@@ -1,63 +1,64 @@
-Return-Path: <linux-kernel+bounces-39028-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2D4783C9D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:20:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E51C83C9D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:21:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF76E1C256A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:20:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA69528D506
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:21:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E421130E4D;
-	Thu, 25 Jan 2024 17:19:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98CA4130E2F;
+	Thu, 25 Jan 2024 17:21:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RC1g8MAZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S6J1Gi0D"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B870512FF82;
-	Thu, 25 Jan 2024 17:19:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB0E14F611;
+	Thu, 25 Jan 2024 17:21:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706203170; cv=none; b=ui9lOuGvQukCz2bWNM/kMGN+pLRlYyU6k7fm3ZQT9AcLoLm6j9xNFnjkEaXDdhqEoDoFtwMADmVgeQpYtMB1fgElxeIZAeQjxwXWwsLIGAcu9e0i61GGpZ4gSUFPZo2i4EDWbkvDjVoqkegEUqYXkOXN0qC4ILiwP9hR/Y/i2E0=
+	t=1706203264; cv=none; b=WdDvekwji4jXJK5KEuW/RlmYEQvjNw0PR+c1bq+FibrsJpdEiX43ngDm6EVIsDzuDVirIF6WnHrP3VyC+0xuuX4qa4tjvNWxHa3m49dammpnceOorM2tQbXHavJABfResD06TqNVxf3WnhClmREKciAlz/0necex+QpTPaL1kDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706203170; c=relaxed/simple;
-	bh=qXoE8YjBexxpmzCM8froty3N1HUq7TECuGLsJ/GlY30=;
+	s=arc-20240116; t=1706203264; c=relaxed/simple;
+	bh=qJy6aD69ChOOiKQIQ8IywuiR88JjYpmJGGBZxwAX/9I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a7o5mE1UOgyhNY5f/Wd+lvVatEL5B91Qg05yptulmRu3AXVgbDWgNoqOVS/iuryVOPaD94jLHY9mGc/qTsj79I/8mnbe2yW/OUW6g39M6nlr8xp1+H0Z6qFqFw9USf9Gf9F4kNlaTjowOClbKl5SNIWLf8KlUviowCHZ9KrDDyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RC1g8MAZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65B3FC433F1;
-	Thu, 25 Jan 2024 17:19:27 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=e8PpPVO0GmwFyuZDNcwdP3McxSyL/19ZVudzfoevctMQhJWkH5xatXbEhPBolfzyns+LFT5e5ZHmyFMM8nIH3cn+HPChV/CA4hX7me+UyWXQMYeE1gO0xnaooVGLE7IdDrn8I/y3SC0WNiODkO7NDBm0u/q7EPsJhkoZ1kuO/kE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S6J1Gi0D; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49BB6C433F1;
+	Thu, 25 Jan 2024 17:21:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706203170;
-	bh=qXoE8YjBexxpmzCM8froty3N1HUq7TECuGLsJ/GlY30=;
+	s=k20201202; t=1706203264;
+	bh=qJy6aD69ChOOiKQIQ8IywuiR88JjYpmJGGBZxwAX/9I=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RC1g8MAZFyopP3gtRUpEs1llcfF4NGB4X77McFIU6Vrrzz3/g0g47bSvd+S8en08E
-	 GyTatf8JScn4m9v4SQATAIpDdzh4asVZ+cNMZqOvBMeeI1jXtcxitEj3RElzXY1Nlz
-	 Ia1yz9ZUNaWHYnNrFBzG7D5UR1PHVF6T/5O5yeNl/Idd0eXGIS4gLZdc/CGjFQ1ZdT
-	 hYTc7Uy16ZO5mFoEEF4sTbfg2qC7n1ZUxyw9DZIr3zqdhGf+eljjbjk92WpXpL7Gam
-	 fu19mDsAv++7NhxPwtgEc3CBROpkqsC57BTP6USAbObFFrRr/mlEcLUt4P9LzUVg+L
-	 KHo5CHoLg3Uig==
-Date: Thu, 25 Jan 2024 17:19:25 +0000
+	b=S6J1Gi0Db2CKExachaEhFx0H826vwASbgafEzEYdAl8/lwrm1DMbWukjBnAwkSBRU
+	 XigEeGOjEeH1lpeb+xflyEys6WWb8w9y/ox6mGn0FZCkO+3/aRjJU860uG+DvrP9OJ
+	 XMVfQ7umWSnXKX1ed1gUy3JP6cCcaX/TsbfWTzjNZtIOKTrWU8fFvP+43jrHL8tfhE
+	 /FFU0xBRwASKxZ0hPu7qLnHmUT5TRJWwVfJmgb8gvgKj8Qphnf86w5l/GorvD2BtKN
+	 3wEAo1ZOKwLv0IYWWQTWK38/1y+nhvEn8Ae3fmyP196FVDy6Rt9Zum69d+PFE7Dkts
+	 tq2flJcOg7RrA==
+Date: Thu, 25 Jan 2024 17:20:59 +0000
 From: Conor Dooley <conor@kernel.org>
-To: Michal Simek <michal.simek@amd.com>
-Cc: linux-kernel@vger.kernel.org, monstr@monstr.eu, michal.simek@xilinx.com,
-	git@xilinx.com, Conor Dooley <conor+dt@kernel.org>,
-	Krishna Potthuri <sai.krishna.potthuri@amd.com>,
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: Jassi Brar <jassisinghbrar@gmail.com>, Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-	"moderated list:ARM/ZYNQ ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
-	"open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Subject: Re: [PATCH] dt-bindings: pinctr: pinctrl-zynq: Fix compatible string
-Message-ID: <20240125-kindness-remnant-1a43ff5c2ba7@spud>
-References: <c1307a4dd5e30290acacc786cb2170deb9eaa539.1706087258.git.michal.simek@amd.com>
- <20240124-frolic-onyx-56bd63791aca@spud>
- <5f2e3917-4767-48ca-9217-fc51fb181daa@amd.com>
+	Conor Dooley <conor+dt@kernel.org>,
+	Dong Aisheng <aisheng.dong@nxp.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH v4 1/4] dt-bindings: mailbox: fsl,mu: add i.MX95
+ Generic/ELE/V2X MU compatible
+Message-ID: <20240125-prudishly-contort-274a48bbb33e@spud>
+References: <20240125-imx-mailbox-v4-0-800be5383c20@nxp.com>
+ <20240125-imx-mailbox-v4-1-800be5383c20@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,60 +66,127 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="q2byNkOV5uJxiLYd"
+	protocol="application/pgp-signature"; boundary="gZWG52K1GgRCAoNi"
 Content-Disposition: inline
-In-Reply-To: <5f2e3917-4767-48ca-9217-fc51fb181daa@amd.com>
+In-Reply-To: <20240125-imx-mailbox-v4-1-800be5383c20@nxp.com>
 
 
---q2byNkOV5uJxiLYd
+--gZWG52K1GgRCAoNi
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 25, 2024 at 08:06:35AM +0100, Michal Simek wrote:
+On Thu, Jan 25, 2024 at 01:20:03PM +0800, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
 >=20
->=20
-> On 1/24/24 17:16, Conor Dooley wrote:
-> > On Wed, Jan 24, 2024 at 10:07:46AM +0100, Michal Simek wrote:
-> > > Compatible string doesn't really match with compatible string listed =
-in the
-> > > driver itself. While binding was converted from txt to yaml
-> > > xlnx,zynq-pinctrl was listed as compatible string but example was usi=
-ng
-> > > xlnx,pinctrl-zynq and also this string is used in all DTSes.
-> > > xlnx,zynq-pinctrl is used only in dt binding and not present in any DT
-> > > which is stable for quite a long time that's why use old compatible s=
-tring
-> > > and update binding document instead of starting to use unused compati=
-ble
-> > > string.
-> > >=20
-> > > Fixes: 153df45acda0 ("dt-bindings: pinctrl: pinctrl-zynq: Convert to =
-yaml")
-> > > Signed-off-by: Michal Simek <michal.simek@amd.com>
-> >=20
-> > I assume that U-Boot etc all use the "incorrect" compatible as was in
-> > the example? If they do, then the patch seems good to me.
->=20
-> Yes. U-Boot is using "incorrect" compatible string from 2015.
+> Add i.MX95 Generic, Secure Enclave and V2X Message Unit compatible string.
+> And some MUs has internal RAMs for SCMI shared buffer usage.
 
-Okay. Assuming U-Boot is the only other user, it eems reasonable to
-document the defacto compatible then.
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Please restrict the SRAM child none to whatever the "some MUs" are that
+actually have it.
 
-Cheers,
+Thanks,
 Conor.
 
---q2byNkOV5uJxiLYd
+>=20
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  .../devicetree/bindings/mailbox/fsl,mu.yaml        | 52 ++++++++++++++++=
++++++-
+>  1 file changed, 50 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/mailbox/fsl,mu.yaml b/Docu=
+mentation/devicetree/bindings/mailbox/fsl,mu.yaml
+> index 12e7a7d536a3..86759831b24a 100644
+> --- a/Documentation/devicetree/bindings/mailbox/fsl,mu.yaml
+> +++ b/Documentation/devicetree/bindings/mailbox/fsl,mu.yaml
+> @@ -29,10 +29,14 @@ properties:
+>        - const: fsl,imx8ulp-mu
+>        - const: fsl,imx8-mu-scu
+>        - const: fsl,imx8-mu-seco
+> -      - const: fsl,imx93-mu-s4
+>        - const: fsl,imx8ulp-mu-s4
+> +      - const: fsl,imx93-mu-s4
+> +      - const: fsl,imx95-mu-ele
+> +      - const: fsl,imx95-mu-v2x
+>        - items:
+> -          - const: fsl,imx93-mu
+> +          - enum:
+> +              - fsl,imx93-mu
+> +              - fsl,imx95-mu
+>            - const: fsl,imx8ulp-mu
+>        - items:
+>            - enum:
+> @@ -95,6 +99,19 @@ properties:
+>    power-domains:
+>      maxItems: 1
+> =20
+> +  ranges: true
+> +
+> +  '#address-cells':
+> +    const: 1
+> +
+> +  '#size-cells':
+> +    const: 1
+> +
+> +patternProperties:
+> +  "^sram@[a-f0-9]+":
+> +    $ref: /schemas/sram/sram.yaml#
+> +    unevaluatedProperties: false
+> +
+>  required:
+>    - compatible
+>    - reg
+> @@ -134,3 +151,34 @@ examples:
+>          interrupts =3D <GIC_SPI 176 IRQ_TYPE_LEVEL_HIGH>;
+>          #mbox-cells =3D <2>;
+>      };
+> +
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +    mu2: mailbox@445b0000 {
+> +        compatible =3D "fsl,imx95-mu", "fsl,imx8ulp-mu";
+> +        reg =3D <0x445b0000 0x10000>;
+> +        ranges;
+> +        interrupts =3D <GIC_SPI 226 IRQ_TYPE_LEVEL_HIGH>;
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <1>;
+> +        #mbox-cells =3D <2>;
+> +
+> +        sram@445b1000 {
+> +            compatible =3D "mmio-sram";
+> +            reg =3D <0x445b1000 0x400>;
+> +            ranges =3D <0x0 0x445b1000 0x400>;
+> +            #address-cells =3D <1>;
+> +            #size-cells =3D <1>;
+> +
+> +            scmi_buf0: scmi-sram-section@0 {
+> +                compatible =3D "arm,scmi-shmem";
+> +                reg =3D <0x0 0x80>;
+> +            };
+> +
+> +            scmi_buf1: scmi-sram-section@80 {
+> +                compatible =3D "arm,scmi-shmem";
+> +                reg =3D <0x80 0x80>;
+> +            };
+> +        };
+> +    };
+>=20
+> --=20
+> 2.37.1
+>=20
+
+--gZWG52K1GgRCAoNi
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbKYHAAKCRB4tDGHoIJi
-0j0MAP0XsUr8CoWVUhz+pTTC7zam+Hl9dZJ2qcjeo393jzdwCwEAuFCgBJsVelr6
-pw7syCZ9WraRq5bzVsbr7KBgDtkR1QE=
-=J64w
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbKYegAKCRB4tDGHoIJi
+0uQkAP9DvCsBlILZzMc3awEyQXoCSoSWWB6nyUnmS7/lsZOxaAEArkQa8GnAv7FF
+vPfHkN1MKkWVPBG4ByV36ieeHXZ5OgA=
+=tP/N
 -----END PGP SIGNATURE-----
 
---q2byNkOV5uJxiLYd--
+--gZWG52K1GgRCAoNi--
 
