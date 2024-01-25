@@ -1,66 +1,63 @@
-Return-Path: <linux-kernel+bounces-38073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4374F83BAAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:32:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FBF583BAAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:32:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0BAE287F39
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:32:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B944B1F24B85
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:32:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F075111CBD;
-	Thu, 25 Jan 2024 07:32:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o/qlP90b"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A717125CE;
+	Thu, 25 Jan 2024 07:32:32 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 361A411C83;
-	Thu, 25 Jan 2024 07:32:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A84783224
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 07:32:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706167950; cv=none; b=Jv3RpysOtcM81OkdG0Xig8zVDEnUWSRtQZz56VzPCjxTFStnnor9By0GM8BF/JUNuzmqzQyZEfPAzJPSwGQ2Cot6Gi4E97V1Lzd17PoS1kMfeP9W5LQmFbeNIMLO3djfOicTYVUks+Hc7O3XUUb+132wTGxishWq5P6+c0zoBqE=
+	t=1706167951; cv=none; b=o0Yz3teygCTD9L9UdecZA7ZXFBXsdryFIP/BBMlQKIdLPiYsSSRVYCw8MePL1ha50SrpJGmvCSUzb9LlqA88spLEcds3Mnktcn4/hHEq4kitiSxO+UuWFp2ul0lMkYai7qMm+UY99yD3W4kmvCLmG4gHh1665Ls40dkKGdaZDB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706167950; c=relaxed/simple;
-	bh=4YJZl/HB/FeUJBFx4g+Hq4GWbhTEDrW8F8ywC05k2CU=;
+	s=arc-20240116; t=1706167951; c=relaxed/simple;
+	bh=gfF68lbPdV5hS04ql6w0rrdGPxjfb4MFByyAPLhlyCY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=enUMFnzbTxV/xe4wEAiMc6WplDq2GGstG4j1c9DT4X8ucdRf8WcYfYaOnFF7WdKmsqiSMoXV7yhSGESmNRY7egsLr8mrC0V47gyZP0LtGudFlIy0UCpUjChmhgIH1fmk/LVvsm6Po6B1RzeqPUk8N9n9xTPhKFsgmFoFbzYGL4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o/qlP90b; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D9E8C433C7;
-	Thu, 25 Jan 2024 07:32:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706167949;
-	bh=4YJZl/HB/FeUJBFx4g+Hq4GWbhTEDrW8F8ywC05k2CU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=o/qlP90bWA8vs1DoAh96IyHbdPjr4YyuZvDq0onY5ZuuTV08XQml8GYs0ScKoZDdk
-	 kRNaiyxLgYIpzg1fYukUi9EtRFIRc727kYqe3wtWXR5gtzs35c/p1Y0J1fwyQZK1Ap
-	 6AYBkhNKcCN91vd4Pq89IdOJXzTo/DfX9ptcP+9MEhnDjZshaFfmldWDYiRB/53swx
-	 +1IA6GzmPSyirfoR+LyXczKV2zT5RxfrhLZ1jFEvHaBZKOwVLKW3QWPCviK1bmr2b8
-	 GoXu6/VAAQ3DwKjghCy5ELrIOAk+v3Yh5RTjDRV/vZkGVh46K5kitkUo/oNKs++SiR
-	 aXnmU6ZKh3AJg==
-Date: Thu, 25 Jan 2024 09:31:57 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: "Lameter, Christopher" <cl@os.amperecomputing.com>
-Cc: Huang Shijie <shijie@os.amperecomputing.com>,
-	gregkh@linuxfoundation.org, patches@amperecomputing.com,
-	rafael@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
-	aou@eecs.berkeley.edu, yury.norov@gmail.com, kuba@kernel.org,
-	vschneid@redhat.com, mingo@kernel.org, akpm@linux-foundation.org,
-	vbabka@suse.cz, tglx@linutronix.de, jpoimboe@kernel.org,
-	ndesaulniers@google.com, mikelley@microsoft.com,
-	mhiramat@kernel.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
-	will@kernel.org, mark.rutland@arm.com, mpe@ellerman.id.au,
-	linuxppc-dev@lists.ozlabs.org, chenhuacai@kernel.org,
-	jiaxun.yang@flygoat.com, linux-mips@vger.kernel.org
-Subject: Re: [PATCH v2] NUMA: Early use of cpu_to_node() returns 0 instead of
- the correct node id
-Message-ID: <ZbIObaA6t9WbRw9y@kernel.org>
-References: <20240123045843.75969-1-shijie@os.amperecomputing.com>
- <4a13353c-cf4b-a388-5776-389c61c63ec0@os.amperecomputing.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=enpjW8WSPF4v5eqjkQuJjg16lpyYGWHXdNZV9Exbud9PhFw9o2y/UErr0fdLceXelutkfbWN1Gmz4HtX5RdX6OxdFMor6Psqs/P1iMBQ4thsd9otNxbo2+BF3s+9ycb7cfgUxVWThqgE1JQsY95xayKag/ZeLaE3sY9TKiYdvOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <sha@pengutronix.de>)
+	id 1rSuDj-0002fb-9C; Thu, 25 Jan 2024 08:32:19 +0100
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <sha@pengutronix.de>)
+	id 1rSuDh-002EXC-VE; Thu, 25 Jan 2024 08:32:17 +0100
+Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+	(envelope-from <sha@pengutronix.de>)
+	id 1rSuDh-001hVW-Ru; Thu, 25 Jan 2024 08:32:17 +0100
+Date: Thu, 25 Jan 2024 08:32:17 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: Jassi Brar <jassisinghbrar@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Dong Aisheng <aisheng.dong@nxp.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH v4 2/4] mailbox: imx: support return value of init
+Message-ID: <20240125073217.GG324503@pengutronix.de>
+References: <20240125-imx-mailbox-v4-0-800be5383c20@nxp.com>
+ <20240125-imx-mailbox-v4-2-800be5383c20@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,45 +66,144 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4a13353c-cf4b-a388-5776-389c61c63ec0@os.amperecomputing.com>
+In-Reply-To: <20240125-imx-mailbox-v4-2-800be5383c20@nxp.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Wed, Jan 24, 2024 at 09:19:00AM -0800, Lameter, Christopher wrote:
-> On Tue, 23 Jan 2024, Huang Shijie wrote:
+On Thu, Jan 25, 2024 at 01:20:04PM +0800, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
 > 
-> > During the kernel booting, the generic cpu_to_node() is called too early in
-> > arm64, powerpc and riscv when CONFIG_NUMA is enabled.
-> > 
-> > For arm64/powerpc/riscv, there are at least four places in the common code
-> > where the generic cpu_to_node() is called before it is initialized:
-> > 	   1.) early_trace_init()         in kernel/trace/trace.c
-> > 	   2.) sched_init()               in kernel/sched/core.c
-> > 	   3.) init_sched_fair_class()    in kernel/sched/fair.c
-> > 	   4.) workqueue_init_early()     in kernel/workqueue.c
-> > 
-> > In order to fix the bug, the patch changes generic cpu_to_node to
-> > function pointer, and export it for kernel modules.
-> > Introduce smp_prepare_boot_cpu_start() to wrap the original
-> > smp_prepare_boot_cpu(), and set cpu_to_node with early_cpu_to_node.
-> > Introduce smp_prepare_cpus_done() to wrap the original smp_prepare_cpus(),
-> > and set the cpu_to_node to formal _cpu_to_node().
+> There will be changes that init may fail, so adding return value for
+> init function.
 > 
-> Would  you please fix this cleanly without a function pointer?
-> 
-> What I think needs to be done is a patch series.
-> 
-> 1. Instrument cpu_to_node so that some warning is issued if it is used too
-> early. Preloading the array with NUMA_NO_NODE would allow us to do that.
-> 
-> 2. Implement early_cpu_to_node on platforms that currently do not have it.
-> 
-> 3. A series of patches that fix each place where cpu_to_node is used too
-> early.
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
 
-I think step 3 can be simplified with a generic function that sets
-per_cpu(numa_node) using early_cpu_to_node(). It can be called right after
-setup_per_cpu_areas().
+Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
+
+Sascha
+
+> ---
+>  drivers/mailbox/imx-mailbox.c | 35 ++++++++++++++++++++++++-----------
+>  1 file changed, 24 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/mailbox/imx-mailbox.c b/drivers/mailbox/imx-mailbox.c
+> index 656171362fe9..dced4614065f 100644
+> --- a/drivers/mailbox/imx-mailbox.c
+> +++ b/drivers/mailbox/imx-mailbox.c
+> @@ -110,7 +110,7 @@ struct imx_mu_dcfg {
+>  	int (*tx)(struct imx_mu_priv *priv, struct imx_mu_con_priv *cp, void *data);
+>  	int (*rx)(struct imx_mu_priv *priv, struct imx_mu_con_priv *cp);
+>  	int (*rxdb)(struct imx_mu_priv *priv, struct imx_mu_con_priv *cp);
+> -	void (*init)(struct imx_mu_priv *priv);
+> +	int (*init)(struct imx_mu_priv *priv);
+>  	enum imx_mu_type type;
+>  	u32	xTR;		/* Transmit Register0 */
+>  	u32	xRR;		/* Receive Register0 */
+> @@ -737,7 +737,7 @@ static struct mbox_chan *imx_mu_seco_xlate(struct mbox_controller *mbox,
+>  	return imx_mu_xlate(mbox, sp);
+>  }
+>  
+> -static void imx_mu_init_generic(struct imx_mu_priv *priv)
+> +static int imx_mu_init_generic(struct imx_mu_priv *priv)
+>  {
+>  	unsigned int i;
+>  	unsigned int val;
+> @@ -757,7 +757,7 @@ static void imx_mu_init_generic(struct imx_mu_priv *priv)
+>  	priv->mbox.of_xlate = imx_mu_xlate;
+>  
+>  	if (priv->side_b)
+> -		return;
+> +		return 0;
+>  
+>  	/* Set default MU configuration */
+>  	for (i = 0; i < IMX_MU_xCR_MAX; i++)
+> @@ -770,9 +770,11 @@ static void imx_mu_init_generic(struct imx_mu_priv *priv)
+>  	/* Clear any pending RSR */
+>  	for (i = 0; i < IMX_MU_NUM_RR; i++)
+>  		imx_mu_read(priv, priv->dcfg->xRR + (i % 4) * 4);
+> +
+> +	return 0;
+>  }
+>  
+> -static void imx_mu_init_specific(struct imx_mu_priv *priv)
+> +static int imx_mu_init_specific(struct imx_mu_priv *priv)
+>  {
+>  	unsigned int i;
+>  	int num_chans = priv->dcfg->type & IMX_MU_V2_S4 ? IMX_MU_S4_CHANS : IMX_MU_SCU_CHANS;
+> @@ -794,12 +796,20 @@ static void imx_mu_init_specific(struct imx_mu_priv *priv)
+>  	/* Set default MU configuration */
+>  	for (i = 0; i < IMX_MU_xCR_MAX; i++)
+>  		imx_mu_write(priv, 0, priv->dcfg->xCR[i]);
+> +
+> +	return 0;
+>  }
+>  
+> -static void imx_mu_init_seco(struct imx_mu_priv *priv)
+> +static int imx_mu_init_seco(struct imx_mu_priv *priv)
+>  {
+> -	imx_mu_init_generic(priv);
+> +	int ret;
+> +
+> +	ret = imx_mu_init_generic(priv);
+> +	if (ret)
+> +		return ret;
+>  	priv->mbox.of_xlate = imx_mu_seco_xlate;
+> +
+> +	return 0;
+>  }
+>  
+>  static int imx_mu_probe(struct platform_device *pdev)
+> @@ -866,7 +876,11 @@ static int imx_mu_probe(struct platform_device *pdev)
+>  
+>  	priv->side_b = of_property_read_bool(np, "fsl,mu-side-b");
+>  
+> -	priv->dcfg->init(priv);
+> +	ret = priv->dcfg->init(priv);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to init MU\n");
+> +		goto disable_clk;
+> +	}
+>  
+>  	spin_lock_init(&priv->xcr_lock);
+>  
+> @@ -878,10 +892,8 @@ static int imx_mu_probe(struct platform_device *pdev)
+>  	platform_set_drvdata(pdev, priv);
+>  
+>  	ret = devm_mbox_controller_register(dev, &priv->mbox);
+> -	if (ret) {
+> -		clk_disable_unprepare(priv->clk);
+> -		return ret;
+> -	}
+> +	if (ret)
+> +		goto disable_clk;
+>  
+>  	pm_runtime_enable(dev);
+>  
+> @@ -899,6 +911,7 @@ static int imx_mu_probe(struct platform_device *pdev)
+>  
+>  disable_runtime_pm:
+>  	pm_runtime_disable(dev);
+> +disable_clk:
+>  	clk_disable_unprepare(priv->clk);
+>  	return ret;
+>  }
+> 
+> -- 
+> 2.37.1
+> 
+> 
+> 
 
 -- 
-Sincerely yours,
-Mike.
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
