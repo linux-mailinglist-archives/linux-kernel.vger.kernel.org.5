@@ -1,205 +1,206 @@
-Return-Path: <linux-kernel+bounces-39080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5AA183CAAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:18:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AC2BD83CAB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:21:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44C1AB2557C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:18:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 144EAB25A32
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:21:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E471353F3;
-	Thu, 25 Jan 2024 18:17:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1217135A45;
+	Thu, 25 Jan 2024 18:21:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="DAuVUQIo"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="NZUtpDRq";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="v7bqEtTd"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A46D1350DB
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 18:17:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC735133994;
+	Thu, 25 Jan 2024 18:21:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706206647; cv=none; b=BdYEfQSDjwaJ50Me7SBSFEgq8AxyJnspRRJ7Jee0TPX4YfgYZWBxTcCk+3itw/XrZDD4rEhKuU1+n9mNsYeXmJZMORGouOMe7DxvslqVBghqpiq3KK/4WvdE3jZYl15/tMjk7T8rDYcKsH5oKb0NlvsB7toYd59425Q+FL37jFQ=
+	t=1706206878; cv=none; b=nCCCVpxQOwVQjVgX+euKryWmO3N1oypdYs28uu++n7AONWVgbXrKpAIOxmFe2ExmXyN0rQFOMI4JfUCSnv7sr3amV1jFTrSaKrjYFCMl22ifUh0T/fryi4XATmJWmDqw+1d5OTgBwUoJ+A6SCZyOQ0Zzlfr1s5DOuS5dJ6rMayI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706206647; c=relaxed/simple;
-	bh=fTH89TljylnA1PFABuOshml81dj6cKrkIPb4PGGYlC8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ciVbjeUdCGjoi2+kEeEuPWwWCvlpsk8FBFl0D5aVJAZmn3e13Gy8iQISp0a7WP22I6FImsjJUgSibAos4eJONPA7L+6+PwEnuMncoU0TT/0GipaDY4q6MklGJ5EwitFwKoEuWP3Z4Hm53pBOKg9CB/J36FW6xCjcF6mNdTT5wF0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=DAuVUQIo; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a2e633c5365so191080366b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 10:17:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1706206644; x=1706811444; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:mail-followup-to:message-id:subject:cc:to
-         :from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LX2Biyswi3lcTJguDEv72aHM8YWWcEZE57McfhSqDfM=;
-        b=DAuVUQIooh7k9SH4DjCLVVGnJGB7h7IAArZMSV32YaaSfOYdF6U+o2Bi8S01iVuN+H
-         O5Ni/NsmY/brjIPSrvB/Sx5KM/vXbEchMV7euTsAn9PVyeMqxqYY6Up3Qb/oFodVhuSu
-         hmmcWUgC+NaAdCEo3swZPzvRJZhAsg94uXr+M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706206644; x=1706811444;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:mail-followup-to:message-id:subject:cc:to
-         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LX2Biyswi3lcTJguDEv72aHM8YWWcEZE57McfhSqDfM=;
-        b=NrOZ4ektZ10hwYkFQHsNkv+BQi9VKPjs5H4AauYIGTu1YQGEmCEjAMngsSN5Emz9DZ
-         kMZgr5IFaNTl2EuYPsSYkM0+7fS0BtcDFDG4yaWhqde3Gh3J+ZrNkHY0lIs/FqSGIlC8
-         Pn5qk3jth2Jv0KlAe2AAf/MMgZ1EIkrSFR2WfY6cVfLsneCrMZUOC32u7Wi4gJyvKytZ
-         H9DRZq72T11g2fkx19/N32Bqt0XLaXfHhd2pEG8se3y8OUCdk8CK3mWsb3FkdI/IPVNZ
-         sV9hVWD//lgxhee0uGf9N1KtQm4Jn1pvDFv8FwOds3FJHEXWpx1pWuYFdAgB1toTQ4JF
-         ZiMg==
-X-Gm-Message-State: AOJu0YwToV3V6/6/xHULZVvgWim/fsDM/0ynkGQkJfQHqfgSXOuQvF7L
-	iOaf2tEwo/tNcZfoWufVslVhauU4NUWvs7ojxSkdjNU0S8l5QnZh+pUweFXLlXU=
-X-Google-Smtp-Source: AGHT+IFFgR3FnuKNaxcbSF/D45iFGEkVO7DwIYkEGMWwJWTauy+SOrnz8WOVHQePtLtXFKX663PQaQ==
-X-Received: by 2002:a17:906:a2d6:b0:a31:7e9c:60bf with SMTP id by22-20020a170906a2d600b00a317e9c60bfmr23085ejb.0.1706206643807;
-        Thu, 25 Jan 2024 10:17:23 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id tl15-20020a170907c30f00b00a3186c2c254sm765083ejc.213.2024.01.25.10.17.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 10:17:23 -0800 (PST)
-Date: Thu, 25 Jan 2024 19:17:21 +0100
-From: Daniel Vetter <daniel@ffwll.ch>
-To: Jason-JH Lin =?utf-8?B?KOael+edv+elpSk=?= <Jason-JH.Lin@mediatek.com>
-Cc: "maxime@cerno.tech" <maxime@cerno.tech>,
-	"daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>,
-	"manasi.d.navare@intel.com" <manasi.d.navare@intel.com>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"michel@daenzer.net" <michel@daenzer.net>,
-	"intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-	"chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
-	"linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-	"mikita.lipski@amd.com" <mikita.lipski@amd.com>,
-	"dmitry.baryshkov@linaro.org" <dmitry.baryshkov@linaro.org>,
-	"tzimmermann@suse.de" <tzimmermann@suse.de>,
-	"daniel.vetter@intel.com" <daniel.vetter@intel.com>,
-	"nicholas.kazlauskas@amd.com" <nicholas.kazlauskas@amd.com>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"quic_abhinavk@quicinc.com" <quic_abhinavk@quicinc.com>,
-	Project_Global_Chrome_Upstream_Group <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-	"lucas.demarchi@intel.com" <lucas.demarchi@intel.com>,
-	"sean@poorly.run" <sean@poorly.run>,
-	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-	"dmitry.osipenko@collabora.com" <dmitry.osipenko@collabora.com>,
-	"fshao@chromium.org" <fshao@chromium.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"jani.nikula@intel.com" <jani.nikula@intel.com>,
-	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>,
-	"freedreno@lists.freedesktop.org" <freedreno@lists.freedesktop.org>
-Subject: Re: [PATCH] drm/atomic-helpers: remove legacy_cursor_update hacks
-Message-ID: <ZbKlsTEvGPiGtzS3@phenom.ffwll.local>
-Mail-Followup-To: Jason-JH Lin =?utf-8?B?KOael+edv+elpSk=?= <Jason-JH.Lin@mediatek.com>,
-	"maxime@cerno.tech" <maxime@cerno.tech>,
-	"manasi.d.navare@intel.com" <manasi.d.navare@intel.com>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"michel@daenzer.net" <michel@daenzer.net>,
-	"intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-	"chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
-	"linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-	"mikita.lipski@amd.com" <mikita.lipski@amd.com>,
-	"dmitry.baryshkov@linaro.org" <dmitry.baryshkov@linaro.org>,
-	"tzimmermann@suse.de" <tzimmermann@suse.de>,
-	"daniel.vetter@intel.com" <daniel.vetter@intel.com>,
-	"nicholas.kazlauskas@amd.com" <nicholas.kazlauskas@amd.com>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"quic_abhinavk@quicinc.com" <quic_abhinavk@quicinc.com>,
-	Project_Global_Chrome_Upstream_Group <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-	"lucas.demarchi@intel.com" <lucas.demarchi@intel.com>,
-	"sean@poorly.run" <sean@poorly.run>,
-	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-	"dmitry.osipenko@collabora.com" <dmitry.osipenko@collabora.com>,
-	"fshao@chromium.org" <fshao@chromium.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"jani.nikula@intel.com" <jani.nikula@intel.com>,
-	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>,
-	"freedreno@lists.freedesktop.org" <freedreno@lists.freedesktop.org>
-References: <20230216111214.3489223-1-daniel.vetter@ffwll.ch>
- <20230307145613.xvhru3fpcudlpazt@houat>
- <aac416742920953999a9ce230ac68139bf5b9790.camel@mediatek.com>
+	s=arc-20240116; t=1706206878; c=relaxed/simple;
+	bh=+gYbRRNF8VL4AUO+/s19Tp8vjrP5BmpHxwfIE0dYgUI=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=o8PNBCiv1DlxQYZAdYHNUHUrdAb5Aj70Oj/ayRvpuZpooeQ/YRWezg5FZCyLsGtGbA5obtU86NHbQH7dGSX8F17f5QP4tFh2vknEVoa/PkpX6zK+gi2HlEjgmZMMA2/5mWA277aEWrgPpDR19M5EUdbSIXg61D/MwhlBV4ZT8H8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=NZUtpDRq; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=v7bqEtTd; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 25 Jan 2024 18:21:13 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706206874;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MEO2pBTBit5Kauaudc9uk4cBNZqTpRTvXqnfWiOO+LQ=;
+	b=NZUtpDRqtLfRKx5rqVRM0TnzzdDMeUVIQbO/bXLQQbjEGjNehWSeqvOyAlo5cbz3skPu9t
+	nRWYfyBLfl+Kry3NvuyMaZmnmp2uShqlRSUrRIz+bemE6k4FQD/i6HRxk3oesxxWfhpiRp
+	g9FDYmnhQUKqjuq8EYWtwRULeXzXFUT08xR2Mdu0g+nnJvcPN6fxqqA8zVaGwJEc41J2H8
+	2paRPILmbth0gK4+Fvp2fvgbQ8kkCwByy4dTk61lrUffu3Jx3v465OE91ExfVP04KkZVvq
+	FwBpNaEIkpJCVp1OJ821IIljaoXWlbpFALdMl7Gv43+17+5k5nFSyzcTUgZS8Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706206874;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MEO2pBTBit5Kauaudc9uk4cBNZqTpRTvXqnfWiOO+LQ=;
+	b=v7bqEtTds46SzjPMzx0VjmwJaP1ne5xmKXZLU/0TPlYNPq78KqPaw3oWhvWu+vufzWXBTJ
+	jUwHdu6V3+7K0IDA==
+From: "tip-bot2 for H. Peter Anvin (Intel)" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject:
+ [tip: x86/fred] x86/fred: Invoke FRED initialization code to enable FRED
+Cc: "H. Peter Anvin (Intel)" <hpa@zytor.com>, Xin Li <xin3.li@intel.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Shan Kang <shan.kang@intel.com>,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231205105030.8698-36-xin3.li@intel.com>
+References: <20231205105030.8698-36-xin3.li@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aac416742920953999a9ce230ac68139bf5b9790.camel@mediatek.com>
-X-Operating-System: Linux phenom 6.6.11-amd64 
+Message-ID: <170620687375.398.11388384121726676497.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 23, 2024 at 06:09:05AM +0000, Jason-JH Lin (林睿祥) wrote:
-> Hi Maxime, Daniel,
-> 
-> We encountered similar issue with mediatek SoCs.
-> 
-> We have found that in drm_atomic_helper_commit_rpm(), when disabling
-> the cursor plane, the old_state->legacy_cursor_update in
-> drm_atomic_wait_for_vblank() is set to true.
-> As the result, we are not actually waiting for a vlbank to wait for our
-> hardware to close the cursor plane. Subsequently, the execution
-> proceeds to drm_atomic_helper_cleanup_planes() to  free the cursor
-> buffer. This can lead to use-after-free issues with our hardware.
-> 
-> Could you please apply this patch to fix our problem?
-> Or are there any considerations for not applying this patch?
+The following commit has been merged into the x86/fred branch of tip:
 
-Mostly it needs someone to collect a pile of acks/tested-by and then land
-it.
+Commit-ID:     a9f26154bf5478fc155309fc69128415f3a1be08
+Gitweb:        https://git.kernel.org/tip/a9f26154bf5478fc155309fc69128415f3a1be08
+Author:        H. Peter Anvin (Intel) <hpa@zytor.com>
+AuthorDate:    Tue, 05 Dec 2023 02:50:24 -08:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Thu, 25 Jan 2024 19:10:33 +01:00
 
-I'd be _very_ happy if someone else can take care of that ...
+x86/fred: Invoke FRED initialization code to enable FRED
 
-There's also the potential issue that it might slow down some of the
-legacy X11 use-cases that really needed a non-blocking cursor, but I think
-all the drivers where this matters have switched over to the async plane
-update stuff meanwhile. So hopefully that's good.
+Let cpu_init_exception_handling() call cpu_init_fred_exceptions() to
+initialize FRED. However if FRED is unavailable or disabled, it falls
+back to set up TSS IST and initialize IDT.
 
-Cheers, Sima
-> 
-> Regards,
-> Jason-JH.Lin
-> 
-> On Tue, 2023-03-07 at 15:56 +0100, Maxime Ripard wrote:
-> > Hi,
-> > 
-> > On Thu, Feb 16, 2023 at 12:12:13PM +0100, Daniel Vetter wrote:
-> > > The stuff never really worked, and leads to lots of fun because it
-> > > out-of-order frees atomic states. Which upsets KASAN, among other
-> > > things.
-> > > 
-> > > For async updates we now have a more solid solution with the
-> > > ->atomic_async_check and ->atomic_async_commit hooks. Support for
-> > > that
-> > > for msm and vc4 landed. nouveau and i915 have their own commit
-> > > routines, doing something similar.
-> > > 
-> > > For everyone else it's probably better to remove the use-after-free
-> > > bug, and encourage folks to use the async support instead. The
-> > > affected drivers which register a legacy cursor plane and don't
-> > > either
-> > > use the new async stuff or their own commit routine are: amdgpu,
-> > > atmel, mediatek, qxl, rockchip, sti, sun4i, tegra, virtio, and
-> > > vmwgfx.
-> > > 
-> > > Inspired by an amdgpu bug report.
-> > 
-> > Thanks for submitting that patch. It's been in the downstream RPi
-> > tree
-> > for a while, so I'd really like it to be merged eventually :)
-> > 
-> > Acked-by: Maxime Ripard <maxime@cerno.tech>
-> > 
-> > Maxime
+Co-developed-by: Xin Li <xin3.li@intel.com>
+Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+Signed-off-by: Xin Li <xin3.li@intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Shan Kang <shan.kang@intel.com>
+Link: https://lore.kernel.org/r/20231205105030.8698-36-xin3.li@intel.com
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+---
+ arch/x86/kernel/cpu/common.c | 22 +++++++++++++++++-----
+ arch/x86/kernel/irqinit.c    |  7 ++++++-
+ arch/x86/kernel/traps.c      |  5 ++++-
+ 3 files changed, 27 insertions(+), 7 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index 399f0d0..5ed968c 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -61,6 +61,7 @@
+ #include <asm/microcode.h>
+ #include <asm/intel-family.h>
+ #include <asm/cpu_device_id.h>
++#include <asm/fred.h>
+ #include <asm/uv/uv.h>
+ #include <asm/ia32.h>
+ #include <asm/set_memory.h>
+@@ -2110,7 +2111,15 @@ void syscall_init(void)
+ 	/* The default user and kernel segments */
+ 	wrmsr(MSR_STAR, 0, (__USER32_CS << 16) | __KERNEL_CS);
+ 
+-	idt_syscall_init();
++	/*
++	 * Except the IA32_STAR MSR, there is NO need to setup SYSCALL and
++	 * SYSENTER MSRs for FRED, because FRED uses the ring 3 FRED
++	 * entrypoint for SYSCALL and SYSENTER, and ERETU is the only legit
++	 * instruction to return to ring 3 (both sysexit and sysret cause
++	 * #UD when FRED is enabled).
++	 */
++	if (!cpu_feature_enabled(X86_FEATURE_FRED))
++		idt_syscall_init();
+ }
+ 
+ #else	/* CONFIG_X86_64 */
+@@ -2216,8 +2225,9 @@ void cpu_init_exception_handling(void)
+ 	/* paranoid_entry() gets the CPU number from the GDT */
+ 	setup_getcpu(cpu);
+ 
+-	/* IST vectors need TSS to be set up. */
+-	tss_setup_ist(tss);
++	/* For IDT mode, IST vectors need to be set in TSS. */
++	if (!cpu_feature_enabled(X86_FEATURE_FRED))
++		tss_setup_ist(tss);
+ 	tss_setup_io_bitmap(tss);
+ 	set_tss_desc(cpu, &get_cpu_entry_area(cpu)->tss.x86_tss);
+ 
+@@ -2226,8 +2236,10 @@ void cpu_init_exception_handling(void)
+ 	/* GHCB needs to be setup to handle #VC. */
+ 	setup_ghcb();
+ 
+-	/* Finally load the IDT */
+-	load_current_idt();
++	if (cpu_feature_enabled(X86_FEATURE_FRED))
++		cpu_init_fred_exceptions();
++	else
++		load_current_idt();
+ }
+ 
+ /*
+diff --git a/arch/x86/kernel/irqinit.c b/arch/x86/kernel/irqinit.c
+index c683666..f79c5ed 100644
+--- a/arch/x86/kernel/irqinit.c
++++ b/arch/x86/kernel/irqinit.c
+@@ -28,6 +28,7 @@
+ #include <asm/setup.h>
+ #include <asm/i8259.h>
+ #include <asm/traps.h>
++#include <asm/fred.h>
+ #include <asm/prom.h>
+ 
+ /*
+@@ -96,7 +97,11 @@ void __init native_init_IRQ(void)
+ 	/* Execute any quirks before the call gates are initialised: */
+ 	x86_init.irqs.pre_vector_init();
+ 
+-	idt_setup_apic_and_irq_gates();
++	if (cpu_feature_enabled(X86_FEATURE_FRED))
++		fred_complete_exception_setup();
++	else
++		idt_setup_apic_and_irq_gates();
++
+ 	lapic_assign_system_vectors();
+ 
+ 	if (!acpi_ioapic && !of_ioapic && nr_legacy_irqs()) {
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index a03c233..cf198d9 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -1412,7 +1412,10 @@ void __init trap_init(void)
+ 
+ 	/* Initialize TSS before setting up traps so ISTs work */
+ 	cpu_init_exception_handling();
++
+ 	/* Setup traps as cpu_init() might #GP */
+-	idt_setup_traps();
++	if (!cpu_feature_enabled(X86_FEATURE_FRED))
++		idt_setup_traps();
++
+ 	cpu_init();
+ }
 
