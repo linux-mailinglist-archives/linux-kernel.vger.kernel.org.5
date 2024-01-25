@@ -1,289 +1,158 @@
-Return-Path: <linux-kernel+bounces-38827-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD63983C698
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:31:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 881C783C6AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:32:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25A2CB227DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:31:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17366B24E3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:32:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 674286EB6A;
-	Thu, 25 Jan 2024 15:30:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="IsB3UrNz"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11olkn2010.outbound.protection.outlook.com [40.92.20.10])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23C1F6EB71;
+	Thu, 25 Jan 2024 15:32:07 +0000 (UTC)
+Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58D287316F;
-	Thu, 25 Jan 2024 15:30:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.20.10
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706196651; cv=fail; b=crYNtBggKN/bItq8MJHdKuND6vBs8rmIgThpQp3fb+noJbCOIsNzzNtI2NNzs4o7Lf84wxrhKf2QR6OyLF/MDQDl8nBKQR74bhX23IUtDY3SK+pJTuF9syHYwt+z+D32V7AAWUB+6tV133XxBPdycglVRZ64S+c/bQ40yoPLQEs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706196651; c=relaxed/simple;
-	bh=49iPpjqiwCxzkmJGVwQFZBZ54dZrh+vA2b1sHXn+RQE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=YVpL74NJVZJe0FzvXwqEYc7cvIHaGiJgKpJUylnuHCi+Y9pCL2mqubQQRV0OHq6nszmHxkEgKFjWexBUZZVIIHYa+dLLV6jkSxCbY3N+pzY1w6d7HvPQVNPEZgqTrv18l4JY9tzTYOgwUdBGNc5H2gp5lFTdaFU6c54Le6FdXfk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=IsB3UrNz; arc=fail smtp.client-ip=40.92.20.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wi2W5EnWM5ImiRa0u3ZgYBv3psB5MjmVL7e8z7LXvboMv5qA9rV3ohntOcVM+0cpqbhjsYovoDDhqO8TEKuJ4uB+OSNa9qc2FFo80qPdpI4vm5FrYrdMRAbvlPet36rcyqe1OJjpoWzDkR2iyORDJ6iieHxmg54QUKnr8be15dAtSbxZh9WC5AD1tA0b/QM/BP1pMkQnOKpKOlrou7hno44gjFk3GKZSEZ3oeVZIHw3LswBSIoMqQLLkEHzDY5cuhpLzScYTtZ0kZ4ZBQEQP8V7Fdqvz6jKGTjG2euum7pUbcKo7ES4oYeFbPaByWFnffyY97aZ+/yzzWshoGhlfvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eW2alejqAOYT8WAjMai/jwWkVOYlVlzir8+fWHfLoG4=;
- b=KZduFnFM4kmyDwEwvMI1M8eJgwyGOExC/11Jx+u6UjbeQNotC6IVwL3CK4/nR4SojUtIuhpSlFpSf0LV1/C5RDSlZEmXPX5ip+07VwHVSXyH9aQzHkBP/O3dGu+X72kKuiatorFDtxeVvf2C/zegsssnE3ttw4V6y/3RR09hSnFa+YsD//WNjIvun3UsXgD5haUSuqznZq4Yd4D0sEiO780dJw+wzLOjEiWZS2q6+OFGCT+KMGdvBuKGtTwrvNbZrYNtiB9bGT92K/UwfWzfBKk9+3xQFzblFHU9R9WbmZWica6+Z0WG5JX32ohM9U+SsDnT+Egbi/Wtn2Ip1hq83g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eW2alejqAOYT8WAjMai/jwWkVOYlVlzir8+fWHfLoG4=;
- b=IsB3UrNzu5Xn0UgYLY+hFfk9v7sdqDOpsfIpP1TB01DdZalsNRyvOSFwBuhU/OhlKKKSMj8AZYhE/YopziPalbqobev+gp6ALcF+EKAAU/MR//7VPs4kDUCHdh1u6mxmcOEPo0l5iJ5l4d7ioFfDt+31Yd7fMRGNvcnxD+0DmsfWtStaxEFeVE2wNmlye6Ic7A1Z56DiwbIyBuUxjEcfGAuK6760BuZtv1UsYxIDFrSWYg0E8CIIxOWrEkIm1fEm2AqnUYyTsJXpDlCtzQA8Mp+7FLSuAq6QFxwj1IJ8pV332UiwNKR/9Bvu22OETDLykJNNx7zaMO2bPInd/LGijA==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by PH7PR02MB8980.namprd02.prod.outlook.com (2603:10b6:510:1f8::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.26; Thu, 25 Jan
- 2024 15:30:46 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7228.022; Thu, 25 Jan 2024
- 15:30:46 +0000
-From: Michael Kelley <mhklinux@outlook.com>
-To: Baoquan He <bhe@redhat.com>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"kexec@lists.infradead.org" <kexec@lists.infradead.org>, "x86@kernel.org"
-	<x86@kernel.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linuxppc-dev@lists.ozlabs.org"
-	<linuxppc-dev@lists.ozlabs.org>, "linux-s390@vger.kernel.org"
-	<linux-s390@vger.kernel.org>, "linux-sh@vger.kernel.org"
-	<linux-sh@vger.kernel.org>, "linux-mips@vger.kernel.org"
-	<linux-mips@vger.kernel.org>, "linux-riscv@lists.infradead.org"
-	<linux-riscv@lists.infradead.org>, "loongarch@lists.linux.dev"
-	<loongarch@lists.linux.dev>, "akpm@linux-foundation.org"
-	<akpm@linux-foundation.org>, "ebiederm@xmission.com" <ebiederm@xmission.com>,
-	"hbathini@linux.ibm.com" <hbathini@linux.ibm.com>, "piliu@redhat.com"
-	<piliu@redhat.com>, "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>
-Subject: RE: [PATCH linux-next v3 06/14] x86, crash: wrap crash dumping code
- into crash related ifdefs
-Thread-Topic: [PATCH linux-next v3 06/14] x86, crash: wrap crash dumping code
- into crash related ifdefs
-Thread-Index: AQHaToRG7EZBXaVit0yb4RXbyvoNjrDpkK1ggABa6ACAAA/3oIAARgWAgABnw3A=
-Date: Thu, 25 Jan 2024 15:30:45 +0000
-Message-ID:
- <SN6PR02MB41572FDAE703FC8A91974DFFD47A2@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <20240124051254.67105-1-bhe@redhat.com>
- <20240124051254.67105-7-bhe@redhat.com>
- <SN6PR02MB4157931105FA68D72E3D3DB8D47B2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <ZbHfACpwqi2U9vmK@MiWiFi-R3L-srv>
- <SN6PR02MB4157E138C7EE4A281AB49C10D47A2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <ZbInIQeIoPj6R0kY@MiWiFi-R3L-srv>
-In-Reply-To: <ZbInIQeIoPj6R0kY@MiWiFi-R3L-srv>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tmn: [kBPvbuH5eMbnBowZglgoIczCWf/e+Xu7]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|PH7PR02MB8980:EE_
-x-ms-office365-filtering-correlation-id: 1dd18b5f-0428-4c59-dec9-08dc1dba99ba
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- /aH4jkmyv0ty76k9LAS6MR4nv2cgpKsOzP6GwHd+HQssdpDIfaJhh/vVCXR5kQsb2qLVdNOmHcA5A7cc3WeT/SgMcCPlMmhwYjkRKD4tHIHtGgseWm+MC7WitVnT0aUobih0TORAKdGV+vqg/MO5y3tIcKCGDSGgPKNxUmKtPJ3GAWl4/tFlLqiCTSaxsRdzLm1sKNVavQWi7KEoyAfEnw65Znm499uxsLJx2yJIla2Tu1HKJBDlhpZ1EqRFABkCrxz8RuGHmF/PjYwZpWzC1OuQ8cD+CxLJo0jD9tQC6ieY2984Tb4kTRt61JHprgz97soQWkbDSkOJAxZX6iNK7tcV85Dyjfyzptjsn6I65hFK5OPc0ax5aIsl3IEV0LvMIWdPbPP0aepx8DWPcZjpnDiYK++kS0uYGGFLS2NYNOqMa9SiJ2gLdb/2GuxHUldXbRgK2bexasJt+VsH5ay2gPBnT+OzSikbsY8Dp87eDbumkyM4IpzryLc6ioDtc18yaHOH451Lt6sII2q9gw5/kEiziqNxO7EcLKrAG/Pznz0GoepHww6mbTx1sTPc0uoF
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?rDZlZD2CA0+HKZCv3KEDs5f1ygEjqFw7Le+0at86EcWCnClczxvKx2gWWXZh?=
- =?us-ascii?Q?JbXZBoacRbvSz0S9fsJbOF1HQ5pt1Ib5AwYgjpzrDMCmvHK/2UiPCnghx398?=
- =?us-ascii?Q?g/qp60CEmCbZclWstEjir0GGZus9cVAYEa0RiV84MiBKR85t0Pc0TgC3HRAf?=
- =?us-ascii?Q?PFUfGtzh3MXNZLZ8D719F5z5HVhgusVKAnDX9H14uGl8BgYbfRS5sZ4Y8/ww?=
- =?us-ascii?Q?0DkFC8qalh1O5XFdGj7hrJllMzk8CFLlUqjnRM8VHGGUwHCfNF3vqh0aSNAG?=
- =?us-ascii?Q?lLtAIRELT4IsacaRW0GOHFQZHDbl+dM0NmWA5lCv4ZZxtS76IBhxe55s55q1?=
- =?us-ascii?Q?2YdIvaxuvTjCgWkZ6TPIKFTKBxaxyAkSQE5IyWsmRGMoadyyDmpc9OYzYmRj?=
- =?us-ascii?Q?faZfO9KKf5xvzBBoy4UgjqNc8ncDfK8cA8exewsaH+GnwM8Omqq/av5h/v7n?=
- =?us-ascii?Q?9fBGovW5O0iSx5dbmmR3LpuiRbXsa3ZJin8+0KEPYaE29nLpFq8wYtTVKLmd?=
- =?us-ascii?Q?sRxm0Hn6GXn+CkqbRa3hz1vWu4TFvOZEtwv0yXZXnx5bXnUdGGBhC/0BR+bK?=
- =?us-ascii?Q?UFnxsvs1His8sEVC+92IQA2QXHh/idK9Ig+PAzA8RJe4NqDuU+B5FYnzZB3a?=
- =?us-ascii?Q?62kbTpJL0zZHePhkEtjTGrQVE8EPfjmpeBzHTrGULLJPlGOWvQmIYkgcnUOS?=
- =?us-ascii?Q?z/Lro/YRiqVPdu2AyO3S+BkrakpN8qf3oxkwXGeNPlDfquw3gvm6gITjm67Q?=
- =?us-ascii?Q?pxKl8IieqDV9/I0r4OC/18pFAauC/ka5PuZdzAm/xfYt4nQQxosh4iJ3FASs?=
- =?us-ascii?Q?3bFMn/VpX/hnEJ70ue5gQDmmy1vCT1k1/DIcqlJNNhkX0XsALsbEp1kNwU1H?=
- =?us-ascii?Q?kZcMKb88y4y18TWtb/4xo1XzDyOelY3iLVI4WE4u3o7wGA8QonVCPju9iEXG?=
- =?us-ascii?Q?QHdxH3p4bwS94RK0v4l34kQZI2TPsTy2Ce6sX/UzGgxFyaVCdBEzUqKY/8cE?=
- =?us-ascii?Q?zsISGi7fqdRCczg2ucuKHrAogLjBwq+/n3Cy1/YB2BHy7e7eyjGLJdCx8OQu?=
- =?us-ascii?Q?oubPCrqiLbaB0K5Me0Ev65m3brFPi+BrNKb2gqodosLxPnVymUrG64ceVvIu?=
- =?us-ascii?Q?of4og4ldjWPK70sCfx8Z8ky3MM1W5+40ir5tnA4unxxiJSXzirA/roTarfiP?=
- =?us-ascii?Q?6Ye4JHUgUp+GufrhQnN5JU+26xNBlYQ7tRYSaA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A09E6EB79;
+	Thu, 25 Jan 2024 15:32:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.186
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706196726; cv=none; b=qV2FzvXfP8qoF58uj8aX3YFOSHQ0kJW8bIDhvovC2ENnlcg/DLWY2xxtDNBaaVc/VfGy98/b+GnRmqNWMsTYE7fhpDrmHcfabx8NkLwOnh8b7c3cwdO8n2STU3Jy3kW4tI7iy3agTdpFauzprqq7VivzhnYIoybKk9HOg/HQHFk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706196726; c=relaxed/simple;
+	bh=+6Yd/SIY7+PpoZIiO/j9Pbc8AItxvrchumutM14SXOo=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=s58SOc8mJN0UpPK4X/LncfdrVp2PNX9B3pMau++ZY4K/jA0sbN6DViSC/kbAAg5WM6Q0BSgJCQHfuVtvS28OILvq4ai3SBeNdDUwfEJhQnhYguBAKmoXfsgszDF+rp2nFnjZx5AHx2yTJAIBao6CFodcGUjF2SOQRlJiTO+R/IY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
+Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id 4ADD2861F8;
+	Thu, 25 Jan 2024 16:31:55 +0100 (CET)
+From: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Subject: [PATCH v5 0/4] Kinetic ExpressWire library and KTD2801 backlight
+ driver
+Date: Thu, 25 Jan 2024 16:30:52 +0100
+Message-Id: <20240125-ktd2801-v5-0-e22da232a825@skole.hr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1dd18b5f-0428-4c59-dec9-08dc1dba99ba
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jan 2024 15:30:45.9873
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR02MB8980
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAKx+smUC/13MQQrCMBCF4atI1lYmM0lNXXkPcdGkExsUK4kUR
+ Xp300JtcfmG+f6PSBwDJ3HYfETkPqTQ3fPQ241wbX2/cBGavAUCkgRQxfXZoAFZgCdjyFldNSD
+ y9yOyD6+pdDrn3Yb07OJ7CvdyvM4N/Wv0OVMoco3RFkqs6mO6djfetVGMiR5npkBKszAcGWrnC
+ Rn2ZfXHaMUQFkaZeUZna++9RfnH1JrhwlRmRK4yZU1sS7NiwzB8ASrIhqBCAQAA
+To: Lee Jones <lee@kernel.org>, 
+ Daniel Thompson <daniel.thompson@linaro.org>, 
+ Jingoo Han <jingoohan1@gmail.com>, Pavel Machek <pavel@ucw.cz>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Helge Deller <deller@gmx.de>, 
+ Linus Walleij <linus.walleij@linaro.org>
+Cc: Karel Balej <balejk@matfyz.cz>, ~postmarketos/upstreaming@lists.sr.ht, 
+ phone-devel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+ linux-leds@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org, 
+ =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2989;
+ i=duje.mihanovic@skole.hr; h=from:subject:message-id;
+ bh=+6Yd/SIY7+PpoZIiO/j9Pbc8AItxvrchumutM14SXOo=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlsn7Di/IlWPx9bZ3kSn1YnOKO3WrECmW3I7iXf
+ gobDA2cbVKJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZbJ+wwAKCRCaEZ6wQi2W
+ 4X93EACnJQIcXvBW6lLq4WJK8I9wJTw1VyaMQ4WpvjEB1nYu0xtAKDUAYQ6Af4h+2ywhOud0dh5
+ SE1/phuGpGx09pj+30prB+dFAG0gi43i9zKq9nhfweHkzZc/czT4nUsls6PBRqPLTik8UQvcS7P
+ jdiYywa2hDFeIvZoPVU3gKI3eGpJz3jlrL2tVk+B3c7n5SlXMowbMA4G5Ojsgt9kc9xWc1TgTRY
+ 5qywnZeBjIAh3q9OuIzNy8ydRy1Vy7IihL68i1l5yy9elAt3Y/n0BOTnwLrBQ/woKEn8JPuRg69
+ 90wJKtseCFeDuq5osAAXBt4Xf+ejKnhgpw2NMnnDy7QbGZ1gKm1lbXVihvXzl8Ix3uBQAcO46Wh
+ jYnUo62isYmQp5br7shCNG+proeAA6MFHRR0ljd/PhM9qQ/uRLGy/02GYfKKU3l5Ti42A1sZt0/
+ x4nVY1S59h4KaEsJ78hSqCUsxCbhvl7vpG3ad43CGjnONlaEclps90Wn0o2JXmiHFfQChAZtK5t
+ 6dyXwAU/5U/Z2mlaaX7VfMlpspe85H6I9nPZ7Vz0RK7tFlqex53sGzp5k9myp6F3HbDro1PDgYL
+ S4laPVQf0GXN/8XH1uSFkXkVBQWTpgLqkEO++HosHDR31QciRvIxJGbPztVVoU/glxODCLuTrDn
+ bwOyLvdVYfrN4ow==
+X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
+ fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
 
-From: Baoquan He <bhe@redhat.com> Sent: Thursday, January 25, 2024 1:17 AM
->=20
-> On 01/25/24 at 05:12am, Michael Kelley wrote:
-> > From: Baoquan He <bhe@redhat.com> Sent: Wednesday, January 24, 2024
-> 8:10 PM
-> > >
-> > > On 01/24/24 at 11:02pm, Michael Kelley wrote:
-> > > > > diff --git a/arch/x86/kernel/cpu/mshyperv.c
-> > > > > b/arch/x86/kernel/cpu/mshyperv.c
-> > > > > index 01fa06dd06b6..f8163a59026b 100644
-> > > > > --- a/arch/x86/kernel/cpu/mshyperv.c
-> > > > > +++ b/arch/x86/kernel/cpu/mshyperv.c
-> > > > > @@ -210,6 +210,7 @@ static void hv_machine_shutdown(void)
-> > > > >  		hyperv_cleanup();
-> > > > >  }
-> > > > >
-> > > > > +#ifdef CONFIG_CRASH_DUMP
-> > > > >  static void hv_machine_crash_shutdown(struct pt_regs *regs)
-> > > > >  {
-> > > > >  	if (hv_crash_handler)
-> > > > > @@ -221,6 +222,7 @@ static void hv_machine_crash_shutdown(struct =
-pt_regs *regs)
-> > > > >  	/* Disable the hypercall page when there is only 1 active CPU. =
-*/
-> > > > >  	hyperv_cleanup();
-> > > > >  }
-> > > > > +#endif
-> > > > >  #endif /* CONFIG_KEXEC_CORE */
-> > > >
-> > > > Note that the #ifdef CONFIG_CRASH_DUMP is nested inside
-> > > > #ifdef CONFIG_KEXEC_CODE here, and in the other Hyper-V code
-> > > > just below.   It's also nested in xen_hvm_guest_init() at the botto=
-m
-> > > > of this patch.  But the KVM case of setting crash_shutdown is
-> > > > not nested -- you changed #ifdef CONFIG_KEXEC_CORE to #ifdef
-> > > > CONFIG_CRASH_DUMP.
-> > > >
-> > > > I think both approaches work because CONFIG_CRASH_DUMP implies
-> > > > CONFIG_KEXEC_CORE, but I wonder if it would be better to *not* nest
-> > > > in all cases.  I'd like to see the cases be consistent so in the fu=
-ture
-> > > > someone doesn't wonder why there's a difference (unless there's
-> > > > a reason for the difference that I missed).
-> > >
-> > > I agree with you, it's a great suggestion. Thanks.
-> > >
-> > > Do you think below draft patch includes all changes you are concerned
-> > > about?
-> >
-> > Yes, these changes look good as a delta to your original patch.
-> >
-> > But also look at xen_hvm_guest_init().  It looks like your original pat=
-ch
-> > does nesting there as well, and it could probably be "un-nested".
->=20
-> Right. I checked them all in arch/x86 this time, hope nothing is missed
-> again. I can post a v4 to update this x86 patch later if no other
-> concern. Thanks.
+Hello,
 
-Yes -- everything looks good to me now.
+This series adds support for the Kinetic KTD2801 LED backlight driver
+IC found in samsung,coreprimevelte.
 
-Michael
+Support is already upstream for the somewhat similar KTD2692 flash
+driver, and this series since v3 also moves its ExpressWire code into a
+separate library and converts the KTD2692 driver to use that library.
 
->=20
-> diff --git a/arch/x86/kernel/cpu/mshyperv.c
-> b/arch/x86/kernel/cpu/mshyperv.c
-> index f8163a59026b..2e8cd5a4ae85 100644
-> --- a/arch/x86/kernel/cpu/mshyperv.c
-> +++ b/arch/x86/kernel/cpu/mshyperv.c
-> @@ -209,6 +209,7 @@ static void hv_machine_shutdown(void)
->  	if (kexec_in_progress)
->  		hyperv_cleanup();
->  }
-> +#endif /* CONFIG_KEXEC_CORE */
->=20
->  #ifdef CONFIG_CRASH_DUMP
->  static void hv_machine_crash_shutdown(struct pt_regs *regs)
-> @@ -222,8 +223,7 @@ static void hv_machine_crash_shutdown(struct
-> pt_regs *regs)
->  	/* Disable the hypercall page when there is only 1 active CPU. */
->  	hyperv_cleanup();
->  }
-> -#endif
-> -#endif /* CONFIG_KEXEC_CORE */
-> +#endif /* CONFIG_CRASH_DUMP */
->  #endif /* CONFIG_HYPERV */
->=20
->  static uint32_t  __init ms_hyperv_platform(void)
-> @@ -497,9 +497,11 @@ static void __init ms_hyperv_init_platform(void)
->  	no_timer_check =3D 1;
->  #endif
->=20
-> -#if IS_ENABLED(CONFIG_HYPERV) && defined(CONFIG_KEXEC_CORE)
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +#if defined(CONFIG_KEXEC_CORE)
->  	machine_ops.shutdown =3D hv_machine_shutdown;
-> -#ifdef CONFIG_CRASH_DUMP
-> +#endif
-> +#if defined(CONFIG_CRASH_DUMP)
->  	machine_ops.crash_shutdown =3D hv_machine_crash_shutdown;
->  #endif
->  #endif
-> diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
-> index 1287b0d5962f..f3130f762784 100644
-> --- a/arch/x86/kernel/reboot.c
-> +++ b/arch/x86/kernel/reboot.c
-> @@ -826,7 +826,7 @@ void machine_halt(void)
->  	machine_ops.halt();
->  }
->=20
-> -#ifdef CONFIG_KEXEC_CORE
-> +#ifdef CONFIG_CRASH_DUMP
->  void machine_crash_shutdown(struct pt_regs *regs)
->  {
->  	machine_ops.crash_shutdown(regs);
-> diff --git a/arch/x86/xen/enlighten_hvm.c b/arch/x86/xen/enlighten_hvm.c
-> index 09e3db7ff990..0b367c1e086d 100644
-> --- a/arch/x86/xen/enlighten_hvm.c
-> +++ b/arch/x86/xen/enlighten_hvm.c
-> @@ -148,6 +148,7 @@ static void xen_hvm_shutdown(void)
->  	if (kexec_in_progress)
->  		xen_reboot(SHUTDOWN_soft_reset);
->  }
-> +#endif
->=20
->  #ifdef CONFIG_CRASH_DUMP
->  static void xen_hvm_crash_shutdown(struct pt_regs *regs)
-> @@ -156,7 +157,6 @@ static void xen_hvm_crash_shutdown(struct pt_regs
-> *regs)
->  	xen_reboot(SHUTDOWN_soft_reset);
->  }
->  #endif
-> -#endif
->=20
->  static int xen_cpu_up_prepare_hvm(unsigned int cpu)
->  {
-> @@ -238,10 +238,10 @@ static void __init xen_hvm_guest_init(void)
->=20
->  #ifdef CONFIG_KEXEC_CORE
->  	machine_ops.shutdown =3D xen_hvm_shutdown;
-> +#endif
->  #ifdef CONFIG_CRASH_DUMP
->  	machine_ops.crash_shutdown =3D xen_hvm_crash_shutdown;
->  #endif
-> -#endif
->  }
->=20
->  static __init int xen_parse_nopv(char *arg)
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+---
+Changes in v5:
+- Split up ExpressWire library and KTD2692 conversion
+- Rebase on v6.8-rc1
+- Link to v4: https://lore.kernel.org/r/20240122-ktd2801-v4-0-33c986a3eb68@skole.hr
+
+Changes in v4:
+- Drop 'extern' keywords in leds-expresswire.h
+- Add 'expresswire_write_u8' to leds-expresswire.c and use it in the two
+  drivers
+- Move GPIOLIB dependency to LEDS_EXPRESSWIRE instead of letting clients
+  handle it
+- Drop time constant macros
+- Drop delay.h include in ktd2692
+- Drop bits.h and delay.h includes in ktd2801
+- Link to v3: https://lore.kernel.org/r/20240120-ktd2801-v3-0-fe2cbafffb21@skole.hr
+
+Changes in v3:
+- Split ExpressWire code into library (and convert KTD2692 to use this
+  library)
+- Rewrite commit messages
+- Add link to datasheet
+- Drop of.h include in ktd2801
+- Use _cansleep and usleep_range when powering off
+- Clean up bitwise operation in update_status
+- Link to v2: https://lore.kernel.org/r/20240118-ktd2801-v2-0-425cf32e0769@skole.hr
+
+Changes in v2:
+- Address maintainer comments:
+  - Drop MODULE_ALIAS
+  - Rename enable-gpios to ctrl-gpios
+  - Rename ktd2801_backlight->desc to ktd2801_backlight->gpiod
+  - Give time constants more descriptive names and note their origins in
+    Samsung driver
+  - Convert to GPIO_ACTIVE_HIGH
+- Update trailers
+- Link to v1: https://lore.kernel.org/r/20231005-ktd2801-v1-0-43cd85b0629a@skole.hr
+
+---
+Duje Mihanović (4):
+      leds: introduce ExpressWire library
+      leds: ktd2692: convert to use ExpressWire library
+      dt-bindings: backlight: add Kinetic KTD2801 binding
+      backlight: Add Kinetic KTD2801 backlight support
+
+ .../bindings/leds/backlight/kinetic,ktd2801.yaml   |  46 ++++++++
+ MAINTAINERS                                        |  13 +++
+ drivers/leds/Kconfig                               |   4 +
+ drivers/leds/Makefile                              |   3 +
+ drivers/leds/flash/Kconfig                         |   2 +-
+ drivers/leds/flash/leds-ktd2692.c                  | 116 +++++--------------
+ drivers/leds/leds-expresswire.c                    |  68 +++++++++++
+ drivers/video/backlight/Kconfig                    |   7 ++
+ drivers/video/backlight/Makefile                   |   1 +
+ drivers/video/backlight/ktd2801-backlight.c        | 128 +++++++++++++++++++++
+ include/linux/leds-expresswire.h                   |  36 ++++++
+ 11 files changed, 334 insertions(+), 90 deletions(-)
+---
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+change-id: 20231004-ktd2801-0f3883cb59d0
+
+Best regards,
+-- 
+Duje Mihanović <duje.mihanovic@skole.hr>
+
 
 
