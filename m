@@ -1,154 +1,206 @@
-Return-Path: <linux-kernel+bounces-38240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18D7783BCF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:12:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6836383BCF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:12:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C3F61C29155
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:12:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10B841F2C878
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:12:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9A611BF3B;
-	Thu, 25 Jan 2024 09:10:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDC131BDDF;
+	Thu, 25 Jan 2024 09:12:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rzPA02LB"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="MMD7PC6p"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CC7211705
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:10:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B0481BC5A;
+	Thu, 25 Jan 2024 09:12:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706173856; cv=none; b=b33MHZJqBgzEy5HxMlHt3f4UOQpYHGTLyGqm0oZJUpqRCjDZE5HiQ/dZz2xSON0gaDm/XaNRWrCtyHbj7FfiHqcRQaGqyDfUTUQ0z9Iw+ua3dUac0QvL6oe5OhoqmBU5GxF0YqruiwLmw/rB0k/8uldNkWllSRVVKAWrTRk3xSE=
+	t=1706173932; cv=none; b=i60wzGSvmBdfDiI6wiXr49PyuHFNn85SxpSeM9xkP6wAiQOGjcCLgkIeukcwKe9J2Af2j97jC3OIVKnOMws2bUQdr2Qf2L4wGsTsds1KAp7aU4bTYsQ0jeiyTNAFbexJwxuK8EzUcEpRRVhEIuJ7nJeS0vNfi4tMVfq0wt0xc3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706173856; c=relaxed/simple;
-	bh=lgSOEWZlSqD/pL0usDOXBO/Mdk6TKDbzIpoTQ7fbJGU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GA8c9InyVMfxKcdptnave5/gRozpQTHJvRYNLKgLmfS3F8P8sn3dBMXP5PT+4T2DYPn2o1vk5hWJ1o2a9WeuZOKfTHjepdNlffDRJ+TWl6b4Hhm/osuM004SQ/LjapMOFpHTFuAbeDWc9Y5IazbwaZKgwT/S6cLEY6TAED4RGrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rzPA02LB; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3392b045e0aso4379588f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 01:10:55 -0800 (PST)
+	s=arc-20240116; t=1706173932; c=relaxed/simple;
+	bh=ibob9So5LsOD/sjW4bKonztTIlxVUC8HtZ04POfdPHc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=M6+/u3pSzYQW4xqXQjjTPgDz0k6S7zxG8u+7Ek0LJNNZwdVIKZE4vNH5mcDp1FKNW7UP+QlSQU+8uPrOZnlbE2oyiGEUkMl0LauhfKYSL3fQnnp7M4rDiQfMf8gOvSbjoDvCBVSUqXVw0h9WYFUAHzR0Lq1mTO7M7dDASG0zI70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=MMD7PC6p; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706173853; x=1706778653; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ig9CtrewkNZDns+fis+CVNjk9HmfwY1rg6axCTrCm6U=;
-        b=rzPA02LBUiji+VHfhRszgDPoArqwHU38/SUAHFbXgMkJMHBIHhn3MqFrgg+dt/HBRb
-         143JWJo4zB/tSe9uFTndo6oakK0vj7q1IVe2XT4pFFQpO+YmGXEljlWJPIji9tEe57MT
-         TzO0WiSVZTnkv8FTcyfbN36w0UIeo4gm9MV7ZXRRQ0sBGgddJor2S40D4LKKxF/tB+Od
-         J5XvO6ZnQJ+vVqY47ia+uqnQR4K70NYlVo6LkImDmcqwy4tMQSIfB2l9xKOeQ2MH03hh
-         ecclfDWtAqmehtnu5h9cA1pbco0BS7wkKrnmtRlilSUMKoIJDWeJD0k6fOZQQg4+RYal
-         MPyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706173853; x=1706778653;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ig9CtrewkNZDns+fis+CVNjk9HmfwY1rg6axCTrCm6U=;
-        b=dfrrrHm2JxbGY2I/ct3o0p7kP98ciya70hRwXdI+idhIE3jpPVGHmeWVtBlNagnvCA
-         tyy+gRqMg6BASSMC1E2/Aa44x2jr1epa5Vcz0LypoCaRXYCn1szjoPOWgK4boZMWIUFP
-         +cAnUu/NBcWIpq0s1/Eda7QWulWc6VJM87qTc/7moml6C7pWcom/yDFxUpIK5TirqL0E
-         nGtRxMttFAofYGavAqpmcdJZ6UyY9o+4kJYpXnqpHNRu5EyjwGl/bBOfwSfDll4i8z+4
-         LsReViK4WIrg9QWut7bjzxv1ZSodkl6rQd6fNe6RHDK4Dk7OSwd+llIgmZxWTEd0vvpP
-         mAyA==
-X-Gm-Message-State: AOJu0YzQhofjVzSkgsq1ooy4DKDhIfFwD+opB4LlZM/MfG2vUjklaFOj
-	Z/ju5nnsCv4QHAGIV5hSV5GxgbSuTALs8oplrsK4I1ykrBnKbu8Ddch9moI+cWE=
-X-Google-Smtp-Source: AGHT+IFUJPNBSnfe9pze2R8lQTxaYfxlsEsmMzJxMBhHjI41QOyKtS211+yYpJKCAXhXnASW8/3ZoA==
-X-Received: by 2002:a5d:4e91:0:b0:337:c6b5:46df with SMTP id e17-20020a5d4e91000000b00337c6b546dfmr288727wru.141.1706173853473;
-        Thu, 25 Jan 2024 01:10:53 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id q7-20020adffec7000000b0033926505eafsm13294530wrs.32.2024.01.25.01.10.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 01:10:53 -0800 (PST)
-Message-ID: <89acec5f-1248-46fb-90fe-b93a7151d535@linaro.org>
-Date: Thu, 25 Jan 2024 10:10:50 +0100
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1706173928; x=1737709928;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=FeUFODrwDWTHKBoEZylP9hxRYVHRbSJKlDURreDdsJk=;
+  b=MMD7PC6pVE/e30/hMbNkA7O6mCdarupDSsODbNP9eTah7k8elGgXY+os
+   cFoeRb5nXdJxJJjIPbRmVp2pCuJTmFbU8VHbNqDEAemI6AIAaP70qhKpq
+   0zy+xdqmmT+jbzNrl3V/gMBhtl2vNW+lcWV49UKdYfKH4Snu4ubxmFsXp
+   IBm1RfXL8RKeI+3qYldpYWNGowylQdNB0eaHahrYu4YrGVoWoHGibQZ09
+   Z/cPuuQZ032W+v9J3PM+xRd58mQuu+KXJF032Ni0E1IWq9xa/J2er+FCr
+   nH7FQSSnAxOlnkdpVk5RlDOc6BEavgwihWLsPUZGqTudSma3WdyicSKvE
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.05,216,1701126000"; 
+   d="scan'208";a="35071346"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 25 Jan 2024 10:11:58 +0100
+Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 62619280075;
+	Thu, 25 Jan 2024 10:11:55 +0100 (CET)
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
+To: Jassi Brar <jassisinghbrar@gmail.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Dong Aisheng <aisheng.dong@nxp.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Peng Fan <peng.fan@nxp.com>, "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Subject: Re: [PATCH v4 2/4] mailbox: imx: support return value of init
+Date: Thu, 25 Jan 2024 10:11:54 +0100
+Message-ID: <5774190.DvuYhMxLoT@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <20240125-imx-mailbox-v4-2-800be5383c20@nxp.com>
+References: <20240125-imx-mailbox-v4-0-800be5383c20@nxp.com> <20240125-imx-mailbox-v4-2-800be5383c20@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: soc: rockchip: Add rk3588 hdptxphy
- syscon
-Content-Language: en-US
-To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
- Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
- Philipp Zabel <p.zabel@pengutronix.de>, Johan Jonker <jbx6244@gmail.com>,
- Sebastian Reichel <sebastian.reichel@collabora.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, Andy Yan <andy.yan@rock-chips.com>,
- Algea Cao <algea.cao@rock-chips.com>
-Cc: linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org, kernel@collabora.com
-References: <20240119193806.1030214-1-cristian.ciocaltea@collabora.com>
- <20240119193806.1030214-2-cristian.ciocaltea@collabora.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240119193806.1030214-2-cristian.ciocaltea@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 
-On 19/01/2024 20:38, Cristian Ciocaltea wrote:
-> Add compatible for the hdptxphy GRF used by rk3588-hdptx-phy.
-> 
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+Hi Peng,
+
+Am Donnerstag, 25. Januar 2024, 06:20:04 CET schrieb Peng Fan (OSS):
+> From: Peng Fan <peng.fan@nxp.com>
+>=20
+> There will be changes that init may fail, so adding return value for
+> init function.
+>=20
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
 > ---
+>  drivers/mailbox/imx-mailbox.c | 35 ++++++++++++++++++++++++-----------
+>  1 file changed, 24 insertions(+), 11 deletions(-)
+>=20
+> diff --git a/drivers/mailbox/imx-mailbox.c b/drivers/mailbox/imx-mailbox.c
+> index 656171362fe9..dced4614065f 100644
+> --- a/drivers/mailbox/imx-mailbox.c
+> +++ b/drivers/mailbox/imx-mailbox.c
+> @@ -110,7 +110,7 @@ struct imx_mu_dcfg {
+>  	int (*tx)(struct imx_mu_priv *priv, struct imx_mu_con_priv *cp, void
+> *data); int (*rx)(struct imx_mu_priv *priv, struct imx_mu_con_priv *cp);
+> int (*rxdb)(struct imx_mu_priv *priv, struct imx_mu_con_priv *cp); -	void
+> (*init)(struct imx_mu_priv *priv);
+> +	int (*init)(struct imx_mu_priv *priv);
+>  	enum imx_mu_type type;
+>  	u32	xTR;		/* Transmit Register0 */
+>  	u32	xRR;		/* Receive Register0 */
+> @@ -737,7 +737,7 @@ static struct mbox_chan *imx_mu_seco_xlate(struct
+> mbox_controller *mbox, return imx_mu_xlate(mbox, sp);
+>  }
+>=20
+> -static void imx_mu_init_generic(struct imx_mu_priv *priv)
+> +static int imx_mu_init_generic(struct imx_mu_priv *priv)
+>  {
+>  	unsigned int i;
+>  	unsigned int val;
+> @@ -757,7 +757,7 @@ static void imx_mu_init_generic(struct imx_mu_priv
+> *priv) priv->mbox.of_xlate =3D imx_mu_xlate;
+>=20
+>  	if (priv->side_b)
+> -		return;
+> +		return 0;
+>=20
+>  	/* Set default MU configuration */
+>  	for (i =3D 0; i < IMX_MU_xCR_MAX; i++)
+> @@ -770,9 +770,11 @@ static void imx_mu_init_generic(struct imx_mu_priv
+> *priv) /* Clear any pending RSR */
+>  	for (i =3D 0; i < IMX_MU_NUM_RR; i++)
+>  		imx_mu_read(priv, priv->dcfg->xRR + (i % 4) * 4);
+> +
+> +	return 0;
+>  }
+>=20
+> -static void imx_mu_init_specific(struct imx_mu_priv *priv)
+> +static int imx_mu_init_specific(struct imx_mu_priv *priv)
+>  {
+>  	unsigned int i;
+>  	int num_chans =3D priv->dcfg->type & IMX_MU_V2_S4 ? IMX_MU_S4_CHANS :
+> IMX_MU_SCU_CHANS; @@ -794,12 +796,20 @@ static void
+> imx_mu_init_specific(struct imx_mu_priv *priv) /* Set default MU
+> configuration */
+>  	for (i =3D 0; i < IMX_MU_xCR_MAX; i++)
+>  		imx_mu_write(priv, 0, priv->dcfg->xCR[i]);
+> +
+> +	return 0;
+>  }
+>=20
+> -static void imx_mu_init_seco(struct imx_mu_priv *priv)
+> +static int imx_mu_init_seco(struct imx_mu_priv *priv)
+>  {
+> -	imx_mu_init_generic(priv);
+> +	int ret;
+> +
+> +	ret =3D imx_mu_init_generic(priv);
+> +	if (ret)
+> +		return ret;
+>  	priv->mbox.of_xlate =3D imx_mu_seco_xlate;
+> +
+> +	return 0;
+>  }
+>=20
+>  static int imx_mu_probe(struct platform_device *pdev)
+> @@ -866,7 +876,11 @@ static int imx_mu_probe(struct platform_device *pdev)
+>=20
+>  	priv->side_b =3D of_property_read_bool(np, "fsl,mu-side-b");
+>=20
+> -	priv->dcfg->init(priv);
+> +	ret =3D priv->dcfg->init(priv);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to init MU\n");
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+As this is during probe, I rather use dev_err_probe right away. Even if dcf=
+g-
+>init won't return -EPROBE_DEFER for now.
 
 Best regards,
-Krzysztof
+Alexander
+
+> +		goto disable_clk;
+> +	}
+>=20
+>  	spin_lock_init(&priv->xcr_lock);
+>=20
+> @@ -878,10 +892,8 @@ static int imx_mu_probe(struct platform_device *pdev)
+>  	platform_set_drvdata(pdev, priv);
+>=20
+>  	ret =3D devm_mbox_controller_register(dev, &priv->mbox);
+> -	if (ret) {
+> -		clk_disable_unprepare(priv->clk);
+> -		return ret;
+> -	}
+> +	if (ret)
+> +		goto disable_clk;
+>=20
+>  	pm_runtime_enable(dev);
+>=20
+> @@ -899,6 +911,7 @@ static int imx_mu_probe(struct platform_device *pdev)
+>=20
+>  disable_runtime_pm:
+>  	pm_runtime_disable(dev);
+> +disable_clk:
+>  	clk_disable_unprepare(priv->clk);
+>  	return ret;
+>  }
+
+
+=2D-=20
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
+
 
 
