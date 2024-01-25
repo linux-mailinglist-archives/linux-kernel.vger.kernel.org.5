@@ -1,178 +1,164 @@
-Return-Path: <linux-kernel+bounces-38992-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AAC683C978
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:10:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63E6B83C97A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:10:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC3901C2540D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:10:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1279429950C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:10:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1160913B7B2;
-	Thu, 25 Jan 2024 17:02:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7AB413BE95;
+	Thu, 25 Jan 2024 17:02:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kq4eMyVO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="KTZN1ugO";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="t8gaVy5t"
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38B3813B79E;
-	Thu, 25 Jan 2024 17:02:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4AB3130E30;
+	Thu, 25 Jan 2024 17:02:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706202127; cv=none; b=U/B5lW+eObehMY3cPgQ8h9AveTuBG/4noth019P7qn5ikeQxlsmeUlDDnCeUjZSgfBrw3pqCwjlPyn8OyyL/iTFCe2pEt4SIfnifE1VRMNuK9Hj9HWVVEXgp6phP2ms3VDLXxwIplKTlNp0/Nzpp3XLB/TltSsEjiFDPVQuGFLU=
+	t=1706202172; cv=none; b=lzyCZQHDME7uCsrri37L2S2qN/0filTdX6Sn5Fbtq1nHUyeaqZNqaRNeR8w3vP7ZgsZokDq08GXrA9svyVoOS367oleG6l54Uw3lGGSVtprNK8U59sUjcyVp1NYuuSCYLyIWlEJs8M/UB55OTX2CTfR6c5vUU2KI6bF3m42ukpQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706202127; c=relaxed/simple;
-	bh=fk/H3bg9JLDDydFanhvs6w6j0jx0x4c5O/IG5hRLQJ0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hUcWtc0+mPF6wJNKOn2DWdqk1LA/Or42DNrGfQlMHZI60R90gkjHVxVjrL2vFCiKha3wkaKUCkTS68TJYeIsW2G5BE2kr7qkcy5CE20l4SM16OwR9hc+rRFX4H074jaC29DrpNKFHbH1V+wkPOdRF4dBViEDOE8iJ6qD39+3QmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kq4eMyVO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D107FC433C7;
-	Thu, 25 Jan 2024 17:02:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706202127;
-	bh=fk/H3bg9JLDDydFanhvs6w6j0jx0x4c5O/IG5hRLQJ0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Kq4eMyVO4mKFGDDymfXbO8h3JEzTwDp0ohWuuo2MDlw0CSJOll1ez1CXQOzNUqr2f
-	 9aq3BBUeJqm4A86hAD0BANxfeIB6eekVzyAhHoXUdOIr7JDiyYxpvMdb8GRpMRdxh1
-	 X35tBckk/NCH115dnVRrUe4Dm0bqG9f4UmlxTcara69xN2O6tPJH1wM/+svj2HzdxM
-	 KbUArgJxlgeYgl5ltk1PVdcys4SSECRmd09puiff7hVryGNucP5QdVQQUT6uMYQaqs
-	 IBDtg9MHd2tFJc3weU4iJEX1ctdxigkJsZJsMXE6MmWkHhEG9zIwIwub7uF8OZ4k+x
-	 vJmIHwOzVWt5Q==
-Date: Thu, 25 Jan 2024 17:02:01 +0000
-From: Conor Dooley <conor@kernel.org>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	chunfeng.yun@mediatek.com, gregkh@linuxfoundation.org,
-	conor+dt@kernel.org, matthias.bgg@gmail.com, linux@roeck-us.net,
-	heikki.krogerus@linux.intel.com, cy_huang@richtek.com,
-	linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: usb: mt6360-tcpc: Drop
- interrupt-names
-Message-ID: <20240125-elective-sermon-32dc2cba79be@spud>
-References: <20240119094105.98312-1-angelogioacchino.delregno@collabora.com>
- <20240119-eldest-discharge-e2d3812be0a9@spud>
- <12b7b339-498b-45c1-bc5e-05e07660aefa@collabora.com>
- <20240123-procurer-jumbo-ebbec485505d@spud>
- <4fdbc3d8-3d44-4c2c-aae6-daa0b431e1c9@collabora.com>
- <dc9773aa-690f-47b5-b60a-a79c1e2dbaf2@linaro.org>
- <abbc1135-6d32-421a-baea-123a9f761362@collabora.com>
- <20240125-disdain-delivery-ff3bf246bbe1@spud>
+	s=arc-20240116; t=1706202172; c=relaxed/simple;
+	bh=WqahYEHmiuKZoQTeca9wIJ0qlqP8F/wnrf3PfIlb3ug=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=ZHEi+qakEqMHsbTN+TFfstlwQNlKhB21uGraHvdjtFDvR0Q793o45MaqVm9etaFuJs5OzO1qjOVkSER+V+yFWUQjOgyMliXRKNVLknybMpQihQkv5pmgVZERFILJFdXFWVlD63AFwM+FLDKaGJ4U3lNdPh4A/NKtTFnXx0Kkxuc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=KTZN1ugO; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=t8gaVy5t; arc=none smtp.client-ip=64.147.123.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id E23603200AED;
+	Thu, 25 Jan 2024 12:02:48 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 25 Jan 2024 12:02:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1706202168; x=1706288568; bh=BaQC6n5Uf0
+	h2jG2xEkFvdsaNKDAE+vFgA3Lv+DwHh0o=; b=KTZN1ugOuk2q1jONQMsU29eGYX
+	ayZ+Y9xbEfVTC5srdmO4xX/FU/LJi1IyxvrJBbZgDVMtA9Di1NZemJvlBVKOqIWc
+	4BQQCMeqkpYWf/sUtkdW3bpPLS5DRAYM5sV8g43XgQ4D6Bbq56FJctNIDtJusD3K
+	1WugZ0ePEl9/SLfyT8ll2qn2Wl0IUixzbk6SPsdiGLsPcKuRPCUvqHGbIe6tPzHR
+	UfDFp56zplZy0W4qZIKbwC7mj1t5lrSFWXLemGeo2IGMakKBgc/TvTUNsRDwmdKt
+	dwRzJHj0g5/DJYQ7KJuPTPEFmcgBvYuPABpTjFvZYOj71x0Xwi4OCSJC2knA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706202168; x=1706288568; bh=BaQC6n5Uf0h2jG2xEkFvdsaNKDAE
+	+vFgA3Lv+DwHh0o=; b=t8gaVy5tjB3mzwKydR4K3cgoWDhXoUkt/XHV2wQI8L+E
+	6rEALfT0MXaluMFoFOONEOvsXJ7c2BYvoJ47bi09j4nZyhwWoO9ZVsT4025+/rLG
+	hLVa/2+fqGl/lJtEhOvXMcAxLt30cHPmUkOfGGtOgLIuzrtt5YHsl5kNJgGYqZqL
+	3OKOX0wq4R+Q71rkg1YKydmNeOmIWRGDABfTv65iF8aeg1WfsyvbOaPdRwsg8ISj
+	hoUFmTGaMzRRTqpfgc7lz9FBhp645WmABAEa+X4rplEEOGb74S5ixjAEBUD4khGq
+	Saq9C75sSSG1EVa2BADgFI/h4hMmrGVlAWa1LWXHYg==
+X-ME-Sender: <xms:N5SyZWhqyNqq2NBhp7BFycUoijapUA4g405F_MZ3U5GXctfHjIanWg>
+    <xme:N5SyZXDaxMapVE9PYd3N5qlawr6fYp0eBmjwZ1berw7ukS3UQsic8pFLnSEjmgQgO
+    w83toIEdZfBYLhW4Hc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdelhedgtdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:N5SyZeH5sfRVU2WzeLl_87QpDc7c-ZREuOwcg1MFR8Wztip1Gjdz8w>
+    <xmx:N5SyZfT2ltRuKgtSh05dp1_QQMwHAat1r9KBoUB-dI1iaXCX4U-IxQ>
+    <xmx:N5SyZTwiWqNTrBYKdNsjRtJVv4I36aM6KndYpU-AmkR9i1M_9GjUHg>
+    <xmx:OJSyZak5RQBQ3QcZdI9QvXqh74t005QM-g6t68kNrgZDem1nVIGcbg>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id AA9FEB6008D; Thu, 25 Jan 2024 12:02:47 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-119-ga8b98d1bd8-fm-20240108.001-ga8b98d1b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ONwNo4Eg6efmgFLG"
-Content-Disposition: inline
-In-Reply-To: <20240125-disdain-delivery-ff3bf246bbe1@spud>
+Message-Id: <d8631ec7-046e-4ef7-a1ff-71e4ecebe706@app.fastmail.com>
+In-Reply-To: <8367053.NyiUUSuA9g@camazotz>
+References: <20240124004028.16826-1-zfigura@codeweavers.com>
+ <4864383.GXAFRqVoOG@camazotz>
+ <3ec03a12-ee1b-45f8-9f03-258606763d1e@app.fastmail.com>
+ <8367053.NyiUUSuA9g@camazotz>
+Date: Thu, 25 Jan 2024 18:02:26 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Elizabeth Figura" <zfigura@codeweavers.com>,
+ "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+ linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
+Cc: wine-devel@winehq.org,
+ =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
+ "Wolfram Sang" <wsa@kernel.org>, "Arkadiusz Hiler" <ahiler@codeweavers.com>,
+ "Peter Zijlstra" <peterz@infradead.org>
+Subject: Re: [RFC PATCH 5/9] ntsync: Introduce NTSYNC_IOC_WAIT_ANY.
+Content-Type: text/plain
 
+On Wed, Jan 24, 2024, at 23:28, Elizabeth Figura wrote:
+> On Wednesday, 24 January 2024 13:52:52 CST Arnd Bergmann wrote:
+>> On Wed, Jan 24, 2024, at 19:02, Elizabeth Figura wrote:
 
---ONwNo4Eg6efmgFLG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>> > That'd be nicer in general. I think there was some documentation that advised
+>> > using timespec64 for new ioctl interfaces but it may have been outdated or
+>> > misread.
+>> 
+>> It's probably something I wrote. It depends a bit on
+>> whether you have an absolute or relative timeout. If
+>> the timeout is relative to the current time as I understand
+>> it is here, a 64-bit number seems more logical to me.
+>> 
+>> For absolute times, I would usually use a __kernel_timespec,
+>> especially if it's CLOCK_REALTIME. In this case you would
+>> also need to specify the time domain.
+>
+> Currently the interface does pass it as an absolute time, with the
+> domain implicitly being MONOTONIC. This particular choice comes from
+> process/botching-up-ioctls.rst, which is admittedly focused around GPU
+> ioctls, but the rationale of having easily restartable ioctls applies
+> here too.
 
-On Thu, Jan 25, 2024 at 04:57:33PM +0000, Conor Dooley wrote:
-> On Thu, Jan 25, 2024 at 12:41:57PM +0100, AngeloGioacchino Del Regno wrot=
-e:
-> > Il 25/01/24 11:32, Krzysztof Kozlowski ha scritto:
-> > > On 24/01/2024 09:48, AngeloGioacchino Del Regno wrote:
-> > > > Il 23/01/24 18:14, Conor Dooley ha scritto:
-> > > > > On Mon, Jan 22, 2024 at 11:32:30AM +0100, AngeloGioacchino Del Re=
-gno wrote:
-> > > > > > Il 19/01/24 17:32, Conor Dooley ha scritto:
-> > > > > > > On Fri, Jan 19, 2024 at 10:41:04AM +0100, AngeloGioacchino De=
-l Regno wrote:
-> > > > > > > > This IP has only one interrupt, hence interrupt-names is no=
-t necessary
-> > > > > > > > to have.
-> > > > > > > > Since there is no user yet, simply remove interrupt-names.
-> > > > > > >=20
-> > > > > > > I'm a bit confused chief. Patch 2 in this series removes a us=
-er of this
-> > > > > > > property from a driver, so can you explain how this statement=
- is true?
-> > > > > > >=20
-> > > > > > > Maybe I need to drink a few cans of Monster and revisit this =
-patchset?
-> > > > > > >=20
-> > > > > >=20
-> > > > > > What I mean with "there is no user" is that there's no device t=
-ree with any
-> > > > > > mt6360-tcpc node upstream yet, so there is no meaningful ABI br=
-eakage.
-> > > > > > Different story would be if there was a device tree using this =
-already, in
-> > > > > > which case, you can make a required property optional but not r=
-emove it.
-> > > > >=20
-> > > > > Not every devicetree lives within the kernel.. If the driver is u=
-sing
-> > > > > it, I'm not inclined to agree that it should be removed.
-> > > >=20
-> > > > I get the point, but as far as I remember, it's not the first time =
-that this
-> > > > kind of change is upstreamed.
-> > > >=20
-> > > > I'm fine with keeping things as they are but, since my intention is=
- to actually
-> > > > introduce an actual user of this binding upstream, and that actuall=
-y depends on
-> > > > if this change is accepted or not (as I have to know whether I can =
-omit adding
-> > > > the interrupt-names property or not)....
-> > > >=20
-> > > > ....may I ask for more feedback/opinions from Rob and/or Krzk?
-> > >=20
-> > > Driver is the user and this is an old binding (released!), thus there
-> > > can be out-of-kernel users already.
-> > >=20
-> > > Minor cleanup is not really a reason to affect ABI. You could depreca=
-te
-> > > it, though. Driver change is fine.
-> > >=20
-> >=20
-> > Thanks for the clarification. If USB maintainers want to take the drive=
-r part only
-> > without me resending this, I'd appreciate that.
-> >=20
->=20
-> > The interrupt-names is not a required property in this binding anyway..=
-=2E :-)
->=20
-> Having -names properties that are not required when the base property is
-> always seem so pointless to me, except in cases where they're not
-> required for the case where there's one item but required when there are
-> more than one. Ultimately they're pointless if not required since they
-> can't be relied on. I think dropping it from the driver is required for
-> correctness.
+Ok, I was thinking of Documentation/driver-api/ioctl.rst, which
+has similar recommendations.
 
-Actually, looking at the binding again:
+> (E.g. Wine does play games with signals, so we do want to be able to
+> interrupt arbitrary waits with EINTR. The "usual" fast path for ntsync
+> waits won't hit that, but we want to have it work.)
+>
+> On the other hand, if we can pass the timeout as relative, and write it
+> back on exit like ppoll() does [assuming that's not proscribed], that
+> would presumably be slightly better for performance.
 
-| required:
-|   - compatible
-|   - interrupts
-|   - interrupt-names
+I've seen arguments go either way between absolute and relative
+times, just pick whatever works best for you here.
 
-It looks like it is a required property after all!
+> When writing the patch I just picked the recommended option, and didn't
+> bother doing any micro-optimizations afterward.
+>
+> What's the rationale for using timespec for absolute or written-back
+> timeouts, instead of dealing in ns directly? I'm afraid it's not
+> obvious to me.
 
---ONwNo4Eg6efmgFLG
-Content-Type: application/pgp-signature; name="signature.asc"
+There is no hard rule either way, I mainly didn't like the
+indirect pointer to the timespec that you have here. For
+traditional unix-style interfaces, a timespec with CLOCK_REALTIME
+times usually makes sense since that is what user space is
+already using elsewhere, but you probably don't need to
+worry about that. In theory, the single u64 CLOCK_REALTIME
+nanoseconds have the problem of no longer working after year
+2262, but with CLOCK_MONOTONIC that is not a concern anyway.
 
------BEGIN PGP SIGNATURE-----
+Between embedding a __u64 nanosecond value and embedding
+a __kernel_timespec, I would pick whichever avoids converting
+a __u64 back into a timespec, as that is an expensive
+operation at least on 32-bit code.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbKUCQAKCRB4tDGHoIJi
-0mRvAQCB6XXEgJ6lkUl5g2rTMFMft8zDVFsRQhLfLfeQOdmJCgD+K5Ydq/dlE8BG
-U82vwFSKghs02EGx2QllPGxubSjCsQE=
-=vNNy
------END PGP SIGNATURE-----
-
---ONwNo4Eg6efmgFLG--
+       Arnd
 
