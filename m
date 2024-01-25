@@ -1,107 +1,107 @@
-Return-Path: <linux-kernel+bounces-39013-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C2EA83C9A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:16:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB29883C9A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:16:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43890296E2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:16:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DED941C24017
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:16:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1F381353EA;
-	Thu, 25 Jan 2024 17:10:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D8881C6A5;
+	Thu, 25 Jan 2024 17:11:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m/gafDU9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="N0U7gxV4"
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A99E1386D0;
-	Thu, 25 Jan 2024 17:10:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 791FD130E33
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 17:11:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706202651; cv=none; b=TN6k5R8vnvzmZEjCJGTnNdQ1+OAA9ojXNLqHGpTtgh/kOiihVwNqiBECG4564oqUnckHSaNWyb+wC2Eyfe3KsI+Hgubrdgc34RNJaGhDCIk5sO6ij0KpxuRGYd2zRLphjVfI1eLFGPMzkQ6PFxpRMQn/SmPC+hjXKozJZGcJuo4=
+	t=1706202684; cv=none; b=FftJb13skLapi+jx1OZqs7g23ZKk2MlNC6anXZUbw2uGDJWIsUjApxcJ7RO0GczpFAiTqx6h9N54naekvhL+2dA6CcaI7Q3x4Z6AfQzgD2v2P4VX+v9RLiLPBruNxl2Lb8arj5KqIygsxe45FeF2c/UsKkPd8Ilc2sWJyWvDEhI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706202651; c=relaxed/simple;
-	bh=apArv/y13HeSPeRmSN34Zj5eLLWOr5OjgCHOgzlBIGk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MkYuNwu26wup7iP8C625AwcDr0MvRnxqw0aCCKe7EQ0zN7tbYHSRz9qq0owtmN9suB/2RQ+zfg4ukG8hc+1nam/Qd08epjSt5coW8egGylJGzeYboXX2W+qxwI/CN4s/GR9Im8GV2/HJWsITP8yKER2BBMr32uh9s9PKw9mBnXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m/gafDU9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18579C433F1;
-	Thu, 25 Jan 2024 17:10:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706202650;
-	bh=apArv/y13HeSPeRmSN34Zj5eLLWOr5OjgCHOgzlBIGk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=m/gafDU9bR1Gmuq/H6tHuAOkh22nQj2vy8TNEPAG7cUWBIIgYkSEUNESS6kpoDUUM
-	 qNXj1bhbjohTv+q8Bf5YTEcULJDqmZJtFUQSnF8QeAvYeOi5tYzuG2MSw4MM+OSiWY
-	 yiUuq+Ry/6kmiAwwyujryuTD6VPyv/Skz6IMuuc8hbsZUyUOd+WBf9QksrUbhv91dU
-	 iwC9hrZ7/sjznYaFTLKwjTEfa+JuVhm5t1ZFBjbsS6U9gVMtubmqSk2WzHxf2fDekB
-	 v39RxBz0VRrwhmOt0OEqOFiXbJOs96OrruqYpjomN77J14zZqAqYjWGW8k/vKTUcnS
-	 Q2VuxQx9P2b6w==
-Date: Thu, 25 Jan 2024 17:10:45 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: AnnanLiu <annan.liu.xdu@outlook.com>, chao.wei@sophgo.com,
-	unicorn_wang@outlook.com, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
-	devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] riscv: dts: sophgo: add watchdog dt node for CV1800
-Message-ID: <20240125-repackage-shore-049e7fcd559e@spud>
-References: <DM6PR20MB2316366FC9ADCBC7B6E9C289AB7A2@DM6PR20MB2316.namprd20.prod.outlook.com>
- <9f9a1f5f-2104-4a5c-a837-cd8d18e173d6@linaro.org>
+	s=arc-20240116; t=1706202684; c=relaxed/simple;
+	bh=nEOsNt6FFR1h3VkdNsbanGLxwjGlJ3VKJhYvlacD+Z0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jAQcNiGyesLpU4EHa/hJcvXo+p6vTVyFO4yNQAypoalEEVb3o/nQPke6gqZXYnMjpLjfcg8R7vknimliGiGBIighXRZsHLEEjbOgldIkcAF3LSzA5T/cpINOCBpHDqX+82kERUhh4rsaq7+rbEduw/LRaAews622vMn0XzttOCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=N0U7gxV4; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <081af630-ab5d-4502-a29a-a8577d414809@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706202677;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cwiSZZSX/ApevLiEYXtfnRTxSGnWM9HwOp5AgT3owUs=;
+	b=N0U7gxV4MpRvXxZcKiNEOu7DcT42hPeaN/Y2U6qOFPHSWeUEx4AgFNLBjp7qqagQPL5Oin
+	vS/FcFfWwyVinSJlI1TWDI/1iwAtorxSkT5HS1mkvoDa4w5K36G+wEdbCJp+CO7+M+5p6Y
+	yxIDgy4Ne25i2rLOl8VrcxMTq+AfUn4=
+Date: Thu, 25 Jan 2024 17:11:08 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="PY07s+DrUtRLCc1c"
-Content-Disposition: inline
-In-Reply-To: <9f9a1f5f-2104-4a5c-a837-cd8d18e173d6@linaro.org>
+Subject: Re: [PATCH 2/2] net: stmmac: dwmac-imx: set TSO/TBS TX queues default
+ settings
+Content-Language: en-US
+To: Esben Haabendal <esben@geanix.com>, netdev@vger.kernel.org,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin
+ <mcoquelin.stm32@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>
+Cc: linux-arm-kernel@lists.infradead.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org
+References: <cover.1706184304.git.esben@geanix.com>
+ <5606bb5f0b7566a20bb136b268dae89d22a48898.1706184304.git.esben@geanix.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <5606bb5f0b7566a20bb136b268dae89d22a48898.1706184304.git.esben@geanix.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
+On 25/01/2024 12:34, Esben Haabendal wrote:
+> TSO and TBS cannot coexist. For now we set i.MX Ethernet QOS controller to use
+> TX queue with TSO and the rest for TBS.
+> 
+> TX queues with TBS can support etf qdisc hw offload.
+> 
+> Signed-off-by: Esben Haabendal <esben@geanix.com>
+> ---
+>   drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c | 6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
+> index 8f730ada71f9..c42e8f972833 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
+> @@ -353,6 +353,12 @@ static int imx_dwmac_probe(struct platform_device *pdev)
+>   	if (data->flags & STMMAC_FLAG_HWTSTAMP_CORRECT_LATENCY)
+>   		plat_dat->flags |= STMMAC_FLAG_HWTSTAMP_CORRECT_LATENCY;
+>   
+> +        for (int i = 0; i < plat_dat->tx_queues_to_use; i++) {
+> +                /* Default TX Q0 to use TSO and rest TXQ for TBS */
+> +                if (i > 0)
+> +                        plat_dat->tx_queues_cfg[i].tbs_en = 1;
+> +        }
+> +
 
---PY07s+DrUtRLCc1c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Just wonder why don't you start with i = 1 and remove 'if' completely?
+Keeping comment in place will make it understandable.
 
-On Thu, Jan 25, 2024 at 01:39:51PM +0100, Krzysztof Kozlowski wrote:
-> On 25/01/2024 10:46, AnnanLiu wrote:
-> > +
-> > +		pclk: pclk {
-> > +			#clock-cells =3D <0>;
-> > +			compatible =3D "fixed-clock";
-> > +			clock-frequency =3D <25000000>;
->=20
-> It does not look like you tested the DTS against bindings. Please run
-> `make dtbs_check W=3D1` (see
-> Documentation/devicetree/bindings/writing-schema.rst or
-> https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sou=
-rces-with-the-devicetree-schema/
-> for instructions).
->=20
+>   	plat_dat->host_dma_width = dwmac->ops->addr_width;
+>   	plat_dat->init = imx_dwmac_init;
+>   	plat_dat->exit = imx_dwmac_exit;
 
-> Also, why do you describe internal clock as stub?
-
-Under the --- line it says the patch depends on the clock series, but
-as you pointed out the clock is a "fake" stub, so I don't understand
-what the dependency would be.
-
---PY07s+DrUtRLCc1c
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbKWFQAKCRB4tDGHoIJi
-0tqoAQD+Wvy3whUfNoEmsB1b/zxhahkinspAiLRmXLLBW4ln+QEAgexJgU/2QH4+
-duQy/xFKdEnnsoj1mbE8G63JT/LScg0=
-=3gZ2
------END PGP SIGNATURE-----
-
---PY07s+DrUtRLCc1c--
 
