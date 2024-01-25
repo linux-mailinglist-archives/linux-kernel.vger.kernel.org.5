@@ -1,194 +1,194 @@
-Return-Path: <linux-kernel+bounces-38532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38533-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AC5183C11A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:40:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90DEB83C120
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:40:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 456261C244F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:40:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A0EA1F26817
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:40:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3676C50A96;
-	Thu, 25 Jan 2024 11:36:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6C1B3307B;
+	Thu, 25 Jan 2024 11:39:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PSqj+YfC"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="envjQJ8c"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C404A5731D;
-	Thu, 25 Jan 2024 11:36:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3911F2C68D;
+	Thu, 25 Jan 2024 11:39:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706182614; cv=none; b=uL+vNXcJYbPyx26PUxc/enJgqIXNqXBv9DVyhcK3gIxghRVbnz8q9ZHdVbpA0a/9pGbcZGrnQr3OK7mp0sjUpqihYgF5qrDW/UUITydS2KTXAw6l374IlVnTwSFHrGbfbMW2kH/OZie9RYSZ+e5XkDrj7NVTJE/E1I+W4XmywmY=
+	t=1706182782; cv=none; b=myIFHEEo8/BiZVBsBQwE/Cyvfxvms+DfW83NeQPAR3UrqMpg3QoWN91d12sHPu0Uh4U1aEY62NwfYu9gZHQd+gSTY4qcFHhiCSTJ1J6aBGqbNNRro/SGX5cPwYY83Sz3Z+3WGuOKvjnuBH3f2+s1DajADBbPeOrsUywozX2WH1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706182614; c=relaxed/simple;
-	bh=9OP2AYCXD7CTzXDDBNhR6z28ox5cvhSWUThScGzrt+w=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bog0JRlwdCPUSVbuAXDdv39qB2Zu0Kc7gudh39RlLYC3h04vYNGGH7Ft8bAPobjNStoMmtMYWlkAw5EfhSEioESQCjyjjkp/kg+xun7iqFtdH/vcy8ojGsdwad/nRr06DhYNxAe0H/oFQDb7FMLoK1lXW2PY+pUozWFyvDOvI3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PSqj+YfC; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40ea5653f6bso68137195e9.3;
-        Thu, 25 Jan 2024 03:36:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706182610; x=1706787410; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=DYXWEmKQIsLe7nv5ynnIoPrTMyRKUKUjaFaattLgh4Y=;
-        b=PSqj+YfC4dKUf3TITfNWqC9Y/OljlkLJ+hVYL0FhM/Dcot19NQxX5Bl20+5m+CbCZr
-         pkehB2n3JmKF1Orw3gmWgclhwkbtAP32k5jqNSZZR6LQzKHO+RzG2oij1r4OI9pilDge
-         3/A+HSO85uK/vA5IFoLokw6mDrRwoRZx8yeRheNPugJ2i9cKQ74vxLMQP1kyK7wnk3Zi
-         Aw3l1Ra0SMuAm09HX7g8FMpG57Wz4vuzU9g7MMQJ+tnajXF6loO0k/S72c3DwJSHRYxh
-         geu3YQVrUTWQ5ACxTXHsnpFhEORbR/uU+jkDboj1ZHfDf/HrSLMsla3QJXxatpEyoCYY
-         iBqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706182610; x=1706787410;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DYXWEmKQIsLe7nv5ynnIoPrTMyRKUKUjaFaattLgh4Y=;
-        b=Qqyfdg3L0749d8eo4FDiphObPWzp4qLABYAKRu25lmiTfi4N+A+z+HJXmSgQr11n5C
-         82Opv8eDtwOP7wCwXKtt6Y5XP3G9LLw1oqTxmNlwic7gA7uC2InwLJuaCcVn5XV1WCoD
-         X+5HYW4z4YYlik5/EVvof2bGk/f0kFPrYxzxKZ9TSHEdGtTALzSgt0lo4BEANaTgor+O
-         HNlH+Anpr0LHNRw17cPIVQrKuXkdnLuNacHFQOJyx22wVUY7O0pvqay/Vy+7yBHzrnBV
-         HF/h2sMX65LFgyBo8WToVLvO+Y9KKs2eevvz1jtP2L+ToaWxAlA/r2m48+gquvrjDbRG
-         z9Gw==
-X-Gm-Message-State: AOJu0YxEpIzX1bWFJU6caXg8FfRuo/Nw8R79LSsdyOSYk1ZNhh0DX+0F
-	vjHdFQgn38AwKs+hyCHRTo3Y84hVvAj2BPX1pLtIUiofILhmFb+6
-X-Google-Smtp-Source: AGHT+IH+/n86D85sKsgvGlpJ6zoWcRtr5Zg1ujyeXp+NnFo+8QR08EJvB11lYtfkWyctEvjXABh0bg==
-X-Received: by 2002:a05:600c:6a90:b0:40e:5aa4:44f8 with SMTP id jl16-20020a05600c6a9000b0040e5aa444f8mr405862wmb.216.1706182609563;
-        Thu, 25 Jan 2024 03:36:49 -0800 (PST)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id bl1-20020adfe241000000b0033935779a23sm10153265wrb.89.2024.01.25.03.36.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 03:36:49 -0800 (PST)
-Message-ID: <65b247d1.df0a0220.12334.efd9@mx.google.com>
-X-Google-Original-Message-ID: <ZbJHzSCj8oGm-OJ3@Ansuel-xps.>
-Date: Thu, 25 Jan 2024 12:36:45 +0100
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Jie Luo <quic_luoj@quicinc.com>
-Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Robert Marko <robert.marko@sartura.hr>,
-	linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Sergey Ryazanov <ryazanov.s.a@gmail.com>
-Subject: Re: [net-next PATCH 0/3] net: mdio-ipq4019: fix wrong default MDC
- rate
-References: <20240124213640.7582-1-ansuelsmth@gmail.com>
- <53445feb-a02c-4859-a993-ccf957208115@quicinc.com>
+	s=arc-20240116; t=1706182782; c=relaxed/simple;
+	bh=uuLQcn67ndZcZcBwuCqbGXWUe0vDASxm3uUwFtizmbE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FHiOYz5zjTzXbuPx1ndmnqneFHFaZShPbtWVjl95QItxhQk7c0VlICwg/BjumxOB5SCI4Tl/opCdYyMiVBYYcJ4Kd3PnHB3u4IOqxlv3MVbFBRcb36+2USnVzC2KZlnwbs7EcG1AxkEl00Jq23zOCD4VDhaiBEIG5VotIBy3jKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=envjQJ8c; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706182779;
+	bh=uuLQcn67ndZcZcBwuCqbGXWUe0vDASxm3uUwFtizmbE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=envjQJ8ceoZeoRYHWBr+w/i6IBO3d6F57Se1tosc9GNzMCx3O9LxVW0JZBA9sCPC2
+	 iMH6KmKwKTvnL0dT3TNrdEtI92faSsuTBg7+HOmEoZlJiWoK6jcvWHJaFYSI4QiuwQ
+	 jJ2s31+gFHe0a91WJYw/6A3qHT7bbtEbonwyQUSt4dVNkb3jOlbDVW9iXplPqTpclF
+	 Ff8mckuU7EsSsfGuA0T5LR4/prZZSCvM+/g06rqPViRaG4o62nmHB8aPwcyje0D87p
+	 iVDNUw1w4WzY9QXJ8VE/EIy09iyMrtrgE5uqNAPNzygW6gilTLMQyF0Kp9unItGGVr
+	 4yLjsoIAr+DQQ==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7D1F33781182;
+	Thu, 25 Jan 2024 11:39:38 +0000 (UTC)
+Message-ID: <68249675-4081-48d9-abbb-1b2e49894fae@collabora.com>
+Date: Thu, 25 Jan 2024 12:39:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <53445feb-a02c-4859-a993-ccf957208115@quicinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: net: bluetooth: Add MediaTek MT7921S
+ SDIO Bluetooth
+Content-Language: en-US
+To: Chen-Yu Tsai <wenst@chromium.org>, Marcel Holtmann <marcel@holtmann.org>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Sean Wang <sean.wang@mediatek.com>, linux-bluetooth@vger.kernel.org,
+ netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240125095240.2308340-1-wenst@chromium.org>
+ <20240125095240.2308340-2-wenst@chromium.org>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240125095240.2308340-2-wenst@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 25, 2024 at 01:57:20PM +0800, Jie Luo wrote:
+Il 25/01/24 10:52, Chen-Yu Tsai ha scritto:
+> The MediaTek MT7921S is a WiFi/Bluetooth combo chip that works over
+> SDIO. While the Bluetooth function is fully discoverable, the chip
+> has a pin that can reset just the Bluetooth side, as opposed to the
+> full chip. This needs to be described in the device tree.
 > 
+> Add a device tree binding for MT7921S Bluetooth over SDIO specifically
+> ot document the reset line.
 > 
-> On 1/25/2024 5:36 AM, Christian Marangi wrote:
-> > This was a long journey to arrive and discover this problem.
-> > 
-> > To not waste too much char, there is a race problem with PHY and driver
-> > probe. This was observed with Aquantia PHY firmware loading.
-> > 
-> > With some hacks the race problem was workarounded but an interesting
-> > thing was notice. It took more than a minute for the firmware to load
-> > via MDIO.
-> > 
-> > This was strange as the same operation was done by UBoot in at max 5
-> > second and the same data was loaded.
-> > 
-> > A similar problem was observed on a mtk board that also had an
-> > Aquantia PHY where the load was very slow. It was notice that the cause
-> > was the MDIO bus running at a very low speed and the firmware
-> > was missing a property (present in mtk sdk) that set the right frequency
-> > to the MDIO bus.
-> > 
-> > It was fun to find that THE VERY SAME PROBLEM is present on IPQ in a
-> > different form. The MDIO apply internally a division to the feed clock
-> > resulting in the bus running at 390KHz instead of 6.25Mhz.
-> > 
-> > Searching around the web for some documentation and some include and
-> > analyzing the uboot codeflow resulted in the divider being set wrongly
-> > at /256 instead of /16 as the value was actually never set.
-> > Applying the value restore the original load time for the Aquantia PHY.
-> > 
-> > This series mainly handle this by adding support for the "clock-frequency"
-> > property.
-> > 
-> > Christian Marangi (3):
-> >    dt-bindings: net: ipq4019-mdio: document now supported clock-frequency
-> >    net: mdio: ipq4019: add support for clock-frequency property
-> >    arm64: dts: qcom: ipq8074: add clock-frequency to MDIO node
-> > 
-> >   .../bindings/net/qcom,ipq4019-mdio.yaml       | 10 +++
-> >   arch/arm64/boot/dts/qcom/ipq8074.dtsi         |  2 +
-> >   drivers/net/mdio/mdio-ipq4019.c               | 68 +++++++++++++++++--
-> >   3 files changed, 75 insertions(+), 5 deletions(-)
-> > 
+> Cc: Sean Wang <sean.wang@mediatek.com>
+> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+> ---
+>   .../bluetooth/mediatek,mt7921s-bluetooth.yaml | 49 +++++++++++++++++++
+>   MAINTAINERS                                   |  1 +
+>   2 files changed, 50 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-bluetooth.yaml
 > 
-> Hi Christian,
-> Just a gentle reminder.
->
+> diff --git a/Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-bluetooth.yaml b/Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-bluetooth.yaml
+> new file mode 100644
+> index 000000000000..bbe240e7cc40
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-bluetooth.yaml
+> @@ -0,0 +1,49 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/bluetooth/mediatek,mt7921s-bluetooth.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MediaTek MT7921S Bluetooth
+> +
 
-Hi Jie,
-hope you can understand my reason.
+title:
 
-> The MDIO frequency config is already added by the following patch series.
-> https://lore.kernel.org/netdev/28c8b31c-8dcb-4a19-9084-22c77a74b9a1@linaro.org/T/#m840cb8d269dca133c3ad3da3d112c63382ec2058
-> 
+maintainers:
 
-Wasn't aware of this, as I said in the cover letter this all comes by a
-problem we notice in the Aquantia firmware load that was slow as hell
-and we just notice the misconfiguration of the divisor.
+description:
 
-The feature in this series is really a simple one and almost ready (I
-already have v2 ready for the request from Andrew to follow 802.3 spec)
-and we really need it ASAP as we are trying to move our ipq807x targets to
-upstream driver and finally start using the integrated firmware loading
-for Aquantia PHY.
+.. and then, you missed
 
-Also I can see some fundamental difference between the 2 patch, mainly
-in how the value is applied and setting a sane divisor by default
-instead of using 0xff. (probably Andrew would have pointed out the same
-thing in some later revision to your series)
+allOf:
+   - $ref: bluetooth-controller.yaml#
 
-Looking at the linked series I notice there are still some thing to
-polish and to clarify with DT and driver and I think it's only
-beneficial if this feature is worked separately as it's not only needed
-for ipq50xx but affects every user of this (ipq40xx, ipq807x, ipq60xx)
-and it would be a pitty to wait the entire ipq50xx series to be handled
-just to fix a long lasting misconfiguration on various SoC family.
+Everything else looks good.
 
-Hope you can understand these reasons, it's all for the sake of making
-this driver more mature quicker.
+Cheers,
+Angelo
 
-> This MDIO patch series will be updated to just keep the MDIO frequency
-> patch and DT document for this MDIO frequency property added.
-> 
-> For CMN PLL config will be moved to the CMN PLL clock driver and the UNIPHY
-> clock config will be moved the uniphy driver as suggested by
-> Sergey's suggestions.
-> 
-> Thanks.
-> 
-> 
+> +description:
 
--- 
-	Ansuel
+MT7921S is a (dual?) SDIO-attached dual-radio WiFi+Bluetooth combo chip;
+this chip has two dedicated reset lines, one of which is used to reset
+the Bluetooth core.
+The WiFi part of this chip is described in ....where? :-)
+
+> +  This binding describes the Bluetooth side of the SDIO-attached MT7921S
+> +  WiFi+Bluetooth combo chips. These chips are dual-radio chips supporting
+> +  WiFi and Bluetooth. Bluetooth works over SDIO just like WiFi. Bluetooth
+> +  has its own reset line, separate from WiFi, which can be used to reset
+> +  the Bluetooth core.
+> +
+> +maintainers:
+> +  - Sean Wang <sean.wang@mediatek.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - mediatek,mt7921s-bluetooth
+> +  reg:
+> +    const: 2
+> +
+> +  reset-gpios:
+> +    maxItems: 1
+> +    description: A GPIO line connected to the Bluetooth subsystem reset line.
+> +      Typically the W_DISABLE2# pin on M.2 E-key modules. If present this
+> +      shall be flagged as active low.
+
+description:
+   An active-low reset line connected for the Bluetooth core;
+   on typical M.2 Key-E modules this is the W_DISABLE2# pin.
+
+Cheers,
+Angelo
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    mmc {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        bluetooth@2 {
+> +            compatible = "mediatek,mt7921s-bluetooth";
+> +            reg = <2>;
+> +            reset-gpios = <&pio 8 GPIO_ACTIVE_LOW>;
+> +        };
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index b64a64ca7916..662957146852 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -13657,6 +13657,7 @@ M:	Sean Wang <sean.wang@mediatek.com>
+>   L:	linux-bluetooth@vger.kernel.org
+>   L:	linux-mediatek@lists.infradead.org (moderated for non-subscribers)
+>   S:	Maintained
+> +F:	Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-bluetooth.yaml
+>   F:	Documentation/devicetree/bindings/net/mediatek-bluetooth.txt
+>   F:	drivers/bluetooth/btmtkuart.c
+>   
+
 
