@@ -1,128 +1,121 @@
-Return-Path: <linux-kernel+bounces-39374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0974583CF95
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:49:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E92B83CF98
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:49:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B593B293DED
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:49:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD5D7293D56
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:49:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 531CE125CD;
-	Thu, 25 Jan 2024 22:49:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB954134A5;
+	Thu, 25 Jan 2024 22:49:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N5j5nBC6"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="b6390Nbn"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9B29111AC
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 22:49:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD28111706;
+	Thu, 25 Jan 2024 22:49:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706222944; cv=none; b=jw0WLEeBHaLbLqaR4GrCPSuipm+cfQMMcH2Vn7iqtuZXi6+Mu7j3z2Qi71NOiLIEM9FffcxyyFf771H9H+W3XzaK5Sjyn+5XeAQhRKKdTZzX2ruPbrocKZ2PBdNf/8v0SbW3bU5KfT48+27BPTBrUEJrZCyRipq5ZhmBLjtDjbs=
+	t=1706222946; cv=none; b=oWd8UMElkz/vtWJYNVLAwZ0cCaRo2Rh9RxM7jRkgeO8mot+pnY3zbsTcGK+esGHfODMq1BsiguXc4fkrqjDSr9H6RBhTSruwX4/22Ffrfs6/cYK/htiC46Pk2MwqIYqSKs+fernAX0ZyEjfA2fJkFYL724bCF41jBxzqjv00wD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706222944; c=relaxed/simple;
-	bh=CbmW/228GCi3mqE9tnHZSnzCJD3NGsjyla4RSnkrJ8c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SwutkoTgl2QT/Z2xAO/4PgPgbYYmJ9el4VNepZ2lZ0mYrN3wTyPKrPIxo5OusI3WvFfTR5lh/qgjWyMhjdA7a0TNLlnAJQTxisam7v9LlkdjSNR8D/SnM3OnvMFti+FrIUx9gq27S7+MZSZfRRA6M1ia9vX1qS8KjHaki2IhytA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=N5j5nBC6; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706222940;
+	s=arc-20240116; t=1706222946; c=relaxed/simple;
+	bh=+7OvAbc65gMBHkNCZLbkYDkZOm9ZDtdcGTRus97SoRw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aP9e371fLuLRKkCfwP+LnMHEGXfExwVq9w5vMpQpj9ayrFaXpK94ajd5GkZJhsgb4AjGl1thJIg+vQn9hToLwHJ/eFqaDqyxRy5POj64zgXKcZbKn5AcUs6N8/g5P0+r5eQQyj5UpQWluDFw6TDisVq9Uwx2L6HvPLcnWgU/E+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=b6390Nbn; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4D7D4FF802;
+	Thu, 25 Jan 2024 22:48:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1706222941;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=q4Crka9/JgHcU0ey0pI+XUxXs9hF7aNw/5Jtdg8P4KE=;
-	b=N5j5nBC6PXcvXuW5fmoXcfVAqqydqTzu0WTZvC7GiKxX2bjjFRtv95BcPeErdgn9Xp42nK
-	0+Fey16/S+J+wwrcLklbVZL+Mewsru9eDEH9fh7IpLbxhRSoh7ngLcq8n7SHlK+fGA2hOc
-	6S3sQ9AeJPz7NPY+iCpQO2I/pepaGf4=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-58-kOXEFjOzNj6EbLhlrZXdtw-1; Thu, 25 Jan 2024 17:48:59 -0500
-X-MC-Unique: kOXEFjOzNj6EbLhlrZXdtw-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-337a9795c5cso5196025f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 14:48:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706222938; x=1706827738;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q4Crka9/JgHcU0ey0pI+XUxXs9hF7aNw/5Jtdg8P4KE=;
-        b=VPStcrEJxpk6qTo74G0HED+k+48y2RLvRCgwgNAJDNQVPtc4+ZIED0ZB/wjYGKZbmH
-         fIDU2yHoCWrG5KArrOZEpsgsAWJkMNvQkWphETvWvIUX4sLy0m5BzXJT6n+LAOHzf/U6
-         OqbrGqFKjRTXNQ1vbHmXt2GeFpbGQVd36jPVZha7WEm4wGPDbg8zwVI/NDV8CqV+wZxl
-         bysmkAzrBH3fxpceO2UlbDIJbTy1rOIh8n9JrQOmvDH9BDUaHlQHlb31RFvUiagK7DNZ
-         c9z+kUvJqaWRSeZF2FraRP8ZQYTHtQV1bXvFQO/+aSylAXe7Jhk112VO+xAS2eFCFj42
-         tmEQ==
-X-Gm-Message-State: AOJu0YxXaRNB8fxdyAxSNLTl6JqJsuvL+wj1PrgucCcb8RZioR6wlWzb
-	niDpdG4x5xUZpkjIPKvRrb2WEOVBg9rq7A+fjP4lJEj+Uja26oQAkl5EjZAOpVwsKKdZmxssOUH
-	+I7oVbNH5vBG/MUrIaMTTBVod+WeBVaH+rJQJq/fYPht3YH1g+AQ9WDxyAy1t3A==
-X-Received: by 2002:a5d:456f:0:b0:337:bfd4:8c1b with SMTP id a15-20020a5d456f000000b00337bfd48c1bmr209620wrc.23.1706222938141;
-        Thu, 25 Jan 2024 14:48:58 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEYwVPAR3CAgbGUu1SF1zj6JUO3aXtfnw/UqEkEi86zKYeiQ92JA4m9kDpOpg8QaBLVc0gbMg==
-X-Received: by 2002:a5d:456f:0:b0:337:bfd4:8c1b with SMTP id a15-20020a5d456f000000b00337bfd48c1bmr209611wrc.23.1706222937744;
-        Thu, 25 Jan 2024 14:48:57 -0800 (PST)
-Received: from redhat.com ([2.52.130.36])
-        by smtp.gmail.com with ESMTPSA id x1-20020adff641000000b0033922db3f74sm15876156wrp.116.2024.01.25.14.48.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 14:48:56 -0800 (PST)
-Date: Thu, 25 Jan 2024 17:48:52 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc: Stefan Hajnoczi <stefanha@redhat.com>,
-	Stefano Garzarella <sgarzare@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Bobby Eshleman <bobby.eshleman@bytedance.com>, kvm@vger.kernel.org,
-	virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel@sberdevices.ru,
-	oxffffaa@gmail.com
-Subject: Re: [PATCH net-next v1] vsock/test: print type for SOCK_SEQPACKET
-Message-ID: <20240125174845-mutt-send-email-mst@kernel.org>
-References: <20240124193255.3417803-1-avkrasnov@salutedevices.com>
+	bh=npd3pP1aReG/0ALjdGC6r+4bjQEOxICwXHbbVuqWcZ4=;
+	b=b6390NbnuGXNe15DVpYrjlfa1PtjIqNM14bhVWY5DOZGJW3IrdQIxWsUry2cdr1ko4tpL2
+	XYaM1eDs04rTuDv05UpUPeHePQfY40n9AM2SyvBKizzy15WRT2ukePEzD+BXGzNyI1EqBU
+	01dehgiepB3Gv3jPJidrzbLlzOUFiR8vrCCOrr7SCkp39Ri65quXPYI8i/WVMZVqTE6V0/
+	wxP2F8GR/RfCJ0XPj6t+8LoFzMkdRjpgiao5ymJs8U7x5dt/dgxDeFU/8k/H5Q0/enjohq
+	/3sdCLsg8wTcKEoVz3cM7v9dZsF2g6pZ/mCLagndFZfRHWxcMcMoZo/sX0pyLg==
+Message-ID: <a5b37e23-5f88-4a23-a1e3-908513a64f03@arinc9.com>
+Date: Fri, 26 Jan 2024 01:48:54 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240124193255.3417803-1-avkrasnov@salutedevices.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v3 6/7] net: dsa: mt7530: do not set
+ priv->p5_interface on mt7530_setup_port5()
+Content-Language: en-US
+To: Daniel Golle <daniel@makrotopia.org>,
+ Landen Chao <Landen.Chao@mediatek.com>, DENG Qingfang <dqfext@gmail.com>,
+ Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+ Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean
+ <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Russell King <linux@armlinux.org.uk>
+Cc: mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+ Bartel Eerdekens <bartel.eerdekens@constell8.be>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20240122-for-netnext-mt7530-improvements-1-v3-0-042401f2b279@arinc9.com>
+ <20240122-for-netnext-mt7530-improvements-1-v3-6-042401f2b279@arinc9.com>
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <20240122-for-netnext-mt7530-improvements-1-v3-6-042401f2b279@arinc9.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
 
-On Wed, Jan 24, 2024 at 10:32:55PM +0300, Arseniy Krasnov wrote:
-> SOCK_SEQPACKET is supported for virtio transport, so do not interpret
-> such type of socket as unknown.
+Vladimir could you review this too? This is the only patch remaining
+without a review or ACK.
+
+Arınç
+
+On 22.01.2024 08:35, Arınç ÜNAL via B4 Relay wrote:
+> From: Arınç ÜNAL <arinc.unal@arinc9.com>
 > 
-> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
-
-
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-
+> Running mt7530_setup_port5() from mt7530_setup() used to handle all cases
+> of configuring port 5, including phylink.
+> 
+> Setting priv->p5_interface under mt7530_setup_port5() makes sure that
+> mt7530_setup_port5() from mt753x_phylink_mac_config() won't run.
+> 
+> The commit ("net: dsa: mt7530: improve code path for setting up port 5")
+> makes so that mt7530_setup_port5() from mt7530_setup() runs only on
+> non-phylink cases.
+> 
+> Get rid of unnecessarily setting priv->p5_interface under
+> mt7530_setup_port5() as port 5 phylink configuration will be done by
+> running mt7530_setup_port5() from mt753x_phylink_mac_config() now.
+> 
+> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
 > ---
->  tools/testing/vsock/vsock_diag_test.c | 2 ++
->  1 file changed, 2 insertions(+)
+>   drivers/net/dsa/mt7530.c | 2 --
+>   1 file changed, 2 deletions(-)
 > 
-> diff --git a/tools/testing/vsock/vsock_diag_test.c b/tools/testing/vsock/vsock_diag_test.c
-> index 5e6049226b77..17aeba7cbd14 100644
-> --- a/tools/testing/vsock/vsock_diag_test.c
-> +++ b/tools/testing/vsock/vsock_diag_test.c
-> @@ -39,6 +39,8 @@ static const char *sock_type_str(int type)
->  		return "DGRAM";
->  	case SOCK_STREAM:
->  		return "STREAM";
-> +	case SOCK_SEQPACKET:
-> +		return "SEQPACKET";
->  	default:
->  		return "INVALID TYPE";
->  	}
-> -- 
-> 2.25.1
-
+> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+> index 33c15f10de34..5394d8c6a40e 100644
+> --- a/drivers/net/dsa/mt7530.c
+> +++ b/drivers/net/dsa/mt7530.c
+> @@ -978,8 +978,6 @@ static void mt7530_setup_port5(struct dsa_switch *ds, phy_interface_t interface)
+>   	dev_dbg(ds->dev, "Setup P5, HWTRAP=0x%x, intf_sel=%s, phy-mode=%s\n",
+>   		val, p5_intf_modes(priv->p5_intf_sel), phy_modes(interface));
+>   
+> -	priv->p5_interface = interface;
+> -
+>   unlock_exit:
+>   	mutex_unlock(&priv->reg_mutex);
+>   }
+> 
 
