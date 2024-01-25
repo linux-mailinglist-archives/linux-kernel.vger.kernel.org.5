@@ -1,158 +1,306 @@
-Return-Path: <linux-kernel+bounces-38859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D95983C75F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:57:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1340183C766
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:00:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBF531F23C81
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:57:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 962FA1F25541
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:00:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FCBA74E0F;
-	Thu, 25 Jan 2024 15:56:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8794E74E05;
+	Thu, 25 Jan 2024 16:00:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="a8Sp4HtS"
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="hZUco6hT";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kLFp17Yt"
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A85C2745E9
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 15:56:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F21206E2DB;
+	Thu, 25 Jan 2024 16:00:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706198210; cv=none; b=XTR2S3oK7DaOlMBgxKrSntLLDmEwtTa/D9+/eOdzi2wAs093zBcxirjpQS4v9u9pkyp5ahn5+iFYGhxmNhRa+/RVB5eqgp33UP+eWfNXIQYC/i0ru0YaVmCK7d9k0wweuSUDtI0K8KOqXFdYfxsSKAsJ/c+1fcYYgPuYKZeUlxw=
+	t=1706198409; cv=none; b=jK/usk1Cz8kAFZP8h1WhvyaONY1T3+UCf3Ci6ku5bU+QVdcbAfqxDqA9gMD4Rx5kpzlIqV+DTEr4LzIJtjg7ppKTNXF2YRsruL1yPNzByOByUM/pcJCSBTDqWmnhY9JxSDzK6t6mRTN6CXz1ZXGw2S++wmnvaG6WeQTrMeEwc9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706198210; c=relaxed/simple;
-	bh=juRKaRMDv4cbltizqT0zFF5a8XSwtyov/hSi9Hh0SqA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=I9m4adxMpoJ2Ba7wsMBUHSmDIzUs68RQmpFSL6B5Navujjn/qnO8weYHKEcYakoe25h7PYjkr1GUuZHz/uihXkZxTjuktvWAE4JmjdCipM3IWZeHh+HoiS19OfLrrTirTV3z1ggWt+rUEAEAClGQahXz1dagsW+DCtesSmf4Fkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=a8Sp4HtS; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3392291b21bso5833321f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 07:56:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706198207; x=1706803007; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=n5KW3cGWOologfkUAtnPYUm4hK4xuDwJ4A0oJbDxe8Y=;
-        b=a8Sp4HtSuutWs7ootURVVXs7Cw+N3XPK/SBGfMJa5U8DQU0uaEEXc7OyalrZIerVgh
-         bzF+6ni2Dzu8AvMjkc25jxemSj1aP+r5MGohTMoy9yOTVm3xzGHHiCWNcZYi6IL7DQ9P
-         UOacLXG3B6mwKuK2pv+AehrHwJsWp9BlXD+Rdnw7f3q092xa2xS3I4d+rRfHZn8e2q2P
-         /e2Rmv9x0yFe6T3jcnY3jAwrT34NCFsA+TaTRi24bu7vuKGq9ZHNzywz7UeuRf+9s73c
-         Nn7VUYJm1ISVjvplvgQhMhbtETfnhICBzvYCyrQL/BEIYTXhRR5MkOMBF52+c80zSJdU
-         EYIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706198207; x=1706803007;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=n5KW3cGWOologfkUAtnPYUm4hK4xuDwJ4A0oJbDxe8Y=;
-        b=plQ6uEDVHRwXjwiEmNKdjUQ0gBcIGP20GCrhG06wKtm/lXV0rZsgwSfTbmbfHHgxus
-         uBQh1tku/k8UALe1EC2KNxI0BmzpoBCvujW24/gDijWmAmPkQ576vXJBszKen+Ut6sHU
-         co3daC98Y41kmpToGt8Cyq+ySdpDp+m0rxc6ZWXpS4ZzTKfinGSGi4AWghoW8KHkcb0W
-         P6W/G0nHxB7hy9R29SNsEqGgLPBqKpnTJUxlkYolQr61bwq4pjANco1P3vWYmdZXouLg
-         DNzx7gWasVeNL8UCXP//YZKfolX4wMSeCKJzOaW20aMTiHtspC6N33FcS/6dQbHUwCd3
-         HStQ==
-X-Gm-Message-State: AOJu0YzU//O8r0G2AovILlS4WNgcFM0lvBcKFQ8Pz6XAeuYvd5oejQTl
-	0X4Oo7MvdAVK+O6nKzbee8x1UN1KPDP+8783bmmC4buCIUKQxnxsDjAy2KnbWlQ=
-X-Google-Smtp-Source: AGHT+IFPfTqnSRv5OmTbnRNo2YdJXXj+rIyKtLlxPTVuohq08LFuZui3s4qdRTru4THU9byyitLVLg==
-X-Received: by 2002:adf:b1d4:0:b0:337:bfd8:e94c with SMTP id r20-20020adfb1d4000000b00337bfd8e94cmr4388wra.55.1706198206858;
-        Thu, 25 Jan 2024 07:56:46 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id g18-20020adff3d2000000b00337f722e5ccsm16485821wrp.65.2024.01.25.07.56.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 07:56:46 -0800 (PST)
-Message-ID: <a355b700-44e0-440b-91b5-c41af7953bfc@linaro.org>
-Date: Thu, 25 Jan 2024 16:56:44 +0100
+	s=arc-20240116; t=1706198409; c=relaxed/simple;
+	bh=JhL7YQiPLcm8PQ76uhgv/Ri86FrIlG5VN2oDXHuMbk4=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=VZSmKuPIqrRS2E5dulAaDc75dx30tEOj4k5yi7Ou5xeKMll9c0fZmwGB8vFUkPZbpke4tM/UPKj8bDmbvLfZHDQTplGz9AzDKNp34Ej87mPR+QtzL6vkM0rbyAUOhQjbHPyeQdnmrN3xsJa113V9As2y+fDwR02Cfm96WPQCK7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=hZUco6hT; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kLFp17Yt; arc=none smtp.client-ip=66.111.4.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.nyi.internal (Postfix) with ESMTP id 005105C00DB;
+	Thu, 25 Jan 2024 11:00:06 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 25 Jan 2024 11:00:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1706198405;
+	 x=1706284805; bh=SqRtybdjact+f0QeQR9azdnQV/iHBEyjbNT4deqFxZo=; b=
+	hZUco6hTk7rOkCqcYBakCuKg7hmrOp10Kl7rKZgdg3AtevpRTSE1FNx35WvDHTR3
+	1C7FoNO4AoNwonAd2Chx/+UWKiyhmFU2eCeCnBslCiMYNOh/xTT/6M8hCTDPxsfz
+	89i84ehFOG8mwCbtzrBv12r4eSH1QZg8tTBBkeJHz1RPqzkzk1xjsOxfOl3oRnTU
+	sPr6vb5q46615EIDB1gJQAN8YA0J5/aOiEJZdQQaOAce8GGilRlQZyztp0ZwZTsc
+	pFM6+FXy3riyiKtPd0DiquSWJ6oRpJyFvfcZeM5uaBpdXOMGhik9K+cRR86Lxl9j
+	yiK2yA9KyAwtsZpPiGf+Nw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706198405; x=
+	1706284805; bh=SqRtybdjact+f0QeQR9azdnQV/iHBEyjbNT4deqFxZo=; b=k
+	LFp17YtrpRi6UPiYMjCy1sSkRCu+4ovdGWJglYg38qH4EC9qgTEkBYuLaLEYguEu
+	e1XEM9HH3ivgr7ZJK9gNu7vf6g4WOJwlqkMdyt+wf9Wm1zSfCn8WTSbbV537JAtg
+	Zd6WuoyJTAhl94CQKpuZNFTyNESGF0Y8bolk8bSWVO3604SjANDQMOdxikiPhGCt
+	GG4VfwNqhjNrQam6m5b+aW7zQsOT6MnsQlRnal4Y9WN0hHW0ZVvRNE6SrI13KGaD
+	8azmTSTIlo/kQew6erQirnv72LdKvsDMb841+XjVkiHjaAmwa9dQKfuzjCHi/6tV
+	nFAlkE9/wgYcr80jMtazw==
+X-ME-Sender: <xms:hYWyZdMCnNNDyxgx9e38kTFRO4tfEujPrKnR2VkCPUqn88cu2N07FQ>
+    <xme:hYWyZf_hcCBLVbUvHV3e_KHJbCI-TfcDPRjP6gTsyE_SttJMCyPtBq1gvRgdqbZNL
+    N1epLMlzAuNUCW3X6k>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdelgedgheeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
+    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:hYWyZcSrj6tqxczRhaAAwS9PuouPD2R6FmvYUnShyGwwclXuM4DwAg>
+    <xmx:hYWyZZumEbZQfXLv_Ip1F35vHXrTUTB3_mZtrE2r-P9BV3bcAIASdg>
+    <xmx:hYWyZVf2Wp44LAJuU-i1pC_p-CdUKQrOUdepDtu0KOLGLRzPMQ6BPA>
+    <xmx:hYWyZb8_wzMTLbtbtdIu8WwuPiAC8-Q5bRy-LrLKrXjioeU23oqL7A>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 4DCDEB6008D; Thu, 25 Jan 2024 11:00:05 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-119-ga8b98d1bd8-fm-20240108.001-ga8b98d1b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/7] ARM: dts: samsung: specify the SPI fifosize
-Content-Language: en-US
-To: Tudor Ambarus <tudor.ambarus@linaro.org>,
- krzysztof.kozlowski+dt@linaro.org, broonie@kernel.org
-Cc: robh+dt@kernel.org, conor+dt@kernel.org, alim.akhtar@samsung.com,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, andre.draszik@linaro.org,
- peter.griffin@linaro.org, semen.protsenko@linaro.org,
- kernel-team@android.com, willmcvicker@google.com
-References: <20240125151630.753318-1-tudor.ambarus@linaro.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240125151630.753318-1-tudor.ambarus@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Message-Id: <e69f9b43-39cd-469d-94db-140504df0833@app.fastmail.com>
+In-Reply-To: 
+ <CAH5fLgi8D18ufma0X49nWhXpnz47t-C=OAtM+wwnYu78hEnwhA@mail.gmail.com>
+References: <20240124-alice-mm-v1-0-d1abcec83c44@google.com>
+ <20240124-alice-mm-v1-2-d1abcec83c44@google.com>
+ <070574cb-8d7f-4fe7-9826-cec6110168ff@app.fastmail.com>
+ <CAH5fLgi8D18ufma0X49nWhXpnz47t-C=OAtM+wwnYu78hEnwhA@mail.gmail.com>
+Date: Thu, 25 Jan 2024 16:59:42 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Alice Ryhl" <aliceryhl@google.com>
+Cc: "Miguel Ojeda" <ojeda@kernel.org>, "Alex Gaynor" <alex.gaynor@gmail.com>,
+ "Wedson Almeida Filho" <wedsonaf@gmail.com>,
+ "Boqun Feng" <boqun.feng@gmail.com>, "Gary Guo" <gary@garyguo.net>,
+ =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ "Benno Lossin" <benno.lossin@proton.me>,
+ "Andreas Hindborg" <a.hindborg@samsung.com>,
+ "Kees Cook" <keescook@chromium.org>,
+ "Alexander Viro" <viro@zeniv.linux.org.uk>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+ =?UTF-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+ "Todd Kjos" <tkjos@android.com>, "Martijn Coenen" <maco@android.com>,
+ "Joel Fernandes" <joel@joelfernandes.org>,
+ "Carlos Llamas" <cmllamas@google.com>,
+ "Suren Baghdasaryan" <surenb@google.com>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
+ "Christian Brauner" <brauner@kernel.org>
+Subject: Re: [PATCH 2/3] rust: add typed accessors for userspace pointers
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 25/01/2024 16:16, Tudor Ambarus wrote:
-> Hi,
-> 
-> The "samsung,spi-fifosize" was introduced in the following patch set:
-> https://lore.kernel.org/linux-arm-kernel/20240125145007.748295-1-tudor.ambarus@linaro.org/T/#t
-> 
-> I expect Mark will provide an immutable tag for the bindings so that it
-> can be merged into the samsung tree. We'll avoid this way using the
-> property into the device trees without having it defined into the
-> bindings.
+On Thu, Jan 25, 2024, at 13:37, Alice Ryhl wrote:
+> On Thu, Jan 25, 2024 at 1:27=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> =
+wrote:
+>> On Wed, Jan 24, 2024, at 12:20, Alice Ryhl wrote:
 
-No need. Any merge back to DTS branch would anyway question my pull
-request to arm soc, so I am not going to do this, unless absolutely
-necessary.
+>> > +EXPORT_SYMBOL_GPL(rust_helper_copy_to_user_unsafe_skip_check_objec=
+t_size);
+>>
+>> These functions are almost identical to the ones in
+>> lib/usercopy.c for !defined(INLINE_COPY_TO_USER).
+>>
+>> That version has an extra memset() after a partial
+>> copy_from_user(), and you probably want to have the
+>> same thing here for consistency.
+>>
+>> I think ideally we should only have one out-of-line copy
+>> of these two functions and have that one shared between
+>> rust and architectures that want the C version out of line
+>> as well.
+>
+> I had a bit of trouble figuring out all of the copy_[to/from]_user
+> methods that are available. I was hoping that a better solution would
+> be available, and it sounds like one is. Is _copy_from_user always
+> available as an exported symbol? If it's always available and skips
+> the check, then I can just use that. I don't think the memset matters
+> for my case.
 
-I'll take the DTS once binding is merged to ASoC, so everything will be
-fine as long linux-next is fine.
+At the moment, it appears that it's available on the few architectures
+that don't #define INLINE_COPY_FROM_USER: alpha, csky, powerpc,
+riscv and x86. On the other architectures it is always an inline
+function.
 
-Best regards,
-Krzysztof
+> Otherwise, I can add a helper in rust/helpers.c that wraps
+> _copy_from_user only when INLINE_COPY_FROM_USER is defined, and call
+> the helper in those cases, and otherwise call the exported symbol
+> directly. (I need an exported symbol to call into C from Rust.)
+>
+> Would that make sense?
 
+I don't think we can have a perfect abstraction here, but rather
+than putting knowledge of INLINE_COPY_FROM_USER into the rust
+wrapper, I would suggest putting a bit of information about
+rust into lib/usercopy.c.
+
+I've tried to come up with an idea below, see if that works
+for you.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
+index 3064314f4832..835aa175d0ee 100644
+--- a/include/linux/uaccess.h
++++ b/include/linux/uaccess.h
+@@ -138,13 +138,18 @@ __copy_to_user(void __user *to, const void *from, =
+unsigned long n)
+ 	return raw_copy_to_user(to, from, n);
+ }
+=20
+-#ifdef INLINE_COPY_FROM_USER
+ static inline __must_check unsigned long
+-_copy_from_user(void *to, const void __user *from, unsigned long n)
++_inline_copy_from_user(void *to, const void __user *from, unsigned long=
+ n)
+ {
+ 	unsigned long res =3D n;
+ 	might_fault();
+ 	if (!should_fail_usercopy() && likely(access_ok(from, n))) {
++		/*
++		 * Ensure that bad access_ok() speculation will not
++		 * lead to nasty side effects *after* the copy is
++		 * finished:
++		 */
++		barrier_nospec();
+ 		instrument_copy_from_user_before(to, from, n);
+ 		res =3D raw_copy_from_user(to, from, n);
+ 		instrument_copy_from_user_after(to, from, n, res);
+@@ -153,14 +158,11 @@ _copy_from_user(void *to, const void __user *from,=
+ unsigned long n)
+ 		memset(to + (n - res), 0, res);
+ 	return res;
+ }
+-#else
+ extern __must_check unsigned long
+ _copy_from_user(void *, const void __user *, unsigned long);
+-#endif
+=20
+-#ifdef INLINE_COPY_TO_USER
+ static inline __must_check unsigned long
+-_copy_to_user(void __user *to, const void *from, unsigned long n)
++_inline_copy_to_user(void __user *to, const void *from, unsigned long n)
+ {
+ 	might_fault();
+ 	if (should_fail_usercopy())
+@@ -171,25 +173,32 @@ _copy_to_user(void __user *to, const void *from, u=
+nsigned long n)
+ 	}
+ 	return n;
+ }
+-#else
+ extern __must_check unsigned long
+ _copy_to_user(void __user *, const void *, unsigned long);
+-#endif
+=20
+ static __always_inline unsigned long __must_check
+ copy_from_user(void *to, const void __user *from, unsigned long n)
+ {
+-	if (check_copy_size(to, n, false))
+-		n =3D _copy_from_user(to, from, n);
+-	return n;
++	if (!check_copy_size(to, n, false))
++		return n;
++#ifdef INLINE_COPY_FROM_USER
++	return _inline_copy_from_user(to, from, n);
++#else
++	return _copy_from_user(to, from, n);
++#endif
+ }
+=20
+ static __always_inline unsigned long __must_check
+ copy_to_user(void __user *to, const void *from, unsigned long n)
+ {
+-	if (check_copy_size(from, n, true))
+-		n =3D _copy_to_user(to, from, n);
+-	return n;
++	if (!check_copy_size(from, n, true))
++		return n;
++
++#ifdef INLINE_COPY_TO_USER
++	return _inline_copy_to_user(to, from, n);
++#else
++	return _copy_to_user(to, from, n);
++#endif
+ }
+=20
+ #ifndef copy_mc_to_kernel
+diff --git a/lib/usercopy.c b/lib/usercopy.c
+index d29fe29c6849..503a064d79e2 100644
+--- a/lib/usercopy.c
++++ b/lib/usercopy.c
+@@ -7,40 +7,18 @@
+=20
+ /* out-of-line parts */
+=20
+-#ifndef INLINE_COPY_FROM_USER
++#if !defined(INLINE_COPY_FROM_USER) || defined(CONFIG_RUST)
+ unsigned long _copy_from_user(void *to, const void __user *from, unsign=
+ed long n)
+ {
+-	unsigned long res =3D n;
+-	might_fault();
+-	if (!should_fail_usercopy() && likely(access_ok(from, n))) {
+-		/*
+-		 * Ensure that bad access_ok() speculation will not
+-		 * lead to nasty side effects *after* the copy is
+-		 * finished:
+-		 */
+-		barrier_nospec();
+-		instrument_copy_from_user_before(to, from, n);
+-		res =3D raw_copy_from_user(to, from, n);
+-		instrument_copy_from_user_after(to, from, n, res);
+-	}
+-	if (unlikely(res))
+-		memset(to + (n - res), 0, res);
+-	return res;
++	return _inline_copy_from_user(to, from, n);
+ }
+ EXPORT_SYMBOL(_copy_from_user);
+ #endif
+=20
+-#ifndef INLINE_COPY_TO_USER
++#if !defined(INLINE_COPY_TO_USER) || defined(CONFIG_RUST)
+ unsigned long _copy_to_user(void __user *to, const void *from, unsigned=
+ long n)
+ {
+-	might_fault();
+-	if (should_fail_usercopy())
+-		return n;
+-	if (likely(access_ok(to, n))) {
+-		instrument_copy_to_user(to, from, n);
+-		n =3D raw_copy_to_user(to, from, n);
+-	}
+-	return n;
++	return _inline_copy_to_user(to, from, n);
+ }
+ EXPORT_SYMBOL(_copy_to_user);
+ #endif
 
