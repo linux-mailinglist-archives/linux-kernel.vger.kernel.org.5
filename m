@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-39226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39227-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA53883CD10
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:02:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D73BE83CD11
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:02:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0925A1C23A00
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:02:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D19AB25EEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5431C1386AA;
-	Thu, 25 Jan 2024 20:01:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BB411386BC;
+	Thu, 25 Jan 2024 20:01:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=easyb-ch.20230601.gappssmtp.com header.i=@easyb-ch.20230601.gappssmtp.com header.b="lerGpfeD"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	dkim=pass (2048-bit key) header.d=easyb-ch.20230601.gappssmtp.com header.i=@easyb-ch.20230601.gappssmtp.com header.b="gM6y+qqC"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D15C7135A78
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 20:01:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63AD6137C58
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 20:01:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706212884; cv=none; b=ftcH8rlNmlfAC4Wgs9mPnTdciv5PLTe6bTc4wUn6ecFqNzKWgB6n1GwwRgbqoUrfoG5oT/lUmVlp7BC+TiJ199pC1vpUhkjLsWWGM40NeUaQ/d5U/mJU/q6l6qlsdHa6fmHmiH45KzSfHO9z0stMIOQ1FYvGhMGVogaOKWWPjZc=
+	t=1706212885; cv=none; b=VRPk4ha9owFxvdv9HM8ppAcZwWutDnj9TJk7j7Rf6H/2OTjhLz5IECnWZlLgLTF9keBKiowuiqvOoG0a5DIq5ePNs3HAwBHb/PJYWQ6Dpu4BMDqL5id5wOdEYzARuU2xoz4fZOhsnxgiXPBd8dK3tqg6iEgyXRwNxXbWDXWdRnA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706212884; c=relaxed/simple;
-	bh=bipr9jBFXsYwifKtcq+gl95MEZqc4KWQsElwUf4n1GA=;
+	s=arc-20240116; t=1706212885; c=relaxed/simple;
+	bh=NPFHNug34QGjbE4L0tIiot7F6XxQaEm1ADq7Q6JJW8I=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SUnES0OCB2qlBSJf1YTlU5FajfKSsW3u63xnbPZQXUO+IIBTb5LHUs/Yhbs8D8AFGxTgeiIhWIGr1px9BZ/WZxzc0lv/3fV9R8R2jAv/8OeKzvwvGxwmPxbMvCmNhpMsuZIbNDWNZ2q/8pwoSLKysasB1qaknmDJ83UL+7Py5rM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=easyb.ch; spf=none smtp.mailfrom=easyb.ch; dkim=pass (2048-bit key) header.d=easyb-ch.20230601.gappssmtp.com header.i=@easyb-ch.20230601.gappssmtp.com header.b=lerGpfeD; arc=none smtp.client-ip=209.85.218.44
+	 MIME-Version; b=Sqb39UihjkJkna2a+TZH/aFkkyWTim3Igg+dIrXnBEj0itXRLQ0rApGvJW2/t3LRWcku4UEuGGvsDbIMwno3zFLrJ3u2dgzM/3UOSSDpqXsbjXd4Ycz7OVb6hA2uoPmRtGS4cvUnDqN5s+ekclNqphezWAWQVsxLd4BW835JIzU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=easyb.ch; spf=none smtp.mailfrom=easyb.ch; dkim=pass (2048-bit key) header.d=easyb-ch.20230601.gappssmtp.com header.i=@easyb-ch.20230601.gappssmtp.com header.b=gM6y+qqC; arc=none smtp.client-ip=209.85.218.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=easyb.ch
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=easyb.ch
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a2e633c5365so193722966b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 12:01:20 -0800 (PST)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a30e90ba9dcso70842866b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 12:01:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=easyb-ch.20230601.gappssmtp.com; s=20230601; t=1706212878; x=1706817678; darn=vger.kernel.org;
+        d=easyb-ch.20230601.gappssmtp.com; s=20230601; t=1706212881; x=1706817681; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DQ0g29wlAAYawG7enqb5FROZ6lIs9rjJ1HjxjPIRBr4=;
-        b=lerGpfeDvvuFxbiiTZq2WFzlhB36vAXuJM8a5J8Z+2fa3NNkVm67UW9g6um7uKC+yu
-         edbdKsrBbq6cIHMkJnFfuxlnyvDJptV9C5X/PmxpmRNOV8ZybEOY8QtFpfdwkLN63JN+
-         4TT/pAypdUDsDRirVlzkbYc2g5+ubaTuYOdUic4hfn3GHSlfiRZOLEWXU4YZm1kLToOm
-         N/CLdsompxsRq/qmu4lFw/cha5vw1/+ysbOC1tlqmVOQpKSBZ+JlHHfZ+ScFm07+XCY9
-         WAC1yzLKNXAQxjcFlgYvDQXAfZXpqqewuhn3tOn+briN8ppdsMvaylu9rMpnz8OXVi5Y
-         em/A==
+        bh=nI2TUBrWsibpggLWuO+Eog4ByDUTome4h9IXAkq4JHg=;
+        b=gM6y+qqCInMPLiugKTwplVm8OXPWxgFqrwRAfTDflHF6mX4G/FSWZ91TmmhonLGuqN
+         qepWep9auu6Fmks3OHOUrxR0/gvwRwGUy2p2KyjA9d75j0Z/8brmZ2WFloL1cQfsmi4k
+         Uc4psliXehC+THPs9sCtcaJMa9Y5XgRIiT9UMSgtf2hAu1wx50YeKgEsSiyE5nguF9l4
+         c2AHsJa6BEBYuiunLRyI7tgu11rL42rW/s/LFG+1sJLQwxkIAooWNm7pl31F6rHQbf62
+         PP8EqAaC0hJFQZVUvchreb+XPwYkaDRZ3dqJFw1ye5SZOWiq7QXMJAiIqFgKe8T+TnJL
+         OrCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706212878; x=1706817678;
+        d=1e100.net; s=20230601; t=1706212881; x=1706817681;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DQ0g29wlAAYawG7enqb5FROZ6lIs9rjJ1HjxjPIRBr4=;
-        b=bDuUEPCgO25dbJ2h9LXimpX525Xm9reKLz5g4SKcQcRXMaZQ2Z3ucQe2JzP+v9Z40T
-         rCYpFXD8sS7sCLyPdAr4Z+XFP470R9wjS6K92XghHjSQctGhktJSXY4M0LBwMZz3GmfJ
-         cLovwM0o83rT3FzcKMOTP068ThuhLkBNihGGGlYk/NgL7zWYVJdOmlb8VlUJ1w2REgcl
-         wi3/cuGi+XuIuQdV0AYLXhG1yNDf4LxpC+0Wj1FbLoS+prc+89UfHq7hUxp6rn79xljb
-         xDnuze0rsoUb1nc6ECjpNdbgA6c+BLx5c8W0479vfRV+37vrKRe0MpeX83jPWTP7+Ten
-         kUQQ==
-X-Gm-Message-State: AOJu0YySZIvyCi7+JV25INPkncAsFDC5qkAIOGrC4zf9YH35Tp2cMXAh
-	aDu/E/vn0/d1GVku7H+jyXbRr3Lvgw+O9m4CWNGPWK+iU+aqIluZTD3L8Mz2AgM=
-X-Google-Smtp-Source: AGHT+IHqVYL/lJVL7JEAq3szsDoY8tNhXCz0ekp9lxwVygOHTiAaO1z5D4lST0SmwVn/brdSUyzCLQ==
-X-Received: by 2002:a17:907:7da5:b0:a31:1d58:262c with SMTP id oz37-20020a1709077da500b00a311d58262cmr170599ejc.5.1706212878670;
-        Thu, 25 Jan 2024 12:01:18 -0800 (PST)
+        bh=nI2TUBrWsibpggLWuO+Eog4ByDUTome4h9IXAkq4JHg=;
+        b=ae7iLLnfVtb34m2/u2dGwAQ5zBXS2qHlXIg+BxyAIIBYv6YQGgiW5KWbAkP13unwxg
+         MPOYYNgTSgTWfI6oILPlMBvtXwQqDX3FVDKtRB8ZAris4EKi4pHLQjlejhUbTkUs1b2h
+         4Mw8YCtSDrEcHrtLNeEHtID9f/dVZU8DshJdPNMk/H0u7PjLk75mNfCD14kc+oXRr6EU
+         78aoIhhj7FvihM/3jILbrNantl4sKmd0Qo6Ifja7VJ7cs0P/t/IUcfhuNKJQ0Py+o4E3
+         mCnkaOeIb8zwl12XgRRaovcB0ehz3dSbf5nCLqls+GsLla8RNoGDuH8UJX8oTX2Jmcvv
+         Wjfg==
+X-Gm-Message-State: AOJu0YwSA7Zfap8TSCCiJZrfYXM22IBsbH2+LdxLH+HhooYOxQ/yRhHj
+	rcTfusrVnM2hH2Jl6xyelpq6nNSzHJLeIcQUhPPt+wbfc13aVHF/MATZqLTRzgE=
+X-Google-Smtp-Source: AGHT+IH2rF8eHuhiaQIwI/Xc+DXpK654R/gK9VQE4TxudoFLQcJX4ThR2HuNQxMZHhNWur8zy1OTlw==
+X-Received: by 2002:a17:906:80c9:b0:a34:95ac:65b4 with SMTP id a9-20020a17090680c900b00a3495ac65b4mr132618ejx.1.1706212881683;
+        Thu, 25 Jan 2024 12:01:21 -0800 (PST)
 Received: from pikachu.. ([105.225.45.176])
-        by smtp.gmail.com with ESMTPSA id ss17-20020a170907c01100b00a3496fa1f7fsm195577ejc.91.2024.01.25.12.01.15
+        by smtp.gmail.com with ESMTPSA id ss17-20020a170907c01100b00a3496fa1f7fsm195577ejc.91.2024.01.25.12.01.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 12:01:18 -0800 (PST)
+        Thu, 25 Jan 2024 12:01:21 -0800 (PST)
 From: Ezra Buehler <ezra@easyb.ch>
 To: linux-mtd@lists.infradead.org
 Cc: Chuanhong Guo <gch981213@gmail.com>,
@@ -76,9 +76,9 @@ Cc: Chuanhong Guo <gch981213@gmail.com>,
 	Sridharan S N <quic_sridsn@quicinc.com>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] mtd: spinand: Add support for 5-byte IDs
-Date: Thu, 25 Jan 2024 22:01:07 +0200
-Message-ID: <20240125200108.24374-2-ezra@easyb.ch>
+Subject: [PATCH 2/2] mtd: spinand: esmt: Extend IDs to 5 bytes
+Date: Thu, 25 Jan 2024 22:01:08 +0200
+Message-ID: <20240125200108.24374-3-ezra@easyb.ch>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240125200108.24374-1-ezra@easyb.ch>
 References: <20240125200108.24374-1-ezra@easyb.ch>
@@ -92,33 +92,57 @@ Content-Transfer-Encoding: 8bit
 
 From: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
 
-E.g. ESMT chips will return an identification code with a length of 5
-bytes. In order to prevent ambiguity, flash chips would actually need to
-return IDs that are up to 17 or more bytes long due to JEDEC's
-continuation scheme. I understand that if a manufacturer ID is located
-in bank N of JEDEC's database (there are currently 16 banks), N - 1
-continuation codes (7Fh) need to be added to the identification code
-(comprising of manufacturer ID and device ID). However, most flash chip
-manufacturers don't seem to implement this (correctly).
+According to the datasheets, the ESMT chips in question will return a 5
+byte long identification code where the last 3 bytes are the JEDEC
+continuation codes (7Fh). Although, I would have expected 4 continuation
+codes as Powerchip Semiconductor (C8h, corresponding to the parameter
+page data) is located in bank 5 of the JEDEC database.
 
+By matching the full 5 bytes we can avoid clashes with GigaDevice NAND
+flashes.
+
+This fix allows the MT7688-based GARDENA smart Gateway to boot again.
+
+Fixes: aa08bf187f32 ("mtd: spinand: esmt: add support for F50D2G41KA")
 Signed-off-by: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
 ---
- include/linux/mtd/spinand.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/spi/esmt.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index badb4c1ac079..5c19ead60499 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -169,7 +169,7 @@
- struct spinand_op;
- struct spinand_device;
+diff --git a/drivers/mtd/nand/spi/esmt.c b/drivers/mtd/nand/spi/esmt.c
+index 31c439a557b1..4597a82de23a 100644
+--- a/drivers/mtd/nand/spi/esmt.c
++++ b/drivers/mtd/nand/spi/esmt.c
+@@ -104,7 +104,8 @@ static const struct mtd_ooblayout_ops f50l1g41lb_ooblayout = {
  
--#define SPINAND_MAX_ID_LEN	4
-+#define SPINAND_MAX_ID_LEN	5
- /*
-  * For erase, write and read operation, we got the following timings :
-  * tBERS (erase) 1ms to 4ms
+ static const struct spinand_info esmt_c8_spinand_table[] = {
+ 	SPINAND_INFO("F50L1G41LB",
+-		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x01),
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x01, 0x7f,
++				0x7f, 0x7f),
+ 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
+ 		     NAND_ECCREQ(1, 512),
+ 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+@@ -113,7 +114,8 @@ static const struct spinand_info esmt_c8_spinand_table[] = {
+ 		     0,
+ 		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
+ 	SPINAND_INFO("F50D1G41LB",
+-		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x11),
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x11, 0x7f,
++				0x7f, 0x7f),
+ 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
+ 		     NAND_ECCREQ(1, 512),
+ 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+@@ -122,7 +124,8 @@ static const struct spinand_info esmt_c8_spinand_table[] = {
+ 		     0,
+ 		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
+ 	SPINAND_INFO("F50D2G41KA",
+-		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x51),
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x51, 0x7f,
++				0x7f, 0x7f),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
+ 		     NAND_ECCREQ(8, 512),
+ 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
 -- 
 2.43.0
 
