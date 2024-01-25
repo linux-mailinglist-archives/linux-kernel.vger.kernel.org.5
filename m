@@ -1,92 +1,103 @@
-Return-Path: <linux-kernel+bounces-38308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 848EB83BDA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:44:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CCE883BDB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:45:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DF7028B372
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:44:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54AEB1F30CD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:45:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE5C61D54B;
-	Thu, 25 Jan 2024 09:42:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bcfQFFgA";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="11gTAjYI"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6CA41BF37;
+	Thu, 25 Jan 2024 09:43:33 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCBAA200AE
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:42:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A87011BDC9
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:43:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706175737; cv=none; b=CRzDPCThjSNfS3Kd8vf/YykbrYRQ/2ylS7eDplqzk9sTAJ7DafMMamL8rzGKQ3LaVKcvOevggyfn94QI82OJN6mBi8N64c0pUqk1MEhqJrNvvujJxnSKlGfaBZg/PGeQGyAkoUxNpf18UnGYPPsTYk+XPYl/dhrFAE2gVPAbJBc=
+	t=1706175813; cv=none; b=ZqMCBqvNMwInVIms9RAl1LsY5nkhWrfWhuDnQjG3IoYo7HnYaCJbCctbN3Q4W9hisQmsTq4S8wrED4kGnQQoD3QCKjdqbUTxmnlQYFZHA1i1yyHSdK9ZF5fIRvjo1+l7go1SKi8W4DCp99O6H9J0PS/c2XGltCsSQNSVCYDE3J8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706175737; c=relaxed/simple;
-	bh=NEumvqjxHP8WbO9/8fl6y31V1m91vIhF+/ycAMyh6NY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=YI03N6S2DSamIrR+qlMqo98j9TfowsjwfXEqrLs0HdSTo3ny7wkSQrMv+4f2Al0A5ghfpxoMNcceyEx1X2/d0+ht55ct9vJEQacay7mhLW0OEAF44x1D2DmB9TWnA3kX9FbIdAsDQCdqX2zwHetdJqU1kL+5Ser/LRfk5mkV+6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bcfQFFgA; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=11gTAjYI; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706175733;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NEumvqjxHP8WbO9/8fl6y31V1m91vIhF+/ycAMyh6NY=;
-	b=bcfQFFgAWTjag9qaPshXPXNlxhTDo/v8EwXv7/hxqWR6azO9RkiEjrbfnzSQenCFe5yUT5
-	LAdCicqYA9+cf2VCRVjmRlqcDsGZUbHioZJK2/ozABzhr0DFq9pxE+0gMDUbv0IcYqUgbA
-	MSJu1BPtIUIBao834GxSNtzpn4KJNV5ayDkxl7VeWPJ4xnhrqYGnyKRsHT6bKSC7Z1oAfW
-	Kxwzy/T8/ZKO7D7NTiYnjd4U4PaDc2iUAW5nEzX47JlinrH9I6Qhc7SejVTeTKk8e/E26d
-	4W/IhSqU8IaFAXBzMzk3RC94SHENVBJsr8SuigqgD6wBslFHxr340N7ThS/njQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706175733;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NEumvqjxHP8WbO9/8fl6y31V1m91vIhF+/ycAMyh6NY=;
-	b=11gTAjYI3wYRvsY05ioKbPnXKwLq0hwIVN+NAZ/AMc2A1Zx0UVKsfCYLjQwEliFVaBKM40
-	mpjYpjJAxvlL16DA==
-To: Frederic Weisbecker <frederic@kernel.org>, LKML
- <linux-kernel@vger.kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>, Ingo Molnar
- <mingo@kernel.org>, Anna-Maria Behnsen <anna-maria@linutronix.de>, Peng
- Liu <liupeng17@lenovo.com>, Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 13/15] tick: Split nohz and highres features from nohz_mode
-In-Reply-To: <20240124170459.24850-14-frederic@kernel.org>
-References: <20240124170459.24850-1-frederic@kernel.org>
- <20240124170459.24850-14-frederic@kernel.org>
-Date: Thu, 25 Jan 2024 10:42:13 +0100
-Message-ID: <87h6j1iway.ffs@tglx>
+	s=arc-20240116; t=1706175813; c=relaxed/simple;
+	bh=NO+cYd0QNeHPKrWW+ljDppiytbZEHXhjbmaRFrtMguc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=CGSWT3KT2Ki0I5vwtvK30mEyB5UGEVoOXC09IMWkPrUS7hAXl3ru1aayS95xmd9WGiv261WDTKFjNUoZfruFvZimmLgGYRuhpEixQmwFlBG/uVEKdhSprtBJ7y47SVPXOuw9QMJUoVuHjrlrVIIntquKm3oQowr0p6mzzAqP2w8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rSwGI-0002Fp-20; Thu, 25 Jan 2024 10:43:06 +0100
+Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rSwGF-002Fm4-V4; Thu, 25 Jan 2024 10:43:03 +0100
+Received: from pza by lupine with local (Exim 4.96)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rSwGF-0003hB-2q;
+	Thu, 25 Jan 2024 10:43:03 +0100
+Message-ID: <88b75ffea33078d092ffa15e3be235358f576c8d.camel@pengutronix.de>
+Subject: Re: [PATCH v5 1/6] of: Add of_phandle_args_equal() helper
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
+	 <krzysztof.kozlowski@linaro.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Banajit Goswami
+ <bgoswami@quicinc.com>, Bjorn Andersson <andersson@kernel.org>, Konrad
+ Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley <conor+dt@kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Viresh Kumar
+ <viresh.kumar@linaro.org>, Frank Rowand <frowand.list@gmail.com>, Jaroslav
+ Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org,  linux-arm-msm@vger.kernel.org,
+ linux-sound@vger.kernel.org,  devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org,  linux-pm@vger.kernel.org
+Date: Thu, 25 Jan 2024 10:43:03 +0100
+In-Reply-To: <20240124220716.GA2454626-robh@kernel.org>
+References: <20240124074527.48869-1-krzysztof.kozlowski@linaro.org>
+	 <20240124074527.48869-2-krzysztof.kozlowski@linaro.org>
+	 <20240124220716.GA2454626-robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Wed, Jan 24 2024 at 18:04, Frederic Weisbecker wrote:
+On Mi, 2024-01-24 at 16:07 -0600, Rob Herring wrote:
+> On Wed, Jan 24, 2024 at 08:45:22AM +0100, Krzysztof Kozlowski wrote:
+> > Add a helper comparing two "struct of_phandle_args" to avoid
+> > reinventing the wheel.
+> >=20
+> > Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > ---
+> >=20
+> > Dependency of cpufreq and reset change.
+> > ---
+> >  include/linux/of.h | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
+>=20
+> Acked-by: Rob Herring <robh@kernel.org>
+>=20
+> I've wanted to write this series for some time. Great work.
 
-> The nohz mode field tells about low resolution nohz mode or high
-> resolution nohz mode but it doesn't tell about high resolution non-nohz
-> mode.
->
-> In order to retrieve the latter state, tick_cancel_sched_timer() must
-> fiddle with struct hrtimer's internals to guess if the tick has been
-> initialized in high resolution.
->
-> Move instead the nohz mode field information into the tick flags and
-> provide two new bits: one to know if the tick is in nohz mode and
-> another one to know if the tick is in high resolution. The combination
-> of those two flags provides all the needed informations to determine
-> which of the three tick modes is running.
->
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+How would you prefer this to be merged? Stable tag from the devicetree
+tree? Go through the reset tree as part of this series?
 
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+regards
+Philipp
 
