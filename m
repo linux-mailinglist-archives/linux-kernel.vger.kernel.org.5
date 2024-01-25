@@ -1,134 +1,122 @@
-Return-Path: <linux-kernel+bounces-39128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5265083CB2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:34:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A00183CB31
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:34:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6820E1C25BDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:34:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3202328CEC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:34:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8C12135A6F;
-	Thu, 25 Jan 2024 18:31:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FC88136666;
+	Thu, 25 Jan 2024 18:31:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S4wtXRhi"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="KmE9Igl9"
+Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E34413399E;
-	Thu, 25 Jan 2024 18:31:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 012851339A3;
+	Thu, 25 Jan 2024 18:31:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.30.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706207470; cv=none; b=c6rcsRGiysT06u3B5vfAPAB0vetgxUznZ0YdgRa8m+qHFR3pBgOTKGRqdwoOroTAd9nQHzOGYnLVSI/TNOvOGRmenBkRZs9gXELYD4xyNVL6UlqqQWT9qFCVnD59gj8ZRq9MpJhC9B01ARFKtzEE/t26RiOtAUwk0mxxiDhAhf8=
+	t=1706207498; cv=none; b=eK93LR4UPiBfvSJYFQFNSPdvVT0x2sQWmwbcew1y8+bG0y012bbg+nlQynRc0d1ifQ0V5CEGWZxdiF/SZrVQbZbzKfPHTy/U0774DVe9FxqVRP8cMNHOm89RddofMbcuLB72MZK5xboOpjT/A3Mb72/bqFWKlfDxgqBjJQ0krE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706207470; c=relaxed/simple;
-	bh=LTM9Rq0ah24lwvVn1y8YRCHc6j5ROIsgGb706zCSPEw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=QK91g528v5d+AXFY78YA3hDlkK0LNcTjXrSxCoH2thZf/M86CwAzMsdd1F6896a2xY+YCkvjD3I5APkkkkeMFvOd27VQK4gSkBrzbryZkUf5seE7PTLJ4pDzOzFeSZcOLECPd0lVgNJjzyatQvm/QHfZxxnmCZvK9aqfHnNOjFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S4wtXRhi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AC4DC433F1;
-	Thu, 25 Jan 2024 18:31:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706207469;
-	bh=LTM9Rq0ah24lwvVn1y8YRCHc6j5ROIsgGb706zCSPEw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=S4wtXRhiDkmqHfxDMkUhXRmGNOlc2t6Dxgow2TFcrq/mWLHuIVpkF9dTF3+NdSXEw
-	 jZmifn0eFFKIR8Hf3ZuJ1j0R6xhj4QvHqIz9eeW9NbXopCjBKQQJ0CZF2PDzpL1Jjl
-	 zHbWVTgyhu11TS7DO4fXyVOMnXjWjP7l3x6q0o5Xqug0ySRSOwCA95u2546yaYGRFw
-	 8c0o6Y8RJu0qV+KNPupq3A4FZK8BPZy50azhxOYhmYcBFK/zC7qj6gfujx6g4V140i
-	 n6tmfWv63Jx/zDFXdWVrAHs8lCM8GhxbySSBkxwbNzQ0FbR7fC3hxlKeYpfyZjTjGm
-	 LMjxQ2FYEQPAg==
-Date: Thu, 25 Jan 2024 12:31:07 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Philipp Stanner <pstanner@redhat.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Randy Dunlap <rdunlap@infradead.org>, NeilBrown <neilb@suse.de>,
-	John Sanpe <sanpeqf@gmail.com>,
-	Kent Overstreet <kent.overstreet@gmail.com>,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Uladzislau Koshchanka <koshchanka@gmail.com>,
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-	David Gow <davidgow@google.com>, Kees Cook <keescook@chromium.org>,
-	Rae Moar <rmoar@google.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	"wuqiang.matt" <wuqiang.matt@bytedance.com>,
-	Yury Norov <yury.norov@gmail.com>, Jason Baron <jbaron@akamai.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Marco Elver <elver@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Ben Dooks <ben.dooks@codethink.co.uk>, dakr@redhat.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-arch@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v5 RESEND 2/5] lib: move pci_iomap.c to drivers/pci/
-Message-ID: <20240125183107.GA393314@bhelgaas>
+	s=arc-20240116; t=1706207498; c=relaxed/simple;
+	bh=5T100LdEWzfnw+YYm0h1x8aoonY4rriPdSCNHs5edGY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Xot/M6gQgqR70347GUqWhwN/RDfpYJ5arZXyPRYlj7AR9DO36wk4zRk1mVHKROhvTk6xLbJIx3HcwudWK1Zg8GtEC4NpDrMJrnIGZ1xypWxj3+sk4iGRXg6QQeQVKBEsor2xkgP3Rpfm97GJvSnLk5f/scWgtgWF7iw6awf6TFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com; spf=pass smtp.mailfrom=geanix.com; dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b=KmE9Igl9; arc=none smtp.client-ip=188.40.30.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geanix.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
+	s=default2211; h=Content-Type:MIME-Version:Message-ID:Date:References:
+	In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=u4CrcfRRouAam+gtwWUyS4EOA4ggi0EQiB/dLp0zrqw=; b=KmE9Igl9ur6EuxOtRm2zlEbgot
+	Y3bbkrUZdnL/BP0h0RHhCuVPNs9nTvysVgfO0bX2GNuxI3GMZS6s3f+tlXgiqKHFl0wHuTZdleNOg
+	Zn/wl1s8aIxd58g+gI554jVLQU9PI6wOiA+lV8BbIS13TkGk6mjzHib13aXNiRejZyyhDRN0ZKMQL
+	eIrq0PqKa9pwDyImfXu9u34AkYjzIQWSWVrEqHNKeynYDvCr7DfpzFrMKVxHXUfDKz+QHLKHgps7t
+	PRDHafOVZfJv+3yeDApsXSPN85ErAK5hBp/Hf2WmniPNX+LkZUZx6fKOhdgvxYHYxqZCYxAiQ5uH2
+	CQCWwqPA==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <esben@geanix.com>)
+	id 1rT4VY-000EIW-R1; Thu, 25 Jan 2024 19:31:24 +0100
+Received: from [87.49.43.79] (helo=localhost)
+	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <esben@geanix.com>)
+	id 1rT4VX-000QQV-PI; Thu, 25 Jan 2024 19:31:23 +0100
+From: Esben Haabendal <esben@geanix.com>
+To: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Cc: netdev@vger.kernel.org,  Alexandre Torgue
+ <alexandre.torgue@foss.st.com>,  Jose Abreu <joabreu@synopsys.com>,
+  "David S. Miller" <davem@davemloft.net>,  Eric Dumazet
+ <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>,  Paolo Abeni
+ <pabeni@redhat.com>,  Maxime Coquelin <mcoquelin.stm32@gmail.com>,  Shawn
+ Guo <shawnguo@kernel.org>,  Sascha Hauer <s.hauer@pengutronix.de>,
+  Pengutronix Kernel Team <kernel@pengutronix.de>,  Fabio Estevam
+ <festevam@gmail.com>,  NXP Linux Team <linux-imx@nxp.com>,
+  linux-arm-kernel@lists.infradead.org,
+  linux-stm32@st-md-mailman.stormreply.com,  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] net: stmmac: dwmac-imx: set TSO/TBS TX queues
+ default settings
+In-Reply-To: <081af630-ab5d-4502-a29a-a8577d414809@linux.dev> (Vadim
+	Fedorenko's message of "Thu, 25 Jan 2024 17:11:08 +0000")
+References: <cover.1706184304.git.esben@geanix.com>
+	<5606bb5f0b7566a20bb136b268dae89d22a48898.1706184304.git.esben@geanix.com>
+	<081af630-ab5d-4502-a29a-a8577d414809@linux.dev>
+Date: Thu, 25 Jan 2024 19:31:23 +0100
+Message-ID: <875xzh6z9g.fsf@geanix.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3abf071d12de5b69e146665dfb57386e3b0ddfe0.camel@redhat.com>
+Content-Type: text/plain
+X-Authenticated-Sender: esben@geanix.com
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27165/Thu Jan 25 10:51:15 2024)
 
-On Thu, Jan 25, 2024 at 03:54:51PM +0100, Philipp Stanner wrote:
-> On Tue, 2024-01-23 at 14:20 -0600, Bjorn Helgaas wrote:
-> > On Thu, Jan 11, 2024 at 09:55:37AM +0100, Philipp Stanner wrote:
-> > > This file is guarded by an #ifdef CONFIG_PCI. It, consequently,
-> > > does not
-> > > belong to lib/ because it is not generic infrastructure.
-> > > 
-> > > Move the file to drivers/pci/ and implement the necessary changes
-> > > to
-> > > Makefiles and Kconfigs.
-> > > ...
-> > 
-> > > --- a/drivers/pci/Kconfig
-> > > +++ b/drivers/pci/Kconfig
-> > > @@ -13,6 +13,11 @@ config FORCE_PCI
-> > >         select HAVE_PCI
-> > >         select PCI
-> > >  
-> > > +# select this to provide a generic PCI iomap,
-> > > +# without PCI itself having to be defined
-> > > +config GENERIC_PCI_IOMAP
-> > > +       bool
-> > 
-> > > --- a/lib/pci_iomap.c
-> > > +++ b/drivers/pci/iomap.c
-> > > @@ -9,7 +9,6 @@
-> > >  
-> > >  #include <linux/export.h>
-> > >  
-> > > -#ifdef CONFIG_PCI
-> > 
-> > IIUC, in the case where CONFIG_GENERIC_PCI_IOMAP=y but CONFIG_PCI was
-> > not set, pci_iomap.c was compiled but produced no code because the
-> > entire file was wrapped with this #ifdef.
-> > 
-> > But after this patch, it looks like pci_iomap_range(),
-> > pci_iomap_wc_range(), etc., *will* be compiled?
-> > 
-> > Is that what you intend, or did I miss something?
-> 
-> They *will* be compiled when BOTH, CONFIG_PCI and
-> CONFIG_GENERIC_PCI_IOMAP have been set.
+Vadim Fedorenko <vadim.fedorenko@linux.dev> writes:
 
-I was asking about CONFIG_GENERIC_PCI_IOMAP=y but CONFIG_PCI unset.
+> On 25/01/2024 12:34, Esben Haabendal wrote:
+>> TSO and TBS cannot coexist. For now we set i.MX Ethernet QOS controller to use
+>> TX queue with TSO and the rest for TBS.
+>> TX queues with TBS can support etf qdisc hw offload.
+>> Signed-off-by: Esben Haabendal <esben@geanix.com>
+>> ---
+>>   drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c | 6 ++++++
+>>   1 file changed, 6 insertions(+)
+>> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
+>> b/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
+>> index 8f730ada71f9..c42e8f972833 100644
+>> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
+>> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
+>> @@ -353,6 +353,12 @@ static int imx_dwmac_probe(struct platform_device *pdev)
+>>   	if (data->flags & STMMAC_FLAG_HWTSTAMP_CORRECT_LATENCY)
+>>   		plat_dat->flags |= STMMAC_FLAG_HWTSTAMP_CORRECT_LATENCY;
+>>   +        for (int i = 0; i < plat_dat->tx_queues_to_use; i++) {
+>> +                /* Default TX Q0 to use TSO and rest TXQ for TBS */
+>> +                if (i > 0)
+>> +                        plat_dat->tx_queues_cfg[i].tbs_en = 1;
+>> +        }
+>> +
+>
+> Just wonder why don't you start with i = 1 and remove 'if' completely?
+> Keeping comment in place will make it understandable.
 
-But the Makefile contains this:
+No good reason for now. Later on, we might have some setup in the same
+lop that also applies to Q0. But the init value can be changed at that
+point.
 
-  ifdef CONFIG_PCI
-  obj-$(CONFIG_GENERIC_PCI_IOMAP) += iomap.o
-  endif
-
-So iomap.c will not be compiled when CONFIG_PCI is unset, which is
-what I missed.
-
-Bjorn
+>
+>>   	plat_dat->host_dma_width = dwmac->ops->addr_width;
+>>   	plat_dat->init = imx_dwmac_init;
+>>   	plat_dat->exit = imx_dwmac_exit;
 
