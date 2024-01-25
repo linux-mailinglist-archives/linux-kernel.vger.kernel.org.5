@@ -1,220 +1,222 @@
-Return-Path: <linux-kernel+bounces-38152-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38153-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D88483BB9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:17:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A6F483BBA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:17:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7935B28E3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:17:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3904E2883A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:17:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ED57175B5;
-	Thu, 25 Jan 2024 08:17:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F51A17BCB;
+	Thu, 25 Jan 2024 08:17:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bE3t5JKr"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3K8roo9V";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZFxAVwdQ"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA9B217592
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:17:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74AA17727;
+	Thu, 25 Jan 2024 08:17:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706170633; cv=none; b=q1oo4OzOkUmHC031xRONgqG67kEb1S5JoHlEEB5mk9ruf2EMpfP/7ADPzcRPOVM2ubHfeD9jWmJZioHocfJw1a1Z0YiMBD25r10Hb91mZtpczQXRJt6BXkMOML3q0ioqD199d2A0k2YGX9TeLeroj6fV8KsIzUfkFQvKoM5N7JM=
+	t=1706170636; cv=none; b=bRb2yrrDszxQwR6IBCPi7ZwySgvRTXcz7UHp2b5wYVzkoLCX2PlhFoqAPCV9tf0u7PvIiobJ9rrHsHZQ23/I8jP1v5NLZjt0DiS0+ziOw2Zp4WTO+aFts+rVFy5bXflZsE2QPuT0C4fGQSc4sYL9HA8VHm3y/1PsELe5mu9A2+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706170633; c=relaxed/simple;
-	bh=4yhaE1qqa9NZTdcUT/69EaMxPMmUDfecZuq6FiE7C1A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Pr8bWz7qNHnlyNNmXlKaYK5hDll1nsHYIA+hO5JqopUlAjtiSh5grqAaWBhusxzLD02QJYaFoufY2Aspl+Ml4Sxjp1Wv2+fidfz91Ix2t/XCaGlBbrZLuE6FwSsN15l1bpOxHZL0G8DAXeQW3kjP+9ZLSxslJ3VCDnebMokkHLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bE3t5JKr; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706170630;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1706170636; c=relaxed/simple;
+	bh=V40nGmNyn/o+KifX8TIh7H+eBEDTtw080ETaLnTfvlw=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=Kh95Yk3kx5a/K2SgxITSsSVDN/yaUa9NkbCIIaA8/DOjW4G/SdwsHYGYMBElgNiQvMtghdbz5RacZZhiNNC9xu2+S6RB74KkH8o/D7PhOKM2dprFRir8B7VVF3u7y7cnO8+iKCppWk2kDS2ftJg9/Wf3WYmw1e6R908rs2G1Zgc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=3K8roo9V; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZFxAVwdQ; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 25 Jan 2024 08:17:11 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706170632;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=UZLvbQ/sj/IqlociRX/ySFK6it2BLTBR7c6/FUndS40=;
-	b=bE3t5JKrDXr9jUx1t+xkCxifIPpY2Bn3VOrMALqPyXTBCYQE6VheBICTb9z9DCXScLehZ4
-	9jqmKAPaEPcna7Fy6FSTD0i0zfl9EMK0u3kN4gRyEb/JcNxeI2hhxCPhlBxd+kasrGUw7w
-	E3eBJjqiyz0tS/KZMsBdjSC/hO1XdIM=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-308-g3epvhxFOKuK-3DDIblq8w-1; Thu, 25 Jan 2024 03:17:06 -0500
-X-MC-Unique: g3epvhxFOKuK-3DDIblq8w-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40e5f548313so55362275e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 00:17:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706170625; x=1706775425;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UZLvbQ/sj/IqlociRX/ySFK6it2BLTBR7c6/FUndS40=;
-        b=MscK0/Bi+9Dfqv0DSUw6bAJYCxxMj19QX8zMcoGwTQxm7Y+czxM2gfEzf7Pejq2Q4C
-         r1ELmbfQrJqfug9sXXMvqscc2+I+n/6B3zZPBBdNz3m3fumJfxIHpgd9iL9HhoI+yEaM
-         BSVnuAHK2bAIfCp07/yOrygw1bI9SpKVu6V6QC/L6II5EIZu6VmeWf3apv2ZGHjaeRkZ
-         SC5JaHXsOrJ6OI7A0JA9YNgIkj8+SHlCugwbeEs5pe3dMyHoOixLLkErVxxN946Ge9bD
-         61lDdpn6C5x5IzQPcxxlOs52Ag58GHTTjfqitYyIRddYl0NWBYKtjOab6H8Q8clWxqAl
-         GTdw==
-X-Gm-Message-State: AOJu0Yyo78qYfzKjD82oZRi5KW0TofAbgM2B7MePwssh3gIeSndJL0qC
-	+a1ZCk1cSBaZJcHAPRNwnLwAyqraw53f5oR6xVWerZJDMVOXsCYRO+y2UeiJR9jfqKDqOi8ONzp
-	cpxojFur6TDQBIHu7tc70snHqm7IYV6s4dg81c3NIZlwXQnDR1DSTenOQYPBODw==
-X-Received: by 2002:a05:600c:4f4d:b0:40e:a32c:988d with SMTP id m13-20020a05600c4f4d00b0040ea32c988dmr107932wmq.4.1706170625369;
-        Thu, 25 Jan 2024 00:17:05 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHBXG0c1n69CXCyo5Gso5jszoyqCLj5BPA212FZgRTdtFdTJYJL0uYG9mHoKZFGV423EU1+WQ==
-X-Received: by 2002:a05:600c:4f4d:b0:40e:a32c:988d with SMTP id m13-20020a05600c4f4d00b0040ea32c988dmr107862wmq.4.1706170624814;
-        Thu, 25 Jan 2024 00:17:04 -0800 (PST)
-Received: from ?IPV6:2003:cb:c70a:7600:9a0b:ceef:a304:b9a7? (p200300cbc70a76009a0bceefa304b9a7.dip0.t-ipconnect.de. [2003:cb:c70a:7600:9a0b:ceef:a304:b9a7])
-        by smtp.gmail.com with ESMTPSA id o14-20020a05600c4fce00b0040d30af488asm1658538wmq.40.2024.01.25.00.17.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 00:17:04 -0800 (PST)
-Message-ID: <a6f3ccf5-26a0-45f1-adaa-56a8df569548@redhat.com>
-Date: Thu, 25 Jan 2024 09:17:01 +0100
+	 in-reply-to:in-reply-to:references:references;
+	bh=lER7lrtQRjwXWHDXcRnYjUURbFjjl0xhPeP2jwJSCh0=;
+	b=3K8roo9VnCsxY9bM39p5ipaVPiNN/T+OcU2IohiF4fwXmNoLh4txb2NNyQyF3FedUlN1UW
+	aXYrY2aiwJdPD7y/ESE+t2UNUJPGdQS+i6MnUdOIvFo7eAX9qyg97rzO8V61E3JOkm5DTN
+	lq3oLEGQRpJ9iz7rpJ06Sv/zSmQgY3kqumV5JoBCecTxS5rdxU7L7CkMbOP9HWrXs0tcli
+	GMJXoG3pJIlDcdFMx4BGuMJSwa6iN2+RjGYUkvcuwFI1X04kVV3TcDJuyMBi+gJx1EIwJA
+	PH8eeqdd5DPNXlV7gN1+LJifPgAuIt5g6HoPz/FFJ/+tqe8uaH7zxD1mtWHQew==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706170632;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lER7lrtQRjwXWHDXcRnYjUURbFjjl0xhPeP2jwJSCh0=;
+	b=ZFxAVwdQ4y5d3WPqsD+czAFmGV0hSkhhN13id3D5/v+bOU7ZrX8ouS/Qv/uYSuucsjkRqE
+	WCGuuAYWf5PwWwDA==
+From: "tip-bot2 for Jiri Wiesner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/urgent] clocksource: Skip watchdog check for large
+ watchdog intervals
+Cc: Feng Tang <feng.tang@intel.com>, Jiri Wiesner <jwiesner@suse.de>,
+ Thomas Gleixner <tglx@linutronix.de>, "Paul E. McKenney" <paulmck@kernel.org>,
+ stable@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240122172350.GA740@incl>
+References: <20240122172350.GA740@incl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 08/28] mm: Define VM_SHADOW_STACK for RISC-V
-To: debug@rivosinc.com, rick.p.edgecombe@intel.com, broonie@kernel.org,
- Szabolcs.Nagy@arm.com, kito.cheng@sifive.com, keescook@chromium.org,
- ajones@ventanamicro.com, paul.walmsley@sifive.com, palmer@dabbelt.com,
- conor.dooley@microchip.com, cleger@rivosinc.com, atishp@atishpatra.org,
- alex@ghiti.fr, bjorn@rivosinc.com, alexghiti@rivosinc.com
-Cc: corbet@lwn.net, aou@eecs.berkeley.edu, oleg@redhat.com,
- akpm@linux-foundation.org, arnd@arndb.de, ebiederm@xmission.com,
- shuah@kernel.org, brauner@kernel.org, guoren@kernel.org,
- samitolvanen@google.com, evan@rivosinc.com, xiao.w.wang@intel.com,
- apatel@ventanamicro.com, mchitale@ventanamicro.com, waylingii@gmail.com,
- greentime.hu@sifive.com, heiko@sntech.de, jszhang@kernel.org,
- shikemeng@huaweicloud.com, charlie@rivosinc.com, panqinglin2020@iscas.ac.cn,
- willy@infradead.org, vincent.chen@sifive.com, andy.chiu@sifive.com,
- gerg@kernel.org, jeeheng.sia@starfivetech.com, mason.huo@starfivetech.com,
- ancientmodern4@gmail.com, mathis.salmen@matsal.de, cuiyunhui@bytedance.com,
- bhe@redhat.com, chenjiahao16@huawei.com, ruscur@russell.cc,
- bgray@linux.ibm.com, alx@kernel.org, baruch@tkos.co.il,
- zhangqing@loongson.cn, catalin.marinas@arm.com, revest@chromium.org,
- josh@joshtriplett.org, joey.gouly@arm.com, shr@devkernel.io,
- omosnace@redhat.com, ojeda@kernel.org, jhubbard@nvidia.com,
- linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20240125062739.1339782-1-debug@rivosinc.com>
- <20240125062739.1339782-9-debug@rivosinc.com>
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240125062739.1339782-9-debug@rivosinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Message-ID: <170617063191.398.1061031038655031575.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 
-On 25.01.24 07:21, debug@rivosinc.com wrote:
-> From: Deepak Gupta <debug@rivosinc.com>
-> 
-> VM_SHADOW_STACK is defined by x86 as vm flag to mark a shadow stack vma.
-> 
-> x86 uses VM_HIGH_ARCH_5 bit but that limits shadow stack vma to 64bit only.
-> arm64 follows same path
-> https://lore.kernel.org/lkml/20231009-arm64-gcs-v6-12-78e55deaa4dd@kernel.org/#r
-> 
-> On RISC-V, write-only page table encodings are shadow stack pages. This patch
-> re-defines VM_WRITE only to be VM_SHADOW_STACK.
-> 
-> Next set of patches will set guard rail that no other mm flow can set VM_WRITE
-> only in vma except when specifically creating shadow stack.
-> 
-> Signed-off-by: Deepak Gupta <debug@rivosinc.com>
-> ---
->   include/linux/mm.h | 14 +++++++++++++-
->   1 file changed, 13 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 418d26608ece..dfe0e8118669 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -352,7 +352,19 @@ extern unsigned int kobjsize(const void *objp);
->    * for more details on the guard size.
->    */
->   # define VM_SHADOW_STACK	VM_HIGH_ARCH_5
-> -#else
-> +#endif
-> +
-> +#ifdef CONFIG_RISCV_USER_CFI
-> +/*
-> + * On RISC-V pte encodings for shadow stack is R=0, W=1, X=0 and thus RISCV
-> + * choosing to use similar mechanism on vm_flags where VM_WRITE only means
-> + * VM_SHADOW_STACK. RISCV as well doesn't support VM_SHADOW_STACK to be set
-> + * with VM_SHARED.
-> + */
-> +#define VM_SHADOW_STACK	VM_WRITE
-> +#endif
-> +
-> +#ifndef VM_SHADOW_STACK
->   # define VM_SHADOW_STACK	VM_NONE
->   #endif
->   
+The following commit has been merged into the timers/urgent branch of tip:
 
-That just screams for trouble. Can we find a less hacky way, please?
+Commit-ID:     644649553508b9bacf0fc7a5bdc4f9e0165576a5
+Gitweb:        https://git.kernel.org/tip/644649553508b9bacf0fc7a5bdc4f9e0165576a5
+Author:        Jiri Wiesner <jwiesner@suse.de>
+AuthorDate:    Mon, 22 Jan 2024 18:23:50 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Thu, 25 Jan 2024 09:13:16 +01:00
 
-Maybe just start with 64bit support only and do it like the other archs. 
-No need to be special.
+clocksource: Skip watchdog check for large watchdog intervals
 
-When wanting to support 32bit, we'll just finally clean up this high 
-flag mess and allow for more vm flags on 32bit as well.
+There have been reports of the watchdog marking clocksources unstable on
+machines with 8 NUMA nodes:
 
--- 
-Cheers,
+  clocksource: timekeeping watchdog on CPU373:
+  Marking clocksource 'tsc' as unstable because the skew is too large:
+  clocksource:   'hpet' wd_nsec: 14523447520
+  clocksource:   'tsc'  cs_nsec: 14524115132
 
-David / dhildenb
+The measured clocksource skew - the absolute difference between cs_nsec
+and wd_nsec - was 668 microseconds:
 
+  cs_nsec - wd_nsec = 14524115132 - 14523447520 = 667612
+
+The kernel used 200 microseconds for the uncertainty_margin of both the
+clocksource and watchdog, resulting in a threshold of 400 microseconds (the
+md variable). Both the cs_nsec and the wd_nsec value indicate that the
+readout interval was circa 14.5 seconds.  The observed behaviour is that
+watchdog checks failed for large readout intervals on 8 NUMA node
+machines. This indicates that the size of the skew was directly proportinal
+to the length of the readout interval on those machines. The measured
+clocksource skew, 668 microseconds, was evaluated against a threshold (the
+md variable) that is suited for readout intervals of roughly
+WATCHDOG_INTERVAL, i.e. HZ >> 1, which is 0.5 second.
+
+The intention of 2e27e793e280 ("clocksource: Reduce clocksource-skew
+threshold") was to tighten the threshold for evaluating skew and set the
+lower bound for the uncertainty_margin of clocksources to twice
+WATCHDOG_MAX_SKEW. Later in c37e85c135ce ("clocksource: Loosen clocksource
+watchdog constraints"), the WATCHDOG_MAX_SKEW constant was increased to
+125 microseconds to fit the limit of NTP, which is able to use a
+clocksource that suffers from up to 500 microseconds of skew per second.
+Both the TSC and the HPET use default uncertainty_margin. When the
+readout interval gets stretched the default uncertainty_margin is no
+longer a suitable lower bound for evaluating skew - it imposes a limit
+that is far stricter than the skew with which NTP can deal.
+
+The root causes of the skew being directly proportinal to the length of
+the readout interval are:
+
+  * the inaccuracy of the shift/mult pairs of clocksources and the watchdog
+  * the conversion to nanoseconds is imprecise for large readout intervals
+
+Prevent this by skipping the current watchdog check if the readout
+interval exceeds 2 * WATCHDOG_INTERVAL. Considering the maximum readout
+interval of 2 * WATCHDOG_INTERVAL, the current default uncertainty margin
+(of the TSC and HPET) corresponds to a limit on clocksource skew of 250
+ppm (microseconds of skew per second).  To keep the limit imposed by NTP
+(500 microseconds of skew per second) for all possible readout intervals,
+the margins would have to be scaled so that the threshold value is
+proportional to the length of the actual readout interval.
+
+As for why the readout interval may get stretched: Since the watchdog is
+executed in softirq context the expiration of the watchdog timer can get
+severely delayed on account of a ksoftirqd thread not getting to run in a
+timely manner. Surely, a system with such belated softirq execution is not
+working well and the scheduling issue should be looked into but the
+clocksource watchdog should be able to deal with it accordingly.
+
+Fixes: 2e27e793e280 ("clocksource: Reduce clocksource-skew threshold")
+Suggested-by: Feng Tang <feng.tang@intel.com>
+Signed-off-by: Jiri Wiesner <jwiesner@suse.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Paul E. McKenney <paulmck@kernel.org>
+Reviewed-by: Feng Tang <feng.tang@intel.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20240122172350.GA740@incl
+---
+ kernel/time/clocksource.c | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+index c108ed8..3052b1f 100644
+--- a/kernel/time/clocksource.c
++++ b/kernel/time/clocksource.c
+@@ -99,6 +99,7 @@ static u64 suspend_start;
+  * Interval: 0.5sec.
+  */
+ #define WATCHDOG_INTERVAL (HZ >> 1)
++#define WATCHDOG_INTERVAL_MAX_NS ((2 * WATCHDOG_INTERVAL) * (NSEC_PER_SEC / HZ))
+ 
+ /*
+  * Threshold: 0.0312s, when doubled: 0.0625s.
+@@ -134,6 +135,7 @@ static DECLARE_WORK(watchdog_work, clocksource_watchdog_work);
+ static DEFINE_SPINLOCK(watchdog_lock);
+ static int watchdog_running;
+ static atomic_t watchdog_reset_pending;
++static int64_t watchdog_max_interval;
+ 
+ static inline void clocksource_watchdog_lock(unsigned long *flags)
+ {
+@@ -399,8 +401,8 @@ static inline void clocksource_reset_watchdog(void)
+ static void clocksource_watchdog(struct timer_list *unused)
+ {
+ 	u64 csnow, wdnow, cslast, wdlast, delta;
++	int64_t wd_nsec, cs_nsec, interval;
+ 	int next_cpu, reset_pending;
+-	int64_t wd_nsec, cs_nsec;
+ 	struct clocksource *cs;
+ 	enum wd_read_status read_ret;
+ 	unsigned long extra_wait = 0;
+@@ -470,6 +472,27 @@ static void clocksource_watchdog(struct timer_list *unused)
+ 		if (atomic_read(&watchdog_reset_pending))
+ 			continue;
+ 
++		/*
++		 * The processing of timer softirqs can get delayed (usually
++		 * on account of ksoftirqd not getting to run in a timely
++		 * manner), which causes the watchdog interval to stretch.
++		 * Skew detection may fail for longer watchdog intervals
++		 * on account of fixed margins being used.
++		 * Some clocksources, e.g. acpi_pm, cannot tolerate
++		 * watchdog intervals longer than a few seconds.
++		 */
++		interval = max(cs_nsec, wd_nsec);
++		if (unlikely(interval > WATCHDOG_INTERVAL_MAX_NS)) {
++			if (system_state > SYSTEM_SCHEDULING &&
++			    interval > 2 * watchdog_max_interval) {
++				watchdog_max_interval = interval;
++				pr_warn("Long readout interval, skipping watchdog check: cs_nsec: %lld wd_nsec: %lld\n",
++					cs_nsec, wd_nsec);
++			}
++			watchdog_timer.expires = jiffies;
++			continue;
++		}
++
+ 		/* Check the deviation from the watchdog clocksource. */
+ 		md = cs->uncertainty_margin + watchdog->uncertainty_margin;
+ 		if (abs(cs_nsec - wd_nsec) > md) {
 
