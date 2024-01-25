@@ -1,284 +1,273 @@
-Return-Path: <linux-kernel+bounces-39388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C948A83CFC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:58:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A427583CFD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:59:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7BF95298668
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:58:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A4FAB27731
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:59:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3402311725;
-	Thu, 25 Jan 2024 22:56:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17A68134C4;
+	Thu, 25 Jan 2024 22:57:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="lz/raEtD"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="B58/m/Id"
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CDDF12E4E;
-	Thu, 25 Jan 2024 22:56:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4842312B9B
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 22:57:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706223367; cv=none; b=EFkeVQQsNnIMCPAIjp8rBbw+pE/iJJARWJVQD257RnNX4yP6fTrMP3+rIedjQ0QyAUfD+eHZxGt792P/5nQHjBFNWE5aR3MkRKNujbxlGyGGwt8SRRQgElJ2aTBD3/Kg2/mw4CPSuzYU2jVNZICVa8DJe2+NbCw/oJcEv7jlQH0=
+	t=1706223468; cv=none; b=SJG2Zp0hiTeAlTYXNtd6omVikkPaEjpdSGvK2fDWQYrK0JFK0mmzPcwSUQmH7zXjUdbLrgKbAlHS4kvXgRh9bEamuPGt50/C7OHaDA0NpwsnI7GhOKU9gnJQDdAjiTBDbE2/Nnc4Uclnu7mYxGHTXnGAzUnWnZ0yeDu5GUuUosA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706223367; c=relaxed/simple;
-	bh=6nh1lQqxDDbt+H3HWELxmrrcExTyqD3eFbOHlmfRpPc=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=tLPL7KrvKMrooaFbpt42bs4OmB+73Umpo4cDuucSdtTNSNFn8vbtbADLWlQ/pl1au1nsvuM5XPIfyNcfyelYUo7RbBA3cWFGp3YGbzhhYwmSBd/3kR0iUbVhgiuPJoDos+6y9OezcnaxKvi/n4Cw16/aRhtx2IuyEnFZWFo95aE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=lz/raEtD; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40PLa7YR029658;
-	Thu, 25 Jan 2024 22:55:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:date:subject:mime-version:content-type
-	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=HCh
-	UC4x+5CmbG4DO8gA69u/ch2BhDGAtrM7ibqqCR7g=; b=lz/raEtDrUJH7K1hJF2
-	oGk7/RreE4ryUvfoJMQG5lHMXHA9XdSX4sTMn4Ro1Y3+wlrgdt4W+O/RHpzFXeJt
-	1Me8YDoD5PjxVWfodM8iQS45+1s0cI4X+U8pTQKPW6GWhWoT8+ZSMDijbXEfiL6B
-	g7BP29aKyEPox8EV/+UiR627xDjzVYiVggrRQcuAmKjssOFjhI+VDXOH0rOsSw+3
-	w7PhehUuKUvvwL0LyDh0M7fUf81Tcrg/WxFyMQnNf/tpoMzd68DRI+xnfjzDLQkJ
-	0zMNUqArZTAG+9QOrdQoiI8qMSemlpco2MmDSg9x6UzB38HwaD4C9Raqt3EvEmnu
-	MOg==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vuypkg50p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Jan 2024 22:55:51 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40PMtoYs032061
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Jan 2024 22:55:50 GMT
-Received: from [169.254.0.1] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 25 Jan
- 2024 14:55:50 -0800
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-Date: Thu, 25 Jan 2024 14:55:47 -0800
-Subject: [PATCH] Revert "nl80211/cfg80211: Specify band specific min RSSI
- thresholds with sched scan"
+	s=arc-20240116; t=1706223468; c=relaxed/simple;
+	bh=6odP9Zfv4jT1UPPhYzIXbp8Wkc0XoPa8xwrrf2TyNnQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iz4dr/iaQo+ClSHQkgoy+fDza+8Zby8/qML3O067WIAwPVAEf03T4ql28J/ilKLMb+HBHqHQwTlDKjcTLrM+uqfb23UU+RFf8C4Pji97rGekBCXF3cnOhCRGErxJL7gLzfJerOruqz38Bg8ajvzpXJbiRciWIpG4gGTMjRSlUKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=B58/m/Id; arc=none smtp.client-ip=209.85.166.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-7bed9f5d35dso362297239f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 14:57:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1706223464; x=1706828264; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DmGx9+QDJXLKTo3H9MiyfX7TEgh1xSwvOnrY9VXnVdM=;
+        b=B58/m/IdEYEIh4nIv0EmFBOm4KbcmU6fOaU+HuIHrhpFJpz/MM3n8bRPbuqAbecug3
+         N6YzG3FjKiKEebsmKqjSkWs4Pg3AGfTud+81aSxHknxuks2j6eU4RO9yzC2qHQQ4ZlZY
+         ayecjUqmgf8t81yW5/d2MHYjH7AhLyrCDFL90=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706223464; x=1706828264;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DmGx9+QDJXLKTo3H9MiyfX7TEgh1xSwvOnrY9VXnVdM=;
+        b=cefn5MqURDEdAFpLbQ8Z2em4yMeIjrLHqyUKRNldNHHy7ahlLnePcQhHrIGGule+Ut
+         5LJrt4dpTbIQGhqxPjt24cv2XSGae3bXoo6x8jJFECWJ0AbVGG2ZEotgTJQHrXubC9/M
+         J76hLgf6A+GPA2GOVS8Qb2nzNOQDpY2ZgBDSoZcblUo5CpCxR6dzWAq3mAJQqySutlFL
+         DF2qyHnIntEHg3A275RSPTyyoUsRXR+nz7uk5crUKoyfZjEO/db+u0+7wHt1m0/2qgqT
+         I7WPMlQH3jDTEbJybQMu/J6FxKn2H+E6eG/ljmMtX/LGtkOWuUvo/WKBDS+7yXtmny01
+         1YHg==
+X-Gm-Message-State: AOJu0YzbktM3kiv/M0ykVePNZ6J5sc95cJ2yvQltWtyunm0KACuK+pYt
+	UbJbgaZtKbLkZNiKk61Kc9828aaZOySbDgRGAO4483VZLJtfo/aGLPNb5KHKYc4xnl8HINropHP
+	aGyiLM12UtNpykdHehOCGdedjodCRr19y5XV8HF9jk2yjOzzZrcUAM48AAKFTA0YicIefjOqE9O
+	Tvbue4RpU8DGXkWHqf1vIgv40nYO7B+/J7XY+fc+/MOL2HPA==
+X-Google-Smtp-Source: AGHT+IGJOlk8p0p+eepUvrJIZ2A7VA58foiJl5D62a/cdKG2oMDEtZHgf75lD945pBIByTtOFe6B7w==
+X-Received: by 2002:a92:290f:0:b0:35f:ced5:5555 with SMTP id l15-20020a92290f000000b0035fced55555mr437125ilg.25.1706223464499;
+        Thu, 25 Jan 2024 14:57:44 -0800 (PST)
+Received: from localhost.localdomain ([2620:11a:c018:0:ea8:be91:8d1:f59b])
+        by smtp.gmail.com with ESMTPSA id z24-20020a631918000000b005d68962e1a7sm19948pgl.24.2024.01.25.14.57.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 14:57:43 -0800 (PST)
+From: Joe Damato <jdamato@fastly.com>
+To: linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: chuck.lever@oracle.com,
+	jlayton@kernel.org,
+	linux-api@vger.kernel.org,
+	brauner@kernel.org,
+	edumazet@google.com,
+	davem@davemloft.net,
+	alexander.duyck@gmail.com,
+	sridhar.samudrala@intel.com,
+	kuba@kernel.org,
+	willemdebruijn.kernel@gmail.com,
+	weiwan@google.com,
+	Joe Damato <jdamato@fastly.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Andrew Waterman <waterman@eecs.berkeley.edu>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Dominik Brodowski <linux@dominikbrodowski.net>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jan Kara <jack@suse.cz>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Julien Panis <jpanis@baylibre.com>,
+	linux-doc@vger.kernel.org (open list:DOCUMENTATION),
+	linux-fsdevel@vger.kernel.org (open list:FILESYSTEMS (VFS and infrastructure)),
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nathan Lynch <nathanl@linux.ibm.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Steve French <stfrench@microsoft.com>,
+	Thomas Huth <thuth@redhat.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH net-next v3 0/3] Per epoll context busy poll support
+Date: Thu, 25 Jan 2024 22:56:56 +0000
+Message-Id: <20240125225704.12781-1-jdamato@fastly.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240125-for-next-v1-1-fd79e01c6c09@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIAPLmsmUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDQyNT3bT8It281IoS3SSLxGTzlGSjpBRDcyWg8oKi1LTMCrBR0bG1tQD
- C8ZeGWgAAAA==
-To: Johannes Berg <johannes@sipsolutions.net>,
-        "David S. Miller"
-	<davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-CC: <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Lin Ma <linma@zju.edu.cn>,
-        Vamsi Krishna
-	<quic_vamsin@quicinc.com>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>
-X-Mailer: b4 0.12.3
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: SbSDd9gSN-iC8tgYkN9t7HMrhw1qH1l2
-X-Proofpoint-GUID: SbSDd9gSN-iC8tgYkN9t7HMrhw1qH1l2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-25_14,2024-01-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- suspectscore=0 spamscore=0 malwarescore=0 priorityscore=1501 phishscore=0
- adultscore=0 bulkscore=0 clxscore=1015 mlxlogscore=652 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401190000
- definitions=main-2401250165
+Content-Transfer-Encoding: 8bit
 
-This *mostly* reverts commit 1e1b11b6a1111cd9e8af1fd6ccda270a9fa3eacf.
+Greetings:
 
-During the review of a new patch [1] it was observed that the
-functionality being modified was not actually being used by any
-in-tree driver. Further research determined that the functionality was
-originally introduced to support a new Android interface, but that
-interface was subsequently abandoned. Since the functionality has
-apparently never been used, remove it. However, to mantain the
-sanctity of the UABI, keep the nl80211.h assignments, but clearly mark
-them as obsolete.
+Welcome to v3. Cover letter updated from v2 to explain why ioctl and
+adjusted my cc_cmd to try to get the correct people in addition to folks
+who were added in v1 & v2. Labeled as net-next because it seems networking
+related to me even though it is fs code.
 
-Cc: Lin Ma <linma@zju.edu.cn>
-Cc: Vamsi Krishna <quic_vamsin@quicinc.com>
-Link: https://lore.kernel.org/linux-wireless/20240119151201.8670-1-linma@zju.edu.cn/ [1]
-Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
----
- include/net/cfg80211.h       |  8 -------
- include/uapi/linux/nl80211.h | 16 ++++---------
- net/wireless/nl80211.c       | 55 --------------------------------------------
- 3 files changed, 4 insertions(+), 75 deletions(-)
+TL;DR This builds on commit bf3b9f6372c4 ("epoll: Add busy poll support to
+epoll with socket fds.") by allowing user applications to enable
+epoll-based busy polling and set a busy poll packet budget on a per epoll
+context basis.
 
-diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
-index cf79656ce09c..65df03a49439 100644
---- a/include/net/cfg80211.h
-+++ b/include/net/cfg80211.h
-@@ -2695,19 +2695,11 @@ static inline void get_random_mask_addr(u8 *buf, const u8 *addr, const u8 *mask)
-  * @bssid: BSSID to be matched; may be all-zero BSSID in case of SSID match
-  *	or no match (RSSI only)
-  * @rssi_thold: don't report scan results below this threshold (in s32 dBm)
-- * @per_band_rssi_thold: Minimum rssi threshold for each band to be applied
-- *	for filtering out scan results received. Drivers advertise this support
-- *	of band specific rssi based filtering through the feature capability
-- *	%NL80211_EXT_FEATURE_SCHED_SCAN_BAND_SPECIFIC_RSSI_THOLD. These band
-- *	specific rssi thresholds take precedence over rssi_thold, if specified.
-- *	If not specified for any band, it will be assigned with rssi_thold of
-- *	corresponding matchset.
-  */
- struct cfg80211_match_set {
- 	struct cfg80211_ssid ssid;
- 	u8 bssid[ETH_ALEN];
- 	s32 rssi_thold;
--	s32 per_band_rssi_thold[NUM_NL80211_BANDS];
- };
- 
- /**
-diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
-index 1ccdcae24372..1b1fd3187446 100644
---- a/include/uapi/linux/nl80211.h
-+++ b/include/uapi/linux/nl80211.h
-@@ -4455,14 +4455,7 @@ enum nl80211_reg_rule_attr {
-  *	value as specified by &struct nl80211_bss_select_rssi_adjust.
-  * @NL80211_SCHED_SCAN_MATCH_ATTR_BSSID: BSSID to be used for matching
-  *	(this cannot be used together with SSID).
-- * @NL80211_SCHED_SCAN_MATCH_PER_BAND_RSSI: Nested attribute that carries the
-- *	band specific minimum rssi thresholds for the bands defined in
-- *	enum nl80211_band. The minimum rssi threshold value(s32) specific to a
-- *	band shall be encapsulated in attribute with type value equals to one
-- *	of the NL80211_BAND_* defined in enum nl80211_band. For example, the
-- *	minimum rssi threshold value for 2.4GHZ band shall be encapsulated
-- *	within an attribute of type NL80211_BAND_2GHZ. And one or more of such
-- *	attributes will be nested within this attribute.
-+ * @NL80211_SCHED_SCAN_MATCH_PER_BAND_RSSI: Obsolete
-  * @NL80211_SCHED_SCAN_MATCH_ATTR_MAX: highest scheduled scan filter
-  *	attribute number currently defined
-  * @__NL80211_SCHED_SCAN_MATCH_ATTR_AFTER_LAST: internal use
-@@ -4475,7 +4468,7 @@ enum nl80211_sched_scan_match_attr {
- 	NL80211_SCHED_SCAN_MATCH_ATTR_RELATIVE_RSSI,
- 	NL80211_SCHED_SCAN_MATCH_ATTR_RSSI_ADJUST,
- 	NL80211_SCHED_SCAN_MATCH_ATTR_BSSID,
--	NL80211_SCHED_SCAN_MATCH_PER_BAND_RSSI,
-+	NL80211_SCHED_SCAN_MATCH_PER_BAND_RSSI, /* obsolete */
- 
- 	/* keep last */
- 	__NL80211_SCHED_SCAN_MATCH_ATTR_AFTER_LAST,
-@@ -6410,8 +6403,7 @@ enum nl80211_feature_flags {
-  * @NL80211_EXT_FEATURE_AP_PMKSA_CACHING: Driver/device supports PMKSA caching
-  *	(set/del PMKSA operations) in AP mode.
-  *
-- * @NL80211_EXT_FEATURE_SCHED_SCAN_BAND_SPECIFIC_RSSI_THOLD: Driver supports
-- *	filtering of sched scan results using band specific RSSI thresholds.
-+ * @NL80211_EXT_FEATURE_SCHED_SCAN_BAND_SPECIFIC_RSSI_THOLD: Obsolete
-  *
-  * @NL80211_EXT_FEATURE_STA_TX_PWR: This driver supports controlling tx power
-  *	to a station.
-@@ -6561,7 +6553,7 @@ enum nl80211_ext_feature_index {
- 	NL80211_EXT_FEATURE_ENABLE_FTM_RESPONDER,
- 	NL80211_EXT_FEATURE_AIRTIME_FAIRNESS,
- 	NL80211_EXT_FEATURE_AP_PMKSA_CACHING,
--	NL80211_EXT_FEATURE_SCHED_SCAN_BAND_SPECIFIC_RSSI_THOLD,
-+	NL80211_EXT_FEATURE_SCHED_SCAN_BAND_SPECIFIC_RSSI_THOLD, /* obsolete */
- 	NL80211_EXT_FEATURE_EXT_KEY_ID,
- 	NL80211_EXT_FEATURE_STA_TX_PWR,
- 	NL80211_EXT_FEATURE_SAE_OFFLOAD,
-diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-index 60877b532993..187c2f644b55 100644
---- a/net/wireless/nl80211.c
-+++ b/net/wireless/nl80211.c
-@@ -905,23 +905,12 @@ nl80211_rekey_policy[NUM_NL80211_REKEY_DATA] = {
- 	[NL80211_REKEY_DATA_AKM] = { .type = NLA_U32 },
- };
- 
--static const struct nla_policy
--nl80211_match_band_rssi_policy[NUM_NL80211_BANDS] = {
--	[NL80211_BAND_2GHZ] = { .type = NLA_S32 },
--	[NL80211_BAND_5GHZ] = { .type = NLA_S32 },
--	[NL80211_BAND_6GHZ] = { .type = NLA_S32 },
--	[NL80211_BAND_60GHZ] = { .type = NLA_S32 },
--	[NL80211_BAND_LC]    = { .type = NLA_S32 },
--};
--
- static const struct nla_policy
- nl80211_match_policy[NL80211_SCHED_SCAN_MATCH_ATTR_MAX + 1] = {
- 	[NL80211_SCHED_SCAN_MATCH_ATTR_SSID] = { .type = NLA_BINARY,
- 						 .len = IEEE80211_MAX_SSID_LEN },
- 	[NL80211_SCHED_SCAN_MATCH_ATTR_BSSID] = NLA_POLICY_EXACT_LEN_WARN(ETH_ALEN),
- 	[NL80211_SCHED_SCAN_MATCH_ATTR_RSSI] = { .type = NLA_U32 },
--	[NL80211_SCHED_SCAN_MATCH_PER_BAND_RSSI] =
--		NLA_POLICY_NESTED(nl80211_match_band_rssi_policy),
- };
- 
- static const struct nla_policy
-@@ -9480,41 +9469,6 @@ nl80211_parse_sched_scan_plans(struct wiphy *wiphy, int n_plans,
- 	return 0;
- }
- 
--static int
--nl80211_parse_sched_scan_per_band_rssi(struct wiphy *wiphy,
--				       struct cfg80211_match_set *match_sets,
--				       struct nlattr *tb_band_rssi,
--				       s32 rssi_thold)
--{
--	struct nlattr *attr;
--	int i, tmp, ret = 0;
--
--	if (!wiphy_ext_feature_isset(wiphy,
--		    NL80211_EXT_FEATURE_SCHED_SCAN_BAND_SPECIFIC_RSSI_THOLD)) {
--		if (tb_band_rssi)
--			ret = -EOPNOTSUPP;
--		else
--			for (i = 0; i < NUM_NL80211_BANDS; i++)
--				match_sets->per_band_rssi_thold[i] =
--					NL80211_SCAN_RSSI_THOLD_OFF;
--		return ret;
--	}
--
--	for (i = 0; i < NUM_NL80211_BANDS; i++)
--		match_sets->per_band_rssi_thold[i] = rssi_thold;
--
--	nla_for_each_nested(attr, tb_band_rssi, tmp) {
--		enum nl80211_band band = nla_type(attr);
--
--		if (band < 0 || band >= NUM_NL80211_BANDS)
--			return -EINVAL;
--
--		match_sets->per_band_rssi_thold[band] =	nla_get_s32(attr);
--	}
--
--	return 0;
--}
--
- static struct cfg80211_sched_scan_request *
- nl80211_parse_sched_scan(struct wiphy *wiphy, struct wireless_dev *wdev,
- 			 struct nlattr **attrs, int max_match_sets)
-@@ -9789,15 +9743,6 @@ nl80211_parse_sched_scan(struct wiphy *wiphy, struct wireless_dev *wdev,
- 			if (rssi)
- 				request->match_sets[i].rssi_thold =
- 					nla_get_s32(rssi);
--
--			/* Parse per band RSSI attribute */
--			err = nl80211_parse_sched_scan_per_band_rssi(wiphy,
--				&request->match_sets[i],
--				tb[NL80211_SCHED_SCAN_MATCH_PER_BAND_RSSI],
--				request->match_sets[i].rssi_thold);
--			if (err)
--				goto out_free;
--
- 			i++;
- 		}
- 
+This makes epoll-based busy polling much more usable for user
+applications than the current system-wide sysctl and hardcoded budget.
 
----
-base-commit: 3fbf61207c66ff7ac9b60ab76d4bfd239f97e973
-change-id: 20240125-for-next-b8ac7dc2bd17
+To allow for this, two ioctls have been added for epoll contexts for
+getting and setting a new struct, struct epoll_params.
+
+ioctl was chosen vs a new syscall after reviewing a suggestion by Willem
+de Bruijn [1]. I am open to using a new syscall instead of an ioctl, but it
+seemed that: 
+  - Busy poll affects all existing epoll_wait and epoll_pwait variants in
+    the same way, so new verions of many syscalls might be needed. It
+    seems much simpler for users to use the correct
+    epoll_wait/epoll_pwait for their app and add a call to ioctl to enable
+    or disable busy poll as needed. This also probably means less work to
+    get an existing epoll app using busy poll.
+
+  - previously added epoll_pwait2 helped to bring epoll closer to
+    existing syscalls (like pselect and ppoll) and this busy poll change
+    reflected as a new syscall would not have the same effect.
+
+Note: patch 1/4 uses an xor so that busy poll is only enabled if the
+per-context busy poll usecs is set or the system-wide sysctl. If both are
+enabled, busy polling does not happen. Calling this out specifically incase
+there are strong feelings about this one; I felt one xor the other made
+sense, but I am open to changing it.
+
+Longer explanation:
+
+Presently epoll has support for a very useful form of busy poll based on
+the incoming NAPI ID (see also: SO_INCOMING_NAPI_ID [2]).
+
+This form of busy poll allows epoll_wait to drive NAPI packet processing
+which allows for a few interesting user application designs which can
+reduce latency and also potentially improve L2/L3 cache hit rates by
+deferring NAPI until userland has finished its work.
+
+The documentation available on this is, IMHO, a bit confusing so please
+allow me to explain how one might use this:
+
+1. Ensure each application thread has its own epoll instance mapping
+1-to-1 with NIC RX queues. An n-tuple filter would likely be used to
+direct connections with specific dest ports to these queues.
+
+2. Optionally: Setup IRQ coalescing for the NIC RX queues where busy
+polling will occur. This can help avoid the userland app from being
+pre-empted by a hard IRQ while userland is running. Note this means that
+userland must take care to call epoll_wait and not take too long in
+userland since it now drives NAPI via epoll_wait.
+
+3. Optionally: Consider using napi_defer_hard_irqs and gro_flush_timeout to
+further restrict IRQ generation from the NIC. These settings are
+system-wide so their impact must be carefully weighed against the running
+applications.
+
+4. Ensure that all incoming connections added to an epoll instance
+have the same NAPI ID. This can be done with a BPF filter when
+SO_REUSEPORT is used or getsockopt + SO_INCOMING_NAPI_ID when a single
+accept thread is used which dispatches incoming connections to threads.
+
+5. Lastly, busy poll must be enabled via a sysctl
+(/proc/sys/net/core/busy_poll).
+
+Please see Eric Dumazet's paper about busy polling [3] and a recent
+academic paper about measured performance improvements of busy polling [4]
+(albeit with a modification that is not currently present in the kernel)
+for additional context.
+
+The unfortunate part about step 5 above is that this enables busy poll
+system-wide which affects all user applications on the system,
+including epoll-based network applications which were not intended to
+be used this way or applications where increased CPU usage for lower
+latency network processing is unnecessary or not desirable.
+
+If the user wants to run one low latency epoll-based server application
+with epoll-based busy poll, but would like to run the rest of the
+applications on the system (which may also use epoll) without busy poll,
+this system-wide sysctl presents a significant problem.
+
+This change preserves the system-wide sysctl, but adds a mechanism (via
+ioctl) to enable or disable busy poll for epoll contexts as needed by
+individual applications, making epoll-based busy poll more usable. Note
+that this change includes an xor allowing only the per-context busy poll or
+the system wide sysctl, not both. If both are enabled, busy polling does
+not happen. Calling this out specifically incase there are strong feelings
+about this one; I felt one xor the other made sense, but I am open to
+changing it.
+
+Thanks,
+Joe
+
+v2 -> v3:
+  - cover letter updated to mention why ioctl seems (to me) like a better
+    choice vs a new syscall.
+
+  - patch 3/4 was modified in 3 ways:
+    - when an unknown ioctl is received, -ENOIOCTLCMD is returned instead
+      of -EINVAL as the ioctl documentation requires.
+    - epoll_params.busy_poll_budget can only be set to a value larger than
+      NAPI_POLL_WEIGHT if code is run by privileged (CAP_NET_ADMIN) users.
+      Otherwise, -EPERM is returned.
+    - busy poll specific ioctl code moved out to its own function. On
+      kernels without busy poll support, -EOPNOTSUPP is returned. This also
+      makes the kernel build robot happier without littering the code with
+      more #ifdefs.
+
+  - dropped patch 4/4 after Eric Dumazet's review of it when it was sent
+    independently to the list [5].
+
+v1 -> v2:
+  - cover letter updated to make a mention of napi_defer_hard_irqs and
+    gro_flush_timeout as an added step 3 and to cite both Eric Dumazet's
+    busy polling paper and a paper from University of Waterloo for
+    additional context. Specifically calling out the xor in patch 1/4
+    incase it is missed by reviewers.
+
+  - Patch 2/4 has its commit message updated, but no functional changes.
+    Commit message now describes that allowing for a settable budget helps
+    to improve throughput and is more consistent with other busy poll
+    mechanisms that allow a settable budget via SO_BUSY_POLL_BUDGET.
+
+  - Patch 3/4 was modified to check if the epoll_params.busy_poll_budget
+    exceeds NAPI_POLL_WEIGHT. The larger value is allowed, but an error is
+    printed. This was done for consistency with netif_napi_add_weight,
+    which does the same.
+
+  - Patch 3/4 the struct epoll_params was updated to fix the type of the
+    data field; it was uint8_t and was changed to u8.
+
+  - Patch 4/4 added to check if SO_BUSY_POLL_BUDGET exceeds
+    NAPI_POLL_WEIGHT. The larger value is allowed, but an error is
+    printed. This was done for consistency with netif_napi_add_weight,
+    which does the same.
+
+[1]: https://lore.kernel.org/lkml/65b1cb7f73a6a_250560294bd@willemb.c.googlers.com.notmuch/
+[2]: https://lore.kernel.org/lkml/20170324170836.15226.87178.stgit@localhost.localdomain/
+[3]: https://netdevconf.info/2.1/papers/BusyPollingNextGen.pdf
+[4]: https://dl.acm.org/doi/pdf/10.1145/3626780
+[5]: https://lore.kernel.org/lkml/CANn89i+uXsdSVFiQT9fDfGw+h_5QOcuHwPdWi9J=5U6oLXkQTA@mail.gmail.com/
+
+Joe Damato (3):
+  eventpoll: support busy poll per epoll instance
+  eventpoll: Add per-epoll busy poll packet budget
+  eventpoll: Add epoll ioctl for epoll_params
+
+ .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+ fs/eventpoll.c                                | 122 +++++++++++++++++-
+ include/uapi/linux/eventpoll.h                |  12 ++
+ 3 files changed, 130 insertions(+), 5 deletions(-)
+
+-- 
+2.25.1
 
 
