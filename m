@@ -1,166 +1,242 @@
-Return-Path: <linux-kernel+bounces-38734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 438B083C503
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:42:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21A8D83C50B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:43:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B050FB2335B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:42:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4EDA1F264E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:43:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80AA43A1B6;
-	Thu, 25 Jan 2024 14:42:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b="Z0mtIbOp"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 471266E2CD;
+	Thu, 25 Jan 2024 14:42:49 +0000 (UTC)
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E39886E2BF
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 14:42:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21F606E2BE;
+	Thu, 25 Jan 2024 14:42:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706193758; cv=none; b=dt9oMCQffyInKehwTYG1deB/H263vgp6zB4CPsKRM2jFbFHQmmQQcO7iL+GQXovcat9RnaVkthno2JmjusYF0OcpgaF9LRFKat0gJrrQSgc3eyPCNu3JFbetmDeIdhfVvp0HWQQ10R+QBLSYkPJAOM9V+O+wpKqMT8cgeKyxwjw=
+	t=1706193768; cv=none; b=j3r3DXqrfz30ufF3kd/DxqHHFm9HaviolvCyVunL78NRb0FpDDG4fAwOr4y7ggEtcVBrB5P3WDik8qyNDjaxa4lEdF0p/PNpE+OtWBp//gJJMYcPIqTMnOBBqT6U0lr3hz6S3QFoJmwm4L8UxOpnNUifvr4bYrW06gtbE16S45Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706193758; c=relaxed/simple;
-	bh=Lri9+r3U5+UXW0b6nYnAwhx2o25q+wQCEH/6xNOMjuo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YgqIDdhbhpTv5PU/Af5RtNc8r2rfTIeTyoR6ZUTmpT5nAA1z9wvV5yCbzT2g17ggcKMqjCG0Pnfurhl0P5qG1bTA/9RZwYwgXNYcvOCTI5LuaWW57RfMKZkW351RGGj/4qlUtsrOR8CW6PTjezJCme4coJBhbiyyDWO/8o7OAoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=smile.fr; spf=pass smtp.mailfrom=smile.fr; dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b=Z0mtIbOp; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=smile.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=smile.fr
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40ed1e78835so6828585e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 06:42:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smile-fr.20230601.gappssmtp.com; s=20230601; t=1706193754; x=1706798554; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=m/VxeZJGjBjcDQmtxAoZtXCX3PaowqHCK6uf1JI14tc=;
-        b=Z0mtIbOpfxc6JjAJgkblDik6yBVVpyM0z5qQRbTA+wkoa8OhQzvPRU1dNqOoPROT+6
-         7BzS36UUUguRti7g1zP6o83r0w5dUadPyiSw1Gx5ZCmyXjt+NkyxPfbdDRnVpJvu60hA
-         5Z7eGmpWWbBMnh+3aR8Y1kAxwsk0Xrox7qh21XBfY4GGq6EmcOUvGN384BLP2kq3qZB9
-         OnjV1igH3MdUMPj05lRwq/6LShUaHm6SPKwDC7RAtgrcbgpJL22zFC0yc3RHaOIQFgwe
-         o9CNrCIy4LS0ejpQv8j6YgvNMNn660MwfFj8KhuU/EKvG2me/kWrVfz9ZL7++j/YOc8E
-         G7wA==
+	s=arc-20240116; t=1706193768; c=relaxed/simple;
+	bh=JaK07Zkj3cT2yhn6Ow34x5ujcw/CKNJtlZf/Ls0PoA8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pbZslrDJaKPlwZU1G/h2QbxCOX5IXjCYd0FuK7kpCBywYl9zdvdP2GwZmHkKlMDyVqxi2o6lB2TQL2FBbE9LtLoQ2orphGEFRwLn6bk8N4E1S9QAwaLQxLKzh3SkZIbo0RJon7wKVk4STGvKxys8SEIL5WLxkMudBbWKZj+XoF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3bc21303a35so1267870b6e.0;
+        Thu, 25 Jan 2024 06:42:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706193754; x=1706798554;
-        h=content-transfer-encoding:in-reply-to:organization:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m/VxeZJGjBjcDQmtxAoZtXCX3PaowqHCK6uf1JI14tc=;
-        b=S2YNysYt8FvrwcR2TzA3zDwpNWDDgpFTavh606hPsdrLvwSP67GMroBWKb2lgyKbgy
-         TyGG7VsBhrHzJO1bK0tObcOw4xHYBgP/Q0tvbHQlVd4cDJaQDQTo1MwTd+BcttzlxxJJ
-         ibNi1cUgvAj3JReGFwY+kuM24JN5vbcJLA/kDSl7yyob8AFn/lfwOrPuQwRhuzLLj8An
-         suHqsBP+MvGGr9WKEj7c9wUH9G/cTcgHZ30l7AY8AMwQD4XulSCFJmdK3d07D17gpKC3
-         8tPCdqd/alzv8UvXG9Y63Cn2rezAqO12ZQjt4DJAIPTJ4FMCkeCVRCY0HeuonSpZJppt
-         ofdw==
-X-Gm-Message-State: AOJu0YzMwJCFbVtFL9KENydDqr8Efk6fJSerPl5qhXv/L0u7ybOoA/kp
-	HDk96FOSMLEiDxDhrPrhD+TqUpN/RZzJmQp935t4s5q+Z0VHGl9w8GTxjZwSi0c=
-X-Google-Smtp-Source: AGHT+IGhyJMrPQn0fqcKBTnmjxLFuu17Nr0I1Uk6sabd53h7Ly7EF0zOXZMmHZTv9b7Ulo//CtDxyA==
-X-Received: by 2002:a05:600c:212:b0:40e:47fb:fcca with SMTP id 18-20020a05600c021200b0040e47fbfccamr487664wmi.147.1706193753803;
-        Thu, 25 Jan 2024 06:42:33 -0800 (PST)
-Received: from [192.168.0.22] ([89.159.1.53])
-        by smtp.gmail.com with ESMTPSA id o36-20020a05600c512400b0040e52cac976sm2845655wms.29.2024.01.25.06.42.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 06:42:33 -0800 (PST)
-Message-ID: <928267c8-2c79-4f76-aa6e-26dc63c77e43@smile.fr>
-Date: Thu, 25 Jan 2024 15:42:32 +0100
+        d=1e100.net; s=20230601; t=1706193766; x=1706798566;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WansAIK1kV2qngBkKGzUZEv8a9oLEEFRWHM6D4Yzd+M=;
+        b=IoiMUcqNl7waglleg4DMIDbjGLYPOtueAM47JFRrHhPGkxwxuLLsVS9de59v5QoP9B
+         5Uc5KkUmSuyqw8j1K7AmEDhnU4r287eMQqUbdfVvONklySaCn3eqHmds9fCpNOZUIMEf
+         bMWfE0WQmvEOQ3JtfjtspI4FU9p6H8lllR+/9DfJwge3Lzkzs+mFM8/pl2eUbyx4nZ1o
+         t9m1BHY3hwL4HBI5nMdY2oj8YImSrEwLyosoO/DZ9MB0WhNop5w6Hf2/0nEg1sTiG0gC
+         s7em5sXAcOw5RfiDD//kODRQEDIXIvo7iPyUinOQTFFpFJVzB1j5GDcAFqurlHi4S/er
+         RgTA==
+X-Gm-Message-State: AOJu0YyFgNwgV1M4/ZtQ2OUQEOPW6B+T/bT7jf4AzXMzJusQqhM/5GsG
+	yedihfax1gzKbOeQSJpvXrPLZ+dbTEZWcrOSLDNkyylxlcX9nlcIPwPkztqeyFH7K8ejlVNKHyv
+	uT616HujBtSTzsDE/UQwXwV2W3eg=
+X-Google-Smtp-Source: AGHT+IHrMMS6irD8BFopNOqV65JYF32HklaFUv2M5fjsXBTp38AaiSFl3qoFRWI4K+lpO8xVl3bxSYdmwfq7Su82484=
+X-Received: by 2002:a05:6870:618a:b0:214:dbdd:a173 with SMTP id
+ a10-20020a056870618a00b00214dbdda173mr987239oah.3.1706193766071; Thu, 25 Jan
+ 2024 06:42:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] kconfig: remove unneeded symbol_empty variable
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-kbuild@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Vegard Nossum <vegard.nossum@oracle.com>
-References: <20231125163559.824210-1-masahiroy@kernel.org>
- <CAMuHMdWm6u1wX7efZQf=2XUAHascps76YQac6rdnQGhc8nop_Q@mail.gmail.com>
- <d21298d9-fed6-4e08-9780-dbcb388b9ccc@smile.fr>
- <CAK7LNASaG4DpHTb3YHMd8d8DJ5H3z0aiUcSqX+=7CZb99kRU8A@mail.gmail.com>
- <b65a68eb-6b96-41ff-bbb9-38cb2dee940e@smile.fr>
- <CAK7LNARVbjVkP=v7uQDB=Z+Ntcy9MiFa6WowTX9mA47YjS3zTg@mail.gmail.com>
-Content-Language: en-US
-From: Yoann Congal <yoann.congal@smile.fr>
-Organization: Smile ECS
-In-Reply-To: <CAK7LNARVbjVkP=v7uQDB=Z+Ntcy9MiFa6WowTX9mA47YjS3zTg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk> <E1rDOg2-00Dvjk-RI@rmk-PC.armlinux.org.uk>
+ <CAJZ5v0ju1JHgpjuFLHZVs4NZiARG6iBZN_wza6c2e0kDhZjK0w@mail.gmail.com>
+ <ZaURtUvWQyjYfiiO@shell.armlinux.org.uk> <20240122160227.00002d83@Huawei.com>
+ <CAJZ5v0hamuXJ_w-TSmVb=5jGide=Lb7sCjbzzNb_rFuPrvkgxQ@mail.gmail.com>
+ <Za6mHRJVjb6M1mun@shell.armlinux.org.uk> <20240123092725.00004382@Huawei.com> <3A26D95F-7366-4354-A010-318A98660076@oracle.com>
+In-Reply-To: <3A26D95F-7366-4354-A010-318A98660076@oracle.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 25 Jan 2024 15:42:34 +0100
+Message-ID: <CAJZ5v0h1na9BQiT6a4dK==8anmt15S4sArktzuLiSyScvw=bqg@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 03/21] ACPI: processor: Register CPUs that are
+ online, but not described in the DSDT
+To: Miguel Luis <miguel.luis@oracle.com>
+Cc: Jonathan Cameron <jonathan.cameron@huawei.com>, 
+	"Russell King (Oracle)" <linux@armlinux.org.uk>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, 
+	"loongarch@lists.linux.dev" <loongarch@lists.linux.dev>, 
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, 
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, 
+	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>, "x86@kernel.org" <x86@kernel.org>, 
+	"acpica-devel@lists.linuxfoundation.org" <acpica-devel@lists.linuxfoundation.org>, 
+	"linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>, 
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, 
+	"linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, 
+	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, Salil Mehta <salil.mehta@huawei.com>, 
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, "jianyong.wu@arm.com" <jianyong.wu@arm.com>, 
+	"justin.he@arm.com" <justin.he@arm.com>, James Morse <james.morse@arm.com>, 
+	"vishnu@os.amperecomputing.com" <vishnu@os.amperecomputing.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
 Hi,
 
-Le 24/01/2024 à 21:12, Masahiro Yamada a écrit :
-> On Wed, Jan 24, 2024 at 5:56 PM Yoann Congal <yoann.congal@smile.fr> wrote:
->> Le 24/01/2024 à 09:09, Masahiro Yamada a écrit :
->>> On Wed, Jan 24, 2024 at 12:11 AM Yoann Congal <yoann.congal@smile.fr> wrote:
->>>> For what it is worth, CONFIG_BASE_SMALL is defined as an int but is only used as a bool :
->>>>    $ git grep BASE_SMALL
->>>>   arch/x86/include/asm/mpspec.h:#if CONFIG_BASE_SMALL == 0
->>>>   drivers/tty/vt/vc_screen.c:#define CON_BUF_SIZE (CONFIG_BASE_SMALL ? 256 : PAGE_SIZE)
->>>>   include/linux/threads.h:#define PID_MAX_DEFAULT (CONFIG_BASE_SMALL ? 0x1000 : 0x8000)
->>>>   include/linux/threads.h:#define PID_MAX_LIMIT (CONFIG_BASE_SMALL ? PAGE_SIZE * 8 : \
->>>>   include/linux/udp.h:#define UDP_HTABLE_SIZE_MIN         (CONFIG_BASE_SMALL ? 128 : 256)
->>>>   include/linux/xarray.h:#define XA_CHUNK_SHIFT           (CONFIG_BASE_SMALL ? 4 : 6)
->>>>   init/Kconfig:   default 12 if !BASE_SMALL
->>>>   init/Kconfig:   default 0 if BASE_SMALL
->>>>   init/Kconfig:config BASE_SMALL
->>>>   kernel/futex/core.c:#if CONFIG_BASE_SMALL
->>>>   kernel/user.c:#define UIDHASH_BITS      (CONFIG_BASE_SMALL ? 3 : 7)
->>>>
->>>> Maybe we should change CONFIG_BASE_SMALL to the bool type?
->>
->> My first test shows that switching CONFIG_BASE_SMALL to bool type does fix the LOG_CPU_MAX_BUF_SHIFT default value.
->>
->>>> I'll poke around to see if I can understand why a int="0" is true for kconfig.
->>
->> Here's what I understood:
->> To get the default value of LOG_CPU_MAX_BUF_SHIFT, kconfig calls sym_get_default_prop(LOG_CPU_MAX_BUF_SHIFT)
->> -> expr_calc_value("BASE_SMALL" as an expr)
->> -> sym_calc_value(BASE_SMALL as a symbol) and returns sym->curr.tri
->>
->> But, if I understood correctly, sym_calc_value() does not set sym->curr.tri in case of a int type config.
-> 
-> Right.
+On Thu, Jan 25, 2024 at 2:56=E2=80=AFPM Miguel Luis <miguel.luis@oracle.com=
+> wrote:
+>
+> Hi
+>
+> > On 23 Jan 2024, at 08:27, Jonathan Cameron <jonathan.cameron@huawei.com=
+> wrote:
+> >
+> > On Mon, 22 Jan 2024 17:30:05 +0000
+> > "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+> >
+> >> On Mon, Jan 22, 2024 at 05:22:46PM +0100, Rafael J. Wysocki wrote:
+> >>> On Mon, Jan 22, 2024 at 5:02=E2=80=AFPM Jonathan Cameron
+> >>> <Jonathan.Cameron@huawei.com> wrote:
+> >>>>
+> >>>> On Mon, 15 Jan 2024 11:06:29 +0000
+> >>>> "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+> >>>>
+> >>>>> On Mon, Dec 18, 2023 at 09:22:03PM +0100, Rafael J. Wysocki wrote:
+> >>>>>> On Wed, Dec 13, 2023 at 1:49=E2=80=AFPM Russell King <rmk+kernel@a=
+rmlinux.org.uk> wrote:
+> >>>>>>>
+> >>>>>>> From: James Morse <james.morse@arm.com>
+> >>>>>>>
+> >>>>>>> ACPI has two descriptions of CPUs, one in the MADT/APIC table, th=
+e other
+> >>>>>>> in the DSDT. Both are required. (ACPI 6.5's 8.4 "Declaring Proces=
+sors"
+> >>>>>>> says "Each processor in the system must be declared in the ACPI
+> >>>>>>> namespace"). Having two descriptions allows firmware authors to g=
+et
+> >>>>>>> this wrong.
+> >>>>>>>
+> >>>>>>> If CPUs are described in the MADT/APIC, they will be brought onli=
+ne
+> >>>>>>> early during boot. Once the register_cpu() calls are moved to ACP=
+I,
+> >>>>>>> they will be based on the DSDT description of the CPUs. When CPUs=
+ are
+> >>>>>>> missing from the DSDT description, they will end up online, but n=
+ot
+> >>>>>>> registered.
+> >>>>>>>
+> >>>>>>> Add a helper that runs after acpi_init() has completed to registe=
+r
+> >>>>>>> CPUs that are online, but weren't found in the DSDT. Any CPU that
+> >>>>>>> is registered by this code triggers a firmware-bug warning and ke=
+rnel
+> >>>>>>> taint.
+> >>>>>>>
+> >>>>>>> Qemu TCG only describes the first CPU in the DSDT, unless cpu-hot=
+plug
+> >>>>>>> is configured.
+> >>>>>>
+> >>>>>> So why is this a kernel problem?
+> >>>>>
+> >>>>> So what are you proposing should be the behaviour here? What this
+> >>>>> statement seems to be saying is that QEMU as it exists today only
+> >>>>> describes the first CPU in DSDT.
+> >>>>
+> >>>> This confuses me somewhat, because I'm far from sure which machines =
+this
+> >>>> is true for in QEMU.  I'm guessing it's a legacy thing with
+> >>>> some old distro version of QEMU - so we'll have to paper over it any=
+way
+> >>>> but for current QEMU I'm not sure it's true.
+> >>>>
+> >>>> Helpfully there are a bunch of ACPI table tests so I've been checkin=
+g
+> >>>> through all the multi CPU cases.
+> >>>>
+> >>>> CPU hotplug not enabled.
+> >>>> pc/DSDT.dimmpxm  - 4x Processor entries.  -smp 4
+> >>>> pc/DSDT.acpihmat - 2x Processor entries.  -smp 2
+> >>>> q35/DSDT.acpihmat - 2x Processor entries. -smp 2
+> >>>> virt/DSDT.acpihmatvirt - 4x ACPI0007 entries -smp 4
+> >>>> q35/DSDT.acpihmat-noinitiator - 4 x Processor () entries -smp 4
+> >>>> virt/DSDT.topology - 8x ACPI0007 entries
+> >>>>
+> >>>> I've also looked at the code and we have various types of
+> >>>> CPU hotplug on x86 but they all build appropriate numbers of
+> >>>> Processor() entries in DSDT.
+> >>>> Arm likewise seems to build the right number of ACPI0007 entries
+> >>>> (and doesn't yet have CPU HP support).
+> >>>>
+> >>>> If anyone can add a reference on why this is needed that would be ve=
+ry
+> >>>> helpful.
+> >>>
+> >>> Yes, it would.
+> >>>
+> >>> Personally, I would prefer to assume that it is not necessary until i=
+t
+> >>> turns out that (1) there is firmware with this issue actually in use
+> >>> and (2) updating the firmware in question to follow the specification
+> >>> is not practical.
+> >>>
+> >>> Otherwise, we'd make it easier to ship non-compliant firmware for no
+> >>> good reason.
+> >>
+> >> If Salil can't come up with a reason, then I'm in favour of dropping
+> >> the patch like already done for patch 2. If the code change serves no
+> >> useful purpose, there's no point in making the change.
+> >>
+> >
+> > Salil's out today, but I've messaged him to follow up later in the week=
+.
+> >
+> > It 'might' be the odd cold plug path where QEMU half comes up, then ext=
+ra
+> > CPUs are added, then it boots. (used by some orchestration frameworks)
+> > I don't have a set up for that and I won't get to creating one today an=
+yway
+> > (we all love start of the year planning workshops!)
+> >
+> > I've +CC'd a few people have run tests on the various iterations of thi=
+s
+> > work in the past.  Maybe one of them can shed some light on this?
+> >
+>
+> IIUC, this patch covers a scenario for non compliant firmware and in whic=
+h my
+> tests for AArch64 using RFC v2 have been unable to trigger its error mess=
+age so
+> far. This does not mean, however, this patch should not be taken forward =
+though.
+>
+> It seems benevolent enough detecting non compliant firmware and still pro=
+ceed
+> while having whoever uses that firmware to get to know that.
 
-Thanks :)
+There is one issue with this approach, though.
 
-> The following will restore the original behavior.
-> 
-> 
-> --- a/scripts/kconfig/symbol.c
-> +++ b/scripts/kconfig/symbol.c
-> @@ -349,12 +349,15 @@ void sym_calc_value(struct symbol *sym)
->         switch (sym->type) {
->         case S_INT:
->                 newval.val = "0";
-> +               newval.tri = no;
->                 break;
->         case S_HEX:
->                 newval.val = "0x0";
-> +               newval.tri = no;
->                 break;
->         case S_STRING:
->                 newval.val = "";
-> +               newval.tri = no;
->                 break;
->         case S_BOOLEAN:
->         case S_TRISTATE:
-> > 
-> But, I do not think that is the right thing to do.
-> 
-> Presumably, turning CONFIG_BASE_SMALL is correct.
+If this is done by Linux and Linux is used as a main testing vehicle
+for whoever produced that firmware, it may pass the tests and be
+shipped causing a problem for the rest of the industry (because other
+operating systems will not support that firmware and now they will be
+put in an awkward position).
 
-I'm working on a patch to do that.
+I've seen enough breakage resulting from a similar policy in some
+other OS and with Linux on the receiving end that I'd rather avoid
+doing this to someone else.
 
-Regards,
--- 
-Yoann Congal
-Smile ECS - Tech Expert
+So if the firmware is not compliant, the best way to go is to ask
+whoever ships it to please fix their stuff, or if other OSes already
+work around the non-compliance, it's time to update the spec to
+reflect the reality (aka "industry practice").
+
+Thanks!
 
