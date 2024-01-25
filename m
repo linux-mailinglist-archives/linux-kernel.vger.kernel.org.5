@@ -1,246 +1,111 @@
-Return-Path: <linux-kernel+bounces-38179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49ED483BC09
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:31:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3924983BC0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:34:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D63471F23736
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:31:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BE021C222D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:34:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8DC21B94A;
-	Thu, 25 Jan 2024 08:31:16 +0000 (UTC)
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F2AC1B943;
+	Thu, 25 Jan 2024 08:34:05 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63AEA18039
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:31:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E14E54C;
+	Thu, 25 Jan 2024 08:34:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706171476; cv=none; b=ICCmR6+13HSvxSYBqfkJiV8y9C431uzbBg2jGCsCR5v9Su+edwp7Th29oFUBJk2ymNeZOl0V+9MOwMR25MGuok2I9Iom840cApbcs28bBCcO6/wh2yXbG/v4Ul4IOSceIwNZ2REWSwPCZghdpkQuspvu6f52H1fSpoJcS15cV0U=
+	t=1706171644; cv=none; b=EnxVKoAtlDqG7QHko+DpZTlnMzxR/cGqfM6zJHHR13jOB44dOAFV8zDhQOiBaUOaPyGoGZeEDXgqlrWk7HSGPacW9eLPqxX8/IZTY+To/43crdJ7cWCoz5iEojeK+/ih87a57jyY89Vstb93Is4deKdCBjHu+DpbF2iVHhHQpjg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706171476; c=relaxed/simple;
-	bh=m/7DGf1do0jsDUZDYzBxB/LrtDCJMUPG0S+IefJqibw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GGaZhuVJU+UBnU5NEJsc2A4K3JG5g3TkCcAxUQjytvSkMQDI+w+OhkaFJRDTiVJxW6IIoVR8KNJV59px7/rXQ8j3rNcYDSQ1FvBogZtI93vpKqr+2KtUyd407LztyEl7tJ0x0k1xiScEsFK9IJsuUJRziVgt9oWW5dvbI9ioCD0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R491e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0W.JldC2_1706171467;
-Received: from 30.178.67.122(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W.JldC2_1706171467)
-          by smtp.aliyun-inc.com;
-          Thu, 25 Jan 2024 16:31:09 +0800
-Message-ID: <8c7ba29d-0e12-412f-b88f-347de237d1ad@linux.alibaba.com>
-Date: Thu, 25 Jan 2024 16:31:07 +0800
+	s=arc-20240116; t=1706171644; c=relaxed/simple;
+	bh=nu2X+w6CoHZuxTQ+GtRpCRPDCFCdqjvwG2j7jgKiTpU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bCeHpwyMeXErr1JF0VXi5dZD+qaKeYWmI5ZzHYlWvDpQJmWb2SSeZLtnwATOkUCkTRB9A7KkKO6gZ6mTPGu6yNGnKmsGGlKa7lbXzc9xjDiagBHOrZhyHiuH40xoR31hmhvznu3etj3Xjj60jASWEi9MHOctOw1ons+a/9LmAi0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 8121b05ff4ae4a279be3bc3a10dff9e7-20240125
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:61e0fa9d-4ed9-49a3-a7a2-54b5d96d874b,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:-5
+X-CID-INFO: VERSION:1.1.35,REQID:61e0fa9d-4ed9-49a3-a7a2-54b5d96d874b,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:5d391d7,CLOUDID:312e3e83-8d4f-477b-89d2-1e3bdbef96d1,B
+	ulkID:2401251633590W14PIM2,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
+	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
+	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 8121b05ff4ae4a279be3bc3a10dff9e7-20240125
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 1342124197; Thu, 25 Jan 2024 16:33:57 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id 92147E000EB9;
+	Thu, 25 Jan 2024 16:33:57 +0800 (CST)
+X-ns-mid: postfix-65B21CF5-371084490
+Received: from kernel.. (unknown [172.20.15.234])
+	by mail.kylinos.cn (NSMail) with ESMTPA id E9161E000EB9;
+	Thu, 25 Jan 2024 16:33:49 +0800 (CST)
+From: Kunwu Chan <chentao@kylinos.cn>
+To: mpe@ellerman.id.au,
+	npiggin@gmail.com,
+	christophe.leroy@csgroup.eu,
+	aneesh.kumar@kernel.org,
+	naveen.n.rao@linux.ibm.com
+Cc: linuxppc-dev@lists.ozlabs.org,
+	kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH v2] KVM: PPC: code cleanup for kvmppc_book3s_irqprio_deliver
+Date: Thu, 25 Jan 2024 16:33:48 +0800
+Message-Id: <20240125083348.533883-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] watchdog/softlockup: low-overhead detection of
- interrupt storm
-Content-Language: en-US
-To: Doug Anderson <dianders@chromium.org>
-Cc: akpm@linux-foundation.org, pmladek@suse.com, tglx@linutronix.de,
- maz@kernel.org, liusong@linux.alibaba.com, linux-kernel@vger.kernel.org,
- yaoma@linux.alibaba.com
-References: <20240123121223.22318-1-yaoma@linux.alibaba.com>
- <20240123121223.22318-2-yaoma@linux.alibaba.com>
- <CAD=FV=WEEQeKX=ec3Gr-8CKs2K0MaWN3V0-0yOsuret0qcB_AA@mail.gmail.com>
-From: Bitao Hu <yaoma@linux.alibaba.com>
-In-Reply-To: <CAD=FV=WEEQeKX=ec3Gr-8CKs2K0MaWN3V0-0yOsuret0qcB_AA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 
+This part was commented from commit 2f4cf5e42d13 ("Add book3s.c")
+in about 14 years before.
+If there are no plans to enable this part code in the future,
+we can remove this dead code.
 
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+Change in v2:
+    - Remove redundant blank line
+---
+ arch/powerpc/kvm/book3s.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-On 2024/1/25 08:19, Doug Anderson wrote:
-> Hi,
-> 
-> On Tue, Jan 23, 2024 at 4:12 AM Bitao Hu <yaoma@linux.alibaba.com> wrote:
->>
->> The following softlockup is caused by interrupt storm, but it cannot be
->> identified from the call tree. Because the call tree is just a snapshot
->> and doesn't fully capture the behavior of the CPU during the soft lockup.
->>    watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
->>    ...
->>    Call trace:
->>      __do_softirq+0xa0/0x37c
->>      __irq_exit_rcu+0x108/0x140
->>      irq_exit+0x14/0x20
->>      __handle_domain_irq+0x84/0xe0
->>      gic_handle_irq+0x80/0x108
->>      el0_irq_naked+0x50/0x58
->>
->> Therefore，I think it is necessary to report CPU utilization during the
->> softlockup_thresh period (report once every sample_period, for a total
->> of 5 reportings), like this:
->>    watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
->>    CPU#28 Utilization every 4s during lockup:
->>      #1: 0.0% system, 0.0% softirq, 100.0% hardirq, 0.0% idle
->>      #2: 0.0% system, 0.0% softirq, 100.0% hardirq, 0.0% idle
->>      #3: 0.0% system, 0.0% softirq, 100.0% hardirq, 0.0% idle
->>      #4: 0.0% system, 0.0% softirq, 100.0% hardirq, 0.0% idle
->>      #5: 0.0% system, 0.0% softirq, 100.0% hardirq, 0.0% idle
->>    ...
->>
->> This would be helpful in determining whether an interrupt storm has
->> occurred or in identifying the cause of the softlockup. The criteria for
->> determination are as follows:
->>    a. If the hardirq utilization is high, then interrupt storm should be
->>    considered and the root cause cannot be determined from the call tree.
->>    b. If the softirq utilization is high, then we could analyze the call
->>    tree but it may cannot reflect the root cause.
->>    c. If the system utilization is high, then we could analyze the root
->>    cause from the call tree.
-> 
-> Just to set the tone: this sounds like a great idea! I've found myself
-> wanting something like this for a long time but I've never sat down to
-> try to code up a mechanism. I have review comments below, but mostly
-> it's just details. IMO the idea is definitely something we want to
-> land.
-Thanks for your support of this idea.
-> 
-> 
->> Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
->> ---
->>   kernel/watchdog.c | 58 +++++++++++++++++++++++++++++++++++++++++++++++
->>   1 file changed, 58 insertions(+)
->>
->> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
->> index 81a8862295d6..9fad10e0a147 100644
->> --- a/kernel/watchdog.c
->> +++ b/kernel/watchdog.c
->> @@ -23,6 +23,8 @@
->>   #include <linux/sched/debug.h>
->>   #include <linux/sched/isolation.h>
->>   #include <linux/stop_machine.h>
->> +#include <linux/kernel_stat.h>
->> +#include <linux/math64.h>
->>
->>   #include <asm/irq_regs.h>
->>   #include <linux/kvm_para.h>
->> @@ -441,6 +443,58 @@ static int is_softlockup(unsigned long touch_ts,
->>          return 0;
->>   }
->>
->> +#ifdef CONFIG_IRQ_TIME_ACCOUNTING
->> +static DEFINE_PER_CPU(u64, cpustat_old[NR_STATS]);
->> +static DEFINE_PER_CPU(u64, cpustat_diff[5][NR_STATS]);
->> +static DEFINE_PER_CPU(int, cpustat_tail);
-> 
-> The above is potentially a lot of memory. On some configs we allow up
-> to 8192 CPUs and you're storing (NR_STATS * 6) u64s per CPU plus
-> another int per CPU . NR_STATS can be up to 11 currently, so if I did
-> my math right then that's
-> 
-> 8 * 8192 * 11 * 6 + 4 * 8192 = 4,358,144 bytes (!) That's probably not OK.
-> 
-> In theory you only need 4 stats (plus the total) instead of 11. If you
-> do that plus the "old" then that would give you (8 * 8192 * 5 * 6 + 4
-> * 8192) = 1,998,848 bytes. That's still a lot, but at least less.
-> ...so at the very least you should only store the fields you need.
-> 
-> Given the amount of potential space at stake, it's probably worth
-> optimizing this to something smaller than u64 as well. It feels like
-> it would be easy to use u32. You only need diffs here and it doesn't
-> seem like it would be hard to figure out how to use 32-bits, even if
-> you have the drop a bit of granularity.
-> 
-> It feels like you could even go down to 8-bits per stat, though. You
-> don't _really_ need such accurate percentages, right? Does it really
-> matter if you have 99.4%? It seems like just saying 99% would be fine.
-> Just do the math here and store the integral percentage per stat you
-> care about. The numbers 0 - 100 can be stored in 8 bits.
-> 
-Thanks for your detailed analysis and optimization of memory 
-consumption. I indeed hadn't considered this point, and I will
-update it in v2.
-> Combining that all together, I guess you could do this (untested):
-> 
-> 1. Get the current stats and right shift them all by 10 and convert
-> them to 32-bit. This gives you (roughly) microseconds which will roll
-> over roughly every ~4000 seconds. That seems about right, though I
-> guess it's possible to do more and see if we can squeeze into 16 bits.
-> 
-> 2. Sum up all 11 of the stats to get a total. This should still fit
-> into 32-bits.
+diff --git a/arch/powerpc/kvm/book3s.c b/arch/powerpc/kvm/book3s.c
+index 8acec144120e..be9fbfbf62f7 100644
+--- a/arch/powerpc/kvm/book3s.c
++++ b/arch/powerpc/kvm/book3s.c
+@@ -360,10 +360,6 @@ static int kvmppc_book3s_irqprio_deliver(struct kvm_=
+vcpu *vcpu,
+ 		break;
+ 	}
+=20
+-#if 0
+-	printk(KERN_INFO "Deliver interrupt 0x%x? %x\n", vec, deliver);
+-#endif
+-
+ 	if (deliver)
+ 		kvmppc_inject_interrupt(vcpu, vec, 0);
+=20
+--=20
+2.39.2
 
-> 
-> 3. Do the math to get the integral percentages and store those in the tail slot.
-> 
-I'm a bit confused, why is there a need to sum up all 11 of the stats to
-get a total? I calculate the percentage using sample_period.
-> 4. Store the 4 stats you care about plus the total (all 32-bits) in
-> "cpustat_old".
-> 
-> If I've got that right, your definitions should be able to be:
-> 
-> #define NUM_OLD_STATS_GROUPS  5
-> #define NUM_STATS_PER_GROUP 4
-> static DEFINE_PER_CPU(u32, cpustat_old[NUM_STATS_PER_GROUP + 1]);
-> static DEFINE_PER_CPU(u8,
-> cpustat_utilization[NUM_OLD_STATS][NUM_STATS_PER_GROUP]);
-> static DEFINE_PER_CPU(u8, cpustat_tail);
-> 
-> With the maximum number of CPUs, that's now this, if I got my math right.
-> 
-> 4 * 8192 * 5 + 1 * 8192 * 5 * 4 + 1 * 8192 = 335,872 bytes.
-> 
-> That's a lot less, but still a lot. I'd be interested to hear other
-> opinions, but it's probably worth a Kconfig knob.
-> 
-> 
->> +static void update_cpustat(void)
->> +{
->> +       u64 *old = this_cpu_ptr(cpustat_old);
->> +       u64 (*diff)[NR_STATS] = this_cpu_ptr(cpustat_diff);
->> +       int tail = this_cpu_read(cpustat_tail), i;
-> 
-> nit: Please define "i" on its own line. It looks weird the way you have it here.
-Sure.
-> 
->> +       struct kernel_cpustat kcpustat;
->> +       u64 *cpustat = kcpustat.cpustat;
->> +
->> +       kcpustat_cpu_fetch(&kcpustat, smp_processor_id());
->> +       for (i = 0; i < NR_STATS; i++) {
->> +               diff[tail][i] = cpustat[i] - old[i];
->> +               old[i] = cpustat[i];
->> +       }
->> +       this_cpu_write(cpustat_tail, (tail + 1) % 5);
->> +}
->> +
->> +static void print_cpustat(void)
->> +{
->> +       int i, j, k;
->> +       u64 a[5][NR_STATS], b[5][NR_STATS];
->> +       u64 (*diff)[NR_STATS] = this_cpu_ptr(cpustat_diff);
->> +       int tail = this_cpu_read(cpustat_tail);
->> +       u32 period_us = sample_period / 1000;
->> +
->> +       for (i = 0; i < 5; i++) {
->> +               for (j = 0; j < NR_STATS; j++) {
->> +                       a[i][j] = 100 * (diff[i][j] / 1000);
->> +                       b[i][j] = 10 * do_div(a[i][j], period_us);
->> +                       do_div(b[i][j], period_us);
->> +               }
->> +       }
->> +       printk(KERN_CRIT "CPU#%d Utilization every %us during lockup:\n",
->> +               smp_processor_id(), period_us/1000000);
->> +       for (k = 0, i = tail; k < 5; k++, i = (i + 1) % 5) {
->> +               printk(KERN_CRIT "\t#%d: %llu.%llu%% system,\t%llu.%llu%% softirq,\t"
->> +                       "%llu.%llu%% hardirq,\t%llu.%llu%% idle\n", k+1,
->> +                       a[i][CPUTIME_SYSTEM], b[i][CPUTIME_SYSTEM],
->> +                       a[i][CPUTIME_SOFTIRQ], b[i][CPUTIME_SOFTIRQ],
->> +                       a[i][CPUTIME_IRQ], b[i][CPUTIME_IRQ],
->> +                       a[i][CPUTIME_IDLE], b[i][CPUTIME_IDLE]);
-> 
-> As per your response to Liu Song, I understand why you're using
-> "printk" instead of pr_crit(), but it deserves a comment.
-Sure, I will add a comment here.
 
