@@ -1,144 +1,124 @@
-Return-Path: <linux-kernel+bounces-37829-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5ED8483B629
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 01:43:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B19D83B62B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 01:44:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F363DB20D0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 00:43:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8F941F24E05
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 00:44:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A200ECC;
-	Thu, 25 Jan 2024 00:43:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D34CA3D;
+	Thu, 25 Jan 2024 00:43:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZJAGw6T9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BBKWHnUs"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B02F9193;
-	Thu, 25 Jan 2024 00:43:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2983F63AE;
+	Thu, 25 Jan 2024 00:43:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706143405; cv=none; b=DpricDiJhvEyySDujxrm4FIwDWOwh4a/GwrdKw23udIdPfaHFzenmm9deQo8zo4x/l1F5g8DM0f76f0QIqlVdH9c95Lr8n7rkBJEJbl2S0MNW4Ixcj5KeMOevrV3Q2u6WtnTGUAlT9Nk9Hwko6AGz8X0tOP8RqHRrKl+JjRbejo=
+	t=1706143436; cv=none; b=PtI+UCtNj+qfkr9RWmcfmy2k9rhfXW+85duAXNwq8h+b2AywzoTe/VwbmkIIW642e05I3WuSNFcnrEFp//kkgbIwIIppP+eSuePYmqILoIs4ZPJLdBRrzq9QMpnoOOzfb4wjEnC8Wpyx7e3VR5MbvfpzK7bA3UUHkPmuj1dMoO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706143405; c=relaxed/simple;
-	bh=YJhrz2YlpRjarNzIZIAgKwyto3BYRf6LeDZBXlnVi1Y=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=rZcrxhNRiNo2NJKpEJGXZ78XwwAdzAVPxsJ87Kg4tWmXQrHet6CHfUDtyw+6gssajMk0La9j/8X6zo+/+CtjsHzYoVRkyEVsRIu6LSr4AytEtq7CIuXoYpVArjQLYlsvcQILbOABngXxETVsimdEQ+PY9O174f0560ZqVOMyuk4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZJAGw6T9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7614C433F1;
-	Thu, 25 Jan 2024 00:43:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706143405;
-	bh=YJhrz2YlpRjarNzIZIAgKwyto3BYRf6LeDZBXlnVi1Y=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ZJAGw6T983IlfnB3cj9GYpmNPaSWDuZtHQJNZLxA1qtqCKGbzlYKo+6xKTzQHvTV6
-	 X9hTPFD3ix+q9hM3uXFlSL/OX6A7cRTLgU5CosjfaReV4b5X7qtzQmDs2wiptiYu6t
-	 5VMw/09ob/JwCcJVgPAhb/r4FJlnJ9vFZFcRTxoq7Dm/HPufTjzSe8yVTAnXKZ4FUX
-	 njNCE7lNcchoPnbBpEqe5WanUwJpLYn7HeTj5b7clEyUE25b9wIAodvUQuWieJ/5I0
-	 r4z/zgQ8VnaeA5V4EV3mTBIK6uWFtBngWbAyOi3h8aZEoevj15dmgM6HGb8p638oDN
-	 QDg5eum/QT4/A==
-Date: Thu, 25 Jan 2024 09:43:20 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Brian Norris <briannorris@chromium.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Pavel Machek <pavel@ucw.cz>, Len Brown
- <len.brown@intel.com>, Randy Dunlap <rdunlap@infradead.org>,
- suleiman@google.com, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v7] PM: sleep: Expose last succeeded resumed timestamp
- in sysfs
-Message-Id: <20240125094320.13a0844614375deb8bb06db6@kernel.org>
-In-Reply-To: <CA+ASDXOwfUrqRDVx_Fi62ERCLRPF+ixD014vE21Sm4mLF_j12A@mail.gmail.com>
-References: <170359668692.1864392.6909734045167510522.stgit@mhiramat.roam.corp.google.com>
-	<170359669607.1864392.5078004271237566637.stgit@mhiramat.roam.corp.google.com>
-	<20240117090706.3522d23763fab9dcea21aee1@kernel.org>
-	<CAJZ5v0gqWRsSGQZp7tz-0Kw6od+fjd_iof4Rj7fkBy80ySkcEQ@mail.gmail.com>
-	<CA+ASDXOwfUrqRDVx_Fi62ERCLRPF+ixD014vE21Sm4mLF_j12A@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706143436; c=relaxed/simple;
+	bh=yCcZeaaqYYRu8RPX/c6SSdgg2TCYbsxPPTWCp3Obvfw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jGt3/sbYLGDUF9dtl2j9EXRUMIPEnF8dj0IaZmtcAKb3zBz295Sc03CcLuM4vyJq3f5dCTDAzNUp5M7a1CQlrTjknS2if6a67mbJhhjEKi/n58Sf0lNcnoCRMqJxw4tvaP/zhkMoTkryYFMh68GZp76tjjK1CV+DuIsDilSFYYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BBKWHnUs; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a313b51cf1fso39858966b.0;
+        Wed, 24 Jan 2024 16:43:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706143433; x=1706748233; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hFc+kSQFufwfP1edBk1kaebdfjp3/wv6fnY/t4JcCA0=;
+        b=BBKWHnUs/k5ZLrpSnhZOsExCwVgs8R0AKBhTcDCNNwo3pGy4HLQLyHGBA01C+J4ToC
+         pvJZlGXOlyTrcYIYU6cmZnX6CUYl16Ijd4HYP16/R7ORkH/sGf2NTnuiY2jfsccmRN86
+         /E4AnvRy7nG3cDjc+Q2s1q97eAWcEEIJiJhBR4Pvo9GBc2la0XuMLHy+KQY9eJOF3tQm
+         5CpALmjsAt6KzzXiOLPotG0BNbyksZJ+yzNGyeFS/hxfZ89mcVYdbv/jhcCX560gG6V4
+         CLsiGEcrn1tKCYInRdhFYG5YkQvFSfnFktVHlTBYwaRiC9BmMK5vd/YUv+VzFC8BgR3F
+         Rf8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706143433; x=1706748233;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hFc+kSQFufwfP1edBk1kaebdfjp3/wv6fnY/t4JcCA0=;
+        b=rLezO/4yAqqLCIx/GK0pSSP5D795dX+KlhzMnqvwe7a3LoO3jPl7cDH6SFz3B8kDi0
+         bjV0rhRd4abjLrzEkPFWiSGaPc6WXgnoDMgqa/6B4q2U8Ow81mQbNFGCQa+PXk5JI4lq
+         kGBUNgXHEZSDF2b7fkJlsFaM4RMkaGZr9sb0fTJf/+G4MbjePswXfUMRlJZvJs934GRA
+         AyYXrGChdAPuvSuVTm93HfSbsVUDSXlPOtrVm6BtYr9WGGQ4mjZy2HryR0rFvueRT7Xz
+         U4aixScIqA8F6o8L80Ac84LX1DQQ7uMFucOCx5+vYFrSZfrKBJhJsNmvcQr+JyHUhx5E
+         rzPA==
+X-Gm-Message-State: AOJu0YypONi7zJ82G1uV4G52+i7u5II9qdR1BJv+QBbj3SMjUJi09Xg5
+	DneUTvyq1a/IRWmPHNVutZ//r5J8rXcG/aBsP139CO2M2l9KyWVFWLV0oOjN0Dtfu7ORSmK0KFW
+	b9rn2BQ9Tj6cTLDX3NmYVDoozR1M6qh3V
+X-Google-Smtp-Source: AGHT+IEddp8f1pcDM+A+XBbfQ3qR7lQckcJQJU5SEbjHDBe9mW2JEaW+SasVs+pocbF3rLzURICRTuYx7M04rvaYBHI=
+X-Received: by 2002:a17:907:c207:b0:a31:1179:199a with SMTP id
+ ti7-20020a170907c20700b00a311179199amr191478ejc.3.1706143433122; Wed, 24 Jan
+ 2024 16:43:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+References: <20240115144538.12018-1-max@enpas.org> <20240115144538.12018-4-max@enpas.org>
+In-Reply-To: <20240115144538.12018-4-max@enpas.org>
+From: Roderick Colenbrander <thunderbird2k@gmail.com>
+Date: Wed, 24 Jan 2024 16:43:41 -0800
+Message-ID: <CAEc3jaDD76e+Lkwc8WSac30-kXBYKP6_R2+kM4+Z_RVOinD9Kg@mail.gmail.com>
+Subject: Re: [PATCH v1 3/7] HID: playstation: DS4: Don't fail on FW/HW version request
+To: Max Staudt <max@enpas.org>
+Cc: Roderick Colenbrander <roderick.colenbrander@sony.com>, Jiri Kosina <jikos@kernel.org>, 
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>, linux-input@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 22 Jan 2024 18:08:22 -0800
-Brian Norris <briannorris@chromium.org> wrote:
+On Mon, Jan 15, 2024 at 6:51=E2=80=AFAM Max Staudt <max@enpas.org> wrote:
+>
+> Some third-party controllers can't report firmware/hardware version.
+>
+> Unlike for the DualSense, the driver does not use these values for
+> anything in the DualShock 4 case, but merely exposes them via sysfs.
+> They will simply be 0x0.
+>
+> Signed-off-by: Max Staudt <max@enpas.org>
+> ---
+>  drivers/hid/hid-playstation.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/hid/hid-playstation.c b/drivers/hid/hid-playstation.=
+c
+> index 0a3c442af305..12321cae4416 100644
+> --- a/drivers/hid/hid-playstation.c
+> +++ b/drivers/hid/hid-playstation.c
+> @@ -2561,7 +2561,7 @@ static struct ps_device *dualshock4_create(struct h=
+id_device *hdev)
+>         ret =3D dualshock4_get_firmware_info(ds4);
+>         if (ret) {
+>                 hid_err(hdev, "Failed to get firmware info from DualShock=
+4\n");
+> -               return ERR_PTR(ret);
+> +               hid_err(hdev, "HW/FW version data in sysfs will be invali=
+d.\n");
+>         }
+>
+>         ret =3D ps_devices_list_add(ps_dev);
+> --
+> 2.39.2
+>
+>
 
-> On Fri, Jan 19, 2024 at 1:08 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> > On Wed, Jan 17, 2024 at 1:07 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > >
-> > > Gently ping,
-> > >
-> > > I would like to know this is enough or I should add more info/update.
-> >
-> > I still am not sure what this is going to be useful for.
-> >
-> > Do you have a specific example?
-> 
-> Since there seems to be some communication gap here, I'll give it a try.
-> 
-> First, I'll paste the key phrase of its use case from the cover letter:
-> 
->   "we would like to know how long the resume processes are taken in kernel
->   and in user-space"
-> 
-> This is a "system measurement" question, for use in tests (e.g., in a
-> test lab for CI or for pre-release testing, where we suspend
-> Chromebooks, wake them back up, and measure how long the wakeup took)
-> or for user-reported metrics (e.g., similar statistics from real
-> users' systems, if they've agreed to automatically report usage
-> statistics, back to Google). We'd like to know how long it takes for a
-> system to wake up, so we can detect when there are problems that lead
-> to a slow system-resume experience. The user experience includes both
-> time spent in the kernel and time spent after user space has thawed
-> (and is spending time in potentially complex power and display manager
-> stacks) before a Chromebook's display lights back up.
+This looks good. Perhaps could have been a hid_warn then, but err is
+probably fine.
 
-Thanks Brian for explaining, this is correctly explained how we are
-using this for measuring resume process duration.
-
-> If I understand the whole of Masami's work correctly, I believe we're
-> taking "timestamps parsed out of dmesg" (or potentially out of ftrace,
-> trace events, etc.) to measure the kernel side, plus "timestamp
-> provided here in CLOCK_MONOTONIC" and "timestamp determined in our
-> power/display managers" to measure user space.
-
-Yes, I decided to decouple the kernel and user space because the clock
-subsystem is adjusted when resuming. So for the kernel, we will use
-local clock (which is not exposed to user space), and use CLOCK_MONOTONIC
-for the user space.
-
-> Does that make sense? Or are we still missing something "specific" for
-> you? I could give code pointers [1], as it's all open source. But I'm
-> not sure browsing our metric-collection code would help understanding
-> any more than these explanations.
-
-I hope it helps you understand more about this. If you have further
-questions, I will be happy to explain.
-
-> (TBH, this all still seems kinda odd to me, since parsing dmesg isn't
-> a great way to get machine-readable information. But this at least
-> serves to close some gaps in measurement.)
-
-Yeah, if I can add more in the stat, I would like to add another duration
-of the kernel resuming as "last_success_resume_duration". Is that smarter
-solution? Or maybe we also can use ftrace for kernel things. But anyway,
-to measure the user-space things, in user-space, we need a reference point
-of start of resuming.
-
-Thank you,
-
-> 
-> Brian
-> 
-> [1] e.g., https://source.chromium.org/chromiumos/chromiumos/codesearch/+/main:src/platform2/power_manager/powerd/metrics_collector.cc;l=294;drc=ce8075df179c4f8b2f4e4c4df6978d3df665c4d1
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Roderick
 
