@@ -1,103 +1,82 @@
-Return-Path: <linux-kernel+bounces-38312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CCE883BDB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:45:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FFB283BDAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:45:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54AEB1F30CD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:45:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 587A52947BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:45:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6CA41BF37;
-	Thu, 25 Jan 2024 09:43:33 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AFBB1C6BE;
+	Thu, 25 Jan 2024 09:43:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="SvGUA8iD";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="o14sfim9"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A87011BDC9
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:43:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6897E1C6B2
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:43:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706175813; cv=none; b=ZqMCBqvNMwInVIms9RAl1LsY5nkhWrfWhuDnQjG3IoYo7HnYaCJbCctbN3Q4W9hisQmsTq4S8wrED4kGnQQoD3QCKjdqbUTxmnlQYFZHA1i1yyHSdK9ZF5fIRvjo1+l7go1SKi8W4DCp99O6H9J0PS/c2XGltCsSQNSVCYDE3J8=
+	t=1706175805; cv=none; b=jws0fISkMCCR4+575snp4MOcLjXcExW5a3LkWUMM2+kuqKWLDY3DRuHzjbppMrcbDClkyUyExXAN8kQejIV+whAw0RVyGS5TfnSyrZzF/vCCdsGKUlGlRvsQxbavfQqmc15QhVzPlK1vKmuR29h04q0Kc4ymA1pTPJfkd62PPKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706175813; c=relaxed/simple;
-	bh=NO+cYd0QNeHPKrWW+ljDppiytbZEHXhjbmaRFrtMguc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=CGSWT3KT2Ki0I5vwtvK30mEyB5UGEVoOXC09IMWkPrUS7hAXl3ru1aayS95xmd9WGiv261WDTKFjNUoZfruFvZimmLgGYRuhpEixQmwFlBG/uVEKdhSprtBJ7y47SVPXOuw9QMJUoVuHjrlrVIIntquKm3oQowr0p6mzzAqP2w8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rSwGI-0002Fp-20; Thu, 25 Jan 2024 10:43:06 +0100
-Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rSwGF-002Fm4-V4; Thu, 25 Jan 2024 10:43:03 +0100
-Received: from pza by lupine with local (Exim 4.96)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rSwGF-0003hB-2q;
-	Thu, 25 Jan 2024 10:43:03 +0100
-Message-ID: <88b75ffea33078d092ffa15e3be235358f576c8d.camel@pengutronix.de>
-Subject: Re: [PATCH v5 1/6] of: Add of_phandle_args_equal() helper
-From: Philipp Zabel <p.zabel@pengutronix.de>
-To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
-	 <krzysztof.kozlowski@linaro.org>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Banajit Goswami
- <bgoswami@quicinc.com>, Bjorn Andersson <andersson@kernel.org>, Konrad
- Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley <conor+dt@kernel.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>, Viresh Kumar
- <viresh.kumar@linaro.org>, Frank Rowand <frowand.list@gmail.com>, Jaroslav
- Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org,  linux-arm-msm@vger.kernel.org,
- linux-sound@vger.kernel.org,  devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org,  linux-pm@vger.kernel.org
-Date: Thu, 25 Jan 2024 10:43:03 +0100
-In-Reply-To: <20240124220716.GA2454626-robh@kernel.org>
-References: <20240124074527.48869-1-krzysztof.kozlowski@linaro.org>
-	 <20240124074527.48869-2-krzysztof.kozlowski@linaro.org>
-	 <20240124220716.GA2454626-robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	s=arc-20240116; t=1706175805; c=relaxed/simple;
+	bh=koPDz8HneqIFQoDSxgsc41QMv27DcPBkMJMXFk2+xZw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=MqQr6IzuTLUTdK2FE/y+QIlfcBujneKXK5N48lsL/60RChaSRZlqsy9LTwfk3DdhDr/ObpET3zbBJuVgTk9Xb8cH/fpqcddIBtM94LQJEjIjYNwnfWXALcyHk+HZauJMYRl7GNplz0n7J2EDKK3nYs3+BgZThzpCjM+7CuuBvio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=SvGUA8iD; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=o14sfim9; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706175803;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=koPDz8HneqIFQoDSxgsc41QMv27DcPBkMJMXFk2+xZw=;
+	b=SvGUA8iDWMow6WuNG6RZmydsgSlfg5YOAtQbM+AY9u222XbgUe098GYp8gcbGwzuI72ung
+	rpAWn5A7hC9vND70c7d54JEYi+vnvSS+H7SsZut10HgaqtLbrXYzQg/T88ovuo//E6ERQi
+	snA09Ph6gg034jbvfMNbkZggVxkcnwCKDPeYSL88Qau0ZXao23psV68CNbWlXa5fyHjMev
+	CnA2+AfKA7niAFyOguw6k0dqRQ4B+o4CrsFt/rK83IjjyPMc8WsYwO+Pihpps6vlOX1Ti8
+	+5EKJuljP8pueBYoYR2rdnDzjOOQQ0L8qCGFMjvcYioJ3ZjoBWt3LDe92yUKNQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706175803;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=koPDz8HneqIFQoDSxgsc41QMv27DcPBkMJMXFk2+xZw=;
+	b=o14sfim95l9bbc/kt6d1W+wISyECkYmuI1de81Adyzb1KmLwoX46b2WwEVi3/Xh5PuTFmx
+	UhPbZzfg1Y7EgdCw==
+To: Frederic Weisbecker <frederic@kernel.org>, LKML
+ <linux-kernel@vger.kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>, Ingo Molnar
+ <mingo@kernel.org>, Anna-Maria Behnsen <anna-maria@linutronix.de>, Peng
+ Liu <liupeng17@lenovo.com>, Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 14/15] tick: Shut down low-res tick from dying CPU
+In-Reply-To: <20240124170459.24850-15-frederic@kernel.org>
+References: <20240124170459.24850-1-frederic@kernel.org>
+ <20240124170459.24850-15-frederic@kernel.org>
+Date: Thu, 25 Jan 2024 10:43:22 +0100
+Message-ID: <87ede5iw91.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
 
-On Mi, 2024-01-24 at 16:07 -0600, Rob Herring wrote:
-> On Wed, Jan 24, 2024 at 08:45:22AM +0100, Krzysztof Kozlowski wrote:
-> > Add a helper comparing two "struct of_phandle_args" to avoid
-> > reinventing the wheel.
-> >=20
-> > Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
-> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> > ---
-> >=20
-> > Dependency of cpufreq and reset change.
-> > ---
-> >  include/linux/of.h | 16 ++++++++++++++++
-> >  1 file changed, 16 insertions(+)
->=20
-> Acked-by: Rob Herring <robh@kernel.org>
->=20
-> I've wanted to write this series for some time. Great work.
+On Wed, Jan 24 2024 at 18:04, Frederic Weisbecker wrote:
+> Prepare for consolidating the handover to a single place (the first one)
+> with shutting down the low-res tick as well from
+> tick_cancel_sched_timer() as well. This will simplify the handover and
+> unify the tick cancellation between high-res and low-res.
+>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-How would you prefer this to be merged? Stable tag from the devicetree
-tree? Go through the reset tree as part of this series?
-
-regards
-Philipp
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 
