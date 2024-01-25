@@ -1,288 +1,365 @@
-Return-Path: <linux-kernel+bounces-37963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37964-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AEDB83B8DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 06:03:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E76EF83B8E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 06:03:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4FFC2863E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 05:03:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45853286748
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 05:03:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28AF079F9;
-	Thu, 25 Jan 2024 05:03:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 117E68831;
+	Thu, 25 Jan 2024 05:03:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OPd0Tl0T"
-Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=marvell.onmicrosoft.com header.i=@marvell.onmicrosoft.com header.b="u+yinMD6"
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAFF879E2
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 05:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706158981; cv=none; b=imIvzFWYVFRLTU9AwfS5L3QkEoSCpdaAuC4zRZH2jQrVnU4b5FHWzhukcMQ81TxGFEVs5nthiHwehIM6Ll2+UtTG4Cj38BiMmPhJCV9ZnDeCD5PEQY/P4pgwVLaMVVBaHQH0uVJSdmEPc+R6GS02LxwbWWydafdH3jp4RgLxakg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706158981; c=relaxed/simple;
-	bh=yTBxAtNAlvrRrXbqqbEnwj1k8Nfg8dzee4sOknZfLx0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MAwtNUSkx0sgt2iaE+8h5GCKxtIft+ziAaxtMesfnLa3cNR0G5BXlzbEGnh5xFlYjoFJt3dm+NggKxZ2N2OHFe+xJoMw0KZVBvaIeTDEE/sXaeorih/g52RxjkyiKasvuJvBq7FDz2g5nFCMbnDO+Zdxh9G5Sn/T6KzV3jebfFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OPd0Tl0T; arc=none smtp.client-ip=209.85.166.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-3600b2c43a8so97105ab.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 21:02:59 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC8E5101CE;
+	Thu, 25 Jan 2024 05:03:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.156.173
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706159023; cv=fail; b=KPzLGjvHLrMcbtoPo/hksFac3R8jRNsTR1kpgfiBnBDr13Jo/qrt3Bb97PGQHhdMCdkO3eH5yvdHgwrkkjdgz4SP6Tpf7L2gQrCzO1K2d6f/9PK8lqgnSuQemIXmmFGNj4OThSWqGvPYh+Bw9Lh32P5VSv+P7ml9xNYZ9OM+oLs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706159023; c=relaxed/simple;
+	bh=Gms9xJf6LEpbDdBPDDqBOy8hqjFIEAEf3HRhDbhZd6Y=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=W2UtncHaB1vz6GQaZsfSnNLIW/gnwh/LhYwigmJVYqGKR6Bve3wQDs61Jb/1HJG3vdQpYolqLhX6ornMgEFrgzhNLidg3rLNm35IhOCAdtb2zN4OtfEHM1fsdCiNIc9Ic/qGRfe+FE2SiGG+nC0JX7eHu0A539sKx4Vkv1bqqRc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.onmicrosoft.com header.i=@marvell.onmicrosoft.com header.b=u+yinMD6; arc=fail smtp.client-ip=67.231.156.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40OHOmZN008119;
+	Wed, 24 Jan 2024 21:03:18 -0800
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3vtmgvpbkh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Jan 2024 21:03:17 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cFPvJpY2Ev6FxknTqxNvm6LscR8LV7XESJgzagD9aPvi21OJtMzEKvZEgbnvkaBvaV4ux2oCNAxtdmB2NMzNgPNWPU9t75P9tEMgB9BE44eXhA+RcHF1P7veohbCMweL1WtiUS9C196LMTngXF/vFsSP2vj5RcUKurUbNl67oSTq9s7a9CYQtVwKMU2iIdipHfJJKo1j/0Y5OYfBUjXfFpuD2GA+vLSGlhbEoM/wY6i1sNB58Co7R/3Z1KiZKvbqTy/vUL21HWtDalysHkH4W0Vl6zFfumMiYjMxhoSKrkd1O4iEMev4TlF3UqQ8kjYRKJi1Eud0lt9T0GGf9+4nZg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IvO6sLiII2177111yikdngPPnJ/Esl6IURH7/B0EPow=;
+ b=jQ/tVTrIS7S7wrQleNnXdWzeY7NXvFLIuYautm5FzLPqsJ+uAZbrpabMmeQO1xNaytSaEF2DcOAz5KJNpb62utjwdLWRlUCfVdY+Zms0gFrpyJi/DPdSwnQDYW1p6W6BDPcWlkgj5kezZsrLqg+G8UQgmmbt5A/tkQlMLloDJkdFkZiHZqJLCJD68OXkinD4vNYSQUoGFxudQERTdQltCzxRlkOFuhPrFgYrx1/en8KZVrUx1KK3uNhDYF+zcekZjYb5ZSFqmCzl0yV17EtMoSUt3IEaoye1hKSQRkR9KmXHxm9x3gy/XNzcYMp3GlrwRVIKFgGjbSOESKFnX4RqpQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706158979; x=1706763779; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ur2qqL2Es+nWoI5h1PMfL0sOBCl4L69zJ184CV5RlLY=;
-        b=OPd0Tl0TUdnYkz8RVfA6/4fu7qrt9cNgUdq9Jx93x3bhVIizvv+8fkG9Z31hfcApZh
-         wZ/AaAmJgzTWL8Ge2+OeLKDS61qaMx16xb0vIEWwuvpuZsOpQAbwxeCf9HWCMWqjY0qk
-         ErDY5U1U3T5SGO54l0fJP4EaNbD429dodo+V//Uqu3mn4nuGGBh7UcMJmjmBtd3ORrDI
-         rAICnDo44g8EvyxxVwy1fHbxzIqbMjGi1xEny+1zD/8Sn8UYP/IZu9ayQ9dkeHo2MIHi
-         2U/w6q2lpf7Jrmnei5k5D4E9utQ0VmDOxKonMe8rhJOYoJ+CwdbHuEKLKxlDC8ZxELBA
-         RXxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706158979; x=1706763779;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ur2qqL2Es+nWoI5h1PMfL0sOBCl4L69zJ184CV5RlLY=;
-        b=VrG0YzSt5nO0WGwexItiJP79JYJ9rMwIzHsCv/zVoaLY+u/yqJpW2p9UsfiELW8v9a
-         1d1mkuDPLIKlQn0nysvkh5UXc04tF4DeQaXbwoC14ELMxf5UHbg+NypBCcVX7Pv0jjTB
-         OGpVMkCJQ6z0+fhvqt/JTF4a7JlcdZREVKeliHyBC+AuYmkFCxwf+p5M2ygQyCx+4YPq
-         IbUAVxpPkP5ZvqurtoEwHDu9PINyZEVbUf/gXdSPS0YCjC9O3xk1Si7Hg40Et2QVoyO/
-         4PUekt5Ek1ZGcKL5UFjXeOEiz6O1XyVoNBleVJKEMqPu0u8J/HaasZRdX6FC3jaY1g9F
-         khFA==
-X-Gm-Message-State: AOJu0YwcReIvmNyjCudwcDQBSAe+RZays6eIEmFaT8jdIaDpc+oel8Zs
-	+veEL/HDBiPbB6XGatc8YYSkXQbAioWJK8Ks/0Zxe0OKdw9l9V0nCj58QrUUQIjUOVoc1f7qRhc
-	8rEE4WNb+lexXo1pe9HUBMMzQQlkX7tSY/XQR
-X-Google-Smtp-Source: AGHT+IHPyGcGj5jZf6bgCbSGqVdUxaQs8+5U+0wBvnaRCVoFQePFQ44IuOviDKQWe9kJu0KjrJMy2qAcaZW2WCpmlNk=
-X-Received: by 2002:a05:6e02:dc2:b0:361:8f09:f6d9 with SMTP id
- l2-20020a056e020dc200b003618f09f6d9mr93503ilj.9.1706158978556; Wed, 24 Jan
- 2024 21:02:58 -0800 (PST)
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IvO6sLiII2177111yikdngPPnJ/Esl6IURH7/B0EPow=;
+ b=u+yinMD6QMwuklVEYvmL86h4l8HzDJdzMcRgwNwMExzFTuXYSNgzURpTpK73qrF4i/xnoe71RnH1Iq8WlAyXq1ntcqx91zKCGQeaWDs4rBSQvgRCnwdYnNllpowQ1XlcRrxx2sT5bI97ioMk1VayZURN92VEtaY/+Ci0TZX7ETc=
+Received: from MWHPR1801MB1918.namprd18.prod.outlook.com
+ (2603:10b6:301:68::33) by DS0PR18MB5396.namprd18.prod.outlook.com
+ (2603:10b6:8:12b::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Thu, 25 Jan
+ 2024 05:03:15 +0000
+Received: from MWHPR1801MB1918.namprd18.prod.outlook.com
+ ([fe80::16ce:12bb:5d5:1012]) by MWHPR1801MB1918.namprd18.prod.outlook.com
+ ([fe80::16ce:12bb:5d5:1012%4]) with mapi id 15.20.7228.015; Thu, 25 Jan 2024
+ 05:03:15 +0000
+From: Ratheesh Kannoth <rkannoth@marvell.com>
+To: Simon Horman <horms@kernel.org>
+CC: Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
+        "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com"
+	<edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        Geethasowjanya Akula
+	<gakula@marvell.com>,
+        Hariprasad Kelam <hkelam@marvell.com>,
+        Suman Ghosh
+	<sumang@marvell.com>
+Subject: RE: [EXT] Re: [PATCH net] octeontx2-af: Initialize bitmap arrays.
+Thread-Topic: [EXT] Re: [PATCH net] octeontx2-af: Initialize bitmap arrays.
+Thread-Index: 
+ AQHaTbrXg+zTduWcbkyHpGKMW10e/rDntVQAgACO+HCAAIMFgIAAAFawgACx4oCAAIIVYA==
+Date: Thu, 25 Jan 2024 05:03:15 +0000
+Message-ID: 
+ <MWHPR1801MB1918AD55E5A7E2B2CE91CC98D37A2@MWHPR1801MB1918.namprd18.prod.outlook.com>
+References: <20240123051245.3801246-1-rkannoth@marvell.com>
+ <20240123181716.GP254773@kernel.org>
+ <MWHPR1801MB1918ADCA9FD3FAFAF9CC68B3D37B2@MWHPR1801MB1918.namprd18.prod.outlook.com>
+ <20240124103755.GY254773@kernel.org>
+ <MWHPR1801MB191860047DEE03672DC642E3D37B2@MWHPR1801MB1918.namprd18.prod.outlook.com>
+ <20240124211547.GD217708@kernel.org>
+In-Reply-To: <20240124211547.GD217708@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-rorf: true
+x-dg-ref: 
+ =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNccmthbm5vdGhc?=
+ =?us-ascii?Q?YXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRi?=
+ =?us-ascii?Q?YTI5ZTM1Ylxtc2dzXG1zZy0wOGJjNzRmYi1iYjNmLTExZWUtYjcwNC04MDM4?=
+ =?us-ascii?Q?ZmJmMmM2MjJcYW1lLXRlc3RcMDhiYzc0ZmQtYmIzZi0xMWVlLWI3MDQtODAz?=
+ =?us-ascii?Q?OGZiZjJjNjIyYm9keS50eHQiIHN6PSIxMzIyIiB0PSIxMzM1MDYzMjU5MDkx?=
+ =?us-ascii?Q?MzI0NDQiIGg9IkhaNVN1RlVGcmJuM0lZdldvMDluVlVOSEQ5QT0iIGlkPSIi?=
+ =?us-ascii?Q?IGJsPSIwIiBibz0iMSIgY2k9ImNBQUFBRVJIVTFSU1JVRk5DZ1VBQUJnV0FB?=
+ =?us-ascii?Q?Q2MxQlRMUzAvYUFiZDEraDc2NURoNXQzWDZIdnJrT0hrWkFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFIQUFBQUJ1RHdBQTNnOEFBRG9HQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFFQUFRRUJBQUFBOVJlbkx3Q0FBUUFBQUFBQUFBQUFBSjRBQUFCaEFHUUFa?=
+ =?us-ascii?Q?QUJ5QUdVQWN3QnpBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR01BZFFCekFIUUFid0J0QUY4QWNB?=
+ =?us-ascii?Q?QmxBSElBY3dCdkFHNEFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FB?=
+ =?us-ascii?Q?QUFBQUNlQUFBQVl3QjFBSE1BZEFCdkFHMEFYd0J3QUdnQWJ3QnVBR1VBYmdC?=
+ =?us-ascii?Q?MUFHMEFZZ0JsQUhJQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJqQUhV?=
+ =?us-ascii?Q?QWN3QjBBRzhBYlFCZkFITUFjd0J1QUY4QVpBQmhBSE1BYUFCZkFIWUFNQUF5?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-refone: 
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFH?=
+ =?us-ascii?Q?TUFkUUJ6QUhRQWJ3QnRBRjhBY3dCekFHNEFYd0JyQUdVQWVRQjNBRzhBY2dC?=
+ =?us-ascii?Q?a0FITUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VBQUFBWXdCMUFITUFkQUJ2QUcw?=
+ =?us-ascii?Q?QVh3QnpBSE1BYmdCZkFHNEFid0JrQUdVQWJBQnBBRzBBYVFCMEFHVUFjZ0Jm?=
+ =?us-ascii?Q?QUhZQU1BQXlBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFB?=
+ =?us-ascii?Q?QUFBSUFBQUFBQUo0QUFBQmpBSFVBY3dCMEFHOEFiUUJmQUhNQWN3QnVBRjhB?=
+ =?us-ascii?Q?Y3dCd0FHRUFZd0JsQUY4QWRnQXdBRElBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FB?=
+ =?us-ascii?Q?QUdRQWJBQndBRjhBY3dCckFIa0FjQUJsQUY4QVl3Qm9BR0VBZEFCZkFHMEFa?=
+ =?us-ascii?Q?UUJ6QUhNQVlRQm5BR1VBWHdCMkFEQUFNZ0FBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFDZUFBQUFaQUJzQUhBQVh3QnpB?=
+ =?us-ascii?Q?R3dBWVFCakFHc0FYd0JqQUdnQVlRQjBBRjhBYlFCbEFITUFjd0JoQUdjQVpR?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-reftwo: 
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCa0FHd0FjQUJm?=
+ =?us-ascii?Q?QUhRQVpRQmhBRzBBY3dCZkFHOEFiZ0JsQUdRQWNnQnBBSFlBWlFCZkFHWUFh?=
+ =?us-ascii?Q?UUJzQUdVQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVB?=
+ =?us-ascii?Q?QUFBQUFBQUFBZ0FBQUFBQW5nQUFBR1VBYlFCaEFHa0FiQUJmQUdFQVpBQmtB?=
+ =?us-ascii?Q?SElBWlFCekFITUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFB?=
+ =?us-ascii?Q?QUNlQUFBQWJRQmhBSElBZGdCbEFHd0FYd0J3QUhJQWJ3QnFBR1VBWXdCMEFG?=
+ =?us-ascii?Q?OEFiZ0JoQUcwQVpRQnpBRjhBWXdCdkFHNEFaZ0JwQUdRQVpRQnVBSFFBYVFC?=
+ =?us-ascii?Q?aEFHd0FYd0JoQUd3QWJ3QnVBR1VBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJ0QUdFQWNn?=
+ =?us-ascii?Q?QjJBR1VBYkFCZkFIQUFjZ0J2QUdvQVpRQmpBSFFBWHdCdUFHRUFiUUJsQUhN?=
+ =?us-ascii?Q?QVh3QnlBR1VBY3dCMEFISUFhUUJqQUhRQVpRQmtBRjhBWVFCc0FHOEFiZ0Js?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?RUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFHMEFZUUJ5QUhZQVpRQnNBRjhBY0FC?=
+ =?us-ascii?Q?eUFHOEFhZ0JsQUdNQWRBQmZBRzRBWVFCdEFHVUFjd0JmQUhJQVpRQnpBSFFB?=
+ =?us-ascii?Q?Y2dCcEFHTUFkQUJsQUdRQVh3Qm9BR1VBZUFCakFHOEFaQUJsQUhNQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFB?=
+ =?us-ascii?Q?QUFBQ2VBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBR0VBY2dCdEFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-refthree: 
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFB?=
+ =?us-ascii?Q?SUFBQUFBQUo0QUFBQnRBR0VBY2dCMkFHVUFiQUJzQUY4QVp3QnZBRzhBWndC?=
+ =?us-ascii?Q?c0FHVUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUcw?=
+ =?us-ascii?Q?QVlRQnlBSFlBWlFCc0FHd0FYd0J3QUhJQWJ3QnFBR1VBWXdCMEFGOEFZd0J2?=
+ =?us-ascii?Q?QUdRQVpRQnpBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFDZUFBQUFiUUJoQUhJQWRnQmxBR3dB?=
+ =?us-ascii?Q?YkFCZkFIQUFjZ0J2QUdvQVpRQmpBSFFBWHdCakFHOEFaQUJsQUhNQVh3QmtB?=
+ =?us-ascii?Q?R2tBWXdCMEFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFB?=
+ =?us-ascii?Q?QUFJQUFBQUFBSjRBQUFCdEFHRUFjZ0IyQUdVQWJBQnNBRjhBY0FCeUFHOEFh?=
+ =?us-ascii?Q?Z0JsQUdNQWRBQmZBRzRBWVFCdEFHVUFjd0JmQUdNQWJ3QnVBR1lBYVFCa0FH?=
+ =?us-ascii?Q?VUFiZ0IwQUdrQVlRQnNBRjhBYlFCaEFISUFkZ0JsQUd3QWJBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFB?=
+ =?us-ascii?Q?RzBBWVFCeUFIWUFaUUJzQUd3QVh3QndBSElBYndCcUFHVUFZd0IwQUY4QWJn?=
+ =?us-ascii?Q?QmhBRzBBWlFCekFGOEFZd0J2QUc0QVpnQnBBR1FBWlFCdUFIUUFhUUJoQUd3?=
+ =?us-ascii?Q?QVh3QnRBR0VBY2dCMkFHVUFiQUJzQUY4QWJ3QnlBRjhBWVFCeUFHMEFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-reffour: 
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNl?=
+ =?us-ascii?Q?QUFBQWJRQmhBSElBZGdCbEFHd0FiQUJmQUhBQWNnQnZBR29BWlFCakFIUUFY?=
+ =?us-ascii?Q?d0J1QUdFQWJRQmxBSE1BWHdCakFHOEFiZ0JtQUdrQVpBQmxBRzRBZEFCcEFH?=
+ =?us-ascii?Q?RUFiQUJmQUcwQVlRQnlBSFlBWlFCc0FHd0FYd0J2QUhJQVh3Qm5BRzhBYndC?=
+ =?us-ascii?Q?bkFHd0FaUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJ0QUdFQWNnQjJB?=
+ =?us-ascii?Q?R1VBYkFCc0FGOEFjQUJ5QUc4QWFnQmxBR01BZEFCZkFHNEFZUUJ0QUdVQWN3?=
+ =?us-ascii?Q?QmZBSElBWlFCekFIUUFjZ0JwQUdNQWRBQmxBR1FBWHdCdEFHRUFjZ0IyQUdV?=
+ =?us-ascii?Q?QWJBQnNBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFnQUFBQUFBbmdBQUFHMEFZUUJ5QUhZQVpRQnNBR3dBWHdCd0FI?=
+ =?us-ascii?Q?SUFid0JxQUdVQVl3QjBBRjhBYmdCaEFHMEFaUUJ6QUY4QWNnQmxBSE1BZEFC?=
+ =?us-ascii?Q?eUFHa0FZd0IwQUdVQVpBQmZBRzBBWVFCeUFIWUFaUUJzQUd3QVh3QnZBSElB?=
+ =?us-ascii?Q?WHdCaEFISUFiUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFB?=
+ =?us-ascii?Q?Q2VBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBSFFBWlFCeUFHMEFhUUJ1QUhV?=
+ =?us-ascii?Q?QWN3QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQnRBR0VBY2dC?=
+ =?us-ascii?Q?MkFHVUFiQUJzQUY4QWR3QnZBSElBWkFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFF?=
+ =?us-ascii?Q?QUFBQUFBQUFBQWdBQUFBQUFPZ1lBQUFBQUFBQUlBQUFBQUFBQUFBZ0FBQUFB?=
+ =?us-ascii?Q?QUFBQUNBQUFBQUFBQUFBYUJnQUFHUUFBQUJn?=
+x-dg-reffive: 
+ =?us-ascii?Q?QUFBQUFBQUFBWVFCa0FHUUFjZ0JsQUhNQWN3QUFBQ1FBQUFBQkFBQUFZd0Ix?=
+ =?us-ascii?Q?QUhNQWRBQnZBRzBBWHdCd0FHVUFjZ0J6QUc4QWJnQUFBQzRBQUFBQUFBQUFZ?=
+ =?us-ascii?Q?d0IxQUhNQWRBQnZBRzBBWHdCd0FHZ0Fid0J1QUdVQWJnQjFBRzBBWWdCbEFI?=
+ =?us-ascii?Q?SUFBQUF3QUFBQUFBQUFBR01BZFFCekFIUUFid0J0QUY4QWN3QnpBRzRBWHdC?=
+ =?us-ascii?Q?a0FHRUFjd0JvQUY4QWRnQXdBRElBQUFBd0FBQUFBQUFBQUdNQWRRQnpBSFFB?=
+ =?us-ascii?Q?YndCdEFGOEFjd0J6QUc0QVh3QnJBR1VBZVFCM0FHOEFjZ0JrQUhNQUFBQStB?=
+ =?us-ascii?Q?QUFBQUFBQUFHTUFkUUJ6QUhRQWJ3QnRBRjhBY3dCekFHNEFYd0J1QUc4QVpB?=
+ =?us-ascii?Q?QmxBR3dBYVFCdEFHa0FkQUJsQUhJQVh3QjJBREFBTWdBQUFESUFBQUFBQUFB?=
+ =?us-ascii?Q?QVl3QjFBSE1BZEFCdkFHMEFYd0J6QUhNQWJnQmZBSE1BY0FCaEFHTUFaUUJm?=
+ =?us-ascii?Q?QUhZQU1BQXlBQUFBUGdBQUFBQUFBQUJrQUd3QWNBQmZBSE1BYXdCNUFIQUFa?=
+ =?us-ascii?Q?UUJmQUdNQWFBQmhBSFFBWHdCdEFHVUFjd0J6QUdFQVp3QmxBRjhBZGdBd0FE?=
+ =?us-ascii?Q?SUFBQUEyQUFBQUFBQUFBR1FBYkFCd0FGOEFjd0JzQUdFQVl3QnJBRjhBWXdC?=
+ =?us-ascii?Q?b0FHRUFkQUJmQUcwQVpRQnpBSE1BWVFCbkFHVUFBQUE0QUFBQUFBQUFBR1FB?=
+ =?us-ascii?Q?YkFCd0FGOEFkQUJsQUdFQWJRQnpBRjhBYndCdUFHVUFaQUJ5QUdrQWRnQmxB?=
+ =?us-ascii?Q?RjhBWmdCcEFHd0FaUUFBQUNRQUFBQUJBQUFBWlFCdEFHRUFhUUJzQUY4QVlR?=
+ =?us-ascii?Q?QmtBR1FBY2dCbEFITUFjd0FBQUZnQUFBQUFBQUFBYlFCaEFISUFkZ0JsQUd3?=
+ =?us-ascii?Q?QVh3QndBSElBYndCcUFHVUFZd0IwQUY4QWJnQmhBRzBBWlFCekFGOEFZd0J2?=
+ =?us-ascii?Q?QUc0QVpnQnBBR1FBWlFCdUFIUUFhUUJoQUd3QVh3QmhBR3dBYndCdUFHVUFB?=
+ =?us-ascii?Q?QUJVQUFBQUFBQUFBRzBBWVFCeUFIWUFaUUJzQUY4QWNBQnlBRzhBYWdCbEFH?=
+ =?us-ascii?Q?TUFkQUJmQUc0QVlRQnRBR1VBY3dCZkFISUFaUUJ6QUhRQWNnQnBBR01BZEFC?=
+ =?us-ascii?Q?bEFHUUFYd0JoQUd3QWJ3QnVBR1VBQUFCYUFBQUFBQUFBQUcwQVlRQnlBSFlB?=
+ =?us-ascii?Q?WlFCc0FGOEFjQUJ5QUc4QWFnQmxBR01BZEFCZkFHNEFZUUJ0QUdVQWN3QmZB?=
+ =?us-ascii?Q?SElBWlFCekFIUUFjZ0JwQUdNQWRBQmxBR1FBWHdCb0FHVUFlQUJqQUc4QVpB?=
+ =?us-ascii?Q?QmxBSE1BQUFBZ0FBQUFBQUFBQUcwQVlRQnlBSFlBWlFCc0FHd0FYd0JoQUhJ?=
+ =?us-ascii?Q?QWJRQUFBQ1lBQUFBQUFBQUFiUUJoQUhJQWRnQmxBR3dBYkFCZkFHY0Fid0J2?=
+ =?us-ascii?Q?QUdjQWJBQmxBQUFBTkFBQUFBQUFBQUJ0QUdF?=
+x-dg-refsix: 
+ =?us-ascii?Q?QWNnQjJBR1VBYkFCc0FGOEFjQUJ5QUc4QWFnQmxBR01BZEFCZkFHTUFid0Jr?=
+ =?us-ascii?Q?QUdVQWN3QUFBRDRBQUFBQUFBQUFiUUJoQUhJQWRnQmxBR3dBYkFCZkFIQUFj?=
+ =?us-ascii?Q?Z0J2QUdvQVpRQmpBSFFBWHdCakFHOEFaQUJsQUhNQVh3QmtBR2tBWXdCMEFB?=
+ =?us-ascii?Q?QUFYZ0FBQUFBQUFBQnRBR0VBY2dCMkFHVUFiQUJzQUY4QWNBQnlBRzhBYWdC?=
+ =?us-ascii?Q?bEFHTUFkQUJmQUc0QVlRQnRBR1VBY3dCZkFHTUFid0J1QUdZQWFRQmtBR1VB?=
+ =?us-ascii?Q?YmdCMEFHa0FZUUJzQUY4QWJRQmhBSElBZGdCbEFHd0FiQUFBQUd3QUFBQUFB?=
+ =?us-ascii?Q?QUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBSEFBY2dCdkFHb0FaUUJqQUhRQVh3?=
+ =?us-ascii?Q?QnVBR0VBYlFCbEFITUFYd0JqQUc4QWJnQm1BR2tBWkFCbEFHNEFkQUJwQUdF?=
+ =?us-ascii?Q?QWJBQmZBRzBBWVFCeUFIWUFaUUJzQUd3QVh3QnZBSElBWHdCaEFISUFiUUFB?=
+ =?us-ascii?Q?QUhJQUFBQUFBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBSEFBY2dCdkFHb0Fa?=
+ =?us-ascii?Q?UUJqQUhRQVh3QnVBR0VBYlFCbEFITUFYd0JqQUc4QWJnQm1BR2tBWkFCbEFH?=
+ =?us-ascii?Q?NEFkQUJwQUdFQWJBQmZBRzBBWVFCeUFIWUFaUUJzQUd3QVh3QnZBSElBWHdC?=
+ =?us-ascii?Q?bkFHOEFid0JuQUd3QVpRQUFBRm9BQUFBQUFBQUFiUUJoQUhJQWRnQmxBR3dB?=
+ =?us-ascii?Q?YkFCZkFIQUFjZ0J2QUdvQVpRQmpBSFFBWHdCdUFHRUFiUUJsQUhNQVh3QnlB?=
+ =?us-ascii?Q?R1VBY3dCMEFISUFhUUJqQUhRQVpRQmtBRjhBYlFCaEFISUFkZ0JsQUd3QWJB?=
+ =?us-ascii?Q?QUFBR2dBQUFBQUFBQUFiUUJoQUhJQWRnQmxBR3dBYkFCZkFIQUFjZ0J2QUdv?=
+ =?us-ascii?Q?QVpRQmpBSFFBWHdCdUFHRUFiUUJsQUhNQVh3QnlBR1VBY3dCMEFISUFhUUJq?=
+ =?us-ascii?Q?QUhRQVpRQmtBRjhBYlFCaEFISUFkZ0JsQUd3QWJBQmZBRzhBY2dCZkFHRUFj?=
+ =?us-ascii?Q?Z0J0QUFBQUtnQUFBQUFBQUFCdEFHRUFjZ0IyQUdVQWJBQnNBRjhBZEFCbEFI?=
+ =?us-ascii?Q?SUFiUUJwQUc0QWRRQnpBQUFBSWdBQUFBQUFBQUJ0QUdFQWNnQjJBR1VBYkFC?=
+ =?us-ascii?Q?c0FGOEFkd0J2QUhJQVpBQUFBQT09Ii8+PC9tZXRhPg=3D=3D?=
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MWHPR1801MB1918:EE_|DS0PR18MB5396:EE_
+x-ms-office365-filtering-correlation-id: 0b911b72-e092-401e-39b4-08dc1d62f020
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ NMx8PGAF/TeyZQ4jCW6ilQ6b2rGcFgO+8AuPjuMeUkl+w36pny3t1jJK23hFa53uVxaIASMH9zUUbZpFSOiw9AO+7lYvK/nlRLbKYOauG+Q+HgDWVfqHKGKgG1hgEKzv46Fk8555wPrJVgY0EryczsDqrbuKGmnor8jxIrXPCGFRHMFS5IpNxR+XxpA51wi6NYB93pDvBaYZiFQxCaAwbWEfNoAUkkpTLn6Y8kffpH5rEXEwCjuylfBmRL51Bt/OW1k3wshuzqeHLXMgdplnEeK04n4NXrUJfDzeuODIfXt6nQoWqESjBKNOEQX+pbDF7NhEXDVxlwhSzlD/93wuEE6F4jx6ol1d7LJDIUtt2Ai3Ey4YW9K0FySepEfMVe+jRTAkt+2SlCuahKlkovhJx0A5DUFU+s/p1Pmba9iiG6hwVfFT4jw+pv5KKvNEpKfnaeJTpGAymdw+yjU5GFWFAwtxchH7uvsYX3OhXqRnDDrjhWkCJxjvXNTjdbrVV845NHNJBnwIVCLfYilZV77uv6/gtVbyx7NFmXg+lBt19Et2A1Sw03bfGgdXCt2W5SxXX1aa6SoWaPzyV62KA/hhc3xzlY1OBMJdC2M3oWqoyPuteWWHOcQ7Xi1fu7sgG6fl
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1801MB1918.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(376002)(39860400002)(346002)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(71200400001)(107886003)(4744005)(26005)(55236004)(7696005)(9686003)(6506007)(478600001)(52536014)(8936002)(8676002)(4326008)(2906002)(41300700001)(5660300002)(316002)(6916009)(66556008)(66446008)(76116006)(66476007)(64756008)(54906003)(55016003)(86362001)(66946007)(38070700009)(33656002)(122000001)(38100700002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?us-ascii?Q?s9aNpuO9sWyOy7bvGZd/pY2UDU+CmOTtqKfcIbovyt9RX87qn8OUiER9/Css?=
+ =?us-ascii?Q?zOATaSsUGukZyyX5yr5N1HhU/c/x0pBdU34nlR3jzX0YWy9lEDcQcQ5C5bHB?=
+ =?us-ascii?Q?d14z5KC3C9L8e1L/IUPK+2zQ9I6aAarJoJ0R3ZskuNW5MMMCnF0AxkhChL1F?=
+ =?us-ascii?Q?HVPEtD2PmoEI/WSYFNAbSS1c++2+vy/vJ1s9dgQ9FOfI8QSVYjjQREu7jRca?=
+ =?us-ascii?Q?BxrhQ9NPEpAvwFj8Jt2ApsHNeWKOOZH/L9AK4Sv2V+UXL9/PyO55fN/drVKR?=
+ =?us-ascii?Q?c9+EXl+3mRiZ3CWZw9+BvxKPferc7C3FATHIDhNNqCcwd2CVorAs1WYQZAum?=
+ =?us-ascii?Q?A7qLykEdTD8JGym6Mdmbix/U6UtePI+aJZVjVXMxfeIMjg0aYTNRtyr+oioE?=
+ =?us-ascii?Q?aS403+zrtze8yt+b3cwo8kPVS5vcKjD7r9p4VJQSAjUeReOsmPGPHcBK3yuH?=
+ =?us-ascii?Q?5BDhOOAmw6tCH10O9ZyHWYVHCLYu3x8Pjljh6Uy1jEYYAQN0vTMTeFgvHVwf?=
+ =?us-ascii?Q?KIVPmPfMVOrA14upsObGgB+e6tHFLxLDeC+bGlhJXx7D+qlQ3i5WSBXCuXh7?=
+ =?us-ascii?Q?ubIKxS776xsW+4PPjzSvQpNzMRc/LDMQrJOXF3bY3BRsVsAljSIZrnna0OI4?=
+ =?us-ascii?Q?l/M/pS4dHLB0L9da7MSW6erEggCfFNydoXfQPP8TdcPxETMXwhUJ667+HaY3?=
+ =?us-ascii?Q?yqMTZIjQXxJ5HA1hn38jdZ/93CkWt5QIRzgxYE4EdyX4IwvklD+ElY4If8As?=
+ =?us-ascii?Q?ZuSuSs0YHNas/4/5EdAC0fQg42Kx1Tb4usDlQMqaMeuNUAXS8svMSEPP2vEG?=
+ =?us-ascii?Q?g3KHAFYZQpErzFeu+if2v3MVVQunoKvmKznKWZuLvGnloffyHIPqwMv3hvYj?=
+ =?us-ascii?Q?Cc5Eu3QQ8GEDXCcJ1JNsk88V8boEXEw2JckIMUVNvzK8hNU48VKfGek7lpBF?=
+ =?us-ascii?Q?BKXm7Zs9X1+eX3qZxhRffvtISUUeISs0uUv5orOlZX2RnzB2vEL9CG7eLCII?=
+ =?us-ascii?Q?TwW4ZfiI+q2ic8/xqr8xi3+hQPUH8CTs+Ch0nYr3sdbf071PoPZT3HXI/AWJ?=
+ =?us-ascii?Q?bZLh+Qg/e73luw3eLw+sd8ZG8fgLb7rwE1u9pSenlu3OHHmyIDpkzJqxmE6Z?=
+ =?us-ascii?Q?HGeGUq9gAhrLVTadu+LjLZK8ssuOzJLgsSCpSfMwpfoh9I15MVSxpFVKpfv6?=
+ =?us-ascii?Q?+j6pWYCyolEiUbp9OeaMgENw0/tHkfDF0JtZx80xahn97hg36gmsYjvcok6U?=
+ =?us-ascii?Q?LBDUd6EW5cDSv+OwW/KNeYnnrPEA8bdnUr0R/SKDxsLWGeOYV9kDu/HEl9sk?=
+ =?us-ascii?Q?nNcGGfyVFJ80kOCeIXkDGReii7P0mdfkToNGG8npRfGT8foOVEyp1+FuUv34?=
+ =?us-ascii?Q?SO8h9GFIMPNLIRrYWeNWGKVmvwpHp069NpG9jtKJkod/nql97w4Xj87XmjHV?=
+ =?us-ascii?Q?DCybfpfH+a6yBR7zqOEjU8x3D/tt8iZBW3nYW9DeCMfsBE60ecG8SJXXSZu0?=
+ =?us-ascii?Q?9O/cl0AF1N+rT9VIJehVUzegmxRele/7bcKUjccQFQJsM1cCG92rDbvcvboV?=
+ =?us-ascii?Q?vLy5DFLupiS2zHMsGWMPZpKYLs3XkxME2mwUBZG+?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231212230224.1473300-1-weilin.wang@intel.com> <20231212230224.1473300-15-weilin.wang@intel.com>
-In-Reply-To: <20231212230224.1473300-15-weilin.wang@intel.com>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 24 Jan 2024 21:02:47 -0800
-Message-ID: <CAP-5=fU4k-V7+bq7evP4Kr6ng5eSTmYQKp9cqsRX6KRZWiRVFw@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 13/18] perf stat: Handle taken alone in hardware-grouping
-To: weilin.wang@intel.com
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
-	Caleb Biggers <caleb.biggers@intel.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Yang Jihong <yangjihong1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1801MB1918.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b911b72-e092-401e-39b4-08dc1d62f020
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jan 2024 05:03:15.1851
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kcMVyiFwuxVtM1TepY+f/ohwIpU8Me7nIcJQUdtSUnZ56YnJYD/cIKPcOIQOIFqCw9mNBgFbt5zGv/fFKUngYg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR18MB5396
+X-Proofpoint-ORIG-GUID: qBthnDehnY9LAWVwZ7YKUGSRghJW3rBs
+X-Proofpoint-GUID: qBthnDehnY9LAWVwZ7YKUGSRghJW3rBs
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-25_02,2024-01-24_01,2023-05-22_02
 
-On Tue, Dec 12, 2023 at 3:03=E2=80=AFPM <weilin.wang@intel.com> wrote:
->
-> From: Weilin Wang <weilin.wang@intel.com>
->
-> Add taken alone into consideration when grouping. Only one taken
-> alone event is supported per group.
+> From: Simon Horman <horms@kernel.org>
+> Subject: Re: [EXT] Re: [PATCH net] octeontx2-af: Initialize bitmap arrays=
+.
 
-This seems to be a deficiency also in parse_events__sort_events_and_fix_gro=
-ups:
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/tools/perf/util/parse-events.c?h=3Dperf-tools-next#n2025
-Is there an example of events that must be taken alone? Perhaps
-because they share a fixed counter?
 
-Thanks,
-Ian
+> I do understand that devm_free() exists, and there are cases where it mak=
+es
+> sense. But I don't think devm_ is buying us anything here.
+For graceful Error handling, this API makes sense.  =20
 
-> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
-> ---
->  tools/perf/pmu-events/jevents.py   |  7 +++++--
->  tools/perf/pmu-events/pmu-events.h |  1 +
->  tools/perf/util/metricgroup.c      | 18 +++++++++++++-----
->  tools/perf/util/metricgroup.h      |  2 ++
->  4 files changed, 21 insertions(+), 7 deletions(-)
->
-> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jev=
-ents.py
-> index 16f17d335f8e..e5919e5e6d4a 100755
-> --- a/tools/perf/pmu-events/jevents.py
-> +++ b/tools/perf/pmu-events/jevents.py
-> @@ -55,7 +55,9 @@ _json_event_attributes =3D [
->      # Counter this event could use
->      'counter',
->      # Longer things (the last won't be iterated over during decompress).
-> -    'long_desc'
-> +    'long_desc',
-> +    # Taken alone event could not be collected in the same group with ot=
-her taken alone event
-> +    'taken_alone'
->  ]
->
->  # Attributes that are in pmu_unit_layout.
-> @@ -71,7 +73,7 @@ _json_metric_attributes =3D [
->  ]
->  # Attributes that are bools or enum int values, encoded as '0', '1',...
->  _json_enum_attributes =3D ['aggr_mode', 'deprecated', 'event_grouping', =
-'perpkg',
-> -    'size', 'fixed_size'
-> +    'size', 'fixed_size', 'taken_alone'
->  ]
->
->  def removesuffix(s: str, suffix: str) -> str:
-> @@ -331,6 +333,7 @@ class JsonEvent:
->        extra_desc +=3D '  Spec update: ' + jd['Errata']
->      self.pmu =3D unit_to_pmu(jd.get('Unit'))
->      self.counter =3D jd.get('Counter')
-> +    self.taken_alone =3D jd.get('TakenAlone')
->      self.size =3D jd.get('Size')
->      self.fixed_size =3D jd.get('FixedSize')
->      filter =3D jd.get('Filter')
-> diff --git a/tools/perf/pmu-events/pmu-events.h b/tools/perf/pmu-events/p=
-mu-events.h
-> index 65e0c5dd8bb4..ce10356e9665 100644
-> --- a/tools/perf/pmu-events/pmu-events.h
-> +++ b/tools/perf/pmu-events/pmu-events.h
-> @@ -50,6 +50,7 @@ struct pmu_event {
->         const char *unit;
->         bool perpkg;
->         bool deprecated;
-> +       bool taken_alone;
->  };
->
->  struct pmu_metric {
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.=
-c
-> index 016ea949ba5d..78e607f3ad56 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -1624,6 +1624,7 @@ static void metricgroup__free_pmu_info(struct list_=
-head *pmu_info_list)
->  static struct metricgroup__event_info *event_info__new(const char *name,
->                                                       const char *pmu_nam=
-e,
->                                                       const char *counter=
-,
-> +                                                     bool taken_alone,
->                                                       bool free_counter)
->  {
->         int ret =3D 0;
-> @@ -1638,6 +1639,7 @@ static struct metricgroup__event_info *event_info__=
-new(const char *name,
->                 pmu_name =3D "core";
->
->         e->name =3D name;
-> +       e->taken_alone =3D taken_alone;
->         e->free_counter =3D free_counter;
->         e->pmu_name =3D pmu_name;
->         if (free_counter) {
-> @@ -1676,7 +1678,8 @@ static int metricgroup__add_metric_event_callback(c=
-onst struct pmu_event *pe,
->         if (!strcasecmp(pe->name, d->event_name)) {
->                 if (!pe->counter)
->                         return -EINVAL;
-> -               event =3D event_info__new(d->event_id, pe->pmu, pe->count=
-er, /*free_counter=3D*/false);
-> +               event =3D event_info__new(d->event_id, pe->pmu, pe->count=
-er,
-> +                                       pe->taken_alone, /*free_counter=
-=3D*/false);
->                 if (!event)
->                         return -ENOMEM;
->                 list_add(&event->nd, d->list);
-> @@ -1799,6 +1802,8 @@ static int find_and_set_counters(struct metricgroup=
-__event_info *e,
->         int ret;
->         unsigned long find_bit =3D 0;
->
-> +       if (e->taken_alone && current_group->taken_alone)
-> +               return -ENOSPC;
->         if (e->free_counter)
->                 return 0;
->         if (e->fixed_counter) {
-> @@ -1833,11 +1838,13 @@ static int _insert_event(struct metricgroup__even=
-t_info *e,
->                 list_add(&event->nd, &group->event_head);
->         else
->                 list_add_tail(&event->nd, &group->event_head);
-> +       if (e->taken_alone)
-> +               group->taken_alone =3D true;
->         return 0;
->  }
->
->  /**
-> - * Insert the new_group node at the end of the group list.
-> + * Initialize the new group and insert it to the end of the group list.
->   */
->  static int insert_new_group(struct list_head *head,
->                            struct metricgroup__group *new_group,
-> @@ -1847,6 +1854,7 @@ static int insert_new_group(struct list_head *head,
->         INIT_LIST_HEAD(&new_group->event_head);
->         fill_counter_bitmap(new_group->gp_counters, 0, size);
->         fill_counter_bitmap(new_group->fixed_counters, 0, fixed_size);
-> +       new_group->taken_alone =3D false;
->         list_add_tail(&new_group->nd, head);
->         return 0;
->  }
-> @@ -2050,8 +2058,8 @@ static int create_grouping(struct list_head *pmu_in=
-fo_list,
->         //TODO: for each new core group, we should consider to add events=
- that uses fixed counters
->         list_for_each_entry(e, event_info_list, nd) {
->                 bitmap_scnprintf(e->counters, NR_COUNTERS, bit_buf, NR_CO=
-UNTERS);
-> -               pr_debug("Event name %s, [pmu]=3D%s, [counters]=3D%s\n", =
-e->name,
-> -                       e->pmu_name, bit_buf);
-> +               pr_debug("Event name %s, [pmu]=3D%s, [counters]=3D%s, [ta=
-ken_alone]=3D%d\n",
-> +                       e->name, e->pmu_name, bit_buf, e->taken_alone);
->                 ret =3D assign_event_grouping(e, pmu_info_list, &groups);
->                 if (ret)
->                         goto out;
-> @@ -2098,7 +2106,7 @@ static int hw_aware_build_grouping(struct expr_pars=
-e_ctx *ctx __maybe_unused,
->                 if (is_special_event(id)) {
->                         struct metricgroup__event_info *event;
->
-> -                       event =3D event_info__new(id, "default_core", "0"=
-,
-> +                       event =3D event_info__new(id, "default_core", "0"=
-, false,
->                                                 /*free_counter=3D*/true);
->                         if (!event)
->                                 goto err_out;
-> diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.=
-h
-> index 37fdf8c5ba77..8f6a1bb9d1ad 100644
-> --- a/tools/perf/util/metricgroup.h
-> +++ b/tools/perf/util/metricgroup.h
-> @@ -105,6 +105,7 @@ struct metricgroup__event_info {
->         const char *pmu_name;
->         bool fixed_counter;
->         bool free_counter;
-> +       bool taken_alone;
->         /** The counters the event allowed to be collected on. */
->         DECLARE_BITMAP(counters, NR_COUNTERS);
->  };
-> @@ -154,6 +155,7 @@ struct metricgroup__group {
->         DECLARE_BITMAP(fixed_counters, NR_COUNTERS);
->         /** Head to the list of event names in this group*/
->         struct list_head event_head;
-> +       bool taken_alone;
->  };
->
->  struct metricgroup__group_events {
-> --
-> 2.39.3
->
+> 1. Use kcalloc() instead of devm_kcalloc() 2. Not change kfree() calls to
+> devm_kfree()
+>=20
+> Then you will end up with a smaller diff than the current patch.
+> And it will address the problem described in the patch description.
+ACK.
 
