@@ -1,115 +1,244 @@
-Return-Path: <linux-kernel+bounces-38350-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F9DB83BE2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:00:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0371A83BE38
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:02:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAE1228BBDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:00:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84DE41F255B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 345091C6A1;
-	Thu, 25 Jan 2024 09:59:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E05641C6B5;
+	Thu, 25 Jan 2024 10:02:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qTRTDKBo"
-Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="VvEyrU92"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B48E1C69E
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:59:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F28C71C686;
+	Thu, 25 Jan 2024 10:02:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706176794; cv=none; b=h/CDQ4IDTd7a6GOcdYKZaYra7xBAh2yMigLYvdayKiZqo1JekdNAAu7ysqvyjut2G48qRopOtgv+ETI3DeSB92wR7qODF2ZN23VIF7ziqMkegqab1chEleBkP3O2sC+S3e7/DsjQI6TBgOe93YSXhHDrEkJh6Laji/+OFDIRScY=
+	t=1706176949; cv=none; b=GcHimR7tXEasaTWUOxaJ5NUVLYQXqGOdpXDZ1J9Xeg466YDM12q8PYsGLzgT7aqLYLknuUJ9nekO/STpUfK78N+MUWyxzucHGq9bv/ILUibfLxtfTQSgo3xHzqLPe4upb55qr1oiT4F4bnSUsg0lB7+dhXsEAYGdf8XytJOSAoc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706176794; c=relaxed/simple;
-	bh=ApUQmlkxa81ceXyof4WusvA21E0Fg32BgwslQHx9PRw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FMrbs1T6DCmIwy8o0+I6z7DAlGn3WW/8yBD1B0G+Sfyeu+1w8TDvWMK8TGljbvdRvgeoqgScC+LCsvqgIK591u5b+V4Knc3cN55S/mRwejwuiHnvIuFB4MQDkp88suFLPHsxA3vWiW9lS/lkMiwJ1J5wihbgHP7Xq/a5/tFZVZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qTRTDKBo; arc=none smtp.client-ip=209.85.217.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-46afb6536d1so829338137.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 01:59:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706176791; x=1706781591; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ejpu0N1U5cHhvf5maKcL218cl9a8A4V67n7tDOsobsg=;
-        b=qTRTDKBoYEnBJVmGeAriqheOMCFgxFbGYja3wAvgRE5HN8iuDw8iMUAZAFgk1THjY8
-         v8mseMujNwe4eKVXEMjrvoQ739+R0eooTNGGKDH3FViaoFRohnqL9iUif7FG5XaiVL0k
-         hun1E7xOdKoUVkHnVKBeCV9KxqYVSQTLe3jGzBRCHM5mqifbTS5YestLbj4T5nKFufYy
-         gadrWmmzpvSLjC8DeI7D9ZpcLwYmSUhpY2hSjZud5wUvLDCXDby9tX5oACrifV07jyBt
-         C4S8ildnTdqMAVAaMHlA/mI4HMollFf0aClTVjxgkmei6GeCIamHJz0NQGOpmORq9ihD
-         spXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706176791; x=1706781591;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ejpu0N1U5cHhvf5maKcL218cl9a8A4V67n7tDOsobsg=;
-        b=FQEy3TlnQkeP765xsB3XxU12DlJzK4Xedif7C8SJi9ZINgi6+pQaIM0hxNw7IiAK7r
-         GOOsxd6Hi5n70l97IThoFw3v5SKXX4C1The+a9WbYZ9TBwrzQ9lZVpGUAPTw1qLw7Zom
-         RvUkvqZhC8gDx3zMS9PzGGV+jF3bBw2QWq2RA2x4cJpx4efytJODKvFakbD8d4SY7U82
-         zfXiOJo1uMURKoePAReMPxIkAHrjRBC6HW/v/j5+xR8FYhWR3M5dg0nSzTGJl6u0fKCB
-         M2eEzDvTPfQDre07OakyVbiJBj2WWqPXZTxSqmVnLh41q/as5DiM6q0g7mQDCFiX+lz1
-         +hIA==
-X-Gm-Message-State: AOJu0YzMZBJTfjMrngb1IvSHrD9BZ0hvE6ttSSaiy69+6uDlJ++4iHlf
-	ia3eu2ILq2VqCpOT/csv9c/72nI3qavgdoZFVSspmhESmf414Bh/ml4os/dlGN0=
-X-Google-Smtp-Source: AGHT+IGcTSAtyt5YyT/kCBTYuBr4kS+3tQLcpFk3BxLBOchKz3KQftdbjqQ7cAMcDL/VuYKBY/YQQQ==
-X-Received: by 2002:a05:6102:3c96:b0:46b:1013:16d7 with SMTP id c22-20020a0561023c9600b0046b101316d7mr607038vsv.12.1706176791010;
-        Thu, 25 Jan 2024 01:59:51 -0800 (PST)
-Received: from [172.30.205.155] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id qm17-20020a056214569100b006879b82e6f0sm375625qvb.38.2024.01.25.01.59.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 01:59:50 -0800 (PST)
-Message-ID: <d1cde782-c223-4400-a129-18e63a10a415@linaro.org>
-Date: Thu, 25 Jan 2024 10:59:48 +0100
+	s=arc-20240116; t=1706176949; c=relaxed/simple;
+	bh=Tv1+9k+cs9ODrgYL0DhM6PbCDNkcFvwIQHm8qIIPFOw=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=pHqX3409f/4AvmVqyV8jipOnFkTOw2dP3nRRha7iAfzGXYV9x1RCZOmKQbb0ISUZ+hHlSC+0ivFF2bIVpLnaEBb5awGlGQyi8pLQf1gvsAio7bc6yB+hhkBozuhrTq1vN5OtrFoQtW7CTXS/JGLgUnnpQnuoRlVcx1kwheMX8cE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=VvEyrU92; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1706176948; x=1737712948;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Tv1+9k+cs9ODrgYL0DhM6PbCDNkcFvwIQHm8qIIPFOw=;
+  b=VvEyrU92g4QY0st1jN98VMuuShbvLKQy/YQAEsT6yP4XLhZ0pWBhQBJd
+   zhge5HH6Vac+PCMmOK1bxgyAJQN5vS7xM+G+kZz3oUIfP0YwtlmhPsSn7
+   lUVdckmnVfBX5VLPv2TQsoercLw6UxxmPAwtN8611ykrB/APVSM8GyFMs
+   3zTUQuvVhLMmyHccxWtxugkv7KsDo5pPxFyrqCj+7KQvLxxmWrX4/JFQl
+   7mTjuGbymJ31VJD9+lb31+xb90+WYmL9TAX3CXB3aKkdZjkHPDjnhtnMf
+   583N22J5dQTWClrELdQCjxx52X+FsFrAGBOzvPZFWdyQQlGrkCFVvlS7h
+   w==;
+X-CSE-ConnectionGUID: EcHPnxniQdWGuWl+Gd9iBA==
+X-CSE-MsgGUID: cPjp1T7gRbWSaY+EDV2BEQ==
+X-IronPort-AV: E=Sophos;i="6.05,216,1701154800"; 
+   d="scan'208";a="245997251"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 25 Jan 2024 03:02:21 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 25 Jan 2024 03:01:56 -0700
+Received: from che-dk-ungapp03lx.microchip.com (10.10.85.11) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Thu, 25 Jan 2024 03:01:53 -0700
+From: Rengarajan S <rengarajan.s@microchip.com>
+To: <kumaravel.thiagarajan@microchip.com>,
+	<tharunkumar.pasumarthi@microchip.com>, <gregkh@linuxfoundation.org>,
+	<jirislaby@kernel.org>, <linux-serial@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+CC: <UNGLinuxDriver@microchip.com>
+Subject: [PATCH v1 tty] 8250: microchip: pci1xxxx: Add Burst mode transmission support in uart driver for reading from FIFO
+Date: Thu, 25 Jan 2024 15:30:06 +0530
+Message-ID: <20240125100006.153342-1-rengarajan.s@microchip.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] arm64: dts: qcom: sm8550-mtp: correct WCD9385 TX port
- mapping
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
-References: <20240124164505.293202-1-krzysztof.kozlowski@linaro.org>
- <20240124164505.293202-2-krzysztof.kozlowski@linaro.org>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240124164505.293202-2-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
+pci1xxxx_handle_irq reads the burst status and checks if the FIFO
+is empty and is ready to accept the incoming data. The handling is
+done in pci1xxxx_tx_burst where each transaction processes data in
+block of DWORDs, while any remaining bytes are processed individually,
+one byte at a time.
 
+Signed-off-by: Rengarajan S <rengarajan.s@microchip.com>
+---
+ drivers/tty/serial/8250/8250_pci1xxxx.c | 106 ++++++++++++++++++++++++
+ 1 file changed, 106 insertions(+)
 
-On 1/24/24 17:45, Krzysztof Kozlowski wrote:
-> WCD9385 audio codec TX port mapping was copied form HDK8450, but in fact
-> it is offset by one.  Correct it to fix recording via analogue
-> microphones.
-> 
-> The change is based on QRD8550 and should be correct here as well, but
-> was not tested on MTP8550.
+diff --git a/drivers/tty/serial/8250/8250_pci1xxxx.c b/drivers/tty/serial/8250/8250_pci1xxxx.c
+index 558c4c7f3104..d53605bf908d 100644
+--- a/drivers/tty/serial/8250/8250_pci1xxxx.c
++++ b/drivers/tty/serial/8250/8250_pci1xxxx.c
+@@ -67,6 +67,7 @@
+ #define SYSLOCK_RETRY_CNT			1000
+ 
+ #define UART_RX_BYTE_FIFO			0x00
++#define UART_TX_BYTE_FIFO			0x00
+ #define UART_FIFO_CTL				0x02
+ 
+ #define UART_ACTV_REG				0x11
+@@ -100,6 +101,7 @@
+ #define UART_RESET_D3_RESET_DISABLE		BIT(16)
+ 
+ #define UART_BURST_STATUS_REG			0x9C
++#define UART_TX_BURST_FIFO			0xA0
+ #define UART_RX_BURST_FIFO			0xA4
+ 
+ #define MAX_PORTS				4
+@@ -109,6 +111,7 @@
+ #define UART_BURST_SIZE				4
+ 
+ #define UART_BST_STAT_RX_COUNT_MASK		0x00FF
++#define UART_BST_STAT_TX_COUNT_MASK		0xFF00
+ #define UART_BST_STAT_IIR_INT_PEND		0x100000
+ #define UART_LSR_OVERRUN_ERR_CLR		0x43
+ #define UART_BST_STAT_LSR_RX_MASK		0x9F000000
+@@ -116,6 +119,7 @@
+ #define UART_BST_STAT_LSR_OVERRUN_ERR		0x2000000
+ #define UART_BST_STAT_LSR_PARITY_ERR		0x4000000
+ #define UART_BST_STAT_LSR_FRAME_ERR		0x8000000
++#define UART_BST_STAT_LSR_THRE			0x20000000
+ 
+ struct pci1xxxx_8250 {
+ 	unsigned int nr;
+@@ -344,6 +348,105 @@ static void pci1xxxx_rx_burst(struct uart_port *port, u32 uart_status)
+ 	}
+ }
+ 
++static void pci1xxxx_process_write_data(struct uart_port *port,
++					struct circ_buf *xmit,
++					int *data_empty_count,
++					u32 *valid_byte_count)
++{
++	u32 valid_burst_count = *valid_byte_count / UART_BURST_SIZE;
++
++	/*
++	 * Each transaction transfers data in DWORDs. If there are less than
++	 * four remaining valid_byte_count to transfer or if the circular
++	 * buffer has insufficient space for a DWORD, the data is transferred
++	 * one byte at a time.
++	 */
++	while (valid_burst_count) {
++		if (*data_empty_count - UART_BURST_SIZE < 0)
++			break;
++		if (xmit->tail > (UART_XMIT_SIZE - UART_BURST_SIZE))
++			break;
++		writel(*(unsigned int *)&xmit->buf[xmit->tail],
++		       port->membase + UART_TX_BURST_FIFO);
++		*valid_byte_count -= UART_BURST_SIZE;
++		*data_empty_count -= UART_BURST_SIZE;
++		valid_burst_count -= UART_BYTE_SIZE;
++
++		xmit->tail = (xmit->tail + UART_BURST_SIZE) &
++			     (UART_XMIT_SIZE - 1);
++	}
++
++	while (*valid_byte_count) {
++		if (*data_empty_count - UART_BYTE_SIZE < 0)
++			break;
++		writeb(xmit->buf[xmit->tail], port->membase +
++		       UART_TX_BYTE_FIFO);
++		*data_empty_count -= UART_BYTE_SIZE;
++		*valid_byte_count -= UART_BYTE_SIZE;
++
++		/*
++		 * When the tail of the circular buffer is reached, the next
++		 * byte is transferred to the beginning of the buffer.
++		 */
++		xmit->tail = (xmit->tail + UART_BYTE_SIZE) &
++			     (UART_XMIT_SIZE - 1);
++
++		/*
++		 * If there are any pending burst count, data is handled by
++		 * transmitting DWORDs at a time.
++		 */
++		if (valid_burst_count && (xmit->tail <
++		   (UART_XMIT_SIZE - UART_BURST_SIZE)))
++			break;
++	}
++}
++
++static void pci1xxxx_tx_burst(struct uart_port *port, u32 uart_status)
++{
++	struct uart_8250_port *up = up_to_u8250p(port);
++	u32 valid_byte_count;
++	int data_empty_count;
++	struct circ_buf *xmit;
++
++	xmit = &port->state->xmit;
++
++	if (port->x_char) {
++		writeb(port->x_char, port->membase + UART_TX);
++		port->icount.tx++;
++		port->x_char = 0;
++		return;
++	}
++
++	if ((uart_tx_stopped(port)) || (uart_circ_empty(xmit))) {
++		port->ops->stop_tx(port);
++	} else {
++		data_empty_count = (pci1xxxx_read_burst_status(port) &
++				    UART_BST_STAT_TX_COUNT_MASK) >> 8;
++		do {
++			valid_byte_count = uart_circ_chars_pending(xmit);
++
++			pci1xxxx_process_write_data(port, xmit,
++						    &data_empty_count,
++						    &valid_byte_count);
++
++			port->icount.tx++;
++			if (uart_circ_empty(xmit))
++				break;
++		} while (data_empty_count && valid_byte_count);
++	}
++
++	if (uart_circ_chars_pending(xmit) < WAKEUP_CHARS)
++		uart_write_wakeup(port);
++
++	 /*
++	  * With RPM enabled, we have to wait until the FIFO is empty before
++	  * the HW can go idle. So we get here once again with empty FIFO and
++	  * disable the interrupt and RPM in __stop_tx()
++	  */
++	if (uart_circ_empty(xmit) && !(up->capabilities & UART_CAP_RPM))
++		port->ops->stop_tx(port);
++}
++
+ static int pci1xxxx_handle_irq(struct uart_port *port)
+ {
+ 	unsigned long flags;
+@@ -359,6 +462,9 @@ static int pci1xxxx_handle_irq(struct uart_port *port)
+ 	if (status & UART_BST_STAT_LSR_RX_MASK)
+ 		pci1xxxx_rx_burst(port, status);
+ 
++	if (status & UART_BST_STAT_LSR_THRE)
++		pci1xxxx_tx_burst(port, status);
++
+ 	spin_unlock_irqrestore(&port->lock, flags);
+ 
+ 	return 1;
+-- 
+2.25.1
 
-Would this not be codec-and-not-board-specific, anyway?
-
-> 
-> Cc: <stable@vger.kernel.org>
-> Fixes: a541667c86a9 ("arm64: dts: qcom: sm8550-mtp: add WCD9385 audio-codec")
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
-
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-
-Konrad
 
