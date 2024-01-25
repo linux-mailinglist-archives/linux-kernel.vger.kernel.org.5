@@ -1,155 +1,129 @@
-Return-Path: <linux-kernel+bounces-37980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FAB783B91F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 06:47:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A3A283B92B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 06:50:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20A131F247AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 05:47:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C8A9287AB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 05:49:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1818101D4;
-	Thu, 25 Jan 2024 05:47:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D192D1079D;
+	Thu, 25 Jan 2024 05:49:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="tkSBl/n7"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Gv6rVzxO"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62A5EC8FF;
-	Thu, 25 Jan 2024 05:47:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05DF7CA50;
+	Thu, 25 Jan 2024 05:49:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706161653; cv=none; b=ZZe7tEvk90vfHWJD3XbNx0Qq1hzzZd3DKQ6tUO6xxT6valm8Ae6weAByuyjpXWQA1LTLBMSkMmSBkSBl/wB7W1vlDcchVpne5TdCBAKQMRfS9aFaBqcr9O3Wqs2Y2vbjHq7eyNrWpcFiLFSIDoIgtJMJDrSYCHywMzhiQJbOle8=
+	t=1706161788; cv=none; b=VgpXeVz7m8EAP/yWH/2lWs2iQ3DP5cpYlgOoidKjabjHkAZuuCgyaVmryDet/3NNUriYgB/mvXrIS7vRXiUe1nregARLZaNofrtthL/HadiK3rwVyPWOCTw06KQdcuoqYpnCKlFwJ4fj68kbBT6nZGaUKlulvi1xvPcNEtSCAjg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706161653; c=relaxed/simple;
-	bh=gQWtfYbGfOV2oVcNNevVHq51J9XY+vPhOrVMnjb/6q4=;
+	s=arc-20240116; t=1706161788; c=relaxed/simple;
+	bh=jEtOBCWHvTb4uHYP5yQCZ1yuaW6/UAwy+xaIHbriYL8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=T1deqzjjbvaT1iFe5VzIUVZxPCH+QEWpBRhBxPIyagE1kcfWhIyj3Lv3lUxr0JZE3gTQaTXvQrWoyc6FST1e3J3IKhMHaU1FSStPodq7cBLHnNEGgYiXzpEdFOJCLtVAlW7FttZfl+uDLo2rQNdSbWO0s48YwYctEEQutISjqiE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=tkSBl/n7; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40P5lHdZ002805;
-	Wed, 24 Jan 2024 23:47:17 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706161637;
-	bh=XYm18jVRWbK0xPk1IDYRqvQ4AolTdoU+U2rtIDmzOAs=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=tkSBl/n72J8iF9D82TzBERbnqxFsMd9EkjXnYnThKyglQZkiqfaEookLAEtX7Uxw/
-	 sbe5G+LV6wpsyf1EIrgbSXYFDDaB3d9yTW2c+VhG/aFZqh1+qSPYxgJZrq3ous2RE7
-	 kcvmcncp7DytXGP5SGB4PLqC+B+2ZIn8X2Kla7iQ=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40P5lH57043952
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 24 Jan 2024 23:47:17 -0600
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 24
- Jan 2024 23:47:16 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 24 Jan 2024 23:47:16 -0600
-Received: from [10.24.69.142] ([10.24.69.142])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40P5lCbK094683;
-	Wed, 24 Jan 2024 23:47:13 -0600
-Message-ID: <2291204f-97d5-4887-b68f-8789fe85f838@ti.com>
-Date: Thu, 25 Jan 2024 11:17:12 +0530
+	 In-Reply-To:Content-Type; b=O0uRb2o0zg3yRbsk8QFHR3Mp5czS24On7sF5CEVN26FwIhXz1tF57Ob2PhFgdke2BYLjk4uPSR3K+VJFPz6XfflnbQ2VE8c87fNntTKa5ndu+s39jqcKzJwmOYK945a/yjBgyoML/PzmCjRokttDK9Uq8anKN1cdviqrbLWmduk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Gv6rVzxO; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40P5i5aT014826;
+	Thu, 25 Jan 2024 05:49:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=P2TR27uCwnO+U4fKCMWikVRqcirqj04TH+FzUWx6064=; b=Gv
+	6rVzxON7mjLI0yZUqypAExCs0cFXGZZXsRWTTEP5fZcmZbShhbDftxcvwBPDCR6s
+	AOhDU8jrulH2xYxdNogw5VOjoKjDwHoQPwDDwsrIxVjHIJG37c2P/7oLo0vbZK4D
+	QIVIZE7eaQuCOQooL9cgyvCKlXwIYrpljircnfGeiK4oERaelDtNwLisFjNO9Lt+
+	1tPEyU4WtmDmUwJHbghmSTWyab1HvkXbxJE9pvL1Q5hxaWobcxcFhpOIm8ZGGh0Q
+	JuRgaj6XMYDI/2doP37KrjC61eq3/1ABKF5mDpTGhtE2y6rxHH0ZwmkRkT7mp7Lf
+	X5BOq+ACRKIV1LaGwu2w==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vufc80976-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jan 2024 05:49:41 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40P5neqI002427
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jan 2024 05:49:40 GMT
+Received: from [10.218.19.46] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 24 Jan
+ 2024 21:49:34 -0800
+Message-ID: <77903574-696b-90f9-f136-be5c5d219ba1@quicinc.com>
+Date: Thu, 25 Jan 2024 11:19:31 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: ti: k3-am62p-mcu/wakeup: Disable MCU and
- wakeup R5FSS nodes
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH 2/3] clk: qcom: gcc-sm8150: Add gcc_parents_0_ao support
 Content-Language: en-US
-To: Nishanth Menon <nm@ti.com>, Jayesh Choudhary <j-choudhary@ti.com>
-CC: <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <bb@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        "Stephen
+ Boyd" <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Taniya Das <quic_tdas@quicinc.com>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <u-kumar1@ti.com>
-References: <20240121134017.374992-1-vaishnav.a@ti.com>
- <0fcec921-0220-4251-afa4-44db5e80d2ef@ti.com>
- <20240124172151.ngxaq6k5tnvsx4jr@proud>
-From: Vaishnav Achath <vaishnav.a@ti.com>
-In-Reply-To: <20240124172151.ngxaq6k5tnvsx4jr@proud>
+        Ajit Pandey
+	<quic_ajipan@quicinc.com>,
+        Imran Shaik <quic_imrashai@quicinc.com>,
+        "Jagadeesh Kona" <quic_jkona@quicinc.com>
+References: <20240123-gcc-ao-support-v1-0-6c18d5310874@quicinc.com>
+ <20240123-gcc-ao-support-v1-2-6c18d5310874@quicinc.com>
+ <d31a52fc-9073-483d-b84b-1f02a5698a89@linaro.org>
+From: "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>
+In-Reply-To: <d31a52fc-9073-483d-b84b-1f02a5698a89@linaro.org>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 962Qzww9toPsXtvzkXVnHV6vFwJI1sfr
+X-Proofpoint-GUID: 962Qzww9toPsXtvzkXVnHV6vFwJI1sfr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-25_02,2024-01-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1015
+ suspectscore=0 bulkscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ phishscore=0 lowpriorityscore=0 mlxlogscore=834 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401190000 definitions=main-2401250037
 
-Hi Nishanth,
 
-On 24/01/24 22:51, Nishanth Menon wrote:
-> On 11:26-20240124, Jayesh Choudhary wrote:
->> Hello Vaishnav,
+On 1/23/2024 11:17 PM, Konrad Dybcio wrote:
+>
+>
+> On 1/23/24 17:34, Satya Priya Kakitapalli wrote:
+>> Add active_only support for gcc_parents_0, this is needed because
+>> some of the clocks under it are critical which would vote on xo
+>> blocking the suspend.
 >>
->> On 21/01/24 19:10, Vaishnav Achath wrote:
->>> K3 Remoteproc R5 driver requires reserved memory carveouts and
->>> mailbox configuration to instantiate the cores successfully.
->>> Since this is a board level dependency, keep the R5 subsytem
->>> disabled at SoC dtsi, otherwise it results in probe errors like
->>> below during AM62P SK boot:
->>>
->>> r5fss@79000000: reserved memory init failed, ret = -22
->>> r5fss@79000000: k3_r5_cluster_rproc_init failed, ret = -22
->>> r5fss@78000000: reserved memory init failed, ret = -22
->>> r5fss@78000000: k3_r5_cluster_rproc_init failed, ret = -22
->>>
->>> Fixes: b5080c7c1f7e ("arm64: dts: ti: k3-am62p: Add nodes for more IPs")
->>>
->>> Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
->>
->> Reviewed-by: Jayesh Choudhary <j-choudhary@ti.com>
->>
->>> ---
->>>    arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi    | 2 ++
->>>    arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi | 1 +
->>>    2 files changed, 3 insertions(+)
->>>
->>> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi
->>> index c4b0b91d70cf..14eb9ba836d3 100644
->>> --- a/arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi
->>> +++ b/arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi
->>> @@ -187,6 +187,8 @@ mcu_r5fss0: r5fss@79000000 {
->>>    		ranges = <0x79000000 0x00 0x79000000 0x8000>,
->>>    			 <0x79020000 0x00 0x79020000 0x8000>;
->>>    		power-domains = <&k3_pds 7 TI_SCI_PD_EXCLUSIVE>;
->>> +		status = "disabled";
->>> +
->>>    		mcu_r5fss0_core0: r5f@79000000 {
->>>    			compatible = "ti,am62-r5f";
->>>    			reg = <0x79000000 0x00008000>,
->>> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
->>> index 19f42b39394e..10a7059b2d9b 100644
->>> --- a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
->>> +++ b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
->>> @@ -78,6 +78,7 @@ wkup_r5fss0: r5fss@78000000 {
->>>    		ranges = <0x78000000 0x00 0x78000000 0x8000>,
->>>    			 <0x78100000 0x00 0x78100000 0x8000>;
->>>    		power-domains = <&k3_pds 119 TI_SCI_PD_EXCLUSIVE>;
->>> +		status = "disabled";
-> 
-> Is there a reason for difference in white space addition?
-> 
+>> Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
+>> ---
+>
+> Is there a need to keep gcc_cpuss_ahb_clk_src around? Do we do any
+> ratesetting on it? Should we ever turn it off?
+>
 
-For mcu_r5fss0_core0 child node there was no blank line as per the 
-recommended coding style : 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/dts-coding-style.rst#n124
-
-So I added a newline there and wkup_r5fss0 already had it correct, since 
-the change was trivial it was not mentioned in commit message.
-
-Thanks and Regards,
-Vaishnav
-
->>>    		wkup_r5fss0_core0: r5f@78000000 {
->>>    			compatible = "ti,am62-r5f";
->>
->> Thanks.
-> 
+The branch clocks under gcc_cpuss_ahb_clk_src are critical clocks, which 
+are running at 19.2Mhz causing vote on XO during suspend. As of now no 
+rate setting is happening but this rcg is useful to get the exact rates 
+from debugfs. Hence this change is needed to avoid XO shutdown issues.
 
