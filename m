@@ -1,80 +1,81 @@
-Return-Path: <linux-kernel+bounces-39242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37C0283CD4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:20:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DACC583CD5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:24:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B84F1C21ADB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:20:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 931AC2961D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:24:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E218B137C3F;
-	Thu, 25 Jan 2024 20:19:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C393136678;
+	Thu, 25 Jan 2024 20:24:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aA34IaJ5"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="D1ut7Los"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0494137C2E
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 20:19:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1827813667B
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 20:24:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706213998; cv=none; b=HDVl/S9qM+ZBDhWQLqXT3jWOJOTKsaaCqHE79DSFxhC64XMWoOmuRxQJUiwY6WceZfcsrKT9mjjF27Mbmw3oU3v6SLb4596gvwNdVRJFdkxJgI3QpkI7xETv4BeQ7TUoqoSZzXAsOVlPmeQrrg+avkeKXl6A8no6hiMMU9Ckgbs=
+	t=1706214243; cv=none; b=EsLyUBkrx4DmeTdDXIVLtjXII52Upnn1lswixkbk4olryx/fx0Wh7eGFGRLoOqPdQJGU5h62TL0iFGphXton5vFFmAm6yKuIUrLdcP/sU1+1A6eaX87szA+FVJe7wJFR28l8KavyRZC8BbwBWgvZ3UqdZF0CSx358NOsmYa2Akw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706213998; c=relaxed/simple;
-	bh=PhI9LW/VlbekrhSAPPRbJUPp4nixxFeRGjHAOy1SKHg=;
+	s=arc-20240116; t=1706214243; c=relaxed/simple;
+	bh=kqQAwBLGyxViE4u0vbdsunK3v7Z4PgeP8PTXlsO5KuM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KCu6G204z4/PdApFJ/NBBIxTx31AZfd0TUkokWiGQ6pNsJGb365y5lwgDPz+DIRW/bEh1VDAbrV0ChIgYipf6IeVaz4dwuaiCnLFAOkFYC5Vy/6PWHPsBIJqiLBuTspMvBgqaFH4CjfY8gSYE3pVxc2LeVClW7Vm0Fa04AZ/2iU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aA34IaJ5; arc=none smtp.client-ip=209.85.214.170
+	 To:Cc:Content-Type; b=adMtZH81PWWBXizB3xKA+IUOcV/sdtPK0aG0u+bxR/OT/Tx9RFH7UtVr/o+fU/Oftn7lLDVrTY3xrQP/5f92PIxx1o1jDEEtqOqRue45vBkN9dwaBc3LwxW0pF0ZUVimuyFyKpT59/8DXV9SYUzy5ubW6CS8wx2v/LGxNzFISVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=D1ut7Los; arc=none smtp.client-ip=209.85.214.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d7232dcb3eso37325855ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 12:19:56 -0800 (PST)
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d76943baafso32734095ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 12:24:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706213996; x=1706818796; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706214241; x=1706819041; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1AMn0y6UWpR7xw27jljzDWKtm5PPL6Cu6Mug2W0VcTk=;
-        b=aA34IaJ54qmnN4639ntC0tBaqILwKLtWGgrubPDL42t7BoVYBjeWxUYWALtJ61N5dC
-         3JhqHizcKmyiEjULvkyUaQBVdkxCRxx6Bk3CvgNgnSrJfeUmXMBfmdwBCtIxZPb/9bWo
-         Ei/vFFMofDL+pP/fP90jLr3MsrZkTiRcClsByswP4HWxICQKZPP+ZYWLhSzb7MruJErZ
-         HJDYCLuen6vJzs+/qlFZchYBYCHK/Gu15yOlA098gCZQY9wP/L4akPdFMbWAokPpzzbP
-         6uCqxY/GXwlRkficGYt4NTcIYYQtwJEmzP5V7GfMzqvvqakLX8aUMNKIhmdvzWBDc+GO
-         MRHQ==
+        bh=YpIaVYqx4hvbLjS/JKbsqZWjGvfbA2FGS3JVN0jglMA=;
+        b=D1ut7Losk9rUiKWKgbvaWJh/EGvqET39yGcfxrnQAorXgY5XcyyrL8DMGicJTQpkX4
+         vWaENVP8rke2wzAZC1wsnFOt3QJUuCGJO4u39txVsuGjLZJxfpsrTYI4KU8CYOx28s4A
+         qk9oNXRW+2oiSljN3MIi41WadqXw9YhkJoblWP4gC3/a+6mr4itPUtKkLYRkE0gFxXvj
+         c/269RfQKzB+a1DHCY2j9qbk/9YYtA/iKCHfzPAU+1QpGK2AL4T0LGpjXRiMaEuRFBGS
+         N+Pvea1+EGYyTmm/Hyj6/LZrId54GOYsV59fh1a3hh3Bh4cmm6RvMV0VwFxiNX72L05i
+         bX0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706213996; x=1706818796;
+        d=1e100.net; s=20230601; t=1706214241; x=1706819041;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1AMn0y6UWpR7xw27jljzDWKtm5PPL6Cu6Mug2W0VcTk=;
-        b=NEwyhh9IgSwxwsIcxx91/wdBDi2IvLEHZoEdu+19AY4bY8KewZto5627nd0NIXpIpv
-         znymwYr9VgvqpRhv51/OLhVNuK5gZl6R/HmEz77caWHSiPkOI0fA9DqB78thzRf/z7qx
-         o/ngUeFk6e2Vy09zjDIDSpbgDbuGdhh2lqbwnB7wlTP8UcPGBArEc2qxRhz0YvovHcf+
-         ERSPg/al5GXt+d9B0SSJAr7Lx+b90KbJjL2EM/nqDHzoW1SATqbhduUItfabPWvGQJZR
-         T6Lbs+H/32Qha2+NANZtok9UQAk0YPblf9mf9iae9rylltRxxLL0ZUsnFgG2Ri874tCU
-         QQMA==
-X-Gm-Message-State: AOJu0YwVMILabgiY5BRRSDAIW/K11XL5SXuSn9VnJEuDtHtlqvVPqCCa
-	fsQHI6PmB3iBZUjMLdCUQFd2iXuFbiduEi/DDS5G3aeMHa2nMrbjejIxutdc4sXAOhenerllyfp
-	I3HwmVsrrWB+BUYFlt1YyJaZEnjDnwroRq0GSmw==
-X-Google-Smtp-Source: AGHT+IEDlNMo5aTWzDJycnq3U1sMwSmzGwmT5xXHVku5Um1940OW4HPZE75X2sbisg5ytxzRxcqd5yUDHa1l+h1tjfo=
-X-Received: by 2002:a17:902:ecc4:b0:1d8:94e4:7718 with SMTP id
- a4-20020a170902ecc400b001d894e47718mr262595plh.114.1706213996125; Thu, 25 Jan
- 2024 12:19:56 -0800 (PST)
+        bh=YpIaVYqx4hvbLjS/JKbsqZWjGvfbA2FGS3JVN0jglMA=;
+        b=LiDDouLXFY8QUlc9LqFM03rMLsUmLFyEjm5hGpnj0qP1T//+nDD3PDqrFMCcSPL4UI
+         sZz9nltIJ+CmntRNXzfrbNEbec3vcUETr4aynLTMVzYDWR+kGcDxYea/hbcFbJ3MZt8E
+         sTNoGrjphfwSYMPy75uwCzcfRmS7wOvvl4BpUWbLwbzjCeraW/WoPazfxucqhBWD9Kx/
+         DNxijlDX29pzFaZJRgA1eEwOQHax369Fx642iVq8secSWymDMLIz0FO+fT6wFE7GdTjc
+         JDlD97o/xdFebMwT8jBFCVobjX0gZJzanWTe/Y+XU9HShgoXnOy1VLN31rVVvt/xGcXw
+         xAuA==
+X-Gm-Message-State: AOJu0YzSIss2bQt6TkveRmZbVRwDZTIf6ZMxEKkhT04Tlki3ZjXSgwiD
+	a5FjTXBplovhi2fCKTfAyYA1uiygq5/QJn8KV+2ZNL2xPSPDkFPrJxtJgYSLIdMt2mQcAHRox57
+	DGMBh5Y5OGSr/J2YKhNM8+qSZFbrag31eezRNZg==
+X-Google-Smtp-Source: AGHT+IHnyAGNsE7seCAbcUAO51vGJRmQKWLFPrYB/WBL0TkR2ISmA1F1Y6Av+oPhpkMmznxOGBDBxLv4iR7HHGTMlzI=
+X-Received: by 2002:a17:90a:4a85:b0:290:fd33:241a with SMTP id
+ f5-20020a17090a4a8500b00290fd33241amr160196pjh.48.1706214241394; Thu, 25 Jan
+ 2024 12:24:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125145007.748295-1-tudor.ambarus@linaro.org> <20240125145007.748295-13-tudor.ambarus@linaro.org>
-In-Reply-To: <20240125145007.748295-13-tudor.ambarus@linaro.org>
+References: <20240125145007.748295-1-tudor.ambarus@linaro.org> <20240125145007.748295-14-tudor.ambarus@linaro.org>
+In-Reply-To: <20240125145007.748295-14-tudor.ambarus@linaro.org>
 From: Sam Protsenko <semen.protsenko@linaro.org>
-Date: Thu, 25 Jan 2024 14:19:44 -0600
-Message-ID: <CAPLW+4nW1LyMT2CGD7R_oRPtRgNQiyUjjUqZJYTAJ2HJMW9yfg@mail.gmail.com>
-Subject: Re: [PATCH v2 12/28] spi: s3c64xx: check return code of dmaengine_slave_config()
+Date: Thu, 25 Jan 2024 14:23:50 -0600
+Message-ID: <CAPLW+4m6W-SC=gijBkx_-pK7RvcxFQgnkQzpA23hbO5TEYd_3A@mail.gmail.com>
+Subject: Re: [PATCH v2 13/28] spi: s3c64xx: propagate the dma_submit_error()
+ error code
 To: Tudor Ambarus <tudor.ambarus@linaro.org>
 Cc: broonie@kernel.org, andi.shyti@kernel.org, arnd@arndb.de, 
 	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
@@ -89,33 +90,30 @@ Content-Transfer-Encoding: quoted-printable
 On Thu, Jan 25, 2024 at 8:50=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro=
 org> wrote:
 >
-> Check the return code of dmaengine_slave_config().
+> Propagate the dma_submit_error() error code, don't overwrite it.
+
+But why? What would be the benefit over -EIO?
+
 >
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 > ---
-
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
-
->  drivers/spi/spi-s3c64xx.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  drivers/spi/spi-s3c64xx.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
 > diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-> index 107b4200ab00..48b87c5e2dd2 100644
+> index 48b87c5e2dd2..25d642f99278 100644
 > --- a/drivers/spi/spi-s3c64xx.c
 > +++ b/drivers/spi/spi-s3c64xx.c
-> @@ -297,7 +297,9 @@ static int prepare_dma(struct s3c64xx_spi_dma_data *d=
+> @@ -316,7 +316,7 @@ static int prepare_dma(struct s3c64xx_spi_dma_data *d=
 ma,
->                 config.dst_maxburst =3D 1;
->         }
->         config.direction =3D dma->direction;
-> -       dmaengine_slave_config(dma->ch, &config);
-> +       ret =3D dmaengine_slave_config(dma->ch, &config);
-> +       if (ret)
+>         ret =3D dma_submit_error(dma->cookie);
+>         if (ret) {
+>                 dev_err(&sdd->pdev->dev, "DMA submission failed");
+> -               return -EIO;
 > +               return ret;
+>         }
 >
->         desc =3D dmaengine_prep_slave_sg(dma->ch, sgt->sgl, sgt->nents,
->                                        dma->direction, DMA_PREP_INTERRUPT=
-);
+>         dma_async_issue_pending(dma->ch);
 > --
 > 2.43.0.429.g432eaa2c6b-goog
 >
