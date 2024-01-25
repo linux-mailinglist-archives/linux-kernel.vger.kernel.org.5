@@ -1,170 +1,100 @@
-Return-Path: <linux-kernel+bounces-38589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5414F83C2AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:40:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C70083C2B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:44:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7931A1C21BC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:40:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F5881C20D1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:44:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C39BE45C0E;
-	Thu, 25 Jan 2024 12:40:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D90DC482D5;
+	Thu, 25 Jan 2024 12:44:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="tSwDac9F"
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SYF9mdai"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9193D321AF
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 12:40:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB18028E3
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 12:44:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706186438; cv=none; b=C85syoozS6Q1dKI7wM60OmRkCAb1Un9zl/W6VYCKSZcmYJ9/58rIjz2K0Mvff5Jk4M2NAj2MAq56T64Efe4X2O9vvJW4Earyk18SzJgHGKvGIPNHR9aXLVtrDSxRi+YGbVI/nV2jNjFo/IM/F6yk+kA3R9gYGzlGcHuba5Jvwko=
+	t=1706186662; cv=none; b=ENgV5J6gQSb3F7ol4wY75155mTQD2ygqAFV4eRK+Cjf7P9ucpwSnfP8xjCeUXEArun+ej7RCKhM8IaIBg6kRQGBYjSjv9yFAz1xcs/iI7HKcICgQZVMAVGHPShT0+IWaYG8SfCs5+9nH+3aqLLLG9lUC+o5QWlBjk0LGP2AdW40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706186438; c=relaxed/simple;
-	bh=hM2iHfDe3tq4q5QhAuG5llL9QvEutMz9ZFyDgZKy5J0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DeDedp9HGbMxpTZb2xUIoRql4GRGEyd2c3V1Tm4gzBpZyQzB9fIFEicN2YJTrlLHrevjjFCYzSTpAEdXMrZvjZU5nvOiqN0b/b+yUQR79daMvGagAj7SzirNrwuZaeIjATPLds32MnOGXNDAmglljyFCqumsd4Ez6mNj/EZjjPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tSwDac9F; arc=none smtp.client-ip=209.85.222.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-7d2e1832d4dso1535379241.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 04:40:36 -0800 (PST)
+	s=arc-20240116; t=1706186662; c=relaxed/simple;
+	bh=Pl4rvSehCDu712l4OmjwYTWLSjY/JocrruzxJxH3UKA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JEzYR3otGPrIyGmUNPBOEbISG/RLDKMGM1SDJLk5KiZQ9C+u0hpQCGoy5yvnsMhBbhnJkTHihJ6EawXa+7cddg/P/KF0hmw0PDLP1HpXy/mJ+WXv62no/ZAGxlOcuEP6pEYKo7fTLfeIPHI/KGUIwSSyeyoGvfrMLPmkQM24Wwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SYF9mdai; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-50ea9daac4cso7306672e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 04:44:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706186435; x=1706791235; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZNi4MiQOUNCak4EWaCvvPwFzUIE3TXQJ5X1CGwYGEDU=;
-        b=tSwDac9F+Gq39agFJa7n4+dKGJ+3I5KVCjk23tNLJug/yMgk2yAfngenoG1KSddIjE
-         Q2k2ozYntrI0wxqrdpc2qHazuP/spOIrv14zBe9P9VTDfUCwuLjTrd36rigrqKzK8/Kk
-         kW3DfBU+oBb5VpCpM4go7nFE3eYhYLWC4Ug+H13I6eMsD5ql3Dzp3L7jJvZsFSlTK9hf
-         //anbCbNcdjKmQ03lmv1vne2w/5Ev4PsS2lPbgu79ayvZ2zDyw9JqV5OKEZE38cv6OBs
-         hYw2R95rtsaXLwGOJvoG11uBOWdBGfodK71LePGHQZUWZ+lYX41E+QpsiLqtyYkcrdWB
-         DjYg==
+        d=linaro.org; s=google; t=1706186659; x=1706791459; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=q1hYxWo8YKNAnkwSYsWFvbWfowJQOuaYvhfqL3qyYBA=;
+        b=SYF9mdai5auKfOMjQx9jv961uwQeUMnF+JEgtqnUVVZacaUJKhCg71/FqEVHcZG5Q3
+         2IyzKX1/sGlzw0XabYjFhwURBurmUgx2n+XZU5U10/xkvtFIdUtHvFdd5f/VLJQwYU7p
+         1uQzuH4g+x+GiZfHtXbOckgoI/N5rcxN7m2FjVA8u6u2jyIS28dAXMppVWabD3Fq1gsV
+         Dzz6zpU7XPBWNO3m22ik50i+uKHp/GQSgq1R0AphDRNj+uiH7cD3INGCUnIznpB7+dE/
+         ZYJXvCkQn0vlxgT3U6pgSA8gQ9UGQuLSXdM274L0uIWSwHcQeWTn3ex5CMYENV/1V1Bk
+         dUkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706186435; x=1706791235;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZNi4MiQOUNCak4EWaCvvPwFzUIE3TXQJ5X1CGwYGEDU=;
-        b=hTnqU9t6L6EnQAOjH5SsD+RxwpY29CKlEXiQaKqSqvP3dqcCr3XjKcBQyeeGKTI+te
-         yEO4E2US1JhXXrBA6z4Ww8rBqRbbNxWSZ1S2ZvJaJehNiB5/MTsDiJAYUvqeBY6C30lH
-         GkAV/o7NBCod9W32BFrtz3YgMNYXinsD72nr4JM5xctGEJb2k0ZhBTV+JCtbGBWtsrgG
-         EA6g+5wn4sqCpoyiQng2USy+fQsSjYIc0j24tfsZb6vmbWSrOpKVRZEz12zxffMu6gi2
-         lzTFHWAi4qsI2k37kzRWAuS1fTB0uuKtPxSYef1BFu4YOm7si5raDno9fM7zFZ0a+HM0
-         /bkQ==
-X-Gm-Message-State: AOJu0Yxc6D3d2Zmr5pWmXZMV2PLNOYP684d8Fx3q2LMc2H6Qw/w/9bEV
-	3lujXL/liUO2TfPagPavjfkLv0QbRgkfhro+kRM1ygaNN4P2dRW8SQVLglGtu4gs76b6/HCXy+m
-	ZUgu+f569bIjtnbaIRImcFIgYQWS/dgz8l0Tv
-X-Google-Smtp-Source: AGHT+IH1C55pZ2RrYSAI4VVBDqlGGHUKM5ynO7yFHVq9bA/uLjts2Z1tsbUOhk0J8KAoOccE1G3W7HnpyeekB5BCP+Q=
-X-Received: by 2002:a1f:c344:0:b0:4bd:3433:aac with SMTP id
- t65-20020a1fc344000000b004bd34330aacmr271077vkf.15.1706186435236; Thu, 25 Jan
- 2024 04:40:35 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706186659; x=1706791459;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=q1hYxWo8YKNAnkwSYsWFvbWfowJQOuaYvhfqL3qyYBA=;
+        b=CqNsayMYYPdzLSuN3M1BD+P0MqBr3a27D4fHG3zDHcwqWdDMhDiaZzVjAADeL1v9+U
+         p4Yp2Qy7/hbX3m45LrTkqyqmjgfo7oT063zv1fsXJ1B/OGh5ektpFfOf5DVHkOfiHsh9
+         SLaIEyV+aQQPyrlLHt7590WO0QMBIkp/ZjDxEhDjfGVede4fO6e/Ku+aXVuEI67PxPOF
+         JPvWqNm2/Q7SzqK2AdJxDsRt15GQEoXGVC0+sY2oT6XXv6X5TwgbAdTpwR6SaaA1H33v
+         sEVAhVSpYhcVW6VLsm4eL72o4muG+Gl55y0V1F30shTYMpS6CxtOOeCEmC9qcoBsXR1N
+         lFCA==
+X-Gm-Message-State: AOJu0YxbQ+yHlzWO2odVCWciEOO4DWFLHsoyYqcB01Jy7ZF8kjT27vCf
+	kEHoKyt9TiP0WsPP4AhCFMYCC7OylTAVN9F0B29P9+Bd7OxHDGvtwRDrOw89T10=
+X-Google-Smtp-Source: AGHT+IEubkIZNy297+NX+IbXw2pIGP4k+bM3ko20GGOIoJSGJ+FhuJl4ngKoPyta1lJiBg6CEsx6jg==
+X-Received: by 2002:a05:6512:234c:b0:510:da3:5122 with SMTP id p12-20020a056512234c00b005100da35122mr583537lfu.4.1706186658773;
+        Thu, 25 Jan 2024 04:44:18 -0800 (PST)
+Received: from [172.30.205.155] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id v15-20020ac258ef000000b0051021b2521csm15045lfo.139.2024.01.25.04.44.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jan 2024 04:44:18 -0800 (PST)
+Message-ID: <59830bbb-dcfa-4e9d-98a7-9a561b60347f@linaro.org>
+Date: Thu, 25 Jan 2024 13:44:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124-alice-mm-v1-2-d1abcec83c44@google.com> <20240124234626.6435-1-kernel@valentinobst.de>
-In-Reply-To: <20240124234626.6435-1-kernel@valentinobst.de>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Thu, 25 Jan 2024 13:40:24 +0100
-Message-ID: <CAH5fLggBH4POm501a_-Yivvnu0A-rFw8nw87iwUQw2361=pq4A@mail.gmail.com>
-Subject: Re: [PATCH 2/3] rust: add typed accessors for userspace pointers
-To: Valentin Obst <kernel@valentinobst.de>
-Cc: a.hindborg@samsung.com, akpm@linux-foundation.org, alex.gaynor@gmail.com, 
-	arnd@arndb.de, arve@android.com, benno.lossin@proton.me, 
-	bjorn3_gh@protonmail.com, boqun.feng@gmail.com, brauner@kernel.org, 
-	cmllamas@google.com, gary@garyguo.net, gregkh@linuxfoundation.org, 
-	joel@joelfernandes.org, keescook@chromium.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, maco@android.com, ojeda@kernel.org, 
-	rust-for-linux@vger.kernel.org, surenb@google.com, tkjos@android.com, 
-	viro@zeniv.linux.org.uk, wedsonaf@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] arm64: dts: qcom: qcm6490-idp: Include PM7250B
+Content-Language: en-US
+To: Umang Chheda <quic_uchheda@quicinc.com>, andersson@kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, quic_kamalw@quicinc.com
+References: <20240125115300.3496783-1-quic_uchheda@quicinc.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240125115300.3496783-1-quic_uchheda@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 25, 2024 at 12:47=E2=80=AFAM Valentin Obst <kernel@valentinobst=
-de> wrote:
->
-> > +/*
->
-> nit: this would be the first comment in the kernel crate to use this
-> style, not sure if there is a rule about that though. Maybe still
-> preferable to keep it consistent.
->
-> > + * These methods skip the `check_object_size` check that `copy_[to|fro=
-m]_user`
-> > + * normally performs.
->
-> nit: They skip the (stronger, and also present without usercopy
-> hardening) `check_copy_size` wrapping that one.
 
-The only difference between check_object_size and check_copy_size is
-the extra check with __builtin_object_size, but that doesn't work
-across the C/Rust boundary, and Rust doesn't have a direct equivalent.
 
-> >                        In C, these checks are skipped whenever the leng=
-th is a
-> > + * compile-time constant, since when that is the case, the kernel poin=
-ter
-> > + * usually points at a local variable that is being initialized
->
-> Question: I thought that this exemption is about dynamic size
-> calculations being more susceptible to bugs than hard-coded ones. Does
-> someone recall the original rationale for that?
->
-> >                                                                  and th=
-e kernel
-> > + * pointer is trivially non-dangling.
->
-> As far as I know the hardened usercopy checks are not meant to catch
-> UAFs but rather about OOB accesses (and some info leaks). For example,
-> if the object is on the heap they check if the copy size exceeds the
-> allocation size, or, if the object is on the stack, they verify the copy
-> size does not leave the stack frame.
+On 1/25/24 12:53, Umang Chheda wrote:
+> Include PM7250B PMIC for qcm6490-idp.
+> 
+> Signed-off-by: Umang Chheda <quic_uchheda@quicinc.com>
+> ---
 
-Right, I can reword to say OOB instead of UAF.
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-> > + *
-> > + * These helpers serve the same purpose in Rust. Whenever the length i=
-s known at
-> > + * compile-time, we call this helper to skip the check.
-> > + */
-> > +unsigned long rust_helper_copy_from_user_unsafe_skip_check_object_size=
-(void *to, const void __user *from, unsigned long n)
-> > +{
-> > +     unsigned long res;
-> > +
-> > +     might_fault();
-> > +     instrument_copy_from_user_before(to, from, n);
-> > +     if (should_fail_usercopy())
-> > +             return n;
-> > +     res =3D raw_copy_from_user(to, from, n);
-> > +     instrument_copy_from_user_after(to, from, n, res);
-> > +     return res;
-> > +}
-> > +EXPORT_SYMBOL_GPL(rust_helper_copy_from_user_unsafe_skip_check_object_=
-size);
-> > +
-> > +unsigned long rust_helper_copy_to_user_unsafe_skip_check_object_size(v=
-oid __user *to, const void *from, unsigned long n)
-> > +{
-> > +     might_fault();
-> > +     if (should_fail_usercopy())
-> > +             return n;
-> > +     instrument_copy_to_user(to, from, n);
-> > +     return raw_copy_to_user(to, from, n);
-> > +}
-> > +EXPORT_SYMBOL_GPL(rust_helper_copy_to_user_unsafe_skip_check_object_si=
-ze);
->
-> Could those be wrapping `_copy_[to|from]_user` instead?
-
-Yeah maybe, see the other thread with Arnd Bergmann.
-
-Alice
+Konrad
 
