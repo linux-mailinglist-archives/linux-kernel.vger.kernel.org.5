@@ -1,130 +1,151 @@
-Return-Path: <linux-kernel+bounces-38284-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B94B783BD80
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 685E683BD7C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:37:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E5CA28C4BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:37:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 176BF285D57
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:37:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EC0C1CA84;
-	Thu, 25 Jan 2024 09:37:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D3C71BDD9;
+	Thu, 25 Jan 2024 09:36:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nwpki+gc"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="E7YPlVBx"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8EA51C6AD;
-	Thu, 25 Jan 2024 09:37:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 971FE1BC46;
+	Thu, 25 Jan 2024 09:36:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706175420; cv=none; b=LrEswRdT8IiqGwiNYOAaA/agmAxxJgpd8bF38RvlMQZh745Ex6N0ElPg/puuHeqCI2L5cD7QTN3Ff8AK3jHkUIwuCZw667aBGTuyli2q4p35zlaQbzjWMEho3PMVW2uGWxoraqrAJ0EiRUPKaafkhV1aW1CiCJR7H6dzuxO1gr4=
+	t=1706175407; cv=none; b=JWJgnp4F39aJM+cKDpr3On0R9bMw5VN2B/1c/RHY2asW2iTVb8po+kcBY2C8C7PXb3CaKkM/nkvtj2/rVrtw4uUUsZ2/E4nBg2d/A+dSYyE77pUZk8IAR/SODQ2+o06DWCbrkli5SvBZM2oEdk1bhUElYkwpsBMpgE3jD2/k8cQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706175420; c=relaxed/simple;
-	bh=gr94+56P2kzJDDYJRH88M8lUAPhvUUKPfiyNI1RdoIA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MP/sdbi1cEO1HfYZS0GiH9A1z6YlOW/iSwqZi6spSAoXwNEbvwDVueEz4y9IhuyRcmToJMZ9WgVcS+IRIcT+qPFd4+Ts+PaxTw/xXJU55MStAiFJfFwieK4kK1Xqb3wDEWXll7TK0E096mysDtJk+E08vthH/q4TB9oW/EL4CCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nwpki+gc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2154C433C7;
-	Thu, 25 Jan 2024 09:36:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706175420;
-	bh=gr94+56P2kzJDDYJRH88M8lUAPhvUUKPfiyNI1RdoIA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nwpki+gcKqJKaqfmZgMJ7UFiFnVP1doqvD1NAyxkVsTKDmQLRRQarzW/fEuRkdAvi
-	 7NfCPwsIyhG1oOwHUUAU0c/faUk7GdbyfFPTU+VmUvyts+VhsCzV97cCgEFFN2cc8F
-	 iQY/oCgkaWWxZVSrXsD8JqUOdHEUAFXGCpS+21U5jD//uVrK4KNg6IhoAW8r/Sj1Fv
-	 8Ghl/QpvvIuLu6Hii4QqaN3dJ+95yJ2H+aggMBYLiE/5F7axNinkm6kiPiJn1ouHCa
-	 T8NPJchz0ua0P0SFQWufV2Cn5XDZ9AQaehvdJvrMdqoNU/bgeG7TjafSaLtZXbvdPa
-	 +B/iVsYKghDgQ==
-Date: Thu, 25 Jan 2024 11:36:32 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: Axel Rasmussen <axelrasmussen@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Lokesh Gidra <lokeshgidra@google.com>,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, selinux@vger.kernel.org,
-	surenb@google.com, kernel-team@android.com, aarcange@redhat.com,
-	peterx@redhat.com, david@redhat.com, bgeffon@google.com,
-	willy@infradead.org, jannh@google.com, kaleshsingh@google.com,
-	ngeoffray@google.com
-Subject: Re: [PATCH] userfaultfd: fix mmap_changing checking in
- mfill_atomic_hugetlb
-Message-ID: <ZbIroGI1kADrOTUB@kernel.org>
-References: <20240117223729.1444522-1-lokeshgidra@google.com>
- <20240118135941.c7795d52881f486aa21aeea8@linux-foundation.org>
- <CAJHvVcgTk3Cf2i-ONx=jH_-dz9GktVMv1Sdqv3cCk6nP2k++iA@mail.gmail.com>
+	s=arc-20240116; t=1706175407; c=relaxed/simple;
+	bh=5IdCGjxog+NAv/y7J+sZhb8XlMuQAvpB+GisSh4S9x8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=n1xPQ8fni/n+yKeKUIpZ9ONEVOCdYG7ScsHV0k/z26QWgG2glUBg8sHLyzxkHixjEVXl2QCgiu0zAQNsr2T2WGlTtEX7lcP/3xz+Bz2/igBep11KqaFY5WFTlox7293wEUUztzxQDuYsQVRtTAa9eKnxPyQNdYb+ikJlBONJcRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=E7YPlVBx; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706175405; x=1737711405;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=5IdCGjxog+NAv/y7J+sZhb8XlMuQAvpB+GisSh4S9x8=;
+  b=E7YPlVBx8zXrhMw6ObNedND5t3fgAfpL9zLncRJy+6OyXRrlT0GIGfE3
+   fMqjrh0EZ/5codKBWOs9qCjtVe+ja3HjRC1C7VuUt/zVSNm6WVBsnBmuh
+   ozFGNid3Qvb1Jj8NhzJnQz0ZR2TleyZ6BIi2R6TYmjDt4U12qhCOtai2V
+   1r6WiGEDNlSkfA70MsZ7diTsETAAf2+UL/yw4EGwMOcE2Ej6AA6sudyW2
+   A3b8HDPxTt6S4QPpouS4E2qAG3wFrEqLJPdo9NyRLz/5wv696pyWsFeFS
+   fDU1PDjxnAAPHe9QUPUEAGaKXkKiWT6OlSD77IQt1OKgkDOR300s5M5bw
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="8767135"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="8767135"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 01:36:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="2303503"
+Received: from cyrillet-mobl.ger.corp.intel.com (HELO localhost) ([10.252.58.252])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 01:36:42 -0800
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Thorsten Leemhuis <linux@leemhuis.info>, Linux kernel regressions list
+ <regressions@lists.linux.dev>, Linux Doc Mailing List
+ <linux-doc@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Bagas Sanjaya <bagasdotme@gmail.com>, Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: More detailed text about bisecting Linux kernel regression --
+ request for comments and help
+In-Reply-To: <c763e15e-e82e-49f8-a540-d211d18768a3@leemhuis.info>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <c763e15e-e82e-49f8-a540-d211d18768a3@leemhuis.info>
+Date: Thu, 25 Jan 2024 11:36:38 +0200
+Message-ID: <87fryllpp5.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJHvVcgTk3Cf2i-ONx=jH_-dz9GktVMv1Sdqv3cCk6nP2k++iA@mail.gmail.com>
+Content-Type: text/plain
 
-On Thu, Jan 18, 2024 at 03:17:14PM -0800, Axel Rasmussen wrote:
-> 
-> On Thu, Jan 18, 2024 at 1:59 PM Andrew Morton <akpm@linux-foundation.org>
-> wrote:
-> 
->     On Wed, 17 Jan 2024 14:37:29 -0800 Lokesh Gidra <lokeshgidra@google.com>
->     wrote:
-> 
->     > In mfill_atomic_hugetlb(), mmap_changing isn't being checked
->     > again if we drop mmap_lock and reacquire it. When the lock is not held,
->     > mmap_changing could have been incremented. This is also inconsistent
->     > with the behavior in mfill_atomic().
-> 
-> 
-> The change looks reasonable to me. I'm not sure I can conclusively say there
-> isn't some other mechanism specific to hugetlbfs which means this isn't needed,
-> though.
-  
-There's nothing specific to hugetlb, if a non-cooperative uffdio_copy races
-with mremap/fork etc, the vma under it may change
- 
->     Thanks. Could you and reviewers please consider
-> 
->     - what might be the userspace-visible runtime effects?
+On Wed, 24 Jan 2024, Thorsten Leemhuis <linux@leemhuis.info> wrote:
+> Hi! Find below a WIP text on bisecting Linux kernel regressions I plan
+> to submit for inclusion in the Linux kernel documentation in a month or
+> two. I could do so now, but chose to write this mail instead, as the
+> text would really benefit from a few people actually testing the given
+> instructions. Hence if you notice somebody that faces a regression that
+> needs bisecting, consider poiting them them to this text, asking them to
+> play through this and provide feedback to me.
+>
+> Ideally point users to the following rendered version:
+> https://www.leemhuis.info/files/misc/How%20to%20bisect%20a%20Linux%20kernel%20regression%20%e2%80%94%20The%20Linux%20Kernel%20documentation.html
+>
+>
+> It is (a) a lot easier to read (b) has no odd or broken line breaks,
+> like the text below has a few (sorry!) (c) is updated when I improve
+> something.
+>
+> Anyone who might be willing to provide feedback can do so in a reply
+> here
 
-For users of non-cooperative uffd with hugetlb, this would fix crashes
-caused by races between uffd operations that update memory and the
-operations that change the VM layout. Pretty much the same fix as
-df2cc96e77011 ("userfaultfd: prevent non-cooperative events vs mcopy_atomic
-races") for !hugetlb memory.
+Hi Thorsten, first of all, thanks for doing this. I think it'll be good
+to have a document on kernel bisection to point people at.
 
-I doubt such users exist, though...
- 
->     - Should the fix be backported into earlier kernels?
->     - A suitable Fixes: target?
-> 
-> Hmm, 60d4d2d2b40e4 added __mcopy_atomic_hugetlb without this. But, at that
-> point in history, none of the other functions had mmap_changing either.
-> 
-> So, I think the right Fixes: target is df2cc96e77011 ("userfaultfd: prevent
-> non-cooperative events vs mcopy_atomic races") ? It seems to have missed the
-> hugetlb path. This was introduced in 4.18.
-> 
-> Based on that commit's message, essentially what can happen if the race
-> "succeeds" is, memory can be accessed without userfaultfd being notified of
-> this fact. Depending on what userfaultfd is being used for, from
-> userspace's perspective this can appear like memory corruption for example. So,
-> based on that it seems to me reasonable to backport this to stable kernels
-> (4.19+).
+The one thing I find problematic is the use of shallow clones by default
+and, well, the use of git in ways that I myself can't figure out without
+resorting to the man pages. I think it's a lot of dark corners of git
+that's overwhelming and really unrelated to the bisection itself.
 
-I agree with Axel, 
+If I point people at that, and they have problems, I'm just going to
+tell them to:
 
-Fixes: df2cc96e77011 ("userfaultfd: prevent non-cooperative events vs mcopy_atomic races")
+  git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+  cd linux
+  git remote add stable git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
+  git fetch stable
 
-seems appropriate.
+And I can tell them to 'git checkout v<GOOD>' and 'git checkout v<BAD>'
+and proceed from there.
+
+To me, that's the TL;DR. And then you can have a section on "what if I
+really can't do full clones" and various options to save bandwidth.
+
+> Downloading the sources using a full git clone
+> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+> If downloading and storing a lot of data (~4,4 Gigabyte as of early
+> 2023) is nothing that bothers you, instead of a shallow clone perform a
+> full git clone instead. You then will avoid the specialties mentioned
+> above and will have all versions and individual commits at hand at any
+> time::
+>
+>   curl -L \
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/clone.bundle
+> \
+>     -o linux-stable.git.bundle
+>   git clone linux-stable.git.bundle ~/linux/
+>   rm linux-stable.git.bundle
+>   cd ~/linux/
+>   git remote set-url origin \
+>     https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+>   git fetch origin
+>   git checkout --detach origin/master
+
+I mean seriously, even the full clone instructions use curl, without
+rationale. Why?
+
+
+BR,
+Jani.
+
 
 -- 
-Sincerely yours,
-Mike.
+Jani Nikula, Intel
 
