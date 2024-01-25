@@ -1,152 +1,101 @@
-Return-Path: <linux-kernel+bounces-38847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7237383C732
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:48:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45D4083C73A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:49:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28D4D289BE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:48:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F0E8E1F23CF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:49:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BFFA7C095;
-	Thu, 25 Jan 2024 15:47:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3879745D0;
+	Thu, 25 Jan 2024 15:48:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="spQERbvP"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="hVBEH2TK"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B34B76916;
-	Thu, 25 Jan 2024 15:47:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A2907319D
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 15:48:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706197635; cv=none; b=eUc20eKlOyPMOdlIAEAqDRNSn/noUUVawiGFBjUt5rrw713PtvA9fEi3nM8OHcoj9j3TjB+drgJtPKGUZUY4HfHN2+fTNxhQUeXLBgwxmh5P/mNkah1w+AT5ej2RtRxYN8B7zcHDf1OlbG23on64r40Xt2iXOKScLQ9wtevnQbM=
+	t=1706197728; cv=none; b=OWPFa1IRTWor/GU/kH65wEPr5jUfeVjUDVPX7M3sLK7kC2amTbuOtgyEw0luS/WOPI/CIZ5St9BlHivmfBI0VjOncEwAD6X1i5ClH+gP6efFTHASKMaD3wEj2GdeUghCjlFARITCqr4kojoaCFUgD+oPkIJtBWUSJb1lfU6nedY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706197635; c=relaxed/simple;
-	bh=zJmZgfxWIaYLZOFMPT1jD8KyCb1GdfoJ77F3vo97p4I=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WdWN0zIHsm3IoNqlO+l8VWgF+tLY6++Nyt5qByXU3ijjcLT3uKESgT8B7bpBZ5a7zPm4tAoyaK89/HSotNAxpxwi3JoKcWu+qiXOwXbR6kS/uO4a0rlaOo61ZNuME5ykTQZw/wbQsfBOiycPRaykQ041fmc+trnwJjZOcrTA7gI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=spQERbvP; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706197631;
-	bh=zJmZgfxWIaYLZOFMPT1jD8KyCb1GdfoJ77F3vo97p4I=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=spQERbvPbrDUUyL60ZyWYlK+MZp56OErqHy8CwHbVAFap8AHI1Cli622MWdnld8Aq
-	 TwrHHehfcs8JZFmZqcaO2enEofICBe5wzVbDWlb1D8QiJXEqIusR9jUQIC6rnsgoXa
-	 3KYVOqzo6hgu2Vq9YzXFpkrOs7jo+IFO6J0mY84SVJBxJvWgaNryCiARh783mOqQZn
-	 NhuqkS6FzsWMQKat6kiOVEnBQsHuEyflRBYKkRjSmgK0nQsFStNyJ2SBsfkh9WdtoA
-	 iAevWDtNz/VCkSYlH8veDwFpBgNKwa3UyH3WPKaRf0VRS00NXT0j6BMvwSFl5u2zTU
-	 i7BuFoEPy1Tfw==
-Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 01DD737820C3;
-	Thu, 25 Jan 2024 15:47:08 +0000 (UTC)
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	kernel@collabora.com,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 5/5] selftests/mm: run_vmtests.sh: add missing tests
-Date: Thu, 25 Jan 2024 20:46:08 +0500
-Message-ID: <20240125154608.720072-6-usama.anjum@collabora.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240125154608.720072-1-usama.anjum@collabora.com>
-References: <20240125154608.720072-1-usama.anjum@collabora.com>
+	s=arc-20240116; t=1706197728; c=relaxed/simple;
+	bh=XkDB2j+aumLxzM/ebMuF8e8HHtMU2QXUT7kkqJuzBVs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=atvUG5dXtkpsnt8Vgd7AXPkJj4li6gmeRdkMk59oYK/eLnaSVesxzYOqceUxs6yEEV6oJxNi8YHPncT5ivlD9BcI30dLdI9ToODJIFfO55BRWmWrIHQRhJSemKYLwHrSGvo4LQ+8IInf7Ls3myun77CmEH7aOQ2Vvt9yFSkOJFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=hVBEH2TK; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=QiJ4CwmCyo6dKl+Q+qnikTNWtt26HZyYn+VJFvkIfIs=; b=hVBEH2TKO5dzIChvSoPv+Rg47C
+	5H8wbbzqwIn1B4Cz1Iw1Q7b0AiB6HYf43tJbia3F3iCdSiNI6ccnFD9NIsWf21f0XATUxmop9RR7s
+	AGw+ovbc14YxNzcl/y/kcSMhHBUgTKlfc/4K6PDbQcooaQZvrM3QW5j/Q/DQu2+6R1IKwVp0kKRHV
+	NyZNX24Suby5v9FS7BC2kORLmnSXs43Fy/lK39V1BnGa0fGflqAO+SZ+LqG7raMmTJQXylqIrTowi
+	E52a9NqOfypHrm598v3g24pr36Oc0nLO0tvaj8qmJb4xPxa2hL8iwg1k9pArTJMMKvGpJGseyQJOx
+	U2GeFwyw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rT1yA-00000000gRI-0FCP;
+	Thu, 25 Jan 2024 15:48:46 +0000
+Date: Thu, 25 Jan 2024 07:48:46 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Russ Weight <russ.weight@linux.dev>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] firmware_loader: introduce __free() cleanup hanler
+Message-ID: <ZbKC3gLfNz301hRQ@bombadil.infradead.org>
+References: <ZaeQw7VXhnirX4pQ@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZaeQw7VXhnirX4pQ@google.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-Add missing tests to run_vmtests.sh. The mm kselftests are run through
-run_vmtests.sh. If a test isn't present in this script, it'll not run
-with run_tests or `make -C tools/testing/selftests/mm run_tests`.
+On Wed, Jan 17, 2024 at 12:33:07AM -0800, Dmitry Torokhov wrote:
+> Define cleanup handler using facilities from linux/cleanup.h to simplify
+> error handling in code using firmware loader. This will allow writing code
+> like this:
+> 
+> int driver_update_firmware(...)
+> {
+> 	const struct firmware *fw_entry __free(firmware) = NULL;
+> 	int error;
+> 
+> 	...
+> 	error = request_firmware(&fw_entry, fw_name, dev);
+> 	if (error) {
+> 		dev_err(dev, "failed to request firmware %s: %d",
+> 			fw_name, error);
+> 		return error;
+> 	}
+> 
+> 	error = check_firmware_valid(fw_entry);
+> 	if (error)
+> 		return error;
+> 
+> 	guard(mutex)(&instance->lock);
+> 
+> 	error = use_firmware(instance, fw);
+> 	if (error)
+> 		return error;
+> 
+> 	return 0;
+> }
+> 
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-Cc: Ryan Roberts <ryan.roberts@arm.com>
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
-Changes since v1:
-- Copy the original scripts and their dependence script to install directory as well
+Acked-by: Luis Chamberalin <mcgrof@kernel.org>
 
-Changes since v2:
-- Add a comment
-- Move tests down in the file
-- Add "-d" option which poisons the pages and aren't being useable after
-  the test
----
- tools/testing/selftests/mm/Makefile       | 5 +++++
- tools/testing/selftests/mm/run_vmtests.sh | 8 ++++++++
- 2 files changed, 13 insertions(+)
-
-diff --git a/tools/testing/selftests/mm/Makefile b/tools/testing/selftests/mm/Makefile
-index 2453add65d12f..f3aec7be80730 100644
---- a/tools/testing/selftests/mm/Makefile
-+++ b/tools/testing/selftests/mm/Makefile
-@@ -114,6 +114,11 @@ TEST_PROGS := run_vmtests.sh
- TEST_FILES := test_vmalloc.sh
- TEST_FILES += test_hmm.sh
- TEST_FILES += va_high_addr_switch.sh
-+TEST_FILES += charge_reserved_hugetlb.sh
-+TEST_FILES += hugetlb_reparenting_test.sh
-+
-+# required by charge_reserved_hugetlb.sh
-+TEST_FILES += write_hugetlb_memory.sh
- 
- include ../lib.mk
- 
-diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
-index e373d592dbf5c..a0f37e4438937 100755
---- a/tools/testing/selftests/mm/run_vmtests.sh
-+++ b/tools/testing/selftests/mm/run_vmtests.sh
-@@ -19,6 +19,7 @@ usage: ${BASH_SOURCE[0]:-$0} [ options ]
-   -t: specify specific categories to tests to run
-   -h: display this message
-   -n: disable TAP output
-+  -d: run destructive tests
- 
- The default behavior is to run required tests only.  If -a is specified,
- will run all tests.
-@@ -79,6 +80,7 @@ EOF
- }
- 
- RUN_ALL=false
-+RUN_DESTRUCTIVE_TEST=false
- TAP_PREFIX="# "
- 
- while getopts "aht:n" OPT; do
-@@ -87,6 +89,7 @@ while getopts "aht:n" OPT; do
- 		"h") usage ;;
- 		"t") VM_SELFTEST_ITEMS=${OPTARG} ;;
- 		"n") TAP_PREFIX= ;;
-+		"a") RUN_DESTRUCTIVE_TEST=true ;;
- 	esac
- done
- shift $((OPTIND -1))
-@@ -304,6 +307,11 @@ CATEGORY="process_mrelease" run_test ./mrelease_test
- CATEGORY="mremap" run_test ./mremap_test
- 
- CATEGORY="hugetlb" run_test ./thuge-gen
-+CATEGORY="hugetlb" run_test ./charge_reserved_hugetlb.sh -cgroup-v2
-+CATEGORY="hugetlb" run_test ./hugetlb_reparenting_test.sh -cgroup-v2
-+if $RUN_DESTRUCTIVE_TEST; then
-+CATEGORY="hugetlb" run_test ./hugetlb-read-hwpoison
-+fi
- 
- if [ $VADDR64 -ne 0 ]; then
- 
--- 
-2.42.0
-
+  Luis
 
