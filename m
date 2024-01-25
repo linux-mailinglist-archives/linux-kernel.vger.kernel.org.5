@@ -1,96 +1,72 @@
-Return-Path: <linux-kernel+bounces-38566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38567-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6E3B83C1AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:10:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83F4783C233
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:11:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B39B9B24479
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:09:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A95041C22AE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:11:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 076F13D97F;
-	Thu, 25 Jan 2024 12:09:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A0C24439F;
+	Thu, 25 Jan 2024 12:11:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="NRloBHEG"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cICzTw1o"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9E0D35EF1
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 12:09:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 113A01CF96
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 12:11:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706184558; cv=none; b=I7PzF+mC6OjfgK5J14QIA8D31maE3Fk7PkIXusuq1+n+LFzd/kIxo1ky9DHzZKMHX7Mz1pAg5D85twUPSMObilhLnqhtjJ+gXowZZ7xwCXTnlof4q7aSxkrlR3TgKLXrRpQfIYFe2HPQkZq12MPRU7woM9C4C70HqpHfHa0Heig=
+	t=1706184690; cv=none; b=cR0qWjxkBsebwcpQB3MVDIg09bYLXuBOlnoH+ENz4KCgrrl0FNXpazzV2nSwmSyu6r7TcAYnQyEl8nJYNyg1w8q6WvBAgZrPeyKd5Em5IYlY9gXcpbjmtbVAtE9+R1HLarVXrecZ/iIBw6hY/i2is1aprU3G/QckBDtacs6l2/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706184558; c=relaxed/simple;
-	bh=X6KtrTWcCvaIY23io48qzhxPzmn2ctueQC3YSuzO8zI=;
-	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dypOnup9hZdN5mV/0Oash6Y3zUwsG2eWWk+mCqZbGJZ3qBNt5tGvPtmvhZZWB9B2NpvqeTHB2+laQaSEZ9ug8CPKpUtYzhUE/flCIR47mkQWtK+ZoicZJ6gYMG7B3ff3/TXGxJEfR3Xm2uLdfdCyxmjcMAvuycu11s1lSgWCHXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=NRloBHEG; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40PBkxof011424;
-	Thu, 25 Jan 2024 12:09:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
- : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=gG7MWoLavXnDvTTl0ZNI4e07YAFVw1dRRN0uz35CGH8=;
- b=NRloBHEGgwxRhiG9kPGGlqR3Pj4sYFg2s50WNbCZf2HyYHqkTBuxA1/cpO38w7aqpKxX
- 9v7WMUYSPMU8V4Q4HLIfQ/tlmeKSL+HBtVcNulZCkJCBvTQri/6d7dJ6WM8jpicmBPCW
- urvy4vuTGSwbgV0H4W1o8VCxBTXwBUcsGQ88+sfjZlvmSM5Gcn5kdjMjvPKeqK6/Qv3K
- ZV6H6xgThKfjkHypE7VxHNKL72w267EkB42bj0Ku0L7mOKaSlbSq64D3HMZaTB0pOR52
- jBAVcqVzysznwaHoOIohfWcRMiQEC1IMA/v7XsVlXudsZFv9xVJORhcyKuUxBcfNzdGc Ew== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vupgph8ua-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Jan 2024 12:09:00 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40PBm9Xt019389;
-	Thu, 25 Jan 2024 12:08:59 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vupgph8tu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Jan 2024 12:08:59 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40P9eDin022510;
-	Thu, 25 Jan 2024 12:08:58 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vrt0mc2h0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Jan 2024 12:08:58 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40PC8tr624969908
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 25 Jan 2024 12:08:55 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 46F5720040;
-	Thu, 25 Jan 2024 12:08:55 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C6FCB20043;
-	Thu, 25 Jan 2024 12:08:52 +0000 (GMT)
-Received: from ltcd48-lp2.aus.stglab.ibm.com (unknown [9.3.101.175])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 25 Jan 2024 12:08:52 +0000 (GMT)
-Subject: [PATCH 2/2] iommu: Fix the domain type checks when default_domain is
- set
-From: Shivaprasad G Bhat <sbhat@linux.ibm.com>
-To: iommu@lists.linux.dev, linuxppc-dev@lists.ozlabs.org
-Cc: linux-kernel@vger.kernel.org, mpe@ellerman.id.au, npiggin@gmail.com,
-        christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org,
-        naveen.n.rao@linux.ibm.com, jgg@ziepe.ca, jroedel@suse.de,
-        tpearson@raptorengineering.com, aik@amd.com, bgray@linux.ibm.com,
-        gregkh@linuxfoundation.org, sbhat@linux.ibm.com,
-        gbatra@linux.vnet.ibm.com, vaibhav@linux.ibm.com
-Date: Thu, 25 Jan 2024 06:08:52 -0600
-Message-ID: 
- <170618452753.3805.4425669653666211728.stgit@ltcd48-lp2.aus.stglab.ibm.com>
-In-Reply-To: 
- <170618450592.3805.8216395093813382208.stgit@ltcd48-lp2.aus.stglab.ibm.com>
-References: 
- <170618450592.3805.8216395093813382208.stgit@ltcd48-lp2.aus.stglab.ibm.com>
-User-Agent: StGit/1.5
+	s=arc-20240116; t=1706184690; c=relaxed/simple;
+	bh=wl6qeStvWY/KbT1X9oM7F92Ws4lF1AS0XXrsCQhBdmk=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=A2jRvvX/ppvAojEKnGcAV7iwymkOvV+ZJ1eoKidFtEJcGkQuNsClpaje60XPeeQ63xG+Shvx/sHR20cAN4kNhdfX21JxkRxluTZ3C+MlS739INyxEU8ZS7G7px6Ym3i2B5wvgHB9x9ypEi5qpR0yO12GUrZhlKxY0TbjMvy09Mg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cICzTw1o; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-50eabbc3dccso8351310e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 04:11:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706184687; x=1706789487; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=foLLMhETECK6dzlBqhWcUTWgNJQ57VgVtXN3QUrlVos=;
+        b=cICzTw1o1r3seciKj/M2hP0aVDxDxsJQNdThl3Xb/uTHyCGrncgv0a4hBiRTLDEBwH
+         OwtPYaI8kxwJ+febqYSevIkDAFw6OkNCCdl8/C9lF/5mW4uC7qLGtSRHX1S8UsD2rbID
+         o5ataTZKBp1dgNyD/Z8RULlw0XnjXRp7I57aIFiTT1EsO8t+XUD2QC4vKUEjN3K0bDqO
+         i3Ds8p8nigm2mz8eq8Toc9NXl8cULnKm/oUXiSyHMY1AMp6iqP7hykIPeaLHjNMlxNTG
+         SgVu+p9T8AG+9dxUj/7zqNzqMLQ/RG5tBgmXyq1LcUKkLjARZ4xms4T4LF/vEdiC9erf
+         GkiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706184687; x=1706789487;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=foLLMhETECK6dzlBqhWcUTWgNJQ57VgVtXN3QUrlVos=;
+        b=XXoHI5Q+mBS1sb1IDTzTcHMnEJCIwfq4Q5TRj8q6yJtsXhFfUctEMXGX5en8zva1wq
+         CMjLGXcnHPhZKcen1Yzv92BrWByu/UZ+EHgvjKuuDjLoH0lGDMUT7EQXyYLvORLSBdtk
+         AIbqdF2p6tK7CDPnso6pOWor7MBw/75G2bvQnYifRfzmfIBNO9iH0+mZt6XiA7SHVO3W
+         8yxagAGSrFhNU96K/ohsLP73DQCioSZ9FMx9zgTHllm28WAUu346BJyVixUW3W0fcZbP
+         IM0b3jL2V4BFfRYWC92RnZuMViADMkEM2LVaGwzPHN4Zsa0FVQcKNaQt7YODCGWMS45h
+         x8cg==
+X-Gm-Message-State: AOJu0YzqKo1LXRMfbQ/QpJlhsV1vz3qIQmUh0pwGbOH5Mt5JdbpgPF0h
+	eAK8rWMmnycQzoU3vxg45ZJ67m5Aw5G9R8kJUMv5hXmdQ2tCnQeD0J9QUiysJQ0=
+X-Google-Smtp-Source: AGHT+IGsG2nw6oX09siaTNeP3ehcDDpZ1k2uPqejFE0ZYYX5t8B39pBj6rqgdd5C+97CXcXi6kGqLA==
+X-Received: by 2002:ac2:46c7:0:b0:50e:cc3b:b21c with SMTP id p7-20020ac246c7000000b0050ecc3bb21cmr243260lfo.43.1706184686982;
+        Thu, 25 Jan 2024 04:11:26 -0800 (PST)
+Received: from [127.0.1.1] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id y20-20020a196414000000b005102188d154sm21221lfb.108.2024.01.25.04.11.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 04:11:26 -0800 (PST)
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH 0/2] Assume polling-delay(-passive) = 0 when absent
+Date: Thu, 25 Jan 2024 13:11:14 +0100
+Message-Id: <20240125-topic-thermal-v1-0-3c9d4dced138@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -99,90 +75,36 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 9xLRX-Ci5ldGH1TbQ5_NxrdYVilzJJRA
-X-Proofpoint-ORIG-GUID: tjZYyV_h8WBjmfJrXQ754fuCM9NqkNdA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-25_06,2024-01-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
- spamscore=0 priorityscore=1501 mlxlogscore=989 mlxscore=0 malwarescore=0
- phishscore=0 clxscore=1015 bulkscore=0 lowpriorityscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2401250084
+X-B4-Tracking: v=1; b=H4sIAOJPsmUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDQyNT3ZL8gsxk3ZKM1KLcxBzdNEtTk+Q0C+O0ZFMDJaCegqLUtMwKsHn
+ RsbW1ALxkgodfAAAA
+To: "Rafael J. Wysocki" <rafael@kernel.org>, 
+ Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, 
+ Lukasz Luba <lukasz.luba@arm.com>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>
+Cc: linux-pm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.13-dev-0438c
 
-On PPC64, the iommu_ops.def_domain_type() is not defined and
-CONFIG_IOMMU_DMA not enabled. With commit 0f6a90436a57 ("iommu: Do not
-use IOMMU_DOMAIN_DMA if CONFIG_IOMMU_DMA is not enabled"), the
-iommu_get_default_domain_type() return IOMMU_DOMAIN_IDENTITY. With
-commit 2ad56efa80db ("powerpc/iommu: Setup a default domain and remove
-set_platform_dma_ops"), the defaule_domain is set wih the type being
-PLATFORM. With these two changes, iommu_group_alloc_default_domain()
-ends up returning the NULL(with recent changes, ERR_PTR(-EINVAL))
-leading to iommu_probe_device() failure and the device has no
-iommu_group set in effect. Subsequently, the bind to vfio(VFIO_IOMMU)
-fail as the iommu_group is not set for the device.
+As it stands, setting 0 explicitly feels like spam inside the DTs.
+This series simplifies it.
 
-Make the iommu_get_default_domain_type() to take default_domain->type
-into consideration along with default_domain_type() and fix
-iommu_group_alloc_default_domain() to not error out if the requested
-type is same as default domain type.
-
-Fixes: 2ad56efa80db ("powerpc/iommu: Setup a default domain and remove set_platform_dma_ops")
-Fixes: 0f6a90436a57 ("iommu: Do not use IOMMU_DOMAIN_DMA if CONFIG_IOMMU_DMA is not enabled")
-Signed-off-by: Shivaprasad G Bhat <sbhat@linux.ibm.com>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- drivers/iommu/iommu.c |   14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+Konrad Dybcio (2):
+      dt-bindings: thermal-zones: Don't require polling-delay(-passive)
+      thermal/of: Assume polling-delay(-passive) 0 when absent
 
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 68e648b55767..04083a1d9f7e 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -135,6 +135,8 @@ static struct group_device *iommu_group_alloc_device(struct iommu_group *group,
- 						     struct device *dev);
- static void __iommu_group_free_device(struct iommu_group *group,
- 				      struct group_device *grp_dev);
-+static int iommu_get_def_domain_type(struct iommu_group *group,
-+				     struct device *dev, int cur_type);
- 
- #define IOMMU_GROUP_ATTR(_name, _mode, _show, _store)		\
- struct iommu_group_attribute iommu_group_attr_##_name =		\
-@@ -1788,7 +1790,8 @@ __iommu_group_alloc_default_domain(struct iommu_group *group, int req_type)
- static struct iommu_domain *
- iommu_group_alloc_default_domain(struct iommu_group *group, int req_type)
- {
--	const struct iommu_ops *ops = dev_iommu_ops(iommu_group_first_dev(group));
-+	struct device *dev = iommu_group_first_dev(group);
-+	const struct iommu_ops *ops = dev_iommu_ops(dev);
- 	struct iommu_domain *dom;
- 
- 	lockdep_assert_held(&group->mutex);
-@@ -1799,7 +1802,7 @@ iommu_group_alloc_default_domain(struct iommu_group *group, int req_type)
- 	 * domain. Do not use in new drivers.
- 	 */
- 	if (ops->default_domain) {
--		if (req_type)
-+		if (iommu_get_def_domain_type(group, dev, req_type) != req_type)
- 			return ERR_PTR(-EINVAL);
- 		return ops->default_domain;
- 	}
-@@ -1871,10 +1874,13 @@ static int iommu_get_def_domain_type(struct iommu_group *group,
- 	const struct iommu_ops *ops = dev_iommu_ops(dev);
- 	int type;
- 
--	if (!ops->def_domain_type)
-+	if (ops->def_domain_type)
-+		type = ops->def_domain_type(dev);
-+	else if (group->default_domain)
-+		type = group->default_domain->type;
-+	else
- 		return cur_type;
- 
--	type = ops->def_domain_type(dev);
- 	if (!type || cur_type == type)
- 		return cur_type;
- 	if (!cur_type)
+ Documentation/devicetree/bindings/thermal/thermal-zones.yaml |  2 --
+ drivers/thermal/thermal_of.c                                 | 12 ++++++++----
+ 2 files changed, 8 insertions(+), 6 deletions(-)
+---
+base-commit: 01af33cc9894b4489fb68fa35c40e9fe85df63dc
+change-id: 20240125-topic-thermal-f954cf83fc50
 
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
 
 
