@@ -1,147 +1,159 @@
-Return-Path: <linux-kernel+bounces-38266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38263-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E339683BDA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:43:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C709983BD54
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:30:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9CF95B2E14D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:31:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74C59291DA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:30:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4970E200C0;
-	Thu, 25 Jan 2024 09:29:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="H6pVcBwO";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="TYyNxe/g"
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55B9E1C2A3;
+	Thu, 25 Jan 2024 09:28:57 +0000 (UTC)
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85BE71D559;
-	Thu, 25 Jan 2024 09:29:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 262B31BF27;
+	Thu, 25 Jan 2024 09:28:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706174949; cv=none; b=TNaBxKyKHY4oTkR4wuSF9JLc3I3gF8sx2pKigPheSco5S91kdXAzqzYiw2euuTE/BVu2cZgyqTSE0f2aRX2eQ52PBHuTnjpCSC3Bsy98xzv5ueTfF/Qhd0F6yKfLA7aUDddAgkhdUyKW0Jy5kXDkCx24ZIY/uBvmngthcgy9VbA=
+	t=1706174936; cv=none; b=Zf1Akv7mbTTGODF5U1IdeCRtP0qqVDWoVWvnRTJBI4EuI/I2rcuIjiERYfQqq6f70JOh6LRuFIBg0pASGeMfuJE3kNDpuCaFLXdmGo4w0A0HX/VROcGoUkRVc/iuZwmxJftYgIEFr6vaUVJ7edn3kkx7wqftjZ6uDqtO9tSmYqA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706174949; c=relaxed/simple;
-	bh=K/9JKflS9axsLrR15vQW/TMGMDqOa6Hya/B30Dusweg=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=ae5zcey6CG0xYH7+Kt3IZlb3cSqyJ1IefF+98+0sLn/rzVsnhepzQvsqfku+JoBdihrZsbTm0WTT5N2gNH9SpF4cwYQcdHX7FvNaRZdL9MbKHDRQqwIEiiXfEEl/T1HBrlyxLOwP2w/X88y6K8Jv2+SuPNjwgXo52GSJfii1B5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com; spf=pass smtp.mailfrom=flygoat.com; dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b=H6pVcBwO; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=TYyNxe/g; arc=none smtp.client-ip=64.147.123.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailout.west.internal (Postfix) with ESMTP id 9DB603200BB7;
-	Thu, 25 Jan 2024 04:29:04 -0500 (EST)
-Received: from imap44 ([10.202.2.94])
-  by compute3.internal (MEProxy); Thu, 25 Jan 2024 04:29:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1706174944;
-	 x=1706261344; bh=i0i8PWJmZEIkk+qKWWCdcOgFw5jqjthhyPV0wFojKbQ=; b=
-	H6pVcBwO4ZLaGUzpBTECLQ40+Mm+pEnyKTDjgZdFJ8Y1TsT1ON1s2ELdQrlEH6BU
-	cgUO71RyLbCfAj5g86T3buVZnH0ROTXRAIicxrC3LqI6yaaWOOmNtaSd/kr1gwHL
-	OodId6jl3iSqNdPnTHT+Ax6vbN6ESIypN/+WEUQHvyo9C+Z9WHw6rUp88bJyiGXY
-	aoUdZP83FOfUvWsiAXLJtSKxljh6Pg0/5jEr1ub9yiw4R5uAmCIEu1WADbBCO0CJ
-	07q7VK5e9bPb9jgcT//yAEYR901RBjEgPYKFSYpJ4j+lkGkghysG/y89kodK9Wk7
-	rZ/kWLSH9OCP3D8gLZeDCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706174944; x=
-	1706261344; bh=i0i8PWJmZEIkk+qKWWCdcOgFw5jqjthhyPV0wFojKbQ=; b=T
-	YyNxe/gap3a1Ds7o35cEU4eoD2hL/lLjyRrQ8FcKoji7qh+TjeUeWJ5lGVgFLE1x
-	ZJCGjkVygP49mRc81E2QmexP2bxGbXrOctbw+Vy/bKGq8wTydaIJC1MmaFlBJXuk
-	DFcFYSqWMHu2yvIQri/nA32t0eTD79ru2Qzo8NZ/fKXPKXy7/BKSjiRC8bGOnmOU
-	DUI5rndTjp48GgQIPOHa3/3AyfaMX0i39eBEFkB3FrTC9fHwkljpBZ7Z8EBtmCEn
-	Lba2+kPJRAB8anHmy2Fv6AhaLPEOD7mA4B7UluGFJx4XvteVFIF6aProT+t7pzZX
-	Yz1F1vP7//Qhqq1kYfLaA==
-X-ME-Sender: <xms:3ymyZVs21U8ZqnsOuXOaazdG7GlnzqP9TsgXip3xB7VzwWRfAKiHIw>
-    <xme:3ymyZecCeNqV4wXeVIvmIxFUA_rUxbWDOwhCUFCXucHHy-KSkdahQ-VWTVFimWZAm
-    G2D9bonnlbDNb3RQ6s>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdelfedgtdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdfl
-    ihgrgihunhcujggrnhhgfdcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtoh
-    hmqeenucggtffrrghtthgvrhhnpedufeegfeetudeghefftdehfefgveffleefgfehhfej
-    ueegveethfduuddvieehgfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:3ymyZYweCc5AvRnJAGpEFU4N4LYF2pZai5DeZhNKmGt1aU5g8_OhIQ>
-    <xmx:3ymyZcM1R8HPm5mcwokD8eY6L7t3vbn8VRUoZh3SbpbCZerQqxwcKw>
-    <xmx:3ymyZV_apitg7LRwV1kIf6usBWUhq5LZLX6KR7Tg-iRwVoScGwunYA>
-    <xmx:4CmyZYkrjz7lcycg6O5LWtTHhKz6m4i46xXuqhYIEYJEXO1sjrZGvA>
-Feedback-ID: ifd894703:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 46B4136A0076; Thu, 25 Jan 2024 04:29:03 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-119-ga8b98d1bd8-fm-20240108.001-ga8b98d1b
+	s=arc-20240116; t=1706174936; c=relaxed/simple;
+	bh=4oi/mDvJ66W3EHJcJkd6l/BObOrE9wC8bVqVRycPZXw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Vd0aQ9L3dDL95q88bABdBJfvQp6407F3UedP2glwDYuwTQkYPG51WOmkMI+2pQOp6a9ulvOHB6IsTY7okbeaHUuiCpC8NuPI5wGfDFpcqZ2AP9FHWcc+w/LHqwzqCe21RFnalBDzLp+55HwEZdZ/lgg+Rg5HXSWd28p2ZnXx7AY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0W.JurKr_1706174923;
+Received: from 30.221.129.223(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W.JurKr_1706174923)
+          by smtp.aliyun-inc.com;
+          Thu, 25 Jan 2024 17:28:44 +0800
+Message-ID: <d93bdf89-d724-4f2a-a3fc-f3a46e54202c@linux.alibaba.com>
+Date: Thu, 25 Jan 2024 17:28:43 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <00d1b813-c55f-4365-8d81-d70258e10b16@app.fastmail.com>
-In-Reply-To: 
- <CAHk-=whkEXGOCEZFO2vAZ9rDd8uW8MJwFNYg9KXaC_vZVso6iA@mail.gmail.com>
-References: <75e9fd7b08562ad9b456a5bdaacb7cc220311cc9.camel@xry111.site>
- <mvmplxraqmd.fsf@suse.de>
- <9481b6d9d015aea25d8f2563bf7bd6f6462f758f.camel@xry111.site>
- <0be1203c9df55432548c92281c8392dfa2f7d6bf.camel@xry111.site>
- <e8583a3ab0522b4e75ba0ada47b6f093b186fa81.camel@xry111.site>
- <CAHk-=wgVrw+8P68Sy2krcc3QFbm_eu_DRs0-i7mct_0BDORZuA@mail.gmail.com>
- <CAHk-=whkEXGOCEZFO2vAZ9rDd8uW8MJwFNYg9KXaC_vZVso6iA@mail.gmail.com>
-Date: Thu, 25 Jan 2024 09:28:41 +0000
-From: "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-To: "Linus Torvalds" <torvalds@linux-foundation.org>,
- "Xi Ruoyao" <xry111@xry111.site>, tsbogend@alpha.franken.de
-Cc: "Andreas Schwab" <schwab@suse.de>, "Ben Hutchings" <ben@decadent.org.uk>,
- "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
- linux-kernel@vger.kernel.org, libc-alpha@sourceware.org
-Subject: Re: Strange EFAULT on mips64el returned by syscall when another thread is
- forking
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [REGRESSION] v6.8 SMC-D issues
+To: Alexandra Winter <wintera@linux.ibm.com>, wenjia@linux.ibm.com,
+ hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, jaka@linux.ibm.com,
+ Matthew Rosato <mjrosato@linux.ibm.com>
+Cc: Linux regressions mailing list <regressions@lists.linux.dev>,
+ borntraeger@linux.ibm.com, svens@linux.ibm.com, alibuda@linux.alibaba.com,
+ tonylu@linux.alibaba.com, raspl@linux.ibm.com, schnelle@linux.ibm.com,
+ guangguan.wang@linux.alibaba.com, linux-s390@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Halil Pasic <pasic@linux.ibm.com>
+References: <20231219142616.80697-1-guwen@linux.alibaba.com>
+ <20231219142616.80697-8-guwen@linux.alibaba.com>
+ <13579588-eb9d-4626-a063-c0b77ed80f11@linux.ibm.com>
+ <530afe45-ba6b-4970-a71c-1f1255f5fca9@linux.alibaba.com>
+ <8090bb34-1b70-43ea-ae13-df5d9a5eb761@linux.ibm.com>
+From: Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <8090bb34-1b70-43ea-ae13-df5d9a5eb761@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
 
-=E5=9C=A82024=E5=B9=B41=E6=9C=8824=E6=97=A5=E4=B8=80=E6=9C=88 =E4=B8=8B=E5=
-=8D=8810:10=EF=BC=8CLinus Torvalds=E5=86=99=E9=81=93=EF=BC=9A
-[...]
->
-> Anyway, I'm pretty sure this is the bug, now some MIPS person just
-> needs to fix the MIPS version of "instruction_pointer()" to do what
-> "exception_epc()" already does.
+On 2024/1/25 16:26, Alexandra Winter wrote:
+> 
+> 
+> On 25.01.24 05:59, Wen Gu wrote:
+>> After a while debug I found an elementary mistake of mine in
+>> b40584d ("net/smc: compatible with 128-bits extended GID of virtual ISM device")..
+>>
+>> The operator order in smcd_lgr_match() is not as expected. It will always return
+>> 'true' in remote-system case.
+>>
+>>   static bool smcd_lgr_match(struct smc_link_group *lgr,
+>> -                          struct smcd_dev *smcismdev, u64 peer_gid)
+>> +                          struct smcd_dev *smcismdev,
+>> +                          struct smcd_gid *peer_gid)
+>>   {
+>> -       return lgr->peer_gid == peer_gid && lgr->smcd == smcismdev;
+>> +       return lgr->peer_gid.gid == peer_gid->gid && lgr->smcd == smcismdev &&
+>> +               smc_ism_is_virtual(smcismdev) ?
+>> +               (lgr->peer_gid.gid_ext == peer_gid->gid_ext) : 1;
+>>   }
+>>
+>> Could you please try again with this patch? to see if this is the root cause.
+>> Really sorry for the inconvenience.
+>>
+>> diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
+>> index da6a8d9c81ea..c6a6ba56c9e3 100644
+>> --- a/net/smc/smc_core.c
+>> +++ b/net/smc/smc_core.c
+>> @@ -1896,8 +1896,8 @@ static bool smcd_lgr_match(struct smc_link_group *lgr,
+>>                             struct smcd_gid *peer_gid)
+>>   {
+>>          return lgr->peer_gid.gid == peer_gid->gid && lgr->smcd == smcismdev &&
+>> -               smc_ism_is_virtual(smcismdev) ?
+>> -               (lgr->peer_gid.gid_ext == peer_gid->gid_ext) : 1;
+>> +               (smc_ism_is_virtual(smcismdev) ?
+>> +                (lgr->peer_gid.gid_ext == peer_gid->gid_ext) : 1);
+>>   }
+>>
+>>
+>> Thanks,
+>> Wen Gu
+> 
+> Hello Wen Gu,
+> 
+> thank you for the quick resposne and for finding this nasty bug.
+> I can confirm that with your patch I do not see the issue anymore.
 
-Hi folks,
+Thank you very much for your confirmation, Alexandra.
 
-Kinda MIPS person here, I looked into the problem, and it's not that
-easy to fix.
+> Please send a fix to the mailing lists. See
+> https://docs.kernel.org/process/handling-regressions.html
+> for some tips.
+> 
 
-I inspected some existing usage of "instruction_pointer()", and some
-of them do want exception return address (which is always CP0_EPC).
-Others like this case they want the precise exception instruction
-pointer ("exception_epc()" for MIPS).
+Thank you. Will do.
 
-I'm planning to make "instruction_pointer()" always point to exception
-instructions, and implemented a new function called "return_pc()"or
-whatever for "exception_epc()". Do you have a better name in mind?
+> May I propose that instead of adding the brackets, you change this function
+> to an if-then-else sequence for readability and maintainability?
+> I would still mention the missing brackets in the commit message, so
+> readers can quickly understand the issue.
 
-Besides isa16 stuff do require kernel to read user space fault
-instruction to determine delay slot size... I don't think it's always
-possible when "instruction_pointer()" is called. MIPS16/microMIPS
-is rarely used today though.
+I agree. if-then-else will make it clearer. I will fix it like this:
 
-Thanks
+diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
+index da6a8d9c81ea..1d5bce82d4d8 100644
+--- a/net/smc/smc_core.c
++++ b/net/smc/smc_core.c
+@@ -1895,9 +1895,15 @@ static bool smcd_lgr_match(struct smc_link_group *lgr,
+                            struct smcd_dev *smcismdev,
+                            struct smcd_gid *peer_gid)
+  {
+-       return lgr->peer_gid.gid == peer_gid->gid && lgr->smcd == smcismdev &&
+-               smc_ism_is_virtual(smcismdev) ?
+-               (lgr->peer_gid.gid_ext == peer_gid->gid_ext) : 1;
++       if (lgr->peer_gid.gid != peer_gid->gid ||
++           lgr->smcd != smcismdev)
++               return false;
++
++       if (smc_ism_is_virtual(smcismdev) &&
++           lgr->peer_gid.gid_ext != peer_gid->gid_ext)
++               return false;
++
++       return true;
+  }
 
->
->               Linus
+Thanks again,
+Wen Gu
 
---=20
-- Jiaxun
+> 
+> Thanks again for the quick response.
+> Sandy
 
