@@ -1,103 +1,179 @@
-Return-Path: <linux-kernel+bounces-38637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2747183C382
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:20:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4279A83C384
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:20:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C2341C2376E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:20:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 748021C21424
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:20:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C86874F885;
-	Thu, 25 Jan 2024 13:20:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2A0350A69;
+	Thu, 25 Jan 2024 13:20:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OV4eAlWQ"
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XvPwZ6Az"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E07C4F88D
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 13:20:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2A8650A71;
+	Thu, 25 Jan 2024 13:20:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706188831; cv=none; b=cIbQfVmxKd+bAmVSy9E1UNWWIkYAqLVVdmrSzctlt7InQM0jacEGEmgntXpNRmkY8JzwpfQvOFnrAAT1zw8P4IQv8kAtRgKeupYKwoeoYXcdnKaPeuDpOslLv2fho2/qKQ4aW8wnBCleVHY1Z996x1CPVHTYdDkMNSupeAmvFuU=
+	t=1706188846; cv=none; b=ltmBi4on713LOemDg2V9/wCu9vWS1Bz1NEPF2XMDNSC2YhCTpwwIC2nkGOPL4OviFzV/NQHljLPNapn1GKcI6DB0R+wce/O4JARJ6lsGt7MSnArhKwrNDuZAnPAngbp253K0Ui+eUpqjhba7LBuwfvToprwmO+nstX0xspWgiD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706188831; c=relaxed/simple;
-	bh=2CXZJyrp6iFAL52EdLsPOSjvjlG8Sc9qL+jXy8nmaq4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RlRnsLnmtVUGgWlNvUQWPEm0BIun5B1Ugp7ZD9BnEax/nL+xO6sjytq5+jlmH5cAUGdzTR9abon+BRIlsDqJZ1am3kMA+oKrCoegBBBLsyIGnimc2aqotYchf71+u2dClMThgkfFJb1P6305V2S6TRgGQtDjZW18qptmCrh+jNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OV4eAlWQ; arc=none smtp.client-ip=209.85.128.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-60032f9e510so25709827b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 05:20:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706188828; x=1706793628; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/tDYjrG3ipq52LMTw0BWl8QpdFX3vh/NkpzYZn5kvI8=;
-        b=OV4eAlWQtnnpl+44dPi7J6QmE0pbkfGrn7za1dLXjbgkcDzEu4iLouie/1ThplPUK9
-         c+suiAtBjb/GgjUR04CdzfT/Ao1hjAzEwPRHa4qNUFKDxi87FH5J/t6hMnJAbn5O7Tns
-         cAbqLnAZg0SXujqWlRS/XsuAiB3HtdRQjxV7FDsDcy7oHrtbM93EFnBDK01bWcnsAtv8
-         idJLEJ6Gjctl4wVM8Mv0V2/2uDTHIIlqfjzqCin6NCfq2Nf09TAH2/XHIUEf552NryN9
-         /oyBWWNfl78+7h983jB1+WmNM+TV4eIdfJlVdVVFFAPlHvGHN0SOhvgETLPog0Scz2Is
-         s/wA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706188828; x=1706793628;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/tDYjrG3ipq52LMTw0BWl8QpdFX3vh/NkpzYZn5kvI8=;
-        b=LiY3YHXgf6QjkwHB6UYr1ddqVzEMm8pI8kf2nTwrDNCMVj8yBkX7GEfoPCB/msdB4g
-         5v79q9hfiPipUAAApXH0i6tjrgxRkhrGjSjuq80p/DasMLwB93O60gWN0NLtP0qrDL08
-         7w5Buvo9AmbjVnUfBqguju0kU1ZQNjt0qt2Xg5K4vDLgtfIi6Il5ob4xUV+7AEZWQ3pt
-         90VpJIbUwUi2MHuDjHOIy5uY/uRXyd36mGBxRO5m/Wvd9wcCNdMMJYEKdeJVo0IOU+3g
-         eYeiAaHAcqyBlWilieQUDY0LHffRDdL6qgu5hLW425IxBMyi81jBXjoW4DQt7OeE+nfS
-         WJ6A==
-X-Gm-Message-State: AOJu0YxEwgluy3ewEoFc12GgFjOtK7r5vc4owxK6szapufBpVigkYMkH
-	xvNjY5T5SHOr2gRcfiYHjvw/xSzPNiykaqKIJSJI1+WePhw2n8Azre8Rj9SOkT+Gajf4Ug9EISD
-	k+W7xIle/jnhWCKkNFlrc/mNciwijvToi9VG/pg==
-X-Google-Smtp-Source: AGHT+IE/kKFnSV92jQGZrCw/siQiblRmVM3ZbROR/NC3wHXCuWovvQn3XOanm79yGEAm93sv5KHZUGzXEC/l5zgL8n4=
-X-Received: by 2002:a81:b65b:0:b0:5ff:7dd8:2b4f with SMTP id
- h27-20020a81b65b000000b005ff7dd82b4fmr592216ywk.94.1706188828076; Thu, 25 Jan
- 2024 05:20:28 -0800 (PST)
+	s=arc-20240116; t=1706188846; c=relaxed/simple;
+	bh=REBZVG9ehyWFJMZdJCjxgTWUOv9y1bMZcqreSj6u5EI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=id8kvQ6XSudqaafBYNjURxtN70KWZ6ONk6uYgNo+SV+I1qf737haIJe3JvranBMkRQFbvLubFhRM1mZSVKEFosAbvoOnBzUTJW2s3CPdkop44XnLLD0dMyzvtH/Xx6XiOgZ6yWB5+wHCQ05sMIKamXQ0A4Q2uKlgGPj8pvfrR80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XvPwZ6Az; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 549DCC433F1;
+	Thu, 25 Jan 2024 13:20:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706188845;
+	bh=REBZVG9ehyWFJMZdJCjxgTWUOv9y1bMZcqreSj6u5EI=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=XvPwZ6AzhOVK6A3/vsuVyOFrAjO4c/mAA4zUw9lmJ6R/R6KL+mNzUgYzYot46Levk
+	 FzWTm8sMRVWeLfbMe4vMOBygGZdpmHeJoLmuSRU3JfLE0oGmmJY4FCresqAsmfLqmv
+	 hq0B6ly4ckUdxQ3A5+NEV806+lmOzSqI2GjVp26vbRgUrhIHWKL685tdCvsGUbk1I4
+	 T2V4X9nZ35yxMAyMQbmfuzaO/6Ro3Nq55TbN1lb1HzB+NXF6sn3AvEv9n3lqFDBG1Y
+	 NziJ6+upFovUW2qO8Jyqz0vTUynOnQbbbNVt5E34YzJYAAfliyQlDV2zQrzgCbsSaA
+	 CcLD9dMoaUdlw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id E6F0FCE189D; Thu, 25 Jan 2024 05:20:44 -0800 (PST)
+Date: Thu, 25 Jan 2024 05:20:44 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>, quic_charante@quicinc.com,
+	akpm@linux-foundation.org, aneesh.kumar@linux.ibm.com,
+	dan.j.williams@intel.com, david@redhat.com,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	mgorman@techsingularity.net, osalvador@suse.de, vbabka@suse.cz,
+	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+	Ilya Leoshkevich <iii@linux.ibm.com>,
+	Nicholas Miehlbradt <nicholas@linux.ibm.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH] mm/sparsemem: fix race in accessing memory_section->usage
+Message-ID: <9d94958c-7ab3-4f0d-a718-1f72c1467925@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <1697202267-23600-1-git-send-email-quic_charante@quicinc.com>
+ <20240115184430.2710652-1-glider@google.com>
+ <CANpmjNMP802yN0i6puHHKX5E1PZ_6_h1x9nkGHCXZ4DVabxy7A@mail.gmail.com>
+ <Zagn_T44RU94dZa7@elver.google.com>
+ <CAG_fn=XcMBWLCZKNY+hiP9HxT9vr0bXDEaHmOcr9-jVro5yAxw@mail.gmail.com>
+ <ZajyqgE3ZHYHSvZC@elver.google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125130626.390850-1-krzysztof.kozlowski@linaro.org> <20240125130626.390850-3-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240125130626.390850-3-krzysztof.kozlowski@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 25 Jan 2024 15:20:17 +0200
-Message-ID: <CAA8EJpqazduHm1DYwGDLjDupRgLXpP+oJXfpwpVfSnBBeTC+5Q@mail.gmail.com>
-Subject: Re: [PATCH 3/6] arm64: dts: qcom: sm8350: describe all PCI MSI interrupts
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZajyqgE3ZHYHSvZC@elver.google.com>
 
-On Thu, 25 Jan 2024 at 15:07, Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> Each group of MSI interrupts is mapped to the separate host interrupt.
-> Describe each of interrupts in the device tree for PCIe hosts.  Not
-> tested on hardware.
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/sm8350.dtsi | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
+On Thu, Jan 18, 2024 at 10:43:06AM +0100, Marco Elver wrote:
+> On Thu, Jan 18, 2024 at 10:01AM +0100, Alexander Potapenko wrote:
+> > >
+> > > Hrm, rcu_read_unlock_sched_notrace() can still call
+> > > __preempt_schedule_notrace(), which is again instrumented by KMSAN.
+> > >
+> > > This patch gets me a working kernel:
+> > >
+> [...]
+> > > Disabling interrupts is a little heavy handed - it also assumes the
+> > > current RCU implementation. There is
+> > > preempt_enable_no_resched_notrace(), but that might be worse because it
+> > > breaks scheduling guarantees.
+> > >
+> > > That being said, whatever we do here should be wrapped in some
+> > > rcu_read_lock/unlock_<newvariant>() helper.
+> > 
+> > We could as well redefine rcu_read_lock/unlock in mm/kmsan/shadow.c
+> > (or the x86-specific KMSAN header, depending on whether people are
+> > seeing the problem on s390 and Power) with some header magic.
+> > But that's probably more fragile than adding a helper.
+> > 
+> > >
+> > > Is there an existing helper we can use? If not, we need a variant that
+> > > can be used from extremely constrained contexts that can't even call
+> > > into the scheduler. And if we want pfn_valid() to switch to it, it also
+> > > should be fast.
+> 
+> The below patch also gets me a working kernel. For pfn_valid(), using
+> rcu_read_lock_sched() should be reasonable, given its critical section
+> is very small and also enables it to be called from more constrained
+> contexts again (like KMSAN).
+> 
+> Within KMSAN we also have to suppress reschedules. This is again not
+> ideal, but since it's limited to KMSAN should be tolerable.
+> 
+> WDYT?
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+I like this one better from a purely selfish RCU perspective.  ;-)
 
+							Thanx, Paul
 
--- 
-With best wishes
-Dmitry
+> ------ >8 ------
+> 
+> diff --git a/arch/x86/include/asm/kmsan.h b/arch/x86/include/asm/kmsan.h
+> index 8fa6ac0e2d76..bbb1ba102129 100644
+> --- a/arch/x86/include/asm/kmsan.h
+> +++ b/arch/x86/include/asm/kmsan.h
+> @@ -64,6 +64,7 @@ static inline bool kmsan_virt_addr_valid(void *addr)
+>  {
+>  	unsigned long x = (unsigned long)addr;
+>  	unsigned long y = x - __START_KERNEL_map;
+> +	bool ret;
+>  
+>  	/* use the carry flag to determine if x was < __START_KERNEL_map */
+>  	if (unlikely(x > y)) {
+> @@ -79,7 +80,21 @@ static inline bool kmsan_virt_addr_valid(void *addr)
+>  			return false;
+>  	}
+>  
+> -	return pfn_valid(x >> PAGE_SHIFT);
+> +	/*
+> +	 * pfn_valid() relies on RCU, and may call into the scheduler on exiting
+> +	 * the critical section. However, this would result in recursion with
+> +	 * KMSAN. Therefore, disable preemption here, and re-enable preemption
+> +	 * below while suppressing rescheduls to avoid recursion.
+> +	 *
+> +	 * Note, this sacrifices occasionally breaking scheduling guarantees.
+> +	 * Although, a kernel compiled with KMSAN has already given up on any
+> +	 * performance guarantees due to being heavily instrumented.
+> +	 */
+> +	preempt_disable();
+> +	ret = pfn_valid(x >> PAGE_SHIFT);
+> +	preempt_enable_no_resched();
+> +
+> +	return ret;
+>  }
+>  
+>  #endif /* !MODULE */
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 4ed33b127821..a497f189d988 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -2013,9 +2013,9 @@ static inline int pfn_valid(unsigned long pfn)
+>  	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+>  		return 0;
+>  	ms = __pfn_to_section(pfn);
+> -	rcu_read_lock();
+> +	rcu_read_lock_sched();
+>  	if (!valid_section(ms)) {
+> -		rcu_read_unlock();
+> +		rcu_read_unlock_sched();
+>  		return 0;
+>  	}
+>  	/*
+> @@ -2023,7 +2023,7 @@ static inline int pfn_valid(unsigned long pfn)
+>  	 * the entire section-sized span.
+>  	 */
+>  	ret = early_section(ms) || pfn_section_valid(ms, pfn);
+> -	rcu_read_unlock();
+> +	rcu_read_unlock_sched();
+>  
+>  	return ret;
+>  }
 
