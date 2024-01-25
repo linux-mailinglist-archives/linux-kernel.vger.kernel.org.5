@@ -1,110 +1,193 @@
-Return-Path: <linux-kernel+bounces-39419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEB8783D0E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 00:46:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 006F683D0EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 00:48:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E258D1C24884
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:46:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F565B21525
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:48:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60904134B2;
-	Thu, 25 Jan 2024 23:45:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3534134AE;
+	Thu, 25 Jan 2024 23:48:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bzP+HFTJ"
-Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="xFmc7W6s"
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41909125B2
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 23:45:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A13A8111AC
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 23:48:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706226355; cv=none; b=DGDoAQAAbWJdJGriVwzLgK7ENVLJcj8vyfC2fnupjGJRSOWlsqPhew+BbEJf/XQDXFAYavS3aX/Ybx+PJmOPZoqHuccw7MX1wWr+Buep8U/7mKM+XqHqS89M2ajmh6Elc7MqoG1dNZHJ3CXMjYLkSoP1gjXjzP08AA82NyRX8kg=
+	t=1706226483; cv=none; b=TvOtxus+mxLQS2yElmkT54bxgCRwxGe47K3vtsebY7E6vPrq68i7bWh/E+91KNTD+Bl8HcwgLB3YqHE7E+PURozJHs96RUgOIL69e8sbVtDqTYkVMalAadsHuJRmgQgZ4bwN5dxiBFwuNXU2XDRd42Q/SW807+zvn+KYyiyoTI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706226355; c=relaxed/simple;
-	bh=LXvDRzf49Xc6i7nbu9yyGuvjQOAoA3TL234yTyYg3TA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=k6sUA78D5vRUsPWHutfjZTc12ZA5m1ayQQCtYSFAwFWrbSd5O/SZ4rMiun9jRacM70fpgntIeRc6kU8yXxEFpxT8G5ePeRe/IPc1sPwKA5TgPLWBcH0XqlNKbfRc0YeHcjgDxatf+/td1CFlkkAGwY3W/BXKiz5eUI957XaqqVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=bzP+HFTJ; arc=none smtp.client-ip=209.85.221.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-4bdc3d5512eso56319e0c.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 15:45:54 -0800 (PST)
+	s=arc-20240116; t=1706226483; c=relaxed/simple;
+	bh=h0ukfu7fbpEtm2GmAALyDiKS1mq9P4izDT/xmXmjvjg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=thdntWmq2LsB6xK+y5V9zDg9y7qxIkJ6c3VheRbqBQgXyI1PuAUU+fJCBf1/IxyZH65fQ+P4cQNYh+WzALGy47DX7Lg/faP6SV79SF428XJF5o0yDRv+yUG+jrtTkRc5x5Ebe/vOsLJmNZhSBIo7/hU30vftKb42opDQP7M7WO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=xFmc7W6s; arc=none smtp.client-ip=209.85.210.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6e0eb1cf1f5so116314a34.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 15:48:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706226353; x=1706831153; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LXvDRzf49Xc6i7nbu9yyGuvjQOAoA3TL234yTyYg3TA=;
-        b=bzP+HFTJN9qJRVR6nRggpZsTrVSSLwk8Y3qJ1yMWERbQc13nA7/NI+N7pAroChQ5fy
-         Dr1cG1lDBEaFUBTcZX5bNQ8hYQnQcBymvo1W5UGmumFZfCNda9IFXVh5pvHoVIBsaSU6
-         m8KF9yDDxv6XWOBfF11VQKdVObHdxkQpkvV74=
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1706226480; x=1706831280; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Od4hU94ybsj7xZ0WbGxgj87ggIn2ak5by+W8Vfq/8K4=;
+        b=xFmc7W6shFc+vR0AsS5dUQEyXT1he6IXFnZIzVz4xas4CzJeJh4vW/5/mXdzsb/yVG
+         4k9Cymj0fyPbgBPaswa4+Pq9yu7pycoHwHSzsorb0d4D3AKzTxHreyu4jH8lStpt3z7f
+         ypFvwL6PW9j990FityYTbIu790pbu5ok582EN/jBqgGInK3PKyw3d82zXJu5ictd1d7F
+         hGt7A34brXVV4TejME8HzIVQWZehEMJQ1wPLoIc9bP66bNei+Jsln2GD0JddMy07zLkm
+         YZhCNms++88ZSeSnK3gWSEO7ehgdbuIXF/rlxSrp4lBGPDXdPCnSxr1oprJRvbnJ8eXY
+         7idg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706226353; x=1706831153;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LXvDRzf49Xc6i7nbu9yyGuvjQOAoA3TL234yTyYg3TA=;
-        b=edbjxG8vXiuLtnP0N8dfIJVQhSDzrUpDhcrvsjFXdHYR26iLtaxGHhZLgxQZolBF07
-         ud7syXUP9O+HliTxYiX7/03po24mi1Z8eAa49yj6CzFCLJrFQfbWkDllpKmp71aI7c33
-         FSOlsuj9FqQVkcqU9LykMdrjqdeAjU5P1jRZiQh/DJTZxjBTv1vPe4BvAccD8BnxnC29
-         GhKhkvFdc1uuT8SI9YnB6ykYnzNSj8RfFUotkR7DepdAK8uPOkByXRHJmksN89MSV1B1
-         zIgFvtLlmdu6bIYkiBgvmrOCjCOVbgiL3LQM3CXr3EbAF3lEY4OL1mYK2R9Zku2K0q2/
-         VLtg==
-X-Gm-Message-State: AOJu0YxIsVWSfSmL0BHZE0t23kY9uPJWZgmVC9cwVUdtQ4x/2znD2h36
-	pfqzJo0W/RvXPDJX5H8GFI9TT1onn/BiC19jRiDNj+QebHYik199/idvK4I5eQKN/eS+f1rl56r
-	STeHBbhtK0A5/WUCbKG/R0N+PvCm43SYlP8il
-X-Google-Smtp-Source: AGHT+IF2+F505DKuWe7knptgJ6CrgZ6lJYDfYgxq0eDiARp7SSTxq8AnE5m0ctWL4L37g8+L1T2m1jJz9ZYlvqQ+HGo=
-X-Received: by 2002:a05:6122:2001:b0:4bd:54d0:e6df with SMTP id
- l1-20020a056122200100b004bd54d0e6dfmr40784vkd.1.1706226353098; Thu, 25 Jan
- 2024 15:45:53 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706226480; x=1706831280;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Od4hU94ybsj7xZ0WbGxgj87ggIn2ak5by+W8Vfq/8K4=;
+        b=vebjinc5qWhmf8k+1BDid+4jSs76R/pyFbtdJ3wCfxVAatlSSCXqD2+se48Qv5pjiS
+         HJXPr6IHj5K+mp2SYWZU6bKxNq/HuX3jj4oh0lw8s0y4l1lp54mt4bSr/nUIE1Zmgsjy
+         YV32g+yuZn+Qwpmg5UtZjzXtBjlNfc8RnF8nb3nwuMpiUIPbQVyKSQgA6j7HQNhM3rhY
+         oLYrhudgG+K4emiZOybmhfZGPYhLQHNT/Sj5pYP3etExSb1wUQAVS4QASBTzuiCQQrTK
+         KWM88Lte/lNovsUSH9pdV4524r0rxVD/qZqQQ34d3pubAhYQuDnBG/aMW17zGz5C5WGh
+         5QRQ==
+X-Gm-Message-State: AOJu0Yz9gkOEeichxcnb0UspBK6D+ADa56KoheS6rGLJoxou1B+w/xcR
+	CHKgRRETuK7/OHJvVngoFuaxH7cM5R055yVrlgrMDlUHFXWBZTQYfMHWKvOmCJzBJTjOZ0yXYF0
+	s
+X-Google-Smtp-Source: AGHT+IFBcA+j2LDvJt1pNeEXPzCsr3T+T/9aXaimRkzS1KxzpY08ZgFRGsxv0b9XtgrDciQPT59Q5g==
+X-Received: by 2002:a05:6830:3a09:b0:6e0:cce9:833b with SMTP id di9-20020a0568303a0900b006e0cce9833bmr613639otb.11.1706226479657;
+        Thu, 25 Jan 2024 15:47:59 -0800 (PST)
+Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
+        by smtp.gmail.com with ESMTPSA id d28-20020a056830045c00b006dc0802ddf5sm52466otc.5.2024.01.25.15.47.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 15:47:59 -0800 (PST)
+From: David Lechner <dlechner@baylibre.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: David Lechner <dlechner@baylibre.com>,
+	linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] spi: avoid double validation in __spi_sync()
+Date: Thu, 25 Jan 2024 17:47:31 -0600
+Message-ID: <20240125234732.3530278-2-dlechner@baylibre.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231228132517.GA12586@wunner.de> <20231228133949.GG2543524@black.fi.intel.com>
- <CA+Y6NJFQq39WSSwHwm37ZQV8_rwX+6k5r+0uUs_d1+UyGGLqUw@mail.gmail.com>
- <20240118060002.GV2543524@black.fi.intel.com> <23ee70d5-d6c0-4dff-aeac-08cc48b11c54@amd.com>
- <ZalOCPrVA52wyFfv@google.com> <20240119053756.GC2543524@black.fi.intel.com>
- <20240119074829.GD2543524@black.fi.intel.com> <20240119102258.GE2543524@black.fi.intel.com>
- <03926c6c-43dc-4ec4-b5a0-eae57c17f507@amd.com> <20240123061820.GL2543524@black.fi.intel.com>
-In-Reply-To: <20240123061820.GL2543524@black.fi.intel.com>
-From: Esther Shimanovich <eshimanovich@chromium.org>
-Date: Thu, 25 Jan 2024 18:45:42 -0500
-Message-ID: <CA+Y6NJFMDcB7NV49r2WxFzcfgarRiWsWO0rEPwz43PKDiXk61g@mail.gmail.com>
-Subject: Re: [PATCH v4] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
-To: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: Mario Limonciello <mario.limonciello@amd.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
-	Lukas Wunner <lukas@wunner.de>, Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Rajat Jain <rajatja@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jan 19, 2024 at 11:03=E2=80=AFAM Esther Shimanovich
-<eshimanovich@chromium.org> wrote:
-> Next week I'll try those devices in our inventory to see if I can find
-> another one with this bug. I'll get back to you on that!
+The __spi_sync() function calls __spi_validate() early in the function.
+Later, it can call spi_async_locked() which calls __spi_validate()
+again. __spi_validate() is an expensive function, so we can improve
+performance measurably by avoiding calling it twice.
 
-I ended up finding 11 additional models with this bug, from various
-manufacturers such as HP, Dell and Lenovo, that use the following
-thunderbolt controllers: JHL6240, JHL6340, JHL6540, JHL7540. So making
-this fix apply to all affected devices would make sense.
+Instead of calling spi_async_locked(), we can call __spi_async() with
+the spin lock held.
 
-On Mon, Jan 22, 2024 at 1:10=E2=80=AFAM Mika Westerberg
-<mika.westerberg@linux.intel.com> wrote:
-> Yes, you are missing the 1. that it needs to be directly behind the PCIe
-> root or downstream port that is marked as ->external_facing, and the
-> fact that there can't be NHI's (that's the host controller with the IDs
-> I listed in 3.) anywhere else except starting the topology according the
-> USB4 spec (and the same applies to Thunderbolt 1-3).
+spi_async_locked() is removed since there are no more callers.
 
-Thanks for the explanation. I'll write up a patch that implements this
-and takes into account all the feedback. Then I'll test it on multiple
-models, and then send it your way. Let me know if it makes sense to
-add you as a co-author.
-Very much appreciate your insights.
+Signed-off-by: David Lechner <dlechner@baylibre.com>
+---
+
+I tested this using an ADC driver that does a lot of spi_sync() calls to read
+samples. I disabled the no-queue fast path by setting ctlr->must_async so that
+the modified code always runs.
+
+With this change I was able to increase the sample rate of the ADC about 6%
+from 14.5 kHz to 15.4 kHz.
+
+ drivers/spi/spi.c | 58 +++++------------------------------------------
+ 1 file changed, 6 insertions(+), 52 deletions(-)
+
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 7a70ef47cdf6..6610aeced765 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -4278,57 +4278,6 @@ int spi_async(struct spi_device *spi, struct spi_message *message)
+ }
+ EXPORT_SYMBOL_GPL(spi_async);
+ 
+-/**
+- * spi_async_locked - version of spi_async with exclusive bus usage
+- * @spi: device with which data will be exchanged
+- * @message: describes the data transfers, including completion callback
+- * Context: any (IRQs may be blocked, etc)
+- *
+- * This call may be used in_irq and other contexts which can't sleep,
+- * as well as from task contexts which can sleep.
+- *
+- * The completion callback is invoked in a context which can't sleep.
+- * Before that invocation, the value of message->status is undefined.
+- * When the callback is issued, message->status holds either zero (to
+- * indicate complete success) or a negative error code.  After that
+- * callback returns, the driver which issued the transfer request may
+- * deallocate the associated memory; it's no longer in use by any SPI
+- * core or controller driver code.
+- *
+- * Note that although all messages to a spi_device are handled in
+- * FIFO order, messages may go to different devices in other orders.
+- * Some device might be higher priority, or have various "hard" access
+- * time requirements, for example.
+- *
+- * On detection of any fault during the transfer, processing of
+- * the entire message is aborted, and the device is deselected.
+- * Until returning from the associated message completion callback,
+- * no other spi_message queued to that device will be processed.
+- * (This rule applies equally to all the synchronous transfer calls,
+- * which are wrappers around this core asynchronous primitive.)
+- *
+- * Return: zero on success, else a negative error code.
+- */
+-static int spi_async_locked(struct spi_device *spi, struct spi_message *message)
+-{
+-	struct spi_controller *ctlr = spi->controller;
+-	int ret;
+-	unsigned long flags;
+-
+-	ret = __spi_validate(spi, message);
+-	if (ret != 0)
+-		return ret;
+-
+-	spin_lock_irqsave(&ctlr->bus_lock_spinlock, flags);
+-
+-	ret = __spi_async(spi, message);
+-
+-	spin_unlock_irqrestore(&ctlr->bus_lock_spinlock, flags);
+-
+-	return ret;
+-
+-}
+-
+ static void __spi_transfer_message_noqueue(struct spi_controller *ctlr, struct spi_message *msg)
+ {
+ 	bool was_busy;
+@@ -4376,6 +4325,7 @@ static void spi_complete(void *arg)
+ static int __spi_sync(struct spi_device *spi, struct spi_message *message)
+ {
+ 	DECLARE_COMPLETION_ONSTACK(done);
++	unsigned long flags;
+ 	int status;
+ 	struct spi_controller *ctlr = spi->controller;
+ 
+@@ -4419,7 +4369,11 @@ static int __spi_sync(struct spi_device *spi, struct spi_message *message)
+ 	 */
+ 	message->complete = spi_complete;
+ 	message->context = &done;
+-	status = spi_async_locked(spi, message);
++
++	spin_lock_irqsave(&ctlr->bus_lock_spinlock, flags);
++	status = __spi_async(spi, message);
++	spin_unlock_irqrestore(&ctlr->bus_lock_spinlock, flags);
++
+ 	if (status == 0) {
+ 		wait_for_completion(&done);
+ 		status = message->status;
+-- 
+2.43.0
+
 
