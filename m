@@ -1,244 +1,167 @@
-Return-Path: <linux-kernel+bounces-39045-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39047-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 424D183CA2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:39:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2931083CA2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:40:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEB2E29137E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:39:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9665CB226C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:40:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA18713174E;
-	Thu, 25 Jan 2024 17:39:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AA98133421;
+	Thu, 25 Jan 2024 17:40:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XsARqJQi"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Jev7GVaf"
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09D8563413
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 17:39:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8F3912A16D
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 17:40:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706204358; cv=none; b=VlvykqV3l7CAE2MeypyRxkaHSWWQjiY1y5qQZzHYnBsi7GB4wtvF2nTmsB6tYoqtkzI2QQrEBqP4FS66HdUjkIlMZEW6uTcyhQDTZS+7eMjq0w1QzEaO8XWEugHlAAo1KE4Jc/zgjF9DeV+rdIOuuo38KGuML9DAxh7iKfzX6GA=
+	t=1706204439; cv=none; b=dmNN8pZs67N8eH4uaDIV1Cn8ACqYY0CqjeSh15gQHYG9ZRTam+6Y1CKpKqYZ3f8dDVSenDozW686/VjezoeT2MgysE/ximPSNM+8s+jfVNmljM6wjIxt/h6VC2KJ1r4xWYx0VOervpSuu/LNDVukbROm2gLgtfl1tzFv6Lps0Wc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706204358; c=relaxed/simple;
-	bh=w2pS1tZX4cPAJFw4udsgluHlpRcv0NmpG8Hpd8o+UBg=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=d/gQt2c1qOIDUQ6HlauXfo7tenSgLdVs9uTgeNOpHqx6qbCx64dTxwjMiV7uSQyWj3jVCgCtfptaJVAbQlgUOuNC+bEFEUvhiJOCfUa5m/BIYM2diTxiUDGeO5L1uw4LoIEUlzabSSRcWfmLMxhRvqmt2Pg5I7HNzDHaNQfO2b8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XsARqJQi; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706204356; x=1737740356;
-  h=date:from:to:cc:subject:message-id;
-  bh=w2pS1tZX4cPAJFw4udsgluHlpRcv0NmpG8Hpd8o+UBg=;
-  b=XsARqJQi9pTxVHgGs4RiWlGAj9aCu5DxYae0DOffr/WKW1YoVI/PqZv8
-   rQHiO1eS3EGzRk9CquOM2TkJ/R3GpvQEVOzVv+0nnzjYlWOqaX3QWlawa
-   6yLfnz9cCs3RyVoDGlnujQjvrE388QcXEo5jU/LZs/z5Xd/oB+llB023R
-   tMIVIZMirgH3lCWikP0lN4YLKpeUh8/XPOyz0T0TFCEocROOZXMO1NyYA
-   ncZUk6PZiu8HP9l4oIRz9y2od7QYXKYMx5F6jqF3QN4qD6UNDxYYAj7U6
-   QlhGYDQLzmxngOsN8k2g7+FvEOrMtsCSeVUlVw9EUUbFmGrfiYh/9RO+S
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="9617320"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="9617320"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 09:39:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="2307426"
-Received: from lkp-server01.sh.intel.com (HELO 370188f8dc87) ([10.239.97.150])
-  by fmviesa005.fm.intel.com with ESMTP; 25 Jan 2024 09:39:13 -0800
-Received: from kbuild by 370188f8dc87 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rT3h1-0000HP-1i;
-	Thu, 25 Jan 2024 17:39:11 +0000
-Date: Fri, 26 Jan 2024 01:39:00 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:rcu/next] BUILD SUCCESS
- 0af3acc42dbe991b20a14767b99da5c512c03d21
-Message-ID: <202401260158.KabpXpIA-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1706204439; c=relaxed/simple;
+	bh=mAAfa+ekF1FxwQldFSf7TSBpo1nSxuHy9JZ+wtpZGnA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aQEE31CLJVEomxZ8InDbKdUlky4+uP7K2R6m6SwPJMHms/pcQxtGNau7vjnCe7gDIJ3I62NTqZbQO8/MsKYb2lSuTpmoA+3DOWRLRF/zmfKBRN9InZLMvaHh2a4A5O8Ozbx3+SxtUYgW/RHCkaz6AoTP3BNQL3Ve6XVPUqtkDv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Jev7GVaf; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2903498ae21so4073184a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:40:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706204437; x=1706809237; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=mAAfa+ekF1FxwQldFSf7TSBpo1nSxuHy9JZ+wtpZGnA=;
+        b=Jev7GVafwp04dXCCGT+BAIwFAqlYTJkG4U7O/49g6eSy296crTduu4WNJ/XQ4Moubl
+         PCL2CycS8o1PdKIHmIAHMCgYQ+SMjoEgMbvvnD+Iq48NfaXw8aheAeI5HuCTNjpSuM3B
+         JwA4jMoFyIUNIuTojZgeaX+uja/W0c6NJivhKr9mET7kvaFFs0rSjwxw5INV3urgQ7pl
+         QNBI4eRfZKMGHa1e/Khsn/qWXdXl+ZHxisDZgqDre3vU7dDYcPqM20TcOOS9lx9rDuAy
+         6UdMf/lxUw2fKCZABVx1PZvt10AvZ2zOH6EhbQchS/QA6gJiF5G35Fy+j6jdOtbHJYbc
+         UwEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706204437; x=1706809237;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mAAfa+ekF1FxwQldFSf7TSBpo1nSxuHy9JZ+wtpZGnA=;
+        b=FHaUF9JVv2dpaQh9B3wur6xiw82J2jmcn2MIntnFetETATWRk+7iNaC1VQMT0S1/CO
+         li0bZ/poHXOc6XS2LF4CzaPb2K7xm9gcxxbXoJc3nF3L5Gz3r3ZclpZhcyC4VId4Hljp
+         /brAd5ENR5zpBCJ8lqeaDTGfeBbMkVIw8paWn77royeeQE8COhdNibHTL0Cx/EVvbiYR
+         LVaf+Nu9FLgkm4LCO0cRKlVy5AcYMdgXsniwhVMSYJmAddftsuHWnlMSEcsGBW5oaxIv
+         hAnZGrEWDLJB1TgSiqJEbs4VdFlF9rqXKlDCcB5JKhWtBjbr5Ch1/2bxIkh3dQ7ijwWW
+         sD3g==
+X-Gm-Message-State: AOJu0YxjWOFG0kIM1zxZBrReuY/QB29crYkzTrfWzwcnPC0cNXXiTAJ2
+	Tq/V4x2LxI0Ln7FGdjI9F18XMSlrTnLrsZyBFA6/jzP9NtAbIjJFGa5gFR7AF9r5XBr9gIsPMj8
+	0w4pkYOLo1qU+oxvGB5C1C88iq26yz+ICuSI3Xw==
+X-Google-Smtp-Source: AGHT+IG9mp4jnM6MKi9OxwjiYgtX/ZGDEceAai7BWv3ny+3ROISeFdUlJM+WAzVoaIO8Y9dDgvzfC12qiD0XceqvxLU=
+X-Received: by 2002:a17:90a:1c90:b0:290:85a:dba1 with SMTP id
+ t16-20020a17090a1c9000b00290085adba1mr861438pjt.5.1706204436886; Thu, 25 Jan
+ 2024 09:40:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20240105222014.1025040-1-qyousef@layalina.io> <20240105222014.1025040-2-qyousef@layalina.io>
+ <CAKfTPtBYcVWxYOhWZjzcQUB1ebUBA-B30hvToqGBq6JnfRUZNg@mail.gmail.com> <20240124222959.ikwnbxkcjaxuiqp2@airbuntu>
+In-Reply-To: <20240124222959.ikwnbxkcjaxuiqp2@airbuntu>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Thu, 25 Jan 2024 18:40:25 +0100
+Message-ID: <CAKfTPtDxqcrf0kaBQG_zpFx-DEZTMKfyxBu_bzCuZ_UZhJwOnA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] sched/fair: Check a task has a fitting cpu when
+ updating misfit
+To: Qais Yousef <qyousef@layalina.io>
+Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, linux-kernel@vger.kernel.org, 
+	Pierre Gondois <Pierre.Gondois@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: 0af3acc42dbe991b20a14767b99da5c512c03d21  rcu-tasks: Eliminate deadlocks involving do_exit() and RCU tasks
+On Wed, 24 Jan 2024 at 23:30, Qais Yousef <qyousef@layalina.io> wrote:
+>
+> On 01/23/24 09:26, Vincent Guittot wrote:
+> > On Fri, 5 Jan 2024 at 23:20, Qais Yousef <qyousef@layalina.io> wrote:
+> > >
+> > > From: Qais Yousef <qais.yousef@arm.com>
+> > >
+> > > If a misfit task is affined to a subset of the possible cpus, we need to
+> > > verify that one of these cpus can fit it. Otherwise the load balancer
+> > > code will continuously trigger needlessly leading the balance_interval
+> > > to increase in return and eventually end up with a situation where real
+> > > imbalances take a long time to address because of this impossible
+> > > imbalance situation.
+> >
+> > If your problem is about increasing balance_interval, it would be
+> > better to not increase the interval is such case.
+> > I mean that we are able to detect misfit_task conditions for the
+> > periodic load balance so we should be able to not increase the
+> > interval in such cases.
+> >
+> > If I'm not wrong, your problem only happens when the system is
+> > overutilized and we have disable EAS
+>
+> Yes and no. There are two concerns here:
+>
+> 1.
+>
+> So this patch is a generalized form of 0ae78eec8aa6 ("sched/eas: Don't update
+> misfit status if the task is pinned") which is when I originally noticed the
+> problem and this patch was written along side it.
+>
+> We have unlinked misfit from overutilized since then.
+>
+> And to be honest I am not sure if flattening of topology matters too since
+> I first noticed this, which was on Juno which doesn't have flat topology.
+>
+> FWIW I can still reproduce this, but I have a different setup now. On M1 mac
+> mini if I spawn a busy task affined to littles then expand the mask for
+> a single big core; I see big delays (>500ms) without the patch. But with the
+> patch it moves in few ms. The delay without the patch is too large and I can't
+> explain it. So the worry here is that generally misfit migration not happening
+> fast enough due to this fake misfit cases.
 
-elapsed time: 1606m
+I tried a similar scenario on RB5 but I don't see any difference with
+your patch. And that could be me not testing it correctly...
 
-configs tested: 156
-configs skipped: 3
+I set the affinity of always running task to cpu[0-3] for a few
+seconds then extend it to [0-3,7] and the time to migrate is almost
+the same.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I'm using tip/sched/core + [0]
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240125   gcc  
-arc                   randconfig-002-20240125   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240125   gcc  
-arm                   randconfig-002-20240125   gcc  
-arm                   randconfig-003-20240125   gcc  
-arm                   randconfig-004-20240125   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240125   gcc  
-arm64                 randconfig-002-20240125   gcc  
-arm64                 randconfig-003-20240125   gcc  
-arm64                 randconfig-004-20240125   gcc  
-csky                              allnoconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240125   gcc  
-csky                  randconfig-002-20240125   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240125   clang
-hexagon               randconfig-002-20240125   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20240124   clang
-i386         buildonly-randconfig-002-20240124   clang
-i386         buildonly-randconfig-003-20240124   clang
-i386         buildonly-randconfig-004-20240124   clang
-i386         buildonly-randconfig-005-20240124   clang
-i386         buildonly-randconfig-006-20240124   clang
-i386                                defconfig   gcc  
-i386                  randconfig-001-20240124   clang
-i386                  randconfig-002-20240124   clang
-i386                  randconfig-003-20240124   clang
-i386                  randconfig-004-20240124   clang
-i386                  randconfig-005-20240124   clang
-i386                  randconfig-006-20240124   clang
-i386                  randconfig-011-20240124   gcc  
-i386                  randconfig-012-20240124   gcc  
-i386                  randconfig-013-20240124   gcc  
-i386                  randconfig-014-20240124   gcc  
-i386                  randconfig-015-20240124   gcc  
-i386                  randconfig-016-20240124   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240125   gcc  
-loongarch             randconfig-002-20240125   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   clang
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240125   gcc  
-nios2                 randconfig-002-20240125   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240125   gcc  
-parisc                randconfig-002-20240125   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   clang
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc               randconfig-001-20240125   gcc  
-powerpc               randconfig-002-20240125   gcc  
-powerpc               randconfig-003-20240125   gcc  
-powerpc64             randconfig-001-20240125   gcc  
-powerpc64             randconfig-002-20240125   gcc  
-powerpc64             randconfig-003-20240125   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   clang
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20240125   gcc  
-riscv                 randconfig-002-20240125   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20240125   clang
-s390                  randconfig-002-20240125   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240125   gcc  
-sh                    randconfig-002-20240125   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240125   gcc  
-sparc64               randconfig-002-20240125   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240125   gcc  
-um                    randconfig-002-20240125   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240125   gcc  
-x86_64       buildonly-randconfig-002-20240125   gcc  
-x86_64       buildonly-randconfig-003-20240125   gcc  
-x86_64       buildonly-randconfig-004-20240125   gcc  
-x86_64       buildonly-randconfig-005-20240125   gcc  
-x86_64       buildonly-randconfig-006-20240125   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240125   clang
-x86_64                randconfig-002-20240125   clang
-x86_64                randconfig-003-20240125   clang
-x86_64                randconfig-004-20240125   clang
-x86_64                randconfig-005-20240125   clang
-x86_64                randconfig-006-20240125   clang
-x86_64                randconfig-011-20240125   gcc  
-x86_64                randconfig-012-20240125   gcc  
-x86_64                randconfig-013-20240125   gcc  
-x86_64                randconfig-014-20240125   gcc  
-x86_64                randconfig-015-20240125   gcc  
-x86_64                randconfig-016-20240125   gcc  
-x86_64                randconfig-071-20240125   gcc  
-x86_64                randconfig-072-20240125   gcc  
-x86_64                randconfig-073-20240125   gcc  
-x86_64                randconfig-074-20240125   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240125   gcc  
-xtensa                randconfig-002-20240125   gcc  
+[0] https://lore.kernel.org/all/20240108134843.429769-1-vincent.guittot@linaro.org/
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+>
+> I did hit issues where with this patch I saw big delays sometimes. I have no
+> clue why this happens. So there are potentially more problems to chase.
+>
+> My expectations that newidle balance should be able to pull misfit regardless
+> of balance_interval. So the system has to be really busy or really quite to
+> notice delays. I think prior to flat topology this pull was not guaranteed, but
+> with flat topology it should happen.
+>
+> On this system if I expand the mask to all cpus (instead of littles + single
+> big), the issue is not as easy to reproduce, but I captured 35+ms delays
+> - which is long if this task was carrying important work and needs to
+> upmigrate. I thought newidle balance is more likely to pull it sooner, but I am
+> not 100% sure.
+>
+> It's a 6.6 kernel I am testing with.
+>
+> 2.
+>
+> Here yes the concern is that when we are overutilized and load balance is
+> required, this unnecessarily long delay can cause potential problems.
+>
+>
+> Cheers
+>
+> --
+> Qais Yousef
 
