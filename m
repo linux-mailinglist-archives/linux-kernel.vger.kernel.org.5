@@ -1,57 +1,66 @@
-Return-Path: <linux-kernel+bounces-38888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 127EA83C7CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:24:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44C5B83C7CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:25:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F6B229616D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:24:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58DE4B220EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:25:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 014BD1292F3;
-	Thu, 25 Jan 2024 16:24:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8EE3129A7B;
+	Thu, 25 Jan 2024 16:25:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q6auVbhM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rbesHY24"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46EB66E2B3
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 16:24:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0144E73177;
+	Thu, 25 Jan 2024 16:25:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706199872; cv=none; b=Xp+SQbQmIQ6TEEQv+6pI0J39ldy6dS1dSaSo7V7xOTNmmdxodCingxj/8pL2+8brc/G7KGWdc4PakgC63ud9dTOQaAx3hy39yVV2oGwXQkMt13Z0D6H7SPrapxuYCjSkJ4zpElD2/GdI+ch3OOu4bi82rhOx6pn+HAwZ9CPo1FU=
+	t=1706199923; cv=none; b=Vk3cCi8eK9oojYZBdGVuCEuUtFikyvvzup3WzuCwKAZ+CtRLnH+6CHPuO/jwE9I2tNP+x6Z/zXi2AWvL8CbMAYrtyMSw9UGix7Amb7tv/79AF6fFz0FUVrl1rtVk9mFwL2UZb9799POPTSzpR55i7jQsF2ylksYGFsrYxn5mkkI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706199872; c=relaxed/simple;
-	bh=4JtuZ4c5afftcmm7Cjz7TNoieO1jwYMjkzuMSShCYTY=;
+	s=arc-20240116; t=1706199923; c=relaxed/simple;
+	bh=wJc8Jxeo78IzspCnw256X6rE5YyddHMgrBAd0+d3SoA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MYoJioSnXfm2WVRdnGvlvbHxben+G/tzhvLDWNnEZql62gyDwxKAx84YukmSAtUOpgLtdKi09bbYBU7f35Suz71D9CHFLohWfpk/N5Fy2+ItJk7Z2+KssvQGdrr0eP/tzNPE8RBh5eODWfWwS+AT/UsYkj09aPHSsz/3977Ra/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q6auVbhM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49C53C433F1;
-	Thu, 25 Jan 2024 16:24:30 +0000 (UTC)
+	 MIME-Version:Content-Type; b=UKceyANua+iiLToIo21cEdemxMcdl3q6i7TJqZD/eI2Oq+opt3YOnGbYtRhuAzrVHsuutAegH9yGhIYFaoe4CydANeysgGG6HDc974a0XUh06bm+ivhQOuVz4uTGQCxCa7DVOs32aPMGk05O1lSBpsbEyBB8DomLCyyPHU0W09E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rbesHY24; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B491C433F1;
+	Thu, 25 Jan 2024 16:25:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706199871;
-	bh=4JtuZ4c5afftcmm7Cjz7TNoieO1jwYMjkzuMSShCYTY=;
+	s=k20201202; t=1706199922;
+	bh=wJc8Jxeo78IzspCnw256X6rE5YyddHMgrBAd0+d3SoA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=q6auVbhM9axSRqWcd4zS2A0L4BPGVyybQRBYCpyKp7g7+eQ4JVIfHqC+cC1kHoeda
-	 kHJrfZF596xNfZx59L62YS/XYN0HV7aFpGL/xcDbf1G5VPF43II8aNBlUrGxQHTW9c
-	 juSlYSkG20Cn1ZNfTKfPajJPeu8GLAlqHxqrOQXgpDlYZZUalJ8RMRRGeHg0dQES/u
-	 u+IImCcU+Iw9szQ8B5j4qEtuX2HLrYKXQ3H1nnekdIRX9fhPt4mvfhjfjVCiCqZa3+
-	 rIiKLsh8j8RWgRGAhoe6BnmLwWnBfTqrGzKpp8V0BJgeiM4EBY7J4QHLZaMIGXUm27
-	 VAWig1+32cnfw==
+	b=rbesHY24ONOYobqOsuPiCJOmEuLcJwgj2DKyliEWdjXRD5sbQ2IxkRweXKrW6dUWU
+	 Dghz52Z7SFJr7DnoBLbEXzZyYO2LV1SnTxfetu08y0nmrDYrwgGS1NUioXSaeArR/x
+	 lxmzmND9jEZlukdxywtNOrcYq0/Tt8n2AeBXpkr6mRb8FVqxt8B8KuMAid+hKReG0c
+	 Mxk/oa3jwa7Cel5znPnJPJiEqpNak9fExYmhaKKP1xzMVTcbpdOhweK0X6WWVYWF4M
+	 NhAU/aUhmXGGI0JABrbvfKlV/OtBfwm8b8Qle80jkUqstk9GhVJ5xdXcQXM0sJdWPC
+	 HUxI6UHWtIKBg==
 From: Christian Brauner <brauner@kernel.org>
-To: Jens Axboe <axboe@kernel.dk>
+To: Baokun Li <libaokun1@huawei.com>
 Cc: Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Keith Busch <kbusch@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] iov_iter: streamline iovec/bvec alignment iteration
-Date: Thu, 25 Jan 2024 17:24:10 +0100
-Message-ID: <20240125-deponie-chirurgisch-58609146686b@brauner>
+	torvalds@linux-foundation.org,
+	viro@zeniv.linux.org.uk,
+	jack@suse.cz,
+	willy@infradead.org,
+	akpm@linux-foundation.org,
+	arnd@arndb.de,
+	linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com,
+	yukuai3@huawei.com,
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] fs: make the i_size_read/write helpers be smp_load_acquire/store_release()
+Date: Thu, 25 Jan 2024 17:25:07 +0100
+Message-ID: <20240125-leihgabe-enkel-403d0d728714@brauner>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <544b31f7-6d4b-42f5-a544-1420501f081f@kernel.dk>
-References: <544b31f7-6d4b-42f5-a544-1420501f081f@kernel.dk>
+In-Reply-To: <20240124142857.4146716-1-libaokun1@huawei.com>
+References: <20240124142857.4146716-1-libaokun1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,17 +68,20 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1165; i=brauner@kernel.org; h=from:subject:message-id; bh=4JtuZ4c5afftcmm7Cjz7TNoieO1jwYMjkzuMSShCYTY=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaRu6jZ1aTGRuGPqUr3wjlHpktmTTtadmnRfVtdUxvKe3 Zry/Rt+d5SyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEzkTxrDf8/rGmtLXAMkOcqF +RJ3hb6rObpty35XvR/va+/PuV0Uws/wVyyaszMtaZbfFq5wiRz1r5Jf3fSb//llf56WOk9mxpJ WBgA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1602; i=brauner@kernel.org; h=from:subject:message-id; bh=wJc8Jxeo78IzspCnw256X6rE5YyddHMgrBAd0+d3SoA=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaRu6s6wYfA9ezPHb+Ee/ll/A98p/+8/4e0xn9vzoGNwm w/f9ne/O0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACYS9Ifhf6SP7+c5Tk7Zz91O yjx4pSRZZ7qKT/Ob8CEP9vo13x7vLmX477XC6XjnWj1h5oLu/Dvbt+mpGad56bUbG7s1OE66oT+ HFwA=
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-On Tue, 23 Jan 2024 15:24:46 -0700, Jens Axboe wrote:
-> Rewrite the alignment checking iterators for iovec and bvec to be easier
-> to read, and also significantly more compact in terms of generated code.
-> This saves 270 bytes of text on x86-64 for me (with clang-18) and 224
-> bytes on arm64 (with gcc-13).
+On Wed, 24 Jan 2024 22:28:54 +0800, Baokun Li wrote:
+> V1->V2:
+>   Add patch 3 to fix an error when compiling code for 32-bit architectures
+>   without CONFIG_SMP enabled.
 > 
-> In profiles, also saves a bit of time as well for the same workload:
+> This patchset follows the Linus suggestion to make the i_size_read/write
+> helpers be smp_load_acquire/store_release(), after which the extra smp_rmb
+> in filemap_read() is no longer needed, so it is removed. And remove the
+> extra type checking in smp_load_acquire/smp_store_release under the
+> !CONFIG_SMP case to avoid compilation errors.
 > 
 > [...]
 
@@ -88,6 +100,10 @@ trailer updates or similar. If in doubt, please check the listed branch.
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
 branch: vfs.misc
 
-[1/1] iov_iter: streamline iovec/bvec alignment iteration
-      https://git.kernel.org/vfs/vfs/c/89d0b83ecf39
+[1/3] fs: make the i_size_read/write helpers be smp_load_acquire/store_release()
+      https://git.kernel.org/vfs/vfs/c/6238fe4d7cad
+[2/3] Revert "mm/filemap: avoid buffered read/write race to read inconsistent data"
+      https://git.kernel.org/vfs/vfs/c/bf7aad3980da
+[3/3] asm-generic: remove extra type checking in acquire/release for non-SMP case
+      https://git.kernel.org/vfs/vfs/c/e9cbdca0a243
 
