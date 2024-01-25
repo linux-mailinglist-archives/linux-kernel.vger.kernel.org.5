@@ -1,145 +1,129 @@
-Return-Path: <linux-kernel+bounces-38111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72B3D83BB0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:55:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5CF483BB0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:55:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2192E1F26671
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:55:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E91BB1C214E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:55:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 307C217753;
-	Thu, 25 Jan 2024 07:55:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E81A18044;
+	Thu, 25 Jan 2024 07:55:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="WK3Apdcn"
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="zBWcBxnJ"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED5EC17727
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 07:55:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9477817BAE
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 07:55:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706169302; cv=none; b=hEiAVgce7muCSqrS+XPLY8cZmzc3LX1qqtyZkcZjTUwWoyNMLOCLm2Wft7odyX9i9d8Cf7URIE/YJJal9nRqsdOPxIPh5ZR2IzmaCFx5l4H5Nu8Yp2QdzyDy7lUYV8CYaC/srcSGDWtDXkZN5i0eJae97WErgXFciJdNXfOMNa4=
+	t=1706169310; cv=none; b=S6iJVhUxjjs8VkUSjMUtZFbNLXEp/hIc3XA8Knr7GuMhebtXNbyBfmHUWFNn7zGF7/DY2Srj0HQ26jcmS0n6Vb3eMM7XDni8bnMM68L04NxQ7ItZYyPR6FCwPqk9KAvA6X818fDdiMZYoEEMibE7Y90PGMEYT2qvIyfbx58/m8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706169302; c=relaxed/simple;
-	bh=gTC2c9jN7tUYX1r6K+w1+v29WYz2GaNbGcR4mUy+84s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fvyYHFuskLP1MJ9jMeuZNATKkeJvNEIsp94aafues3ln+2LTBOheu2hUcpyWSBK+7DCKm+K/QdxO755UODHgNFvqpr4NYVi9DbSOxEqd4qBdtRa1yooPAgf55dnL9oB75Cx9ImcOm0y/bRVF3QSkzJL/HFjKlIaLTM5VCfN17fM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=WK3Apdcn; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6ddc5faeb7fso630427b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 23:55:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1706169300; x=1706774100; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5OROYfvMkNNHoS7DwRqESXxsnw6XTxOyVsoUr8hVxqY=;
-        b=WK3ApdcndW0lj0k/QzwPGa252QUBzBy5KpEGg2w4cFuvi2aTu1jSoBgSC62rEgfOSf
-         pttJtmcuS6WZHhCDO1k/qltbihv+5bFMJC46szepc0ucPNHtU/TmOYfbTtqdi4g1i9Hi
-         9lCAVIS41VCM1xNA8T7N5TunGhOU3z7i5stn/rSXKfjtsFLgHNZzC4jEcwoLferRDb6L
-         Y04Q/Y//nW4R4GKY3Z7D7GavC5H981mrNY+QjcIln0GLdTmQfEyWIFAqWcJjOJw5n+FI
-         KCc3mht6+f8mxQzSeMFphCCoopl2J0EQMnIqS0tmvHllD5+W9y6YbEAVaHZw9IP5NO5S
-         Haeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706169300; x=1706774100;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=5OROYfvMkNNHoS7DwRqESXxsnw6XTxOyVsoUr8hVxqY=;
-        b=d+l8fVPIqaAHq2tEPATVUkhKNBHOlliFKb8q8HxaGffn5bOUCMThZiqi5WOYTUr5dl
-         cUO7XFgoU4JCAjPhK2EkK5zxxKym3uvMNUOI27h22ztYbx9qb6gEeBH6PCOfbL/SeSIy
-         uvQX8j4pQof2oXixKF4RpZkJbZc7YUGR0rLCKAM5iRE7t78iKJhQecYRrT9GLTcFnD1u
-         gFwVZ2NgxMJ5mDVrN3tJDnuV0nUUORhe3uFiJGs6dAwxGfbax0x4FrnkAL47SEL1QFZI
-         oma1voW2x0WueiSBxi33UNGxFm5CEmumfAu+HMzJpbQUf/PrkasQtHeErHSH+LIlQxbh
-         XPBg==
-X-Gm-Message-State: AOJu0Yz40vfuD8H070lezKDIoZhs4Q9UozLWkCSaq3bpqJehERqNYo6q
-	tI9Y9Ku56SnU2BtDZu6vZCn+0NZx4/AVHPksl3D1q3PgrW5iPcmla2RBCCaOzu4=
-X-Google-Smtp-Source: AGHT+IHPj34+BjxeQU5RJ5hi0SAajOGsqZbqfp1sq3sB3OlcUAa1sEKHnRxffsrFMyH2FoKX03G36w==
-X-Received: by 2002:a05:6a20:7350:b0:199:3b3f:25d8 with SMTP id v16-20020a056a20735000b001993b3f25d8mr772619pzc.61.1706169300307;
-        Wed, 24 Jan 2024 23:55:00 -0800 (PST)
-Received: from [10.54.24.52] (static-ip-148-99-134-202.rev.dyxnet.com. [202.134.99.148])
-        by smtp.gmail.com with ESMTPSA id u6-20020a056a00124600b006dbc5569599sm11436690pfi.10.2024.01.24.23.54.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jan 2024 23:54:59 -0800 (PST)
-Message-ID: <fcbf3eec-e67b-4377-a888-a59b2583ab5f@shopee.com>
-Date: Thu, 25 Jan 2024 15:54:55 +0800
+	s=arc-20240116; t=1706169310; c=relaxed/simple;
+	bh=pyMEcKtVJxb7T/GxClE/3Bz1lwTzPFpnniWDjB5Fa5o=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WmdWud0fqJycTyqKgLPUglPU6PnhEtJf/Mbl5G+VEQZMEBlhznv3G7AUE2V3csCoCMX2gTY51bUhBz42QMJZ/7spnA9BIcR2ptrUChhfW6y3nRwjDjhIlD3YYetRkWDChiQKNhdKIJHIZROmK1B50f02rR8kWflMXakhsHIGcyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=zBWcBxnJ; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706169305;
+	bh=pyMEcKtVJxb7T/GxClE/3Bz1lwTzPFpnniWDjB5Fa5o=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=zBWcBxnJsGwrfch37UMhqu8LOsolJ/KVQkSJosUgJJGDb13zcIFPsx6HODmWPyU8f
+	 9Snas5pyoGFXvJxIG8IDHGvtHbNhq2E9pcEdcrwauBNR10UF4BXpcmcBpKtl8eA10W
+	 eGtHePMNgsNf/tLNUwustb7V3WUku1kt6gubqx1HQu4eIFXO1tl0DZhkvxuOPpbKb5
+	 F8LZNWLndzD6mX7VsvSNG8t8zZ721d38yKCLaiDKcTqkijAeVgOqfnf6TR3ryfd7S7
+	 7lOI/jnhRkZwApt5Q7OsiAfZ01w21/IPJZ1uUhRowWTgHeQo8Rrl00L40pUw4slIu+
+	 0Raekb75VHLsQ==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bbrezillon)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 460243781FC7;
+	Thu, 25 Jan 2024 07:55:04 +0000 (UTC)
+Date: Thu, 25 Jan 2024 08:55:02 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc: David Airlie <airlied@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>,
+ Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
+ <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, Christian =?UTF-8?B?S8O2bmln?=
+ <christian.koenig@amd.com>, Qiang Yu <yuq825@gmail.com>, Steven Price
+ <steven.price@arm.com>, Emma Anholt <emma@anholt.net>, Melissa Wen
+ <mwen@igalia.com>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, kernel@collabora.com,
+ virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v19 03/30] drm/gem: Document locking rule of vmap and
+ evict callbacks
+Message-ID: <20240125085502.3207ee29@collabora.com>
+In-Reply-To: <20240105184624.508603-4-dmitry.osipenko@collabora.com>
+References: <20240105184624.508603-1-dmitry.osipenko@collabora.com>
+	<20240105184624.508603-4-dmitry.osipenko@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] x86/resctrl: Display cache occupancy of busy RMIDs
-To: Reinette Chatre <reinette.chatre@intel.com>
-Cc: fenghua.yu@intel.com, babu.moger@amd.com, peternewman@google.com,
- x86@kernel.org, linux-kernel@vger.kernel.org,
- James Morse <james.morse@arm.com>
-References: <20240123092024.1271882-3-haifeng.xu@shopee.com>
- <8abb0237-90e3-484e-a549-d74f540d4045@intel.com>
-From: Haifeng Xu <haifeng.xu@shopee.com>
-In-Reply-To: <8abb0237-90e3-484e-a549-d74f540d4045@intel.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
+On Fri,  5 Jan 2024 21:45:57 +0300
+Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
 
+> The vmap/vunmap/evict GEM callbacks are always invoked with a held GEM's
+> reservation lock. Document this locking rule for clarity.
+> 
+> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 
-On 2024/1/25 06:25, Reinette Chatre wrote:
-> (+James)
-> 
-> Hi Haifeng,
-> 
-> On 1/23/2024 1:20 AM, Haifeng Xu wrote:
->> If llc_occupany is enabled, the RMID may not be freed immediately unless
->> its llc_occupany is less than the resctrl_rmid_realloc_threshold.
->>
->> In our production environment, those unused RMIDs get stuck in the limbo
->> list forever because their llc_occupancy are larger than the threshold.
->> After turning it up , we can successfully free unused RMIDs and create
->> new monitor groups. In order to accquire the llc_occupancy of RMIDs in
->> each rdt domain, we use perf tool to track and filter the log manually.
->>
->> It's not efficient enough. Therefore, we can add a RFTYPE_TOP_INFO file
->> 'busy_rmids_info' that tells users the llc_occupancy of busy RMIDs. It
->> can also help to guide users how much the resctrl_rmid_realloc_threshold
->> should be.
-> 
-> I am addressing both patch 2/3 and patch 3/3 here.
-> 
-> First, please note that resctrl is obtaining support for Arm's Memory 
-> System Resource Partitioning and Monitoring (MPAM) and MPAM's monitoring
-> is done with a monitoring group that is dependent on the control group,
-> not independent as Intel and AMD. Please see [1] for more details.
-> 
-> resctrl is the generic interface that will be used to interact with RDT
-> on Intel, PQoS on AMD, and also MPAM on Arm. We thus need to ensure that
-> the interface is appropriate for all. Specifically, for Arm there is
-> no global "free RMID list", on Arm the free RMIDs (PMG in Arm language,
-> but rmid is the term that made it into resctrl) are per control group.
-> 
-> Second, this addition seems to be purely a debugging aid. I thus don't see
-> this as something that users may want/need all the time, yet when users do
-> want/need it, accurate data is preferred. To that end, the limbo
-> code already walks the busy list once per second. What if there is a
-> new tracepoint within the limbo code that shares the exact data used during
-> limbo list management?
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 
-OK, I'll try this way.
+> ---
+>  include/drm/drm_gem.h | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/drm/drm_gem.h b/include/drm/drm_gem.h
+> index f835fdee6a5e..021f64371056 100644
+> --- a/include/drm/drm_gem.h
+> +++ b/include/drm/drm_gem.h
+> @@ -156,7 +156,8 @@ struct drm_gem_object_funcs {
+>  	 * @vmap:
+>  	 *
+>  	 * Returns a virtual address for the buffer. Used by the
+> -	 * drm_gem_dmabuf_vmap() helper.
+> +	 * drm_gem_dmabuf_vmap() helper. Called with a held GEM reservation
+> +	 * lock.
+>  	 *
+>  	 * This callback is optional.
+>  	 */
+> @@ -166,7 +167,8 @@ struct drm_gem_object_funcs {
+>  	 * @vunmap:
+>  	 *
+>  	 * Releases the address previously returned by @vmap. Used by the
+> -	 * drm_gem_dmabuf_vunmap() helper.
+> +	 * drm_gem_dmabuf_vunmap() helper. Called with a held GEM reservation
+> +	 * lock.
+>  	 *
+>  	 * This callback is optional.
+>  	 */
+> @@ -189,7 +191,8 @@ struct drm_gem_object_funcs {
+>  	 * @evict:
+>  	 *
+>  	 * Evicts gem object out from memory. Used by the drm_gem_object_evict()
+> -	 * helper. Returns 0 on success, -errno otherwise.
+> +	 * helper. Returns 0 on success, -errno otherwise. Called with a held
+> +	 * GEM reservation lock.
+>  	 *
+>  	 * This callback is optional.
+>  	 */
 
- From what I can tell, this data, combined with the
-> per-monitor-group "mon_hw_id", should give user space sufficient data to
-> debug the scenarios mentioned in these patches.
-> 
-> I did add James to this discussion to make him aware of your requirements.
-> Please do include him in future submissions.
-> 
-> Reinette
-> 
-> [1] https://urldefense.proofpoint.com/v2/url?u=https-3A__lore.kernel.org_all_20231215174343.13872-2D1-2Djames.morse-40arm.com_&d=DwICaQ&c=R1GFtfTqKXCFH-lgEPXWwic6stQkW4U7uVq33mt-crw&r=3uoFsejk1jN2oga47MZfph01lLGODc93n4Zqe7b0NRk&m=-XE6uI2GOyk-qzRRAWvuDzQ9NgM2-QK-KLArnJEYmu02heN9gOh6VMbPeF1iZUZe&s=FySup-TxYl6c-jaA7Q8OFIVwbMdsMxZ3ChQ6Sj0HaLA&e= 
-
-Thanks.
 
