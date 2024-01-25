@@ -1,186 +1,183 @@
-Return-Path: <linux-kernel+bounces-38196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38197-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 052BC83BC58
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:52:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7FDB83BC5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:54:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7350C1F2A5CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:52:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97AE728163D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:54:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 912D11B96C;
-	Thu, 25 Jan 2024 08:52:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6349E1B95F;
+	Thu, 25 Jan 2024 08:54:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="lTOnOuYp"
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="sSa+is6I";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="sSa+is6I"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D87EF18044
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:52:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71AC71805A
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:54:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706172741; cv=none; b=JPlvaj/GMkIeCbjHuERJ6TNR70anib3NxA0QvSrtD2B++yg0L/8nSJzcTcvVFwSLDYldwaLJ0mx+3AwtN+MQ9lxBcDFQdvYoR7qtjo9DzjrJ+KKc8cAu50IX8vZezy/fvv9UyQhKmpflmdLekpmiohFQ07T5TFoSC5PpI6LsBRs=
+	t=1706172853; cv=none; b=RPUMF9v5xxrq91z0NSzXm6lNa30/vwNubpPqOgZMczgpsDe4aL4MenvPwk6v837OEUJKZBDeYdCFY7bjYkXWICOpRILX6slbgAPG4Bq1AtVVBxU9CboOEmtyNcTTAlIynM0de+LyiFc89bmqYw7eJPYRf6z0qwuqoZujpgp0G2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706172741; c=relaxed/simple;
-	bh=HEnUBiuLw+OIx22HFEZkQL3JqRl3WIca8WvxBLm7tn0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gWvTUQM6g4sGBPIvxvlkCMVw9hb8YEj2b9lQkw6m9pZF68HnMny9XGudw0TeYOyrf3snWesY9/ztypiwZlFgL4gmZM/bWMud4AA53ArPqlgNeRvc/hn+cnzBp3rAaLN6hOxVPIW8VLW4yOSSw1ZLQSWvqL48OiRdFv877U3/Aak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=lTOnOuYp; arc=none smtp.client-ip=209.85.167.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bda5be862eso4062896b6e.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 00:52:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1706172739; x=1706777539; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UkGQoIYNC+nMybNFXcUXZhNlJLPpzMlk/G5qwiD/mfw=;
-        b=lTOnOuYpySqhrtWUUysEz1fcgKX45Eg56HQNOwFpaAa2e432tB9uxlZqlOCsWZa1r5
-         FD9XH1o0hR2Ejts5xizSF3GQxlRl9IH1eTd+xmmajPugx/RGFkRisgCSGLXGyVq8f3PI
-         qwyzkaMnikeEfS4GNMzL7zxj0E0NEmzSthaKJGInPnWa/A/JS7BGmGgWYXtrYG78QzuB
-         70qODfmQ2n2tp5ol8vAzJdMM3tRLJ7rAGAXJXZKjg26rX4/QLmoBWY/nsvQ4WAiK2TBI
-         DmbkS3IrAgogDA0T8hzUjBMdQMulY3RaPAHH4R3e+8cXuLDiGX0fBAteADAVHQOO/BxK
-         k5AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706172739; x=1706777539;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UkGQoIYNC+nMybNFXcUXZhNlJLPpzMlk/G5qwiD/mfw=;
-        b=Ql93rQAxiezWwu+V3v7GwMuRKjTMNfAv4z26tFIVlIspGFxdyQNRn7o7k/MKDUzUaX
-         nWzf7ITvhA8izR7ZbnzeV4FyOUNaUWTD2ck6YzbqQgqRiUkqPBhmOW3+mqT8hajsJyDJ
-         7mc2HOBB4Mji/2kOBFwaE3MQ//NciA7ov2wGaxHVLF2eIEVkQ9LVr+H3GkdYJIXr4ndY
-         LwTqMfidxVyBtqlirZQvnn3bz12MQyBO/Tns5dQW9saQVmCkrxy1/+Bemzm1Zm6Oeqdw
-         pdvMag/SctHkANAlhKtMb6cCeOHnpxmCnFh0pNdmrEhJDMt3/PtZ974/Rfk6edO0NlV4
-         +U9Q==
-X-Gm-Message-State: AOJu0YyJMmVv7xurvvXELUJVFnRlG/2af0PHlS3wteCrAr2E7dQdfBvh
-	kc0ONke2G0+gvRfbR+dVPawJBRLlgfmNeyzjfiGoi+Y7TvwWw5OlDLfcTHw5fnU=
-X-Google-Smtp-Source: AGHT+IE3KQ6LFPbSUS7KHTooCvwgkX/cufH/YfcEdQp9M1/ylyfGjHKPw8tFuV/tMyB3cXv/EPsLGQ==
-X-Received: by 2002:a05:6808:148f:b0:3bd:dae2:b9b1 with SMTP id e15-20020a056808148f00b003bddae2b9b1mr603753oiw.3.1706172738781;
-        Thu, 25 Jan 2024 00:52:18 -0800 (PST)
-Received: from [10.4.195.141] ([139.177.225.254])
-        by smtp.gmail.com with ESMTPSA id a11-20020aa780cb000000b006dbd5a5dca9sm8764698pfn.185.2024.01.25.00.52.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 00:52:18 -0800 (PST)
-Message-ID: <35c3b0e5-a5eb-44b2-aa7d-3167f4603c73@bytedance.com>
-Date: Thu, 25 Jan 2024 16:52:13 +0800
+	s=arc-20240116; t=1706172853; c=relaxed/simple;
+	bh=z6XRFaS84z9g7qblnH+LG49Jfq7o/lPDSgcB82hgA0o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lYw8f/DcbRHqpf1n6tk//z5Yj69vEJd/gmiH2HggfMDc0osw7Sa9JT7uN3unOzbdM/gCXBCHdUc0cDueqduIFqD0K7I/gVTXX6kv2sUrviNkAMnjM4IeSb0eyBg5JV5rVYwwp8fXIweVDINwW8PJj6ny+UkjuCBT3o0D/SyfAhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=sSa+is6I; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=sSa+is6I; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 603AD21F5F;
+	Thu, 25 Jan 2024 08:54:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706172843; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7ecjAXcF2LiHHvxYnU8Fo2z7wDNf7fQuOUP6dn1MlNk=;
+	b=sSa+is6I8ZeE4cqganZ4RLhvkR6KKtqLp98Nl1vxh2lwcgKBLKM5lsuv8lrs243U4F3jHp
+	de/SVoIpJwrUYWelmAchqHmAIX8DPjO/WuGo78iVezDvZsCw9DuA+MuqvtopfrPoXcgWk6
+	vh545D1vtOu5bNHdDgl3aNuTy1dGKPA=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706172843; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7ecjAXcF2LiHHvxYnU8Fo2z7wDNf7fQuOUP6dn1MlNk=;
+	b=sSa+is6I8ZeE4cqganZ4RLhvkR6KKtqLp98Nl1vxh2lwcgKBLKM5lsuv8lrs243U4F3jHp
+	de/SVoIpJwrUYWelmAchqHmAIX8DPjO/WuGo78iVezDvZsCw9DuA+MuqvtopfrPoXcgWk6
+	vh545D1vtOu5bNHdDgl3aNuTy1dGKPA=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2779F134C3;
+	Thu, 25 Jan 2024 08:54:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id exlXBqshsmVFNQAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Thu, 25 Jan 2024 08:54:03 +0000
+Date: Thu, 25 Jan 2024 09:53:54 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Yang Shi <shy828301@gmail.com>
+Cc: jirislaby@kernel.org, surenb@google.com, riel@surriel.com,
+	willy@infradead.org, cl@linux.com, akpm@linux-foundation.org,
+	yang@os.amperecomputing.com, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: huge_memory: don't force huge page alignment on 32
+ bit
+Message-ID: <ZbIhoj2PzD5jIdSn@tiehlicka>
+References: <20240118133504.2910955-1-shy828301@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] mm: zswap: remove unnecessary tree cleanups in
- zswap_swapoff()
-Content-Language: en-US
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
- Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>,
- Chris Li <chrisl@kernel.org>, Huang Ying <ying.huang@intel.com>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240120024007.2850671-1-yosryahmed@google.com>
- <20240120024007.2850671-3-yosryahmed@google.com>
- <20240122201906.GA1567330@cmpxchg.org>
- <CAJD7tkaATS48HVuBfbOmPM3EvRUoPFr66WhF64UC4FkyVH5exg@mail.gmail.com>
- <20240123153851.GA1745986@cmpxchg.org>
- <CAJD7tkasHsRnT_75-TXsEe58V9_OW6m3g6CF7Kmsvz8CKRG_EA@mail.gmail.com>
- <20240123201234.GC1745986@cmpxchg.org>
- <CAJD7tkZC6w2EaE=j2NEVWn1s7Lo2A7YZh8LiZ+w72jQzFFWLUQ@mail.gmail.com>
- <f3fa799f-1815-4cfe-abc8-3ba929fcd1ba@bytedance.com>
- <CAJD7tka6UuEuuP=df-1V3vwsi0T0QhLORTRDs6qDvA81iY6SGA@mail.gmail.com>
- <1496dce3-a4bb-4ccf-92d6-701a45b67da3@bytedance.com>
- <CAJD7tkbrQw7FWx-EDKKCtH_E03xEd5Y+8BqRjE8d29JSOCGybg@mail.gmail.com>
-From: Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <CAJD7tkbrQw7FWx-EDKKCtH_E03xEd5Y+8BqRjE8d29JSOCGybg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240118133504.2910955-1-shy828301@gmail.com>
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=sSa+is6I
+X-Spamd-Result: default: False [-2.81 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email,infradead.org:email];
+	 FREEMAIL_TO(0.00)[gmail.com];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 603AD21F5F
+X-Spam-Level: 
+X-Spam-Score: -2.81
+X-Spam-Flag: NO
 
-On 2024/1/25 16:42, Yosry Ahmed wrote:
-> On Thu, Jan 25, 2024 at 12:30 AM Chengming Zhou
-> <zhouchengming@bytedance.com> wrote:
->>
->> On 2024/1/25 15:53, Yosry Ahmed wrote:
->>>> Hello,
->>>>
->>>> I also thought about this problem for some time, maybe something like below
->>>> can be changed to fix it? It's likely I missed something, just some thoughts.
->>>>
->>>> IMHO, the problem is caused by the different way in which we use zswap entry
->>>> in the writeback, that should be much like zswap_load().
->>>>
->>>> The zswap_load() comes in with the folio locked in swap cache, so it has
->>>> stable zswap tree to search and lock... But in writeback case, we don't,
->>>> shrink_memcg_cb() comes in with only a zswap entry with lru list lock held,
->>>> then release lru lock to get tree lock, which maybe freed already.
->>>>
->>>> So we should change here, we read swpentry from entry with lru list lock held,
->>>> then release lru lock, to try to lock corresponding folio in swap cache,
->>>> if we success, the following things is much the same like zswap_load().
->>>> We can get tree lock, to recheck the invalidate race, if no race happened,
->>>> we can make sure the entry is still right and get refcount of it, then
->>>> release the tree lock.
->>>
->>> Hmm I think you may be onto something here. Moving the swap cache
->>> allocation ahead before referencing the tree should give us the same
->>> guarantees as zswap_load() indeed. We can also consolidate the
->>> invalidate race checks (right now we have one in shrink_memcg_cb() and
->>> another one inside zswap_writeback_entry()).
->>
->> Right, if we successfully lock folio in the swap cache, we can get the
->> tree lock and check the invalidate race, only once.
->>
->>>
->>> We will have to be careful about the error handling path to make sure
->>> we delete the folio from the swap cache only after we know the tree
->>> won't be referenced anymore. Anyway, I think this can work.
->>
->> Yes, we can't reference tree if we early return or after unlocking folio,
->> since the reference of zswap entry can't protect the tree.
->>
->>>
->>> On a separate note, I think there is a bug in zswap_writeback_entry()
->>> when we delete a folio from the swap cache. I think we are missing a
->>> folio_unlock() there.
->>
->> Ah, yes, and folio_put().
+On Thu 18-01-24 05:35:04, Yang Shi wrote:
+> From: Yang Shi <yang@os.amperecomputing.com>
 > 
-> Yes. I am preparing a fix.
+> The commit efa7df3e3bb5 ("mm: align larger anonymous mappings on THP
+> boundaries") caused two issues [1] [2] reported on 32 bit system or compat
+> userspace.
 > 
->>
->>>
->>>>
->>>> The main differences between this writeback with zswap_load() is the handling
->>>> of lru entry and the tree lifetime. The whole zswap_load() function has the
->>>> stable reference of zswap tree, but it's not for shrink_memcg_cb() bottom half
->>>> after __swap_writepage() since we unlock the folio after that. So we can't
->>>> reference the tree after that.
->>>>
->>>> This problem is easy to fix, we can zswap_invalidate_entry(tree, entry) early
->>>> in tree lock, since thereafter writeback can't fail. BTW, I think we should
->>>> also zswap_invalidate_entry() early in zswap_load() and only support the
->>>> zswap_exclusive_loads_enabled mode, but that's another topic.
->>>
->>> zswap_invalidate_entry() actually doesn't seem to be using the tree at all.
->>>
->>>>
->>>> The second difference is the handling of lru entry, which is easy that we
->>>> just zswap_lru_del() in tree lock.
->>>
->>> Why do we need zswap_lru_del() at all? We should have already isolated
->>> the entry at that point IIUC.
->>
->> I was thinking how to handle the "zswap_lru_putback()" if not writeback,
->> in which case we can't use the entry actually since we haven't got reference
->> of it. So we can don't isolate at the entry, and only zswap_lru_del() when
->> we are going to writeback actually.
+> It doesn't make too much sense to force huge page alignment on 32 bit
+> system due to the constrained virtual address space.
 > 
-> Why not just call zswap_lru_putback() before we unlock the folio?
+> [1] https://lore.kernel.org/linux-mm/CAHbLzkqa1SCBA10yjWTtA2mKCsoK5+M1BthSDL8ROvUq2XxZMw@mail.gmail.com/T/#mf211643a0427f8d6495b5b53f8132f453d60ab95
+> [2] https://lore.kernel.org/linux-mm/CAHbLzkqa1SCBA10yjWTtA2mKCsoK5+M1BthSDL8ROvUq2XxZMw@mail.gmail.com/T/#me93dff2ccbd9902c3e395e1c022fb454e48ecb1d
+> 
+> Fixes: efa7df3e3bb5 ("mm: align larger anonymous mappings on THP boundaries")
+> Reported-by: Jiri Slaby <jirislaby@kernel.org>
+> Reported-by: Suren Baghdasaryan <surenb@google.com>
+> Tested-by: Jiri Slaby <jirislaby@kernel.org>
+> Tested-by: Suren Baghdasaryan <surenb@google.com>
+> Cc: Rik van Riel <riel@surriel.com>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Christopher Lameter <cl@linux.com>
+> Signed-off-by: Yang Shi <yang@os.amperecomputing.com>
 
-When early return because __read_swap_cache_async() return NULL or !folio_was_allocated,
-we don't have a locked folio yet. The entry maybe invalidated and freed concurrently.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
+Thanks!
+
+> ---
+>  mm/huge_memory.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 94ef5c02b459..e9fbaccbe0c0 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -37,6 +37,7 @@
+>  #include <linux/page_owner.h>
+>  #include <linux/sched/sysctl.h>
+>  #include <linux/memory-tiers.h>
+> +#include <linux/compat.h>
+>  
+>  #include <asm/tlb.h>
+>  #include <asm/pgalloc.h>
+> @@ -811,6 +812,14 @@ static unsigned long __thp_get_unmapped_area(struct file *filp,
+>  	loff_t off_align = round_up(off, size);
+>  	unsigned long len_pad, ret;
+>  
+> +	/*
+> +	 * It doesn't make too much sense to froce huge page alignment on
+> +	 * 32 bit system or compat userspace due to the contrained virtual
+> +	 * address space and address entropy.
+> +	 */
+> +	if (IS_ENABLED(CONFIG_32BIT) || in_compat_syscall())
+> +		return 0;
+> +
+>  	if (off_end <= off_align || (off_end - off_align) < size)
+>  		return 0;
+>  
+> -- 
+> 2.41.0
+> 
+
+-- 
+Michal Hocko
+SUSE Labs
 
