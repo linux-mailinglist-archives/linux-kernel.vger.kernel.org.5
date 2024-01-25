@@ -1,135 +1,223 @@
-Return-Path: <linux-kernel+bounces-39122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AD3183CB19
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:32:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16C9383CB1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:32:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BB6E1F21003
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:32:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B031F29AE32
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:32:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AC4A1386D2;
-	Thu, 25 Jan 2024 18:28:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6698D1D68C;
+	Thu, 25 Jan 2024 18:30:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mO9UXfzr"
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hrn1JA8E"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ED1313473D
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 18:28:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B79AD13A24F
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 18:30:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706207324; cv=none; b=WJLA8Ka7C4Riix9VBcYOUnKD7irqjuQ5ZgcyR2Gh6snpWcxuHPmB6VjJKXsLLjflTE2M9ZjNQ/6AMOXGvyvCY/BIihNq8vaxLmH6s/GKW/QtZ0RxLlhJXBzCkqAlWy4XhcwsbnqQdXGvrAHm2qzEzL1XNfLyqTffbP2AlCON3Wg=
+	t=1706207404; cv=none; b=uRBdHggin9JFSDfk7a0LYx5ziLHj3enDgqO0mguKCEQ0CT1sNU7TEmoHMqBTPH74LT0hadyPp/ui3xWo2QImdlQRPH5Ph2EHk622iNQpAxh1DG7w7krXEY4kpsRrJJdxzqb07z0mGfijYHiApMmwXxP2zMQZMCCFJWWG6qugalY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706207324; c=relaxed/simple;
-	bh=756udnWKPUnYu+tviVP/6MzNK65B+hc7fr7/t17LzaA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ntnzcAwJ+c8q/Jkh6Bj2GnUBmnLd1qp/75UcxDAUFVUHuGaqA0RIACgqCpyrK33qcZ6kCiFNdrONBoTisac3hcYAu5A5CCLwdn0T00MI4dJdx/c//2eReyJfnGMR0D4cJ9R6uhcC2L66hJzA9uBlucNZOpVXipkEwkWNNbLHT34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mO9UXfzr; arc=none smtp.client-ip=209.85.222.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-78333ad3a17so562264485a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 10:28:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706207320; x=1706812120; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=uLhCwnRRIZ1E72pj3tBhSpsWi74rqeA6ru7YY86vWc8=;
-        b=mO9UXfzr7iiYQ0LltAqd+UVA5xLXhbhgv5Racbh+U7Y2WbE6myGOdYLM0pxDznQhbq
-         sNfl5C5A+EgT3vNGE8vXXyVcPNvP240ERHJW/ieU6o8Gh8eQgq/GoTWXGCvMZ6x016/C
-         xV4PfB6r1w3p1T2ml75ITKn6kFgcvayy0TMclD8HBpaTq+U7LCgDvTZwznupuUVMYfwl
-         1yvQHLkuZ1fcHfOWaEzbpqzdMFYQC2Vt3PFSbBiF/T4/9OzdovZvgs9AntddZ8IvGZ+9
-         Ag/v1iqVDb3YrBhm/R19qui3PT2NHKgEuhI/9XAhOKGb6B29Mz1rBhAPCoQNo+UEFEa+
-         L/BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706207320; x=1706812120;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uLhCwnRRIZ1E72pj3tBhSpsWi74rqeA6ru7YY86vWc8=;
-        b=CTdJ+VrrvOIJwToYVaaWdmtJMUU2SyjKRkhfj0oylBWqV4EOLAmicy9gDU9jAGEprF
-         M5jzf9PQizwNrq8JP2Y2ANEBo2CkFUTrrVKmAIdAUKTB1qfGjZLPxlUrd/Oih0xOsDsA
-         goRcYBzIh86b4yBALM06ok4EXoc5kKFkMXIr36vfrP8WjsJI9ObGoowD+TpmD9w1tWRv
-         7mUuHpPwxt1qe3NaNu2szziq96gBkwBGWEO7BFHGAQQQH4HyGgHN8ToqXv38OQVdMVtJ
-         3gWh20f4vAG/KqaZWzKalURNDHthM0WWFNCEIThV+z1D+uKyLj1uDUI/c4bfdEYBPmyv
-         x2wQ==
-X-Gm-Message-State: AOJu0YyUKYsDGqG6EKJBRgpBu0WyM6vVLMS4sqUSeRU2Znlqbana/t+y
-	X49IfS/9T9mHZw3tdZWSyf69ti+dZdnCnbUFv9Na69XOmT9ILL9dbflPTMZi
-X-Google-Smtp-Source: AGHT+IENIfq2UC3Og9qo2vh57IZoVlyR7hwFppNQFJocCbIrcZLJZCfEHxBEHlZFM1RVSvBhlQNCNQ==
-X-Received: by 2002:a05:620a:8529:b0:781:2dfe:787 with SMTP id pe41-20020a05620a852900b007812dfe0787mr101689qkn.111.1706207320207;
-        Thu, 25 Jan 2024 10:28:40 -0800 (PST)
-Received: from pm2-ws13.praxislan02.com (207-172-141-204.s8906.c3-0.slvr-cbr1.lnh-slvr.md.cable.rcncustomer.com. [207.172.141.204])
-        by smtp.gmail.com with ESMTPSA id c21-20020a05620a201500b007831ffa4234sm5285373qka.42.2024.01.25.10.28.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 10:28:39 -0800 (PST)
-From: Jason Andryuk <jandryuk@gmail.com>
-To: linux-kernel@vger.kernel.org
-Cc: Jason Andryuk <jandryuk@gmail.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH] x86/mm/cpa-test: Ensure pfn isn't already in use
-Date: Thu, 25 Jan 2024 13:28:35 -0500
-Message-ID: <20240125182837.52467-1-jandryuk@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706207404; c=relaxed/simple;
+	bh=OPA2cuzn5UAHEJ6wEIBW91lYRI0vxCC/ZWjzMFkOScQ=;
+	h=Date:From:To:cc:Subject:Message-ID:MIME-Version:Content-Type; b=kquRQMrg4HLV9bR7lPdzmmbrg3dycpj9fF/lY3RFYx2wAsDOMuBXOwXI3PjAIqxWNYwQaKgqwn5pvinmNeTGkr//h4DwK2AsA8DypQ60Tkn02ORd5ro2p51lbTKafJJm919Og6vLtPhkAx7Qz8yCeBaQKpABPfmcSNi/Di6C/JY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hrn1JA8E; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706207401;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=bB4BbgukWG92dKMqbQfPWgXExA2ppJqUrBLC6EqUHro=;
+	b=hrn1JA8EwlT1Q+sz12catAZXv7YApCNHDJEYTgAPiBltosoSdK2vBbTrZAeznsNp/io+bO
+	fSpcC2tSb/0oZoyPgjfCVgHPrmDMZl0oMMeVPEJezdR1x0I676TDiGFUdVBYZSPYSt0Phu
+	gTHaFVPbO8/aSRCS3wodbCmOzQRIiak=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-102-hSV-gnCWM_6XREPhKZJG2A-1; Thu,
+ 25 Jan 2024 13:29:44 -0500
+X-MC-Unique: hSV-gnCWM_6XREPhKZJG2A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AD0753C1E9C5;
+	Thu, 25 Jan 2024 18:29:43 +0000 (UTC)
+Received: from file1-rdu.file-001.prod.rdu2.dc.redhat.com (unknown [10.11.5.21])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id BFC6A2166B32;
+	Thu, 25 Jan 2024 18:29:42 +0000 (UTC)
+Received: by file1-rdu.file-001.prod.rdu2.dc.redhat.com (Postfix, from userid 12668)
+	id A8F5830CAABD; Thu, 25 Jan 2024 18:29:42 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+	by file1-rdu.file-001.prod.rdu2.dc.redhat.com (Postfix) with ESMTP id A48F63FB4E;
+	Thu, 25 Jan 2024 19:29:42 +0100 (CET)
+Date: Thu, 25 Jan 2024 19:29:42 +0100 (CET)
+From: Mikulas Patocka <mpatocka@redhat.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>, 
+    Thomas Gleixner <tglx@linutronix.de>
+cc: linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev, 
+    Mike Snitzer <msnitzer@redhat.com>, Ignat Korchagin <ignat@cloudflare.com>, 
+    Damien Le Moal <damien.lemoal@wdc.com>, Bob Liu <bob.liu@oracle.com>, 
+    Hou Tao <houtao1@huawei.com>, Nathan Huckleberry <nhuck@google.com>, 
+    Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@elte.hu>
+Subject: [PATCH] softirq: fix memory corruption when freeing tasklet_struct
+Message-ID: <82b964f0-c2c8-a2c6-5b1f-f3145dc2c8e5@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-Ensure pfn isn't already in use before assigning to addr[i].  Retry if
-in use.  The subsequent pfns were checked against the bitmap, but not
-the initial selection.
+Hi
 
-This prevents some false positives on a machine with a small amount of
-RAM where pfn collisions are more likely to be seen.
+There's a problem with the tasklet API - there is no reliable way how to
+free a structure that contains tasklet_struct. The problem is that the
+function tasklet_action_common calls task_unlock(t) after it called the
+callback. If the callback does something that frees tasklet_struct,
+task_unlock(t) would write into free memory.
 
-A Xen HVM first showed:
-[ 3640.227939] CPA ffff88800869c000: bad pte 800000000869c163
-[ 3640.227982] CPA ffff88800104e000: bad pte 800000000104e161
+dm-crypt does this - it schedules a tasklet with tasklet_schedule, it does
+encryption inside the tasklet handler (because it performs better than
+doing the encryption in a workqueue), then it submits a workqueue entry
+and calls bio_endio from the workqueue entry.
 
-Testing this patch with a Xen PV guest with one 192MB of RAM showed
-varying numbers of addresses like:
-[ 2768.082971] CPA test 5 pfn 930d in use
+However, if the workqueue preempts ksoftirqd, this race condition happens:
 
-Signed-off-by: Jason Andryuk <jandryuk@gmail.com>
+ksoftirqd:
+* tasklet_action_common
+* t->func(t->data)	(that points to kcryptd_crypt_tasklet)
+* kcryptd_crypt_tasklet
+* kcryptd_crypt
+* kcryptd_crypt_read_convert
+* crypt_dec_pending
+* queue_work(cc->io_queue, &io->work);
+now we switch to the workqueue process:
+* kcryptd_io_bio_endio
+* bio_endio(io->base_bio)	(this calls clone_endio)
+* clone_endio
+* free_tio
+* bio_put(clone) - the bio is freed
+now we switch back to ksoftirqd:
+* tasklet_action_common calls task_unlock(t) 
+* task_unlock(t) touches memory that was already freed when the bio was freed
+
+dm-verity has a similar problem.
+
+In order to fix this bug, I am proposing to add a new flag
+TASKLET_STATE_ONESHOT. The flag indicates that the tasklet will be
+submitted only once and it prevents tasklet_action_common from touching
+the tasklet after the callback completed.
+
+If you have another idea how to solve this bug, let me know.
+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Fixes: 39d42fa96ba1 ("dm crypt: add flags to optionally bypass kcryptd workqueues")
+Fixes: 5721d4e5a9cd ("dm verity: Add optional "try_verify_in_tasklet" feature")
+Cc: stable@vger.kernel.org	# v5.9+
+
 ---
-This could infinite loop on a machine with a small amount of RAM - is
-that worth handling?  Just skip an in-use pfn instead?
----
- arch/x86/mm/pat/cpa-test.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/md/dm-crypt.c         |    1 +
+ drivers/md/dm-verity-target.c |    1 +
+ include/linux/interrupt.h     |    9 ++++++++-
+ kernel/softirq.c              |   22 +++++++++++++++-------
+ 4 files changed, 25 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/mm/pat/cpa-test.c b/arch/x86/mm/pat/cpa-test.c
-index ad3c1feec990..bbf337e3e246 100644
---- a/arch/x86/mm/pat/cpa-test.c
-+++ b/arch/x86/mm/pat/cpa-test.c
-@@ -136,7 +136,14 @@ static int pageattr_test(void)
- 	failed += print_split(&sa);
+Index: linux-2.6/drivers/md/dm-crypt.c
+===================================================================
+--- linux-2.6.orig/drivers/md/dm-crypt.c	2024-01-18 19:18:30.000000000 +0100
++++ linux-2.6/drivers/md/dm-crypt.c	2024-01-25 16:42:17.000000000 +0100
+@@ -2265,6 +2265,7 @@ static void kcryptd_queue_crypt(struct d
+ 		if (in_hardirq() || irqs_disabled()) {
+ 			io->in_tasklet = true;
+ 			tasklet_init(&io->tasklet, kcryptd_crypt_tasklet, (unsigned long)&io->work);
++			tasklet_set_oneshot(&io->tasklet);
+ 			tasklet_schedule(&io->tasklet);
+ 			return;
+ 		}
+Index: linux-2.6/include/linux/interrupt.h
+===================================================================
+--- linux-2.6.orig/include/linux/interrupt.h	2023-11-13 17:39:50.000000000 +0100
++++ linux-2.6/include/linux/interrupt.h	2024-01-25 16:41:52.000000000 +0100
+@@ -684,7 +684,9 @@ struct tasklet_struct name = {				\
+ enum
+ {
+ 	TASKLET_STATE_SCHED,	/* Tasklet is scheduled for execution */
+-	TASKLET_STATE_RUN	/* Tasklet is running (SMP only) */
++	TASKLET_STATE_RUN,	/* Tasklet is running (SMP only) */
++	TASKLET_STATE_ONESHOT	/* Don't unlock the tasklet after the callback
++				   to avoid writing to free memory */
+ };
  
- 	for (i = 0; i < NTEST; i++) {
--		unsigned long pfn = get_random_u32_below(max_pfn_mapped);
-+		unsigned long pfn;
+ #if defined(CONFIG_SMP) || defined(CONFIG_PREEMPT_RT)
+@@ -756,6 +758,11 @@ extern void tasklet_init(struct tasklet_
+ extern void tasklet_setup(struct tasklet_struct *t,
+ 			  void (*callback)(struct tasklet_struct *));
+ 
++static inline void tasklet_set_oneshot(struct tasklet_struct *t)
++{
++	__set_bit(TASKLET_STATE_ONESHOT, &t->state);
++}
 +
-+ retry:
-+		pfn = get_random_u32_below(max_pfn_mapped);
-+		if (test_bit(pfn, bm)) {
-+			pr_debug("CPA test %d pfn %lx in use\n", i, pfn);
-+			goto retry;
-+		}
+ /*
+  * Autoprobing for irqs:
+  *
+Index: linux-2.6/kernel/softirq.c
+===================================================================
+--- linux-2.6.orig/kernel/softirq.c	2023-10-31 15:31:42.000000000 +0100
++++ linux-2.6/kernel/softirq.c	2024-01-25 17:10:03.000000000 +0100
+@@ -774,18 +774,26 @@ static void tasklet_action_common(struct
  
- 		addr[i] = (unsigned long)__va(pfn << PAGE_SHIFT);
- 		len[i] = get_random_u32_below(NPAGES);
--- 
-2.43.0
+ 		if (tasklet_trylock(t)) {
+ 			if (!atomic_read(&t->count)) {
++				/*
++				 * If oneshot is set, we must not touch the
++				 * tasklet after the callback.
++				 */
++				bool oneshot = test_bit(TASKLET_STATE_ONESHOT, &t->state);
+ 				if (tasklet_clear_sched(t)) {
+ 					if (t->use_callback) {
+-						trace_tasklet_entry(t, t->callback);
+-						t->callback(t);
+-						trace_tasklet_exit(t, t->callback);
++						void (*callback)(struct tasklet_struct *) = t->callback;
++						trace_tasklet_entry(t, callback);
++						callback(t);
++						trace_tasklet_exit(t, callback);
+ 					} else {
+-						trace_tasklet_entry(t, t->func);
+-						t->func(t->data);
+-						trace_tasklet_exit(t, t->func);
++						void (*func)(unsigned long) = t->func;
++						trace_tasklet_entry(t, func);
++						func(t->data);
++						trace_tasklet_exit(t, func);
+ 					}
+ 				}
+-				tasklet_unlock(t);
++				if (!oneshot)
++					tasklet_unlock(t);
+ 				continue;
+ 			}
+ 			tasklet_unlock(t);
+Index: linux-2.6/drivers/md/dm-verity-target.c
+===================================================================
+--- linux-2.6.orig/drivers/md/dm-verity-target.c	2024-01-18 19:18:30.000000000 +0100
++++ linux-2.6/drivers/md/dm-verity-target.c	2024-01-25 18:12:09.000000000 +0100
+@@ -676,6 +676,7 @@ static void verity_end_io(struct bio *bi
+ 
+ 	if (static_branch_unlikely(&use_tasklet_enabled) && io->v->use_tasklet) {
+ 		tasklet_init(&io->tasklet, verity_tasklet, (unsigned long)io);
++		tasklet_set_oneshot(&io->tasklet);
+ 		tasklet_schedule(&io->tasklet);
+ 	} else {
+ 		INIT_WORK(&io->work, verity_work);
 
 
