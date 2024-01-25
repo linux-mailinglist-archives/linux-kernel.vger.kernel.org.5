@@ -1,47 +1,84 @@
-Return-Path: <linux-kernel+bounces-39173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99B2983CC0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:18:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BD04A83CC0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:19:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 507A71F27A22
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:18:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 461E91F27A0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:19:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9DF01350E6;
-	Thu, 25 Jan 2024 19:18:37 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC909111AA;
-	Thu, 25 Jan 2024 19:18:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F35B135407;
+	Thu, 25 Jan 2024 19:18:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="ReTY6K6r"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA9A13474F
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 19:18:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706210317; cv=none; b=uxqaYXNtSkNMlSYx7dVJjNpuguR8pB/02qUYeJkzlRA2TlVCEq8TRip94auiXD+RJb+ulsg1NvmVzO4hGPZ4PdCAFBJNtlOk7yV4DrjwAiUwZvUBxRrh9HMMubjXfqdGD2jNx8/DrLnfOd5X/B/G14AHeFGehOWqLjFIiICQrHE=
+	t=1706210337; cv=none; b=H4TVg71nLczzsngRZ3TC/cu3bhK+Z0HnRZUgHX0pvKOa686E6tL3iAFZLN+K+VKpp/5OQSwL9kf93z9nBwl6goGj97rNQz1tD8Rlf3VWHMl6iJTS4mTcgVlQ8ynuTRHm0KtiJ9sQd+hstzOyAk01DMuki/71605MytwT4Jma1to=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706210317; c=relaxed/simple;
-	bh=UraaLLeJ1ju3DnPi61+iDA0jaVSKMl2MoYlsOHXiN9c=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Zt/YS4QnZczIQUF4nAdjAR+HsMGzHQJpyTMHPZvAwRLsIDnQniXtfprHk708tcvX6YsRn9Z54fWJe3aplZZr3NnK4KQJccDRU5j9lvZnrQLaSRAOCHGucuxB3m2cFTRvW6e8G8AInGL0BirVVZ2ACNgplQR5OC9NdKQLbG+Myws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 816901FB;
-	Thu, 25 Jan 2024 11:19:18 -0800 (PST)
-Received: from pluto.. (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D6EAF3F73F;
-	Thu, 25 Jan 2024 11:18:32 -0800 (PST)
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: linux-arm-kernel@lists.infradead.org,
-	linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Cristian Marussi <cristian.marussi@arm.com>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH] pmdomain: arm: Fix NULL dereference on scmi_perf_domain removal
-Date: Thu, 25 Jan 2024 19:17:56 +0000
-Message-ID: <20240125191756.868860-1-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706210337; c=relaxed/simple;
+	bh=lab1cc/BnvmVMoI/6a4oqJtvBk6zbJgk82AeHiJrUN8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OBrpvMk39STUZS3erLw8NPSqFOdWflcnB35hGyo3lnBDt2SDuXYvNJQISP5SlFVkBE++56CBnqaigH8hey9GAKCHP3gfhxv0CpeoZmbEIvEgYvLlIpCLF4i1uwgRPK8VyZee8yUb+ibvDakmM7wkLpX0kyWqStZ6UmFkavMW2wE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=ReTY6K6r; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d89518d3b1so4104515ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 11:18:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1706210335; x=1706815135; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vgDFOq40XBBKNZXci2Ggytp+MQppzv/horYrfyyqlNM=;
+        b=ReTY6K6rez9zYsde1a6ELbDDYS6P2XW2eDpp09JX7+NVwe3U6i6nEMXhDs0OizXU4D
+         GEJZ3Cz397l0rhkMwHl7RbIZMi6SMEy4RchuVeSgEl5Q0pup4hxzuz7mStpkPDHWZDWJ
+         4PRRCGxabQ7REwDpcaiwfS3u5wO0frQ7IHwgQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706210335; x=1706815135;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vgDFOq40XBBKNZXci2Ggytp+MQppzv/horYrfyyqlNM=;
+        b=YrE0CDOevg/LkKi3x1iDjU3oznAIHtntG89ROy5W6zFbkOSgNaCO8xnvrEQn6jy1qS
+         Frgo0HllDlbNekgeDikw4HQrnJNKwTGK27UkdLt909k7h/mYOs88Gn6t5TiwkLW5FL0u
+         whDDqueNFT43kjCIUOvK617ePmX9o8PsDtyoKG5j42SBNDV1SrrvQf/kFqM19NcAG0ym
+         4tKeoGSj9+6wkO/ZZkjI5HPeVb3Rg4LDljA1G6KxKTEdkaZwr8bZhuOi9TW4BZ+WVsuM
+         BCqB/mxHrzy8wECkMGf0FAMdZiiUItJVfPOub7YKTH5Dd2FRSmIPhHn/PQG941PwiHWl
+         JJKA==
+X-Gm-Message-State: AOJu0Yxmt/Ldt+V4etCxTrH7xjqLRazSkfxui/7zR7p4i0stjKNEtB/3
+	I+C9HTlYFwBW/M+31c8C73/6hltzomksN6wY/R55i53dHlhLW1PIKxwMtelTbbzA7BY2cLes+4b
+	B47EsZnEK5LZ2VMPKBRQ8heMHEGYVAjz3LWkvNq+QPMEkusK4CqApWNg29aolOgQ7lJ+umiEI5l
+	wjp3aUIaTgrwX/a4nubiz0dxpjppblTbx4N+sZpJJbx4s=
+X-Google-Smtp-Source: AGHT+IHdKHB94OhPgZOVY77ABy+eW7S+fOS7rs6rmsVrvHAqW+Nt5DJrWXeJyflcQ9xYvVmNTGX+MA==
+X-Received: by 2002:a17:902:ced0:b0:1d4:bd1f:e4b7 with SMTP id d16-20020a170902ced000b001d4bd1fe4b7mr29761plg.24.1706210334003;
+        Thu, 25 Jan 2024 11:18:54 -0800 (PST)
+Received: from localhost.localdomain ([2620:11a:c018:0:ea8:be91:8d1:f59b])
+        by smtp.gmail.com with ESMTPSA id n9-20020a170902d0c900b001d706c17af2sm12215017pln.268.2024.01.25.11.18.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 11:18:53 -0800 (PST)
+From: Joe Damato <jdamato@fastly.com>
+To: linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: dhowells@redhat.com,
+	alexander@mihalicyn.com,
+	leitao@debian.org,
+	wuyun.abel@bytedance.com,
+	kuniyu@amazon.com,
+	pabeni@redhat.com,
+	kuba@kernel.org,
+	edumazet@google.com,
+	davem@davemloft.net,
+	Joe Damato <jdamato@fastly.com>
+Subject: [PATCH net-next] net: print error if SO_BUSY_POLL_BUDGET is large
+Date: Thu, 25 Jan 2024 19:18:40 +0000
+Message-Id: <20240125191840.6740-1-jdamato@fastly.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -50,92 +87,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On unloading of the scmi_perf_domain module got the below splat, when in
-the DT provided to the system under test the '#power-domain-cells' property
-was missing.
-Indeed, this particular setup causes the probe to bail out early without
-giving any error, so that, then, the removal code is run on unload, but
-without all the expected initialized structures in place.
+When drivers call netif_napi_add_weight with a weight that is larger
+than NAPI_POLL_WEIGHT, the networking code allows the larger weight, but
+prints an error.
 
-Add a check and bail out early on remove too.
+Replicate this check for SO_BUSY_POLL_BUDGET; check if the user
+specified amount exceeds NAPI_POLL_WEIGHT, allow it anyway, but print an
+error.
 
-Unable to handle kernel NULL pointer dereference at virtual address 0000000000000008
-Mem abort info:
-   ESR = 0x0000000096000004
-   EC = 0x25: DABT (current EL), IL = 32 bits
-   SET = 0, FnV = 0
-   EA = 0, S1PTW = 0
-   FSC = 0x04: level 0 translation fault
- Data abort info:
-   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
-   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
- user pgtable: 4k pages, 48-bit VAs, pgdp=00000001076e5000
- [0000000000000008] pgd=0000000000000000, p4d=0000000000000000
- Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
- Modules linked in: scmi_perf_domain(-) scmi_module scmi_core
- CPU: 0 PID: 231 Comm: rmmod Not tainted 6.7.0-00084-gb4b1f27d3b83-dirty #15
- Hardware name: linux,dummy-virt (DT)
- pstate: 61400005 (nZCv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
- pc : scmi_perf_domain_remove+0x28/0x70 [scmi_perf_domain]
- lr : scmi_perf_domain_remove+0x28/0x70 [scmi_perf_domain]
- sp : ffff80008393bc10
- x29: ffff80008393bc10 x28: ffff0000875a8000 x27: 0000000000000000
- x26: 0000000000000000 x25: 0000000000000000 x24: 0000000000000000
- x23: ffff00008030c090 x22: ffff00008032d490 x21: ffff80007b287050
- x20: 0000000000000000 x19: ffff00008032d410 x18: 0000000000000000
- x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
- x14: 8ba0696d05013a2f x13: 0000000000000000 x12: 0000000000000002
- x11: 0101010101010101 x10: ffff00008510cff8 x9 : ffff800080a6797c
- x8 : 0101010101010101 x7 : 7f7f7f7f7f7f7f7f x6 : fefefeff6364626d
- x5 : 8080808000000000 x4 : 0000000000000020 x3 : 00000000553a3dc1
- x2 : ffff0000875a8000 x1 : ffff0000875a8000 x0 : ffff800082ffa048
- Call trace:
-  scmi_perf_domain_remove+0x28/0x70 [scmi_perf_domain]
-  scmi_dev_remove+0x28/0x40 [scmi_core]
-  device_remove+0x54/0x90
-  device_release_driver_internal+0x1dc/0x240
-  driver_detach+0x58/0xa8
-  bus_remove_driver+0x78/0x108
-  driver_unregister+0x38/0x70
-  scmi_driver_unregister+0x28/0x180 [scmi_core]
-  scmi_perf_domain_driver_exit+0x18/0xb78 [scmi_perf_domain]
-  __arm64_sys_delete_module+0x1a8/0x2c0
-  invoke_syscall+0x50/0x128
-  el0_svc_common.constprop.0+0x48/0xf0
-  do_el0_svc+0x24/0x38
-  el0_svc+0x34/0xb8
-  el0t_64_sync_handler+0x100/0x130
-  el0t_64_sync+0x190/0x198
- Code: a90153f3 f9403c14 f9414800 955f8a05 (b9400a80)
- ---[ end trace 0000000000000000 ]---
-
-Cc: Sudeep Holla <sudeep.holla@arm.com>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>
-Fixes: 2af23ceb8624 ("pmdomain: arm: Add the SCMI performance domain")
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+Signed-off-by: Joe Damato <jdamato@fastly.com>
 ---
-I suppose the probe does NOT bail out with an error because this DT config has
-to be supported, right ?
----
- drivers/pmdomain/arm/scmi_perf_domain.c | 3 +++
+ net/core/sock.c | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/drivers/pmdomain/arm/scmi_perf_domain.c b/drivers/pmdomain/arm/scmi_perf_domain.c
-index 709bbc448fad..d7ef46ccd9b8 100644
---- a/drivers/pmdomain/arm/scmi_perf_domain.c
-+++ b/drivers/pmdomain/arm/scmi_perf_domain.c
-@@ -159,6 +159,9 @@ static void scmi_perf_domain_remove(struct scmi_device *sdev)
- 	struct genpd_onecell_data *scmi_pd_data = dev_get_drvdata(dev);
- 	int i;
- 
-+	if (!scmi_pd_data)
-+		return;
-+
- 	of_genpd_del_provider(dev->of_node);
- 
- 	for (i = 0; i < scmi_pd_data->num_domains; i++)
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 158dbdebce6a..ed243bd0dd77 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -1153,6 +1153,9 @@ int sk_setsockopt(struct sock *sk, int level, int optname,
+ 			return -EPERM;
+ 		if (val < 0 || val > U16_MAX)
+ 			return -EINVAL;
++		if (val > NAPI_POLL_WEIGHT)
++			pr_err("SO_BUSY_POLL_BUDGET %u exceeds suggested maximum %u\n", val,
++			       NAPI_POLL_WEIGHT);
+ 		WRITE_ONCE(sk->sk_busy_poll_budget, val);
+ 		return 0;
+ #endif
 -- 
-2.43.0
+2.25.1
 
 
