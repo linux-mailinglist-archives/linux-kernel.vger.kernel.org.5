@@ -1,261 +1,205 @@
-Return-Path: <linux-kernel+bounces-39079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D422183CAAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:17:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A5AA183CAAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:18:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2F31B252F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:17:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44C1AB2557C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:18:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D394134720;
-	Thu, 25 Jan 2024 18:17:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E471353F3;
+	Thu, 25 Jan 2024 18:17:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Uz4dmRMn"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="DAuVUQIo"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CFA113172D;
-	Thu, 25 Jan 2024 18:17:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A46D1350DB
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 18:17:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706206639; cv=none; b=rWHijqHYOw4g7NCDkap0Z8PHmV9M3/Soztss1++GENSICW64nj0uMJPT155YDgJQ/uBIN3KFj5duvvNJ88R0510hFCuakCQyjGx5OUIe+pm8vCnyQv0PqpoEzNezfgRLS7pEhrquJKcczEtwy+sE9SeulrbgJWHysswV6s+ybC0=
+	t=1706206647; cv=none; b=BdYEfQSDjwaJ50Me7SBSFEgq8AxyJnspRRJ7Jee0TPX4YfgYZWBxTcCk+3itw/XrZDD4rEhKuU1+n9mNsYeXmJZMORGouOMe7DxvslqVBghqpiq3KK/4WvdE3jZYl15/tMjk7T8rDYcKsH5oKb0NlvsB7toYd59425Q+FL37jFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706206639; c=relaxed/simple;
-	bh=OYQNhkCaGfcOD12De88u8E2wljddVAWl6ebk7cjnKQ8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HFdMHvy8gL2HmfSBwTcnoNbD6Bn45Jg4yyhpcv3ST9ci0bOQJwH/QQvQiig3n9HNFES52+lbMPiYKDMbNkFcUxpjrps3IEhIqPoWMRyU5eBDZi2/pxUyLp6MN3PqjZpR013HV4qoKqQQgVWnq8LOPn4oepJw7PSzfSoj1siOkV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Uz4dmRMn; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc2308fe275so6073498276.1;
-        Thu, 25 Jan 2024 10:17:17 -0800 (PST)
+	s=arc-20240116; t=1706206647; c=relaxed/simple;
+	bh=fTH89TljylnA1PFABuOshml81dj6cKrkIPb4PGGYlC8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ciVbjeUdCGjoi2+kEeEuPWwWCvlpsk8FBFl0D5aVJAZmn3e13Gy8iQISp0a7WP22I6FImsjJUgSibAos4eJONPA7L+6+PwEnuMncoU0TT/0GipaDY4q6MklGJ5EwitFwKoEuWP3Z4Hm53pBOKg9CB/J36FW6xCjcF6mNdTT5wF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=DAuVUQIo; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a2e633c5365so191080366b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 10:17:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706206636; x=1706811436; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7nVNhkDPplKhG7f04X1t1/cMPmbDbBA5xDKEJ1bPIAc=;
-        b=Uz4dmRMnf1M3OVs1xEZ1ZMrOvC8ThWCsZX/HhyK2Rfgtfk+DnsMiI/aMg8qt+5tAie
-         eZMBrSrgkp4Fl/U1KRdKpNGh0XVMgax36dmF3xLlEMdEhvTRhyr72xFdpEbkT7rcinIj
-         YEY0cKxrLVAOhRcbBVQaYHAV8T2jUhAmjGc88fgvHewVywajO4MtQlI7Ejj+i69e32/H
-         DQdLy1CXn5o5oHPsnPX9lW3BB6+VsIC8MK1MB5VtOn/1ZAXz38UBbo7PUspHJJisHMbC
-         yv3TBpW5UnQ0PFz9hg8/R+Waf3OnDJTEzAieF8w35+7hZEwzDLN8RTa0FqQmTgBMBLO0
-         +Rlg==
+        d=ffwll.ch; s=google; t=1706206644; x=1706811444; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:mail-followup-to:message-id:subject:cc:to
+         :from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LX2Biyswi3lcTJguDEv72aHM8YWWcEZE57McfhSqDfM=;
+        b=DAuVUQIooh7k9SH4DjCLVVGnJGB7h7IAArZMSV32YaaSfOYdF6U+o2Bi8S01iVuN+H
+         O5Ni/NsmY/brjIPSrvB/Sx5KM/vXbEchMV7euTsAn9PVyeMqxqYY6Up3Qb/oFodVhuSu
+         hmmcWUgC+NaAdCEo3swZPzvRJZhAsg94uXr+M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706206636; x=1706811436;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7nVNhkDPplKhG7f04X1t1/cMPmbDbBA5xDKEJ1bPIAc=;
-        b=CJ1M4OghZ28wHZAbUu82VApscI2tYwe8EBqxQ5hbi6809HHc3gjDPjpaZHUc7Bom+X
-         ol631FH2IQBX6Ivq2DHmqFaLqIv7M1yhs162HiXYB6ZP49+W8kWjKVBcHxC1VY/KaKYl
-         7m2c2GklUYRpYcD51e1bgo29KD9wJ1zo7cj1zSQ8DQbGnG0hwTKHfAj48nPWEQLJrzjo
-         vXBf0GtfI9mgcr283Xa1o36Ao3suVtbZlIU7QknC5VW6mTRq5JeA+nHce1XxKbon5HFr
-         RfpsaTU4fKeyuOEASWLi3CkkfxF+Fe/iU/ldxpKuC7lhiraZ7UJIujsSje7NtuHE0Tag
-         RsBA==
-X-Gm-Message-State: AOJu0YxfZiBI94/KsmomzE1WzF4z/M0fP5VNSgdoasl7QaWF8fP/PiqJ
-	MEwLhZ0YUPcf+xj42mjUVdUwzfkjfu6kidW45hnFh+B+qiGLyAAH
-X-Google-Smtp-Source: AGHT+IECpooZ6q5I5DN/3l35firHow3ERwcB5ooCbY+dmqtEPTLEvzs9OCTwn7FwI2sc7y4wKIYN8w==
-X-Received: by 2002:a05:6902:2509:b0:dc2:2480:6aa1 with SMTP id dt9-20020a056902250900b00dc224806aa1mr192712ybb.71.1706206636190;
-        Thu, 25 Jan 2024 10:17:16 -0800 (PST)
-Received: from ?IPV6:2600:1700:6cf8:1240:5100:fbae:e50d:52c9? ([2600:1700:6cf8:1240:5100:fbae:e50d:52c9])
-        by smtp.gmail.com with ESMTPSA id v1-20020a25c501000000b00dc23a0382c6sm3641554ybe.6.2024.01.25.10.17.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 10:17:15 -0800 (PST)
-Message-ID: <e2ce2704-cc7c-4430-a938-d5b2e56db336@gmail.com>
-Date: Thu, 25 Jan 2024 10:17:13 -0800
+        d=1e100.net; s=20230601; t=1706206644; x=1706811444;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:mail-followup-to:message-id:subject:cc:to
+         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LX2Biyswi3lcTJguDEv72aHM8YWWcEZE57McfhSqDfM=;
+        b=NrOZ4ektZ10hwYkFQHsNkv+BQi9VKPjs5H4AauYIGTu1YQGEmCEjAMngsSN5Emz9DZ
+         kMZgr5IFaNTl2EuYPsSYkM0+7fS0BtcDFDG4yaWhqde3Gh3J+ZrNkHY0lIs/FqSGIlC8
+         Pn5qk3jth2Jv0KlAe2AAf/MMgZ1EIkrSFR2WfY6cVfLsneCrMZUOC32u7Wi4gJyvKytZ
+         H9DRZq72T11g2fkx19/N32Bqt0XLaXfHhd2pEG8se3y8OUCdk8CK3mWsb3FkdI/IPVNZ
+         sV9hVWD//lgxhee0uGf9N1KtQm4Jn1pvDFv8FwOds3FJHEXWpx1pWuYFdAgB1toTQ4JF
+         ZiMg==
+X-Gm-Message-State: AOJu0YwToV3V6/6/xHULZVvgWim/fsDM/0ynkGQkJfQHqfgSXOuQvF7L
+	iOaf2tEwo/tNcZfoWufVslVhauU4NUWvs7ojxSkdjNU0S8l5QnZh+pUweFXLlXU=
+X-Google-Smtp-Source: AGHT+IFFgR3FnuKNaxcbSF/D45iFGEkVO7DwIYkEGMWwJWTauy+SOrnz8WOVHQePtLtXFKX663PQaQ==
+X-Received: by 2002:a17:906:a2d6:b0:a31:7e9c:60bf with SMTP id by22-20020a170906a2d600b00a317e9c60bfmr23085ejb.0.1706206643807;
+        Thu, 25 Jan 2024 10:17:23 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id tl15-20020a170907c30f00b00a3186c2c254sm765083ejc.213.2024.01.25.10.17.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 10:17:23 -0800 (PST)
+Date: Thu, 25 Jan 2024 19:17:21 +0100
+From: Daniel Vetter <daniel@ffwll.ch>
+To: Jason-JH Lin =?utf-8?B?KOael+edv+elpSk=?= <Jason-JH.Lin@mediatek.com>
+Cc: "maxime@cerno.tech" <maxime@cerno.tech>,
+	"daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>,
+	"manasi.d.navare@intel.com" <manasi.d.navare@intel.com>,
+	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"michel@daenzer.net" <michel@daenzer.net>,
+	"intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+	"chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
+	"linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+	"mikita.lipski@amd.com" <mikita.lipski@amd.com>,
+	"dmitry.baryshkov@linaro.org" <dmitry.baryshkov@linaro.org>,
+	"tzimmermann@suse.de" <tzimmermann@suse.de>,
+	"daniel.vetter@intel.com" <daniel.vetter@intel.com>,
+	"nicholas.kazlauskas@amd.com" <nicholas.kazlauskas@amd.com>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"quic_abhinavk@quicinc.com" <quic_abhinavk@quicinc.com>,
+	Project_Global_Chrome_Upstream_Group <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+	"lucas.demarchi@intel.com" <lucas.demarchi@intel.com>,
+	"sean@poorly.run" <sean@poorly.run>,
+	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+	"dmitry.osipenko@collabora.com" <dmitry.osipenko@collabora.com>,
+	"fshao@chromium.org" <fshao@chromium.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"jani.nikula@intel.com" <jani.nikula@intel.com>,
+	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>,
+	"freedreno@lists.freedesktop.org" <freedreno@lists.freedesktop.org>
+Subject: Re: [PATCH] drm/atomic-helpers: remove legacy_cursor_update hacks
+Message-ID: <ZbKlsTEvGPiGtzS3@phenom.ffwll.local>
+Mail-Followup-To: Jason-JH Lin =?utf-8?B?KOael+edv+elpSk=?= <Jason-JH.Lin@mediatek.com>,
+	"maxime@cerno.tech" <maxime@cerno.tech>,
+	"manasi.d.navare@intel.com" <manasi.d.navare@intel.com>,
+	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"michel@daenzer.net" <michel@daenzer.net>,
+	"intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+	"chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
+	"linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+	"mikita.lipski@amd.com" <mikita.lipski@amd.com>,
+	"dmitry.baryshkov@linaro.org" <dmitry.baryshkov@linaro.org>,
+	"tzimmermann@suse.de" <tzimmermann@suse.de>,
+	"daniel.vetter@intel.com" <daniel.vetter@intel.com>,
+	"nicholas.kazlauskas@amd.com" <nicholas.kazlauskas@amd.com>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"quic_abhinavk@quicinc.com" <quic_abhinavk@quicinc.com>,
+	Project_Global_Chrome_Upstream_Group <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+	"lucas.demarchi@intel.com" <lucas.demarchi@intel.com>,
+	"sean@poorly.run" <sean@poorly.run>,
+	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+	"dmitry.osipenko@collabora.com" <dmitry.osipenko@collabora.com>,
+	"fshao@chromium.org" <fshao@chromium.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"jani.nikula@intel.com" <jani.nikula@intel.com>,
+	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>,
+	"freedreno@lists.freedesktop.org" <freedreno@lists.freedesktop.org>
+References: <20230216111214.3489223-1-daniel.vetter@ffwll.ch>
+ <20230307145613.xvhru3fpcudlpazt@houat>
+ <aac416742920953999a9ce230ac68139bf5b9790.camel@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [bpf?] general protection fault in
- bpf_struct_ops_find_value
-Content-Language: en-US
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: syzbot <syzbot+88f0aafe5f950d7489d7@syzkaller.appspotmail.com>,
- andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
- jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
- martin.lau@kernel.org, netdev@vger.kernel.org, sdf@google.com,
- song@kernel.org, syzkaller-bugs@googlegroups.com, thinker.li@gmail.com,
- yonghong.song@linux.dev
-References: <00000000000040d68a060fc8db8c@google.com>
- <d5bf7be3-8c9e-4ab1-a105-0d3e1c745d51@linux.dev>
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <d5bf7be3-8c9e-4ab1-a105-0d3e1c745d51@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <aac416742920953999a9ce230ac68139bf5b9790.camel@mediatek.com>
+X-Operating-System: Linux phenom 6.6.11-amd64 
 
-
-
-On 1/25/24 10:09, Martin KaFai Lau wrote:
-> On 1/25/24 9:53 AM, syzbot wrote:
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit:    d47b9f68d289 libbpf: Correct bpf_core_read.h comment 
->> wrt b..
->> git tree:       bpf-next
->> console+strace: https://syzkaller.appspot.com/x/log.txt?x=11479fe7e80000
->> kernel config:  
->> https://syzkaller.appspot.com/x/.config?x=719e6acaf392d56b
->> dashboard link: 
->> https://syzkaller.appspot.com/bug?extid=88f0aafe5f950d7489d7
->> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils 
->> for Debian) 2.40
->> syz repro:      
->> https://syzkaller.appspot.com/x/repro.syz?x=14ea6be3e80000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15bc199be80000
->>
->> Downloadable assets:
->> disk image: 
->> https://storage.googleapis.com/syzbot-assets/1a9b4a5622fb/disk-d47b9f68.raw.xz
->> vmlinux: 
->> https://storage.googleapis.com/syzbot-assets/dd68baeac4fd/vmlinux-d47b9f68.xz
->> kernel image: 
->> https://storage.googleapis.com/syzbot-assets/811ba9dc9ddf/bzImage-d47b9f68.xz
->>
->> The issue was bisected to:
->>
->> commit fcc2c1fb0651477c8ed78a3a293c175ccd70697a
->> Author: Kui-Feng Lee <thinker.li@gmail.com>
->> Date:   Fri Jan 19 22:49:59 2024 +0000
->>
->>      bpf: pass attached BTF to the bpf_struct_ops subsystem
->>
->> bisection log:  
->> https://syzkaller.appspot.com/x/bisect.txt?x=106a04c3e80000
->> final oops:     
->> https://syzkaller.appspot.com/x/report.txt?x=126a04c3e80000
->> console output: https://syzkaller.appspot.com/x/log.txt?x=146a04c3e80000
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the 
->> commit:
->> Reported-by: syzbot+88f0aafe5f950d7489d7@syzkaller.appspotmail.com
->> Fixes: fcc2c1fb0651 ("bpf: pass attached BTF to the bpf_struct_ops 
->> subsystem")
->>
->> general protection fault, probably for non-canonical address 
->> 0xdffffc0000000011: 0000 [#1] PREEMPT SMP KASAN
->> KASAN: null-ptr-deref in range [0x0000000000000088-0x000000000000008f]
->> CPU: 0 PID: 5058 Comm: syz-executor257 Not tainted 
->> 6.7.0-syzkaller-12348-gd47b9f68d289 #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, 
->> BIOS Google 11/17/2023
->> RIP: 0010:bpf_struct_ops_find_value+0x49/0x140 kernel/bpf/btf.c:8763
->> Code: 7d ea dd ff 45 85 e4 0f 84 d7 00 00 00 e8 ff ee dd ff 48 8d bb 
->> 88 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 
->> 02 00 0f 85 dc 00 00 00 48 8b 9b 88 00 00 00 48 85 db 0f 84
->> RSP: 0018:ffffc90003bb7b20 EFLAGS: 00010206
->> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff81aa3283
->> RDX: 0000000000000011 RSI: ffffffff81aa3291 RDI: 0000000000000088
->> RBP: ffffc90003bb7dd0 R08: 0000000000000005 R09: 0000000000000000
->> R10: 0000000000000002 R11: 0000000000000000 R12: 0000000000000002
->> R13: 000000000000001a R14: ffffffff8ad6bca0 R15: ffffc90003bb7e04
->> FS:  0000555556ed2380(0000) GS:ffff8880b9800000(0000) 
->> knlGS:0000000000000000
->> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> CR2: 000000000160d398 CR3: 000000007809c000 CR4: 00000000003506f0
->> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->> Call Trace:
->>   <TASK>
->>   bpf_struct_ops_map_alloc+0x12f/0x5d0 kernel/bpf/bpf_struct_ops.c:674
+On Tue, Jan 23, 2024 at 06:09:05AM +0000, Jason-JH Lin (林睿祥) wrote:
+> Hi Maxime, Daniel,
 > 
-> The check should be IS_ERR_"OR_NULL"(btf).  Kui-Feng, please take a 
-> look. Thanks.
-
-Sure!
-
+> We encountered similar issue with mediatek SoCs.
 > 
->>   map_create+0x548/0x1b90 kernel/bpf/syscall.c:1237
->>   __sys_bpf+0xa32/0x4a00 kernel/bpf/syscall.c:5445
->>   __do_sys_bpf kernel/bpf/syscall.c:5567 [inline]
->>   __se_sys_bpf kernel/bpf/syscall.c:5565 [inline]
->>   __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5565
->>   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->>   do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
->>   entry_SYSCALL_64_after_hwframe+0x63/0x6b
->> RIP: 0033:0x7f9f205ef2e9
->> Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 
->> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 
->> 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
->> RSP: 002b:00007fffa4ce4088 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
->> RAX: ffffffffffffffda RBX: 00007fffa4ce4268 RCX: 00007f9f205ef2e9
->> RDX: 0000000000000048 RSI: 00000000200004c0 RDI: 0000000000000000
->> RBP: 00007f9f20662610 R08: 0000000000000000 R09: 0000000000000000
->> R10: 00000000ffffffff R11: 0000000000000246 R12: 0000000000000001
->> R13: 00007fffa4ce4258 R14: 0000000000000001 R15: 0000000000000001
->>   </TASK>
->> Modules linked in:
->> ---[ end trace 0000000000000000 ]---
->> RIP: 0010:bpf_struct_ops_find_value+0x49/0x140 kernel/bpf/btf.c:8763
->> Code: 7d ea dd ff 45 85 e4 0f 84 d7 00 00 00 e8 ff ee dd ff 48 8d bb 
->> 88 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 
->> 02 00 0f 85 dc 00 00 00 48 8b 9b 88 00 00 00 48 85 db 0f 84
->> RSP: 0018:ffffc90003bb7b20 EFLAGS: 00010206
->> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff81aa3283
->> RDX: 0000000000000011 RSI: ffffffff81aa3291 RDI: 0000000000000088
->> RBP: ffffc90003bb7dd0 R08: 0000000000000005 R09: 0000000000000000
->> R10: 0000000000000002 R11: 0000000000000000 R12: 0000000000000002
->> R13: 000000000000001a R14: ffffffff8ad6bca0 R15: ffffc90003bb7e04
->> FS:  0000555556ed2380(0000) GS:ffff8880b9800000(0000) 
->> knlGS:0000000000000000
->> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> CR2: 000000000160d398 CR3: 000000007809c000 CR4: 00000000003506f0
->> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->> ----------------
->> Code disassembly (best guess), 4 bytes skipped:
->>     0:    45 85 e4                 test   %r12d,%r12d
->>     3:    0f 84 d7 00 00 00        je     0xe0
->>     9:    e8 ff ee dd ff           call   0xffddef0d
->>     e:    48 8d bb 88 00 00 00     lea    0x88(%rbx),%rdi
->>    15:    48 b8 00 00 00 00 00     movabs $0xdffffc0000000000,%rax
->>    1c:    fc ff df
->>    1f:    48 89 fa                 mov    %rdi,%rdx
->>    22:    48 c1 ea 03              shr    $0x3,%rdx
->> * 26:    80 3c 02 00              cmpb   $0x0,(%rdx,%rax,1) <-- 
->> trapping instruction
->>    2a:    0f 85 dc 00 00 00        jne    0x10c
->>    30:    48 8b 9b 88 00 00 00     mov    0x88(%rbx),%rbx
->>    37:    48 85 db                 test   %rbx,%rbx
->>    3a:    0f                       .byte 0xf
->>    3b:    84                       .byte 0x84
->>
->>
->> ---
->> This report is generated by a bot. It may contain errors.
->> See https://goo.gl/tpsmEJ for more information about syzbot.
->> syzbot engineers can be reached at syzkaller@googlegroups.com.
->>
->> syzbot will keep track of this issue. See:
->> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->> For information about bisection process see: 
->> https://goo.gl/tpsmEJ#bisection
->>
->> If the report is already addressed, let syzbot know by replying with:
->> #syz fix: exact-commit-title
->>
->> If you want syzbot to run the reproducer, reply with:
->> #syz test: git://repo/address.git branch-or-commit-hash
->> If you attach or paste a git patch, syzbot will apply it before testing.
->>
->> If you want to overwrite report's subsystems, reply with:
->> #syz set subsystems: new-subsystem
->> (See the list of subsystem names on the web dashboard)
->>
->> If the report is a duplicate of another one, reply with:
->> #syz dup: exact-subject-of-another-report
->>
->> If you want to undo deduplication, reply with:
->> #syz undup
+> We have found that in drm_atomic_helper_commit_rpm(), when disabling
+> the cursor plane, the old_state->legacy_cursor_update in
+> drm_atomic_wait_for_vblank() is set to true.
+> As the result, we are not actually waiting for a vlbank to wait for our
+> hardware to close the cursor plane. Subsequently, the execution
+> proceeds to drm_atomic_helper_cleanup_planes() to  free the cursor
+> buffer. This can lead to use-after-free issues with our hardware.
 > 
+> Could you please apply this patch to fix our problem?
+> Or are there any considerations for not applying this patch?
+
+Mostly it needs someone to collect a pile of acks/tested-by and then land
+it.
+
+I'd be _very_ happy if someone else can take care of that ...
+
+There's also the potential issue that it might slow down some of the
+legacy X11 use-cases that really needed a non-blocking cursor, but I think
+all the drivers where this matters have switched over to the async plane
+update stuff meanwhile. So hopefully that's good.
+
+Cheers, Sima
+> 
+> Regards,
+> Jason-JH.Lin
+> 
+> On Tue, 2023-03-07 at 15:56 +0100, Maxime Ripard wrote:
+> > Hi,
+> > 
+> > On Thu, Feb 16, 2023 at 12:12:13PM +0100, Daniel Vetter wrote:
+> > > The stuff never really worked, and leads to lots of fun because it
+> > > out-of-order frees atomic states. Which upsets KASAN, among other
+> > > things.
+> > > 
+> > > For async updates we now have a more solid solution with the
+> > > ->atomic_async_check and ->atomic_async_commit hooks. Support for
+> > > that
+> > > for msm and vc4 landed. nouveau and i915 have their own commit
+> > > routines, doing something similar.
+> > > 
+> > > For everyone else it's probably better to remove the use-after-free
+> > > bug, and encourage folks to use the async support instead. The
+> > > affected drivers which register a legacy cursor plane and don't
+> > > either
+> > > use the new async stuff or their own commit routine are: amdgpu,
+> > > atmel, mediatek, qxl, rockchip, sti, sun4i, tegra, virtio, and
+> > > vmwgfx.
+> > > 
+> > > Inspired by an amdgpu bug report.
+> > 
+> > Thanks for submitting that patch. It's been in the downstream RPi
+> > tree
+> > for a while, so I'd really like it to be merged eventually :)
+> > 
+> > Acked-by: Maxime Ripard <maxime@cerno.tech>
+> > 
+> > Maxime
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
 
