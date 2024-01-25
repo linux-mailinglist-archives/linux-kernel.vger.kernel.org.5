@@ -1,296 +1,266 @@
-Return-Path: <linux-kernel+bounces-39349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9D2B83CF3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:19:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C7B283CF41
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:23:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49A351F26E05
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:19:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0250296818
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:23:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C72B13B787;
-	Thu, 25 Jan 2024 22:19:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B799C13B789;
+	Thu, 25 Jan 2024 22:23:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="eyt0jOaE"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aiTWWLkd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 511F4130E3C;
-	Thu, 25 Jan 2024 22:19:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 773A5130E3C;
+	Thu, 25 Jan 2024 22:23:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706221184; cv=none; b=PvMdxzm5WUS2VJPAldA/l/xC8wDr8gZhJefY6i1G6/ZHD+wbvSW0BcepcPDdC4XJG11ITBVdWAcAXQe7nXKM6VS1GhOVXHm+xtIrdqab3MYmHVQW9In7Jo24O9prhqOcpPmvQ/yPkb/rmzwN8K6XYs3kvtu7RXMaPcRJJD7mzMw=
+	t=1706221421; cv=none; b=FWOxMqv6tcZGoyJRYwYJhR9A9lGWqfqzv21XVK4qY/2iA1NDqqMq9C+MwhuH9qApJ+NOlkrFzvsTodfRO/k2+uHbzD5R/3OHGwc8Jh8PQaukbUuEpoFmONrg0zREEoZ6F6wHSNv5OmWBnkoARtiB57BJMCB04HdBeNYu6Lsbudc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706221184; c=relaxed/simple;
-	bh=d38WnNQvNhLYVOelkDEd5MQzIBOLr526Ysbk5Qc+buQ=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=Ieblc2XBwQKWthLecbQ1+u42fSC6vsjaOc5Xwb1nQgdUfVS0gkQq5HZ4x0TMhXf0K2Lf7unMW5QTohBtVi+ttR2MPvZZssyi06ze//KZW//hYxiNYFNaMS2Fr7jtrk266WLjt7ARndG+etSVNI3EyB2T+zgrKYhTTaImcssWESI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=eyt0jOaE; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1706221421; c=relaxed/simple;
+	bh=KfWASBKDRevu5qr6cQGKAvSwJBw6sVXr+1MQuNzLhVE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nLXgvEhuuXy4WPSpw9UHjX7gSCNtj7XVgSzKFq893thmDlarkD02JSlCdDPdBp6gXRdWnlp5Ga+RZJbwHO5wyYPzkPapvfzFKvGWnpkCF8GOgUpZkW+fIsDxbbJexXM8HvsAIzGn8idiCqCQxtcTti0Zp+/sgP1PJfWa2YcxmMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aiTWWLkd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9870C433C7;
+	Thu, 25 Jan 2024 22:23:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706221420;
+	bh=KfWASBKDRevu5qr6cQGKAvSwJBw6sVXr+1MQuNzLhVE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aiTWWLkdkQo12gTzQBOX3h+TwC0Ruzgc3ZyfL26QUpfjrM8YESoBKG87eQ9BQ0k1U
+	 toK3R+OF32jGpRzPDcDOOg0iy0GjzvEyiKE633qLanq2ehveV7Uk/nmM3tKARUzq+j
+	 yImY/0ZtWWA6UwfMLcuvKmdFf8NP4NR3KfpcqmwxJh5TTUhnztD9nrFakXMNOtvXuR
+	 3fi+2PYGybO3IG1UohFZnfVCY7xbuNzcZByUklN4yJnRDNhCLp5AEwdg5DFpXQzMV8
+	 hfkA1682Nfk2TESVmvlkbjU7gcyEdk7rHt6jX9joAehJ49UhP7yCXSTwqyugKyPOri
+	 ulUUEbCf9qecw==
+Date: Thu, 25 Jan 2024 15:23:38 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Ard Biesheuvel <ardb+git@google.com>
+Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+	Kevin Loughlin <kevinloughlin@google.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: Re: [PATCH v2 00/17] x86: Confine early 1:1 mapped startup code
+Message-ID: <20240125222338.GA2585843@dev-arch.thelio-3990X>
+References: <20240125112818.2016733-19-ardb+git@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1706221177;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bzRBY22pMxg+4h3uegQXsyfdNf8+dTMvBpIgXoWqSig=;
-	b=eyt0jOaEsijExn+j088mTxQDy9lXfFJjPxpYQdEj9EbDxTGKHRwvUcuQF1id8O6cwASHXz
-	GfOj6eUOQ9wnlcooyjzUpzIEQIVlsGaYMIQdBgJyqGoW/rMa8lrVKAkNCsK91AxCbm2+3r
-	+PBCwz67BWEZ6Mwd+lRmfhPGzfOsxZ6p/PI9pkfHBKlMLQ80ThSsywTPmimowLHX0PfRsh
-	O7AP5je7EUg3U64kk99NEoZtPYR5ObXlvQgROCNJCFtvgVDx9r4wy7pH32v12/fNCK7qMt
-	m9f1stk72WwOMvRBz/BimKw1B4Dt388YHj5c9Btq7Fo++nhQZ5PFcasE0MssnA==
-Date: Thu, 25 Jan 2024 23:19:35 +0100
-From: Dragan Simic <dsimic@manjaro.org>
-To: Alexey Charkov <alchark@gmail.com>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] arm64: dts: rockchip: enable built-in thermal
- monitoring on rk3588
-In-Reply-To: <CABjd4Yz3RTeog0gvYaSK3A5H8NzQpYeqmjRWN1QDHjVPG9qTpA@mail.gmail.com>
-References: <20240125-rk-dts-additions-v1-0-5879275db36f@gmail.com>
- <20240125-rk-dts-additions-v1-2-5879275db36f@gmail.com>
- <245f5692-be30-4216-8b13-988092793732@linaro.org>
- <CABjd4Yz3RTeog0gvYaSK3A5H8NzQpYeqmjRWN1QDHjVPG9qTpA@mail.gmail.com>
-Message-ID: <55aa69e8b9fb0868091e4b2651a99beb@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240125112818.2016733-19-ardb+git@google.com>
 
-On 2024-01-25 09:26, Alexey Charkov wrote:
-> On Thu, Jan 25, 2024 at 1:56 AM Daniel Lezcano
-> <daniel.lezcano@linaro.org> wrote:
->> 
->> On 24/01/2024 21:30, Alexey Charkov wrote:
->> > Include thermal zones information in device tree for rk3588 variants
->> 
->> There is an energy model for the CPUs. But finding out the sustainable
->> power may be a bit tricky. So I suggest to remove everything related 
->> to
->> the power allocator in this change and propose a dedicated change with
->> all the power configuration (which includes proper k_p* coefficients 
->> to
->> be set from userspace to have a flat mitigation figure).
->> 
->> That implies removing the "contribution" properties in this 
->> description.
-> 
-> Alright, I'll just drop those "contribution" properties, thanks!
-> 
->> Some comments below but definitively this version is close to be ok.
-> 
-> Yay! :)
-> 
->> > Signed-off-by: Alexey Charkov <alchark@gmail.com>
->> > ---
->> >   arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 165 ++++++++++++++++++++++++++++++
->> >   1 file changed, 165 insertions(+)
->> >
->> > diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
->> > index 36b1b7acfe6a..131b9eb21398 100644
->> > --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
->> > +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
->> > @@ -10,6 +10,7 @@
->> >   #include <dt-bindings/reset/rockchip,rk3588-cru.h>
->> >   #include <dt-bindings/phy/phy.h>
->> >   #include <dt-bindings/ata/ahci.h>
->> > +#include <dt-bindings/thermal/thermal.h>
->> >
->> >   / {
->> >       compatible = "rockchip,rk3588";
->> > @@ -2228,6 +2229,170 @@ tsadc: tsadc@fec00000 {
->> >               status = "disabled";
->> >       };
->> >
->> > +     thermal_zones: thermal-zones {
->> > +             /* sensor near the center of the whole chip */
->> > +             package_thermal: package-thermal {
->> > +                     polling-delay-passive = <0>;
->> > +                     polling-delay = <0>;
->> > +                     thermal-sensors = <&tsadc 0>;
->> > +
->> > +                     trips {
->> > +                             package_crit: package-crit {
->> > +                                     temperature = <115000>;
->> > +                                     hysteresis = <0>;
->> > +                                     type = "critical";
->> > +                             };
->> > +                     };
->> > +             };
->> > +
->> > +             /* sensor between A76 cores 0 and 1 */
->> > +             bigcore0_thermal: bigcore0-thermal {
->> > +                     polling-delay-passive = <20>;
->> 
->> 20ms seems very short, is this value on purpose? Or just picked up
->> arbitrarily?
-> 
-> Frankly, I simply used the value that Radxa's downstream DTS sets for
-> my board. 100ms seem to work just as well.
+Hi Ard,
 
-I think that 100 ms should be just fine (and should lower the resulting
-CPU usage a bit), especially because the resolution of the TSADCs is
-quite low at 1 oC, according to the RK3588 TRM.  If the resolution were
-higher, sampling the temperatures more often might make more sense.
+On Thu, Jan 25, 2024 at 12:28:19PM +0100, Ard Biesheuvel wrote:
+> From: Ard Biesheuvel <ardb@kernel.org>
+> 
+> This is a follow-up to my RFC [0] that proposed to build the entire core
+> kernel with -fPIC, to reduce the likelihood that code that runs
+> extremely early from the 1:1 mapping of memory will misbehave.
+> 
+> This is needed to address reports that SEV boot on Clang built kernels
+> is broken, due to the fact that this early code attempts to access
+> virtual kernel address that are not mapped yet. Kevin has suggested some
+> workarounds to this [1] but this is really something that requires a
+> more rigorous approach, rather than addressing a couple of symptoms of
+> the underlying defect.
+> 
+> As it turns out, the use of fPIE for the entire kernel is neither
+> necessary nor sufficient, and has its own set of problems, including the
+> fact that the PIE small C code model uses FS rather than GS for the
+> per-CPU register, and only recent GCC and Clang versions permit this to
+> be overridden on the command line.
+> 
+> But the real problem is that even position independent code is not
+> guaranteed to execute correctly at any offset unless all statically
+> initialized pointer variables use the same translation as the code.
+> 
+> So instead, this v2 proposes another solution, taking the following
+> approach:
+> - clean up and refactor the startup code so that the primary startup
+>   code executes from the 1:1 mapping but nothing else;
+> - define a new text section type .pi.text and enforce that it can only
+>   call into other .pi.text sections;
+> - (tbd) require that objects containing .pi.text sections are built with
+>   -fPIC, and disallow any absolute references from such objects.
+> 
+> The latter point is not implemented yet in this v2, but this could be
+> done rather straight-forwardly. (The EFI stub already does something
+> similar across all architectures)
+> 
+> Patch #13 in particular gives an overview of all the code that gets
+> pulled into the early 1:1 startup code path due to the fact that memory
+> encryption needs to be configured before we can even map the kernel.
+> 
+> 
+> [0] https://lkml.kernel.org/r/20240122090851.851120-7-ardb%2Bgit%40google.com
+> [1] https://lore.kernel.org/all/20240111223650.3502633-1-kevinloughlin@google.com/T/#u
 
->> If it is possible, perhaps you should profile the temperature of these
->> thermal zones (CPUs ones). There is a tool in
->> <linuxdir>/tools/thermal/thermometer to do that.
->> 
->> You can measure with 10ms sampling rate when running for instance
->> dhrystone pinned on b0 and b1, then on b2 and b3. And finally on the
->> small cluster.
-> 
-> It seems tricky to isolate the effects from just one of the CPU
-> clusters, as their individual thermal outputs are not that high.
-> 
-> For my testing I disabled the fan (but didn't remove the heatsink to
-> avoid wasting the thermal interface tape), and tried loading CPUs with
-> stress-ng. Here are the observations:
->  - Little cores alone stressed with 4 threads pegged to them with
-> taskset never reach the throttling temperature (85C), and balance out
-> around 60C
->  - Either of the big core clusters stressed individually with 2
-> threads pegged to them with taskset never reach the throttling
-> temperature either
->  - Four big cores with 4 threads heat up very slowly (>30 minutes to
-> reach throttling temperature, I didn't have enough patience to let
-> them actually reach it - maybe they never do)
->  - Eight cores with 8 threads heat up to the throttling temperature
-> within ~5 minutes (again, with the fan off), and then, as soon as just
-> one of the big core clusters gets throttled, the temperature of all
-> cores balances out just below the throttling threshold. In my
-> observation cores 6,7 go from 2.4GHz down to 1.8GHz while the rest
-> stay at their respective top performance states (2.4GHz for big cores
-> 4,5 and 1.8GHz for little cores 0-3)
-> 
-> Adding to it the fact that the temperature measurement resolution is
-> not very granular (almost 1C) it's somewhat difficult to estimate how
-> fast throttling action on a single cluster really brings its
-> temperature within bounds, as they all affect each other at relevant
-> temperature-load combinations. Perhaps it means that too granular
-> polling doesn't add much value.
-> 
->> But if you don't have spare time and 20 is ok for you. Then it is fine
->> for me too.
-> 
-> I guess I'll go for 100 as other upstream Rockchip .dtsi's do, given
-> all of the above. Thanks for pointing this out!
-> 
->> Some nits below.
->> 
->> > +                     polling-delay = <0>;
->> > +                     thermal-sensors = <&tsadc 1>;
->> > +
->> > +                     trips {
->> > +                             bigcore0_alert0: bigcore0-alert0 {
->> > +                                     temperature = <75000>;
->> > +                                     hysteresis = <2000>;
->> > +                                     type = "passive";
->> > +                             };
->> > +                             bigcore0_alert1: bigcore0-alert1 {
->> > +                                     temperature = <85000>;
->> > +                                     hysteresis = <2000>;
->> > +                                     type = "passive";
->> > +                             };
->> > +                             bigcore0_crit: bigcore0-crit {
->> > +                                     temperature = <115000>;
->> > +                                     hysteresis = <0>;
->> > +                                     type = "critical";
->> > +                             };
->> > +                     };
->> > +                     cooling-maps {
->> > +                             map0 {
->> > +                                     trip = <&bigcore0_alert1>;
->> > +                                     cooling-device =
->> > +                                             <&cpu_b0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
->> > +                                             <&cpu_b1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
->> > +                                     contribution = <1024>;
->> > +                             };
->> > +                     };
->> > +             };
->> > +
->> > +             /* sensor between A76 cores 2 and 3 */
->> > +             bigcore2_thermal: bigcore2-thermal {
->> > +                     polling-delay-passive = <20>;
->> > +                     polling-delay = <0>;
->> > +                     thermal-sensors = <&tsadc 2>;
->> > +
->> > +                     trips {
->> > +                             bigcore2_alert0: bigcore2-alert0 {
->> > +                                     temperature = <75000>;
->> > +                                     hysteresis = <2000>;
->> > +                                     type = "passive";
->> > +                             };
->> > +                             bigcore2_alert1: bigcore2-alert1 {
->> > +                                     temperature = <85000>;
->> > +                                     hysteresis = <2000>;
->> > +                                     type = "passive";
->> > +                             };
->> > +                             bigcore2_crit: bigcore2-crit {
->> > +                                     temperature = <115000>;
->> > +                                     hysteresis = <0>;
->> > +                                     type = "critical";
->> > +                             };
->> > +                     };
->> > +                     cooling-maps {
->> > +                             map1 {
->> 
->> s/map1/mpa0/
-> 
-> Noted, thanks!
-> 
->> > +                                     trip = <&bigcore2_alert1>;
->> > +                                     cooling-device =
->> > +                                             <&cpu_b2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
->> > +                                             <&cpu_b3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
->> > +                                     contribution = <1024>;
->> > +                             };
->> > +                     };
->> > +             };
->> > +
->> > +             /* sensor between the four A55 cores */
->> > +             little_core_thermal: littlecore-thermal {
->> > +                     polling-delay-passive = <20>;
->> > +                     polling-delay = <0>;
->> > +                     thermal-sensors = <&tsadc 3>;
->> > +
->> > +                     trips {
->> > +                             littlecore_alert0: littlecore-alert0 {
->> > +                                     temperature = <75000>;
->> > +                                     hysteresis = <2000>;
->> > +                                     type = "passive";
->> > +                             };
->> > +                             littlecore_alert1: littlecore-alert1 {
->> > +                                     temperature = <85000>;
->> > +                                     hysteresis = <2000>;
->> > +                                     type = "passive";
->> > +                             };
->> > +                             littlecore_crit: littlecore-crit {
->> > +                                     temperature = <115000>;
->> > +                                     hysteresis = <0>;
->> > +                                     type = "critical";
->> > +                             };
->> > +                     };
->> > +                     cooling-maps {
->> > +                             map2 {
->> 
->> s/map2/map0/
-> 
-> Noted, thanks!
+I tested both this series as well as the pending updates on
+x86-pie-for-sev-v3 at commit 0574677aacf7 ("x86/efi: Remap kernel code
+read-only before dropping NX attribute") with my LLVM build matrix and I
+noticed two problems.
+
+The first issue is a series of errors when building with LTO around
+mismatched code model attributes between functions. Unhelpfully, the
+error message does not actually say what function is conflicting...
+
+  ld.lld: error: Function Import: link error: linking module flags 'Code Model': IDs have conflicting values in 'vmlinux.a(head64.o at 1181178)' and 'vmlinux.a(numa.o at 1191378)'
+  ld.lld: error: Function Import: link error: linking module flags 'Code Model': IDs have conflicting values in 'vmlinux.a(head64.o at 1181178)' and 'vmlinux.a(buffer.o at 1211538)'
+  ld.lld: error: Function Import: link error: linking module flags 'Code Model': IDs have conflicting values in 'vmlinux.a(head64.o at 1181178)' and 'vmlinux.a(nfs4xdr.o at 1222698)'
+  ld.lld: error: Function Import: link error: linking module flags 'Code Model': IDs have conflicting values in 'vmlinux.a(head64.o at 1181178)' and 'vmlinux.a(namei.o at 1209498)'
+  ld.lld: error: Function Import: link error: linking module flags 'Code Model': IDs have conflicting values in 'vmlinux.a(head64.o at 1181178)' and 'vmlinux.a(vmalloc.o at 1207458)'
+  ld.lld: error: Function Import: link error: linking module flags 'Code Model': IDs have conflicting values in 'vmlinux.a(head64.o at 1181178)' and 'vmlinux.a(iommu.o at 1267098)'
+  ld.lld: error: Function Import: link error: linking module flags 'Code Model': IDs have conflicting values in 'vmlinux.a(head64.o at 1181178)' and 'vmlinux.a(ring_buffer.o at 1202478)'
+  ld.lld: error: Function Import: link error: linking module flags 'Code Model': IDs have conflicting values in 'vmlinux.a(head64.o at 1181178)' and 'vmlinux.a(sky2.o at 1299798)'
+  ld.lld: error: Function Import: link error: linking module flags 'Code Model': IDs have conflicting values in 'vmlinux.a(head64.o at 1181178)' and 'vmlinux.a(page_alloc.o at 1207578)'
+  ld.lld: error: Function Import: link error: linking module flags 'Code Model': IDs have conflicting values in 'vmlinux.a(head64.o at 1181178)' and 'vmlinux.a(percpu.o at 1206018)'
+  ld.lld: error: Function Import: link error: linking module flags 'Code Model': IDs have conflicting values in 'vmlinux.a(head64.o at 1181178)' and 'vmlinux.a(slub.o at 1207758)'
+  ld.lld: error: Function Import: link error: linking module flags 'Code Model': IDs have conflicting values in 'vmlinux.a(head64.o at 1181178)' and 'vmlinux.a(xhci.o at 1302858)'
+  ld.lld: error: Function Import: link error: linking module flags 'Code Model': IDs have conflicting values in 'vmlinux.a(head64.o at 1181178)' and 'vmlinux.a(blk-mq.o at 1233858)'
+  ld.lld: error: Function Import: link error: linking module flags 'Code Model': IDs have conflicting values in 'vmlinux.a(head64.o at 1181178)' and 'vmlinux.a(nfs4proc.o at 1222638)'
+  ld.lld: error: Function Import: link error: linking module flags 'Code Model': IDs have conflicting values in 'vmlinux.a(head64.o at 1181178)' and 'vmlinux.a(inode.o at 1218078)'
+  ld.lld: error: Function Import: link error: linking module flags 'Code Model': IDs have conflicting values in 'vmlinux.a(head64.o at 1181178)' and 'vmlinux.a(journal.o at 1219638)'
+  ld.lld: error: Function Import: link error: linking module flags 'Code Model': IDs have conflicting values in 'vmlinux.a(head64.o at 1181178)' and 'vmlinux.a(memory.o at 1206738)'
+  ld.lld: error: Function Import: link error: linking module flags 'Code Model': IDs have conflicting values in 'vmlinux.a(head64.o at 1181178)' and 'vmlinux.a(mballoc.o at 1218198)'
+  ld.lld: error: Function Import: link error: linking module flags 'Code Model': IDs have conflicting values in 'vmlinux.a(head64.o at 1181178)' and 'vmlinux.a(iov_iter.o at 1238058)'
+  ld.lld: error: Function Import: link error: linking module flags 'Code Model': IDs have conflicting values in 'vmlinux.a(head64.o at 1181178)' and 'vmlinux.a(filemap.o at 1204938)'
+
+Turning off LTO for the translation units that use PIE_CFLAGS avoids
+that, not sure if that is reasonable or not.
+
+diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
+index 65677b25d803..e4fa57ae3d09 100644
+--- a/arch/x86/kernel/Makefile
++++ b/arch/x86/kernel/Makefile
+@@ -24,7 +24,9 @@ endif
+ # head64.c contains C code that may execute from a different virtual address
+ # than it was linked at, so we always build it using PIE codegen
+ CFLAGS_head64.o += $(PIE_CFLAGS)
++CFLAGS_REMOVE_head64.o += $(CC_FLAGS_LTO)
+ CFLAGS_sev.o += $(PIE_CFLAGS)
++CFLAGS_REMOVE_sev.o += $(CC_FLAGS_LTO)
+ 
+ KASAN_SANITIZE_head$(BITS).o				:= n
+ KASAN_SANITIZE_dumpstack.o				:= n
+diff --git a/arch/x86/lib/Makefile b/arch/x86/lib/Makefile
+index 87c79bb8d386..6bb4bc271441 100644
+--- a/arch/x86/lib/Makefile
++++ b/arch/x86/lib/Makefile
+@@ -25,6 +25,7 @@ CFLAGS_REMOVE_cmdline.o = -pg
+ endif
+ 
+ CFLAGS_cmdline.o := $(PIE_CFLAGS)
++CFLAGS_REMOVE_cmdline.o := $(CC_FLAGS_LTO)
+ endif
+ 
+ inat_tables_script = $(srctree)/arch/x86/tools/gen-insn-attr-x86.awk
+diff --git a/arch/x86/mm/Makefile b/arch/x86/mm/Makefile
+index b412009ae588..bf8d9d4bc97f 100644
+--- a/arch/x86/mm/Makefile
++++ b/arch/x86/mm/Makefile
+@@ -31,8 +31,10 @@ obj-y				+= pat/
+ 
+ # Make sure __phys_addr has no stackprotector
+ CFLAGS_physaddr.o		:= -fno-stack-protector
+-CFLAGS_mem_encrypt_identity.o	:= $(PIE_CFLAGS)
++CFLAGS_mem_encrypt_identity.o			:= $(PIE_CFLAGS)
++CFLAGS_REMOVE_mem_encrypt_identity.o	:= $(CC_FLAGS_LTO)
+ CFLAGS_pti.o			:= $(PIE_CFLAGS)
++CFLAGS_REMOVE_pti.o		:= $(CC_FLAGS_LTO)
+ 
+ CFLAGS_fault.o := -I $(srctree)/$(src)/../include/asm/trace
+ 
+
+The second issue is a bunch of modpost warnings I see with various
+configurations around some UBSAN and tracing functions.
+
+Clang allmodconfig:
+
+  WARNING: modpost: vmlinux: section mismatch in reference: __startup_64+0x353 (section: .pi.text) -> __phys_addr (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __startup_64+0x35e (section: .pi.text) -> __phys_addr (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __startup_64+0x3f8 (section: .pi.text) -> __ubsan_handle_out_of_bounds (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __startup_64+0x41f (section: .pi.text) -> __ubsan_handle_out_of_bounds (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __startup_64+0x44a (section: .pi.text) -> __ubsan_handle_out_of_bounds (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: snp_cpuid+0xa6 (section: .pi.text) -> __ubsan_handle_out_of_bounds (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: snp_cpuid+0x316 (section: .pi.text) -> __ubsan_handle_out_of_bounds (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: snp_init+0x12d (section: .pi.text) -> __ubsan_handle_out_of_bounds (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: snp_cpuid_hv+0x10d (section: .pi.text) -> __phys_addr (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __pti_set_user_pgtbl+0x5 (section: .pi.text) -> __fentry__ (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __pti_set_user_pgtbl+0x15 (section: .pi.text) -> __sanitizer_cov_trace_pc (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __pti_set_user_pgtbl+0x26 (section: .pi.text) -> __sanitizer_cov_trace_const_cmp8 (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __pti_set_user_pgtbl+0x36 (section: .pi.text) -> __sanitizer_cov_trace_pc (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __pti_set_user_pgtbl+0x54 (section: .pi.text) -> __sanitizer_cov_trace_const_cmp8 (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __pti_set_user_pgtbl+0x6a (section: .pi.text) -> __sanitizer_cov_trace_const_cmp8 (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __pti_set_user_pgtbl+0x8d (section: .pi.text) -> __sanitizer_cov_trace_pc (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: sme_encrypt_kernel+0x5 (section: .pi.text) -> __fentry__ (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: sme_encrypt_kernel+0x42 (section: .pi.text) -> __phys_addr_symbol (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: sme_encrypt_kernel+0x51 (section: .pi.text) -> __phys_addr_symbol (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: sme_pgtable_calc+0x1 (section: .pi.text) -> __fentry__ (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: sme_enable+0x5 (section: .pi.text) -> __fentry__ (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __strncmp+0x1 (section: .pi.text) -> __fentry__ (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __sme_map_range+0x1 (section: .pi.text) -> __fentry__ (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __sme_map_range_pte+0x1 (section: .pi.text) -> __fentry__ (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: sme_prepare_pgd+0x1 (section: .pi.text) -> __fentry__ (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: cmdline_find_option_bool+0x5 (section: .pi.text) -> __fentry__ (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: cmdline_find_option+0x5 (section: .pi.text) -> __fentry__ (section: .text)
+
+GCC allmodconfig
+
+  WARNING: modpost: vmlinux: section mismatch in reference: early_load_idt+0x53 (section: .pi.text) -> native_write_idt_entry.constprop.0 (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __startup_64+0x348 (section: .pi.text) -> __phys_addr (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __startup_64+0x353 (section: .pi.text) -> __phys_addr (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __startup_64+0x436 (section: .pi.text) -> __ubsan_handle_out_of_bounds (section: .text.unlikely)
+  WARNING: modpost: vmlinux: section mismatch in reference: __startup_64+0x47b (section: .pi.text) -> __ubsan_handle_out_of_bounds (section: .text.unlikely)
+  WARNING: modpost: vmlinux: section mismatch in reference: __startup_64+0x4c0 (section: .pi.text) -> __ubsan_handle_out_of_bounds (section: .text.unlikely)
+  WARNING: modpost: vmlinux: section mismatch in reference: sev_es_ghcb_hv_call+0x58 (section: .pi.text) -> __phys_addr (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: setup_cpuid_table+0xf6 (section: .pi.text) -> __ubsan_handle_out_of_bounds (section: .text.unlikely)
+  WARNING: modpost: vmlinux: section mismatch in reference: snp_cpuid_hv+0x6 (section: .pi.text) -> __sev_cpuid_hv_ghcb (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: snp_cpuid+0xde (section: .pi.text) -> snp_cpuid_postprocess (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: snp_cpuid+0x16c (section: .pi.text) -> __ubsan_handle_out_of_bounds (section: .text.unlikely)
+  WARNING: modpost: vmlinux: section mismatch in reference: __pti_set_user_pgtbl+0x6 (section: .pi.text) -> __fentry__ (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __pti_set_user_pgtbl+0x15 (section: .pi.text) -> __sanitizer_cov_trace_pc (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __pti_set_user_pgtbl+0x29 (section: .pi.text) -> __sanitizer_cov_trace_const_cmp8 (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __pti_set_user_pgtbl+0x33 (section: .pi.text) -> __sanitizer_cov_trace_pc (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __pti_set_user_pgtbl+0x51 (section: .pi.text) -> __sanitizer_cov_trace_const_cmp8 (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __pti_set_user_pgtbl+0x5c (section: .pi.text) -> __sanitizer_cov_trace_pc (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __pti_set_user_pgtbl+0x71 (section: .pi.text) -> __sanitizer_cov_trace_pc (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __pti_set_user_pgtbl+0x82 (section: .pi.text) -> __sanitizer_cov_trace_const_cmp8 (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __pti_set_user_pgtbl+0x8c (section: .pi.text) -> __sanitizer_cov_trace_pc (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: sme_pgtable_calc+0x2 (section: .pi.text) -> __fentry__ (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: sme_clear_pgd+0x2 (section: .pi.text) -> __fentry__ (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: sme_prepare_pgd+0x2 (section: .pi.text) -> __fentry__ (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: sme_populate_pgd+0x2 (section: .pi.text) -> __fentry__ (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: __sme_map_range+0x2 (section: .pi.text) -> __fentry__ (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: sme_encrypt_kernel+0x6 (section: .pi.text) -> __fentry__ (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: sme_encrypt_kernel+0x19 (section: .pi.text) -> stackleak_track_stack (section: .noinstr.text)
+  WARNING: modpost: vmlinux: section mismatch in reference: sme_encrypt_kernel+0x8f (section: .pi.text) -> __phys_addr_symbol (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: sme_encrypt_kernel+0xa5 (section: .pi.text) -> __phys_addr_symbol (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: sme_enable+0x6 (section: .pi.text) -> __fentry__ (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: cmdline_find_option_bool+0x6 (section: .pi.text) -> __fentry__ (section: .text)
+  WARNING: modpost: vmlinux: section mismatch in reference: cmdline_find_option+0x6 (section: .pi.text) -> __fentry__ (section: .text)
+
+Should functions marked with __pitext have these sanitizers disabled?
+
+Cheers,
+Nathan
 
