@@ -1,121 +1,110 @@
-Return-Path: <linux-kernel+bounces-39025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C4D383C9CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:19:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4D2183C9C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:19:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C08231F2A40B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:19:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8CA31C247A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:19:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 011B14F611;
-	Thu, 25 Jan 2024 17:18:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1745713473D;
+	Thu, 25 Jan 2024 17:18:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="TLymDIki"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D2HkKulG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA067131E2C
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 17:18:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C4D71339BD;
+	Thu, 25 Jan 2024 17:18:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706203125; cv=none; b=Jaq8L7EGw1c8ofhikrDzoIOo7k8IIk6V1wDWXA800AzPZjSrQUKAmXVbOJQdVSDR1BLQ3HMjSl45RvzhHNr7gVf6toBEUapKvtDVK2JuKfRFo8ssaNZmiawdATDcUGrQP4ApDFxAZOtPqqKt2eNmmqq9MHcuVFtMr2YpBuaoUuw=
+	t=1706203089; cv=none; b=n0VFn4TBY5a63Q0zfsSzCFqLZZnTRHpwkygdrs8uon2qU5UhxPO35stLlNNSg+fTWLGfyy8cCH3WAJvX9XzNkClsZfj6bpZSxlzBcYrU67CDPNLwk5riygQwM6iluPpSaa8zgyKDKXkAjbZ2x1ixKMbwORazKIUB9fIZOojWBb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706203125; c=relaxed/simple;
-	bh=sF05Yy+d5ZaxIGAlWjRsAJJDf8Q9jJLY3pcKpcNli+I=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=G0Sljsw/SvK+CRyeDXGl2rVKjcFFBAAn6sv0ctwF0M5h/0cgSwwPpwWjUWkL6k0jjbNtMSUmHiqCqoCbwnu66ZNsBcctD25gmYrD8xL5teNK7HVqqoaRVXyMkBSw+VbyPVK1vMpMhK+V8O/NiBkslQNgkDMUkGKf7wfdwBfKmPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=TLymDIki; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9362920003;
-	Thu, 25 Jan 2024 17:18:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1706203115;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=M3w/v9oEuYlkPL4C5kh7T1VxbhDjpPY1oFMPL7Ii+tg=;
-	b=TLymDIkiKJiBhJzkLiN12QBT7u1FHgvghk103/R4JrrlkXq220kOYkho7k6V6QnW8UYRcI
-	GRzm3FPVbO1h46mQwSqJT+qWV6TOc9X8LmaklPnnsrU5GI6OYzGQMfyIJrPMiRfO+nbsFf
-	8piTxBJGnoVzusL13EhQofWSNV5HcJOOhIXSU7ZCmKR3mSaMUf89nLvDa/oLQvsgIOh0PD
-	56sx5qChrNmwIou6OVgKOaHWjE10xZQE08koPG/Xu+f4GdV1HM5IQzslN3x7LbHyiUIGEk
-	aJdLsDyXTdyQnqMpxttPwztAwaQTdmLrxdHnP0obqUoS+x3U4VuXGr/o2aU9zQ==
-From: Thomas Richard <thomas.richard@bootlin.com>
-To: vkoul@kernel.org,
-	kishon@kernel.org
-Cc: linux-phy@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	gregory.clement@bootlin.com,
-	thomas.petazzoni@bootlin.com,
-	theo.lebrun@bootlin.com,
-	u-kumar1@ti.com,
-	Thomas Richard <thomas.richard@bootlin.com>
-Subject: [PATCH] phy: ti: gmii-sel: add resume support
-Date: Thu, 25 Jan 2024 18:17:54 +0100
-Message-Id: <20240125171754.773909-1-thomas.richard@bootlin.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1706203089; c=relaxed/simple;
+	bh=VmrqQGWyTbOGTNQ/vAkIp69HNVkARx3sDciLeid9ZvU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ypy2SR01OYXto7hxEStSowFDFkkbYbUJwlMLZckm0PnW2xb9ER0xLtQ4gsMJrMix4IijPbJEJOsbA0a/JeUF224+UAEeKXlHxbkRwpMN7HhPwOpPYyRcuF96KTorwdnxDEkRdgGiemLz2toO9YYrExAMM2DfsRalf0yCf+hUg3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D2HkKulG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FE2FC433C7;
+	Thu, 25 Jan 2024 17:18:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706203088;
+	bh=VmrqQGWyTbOGTNQ/vAkIp69HNVkARx3sDciLeid9ZvU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=D2HkKulGZOJDLv1CxUoUEePIPPC22jyGmMG6KiuneZXq0/pd1BpJlwCzUgSmTWrV/
+	 R/JO5+1/nhtk15gStc7jK5j/9Q1/XcQ6iFDjFueIIt/D6jmuYCmL6vLVX/2muZDFMY
+	 xVOY6UAULY0vUoG6goSp6+BmSxcBAeKDNAvryLnS/Bq4E9BVcHW9xdeDSIieHGdR2w
+	 Karj56jxx3FtkJNQRD6N3RkOQkt2vCvHkRNdwIR9yIDstmtGDj3vxAh+OJ27K7MQ58
+	 iUkTNtQLK31/1UpBmv2VfbCBk43VbMc+qMI3BrM732hVdA0PpV6KleWQh3uTjWT4zp
+	 kMvvZNesLB/fA==
+Date: Thu, 25 Jan 2024 17:18:01 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: andi.shyti@kernel.org, arnd@arndb.de, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	alim.akhtar@samsung.com, linux-spi@vger.kernel.org,
+	linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-arch@vger.kernel.org, andre.draszik@linaro.org,
+	peter.griffin@linaro.org, semen.protsenko@linaro.org,
+	kernel-team@android.com, willmcvicker@google.com
+Subject: Re: [PATCH v2 21/28] spi: s3c64xx: infer fifosize from the compatible
+Message-ID: <2086b88e-45fc-4224-b00f-0840d446d042@sirena.org.uk>
+References: <20240125145007.748295-1-tudor.ambarus@linaro.org>
+ <20240125145007.748295-22-tudor.ambarus@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: thomas.richard@bootlin.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="HgRtS/XEVb/749Yx"
+Content-Disposition: inline
+In-Reply-To: <20240125145007.748295-22-tudor.ambarus@linaro.org>
+X-Cookie: Entropy isn't what it used to be.
 
-The resume callback restores the submode of each PHY.
 
-It uses the submode stored in struct phy_gmii_sel_phy_priv (variable
-phy_if_mode). The submode was saved by the set_mode PHY operation.
+--HgRtS/XEVb/749Yx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
----
- drivers/phy/ti/phy-gmii-sel.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+On Thu, Jan 25, 2024 at 02:49:59PM +0000, Tudor Ambarus wrote:
 
-diff --git a/drivers/phy/ti/phy-gmii-sel.c b/drivers/phy/ti/phy-gmii-sel.c
-index 555b323f45da..c62790937313 100644
---- a/drivers/phy/ti/phy-gmii-sel.c
-+++ b/drivers/phy/ti/phy-gmii-sel.c
-@@ -491,11 +491,35 @@ static int phy_gmii_sel_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static int phy_gmii_sel_resume_noirq(struct device *dev)
-+{
-+	struct phy_gmii_sel_priv *priv = dev_get_drvdata(dev);
-+	struct phy_gmii_sel_phy_priv *if_phys = priv->if_phys;
-+	int ret, i;
-+
-+	for (i = 0; i < priv->num_ports; i++) {
-+		if (if_phys[i].phy_if_mode) {
-+			ret = phy_gmii_sel_mode(if_phys[i].if_phy,
-+						PHY_MODE_ETHERNET, if_phys[i].phy_if_mode);
-+			if (ret) {
-+				dev_err(dev, "port%u: restore mode fail %d\n",
-+					if_phys[i].if_phy->id, ret);
-+				return ret;
-+			}
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static DEFINE_NOIRQ_DEV_PM_OPS(phy_gmii_sel_pm_ops, NULL, phy_gmii_sel_resume_noirq);
-+
- static struct platform_driver phy_gmii_sel_driver = {
- 	.probe		= phy_gmii_sel_probe,
- 	.driver		= {
- 		.name	= "phy-gmii-sel",
- 		.of_match_table = phy_gmii_sel_id_table,
-+		.pm = pm_sleep_ptr(&phy_gmii_sel_pm_ops),
- 	},
- };
- module_platform_driver(phy_gmii_sel_driver);
--- 
-2.39.2
+> Infer the FIFO size from the compatible, where all the instances of the
+> SPI IP have the same FIFO size. This way we no longer depend on the SPI
+> alias from the device tree to select the FIFO size, thus we remove the
+> dependency of the driver on the SPI alias.
 
+>  static const struct s3c64xx_spi_port_config s3c2443_spi_port_config = {
+> -	.fifo_lvl_mask	= { 0x7f },
+> +	.fifosize	= 64,
+>  	.rx_lvl_offset	= 13,
+>  	.tx_st_done	= 21,
+>  	.clk_div	= 2,
+
+I'm having real trouble associating the changelog with the change here.
+This appears to be changing from specifying the mask for the FIFO level
+register to specifying the size of the FIFO and unrelated to anything to
+do with looking things up from the compatible?
+
+--HgRtS/XEVb/749Yx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWyl8gACgkQJNaLcl1U
+h9DTfwf9EPYILffoosYlL9u/einpypgWGHhqhCvASqvmgmec/OFieX6W9rE9756V
+qRQKkCsaD16mHJUSvJSqEf4qwoAXGf/57d03e5ShnK7nF8eUh+gsG2nz8b2mDmIr
+2M6foetkCRim5eV4rNmsqxW8Ce+6EWrJX4y9BqxJNbxaACxa9fO9fIHAF+jnUOdU
+/Bw/4aK99kPkW8PHMsg3vpuHxzbzak0aiYvMTHVZcp8Paan0hz3KYvI6xHLllNL0
+ukoQMrnHrpOKy3ftVmNDXeefDuE0sOHQinzQsIEuIXqiRE2XKyJ+yXII+RaZ2o1b
+v87fTDNtaYqs9bH0jweNhcv62vHu1A==
+=qAfe
+-----END PGP SIGNATURE-----
+
+--HgRtS/XEVb/749Yx--
 
