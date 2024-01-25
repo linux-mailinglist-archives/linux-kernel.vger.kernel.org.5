@@ -1,166 +1,131 @@
-Return-Path: <linux-kernel+bounces-39166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D20D283CBC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:01:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2962B83CBCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:01:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D207B2553C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:01:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C36C1C21A49
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:01:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C76CD137C51;
-	Thu, 25 Jan 2024 19:00:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ED5E134720;
+	Thu, 25 Jan 2024 19:01:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="kL9B3p5z"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WfxGMDUj"
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6278137C3D;
-	Thu, 25 Jan 2024 18:59:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10DE11339B7
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 19:01:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706209201; cv=none; b=aSHSJieFRUgT1RyfqpoKXpe7kfr5Pv84sEQT8Rs3iRiMmH7MxiFhZRvPED0QeY8cGyshd7M5SHvUYetItJhq7Awkv74K3kYx7p2mm5fio7Aa85qdJv+Zawfl0tvub04iseJuokL55QEBKeiFIl6QOiJOzff34X02umgA6qdoSMI=
+	t=1706209276; cv=none; b=TZX4b4hOhYK5wKWCfyJ/04Pp82edJBTUNTUKAkPxnD1zcVwLFSambHyIduzhjbaoxbXlPLEdRiN13fasVLU/O+n76XYJ6ajRdekZgf5diBs1iFORBH5OpB9MZqdZI0+pxzMjPbWrElJVMi+s4dWezJKXQyDPob2G/ja3aFCpP+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706209201; c=relaxed/simple;
-	bh=HDJDZ7O9mdNe/Y3AxDRfD6+ErhPOkpfNXxy4R/TlEVM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OM+fbyx0YaC7wEkeavMeRaM6MLFL5ucMsOkUmLOVqWYBsuMQdfpcaL8+FBcUgEvX92e8a9oUsLNhbu2qbtOrjnrNbA5I8NFaZX6ultr+iu9ZijRKwejXFN1yrb4rxilnbNR8ZXixh8hjl13E4sqJkrJvC5uZOntZP8XdgXDramg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=kL9B3p5z; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40PIB9qL007932;
-	Thu, 25 Jan 2024 18:59:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=JAN4K8Xa62IAsqf/M72hM6xabS3g3wSCJxBQxVgkqKM=; b=kL
-	9B3p5z+HiJSSWJFL1Bmm3qDUPMvx7CCrfyoPrQqOyfAfY93afoP7mLAkkItKSZuY
-	cQop515lfjGx9LKwByW1XxHgTfRjJpNc/DSm8xkUcRaT06t+How46xv/XMqKvaAs
-	4e1LkkDa0cpQ1RDi5r7x8cbJ1sgNpI31Lcylqc3LGGVH1uINxYkveKtb4X5mqzTK
-	NtIROhshOjEyG5To8NuP/MS5TVnRU1jdVGmaH8tULFhuJBWZHAR5fimup2Z/X8DS
-	iT93SqQyynjIdAdP9qNwmAmk/qIJgNzOiuH0JrEEIpHiiPVHNMxbNX9txD1751YL
-	befFIifFNjrySozzBzvQ==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vupy897ky-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Jan 2024 18:59:55 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40PIxsaf017202
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Jan 2024 18:59:54 GMT
-Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 25 Jan 2024 10:59:50 -0800
-From: Krishna Kurapati <quic_kriskura@quicinc.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring
-	<robh+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <cros-qcom-dts-watchers@chromium.org>
-CC: <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>, Krishna Kurapati <quic_kriskura@quicinc.com>
-Subject: [PATCH v3 4/4] arm64: dts: qcom: Add missing interrupts for qcs404/ipq5332
-Date: Fri, 26 Jan 2024 00:29:21 +0530
-Message-ID: <20240125185921.5062-5-quic_kriskura@quicinc.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240125185921.5062-1-quic_kriskura@quicinc.com>
-References: <20240125185921.5062-1-quic_kriskura@quicinc.com>
+	s=arc-20240116; t=1706209276; c=relaxed/simple;
+	bh=3l+IaiZHZv/Fe8lERi3/HFhALnFg+BculQ2om86Od/A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TN0DmCpKtuU4yu7VfjROMDZCUxlguxzD5goM7IlGh5oW5Kjy6ZrY7kPbkBcMZDKlAiIXG5X+lVOIRit/BFGT1F96McMbKcrGb5AfhKvQDq8nvkIp2ZiBhnK3BW3R+/epgX6rserjHjU8QfQQR0hSBYZ7xNiIw5jt72jmW2mRu2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WfxGMDUj; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3392b12dd21so4769909f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 11:01:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706209273; x=1706814073; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dmN7I+9NF0wxlajdSp9I8HACKLWc2WQole+/PqyLTmw=;
+        b=WfxGMDUj+jiNXnGj1RT38BlkPxJee9iNE+6rdI3wnr8lM1bTxwVBkVXMGTIqKEhs4A
+         hrXSCzLOlaSeTEOe/Fot0dA6O9WnnSU5t6vQ8ZuJ1BLPOdQe9YwpevrLnEZ+yPFhu9YI
+         0nOB4TjRcUgQMWPX2+uTNBpr08MKkoBf+m+ZbROe188Ryq26eZMqmSKr0TBxg55/9m/f
+         VP0wQTBtiPEOD0YMqDBvCSYliYXEqHfAEPHcrldFHFw3gDnLZkDnv8uOid1vgw6W8uRM
+         Z1BRM0l9+5nK67mNe4ax+8rze1pN94TFfTy0UoIX7HIMHSAKik28K8sRGsKADCGfIaY4
+         rQIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706209273; x=1706814073;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dmN7I+9NF0wxlajdSp9I8HACKLWc2WQole+/PqyLTmw=;
+        b=fU0Bje41zgEIsw2S/2+btRahplYg8XwO6j5CGsKXsZvwlAUHa/BtXVzOsIqWE2IqIs
+         Yx+jDRb9K+SoVP0+Vo7NfJ7oisLBMSVX7MlXq98lvaDjKlv4Fxc7j9PQ1ST9sZTbpaI8
+         Cc/ZokQpI8RlHowYnz2praBucDrR0qpPwRE0HL5kAxxXe8tjywXINt/ueec3OoGOyNF6
+         7wlwqV9afeYWSFgNUsGqcUwdaOyyagEQVNpvJETq3YwOEY9NCfSJi6KtmAl4N1TtPJDZ
+         /lYAlDxH4yv2wIaRHZ9z1eWKmomW+KcTvnRzwadXPfStP0yZQD92EeWjH+LYn6VbOYLu
+         yA0w==
+X-Gm-Message-State: AOJu0YzBd5d8sCnmk5grRhj6nmPVeZQ6SpKjQ2J/0L/ViuzOfDbgeFo0
+	YPZaQvOCFhv4Wj+2ZFEnxj9EJ/Q2eN3Q6esjOZWVsPApgVPICwHLFlI8Pniszq8=
+X-Google-Smtp-Source: AGHT+IHC7Mstw0DGiNo4tWtWCkZLvrWPOabFhDIsnvgtLlwTRPhqhBdNAB3jnq5GXT72VzereEQh0w==
+X-Received: by 2002:a5d:5689:0:b0:337:c6be:7737 with SMTP id f9-20020a5d5689000000b00337c6be7737mr154375wrv.48.1706209273304;
+        Thu, 25 Jan 2024 11:01:13 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id l8-20020a5d5608000000b003392bcd6c48sm13097531wrv.79.2024.01.25.11.01.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jan 2024 11:01:12 -0800 (PST)
+Message-ID: <96f9306f-3445-484b-bd3c-82e708681f1b@linaro.org>
+Date: Thu, 25 Jan 2024 19:01:10 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Xc1Pb3bBJfh54XCTb1wgQNi8qdmt51Mf
-X-Proofpoint-ORIG-GUID: Xc1Pb3bBJfh54XCTb1wgQNi8qdmt51Mf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-25_12,2024-01-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 lowpriorityscore=0 clxscore=1015 mlxscore=0
- adultscore=0 phishscore=0 bulkscore=0 malwarescore=0 mlxlogscore=276
- impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2401190000 definitions=main-2401250137
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 05/28] spi: dt-bindings: samsung: add
+ samsung,spi-fifosize property
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+Cc: andi.shyti@kernel.org, arnd@arndb.de, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ alim.akhtar@samsung.com, linux-spi@vger.kernel.org,
+ linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-arch@vger.kernel.org, andre.draszik@linaro.org,
+ peter.griffin@linaro.org, semen.protsenko@linaro.org,
+ kernel-team@android.com, willmcvicker@google.com
+References: <20240125145007.748295-1-tudor.ambarus@linaro.org>
+ <20240125145007.748295-6-tudor.ambarus@linaro.org>
+ <7ef86704-3e40-4d39-a69d-a30719c96660@sirena.org.uk>
+ <1c58deef-bc0f-4889-bf40-54168ce9ff7c@linaro.org>
+ <55af5d4a-7bc9-4ae7-88c5-5acae4666450@sirena.org.uk>
+ <f2ec664b-cd67-4cae-9c0d-5a435c72f121@linaro.org>
+ <f44d5c58-234d-45ec-8027-47df079e2f16@sirena.org.uk>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <f44d5c58-234d-45ec-8027-47df079e2f16@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-For qcs404 and ipq5332, certain interrupts are missing in DT.
-Add them to ensure they are in accordance to bindings.
 
-The interrupts added enable remote wakeup functionality for these SoCs.
 
-Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
----
- arch/arm64/boot/dts/qcom/ipq5332.dtsi |  8 ++++++--
- arch/arm64/boot/dts/qcom/qcs404.dtsi  | 16 ++++++++++++++++
- 2 files changed, 22 insertions(+), 2 deletions(-)
+On 1/25/24 17:45, Mark Brown wrote:
+> On Thu, Jan 25, 2024 at 05:30:53PM +0000, Tudor Ambarus wrote:
+>> On 1/25/24 17:26, Mark Brown wrote:
+> 
+>>> OK, so just the compatible is enough information then?
+> 
+>> For gs101, yes. All the gs101 SPI instances are configured with 64 bytes
+>> FIFO depths. So instead of specifying the FIFO depth for each SPI node,
+>> we can infer the FIFO depth from the compatible.
+> 
+> But this is needed for other SoCs?  This change is scattered through a
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq5332.dtsi b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-index 42e2e48b2bc3..770d9c2fb456 100644
---- a/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-@@ -320,8 +320,12 @@ usb: usb@8af8800 {
- 			compatible = "qcom,ipq5332-dwc3", "qcom,dwc3";
- 			reg = <0x08af8800 0x400>;
- 
--			interrupts = <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>;
--			interrupt-names = "hs_phy_irq";
-+			interrupts = <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 53 IRQ_TYPE_EDGE_BOTH>,
-+				     <GIC_SPI 52 IRQ_TYPE_EDGE_BOTH>;
-+			interrupt-names = "pwr_event",
-+					  "dp_hs_phy_irq",
-+					  "dm_hs_phy_irq";
- 
- 			clocks = <&gcc GCC_USB0_MASTER_CLK>,
- 				 <&gcc GCC_SNOC_USB_CLK>,
-diff --git a/arch/arm64/boot/dts/qcom/qcs404.dtsi b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-index 2f2eeaf2e945..a05d0234f7fc 100644
---- a/arch/arm64/boot/dts/qcom/qcs404.dtsi
-+++ b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-@@ -675,6 +675,14 @@ usb3: usb@7678800 {
- 			assigned-clocks = <&gcc GCC_USB20_MOCK_UTMI_CLK>,
- 					  <&gcc GCC_USB30_MASTER_CLK>;
- 			assigned-clock-rates = <19200000>, <200000000>;
-+
-+			interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 319 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "pwr_event",
-+					  "hs_phy_irq",
-+					  "qusb2_phy";
-+
- 			status = "disabled";
- 
- 			usb3_dwc3: usb@7580000 {
-@@ -704,6 +712,14 @@ usb2: usb@79b8800 {
- 			assigned-clocks = <&gcc GCC_USB20_MOCK_UTMI_CLK>,
- 					  <&gcc GCC_USB_HS_SYSTEM_CLK>;
- 			assigned-clock-rates = <19200000>, <133333333>;
-+
-+			interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 318 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "pwr_event",
-+					  "hs_phy_irq",
-+					  "qusb2_phy";
-+
- 			status = "disabled";
- 
- 			usb@78c0000 {
--- 
-2.42.0
+There are SoCs that have multiple instances of the SPI IP, and they
+configure them with different FIFO depths. See
+"samsung,exynosautov9-spi" for example: SPI0, SPI1, and SPI6 are
+configured by the SoC to use 256 bytes FIFO depths, while all the other
+8 SPI instances use 64 bytes FIFOs. I tried to explain the entire logic
+of the series in another reply, see it here:
+https://lore.kernel.org/linux-arm-kernel/40ba9481-4aea-4a72-87bd-c2db319be069@linaro.org/T/#u
 
+> very large series which does multiple things so it's a bit difficult to
+> follow what's going on here.
+
+Sorry, I was afraid that this might happen. I agree, I'll split tomorrow
+this patch set in 3 smaller sets:
+1/ dumb cleaning patches
+2/ heavy lifting cleaning patches
+3/ gs101 addition
 
