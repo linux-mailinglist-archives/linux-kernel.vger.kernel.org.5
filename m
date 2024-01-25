@@ -1,72 +1,72 @@
-Return-Path: <linux-kernel+bounces-37946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97A0783B8AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 05:37:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9679B83B8AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 05:37:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC22D1C22D3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 04:37:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 451C32881CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 04:37:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80CA8CA7C;
-	Thu, 25 Jan 2024 04:37:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 625AC10A1A;
+	Thu, 25 Jan 2024 04:37:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="JuNSNrst"
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="FnQmKy8X"
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 380D98832
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 04:37:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5572010A0A
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 04:37:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706157422; cv=none; b=Cmfhgha1KUNdBqx1M4E0LOm7fRZSpP5o/uXgbu2mMeKsGBn5Yuluh/S6KLvxK12VSOGveSeHFbXTIVDT4Q65w52mT6/B1ym2X/MPRAjugK1UsN1eTKeBGKF1/SLnzw93lsdm/oPbGhMxAsM1uAtutQJVvPrA74MdXTVUzeuPXg8=
+	t=1706157430; cv=none; b=BBsSM5kGemYpMtxvDGBPjScUwuEs5Q68dm5/PN/8KI6ZgMp3nQWlIj24w0CuhNUC7+svcWephdbP1azhKv2qxPFKxgURG5jqjhfZYCMSLAeW1lL5myBlT29HfA8x4SLeluSOXKf8zAWzSFGHwFCkixCptzDyGKjwjkodQa6oPsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706157422; c=relaxed/simple;
-	bh=xfsQLJ/2vU+01sZsEX/6QiGDSwmC4PQVvgtOhSVA27M=;
+	s=arc-20240116; t=1706157430; c=relaxed/simple;
+	bh=rmEWhlVDpeIv0NBvUoVUkcUuNtoCG83x6jLTykAx0mI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:MIME-Version:
-	 Content-Type:References; b=H1l9lAlAEWu4Ih8zjNqTQDWuhmIRp4FiqUY+jwtg1D2xaD4gJCrC+Nj/nHwxhB3OIR7jP258K8X8Ga5XyiruXw9ElbBIyXpUUemaYuj2Yz4hmhFsIX6h4K/lj05OvLolgQZ7Tp797U9MtJL1EGjA2xVbj1NSr8UYKwM4xCEDdLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=JuNSNrst; arc=none smtp.client-ip=203.254.224.33
+	 Content-Type:References; b=Mih9/vRJy3HREwdTAgbRDZ4kNCvhdaFhizfuzK9n9GZ6JDDtaIeaUFn10GwqjbqbpbaL1S3BzO/QiBDJGp6G8T4h66Dh11gyu++EIv6edPZcDZWDgdLvMelpnMuSdAJevb/3qzsYXne/6LBok5Fv6Bt6ZnjUl1zgAKIEc50TldM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=FnQmKy8X; arc=none smtp.client-ip=203.254.224.24
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-	by mailout3.samsung.com (KnoxPortal) with ESMTP id 20240125043657epoutp03c03bfeefae251da988501d9eec6048d3~tfSHLlLNF0189501895epoutp03J
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 04:36:57 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20240125043657epoutp03c03bfeefae251da988501d9eec6048d3~tfSHLlLNF0189501895epoutp03J
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+	by mailout1.samsung.com (KnoxPortal) with ESMTP id 20240125043705epoutp01b5563a18b45d2faff699dc4a7c0fdb05~tfSNzDx_U0209802098epoutp01e
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 04:37:05 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20240125043705epoutp01b5563a18b45d2faff699dc4a7c0fdb05~tfSNzDx_U0209802098epoutp01e
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1706157417;
-	bh=FxRt1IQQ9RC5YoH6B7ssFdDYXaY2b2Jj8AIgAplcqlw=;
+	s=mail20170921; t=1706157425;
+	bh=KW0GPlc8JiP+I2GAgypKX/jwr3P9ZdZ55AOnVvit4IE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JuNSNrstCX6YtCsIJxTrGm3s446quYIXgJqM7dMYTXVSW8e4DgBVO9DM3wJyKosMe
-	 JZxCmOrGGEhSFe5FlDTY/ggepXB0dYZLnLnLpOnLzDiv80si55E4V+hDKR/b2rctlm
-	 61+xEzLeiB5h9Q6dsNR05cUp4Cs+NswrwEs5FOl4=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-	epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-	20240125043657epcas5p2e8dcabc0d9f5640cf3243ccc69e1ab4b~tfSG5Cmqj2349523495epcas5p2x;
-	Thu, 25 Jan 2024 04:36:57 +0000 (GMT)
-Received: from epsmgec5p1-new.samsung.com (unknown [182.195.38.178]) by
-	epsnrtp2.localdomain (Postfix) with ESMTP id 4TL7MV6TbTz4x9Pt; Thu, 25 Jan
-	2024 04:36:54 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-	epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	1C.E8.19369.665E1B56; Thu, 25 Jan 2024 13:36:54 +0900 (KST)
+	b=FnQmKy8X2fB2W9KnM9z43KKEIYAyNKSnd30fzG2rhtcKVcUXHmCg2MHvYjpE1ONy7
+	 QSBij66y7d61n2kGDauPTp5SeqdDQ1g6x7l46Hocz3ErXNUAG6OYYfEjlMcNclZ+FU
+	 bihsuo+BENsFTotUO02RzV+1hBjTJUWT/Tx7gqCU=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+	epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+	20240125043704epcas5p4860f2846d3f44b15c3d426a8fe32fe67~tfSNfEfVB2513325133epcas5p4E;
+	Thu, 25 Jan 2024 04:37:04 +0000 (GMT)
+Received: from epsmges5p1new.samsung.com (unknown [182.195.38.180]) by
+	epsnrtp4.localdomain (Postfix) with ESMTP id 4TL7Mg0Y0Qz4x9Q8; Thu, 25 Jan
+	2024 04:37:03 +0000 (GMT)
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+	epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	93.C6.09634.E65E1B56; Thu, 25 Jan 2024 13:37:02 +0900 (KST)
 Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-	epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-	20240125043654epcas5p10aa2da156c494bbaebd0bd63a37c87aa~tfSD8Vyld0294902949epcas5p1a;
-	Thu, 25 Jan 2024 04:36:54 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
+	epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
+	20240125043702epcas5p33d9ef989dc51276185972d4517ba80fd~tfSLl3TTk0575905759epcas5p3Z;
+	Thu, 25 Jan 2024 04:37:02 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
 	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240125043654epsmtrp1ccfa2db4cf445bd7254aaf5488fa490a~tfSD7qyDD1583815838epsmtrp1x;
-	Thu, 25 Jan 2024 04:36:54 +0000 (GMT)
-X-AuditID: b6c32a50-c99ff70000004ba9-0d-65b1e566f3a3
+	20240125043702epsmtrp10f457bf9d1f2c4998f7b9d6a583b78cf~tfSLkXaOM1583815838epsmtrp1U;
+	Thu, 25 Jan 2024 04:37:02 +0000 (GMT)
+X-AuditID: b6c32a49-eebff700000025a2-4e-65b1e56ea263
 Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	A4.4A.07368.665E1B56; Thu, 25 Jan 2024 13:36:54 +0900 (KST)
+	epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+	1B.DB.18939.E65E1B56; Thu, 25 Jan 2024 13:37:02 +0900 (KST)
 Received: from ws2030077324.sa.corp.samsungelectronics.net (unknown
 	[107.99.237.91]) by epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240125043652epsmtip28c11c214583483f9bc409b94a14d4064~tfSCfoI_g2197421974epsmtip2k;
-	Thu, 25 Jan 2024 04:36:52 +0000 (GMT)
+	20240125043701epsmtip2c0ee6edc7c3236fb782a9d45485830e1~tfSKG6JX12197421974epsmtip2r;
+	Thu, 25 Jan 2024 04:37:00 +0000 (GMT)
 From: Sandeep C S <sandeep.cs@samsung.com>
 To: Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires
 	<benjamin.tissoires@redhat.com>
@@ -74,10 +74,10 @@ Cc: gaudium.lee@samsung.com, ih0923.kim@samsung.com,
 	suhyun_.kim@samsung.com, jitender.s21@samsung.com, junwan.cho@samsung.com,
 	sandeep.cs@samsung.com, linux-input@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [HID Patchsets for Samsung driver v4 1/6] HID Samsung : Broaden
- device compatibility in samsung driver.
-Date: Thu, 25 Jan 2024 10:06:24 +0530
-Message-Id: <20240125043630.4031634-2-sandeep.cs@samsung.com>
+Subject: [HID Patchsets for Samsung driver v4 2/6] HID: Samsung : Fix the
+ checkpatch complain. Rewritten code using memcmp where applicable.
+Date: Thu, 25 Jan 2024 10:06:25 +0530
+Message-Id: <20240125043630.4031634-3-sandeep.cs@samsung.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240125043630.4031634-1-sandeep.cs@samsung.com>
 Precedence: bulk
@@ -87,103 +87,192 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprAJsWRmVeSWpSXmKPExsWy7bCmpm7a042pBr/XG1lcn7KZ1eL2Ak+L
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupnk+LIzCtJLcpLzFFi42LZdlhTSzfv6cZUg21rbSyuT9nManF7gafF
+	1iVzWS1uHW9ltHj5YAO7xebJj1gsbn76xmpxedccNov22c8YLR6t2MTkwOWxaVUnm8f7fVfZ
+	PPq2rGL0+LxJLoAlKtsmIzUxJbVIITUvOT8lMy/dVsk7ON453tTMwFDX0NLCXEkhLzE31VbJ
+	xSdA1y0zB+geJYWyxJxSoFBAYnGxkr6dTVF+aUmqQkZ+cYmtUmpBSk6BSYFecWJucWleul5e
+	aomVoYGBkSlQYUJ2xvmr/5kLTmpVTFp2g6WBcYtyFyMnh4SAicTjqWdYuxi5OIQEdjNKPP8E
+	43xilNjQMgPB+Xx1FztMy6P9FxkhEjsZJc4+fcwC4XQySUzY/ZQJpIpNQEui78h3MFtEIELi
+	3YJNjCA2s8B1RokHDwNBGoQF+hglnl7+DTaWRUBV4vvSk8wgNq+ArcSU81+YIdbJS+w/eBbM
+	5hSwk+hb+oYJokZQ4uTMJywQQ+UlmrfOZgYZKiHwlV3iy8N5QEUcQI6LxIyl3hBzhCVeHd8C
+	9YKUxMv+NnaI+m5GiaW3j0E5MxglWnZehdpsL/Hz9QQ2kEHMApoS63fpQyzjk+j9/QRqPq9E
+	R5sQRLWKxNOu3aww87+f2MgEYXtIHLl9HxpCExklWuf8YJ7AKD8LyQ+zkPwwC2HbAkbmVYyS
+	qQXFuempxaYFhnmp5fC4Tc7P3cQITplanjsY7z74oHeIkYmD8RCjBAezkgivienGVCHelMTK
+	qtSi/Pii0pzU4kOMpsBAnsgsJZqcD0zaeSXxhiaWBiZmZmYmlsZmhkrivK9b56YICaQnlqRm
+	p6YWpBbB9DFxcEo1MJUV6LR36OSuW/6yu3al57870c+q/+/kbF9YxvngiMTmm8b9VgGPzaOW
+	PGlR2brNWKVzTmgRj+0fLtmX536fqfaeqLHMS8ClVU92QvCLVYz7Hs+b5sFRGsEeolj5IL/j
+	4Zb+azN1ZBeckbykOOf9vkV2/ya9eHvgQ5DCwpUBH049T2ZlSH0r5tgpx/avPFLnneUSndfx
+	54wemT/sWLzH7pL9KrPMKRGvjwRf+WL/3CxnSkvsrl+XOBLCHDokp3xZsuBz0T8b/fZzzRwy
+	Iqoxv7gutz36f7T1QnTeyYe1rCvTp2vyPyg6vsnG2EVV4uRynsoDfjaLYiWXC7SlSoYd3rWY
+	9WOe5Y0/wuKVPpm/+5RYijMSDbWYi4oTATDmAN8iBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrLLMWRmVeSWpSXmKPExsWy7bCSvG7e042pBs+PqVhcn7KZ1eL2Ak+L
 	rUvmslrcOt7KaPHywQZ2i82TH7FY3Pz0jdXi8q45bBbts58xWjxasYnJgctj06pONo/3+66y
-	efRtWcXo8XmTXABLVLZNRmpiSmqRQmpecn5KZl66rZJ3cLxzvKmZgaGuoaWFuZJCXmJuqq2S
-	i0+ArltmDtA9SgpliTmlQKGAxOJiJX07m6L80pJUhYz84hJbpdSClJwCkwK94sTc4tK8dL28
-	1BIrQwMDI1OgwoTsjJtffjIWbBGouN25jq2B8QRvFyMnh4SAicTrIzcZuxi5OIQE9jBKLG57
-	zwLhfGKUaP98H8r5xihxrL2RFa5l3jaoxF5GibOvFzBDOJ1MEqcf7mUGqWIT0JLoO/KdCcQW
-	EYiQeLdgEyOIzSxwnVHiwcNAEFtYoEjiQN9qFhCbRUBV4v6yY2A2r4CtxJdXc6C2yUvsP3gW
-	bCangJ1E39I3TBA1ghInZz5hgZgpL9G8dTbYERICP9klFn/vYYFodpH4ueoR1CBhiVfHt7BD
-	2FISL/vb2CEauhkllt4+BuXMYJRo2XmVGaLKXuLn6wlsXYwcQCs0Jdbv0ofYxifR+/sJE0hY
-	QoBXoqNNCKJaReJp125WmPnfT2xkgrA9JP7tvsIOCaGJjBKXZl9hnMAoPwvJE7OQPDELYdsC
-	RuZVjFKpBcW56anJpgWGunmp5fDITc7P3cQITppaATsYV2/4q3eIkYmD8RCjBAezkgivienG
-	VCHelMTKqtSi/Pii0pzU4kOMpsBgnsgsJZqcD0zbeSXxhiaWBiZmZmYmlsZmhkrivK9b56YI
-	CaQnlqRmp6YWpBbB9DFxcEo1MNn+KNXvedQzsf+f7txrTfuXhTi3H+/cvN+9T+Pu01L1k9Jf
-	c757e7+KZy5+pcPNsbKwtkrt84oOnq9zevkM1k70CPBqNSgzFfV8ud8wLk1n693ka6ab/6lf
-	vGXRI1hk7WLQVWbSocH38uHbN+f19H+E9hydF3BhW9SfkGvLd7zN3+GofVsqtk8sX53jj4XL
-	ErtjqnfLL/pzc1+WO74/f5MRi9mpi3x3MydKBVwyTl6bxrLZyyTFN2fntr6QTK5Ktl1u6oVT
-	ee+KTjB91ZK8MiD7WFmrY4Vmn1dF1fSUKb5fYr6vD+2Im/zpn/2BL+yH9y9aEiiS3WlwxmzV
-	He30DaYXfvYx8yvJTL8swH1ZiaU4I9FQi7moOBEATl15LSMEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrILMWRmVeSWpSXmKPExsWy7bCSvG7a042pBrMmSlhcn7KZ1eL2Ak+L
-	rUvmslrcOt7KaPHywQZ2i82TH7FY3Pz0jdXi8q45bBbts58xWjxasYnJgctj06pONo/3+66y
-	efRtWcXo8XmTXABLFJdNSmpOZllqkb5dAlfGzS8/GQu2CFTc7lzH1sB4greLkZNDQsBE4vW8
-	bSxdjFwcQgK7GSVuHvvLDJGQklh1/R4jhC0ssfLfc3aIonYmiVu/17KBJNgEtCT6jnxnArFF
-	BCIkpv1bywhSxCxwn1Fi6/6rYEXCAgUSK7qPsoPYLAKqEveXHWMBsXkFbCW+vJrDCrFBXmL/
-	wbNgmzkF7CT6lr4BGyoEVHP/zWxWiHpBiZMzn4D1MgPVN2+dzTyBUWAWktQsJKkFjEyrGCVT
-	C4pz03OTDQsM81LL9YoTc4tL89L1kvNzNzGCQ11LYwfjvfn/9A4xMnEwHmKU4GBWEuE1Md2Y
-	KsSbklhZlVqUH19UmpNafIhRmoNFSZzXcMbsFCGB9MSS1OzU1ILUIpgsEwenVANTxcmuzc6n
-	OJft2/v4YkicysFoPfNtRzvNve3ql1ucqMm+8OHNL/3pV7uC27+xCWyVWLZI9/Ksx96Lbdjk
-	9svmx11+Yx6yXJVld4fKsjeeLw6+snod2+ZSxLh8nXd8S87RWfO2hHzLebv1yV7Z6HOrr+qI
-	/bxQuHm5mO2HOwl1J1Nys/d//X5u9tw32XFR1rvk7L/NDDq84rzFpJndz7esW1z/+QmLyVfz
-	7oyCbbumMLirzZM+oeTlJeC+d1LJkoOfexduan7Atl0/4WODk2hBvdQv3aWlEup/k4JfHbi9
-	OdzO3lC0X1n0IoeofsVZs5u/zV74Hl7/bv6M98026tqLHr1K1ZnIkfvIL+WMzPqociWW4oxE
-	Qy3mouJEAFscY7HkAgAA
-X-CMS-MailID: 20240125043654epcas5p10aa2da156c494bbaebd0bd63a37c87aa
+	efRtWcXo8XmTXABLFJdNSmpOZllqkb5dAlfG+av/mQtOalVMWnaDpYFxi3IXIyeHhICJxKP9
+	FxlBbCGB7YwSh57ZQcSlJFZdv8cIYQtLrPz3nL2LkQuopp1JYu7PS2wgCTYBLYm+I9+ZQGwR
+	gQiJaf/WMoIUMQvcZ5TYuv8qG4gjLNDDKPH38j1mkCoWAVWJ70tPgtm8ArYSU85/YYZYIS+x
+	/+BZMJtTwE6ib+kbJoiTbCXuv5nNClEvKHFy5hMWEJsZqL5562zmCYwCs5CkZiFJLWBkWsUo
+	mlpQnJuem1xgqFecmFtcmpeul5yfu4kRHOJaQTsYl63/q3eIkYmD8RCjBAezkgivienGVCHe
+	lMTKqtSi/Pii0pzU4kOM0hwsSuK8yjmdKUIC6YklqdmpqQWpRTBZJg5OqQampQKTjl0Q99V7
+	+KgpcILUBt3iL0v+eRhNmNLaed+iscZyXeK55b6nP65ecqgn7uLP1eGa0ZE9Sze+WzeFT+ut
+	n4npI2fezw+Kc2f+i+k7wNjs8UIi8rxXeLDHK6uAD9bRW98m6H7T/bXx3+FspS0tD5/qXe66
+	ofQskYXb/fQ//un6+35+mVnnFjuz/HeRZM2S719WN97wuKrxNLuMv215hTL3hcjEjxda5A0n
+	3F/Dxxk+c47B+WP5/IcXrdssyn5PrE3VwPJR7Y/SD6KdvL7ZSpNc1WLcV21e8naOWsq5A1P3
+	MxVvnKgic4+Jd6e4YNOmBLNjQZsLWqblXyyrCXPZ8tms7U1uB7OMbZaBlHO3EktxRqKhFnNR
+	cSIATNyjseACAAA=
+X-CMS-MailID: 20240125043702epcas5p33d9ef989dc51276185972d4517ba80fd
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
 CMS-TYPE: 105P
 DLP-Filter: Pass
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240125043654epcas5p10aa2da156c494bbaebd0bd63a37c87aa
+X-CMS-RootMailID: 20240125043702epcas5p33d9ef989dc51276185972d4517ba80fd
 References: <20240125043630.4031634-1-sandeep.cs@samsung.com>
-	<CGME20240125043654epcas5p10aa2da156c494bbaebd0bd63a37c87aa@epcas5p1.samsung.com>
+	<CGME20240125043702epcas5p33d9ef989dc51276185972d4517ba80fd@epcas5p3.samsung.com>
 
-The USB validation check has been moved wherever its required.
-
-Earlier Samsung driver only handles USB HID devices and returns an error if it encounters a Bluetooth type of HID device.
-This changes improves driver compatibility and extends its support for a wide range of devices.
+Resolved warnings found by checkpatch.pl script.
 
 Signed-off-by: Sandeep C S <sandeep.cs@samsung.com>
 Signed-off-by: Junwan Cho <junwan.cho@samsung.com>
 Signed-off-by: Jitender Sajwan <jitender.s21@samsung.com>
 ---
- drivers/hid/hid-samsung.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/hid/hid-samsung.c | 80 +++++++++++++++++++++++----------------
+ 1 file changed, 47 insertions(+), 33 deletions(-)
 
 diff --git a/drivers/hid/hid-samsung.c b/drivers/hid/hid-samsung.c
-index cf5992e97094..3a8756232731 100644
+index 3a8756232731..97d0bf7d4d7e 100644
 --- a/drivers/hid/hid-samsung.c
 +++ b/drivers/hid/hid-samsung.c
-@@ -128,7 +128,7 @@ static int samsung_kbd_mouse_input_mapping(struct hid_device *hdev,
+@@ -58,33 +58,25 @@ static inline void samsung_irda_dev_trace(struct hid_device *hdev,
+ static __u8 *samsung_irda_report_fixup(struct hid_device *hdev, __u8 *rdesc,
+ 		unsigned int *rsize)
+ {
+-	if (*rsize == 184 && rdesc[175] == 0x25 && rdesc[176] == 0x40 &&
+-			rdesc[177] == 0x75 && rdesc[178] == 0x30 &&
+-			rdesc[179] == 0x95 && rdesc[180] == 0x01 &&
++	if (*rsize == 184 && !memcmp(&rdesc[175], "\x25\x40\x75\x30\x95\x01", 6) &&
+ 			rdesc[182] == 0x40) {
+ 		samsung_irda_dev_trace(hdev, 184);
+ 		rdesc[176] = 0xff;
+ 		rdesc[178] = 0x08;
+ 		rdesc[180] = 0x06;
+ 		rdesc[182] = 0x42;
+-	} else
+-	if (*rsize == 203 && rdesc[192] == 0x15 && rdesc[193] == 0x0 &&
+-			rdesc[194] == 0x25 && rdesc[195] == 0x12) {
++	} else if (*rsize == 203 && !memcmp(&rdesc[192], "\x15\x00\x25\x12", 4)) {
+ 		samsung_irda_dev_trace(hdev, 203);
+-		rdesc[193] = 0x1;
+-		rdesc[195] = 0xf;
+-	} else
+-	if (*rsize == 135 && rdesc[124] == 0x15 && rdesc[125] == 0x0 &&
+-			rdesc[126] == 0x25 && rdesc[127] == 0x11) {
++		rdesc[193] = 0x01;
++		rdesc[195] = 0x0f;
++	} else if (*rsize == 135 && !memcmp(&rdesc[124], "\x15\x00\x25\x11", 4)) {
+ 		samsung_irda_dev_trace(hdev, 135);
+-		rdesc[125] = 0x1;
+-		rdesc[127] = 0xe;
+-	} else
+-	if (*rsize == 171 && rdesc[160] == 0x15 && rdesc[161] == 0x0 &&
+-			rdesc[162] == 0x25 && rdesc[163] == 0x01) {
++		rdesc[125] = 0x01;
++		rdesc[127] = 0x0e;
++	} else if (*rsize == 171 && !memcmp(&rdesc[160], "\x15\x00\x25\x01", 4)) {
+ 		samsung_irda_dev_trace(hdev, 171);
+-		rdesc[161] = 0x1;
+-		rdesc[163] = 0x3;
++		rdesc[161] = 0x01;
++		rdesc[163] = 0x03;
+ 	}
+ 	return rdesc;
+ }
+@@ -99,7 +91,7 @@ static int samsung_kbd_mouse_input_mapping(struct hid_device *hdev,
+ 	struct usb_interface *intf = to_usb_interface(hdev->dev.parent);
+ 	unsigned short ifnum = intf->cur_altsetting->desc.bInterfaceNumber;
+ 
+-	if (1 != ifnum || HID_UP_CONSUMER != (usage->hid & HID_USAGE_PAGE))
++	if (ifnum != 1 || HID_UP_CONSUMER != (usage->hid & HID_USAGE_PAGE))
+ 		return 0;
+ 
+ 	dbg_hid("samsung wireless keyboard/mouse input mapping event [0x%x]\n",
+@@ -107,17 +99,39 @@ static int samsung_kbd_mouse_input_mapping(struct hid_device *hdev,
+ 
+ 	switch (usage->hid & HID_USAGE) {
+ 	/* report 2 */
+-	case 0x183: samsung_kbd_mouse_map_key_clear(KEY_MEDIA); break;
+-	case 0x195: samsung_kbd_mouse_map_key_clear(KEY_EMAIL);	break;
+-	case 0x196: samsung_kbd_mouse_map_key_clear(KEY_CALC); break;
+-	case 0x197: samsung_kbd_mouse_map_key_clear(KEY_COMPUTER); break;
+-	case 0x22b: samsung_kbd_mouse_map_key_clear(KEY_SEARCH); break;
+-	case 0x22c: samsung_kbd_mouse_map_key_clear(KEY_WWW); break;
+-	case 0x22d: samsung_kbd_mouse_map_key_clear(KEY_BACK); break;
+-	case 0x22e: samsung_kbd_mouse_map_key_clear(KEY_FORWARD); break;
+-	case 0x22f: samsung_kbd_mouse_map_key_clear(KEY_FAVORITES); break;
+-	case 0x230: samsung_kbd_mouse_map_key_clear(KEY_REFRESH); break;
+-	case 0x231: samsung_kbd_mouse_map_key_clear(KEY_STOP); break;
++	case 0x183:
++		samsung_kbd_mouse_map_key_clear(KEY_MEDIA);
++		break;
++	case 0x195:
++		samsung_kbd_mouse_map_key_clear(KEY_EMAIL);
++		break;
++	case 0x196:
++		samsung_kbd_mouse_map_key_clear(KEY_CALC);
++		break;
++	case 0x197:
++		samsung_kbd_mouse_map_key_clear(KEY_COMPUTER);
++		break;
++	case 0x22b:
++		samsung_kbd_mouse_map_key_clear(KEY_SEARCH);
++		break;
++	case 0x22c:
++		samsung_kbd_mouse_map_key_clear(KEY_WWW);
++		break;
++	case 0x22d:
++		samsung_kbd_mouse_map_key_clear(KEY_BACK);
++		break;
++	case 0x22e:
++		samsung_kbd_mouse_map_key_clear(KEY_FORWARD);
++		break;
++	case 0x22f:
++		samsung_kbd_mouse_map_key_clear(KEY_FAVORITES);
++		break;
++	case 0x230:
++		samsung_kbd_mouse_map_key_clear(KEY_REFRESH);
++		break;
++	case 0x231:
++		samsung_kbd_mouse_map_key_clear(KEY_STOP);
++		break;
+ 	default:
+ 		return 0;
+ 	}
+@@ -128,7 +142,7 @@ static int samsung_kbd_mouse_input_mapping(struct hid_device *hdev,
  static __u8 *samsung_report_fixup(struct hid_device *hdev, __u8 *rdesc,
  	unsigned int *rsize)
  {
--	if (USB_DEVICE_ID_SAMSUNG_IR_REMOTE == hdev->product)
-+	if (USB_DEVICE_ID_SAMSUNG_IR_REMOTE == hdev->product && hid_is_usb(hdev))
+-	if (USB_DEVICE_ID_SAMSUNG_IR_REMOTE == hdev->product && hid_is_usb(hdev))
++	if (hdev->product == USB_DEVICE_ID_SAMSUNG_IR_REMOTE && hid_is_usb(hdev))
  		rdesc = samsung_irda_report_fixup(hdev, rdesc, rsize);
  	return rdesc;
  }
-@@ -139,7 +139,7 @@ static int samsung_input_mapping(struct hid_device *hdev, struct hid_input *hi,
+@@ -139,7 +153,7 @@ static int samsung_input_mapping(struct hid_device *hdev, struct hid_input *hi,
  {
  	int ret = 0;
  
--	if (USB_DEVICE_ID_SAMSUNG_WIRELESS_KBD_MOUSE == hdev->product)
-+	if (USB_DEVICE_ID_SAMSUNG_WIRELESS_KBD_MOUSE == hdev->product && hid_is_usb(hdev))
+-	if (USB_DEVICE_ID_SAMSUNG_WIRELESS_KBD_MOUSE == hdev->product && hid_is_usb(hdev))
++	if (hdev->product == USB_DEVICE_ID_SAMSUNG_WIRELESS_KBD_MOUSE && hid_is_usb(hdev))
  		ret = samsung_kbd_mouse_input_mapping(hdev,
  			hi, field, usage, bit, max);
  
-@@ -152,9 +152,6 @@ static int samsung_probe(struct hid_device *hdev,
- 	int ret;
- 	unsigned int cmask = HID_CONNECT_DEFAULT;
- 
--	if (!hid_is_usb(hdev))
--		return -EINVAL;
--
- 	ret = hid_parse(hdev);
- 	if (ret) {
- 		hid_err(hdev, "parse failed\n");
-@@ -162,6 +159,10 @@ static int samsung_probe(struct hid_device *hdev,
+@@ -158,7 +172,7 @@ static int samsung_probe(struct hid_device *hdev,
+ 		goto err_free;
  	}
  
- 	if (USB_DEVICE_ID_SAMSUNG_IR_REMOTE == hdev->product) {
-+		if (!hid_is_usb(hdev)) {
-+			ret = -EINVAL;
-+			goto err_free;
-+		}
- 		if (hdev->rsize == 184) {
- 			/* disable hidinput, force hiddev */
- 			cmask = (cmask & ~HID_CONNECT_HIDINPUT) |
+-	if (USB_DEVICE_ID_SAMSUNG_IR_REMOTE == hdev->product) {
++	if (hdev->product == USB_DEVICE_ID_SAMSUNG_IR_REMOTE) {
+ 		if (!hid_is_usb(hdev)) {
+ 			ret = -EINVAL;
+ 			goto err_free;
 -- 
 2.34.1
 
