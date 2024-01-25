@@ -1,137 +1,131 @@
-Return-Path: <linux-kernel+bounces-38537-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0326883C12E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:42:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16AEC83C132
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:42:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 056501C23CC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:41:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA1151F288F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:42:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBC5545025;
-	Thu, 25 Jan 2024 11:41:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2335F32182;
+	Thu, 25 Jan 2024 11:42:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bNtFBgEM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="vewYOVwJ"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DC4944363;
-	Thu, 25 Jan 2024 11:41:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F5C82C68E;
+	Thu, 25 Jan 2024 11:42:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706182899; cv=none; b=Sq5Bdp7RnCjaHNy9Nv/sTE59yez1NwqxTx2ZXHxcas0aaKOjMALwZzY/O4r63cXUoiV1yVk+0ZEODoG2Jk3BocARXBGYesvuYuQwXMHOuToIAkE1Q+c1+2e1MWYu9OKikLUkW1gcaNXlTycV2+ILOCHQ4rmTh3uCovcDie0At3Y=
+	t=1706182922; cv=none; b=MgRubXibIaMoJes7WdCYlmIm1MJcsbBTldOYiUpdYLwJu4XS9K5jg17bppmoqBabzMrpzfyjbkZosJnk4ZMGGI/Ea6oR+tLNxiizxHz53Atiw5kqNxDrZtMhW1ftThQHdkk75vVyWrQ1H2SMeHydLy018uunsOl1nc6cx/TAjpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706182899; c=relaxed/simple;
-	bh=MKey3YQTd92e4aAsfwfIM20Iq3jFKrjkcDjDuS9hx1I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ld1sXg+m6v2XsACLkBCESnnaZEG1UCP2ROCcPoFMhlIL2y/TuYt7nfrjFNQI0pOEDP+IloOIvwgIEj0qoBrzse7cyZj71jwjNSM72rnF1Vcq88gd+bxJVdr3bLafMMRQ5Y5PWeI8503Kc/cKLT/xmrP1rajuG1I4jiL36TpIXxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bNtFBgEM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 550F4C433F1;
-	Thu, 25 Jan 2024 11:41:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706182898;
-	bh=MKey3YQTd92e4aAsfwfIM20Iq3jFKrjkcDjDuS9hx1I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bNtFBgEMv1Ev5WK11pfPhwcDRyYz5zgqGlmBqM5RNoLy7aouMQ2cPj8SpuJRmpotL
-	 BZI39nNFua6PUr1E+Lcig8cp74shLSM4R6b8sTezKK1XWh6TymeOuRg5Wm1QZj29os
-	 mga/3J/MnBbSzzyctaDAFQHBLEl/W4y0XcU3gXAo/Q1VY4XcikM9hYMQNrqubZ3bN2
-	 mb94Eq0FiN8uCzAypzjgyerqm82+2WSExpBp91zBFhTfuFLXX/jLVdEWNM+8d49oD/
-	 JnPnbvnfAT0Qpf7ksYfkcioS1nmYPr0f/br5Q6s5htilAxTG5oSba6VfGf+2cq+g60
-	 J/k51Rvw4gCxw==
-Date: Thu, 25 Jan 2024 17:11:35 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Kishon Vijay Abraham I <kishon@kernel.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>,
-	Mantas Pucka <mantas@8devices.com>
-Subject: Re: linux-next: manual merge of the phy-next tree with the phy tree
-Message-ID: <ZbJI7437Hd22EuF3@matsya>
-References: <20240125123327.4e2825ab@canb.auug.org.au>
+	s=arc-20240116; t=1706182922; c=relaxed/simple;
+	bh=lIMClxazBCbbP0kSsel6jlB5mJrKwckFwpLWr68KnQk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ctefA71HLbGGq2HI1ix+k11gi1pwrkHRP2l7yqAgQBamN7h8WD3ubsazcuhYjzpfFDpDFQhdPrXnh4N9aWT+kRG/H9T2MQZxe68MOgOi8GzNxuz+KGQyojMyz+Ox3bzUbgWcwQabQqBtdk9Q8dVUliWnlpzmOYz5M+i5MJH9xQ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=vewYOVwJ; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706182919;
+	bh=lIMClxazBCbbP0kSsel6jlB5mJrKwckFwpLWr68KnQk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=vewYOVwJUEiqmlgjNKNPbZKIVEvx1wPn8xyneTSefKDDOj+Zh1gYQtubBg06SAM75
+	 Yj7ndipccxrzQtscnWa4d7x7nETGOvom4Km7rspA1Rmh9jOLXtnXAd19kIFlQYhUGh
+	 1wss5MkNQg/8zVW/HHCaak2qUqh0+oxPi2sIn7KIBVqUb7oEPyL+OQ1U3hFY6q9Ai+
+	 E7A6s26M+Tae8n2PIaeDYzcwlaXFHqmQDs9NcXPDDlaq6bCb8lxPYCbrITb4hA2DXP
+	 ZE+xjAkqaQ1KkKKVAWtgq9na+sJiMccfCTDzkGsWiwWuuF0T7YD2MaDOFdjUpQ1oth
+	 Cg5LK8OuDO3kw==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 3A0303781182;
+	Thu, 25 Jan 2024 11:41:58 +0000 (UTC)
+Message-ID: <abbc1135-6d32-421a-baea-123a9f761362@collabora.com>
+Date: Thu, 25 Jan 2024 12:41:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240125123327.4e2825ab@canb.auug.org.au>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] dt-bindings: usb: mt6360-tcpc: Drop
+ interrupt-names
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Conor Dooley <conor@kernel.org>, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org
+Cc: chunfeng.yun@mediatek.com, gregkh@linuxfoundation.org,
+ conor+dt@kernel.org, matthias.bgg@gmail.com, linux@roeck-us.net,
+ heikki.krogerus@linux.intel.com, cy_huang@richtek.com,
+ linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240119094105.98312-1-angelogioacchino.delregno@collabora.com>
+ <20240119-eldest-discharge-e2d3812be0a9@spud>
+ <12b7b339-498b-45c1-bc5e-05e07660aefa@collabora.com>
+ <20240123-procurer-jumbo-ebbec485505d@spud>
+ <4fdbc3d8-3d44-4c2c-aae6-daa0b431e1c9@collabora.com>
+ <dc9773aa-690f-47b5-b60a-a79c1e2dbaf2@linaro.org>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <dc9773aa-690f-47b5-b60a-a79c1e2dbaf2@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 25-01-24, 12:33, Stephen Rothwell wrote:
-> Hi all,
+Il 25/01/24 11:32, Krzysztof Kozlowski ha scritto:
+> On 24/01/2024 09:48, AngeloGioacchino Del Regno wrote:
+>> Il 23/01/24 18:14, Conor Dooley ha scritto:
+>>> On Mon, Jan 22, 2024 at 11:32:30AM +0100, AngeloGioacchino Del Regno wrote:
+>>>> Il 19/01/24 17:32, Conor Dooley ha scritto:
+>>>>> On Fri, Jan 19, 2024 at 10:41:04AM +0100, AngeloGioacchino Del Regno wrote:
+>>>>>> This IP has only one interrupt, hence interrupt-names is not necessary
+>>>>>> to have.
+>>>>>> Since there is no user yet, simply remove interrupt-names.
+>>>>>
+>>>>> I'm a bit confused chief. Patch 2 in this series removes a user of this
+>>>>> property from a driver, so can you explain how this statement is true?
+>>>>>
+>>>>> Maybe I need to drink a few cans of Monster and revisit this patchset?
+>>>>>
+>>>>
+>>>> What I mean with "there is no user" is that there's no device tree with any
+>>>> mt6360-tcpc node upstream yet, so there is no meaningful ABI breakage.
+>>>> Different story would be if there was a device tree using this already, in
+>>>> which case, you can make a required property optional but not remove it.
+>>>
+>>> Not every devicetree lives within the kernel.. If the driver is using
+>>> it, I'm not inclined to agree that it should be removed.
+>>
+>> I get the point, but as far as I remember, it's not the first time that this
+>> kind of change is upstreamed.
+>>
+>> I'm fine with keeping things as they are but, since my intention is to actually
+>> introduce an actual user of this binding upstream, and that actually depends on
+>> if this change is accepted or not (as I have to know whether I can omit adding
+>> the interrupt-names property or not)....
+>>
+>> ....may I ask for more feedback/opinions from Rob and/or Krzk?
 > 
-> Today's linux-next merge of the phy-next tree got a conflict in:
+> Driver is the user and this is an old binding (released!), thus there
+> can be out-of-kernel users already.
 > 
->   drivers/phy/qualcomm/phy-qcom-qmp-usb.c
+> Minor cleanup is not really a reason to affect ABI. You could deprecate
+> it, though. Driver change is fine.
 > 
-> between commit:
-> 
->   f74c35b630d4 ("phy: qcom-qmp-usb: fix register offsets for ipq8074/ipq6018")
-> 
-> from the phy tree and commit:
-> 
->   52cfdc9c6c33 ("phy: qcom: qmp-usb: drop dual-lane handling")
-> 
-> from the phy-next tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
 
-Thanks Stephen, this looks good to me. I will notify Linus when he pulls
-this
+Thanks for the clarification. If USB maintainers want to take the driver part only
+without me resending this, I'd appreciate that.
 
-BR
+The interrupt-names is not a required property in this binding anyway... :-)
 
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
-> 
-> diff --cc drivers/phy/qualcomm/phy-qcom-qmp-usb.c
-> index 6621246e4ddf,e62539ce99a6..25d8d881b2f3
-> --- a/drivers/phy/qualcomm/phy-qcom-qmp-usb.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-usb.c
-> @@@ -1621,28 -1385,8 +1393,24 @@@ static const struct qmp_usb_offsets qmp
->   	.rx		= 0x1000,
->   };
->   
->  +static const struct qmp_phy_cfg ipq6018_usb3phy_cfg = {
-> - 	.lanes			= 1,
-> - 
->  +	.offsets		= &qmp_usb_offsets_ipq8074,
->  +
->  +	.serdes_tbl		= ipq9574_usb3_serdes_tbl,
->  +	.serdes_tbl_num		= ARRAY_SIZE(ipq9574_usb3_serdes_tbl),
->  +	.tx_tbl			= msm8996_usb3_tx_tbl,
->  +	.tx_tbl_num		= ARRAY_SIZE(msm8996_usb3_tx_tbl),
->  +	.rx_tbl			= ipq8074_usb3_rx_tbl,
->  +	.rx_tbl_num		= ARRAY_SIZE(ipq8074_usb3_rx_tbl),
->  +	.pcs_tbl		= ipq8074_usb3_pcs_tbl,
->  +	.pcs_tbl_num		= ARRAY_SIZE(ipq8074_usb3_pcs_tbl),
->  +	.vreg_list		= qmp_phy_vreg_l,
->  +	.num_vregs		= ARRAY_SIZE(qmp_phy_vreg_l),
->  +	.regs			= qmp_v3_usb3phy_regs_layout,
->  +};
->  +
->   static const struct qmp_phy_cfg ipq8074_usb3phy_cfg = {
-> - 	.lanes			= 1,
-> - 
->  -	.offsets		= &qmp_usb_offsets_v3,
->  +	.offsets		= &qmp_usb_offsets_ipq8074,
->   
->   	.serdes_tbl		= ipq8074_usb3_serdes_tbl,
->   	.serdes_tbl_num		= ARRAY_SIZE(ipq8074_usb3_serdes_tbl),
+Thanks again,
+Angelo
 
-
-
--- 
-~Vinod
 
