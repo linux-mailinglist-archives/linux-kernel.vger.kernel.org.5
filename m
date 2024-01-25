@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-37867-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FB0E83B6C2
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B44F483B6C3
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 02:39:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB3CC1F231CB
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 649122845F2
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 01:39:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E98E7482;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EAFB7483;
 	Thu, 25 Jan 2024 01:39:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mAwp39rj"
-Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CrT3WOLd"
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE9B01FDD
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 01:39:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A156067C67
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 01:39:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706146744; cv=none; b=tMLXDCqCdSzYdIGVjVpLw123/m6ZLt0Shn9bRg3YqP9lfMTmtxdGplN1m5BFj55FrAX3fDZaWFOUkaL5+lipMuewV78yIo3WuCsDMbLG45xp0lt89IbGo+yZzFIzmp8LhtyOQzSDZo0SbBD6jgZ+4/PFw2k3hBPHcyjOQKP2hg4=
+	t=1706146744; cv=none; b=jTBGTLfJjvIw5gixjNOPa8jOuNk6jIInCRWQpk3P331iLuuZ3VFci8qm76PE1WRMeC/pOZoQQgMZ8oyZrv46F469R1ZY4sVXGYxdX+8nKEQTavXza2dG2bPyT7pQGrdfx+Uv2M90JGz3FlC+/UrH5K0Fk/KIfyt2ONisP/QNICM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706146744; c=relaxed/simple;
-	bh=UecBJlCGnBcs6D2LscfjQO975kiIPSTNfeRKciZdpls=;
+	bh=6FIShmpWgOIrxPG+MyJHb07uPDYh/gBRSLhspWB4bvo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=n4Of6ec4lnGa9v37M99C5/t3bPsw2UCpmVMXYpshKHWrwuPAHXZ2hhfo40jwls0+qNjEGeG8QDWNW4IY28ed9t2i4kFfY/2N63c8cPbpzRn+R3mGsP16WQtNVQvFp++sW3iFQ8ndYRU9A6XAYhtczjJf228T/vFMVVl0fzANbP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mAwp39rj; arc=none smtp.client-ip=209.85.167.175
+	 MIME-Version; b=Rjp0QQp7DCBm2Fc/zLZkswDe3/DsNaEdPrqH94muoJLDvU0FQCBq8DG/cyQ6lQ69eYRVD1ZZP/5jbqibQKTGt0hsePUBzTmkrbWYVV9MPbvLkjFLS7EIP9OYCiLf0FT/UO/d84eIHv1t1CEtYUKjUtZ2c2GiIAsgux6t40scNq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CrT3WOLd; arc=none smtp.client-ip=209.85.210.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3bb9d54575cso4228641b6e.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:39:01 -0800 (PST)
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6e0f993265cso1234472a34.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:39:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706146741; x=1706751541; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706146742; x=1706751542; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Cd14S9gVt8ajgJuri9OeN7aZLThOvunLIv6HZZP7bpE=;
-        b=mAwp39rjUN9tp2brPSdglZr/0FknSKlAnC+PIy6OOhc9V01LDXo9laubS9klcBiAjg
-         qq3M+VRcEyz4pOgI3f9PPyD4Ko2jn4vRhJkFZIZB6TGMsXDz86Wt53zAax70nvzx96rP
-         mlqFNcZKeCA4LvfUA8hs4UV0P7orEFjrFvYGcIWbJ6g0cCAEWWHt200eazY4RsP51Sx7
-         lnlHWPfH7jEFh7k2X/9yWlpP5Z8fScfBBNo3ZTyhUCAgTwU1TVnUeucr8k2uTUiQqCMq
-         dKtxSM/pnHdhWcIEex4APIA5SqqjVnqYDWdRF0GEWjpq3OGUOmPbV+ODUSvqxAlQzsvm
-         EcQQ==
+        bh=TjPexQC8ty5Ziu/bGc5xDaPIP0Ca5UrAvRlV4O1huCs=;
+        b=CrT3WOLdtkIvOGywc49O9A3/mwJv+yDGM//Y1v1hKZsKQgEJViZOovNDjznLdOfunE
+         y+Hy0S78y/QH3DhOiFXH2D/53ppnm0hqVBuLDjLNFFynkHLBV1/4S53XsUs/eNVj7B41
+         W0VyF6ToTu50GqPRkLJNAUV2esNJ81+ZSXlZql03VWMWZdUnfRsk1HSvX7qMm7f8nY99
+         htfCBgM+n3lr53Fsqw/QA2HzA5nDEB+74JiTXSSaILN1PI2o0nmCFQFCGfrB3Vk1h09Z
+         ZI6zSlcd5X3LRz7El5R9TU2Y7E2QMAx9mETtNFxmt7LPkXWgaW67CBX/N1wUZQ4XWqBA
+         C4tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706146741; x=1706751541;
+        d=1e100.net; s=20230601; t=1706146742; x=1706751542;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Cd14S9gVt8ajgJuri9OeN7aZLThOvunLIv6HZZP7bpE=;
-        b=wyqt/Im/lQm5VH+v+AZsxcga73QERiAP1sXIg6CjOWqSuRwjoSoZXTxprZa4X5gKUk
-         bhe3qmWU+haAUNwdKIplPIHWDtO+n0/hbe9R9U0cLaiZmruTKC85s2Y1EFT9r4RhgbGb
-         JRbk0UdQ4cydNAjsjczHB8s7vwQq3MAno73vOyr1891veiKtk2yBmyUVX4Ae1X9Zl84a
-         T+LDX7cdWiZPdDEb8ufn2UwXYrPVL6eL/IktzMVTapw58uzYrpZUQpnDnBXVN4OOv888
-         wbNrB0i/OQD8Aq1PljW8Vpe3iFOQBCrp3wAvHVYOKtnzpP/XC/wO4pyeR6YqPPcYL1ko
-         voaA==
-X-Gm-Message-State: AOJu0YwIeF3XNfLj7rxhYN0JDSYZ5dxkZW8b5ZL9G7iiWMGnSnr4in9i
-	TQOCOVKPJubDYYp+Oz6GEqPY6Oo2z0vjBry+xR14GWx0KXLKgA7/PGtCQLbUd1Y=
-X-Google-Smtp-Source: AGHT+IGNzOOC6dwOU5Fgft4DlrzTKACngiq/T9rJ3NZO/iXhvAACtkl6FDHW66WWR1iaI45JSgHD7A==
-X-Received: by 2002:a05:6808:16aa:b0:3bd:8ceb:da6d with SMTP id bb42-20020a05680816aa00b003bd8cebda6dmr157088oib.34.1706146741020;
+        bh=TjPexQC8ty5Ziu/bGc5xDaPIP0Ca5UrAvRlV4O1huCs=;
+        b=hmxlnkmmHNTJDpFHlXZT7Mn6+CQ5iYz98ONgGJzl2+EpupLi3ElLKTrZLMABU9PVvP
+         s6Kmf38XEHsX5DsnbX0aNvOz5+rEoVe9T9x6YBs+SIJuHON3dg6MQ91IQ/q3BzTbtGiN
+         M/JxT+gD/2peIZP7aSrEvRhq7JnsQCdFhdbHRx1yf4iSk34KzjEzgNfTo3mrf1r0UnBE
+         xT/nmpJUlWjbFb7dDGcU9SRmxM946oC09iSsHNXdwRRQHpVKDJpqAa7Yg9W5gGvUQUvh
+         t9OKGrBMLr+WrpW0g4aJZPIF+OwIYBa5ZU+AQboyVPLgdwkKPQ1533mmQN2Bwg35MYZ+
+         N8ug==
+X-Gm-Message-State: AOJu0YyinKMToYBtu6yAEPGOnQj7U1dv8QXuYlXjepbC4TdQLIxclSLC
+	vjqrgCVSa12BmeRYHkBqfQryDw/dyOuvnwADCdOsyRw4l4P037Imn2qCwG10vP0=
+X-Google-Smtp-Source: AGHT+IF+y+tlqblJCyThtSQ4rGmzUP9A2lBfd2on5oJmlWIXhHXRv7FokwkLpB+H8no/+5JOqFomyA==
+X-Received: by 2002:a05:6830:2806:b0:6e1:367:4485 with SMTP id w6-20020a056830280600b006e103674485mr149294otu.18.1706146741893;
         Wed, 24 Jan 2024 17:39:01 -0800 (PST)
 Received: from localhost ([136.62.192.75])
-        by smtp.gmail.com with ESMTPSA id dd1-20020a056808604100b003bb7fd5686asm2827162oib.23.2024.01.24.17.39.00
+        by smtp.gmail.com with ESMTPSA id dp3-20020a0568300e8300b006dc0414920csm2860585otb.28.2024.01.24.17.39.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 17:39:00 -0800 (PST)
+        Wed, 24 Jan 2024 17:39:01 -0800 (PST)
 From: Sam Protsenko <semen.protsenko@linaro.org>
 To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Rob Herring <robh+dt@kernel.org>,
@@ -79,9 +79,9 @@ Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
 	linux-kernel@vger.kernel.org,
 	linux-clk@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 2/3] arm64: dts: exynos: Add PDMA node for Exynos850
-Date: Wed, 24 Jan 2024 19:38:57 -0600
-Message-Id: <20240125013858.3986-3-semen.protsenko@linaro.org>
+Subject: [PATCH v2 3/3] arm64: dts: exynos: Add SPI nodes for Exynos850
+Date: Wed, 24 Jan 2024 19:38:58 -0600
+Message-Id: <20240125013858.3986-4-semen.protsenko@linaro.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240125013858.3986-1-semen.protsenko@linaro.org>
 References: <20240125013858.3986-1-semen.protsenko@linaro.org>
@@ -93,41 +93,96 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Enable PDMA node. It's needed for multiple peripheral modules, like SPI.
-Use "arm,pl330-broken-no-flushp" quirk, as otherwise SPI transfers in
-DMA mode often fail with error like this:
-
-    I/O Error: rx-1 tx-1 rx-f tx-f len-786 dma-1 res-(-5)
+Some USI blocks can be configured as SPI controllers. Add corresponding
+SPI nodes to Exynos850 SoC device tree.
 
 Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
 ---
 Changes in v2:
-  - Ordered PDMA node by unit address
+  - Sorted pinctrl properties properly
 
- arch/arm64/boot/dts/exynos/exynos850.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/arm64/boot/dts/exynos/exynos850.dtsi | 54 +++++++++++++++++++++++
+ 1 file changed, 54 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/exynos/exynos850.dtsi b/arch/arm64/boot/dts/exynos/exynos850.dtsi
-index da3f4a791e68..618bc674896e 100644
+index 618bc674896e..ca257da74b50 100644
 --- a/arch/arm64/boot/dts/exynos/exynos850.dtsi
 +++ b/arch/arm64/boot/dts/exynos/exynos850.dtsi
-@@ -184,6 +184,16 @@ timer@10040000 {
- 			clock-names = "fin_pll", "mct";
+@@ -738,6 +738,24 @@ usi_spi_0: usi@139400c0 {
+ 				 <&cmu_peri CLK_GOUT_SPI0_IPCLK>;
+ 			clock-names = "pclk", "ipclk";
+ 			status = "disabled";
++
++			spi_0: spi@13940000 {
++				compatible = "samsung,exynos850-spi";
++				reg = <0x13940000 0x30>;
++				interrupts = <GIC_SPI 221 IRQ_TYPE_LEVEL_HIGH>;
++				pinctrl-0 = <&spi0_pins>;
++				pinctrl-names = "default";
++				clocks = <&cmu_peri CLK_GOUT_SPI0_IPCLK>,
++					 <&cmu_peri CLK_GOUT_SPI0_PCLK>;
++				clock-names = "spi_busclk0", "spi";
++				samsung,spi-src-clk = <0>;
++				dmas = <&pdma0 5>, <&pdma0 4>;
++				dma-names = "tx", "rx";
++				num-cs = <1>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++				status = "disabled";
++			};
  		};
  
-+		pdma0: dma-controller@120c0000 {
-+			compatible = "arm,pl330", "arm,primecell";
-+			reg = <0x120c0000 0x1000>;
-+			interrupts = <GIC_SPI 479 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cmu_core CLK_GOUT_PDMA_CORE_ACLK>;
-+			clock-names = "apb_pclk";
-+			arm,pl330-broken-no-flushp;
-+			#dma-cells = <1>;
-+		};
+ 		usi_cmgp0: usi@11d000c0 {
+@@ -779,6 +797,24 @@ serial_1: serial@11d00000 {
+ 				clock-names = "uart", "clk_uart_baud0";
+ 				status = "disabled";
+ 			};
 +
- 		gic: interrupt-controller@12a01000 {
- 			compatible = "arm,gic-400";
- 			#interrupt-cells = <3>;
++			spi_1: spi@11d00000 {
++				compatible = "samsung,exynos850-spi";
++				reg = <0x11d00000 0x30>;
++				interrupts = <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>;
++				pinctrl-0 = <&spi1_pins>;
++				pinctrl-names = "default";
++				clocks = <&cmu_cmgp CLK_GOUT_CMGP_USI0_IPCLK>,
++					 <&cmu_cmgp CLK_GOUT_CMGP_USI0_PCLK>;
++				clock-names = "spi_busclk0", "spi";
++				samsung,spi-src-clk = <0>;
++				dmas = <&pdma0 12>, <&pdma0 13>;
++				dma-names = "tx", "rx";
++				num-cs = <1>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++				status = "disabled";
++			};
+ 		};
+ 
+ 		usi_cmgp1: usi@11d200c0 {
+@@ -820,6 +856,24 @@ serial_2: serial@11d20000 {
+ 				clock-names = "uart", "clk_uart_baud0";
+ 				status = "disabled";
+ 			};
++
++			spi_2: spi@11d20000 {
++				compatible = "samsung,exynos850-spi";
++				reg = <0x11d20000 0x30>;
++				interrupts = <GIC_SPI 63 IRQ_TYPE_LEVEL_HIGH>;
++				pinctrl-0 = <&spi2_pins>;
++				pinctrl-names = "default";
++				clocks = <&cmu_cmgp CLK_GOUT_CMGP_USI1_IPCLK>,
++					 <&cmu_cmgp CLK_GOUT_CMGP_USI1_PCLK>;
++				clock-names = "spi_busclk0", "spi";
++				samsung,spi-src-clk = <0>;
++				dmas = <&pdma0 14>, <&pdma0 15>;
++				dma-names = "tx", "rx";
++				num-cs = <1>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++				status = "disabled";
++			};
+ 		};
+ 	};
+ };
 -- 
 2.39.2
 
