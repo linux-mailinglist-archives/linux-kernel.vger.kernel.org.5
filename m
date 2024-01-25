@@ -1,193 +1,298 @@
-Return-Path: <linux-kernel+bounces-39377-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDFAD83CFA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:51:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5566983CFAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:52:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32B831F242E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:51:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 364871C23246
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:52:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 011A3125BB;
-	Thu, 25 Jan 2024 22:51:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19CDA11CB1;
+	Thu, 25 Jan 2024 22:52:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="a0Ct1Qdw"
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cWaYCSuU"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8666311731
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 22:51:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16C9E10A3B
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 22:52:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706223085; cv=none; b=i2C7hEJ37XSO6+4QIXuBapmS3n+KserT3fH1eBss0sn9GqXTFV9lKkFcbyQgkNQBoeUj6pWEGPvTC2/B74Jy5tHoZqAWuy5WPigxMccasADvmhyHBfi7B0jZtExr/Nosp5V6OIi6c7GBUudh2+PbGS18uJ8/wbW+KcGKsOsQltA=
+	t=1706223149; cv=none; b=jFDoHxtJGYhsTCsjxfo6s/BYfHMeZux6sGHf1KNDUqqTVxUIxJ7gU/EHn04RItrvyGeaIvxskh9UcxEW2RFyfvSpm1vgYBpW120Vvqv+Uu2/5fe/knqmsSTzbaw1dIseCYKfm9TRxwiyphzAU6uS7TvnPReoTRRvt1/G0t3O+F0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706223085; c=relaxed/simple;
-	bh=x+9cZFwfUUbXCSIUNvGOd+YWk7iUfd+WBM+Y4Bxq87g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c1cLnSS3Wa+0IBNMRCImNoT0N8sZT8651qjuhAJke6TZAPClWJ7mF8ydjfLRwMCkq7jqsWD3umdtp+PICVCdyfGc5FcggDlG4/VvSYGgzM88EvoK4nU5BJc3L6UwlP8fzrHzz8dHYXPuJ9d2PEULkjvO4nYAM9JKBo+K481rkTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=a0Ct1Qdw; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-290b1e19101so971721a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 14:51:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1706223083; x=1706827883; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MnJEKVw0k0WgdGsgQiun3uEEO1MzAZB4cFb7xewCZWo=;
-        b=a0Ct1QdwnQH0X1eUK+i28MokP1ZYceuK1iIA+qHVQxdOO09fumlqmYoYBlT7sip2RS
-         DWutmisy3e6LoVkhor6r2kDKdN+Ej/uL5ChA59YLieyCbsPyLYSVabtEtBQcXzGaNOPf
-         gPXATIBF5bPIpreKuvJgEG85fzKpOfMozboXWOvMnqm2dJomiaULEaRN3/u45OqX1wKu
-         ZzkBMCacHWrbcLqYmsStNJxj3HiDTYhQiXnxj7WfHD+P3AhwbbVa0CyTMpPuGkec+auO
-         jr4xIJTz7JgLWirhp6g9CAJmz1Jp8Obqrw/mtr+Uz1WwVl83OM954OqGzmChFp1MsUeg
-         XY3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706223083; x=1706827883;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MnJEKVw0k0WgdGsgQiun3uEEO1MzAZB4cFb7xewCZWo=;
-        b=Z2ed6oIq0Y1LBlZInhdDGiYeInzZIHTsACN7dT0Srwz13rMv1K/4q0JPF2rnKLIeK3
-         urfmIjLevj94CrmukkhKhFTtExghZEhdAl8+p3pt2BOQHw+j13OouX4joFwlWxQulSaN
-         9zs3N8vAQnfINgGGlaFaWAjlUecipnIpLec0z/9+p4NGNwIuZaPlia7Bmm38calzz0c7
-         2YEzRjkImYIoDqTKZTTfZIYfdoJK680LV1AwH54GQB0ra/lRUG2/iHhCet4soqMPv4W4
-         lSdfOsE/45/b5AfUQcnibqxHFZGFvnt/vm47/TXEvOOq/ZYMQ+WF+2ldTfvBuHYBwwb5
-         Yryw==
-X-Gm-Message-State: AOJu0Yy/nEDo2M+CdhiWgNyWjNMa7XuJ/U+iBx+gIAN6q4n4de+xR2Qk
-	G/zmQ3WVnW9Ymi0JzUAtnZK6/O01LMoT8Wt6bE3FEsQRDM183fDtI8pUF2vlhzbZIr/wLNNNNXF
-	AcZ/Zbv8Xs868Zjf0bDcIRXEBoSNReri0l0nKOw==
-X-Google-Smtp-Source: AGHT+IHTt2kfCDEIEqdQhaB1moHLVMHvs0ForCZoVTPtNM//1C1xaPtRtXtr7AubXLZ/EjIQvOS1P1z4QWqLRBNJjKQ=
-X-Received: by 2002:a17:90b:4c04:b0:293:dfe6:6046 with SMTP id
- na4-20020a17090b4c0400b00293dfe66046mr35774pjb.8.1706223082705; Thu, 25 Jan
- 2024 14:51:22 -0800 (PST)
+	s=arc-20240116; t=1706223149; c=relaxed/simple;
+	bh=RvKmfO1R7GNayAPRD/6Wd0l8BRL4dFDHykXLHGppS4g=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=XIRh/iKRuZH8m/q4EPnGT1xngzsNDI0XAvV7s3xhZSKbI2bQXcnEU6SlxcJ2ZajwZ++n8a8NUPzQnY7RipbFB6eIlw0M5649tnkembk4bNXR+Pwv0GyXqeoB5gUel15trrPfuHTuSwuFtiz8FEnWDZ+wrBOx4TcN0Lq+2SqCxTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cWaYCSuU; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706223146; x=1737759146;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=RvKmfO1R7GNayAPRD/6Wd0l8BRL4dFDHykXLHGppS4g=;
+  b=cWaYCSuUD7pXmPJclphBFjV7BmEcwg7/vSixVIpSPAniuT7R+bLKSFZG
+   aOzyygrHR7aae1UkpU7NzAVWM3J50i6IILqx+pP0XcDbUUXj174IEXhXf
+   2FQMugL/afL6gbjx3c3KvvNMw/++dhoLNrM7Ws6BP8RKJDKADpD/7fK/5
+   2S5D2J+FSIIfkPyJloR6yF5dJXKf9O8s8ZwI7abaHS+KdtmIDMwcP9zcU
+   8IZVZLSM9CGs+WsSSE0Nvc7HSsr3Hj0dc7NVkPx5fR6cC6EO7LZ3+WIav
+   tCJWj8V6muwCinL845vVWXfftiZApwomITPggVxkHDxGKAuT86LqMAIK+
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="2195593"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="2195593"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 14:52:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="820948030"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="820948030"
+Received: from lkp-server01.sh.intel.com (HELO 370188f8dc87) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 25 Jan 2024 14:52:23 -0800
+Received: from kbuild by 370188f8dc87 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rT8a5-0000TE-0A;
+	Thu, 25 Jan 2024 22:52:21 +0000
+Date: Fri, 26 Jan 2024 06:52:01 +0800
+From: kernel test robot <lkp@intel.com>
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Christian Brauner <brauner@kernel.org>
+Subject: WARNING: modpost: vmlinux: section mismatch in reference:
+ vega20_enable_dpm_tasks.part.0+0x2cc (section: .text) -> (unknown) (section:
+ .init.text)
+Message-ID: <202401260626.nE6j5ZwR-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <82b964f0-c2c8-a2c6-5b1f-f3145dc2c8e5@redhat.com> <CAHk-=wjDW53w4-YcSmgKC5RruiRLHmJ1sXeYdp_ZgVoBw=5byA@mail.gmail.com>
-In-Reply-To: <CAHk-=wjDW53w4-YcSmgKC5RruiRLHmJ1sXeYdp_ZgVoBw=5byA@mail.gmail.com>
-From: Ignat Korchagin <ignat@cloudflare.com>
-Date: Thu, 25 Jan 2024 22:51:11 +0000
-Message-ID: <CALrw=nGHUJWhZvibb61r8wDgZ7eRCDU5-vv=uTouAZH90vUGWw@mail.gmail.com>
-Subject: Re: [PATCH] softirq: fix memory corruption when freeing tasklet_struct
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Mikulas Patocka <mpatocka@redhat.com>, Tejun Heo <tj@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev, 
-	Mike Snitzer <msnitzer@redhat.com>, Damien Le Moal <damien.lemoal@wdc.com>, 
-	Bob Liu <bob.liu@oracle.com>, Hou Tao <houtao1@huawei.com>, 
-	Nathan Huckleberry <nhuck@google.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@elte.hu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Thu, Jan 25, 2024 at 7:51=E2=80=AFPM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Thu, 25 Jan 2024 at 10:30, Mikulas Patocka <mpatocka@redhat.com> wrote=
-:
-> >
-> > There's a problem with the tasklet API - there is no reliable way how t=
-o
-> > free a structure that contains tasklet_struct. The problem is that the
-> > function tasklet_action_common calls task_unlock(t) after it called the
-> > callback. If the callback does something that frees tasklet_struct,
-> > task_unlock(t) would write into free memory.
->
-> Ugh.
->
-> I see what you're doing, but I have to say, I dislike this patch
-> immensely. It feels like a serious misdesign that is then papered over
-> with a hack.
->
-> I'd much rather see us trying to move away from tasklets entirely in
-> cases like this. Just say "you cannot do that".
->
-> In fact, of the two cases that want this new functionality, at least
-> dm-verity already makes tasklets a conditional feature that isn't even
-> enabled by default, and that was only introduced in the last couple of
-> years.
->
-> So I think dm-verity would be better off just removing tasklet use,
-> and we should check whether there are better models for handling the
-> latency issue.
->
-> The dm-crypt.c case looks different, but similar. I'm not sure why it
-> doesn't just use the workqueue for the "in interrupt" case. Like
-> dm-verity, it already does have a workqueue option, and it's a
-> setup-time option to say "don't use the workqueue for reads / writes".
-> But it feels like the code should just say "tough luck, in interrupt
-> context we *will* use workqueues".
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   ecb1b8288dc7ccbdcb3b9df005fa1c0e0c0388a7
+commit: dff745c1221a402b4921d54f292288373cff500c fs: move cleanup from init_file() into its callers
+date:   7 months ago
+config: riscv-randconfig-r026-20230716 (https://download.01.org/0day-ci/archive/20240126/202401260626.nE6j5ZwR-lkp@intel.com/config)
+compiler: riscv32-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240126/202401260626.nE6j5ZwR-lkp@intel.com/reproduce)
 
-This is not great just considering the following context: the
-tasklet/interrupt code was added, when we discovered dm-crypt most
-likely processes read bios in interrupt context when using NVME
-drives. So this would penalise the most desirable case for fast disk
-encryption (decryption that is): systems use NVMEs mostly to get fast
-IO, so they are the most sensitive to any latency introduced by
-dm-crypt. For us it was a go/no-go: without this we might have
-switched to dodgy proprietary self encrypting drives.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401260626.nE6j5ZwR-lkp@intel.com/
 
-On the other hand this code never uses tasklets for slower media, but
-they don't care and can use the default workqueue option in the first
-place.
+All warnings (new ones prefixed by >>, old ones prefixed by <<):
 
-> So honestly, both of the cases you bring up seem to be just BUGGY. The
-> fix is not to extend tasklets to a new thing, the fix is to say "those
-> two uses of tasklets were broken, and should go away".
->
-> End result: I would suggest:
->
->  - just get rid of the actively buggy use of tasklets. It's not
-> necessary in either case.
->
->  - look at introducing a "low-latency atomic workqueue" that looks
-> *exactly* like a regular workqueue, but has the rule that it's per-cpu
-> and functions on it cannot sleep
->
-> because I think one common issue with workqueues - which are better
-> designed than tasklets - is that scheduling latency.
->
-> I think if we introduced a workqueue that worked more like a tasklet -
-> in that it's run in softirq context - but doesn't have the interface
-> mistakes of tasklets, a number of existing workqueue users might
-> decide that that is exactly what they want.
->
-> So we could have a per-cpu 'atomic_wq' that things can be scheduled
-> on, and that runs from softirqs just like tasklets, and shares the
-> workqueue queueing infrastructure but doesn't use the workqueue
-> threads.
->
-> Yes, the traditional use of workqueues is to be able to sleep and do
-> things in process context, so that sounds a bit odd, but let's face
-> it, we
->
->  (a) already have multiple classes of workqueues
->
->  (b) avoiding deep - and possibly recursive - stack depths is another
-> reason people use workqueues
->
->  (c) avoiding interrupt context is a real concern, even if you don't
-> want to sleep
->
-> and I really *really* would like to get rid of tasklets entirely.
->
-> They started as this very specific hardcoded softirq thing used by
-> some drivers, and then the notion was generalized.
->
-> And I think it was generalized badly, as shown by this example.
->
-> I have added Tejun to the cc, so that he can throw his hands up in
-> horror and say "Linus, you're crazy, your drug-fueled idea would be
-> horrid because of Xyz".
->
-> But *maybe* Tejun has been taking the same drugs I have, and goes
-> "yeah, that would fit well".
->
-> Tejun? Please tell me I'm not on some bad crack..
->
->                Linus
+WARNING: modpost: vmlinux: section mismatch in reference: vega10_populate_single_gfx_level+0x164 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega10_populate_single_gfx_level+0x168 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega10_populate_single_gfx_level+0x170 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega10_populate_single_soc_level+0x4e (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega10_populate_single_soc_level+0x5a (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega10_populate_single_soc_level+0x5e (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega10_populate_single_soc_level+0x74 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega10_populate_single_soc_level+0xbc (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega10_populate_single_soc_level+0xc8 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega10_print_clock_levels+0x50a (section: .text) -> $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0 (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: phm_get_voltage_id+0x1a (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: phm_get_voltage_id+0x2c (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: phm_get_voltage_id+0x3c (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: phm_get_voltage_id+0x44 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: phm_get_voltage_id+0x50 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x2a0 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x2a6 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x302 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x316 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x32e (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x34e (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x366 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x36a (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x396 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x39e (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x3a2 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x3b2 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x3d4 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x3da (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x3ee (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x3fc (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x422 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x42a (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x436 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x448 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x480 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x4b4 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x4c6 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x4ca (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x4d2 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x4e4 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x4e8 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x4ec (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x4f8 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x512 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_setup_default_dpm_tables+0x582 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_get_max_sustainable_clock+0x60 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_get_max_sustainable_clock+0x7e (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_init_max_sustainable_clocks+0xb2 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_init_max_sustainable_clocks+0xfe (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_init_max_sustainable_clocks+0x190 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_init_max_sustainable_clocks+0x1bc (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_init_max_sustainable_clocks+0x1f2 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_init_max_sustainable_clocks+0x228 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_find_highest_dpm_level+0x54 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_find_highest_dpm_level+0x8a (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_find_highest_dpm_level+0xc0 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_set_mp1_state+0x46 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_mgpu_fan_boost+0x30 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_disable_dpm_tasks+0x50 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_disable_dpm_tasks+0x6a (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_power_off_asic+0x40 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_override_pcie_parameters+0x192 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_override_pcie_parameters+0x1c6 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_override_pcie_parameters+0x1fa (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_get_ppfeature_status+0x15e (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_get_power_profile_mode+0x29e (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_get_power_profile_mode+0x2b2 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_get_power_profile_mode+0x2b4 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_get_power_profile_mode+0x2c0 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_get_power_profile_mode+0x2d0 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_set_power_profile_mode+0x36 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_set_power_profile_mode+0x3a (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_set_power_profile_mode+0x7e (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_set_power_profile_mode+0x94 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_set_power_profile_mode+0x118 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_set_power_profile_mode+0x11c (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_set_power_profile_mode+0x120 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_set_power_profile_mode+0x142 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_set_power_profile_mode+0x158 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_set_power_profile_mode+0x16a (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_get_current_clk_freq+0x4a (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_print_clock_levels+0x6ea (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_print_clock_levels+0x6ee (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_print_clock_levels+0x708 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_print_clock_levels+0x70c (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_print_clock_levels+0x72a (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_print_clock_levels+0x804 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_print_clock_levels+0x83a (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_print_clock_levels+0x872 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_print_clock_levels+0x8aa (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_print_clock_levels+0x910 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_od8_get_gfx_clock_base_voltage+0x42 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_power_gate_uvd+0x6a (section: .text) -> quiet_kernel (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_disable_vce_dpm.isra.0+0x4c (section: .text) -> rdinit_setup (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_od8_initialize_default_settings+0x2e6 (section: .text) -> ignore_unknown_bootoption (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_od8_initialize_default_settings+0x31c (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_od8_initialize_default_settings+0x342 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_od8_initialize_default_settings+0x378 (section: .text) -> warn_bootconfig (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_od8_initialize_default_settings+0x39e (section: .text) -> (unknown) (section: .init.text)
+>> WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_dpm_tasks.part.0+0x2cc (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_dpm_tasks.part.0+0x2fc (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_dpm_tasks.part.0+0x318 (section: .text) -> set_init_arg (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_dpm_tasks.part.0+0x34c (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_dpm_tasks.part.0+0x368 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_dpm_tasks.part.0+0x39c (section: .text) -> unknown_bootoption (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_dpm_tasks.part.0+0x3d0 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_dpm_tasks.part.0+0x404 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_dpm_tasks.part.0+0x43a (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_dpm_tasks.part.0+0x470 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_dpm_tasks.part.0+0x4a6 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_dpm_tasks.part.0+0x4f2 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_dpm_tasks.part.0+0x524 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_dpm_tasks.part.0+0x528 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_dpm_tasks.part.0+0x52c (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_dpm_tasks.part.0+0x53c (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_dpm_tasks.part.0+0x564 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_dpm_tasks.part.0+0x5a8 (section: .text) -> loglevel (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_dpm_tasks.part.0+0x5de (section: .text) -> initcall_blacklist (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_dpm_tasks+0xae (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_dpm_tasks+0xc8 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_enable_dpm_tasks+0xfc (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_set_sclk_od+0xe8 (section: .text) -> initcall_blacklisted (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_set_sclk_od+0x150 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_dpm_get_sclk+0x72 (section: .text) -> trace_initcall_finish_cb.constprop.0 (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_dpm_get_sclk+0x8c (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_dpm_get_sclk+0xb2 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_dpm_get_sclk+0xd0 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_dpm_get_sclk+0xea (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_dpm_get_mclk+0x74 (section: .text) -> trace_initcall_finish_cb.constprop.0 (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_dpm_get_mclk+0xb4 (section: .text) -> parse_early_options (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_dpm_get_mclk+0xd2 (section: .text) -> (unknown) (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_get_gpu_power+0xde (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_get_current_activity_percent+0xee (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: vega20_get_gpu_metrics+0x20c (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: dm_helpers_dp_write_dpcd+0x34 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: dm_helpers_submit_i2c+0x16 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: dm_helpers_submit_i2c+0x3c (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: dm_helpers_submit_i2c+0x3e (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: dm_helpers_submit_i2c+0x74 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: dm_helpers_submit_i2c+0xb6 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: dm_helpers_submit_i2c+0xc4 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: dm_helpers_submit_i2c+0xcc (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: dm_helpers_dp_write_dsc_enable+0xe (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: dm_helpers_dp_write_dsc_enable+0x1c (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: dm_helpers_dp_write_dsc_enable+0x28 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: dm_helpers_dp_write_dsc_enable+0x30 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: dm_helpers_dp_write_dsc_enable+0x38 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: dm_helpers_dp_write_dsc_enable+0x8a (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: dm_helpers_dp_write_dsc_enable+0xb0 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: dm_helpers_dp_write_dsc_enable+0xb4 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: dm_helpers_dp_write_dsc_enable+0xb8 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: dm_helpers_dp_write_dsc_enable+0x214 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: dm_helpers_read_local_edid+0x10a (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: dm_helpers_read_local_edid+0x126 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: srm_data_write+0x76 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: hdcp_update_display+0x204 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: hdcp_create_workqueue+0x10a (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: hdcp_create_workqueue+0x138 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: hdcp_create_workqueue+0x158 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: hdcp_create_workqueue+0x186 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: hdcp_create_workqueue+0x1d4 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: hdcp_create_workqueue+0x1e0 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: hdcp_create_workqueue+0x244 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: hdcp_create_workqueue+0x316 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: hdcp_create_workqueue+0x372 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: hdcp_create_workqueue+0x380 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: hdcp_create_workqueue+0x3c4 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x36 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x48 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x6a (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x70 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x84 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x88 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x8c (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x90 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0xc6 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0xd0 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0xd6 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0xde (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0xf0 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0xf6 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x10a (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x10e (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x11e (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x128 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x14e (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x152 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x172 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x1a6 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x1b0 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x1b4 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x1b8 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x1c4 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x1d4 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x1d8 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x1dc (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x202 (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x20c (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x20e (section: .text) -> set_reset_devices (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: $xrv32i2p1_m2p0_a2p1_c2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0+0x212 (section: .text) -> set_reset_devices (section: .init.text)
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
