@@ -1,125 +1,146 @@
-Return-Path: <linux-kernel+bounces-38522-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C06683C0FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:37:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2ADFD83C100
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:37:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E69DC1F2352D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:37:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F3C91C22B4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:37:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B19236123;
-	Thu, 25 Jan 2024 11:33:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22EC84502C;
+	Thu, 25 Jan 2024 11:33:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fox/lw+v"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nhJuwrJd"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F636225DF;
-	Thu, 25 Jan 2024 11:33:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBF2741744;
+	Thu, 25 Jan 2024 11:33:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706182421; cv=none; b=DF7QMJVmSsSpm4Da5R2cPC2GIM7OpipgWC3HXASOKVsvaliU66DfhXSZfbj7VKrdTIk/Hc1pkmECtAGjeZvrGXsBn0ZxGsQSZjVjDUrq10aekFFpgMaO/UomdWd+5xXx9x1XIzsVKtino0fs7P7ojqArqv8n3setxFRKxzV7W30=
+	t=1706182433; cv=none; b=m+DSsTj2DVsjYZpp439MrkG8N5VUykw77cVpZTHsYR81c+u8ZHarDPGEl8CBfVCX9+cJvszReh7Zus2oP6LduRt4goSep6CUlI8lOUC1CS9maC03iLurSS/4Dy9tCGo/O450LMQqAQJr85GE4tHTTgv3GBEZZVgA62k3D2RMQj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706182421; c=relaxed/simple;
-	bh=IGYfPI7688VfayKOecv3nY8+501LOVMN+CzGWqpbr0s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rsu6mDzCxbmFFhYsl8Z8y6iFRLOZabitD6nus8LDddmbu37umIRryUSAKLGVd8Y6pN686M/lA/W8LN3LN8te7a4FiV+yO/QhrxvjlJwKoZ9Uqig/LlYxe+L/33DL0YoMadCSGWA2wHnbuckTxwNv7mRTy680unocI7msC0cn1oE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fox/lw+v; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DADE4C433F1;
-	Thu, 25 Jan 2024 11:33:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706182421;
-	bh=IGYfPI7688VfayKOecv3nY8+501LOVMN+CzGWqpbr0s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Fox/lw+voPCBAsWOueVB3iJzpSaSNiWS0nwdr9xKBupWBpySniTn/+Z7a3znK8NBO
-	 JoJUpPgusVpkIisNqYcq9bFOCrWGvipvWkekke6dsxP/WcfcQqXr5rBQstC8e97KBa
-	 DXPpHpnVJptQOPeOmcn7NAE7BZBkx4m+6/NPq2dFUep1RUrXk1/z0TaqRvfhukAnno
-	 Zs1wcoxTFYhINRkq6/ZMkBx7G9lJyQw+3mxMKirPamwSZPnp9oRDcbno0TsHYmcoKk
-	 ow4OLBXaxg4LGxvvr38vQCc+MrtBtBbYupRUgzorsbqRSZ0ice10emaqmIMk+L9wdi
-	 W2hrpqzE1tO8g==
-Date: Thu, 25 Jan 2024 11:33:36 +0000
-From: Simon Horman <horms@kernel.org>
-To: Geetha sowjanya <gakula@marvell.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kuba@kernel.org,
-	davem@davemloft.net, pabeni@redhat.com, edumazet@google.com,
-	sgoutham@marvell.com, sbhatta@marvell.com, hkelam@marvell.com
-Subject: Re: [net-next PATCH 1/3] octeontx2-af: Create BPIDs free pool
-Message-ID: <20240125113336.GF217708@kernel.org>
-References: <20240124055014.32694-1-gakula@marvell.com>
- <20240124055014.32694-2-gakula@marvell.com>
+	s=arc-20240116; t=1706182433; c=relaxed/simple;
+	bh=79Mq1ZnJKV7PdAzDq1uAOf2d4SKGw7H6Dm+xZXHOOqE=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Pc43VlgjyeVpoKOSJfcrgkLD+PmwjZPGoj4gibI4vSKByLVtPzrXBx+RF3HoDVLXIi7Csq9NK/Bn46jQKzi9/zwbgkYCLlRUq1xjzy36op0ndwEKkc2z7WQ8EeyEZ5gwdoi1IEkHE7k2JAe2v26MZ14dg1NYxhL8g68OIMPwp7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nhJuwrJd; arc=none smtp.client-ip=134.134.136.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706182431; x=1737718431;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=79Mq1ZnJKV7PdAzDq1uAOf2d4SKGw7H6Dm+xZXHOOqE=;
+  b=nhJuwrJdsU713Jl1UIncjJN3HsklP8Y9fDia76D/AWQeQkE/JTU8CQZh
+   DLsaqg6ZwDijf2LkWeUT2C0gmGYOMEliz1379ZF+lQrKUIFs9hAQJXlJx
+   F22qULgIpOUbBi7kUJRDuLMNG9a0k1ZwfmLpGDsmOUe5ngbuO9PXI6FDX
+   dH/2DfsGRWrpLV+YtbyIkGmfxcL2v8MkAWVpL2T+ZcV9MidjsPbBcEQdp
+   2RNEQzqgimw8PHVoJEJuBVU9CT5uxMhbpfpguttCagrPUdW5K7vj/vx3v
+   PEbo6yuJg0YM6dTh+uqyO/cUpL1zW4LgU2nR6E35+7XGI6/mgZq5r/XzN
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="466417296"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="466417296"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 03:33:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="2385166"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.209.226]) ([10.254.209.226])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 03:33:47 -0800
+Message-ID: <cf1319f7-b91b-4161-8b62-2b0c03f53c16@linux.intel.com>
+Date: Thu, 25 Jan 2024 19:33:45 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240124055014.32694-2-gakula@marvell.com>
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
+ Jacob Pan <jacob.jun.pan@linux.intel.com>,
+ Longfang Liu <liulongfang@huawei.com>, Yan Zhao <yan.y.zhao@intel.com>,
+ iommu@lists.linux.dev, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Jason Gunthorpe <jgg@nvidia.com>
+Subject: Re: [PATCH v10 04/16] iommu: Cleanup iopf data structure definitions
+Content-Language: en-US
+To: Joel Granados <j.granados@samsung.com>
+References: <20240122054308.23901-1-baolu.lu@linux.intel.com>
+ <20240122054308.23901-5-baolu.lu@linux.intel.com>
+ <CGME20240125102328eucas1p288a2c65df13b1f60d60f363447bb8e5c@eucas1p2.samsung.com>
+ <20240125102326.rgos2wizh273rteq@localhost>
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20240125102326.rgos2wizh273rteq@localhost>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 24, 2024 at 11:20:12AM +0530, Geetha sowjanya wrote:
-> Current code reserves 64 bpids for 64 LBK channels. But in most
-> of the cases multiple LBK channels uses same bpid. This leads
-> to inefficient use of bpids. Latest HW support configured multiple
-> bpids per channel for other interface types (CGX). For better use
-> of these bpids, this patch creates pool of free bpids from reserved
-> LBK bpids. This free pool is used to allocate bpid on request for
-> another interface like sso etc.
+On 2024/1/25 18:23, Joel Granados wrote:
+>> diff --git a/drivers/iommu/io-pgfault.c b/drivers/iommu/io-pgfault.c
+>> index e5b8b9110c13..24b5545352ae 100644
+>> --- a/drivers/iommu/io-pgfault.c
+>> +++ b/drivers/iommu/io-pgfault.c
+>> @@ -56,7 +56,6 @@ static int iopf_complete_group(struct device *dev, struct iopf_fault *iopf,
+>>   			       enum iommu_page_response_code status)
+>>   {
+>>   	struct iommu_page_response resp = {
+>> -		.version		= IOMMU_PAGE_RESP_VERSION_1,
+>>   		.pasid			= iopf->fault.prm.pasid,
+>>   		.grpid			= iopf->fault.prm.grpid,
+>>   		.code			= status,
+>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+>> index 68e648b55767..b88dc3e0595c 100644
+>> --- a/drivers/iommu/iommu.c
+>> +++ b/drivers/iommu/iommu.c
+>> @@ -1494,10 +1494,6 @@ int iommu_page_response(struct device *dev,
+>>   	if (!param || !param->fault_param)
+>>   		return -EINVAL;
+>>   
+>> -	if (msg->version != IOMMU_PAGE_RESP_VERSION_1 ||
+>> -	    msg->flags & ~IOMMU_PAGE_RESP_PASID_VALID)
+>> -		return -EINVAL;
+>> -
+> I see that this function `iommu_page_response` eventually lands in
+> drivers/iommu/io-pgfault.c as `iopf_group_response`. But it seems that
+> the check for IOMMU_PAGE_RESP_PASID_VALID is dropped.
 > 
-> This patch also reduces the number of bpids for cgx interfaces to 8
-> and adds proper error code
+> I see that after applying [1] and [2] there are only three places where
+> IOMMU_PAGE_RESP_PASID_VALID appears in the code: One is the definition
+> and the other two are just setting the value. We effectively dropped the
+
+Yes, really. Thanks for pointing this out.
+
+$ git grep IOMMU_PAGE_RESP_PASID_VALID
+drivers/iommu/io-pgfault.c:             resp.flags = 
+IOMMU_PAGE_RESP_PASID_VALID;
+drivers/iommu/io-pgfault.c:                     resp.flags = 
+IOMMU_PAGE_RESP_PASID_VALID;
+include/linux/iommu.h:#define IOMMU_PAGE_RESP_PASID_VALID       (1 << 0)
+
+> check. Is the drop intended? and if so, should we just get rid of
+> IOMMU_PAGE_RESP_PASID_VALID?
+
+In my opinion, we should keep this hardware detail in the individual
+driver. When the page fault handling framework in IOMMU and IOMMUFD
+subsystems includes a valid PASID in the fault message, the response
+message should also contain the *same* PASID value. Individual drivers
+should be responsible for deciding whether to include the PASID in the
+messages they provide for the hardware.
+
 > 
-> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+> Best
+> 
+> [1]https://lore.kernel.org/all/20240122054308.23901-1-baolu.lu@linux.intel.com
+> [2]https://lore.kernel.org/all/20240122073903.24406-1-baolu.lu@linux.intel.com
 
-Hi Geetha,
-
-I have some suggestions for possible follow-up below.
-That notwithstanding patch looks good to me.
-
-Reviewed-by: Simon Horman <horms@kernel.org>
-
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-> index 66203a90f052..e1eae16b09b3 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-> @@ -499,14 +499,84 @@ static void nix_interface_deinit(struct rvu *rvu, u16 pcifunc, u8 nixlf)
->  	rvu_cgx_disable_dmac_entries(rvu, pcifunc);
->  }
->  
-> +#define NIX_BPIDS_PER_LMAC	8
-> +#define NIX_BPIDS_PER_CPT	1
-> +static int nix_setup_bpids(struct rvu *rvu, struct nix_hw *hw, int blkaddr)
-> +{
-> +	struct nix_bp *bp = &hw->bp;
-> +	int err, max_bpids;
-> +	u64 cfg;
-> +
-> +	cfg = rvu_read64(rvu, blkaddr, NIX_AF_CONST1);
-> +	max_bpids = (cfg >> 12) & 0xFFF;
-
-I don't think this needs to block progress of this patch,
-but rather I'm providing this as a suggestion for a follow-up.
-
-I think it would be nice to define a mask, created using GENMASK,
-that names the register field (I don't know what it is).
-And then uses FIELD_GET here.
-
-Likewise for the 0xFFF below, and possibly elsewhere in this patch.
-
-Further, in patch 2 I see the use of BIT(11) in the following patch.
-And existing use of BIT(16) in this file.  I assume are register fields.
-If so it would be nice to make #defines to name them too.
-
-> +
-> +	/* Reserve the BPIds for CGX and SDP */
-> +	bp->cgx_bpid_cnt = rvu->hw->cgx_links * NIX_BPIDS_PER_LMAC;
-> +	bp->sdp_bpid_cnt = rvu->hw->sdp_links * (cfg & 0xFFF);
-> +	bp->free_pool_base = bp->cgx_bpid_cnt + bp->sdp_bpid_cnt +
-> +			     NIX_BPIDS_PER_CPT;
-> +	bp->bpids.max = max_bpids - bp->free_pool_base;
-
-..
+Best regards,
+baolu
 
