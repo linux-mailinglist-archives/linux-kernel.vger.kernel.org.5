@@ -1,88 +1,92 @@
-Return-Path: <linux-kernel+bounces-38688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B959883C41E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:51:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90DAF83C423
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:55:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 445BE2974E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:51:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26C051F22D6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:55:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF7BF5B213;
-	Thu, 25 Jan 2024 13:51:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 307A35EE89;
+	Thu, 25 Jan 2024 13:55:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fzyt2/gs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FfjWcYA8"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1886A5B204;
-	Thu, 25 Jan 2024 13:51:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 757685DF32;
+	Thu, 25 Jan 2024 13:55:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706190675; cv=none; b=KSIsmad6SXCiT1i0pMoJehadZ76vkipm6pgwHXW+6S1XmeNXlrphsr920iSVuiQK0DB3vVmCfWqKeM/TLeDRPbFlj6qPLzE/FOstdrVGOdmLzJ3ORCLohyJL6I07B9qO1FSh+a6oakernCIEWHF+VJLPSFr5ztBtv2DDIV8UoeE=
+	t=1706190914; cv=none; b=gmJISzBoJ28TZ3KkzLCvU9doOkXukeMoltWziv/bCZC3gTsCh+8XzrpvJsKbhr1sFl63StukKwoCKStjCQKeWaae4Hjs/wY7nF/tocBq3x3IQtxxdiTvEojbPmAaFKSBpM46/wHgzcv7Wpwfw+PRE6QfyHWyZhe2js8RuGmQSPg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706190675; c=relaxed/simple;
-	bh=wH81iS855opiUGjOXv2S6FTtpKNofrQv2CSZAxYC3/k=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=XuS9yd/it7VNNy7wFnUy15ZpQKrLQCXg9jD0o4okLSdW10qskDXyH+aqApGQT8EWKIZe8++/DVPjtjY4n6qnxuvDmAoeubRoZGbLrVq2sEd0lf0rlpZ7SVvnqHiaE0zoq6nD8XT6gSTttzezd6Bp8yXqNuUJu5gRKecrqIFZZEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fzyt2/gs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FC8DC433F1;
-	Thu, 25 Jan 2024 13:51:12 +0000 (UTC)
+	s=arc-20240116; t=1706190914; c=relaxed/simple;
+	bh=lkORbup5ysi9TnIdkS3Dfkmedc2lWrIbmKoC0k/1xYk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pn/acY52nby70Aly7FmiN7ly1lqljn0GfoC/C6vkAlLxvDaBGsaVQaizBOTPyF7kHYK2YIVwyljLrGKYFerd6XxlSZOC9mDs7IWiixJDGYW/8Yad6yfvMIjqnN+FKkSpXzbVkd3fBG1NRbqqDteh2fasUPPqs4/39WULc7o7bOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FfjWcYA8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87427C433C7;
+	Thu, 25 Jan 2024 13:55:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706190674;
-	bh=wH81iS855opiUGjOXv2S6FTtpKNofrQv2CSZAxYC3/k=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=fzyt2/gsNccB/ZCejD01UTKlKnbJ/DDRyMh4JuscNZPSrX0Bgt8TItGfPX6z4Qmis
-	 MeE60VNLb/zQcqOlYLpSxGqC+4YSfUMpEp1zbVHpfYIba/LwaNoFR0Y49Y2d1ba/4f
-	 aa+o1kQjtomqLMHgdPAOdiyAmmnrGMwGVwm6PpHplc8V05zSNJvIvg9C+0V2Es6ty3
-	 EWy/62av6nWIFq5f6caMPyYFUtNmChzhuxwq49D3zJYKwcWTB/WB2YlmKUFjUzul5V
-	 I4OiuXKvHow9jE3ajDGgGCibe28VgIgA3t4h4mk7VrD7QLRg0mx5qkPgYV8uvhTsZm
-	 M5sdhjzkxIyFQ==
+	s=k20201202; t=1706190914;
+	bh=lkORbup5ysi9TnIdkS3Dfkmedc2lWrIbmKoC0k/1xYk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FfjWcYA8x/ZdkCXMwxd9nfscis8ARlLJ9TXMASZTXr8RcCXgG0/JkPvIoeUNOfUCU
+	 gvR/wgSj8qNociAQjVr7M74V/dXIap9wRYKi0AwpcXarzO9mm+aWkEtT5vjVjI53gS
+	 ZysyxHwg8svzJZ8CIRV6NKaYHdhb6t8Lx5sAs+MaBaTp1wF4kL9vK/Ia8lRqz7VSX1
+	 R8BnnjaZ7OmzhvvgC4Tq7MT6kPlYa+l8v16IMxrPs4FnygK81wyVTUECURjPiNd79w
+	 2ltTBtj3SDoRLEri5ovtpQOdK55yXm5IzL2OVEVjxek/z1ENEHb0xQDtsKlEZSG0Ao
+	 A9i/zOo3TQnBg==
+Date: Thu, 25 Jan 2024 13:55:09 +0000
 From: Lee Jones <lee@kernel.org>
-To: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, 
- Arnd Bergmann <arnd@kernel.org>
-Cc: Andrew Lunn <andrew@lunn.ch>, Arnd Bergmann <arnd@arndb.de>, 
- Heiner Kallweit <hkallweit1@gmail.com>, Hans de Goede <hdegoede@redhat.com>, 
- Jean-Jacques Hiblot <jjhiblot@traphandler.com>, linux-leds@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240109090715.982332-1-arnd@kernel.org>
-References: <20240109090715.982332-1-arnd@kernel.org>
-Subject: Re: [PATCH 1/2] leds: remove led_init_default_state_get() and
- devm_led_classdev_register_ext() stubs
-Message-Id: <170619067236.1476369.7542248214179652574.b4-ty@kernel.org>
-Date: Thu, 25 Jan 2024 13:51:12 +0000
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: broonie@kernel.org, andy.shevchenko@gmail.com,
+	patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+	linux-spi@vger.kernel.org
+Subject: Re: [PATCH v3 2/6] mfd: cs42l43: Tidy up header includes
+Message-ID: <20240125135509.GL74950@google.com>
+References: <20240125102555.2621736-1-ckeepax@opensource.cirrus.com>
+ <20240125102555.2621736-2-ckeepax@opensource.cirrus.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.3
+In-Reply-To: <20240125102555.2621736-2-ckeepax@opensource.cirrus.com>
 
-On Tue, 09 Jan 2024 10:06:39 +0100, Arnd Bergmann wrote:
-> These two functions have stub implementations that are called when
-> NEW_LEDS and/or LEDS_CLASS are disabled, theorerically allowing drivers
-> to optionally use the LED subsystem.
+On Thu, 25 Jan 2024, Charles Keepax wrote:
+
+> Use more forward declarations, move header guards to cover other
+> includes, and rely less on including headers through other headers.
 > 
-> However, this has never really worked because a built-in driver is
-> unable to link against these functions if the LED class is in a loadable
-> module. Heiner ran into this problem with a driver that newly gained
-> a LEDS_CLASS dependency and suggested using an IS_REACHABLE() check.
+> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+Patches look okay to me, but seeing as Andy suggested the changes, it
+would be good to get a R-by from him.
+
+> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> ---
 > 
-> [...]
+> Changes since v2:
+>  - Added pm.h and regmap.h back into mfd/cs42l43.h
+> 
+> Thanks,
+> Charles
+> 
+>  drivers/mfd/cs42l43-i2c.c   |  6 +++++-
+>  drivers/mfd/cs42l43-sdw.c   |  6 +++++-
+>  drivers/mfd/cs42l43.c       |  8 +++++++-
+>  drivers/mfd/cs42l43.h       | 10 ++++++----
+>  include/linux/mfd/cs42l43.h | 13 +++++++------
+>  5 files changed, 30 insertions(+), 13 deletions(-)
 
-Applied, thanks!
-
-[1/2] leds: remove led_init_default_state_get() and devm_led_classdev_register_ext() stubs
-      commit: c0b64609dada48907b04b48873ba052efa8f121d
-[2/2] leds: make flash and multicolor dependencies unconditional
-      commit: 54602f38551e89b520611ffb9df05232d1bf73f8
-
---
+-- 
 Lee Jones [李琼斯]
-
 
