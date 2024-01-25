@@ -1,96 +1,88 @@
-Return-Path: <linux-kernel+bounces-38708-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5514F83C467
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:12:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDDDE83C46D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:12:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 889FC1C223CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:12:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74F3B1F24C33
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:12:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1333463405;
-	Thu, 25 Jan 2024 14:11:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B035563500;
+	Thu, 25 Jan 2024 14:12:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fByMSPId"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DHAV0TPB"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 513B5633E4;
-	Thu, 25 Jan 2024 14:11:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD184634F3
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 14:12:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706191918; cv=none; b=d94LCW21qYLa8npOVF1uMQBw5e11d+brOAgl6+OWGGTEIfwRh0dDKcXER/1wE1WJIQN0waZ6HzHKthstcUUaiHzI1DjNPYMJLgcsnbotF/ck5/6ohYN6YQL2/KFDNe1MmhaODKlGnlsEUkWyP1NYWKVce8Zw10OMAjOXF5df6qU=
+	t=1706191929; cv=none; b=mm2N1E5V39xoThN/Pf/O7VyIaEFhD/206bQ9pULyuwoZzFLZoNdWYG7ZulRffbpmRnM562DRB92ul99HdH+KOk4RqgA0rdrVnt6Gp+bmPh45PNVhX779rG9WZipi13ySGR8HoHZQT0fAXhEsBZpnLIM5UbeEGG66/lNUux5Fx14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706191918; c=relaxed/simple;
-	bh=/jo1CNyBcXQIcEa2M1kRwe74y/BzAkDY1EHD40eI6hA=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=AYXyUushpZDYb7U0b4t3RaZ+hPGW4jDNM5wUuzeq2p/jVKAyJ9NUtLVjN6sbgD0Ei+67RJVhXNlmIdrgamVnGSZCf6wOcYLhEcnQWXthEdkt/CGicb5tQtEsPXNxrgEp+2E9qffcSCYuWnY5jUWM9wB3di3F9GKa+0wkId/CX3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fByMSPId; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 795BEC433F1;
-	Thu, 25 Jan 2024 14:11:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706191917;
-	bh=/jo1CNyBcXQIcEa2M1kRwe74y/BzAkDY1EHD40eI6hA=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=fByMSPId8+5Rfn3HjHSUzUjVKd3flQGSKiyg90Z1fiRuDFDi+FLJZ/nmsHVAIULjs
-	 MDjAOQkt3Dj+aF7L/0m9VvPClQDX3/xA8nazEUXr+5TvA4x7DgqhllxNPEVjGjmc+b
-	 I/3xyesOqJCqjhqneHRiSrIT8OxbrAhjlOahL1PgH1k4c/ZK3JWD6bL3IbRIUugXww
-	 NIePTnXeSLa2rxwB9Fpucwqbl9Dvo1eZnWgsY1ZdWmt8g/ADBJ7Hs8VZzcHgvVVgMk
-	 /XdzspeJN5Ium/6q8PRXxkuGUQY5g/2IrKDivm8maoIwMyiE1kApDQD/1YErH2xpIp
-	 C0A2EvPgoJZ5w==
-From: Kalle Valo <kvalo@kernel.org>
-To: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Cc: Ubisectech Sirius <bugreport@ubisectech.com>,  linux-trace-kernel
- <linux-trace-kernel@vger.kernel.org>,  linux-kernel
- <linux-kernel@vger.kernel.org>,  johannes <johannes@sipsolutions.net>,
-    linux-wireless@vger.kernel.org
-Subject: Re: =?utf-8?B?5Zue5aSN77yaZ2VuZXJhbA==?= protection fault in
- ath9k_wmi_event_tasklet
-References: <ed1d2c66-1193-4c81-9542-d514c29ba8b8.bugreport@ubisectech.com>
-	<878r4e4q69.fsf@toke.dk>
-	<fb3ea26f-f9b6-4107-bb03-ca4893f0495f.bugreport@ubisectech.com>
-	<87wmrx34np.fsf@toke.dk>
-Date: Thu, 25 Jan 2024 16:11:54 +0200
-In-Reply-To: <87wmrx34np.fsf@toke.dk> ("Toke =?utf-8?Q?H=C3=B8iland-J?=
- =?utf-8?Q?=C3=B8rgensen=22's?= message of
-	"Thu, 25 Jan 2024 14:48:26 +0100")
-Message-ID: <87plxp1p05.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=arc-20240116; t=1706191929; c=relaxed/simple;
+	bh=E87yYMUmIZQHj4uCon05JeVlBr+VAITmiBQh7svNdRQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BRmnBiowJUxOa4KDEgrhnFIaH9dW1nDJ/C2pFm5losjLObFoj2RpHsLwxfiHr2+HeqIEvKaElQSsSxd/f6ty4IWtCPmJHRRujjK2KWlDj1leposElgCggEZpk9wQGATbzzBuBM1C35w2ZlIptq/zJaRl2hFE2/pLzAojABoxf4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DHAV0TPB; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706191926;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ACqcEjg537hZBJWAT4QAy+L6J3AJYKEx3L1s6N7xY70=;
+	b=DHAV0TPB30rDH/Gc6GGbeA4kVuPrXy7g+f7PUts+OyoWvDl1MMDS7chB05hEEED6stme//
+	rEDPd4DKAD3mgdvhM43eY4fPqYo1TXUfub+vn1VpwfhjkxwQi0TqOWEWU75CdTFKcvV87v
+	WUV2J7gPmW+OAyDNWVFoTXd9u1qRsEY=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-684-Ton7HokXPSWRswBc5p_IDw-1; Thu,
+ 25 Jan 2024 09:11:59 -0500
+X-MC-Unique: Ton7HokXPSWRswBc5p_IDw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6A4A21C0BA46;
+	Thu, 25 Jan 2024 14:11:58 +0000 (UTC)
+Received: from [192.168.37.1] (ovpn-0-9.rdu2.redhat.com [10.22.0.9])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 060CB51D5;
+	Thu, 25 Jan 2024 14:11:55 +0000 (UTC)
+From: Benjamin Coddington <bcodding@redhat.com>
+To: David Howells <dhowells@redhat.com>
+Cc: Gao Xiang <xiang@kernel.org>, Jeff Layton <jlayton@kernel.org>,
+ Christian Brauner <brauner@kernel.org>, Matthew Wilcox <willy@infradead.org>,
+ Eric Sandeen <esandeen@redhat.com>, v9fs@lists.linux.dev,
+ linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+ linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+ linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: Roadmap for netfslib and local caching (cachefiles)
+Date: Thu, 25 Jan 2024 09:11:54 -0500
+Message-ID: <B01D6639-6F09-4542-A1CE-5023D059B84F@redhat.com>
+In-Reply-To: <520668.1706191347@warthog.procyon.org.uk>
+References: <520668.1706191347@warthog.procyon.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-Toke H=C3=B8iland-J=C3=B8rgensen <toke@toke.dk> writes:
+On 25 Jan 2024, at 9:02, David Howells wrote:
+..
+> NFS.  NFS at the very least needs to be altered to give up the use of
+> PG_private_2.
 
-> "Ubisectech Sirius" <bugreport@ubisectech.com> writes:
->
->>>Hmm, so from eyeballing the code in question, this looks like it is
->>>another initialisation race along the lines of the one fixed in commit:
->>>8b3046abc99e ("ath9k_htc: fix NULL pointer dereference at
->>> ath9k_htc_tx_get_packet()")
->>>Could you please test the patch below and see if you can still reproduce
->>>this issue with that applied?
->> Hello.
->>  I can not reproduce the issue on the Linux with the patch applied
->> Ubisectech Sirius Team
->
-> Great, thank you for testing! I'll send a proper patch. How would you
-> like to be credited with reporting? Just as 'Ubisectech Sirius
-> <bugreport@ubisectech.com>' ?
+Forgive what may be a naive question, but where is NFS using PG_private_2?
 
-Ubisectech, please CC linux-wireless on any wireless issues and don't
-use HTML format in emails. More info in the wiki below.
+Ben
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
 
