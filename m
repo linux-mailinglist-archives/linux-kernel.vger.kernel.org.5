@@ -1,72 +1,72 @@
-Return-Path: <linux-kernel+bounces-38464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F88F83C0C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:27:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A386A83C04C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:09:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6389B35735
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:08:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 151A61F23C5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:09:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A3D136B10;
-	Thu, 25 Jan 2024 10:56:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B9D256473;
+	Thu, 25 Jan 2024 10:57:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="S0MHBwtd"
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HByBT7zP"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7924F3309C
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 10:56:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63A7555C1F
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 10:57:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706180209; cv=none; b=abJ5BwgbrTOWAn/WuVaZFUGtxHREXkvw6kmSpV5yMygvanHte0hwMvKBwrX1UUoSMYDGCJ0Rhz6L2NKj9WijSIg6yfMwISWjLlMD/dCvOF/F1Wf+4qnsCScnndS7YOHnhXo1mTudUfImPbgO2cXW9jgA2qVoGbjZ4Nt4trxP8Ic=
+	t=1706180245; cv=none; b=dXloLl/bs413qh4lmcZLfuHU6UxAoo12OKU/EyI+SoKkc7u5vmlj5uxYKqJzgxpTqki61CpMPhP0/CIE5e5uDFZ1rXi5X0eKS03F3MoPP1tEYxynNxXVo7XSOqoBSyKVHhjCR5J+sGOEeK770rVZWW/L3EQbjHCD54kSKEtWLu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706180209; c=relaxed/simple;
-	bh=9qY2haHLwCCpegYVyW5Gz9pPYqp5yfhyAdGIM8sSa0c=;
+	s=arc-20240116; t=1706180245; c=relaxed/simple;
+	bh=4qD2CXu8N/6r+864TKXfk3a5vuGTZ4qhXFLEbdOxfK8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=prgcciXE4cemX9ExvmPWShueXHIhiz3Al37WbKpVGMOGDwD17TXrAfYATQf32OME529SSOjOlsYqbllDAA0tK39bFkONHlXJdd7uUn3HSjku3qazIGbIoq3iHF+gH3t3KhsxsFigvg5kwf6riUOYJv1h0/PCohFT6aKBqII7x9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=S0MHBwtd; arc=none smtp.client-ip=209.85.208.177
+	 In-Reply-To:Content-Type; b=LvFth20C0lCoFyz965hNrn52P9Q/Cc1q58MSj+kn00SZ7VSg6v+GzF/+uqJItboBQxMO30zQNBKu1vNVPFCLYVybNGvZALPMQoQRMZp0wcSu4+maFgd1ZwMlrpCuXCksIouRqFaewIBtcRzU+scFKwJPQPMKBF2jDAFtj5B9HdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HByBT7zP; arc=none smtp.client-ip=209.85.208.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2cddb2c2b54so66716891fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 02:56:47 -0800 (PST)
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2cf161b5eadso31337341fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 02:57:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706180205; x=1706785005; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1706180241; x=1706785041; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=pCfQ4dB5qtEMvlBkDX6rwlE0l9miPxpcPJ/nwYxSowU=;
-        b=S0MHBwtdrk6e5b+WIRtkLHyqTz9OQ8lTbTnpYU+Z+Q789sgGELgmcdd2UgjYuLclQX
-         bd712yyF7NMHEf9M5DA/xCGloH+UcYUq9N6KPtrj6VjCSGDv6fBcI8gXVjTKzBxt70QS
-         B3/HOntD1SFZ+cyoxOXdZnWKXm6osIVTt7/x2NcCEC+GxJSzdh3HPbNfgh22gytz4RCV
-         0YdE/altzt2lhj1qDb6A5Q7NcCKLt11Sq509gybAG8a8vMp5KJFVurR2hu3InVuZzKn/
-         EU9OrXA4m7ScWSBxen9aqUijwZ8iwR7IPbyqoJKUw6iIyLma0fJsTC3F4k9qHyMkEIMk
-         6GJg==
+        bh=HwpguGkqNwgpijlAt2Oe0B1qzP3LlkGTfciVecu4QVQ=;
+        b=HByBT7zPYjtY+36iBWoGVukWS8Ximk4NnYYY1Pb+ydZceB5JLZSaiCoqzO18M2WJom
+         8nIWwA4VQKuWJXVSP0FFTJOZGSMZZ3lti5d3AybG7WzyHCX+LhffhZ8dML9pH6og+jBO
+         hh8W/4FyMj7B2ojY0j1ZOLGuCT6gxvjn73ZzPlCuKniX2cdi8Vna7RyXoaBdPuVlv2s7
+         kOwdjodJ8RJ+bGniJJU5/lLMQr9BialzFE0btoWDVPWfFFZN0zX2lDNc/FfFM/oMvwMG
+         nhSnaqlmPuWmCj1Wp51CEYIDHJ1rAMTdCKkSVyCM4ZqCSVwMwRHct28LDic913UC+a+7
+         HiBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706180205; x=1706785005;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1706180241; x=1706785041;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pCfQ4dB5qtEMvlBkDX6rwlE0l9miPxpcPJ/nwYxSowU=;
-        b=hYGtmnBqOrAy0p4CHES5HK4SELqzqIo221A0dgGYg8nIwRCE3bDhUFWd6pqYAU80BC
-         sXMHQXm4ezqg2B9Cy8wAJyX9BF6lYzW38Pts2QQI2WzHgYeAfi8eTejSt/Q/A6FTqiGt
-         jMPoUWPtDh2ngt9hxZsxS314mnU+eytOJo4r6+u4JE6Y2qpUfNMTwc57+2A2CbrJBBAx
-         xcy8GvWs0iAi5wOrcAMjH/OSxQRyIp6lOku2i+4FxQhDfzmYQGz/4Fk1Qrd19tZEY5Rh
-         3m6xHeLSdYPpHasykPqgKdBA9UIgvOc1khc8infNn3SWlQvVKJ+y3KU7fxOnVzZPnveX
-         QVZw==
-X-Gm-Message-State: AOJu0YzxFCYnhA3Q5YlJGRo66v0bvakrv1BS7VP7HEnWZYJIXGbW2sSS
-	L/PvpfSnnppdQVjp4MNOtnlGpQy6wgkFjNy7WJWCFu/U5TnS0h9oqasFUQK4COM=
-X-Google-Smtp-Source: AGHT+IHRtAZxhGIF/Y+ITlHpQgzW+VI9oR1q2AdFBH42WjiA/tqDSCXgRSch7fRF3PNSewVYjvX/Fg==
-X-Received: by 2002:a2e:a786:0:b0:2cf:26d5:1813 with SMTP id c6-20020a2ea786000000b002cf26d51813mr919939ljf.13.1706180205552;
-        Thu, 25 Jan 2024 02:56:45 -0800 (PST)
-Received: from [172.30.205.155] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id z18-20020a2e3512000000b002cd5b233861sm234062ljz.60.2024.01.25.02.56.44
+        bh=HwpguGkqNwgpijlAt2Oe0B1qzP3LlkGTfciVecu4QVQ=;
+        b=Ua7aY4gRHbcqFUO2l79iq+sEoIekeA64tQ39F3ytOwhRFroWQA3cs+KVu74LPvDPil
+         YReoQZey+PRVJCAGge3xVqix/nBGephtvV6DVQmsNR61xKZalqQa1k2aPqM7t1WcIMob
+         vLlmWG6/+t9sz8TwvjOOScm7fNyLRFAuumFpv8NZwN+HMPcK4Im26geLPBefCqzbGQF8
+         g2VGjVcdFjbXWG4cbNPUcn6hZw1UQUCzfBvaYYZ2/LD0lQFsx/SfPUmV4aFEe3LIJq3i
+         O5ZCMnJQm4sma05iYD2ywm0zTYQUo8qrZ2Rebh9zf1WwYqAUKrm3BflEc15gM/e701qC
+         2qhg==
+X-Gm-Message-State: AOJu0Ywleh1omWe+nuHYehLlyLegDYS8DP78P/4mTp/taW686ZUooLkg
+	UujPfv+kYFwxMMBpjZJWDfeBjVDTtQiMOWPRiCD3vC7Vu7QHHtHgP6Rz8qQjALs=
+X-Google-Smtp-Source: AGHT+IGWm1fEW9w//XlIVmaPmR3FIhXEoLIWxVuRfsxULhe2J7QZD7uMCG5MCVPNBXtBMJ9DTE0kGQ==
+X-Received: by 2002:a05:651c:205c:b0:2cd:7039:e281 with SMTP id t28-20020a05651c205c00b002cd7039e281mr530622ljo.8.1706180241628;
+        Thu, 25 Jan 2024 02:57:21 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id qu27-20020a170907111b00b00a331d6c0c70sm13878ejb.71.2024.01.25.02.57.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 02:56:45 -0800 (PST)
-Message-ID: <49a98836-b4a1-4654-8b39-7cf095a17d1b@linaro.org>
-Date: Thu, 25 Jan 2024 11:56:43 +0100
+        Thu, 25 Jan 2024 02:57:21 -0800 (PST)
+Message-ID: <4e14b7c7-7f0a-437b-aa84-20fdc30a2361@linaro.org>
+Date: Thu, 25 Jan 2024 11:57:18 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,76 +74,135 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 00/12] Unregister critical branch clocks + some RPM
+Subject: Re: [PATCH v2 4/8] dt-bindings: power: reset: add bindings for NVMEM
+ hardware storing PSCR Data
 Content-Language: en-US
-To: Taniya Das <quic_tdas@quicinc.com>, Bjorn Andersson
- <andersson@kernel.org>, Andy Gross <agross@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+To: Oleksij Rempel <o.rempel@pengutronix.de>,
+ Sebastian Reichel <sre@kernel.org>, Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>,
- linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- Johan Hovold <johan+linaro@kernel.org>,
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-References: <20230717-topic-branch_aon_cleanup-v6-0-46d136a4e8d0@linaro.org>
- <d4a14fb9-849c-4236-9ec1-538f2944fb02@quicinc.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <d4a14fb9-849c-4236-9ec1-538f2944fb02@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ Conor Dooley <conor+dt@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>,
+ Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org,
+ devicetree@vger.kernel.org, =?UTF-8?Q?S=C3=B8ren_Andersen?= <san@skov.dk>
+References: <20240124122204.730370-1-o.rempel@pengutronix.de>
+ <20240124122204.730370-5-o.rempel@pengutronix.de>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240124122204.730370-5-o.rempel@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
+On 24/01/2024 13:22, Oleksij Rempel wrote:
+> Add device tree bindings that describe hardware implementations of
+> Non-Volatile Memory (NVMEM) used for storing Power State Change Reasons
+> (PSCR).
 
-
-On 1/25/24 11:16, Taniya Das wrote:
-> Hi Konrad,
-> 
-> Thanks for your patch.
-> 
-> On 1/13/2024 8:20 PM, Konrad Dybcio wrote:
->> On Qualcomm SoCs, certain branch clocks either need to be always-on, or
->> should be if you're interested in touching some part of the hardware.
->>
->> Using CLK_IS_CRITICAL for this purpose sounds like a genius idea,
->> however that messes with the runtime pm handling - if a clock is
->> marked as such, the clock controller device will never enter the
->> "suspended" state, leaving the associated resources online, which in
->> turn breaks SoC-wide suspend.
-> 
-> I am really curious to know a little more about the SoC-Wide Suspend not happening on these targets. Could you add more details here ?
-> 
-> The Resource Power Manager (RPM) is the main aggregator on these targets where the active & sleep votes on XO, shared rails (CX/MX) decide the SoC wide suspend. The High Level OS on our internal platforms never had any suspend issues due to clocks(GCC/GPUCC) or shared rails being kept enabled from the consumers.
-
-With the common clock framework, CLK_IS_CRITICAL blocks pm operations, as
-clk_disable fails at some point. Since RPM(h)PDs are modeled as pmdomains,
-this in turn results in them never getting disabled, leading to outstanding
-votes. Then, RPM(h) sees these votes and (among other things which are not
-properly described on most SoCs leading to dangling votes) decides that
-CXPD/XOSD/AOSD can't be entered because there's a request on a resource.
+A nit, subject: drop second/last, redundant "bindings for". The
+"dt-bindings" prefix is already stating that these are bindings.
+See also:
+https://elixir.bootlin.com/linux/v6.7-rc8/source/Documentation/devicetree/bindings/submitting-patches.rst#L18
 
 > 
->>
->> This series aims to solve that on a couple SoCs that I could test the
->> changes on and it sprinkles some runtime pm enablement atop these drivers.
->>
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  .../bindings/power/reset/pscrr-nvmem.yaml     | 53 +++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/power/reset/pscrr-nvmem.yaml
 > 
-> As CX is a shared resource/rail on these specific targets we definitely do not achieve any power saving with the runtime pm attached to these clock controllers, but I see a little more SW overhead. Though you could please add your observations/comments.
+> diff --git a/Documentation/devicetree/bindings/power/reset/pscrr-nvmem.yaml b/Documentation/devicetree/bindings/power/reset/pscrr-nvmem.yaml
+> new file mode 100644
+> index 000000000000..779920dea283
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/power/reset/pscrr-nvmem.yaml
+> @@ -0,0 +1,53 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/power/reset/pscrr-nvmem.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Generic NVMEM Power State Change Reason Recorder
+> +
+> +maintainers:
+> +  - Oleksij Rempel <o.rempel@pengutronix.de>
+> +
+> +description: This binding describes the Non-Volatile Memory (NVMEM) hardware
 
-Hm, simply adding a power-domains entry to denote the required
-performance state values when voting for downstream GDSCs would
-be enough and runtime PM only makes sense if there's an additional
-rail, say MMCX or GFX. But see the comment below.
+Same comment and also: describe the hardware, not the binding. s/This
+binding describes/something useful/
 
-> 
-> Removing the CLK_IS_CRITICAL is a good cleanup and moving them to probe is a good way to handle the always-on clocks.
+> +  that stores Power State Change Reasons (PSCR).
+> +
+> +allOf:
+> +  - $ref: pscrr.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: pscrr-nvmem
+> +
 
-Unless it turns out to be really messy with keeping backwards DTS
-compatibilty, the goal is to use the pm_clk APIs to only keep the
-interface/xo/sleep clocks for subsystems active when that subsystem
-is active (i.e. when SUBSYS_CC is *runtime-active*).
+So that's a driver :/. Maybe Rob will like it, but it's a no from me.
+Please come up with something really suiting DEVICES, not DRIVERS.
 
-This will result in a treewide patchset.
+> +  nvmem-cells:
+> +    description: |
 
-Konrad
+Do not need '|' unless you need to preserve formatting.
+
+> +      A phandle pointing to the nvmem-cells node where the power state change
+> +      reasons are stored.
+> +    maxItems: 1
+> +
+
+
+Best regards,
+Krzysztof
+
 
