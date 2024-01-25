@@ -1,130 +1,124 @@
-Return-Path: <linux-kernel+bounces-38951-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E87E83C8EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:57:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FEE583C8EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:58:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF5191C22D33
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:57:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58C28296DE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:58:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BA4313174C;
-	Thu, 25 Jan 2024 16:47:23 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA51D12FF94
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 16:47:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B5E41386BC;
+	Thu, 25 Jan 2024 16:47:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s6rmiGnG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9261A1386AD;
+	Thu, 25 Jan 2024 16:47:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706201242; cv=none; b=lKJ4QRIvHqeF325CoE1Qaa35M7y31tjRalF3/dL7u7tST4Ptc8nNR3pS7k3ll++093dnTXz81pWxH2YgBxZ+lWzq58anShDGNZ/uVlpJY7EJGcUBfHsP/LQF1Wca37oBB4iPaafFb3DU4XoAx4v+Nn66ld72b2oAvh/sFDuF+34=
+	t=1706201246; cv=none; b=IDcHIjquQokO/eDeCz7DXVugTFIu85/GO6ntBcNg8Smj9V/WjmLwKpY/HSrouh7TC8EpIgR9gnKgP+gsYgNUl3aR97QbbNTSN6vL66YCiiV0/Nxttx4P0mrBJG9kGMO6tv4Dg6j9ivJm9yJ2mp8+ZeZbyjyg9SQBKlq2lX9kHmU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706201242; c=relaxed/simple;
-	bh=/FHwRI4r7JgDwNCxrf6OQAN4XCPE9f4qryDKOoKaftc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gDoCnEGTCQDQj4XNg5SUSuqpkQfXG2EBrlqA3shmsd8qGHiWo/yfUfVixbFb2CaduM64QoSajSJTsM3HJpUmmL16Fdd7nN1EsLqBo+S45hjH8W82UPlKR2dzYQzzx3xYmsWbD+gMAsK+AtlCEcYuchaYT3tJOUgcvpkvvVTlYvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1E5B71763;
-	Thu, 25 Jan 2024 08:48:05 -0800 (PST)
-Received: from [10.1.27.41] (e122027.cambridge.arm.com [10.1.27.41])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 454BA3F5A1;
-	Thu, 25 Jan 2024 08:47:17 -0800 (PST)
-Message-ID: <08fd5c89-9fec-4fc8-b0a3-03e4ab9447d7@arm.com>
-Date: Thu, 25 Jan 2024 16:47:15 +0000
+	s=arc-20240116; t=1706201246; c=relaxed/simple;
+	bh=YftANLU4vv1DKrmQ7rhoS3AB+ju9sPZ5HuQVKVso5tk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ez/HmvCcj20xBJrJGBtNq4z3ZmlUJLmzQnA/oM8HcYEc3RYtvUPvNLHks9SGjZAz8w9dNNojXHLmU0SIT5RurGsvyxnJtg3vhC2PP1aXjL1nl1+gIZABV+VXV83TwXuCFTgMaj1JRNShsUNFaphfv1hJxASk4lstKtI1IZA5d7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s6rmiGnG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C0E2C41612;
+	Thu, 25 Jan 2024 16:47:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706201246;
+	bh=YftANLU4vv1DKrmQ7rhoS3AB+ju9sPZ5HuQVKVso5tk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=s6rmiGnGS3StI/AkZtPr7HFJDisYiAw9Es1vYshMTNs8s4kf3gomFnnXQ3nSe//yE
+	 RPNgoSfEXQ+UTTvwIbRAR0afzOQLAWiJ5F7IGkQH0Rv/lKVFWnNbYJrQ+Drm35xfjW
+	 RjIoR/G0z3fpYqNmxKNdjSLBnV0+2Mo0lLGQxrOLdifjO1v5NLPgEpeDoMZ/3IMuFC
+	 WnU5u+GMRTgLReWdPjFyVO/Ri/dml7/68I+Y8qVLP+PcVyGfaOIB5NPpgv65eY5gIu
+	 oXN9+Ulnp+z1A0HXllKlrwjGwi2mYH9V+nZAw2tFVZc6lnuMqbzJzn1ouG6WLR2iMb
+	 9QOBBhaOKYvOw==
+Date: Thu, 25 Jan 2024 17:47:19 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: syzbot <syzbot+fb337a5ea8454f5f1e3f@syzkaller.appspotmail.com>, 
+	hdanton@sina.com, jack@suse.cz, jfs-discussion@lists.sourceforge.net, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, shaggy@kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [jfs?] INFO: task hung in path_mount (2)
+Message-ID: <20240125-addition-audienz-c955ab3c8435@brauner>
+References: <00000000000083513f060340d472@google.com>
+ <000000000000e5e71a060fc3e747@google.com>
+ <20240125-legten-zugleich-21a988d80b45@brauner>
+ <11868eb4-0528-4298-b8bc-2621fd1aac83@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 17/30] drm/panfrost: Fix the error path in
- panfrost_mmu_map_fault_addr()
-To: Dmitry Osipenko <dmitry.osipenko@collabora.com>,
- David Airlie <airlied@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>,
- Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
- <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Qiang Yu <yuq825@gmail.com>, Boris Brezillon
- <boris.brezillon@collabora.com>, Emma Anholt <emma@anholt.net>,
- Melissa Wen <mwen@igalia.com>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- kernel@collabora.com, virtualization@lists.linux-foundation.org
-References: <20240105184624.508603-1-dmitry.osipenko@collabora.com>
- <20240105184624.508603-18-dmitry.osipenko@collabora.com>
-Content-Language: en-GB
-From: Steven Price <steven.price@arm.com>
-In-Reply-To: <20240105184624.508603-18-dmitry.osipenko@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <11868eb4-0528-4298-b8bc-2621fd1aac83@kernel.dk>
 
-On 05/01/2024 18:46, Dmitry Osipenko wrote:
-> From: Boris Brezillon <boris.brezillon@collabora.com>
+On Thu, Jan 25, 2024 at 09:11:34AM -0700, Jens Axboe wrote:
+> On Thu, Jan 25, 2024 at 9:08?AM Christian Brauner <brauner@kernel.org> wrote:
+> >
+> > On Thu, Jan 25, 2024 at 03:59:03AM -0800, syzbot wrote:
+> > > syzbot suspects this issue was fixed by commit:
+> > >
+> > > commit 6f861765464f43a71462d52026fbddfc858239a5
+> > > Author: Jan Kara <jack@suse.cz>
+> > > Date:   Wed Nov 1 17:43:10 2023 +0000
+> > >
+> > >     fs: Block writes to mounted block devices
+> > >
+> > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13175a53e80000
+> > > start commit:   2ccdd1b13c59 Linux 6.5-rc6
+> > > git tree:       upstream
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=9c37cc0e4fcc5f8d
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=fb337a5ea8454f5f1e3f
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ba5d53a80000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14265373a80000
+> > >
+> > > If the result looks correct, please mark the issue as fixed by replying with:
+> >
+> > #syz fix: fs: Block writes to mounted block devices
 > 
-> If some the pages or sgt allocation failed, we shouldn't release the
-> pages ref we got earlier, otherwise we will end up with unbalanced
-> get/put_pages() calls. We should instead leave everything in place
-> and let the BO release function deal with extra cleanup when the object
-> is destroyed, or let the fault handler try again next time it's called.
+> Like Dave replied a few days ago, I'm kind of skeptical on all of these
+> bugs being closed by this change. I'm guessing that they are all
+> resolved now because a) the block writes while mounted option was set to
+> Y, and b) the actual bug is just masked by that.
 > 
-> Fixes: 187d2929206e ("drm/panfrost: Add support for GPU heap allocations")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Co-developed-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> Maybe this is fine, but it does seem a bit... sketchy? The bugs aren't
+> really fixed, and what happens if someone doesn't turn on that option?
+> If it's required, perhaps it should not be an option at all? Though
+> that'd seem to be likely to break some funky use cases, whether they are
+> valid or not.
 
-Reviewed-by: Steven Price <steven.price@arm.com>
+We have no way of actually testing or verifying this stuff and a lot of
+these have been around for a long time. For example, this report here
+has a C reproducer but following the actual dashboard link that
+reproducer is striked-through which supposedly means that it isn't valid
+or reliable. And no other reproducer ever showed up.
 
-> ---
->  drivers/gpu/drm/panfrost/panfrost_mmu.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> index bd5a0073009d..4a0b4bf03f1a 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> @@ -502,11 +502,18 @@ static int panfrost_mmu_map_fault_addr(struct panfrost_device *pfdev, int as,
->  	mapping_set_unevictable(mapping);
->  
->  	for (i = page_offset; i < page_offset + NUM_FAULT_PAGES; i++) {
-> +		/* Can happen if the last fault only partially filled this
-> +		 * section of the pages array before failing. In that case
-> +		 * we skip already filled pages.
-> +		 */
-> +		if (pages[i])
-> +			continue;
-> +
->  		pages[i] = shmem_read_mapping_page(mapping, i);
->  		if (IS_ERR(pages[i])) {
->  			ret = PTR_ERR(pages[i]);
->  			pages[i] = NULL;
-> -			goto err_pages;
-> +			goto err_unlock;
->  		}
->  	}
->  
-> @@ -514,7 +521,7 @@ static int panfrost_mmu_map_fault_addr(struct panfrost_device *pfdev, int as,
->  	ret = sg_alloc_table_from_pages(sgt, pages + page_offset,
->  					NUM_FAULT_PAGES, 0, SZ_2M, GFP_KERNEL);
->  	if (ret)
-> -		goto err_pages;
-> +		goto err_unlock;
->  
->  	ret = dma_map_sgtable(pfdev->dev, sgt, DMA_BIDIRECTIONAL, 0);
->  	if (ret)
-> @@ -537,8 +544,6 @@ static int panfrost_mmu_map_fault_addr(struct panfrost_device *pfdev, int as,
->  
->  err_map:
->  	sg_free_table(sgt);
-> -err_pages:
-> -	drm_gem_shmem_put_pages_locked(&bo->base);
->  err_unlock:
->  	dma_resv_unlock(obj->resv);
->  err_bo:
+As far as I can see we should just close reports such as. If this is a
+real bug that is separate from the ability to mount to writed block
+devices then one should hope that syzbot finds another reproducer that
+let's us really analyze the bug?
 
+A separate issue is that syzbot keeps suggesting as all of these being
+closable because of this. So how serious can we take this and how much
+time can/should we spend given that we got ~20 or more of these mails in
+the last two weeks or so.
+
+I have no better answers than this tbh. And fwiw, apart from this one I
+haven't closed a single bug based on this.
+
+And yes, ideally the ability to write to mounted block devices should be
+turned off. But we'll have to let it trickle into the individual
+distributions first and make remaining userspace tools that rely on this
+move to alternate apis before we can make any serious effort.
 
