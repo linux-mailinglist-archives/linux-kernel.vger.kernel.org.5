@@ -1,100 +1,57 @@
-Return-Path: <linux-kernel+bounces-38022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38037-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B6CA83B9DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:33:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7AEB83BA1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:38:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A24C7B21F83
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 06:33:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E283E1C22A4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 06:38:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43BD51B7FF;
-	Thu, 25 Jan 2024 06:29:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CIxU5pXy"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F86210A2A;
+	Thu, 25 Jan 2024 06:32:47 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A90412B6E;
-	Thu, 25 Jan 2024 06:29:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22FBA1CD03;
+	Thu, 25 Jan 2024 06:32:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706164193; cv=none; b=t/ekeA2aY02KbcrB8V30gVdoOre+mVtzBRyK4QtgnmU9cVa504ivq95wAEKnzzAETE4fzZLCGsACHc60bJuNAIiUugvur2Ep2zFyhs45XuuhGBBYTQs4nZvXkc0FDRWPRYJjAUjE2K6tqiiw4hiuAZMT8S257Tt4AtP4TvIyli0=
+	t=1706164366; cv=none; b=HFHJ/JCAwliI8HUcPsXSq1Tcjz0/xZphxoz6RTLjM7kEGQ5mYtxjYGEQ3vCwDqI9RM9mOJUuMTGk7RqyA4u0P9MgJGqERnAo+JtpUsNpZTLlsbCqQ0FSStB83K9zuTHKo+TIWodRdSyO9dc62E8t/O3SYGiqi3bRB+wz8IQn0Pw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706164193; c=relaxed/simple;
-	bh=x32LOme0VCi24BOXE0bhRSdLzmkLr19AHRZy9FC+YGQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=k/jLyuIqsCG6KkgGEbDbIAk96orftdB86kbrPUpF/6RCn1hYHCxDk7avFAgf/FQiTvQwh2KJFoiHPahhcjYUmuIwhgILzCLOqVz85b1rJVawSUKF0TnIZEXUjnzbuzsoA/uSTlNXpipxwEpi3M+YGKgFdX8hWk5q7EYO2epiPYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CIxU5pXy; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706164191; x=1737700191;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=x32LOme0VCi24BOXE0bhRSdLzmkLr19AHRZy9FC+YGQ=;
-  b=CIxU5pXy8hoGyw+0r/UeLVYxkSZFTw1/OtpLmEb/weyahrYi3Fxt4o95
-   k6gv36b+ckzBi+TfMe4dEw9L/cRdPosYg6eEDur0tR9uieFGrmREe29QY
-   rXx2yPG95luUzUjaHvOK1gN4F9A6r+4Mleuv5InxY/kl0XSKLPF8TjMaW
-   qyUB9ElEcIEmrFGtFKagoZ+SiP4lb6PuCV5ugzAWhic43Y69J7E7ThPkF
-   jBsAo5huO4BMjQb9AnzE33D/7BbJ0P9wnvfstO2nbt6QY1HCyAk4ySNJW
-   U2+63s27aSWlwWsczRsr0mPzLZC7QoLTkdfE/Rt/ieg8iLau/ZxFZBM74
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="976651"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="976651"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 22:29:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="28658999"
-Received: from linchen5-mobl.ccr.corp.intel.com (HELO localhost) ([10.254.209.209])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 22:29:38 -0800
-From: "Wang, Qingshun" <qingshun.wang@linux.intel.com>
-To: linux-pci@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-acpi@vger.kernel.org
-Cc: chao.p.peng@linux.intel.com,
-	erwin.tsaur@intel.com,
-	feiting.wanyan@intel.com,
-	qingshun.wang@intel.com,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
-	James Morse <james.morse@arm.com>,
-	Tony Luck <tony.luck@intel.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Ira Weiny <ira.weiny@intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Bjorn Helgaas <helgaas@kernel.org>,
-	Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-	"Oliver O'Halloran" <oohall@gmail.com>,
-	Miaohe Lin <linmiaohe@huawei.com>,
-	Shiju Jose <shiju.jose@huawei.com>,
-	Adam Preble <adam.c.preble@intel.com>,
-	Li Yang <leoyang.li@nxp.com>,
-	Lukas Wunner <lukas@wunner.de>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-	Robert Richter <rrichter@amd.com>,
+	s=arc-20240116; t=1706164366; c=relaxed/simple;
+	bh=TcriaBTV0/PQuQz0lw9hXdSafxSdcnqA1UrK92Dxklk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nnqnM1XzKYWcqMkmCmUbDe/PKBEbpTHW2j8qdA3KsZI9L6AaMZlQtBWwgFDtS4qkK1OlW3K/P0WP8dNRGHGi0nMJQLAoMl7FH+0tCvGG+YIp/PuHf8Q7zDro05DAkunySyQ7AvLUgB+B/1MDSHs2YrJwm5cGpo3KFpuisW6ANXs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TL9wx71F4z4f3lVg;
+	Thu, 25 Jan 2024 14:32:33 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 4A50F1A0232;
+	Thu, 25 Jan 2024 14:32:40 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgBHGBGGALJlUoSmBw--.63362S4;
+	Thu, 25 Jan 2024 14:32:40 +0800 (CST)
+From: linan666@huaweicloud.com
+To: song@kernel.org,
+	neilb@suse.com,
+	shli@fb.com,
+	mariusz.tkaczyk@linux.intel.com
+Cc: linux-raid@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-cxl@vger.kernel.org,
-	linux-edac@vger.kernel.org,
-	"Wang, Qingshun" <qingshun.wang@linux.intel.com>
-Subject: [PATCH v2 4/4] RAS: Trace more information in aer_event
-Date: Thu, 25 Jan 2024 14:28:02 +0800
-Message-ID: <20240125062802.50819-5-qingshun.wang@linux.intel.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240125062802.50819-1-qingshun.wang@linux.intel.com>
-References: <20240125062802.50819-1-qingshun.wang@linux.intel.com>
+	linan666@huaweicloud.com,
+	yukuai3@huawei.com,
+	yi.zhang@huawei.com,
+	houtao1@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH v3 0/4] md: Don't clear MD_CLOSING when the raid is about to stop
+Date: Thu, 25 Jan 2024 14:28:37 +0800
+Message-Id: <20240125062841.1721193-1-linan666@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -102,179 +59,47 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgBHGBGGALJlUoSmBw--.63362S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrurWUZrykZrW5AFyUWr1xKrg_yoW3GFg_JF
+	WkAa4rGrn7GFyfCa45Gr4DArW0yr4UWr1UJF1xtrWfJr13tw1UWF4DJr4kXw1xXFWUAr4F
+	kw1UAr1SvF4qqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbfxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+	0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+	1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
+	rcIFxwACI402YVCY1x02628vn2kIc2xKxwAKzVCY07xG64k0F24l42xK82IYc2Ij64vIr4
+	1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
+	67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
+	8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAv
+	wI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUBSoJUUUUU=
+X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
 
-Add following fields in aer_event to better understand Advisory
-Non-Fatal and other errors for external observation:
+From: Li Nan <linan122@huawei.com>
 
-  - cor_status		(Correctable Error Status)
-  - cor_mask		(Correctable Error Mask)
-  - uncor_status	(Uncorrectable Error Status)
-  - uncor_severity	(Uncorrectable Error Severity)
-  - uncor_mask		(Uncorrectable Error Mask)
-  - aer_cap_ctrl	(AER Capabilities and Control)
-  - link_status		(Link Status)
-  - device_status	(Device Status)
-  - device_control_2	(Device Control 2)
+Changes in v3:
+ - rename vaires 'did_set_md_closing' in patch 1.
+ - rename function mddev_set_closing_and_sync_blockdev() in patch 2.
+ - reorganize conditions in patch 3.
+ - add a new patch to clean up md_set_readonly().
 
-In addition to the raw register value, value of following fields are
-extracted and logged for better observability:
+Changes in v2:
+ - don't clear MD_CLOSING in md_clean().
+ - set MD_CLOSING and sync blockdev in array_state_store().
 
-  - "First Error Pointer" and "Completion Timeout Prefix/Header Log
-    Capable" from "AER Capabilities and Control"
-  - "Completion Timeout Value" and "Completion Timeout Disable"
-    from "Device Control 2"
+Li Nan (4):
+  md: Don't clear MD_CLOSING when the raid is about to stop
+  md: factor out a helper to sync mddev
+  md: sync blockdev before stopping raid or setting readonly
+  md: check mddev->pers before calling md_set_readonly()
 
-Signed-off-by: "Wang, Qingshun" <qingshun.wang@linux.intel.com>
----
- drivers/pci/pcie/aer.c        | 17 +++++++++++--
- include/ras/ras_event.h       | 48 ++++++++++++++++++++++++++++++++---
- include/uapi/linux/pci_regs.h |  1 +
- 3 files changed, 60 insertions(+), 6 deletions(-)
+ drivers/md/md.c | 96 ++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 67 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-index eec3406f727a..2f5639f6c40f 100644
---- a/drivers/pci/pcie/aer.c
-+++ b/drivers/pci/pcie/aer.c
-@@ -757,6 +757,7 @@ void aer_print_error(struct pci_dev *dev, struct aer_err_info *info)
- 	int layer, agent;
- 	int id = pci_dev_id(dev);
- 	const char *level;
-+	struct aer_capability_regs aer_caps;
- 
- 	if (info->severity == AER_CORRECTABLE) {
- 		status = info->cor_status;
-@@ -793,8 +794,18 @@ void aer_print_error(struct pci_dev *dev, struct aer_err_info *info)
- 	if (info->id && info->error_dev_num > 1 && info->id == id)
- 		pci_err(dev, "  Error of this Agent is reported first\n");
- 
-+	aer_caps = (struct aer_capability_regs) {
-+	  .cor_status = info->cor_status,
-+	  .cor_mask = info->cor_mask,
-+	  .uncor_status = info->uncor_status,
-+	  .uncor_severity = info->uncor_severity,
-+	  .uncor_mask = info->uncor_mask,
-+	  .cap_control = info->aer_cap_ctrl
-+	};
- 	trace_aer_event(dev_name(&dev->dev), (status & ~mask),
--			info->severity, info->tlp_header_valid, &info->tlp);
-+			info->severity, info->tlp_header_valid, &info->tlp,
-+			&aer_caps, info->link_status,
-+			info->device_status, info->device_control_2);
- }
- 
- static void aer_print_port_info(struct pci_dev *dev, struct aer_err_info *info)
-@@ -870,7 +881,9 @@ void pci_print_aer(struct pci_dev *dev, int aer_severity,
- 		__print_tlp_header(dev, &aer->header_log);
- 
- 	trace_aer_event(dev_name(&dev->dev), (status & ~mask),
--			aer_severity, tlp_header_valid, &aer->header_log);
-+			aer_severity, tlp_header_valid, &aer->header_log,
-+			aer, info.link_status,
-+			info.device_status, info.device_control_2);
- }
- EXPORT_SYMBOL_NS_GPL(pci_print_aer, CXL);
- 
-diff --git a/include/ras/ras_event.h b/include/ras/ras_event.h
-index cbd3ddd7c33d..a94997073d90 100644
---- a/include/ras/ras_event.h
-+++ b/include/ras/ras_event.h
-@@ -300,9 +300,14 @@ TRACE_EVENT(aer_event,
- 		 const u32 status,
- 		 const u8 severity,
- 		 const u8 tlp_header_valid,
--		 struct aer_header_log_regs *tlp),
-+		 struct aer_header_log_regs *tlp,
-+		 struct aer_capability_regs *aer_caps,
-+		 const u16 link_status,
-+		 const u16 device_status,
-+		 const u16 device_control_2),
- 
--	TP_ARGS(dev_name, status, severity, tlp_header_valid, tlp),
-+	TP_ARGS(dev_name, status, severity, tlp_header_valid, tlp,
-+		aer_caps, link_status, device_status, device_control_2),
- 
- 	TP_STRUCT__entry(
- 		__string(	dev_name,	dev_name	)
-@@ -310,6 +315,10 @@ TRACE_EVENT(aer_event,
- 		__field(	u8,		severity	)
- 		__field(	u8, 		tlp_header_valid)
- 		__array(	u32, 		tlp_header, 4	)
-+		__field_struct(struct aer_capability_regs, aer_caps)
-+		__field(	u16,		link_status	)
-+		__field(	u16,		device_status	)
-+		__field(	u16,		device_control_2)
- 	),
- 
- 	TP_fast_assign(
-@@ -317,6 +326,10 @@ TRACE_EVENT(aer_event,
- 		__entry->status		= status;
- 		__entry->severity	= severity;
- 		__entry->tlp_header_valid = tlp_header_valid;
-+		__entry->aer_caps	= *aer_caps;
-+		__entry->link_status	= link_status;
-+		__entry->device_status	= device_status;
-+		__entry->device_control_2 = device_control_2;
- 		if (tlp_header_valid) {
- 			__entry->tlp_header[0] = tlp->dw0;
- 			__entry->tlp_header[1] = tlp->dw1;
-@@ -325,7 +338,20 @@ TRACE_EVENT(aer_event,
- 		}
- 	),
- 
--	TP_printk("%s PCIe Bus Error: severity=%s, %s, TLP Header=%s\n",
-+	TP_printk("%s PCIe Bus Error: severity=%s, %s, TLP Header=%s, "
-+		  "Correctable Error Status=0x%08x, "
-+		  "Correctable Error Mask=0x%08x, "
-+		  "Uncorrectable Error Status=0x%08x, "
-+		  "Uncorrectable Error Severity=0x%08x, "
-+		  "Uncorrectable Error Mask=0x%08x, "
-+		  "AER Capability and Control=0x%08x, "
-+		  "First Error Pointer=0x%x, "
-+		  "Completion Timeout Prefix/Header Log Capable=%s, "
-+		  "Link Status=0x%04x, "
-+		  "Device Status=0x%04x, "
-+		  "Device Control 2=0x%04x, "
-+		  "Completion Timeout Value=0x%x, "
-+		  "Completion Timeout Disable=%sn",
- 		__get_str(dev_name),
- 		__entry->severity == AER_CORRECTABLE ? "Corrected" :
- 			__entry->severity == AER_FATAL ?
-@@ -335,7 +361,21 @@ TRACE_EVENT(aer_event,
- 		__print_flags(__entry->status, "|", aer_uncorrectable_errors),
- 		__entry->tlp_header_valid ?
- 			__print_array(__entry->tlp_header, 4, 4) :
--			"Not available")
-+			"Not available",
-+		__entry->aer_caps.cor_status,
-+		__entry->aer_caps.cor_mask,
-+		__entry->aer_caps.uncor_status,
-+		__entry->aer_caps.uncor_severity,
-+		__entry->aer_caps.uncor_mask,
-+		__entry->aer_caps.cap_control,
-+		PCI_ERR_CAP_FEP(__entry->aer_caps.cap_control),
-+		__entry->aer_caps.cap_control & PCI_ERR_CAP_CTO_LOGC ? "True" : "False",
-+		__entry->link_status,
-+		__entry->device_status,
-+		__entry->device_control_2,
-+		__entry->device_control_2 & PCI_EXP_DEVCTL2_COMP_TIMEOUT,
-+		__entry->device_control_2 & PCI_EXP_DEVCTL2_COMP_TMOUT_DIS ?
-+					    "True" : "False")
- );
- 
- /*
-diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
-index a39193213ff2..54160ed2a8c9 100644
---- a/include/uapi/linux/pci_regs.h
-+++ b/include/uapi/linux/pci_regs.h
-@@ -787,6 +787,7 @@
- #define  PCI_ERR_CAP_ECRC_GENE	0x00000040	/* ECRC Generation Enable */
- #define  PCI_ERR_CAP_ECRC_CHKC	0x00000080	/* ECRC Check Capable */
- #define  PCI_ERR_CAP_ECRC_CHKE	0x00000100	/* ECRC Check Enable */
-+#define  PCI_ERR_CAP_CTO_LOGC	0x00001000	/* Completion Timeout Prefix/Header Log Capable */
- #define PCI_ERR_HEADER_LOG	0x1c	/* Header Log Register (16 bytes) */
- #define PCI_ERR_ROOT_COMMAND	0x2c	/* Root Error Command */
- #define  PCI_ERR_ROOT_CMD_COR_EN	0x00000001 /* Correctable Err Reporting Enable */
 -- 
-2.42.0
+2.39.2
 
 
