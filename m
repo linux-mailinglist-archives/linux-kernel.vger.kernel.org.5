@@ -1,135 +1,142 @@
-Return-Path: <linux-kernel+bounces-39016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B604383C9AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:17:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D71983C9B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:17:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 671521F22138
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:17:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A10871C23334
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:17:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB880136664;
-	Thu, 25 Jan 2024 17:13:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F3B9131E45;
+	Thu, 25 Jan 2024 17:14:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ffDXEQ6x"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="FJxgyyNh"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED358131723;
-	Thu, 25 Jan 2024 17:12:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BBED4F611;
+	Thu, 25 Jan 2024 17:14:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706202780; cv=none; b=YoN+9+4y6yDjNETBMUSL6axeU3AT3Rc7St/P1Y/njhYgF4X3nUgh1SFeE8P2QZnT0saLnTiGCr7QLEDkvBPo++nzPn4xJbahntsopYaWHqAxlkZZcKyO0afCOCwsnM7uvfngagm0ykIm8SbwCC70psY+y5Emij7z6IRvxNB+Hqg=
+	t=1706202890; cv=none; b=jLWhf8Bu+CpBfG0oPtkvkhexYYZHwXGZrd550oun8DPQ9ITDr2iHia+1CWXlolZI8bxoNxSSthdAzw6ZQ2NGeMLx4iD5WcpelR0uaTiJ45ovvvxi17iyWriQIM4+Ceb2fkCjr+qRFBVAuxL8ZauKCLSgx/xWKDEf3eKNw/PRMrA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706202780; c=relaxed/simple;
-	bh=P8twLiBk8195NVVkVBNtmDPSljomu/5qIfayjD6vnKg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vGvlR5j/3IurDou94xphbNSBpnyelrjjgYe4GJlXWE5dw4+B5qtEatmYDOHxamZTLCpEa2kgW9he0epXZFDKKOE26YYq0jWCMdDN2y/GMT7dLPFKdM8Q60Iwi4AYrT0HSAVZqVbrtsjabY2pDH8osdZ942xK/ZRYuSEtWhY7Ewc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ffDXEQ6x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 020FAC433F1;
-	Thu, 25 Jan 2024 17:12:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706202779;
-	bh=P8twLiBk8195NVVkVBNtmDPSljomu/5qIfayjD6vnKg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ffDXEQ6xe5Oc09Q0Ks5MWZFNjI/ryOga9U0VvRre4UlZEsa4bu1C1FXVa6Kf3v4qP
-	 P8E/TALOBWSYRQd5NsV2L5zUqy4jO7BVVip0OWlmeyLMgqtw55dnQGKSOpNFTFMqqR
-	 Fp8KqNxBzSziJSwDZdZEx7JJUL12SiHu9misY+GkRJBqdgG1zwLfsSeOWHkTeFNexM
-	 Ahi5B3AJZf0vRBV3NRRn4YuJ5SB+VZqA0fRwsWGfJVi2hH8UJ7JFTSwvnye1xjr+BO
-	 yg5sTt5RbpjbV9x6hUkNkW1WDlzfJIZqyudzyT/UtsrbgL+5xT0If1FURMZAkirwTy
-	 Pc9SwmnCEFYtA==
-Date: Thu, 25 Jan 2024 17:12:54 +0000
-From: Conor Dooley <conor@kernel.org>
-To: AnnanLiu <annan.liu.xdu@outlook.com>
-Cc: chao.wei@sophgo.com, unicorn_wang@outlook.com, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
-	devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] riscv: dts: sophgo: add timer dt node for CV1800
-Message-ID: <20240125-rosy-folk-976dd297e32f@spud>
-References: <DM6PR20MB23167ABF18C1F004A5710D4FAB7A2@DM6PR20MB2316.namprd20.prod.outlook.com>
+	s=arc-20240116; t=1706202890; c=relaxed/simple;
+	bh=FhdGxpb8WRLhcPuhsyXPUQ/OHyb7n5wxsxPBiROQ59I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=BhCr7rT2fJM10RbaeN9lLtNra8EmiVEONW8NezpQDSjnTpfWL3NdviUjHG9enxXK3OKF9cVGpiVmktuKZ2+iCZqq5STK4n54Sgn+w8VFVLuwZvywP0WW/oslPwHmm0WCy7TkcH+IeZMwxoqTL+YTuyXpvWToSEeEAeVTSV32UWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=FJxgyyNh; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40P6U5C7016792;
+	Thu, 25 Jan 2024 17:14:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=QVBi23eTif8k1KMpbX3/5gFCMzFOXHrSwUxTig2rOoU=; b=FJ
+	xgyyNh6KGEbV3J7nosNLR6HiZ8eB6gX8Jhi7VpfT+6XmGiw6Cyi1gaQ3f0w9qWOE
+	bCA79aMwzv0sVF6s1PCRolBLgu475QtMnnnNvKYI873uHHnEiWdMmnu7tc64Ddw4
+	DYuGpGPVHpXzsmDOlbV/3jR4+6xRjFU3DuiNszp5B+Aoh1sZBAR8Q5Yh2tp6SGEi
+	otWyjGDKIHXc23vQseWnASv4rFeAS+k/gTjkz6lpAfVdWzW32wi7CGHrQ7yS62uI
+	y1dRb4+IbEWaKaWe6g88jEDCYlWF52aISKQsqPZF4/rj3H/9Oae8eYWMA5ZkGPL0
+	DzmbNr2hohDCy9hikvJw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vufc8245p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jan 2024 17:14:41 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40PHEeVH002310
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jan 2024 17:14:40 GMT
+Received: from [10.71.109.81] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 25 Jan
+ 2024 09:14:39 -0800
+Message-ID: <ba27bb80-2234-60c8-5f76-34a9f7ae6ae9@quicinc.com>
+Date: Thu, 25 Jan 2024 09:14:39 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="U7ZAB6TpsVs6HOXN"
-Content-Disposition: inline
-In-Reply-To: <DM6PR20MB23167ABF18C1F004A5710D4FAB7A2@DM6PR20MB2316.namprd20.prod.outlook.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] drm/msm/dpu: make "vblank timeout" more useful
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark
+	<robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Marijn Suijten
+	<marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>, Daniel
+ Vetter <daniel@ffwll.ch>
+CC: <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+References: <20240106-fd-dpu-debug-timeout-v1-1-6d9762884641@linaro.org>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <20240106-fd-dpu-debug-timeout-v1-1-6d9762884641@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: SHvHfoZSlaQVkG37NNG_upCDrdy3PfRO
+X-Proofpoint-GUID: SHvHfoZSlaQVkG37NNG_upCDrdy3PfRO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-25_10,2024-01-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1015
+ suspectscore=0 bulkscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ phishscore=0 lowpriorityscore=0 mlxlogscore=738 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401190000 definitions=main-2401250122
 
 
---U7ZAB6TpsVs6HOXN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 25, 2024 at 05:46:23PM +0800, AnnanLiu wrote:
-> Add the timer device tree node to CV1800 SoC.
->=20
-> Signed-off-by: AnnanLiu <annan.liu.xdu@outlook.com>
+On 1/5/2024 3:50 PM, Dmitry Baryshkov wrote:
+> We have several reports of vblank timeout messages. However after some
+> debugging it was found that there might be different causes to that.
+> Include the actual CTL_FLUSH value into the timeout message. This allows
+> us to identify the DPU block that gets stuck.
+> 
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 > ---
-> This patch depends on the clk driver and reset driver.
-> Clk driver link:
-> https://lore.kernel.org/all/IA1PR20MB49539CDAD9A268CBF6CA184BBB9FA@IA1PR2=
-0MB4953.namprd20.prod.outlook.com/
-> Reset driver link:
-> https://lore.kernel.org/all/20231113005503.2423-1-jszhang@kernel.org/
->=20
-> Changes since v1:
-> - Change the status of the timer from disabled to okay.
-> v1 link:
-> https://lore.kernel.org/all/DM6PR20MB23167E08FCA546D6C1899CB1AB9EA@DM6PR2=
-0MB2316.namprd20.prod.outlook.com/
->=20
->  arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 73 +++++++++++++++++++++++++
->  1 file changed, 73 insertions(+)
->=20
-> diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dt=
-s/sophgo/cv1800b.dtsi
-> index aec6401a467b..aef7970af2b8 100644
-> --- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> +++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> @@ -1,6 +1,7 @@
->  // SPDX-License-Identifier: (GPL-2.0 OR MIT)
->  /*
->   * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-> + * Copyright (C) 2024 Annan Liu <annan.liu.xdu@outlook.com>
->   */
-> =20
->  #include <dt-bindings/interrupt-controller/irq.h>
-> @@ -113,6 +114,78 @@ plic: interrupt-controller@70000000 {
->  			riscv,ndev =3D <101>;
->  		};
-> =20
-> +		timer0: timer@030a0000 {
-> +			compatible =3D "snps,dw-apb-timer";
-> +			reg =3D <0x030a0000 0x14>;
-> +			interrupts =3D <79 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks =3D <&osc>;
-> +			resets =3D <&rst RST_TIMER0>;
-> +			status =3D "okay";
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+> index d0f56c5c4cce..fb34067ab6af 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+> @@ -489,7 +489,7 @@ static int dpu_encoder_phys_vid_wait_for_commit_done(
+>   		(hw_ctl->ops.get_flush_register(hw_ctl) == 0),
+>   		msecs_to_jiffies(50));
+>   	if (ret <= 0) {
+> -		DPU_ERROR("vblank timeout\n");
+> +		DPU_ERROR("vblank timeout: %x\n", hw_ctl->ops.get_flush_register(hw_ctl));
+>   		return -ETIMEDOUT;
+>   	}
 
-Do these really have no interface clock? I'd expect something that
-is almost certainly sitting on a apb (or similar) interface to have one.
+Nothing wrong with this change.
 
-Thanks,
-Conor.
+But I dont know how much information this is giving to really find out 
+what is causing the vblank timeout. Sure, we know which flush bit is 
+actually stuck but we dont know why its stuck.
 
---U7ZAB6TpsVs6HOXN
-Content-Type: application/pgp-signature; name="signature.asc"
+We should add a logic here to get the snapshot on the first vblank 
+timeout that way we avoid excessive capture as well similar to the other 
+fatal locations of calling snapshot.
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbKWlgAKCRB4tDGHoIJi
-0vpGAP9NN4LPvUxivpiccMxrAPRFKuRn7nj+iQE9H6tZd0YdzAEAjWezQmZEkdEt
-fL6gE5liQ4NsH5TG4cdJc7SJ9zAU2gk=
-=yJSK
------END PGP SIGNATURE-----
-
---U7ZAB6TpsVs6HOXN--
+>   
+> 
+> ---
+> base-commit: 39676dfe52331dba909c617f213fdb21015c8d10
+> change-id: 20240106-fd-dpu-debug-timeout-e917f0bc8063
+> 
+> Best regards,
 
