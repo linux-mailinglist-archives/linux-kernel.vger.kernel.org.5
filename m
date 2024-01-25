@@ -1,419 +1,133 @@
-Return-Path: <linux-kernel+bounces-38269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F294F83BD63
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:33:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E0FD83BD65
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:33:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A432E29044E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:32:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2783029291E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:33:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99E091BDE2;
-	Thu, 25 Jan 2024 09:30:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA9FE1BF38;
+	Thu, 25 Jan 2024 09:31:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="R9bz5TP4"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WC6nwv1D"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A515E1CD22
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:30:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68DB81BDC2;
+	Thu, 25 Jan 2024 09:31:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706175025; cv=none; b=QEZA5atPuuYiIUfuPcw6e/cBaDEDktwILh9eMUDKSibxCxcqDj46AKPtO0PvIoNGCOA21VecE5bUD5MIfcfNfiYgECOjdRBXaqqRoaagEhU+NU73k5k88Oh5WmHYKHFMrHcwNbxUYIEtEBOHYo/xG2Tpq17upOa3OELogICRsvI=
+	t=1706175070; cv=none; b=HWWdlR9Ela3GmY78BPGkTnDSNfMOGd4yIIQbgtdJPegMGvando+tn9mxk5L917ccodxNWBfNitW6JqswHC2hdf7Ir5DhMdeEJ0hxxvBCRGkVv7ykzqG5nHfMQdlosdHB90sapVAx2dF94z6xiOxeQ5z0Bgtn7FE7OGyKJScsSw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706175025; c=relaxed/simple;
-	bh=+z8U3jmkrYITgqElhgcXRMdg31Uor/mf5V6CeNez3JI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oRXnq1O6EpgThE0JClBGYsGDsLTnMNhWN8+smNGs299/GUTigBsboWg9kKgd0cjz7Tq45TITC3J7YyfcwMyC+MZRHmuLezEVfRWun+it9L1Y4ClGeJcm9LFAp/lxqVMTGceT/pXnF0VeXZ7CKV/+SPdrMABL9PcwjOUKINAUaws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=R9bz5TP4; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40e8d3b29f2so76204695e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 01:30:23 -0800 (PST)
+	s=arc-20240116; t=1706175070; c=relaxed/simple;
+	bh=OeShpqzxJE7yLOFxxvK9qlbC3YgMT04WmY+0Pht28xQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Au+ocbJG9zAQQ/1BP/abWhjjKXBTCPse79oSeqvf0isYpDgT5pj2ci4q62gCno5fYBFxs9ubv/+FR5d3nHHZkMuLCEFojPiMOnXe0IMkyNqovWLq/7nq2pJ4dI7vrIupwtqZwh7Xz6FyrZrFBcuvll1lT7l4r8ZJahl3+SkbgyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WC6nwv1D; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-55a50649ff6so7183035a12.3;
+        Thu, 25 Jan 2024 01:31:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706175022; x=1706779822; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qZ93Ung9UFj9gEmUJ9dbTh7s4u6LdRY89gOu3DzOeMw=;
-        b=R9bz5TP42ob88mBEkjL4/Ahdn70pmu17HWyVDSdTrnYCeiSB1tg5XRo4xXkiAOCKVr
-         5swLsF88KebPCNaC5YGN0QUjY7h5pYA0GWcwdTfOIoCSwIn0egI60N0rF4WEPC2vSU3Y
-         SZZt8+bF97Y11hDwBSlDF2OkkH++AvXBJhy3gupK/BB9V2UtSRCKa0kQntOKiWmvL6G+
-         njeTbatXSP7lpjbyBBBg4PWvxNZQzA4vWC3LbeSOUIklM6kFp0q8XNbSHLfw3x0vWq38
-         EYcYrBb5nsazJQphNORsw5+ip8dUHml5zVwr9ufbOkPMRa2zDXTtdlslDsbhGQbv1UbP
-         9geA==
+        d=gmail.com; s=20230601; t=1706175066; x=1706779866; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=yF1vj6bD4OantSklaxQBfzwibMkOXYYkC5p2/Evicfs=;
+        b=WC6nwv1DAO+WUe+jGRSDhXj418Jv6mU5tgpHLkd0H3J7o3Gm1xSZO5zqe1Ip5T6tLC
+         NtzykAejh7caOGjFOlx4OPOiLOY4ItlU8pu+d4SdggA+fzIEuJ9noVh1dzpZv16EL/mu
+         N0DG83jgISRlexCdtMTQaOlhAs7MxcTGOXc7MjSW/7Exe1SxNKOnd04Bd9H3442nAB/I
+         7OPswA8ah8BU9//oY80Xg826daKgOSkrU2R6q19YKpjgFkQRaM52pP93acMQEj1CPeqb
+         yzxvbDcSj8squdYcp4C3pkC2J7FhjpSjQXmfJf8Ip0fIhLbkqRIW2oVl+mwcYLVtTDEU
+         4ZFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706175022; x=1706779822;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1706175066; x=1706779866;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qZ93Ung9UFj9gEmUJ9dbTh7s4u6LdRY89gOu3DzOeMw=;
-        b=AnGWp0ClKHJGorrtXCF8ZpBCAOE6twqeh4TVQq+Fian8X3wD0Ge3Q/1hr0kPvU8tSF
-         9nGG4jUJObmLliAL7xVlRY/YEz3XJ7Jpo2c6IaoEUy0QOhRjo6i4pWf6yGaGDyIaYnOY
-         VJLuyspmOeaCfT/5F/6zVnyT3fJshtI6Q85Z7xWDX2RK22hCHLOVVklLXP6LBqif4yES
-         gQh9GvMvHCYYsSzETTp+ft9DiImV+nXQfu6E25NKvGEjg9u3oOO2cycG8nD6WZzuGC6n
-         hIZ10Z71hoaUJgUuq6vUR2BKMM+mWVHeTLQy0xYIB5fMm8l5A3W44BbtYuJXsNq3F9U7
-         wb0A==
-X-Gm-Message-State: AOJu0YwpG9CT0cvp2p66jPFtVFE6ZjRVUqrag7SP0Al3jhX7QZYbAqus
-	BwH1GuZtqe8uz/4hBmZ9lZAedHCwunJ+iWzcte/zGT/VlDOmNI5rtIfP0JqmsUk=
-X-Google-Smtp-Source: AGHT+IFW9Dh9uQSkOuMQVDpLAUQv+08vOtsrRbDpJ59aMyH0jm7MsfbpJ9gZPI/GPcA4/RL6Ig0vBg==
-X-Received: by 2002:a05:600c:4747:b0:40e:48e9:b47f with SMTP id w7-20020a05600c474700b0040e48e9b47fmr242908wmo.147.1706175021858;
-        Thu, 25 Jan 2024 01:30:21 -0800 (PST)
-Received: from ?IPV6:2a05:6e02:1041:c10:3efc:18bf:254:203f? ([2a05:6e02:1041:c10:3efc:18bf:254:203f])
-        by smtp.googlemail.com with ESMTPSA id er9-20020a05600c84c900b0040e596320bfsm733750wmb.0.2024.01.25.01.30.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 01:30:21 -0800 (PST)
-Message-ID: <731aac66-f698-4a1e-b9ee-46a7f24ecae5@linaro.org>
-Date: Thu, 25 Jan 2024 10:30:20 +0100
+        bh=yF1vj6bD4OantSklaxQBfzwibMkOXYYkC5p2/Evicfs=;
+        b=fMJBiT/cta7JZJXeE2jduWz3Hnx8plJQDVrCrmfOmPnFoANczfpoZL3O2qKjlHc24g
+         UgFyMimlaL1U8HpDdYhcCBmCa2Eppuang0/krClFw/Sn98IRqry1RpfUnmmvovfytqZP
+         R6MZ53kFvh6Lr7wgmVEZyLwCf4s5t4I/218rSQuAls1ONsvuR2+L3AHjbUigNuQTxGwT
+         H7Aybz7E4u6rAjXlrlnPdQ9teMhgkqVn7GIZiC7svIXhNBrOjv64WMVpQ2vb3iIm50RD
+         ARupKc6YvtbfnyrDAF/yjATMKwwVd0MgsJ3N1j211QdsLo/vY7XGG2vPfsy4GAuGOb29
+         emwg==
+X-Gm-Message-State: AOJu0YyInI1Ny839wb3zVP1+FYQeuTCzOq07q37ZGDPavK87kXAlbwd1
+	9Btpe5Z5v2ywLEHPT26XBdyY7ZZSOD0nTotPMDZxBQjGfXhZu9R1
+X-Google-Smtp-Source: AGHT+IFD9l2XpZg6gJ3Y5v2cAtGMf4TOPGAa0HvVrsoqEDBhW3/sdNPJABjpXIj+kn4fncD/5XKE+A==
+X-Received: by 2002:a17:907:8693:b0:a2d:d05e:5704 with SMTP id qa19-20020a170907869300b00a2dd05e5704mr456600ejc.30.1706175066341;
+        Thu, 25 Jan 2024 01:31:06 -0800 (PST)
+Received: from skbuf ([188.25.255.36])
+        by smtp.gmail.com with ESMTPSA id k14-20020a1709065fce00b00a28aa4871c7sm809849ejv.205.2024.01.25.01.31.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 01:31:06 -0800 (PST)
+Date: Thu, 25 Jan 2024 11:31:03 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: arinc.unal@arinc9.com
+Cc: Daniel Golle <daniel@makrotopia.org>,
+	Landen Chao <Landen.Chao@mediatek.com>,
+	DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Russell King <linux@armlinux.org.uk>, mithat.guner@xeront.com,
+	erkin.bozoglu@xeront.com,
+	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next v3 1/7] net: dsa: mt7530: always trap frames to
+ active CPU port on MT7530
+Message-ID: <20240125093103.xlf46pezqj6d5ij7@skbuf>
+References: <20240122-for-netnext-mt7530-improvements-1-v3-0-042401f2b279@arinc9.com>
+ <20240122-for-netnext-mt7530-improvements-1-v3-0-042401f2b279@arinc9.com>
+ <20240122-for-netnext-mt7530-improvements-1-v3-1-042401f2b279@arinc9.com>
+ <20240122-for-netnext-mt7530-improvements-1-v3-1-042401f2b279@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] arm64: dts: rockchip: Add OPP data for CPU cores on
- RK3588
-Content-Language: en-US
-To: Alexey Charkov <alchark@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
-Cc: Dragan Simic <dsimic@manjaro.org>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org, Viresh Kumar <viresh.kumar@linaro.org>
-References: <20240125-rk-dts-additions-v1-0-5879275db36f@gmail.com>
- <20240125-rk-dts-additions-v1-4-5879275db36f@gmail.com>
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20240125-rk-dts-additions-v1-4-5879275db36f@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240122-for-netnext-mt7530-improvements-1-v3-1-042401f2b279@arinc9.com>
+ <20240122-for-netnext-mt7530-improvements-1-v3-1-042401f2b279@arinc9.com>
 
-
-Hi Alexey,
-
-Adding Viresh
-
-On 24/01/2024 21:30, Alexey Charkov wrote:
-> By default the CPUs on RK3588 start up in a conservative performance
-> mode. Add frequency and voltage mappings to the device tree to enable
-> dynamic scaling via cpufreq
+On Mon, Jan 22, 2024 at 08:35:52AM +0300, Arınç ÜNAL via B4 Relay wrote:
+> From: Arınç ÜNAL <arinc.unal@arinc9.com>
 > 
-> Signed-off-by: Alexey Charkov <alchark@gmail.com>
+> On the MT7530 switch, the CPU_PORT field indicates which CPU port to trap
+> frames to, regardless of the affinity of the inbound user port.
+> 
+> When multiple CPU ports are in use, if the DSA conduit interface is down,
+> trapped frames won't be passed to the conduit interface.
+> 
+> To make trapping frames work including this case, implement
+> ds->ops->conduit_state_change() on this subdriver and set the CPU_PORT
+> field to the numerically smallest CPU port whose conduit interface is up.
+> Introduce the active_cpu_ports field to store the information of the active
+> CPU ports. Correct the macros, CPU_PORT is bits 4 through 6 of the
+> register.
+> 
+> Add a comment to explain frame trapping for this switch.
+> 
+> Currently, the driver doesn't support the use of multiple CPU ports so this
+> is not necessarily a bug fix.
+> 
+> Suggested-by: Vladimir Oltean <olteanv@gmail.com>
+> Suggested-by: Russell King (Oracle) <linux@armlinux.org.uk>
+> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
 > ---
->   arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 209 ++++++++++++++++++++++++++++++
->   1 file changed, 209 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> index 131b9eb21398..e605be531a0f 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> @@ -97,6 +97,7 @@ cpu_l0: cpu@0 {
->   			clocks = <&scmi_clk SCMI_CLK_CPUL>;
->   			assigned-clocks = <&scmi_clk SCMI_CLK_CPUL>;
->   			assigned-clock-rates = <816000000>;
-> +			operating-points-v2 = <&cluster0_opp_table>;
->   			cpu-idle-states = <&CPU_SLEEP>;
->   			i-cache-size = <32768>;
->   			i-cache-line-size = <64>;
-> @@ -116,6 +117,7 @@ cpu_l1: cpu@100 {
->   			enable-method = "psci";
->   			capacity-dmips-mhz = <530>;
->   			clocks = <&scmi_clk SCMI_CLK_CPUL>;
-> +			operating-points-v2 = <&cluster0_opp_table>;
->   			cpu-idle-states = <&CPU_SLEEP>;
->   			i-cache-size = <32768>;
->   			i-cache-line-size = <64>;
-> @@ -135,6 +137,7 @@ cpu_l2: cpu@200 {
->   			enable-method = "psci";
->   			capacity-dmips-mhz = <530>;
->   			clocks = <&scmi_clk SCMI_CLK_CPUL>;
-> +			operating-points-v2 = <&cluster0_opp_table>;
->   			cpu-idle-states = <&CPU_SLEEP>;
->   			i-cache-size = <32768>;
->   			i-cache-line-size = <64>;
-> @@ -154,6 +157,7 @@ cpu_l3: cpu@300 {
->   			enable-method = "psci";
->   			capacity-dmips-mhz = <530>;
->   			clocks = <&scmi_clk SCMI_CLK_CPUL>;
-> +			operating-points-v2 = <&cluster0_opp_table>;
->   			cpu-idle-states = <&CPU_SLEEP>;
->   			i-cache-size = <32768>;
->   			i-cache-line-size = <64>;
-> @@ -175,6 +179,7 @@ cpu_b0: cpu@400 {
->   			clocks = <&scmi_clk SCMI_CLK_CPUB01>;
->   			assigned-clocks = <&scmi_clk SCMI_CLK_CPUB01>;
->   			assigned-clock-rates = <816000000>;
-> +			operating-points-v2 = <&cluster1_opp_table>;
->   			cpu-idle-states = <&CPU_SLEEP>;
->   			i-cache-size = <65536>;
->   			i-cache-line-size = <64>;
-> @@ -194,6 +199,7 @@ cpu_b1: cpu@500 {
->   			enable-method = "psci";
->   			capacity-dmips-mhz = <1024>;
->   			clocks = <&scmi_clk SCMI_CLK_CPUB01>;
-> +			operating-points-v2 = <&cluster1_opp_table>;
->   			cpu-idle-states = <&CPU_SLEEP>;
->   			i-cache-size = <65536>;
->   			i-cache-line-size = <64>;
-> @@ -215,6 +221,7 @@ cpu_b2: cpu@600 {
->   			clocks = <&scmi_clk SCMI_CLK_CPUB23>;
->   			assigned-clocks = <&scmi_clk SCMI_CLK_CPUB23>;
->   			assigned-clock-rates = <816000000>;
-> +			operating-points-v2 = <&cluster2_opp_table>;
->   			cpu-idle-states = <&CPU_SLEEP>;
->   			i-cache-size = <65536>;
->   			i-cache-line-size = <64>;
-> @@ -234,6 +241,7 @@ cpu_b3: cpu@700 {
->   			enable-method = "psci";
->   			capacity-dmips-mhz = <1024>;
->   			clocks = <&scmi_clk SCMI_CLK_CPUB23>;
-> +			operating-points-v2 = <&cluster2_opp_table>;
->   			cpu-idle-states = <&CPU_SLEEP>;
->   			i-cache-size = <65536>;
->   			i-cache-line-size = <64>;
-> @@ -348,6 +356,207 @@ l3_cache: l3-cache {
->   		};
->   	};
->   
-> +	cluster0_opp_table: opp-table-cluster0 {
-> +		compatible = "operating-points-v2";
-> +		opp-shared;
-> +
-> +		opp-408000000 {
-> +			opp-hz = /bits/ 64 <408000000>;
-> +			opp-microvolt = <675000 675000 950000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-600000000 {
-> +			opp-hz = /bits/ 64 <600000000>;
-> +			opp-microvolt = <675000 675000 950000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-816000000 {
-> +			opp-hz = /bits/ 64 <816000000>;
-> +			opp-microvolt = <675000 675000 950000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-1008000000 {
-> +			opp-hz = /bits/ 64 <1008000000>;
-> +			opp-microvolt = <675000 675000 950000>;
-> +			clock-latency-ns = <40000>;
-> +		};
 
-It is not useful to introduce OPP with the same voltage. There is no 
-gain in terms of energy efficiency as the compute capacity is linearly 
-tied with power consumption (P=CxFxV²) in this case.
-
-For example, opp-408 consumes 2 bogoWatts and opp-816 consumes 4 
-bogoWatts (because of the same voltage).
-
-For a workload, opp-408 takes 10 sec and opp-816 takes 5 sec because it 
-is twice faster.
-
-The energy consumption is:
-
-opp-408 = 10 x 2 = 20 BogoJoules
-opp-816 = 5 x 4 = 20 BogoJoules
-
-
-> +		opp-1200000000 {
-> +			opp-hz = /bits/ 64 <1200000000>;
-> +			opp-microvolt = <712500 712500 950000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-1416000000 {
-> +			opp-hz = /bits/ 64 <1416000000>;
-> +			opp-microvolt = <762500 762500 950000>;
-> +			clock-latency-ns = <40000>;
-> +			opp-suspend;
-> +		};
-> +		opp-1608000000 {
-> +			opp-hz = /bits/ 64 <1608000000>;
-> +			opp-microvolt = <850000 850000 950000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-1800000000 {
-> +			opp-hz = /bits/ 64 <1800000000>;
-> +			opp-microvolt = <950000 950000 950000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +	};
-> +
-> +	cluster1_opp_table: opp-table-cluster1 {
-> +		compatible = "operating-points-v2";
-> +		opp-shared;
-> +
-> +		opp-408000000 {
-> +			opp-hz = /bits/ 64 <408000000>;
-> +			opp-microvolt = <675000 675000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +			opp-suspend;
-> +		};
-> +		opp-600000000 {
-> +			opp-hz = /bits/ 64 <600000000>;
-> +			opp-microvolt = <675000 675000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-816000000 {
-> +			opp-hz = /bits/ 64 <816000000>;
-> +			opp-microvolt = <675000 675000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-1008000000 {
-> +			opp-hz = /bits/ 64 <1008000000>;
-> +			opp-microvolt = <675000 675000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-
-same comment
-
-> +		opp-1200000000 {
-> +			opp-hz = /bits/ 64 <1200000000>;
-> +			opp-microvolt = <675000 675000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-1416000000 {
-> +			opp-hz = /bits/ 64 <1416000000>;
-> +			opp-microvolt = <725000 725000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-1608000000 {
-> +			opp-hz = /bits/ 64 <1608000000>;
-> +			opp-microvolt = <762500 762500 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-1800000000 {
-> +			opp-hz = /bits/ 64 <1800000000>;
-> +			opp-microvolt = <850000 850000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-2016000000 {
-> +			opp-hz = /bits/ 64 <2016000000>;
-> +			opp-microvolt = <925000 925000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-2208000000 {
-> +			opp-hz = /bits/ 64 <2208000000>;
-> +			opp-microvolt = <987500 987500 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-2256000000 {
-> +			opp-hz = /bits/ 64 <2256000000>;
-> +			opp-microvolt = <1000000 1000000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-2304000000 {
-> +			opp-hz = /bits/ 64 <2304000000>;
-> +			opp-microvolt = <1000000 1000000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-2352000000 {
-> +			opp-hz = /bits/ 64 <2352000000>;
-> +			opp-microvolt = <1000000 1000000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-2400000000 {
-> +			opp-hz = /bits/ 64 <2400000000>;
-> +			opp-microvolt = <1000000 1000000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-
-Same comment
-
-> +	};
-> +
-> +	cluster2_opp_table: opp-table-cluster2 {
-> +		compatible = "operating-points-v2";
-> +		opp-shared;
-> +
-> +		opp-408000000 {
-> +			opp-hz = /bits/ 64 <408000000>;
-> +			opp-microvolt = <675000 675000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +			opp-suspend;
-> +		};
-> +		opp-600000000 {
-> +			opp-hz = /bits/ 64 <600000000>;
-> +			opp-microvolt = <675000 675000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-816000000 {
-> +			opp-hz = /bits/ 64 <816000000>;
-> +			opp-microvolt = <675000 675000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-1008000000 {
-> +			opp-hz = /bits/ 64 <1008000000>;
-> +			opp-microvolt = <675000 675000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-1200000000 {
-> +			opp-hz = /bits/ 64 <1200000000>;
-> +			opp-microvolt = <675000 675000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-1416000000 {
-> +			opp-hz = /bits/ 64 <1416000000>;
-> +			opp-microvolt = <725000 725000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-1608000000 {
-> +			opp-hz = /bits/ 64 <1608000000>;
-> +			opp-microvolt = <762500 762500 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-1800000000 {
-> +			opp-hz = /bits/ 64 <1800000000>;
-> +			opp-microvolt = <850000 850000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-2016000000 {
-> +			opp-hz = /bits/ 64 <2016000000>;
-> +			opp-microvolt = <925000 925000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-2208000000 {
-> +			opp-hz = /bits/ 64 <2208000000>;
-> +			opp-microvolt = <987500 987500 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-2256000000 {
-> +			opp-hz = /bits/ 64 <2256000000>;
-> +			opp-microvolt = <1000000 1000000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-2304000000 {
-> +			opp-hz = /bits/ 64 <2304000000>;
-> +			opp-microvolt = <1000000 1000000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-2352000000 {
-> +			opp-hz = /bits/ 64 <2352000000>;
-> +			opp-microvolt = <1000000 1000000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-> +		opp-2400000000 {
-> +			opp-hz = /bits/ 64 <2400000000>;
-> +			opp-microvolt = <1000000 1000000 1000000>;
-> +			clock-latency-ns = <40000>;
-> +		};
-
-Same comment
-
-> +	};
-> +
->   	firmware {
->   		optee: optee {
->   			compatible = "linaro,optee-tz";
-> 
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
-
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 
