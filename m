@@ -1,217 +1,105 @@
-Return-Path: <linux-kernel+bounces-38156-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A18A83BBAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:18:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C88A83BBB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:19:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C89DA28BDDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:18:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FF141F219AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:19:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5990217753;
-	Thu, 25 Jan 2024 08:18:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="U1Yjzs0Z"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D0D0175B6;
+	Thu, 25 Jan 2024 08:19:19 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3C621758E
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:18:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A38D617581
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:19:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706170696; cv=none; b=dhfHe7+pIs/eyBP1XUYDiEC1XXj+vI3th+dZpoxxeyEgOYbcc436PbJ+BMLsFy8s60oN0vG7nbgeh/O3caVG/YiN1lhRstANz3xRCBECtrtYVzQM+UaWyDSWKTucqnrAfXPQavXzDPns0zf7zZra6UKGlpIcnMPVLK/8j/CuycM=
+	t=1706170758; cv=none; b=AIIFbG4kSP8TlyfCzkf+xYboX9YDZMR4ub1KnLuLNeUNFZywJzhfS+OndiFXLKNVWallE9P7fcwetu5MCZlzyHXHYZxSAweG9mb19wois9t5lxi3/8QpfuRxgbZ5TXhz8sLNHapqTwScw3Pg3ov2J7W/xEfaw7md0CP1AKi/Z1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706170696; c=relaxed/simple;
-	bh=1Cdj96ruUWkOMFCx+HXr5U6F+uD2KtXlvHZKAxRf9bU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VA+vrFiSQ3ta9ocmzEgZJv3YQurozitiasqKvp/p1VSvjGnsxx+iVO5xycKuK+Lq+Dj1qjix5YugqrAON9lNBXcUJfQH1zlxP5bHSerOUkAXkbItkH2N76acvfEmwQGgDBzqnu11iuYuPeER73a3tMTezLVTu2vW3bJBS4JfzIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=U1Yjzs0Z; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706170694;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=uXqJgm/c2OUlFe0pydromqbBJfahkXAhDOZB8V8CPy0=;
-	b=U1Yjzs0Zv57ZrcoK7Rmhtgk0k323KUwDSIqxLoc5jNVDFZJd1ttjpcUVZbTtsLH37yK54z
-	Nwr8aCDmVg4mjJdgsqXDWjWb3fije4sHrg0SrjMFnBOnuOlYN8xG3I4K1Fw6SEQ0s486zk
-	HkDX67+OblaqYSpl6GRe611cZUJKnrE=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-361-pN_sYv8OPi-gz-Ya29DCEg-1; Thu, 25 Jan 2024 03:18:12 -0500
-X-MC-Unique: pN_sYv8OPi-gz-Ya29DCEg-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40d62d3ae0cso61035645e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 00:18:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706170691; x=1706775491;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uXqJgm/c2OUlFe0pydromqbBJfahkXAhDOZB8V8CPy0=;
-        b=sl3mQYNfsCmmu3J9mAkpRLONcOuKwZNKRIv92t7TrP7vvxRDCg9WK2AxmxpO7ViisF
-         S1xJRN1Vn5gOiyDQ5tWYug6gTB4fnDvSZfmJ9so4JCbBPMjtk2uHp8H9EbNG4EQJ8tBw
-         c++Via4AZUHHJtGA1UkVVGcD9jZXxRlpSuDtygwkMA0f/wXZlGURFQig7rSk4Ak8nR5V
-         3tAacFZUqMLhsCBCyT4ZQzmdBqmtMW/fvA9WudXbfnptYnSN0AUI+bI0HVf1kyZmVVNO
-         L+wLKpvRv+rXTlnzUSiud9epiqZcHh45ss2O9pvxNKYqVoPR6IxwkP7MAlUtwQ23TO8H
-         NxmQ==
-X-Gm-Message-State: AOJu0YxSaIYN4Zd4rm5Gk8igll40Ymeof9j6XbNQ0ZSzUfL18FmVJYwn
-	3+0Xp3fWgt9jZGmrsDPks/Pz0FdSI66zUfuoRcGHO21NxWFnrJLZS3EXTHy0mgWUleNNMvouPHR
-	4R+Hmxpk4yeXb9gBRr2GylCHN/SKAb3T+Jgjjvzbbn9CIFc6wzSQ1uYDal+bh7Q==
-X-Received: by 2002:a05:600c:c8b:b0:40e:4b11:663d with SMTP id fj11-20020a05600c0c8b00b0040e4b11663dmr267262wmb.66.1706170690828;
-        Thu, 25 Jan 2024 00:18:10 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEshtEkNFMkm00s60/JsUTo/oUqMCiWSuFJI5nmGq2+g7C4FvJZO0iTHAUzos0dIk+wNed0Hw==
-X-Received: by 2002:a05:600c:c8b:b0:40e:4b11:663d with SMTP id fj11-20020a05600c0c8b00b0040e4b11663dmr267209wmb.66.1706170690365;
-        Thu, 25 Jan 2024 00:18:10 -0800 (PST)
-Received: from ?IPV6:2003:cb:c70a:7600:9a0b:ceef:a304:b9a7? (p200300cbc70a76009a0bceefa304b9a7.dip0.t-ipconnect.de. [2003:cb:c70a:7600:9a0b:ceef:a304:b9a7])
-        by smtp.gmail.com with ESMTPSA id o14-20020a05600c4fce00b0040d30af488asm1658538wmq.40.2024.01.25.00.18.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 00:18:09 -0800 (PST)
-Message-ID: <2f34f6aa-99fa-4545-b706-a1d50864f9e9@redhat.com>
-Date: Thu, 25 Jan 2024 09:18:07 +0100
+	s=arc-20240116; t=1706170758; c=relaxed/simple;
+	bh=Pe3+Z5TprG1MCm3XH/wvYQEymtq4W+JtGYVqdZcG9Uk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ViddstdiiwRG/NA7SYhb6eF4YoTGTo1TypxD9S75M6XoIrs8x0A5JEnvIBq+bJIg7HnoYytQrbII/kmN1zgZoNxKCXkjLk0k6QSgdPFSbQk1k0oD0xXkm8AelCETKV7QNu3IGXiaubMlCPm+L9tMMlqmsHeSZdpVCCg0XxRUaa8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 875a5205a7694e01b70b9770baae8f36-20240125
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:5b8963f5-aa20-446f-84e2-6c7c914ac904,IP:10,
+	URL:0,TC:0,Content:-5,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,AC
+	TION:release,TS:15
+X-CID-INFO: VERSION:1.1.35,REQID:5b8963f5-aa20-446f-84e2-6c7c914ac904,IP:10,UR
+	L:0,TC:0,Content:-5,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:15
+X-CID-META: VersionHash:5d391d7,CLOUDID:1a2f23fe-c16b-4159-a099-3b9d0558e447,B
+	ulkID:240125161904AS2NEWQO,BulkQuantity:0,Recheck:0,SF:66|24|17|19|44|102,
+	TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,
+	OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR
+X-UUID: 875a5205a7694e01b70b9770baae8f36-20240125
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 1220097995; Thu, 25 Jan 2024 16:19:04 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id 1361EE000EBA;
+	Thu, 25 Jan 2024 16:19:04 +0800 (CST)
+X-ns-mid: postfix-65B21977-817775418
+Received: from kernel.. (unknown [172.20.15.234])
+	by mail.kylinos.cn (NSMail) with ESMTPA id 7AF92E000EB9;
+	Thu, 25 Jan 2024 16:19:01 +0800 (CST)
+From: Kunwu Chan <chentao@kylinos.cn>
+To: linux@armlinux.org.uk
+Cc: linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH] ARM: riscpc: Code cleanup for parse_tag_acorn
+Date: Thu, 25 Jan 2024 16:18:56 +0800
+Message-Id: <20240125081856.531595-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 09/28] mm: abstract shadow stack vma behind
- `arch_is_shadow_stack`
-Content-Language: en-US
-To: debug@rivosinc.com, rick.p.edgecombe@intel.com, broonie@kernel.org,
- Szabolcs.Nagy@arm.com, kito.cheng@sifive.com, keescook@chromium.org,
- ajones@ventanamicro.com, paul.walmsley@sifive.com, palmer@dabbelt.com,
- conor.dooley@microchip.com, cleger@rivosinc.com, atishp@atishpatra.org,
- alex@ghiti.fr, bjorn@rivosinc.com, alexghiti@rivosinc.com
-Cc: corbet@lwn.net, aou@eecs.berkeley.edu, oleg@redhat.com,
- akpm@linux-foundation.org, arnd@arndb.de, ebiederm@xmission.com,
- shuah@kernel.org, brauner@kernel.org, guoren@kernel.org,
- samitolvanen@google.com, evan@rivosinc.com, xiao.w.wang@intel.com,
- apatel@ventanamicro.com, mchitale@ventanamicro.com, waylingii@gmail.com,
- greentime.hu@sifive.com, heiko@sntech.de, jszhang@kernel.org,
- shikemeng@huaweicloud.com, charlie@rivosinc.com, panqinglin2020@iscas.ac.cn,
- willy@infradead.org, vincent.chen@sifive.com, andy.chiu@sifive.com,
- gerg@kernel.org, jeeheng.sia@starfivetech.com, mason.huo@starfivetech.com,
- ancientmodern4@gmail.com, mathis.salmen@matsal.de, cuiyunhui@bytedance.com,
- bhe@redhat.com, chenjiahao16@huawei.com, ruscur@russell.cc,
- bgray@linux.ibm.com, alx@kernel.org, baruch@tkos.co.il,
- zhangqing@loongson.cn, catalin.marinas@arm.com, revest@chromium.org,
- josh@joshtriplett.org, joey.gouly@arm.com, shr@devkernel.io,
- omosnace@redhat.com, ojeda@kernel.org, jhubbard@nvidia.com,
- linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20240125062739.1339782-1-debug@rivosinc.com>
- <20240125062739.1339782-10-debug@rivosinc.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240125062739.1339782-10-debug@rivosinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-On 25.01.24 07:21, debug@rivosinc.com wrote:
-> From: Deepak Gupta <debug@rivosinc.com>
-> 
-> x86 has used VM_SHADOW_STACK (alias to VM_HIGH_ARCH_5) to encode shadow
-> stack VMA. VM_SHADOW_STACK is thus not possible on 32bit. Some arches may
-> need a way to encode shadow stack on 32bit and 64bit both and they may
-> encode this information differently in VMAs.
-> 
-> This patch changes checks of VM_SHADOW_STACK flag in generic code to call
-> to a function `arch_is_shadow_stack` which will return true if arch
-> supports shadow stack and vma is shadow stack else stub returns false.
-> 
-> There was a suggestion to name it as `vma_is_shadow_stack`. I preferred to
-> keep `arch` prefix in there because it's each arch specific.
-> 
-> Signed-off-by: Deepak Gupta <debug@rivosinc.com>
-> ---
->   include/linux/mm.h | 18 +++++++++++++++++-
->   mm/gup.c           |  5 +++--
->   mm/internal.h      |  2 +-
->   3 files changed, 21 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index dfe0e8118669..15c70fc677a3 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -352,6 +352,10 @@ extern unsigned int kobjsize(const void *objp);
->    * for more details on the guard size.
->    */
->   # define VM_SHADOW_STACK	VM_HIGH_ARCH_5
-> +static inline bool arch_is_shadow_stack(vm_flags_t vm_flags)
-> +{
-> +	return (vm_flags & VM_SHADOW_STACK);
-> +}
->   #endif
->   
->   #ifdef CONFIG_RISCV_USER_CFI
-> @@ -362,10 +366,22 @@ extern unsigned int kobjsize(const void *objp);
->    * with VM_SHARED.
->    */
->   #define VM_SHADOW_STACK	VM_WRITE
-> +
-> +static inline bool arch_is_shadow_stack(vm_flags_t vm_flags)
-> +{
-> +	return ((vm_flags & (VM_WRITE | VM_READ | VM_EXEC)) == VM_WRITE);
-> +}
-> +
+This part was commented in about 19 years before.
 
-Please no such hacks just to work around the 32bit vmflags limitation.
+If there are no plans to enable this part code in the future,
+we can remove this dead code.
 
--- 
-Cheers,
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+ arch/arm/mach-rpc/riscpc.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-David / dhildenb
+diff --git a/arch/arm/mach-rpc/riscpc.c b/arch/arm/mach-rpc/riscpc.c
+index f70fb9c4b0cb..947c88950518 100644
+--- a/arch/arm/mach-rpc/riscpc.c
++++ b/arch/arm/mach-rpc/riscpc.c
+@@ -53,12 +53,6 @@ static int __init parse_tag_acorn(const struct tag *ta=
+g)
+ 	default:
+ 		break;
+ 	}
+-#if 0
+-	if (vram_size) {
+-		desc->video_start =3D 0x02000000;
+-		desc->video_end   =3D 0x02000000 + vram_size;
+-	}
+-#endif
+ 	return 0;
+ }
+=20
+--=20
+2.39.2
 
 
