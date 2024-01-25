@@ -1,103 +1,111 @@
-Return-Path: <linux-kernel+bounces-39154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39155-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DB8083CB9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:52:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D07D83CBA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:55:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F543290D4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:52:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5221FB23B32
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:55:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3287134724;
-	Thu, 25 Jan 2024 18:52:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09AD61339B5;
+	Thu, 25 Jan 2024 18:54:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IjQZ2xL7"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="eTg4QeI5"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A6CA1350CB;
-	Thu, 25 Jan 2024 18:52:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFC276341A;
+	Thu, 25 Jan 2024 18:54:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706208766; cv=none; b=lyquZBUwVZcDyKVVYvxcuNFkC9sMSmUU1stMlcUad1Dwm1Ir3/MOufNjEuJc1Z2QGFrajdUTBGCeGeF+W8nBD7H/WkEOsGnuv6CkBl4MA4vIBD9nf+jru+0ZqRf9YpWh+TQR3sIEaYu7sNxVpuwqRL07Y2boJesmfyxdk2pxJlk=
+	t=1706208894; cv=none; b=PN7LDyNalhUOcebSNmqhYAdHS9L+psnT3gwxv2LAXGbfqFni/PtawbAa/C6IGXi56Le/jsp9zQSjUEqW9tooEdOJmBo1RPoNE7Bd8OEMiAgnRtndcEF6Jv2SBtBMdvLdDEdifrX+Zg/3nA0agfxMTDnh2Dyg7dYapB2LJDOKKlc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706208766; c=relaxed/simple;
-	bh=9TC5L7SsGud9PoX5lqIO+z4dFzZhiDP4gcVIzf6t97E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RWG+zTmPzzgvJRIlDduzImyJJBNNuWsFvRII3cApHmjoC1yq9X39syV/NLtiwmosZqI0cPMZc1kbaB6Slc2jlRSzRBdSbe3DW7jovBPXQ55JNJUxBqKpnHKVGZNoul5Uax17l40eR80ndvCCabiLWDyQJs91GoPkF21B1t0uxaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IjQZ2xL7; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cf2fdd518bso16827351fa.1;
-        Thu, 25 Jan 2024 10:52:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706208759; x=1706813559; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=048d7izM4Yl6eTbb1eftwVJi71Uqd0w2n0Eu3Ykko+M=;
-        b=IjQZ2xL7p/neU7UA9WKfha8mwFUXXTQe7+7keIBTvI39jhXpgLEyAilj1QwTwOtUwd
-         VcMFBG7RXvk3wQnU8flEWu6RRT+1uFE74+qds852QJiqjqPbXrxZYovTQJjfCt/bEx2S
-         5yI6/vqlwU+UFzODaVJWwl8xVewuFW0R5vek2FBoKy5jM5UOTiB2LnLXuCBiL7Ak86aw
-         j34X+KbG0AMhPu4C4XctbyUmZlc9hEZuCRXUV7SWDWMgkovVITNqW9idENllNnFKJXJP
-         uBCdhvsNLnDGbWtDGWCyaq/ePku+c0LyIW0b4KLR0aotsE2kyFi1BEhSPqlV3g2Vmed+
-         qFjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706208759; x=1706813559;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=048d7izM4Yl6eTbb1eftwVJi71Uqd0w2n0Eu3Ykko+M=;
-        b=BInGTb5yACTOLvDMb13ISy5FZGBYzh+TMciqYVGSNexzboefNmZSr9oJ4no/Mvxs4/
-         UxHC6+kpDvHq3sgU84myhbfa7FyLzSfg6uTK2rLEfbfReayQWGtFDqce8hH38Ex2IiuJ
-         NtIV0pgftSGUPYn47yodWw2WTCImT0DHto2K/sCTaOv+36u7+O+aCRUAwZdlqApBxcCH
-         aWrS8B0TCaQpbo6dCpWlDcXclRlBLUCe2zqBOOHZNLN9migPVbL3BM7ICSIu5mzxOKsr
-         6KwVrFbhy8bXaj51CXKbrJ91b2rp81tq2SFVgXQl4+2DIq3uo1+IfZ+MNLrPejMDCWOY
-         rD4A==
-X-Gm-Message-State: AOJu0YwdI0rBMfs/vH4AZqz2/CsAYIlO0/5zgmsmltnB8Forfs0s2Ek7
-	h8VxwAqAiZbYm6NS6i5DvzU3rR+scKs+2D4wJ+b6LhOnRkEGOETCqC0COmUnmB4xzE2AzFRNU3m
-	CiOMNWs9F32wVrkP6ckbOkRhVFVpfvQnQtj4=
-X-Google-Smtp-Source: AGHT+IEzQl2KNeCJdNE0dvb3B3KaO9UwIIZk774tMe3+opFEMKKxVdZZ4wTPLxcWN9noVwpW27jndvyjg8yaBHXNiZY=
-X-Received: by 2002:a05:6512:3d21:b0:510:17b1:cfdd with SMTP id
- d33-20020a0565123d2100b0051017b1cfddmr118605lfv.67.1706208758682; Thu, 25 Jan
- 2024 10:52:38 -0800 (PST)
+	s=arc-20240116; t=1706208894; c=relaxed/simple;
+	bh=uUhFUZXQ4vRb3CNL/o+LkzhDQHu7ajYW4NMDA3n5IN0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=u9fbeU2cK71KFeuiAYPajSCeN7q8nedBH6dXIcfGEix5PSn2hLoK6tyg+WVrLZvhmZ+Gsp19n6/epj0DmatVMrhX34veWTnrcTA2f4V5TeFqOIv2XTrUeDW4xo6Ur6ikJxGLyuOw61jI3Jpgh5KEz980hI3/p5x0p7ufmB9qHU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=eTg4QeI5; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4B54D40E00C5;
+	Thu, 25 Jan 2024 18:54:42 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 1B73w0UfRrJD; Thu, 25 Jan 2024 18:54:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706208880; bh=nPXhbPzMU7Z8LSGsHzQlCMKYBA7gkUxN+sOfblh11lE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=eTg4QeI5+iJej5EIxhAHAXLWalh3Lw8ot9yp0ezjBd5+8SGkK2FXE6yw0F9FTvULV
+	 ylpBmjtWNZy9t3rlF6HIg8WUN6rcYn82GYTAVEWE/VmI9v25e6Ke2Wu3IfiBP6OkNF
+	 opPPEejlncO6EN4L409GY6D4yPgvUFNDYPQY3nqHYJjYd/bwWV8HUYo22x56+AAQmr
+	 6Gk+ue+b21SWxCBnXcGMxtifAj1/oDBm6fw3+hYpKkuBIxuz1VoVo4v3TbZliuvT2b
+	 6u5wfL7Fi6N8CbRQlriNA9+Xn6P0L3/A9aw+BCWq0q52ddlfUquxRuyqfjxW3yBou4
+	 djMOwGoI0w3BO9jw3EWAaPMYQzY5LYrDbF8nadJ7537v+p0BOHHwgomfCkcJBA0WP2
+	 5jqikpByplVmiiMdftS1rtfbBW4F6D+aXsbLrcaAq0KZiO2wa1zBrjbgxz1URLJ0nQ
+	 +iym9dNrL8tYddP4b9ApxSycm1IAE08O0hSpROXwXoO42cC3qXag40KX79M6Q3vzyE
+	 I+nfw9u9b6MQgPVDXLdh+bzVCPiiTZHa9U0V44Pog2UfZjeK77eRt8KPOhzc10pJ1+
+	 QyBG6q0OE+oyEu05SBD5wMZqTt/OtPzbXBvt3JffDWfsVmZhNQW3Dd0a54SExufodV
+	 od/mNGlabxq3MyyzAlTnYGvs=
+Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CF2B040E016C;
+	Thu, 25 Jan 2024 18:54:30 +0000 (UTC)
+Date: Thu, 25 Jan 2024 19:54:22 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: "Naik, Avadhut" <avadnaik@amd.com>, Tony Luck <tony.luck@intel.com>,
+	Avadhut Naik <avadhut.naik@amd.com>,
+	linux-trace-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+	x86@kernel.org, linux-kernel@vger.kernel.org, yazen.ghannam@amd.com
+Subject: Re: [PATCH] tracing: Include PPIN in mce_record tracepoint
+Message-ID: <20240125185422.GCZbKuXpLUaOzV8IlO@fat_crate.local>
+References: <20240123235150.3744089-1-avadhut.naik@amd.com>
+ <ZbBV4EGrZw6hJ5IE@agluck-desk3>
+ <be870e14-eeb9-4dcf-ba43-a72ef66a3d87@amd.com>
+ <20240123203853.66655e95@rorschach.local.home>
+ <20240124095708.GAZbDe9Hks0tL2Aj94@fat_crate.local>
+ <20240124090908.1c4daea8@rorschach.local.home>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125102555.2621736-1-ckeepax@opensource.cirrus.com> <20240125102555.2621736-2-ckeepax@opensource.cirrus.com>
-In-Reply-To: <20240125102555.2621736-2-ckeepax@opensource.cirrus.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Thu, 25 Jan 2024 20:52:02 +0200
-Message-ID: <CAHp75VfL2n-zn=cSPULtu1_uRuTNrgtLnJCpSxbiN6xxKzc-JQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/6] mfd: cs42l43: Tidy up header includes
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: lee@kernel.org, broonie@kernel.org, patches@opensource.cirrus.com, 
-	linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240124090908.1c4daea8@rorschach.local.home>
 
-On Thu, Jan 25, 2024 at 12:25=E2=80=AFPM Charles Keepax
-<ckeepax@opensource.cirrus.com> wrote:
->
-> Use more forward declarations, move header guards to cover other
-> includes, and rely less on including headers through other headers.
+On Wed, Jan 24, 2024 at 09:09:08AM -0500, Steven Rostedt wrote:
+> I don't think that's a worry anymore. The offsets can change based on
+> kernel config. PowerTop needed to have the library ported to it because
+> it use to hardcode the offsets but then it broke when running the 32bit
+> version on a 64bit kernel.
+> 
+> > 
+> > I guess no until we break some use case and then we will have to revert.
+> > At least this is what we've done in the past...
+> > 
+> 
+> But that revert was reverted when we converted PowerTop to use libtraceevent.
 
-..
+Ok, sounds like a good plan.
 
-> Changes since v2:
->  - Added pm.h and regmap.h back into mfd/cs42l43.h
+/me makes a mental note for the future.
 
-Btw, TIL that your v1 was fully correct as there is no use of the type
-definitions. In case you are going to send v3, you can use v1 of this
-patch if you want, this version is also okay (as we have some more
-like this pattern, which probably needs to be amended in the future).
+Thx.
 
---=20
-With Best Regards,
-Andy Shevchenko
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
