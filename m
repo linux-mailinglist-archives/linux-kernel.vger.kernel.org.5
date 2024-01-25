@@ -1,215 +1,153 @@
-Return-Path: <linux-kernel+bounces-38804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38802-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DC3583C630
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:13:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B6E583C62A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:12:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED42DB25540
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:12:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31BB91F21519
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:12:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18E00745D0;
-	Thu, 25 Jan 2024 15:12:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BA257316A;
+	Thu, 25 Jan 2024 15:11:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="E2Ffo1uh"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VX3axazP"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61C986EB57;
-	Thu, 25 Jan 2024 15:11:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46B976E2C9;
+	Thu, 25 Jan 2024 15:11:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706195519; cv=none; b=jgdgtpiwYeCILzrnL7xVpdyxrWvk7YwF9zS65LG1bOVH1xa5IPWlRTsT5U369RkgzKodZlFnGlGY5DyjLlNyYjPnYVMnY3KJmiI53nFl4LBpw7KDUFhwSIXAWTYp7BokoAwW7dsnJKbMMy9XMtH/xK/+FD2OuL2fce72I66u4Ic=
+	t=1706195517; cv=none; b=HBhaIxKFvaZGLigIF8sb/wyBa6zwECbSDMGhCzWHMVKqDnqg9Vj+IgcZ6FbbiHf4wcqaa/oHDed3kMX9z+N7Zd1Gz7cflQMUvbaOBHouTaeoD3SHEAyAYxNOH51E42dr+nH9TfNpiLBqxb0W1VP4E1S9aMcnqoUBb5xAlnv5a2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706195519; c=relaxed/simple;
-	bh=4wd9RyWyfdexA0auyxKTcpoP6F7WPK4FkDs5AQI85YQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Km4ihJIaMPFlaIqG7zAmbSbaG2/zC9RKGVBUnqchKpuoKf6hayzpIlaKrGkbzeaEfgwmJFmhFQcTruV5OmH9Z8kOT8cTD4BMEgo8jZEGUzbpw2YgYnE516WggkOsytXB7kvo9YEd/wakXsfC8QFEs92eghQzJa9K+Bkt4sFpxsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=E2Ffo1uh; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40PFBTjo062885;
-	Thu, 25 Jan 2024 09:11:29 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706195489;
-	bh=nnycDpUyHEYRnXSGd7BVAApDp79zLAy9I9g2qDZQ/7o=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=E2Ffo1uhKS+Wi6oSs27amFdIrvP691dLNdESwuTKuC4Qv9ef+txUdhrS2EXgNT7fn
-	 3NY0ZyPtxv26l8bvImfu9DpJVooKXqxAB6lbOzcS+87TDHxtnpGnKs7gFh7PqmW/e5
-	 YPzd2gbOI9PIv0GDTaEfvYT6L70byAufxkPzG9N4=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40PFBTBm052055
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 25 Jan 2024 09:11:29 -0600
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 25
- Jan 2024 09:11:29 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 25 Jan 2024 09:11:28 -0600
-Received: from [10.249.42.149] ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40PFBRqW005393;
-	Thu, 25 Jan 2024 09:11:28 -0600
-Message-ID: <68eb9295-ffb5-4c48-a474-39f1893d6a28@ti.com>
-Date: Thu, 25 Jan 2024 09:11:27 -0600
+	s=arc-20240116; t=1706195517; c=relaxed/simple;
+	bh=mzMOuqXTq4zCUMMK/K2C/+HNWBvw8RALwJlnW72830A=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ShZal1LwVHp5r67a0WRZRLd2b3Milmq6YDlNAAOUViAN35H6n24oNSDZGPmtw6pzoUH+ahsmHmWU2Wi2t6G2jFiIIfj3D6uouPFDPqYb4IfIWawEf/roUq9p2QooFuxF3A4OFVKFH5acOLh4nRiDlVwgFVIf7agdO2c1lrfzuEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VX3axazP; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e7065b692so73641005e9.3;
+        Thu, 25 Jan 2024 07:11:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706195514; x=1706800314; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GUvl1REbEUd6BLP3pDMwPlzTx9j7ZW9jZ3MWQ9/tcz0=;
+        b=VX3axazPlyFUmYuDEEkw+xtrxFIkiqdSPAYHeVXGUhBz48ECULgjDf40aSif9EIixL
+         ISgJ3kl3JCnH2jgZ8oOpfBSWpkujV2VTF0TwecOtgX++3rS901YnV/FACx60xRgnu23T
+         7F3RL1/j3lwDrY5mTx+UbvtK3RJeO3eN6+23uhgWyc1HIUG7+hKv7Vcip7+0ySVhdRQH
+         qHhPM8lboD8wzdTLY8+WGwkbJoZE77sqyDTCu5suXezPTX44ZaZ2XapcxbNXMa1oz1l4
+         ShMawQQZWeQmyJGIakegnftMWHK/zlMiLIcnHfpQciSIypHgToMNPP/neXkWVg5jq6cx
+         VHtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706195514; x=1706800314;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GUvl1REbEUd6BLP3pDMwPlzTx9j7ZW9jZ3MWQ9/tcz0=;
+        b=d7J4jq+1aj3N8gO8h8ZXvyCYE9EsB1YBQ1UkmeKTLCx29ZclSamsfA3/fwHAkUBZs+
+         cv9Hwz4I0fa/7aSD8wLlb6T4GoHOIjDKfnyfXSA5Ea7k60E6i4f5Mdk883yRSyJ0ta9a
+         u/cNpsvM+G4D/1Vh7DTre1jLytEjaWFH7PQHfDNb6NVfIDEPMHxLWinXvNh6HC4fN9V9
+         zzH3FcoDZwp9btetdlPNKUxu7aS/svetbLgkrpIhKHtj+7G4/Ug3FCMJgeos8YYjaAhZ
+         4oi1A1OIaZpwOFiVVWNJubV/tumkTQIc4IHPTzkPge7gWRgq4cT++ivWYYtzOm/W/edV
+         xRqQ==
+X-Gm-Message-State: AOJu0YwUhNsXf+Wxa364hiUDMYgSW7JsLk9FA3q6xI8Fl9nrKvEs0dMh
+	7dDXJlqtPHXM9LuRdVQtxqO3MTCdRNdgYzWInoezEnVYbE6YRmlE
+X-Google-Smtp-Source: AGHT+IGLT7Hf2eaNt5e2aNLHGjHeIelPf8TJtASTb4bi2ksEIb1W7zTEDnc6u5Ree+0Xvs/4dFCvew==
+X-Received: by 2002:a05:600c:1396:b0:40e:7e28:e5c8 with SMTP id u22-20020a05600c139600b0040e7e28e5c8mr605036wmf.6.1706195514252;
+        Thu, 25 Jan 2024 07:11:54 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id a17-20020a5d5091000000b003392d3dcf6dsm12011392wrt.0.2024.01.25.07.11.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 07:11:53 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 25 Jan 2024 16:11:51 +0100
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>,
+	linux-trace-kernel@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v6 32/36] fprobe: Rewrite fprobe on function-graph tracer
+Message-ID: <ZbJ6NxkjWEP5adru@krava>
+References: <170505424954.459169.10630626365737237288.stgit@devnote2>
+ <170505462606.459169.1375700979988728260.stgit@devnote2>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 04/17] dt-bindings: soc: mobileye: add EyeQ5 OLB system
- controller
-Content-Language: en-US
-To: =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh@kernel.org>
-CC: Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Michael Turquette
-	<mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Linus
- Walleij <linus.walleij@linaro.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
-	<rafal@milecki.pl>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Vladimir
- Kondratiev <vladimir.kondratiev@mobileye.com>,
-        <linux-mips@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Thomas Petazzoni
-	<thomas.petazzoni@bootlin.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-        <linux-gpio@vger.kernel.org>
-References: <20240123-mbly-clk-v3-0-392b010b8281@bootlin.com>
- <20240123-mbly-clk-v3-4-392b010b8281@bootlin.com>
- <20240124151405.GA930997-robh@kernel.org>
- <dd7e723d-3c4c-4edf-afc2-51db9a074efa@linaro.org>
- <CYNQHXOZ73YR.3QODFI2X08KC6@bootlin.com>
- <9a5f017c-530c-482b-9cbf-a07281e92589@ti.com>
- <CYNVD4U0M5OS.LQ2MAKOL0LAP@bootlin.com>
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <CYNVD4U0M5OS.LQ2MAKOL0LAP@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <170505462606.459169.1375700979988728260.stgit@devnote2>
 
-On 1/25/24 8:49 AM, Théo Lebrun wrote:
-> Hello,
-> 
-> On Thu Jan 25, 2024 at 3:33 PM CET, Andrew Davis wrote:
->> On 1/25/24 5:01 AM, Théo Lebrun wrote:
->>> Hello,
->>>
->>> On Thu Jan 25, 2024 at 8:51 AM CET, Krzysztof Kozlowski wrote:
->>>> On 24/01/2024 16:14, Rob Herring wrote:
->>>>>> +
->>>>>> +      pinctrl-b {
->>>>>> +        compatible = "mobileye,eyeq5-b-pinctrl";
->>>>>> +        #pinctrl-cells = <1>;
->>>>>> +      };
->>>>>> +    };
->>>>>
->>>>> This can all be simplified to:
->>>>>
->>>>> system-controller@e00000 {
->>>>>       compatible = "mobileye,eyeq5-olb", "syscon";
->>>>>       reg = <0xe00000 0x400>;
->>>>>       #reset-cells = <2>;
->>>>>       #clock-cells = <1>;
->>>>>       clocks = <&xtal>;
->>>>>       clock-names = "ref";
->>>>>
->>>>>       pins { ... };
->>>>> };
->>>>>
->>>>> There is no need for sub nodes unless you have reusable blocks or each
->>>>> block has its own resources in DT.
->>>>
->>>> Yes, however I believe there should be resources here: each subnode
->>>> should get its address space. This is a bit tied to implementation,
->>>> which currently assumes "everyone can fiddle with everything" in this block.
->>>>
->>>> Theo, can you draw memory map?
->>>
->>> It would be a mess. I've counted things up. The first 147 registers are
->>> used in this 0x400 block. There are 31 individual blocks, with 7
->>> registers unused (holes to align next block).
->>>
->>> Functions are reset, clocks, LBIST, MBIST, DDR control, GPIO,
->>> accelerator control, CPU entrypoint, PDTrace, IRQs, chip info & ID
->>> stuff, control registers for PCIe / eMMC / Eth / SGMII / DMA / etc.
->>>
->>> Some will never get used from Linux, others might. Maybe a moderate
->>> approach would be to create ressources for major blocks and make it
->>> evolve organically, without imposing that all uses lead to a new
->>> ressource creation.
->>>
->>
->> That is usually how nodes are added to DT. If you modeled this
->> system-controller space as a "simple-bus" instead of a "syscon"
->> device, you could add nodes as you implement them. Rather than
->> all at once as you have to by treating this space as one large
->> blob device.
-> 
-> I see where you are coming from, but in our case modeling our DT node as
-> a simple-bus would be lying about the hardware behind. There is no such
-> underlying bus. Let's try to keep the devicetree an abstraction
-> describing the hardware.
+On Fri, Jan 12, 2024 at 07:17:06PM +0900, Masami Hiramatsu (Google) wrote:
 
-Sure there is a bus, every register is on a bus, all these registers are
-memory mapped aren't they? "simple-bus" is just a logical grouping, it
-doesn't have to imply the bus is physically separate from the rest of
-the system bus. If you don't want these misc registers logically grouped
-then add them all as subnodes directly on the main SoC bus node.
+SNIP
 
-Calling that group of miscellaneous registers a "simple-mfd" device is
-even more incorrectly modeled IMHO.
+>   * Register @fp to ftrace for enabling the probe on the address given by @addrs.
+> @@ -298,23 +547,27 @@ EXPORT_SYMBOL_GPL(register_fprobe);
+>   */
+>  int register_fprobe_ips(struct fprobe *fp, unsigned long *addrs, int num)
+>  {
+> -	int ret;
+> -
+> -	if (!fp || !addrs || num <= 0)
+> -		return -EINVAL;
+> -
+> -	fprobe_init(fp);
+> +	struct fprobe_hlist *hlist_array;
+> +	int ret, i;
+>  
+> -	ret = ftrace_set_filter_ips(&fp->ops, addrs, num, 0, 0);
+> +	ret = fprobe_init(fp, addrs, num);
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = fprobe_init_rethook(fp, num);
+> -	if (!ret)
+> -		ret = register_ftrace_function(&fp->ops);
+> +	mutex_lock(&fprobe_mutex);
+> +
+> +	hlist_array = fp->hlist_array;
+> +	ret = fprobe_graph_add_ips(addrs, num);
 
-We have the same problem on our SoCs (hardware folks just love making
-miscellaneous junk drawer register spaces :D). And we decided to model
-it as a "syscon", "simple-mfd" too, how simple to just have all the
-other nodes point to this space with phandles and pull out whatever
-register they need. But that was a mistake we are still working to
-unwind.
+so fprobe_graph_add_ips registers the ftrace_ops and actually starts
+the tracing.. and in the code below we prepare fprobe data that is
+checked in the ftrace_ops callback.. should we do this this earlier
+before calling fprobe_graph_add_ips/register_ftrace_graph?
 
-> 
-> Also, we are having conflicts because multiple such child nodes are
-> being added at the same time as the base node. Once this initial series
-> is out (meaning dt-bindings for the OLB will exist) we'll be able to
-> add new nodes or ressources on a whim.
-> 
+jirka
 
-Not to this "system-controller" space you won't. If you keep it as
-a "simple-mfd","syscon" you will need to update the binding every
-time you add a new node.
+> +	if (!ret) {
+> +		add_fprobe_hash(fp);
+> +		for (i = 0; i < hlist_array->size; i++)
+> +			insert_fprobe_node(&hlist_array->array[i]);
+> +	}
+> +	mutex_unlock(&fprobe_mutex);
+>  
+>  	if (ret)
+>  		fprobe_fail_cleanup(fp);
+> +
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(register_fprobe_ips);
+> @@ -352,14 +605,13 @@ EXPORT_SYMBOL_GPL(register_fprobe_syms);
 
-> Have you got an opinion on the approach described in this email?
-> https://lore.kernel.org/lkml/CYNRCGYA1PJ2.FYENLB4SRJWH@bootlin.com/
-> 
-
-Looks better to me, the nodes contain the registers they use which
-means you could simply add a ranges property to the parent and
-not need to use special accessors and offsets in the drivers too.
-
-Andrew
-
-> Thanks,
-> 
-> --
-> Théo Lebrun, Bootlin
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
+SNIP
 
