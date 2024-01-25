@@ -1,72 +1,67 @@
-Return-Path: <linux-kernel+bounces-38492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 523AD83C09B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:17:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C89883C09D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:17:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA7E82854D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:17:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11921288EAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:17:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBF6754BC0;
-	Thu, 25 Jan 2024 11:13:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9145945C0E;
+	Thu, 25 Jan 2024 11:14:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BPbFMRmb"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="wJQsllC7"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DB2D55C06;
-	Thu, 25 Jan 2024 11:13:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05EA328DC4;
+	Thu, 25 Jan 2024 11:14:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706181216; cv=none; b=GRXGEC1J3l/r2RWGBUQ3PLIC7H2YBnV08FNOF1xs+nSZPetYtu+BQWYNjAzHEHG1L90NhriDIXPQy/9pTamXRqv63nh1zVfcZU/EkfSdfoycqtee3e/rPjbQjts89ErrdwtqaR6FGSGQhpeWSFdduG5maL4b8ORtOk6Qn36EvuQ=
+	t=1706181298; cv=none; b=OfkgbXIghul6tw66KcKA4Vstr3XPayXlMAOkmhmNq12ROuL6mKmAVQx0sP5drVmWs94Fafj45WaVVs1U4fD+IUygvNL7ofIjAqwZjgBBOnEdKSfeBT8ZfgZcBUOla2oCyfvbfBZPnwXSPmmo8at0n9EAPS/IlXmzcSRypFEWptI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706181216; c=relaxed/simple;
-	bh=wvPvlJpDpd/QxRlMnz5Gl6xGp3XTyHaDNtoD/6HTHOQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=vFxplZA8wLFkDMjYlSafQwlAej2V1Naelq25QOOJ/Pus3BPhfHewb6giTHlNttwQlOHS38wtJLcp8oIrP0hFkf+m5ygVSSWPehexnqzfGK7dDpya5tvVpnXXWl4RVbYtKx+wg2uDCRHWyYxfK1FiZKcTFVFpJ+Bo5IPBp00Wi0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BPbFMRmb; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706181215; x=1737717215;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=wvPvlJpDpd/QxRlMnz5Gl6xGp3XTyHaDNtoD/6HTHOQ=;
-  b=BPbFMRmbtrkwp3z+ygHstZIHNvA2QNg6p2QzkofD0FvT5g0i8LhAG8iE
-   reqByJbImi7+SEl16gkCOptcYV58BJuhLnTlfPhgUAZnKzTKpaVQ1ODcE
-   +U8B0/jlMEzTG3nODwrKsv84L0t0mtfbVJJLPbMttcxV9UaWfUn2Qu9+6
-   hIZ1O9bGSITIkcsIzHP52oQFRfO+YF0d5amlzDV/d5KFfRGLRTNLEkvta
-   2lJncC+oy07Jo/Vmp5Nlbq/fVigGTCMDrLVbNzhhtX2tuB6zEk/7DHf4a
-   fSuTvgGDDBRFMeWTnEHDpMx7QQ0OaXv2WyN74tK9yB9ZaGR//KLTieXr+
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="9244677"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="9244677"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 03:13:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="959823461"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="959823461"
-Received: from apejovix-mobl1.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.0.239])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 03:13:31 -0800
-From: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-To: fenghua.yu@intel.com,
-	reinette.chatre@intel.com,
-	shuah@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	ilpo.jarvinen@linux.intel.com
-Subject: [PATCH v3 5/5] selftests/resctrl: Add non-contiguous CBMs CAT test
-Date: Thu, 25 Jan 2024 12:13:16 +0100
-Message-ID: <647fbfd449f8b0e0ad6cfe58bb280ff44ee162b8.1706180726.git.maciej.wieczor-retman@intel.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1706180726.git.maciej.wieczor-retman@intel.com>
-References: <cover.1706180726.git.maciej.wieczor-retman@intel.com>
+	s=arc-20240116; t=1706181298; c=relaxed/simple;
+	bh=HZxAE4+693ZGgkuVWmJaA59ddkhcAmD22T3imvZcIGA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=iHz906E8dpnpTonmNXUymwXXy+Ee2XbO9XaIn5mB5jOpFbH+bQmQOVAPKPKjcGZb8HIIE81KSyeQ8eAXS7WctGAJ9CfX+UzjZx9L+PnVOG6LdbfUJlzD/oHH8nfhgbHn8vgqdyBiXu/A3vvG0kMinXrCDqBSh12WKbTUo/rNdGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=wJQsllC7; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40PBEqpV084295;
+	Thu, 25 Jan 2024 05:14:52 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706181292;
+	bh=zwL0qHW+HcUrrm4Rz75LXs6hgLXZji8xSGHiZZgScfU=;
+	h=From:To:CC:Subject:Date;
+	b=wJQsllC7UEvtwMm+JK/2Lp50j+YRGK+yXfVqFGtEJH24LO1Wyb9C1yVaZwa3ly3hU
+	 CasYrIgj11BN2uZsdu0Z+ffvK+zVeb7e0erUGGKipa7Huq7sn2u2/n/GIgK18/Kcbj
+	 BpYP8ieo2fzZcGGHi7wrqaYw8LfGZVuKgmQ3iqaM=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40PBEqNj080677
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 25 Jan 2024 05:14:52 -0600
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 25
+ Jan 2024 05:14:52 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 25 Jan 2024 05:14:52 -0600
+Received: from uda0490681.dhcp.ti.com ([10.24.69.142])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40PBEn8u089844;
+	Thu, 25 Jan 2024 05:14:50 -0600
+From: Vaishnav Achath <vaishnav.a@ti.com>
+To: <vkoul@kernel.org>, <peter.ujfalusi@gmail.com>
+CC: <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <vaishnav.a@ti.com>, <u-kumar1@ti.com>, <j-choudhary@ti.com>
+Subject: [PATCH] dmaengine: ti: k3-psil-j721s2: Add entry for CSI2RX
+Date: Thu, 25 Jan 2024 16:44:49 +0530
+Message-ID: <20240125111449.855876-1-vaishnav.a@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,160 +69,113 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Add tests for both L2 and L3 CAT to verify the return values
-generated by writing non-contiguous CBMs don't contradict the
-reported non-contiguous support information.
+The CSI2RX subsystem uses PSI-L DMA to transfer frames to memory. It can
+have up to 32 threads per instance. J721S2 has two instances of the
+subsystem, so there are 64 threads total, Add them to the endpoint map.
 
-Use a logical XOR to confirm return value of write_schemata() and
-non-contiguous CBMs support information match.
-
-Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
 ---
-Changelog v3:
-- Roll back __cpuid_count part. (Reinette)
-- Update function name to read sparse_masks file.
-- Roll back get_cache_level() changes.
-- Add ksft_print_msg() to contiguous schemata write error handling
-  (Reinette).
+Tested on J721S2 EVM on 6.8.0-rc1-next-20240124 for CSI2RX capture with
+OV5640: https://gist.github.com/vaishnavachath/e6918ae4dadeb34c4cbad515bffcc558
 
-Changelog v2:
-- Redo the patch message. (Ilpo)
-- Tidy up __cpuid_count calls. (Ilpo)
-- Remove redundant AND in noncont_mask calculations (Ilpo)
-- Fix bit_center offset.
-- Add newline before function return. (Ilpo)
-- Group non-contiguous tests with CAT tests. (Ilpo)
-- Use a helper for reading sparse_masks file. (Ilpo)
-- Make get_cache_level() available in other source files. (Ilpo)
+ drivers/dma/ti/k3-psil-j721s2.c | 73 +++++++++++++++++++++++++++++++++
+ 1 file changed, 73 insertions(+)
 
- tools/testing/selftests/resctrl/cat_test.c    | 81 +++++++++++++++++++
- tools/testing/selftests/resctrl/resctrl.h     |  2 +
- .../testing/selftests/resctrl/resctrl_tests.c |  2 +
- 3 files changed, 85 insertions(+)
-
-diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
-index 39fc9303b8e8..9086bf359072 100644
---- a/tools/testing/selftests/resctrl/cat_test.c
-+++ b/tools/testing/selftests/resctrl/cat_test.c
-@@ -294,6 +294,71 @@ static int cat_run_test(const struct resctrl_test *test, const struct user_param
- 	return ret;
- }
+diff --git a/drivers/dma/ti/k3-psil-j721s2.c b/drivers/dma/ti/k3-psil-j721s2.c
+index 1d5430fc5724..ba08bdcdcd2b 100644
+--- a/drivers/dma/ti/k3-psil-j721s2.c
++++ b/drivers/dma/ti/k3-psil-j721s2.c
+@@ -57,6 +57,14 @@
+ 		},					\
+ 	}
  
-+static int noncont_cat_run_test(const struct resctrl_test *test,
-+				const struct user_params *uparams)
-+{
-+	unsigned long full_cache_mask, cont_mask, noncont_mask;
-+	unsigned int eax, ebx, ecx, edx, ret, sparse_masks;
-+	char schemata[64];
-+	int bit_center;
-+
-+	/* Check to compare sparse_masks content to CPUID output. */
-+	ret = resource_info_unsigned_get(test->resource, "sparse_masks", &sparse_masks);
-+	if (ret)
-+		return ret;
-+
-+	if (!strcmp(test->resource, "L3"))
-+		__cpuid_count(0x10, 1, eax, ebx, ecx, edx);
-+	else if (!strcmp(test->resource, "L2"))
-+		__cpuid_count(0x10, 2, eax, ebx, ecx, edx);
-+	else
-+		return -EINVAL;
-+
-+	if (sparse_masks != ((ecx >> 3) & 1)) {
-+		ksft_print_msg("CPUID output doesn't match 'sparse_masks' file content!\n");
-+		return -1;
++#define PSIL_CSI2RX(x)					\
++	{						\
++		.thread_id = x,				\
++		.ep_config = {				\
++			.ep_type = PSIL_EP_NATIVE,	\
++		},					\
 +	}
 +
-+	/* Write checks initialization. */
-+	ret = get_full_cbm(test->resource, &full_cache_mask);
-+	if (ret < 0)
-+		return ret;
-+	bit_center = count_bits(full_cache_mask) / 2;
-+	cont_mask = full_cache_mask >> bit_center;
-+
-+	/* Contiguous mask write check. */
-+	snprintf(schemata, sizeof(schemata), "%lx", cont_mask);
-+	ret = write_schemata("", schemata, uparams->cpu, test->resource);
-+	if (ret) {
-+		ksft_print_msg("Write of contiguous CBM failed\n");
-+		return ret;
-+	}
-+
-+	/*
-+	 * Non-contiguous mask write check. CBM has a 0xf hole approximately in the middle.
-+	 * Output is compared with support information to catch any edge case errors.
-+	 */
-+	noncont_mask = ~(0xf << (bit_center - 2)) & full_cache_mask;
-+	snprintf(schemata, sizeof(schemata), "%lx", noncont_mask);
-+	ret = write_schemata("", schemata, uparams->cpu, test->resource);
-+	if (ret && sparse_masks)
-+		ksft_print_msg("Non-contiguous CBMs supported but write of non-contiguous CBM failed\n");
-+	else if (ret && !sparse_masks)
-+		ksft_print_msg("Non-contiguous CBMs not supported and write of non-contiguous CBM failed as expected\n");
-+	else if (!ret && !sparse_masks)
-+		ksft_print_msg("Non-contiguous CBMs not supported but write of non-contiguous CBM succeeded\n");
-+
-+	return !ret == !sparse_masks;
-+}
-+
-+static bool noncont_cat_feature_check(const struct resctrl_test *test)
-+{
-+	if (!resctrl_resource_exists(test->resource))
-+		return false;
-+
-+	return resource_info_file_exists(test->resource, "sparse_masks");
-+}
-+
- struct resctrl_test l3_cat_test = {
- 	.name = "L3_CAT",
- 	.group = "CAT",
-@@ -301,3 +366,19 @@ struct resctrl_test l3_cat_test = {
- 	.feature_check = test_resource_feature_check,
- 	.run_test = cat_run_test,
- };
-+
-+struct resctrl_test l3_noncont_cat_test = {
-+	.name = "L3_NONCONT_CAT",
-+	.group = "CAT",
-+	.resource = "L3",
-+	.feature_check = noncont_cat_feature_check,
-+	.run_test = noncont_cat_run_test,
-+};
-+
-+struct resctrl_test l2_noncont_cat_test = {
-+	.name = "L2_NONCONT_CAT",
-+	.group = "CAT",
-+	.resource = "L2",
-+	.feature_check = noncont_cat_feature_check,
-+	.run_test = noncont_cat_run_test,
-+};
-diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-index c39105f46da9..8cb97f278459 100644
---- a/tools/testing/selftests/resctrl/resctrl.h
-+++ b/tools/testing/selftests/resctrl/resctrl.h
-@@ -210,5 +210,7 @@ extern struct resctrl_test mbm_test;
- extern struct resctrl_test mba_test;
- extern struct resctrl_test cmt_test;
- extern struct resctrl_test l3_cat_test;
-+extern struct resctrl_test l3_noncont_cat_test;
-+extern struct resctrl_test l2_noncont_cat_test;
- 
- #endif /* RESCTRL_H */
-diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
-index 3044179ee6e9..f3dc1b9696e7 100644
---- a/tools/testing/selftests/resctrl/resctrl_tests.c
-+++ b/tools/testing/selftests/resctrl/resctrl_tests.c
-@@ -19,6 +19,8 @@ static struct resctrl_test *resctrl_tests[] = {
- 	&mba_test,
- 	&cmt_test,
- 	&l3_cat_test,
-+	&l3_noncont_cat_test,
-+	&l2_noncont_cat_test,
- };
- 
- static int detect_vendor(void)
+ /* PSI-L source thread IDs, used for RX (DMA_DEV_TO_MEM) */
+ static struct psil_ep j721s2_src_ep_map[] = {
+ 	/* PDMA_MCASP - McASP0-4 */
+@@ -114,6 +122,71 @@ static struct psil_ep j721s2_src_ep_map[] = {
+ 	PSIL_PDMA_XY_PKT(0x4707),
+ 	PSIL_PDMA_XY_PKT(0x4708),
+ 	PSIL_PDMA_XY_PKT(0x4709),
++	/* CSI2RX */
++	PSIL_CSI2RX(0x4940),
++	PSIL_CSI2RX(0x4941),
++	PSIL_CSI2RX(0x4942),
++	PSIL_CSI2RX(0x4943),
++	PSIL_CSI2RX(0x4944),
++	PSIL_CSI2RX(0x4945),
++	PSIL_CSI2RX(0x4946),
++	PSIL_CSI2RX(0x4947),
++	PSIL_CSI2RX(0x4948),
++	PSIL_CSI2RX(0x4949),
++	PSIL_CSI2RX(0x494a),
++	PSIL_CSI2RX(0x494b),
++	PSIL_CSI2RX(0x494c),
++	PSIL_CSI2RX(0x494d),
++	PSIL_CSI2RX(0x494e),
++	PSIL_CSI2RX(0x494f),
++	PSIL_CSI2RX(0x4950),
++	PSIL_CSI2RX(0x4951),
++	PSIL_CSI2RX(0x4952),
++	PSIL_CSI2RX(0x4953),
++	PSIL_CSI2RX(0x4954),
++	PSIL_CSI2RX(0x4955),
++	PSIL_CSI2RX(0x4956),
++	PSIL_CSI2RX(0x4957),
++	PSIL_CSI2RX(0x4958),
++	PSIL_CSI2RX(0x4959),
++	PSIL_CSI2RX(0x495a),
++	PSIL_CSI2RX(0x495b),
++	PSIL_CSI2RX(0x495c),
++	PSIL_CSI2RX(0x495d),
++	PSIL_CSI2RX(0x495e),
++	PSIL_CSI2RX(0x495f),
++	PSIL_CSI2RX(0x4960),
++	PSIL_CSI2RX(0x4961),
++	PSIL_CSI2RX(0x4962),
++	PSIL_CSI2RX(0x4963),
++	PSIL_CSI2RX(0x4964),
++	PSIL_CSI2RX(0x4965),
++	PSIL_CSI2RX(0x4966),
++	PSIL_CSI2RX(0x4967),
++	PSIL_CSI2RX(0x4968),
++	PSIL_CSI2RX(0x4969),
++	PSIL_CSI2RX(0x496a),
++	PSIL_CSI2RX(0x496b),
++	PSIL_CSI2RX(0x496c),
++	PSIL_CSI2RX(0x496d),
++	PSIL_CSI2RX(0x496e),
++	PSIL_CSI2RX(0x496f),
++	PSIL_CSI2RX(0x4970),
++	PSIL_CSI2RX(0x4971),
++	PSIL_CSI2RX(0x4972),
++	PSIL_CSI2RX(0x4973),
++	PSIL_CSI2RX(0x4974),
++	PSIL_CSI2RX(0x4975),
++	PSIL_CSI2RX(0x4976),
++	PSIL_CSI2RX(0x4977),
++	PSIL_CSI2RX(0x4978),
++	PSIL_CSI2RX(0x4979),
++	PSIL_CSI2RX(0x497a),
++	PSIL_CSI2RX(0x497b),
++	PSIL_CSI2RX(0x497c),
++	PSIL_CSI2RX(0x497d),
++	PSIL_CSI2RX(0x497e),
++	PSIL_CSI2RX(0x497f),
+ 	/* MAIN SA2UL */
+ 	PSIL_SA2UL(0x4a40, 0),
+ 	PSIL_SA2UL(0x4a41, 0),
 -- 
-2.43.0
+2.34.1
 
 
