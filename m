@@ -1,102 +1,244 @@
-Return-Path: <linux-kernel+bounces-37957-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37959-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E108883B8CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 05:54:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82D6883B8D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 05:59:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02FCF1C23BAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 04:54:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32DD6287D9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 04:59:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F76C79F1;
-	Thu, 25 Jan 2024 04:54:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KYBslUBh"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6E51101F7;
+	Thu, 25 Jan 2024 04:59:13 +0000 (UTC)
+Received: from mail115-100.sinamail.sina.com.cn (mail115-100.sinamail.sina.com.cn [218.30.115.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6435979C6
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 04:54:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC5E8D537
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 04:59:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706158466; cv=none; b=b58Fozk1XlHzgJGQTEW50k8x2VUz+w3lLfFWp8yJ92cHw+Tv/yDBDTcBM35wzA1oSgH6IjhCyv1C6ldHqtBPWRHmDkOBhrSw+JWFw/8Wz37wmJcciFnolxqF42rRsxnh9wZ8eFQBbRgB1EbrBaPGGU1FQduELCvKOZEvsBG2+SQ=
+	t=1706158752; cv=none; b=hpZ0SlqkraumyJ2Au/KErjnEWMvqCZxzMj65aHBfv6x8H+EAfNEtqHBp8GBGZ3YkdG5RavC9qw8fmSwttKhCTXona2xfTdnWhwYCqw2W2TWJxvbH6A8KhEDMJ+7ED6sO/3qaq6F7hC5uwsR21euchm4H8rS2r+utKfDqweBRQfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706158466; c=relaxed/simple;
-	bh=RY0YpxLJVnkyOM+U4EyavUoYESYenKBNJ/vaR1IY6cM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kbWyLqNhH4uIf5xlPTUL1W3eqZMi4qZ0cPLTCxshJKkwwzokb421DLBQO2okq07Hw1zUu9se740a2u20CDdR7GcaVaI4k/vd29SNP5ON367lMGEkt1YvQTlYPmGSRodXt5ikJB3UJLt/5f9P0sT2i2wOlCCn5yV9afA7w93rnTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KYBslUBh; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d76f1e3e85so90155ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 20:54:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706158465; x=1706763265; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RY0YpxLJVnkyOM+U4EyavUoYESYenKBNJ/vaR1IY6cM=;
-        b=KYBslUBhHYnRbtEOssPRg1sIKHjI8Lo0tAolcbPFTk7Zz1yslplDzC1rXa2wBilOhm
-         zxPgKBBm3R/ZuM872QgdRU1RFvMN8AC0BH21pnHLDRn8oKpzTwlXu11WzJNNw9GqZBCn
-         eObwDyj14Va/2mzeQSBxazZBdQZgafH8Yw77xqr+Re/D6HKTvl4z8hvwqJNlb+c1Ucm6
-         Ip4//zYBB9FEXFvO1tWKYyTZyKd5jkzrKm1KxJdKoozrHoH6iXFKQazF2VPu4S3eit1C
-         XGe+H1zWts/U7p8MSSq3+TesHQvyOsEaeQGabkGicLmlCrRIIWPiM+3nUEZKbR9a+Bh3
-         3D9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706158465; x=1706763265;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RY0YpxLJVnkyOM+U4EyavUoYESYenKBNJ/vaR1IY6cM=;
-        b=XElG1oJrSDgiEpKj2/uQGUwATatCzhep9CxoOgy21T4cCcdOqYoDu7aLTIhtQSFWk2
-         3NDa/V6L57J79HWIEYSEBM7CqLRYGNQM3ufmC8AZt8HNUYGrOn9KOw/eBIowtaDBd38G
-         lle1DGRwelXrV3TRPhxdfIPY41T+18ApKiC9MrpADXjacExKsGY98AlhGKHlRfWhU43Y
-         S0tSU5d0lP8+vv/XIH5zMCXb2ejePLjDyHquQIQag2fNHcQFr/H7lXNTIVFkjeEx7En1
-         KQS0wHgoUfI9yvkqcsPnrLqJtW1j818jx6uK6uWZC6hR+tbv3MA3Z/NsdJfIjBBn092c
-         Actg==
-X-Gm-Message-State: AOJu0Yz8Ytv8zhG2uIHA6AACRiLG9yo6bqIiD7eUHNBQnVe31t6o3pl0
-	ICny5d1uturI6aiYxLHoQixdU6StOl9VDqQQ9ywQFDIBZ7FSoTSj2z0/H4WKpyTdGgzZa2cbHjg
-	cSvtouYUBSwVZc1foGPHnxYVYmM0yKdFi4VS9
-X-Google-Smtp-Source: AGHT+IGmwUyV7ad6tGGpwYKy06i1bLqX3aP6rnMCqtrP6eCDM/dw9PI9hnQa4rcswaKttl2+4JOZaCJ4y/v8gXKio/0=
-X-Received: by 2002:a17:903:22c8:b0:1d7:37f5:5619 with SMTP id
- y8-20020a17090322c800b001d737f55619mr104642plg.25.1706158464470; Wed, 24 Jan
- 2024 20:54:24 -0800 (PST)
+	s=arc-20240116; t=1706158752; c=relaxed/simple;
+	bh=+ox98ynols6V0gN52o/Ljq2gCOBLTPuOcuyFnIKId1M=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=XbwI0NQmVMzj/pmAAnMZPVGxBBGzsXTB6TZKO2LaWkAeoGdkqPEPaHBp18fMvm3KZniITZoSb7kiFO73j9K6pJR5L4OLLFABtfE+ZjWGQt5KaOXuLXHzjjAz6CXqYdJ/jehUVSK7+yUvoHKTOeDLnHAVpfv7DS1kmqJPnfYw/zc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.118.66.48])
+	by sina.com (172.16.235.24) with ESMTP
+	id 65B1EA6C00003FA1; Thu, 25 Jan 2024 12:58:23 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 43463945089360
+X-SMAIL-UIID: 0DDC04B7824E45D88F8B3AF93CBD6B6B-20240125-125823-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+22e2c28c99235275f109@syzkaller.appspotmail.com>
+Cc: airlied@redhat.com,
+	daniel@ffwll.ch,
+	dri-devel@lists.freedesktop.org,
+	Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com,
+	virtualization@lists.linux.dev
+Subject: Re: [syzbot] [dri?] [virtualization?] upstream boot error: INFO: task hung in virtio_gpu_queue_fenced_ctrl_buffer
+Date: Thu, 25 Jan 2024 12:58:13 +0800
+Message-Id: <20240125045813.1564-1-hdanton@sina.com>
+In-Reply-To: <0000000000002fff4a060fae5751@google.com>
+References: <0000000000002fff4a060fae5751@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231212230224.1473300-1-weilin.wang@intel.com> <20231212230224.1473300-8-weilin.wang@intel.com>
-In-Reply-To: <20231212230224.1473300-8-weilin.wang@intel.com>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 24 Jan 2024 20:54:12 -0800
-Message-ID: <CAP-5=fXDWbp90cQ62tjEahy68DF+YGiWWhXxjMLNfLq_Ce98-A@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 06/18] perf pmu-events: Add event counter data for Icelakex
-To: weilin.wang@intel.com
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
-	Caleb Biggers <caleb.biggers@intel.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Yang Jihong <yangjihong1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Dec 12, 2023 at 3:03=E2=80=AFPM <weilin.wang@intel.com> wrote:
->
-> From: Weilin Wang <weilin.wang@intel.com>
->
-> The added new fields are required in this new grouping method. Currently,
-> the format of added fields are temporary for experiments.
+On Wed, 24 Jan 2024 02:15:21 -0800
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    615d30064886 Merge tag 'trace-v6.8-rc1' of git://git.kerne..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=167456f7e80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=e6c3b3d5f71246cb
+> dashboard link: https://syzkaller.appspot.com/bug?extid=22e2c28c99235275f109
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> 
+> Downloadable assets:
+> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-615d3006.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/4bf0b27acaa4/vmlinux-615d3006.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/3133809ff35d/bzImage-615d3006.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+22e2c28c99235275f109@syzkaller.appspotmail.com
+> 
+> INFO: task swapper/0:1 blocked for more than 143 seconds.
+>       Not tainted 6.8.0-rc1-syzkaller-00029-g615d30064886 #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:swapper/0       state:D stack:22288 pid:1     tgid:1     ppid:0      flags:0x00004000
+> Call Trace:
+>  <TASK>
+>  context_switch kernel/sched/core.c:5400 [inline]
+>  __schedule+0xf12/0x5c00 kernel/sched/core.c:6727
+>  __schedule_loop kernel/sched/core.c:6802 [inline]
+>  schedule+0xe9/0x270 kernel/sched/core.c:6817
+>  virtio_gpu_queue_ctrl_sgs drivers/gpu/drm/virtio/virtgpu_vq.c:341 [inline]
+>  virtio_gpu_queue_fenced_ctrl_buffer+0x497/0xff0 drivers/gpu/drm/virtio/virtgpu_vq.c:415
+>  virtio_gpu_resource_flush drivers/gpu/drm/virtio/virtgpu_plane.c:162 [inline]
+>  virtio_gpu_primary_plane_update+0x1059/0x1590 drivers/gpu/drm/virtio/virtgpu_plane.c:237
+>  drm_atomic_helper_commit_planes+0x92f/0xfe0 drivers/gpu/drm/drm_atomic_helper.c:2800
+>  drm_atomic_helper_commit_tail+0x69/0xf0 drivers/gpu/drm/drm_atomic_helper.c:1749
+>  commit_tail+0x353/0x410 drivers/gpu/drm/drm_atomic_helper.c:1834
+>  drm_atomic_helper_commit+0x2f9/0x380 drivers/gpu/drm/drm_atomic_helper.c:2072
+>  drm_atomic_commit+0x20b/0x2d0 drivers/gpu/drm/drm_atomic.c:1514
+>  drm_client_modeset_commit_atomic+0x6c2/0x810 drivers/gpu/drm/drm_client_modeset.c:1051
+>  drm_client_modeset_commit_locked+0x14d/0x580 drivers/gpu/drm/drm_client_modeset.c:1154
+>  pan_display_atomic drivers/gpu/drm/drm_fb_helper.c:1370 [inline]
+>  drm_fb_helper_pan_display+0x2a5/0x990 drivers/gpu/drm/drm_fb_helper.c:1430
+>  fb_pan_display+0x477/0x7c0 drivers/video/fbdev/core/fbmem.c:191
+>  bit_update_start+0x49/0x1f0 drivers/video/fbdev/core/bitblit.c:390
+>  fbcon_switch+0xbb3/0x12e0 drivers/video/fbdev/core/fbcon.c:2170
+>  redraw_screen+0x2bd/0x750 drivers/tty/vt/vt.c:969
+>  fbcon_prepare_logo+0x9f8/0xc80 drivers/video/fbdev/core/fbcon.c:616
+>  con2fb_init_display drivers/video/fbdev/core/fbcon.c:803 [inline]
+>  set_con2fb_map+0xcea/0x1050 drivers/video/fbdev/core/fbcon.c:867
+>  do_fb_registered drivers/video/fbdev/core/fbcon.c:3007 [inline]
+>  fbcon_fb_registered+0x21d/0x660 drivers/video/fbdev/core/fbcon.c:3023
+>  do_register_framebuffer drivers/video/fbdev/core/fbmem.c:449 [inline]
+>  register_framebuffer+0x4b2/0x860 drivers/video/fbdev/core/fbmem.c:515
+>  __drm_fb_helper_initial_config_and_unlock+0xd7c/0x1650 drivers/gpu/drm/drm_fb_helper.c:1871
+>  drm_fb_helper_initial_config drivers/gpu/drm/drm_fb_helper.c:1936 [inline]
+>  drm_fb_helper_initial_config+0x44/0x60 drivers/gpu/drm/drm_fb_helper.c:1928
+>  drm_fbdev_generic_client_hotplug+0x19e/0x270 drivers/gpu/drm/drm_fbdev_generic.c:279
+>  drm_client_register+0x195/0x280 drivers/gpu/drm/drm_client.c:141
+>  drm_fbdev_generic_setup+0x184/0x340 drivers/gpu/drm/drm_fbdev_generic.c:341
+>  virtio_gpu_probe+0x1be/0x3c0 drivers/gpu/drm/virtio/virtgpu_drv.c:105
+>  virtio_dev_probe+0x5e4/0x980 drivers/virtio/virtio.c:311
+>  call_driver_probe drivers/base/dd.c:579 [inline]
+>  really_probe+0x234/0xc90 drivers/base/dd.c:658
+>  __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
+>  driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
+>  __driver_attach+0x274/0x570 drivers/base/dd.c:1216
+>  bus_for_each_dev+0x13c/0x1d0 drivers/base/bus.c:368
+>  bus_add_driver+0x2e9/0x630 drivers/base/bus.c:673
+>  driver_register+0x15c/0x4a0 drivers/base/driver.c:246
+>  do_one_initcall+0x11c/0x650 init/main.c:1236
+>  do_initcall_level init/main.c:1298 [inline]
+>  do_initcalls init/main.c:1314 [inline]
+>  do_basic_setup init/main.c:1333 [inline]
+>  kernel_init_freeable+0x687/0xc10 init/main.c:1551
+>  kernel_init+0x1c/0x2a0 init/main.c:1441
+>  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+>  </TASK>
+> INFO: task kworker/0:0:8 blocked for more than 143 seconds.
+>       Not tainted 6.8.0-rc1-syzkaller-00029-g615d30064886 #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:kworker/0:0     state:D stack:28208 pid:8     tgid:8     ppid:2      flags:0x00004000
+> Workqueue: events virtio_gpu_dequeue_ctrl_func
+> Call Trace:
+>  <TASK>
+>  context_switch kernel/sched/core.c:5400 [inline]
+>  __schedule+0xf12/0x5c00 kernel/sched/core.c:6727
+>  __schedule_loop kernel/sched/core.c:6802 [inline]
+>  schedule+0xe9/0x270 kernel/sched/core.c:6817
+>  schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6874
+>  __mutex_lock_common kernel/locking/mutex.c:684 [inline]
+>  __mutex_lock+0x5b9/0x9d0 kernel/locking/mutex.c:752
+>  drm_client_dev_hotplug drivers/gpu/drm/drm_client.c:217 [inline]
+>  drm_client_dev_hotplug+0x169/0x3c0 drivers/gpu/drm/drm_client.c:204
+>  virtio_gpu_cmd_get_display_info_cb+0x3e1/0x550 drivers/gpu/drm/virtio/virtgpu_vq.c:674
+>  virtio_gpu_dequeue_ctrl_func+0x21b/0x9a0 drivers/gpu/drm/virtio/virtgpu_vq.c:235
+>  process_one_work+0x886/0x15d0 kernel/workqueue.c:2633
+>  process_scheduled_works kernel/workqueue.c:2706 [inline]
+>  worker_thread+0x8b9/0x1290 kernel/workqueue.c:2787
+>  kthread+0x2c6/0x3a0 kernel/kthread.c:388
+>  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+>  </TASK>
+> INFO: task kworker/1:1:55 blocked for more than 143 seconds.
+>       Not tainted 6.8.0-rc1-syzkaller-00029-g615d30064886 #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:kworker/1:1     state:D stack:27648 pid:55    tgid:55    ppid:2      flags:0x00004000
+> Workqueue: events drm_fb_helper_damage_work
+> Call Trace:
+>  <TASK>
+>  context_switch kernel/sched/core.c:5400 [inline]
+>  __schedule+0xf12/0x5c00 kernel/sched/core.c:6727
+>  __schedule_loop kernel/sched/core.c:6802 [inline]
+>  schedule+0xe9/0x270 kernel/sched/core.c:6817
+>  schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6874
+>  __mutex_lock_common kernel/locking/mutex.c:684 [inline]
+>  __mutex_lock+0x5b9/0x9d0 kernel/locking/mutex.c:752
+>  drm_fbdev_generic_damage_blit drivers/gpu/drm/drm_fbdev_generic.c:198 [inline]
+>  drm_fbdev_generic_helper_fb_dirty+0x255/0xbb0 drivers/gpu/drm/drm_fbdev_generic.c:225
+>  drm_fb_helper_fb_dirty drivers/gpu/drm/drm_fb_helper.c:390 [inline]
+>  drm_fb_helper_damage_work+0x283/0x5e0 drivers/gpu/drm/drm_fb_helper.c:413
+>  process_one_work+0x886/0x15d0 kernel/workqueue.c:2633
+>  process_scheduled_works kernel/workqueue.c:2706 [inline]
+>  worker_thread+0x8b9/0x1290 kernel/workqueue.c:2787
+>  kthread+0x2c6/0x3a0 kernel/kthread.c:388
+>  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+>  </TASK>
+> 
+> Showing all locks held in the system:
+> 10 locks held by swapper/0/1:
+>  #0: ffff88801bcf8170 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:990 [inline]
+>  #0: ffff88801bcf8170 (&dev->mutex){....}-{3:3}, at: __device_driver_lock drivers/base/dd.c:1095 [inline]
+>  #0: ffff88801bcf8170 (&dev->mutex){....}-{3:3}, at: __driver_attach+0x269/0x570 drivers/base/dd.c:1215
+>  #1: ffff88801d7b42f8 (&dev->clientlist_mutex){+.+.}-{3:3}, at: drm_client_register+0x54/0x280 drivers/gpu/drm/drm_client.c:127
+>  #2: ffffffff8dcbfe88 (registration_lock){+.+.}-{3:3}, at: register_framebuffer+0x7a/0x860 drivers/video/fbdev/core/fbmem.c:514
+>  #3: ffffffff8d196720 (console_lock){+.+.}-{0:0}, at: fbcon_fb_registered+0x3c/0x660 drivers/video/fbdev/core/fbcon.c:3019
+>  #4: ffff8880198f4280 (&helper->lock){+.+.}-{3:3}, at: drm_fb_helper_pan_display+0xd5/0x990 drivers/gpu/drm/drm_fb_helper.c:1423
+>  #5: ffff88801d7b41b0 (&dev->master_mutex){+.+.}-{3:3}, at: drm_master_internal_acquire+0x21/0x70 drivers/gpu/drm/drm_auth.c:452
+>  #6: ffff8880198f4098 (&client->modeset_mutex){+.+.}-{3:3}, at: drm_client_modeset_commit_locked+0x4c/0x580 drivers/gpu/drm/drm_client_modeset.c:1152
+>  #7: ffffc90000047278 (crtc_ww_class_acquire){+.+.}-{0:0}, at: drm_client_modeset_commit_atomic+0xd0/0x810 drivers/gpu/drm/drm_client_modeset.c:990
+>  #8: ffff88801d9cb0b0 (crtc_ww_class_mutex){+.+.}-{3:3}, at: modeset_lock+0x484/0x6c0 drivers/gpu/drm/drm_modeset_lock.c:314
+>  #9: ffffffff8ddf96d0 (drm_unplug_srcu){.+.+}-{0:0}, at: srcu_lock_acquire include/linux/srcu.h:116 [inline]
+>  #9: ffffffff8ddf96d0 (drm_unplug_srcu){.+.+}-{0:0}, at: srcu_read_lock include/linux/srcu.h:215 [inline]
+>  #9: ffffffff8ddf96d0 (drm_unplug_srcu){.+.+}-{0:0}, at: drm_dev_enter+0x49/0x160 drivers/gpu/drm/drm_drv.c:449
+> 3 locks held by kworker/0:0/8:
+>  #0: ffff888013088d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x789/0x15d0 kernel/workqueue.c:2608
+>  #1: ffffc900000b7d80 ((work_completion)(&vgvq->dequeue_work)){+.+.}-{0:0}, at: process_one_work+0x7eb/0x15d0 kernel/workqueue.c:2609
+>  #2: ffff88801d7b42f8 (&dev->clientlist_mutex){+.+.}-{3:3}, at: drm_client_dev_hotplug drivers/gpu/drm/drm_client.c:217 [inline]
+>  #2: ffff88801d7b42f8 (&dev->clientlist_mutex){+.+.}-{3:3}, at: drm_client_dev_hotplug+0x169/0x3c0 drivers/gpu/drm/drm_client.c:204
 
-It'd be nice in the commit message to state which fields are added.
-I'm somewhat confused about the meaning of TakenAlone on an event.
 
-Thanks,
-Ian
+	swapper/0/1			kworker/0:0/8
+	===				===
+	lock &dev->clientlist_mutex
+	wait_event(vgdev->ctrlq.ack_queue, vq->num_free >= elemcnt);
+
+					lock   &dev->clientlist_mutex
+					unlock &dev->clientlist_mutex
+					wake_up(&vgdev->ctrlq.ack_queue);
+	deadlock
+
+> 2 locks held by kworker/u16:0/11:
+>  #0: ffff888013089938 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x789/0x15d0 kernel/workqueue.c:2608
+>  #1: ffffc900000e7d80 ((work_completion)(&(&kfence_timer)->work)){+.+.}-{0:0}, at: process_one_work+0x7eb/0x15d0 kernel/workqueue.c:2609
+> 1 lock held by khungtaskd/39:
+>  #0: ffffffff8d1a9120 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
+>  #0: ffffffff8d1a9120 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
+>  #0: ffffffff8d1a9120 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x75/0x340 kernel/locking/lockdep.c:6614
+> 3 locks held by kworker/1:1/55:
+>  #0: ffff888013088d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x789/0x15d0 kernel/workqueue.c:2608
+>  #1: ffffc90000a77d80 ((work_completion)(&helper->damage_work)){+.+.}-{0:0}, at: process_one_work+0x7eb/0x15d0 kernel/workqueue.c:2609
+>  #2: ffff8880198f4280 (&helper->lock){+.+.}-{3:3}, at: drm_fbdev_generic_damage_blit drivers/gpu/drm/drm_fbdev_generic.c:198 [inline]
+>  #2: ffff8880198f4280 (&helper->lock){+.+.}-{3:3}, at: drm_fbdev_generic_helper_fb_dirty+0x255/0xbb0 drivers/gpu/drm/drm_fbdev_generic.c:225
+> 
+> =============================================
+> 
 
