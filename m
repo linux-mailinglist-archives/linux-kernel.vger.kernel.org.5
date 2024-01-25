@@ -1,215 +1,150 @@
-Return-Path: <linux-kernel+bounces-38459-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0999183C035
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:06:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A365783C03B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:07:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD42B29A8B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:06:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C90191C20DFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:07:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 261624F891;
-	Thu, 25 Jan 2024 10:48:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A82D91C6BF;
+	Thu, 25 Jan 2024 10:49:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NoJOyvcf"
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ql1bxhnq"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8BD52C68E
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 10:48:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46F5D2C69A
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 10:49:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706179730; cv=none; b=qhEPlJiXIokeGTXgUAvD7MKWRfdpcxbjISbjELvFvLrkHKV/4xmzUBlsQmIWx8lNPZ3EBbdyTxVTzJrAYCQQCvXSvOMwkDoH6xpuZQC+dNatnpTAVcK+VECPITh1BzrBdVcNMCDGHRwLdo+0p9DE9SAWdBZEx34g77U8jn6jODU=
+	t=1706179766; cv=none; b=t1Qyy4BEr4xKpyfD8kaB4oq13OlO/WxolAegLIkescoDw3ljeezDldTD+OAhTStxaaVVx5YOTIsNHETcx3KV2RqCiJKM81sxMlnhwcqoHY1DbRMY8YRNT5by+h7XONBoH0DnRNNDujOtjkgqEjUEaPqpmQGeDgJLhHU/mPDT7BQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706179730; c=relaxed/simple;
-	bh=dD9ASP7AItpjc32mtRonAKJYsomCbQMJVZmHnMoDXtA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TH6D29wEnGvO70QECPlWNrip0h3ihvqUZfQ9Mv89rM2hurHJxaF2V3ZF8PqdrgovN4I4VGKWjQ2zB85tuPAENZlZ7M0xyEULS8tke0C2khNWifziad/pEwXOMjyZIMiavPwWPVLA5Pr3AUtmOcGPOYHi3y3nYmaZb0Nwk2C6tA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NoJOyvcf; arc=none smtp.client-ip=209.85.219.46
+	s=arc-20240116; t=1706179766; c=relaxed/simple;
+	bh=okODscfbgP/NEXtMfXADzLUO26Y9lxRYZZ6z8x2/kQ8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=P/pT/QZ43JNdxIKn3TZF/X9zFTpY6NakP74ng0khwHY4Rn1kqTIZKeHMJpbkC1+iJyZwq1NBCe9TUCqTJ7dgLp6B/XwwnDWhkz4ClpDfm+VwMiwRUnjrQciTtf/TWa1zGZSwJUpYWxw3xOh3bFdUoRXPQ2WXar+YJnHV906OYxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ql1bxhnq; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-6818a9fe380so38727356d6.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 02:48:48 -0800 (PST)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40eccf4a91dso11607035e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 02:49:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706179727; x=1706784527; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=714b/NnDPMdp2ZdQ3AWnpaMxa/q2envc65xjfUr/MfQ=;
-        b=NoJOyvcfUdqI4rUMo9zkeOi6DIulYDNOKTBYdf100C8bsB2lj/s/2zK3MhmcQm4XKJ
-         g9/6RrftstO2Lpzu6S6nTrn4RUs/5QksvdyU3SIh3LsRQTb+5HHCiT0zpvjW8ydgOSK0
-         c9e1HSXAx/yHuaATeynzwaWJfzZGGRHs+gg0BtcO9QhdS4lMtfEmP1mI8Xg0trOMXfwP
-         BYxZP8KesdAG5qN/GUGgBlY627SW5j2WUTPPUS4H4nO4piNGeD+1yV1us6fx4dsl8hCF
-         Gd2sBitAuO0IjhSO+rVyQBonHS+7ck4ygvr124bTD+3tTiI4zrmJIyWbUqb7zLtp5ZWy
-         Kfjg==
+        d=linaro.org; s=google; t=1706179762; x=1706784562; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sg9voFCh0OKdIMD1ScBUrg/Gel/xwqsPpRppsdKRtOE=;
+        b=ql1bxhnqJJuuQ1j23T/xoN4WV4mgbgbaytutH51ecW6vjfTZKDCi/x9viJ/OfsSawu
+         9DsZr/SJCr8QjTtmvt41iGX418R1yIkXZIimqxvRF3PBukD4uZ/tQ/Pin52+835zU43W
+         5GwqZIEFNoTAzwzm1OhjkQ0Zb7NbFfSNCULS8zjzN42yQYofLpyNM+NZTk7HFMENub2/
+         Rwpd4uX5FFurvULn2pYgSYCKGT5pco4XMq9ZXw983ela5l0AnawZgHWs6ChSnZX07Z79
+         yx5nya7yt4zphP8THQDCrlcZtyfI3EkYYWwowziz5ucvbktHGhrwE3ZEm3roQPUmsaRa
+         yaCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706179727; x=1706784527;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=714b/NnDPMdp2ZdQ3AWnpaMxa/q2envc65xjfUr/MfQ=;
-        b=E8fjbj/o8AabwZO//v5O8ggCUHWcVVbzQRWEvgDnobh1K5GvzgbfTugKC3Q0QsoH/R
-         zeyBtvCH5XanHSS8uAOJ8gsxFNYV7gnEFz4zNltNnrRjFxbO2sAQqZNQJd7fIuzeUWFt
-         Xpqy0T6eIKZ1pPcAGhfneFTaIRI+eX3V9h80Ig9EaryNIJEHNa/HnZs0IcXIyqkVf2lV
-         P8icGOcYIHGQo6pxUdKeH0Pu2OAz36rc7ONPrbBQJwGNcWTuUOeYqMRTcLv9h3WX4OHa
-         30oPwFSJGkfEMlghia0igzJjDLyFI1SrTqJfmmzW5RZkrvuGMZZnXhZKFQAcYgBWc+6q
-         EvdA==
-X-Gm-Message-State: AOJu0Ywv+Nn+rcqdSmQV81TzwD4cu+YLZnUZrt/McuvqSJmue+B29mE7
-	Q5UTc0n3BRrO9Gp8a6gZpSap6ipxVpvjxaO8N2I700jmxGMH46whhwoTgkOtMDW8iYA/UHPpVnN
-	oTsM1iFke/V9XLRMUbBXm0cg7O77tifRZAs4Iow==
-X-Google-Smtp-Source: AGHT+IHSNRTCqABkpiFJ88rnfpvQxM0isfEvlY334nV9mvLZQSLTOBpoUl+InAp+5NGcIzotfN/h0ZJLO7z8hwoHXkw=
-X-Received: by 2002:a05:6214:2a47:b0:680:b72b:7d7f with SMTP id
- jf7-20020a0562142a4700b00680b72b7d7fmr892023qvb.127.1706179727544; Thu, 25
- Jan 2024 02:48:47 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706179762; x=1706784562;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sg9voFCh0OKdIMD1ScBUrg/Gel/xwqsPpRppsdKRtOE=;
+        b=bBx92iy3rjutQvXyZP4HJAkiNa+lp/0P52XVIMnW+9Nni8rukZRfKQWpIIRCwP5tiL
+         0szNmsUF/L52kBp8DoenMLSLWABMwZCWCXchPaE+TB/eF/V7TG9qsP7xx9eOS3uUgeg4
+         nSHurr+sB+vQG7jCJr2RpZ5rOvzoJzxM3nAk1cNLZb90v9YolR4MeEN5IoS3YuRTXqmv
+         Uvh2xJXTuhgtWTyDWgygcfVNAC5Fht6PN2p+UrvrNDO+CeKPYiWxn8HkaHboFpF890DG
+         XizVHqvrApndRScmY+sOouhWls+VfBCpr57R0OHjRTvwi5Ns4QvYe+7rUZ8cPPzwOozB
+         1bgw==
+X-Gm-Message-State: AOJu0YyChqyMg6pGLDMc8a+1AF8mcLEBW+Ttx97M4QD1A77kKo674kfi
+	WNF38CEVxuNLcbT1F/4GbA1Kw1Knj5MySjOCizVvkCiEL6960VMOxcHz6U9o/A8=
+X-Google-Smtp-Source: AGHT+IHPkpEfMUwVk+L0mQez1wITeiV6sdtk0ftT+wRgTuKx4lRoauSM7hHb2RK/z43mmblkeA2aGA==
+X-Received: by 2002:a05:600c:6020:b0:40e:d231:498c with SMTP id az32-20020a05600c602000b0040ed231498cmr270880wmb.125.1706179762509;
+        Thu, 25 Jan 2024 02:49:22 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id i6-20020adfb646000000b00337bc2176f6sm20610248wre.81.2024.01.25.02.49.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jan 2024 02:49:22 -0800 (PST)
+Message-ID: <1fd6ba07-e542-4220-9435-e51e2d81d536@linaro.org>
+Date: Thu, 25 Jan 2024 11:49:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122225710.1952066-1-peter.griffin@linaro.org>
- <20240122225710.1952066-3-peter.griffin@linaro.org> <CAPLW+4=G5YiTZaZ5k=H1YciUwOEjKSF0w9Hd8rwymA71UmJnRQ@mail.gmail.com>
- <CADrjBPqbToXYUBx=reE5_W4U4aUUJRFs+FC5AHsrQ6mRYB9iAA@mail.gmail.com> <CAPLW+4=2dx3T=Snn-WstAQXhrDNE3as1Qgjr+LK+xwscHivBBQ@mail.gmail.com>
-In-Reply-To: <CAPLW+4=2dx3T=Snn-WstAQXhrDNE3as1Qgjr+LK+xwscHivBBQ@mail.gmail.com>
-From: Peter Griffin <peter.griffin@linaro.org>
-Date: Thu, 25 Jan 2024 10:48:35 +0000
-Message-ID: <CADrjBPoYpVDYptJSEd+=5x+eRnsuZzm4uOUokNEpEX2dxMGtiQ@mail.gmail.com>
-Subject: Re: [PATCH 2/9] soc: samsung: exynos-pmu: Add exynos_pmu_update/read/write
- APIs and SoC quirks
-To: Sam Protsenko <semen.protsenko@linaro.org>
-Cc: arnd@arndb.de, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
-	linux@roeck-us.net, wim@linux-watchdog.org, conor+dt@kernel.org, 
-	alim.akhtar@samsung.com, jaewon02.kim@samsung.com, chanho61.park@samsung.com, 
-	kernel-team@android.com, tudor.ambarus@linaro.org, andre.draszik@linaro.org, 
-	saravanak@google.com, willmcvicker@google.com, linux-fsd@tesla.com, 
-	linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/4] dt-bindings: pinctrl: Document nuvoton ma35d1 pin
+ control
+Content-Language: en-US
+To: Jacky Huang <ychuang570808@gmail.com>, linus.walleij@linaro.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ p.zabel@pengutronix.de, j.neuschaefer@gmx.net
+Cc: linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ ychuang3@nuvoton.com, schung@nuvoton.com
+References: <20240123080637.1902578-1-ychuang570808@gmail.com>
+ <20240123080637.1902578-3-ychuang570808@gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240123080637.1902578-3-ychuang570808@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Sam,
+On 23/01/2024 09:06, Jacky Huang wrote:
+> From: Jacky Huang <ychuang3@nuvoton.com>
+> 
+> Add documentation to describe nuvoton ma35d1 pin control and GPIO.
+> 
+> Signed-off-by: Jacky Huang <ychuang3@nuvoton.com>
+> ---
 
-Thanks for your review feedback!
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-On Wed, 24 Jan 2024 at 20:23, Sam Protsenko <semen.protsenko@linaro.org> wr=
-ote:
->
-> On Wed, Jan 24, 2024 at 4:02=E2=80=AFAM Peter Griffin <peter.griffin@lina=
-ro.org> wrote:
-> >
-> > Hi Sam,
-> >
-> > Thanks for the review feedback.
-> >
-> > On Tue, 23 Jan 2024 at 18:56, Sam Protsenko <semen.protsenko@linaro.org=
-> wrote:
-> > >
-> > > On Mon, Jan 22, 2024 at 4:57=E2=80=AFPM Peter Griffin <peter.griffin@=
-linaro.org> wrote:
-> > > >
-> > > > Newer Exynos SoCs have atomic set/clear bit hardware for PMU regist=
-ers as
-> > > > these registers can be accessed by multiple masters. Some platforms=
- also
-> > > > protect the PMU registers for security hardening reasons so they ca=
-n't be
-> > > > written by normal world and are only write acessible in el3 via a S=
-MC call.
-> > > >
-> > > > Add support for both of these usecases using SoC specific quirks th=
-at are
-> > > > determined from the DT compatible string.
-> > > >
-> > > > Drivers which need to read and write PMU registers should now use t=
-hese
-> > > > new exynos_pmu_*() APIs instead of obtaining a regmap using
-> > > > syscon_regmap_lookup_by_phandle()
-> > > >
-> > > > Depending on the SoC specific quirks, the exynos_pmu_*() APIs will =
-access
-> > > > the PMU register in the appropriate way.
-> > > >
-> > > > Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
-> > > > ---
-> > > >  drivers/soc/samsung/exynos-pmu.c       | 209 +++++++++++++++++++++=
-+++-
-> > > >  drivers/soc/samsung/exynos-pmu.h       |   4 +
-> > > >  include/linux/soc/samsung/exynos-pmu.h |  28 ++++
-> > > >  3 files changed, 234 insertions(+), 7 deletions(-)
-> > > >
-> > >
-> > > [snip]
-> > >
-> > > > +
-> > > > +int exynos_pmu_update_bits(unsigned int offset, unsigned int mask,
-> > > > +                          unsigned int val)
-> > > > +{
-> > > > +       if (pmu_context->pmu_data &&
-> > > > +           pmu_context->pmu_data->quirks & QUIRK_PMU_ALIVE_WRITE_S=
-EC)
-> > > > +               return rmw_priv_reg(pmu_context->pmu_base_pa + offs=
-et,
-> > > > +                                   mask, val);
-> > > > +
-> > > > +       return regmap_update_bits(pmu_context->pmureg, offset, mask=
-, val);
-> > > > +}
-> > > > +EXPORT_SYMBOL(exynos_pmu_update_bits);
-> > > > +
-> > >
-> > > This seems a bit hacky, from the design perspective. This way the use=
-r
-> > > will have to worry about things like driver dependencies, making sure
-> > > everything is instantiated in a correct order, etc. It also hides the
-> > > details otherwise visible through "syscon-phandle" property in the
-> > > device tree.
-> >
-> > In v2 I will keep the phandle to pmu_system_controller in DT, and add
-> > some -EPROBE_DEFER logic (See my email with Krzysztof).
-> >
-> > > Can we instead rework it by overriding regmap
-> > > implementation for Exynos specifics, and then continue to use it in
-> > > the leaf drivers via "syscon-phandle" property?
-> >
-> > I did look at that possibility first, as like you say it would avoid
-> > updating the leaf drivers to use the new API. Unfortunately a SMC
-> > backend to regmap was already tried and nacked upstream pretty hard.
-> > See here https://lore.kernel.org/lkml/20210723163759.GI5221@sirena.org.=
-uk/T/
-> >
->
-> Oh, I didn't mean creating a new regmap implementation :) To
-> illustrate what I meant, please look at these:
->
->   - drivers/mfd/altera-sysmgr.c
->   - altr_sysmgr_regmap_lookup_by_phandle()
->   - arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi
->   - drivers/mmc/host/dw_mmc-pltfm.c
+Best regards,
+Krzysztof
 
-Thanks for the pointers :) I hadn't spotted this when looking
-previously. I did find the previous threads I linked to and (it
-appears wrongly concluded) that such a regmap SMC would not be
-acceptable.
->
-> They basically implement their own regmap operations (with smcc too)
-> in their syscon implementation. So they can actually reference that
-> syscon as phandle in device tree and avoid exporting and calling
-> read/write operations (which I think looks hacky). Instead they use
-> altr_sysmgr_regmap_lookup_by_phandle() to get their regmap (which
-> performs smcc), and then they just use regular regmap_read() /
-> regmap_write or whatever functions to operate on their regmap object.
-> That's what I meant by "overriding" the regmap.
->
-> Do you think this approach would be clearer and more "productizable"
-> so to speak? Just a thought.
-
-Keeping it as a regmap was certainly always my preference. I'll try
-and re-work it in a similar way and see if I hit any blocking issues.
-
-Thanks,
-
-Peter.
 
