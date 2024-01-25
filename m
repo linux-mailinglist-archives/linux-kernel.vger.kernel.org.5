@@ -1,134 +1,170 @@
-Return-Path: <linux-kernel+bounces-38233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A095983BCDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:09:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 145F683BCDC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:09:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4152E1F2F460
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:09:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9D21291EB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:09:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 616471F61C;
-	Thu, 25 Jan 2024 09:05:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFBB71BC3A;
+	Thu, 25 Jan 2024 09:05:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="X58mvdCB"
-Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="QTabPfsN";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="uhZpULmk";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="QTabPfsN";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="uhZpULmk"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C83A1F619
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:05:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BD5A1BC23;
+	Thu, 25 Jan 2024 09:05:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706173504; cv=none; b=uZXlv9Qko7ziQ2VeKR+cEjv84W1zMAnLvJwgRemz8oeALur7iSejpWD9/Nimi2jLl5v3NDEX3KH3C6R+MisuqqGwq4h3GpIK1SjfsI5neasNezH+G0Qiab7+JqgP0X9jgPDLGP/ohvxPUcIYZJ5E4EBoBUKH4i4qej/t2DfsIx4=
+	t=1706173547; cv=none; b=Bzw8CSKLe5Ay7i0RbTae8qPpDYZga78kZ40crSqx08NN0UqLgP/a4JIa23N1eGijEiQ0wHXQVgsLECFUvB0BBK8oSFIuBlLEKvURy+cR/rF9tLfSLEDDrx9cU6qiC5nfPVyr77113eSEvYbmSgZeIVH5A2yfhME/yKlwcktuJ/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706173504; c=relaxed/simple;
-	bh=lipnMpwPco9x7KCIoob4tS30Jg6ddwgaMbgOVw0YoI8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kK3dO3lgaRXKXJyWbvWaxDmpsSc2zaoAlVSSzOkcMawMXFe/2+lw4KWUtdQPeHlpzdrBasjqMuUQqVdXC7ShGb1AgF9J2qMmSZpKmhmQc+uBjBFs0+R2Iz6g1DyDE/SPW47gdR9pq0EqFA0pCmVoOXIJBRykl1LV8lRJmR/Bkdg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=X58mvdCB; arc=none smtp.client-ip=209.85.221.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-4bd80b41cbdso160143e0c.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 01:05:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1706173502; x=1706778302; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4yl5XDxNSx+scno4sOmOPamPnwehic8cqjKIJbS0TL4=;
-        b=X58mvdCBymraHkwlYwZdQgnCmM5TcvsWU0IzAKvOzAbQ3OhtaN86Aulmefn9szzPTD
-         bTm3OcgAThKYs2HZPOD8Yyc95gRTA1RnV1KHDcxV1rwSaAEtSHy6thgM+xukd900Hlzb
-         QSWG0WXKqM9hUd9l1OpeAqsA+F/JbXpDQ3ksnriZm96kN0ZHuChkMkXIxdHLv4AwEiHZ
-         OgkjEHL9wEo0B9WE1N+sgaPlZ6eTADiO3N8c9i3FjPFsU4jprdAPSCOLE3lzGTWD0oen
-         +APs74LPXe9uwheyzn/StMJ2eUcpSJxUZ2qxRctdNoh6f/7o+6aAjYRgK90VUKT9TAxs
-         t2ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706173502; x=1706778302;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4yl5XDxNSx+scno4sOmOPamPnwehic8cqjKIJbS0TL4=;
-        b=Bn+vyraOBrvjXB/ddzUsd4Q2D/XnXfSDwMZ8eblN63U1npcHOkbyyOfIebrylbi5mV
-         5jCdBw0qMvO5sPwZ1uHGCMxVyA9vzRKsXVMtF+FHobvGod7ln0B5NbCNF9jb+XM2XZoN
-         6lmmTeX0VV1KG0zGhJPIIMwUzNOIjKSMmS1rNdyDM/MOsyZrqJNZyiJH6DvE84AO8EQd
-         Bbur3yIkB+VgcXWEqnMI1Q+FtCURWHqlGQq+q4CpKN1iD/2gB8mqA/5QZghOJL1Tq8E/
-         /S9cImTD+2Z9zLA+tEad7y+EGmUzf5PyGxPnT40rytYWWIUC4hzTim+z2t1gvs6UoDdk
-         M+Pw==
-X-Gm-Message-State: AOJu0Yx36ekIemrNNHjz7Mt/pbtIYeShp6zE/lRt7/UHM6QNdwkORjVh
-	9hw9bz7tsoiyiulHVYIUlas+H7WqzWrpbhUFTocugo1cdsAXCySuco/GRMlq0tVV7SFPfKmDVm9
-	VGDmXn6HUJsg5N4U26JL1rHmk8GzDLWXgS6ID4w==
-X-Google-Smtp-Source: AGHT+IHZWV4UhDIIHdron+8ZF5KochAC0026rXhEu1We5qqfpAof5+JF6/mZFAZjawdecPIHq2gOns25o02YMaXlq/w=
-X-Received: by 2002:a05:6122:71f:b0:4b7:a77c:d133 with SMTP id
- 31-20020a056122071f00b004b7a77cd133mr385418vki.11.1706173502163; Thu, 25 Jan
- 2024 01:05:02 -0800 (PST)
+	s=arc-20240116; t=1706173547; c=relaxed/simple;
+	bh=/Awd5Rpw/LP0WK2bkwYJVJu10+RpEs5ehXlnYOdjEfU=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EQS9DSBM+aMbzANYpZeKQ1JjuN5ApZ8oriC2j/KAOOaWAd4AsII1aJQDd8CN2yts3vrZLoK+U+Uvnig56vjc7CjEUbc18pE9peaAv3apXF9tRJNkuoVA7PALM5bV6fPSyevHp+wH6JfGX1Eu1MkE6Gb6zZxVN7kPvCHmG0/rj9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=QTabPfsN; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=uhZpULmk; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=QTabPfsN; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=uhZpULmk; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BFF051F84C;
+	Thu, 25 Jan 2024 09:05:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706173540; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LqO3/k5my85BZMbKqkCA9egmBjk9aaibA3LxQHowLFY=;
+	b=QTabPfsNk0guURroVYzz+FmbtUAVMvVU+U/QVhvxpghjL64cTAe/0I1kGdF0ojvHfePUmw
+	s4oFAktLUZBiHr2rd9e1PZBxZ0LQ1bKVXxHPhpuT452T7xqLhHyeLx/fwWygoPXKWU0nzX
+	c7IA9xoYQdLvCLMHICIJnbAprtUNTKQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706173540;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LqO3/k5my85BZMbKqkCA9egmBjk9aaibA3LxQHowLFY=;
+	b=uhZpULmkXrNFMbMhGHbbHVJvzLH5vasozTg6RYgYPoAkQm2k2iXlytkmDzl2tz++C8ujhK
+	z7qGV0VQdTzKWYAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706173540; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LqO3/k5my85BZMbKqkCA9egmBjk9aaibA3LxQHowLFY=;
+	b=QTabPfsNk0guURroVYzz+FmbtUAVMvVU+U/QVhvxpghjL64cTAe/0I1kGdF0ojvHfePUmw
+	s4oFAktLUZBiHr2rd9e1PZBxZ0LQ1bKVXxHPhpuT452T7xqLhHyeLx/fwWygoPXKWU0nzX
+	c7IA9xoYQdLvCLMHICIJnbAprtUNTKQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706173540;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LqO3/k5my85BZMbKqkCA9egmBjk9aaibA3LxQHowLFY=;
+	b=uhZpULmkXrNFMbMhGHbbHVJvzLH5vasozTg6RYgYPoAkQm2k2iXlytkmDzl2tz++C8ujhK
+	z7qGV0VQdTzKWYAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 76A90134C3;
+	Thu, 25 Jan 2024 09:05:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id PI+MG2QksmUcPwAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Thu, 25 Jan 2024 09:05:40 +0000
+Date: Thu, 25 Jan 2024 10:05:40 +0100
+Message-ID: <87o7d9kckb.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: <tiwai@suse.com>,
+	<soyer@irl.hu>,
+	<shenghao-ding@ti.com>,
+	<perex@perex.cz>,
+	<linux-kernel@vger.kernel.org>,
+	<linux-sound@vger.kernel.org>,
+	<alsa-devel@alsa-project.org>,
+	<patches@opensource.cirrus.com>
+Subject: Re: [PATCH 0/2] ALSA: hda: Move component binding support into separate library
+In-Reply-To: <87plxqlucs.wl-tiwai@suse.de>
+References: <20240124112607.77614-1-rf@opensource.cirrus.com>
+	<87plxqlucs.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240125081601.118051-1-krzysztof.kozlowski@linaro.org> <20240125081601.118051-3-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240125081601.118051-3-krzysztof.kozlowski@linaro.org>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Thu, 25 Jan 2024 10:04:51 +0100
-Message-ID: <CAMRc=MfYg5MgndDZtrAaScmtjXm4-AX6y1np7V3p4ngBKZG-pw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] gpiolib: add gpio_device_get_label() stub for !GPIOLIB
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Peter Rosin <peda@axentia.se>, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org, kernel test robot <lkp@intel.com>, 
-	Philipp Zabel <p.zabel@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=QTabPfsN;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=uhZpULmk
+X-Spamd-Result: default: False [-1.18 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-1.87)[94.27%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: BFF051F84C
+X-Spam-Level: 
+X-Spam-Score: -1.18
+X-Spam-Flag: NO
 
-On Thu, Jan 25, 2024 at 9:16=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> Add empty stub of gpio_device_get_label() when GPIOLIB is not enabled.
->
-> Cc: <stable@vger.kernel.org>
-> Fixes: d1f7728259ef ("gpiolib: provide gpio_device_get_label()")
-> Suggested-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->
-> ---
->
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
->
-> Reset framework will need it:
-> https://lore.kernel.org/oe-kbuild-all/202401250958.YksQmnWj-lkp@intel.com=
-/
+On Wed, 24 Jan 2024 14:43:47 +0100,
+Takashi Iwai wrote:
+> 
+> On Wed, 24 Jan 2024 12:26:05 +0100,
+> Richard Fitzgerald wrote:
+> > 
+> > The Cirrus Logic amplifiers are currently paired with Realtek HDA codecs.
+> > But they could be used with other codecs. To prepare for this, these two
+> > patches move the manager side of the component binding out of the Realtek
+> > driver into a library module.
+> > 
+> > The first patch tweaks the CS35L41 code so that it is not hardcoded to
+> > CS35L41, and changes the TAS2781 handling so that it re-uses that code
+> > instead of having a near-identical copy of it.
+> > 
+> > Can someone please test that these two patches don't break TAS2781?
+> > I have checked that they should work in theory but I don't have hardware
+> > to test on.
+> > 
+> > Richard Fitzgerald (2):
+> >   ALSA: hda: realtek: Re-work CS35L41 fixups to re-use for other amps
+> >   ALSA: hda: realtek: Move hda_component implementation to module
+> 
+> Through a quick glance, it looks good.
+> I'll wait for the verification for TAS codec for a while.
 
-And I suppose you'll want an immutable branch for that?
+Now applied to for-next branch.
 
-Bart
 
-> ---
->  include/linux/gpio/driver.h | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
-> index c1df7698edb0..7f75c9a51874 100644
-> --- a/include/linux/gpio/driver.h
-> +++ b/include/linux/gpio/driver.h
-> @@ -831,6 +831,12 @@ static inline int gpio_device_get_base(struct gpio_d=
-evice *gdev)
->         return -ENODEV;
->  }
->
-> +static inline const char *gpio_device_get_label(struct gpio_device *gdev=
-)
-> +{
-> +       WARN_ON(1);
-> +       return NULL;
-> +}
-> +
->  static inline int gpiochip_lock_as_irq(struct gpio_chip *gc,
->                                        unsigned int offset)
->  {
-> --
-> 2.34.1
->
+thanks,
+
+Takashi
 
