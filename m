@@ -1,101 +1,86 @@
-Return-Path: <linux-kernel+bounces-38848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45D4083C73A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:49:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 493AE83C73C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:49:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F0E8E1F23CF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:49:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00B14292381
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:49:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3879745D0;
-	Thu, 25 Jan 2024 15:48:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ADAC745D0;
+	Thu, 25 Jan 2024 15:49:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="hVBEH2TK"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="gT2uAi8k"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A2907319D
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 15:48:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1097B73172;
+	Thu, 25 Jan 2024 15:49:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706197728; cv=none; b=OWPFa1IRTWor/GU/kH65wEPr5jUfeVjUDVPX7M3sLK7kC2amTbuOtgyEw0luS/WOPI/CIZ5St9BlHivmfBI0VjOncEwAD6X1i5ClH+gP6efFTHASKMaD3wEj2GdeUghCjlFARITCqr4kojoaCFUgD+oPkIJtBWUSJb1lfU6nedY=
+	t=1706197768; cv=none; b=YKUsxpHYk2nrqLLQwbuRmzEVJAUtVo/lR1KfjDuLow1lVZdNxQBVAm7Rhy06XjgMr4+M141xKEBfz0xI7cLGF7Y7SCOAalub8v+I21BSnrIrWUoqLfLbzh6L71jWb5cU3dv9wmaBIe7cZwXZZ4h7FKF/AWKvqe/+cpUFoAfmbeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706197728; c=relaxed/simple;
-	bh=XkDB2j+aumLxzM/ebMuF8e8HHtMU2QXUT7kkqJuzBVs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=atvUG5dXtkpsnt8Vgd7AXPkJj4li6gmeRdkMk59oYK/eLnaSVesxzYOqceUxs6yEEV6oJxNi8YHPncT5ivlD9BcI30dLdI9ToODJIFfO55BRWmWrIHQRhJSemKYLwHrSGvo4LQ+8IInf7Ls3myun77CmEH7aOQ2Vvt9yFSkOJFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=hVBEH2TK; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=QiJ4CwmCyo6dKl+Q+qnikTNWtt26HZyYn+VJFvkIfIs=; b=hVBEH2TKO5dzIChvSoPv+Rg47C
-	5H8wbbzqwIn1B4Cz1Iw1Q7b0AiB6HYf43tJbia3F3iCdSiNI6ccnFD9NIsWf21f0XATUxmop9RR7s
-	AGw+ovbc14YxNzcl/y/kcSMhHBUgTKlfc/4K6PDbQcooaQZvrM3QW5j/Q/DQu2+6R1IKwVp0kKRHV
-	NyZNX24Suby5v9FS7BC2kORLmnSXs43Fy/lK39V1BnGa0fGflqAO+SZ+LqG7raMmTJQXylqIrTowi
-	E52a9NqOfypHrm598v3g24pr36Oc0nLO0tvaj8qmJb4xPxa2hL8iwg1k9pArTJMMKvGpJGseyQJOx
-	U2GeFwyw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rT1yA-00000000gRI-0FCP;
-	Thu, 25 Jan 2024 15:48:46 +0000
-Date: Thu, 25 Jan 2024 07:48:46 -0800
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Russ Weight <russ.weight@linux.dev>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] firmware_loader: introduce __free() cleanup hanler
-Message-ID: <ZbKC3gLfNz301hRQ@bombadil.infradead.org>
-References: <ZaeQw7VXhnirX4pQ@google.com>
+	s=arc-20240116; t=1706197768; c=relaxed/simple;
+	bh=Uq2v743gJaoPIQCnfIBj7JCBZnQMdT1G44QjJkIk6M4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Tubmab0Xfy4gMhFmAbdPaoso8Sm6dGh3Go+5uy2mO5oE/HKiqM8OJc28M9t5qT1KnFGuJhB7s/Q4fakSFG7h5T3z1ibwgWvT13eYwUB5cZlQGFFZO6HhEHAfUM5+qkguWwetuPQOj0/pKSlkiWXamXZXsmy+V+pDAlD2bn4rX+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=gT2uAi8k; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from umang.jain (unknown [103.86.18.175])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id BE9E47FA;
+	Thu, 25 Jan 2024 16:48:01 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1706197683;
+	bh=Uq2v743gJaoPIQCnfIBj7JCBZnQMdT1G44QjJkIk6M4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=gT2uAi8kNorNIv1aOJAZFq3AkEKLVK1TZpR2sfGQfMChvsit/SC0fFKPUU7f1CGMx
+	 WBQIeuRO/i6KzcfCW8/iqOKV3lnq9OpLZLplOpoymDIqnFbK0LIWBVQpVIFeR2wpJB
+	 wx9r5sk1Rktsk/do8QQ3KF84PsQy8oSF0Z8yjPic=
+From: Umang Jain <umang.jain@ideasonboard.com>
+To: linux-media@vger.kernel.org
+Cc: Kieran Bingham <kieran.bingham@ideasonboard.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Umang Jain <umang.jain@ideasonboard.com>
+Subject: [PATCH 0/4] imx335: Support additional link-freq and TPG
+Date: Thu, 25 Jan 2024 21:19:04 +0530
+Message-ID: <20240125154908.465191-1-umang.jain@ideasonboard.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZaeQw7VXhnirX4pQ@google.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 17, 2024 at 12:33:07AM -0800, Dmitry Torokhov wrote:
-> Define cleanup handler using facilities from linux/cleanup.h to simplify
-> error handling in code using firmware loader. This will allow writing code
-> like this:
-> 
-> int driver_update_firmware(...)
-> {
-> 	const struct firmware *fw_entry __free(firmware) = NULL;
-> 	int error;
-> 
-> 	...
-> 	error = request_firmware(&fw_entry, fw_name, dev);
-> 	if (error) {
-> 		dev_err(dev, "failed to request firmware %s: %d",
-> 			fw_name, error);
-> 		return error;
-> 	}
-> 
-> 	error = check_firmware_valid(fw_entry);
-> 	if (error)
-> 		return error;
-> 
-> 	guard(mutex)(&instance->lock);
-> 
-> 	error = use_firmware(instance, fw);
-> 	if (error)
-> 		return error;
-> 
-> 	return 0;
-> }
-> 
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+This series adds support for additional link frequency and
+test pattern generator on IMX335.
 
-Acked-by: Luis Chamberalin <mcgrof@kernel.org>
+Patch 1/4 is a drive-by patch which drops setting of a reserved
+register.
 
-  Luis
+Patch 2/4 is also a prep-up patch for TPG introduction(in 4/4), as the test
+pattern needs sensor to be powered up to apply the test pattern.
+
+Patch 3/4 supports for additional link-frequency supported by IMX335
+
+Matthias Fend (1):
+  media: i2c: imx335: Add support for test pattern generator
+
+Umang Jain (3):
+  media: i2c: imx335: Drop setting of 0x3a00 register
+  media: i2c: imx335: Refactor power sequence to set controls
+  media: i2c: imx335: Support multiple link frequency
+
+ drivers/media/i2c/imx335.c | 227 ++++++++++++++++++++++++++++++++-----
+ 1 file changed, 197 insertions(+), 30 deletions(-)
+
+-- 
+2.41.0
+
 
