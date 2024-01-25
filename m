@@ -1,165 +1,227 @@
-Return-Path: <linux-kernel+bounces-39332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DA0C83CED4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:47:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C91CA83CED3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:47:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 931551C21D48
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:47:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7107828D7AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:47:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 348E413AA50;
-	Thu, 25 Jan 2024 21:47:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4D8E13AA3B;
+	Thu, 25 Jan 2024 21:47:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QcXiMWJZ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UauIyJax"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9703C13A272
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 21:47:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C626C135413;
+	Thu, 25 Jan 2024 21:47:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706219245; cv=none; b=CvXCx29PfCxRgo2Dcgw3hxs/FAN9bS+KkyXvZiC6pQoF0LgfTlm4Sk7xdIzPvOx5iWoEeA7Q/NWhyuN1DoJeiMlzhl+XuZXLwJMKDPuLTTwNWVG7+vXZ1uvA+7hA3Ibj/n5NGCLx4ly4rJdk3AJ3Mm8KIhxroyino9dTyTpkshM=
+	t=1706219225; cv=none; b=D3AGhW9P/kTBs4uW3a5Bd9udZ4vaJX/MHwI97i1DHM8ipDYp2tf3RWaW7iivJVHJpBZb74YEU2nlfZxw8OtY2B8r/bvngkXXuZI2mkAywPQFSaQ4Bi62VJFbOPb1rsFBj2g7O0eowblshYf1iM3BWHsgjc7ke/HbdTFCXLLYDys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706219245; c=relaxed/simple;
-	bh=NcaE8S5NwQHT5Tq0RlWwGiOlHY6ORi1hFNchO5th4hc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type:Content-Disposition; b=DIr1Yr/NwgC+J/XyPUrHlTxICYnKSwjPuExQKPwPq9+3lDNTa+QweihaTVgsAKnqYE6LoXH2CKPxT0nX6DAXSist5f8AJDbF6WxXspV8TxDJgby78nE2iirFMGwjT52QHZrjDzSTC+qOgE4+rSc+bYgEdkv7uCQGHFFFN2kfDXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QcXiMWJZ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706219241;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=f6m+zu3oNEJHiwD8qfoMPQzECOUmp8yU0Qm9W6z7sE4=;
-	b=QcXiMWJZu+AGOKu6W5kpKqtiYsQCS5z+HAq2DRQ99WAvlJLcuUtk66UTd8OQM/C+I3TWlL
-	YYXNOW43HPAX8hTqweQYUVVitA5vvg4TY5ERKnKqjTNrhUr78U6FyaOxiHP4tGnIluNqeQ
-	e9UUtxC0X3sccvJRgCIGTJ1RhmKis9Q=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-553-sDAaEQhtPkOmeEQU79Up1Q-1; Thu, 25 Jan 2024 16:47:20 -0500
-X-MC-Unique: sDAaEQhtPkOmeEQU79Up1Q-1
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5cfda2f4716so2452475a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 13:47:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706219239; x=1706824039;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f6m+zu3oNEJHiwD8qfoMPQzECOUmp8yU0Qm9W6z7sE4=;
-        b=xQn3+8V1UpN/YHnpCf5kj57zqimGZY1cRuQ4vAQCxMxnEmfTpS7WPwMsB2FBYntvwG
-         HlRAsVuT1K0QcXGe15sEc5jTBH0cdmXgzYSLb88PQueToTmlmyAaJBHUXWIeqrU7StSQ
-         AVQr00zyAIl/u549wS5d4djSKQpbks+XeUV4oMtuVG/ynPWnSJe2qJ5cPnclPv/ywujI
-         piIdUP9jnRxwcm6akxyZpfg7a/wQNC9KM57oNW59AzZ1tsr55AlBaI8sDPUkuyaf2jio
-         GfubikiQsA3ZAzOTvo0pL7i3qQMEIn12uceY5nxNxy67quaFpNtSnqpLVAGkGjMsrdKf
-         +l6g==
-X-Gm-Message-State: AOJu0YzFoypPQI9QYtaWKcQOTsozg1bHPHTfOPmseHKssORyFaJ/VxJ4
-	K4qQc2p4JSIKVU1vnlY9OfilhiuUFM1e83yXM5WxCE5k2IcN33excHFNCnQPyX/YYfM6fJMOB3J
-	p250Ec8MOkmx89nnLaXCll+3s/sXosZgcBbsUNDGhpM0yEOdUmd79GF069tYupw==
-X-Received: by 2002:a17:902:c942:b0:1d7:8cd6:63d with SMTP id i2-20020a170902c94200b001d78cd6063dmr428542pla.106.1706219238867;
-        Thu, 25 Jan 2024 13:47:18 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEWJC5YTpRbaoh14bsl5ibY91uvk6x3YL/0dEVyxqwYJypzaQhTZ2Llob8V9gb1yptW7SOgSA==
-X-Received: by 2002:a17:902:c942:b0:1d7:8cd6:63d with SMTP id i2-20020a170902c94200b001d78cd6063dmr428530pla.106.1706219238486;
-        Thu, 25 Jan 2024 13:47:18 -0800 (PST)
-Received: from localhost.localdomain ([2804:1b3:a803:96a5:ba81:becc:80f3:6a79])
-        by smtp.gmail.com with ESMTPSA id mm14-20020a1709030a0e00b001d7222d8caasm10460079plb.50.2024.01.25.13.47.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 13:47:17 -0800 (PST)
-From: Leonardo Bras <leobras@redhat.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: Leonardo Bras <leobras@redhat.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 1/1] wq: Avoid using isolated cpus' timers on unbounded queue_delayed_work
-Date: Thu, 25 Jan 2024 18:46:33 -0300
-Message-ID: <ZbLWubUjuzFUKD5R@LeoBras>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <ZbKqoeC7JVcJULdI@slm.duckdns.org>
-References: <20240124082938.2527697-2-leobras@redhat.com> <ZbGFce8ixJKb6umE@slm.duckdns.org> <ZbG9TjHAMJYIvwsg@LeoBras> <ZbKqoeC7JVcJULdI@slm.duckdns.org>
+	s=arc-20240116; t=1706219225; c=relaxed/simple;
+	bh=fjFf6vRo4yuWVrpY3vShY+6xxu0dgHE9J/OQbltZeUs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SD0c1pbjYnWQOdbZZSBLa30wbTAKX2wHdq2aDTmzz0SY+ZXeR0by6ryt/1AuBqAsbdkUgiJAVpJ+V8Ya2edYl8pB4411u5U9wrh64lVHvj0+GWusvr6u27OvEiFukotrAyAn44sXwqYebTptd+BQOf3F1ThOi4QIZKVdCox3MfY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UauIyJax; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FE51C433C7;
+	Thu, 25 Jan 2024 21:47:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706219225;
+	bh=fjFf6vRo4yuWVrpY3vShY+6xxu0dgHE9J/OQbltZeUs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UauIyJaxOjRGvGs4W/OY+L7QWCmsRuosHxifU5R6Qx0UzIbhXAa87Cm0Dmpg2x5dr
+	 Jd2PMPu8MnnzXoIfjVsJR3Qc82TKDSFpjGEoW827lPQEoDtPqQi2yGB5PU6DJG5/5k
+	 RRWm1N1X+o1CaFtc0BaWEu4CiYAtNyg0m3XchubQTIXEC64QZNf9zWWJeYoGs+mbl1
+	 TZDQonudge3fIQOhFfNSAK6oSLlGekENiN4IcCc6daA4vT0L2sQXRxmUbJrKXCydW5
+	 /DAKupIyOlPDEMvE2qgrV3rvHNrUVJ3dBMGvq7/oDlN2xNFo0Jk4tFQesovJabhgL1
+	 aeK8IN40vfqjA==
+Date: Thu, 25 Jan 2024 21:46:59 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
+	Theodore Ts'o <tytso@mit.edu>, Greg KH <greg@kroah.com>,
+	Neal Gompa <neal@gompa.dev>, Kees Cook <keescook@chromium.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+	Nikolai Kondrashov <spbnick@gmail.com>,
+	Philip Li <philip.li@intel.com>,
+	Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [GIT PULL] bcachefs updates for 6.8
+Message-ID: <ZbLW0/t57GVQJVF1@sirena.org.uk>
+References: <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
+ <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
+ <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
+ <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
+ <2024011532-mortician-region-8302@gregkh>
+ <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
+ <20240117055457.GL911245@mit.edu>
+ <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
+ <c69a3103-ae4d-459a-b5f4-d3bbe2af6fb2@sirena.org.uk>
+ <vm5fwfqtqoy5yl37meflf4yrmzotyi5aszouwthfv6q7nrtxhq@oucmld5ak4uo>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="95W9f47JAmPj9bg9"
+Content-Disposition: inline
+In-Reply-To: <vm5fwfqtqoy5yl37meflf4yrmzotyi5aszouwthfv6q7nrtxhq@oucmld5ak4uo>
+X-Cookie: You might have mail.
+X-TUID: zJhhZNiCh8nK
+
+
+--95W9f47JAmPj9bg9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 25, 2024 at 08:38:25AM -1000, Tejun Heo wrote:
-> Hello,
-> 
-> On Wed, Jan 24, 2024 at 10:45:50PM -0300, Leonardo Bras wrote:
-> > That's a good suggestion, but looking at workqueue_init_early() I see that, 
-> > in short:
-> > wq_unbound_cpumask = 	cpu_possible_mask & 
-> > 			housekeeping_cpumask(HK_TYPE_WQ) & 
-> > 			housekeeping_cpumask(HK_TYPE_DOMAIN) &
-> > 			wq_cmdline_cpumask
-> > 
-> > So wq_unbound_cpumask relates to domain and workqueue cpu isolation.
-> > 
-> > In our case, we are using this to choose in which cpu is the timer we want 
-> > to use, so it makes sense to use timer-related cpu isolation, instead.
-> 
-> - In the proposed code, when cpu == WORK_CPU_UNBOUND, it's always setting
->   cpu to housekeeping_any_cpu(HK_TYPE_TIMER). This may unnecessarily move
->   the timer and task away from local CPU. Preferring the local CPU would
->   likely make sense.
-> 
-> - If HK_TYPE_TIMER and workqueue masks may not agree, setting dwork->cpu to
->   the one returned from HK_TYPE_TIMER is likely problematic. That would
->   force __queue_work() to use that CPU instead of picking one from
->   wq_unbound_cpumask.
-> 
-> > As of today, your suggestion would work the same, as the only way to enable 
-> > WQ cpu isolation is to use nohz_full, which also enables TIMER cpu 
-> > isolation. But since that can change in the future, for any reason, I would 
-> > suggest that we stick to using the HK_TYPE_TIMER cpumask.
-> > 
-> > I can now notice that this can end up introducing an issue: possibly 
-> > running on a workqueue on a cpu outside of a valid wq_cmdline_cpumask.
-> 
-> Yeap.
-> 
-> > I would suggest fixing this in a couple ways:
-> > 1 - We introduce a new cpumask which is basically 
-> >     housekeeping_cpumask(HK_TYPE_DOMAIN) & wq_cmdline_cpumask, allowing us 
-> >     to keep the timer interrupt in the same cpu as the scheduled function,
-> > 2- We use the resulting cpu only to pick the right timer.
-> > 
-> > What are your thouhts on that?
-> 
-> How about something like the following instead?
-> 
-> - If current CPU is in HK_TYPE_TIMER, pick that CPU.
-> 
-> - If not, pick a CPU from HK_TYPE_TIMER.
-> 
-> - Do add_timer_on() on the selected CPU but leave dwork->cpu as
->   WORK_CPU_UNBOUND and leave that part to __queue_work().
-> 
-> Thanks.
+On Sat, Jan 20, 2024 at 10:24:09PM -0500, Kent Overstreet wrote:
+> On Wed, Jan 17, 2024 at 06:19:43PM +0000, Mark Brown wrote:
+> > On Wed, Jan 17, 2024 at 08:03:35AM -0500, James Bottomley wrote:
 
-It looks like a good idea to me.
+> > I think that's a *bit* pessimistic, at least for some areas of the
+> > kernel - there is commercial stuff going on with kernel testing with
+> > varying degrees of community engagement (eg, off the top of my head
+> > Baylibre, Collabora and Linaro all have offerings of various kinds that
+> > I'm aware of), and some of that does turn into investments in reusable
+> > things rather than proprietary stuff.  I know that I look at the
+> > kernelci.org results for my trees, and that I've fixed issues I saw
+> > purely in there.  kselftest is noticably getting much better over time,
+> > and LTP is quite active too.  The stuff I'm aware of is more focused
+> > around the embedded space than the enterprise/server space but it does
+> > exist.  That's not to say that this is all well resourced and there's no
+> > problem (far from it), but it really doesn't feel like a complete dead
+> > loss either.
 
-It's basicaly (2) with "keep the timer in this cpu if it's not isolated", 
-which seems the right thing to do.
+> kselftest is pretty exciting to me; "collect all our integration tests
+> into one place and start to standarize on running them" is good stuff.
 
-Thanks!
-Leo
+> You seem to be pretty familiar with all the various testing efforts, I
+> wonder if you could talk about what you see that's interesting and
+> useful in the various projects?
 
+Well, I'm familiar with the bits I look at and some of the adjacent
+areas but definitely not with the testing world as a whole.
 
-> 
-> -- 
-> tejun
-> 
+For tests themselves there's some generic suites like LTP and kselftest,
+plus a lot of domain specific things which are widely used in their
+areas.  Often the stuff that's separate either lives with something like
+a userspace library rather than just being a purely kernel thing or has
+some other special infrastructure needs.
 
+For lab orchestration there's at least:
+
+    https://beaker-project.org/
+    https://github.com/labgrid-project/labgrid
+    https://www.lavasoftware.org/
+
+Beaker and LAVA are broadly similar in a parallel evolution sort of way,
+scalable job scheduler/orchestration things intended for non interactive
+use with a lot of overlap in design choices.  LAVA plays nicer with
+embedded boards since Beaker comes from RedHat and is focused more on
+server/PC type use cases though I don't think there's anything
+fundamental there.  Labgrid has a strong embedded focus with facilities
+like integrating anciliary test equipment and caters a lot more to
+interactive use than either of the other two but AIUI doesn't help so
+much with batch usage, though that can be built on top.  All of them can
+handle virtual targets as well as physical ones.
+
+All of these need something driving them to actually generate test jobs
+and present the results, as well as larger projects there's also people
+like Guenter Roeck and myself who run things that amuse us and report
+them by hand.  Of the bigger general purpose orchestration projects off
+the top of my head there's
+
+    https://github.com/intel/lkp-tests/blob/master/doc/faq.md
+    https://cki-project.org/
+    https://kernelci.org/
+    https://lkft.linaro.org/
+
+CKI and KernelCI are not a million miles apart, they both monitor a
+bunch of trees and run well known testsuites that they've integrated,
+and have code available if you want to deploy your own thing (eg, for
+non-public stuff).  They're looking at pooling their results into kcidb
+as part of the KernelCI LF project.  Like 0day is proprietary to Intel
+LKFT is proprietary to Linaro, LKFT has a focus on running a lot of
+tests on stable -rcs with manual reporting though they do have some best
+effort coverage of mainline and -next as well.
+
+There's also a bunch of people doing things specific to a given hardware
+type or other interest, often internal to a vendor but for example Intel
+have some public CI for their graphics and audio:
+
+    https://intel-gfx-ci.01.org/
+    https://github.com/thesofproject/linux/
+
+(you can see the audio stuff doing it's thing on the pull requests in
+the SOF repo.)  The infra behind these is a bit task specific AIUI, for
+example the audio testing includes a lot of boards that don't have
+serial consoles or anything (eg, laptops) so it uses a fixed filesystem
+on the device, copies a kernel in and uses grub-reboot to try it one
+time.  They're particularly interesting because they're more actively
+tied to the development flow.  The clang people have something too using
+a github flow:
+
+    https://github.com/ClangBuiltLinux/continuous-integration2
+
+(which does have some boots on virtual platforms as well as just build
+coverage.)
+
+> I think a lot of this stems from a lack of organization and a lack of
+> communication; I see a lot of projects reinventing things in slightly
+> different ways and failing to build off of each other.
+
+There's definitely some NIHing going on in places but a lot of it comes
+=66rom people with different needs or environments (like the Intel audio
+stuff I mentioned), or just things already existing and nobody wanting
+to disrupt what they've got for a wholesale replacement.  People are
+rarely working from nothing, and there's a bunch of communication and
+sharing of ideas going on.
+
+> > Some of the issues come from the different questions that people are
+> > trying to answer with testing, or the very different needs of the
+> > tests that people want to run - for example one of the reasons
+> > filesystems aren't particularly well covered for the embedded cases is
+> > that if your local storage is SD or worse eMMC then heavy I/O suddenly
+> > looks a lot more demanding and media durability a real consideration.
+
+> Well, for filesystem testing we (mostly) don't want to be hammering on
+> an actual block device if we can help it - there are occasionally bugs
+> that will only manifest when you're testing on a device with realistic
+> performance characteristics, and we definitely want to be doing some
+> amount of performance testing on actual devices, but most of our testing
+> is best done in a VM where the scratch devices live entirely in dram on
+> the host.
+
+Sure, though there can be limitations with the amount of memory on a lot
+of these systems too!  You can definitely do things, it's just not
+always ideal - for example filesystem people will tend to default to
+using test filesystems sized like the total memory of a lot of even
+modern embedded boards so if nothing else you need to tune things down
+if you're going to do a memory only test.
+
+--95W9f47JAmPj9bg9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWy1tIACgkQJNaLcl1U
+h9CVTgf/R7iosqegrv7uwYe4o59k308aqsf0UrmWnF7gVhEtitPC84CIBvjkKRc+
+6w0aNtqn16xcQT11AqCbzmkZvlmODIpwLyS58fknXWBF+VXz082jtYVK0SThg22+
+cGnCMUrWCWJ6t6Y4nsA0ocRe2MDB4Ykk84XSjgn6sPeP8GX3HRY3GKHsJhQ7nLMu
+bTBttmqO/e39T+F8ldYOX25ZK+qHpW4x7k7WEdpVBm2xXGPtdZzUwXHAtqVx/GJQ
+CaiclaF/HHd/uCv6ErlcmYB3VNHtnpW0k+zqiqlW6kC2Z4QkMdr0MdGkvAqbPjHi
+Ooqh5CkJTQXefxz2oEuXWGz7FBIlnA==
+=fF9S
+-----END PGP SIGNATURE-----
+
+--95W9f47JAmPj9bg9--
 
