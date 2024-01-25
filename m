@@ -1,61 +1,72 @@
-Return-Path: <linux-kernel+bounces-38289-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BD3383BD87
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:39:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DD5383BD8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:39:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 821E21C2262D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:39:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42A301C23CA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:39:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C6C71C6BF;
-	Thu, 25 Jan 2024 09:38:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C1561CD1C;
+	Thu, 25 Jan 2024 09:38:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Hxtb5kt/"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="OuqMn9lr"
+Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7945E1C686
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:38:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DA091CD16
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:38:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706175486; cv=none; b=Rfn4XnRYFnbVdY5kWzhdLcobD/WabJ/0eBv5EBtTacF0H10zbwTh0TBGgzBKE9dxlMVxWhxrw7HbHrXzH2OqJVz57RP/KVVjCnrlQInrvL0qm/J3oXT9LD4FeXoDGKtlsxZVEby8Kv/+czVdhEjfgpz8tqytOXInWaTAwD+oiD0=
+	t=1706175510; cv=none; b=P7jE0Ck3q7RWDr0sO6+Q/9q++EOydrP+EsCEgVjFY0pGjaIoUPh71ttMIIAapQIWJGMA9ZH/TiZG/ML7lg8GLkIhzuU6gsVP7/K98Ajkg4KBla+AWM2458OtWPwUtkaFBQrDMDuOT5+vWXhiWkVUcf8YTV6WqZMUCuJSegElfjg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706175486; c=relaxed/simple;
-	bh=yG81cTllFEjaTu43SogQYuhthByCM+AVIe1A6soPGns=;
+	s=arc-20240116; t=1706175510; c=relaxed/simple;
+	bh=0sOcb8GBs2ftSAjMf8ketU17zizcRDHYVrBzO0rltrk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OAcQtbZSRmfB1KCJVkUWxp6HQV4kIi5kYqWg+GjQdu2ZLR+AZwVh1pmu+K06BULvCJNCS8o6daV2UVDHOUTiMtzdwekmegQDBQBuHh2nTxPC1T712EVjtp3rl2mufAx0V5JpaiZW8MrmP5W7yv+/jfPuvjGXfhnWkIBpeRZIRHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Hxtb5kt/; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706175484; x=1737711484;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=yG81cTllFEjaTu43SogQYuhthByCM+AVIe1A6soPGns=;
-  b=Hxtb5kt/gmHI0OU3rRwCyWoo9GYYmZy4ZSyGHqgGK2VB1EsqHyDs2e5X
-   G8bFaz8v2H5T9RsegBD1jEmCo/7RbUEnb11tdZUPe97yNBexAl1kEiGrG
-   r6CsRo/GcJEEyKRaf86B86q0iFiWLsGEGSG1db3GivbwsXSQVVITwUU3m
-   EwZfaAE6AFx7oodJQAli2hvCWv6D4ZGqVVOEeVr3/BkwWsubLY7Uk94yv
-   8hK0FYxC1/aSBX8NmYKk77MF5RuXZTaAizpAibOXMgnAcZ1G0h2g+dmyI
-   Kr7ClksOU7xH13eaZLvqM6EBYMBZB9Q6NpiUk2+ccHma+L/1bVyah9Rqi
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="2004932"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="2004932"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 01:38:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="905904562"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="905904562"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.254.212.253]) ([10.254.212.253])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 01:38:01 -0800
-Message-ID: <a6e18e0a-2721-4126-aa8a-ae650fa86edb@linux.intel.com>
-Date: Thu, 25 Jan 2024 17:37:58 +0800
+	 In-Reply-To:Content-Type; b=J4XJYXczI5p8k83mvoyVYOx71JKM6VHdw/sD655NNF6ew5vXz7/40teeMkEVYQVbQiH3iWFCvoCMnI+vzS2KYveF/wMrJgIeiVzp4DDGfVyskgWkKNhQhm2FMhp5wY53vBusVguDeSVB66txKoYvG30/C0ireu3MbFSAXwH5EwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=OuqMn9lr; arc=none smtp.client-ip=209.85.166.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-362a24b136fso1186335ab.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 01:38:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1706175507; x=1706780307; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1KW4jHyEa7kFs7oT9yas8ifPzAyaH1yeBSUUUHJFfAc=;
+        b=OuqMn9lr6yb0cTQpXBfSijWWI9VNhxKjRjU2SgHnjQcn8bvCbhX/NjKoxkJV2bJaMn
+         74tp5XHuC4eHtxEblfieUCLKG/dQkJxzNDrWyT5iC6wCuSktLc81098NG5+Pe3xV5/9W
+         B7hwX4w9SSDFk5Q0zS2Ok9qdlLnPUiTtR+TtBywu6BSso1WRAnd/l1tzfb0DwN702cXb
+         c3wFskp3U4/kCGNGcdyF81EsgkwNs+IBd+rdtz5CpbwYryD0ynRCpKowVHpNEf5+ykE7
+         JO//vrkslwU5BILXXsE/i+7wxOvo9yJbFxcW7ka9GNxtAzEFQXpAw5cUeDlmYS5+qy6w
+         DRlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706175507; x=1706780307;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1KW4jHyEa7kFs7oT9yas8ifPzAyaH1yeBSUUUHJFfAc=;
+        b=wB5IiKDim7e3RnSEu776BvhNBMb+Ig2MLytpHb+m7pZVwHW+D5M7UejgrCGzVLt3NR
+         zhbyP4Z5SoQ3dhGeZ8SqtYLD02IxFr8h63DPxCm6fTxAMHooIyAfg8paHzzPQfkD+ZsE
+         g0j/cvZo3ixrNfrKEWTCH3piTuYqnPzz5gvP2ulaGlDE113wKe3FHIbH1p+AJglIfr/y
+         zglDljckenNAOyeaUP8qjGagfmNpWooM4QBYi+W21o13GfR+Hdst2lTZCtwYm2RjoLUx
+         yPx9lXTDwLDnPpttMJU5Rrcu9WRE3n4r88PTy5bBWpLC7XuMcHIFNyT60z3L86gXaF9s
+         SBWQ==
+X-Gm-Message-State: AOJu0YyMkGWS23d2SzdFV8sfz9+LsWVkpmGtnbGYR5BWFVwWB0gInM/5
+	tlYTTgWPS+JBjE2wqZtfcX/a77TA7agGvzFjGxqHxRGhQbOEZKTrLxdYYNwcBUM=
+X-Google-Smtp-Source: AGHT+IE0YcGyxn+lstZACLJCx7aiaPb2obv9RRNzDuZgcO5pg9nfVRo//pcffrCR8x+sc55LCaFcvA==
+X-Received: by 2002:a05:6e02:80e:b0:361:a91d:aaac with SMTP id u14-20020a056e02080e00b00361a91daaacmr915987ilm.63.1706175507515;
+        Thu, 25 Jan 2024 01:38:27 -0800 (PST)
+Received: from [10.4.195.141] ([139.177.225.254])
+        by smtp.gmail.com with ESMTPSA id k69-20020a633d48000000b005cf5bf78b74sm12849244pga.17.2024.01.25.01.38.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jan 2024 01:38:27 -0800 (PST)
+Message-ID: <68b7f87b-7f15-410c-9094-9fe9865b4bc4@bytedance.com>
+Date: Thu, 25 Jan 2024 17:38:21 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,162 +74,82 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Dell XPS 13 9360: DMAR errors `DRHD: handling fault status reg 2`
- and `[INTR-REMAP] Request device [f0:1f.0] fault index 0x0`
-To: "Christian A. Ehrhardt" <lk@c--e.de>, Baolu Lu <baolu.lu@linux.intel.com>
-Cc: Paul Menzel <pmenzel@molgen.mpg.de>, =?UTF-8?B?SsO2cmcgUsO2ZGVs?=
- <joro@8bytes.org>, Will Deacon <will@kernel.org>, iommu@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <9a24c335-8ec5-48c9-9bdd-b0dac5ecbca8@molgen.mpg.de>
- <cb71c806-b100-4673-a131-faac77344002@linux.intel.com>
- <Za5xYauQDe8xcVGr@cae.in-ulm.de>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <Za5xYauQDe8xcVGr@cae.in-ulm.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH 2/2] mm: zswap: remove unnecessary tree cleanups in
+ zswap_swapoff()
+Content-Language: en-US
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>,
+ Chris Li <chrisl@kernel.org>, Huang Ying <ying.huang@intel.com>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240120024007.2850671-1-yosryahmed@google.com>
+ <20240120024007.2850671-3-yosryahmed@google.com>
+ <20240122201906.GA1567330@cmpxchg.org>
+ <CAJD7tkaATS48HVuBfbOmPM3EvRUoPFr66WhF64UC4FkyVH5exg@mail.gmail.com>
+ <20240123153851.GA1745986@cmpxchg.org>
+ <CAJD7tkasHsRnT_75-TXsEe58V9_OW6m3g6CF7Kmsvz8CKRG_EA@mail.gmail.com>
+ <20240123201234.GC1745986@cmpxchg.org>
+ <CAJD7tkZC6w2EaE=j2NEVWn1s7Lo2A7YZh8LiZ+w72jQzFFWLUQ@mail.gmail.com>
+ <f3fa799f-1815-4cfe-abc8-3ba929fcd1ba@bytedance.com>
+ <CAJD7tka6UuEuuP=df-1V3vwsi0T0QhLORTRDs6qDvA81iY6SGA@mail.gmail.com>
+ <1496dce3-a4bb-4ccf-92d6-701a45b67da3@bytedance.com>
+ <CAJD7tkbrQw7FWx-EDKKCtH_E03xEd5Y+8BqRjE8d29JSOCGybg@mail.gmail.com>
+ <35c3b0e5-a5eb-44b2-aa7d-3167f4603c73@bytedance.com>
+ <CAJD7tkak+ZA8t+AVbYNXYWnrmVBBs=NfMTBQBsnHJQni2=gG2Q@mail.gmail.com>
+ <1a8a513f-fa84-41ca-b7f4-62726e78fd31@bytedance.com>
+ <CAJD7tkYBLkh82VQ6DmNQNXtnCxTVOY_7JRjARRtDrkKfKyTFSQ@mail.gmail.com>
+From: Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <CAJD7tkYBLkh82VQ6DmNQNXtnCxTVOY_7JRjARRtDrkKfKyTFSQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-
-On 1/22/2024 9:45 PM, Christian A. Ehrhardt wrote:
-> Hi,
->
-> On Mon, Jan 22, 2024 at 08:53:43PM +0800, Baolu Lu wrote:
->> On 2024/1/19 20:59, Paul Menzel wrote:
->>> Dear Linux folks,
+On 2024/1/25 17:26, Yosry Ahmed wrote:
+> On Thu, Jan 25, 2024 at 1:22 AM Chengming Zhou
+> <zhouchengming@bytedance.com> wrote:
+>>
+>> On 2024/1/25 17:03, Yosry Ahmed wrote:
+>>>>>>>> The second difference is the handling of lru entry, which is easy that we
+>>>>>>>> just zswap_lru_del() in tree lock.
+>>>>>>>
+>>>>>>> Why do we need zswap_lru_del() at all? We should have already isolated
+>>>>>>> the entry at that point IIUC.
+>>>>>>
+>>>>>> I was thinking how to handle the "zswap_lru_putback()" if not writeback,
+>>>>>> in which case we can't use the entry actually since we haven't got reference
+>>>>>> of it. So we can don't isolate at the entry, and only zswap_lru_del() when
+>>>>>> we are going to writeback actually.
+>>>>>
+>>>>> Why not just call zswap_lru_putback() before we unlock the folio?
+>>>>
+>>>> When early return because __read_swap_cache_async() return NULL or !folio_was_allocated,
+>>>> we don't have a locked folio yet. The entry maybe invalidated and freed concurrently.
 >>>
+>>> Oh, that path, right.
 >>>
->>> On a Dell XPS 13 9360 Linux 6.6.8, 6.6.11 and 6.7 (and earlier versions)
->>> log the lines below when resuming from ACPI S3 (deep):
+>>> If we don't isolate the entry straightaway, concurrent reclaimers will
+>>> see the same entry, call __read_swap_cache_async(), find the folio
+>>> already in the swapcache and stop shrinking. This is because usually
+>>> this means we are racing with swapin and hitting the warmer part of
+>>> the zswap LRU.
 >>>
->>>       [    0.000000] Linux version 6.7-amd64
->>> (debian-kernel@lists.debian.org) (x86_64-linux-gnu-gcc-13 (Debian
->>> 13.2.0-9) 13.2.0, GNU ld (GNU Binutils for Debian) 2.41.50.20231227) #1
->>> SMP PREEMPT_DYNAMIC Debian 6.7-1~exp1 (2024-01-08)
->>>       [    0.000000] Command line: BOOT_IMAGE=/vmlinuz-6.7-amd64
->>> root=UUID=32e29882-d94d-4a92-9ee4-4d03002bfa29 ro quiet pci=noaer
->>> mem_sleep_default=deep log_buf_len=8M
->>>       […]
->>>       [    0.000000] DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0
->>> 06/02/2022
->>>       […]
->>>       [   99.711230] PM: suspend entry (deep)
->>>       […]
->>>       [   99.722101] printk: Suspending console(s) (use
->>> no_console_suspend to debug)
->>>       [  100.285178] ACPI: EC: interrupt blocked
->>>       [  100.319908] ACPI: PM: Preparing to enter system sleep state S3
->>>       [  100.331793] ACPI: EC: event blocked
->>>       [  100.331798] ACPI: EC: EC stopped
->>>       [  100.331800] ACPI: PM: Saving platform NVS memory
->>>       [  100.335224] Disabling non-boot CPUs ...
->>>       [  100.337412] smpboot: CPU 1 is now offline
->>>       [  100.341065] smpboot: CPU 2 is now offline
->>>       [  100.346441] smpboot: CPU 3 is now offline
->>>       [  100.353086] ACPI: PM: Low-level resume complete
->>>       [  100.353129] ACPI: EC: EC started
->>>       [  100.353129] ACPI: PM: Restoring platform NVS memory
->>>       [  100.355219] Enabling non-boot CPUs ...
->>>       [  100.355244] smpboot: Booting Node 0 Processor 1 APIC 0x2
->>>       [  100.355954] CPU1 is up
->>>       [  100.355972] smpboot: Booting Node 0 Processor 2 APIC 0x1
->>>       [  100.356698] CPU2 is up
->>>       [  100.356716] smpboot: Booting Node 0 Processor 3 APIC 0x3
->>>       [  100.357371] CPU3 is up
->>>       [  100.360217] ACPI: PM: Waking up from system sleep state S3
->>>       [  100.668380] ACPI: EC: interrupt unblocked
->>>       [  100.668598] pcieport 0000:00:1c.0: Intel SPT PCH root port ACS
->>> workaround enabled
->>>       [  100.668606] pcieport 0000:00:1c.4: Intel SPT PCH root port ACS
->>> workaround enabled
->>>       [  100.668643] pcieport 0000:00:1d.0: Intel SPT PCH root port ACS
->>> workaround enabled
->>>       [  100.690996] DMAR: DRHD: handling fault status reg 2
->>>       [  100.691001] DMAR: [INTR-REMAP] Request device [f0:1f.0] fault
->>> index 0x0 [fault reason 0x25] Blocked a compatibility format interrupt
->>> request
->>>
->>> But I am unable to find the device f0:1f.0:
->>>
->>>       $ lspci -nn
->>>       00:00.0 Host bridge [0600]: Intel Corporation Xeon E3-1200 v6/7th
->>> Gen Core Processor Host Bridge/DRAM Registers [8086:5904] (rev 02)
->>>       00:02.0 VGA compatible controller [0300]: Intel Corporation HD
->>> Graphics 620 [8086:5916] (rev 02)
->>>       00:04.0 Signal processing controller [1180]: Intel Corporation Xeon
->>> E3-1200 v5/E3-1500 v5/6th Gen Core Processor Thermal Subsystem
->>> [8086:1903] (rev 02)
->>>       00:14.0 USB controller [0c03]: Intel Corporation Sunrise Point-LP
->>> USB 3.0 xHCI Controller [8086:9d2f] (rev 21)
->>>       00:14.2 Signal processing controller [1180]: Intel Corporation
->>> Sunrise Point-LP Thermal subsystem [8086:9d31] (rev 21)
->>>       00:15.0 Signal processing controller [1180]: Intel Corporation
->>> Sunrise Point-LP Serial IO I2C Controller #0 [8086:9d60] (rev 21)
->>>       00:15.1 Signal processing controller [1180]: Intel Corporation
->>> Sunrise Point-LP Serial IO I2C Controller #1 [8086:9d61] (rev 21)
->>>       00:16.0 Communication controller [0780]: Intel Corporation Sunrise
->>> Point-LP CSME HECI #1 [8086:9d3a] (rev 21)
->>>       00:1c.0 PCI bridge [0604]: Intel Corporation Sunrise Point-LP PCI
->>> Express Root Port #1 [8086:9d10] (rev f1)
->>>       00:1c.4 PCI bridge [0604]: Intel Corporation Sunrise Point-LP PCI
->>> Express Root Port #5 [8086:9d14] (rev f1)
->>>       00:1d.0 PCI bridge [0604]: Intel Corporation Sunrise Point-LP PCI
->>> Express Root Port #9 [8086:9d18] (rev f1)
->>>       00:1f.0 ISA bridge [0601]: Intel Corporation Sunrise Point-LP LPC
->>> Controller [8086:9d58] (rev 21)
->>>       00:1f.2 Memory controller [0580]: Intel Corporation Sunrise
->>> Point-LP PMC [8086:9d21] (rev 21)
->>>       00:1f.3 Audio device [0403]: Intel Corporation Sunrise Point-LP HD
->>> Audio [8086:9d71] (rev 21)
->>>       00:1f.4 SMBus [0c05]: Intel Corporation Sunrise Point-LP SMBus
->>> [8086:9d23] (rev 21)
->>>       01:00.0 PCI bridge [0604]: Intel Corporation DSL6340 Thunderbolt 3
->>> Bridge [Alpine Ridge 2C 2015] [8086:1576]
->>>       02:00.0 PCI bridge [0604]: Intel Corporation DSL6340 Thunderbolt 3
->>> Bridge [Alpine Ridge 2C 2015] [8086:1576]
->>>       02:01.0 PCI bridge [0604]: Intel Corporation DSL6340 Thunderbolt 3
->>> Bridge [Alpine Ridge 2C 2015] [8086:1576]
->>>       02:02.0 PCI bridge [0604]: Intel Corporation DSL6340 Thunderbolt 3
->>> Bridge [Alpine Ridge 2C 2015] [8086:1576]
->>>       39:00.0 USB controller [0c03]: Intel Corporation DSL6340 USB 3.1
->>> Controller [Alpine Ridge] [8086:15b5]
->>>       3a:00.0 Network controller [0280]: Qualcomm Atheros QCA6174
->>> 802.11ac Wireless Network Adapter [168c:003e] (rev 32)
->>>       3b:00.0 Non-Volatile memory controller [0108]: SK hynix PC300 NVMe
->>> Solid State Drive 512GB [1c5c:1284]
->>>
->>> As this is logged as an error, can this be fixed somehow?
->> This appears to be a platform problem. The hidden device (f0:1f.0) is
->> not visible to the OS, so no driver can program the interrupt remapping
->> table for the device's interrupts.
-> The hidden device has been identified as the IO-APIC. It is visible
-> and properly declared to use 0f:1f.0 in the DMAR table.
+>>> I am not sure if this would matter in practice, maybe Nhat knows
+>>> better. Perhaps we can rotate the entry in the LRU before calling
+>>> __read_swap_cache_async() to minimize the chances of such a race? Or
+>>> we can serialize the calls to __read_swap_cache_async() but this may
+>>> be an overkill.
+>>
+>> Also, not sure, rotate the entry maybe good IMHO since we will zswap_lru_del()
+>> once we checked the invalidate race.
+> 
+> Not sure what you mean. If we rotate first, we won't have anything to
+> do in the failure case (if the folio is not locked). We will have to
+> do zswap_lru_del() if actually writeback, yes, but in this case no
+> synchronization is needed because the folio is locked, right?
 
-Didn't see the warning
+Right, sorry for my confusing expression. We rotate first in lru lock,
+and only zswap_lru_del() later if actually writeback.
 
-          "Compatibility-format IRQs enabled despite intr remapping;\n"
-
-          "you are vulnerable to IRQ injection.\n");
-
-So assume the DMA_GSTS_CFIS bit of GSTS_REG shows the interrupt
-
-remapping was programmed to the right behaviour -- Compatibility
-
-format interrupts are blocked.
-
-But the device f0:1f.0 is still armed to inject compatible format interrupt
-
-that is dangerous mistake if not be blocked, so far no such exception
-
-that should be passed through, appears not iommu issue per my
-
-understanding.
-
-Thanks,
-
-Ethan
-
-
->
->       regards  Christian
->
->
+What I want to mean is that the possibility of seeing the entry on lru list
+by another reclaimer is very low, since we rotate and the timing between
+__read_swap_cache_async() and zswap_lru_del() should be short.
 
