@@ -1,173 +1,137 @@
-Return-Path: <linux-kernel+bounces-38973-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38974-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F57483C93A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:05:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE5C983C93C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:05:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A46951C22335
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:05:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FC991F253AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:05:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB70214078D;
-	Thu, 25 Jan 2024 16:55:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 190881419B2;
+	Thu, 25 Jan 2024 16:55:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vOf1aFCA"
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j2Jv9J93"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B92EC141985
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 16:55:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 564AF136656;
+	Thu, 25 Jan 2024 16:55:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706201709; cv=none; b=lSrr/mpJsNchrBjv1PrYi9nzVBEWQe7/jYgQwIYwACl9iPKbTeCCP7JWHwovDMLYxrYCKUCNsDTipsQ6k4l1aPkDTEhZu/m+MabygBpLYInmPPDSzgAggVi+OSAqWIn3XRNF9KIvKIoAwWZ+pe8gOsQ6v+ZVojExO2/XCQKiENg=
+	t=1706201723; cv=none; b=BapWVg0dmlMZYgiR8Sstp0Zo46X0IZmvuAt5+FCRLWnH27UTpmAziOHqddLIl3GPG6U5Rqgusql0Y4MmRjER2KvMDSUADyizwn6guy6MYJWnPoVsAHeYlKxr6lNmlqs5OCW60Ptmw4oCeLDI5ADrLyH2tKShHU2IglUf0JkF/rU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706201709; c=relaxed/simple;
-	bh=Rw+Oj/BjNcnqfn7QvDWzv7ZoteAVYbGdEhGHUSoxplQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=ecFzClszLR5XHzPQED10q66ukHkdsiGWUDGz0EYcN7fv90Rhu8czPo5iCb2TeqlKHCYAEyCNoZjWphLWixFHI3hqtsfcEwv+zPxqjwmEySXLXU7EmXIOhsdaeKy+cadQIOxiTOokIjghtQwvkuYEEGxXaFuRfPYWjdXdoOZshN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vOf1aFCA; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40ed4690ee4so3305545e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:55:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706201706; x=1706806506; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yB4jfE0/XJsodASjO1q01zoyOa02tPYQ2u4yeHlxV2k=;
-        b=vOf1aFCAGVFyR9bUCGRhcsSv9TWFF6y1INiJR7odljiQVtUoZ8+nr/UQvyj+0z6iqo
-         9mpBaOiTzZUEwdW8awz478UNCwQaAypiSk92MoSrak10skQGvJBdfu2HRvjE1yzSqbmQ
-         bdDcyoqGf13wIJd8l7R59QrSMPmE1oF4kgWH+w++g2okxNzCOv9VFDEfqMzPfwPDrqUV
-         t8LNjgsQY4KzBnG+Qk49bJ9AE4on1Y3gBMz22eLDiCjgx7MrdakUYs9LwtsOvROV0zLn
-         +LpWhpbD2xu06502tpGBsdYq21Fyt3bsgVfVxD06fIVSgvB3UxSI9WxMXIsK0LwvDRXU
-         5swg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706201706; x=1706806506;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yB4jfE0/XJsodASjO1q01zoyOa02tPYQ2u4yeHlxV2k=;
-        b=o7CscoaHcl+9UHsijNoQwtqysTv7FuiRmPJ8s6xXCIznXCiN4CXF2cl2WRJ7HqovnE
-         wH3denUkm6v06Tr9j89LcG7W67gnxwcLgpyvN2FS5lkjBxZ6FpqZadvx61XaJlBpGRiW
-         Duo6xae6xrehgMgn10QLKGj0Cja66VVyxOL4s6zLFm6GPTSqYIXQggsc5IBBuLX5qu+S
-         jisG22lsUWBwcn+Dv5mc3ZcFxS4KXs9iIjOtPxeKmMmQFjOs8MMBmO7lpu42OcheUQzf
-         Vqnai0SyJ4eNQgpcjYal2aujbqymwVKdrfpnvtjFL9HoyqFROQD+c44bXu5oBuO5yqDV
-         6pKw==
-X-Gm-Message-State: AOJu0Yx1t/eMt12BOuMqdY/RS6O5TYIGhahCTqO71xSxDSAY7YAZof9L
-	BHfR2ocXXoW+cGuqKPPuBlhYee8u0ASItpEGTnl7BOeO63l2N5ptPu0L+6x05WQ=
-X-Google-Smtp-Source: AGHT+IHleA7Y4H0hQ5T4pCCE6WJ098hqFPCRZ9zv/Lp/YDzqnFQIDqHIGMPuwk9ZPkjXATQtn6dqeQ==
-X-Received: by 2002:a05:600c:4ecd:b0:40e:622e:7449 with SMTP id g13-20020a05600c4ecd00b0040e622e7449mr23392wmq.22.1706201705917;
-        Thu, 25 Jan 2024 08:55:05 -0800 (PST)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id bs8-20020a056000070800b0033959354b59sm1940271wrb.13.2024.01.25.08.55.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 08:55:05 -0800 (PST)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Thu, 25 Jan 2024 17:55:04 +0100
-Subject: [PATCH] arm64: dts: qcom: sm8650: Use GIC-ITS for PCIe0 and PCIe1
+	s=arc-20240116; t=1706201723; c=relaxed/simple;
+	bh=pzjRcCGvrsjo3wuH+LeThDxqSyRY109U181HGTQgYHI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ahQxjzzNORo8a6bJ1FAJVPDgRfkUat/BLGuWY7EM1CKoNdZ/4pyvzUaz3+qnuYbYEzUnrZvIfDvKl0r7cCG/0xCdKBzBCFEMXwVSoDw6l2DqZTzb3EvJrWc5t8URkkbX3NrGKUkGQjBpUG1t03PVUFQSE1Tz0fVuDMzOsqS3KWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j2Jv9J93; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63A27C433F1;
+	Thu, 25 Jan 2024 16:55:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706201722;
+	bh=pzjRcCGvrsjo3wuH+LeThDxqSyRY109U181HGTQgYHI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=j2Jv9J93Su2HLrEG9Sx7oSAjZoSHRJ5+MYJbKCVavuZK+VZUD5YkUmCy6h6DsKfZL
+	 5W4qHcJQBvcVA6WE1wFIH1mmGWjfkGAcz8SovM15ACUcODxk4wlLi+cq644voaGZbz
+	 p/ZwhcO4z6syo2SDD+gB/uVcTpr2g2FY6T5ylpUkdVINS7km6+1KRt1C23hulVWVai
+	 wTRFAzMIrgGHuGMaM/o2MIo6YrEnwDu5fnQVh7tLCFTP6OcV7IrDP60d4AF8zS87FV
+	 3M89bQUVnb2hE1KHhCw5w6g2RGdV9/7I0nodOe7c4VMlzWEVcsVsfwfrBxwAylo/FJ
+	 VNfn8o+eOM/+A==
+Date: Thu, 25 Jan 2024 17:55:17 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: syzbot <syzbot+fb337a5ea8454f5f1e3f@syzkaller.appspotmail.com>, 
+	hdanton@sina.com, jack@suse.cz, jfs-discussion@lists.sourceforge.net, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, shaggy@kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [jfs?] INFO: task hung in path_mount (2)
+Message-ID: <20240125-erwehren-wandbild-05bf05ac9122@brauner>
+References: <00000000000083513f060340d472@google.com>
+ <000000000000e5e71a060fc3e747@google.com>
+ <20240125-legten-zugleich-21a988d80b45@brauner>
+ <11868eb4-0528-4298-b8bc-2621fd1aac83@kernel.dk>
+ <20240125-addition-audienz-c955ab3c8435@brauner>
+ <e0a1fcc8-40ce-4c96-bba5-95a9641cb076@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240125-topic-sm8650-upstream-pcie-its-v1-1-cb506deeb43e@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAGeSsmUC/x2NQQqDMBAAvyJ7diFJTaN+RXoIcbV7SAzZWAri3
- xt6HBhmLhAqTAJzd0GhDwsfqYHuOwhvn3ZCXhuDUWZQ2lisR+aAEsenVXhmqYV8xBy4mVVwGqw
- zwW3auwe0SC608fc/WF73/QNTQahTcAAAAA==
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3857;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=Rw+Oj/BjNcnqfn7QvDWzv7ZoteAVYbGdEhGHUSoxplQ=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlspJoGGRyEvcAaOXkVwtzoVk7+NYQoHE5INxRMVDO
- VjxpyiiJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZbKSaAAKCRB33NvayMhJ0VcQD/
- 43v9OgaZf/HPPogg7KXWahD0LDbAHVRbH++55dePgGF/NJkvVdtTbebcV3LlLUEvf04VFAcaD+NPhH
- uycaYzUqc161NRy2KavibircNqQF9fKrX3ay4z/l1db1MJxK2WgPZjzhAptZG/AbA87sQVf2mfAsnz
- UHMMhrM9dom8uQHTUk7mAbjfYeJeVgfadCB9/4hKXrF5RTgfebhm8JbI1RSsNrWmOy+qQxPGwNv6VB
- p3ORPIT4g5LVGtPq1cTg7fhLFidF+fr/D9GZTNip2oZDO8CtUEjcfC5SV+Zf2PQ21lJNrUR7j2wTNl
- 2k712xezO0lkO2aLG7Q2dNRbQ46Q8zaRvV0q5T6JkO6ijm7JYMp+yO/9VHjXaQSr2e0vJPLFuvEl+b
- vDUWDxsrFvuf1ihfW5avhzqLBiAH6i81Bh0D0KtXLzN4/Ge12j/44HAAG12fBwt0mMCtXEWYjgWEGH
- 61lkForwMQVDyYvmEyZEuF/vQ+hAed08l4sCG21Ml5OJwIqXhUPOtnxWOUDDrLVMKBH2AHbVO5YARN
- 5UjMOFht24QoxsIXnbkqPFe5yc1S8Xamh0sbVyA16a6UHCXfncZ/bJNuFil90FkqFoIcqKtn/t7lIv
- yU4IIgnK84R8rEZ7yEot9Fifwl0QUFrRUoIJ2UjHyTpUH0ADPvOFlZyt7ulw==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <e0a1fcc8-40ce-4c96-bba5-95a9641cb076@kernel.dk>
 
-Both PCIe0 and PCIe1 controllers are capable of signalling the MSIs
-received from endpoint devices to the CPU using GIC-ITS MSI controller.
-Add support for it.
+On Thu, Jan 25, 2024 at 09:51:43AM -0700, Jens Axboe wrote:
+> On 1/25/24 9:47 AM, Christian Brauner wrote:
+> > On Thu, Jan 25, 2024 at 09:11:34AM -0700, Jens Axboe wrote:
+> >> On Thu, Jan 25, 2024 at 9:08?AM Christian Brauner <brauner@kernel.org> wrote:
+> >>>
+> >>> On Thu, Jan 25, 2024 at 03:59:03AM -0800, syzbot wrote:
+> >>>> syzbot suspects this issue was fixed by commit:
+> >>>>
+> >>>> commit 6f861765464f43a71462d52026fbddfc858239a5
+> >>>> Author: Jan Kara <jack@suse.cz>
+> >>>> Date:   Wed Nov 1 17:43:10 2023 +0000
+> >>>>
+> >>>>     fs: Block writes to mounted block devices
+> >>>>
+> >>>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13175a53e80000
+> >>>> start commit:   2ccdd1b13c59 Linux 6.5-rc6
+> >>>> git tree:       upstream
+> >>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=9c37cc0e4fcc5f8d
+> >>>> dashboard link: https://syzkaller.appspot.com/bug?extid=fb337a5ea8454f5f1e3f
+> >>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ba5d53a80000
+> >>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14265373a80000
+> >>>>
+> >>>> If the result looks correct, please mark the issue as fixed by replying with:
+> >>>
+> >>> #syz fix: fs: Block writes to mounted block devices
+> >>
+> >> Like Dave replied a few days ago, I'm kind of skeptical on all of these
+> >> bugs being closed by this change. I'm guessing that they are all
+> >> resolved now because a) the block writes while mounted option was set to
+> >> Y, and b) the actual bug is just masked by that.
+> >>
+> >> Maybe this is fine, but it does seem a bit... sketchy? The bugs aren't
+> >> really fixed, and what happens if someone doesn't turn on that option?
+> >> If it's required, perhaps it should not be an option at all? Though
+> >> that'd seem to be likely to break some funky use cases, whether they are
+> >> valid or not.
+> > 
+> > We have no way of actually testing or verifying this stuff and a lot of
+> > these have been around for a long time. For example, this report here
+> > has a C reproducer but following the actual dashboard link that
+> > reproducer is striked-through which supposedly means that it isn't valid
+> > or reliable. And no other reproducer ever showed up.
+> > 
+> > As far as I can see we should just close reports such as. If this is a
+> > real bug that is separate from the ability to mount to writed block
+> > devices then one should hope that syzbot finds another reproducer that
+> > let's us really analyze the bug?
+> > 
+> > A separate issue is that syzbot keeps suggesting as all of these being
+> > closable because of this. So how serious can we take this and how much
+> > time can/should we spend given that we got ~20 or more of these mails in
+> > the last two weeks or so.
+> > 
+> > I have no better answers than this tbh. And fwiw, apart from this one I
+> > haven't closed a single bug based on this.
+> 
+> Oh yeah, it wasn't directed at you specifically, just the overall class
+> of bugs that get closed due to this in general.
+> 
+> > And yes, ideally the ability to write to mounted block devices should be
+> > turned off. But we'll have to let it trickle into the individual
+> > distributions first and make remaining userspace tools that rely on this
+> > move to alternate apis before we can make any serious effort.
+> 
+> Hopefully it's all fine on the distro front and we can just make it the
+> default some years from now. May even make sense to backport some of
+> this to stable and get it in their hands faster?
 
-The GIC-ITS MSI implementation provides an advantage over internal MSI
-implementation using Locality-specific Peripheral Interrupts (LPI) that
-would allow MSIs to be targeted for each CPU core.
-
-Like SM8450 & SM8550, the IDs are swapped, but works fine on PCIe0 and PCIe1.
-
-WiFi PCIe Device on SM8650-QRD using GIC-ITS:
-159:          0          0          0          0          0          0          0          0   ITS-MSI   0 Edge      PCIe PME, aerdrv
-167:          0          4          0          0          0          0          0          0   ITS-MSI 524288 Edge      bhi
-168:          0          0          4          0          0          0          0          0   ITS-MSI 524289 Edge      mhi
-169:          0          0          0         34          0          0          0          0   ITS-MSI 524290 Edge      mhi
-170:          0          0          0          0          3          0          0          0   ITS-MSI 524291 Edge      ce0
-171:          0          0          0          0          0          2          0          0   ITS-MSI 524292 Edge      ce1
-172:          0          0          0          0          0          0        806          0   ITS-MSI 524293 Edge      ce2
-173:          0          0          0          0          0          0          0         76   ITS-MSI 524294 Edge      ce3
-174:          0          0          0          0          0          0          0          0   ITS-MSI 524295 Edge      ce5
-175:          0         13          0          0          0          0          0          0   ITS-MSI 524296 Edge      DP_EXT_IRQ
-176:          0          0          0          0          0          0          0          0   ITS-MSI 524297 Edge      DP_EXT_IRQ
-177:          0          0          0       5493          0          0          0          0   ITS-MSI 524298 Edge      DP_EXT_IRQ
-178:          0          0          0          0         82          0          0          0   ITS-MSI 524299 Edge      DP_EXT_IRQ
-179:          0          0          0          0          0       7204          0          0   ITS-MSI 524300 Edge      DP_EXT_IRQ
-180:          0          0          0          0          0          0        672          0   ITS-MSI 524301 Edge      DP_EXT_IRQ
-181:          0          0          0          0          0          0          0         30   ITS-MSI 524302 Edge      DP_EXT_IRQ
-
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8650.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-index 2df77123a8c7..7b3dfcb9a57b 100644
---- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-@@ -2255,6 +2255,10 @@ &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>,
- 			interrupt-map-mask = <0 0 0 0x7>;
- 			#interrupt-cells = <1>;
- 
-+			/* Entries are reversed due to the unusual ITS DeviceID encoding */
-+			msi-map = <0x0 &gic_its 0x1401 0x1>,
-+				  <0x100 &gic_its 0x1400 0x1>;
-+
- 			linux,pci-domain = <0>;
- 			num-lanes = <2>;
- 			bus-range = <0 0xff>;
-@@ -2364,6 +2368,10 @@ &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>,
- 			interrupt-map-mask = <0 0 0 0x7>;
- 			#interrupt-cells = <1>;
- 
-+			/* Entries are reversed due to the unusual ITS DeviceID encoding */
-+			msi-map = <0x0 &gic_its 0x1481 0x1>,
-+				  <0x100 &gic_its 0x1480 0x1>;
-+
- 			linux,pci-domain = <1>;
- 			num-lanes = <2>;
- 			bus-range = <0 0xff>;
-
----
-base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
-change-id: 20240125-topic-sm8650-upstream-pcie-its-94572c7f1a73
-
-Best regards,
--- 
-Neil Armstrong <neil.armstrong@linaro.org>
-
+Yes, I agree that this would be good.
 
