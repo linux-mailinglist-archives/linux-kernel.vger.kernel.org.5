@@ -1,282 +1,170 @@
-Return-Path: <linux-kernel+bounces-37987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 776A583B946
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 06:56:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3F1A83B951
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 06:58:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E4DFA1F23167
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 05:56:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE59B28183A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 05:58:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1812C10A05;
-	Thu, 25 Jan 2024 05:56:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4881710A13;
+	Thu, 25 Jan 2024 05:57:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="nSzSU+ug"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2067.outbound.protection.outlook.com [40.107.237.67])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="OJypJfPk"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3103563AC;
-	Thu, 25 Jan 2024 05:56:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.67
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706162208; cv=fail; b=E3pOaH+bfvl4e/brNPGWX17JhqYR4eZPuG72YZVxdA1MthxolnHZtrO6hQnh8flyEBpd1iuFYgbBhkZjz7sdFoDkezf5pz/46AdWRcJtTF9QFuB5m29317ghx/9Bc+9/+Zzx+tVGjN+IAOwogao+rA/C3L9HIldIL1CzJhiMfME=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706162208; c=relaxed/simple;
-	bh=/V+FWgUjDTEkc0ZUgmzJ58bc6lDaB294oRDMKvgXBZo=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ev9NcopCUZ8Ur1JmJ9x/ggPBY1ngoI+wVnKjwzihT4MvU6gb4QKxu2ainZ4vsbFvw8oTYh+/LICS+8F8caL2ttSquAfrrfJlnbJCSSxgShkpaDjGtpDy9pL0wCVFS/wzTeEPdNARPHw+ANeyBVE6JK8JdLZimSekfR9McIlLTKA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=nSzSU+ug; arc=fail smtp.client-ip=40.107.237.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I4F447m75Bz3FVS0bkWNQdhBlncIYDSRM1RScxd6bUVNMxhtCtWFvvtC6ILI/8s2U7Al9QapnBoQOkYY8qPAQ/D5RmNbduT+9xp6662huCB8Iza07vmq7JUZjW27OLOYxe5gPtjAk1Jm6P3rDB/oat317tebCAq5zyZDo2Lo5Jr8fUkOhSHP7kME6CsGgiIvthSMkgv5vZn8yWs/e3JrjIIfYZi5/rRx40WziTiVel7L3tGuGnrTKlvH+8LKWZI5AUMD5euwwRsV1JGS2dyaKbtIn6OpoR+Tonh2ramh7I9LU/wT6ai9aDvZOB04Ww3DssrjmwqsYum3GBI8J0Awmg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cnqdeRQS+YUYKCQdKxaWlmnN+2poHQ2FRXNX6yvt1uA=;
- b=N0ZKzhpcShwRT3k7TkahHaDPoLXh7ZrA41U6Ck5/fKcSYfy9oLBrWHS9vSs1YWrlnIQDPIRKWnK3spUpp4BCaWAdDK/5ceW09modI71KG78aPb2JV2nQc4vvg4mYxThtT3b/59P4d+RCY2DVMi9T7HBi/RnMEV83B4Gy5jgtGN8CfLE3sBgd4dRuUuDPReJ5+PFHi3RGV1FQsVkwkYF2ildoPighY8v09iPB61/MNpY9nsRYvOpU8953hH0wDMZs4/f3iOZ0875uIvZCxbKOAjQ3jo38QpK9lHL/XVPysfVAUM2Kwxx+BCgadIf2oYlsBJOankWmilf/8/tQsYXG1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cnqdeRQS+YUYKCQdKxaWlmnN+2poHQ2FRXNX6yvt1uA=;
- b=nSzSU+ugoBY15i6WsTFsmbWAMSkaWdupusVzAkQo7NkL2vhpVXClLh4Z3xXu0np0KM4ibanEjZAuMoVayna4bGqSi6NuRiCRDOThp5WlRPaopk5QQuj19M9/JIiihzuSKhoufrctdHuEYgR6gDriQGAyhNYLofKMA0ZlWNZ7pVs=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5040.namprd12.prod.outlook.com (2603:10b6:5:38b::19)
- by DS7PR12MB6024.namprd12.prod.outlook.com (2603:10b6:8:84::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Thu, 25 Jan
- 2024 05:56:43 +0000
-Received: from DM4PR12MB5040.namprd12.prod.outlook.com
- ([fe80::92cf:d8be:2c70:83b3]) by DM4PR12MB5040.namprd12.prod.outlook.com
- ([fe80::92cf:d8be:2c70:83b3%2]) with mapi id 15.20.7228.023; Thu, 25 Jan 2024
- 05:56:43 +0000
-Message-ID: <fd8df604-7023-42f2-a94c-4673c1415a0e@amd.com>
-Date: Thu, 25 Jan 2024 11:26:39 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/4] iio: hid-sensor-als: Add light chromaticity
- support
-Content-Language: en-US
-To: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- jikos@kernel.org, jic23@kernel.org, lars@metafoo.de,
- Basavaraj.Natikar@amd.com
-Cc: linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240109180007.3373784-1-srinivas.pandruvada@linux.intel.com>
- <20240109180007.3373784-5-srinivas.pandruvada@linux.intel.com>
-From: Basavaraj Natikar <bnatikar@amd.com>
-In-Reply-To: <20240109180007.3373784-5-srinivas.pandruvada@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN2PR01CA0099.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:27::14) To DM4PR12MB5040.namprd12.prod.outlook.com
- (2603:10b6:5:38b::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EA0010A09;
+	Thu, 25 Jan 2024 05:57:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706162274; cv=none; b=irv6rUmlOw+AkndPDJn6t4c/xwOlLQkBelQ0w//xA3dSLsr7UxLmzuzdPeIlhQE5APKGJ9L/6ksQSnxn/4N/3OVTyw8asVUG/0xxLnp9guBagrpBBS2AEvBszj2/y35zKXigdkR07QzfRbdG/INEgMo9RmOGTv/0Nt3itdJsqRI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706162274; c=relaxed/simple;
+	bh=6rpUqc4mjiy4kKVxPx+aduOZN23mYLXAOQ+9TJPnLo4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Y0f9yQkbC011ZrfeqW6Z0oRfaowVS19a5xJNx1NK4sfftG4M4ho07IaQRRnr1R28EFZpSKyJpSkBT4w2fIhqCxg2b7mB/4J86LYAu1xkpzHPU52HwXLvhrZ0993BSNUzbIR5wZ54u9ibGlu1rqfziKHJfdqtFlaPwhooFCUzTCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=OJypJfPk; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40P5AVuw006910;
+	Thu, 25 Jan 2024 05:57:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Pqc+xX/TZT2wrUmJY75RyztBsHJ5cRSWochi3dAiI6Q=; b=OJ
+	ypJfPkuraL7mN4S9YM3LKOIddvBQ0HwZmIKJM+LjWed0H3bYjG83RZVQ87kUMeNp
+	wE3/BwcGd3e4cUatTQYkaOa5e1hE5ZUL1IVM/825YQmMc3fkIQwKTuNwJ75sV/4S
+	ikbjK1YPNEoVsCKHY7O0y5YIdQZVCxT9//RpRGMwMQIFMi0qCN7SElZUv+A3qnwp
+	3mvy51uq0e6DTtufhr/A2nbYJeQfEJ6dbR8QyAH3rSq11A+8pb3PedBvCYEAQ1vK
+	/nh8YlBJtR4pt92zbTO14FtyZe9/zy11cHBGL8NMyfXGZfYOZX/KAYYAbNJmTdK0
+	+K67O9jDlQGw+zxL9O1g==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vu4999w5t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jan 2024 05:57:29 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40P5vSsn013717
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jan 2024 05:57:28 GMT
+Received: from [10.253.33.199] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 24 Jan
+ 2024 21:57:23 -0800
+Message-ID: <53445feb-a02c-4859-a993-ccf957208115@quicinc.com>
+Date: Thu, 25 Jan 2024 13:57:20 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5040:EE_|DS7PR12MB6024:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2e820f2c-0fb4-4c0a-2b6b-08dc1d6a67e9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	PHvxJ+boKcYDLLJekEvrpqh9kG47UXIjEHkusfb5PE4cQw/8Tlq4nEEj7v6J3dMtnCW79Afn43WDjvSXbUtR4NCFebO4SUbeWXcOIpORE/8O8Po7/qbEeZ1++qoeqemKYO9C2faHWfMmNNQumQNMoeFnvz4vZAC23dx2+KJoqio5rlz6BIf6o9P948THdC1fkJrIaFQMbC8VSWfvmo6WFVUxWwNjCq4xxaRIymgbaNBVMWF5MPqkwm1RFOdhHXqYj6pQhl7t/E07tXlPjXyFljBdYsksHe01ILV7MibvuvdfRjOWnLQsT6aMZIH6uaZ97goD2x/ouvE7sSy9MRhrBmMe8XOyxBiKEYLzAlwP05LNNxxOj1V6j1+Z0zWlW+XLtAdg1A5lhckqNi9/gzfyVrhd7goaDqna5USxp/EV4HalHjiNtMMAQ4jeMqKxGINzsxK+E23InTUuQPSVav2uZ+MD4czUwQda9qRXqDExbTJb4f4VD9Uc1mfr+IG1sr9/EeGa8epvRZxOyW5eZGJBvS/bEpPtiRsj+6FYMOwDcgSR33nY4RXEqBIt6qXVzMg/2FGldDKcmj/MVMXo/hHZwiZTInZWgzqLvwlnostBZ6sL26w5Bq854IFw3ILR2jY57ABc0nbTirYZg7mxmm17Qw==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5040.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(366004)(136003)(396003)(376002)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(31696002)(5660300002)(2906002)(41300700001)(36756003)(31686004)(66476007)(66946007)(66556008)(6512007)(316002)(6636002)(83380400001)(6506007)(38100700002)(6666004)(53546011)(478600001)(6486002)(2616005)(26005)(8676002)(8936002)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?bFJVOVFkRHBNdURvY1VQakJIYXhhdEdYYnBqU1YrYzFXRlBOaTFKbXhyUTBi?=
- =?utf-8?B?SFlQajhtTkpKQ000ZjArMm5Eak9HK0hqRGE0eHZsaXBUc3NMMURHTkdYUkV6?=
- =?utf-8?B?Q0k5Z2x4V2xVdGN6MVhsaXlFaHM3d1FTb3AwWmY3REltdHNIdUJYaVlJYTNN?=
- =?utf-8?B?L1RhenhwVzV1T3RlRU42WElFUmlQWmpHM2JoMzhnbGNtL3ZUYlVMczRnLyt1?=
- =?utf-8?B?OUpLTy9kcE9SaHJnOTUzeXR4UXFYM3piYmFQbm1XN3orNmVKM3FLaHBvVDNS?=
- =?utf-8?B?bGQ4Ly93dmJ5eldXT3IyNXk3ZHpnSG8zV2cxc0FkN2tuMUZHV2dVS2VZL0NR?=
- =?utf-8?B?SWVHN1pra0owd3E2dWVFemdTT0NSNHhZS3ZZOHZxZW1hZkM2WDJ2SE9BVU05?=
- =?utf-8?B?bXVmNHV0WVNPYnlPTHBiUGdJN1FJdFZvTStYUElRKzM3QzBUSW1iaUNMaFIr?=
- =?utf-8?B?eTllazVXRW9SU0dYU1k4K2lLNThXSkUycHJBR21aSFh3MTBJUmNqUHM3cTJE?=
- =?utf-8?B?T2lOMmp5WkdmRS9iMkVvbUR4UnVOQUtaVzlISFNrWXNrQWNHVlQraDZLL1NO?=
- =?utf-8?B?Y0pqUCtWaERuYU5pOUNDUTg0WHhydjVpN2FFU1hzeXhjZmxWYTRWeW11dGZh?=
- =?utf-8?B?VEdvMTN6dHI1V0VZRVd2Mk9Rd3RqVVI4aTczSXNOVnFReGkvTzlnSVZoM09N?=
- =?utf-8?B?TFhZYnp4WHV2L1M0RUFMU0dad0dUa0RIQjFNMkhoR3F5ZEEwcXZXdnZFOVpJ?=
- =?utf-8?B?LzBUMDZGQW5FVDdQZ1VvNkRuem9oMVMybkFoL05NdVAyTTk5MlBZalZ6cVcr?=
- =?utf-8?B?c0ErWXRNSnB3VVB1REVsUUJDRmkrVU9VdkdhUzZCNzhRT0hDQ25DTVNHR2ZP?=
- =?utf-8?B?QUhZSE1rTlFMNUloUXVwcEtRR2o3K1lpc3NybG5TTFJuaVpFTVVJTGJjMngz?=
- =?utf-8?B?NjRZWHRmVjRhQndidG9nSGQrODBTaW1Hdm9MTG9JaWNZTWZjLzMveTYwSVlr?=
- =?utf-8?B?WEc2elJWS2MvVTk0MFg5dnh0MFE0WGlLbHJNTkNoTldQSTRCK1hTbXQxYTlP?=
- =?utf-8?B?aGhWcG1vWjRpcmZiTkNUK1UwcE9kRkVMNlNCS3JqSXBMSzdOSXdNL1E3N2xS?=
- =?utf-8?B?aEFWZVgzY241NWJOSVp2MUpzbHZ5c3RTK05KN1ZYRVZzVGNQVkVyS1Z4Rkg4?=
- =?utf-8?B?dTUwLzlyWGhpaHBYZXpybDFRTlhaSWtacUY3ektjQlM4cm9YNlR0V09OWEZz?=
- =?utf-8?B?R2NkcFA3eWUzd3Y2cWN0QjhNUTJDenVuM3ZQN0E0WHFCWDFjd01qSTZmMFRt?=
- =?utf-8?B?eElKclNhelNxOWozRUJDMXI4ZldyaStFWmFTNk1NTUEyc1VmZTFKTHlPUkUw?=
- =?utf-8?B?SWVRNGRqaWp4aS8vN2tFVEZaWTR2aGtBV2hYNm9DV0hKSjA2THIwWU5MeSs3?=
- =?utf-8?B?VXprSlBXeW1WeW9kcW1HUGQ2WStwMFhTWUFmSFk5OWR1aURpeE4xYU1RdGhw?=
- =?utf-8?B?Y2Z0dElMNURmYjc4K3VOMHRuUS9hQk8yaWlUem1sbUkzWG1GQUJaSlRuNkRx?=
- =?utf-8?B?L2Q0MlNrMUE2K2VSK2o1OWRFRENqWUtYaS83NC9BeU5iYUNNK1A3VHJjM0dt?=
- =?utf-8?B?bXdzdXpuOGQwWWViQTJjc3FDbVkwVmdiT0gyMDFQMmRpSThZcXF0S1I2amJh?=
- =?utf-8?B?RmRFREYwQ21IZ3BSWEx6c251Qlh3TTFKTVNtUWNPZlNtTTBQRUZkMDlYakZ4?=
- =?utf-8?B?SElRelVaNVZ4ekpKSDlwSjFKSzZjOEt2ZzVQY1FBbWV1Mlp0SEc1QWVRUVVN?=
- =?utf-8?B?d1pLakxzcmMwUkliaVhjeU9ESlhSTzB2ZDF2QmlheVg4eWc1TFVKa2Z0cGEx?=
- =?utf-8?B?cGo2cVdKWlBVNHpUbmN1MjRxdExiNHJKWXp3NUpYdjJLdnptaTJCWTVLN2E3?=
- =?utf-8?B?dWFsa2NJUmhZRVJDVmEwRFpiTllhMU9Gbkc5SStIT1Rod0llMWp5QnN4NWJ6?=
- =?utf-8?B?T2JrcHFCdHJCM21OT3VwcU5TYzQrUXhhdmFzWFlSdFptZTlTZVB2SUFONE1J?=
- =?utf-8?B?bUNIS1JSdFlNemFnMXo2WUFNeUNVZFllNHFZdWgzNEV4V05LWWtYSU1QTjZ5?=
- =?utf-8?Q?Rpt+MkqwKD7pwYfypaf8rufZ9?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e820f2c-0fb4-4c0a-2b6b-08dc1d6a67e9
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5040.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jan 2024 05:56:42.9927
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: InOnk4xxXgBg6UtWVC1/RLOkmTZcVi/IrevRQ/eu+077aEPya1y7w8EbM2Tm08RJF6nrh8N0rtJQsQQh1mwifQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6024
-
-Hi Srinivas,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [net-next PATCH 0/3] net: mdio-ipq4019: fix wrong default MDC
+ rate
+Content-Language: en-US
+To: Christian Marangi <ansuelsmth@gmail.com>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni
+	<pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell
+ King <linux@armlinux.org.uk>,
+        Robert Marko <robert.marko@sartura.hr>,
+        <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Sergey Ryazanov
+	<ryazanov.s.a@gmail.com>
+References: <20240124213640.7582-1-ansuelsmth@gmail.com>
+From: Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <20240124213640.7582-1-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: EyM9ju-pxiA_mNCxhWscwcDkFPx6OcGf
+X-Proofpoint-GUID: EyM9ju-pxiA_mNCxhWscwcDkFPx6OcGf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-25_02,2024-01-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
+ spamscore=0 priorityscore=1501 lowpriorityscore=0 suspectscore=0
+ impostorscore=0 mlxscore=0 mlxlogscore=698 bulkscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401190000 definitions=main-2401250038
 
 
-On 1/9/2024 11:30 PM, Srinivas Pandruvada wrote:
-> From: Basavaraj Natikar <Basavaraj.Natikar@amd.com>
->
-> On some platforms, ambient color sensors also support the x and y light
-> colors, which represent the coordinates on the CIE 1931 chromaticity
-> diagram. Add light chromaticity x and y.
->
-> Signed-off-by: Basavaraj Natikar <Basavaraj.Natikar@amd.com>
-> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> ---
-> I don't have a system to test this patch.
-> Hi Basavraj,
-> Please test.
 
-After fixing both comments in patch 1 all works fine.
+On 1/25/2024 5:36 AM, Christian Marangi wrote:
+> This was a long journey to arrive and discover this problem.
+> 
+> To not waste too much char, there is a race problem with PHY and driver
+> probe. This was observed with Aquantia PHY firmware loading.
+> 
+> With some hacks the race problem was workarounded but an interesting
+> thing was notice. It took more than a minute for the firmware to load
+> via MDIO.
+> 
+> This was strange as the same operation was done by UBoot in at max 5
+> second and the same data was loaded.
+> 
+> A similar problem was observed on a mtk board that also had an
+> Aquantia PHY where the load was very slow. It was notice that the cause
+> was the MDIO bus running at a very low speed and the firmware
+> was missing a property (present in mtk sdk) that set the right frequency
+> to the MDIO bus.
+> 
+> It was fun to find that THE VERY SAME PROBLEM is present on IPQ in a
+> different form. The MDIO apply internally a division to the feed clock
+> resulting in the bus running at 390KHz instead of 6.25Mhz.
+> 
+> Searching around the web for some documentation and some include and
+> analyzing the uboot codeflow resulted in the divider being set wrongly
+> at /256 instead of /16 as the value was actually never set.
+> Applying the value restore the original load time for the Aquantia PHY.
+> 
+> This series mainly handle this by adding support for the "clock-frequency"
+> property.
+> 
+> Christian Marangi (3):
+>    dt-bindings: net: ipq4019-mdio: document now supported clock-frequency
+>    net: mdio: ipq4019: add support for clock-frequency property
+>    arm64: dts: qcom: ipq8074: add clock-frequency to MDIO node
+> 
+>   .../bindings/net/qcom,ipq4019-mdio.yaml       | 10 +++
+>   arch/arm64/boot/dts/qcom/ipq8074.dtsi         |  2 +
+>   drivers/net/mdio/mdio-ipq4019.c               | 68 +++++++++++++++++--
+>   3 files changed, 75 insertions(+), 5 deletions(-)
+> 
 
-Thanks,
---
-Basavaraj
+Hi Christian,
+Just a gentle reminder.
 
->
-> v3:
-> Simplilified as no special processing is required in als_parse_report()
->
-> v2:
-> Original patch from Basavaraj Natikar <Basavaraj.Natikar@amd.com> is
-> modified to prevent failure when the new usage id is not found in the
-> descriptor.
->
->  drivers/iio/light/hid-sensor-als.c | 48 ++++++++++++++++++++++++++++++
->  include/linux/hid-sensor-ids.h     |  3 ++
->  2 files changed, 51 insertions(+)
->
-> diff --git a/drivers/iio/light/hid-sensor-als.c b/drivers/iio/light/hid-sensor-als.c
-> index 0d54eb59e47d..9c31febc84b8 100644
-> --- a/drivers/iio/light/hid-sensor-als.c
-> +++ b/drivers/iio/light/hid-sensor-als.c
-> @@ -17,6 +17,8 @@ enum {
->  	CHANNEL_SCAN_INDEX_INTENSITY,
->  	CHANNEL_SCAN_INDEX_ILLUM,
->  	CHANNEL_SCAN_INDEX_COLOR_TEMP,
-> +	CHANNEL_SCAN_INDEX_CHROMATICITY_X,
-> +	CHANNEL_SCAN_INDEX_CHROMATICITY_Y,
->  	CHANNEL_SCAN_INDEX_MAX
->  };
->  
-> @@ -45,6 +47,8 @@ static const u32 als_usage_ids[] = {
->  	HID_USAGE_SENSOR_LIGHT_ILLUM,
->  	HID_USAGE_SENSOR_LIGHT_ILLUM,
->  	HID_USAGE_SENSOR_LIGHT_COLOR_TEMPERATURE,
-> +	HID_USAGE_SENSOR_LIGHT_CHROMATICITY_X,
-> +	HID_USAGE_SENSOR_LIGHT_CHROMATICITY_Y,
->  };
->  
->  static const u32 als_sensitivity_addresses[] = {
-> @@ -86,6 +90,30 @@ static const struct iio_chan_spec als_channels[] = {
->  		BIT(IIO_CHAN_INFO_HYSTERESIS_RELATIVE),
->  		.scan_index = CHANNEL_SCAN_INDEX_COLOR_TEMP,
->  	},
-> +	{
-> +		.type = IIO_CHROMATICITY,
-> +		.modified = 1,
-> +		.channel2 = IIO_MOD_X,
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
-> +		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_OFFSET) |
-> +		BIT(IIO_CHAN_INFO_SCALE) |
-> +		BIT(IIO_CHAN_INFO_SAMP_FREQ) |
-> +		BIT(IIO_CHAN_INFO_HYSTERESIS) |
-> +		BIT(IIO_CHAN_INFO_HYSTERESIS_RELATIVE),
-> +		.scan_index = CHANNEL_SCAN_INDEX_CHROMATICITY_X,
-> +	},
-> +	{
-> +		.type = IIO_CHROMATICITY,
-> +		.modified = 1,
-> +		.channel2 = IIO_MOD_Y,
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
-> +		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_OFFSET) |
-> +		BIT(IIO_CHAN_INFO_SCALE) |
-> +		BIT(IIO_CHAN_INFO_SAMP_FREQ) |
-> +		BIT(IIO_CHAN_INFO_HYSTERESIS) |
-> +		BIT(IIO_CHAN_INFO_HYSTERESIS_RELATIVE),
-> +		.scan_index = CHANNEL_SCAN_INDEX_CHROMATICITY_Y,
-> +	},
->  	IIO_CHAN_SOFT_TIMESTAMP(CHANNEL_SCAN_INDEX_TIMESTAMP)
->  };
->  
-> @@ -129,6 +157,16 @@ static int als_read_raw(struct iio_dev *indio_dev,
->  			min = als_state->als[chan->scan_index].logical_minimum;
->  			address = HID_USAGE_SENSOR_LIGHT_COLOR_TEMPERATURE;
->  			break;
-> +		case  CHANNEL_SCAN_INDEX_CHROMATICITY_X:
-> +			report_id = als_state->als[chan->scan_index].report_id;
-> +			min = als_state->als[chan->scan_index].logical_minimum;
-> +			address = HID_USAGE_SENSOR_LIGHT_CHROMATICITY_X;
-> +			break;
-> +		case  CHANNEL_SCAN_INDEX_CHROMATICITY_Y:
-> +			report_id = als_state->als[chan->scan_index].report_id;
-> +			min = als_state->als[chan->scan_index].logical_minimum;
-> +			address = HID_USAGE_SENSOR_LIGHT_CHROMATICITY_Y;
-> +			break;
->  		default:
->  			report_id = -1;
->  			break;
-> @@ -257,6 +295,16 @@ static int als_capture_sample(struct hid_sensor_hub_device *hsdev,
->  		als_state->scan.illum[scan_index] = sample_data;
->  		ret = 0;
->  		break;
-> +	case HID_USAGE_SENSOR_LIGHT_CHROMATICITY_X:
-> +		scan_index = als_state->scan.scan_index[CHANNEL_SCAN_INDEX_CHROMATICITY_X];
-> +		als_state->scan.illum[scan_index] = sample_data;
-> +		ret = 0;
-> +		break;
-> +	case HID_USAGE_SENSOR_LIGHT_CHROMATICITY_Y:
-> +		scan_index = als_state->scan.scan_index[CHANNEL_SCAN_INDEX_CHROMATICITY_Y];
-> +		als_state->scan.illum[scan_index] = sample_data;
-> +		ret = 0;
-> +		break;
->  	case HID_USAGE_SENSOR_TIME_TIMESTAMP:
->  		als_state->timestamp = hid_sensor_convert_timestamp(&als_state->common_attributes,
->  								    *(s64 *)raw_data);
-> diff --git a/include/linux/hid-sensor-ids.h b/include/linux/hid-sensor-ids.h
-> index 8af4fb3e0254..6730ee900ee1 100644
-> --- a/include/linux/hid-sensor-ids.h
-> +++ b/include/linux/hid-sensor-ids.h
-> @@ -22,6 +22,9 @@
->  #define HID_USAGE_SENSOR_DATA_LIGHT				0x2004d0
->  #define HID_USAGE_SENSOR_LIGHT_ILLUM				0x2004d1
->  #define HID_USAGE_SENSOR_LIGHT_COLOR_TEMPERATURE		0x2004d2
-> +#define HID_USAGE_SENSOR_LIGHT_CHROMATICITY			0x2004d3
-> +#define HID_USAGE_SENSOR_LIGHT_CHROMATICITY_X			0x2004d4
-> +#define HID_USAGE_SENSOR_LIGHT_CHROMATICITY_Y			0x2004d5
->  
->  /* PROX (200011) */
->  #define HID_USAGE_SENSOR_PROX                                   0x200011
+The MDIO frequency config is already added by the following patch series.
+https://lore.kernel.org/netdev/28c8b31c-8dcb-4a19-9084-22c77a74b9a1@linaro.org/T/#m840cb8d269dca133c3ad3da3d112c63382ec2058
+
+This MDIO patch series will be updated to just keep the MDIO frequency
+patch and DT document for this MDIO frequency property added.
+
+For CMN PLL config will be moved to the CMN PLL clock driver and the 
+UNIPHY clock config will be moved the uniphy driver as suggested by
+Sergey's suggestions.
+
+Thanks.
+
 
 
