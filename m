@@ -1,105 +1,139 @@
-Return-Path: <linux-kernel+bounces-38157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C88A83BBB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:19:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4EAD83BBBA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:21:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FF141F219AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:19:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DECB51C22665
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:21:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D0D0175B6;
-	Thu, 25 Jan 2024 08:19:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2ECE175B1;
+	Thu, 25 Jan 2024 08:21:23 +0000 (UTC)
 Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A38D617581
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:19:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5446F13FFD
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:21:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706170758; cv=none; b=AIIFbG4kSP8TlyfCzkf+xYboX9YDZMR4ub1KnLuLNeUNFZywJzhfS+OndiFXLKNVWallE9P7fcwetu5MCZlzyHXHYZxSAweG9mb19wois9t5lxi3/8QpfuRxgbZ5TXhz8sLNHapqTwScw3Pg3ov2J7W/xEfaw7md0CP1AKi/Z1Q=
+	t=1706170883; cv=none; b=AQdDSR7oxZuPENfit9qdhY83lWDhQCUFqLlmJpxNthwAbPR99LtLN2XXgFpYBgHt7c+vlY2QuHMdo7fKMufzZ4bJPewFmx5idN8DR033ww0WbMNMnytvdwJCpTUkTnFfC4onNnS+RpxHa1j1iKtfS2GszT0I1dMZIe+qNo92ygc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706170758; c=relaxed/simple;
-	bh=Pe3+Z5TprG1MCm3XH/wvYQEymtq4W+JtGYVqdZcG9Uk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ViddstdiiwRG/NA7SYhb6eF4YoTGTo1TypxD9S75M6XoIrs8x0A5JEnvIBq+bJIg7HnoYytQrbII/kmN1zgZoNxKCXkjLk0k6QSgdPFSbQk1k0oD0xXkm8AelCETKV7QNu3IGXiaubMlCPm+L9tMMlqmsHeSZdpVCCg0XxRUaa8=
+	s=arc-20240116; t=1706170883; c=relaxed/simple;
+	bh=cxuqcr1pKgjBMew+4nHE9siyrzEAAX1kfp+W57MbEuo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iU0mBjFfxAuABPEKqJ4ZiLeNNJdxlL7vS6TFJJPLnD+m3B4ED0JQ27euBWeU5aZVzLyV7o7CPAVOj6Ec2PYbVPmwSyO3NpzCjC0yUjJeaGpq6GEmRPQfa/7yqucU/PogmUUVo5iCfOUWMDrQf9NbeQnpqL1sL7Jp9brELiJLOwo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 875a5205a7694e01b70b9770baae8f36-20240125
+X-UUID: 28377b4fc3ba46d69d1bdf08664895d9-20240125
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:5b8963f5-aa20-446f-84e2-6c7c914ac904,IP:10,
-	URL:0,TC:0,Content:-5,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,AC
-	TION:release,TS:15
-X-CID-INFO: VERSION:1.1.35,REQID:5b8963f5-aa20-446f-84e2-6c7c914ac904,IP:10,UR
-	L:0,TC:0,Content:-5,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:15
-X-CID-META: VersionHash:5d391d7,CLOUDID:1a2f23fe-c16b-4159-a099-3b9d0558e447,B
-	ulkID:240125161904AS2NEWQO,BulkQuantity:0,Recheck:0,SF:66|24|17|19|44|102,
-	TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,
-	OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR
-X-UUID: 875a5205a7694e01b70b9770baae8f36-20240125
+X-CID-O-INFO: VERSION:1.1.35,REQID:24c280cf-efdb-45d6-a95a-bb7bb1f1d273,IP:20,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:5
+X-CID-INFO: VERSION:1.1.35,REQID:24c280cf-efdb-45d6-a95a-bb7bb1f1d273,IP:20,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:5
+X-CID-META: VersionHash:5d391d7,CLOUDID:6237be7f-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:240125144931KQV0B0BI,BulkQuantity:5,Recheck:0,SF:38|24|17|19|44|64|6
+	6|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,
+	COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 28377b4fc3ba46d69d1bdf08664895d9-20240125
 Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
 	(envelope-from <chentao@kylinos.cn>)
 	(Generic MTA)
-	with ESMTP id 1220097995; Thu, 25 Jan 2024 16:19:04 +0800
+	with ESMTP id 1000393714; Thu, 25 Jan 2024 16:21:10 +0800
 Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 1361EE000EBA;
-	Thu, 25 Jan 2024 16:19:04 +0800 (CST)
-X-ns-mid: postfix-65B21977-817775418
-Received: from kernel.. (unknown [172.20.15.234])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 7AF92E000EB9;
-	Thu, 25 Jan 2024 16:19:01 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: linux@armlinux.org.uk
-Cc: linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH] ARM: riscpc: Code cleanup for parse_tag_acorn
-Date: Thu, 25 Jan 2024 16:18:56 +0800
-Message-Id: <20240125081856.531595-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	by mail.kylinos.cn (NSMail) with SMTP id 4B2DDE000EB9;
+	Thu, 25 Jan 2024 16:21:10 +0800 (CST)
+X-ns-mid: postfix-65B219F6-201682428
+Received: from [172.20.15.234] (unknown [172.20.15.234])
+	by mail.kylinos.cn (NSMail) with ESMTPA id 1C8C5E000EB9;
+	Thu, 25 Jan 2024 16:21:00 +0800 (CST)
+Message-ID: <0cc62f04-ce60-42ed-89c9-ce8b1ce26ce7@kylinos.cn>
+Date: Thu, 25 Jan 2024 16:20:59 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] powerpc/iommu: Code cleanup for cell/iommu.c
+To: Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "arnd@arndb.de" <arnd@arndb.de>, "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+ "npiggin@gmail.com" <npiggin@gmail.com>,
+ "aneesh.kumar@kernel.org" <aneesh.kumar@kernel.org>,
+ "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>
+Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240125024633.512513-1-chentao@kylinos.cn>
+ <7cdfcfc3-fc9e-433d-8992-7782d641cb94@csgroup.eu>
+Content-Language: en-US
+From: Kunwu Chan <chentao@kylinos.cn>
+In-Reply-To: <7cdfcfc3-fc9e-433d-8992-7782d641cb94@csgroup.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
 
-This part was commented in about 19 years before.
+On 2024/1/25 14:49, Christophe Leroy wrote:
+>=20
+>=20
+> Le 25/01/2024 =C3=A0 03:46, Kunwu Chan a =C3=A9crit=C2=A0:
+>> This part was commented from commit 165785e5c0be ("[POWERPC] Cell
+>> iommu support") in about 17 years before.
+>>
+>> If there are no plans to enable this part code in the future,
+>> we can remove this dead code.
+>>
+>> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+>> ---
+>>    arch/powerpc/platforms/cell/iommu.c | 16 ----------------
+>>    1 file changed, 16 deletions(-)
+>>
+>> diff --git a/arch/powerpc/platforms/cell/iommu.c b/arch/powerpc/platfo=
+rms/cell/iommu.c
+>> index 1202a69b0a20..afce9e64a443 100644
+>> --- a/arch/powerpc/platforms/cell/iommu.c
+>> +++ b/arch/powerpc/platforms/cell/iommu.c
+>> @@ -424,22 +424,6 @@ static void __init cell_iommu_setup_hardware(stru=
+ct cbe_iommu *iommu,
+>>    	cell_iommu_enable_hardware(iommu);
+>>    }
+>>   =20
+>> -#if 0/* Unused for now */
+>> -static struct iommu_window *find_window(struct cbe_iommu *iommu,
+>> -		unsigned long offset, unsigned long size)
+>> -{
+>> -	struct iommu_window *window;
+>> -
+>> -	/* todo: check for overlapping (but not equal) windows) */
+>> -
+>> -	list_for_each_entry(window, &(iommu->windows), list) {
+>> -		if (window->offset =3D=3D offset && window->size =3D=3D size)
+>> -			return window;
+>> -	}
+>> -
+>> -	return NULL;
+>> -}
+>> -#endif
+>=20
+> Same as the other one, please remove the second blank line, don't leave
+> two blank lines between the remaining functions.
+Thanks for your reply.
 
-If there are no plans to enable this part code in the future,
-we can remove this dead code.
+I'll check my patches and update in v2.
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- arch/arm/mach-rpc/riscpc.c | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/arch/arm/mach-rpc/riscpc.c b/arch/arm/mach-rpc/riscpc.c
-index f70fb9c4b0cb..947c88950518 100644
---- a/arch/arm/mach-rpc/riscpc.c
-+++ b/arch/arm/mach-rpc/riscpc.c
-@@ -53,12 +53,6 @@ static int __init parse_tag_acorn(const struct tag *ta=
-g)
- 	default:
- 		break;
- 	}
--#if 0
--	if (vram_size) {
--		desc->video_start =3D 0x02000000;
--		desc->video_end   =3D 0x02000000 + vram_size;
--	}
--#endif
- 	return 0;
- }
-=20
+>=20
+>>   =20
+>>    static inline u32 cell_iommu_get_ioid(struct device_node *np)
+>>    {
 --=20
-2.39.2
+Thanks,
+   Kunwu
 
 
