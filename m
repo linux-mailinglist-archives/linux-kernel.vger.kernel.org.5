@@ -1,107 +1,143 @@
-Return-Path: <linux-kernel+bounces-38473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38474-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 238F183C06B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:12:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69E8383C06E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:12:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1FCB1F24F68
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:12:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CCD21C22A37
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:12:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E86EB5BADB;
-	Thu, 25 Jan 2024 11:04:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tXUmYTYV"
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5A915C5E9;
+	Thu, 25 Jan 2024 11:05:22 +0000 (UTC)
+Received: from mail115-76.sinamail.sina.com.cn (mail115-76.sinamail.sina.com.cn [218.30.115.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9218F17735
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 11:04:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 538505BAF0
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 11:05:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706180678; cv=none; b=ZfZ88186I29JK0g0klZ3QOC7qVyxD3M2/12Rg9LYL3GdM1CH4n/iYOsl95d+Vxz/0JUsHraSBsUSELy2+LnyKqcnB+wK7uqu1jNbnWaMca4KRADkcYLoi3v8YmVpPicNeuAfkekQ1+/YJj2yTraCBaTTevQ5paF3qwAIUlXiSMM=
+	t=1706180722; cv=none; b=CTKgJHxszRYe5UTjMub6Sb5gzJKTLITgX+CXRLJBaEWUaz4sr5UO4LBkdnYFNL/WVceyPGdSKcIxszBxoRirXlPsQxESOC1ZpS/3+62idxj2Iok1mSi/JkmcktwLr4/IInoAalshW6VXOYLIfDbDQxjFu7nsW4XirsquYQmNI2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706180678; c=relaxed/simple;
-	bh=Ts9q+13xetCVwAeVTuiXnLneaHqI4vRmZWMNM3PN1Cs=;
-	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=tp0D0jC42JP42BM53n4+OWIx2JrlT0EaIr8dOC7X2qHX5I9XdK26qFOAF2TuqR7vleU3WBU1eicZ4l4lqH/8BkrNsJAomd8lL9Wbtoh/0zByqezoBJFyxKTG+kMbVku7eYnDFOJAHRAsMKLd8e5bTMu1r30qhi6GymY60j81oNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tXUmYTYV; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2cf3a04ea1cso4675291fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 03:04:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706180674; x=1706785474; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IqKqhdtGXtBOJU6ppRXF6CRxwiYujmvPhfvNz+SyAaQ=;
-        b=tXUmYTYVa0WLhR88zn0j9XmDE0X3ehOYjh3Zk1fUhLLINqr6Hj+itidQ2n0qii1eFr
-         JTLZoGYVDxCO40ah+4LuRc1MT8Sj5IbV5vhrc/yjYBoLaOsXD5Mxul4yLQ0w1T2kG2Ag
-         4gqB/CSj+jNiI9S5jTPsrVIERjNBMTozr/1feTgYASrebfQP6NYdXv/C8C7Az9V5rTpu
-         Vw4cIlU5o138T7huGn4Qtd8eng1F37V60Gr1BF74q6WG4jrFsQucEEy0+GHeO1w7LHU8
-         LBLXT57KqvvkaOYRe0eYt63On4CCUpMqd5tSyg0HZ0mKMCg5F6/VPn+frA87lkQAeCH4
-         ON2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706180674; x=1706785474;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IqKqhdtGXtBOJU6ppRXF6CRxwiYujmvPhfvNz+SyAaQ=;
-        b=F8765pibxKc98PRPLNU2zf1++BpaYv7Sm50wCdc0yVQ1qSOwtzeMqo+4efBHncfRzK
-         yBZjjPkXr/ota4oYYYuuIh8BNQ1MNdbJlyilbRiHnbrdFe5YZV+lTY4TD67QmkYr8npe
-         22lAtm2Y3aKAVw54yyoeg7useeFIf4mTBlUIB6saFn9rPEG65SnDbLdVjS9glmvojPId
-         1fnm4WuX3TxChOF9mLZjv5VAvayeK84/Mf62OdNBhEFdN3U4v3TGZxbNc7Wb5chGHeqf
-         dLIkoJs7ApLW03Hti5stBMJWxX1RNykPYjbHgaGZXPlUr6t3NGBxtgDt8Fguf7prJnot
-         pcpg==
-X-Gm-Message-State: AOJu0YzlJkuAAFfZKG+UQpfzzsCWZQbhlR/688NkFLfM11UTtJUtEjzC
-	UWgVOwcCAELrWMpOHa1sOgeHqNQ29sxeYUfKbPTRdGxiMPCVVakeC5V49cPj7dA=
-X-Google-Smtp-Source: AGHT+IHRN0EYIlVEghtEqMxeg1S3Go+WMINZWoqrHECHlbWMgqI/DcQDJtzKvV4+NTQvJ6/PflKb+w==
-X-Received: by 2002:a2e:300d:0:b0:2cd:9503:f91 with SMTP id w13-20020a2e300d000000b002cd95030f91mr465395ljw.15.1706180674614;
-        Thu, 25 Jan 2024 03:04:34 -0800 (PST)
-Received: from [127.0.1.1] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id tj3-20020a170907c24300b00a2fde3a8097sm209847ejc.74.2024.01.25.03.04.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 03:04:34 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
- Thierry Reding <thierry.reding@gmail.com>, 
- Jonathan Hunter <jonathanh@nvidia.com>, Dmitry Osipenko <digetx@gmail.com>, 
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-tegra@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240123083517.21091-1-krzysztof.kozlowski@linaro.org>
-References: <20240123083517.21091-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] dt-bindings: memory-controllers: narrow regex for unit
- address to hex numbers
-Message-Id: <170618067286.174727.5575658659915083123.b4-ty@linaro.org>
-Date: Thu, 25 Jan 2024 12:04:32 +0100
+	s=arc-20240116; t=1706180722; c=relaxed/simple;
+	bh=dkocADbOYvTMw/1B14GzZTy0MDUDsy+hKS032mNu1oY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=nhoscBlI9IK4BbQsjPf63k9/sdG8eqZVoaoM5u5B5eBCW/Gezkz7M3/aJLVzMK729juTCQi5D+kFbXkhZHONaU+AW2RVe8SY9/DVyQC0swRtmMzUkGk2B82fidRZ0aDVWTOAZkyL8g9AbK875E8w2vM++4JEUNTFD0FA3TWKIDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.118.66.48])
+	by sina.com (10.75.12.45) with ESMTP
+	id 65B2406000006131; Thu, 25 Jan 2024 19:05:07 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 90902331457749
+X-SMAIL-UIID: C48E56203AD94D7ABC5CFEFD23E8F7E5-20240125-190507-1
+From: Hillf Danton <hdanton@sina.com>
+To: Benjamin Segall <bsegall@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] locking/percpu-rwsem: do not do lock handoff in percpu_up_write
+Date: Thu, 25 Jan 2024 19:04:56 +0800
+Message-Id: <20240125110456.783-1-hdanton@sina.com>
+In-Reply-To: <xm26v87imlgc.fsf@bsegall-linux.svl.corp.google.com>
+References: <xm26zfwx7z5p.fsf@google.com> <20240123150541.1508-1-hdanton@sina.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.4
+Content-Transfer-Encoding: 8bit
 
-
-On Tue, 23 Jan 2024 09:35:17 +0100, Krzysztof Kozlowski wrote:
-> Regular expression used to match the unit address part should not allow
-> non-hex numbers.
+On Wed, 24 Jan 2024 14:10:43 -0800 Benjamin Segall <bsegall@google.com>
+> Hillf Danton <hdanton@sina.com> writes:
+> > On Mon, 22 Jan 2024 14:59:14 -0800 Benjamin Segall <bsegall@google.com>
+> >> So the actual problem we saw was that one job had severe slowdowns
+> >> during startup with certain other jobs on the machine, and the slowdowns
+> >> turned out to be some cgroup moves it did during startup. The antagonist
+> >> jobs were spawning huge numbers of threads and some other internal bugs
+> >> were exacerbating their contention. The lock handoff meant that a batch
+> >> of antagonist threads would receive the read lock of
+> >> cgroup_threadgroup_rwsem and at least some of those threads would take a
+> >> long time to be scheduled.
+> >
+> > If you want to avoid starved lock waiter, take a look at RWSEM_FLAG_HANDOFF
+> > in rwsem_down_read_slowpath().
 > 
-> 
+> rwsem's HANDOFF flag is the exact opposite of what this patch is doing.
 
-Applied, thanks!
+You and I are not on the same page.
 
-[1/1] dt-bindings: memory-controllers: narrow regex for unit address to hex numbers
-      https://git.kernel.org/krzk/linux-mem-ctrl/c/2f542c937c48c2bd5a8ddf180b417fbe7152559f
+> Percpu-rwsem's current code has perfect handoff for read->write, and a very
+> short window for write->read (or write->write) to be beaten by a new writer.
 
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Given no chance left for spin on owner who is legal to take a ten-minute nap,
+the right thing known to do on behalf of starved waiters is to add the HANDOFF
+mechanism without any heuristic like you proposed for instance, in order to
+force lock acquirers to go the slow path.
 
+Only for thoughts.
+
+--- x/kernel/locking/percpu-rwsem.c
++++ y/kernel/locking/percpu-rwsem.c
+@@ -22,6 +22,7 @@ int __percpu_init_rwsem(struct percpu_rw
+ 	rcuwait_init(&sem->writer);
+ 	init_waitqueue_head(&sem->waiters);
+ 	atomic_set(&sem->block, 0);
++	atomic_set(&sem->ww, 0);	/* write waiters */
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ 	debug_check_no_locks_freed((void *)sem, sizeof(*sem));
+ 	lockdep_init_map(&sem->dep_map, name, key, 0);
+@@ -135,6 +136,9 @@ static int percpu_rwsem_wake_function(st
+ 	wake_up_process(p);
+ 	put_task_struct(p);
+ 
++	if (!reader)
++		atomic_dec(&sem->ww);
++
+ 	return !reader; /* wake (readers until) 1 writer */
+ }
+ 
+@@ -148,8 +152,10 @@ static void percpu_rwsem_wait(struct per
+ 	 * Serialize against the wakeup in percpu_up_write(), if we fail
+ 	 * the trylock, the wakeup must see us on the list.
+ 	 */
+-	wait = !__percpu_rwsem_trylock(sem, reader);
++	wait = atomic_read(&sem->ww) || !__percpu_rwsem_trylock(sem, reader);
+ 	if (wait) {
++		if (!reader)
++			atomic_inc(&sem->ww);
+ 		wq_entry.flags |= WQ_FLAG_EXCLUSIVE | reader * WQ_FLAG_CUSTOM;
+ 		__add_wait_queue_entry_tail(&sem->waiters, &wq_entry);
+ 	}
+@@ -166,7 +172,7 @@ static void percpu_rwsem_wait(struct per
+ 
+ bool __sched __percpu_down_read(struct percpu_rw_semaphore *sem, bool try)
+ {
+-	if (__percpu_down_read_trylock(sem))
++	if (!atomic_read(&sem->ww) && __percpu_down_read_trylock(sem))
+ 		return true;
+ 
+ 	if (try)
+@@ -234,7 +240,7 @@ void __sched percpu_down_write(struct pe
+ 	 * Try set sem->block; this provides writer-writer exclusion.
+ 	 * Having sem->block set makes new readers block.
+ 	 */
+-	if (!__percpu_down_write_trylock(sem))
++	if (atomic_read(&sem->ww) || !__percpu_down_read_trylock(sem))
+ 		percpu_rwsem_wait(sem, /* .reader = */ false);
+ 
+ 	/* smp_mb() implied by __percpu_down_write_trylock() on success -- D matches A */
 
