@@ -1,112 +1,126 @@
-Return-Path: <linux-kernel+bounces-38338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95D2C83BE07
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:54:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5BA283BE18
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:56:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DB011F2E969
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:54:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E13831C21566
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:56:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAD231CA8B;
-	Thu, 25 Jan 2024 09:53:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68C3C1CAA7;
+	Thu, 25 Jan 2024 09:56:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="KRrMtcPM"
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JC97NJBj"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 614611BF33;
-	Thu, 25 Jan 2024 09:53:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D6571C6A1
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:56:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706176415; cv=none; b=IlCjbgNvwEDNyFejH/2rBq6fkF1oZQbNBBPVxcukUgfQj/+lHTBjrrkEH60GX3V+IwRcI2qoxSa/93BzRArX+4qusdB6wCr+jW09clHAxMLXl1WNliD3RRwg0iZPc+C6sIBc6E0iPFa8Y1sok7y3s2CWTI0R93NtIZvc/Aju6Nw=
+	t=1706176572; cv=none; b=uX726LkWYJWf1V2z199Xki5WK2u7Ef4tfzmvauhPX0Vt/NuOSUBqeduBU10JlMFSWRfvLpcxnk8Mf2fVSKR3AyVx/eP7Bv0e5myx2Nk3NgdtXvpMR/9IIEm8AES7kNeqBxUjXWrIRHugMmG93ocMzEqlHjRFCdftmhmCRHgfZzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706176415; c=relaxed/simple;
-	bh=MOQWUs4LfrqyBim3cdZJiOlBAObGGDGpzuE1pIY1Gwg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JtRk/8T67nRMUOc6HOO8g/F3m/4Nwzkh4xZkpQ/2xOFE01rivhKw5NjxVNjR62wI+fYc1BDYb25IBNE+uKxY2qoUHfxwxQ3zL6t6LKg1khMQdpY2Pc67CFc5XrOK+UB2BHEkKJKL2P5mS09XnM7FaikUVZQUWoZNwiZwMYpIQcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=KRrMtcPM; arc=none smtp.client-ip=83.149.199.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
-Received: from localhost.ispras.ru (unknown [10.10.165.6])
-	by mail.ispras.ru (Postfix) with ESMTPSA id 755C04076731;
-	Thu, 25 Jan 2024 09:53:23 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 755C04076731
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1706176403;
-	bh=KQrR+5BkSPmu/kRG4OwqNQfdmbL9yFyULUlnEV6F95k=;
-	h=From:To:Cc:Subject:Date:From;
-	b=KRrMtcPMC+9jDKT+AIn/r5Lj8MaJLvhTzsrcsyy3xGxnr7uDd+F9aRmE1BdU0jfE2
-	 AAfNyzDjwRfyNf9T6Kx+iqsaazo712CpMtE8/9mEp8tKVgNpjuZU0HBhneWS7q+l0E
-	 o2bP+OZ8QbLRtOmmzA9sT/4Go1hKPCX2hzTOvaRw=
-From: Fedor Pchelkin <pchelkin@ispras.ru>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Jeremy Cline <jeremy@jcline.org>,
-	Simon Horman <horms@kernel.org>,
-	Breno Leitao <leitao@debian.org>,
-	Ilan Elias <ilane@ti.com>,
-	"John W. Linville" <linville@tuxdriver.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Alexey Khoroshilov <khoroshilov@ispras.ru>,
-	lvc-project@linuxtesting.org,
-	stable@vger.kernel.org,
-	syzbot+6b7c68d9c21e4ee4251b@syzkaller.appspotmail.com
-Subject: [PATCH net] nfc: nci: free rx_data_reassembly skb on NCI device cleanup
-Date: Thu, 25 Jan 2024 12:53:09 +0300
-Message-ID: <20240125095310.15738-1-pchelkin@ispras.ru>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706176572; c=relaxed/simple;
+	bh=0FglvjcoV5T/4Go2FaGM3w5PY2/YxleqKSSdfl2SFkk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lh49AXZEotDRbXXXD1xe0XiOGzAWh+/siAOxX0NwGNNVX1yGWSPaLt/3C70h6lgyg5dMRF/dHy68VMjMJN29CAiJC+KM+wUPERwGrUdikFTqp1ecp7Foy+q5Z+KObccPOO9C5P+A5Zndlg8pYwHLwo6W9HiCPUkvXz6WSjBaXZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JC97NJBj; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706176571; x=1737712571;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=0FglvjcoV5T/4Go2FaGM3w5PY2/YxleqKSSdfl2SFkk=;
+  b=JC97NJBjVLhiHPRCLa5OEt+Sh9ZTmUZAHXFvlDnnItl9JqM3DNYvWtGQ
+   bhfhoWhete0xSPGmp3QKj5Syt6fblUbcbao7jS95dSVIERCddGaOfl2lh
+   ZEKVG75PWrBVR49rZOVWv0o1Gc0MTFG97UZ5T2vata45yXxa2T4LB8Knd
+   UuQloHrqbkgTh5+HmyLrmnBMIfnnFEjpmwkTveVa/K6ABcoO5U94ZPrQN
+   9Uwk6WxRucJYIUbVoVNu+si5dPbVOOnMziRiwiYvoXo4QKgJqvm03qeEN
+   HFOq6Oxa2tNSGURndMUsX32qs0xTnzuYfHiPBbgcQMhZEPlEUD+SFb2Qj
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="1991541"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="1991541"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 01:56:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="857016534"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="857016534"
+Received: from araj-dh-work.jf.intel.com ([10.165.157.158])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 01:56:08 -0800
+Date: Thu, 25 Jan 2024 01:53:14 -0800
+From: Ashok Raj <ashok_raj@linux.intel.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Andrew Cooper <andrew.cooper3@citrix.com>,
+	Arjan van de Ven <arjan@linux.intel.com>,
+	Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
+	Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+	Sohil Mehta <sohil.mehta@intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Zhang Rui <rui.zhang@intel.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Feng Tang <feng.tang@intel.com>,
+	Andy Shevchenko <andy@infradead.org>,
+	Michael Kelley <mhklinux@outlook.com>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
+	Wei Liu <wei.liu@kernel.org>, Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [patch V2 01/22] x86/cpu/topology: Make the APIC mismatch
+ warnings complete
+Message-ID: <ZbIvis3zHeQLZerL@araj-dh-work.jf.intel.com>
+References: <20240117124704.044462658@linutronix.de>
+ <20240117124902.403342409@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240117124902.403342409@linutronix.de>
 
-rx_data_reassembly skb is stored during NCI data exchange for processing
-fragmented packets. It is dropped only when the last fragment is processed
-or when an NTF packet with NCI_OP_RF_DEACTIVATE_NTF opcode is received.
-However, the NCI device may be deallocated before that which leads to skb
-leak.
+On Tue, Jan 23, 2024 at 02:10:04PM +0100, Thomas Gleixner wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
+> 
+> Detect all possible combinations of mismatch right in the CPUID evaluation
+> code.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> 
+> ---
+>  arch/x86/include/asm/apic.h           |    5 ++---
+>  arch/x86/kernel/cpu/common.c          |   15 ++-------------
+>  arch/x86/kernel/cpu/topology_common.c |   12 ++++++++++++
+>  3 files changed, 16 insertions(+), 16 deletions(-)
 
-As by design the rx_data_reassembly skb is bound to the NCI device and
-nothing prevents the device to be freed before the skb is processed in
-some way and cleaned, free it on the NCI device cleanup.
+[snip]
 
-Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
+> --- a/arch/x86/kernel/cpu/topology_common.c
+> +++ b/arch/x86/kernel/cpu/topology_common.c
+> @@ -177,6 +177,18 @@ void cpu_parse_topology(struct cpuinfo_x
+>  
+>  	parse_topology(&tscan, false);
+>  
+> +	if (IS_ENABLED(CONFIG_X86_LOCAL_APIC)) {
+> +		if (c->topo.initial_apicid != c->topo.apicid) {
+> +			pr_err(FW_BUG "CPU%4u: APIC ID mismatch. CPUID: 0x%04x APIC: 0x%04x\n",
+> +			       cpu, c->topo.initial_apicid, c->topo.apicid);
+> +		}
+> +
+> +		if (c->topo.apicid != cpuid_to_apicid[cpu]) {
+> +			pr_err(FW_BUG "CPU%4u: APIC ID mismatch. Firmware: 0x%04x APIC: 0x%04x\n",
+> +			       cpu, cpuid_to_apicid[cpu], c->topo.apicid);
+> +		}
 
-Fixes: 6a2968aaf50c ("NFC: basic NCI protocol implementation")
-Cc: stable@vger.kernel.org
-Reported-by: syzbot+6b7c68d9c21e4ee4251b@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/lkml/000000000000f43987060043da7b@google.com/
-Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
----
- net/nfc/nci/core.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
-index 97348cedb16b..cdad47b140fa 100644
---- a/net/nfc/nci/core.c
-+++ b/net/nfc/nci/core.c
-@@ -1208,6 +1208,10 @@ void nci_free_device(struct nci_dev *ndev)
- {
- 	nfc_free_device(ndev->nfc_dev);
- 	nci_hci_deallocate(ndev);
-+
-+	/* drop partial rx data packet if present */
-+	if (ndev->rx_data_reassembly)
-+		kfree_skb(ndev->rx_data_reassembly);
- 	kfree(ndev);
- }
- EXPORT_SYMBOL(nci_free_device);
--- 
-2.43.0
-
+Should we consider tainting the kernel when there is any mismatch?
 
