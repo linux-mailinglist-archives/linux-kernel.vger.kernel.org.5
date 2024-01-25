@@ -1,217 +1,160 @@
-Return-Path: <linux-kernel+bounces-38954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86BCA83C8F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:58:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3ED8B83C8F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:59:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35FA0296CF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:58:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63AD01C2372F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:59:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8F8E1386DA;
-	Thu, 25 Jan 2024 16:47:30 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0730713172B
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 16:47:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBA96133426;
+	Thu, 25 Jan 2024 16:48:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="cJ70+Uo4";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="H7AnADWU"
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1C62133409;
+	Thu, 25 Jan 2024 16:48:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706201250; cv=none; b=oczoT7k5TRvdeMFyg9AEQivxRzLJc5Sbsh7lj+RdlzA650Hq/moKweRq9CDyQEYGeXXy8zToDKS6eBBPpK+Ojl1ouW/ggVwmxQcw0smSEuol/XRFoeBy6nDDX0vk1wnraP02EmID/3axjYtayj+TOCfKRotrmk/YV1gkhk3/5hk=
+	t=1706201305; cv=none; b=hUWj4eptoEF+oh5yzyV1nKFpQ69i5D1+T1Z/6K0yW2DZ46rKlnvGBJins0ukZIIXS9u2MHpBPSSCbepnBPxATb6pYwmT+++t5kf9dj3IgF6hp8dYLLUEyVoDhTCl+HNhZGLG9qb1hqjwOigguzFNKYNOiEo+XpaYZO+BZgdgVtA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706201250; c=relaxed/simple;
-	bh=5Sz6nyOUKq3MXrhagkP0FYymhM11nOGQSTAzf9cZVGw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=k84n4X150jBnl/9APZjdqq1xzyk0kxw+PWVP+mXcrNZ+3DKbKb3n649UD7t/HAfgtIDBk3IiMyNjoSry/+mXjY1gMntAgSSgjnutGdRCn5aBZWCDHzeX844xr1GorhTDI29yccBFrAD5EYYW2gbPcXkuw1ARO2JBLDogWYpeL14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2E9401764;
-	Thu, 25 Jan 2024 08:48:12 -0800 (PST)
-Received: from [10.1.27.41] (e122027.cambridge.arm.com [10.1.27.41])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF2673F5A1;
-	Thu, 25 Jan 2024 08:47:24 -0800 (PST)
-Message-ID: <7144dd9b-62d1-4968-9b94-0313e2475f7e@arm.com>
-Date: Thu, 25 Jan 2024 16:47:24 +0000
+	s=arc-20240116; t=1706201305; c=relaxed/simple;
+	bh=IRwJ0TMkwrUt/pbqRLgyTYDNt0RpyKyPLiKJWU0pKOY=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=jgsNOtcWxZZMJS8z5JwtuuJt2a2/9kZfLP7Ww9lOo4hiWuhZ0hBtCLlXED502aYvt8F/hk/VIupBw8UPDYeKlNOaGvtphyBg8BLK4F96KJwKXCnAtLt9jT0RfSTU+Uiiy1911mVHNxjqv5LpF7jljlP8KwJSX/27N6R9Ljls5u8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=cJ70+Uo4; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=H7AnADWU; arc=none smtp.client-ip=64.147.123.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id 3655D3200AFB;
+	Thu, 25 Jan 2024 11:48:22 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 25 Jan 2024 11:48:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1706201301;
+	 x=1706287701; bh=7RObLEsmqCUsuKu6leTIFIVyQ4Z62QVJOMWQ8jNtjjY=; b=
+	cJ70+Uo46ietnMAzKmBUR1zehbq4uYCQXos0JapO3J04wLdUnhEfZlj4YUxPPAg8
+	GFAOATWioJNivmbcs8hktjOzFeNyKvw+OSrZVRzuEkQvTMZ0vStfSNbQX6Tp8BOY
+	ED0nqO//B0oHxNoi1ZJiIVvJbbaObziJmCu3qQdsITDDvcupr5WaE3M11Ix71z9t
+	dXcXnmrFTbwdpccUPFJFiSWwUY2zD3mxKgJy3PscborZvvkk3llLBTXYmNDSMZV9
+	OADoHcK9KdxiZpb8RQlRRLiWaO/AxaoRS9fZ9j+KOqNJbmuWT9RovVqW4js6ABdc
+	PL8dy+cBv7xWpAA6cRHIEA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706201301; x=
+	1706287701; bh=7RObLEsmqCUsuKu6leTIFIVyQ4Z62QVJOMWQ8jNtjjY=; b=H
+	7AnADWUn80T4NfwgQXzQE9E57BBsqQ1XTKHidubNzbHSOaFeD710YUmag9oIqiGR
+	SzL8mBxVm1FG7eKZkcVF77W7QvHB9RlV/yjW8ttJDi5xRQXYSLeOXa0rEIv+E7Ai
+	+N+iLNxPYH/8lYulHrYYwF0hVceHtr1jkCg0R8tUqpM1v431BiJrFRhSi4Ruxk93
+	uK7NkMSqkLCjH1wj22cx1tBx4wdxXirX8M9M/IuaIPg2z1SBf1f3mqDymiF+c32Q
+	Zjhtyn4aB0T1qbD7OJxjlsAdKv1l23ktn7PK6ntw7uM+tTw+Si+3u9nf2O4lSh9T
+	pbbrOm4ZveVc/emZMRYrw==
+X-ME-Sender: <xms:1ZCyZZu_m9agGzLlQ8qfJD6cZmnQ984BEtwC6hhW7C__FfAxF40bow>
+    <xme:1ZCyZSfzT6MCJk76BgT04TX9oVjUC4thPO3dMF_yyhbBjI0QjJwh71YAg-jGXykPE
+    VMOx0LwVEiv9kFPr-0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdelhecutefuodetggdotefrodftvfcurf
+    hrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehrnhgu
+    uceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvg
+    hrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfgjeev
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnh
+    gusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:1ZCyZczp006U4CnrXt2igNh3fOhYEiPqlQpRPEqugxjUqHMUjxbeoA>
+    <xmx:1ZCyZQNAO6k3L9iBA9GM84UokYiKqUGh4uPA8z24XBb4so36kDjZWA>
+    <xmx:1ZCyZZ-3xCIFWAN-6m75cZdEXRb9WVEbEDpD7yKNkBs_eg-Et4qGtQ>
+    <xmx:1ZCyZSOVSNeC82OU3Og8y9onoxsQ8MS2AGoMPBYyzjkEIkce5cIbdQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 04612B6008D; Thu, 25 Jan 2024 11:48:20 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-119-ga8b98d1bd8-fm-20240108.001-ga8b98d1b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 18/30] drm/panfrost: Explicitly get and put drm-shmem
- pages
-Content-Language: en-GB
-To: Dmitry Osipenko <dmitry.osipenko@collabora.com>,
- David Airlie <airlied@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>,
- Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
- <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Qiang Yu <yuq825@gmail.com>, Boris Brezillon
- <boris.brezillon@collabora.com>, Emma Anholt <emma@anholt.net>,
- Melissa Wen <mwen@igalia.com>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- kernel@collabora.com, virtualization@lists.linux-foundation.org
-References: <20240105184624.508603-1-dmitry.osipenko@collabora.com>
- <20240105184624.508603-19-dmitry.osipenko@collabora.com>
-From: Steven Price <steven.price@arm.com>
-In-Reply-To: <20240105184624.508603-19-dmitry.osipenko@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Message-Id: <63b3828d-8482-4435-9c98-50578bbbbe07@app.fastmail.com>
+In-Reply-To: <10405963.nUPlyArG6x@terabithia>
+References: <20240124004028.16826-1-zfigura@codeweavers.com>
+ <CALCETrU+Eb5CdkqfYK8JvOiPA7K-6Bfs4uEWiu-U9oH95XfvKw@mail.gmail.com>
+ <5907233.BlLQTPImNI@camazotz> <10405963.nUPlyArG6x@terabithia>
+Date: Thu, 25 Jan 2024 17:47:49 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Elizabeth Figura" <zfigura@codeweavers.com>,
+ "Andy Lutomirski" <luto@kernel.org>, wine-devel@winehq.org
+Cc: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+ linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+ =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
+ "Wolfram Sang" <wsa@kernel.org>, "Peter Zijlstra" <peterz@infradead.org>,
+ "Alexandre Julliard" <julliard@winehq.org>
+Subject: Re: [RFC PATCH 1/9] ntsync: Introduce the ntsync driver and character device.
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 05/01/2024 18:46, Dmitry Osipenko wrote:
-> To simplify the drm-shmem refcnt handling, we're moving away from
-> the implicit get_pages() that is used by get_pages_sgt(). From now on
-> drivers will have to pin pages while they use sgt. Panfrost's shrinker
-> doesn't support swapping out BOs, hence pages are pinned and sgt is valid
-> as long as pages' use-count > 0.
-> 
-> In Panfrost, panfrost_gem_mapping, which is the object representing a
-> GPU mapping of a BO, owns a pages ref. This guarantees that any BO being
-> mapped GPU side has its pages retained till the mapping is destroyed.
-> 
-> Since pages are no longer guaranteed to stay pinned for the BO lifetime,
-> and MADVISE(DONT_NEED) flagging remains after the GEM handle has been
-> destroyed, we need to add an extra 'is_purgeable' check in
-> panfrost_gem_purge(), to make sure we're not trying to purge a BO that
-> already had its pages released.
-> 
-> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+On Thu, Jan 25, 2024, at 04:42, Elizabeth Figura wrote:
+> On Wednesday, 24 January 2024 16:56:23 CST Elizabeth Figura wrote:
+>> On Wednesday, 24 January 2024 15:26:15 CST Andy Lutomirski wrote:
+>> > On Tue, Jan 23, 2024 at 4:59=E2=80=AFPM Elizabeth Figura <zfigura@c=
+odeweavers.com> wrote:
+>>=20
+>> [There is also a potential problem where some broken applications
+>> create a million (literally) sync objects. Making these into files ru=
+ns
+>> into NOFILE. We did specifically push distributions and systemd to
+>> increase those limits because an older solution *did* use eventfds and
+>> *did* run into those limits. Since that push was successful I don't
+>> know if this is *actually* a concern anymore, but avoiding files is
+>> probably not a bad thing either.]
+>
+> Of course, looking at it from a kernel maintainer's perspective, it wo=
+uldn't=20
+> be insane to do this anyway. If we at some point do start to care abou=
+t cross-
+> process isolation in this way, or if another NT emulator wants to use =
+this=20
+> interface and does care about cross-process isolation, it'll be necess=
+ary. At=20
+> least it'd make sense to make them separate files even if we don't imp=
+lement=20
+> granular permission handling just yet.
 
-Reviewed-by: Steven Price <steven.price@arm.com>
+I can think of a few other possible benefits of going with
+per-mutex file descriptors:
 
-Although I don't like the condition in panfrost_gem_mapping_release()
-for drm_gem_shmem_put_pages() and assigning NULL to bo->sgts - it feels
-very fragile. See below.
+- being able to use poll() for waiting on them individually in
+  combination with other file descriptor based events (socket,
+  signalfd, pidfd, ...)
 
-> ---
->  drivers/gpu/drm/panfrost/panfrost_gem.c       | 63 ++++++++++++++-----
->  .../gpu/drm/panfrost/panfrost_gem_shrinker.c  |  6 ++
->  2 files changed, 52 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.c b/drivers/gpu/drm/panfrost/panfrost_gem.c
-> index f268bd5c2884..7edfc12f7c1f 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gem.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gem.c
-> @@ -35,20 +35,6 @@ static void panfrost_gem_free_object(struct drm_gem_object *obj)
->  	 */
->  	WARN_ON_ONCE(!list_empty(&bo->mappings.list));
->  
-> -	if (bo->sgts) {
-> -		int i;
-> -		int n_sgt = bo->base.base.size / SZ_2M;
-> -
-> -		for (i = 0; i < n_sgt; i++) {
-> -			if (bo->sgts[i].sgl) {
-> -				dma_unmap_sgtable(pfdev->dev, &bo->sgts[i],
-> -						  DMA_BIDIRECTIONAL, 0);
-> -				sg_free_table(&bo->sgts[i]);
-> -			}
-> -		}
-> -		kvfree(bo->sgts);
-> -	}
-> -
->  	drm_gem_shmem_free(&bo->base);
->  }
->  
-> @@ -85,11 +71,40 @@ panfrost_gem_teardown_mapping(struct panfrost_gem_mapping *mapping)
->  
->  static void panfrost_gem_mapping_release(struct kref *kref)
->  {
-> -	struct panfrost_gem_mapping *mapping;
-> -
-> -	mapping = container_of(kref, struct panfrost_gem_mapping, refcount);
-> +	struct panfrost_gem_mapping *mapping =
-> +		container_of(kref, struct panfrost_gem_mapping, refcount);
-> +	struct panfrost_gem_object *bo = mapping->obj;
-> +	struct panfrost_device *pfdev = bo->base.base.dev->dev_private;
->  
->  	panfrost_gem_teardown_mapping(mapping);
-> +
-> +	/* On heap BOs, release the sgts created in the fault handler path. */
-> +	if (bo->sgts) {
-> +		int i, n_sgt = bo->base.base.size / SZ_2M;
-> +
-> +		for (i = 0; i < n_sgt; i++) {
-> +			if (bo->sgts[i].sgl) {
-> +				dma_unmap_sgtable(pfdev->dev, &bo->sgts[i],
-> +						  DMA_BIDIRECTIONAL, 0);
-> +				sg_free_table(&bo->sgts[i]);
-> +			}
-> +		}
-> +		kvfree(bo->sgts);
-> +	}
-> +
-> +	/* Pages ref is owned by the panfrost_gem_mapping object. We must
-> +	 * release our pages ref (if any), before releasing the object
-> +	 * ref.
-> +	 * Non-heap BOs acquired the pages at panfrost_gem_mapping creation
-> +	 * time, and heap BOs may have acquired pages if the fault handler
-> +	 * was called, in which case bo->sgts should be non-NULL.
-> +	 */
-> +	if (!bo->base.base.import_attach && (!bo->is_heap || bo->sgts) &&
-> +	    bo->base.madv >= 0) {
-> +		drm_gem_shmem_put_pages(&bo->base);
-> +		bo->sgts = NULL;
+- replacing your logic around xarray with something a bit
+  simpler. As far as I can tell, your code is all correct here,
+  but it would be easier to understand if it looked more like
+  other code I'm familiar with.
 
-The assignment of NULL here really ought to be unconditional - it isn't
-a valid pointer because of the kvfree() above.
+> The main question is, is NOFILE a realistic concern, and what other pr=
+oblems=20
+> might there be, in terms of making these heavier objects? Besides memo=
+ry usage=20
+> I can't think of any, but of course I don't have much knowledge of thi=
+s area.
 
-I also feel that the big condition above suggests there's a need for a
-better state machine to keep track of what's going on.
+I would think that RLIMIT_NOFILE is a sensible way of
+managing this, at least this way it's possible to prevent
+exhausting memory with too many mutexes, but still raising
+the limit if you need more than whatever default one might
+come up with.
 
-But having said that I do think this series as a whole is an
-improvement, it's nice to get the shrinker code generic. And sadly I
-don't have an immediate idea for cleaning this up, hence my R-b.
-
-Steve
-
-> +	}
-> +
->  	drm_gem_object_put(&mapping->obj->base.base);
->  	panfrost_mmu_ctx_put(mapping->mmu);
->  	kfree(mapping);
-> @@ -125,6 +140,20 @@ int panfrost_gem_open(struct drm_gem_object *obj, struct drm_file *file_priv)
->  	if (!mapping)
->  		return -ENOMEM;
->  
-> +	if (!bo->is_heap && !bo->base.base.import_attach) {
-> +		/* Pages ref is owned by the panfrost_gem_mapping object.
-> +		 * For non-heap BOs, we request pages at mapping creation
-> +		 * time, such that the panfrost_mmu_map() call, further down in
-> +		 * this function, is guaranteed to have pages_use_count > 0
-> +		 * when drm_gem_shmem_get_pages_sgt() is called.
-> +		 */
-> +		ret = drm_gem_shmem_get_pages(&bo->base);
-> +		if (ret) {
-> +			kfree(mapping);
-> +			return ret;
-> +		}
-> +	}
-> +
->  	INIT_LIST_HEAD(&mapping->node);
->  	kref_init(&mapping->refcount);
->  	drm_gem_object_get(obj);
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c b/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
-> index 02b60ea1433a..d4fb0854cf2f 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
-> @@ -50,6 +50,12 @@ static bool panfrost_gem_purge(struct drm_gem_object *obj)
->  	if (!dma_resv_trylock(shmem->base.resv))
->  		goto unlock_mappings;
->  
-> +	/* BO might have become unpurgeable if the last pages_use_count ref
-> +	 * was dropped, but the BO hasn't been destroyed yet.
-> +	 */
-> +	if (!drm_gem_shmem_is_purgeable(shmem))
-> +		goto unlock_mappings;
-> +
->  	panfrost_gem_teardown_mappings_locked(bo);
->  	drm_gem_shmem_purge_locked(&bo->base);
->  	ret = true;
-
+     Arnd
 
