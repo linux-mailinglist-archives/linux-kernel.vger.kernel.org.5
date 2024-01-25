@@ -1,205 +1,330 @@
-Return-Path: <linux-kernel+bounces-38062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4E7C83BA7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:18:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12D0683BA92
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:22:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F3271F22AA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:18:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37B5A1C213FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:22:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3332711739;
-	Thu, 25 Jan 2024 07:18:14 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 658B912B9A;
+	Thu, 25 Jan 2024 07:21:58 +0000 (UTC)
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A30FB125AC;
-	Thu, 25 Jan 2024 07:18:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ECF712B88;
+	Thu, 25 Jan 2024 07:21:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706167093; cv=none; b=robchwaiK2c9jojkAA4ZS+bExMv51Qv2/O596/Av1hmCDT78Xea0UAPFyD7IGqV8KLxnOOoZGwr9edKvOl3SC292a8zZ6Ja903rCgefz0tKX8qkOfOtQ2c0OZHLxlIBNU1JM/BDuFlydCsbDyY7iNJH5Faeo+TiT5xmv02/4MCw=
+	t=1706167317; cv=none; b=UEkm2YQRpyvMKeKNe88hmDaxdx+HK8TMS3kKgvh8l+LMogVUIWmUo7Wb3j9nUBUYqBpUTsHyFSmw5YxiFJ/Cu3zTZ7ss9DSScJuerts/sUXAKNf1f8zYjyeW836H+TPaPokkLvhd0JsJ2I6rRgdTHoZEj5xA0Z4Or0BNqkjCvhk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706167093; c=relaxed/simple;
-	bh=v9CmbAhgiwRyHdIyDJQME8LxQd+xB3pL3KsdDf+BcCw=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=XMfwQ+h0Q4RpVR9DhEr/UceYOc/M/j8GZY0G0ibTAA+3BMO69vGAWGmrcMgnojvqa/Lbh96UV2n/O8wo50dz7BC+JgaHGvMVenMaWP3vV9AvTgenK+p+9pj6npfe2kvEpCGI+Kg25MlQuJJz03lqTajAJ244tm44R7c4WQuDpe0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TLBxS5mf5z4f3k6C;
-	Thu, 25 Jan 2024 15:18:04 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 2D4C91A0171;
-	Thu, 25 Jan 2024 15:18:07 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP4 (Coremail) with SMTP id gCh0CgBXXG4rC7JlVenABw--.25628S2;
-	Thu, 25 Jan 2024 15:18:06 +0800 (CST)
-Subject: Re: [PATCH bpf 2/3] x86/mm: Disallow vsyscall page read for
- copy_from_kernel_nofault()
-To: Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org, bpf@vger.kernel.org
-Cc: Dave Hansen <dave.hansen@linux.intel.com>,
- Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>,
- linux-kernel@vger.kernel.org, xingwei lee <xrivendell7@gmail.com>,
- Jann Horn <jannh@google.com>, houtao1@huawei.com
-References: <20240119073019.1528573-1-houtao@huaweicloud.com>
- <20240119073019.1528573-3-houtao@huaweicloud.com>
- <e83eb3e8-6d08-462b-9ffe-d843e439d7da@intel.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <6f1aa71b-13f3-0972-3cb0-62f431de7e48@huaweicloud.com>
-Date: Thu, 25 Jan 2024 15:18:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1706167317; c=relaxed/simple;
+	bh=X2DdHx3TwcK0P7pxS8Co307SLDPVxYS3AliXou2RwcE=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=EvEr1VFwKtmllh+T5DZ95ihsZNy8wSoUrrQpxD8xEif5tjZt0iefEgk0maG0VXiHRjKh+lGEQu+WCPNJY3KL6FcbxMmuuJ3eJ/HvwmssjroMXrGzWOtsKmF0DJM8zwU9LC5QwWPir1lXzulA0vFKcSfy26C5Sa7w/1gnLuSkImk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 40P7JGqo013918;
+	Thu, 25 Jan 2024 15:19:16 +0800 (+08)
+	(envelope-from zhaoyang.huang@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TLBpG4GkXz2Rq6jZ;
+	Thu, 25 Jan 2024 15:11:50 +0800 (CST)
+Received: from bj03382pcu01.spreadtrum.com (10.0.73.40) by
+ BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Thu, 25 Jan 2024 15:19:13 +0800
+From: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
+To: Andrew Morton <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>,
+        Yu Zhao <yuzhao@google.com>, Damien Le Moal <dlemoal@kernel.org>,
+        Niklas
+ Cassel <niklas.cassel@wdc.com>,
+        "Martin K . Petersen"
+	<martin.petersen@oracle.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Linus Walleij
+	<linus.walleij@linaro.org>, <linux-mm@kvack.org>,
+        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zhaoyang Huang
+	<huangzhaoyang@gmail.com>, <steve.kang@unisoc.com>
+Subject: [PATCHv3 1/1] block: introduce content activity based ioprio
+Date: Thu, 25 Jan 2024 15:19:01 +0800
+Message-ID: <20240125071901.3223188-1-zhaoyang.huang@unisoc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <e83eb3e8-6d08-462b-9ffe-d843e439d7da@intel.com>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:gCh0CgBXXG4rC7JlVenABw--.25628S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJw4rGr1ktw4DXFWkKw17ZFb_yoW7Jw45pw
-	18A3yUtFW8Ar1rAFsFq34qqFyrJ348Ja15Grn5tF1rZw1jgF1YqrWDWa4jgF17Jr4xKw1x
-	tw4UXr1qvw1UJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-	uYvjxUrR6zUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Content-Type: text/plain
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ BJMBX01.spreadtrum.com (10.0.64.7)
+X-MAIL:SHSQR01.spreadtrum.com 40P7JGqo013918
 
-Hi,
+From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
-On 1/23/2024 8:18 AM, Sohil Mehta wrote:
-> On 1/18/2024 11:30 PM, Hou Tao wrote:
->> From: Hou Tao <houtao1@huawei.com>
->>
->> When trying to use copy_from_kernel_nofault() to read vsyscall page
->> through a bpf program, the following oops was reported:
->>
->>   BUG: unable to handle page fault for address: ffffffffff600000
->>   #PF: supervisor read access in kernel mode
->>   #PF: error_code(0x0000) - not-present page
->>   PGD 3231067 P4D 3231067 PUD 3233067 PMD 3235067 PTE 0
->>   Oops: 0000 [#1] PREEMPT SMP PTI
->>   CPU: 1 PID: 20390 Comm: test_progs ...... 6.7.0+ #58
->>   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996) ......
->>   RIP: 0010:copy_from_kernel_nofault+0x6f/0x110
->>   ......
->>   Call Trace:
->>    <TASK>
->>    ? copy_from_kernel_nofault+0x6f/0x110
->>    bpf_probe_read_kernel+0x1d/0x50
->>    bpf_prog_2061065e56845f08_do_probe_read+0x51/0x8d
->>    trace_call_bpf+0xc5/0x1c0
->>    perf_call_bpf_enter.isra.0+0x69/0xb0
->>    perf_syscall_enter+0x13e/0x200
->>    syscall_trace_enter+0x188/0x1c0
->>    do_syscall_64+0xb5/0xe0
->>    entry_SYSCALL_64_after_hwframe+0x6e/0x76
->>    </TASK>
->>   ......
->>   ---[ end trace 0000000000000000 ]---
->>
->> The oops happens as follows: A bpf program uses bpf_probe_read_kernel()
->> to read from vsyscall page, bpf_probe_read_kernel() invokes
->> copy_from_kernel_nofault() in turn and then invokes __get_user_asm(). A
->> page fault exception is triggered accordingly, but handle_page_fault()
->> considers the vsyscall page address as a userspace address instead of
->> a kernel space address, so the fix-up set-up by bpf isn't applied.
-> This comment and the one in the code below seem contradictory and
-> confusing. Do we want the vsyscall page address to be considered as a
-> userspace address or not?
+Currently, request's ioprio are set via task's schedule priority(when no
+blkcg configured), which has high priority tasks possess the privilege on
+both of CPU and IO scheduling.
+This commit works as a hint of original policy by promoting the request ioprio
+based on the page/folio's activity. The original idea comes from LRU_GEN
+which provides more precised folio activity than before. This commit try
+to adjust the request's ioprio when certain part of its folios are hot,
+which indicate that this request carry important contents and need be
+scheduled ealier.
 
-Now handle_page_fault() has already considered the vsyscall page as a
-userspace address, and in the patch we update copy_from_kernel_nofault()
-to consider vsyscall page as a userspapce address as well.
->
-> IIUC, the issue here is that the vsyscall page (in xonly mode) is not
-> really mapped and therefore running copy_from_kernel_nofault() on this
-> address is incorrect. This patch fixes this by making
-> copy_from_kernel_nofault() return an error for a vsyscall address.
->
+This commit is verified on a v6.6 6GB RAM android14 system via 4 test cases
+by changing the bio_add_page/folio API in ext4 and f2fs.
 
-Yes, but the issue may occur for vsyscall=none case as well. Because
-fault_in_kernel_space() invoked by handle_page_fault() will return
-false, so in do_user_addr_fault(), when smap feature is enabled, the
-invocation of copy_from_kernel_nofault() will trigger oops due to the
-following code snippet:
+Case 1:
+script[a] which get significant improved fault time as expected[b]
+where dd's cost also shrink from 55s to 40s.
+(1). fault_latency.bin is an ebpf based test tool which measure all task's
+   iowait latency during page fault when scheduled out/in.
+(2). costmem generate page fault by mmaping a file and access the VA.
+(3). dd generate concurrent vfs io.
 
-        if (unlikely(cpu_feature_enabled(X86_FEATURE_SMAP) &&
-                     !(error_code & X86_PF_USER) &&
-                     !(regs->flags & X86_EFLAGS_AC))) {
-                /*
-                 * No extable entry here.  This was a kernel access to an
-                 * invalid pointer.  get_kernel_nofault() will not get here.
-                 */
-                page_fault_oops(regs, error_code, address);
-                return;
-        }
+[a]
+/fault_latency.bin 1 5 > /data/dd_costmem &
+costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
+costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
+costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
+costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
+dd if=/dev/block/sda of=/data/ddtest bs=1024 count=2048000 &
+dd if=/dev/block/sda of=/data/ddtest1 bs=1024 count=2048000 &
+dd if=/dev/block/sda of=/data/ddtest2 bs=1024 count=2048000 &
+dd if=/dev/block/sda of=/data/ddtest3 bs=1024 count=2048000
+[b]
+                       mainline		commit
+io wait                836us            156us
 
->> Because the exception happens in kernel space and page fault handling is
->> disabled, page_fault_oops() is invoked and an oops happens.
->>
->> Fix it by disallowing vsyscall page read for copy_from_kernel_nofault().
->>
-> [Maybe I have misunderstood the issue here and following questions are
-> not even relevant.]
->
-> But, what about vsyscall=emulate? In that mode the page is actually
-> mapped. Would we want the page read to go through then?
+Case 2:
+fio -filename=/dev/block/by-name/userdata -rw=randread -direct=0 -bs=4k -size=2000M -numjobs=8 -group_reporting -name=mytest
+mainline: 513MiB/s
+READ: bw=531MiB/s (557MB/s), 531MiB/s-531MiB/s (557MB/s-557MB/s), io=15.6GiB (16.8GB), run=30137-30137msec
+READ: bw=543MiB/s (569MB/s), 543MiB/s-543MiB/s (569MB/s-569MB/s), io=15.6GiB (16.8GB), run=29469-29469msec
+READ: bw=474MiB/s (497MB/s), 474MiB/s-474MiB/s (497MB/s-497MB/s), io=15.6GiB (16.8GB), run=33724-33724msec
+READ: bw=535MiB/s (561MB/s), 535MiB/s-535MiB/s (561MB/s-561MB/s), io=15.6GiB (16.8GB), run=29928-29928msec
+READ: bw=523MiB/s (548MB/s), 523MiB/s-523MiB/s (548MB/s-548MB/s), io=15.6GiB (16.8GB), run=30617-30617msec
+READ: bw=492MiB/s (516MB/s), 492MiB/s-492MiB/s (516MB/s-516MB/s), io=15.6GiB (16.8GB), run=32518-32518msec
+READ: bw=533MiB/s (559MB/s), 533MiB/s-533MiB/s (559MB/s-559MB/s), io=15.6GiB (16.8GB), run=29993-29993msec
+READ: bw=524MiB/s (550MB/s), 524MiB/s-524MiB/s (550MB/s-550MB/s), io=15.6GiB (16.8GB), run=30526-30526msec
+READ: bw=529MiB/s (554MB/s), 529MiB/s-529MiB/s (554MB/s-554MB/s), io=15.6GiB (16.8GB), run=30269-30269msec
+READ: bw=449MiB/s (471MB/s), 449MiB/s-449MiB/s (471MB/s-471MB/s), io=15.6GiB (16.8GB), run=35629-35629msec
 
-Er, Now the vsyscall page is considered as a userspace address, I think
-we should reject its read through copy_from_kernel_nofault() even it is
-mapped.
+commit: 633MiB/s
+READ: bw=668MiB/s (700MB/s), 668MiB/s-668MiB/s (700MB/s-700MB/s), io=15.6GiB (16.8GB), run=23952-23952msec
+READ: bw=589MiB/s (618MB/s), 589MiB/s-589MiB/s (618MB/s-618MB/s), io=15.6GiB (16.8GB), run=27164-27164msec
+READ: bw=638MiB/s (669MB/s), 638MiB/s-638MiB/s (669MB/s-669MB/s), io=15.6GiB (16.8GB), run=25071-25071msec
+READ: bw=714MiB/s (749MB/s), 714MiB/s-714MiB/s (749MB/s-749MB/s), io=15.6GiB (16.8GB), run=22409-22409msec
+READ: bw=600MiB/s (629MB/s), 600MiB/s-600MiB/s (629MB/s-629MB/s), io=15.6GiB (16.8GB), run=26669-26669msec
+READ: bw=592MiB/s (621MB/s), 592MiB/s-592MiB/s (621MB/s-621MB/s), io=15.6GiB (16.8GB), run=27036-27036msec
+READ: bw=691MiB/s (725MB/s), 691MiB/s-691MiB/s (725MB/s-725MB/s), io=15.6GiB (16.8GB), run=23150-23150msec
+READ: bw=569MiB/s (596MB/s), 569MiB/s-569MiB/s (596MB/s-596MB/s), io=15.6GiB (16.8GB), run=28142-28142msec
+READ: bw=563MiB/s (590MB/s), 563MiB/s-563MiB/s (590MB/s-590MB/s), io=15.6GiB (16.8GB), run=28429-28429msec
+READ: bw=712MiB/s (746MB/s), 712MiB/s-712MiB/s (746MB/s-746MB/s), io=15.6GiB (16.8GB), run=22478-22478msec
 
->
->> Originally-from: Thomas Gleixner <tglx@linutronix.de>
-> Documentation/process/maintainer-tip.rst says to use "Originally-by:"
+Case 3:
+This commit is also verified by the case of launching camera APP which is
+usually considered as heavy working load on both of memory and IO, which
+shows 12%-24% improvement.
 
-Thanks for the tip. Will update.
->
->
->> diff --git a/arch/x86/mm/maccess.c b/arch/x86/mm/maccess.c
->> index 6993f026adec9..bb454e0abbfcf 100644
->> --- a/arch/x86/mm/maccess.c
->> +++ b/arch/x86/mm/maccess.c
->> @@ -3,6 +3,8 @@
->>  #include <linux/uaccess.h>
->>  #include <linux/kernel.h>
->>  
->> +#include "mm_internal.h"
->> +
->>  #ifdef CONFIG_X86_64
->>  bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
->>  {
->> @@ -15,6 +17,10 @@ bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
->>  	if (vaddr < TASK_SIZE_MAX + PAGE_SIZE)
->>  		return false;
->>  
->> +	/* vsyscall page is also considered as userspace address. */
-> A bit more explanation about why this should happen might be useful.
->
->> +	if (is_vsyscall_vaddr(vaddr))
->> +		return false;
->> +
->>  	/*
->>  	 * Allow everything during early boot before 'x86_virt_bits'
->>  	 * is initialized.  Needed for instruction decoding in early
+		ttl = 0		ttl = 50	ttl = 100
+mainline        2267ms		2420ms		2316ms
+commit          1992ms          1806ms          1998ms
+
+case 4:
+androbench has no improvment as well as regression which supposed to be
+its test time is short which MGLRU hasn't take effect yet.
+
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+---
+change of v2: calculate page's activity via helper function
+change of v3: solve layer violation by move API into mm
+change of v4: keep block clean by removing the page related API
+---
+---
+ include/linux/act_ioprio.h  | 62 +++++++++++++++++++++++++++++++++++++
+ include/uapi/linux/ioprio.h | 44 +++++++++++++++++++++++---
+ mm/Kconfig                  |  8 +++++
+ 3 files changed, 110 insertions(+), 4 deletions(-)
+ create mode 100644 include/linux/act_ioprio.h
+
+diff --git a/include/linux/act_ioprio.h b/include/linux/act_ioprio.h
+new file mode 100644
+index 000000000000..8cfb3df270bd
+--- /dev/null
++++ b/include/linux/act_ioprio.h
+@@ -0,0 +1,62 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++#ifndef _ACT_IOPRIO_H
++#define _ACT_IOPRIO_H
++
++#include <linux/bio.h>
++
++#ifdef CONFIG_CONTENT_ACT_BASED_IOPRIO
++bool BIO_ADD_FOLIO(struct bio *bio, struct folio *folio, size_t len,
++		size_t off)
++{
++	int class, level, hint, activity;
++
++	if (len > UINT_MAX || off > UINT_MAX)
++		return false;
++
++	class = IOPRIO_PRIO_CLASS(bio->bi_ioprio);
++	level = IOPRIO_PRIO_LEVEL(bio->bi_ioprio);
++	hint = IOPRIO_PRIO_HINT(bio->bi_ioprio);
++	activity = IOPRIO_PRIO_ACTIVITY(bio->bi_ioprio);
++
++	activity += (bio->bi_vcnt + 1 <= IOPRIO_NR_ACTIVITY &&
++			PageWorkingset(&folio->page)) ? 1 : 0;
++	if (activity >= bio->bi_vcnt / 2)
++		class = IOPRIO_CLASS_RT;
++	else if (activity >= bio->bi_vcnt / 4)
++		class = max(IOPRIO_PRIO_CLASS(get_current_ioprio()), IOPRIO_CLASS_BE);
++
++	bio->bi_ioprio = IOPRIO_PRIO_VALUE_ACTIVITY(class, level, hint, activity);
++
++	return bio_add_page(bio, &folio->page, len, off) > 0;
++}
++
++int BIO_ADD_PAGE(struct bio *bio, struct page *page,
++		unsigned int len, unsigned int offset)
++{
++	int class, level, hint, activity;
++
++	if (bio_add_page(bio, page, len, offset) > 0) {
++		class = IOPRIO_PRIO_CLASS(bio->bi_ioprio);
++		level = IOPRIO_PRIO_LEVEL(bio->bi_ioprio);
++		hint = IOPRIO_PRIO_HINT(bio->bi_ioprio);
++		activity = IOPRIO_PRIO_ACTIVITY(bio->bi_ioprio);
++		activity += (bio->bi_vcnt <= IOPRIO_NR_ACTIVITY && PageWorkingset(page)) ? 1 : 0;
++		bio->bi_ioprio = IOPRIO_PRIO_VALUE_ACTIVITY(class, level, hint, activity);
++	}
++
++	return len;
++}
++#else
++bool BIO_ADD_FOLIO(struct bio *bio, struct folio *folio, size_t len,
++		size_t off)
++{
++	return bio_add_folio(bio, folio, len, off);
++}
++
++int BIO_ADD_PAGE(struct bio *bio, struct page *page,
++		unsigned int len, unsigned int offset)
++{
++	return bio_add_page(bio, page, len, offset);
++}
++#endif
++#endif
+diff --git a/include/uapi/linux/ioprio.h b/include/uapi/linux/ioprio.h
+index bee2bdb0eedb..f933af54d71e 100644
+--- a/include/uapi/linux/ioprio.h
++++ b/include/uapi/linux/ioprio.h
+@@ -71,12 +71,24 @@ enum {
+  * class and level.
+  */
+ #define IOPRIO_HINT_SHIFT		IOPRIO_LEVEL_NR_BITS
++#ifdef CONFIG_CONTENT_ACT_BASED_IOPRIO
++#define IOPRIO_HINT_NR_BITS		3
++#else
+ #define IOPRIO_HINT_NR_BITS		10
++#endif
+ #define IOPRIO_NR_HINTS			(1 << IOPRIO_HINT_NR_BITS)
+ #define IOPRIO_HINT_MASK		(IOPRIO_NR_HINTS - 1)
+ #define IOPRIO_PRIO_HINT(ioprio)	\
+ 	(((ioprio) >> IOPRIO_HINT_SHIFT) & IOPRIO_HINT_MASK)
+ 
++#ifdef CONFIG_CONTENT_ACT_BASED_IOPRIO
++#define IOPRIO_ACTIVITY_SHIFT		(IOPRIO_HINT_NR_BITS + IOPRIO_LEVEL_NR_BITS)
++#define IOPRIO_ACTIVITY_NR_BITS		7
++#define IOPRIO_NR_ACTIVITY		(1 << IOPRIO_ACTIVITY_NR_BITS)
++#define IOPRIO_ACTIVITY_MASK		(IOPRIO_NR_ACTIVITY - 1)
++#define IOPRIO_PRIO_ACTIVITY(ioprio)	\
++	(((ioprio) >> IOPRIO_ACTIVITY_SHIFT) & IOPRIO_ACTIVITY_MASK)
++#endif
+ /*
+  * I/O hints.
+  */
+@@ -104,24 +116,48 @@ enum {
+ 
+ #define IOPRIO_BAD_VALUE(val, max) ((val) < 0 || (val) >= (max))
+ 
++#ifndef CONFIG_CONTENT_ACT_BASED_IOPRIO
+ /*
+  * Return an I/O priority value based on a class, a level and a hint.
+  */
+ static __always_inline __u16 ioprio_value(int prioclass, int priolevel,
+-					  int priohint)
++		int priohint)
+ {
+ 	if (IOPRIO_BAD_VALUE(prioclass, IOPRIO_NR_CLASSES) ||
+-	    IOPRIO_BAD_VALUE(priolevel, IOPRIO_NR_LEVELS) ||
+-	    IOPRIO_BAD_VALUE(priohint, IOPRIO_NR_HINTS))
++			IOPRIO_BAD_VALUE(priolevel, IOPRIO_NR_LEVELS) ||
++			IOPRIO_BAD_VALUE(priohint, IOPRIO_NR_HINTS))
+ 		return IOPRIO_CLASS_INVALID << IOPRIO_CLASS_SHIFT;
+ 
+ 	return (prioclass << IOPRIO_CLASS_SHIFT) |
+ 		(priohint << IOPRIO_HINT_SHIFT) | priolevel;
+ }
+-
+ #define IOPRIO_PRIO_VALUE(prioclass, priolevel)			\
+ 	ioprio_value(prioclass, priolevel, IOPRIO_HINT_NONE)
+ #define IOPRIO_PRIO_VALUE_HINT(prioclass, priolevel, priohint)	\
+ 	ioprio_value(prioclass, priolevel, priohint)
++#else
++/*
++ * Return an I/O priority value based on a class, a level and a hint.
++ */
++static __always_inline __u16 ioprio_value(int prioclass, int priolevel,
++		int priohint, int activity)
++{
++	if (IOPRIO_BAD_VALUE(prioclass, IOPRIO_NR_CLASSES) ||
++			IOPRIO_BAD_VALUE(priolevel, IOPRIO_NR_LEVELS) ||
++			IOPRIO_BAD_VALUE(priohint, IOPRIO_NR_HINTS) ||
++			IOPRIO_BAD_VALUE(activity, IOPRIO_NR_ACTIVITY))
++		return IOPRIO_CLASS_INVALID << IOPRIO_CLASS_SHIFT;
+ 
++	return (prioclass << IOPRIO_CLASS_SHIFT) |
++		(activity << IOPRIO_ACTIVITY_SHIFT) |
++		(priohint << IOPRIO_HINT_SHIFT) | priolevel;
++}
++
++#define IOPRIO_PRIO_VALUE(prioclass, priolevel)			\
++	ioprio_value(prioclass, priolevel, IOPRIO_HINT_NONE, 0)
++#define IOPRIO_PRIO_VALUE_HINT(prioclass, priolevel, priohint)	\
++	ioprio_value(prioclass, priolevel, priohint, 0)
++#define IOPRIO_PRIO_VALUE_ACTIVITY(prioclass, priolevel, priohint, activity)	\
++	ioprio_value(prioclass, priolevel, priohint, activity)
++#endif
+ #endif /* _UAPI_LINUX_IOPRIO_H */
+diff --git a/mm/Kconfig b/mm/Kconfig
+index 264a2df5ecf5..e0e5a5a44ded 100644
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -1240,6 +1240,14 @@ config LRU_GEN_STATS
+ 	  from evicted generations for debugging purpose.
+ 
+ 	  This option has a per-memcg and per-node memory overhead.
++
++config CONTENT_ACT_BASED_IOPRIO
++	bool "Enable content activity based ioprio"
++	depends on LRU_GEN
++	default n
++	help
++	  This item enable the feature of adjust bio's priority by
++	  calculating its content's activity.
+ # }
+ 
+ config ARCH_SUPPORTS_PER_VMA_LOCK
+-- 
+2.25.1
 
 
