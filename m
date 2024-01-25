@@ -1,107 +1,176 @@
-Return-Path: <linux-kernel+bounces-38174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41CBD83BBF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:27:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9AE083BC07
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:30:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED31C1F219F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:27:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8384B281987
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:30:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F81217993;
-	Thu, 25 Jan 2024 08:27:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 242D2179BE;
+	Thu, 25 Jan 2024 08:30:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZEMYCeZG"
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="dSXT5p3h"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D0F7199BE
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:27:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A051717753;
+	Thu, 25 Jan 2024 08:30:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706171225; cv=none; b=lxFoNM4MyiEp45i+J96p7acyYrj/H0D1b6NojVKVDaNiz+6uhVbeLo791jAmsKdhFTnhz57r0CEBLlhYxilo12FlGjXbgmha4u4RnNA73gQgf67jdh0D19PYF5QjKZhv6R4USr1J+TStqg9ANSp8Lo245Prs/DxVULSt0AmSj1c=
+	t=1706171415; cv=none; b=eVCZlTVO3cGg4hxpktIdrGqygsw8xQLj9zWCB8dRkmBMc2FMyCWdAPesS8ZZ78fmrc/V2MEA2aGwNOdo3J7xXv7yOcsulCa2eYoh78tz3uT3aO0B7gJztzEQz6ju38BcllYQGvWxZ62xoa0/YbVutiZaHBbGj9FjwLQIt3nEqNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706171225; c=relaxed/simple;
-	bh=epCn74cCro25TUD1QolrGgdibFLExDob+WY6wtKgwgU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LL1WEMuTU28NqAMV0hSmKvTorR7vgbJc0wCGfWa3qAob2YEPlwMnt1h/A7RcR2+6EfcOVj7jtll4rjpwfbAT0M8FNmojhbEZPkUt53daNZujile/9SouKR1P961zYDLsXzcUHw2lO4j7UIHz/u2euOCQPyxHPUr5iZTfMqIdPBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZEMYCeZG; arc=none smtp.client-ip=209.85.128.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-600273605a9so37342427b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 00:27:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706171223; x=1706776023; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5db9cUe3aHqjgTBEeT9QTdcx827mStp0Y3bBIBsr4u0=;
-        b=ZEMYCeZGT5DFTI7ZZcwNjRAywthp74itgUlUcL8/0l28YpdHU8mRKiHESNoPuzP761
-         KkMaXXph5DRJZiSgYAwkMhnSEhMYqoJEqqM6teV4Yo5SCLRGQvnu7qVDq3ciax9TRmmK
-         kG8JGApkxpvc4NZvIBVKwzPleqpLQQRBYix029tsVNQgR2Cb3jaBgyhPDlZqnlP6qmoR
-         z2gPEX2JKDSyUY6MLDILzAE5VJZsX2zIbpHtLnjaL5W5W4nmg6vk1VKbZLSYUfvs2GH7
-         vXhDPN/o9Dpvg6fjjj6CSHN9L3B89c9LSpmSMjIN88e667pt1JR+MYk5OUJ33aYMPH41
-         iVrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706171223; x=1706776023;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5db9cUe3aHqjgTBEeT9QTdcx827mStp0Y3bBIBsr4u0=;
-        b=hj51l0irB2sO44lKzuo5JoALURJuQFV5eVnqOmlGSv60cBDhjF9g2bXt8DS83s0QK7
-         KVuaar6hdnD+gtw/goZPSlKndDzHYgxhOrtXoC/1p6i1fKI2kstAYhVLhG4vfZl0F43M
-         HoN8QDxJAJUHkOq8qzDsSVCjT783UIIIEgXpPQJ2rSTrZwhDDO9L6eR1S3bquWypcBT0
-         x/OlrzTRr6mIDkWrYrIaOw7La4UEF/KUllyJptb1ioK7KnHdSm/gM4AU8VrpQLJq0uKg
-         Xn0SGEumO+pOUqhg/6Y1z9r6hXt50JqAPbX71nxhfNRP7CGZpEReIDHnAzbURGkPCU++
-         ZFdg==
-X-Gm-Message-State: AOJu0YzPEhSu2MYz9tDWmJehOWMVGfzsgd+KSo199oORFNHdDJ+VL/t8
-	l2uXR2qQ/idQLSdRyNP5BOkKUJEXWq979KIdQ5wSuRxie+v6oTFbJKoVug83JDZj7nLcVxAvEue
-	8u17jef8DVTrL3jb86pruCm0Qu5h7qpP/lH58kA==
-X-Google-Smtp-Source: AGHT+IEUQCuoEpqKG7r7GJy4FbZtSZ/S0mjmHDm9w7otjaaJRTfJiU+7gOZnFJldnLX/tYEdSk92C7pDiM359eCuLz4=
-X-Received: by 2002:a0d:dd89:0:b0:5ff:88d2:631e with SMTP id
- g131-20020a0ddd89000000b005ff88d2631emr355966ywe.90.1706171223325; Thu, 25
- Jan 2024 00:27:03 -0800 (PST)
+	s=arc-20240116; t=1706171415; c=relaxed/simple;
+	bh=3XBWo2N7vPeYYFH5hJHHJ4R4cDBYgvyARsugBQmHXL4=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=ak7Ag7TCsVNgioU/Q7C3smx3VIn3Ab3rOgE2k+CzFchRHuMohEmf6fhv3jw4LyBaIzToK8rTETZGLGbl+wEVwVLOzVGN/lPBnJZ5JWF3ZLADWoP5A+tCsAs4yfBNuLalIrs1ltsNExnR8AtqlXjEK7qR8LWf4LZLxG1oJKkKtKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=dSXT5p3h; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40P7Ws7f020363;
+	Thu, 25 Jan 2024 08:30:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=jSTDG7pZUdM5R9gkBMPp9G3Ps4anJqutG/WR/2lOnuY=;
+ b=dSXT5p3hpWogxlGVlcqhXejmTsB0A8TpuQr7Sc3QwCyPtqesJcJJe9ssK0KkYR1JwyA2
+ l4MqVV9WxUYB/Lc0Yu6NU/njqocM9+XwRWg7kkrHl9IZ5MpaV4Uh/YAN6XM+5csSfKUz
+ vnf3jJUEkoTBPAxHyEfPugyuAWYy8GHnpSYLqiF3uugJoZoQU/YqUVNKRmmYTESQXnuU
+ 85LZnHcPtes4vCicYTM/EXRLMFOkuNik/AUPqGR9xzAXnfg4bBbi6cIMl4LXof+i0FA3
+ DBsm0UPnU2c5Xja7UCIy0L1YHkTr5p4wPzDvo22HDuD1fNBqj63/boaFSZgRCl3Dh4Im DA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vukbj18ef-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jan 2024 08:30:07 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40P85cuv022522;
+	Thu, 25 Jan 2024 08:30:06 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vukbj183q-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jan 2024 08:30:06 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40P527pn010854;
+	Thu, 25 Jan 2024 08:27:03 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vrrw03c88-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jan 2024 08:27:03 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40P8R0G556754506
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 25 Jan 2024 08:27:00 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8897220043;
+	Thu, 25 Jan 2024 08:27:00 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0F95F20040;
+	Thu, 25 Jan 2024 08:27:00 +0000 (GMT)
+Received: from [9.152.224.38] (unknown [9.152.224.38])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 25 Jan 2024 08:27:00 +0000 (GMT)
+Message-ID: <8090bb34-1b70-43ea-ae13-df5d9a5eb761@linux.ibm.com>
+Date: Thu, 25 Jan 2024 09:26:59 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [REGRESSION] v6.8 SMC-D issues
+To: Wen Gu <guwen@linux.alibaba.com>, wenjia@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        jaka@linux.ibm.com, Matthew Rosato <mjrosato@linux.ibm.com>
+Cc: Linux regressions mailing list <regressions@lists.linux.dev>,
+        borntraeger@linux.ibm.com, svens@linux.ibm.com,
+        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        raspl@linux.ibm.com, schnelle@linux.ibm.com,
+        guangguan.wang@linux.alibaba.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Halil Pasic <pasic@linux.ibm.com>
+References: <20231219142616.80697-1-guwen@linux.alibaba.com>
+ <20231219142616.80697-8-guwen@linux.alibaba.com>
+ <13579588-eb9d-4626-a063-c0b77ed80f11@linux.ibm.com>
+ <530afe45-ba6b-4970-a71c-1f1255f5fca9@linux.alibaba.com>
+Content-Language: en-US
+From: Alexandra Winter <wintera@linux.ibm.com>
+In-Reply-To: <530afe45-ba6b-4970-a71c-1f1255f5fca9@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: hL-eyvXh5IfeJnQxS3WvRFG4GCoUuQvl
+X-Proofpoint-GUID: d9-pXlaTopAnnCB5pTPeUJJRJKxMjHfa
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123102817.2414155-1-quic_uchheda@quicinc.com>
- <CAA8EJppwboaEbKFFACr3LO0OHg4iOJPapKRqoH2EGEYcjV6HfA@mail.gmail.com> <735575f5-ee46-4c91-b0bd-e9c6fb97361c@quicinc.com>
-In-Reply-To: <735575f5-ee46-4c91-b0bd-e9c6fb97361c@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 25 Jan 2024 10:26:52 +0200
-Message-ID: <CAA8EJpr6XrhNp2gdbqmCow7ShXLNXEwGZ-a_Yxr08bcxtORg6A@mail.gmail.com>
-Subject: Re: [PATCH RESEND] arm64: dts: qcom: qcm6490-idp: Add support for
- PM7250B PMIC
-To: Umang Chheda <quic_uchheda@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Kamal Wadhwa <quic_kamalw@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-25_04,2024-01-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ spamscore=0 lowpriorityscore=0 mlxscore=0 malwarescore=0 phishscore=0
+ impostorscore=0 clxscore=1015 priorityscore=1501 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401250057
 
-On Thu, 25 Jan 2024 at 10:10, Umang Chheda <quic_uchheda@quicinc.com> wrote:
->
-> Hi Dmitry,
->
-> On 1/23/2024 5:48 PM, Dmitry Baryshkov wrote:
-> > On Tue, 23 Jan 2024 at 12:28, Umang Chheda <quic_uchheda@quicinc.com> wrote:
-> >>
-> >> qcm6490-idp platform supports PM7250B PMIC as well.
-> >> Add support for the same.
-> >
-> > The platform can not "support" PMIC. Please fix the commit message.
-> Shall I change the commit message as below in the next patch ?
-> "Add PM7250B PMIC support for qcm6490-idp"
 
-This is also not accurate. You are not adding support for the PMIC.
-You are describing PMICs present on the board.
 
--- 
-With best wishes
-Dmitry
+On 25.01.24 05:59, Wen Gu wrote:
+> After a while debug I found an elementary mistake of mine in
+> b40584d ("net/smc: compatible with 128-bits extended GID of virtual ISM device")..
+> 
+> The operator order in smcd_lgr_match() is not as expected. It will always return
+> 'true' in remote-system case.
+> 
+>  static bool smcd_lgr_match(struct smc_link_group *lgr,
+> -                          struct smcd_dev *smcismdev, u64 peer_gid)
+> +                          struct smcd_dev *smcismdev,
+> +                          struct smcd_gid *peer_gid)
+>  {
+> -       return lgr->peer_gid == peer_gid && lgr->smcd == smcismdev;
+> +       return lgr->peer_gid.gid == peer_gid->gid && lgr->smcd == smcismdev &&
+> +               smc_ism_is_virtual(smcismdev) ?
+> +               (lgr->peer_gid.gid_ext == peer_gid->gid_ext) : 1;
+>  }
+> 
+> Could you please try again with this patch? to see if this is the root cause.
+> Really sorry for the inconvenience.
+> 
+> diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
+> index da6a8d9c81ea..c6a6ba56c9e3 100644
+> --- a/net/smc/smc_core.c
+> +++ b/net/smc/smc_core.c
+> @@ -1896,8 +1896,8 @@ static bool smcd_lgr_match(struct smc_link_group *lgr,
+>                            struct smcd_gid *peer_gid)
+>  {
+>         return lgr->peer_gid.gid == peer_gid->gid && lgr->smcd == smcismdev &&
+> -               smc_ism_is_virtual(smcismdev) ?
+> -               (lgr->peer_gid.gid_ext == peer_gid->gid_ext) : 1;
+> +               (smc_ism_is_virtual(smcismdev) ?
+> +                (lgr->peer_gid.gid_ext == peer_gid->gid_ext) : 1);
+>  }
+> 
+> 
+> Thanks,
+> Wen Gu
+
+Hello Wen Gu,
+
+thank you for the quick resposne and for finding this nasty bug.
+I can confirm that with your patch I do not see the issue anymore.
+Please send a fix to the mailing lists. See
+https://docs.kernel.org/process/handling-regressions.html
+for some tips.
+
+May I propose that instead of adding the brackets, you change this function 
+to an if-then-else sequence for readability and maintainability?
+I would still mention the missing brackets in the commit message, so
+readers can quickly understand the issue.
+
+Thanks again for the quick response.
+Sandy
+
 
