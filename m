@@ -1,107 +1,123 @@
-Return-Path: <linux-kernel+bounces-39014-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39015-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB29883C9A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:16:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43BC083C9A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:16:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DED941C24017
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:16:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDEA31F221FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:16:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D8881C6A5;
-	Thu, 25 Jan 2024 17:11:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="N0U7gxV4"
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F348130E3E;
+	Thu, 25 Jan 2024 17:12:04 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 791FD130E33
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 17:11:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 535D8481CB
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 17:12:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706202684; cv=none; b=FftJb13skLapi+jx1OZqs7g23ZKk2MlNC6anXZUbw2uGDJWIsUjApxcJ7RO0GczpFAiTqx6h9N54naekvhL+2dA6CcaI7Q3x4Z6AfQzgD2v2P4VX+v9RLiLPBruNxl2Lb8arj5KqIygsxe45FeF2c/UsKkPd8Ilc2sWJyWvDEhI=
+	t=1706202723; cv=none; b=Si/kUHzopARnPWvOKm1MSFI4uZcaK1FsCKuFkvqA+37h5l+7PomANHc74mWh0T+iBz89aEKhT8hw+1kS3d+3svfGaeFQ3XGIGetljgfUbrlHoSRtfSzRmSJHoBTbEpXAlYuMeRuDhy/m8fYLytE1MGVSEpZGxw/D6LrzyQAZINk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706202684; c=relaxed/simple;
-	bh=nEOsNt6FFR1h3VkdNsbanGLxwjGlJ3VKJhYvlacD+Z0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jAQcNiGyesLpU4EHa/hJcvXo+p6vTVyFO4yNQAypoalEEVb3o/nQPke6gqZXYnMjpLjfcg8R7vknimliGiGBIighXRZsHLEEjbOgldIkcAF3LSzA5T/cpINOCBpHDqX+82kERUhh4rsaq7+rbEduw/LRaAews622vMn0XzttOCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=N0U7gxV4; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <081af630-ab5d-4502-a29a-a8577d414809@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706202677;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cwiSZZSX/ApevLiEYXtfnRTxSGnWM9HwOp5AgT3owUs=;
-	b=N0U7gxV4MpRvXxZcKiNEOu7DcT42hPeaN/Y2U6qOFPHSWeUEx4AgFNLBjp7qqagQPL5Oin
-	vS/FcFfWwyVinSJlI1TWDI/1iwAtorxSkT5HS1mkvoDa4w5K36G+wEdbCJp+CO7+M+5p6Y
-	yxIDgy4Ne25i2rLOl8VrcxMTq+AfUn4=
-Date: Thu, 25 Jan 2024 17:11:08 +0000
+	s=arc-20240116; t=1706202723; c=relaxed/simple;
+	bh=NkWD/j8A67rN4utXThlvq4tYQthwoTcWcmrHRVS7C+4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LHUfB+B/cjFeetPRaavLjs26gGGVUU8JCRMb9gH7vr9W/Syc5qu3PBTLmU0EnueesRPgWJtPiW6JlLLxTcCqO37HgnEPUweYciIMF2zzp5V8OssJqxTP18S+HIDoHvNOIKDUfhGuNNpQzX/Gbjgtd3fBxEUWOML4k+/nJD0+o3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rT3GV-00061z-8M; Thu, 25 Jan 2024 18:11:47 +0100
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rT3GU-002KpY-CE; Thu, 25 Jan 2024 18:11:46 +0100
+Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rT3GU-001mwF-9K; Thu, 25 Jan 2024 18:11:46 +0100
+Date: Thu, 25 Jan 2024 18:11:46 +0100
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Sebastian Reichel <sre@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
+	linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+	=?utf-8?B?U8O4cmVu?= Andersen <san@skov.dk>
+Subject: Re: [PATCH v2 4/8] dt-bindings: power: reset: add bindings for NVMEM
+ hardware storing PSCR Data
+Message-ID: <20240125171146.GC381737@pengutronix.de>
+References: <20240124122204.730370-1-o.rempel@pengutronix.de>
+ <20240124122204.730370-5-o.rempel@pengutronix.de>
+ <4e14b7c7-7f0a-437b-aa84-20fdc30a2361@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/2] net: stmmac: dwmac-imx: set TSO/TBS TX queues default
- settings
-Content-Language: en-US
-To: Esben Haabendal <esben@geanix.com>, netdev@vger.kernel.org,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin
- <mcoquelin.stm32@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>
-Cc: linux-arm-kernel@lists.infradead.org,
- linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org
-References: <cover.1706184304.git.esben@geanix.com>
- <5606bb5f0b7566a20bb136b268dae89d22a48898.1706184304.git.esben@geanix.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <5606bb5f0b7566a20bb136b268dae89d22a48898.1706184304.git.esben@geanix.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <4e14b7c7-7f0a-437b-aa84-20fdc30a2361@linaro.org>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On 25/01/2024 12:34, Esben Haabendal wrote:
-> TSO and TBS cannot coexist. For now we set i.MX Ethernet QOS controller to use
-> TX queue with TSO and the rest for TBS.
+On Thu, Jan 25, 2024 at 11:57:18AM +0100, Krzysztof Kozlowski wrote:
+> On 24/01/2024 13:22, Oleksij Rempel wrote:
+> > Add device tree bindings that describe hardware implementations of
+> > Non-Volatile Memory (NVMEM) used for storing Power State Change Reasons
+> > (PSCR).
+> > +  that stores Power State Change Reasons (PSCR).
+> > +
+> > +allOf:
+> > +  - $ref: pscrr.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: pscrr-nvmem
+> > +
 > 
-> TX queues with TBS can support etf qdisc hw offload.
-> 
-> Signed-off-by: Esben Haabendal <esben@geanix.com>
-> ---
->   drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c | 6 ++++++
->   1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
-> index 8f730ada71f9..c42e8f972833 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
-> @@ -353,6 +353,12 @@ static int imx_dwmac_probe(struct platform_device *pdev)
->   	if (data->flags & STMMAC_FLAG_HWTSTAMP_CORRECT_LATENCY)
->   		plat_dat->flags |= STMMAC_FLAG_HWTSTAMP_CORRECT_LATENCY;
->   
-> +        for (int i = 0; i < plat_dat->tx_queues_to_use; i++) {
-> +                /* Default TX Q0 to use TSO and rest TXQ for TBS */
-> +                if (i > 0)
-> +                        plat_dat->tx_queues_cfg[i].tbs_en = 1;
-> +        }
-> +
+> So that's a driver :/. Maybe Rob will like it, but it's a no from me.
+> Please come up with something really suiting DEVICES, not DRIVERS.
 
-Just wonder why don't you start with i = 1 and remove 'if' completely?
-Keeping comment in place will make it understandable.
+If I understand your distinction between 'DEVICES' and 'DRIVERS'
+correctly, 'DEVICES' in the device tree context are meant to represent
+physical hardware components, while 'DRIVERS' refer to software
+abstractions of these components. However, there are numerous device
+tree instances, like software-based implementations for SPI, I2C, or
+GPIO, which could also be interpreted as 'DRIVERS' in the context of
+your email. Similarly, the binding for PSCRR represents functionality not
+fully implemented in hardware but supported by the hardware component of
+NVMEM, akin to how ramoops or other functionalities are represented.
 
->   	plat_dat->host_dma_width = dwmac->ops->addr_width;
->   	plat_dat->init = imx_dwmac_init;
->   	plat_dat->exit = imx_dwmac_exit;
+If I'm misunderstanding your distinction between 'DEVICES' and
+'DRIVERS', please clarify with an example of how a proper binding should
+be implemented for a case like this.
 
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
