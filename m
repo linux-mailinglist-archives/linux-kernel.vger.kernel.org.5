@@ -1,90 +1,97 @@
-Return-Path: <linux-kernel+bounces-37921-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF4D983B7B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 04:17:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8A1E83B7C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 04:27:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB1A6B2552F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 03:17:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECDD31C22EFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 03:27:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90F21748D;
-	Thu, 25 Jan 2024 03:17:05 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 248EB6FCA;
+	Thu, 25 Jan 2024 03:27:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dxS3a7e7"
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C00F66127
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 03:17:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D7C263AE;
+	Thu, 25 Jan 2024 03:27:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706152625; cv=none; b=ie89XUDycNNH6197oJFG+qttnN2q+mhVjlLU7K6PC8hvwFBu47INn87fakqZ8iHMRmaIpPu1/doXXIgMpkc4Z+za/z6YhK4+yZ4iJwFzgstgd+HvMGGea6UwxjaUDVrG7TclxtSaJ8Gzm5VCZsAtCiU8z3tCvxOSiEw+eDOG5WU=
+	t=1706153236; cv=none; b=B+iHrbvqv2xN0BROtYM/57ho8tzAxdxlTQvw1exOWa5LUNrnNGQ9o/Bpy4cttodSVpm3p3lZtb6j0kbGrb5WJ9ZdxZUV7q97Ijbn8JbeEZOmC+1/BVA070DGekR6jjUAhrY0xRyLjjD3Jg8mLQ8sbW1aBU2tu1AKhMXRgWaDrLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706152625; c=relaxed/simple;
-	bh=3b4QVeF1pYvzutP3o1SR8RZDpRDEWY4FFGHRQYxAq34=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=LgLmHoWc/5CjkxIcN7NGkyHg0/FsCDqEaINSpgkCaulis5s7YlPiGR+/8aKYRNZ/e3OHT2dXhqBwAxn2WXvkA8KLrHSH2WygOmbuELl9oDYoBV6xis1OvkLJwrqyYCimhPEHIkAJg8uFuPbmHuG4DmNBX8W4CN2TVf8PwflmlE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7bec4b24a34so910819239f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 19:17:03 -0800 (PST)
+	s=arc-20240116; t=1706153236; c=relaxed/simple;
+	bh=yEQFIzW7vfaJ84CN+Hu3kbRoq6YvXr1DdEZcM3eLG3M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=n78N5x9N5GJH6dmDnmCV2//7ow3xTUURyzc9QqcmymCT5ukTg6tHzod+VVRWdlFQrGmUmU0OD6Pg+wT4mfjqMU8dR6c1s5+ivYghbc8kXE6sREyP7E4s1IAaw14Ijn40x1jJWs/zgCkalY2+xWmoCrvoZ6WTVzK/vlEoVLmHOWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dxS3a7e7; arc=none smtp.client-ip=209.85.161.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5997edc27ccso508469eaf.0;
+        Wed, 24 Jan 2024 19:27:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706153234; x=1706758034; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3Jod44M1hOidJ68nqDYC6ddWYkrlEE09my6U9pz3NCg=;
+        b=dxS3a7e74YQdRYW0ZP4gEx2w+wzMatkFXDCYDkwCfU4qHuVl21AvJpqMTf75lt2U4x
+         r9tnBYL8MR9mff11MAQIzA1/AU6AZFxp+kwu/+IFfl8QRmD/co40POYDzKO526CGu11j
+         jHVq4oT9aQ2sdPz3+Equ9QRg3I5n8pj3K4hngaOglFXrP39NIKE9/BoW17Oim8rsD43D
+         JGJkHZlgSPER5OADJ63rWbiL/vpP/iyfy/RTNqOnI0hX3JmsDP3jP28+YlzIHdEn5k/r
+         qTBls9HiTq9LTEQJUKpvAIbpMNK5rARLD9uaYG7LNOgdNgG1EfyqgbZcCNA8awwYrTyM
+         MinQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706152623; x=1706757423;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qLRpZma8mtLPRBhL0fvyMPkNbwpSrpDOLPb1BBDBo+Y=;
-        b=jFPl+/jf8xN0HqT9qEs673jaHmnTEs1r17P/LDHpePuKv3ddlfAXSSIsQdUlcJX2Uv
-         vwgFbCV5gK0Pg+ltgcBRi5baSIwgns1+cj9VkufZ5sMR+WbhBk07+GcJdbHoIaj5psjT
-         zJhWcHZSTVSnJ4lol38ZtGiWmYsN8Wq3V8kOHqye3B3yRvW7b7H75QQM/52VCLzcsHDm
-         3i4uaXUKn5EMrZp0nBqTAqObBNM4IQErb/5z+eNQo1Qdjrh0IDTEXHWPGyut9KR2kR3+
-         tYMgXBfo1xLQmjdOd+FoM5hCOd2XnOQF4Zzeo730VhFqXjpu2CYQ0noCavyU3fmG4XCD
-         H7mg==
-X-Gm-Message-State: AOJu0Yyj4wX861cCLVOowtSsy0WFa57QVLTNyq9qBeGrqeEDm18+zy98
-	Ae6aKi/AQeEisG3Tw7RL6vNTs1RN0i7SCpXuG18+zxs5ZPKbxy9DJ2KWWIkuvxtTDMF89WCRBKG
-	S2zNjlZZNkmeBXgpyNl0jv+H2Q9mZhc3uL0yXYknTRi7vR5qrqS/cUVg=
-X-Google-Smtp-Source: AGHT+IHKRif9C2TVCAnTB+ddDTrv8NsXW4n+JGnOJwbfjQJTlgshEPUGDuOThKi5/ROZbD1cuw/iTate8kx83vH4uJP39FCE7aVp
+        d=1e100.net; s=20230601; t=1706153234; x=1706758034;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3Jod44M1hOidJ68nqDYC6ddWYkrlEE09my6U9pz3NCg=;
+        b=LQRehkN7Yt9/2Uuj/3BO7WSPswhIE598/DI0VibbRJ8DV5ih+5e7cLJ73rGJwwpkgq
+         vM+6ez1tFYPjaqLmjSbgz/ejlFwoeSvzx1FFv2o5j7JpFqAsV7I+89koMf1JjRtC4XQu
+         4Yw+GDX4QVMWl6zG5UV8t83n0lTbXfHbGh6uErx0CPfm+7blgGFkZtkaxNSwgBYQxdFy
+         pSBzbpqlSZe+6w1DdQAJBfV/V6Jw18yi036TqgyEaugXjYCkL8oztISPnXxz/xjas/CB
+         Jr9ZFd+rdg/QFCp+5PyYsRG4x0jEIwnFpu3RIszxz5KxbNIxmQGBn9cekVawYmD2st8o
+         v2Xw==
+X-Gm-Message-State: AOJu0YyENrPrkglnQ2zEZaq8YNFViXxl9pxBYeL5QGHesVtjrDa5Mkdx
+	kzDW1OPx6iVqHMfDRvteUnhm+rAio2gMoN1X3xUyahPcHe7HhDYH
+X-Google-Smtp-Source: AGHT+IF8A8h7L4AGqkhVXFE1PfvRfA20seFFacmDWLkms4xRIytLXhni/4T3a6EE2qBZHZQxGYPh5g==
+X-Received: by 2002:a05:6358:5912:b0:176:4921:21c9 with SMTP id g18-20020a056358591200b00176492121c9mr714040rwf.3.1706153234043;
+        Wed, 24 Jan 2024 19:27:14 -0800 (PST)
+Received: from hoboy.vegasvil.org ([2600:1700:2430:6f6f:f69e:ce0e:5564:9caf])
+        by smtp.gmail.com with ESMTPSA id a5-20020a5b0905000000b00dc256eab936sm3169265ybq.52.2024.01.24.19.27.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 19:27:13 -0800 (PST)
+Date: Wed, 24 Jan 2024 19:27:11 -0800
+From: Richard Cochran <richardcochran@gmail.com>
+To: Li Zhijian <lizhijian@fujitsu.com>
+Cc: linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH v2] drivers/ptp: Convert snprintf to sysfs_emit
+Message-ID: <ZbHVDw6vUQ_-xyB-@hoboy.vegasvil.org>
+References: <20240125015329.123023-1-lizhijian@fujitsu.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:22cf:b0:46e:d5b8:e1e2 with SMTP id
- j15-20020a05663822cf00b0046ed5b8e1e2mr11984jat.4.1706152623065; Wed, 24 Jan
- 2024 19:17:03 -0800 (PST)
-Date: Wed, 24 Jan 2024 19:17:03 -0800
-In-Reply-To: <000000000000562d8105f5ecc4ca@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000007cd5c060fbc9da4@google.com>
-Subject: Re: [syzbot] [ext4?] kernel BUG in ext4_write_inline_data_end
-From: syzbot <syzbot+198e7455f3a4f38b838a@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, axboe@kernel.dk, brauner@kernel.org, 
-	jack@suse.cz, linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240125015329.123023-1-lizhijian@fujitsu.com>
 
-syzbot suspects this issue was fixed by commit:
+On Thu, Jan 25, 2024 at 09:53:29AM +0800, Li Zhijian wrote:
+> Per filesystems/sysfs.rst, show() should only use sysfs_emit()
+> or sysfs_emit_at() when formatting the value to be returned to user space.
+> 
+> coccinelle complains that there are still a couple of functions that use
+> snprintf(). Convert them to sysfs_emit().
+> 
+> > ./drivers/ptp/ptp_sysfs.c:27:8-16: WARNING: please use sysfs_emit
+> 
+> No functional change intended
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
-
-    fs: Block writes to mounted block devices
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1682e45fe80000
-start commit:   90b0c2b2edd1 Merge tag 'pinctrl-v6.7-1' of git://git.kerne..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=93ac5233c138249e
-dashboard link: https://syzkaller.appspot.com/bug?extid=198e7455f3a4f38b838a
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17277d7f680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=123c58df680000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: fs: Block writes to mounted block devices
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Acked-by: Richard Cochran <richardcochran@gmail.com>
 
