@@ -1,233 +1,199 @@
-Return-Path: <linux-kernel+bounces-37848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC5FB83B665
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 02:09:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8A8883B663
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 02:09:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37B5F1F23FF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 01:09:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53F37B20F3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 01:09:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91DD76FC8;
-	Thu, 25 Jan 2024 01:09:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="M1limboU"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B7FC1877;
+	Thu, 25 Jan 2024 01:09:10 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D230E538D
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 01:09:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72AE27E1;
+	Thu, 25 Jan 2024 01:09:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706144952; cv=none; b=lYIHhjFZnAS4NZ6ftULSoJtaLEeqOBdXKXGBGCPmPmgWLHPYqidhVHNL8d3CT/BM5qQAqwdsSyXkmqPsBE5imAohKOJGlBKtoxMzA3Ty59FV4BN9xMBH6SP3rPbAxOVM5oVKLbQRtvzb3n/B5cEcS0tz/MxG7Q3y6EVUjXu6WnU=
+	t=1706144949; cv=none; b=ZxkdaOncERfGxcNNeVL98ymwPYNOt/whxneOOKZ6UA1pLShXC6jWKGjKfVVQqsRz8nkznZshDJfEb4uRFPrjlrTVKY/objKIIg7AYSwj8jiyUpJPIRGAmDZfMQ0tY58yeDiqP8OTobuzZY/OOtIdie4C46TNXLISKnsFk+4dO2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706144952; c=relaxed/simple;
-	bh=XfnH0XnxBRxSw8s+Kmggue61fl8TjZsRhAk9ljaDQ/o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ReWljtIC0A0S70W5a74R59BO3Y+tWEtUIB6/6fgqKsPSADWv/7SxrWxam5Zxz0eyRSJh3eRf30Kv+kluiPY0/7IaItdvtlPy/2kktwjJEFLSJ4/DB0WHWgNLnWQk2q2irMG8nNyffsM+YRT39JDFrePid0q1tSrmv2BqMn4Puhw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=M1limboU; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2cf2a381b86so12919301fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:09:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1706144949; x=1706749749; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PiUW1kySFY5d/pkzoDzjFVz4adphI3+IFsUwCl7g0Cw=;
-        b=M1limboU6m+53976lC325ZeB0bSQMABBxqExECk6McTgXWGObUxu5ocGquLfaT2XQM
-         fR27aMpNBTLy3GJCLB0VkY/uXts/f3HLltthLAg/jH934I8QsGAxgJrwKVhu1z2x0VqP
-         p+CNS2aand+nHQpF5PpP1xt/K4MW5CoRpsyu0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706144949; x=1706749749;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PiUW1kySFY5d/pkzoDzjFVz4adphI3+IFsUwCl7g0Cw=;
-        b=g8wyzWwGu0UbOmDWz0REQHpKDdwP9l/urK4zZSOSW+tqXquLlsFiHQyNo2ew7CpxsS
-         NfIQiTSmYKciPeyZr+a+SKbo5TrJlFLhL+bees0DJc9K4c1AkPvA20gEVI/DC0v3JRFO
-         awRROiLnlyAXuU+8BqnckaQ40tjGUQA/HEEbZuVQwa0JDhvVWiB9YQgJ4rvx9dGgV+En
-         x3CwO8mAX8VoHMiBc98+cNE/tBG6JsAu05fxIjmO9e7RwvTGufUjffNxbx8kNgVtS3FD
-         kdah2oDHZXZPfHR52/YUZ1oxT7XRWHchkKdpLWUFeKvjQwYp6/EGuudvOBsoxJifJkDs
-         S+wA==
-X-Gm-Message-State: AOJu0Yw1DOMC6rBvALQonHOrbXlkbQHC+tt8u8TAqmaafkQsCNGn2B11
-	TbiBrimTRJ82nX5sq5MybIAuskA3rJOh5w817ThhypYnvCCsxNc1Pdj/lnAMA00RIifrbvbQ9GV
-	Ix2JaWAG/jnYLmii4PnsX7Se+s7p9r7Ju1X1KVA==
-X-Google-Smtp-Source: AGHT+IHJ7U3y7K16MAJwZ9L7zwf69BBYdFrG85RGACDOZ5s5lNNGtUA2ZLqUoinUEmFG3pgoJzQ6zATtiiWTOT6o3Fk=
-X-Received: by 2002:a2e:3a03:0:b0:2cf:1c74:9bcb with SMTP id
- h3-20020a2e3a03000000b002cf1c749bcbmr100829lja.106.1706144948656; Wed, 24 Jan
- 2024 17:09:08 -0800 (PST)
+	s=arc-20240116; t=1706144949; c=relaxed/simple;
+	bh=DLKo5zqJOphP7s/xspolDgNhsyMTRKFCspsbqI7wfTA=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=Dyx9DDK16wOHBS8tKNoXek8DsjVDbBCQWFBt1Tm6vAvopkW3q76X2EsojJgAFnZdFEAxkXkHc9W4kbsBmRE3K5nk1yG8XL3zkqnLlTc/jL8M5C1AI3FjxVtQl4apRGhjH+0P7V9ba0knzeWXZck2Gmfq/GXOB0A2ZHRpZIrYzhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TL2lZ2l1kz4f3jJ0;
+	Thu, 25 Jan 2024 09:08:58 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 525161A0172;
+	Thu, 25 Jan 2024 09:09:02 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgAX6RGstLFl0+SNBw--.50668S3;
+	Thu, 25 Jan 2024 09:09:02 +0800 (CST)
+Subject: Re: [PATCH v2 00/11] dm-raid: fix v6.7 regressions
+To: Song Liu <song@kernel.org>, mpatocka@redhat.com,
+ dm-devel@lists.linux.dev, snitzer@kernel.org, agk@redhat.com
+Cc: xni@redhat.com, jbrassow@f14.redhat.com, neilb@suse.de,
+ heinzm@redhat.com, shli@fb.com, akpm@osdl.org, linux-kernel@vger.kernel.org,
+ linux-raid@vger.kernel.org, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
+ yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20240124091421.1261579-1-yukuai3@huawei.com>
+ <CAPhsuW4aqpQfQvBaeDaiJwOOOy-XspdDjAdvQVfFBEvHN-WUQA@mail.gmail.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <216fbc61-4f71-3796-5ec1-2e4cfa815ced@huaweicloud.com>
+Date: Thu, 25 Jan 2024 09:08:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214024727.3503870-1-vineeth@bitbyteword.org>
- <ZXsvl7mabUuNkWcY@google.com> <20231215181014.GB2853@maniforge>
- <6595bee6.e90a0220.57b35.76e9@mx.google.com> <20240104223410.GE303539@maniforge>
- <052b0521-2273-4b1f-bd94-a3decceb9b05@joelfernandes.org> <20240124170648.GA249939@maniforge>
-In-Reply-To: <20240124170648.GA249939@maniforge>
-From: Joel Fernandes <joel@joelfernandes.org>
-Date: Wed, 24 Jan 2024 20:08:56 -0500
-Message-ID: <CAEXW_YR5weKdRD3DfJCUPr4eyXtj=HgTqw0=oV_0Kh2VDVhDdg@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/8] Dynamic vcpu priority management in kvm
-To: David Vernet <void@manifault.com>
-Cc: Sean Christopherson <seanjc@google.com>, "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>, 
-	Ben Segall <bsegall@google.com>, Borislav Petkov <bp@alien8.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, "H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, 
-	Juri Lelli <juri.lelli@redhat.com>, Mel Gorman <mgorman@suse.de>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Valentin Schneider <vschneid@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Vitaly Kuznetsov <vkuznets@redhat.com>, 
-	Wanpeng Li <wanpengli@tencent.com>, Suleiman Souhlal <suleiman@google.com>, 
-	Masami Hiramatsu <mhiramat@google.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	x86@kernel.org, Tejun Heo <tj@kernel.org>, Josh Don <joshdon@google.com>, 
-	Barret Rhoden <brho@google.com>, David Dunn <daviddunn@google.com>, julia.lawall@inria.fr, 
-	himadrispandya@gmail.com, jean-pierre.lozi@inria.fr, ast@kernel.org, 
-	paulmck@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAPhsuW4aqpQfQvBaeDaiJwOOOy-XspdDjAdvQVfFBEvHN-WUQA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAX6RGstLFl0+SNBw--.50668S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxCw15XryUJr13XF1fAr4ruFg_yoWrtF18pa
+	yj93WYqr48CrnavrZ7t3W0qFW0kF95Jr98GF95J34UA34FkF1IyrWxGayj9FWkCw15Gw4Y
+	vr45ta43ua4qyaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+	17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+	IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
+	3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUOmhFUUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-Hi David,
+Hi,
 
-On Wed, Jan 24, 2024 at 12:06=E2=80=AFPM David Vernet <void@manifault.com> =
-wrote:
->
-[...]
-> > There might be a caveat to the unboosting path though needing a hyperca=
-ll and I
-> > need to check with Vineeth on his latest code whether it needs a hyperc=
-all, but
-> > we could probably figure that out. In the latest design, one thing I kn=
-ow is
-> > that we just have to force a VMEXIT for both boosting and unboosting. W=
-ell for
-> > boosting, the VMEXIT just happens automatically due to vCPU preemption,=
- but for
-> > unboosting it may not.
->
-> As mentioned above, I think we'd need to add UAPI for setting state from
-> the guest scheduler, even if we didn't use a hypercall to induce a
-> VMEXIT, right?
+在 2024/01/25 8:46, Song Liu 写道:
+> On Wed, Jan 24, 2024 at 1:18 AM Yu Kuai <yukuai3@huawei.com> wrote:
+>>
+>> First regression related to stop sync thread:
+>>
+>> The lifetime of sync_thread is designed as following:
+>>
+>> 1) Decide want to start sync_thread, set MD_RECOVERY_NEEDED, and wake up
+>> daemon thread;
+>> 2) Daemon thread detect that MD_RECOVERY_NEEDED is set, then set
+>> MD_RECOVERY_RUNNING and register sync_thread;
+>> 3) Execute md_do_sync() for the actual work, if it's done or
+>> interrupted, it will set MD_RECOVERY_DONE and wake up daemone thread;
+>> 4) Daemon thread detect that MD_RECOVERY_DONE is set, then clear
+>> MD_RECOVERY_RUNNING and unregister sync_thread;
+>>
+>> In v6.7, we fix md/raid to follow this design by commit f52f5c71f3d4
+>> ("md: fix stopping sync thread"), however, dm-raid is not considered at
+>> that time, and following test will hang:
+>>
+>> shell/integrity-caching.sh
+>> shell/lvconvert-raid-reshape.sh
+>>
+>> This patch set fix the broken test by patch 1-4;
+>>   - patch 1 fix that step 4) is broken by suspended array;
+>>   - patch 2 fix that step 4) is broken by read-only array;
+>>   - patch 3 fix that step 3) is broken that md_do_sync() doesn't set
+>>   MD_RECOVERY_DONE; Noted that this patch will introdece new problem that
+>>   data will be corrupted, which will be fixed in later patches.
+>>   - patch 4 fix that setp 1) is broken that sync_thread is register and
+>>   MD_RECOVERY_RUNNING is set directly;
+>>
+>> With patch 1-4, the above test won't hang anymore, however, the test
+>> will still fail and complain that ext4 is corrupted;
+>>
+>> Second regression related to frozen sync thread:
+>>
+>> Noted that for raid456, if reshape is interrupted, then call
+>> "pers->start_reshape" will corrupt data. This is because dm-raid rely on
+>> md_do_sync() doesn't set MD_RECOVERY_DONE so that new sync_thread won't
+>> be registered, and patch 3 just break this.
+>>
+>>   - Patch 5-6 fix this problem by interrupting reshape and frozen
+>>   sync_thread in dm_suspend(), then unfrozen and continue reshape in
+>> dm_resume(). It's verified that dm-raid tests won't complain that
+>> ext4 is corrupted anymore.
+>>   - Patch 7 fix the problem that raid_message() call
+>>   md_reap_sync_thread() directly, without holding 'reconfig_mutex'.
+>>
+>> Last regression related to dm-raid456 IO concurrent with reshape:
+>>
+>> For raid456, if reshape is still in progress, then IO across reshape
+>> position will wait for reshape to make progress. However, for dm-raid,
+>> in following cases reshape will never make progress hence IO will hang:
+>>
+>> 1) the array is read-only;
+>> 2) MD_RECOVERY_WAIT is set;
+>> 3) MD_RECOVERY_FROZEN is set;
+>>
+>> After commit c467e97f079f ("md/raid6: use valid sector values to determine
+>> if an I/O should wait on the reshape") fix the problem that IO across
+>> reshape position doesn't wait for reshape, the dm-raid test
+>> shell/lvconvert-raid-reshape.sh start to hang at raid5_make_request().
+>>
+>> For md/raid, the problem doesn't exist because:
+>>
+>> 1) If array is read-only, it can switch to read-write by ioctl/sysfs;
+>> 2) md/raid never set MD_RECOVERY_WAIT;
+>> 3) If MD_RECOVERY_FROZEN is set, mddev_suspend() doesn't hold
+>>     'reconfig_mutex' anymore, it can be cleared and reshape can continue by
+>>     sysfs api 'sync_action'.
+>>
+>> However, I'm not sure yet how to avoid the problem in dm-raid yet.
+>>
+>>   - patch 9-11 fix this problem by detecting the above 3 cases in
+>>   dm_suspend(), and fail those IO directly.
+>>
+>> If user really meet the IO error, then it means they're reading the wrong
+>> data before c467e97f079f. And it's safe to read/write the array after
+>> reshape make progress successfully.
+> 
+> c467e97f079f got back ported to stable kernels (6.6.13, for example). We
+> will need some fixes for them (to fix shell/lvconvert-raid-reshape.sh).
+> 
+> Mikulas and folks, please help review the analysis above and dm-raid
+> changes. The failure was triggered by c467e97f079f. However, the commit
+> is doing the right thing, so we really shouldn't revert it.
+> 
+>>
+>> Tests:
+>>
+>> I already run the following two tests many times and verified that they
+>> won't fail anymore:
+>>
+>> shell/integrity-caching.sh
+>> shell/lvconvert-raid-reshape.sh
+> 
+> shell/lvconvert-raid-reshape-linear_to_raid6-single-type.sh is failing
+> with upstream + this set. (I need to fix some trivial compilation errors,
+> which are probably last minute typos).
 
-I see what you mean now. I'll think more about it. The immediate
-thought is to load BPF programs to trigger at appropriate points in
-the guest. For instance, we already have tracepoints for preemption
-disabling. I added that upstream like 8 years ago or something. And
-sched_switch already knows when we switch to RT, which we could
-leverage in the guest. The BPF program would set some shared memory
-state in whatever format it desires, when it runs is what I'm
-envisioning.
+I'm running test for this patchset overnight in my vm, and this test has
+been ran for 9 times and all passed. Looks like I can't reporduce this
+in my vm.
 
-By the way, one crazy idea about loading BPF programs into a guest..
-Maybe KVM can pass along the BPF programs to be loaded to the guest?
-The VMM can do that. The nice thing there is only the host would be
-the only responsible for the BPF programs. I am not sure if that makes
-sense, so please let me know what you think. I guess the VMM should
-also be passing additional metadata, like which tracepoints to hook
-to, in the guest, etc.
+Thanks,
+Kuai
 
-> > In any case, can we not just force a VMEXIT from relevant path within t=
-he guest,
-> > again using a BPF program? I don't know what the BPF prog to do that wo=
-uld look
-> > like, but I was envisioning we would call a BPF prog from within a gues=
-t if
-> > needed at relevant point (example, return to guest userspace).
->
-> I agree it would be useful to have a kfunc that could be used to force a
-> VMEXIT if we e.g. need to trigger a resched or something. In general
-> that seems like a pretty reasonable building block for something like
-> this. I expect there are use cases where doing everything async would be
-> useful as well. We'll have to see what works well in experimentation.
+> 
+> Thanks,
+> Song
+> 
+> .
+> 
 
-Sure.
-
-> > >> Still there is a lot of merit to sharing memory with BPF and let BPF=
- decide
-> > >> the format of the shared memory, than baking it into the kernel... s=
-o thanks
-> > >> for bringing this up! Lets talk more about it... Oh, and there's my =
-LSFMMBPF
-> > >> invitiation request ;-) ;-).
-> > >
-> > > Discussing this BPF feature at LSFMMBPF is a great idea -- I'll submi=
-t a
-> > > proposal for it and cc you. I looked and couldn't seem to find the
-> > > thread for your LSFMMBPF proposal. Would you mind please sending a li=
-nk?
-> >
-> > I actually have not even submitted one for LSFMM but my management is s=
-upportive
-> > of my visit. Do you want to go ahead and submit one with all of us incl=
-uded in
-> > the proposal? And I am again sorry for the late reply and hopefully we =
-did not
-> > miss any deadlines. Also on related note, there is interest in sched_ex=
-t for
->
-> I see that you submitted a proposal in [2] yesterday. Thanks for writing
-> it up, it looks great and I'll comment on that thread adding a +1 for
-> the discussion.
->
-> [2]: https://lore.kernel.org/all/653c2448-614e-48d6-af31-c5920d688f3e@joe=
-lfernandes.org/
->
-> No worries at all about the reply latency. Thank you for being so open
-> to discussing different approaches, and for driving the discussion. I
-> think this could be a very powerful feature for the kernel so I'm
-> pretty excited to further flesh out the design and figure out what makes
-> the most sense here.
-
-Great!
-
-> > As mentioned above, for boosting, there is no hypercall. The VMEXIT is =
-induced
-> > by host preemption.
->
-> I expect I am indeed missing something then, as mentioned above. VMEXIT
-> aside, we still need some UAPI for the shared structure between the
-> guest and host where the guest indicates its need for boosting, no?
-
-Yes you are right, it is more clear now what you were referring to
-with UAPI. I think we need figure that issue out. But if we can make
-the VMM load BPF programs, then the host can completely decide how to
-structure the shared memory.
-
-> > > 2. What is the cost we're imposing on users if we force paravirt to b=
-e
-> > >    done through BPF? Is this prohibitively high?
-> > >
-> > > There is certainly a nonzero cost. As you pointed out, right now Andr=
-oid
-> > > apparently doesn't use much BPF, and adding the requisite logic to us=
-e
-> > > and manage BPF programs is not insigificant.
-> > >
-> > > Is that cost prohibitively high? I would say no. BPF should be fully
-> > > supported on aarch64 at this point, so it's really a user space probl=
-em.
-> > > Managing the system is what user space does best, and many other
-> > > ecosystems have managed to integrate BPF to great effect. So while th=
-e
-> > > cost is cetainly nonzero, I think there's a reasonable argument to be
-> > > made that it's not prohibitively high.
-> >
-> > Yes, I think it is doable.
-> >
-> > Glad to be able to finally reply, and I shall prioritize this thread mo=
-re on my
-> > side moving forward.
->
-> Thanks for your detailed reply, and happy belated birthday :-)
-
-Thank you!!! :-)
-
- - Joel
 
