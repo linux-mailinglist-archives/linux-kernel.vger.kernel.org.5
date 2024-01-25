@@ -1,161 +1,261 @@
-Return-Path: <linux-kernel+bounces-38557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7A1B83C192
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:02:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB7C083C18D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:01:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 659C7B2794A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:01:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BEE21C2096E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:01:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6A2745029;
-	Thu, 25 Jan 2024 12:00:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBD2A36B0E;
+	Thu, 25 Jan 2024 12:00:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="bSGKjvtM"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="phDFEmpd"
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EAC445951;
-	Thu, 25 Jan 2024 12:00:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C47562376C
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 12:00:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706184018; cv=none; b=G6/UjPKMihPBcq8RSdWvSSzsjEAohP+bqCC5hr+jF2PqOLjDvYkYnQFHZbtNHxzUjbjzpjxBIENOnfPflfBOSTp9OLbqg8Dgm/BI3PrUDDmG6H2Dg6dK14BnIERr2DHUfYc/Tck9HPi1NySeeII4lDs7oV/m+NGdnXqOdsXthuE=
+	t=1706184055; cv=none; b=FVQt5t1kIPvz81K9cZQz4IZFivGNGr1Zq2Bvts/3meUEoPIkEGlCTIEtlL4U8Uz2JLaaKJatepdiYeW7tMbZT/upL5XquXD+DxWXRI1uK/epuXHCs9Fp+SV7Y84BIBy7jAG7k3Anl875PmjJOtEm9VHuEUdBnbK7eP45mOJ0swY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706184018; c=relaxed/simple;
-	bh=UrXCzano3LnAmkB3wjF8eARyW/4Ah8WO7K5ZPp7D7zs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MTIzYqZnjzBuzZT3DrF9GrIgbP97J59rMu5VlnbdZyXCf6v7Hyrzb4GJTgmvq0sRLcbIWR3HayYFbrCUgk/RoEpERbWN6Kjo77DQsTcbDMsbMeRgh3mn9N+Z8Y24bElAdlF6viECTbEzdTx6RWMy/7Z7/kOUOLw3IPYOmtGG/Fg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=bSGKjvtM; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0414540E01AE;
-	Thu, 25 Jan 2024 12:00:13 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id bE7QAEOdOj5V; Thu, 25 Jan 2024 12:00:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706184011; bh=Vv4ePJnj649No3QYHO2JSUq/fMCA6NiRC9M5fwJmQ/c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bSGKjvtMaPbEa7Pu9wiOY/zX2h3SPeXxXdghAcsZQ9N7vyOukagYlmn9ynw8xnQPd
-	 lJcuhapwAi8W0Y3q9NWHIIeNvGdinA2piuwLnz6qbl7jrJ643fspGi2kQxZEvntKqX
-	 1GoZu42cHdshl+aQ48ECdDhg31gEWKuNRR6s6ownftZSG6sijv2xm2YNXTXzVG4NS2
-	 Im2lGPPLyRKF07+DVSilZ4ysoglzFO8lQSzOL856viuay23Y4Kl9BrjZoO8rtVMuBY
-	 Iel/ek56zrGg99RCk7bpbYGEnPW9mRfR8fzX9riNdEHeptvrFEWMyj5BIBFRz7pJLD
-	 t3GKzN808v0557WfHTATrdIi3z/uRIZNpK4ZYj/si5OwWjFVCjXpHHzNu/hPJ5hvWh
-	 lGm6sz1Te21+g1snKtPf/zqFf3RVRSfYxnXuEneAQn3tWLJZjfsk4sEkn2+qSWxu0a
-	 bojFmkUDocfGNvOlEkw17Tss5igqY5IAVtOitREKd2aoMy3gA2pYLpVaFHmofgNNch
-	 hUcPpsbRLGGUKnIs73N4qBFMZCYtdiByieNDJ8UlQ2C1DJwIN/kfqadIHOrhVWUzzT
-	 jWEiP3w+/I13uTY34tw15sR+Gud/h+rqbLTrxxrqRn4Kej+KY6mHBqQzlVKC5klwMR
-	 I/COqTJ5VISlhJmxOHAC/f4g=
-Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CBC2F40E0177;
-	Thu, 25 Jan 2024 11:59:58 +0000 (UTC)
-Date: Thu, 25 Jan 2024 12:59:52 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Nikunj A Dadhania <nikunj@amd.com>
-Cc: linux-kernel@vger.kernel.org, thomas.lendacky@amd.com, x86@kernel.org,
-	kvm@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
-	dave.hansen@linux.intel.com, dionnaglaze@google.com,
-	pgonda@google.com, seanjc@google.com, pbonzini@redhat.com
-Subject: Re: [PATCH v7 03/16] virt: sev-guest: Add SNP guest request structure
-Message-ID: <20240125115952.GXZbJNOGfxfuiC5WRT@fat_crate.local>
-References: <20231220151358.2147066-1-nikunj@amd.com>
- <20231220151358.2147066-4-nikunj@amd.com>
+	s=arc-20240116; t=1706184055; c=relaxed/simple;
+	bh=8tORzQRTIrAwh0txLjRsxZoOf8yOAUytYH0gYHXiZyM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qppNKKJ0qov2eaAUSSDvPCREIh46VGYAtMEJF0r0dtb9WnfLgKoulQRBO6XZXNhHd7IbMZ1MkW8/lUyN3/3MiD3FjLQlWAIhg9EfmVm84/kPN9q1OI6E9J8xZwSMeM2OHQZ3Ir1z3H0K/OFtSaXKAJNPlIAu+mp78+cI4AYrcaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=phDFEmpd; arc=none smtp.client-ip=115.124.30.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1706184045; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=Lg18pJRnC+ACcPyGG/CNpKDXLC2wHHOhz9Wm/T97nV0=;
+	b=phDFEmpd6l1QHWRma8TcDYgq8e8/tzig6KImXEL4Ef2/tjExXWNHdXJOfyYoGBavowOsodcvoXZgbM9nHWJJkdvNnPefJtCpcIPj7gLlNh9+ELD0U9LqV4xbSw5yzlgSAjmOqcf52vgMy1fMn8lSKP6O3jnN1dl6KVDX/otOTKk=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0W.KNHKd_1706184040;
+Received: from e69b19392.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W.KNHKd_1706184040)
+          by smtp.aliyun-inc.com;
+          Thu, 25 Jan 2024 20:00:45 +0800
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
+To: linux-erofs@lists.ozlabs.org
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: [PATCH] erofs: fix infinite loop due to a race of filling compressed_bvecs
+Date: Thu, 25 Jan 2024 20:00:39 +0800
+Message-Id: <20240125120039.3228103-1-hsiangkao@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231220151358.2147066-4-nikunj@amd.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 20, 2023 at 08:43:45PM +0530, Nikunj A Dadhania wrote:
-> -int snp_issue_guest_request(u64 exit_code, struct snp_req_data *input, struct snp_guest_request_ioctl *rio)
-> +int snp_issue_guest_request(struct snp_guest_req *req, struct snp_req_data *input,
-> +			    struct snp_guest_request_ioctl *rio)
->  {
->  	struct ghcb_state state;
->  	struct es_em_ctxt ctxt;
->  	unsigned long flags;
->  	struct ghcb *ghcb;
-> +	u64 exit_code;
+I encountered a race issue after lengthy (~594647 sec) stress tests on
+a 64k-page arm64 VM with several 4k-block EROFS images.  The timing
+is like below:
 
-Silly local vars. Just use req->exit_code everywhere instead.
+z_erofs_try_inplace_io                  z_erofs_fill_bio_vec
+  cmpxchg(&compressed_bvecs[].page,
+          NULL, ..)
+                                        [access bufvec]
+  compressed_bvecs[] = *bvec;
 
->  	int ret;
->  
->  	rio->exitinfo2 = SEV_RET_NO_FW_CALL;
-> +	if (!req)
-> +		return -EINVAL;
+Previously, z_erofs_submit_queue() just accessed bufvec->page only, so
+other fields in bufvec didn't matter.  After the subpage block support
+is landed, .offset and .end can be used too, but filling bufvec isn't
+an atomic operation which can cause inconsistency.
 
-Such tests are done under the variable which is assigned, not randomly.
+Let's use a spinlock to keep the atomicity of each bufvec.  More
+specifically, just reuse the existing spinlock `pcl->obj.lockref.lock`
+since it's rarely used (also it takes a short time if even used) as long
+as the pcluster has a reference.
 
-Also, what's the point in testing req? Will that ever be NULL? What are
-you actually protecting against here?
+Fixes: 192351616a9d ("erofs: support I/O submission for sub-page compressed blocks")
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+---
+ fs/erofs/zdata.c | 74 +++++++++++++++++++++++++-----------------------
+ 1 file changed, 38 insertions(+), 36 deletions(-)
 
-> diff --git a/drivers/virt/coco/sev-guest/sev-guest.c b/drivers/virt/coco/sev-guest/sev-guest.c
-> index 469e10d9bf35..5cafbd1c42cb 100644
-> --- a/drivers/virt/coco/sev-guest/sev-guest.c
-> +++ b/drivers/virt/coco/sev-guest/sev-guest.c
-> @@ -27,8 +27,7 @@
->  
->  #include <asm/svm.h>
->  #include <asm/sev.h>
-> -
-> -#include "sev-guest.h"
-> +#include <asm/sev-guest.h>
->  
->  #define DEVICE_NAME	"sev-guest"
->  
-> @@ -169,7 +168,7 @@ static struct aesgcm_ctx *snp_init_crypto(u8 *key, size_t keylen)
->  	return ctx;
->  }
->  
-> -static int verify_and_dec_payload(struct snp_guest_dev *snp_dev, void *payload, u32 sz)
-> +static int verify_and_dec_payload(struct snp_guest_dev *snp_dev, struct snp_guest_req *guest_req)
-
-So we call the request everywhere "req". But you've called it
-"guest_req" here because...
-
->  {
->  	struct snp_guest_msg *resp = &snp_dev->secret_response;
->  	struct snp_guest_msg *req = &snp_dev->secret_request;
-
-.. there already is a "req" variable which is not a guest request thing
-but a guest message. So why don't you call it "req_msg" instead and the
-"resp" "resp_msg" so that it is clear what is what?
-
-And then you can call the actual request var "req" and then the code
-becomes more readable...
-
-..
-
->  static int get_report(struct snp_guest_dev *snp_dev, struct snp_guest_request_ioctl *arg)
->  {
->  	struct snp_report_req *req = &snp_dev->req.report;
-> +	struct snp_guest_req guest_req = {0};
-
-You have the same issue here.
-
-If we aim at calling the local vars in every function the same, the code
-becomes automatically much more readable.
-
-And so on...
-
+diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+index 583c062cd0e4..c1c77166b30f 100644
+--- a/fs/erofs/zdata.c
++++ b/fs/erofs/zdata.c
+@@ -563,21 +563,19 @@ static void z_erofs_bind_cache(struct z_erofs_decompress_frontend *fe)
+ 			__GFP_NOMEMALLOC | __GFP_NORETRY | __GFP_NOWARN;
+ 	unsigned int i;
+ 
+-	if (i_blocksize(fe->inode) != PAGE_SIZE)
+-		return;
+-	if (fe->mode < Z_EROFS_PCLUSTER_FOLLOWED)
++	if (i_blocksize(fe->inode) != PAGE_SIZE ||
++	    fe->mode < Z_EROFS_PCLUSTER_FOLLOWED)
+ 		return;
+ 
+ 	for (i = 0; i < pclusterpages; ++i) {
+ 		struct page *page, *newpage;
+ 		void *t;	/* mark pages just found for debugging */
+ 
+-		/* the compressed page was loaded before */
++		/* Inaccurate check w/o locking to avoid unneeded lookups */
+ 		if (READ_ONCE(pcl->compressed_bvecs[i].page))
+ 			continue;
+ 
+ 		page = find_get_page(mc, pcl->obj.index + i);
+-
+ 		if (page) {
+ 			t = (void *)((unsigned long)page | 1);
+ 			newpage = NULL;
+@@ -597,9 +595,13 @@ static void z_erofs_bind_cache(struct z_erofs_decompress_frontend *fe)
+ 			set_page_private(newpage, Z_EROFS_PREALLOCATED_PAGE);
+ 			t = (void *)((unsigned long)newpage | 1);
+ 		}
+-
+-		if (!cmpxchg_relaxed(&pcl->compressed_bvecs[i].page, NULL, t))
++		spin_lock(&pcl->obj.lockref.lock);
++		if (!pcl->compressed_bvecs[i].page) {
++			pcl->compressed_bvecs[i].page = t;
++			spin_unlock(&pcl->obj.lockref.lock);
+ 			continue;
++		}
++		spin_unlock(&pcl->obj.lockref.lock);
+ 
+ 		if (page)
+ 			put_page(page);
+@@ -718,31 +720,25 @@ int erofs_init_managed_cache(struct super_block *sb)
+ 	return 0;
+ }
+ 
+-static bool z_erofs_try_inplace_io(struct z_erofs_decompress_frontend *fe,
+-				   struct z_erofs_bvec *bvec)
+-{
+-	struct z_erofs_pcluster *const pcl = fe->pcl;
+-
+-	while (fe->icur > 0) {
+-		if (!cmpxchg(&pcl->compressed_bvecs[--fe->icur].page,
+-			     NULL, bvec->page)) {
+-			pcl->compressed_bvecs[fe->icur] = *bvec;
+-			return true;
+-		}
+-	}
+-	return false;
+-}
+-
+ /* callers must be with pcluster lock held */
+ static int z_erofs_attach_page(struct z_erofs_decompress_frontend *fe,
+ 			       struct z_erofs_bvec *bvec, bool exclusive)
+ {
++	struct z_erofs_pcluster *pcl = fe->pcl;
+ 	int ret;
+ 
+ 	if (exclusive) {
+ 		/* give priority for inplaceio to use file pages first */
+-		if (z_erofs_try_inplace_io(fe, bvec))
++		spin_lock(&pcl->obj.lockref.lock);
++		while (fe->icur > 0) {
++			if (pcl->compressed_bvecs[--fe->icur].page)
++				continue;
++			pcl->compressed_bvecs[fe->icur] = *bvec;
++			spin_unlock(&pcl->obj.lockref.lock);
+ 			return 0;
++		}
++		spin_unlock(&pcl->obj.lockref.lock);
++
+ 		/* otherwise, check if it can be used as a bvpage */
+ 		if (fe->mode >= Z_EROFS_PCLUSTER_FOLLOWED &&
+ 		    !fe->candidate_bvpage)
+@@ -1423,23 +1419,26 @@ static void z_erofs_fill_bio_vec(struct bio_vec *bvec,
+ {
+ 	gfp_t gfp = mapping_gfp_mask(mc);
+ 	bool tocache = false;
+-	struct z_erofs_bvec *zbv = pcl->compressed_bvecs + nr;
++	struct z_erofs_bvec zbv;
+ 	struct address_space *mapping;
+-	struct page *page, *oldpage;
++	struct page *page;
+ 	int justfound, bs = i_blocksize(f->inode);
+ 
+ 	/* Except for inplace pages, the entire page can be used for I/Os */
+ 	bvec->bv_offset = 0;
+ 	bvec->bv_len = PAGE_SIZE;
+ repeat:
+-	oldpage = READ_ONCE(zbv->page);
+-	if (!oldpage)
++	spin_lock(&pcl->obj.lockref.lock);
++	zbv = pcl->compressed_bvecs[nr];
++	page = zbv.page;
++	justfound = (unsigned long)page & 1UL;
++	page = (struct page *)((unsigned long)page & ~1UL);
++	pcl->compressed_bvecs[nr].page = page;
++	spin_unlock(&pcl->obj.lockref.lock);
++	if (!page)
+ 		goto out_allocpage;
+ 
+-	justfound = (unsigned long)oldpage & 1UL;
+-	page = (struct page *)((unsigned long)oldpage & ~1UL);
+ 	bvec->bv_page = page;
+-
+ 	DBG_BUGON(z_erofs_is_shortlived_page(page));
+ 	/*
+ 	 * Handle preallocated cached pages.  We tried to allocate such pages
+@@ -1448,7 +1447,6 @@ static void z_erofs_fill_bio_vec(struct bio_vec *bvec,
+ 	 */
+ 	if (page->private == Z_EROFS_PREALLOCATED_PAGE) {
+ 		set_page_private(page, 0);
+-		WRITE_ONCE(zbv->page, page);
+ 		tocache = true;
+ 		goto out_tocache;
+ 	}
+@@ -1459,9 +1457,9 @@ static void z_erofs_fill_bio_vec(struct bio_vec *bvec,
+ 	 * therefore it is impossible for `mapping` to be NULL.
+ 	 */
+ 	if (mapping && mapping != mc) {
+-		if (zbv->offset < 0)
+-			bvec->bv_offset = round_up(-zbv->offset, bs);
+-		bvec->bv_len = round_up(zbv->end, bs) - bvec->bv_offset;
++		if (zbv.offset < 0)
++			bvec->bv_offset = round_up(-zbv.offset, bs);
++		bvec->bv_len = round_up(zbv.end, bs) - bvec->bv_offset;
+ 		return;
+ 	}
+ 
+@@ -1471,7 +1469,6 @@ static void z_erofs_fill_bio_vec(struct bio_vec *bvec,
+ 
+ 	/* the cached page is still in managed cache */
+ 	if (page->mapping == mc) {
+-		WRITE_ONCE(zbv->page, page);
+ 		/*
+ 		 * The cached page is still available but without a valid
+ 		 * `->private` pcluster hint.  Let's reconnect them.
+@@ -1503,11 +1500,15 @@ static void z_erofs_fill_bio_vec(struct bio_vec *bvec,
+ 	put_page(page);
+ out_allocpage:
+ 	page = erofs_allocpage(&f->pagepool, gfp | __GFP_NOFAIL);
+-	if (oldpage != cmpxchg(&zbv->page, oldpage, page)) {
++	spin_lock(&pcl->obj.lockref.lock);
++	if (pcl->compressed_bvecs[nr].page) {
+ 		erofs_pagepool_add(&f->pagepool, page);
++		spin_unlock(&pcl->obj.lockref.lock);
+ 		cond_resched();
+ 		goto repeat;
+ 	}
++	pcl->compressed_bvecs[nr].page = page;
++	spin_unlock(&pcl->obj.lockref.lock);
+ 	bvec->bv_page = page;
+ out_tocache:
+ 	if (!tocache || bs != PAGE_SIZE ||
+@@ -1685,6 +1686,7 @@ static void z_erofs_submit_queue(struct z_erofs_decompress_frontend *f,
+ 
+ 			if (cur + bvec.bv_len > end)
+ 				bvec.bv_len = end - cur;
++			DBG_BUGON(bvec.bv_len < sb->s_blocksize);
+ 			if (!bio_add_page(bio, bvec.bv_page, bvec.bv_len,
+ 					  bvec.bv_offset))
+ 				goto submit_bio_retry;
 -- 
-Regards/Gruss,
-    Boris.
+2.39.3
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
