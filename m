@@ -1,172 +1,218 @@
-Return-Path: <linux-kernel+bounces-37818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F113683B603
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 01:20:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14C9C83B60A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 01:30:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F7FD285E22
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 00:20:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 308321C2237C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 00:30:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56D48197;
-	Thu, 25 Jan 2024 00:20:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BA1E1369;
+	Thu, 25 Jan 2024 00:30:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Gs3U4u9k"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="nE2taNG2"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C45B87F
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 00:20:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2ACA64E
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 00:30:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706142005; cv=none; b=u6YokRX6UZ9buzGL+JH1P+WuM8NH4V6vMXzOr5LuX4GwaZ5B4PmRfrriZcqyms/1uua9PM/HJt++sArW7CJykOgl74IPNWyBkyrlcrAvz4j0wSw4IxKIQtpuz8LPdvdpdA5na2Atq6UlFTFRKn38GdJeF2t46O9BIdtHylbr1uk=
+	t=1706142623; cv=none; b=BZJlYh8GGF/2r+G8eVV2/wJWd5kQOwLia1pBVnGWGblDnulkF7Rzb7YGBs9mWtb+uNOHV9DzerV9q6JISjL74mFiO9/n80QOsA6fkriCzyatiMZLHBbbFixau2RQNqHRA//iDRu3KBUaiRIE1sVy667qr5eW1hqDzINcPhgOXyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706142005; c=relaxed/simple;
-	bh=c9/nJK5laW+kfjfBhk73NaQ/i8Xr3ZqLouB+V5e3UBg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OCgjRXAkRacdKbOkOCLClFIYK/Po5f5Jk9y2Mg/F7R49mM2BiglBqMmnXL670GYFo0S+9skRzo269d3RYvMcgL9WyovD5+yr6rehPlJRbIvN3PjoKHvQEXkw9SuB1Kb9UGJb5hfzcilu72dBo7shT6j2OB1/thliroKsJI8bT3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Gs3U4u9k; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-55a179f5fa1so7214539a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 16:20:03 -0800 (PST)
+	s=arc-20240116; t=1706142623; c=relaxed/simple;
+	bh=6ed+3atdOO90Bcl6o4AJkfZDmJDPlpNG9qn2t/N6EdA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ktilar/YTlYuTPu+8IeSwGnK1HH7GLdG9sCU+UBcZWScCO9ocBsgcn/Hs3hQQxU2PnbI3jhhK2FwG9iarNIp9tSstPArN18XZN8bTUWwLSdIA8sWSjwYXkI/PJdgq8kV1tVKEnsYQX8gFr6UFyXH86Mpo2HxClhLA3PlmQJxdkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=nE2taNG2; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6ddc5faeb7fso355208b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 16:30:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706142001; x=1706746801; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h9dFLTZ3N0TriBrErDmuqcfdECmElEFTmjFDKN9D9u0=;
-        b=Gs3U4u9kK5HhbAU7Mmge2B5kBUcx/Z2tHo16rUrK4nXfANn/Ew0CeimBnDMezyS0i6
-         R1eAf7sLQEEv3PX7ynjwbGxO9hJ6hIKSgfWWRx2Ogcb5tctVqUynGkgTn8nd/0cZ5gpC
-         C/rZw9AfKfAvsIKLXPU0ENPKzLa32KHxefTvQ=
+        d=fastly.com; s=google; t=1706142621; x=1706747421; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nJ/KhjXFYvr9irVvrcVntzkJlwaP0ByriXx5y0FiiYc=;
+        b=nE2taNG2UQrC2NR1MGIWKEeY0JDaLOfD5jA2ZUpciZbYw/15cDZ2Cu7HaMigHVSRFg
+         U7gKIe1cqxCWmW6CI+Rl4Xg5aluIRqxgO9tNrWTxt0aIYLKyGZ8acqEUHvaTtB9ZpC9L
+         IVUVDyBAxyX0VYbKewFGEQC35R97TT0JbVGqI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706142001; x=1706746801;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h9dFLTZ3N0TriBrErDmuqcfdECmElEFTmjFDKN9D9u0=;
-        b=nqDL5nojCiqjDe7qG7JekPzOj+pbzuwkehMlkCYNUQeyifhGknq+dz24+voFvHVN03
-         ZE0wp6LV8ZjltX70Sg1WgQM0DQA4+lNTPqdzCfig++bfHAYG52Aj6TDlMMc2ADcJq3TG
-         ORMahQ/B38mLpyZc5yEzY7/wY2RZZLbIFQL4zmF7+rK9ypsFZd2vb0aNCJTdgqbxoEhj
-         jArcAcuuGXT5HcxyKDtoxSQNHaR4KCT7fE+isqa6amJPsVor6v984LZZtJ8iCbV2aSGJ
-         fUh/DFDqDB7sszGpGt5C6Edb+S3qwwR2p0tbsh+bXL8qJmqhlmDT3FS9bfAtLsZNZvOI
-         auZA==
-X-Gm-Message-State: AOJu0Yw9TW5n+O9KgnZOm/Ff856wblzK8FLwa3gG8iCEsU8O5PeW1QAD
-	Gk+B2w3OCE5EH9LtfcJ5FweFAt0G/fhCJgQPqR2f1qOtnGZlA/9FR0PevQ4+62fztOuVsjyS1tL
-	WIA==
-X-Google-Smtp-Source: AGHT+IEUWprvVmVuSYtzFA49UxYfcrGUXDqAiBMNCkst20+BVIen1Cj6IcGG2Wfj827fT1oPfDVf+A==
-X-Received: by 2002:a17:906:6b8f:b0:a30:3a34:57ac with SMTP id l15-20020a1709066b8f00b00a303a3457acmr50932ejr.123.1706142001116;
-        Wed, 24 Jan 2024 16:20:01 -0800 (PST)
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com. [209.85.128.46])
-        by smtp.gmail.com with ESMTPSA id v17-20020a1709064e9100b00a2a1bbda0a6sm414795eju.175.2024.01.24.16.20.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jan 2024 16:20:00 -0800 (PST)
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40eb95cbe52so8155e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 16:20:00 -0800 (PST)
-X-Received: by 2002:a05:600c:4f08:b0:40e:b21d:6c0c with SMTP id
- l8-20020a05600c4f0800b0040eb21d6c0cmr72157wmq.2.1706141999967; Wed, 24 Jan
- 2024 16:19:59 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706142621; x=1706747421;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nJ/KhjXFYvr9irVvrcVntzkJlwaP0ByriXx5y0FiiYc=;
+        b=MOoT0senLYXnkyz1c9uebHJugVTwD9NneiGHHYkV5t3MoTgKQCtdhWgqLp8yRISd6Y
+         qndIjCCVfBHDqRsCO159y+i0J+h17CjPpVM6boCdLah7mBwV/jMM13x1Po7/GvjoSANA
+         6N6lMjFtHowK7z9nCA5qAxYWl3GrvYCS2ok94S3IwMfzNAzCUCsMD+R5yra6ewm3X1BZ
+         p24GskL8voyQNdp+17rSvBr7m4M5pJKRjaJtgl4Btc2gGJL/CgMq348mFoykehnr51+t
+         txIsVA/BegX/bDXrfvtSkY5rBByx7+UPvzCk+RBgkCE+yavOk8/faNr/AZOlmFIpVCqP
+         EhVw==
+X-Gm-Message-State: AOJu0Yz8mGGrFGniGGezBThaukuY0WVJGX/1Cs/Gwx08NwYEZYryMwu/
+	uJRdzNFCwcQAuDmBf5Fz9EO77AbaoOpguDGxFN0SYNR4A5sBx928h8A2UXZ+T/M=
+X-Google-Smtp-Source: AGHT+IHdVXS6pNvjfF+4A/EF7XQhuNGhFbyY8RuLB7kiTQxOL8W7fgLJz1aoWc/mzDe0fl2C0mRcNQ==
+X-Received: by 2002:a05:6a00:3ccf:b0:6dd:c542:afd7 with SMTP id ln15-20020a056a003ccf00b006ddc542afd7mr71418pfb.19.1706142621086;
+        Wed, 24 Jan 2024 16:30:21 -0800 (PST)
+Received: from localhost.localdomain ([2620:11a:c018:0:ea8:be91:8d1:f59b])
+        by smtp.gmail.com with ESMTPSA id w10-20020a63d74a000000b005cd945c0399sm12550486pgi.80.2024.01.24.16.30.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 16:30:20 -0800 (PST)
+From: Joe Damato <jdamato@fastly.com>
+To: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: chuck.lever@oracle.com,
+	jlayton@kernel.org,
+	linux-api@vger.kernel.org,
+	brauner@kernel.org,
+	edumazet@google.com,
+	davem@davemloft.net,
+	alexander.duyck@gmail.com,
+	sridhar.samudrala@intel.com,
+	kuba@kernel.org,
+	weiwan@google.com,
+	Joe Damato <jdamato@fastly.com>
+Subject: [net-next v2 0/4] Per epoll context busy poll support
+Date: Thu, 25 Jan 2024 00:30:10 +0000
+Message-Id: <20240125003014.43103-1-jdamato@fastly.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123121223.22318-1-yaoma@linux.alibaba.com> <20240123121223.22318-3-yaoma@linux.alibaba.com>
-In-Reply-To: <20240123121223.22318-3-yaoma@linux.alibaba.com>
-From: Doug Anderson <dianders@chromium.org>
-Date: Wed, 24 Jan 2024 16:19:46 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=X_uLqi1W7JuSjo=WXF5JEvtM=wxbSeFQQ2KhVcW9=Fcw@mail.gmail.com>
-Message-ID: <CAD=FV=X_uLqi1W7JuSjo=WXF5JEvtM=wxbSeFQQ2KhVcW9=Fcw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] watchdog/softlockup: report the most time-consuming hardirq
-To: Bitao Hu <yaoma@linux.alibaba.com>
-Cc: akpm@linux-foundation.org, pmladek@suse.com, tglx@linutronix.de, 
-	maz@kernel.org, liusong@linux.alibaba.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi,
+Greetings:
 
-On Tue, Jan 23, 2024 at 4:12=E2=80=AFAM Bitao Hu <yaoma@linux.alibaba.com> =
-wrote:
->
-> When the watchdog determines that the current soft lockup is due
-> to an interrupt storm based on CPU utilization, reporting the
-> top three most time-consuming hardirq can be quite useful for
-> further troubleshooting.
-> Below is an example of interrupt storm. The call tree does not
-> provide useful information, but we can analyze which interrupt
-> caused the soft lockup by using the time-consuming information
-> of hardirq.
->
-> [   67.714044] watchdog: BUG: soft lockup - CPU#9 stuck for 28s! [swapper=
-/9:0]
-> [   67.714548] CPU#9 Utilization every 4s during lockup:
-> [   67.714549]  #1: 0.0% system,        0.0% softirq,   95.0% hardirq,  0=
-0% idle
-> [   67.714551]  #2: 0.0% system,        0.0% softirq,   90.0% hardirq,  0=
-0% idle
-> [   67.714553]  #3: 0.0% system,        0.0% softirq,   90.0% hardirq,  0=
-0% idle
-> [   67.714555]  #4: 0.0% system,        0.0% softirq,   95.0% hardirq,  0=
-0% idle
-> [   67.714556]  #5: 0.0% system,        0.0% softirq,   90.0% hardirq,  0=
-0% idle
-> [   67.714570] CPU#9 Detect HardIRQ Time exceeds 50% since 45s. Most time=
--consuming HardIRQs:
-> [   67.714571]  #1: 99.9% irq#7(IPI)
-> [   67.714575]  #2: 0.0% irq#10(arch_timer)
-> [   67.714578]  #3: 0.0% irq#2(IPI)
-> ...
-> [   67.714654] Call trace:
-> [   67.714656]  __do_softirq+0xa8/0x364
->
-> Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
-> ---
->  include/linux/irq.h     |   9 ++
->  include/linux/irqdesc.h |   2 +
->  kernel/irq/irqdesc.c    |   9 +-
->  kernel/watchdog.c       | 186 ++++++++++++++++++++++++++++++++++++++++
->  4 files changed, 205 insertions(+), 1 deletion(-)
+Welcome to v2. Cover letter updated from v1.
 
-Just like on patch #1, I'd overall like to say that I'm very excited
-about this patch and think it'll help track down a lot of issues, so
-please continue moving forward with it!
+TL;DR This builds on commit bf3b9f6372c4 ("epoll: Add busy poll support to
+epoll with socket fds.") by allowing user applications to enable
+epoll-based busy polling and set a busy poll packet budget on a per epoll
+context basis.
 
-That being said, my gut says that this can be a lot simpler / lower
-overhead if we just use the existing IRQ counts that the framework is
-already keeping track of for us. We could look for the IRQs that had
-the most counts on the soft locked CPU over the period of time.
+To allow for this, two ioctls have been added for epoll contexts for
+getting and setting a new struct, struct epoll_params.
 
-It might not be quite as good/accurate compared to what you have here
-but it seems like it would be "good enough". Normally when there's an
-IRQ storm that's so bad that it's causing a softlockup then each IRQ
-isn't actually that slow but they're going off nonstop. It would catch
-that case perfectly.
+This makes epoll-based busy polling much more usable for user
+applications than the current system-wide sysctl and hardcoded budget.
 
-I guess maybe (?) the case it wouldn't catch so well would be if you
-had a loop that looked like:
+Note: patch 1/4 uses an xor so that busy poll is only enabled if the
+per-context busy poll usecs is set or the system-wide sysctl. If both are
+enabled, busy polling does not happen. Calling this out specifically incase
+there are strong feelings about this one; I felt one xor the other made
+sense, but I am open to changing it.
 
-* CPU from "storming" device takes ~10 ms and finishes.
-* After the "storming" device finishes, we somehow manage to service a
-whole pile of normal interrupts from non-storming devices.
-* After the non-storming interrupts finished, then we went back to
-servicing the slow storming interrupt.
+Longer explanation:
 
-I haven't dug into the bowels of the Linux IRQ handling well enough to
-know if that would be possible. However, even if it was possible it
-doesn't feel likely to happen. If those "normal" interrupts aren't
-storming then it seems unlikely we'd see more than one of each of them
-between the "storming" interrupts. Thus it feels like the "storming"
-interrupt would still have the highest (or tied for the highest) count
-on the locked up CPU. Maybe you could print the top 4 or 5 (instead of
-the top 3) and you'd be pretty certain to catch even this case?
+Presently epoll has support for a very useful form of busy poll based on
+the incoming NAPI ID (see also: SO_INCOMING_NAPI_ID [1]).
 
-In any case, I'll wait before doing a more thorough review for now and
-hope the above sounds right to you.
+This form of busy poll allows epoll_wait to drive NAPI packet processing
+which allows for a few interesting user application designs which can
+reduce latency and also potentially improve L2/L3 cache hit rates by
+deferring NAPI until userland has finished its work.
 
--Doug
+The documentation available on this is, IMHO, a bit confusing so please
+allow me to explain how one might use this:
+
+1. Ensure each application thread has its own epoll instance mapping
+1-to-1 with NIC RX queues. An n-tuple filter would likely be used to
+direct connections with specific dest ports to these queues.
+
+2. Optionally: Setup IRQ coalescing for the NIC RX queues where busy
+polling will occur. This can help avoid the userland app from being
+pre-empted by a hard IRQ while userland is running. Note this means that
+userland must take care to call epoll_wait and not take too long in
+userland since it now drives NAPI via epoll_wait.
+
+3. Optionally: Consider using napi_defer_hard_irqs and gro_flush_timeout to
+further restrict IRQ generation form the NIC. These settings are
+system-wide so their impact must be carefully weighed against the running
+applications.
+
+4. Ensure that all incoming connections added to an epoll instance
+have the same NAPI ID. This can be done with a BPF filter when
+SO_REUSEPORT is used or getsockopt + SO_INCOMING_NAPI_ID when a single
+accept thread is used which dispatches incoming connections to threads.
+
+5. Lastly, busy poll must be enabled via a sysctl
+(/proc/sys/net/core/busy_poll).
+
+Please see Eric Dumazet's paper about busy polling [2] and a recent
+academic paper about measured performance improvements of busy polling [3]
+(albeit with a modification that is not currently present in the kernel)
+for additional context.
+
+The unfortunate part about step 5 above is that this enables busy poll
+system-wide which affects all user applications on the system,
+including epoll-based network applications which were not intended to
+be used this way or applications where increased CPU usage for lower
+latency network processing is unnecessary or not desirable.
+
+If the user wants to run one low latency epoll-based server application
+with epoll-based busy poll, but would like to run the rest of the
+applications on the system (which may also use epoll) without busy poll,
+this system-wide sysctl presents a significant problem.
+
+This change preserves the system-wide sysctl, but adds a mechanism (via
+ioctl) to enable or disable busy poll for epoll contexts as needed by
+individual applications, making epoll-based busy poll more usable. Note
+that this change includes an xor allowing only the per-context busy poll or
+the system wide sysctl, not both. If both are enabled, busy polling does
+not happen. Calling this out specifically incase there are strong feelings
+about this one; I felt one xor the other made sense, but I am open to
+changing it.
+
+Thanks,
+Joe
+
+v1 -> v2:
+  - cover letter updated to make a mention of napi_defer_hard_irqs and
+    gro_flush_timeout as an added step 3 and to cite both Eric Dumazet's
+    busy polling paper and a paper from University of Waterloo for
+    additional context. Specifically calling out the xor in patch 1/4
+    incase it is missed by reviewers.
+
+  - Patch 2/4 has its commit message updated, but no functional changes.
+    Commit message now describes that allowing for a settable budget helps
+    to improve throughput and is more consistent with other busy poll
+    mechanisms that allow a settable budget via SO_BUSY_POLL_BUDGET.
+
+  - Patch 3/4 was modified to check if the epoll_params.busy_poll_budget
+    exceeds NAPI_POLL_WEIGHT. The larger value is allowed, but an error is
+    printed. This was done for consistency with netif_napi_add_weight,
+    which does the same.
+
+  - Patch 3/4 the struct epoll_params was updated to fix the type of the
+    data field; it was uint8_t and was changed to u8.
+
+  - Patch 4/4 added to check if SO_BUSY_POLL_BUDGET exceeds
+    NAPI_POLL_WEIGHT. The larger value is allowed, but an error is
+    printed. This was done for consistency with netif_napi_add_weight,
+    which does the same.
+
+[1]: https://lore.kernel.org/lkml/20170324170836.15226.87178.stgit@localhost.localdomain/
+[2]: https://netdevconf.info/2.1/papers/BusyPollingNextGen.pdf
+[3]: https://dl.acm.org/doi/pdf/10.1145/3626780
+
+Joe Damato (4):
+  eventpoll: support busy poll per epoll instance
+  eventpoll: Add per-epoll busy poll packet budget
+  eventpoll: Add epoll ioctl for epoll_params
+  net: print error if SO_BUSY_POLL_BUDGET is large
+
+ .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+ fs/eventpoll.c                                | 105 +++++++++++++++++-
+ include/uapi/linux/eventpoll.h                |  12 ++
+ net/core/sock.c                               |   3 +
+ 4 files changed, 116 insertions(+), 5 deletions(-)
+
+-- 
+2.25.1
+
 
