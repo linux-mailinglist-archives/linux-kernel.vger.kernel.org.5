@@ -1,131 +1,74 @@
-Return-Path: <linux-kernel+bounces-38149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C4D883BB90
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:16:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9F7383BB55
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:11:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3BC92B285D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:16:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8413A2885A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:11:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 199E317BA9;
-	Thu, 25 Jan 2024 08:16:10 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EEA21759E;
+	Thu, 25 Jan 2024 08:10:58 +0000 (UTC)
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BC4D179AF;
-	Thu, 25 Jan 2024 08:16:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 186981756B;
+	Thu, 25 Jan 2024 08:10:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706170569; cv=none; b=ubtF4kP/z96XeWYcSTN5YXIJtJa42WvC1DUCvi9wWhHW2uG/SWnOfSafr4c9YOHEXDDGoOo+UYDRT2GHWYP5T7ultrqGbrQnWvsi/pQMGxEJf4Y1CTjMK3pVdCxx5IDUmWXkb7XSfoJ3nuo8tAdqrZI3rUDp7CIbb+j1oSTIQQ4=
+	t=1706170257; cv=none; b=Tf7KUKiYU7LdSjdv+BxcOQw6kHqcEPueK3ThDfO+mj77Crt2aawUk5/J5zuMbIUhrKVCJG4Ws6ZJNk1J8XsBMor1hBpnkMheYaTwY9h+a+7Ho/9Z6pJ3AeJ65n5rsa7h1b7VaXyLiONoW1n5iVkRtXPRpOKtEIl0M+tp0pV7k8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706170569; c=relaxed/simple;
-	bh=Xl0TmeJ+mRn2vWcKVhHEFlceOfHZO+RIPMQACXTlSFw=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HueivX/aQAa/lyPTduVtDU3P4RPSmCiB0iUKlSlx+A9deG3LAQiowneVgyvc1vvCZGpT/KHHwfTH8QkGzAGf5qgIHZLKLVOs2wn/TXcRchahZEkj7IZG3CaYtkjnNP7y4cwUe8R0fipHCRRti3cerRJHQnjcSYxOxjknlbJS3qo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TLDBb64V4zhZPy;
-	Thu, 25 Jan 2024 16:14:31 +0800 (CST)
-Received: from kwepemm600005.china.huawei.com (unknown [7.193.23.191])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0C13A1400E3;
-	Thu, 25 Jan 2024 16:16:05 +0800 (CST)
-Received: from huawei.com (10.50.165.33) by kwepemm600005.china.huawei.com
- (7.193.23.191) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 25 Jan
- 2024 16:16:04 +0800
-From: Longfang Liu <liulongfang@huawei.com>
-To: <alex.williamson@redhat.com>, <jgg@nvidia.com>,
-	<shameerali.kolothum.thodi@huawei.com>, <jonathan.cameron@huawei.com>
-CC: <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linuxarm@openeuler.org>, <liulongfang@huawei.com>
-Subject: [PATCH 3/3] Documentation: add debugfs description for hisi migration
-Date: Thu, 25 Jan 2024 16:10:31 +0800
-Message-ID: <20240125081031.48707-4-liulongfang@huawei.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20240125081031.48707-1-liulongfang@huawei.com>
-References: <20240125081031.48707-1-liulongfang@huawei.com>
+	s=arc-20240116; t=1706170257; c=relaxed/simple;
+	bh=cIdPxH2vkyKy+0ZVR3QifIcpYvOOFuiDKYqG8t4FD7M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zl3VCUcA3RHLApiQUSxBbOB8JUFudJNQrPLnVNyIY45e62PoTnJr/pkDZ2tCgJea4SKkWNN5iTRPywfVOwtYd8LD7hHYPoOu9DIo/UQ6M5B+DYIBd7eB05s9/0UMopGOusAyM62coOTWGuKmuJv4Dl9ufEsPPya3kXNN7qJEPlk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id E75D667373; Thu, 25 Jan 2024 09:10:50 +0100 (CET)
+Date: Thu, 25 Jan 2024 09:10:50 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
+	tj@kernel.org, jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: [PATCH, RFC] block: set noio context in
+ submit_bio_noacct_nocheck
+Message-ID: <20240125081050.GA21006@lst.de>
+References: <20240124093941.2259199-1-hch@lst.de> <be690355-03c6-42e2-a13f-b593ad1c0edd@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600005.china.huawei.com (7.193.23.191)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <be690355-03c6-42e2-a13f-b593ad1c0edd@kernel.dk>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-Add a debugfs document description file to help users understand
-how to use the hisilicon accelerator live migration driver's
-debugfs.
+On Wed, Jan 24, 2024 at 08:40:28AM -0700, Jens Axboe wrote:
+> On 1/24/24 2:39 AM, Christoph Hellwig wrote:
+> > Make sure all in-line block layer submission runs in noio reclaim
+> > context.  This is a big step towards allowing GFP_NOIO, the other
+> > one would be to have noio (and nofs for that matter) workqueues for
+> > kblockd and driver internal workqueues.
+> 
+> I really don't like adding this for no good reason. Who's doing non NOIO
+> allocations down from this path?
 
-Update the file paths that need to be maintained in MAINTAINERS
+If there is a non-NOIO allocation right now that would be a bug,
+although I would not be surprised if we had a few of them.
 
-Signed-off-by: Longfang Liu <liulongfang@huawei.com>
----
- .../ABI/testing/debugfs-hisi-migration        | 34 +++++++++++++++++++
- MAINTAINERS                                   |  1 +
- 2 files changed, 35 insertions(+)
- create mode 100644 Documentation/ABI/testing/debugfs-hisi-migration
+The reason to add this is a different one:  The MM folks want to
+get rid of GFP_NOIO and GFP_NOFS and replace them by these context.
 
-diff --git a/Documentation/ABI/testing/debugfs-hisi-migration b/Documentation/ABI/testing/debugfs-hisi-migration
-new file mode 100644
-index 000000000000..d61255c3bcd9
---- /dev/null
-+++ b/Documentation/ABI/testing/debugfs-hisi-migration
-@@ -0,0 +1,34 @@
-+What:		/sys/kernel/debug/vfio/<device>/migration/hisi_acc/data
-+Date:		JAN 2024
-+KernelVersion:  6.8
-+Contact:	Longfang Liu <liulongfang@huawei.com>
-+Description:	Read the live migration data of the vfio device.
-+		These data include device status data, queue configuration
-+		data and some task configuration data.
-+		The output format of the data is defined by the live
-+		migration driver.
-+
-+What:		/sys/kernel/debug/vfio/<device>/migration/hisi_acc/attr
-+Date:		JAN 2024
-+KernelVersion:  6.8
-+Contact:	Longfang Liu <liulongfang@huawei.com>
-+Description:	Read the live migration attributes of the vfio device.
-+		it include device status attributes and data length attributes
-+		The output format of the attributes is defined by the live
-+		migration driver.
-+
-+What:		/sys/kernel/debug/vfio/<device>/migration/hisi_acc/cmd_state
-+Date:		JAN 2024
-+KernelVersion:  6.8
-+Contact:	Longfang Liu <liulongfang@huawei.com>
-+Description:	Used to obtain the device command sending and receiving
-+		channel status. If successful, returns the command value.
-+		If failed, return error log.
-+
-+What:		/sys/kernel/debug/vfio/<device>/migration/hisi_acc/save
-+Date:		JAN 2024
-+KernelVersion:  6.8
-+Contact:	Longfang Liu <liulongfang@huawei.com>
-+Description:	Trigger the Hisilicon accelerator device to perform
-+		the state saving operation of live migration through the read
-+		operation, and output the operation log results.
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 20f8e9872deb..115d43d307e8 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -22856,6 +22856,7 @@ M:	Longfang Liu <liulongfang@huawei.com>
- M:	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
- L:	kvm@vger.kernel.org
- S:	Maintained
-+F:	Documentation/ABI/testing/debugfs-hisi-migration
- F:	drivers/vfio/pci/hisilicon/
- 
- VFIO MEDIATED DEVICE DRIVERS
--- 
-2.24.0
-
+And doing this in the submission path and kblockd will cover almost
+all of the noio context, with the rest probably covered by other
+workqueues.  And this feels a lot less error prone than requiring
+every driver to annotate the context in their submission routines.
 
