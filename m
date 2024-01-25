@@ -1,142 +1,127 @@
-Return-Path: <linux-kernel+bounces-38181-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38182-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D40183BC15
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:35:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B749B83BC18
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:35:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D19BB230FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:35:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71382285904
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:35:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BC0D1B945;
-	Thu, 25 Jan 2024 08:34:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C52717735;
+	Thu, 25 Jan 2024 08:35:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BySedhPL"
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="wivu03eQ"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 280DA17731;
-	Thu, 25 Jan 2024 08:34:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD42C17BD4
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:35:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706171698; cv=none; b=I8PrZNhH55TV1uQx4zQ1xWpEF2mB3ZfxKLYcWWJ2UO/2U3zl8M3QrGZwb7OgLf2X610IN660RwsbU7WbgLdsLo+5EmSMPZHvgJbknrWXHTNgROil843LutsK27DvcA591VaDW3StEmDXA7do3iWREIV4SO4nbe8C8QxVVhlv710=
+	t=1706171715; cv=none; b=MCKmBxdbPOiNXNi7AkV4tdn2L5+lWqlWLGYF9aUzMf57X7gwFHXQ/STCG767vDEi0nmT71CDtPG2u2QuESgLG4oJatIrTuPPHkpkJgRCx+0dO3VpPA/r8wr7DM2QFp9t2kfexC8dnOfuZ82S2Ir1AVQKbb8utNJ2i6YnWmNxzmA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706171698; c=relaxed/simple;
-	bh=xQ3ELqXF3nkIUmMUdjf/42MCdn5UjLE2cnrQvuBnX2k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=siLiNR98ubOPx2jcL5dvBBlWh/3qSsDlBof7Lb6TZvWXJMwJmM7LvxOs4tAv0XpibuqkM8OfyKEYgZQFnJB5vjq2Mk5rjxtXmsMZMYzoqAn5ogyBH0AILbxLyDawVxnAXrPfKry7peFoqa4f+nWfItWrIP9Tp8Qk69H6GwAUd2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BySedhPL; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc372245aefso2677961276.2;
-        Thu, 25 Jan 2024 00:34:56 -0800 (PST)
+	s=arc-20240116; t=1706171715; c=relaxed/simple;
+	bh=yi/4Czfks9LIWr5CkZUzmlQI1+oB5EfuKTiOSgTBaH4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=e2rmsTQhVN/bBZUzZQWqRilp3mtJLNoskyTfFIUuEuQAtHWLvwoLY+lJQE4cm8gi1rlWUIu/Dr+5URKG7de4HcyY3R5aM5janOA3Fa9HVEu7jeKT0Fx/fxwLWOJZC99wmj07/PpiF3FbodZVxO8tNPgTYl+RwW3fOT7zeH3DqpA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=wivu03eQ; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40e60e135a7so63255015e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 00:35:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706171696; x=1706776496; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7U7VKdIWyrhj7s7eAQrsWiZ5oaoSX60SyzCWbwjlQO0=;
-        b=BySedhPLJF5ZWQpu+QrPP35CqU3k006s1dUWWy1zf7VAhKaVIf+x0GA6oe1WxKrb/m
-         eJxXWPwptcf1jZCOcPKkDdwatfEe093dH7+ZxgrZwVD28hQYCexk1wl0KHbmtCgA16wc
-         85eZiZ77fXS8N+RqlsJvuDeOwK271jKRZW3WmZf996F0jYhsQ2QNzEMbeDrJ2zmuBh2/
-         0nXta/piOQR4q0A0z55fAZ1qivSgL1/NO6DF66e34WOB2M4cDJpTOth4Si6aDOOL7uaQ
-         q4uKX5wucIYAUGT9Q8ij8CR21rKc9lEn8gCED+oSB3RSfEuEzLWF+o+kmSsOVbZqPyMs
-         6aAA==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1706171710; x=1706776510; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=r7cb1ndwKgmJR9epTnoZNNIKyvDAN1904iU4WrDFcng=;
+        b=wivu03eQIK/7YqSYXj04yMQptdU1+igmE3F0+A7hBlTceyGJyEcA7Wkgml7Q64cEYK
+         F8mERcOIY/EIJBpPFmnxEeZwj5P+CbokimNJ04YTW/5Iga9joBwGcJE3uCL8bFyncJW0
+         JAaYgzn+ua8G8qPuOnFOnMIgLjwQYRWclQZ2sZufZYAYO0eZ4pS602pwmHE4Khzi6cYu
+         WgqJr7eiD020lCF/xkkM6/kJfT8jOwbAzzO7JIL+E4k0VUYeCZdpP7HjaMP2b79Mywlm
+         qRdSLhffMW1VMKbbvGAoFRKBgr4QnHR7v+ypEp4hyD0lUl19ldfTaTODDJXJt7rt4/TB
+         SQAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706171696; x=1706776496;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1706171710; x=1706776510;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=7U7VKdIWyrhj7s7eAQrsWiZ5oaoSX60SyzCWbwjlQO0=;
-        b=YpqLa0dIO3rv2ru8BIezSzaWld++7evnnFHzOfL5lwZppxNhGcqkXUzT+ultEWtKS4
-         k2ic4wQgtFmpZVzPKDF1SR5F5JUVz60VC/aRQaSAVl8oQwLZfitbuE9WGTbNbcirI9D5
-         5rRlptZu39pGyG9xsFMgteszAAqDNDPGN9sJ3Py0N2tpkiwCYOexrvy2TpGXSpTiihEG
-         QyWCUjNdc5iWi9fLE1KEnMfScTlXhscGxv7IJqU9DiglxBB07yYVmvBK+Epm+HiooQa3
-         u2mAduCu9imSpuyUrP3uDX+wz+d2wXasaQpQggN4r8y9R9plQ0qAOAzCYxeNli47eQwC
-         tICg==
-X-Gm-Message-State: AOJu0Yw6EwF65TWD11NCMjUdQg6mowHAVop8OSGnG5QqNLGn3AaqZNWr
-	VR9liHb/2+x3+Lhv7A9Dd19jjXnu1hSEGjcBORmFlVyRnWNGN3WAKAK4Klwd/D19Jh1E2dgLbFI
-	xteEvwhcm9+X0FaKgybLmn+8CPKz8UygzSw==
-X-Google-Smtp-Source: AGHT+IE/4ow0NdqbVoY+ay5s1tDiOWK1PsDj9qa5dZ+9geKzcPOli/gpF6TyXHCqnfgNB5DZXhk5dxAJ3zEjIEKykFM=
-X-Received: by 2002:a05:6902:2808:b0:dc2:5674:b408 with SMTP id
- ed8-20020a056902280800b00dc25674b408mr489570ybb.57.1706171695943; Thu, 25 Jan
- 2024 00:34:55 -0800 (PST)
+        bh=r7cb1ndwKgmJR9epTnoZNNIKyvDAN1904iU4WrDFcng=;
+        b=Ood271E3vDOSWQ/+5zKUsUSzMOL/cbRltKHernSoa9rJh+J0PhPdSrQOWGsCBFRKFH
+         oGh5hKd8okqMnvmA2nOv8ck9RuuAMXfJBGg/vxfkmXW+F8l1NMBINtg8D2flYVIBOWl/
+         JcmEyTCBwbfhyLxyUCxNKuweS2mqBLQZhSxwLgfq4C6MrOcoeuNDg+MB1649vVhC6s8I
+         s5b9HJSdP2399NsMnMwIV25SiKxs9xGCO6vKII6TSxFhRQj2rxwb7fuysNS/5e8IMbVM
+         faejut5mLZ2JZ32lnZVqBYv9tWkVnBvlF1Ko2M0vOjh+bpMKUBDFsiGrWAr5TEEGj2zH
+         tmAw==
+X-Gm-Message-State: AOJu0YzbPBhI/qjgG7oZHJLXgpVhvX330aYo07bS74f2G/A108jm9DH7
+	okVdDDRKIAFB1iv3K0zXE0mJMdFpYEgsFhq3LmuZ9XLlEGhlFmFXx8k5NWBHfrY=
+X-Google-Smtp-Source: AGHT+IEhTd+knmYT5ge0F8Dk7Hl9LXxICTxlv+/zSYtcEvZDA79lZLulIp9/0fBqOZ39iDPOfMhYWg==
+X-Received: by 2002:a05:600c:511d:b0:40e:50ac:d24e with SMTP id o29-20020a05600c511d00b0040e50acd24emr402802wms.13.1706171710048;
+        Thu, 25 Jan 2024 00:35:10 -0800 (PST)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:5c05:1552:a486:c7ef])
+        by smtp.gmail.com with ESMTPSA id w15-20020adfec4f000000b00338a3325331sm15435858wrn.69.2024.01.25.00.35.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 00:35:09 -0800 (PST)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Linus Walleij <linus.walleij@linaro.org>,
+	Kent Gibson <warthog618@gmail.com>
+Cc: linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	=?UTF-8?q?Jos=C3=A9=20Guilherme=20de=20Castro=20Rodrigues?= <joseguilhermebh@hotmail.com>
+Subject: [PATCH v2] gpio: improve the API contract for setting direction
+Date: Thu, 25 Jan 2024 09:35:07 +0100
+Message-Id: <20240125083507.25213-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124103010.51408-1-sunhao.th@gmail.com> <5d33819c5f752755614882e30d971488731d97e0.camel@gmail.com>
-In-Reply-To: <5d33819c5f752755614882e30d971488731d97e0.camel@gmail.com>
-From: Hao Sun <sunhao.th@gmail.com>
-Date: Thu, 25 Jan 2024 09:34:44 +0100
-Message-ID: <CACkBjsZjYewSh4ZHFbj-D_Z7kGOeaVLfROcEDE1beNEDn-aU-A@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: Reject pointer spill with var offset
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, andreimatei1@gmail.com, ast@kernel.org, 
-	andrii@kernel.org, daniel@iogearbox.net, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
->
-> I tried this example as a part of selftest
-> (If put to tools/testing/selftests/bpf/progs/verifier_map_ptr.c
->  could be executed using command:
->  ./test_progs -vvv -a 'verifier_map_ptr/ctx_addr_leak @unpriv'):
->
-> SEC("socket")
-> __failure_unpriv
-> __msg_unpriv("spilling pointer with var-offset is disallowed")
-> __naked void ctx_addr_leak(void)
-> {
->         asm volatile (
->                 "r0 = 0;"
->                 "*(u64 *)(r10 -8) = r0;"
->                 "*(u64 *)(r10 -16) = r0;"
->                 "*(u64 *)(r10 -24) = r0;"
->                 "r6 = r1;"
->                 "r1 = 8;"
->                 "r1 /= 1;"
->                 "r1 &= 8;"
->                 "r2 = r10;"
->                 "r2 += -16;"
->                 "r2 += r1;"
->                 "*(u64 *)(r2 +0) = r6;"
->                 "r1 = %[map_hash_16b] ll;"
->                 "r2 = r10;"
->                 "r2 += -16;"
->                 "r3 = r10;"
->                 "r3 += -8;"
->                 "r4 = 0;"
->                 "call %[bpf_map_update_elem];"
->                 "r0 = *(u64 *)(r10 -8);"
->                 "exit;"
->         :
->         : __imm(bpf_map_update_elem),
->           __imm_addr(map_hash_16b)
->         : __clobber_all);
-> }
->
-> And see the following error message:
->
-> ...
-> r1 &= 8                       ; R1_w=Pscalar(smin=smin32=0,smax=umax=smax32=umax32=8,var_off=(0x0; 0x8))
-> r2 = r10                      ; R2_w=fp0 R10=fp0
-> r2 += -16                     ; R2_w=fp-16
-> r2 += r1
-> R2 variable stack access prohibited for !root, var_off=(0x0; 0x8) off=-16
->
-> Could you please craft a selftest that checks for expected message?
-> Overall the change makes sense to me.
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Testing this case with test_progs/test_verifier is hard because it happens
-when cpu_mitigations_off() is true, but we do not have this setup yet.
-So the mentioned prog is rejected by sanitize_check_bounds() due to ptr
-alu with var_off when adding it to test_progs, and loading as unpriv.
+If a GPIO driver returns a positive integer from one of the direction
+setter callbacks, we'll end up propagating it to user-space. Whether we
+should sanitize the values returned by callbacks is a different question
+but let's first improve the documentation and fortify the contract with
+GPIO providers.
 
-My local test was conducted: (1) booting the kernel with "mitigations=off"
-so that bypass_spec_v1 is true and sanitize_check_bounds() is skipped;
-(2) running the prog without the patch leaks the pointer; (3) loading the
-prog with the patch applied resulting in the expected message.
+Reported-by: José Guilherme de Castro Rodrigues <joseguilhermebh@hotmail.com>
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+---
+v1 -> v2:
+- add a mention of 0 being return on success
+
+ include/linux/gpio/driver.h | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
+index 9a5c6c76e653..90cd57796b36 100644
+--- a/include/linux/gpio/driver.h
++++ b/include/linux/gpio/driver.h
+@@ -335,10 +335,12 @@ struct gpio_irq_chip {
+  *	(same as GPIO_LINE_DIRECTION_OUT / GPIO_LINE_DIRECTION_IN),
+  *	or negative error. It is recommended to always implement this
+  *	function, even on input-only or output-only gpio chips.
+- * @direction_input: configures signal "offset" as input, or returns error
+- *	This can be omitted on input-only or output-only gpio chips.
+- * @direction_output: configures signal "offset" as output, or returns error
+- *	This can be omitted on input-only or output-only gpio chips.
++ * @direction_input: configures signal "offset" as input, returns 0 on success
++ *	or a negative error number. This can be omitted on input-only or
++ *	output-only gpio chips.
++ * @direction_output: configures signal "offset" as output, returns 0 on
++ *	success or a negative error number. This can be omitted on input-only
++ *	or output-only gpio chips.
+  * @get: returns value for signal "offset", 0=low, 1=high, or negative error
+  * @get_multiple: reads values for multiple signals defined by "mask" and
+  *	stores them in "bits", returns 0 on success or negative error
+-- 
+2.40.1
+
 
