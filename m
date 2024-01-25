@@ -1,184 +1,107 @@
-Return-Path: <linux-kernel+bounces-39333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2193783CED6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:48:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97E3283CEDC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:49:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92C581F28A6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:48:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4D11B26FEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:49:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BC0F13AA26;
-	Thu, 25 Jan 2024 21:48:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA49A13AA43;
+	Thu, 25 Jan 2024 21:48:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kmzzfGms"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NBZqDCRb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17BAC634E8;
-	Thu, 25 Jan 2024 21:48:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF2E1135413;
+	Thu, 25 Jan 2024 21:48:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706219301; cv=none; b=C3hWt4FJEumGECB5TYGh5NOWm1NanGBO5lkSOvGM8JepFFmF+xknI1/NlVSa6+bhYm3lm+9H/Q+8ldafgoqwLqiSz0UjSjA3sLKZ2rZcXHxRzLdsTRD9yJhaoD6TF+KMe/ji2TvSTWQshJu2dclLsamPGoINpxuBYax9D6cHSBs=
+	t=1706219336; cv=none; b=RpwdciipZR6ES0yJ2+vJe6G42oxUaNYOgsk0EyMJI9jhB1dAJ3ot+H/bUfTdbhuFu9bmJLzftHyA2l2BKUxE9RnbtVZzvxi3pk0YBMICYCHfvRvv002rFZEIeglb8OUlgB5BuZ9zM+0cPd34JGD+18j19BO4sIb9k6X6VU+Asuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706219301; c=relaxed/simple;
-	bh=gxD6wLjO9/201y2Y9XhzXJidT9LORX6jQWUUbKfoiZs=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pB8RP9jmsm49J+nFNaBAsFtqp9ZBnnDbhFA2b/7McinOGP/55EDjz7k3EkCkBVqlsK9KOiIqWyCn50Z7Gbdo1eMJLvOQCZ5xZXSbRD7LspsTvdDnJ/77A5ewxRTbB0JRKUljeLX4RvCYG7iTTzeTHd1YEJkxFr+5erCJPsQTlUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kmzzfGms; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5101d38e9b1so204168e87.1;
-        Thu, 25 Jan 2024 13:48:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706219298; x=1706824098; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qrKeQewcWwFL5vL1nGiLtWlm7WkCmJpd3uurZ4CeExQ=;
-        b=kmzzfGmskvdMeYpRtp/dEwBUJapWWr+8abKZC7Kk+qM3VhUktmekKn5rGvMgMFyiZu
-         /SVdqEvFDZCiFSHXApKfSTbKfqwttKQXFW8cj0MsMulJtquIpXIJJcqbhNVFEufalnwA
-         29fkRQ2VwnCBRdFLd0/KwT7OyGePLBl1F0jzAHGoLYjHLcfknxs++GSwKaQjRz+unrb4
-         6AE9fBvr+mklHQSpP4/9eJjCp+HeAYqWePljIEGSEeFoYbgVKbIN/95QaR5ENGd0USJ1
-         XT4jEjifZGWHflOrzMYNnxf9XK3zNbNHo/gz1Y0tOwLYwRXNMk0YpcU1xsHZEaHzcx0N
-         53TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706219298; x=1706824098;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qrKeQewcWwFL5vL1nGiLtWlm7WkCmJpd3uurZ4CeExQ=;
-        b=qpK7tjR+DBlCOXOvjLJp7AieCDXfLhhpLJBQoLi7z5BCZr3w4ex7sv/2kUYV/6fmtI
-         q7Gxle+Gb9Fq4zM7IyP0pMsb4wCbrIKrLaFGlxRH0F3YOT1ZQ+Al25CksD4p4qjOHYdb
-         3WC/4OGt7GoEhaIUr+dGVss9pP2SUZOPV2B56ZTDh0fVkxEs9qxar/vUzRLGPU2eDhb9
-         izNTez18nFS7bTB3zLl6T6cowKxu3hscadlglkow0KaKz0qX862xKI1qntEb0avqMrUX
-         aDq1zViWRgQe08qwXWNtcVNvjyyKE6MV3d2S2SlqodgiiK4gBo+oFt11F7Fk86+XRCYJ
-         0kug==
-X-Gm-Message-State: AOJu0Ywx25YvHfQLh9Nn45J68PjmcKw79h2Upabjv5BIMparLhYvgu44
-	9g/4G7Grs0QxRh+iMUonzY3o1Mc0JdQgZof+pHLNs64fnI9mxUZq
-X-Google-Smtp-Source: AGHT+IFkzs0/quHfA3kUyUVwzlPbepDoGXYlGjDLUf8IXT9q1mUX4cF6lZ2nyJU3cs/sXFZTNpT1rQ==
-X-Received: by 2002:a19:4f07:0:b0:50e:84f9:22dc with SMTP id d7-20020a194f07000000b0050e84f922dcmr575332lfb.2.1706219297770;
-        Thu, 25 Jan 2024 13:48:17 -0800 (PST)
-Received: from localhost (88-115-161-74.elisa-laajakaista.fi. [88.115.161.74])
-        by smtp.gmail.com with ESMTPSA id q16-20020ac24a70000000b0051018c2f199sm351375lfp.206.2024.01.25.13.48.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 13:48:17 -0800 (PST)
-Date: Thu, 25 Jan 2024 23:48:13 +0200
-From: Zhi Wang <zhi.wang.linux@gmail.com>
-To: Longfang Liu <liulongfang@huawei.com>
-Cc: <alex.williamson@redhat.com>, <jgg@nvidia.com>,
- <shameerali.kolothum.thodi@huawei.com>, <jonathan.cameron@huawei.com>,
- <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linuxarm@openeuler.org>
-Subject: Re: [PATCH 1/3] hisi_acc_vfio_pci: extract public functions for
- container_of
-Message-ID: <20240125234813.00005f5d.zhi.wang.linux@gmail.com>
-In-Reply-To: <20240125081031.48707-2-liulongfang@huawei.com>
-References: <20240125081031.48707-1-liulongfang@huawei.com>
-	<20240125081031.48707-2-liulongfang@huawei.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-w64-mingw32)
+	s=arc-20240116; t=1706219336; c=relaxed/simple;
+	bh=rWGTonIdjaAw97+VCMgdvv8+A740NjupUkUrNWkZhiU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VIyxkyuO64u1Y6eoIxZP3XE4WNxTrDty5SqRG8WoJOmuOs2NLaL6y2eUvPQqPSOtk3c5Muf6nbka/xPIFqvgb+WFxBzODwbaQG0UxcyQptLLpylLfO2GRzQJTXNqRqzmGi1F8Z1H1CxCywbIZfq3fA99Eb1OUu2+zNnF5FJT2Ik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NBZqDCRb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD265C433C7;
+	Thu, 25 Jan 2024 21:48:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706219335;
+	bh=rWGTonIdjaAw97+VCMgdvv8+A740NjupUkUrNWkZhiU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NBZqDCRb8YD9sWKY5X5LSGXBZlsGS5XW90KA4XY5rwha8+ew31eOIpNFyMuattB4w
+	 2sz8XKtIikx9HlT5vLckXPu1NtzXZqplpKMxpUQVIdM/jSBGwdp3dapwPJJkH5PWPU
+	 3wnPCxc/O51mJ4W7Bl+DBqK0MIiZdH+I3x08hAbUmq3FFVnZ7/IFxC3MJ8UZ2Xclyr
+	 rcwFlKGeOghipvEhMXHX7vXwe1da98i7EosC7ZRaf8GBBOmBj+m1ftDESID+YFE861
+	 Z28nCaCuycEPvpwQ54qFY+y2LfyseerDBw8ftFaf7V2pPT0gF8y4Zs61QrL1M3KM/U
+	 yCjsFsafBTZlw==
+Date: Thu, 25 Jan 2024 21:48:48 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Sam Protsenko <semen.protsenko@linaro.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, andi.shyti@kernel.org,
+	arnd@arndb.de, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	alim.akhtar@samsung.com, linux-spi@vger.kernel.org,
+	linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-arch@vger.kernel.org, andre.draszik@linaro.org,
+	peter.griffin@linaro.org, kernel-team@android.com,
+	willmcvicker@google.com
+Subject: Re: [PATCH v2 10/28] spi: s3c64xx: use full mask for {RX,
+ TX}_FIFO_LVL
+Message-ID: <e2c25c1b-7fe9-4174-95ed-e867eff14e37@sirena.org.uk>
+References: <20240125145007.748295-1-tudor.ambarus@linaro.org>
+ <20240125145007.748295-11-tudor.ambarus@linaro.org>
+ <CAPLW+4nOGjfniu+shzO5irmH5bC1E_yD0EZcuDwQJKdfMiDswA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="D8vvs0/b2DbNCmIR"
+Content-Disposition: inline
+In-Reply-To: <CAPLW+4nOGjfniu+shzO5irmH5bC1E_yD0EZcuDwQJKdfMiDswA@mail.gmail.com>
+X-Cookie: Entropy isn't what it used to be.
 
-On Thu, 25 Jan 2024 16:10:29 +0800
-Longfang Liu <liulongfang@huawei.com> wrote:
 
-> In the current driver, vdev is obtained from struct
-> hisi_acc_vf_core_device through the container_of function.
-> This method is used in many places in the driver. In order to
-> reduce this repetitive operation, I extracted a public function
-> to replace it.
-> 
-It is better to use the passive voice in the patch comment.
-> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
-> ---
->  .../vfio/pci/hisilicon/hisi_acc_vfio_pci.c    | 21
-> ++++++++++--------- 1 file changed, 11 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
-> b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c index
-> f4b38a243aa7..5f6e01571a7b 100644 ---
-> a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c +++
-> b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c @@ -641,6 +641,12 @@
-> static void hisi_acc_vf_disable_fds(struct hisi_acc_vf_core_device
-> *hisi_acc_vde } }
->  
-> +static struct hisi_acc_vf_core_device *hisi_acc_get_vf_dev(struct
-> vfio_device *vdev) +{
-> +	return container_of(vdev, struct hisi_acc_vf_core_device,
-> +			    core_device.vdev);
-> +}
-> +
->  /*
->   * This function is called in all state_mutex unlock cases to
->   * handle a 'deferred_reset' if exists.
-> @@ -1064,8 +1070,7 @@ static struct file *
->  hisi_acc_vfio_pci_set_device_state(struct vfio_device *vdev,
->  				   enum vfio_device_mig_state
-> new_state) {
-> -	struct hisi_acc_vf_core_device *hisi_acc_vdev =
-> container_of(vdev,
-> -			struct hisi_acc_vf_core_device,
-> core_device.vdev);
-> +	struct hisi_acc_vf_core_device *hisi_acc_vdev =
-> hisi_acc_get_vf_dev(vdev); enum vfio_device_mig_state next_state;
->  	struct file *res = NULL;
->  	int ret;
-> @@ -1106,8 +1111,7 @@ static int
->  hisi_acc_vfio_pci_get_device_state(struct vfio_device *vdev,
->  				   enum vfio_device_mig_state
-> *curr_state) {
-> -	struct hisi_acc_vf_core_device *hisi_acc_vdev =
-> container_of(vdev,
-> -			struct hisi_acc_vf_core_device,
-> core_device.vdev);
-> +	struct hisi_acc_vf_core_device *hisi_acc_vdev =
-> hisi_acc_get_vf_dev(vdev); 
->  	mutex_lock(&hisi_acc_vdev->state_mutex);
->  	*curr_state = hisi_acc_vdev->mig_state;
-> @@ -1323,8 +1327,7 @@ static long hisi_acc_vfio_pci_ioctl(struct
-> vfio_device *core_vdev, unsigned int 
->  static int hisi_acc_vfio_pci_open_device(struct vfio_device
-> *core_vdev) {
-> -	struct hisi_acc_vf_core_device *hisi_acc_vdev =
-> container_of(core_vdev,
-> -			struct hisi_acc_vf_core_device,
-> core_device.vdev);
-> +	struct hisi_acc_vf_core_device *hisi_acc_vdev =
-> hisi_acc_get_vf_dev(core_vdev); struct vfio_pci_core_device *vdev =
-> &hisi_acc_vdev->core_device; int ret;
->  
-> @@ -1347,8 +1350,7 @@ static int hisi_acc_vfio_pci_open_device(struct
-> vfio_device *core_vdev) 
->  static void hisi_acc_vfio_pci_close_device(struct vfio_device
-> *core_vdev) {
-> -	struct hisi_acc_vf_core_device *hisi_acc_vdev =
-> container_of(core_vdev,
-> -			struct hisi_acc_vf_core_device,
-> core_device.vdev);
-> +	struct hisi_acc_vf_core_device *hisi_acc_vdev =
-> hisi_acc_get_vf_dev(core_vdev); struct hisi_qm *vf_qm =
-> &hisi_acc_vdev->vf_qm; 
->  	iounmap(vf_qm->io_base);
-> @@ -1363,8 +1365,7 @@ static const struct vfio_migration_ops
-> hisi_acc_vfio_pci_migrn_state_ops = { 
->  static int hisi_acc_vfio_pci_migrn_init_dev(struct vfio_device
-> *core_vdev) {
-> -	struct hisi_acc_vf_core_device *hisi_acc_vdev =
-> container_of(core_vdev,
-> -			struct hisi_acc_vf_core_device,
-> core_device.vdev);
-> +	struct hisi_acc_vf_core_device *hisi_acc_vdev =
-> hisi_acc_get_vf_dev(core_vdev); struct pci_dev *pdev =
-> to_pci_dev(core_vdev->dev); struct hisi_qm *pf_qm =
-> hisi_acc_get_pf_qm(pdev); 
+--D8vvs0/b2DbNCmIR
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Jan 25, 2024 at 02:03:15PM -0600, Sam Protsenko wrote:
+> On Thu, Jan 25, 2024 at 8:50=E2=80=AFAM Tudor Ambarus <tudor.ambarus@lina=
+ro.org> wrote:
+
+> > +#define S3C64XX_SPI_ST_RX_FIFO_LVL             GENMASK(23, 15)
+
+> What about s3c* architectures, where RX_LVL starts with bit #13, as
+> can be seen from .rx_lvl_offset values in corresponding port_configs?
+> Wouldn't this change break those?
+
+I should point out that I have a s3c6410 board I care about.
+
+--D8vvs0/b2DbNCmIR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWy1z8ACgkQJNaLcl1U
+h9A4kAf/Q+HBGYYkQyjJ5STSJRHGbWJxkifiVS4eI6m2f7lwAyvgTOjwWh00Ok4+
+Cyya2gAMfFPhwVXlaJDdCJy/iUerkZi31WdJ1mWXIi8emYRn8hzqPEMupJMjiHGK
+T05f9YtcTwyD1P2cHdhrrq0d8hpGqwvfH7zBsKDTwqXqS6BtARjR4MLX7mvReCYj
+uHHO2UtwKzAOClsM6BeDnSciuXDx2z57MhaXZNX9RpeMTrYCW57UdkfPOS0ZuSty
+6pAdSh7jgREL7cSTq2cU5K4BOXlwcWdmGPRk1d7V5x55zmPWVeuKZzGmfji1BQz9
+XH9AJbaQWAdfFzGPvs730pb/JC1GRw==
+=j0Ln
+-----END PGP SIGNATURE-----
+
+--D8vvs0/b2DbNCmIR--
 
