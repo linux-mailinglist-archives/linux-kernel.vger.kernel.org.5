@@ -1,204 +1,306 @@
-Return-Path: <linux-kernel+bounces-39075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9405683CA96
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:10:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7B8F83CA9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:10:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8208B24829
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:10:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8605B1F25D7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:10:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5C171339BA;
-	Thu, 25 Jan 2024 18:10:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4420613399E;
+	Thu, 25 Jan 2024 18:10:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CIRbStlj"
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="CGkvof0E"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09FA8132C04;
-	Thu, 25 Jan 2024 18:10:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96E0913475F
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 18:10:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706206210; cv=none; b=gZ5ZyUQ86qEaOj3blf2ce3Z3I3074NMe4qJyP8cE5vbGYd43ZfRuFmSLpLekm1ULgNrsvKfO0UpQ2Cp+QDcW4hpfqzmNr56ywktWAdQe4Hp/j06TYFPG96uaw6q07YtQG16sbZ7Asp0i54tR8MvTdHzsFjzuiJlQ89tmwRyUqhw=
+	t=1706206217; cv=none; b=lnWsumcKYKgYlmNvq/MZ+h5YLsvlhjNl1rBgalOvJbPaRSUNJRXb16g29h2giZpWMG0Jj5jMuXB2tJ4/ALHOXsgpz0W45DpNS3Y0td8fCay2jHk/fkIIatAx3Axbyq0kIJM/8VXJmZXQlQ6mZBi+zn5VG3672MynOvEiONK5veY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706206210; c=relaxed/simple;
-	bh=2qxgiU/kjGyslf6jlA4bqvkrXtYXz08QZ7CIiQ+YWyo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
-	 In-Reply-To:Content-Type; b=JJDloCB3ImA23qzbTY9hgUwgXo9qht8tHn4cpHaiUNTatfjqXylY1ZADm2rBMW/q0VvOOcbK5aSu+Vz9XqdDf623d9l7mTAFzgOMyXbs0uUFmOKS6jUut5Vct+J93/6rILFKhNLPX636VoelU1d5wqGpLypjpAi2KKsAVtSAe6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CIRbStlj; arc=none smtp.client-ip=95.215.58.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d5bf7be3-8c9e-4ab1-a105-0d3e1c745d51@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706206205;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kbOkwczQdqT6rnEcotwrf5J+UUlD3rCorQj1R8O8yoo=;
-	b=CIRbStljmRYl+Z78XSI08c5pG1rLiPS6edOlM5xaBCA61NeThM+3TF2EO7goCgty6ZAIPV
-	GQVpdKsCBbgfczvg5n0+wzt/fvrOtSR3+h8qOdtZDldQcISqyWoP4kbj8Q5BfqO9Sj+4+X
-	CSwstgm+WoqiwALXo8nAvFwlk/ItPpE=
-Date: Thu, 25 Jan 2024 10:09:57 -0800
+	s=arc-20240116; t=1706206217; c=relaxed/simple;
+	bh=IjkBfYyXyZuxLRiem9LViq3PHGioJn1sHgJBkjshdog=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KgBzif2hQF/8QkwRhrP6UHPHeWnjdfMH5OQ7r4i6s5Yt1ok+4V9nmAaZxcyZByc1Y6K1YvkmJ2E8/l8UYAgk+ph2PT+juido9O1HWSeQPHnHoGZUsft1NsgRhj1BJelUKKsZbI+zBjxFB2cKzeU6A2TlQDhA68FGAvdc5lvjDvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=CGkvof0E; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55369c59708so1639250a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 10:10:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google; t=1706206214; x=1706811014; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5tOrqes/9yVROTQ69tGyE0dsjLuB7wrcHht59zsTqBI=;
+        b=CGkvof0EtzcKmw7WNMprPWIIDhnUd5DMGi6YIWp80nwC41xYArFvglosFhOYI0TLRu
+         a7ObXw4SQpWaG6OJcsZcHqhoHHfKhfsGj3fVQDJ1mG2TIvsYgUF/8x1HR/Dx9efT+8go
+         7GMqiShf5ClOvHKiVH6nA3o3TGI4tfUz4e970=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706206214; x=1706811014;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5tOrqes/9yVROTQ69tGyE0dsjLuB7wrcHht59zsTqBI=;
+        b=A2H0wY9/ocOHExw27y58wsvCRz31nEslE6+uDGx4xfvFXHIf2ECCstfX3pl+MVPbLM
+         b/Nnjkt1pjORHe4osZyxiZlrxu+etCmB5bCRIFUn1dE7YMtzTLzfY4wCFu61geT5OpSI
+         Mm5Ezt5cwq7fAGiC/pXAeRiwUmL/NEkswBy6crsT6+X74h8S++Enr8INi5njEBzqNWZw
+         4Ts8W9TIVTFYIS9WK3/Yd8xh1/iWjF0R8TfSxwChPVMj7irw6xJMpBdSyF/+SLvPjgpj
+         aiJIGV+WDC1uVNBxkhAWR7teEg4cbbVMuPtGDnYPbodYt/844qRHIXFOo4eGjivnY+LA
+         A0tA==
+X-Gm-Message-State: AOJu0YyFV3mW0U/r4CdBDWxp0jLwoNWOANEd6LEk7ncBvpn+NCZJGBvb
+	Yp6j9HPL+qtP09TAMcOXgBEbm9WO+AgDykb5dn9HIA4LQYV1AoikT98YKLp4LMM=
+X-Google-Smtp-Source: AGHT+IHiPqW8oQ3VVW2VkOd3YkCZla2B2xfbN2rRDbyJzKzFaaBeBkii2OIRJhk353wOIuVlybUpFg==
+X-Received: by 2002:aa7:c595:0:b0:55c:c283:30c6 with SMTP id g21-20020aa7c595000000b0055cc28330c6mr63184edq.0.1706206213777;
+        Thu, 25 Jan 2024 10:10:13 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id fj9-20020a0564022b8900b00559cb738c1bsm10748896edb.4.2024.01.25.10.10.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 10:10:13 -0800 (PST)
+Date: Thu, 25 Jan 2024 19:10:11 +0100
+From: Daniel Vetter <daniel@ffwll.ch>
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Nuno =?iso-8859-1?Q?S=E1?= <noname.nuno@gmail.com>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	linux-usb@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH v5 1/6] dma-buf: Add dma_buf_{begin,end}_access()
+Message-ID: <ZbKkA68PuekJGIrP@phenom.ffwll.local>
+Mail-Followup-To: Paul Cercueil <paul@crapouillou.net>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Nuno =?iso-8859-1?Q?S=E1?= <noname.nuno@gmail.com>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	linux-usb@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+References: <20240119141402.44262-1-paul@crapouillou.net>
+ <20240119141402.44262-2-paul@crapouillou.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [syzbot] [bpf?] general protection fault in
- bpf_struct_ops_find_value
-Content-Language: en-US
-To: Kui-Feng Lee <sinquersw@gmail.com>
-References: <00000000000040d68a060fc8db8c@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: syzbot <syzbot+88f0aafe5f950d7489d7@syzkaller.appspotmail.com>,
- andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
- jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
- martin.lau@kernel.org, netdev@vger.kernel.org, sdf@google.com,
- song@kernel.org, syzkaller-bugs@googlegroups.com, thinker.li@gmail.com,
- yonghong.song@linux.dev
-In-Reply-To: <00000000000040d68a060fc8db8c@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240119141402.44262-2-paul@crapouillou.net>
+X-Operating-System: Linux phenom 6.6.11-amd64 
 
-On 1/25/24 9:53 AM, syzbot wrote:
-> Hello,
+On Fri, Jan 19, 2024 at 03:13:57PM +0100, Paul Cercueil wrote:
+> These functions should be used by device drivers when they start and
+> stop accessing the data of DMABUF. It allows DMABUF importers to cache
+> the dma_buf_attachment while ensuring that the data they want to access
+> is available for their device when the DMA transfers take place.
 > 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    d47b9f68d289 libbpf: Correct bpf_core_read.h comment wrt b..
-> git tree:       bpf-next
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=11479fe7e80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=719e6acaf392d56b
-> dashboard link: https://syzkaller.appspot.com/bug?extid=88f0aafe5f950d7489d7
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14ea6be3e80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15bc199be80000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/1a9b4a5622fb/disk-d47b9f68.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/dd68baeac4fd/vmlinux-d47b9f68.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/811ba9dc9ddf/bzImage-d47b9f68.xz
-> 
-> The issue was bisected to:
-> 
-> commit fcc2c1fb0651477c8ed78a3a293c175ccd70697a
-> Author: Kui-Feng Lee <thinker.li@gmail.com>
-> Date:   Fri Jan 19 22:49:59 2024 +0000
-> 
->      bpf: pass attached BTF to the bpf_struct_ops subsystem
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=106a04c3e80000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=126a04c3e80000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=146a04c3e80000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+88f0aafe5f950d7489d7@syzkaller.appspotmail.com
-> Fixes: fcc2c1fb0651 ("bpf: pass attached BTF to the bpf_struct_ops subsystem")
-> 
-> general protection fault, probably for non-canonical address 0xdffffc0000000011: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: null-ptr-deref in range [0x0000000000000088-0x000000000000008f]
-> CPU: 0 PID: 5058 Comm: syz-executor257 Not tainted 6.7.0-syzkaller-12348-gd47b9f68d289 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-> RIP: 0010:bpf_struct_ops_find_value+0x49/0x140 kernel/bpf/btf.c:8763
-> Code: 7d ea dd ff 45 85 e4 0f 84 d7 00 00 00 e8 ff ee dd ff 48 8d bb 88 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 dc 00 00 00 48 8b 9b 88 00 00 00 48 85 db 0f 84
-> RSP: 0018:ffffc90003bb7b20 EFLAGS: 00010206
-> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff81aa3283
-> RDX: 0000000000000011 RSI: ffffffff81aa3291 RDI: 0000000000000088
-> RBP: ffffc90003bb7dd0 R08: 0000000000000005 R09: 0000000000000000
-> R10: 0000000000000002 R11: 0000000000000000 R12: 0000000000000002
-> R13: 000000000000001a R14: ffffffff8ad6bca0 R15: ffffc90003bb7e04
-> FS:  0000555556ed2380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000000000160d398 CR3: 000000007809c000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   <TASK>
->   bpf_struct_ops_map_alloc+0x12f/0x5d0 kernel/bpf/bpf_struct_ops.c:674
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 
-The check should be IS_ERR_"OR_NULL"(btf).  Kui-Feng, please take a look. Thanks.
+Putting my detailed review comments here just so I don't have to remember
+them any longer. We need to reach consensus on the big picture direction
+first.
 
->   map_create+0x548/0x1b90 kernel/bpf/syscall.c:1237
->   __sys_bpf+0xa32/0x4a00 kernel/bpf/syscall.c:5445
->   __do_sys_bpf kernel/bpf/syscall.c:5567 [inline]
->   __se_sys_bpf kernel/bpf/syscall.c:5565 [inline]
->   __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5565
->   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->   do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
->   entry_SYSCALL_64_after_hwframe+0x63/0x6b
-> RIP: 0033:0x7f9f205ef2e9
-> Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007fffa4ce4088 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-> RAX: ffffffffffffffda RBX: 00007fffa4ce4268 RCX: 00007f9f205ef2e9
-> RDX: 0000000000000048 RSI: 00000000200004c0 RDI: 0000000000000000
-> RBP: 00007f9f20662610 R08: 0000000000000000 R09: 0000000000000000
-> R10: 00000000ffffffff R11: 0000000000000246 R12: 0000000000000001
-> R13: 00007fffa4ce4258 R14: 0000000000000001 R15: 0000000000000001
->   </TASK>
-> Modules linked in:
-> ---[ end trace 0000000000000000 ]---
-> RIP: 0010:bpf_struct_ops_find_value+0x49/0x140 kernel/bpf/btf.c:8763
-> Code: 7d ea dd ff 45 85 e4 0f 84 d7 00 00 00 e8 ff ee dd ff 48 8d bb 88 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 dc 00 00 00 48 8b 9b 88 00 00 00 48 85 db 0f 84
-> RSP: 0018:ffffc90003bb7b20 EFLAGS: 00010206
-> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff81aa3283
-> RDX: 0000000000000011 RSI: ffffffff81aa3291 RDI: 0000000000000088
-> RBP: ffffc90003bb7dd0 R08: 0000000000000005 R09: 0000000000000000
-> R10: 0000000000000002 R11: 0000000000000000 R12: 0000000000000002
-> R13: 000000000000001a R14: ffffffff8ad6bca0 R15: ffffc90003bb7e04
-> FS:  0000555556ed2380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000000000160d398 CR3: 000000007809c000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> ----------------
-> Code disassembly (best guess), 4 bytes skipped:
->     0:	45 85 e4             	test   %r12d,%r12d
->     3:	0f 84 d7 00 00 00    	je     0xe0
->     9:	e8 ff ee dd ff       	call   0xffddef0d
->     e:	48 8d bb 88 00 00 00 	lea    0x88(%rbx),%rdi
->    15:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
->    1c:	fc ff df
->    1f:	48 89 fa             	mov    %rdi,%rdx
->    22:	48 c1 ea 03          	shr    $0x3,%rdx
-> * 26:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
->    2a:	0f 85 dc 00 00 00    	jne    0x10c
->    30:	48 8b 9b 88 00 00 00 	mov    0x88(%rbx),%rbx
->    37:	48 85 db             	test   %rbx,%rbx
->    3a:	0f                   	.byte 0xf
->    3b:	84                   	.byte 0x84
-> 
 > 
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> v5: New patch
+> ---
+>  drivers/dma-buf/dma-buf.c | 66 +++++++++++++++++++++++++++++++++++++++
+>  include/linux/dma-buf.h   | 37 ++++++++++++++++++++++
+>  2 files changed, 103 insertions(+)
 > 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> 
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
-> 
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
+> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> index 8fe5aa67b167..a8bab6c18fcd 100644
+> --- a/drivers/dma-buf/dma-buf.c
+> +++ b/drivers/dma-buf/dma-buf.c
+> @@ -830,6 +830,8 @@ static struct sg_table * __map_dma_buf(struct dma_buf_attachment *attach,
+>   *     - dma_buf_mmap()
+>   *     - dma_buf_begin_cpu_access()
+>   *     - dma_buf_end_cpu_access()
+> + *     - dma_buf_begin_access()
+> + *     - dma_buf_end_access()
+>   *     - dma_buf_map_attachment_unlocked()
+>   *     - dma_buf_unmap_attachment_unlocked()
+>   *     - dma_buf_vmap_unlocked()
+> @@ -1602,6 +1604,70 @@ void dma_buf_vunmap_unlocked(struct dma_buf *dmabuf, struct iosys_map *map)
+>  }
+>  EXPORT_SYMBOL_NS_GPL(dma_buf_vunmap_unlocked, DMA_BUF);
+>  
+> +/**
+> + * @dma_buf_begin_access - Call before any hardware access from/to the DMABUF
+> + * @attach:	[in]	attachment used for hardware access
+> + * @sg_table:	[in]	scatterlist used for the DMA transfer
+> + * @direction:  [in]    direction of DMA transfer
 
+I think for the kerneldoc would be good to point at the other function
+here, explain why this might be needed and that for most reasonable
+devices it's probably not, and link between the function pairs.
+
+Also we need to document that dma_buf_map does an implied
+dma_buf_begin_access (because dma_sg_map does an implied
+dma_sg_sync_for_device) and vice versa for dma_buf_end_access. Which also
+means that dma_buf_map/unmap should link to these functions in their
+kerneldoc too.
+
+Finally I think we should document here that it's ok to call these from
+dma_fence signalling critical section and link to the relevant discussion
+in the dma_fence docs for that.
+
+> + */
+> +int dma_buf_begin_access(struct dma_buf_attachment *attach,
+> +			 struct sg_table *sgt, enum dma_data_direction dir)
+> +{
+> +	struct dma_buf *dmabuf;
+> +	bool cookie;
+> +	int ret;
+> +
+> +	if (WARN_ON(!attach))
+> +		return -EINVAL;
+> +
+> +	dmabuf = attach->dmabuf;
+> +
+> +	if (!dmabuf->ops->begin_access)
+> +		return 0;
+> +
+> +	cookie = dma_fence_begin_signalling();
+> +	ret = dmabuf->ops->begin_access(attach, sgt, dir);
+> +	dma_fence_end_signalling(cookie);
+> +
+> +	if (WARN_ON_ONCE(ret))
+> +		return ret;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_NS_GPL(dma_buf_begin_access, DMA_BUF);
+
+So explicit device side coherency management is not going to be very
+compatible with dynamic buffer managament where the exporter can move the
+buffer around. The reason for that is that for a dynamic exporter we cache
+the sg mapping, which means any device-side coherency management which
+dma_buf_map/unmap would do will not happen (since it's cached),
+potentially breaking things for importers that rely on the assumption that
+dma_buf_map/unmap already implies dma_buf_begin/end_device_access.
+
+I think for now it's sufficient to put a WARN_ON(dma_buf_is_dymamic() &&
+ops->begin|end_access) or similar into dma_buf_export and bail out with an
+error to catch that.
+
+Aside from the nits I do think this is roughly what we brievely discussed
+well over a decade ago in the original dma-buf kickoff meeting at a linaro
+connect in Budapest :-)
+
+Cheers, Sima
+
+> +
+> +/**
+> + * @dma_buf_end_access - Call after any hardware access from/to the DMABUF
+> + * @attach:	[in]	attachment used for hardware access
+> + * @sg_table:	[in]	scatterlist used for the DMA transfer
+> + * @direction:  [in]    direction of DMA transfer
+> + */
+> +int dma_buf_end_access(struct dma_buf_attachment *attach,
+> +		       struct sg_table *sgt, enum dma_data_direction dir)
+> +{
+> +	struct dma_buf *dmabuf;
+> +	bool cookie;
+> +	int ret;
+> +
+> +	if (WARN_ON(!attach))
+> +		return -EINVAL;
+> +
+> +	dmabuf = attach->dmabuf;
+> +
+> +	if (!dmabuf->ops->end_access)
+> +		return 0;
+> +
+> +	cookie = dma_fence_begin_signalling();
+> +	ret = dmabuf->ops->end_access(attach, sgt, dir);
+> +	dma_fence_end_signalling(cookie);
+> +
+> +	if (WARN_ON_ONCE(ret))
+> +		return ret;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_NS_GPL(dma_buf_end_access, DMA_BUF);
+> +
+>  #ifdef CONFIG_DEBUG_FS
+>  static int dma_buf_debug_show(struct seq_file *s, void *unused)
+>  {
+> diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+> index 8ff4add71f88..8ba612c7cc16 100644
+> --- a/include/linux/dma-buf.h
+> +++ b/include/linux/dma-buf.h
+> @@ -246,6 +246,38 @@ struct dma_buf_ops {
+>  	 */
+>  	int (*end_cpu_access)(struct dma_buf *, enum dma_data_direction);
+>  
+> +	/**
+> +	 * @begin_access:
+> +	 *
+> +	 * This is called from dma_buf_begin_access() when a device driver
+> +	 * wants to access the data of the DMABUF. The exporter can use this
+> +	 * to flush/sync the caches if needed.
+> +	 *
+> +	 * This callback is optional.
+> +	 *
+> +	 * Returns:
+> +	 *
+> +	 * 0 on success or a negative error code on failure.
+> +	 */
+> +	int (*begin_access)(struct dma_buf_attachment *, struct sg_table *,
+> +			    enum dma_data_direction);
+> +
+> +	/**
+> +	 * @end_access:
+> +	 *
+> +	 * This is called from dma_buf_end_access() when a device driver is
+> +	 * done accessing the data of the DMABUF. The exporter can use this
+> +	 * to flush/sync the caches if needed.
+> +	 *
+> +	 * This callback is optional.
+> +	 *
+> +	 * Returns:
+> +	 *
+> +	 * 0 on success or a negative error code on failure.
+> +	 */
+> +	int (*end_access)(struct dma_buf_attachment *, struct sg_table *,
+> +			  enum dma_data_direction);
+> +
+>  	/**
+>  	 * @mmap:
+>  	 *
+> @@ -606,6 +638,11 @@ void dma_buf_detach(struct dma_buf *dmabuf,
+>  int dma_buf_pin(struct dma_buf_attachment *attach);
+>  void dma_buf_unpin(struct dma_buf_attachment *attach);
+>  
+> +int dma_buf_begin_access(struct dma_buf_attachment *attach,
+> +			 struct sg_table *sgt, enum dma_data_direction dir);
+> +int dma_buf_end_access(struct dma_buf_attachment *attach,
+> +		       struct sg_table *sgt, enum dma_data_direction dir);
+> +
+>  struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info);
+>  
+>  int dma_buf_fd(struct dma_buf *dmabuf, int flags);
+> -- 
+> 2.43.0
+> 
+> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
 
