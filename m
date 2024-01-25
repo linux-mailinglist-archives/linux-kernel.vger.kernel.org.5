@@ -1,146 +1,73 @@
-Return-Path: <linux-kernel+bounces-38523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2ADFD83C100
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:37:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3F5983C103
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:37:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F3C91C22B4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:37:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CF4028C4E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:37:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22EC84502C;
-	Thu, 25 Jan 2024 11:33:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81164481A8;
+	Thu, 25 Jan 2024 11:33:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nhJuwrJd"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hTrlUi5h"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBF2741744;
-	Thu, 25 Jan 2024 11:33:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C802446447;
+	Thu, 25 Jan 2024 11:33:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706182433; cv=none; b=m+DSsTj2DVsjYZpp439MrkG8N5VUykw77cVpZTHsYR81c+u8ZHarDPGEl8CBfVCX9+cJvszReh7Zus2oP6LduRt4goSep6CUlI8lOUC1CS9maC03iLurSS/4Dy9tCGo/O450LMQqAQJr85GE4tHTTgv3GBEZZVgA62k3D2RMQj0=
+	t=1706182436; cv=none; b=KM3wWN9v7Gzu6pPpgzMkQy9w4TLoy4lpeUtTZnxUvOFAHNqQLmdbz6H4fVX7K+feg9zLfHO/EnFAjJ0JaHWLzr89tk4s9b+n+rzA3oYlEjIc4QnInSK1tpor7pfSZMcjY3S3q5YrE/9T9zyEA9XvGySgY6gLJmdMKUvqgqczcOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706182433; c=relaxed/simple;
-	bh=79Mq1ZnJKV7PdAzDq1uAOf2d4SKGw7H6Dm+xZXHOOqE=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Pc43VlgjyeVpoKOSJfcrgkLD+PmwjZPGoj4gibI4vSKByLVtPzrXBx+RF3HoDVLXIi7Csq9NK/Bn46jQKzi9/zwbgkYCLlRUq1xjzy36op0ndwEKkc2z7WQ8EeyEZ5gwdoi1IEkHE7k2JAe2v26MZ14dg1NYxhL8g68OIMPwp7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nhJuwrJd; arc=none smtp.client-ip=134.134.136.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706182431; x=1737718431;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=79Mq1ZnJKV7PdAzDq1uAOf2d4SKGw7H6Dm+xZXHOOqE=;
-  b=nhJuwrJdsU713Jl1UIncjJN3HsklP8Y9fDia76D/AWQeQkE/JTU8CQZh
-   DLsaqg6ZwDijf2LkWeUT2C0gmGYOMEliz1379ZF+lQrKUIFs9hAQJXlJx
-   F22qULgIpOUbBi7kUJRDuLMNG9a0k1ZwfmLpGDsmOUe5ngbuO9PXI6FDX
-   dH/2DfsGRWrpLV+YtbyIkGmfxcL2v8MkAWVpL2T+ZcV9MidjsPbBcEQdp
-   2RNEQzqgimw8PHVoJEJuBVU9CT5uxMhbpfpguttCagrPUdW5K7vj/vx3v
-   PEbo6yuJg0YM6dTh+uqyO/cUpL1zW4LgU2nR6E35+7XGI6/mgZq5r/XzN
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="466417296"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="466417296"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 03:33:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="2385166"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.209.226]) ([10.254.209.226])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 03:33:47 -0800
-Message-ID: <cf1319f7-b91b-4161-8b62-2b0c03f53c16@linux.intel.com>
-Date: Thu, 25 Jan 2024 19:33:45 +0800
+	s=arc-20240116; t=1706182436; c=relaxed/simple;
+	bh=sJBazGEgZqoeVApoEuk0AF0P4v6I9SX7AQhh97D4vH8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FD/FcfVm9mMs05/M0gs6FNJPI1NJa5wKzCuN8cOd3kC5jBJ+Ro3fyuegVHZeuFaPX5E7OTX0EuUQKXVzBJgMAZgvDJ6YSSalYQdL3sdBxnI61MdIqKpTPiceYZFCGtViu3cOuD2hVgMAzAb159l6GowrO4fAlPlyIGFK0amFGkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hTrlUi5h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B2FEC433B2;
+	Thu, 25 Jan 2024 11:33:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706182436;
+	bh=sJBazGEgZqoeVApoEuk0AF0P4v6I9SX7AQhh97D4vH8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hTrlUi5hnMtlWHfQ+5vNeKY5jnz3O0d4erR2K73kUPveu2kCYNUAKbOxk2NjbQJSr
+	 9cp9QkQ7f+n/tvptNbAamOQ1fuG1Bdgj3U0LpjKPn7bMSSzWS0CtRyHkpp8Nsid8lE
+	 AoCYAOp/FjPFZGN3arvM3CrRWXi/sHXMYrZM+5vDL5V3USG1tdcix7pshKhvQgf8yB
+	 hEJta9HkACkzZ4zrb+KQkqrK3tjVoUg+KOyYt9lETprqeD5OoM9bmiYZDsbuZwxV+B
+	 AAFrR3WCTMIQWRLuX4U3wUArOIgmRBSg0E+GCJL9XvQKTBeIzZFOlyox6fgiRHg/oQ
+	 pml++HTga/qig==
+Date: Thu, 25 Jan 2024 11:33:51 +0000
+From: Simon Horman <horms@kernel.org>
+To: Geetha sowjanya <gakula@marvell.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kuba@kernel.org,
+	davem@davemloft.net, pabeni@redhat.com, edumazet@google.com,
+	sgoutham@marvell.com, sbhatta@marvell.com, hkelam@marvell.com
+Subject: Re: [net-next PATCH 2/3] octeontx2-af: Add mbox to alloc/free BPIDs
+Message-ID: <20240125113351.GG217708@kernel.org>
+References: <20240124055014.32694-1-gakula@marvell.com>
+ <20240124055014.32694-3-gakula@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>,
- Jean-Philippe Brucker <jean-philippe@linaro.org>,
- Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
- Jacob Pan <jacob.jun.pan@linux.intel.com>,
- Longfang Liu <liulongfang@huawei.com>, Yan Zhao <yan.y.zhao@intel.com>,
- iommu@lists.linux.dev, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH v10 04/16] iommu: Cleanup iopf data structure definitions
-Content-Language: en-US
-To: Joel Granados <j.granados@samsung.com>
-References: <20240122054308.23901-1-baolu.lu@linux.intel.com>
- <20240122054308.23901-5-baolu.lu@linux.intel.com>
- <CGME20240125102328eucas1p288a2c65df13b1f60d60f363447bb8e5c@eucas1p2.samsung.com>
- <20240125102326.rgos2wizh273rteq@localhost>
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20240125102326.rgos2wizh273rteq@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240124055014.32694-3-gakula@marvell.com>
 
-On 2024/1/25 18:23, Joel Granados wrote:
->> diff --git a/drivers/iommu/io-pgfault.c b/drivers/iommu/io-pgfault.c
->> index e5b8b9110c13..24b5545352ae 100644
->> --- a/drivers/iommu/io-pgfault.c
->> +++ b/drivers/iommu/io-pgfault.c
->> @@ -56,7 +56,6 @@ static int iopf_complete_group(struct device *dev, struct iopf_fault *iopf,
->>   			       enum iommu_page_response_code status)
->>   {
->>   	struct iommu_page_response resp = {
->> -		.version		= IOMMU_PAGE_RESP_VERSION_1,
->>   		.pasid			= iopf->fault.prm.pasid,
->>   		.grpid			= iopf->fault.prm.grpid,
->>   		.code			= status,
->> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->> index 68e648b55767..b88dc3e0595c 100644
->> --- a/drivers/iommu/iommu.c
->> +++ b/drivers/iommu/iommu.c
->> @@ -1494,10 +1494,6 @@ int iommu_page_response(struct device *dev,
->>   	if (!param || !param->fault_param)
->>   		return -EINVAL;
->>   
->> -	if (msg->version != IOMMU_PAGE_RESP_VERSION_1 ||
->> -	    msg->flags & ~IOMMU_PAGE_RESP_PASID_VALID)
->> -		return -EINVAL;
->> -
-> I see that this function `iommu_page_response` eventually lands in
-> drivers/iommu/io-pgfault.c as `iopf_group_response`. But it seems that
-> the check for IOMMU_PAGE_RESP_PASID_VALID is dropped.
+On Wed, Jan 24, 2024 at 11:20:13AM +0530, Geetha sowjanya wrote:
+> Adds mbox handlers to allocate/free BPIDs from the free BPIDs pool.
+> This can be used by the PF/VF to request up to 8 BPIds.
+> Also adds a mbox handler to configure NIXX_AF_RX_CHANX with multiple
+> Bpids.
 > 
-> I see that after applying [1] and [2] there are only three places where
-> IOMMU_PAGE_RESP_PASID_VALID appears in the code: One is the definition
-> and the other two are just setting the value. We effectively dropped the
+> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
 
-Yes, really. Thanks for pointing this out.
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-$ git grep IOMMU_PAGE_RESP_PASID_VALID
-drivers/iommu/io-pgfault.c:             resp.flags = 
-IOMMU_PAGE_RESP_PASID_VALID;
-drivers/iommu/io-pgfault.c:                     resp.flags = 
-IOMMU_PAGE_RESP_PASID_VALID;
-include/linux/iommu.h:#define IOMMU_PAGE_RESP_PASID_VALID       (1 << 0)
-
-> check. Is the drop intended? and if so, should we just get rid of
-> IOMMU_PAGE_RESP_PASID_VALID?
-
-In my opinion, we should keep this hardware detail in the individual
-driver. When the page fault handling framework in IOMMU and IOMMUFD
-subsystems includes a valid PASID in the fault message, the response
-message should also contain the *same* PASID value. Individual drivers
-should be responsible for deciding whether to include the PASID in the
-messages they provide for the hardware.
-
-> 
-> Best
-> 
-> [1]https://lore.kernel.org/all/20240122054308.23901-1-baolu.lu@linux.intel.com
-> [2]https://lore.kernel.org/all/20240122073903.24406-1-baolu.lu@linux.intel.com
-
-Best regards,
-baolu
 
