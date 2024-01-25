@@ -1,119 +1,186 @@
-Return-Path: <linux-kernel+bounces-38195-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38196-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AFB383BC53
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:51:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 052BC83BC58
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:52:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F099CB24320
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:51:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7350C1F2A5CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:52:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3CBD1B95D;
-	Thu, 25 Jan 2024 08:51:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 912D11B96C;
+	Thu, 25 Jan 2024 08:52:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="e9byiWQk"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="lTOnOuYp"
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E702D11C84
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:51:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D87EF18044
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:52:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706172692; cv=none; b=NaYtn5qHS1LtwEdqqacRwMMwKqWZ439BXxWiRS8o+YgvLiA7SAfUpyVnkUWTeT9EACWBELc1KarXbXYT9KOV/mwP1VMWR7Sx3wgFfvkOpX2Nr8KWqOXXRJY9KCxBp1oFxCx5l29h5gUL44rAhEyF2dlPxTfOZyApU9IkhYkCYwE=
+	t=1706172741; cv=none; b=JPlvaj/GMkIeCbjHuERJ6TNR70anib3NxA0QvSrtD2B++yg0L/8nSJzcTcvVFwSLDYldwaLJ0mx+3AwtN+MQ9lxBcDFQdvYoR7qtjo9DzjrJ+KKc8cAu50IX8vZezy/fvv9UyQhKmpflmdLekpmiohFQ07T5TFoSC5PpI6LsBRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706172692; c=relaxed/simple;
-	bh=Y+lLAx83cNHZs5vINYxx2KNx2W2cYGODV6Ig6vdN0D8=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=MRW0OwmFGhHiMR1DJvTr7DHBGMC3F4PbrRt3Kf56vFxvOMAM7CfTlwt1LE9lfhmMRF23+Tk456Y3osw8ba7B66EQgnMEb6FGprXRPMInfO4Zr9+LW1QGDLjhVvJNYc5+5nVYIkLP8E1JUWAHwLwlf+5GbPRdB+J/LbtLRruyZdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=e9byiWQk; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc221ed88d9so8577304276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 00:51:30 -0800 (PST)
+	s=arc-20240116; t=1706172741; c=relaxed/simple;
+	bh=HEnUBiuLw+OIx22HFEZkQL3JqRl3WIca8WvxBLm7tn0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gWvTUQM6g4sGBPIvxvlkCMVw9hb8YEj2b9lQkw6m9pZF68HnMny9XGudw0TeYOyrf3snWesY9/ztypiwZlFgL4gmZM/bWMud4AA53ArPqlgNeRvc/hn+cnzBp3rAaLN6hOxVPIW8VLW4yOSSw1ZLQSWvqL48OiRdFv877U3/Aak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=lTOnOuYp; arc=none smtp.client-ip=209.85.167.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bda5be862eso4062896b6e.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 00:52:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706172690; x=1706777490; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=RohIgLrjWVqbBH18OwPUPby673o+oBFFq7JGaEpXbpE=;
-        b=e9byiWQkS9FUVW9mHOgG4TUba3aHGxnQ8En6rnbzEmr79BL5BGV6Tue852JHoeCMrp
-         mEnPoIfGPs9K2Zqf0IRRLi7sA+wf1y6/ImdZ2EqKmviBCJnwMKh5vKPFlsv0oIxjxpdK
-         nMEHytZi7pH3AmCP1mgfw3XcDBI4Sru1GFEsKvYQNq3Td8uxRYnD3uYOpdzJxwn/T4Z2
-         iL/P0DCOeZ2qwy+GSMFS6BwtB8RnHq3lo9//R4vLHRdKpvtzxUbsr3TQLx1hVc5PaW3m
-         nxLyvsgJzjl71AWPf0Do2gNcd7Zy6BbE2WhiwilIJAp19wvApH7dKoBVPzMS86dXQnYx
-         CWiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706172690; x=1706777490;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+        d=bytedance.com; s=google; t=1706172739; x=1706777539; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=RohIgLrjWVqbBH18OwPUPby673o+oBFFq7JGaEpXbpE=;
-        b=QPjKNjUiDDU1muVMArYiGAk35w+7X3qahdphboVsynfmOAFDuoyRD7EGI/VwfefL8y
-         Ax+9E40jtNaYjOhhOSMHwFPAeQMUfDH0+raWb3SElOZYWhjasXG0pxvWCdhofJGzFe5d
-         fgQYXzyvHuTb+B7bPNH+cQUilPEJRoAlWycAxYZKTWlrfSo7D9tlT+KjHt6W0Oocxl38
-         mnE2U8mKsq4o60SGBR3gXnDs5hNMJXlil7nbC57PlpP67Bf6oR6szdHhMSeBIV7W4s3j
-         +R+zn2BlKWxL6Br8bbw/nRX+8bfU/aGtkSMo4lZ7qOGwCOsGuXr3xIvhEEOoyMvZQ05m
-         wUeg==
-X-Gm-Message-State: AOJu0YyZzEjva4493xVjFnI8akD8hIe9B8k7maLm7EIwi8360Uo0IDXc
-	eU04eYlfcQO8C637TJANHtXQsg4l/ykN8TbX+kEeQt41tB1LSsrWjFUFAkgQeJzJ66NzkE0W99+
-	w3r4jg5EnHBJx+3V/bA==
-X-Google-Smtp-Source: AGHT+IG1/Hsqz9ICsfnUgUMjxMtXfDta6xfbiPArXWACl8gSYY8PEXXbSOk7GppsayLhkPPaDAta+w1h4X+ApK3c
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:1b8c:b0:dc2:57c9:b462 with
- SMTP id ei12-20020a0569021b8c00b00dc257c9b462mr67730ybb.9.1706172690108; Thu,
- 25 Jan 2024 00:51:30 -0800 (PST)
-Date: Thu, 25 Jan 2024 08:51:27 +0000
+        bh=UkGQoIYNC+nMybNFXcUXZhNlJLPpzMlk/G5qwiD/mfw=;
+        b=lTOnOuYpySqhrtWUUysEz1fcgKX45Eg56HQNOwFpaAa2e432tB9uxlZqlOCsWZa1r5
+         FD9XH1o0hR2Ejts5xizSF3GQxlRl9IH1eTd+xmmajPugx/RGFkRisgCSGLXGyVq8f3PI
+         qwyzkaMnikeEfS4GNMzL7zxj0E0NEmzSthaKJGInPnWa/A/JS7BGmGgWYXtrYG78QzuB
+         70qODfmQ2n2tp5ol8vAzJdMM3tRLJ7rAGAXJXZKjg26rX4/QLmoBWY/nsvQ4WAiK2TBI
+         DmbkS3IrAgogDA0T8hzUjBMdQMulY3RaPAHH4R3e+8cXuLDiGX0fBAteADAVHQOO/BxK
+         k5AA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706172739; x=1706777539;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UkGQoIYNC+nMybNFXcUXZhNlJLPpzMlk/G5qwiD/mfw=;
+        b=Ql93rQAxiezWwu+V3v7GwMuRKjTMNfAv4z26tFIVlIspGFxdyQNRn7o7k/MKDUzUaX
+         nWzf7ITvhA8izR7ZbnzeV4FyOUNaUWTD2ck6YzbqQgqRiUkqPBhmOW3+mqT8hajsJyDJ
+         7mc2HOBB4Mji/2kOBFwaE3MQ//NciA7ov2wGaxHVLF2eIEVkQ9LVr+H3GkdYJIXr4ndY
+         LwTqMfidxVyBtqlirZQvnn3bz12MQyBO/Tns5dQW9saQVmCkrxy1/+Bemzm1Zm6Oeqdw
+         pdvMag/SctHkANAlhKtMb6cCeOHnpxmCnFh0pNdmrEhJDMt3/PtZ974/Rfk6edO0NlV4
+         +U9Q==
+X-Gm-Message-State: AOJu0YyJMmVv7xurvvXELUJVFnRlG/2af0PHlS3wteCrAr2E7dQdfBvh
+	kc0ONke2G0+gvRfbR+dVPawJBRLlgfmNeyzjfiGoi+Y7TvwWw5OlDLfcTHw5fnU=
+X-Google-Smtp-Source: AGHT+IE3KQ6LFPbSUS7KHTooCvwgkX/cufH/YfcEdQp9M1/ylyfGjHKPw8tFuV/tMyB3cXv/EPsLGQ==
+X-Received: by 2002:a05:6808:148f:b0:3bd:dae2:b9b1 with SMTP id e15-20020a056808148f00b003bddae2b9b1mr603753oiw.3.1706172738781;
+        Thu, 25 Jan 2024 00:52:18 -0800 (PST)
+Received: from [10.4.195.141] ([139.177.225.254])
+        by smtp.gmail.com with ESMTPSA id a11-20020aa780cb000000b006dbd5a5dca9sm8764698pfn.185.2024.01.25.00.52.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jan 2024 00:52:18 -0800 (PST)
+Message-ID: <35c3b0e5-a5eb-44b2-aa7d-3167f4603c73@bytedance.com>
+Date: Thu, 25 Jan 2024 16:52:13 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Message-ID: <20240125085127.1327013-1-yosryahmed@google.com>
-Subject: [PATCH] mm: zswap: fix missing folio cleanup in writeback race path
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>, 
-	Chengming Zhou <zhouchengming@bytedance.com>, 
-	Domenico Cerasuolo <cerasuolodomenico@gmail.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>, 
-	stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] mm: zswap: remove unnecessary tree cleanups in
+ zswap_swapoff()
+Content-Language: en-US
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>,
+ Chris Li <chrisl@kernel.org>, Huang Ying <ying.huang@intel.com>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240120024007.2850671-1-yosryahmed@google.com>
+ <20240120024007.2850671-3-yosryahmed@google.com>
+ <20240122201906.GA1567330@cmpxchg.org>
+ <CAJD7tkaATS48HVuBfbOmPM3EvRUoPFr66WhF64UC4FkyVH5exg@mail.gmail.com>
+ <20240123153851.GA1745986@cmpxchg.org>
+ <CAJD7tkasHsRnT_75-TXsEe58V9_OW6m3g6CF7Kmsvz8CKRG_EA@mail.gmail.com>
+ <20240123201234.GC1745986@cmpxchg.org>
+ <CAJD7tkZC6w2EaE=j2NEVWn1s7Lo2A7YZh8LiZ+w72jQzFFWLUQ@mail.gmail.com>
+ <f3fa799f-1815-4cfe-abc8-3ba929fcd1ba@bytedance.com>
+ <CAJD7tka6UuEuuP=df-1V3vwsi0T0QhLORTRDs6qDvA81iY6SGA@mail.gmail.com>
+ <1496dce3-a4bb-4ccf-92d6-701a45b67da3@bytedance.com>
+ <CAJD7tkbrQw7FWx-EDKKCtH_E03xEd5Y+8BqRjE8d29JSOCGybg@mail.gmail.com>
+From: Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <CAJD7tkbrQw7FWx-EDKKCtH_E03xEd5Y+8BqRjE8d29JSOCGybg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-In zswap_writeback_entry(), after we get a folio from
-__read_swap_cache_async(), we grab the tree lock again to check that the
-swap entry was not invalidated and recycled. If it was, we delete the
-folio we just added to the swap cache and exit.
+On 2024/1/25 16:42, Yosry Ahmed wrote:
+> On Thu, Jan 25, 2024 at 12:30 AM Chengming Zhou
+> <zhouchengming@bytedance.com> wrote:
+>>
+>> On 2024/1/25 15:53, Yosry Ahmed wrote:
+>>>> Hello,
+>>>>
+>>>> I also thought about this problem for some time, maybe something like below
+>>>> can be changed to fix it? It's likely I missed something, just some thoughts.
+>>>>
+>>>> IMHO, the problem is caused by the different way in which we use zswap entry
+>>>> in the writeback, that should be much like zswap_load().
+>>>>
+>>>> The zswap_load() comes in with the folio locked in swap cache, so it has
+>>>> stable zswap tree to search and lock... But in writeback case, we don't,
+>>>> shrink_memcg_cb() comes in with only a zswap entry with lru list lock held,
+>>>> then release lru lock to get tree lock, which maybe freed already.
+>>>>
+>>>> So we should change here, we read swpentry from entry with lru list lock held,
+>>>> then release lru lock, to try to lock corresponding folio in swap cache,
+>>>> if we success, the following things is much the same like zswap_load().
+>>>> We can get tree lock, to recheck the invalidate race, if no race happened,
+>>>> we can make sure the entry is still right and get refcount of it, then
+>>>> release the tree lock.
+>>>
+>>> Hmm I think you may be onto something here. Moving the swap cache
+>>> allocation ahead before referencing the tree should give us the same
+>>> guarantees as zswap_load() indeed. We can also consolidate the
+>>> invalidate race checks (right now we have one in shrink_memcg_cb() and
+>>> another one inside zswap_writeback_entry()).
+>>
+>> Right, if we successfully lock folio in the swap cache, we can get the
+>> tree lock and check the invalidate race, only once.
+>>
+>>>
+>>> We will have to be careful about the error handling path to make sure
+>>> we delete the folio from the swap cache only after we know the tree
+>>> won't be referenced anymore. Anyway, I think this can work.
+>>
+>> Yes, we can't reference tree if we early return or after unlocking folio,
+>> since the reference of zswap entry can't protect the tree.
+>>
+>>>
+>>> On a separate note, I think there is a bug in zswap_writeback_entry()
+>>> when we delete a folio from the swap cache. I think we are missing a
+>>> folio_unlock() there.
+>>
+>> Ah, yes, and folio_put().
+> 
+> Yes. I am preparing a fix.
+> 
+>>
+>>>
+>>>>
+>>>> The main differences between this writeback with zswap_load() is the handling
+>>>> of lru entry and the tree lifetime. The whole zswap_load() function has the
+>>>> stable reference of zswap tree, but it's not for shrink_memcg_cb() bottom half
+>>>> after __swap_writepage() since we unlock the folio after that. So we can't
+>>>> reference the tree after that.
+>>>>
+>>>> This problem is easy to fix, we can zswap_invalidate_entry(tree, entry) early
+>>>> in tree lock, since thereafter writeback can't fail. BTW, I think we should
+>>>> also zswap_invalidate_entry() early in zswap_load() and only support the
+>>>> zswap_exclusive_loads_enabled mode, but that's another topic.
+>>>
+>>> zswap_invalidate_entry() actually doesn't seem to be using the tree at all.
+>>>
+>>>>
+>>>> The second difference is the handling of lru entry, which is easy that we
+>>>> just zswap_lru_del() in tree lock.
+>>>
+>>> Why do we need zswap_lru_del() at all? We should have already isolated
+>>> the entry at that point IIUC.
+>>
+>> I was thinking how to handle the "zswap_lru_putback()" if not writeback,
+>> in which case we can't use the entry actually since we haven't got reference
+>> of it. So we can don't isolate at the entry, and only zswap_lru_del() when
+>> we are going to writeback actually.
+> 
+> Why not just call zswap_lru_putback() before we unlock the folio?
 
-However, __read_swap_cache_async() returns the folio locked when it is
-newly allocated, which is always true for this path, and the folio is
-ref'd. Make sure to unlock and put the folio before returning.
-
-This was discovered by code inspection, probably because this path
-handles a race condition that should not happen often, and the bug would
-not crash the system, it will only strand the folio indefinitely.
-
-Fixes: 04fc7816089c ("mm: fix zswap writeback race condition")
-Cc: stable@vger.kernel.org
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
----
- mm/zswap.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 8f4a7efc2bdae..00e90b9b5417d 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -1448,6 +1448,8 @@ static int zswap_writeback_entry(struct zswap_entry *entry,
- 	if (zswap_rb_search(&tree->rbroot, swp_offset(entry->swpentry)) != entry) {
- 		spin_unlock(&tree->lock);
- 		delete_from_swap_cache(folio);
-+		folio_unlock(folio);
-+		folio_put(folio);
- 		return -ENOMEM;
- 	}
- 	spin_unlock(&tree->lock);
--- 
-2.43.0.429.g432eaa2c6b-goog
+When early return because __read_swap_cache_async() return NULL or !folio_was_allocated,
+we don't have a locked folio yet. The entry maybe invalidated and freed concurrently.
 
 
