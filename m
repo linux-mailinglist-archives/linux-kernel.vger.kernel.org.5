@@ -1,150 +1,192 @@
-Return-Path: <linux-kernel+bounces-38597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6671883C2DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:54:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4082D83C2DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:54:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F08728FA8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:54:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E461F28F6E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:54:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 163BC4F605;
-	Thu, 25 Jan 2024 12:54:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9EB44F5E9;
+	Thu, 25 Jan 2024 12:54:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="RLUEzpka"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jRYeAJoB"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C48614F885;
-	Thu, 25 Jan 2024 12:54:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E86A145035;
+	Thu, 25 Jan 2024 12:54:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706187271; cv=none; b=KXFbe9h0yLhKKxJ/8fQYIY5u5/cBwDkuXv7ipmbjPFjFw4S0BVDy/AsWhJzGnPjP3jqiZaICA040/YqnfZbtNQ3TuyhHUcQGmARFEcRLJHFB6RI9agbNM9u/H7iwfPpaZtPCi4S8jX/FXHPJOA3dgUYp8J6xTPKs7wQ0U4eAyOo=
+	t=1706187256; cv=none; b=L0be1l5HNsgy97F/zIeg/ohA4jG0VZ+45MwhgO/M2HWBt9Fg0mP8FTut54cfeARN0bWh654IF3o9XLbEzbpzwCtbJGBXb9GKHQ7pj7zs38dfAFoX5t7+GEiSTWYjhaQv9j7qtkVoRLOfjYIGXiNdH8rM4w16m1054Qe/ysQ5C84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706187271; c=relaxed/simple;
-	bh=IJhoKFM+i5ASs0eGsRCruWhTxm7oDqUUNqFVN5TeXwM=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OQc3dB7OM35F17N2HHdP2rE6vwCIIbBi8pcFer+7uWoF0EG6j9XnX3CokMG3pSEptfULlqK0Sr3cPVIz9sKd/8MhiyaYbPApN0eudrM4affxWKqlMkYuDV78qBf3WjRnzCDrAJmJrq2WQKRM+VWZ3WKSb0S3qkTY+GLJLvzaq/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=RLUEzpka; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+	s=arc-20240116; t=1706187256; c=relaxed/simple;
+	bh=aDy+zxrBvLGBTnY5ULjZGxPIAzRHjhbDUT0L0vBGqd8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=TuHGDkWeel9Q+zSuumbRPxcyM1VQOZPo5jkPt2tT86H00FZZ2Kj94+5fhyhsCcwaLc/MCLeB+GRK5qRQYewwCjLO3+DTRDlxLbdoXsF+2dIQWvvkbA7793269ftgcHny3BaFdYV1JLUuVDEW1+cM+ORvS06JZQGbfWinVJNWyTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jRYeAJoB; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1706187270; x=1737723270;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=IJhoKFM+i5ASs0eGsRCruWhTxm7oDqUUNqFVN5TeXwM=;
-  b=RLUEzpkamyNFAt8RaguLH99mrXM/dtLTLRE8bGaEPqhWVqvf7CmM5SYJ
-   aR1Nv3qikNHuX/zYK5bGcQBOmZKVtAPizspvC6ebkCKuOsjUbb6sZ14K4
-   mqtZll5QAxDB65OoL+ve4YhS8wfoBaozVhSB6U0pWbM7G5WSSK7zSt+F6
-   rvpQU2eU08rDZ4vB3WYoOOooj9wAnnaPyXq0Z60S3KkhXfrwn0lWB7cNR
-   lR8clLN5E3T+US1zYib3yErByprz0QY5ilMG93IITRCR0E4YeI5p3ITFF
-   LKqCi7h0oNdogNSYrzTbq23/O9kpkVef51+/PqTBKRMuYoMFsIVAmyGHX
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706187254; x=1737723254;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=aDy+zxrBvLGBTnY5ULjZGxPIAzRHjhbDUT0L0vBGqd8=;
+  b=jRYeAJoB7cpi+bhu61jCCApbXxTaDzoK4CS1BkR7woahFwpT7zF3qA8d
+   UUc/3ZAw7+Q70fhbGRM5tp8YMauoUNldNMrtlb+WZrcq/hP8CJr5regbF
+   Mq3pwydpLshH4frRxxtcCMGc2lJjHnI+KmGgPRJLpy630lObfhf/F8gWt
+   RpMUWDgPe6iGZHhx6PDFl+LNsVL0vFUQD//zRJS3x1yQ9YrHyKnzM+m9H
+   Cc3mtRKUO3xNZsNLE/Cf24jujnC9uEWaCO+8ag/uVsL4KMm6yFNLmN0Vv
+   pJBst6y9K4IQeiV9Dk8rSTmBKTP5nzVoAkmutfDCr+nkKdj9eemzha48L
    Q==;
-X-CSE-ConnectionGUID: /Aq3hlafTTiCOLhNSRHcKA==
-X-CSE-MsgGUID: lzBoItwTTlWkoW1LraUKKg==
-X-IronPort-AV: E=Sophos;i="6.05,216,1701154800"; 
-   d="asc'?scan'208";a="246002953"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 25 Jan 2024 05:54:29 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 25 Jan 2024 05:54:19 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Thu, 25 Jan 2024 05:54:16 -0700
-Date: Thu, 25 Jan 2024 12:53:38 +0000
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Andrew Lunn <andrew@lunn.ch>
-CC: Conor Dooley <conor@kernel.org>, Philippe Schenker <dev@pschenker.ch>,
-	<netdev@vger.kernel.org>, Paolo Abeni <pabeni@redhat.com>, Conor Dooley
-	<conor+dt@kernel.org>, Woojung Huh <woojung.huh@microchip.com>, "Vladimir
- Oltean" <olteanv@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<UNGLinuxDriver@microchip.com>, Marek Vasut <marex@denx.de>, Florian Fainelli
-	<f.fainelli@gmail.com>, <devicetree@vger.kernel.org>, Eric Dumazet
-	<edumazet@google.com>, "David S . Miller" <davem@davemloft.net>, "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, Jakub Kicinski
-	<kuba@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH net-next v1 1/2] dt-bindings: net: dsa: Add KSZ8567
- switch support
-Message-ID: <20240125-crouch-decay-5b149b60e9f3@wendy>
-References: <20240123135014.614858-1-dev@pschenker.ch>
- <20240123-ripening-tabby-b97785375990@spud>
- <b2e232de11cee47a5932fccc2d151a9c7c276784.camel@pschenker.ch>
- <20240123-atlas-dart-7e955e7e24e5@spud>
- <979b1e77b5bb62463d52e7b9d3f9ca1415f4006a.camel@pschenker.ch>
- <20240123-carpool-avatar-c1e51ab3cc32@spud>
- <359c32a1-3ffb-4bb2-9a46-802dff3812c4@lunn.ch>
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="15684163"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="15684163"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 04:54:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="959846151"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="959846151"
+Received: from unknown (HELO localhost) ([10.237.66.162])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 04:54:09 -0800
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Thorsten Leemhuis <linux@leemhuis.info>, Linux kernel regressions list
+ <regressions@lists.linux.dev>, Linux Doc Mailing List
+ <linux-doc@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Bagas Sanjaya <bagasdotme@gmail.com>, Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: More detailed text about bisecting Linux kernel regression --
+ request for comments and help
+In-Reply-To: <5cfc34c7-8298-4639-bb81-8b95392279ba@leemhuis.info>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <c763e15e-e82e-49f8-a540-d211d18768a3@leemhuis.info>
+ <87fryllpp5.fsf@intel.com>
+ <5cfc34c7-8298-4639-bb81-8b95392279ba@leemhuis.info>
+Date: Thu, 25 Jan 2024 14:54:06 +0200
+Message-ID: <874jf1lgk1.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="FasY058SMp5+ll7F"
-Content-Disposition: inline
-In-Reply-To: <359c32a1-3ffb-4bb2-9a46-802dff3812c4@lunn.ch>
+Content-Type: text/plain
 
---FasY058SMp5+ll7F
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, 25 Jan 2024, Thorsten Leemhuis <linux@leemhuis.info> wrote:
+> On 25.01.24 10:36, Jani Nikula wrote:
+>> The one thing I find problematic is the use of shallow clones by default
+>
+> FWIW, some of what is in that text is a result of similar discussion
+> that happened when
+> Documentation/admin-guide/quickly-build-trimmed-linux.rst was submitted
+> about a year ago, which also uses shallow clones by default.
+>
+> Further a quick reminder, as it's easy to forget: most of us live in
+> areas where downloading a lot of data is not something that bothers us
+> or will take a lot of time. But it is different for some people that
+> will need this document.
 
-On Wed, Jan 24, 2024 at 07:08:29PM +0100, Andrew Lunn wrote:
-> > That sounds counter productive to be honest. Why does the driver not
-> > trust that the dt is correct? I saw this recently in some IIO drivers,
-> > but it was shot down for this sort of reason.
->=20
-> DT is software, therefore it contains bugs.
->=20
-> Say we ignore that the compatible does not match the hardware on the
-> board and just accept the DT has a bug in it and keep going.
->=20
-> That then makes the compatible pointless, and unusable for anything,
-> since there are boards out in the wild with incorrect compatibles. If
-> we later actually use the compatible for something, it might cause
-> regressions for those buggy DT blobs.
->=20
-> By erroring out then the compatible does not match the hardware avoids
-> such bugs.
+I'm not suggesting to ignore or forget the people for whom full clones
+might be slow or costly. I'm suggesting to first describe the basic
+principles in as simple ways as possible, and then expand on pitfalls
+and corner cases in separate sections.
 
-It also makes fallback compatibles useless, which is what I see as being
-counter productive, since you'll have to add support to the driver even
-if (other than the id) the change is imperceptible to software.
-If you have your reasons why you do not trust the compatibles for these
-devices, then it is your prerogative as a driver author to cross check it
-and fail if they don't match.
+I think even the simplest and most basic kernel bisect can be
+intimidating for anyone doing it for the first time - and that's the
+target audience here - so I'd like to not scare people with all the
+difficulties with shallow clones right off the bat. Lure them in first!
+;)
 
-That said, it does not prevent the fallback being accurately described
-in the binding itself, which at the end of the day is what I am more
-interested it.
+Also not suggesting to throw out all the things you've written, just to
+structure it different.
 
-> The marvell mv88e6xxx driver takes a different approach. All the
-> compatible does is tell the driver where to find the ID
-> register. Marvell keeps moving it around, so there are three different
-> compatibles for the three different locations. If you use the wrong
-> compatible, its not going to find a device is knows about and errors
-> out. So this also avoids bugs in the compatible.
->=20
->      Andrew
+>> and, well, the use of git in ways that I myself can't figure out without
+>> resorting to the man pages. I think it's a lot of dark corners of git
+>> that's overwhelming and really unrelated to the bisection itself.
+>> 
+>> If I point people at that, and they have problems, I'm just going to
+>> tell them to:
+>> 
+>>   git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>   cd linux
+>>   git remote add stable git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
+>>   git fetch stable
+>
+> This could be simplified, as linux-stable.git includes mainline, it's
+> just sometimes a few hours behind.
 
---FasY058SMp5+ll7F
-Content-Type: application/pgp-signature; name="signature.asc"
+It's perhaps a personal preference more than anything to have origin
+always point at Linus' tree, and all the other repos as additional
+remotes. Then I can ask people to add remotes e.g. for drm subsystem to
+try out new stuff. YMMV.
 
------BEGIN PGP SIGNATURE-----
+>> And I can tell them to 'git checkout v<GOOD>' and 'git checkout v<BAD>'
+>> and proceed from there.
+>> 
+>> To me, that's the TL;DR.
+>
+> FWIW, I earlier today considered changing this myself. But then I
+> noticed the bundle clone instructions (more on that below) are complex
+> as well. :-/
+>
+> Hmmm. Maybe switching to "do a full clone of linus' repo (without using
+> bundles) and just telling users to add the stable branches they might
+> need" by default would be a good middle ground for this document. Guess
+> then I'd switch quickly-build-trimmed-linux.rst over myself.
+>
+>> And then you can have a section on "what if I
+>> really can't do full clones" and various options to save bandwidth.
+>> 
+>>> Downloading the sources using a full git clone
+>>> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>>
+>>> If downloading and storing a lot of data (~4,4 Gigabyte as of early
+>>> 2023) is nothing that bothers you, instead of a shallow clone perform a
+>>> full git clone instead. You then will avoid the specialties mentioned
+>>> above and will have all versions and individual commits at hand at any
+>>> time::
+>>>
+>>>   curl -L \
+>>>
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/clone.bundle
+>>> \
+>>>     -o linux-stable.git.bundle
+>>>   git clone linux-stable.git.bundle ~/linux/
+>>>   rm linux-stable.git.bundle
+>>>   cd ~/linux/
+>>>   git remote set-url origin \
+>>>     https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+>>>   git fetch origin
+>>>   git checkout --detach origin/master
+>> 
+>> I mean seriously, even the full clone instructions use curl, without
+>> rationale. Why?
+>
+> That was the result of the discussion back then, can't remember all the
+> details and all the places where that happened. Part of it was reducing
+> the server load, but that IIRC is mainly a concern for CI systems and
+> something this document can ignore. Unstable internet connection might
+> have been the main reason -- in combination with the redirection thing
+> kernel.org does, which *IIRC* prevents us from using "git clone
+> --bundle-uri=".
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbJZ0gAKCRB4tDGHoIJi
-0kQ+AQC8bfXwu4cS2q0UdokiptXIHP0dNFYEDpmgxeF19Tpo+wEAlrHaYMrYkfJH
-CKM8cpf8KpQLdoE/xhPrfS1a1YBYBQU=
-=aa2K
------END PGP SIGNATURE-----
+Perhaps server load should not be a consideration in *this* particular
+case?
 
---FasY058SMp5+ll7F--
+To me, all of this is just saying "git is difficult", and that's kind of
+the wrong message here. :/
+
+
+BR,
+Jani.
+
+
+
+-- 
+Jani Nikula, Intel
 
