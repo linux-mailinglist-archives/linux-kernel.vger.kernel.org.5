@@ -1,137 +1,154 @@
-Return-Path: <linux-kernel+bounces-38262-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38256-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 479E883BD4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:29:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1923283BD36
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:28:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A8521C23340
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:29:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5C0D28C37C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:28:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1CAE1CD3B;
-	Thu, 25 Jan 2024 09:28:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77B9C1BDC9;
+	Thu, 25 Jan 2024 09:27:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="coRIzuKu"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="pLDk1JKN"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97D181CD00
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:28:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32B941BF2A;
+	Thu, 25 Jan 2024 09:27:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706174892; cv=none; b=pWqGL1rU2GYbjjc9sFwDkq/2DkJ7PONe8ujQ0zhLjhspmroj+yQLdomInwbOKn8ler49+7dK/cCS7J37c2ULUKGbKa+VPbbOF/nHTIcYWd0A0vcbhfCfSIGjxi4Uohp++mnxyr4+0FvKmig2tVLjZnN9a5R9zHCJ3fgXwZjDDQU=
+	t=1706174875; cv=none; b=AGtQ0xOyvbvFu8MMSdMMsIMq47AzgBCkj6BvR8nljKMdqSeraFi/wG3FvV+nrhgnufdbYkAakqiWEGDoHCyMS8RCpcmF7NHxrfYQQezEdR5XZDtXrXwHtaagN8CnzIVPc4EeS5+xPVe/4Pgi7lakEJ6PoZ6r7Ej47b5yv9a7V0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706174892; c=relaxed/simple;
-	bh=4FhzQMyuNRu9cVH4Ij85n7GCnfVD5xm77q2Ax+afBBk=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=iYW9PosMDlRMGcr0yTPvs97L+LTE411a+5IjnaAWKdB19OE4ld+gz09zoe3i7nKP4zXajHhxs3ktJcd47MdweaoRRSpD+MR5W3pPmjczi0ajyj6rD2sU0RRKINLGKZbh+M1iLQuDui2MIJ7y/xuMf0wfxIUt0BiOlkRzGOSK9O0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=coRIzuKu; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-55c1ac8d2f2so5602498a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 01:28:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706174889; x=1706779689; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JLNRnzxe4/p0rMB0AsJl/Ri8TUeEmBjJpE+eIe/tTYA=;
-        b=coRIzuKuOqIEM+LyOBo1js6mdCEXlkaoOnr2ooeVDFveVHAfyHgfoMC0ltSa3bwLrN
-         laA4YoDrkvJNGh+xkaGYFKdaiivNALfXPaSRmLNz4yWdIBfHYp+oEKj2fo4I/gjDDHuc
-         piAgusGkJOVxEskVui+yGGxrSooR89YlNlrM1VQYgbA/hfK5+PFtvr1vKS5ZCiW14AuA
-         wUJSDCXbJLtw91BRQicjQxWwp4nXakLEnLaaaM1njgl1+Im0W+VOIXmMSUlI4T0fZgOG
-         xPKRAZmuUbGIQ1YQOxXy9iGm10PSasjaGkjhBgFOdl+xlBJfmgERpPb9e2xAh8bCR3gX
-         5mKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706174889; x=1706779689;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JLNRnzxe4/p0rMB0AsJl/Ri8TUeEmBjJpE+eIe/tTYA=;
-        b=GkZumJCmhU8C6Y6xU6xlQ1NGGe35cu2rR99shlFg2UqneHfgiq/SI99YwAVqpjczfS
-         RH7WZoMJXsD4W0bzEFF5v0BCWZVIoTVSK3Is1JPSHDVXUjAZAKltS/8Wv17vhzdsmzdR
-         w9I73/lU1x8G41xr+RFx4fBarVHVefsz8JGTYNaqX5Pw9US6q/rXXJ4Cs+0OkFWnGjdS
-         tUAqKn0DZBTINOTFciAfRdN30B6kz0QZTIrty6ZOWyWm+l1WT4ElYpFKfyKIIqQtuN2y
-         kchpUrxqy5kOl/Ivo/SWaHJF0V2RfvtNJKltaIAYlp6ewHazlh/Y8iqJDn5cOaUlkfo4
-         jdZA==
-X-Gm-Message-State: AOJu0YycpOGVJ/Q0C+cogUcHKssRtnDEUq7cGIFcKMIZn8XEDBa9JuQf
-	rAgZhR+Hg2x7rjRBXS0H3IeBCPbjTRbe1c6I9mJjeTFBqN6ySVQBHJjGhS07zY4=
-X-Google-Smtp-Source: AGHT+IGF5HE4900Esq4LG85HNYrVZua2xMqt9RXVRLh3ifbkx5FX+VjRG/Dgu3rYNjdwZlS4bfnKWQ==
-X-Received: by 2002:a05:6402:714:b0:55c:8cdc:b2c6 with SMTP id w20-20020a056402071400b0055c8cdcb2c6mr381105edx.10.1706174888969;
-        Thu, 25 Jan 2024 01:28:08 -0800 (PST)
-Received: from [127.0.1.1] ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id f19-20020a056402005300b00554af5ec62asm17356391edu.8.2024.01.25.01.28.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 01:28:08 -0800 (PST)
-From: Abel Vesa <abel.vesa@linaro.org>
-Date: Thu, 25 Jan 2024 11:27:49 +0200
-Subject: [PATCH 5/5] clk: qcom: dispcc-sm8650: Drop the Disp AHB DT
- provided clock
+	s=arc-20240116; t=1706174875; c=relaxed/simple;
+	bh=2HI/3q805ve/6g1st0t9MjEBU4SWWK3qDTKGnNLjk1o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WiyQjQK4MtLdTC9LjCFLZG7abM88e60vEV7PVMBxah/QgYeqTXGRpwOtOzQ2SQogT/nh31SN+CMxVtoyMFlt6d/S2Wy7pI9v9JuSgcxzcuf9xMj0NnlKd9g2/b7KaawXy88PmcH6xnd2IoPtve5zgjU83PkSXiMoX7NDFjmeMYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=pLDk1JKN; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706174872;
+	bh=2HI/3q805ve/6g1st0t9MjEBU4SWWK3qDTKGnNLjk1o=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=pLDk1JKN8jjM9a2pnvFOSoMKotU24nw8OewtkEVURAJOUp6Pyv+mNFx7Du+Hq1sOD
+	 ZGnghYgR5tEJrSIIkFeX0ohyEGtNAMlC3lFDymF9dPs3+fSeFjJueZEyKq0MHeje6M
+	 4IKWSMKKV12lVqV2jU+cNBoPJnVIdw+0TcsZcFu02gfW6AhZBfq/yDk1pqLiu4tRzm
+	 /YMaNDfmku4SNi+3cYRB/R/twidnI4kNqk/Qce7MNRJ366xEjY12y/4+MlmpvhODyU
+	 dIcx5lpJZwwKvkV9sk+4OAuq70ZV8vX+ZEvPSLgomqbNygIqyv9pQzKa9tMAPzZTBi
+	 r/dblo7nBH9sA==
+Received: from [100.93.89.217] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: benjamin.gaignard)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2E88C378000B;
+	Thu, 25 Jan 2024 09:27:52 +0000 (UTC)
+Message-ID: <41e69449-c797-44d1-b832-d4972915bb6d@collabora.com>
+Date: Thu, 25 Jan 2024 10:27:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240125-dispcc-sm8550-sm8650-drop-disp-ahb-clk-v1-5-0f8d96156156@linaro.org>
-References: <20240125-dispcc-sm8550-sm8650-drop-disp-ahb-clk-v1-0-0f8d96156156@linaro.org>
-In-Reply-To: <20240125-dispcc-sm8550-sm8650-drop-disp-ahb-clk-v1-0-0f8d96156156@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Neil Armstrong <neil.armstrong@linaro.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
- linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Abel Vesa <abel.vesa@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=699; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=4FhzQMyuNRu9cVH4Ij85n7GCnfVD5xm77q2Ax+afBBk=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlsimf+b1kIT9CRygBqdcl6OsrWJwKtA+IS6Mus
- 59bM1COowaJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZbIpnwAKCRAbX0TJAJUV
- VlNhD/4j69Ljrfvn/PVcSUIvyHNmnIqC/mxKxo6qN/NK0EfeFzzFY2G28aABZxuSQtAZLCxu0+B
- UV9Xb8QZ2l0Ka9aCnVP4TF+Ax1UmVfnqX5WQOWlKbqQ9eqoeqyknMjjTgNjyqsxHUZ0xdFZN+/g
- LhzweFk6FmQwvNfKusPau6VTHufo9+p9eo5q5RAt1vgs5GYLmDcdp38ecMp7eaPUcNhss+TTjeh
- Mk++gwVLfuY8cpV2R3wsLLoWjb1hyiSvkZrghWIfJYPRsUGFCAmM2CKqz9Ej9znvNhDk4+DANVt
- FtB6NXyAMkc7JVOYBzHzA/969k1biyHNdbt9Gj3mxiZZlcfylpTV5+wtUMX5pz12zMz2UchLbJY
- dDxZVqFZB5Lpptalv295B6C+eOVZ1N0a9h9HdmHRVUWgMky6iMqLKN+toGvS/rRkiSJ5Ph4HOVv
- 7xWTKWGsmrmfnaj2we4MakE5Z7RBX/t2eroX5EqdChrob8YjXFSAtK6RAGyoF7ZmrC0efqFbQjV
- 8zctck7/adbJY5iaGtMeXvBVoJBrIysiV4mOoYRCH13Sl3lhEyebf8ZniBJ6n6s65EUnJbuYcEk
- gEnDmU2gOgyRAkC9W5QibH6CVlw9giEVR+lnNFO1S+t2SFwogomzfN5utkvGqUFFUXExwaWMUdu
- /ppzcrqQc93R5Yw==
-X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
- fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v17 8/8] media: verisilicon: Support deleting buffers on
+ capture queue
+To: Hans Verkuil <hverkuil@xs4all.nl>, mchehab@kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+ kernel@collabora.com
+References: <20240119094944.26763-1-benjamin.gaignard@collabora.com>
+ <20240119094944.26763-9-benjamin.gaignard@collabora.com>
+ <56c1410e-7a4c-4913-823d-83b8bc0ac002@xs4all.nl>
+ <1cd7c504-c384-4c9c-bedd-79cd8aed8484@collabora.com>
+ <7f40af24-79a8-466c-8906-7104988124fb@xs4all.nl>
+Content-Language: en-US
+From: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+In-Reply-To: <7f40af24-79a8-466c-8906-7104988124fb@xs4all.nl>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-The GCC doesn't even register the Disp AHB clock. It enables it
-on probe though. So drop it from the list of DT provided clocks as well.
 
-Fixes: 9e939f008338 ("clk: qcom: add the SM8650 Display Clock Controller driver")
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
----
- drivers/clk/qcom/dispcc-sm8650.c | 1 -
- 1 file changed, 1 deletion(-)
+Le 24/01/2024 à 16:44, Hans Verkuil a écrit :
+> On 24/01/2024 16:35, Benjamin Gaignard wrote:
+>> Le 24/01/2024 à 13:52, Hans Verkuil a écrit :
+>>> On 19/01/2024 10:49, Benjamin Gaignard wrote:
+>>>> Allow to delete buffers on capture queue because it the one which
+>>>> own the decoded buffers. After a dynamic resolution change lot of
+>>>> them could remain allocated but won't be used anymore so deleting
+>>>> them save memory.
+>>>> Do not add this feature on output queue because the buffers are
+>>>> smaller, fewer and always recycled even after a dynamic resolution
+>>>> change.
+>>>>
+>>>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>>>> ---
+>>>>    drivers/media/platform/verisilicon/hantro_drv.c  | 1 +
+>>>>    drivers/media/platform/verisilicon/hantro_v4l2.c | 1 +
+>>>>    2 files changed, 2 insertions(+)
+>>>>
+>>>> diff --git a/drivers/media/platform/verisilicon/hantro_drv.c b/drivers/media/platform/verisilicon/hantro_drv.c
+>>>> index db3df6cc4513..f6b0a676a740 100644
+>>>> --- a/drivers/media/platform/verisilicon/hantro_drv.c
+>>>> +++ b/drivers/media/platform/verisilicon/hantro_drv.c
+>>>> @@ -248,6 +248,7 @@ queue_init(void *priv, struct vb2_queue *src_vq, struct vb2_queue *dst_vq)
+>>>>        dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
+>>>>        dst_vq->lock = &ctx->dev->vpu_mutex;
+>>>>        dst_vq->dev = ctx->dev->v4l2_dev.dev;
+>>>> +    src_vq->supports_delete_bufs = true;
+>>> As I mentioned, I remain unconvinced by this. It is just making the API inconsistent
+>>> since if you support delete_bufs, then why support it for one queue only and not both?
+>> Because the both queues don't handle the same type of data.
+>> For example for a stateless decoder, for me, it makes sense to allow delete decoded frames
+>> if they won't be used anymore but that won't makes sense for bitstream buffers.
+> But is there any reason why you wouldn't support this feature? We support VIDIOC_CREATE_BUFS
+> as well, even though most drivers do not need it, but it is cheap to add.
+>
+> Deleting buffers is a generic feature, and I don't see why you wouldn't just offer it
+> for both queues.
 
-diff --git a/drivers/clk/qcom/dispcc-sm8650.c b/drivers/clk/qcom/dispcc-sm8650.c
-index f3b1d9d16bae..382ebc1866b9 100644
---- a/drivers/clk/qcom/dispcc-sm8650.c
-+++ b/drivers/clk/qcom/dispcc-sm8650.c
-@@ -29,7 +29,6 @@
- enum {
- 	DT_BI_TCXO,
- 	DT_BI_TCXO_AO,
--	DT_AHB_CLK,
- 	DT_SLEEP_CLK,
- 
- 	DT_DSI0_PHY_PLL_OUT_BYTECLK,
+You want me to remove supports_delete_bufs and V4L2_BUF_CAP_SUPPORTS_DELETE_BUFS ?
+This way we can remove buffers from the both queues.
+Sound good for you ?
 
--- 
-2.34.1
+Regards,
+Benjamin
 
+>
+> Regards,
+>
+> 	Hans
+>
+>>>>          return vb2_queue_init(dst_vq);
+>>>>    }
+>>>> diff --git a/drivers/media/platform/verisilicon/hantro_v4l2.c b/drivers/media/platform/verisilicon/hantro_v4l2.c
+>>>> index 941fa23c211a..34eab90e8a42 100644
+>>>> --- a/drivers/media/platform/verisilicon/hantro_v4l2.c
+>>>> +++ b/drivers/media/platform/verisilicon/hantro_v4l2.c
+>>>> @@ -756,6 +756,7 @@ const struct v4l2_ioctl_ops hantro_ioctl_ops = {
+>>>>        .vidioc_dqbuf = v4l2_m2m_ioctl_dqbuf,
+>>>>        .vidioc_prepare_buf = v4l2_m2m_ioctl_prepare_buf,
+>>>>        .vidioc_create_bufs = v4l2_m2m_ioctl_create_bufs,
+>>>> +    .vidioc_delete_bufs = v4l2_m2m_ioctl_delete_bufs,
+>>>>        .vidioc_expbuf = v4l2_m2m_ioctl_expbuf,
+>>>>          .vidioc_subscribe_event = v4l2_ctrl_subscribe_event,
+>>> In my view setting vidioc_delete_bufs should enable this feature, and if
+>>> for some strange reason only one queue support it, then make a wrapper
+>>> callback that returns an error when used with the wrong queue.
+>>>
+>>> Also note that patch 6/8 never checks for q->supports_delete_bufs in
+>>> vb2_core_delete_bufs(), which is wrong!
+>> I will fix that in next version.
+>> Regards,
+>> Benjamin
+>>
+>>> Regards,
+>>>
+>>>      Hans
+>>>
+>
 
