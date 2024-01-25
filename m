@@ -1,122 +1,155 @@
-Return-Path: <linux-kernel+bounces-39129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A00183CB31
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:34:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFE6083CB37
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:35:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3202328CEC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:34:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71BE51F22C10
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:35:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FC88136666;
-	Thu, 25 Jan 2024 18:31:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13C2F77F02;
+	Thu, 25 Jan 2024 18:33:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="KmE9Igl9"
-Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="j3Za+b+q"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 012851339A3;
-	Thu, 25 Jan 2024 18:31:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.30.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63CAE8472;
+	Thu, 25 Jan 2024 18:33:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706207498; cv=none; b=eK93LR4UPiBfvSJYFQFNSPdvVT0x2sQWmwbcew1y8+bG0y012bbg+nlQynRc0d1ifQ0V5CEGWZxdiF/SZrVQbZbzKfPHTy/U0774DVe9FxqVRP8cMNHOm89RddofMbcuLB72MZK5xboOpjT/A3Mb72/bqFWKlfDxgqBjJQ0krE4=
+	t=1706207590; cv=none; b=fXsroKz+GO8iQwclJDIszhf4NaHsJdnNXfmZ9edhgijPU99iwM3MUucX39pKQ/eCtvCEZYqljkZK++12jRYSwtbZpuQhCuaBAQhcyn9i3/h04lkmD3k6poJ301DeTdhmz6/9c7ia70Diuab8t7eGU9XsXPfz3d9KFzBa+mr4HkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706207498; c=relaxed/simple;
-	bh=5T100LdEWzfnw+YYm0h1x8aoonY4rriPdSCNHs5edGY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Xot/M6gQgqR70347GUqWhwN/RDfpYJ5arZXyPRYlj7AR9DO36wk4zRk1mVHKROhvTk6xLbJIx3HcwudWK1Zg8GtEC4NpDrMJrnIGZ1xypWxj3+sk4iGRXg6QQeQVKBEsor2xkgP3Rpfm97GJvSnLk5f/scWgtgWF7iw6awf6TFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com; spf=pass smtp.mailfrom=geanix.com; dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b=KmE9Igl9; arc=none smtp.client-ip=188.40.30.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geanix.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
-	s=default2211; h=Content-Type:MIME-Version:Message-ID:Date:References:
-	In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=u4CrcfRRouAam+gtwWUyS4EOA4ggi0EQiB/dLp0zrqw=; b=KmE9Igl9ur6EuxOtRm2zlEbgot
-	Y3bbkrUZdnL/BP0h0RHhCuVPNs9nTvysVgfO0bX2GNuxI3GMZS6s3f+tlXgiqKHFl0wHuTZdleNOg
-	Zn/wl1s8aIxd58g+gI554jVLQU9PI6wOiA+lV8BbIS13TkGk6mjzHib13aXNiRejZyyhDRN0ZKMQL
-	eIrq0PqKa9pwDyImfXu9u34AkYjzIQWSWVrEqHNKeynYDvCr7DfpzFrMKVxHXUfDKz+QHLKHgps7t
-	PRDHafOVZfJv+3yeDApsXSPN85ErAK5hBp/Hf2WmniPNX+LkZUZx6fKOhdgvxYHYxqZCYxAiQ5uH2
-	CQCWwqPA==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <esben@geanix.com>)
-	id 1rT4VY-000EIW-R1; Thu, 25 Jan 2024 19:31:24 +0100
-Received: from [87.49.43.79] (helo=localhost)
-	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <esben@geanix.com>)
-	id 1rT4VX-000QQV-PI; Thu, 25 Jan 2024 19:31:23 +0100
-From: Esben Haabendal <esben@geanix.com>
-To: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-Cc: netdev@vger.kernel.org,  Alexandre Torgue
- <alexandre.torgue@foss.st.com>,  Jose Abreu <joabreu@synopsys.com>,
-  "David S. Miller" <davem@davemloft.net>,  Eric Dumazet
- <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>,  Paolo Abeni
- <pabeni@redhat.com>,  Maxime Coquelin <mcoquelin.stm32@gmail.com>,  Shawn
- Guo <shawnguo@kernel.org>,  Sascha Hauer <s.hauer@pengutronix.de>,
-  Pengutronix Kernel Team <kernel@pengutronix.de>,  Fabio Estevam
- <festevam@gmail.com>,  NXP Linux Team <linux-imx@nxp.com>,
-  linux-arm-kernel@lists.infradead.org,
-  linux-stm32@st-md-mailman.stormreply.com,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] net: stmmac: dwmac-imx: set TSO/TBS TX queues
- default settings
-In-Reply-To: <081af630-ab5d-4502-a29a-a8577d414809@linux.dev> (Vadim
-	Fedorenko's message of "Thu, 25 Jan 2024 17:11:08 +0000")
-References: <cover.1706184304.git.esben@geanix.com>
-	<5606bb5f0b7566a20bb136b268dae89d22a48898.1706184304.git.esben@geanix.com>
-	<081af630-ab5d-4502-a29a-a8577d414809@linux.dev>
-Date: Thu, 25 Jan 2024 19:31:23 +0100
-Message-ID: <875xzh6z9g.fsf@geanix.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1706207590; c=relaxed/simple;
+	bh=X9g2XA4NppT+YGuEazcfPB3e27C9le9+RqHSEyar0lo=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=YeC+c9wP8jjhQ/XDfTrOgMdGh9i2Jz70H5Qk73YxC/kwZ7QUnY/K3N9y/Iq3ZVgwoQlntuDPBU/QVFgVCri2BfV1K47Q0BFTjvtIZVjHdqbYIhoyW/1rApJuJmCyUQIwmv6LffniRxsQZFSAoskd1Vh5pRaCa/r6H26ZOext/ho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=j3Za+b+q; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40PHDXfO023662;
+	Thu, 25 Jan 2024 18:32:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:from:to:references
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=rtduzouzzoSoD527t39zRPaWPzfaEpx6N6wuAqAgPs8=; b=j3
+	Za+b+q8t4456lifVUBASJdEz3iCCtBR8P5ySUzru52NhLQgIFR/zOL9MXJXNAwX3
+	o+hOUapPxlliV82lrh3J55o6fTzxIZ7hJ+bdbI+F7cXjuX/M8y4AlSP3lPi39698
+	HaGI/+UnZJM4HEI7YcUyXLYSWTn3lfhCik3209GgKlPGcuqLRpeXYkxVAxvrr5aD
+	tuYCOspsj6jMJrfJ5ZIBdDUS5T93RGVXaVKu9sLuc2scNnvoRXqZJ8FzTli0WWCh
+	OhMvAySAOQvgzv9ZzmoRUBDb8COWI1S+g/epRyagkW03Cm1i18LdMpxPJFYd1bcC
+	QQF2W80F82Cn0ZhAUqZA==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vuqra0wfw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jan 2024 18:32:55 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40PIWsCq006259
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jan 2024 18:32:54 GMT
+Received: from [10.110.0.209] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 25 Jan
+ 2024 10:32:53 -0800
+Message-ID: <d49f69f4-7f5c-498f-bb17-a636256d3245@quicinc.com>
+Date: Thu, 25 Jan 2024 10:32:53 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Authenticated-Sender: esben@geanix.com
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27165/Thu Jan 25 10:51:15 2024)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH wireless v2] nl80211/cfg80211: add nla_policy for S1G band
+Content-Language: en-US
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+To: Johannes Berg <johannes@sipsolutions.net>, Lin Ma <linma@zju.edu.cn>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <linux-wireless@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kvalo@kernel.org>
+References: <20240119151201.8670-1-linma@zju.edu.cn>
+ <9e1db7f3-fd18-4b3b-a912-3cf6efd96fed@quicinc.com>
+ <590fe2823d934af997c515640733eb8889b0560f.camel@sipsolutions.net>
+ <d80ae6ae-e1f2-48ef-b18a-29b5ca62e64c@quicinc.com>
+In-Reply-To: <d80ae6ae-e1f2-48ef-b18a-29b5ca62e64c@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: IyX4pDl-EWRg6uBFMjQ3k44OVVGgWude
+X-Proofpoint-ORIG-GUID: IyX4pDl-EWRg6uBFMjQ3k44OVVGgWude
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-25_11,2024-01-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 mlxlogscore=999 phishscore=0 lowpriorityscore=0 bulkscore=0
+ spamscore=0 malwarescore=0 mlxscore=0 impostorscore=0 suspectscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401190000 definitions=main-2401250133
 
-Vadim Fedorenko <vadim.fedorenko@linux.dev> writes:
+On 1/22/2024 10:33 AM, Jeff Johnson wrote:
+> On 1/20/2024 12:27 PM, Johannes Berg wrote:
+>> On Fri, 2024-01-19 at 15:47 -0800, Jeff Johnson wrote:
+>>>> --- a/net/wireless/nl80211.c
+>>>> +++ b/net/wireless/nl80211.c
+>>>> @@ -911,6 +911,7 @@ nl80211_match_band_rssi_policy[NUM_NL80211_BANDS] = {
+>>>>  	[NL80211_BAND_5GHZ] = { .type = NLA_S32 },
+>>>>  	[NL80211_BAND_6GHZ] = { .type = NLA_S32 },
+>>>>  	[NL80211_BAND_60GHZ] = { .type = NLA_S32 },
+>>>> +	[NL80211_BAND_S1GHZ] = { .type = NLA_S32 },
+>>>>  	[NL80211_BAND_LC]    = { .type = NLA_S32 },
+>>>>  };
+>>>>  
+>>> something is really suspicious since the NL80211_BAND_* enums are
+>>> *value* enums, not attribute ID enums, and hence they should never be
+>>> used in an nla_policy.
+>>
+>> Yeah, that's what it looks like first, but then they do get used
+>> anyway...
+>>
+>>> what is actually using these as attribute IDs, noting that
+>>> NL80211_BAND_2GHZ == 0 and hence cannot be used as an attribute ID
+>>
+>> Ohh. Good catch!
+>>
+>>> seems the logic that introduced this policy needs to be revisited.
+>>>
+>>
+>> Let's just remove it?
+>>
+>> commit 1e1b11b6a1111cd9e8af1fd6ccda270a9fa3eacf
+>> Author: vamsi krishna <vamsin@codeaurora.org>
+>> Date:   Fri Feb 1 18:34:51 2019 +0530
+>>
+>>     nl80211/cfg80211: Specify band specific min RSSI thresholds with sched scan
+>>
+>>
+>> As far as I can tell nothing is using that in the first place ...
+>> Certainly not in the kernel, nor wpa_s, nor anything else I could find
+>> really ...
+>>
+>> We can't completely revert it since we need the attribute number to stay
+>> allocated, but that's all we cannot remove.
+> 
+> I'm investigating this and will report back.
 
-> On 25/01/2024 12:34, Esben Haabendal wrote:
->> TSO and TBS cannot coexist. For now we set i.MX Ethernet QOS controller to use
->> TX queue with TSO and the rest for TBS.
->> TX queues with TBS can support etf qdisc hw offload.
->> Signed-off-by: Esben Haabendal <esben@geanix.com>
->> ---
->>   drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c | 6 ++++++
->>   1 file changed, 6 insertions(+)
->> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
->> b/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
->> index 8f730ada71f9..c42e8f972833 100644
->> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
->> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
->> @@ -353,6 +353,12 @@ static int imx_dwmac_probe(struct platform_device *pdev)
->>   	if (data->flags & STMMAC_FLAG_HWTSTAMP_CORRECT_LATENCY)
->>   		plat_dat->flags |= STMMAC_FLAG_HWTSTAMP_CORRECT_LATENCY;
->>   +        for (int i = 0; i < plat_dat->tx_queues_to_use; i++) {
->> +                /* Default TX Q0 to use TSO and rest TXQ for TBS */
->> +                if (i > 0)
->> +                        plat_dat->tx_queues_cfg[i].tbs_en = 1;
->> +        }
->> +
->
-> Just wonder why don't you start with i = 1 and remove 'if' completely?
-> Keeping comment in place will make it understandable.
+OK, I have investigated this and based upon the investigation this can
+be removed (except for keeping the now obsolete uapi bits). This was
+done in preparation for supporting a new Android interface in the
+out-of-tree Android driver, but that interface was subsequently
+withdrawn by Google.
 
-No good reason for now. Later on, we might have some setup in the same
-lop that also applies to Q0. But the init value can be changed at that
-point.
+Johannes, do you want to handle this? Or should I?
 
->
->>   	plat_dat->host_dma_width = dwmac->ops->addr_width;
->>   	plat_dat->init = imx_dwmac_init;
->>   	plat_dat->exit = imx_dwmac_exit;
+/jeff
+
+
+
 
