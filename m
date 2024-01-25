@@ -1,101 +1,94 @@
-Return-Path: <linux-kernel+bounces-38714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D66283C492
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:21:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C587583C498
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:22:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1DCB1F21F07
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:21:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04BD71C231F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:22:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40A8763417;
-	Thu, 25 Jan 2024 14:21:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB2AB6341F;
+	Thu, 25 Jan 2024 14:22:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EPBMy9P1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=toke.dk header.i=@toke.dk header.b="Y6Ok/gLP"
+Received: from mail.toke.dk (mail.toke.dk [45.145.95.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8569D633F4;
-	Thu, 25 Jan 2024 14:21:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9B426340D;
+	Thu, 25 Jan 2024 14:22:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.95.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706192465; cv=none; b=MrCorPo8S8zEYP2dkUpNqvKMBvrFRuKc+L2j5UbT6keYZvxFlJHL62vDHmxJIbPxiI2OclGDVJ47McSp4ABOA27k7CgZFrakbXkET12D9bW7zk3GZj73vXCVc5JBlZPxtOaf50bmtnlNKAy2B2rdpZv4SvPBBJUz9/IBWVzSbcM=
+	t=1706192534; cv=none; b=k5Vh44XM+hP1nAaXnXiz5Z4XNsHfStEyfBqZkDQwl6FU6xlKwLtHlAe3o1XAfACuWOCntHY1edqDRDE4P2hxBcr6x8H09/PqRcN7BucDFC0Vrf01u7jU6vrtIQIPGAPM5R+h1IC3mixN29tTj6bxt3hSfX/8xb0W9tbtOlMV7eo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706192465; c=relaxed/simple;
-	bh=MNIgi+b3t8zEWYR3iuNyPFdo/g4cOlipsxaAEiU4R/c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tw39Gch1UZIr/8LdaOb0BofomonOVczgQDXSeWEKtoQ3FJbOqW2oqHJxSA/pJf9oozrxN7DwK8vpmV35eQCaDAEitye4RRXe5nkK6XZbygLRhADoqMBVShnqqvr6hKxVXNAFaT3OSzuBU8FCfTW/ZUpw8L9gpgz3FzNh3AyAPuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EPBMy9P1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB3A7C433C7;
-	Thu, 25 Jan 2024 14:21:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706192465;
-	bh=MNIgi+b3t8zEWYR3iuNyPFdo/g4cOlipsxaAEiU4R/c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EPBMy9P14kelBFAkx5aDrWkGpOtB0+cYKu1CE7M/TdEROHq88tUk7EjHvIHPo0Twc
-	 1mO7tDsZHHyRsU9OrtlMs2wcXBt/CzZMVzxcKEY13IENKVj+PuLFFsDZwQz977qPeU
-	 jGtnhst02LWR/Ozsybmy/43puOIKDIkjWGidIY5KihtuV4G7Z21CT3sMJy/WFsNW0R
-	 yYngWuqHRp6K31iKdyibEYmnM8wZwPSATjljwJRYcOGJVgqgkVtEDukRjrCNdj3141
-	 A6wwybdSM+1aQhrftQBcmwfP6TDDWBKnW7llB+NlZpxBmubBECceXBrZhu+SVri6T/
-	 MCukgKqw4Z3Ng==
-Date: Thu, 25 Jan 2024 14:20:58 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
-	James Clark <james.clark@arm.com>, Rob Herring <robh@kernel.org>,
-	Marc Zyngier <maz@kernel.org>,
-	Suzuki Poulose <suzuki.poulose@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH V16 1/8] arm64/sysreg: Add BRBE registers and fields
-Message-ID: <bfef9ef2-e1e8-4097-a683-8aff625f7091@sirena.org.uk>
-References: <20240125094119.2542332-1-anshuman.khandual@arm.com>
- <20240125094119.2542332-2-anshuman.khandual@arm.com>
+	s=arc-20240116; t=1706192534; c=relaxed/simple;
+	bh=BlFlnN5qxYKRyaYqgmmBhqDJtczdzc9S8thYktBe64E=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=NEjASiv3KS8zW1ezR490NKi4T2eDrq2CqGWcy3sIZ11OGk8lPtcUVP8E9ubRUc15gm9HhNNAy4EWJqShlPO3qjMKmithDb6xVg11Pt9seEZ3otJYJppLPH2U76MSwVRpq3YnXDH9PlSdByiwjCFrjcbn0uGaEJWWrjKH8siqirI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=toke.dk; spf=pass smtp.mailfrom=toke.dk; dkim=pass (2048-bit key) header.d=toke.dk header.i=@toke.dk header.b=Y6Ok/gLP; arc=none smtp.client-ip=45.145.95.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=toke.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=toke.dk
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=toke.dk; s=20161023;
+	t=1706192529; bh=BlFlnN5qxYKRyaYqgmmBhqDJtczdzc9S8thYktBe64E=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=Y6Ok/gLP5jvnH33oYT6TW7oClfxA5PvOAVDjcwKEBvtXq5qm8pVEruhm8I0v1s4In
+	 KVsXmXNzC1d2pmdEvnHurE/b3wEapH/eQVFprvEyFhBOpD1z5EvrhbUQELthvCigV9
+	 oFCowBTiAd2MNn8/9bwiYygOAm5H90tVSpAobN6SfnMsZOn8nUG8DD9xzrIYrmF+C/
+	 X2cJRVwVem8kV4KYTJ+9By+AM7ofrF0U8QBd6hkyqsWSXUmY0Bn2QEHOUoA0fltzMs
+	 Gt4TI7miaoXRQp2yLjgVUOX8vAQ4ygZnxOGZNovv4TW56xCYFM1TtpOXbAr22HWnRr
+	 h2dIHCBvOMU+A==
+To: Kalle Valo <kvalo@kernel.org>
+Cc: Ubisectech Sirius <bugreport@ubisectech.com>, linux-trace-kernel
+ <linux-trace-kernel@vger.kernel.org>, linux-kernel
+ <linux-kernel@vger.kernel.org>, johannes <johannes@sipsolutions.net>,
+ linux-wireless@vger.kernel.org
+Subject: Re: =?utf-8?B?5Zue5aSN77yaZ2VuZXJhbA==?= protection fault in
+ ath9k_wmi_event_tasklet
+In-Reply-To: <87plxp1p05.fsf@kernel.org>
+References: <ed1d2c66-1193-4c81-9542-d514c29ba8b8.bugreport@ubisectech.com>
+ <878r4e4q69.fsf@toke.dk>
+ <fb3ea26f-f9b6-4107-bb03-ca4893f0495f.bugreport@ubisectech.com>
+ <87wmrx34np.fsf@toke.dk> <87plxp1p05.fsf@kernel.org>
+Date: Thu, 25 Jan 2024 15:22:08 +0100
+X-Clacks-Overhead: GNU Terry Pratchett
+Message-ID: <87ttn1333j.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="MiSmjfR9RuqrtYah"
-Content-Disposition: inline
-In-Reply-To: <20240125094119.2542332-2-anshuman.khandual@arm.com>
-X-Cookie: Entropy isn't what it used to be.
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+Kalle Valo <kvalo@kernel.org> writes:
 
---MiSmjfR9RuqrtYah
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Toke H=C3=B8iland-J=C3=B8rgensen <toke@toke.dk> writes:
+>
+>> "Ubisectech Sirius" <bugreport@ubisectech.com> writes:
+>>
+>>>>Hmm, so from eyeballing the code in question, this looks like it is
+>>>>another initialisation race along the lines of the one fixed in commit:
+>>>>8b3046abc99e ("ath9k_htc: fix NULL pointer dereference at
+>>>> ath9k_htc_tx_get_packet()")
+>>>>Could you please test the patch below and see if you can still reproduce
+>>>>this issue with that applied?
+>>> Hello.
+>>>  I can not reproduce the issue on the Linux with the patch applied
+>>> Ubisectech Sirius Team
+>>
+>> Great, thank you for testing! I'll send a proper patch. How would you
+>> like to be credited with reporting? Just as 'Ubisectech Sirius
+>> <bugreport@ubisectech.com>' ?
+>
+> Ubisectech, please CC linux-wireless on any wireless issues and don't
+> use HTML format in emails. More info in the wiki below.
 
-On Thu, Jan 25, 2024 at 03:11:12PM +0530, Anshuman Khandual wrote:
-> This adds BRBE related register definitions and various other related field
-> macros there in. These will be used subsequently in a BRBE driver, which is
-> being added later on.
+Doh, didn't even notice that linux-wireless was not in Cc. Sorry about
+that! :(
 
-Checked against DDI0601 2023-12.
-
-Reviewed-by: Mark Brown <broonie@kernel.org>
-
---MiSmjfR9RuqrtYah
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWybkoACgkQJNaLcl1U
-h9Dwzgf9FNtXB8s0Ee+Ieyg34xIqlufx1AHq7PXMwIcKshRsPL5yLd/nzWL0zwi1
-mHfyX02YU5K2nWCo0oFusfPr2fkHih0DVCIpz6h4iBWPxkbeiEq4qrvpE/oppe0R
-p6fDnvG7F+w/NvdJ0IYGofL6CyzT7f7sEX2ddydwoW35Rd+c/n5/6D3mq6N7Z9eH
-4TjO8JOA0vcoy3AO7N6lj6Hkk5AW4ziw26f4IlAHtYbzI94tRSqYJq8eOOhrgSq7
-zFC8CmC33IZ43UUibpVknH0iFeelr7y1nvi1iyYl+nM+9haI+DCwqu7CbBQVLyuk
-wR6P/Ku/wfRzFH2H93WsdMWDXF2KWQ==
-=xysw
------END PGP SIGNATURE-----
-
---MiSmjfR9RuqrtYah--
+-Toke
 
