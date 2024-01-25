@@ -1,196 +1,152 @@
-Return-Path: <linux-kernel+bounces-38542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C873583C143
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:46:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF5AD83C145
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:47:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED4251C229EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:46:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E0A31C23050
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:47:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 837FE3172D;
-	Thu, 25 Jan 2024 11:46:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD4862EB05;
+	Thu, 25 Jan 2024 11:47:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iNChhATk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ihl++4Vx"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A940B376E0;
-	Thu, 25 Jan 2024 11:46:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78CCB2C6A1;
+	Thu, 25 Jan 2024 11:46:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706183174; cv=none; b=N1JQ/hWLqBhAzO+3VeANBBmpGFnEWr2K+au+bsoFkzi8PtNBIf/mb3bP2pK+kVwjt8mtnRx1kKfu/vpwBn8wpNhvU0nDFoFpcWA8VHZ6PjrbdErgKPbh0CRNYlNuePM8wnMWIEhgpj5/N7lviLGEu0NFDUPOXOrP+aZJFhvrJSE=
+	t=1706183221; cv=none; b=E5ijn7w4oLhgz6FMBvU/2A4mR1IjrbN2LuPq8IQ+97z1a+1LzcALNI9/kOZrq3+HEnKvBPpeKDSzeps/lV2CDUjFZZEYqtBB+w0ztiHClsVzWtshhsTHXZg9kc1IhMq5jb6Ursk5hD0MNyD7aVg3OeGP864UqjDV7Dl3Bt31XQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706183174; c=relaxed/simple;
-	bh=zT7UuuLPgK03PoMVnPSeikhPiQ2VY8XDljDQ6fuzGjM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mWlHAslqFkttjUf6nxlWy73gO5uq241s8pyBbRGD67TjwCuKyKQNBG17yCdL+g3gVxyxAAQN7GuYEOR1smCe04M4NIq6HooAdJT9BYFdc9asXXy1g2NN4Tov5RcWzZfUmkAV09f7E3bGg/H48EziLDUfBtdIZCbQ3g/VPiqnqE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iNChhATk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 844FFC433F1;
-	Thu, 25 Jan 2024 11:46:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706183174;
-	bh=zT7UuuLPgK03PoMVnPSeikhPiQ2VY8XDljDQ6fuzGjM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iNChhATkM652SseRl9tRO4D0GLx0NUKgWDj0I3E84pbIsDKfCFfZVG2cgOEKzRwU2
-	 biQmMGlE8x3jViaqrgaWBn16vjZwdcI7X8NmJ9/KDsi3wEKIEL1ewQOfluszMPzXsi
-	 Db5YjwJMS+e0h633Zr1NtrQ4VeCKzdmEaAuDetOCgqM6KUsvucoX6sqbxv1xZr0IbJ
-	 IzCsetVR1lUv5WG73SgFuQZWLKuTM7uqDgLAmDTUo0ih8l1BihyOxexlS+2JyQSxH8
-	 C1sG0zUtc+QnA7R5BCuhPSDG0eUsl5lK2/Fx2RCxXQlGdmFBQ1XOmI7Hgf0R6VYKRs
-	 VJMwAOFMrxvcw==
-Date: Thu, 25 Jan 2024 11:46:06 +0000
-From: Lee Jones <lee@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Saravana Kannan <saravanak@google.com>,
-	Peter Griffin <peter.griffin@linaro.org>, arnd@arndb.de,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	linux@roeck-us.net, wim@linux-watchdog.org, conor+dt@kernel.org,
-	alim.akhtar@samsung.com, jaewon02.kim@samsung.com,
-	chanho61.park@samsung.com, semen.protsenko@linaro.org,
-	kernel-team@android.com, tudor.ambarus@linaro.org,
-	andre.draszik@linaro.org, willmcvicker@google.com,
-	linux-fsd@tesla.com, linux-watchdog@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 3/9] watchdog: s3c2410_wdt: update to use new
- exynos_pmu_*() apis
-Message-ID: <20240125114606.GA1327902@google.com>
-References: <20240122225710.1952066-1-peter.griffin@linaro.org>
- <20240122225710.1952066-4-peter.griffin@linaro.org>
- <da30a68a-e29f-45c8-aa73-02955255a457@linaro.org>
- <CADrjBPor5tMY4r0jOy7GH36auCU7dWn6Qn4ct89bsSMW4vAQOA@mail.gmail.com>
- <6c72a521-1048-42eb-ac74-d8f718a90723@linaro.org>
- <CAGETcx-CCpaV7R0O0HpDpoX6KxQBuJiMmKdWA8nDE-5Qj2Sa7g@mail.gmail.com>
- <f4d3aa5a-e01d-4ef3-8004-b6eac4461184@linaro.org>
- <CAGETcx_HGcuGQTO11tzX0EvnuLEaKYc4vBse1CRP0JwPqMJdQQ@mail.gmail.com>
- <04411aaf-6f2c-4f43-83b4-aa0741ccd25f@linaro.org>
+	s=arc-20240116; t=1706183221; c=relaxed/simple;
+	bh=/qY8+GO9uXyETM6l1xdCOFxzv90yJYBZM6zC5WJjGNs=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=u1mFInHS+XZuAN4ME189quwPsof5GqeJdYkuY2S2ieVfTsgZb/Q8Xeidsh/e75obxc56RIQ/2KtAQ4/wXkhr9XYkqgtXUeUmDvC3KbDGU3MVit4SGJivXeLYJCR5d1q4Y1Bcz82XoIFQnTsSJ6ary8QGr6WCbRVz9+iVMQGs9Lg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ihl++4Vx; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706183220; x=1737719220;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=/qY8+GO9uXyETM6l1xdCOFxzv90yJYBZM6zC5WJjGNs=;
+  b=Ihl++4Vx3Fm6mMjrC9ZIUx+0xKLMki7gAhTj/aY5BRqkeEhVfJZcbrwL
+   DkernGUZjYmVSi7NcNRE3KnEIcuTPFkIUV4jkuawguctHbSGpOQ45eB1p
+   9gu9/5n9c3WenGSMW15aEUA6HRpDtnXzAsdkkeCE2omQRr/v1c58IazF+
+   6iY0oXpcHl3/9WDaH1LUDGUpOl7oC2lI4CPU7ONS/q7PsRkC5kVO97wsI
+   HXWeZaJTIS8xiZIIsydCW+dUo70NTZy/R3vN2Nk8fzm3eFHyez0lETJ74
+   bu2fUsZ0tE8ZnN6iwLkrjt+STikPAoLohJLUv0YNUsacuc3QIp7tXbbjq
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="20687227"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="20687227"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 03:46:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="2228958"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.94.252.55])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 03:46:57 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Thu, 25 Jan 2024 13:46:51 +0200 (EET)
+To: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+cc: Reinette Chatre <reinette.chatre@intel.com>, shuah@kernel.org, 
+    fenghua.yu@intel.com, LKML <linux-kernel@vger.kernel.org>, 
+    linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3 3/5] selftests/resctrl: Split
+ validate_resctrl_feature_request()
+In-Reply-To: <415cc65c113143c833ca2eaacd3a03c285c2e841.1706180726.git.maciej.wieczor-retman@intel.com>
+Message-ID: <62310cc5-7756-61a2-9529-8ae0fc247c21@linux.intel.com>
+References: <cover.1706180726.git.maciej.wieczor-retman@intel.com> <415cc65c113143c833ca2eaacd3a03c285c2e841.1706180726.git.maciej.wieczor-retman@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <04411aaf-6f2c-4f43-83b4-aa0741ccd25f@linaro.org>
+Content-Type: text/plain; charset=US-ASCII
 
-On Thu, 25 Jan 2024, Krzysztof Kozlowski wrote:
+On Thu, 25 Jan 2024, Maciej Wieczor-Retman wrote:
 
-> On 24/01/2024 22:27, Saravana Kannan wrote:
-> > On Tue, Jan 23, 2024 at 10:27 PM Krzysztof Kozlowski
-> > <krzysztof.kozlowski@linaro.org> wrote:
-> >>
-> >> On 24/01/2024 04:37, Saravana Kannan wrote:
-> >>> On Tue, Jan 23, 2024 at 10:12 AM Krzysztof Kozlowski
-> >>> <krzysztof.kozlowski@linaro.org> wrote:
-> >>>>
-> >>>> On 23/01/2024 18:30, Peter Griffin wrote:
-> >>>>>>>               dev_warn(wdt->dev, "Couldn't get RST_STAT register\n");
-> >>>>>>>       else if (rst_stat & BIT(wdt->drv_data->rst_stat_bit))
-> >>>>>>> @@ -698,14 +699,6 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
-> >>>>>>>       if (ret)
-> >>>>>>>               return ret;
-> >>>>>>>
-> >>>>>>> -     if (wdt->drv_data->quirks & QUIRKS_HAVE_PMUREG) {
-> >>>>>>> -             wdt->pmureg = syscon_regmap_lookup_by_phandle(dev->of_node,
-> >>>>>>> -                                             "samsung,syscon-phandle");
-> >>>>>>> -             if (IS_ERR(wdt->pmureg))
-> >>>>>>> -                     return dev_err_probe(dev, PTR_ERR(wdt->pmureg),
-> >>>>>>> -                                          "syscon regmap lookup failed.\n");
-> >>>>>>
-> >>>>>>
-> >>>>>> Continuing topic from the binding: I don't see how you handle probe
-> >>>>>> deferral, suspend ordering.
-> >>>>>
-> >>>>> The current implementation is simply relying on exynos-pmu being
-> >>>>> postcore_initcall level.
-> >>>>>
-> >>>>> I was just looking around for any existing Linux APIs that could be a
-> >>>>> more robust solution. It looks like
-> >>>>>
-> >>>>> of_parse_phandle()
-> >>>>> and
-> >>>>> of_find_device_by_node();
-> >>>>>
-> >>>>> Are often used to solve this type of probe deferral issue between
-> >>>>> devices. Is that what you would recommend using? Or is there something
-> >>>>> even better?
-> >>>>
-> >>>> I think you should keep the phandle and then set device link based on
-> >>>> of_find_device_by_node(). This would actually improve the code, because
-> >>>> syscon_regmap_lookup_by_phandle() does not create device links.
-> >>>
-> >>> I kinda agree with this. Just because we no longer use a syscon API to
-> >>> find the PMU register address doesn't mean the WDT doesn't depend on
-> >>> the PMU.
-> >>>
-> >>> However, I think we should move to a generic "syscon" property. Then I
-> >>> can add support for "syscon" property to fw_devlink and then things
-> >>> will just work in terms of probe ordering, suspend/resume and also
-> >>> showing the dependency in DT even if you don't use the syscon APIs.
-> >>>
-> >>> Side note 1:
-> >>>
-> >>> I think we really should officially document a generic syscon DT
-> >>> property similar to how we have a generic "clocks" or "dmas" property.
-> >>> Then we can have a syscon_get_regmap() that's like so:
-> >>>
-> >>> struct regmap *syscon_get_regmap(struct device *dev)
-> >>> {
-> >>>         return syscon_regmap_lookup_by_phandle(dev->of_node, "syscon");
-> >>> }
-> >>>
-> >>> Instead of every device defining its own bespoke DT property to do the
-> >>> exact same thing. I did a quick "back of the envelope" grep on this
-> >>> and I get about 143 unique properties just to get the syscon regmap.
-> >>> $ git grep -A1 syscon_regmap_lookup_by_phandle | grep '"' | sed -e
-> >>> 's/^[^"]*//' -e 's/"[^"]*$/"/' | sort | uniq | wc -l
-> >>> 143
-> >>
-> >> Sorry, generic "syscon" property won't fly with DT maintainers, because
-> >> there is no such thing as syscon in any of hardware.
-> > 
-> > Then why do we allow a "syscon" compatible string and nodes? If the
+> validate_resctrl_feature_request() is used to test both if a resource is
+> present in the info directory, and if a passed monitoring feature is
+> present in the mon_features file.
 > 
-> To bind Linux drivers.
+> Refactor validate_resctrl_feature_request() into two smaller functions
+> that each accomplish one check to give feature checking more
+> granularity:
+> - Resource directory presence in the /sys/fs/resctrl/info directory.
+> - Feature name presence in the /sys/fs/resctrl/info/L3_MON/mon_features
+>   file.
 > 
-> > "syscon" property isn't clear enough, we can make it something like
-> > gpios and have it be <whatever>-syscon or have syscon-names property
-> > if you want to give it a name.
+> Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+> ---
+> Changelog v3:
+> - Move new function to a separate patch. (Reinette)
+> - Rewrite resctrl_mon_feature_exists() only for L3_MON.
 > 
-> This could work.
-
-I'm not opposed to this idea.  The issue you'll have is keeping the
-kernel backwards compatible with older DTBs, thus this solution may only
-be possible for newly created bindings.  More than happy to be proven
-wrong here though.
-
-> >>> How are we making sure that it's the exynos-pmu driver that ends up
-> >>> probing the PMU and not the generic syscon driver? Both of these are
-> >>> platform drivers. And the exynos PMU device lists both the exynos
-> >>> compatible string and the syscon property. Is it purely a link order
-> >>> coincidence?
-> >>
-> >> initcall ordering
-> > 
-> > Both these drivers usr postcore_initcall(). So it's purely because
-> > soc/ is listed earlier in drivers/Makefile than mfd/. And as soon as
+> Changelog v2:
+> - Add this patch.
 > 
-> Oh... great :/.
+>  tools/testing/selftests/resctrl/cmt_test.c  |  4 +--
+>  tools/testing/selftests/resctrl/mba_test.c  |  4 +--
+>  tools/testing/selftests/resctrl/mbm_test.c  |  6 ++--
+>  tools/testing/selftests/resctrl/resctrl.h   |  3 +-
+>  tools/testing/selftests/resctrl/resctrlfs.c | 33 +++++++++++++--------
+>  5 files changed, 30 insertions(+), 20 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/resctrl/cmt_test.c b/tools/testing/selftests/resctrl/cmt_test.c
+> index dd5ca343c469..428de9df81c8 100644
+> --- a/tools/testing/selftests/resctrl/cmt_test.c
+> +++ b/tools/testing/selftests/resctrl/cmt_test.c
+> @@ -169,8 +169,8 @@ static int cmt_run_test(const struct resctrl_test *test, const struct user_param
+>  
+>  static bool cmt_feature_check(const struct resctrl_test *test)
+>  {
+> -	return test_resource_feature_check(test) &&
+> -	       validate_resctrl_feature_request("L3_MON", "llc_occupancy");
+> +	return resctrl_mon_feature_exists("llc_occupancy") &&
+> +	       resctrl_resource_exists("L3");
+>  }
+>  
+>  struct resctrl_test cmt_test = {
+> diff --git a/tools/testing/selftests/resctrl/mba_test.c b/tools/testing/selftests/resctrl/mba_test.c
+> index da256d2dbe5c..e22285b80e37 100644
+> --- a/tools/testing/selftests/resctrl/mba_test.c
+> +++ b/tools/testing/selftests/resctrl/mba_test.c
+> @@ -170,8 +170,8 @@ static int mba_run_test(const struct resctrl_test *test, const struct user_param
+>  
+>  static bool mba_feature_check(const struct resctrl_test *test)
+>  {
+> -	return test_resource_feature_check(test) &&
+> -	       validate_resctrl_feature_request("L3_MON", "mbm_local_bytes");
+> +	return resctrl_resource_exists(test->resource) &&
 
-Agree.
+I don't understand what's the advantage of converting away from 
+test_resource_feature_check() in CMT and MBA case?
 
-Even using initcalls for ordering is fragile.  Relying on the
-lexicographical order of a directory / filename structure is akin to
-rolling a dice.  It would be far nicer if you are able to find a more
-robust method of ensuring load order e.g. dynamically poking at
-hardware and / or utilising -EPROBE_DEFER.
+> +	       resctrl_mon_feature_exists("mbm_local_bytes");
+>  }
+
+> @@ -756,7 +765,7 @@ bool validate_resctrl_feature_request(const char *resource, const char *feature)
+>  
+>  bool test_resource_feature_check(const struct resctrl_test *test)
+>  {
+> -	return validate_resctrl_feature_request(test->resource, NULL);
+> +	return resctrl_resource_exists(test->resource);
+
+..The replacement in MBA open coded test_resource_feature_check() 100% 
+and CMT even replaces the test->resource with the string matching to 
+what's in test->resource?
+
 
 -- 
-Lee Jones [李琼斯]
+ i.
+
 
