@@ -1,98 +1,150 @@
-Return-Path: <linux-kernel+bounces-39397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CE5283D05E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 00:09:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F6D083D061
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 00:10:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5DBD291B6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:09:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81A441C2292D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:10:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F1D412B8C;
-	Thu, 25 Jan 2024 23:09:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Sc1LdxnK"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4E7912B82
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 23:09:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1761912B8A;
+	Thu, 25 Jan 2024 23:10:23 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CC5E134A0;
+	Thu, 25 Jan 2024 23:10:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706224176; cv=none; b=QviY57uMBMF7QBfBpBtMBwM4fq4R/r/5Q+XmumyhVs7zi0LLfxBU1JrjMeV/Dlhiw03FrwWDY4YlqeGG80sA8PJe2bPB9VZvhGxVMd5YwSH01P+30+liEK+Y2W+Ey3OjN5/Qi0wQFdvL12HbGZ2q7zDgdUa/Hd4E3QCdbw9Ttig=
+	t=1706224222; cv=none; b=dVBbGVNXVTLcbG0+rf85UZjJyX64UfWhsww5vGIwaY0z3Pq9BEjm2eUD7wHI3dbkAwJuSx0jn5FtS8XnIlMNTIBwovTJi/fA6m4dVI76x7nItYmAWQm9b/dubDkuQMJshF9+sHLbPDYwOXEEIGoyOi2Dlx2UYSDXEa726zDqSps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706224176; c=relaxed/simple;
-	bh=ePte//PcvI+POPvm5pOf9eY2yfLLJls6I8UsfkKqq8I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hPytuPU/dVVjB888gdRe3G5BamtY8ZP0cjHO017s96QhoJBrOpc6gMiIWq4WR/IKlNi/jCeCYPbfAG1iiIBnU45I0IlCu6rg5OMZxoviwWlGaJeOyBNgSI0wb/PmY9gkOUpZjmoxKFo69HIhzh7VwVZUFp98rtAyH3Ez4AlhWL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Sc1LdxnK; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ddc1b30458so198247b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 15:09:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706224173; x=1706828973; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NNidztSseW3f6ox0VaVwn+MmYmXjLmRwN6RuC1S6ZnI=;
-        b=Sc1LdxnKDEn2FUa7jyeJmOK2uxPNAJtUNZ/lP0ZinbliSf5uNrZrpDjZYKSn6ia5z/
-         uJ5bsNh51b3g6TcZpf5adCBpke/Fe/rX1kCUfmIBlcuNgtyxQ13JjKyzGbI/CqVgxhj4
-         zRJmXZxPyfE5KbS9d6cuxhcFaQBnjBhcoET08=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706224173; x=1706828973;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NNidztSseW3f6ox0VaVwn+MmYmXjLmRwN6RuC1S6ZnI=;
-        b=GI6UvFQR1f/ltkv1qKqdhTmBmmAzns1SjRidEtWq5pogloub7n4GJ3OHnL9jZggIYH
-         CEZSS1fEWTfWCashwZSs6DZPG6oUZ55HocXb+xrh8wXh7zE2+RmxsdA04duHvVeIn7J2
-         9TnN5XbzxdSXHvBzadvvazsVNY4JC9kEnD8ZM4c7L3TfkPow9z7bMLeDuVzbsNmaYCMF
-         3/Cjhn8OJ5Mo5V8Bn0cKZTO7ngFAZsMW1umDrCw7ZpfyS9QYGckJCcX7VCOzDp/FQt/j
-         2osHLX2vohj37rl7FjqsgPIeXIs9xgjWGD2deMT3OB5AceoEaHkAHKBokz2cssUtUgzl
-         u+eQ==
-X-Gm-Message-State: AOJu0YxjbrvSOhJNxXd5UGR7KWo9FNTaAcfooTkknB0Ky++0CKfyYPkv
-	VxIPHfnx8Me77ZzuXICppQX1NEK9nSqMnXdXocT5IqAF7b9U56DXPxcXGCU79Q==
-X-Google-Smtp-Source: AGHT+IH4wMIY5onoDuNtmQW2qW/oiyEguJjb8r1Cdunh6LBtNU0O2EKFQ/LepjR7KIf8EtqHsgZMQA==
-X-Received: by 2002:a05:6a20:1616:b0:19b:5cf9:45ac with SMTP id l22-20020a056a20161600b0019b5cf945acmr452465pzj.81.1706224173278;
-        Thu, 25 Jan 2024 15:09:33 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id m66-20020a633f45000000b005cdfb0a11e1sm27205pga.88.2024.01.25.15.09.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 15:09:32 -0800 (PST)
-Date: Thu, 25 Jan 2024 15:09:20 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: akpm@linux-foundation.org, masahiroy@kernel.org, nicolas@fjasle.eu,
-	linux-kbuild@vger.kernel.org, llvm@lists.linux.dev,
-	patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 09/11] fortify: Drop Clang version check for 12.0.1 or
- newer
-Message-ID: <202401251509.70789B5D@keescook>
-References: <20240125-bump-min-llvm-ver-to-13-0-1-v1-0-f5ff9bda41c5@kernel.org>
- <20240125-bump-min-llvm-ver-to-13-0-1-v1-9-f5ff9bda41c5@kernel.org>
+	s=arc-20240116; t=1706224222; c=relaxed/simple;
+	bh=WjAquZ3WjL/xwJBFncZOshEyjxA/1dzJMiU7mPslkcI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UuTqixFl/BFvyISeyHELthrpPdGvLsahL1Hr3drakRZexy4CxT1zRzCivv58jVt/aJSzlwbmHhd/USgcsldjjsAtXblnAFd9nBBa+RWxpT11hWNAvs6SblZun8IqPrlMKPu8kMnWz6pgHyExhwdGgSJ4+555l/PaC5VYTHT4EUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B5FB31FB;
+	Thu, 25 Jan 2024 15:11:03 -0800 (PST)
+Received: from [10.57.48.67] (unknown [10.57.48.67])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3670C3F5A1;
+	Thu, 25 Jan 2024 15:10:18 -0800 (PST)
+Message-ID: <cbde8e52-f1a9-4c45-b82c-f3ca13b96991@arm.com>
+Date: Thu, 25 Jan 2024 23:10:16 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240125-bump-min-llvm-ver-to-13-0-1-v1-9-f5ff9bda41c5@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] virtio: uapi: Drop __packed attribute in
+ linux/virtio_pci.h:
+Content-Language: en-GB
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+ Feng Liu <feliu@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>,
+ Alex Williamson <alex.williamson@redhat.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>
+References: <20240124172345.853129-1-suzuki.poulose@arm.com>
+ <20240125174705-mutt-send-email-mst@kernel.org>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <20240125174705-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 25, 2024 at 03:55:15PM -0700, Nathan Chancellor wrote:
-> Now that the minimum supported version of LLVM for building the kernel
-> has been bumped to 13.0.1, this condition is always true, as the build
-> will fail during the configuration stage for older LLVM versions. Remove
-> it.
+On 25/01/2024 22:48, Michael S. Tsirkin wrote:
+> On Wed, Jan 24, 2024 at 05:23:45PM +0000, Suzuki K Poulose wrote:
+>> Commit 92792ac752aa ("virtio-pci: Introduce admin command sending function")
+>> added "__packed" structures to UAPI header linux/virtio_pci.h. This triggers
+>> build failures in the consumer userspace applications without proper "definition"
+>> of __packed (e.g., kvmtool build fails).
+>>
+>> Moreover, the structures are already packed well, and doesn't need explicit
+>> packing, similar to the rest of the structures in all virtio_* headers. Remove
+>> the __packed attribute.
+>>
+>> Fixes: commit 92792ac752aa ("virtio-pci: Introduce admin command sending function")
 > 
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> 
+> Proper form is:
+> 
+> Fixes: 92792ac752aa ("virtio-pci: Introduce admin command sending function")
 
-Acked-by: Kees Cook <keescook@chromium.org>
+Apologies, for messing that up.
 
--- 
-Kees Cook
+> 
+>> Cc: Feng Liu <feliu@nvidia.com>
+>> Cc: Michael S. Tsirkin <mst@redhat.com>
+>> Cc: Yishai Hadas <yishaih@nvidia.com>
+>> Cc: Alex Williamson <alex.williamson@redhat.com>
+>> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> ---
+>>   include/uapi/linux/virtio_pci.h | 10 +++++-----
+>>   1 file changed, 5 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
+>> index ef3810dee7ef..a8208492e822 100644
+>> --- a/include/uapi/linux/virtio_pci.h
+>> +++ b/include/uapi/linux/virtio_pci.h
+>> @@ -240,7 +240,7 @@ struct virtio_pci_cfg_cap {
+>>   #define VIRTIO_ADMIN_CMD_LEGACY_DEV_CFG_READ		0x5
+>>   #define VIRTIO_ADMIN_CMD_LEGACY_NOTIFY_INFO		0x6
+>>   
+>> -struct __packed virtio_admin_cmd_hdr {
+>> +struct virtio_admin_cmd_hdr {
+>>   	__le16 opcode;
+>>   	/*
+>>   	 * 1 - SR-IOV
+>> @@ -252,20 +252,20 @@ struct __packed virtio_admin_cmd_hdr {
+>>   	__le64 group_member_id;
+>>   };
+>>   
+>> -struct __packed virtio_admin_cmd_status {
+>> +struct virtio_admin_cmd_status {
+>>   	__le16 status;
+>>   	__le16 status_qualifier;
+>>   	/* Unused, reserved for future extensions. */
+>>   	__u8 reserved2[4];
+>>   };
+>>   
+>> -struct __packed virtio_admin_cmd_legacy_wr_data {
+>> +struct virtio_admin_cmd_legacy_wr_data {
+>>   	__u8 offset; /* Starting offset of the register(s) to write. */
+>>   	__u8 reserved[7];
+>>   	__u8 registers[];
+>>   };
+>>   
+>> -struct __packed virtio_admin_cmd_legacy_rd_data {
+>> +struct virtio_admin_cmd_legacy_rd_data {
+>>   	__u8 offset; /* Starting offset of the register(s) to read. */
+>>   };
+>>   
+>> @@ -275,7 +275,7 @@ struct __packed virtio_admin_cmd_legacy_rd_data {
+>>   
+>>   #define VIRTIO_ADMIN_CMD_MAX_NOTIFY_INFO 4
+>>   
+>> -struct __packed virtio_admin_cmd_notify_info_data {
+>> +struct virtio_admin_cmd_notify_info_data {
+>>   	__u8 flags; /* 0 = end of list, 1 = owner device, 2 = member device */
+>>   	__u8 bar; /* BAR of the member or the owner device */
+>>   	__u8 padding[6];
+> 
+> 
+> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+> 
+> I will queue this.
+
+Thanks
+Suzuki
+
+> 
+>> -- 
+>> 2.34.1
+> 
+
 
