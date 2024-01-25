@@ -1,238 +1,141 @@
-Return-Path: <linux-kernel+bounces-39119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39121-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5554283CB10
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:31:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD83183CB18
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:32:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9A0B1F2670A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:31:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 988AEB256C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:32:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84CDD137C31;
-	Thu, 25 Jan 2024 18:26:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0AE81386BB;
+	Thu, 25 Jan 2024 18:28:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="ndRNjLNt"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BZkHsCxq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A99679C7
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 18:26:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D306D134757;
+	Thu, 25 Jan 2024 18:28:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706207186; cv=none; b=FUNLlO4miCv7LKJishwvNHdtShIpWvhtpaY3tjKq1dm5y9AzSk/WkjgGjgbdnzhvroIYoUvDH4212lSZrAueLNKHqkYPp1Cl7mvFimVnUjDS2qpb93Jm5SDZADr7PLv6H6vk/z1vNR85TNzVDjkTiP45TsB4l6+mgOWFMwSErqA=
+	t=1706207296; cv=none; b=IuU8QUgJyM0MnDvLspwCRMf4q470ZaeC6jD/uQ7lF5aueYWiWhvkRld8FxkW5A50oi02oIwCKuCcIzVHxNVIQuRtR3B1IXWXV5ZIhY6Q9h/iax6IZzA4Gzvepe9B9RlggwvZPNNfMABNVMXqWDWQPS9bArkszM/CVFaCavBEIMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706207186; c=relaxed/simple;
-	bh=jx00gY1ANnXUmZbXujxCZw5ack5kqcVrRKjf2wSzAGE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hfg3CaxBMINTw11hwdp/S1uZnlYxNP6yG/otu7ij9LOdQuD4BtkdSKLADNzLiEMjyF2V3NH2UmEXPQKtg4wCDhnbBjs0uZL17Y8d49zKePlUFHFtSeibM+i+DNtH0ruCWx6Ra52ruSdxJuGx7JJCIpCn+5Lec205/JiSe0kvgo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=ndRNjLNt; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6ddc5faeb7fso1240255b3a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 10:26:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706207184; x=1706811984; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xyuZ0gVdBuvlPmtjlhSz8uJtD77t/nVDJ3cBvemqEj0=;
-        b=ndRNjLNtyb2HSEDOmH/SyIDmrte0pVJhbjx5ZFOqTVaN7zTiNt5Hv0poqPgH1fvEvW
-         o4qDLhKbdvSU8IfpisXd196IA9OWyysxT9b6MZ/eBWwz+s+GogE5RDlWdvAZ6Pv7CqeX
-         d1nZwoWmgxZh8V3wrRsluC8eWBvyzqJMrD1yWLdPmXld+IZZ2zckxZ7vER8J/2glMQMQ
-         DNtMgs5Iwnxpov8tsBR+gQpM/ZaS8IorzAJ5KtBQs0MLqSmcIN6bJGDpJOdOaNkkBFXq
-         Tq0YI3Ng8+ZVomByK6VtS5pDVUXFVyRFuNVKXd5CbYV60X5g0mGS76qtBFj6D+YS6wIs
-         im9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706207184; x=1706811984;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xyuZ0gVdBuvlPmtjlhSz8uJtD77t/nVDJ3cBvemqEj0=;
-        b=DNF6y0bQgGOk4ZUuA4QYgo/7f7WOS7EHmqnxjaz/KZkYaw6r9odCx2NlbJabFHFON2
-         uoER51o+ZVCZPD+Eu5NowTy997QWICiJJgWC8/gvtu4NUMHgCKCgk1wzc3VtvRvPwdnT
-         3bMqdXXSgTNMawWgIYXvR3uvsxn02XuG02o7WnCJTRMVe1jH8n+grIR3cR7nshc8megr
-         w7cuxjdHwTn3vHfPjYQ5uDZOOeqHNbUuew4/Em5A59gvRYhPy5liMdbL/6bj7mlXE7m2
-         z4XPG8QD+hFApuRwTq/FaLjmsVQ9ORe768NcMsIQg4BFuY6odxvDhOcCrh3cfrmMI4BF
-         rtng==
-X-Gm-Message-State: AOJu0Yyca84SLgnmTIxLNzV96BmrxrQG1D5qouabS55le0lCb4ZHVXsW
-	U/NwiBTGwVS9MiMNf4g56i93+xoCvV9LGZaWv/Mym3Rchc3ireiKijx+iEyQxIA=
-X-Google-Smtp-Source: AGHT+IFBV2oC78chsLzac9k77DXS5/WbnhoEAPatEDRZ6lhNeqqRGgEsUCPUu1zeHuG1e8R3Jwt8hg==
-X-Received: by 2002:a05:6a20:1453:b0:199:ad49:ea79 with SMTP id a19-20020a056a20145300b00199ad49ea79mr78878pzi.63.1706207184482;
-        Thu, 25 Jan 2024 10:26:24 -0800 (PST)
-Received: from debug.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id j38-20020a635526000000b005cf7c4bb938sm13685563pgb.94.2024.01.25.10.26.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 10:26:24 -0800 (PST)
-Date: Thu, 25 Jan 2024 10:26:19 -0800
-From: Deepak Gupta <debug@rivosinc.com>
-To: Conor Dooley <conor@kernel.org>
-Cc: rick.p.edgecombe@intel.com, broonie@kernel.org, Szabolcs.Nagy@arm.com,
-	kito.cheng@sifive.com, keescook@chromium.org,
-	ajones@ventanamicro.com, paul.walmsley@sifive.com,
-	palmer@dabbelt.com, conor.dooley@microchip.com, cleger@rivosinc.com,
-	atishp@atishpatra.org, alex@ghiti.fr, bjorn@rivosinc.com,
-	alexghiti@rivosinc.com, corbet@lwn.net, aou@eecs.berkeley.edu,
-	oleg@redhat.com, akpm@linux-foundation.org, arnd@arndb.de,
-	ebiederm@xmission.com, shuah@kernel.org, brauner@kernel.org,
-	guoren@kernel.org, samitolvanen@google.com, evan@rivosinc.com,
-	xiao.w.wang@intel.com, apatel@ventanamicro.com,
-	mchitale@ventanamicro.com, waylingii@gmail.com,
-	greentime.hu@sifive.com, heiko@sntech.de, jszhang@kernel.org,
-	shikemeng@huaweicloud.com, david@redhat.com, charlie@rivosinc.com,
-	panqinglin2020@iscas.ac.cn, willy@infradead.org,
-	vincent.chen@sifive.com, andy.chiu@sifive.com, gerg@kernel.org,
-	jeeheng.sia@starfivetech.com, mason.huo@starfivetech.com,
-	ancientmodern4@gmail.com, mathis.salmen@matsal.de,
-	cuiyunhui@bytedance.com, bhe@redhat.com, ruscur@russell.cc,
-	bgray@linux.ibm.com, alx@kernel.org, baruch@tkos.co.il,
-	zhangqing@loongson.cn, catalin.marinas@arm.com, revest@chromium.org,
-	josh@joshtriplett.org, joey.gouly@arm.com, shr@devkernel.io,
-	omosnace@redhat.com, ojeda@kernel.org, jhubbard@nvidia.com,
-	linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH v1 05/28] riscv: zicfiss/zicfilp enumeration
-Message-ID: <ZbKny7ZAG5FWHwwF@debug.ba.rivosinc.com>
-References: <20240125062739.1339782-1-debug@rivosinc.com>
- <20240125062739.1339782-6-debug@rivosinc.com>
- <20240125-unscathed-coeditor-31f04e811489@spud>
+	s=arc-20240116; t=1706207296; c=relaxed/simple;
+	bh=N6ZEDuiUthyrFTNfqDI04qaw+c0qqDUfP3nYRGcwyjI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sMTOyYfwPUVlG+YSYDuF6XZ7fqW2Eu6Fu+VA8PSJYI6A6sODFFCq69/rivgruoYa8Hv6MxCPKE9+1+EaJErev2EjAfK/HSMLH4wYFi1wTE0Dk/biUVwSR8MdbFYaO7qjjxyTZvuSyASZ+7xAJikx5lGii4cd0+XmJVmoh2XxzP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BZkHsCxq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81F4BC43390;
+	Thu, 25 Jan 2024 18:28:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706207296;
+	bh=N6ZEDuiUthyrFTNfqDI04qaw+c0qqDUfP3nYRGcwyjI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=BZkHsCxqRg4uKfWIIAzrh35ZHF7uOs8Fold3RkOXJ8QpcxrOvoVP6RdBSCMFwzcHf
+	 YFkyhLj8woDGjGb6oHqlimvo0hi5+1LR00Cq0FhMCEoxELdwkjRDf+3Cloebwsmv3Z
+	 7OdYixQINOjG146LOn12MJj1UdZ1v4mRvgzuzHoYt8IfnL0ex0yuWemnlDrw+YJ7C3
+	 ou1rLvom/37mMFfjPK8ziz+IdFlxdbbWXUe43KyhIYT8nIy5OF3magR6ZIwTOjZwEw
+	 wkAfL3cLYULfY9V2bvsJckv0ea0Um/ptsrs7iNBglrnw3UM+hxOyJdEmbgyMZPMe9+
+	 ZhMuAFfPJPhFA==
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cf33b909e8so9713321fa.0;
+        Thu, 25 Jan 2024 10:28:16 -0800 (PST)
+X-Gm-Message-State: AOJu0YyvLkpEuGWVi6YX3OzM14VlBpoPP3M7dxkOB1CDPTEmQcufMQ3y
+	nsgPd8ylp9Knl6w1+DZjb0lqTc9R4C64bK7dDGO5UKYnPISaD7wbXXOxBji67SqTGfYFPHiZo9A
+	r+NHw7IIID64+lOARE3E2BRerWVw=
+X-Google-Smtp-Source: AGHT+IF4A+Ju+VLoXBiDORGvr3AIpO6hZuYmyrpVf8uXLhHDJf4q1S9Z2/98OeaA5FJkEYmlY6Xk9DZVHViKbc6Mtb0=
+X-Received: by 2002:a2e:be20:0:b0:2cf:15be:462e with SMTP id
+ z32-20020a2ebe20000000b002cf15be462emr185537ljq.11.1706207294732; Thu, 25 Jan
+ 2024 10:28:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20240125-unscathed-coeditor-31f04e811489@spud>
+References: <20240123234731.work.358-kees@kernel.org> <CAMj1kXGcKBPnHOm6PtsrxePdv5a6AokB=qvMrwvGmPh_Uk6vsA@mail.gmail.com>
+ <202401250958.11B29BE48@keescook>
+In-Reply-To: <202401250958.11B29BE48@keescook>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Thu, 25 Jan 2024 19:28:03 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXHKTWy7kyHNYD0+JbbDqEreL7efatDZ9VLKPbXhVVVdqw@mail.gmail.com>
+Message-ID: <CAMj1kXHKTWy7kyHNYD0+JbbDqEreL7efatDZ9VLKPbXhVVVdqw@mail.gmail.com>
+Subject: Re: [PATCH] smb: Work around Clang __bdos() type confusion
+To: Kees Cook <keescook@chromium.org>
+Cc: Steve French <sfrench@samba.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Paulo Alcantara <pc@manguebit.com>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, 
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>, linux-cifs@vger.kernel.org, 
+	llvm@lists.linux.dev, Nick Desaulniers <ndesaulniers@google.com>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Jan 25, 2024 at 05:59:24PM +0000, Conor Dooley wrote:
->Yo,
+On Thu, 25 Jan 2024 at 19:00, Kees Cook <keescook@chromium.org> wrote:
 >
->Series is RFC, so not gonna review it in depth, just wanted to comment
->on this particular patch.
+> On Thu, Jan 25, 2024 at 01:19:19PM +0100, Ard Biesheuvel wrote:
+> > On Wed, 24 Jan 2024 at 00:47, Kees Cook <keescook@chromium.org> wrote:
+> > >
+> > > Recent versions of Clang gets confused about the possible size of the
+> > > "user" allocation, and CONFIG_FORTIFY_SOURCE ends up emitting a
+> > > warning[1]:
+> > >
+> > > repro.c:126:4: warning: call to '__write_overflow_field' declared with 'warning' attribute: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Wattribute-warning]
+> > >   126 |                         __write_overflow_field(p_size_field, size);
+> > >       |                         ^
+> > >
+> > > for this memset():
+> > >
+> > >         int len;
+> > >         __le16 *user;
+> > >         ...
+> > >         len = ses->user_name ? strlen(ses->user_name) : 0;
+> > >         user = kmalloc(2 + (len * 2), GFP_KERNEL);
+> > >         ...
+> > >         if (len) {
+> > >                 ...
+> > >         } else {
+> > >                 memset(user, '\0', 2);
+> > >         }
+> > >
+> > > While Clang works on this bug[2], switch to using a direct assignment,
+> > > which avoids memset() entirely which both simplifies the code and silences
+> > > the false positive warning. (Making "len" size_t also silences the
+> > > warning, but the direct assignment seems better.)
+> > >
+> > > Reported-by: Nathan Chancellor <nathan@kernel.org>
+> > > Closes: https://github.com/ClangBuiltLinux/linux/issues/1966 [1]
+> > > Link: https://github.com/llvm/llvm-project/issues/77813 [2]
+> > > Cc: Steve French <sfrench@samba.org>
+> > > Cc: Paulo Alcantara <pc@manguebit.com>
+> > > Cc: Ronnie Sahlberg <ronniesahlberg@gmail.com>
+> > > Cc: Shyam Prasad N <sprasad@microsoft.com>
+> > > Cc: Tom Talpey <tom@talpey.com>
+> > > Cc: linux-cifs@vger.kernel.org
+> > > Cc: llvm@lists.linux.dev
+> > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > ---
+> > >  fs/smb/client/cifsencrypt.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/fs/smb/client/cifsencrypt.c b/fs/smb/client/cifsencrypt.c
+> > > index ef4c2e3c9fa6..6322f0f68a17 100644
+> > > --- a/fs/smb/client/cifsencrypt.c
+> > > +++ b/fs/smb/client/cifsencrypt.c
+> > > @@ -572,7 +572,7 @@ static int calc_ntlmv2_hash(struct cifs_ses *ses, char *ntlmv2_hash,
+> > >                 len = cifs_strtoUTF16(user, ses->user_name, len, nls_cp);
+> > >                 UniStrupr(user);
+> > >         } else {
+> > > -               memset(user, '\0', 2);
+> > > +               *(u16 *)user = 0;
+> >
+> > Is 'user' guaranteed to be 16-bit aligned?
 >
->On Wed, Jan 24, 2024 at 10:21:30PM -0800, debug@rivosinc.com wrote:
->> From: Deepak Gupta <debug@rivosinc.com>
->>
->> This patch adds support for detecting zicfiss and zicfilp. zicfiss and zicfilp
->> stands for unprivleged integer spec extension for shadow stack and branch
->> tracking on indirect branches, respectively.
->>
->> This patch looks for zicfiss and zicfilp in device tree and accordinlgy lights
->> up bit in cpu feature bitmap. Furthermore this patch adds detection utility
->> functions to return whether shadow stack or landing pads are supported by
->> cpu.
->>
->> Signed-off-by: Deepak Gupta <debug@rivosinc.com>
->> ---
->>  arch/riscv/include/asm/cpufeature.h | 18 ++++++++++++++++++
->>  arch/riscv/include/asm/hwcap.h      |  2 ++
->>  arch/riscv/include/asm/processor.h  |  1 +
->>  arch/riscv/kernel/cpufeature.c      |  2 ++
->>  4 files changed, 23 insertions(+)
->>
->> diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm/cpufeature.h
->> index a418c3112cd6..216190731c55 100644
->> --- a/arch/riscv/include/asm/cpufeature.h
->> +++ b/arch/riscv/include/asm/cpufeature.h
->> @@ -133,4 +133,22 @@ static __always_inline bool riscv_cpu_has_extension_unlikely(int cpu, const unsi
->>  	return __riscv_isa_extension_available(hart_isa[cpu].isa, ext);
->>  }
->>
->> +static inline bool cpu_supports_shadow_stack(void)
->> +{
->> +#ifdef CONFIG_RISCV_USER_CFI
+> It's the first two bytes of a kmalloced address range, which I'm nearly
+> certain will be sanely aligned, as those allocs are commonly used for
+> holding structs, etc.
 >
->In passing, I don't see any reason for not using IS_ENABLED() here.
 
-No reason. I should probably do that. More readable.
-Thanks.
-
->
->> +	return riscv_isa_extension_available(NULL, ZICFISS);
->> +#else
->> +	return false;
->> +#endif
->> +}
->> +
->> +static inline bool cpu_supports_indirect_br_lp_instr(void)
->> +{
->> +#ifdef CONFIG_RISCV_USER_CFI
->> +	return riscv_isa_extension_available(NULL, ZICFILP);
->> +#else
->> +	return false;
->> +#endif
->> +}
->> +
->>  #endif
->> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
->> index 06d30526ef3b..918165cfb4fa 100644
->> --- a/arch/riscv/include/asm/hwcap.h
->> +++ b/arch/riscv/include/asm/hwcap.h
->> @@ -57,6 +57,8 @@
->>  #define RISCV_ISA_EXT_ZIHPM		42
->>  #define RISCV_ISA_EXT_SMSTATEEN		43
->>  #define RISCV_ISA_EXT_ZICOND		44
->> +#define RISCV_ISA_EXT_ZICFISS	45
->> +#define RISCV_ISA_EXT_ZICFILP	46
->>
->>  #define RISCV_ISA_EXT_MAX		64
->>
->> diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
->> index f19f861cda54..ee2f51787ff8 100644
->> --- a/arch/riscv/include/asm/processor.h
->> +++ b/arch/riscv/include/asm/processor.h
->> @@ -13,6 +13,7 @@
->>  #include <vdso/processor.h>
->>
->>  #include <asm/ptrace.h>
->> +#include <asm/hwcap.h>
->>
->>  #ifdef CONFIG_64BIT
->>  #define DEFAULT_MAP_WINDOW	(UL(1) << (MMAP_VA_BITS - 1))
->> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
->> index 98623393fd1f..16624bc9a46b 100644
->> --- a/arch/riscv/kernel/cpufeature.c
->> +++ b/arch/riscv/kernel/cpufeature.c
->> @@ -185,6 +185,8 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
->>  	__RISCV_ISA_EXT_DATA(svinval, RISCV_ISA_EXT_SVINVAL),
->>  	__RISCV_ISA_EXT_DATA(svnapot, RISCV_ISA_EXT_SVNAPOT),
->>  	__RISCV_ISA_EXT_DATA(svpbmt, RISCV_ISA_EXT_SVPBMT),
->> +	__RISCV_ISA_EXT_DATA(zicfiss, RISCV_ISA_EXT_ZICFISS),
->> +	__RISCV_ISA_EXT_DATA(zicfilp, RISCV_ISA_EXT_ZICFILP),
->
->Anything you add to this array, you need to document in a dt-binding.
-
-You mean Documentation/devicetree/bindings/riscv/extensions.yaml
-(or possibly any other yaml if needed?)
-
->Also, you added these in the wrong place. There's a massive comment
->before the array describing the order entries must be in, please take a
->look.
-
-I see the comment.
-In my defense, looks like I missed it when I was rebasing.
-
-Will fix it.
-
->
->Thanks,
->Conor.
->
->
->>  };
->>
->>  const size_t riscv_isa_ext_count = ARRAY_SIZE(riscv_isa_ext);
->> --
->> 2.43.0
->>
->>
->> _______________________________________________
->> linux-riscv mailing list
->> linux-riscv@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-riscv
-
-
+Ah yes, this kmalloc() was carefully hidden in the commit log :-)
 
