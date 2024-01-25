@@ -1,142 +1,598 @@
-Return-Path: <linux-kernel+bounces-38914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D718383C85F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:44:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B7CE83C8BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:53:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 166961C23336
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:44:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BAA041F21C49
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:53:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B559C130E20;
-	Thu, 25 Jan 2024 16:43:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qmoftmKu"
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E9B0133981
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 16:42:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D673140775;
+	Thu, 25 Jan 2024 16:45:05 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 947E5130E31;
+	Thu, 25 Jan 2024 16:45:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706200980; cv=none; b=BksPC8172VTliVBtB30CA7n/VVNbLMs8U3WuLGxeHILLwhe7ShRXELhXyfAdLifuolNMnuUijXCYZbtU+mYzJNEB6j1FuYG1fpCQz6f1G6FqLLdRQukBrEDtCbaf0/dzzcjrZXt3KtYRjR8haJDmVGOwKuQ0hv88XVEXjzZQrN4=
+	t=1706201104; cv=none; b=nmcjF5mI3gPiITfJEI8R1Dv/MKwHUUibTSrFUeX140Af1QO6aM/WaAiFj/kQMebS1gkVWrGFD/reuY5PTkVFjCJJFmn7JV7Xs4T4AemFkSmGOvTeOmgPgvo4Fcq2Z0tG+tCq4UFA8KTDVlSSrx+gM0oUX4bdnfNFZL7ZFclLHu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706200980; c=relaxed/simple;
-	bh=RA/dywI//b8wbJThXyjIP0zXgcdf9VZeWuhmmKqDdfc=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Gos05llPV4n8lxIPxIbw85ik7MunWRu7sg/5NFqxnVYlVuKGsim4Agd3rumDuTeRMQBPHKIShxa06SA55nWWBnNrec6xTfzTpzZuU8X9fXGrVDqQ7C0CAG9oQNQ81eUiQ5s0+C4fx+E7XrdH1+6rigvqW5SYTdpHuWf9wAN67fk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qmoftmKu; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2900c648b8bso5236745a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:42:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706200978; x=1706805778; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AUoJ3ddc9e3JLhAMVuimNZikRZg+KeQcTa0lsEDkqvU=;
-        b=qmoftmKunVu7+O5pV0MqzQ/W0lqfyHSfwANG/2C27qIlkTrzFzENYxV9/wcBBv2VXo
-         LQuMCp4WdEdnNSBTXLzSm25zfdlvDfMTAIrq9xusksCtQN8kBOkDZM9ZqtGPOlJtahWj
-         AaehgAZssnL9VAIBCZUygW3hz0I11ORg1mibOWnlJEHqhOkSQGFS2ppkE+r+HOI3SEEd
-         rydQ52VGjowDvVmAfX5oLKs0PS168SvVEut8QaCf0n4X9lM6WxAC8LctNYbU9/hsFoZl
-         eLQbD4SthsgNJvdHWuB9uu99SAodepoDe8ghFe1sIcpOVGSkDxyGyQxr0qu1ZOF81t6r
-         hezg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706200978; x=1706805778;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AUoJ3ddc9e3JLhAMVuimNZikRZg+KeQcTa0lsEDkqvU=;
-        b=XpLLD7LWErmTTVsUG+wCHYFqRI7FyMn7E0rgMSWi+q7cvJuY07JxIEm8sxOiALEmJJ
-         xFopMG2rQLFhqlSaVZ+1bIHkhAqsEYUbesLp+djYfhvzOL3mzsVZVzfClmWTnWmJo3KP
-         xikfuD/2ny5h1G5Iggg5ROfaBrmrWpynLKbdAIt5aJDNiGs+cmkFbwkVu1Ei+ZHGjcMu
-         +UOJKtcCz7/oArEihiQgU9q0nIbIbdshnaD/nvR8fF6++6Y/4A4nr0RIidhw7RrvizH8
-         +7+mDznKUrBWa5LQX2X+R4uqlQ+RDO7VOFcPPhY1stlVrWb8FI1kBwNEx6ALKk/Yuh67
-         HQ2Q==
-X-Gm-Message-State: AOJu0YwrkIUNuIk62V7YZp6CRUK+mf+6qLWfxlTP1WWlydRTtgxBv1zE
-	yiwh2A/nO6FhX75VT+zs7pfNj4Owavc2v3cmvnbJsctmfq3mBTeHS2vPU/1nPUo=
-X-Google-Smtp-Source: AGHT+IEepz3BMfPNOyvpg5nL+cVmUDpDXFngYmuO367eAXReN/+4XkVqPSwF+8qpIsQRVpURpQK04w==
-X-Received: by 2002:a17:90a:db8e:b0:28f:fc6e:7ecc with SMTP id h14-20020a17090adb8e00b0028ffc6e7eccmr941017pjv.41.1706200978007;
-        Thu, 25 Jan 2024 08:42:58 -0800 (PST)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id u15-20020a17090ac88f00b0028c89122f8asm1769170pjt.6.2024.01.25.08.42.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 08:42:57 -0800 (PST)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Thu, 25 Jan 2024 17:42:43 +0100
-Subject: [PATCH 3/3] arm64: defconfig: enable audio drivers for SM8650 QRD
- board
+	s=arc-20240116; t=1706201104; c=relaxed/simple;
+	bh=jlGfFnTMCEmyx7VrpRL5SX1KOi3Z2lUgGZr9JsXwi9c=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=otQ/iz2eLDr/q+jNGXwErKXiIV6CpyS02gXL9ulKZ6Fj6eD60Hj882DAKfV84SQUsXauecveKN4NK2hr0+cYMe7wX3CU3EiMtanFpjmN/9nfmUIlrwKA6mSeodZAZ17DKH2Hw1el1tLH8wSk9qIQFAE0Va+Fv5OBLLTnVDKPOxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7B1D41691;
+	Thu, 25 Jan 2024 08:45:44 -0800 (PST)
+Received: from e121798.cable.virginm.net (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8C0543F5A1;
+	Thu, 25 Jan 2024 08:44:54 -0800 (PST)
+From: Alexandru Elisei <alexandru.elisei@arm.com>
+To: catalin.marinas@arm.com,
+	will@kernel.org,
+	oliver.upton@linux.dev,
+	maz@kernel.org,
+	james.morse@arm.com,
+	suzuki.poulose@arm.com,
+	yuzenghui@huawei.com,
+	arnd@arndb.de,
+	akpm@linux-foundation.org,
+	mingo@redhat.com,
+	peterz@infradead.org,
+	juri.lelli@redhat.com,
+	vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com,
+	rostedt@goodmis.org,
+	bsegall@google.com,
+	mgorman@suse.de,
+	bristot@redhat.com,
+	vschneid@redhat.com,
+	mhiramat@kernel.org,
+	rppt@kernel.org,
+	hughd@google.com
+Cc: pcc@google.com,
+	steven.price@arm.com,
+	anshuman.khandual@arm.com,
+	vincenzo.frascino@arm.com,
+	david@redhat.com,
+	eugenis@google.com,
+	kcc@google.com,
+	hyesoo.yu@samsung.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	kvmarm@lists.linux.dev,
+	linux-fsdevel@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH RFC v3 23/35] arm64: mte: Try to reserve tag storage in arch_alloc_page()
+Date: Thu, 25 Jan 2024 16:42:44 +0000
+Message-Id: <20240125164256.4147-24-alexandru.elisei@arm.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240125164256.4147-1-alexandru.elisei@arm.com>
+References: <20240125164256.4147-1-alexandru.elisei@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240125-topic-sm8650-upstream-audio-dt-v1-3-c24d23ae5763@linaro.org>
-References: <20240125-topic-sm8650-upstream-audio-dt-v1-0-c24d23ae5763@linaro.org>
-In-Reply-To: <20240125-topic-sm8650-upstream-audio-dt-v1-0-c24d23ae5763@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- Neil Armstrong <neil.armstrong@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1023;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=RA/dywI//b8wbJThXyjIP0zXgcdf9VZeWuhmmKqDdfc=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlso+FzUzXr6EEozwn0lUxfe+CLrYHnIVUiTRaL9hn
- eRdNipqJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZbKPhQAKCRB33NvayMhJ0T5hEA
- CHQJglHouUdo4/OzFYRlYbi6ra+tX8c+gXpIkSBPrsdFpBe3ezha3i5QTimq7uP3p+SQPrUqoZqCCI
- 4MGxHiukM065uJQ+4xia2uxbyQ+bi4r7rtqpMmfhHz/sYZBD3iGEWiA5Cc3CSQOG2Q5L1Dpw0wbE9m
- ryO4jmz3g5hf1O1Yk+5SpgLrbW6o2fWDOxh9Hyn01a83RdRMBPF2mnJMmudytYUx7rhGOH9gNsKevt
- qUeYejb1ob334ZEU/Xt5fPDpvRT0WXFCiZa8fNrWE7BQ/FfyPRRes9XMG3iQAT8x64iGpXDM0YGkdp
- mlneSEmNUMexqsEEBH75ZKsu4kG42Og6+QoiIsQgrw2Jvaglt9Jk3jfJrTleOFTF4ssAbQXl2MaU5Z
- cIDTpMU4i84meJenlJki73Tw2K8w4lpf+L+J7dOZPd2WpHAQxfb3iUg++7okhQ5azkMHTagD8QG1oq
- BqtBas4utXoGuu9nJLY1alwpPf2Jv4E0MQTN4Rbts1BI6EwaNnQQr7XaTQwesg9XDHB0/wrezisND3
- FiSVUwLNQslFj/Js26oVONyOnZfkgr/uE2OPw1MCsZgYFL1ohRvRQrAWRUycpf4RIkN6j8oeFrxQR4
- ikaNUdeS/FqoMiKno3L2NQFDsB4vUlF2A/3SC+eKyG82571S5WuycN+3Q8dQ==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+Content-Transfer-Encoding: 8bit
 
-Enable the SM8650 LPASS driver and the WCD939x codec driver
-as module which are used to support Audio on the SM8650 QRD board.
+Reserve tag storage for a page that is being allocated as tagged. This
+is a best effort approach, and failing to reserve tag storage is
+allowed.
 
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+When all the associated tagged pages have been freed, return the tag
+storage pages back to the page allocator, where they can be used again for
+data allocations.
+
+Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
 ---
- arch/arm64/configs/defconfig | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 5c8777fb5a29..d13d0fb8517a 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -620,6 +620,7 @@ CONFIG_PINCTRL_SM8350_LPASS_LPI=m
- CONFIG_PINCTRL_SM8450_LPASS_LPI=m
- CONFIG_PINCTRL_SC8280XP_LPASS_LPI=m
- CONFIG_PINCTRL_SM8550_LPASS_LPI=m
-+CONFIG_PINCTRL_SM8650_LPASS_LPI=m
- CONFIG_GPIO_ALTERA=m
- CONFIG_GPIO_DAVINCI=y
- CONFIG_GPIO_DWAPB=y
-@@ -992,6 +993,8 @@ CONFIG_SND_SOC_TLV320AIC32X4_I2C=m
- CONFIG_SND_SOC_TLV320AIC3X_I2C=m
- CONFIG_SND_SOC_WCD9335=m
- CONFIG_SND_SOC_WCD934X=m
-+CONFIG_SND_SOC_WCD939X=m
-+CONFIG_SND_SOC_WCD939X_SDW=m
- CONFIG_SND_SOC_WM8524=m
- CONFIG_SND_SOC_WM8904=m
- CONFIG_SND_SOC_WM8960=m
+Changes since rfc v2:
 
+* Based on rfc v2 patch #16 ("arm64: mte: Manage tag storage on page
+allocation").
+* Fixed calculation of the number of associated tag storage blocks (Hyesoo
+Yu).
+* Tag storage is reserved in arch_alloc_page() instead of
+arch_prep_new_page().
+
+ arch/arm64/include/asm/mte.h             |  16 +-
+ arch/arm64/include/asm/mte_tag_storage.h |  31 +++
+ arch/arm64/include/asm/page.h            |   5 +
+ arch/arm64/include/asm/pgtable.h         |  19 ++
+ arch/arm64/kernel/mte_tag_storage.c      | 234 +++++++++++++++++++++++
+ arch/arm64/mm/fault.c                    |   7 +
+ fs/proc/page.c                           |   1 +
+ include/linux/kernel-page-flags.h        |   1 +
+ include/linux/page-flags.h               |   1 +
+ include/trace/events/mmflags.h           |   3 +-
+ mm/huge_memory.c                         |   1 +
+ 11 files changed, 316 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+index 8034695b3dd7..6457b7899207 100644
+--- a/arch/arm64/include/asm/mte.h
++++ b/arch/arm64/include/asm/mte.h
+@@ -40,12 +40,24 @@ void mte_free_tag_buf(void *buf);
+ #ifdef CONFIG_ARM64_MTE
+ 
+ /* track which pages have valid allocation tags */
+-#define PG_mte_tagged	PG_arch_2
++#define PG_mte_tagged		PG_arch_2
+ /* simple lock to avoid multiple threads tagging the same page */
+-#define PG_mte_lock	PG_arch_3
++#define PG_mte_lock		PG_arch_3
++/* Track if a tagged page has tag storage reserved */
++#define PG_tag_storage_reserved	PG_arch_4
++
++#ifdef CONFIG_ARM64_MTE_TAG_STORAGE
++DECLARE_STATIC_KEY_FALSE(tag_storage_enabled_key);
++extern bool page_tag_storage_reserved(struct page *page);
++#endif
+ 
+ static inline void set_page_mte_tagged(struct page *page)
+ {
++#ifdef CONFIG_ARM64_MTE_TAG_STORAGE
++	/* Open code mte_tag_storage_enabled() */
++	WARN_ON_ONCE(static_branch_likely(&tag_storage_enabled_key) &&
++		     !page_tag_storage_reserved(page));
++#endif
+ 	/*
+ 	 * Ensure that the tags written prior to this function are visible
+ 	 * before the page flags update.
+diff --git a/arch/arm64/include/asm/mte_tag_storage.h b/arch/arm64/include/asm/mte_tag_storage.h
+index 7b3f6bff8e6f..09f1318d924e 100644
+--- a/arch/arm64/include/asm/mte_tag_storage.h
++++ b/arch/arm64/include/asm/mte_tag_storage.h
+@@ -5,6 +5,12 @@
+ #ifndef __ASM_MTE_TAG_STORAGE_H
+ #define __ASM_MTE_TAG_STORAGE_H
+ 
++#ifndef __ASSEMBLY__
++
++#include <linux/mm_types.h>
++
++#include <asm/mte.h>
++
+ #ifdef CONFIG_ARM64_MTE_TAG_STORAGE
+ 
+ DECLARE_STATIC_KEY_FALSE(tag_storage_enabled_key);
+@@ -15,6 +21,15 @@ static inline bool tag_storage_enabled(void)
+ }
+ 
+ void mte_init_tag_storage(void);
++
++static inline bool alloc_requires_tag_storage(gfp_t gfp)
++{
++	return gfp & __GFP_TAGGED;
++}
++int reserve_tag_storage(struct page *page, int order, gfp_t gfp);
++void free_tag_storage(struct page *page, int order);
++
++bool page_tag_storage_reserved(struct page *page);
+ #else
+ static inline bool tag_storage_enabled(void)
+ {
+@@ -23,6 +38,22 @@ static inline bool tag_storage_enabled(void)
+ static inline void mte_init_tag_storage(void)
+ {
+ }
++static inline bool alloc_requires_tag_storage(struct page *page)
++{
++	return false;
++}
++static inline int reserve_tag_storage(struct page *page, int order, gfp_t gfp)
++{
++	return 0;
++}
++static inline void free_tag_storage(struct page *page, int order)
++{
++}
++static inline bool page_tag_storage_reserved(struct page *page)
++{
++	return true;
++}
+ #endif /* CONFIG_ARM64_MTE_TAG_STORAGE */
+ 
++#endif /* !__ASSEMBLY__ */
+ #endif /* __ASM_MTE_TAG_STORAGE_H  */
+diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
+index 88bab032a493..3a656492f34a 100644
+--- a/arch/arm64/include/asm/page.h
++++ b/arch/arm64/include/asm/page.h
+@@ -35,6 +35,11 @@ void copy_highpage(struct page *to, struct page *from);
+ void tag_clear_highpage(struct page *to);
+ #define __HAVE_ARCH_TAG_CLEAR_HIGHPAGE
+ 
++#ifdef CONFIG_ARM64_MTE_TAG_STORAGE
++void arch_alloc_page(struct page *, int order, gfp_t gfp);
++#define HAVE_ARCH_ALLOC_PAGE
++#endif
++
+ #define clear_user_page(page, vaddr, pg)	clear_page(page)
+ #define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
+ 
+diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+index 2499cc4fa4f2..f30466199a9b 100644
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -10,6 +10,7 @@
+ 
+ #include <asm/memory.h>
+ #include <asm/mte.h>
++#include <asm/mte_tag_storage.h>
+ #include <asm/pgtable-hwdef.h>
+ #include <asm/pgtable-prot.h>
+ #include <asm/tlbflush.h>
+@@ -1069,6 +1070,24 @@ static inline void arch_swap_restore(swp_entry_t entry, struct folio *folio)
+ 		mte_restore_page_tags_by_swp_entry(entry, &folio->page);
+ }
+ 
++#ifdef CONFIG_ARM64_MTE_TAG_STORAGE
++
++#define __HAVE_ARCH_FREE_PAGES_PREPARE
++static inline void arch_free_pages_prepare(struct page *page, int order)
++{
++	if (tag_storage_enabled() && page_mte_tagged(page))
++		free_tag_storage(page, order);
++}
++
++#define __HAVE_ARCH_ALLOC_CMA
++static inline bool arch_alloc_cma(gfp_t gfp_mask)
++{
++	if (tag_storage_enabled() && alloc_requires_tag_storage(gfp_mask))
++		return false;
++	return true;
++}
++
++#endif /* CONFIG_ARM64_MTE_TAG_STORAGE */
+ #endif /* CONFIG_ARM64_MTE */
+ 
+ #define __HAVE_ARCH_CALC_VMA_GFP
+diff --git a/arch/arm64/kernel/mte_tag_storage.c b/arch/arm64/kernel/mte_tag_storage.c
+index d58c68b4a849..762c7c803a70 100644
+--- a/arch/arm64/kernel/mte_tag_storage.c
++++ b/arch/arm64/kernel/mte_tag_storage.c
+@@ -34,6 +34,31 @@ struct tag_region {
+ static struct tag_region tag_regions[MAX_TAG_REGIONS];
+ static int num_tag_regions;
+ 
++/*
++ * A note on locking. Reserving tag storage takes the tag_blocks_lock mutex,
++ * because alloc_contig_range() might sleep.
++ *
++ * Freeing tag storage takes the xa_lock spinlock with interrupts disabled
++ * because pages can be freed from non-preemptible contexts, including from an
++ * interrupt handler.
++ *
++ * Because tag storage can be freed from interrupt contexts, the xarray is
++ * defined with the XA_FLAGS_LOCK_IRQ flag to disable interrupts when calling
++ * xa_store(). This is done to prevent a deadlock with free_tag_storage() being
++ * called from an interrupt raised before xa_store() releases the xa_lock.
++ *
++ * All of the above means that reserve_tag_storage() cannot run concurrently
++ * with itself (no concurrent insertions), but it can run at the same time as
++ * free_tag_storage(). The first thing that reserve_tag_storage() does after
++ * taking the mutex is increase the refcount on all present tag storage blocks
++ * with the xa_lock held, to serialize against freeing the blocks. This is an
++ * optimization to avoid taking and releasing the xa_lock after each iteration
++ * if the refcount operation was moved inside the loop, where it would have had
++ * to be executed for each block.
++ */
++static DEFINE_XARRAY_FLAGS(tag_blocks_reserved, XA_FLAGS_LOCK_IRQ);
++static DEFINE_MUTEX(tag_blocks_lock);
++
+ static u32 __init get_block_size_pages(u32 block_size_bytes)
+ {
+ 	u32 a = PAGE_SIZE;
+@@ -364,3 +389,212 @@ static int __init mte_enable_tag_storage(void)
+ 	return -EINVAL;
+ }
+ arch_initcall(mte_enable_tag_storage);
++
++static void page_set_tag_storage_reserved(struct page *page, int order)
++{
++	int i;
++
++	for (i = 0; i < (1 << order); i++)
++		set_bit(PG_tag_storage_reserved, &(page + i)->flags);
++}
++
++static void block_ref_add(unsigned long block, struct tag_region *region, int order)
++{
++	int count;
++
++	count = min(1u << order, 32 * region->block_size_pages);
++	page_ref_add(pfn_to_page(block), count);
++}
++
++static int block_ref_sub_return(unsigned long block, struct tag_region *region, int order)
++{
++	int count;
++
++	count = min(1u << order, 32 * region->block_size_pages);
++	return page_ref_sub_return(pfn_to_page(block), count);
++}
++
++static bool tag_storage_block_is_reserved(unsigned long block)
++{
++	return xa_load(&tag_blocks_reserved, block) != NULL;
++}
++
++static int tag_storage_reserve_block(unsigned long block, struct tag_region *region, int order)
++{
++	int ret;
++
++	ret = xa_err(xa_store(&tag_blocks_reserved, block, pfn_to_page(block), GFP_KERNEL));
++	if (!ret)
++		block_ref_add(block, region, order);
++
++	return ret;
++}
++
++static int order_to_num_blocks(int order, u32 block_size_pages)
++{
++	int num_tag_storage_pages = max((1 << order) / 32, 1);
++
++	return DIV_ROUND_UP(num_tag_storage_pages, block_size_pages);
++}
++
++static int tag_storage_find_block_in_region(struct page *page, unsigned long *blockp,
++					    struct tag_region *region)
++{
++	struct range *tag_range = &region->tag_range;
++	struct range *mem_range = &region->mem_range;
++	u64 page_pfn = page_to_pfn(page);
++	u64 block, block_offset;
++
++	if (!(mem_range->start <= page_pfn && page_pfn <= mem_range->end))
++		return -ERANGE;
++
++	block_offset = (page_pfn - mem_range->start) / 32;
++	block = tag_range->start + rounddown(block_offset, region->block_size_pages);
++
++	if (block + region->block_size_pages - 1 > tag_range->end) {
++		pr_err("Block 0x%llx-0x%llx is outside tag region 0x%llx-0x%llx\n",
++			PFN_PHYS(block), PFN_PHYS(block + region->block_size_pages + 1) - 1,
++			PFN_PHYS(tag_range->start), PFN_PHYS(tag_range->end + 1) - 1);
++		return -ERANGE;
++	}
++	*blockp = block;
++
++	return 0;
++
++}
++
++static int tag_storage_find_block(struct page *page, unsigned long *block,
++				  struct tag_region **region)
++{
++	int i, ret;
++
++	for (i = 0; i < num_tag_regions; i++) {
++		ret = tag_storage_find_block_in_region(page, block, &tag_regions[i]);
++		if (ret == 0) {
++			*region = &tag_regions[i];
++			return 0;
++		}
++	}
++
++	return -EINVAL;
++}
++
++bool page_tag_storage_reserved(struct page *page)
++{
++	return test_bit(PG_tag_storage_reserved, &page->flags);
++}
++
++int reserve_tag_storage(struct page *page, int order, gfp_t gfp)
++{
++	unsigned long start_block, end_block;
++	struct tag_region *region;
++	unsigned long block;
++	unsigned long flags;
++	int ret = 0;
++
++	VM_WARN_ON_ONCE(!preemptible());
++
++	if (page_tag_storage_reserved(page))
++		return 0;
++
++	/*
++	 * __alloc_contig_migrate_range() ignores gfp when allocating the
++	 * destination page for migration. Regardless, massage gfp flags and
++	 * remove __GFP_TAGGED to avoid recursion in case gfp stops being
++	 * ignored.
++	 */
++	gfp &= ~__GFP_TAGGED;
++	if (!(gfp & __GFP_NORETRY))
++		gfp |= __GFP_RETRY_MAYFAIL;
++
++	ret = tag_storage_find_block(page, &start_block, &region);
++	if (WARN_ONCE(ret, "Missing tag storage block for pfn 0x%lx", page_to_pfn(page)))
++		return -EINVAL;
++	end_block = start_block + order_to_num_blocks(order, region->block_size_pages);
++
++	mutex_lock(&tag_blocks_lock);
++
++	/* Check again, this time with the lock held. */
++	if (page_tag_storage_reserved(page))
++		goto out_unlock;
++
++	/* Make sure existing entries are not freed from out under out feet. */
++	xa_lock_irqsave(&tag_blocks_reserved, flags);
++	for (block = start_block; block < end_block; block += region->block_size_pages) {
++		if (tag_storage_block_is_reserved(block))
++			block_ref_add(block, region, order);
++	}
++	xa_unlock_irqrestore(&tag_blocks_reserved, flags);
++
++	for (block = start_block; block < end_block; block += region->block_size_pages) {
++		/* Refcount incremented above. */
++		if (tag_storage_block_is_reserved(block))
++			continue;
++
++		ret = cma_alloc_range(region->cma, block, region->block_size_pages, 3, gfp);
++		/* Should never happen. */
++		VM_WARN_ON_ONCE(ret == -EEXIST);
++		if (ret)
++			goto out_error;
++
++		ret = tag_storage_reserve_block(block, region, order);
++		if (ret) {
++			cma_release(region->cma, pfn_to_page(block), region->block_size_pages);
++			goto out_error;
++		}
++	}
++
++	page_set_tag_storage_reserved(page, order);
++out_unlock:
++	mutex_unlock(&tag_blocks_lock);
++
++	return 0;
++
++out_error:
++	xa_lock_irqsave(&tag_blocks_reserved, flags);
++	for (block = start_block; block < end_block; block += region->block_size_pages) {
++		if (tag_storage_block_is_reserved(block) &&
++		    block_ref_sub_return(block, region, order) == 1) {
++			__xa_erase(&tag_blocks_reserved, block);
++			cma_release(region->cma, pfn_to_page(block), region->block_size_pages);
++		}
++	}
++	xa_unlock_irqrestore(&tag_blocks_reserved, flags);
++
++	mutex_unlock(&tag_blocks_lock);
++
++	return ret;
++}
++
++void free_tag_storage(struct page *page, int order)
++{
++	unsigned long block, start_block, end_block;
++	struct tag_region *region;
++	unsigned long flags;
++	int ret;
++
++	ret = tag_storage_find_block(page, &start_block, &region);
++	if (WARN_ONCE(ret, "Missing tag storage block for pfn 0x%lx", page_to_pfn(page)))
++		return;
++
++	end_block = start_block + order_to_num_blocks(order, region->block_size_pages);
++
++	xa_lock_irqsave(&tag_blocks_reserved, flags);
++	for (block = start_block; block < end_block; block += region->block_size_pages) {
++		if (WARN_ONCE(!tag_storage_block_is_reserved(block),
++		    "Block 0x%lx is not reserved for pfn 0x%lx", block, page_to_pfn(page)))
++			continue;
++
++		if (block_ref_sub_return(block, region, order) == 1) {
++			__xa_erase(&tag_blocks_reserved, block);
++			cma_release(region->cma, pfn_to_page(block), region->block_size_pages);
++		}
++	}
++	xa_unlock_irqrestore(&tag_blocks_reserved, flags);
++}
++
++void arch_alloc_page(struct page *page, int order, gfp_t gfp)
++{
++	if (tag_storage_enabled() && alloc_requires_tag_storage(gfp))
++		reserve_tag_storage(page, order, gfp);
++}
+diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+index c022e473c17c..1ffaeccecda2 100644
+--- a/arch/arm64/mm/fault.c
++++ b/arch/arm64/mm/fault.c
+@@ -37,6 +37,7 @@
+ #include <asm/esr.h>
+ #include <asm/kprobes.h>
+ #include <asm/mte.h>
++#include <asm/mte_tag_storage.h>
+ #include <asm/processor.h>
+ #include <asm/sysreg.h>
+ #include <asm/system_misc.h>
+@@ -950,6 +951,12 @@ gfp_t arch_calc_vma_gfp(struct vm_area_struct *vma, gfp_t gfp)
+ 
+ void tag_clear_highpage(struct page *page)
+ {
++	if (tag_storage_enabled() && !page_tag_storage_reserved(page)) {
++		/* Don't zero the tags if tag storage is not reserved */
++		clear_page(page_address(page));
++		return;
++	}
++
+ 	/* Newly allocated page, shouldn't have been tagged yet */
+ 	WARN_ON_ONCE(!try_page_mte_tagging(page));
+ 	mte_zero_clear_page_tags(page_address(page));
+diff --git a/fs/proc/page.c b/fs/proc/page.c
+index 195b077c0fac..e7eb584a9234 100644
+--- a/fs/proc/page.c
++++ b/fs/proc/page.c
+@@ -221,6 +221,7 @@ u64 stable_page_flags(struct page *page)
+ #ifdef CONFIG_ARCH_USES_PG_ARCH_X
+ 	u |= kpf_copy_bit(k, KPF_ARCH_2,	PG_arch_2);
+ 	u |= kpf_copy_bit(k, KPF_ARCH_3,	PG_arch_3);
++	u |= kpf_copy_bit(k, KPF_ARCH_4,	PG_arch_4);
+ #endif
+ 
+ 	return u;
+diff --git a/include/linux/kernel-page-flags.h b/include/linux/kernel-page-flags.h
+index 859f4b0c1b2b..4a0d719ffdd4 100644
+--- a/include/linux/kernel-page-flags.h
++++ b/include/linux/kernel-page-flags.h
+@@ -19,5 +19,6 @@
+ #define KPF_SOFTDIRTY		40
+ #define KPF_ARCH_2		41
+ #define KPF_ARCH_3		42
++#define KPF_ARCH_4		43
+ 
+ #endif /* LINUX_KERNEL_PAGE_FLAGS_H */
+diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+index b7237bce7446..03f03e6d735e 100644
+--- a/include/linux/page-flags.h
++++ b/include/linux/page-flags.h
+@@ -135,6 +135,7 @@ enum pageflags {
+ #ifdef CONFIG_ARCH_USES_PG_ARCH_X
+ 	PG_arch_2,
+ 	PG_arch_3,
++	PG_arch_4,
+ #endif
+ 	__NR_PAGEFLAGS,
+ 
+diff --git a/include/trace/events/mmflags.h b/include/trace/events/mmflags.h
+index 6ca0d5ed46c0..ba962fd10a2c 100644
+--- a/include/trace/events/mmflags.h
++++ b/include/trace/events/mmflags.h
+@@ -125,7 +125,8 @@ IF_HAVE_PG_HWPOISON(hwpoison)						\
+ IF_HAVE_PG_IDLE(idle)							\
+ IF_HAVE_PG_IDLE(young)							\
+ IF_HAVE_PG_ARCH_X(arch_2)						\
+-IF_HAVE_PG_ARCH_X(arch_3)
++IF_HAVE_PG_ARCH_X(arch_3)						\
++IF_HAVE_PG_ARCH_X(arch_4)
+ 
+ #define show_page_flags(flags)						\
+ 	(flags) ? __print_flags(flags, "|",				\
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 2bad63a7ec16..47932539cc50 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2804,6 +2804,7 @@ static void __split_huge_page_tail(struct folio *folio, int tail,
+ #ifdef CONFIG_ARCH_USES_PG_ARCH_X
+ 			 (1L << PG_arch_2) |
+ 			 (1L << PG_arch_3) |
++			 (1L << PG_arch_4) |
+ #endif
+ 			 (1L << PG_dirty) |
+ 			 LRU_GEN_MASK | LRU_REFS_MASK));
 -- 
-2.34.1
+2.43.0
 
 
