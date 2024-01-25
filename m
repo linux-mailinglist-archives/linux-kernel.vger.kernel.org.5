@@ -1,100 +1,139 @@
-Return-Path: <linux-kernel+bounces-38872-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38873-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FC8B83C79E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:12:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A231983C7A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:12:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F7C01F2768E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:12:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5C321C251DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:12:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C96412A141;
-	Thu, 25 Jan 2024 16:11:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCEB5129A66;
+	Thu, 25 Jan 2024 16:12:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="THjYKDS9"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YwqjdWA1"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D0B7129A70;
-	Thu, 25 Jan 2024 16:11:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D16EF12AACA;
+	Thu, 25 Jan 2024 16:12:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706199099; cv=none; b=X6l08ElURbqhJE7b7npD5Qo5BZKYWg+Q44h++v5tLHawJrdbqCmDC27Bl79GHlNxYsqvDctdjx++USuHoDtHGVDn3IZbeSKy4XqEPdcExtltj1NcmJXWb5edLJzHKZY2YM76HGUwx8t1aCTt84VwyblNCDNlOLsye4cD77pdh2k=
+	t=1706199129; cv=none; b=ssN+F4yFwnOJMtoazyAtE+SKNDFroa0BiB10RN8X6/glVafib/sGbnLxipxKKGCibv9T+VUUWo7+NdQOpnSoLs03MhgJxVfgj71+AwLqBkFBuYcUR2cPOQQJG/Bfxwff/bTjxkRPLx1bAUbWtneAVnf2m01C97Puf8KmhCeoPpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706199099; c=relaxed/simple;
-	bh=qUeOGjqnJTDwJd8TRY8IOpT89uT1I9zRiXX5WELbkM4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sPMo56S9VLUrXoBvkQQEeNd6fG5zZsVQG8zvgd17XzwY8dQ4Eq1HUk9COyeTmGm4i7E5kz/tREM0QcBwf12o49Pu6BwU4t9OKirluA0/qRNkzx8wQjO9dUFPnCaJ+BbOCEEsYluoE9qQWnL1KSKCrtYy6I03uC5NSKxVfYJ+9q4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=THjYKDS9; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=kYtGfh7brmeXFx2nN/OWMcBywY6OoQSQw0s7tMqTk5s=; b=THjYKDS9V795JWmm7rTHeSVhHX
-	QS2PO3MCt5dzAmV/++OnZ7MyMjDgK3S9sDuj63aK+ypZqQJ30li1oNMICJq2Y14bhNmBbjIjOEkRS
-	eXcd5zp+FZyokuBChNeQYc12qvcSNobReQyAnEv5VaDNvOTk4bL0DazzEHsRlabzZ3VAj62mtbmE9
-	zxcSZ3GZ1ORBR+jmTgMFYyvipo6jpndl7llpXYjmwuD2RbJOJky27O2Gzbwk+i8mdu8NxNoWDgQ3A
-	Sp9cWp+pb3sWBPw0/fxAI+9fDiP5QURc0GMs9GG4GT8te4YMuopDPZI987MzQJ0SGKocYkjL4cJK8
-	8eNulXaQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rT2KG-0000000AS8B-0H2I;
-	Thu, 25 Jan 2024 16:11:36 +0000
-Date: Thu, 25 Jan 2024 16:11:35 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
-	tj@kernel.org, jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH, RFC] block: set noio context in submit_bio_noacct_nocheck
-Message-ID: <ZbKIN5tn4MqHzw6U@casper.infradead.org>
-References: <20240124093941.2259199-1-hch@lst.de>
- <be690355-03c6-42e2-a13f-b593ad1c0edd@kernel.dk>
- <20240125081050.GA21006@lst.de>
- <07de550c-2048-4b2f-8127-e20de352ffde@kernel.dk>
+	s=arc-20240116; t=1706199129; c=relaxed/simple;
+	bh=mDUOlVLrhkHD8tGE4iHD3AeMXzlT68MxWClAhVJxWjw=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=TgFDTOCpr3sPeXlfw+KGW80eepSAJKHnRmDwyTqBkkSu/93jtMr1tb80AlEMtliW5rWzqncF19xKh/EgzzaIMbMw1FanTmLEsgIghZLrFwgQfXo+LQIpdNYIw6M2DpndhmbUEysaXcscb+jW7BxtYxBq1yxiuHyVpF+yxUaA5Hs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YwqjdWA1; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706199128; x=1737735128;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=mDUOlVLrhkHD8tGE4iHD3AeMXzlT68MxWClAhVJxWjw=;
+  b=YwqjdWA103rASeC93L+wVnYkTwViUWHO9TVxA8F6fBNLOWJzQvY5bv0w
+   FBWKe+KHCASYWr2aqfE2rAAkMBbL2a7s12Jif9rgL3cUcndzqE6REBM87
+   1VuLd4NKFalbM9mUAwU1Lpekwie0VKXw262R6uTbm+kPe7rmmfcy8POXL
+   osQPAzei+If/zdJ6yBaxz+zbBc/LiPb2MJazJbUzebojwCRql6puFzRME
+   5B8k/AlxCraLIuxx0VSKk+qZkS201qUZpzR5Dnz/CkhHTxV1QV5q45yNU
+   ZWHcI0G6A4auwwHL2ocEnI056mKX2n9GHrYsO74QVNgBbgYxjAS5Bj6Gs
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="2074478"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="2074478"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 08:12:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="21092170"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.94.252.55])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 08:12:04 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Thu, 25 Jan 2024 18:12:00 +0200 (EET)
+To: Ashok Raj <ashok.raj@intel.com>
+cc: Jithu Joseph <jithu.joseph@intel.com>, Tony Luck <tony.luck@intel.com>, 
+    Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org, 
+    LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] platform/x86/intel/ifs: Remove unnecessary ret
+ init
+In-Reply-To: <ZbJ8gp47CWDDqCb4@a4bf019067fa.jf.intel.com>
+Message-ID: <b9368410-e084-8d4e-1c81-55c4e6a22434@linux.intel.com>
+References: <20240125130328.11253-1-ilpo.jarvinen@linux.intel.com> <ZbJ8gp47CWDDqCb4@a4bf019067fa.jf.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <07de550c-2048-4b2f-8127-e20de352ffde@kernel.dk>
+Content-Type: multipart/mixed; boundary="8323328-817356417-1706199120=:1444"
 
-On Thu, Jan 25, 2024 at 09:09:44AM -0700, Jens Axboe wrote:
-> On 1/25/24 1:10 AM, Christoph Hellwig wrote:
-> > On Wed, Jan 24, 2024 at 08:40:28AM -0700, Jens Axboe wrote:
-> >> On 1/24/24 2:39 AM, Christoph Hellwig wrote:
-> >>> Make sure all in-line block layer submission runs in noio reclaim
-> >>> context.  This is a big step towards allowing GFP_NOIO, the other
-> >>> one would be to have noio (and nofs for that matter) workqueues for
-> >>> kblockd and driver internal workqueues.
-> >>
-> >> I really don't like adding this for no good reason. Who's doing non NOIO
-> >> allocations down from this path?
-> > 
-> > If there is a non-NOIO allocation right now that would be a bug,
-> > although I would not be surprised if we had a few of them.
-> > 
-> > The reason to add this is a different one:  The MM folks want to
-> > get rid of GFP_NOIO and GFP_NOFS and replace them by these context.
-> > 
-> > And doing this in the submission path and kblockd will cover almost
-> > all of the noio context, with the rest probably covered by other
-> > workqueues.  And this feels a lot less error prone than requiring
-> > every driver to annotate the context in their submission routines.
-> 
-> I think it'd be much better to add a DEBUG protected aid that checks for
-> violating allocations. Nothing that isn't buggy should trigger this,
-> right now, and then we could catch problems if there are any. If we do
-> the save/restore there and call it good, then we're going to be stuck
-> with that forever. Regardless of whether it's actually needed or not.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Nono, you don't understand.  The plan is to remove GFP_NOIO
-entirely.  Allocations should be done with GFP_KERNEL while under a
-memalloc_noio_save().
+--8323328-817356417-1706199120=:1444
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+
+On Thu, 25 Jan 2024, Ashok Raj wrote:
+
+> Hi Ilpo
+>=20
+> thanks for looking into it.
+>=20
+> On Thu, Jan 25, 2024 at 03:03:28PM +0200, Ilpo J=E4rvinen wrote:
+> > ret variable is assigned unconditionally in ifs_load_firmware(), thus
+> > remove the unnecessary initialization of it.
+> >=20
+> > Signed-off-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
+> > ---
+> >  drivers/platform/x86/intel/ifs/load.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/platform/x86/intel/ifs/load.c b/drivers/platform/x=
+86/intel/ifs/load.c
+> > index a1ee1a74fc3c..03e49b836a6b 100644
+> > --- a/drivers/platform/x86/intel/ifs/load.c
+> > +++ b/drivers/platform/x86/intel/ifs/load.c
+> > @@ -383,7 +383,7 @@ int ifs_load_firmware(struct device *dev)
+> >  =09unsigned int expected_size;
+> >  =09const struct firmware *fw;
+> >  =09char scan_path[64];
+> > -=09int ret =3D -EINVAL;
+> > +=09int ret;
+> > =20
+>=20
+> Looks reasonable to me.=20
+>=20
+> I can keep this as a separate cleanup patch, or merge the change in this
+> patch.
+>=20
+> What ever Hans/You prefer.=20
+
+Hi,
+
+I was thinking of merging it myself into pdx86 review-ilpo -> next after=20
+allowing it sit on the queue a day or two. IMO, doesn't need to be more=20
+complicated than the usual process kernel process with patches, it would=20
+just take extra time from all the more there are middlemens handling the=20
+patch (after all this is just a trivial cleanup which I noticed while=20
+reviewing the patches you sent and since it didn't conflict the series,=20
+I just sent the obvious cleanup).
+
+But that's assuming you don't have anything conflicting beyond those=20
+patches which you sent? If that's the case, it would be better for you to=
+=20
+take care of it so just let me and I won't merge it myself until it comes=
+=20
+back.
+
+
+--=20
+ i.
+
+--8323328-817356417-1706199120=:1444--
 
