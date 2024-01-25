@@ -1,49 +1,48 @@
-Return-Path: <linux-kernel+bounces-39380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2789283CFB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:56:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 035B283CFB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:56:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F327B23168
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:56:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABA761F24F23
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:56:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6738D12E48;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB140134AA;
 	Thu, 25 Jan 2024 22:56:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kpv5uh+J"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fgU9vfu4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 902C1125BC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EBFF12B82;
 	Thu, 25 Jan 2024 22:56:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706223361; cv=none; b=ie3HLYEW667cxlzK7pidHEc63mYk60D+lKaRd78emZRQwEBhROLmBAcmoHJBOXJMoHTvyLVg7XugglthvVORcsi0ZGKcd+x/8ySddpm7B2/t6pELyvC698kEmPymkqoVoUlg9zlUCXejWtOtW3PcOYI99LwAHpxx9KMtQwTNnmo=
+	t=1706223362; cv=none; b=dmncPmx+6vzxGGsSaJEQjH81Nlp2MYTiHvSdONEWVYGwdGrYYKuu3AjUnGbCyYviDJYa8LBun9wXLZWcM6UxAMGzhu135xGv8wTQ0BMqZ2lNIXJYnyAhHxa5TS+HHTWr0azlOj2AYmvBBEH1+uOh0CVCbrx/Xahtp7sMMt9Rmt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706223361; c=relaxed/simple;
-	bh=OeMGm6ictAkQDCkGVdUzwK+Cgapce5TRIlo9wxuF41g=;
+	s=arc-20240116; t=1706223362; c=relaxed/simple;
+	bh=x+4g7ReKIyIJhKSP2GxkvPMFHG6lRsI5FMdClkdB74Y=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=uMBF8YqYxpYMvmUjNXweR0zA3zUpZ/2CUZNcSpsMvHkxfX6NHtgJmvYXDNmvFFGr4nAx+YipsY5/EB9SXtn9su8eIG3jamUuXTSbJdFnJeM3e2FfdV/pL5X3ugwrDz9Cu1xt5GgNY47HYWTldPIt67jHeiD/97na/HdIW+H41Es=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kpv5uh+J; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FE69C43609;
-	Thu, 25 Jan 2024 22:56:00 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=kbvrhjpQfi1yL4yUPwVwPU9I8TEqT5cOm6E56rS2i4MrEF0N6SkNAIDWCigkHCEqpnmYeaE+mYcPBaTMy8P8uluell4fz1D6ah2Uaw1ywZTqEaiNHpXrc/Y3BjOWj4i3hvbRHh7N4/d1MOf6MUDcW6OU46sgaGtRd0LEzJu9Dro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fgU9vfu4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 432E6C433F1;
+	Thu, 25 Jan 2024 22:56:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1706223361;
-	bh=OeMGm6ictAkQDCkGVdUzwK+Cgapce5TRIlo9wxuF41g=;
+	bh=x+4g7ReKIyIJhKSP2GxkvPMFHG6lRsI5FMdClkdB74Y=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=Kpv5uh+JaKS3dsIYEaOmLE6zuPcoqJZCzUOR0LcqlWetBaNU4dk0oP1G5EYCvNfMu
-	 HK2fjgHkZ4kVYiWA6j9NiUoF2oAnxMn+EXjdoH4RmNAKDQDn73qGPDZUCHPjTsD8jA
-	 9/EurJ1JaOZN9fAGqzWuKumbA8h7FDTV8alxHKC2rhbS7D935vRbLg8xWuTAfkCXFZ
-	 DtUONHR5OqMNvsMjUOxh76tPchYqbqZCX2Lv1izn28ZFU5iDySvzA2HSHfsTXkTTO6
-	 qY945HLLauZF7ypR2unDDObkAQaR9ZurNWVNw11qhhNz4Vu779ReQ3HWKPYxr/yQRh
-	 Fb+jxDpiseoYw==
+	b=fgU9vfu4+B4cCQZXLwrhFaJz6b8A7tcRqpefZZ9ZxvBFAMI9fO5YKJzUHMYaUkMXA
+	 HwVWj2DByzwsc24TzMYueqZ9QElJH/Cg6wWWHzfAGMcZ6SwSMT6Vt4zjqfvkYM+6vg
+	 3F8ETTbtM/+IOn/AmpjTahJYmmikwMuncnD/pWt1YOZn52e20MGkuSLJMsglw1IjMn
+	 vsLZtOcl9xgSS5kTnHMbESbzJp+NItxnyi4FbM3/9R9kQNHvoPmOWnP0KpcrsXrmC3
+	 ck9xKFi+lorRWWZDoZoNhzBjR6etzWXRWfnBfAndh2x5bLcO4HaFH/Byl+4mhlcRpQ
+	 xFfBOtB2ukNUg==
 From: Nathan Chancellor <nathan@kernel.org>
-Date: Thu, 25 Jan 2024 15:55:07 -0700
-Subject: [PATCH 01/11] kbuild: Raise the minimum supported version of LLVM
- to 13.0.1
+Date: Thu, 25 Jan 2024 15:55:08 -0700
+Subject: [PATCH 02/11] Makefile: Drop warn-stack-size plugin opt
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -52,7 +51,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240125-bump-min-llvm-ver-to-13-0-1-v1-1-f5ff9bda41c5@kernel.org>
+Message-Id: <20240125-bump-min-llvm-ver-to-13-0-1-v1-2-f5ff9bda41c5@kernel.org>
 References: <20240125-bump-min-llvm-ver-to-13-0-1-v1-0-f5ff9bda41c5@kernel.org>
 In-Reply-To: <20240125-bump-min-llvm-ver-to-13-0-1-v1-0-f5ff9bda41c5@kernel.org>
 To: akpm@linux-foundation.org, masahiroy@kernel.org
@@ -60,94 +59,49 @@ Cc: nicolas@fjasle.eu, linux-kbuild@vger.kernel.org, llvm@lists.linux.dev,
  patches@lists.linux.dev, linux-kernel@vger.kernel.org, 
  Nathan Chancellor <nathan@kernel.org>
 X-Mailer: b4 0.13-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4149; i=nathan@kernel.org;
- h=from:subject:message-id; bh=OeMGm6ictAkQDCkGVdUzwK+Cgapce5TRIlo9wxuF41g=;
- b=owGbwMvMwCUmm602sfCA1DTG02pJDKmbnv3dscousljfz6bPS2q2+dVop2NnpnFUs058dLck/
- eD3dvHgjlIWBjEuBlkxRZbqx6rHDQ3nnGW8cWoSzBxWJpAhDFycAjCRV7MY/mcGZK8U13/GHde7
- R8vqj1Tp8oibSm7GXCf+yN7KM/qVeJSRYb+kHnfRUh51DW2GAtGLFk2ZT35asT341MCW2np76Y9
- XHAA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1170; i=nathan@kernel.org;
+ h=from:subject:message-id; bh=x+4g7ReKIyIJhKSP2GxkvPMFHG6lRsI5FMdClkdB74Y=;
+ b=owGbwMvMwCUmm602sfCA1DTG02pJDKmbnv1Nn3/9RZHdBf2F3tzsU/YddA8PPvLFXml2Xu2Ub
+ 7OfNoqod5SyMIhxMciKKbJUP1Y9bmg45yzjjVOTYOawMoEMYeDiFICJFO1mZPiuFPdsYf+K2Tvm
+ JE/ftT6q4szlAo+jn+usZ75rfFpmH+PP8FeQPbb8qegslwDBE0qR4a/XLpTJXGjTf32mQF3CT+Y
+ QRn4A
 X-Developer-Key: i=nathan@kernel.org; a=openpgp;
  fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
 
-When __builtin_mul_overflow() has arguments that differ in terms of
-signedness and width, LLVM may generate a libcall to __muloti4 because
-it performs the checks in terms of 65-bit multiplication. This issue
-becomes harder to hit (but still possible) after LLVM 12.0.0, which
-includes a special case for matching widths but different signs.
+Now that the minimum supported version of LLVM for building the kernel
+has been bumped to 13.0.1, the inner ifeq statement is always false, as
+the build will fail during the configuration stage for older LLVM
+versions.
 
-To gain access to this special case, which the kernel can take advantage
-of when calls to __muloti4 appear, bump the minimum supported version of
-LLVM for building the kernel to 13.0.1. 13.0.1 was chosen because there
-is minimal impact to distribution support while allowing a few more
-workarounds to be dropped in the kernel source than if 12.0.0 were
-chosen. Looking at container images of up to date distribution versions:
+This effectively reverts commit 24845dcb170e ("Makefile: LTO: have
+linker check -Wframe-larger-than") and its follow up fix,
+commit 0236526d76b8 ("Makefile: lto: Pass -warn-stack-size only on LLD <
+13.0.0").
 
-  archlinux:latest              clang version 16.0.6
-  debian:oldoldstable-slim      clang version 7.0.1-8+deb10u2 (tags/RELEASE_701/final)
-  debian:oldstable-slim         Debian clang version 11.0.1-2
-  debian:stable-slim            Debian clang version 14.0.6
-  debian:testing-slim           Debian clang version 16.0.6 (19)
-  debian:unstable-slim          Debian clang version 16.0.6 (19)
-  fedora:38                     clang version 16.0.6 (Fedora 16.0.6-3.fc38)
-  fedora:latest                 clang version 17.0.6 (Fedora 17.0.6-1.fc39)
-  fedora:rawhide                clang version 17.0.6 (Fedora 17.0.6-1.fc40)
-  opensuse/leap:latest          clang version 15.0.7
-  opensuse/tumbleweed:latest    clang version 17.0.6
-  ubuntu:focal                  clang version 10.0.0-4ubuntu1
-  ubuntu:latest                 Ubuntu clang version 14.0.0-1ubuntu1.1
-  ubuntu:rolling                Ubuntu clang version 16.0.6 (15)
-  ubuntu:devel                  Ubuntu clang version 17.0.6 (3)
-
-The only distribution that gets left behind is Debian Bullseye, as the
-default version is 11.0.1; other distributions either have a newer
-version than 13.0.1 or one older than the current minimum of 11.0.0.
-Debian has easy access to more recent LLVM versions through
-apt.llvm.org, so this is not as much of a concern. There are also the
-kernel.org LLVM toolchains, which should work with distributions with
-glibc 2.28 and newer.
-
-Another benefit of slimming up the number of supported versions of LLVM
-for building the kernel is reducing the build capacity needed to support
-a matrix that builds with each supported version, which allows a matrix
-to reallocate the freed up build capacity towards something else, such
-as more configuration combinations.
-
-Closes: https://github.com/ClangBuiltLinux/linux/issues/1975
-Link: https://github.com/llvm/llvm-project/issues/38013
-Link: https://github.com/llvm/llvm-project/commit/3203143f1356a4e4e3ada231156fc6da6e1a9f9d
-Link: https://mirrors.edge.kernel.org/pub/tools/llvm/
 Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 ---
- Documentation/process/changes.rst | 2 +-
- scripts/min-tool-version.sh       | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ Makefile | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/Documentation/process/changes.rst b/Documentation/process/changes.rst
-index 50b3d1cb1115..d7306b8cad13 100644
---- a/Documentation/process/changes.rst
-+++ b/Documentation/process/changes.rst
-@@ -30,7 +30,7 @@ you probably needn't concern yourself with pcmciautils.
-         Program        Minimal version       Command to check the version
- ====================== ===============  ========================================
- GNU C                  5.1              gcc --version
--Clang/LLVM (optional)  11.0.0           clang --version
-+Clang/LLVM (optional)  13.0.1           clang --version
- Rust (optional)        1.74.1           rustc --version
- bindgen (optional)     0.65.1           bindgen --version
- GNU make               3.82             make --version
-diff --git a/scripts/min-tool-version.sh b/scripts/min-tool-version.sh
-index 9faa4d3d91e3..5d17022ee1f6 100755
---- a/scripts/min-tool-version.sh
-+++ b/scripts/min-tool-version.sh
-@@ -29,7 +29,7 @@ llvm)
- 	elif [ "$SRCARCH" = loongarch ]; then
- 		echo 18.0.0
- 	else
--		echo 11.0.0
-+		echo 13.0.1
- 	fi
- 	;;
- rustc)
+diff --git a/Makefile b/Makefile
+index 9869f57c3fb3..885b2940e20d 100644
+--- a/Makefile
++++ b/Makefile
+@@ -951,14 +951,6 @@ CC_FLAGS_LTO	+= -fvisibility=hidden
+ 
+ # Limit inlining across translation units to reduce binary size
+ KBUILD_LDFLAGS += -mllvm -import-instr-limit=5
+-
+-# Check for frame size exceeding threshold during prolog/epilog insertion
+-# when using lld < 13.0.0.
+-ifneq ($(CONFIG_FRAME_WARN),0)
+-ifeq ($(call test-lt, $(CONFIG_LLD_VERSION), 130000),y)
+-KBUILD_LDFLAGS	+= -plugin-opt=-warn-stack-size=$(CONFIG_FRAME_WARN)
+-endif
+-endif
+ endif
+ 
+ ifdef CONFIG_LTO
 
 -- 
 2.43.0
