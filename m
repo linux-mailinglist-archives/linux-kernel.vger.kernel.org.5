@@ -1,68 +1,72 @@
-Return-Path: <linux-kernel+bounces-39078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39079-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0260783CAA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:14:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D422183CAAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:17:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E3CCB22611
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:14:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2F31B252F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:17:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12A781339B3;
-	Thu, 25 Jan 2024 18:14:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D394134720;
+	Thu, 25 Jan 2024 18:17:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="STr+JAzA"
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Uz4dmRMn"
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DA8C131E45
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 18:14:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CFA113172D;
+	Thu, 25 Jan 2024 18:17:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706206476; cv=none; b=okQqmTEosyQJhXCt3t/IWCXy1zDibzGv5mN1mIKt7YuvwMy+NVj/PsaFYm7Ki1Kbaud+V33aMuvL8PBkK0+0PYWEMEIEpi7E/yOn1a3721mI+rAbvC4Xzaxj6SExDf1zlRPDmBTos6IZypeSxevmeutjG+FpSZtDzM6AgHTTl/A=
+	t=1706206639; cv=none; b=rWHijqHYOw4g7NCDkap0Z8PHmV9M3/Soztss1++GENSICW64nj0uMJPT155YDgJQ/uBIN3KFj5duvvNJ88R0510hFCuakCQyjGx5OUIe+pm8vCnyQv0PqpoEzNezfgRLS7pEhrquJKcczEtwy+sE9SeulrbgJWHysswV6s+ybC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706206476; c=relaxed/simple;
-	bh=bguEoM0mHJy3cyp+PZiL0TYl8Z1JxL07au5zl664Tvs=;
+	s=arc-20240116; t=1706206639; c=relaxed/simple;
+	bh=OYQNhkCaGfcOD12De88u8E2wljddVAWl6ebk7cjnKQ8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KR9sn4DvTZlzpD+BovgiJPQTCG3Ls/LVHH1aee+j4hgsbQx4IVUDviiCX4RINbvDHgfOn3+MzjTYEA0CTEMAU28Mwux2CI8TSLVwyQw+7ygJ8isFNhNR0WUOI2uHj2kB8ClS8askNls9SvCbR38Fb0prp5jhHpWjOFkXWrbD1eI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=STr+JAzA; arc=none smtp.client-ip=209.85.222.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-78313f4d149so610297285a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 10:14:34 -0800 (PST)
+	 In-Reply-To:Content-Type; b=HFdMHvy8gL2HmfSBwTcnoNbD6Bn45Jg4yyhpcv3ST9ci0bOQJwH/QQvQiig3n9HNFES52+lbMPiYKDMbNkFcUxpjrps3IEhIqPoWMRyU5eBDZi2/pxUyLp6MN3PqjZpR013HV4qoKqQQgVWnq8LOPn4oepJw7PSzfSoj1siOkV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Uz4dmRMn; arc=none smtp.client-ip=209.85.219.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc2308fe275so6073498276.1;
+        Thu, 25 Jan 2024 10:17:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1706206473; x=1706811273; darn=vger.kernel.org;
-        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=qh4m2KO5FE810PtD0dK9TmVGfyhJbmLr0hu/S6yJ6gc=;
-        b=STr+JAzAJ/n0i6JhHBvIngqhI0EeISSH0773EGHJpS9DWJ5MRZhcVB5nE2ZSLFYQ+a
-         SVyVwLH0mR8uz+R13KM35WDDfFIMFJvoJ231jS1VrIVzY8/ZZtAZ/BNw2WVA7JB2PPBY
-         m5Ze/IU4Jgx0Sbs+dmVC2XlvnCTEg9RNHf10c=
+        d=gmail.com; s=20230601; t=1706206636; x=1706811436; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7nVNhkDPplKhG7f04X1t1/cMPmbDbBA5xDKEJ1bPIAc=;
+        b=Uz4dmRMnf1M3OVs1xEZ1ZMrOvC8ThWCsZX/HhyK2Rfgtfk+DnsMiI/aMg8qt+5tAie
+         eZMBrSrgkp4Fl/U1KRdKpNGh0XVMgax36dmF3xLlEMdEhvTRhyr72xFdpEbkT7rcinIj
+         YEY0cKxrLVAOhRcbBVQaYHAV8T2jUhAmjGc88fgvHewVywajO4MtQlI7Ejj+i69e32/H
+         DQdLy1CXn5o5oHPsnPX9lW3BB6+VsIC8MK1MB5VtOn/1ZAXz38UBbo7PUspHJJisHMbC
+         yv3TBpW5UnQ0PFz9hg8/R+Waf3OnDJTEzAieF8w35+7hZEwzDLN8RTa0FqQmTgBMBLO0
+         +Rlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706206473; x=1706811273;
-        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qh4m2KO5FE810PtD0dK9TmVGfyhJbmLr0hu/S6yJ6gc=;
-        b=v2H9LVz82vzmFzT9BDXozpB2yIQPp0e9gV9QE28/iFFGN2TAx/nvjXuzivFjN+ybhL
-         bKJvZHqGUsLAKT6KWzIs1p+AR+kn+aQNu1MQJ/pRg/9j7aRYn3oeMnFeWMYPpWHKJ+jK
-         QU82iiHyXva+dej7daQOTrlmLHuL89rJwdXZvjJ9wKBJJ/p2g+PCe2W6Gflhy/EHkoIT
-         1gSGfi+lEqN7Jw4GyNr9vSAVeUaUypcKFaYbMMtt3JCuOWyr11VtMN+x/ccNrCwDDw3q
-         pOFiLGsC64mlg9RUF5qh4qIlGyGLkd+UKLYr5wQRG/hQqrkm3RgHnHKbGYNoXs7NKKUu
-         wPrw==
-X-Gm-Message-State: AOJu0YyM3Y5gwlmYNlnjGJk1zAdpRSIdt+QK16KZTbYx/TFcOKIgNkUC
-	LjsFgk4yeZyrLcPU2c+IkXslTkC7Gx1VK7giL3lTAgcJoxPmuOVbRSsXB6/rcg==
-X-Google-Smtp-Source: AGHT+IFFnGugJakjWH6sSes6QtJ3nrnwoDtbxipIKJUUxsM0OmPvS2pUsZp2+XBoKLkn2CHN1T+7/g==
-X-Received: by 2002:a05:6214:2404:b0:686:ad1b:1a60 with SMTP id fv4-20020a056214240400b00686ad1b1a60mr68060qvb.59.1706206473133;
-        Thu, 25 Jan 2024 10:14:33 -0800 (PST)
-Received: from [192.168.52.129] ([192.19.222.250])
-        by smtp.gmail.com with ESMTPSA id ee7-20020a0562140a4700b006816843f6dcsm5673088qvb.137.2024.01.25.10.14.27
+        d=1e100.net; s=20230601; t=1706206636; x=1706811436;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7nVNhkDPplKhG7f04X1t1/cMPmbDbBA5xDKEJ1bPIAc=;
+        b=CJ1M4OghZ28wHZAbUu82VApscI2tYwe8EBqxQ5hbi6809HHc3gjDPjpaZHUc7Bom+X
+         ol631FH2IQBX6Ivq2DHmqFaLqIv7M1yhs162HiXYB6ZP49+W8kWjKVBcHxC1VY/KaKYl
+         7m2c2GklUYRpYcD51e1bgo29KD9wJ1zo7cj1zSQ8DQbGnG0hwTKHfAj48nPWEQLJrzjo
+         vXBf0GtfI9mgcr283Xa1o36Ao3suVtbZlIU7QknC5VW6mTRq5JeA+nHce1XxKbon5HFr
+         RfpsaTU4fKeyuOEASWLi3CkkfxF+Fe/iU/ldxpKuC7lhiraZ7UJIujsSje7NtuHE0Tag
+         RsBA==
+X-Gm-Message-State: AOJu0YxfZiBI94/KsmomzE1WzF4z/M0fP5VNSgdoasl7QaWF8fP/PiqJ
+	MEwLhZ0YUPcf+xj42mjUVdUwzfkjfu6kidW45hnFh+B+qiGLyAAH
+X-Google-Smtp-Source: AGHT+IECpooZ6q5I5DN/3l35firHow3ERwcB5ooCbY+dmqtEPTLEvzs9OCTwn7FwI2sc7y4wKIYN8w==
+X-Received: by 2002:a05:6902:2509:b0:dc2:2480:6aa1 with SMTP id dt9-20020a056902250900b00dc224806aa1mr192712ybb.71.1706206636190;
+        Thu, 25 Jan 2024 10:17:16 -0800 (PST)
+Received: from ?IPV6:2600:1700:6cf8:1240:5100:fbae:e50d:52c9? ([2600:1700:6cf8:1240:5100:fbae:e50d:52c9])
+        by smtp.gmail.com with ESMTPSA id v1-20020a25c501000000b00dc23a0382c6sm3641554ybe.6.2024.01.25.10.17.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 10:14:29 -0800 (PST)
-Message-ID: <6cca1b89-0dd5-4276-b03d-d356b2ede136@broadcom.com>
-Date: Thu, 25 Jan 2024 10:14:26 -0800
+        Thu, 25 Jan 2024 10:17:15 -0800 (PST)
+Message-ID: <e2ce2704-cc7c-4430-a938-d5b2e56db336@gmail.com>
+Date: Thu, 25 Jan 2024 10:17:13 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,199 +74,188 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 02/10] ARM: dts: broadcom: bcmbca: Add NAND controller
- node
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
- David Regan <dregan@broadcom.com>, dregan@mail.com, richard@nod.at,
- vigneshr@ti.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, computersforpeace@gmail.com, kdasu.kdev@gmail.com,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, joel.peshkin@broadcom.com,
- tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com,
- anand.gore@broadcom.com, kursad.oney@broadcom.com, rafal@milecki.pl,
- bcm-kernel-feedback-list@broadcom.com, andre.przywara@arm.com,
- baruch@tkos.co.il, linux-arm-kernel@lists.infradead.org,
- dan.carpenter@linaro.org
-References: <20240124030458.98408-1-dregan@broadcom.com>
- <20240124030458.98408-3-dregan@broadcom.com> <20240124183008.04a1bcb0@xps-13>
- <2c10a764-f74f-45b2-8bba-77c40468f4b5@broadcom.com>
- <85c97d00-a973-46c6-974c-3dfa587ae873@broadcom.com>
- <722d6bdf-9a43-436d-a9e2-4c21e1deb8c3@broadcom.com>
- <20240125102058.5ae46d8a@xps-13>
-From: William Zhang <william.zhang@broadcom.com>
-In-Reply-To: <20240125102058.5ae46d8a@xps-13>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000c3b50d060fc92688"
-
---000000000000c3b50d060fc92688
+Subject: Re: [syzbot] [bpf?] general protection fault in
+ bpf_struct_ops_find_value
 Content-Language: en-US
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: syzbot <syzbot+88f0aafe5f950d7489d7@syzkaller.appspotmail.com>,
+ andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
+ jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+ martin.lau@kernel.org, netdev@vger.kernel.org, sdf@google.com,
+ song@kernel.org, syzkaller-bugs@googlegroups.com, thinker.li@gmail.com,
+ yonghong.song@linux.dev
+References: <00000000000040d68a060fc8db8c@google.com>
+ <d5bf7be3-8c9e-4ab1-a105-0d3e1c745d51@linux.dev>
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <d5bf7be3-8c9e-4ab1-a105-0d3e1c745d51@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Hi Miquel,
 
-On 1/25/24 01:20, Miquel Raynal wrote:
-> Hi William,
-> 
->>>>>> +        nand_controller: nand-controller@1800 {
->>>>>> +            #address-cells = <1>;
->>>>>> +            #size-cells = <0>;
->>>>>> +            compatible = "brcm,nand-bcm63138", >>>> "brcm,brcmnand-v7.1", "brcm,brcmnand";
->>>>>> +            reg = <0x1800 0x600>, <0x2000 0x10>;
->>>>>> +            reg-names = "nand", "nand-int-base";
->>>>>> +            brcm,nand-use-wp = <0>;
->>>>>> +            status = "disabled";
->>>>>> +
->>>>>> +            nandcs: nand@0 {
->>>>>> +                compatible = "brcm,nandcs";
->>>>>> +                reg = <0>;
->>>>>> +                nand-on-flash-bbt;
->>>>>> +                brcm,nand-ecc-use-strap;
->>>>>
->>>>> Describing the NAND chip in a SoC DTSI does not look relevant to me.
->>>>> Even more if you add something like this nand-ecc-use-strap setting
->>>>> which is very board dependent.
->>>>>   
->>>> I am not sure if I understand you comments correctly but are you >> suggesting to put this whole nand controller node into each board dts? >> We have other ip block nodes like SPI, uart in this same soc dtsi file >> too.  For all the bcmbca soc dtsi I am updating here(and its board >> design), we always use the strap to for ecc setting.  So I thought it >> should be okay to put brcm,nand-ecc-use-strap in the default dtsi >> file. For any board that uses the raw nand nand-ecc property, the >> board dts can do so and override the brcm,nand-ecc-use-strap setting.
->>>
->>> I read Miquel's comment as meaning that the nandcs aka the NAND > chip/flash part description should be in the board .dts file, while the > controller itself can remain in the .dtsi file with its status = > "disabled" property.
->>>
->>> Are there customer boards, that is non reference boards that might chose > a different chip select number and/or not use the strap settings?
->> In BCMBCA SoC, there is only one cs and customer design also have to use strap for the bootrom to boot up properly.  They can override it with dts in linux but I don't think any customer would do that.
+
+On 1/25/24 10:09, Martin KaFai Lau wrote:
+> On 1/25/24 9:53 AM, syzbot wrote:
+>> Hello,
 >>
->> Maybe the nand-on-flash-bbt could be possible item that customer may have to set it differently if they don't follow our reference software design.
+>> syzbot found the following issue on:
 >>
->> I will move the nand-on-flash-bbt to the board dts but I would like to keep the other default nandcs settings in SoC.dsti if that is not too out of the conventional rule and Miquel is okay with it.
+>> HEAD commit:    d47b9f68d289 libbpf: Correct bpf_core_read.h comment 
+>> wrt b..
+>> git tree:       bpf-next
+>> console+strace: https://syzkaller.appspot.com/x/log.txt?x=11479fe7e80000
+>> kernel config:  
+>> https://syzkaller.appspot.com/x/.config?x=719e6acaf392d56b
+>> dashboard link: 
+>> https://syzkaller.appspot.com/bug?extid=88f0aafe5f950d7489d7
+>> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils 
+>> for Debian) 2.40
+>> syz repro:      
+>> https://syzkaller.appspot.com/x/repro.syz?x=14ea6be3e80000
+>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15bc199be80000
+>>
+>> Downloadable assets:
+>> disk image: 
+>> https://storage.googleapis.com/syzbot-assets/1a9b4a5622fb/disk-d47b9f68.raw.xz
+>> vmlinux: 
+>> https://storage.googleapis.com/syzbot-assets/dd68baeac4fd/vmlinux-d47b9f68.xz
+>> kernel image: 
+>> https://storage.googleapis.com/syzbot-assets/811ba9dc9ddf/bzImage-d47b9f68.xz
+>>
+>> The issue was bisected to:
+>>
+>> commit fcc2c1fb0651477c8ed78a3a293c175ccd70697a
+>> Author: Kui-Feng Lee <thinker.li@gmail.com>
+>> Date:   Fri Jan 19 22:49:59 2024 +0000
+>>
+>>      bpf: pass attached BTF to the bpf_struct_ops subsystem
+>>
+>> bisection log:  
+>> https://syzkaller.appspot.com/x/bisect.txt?x=106a04c3e80000
+>> final oops:     
+>> https://syzkaller.appspot.com/x/report.txt?x=126a04c3e80000
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=146a04c3e80000
+>>
+>> IMPORTANT: if you fix the issue, please add the following tag to the 
+>> commit:
+>> Reported-by: syzbot+88f0aafe5f950d7489d7@syzkaller.appspotmail.com
+>> Fixes: fcc2c1fb0651 ("bpf: pass attached BTF to the bpf_struct_ops 
+>> subsystem")
+>>
+>> general protection fault, probably for non-canonical address 
+>> 0xdffffc0000000011: 0000 [#1] PREEMPT SMP KASAN
+>> KASAN: null-ptr-deref in range [0x0000000000000088-0x000000000000008f]
+>> CPU: 0 PID: 5058 Comm: syz-executor257 Not tainted 
+>> 6.7.0-syzkaller-12348-gd47b9f68d289 #0
+>> Hardware name: Google Google Compute Engine/Google Compute Engine, 
+>> BIOS Google 11/17/2023
+>> RIP: 0010:bpf_struct_ops_find_value+0x49/0x140 kernel/bpf/btf.c:8763
+>> Code: 7d ea dd ff 45 85 e4 0f 84 d7 00 00 00 e8 ff ee dd ff 48 8d bb 
+>> 88 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 
+>> 02 00 0f 85 dc 00 00 00 48 8b 9b 88 00 00 00 48 85 db 0f 84
+>> RSP: 0018:ffffc90003bb7b20 EFLAGS: 00010206
+>> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff81aa3283
+>> RDX: 0000000000000011 RSI: ffffffff81aa3291 RDI: 0000000000000088
+>> RBP: ffffc90003bb7dd0 R08: 0000000000000005 R09: 0000000000000000
+>> R10: 0000000000000002 R11: 0000000000000000 R12: 0000000000000002
+>> R13: 000000000000001a R14: ffffffff8ad6bca0 R15: ffffc90003bb7e04
+>> FS:  0000555556ed2380(0000) GS:ffff8880b9800000(0000) 
+>> knlGS:0000000000000000
+>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> CR2: 000000000160d398 CR3: 000000007809c000 CR4: 00000000003506f0
+>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>> Call Trace:
+>>   <TASK>
+>>   bpf_struct_ops_map_alloc+0x12f/0x5d0 kernel/bpf/bpf_struct_ops.c:674
 > 
-> I think there is a global misunderstanding regarding the use of the
-> nand-ecc-* properties. These are not the default. The default is the OS
-> choice and depends on the NAND capabilities. The OS will always try to
-> match the closest ECC settings offered by the engine, based on the NAND
-> chip requirements which are discoverable. If you want to maximize your
-> strength, it is also possible to tell the OS with a dedicated (generic)
-This is the nand-ecc-* property, right?
+> The check should be IS_ERR_"OR_NULL"(btf).  Kui-Feng, please take a 
+> look. Thanks.
 
-> property. And only if you want something different, you may use these
-> properties, but they should be the exception rather than the rule.
-> 
-> Overriding this with a strap is a bad hardware design on commercial
-> products IMO. I am totally fine with the idea of a strap to choose
-> the ECC configuration for development boards/evaluation kits, but once
-> you've decided which setting you want you cannot change it for the
-> lifetime of your project (or with a lot of difficulties) so I don't see
-> the point of such a strap. So really, I don't like the idea of defining
-> by default a variable which asks for an override of the defaults, even
-> though many of your customers might want to use that.
-Correct, no change to strap is possible on real product because they are 
-always through soldered down resister and no dip switch/jumper for ecc 
-strap. But as the SoC requires, it is part of bootstrap each product has 
-to set and that's how bootloader get the ecc setting as it does not have 
-the access to the dts and the capability to auto select the ecc setting.
-
-Most of the time, customer will set strap to match the OS auto selected 
-ecc setting but there are times customer want more strength so yes they 
-can use nand-ecc-* to override but it has to match the strap setting. 
-Then I think it make sense and much easier for customer to just use 
-strap to override and reduce the any manual setting error in dts. It 
-will cause many trouble down the road if the edit does not match strap 
-setting.  Not saying this is for everyone but definitively a good 
-feature for our product and it reduces ecc setting error in case of 
-overriding OS default selection.
+Sure!
 
 > 
-> So, anything that is design dependent (the chip CS, ECC
-> configuration, etc) should go into the board DTS, and what is SoC
-> related hardware (like the definition of the NAND controller) should
-> stay in the DTSI, as properly clarified by Florian.
+>>   map_create+0x548/0x1b90 kernel/bpf/syscall.c:1237
+>>   __sys_bpf+0xa32/0x4a00 kernel/bpf/syscall.c:5445
+>>   __do_sys_bpf kernel/bpf/syscall.c:5567 [inline]
+>>   __se_sys_bpf kernel/bpf/syscall.c:5565 [inline]
+>>   __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5565
+>>   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>>   do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
+>>   entry_SYSCALL_64_after_hwframe+0x63/0x6b
+>> RIP: 0033:0x7f9f205ef2e9
+>> Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 
+>> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 
+>> 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+>> RSP: 002b:00007fffa4ce4088 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+>> RAX: ffffffffffffffda RBX: 00007fffa4ce4268 RCX: 00007f9f205ef2e9
+>> RDX: 0000000000000048 RSI: 00000000200004c0 RDI: 0000000000000000
+>> RBP: 00007f9f20662610 R08: 0000000000000000 R09: 0000000000000000
+>> R10: 00000000ffffffff R11: 0000000000000246 R12: 0000000000000001
+>> R13: 00007fffa4ce4258 R14: 0000000000000001 R15: 0000000000000001
+>>   </TASK>
+>> Modules linked in:
+>> ---[ end trace 0000000000000000 ]---
+>> RIP: 0010:bpf_struct_ops_find_value+0x49/0x140 kernel/bpf/btf.c:8763
+>> Code: 7d ea dd ff 45 85 e4 0f 84 d7 00 00 00 e8 ff ee dd ff 48 8d bb 
+>> 88 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 
+>> 02 00 0f 85 dc 00 00 00 48 8b 9b 88 00 00 00 48 85 db 0f 84
+>> RSP: 0018:ffffc90003bb7b20 EFLAGS: 00010206
+>> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff81aa3283
+>> RDX: 0000000000000011 RSI: ffffffff81aa3291 RDI: 0000000000000088
+>> RBP: ffffc90003bb7dd0 R08: 0000000000000005 R09: 0000000000000000
+>> R10: 0000000000000002 R11: 0000000000000000 R12: 0000000000000002
+>> R13: 000000000000001a R14: ffffffff8ad6bca0 R15: ffffc90003bb7e04
+>> FS:  0000555556ed2380(0000) GS:ffff8880b9800000(0000) 
+>> knlGS:0000000000000000
+>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> CR2: 000000000160d398 CR3: 000000007809c000 CR4: 00000000003506f0
+>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>> ----------------
+>> Code disassembly (best guess), 4 bytes skipped:
+>>     0:    45 85 e4                 test   %r12d,%r12d
+>>     3:    0f 84 d7 00 00 00        je     0xe0
+>>     9:    e8 ff ee dd ff           call   0xffddef0d
+>>     e:    48 8d bb 88 00 00 00     lea    0x88(%rbx),%rdi
+>>    15:    48 b8 00 00 00 00 00     movabs $0xdffffc0000000000,%rax
+>>    1c:    fc ff df
+>>    1f:    48 89 fa                 mov    %rdi,%rdx
+>>    22:    48 c1 ea 03              shr    $0x3,%rdx
+>> * 26:    80 3c 02 00              cmpb   $0x0,(%rdx,%rax,1) <-- 
+>> trapping instruction
+>>    2a:    0f 85 dc 00 00 00        jne    0x10c
+>>    30:    48 8b 9b 88 00 00 00     mov    0x88(%rbx),%rbx
+>>    37:    48 85 db                 test   %rbx,%rbx
+>>    3a:    0f                       .byte 0xf
+>>    3b:    84                       .byte 0x84
+>>
+>>
+>> ---
+>> This report is generated by a bot. It may contain errors.
+>> See https://goo.gl/tpsmEJ for more information about syzbot.
+>> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>>
+>> syzbot will keep track of this issue. See:
+>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>> For information about bisection process see: 
+>> https://goo.gl/tpsmEJ#bisection
+>>
+>> If the report is already addressed, let syzbot know by replying with:
+>> #syz fix: exact-commit-title
+>>
+>> If you want syzbot to run the reproducer, reply with:
+>> #syz test: git://repo/address.git branch-or-commit-hash
+>> If you attach or paste a git patch, syzbot will apply it before testing.
+>>
+>> If you want to overwrite report's subsystems, reply with:
+>> #syz set subsystems: new-subsystem
+>> (See the list of subsystem names on the web dashboard)
+>>
+>> If the report is a duplicate of another one, reply with:
+>> #syz dup: exact-subject-of-another-report
+>>
+>> If you want to undo deduplication, reply with:
+>> #syz undup
 > 
-Okay I will move nand-on-flash-bbt and brcm,nand-ecc-use-strap from soc 
-dtsi to board dts but leave the default nandcs node with compatible and 
-reg = 0 in the dtsi as they are not design dependent and board dts can 
-conveniently reference the nandcs node.
-
-> Thanks,
-> Miquèl
-
---000000000000c3b50d060fc92688
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-YDZuuBJwnyCzevMoPtVYPharioL5H3BRnQi8YoTXH7/uRo33dewYFm474yFjwwnt82TFtveVZkVq
-6h4WIQ4wTcwFfET8zMkELnGzS5SHCl8sPD+lNxxJ1JDZYwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRp3aWxsaWFtLnpoYW5nQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUq65GzwZxydFHjjYEU/9h
-xHhPWlwwDQYJKoZIhvcNAQELBQADggEBAA2hGG3JPAdGPH0ZdohGUCIVjKz+U+EFuIDbS6A/5jqX
-VhYAxZlzj7tSjUIM7G7IhyfqPC46GKJ/4x+Amz1Z6YxNGy71L68kYD6hIbBcA5AM42QBUufly6Oa
-/ppSz3WoflVyFFQ5YXniZ+eU+2/cdnYZg4aVUnFjimOF5o3NfMLzOkhQNxbaDjFUfUYD8hKmU6v4
-0vUBj8KZ9Gi1LIagLKUREn8jku0lcLsRbnJ5Ey5ScajC/FESPyYWasOW8j8/1EoJksmhbYGKNS6C
-urb/KlmDGfVrIRYDbL0ckhGQIP5c6L+kSQZ2sHnQK0e0WgIaZYxaPYeY5u0GLCOze+3vyRMxggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwxuh2XG3FXRL1W
-JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPxYEAjitgnSuAiKOiGTXCYSavh8
-21zG/jkf3y5ybGAbMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0
-MDEyNTE4MTQzM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQCETq3m8RkuWDpI6a55kAVEy3h/kLQdRmOmzEw/HDC4rVb0
-SjaGsoNxn1Sj+rJ2fUnmGiSZSiGc2MLxG50TWlbBph5arwJe/1pUbI3eRoHhnX9NrZjN+iwWu7sZ
-lMQTcjFtoKnIY51NgooLbnbELo0HeAaf41GIQN4ZCo8JEe3SPCoIbcMcidcpSAJe1DlRpzX+SKAq
-H047d7swCpMW3tceuMQ5BTdsW/gYoGVh1iCzubv0+Xo1B3GvC7sc8kTxlt0eNNYz2xWw9JniS+C3
-QM1Rk5UAarjelgXtPDciN4JRo//ofn4MMPKbtoA+EOP6r+cusvPl+cmD/ZnNuvuSepF7
---000000000000c3b50d060fc92688--
 
