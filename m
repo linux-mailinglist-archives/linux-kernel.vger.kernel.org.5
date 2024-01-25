@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-38813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38814-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2285783C654
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:18:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A6F283C655
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:18:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B14971F2438D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:18:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 024D42898FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:18:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4D4F76916;
-	Thu, 25 Jan 2024 15:16:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A6EF77626;
+	Thu, 25 Jan 2024 15:16:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DLeNheuK"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oL/tsqkJ"
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 791CB745E9
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 15:16:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB68974E2D
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 15:16:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706195809; cv=none; b=DPiv8ASOqBbpzvWopsEpLr0ZqT0M0iG47/OQe/hqn1KlrICIxlpsTGvwIAHsE19FuwYBGLgZBh7vOAe9IahjjhkVg0hyP0/lkSHKE138Qk1g/JSEjQUzfFZjXP5JKPxBW6D1DbN2tdd5mOeTuzd56i44y3SGH92lxCCWf9xGW3w=
+	t=1706195809; cv=none; b=NcjJ4etd7n6A84EhIBDHRdnaauQFEy1nB0R18Xfi6+9ZwBEzquecNVlreMYqGz4txBBnbr0QbCFl8KIq4qcztc4zd96jsmBXvgDg93OIzA5OGDrqSCoyqtbq5yD/S501ZqiEuiEDlAzjtlzS4+0ng5gf2e5YLEvXHZ3DWWQUFfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706195809; c=relaxed/simple;
-	bh=tTDyP+QbDcDGX9MYq7Op5ElHJv6X/wISu1O4fxGJcjw=;
+	bh=FTTDJwnrK7E36EZxAV/LZq7tKNV5qxmi0FcnlYPFXNo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=o31OvBFNr9V1gOAe8O0Sy8voSYcwc5IN5cdKBVExbo3L0Fw2tJFhdltlpG/0wAWB9n69idqKJSSH1+yyRu3MJ+Q7kPI8y3jaaeyinR9tqJAV5XjuUtNbVdq6zJlbikQwHt0YbgI46MmvkntFpVwtkocNxI3SMw5gTXcVYyQR0vI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DLeNheuK; arc=none smtp.client-ip=209.85.128.47
+	 MIME-Version; b=XbbH9XOYo27gyt5/SbelTZ2cuO9vTw518MdUaZdUhq0KNVlW1cqZv47euwsiKCD1/pTY38t+kHP1UlOoQtzOaAkHFl/wDPe8DLbahewQQiT1iTwNJOpbpruOgIbGdCezZcZhJuZysjCr/Z2PyXW02tj8So8ovwN+wnOHs2i2R+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oL/tsqkJ; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40ed28f8666so6034635e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 07:16:46 -0800 (PST)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-339231c062bso4833465f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 07:16:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706195805; x=1706800605; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706195806; x=1706800606; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZccBdMZTdQRiy4WH1cInpysJI1QGDCx3Jxp2itAkdao=;
-        b=DLeNheuKPphe/bKw8eeimrUVHXPAylo2EEr/oJv1dTsfJ+1WZSlklQ6/9VeZDMbmLf
-         cqjkIf+RJzAxC6zlTLuVlRqGCLNJGxDZj4MFQbQeQrjgY4IdM+WfchHrOdaTmdQA1YZr
-         p3x8dXkGWz1bFBGNyvJxvh13uNeI26F1Oqifj+QMW2z6Inyn0UNeNAboNJwPpJHWHNzq
-         YnxO7vGbMyt4KjdaZCbM7PXl/WS8WesexpnQZaSxoCYtZ6orSqKSptSAFUvBDe5Cz6WW
-         T6r4C1YlTaWERV4eLPs6LKrQmQMB7WtrWYOCnbEQ1N2ijcyDyfb65Fs/yeqe6k++s9NU
-         zhlw==
+        bh=tXxPqJOvoUlfXn9BCYWKqTCOJ1mrScyukPmjwSmqHnA=;
+        b=oL/tsqkJP1HMjNzmSZkZ+FaSw18KYThdi3vq/Mg/dr1SI7EXLVBV1fQesMc67jXTNr
+         vyfkWNxr5SoZWu4YtChPmBejXmZ7a7ChhsyCAe2FGtMB3DSmkOAyUO8HZs4+vbjryEdP
+         c1r3OtYVfW2l9j8jE46VHTr8BmazimQ79t0pEo832pTqoQfi9oB8I4FhLaw126b/9cxm
+         0jWn/OoRoUTRFFq1cnzSQlqlc+gDq+cI5fRtLXuqTXbyelnOrqjeMkmzjUUWinPFb0or
+         ZAjbM+CrjDLrDfDhjVgWxlpZNAS9W09qngbw9z1GDOA5vhy+14E50UzGMafSh4zfrmJz
+         o+GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706195805; x=1706800605;
+        d=1e100.net; s=20230601; t=1706195806; x=1706800606;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZccBdMZTdQRiy4WH1cInpysJI1QGDCx3Jxp2itAkdao=;
-        b=vKp5XwYEXgWByFJcORFM9gCOzJUGy3/XShoTROK+i6jWVmjQT/86b3+ZxoH5GoFMaV
-         Gy0+1aEI+20ytmRDwPl7ZaHSCx6oTpXCvG54J3YHfR9pN2Kzh2MP3/fnOt33v/beYm6P
-         lZWF6TGRrtwBLMoFhEsHU/fxZIRpDBLu3p+sZyCgTImuIZq4FJpUQZrbx6xJog4bT/nW
-         YHGI+EjO1dnl3HIkfu10gxLXPK6SwwHQ8Zhk8oHtKZvs40iUAJ+8dXTM7PVhz6HQhnEa
-         ES3wq73PVzMJn2mefhUS07Cp1gnJruBsP9vHi3Z3wztZBMSRPJFW8r1n8BmKF7nyI+WV
-         wzgA==
-X-Gm-Message-State: AOJu0YykqCEedUOjR693bayCm1MfU1m0bXeeo/QSq/+UuSQDmf85RpSV
-	9p04/fY01Vzy7UjNkwJ36clJAugr7icjD7nRgKP6eaiFdOVpAsBVpqk5zFgXwHI=
-X-Google-Smtp-Source: AGHT+IGeL1GlUcr2NLv2GRUKPYkgBQEEer1ETUOGmu8WmOi1W5uB4BOahlGNzKoqyE+JD19VzVCIWQ==
-X-Received: by 2002:a05:600c:84c9:b0:40e:550c:a295 with SMTP id er9-20020a05600c84c900b0040e550ca295mr471910wmb.136.1706195804783;
-        Thu, 25 Jan 2024 07:16:44 -0800 (PST)
+        bh=tXxPqJOvoUlfXn9BCYWKqTCOJ1mrScyukPmjwSmqHnA=;
+        b=HAOEWDyUEUGtvl5EJzEZzFmtLTy+Waa478faKMR+pKKMh0o74zEQ9y22W5iuXei0jg
+         L+PcCSbhcEGocDg1k6rJxHdp3d7CmMoxq50+80xb11R76Ayaj5BFLhf73YO4pj6O/crS
+         4oyzQVT9a/LyijbvYbYmLbaNBPe8IdB6yP4O9NHEcIFkGDubyvh56AMOFBxC9H3rlXGr
+         1an4xks6LjStvnZWfqRweFRczgWr8GsKXF54OAx8qFJOKu0EKllLmU2rqqrcO66mcptv
+         fs29gRhzunA6LXWncQOMzh4Fk3hVfgGhO1TkzcUCQMK/RMXnogvyowBcobhxTOLgkDbW
+         4xvg==
+X-Gm-Message-State: AOJu0YylgRuhJp4UiPtKwpByOzxzTMctVCyFSEJ9zqLs2i4q/HQKqayp
+	ksmWyFxPVBzBPoiUfiUIQdNnBaVsuUvqyb6P17W4oVfN3uGUqScVnYknnNZoIn0=
+X-Google-Smtp-Source: AGHT+IFOoZHXMIT/4Zve03YeeUbOYEFQZSqJR86REuQDoTvLqWV4vzsg7EY4ouv402Ob73dh/Vbehw==
+X-Received: by 2002:a5d:4407:0:b0:33a:c013:68d7 with SMTP id z7-20020a5d4407000000b0033ac01368d7mr530130wrq.11.1706195806021;
+        Thu, 25 Jan 2024 07:16:46 -0800 (PST)
 Received: from ta2.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id q17-20020adfcb91000000b00337d3465997sm3184656wrh.38.2024.01.25.07.16.43
+        by smtp.gmail.com with ESMTPSA id q17-20020adfcb91000000b00337d3465997sm3184656wrh.38.2024.01.25.07.16.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 07:16:43 -0800 (PST)
+        Thu, 25 Jan 2024 07:16:45 -0800 (PST)
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
 To: krzysztof.kozlowski+dt@linaro.org,
 	broonie@kernel.org
@@ -82,9 +82,9 @@ Cc: robh+dt@kernel.org,
 	kernel-team@android.com,
 	willmcvicker@google.com,
 	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH 4/7] ARM: dts: samsung: exynos5250: specify the SPI fifosize
-Date: Thu, 25 Jan 2024 15:16:27 +0000
-Message-ID: <20240125151630.753318-5-tudor.ambarus@linaro.org>
+Subject: [PATCH 5/7] ARM: dts: samsung: exynos5450: specify the SPI fifosize
+Date: Thu, 25 Jan 2024 15:16:28 +0000
+Message-ID: <20240125151630.753318-6-tudor.ambarus@linaro.org>
 X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
 In-Reply-To: <20240125151630.753318-1-tudor.ambarus@linaro.org>
 References: <20240125151630.753318-1-tudor.ambarus@linaro.org>
@@ -102,37 +102,37 @@ the SPI alias and specify the SPI FIFO size directly into the SPI node.
 
 Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
- arch/arm/boot/dts/samsung/exynos5250.dtsi | 3 +++
+ arch/arm/boot/dts/samsung/exynos5420.dtsi | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm/boot/dts/samsung/exynos5250.dtsi b/arch/arm/boot/dts/samsung/exynos5250.dtsi
-index 99c84bebf25a..8e81d49622b7 100644
---- a/arch/arm/boot/dts/samsung/exynos5250.dtsi
-+++ b/arch/arm/boot/dts/samsung/exynos5250.dtsi
-@@ -511,6 +511,7 @@ spi_0: spi@12d20000 {
- 			clock-names = "spi", "spi_busclk0";
- 			pinctrl-names = "default";
+diff --git a/arch/arm/boot/dts/samsung/exynos5420.dtsi b/arch/arm/boot/dts/samsung/exynos5420.dtsi
+index 25ed90374679..e22692063aa9 100644
+--- a/arch/arm/boot/dts/samsung/exynos5420.dtsi
++++ b/arch/arm/boot/dts/samsung/exynos5420.dtsi
+@@ -658,6 +658,7 @@ spi_0: spi@12d20000 {
  			pinctrl-0 = <&spi0_bus>;
+ 			clocks = <&clock CLK_SPI0>, <&clock CLK_SCLK_SPI0>;
+ 			clock-names = "spi", "spi_busclk0";
 +			samsung,spi-fifosize = <256>;
+ 			status = "disabled";
  		};
  
- 		spi_1: spi@12d30000 {
-@@ -526,6 +527,7 @@ spi_1: spi@12d30000 {
- 			clock-names = "spi", "spi_busclk0";
- 			pinctrl-names = "default";
+@@ -674,6 +675,7 @@ spi_1: spi@12d30000 {
  			pinctrl-0 = <&spi1_bus>;
-+			samsung,spi-fifosize = <64>;
- 		};
- 
- 		spi_2: spi@12d40000 {
-@@ -541,6 +543,7 @@ spi_2: spi@12d40000 {
+ 			clocks = <&clock CLK_SPI1>, <&clock CLK_SCLK_SPI1>;
  			clock-names = "spi", "spi_busclk0";
- 			pinctrl-names = "default";
- 			pinctrl-0 = <&spi2_bus>;
 +			samsung,spi-fifosize = <64>;
+ 			status = "disabled";
  		};
  
- 		mmc_0: mmc@12200000 {
+@@ -690,6 +692,7 @@ spi_2: spi@12d40000 {
+ 			pinctrl-0 = <&spi2_bus>;
+ 			clocks = <&clock CLK_SPI2>, <&clock CLK_SCLK_SPI2>;
+ 			clock-names = "spi", "spi_busclk0";
++			samsung,spi-fifosize = <64>;
+ 			status = "disabled";
+ 		};
+ 
 -- 
 2.43.0.429.g432eaa2c6b-goog
 
