@@ -1,111 +1,139 @@
-Return-Path: <linux-kernel+bounces-38422-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7688783BF73
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:49:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A609683BFB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:56:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA3FF1C23D85
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:49:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DDC3286D95
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:56:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7104958AAE;
-	Thu, 25 Jan 2024 10:43:56 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C6036167F;
+	Thu, 25 Jan 2024 10:44:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="a9uTMdnc"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B6DD58114
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 10:43:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D282060EFE
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 10:44:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706179436; cv=none; b=McwaySR7R5Xf+SS43Rcqi7uMccOmLRG1ID5iahwVj00sB0DjFPJxAgvsEo74NxeuLmw5k1iyNkGbLzzdaLFRIO2cgtBzB/NZLKhgSQwBs3QtS1Zg4am4U/PXFkyJb2Or4Q6fT3Ca9xNfWYJcwPKh2SbodagltkWpwWlYMu2EUpc=
+	t=1706179481; cv=none; b=h/AAqgLAoyce33dKwNmzq3TAY6HuCQhrloeRsVo/8EMKlaj+iyPDQX+Ee1m5i1s3NH9WkJppmpPG4LTmjV0tchxSBDKzf1z26qXdPoXJ8dgsnDdPhtIkoFZEJEMdzIE0QOlPDiS7xnRKSTY9u9Zpkf6xS9buZQAfPrxzt8Ng85M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706179436; c=relaxed/simple;
-	bh=Pq2HycWL5UZIeTfQdGCMuXNRVUInCqTunQ8KIofIoyU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XpJYDNXgoPsStjU6r+hPLcumctNkPlQWgDwpy5V6pS7JlArq++sspZhTVm77fQDBx6+wBBnWmD2nxojaXdt+CRRMyqLOzJEhrmiKd02RrlAvy2AU6l3BvSVusIPwPu9AOd1cgJuZ73ekKoCzJS1Q+vWaEmUzJ4dyHdmZur0b4qk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rSxD3-0006Mj-Pz; Thu, 25 Jan 2024 11:43:49 +0100
-Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rSxCz-002GMP-RI; Thu, 25 Jan 2024 11:43:45 +0100
-Received: from pza by lupine with local (Exim 4.96)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rSxCz-0005of-2V;
-	Thu, 25 Jan 2024 11:43:45 +0100
-Message-ID: <bf30a97b4c39e5c606583783058ea12520c1146b.camel@pengutronix.de>
-Subject: Re: [PATCH v2 2/4] reset: sophgo: add SG2042 reset generator driver
-From: Philipp Zabel <p.zabel@pengutronix.de>
-To: Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
- chao.wei@sophgo.com,  conor@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- palmer@dabbelt.com,  paul.walmsley@sifive.com, robh+dt@kernel.org,
- devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org,
- linux-riscv@lists.infradead.org,  haijiao.liu@sophgo.com,
- xiaoguang.xing@sophgo.com, guoren@kernel.org,  jszhang@kernel.org,
- inochiama@outlook.com
-Cc: Chen Wang <unicorn_wang@outlook.com>
-Date: Thu, 25 Jan 2024 11:43:45 +0100
-In-Reply-To: <34650036ea5f1c500da54c67c3a67b91c4419399.1706161530.git.unicorn_wang@outlook.com>
-References: <cover.1706161530.git.unicorn_wang@outlook.com>
-	 <34650036ea5f1c500da54c67c3a67b91c4419399.1706161530.git.unicorn_wang@outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	s=arc-20240116; t=1706179481; c=relaxed/simple;
+	bh=yT1mRF6XNlXaTfuWIVMhLXVcISTzbXHuEXNJEvgnJqs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e9TSFFR8CaOhzy94Krj5YZrDKZXrw4jLIdYLwaM41M+tu9I+zbp0uf8hPjhsWHqjMICeE4PYypSPSMy1i8UX0PjOiQhD0IeCtCY5tDmfaDhlw1focYTk6mfGNum/RBWPkR3yRzd+K8dImLfuMxe6VfySDoGKJx1ghqnx5abYnFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=a9uTMdnc; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-559f92bf7b6so1239443a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 02:44:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706179478; x=1706784278; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DP1TkMGJCcP03wjm/2IvbB0Zl5zG12ipI2nSUEb0ViM=;
+        b=a9uTMdnc5HKWIM6ieliulr3BHXgwysfjW028gwnVeVZ2qZr/U9WbCRnWbjzVmumKHA
+         mwwl/6BtHFs8tJkhCDlVStk03+ffHCejCwK3uw1Eg4+C0n2LXJWDd5efWjsH9BzmGgKR
+         1j3C2xEmSDvDKxc0OeI1Nirkva/MTPpbIuXA2f+6741zGkWVYAoEjTyNSG3hLH5opRMe
+         PN42Gx3nqxXQ1ny6h2JHIFcR7AhF09r8rmXhE/l6LzNDJ18tOyYL3d/y/GNtIP6EHo5T
+         dMwmqiaxhT3DdU4LNdD08RMDtF9xwaBadNSxmAMY8jkWnTzxoIPojryIacOGZn2xwKHk
+         2wcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706179478; x=1706784278;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DP1TkMGJCcP03wjm/2IvbB0Zl5zG12ipI2nSUEb0ViM=;
+        b=OQXubJIfDaeEituP3haAnTQ1XomfTHTMMFmC1xRqy+rjrSVYjKwd4sgLHLWEdt3dEn
+         ai5+fs5AF0GCTU/AIEok5Tv2eqxzLDkGdGxpn22C25Tbga7IZEgkohriHz6lcjCmQ0mz
+         XQkqIvHsrnQvNomNUcbZEqHRNH/wLV3KTlVsQItaxOoJc4CYy0fS0dcksJCVV2lx2p2z
+         u9oK73kt5H+J25usxTKIZ6R0NsTweFIiE9kiPrwdmdZ+9fMaZ/efWEPJUzg2Qp8u4duY
+         LJfOUq0aQrW2kOrSohGlP2k/ZcgbKK0gVSpJ+7+k2sXJV2b4BR6lLkbbLZXz4kUSM3M6
+         QGBw==
+X-Gm-Message-State: AOJu0YxWENCODbIqnzr4IWUnGaTEClm5Pu5gqHbcuPMdRPRO4d+/9fjE
+	9XKOyQ96JMz/XxYechhgJYjvbEHoyCSMHV65ixR2XWk6ZaQhzFiXhcU8bEA1R3o=
+X-Google-Smtp-Source: AGHT+IGG9jiccgy/B1Ja0Qj3GOeWRI+vkQ1p7kjIJbpZvMUF9eD/sku0Vq25Up2+hLJIJLvcnhGwEw==
+X-Received: by 2002:aa7:d857:0:b0:55c:feaa:aca4 with SMTP id f23-20020aa7d857000000b0055cfeaaaca4mr661597eds.9.1706179477838;
+        Thu, 25 Jan 2024 02:44:37 -0800 (PST)
+Received: from linaro.org ([79.115.23.25])
+        by smtp.gmail.com with ESMTPSA id ig1-20020a056402458100b0055ca5ce62ddsm1760685edb.12.2024.01.25.02.44.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 02:44:37 -0800 (PST)
+Date: Thu, 25 Jan 2024 12:44:35 +0200
+From: Abel Vesa <abel.vesa@linaro.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] clk: qcom: sm8[56]50: Drop the Disp AHB clock from
+ Display Clock Controller
+Message-ID: <ZbI7k+bDy+KSmncq@linaro.org>
+References: <20240125-dispcc-sm8550-sm8650-drop-disp-ahb-clk-v1-0-0f8d96156156@linaro.org>
+ <99817149-4a2e-49fc-aedc-fe298964a019@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <99817149-4a2e-49fc-aedc-fe298964a019@linaro.org>
 
-On Do, 2024-01-25 at 14:11 +0800, Chen Wang wrote:
-> From: Chen Wang <unicorn_wang@outlook.com>
->=20
-> Reuse reset-simple driver for the Sophgo SG2042 reset generator.
+On 24-01-25 10:49:23, Konrad Dybcio wrote:
+> 
+> 
+> On 1/25/24 10:27, Abel Vesa wrote:
+> > The Disp AHB clock is provided by the GCC but never registered. It is
+> > instead enabled on probe as it is expected to be always-on. So it should
+> > be dropped from Disp CC entirely.
+> > 
+> > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> > ---
+> 
+> Abel, you just raised some concerns over my series doing this and now
+> you're doing the same, plus breaking backwards compatibility for no
+> good reason, instead of solving the problem.
 
-Subject prefix should be "reset: simple: "
+Sorry but, during the off-list discussion, you convinced me that it is OK to drop
+their registration as long as we enable them on probe.
 
-> Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
-> ---
->  drivers/reset/Kconfig        |  1 +
->  drivers/reset/reset-simple.c |  2 ++
->  drivers/reset/sophgo/Kconfig | 10 ++++++++++
->  3 files changed, 13 insertions(+)
->  create mode 100644 drivers/reset/sophgo/Kconfig
->=20
-[...]
-> diff --git a/drivers/reset/sophgo/Kconfig b/drivers/reset/sophgo/Kconfig
-> new file mode 100644
-> index 000000000000..9ad96e49e1dd
-> --- /dev/null
-> +++ b/drivers/reset/sophgo/Kconfig
-> @@ -0,0 +1,10 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +
-> +config RESET_SOPHGO_SG2042
-> +	bool "Sophgo SG2042 Reset Driver"
-> +	depends on ARCH_SOPHGO || COMPILE_TEST
-> +	select RESET_SIMPLE
-> +	default ARCH_SOPHGO
-> +	help
-> +	  This enables the reset controller driver for the Sophgo SG2042 SoC.
-> +
+I've not seen the following reply in time before sending current series:
+https://lore.kernel.org/all/6aa58497-9727-4601-b6eb-264c478997c3@linaro.org/
 
-Drop the Kconfig, just add a default y if ARCH_SOPHGO to RESET_SIMPLE.
+Since this is blocking the patches for dispcc and dts for X1E80100, I
+thought I'd just drop the clock as required from DT point of view.
+But yeah, you're right, it breaks bindings ABI and that's wrong.
 
-regards
-Philipp
+> 
+> The correct solution here is to register the AHB clock with GCC and
+> pm_clk_add() it from dispcc's .probe (and enable runtime PM on dispcc
+> if it's already not the case). Then the AHB clock will be gated when
+> no display hardware (= no dispcc consumer) is in use.
+
+I agree.
+
+> 
+> 8[56]50 are in a good position for this, as they already have the
+> required DTS reference. Unfortunately, I still haven't fully dug
+> into this for platforms without one, but that's on me.
+
+Since I need to do this for the X1E80100, I'll probably do it for the
+other two as well.
+
+Sorry for the misunderstanding.
+
+> 
+> Konrad
 
