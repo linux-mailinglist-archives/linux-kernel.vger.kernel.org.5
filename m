@@ -1,306 +1,170 @@
-Return-Path: <linux-kernel+bounces-38860-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1340183C766
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:00:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A02EC83C799
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:11:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 962FA1F25541
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:00:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D38F71C233EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:11:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8794E74E05;
-	Thu, 25 Jan 2024 16:00:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40EA0129A73;
+	Thu, 25 Jan 2024 16:11:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="hZUco6hT";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kLFp17Yt"
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UGsjEBlW"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F21206E2DB;
-	Thu, 25 Jan 2024 16:00:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD30986143;
+	Thu, 25 Jan 2024 16:11:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706198409; cv=none; b=jK/usk1Cz8kAFZP8h1WhvyaONY1T3+UCf3Ci6ku5bU+QVdcbAfqxDqA9gMD4Rx5kpzlIqV+DTEr4LzIJtjg7ppKTNXF2YRsruL1yPNzByOByUM/pcJCSBTDqWmnhY9JxSDzK6t6mRTN6CXz1ZXGw2S++wmnvaG6WeQTrMeEwc9s=
+	t=1706199062; cv=none; b=vANzayhpyFTxyuGImUFE6TGnt64N6T6qMra2eHh53jfwW+jgSJ4Vgmh52rElOuR6UPV0h8ijvjzjjWEhhJgsVgNactvjIwrfmAiWX+WBr/V6PJs4Tg95s9Jqi0Hl59B5TNrQ3Ppk9HAK5HXl5gTy13fMWA/tXBnLhQhA0Kj8xIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706198409; c=relaxed/simple;
-	bh=JhL7YQiPLcm8PQ76uhgv/Ri86FrIlG5VN2oDXHuMbk4=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=VZSmKuPIqrRS2E5dulAaDc75dx30tEOj4k5yi7Ou5xeKMll9c0fZmwGB8vFUkPZbpke4tM/UPKj8bDmbvLfZHDQTplGz9AzDKNp34Ej87mPR+QtzL6vkM0rbyAUOhQjbHPyeQdnmrN3xsJa113V9As2y+fDwR02Cfm96WPQCK7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=hZUco6hT; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kLFp17Yt; arc=none smtp.client-ip=66.111.4.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id 005105C00DB;
-	Thu, 25 Jan 2024 11:00:06 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Thu, 25 Jan 2024 11:00:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1706198405;
-	 x=1706284805; bh=SqRtybdjact+f0QeQR9azdnQV/iHBEyjbNT4deqFxZo=; b=
-	hZUco6hTk7rOkCqcYBakCuKg7hmrOp10Kl7rKZgdg3AtevpRTSE1FNx35WvDHTR3
-	1C7FoNO4AoNwonAd2Chx/+UWKiyhmFU2eCeCnBslCiMYNOh/xTT/6M8hCTDPxsfz
-	89i84ehFOG8mwCbtzrBv12r4eSH1QZg8tTBBkeJHz1RPqzkzk1xjsOxfOl3oRnTU
-	sPr6vb5q46615EIDB1gJQAN8YA0J5/aOiEJZdQQaOAce8GGilRlQZyztp0ZwZTsc
-	pFM6+FXy3riyiKtPd0DiquSWJ6oRpJyFvfcZeM5uaBpdXOMGhik9K+cRR86Lxl9j
-	yiK2yA9KyAwtsZpPiGf+Nw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706198405; x=
-	1706284805; bh=SqRtybdjact+f0QeQR9azdnQV/iHBEyjbNT4deqFxZo=; b=k
-	LFp17YtrpRi6UPiYMjCy1sSkRCu+4ovdGWJglYg38qH4EC9qgTEkBYuLaLEYguEu
-	e1XEM9HH3ivgr7ZJK9gNu7vf6g4WOJwlqkMdyt+wf9Wm1zSfCn8WTSbbV537JAtg
-	Zd6WuoyJTAhl94CQKpuZNFTyNESGF0Y8bolk8bSWVO3604SjANDQMOdxikiPhGCt
-	GG4VfwNqhjNrQam6m5b+aW7zQsOT6MnsQlRnal4Y9WN0hHW0ZVvRNE6SrI13KGaD
-	8azmTSTIlo/kQew6erQirnv72LdKvsDMb841+XjVkiHjaAmwa9dQKfuzjCHi/6tV
-	nFAlkE9/wgYcr80jMtazw==
-X-ME-Sender: <xms:hYWyZdMCnNNDyxgx9e38kTFRO4tfEujPrKnR2VkCPUqn88cu2N07FQ>
-    <xme:hYWyZf_hcCBLVbUvHV3e_KHJbCI-TfcDPRjP6gTsyE_SttJMCyPtBq1gvRgdqbZNL
-    N1epLMlzAuNUCW3X6k>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdelgedgheeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
-    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:hYWyZcSrj6tqxczRhaAAwS9PuouPD2R6FmvYUnShyGwwclXuM4DwAg>
-    <xmx:hYWyZZumEbZQfXLv_Ip1F35vHXrTUTB3_mZtrE2r-P9BV3bcAIASdg>
-    <xmx:hYWyZVf2Wp44LAJuU-i1pC_p-CdUKQrOUdepDtu0KOLGLRzPMQ6BPA>
-    <xmx:hYWyZb8_wzMTLbtbtdIu8WwuPiAC8-Q5bRy-LrLKrXjioeU23oqL7A>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 4DCDEB6008D; Thu, 25 Jan 2024 11:00:05 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-119-ga8b98d1bd8-fm-20240108.001-ga8b98d1b
+	s=arc-20240116; t=1706199062; c=relaxed/simple;
+	bh=erA6r6+8c+fMm7TjsfyuG2K4tmIEaj6481Pqbo/gIRU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eg61iM8gqKsw+CTvF5lHoLHfXibH18Zr7aoS7WUeo6eDJfnqjdN0hIWfFD7tglBpje6P/sbWKzdWrRZAmhtXgbAbW/CHx8Xip8/2XgHr9d7ZQN9W5xGy2eI3PNj05rLgE2f7dubEROXozwV0mkKFJQ/cvEPgfCImWvmVnSRuXk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UGsjEBlW; arc=none smtp.client-ip=192.55.52.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706199061; x=1737735061;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=erA6r6+8c+fMm7TjsfyuG2K4tmIEaj6481Pqbo/gIRU=;
+  b=UGsjEBlWD4hml9v1xNgHY6As2IYorXSB3+lIQR3W+kRa11R4pd1DJ5vf
+   MipegmtzJOh3uIqxEF0o5vDms+Mfq9yr6ndFMtpBIuqRMuWfmRB5a4hbo
+   kuarqa/3HqtLOlQqu9UBAsw2CGJwpaiP42IEumBt5ZDvdZBiUnjzj1AgY
+   Hrnkp7l/f8rYABkRBeUJSfbU13kFSTtuCNwRsdQuwc6/BZ5A+9aN4dxKT
+   qzGykkX2Mmp6REN9ErBTWgDtVT51GkLdgdgfhFipHL1bQNBxYo8L5O2z9
+   TV7gLxoyuUoMkNPy7wM+srX0bKPzNd7fk8ptabyMzAB56MEdGV/3cyJq/
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="433358619"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="433358619"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 08:10:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="736372656"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="736372656"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 08:10:52 -0800
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+	by kekkonen.fi.intel.com (Postfix) with ESMTP id 775ED11FAD4;
+	Thu, 25 Jan 2024 18:01:16 +0200 (EET)
+Date: Thu, 25 Jan 2024 16:01:16 +0000
+From: "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>
+To: Zhi Mao =?utf-8?B?KOavm+aZuik=?= <zhi.mao@mediatek.com>
+Cc: "heiko@sntech.de" <heiko@sntech.de>,
+	"gerald.loacker@wolfvision.net" <gerald.loacker@wolfvision.net>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"yunkec@chromium.org" <yunkec@chromium.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"dan.scally@ideasonboard.com" <dan.scally@ideasonboard.com>,
+	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+	Shengnan Wang =?utf-8?B?KOeOi+Wco+eUtyk=?= <shengnan.wang@mediatek.com>,
+	"hdegoede@redhat.com" <hdegoede@redhat.com>,
+	"linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+	"andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
+	Yaya Chang =?utf-8?B?KOW8tembhea4hSk=?= <Yaya.Chang@mediatek.com>,
+	"mchehab@kernel.org" <mchehab@kernel.org>,
+	"jacopo.mondi@ideasonboard.com" <jacopo.mondi@ideasonboard.com>,
+	"jernej.skrabec@gmail.com" <jernej.skrabec@gmail.com>,
+	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+	"bingbu.cao@intel.com" <bingbu.cao@intel.com>,
+	Project_Global_Chrome_Upstream_Group <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	"10572168@qq.com" <10572168@qq.com>,
+	"hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+	"tomi.valkeinen@ideasonboard.com" <tomi.valkeinen@ideasonboard.com>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+	"laurent.pinchart@ideasonboard.com" <laurent.pinchart@ideasonboard.com>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>,
+	"macromorgan@hotmail.com" <macromorgan@hotmail.com>
+Subject: Re: [PATCH v3 2/2] media: i2c: Add GC08A3 image sensor driver
+Message-ID: <ZbKFzGxXhU0TABHZ@kekkonen.localdomain>
+References: <20240109022715.30278-1-zhi.mao@mediatek.com>
+ <20240109022715.30278-3-zhi.mao@mediatek.com>
+ <ZZ0dcTEqxjYCohac@kekkonen.localdomain>
+ <42cf05ea80a2413aae588b762e67c3418b9514d4.camel@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <e69f9b43-39cd-469d-94db-140504df0833@app.fastmail.com>
-In-Reply-To: 
- <CAH5fLgi8D18ufma0X49nWhXpnz47t-C=OAtM+wwnYu78hEnwhA@mail.gmail.com>
-References: <20240124-alice-mm-v1-0-d1abcec83c44@google.com>
- <20240124-alice-mm-v1-2-d1abcec83c44@google.com>
- <070574cb-8d7f-4fe7-9826-cec6110168ff@app.fastmail.com>
- <CAH5fLgi8D18ufma0X49nWhXpnz47t-C=OAtM+wwnYu78hEnwhA@mail.gmail.com>
-Date: Thu, 25 Jan 2024 16:59:42 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Alice Ryhl" <aliceryhl@google.com>
-Cc: "Miguel Ojeda" <ojeda@kernel.org>, "Alex Gaynor" <alex.gaynor@gmail.com>,
- "Wedson Almeida Filho" <wedsonaf@gmail.com>,
- "Boqun Feng" <boqun.feng@gmail.com>, "Gary Guo" <gary@garyguo.net>,
- =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
- "Benno Lossin" <benno.lossin@proton.me>,
- "Andreas Hindborg" <a.hindborg@samsung.com>,
- "Kees Cook" <keescook@chromium.org>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- =?UTF-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
- "Todd Kjos" <tkjos@android.com>, "Martijn Coenen" <maco@android.com>,
- "Joel Fernandes" <joel@joelfernandes.org>,
- "Carlos Llamas" <cmllamas@google.com>,
- "Suren Baghdasaryan" <surenb@google.com>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
- "Christian Brauner" <brauner@kernel.org>
-Subject: Re: [PATCH 2/3] rust: add typed accessors for userspace pointers
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <42cf05ea80a2413aae588b762e67c3418b9514d4.camel@mediatek.com>
 
-On Thu, Jan 25, 2024, at 13:37, Alice Ryhl wrote:
-> On Thu, Jan 25, 2024 at 1:27=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> =
-wrote:
->> On Wed, Jan 24, 2024, at 12:20, Alice Ryhl wrote:
+Hi Zhi,
 
->> > +EXPORT_SYMBOL_GPL(rust_helper_copy_to_user_unsafe_skip_check_objec=
-t_size);
->>
->> These functions are almost identical to the ones in
->> lib/usercopy.c for !defined(INLINE_COPY_TO_USER).
->>
->> That version has an extra memset() after a partial
->> copy_from_user(), and you probably want to have the
->> same thing here for consistency.
->>
->> I think ideally we should only have one out-of-line copy
->> of these two functions and have that one shared between
->> rust and architectures that want the C version out of line
->> as well.
->
-> I had a bit of trouble figuring out all of the copy_[to/from]_user
-> methods that are available. I was hoping that a better solution would
-> be available, and it sounds like one is. Is _copy_from_user always
-> available as an exported symbol? If it's always available and skips
-> the check, then I can just use that. I don't think the memset matters
-> for my case.
+On Thu, Jan 25, 2024 at 02:24:52AM +0000, Zhi Mao (毛智) wrote:
+> Hi Sakari
+> 
+> Thanks for your review code and comments.
+> 
+> On Tue, 2024-01-09 at 10:18 +0000, Sakari Ailus wrote:
+> >  	 
+> > External email : Please do not click links or open attachments until
+> > you have verified the sender or the content.
+> >  Hi Zhi,
+> > 
+> > Thanks for the update.
+> > 
+> > On Tue, Jan 09, 2024 at 10:27:15AM +0800, Zhi Mao wrote:
+> > > Add a V4L2 sub-device driver for Galaxycore GC08A3 image sensor.
+> > > 
+> > > Signed-off-by: Zhi Mao <zhi.mao@mediatek.com>
+> > > ---
+> > >  drivers/media/i2c/Kconfig  |   10 +
+> > >  drivers/media/i2c/Makefile |    1 +
+> > >  drivers/media/i2c/gc08a3.c | 1467
+> > ++++++++++++++++++++++++++++++++++++
+> > >  3 files changed, 1478 insertions(+)
+> > >  create mode 100644 drivers/media/i2c/gc08a3.c
+> > > 
+> > > +for (i = 0; i < ARRAY_SIZE(link_freq_menu_items); i++) {
+> > > +for (j = 0; j < bus_cfg.nr_of_link_frequencies; j++) {
+> > > +if (link_freq_menu_items[i] ==
+> > > +    bus_cfg.link_frequencies[j])
+> > > +break;
+> > > +}
+> > > +
+> > > +if (j == bus_cfg.nr_of_link_frequencies) {
+> > > +dev_err(dev,
+> > > +"no link frequency %lld supported, please check DT",
+> > > +link_freq_menu_items[i]);
+> > > +ret = -EINVAL;
+> > > +goto done;
+> > > +}
+> > > +}
+> > 
+> > Please use v4l2_link_freq_to_bitmap() available here
+> > <URL:
+> > https://lore.kernel.org/linux-media/20240108151805.55584-2-sakari.ailus@linux.intel.com/T/#u>
+> > ;.
+> > We'll then merge both at the same time.
+> > 
+> 
+> After got the latest linux kernel code base(tag: next-20240124), there
+> seems to be not new API:v4l2_link_freq_to_bitmap() still.
+> 
+> Would you please let me know, how about the status about this API?
 
-At the moment, it appears that it's available on the few architectures
-that don't #define INLINE_COPY_FROM_USER: alpha, csky, powerpc,
-riscv and x86. On the other architectures it is always an inline
-function.
+The patches are in my linuxtv.org tree's master branch now:
 
-> Otherwise, I can add a helper in rust/helpers.c that wraps
-> _copy_from_user only when INLINE_COPY_FROM_USER is defined, and call
-> the helper in those cases, and otherwise call the exported symbol
-> directly. (I need an exported symbol to call into C from Rust.)
->
-> Would that make sense?
+	https://git.linuxtv.org/sailus/media_tree.git/
 
-I don't think we can have a perfect abstraction here, but rather
-than putting knowledge of INLINE_COPY_FROM_USER into the rust
-wrapper, I would suggest putting a bit of information about
-rust into lib/usercopy.c.
-
-I've tried to come up with an idea below, see if that works
-for you.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
-index 3064314f4832..835aa175d0ee 100644
---- a/include/linux/uaccess.h
-+++ b/include/linux/uaccess.h
-@@ -138,13 +138,18 @@ __copy_to_user(void __user *to, const void *from, =
-unsigned long n)
- 	return raw_copy_to_user(to, from, n);
- }
-=20
--#ifdef INLINE_COPY_FROM_USER
- static inline __must_check unsigned long
--_copy_from_user(void *to, const void __user *from, unsigned long n)
-+_inline_copy_from_user(void *to, const void __user *from, unsigned long=
- n)
- {
- 	unsigned long res =3D n;
- 	might_fault();
- 	if (!should_fail_usercopy() && likely(access_ok(from, n))) {
-+		/*
-+		 * Ensure that bad access_ok() speculation will not
-+		 * lead to nasty side effects *after* the copy is
-+		 * finished:
-+		 */
-+		barrier_nospec();
- 		instrument_copy_from_user_before(to, from, n);
- 		res =3D raw_copy_from_user(to, from, n);
- 		instrument_copy_from_user_after(to, from, n, res);
-@@ -153,14 +158,11 @@ _copy_from_user(void *to, const void __user *from,=
- unsigned long n)
- 		memset(to + (n - res), 0, res);
- 	return res;
- }
--#else
- extern __must_check unsigned long
- _copy_from_user(void *, const void __user *, unsigned long);
--#endif
-=20
--#ifdef INLINE_COPY_TO_USER
- static inline __must_check unsigned long
--_copy_to_user(void __user *to, const void *from, unsigned long n)
-+_inline_copy_to_user(void __user *to, const void *from, unsigned long n)
- {
- 	might_fault();
- 	if (should_fail_usercopy())
-@@ -171,25 +173,32 @@ _copy_to_user(void __user *to, const void *from, u=
-nsigned long n)
- 	}
- 	return n;
- }
--#else
- extern __must_check unsigned long
- _copy_to_user(void __user *, const void *, unsigned long);
--#endif
-=20
- static __always_inline unsigned long __must_check
- copy_from_user(void *to, const void __user *from, unsigned long n)
- {
--	if (check_copy_size(to, n, false))
--		n =3D _copy_from_user(to, from, n);
--	return n;
-+	if (!check_copy_size(to, n, false))
-+		return n;
-+#ifdef INLINE_COPY_FROM_USER
-+	return _inline_copy_from_user(to, from, n);
-+#else
-+	return _copy_from_user(to, from, n);
-+#endif
- }
-=20
- static __always_inline unsigned long __must_check
- copy_to_user(void __user *to, const void *from, unsigned long n)
- {
--	if (check_copy_size(from, n, true))
--		n =3D _copy_to_user(to, from, n);
--	return n;
-+	if (!check_copy_size(from, n, true))
-+		return n;
-+
-+#ifdef INLINE_COPY_TO_USER
-+	return _inline_copy_to_user(to, from, n);
-+#else
-+	return _copy_to_user(to, from, n);
-+#endif
- }
-=20
- #ifndef copy_mc_to_kernel
-diff --git a/lib/usercopy.c b/lib/usercopy.c
-index d29fe29c6849..503a064d79e2 100644
---- a/lib/usercopy.c
-+++ b/lib/usercopy.c
-@@ -7,40 +7,18 @@
-=20
- /* out-of-line parts */
-=20
--#ifndef INLINE_COPY_FROM_USER
-+#if !defined(INLINE_COPY_FROM_USER) || defined(CONFIG_RUST)
- unsigned long _copy_from_user(void *to, const void __user *from, unsign=
-ed long n)
- {
--	unsigned long res =3D n;
--	might_fault();
--	if (!should_fail_usercopy() && likely(access_ok(from, n))) {
--		/*
--		 * Ensure that bad access_ok() speculation will not
--		 * lead to nasty side effects *after* the copy is
--		 * finished:
--		 */
--		barrier_nospec();
--		instrument_copy_from_user_before(to, from, n);
--		res =3D raw_copy_from_user(to, from, n);
--		instrument_copy_from_user_after(to, from, n, res);
--	}
--	if (unlikely(res))
--		memset(to + (n - res), 0, res);
--	return res;
-+	return _inline_copy_from_user(to, from, n);
- }
- EXPORT_SYMBOL(_copy_from_user);
- #endif
-=20
--#ifndef INLINE_COPY_TO_USER
-+#if !defined(INLINE_COPY_TO_USER) || defined(CONFIG_RUST)
- unsigned long _copy_to_user(void __user *to, const void *from, unsigned=
- long n)
- {
--	might_fault();
--	if (should_fail_usercopy())
--		return n;
--	if (likely(access_ok(to, n))) {
--		instrument_copy_to_user(to, from, n);
--		n =3D raw_copy_to_user(to, from, n);
--	}
--	return n;
-+	return _inline_copy_to_user(to, from, n);
- }
- EXPORT_SYMBOL(_copy_to_user);
- #endif
+-- 
+Sakari Ailus
 
