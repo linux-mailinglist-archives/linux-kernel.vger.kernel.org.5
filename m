@@ -1,101 +1,82 @@
-Return-Path: <linux-kernel+bounces-39133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97ED383CB3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:37:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3056483CB41
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:38:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D6891F27093
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:37:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F965B2247D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:38:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6662133991;
-	Thu, 25 Jan 2024 18:37:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3A6B1F60A;
+	Thu, 25 Jan 2024 18:38:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b="RycUwXwz";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ElM0XVZM"
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M8fT/wIt"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C95D779C7;
-	Thu, 25 Jan 2024 18:36:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.26
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BC2B10A12
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 18:38:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706207817; cv=none; b=ixgJ/UebfuGXPAs4snDJnCKxgi+B7B6oSDCnVFjPIDniDfiKA6Ct5Br/YMLSkR0Xol4PgEH0A69A+KjfgOnBewbKlPNFKOop+X3jYbRLNm/uRY7KQhKYKKq7RM/F97M90AKVp0QAtgZjNgnZU2iNpfrPGvSF8oZC2W0+GIQqamU=
+	t=1706207909; cv=none; b=fGJ3n3LE0sgR4SQQP04WnHNns24HSl2NVCLEnOiw+DFKImo7eIvyX5IMRSR9CfvoWDXRKFcVFYZGyrm1pERkT29mWZKCyUgWuTbLzG28ph2nWF6m7RyBUPu7c4z+A59TzhUohW0nWTYPYpbdlqhlt+nNeCU0kjQhgecKcUfRrJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706207817; c=relaxed/simple;
-	bh=UF54OoPnWhCHjd4YHoCkTUMl9/peohQTDd90vfCnJDY=;
+	s=arc-20240116; t=1706207909; c=relaxed/simple;
+	bh=cZx+YNVP7ZTa30LGqSaWbg8X8fXKuev5Uk2WGNJ5Y4g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g8pjlGxG6+wyWtB1j2kd8Pw3KRGAVhZS+R8kq+uVQz3v0g2mxiurPDFJmSPiM1m1WAMabrESHapxDqVDf1fPrOrlPlUM2Kw8ahDwdWzHVRgwu1h7VfQom0yUW8PDbBAURjbGNxJuVQ2FXFEDP9Yo+fYcAJPuPwY/y2uIGsGu3Ow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza; spf=pass smtp.mailfrom=tycho.pizza; dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b=RycUwXwz; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ElM0XVZM; arc=none smtp.client-ip=66.111.4.26
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tycho.pizza
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailout.nyi.internal (Postfix) with ESMTP id AB4EE5C00D7;
-	Thu, 25 Jan 2024 13:36:53 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 25 Jan 2024 13:36:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1706207813; x=1706294213; bh=CfjLibIYa5
-	BzwhBwoi4+HVAjuBeEwvxGVOrZM+/ntKI=; b=RycUwXwzL+doy0qtLxNp1VU07y
-	SwLS1WBJ1YLm0mJ/p+6EVVWg0yBUpq5tzR/ofmG6Cx57dgNu31HHxZSQMPxMKxv0
-	uEynQonjsyl5J9oaPIoNi+MEVgnSBzUCwckX7zxLDZILn9y+4giy3c38SjHd6Xzs
-	USgCpLeVnqkdFzDVWFw6VaSxd/FaMP9pIc32dM2RUZnAdC9Sg9Mv13sFwnXaro1n
-	3b7nJNzdrKkuv6wxXkuCPsQDYTjk6dZBEnEHuZg3IkmTINrp4/BkX89M0+TxzRB7
-	fjL4TOfN/Mr58CEdQqp+ZKqVgs5RqGcMelYXmY4CMK6KD+77y344JP4cA2Jw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1706207813; x=1706294213; bh=CfjLibIYa5BzwhBwoi4+HVAjuBeE
-	wvxGVOrZM+/ntKI=; b=ElM0XVZMzc6Ho5C5QpHT9YZQAny2m3zqD0CJ9+INRgcZ
-	DDy6ltqdsporXE+mjPVFJzR8gXWZq3v1Y5B485Yp32g70Tf//IRPFXLHDQdTfJLr
-	ekDlidYHqwTudhyHOBEb1mOgmUYmgqtb+Q7sobkXvZdPWQUikPMeKZ0WcAJMTjOL
-	WSr6sJAiNUfRXCVwh1Vbh7CXXzri4qNDHJ6ch/mqGRL7j04RtHdjtTcWRh9wZW6z
-	AvXAMBisgvEHv1dqZORUltSVJaXpZn8gDRkR0Tk4d/H2rcwMVyAeWAJDZO3qGNSD
-	KpWjqGEKTx+Jue/DU7oBDIz75U2kOXh48NQtuSRzPQ==
-X-ME-Sender: <xms:RaqyZVeJl9tjNILUUoOSrwclJT2IPDfwjYHo1FJv2JGEXEFBIuraSw>
-    <xme:RaqyZTPAE_vnNvEhhDOagimsTMhyAtJweB0kKlEQXyGgq55vdR38s_NEWPXikRM1u
-    b6RmCIOlbYPXb2GbDk>
-X-ME-Received: <xmr:RaqyZej_egbs6xNPlQyHlaqElEAeYFd9FAA4rT-AM3EXjvqDayXQHV7zPVQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdelhedgvddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfihtghh
-    ohcutehnuggvrhhsvghnuceothihtghhohesthihtghhohdrphhiiiiirgeqnecuggftrf
-    grthhtvghrnhepueettdetgfejfeffheffffekjeeuveeifeduleegjedutdefffetkeel
-    hfelleetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epthihtghhohesthihtghhohdrphhiiiiirg
-X-ME-Proxy: <xmx:RaqyZe_RDKMnFLhmhBxR31lIhkF0zKhPT5CT-2py3ol0a7n3VNA3yg>
-    <xmx:RaqyZRvhqfd0ffWDwMQyfstGZAKD6y4nEwJSuS-v1rDxJo3JgEMixg>
-    <xmx:RaqyZdG2XYOKcnqzykI4eB--rJJSfBuxiEWxP283e9Aw25YqfLMtbQ>
-    <xmx:RaqyZfXP5c2UBntKNCJ--PfX2MoyGz4Dt4s46fpMlKbJaal4TkE6SQ>
-Feedback-ID: i21f147d5:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 25 Jan 2024 13:36:52 -0500 (EST)
-Date: Thu, 25 Jan 2024 11:36:50 -0700
-From: Tycho Andersen <tycho@tycho.pizza>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Christian Brauner <brauner@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-api@vger.kernel.org, Tycho Andersen <tandersen@netflix.com>,
-	"Eric W. Biederman" <ebiederm@xmission.com>
-Subject: Re: [PATCH v3 1/3] pidfd: allow pidfd_open() on non-thread-group
- leaders
-Message-ID: <ZbKqQl39WlqX8dgp@tycho.pizza>
-References: <20240123153452.170866-1-tycho@tycho.pizza>
- <20240123153452.170866-2-tycho@tycho.pizza>
- <20240123195608.GB9978@redhat.com>
- <ZbArN3EYRfhrNs3o@tycho.pizza>
- <20240125140830.GA5513@redhat.com>
- <20240125-tricksen-baugrube-3f78c487a23a@brauner>
- <20240125175113.GC5513@redhat.com>
- <ZbKigMNQM0Yklc/5@tycho.pizza>
- <20240125182505.GD5513@redhat.com>
- <20240125183045.GE5513@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hA1SgrmOr1YLWZ5dY2HfXCxMqmf+YzLYqR0XGZfNRvUWL7Kdut4z639hhdYA1dmKf+GAfVHVcTD1T23tFEbqn3PnlMVLi1rwBoXTCwAE2Ai6lSo4JkN8qT2aF+WpkgB95YGOxqz0IaIB8XbMoqoqkEgfVRCQO6SL6hKQEFYEQa4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M8fT/wIt; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d88e775d91so7059215ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 10:38:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706207907; x=1706812707; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TjpbnjVkJNaYuycPPkK9d7AUEFZBY5VnjgqUS9zaxEA=;
+        b=M8fT/wIte5Tu4UuwTJdTh4It3NPDMN3BSY31FuLaii5w571zfhCch/TdWqjnWkpmsg
+         SwbDvGcht+okrrzBuaqDgE2b0Y1tK69FjjsRhtEQC0JAzqdnWgH3yApNgu3yDneG/HhK
+         oz/KSliA0uhEJdvZxO4tYAU8Goqz67aPulO9IUNvMJf5B1Kvtk4fWiFcfwvSSLw4BCDb
+         emE2K8anNkjOg7TPfPRI2DQkQQjck0uNDSd2udQ/AxVlDYjlEk55qPXHiF0DjL2ZN8V5
+         XzYCDFAy7sD9chrVKTDPKrTHNnk3tqEX65G7S4eD9pGHq0sYJFTNtcw6wt/dJsme//8C
+         Csdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706207907; x=1706812707;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TjpbnjVkJNaYuycPPkK9d7AUEFZBY5VnjgqUS9zaxEA=;
+        b=aVjhhmGxw3rXpf8+sXBjey7d0KnaqftKVSTuzn9CB1bpw04QwKQc/9RI0FOnUyqgRo
+         pzF+s2HAr92pm40ynrdil5dRjqgufb+YTEcJXEfwA0y/UBsqn5RyhZ+LmU2zgnAdyCTf
+         y9uggAfsKjTpSoZUxoOmH2dOBHlTskX9cCSHtBIIATcGUMvNw9u1/2BdQALotwQOHhZS
+         bwrNGAGo0nrgksUKTFLdXPSrfYHVJUyBF/YEN/HLtbJbyxJF5ErrRtw7XLB0SPjxf8eh
+         ZOtFx9I/w9kUqwmn8RQ387MSpTAIsFg+DwuchOLgx2qMbh9iD3QOtnkRD6lwGuYaJuHr
+         QFeg==
+X-Gm-Message-State: AOJu0YxLgp6DWPwaIVCOtZDtAvP2ZHJTTnZpchrfuOwEdpDsbnuHFRCm
+	hQ4z+zGDI2Q8q8qbPyPOBrr45/uE4fc918+A+MHUWt5KrKH6H6SUv8P5yOcS
+X-Google-Smtp-Source: AGHT+IHp6qpfTLiA0iJytlA7jNybbdQ1jxKFWt5NMqE3ZB8YeEIMY98zd4QBtVKmr6KS3qkunMUe1w==
+X-Received: by 2002:a17:902:fc8d:b0:1d7:1948:6f2e with SMTP id mf13-20020a170902fc8d00b001d719486f2emr132480plb.80.1706207906637;
+        Thu, 25 Jan 2024 10:38:26 -0800 (PST)
+Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
+        by smtp.gmail.com with ESMTPSA id jh10-20020a170903328a00b001d6ea47ce68sm12386895plb.52.2024.01.25.10.38.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 10:38:26 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Thu, 25 Jan 2024 08:38:25 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Leonardo Bras <leobras@redhat.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v1 1/1] wq: Avoid using isolated cpus' timers on
+ unbounded queue_delayed_work
+Message-ID: <ZbKqoeC7JVcJULdI@slm.duckdns.org>
+References: <20240124082938.2527697-2-leobras@redhat.com>
+ <ZbGFce8ixJKb6umE@slm.duckdns.org>
+ <ZbG9TjHAMJYIvwsg@LeoBras>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -104,38 +85,62 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240125183045.GE5513@redhat.com>
+In-Reply-To: <ZbG9TjHAMJYIvwsg@LeoBras>
 
-On Thu, Jan 25, 2024 at 07:30:46PM +0100, Oleg Nesterov wrote:
-> On 01/25, Oleg Nesterov wrote:
-> >
-> > On 01/25, Tycho Andersen wrote:
-> > >
-> > > One of the things I don't like about PIDFD_THREAD is that it's hard to
-> > > tell whether an arbitrary thread is a leader or not. Right now we do
-> > > it by parsing /proc/pid/status, which shows all the stuff from
-> > > do_task_stat() that we don't care about but which is quite expensive
-> > > to compute. (Maybe there's a better way?)
-> > >
-> > > With PIDFD_THREAD we could could do it twice, once with the flag, get
-> > > EINVAL, and then do it again. But ideally we wouldn't have to.
-> >
-> > Too late for me, most probably I misunderstood.
-> >
-> > If you want the PIDFD_THREAD behaviour, you can always use this flag
-> > without any check...
+Hello,
 
-Sorry, I hadn't read the patch. If it's ok to use PIDFD_THREAD on a
-leader, then we can just always specify it. (We don't care about the
-behavior of pidfd_poll().)
-
-> > Could you spell?
+On Wed, Jan 24, 2024 at 10:45:50PM -0300, Leonardo Bras wrote:
+> That's a good suggestion, but looking at workqueue_init_early() I see that, 
+> in short:
+> wq_unbound_cpumask = 	cpu_possible_mask & 
+> 			housekeeping_cpumask(HK_TYPE_WQ) & 
+> 			housekeeping_cpumask(HK_TYPE_DOMAIN) &
+> 			wq_cmdline_cpumask
 > 
-> Just in case, we can even add PIDFD_AUTO (modulo naming) which acts as
-> PIDFD_THREAD if the target task is not a leader or 0 (current behaviour)
-> otherwise. Trivial.
+> So wq_unbound_cpumask relates to domain and workqueue cpu isolation.
+> 
+> In our case, we are using this to choose in which cpu is the timer we want 
+> to use, so it makes sense to use timer-related cpu isolation, instead.
 
-Yep, or given the above, maybe it'll work as-is, thank you.
+- In the proposed code, when cpu == WORK_CPU_UNBOUND, it's always setting
+  cpu to housekeeping_any_cpu(HK_TYPE_TIMER). This may unnecessarily move
+  the timer and task away from local CPU. Preferring the local CPU would
+  likely make sense.
 
-Tycho
+- If HK_TYPE_TIMER and workqueue masks may not agree, setting dwork->cpu to
+  the one returned from HK_TYPE_TIMER is likely problematic. That would
+  force __queue_work() to use that CPU instead of picking one from
+  wq_unbound_cpumask.
+
+> As of today, your suggestion would work the same, as the only way to enable 
+> WQ cpu isolation is to use nohz_full, which also enables TIMER cpu 
+> isolation. But since that can change in the future, for any reason, I would 
+> suggest that we stick to using the HK_TYPE_TIMER cpumask.
+> 
+> I can now notice that this can end up introducing an issue: possibly 
+> running on a workqueue on a cpu outside of a valid wq_cmdline_cpumask.
+
+Yeap.
+
+> I would suggest fixing this in a couple ways:
+> 1 - We introduce a new cpumask which is basically 
+>     housekeeping_cpumask(HK_TYPE_DOMAIN) & wq_cmdline_cpumask, allowing us 
+>     to keep the timer interrupt in the same cpu as the scheduled function,
+> 2- We use the resulting cpu only to pick the right timer.
+> 
+> What are your thouhts on that?
+
+How about something like the following instead?
+
+- If current CPU is in HK_TYPE_TIMER, pick that CPU.
+
+- If not, pick a CPU from HK_TYPE_TIMER.
+
+- Do add_timer_on() on the selected CPU but leave dwork->cpu as
+  WORK_CPU_UNBOUND and leave that part to __queue_work().
+
+Thanks.
+
+-- 
+tejun
 
