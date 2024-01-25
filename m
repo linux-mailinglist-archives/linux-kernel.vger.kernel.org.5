@@ -1,286 +1,110 @@
-Return-Path: <linux-kernel+bounces-37908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37909-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95C0883B785
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 04:06:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C67A183B787
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 04:07:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43998288321
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 03:06:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67D7E1F25452
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 03:07:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA9216FCB;
-	Thu, 25 Jan 2024 03:06:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lqJLYM9Q"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11F136127;
+	Thu, 25 Jan 2024 03:06:42 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20EF46FA7;
-	Thu, 25 Jan 2024 03:06:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6460D79E2;
+	Thu, 25 Jan 2024 03:06:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706151992; cv=none; b=czXtHBf2XN+dUHxGFxPBGKFSY03YkVICxXph2IhfLqNX6WCVarSgnI9gAZx6UzxVqsl6MLumrtXBtAP+uYbWPJPMkMwt0QvAURVrd/aicHGyIZbGwcMO1faQ/x84Y6I6dLF7zxtym+mclI/XW3Pn5I4+upqnEXNsXKF/+GAw5lg=
+	t=1706152001; cv=none; b=aaREJBaKn8viLN1h8kM9zZo/v9EVd0DQzc6eWXTAGhL16a+uiFOKLWHlt+fRuOWeIt7lF0xY2pQcwFaK4Qoof2Y/ex8IG7QVLftS3vFWAGlvKuFURK94Z+UijHyMiTtsaTOv9rPRtcgPhPsioDHBP1JWNDuDVZyU0vCKHWgKG2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706151992; c=relaxed/simple;
-	bh=3rJULeyM9xYbVpyP/NnT3ukU2TEBtC8bBU7bswXKk0E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GdUULNeyB6b/+khdr1l9vczar9BvDU7UCtxjTKLCSwO1jzsPBGzrE8OUS19uQbWi+3ImJeS1d7anjWuVJF5JjeUca1f4+r24gziaF2upPD+Z1Xp4Zar3RaP2pBjOm54vALYg6LZBVeilczzel9g5tcrDcWpSELR92UPAbQVykbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lqJLYM9Q; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706151990; x=1737687990;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=3rJULeyM9xYbVpyP/NnT3ukU2TEBtC8bBU7bswXKk0E=;
-  b=lqJLYM9QC4bhGjd0y5znqUIeT1AYn7SW0Mv9bmQcuHRLJagpqOGNWIdk
-   Z3pOG8X0kt+F3nJQV9SMD/7672Nj8UxcMhka3LmLTY2mkfC0qG9XIppLt
-   T12Fd39itBq+R0mYtOiDVR0t4aQ3ZsVSbkAnJPFuIcMKV6gE3F+bg5gBN
-   3S7m/h2PNMq/NgKrxKuslVXp7yJbZMReOJB6b3N2IGLj2cdmqttkKBmeY
-   cc7sv1yH3JwgxnWqjNJdHrdFUWxlGanFEvABLocxkHjE/5dCMdI7YNTpU
-   0hwpnUCPTM6rNBCacBQBIfKCSD7N4vzmCrSF2+h1RiqpzfcuKlEnEXv0Q
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="1884870"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="1884870"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 19:06:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="2269262"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.49]) ([10.238.10.49])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 19:06:25 -0800
-Message-ID: <49f044a1-e5ab-4a3d-8d73-67fa913e2948@linux.intel.com>
-Date: Thu, 25 Jan 2024 11:06:22 +0800
+	s=arc-20240116; t=1706152001; c=relaxed/simple;
+	bh=ow7IMVspmCcE3TE1IhnzZv0vHhmCk8Hrv8HbR587cVk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Faqum17Wa9EqPsmtIOoI/unqhC7+yAGxqbOnAxHYUJS+c/YDZnB6o8V9rLK3iHf385u/xXZ52mQPMktUvXFLgpEc0TY01C7xQ/S5EZjk+ovz5/dVORQZ3Ix5TsUzFG9OaYoxiVOSbSJvTouofVGBebGhqKJUJLVt0naIVz5oVdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 99479cd41a2149baa6630577220df5a3-20240125
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:b5f2e5c8-8590-4e7f-b06c-b09c9f7db4fa,IP:20,
+	URL:0,TC:0,Content:-20,EDM:0,RT:0,SF:-3,FILE:0,BULK:0,RULE:Release_Ham,ACT
+	ION:release,TS:-3
+X-CID-INFO: VERSION:1.1.35,REQID:b5f2e5c8-8590-4e7f-b06c-b09c9f7db4fa,IP:20,UR
+	L:0,TC:0,Content:-20,EDM:0,RT:0,SF:-3,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-3
+X-CID-META: VersionHash:5d391d7,CLOUDID:35c43a83-8d4f-477b-89d2-1e3bdbef96d1,B
+	ulkID:240125110630WOUVYAVM,BulkQuantity:0,Recheck:0,SF:19|44|101|66|38|24|
+	100|17|102,TC:nil,Content:1,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BE
+	C:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 99479cd41a2149baa6630577220df5a3-20240125
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 599201392; Thu, 25 Jan 2024 11:06:29 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id C92E2E000EB9;
+	Thu, 25 Jan 2024 11:06:28 +0800 (CST)
+X-ns-mid: postfix-65B1D034-617628425
+Received: from kernel.. (unknown [172.20.15.234])
+	by mail.kylinos.cn (NSMail) with ESMTPA id DD215E000EB9;
+	Thu, 25 Jan 2024 11:06:24 +0800 (CST)
+From: Kunwu Chan <chentao@kylinos.cn>
+To: bhelgaas@google.com,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com
+Cc: linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH] x86: Code cleanup for ehci_hdr
+Date: Thu, 25 Jan 2024 11:06:23 +0800
+Message-Id: <20240125030623.513902-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v18 029/121] KVM: TDX: create/free TDX vcpu structure
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <f857ba01c0b2ffbcc310727fd7a61599221c4f21.1705965635.git.isaku.yamahata@intel.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <f857ba01c0b2ffbcc310727fd7a61599221c4f21.1705965635.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
+This part was commented from commit 3ef0e1f8cad0
+("x86: olpc: add One Laptop Per Child architecture support")
+in about 16 years before.
 
+If there are no plans to enable this part code in the future,
+we can remove this dead code.
 
-On 1/23/2024 7:53 AM, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
->
-> The next step of TDX guest creation is to create vcpu.  Create TDX vcpu
-> structures, initialize it that doesn't require TDX SEAMCALL.  TDX specific
-> vcpu initialization will be implemented as independent KVM_TDX_INIT_VCPU
-> so that when error occurs it's easy to determine which component has the
-> issue, KVM or TDX.
->
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
-> v18:
-> - update commit log to use create instead of allocate because the patch
->    doesn't newly allocate memory for TDX vcpu.
->
-> v15 -> v16:
-> - Add AMX support as the KVM upstream supports it.
-> ---
->   arch/x86/kvm/vmx/main.c    | 44 ++++++++++++++++++++++++++++++----
->   arch/x86/kvm/vmx/tdx.c     | 49 ++++++++++++++++++++++++++++++++++++++
->   arch/x86/kvm/vmx/x86_ops.h | 10 ++++++++
->   arch/x86/kvm/x86.c         |  2 ++
->   4 files changed, 101 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
-> index 50a1f50c0fc5..c2f1dc2000c5 100644
-> --- a/arch/x86/kvm/vmx/main.c
-> +++ b/arch/x86/kvm/vmx/main.c
-> @@ -102,6 +102,42 @@ static void vt_vm_free(struct kvm *kvm)
->   		tdx_vm_free(kvm);
->   }
->   
-> +static int vt_vcpu_precreate(struct kvm *kvm)
-> +{
-> +	if (is_td(kvm))
-> +		return 0;
-> +
-> +	return vmx_vcpu_precreate(kvm);
-> +}
-> +
-> +static int vt_vcpu_create(struct kvm_vcpu *vcpu)
-> +{
-> +	if (is_td_vcpu(vcpu))
-> +		return tdx_vcpu_create(vcpu);
-> +
-> +	return vmx_vcpu_create(vcpu);
-> +}
-> +
-> +static void vt_vcpu_free(struct kvm_vcpu *vcpu)
-> +{
-> +	if (is_td_vcpu(vcpu)) {
-> +		tdx_vcpu_free(vcpu);
-> +		return;
-> +	}
-> +
-> +	vmx_vcpu_free(vcpu);
-> +}
-> +
-> +static void vt_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
-> +{
-> +	if (is_td_vcpu(vcpu)) {
-> +		tdx_vcpu_reset(vcpu, init_event);
-> +		return;
-> +	}
-> +
-> +	vmx_vcpu_reset(vcpu, init_event);
-> +}
-> +
->   static int vt_mem_enc_ioctl(struct kvm *kvm, void __user *argp)
->   {
->   	if (!is_td(kvm))
-> @@ -140,10 +176,10 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
->   	.vm_destroy = vt_vm_destroy,
->   	.vm_free = vt_vm_free,
->   
-> -	.vcpu_precreate = vmx_vcpu_precreate,
-> -	.vcpu_create = vmx_vcpu_create,
-> -	.vcpu_free = vmx_vcpu_free,
-> -	.vcpu_reset = vmx_vcpu_reset,
-> +	.vcpu_precreate = vt_vcpu_precreate,
-> +	.vcpu_create = vt_vcpu_create,
-> +	.vcpu_free = vt_vcpu_free,
-> +	.vcpu_reset = vt_vcpu_reset,
->   
->   	.prepare_switch_to_guest = vmx_prepare_switch_to_guest,
->   	.vcpu_load = vmx_vcpu_load,
-> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> index 1c6541789c39..8330f448ab8e 100644
-> --- a/arch/x86/kvm/vmx/tdx.c
-> +++ b/arch/x86/kvm/vmx/tdx.c
-> @@ -411,6 +411,55 @@ int tdx_vm_init(struct kvm *kvm)
->   	return 0;
->   }
->   
-> +int tdx_vcpu_create(struct kvm_vcpu *vcpu)
-> +{
-> +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(vcpu->kvm);
-> +
-> +	/*
-> +	 * On cpu creation, cpuid entry is blank.  Forcibly enable
-> +	 * X2APIC feature to allow X2APIC.
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+ arch/x86/pci/olpc.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-This comment is a bit confusing.
-Do you mean force x2apic here or elsewhere?
-So far, in this patch, x2apic is not forced yet.
-
-> +	 * Because vcpu_reset() can't return error, allocation is done here.
-
-What do you mean "allocation" here?
-
-> +	 */
-> +	WARN_ON_ONCE(vcpu->arch.cpuid_entries);
-> +	WARN_ON_ONCE(vcpu->arch.cpuid_nent);
-> +
-> +	/* TDX only supports x2APIC, which requires an in-kernel local APIC. */
-> +	if (!vcpu->arch.apic)
-> +		return -EINVAL;
-> +
-> +	fpstate_set_confidential(&vcpu->arch.guest_fpu);
-> +
-> +	vcpu->arch.efer = EFER_SCE | EFER_LME | EFER_LMA | EFER_NX;
-> +
-> +	vcpu->arch.cr0_guest_owned_bits = -1ul;
-> +	vcpu->arch.cr4_guest_owned_bits = -1ul;
-> +
-> +	vcpu->arch.tsc_offset = to_kvm_tdx(vcpu->kvm)->tsc_offset;
-> +	vcpu->arch.l1_tsc_offset = vcpu->arch.tsc_offset;
-> +	vcpu->arch.guest_state_protected =
-> +		!(to_kvm_tdx(vcpu->kvm)->attributes & TDX_TD_ATTRIBUTE_DEBUG);
-> +
-> +	if ((kvm_tdx->xfam & XFEATURE_MASK_XTILE) == XFEATURE_MASK_XTILE)
-> +		vcpu->arch.xfd_no_write_intercept = true;
-> +
-> +	return 0;
-> +}
-> +
-> +void tdx_vcpu_free(struct kvm_vcpu *vcpu)
-> +{
-> +	/* This is stub for now.  More logic will come. */
-> +}
-> +
-> +void tdx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
-> +{
-> +
-> +	/* Ignore INIT silently because TDX doesn't support INIT event. */
-> +	if (init_event)
-> +		return;
-> +
-> +	/* This is stub for now. More logic will come here. */
-> +}
-> +
->   static int tdx_get_capabilities(struct kvm_tdx_cmd *cmd)
->   {
->   	struct kvm_tdx_capabilities __user *user_caps;
-> diff --git a/arch/x86/kvm/vmx/x86_ops.h b/arch/x86/kvm/vmx/x86_ops.h
-> index 645688081561..1ea532dfaf2a 100644
-> --- a/arch/x86/kvm/vmx/x86_ops.h
-> +++ b/arch/x86/kvm/vmx/x86_ops.h
-> @@ -144,7 +144,12 @@ int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap);
->   int tdx_vm_init(struct kvm *kvm);
->   void tdx_mmu_release_hkid(struct kvm *kvm);
->   void tdx_vm_free(struct kvm *kvm);
-> +
->   int tdx_vm_ioctl(struct kvm *kvm, void __user *argp);
-> +
-> +int tdx_vcpu_create(struct kvm_vcpu *vcpu);
-> +void tdx_vcpu_free(struct kvm_vcpu *vcpu);
-> +void tdx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event);
->   #else
->   static inline int tdx_hardware_setup(struct kvm_x86_ops *x86_ops) { return -EOPNOTSUPP; }
->   static inline void tdx_hardware_unsetup(void) {}
-> @@ -158,7 +163,12 @@ static inline int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
->   static inline int tdx_vm_init(struct kvm *kvm) { return -EOPNOTSUPP; }
->   static inline void tdx_mmu_release_hkid(struct kvm *kvm) {}
->   static inline void tdx_vm_free(struct kvm *kvm) {}
-> +
->   static inline int tdx_vm_ioctl(struct kvm *kvm, void __user *argp) { return -EOPNOTSUPP; }
-> +
-> +static inline int tdx_vcpu_create(struct kvm_vcpu *vcpu) { return -EOPNOTSUPP; }
-> +static inline void tdx_vcpu_free(struct kvm_vcpu *vcpu) {}
-> +static inline void tdx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event) {}
->   #endif
->   
->   #endif /* __KVM_X86_VMX_X86_OPS_H */
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index c5b66b493f1d..e0027134454c 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -502,6 +502,7 @@ int kvm_set_apic_base(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->   	kvm_recalculate_apic_map(vcpu->kvm);
->   	return 0;
->   }
-> +EXPORT_SYMBOL_GPL(kvm_set_apic_base);
->   
->   /*
->    * Handle a fault on a hardware virtualization (VMX or SVM) instruction.
-> @@ -12488,6 +12489,7 @@ bool kvm_vcpu_is_reset_bsp(struct kvm_vcpu *vcpu)
->   {
->   	return vcpu->kvm->arch.bsp_vcpu_id == vcpu->vcpu_id;
->   }
-> +EXPORT_SYMBOL_GPL(kvm_vcpu_is_reset_bsp);
->   
->   bool kvm_vcpu_is_bsp(struct kvm_vcpu *vcpu)
->   {
+diff --git a/arch/x86/pci/olpc.c b/arch/x86/pci/olpc.c
+index f3aab76e357a..4b18c6404363 100644
+--- a/arch/x86/pci/olpc.c
++++ b/arch/x86/pci/olpc.c
+@@ -154,9 +154,6 @@ static const uint32_t ehci_hdr[] =3D {  /* dev f func=
+tion 4 - devfn =3D 7d */
+ 	0x0,	0x40,	0x0,	0x40a,			/* CapPtr INT-D, IRQA */
+ 	0xc8020001, 0x0, 0x0,	0x0,	/* Capabilities - 40 is R/O, 44 is
+ 					   mask 8103 (power control) */
+-#if 0
+-	0x1,	0x40080000, 0x0, 0x0,	/* EECP - see EHCI spec section 2.1.7 */
+-#endif
+ 	0x01000001, 0x0, 0x0,	0x0,	/* EECP - see EHCI spec section 2.1.7 */
+ 	0x2020,	0x0,	0x0,	0x0,	/* (EHCI page 8) 60 SBRN (R/O),
+ 					   61 FLADJ (R/W), PORTWAKECAP  */
+--=20
+2.39.2
 
 
