@@ -1,231 +1,100 @@
-Return-Path: <linux-kernel+bounces-39411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E85C83D095
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 00:22:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE77883D0A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 00:24:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C238B24F85
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:22:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A94E828AF84
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:24:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77FD6134C7;
-	Thu, 25 Jan 2024 23:22:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D209134AA;
+	Thu, 25 Jan 2024 23:24:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="G/U+Uh7x"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P9cBRiB3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FC3412E4E;
-	Thu, 25 Jan 2024 23:22:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1EFB11731;
+	Thu, 25 Jan 2024 23:24:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706224956; cv=none; b=QLfnUnU+qhjET+cZUDhpxFfZgUno1M0MVLgXdX2uONqZpAvb/4m02gHrnfIjrpX18wBLmvKu1dQ2Zhzd57lh7PdWMCA632z+8BzaVI+2/KcTSQB8F91Zmnu9qfyR+pt5A7LNl2vdEXdwi3/PW78H3err2u2rBC5qvVE5/xpcp/4=
+	t=1706225088; cv=none; b=IiRP1rVHbdNGRtTNvcZX3ctVJg402wDiq9R1qzPOetVkVmMByw8ycfLkCuv12v5nTQ69R6xbVBjqzuiYv6CjImXXFIVscTFAW9GqDOd0oveLJKOUVdqlrevrIdK9B9mKHiDHJ3znHE1OKd3z8AV+8yRuLjBDZuIErpBknmLGmKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706224956; c=relaxed/simple;
-	bh=587/YeORTOjV4+4rZmCxNEau5T3CAeS60+mA4rS7qv0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jUkzn1AZdvHa40UHL7T2JgbqYAlJP29uob7mdEhl7J9gW6JF0h6cItAwHCIfOCjPy614j4TAKP4ODtazNykbmArrTglsWevz7cmTrZpQK9ANZA4yuM4a8wpGTsPQPk89VCwCsSy1L3K2bRumk+1dikg6F6VZi73NStqXP1mFOqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=G/U+Uh7x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1471C433F1;
-	Thu, 25 Jan 2024 23:22:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1706224956;
-	bh=587/YeORTOjV4+4rZmCxNEau5T3CAeS60+mA4rS7qv0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=G/U+Uh7xSlHZmssoQ6TdqtZIO6/P8sce/TuhJLXQfa15z5QJa4CejQ4Y+tqrGECzP
-	 p3mCGeahqF71sPfCIBBDlc5fWrvczb5IQ5wMqJub3eHrM/aJKUZeQ18I+a1VySgRz8
-	 OZGYj+umd8CQIOdCRaL1CSHJDCDePSXzzg8b4aNM=
-Date: Thu, 25 Jan 2024 15:22:34 -0800
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Joe Damato <jdamato@fastly.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	chuck.lever@oracle.com, jlayton@kernel.org,
-	linux-api@vger.kernel.org, brauner@kernel.org, edumazet@google.com,
-	davem@davemloft.net, alexander.duyck@gmail.com,
-	sridhar.samudrala@intel.com, kuba@kernel.org,
-	willemdebruijn.kernel@gmail.com, weiwan@google.com,
-	Jonathan Corbet <corbet@lwn.net>,
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nathan Lynch <nathanl@linux.ibm.com>,
-	Steve French <stfrench@microsoft.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Julien Panis <jpanis@baylibre.com>, Arnd Bergmann <arnd@arndb.de>,
-	Andrew Waterman <waterman@eecs.berkeley.edu>,
-	Thomas Huth <thuth@redhat.com>, Palmer Dabbelt <palmer@dabbelt.com>,
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-	"open list:FILESYSTEMS (VFS and infrastructure)" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH net-next v3 3/3] eventpoll: Add epoll ioctl for
- epoll_params
-Message-ID: <2024012558-coasting-unlatch-9315@gregkh>
-References: <20240125225704.12781-1-jdamato@fastly.com>
- <20240125225704.12781-4-jdamato@fastly.com>
+	s=arc-20240116; t=1706225088; c=relaxed/simple;
+	bh=nvWG+QBFahtKdRU5auqjQY0W/k/VTqwcLTuI7owHaJE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ecFHTYapnUGAmTdLRv9UWH5e/EPOhUhR1LS1tq7rUhBu4Rsyue2oXoru4rLgL+1DoKF2sWt0LZKGo5rE96M5FMoEUM6pT/hm94y0V1iXlPLAFUZLz3CQYGfA4cwLwgw03uj50riYQDtkA3p8iIkSOxN+zBIg2AOuNX5WWO/tve4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P9cBRiB3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49CF8C43399;
+	Thu, 25 Jan 2024 23:24:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706225088;
+	bh=nvWG+QBFahtKdRU5auqjQY0W/k/VTqwcLTuI7owHaJE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=P9cBRiB3pg4MVANgKJWfoqL8wVJluMjvpChMlST17x8HO32e3RCdVnq4mefr9ofg5
+	 jSr0AN31PSu9mQmC6ZRq/619iQMhSasdEq8SzsJajb9cyx9SSrg3/cOV1wx8gTbhm/
+	 CgENoVeC0A+OGB2KGe9Sb81+UMuFQ0MoeUlvh3Up7NnqURYAmNRtIdcYgEaRqlHi8k
+	 FIlzVhOPEsvljKsJ01Umy2rxidUgQz7gXn0cw/Uyc9PzA5drHGbJElr2uRvk1Gbr5X
+	 a+mD5EcTzDvbYc0tU/zCEpfpbW9lWbvY68yhaiYTqNatCch34Ubma5oMDP0th+Krgg
+	 6S4u1bn01kQ7g==
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-510133ed214so3416208e87.1;
+        Thu, 25 Jan 2024 15:24:48 -0800 (PST)
+X-Gm-Message-State: AOJu0YyvnUFofRxta4V7Rq0d9RyqHc9IQqKrIEJfMKhVgNZSGH2CEalR
+	eCsRF6QXWbHUp/f7ClIHHKDxlFqs6t7C4XtgdvUo9dro6s4KbMSmy1tLLN5wdmsCAFZlJKR4/JY
+	IqcPoFB73ovuSzX1G+Awp5yJA4LI=
+X-Google-Smtp-Source: AGHT+IHB0caDko9nY9w72/lzhdsdAzPG/BA9d4nmkX755oG9KiJmerbz5g9MrFbgaGaGkBg5kzf7ENnZGzaxh4X5JdA=
+X-Received: by 2002:ac2:58c6:0:b0:510:1ea5:f747 with SMTP id
+ u6-20020ac258c6000000b005101ea5f747mr274447lfo.9.1706225086479; Thu, 25 Jan
+ 2024 15:24:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240125225704.12781-4-jdamato@fastly.com>
+References: <20240125112818.2016733-19-ardb+git@google.com>
+ <20240125112818.2016733-35-ardb+git@google.com> <CAGdbjmLEsj1cSnxoneSrDy2J2SFenjEdoYa_zoDQQhtU1nccMA@mail.gmail.com>
+In-Reply-To: <CAGdbjmLEsj1cSnxoneSrDy2J2SFenjEdoYa_zoDQQhtU1nccMA@mail.gmail.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Fri, 26 Jan 2024 00:24:35 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXE5bC-QgGWqhAtuRT5fDbBUgjkRyjGSwsiQcSgA-KuaYg@mail.gmail.com>
+Message-ID: <CAMj1kXE5bC-QgGWqhAtuRT5fDbBUgjkRyjGSwsiQcSgA-KuaYg@mail.gmail.com>
+Subject: Re: [PATCH v2 16/17] x86/sev: Drop inline asm LEA instructions for
+ RIP-relative references
+To: Kevin Loughlin <kevinloughlin@google.com>
+Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
+	Tom Lendacky <thomas.lendacky@amd.com>, Dionna Glaze <dionnaglaze@google.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 25, 2024 at 10:56:59PM +0000, Joe Damato wrote:
-> Add an ioctl for getting and setting epoll_params. User programs can use
-> this ioctl to get and set the busy poll usec time or packet budget
-> params for a specific epoll context.
-> 
-> Signed-off-by: Joe Damato <jdamato@fastly.com>
-> ---
->  .../userspace-api/ioctl/ioctl-number.rst      |  1 +
->  fs/eventpoll.c                                | 64 +++++++++++++++++++
->  include/uapi/linux/eventpoll.h                | 12 ++++
->  3 files changed, 77 insertions(+)
-> 
-> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> index 457e16f06e04..b33918232f78 100644
-> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
-> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> @@ -309,6 +309,7 @@ Code  Seq#    Include File                                           Comments
->  0x89  0B-DF  linux/sockios.h
->  0x89  E0-EF  linux/sockios.h                                         SIOCPROTOPRIVATE range
->  0x89  F0-FF  linux/sockios.h                                         SIOCDEVPRIVATE range
-> +0x8A  00-1F  linux/eventpoll.h
->  0x8B  all    linux/wireless.h
->  0x8C  00-3F                                                          WiNRADiO driver
->                                                                       <http://www.winradio.com.au/>
-> diff --git a/fs/eventpoll.c b/fs/eventpoll.c
-> index 40bd97477b91..73ae886efb8a 100644
-> --- a/fs/eventpoll.c
-> +++ b/fs/eventpoll.c
-> @@ -6,6 +6,8 @@
->   *  Davide Libenzi <davidel@xmailserver.org>
->   */
->  
-> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> +
->  #include <linux/init.h>
->  #include <linux/kernel.h>
->  #include <linux/sched/signal.h>
-> @@ -37,6 +39,7 @@
->  #include <linux/seq_file.h>
->  #include <linux/compat.h>
->  #include <linux/rculist.h>
-> +#include <linux/capability.h>
->  #include <net/busy_poll.h>
->  
->  /*
-> @@ -495,6 +498,39 @@ static inline void ep_set_busy_poll_napi_id(struct epitem *epi)
->  	ep->napi_id = napi_id;
->  }
->  
-> +static long ep_eventpoll_bp_ioctl(struct file *file, unsigned int cmd,
-> +				  unsigned long arg)
-> +{
-> +	struct eventpoll *ep;
-> +	struct epoll_params epoll_params;
-> +	void __user *uarg = (void __user *) arg;
-> +
-> +	ep = file->private_data;
-> +
-> +	switch (cmd) {
-> +	case EPIOCSPARAMS:
-> +		if (copy_from_user(&epoll_params, uarg, sizeof(epoll_params)))
-> +			return -EFAULT;
-> +
-> +		if (epoll_params.busy_poll_budget > NAPI_POLL_WEIGHT &&
-> +		    !capable(CAP_NET_ADMIN))
-> +			return -EPERM;
-> +
-> +		ep->busy_poll_usecs = epoll_params.busy_poll_usecs;
-> +		ep->busy_poll_budget = epoll_params.busy_poll_budget;
-> +		return 0;
-> +	case EPIOCGPARAMS:
-> +		memset(&epoll_params, 0, sizeof(epoll_params));
-> +		epoll_params.busy_poll_usecs = ep->busy_poll_usecs;
-> +		epoll_params.busy_poll_budget = ep->busy_poll_budget;
-> +		if (copy_to_user(uarg, &epoll_params, sizeof(epoll_params)))
-> +			return -EFAULT;
-> +		return 0;
-> +	default:
-> +		return -ENOIOCTLCMD;
-> +	}
-> +}
-> +
->  #else
->  
->  static inline bool ep_busy_loop(struct eventpoll *ep, int nonblock)
-> @@ -510,6 +546,12 @@ static inline bool ep_busy_loop_on(struct eventpoll *ep)
->  {
->  	return false;
->  }
-> +
-> +static long ep_eventpoll_bp_ioctl(struct file *file, unsigned int cmd,
-> +				  unsigned long arg)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
->  #endif /* CONFIG_NET_RX_BUSY_POLL */
->  
->  /*
-> @@ -869,6 +911,26 @@ static void ep_clear_and_put(struct eventpoll *ep)
->  		ep_free(ep);
->  }
->  
-> +static long ep_eventpoll_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-> +{
-> +	int ret;
-> +
-> +	if (!is_file_epoll(file))
-> +		return -EINVAL;
-> +
-> +	switch (cmd) {
-> +	case EPIOCSPARAMS:
-> +	case EPIOCGPARAMS:
-> +		ret = ep_eventpoll_bp_ioctl(file, cmd, arg);
-> +		break;
-> +	default:
-> +		ret = -EINVAL;
-> +		break;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->  static int ep_eventpoll_release(struct inode *inode, struct file *file)
->  {
->  	struct eventpoll *ep = file->private_data;
-> @@ -975,6 +1037,8 @@ static const struct file_operations eventpoll_fops = {
->  	.release	= ep_eventpoll_release,
->  	.poll		= ep_eventpoll_poll,
->  	.llseek		= noop_llseek,
-> +	.unlocked_ioctl	= ep_eventpoll_ioctl,
-> +	.compat_ioctl   = compat_ptr_ioctl,
->  };
->  
->  /*
-> diff --git a/include/uapi/linux/eventpoll.h b/include/uapi/linux/eventpoll.h
-> index cfbcc4cc49ac..8eb0fdbce995 100644
-> --- a/include/uapi/linux/eventpoll.h
-> +++ b/include/uapi/linux/eventpoll.h
-> @@ -85,4 +85,16 @@ struct epoll_event {
->  	__u64 data;
->  } EPOLL_PACKED;
->  
-> +struct epoll_params {
-> +	u64 busy_poll_usecs;
-> +	u16 busy_poll_budget;
-> +
-> +	/* for future fields */
-> +	u8 data[118];
+On Thu, 25 Jan 2024 at 21:46, Kevin Loughlin <kevinloughlin@google.com> wro=
+te:
+>
+> On Thu, Jan 25, 2024 at 3:33=E2=80=AFAM Ard Biesheuvel <ardb+git@google.c=
+om> wrote:
+> >
+> > The SEV code that may run early is now built with -fPIC and so there is
+> > no longer a need for explicit RIP-relative references in inline asm,
+> > given that is what the compiler will emit as well.
+> >
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > ---
+> >  arch/x86/mm/mem_encrypt_identity.c | 37 +++-----------------
+> >  1 file changed, 5 insertions(+), 32 deletions(-)
+>
+> snp_cpuid_get_table() in arch/x86/kernel/sev-shared.c (a helper
+> function to provide the same inline assembly pattern for RIP-relative
+> references) would also no longer be needed, as all calls to it would
+> now be made in position-independent code. We can therefore eliminate
+> the function as part of this commit.
 
-You forgot to validate that "data" is set to 0, which means that this
-would be useless.  Why have this at all?
-
-thanks,
-
-greg k-h
+Yes that would be another nice cleanup.
 
