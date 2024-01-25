@@ -1,135 +1,204 @@
-Return-Path: <linux-kernel+bounces-38044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 198E483BA30
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:40:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A39083BA32
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:41:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6BE228D7A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 06:40:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8DCFDB28272
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 06:41:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F11C11181;
-	Thu, 25 Jan 2024 06:36:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QdlSJjwv"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B103C150;
+	Thu, 25 Jan 2024 06:37:56 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B91C10A2B
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 06:36:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E695D1A71F;
+	Thu, 25 Jan 2024 06:37:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706164603; cv=none; b=czUBaL6GbNo/nTRA02/WeVdeWIdbzoeZjIGJdIfgVL8riwWAXT5xFjLN896y+JzL425AaqNjp7Wkx7e2PB1UQcktW0Lwu0Ppl0TFrIud3RZOT6keyB/V/Kz4BOsD7pEEG8FWjcA2cI0+heS1YS7eU+auRidQNamoxWePQhU+aDA=
+	t=1706164675; cv=none; b=WI7YHHjSq5Jlf4bbNDT1YOYM5/7wGLtIfMt7KgBMgx3FogIhCg5AMWrBCVI/DOnXraYwuduZKRnSjlJV0xakEMbDW6jShBhwaTJkQ9niz+bEqB0P+BfsRq5Qc9tbjkO79PI+w4QMv43eGaeAZW5ZUkt8d2KUnBiX4DUW6KHLxfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706164603; c=relaxed/simple;
-	bh=iKNSG8qLy9+IU6XC8XCWUQXo7YjyxS4FMfRu28VsM1M=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ptqHgld2+NiLdvC2TLPXM3qIb6W12nIIAMG0ewnA2wJzt9/vOSd3DtIh4RNieaBSRB2MkcOjxLjWqw79gwTQb691KKh4gk9nXbO8EoadjtBd/AvzN3K36qpb97MgzsQKONuZwnTj291FK2t+4CFyhdmUx5kgaM+3f/Zu0PRCv/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QdlSJjwv; arc=none smtp.client-ip=192.55.52.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706164602; x=1737700602;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=iKNSG8qLy9+IU6XC8XCWUQXo7YjyxS4FMfRu28VsM1M=;
-  b=QdlSJjwv8xeB53zGlFPBDhmQXDmjBMWsL1JraxjPOIaT49IFTU0C2m2S
-   4pggs4XUsGta8TXQRLe72I65YZHTYX3kP0yoEjB7xSYib4ekaYjmMjVjl
-   JpTxBeq8gpnZMG8Z+/JRl1OXacVt4OaagIeFsqdbd30cMG0IysCda7nV1
-   EOBkX/A1fs0OWB4psDtSiGa4Lzxy6j4AEpEz5NSXo3zO2idD66teFZGwt
-   DPCMEBmWqsRt8EmHvJrgiAyFZlb2t71NW37nJ9ikaRnBKBN9e871tz/Xa
-   sbvJ4OfsmIvhTj/ImR11HwiZ/GKBW55vLSgVu0HJ99xIgncO1wO/PaH4w
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="433228393"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="433228393"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 22:36:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="820699476"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="820699476"
-Received: from tgl-lenovo-03.sh.intel.com ([10.239.87.93])
-  by orsmga001.jf.intel.com with ESMTP; 24 Jan 2024 22:36:38 -0800
-From: wangxiaoming321 <xiaoming.wang@intel.com>
-To: lucas.demarchi@intel.com,
-	ogabbay@kernel.org,
-	thomas.hellstrom@linux.intel.com,
-	maarten.lankhorst@linux.intel.com,
-	mripard@kernel.org,
-	tzimmermann@suse.de,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	intel-xe@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Cc: wangxiaoming321 <xiaoming.wang@intel.com>
-Subject: [PATCH] drm/xe/display: Fix memleak in display initialization
-Date: Thu, 25 Jan 2024 14:36:33 +0800
-Message-Id: <20240125063633.989944-1-xiaoming.wang@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <y>
-References: <y>
+	s=arc-20240116; t=1706164675; c=relaxed/simple;
+	bh=UvN2JNG3WB4C5D3XZIh/oWXGBGhfctOhs/FEXZHIj2w=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=FWBRC1Zfjrv4vFWFsGGSowgiY/zSizxFT1XX8msRkJB3XiyI9YiL1dDaIXhodbuJmozed3KiefPBIADFu/6Ia/pYAzO0EiW/jZNEJiOGWV/EReE9j/WvqheKpqpXTYIrBWBDrJX4rt78XopsITgMgQvBv7NQ8qm25j/R03a9bqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TLB2y5hS2z4f3jYM;
+	Thu, 25 Jan 2024 14:37:46 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id B9D711A017A;
+	Thu, 25 Jan 2024 14:37:50 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP2 (Coremail) with SMTP id Syh0CgAXOg29AbJlpavFBw--.21614S2;
+	Thu, 25 Jan 2024 14:37:50 +0800 (CST)
+Subject: Re: [PATCH bpf 3/3] selftest/bpf: Test the read of vsyscall page
+ under x86-64
+To: Yonghong Song <yonghong.song@linux.dev>, x86@kernel.org,
+ bpf@vger.kernel.org
+Cc: Dave Hansen <dave.hansen@linux.intel.com>,
+ Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>,
+ linux-kernel@vger.kernel.org, xingwei lee <xrivendell7@gmail.com>,
+ Jann Horn <jannh@google.com>, houtao1@huawei.com
+References: <20240119073019.1528573-1-houtao@huaweicloud.com>
+ <20240119073019.1528573-4-houtao@huaweicloud.com>
+ <f227d88b-963a-4df0-a6bc-ad3b12abe6dd@linux.dev>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <f83cd515-1492-229a-913a-aa542ecd1d74@huaweicloud.com>
+Date: Thu, 25 Jan 2024 14:37:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <f227d88b-963a-4df0-a6bc-ad3b12abe6dd@linux.dev>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:Syh0CgAXOg29AbJlpavFBw--.21614S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJw47XryUCw1UCFy7CrWDtwb_yoWrCF48p3
+	WkAay5KrWfJwnayr17XrZ8uFyrAF1kGa15tr1FqF15Zr47Zr9YgryagFyqgr1fJrsY9w45
+	Zr10g3s3ur1UJFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UQzVbUUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-In the call stack xe_device_probe ->  xe_display_init_nommio -> intel_power_domains_init
-Power_domains  hasn't been cleaned up if return error,
-which has do the clean in i915_driver_late_release call from i915_driver_probe.
+Hi,
 
-unreferenced object 0xffff88811150ee00 (size 512):
-  comm "systemd-udevd", pid 506, jiffies 4294674198 (age 3605.560s)
-  hex dump (first 32 bytes):
-    10 b4 9d a0 ff ff ff ff ff ff ff ff ff ff ff ff  ................
-    ff ff ff ff ff ff ff ff 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff8134b901>] __kmem_cache_alloc_node+0x1c1/0x2b0
-    [<ffffffff812c98b2>] __kmalloc+0x52/0x150
-    [<ffffffffa08b0033>] __set_power_wells+0xc3/0x360 [xe]
-    [<ffffffffa08562fc>] xe_display_init_nommio+0x4c/0x70 [xe]
-    [<ffffffffa07f0d1c>] xe_device_probe+0x3c/0x5a0 [xe]
-    [<ffffffffa082e48f>] xe_pci_probe+0x33f/0x5a0 [xe]
-    [<ffffffff817f2187>] local_pci_probe+0x47/0xa0
-    [<ffffffff817f3db3>] pci_device_probe+0xc3/0x1f0
-    [<ffffffff8192f2a2>] really_probe+0x1a2/0x410
-    [<ffffffff8192f598>] __driver_probe_device+0x78/0x160
-    [<ffffffff8192f6ae>] driver_probe_device+0x1e/0x90
-    [<ffffffff8192f92a>] __driver_attach+0xda/0x1d0
-    [<ffffffff8192c95c>] bus_for_each_dev+0x7c/0xd0
-    [<ffffffff8192e159>] bus_add_driver+0x119/0x220
-    [<ffffffff81930d00>] driver_register+0x60/0x120
-    [<ffffffffa05e50a0>] 0xffffffffa05e50a0
+On 1/22/2024 2:30 PM, Yonghong Song wrote:
+>
+> On 1/18/24 11:30 PM, Hou Tao wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> Using bpf_probe_read_kernel{_str}() or bpf_probe_read{_str}() to read
+>> from vsyscall page under x86-64 will trigger oops, so add one test case
+>> to ensure that the problem is fixed.
+>>
+>> Beside those four bpf helpers mentioned above, testing the read of
+>> vsyscall page by using bpf_probe_read_user{_str} and
+>> bpf_copy_from_user{_task}() as well.
+>>
+>> vsyscall page could be disabled by CONFIG_LEGACY_VSYSCALL_NONE or
+>> vsyscall=none boot cmd-line, but it doesn't affect the reproduce of the
+>> problem and the returned error codes.
+>>
+>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>> ---
+>>   .../selftests/bpf/prog_tests/read_vsyscall.c  | 61 +++++++++++++++++++
+>>   .../selftests/bpf/progs/read_vsyscall.c       | 45 ++++++++++++++
+>>   2 files changed, 106 insertions(+)
+>>   create mode 100644
+>> tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
+>>   create mode 100644 tools/testing/selftests/bpf/progs/read_vsyscall.c
+>>
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
+>> b/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
+>> new file mode 100644
+>> index 0000000000000..d9247cc89cf3e
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
+>> @@ -0,0 +1,61 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/* Copyright (C) 2024. Huawei Technologies Co., Ltd */
+>> +#include "test_progs.h"
+>> +#include "read_vsyscall.skel.h"
+>> +
+>> +#if defined(__x86_64__)
+>> +/* For VSYSCALL_ADDR */
+>> +#include <asm/vsyscall.h>
+>> +#else
+>> +/* To prevent build failure on non-x86 arch */
+>> +#define VSYSCALL_ADDR 0UL
+>> +#endif
+>> +
+>> +struct read_ret_desc {
+>> +    const char *name;
+>> +    int ret;
+>> +} all_read[] = {
+>> +    { .name = "probe_read_kernel", .ret = -ERANGE },
+>> +    { .name = "probe_read_kernel_str", .ret = -ERANGE },
+>> +    { .name = "probe_read", .ret = -ERANGE },
+>> +    { .name = "probe_read_str", .ret = -ERANGE },
+>> +    /* __access_ok() will fail */
+>> +    { .name = "probe_read_user", .ret = -EFAULT },
+>> +    /* __access_ok() will fail */
+>> +    { .name = "probe_read_user_str", .ret = -EFAULT },
+>> +    /* access_ok() will fail */
+>> +    { .name = "copy_from_user", .ret = -EFAULT },
+>> +    /* both vma_lookup() and expand_stack() will fail */
+>> +    { .name = "copy_from_user_task", .ret = -EFAULT },
+>
+> The above comments are not clear enough. For example,
+> '__access_ok() will fail', user will need to
+> check the source code where __access_ok() is and
+> this could be hard e.g., for probe_read_user_str().
+> Another example, 'both vma_lookup() and expand_stack() will fail',
+> where is vma_lookup()/expand_stack()? User needs to further
+> check to make sense.
 
-Signed-off-by: wangxiaoming321 <xiaoming.wang@intel.com>
----
- drivers/gpu/drm/xe/xe_display.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Yes. These comment are highly coupled with the implementation.
+>
+> I suggest remove the above comments and add more
+> detailed explanation in commit messages with callstack
+> indicating where the fail/error return happens.
 
-diff --git a/drivers/gpu/drm/xe/xe_display.c b/drivers/gpu/drm/xe/xe_display.c
-index 74391d9b11ae..2725afba4afb 100644
---- a/drivers/gpu/drm/xe/xe_display.c
-+++ b/drivers/gpu/drm/xe/xe_display.c
-@@ -146,8 +146,10 @@ int xe_display_init_nommio(struct xe_device *xe)
- 	intel_detect_pch(xe);
- 
- 	err = intel_power_domains_init(xe);
--	if (err)
-+	if (err) {
-+		intel_power_domains_cleanup(xe);
- 		return err;
-+	}
- 
- 	return drmm_add_action_or_reset(&xe->drm, xe_display_fini_nommio, xe);
- }
--- 
-2.25.1
+Will do in v2. Thanks for the suggestions.
+>
+>> +};
+>> +
+>> +void test_read_vsyscall(void)
+>> +{
+>> +    struct read_vsyscall *skel;
+>> +    unsigned int i;
+>> +    int err;
+>> +
+>> +#if !defined(__x86_64__)
+>> +    test__skip();
+>> +    return;
+>> +#endif
+>> +    skel = read_vsyscall__open_and_load();
+>> +    if (!ASSERT_OK_PTR(skel, "read_vsyscall open_load"))
+>> +        return;
+>> +
+>> +    skel->bss->target_pid = getpid();
+>> +    err = read_vsyscall__attach(skel);
+>> +    if (!ASSERT_EQ(err, 0, "read_vsyscall attach"))
+>> +        goto out;
+>> +
+>> +    /* userspace may don't have vsyscall page due to
+>> LEGACY_VSYSCALL_NONE,
+>> +     * but it doesn't affect the returned error codes.
+>> +     */
+>> +    skel->bss->user_ptr = (void *)VSYSCALL_ADDR;
+>> +    usleep(1);
+>> +
+>> +    for (i = 0; i < ARRAY_SIZE(all_read); i++)
+>> +        ASSERT_EQ(skel->bss->read_ret[i], all_read[i].ret,
+>> all_read[i].name);
+>> +out:
+>> +    read_vsyscall__destroy(skel);
+>> +}
+> [...]
 
 
