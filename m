@@ -1,129 +1,190 @@
-Return-Path: <linux-kernel+bounces-37981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A3A283B92B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 06:50:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A236C83B930
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 06:51:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C8A9287AB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 05:49:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D582E1C2273A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 05:51:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D192D1079D;
-	Thu, 25 Jan 2024 05:49:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59FD0101F7;
+	Thu, 25 Jan 2024 05:51:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Gv6rVzxO"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fbQc4cW8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05DF7CA50;
-	Thu, 25 Jan 2024 05:49:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92B4710A05;
+	Thu, 25 Jan 2024 05:51:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706161788; cv=none; b=VgpXeVz7m8EAP/yWH/2lWs2iQ3DP5cpYlgOoidKjabjHkAZuuCgyaVmryDet/3NNUriYgB/mvXrIS7vRXiUe1nregARLZaNofrtthL/HadiK3rwVyPWOCTw06KQdcuoqYpnCKlFwJ4fj68kbBT6nZGaUKlulvi1xvPcNEtSCAjg=
+	t=1706161886; cv=none; b=P/8j+ay0/G9eFEuEFy/CDyeQcoh0h5WViSKuEHx6oGcPlHecvT6ylQq1fUGWyqNRSI0NVbc2iHYz12SYeOWlm59kBCZq8L6sWPz1ZiUcdFx3MahsEMCWi2pADBgaypOspeHE6FD9RsGdQRhUxc+As+In1XgF1RyHr2YqYg18+eE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706161788; c=relaxed/simple;
-	bh=jEtOBCWHvTb4uHYP5yQCZ1yuaW6/UAwy+xaIHbriYL8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=O0uRb2o0zg3yRbsk8QFHR3Mp5czS24On7sF5CEVN26FwIhXz1tF57Ob2PhFgdke2BYLjk4uPSR3K+VJFPz6XfflnbQ2VE8c87fNntTKa5ndu+s39jqcKzJwmOYK945a/yjBgyoML/PzmCjRokttDK9Uq8anKN1cdviqrbLWmduk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Gv6rVzxO; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40P5i5aT014826;
-	Thu, 25 Jan 2024 05:49:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=P2TR27uCwnO+U4fKCMWikVRqcirqj04TH+FzUWx6064=; b=Gv
-	6rVzxON7mjLI0yZUqypAExCs0cFXGZZXsRWTTEP5fZcmZbShhbDftxcvwBPDCR6s
-	AOhDU8jrulH2xYxdNogw5VOjoKjDwHoQPwDDwsrIxVjHIJG37c2P/7oLo0vbZK4D
-	QIVIZE7eaQuCOQooL9cgyvCKlXwIYrpljircnfGeiK4oERaelDtNwLisFjNO9Lt+
-	1tPEyU4WtmDmUwJHbghmSTWyab1HvkXbxJE9pvL1Q5hxaWobcxcFhpOIm8ZGGh0Q
-	JuRgaj6XMYDI/2doP37KrjC61eq3/1ABKF5mDpTGhtE2y6rxHH0ZwmkRkT7mp7Lf
-	X5BOq+ACRKIV1LaGwu2w==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vufc80976-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Jan 2024 05:49:41 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40P5neqI002427
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Jan 2024 05:49:40 GMT
-Received: from [10.218.19.46] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 24 Jan
- 2024 21:49:34 -0800
-Message-ID: <77903574-696b-90f9-f136-be5c5d219ba1@quicinc.com>
-Date: Thu, 25 Jan 2024 11:19:31 +0530
+	s=arc-20240116; t=1706161886; c=relaxed/simple;
+	bh=dJn0iZwDo3YjbbXFWkfRSJfzznH/m2xLg/1aaKwYlwE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cRoJqOuzn3m7nqGu6+qptsFSUK27/m/D7BJuLxWS1F30hvjsQa2hh76fN77cOENA6oI4wQ00KNbyRakTdvNCBXZ7vGr6kswdBDna2NLyB+n59NEfZf6Ib7uLZadkL/a12aW8k/yGS9wfc362FKBL2j215k/zCRV+HOIAkfIq6f4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fbQc4cW8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5AF8C433C7;
+	Thu, 25 Jan 2024 05:51:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706161886;
+	bh=dJn0iZwDo3YjbbXFWkfRSJfzznH/m2xLg/1aaKwYlwE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=fbQc4cW8pjU2Miv/8zP1E8CxGxB9HjJzs9YEylsWJIGgviEIx9hN+pVJdqZ7aBDcl
+	 WHiUlarxsElM+Q+goHTGlifR+VvCumRtqAVznohp4PCrvXcj1FW7lAbEzPLuIr/zUE
+	 ANbZ8pqcGRmUfxupKKPBdflTPq2jgxE6yIGs1kuhET/QCKi/2J43pir1ob2qvP1wg+
+	 Wt/8XJm1r07q+U7Czi8Iy2ugyGdMEWYrWRqYk1r+K7gFAXAabWXUd/nCU4gIAfadph
+	 ChpH5b/R7ap+KXHuYXaiV09E5n4g+TFlvRFxEja808DF3iwIKQqyGW/AXp5a62F54G
+	 46ndNA4Hyg1jQ==
+From: Namhyung Kim <namhyung@kernel.org>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org
+Subject: [PATCH RESEND] perf tools: Add -H short option for --hierarchy
+Date: Wed, 24 Jan 2024 21:51:24 -0800
+Message-ID: <20240125055124.1579617-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH 2/3] clk: qcom: gcc-sm8150: Add gcc_parents_0_ao support
-Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        "Stephen
- Boyd" <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Taniya Das <quic_tdas@quicinc.com>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Ajit Pandey
-	<quic_ajipan@quicinc.com>,
-        Imran Shaik <quic_imrashai@quicinc.com>,
-        "Jagadeesh Kona" <quic_jkona@quicinc.com>
-References: <20240123-gcc-ao-support-v1-0-6c18d5310874@quicinc.com>
- <20240123-gcc-ao-support-v1-2-6c18d5310874@quicinc.com>
- <d31a52fc-9073-483d-b84b-1f02a5698a89@linaro.org>
-From: "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>
-In-Reply-To: <d31a52fc-9073-483d-b84b-1f02a5698a89@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 962Qzww9toPsXtvzkXVnHV6vFwJI1sfr
-X-Proofpoint-GUID: 962Qzww9toPsXtvzkXVnHV6vFwJI1sfr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-25_02,2024-01-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1015
- suspectscore=0 bulkscore=0 spamscore=0 priorityscore=1501 mlxscore=0
- phishscore=0 lowpriorityscore=0 mlxlogscore=834 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2401250037
+Content-Transfer-Encoding: 8bit
 
+I found the hierarchy mode useful, but it's easy to make a typo when
+using it.  Let's add a short option for that.
 
-On 1/23/2024 11:17 PM, Konrad Dybcio wrote:
->
->
-> On 1/23/24 17:34, Satya Priya Kakitapalli wrote:
->> Add active_only support for gcc_parents_0, this is needed because
->> some of the clocks under it are critical which would vote on xo
->> blocking the suspend.
->>
->> Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
->> ---
->
-> Is there a need to keep gcc_cpuss_ahb_clk_src around? Do we do any
-> ratesetting on it? Should we ever turn it off?
->
+Also update the documentation. :)
 
-The branch clocks under gcc_cpuss_ahb_clk_src are critical clocks, which 
-are running at 19.2Mhz causing vote on XO during suspend. As of now no 
-rate setting is happening but this rcg is useful to get the exact rates 
-from debugfs. Hence this change is needed to avoid XO shutdown issues.
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/Documentation/perf-report.txt | 29 ++++++++++++++++++++-
+ tools/perf/Documentation/perf-top.txt    | 32 +++++++++++++++++++++++-
+ tools/perf/builtin-report.c              |  2 +-
+ tools/perf/builtin-top.c                 |  2 +-
+ 4 files changed, 61 insertions(+), 4 deletions(-)
+
+diff --git a/tools/perf/Documentation/perf-report.txt b/tools/perf/Documentation/perf-report.txt
+index 38f59ac064f7..d8b863e01fe0 100644
+--- a/tools/perf/Documentation/perf-report.txt
++++ b/tools/perf/Documentation/perf-report.txt
+@@ -531,8 +531,35 @@ include::itrace.txt[]
+ --raw-trace::
+ 	When displaying traceevent output, do not use print fmt or plugins.
+ 
++-H::
+ --hierarchy::
+-	Enable hierarchical output.
++	Enable hierarchical output.  In the hierarchy mode, each sort key groups
++	samples based on the criteria and then sub-divide it using the lower
++	level sort key.
++
++	For example:
++	In normal output:
++
++	  perf report -s dso,sym
++	  # Overhead  Shared Object      Symbol
++	      50.00%  [kernel.kallsyms]  [k] kfunc1
++	      20.00%  perf               [.] foo
++	      15.00%  [kernel.kallsyms]  [k] kfunc2
++	      10.00%  perf               [.] bar
++	       5.00%  libc.so            [.] libcall
++
++	In hierarchy output:
++
++	  perf report -s dso,sym --hierarchy
++	  #   Overhead  Shared Object / Symbol
++	      65.00%    [kernel.kallsyms]
++	        50.00%    [k] kfunc1
++	        15.00%    [k] kfunc2
++	      30.00%    perf
++	        20.00%    [.] foo
++	        10.00%    [.] bar
++	       5.00%    libc.so
++	         5.00%    [.] libcall
+ 
+ --inline::
+ 	If a callgraph address belongs to an inlined function, the inline stack
+diff --git a/tools/perf/Documentation/perf-top.txt b/tools/perf/Documentation/perf-top.txt
+index 3c202ec080ba..a754875fa5bb 100644
+--- a/tools/perf/Documentation/perf-top.txt
++++ b/tools/perf/Documentation/perf-top.txt
+@@ -261,8 +261,38 @@ Default is to monitor all CPUS.
+ --raw-trace::
+ 	When displaying traceevent output, do not use print fmt or plugins.
+ 
++-H::
+ --hierarchy::
+-	Enable hierarchy output.
++	Enable hierarchical output.  In the hierarchy mode, each sort key groups
++	samples based on the criteria and then sub-divide it using the lower
++	level sort key.
++
++	For example, in normal output:
++
++	  perf report -s dso,sym
++	  #
++	  # Overhead  Shared Object      Symbol
++	  # ........  .................  ...........
++	      50.00%  [kernel.kallsyms]  [k] kfunc1
++	      20.00%  perf               [.] foo
++	      15.00%  [kernel.kallsyms]  [k] kfunc2
++	      10.00%  perf               [.] bar
++	       5.00%  libc.so            [.] libcall
++
++	In hierarchy output:
++
++	  perf report -s dso,sym --hierarchy
++	  #
++	  #   Overhead  Shared Object / Symbol
++	  # ..........  ......................
++	      65.00%    [kernel.kallsyms]
++	        50.00%    [k] kfunc1
++	        15.00%    [k] kfunc2
++	      30.00%    perf
++	        20.00%    [.] foo
++	        10.00%    [.] bar
++	       5.00%    libc.so
++	         5.00%    [.] libcall
+ 
+ --overwrite::
+ 	Enable this to use just the most recent records, which helps in high core count
+diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+index f2ed2b7e80a3..ccb91fe6b876 100644
+--- a/tools/perf/builtin-report.c
++++ b/tools/perf/builtin-report.c
+@@ -1410,7 +1410,7 @@ int cmd_report(int argc, const char **argv)
+ 		    "only show processor socket that match with this filter"),
+ 	OPT_BOOLEAN(0, "raw-trace", &symbol_conf.raw_trace,
+ 		    "Show raw trace event output (do not use print fmt or plugins)"),
+-	OPT_BOOLEAN(0, "hierarchy", &symbol_conf.report_hierarchy,
++	OPT_BOOLEAN('H', "hierarchy", &symbol_conf.report_hierarchy,
+ 		    "Show entries in a hierarchy"),
+ 	OPT_CALLBACK_DEFAULT(0, "stdio-color", NULL, "mode",
+ 			     "'always' (default), 'never' or 'auto' only applicable to --stdio mode",
+diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
+index baf1ab083436..03cf45088fd8 100644
+--- a/tools/perf/builtin-top.c
++++ b/tools/perf/builtin-top.c
+@@ -1573,7 +1573,7 @@ int cmd_top(int argc, const char **argv)
+ 		    "add last branch records to call history"),
+ 	OPT_BOOLEAN(0, "raw-trace", &symbol_conf.raw_trace,
+ 		    "Show raw trace event output (do not use print fmt or plugins)"),
+-	OPT_BOOLEAN(0, "hierarchy", &symbol_conf.report_hierarchy,
++	OPT_BOOLEAN('H', "hierarchy", &symbol_conf.report_hierarchy,
+ 		    "Show entries in a hierarchy"),
+ 	OPT_BOOLEAN(0, "overwrite", &top.record_opts.overwrite,
+ 		    "Use a backward ring buffer, default: no"),
+-- 
+2.43.0.429.g432eaa2c6b-goog
+
 
