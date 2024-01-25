@@ -1,179 +1,88 @@
-Return-Path: <linux-kernel+bounces-39327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F29E883CECC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:45:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F4FE83CECD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:45:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 833A8B21963
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:45:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1C5D1C24AB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:45:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 088D613AA22;
-	Thu, 25 Jan 2024 21:45:02 +0000 (UTC)
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C464D13AA5D;
+	Thu, 25 Jan 2024 21:45:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z44kmTMX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3328E1350E8;
-	Thu, 25 Jan 2024 21:44:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 115A213A25E;
+	Thu, 25 Jan 2024 21:45:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706219101; cv=none; b=KXWJbbTAvw9hTRaWVdeEF4qNjoVZ31IIevYSokO+hPVEznugXeTqRjM8rfE1AozDeAL9pDtY/0Kd9BReuSPyYEx2ocxHUqmQdFbk+5DRVwJvkxo5GqSPzKuV0HotL8AG6KvQXQI8KKcYYCvSBdGcuxP9ThucUY9gCdAy8OCdob0=
+	t=1706219106; cv=none; b=hL6JzQYNngq/y04UPoInVfPrU9v7pFmSAMjOo5VWrR/qLqbGy2iqkguDRElGYWfR0zr9fWLRIb3rvOpaWoDRQuroTu3EmV6gvq7C46/0zHn326Nt9UWvDV3Lh4KIerdgHbVeWOx1nx5KvV+KfGh1dZyuYq6OYEUiShWnMKYpf9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706219101; c=relaxed/simple;
-	bh=9u4anSjlouTgw/2P/q/Jq3ADuTKVXo6TI+Vf4cQgPZw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lRXV7G/S7h62zqxmWAOohA1b0qsNZKi5yR3N/QcKZHdiwOMouek0ydegT/Z5p6XZxsaeX/e7/5FLCZcCIhWhFHN1So5A8cyTBw/ECJR3Spyjd5iXK1UdJBECY4l6S174xhmM47QjyEx4y4YlW9cm6YBZgMak+odivl18Mo4es0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-29041136f73so4552a91.0;
-        Thu, 25 Jan 2024 13:44:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706219099; x=1706823899;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rbmRSc7ZlDh5JTNaoRV6DZxWPyFidEzfmHZVG8JBRMc=;
-        b=ez99wzURGVwz987S3LtCtJ39BWqxah4051tsR3D8LVNNpkZjn7kZ7XoZJnKtPChN0/
-         xoSw0DNVI3QiPjavauCrOW+bXq3D4VoFDX6Jgsr4jDt/LTieKv6trL0tM5TcFwMSmM7J
-         CRro7grk2OZyPK1W1WfEQYRCsUCNZHqQ0QHDGW690tR4oR1wG7LGG+HRKXyHiRTUgr/E
-         +K21+mKbKeXg+WzlYzAn+LOlRs3QYUmFh7KpppHHdVx1EsN1dUA2Y2F/dXfEiPkVVYeY
-         dlLIMupi9C4V1XtEfEgwevCM1/5ltj3M97M05K6y/vjgaP36rFmlAA9so53nrah4+5WN
-         pi5w==
-X-Gm-Message-State: AOJu0YwYQBM2aXy00xw+2abMmNjXKxVK9oioamzznS4LYVtJTnuVhNSA
-	7Chr1YYYaaTDikJnnz7ClxofEap8E8wpyhZnyDALMlAJSxeR5sUyg6SUl+SNiSWnAAMmbOQfIIj
-	UqzLC+LEH9nsiQ4r86FlUB/Zxohc=
-X-Google-Smtp-Source: AGHT+IHCMp/MWj1+jPa5h7pSxHiBv8GYZGu1MfqAEy53tVm0nxahs2oEaKw2fR+PKHL7GJSDjgpewKxB0Ru0WSL8hhs=
-X-Received: by 2002:a17:90b:3d90:b0:290:1cba:7ccc with SMTP id
- pq16-20020a17090b3d9000b002901cba7cccmr234706pjb.75.1706219099258; Thu, 25
- Jan 2024 13:44:59 -0800 (PST)
+	s=arc-20240116; t=1706219106; c=relaxed/simple;
+	bh=JQd1N0cLbwJCRpu8W5IyZC5+ZemZha23KmJar4jpt2o=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Kp3y7xpLj+pN0zgcOq9MfbF96ZONHofutzcLimt3EOok7xQttpIVa2puJp/tzfSFDwuuxFwGXzROXfD6rpmC0nTzCVDhW6wI2lC+WY7usvxVFUWnhpEZzbDvqCnFCMujuxWTkELh1EEoYvIxyRvjMYedVJ9Qh+vEL9S31jMNsAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z44kmTMX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAF25C43390;
+	Thu, 25 Jan 2024 21:45:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706219105;
+	bh=JQd1N0cLbwJCRpu8W5IyZC5+ZemZha23KmJar4jpt2o=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Z44kmTMX6eKCkVGjdG2q+PBh5PXvlqwLzhixVqfzqE7KXJ22Ktmz9zQszRHToGwOK
+	 ws2j/h5CdM7E5F0SHsj/f1QxrFSmUji9WfeovgY3qcREzzRHtPhL8Wc831pp/no6hd
+	 xZDOPP6/vFIPG7fa4bidMJXX9azcKkmqutV4S6fuJPSIVK9WXLLAz9OCpDuuZky9XF
+	 cTxlQ0KhKHlqsfYdBK+44RWzN4t/NDKDcBMFq8u50Z15TYgXF2TFEWb7/+3UenH+fx
+	 M+n8fLDKmmUQGhwk9nhILlIAhCfzi1J7aaSLBBQ55n8jXd5cZP9+ellGHC5proxXW2
+	 EsE4qktjP+LiQ==
+From: Namhyung Kim <namhyung@kernel.org>
+To: James Clark <james.clark@arm.com>,
+	linux-perf-users@vger.kernel.org,
+	irogers@google.com
+Cc: linux-kernel@vger.kernel.org,
+	Spoorthy S <spoorts2@in.ibm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Kajol Jain <kjain@linux.ibm.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH 0/2] perf test: Skip test_arm_callgraph_fp.sh if unwinding isn't built in
+Date: Thu, 25 Jan 2024 13:45:01 -0800
+Message-ID: <170621898549.3227482.15120591332128691529.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+In-Reply-To: <20240123163903.350306-1-james.clark@arm.com>
+References: <20240123163903.350306-1-james.clark@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123185036.3461837-1-kan.liang@linux.intel.com>
- <CAP-5=fWuUJHUMb4mq2oPo+eVH32cLrrzYrKVuMymkkrYqMAYFw@mail.gmail.com> <CAM9d7chCdSSeoBnj2=suzou3udMRQ3XW_qYQe+oejHcO8y3PPQ@mail.gmail.com>
-In-Reply-To: <CAM9d7chCdSSeoBnj2=suzou3udMRQ3XW_qYQe+oejHcO8y3PPQ@mail.gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Thu, 25 Jan 2024 13:44:48 -0800
-Message-ID: <CAM9d7chRmZLLTKAPvANj4FButtxpK3H6iX7W35fOedG-tYMzZA@mail.gmail.com>
-Subject: Re: [PATCH V4 0/7] Clean up perf mem
-To: Ian Rogers <irogers@google.com>
-Cc: kan.liang@linux.intel.com, acme@kernel.org, peterz@infradead.org, 
-	mingo@redhat.com, jolsa@kernel.org, adrian.hunter@intel.com, 
-	john.g.garry@oracle.com, will@kernel.org, james.clark@arm.com, 
-	mike.leach@linaro.org, leo.yan@linaro.org, yuhaixin.yhx@linux.alibaba.com, 
-	renyu.zj@linux.alibaba.com, tmricht@linux.ibm.com, ravi.bangoria@amd.com, 
-	atrajeev@linux.vnet.ibm.com, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 24, 2024 at 9:24=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
->
-> On Wed, Jan 24, 2024 at 10:24=E2=80=AFAM Ian Rogers <irogers@google.com> =
-wrote:
-> >
-> > On Tue, Jan 23, 2024 at 10:51=E2=80=AFAM <kan.liang@linux.intel.com> wr=
-ote:
-> > >
-> > > From: Kan Liang <kan.liang@linux.intel.com>
-> > >
-> > > Changes since V3:
-> > > - Fix the powerPC building error (Kajol Jain)
-> > > - The s390 does not support perf mem. Remove the code. (Thomas)
-> > > - Add reviewed-by and tested-by from Kajol Jain for patch 1 and 2
-> > > - Add tested-by from Leo
-> > >
-> > > Changes since V2:
-> > > - Fix the Arm64 building error (Leo)
-> > > - Add two new patches to clean up perf_mem_events__record_args()
-> > >   and perf_pmus__num_mem_pmus() (Leo)
-> > >
-> > > Changes since V1:
-> > > - Fix strcmp of PMU name checking (Ravi)
-> > > - Fix "/," typo (Ian)
-> > > - Rename several functions with perf_pmu__mem_events prefix. (Ian)
-> > > - Fold the header removal patch into the patch where the cleanups mad=
-e.
-> > >   (Arnaldo)
-> > > - Add reviewed-by and tested-by from Ian and Ravi
-> > >
-> > > As discussed in the below thread, the patch set is to clean up perf m=
-em.
-> > > https://lore.kernel.org/lkml/afefab15-cffc-4345-9cf4-c6a4128d4d9c@lin=
-ux.intel.com/
-> > >
-> > > Introduce generic functions perf_mem_events__ptr(),
-> > > perf_mem_events__name() ,and is_mem_loads_aux_event() to replace the
-> > > ARCH specific ones.
-> > > Simplify the perf_mem_event__supported().
-> > >
-> > > Only keeps the ARCH-specific perf_mem_events array in the correspondi=
-ng
-> > > mem-events.c for each ARCH.
-> > >
-> > > There is no functional change.
-> > >
-> > > The patch set touches almost all the ARCHs, Intel, AMD, ARM, Power an=
-d
-> > > etc. But I can only test it on two Intel platforms.
-> > > Please give it try, if you have machines with other ARCHs.
-> > >
-> > > Here are the test results:
-> > > Intel hybrid machine:
-> > >
-> > > $perf mem record -e list
-> > > ldlat-loads  : available
-> > > ldlat-stores : available
-> > >
-> > > $perf mem record -e ldlat-loads -v --ldlat 50
-> > > calling: record -e cpu_atom/mem-loads,ldlat=3D50/P -e cpu_core/mem-lo=
-ads,ldlat=3D50/P
-> > >
-> > > $perf mem record -v
-> > > calling: record -e cpu_atom/mem-loads,ldlat=3D30/P -e cpu_atom/mem-st=
-ores/P -e cpu_core/mem-loads,ldlat=3D30/P -e cpu_core/mem-stores/P
-> > >
-> > > $perf mem record -t store -v
-> > > calling: record -e cpu_atom/mem-stores/P -e cpu_core/mem-stores/P
-> > >
-> > >
-> > > Intel SPR:
-> > > $perf mem record -e list
-> > > ldlat-loads  : available
-> > > ldlat-stores : available
-> > >
-> > > $perf mem record -e ldlat-loads -v --ldlat 50
-> > > calling: record -e {cpu/mem-loads-aux/,cpu/mem-loads,ldlat=3D50/}:P
-> > >
-> > > $perf mem record -v
-> > > calling: record -e {cpu/mem-loads-aux/,cpu/mem-loads,ldlat=3D30/}:P -=
-e cpu/mem-stores/P
-> > >
-> > > $perf mem record -t store -v
-> > > calling: record -e cpu/mem-stores/P
-> > >
-> > > Kan Liang (7):
-> > >   perf mem: Add mem_events into the supported perf_pmu
-> > >   perf mem: Clean up perf_mem_events__ptr()
-> > >   perf mem: Clean up perf_mem_events__name()
-> > >   perf mem: Clean up perf_mem_event__supported()
-> > >   perf mem: Clean up is_mem_loads_aux_event()
-> > >   perf mem: Clean up perf_mem_events__record_args()
-> > >   perf mem: Clean up perf_pmus__num_mem_pmus()
-> >
-> > I think this is ready to land in perf-tools-next, multiple Tested-by
-> > or Reviewed-by.
->
-> Sure, queued for a local testing.
+On Tue, 23 Jan 2024 16:39:00 +0000, James Clark wrote:
+> The first commit outputs the unwinding feature definition in perf
+> version so that the script can gate on it. And then skip the test if
+> it's not present.
+> 
+> I didn't add any fixes tags because it's modifying the perf version
+> output, requires both commits, and it's just for a test skip change so
+> I don't think backporting makes sense.
+> 
+> [...]
 
 Applied to perf-tools-next, thanks!
 
-Namhyung
+Best regards,
+-- 
+Namhyung Kim <namhyung@kernel.org>
 
