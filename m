@@ -1,291 +1,130 @@
-Return-Path: <linux-kernel+bounces-38071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44B8383BA9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:29:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A66B483BA9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:29:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 691481C22502
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:29:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAE851C22453
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:29:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18D3B12B70;
-	Thu, 25 Jan 2024 07:29:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 406A011CB1;
+	Thu, 25 Jan 2024 07:29:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b="4WWqHOsK";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="fWat02Ra"
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ScFGMYM1"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3848C125BC;
-	Thu, 25 Jan 2024 07:29:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.29
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1BB611712;
+	Thu, 25 Jan 2024 07:29:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706167768; cv=none; b=apiliaazNwPVs9edMDwjjAsK0aMZRe+//eOKaqCjmhk/kSPzQ5GXfBiCj4MExo8A4F8ymwVSkM+ermJzM9iNOWanmSxywWWpMnDz+bkd2sUsyUuc71YFiMF8y+ppc8gAtJ3jxHiQd4UPYIJAYgprjzXGJveIMapksasT77kzqoc=
+	t=1706167762; cv=none; b=MUNpZiKy3nQp9hA1MxCJ8snbjxI0ZbNnmX+MQsSA3tcX9oho9Rz1Ibad1A7dc8GpgT4dRlOlrgfUdMyk/bFXcc85srCRxMmAuztOpoLnChAe79T6/NV4Y8p/E8mkvd3uB6Mpi3Pua4za9h/Q0YUifqnwS1mWh86MG6SgRrUc6i0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706167768; c=relaxed/simple;
-	bh=UDDxqmJwRwfGRdgYCAAJVPgdb8XBmMphX3vXWn1q41I=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=uQoWbb8KsreKxmzEQ6vdGydt64xYL3pA85rjhgY2aRbPXUx5fAlqUPVEu2OITEx6thOWVV93ADKKoJBl772KhoPHDhkzwY7VDVpBRHsFkxZqwq9CYVsHW6jV2YoAvGVAyi0Z6qabtJ+N6Wrwt8No6nnZII72tobscSF0TKt4uhc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com; spf=pass smtp.mailfrom=fastmail.com; dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b=4WWqHOsK; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=fWat02Ra; arc=none smtp.client-ip=66.111.4.29
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.com
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailout.nyi.internal (Postfix) with ESMTP id 235435C0095;
-	Thu, 25 Jan 2024 02:29:22 -0500 (EST)
-Received: from imap50 ([10.202.2.100])
-  by compute3.internal (MEProxy); Thu, 25 Jan 2024 02:29:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com; h=
-	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1706167762; x=1706254162; bh=4/dVYBNNL2
-	9STF+/5i846JO1dRke2hCM5JY24OM2ohU=; b=4WWqHOsKiWwKd8AZBn+R9MaRq0
-	o0JaKbYFyW1luubvbv1noVg4Mrlyko5Yl9zZQ9oFnJbyiGuYS7z88GjP7CJIs2br
-	hNDgqGEqd1rUryx+AXqc9lrHmRsxIuFSJPVZU3v4ktv52E1ynPbcBVdRtTmTJAtI
-	s/gj2vUSM6K8Y6Rh/Fdg7QKAg9xJu0jvqDT0Ghado7JWD9OfSkTZukPkTEa0eoV1
-	P+glLGXM4mPNKhUbNuzfGkWf8bCvKxecsOzjgpFm4q+chrU/67Z+NHVa2cg7BetI
-	bO3PXjBoaU64EOk9/7Jwbbc2hbtn2LHIZTC79gp2NFhNT1o3ZS9IlRWZwx7g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1706167762; x=1706254162; bh=4/dVYBNNL29STF+/5i846JO1dRke
-	2hCM5JY24OM2ohU=; b=fWat02Ravbdkseak+cwCvRDzjBa5R3ohoLp788UPLofv
-	rx9dBbDLsxArc9EKJFXMNMGVWNVSAFGNIBdIuV3eFy3w9mrgPWlfaN0BN2hcY6u2
-	tw7d7oc3yXSUKQ8e2Dcx8QNfo+vGCcfZVzAe/FQS/aMwnYId6tpw8tVVke7aspC1
-	y2lx357GjC6shwfhUBv7miFC8bP9CUO8B/HHSp7w2DXcOtqOen7uUG2jnwnk0Huu
-	ZG/qWxU8QUzm8rKCo9yQbju23D0FyEAli+asS7URM2Lo4dxhJXfLWc8CLg85/PXs
-	Ru9AiU2I/Sxr7bFJDEsy++quS8tVXbugzmhRwb0Y6Q==
-X-ME-Sender: <xms:0Q2yZZgHwcn24DiOahZrGqrGnvBpm-ZsPC_8Kn5L39IlgEZSHNZ1qg>
-    <xme:0Q2yZeDnGGz0_0LGliPx0EXvN9Z7BqjAb-cT42_DFhjNS2uO7XwrZqOOh34j47MFo
-    ASeabRK48YLNgAjhA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdelvddguddthecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdfu
-    thgvfhgrnhcuqfdktfgvrghrfdcuoehsohhrvggrrhesfhgrshhtmhgrihhlrdgtohhmqe
-    enucggtffrrghtthgvrhhnpefhtefgffelieduudekgeevueegudegueefhfehhfffiefg
-    keffvedtuefggfehteenucffohhmrghinhepvghnthhrhidrshgspdhinhhfrhgruggvrg
-    gurdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhho
-    mhepshhorhgvrghrsehfrghsthhmrghilhdrtghomh
-X-ME-Proxy: <xmx:0Q2yZZFSzmAP28-Yw_tJzgxRNKSU-3toWvfbDhR3b_mTG3GoJbIhxw>
-    <xmx:0Q2yZeTZlrYF9hZBDnW4R9U05tXmpA06fYTF9UblXerse7ooEN6SfQ>
-    <xmx:0Q2yZWxicRgvULAInvriUjS8D6tUBpvVKhQKcf__ndRa8KL4ZWTYEw>
-    <xmx:0g2yZbKM5BS9-p4l4K3R6W0ZsBQxfxzHydoICT-YiYLwle95QXW8Uw>
-Feedback-ID: i84414492:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 7A9091700093; Thu, 25 Jan 2024 02:29:21 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-119-ga8b98d1bd8-fm-20240108.001-ga8b98d1b
+	s=arc-20240116; t=1706167762; c=relaxed/simple;
+	bh=w/xsvgCqgl8ZlV62QDdJt67bBzlXk6B6Nkily4sOnp8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=B/MhniXIrqDjPXyysrVtyuIOhgcK6UAnLQqa4WOLU2hKrc7pzxcRhApxfR/jXZ0mZlwnzzVtdUD9Veo/ylFQqWpGbTVyTAsq7bQjpIqBPmmy7Af9zUvx/M84EeYQQw0jG+EOEVjr0Yq+psxDcBbHPs4gPZB7GZFOwg90AcpJ/mY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ScFGMYM1; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50eabfac2b7so8165814e87.0;
+        Wed, 24 Jan 2024 23:29:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706167759; x=1706772559; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5SpBWJtN6OzM/roaWnbD+Q5Csju0Dqh0SUBOg2+T/As=;
+        b=ScFGMYM1J4OEBiRsDl6g9CwCaVjntROfyPO+TCDK2khMOnTrQGxSpKfmTPiXbq6diz
+         t4yIxyBtuDe4/8ECUQvG1nxeXnqjJsIx+6UsL5m6CXOuSC9XQvNw+DGc9SRa9xbHFc2e
+         CQrM/862odjC+tZD599RRH6lVJmdHXzvxjBpfNa/DkY6HqxT4PMprwbeGFfncNGQjhmz
+         DdSo1sSXeKd4uqXirCaQ/SbxX8AiSS8kD8Nyf1p5LaW6K8g4dKpxL6Dkhxr92S0q8NHC
+         A85MWYYb5QsLP8abAyhdu1hz0A6iyQmFcixJ6ZoglUkCX/A1rG+KVkvf+JFQEOQgd6kW
+         NfRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706167759; x=1706772559;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5SpBWJtN6OzM/roaWnbD+Q5Csju0Dqh0SUBOg2+T/As=;
+        b=K8/iIM3KjWbKbNHwy/XwnayHSAb9Nkqu6DJCwu6Rsr7rhXVF4OIFgNGhm3E7R52JsY
+         Y7oGRpqHQmJ14Ui2n+qarXEL3H6XcA/87SRyWWLsAxMij0QNM4OvJbP2wcPF7kL1Z9UJ
+         R0DLKEq31ia30cCfCA8Os8MuCrZfVCa/RjgkaVFSunLJm7RKw/og1q/WgBgDjw9SORfZ
+         srMLoeOEhE5bfQPJ7eU7yhlQCDCNPWqALPZrwioHExskGTTQMaoWWLJxpoKJmKEdZ6TI
+         RkM6Zl7UBCQ1fgW+z8uuwpjx0bJO4ghzDORfXcSx8uXV7TFYKw2wMe18Q7HhqlFzWn4g
+         pUow==
+X-Gm-Message-State: AOJu0Yygu3A58pWdxbOcRVJ3rJ0nLYozqD0EZ/LxWWQsJ5x7MB7mKdd7
+	1X6tUsX4nnWMVUvoAVev+TP0r/tKd8zxcJ6Hr8vrjkhxPSXJeOlAMm/iClgLqfTo48ObaIIe0hK
+	w+ybfpN2yTvdUGVfsanraFetFQyc=
+X-Google-Smtp-Source: AGHT+IFsvWv/w3MZ9ahKnAMtITkSnq56kA8ImWJUFJoX6t+Y96Fl2tPUYWyEeo0Pd7WdV0pF5XbH4bXej5/U5dn29wA=
+X-Received: by 2002:ac2:4d1a:0:b0:50e:815f:50d1 with SMTP id
+ r26-20020ac24d1a000000b0050e815f50d1mr223636lfi.105.1706167758549; Wed, 24
+ Jan 2024 23:29:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <ab343d4b-d8b0-47fc-8040-83313a3d735e@app.fastmail.com>
-In-Reply-To: <20240125062739.1339782-8-debug@rivosinc.com>
-References: <20240125062739.1339782-1-debug@rivosinc.com>
- <20240125062739.1339782-8-debug@rivosinc.com>
-Date: Thu, 25 Jan 2024 02:29:01 -0500
-From: "Stefan O'Rear" <sorear@fastmail.com>
-To: debug <debug@rivosinc.com>, rick.p.edgecombe@intel.com,
- broonie@kernel.org, Szabolcs.Nagy@arm.com,
- "kito.cheng@sifive.com" <kito.cheng@sifive.com>,
- "Kees Cook" <keescook@chromium.org>,
- "Andrew Jones" <ajones@ventanamicro.com>, paul.walmsley@sifive.com,
- "Palmer Dabbelt" <palmer@dabbelt.com>,
- "Conor Dooley" <conor.dooley@microchip.com>, cleger@rivosinc.com,
- "Atish Patra" <atishp@atishpatra.org>, "Alexandre Ghiti" <alex@ghiti.fr>,
- =?UTF-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@rivosinc.com>,
- "Alexandre Ghiti" <alexghiti@rivosinc.com>
-Cc: "Jonathan Corbet" <corbet@lwn.net>, "Albert Ou" <aou@eecs.berkeley.edu>,
- oleg@redhat.com, akpm@linux-foundation.org, arnd@arndb.de,
- "Eric W. Biederman" <ebiederm@xmission.com>, shuah@kernel.org,
- "Christian Brauner" <brauner@kernel.org>, guoren <guoren@kernel.org>,
- samitolvanen@google.com, "Evan Green" <evan@rivosinc.com>,
- xiao.w.wang@intel.com, "Anup Patel" <apatel@ventanamicro.com>,
- mchitale@ventanamicro.com, waylingii@gmail.com, greentime.hu@sifive.com,
- "Heiko Stuebner" <heiko@sntech.de>, "Jisheng Zhang" <jszhang@kernel.org>,
- shikemeng@huaweicloud.com, david@redhat.com,
- "Charlie Jenkins" <charlie@rivosinc.com>, panqinglin2020@iscas.ac.cn,
- willy@infradead.org, "Vincent Chen" <vincent.chen@sifive.com>,
- "Andy Chiu" <andy.chiu@sifive.com>, "Greg Ungerer" <gerg@kernel.org>,
- jeeheng.sia@starfivetech.com, mason.huo@starfivetech.com,
- ancientmodern4@gmail.com, mathis.salmen@matsal.de,
- cuiyunhui@bytedance.com, bhe@redhat.com, chenjiahao16@huawei.com,
- ruscur@russell.cc, bgray@linux.ibm.com, alx@kernel.org,
- baruch@tkos.co.il, zhangqing@loongson.cn,
- "Catalin Marinas" <catalin.marinas@arm.com>, revest@chromium.org,
- josh@joshtriplett.org, joey.gouly@arm.com, shr@devkernel.io,
- omosnace@redhat.com, ojeda@kernel.org, jhubbard@nvidia.com,
- linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH v1 07/28] riscv: kernel handling on trap entry/exit for user
- cfi
-Content-Type: text/plain
+References: <20240124085334.3060748-1-zhaoyang.huang@unisoc.com>
+ <ZbDWSUkT/OjHTe0t@infradead.org> <CAGWkznHAi_U5erM0s8vFWwwucRKPoSzimNr9tdsPvs_sApGxgQ@mail.gmail.com>
+ <ZbDaq+iI/8ZQWRxF@infradead.org> <CAGWkznGibmzH8WT9CjC9swWD3pLyCcWnG29eoj=EQk=Qd=kHBg@mail.gmail.com>
+ <1879ce4b-d8c0-40f4-98ef-88dea0721974@kernel.dk>
+In-Reply-To: <1879ce4b-d8c0-40f4-98ef-88dea0721974@kernel.dk>
+From: Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date: Thu, 25 Jan 2024 15:29:07 +0800
+Message-ID: <CAGWkznGGFxazJvhNF-SHFX559sUTkmQfaHpBb-9iMrgdzLaJAw@mail.gmail.com>
+Subject: Re: [PATCHv2 1/1] block: introduce content activity based ioprio
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Christoph Hellwig <hch@infradead.org>, "zhaoyang.huang" <zhaoyang.huang@unisoc.com>, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	steve.kang@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 25, 2024, at 1:21 AM, debug@rivosinc.com wrote:
-> From: Deepak Gupta <debug@rivosinc.com>
+On Wed, Jan 24, 2024 at 11:38=E2=80=AFPM Jens Axboe <axboe@kernel.dk> wrote=
+:
 >
-> Carves out space in arch specific thread struct for cfi status and shadow stack
-> in usermode on riscv.
+> On 1/24/24 4:58 AM, Zhaoyang Huang wrote:
+> > On Wed, Jan 24, 2024 at 5:38?PM Christoph Hellwig <hch@infradead.org> w=
+rote:
+> >>
+> >> The I/O priority can be explicitly set by the submitter, task and
+> >> blkcg arre jut fallbacks.
+> > Yes. I would like to suggest if it is possible to have this commit
+> > work as a hint for promoting the priority since it has been proved in
+> > the verification?
 >
-> This patch does following
-> - defines a new structure cfi_status with status bit for cfi feature
-> - defines shadow stack pointer, base and size in cfi_status structure
-> - defines offsets to new member fields in thread in asm-offsets.c
-> - Saves and restore shadow stack pointer on trap entry (U --> S) and exit
->   (S --> U)
+> We don't add patches that are wrong just because they provide a
+> performance benefit for some cases. Down that path lies tech debt to be
+> cleaned up later. Rather, the feature should be done right from the
+> start.
 >
-> Signed-off-by: Deepak Gupta <debug@rivosinc.com>
-> ---
->  arch/riscv/include/asm/processor.h   |  1 +
->  arch/riscv/include/asm/thread_info.h |  3 +++
->  arch/riscv/include/asm/usercfi.h     | 24 ++++++++++++++++++++++++
->  arch/riscv/kernel/asm-offsets.c      |  5 ++++-
->  arch/riscv/kernel/entry.S            | 25 +++++++++++++++++++++++++
->  5 files changed, 57 insertions(+), 1 deletion(-)
->  create mode 100644 arch/riscv/include/asm/usercfi.h
+> >> And as said multiple times now bio_add_page must just treat the page
+> >> as a physical address container.  It must never look at MM-internal
+> >> flags.
+> > The alternative way is to iterate the request;s pages in the scheduler
+> > which has been refused by Jens in the previous version. Anyway, we can
+> > find a solution on this.
 >
-> diff --git a/arch/riscv/include/asm/processor.h 
-> b/arch/riscv/include/asm/processor.h
-> index ee2f51787ff8..d4dc298880fc 100644
-> --- a/arch/riscv/include/asm/processor.h
-> +++ b/arch/riscv/include/asm/processor.h
-> @@ -14,6 +14,7 @@
-> 
->  #include <asm/ptrace.h>
->  #include <asm/hwcap.h>
-> +#include <asm/usercfi.h>
-> 
->  #ifdef CONFIG_64BIT
->  #define DEFAULT_MAP_WINDOW	(UL(1) << (MMAP_VA_BITS - 1))
-> diff --git a/arch/riscv/include/asm/thread_info.h 
-> b/arch/riscv/include/asm/thread_info.h
-> index 320bc899a63b..6a2acecec546 100644
-> --- a/arch/riscv/include/asm/thread_info.h
-> +++ b/arch/riscv/include/asm/thread_info.h
-> @@ -58,6 +58,9 @@ struct thread_info {
->  	int			cpu;
->  	unsigned long		syscall_work;	/* SYSCALL_WORK_ flags */
->  	unsigned long envcfg;
-> +#ifdef CONFIG_RISCV_USER_CFI
-> +	struct cfi_status       user_cfi_state;
-> +#endif
->  #ifdef CONFIG_SHADOW_CALL_STACK
->  	void			*scs_base;
->  	void			*scs_sp;
-> diff --git a/arch/riscv/include/asm/usercfi.h 
-> b/arch/riscv/include/asm/usercfi.h
-> new file mode 100644
-> index 000000000000..080d7077d12c
-> --- /dev/null
-> +++ b/arch/riscv/include/asm/usercfi.h
-> @@ -0,0 +1,24 @@
-> +/* SPDX-License-Identifier: GPL-2.0
-> + * Copyright (C) 2023 Rivos, Inc.
-> + * Deepak Gupta <debug@rivosinc.com>
-> + */
-> +#ifndef _ASM_RISCV_USERCFI_H
-> +#define _ASM_RISCV_USERCFI_H
-> +
-> +#ifndef __ASSEMBLY__
-> +#include <linux/types.h>
-> +
-> +#ifdef CONFIG_RISCV_USER_CFI
-> +struct cfi_status {
-> +	unsigned long ubcfi_en : 1; /* Enable for backward cfi. */
-> +	unsigned long rsvd : ((sizeof(unsigned long)*8) - 1);
-> +	unsigned long user_shdw_stk; /* Current user shadow stack pointer */
-> +	unsigned long shdw_stk_base; /* Base address of shadow stack */
-> +	unsigned long shdw_stk_size; /* size of shadow stack */
-> +};
-> +
-> +#endif /* CONFIG_RISCV_USER_CFI */
-> +
-> +#endif /* __ASSEMBLY__ */
-> +
-> +#endif /* _ASM_RISCV_USERCFI_H */
-> diff --git a/arch/riscv/kernel/asm-offsets.c 
-> b/arch/riscv/kernel/asm-offsets.c
-> index cdd8f095c30c..5e1f412e96ba 100644
-> --- a/arch/riscv/kernel/asm-offsets.c
-> +++ b/arch/riscv/kernel/asm-offsets.c
-> @@ -43,8 +43,11 @@ void asm_offsets(void)
->  #ifdef CONFIG_SHADOW_CALL_STACK
->  	OFFSET(TASK_TI_SCS_SP, task_struct, thread_info.scs_sp);
->  #endif
-> -
->  	OFFSET(TASK_TI_CPU_NUM, task_struct, thread_info.cpu);
-> +#ifdef CONFIG_RISCV_USER_CFI
-> +	OFFSET(TASK_TI_CFI_STATUS, task_struct, thread_info.user_cfi_state);
-> +	OFFSET(TASK_TI_USER_SSP, task_struct, 
-> thread_info.user_cfi_state.user_shdw_stk);
-> +#endif
->  	OFFSET(TASK_THREAD_F0,  task_struct, thread.fstate.f[0]);
->  	OFFSET(TASK_THREAD_F1,  task_struct, thread.fstate.f[1]);
->  	OFFSET(TASK_THREAD_F2,  task_struct, thread.fstate.f[2]);
-> diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
-> index 63c3855ba80d..410659e2eadb 100644
-> --- a/arch/riscv/kernel/entry.S
-> +++ b/arch/riscv/kernel/entry.S
-> @@ -49,6 +49,21 @@ SYM_CODE_START(handle_exception)
->  	REG_S x5,  PT_T0(sp)
->  	save_from_x6_to_x31
-> 
-> +#ifdef CONFIG_RISCV_USER_CFI
-> +	/*
-> +	* we need to save cfi status only when previous mode was U
-> +	*/
-> +	csrr s2, CSR_STATUS
-> +	andi s2, s2, SR_SPP
-> +	bnez s2, skip_bcfi_save
-> +	/* load cfi status word */
-> +	lw s3, TASK_TI_CFI_STATUS(tp)
-> +	andi s3, s3, 1
-> +	beqz s3, skip_bcfi_save
-> +	csrr s3, CSR_SSP
-> +	REG_S s3, TASK_TI_USER_SSP(tp) /* save user ssp in thread_info */
-> +skip_bcfi_save:
-> +#endif
->  	/*
->  	 * Disable user-mode memory access as it should only be set in the
->  	 * actual user copy routines.
-> @@ -141,6 +156,16 @@ SYM_CODE_START_NOALIGN(ret_from_exception)
->  	 * structures again.
->  	 */
->  	csrw CSR_SCRATCH, tp
-> +
-> +#ifdef CONFIG_RISCV_USER_CFI
-> +	lw s3, TASK_TI_CFI_STATUS(tp)
-> +	andi s3, s3, 1
-> +	beqz s3, skip_bcfi_resume
-> +	REG_L s3, TASK_TI_USER_SSP(tp) /* restore user ssp from thread struct */
-> +	csrw CSR_SSP, s3
-> +skip_bcfi_resume:
-> +#endif
-> +
-
-We shouldn't need any of this in the entry/exit code, at least as long as
-the kernel itself is not using Zicfiss.  ssp can keep its value in the
-kernel and swap it on task switches.  Our entry/exit code is rather short
-and I'd like to keep it that way.
-
--s
-
->  1:
->  	REG_L a0, PT_STATUS(sp)
->  	/*
-> -- 
-> 2.43.0
+> That approach, or the current one, both have the same layering violation
+> that Christoph keeps telling you is wrong - you are looking at the page
+> itself in the IO path. What has been suggested is that the _issuer_ of
+> the IO, the one that actually deals with pages, is the one that should
+> be submitting IO at the right priority to begin with.
 >
+> Your approach tries to hack around the fact that this isn't done, and
+> hence is introducing a layering violation where the block layer now
+> needs to look at the page and adjust the priority. If the IO was
+> submitted with the right priority to begin with, you would not have this
+> issue at all.
+I have issued out v3 which provide new APIs to have submitter set
+bio's ioprio out of bio_add_page
 >
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> --
+> Jens Axboe
+>
 
