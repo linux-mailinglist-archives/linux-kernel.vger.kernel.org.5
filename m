@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-39165-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39166-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3019C83CBC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:00:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D20D283CBC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:01:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 541BC1C21B1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:00:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D207B2553C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:01:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF7D8137C2C;
-	Thu, 25 Jan 2024 18:59:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C76CD137C51;
+	Thu, 25 Jan 2024 19:00:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="mzBFM7Ae"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="kL9B3p5z"
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CD6F13666C;
-	Thu, 25 Jan 2024 18:59:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6278137C3D;
+	Thu, 25 Jan 2024 18:59:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706209196; cv=none; b=FhZ88U+G+Wm8GE5eQaehiLQvcLjGPi7OjYqSAvoRTENlVwykYMgYZJ5HjkS6cSX/pJCKPw4Jnlt/oiGEbTUGmkmjK/7d4TQ80Xpd0yJEfuqhp2TYk2mb1nWSAEFYMJ7aXi0N3OLvrDNqvQSBFgZPEhCCFjhDPg97+5r/SiPLNM4=
+	t=1706209201; cv=none; b=aSHSJieFRUgT1RyfqpoKXpe7kfr5Pv84sEQT8Rs3iRiMmH7MxiFhZRvPED0QeY8cGyshd7M5SHvUYetItJhq7Awkv74K3kYx7p2mm5fio7Aa85qdJv+Zawfl0tvub04iseJuokL55QEBKeiFIl6QOiJOzff34X02umgA6qdoSMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706209196; c=relaxed/simple;
-	bh=fpTese9gIlH1WCwAPDW0DDjFdbXCvm2928Iri2sfnxs=;
+	s=arc-20240116; t=1706209201; c=relaxed/simple;
+	bh=HDJDZ7O9mdNe/Y3AxDRfD6+ErhPOkpfNXxy4R/TlEVM=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MuYkei/3OiYn2SSadi5tApfC28sRBpjiE1cLzVMZauoapZ9NUNU29tYSLi2/IXc4MqK6dpEkKRy1EjOhTHjRN11qZOd8uXGcAkiHemczZtPlYnkLLoBDbL+IBU0ZeJYP4Z7Xr3iIv+tWOqyA9jUx6iGxG7tvx3mNeLvlad1cU8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=mzBFM7Ae; arc=none smtp.client-ip=205.220.180.131
+	 MIME-Version:Content-Type; b=OM+fbyx0YaC7wEkeavMeRaM6MLFL5ucMsOkUmLOVqWYBsuMQdfpcaL8+FBcUgEvX92e8a9oUsLNhbu2qbtOrjnrNbA5I8NFaZX6ultr+iu9ZijRKwejXFN1yrb4rxilnbNR8ZXixh8hjl13E4sqJkrJvC5uZOntZP8XdgXDramg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=kL9B3p5z; arc=none smtp.client-ip=205.220.180.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40PGcIkY000622;
-	Thu, 25 Jan 2024 18:59:51 GMT
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40PIB9qL007932;
+	Thu, 25 Jan 2024 18:59:56 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=xwsHnspD3F6FqsW0ik8HKmLR/lXIqpQSci9/qLynE4s=; b=mz
-	BFM7AesJd8i+8U0NWsQqhyVjWuG8Nacvmh1luDSghpYjCSzyYS9c0MjSmhHOg/LW
-	G7KlN0y9p4RUwuGzPDdm3n5wSktXhEmuZ5OpTSjB5DJzclmSxqgMQANWXmB9TNo4
-	Hdrr7s0mDuKDA54XdOchm32mcJ9zv7C7eS+Pmd4rNwC3zWjO7TmaX2h9DAjWX9R3
-	09Ee1Ake3+aB5JLSoMQ4qifrQirqiksi2Aepk3xVdlTmumYpzM3TFqABkbWgsKvj
-	TqnnZyLuO9pQSu6jV8LM9Ps2ybA2rV5VB/cPuovelSO8qZY2RoOlv5OeR5K4NGwq
-	lh6gUXhZK33Uggs0lyTw==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vup5csdve-1
+	qcppdkim1; bh=JAN4K8Xa62IAsqf/M72hM6xabS3g3wSCJxBQxVgkqKM=; b=kL
+	9B3p5z+HiJSSWJFL1Bmm3qDUPMvx7CCrfyoPrQqOyfAfY93afoP7mLAkkItKSZuY
+	cQop515lfjGx9LKwByW1XxHgTfRjJpNc/DSm8xkUcRaT06t+How46xv/XMqKvaAs
+	4e1LkkDa0cpQ1RDi5r7x8cbJ1sgNpI31Lcylqc3LGGVH1uINxYkveKtb4X5mqzTK
+	NtIROhshOjEyG5To8NuP/MS5TVnRU1jdVGmaH8tULFhuJBWZHAR5fimup2Z/X8DS
+	iT93SqQyynjIdAdP9qNwmAmk/qIJgNzOiuH0JrEEIpHiiPVHNMxbNX9txD1751YL
+	befFIifFNjrySozzBzvQ==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vupy897ky-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Jan 2024 18:59:50 +0000 (GMT)
+	Thu, 25 Jan 2024 18:59:55 +0000 (GMT)
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40PIxnZq009334
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40PIxsaf017202
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Jan 2024 18:59:50 GMT
+	Thu, 25 Jan 2024 18:59:54 GMT
 Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 25 Jan 2024 10:59:46 -0800
+ 15.2.1118.40; Thu, 25 Jan 2024 10:59:50 -0800
 From: Krishna Kurapati <quic_kriskura@quicinc.com>
 To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Rob Herring
@@ -67,9 +67,9 @@ To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 CC: <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <quic_ppratap@quicinc.com>,
         <quic_jackp@quicinc.com>, Krishna Kurapati <quic_kriskura@quicinc.com>
-Subject: [PATCH v3 3/4] arm64: dts: qcom: Fix hs_phy_irq for SDM670/SDM845/SM6350
-Date: Fri, 26 Jan 2024 00:29:20 +0530
-Message-ID: <20240125185921.5062-4-quic_kriskura@quicinc.com>
+Subject: [PATCH v3 4/4] arm64: dts: qcom: Add missing interrupts for qcs404/ipq5332
+Date: Fri, 26 Jan 2024 00:29:21 +0530
+Message-ID: <20240125185921.5062-5-quic_kriskura@quicinc.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20240125185921.5062-1-quic_kriskura@quicinc.com>
 References: <20240125185921.5062-1-quic_kriskura@quicinc.com>
@@ -85,134 +85,81 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Y9aykyegFV2tLKf1nWbqkv1HeCjvyAg4
-X-Proofpoint-ORIG-GUID: Y9aykyegFV2tLKf1nWbqkv1HeCjvyAg4
+X-Proofpoint-GUID: Xc1Pb3bBJfh54XCTb1wgQNi8qdmt51Mf
+X-Proofpoint-ORIG-GUID: Xc1Pb3bBJfh54XCTb1wgQNi8qdmt51Mf
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-01-25_12,2024-01-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- suspectscore=0 phishscore=0 malwarescore=0 mlxlogscore=682 clxscore=1015
- bulkscore=0 lowpriorityscore=0 impostorscore=0 spamscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2401250137
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 lowpriorityscore=0 clxscore=1015 mlxscore=0
+ adultscore=0 phishscore=0 bulkscore=0 malwarescore=0 mlxlogscore=276
+ impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2401190000 definitions=main-2401250137
 
-For sm6350/sdm670/sdm845, although they are qusb2 phy targets, dp/dm
-interrupts are used for wakeup instead of qusb2_phy irq. These targets
-were part of a generation that were the last ones to implement QUSB2 PHY
-and the design incorporated dedicated DP/DM interrupts which eventually
-carried forward to the newer femto based targets.
+For qcs404 and ipq5332, certain interrupts are missing in DT.
+Add them to ensure they are in accordance to bindings.
 
-Add the missing pwr_event irq for these targets. Also modify order of
-interrupts in accordance to bindings update. Modifying the order of these
-interrupts is harmless as the driver tries to get these interrupts from DT
-by name and not by index.
+The interrupts added enable remote wakeup functionality for these SoCs.
 
 Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
 ---
- arch/arm64/boot/dts/qcom/sdm670.dtsi | 14 +++++++++-----
- arch/arm64/boot/dts/qcom/sdm845.dtsi | 28 ++++++++++++++++++----------
- arch/arm64/boot/dts/qcom/sm6350.dtsi | 13 ++++++++-----
- 3 files changed, 35 insertions(+), 20 deletions(-)
+ arch/arm64/boot/dts/qcom/ipq5332.dtsi |  8 ++++++--
+ arch/arm64/boot/dts/qcom/qcs404.dtsi  | 16 ++++++++++++++++
+ 2 files changed, 22 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm670.dtsi b/arch/arm64/boot/dts/qcom/sdm670.dtsi
-index 4d7b77a23159..80e81c4233b3 100644
---- a/arch/arm64/boot/dts/qcom/sdm670.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm670.dtsi
-@@ -1320,12 +1320,16 @@ usb_1: usb@a6f8800 {
- 					  <&gcc GCC_USB30_PRIM_MASTER_CLK>;
- 			assigned-clock-rates = <19200000>, <150000000>;
+diff --git a/arch/arm64/boot/dts/qcom/ipq5332.dtsi b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
+index 42e2e48b2bc3..770d9c2fb456 100644
+--- a/arch/arm64/boot/dts/qcom/ipq5332.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
+@@ -320,8 +320,12 @@ usb: usb@8af8800 {
+ 			compatible = "qcom,ipq5332-dwc3", "qcom,dwc3";
+ 			reg = <0x08af8800 0x400>;
  
--			interrupts-extended = <&intc GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
--					      <&pdc 6 IRQ_TYPE_LEVEL_HIGH>,
-+			interrupts-extended = <&intc GIC_SPI 130 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&intc GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&pdc 9 IRQ_TYPE_EDGE_BOTH>,
- 					      <&pdc 8 IRQ_TYPE_EDGE_BOTH>,
--					      <&pdc 9 IRQ_TYPE_EDGE_BOTH>;
--			interrupt-names = "hs_phy_irq", "ss_phy_irq",
--					  "dm_hs_phy_irq", "dp_hs_phy_irq";
-+					      <&pdc 6 IRQ_TYPE_LEVEL_HIGH>;
+-			interrupts = <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>;
+-			interrupt-names = "hs_phy_irq";
++			interrupts = <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 53 IRQ_TYPE_EDGE_BOTH>,
++				     <GIC_SPI 52 IRQ_TYPE_EDGE_BOTH>;
++			interrupt-names = "pwr_event",
++					  "dp_hs_phy_irq",
++					  "dm_hs_phy_irq";
+ 
+ 			clocks = <&gcc GCC_USB0_MASTER_CLK>,
+ 				 <&gcc GCC_SNOC_USB_CLK>,
+diff --git a/arch/arm64/boot/dts/qcom/qcs404.dtsi b/arch/arm64/boot/dts/qcom/qcs404.dtsi
+index 2f2eeaf2e945..a05d0234f7fc 100644
+--- a/arch/arm64/boot/dts/qcom/qcs404.dtsi
++++ b/arch/arm64/boot/dts/qcom/qcs404.dtsi
+@@ -675,6 +675,14 @@ usb3: usb@7678800 {
+ 			assigned-clocks = <&gcc GCC_USB20_MOCK_UTMI_CLK>,
+ 					  <&gcc GCC_USB30_MASTER_CLK>;
+ 			assigned-clock-rates = <19200000>, <200000000>;
++
++			interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 319 IRQ_TYPE_LEVEL_HIGH>;
 +			interrupt-names = "pwr_event",
 +					  "hs_phy_irq",
-+					  "dp_hs_phy_irq",
-+					  "dm_hs_phy_irq",
-+					  "ss_phy_irq";
++					  "qusb2_phy";
++
+ 			status = "disabled";
  
- 			power-domains = <&gcc USB30_PRIM_GDSC>;
- 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index c2244824355a..7f35c47817f4 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -4058,12 +4058,16 @@ usb_1: usb@a6f8800 {
- 					  <&gcc GCC_USB30_PRIM_MASTER_CLK>;
- 			assigned-clock-rates = <19200000>, <150000000>;
- 
--			interrupts-extended = <&intc GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
--					      <&pdc_intc 6 IRQ_TYPE_LEVEL_HIGH>,
-+			interrupts-extended = <&intc GIC_SPI 130 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&intc GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&pdc_intc 9 IRQ_TYPE_EDGE_BOTH>,
- 					      <&pdc_intc 8 IRQ_TYPE_EDGE_BOTH>,
--					      <&pdc_intc 9 IRQ_TYPE_EDGE_BOTH>;
--			interrupt-names = "hs_phy_irq", "ss_phy_irq",
--					  "dm_hs_phy_irq", "dp_hs_phy_irq";
-+					      <&pdc_intc 6 IRQ_TYPE_LEVEL_HIGH>;
+ 			usb3_dwc3: usb@7580000 {
+@@ -704,6 +712,14 @@ usb2: usb@79b8800 {
+ 			assigned-clocks = <&gcc GCC_USB20_MOCK_UTMI_CLK>,
+ 					  <&gcc GCC_USB_HS_SYSTEM_CLK>;
+ 			assigned-clock-rates = <19200000>, <133333333>;
++
++			interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 318 IRQ_TYPE_LEVEL_HIGH>;
 +			interrupt-names = "pwr_event",
 +					  "hs_phy_irq",
-+					  "dp_hs_phy_irq",
-+					  "dm_hs_phy_irq",
-+					  "ss_phy_irq";
++					  "qusb2_phy";
++
+ 			status = "disabled";
  
- 			power-domains = <&gcc USB30_PRIM_GDSC>;
- 
-@@ -4109,12 +4113,16 @@ usb_2: usb@a8f8800 {
- 					  <&gcc GCC_USB30_SEC_MASTER_CLK>;
- 			assigned-clock-rates = <19200000>, <150000000>;
- 
--			interrupts-extended = <&intc GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>,
--					      <&pdc_intc 7 IRQ_TYPE_LEVEL_HIGH>,
-+			interrupts-extended = <&intc GIC_SPI 135 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&intc GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&pdc_intc 11 IRQ_TYPE_EDGE_BOTH>,
- 					      <&pdc_intc 10 IRQ_TYPE_EDGE_BOTH>,
--					      <&pdc_intc 11 IRQ_TYPE_EDGE_BOTH>;
--			interrupt-names = "hs_phy_irq", "ss_phy_irq",
--					  "dm_hs_phy_irq", "dp_hs_phy_irq";
-+					      <&pdc_intc 7 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "pwr_event",
-+					  "hs_phy_irq",
-+					  "dp_hs_phy_irq",
-+					  "dm_hs_phy_irq",
-+					  "ss_phy_irq";
- 
- 			power-domains = <&gcc USB30_SEC_GDSC>;
- 
-diff --git a/arch/arm64/boot/dts/qcom/sm6350.dtsi b/arch/arm64/boot/dts/qcom/sm6350.dtsi
-index 43cffe8e1247..2fd363953bdc 100644
---- a/arch/arm64/boot/dts/qcom/sm6350.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm6350.dtsi
-@@ -1830,12 +1830,15 @@ usb_1: usb@a6f8800 {
- 				      "mock_utmi";
- 
- 			interrupts-extended = <&intc GIC_SPI 130 IRQ_TYPE_LEVEL_HIGH>,
--					      <&pdc 17 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&intc GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&pdc 14 IRQ_TYPE_EDGE_BOTH>,
- 					      <&pdc 15 IRQ_TYPE_EDGE_BOTH>,
--					      <&pdc 14 IRQ_TYPE_EDGE_BOTH>;
--
--			interrupt-names = "hs_phy_irq", "ss_phy_irq",
--					  "dm_hs_phy_irq", "dp_hs_phy_irq";
-+					      <&pdc 17 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "pwr_event",
-+					  "hs_phy_irq",
-+					  "dp_hs_phy_irq",
-+					  "dm_hs_phy_irq",
-+					  "ss_phy_irq";
- 
- 			power-domains = <&gcc USB30_PRIM_GDSC>;
- 
+ 			usb@78c0000 {
 -- 
 2.42.0
 
