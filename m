@@ -1,137 +1,100 @@
-Return-Path: <linux-kernel+bounces-38974-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38975-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE5C983C93C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:05:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C7B683C940
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:05:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FC991F253AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:05:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3220928FAB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:05:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 190881419B2;
-	Thu, 25 Jan 2024 16:55:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CDB8136671;
+	Thu, 25 Jan 2024 16:55:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j2Jv9J93"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IYYFaX1C";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="dhtglBwj"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 564AF136656;
-	Thu, 25 Jan 2024 16:55:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E94A130E4C;
+	Thu, 25 Jan 2024 16:55:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706201723; cv=none; b=BapWVg0dmlMZYgiR8Sstp0Zo46X0IZmvuAt5+FCRLWnH27UTpmAziOHqddLIl3GPG6U5Rqgusql0Y4MmRjER2KvMDSUADyizwn6guy6MYJWnPoVsAHeYlKxr6lNmlqs5OCW60Ptmw4oCeLDI5ADrLyH2tKShHU2IglUf0JkF/rU=
+	t=1706201758; cv=none; b=Te9Buf2bpKYQDqOT0zVmhBb54iNPmrY1w4GCctKClzd5qODfgIYq1xOlqOselitMe3HFTn9YzNLYpJh1PbqzbEm/SiacQol/B6dFOzAPrOmYIkpQKYRM/kYq7cl8oPJhlJo6kBT2+GdNtICojKkTh8ChNYfUFU5U+btclZaExPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706201723; c=relaxed/simple;
-	bh=pzjRcCGvrsjo3wuH+LeThDxqSyRY109U181HGTQgYHI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ahQxjzzNORo8a6bJ1FAJVPDgRfkUat/BLGuWY7EM1CKoNdZ/4pyvzUaz3+qnuYbYEzUnrZvIfDvKl0r7cCG/0xCdKBzBCFEMXwVSoDw6l2DqZTzb3EvJrWc5t8URkkbX3NrGKUkGQjBpUG1t03PVUFQSE1Tz0fVuDMzOsqS3KWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j2Jv9J93; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63A27C433F1;
-	Thu, 25 Jan 2024 16:55:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706201722;
-	bh=pzjRcCGvrsjo3wuH+LeThDxqSyRY109U181HGTQgYHI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=j2Jv9J93Su2HLrEG9Sx7oSAjZoSHRJ5+MYJbKCVavuZK+VZUD5YkUmCy6h6DsKfZL
-	 5W4qHcJQBvcVA6WE1wFIH1mmGWjfkGAcz8SovM15ACUcODxk4wlLi+cq644voaGZbz
-	 p/ZwhcO4z6syo2SDD+gB/uVcTpr2g2FY6T5ylpUkdVINS7km6+1KRt1C23hulVWVai
-	 wTRFAzMIrgGHuGMaM/o2MIo6YrEnwDu5fnQVh7tLCFTP6OcV7IrDP60d4AF8zS87FV
-	 3M89bQUVnb2hE1KHhCw5w6g2RGdV9/7I0nodOe7c4VMlzWEVcsVsfwfrBxwAylo/FJ
-	 VNfn8o+eOM/+A==
-Date: Thu, 25 Jan 2024 17:55:17 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: syzbot <syzbot+fb337a5ea8454f5f1e3f@syzkaller.appspotmail.com>, 
-	hdanton@sina.com, jack@suse.cz, jfs-discussion@lists.sourceforge.net, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, shaggy@kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [jfs?] INFO: task hung in path_mount (2)
-Message-ID: <20240125-erwehren-wandbild-05bf05ac9122@brauner>
-References: <00000000000083513f060340d472@google.com>
- <000000000000e5e71a060fc3e747@google.com>
- <20240125-legten-zugleich-21a988d80b45@brauner>
- <11868eb4-0528-4298-b8bc-2621fd1aac83@kernel.dk>
- <20240125-addition-audienz-c955ab3c8435@brauner>
- <e0a1fcc8-40ce-4c96-bba5-95a9641cb076@kernel.dk>
+	s=arc-20240116; t=1706201758; c=relaxed/simple;
+	bh=ev6BXcPHhv7hS7Msyu1jtYzNEvqf40KXNLQ0snfhHq8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=LDPFp+ZDzRGB2TCHxp/yfZVps3Rq7H82kIWPjYZ9DgOkV+wMAoTCKlrAdHUWWSsOTK1SBWat3r9ays/xLIzqxe75VMLljC+maXm+WQc2oGC7b6hEfWb6G+AIhf51ggLBBLztM9LmY+mT0G01Ll6hW1H/6I+r7/hzeechttsmpSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=IYYFaX1C; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=dhtglBwj; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706201754;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=92eY21xw230GFaL41ki63jBw0c9iPkoZ86cyJ3/UBuE=;
+	b=IYYFaX1CoPZKZ22c4E20tWimlLKl43pFyO/pydrGFhb3jKmR/0qffOL5o6Pc7a6ARLtL5X
+	cx7d/E6Kqxwzon8E1NiV9zpyFr6Hb+G203Lb44AHFg3Qh9I/s8HlaDXTjqd6ueVdD3Ey3L
+	f9r2F7a418aL1JytoctvHEABzFc7spyfeVDGlsY5iHjdYN0/5VO6IyRXwh858CxoL1fAqg
+	ezIjbD/nlZ+ovdWu7vLp2QNU9/y8m4evdrS3h9uskmhj+J58V11BcunV5Bh68wSQbOU1JC
+	OpD3rfSKR/YQ+OuaUnbv++/omkHjFRWmbPeVUHT+pe4/ukgxO2+uPlNsbFoNbg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706201754;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=92eY21xw230GFaL41ki63jBw0c9iPkoZ86cyJ3/UBuE=;
+	b=dhtglBwj2v1Tv9I9JA58q4T+sG6vEy/szyfd4g6YVrOv3Iw+digC76dDrnMyo5yeermLWM
+	PK750z3a/vS3/JCg==
+To: Jani Nikula <jani.nikula@linux.intel.com>, Jonathan Corbet
+ <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>,
+ linux-kernel@vger.kernel.org
+Cc: Thomas Gleixner <tglx@linutronix.de>, Frederic Weisbecker
+ <frederic@kernel.org>, Ingo Molnar <mingo@kernel.org>, John Stultz
+ <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>, Clemens Ladisch
+ <clemens@ladisch.de>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH 6/8] Documentation: Create a new folder for all timer
+ internals
+In-Reply-To: <87y1cdjuwk.fsf@intel.com>
+References: <20240123164702.55612-1-anna-maria@linutronix.de>
+ <20240123164702.55612-7-anna-maria@linutronix.de>
+ <8eac7bf0-86c5-43ef-99e0-0896c994184a@infradead.org>
+ <87o7d9d7dd.fsf@somnus> <87plxpbgpz.fsf@meer.lwn.net>
+ <87y1cdjuwk.fsf@intel.com>
+Date: Thu, 25 Jan 2024 17:55:54 +0100
+Message-ID: <87wmrxbbdx.fsf@somnus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e0a1fcc8-40ce-4c96-bba5-95a9641cb076@kernel.dk>
+Content-Type: text/plain
 
-On Thu, Jan 25, 2024 at 09:51:43AM -0700, Jens Axboe wrote:
-> On 1/25/24 9:47 AM, Christian Brauner wrote:
-> > On Thu, Jan 25, 2024 at 09:11:34AM -0700, Jens Axboe wrote:
-> >> On Thu, Jan 25, 2024 at 9:08?AM Christian Brauner <brauner@kernel.org> wrote:
-> >>>
-> >>> On Thu, Jan 25, 2024 at 03:59:03AM -0800, syzbot wrote:
-> >>>> syzbot suspects this issue was fixed by commit:
-> >>>>
-> >>>> commit 6f861765464f43a71462d52026fbddfc858239a5
-> >>>> Author: Jan Kara <jack@suse.cz>
-> >>>> Date:   Wed Nov 1 17:43:10 2023 +0000
-> >>>>
-> >>>>     fs: Block writes to mounted block devices
-> >>>>
-> >>>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13175a53e80000
-> >>>> start commit:   2ccdd1b13c59 Linux 6.5-rc6
-> >>>> git tree:       upstream
-> >>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=9c37cc0e4fcc5f8d
-> >>>> dashboard link: https://syzkaller.appspot.com/bug?extid=fb337a5ea8454f5f1e3f
-> >>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ba5d53a80000
-> >>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14265373a80000
-> >>>>
-> >>>> If the result looks correct, please mark the issue as fixed by replying with:
-> >>>
-> >>> #syz fix: fs: Block writes to mounted block devices
-> >>
-> >> Like Dave replied a few days ago, I'm kind of skeptical on all of these
-> >> bugs being closed by this change. I'm guessing that they are all
-> >> resolved now because a) the block writes while mounted option was set to
-> >> Y, and b) the actual bug is just masked by that.
-> >>
-> >> Maybe this is fine, but it does seem a bit... sketchy? The bugs aren't
-> >> really fixed, and what happens if someone doesn't turn on that option?
-> >> If it's required, perhaps it should not be an option at all? Though
-> >> that'd seem to be likely to break some funky use cases, whether they are
-> >> valid or not.
-> > 
-> > We have no way of actually testing or verifying this stuff and a lot of
-> > these have been around for a long time. For example, this report here
-> > has a C reproducer but following the actual dashboard link that
-> > reproducer is striked-through which supposedly means that it isn't valid
-> > or reliable. And no other reproducer ever showed up.
-> > 
-> > As far as I can see we should just close reports such as. If this is a
-> > real bug that is separate from the ability to mount to writed block
-> > devices then one should hope that syzbot finds another reproducer that
-> > let's us really analyze the bug?
-> > 
-> > A separate issue is that syzbot keeps suggesting as all of these being
-> > closable because of this. So how serious can we take this and how much
-> > time can/should we spend given that we got ~20 or more of these mails in
-> > the last two weeks or so.
-> > 
-> > I have no better answers than this tbh. And fwiw, apart from this one I
-> > haven't closed a single bug based on this.
-> 
-> Oh yeah, it wasn't directed at you specifically, just the overall class
-> of bugs that get closed due to this in general.
-> 
-> > And yes, ideally the ability to write to mounted block devices should be
-> > turned off. But we'll have to let it trickle into the individual
-> > distributions first and make remaining userspace tools that rely on this
-> > move to alternate apis before we can make any serious effort.
-> 
-> Hopefully it's all fine on the distro front and we can just make it the
-> default some years from now. May even make sense to backport some of
-> this to stable and get it in their hands faster?
+Jani Nikula <jani.nikula@linux.intel.com> writes:
 
-Yes, I agree that this would be good.
+> On Thu, 25 Jan 2024, Jonathan Corbet <corbet@lwn.net> wrote:
+>>
+>> I've thought for a while that we should have a standard warning or two
+>> along these lines, like Wikipedia does, but of course haven't done
+>> anything about it.
+>
+> One approach could be to use the todo extension [1], and use todo
+> directives instead of warnings. With todo_include_todos config set to
+> True, you get the banners in the code, but it's more of an invitation
+> for people to fix them. Maybe. :)
+>
+
+This might be a bit more positive than the red warning box. But with
+this todo extension, the box is simply grey and might be easier to
+ignore (I don't know if it is that easy to change the appearance).
+
+Thanks,
+
+	Anna-Maria
 
