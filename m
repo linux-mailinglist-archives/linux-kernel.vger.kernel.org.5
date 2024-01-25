@@ -1,139 +1,123 @@
-Return-Path: <linux-kernel+bounces-38158-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4EAD83BBBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:21:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57B8883BBC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:22:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DECB51C22665
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:21:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1085F2848ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:22:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2ECE175B1;
-	Thu, 25 Jan 2024 08:21:23 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43F74175BC;
+	Thu, 25 Jan 2024 08:22:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="VR9hxFam"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5446F13FFD
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:21:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B47C417588;
+	Thu, 25 Jan 2024 08:22:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706170883; cv=none; b=AQdDSR7oxZuPENfit9qdhY83lWDhQCUFqLlmJpxNthwAbPR99LtLN2XXgFpYBgHt7c+vlY2QuHMdo7fKMufzZ4bJPewFmx5idN8DR033ww0WbMNMnytvdwJCpTUkTnFfC4onNnS+RpxHa1j1iKtfS2GszT0I1dMZIe+qNo92ygc=
+	t=1706170961; cv=none; b=bUUMdRB+dt5RUZRjz7Ri82R9U/9lH3DPvFbsr93Y2HLtSZGSc+UhBuqWhj7HRq4kROiDxKo3+87eQDuTtSIg3IoOTY1L/Fm6131JGX/ZAZ+FLCmu0w+AFqGmH2NdHMlt1MTX8/Mmn561z+SylnOEr4yeXkfGmvdqsWnuwj+NC3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706170883; c=relaxed/simple;
-	bh=cxuqcr1pKgjBMew+4nHE9siyrzEAAX1kfp+W57MbEuo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iU0mBjFfxAuABPEKqJ4ZiLeNNJdxlL7vS6TFJJPLnD+m3B4ED0JQ27euBWeU5aZVzLyV7o7CPAVOj6Ec2PYbVPmwSyO3NpzCjC0yUjJeaGpq6GEmRPQfa/7yqucU/PogmUUVo5iCfOUWMDrQf9NbeQnpqL1sL7Jp9brELiJLOwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 28377b4fc3ba46d69d1bdf08664895d9-20240125
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:24c280cf-efdb-45d6-a95a-bb7bb1f1d273,IP:20,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:5
-X-CID-INFO: VERSION:1.1.35,REQID:24c280cf-efdb-45d6-a95a-bb7bb1f1d273,IP:20,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:5
-X-CID-META: VersionHash:5d391d7,CLOUDID:6237be7f-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:240125144931KQV0B0BI,BulkQuantity:5,Recheck:0,SF:38|24|17|19|44|64|6
-	6|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,
-	COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 28377b4fc3ba46d69d1bdf08664895d9-20240125
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 1000393714; Thu, 25 Jan 2024 16:21:10 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 4B2DDE000EB9;
-	Thu, 25 Jan 2024 16:21:10 +0800 (CST)
-X-ns-mid: postfix-65B219F6-201682428
-Received: from [172.20.15.234] (unknown [172.20.15.234])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 1C8C5E000EB9;
-	Thu, 25 Jan 2024 16:21:00 +0800 (CST)
-Message-ID: <0cc62f04-ce60-42ed-89c9-ce8b1ce26ce7@kylinos.cn>
-Date: Thu, 25 Jan 2024 16:20:59 +0800
+	s=arc-20240116; t=1706170961; c=relaxed/simple;
+	bh=kzl7T5i340HyxSsb6EuzdgzNJ2C7Gyw5WoLYTyLp2Sk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=irK2/ZNfkbwksKfv0hwwS659eUh3hRysN8UIoTogzf8mDUKufKqkH9PsurEIXg762rtC9k6GfTd2j2EvJacO4+vSPQnorhRq/z6T86TCSvPMAG4AGeUHBucTXbwXN0zyLPB5jqPp/0kS8yuLv/x/iCH4KKHq5fyhVosJLsGKXIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=VR9hxFam; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8423C1BF20B;
+	Thu, 25 Jan 2024 08:22:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706170956;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mfTST55I42VzaDvOMmCyzlbKGUX1F47dp8ViDve0Oew=;
+	b=VR9hxFamSIyqRfpdhMXd39umlqM0aoECc+duJd6cJREz0HlQyGlGRtsmdqXr/S2ezWfgy2
+	Rb4vMC7/Z1BdyaTxxmQZgA0fQyxbRnTIrKA5xDG5ilbNbIBFBPg27lkYT3c8qjySCWG6QA
+	oAaYT8Qh9NO6qFc+/Gc/Eq6sjHVG+cb8nI8b05agZuxtr1dK6sYeEknmLOVxIPqZ28hS0r
+	rkzjDwo7JCfe7YvWUS5Hu9eiciJGL+YBj3edR3MVpgD8qDuAYjWxX/UKZrPR9EMtzlOFy2
+	/mrkfdCYP5Z0093MTysFglWyp7SEGR2kcQ6bsC8XuTV1/NyGIIGxOv6ZkkHWWg==
+Date: Thu, 25 Jan 2024 09:22:25 +0100
+From: Maxime Chevallier <maxime.chevallier@bootlin.com>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ thomas.petazzoni@bootlin.com, Eric Dumazet <edumazet@google.com>, Paolo
+ Abeni <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
+ linux-arm-kernel@lists.infradead.org, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, Herve Codina <herve.codina@bootlin.com>,
+ Florian Fainelli <f.fainelli@gmail.com>, Heiner Kallweit
+ <hkallweit1@gmail.com>, Vladimir Oltean <vladimir.oltean@nxp.com>,
+ =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>, Jesse Brandeburg
+ <jesse.brandeburg@intel.com>, Jonathan Corbet <corbet@lwn.net>, Marek
+ =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>, Piergiorgio Beruto
+ <piergiorgio.beruto@gmail.com>, Oleksij Rempel <o.rempel@pengutronix.de>,
+ =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>, Simon Horman
+ <horms@kernel.org>
+Subject: Re: [PATCH net-next v5 07/13] net: ethtool: Introduce a command to
+ list PHYs on an interface
+Message-ID: <20240125092225.45cdaa09@device-28.home>
+In-Reply-To: <1092441f-c347-4f61-8405-7cc8a07d5850@lunn.ch>
+References: <20231221180047.1924733-1-maxime.chevallier@bootlin.com>
+	<20231221180047.1924733-8-maxime.chevallier@bootlin.com>
+	<20240104153401.08ff9809@kernel.org>
+	<20240105104311.03a35622@device-28.home>
+	<2c955f94-7c95-4f66-b739-f0967ec9c171@lunn.ch>
+	<20240124145033.1c711fd1@device-28.home>
+	<1092441f-c347-4f61-8405-7cc8a07d5850@lunn.ch>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] powerpc/iommu: Code cleanup for cell/iommu.c
-To: Christophe Leroy <christophe.leroy@csgroup.eu>,
- "arnd@arndb.de" <arnd@arndb.de>, "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
- "npiggin@gmail.com" <npiggin@gmail.com>,
- "aneesh.kumar@kernel.org" <aneesh.kumar@kernel.org>,
- "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>
-Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240125024633.512513-1-chentao@kylinos.cn>
- <7cdfcfc3-fc9e-433d-8992-7782d641cb94@csgroup.eu>
-Content-Language: en-US
-From: Kunwu Chan <chentao@kylinos.cn>
-In-Reply-To: <7cdfcfc3-fc9e-433d-8992-7782d641cb94@csgroup.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: maxime.chevallier@bootlin.com
 
-On 2024/1/25 14:49, Christophe Leroy wrote:
->=20
->=20
-> Le 25/01/2024 =C3=A0 03:46, Kunwu Chan a =C3=A9crit=C2=A0:
->> This part was commented from commit 165785e5c0be ("[POWERPC] Cell
->> iommu support") in about 17 years before.
->>
->> If there are no plans to enable this part code in the future,
->> we can remove this dead code.
->>
->> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
->> ---
->>    arch/powerpc/platforms/cell/iommu.c | 16 ----------------
->>    1 file changed, 16 deletions(-)
->>
->> diff --git a/arch/powerpc/platforms/cell/iommu.c b/arch/powerpc/platfo=
-rms/cell/iommu.c
->> index 1202a69b0a20..afce9e64a443 100644
->> --- a/arch/powerpc/platforms/cell/iommu.c
->> +++ b/arch/powerpc/platforms/cell/iommu.c
->> @@ -424,22 +424,6 @@ static void __init cell_iommu_setup_hardware(stru=
-ct cbe_iommu *iommu,
->>    	cell_iommu_enable_hardware(iommu);
->>    }
->>   =20
->> -#if 0/* Unused for now */
->> -static struct iommu_window *find_window(struct cbe_iommu *iommu,
->> -		unsigned long offset, unsigned long size)
->> -{
->> -	struct iommu_window *window;
->> -
->> -	/* todo: check for overlapping (but not equal) windows) */
->> -
->> -	list_for_each_entry(window, &(iommu->windows), list) {
->> -		if (window->offset =3D=3D offset && window->size =3D=3D size)
->> -			return window;
->> -	}
->> -
->> -	return NULL;
->> -}
->> -#endif
->=20
-> Same as the other one, please remove the second blank line, don't leave
-> two blank lines between the remaining functions.
-Thanks for your reply.
+On Wed, 24 Jan 2024 17:54:53 +0100
+Andrew Lunn <andrew@lunn.ch> wrote:
 
-I'll check my patches and update in v2.
+> > > Another option might be to add PHY support to netdevsim. Add a debugfs
+> > > interface to allow you to create arbitrary PHY topologies? You can
+> > > then even add a test script.  
+> > 
+> > Sorry for the delayed answer, I just took a few hours to give it a try,
+> > and I was able to spin some very basic PHY support for the netdevsim,
+> > allowing to attach arbitrary instances of fixed_phy devices. I can
+> > therefore use that as a mean of testing the dump operation, I'll try to
+> > include that in the next iteration, that should pave the way for some
+> > testability of more PHY stuff hopefully.  
+> 
+> Great that you looked at this.
+> 
+> FYI: Jakub would like to see changes to netdevsim accompanied with
+> self tests making you of the features you add. There is also now a
+> build bot running the self tests against net-next, so these tests
+> should get run quite frequently.
 
->=20
->>   =20
->>    static inline u32 cell_iommu_get_ioid(struct device_node *np)
->>    {
---=20
+No problem, I'll include these as well.
+
+I do face a problem with fixed_phy though now that I've played around
+with it. As fixed_phys share the same global MDIO bus, what can happen
+is that netdevsim-registered PHYs can starve the dummy MDIO bus by
+exhausting all 32 mdio addresses, preventing real interfaces from
+getting their own fixed-phy instance.
+
+I'll probably register a dedicated mdio bus per netdevsim (or even
+per-phy, so that we can imagine controling the returned register
+values), let's see how it goes.
+
 Thanks,
-   Kunwu
 
+Maxime
 
