@@ -1,105 +1,87 @@
-Return-Path: <linux-kernel+bounces-39135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6407A83CB47
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:40:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 337DF83CB4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:40:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 968CC1C2437E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:40:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E09682916CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:40:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24F6A433D4;
-	Thu, 25 Jan 2024 18:40:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A3701339B5;
+	Thu, 25 Jan 2024 18:40:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cIm1/Fac"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="hfPIS3KF"
+Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFED11BDD6
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 18:40:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 453F11BDD6;
+	Thu, 25 Jan 2024 18:40:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706208006; cv=none; b=J5QSink/oIAmsRXr2tKfu4ZNhdGAjwhMXkZxtx/tNbYig6u/OUOAXvX/rmF8HoH+G4OodXDh4J886wtXQOMVXoycZWnjHZiAaja/hnVRwN6EOMqkFkyi+/26ePVapNBanWMmz0n0S8uJcwiyMYA5RKVO7bXUqFPpNw9fH3DZrkQ=
+	t=1706208012; cv=none; b=fdohhGciMGH/iFwPkFA+NUIf7erkVjLhTn6OMnOdxD0Mo8+R6iEil7NbEGt5oSG/lWjeP4lEiYkusegYGE5qUpSKEMZvRi1kQpAzK+hA4Qc4bMUdoxvJNtAGQeZxF+u0/kCxWyZBQLgBe6ojN4zyyjmMPJ6RHe2gp76nVFaLiw0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706208006; c=relaxed/simple;
-	bh=3CLSfBfENYV5XhGFt9BT6JPp3GQDXIfg6Fvv887gOHs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RNju42Enopnnmo2gfRnSp50lxgo/zDfNiGX81TMz+BgzrfRq8Rf2ygPhhX04LpV9KrAL6QUbZEGeMbonnk0CQKFtjre9n2SltIROGfBoHdyIdWd93srp7o9Hlj/sygJBHbNbnqsPX8dD8ullUlLIbFSJO9SmgLLZ1oR+5cRLC10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cIm1/Fac; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40ec6a002a7so24374215e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 10:40:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706208003; x=1706812803; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ijNUk4GYjeMZUPqqpKW/HBBXeKe2nIxIazswVza/uWI=;
-        b=cIm1/FacjduA6J7t51hVnNxIeW5+u3kIuIy7XosAt0zR4ZGSrDR8yarvpGvvAPhnpl
-         3E4ea9UWj38pAxN+bjyil67eMTzzaz7HNMsyX2exLH+D/15cEQCkt5sOZQdj29Azh9hP
-         TJT7w+q2gJVn24uMguoUkb5yddwEs8iu7SMtjqZkiUehbH9QjUao3Qmsl0sttCj+qSCB
-         Bgwe9wNZ+vXplSLLojzmd2k+gzYjSL1HUUvxmRT378sR8t0vYaarHW2OqG1aJrK309mx
-         mw6Jlelx0v/K1zh+4oxz0YS6hU8SgFPrMye2xbVFwQ2SnPcrPQ/khpkUFlbMfmZlI/Id
-         8JrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706208003; x=1706812803;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ijNUk4GYjeMZUPqqpKW/HBBXeKe2nIxIazswVza/uWI=;
-        b=PsZB/3l4ALjzMU6ZWRBuigO2sDUEt6CWGI0EgyGXrIwuAJ8CvQ0yw/FMTgdD7SGCbs
-         TeWOhRUXY+3Noja1gVmkHnL9sVwJwF4FP3p0EvryuKgtvwb3Qg7j9k8/zgyuhf0VG+c4
-         3rzaPCpM87EIaZMYaG9v4l9PAq0B+nM7f1ZaAghBGdNLbd8geyIZhdDAQaeJw50Ctw3W
-         zvNJ6DuBUhI0WakaAS7+nuHVn3NAbRCW8Az2jtk3I74HycV3FyOBV3emGm8+oZCH3ot+
-         XmpM94+Y23sQ1UNWqPsSHAZbeYr8vftSf4iGTis7/fBUE3vVkouNy/xaq5NvHMNJLWxi
-         yxew==
-X-Gm-Message-State: AOJu0Yzb4XhG7JsU4jXq4rDGEP1FxHPlzcDdsGJKLfzFv8ZdUjQKB7+r
-	UQAiCNnyOGNoM1larrXNlPqtWlNTS7gNojUW57q3phma+O+N9tzXPTtsN9vli8NxjfCKRrEtsbH
-	Vmkuwl4aUcNcfMaIl51onRtC8lfQ=
-X-Google-Smtp-Source: AGHT+IFOTD9p6WHQQNRAhvudCfit2ywt8cabLRMyQged+rfhMS+N3QLgubrBSZkeRsD95lO+cLXJwVGlJodzKOSMljM=
-X-Received: by 2002:a05:600c:569a:b0:40e:48aa:c444 with SMTP id
- jt26-20020a05600c569a00b0040e48aac444mr65528wmb.213.1706208002791; Thu, 25
- Jan 2024 10:40:02 -0800 (PST)
+	s=arc-20240116; t=1706208012; c=relaxed/simple;
+	bh=gPo85dRXsQng8Kc2yz5uMF26Tfq8l5cUAj+CcLKGQZM=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=QCnBBxoHI6wTyCHRsUsLNeIUcL9t8s3f4wW1ygskiLpks78Au9oR8icUptf2zyyuuU1FO/T2CjYoRPTqgPpHLMM5zc/HtcxCkMVhBCnJBMAk5tKm3H6plEGVf9QH9E+x1kE4HN8qPIUU+aARJPJjBcBHUSwHLsdHDG/vHW7/Tpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=hfPIS3KF; arc=none smtp.client-ip=168.119.38.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID:Sender:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=gPo85dRXsQng8Kc2yz5uMF26Tfq8l5cUAj+CcLKGQZM=;
+	t=1706208010; x=1707417610; b=hfPIS3KFkiZUT6fwHEAiuWt+vuojHboyy34m3+TCnngS5qF
+	NqjFxky9pnTXnj1XLt2QYhr7akZZEKhsY/PPgqLHZiIj4C6ijqt4WgQmA+voWsww4fNUc8/ajkUvH
+	QOHdfKGeHyUntUHTKiCuIuKIqGdeUhsEWWccErN5gcn2azkUgxeh9wHjQFue/7x5J1sTD3037cBBm
+	idCU8VUuhT9Mb4lAePC1yc9Ogx/gXW3FTZ+Jb6E8Bo/BrcVlBD2QhwaZKCzXSCAlTilVyn1nARude
+	uZQEvFEap7Ul3XmhZ32fLV/UNUMcF7GiRQSo8QmrBL2iu04uGf1kQJPwxN6i9uVQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1rT4dr-0000000028p-3cQ3;
+	Thu, 25 Jan 2024 19:40:00 +0100
+Message-ID: <008b0c43d963276453f4913da0fb95fb29e5d4ff.camel@sipsolutions.net>
+Subject: Re: [PATCH wireless v2] nl80211/cfg80211: add nla_policy for S1G
+ band
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Jeff Johnson <quic_jjohnson@quicinc.com>, Lin Ma <linma@zju.edu.cn>, 
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com,  linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+  linux-kernel@vger.kernel.org, kvalo@kernel.org
+Date: Thu, 25 Jan 2024 19:39:58 +0100
+In-Reply-To: <d49f69f4-7f5c-498f-bb17-a636256d3245@quicinc.com>
+References: <20240119151201.8670-1-linma@zju.edu.cn>
+	 <9e1db7f3-fd18-4b3b-a912-3cf6efd96fed@quicinc.com>
+	 <590fe2823d934af997c515640733eb8889b0560f.camel@sipsolutions.net>
+	 <d80ae6ae-e1f2-48ef-b18a-29b5ca62e64c@quicinc.com>
+	 <d49f69f4-7f5c-498f-bb17-a636256d3245@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125182417.51898-1-jandryuk@gmail.com> <4f5117e3-4dfb-4b37-9ff4-b5f156494d94@intel.com>
-In-Reply-To: <4f5117e3-4dfb-4b37-9ff4-b5f156494d94@intel.com>
-From: Jason Andryuk <jandryuk@gmail.com>
-Date: Thu, 25 Jan 2024 13:39:51 -0500
-Message-ID: <CAKf6xptFyg=pRJAhEg=U2-6rKZVHv3yE4B8P+chcN6AdaK+mig@mail.gmail.com>
-Subject: Re: [PATCH] x86/mm/cpa-test: Correct length selection
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: linux-kernel@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-malware-bazaar: not-scanned
 
-On Thu, Jan 25, 2024 at 1:30=E2=80=AFPM Dave Hansen <dave.hansen@intel.com>=
- wrote:
->
-> On 1/25/24 10:24, Jason Andryuk wrote:
-> > The length of pages to modify corresponding to addr[i] is given in
-> > len[i].  Remove the hard coded 1.
-> >
-> > Signed-off-by: Jason Andryuk <jandryuk@gmail.com>
-> > ---
-> > This is a typo, right?  The other cases use len[i].
->
-> Sure looks like it to me.
->
-> Any idea how this could have gone unnoticed for 5 years?
+On Thu, 2024-01-25 at 10:32 -0800, Jeff Johnson wrote:
+>=20
+> OK, I have investigated this and based upon the investigation this can
+> be removed (except for keeping the now obsolete uapi bits). This was
+> done in preparation for supporting a new Android interface in the
+> out-of-tree Android driver, but that interface was subsequently
+> withdrawn by Google.
+>=20
+> Johannes, do you want to handle this? Or should I?
 
-Not really, which is why I wondered if I was missing something.
+Would be great if you could send a patch, thanks!
 
-Regards,
-Jason
+johannes
 
