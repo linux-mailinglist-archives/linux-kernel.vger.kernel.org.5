@@ -1,180 +1,171 @@
-Return-Path: <linux-kernel+bounces-39310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D6D483CE97
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:27:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA7C083CE9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:28:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DB6029A088
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:27:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C24D2B26BA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:28:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2821A13A27C;
-	Thu, 25 Jan 2024 21:27:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="VGePd2WO"
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2073.outbound.protection.outlook.com [40.107.9.73])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5215813A26B;
+	Thu, 25 Jan 2024 21:28:30 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53A1113A262;
-	Thu, 25 Jan 2024 21:27:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.9.73
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706218053; cv=fail; b=pJL7WvbltZPwL93EV5tSDVrBdtvnvuc50TrMYc9hqmp4NrkTXNhShlkQMrjWpe+VsR888pc9C1kiPymiuoVLJkCD+wTRLl1GelkRs2pJus3W61ygqIrQFa10WJIQaETaiRO9l81ob0HOFoFBHT1cgpBhAc5eZnKeNkm7PgfvLuY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706218053; c=relaxed/simple;
-	bh=AZ9TWODlJyT7cwyN9/D82cToDdKUlQm8XjcF2gDSsC0=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=AM/VFtDoHKcO0wJ1v6k+eW1sdeVtHN6Lk7I4aEpDaw9uKZd9/8QZt2s/24N8elFCXqoA0krMfjwPqGbuN5t8q6TyeYC6UcW1znr3RJ/D4yoXEkSHyj13+lQN0Hy1mDnhciwN98qSonxG89RmXoshVOh/pHgLImNxFcrmWaSCSPQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=VGePd2WO; arc=fail smtp.client-ip=40.107.9.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BvbLPz1ILa/aIxUNeLqy7c8Y3U/m8zJoULVMstdCoodLyUfBIb1tZORqFGqUEBiwpp4rJF4sqUzQxxlSj8GX9uRh3XPbQqaIAahlNrPY2kaKsla4BwU3g/Y80pomb4SXJruIV80ccEd09F0hldKP7Ieq29Q9l8Ey2rfLggwTWu0a4stl053r6HfbyNYB4BEcIl3HRgvkIKKMAcKdPB/NDOQ0xTnA2f2fQK5fuAki/ElFZv4xMfGbsZwIW/vw7fuMmQn4HKXn4h0PpLLnb/VAIZkDdhVCIyxq2d7KAZ8FIz4Hqi+3dsLnengyiRsQ+4P/xo23VGYINVeeKIVrLnraNw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AZ9TWODlJyT7cwyN9/D82cToDdKUlQm8XjcF2gDSsC0=;
- b=NDMb7d7xR1ANXPvTYLJuj1RgQPPBeFgJEcIchQtfzWC/qONtuWSaLsp6QALHwhQ4E09feTz/ML9yeRV9Hp/dIFsNf8pLfyeJSedZYYamkYvgYLojTL12kQZrMiRh0P/7NLnO67/1hUbBf+IUP6NLS0IY8QgfoT9ondrFjjzg59zR5PZEZHGCqsXJU4FpkPfZqsLlAVynuPtMIusIadm2XEms81XGD7j5Q8uMl2NfLA7AhV6CuhTEUxRzwSrkpypCOfiqZeEkMrju0bXDhTBjSbacAYmwYN7OVIEIj8Co/ynle0kG4/YCIEbU9eiSgw2yHLEnhdJepv77ivjgq6pBrg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AZ9TWODlJyT7cwyN9/D82cToDdKUlQm8XjcF2gDSsC0=;
- b=VGePd2WO9JDXwrVUXMn0AenEiVYMvrSaULNrQVsKxfNR3X1Eew4y2Rs6DRZJwOwM79kpHPwk2E2tJAgyCKqqj/9e445KUCEyR78gN1rw1JYYgJt7iKBmUjU2sC90kLfdPOqEvD6n6HfjA1loAWot9i78nc4h33Z6Zdhs3Rwb7Y6O6FZlXUR9w7ftxVoDqBGgJne53AiV2jM93OD2K86VJcibY8H3Atiovkzml9Gb7yOjQpgw7WMM5b7idTE26YegzgR7Lc0XnCEGz2MF6GTupKuj2O68u8S45nSX4tPQhr4Jz/UAR//QbVaD89rXpwVqnG1cG8tHO/LNzXe/jbnC1A==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by MR1P264MB2308.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:35::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.26; Thu, 25 Jan
- 2024 21:27:28 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::9f77:c0ff:cd22:ae96]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::9f77:c0ff:cd22:ae96%4]) with mapi id 15.20.7228.027; Thu, 25 Jan 2024
- 21:27:28 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: David Hildenbrand <david@redhat.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-CC: "linux-mm@kvack.org" <linux-mm@kvack.org>, Andrew Morton
-	<akpm@linux-foundation.org>, Matthew Wilcox <willy@infradead.org>, Ryan
- Roberts <ryan.roberts@arm.com>, Russell King <linux@armlinux.org.uk>, Catalin
- Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Dinh Nguyen
-	<dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin
-	<npiggin@gmail.com>, Aneesh Kumar K.V <aneesh.kumar@kernel.org>, "Naveen N.
- Rao" <naveen.n.rao@linux.ibm.com>, Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
-	Alexander Gordeev <agordeev@linux.ibm.com>, Gerald Schaefer
-	<gerald.schaefer@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily
- Gorbik <gor@linux.ibm.com>, Christian Borntraeger
-	<borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, "David S.
- Miller" <davem@davemloft.net>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linuxppc-dev@lists.ozlabs.org"
-	<linuxppc-dev@lists.ozlabs.org>, "linux-riscv@lists.infradead.org"
-	<linux-riscv@lists.infradead.org>, "linux-s390@vger.kernel.org"
-	<linux-s390@vger.kernel.org>, "sparclinux@vger.kernel.org"
-	<sparclinux@vger.kernel.org>
-Subject: Re: [PATCH v2 10/15] powerpc/mm: use pte_next_pfn() in set_ptes()
-Thread-Topic: [PATCH v2 10/15] powerpc/mm: use pte_next_pfn() in set_ptes()
-Thread-Index: AQHaT8Vnobf5hh+EwEWWBMKpjyWCKbDrCwoA
-Date: Thu, 25 Jan 2024 21:27:27 +0000
-Message-ID: <78ef3d3f-9801-43a8-97da-03004198cf1a@csgroup.eu>
-References: <20240125193227.444072-1-david@redhat.com>
- <20240125193227.444072-11-david@redhat.com>
-In-Reply-To: <20240125193227.444072-11-david@redhat.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MR1P264MB2308:EE_
-x-ms-office365-filtering-correlation-id: 3325251b-abd0-4bec-78e7-08dc1dec6e64
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- iRwf7tk4ONwvErF0PTFK0qoxVWiUJ4aMm1LEbuEfiIM9fUi7wfr9FgepS7ARAyylRPePkc4MC3ZoJofoX9KdlhHHuUw5g1sYt9FFDZMPN1gZM6bMWfWz7upQ/5cs2etwqAz1wKhXftJV6YxPTLneHTvSScf2MTPD2HXpwk1ba+6BkQ24LqFklFyXr2QFEtpIqgf/nXXWLZsSLuulSSQ5NZj7DCDNC4TetjuB16vAET4Vp+KLuQzza3Sv05ESYXDLndyYTkz7/NZs56l98HsHorsYQoPuVVuViSC0YUTI7J0k86/zv6r5+ocZ6WHav5qcphqLRztLo4WPH9JP2o4qOn+MXoj/cTNY82iw17iBacsKUYLq6wXCadJGLdRcpJhKMpgS6EvXsEZJ+bJFJ9RbAOKT/TpgI4tPl9QzneSfdnkRaRMuAJw3lzpOOh6AJh5Mu/ywPciwioLjSpeVZ+sBgkBhPvhw9dnJsByvsmlO4qLGu8PNjDycK20PSKIm9mTop6C45ZdsNPai8FSsQ6sq+lytKQs5bGFhENJlCAH/1pn2+n5oxPrjDzFaQjbrqwj6mCEbgZ4ivR3p4XryanGgHmh4F/LrjumcOIuKKLjJ4bZ63BXY9WyhS3pBTxbUF8m3FXdlyBHq3iDzKKyZUVgGdSaz6z/f32DQ412zqX2iSMrD2xV2nOWeJo8ErVzS2plE
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(39860400002)(396003)(346002)(136003)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(91956017)(31696002)(64756008)(86362001)(122000001)(6486002)(66946007)(478600001)(66446008)(71200400001)(76116006)(54906003)(66476007)(66556008)(316002)(110136005)(38100700002)(2616005)(6512007)(6506007)(26005)(8936002)(8676002)(4326008)(44832011)(83380400001)(7416002)(4744005)(41300700001)(2906002)(36756003)(31686004)(38070700009)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?bXU2cVBDSjU4RTBPQ0Q0clFUeXFZeW80YlM0NEk3and4c2djbi9FZ0xLZDJ3?=
- =?utf-8?B?MW94VGkxeGE1WWg2ODN3d09CVEJVczRzY2Q3Z1JvdmNLekF2UXM0UkNLL2ZM?=
- =?utf-8?B?ck40Z045dHVxaWVSZk1NcDVWaUNDL1JmbFd6cjVTY2hlNmgzU2J4d0JsVDl4?=
- =?utf-8?B?OS9SdUZ2TURYT2FjTVZMNFdLZHZuNlhWN0pDL0pzaDBWV0NVWHBKajc4SlZu?=
- =?utf-8?B?U0M0dTM3REo3MHMvVmxGaTZDVzVHcXRGUXlwNTdQLzVrQkVrd29qMGZQbkJ5?=
- =?utf-8?B?ZGxrNHh1OURWWnF2K1I5NzN2enFwTjV2bDdtWmRhNmpCT0dSeVNVVm9QaThp?=
- =?utf-8?B?WXBGSVIrVzA2NEJnL2FYT21NRE94MkRNOXAxZGFkTk0zMTJRMHNFVFZXK3E0?=
- =?utf-8?B?ZVM0Q3FZN1dnTTZaa3JqYkpodTcwbnByR1ZPZWE2Sksyc2Y2dktkaE9lL3VM?=
- =?utf-8?B?VnVBTGFDVjFDY3dIdUxnL1lYTnMxbk54Tjc4d3NjT2hnYW0zQ05lc2o3enRl?=
- =?utf-8?B?M2ZSQWRnMHRnTW9HK29YTjVVSDBHU0MyNWd0VFlZZG5NTkpwTnJmRXVwT2hZ?=
- =?utf-8?B?ZVZ5cm90Y2VIeW8ySFV2TklyN3lxV3lkcTF6Y09zRWNzTmdZQmMzdW5NYXlB?=
- =?utf-8?B?b3FMdGJ4OEozZzV3N3grQ3hJVG9nek44RUpWYUUyTjREMFpIb2FJNUMvWXlr?=
- =?utf-8?B?MHRlamc1Q2Y0UFozZDUrSkRJTU1ydnFjZUhjUjNIcm9iTmNpMGtvNVRSSERU?=
- =?utf-8?B?RWhRZkptK1N5QllKZEJrQzhKbzV1YnFQeEUvamZycmlCZ1BnSlQyTHNZamJw?=
- =?utf-8?B?bnV1Mm5hNjZMVzdJaEp5L3BSb1NZbnpvMEswVW8xRzBrOXlWa1E2RzVscU5O?=
- =?utf-8?B?ekJXQlNTNFZFazVqSU5iQ0tQUEtxZ3pMVDErbGxZZUljQnpEai9aWHVCdUpE?=
- =?utf-8?B?d2E5cHMzTGRhMUp3eHhxMlFyV1pXU3ZuNEJMaCtqUjdZUEowV1lSMVVqSDlu?=
- =?utf-8?B?cmZ6QnVFZ2tEZCs3MEtha0RoMEF1MlFtT0pXUGkrZDkrS2p3SmdhVUtWZm1G?=
- =?utf-8?B?OGsyQm5jbjg3S2gzQnZ6ZUxoc09KamlTazYzMXphbW82TWs5WU5hcnhhbS8w?=
- =?utf-8?B?d1VXN0UwdnVxckRQT1FMMGJiOGpVOWFzNDkwaitITUg4V29jY0lraWNyZHZn?=
- =?utf-8?B?eS9zN3REOWd2WlpUczU2RFcrVHgxS3d0bGV0R0ZIbEF1VVZ3dVZabkp4bVVG?=
- =?utf-8?B?SnZxd040MmhtQUVaWWR2ejNiaDB5YjEwaHVqeWJ0MHJrTkl2czFuODZLSGZm?=
- =?utf-8?B?QzYrT0s0bmxVUWdhK3BNSFRKdS8wQ3F1blkzcHpUaTNraXB5a1BoWXUyNkh4?=
- =?utf-8?B?YWlTT3R5aXJDdzlrYnZsb1VCN2kzSlhaSzBZbjc2STMrYWxsekJyS3RXdjJK?=
- =?utf-8?B?M2luaUNMOXhYSkVkMEpyeGxpUHdVdmhhd3dBWEJ2dFFCNWtGYzEwUStCai9l?=
- =?utf-8?B?MDNGTmFvbWNKZEFKSStmYVVVWkNlenFxRk0wN3J6UjdzSGpUMkhzZVplZ01C?=
- =?utf-8?B?VDJodDZzbmVOVXlVQXJHN2V5T0p0dm1tdGlMRFZKT0QySGZLQUpHdnNVTXlT?=
- =?utf-8?B?MXFyTllNMUtOd1BzODlHbUJ0RnNhbDJXb1dXbmpxWEJkUlVtbWREamNUYnBD?=
- =?utf-8?B?NGFRa2FCY2p1alpvWmw1M0Fva21sYkR2NWdkMGVmNmdTK1JJSllDUEpPQllT?=
- =?utf-8?B?bEFXK1hyaVZMQVhDaXp6ZDJaTjF2YjhvUUFUalFaaUptV0FGWVFEM21UM092?=
- =?utf-8?B?RG1BR3ltZmlNUE83TFh1V3dGWnFBUVFlc1ZiL0ZBUUN4SWxHa1dXdHh0NzNh?=
- =?utf-8?B?cU4vM1hWT25SR28rY2tqT3A5Vmd0RE92cDR6TGxDZk9MZjV4aTVXNjNsaGlo?=
- =?utf-8?B?NDJORjZjOFNSTU14NG1rb2h1UXgwa0MzNjVJN0NmSHNZOEFxQXE3QzhJaW5D?=
- =?utf-8?B?SE9DZDdTUlVIK2xvcEhaSFhuS29XSUczVmpoTXA1YVo1TjBLWi9GcEdCRytk?=
- =?utf-8?B?WDRZclp0ODBMN0dvZExORStvOFpZOHpRU2FKeUZScXFkRW5lT0lZM0xyOFlQ?=
- =?utf-8?B?ZWw1cHFpVmRBVGkzaURWUCtMUG1IbDBzNTBTSE5OQzUxYkdFeHE2SCtVZjVz?=
- =?utf-8?B?VWc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <45B979D28DFBA042A0F5328511AC4A62@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 763E61386DF
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 21:28:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706218109; cv=none; b=nyYO8/nGVExMhku2PSoORtsms+BrhwdNfh3Khit/D/2ywFPxYBLnoMviSd2w5Lo88bsbqr+Xtdctsxf7v1ExTN+W6ourVOepp6Y7ekl3CSvfu09YCfcXLpu76pucEvluZXXrkpwVPNRnuEdY5VUn8hD0Q2WzTTePG/aGStfDjVA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706218109; c=relaxed/simple;
+	bh=Aq9BEwj5Ou4QsJAljREwqkwq4jjfU8buVLcEkODYpac=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Nz2QHlBcdo6wB8IVOzymyure9OkT3Hdm5yTRSslBxzrG7nE8NvwarQ0uROl31/s6k7ENSpboGjrLF5VK4UAGxHwGk1BMgzgdwIKLFHqQtKl2zYUlj6NzaoB2iNsDHE8Yb5oLc+bijJx/qXfzGAzb++QYa6p5q6xPdDBndH8obf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rT7Gn-0003Mo-SR; Thu, 25 Jan 2024 22:28:21 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rT7Gm-002N4M-Ou; Thu, 25 Jan 2024 22:28:20 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rT7Gm-0089pQ-28;
+	Thu, 25 Jan 2024 22:28:20 +0100
+Date: Thu, 25 Jan 2024 22:28:20 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Stefan Wahren <wahrenst@gmx.net>
+Cc: Francesco Dolcini <francesco@dolcini.it>, pratikmanvar09@gmail.com, 
+	linux-pwm@vger.kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de, 
+	pratik.manvar@ifm.com, linux-kernel@vger.kernel.org, thierry.reding@gmail.com, 
+	xiaoning.wang@nxp.com, linux-imx@nxp.com, kernel@pengutronix.de, 
+	oe-kbuild-all@lists.linux.dev, festevam@gmail.com, linux-arm-kernel@lists.infradead.org, 
+	jun.li@nxp.com
+Subject: Re: [PATCH v3] pwm: imx27: workaround of the pwm output bug
+Message-ID: <w34gpyikqc6oz5zjoan3ws4ckw5dlzjytddfw4df26dyflx3uk@itw6b34z5luv>
+References: <20240103103421.GA3758@francesco-nb>
+ <20240103110200.1018-1-pratikmanvar09@gmail.com>
+ <20240103122005.GA3347@francesco-nb>
+ <71426744-7223-448c-bd5b-ff786c5f8e65@gmx.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3325251b-abd0-4bec-78e7-08dc1dec6e64
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jan 2024 21:27:28.0851
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: DUxH6WrVVVMEhMSPMMhIpd0Sqae+6rFNwtB94VCJoN2297OuY9TnxbBAj8wNvL9vEcaYLSG8KzOsqQCDWQdKOx6gipBclbmhNNgmiAkuHV4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MR1P264MB2308
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="aqzalxdjxdebfp4u"
+Content-Disposition: inline
+In-Reply-To: <71426744-7223-448c-bd5b-ff786c5f8e65@gmx.net>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-DQoNCkxlIDI1LzAxLzIwMjQgw6AgMjA6MzIsIERhdmlkIEhpbGRlbmJyYW5kIGEgw6ljcml0wqA6
-DQo+IExldCdzIHVzZSBvdXIgaGFuZHkgbmV3IGhlbHBlci4gTm90ZSB0aGF0IHRoZSBpbXBsZW1l
-bnRhdGlvbiBpcyBzbGlnaHRseQ0KPiBkaWZmZXJlbnQsIGJ1dCBzaG91bGRuJ3QgcmVhbGx5IG1h
-a2UgYSBkaWZmZXJlbmNlIGluIHByYWN0aWNlLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogRGF2aWQg
-SGlsZGVuYnJhbmQgPGRhdmlkQHJlZGhhdC5jb20+DQoNClJldmlld2VkLWJ5OiBDaHJpc3RvcGhl
-IExlcm95IDxjaHJpc3RvcGhlLmxlcm95QGNzZ3JvdXAuZXU+DQoNCj4gLS0tDQo+ICAgYXJjaC9w
-b3dlcnBjL21tL3BndGFibGUuYyB8IDUgKy0tLS0NCj4gICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNl
-cnRpb24oKyksIDQgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvYXJjaC9wb3dlcnBj
-L21tL3BndGFibGUuYyBiL2FyY2gvcG93ZXJwYy9tbS9wZ3RhYmxlLmMNCj4gaW5kZXggYTA0YWU0
-NDQ5YTAyNS4uNTQ5YTQ0MGVkN2Y2NSAxMDA2NDQNCj4gLS0tIGEvYXJjaC9wb3dlcnBjL21tL3Bn
-dGFibGUuYw0KPiArKysgYi9hcmNoL3Bvd2VycGMvbW0vcGd0YWJsZS5jDQo+IEBAIC0yMjAsMTAg
-KzIyMCw3IEBAIHZvaWQgc2V0X3B0ZXMoc3RydWN0IG1tX3N0cnVjdCAqbW0sIHVuc2lnbmVkIGxv
-bmcgYWRkciwgcHRlX3QgKnB0ZXAsDQo+ICAgCQkJYnJlYWs7DQo+ICAgCQlwdGVwKys7DQo+ICAg
-CQlhZGRyICs9IFBBR0VfU0laRTsNCj4gLQkJLyoNCj4gLQkJICogaW5jcmVtZW50IHRoZSBwZm4u
-DQo+IC0JCSAqLw0KPiAtCQlwdGUgPSBwZm5fcHRlKHB0ZV9wZm4ocHRlKSArIDEsIHB0ZV9wZ3By
-b3QoKHB0ZSkpKTsNCj4gKwkJcHRlID0gcHRlX25leHRfcGZuKHB0ZSk7DQo+ICAgCX0NCj4gICB9
-DQo+ICAgDQo=
+
+--aqzalxdjxdebfp4u
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello Stefan,
+
+On Wed, Jan 24, 2024 at 12:48:21PM +0100, Stefan Wahren wrote:
+> Am 03.01.24 um 13:20 schrieb Francesco Dolcini:
+> > Hello Pratik,
+> >=20
+> > On Wed, Jan 03, 2024 at 04:32:00PM +0530, pratikmanvar09@gmail.com wrot=
+e:
+> > > From: Clark Wang <xiaoning.wang@nxp.com>
+> > >=20
+> > > This fixes the pwm output bug when decrease the duty cycle.
+> > > This is a limited workaround for the PWM IP issue TKT0577206.
+> > >=20
+> > > Root cause:
+> > > When the SAR FIFO is empty, the new write value will be directly appl=
+ied
+> > > to SAR even the current period is not over.
+> > > If the new SAR value is less than the old one, and the counter is
+> > > greater than the new SAR value, the current period will not filp the
+> > > level. This will result in a pulse with a duty cycle of 100%.
+> > >=20
+> > > Workaround:
+> > > Add an old value SAR write before updating the new duty cycle to SAR.
+> > > This will keep the new value is always in a not empty fifo, and can be
+> > > wait to update after a period finished.
+> > >=20
+> > > Limitation:
+> > > This workaround can only solve this issue when the PWM period is long=
+er
+> > > than 2us(or <500KHz).
+> > >=20
+> > > Reviewed-by: Jun Li <jun.li@nxp.com>
+> > > Signed-off-by: Clark Wang <xiaoning.wang@nxp.com>
+> > > Link: https://github.com/nxp-imx/linux-imx/commit/16181cc4eee61d87cba=
+ba0e5a479990507816317
+> > > Tested-by: Pratik Manvar <pratik.manvar@ifm.com>
+> > > Signed-off-by: Pratik Manvar <pratik.manvar@ifm.com>
+> > A very similar patch was already send in 2021 [1], did it had review
+> > comments not addressed? Please have a look.
+> >=20
+> > In general please refrain from sending a new patch version every other
+> > day, while every Linux kernel subsystem has different rules and a
+> > difference pace of development, in this specific case sending a v3 just
+> > adding your signed-off-by without allowing a little bit of time to wait
+> > for more feedback is just not sane.
+> >=20
+> > [1] https://lore.kernel.org/all/?q=3Ddfn%3Adrivers%2Fpwm%2Fpwm-imx27.c+=
+AND+b%3A%22Clark+Wang%22
+> thank you, this is very helpful. Unfortunately i don't have the
+> knowledge and resources to continue this work.
+>=20
+> @Uwe It seems that you were able to reproduce this issue. Is it possible
+> to trigger this via sysfs and some kind of script?
+
+When I read through the linked thread I was surprised to read that I
+could reproduce it. My best guess is that I did that using a long period
+and an LED connected to the PWM's output to make the effect easily visible.
+Something like: Configure for
+
+	.duty_cycle =3D 1s, .period =3D 5s
+
+and change that to
+
+	.duty_cycle =3D 0s, .period =3D 5s
+
+(e.g. using sysfs) when the output got high.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--aqzalxdjxdebfp4u
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWy0nMACgkQj4D7WH0S
+/k568QgAl9kR2hZ1RP9qsAlpFKv1pbgAqj8Cm2Q2SnZ6jmVmw6pEQHAiJ+kjKr7u
+XtaA2sUd05WCawm4997HKGx7KRoJAdjzyiLB6MIsvWGjP2IV8rVNMXejmXPRZ92h
+VyRGn1U6OeExVQnm+MkVCpDzQEZlHuMVzBUojTvzxip69IylIZ23QmUOWFJfYVFT
+LcA/fNE0MjoYqYdqw9Me87u8fuN5wHyGTIGGKjRdKWP0YV/6NeJKM1fRuYMqXXEw
+7+FFg7NwQ7mh5PyloJ1Phjh0ZsTiwbBIJHD35Sdogj6tIrGoNv9DQpG7cHUo8jSI
+/GzzhiotZlzTOU7JfVKxg2nEnwYPJA==
+=Tkun
+-----END PGP SIGNATURE-----
+
+--aqzalxdjxdebfp4u--
 
