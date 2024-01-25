@@ -1,175 +1,104 @@
-Return-Path: <linux-kernel+bounces-39178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39179-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63C0783CC18
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:27:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C4A083CC1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:29:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A786288506
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:27:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A185B230D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:29:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC8411350F2;
-	Thu, 25 Jan 2024 19:26:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 832F21350E6;
+	Thu, 25 Jan 2024 19:29:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="KZBQyURt"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JoaoKBG4"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29E56130E50
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 19:26:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3164C1353F5
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 19:28:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706210816; cv=none; b=sTEIwuL1dhjC640lSGqaZ/2F/PPkEQSVn/3ZjQowSi0iCefyjs9PkCRQB0ATzOBo1Ei7VkDpDuSZ7CXFSL7IFXMi/Icj6v85NTTeJExjzi5P8ZBvt31sAYqNCfxElhjhebfqI2YrpQAATpi3wOxqsBIBG41W6labdkRMI6IaOM4=
+	t=1706210942; cv=none; b=d2mtHs4Xt0TVjGD6/I5xjecuwx4Yl8dXeD7OYf6Dz1FxCycUUsn0Sfzs9fdeVbyFC5FSa35hlUwcYPfWL5TRQLnbEbefkh3jK/oGCEdN+hGvbsCJd6JbZQdstOC7NCt+i/ypmr0df8z8VAn86sNsW1vSUG/4uJSYeEBqtWLVGJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706210816; c=relaxed/simple;
-	bh=ylFJKzXqxkLLZFj7AHYMJMyVTFRolbBhbtaZYtJqeFs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EOJ+c7oalV9n3XifjRnW3rIP3RqfHsjhp+FSIYWS795cqhT0v5dOe8twVFFKTnM4efWlgZAkoXjl3XnnnbL7VN/cchYrrEarxWlUrp0WbIdYZSyBLxenhjeuj5I2X9OYxJkd1pJLXyH8au6WieysJgEHkPDVOTUcAl8PTO+7XiM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=KZBQyURt; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d51ba18e1bso65282025ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 11:26:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706210812; x=1706815612; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UQXEmk/KhfqrXjoSGAenKDc1hYdrFqHQSs6fJFT2dl0=;
-        b=KZBQyURtNBdCg+5WsV/2PlC507i7ad612vIfMFRBP61Vt34euQ9shTDsWKVCx5hgMI
-         ftGD0bO4VvQTdRtXnx8ZZdLoLiK3pma0F7er3An7b7T+4W6+I0MIJ70eqEyPMMF09A0g
-         YSzG4J6gLjld9tJzfWAoddgdoWygvrWA3L5G+Y6b6JCRnCnNzYRpSNq2bd9Zvon50qtj
-         XLYFV2/qZebdyPJTyi1L1crYRtgU8e3OIiZwR9kTpy/hH7ioaB1mU/E1Z03FtiQp+la1
-         pu0mlEAbIo15jeplcDLgWN0LsZIVMz82cCms/hxMhs0yaQEGVGUH3ORluIOMfSDKgovk
-         M4/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706210812; x=1706815612;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UQXEmk/KhfqrXjoSGAenKDc1hYdrFqHQSs6fJFT2dl0=;
-        b=XxnAZGaJymJEsMy9zbKX/djywqtQfhN7kgQY3lQztwKfH1cEURkxxx74FtC/5pHuef
-         /rEJZK36mUX2WETCXq0LxmZWeHFfQQdeoVTkbQOp3qrud0302KKpEh7u6jJ4cY97ku2o
-         119772VhmPb6WjKP8LKAnDZ18wm23HcPgukLCLFe175qvVDu2I7Tu2nOEOKzowQbN0mL
-         hKNmsu1hsv73mwDOFIrzNb53LuVEfDbV2y6E47GOXF662EePRo283ZlelLjEoxPUpSFi
-         EfO1Qyuy+9/EnI4B1thEJGDN6Kfc5pqtPGJ9V+T505Hix2ZMQ4U6MMKiFPV5F4MCIohI
-         RNhw==
-X-Gm-Message-State: AOJu0YzEc1od8oi+EZJXhBDXQiekGRxbZezFoJUS3IU6msmKiUiuoIsn
-	KRh35idL6ou28/hhp3f8nrr0GZIY6IboDbF0/RuvTj1yicRxbhmUg+VgE0UdG1M=
-X-Google-Smtp-Source: AGHT+IEjKhTyFXdeaj6bJIwWSc4zBffLzTHNmIGLnbACUsqZozte6YVSrp4zqdesGPXDBC/y4GWPyA==
-X-Received: by 2002:a17:903:2350:b0:1d4:97:b8e with SMTP id c16-20020a170903235000b001d400970b8emr186405plh.79.1706210812431;
-        Thu, 25 Jan 2024 11:26:52 -0800 (PST)
-Received: from debug.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id l11-20020a17090270cb00b001d757e49a70sm6544821plt.112.2024.01.25.11.26.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 11:26:52 -0800 (PST)
-Date: Thu, 25 Jan 2024 11:26:47 -0800
-From: Deepak Gupta <debug@rivosinc.com>
-To: Conor Dooley <conor@kernel.org>
-Cc: rick.p.edgecombe@intel.com, broonie@kernel.org, Szabolcs.Nagy@arm.com,
-	kito.cheng@sifive.com, keescook@chromium.org,
-	ajones@ventanamicro.com, paul.walmsley@sifive.com,
-	palmer@dabbelt.com, conor.dooley@microchip.com, cleger@rivosinc.com,
-	atishp@atishpatra.org, alex@ghiti.fr, bjorn@rivosinc.com,
-	alexghiti@rivosinc.com, corbet@lwn.net, aou@eecs.berkeley.edu,
-	oleg@redhat.com, akpm@linux-foundation.org, arnd@arndb.de,
-	ebiederm@xmission.com, shuah@kernel.org, brauner@kernel.org,
-	guoren@kernel.org, samitolvanen@google.com, evan@rivosinc.com,
-	xiao.w.wang@intel.com, apatel@ventanamicro.com,
-	mchitale@ventanamicro.com, waylingii@gmail.com,
-	greentime.hu@sifive.com, heiko@sntech.de, jszhang@kernel.org,
-	shikemeng@huaweicloud.com, david@redhat.com, charlie@rivosinc.com,
-	panqinglin2020@iscas.ac.cn, willy@infradead.org,
-	vincent.chen@sifive.com, andy.chiu@sifive.com, gerg@kernel.org,
-	jeeheng.sia@starfivetech.com, mason.huo@starfivetech.com,
-	ancientmodern4@gmail.com, mathis.salmen@matsal.de,
-	cuiyunhui@bytedance.com, bhe@redhat.com, chenjiahao16@huawei.com,
-	ruscur@russell.cc, bgray@linux.ibm.com, alx@kernel.org,
-	baruch@tkos.co.il, zhangqing@loongson.cn, catalin.marinas@arm.com,
-	revest@chromium.org, josh@joshtriplett.org, joey.gouly@arm.com,
-	shr@devkernel.io, omosnace@redhat.com, ojeda@kernel.org,
-	jhubbard@nvidia.com, linux-doc@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-arch@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH v1 24/28] riscv: select config for shadow stack and
- landing pad instr support
-Message-ID: <ZbK198Vovbw2CwrR@debug.ba.rivosinc.com>
-References: <20240125062739.1339782-1-debug@rivosinc.com>
- <20240125062739.1339782-25-debug@rivosinc.com>
- <20240125-snitch-boogieman-5b4a0b142e61@spud>
- <ZbKkgNX7xfU5KO8X@debug.ba.rivosinc.com>
- <20240125-implement-coagulant-3058e743a098@spud>
+	s=arc-20240116; t=1706210942; c=relaxed/simple;
+	bh=Klf1n72HKz+7NLRCuzAOesPmv7RwpZWk37FL3U1M6Js=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WntRAPqZCN8GudYLa2fS1B5kf72DFimT5DBCtY0cd0KwB44eDazi0X01V+BTrC631GS+St4mwnnzDXPvDBJOhEzXoOe10PHq76CGigGWxkDqmwnavrEDtwk1+f0Tdjz+Qhu7emLyqW1AcjMcuz2JqS+Ge5ktCWJVcD6aoIp2wdg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JoaoKBG4; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706210937;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=orENYTchG91SsGUpfMPnTLKwMM3GW/2swFPCPjquPdc=;
+	b=JoaoKBG49vOwdRiy2LEQJXxNLve3wTbm5GKZ5aUul27WLfAfDz9AjwtfNVxf1shYB4mYJj
+	n6RLS1dALxcU6AqgbnUmYbhWWNMuKcVYIg+d50WF7KxHHkbVZiEeem1Q/Kln5HZ2+GCgAo
+	2/Wqn8nXHE9fmAlbwqwsXluEBZ80Vlc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-244-p7iKSKg_ObCnrrZaKzoIWA-1; Thu, 25 Jan 2024 14:28:51 -0500
+X-MC-Unique: p7iKSKg_ObCnrrZaKzoIWA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8C23185A58C;
+	Thu, 25 Jan 2024 19:28:50 +0000 (UTC)
+Received: from [192.168.37.1] (ovpn-0-9.rdu2.redhat.com [10.22.0.9])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 36F4C40CD14B;
+	Thu, 25 Jan 2024 19:28:48 +0000 (UTC)
+From: Benjamin Coddington <bcodding@redhat.com>
+To: David Howells <dhowells@redhat.com>
+Cc: Gao Xiang <xiang@kernel.org>, Jeff Layton <jlayton@kernel.org>,
+ Christian Brauner <brauner@kernel.org>, Matthew Wilcox <willy@infradead.org>,
+ Eric Sandeen <esandeen@redhat.com>, v9fs@lists.linux.dev,
+ linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+ linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+ linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: Roadmap for netfslib and local caching (cachefiles)
+Date: Thu, 25 Jan 2024 14:28:46 -0500
+Message-ID: <EB613778-D963-438B-AA20-66D5E5E0DD90@redhat.com>
+In-Reply-To: <524118.1706195224@warthog.procyon.org.uk>
+References: <B01D6639-6F09-4542-A1CE-5023D059B84F@redhat.com>
+ <520668.1706191347@warthog.procyon.org.uk>
+ <524118.1706195224@warthog.procyon.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20240125-implement-coagulant-3058e743a098@spud>
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-On Thu, Jan 25, 2024 at 06:44:48PM +0000, Conor Dooley wrote:
->On Thu, Jan 25, 2024 at 10:12:16AM -0800, Deepak Gupta wrote:
->> On Thu, Jan 25, 2024 at 06:04:26PM +0000, Conor Dooley wrote:
->> > On Wed, Jan 24, 2024 at 10:21:49PM -0800, debug@rivosinc.com wrote:
->> > > From: Deepak Gupta <debug@rivosinc.com>
->> > >
->> > > This patch selects config shadow stack support and landing pad instr
->> > > support. Shadow stack support and landing instr support is hidden behind
->> > > `CONFIG_RISCV_USER_CFI`. Selecting `CONFIG_RISCV_USER_CFI` wires up path
->> > > to enumerate CPU support and if cpu support exists, kernel will support
->> > > cpu assisted user mode cfi.
->> > >
->> > > Signed-off-by: Deepak Gupta <debug@rivosinc.com>
->> > > ---
->> > >  arch/riscv/Kconfig | 15 +++++++++++++++
->> > >  1 file changed, 15 insertions(+)
->> > >
->> > > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
->> > > index 9d386e9edc45..437b2f9abf3e 100644
->> > > --- a/arch/riscv/Kconfig
->> > > +++ b/arch/riscv/Kconfig
->> > > @@ -163,6 +163,7 @@ config RISCV
->> > >  	select SYSCTL_EXCEPTION_TRACE
->> > >  	select THREAD_INFO_IN_TASK
->> > >  	select TRACE_IRQFLAGS_SUPPORT
->> > > +	select RISCV_USER_CFI
->> >
->> > This select makes no sense to me, it will unconditionally enable
->> > RISCV_USER_CFI. I don't think that that is your intent, since you have a
->> > detailed option below that allows the user to turn it on or off.
->> >
->> > If you remove it, the commit message will need to change too FYI.
->> >
+On 25 Jan 2024, at 10:07, David Howells wrote:
+
+> Benjamin Coddington <bcodding@redhat.com> wrote:
+>
+>>> NFS.  NFS at the very least needs to be altered to give up the use of
+>>> PG_private_2.
 >>
->> Selecting this config puts support in Kernel so that it can run tasks who wants
->> to enable hardware assisted control flow integrity for themselves. But apps still
->> always need to optin using `prctls`. Those prctls are stubs and return EINVAL when
->> this config is not selected. Not selecting this config means, kernel will not support
->> enabling this feature for user mode.
+>> Forgive what may be a naive question, but where is NFS using PG_private_2?
 >
->I don't think you understand me. "select RISCV_USER_CFI" will
->unconditionally build it into the kernel, making stubs etc useless.
->You're talking like (and the rest of your commit implements it!) that
->this feature can be enabled in menuconfig etc. Having this select
->will always enable the config option, rendering the choice below
->redundant. Try turning it off in menuconfig.
-
-Aah got it now. Thanks.
-I'll fix this messaging and select in next version.
-
+> aka PG_fscache.
 >
->Oh and if it were valid to have here, you put it in out of order. That's
->an alphanumerically sorted list :)
+> See nfs_fscache_release_folio() for example where it uses folio_test_fscache()
+> and folio_wait_fscache().
 
-Thanks for pointing that out. Will fix it.
->
->Cheers,
->Conor.
->
+Ah, thanks!  At the end of the netfslib work, will NFS still be able to
+utilize fscache and still manage its own folios, or are you looking at
+making fscache be an all-or-nothing depending on the use of netfslib?
 
+I think NFS might easily stop using PG_fscache by carrying that information on
+folio->private (since we're currently stuck with it).
+
+Ben
 
 
