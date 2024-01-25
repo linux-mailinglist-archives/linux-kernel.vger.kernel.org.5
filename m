@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-38763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38764-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69B8883C59C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:54:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66A3583C59E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:55:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B2A81F22198
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:54:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1B67B23C16
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:54:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C04451272AD;
-	Thu, 25 Jan 2024 14:50:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 354E61272BB;
+	Thu, 25 Jan 2024 14:50:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rHkHVRvV"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Xq00kVaa"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1AED7F7E4
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 14:50:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07404823B2
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 14:50:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706194227; cv=none; b=CzFAxIGK0x6yuxU28hreLXUXQqomRk2/RWwH9RtRpBj14DV8eAan4M9NvWCF5RvQQItzQfX96IqoaHKkswUkdswMzSgo8CQM6xvYJtNopc/i1asBSqpwYRm4fuMvVQdwUMnLCZRKtiUb+Qk0ppkXyG9V1iUYCeHvpxB6LNuoZCA=
+	t=1706194228; cv=none; b=lT8Qm7EKFfs9kuQJ5w91jK1gcf7TgFjvK/2nIYWtaFuggB5G13b6InqHs2WLkhc+hivVajx2y1/Dplau+uHZ9lBoVitBNIdxzfLqtVtkv0ocHq/plNXgLqqXEd7Fps/GVWH0S+w90K+iri9FNqdrPRIFMGeaKsa2obh2PImkb28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706194227; c=relaxed/simple;
-	bh=hXVQ0xlIaveU3XkFuaJGe+I4uTpyEmgE+f4FfHSp1qs=;
+	s=arc-20240116; t=1706194228; c=relaxed/simple;
+	bh=BMnHD2dtw0Q+/VBvgqPiw6zeufZq9wG7qlcCmbu3aCw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BQeESNWw1U0WmsuH5yzXrThH1rQ2UFsYL/5sIhz06dN0aYL49Xu9NQzo0yMwyA/6Y43ik6CDnc1mv+BFMzhF7wIuG/e1W4OSqM4aplI5W/iHuAo49HjmD6LHk00Ov2bbCsCvlbp1kpufRLTE60phNFuExDbn9f3cbpGFF60OJvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rHkHVRvV; arc=none smtp.client-ip=209.85.128.45
+	 MIME-Version; b=rCZn3GP8Lq7WheqQ17zVia7mHu/bZe/cFYItY+3/ScART1MBkVjVR6hY42Rfihw8gNHzd4SnYl9QpF7Za7FSGoAbHN/XkZAEYyaPA1HpNWJgZTSLmDyKdFaFuy3GyaZkOAQLytCjLvKOSM2BqoQ0O1gvTEIVvvoqvJ/Veb2PM0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Xq00kVaa; arc=none smtp.client-ip=209.85.128.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40e76626170so75552225e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 06:50:24 -0800 (PST)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40ec6a002a7so21431765e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 06:50:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706194223; x=1706799023; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706194224; x=1706799024; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GwSZ9ii64mt7cJNVg0lI8ru0eSDBGUd0YlY2mDEiodU=;
-        b=rHkHVRvVsq/fC5NwydsH3ES17+/nzhdUHaLe+oOTHj5w0PmXxcNR8wWQoJeh7MIDZ5
-         hA/9qXxG78lTObSK3IaxMWsI2ExH6gXe9QagmA3o6znxab8Rw8onBngLEBEnykfLoivO
-         vGvnDuKXH4xW3nQX+yhx1OVKPlCUe6Kwr8gWkDCaEyyHdeFwbBrkvvIBvbGgqWuS4cRi
-         tM4h2JNKBVxPMJLSbfAHxAJNDolHMVg8t1DzOLfZT0SRb+Wyt2i/+FdpptNst5eP/emG
-         +fC3KEHQ3mBYnYw0PJCmAmtN2HoUZCG3ayZzq5T7Z/yr4Zs0aE7sWA4rPRtJf83GqbcL
-         8Vug==
+        bh=+YODKSwwosS+Boh3Md8IudPiFt2ZVlyI0co3V0SoeDA=;
+        b=Xq00kVaaLgJocw69dajORWZrvF+jg106QL8zKSK1pE4yZgFFl/8JVExa3PbN0oezme
+         0oJvTkVdH7VOx/i63chNWnZ2UZe83zryqZr3TqFLkXaLRHekP7bpZfEyXWHAKBY+dbL2
+         gQuRqkWqnaTxJe1qo8resDhFcuW1h6SAqWI+qcH8/v6lrdMpYgDoiaF1f2QtsUugoGlC
+         QBsTpWgsIaysBUWMIggNh+eo6Fpq86E3+bKTroSDA84cYoYFvKpfNzfSRApQ9e9R6vur
+         vijPxe3guc/gX5ECGeufRmtDCnQMvNU7tT9llhGPZ9rM68VzQC2a0VEQsHkqCWVlmhIx
+         MgUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706194223; x=1706799023;
+        d=1e100.net; s=20230601; t=1706194224; x=1706799024;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GwSZ9ii64mt7cJNVg0lI8ru0eSDBGUd0YlY2mDEiodU=;
-        b=iNuojEATaZq0vLekzt4kmqJioLnM3NMmrR6Ra3ljfpwmcq9b29lUHS1kZjKL1wmEjT
-         Q6D5hR0dbqWQEL60ZPTHFvReyINWc2sxZdeBLyjNTjAH31tu0Dy8M64CLyTXQbcYDr8e
-         YOEKEBaWfiDX3bX9EcS+omUiCkDuo0MWFRnxHiS7UPxfjShyv3E1B2Mg8eHWxSQBAG+s
-         0DqmQBusSiuGrZNX3pq9n5hVnv6kFGMtdBfswp61rp1FBJYNnJF0h+W5eg39IV9JmhGG
-         v9uNZRjpVtunNS5JY07LPhftM3q9jSJ7tJsE+YqeTwlmlNSr0Ll8oNaT33r0VgexNo1s
-         ewNQ==
-X-Gm-Message-State: AOJu0YwNXEQhDTOp9uRn/EGJ1WU1/xcvp0HIR+NP4Arm7Hi0BOzv6tbo
-	MwUSlbCJUSpgP/zwuyPCqgkPmzWSbOq9qulg5XjGBHjvfvQHHShOUtk9NyhF/k4=
-X-Google-Smtp-Source: AGHT+IHU3uE9VctkwSLc7sy1ouZi/e0ls1mgPCFV1inwCVVGb/ieTXa3QkXnQoUQMDecFLIT7pf3+w==
-X-Received: by 2002:a05:600c:458b:b0:40e:af93:54f1 with SMTP id r11-20020a05600c458b00b0040eaf9354f1mr697668wmo.5.1706194223137;
-        Thu, 25 Jan 2024 06:50:23 -0800 (PST)
+        bh=+YODKSwwosS+Boh3Md8IudPiFt2ZVlyI0co3V0SoeDA=;
+        b=M+PkM8VQf4RvXYwJcnh2FO8ENNxk/2c0uaTD655CKnQfdKsUYQ7g0z5Da8FSd+1osK
+         xJAfttE4xe1Xa1fZ93YxidKLgnmVip0bMdV/M2hMo8sWaTR/oGv7VzTpRDBo8qy9W2s9
+         RsKfybdYAwsnnDYFoKo4I5LWu2+4PbJjlYubw0BPUx7ZxwQulu8HJg25XTvWO7rZyfbF
+         JSE8EgBm3EG358/87KCACIbQKT5tnBw9hCs8Tnr2QEXf5utFMXypGiSWx7FBbjQZ8Vg/
+         8RLTtkcuIUZ9UAeXbk10Krx/R6KRH5EHsL5VegT6dN6o6NFEWLHczomSZ4A7bmppBEI8
+         Zd+A==
+X-Gm-Message-State: AOJu0YxsMymzJlZNN8/VDzygyanXs4RvaWt/h9/vLcS7B7G5Jo0JuhdB
+	r5kyWbq6MZCX/4O2NRWhliY7w6KFp7CbJCrlDTCDE2Ox/bNjH8oTD3HeuUfX4YM=
+X-Google-Smtp-Source: AGHT+IHQibS5o6WlTuiDCwT7ZjkLtBnPKNQkGAG1I79CB9wOZ7GILO1eVGmHw8GQaGabYq+jMXwkKQ==
+X-Received: by 2002:a05:600c:6b03:b0:40e:6f03:45b5 with SMTP id jn3-20020a05600c6b0300b0040e6f0345b5mr390308wmb.261.1706194224044;
+        Thu, 25 Jan 2024 06:50:24 -0800 (PST)
 Received: from ta2.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id v17-20020a05600c471100b0040d91fa270fsm2875875wmo.36.2024.01.25.06.50.22
+        by smtp.gmail.com with ESMTPSA id v17-20020a05600c471100b0040d91fa270fsm2875875wmo.36.2024.01.25.06.50.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 06:50:22 -0800 (PST)
+        Thu, 25 Jan 2024 06:50:23 -0800 (PST)
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
 To: broonie@kernel.org,
 	andi.shyti@kernel.org,
@@ -85,9 +85,9 @@ Cc: robh+dt@kernel.org,
 	kernel-team@android.com,
 	willmcvicker@google.com,
 	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v2 14/28] spi: s3c64xx: rename prepare_dma() to s3c64xx_prepare_dma()
-Date: Thu, 25 Jan 2024 14:49:52 +0000
-Message-ID: <20240125145007.748295-15-tudor.ambarus@linaro.org>
+Subject: [PATCH v2 15/28] spi: s3c64xx: return ETIMEDOUT for wait_for_completion_timeout()
+Date: Thu, 25 Jan 2024 14:49:53 +0000
+Message-ID: <20240125145007.748295-16-tudor.ambarus@linaro.org>
 X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
 In-Reply-To: <20240125145007.748295-1-tudor.ambarus@linaro.org>
 References: <20240125145007.748295-1-tudor.ambarus@linaro.org>
@@ -99,47 +99,45 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Don't monopolize the name. Prepend the driver prefix to the function
-name.
+ETIMEDOUT is more specific than EIO, use it for
+wait_for_completion_timeout().
 
 Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
- drivers/spi/spi-s3c64xx.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/spi/spi-s3c64xx.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-index 25d642f99278..447320788697 100644
+index 447320788697..d2dd28ff00c6 100644
 --- a/drivers/spi/spi-s3c64xx.c
 +++ b/drivers/spi/spi-s3c64xx.c
-@@ -273,8 +273,8 @@ static void s3c64xx_spi_dmacb(void *data)
- 	spin_unlock_irqrestore(&sdd->lock, flags);
- }
+@@ -523,7 +523,7 @@ static int s3c64xx_wait_for_dma(struct s3c64xx_spi_driver_data *sdd,
  
--static int prepare_dma(struct s3c64xx_spi_dma_data *dma,
--			struct sg_table *sgt)
-+static int s3c64xx_prepare_dma(struct s3c64xx_spi_dma_data *dma,
-+			       struct sg_table *sgt)
- {
- 	struct s3c64xx_spi_driver_data *sdd;
- 	struct dma_slave_config config;
-@@ -440,7 +440,7 @@ static int s3c64xx_enable_datapath(struct s3c64xx_spi_driver_data *sdd,
- 		chcfg |= S3C64XX_SPI_CH_TXCH_ON;
- 		if (dma_mode) {
- 			modecfg |= S3C64XX_SPI_MODE_TXDMA_ON;
--			ret = prepare_dma(&sdd->tx_dma, &xfer->tx_sg);
-+			ret = s3c64xx_prepare_dma(&sdd->tx_dma, &xfer->tx_sg);
- 		} else {
- 			switch (sdd->cur_bpw) {
- 			case 32:
-@@ -472,7 +472,7 @@ static int s3c64xx_enable_datapath(struct s3c64xx_spi_driver_data *sdd,
- 			writel(((xfer->len * 8 / sdd->cur_bpw) & 0xffff)
- 					| S3C64XX_SPI_PACKET_CNT_EN,
- 					regs + S3C64XX_SPI_PACKET_CNT);
--			ret = prepare_dma(&sdd->rx_dma, &xfer->rx_sg);
-+			ret = s3c64xx_prepare_dma(&sdd->rx_dma, &xfer->rx_sg);
- 		}
+ 	/*
+ 	 * If the previous xfer was completed within timeout, then
+-	 * proceed further else return -EIO.
++	 * proceed further else return -ETIMEDOUT.
+ 	 * DmaTx returns after simply writing data in the FIFO,
+ 	 * w/o waiting for real transmission on the bus to finish.
+ 	 * DmaRx returns only after Dma read data from FIFO which
+@@ -544,7 +544,7 @@ static int s3c64xx_wait_for_dma(struct s3c64xx_spi_driver_data *sdd,
+ 
+ 	/* If timed out while checking rx/tx status return error */
+ 	if (!val)
+-		return -EIO;
++		return -ETIMEDOUT;
+ 
+ 	return 0;
+ }
+@@ -574,7 +574,7 @@ static int s3c64xx_wait_for_pio(struct s3c64xx_spi_driver_data *sdd,
+ 	if (use_irq) {
+ 		val = msecs_to_jiffies(ms);
+ 		if (!wait_for_completion_timeout(&sdd->xfer_completion, val))
+-			return -EIO;
++			return -ETIMEDOUT;
  	}
  
+ 	val = msecs_to_loops(ms);
 -- 
 2.43.0.429.g432eaa2c6b-goog
 
