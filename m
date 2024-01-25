@@ -1,165 +1,209 @@
-Return-Path: <linux-kernel+bounces-39009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B7C083C998
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:15:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A107983C99D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:15:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CCFB298693
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:15:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5130729988F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:15:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E935132C15;
-	Thu, 25 Jan 2024 17:08:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B53D133434;
+	Thu, 25 Jan 2024 17:09:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r0jMYfzi"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="wWxB6UTz"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBBC6130E4B;
-	Thu, 25 Jan 2024 17:08:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC821131735
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 17:09:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706202490; cv=none; b=WfE1YMUMxrvXOM6fXMxoUlESLgV4y8ESo2/6lhsplrp8crxU4Z/jSqUkYVXDLPsVyNuZ7TjwksKlCSSIFfR16Qz8C0eaGtFHpA8cxj2cJgkN1AaQNUq4OXhqXzPN1AazOJKE0KKMYcKDytdDnBbRSCZSNteG6QK9xE3qyQH+nHI=
+	t=1706202562; cv=none; b=jPfEWxQJjFitXOVdX47PoTcKQ5thBZjO0eXGfxgREXE7MI/KAYIJVEqYWA95L6yBQCCivq1sw7rT2TeqLChu2UTPnbAcrKwmo93mWB/tIxX2TNzQ+vyT8QUgXEjsej3fZE5fXh4gqQfZ28sQQxeN44Be68uA5SY9FChTnni2Gtw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706202490; c=relaxed/simple;
-	bh=AExTusMF4INxCnd5hFNzvqahxV6pvzKQNN6GGi8BlDg=;
+	s=arc-20240116; t=1706202562; c=relaxed/simple;
+	bh=SYP5SuCzecJg/AbMI+aiTjZqTA04WqjPusKcUYsXjXM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Aqs2lqsuS0PSOLQYQGLfEpcdKQ6cEQ/vblK1yVqLLaWNvtLkfvsXFJpgAw+Gt4J28ZdPRHjEdWuPmoy7w3Jx3M2doBwwcdfFTXYQDRAzzv90LT0uf/UdeW7Kqlk9Wn8g/8arz3Tt5RwxXj675Tl4s23vXzaKDvpJpErjSFCdi24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r0jMYfzi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28C9FC433C7;
-	Thu, 25 Jan 2024 17:08:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706202489;
-	bh=AExTusMF4INxCnd5hFNzvqahxV6pvzKQNN6GGi8BlDg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=r0jMYfziQNN9sa6AmXoKSCurKA6BqmG0INQ+XdOsKnF8kNWE7IY7ybm+Wd0PgA0Zr
-	 U9pPkSnIheEO2AJYHygBeqbbgcaOYR3BPX8PWO664E66/DhClkUbL49zuAKBhzDqPr
-	 s5otYwc+lDBvuoi9aIbkqKjCx38tZpTsbNC5+YCw6wR8rpnKjUosv6G32FwG+yH8pd
-	 fEKHJL+yRuyHsbOiSkFSwiOo4MaG8fRDEv+H6Edg+kFD1WbU6qYqT8i18yfTBdZLHY
-	 ZnY5/fPfeo1plfWXTvWXEdkMMQ21mQgaGWHB5qFx6XUbh9I9A3nwHvcfaboSdAWy1F
-	 HXLbKmS5E5Iuw==
-Date: Thu, 25 Jan 2024 17:08:04 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Francesco Dolcini <francesco@dolcini.it>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Li Yang <leoyang.li@nxp.com>,
-	Joao Paulo Goncalves <joao.goncalves@toradex.com>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Francesco Dolcini <francesco.dolcini@toradex.com>
-Subject: Re: [PATCH v1 1/2] dt-bindings: arm: fsl: add imx8qm apalis eval
- v1.2 carrier board
-Message-ID: <20240125-player-disposal-a9cd852e9061@spud>
-References: <20240125101457.9873-1-francesco@dolcini.it>
- <20240125101457.9873-2-francesco@dolcini.it>
+	 Content-Type:Content-Disposition:In-Reply-To; b=nNOCnJCOzpXxE7DGKj9RfmwYQU7fCV9M/cua/sncMxrOJTHksTq5gc7cOApgZP5OWRaKbuHWiTmIfd95VzoCYeOzbCza3mBRIh/u3NJtfW8zZVfbFwqc2gFwb9a649Po6av/w2rz8leqWqTgFYwHtuMJrE7FZW55KAG1bdLKqz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=wWxB6UTz; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6dd853c1f80so688708b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:09:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706202560; x=1706807360; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=EemHHEVJxCejDW2IGmWybsIfYtaSynaTSK4azEaq/DU=;
+        b=wWxB6UTzC752chpv9Ex6QtzPlDcXZCYcUzrQ39rHeCXZCx0ugi59QuQ5HcMpjSm2fS
+         6lAivpF8m4CyLmGbvvFo9dr6Ve6NuXhKeRS5/kxBJ24Rf9QTbnzvCpUgAZ1K8xSfi3o+
+         9dAaOzASZoMzm2tnA5qQoUdKon0uPc042Zor/AJTthSQMkg1DWUGrbDkjjc++8V3imHl
+         +RlWnYje6UplVxu8RdlbYeY8EoNa/qaZPjylUEDaxLEQq4r5Bj5mNfrenqAepVh+P1EU
+         qAO8x9NbM4c5eGD4CvKZ+MC2e6FupknCCBBthBiBpn6rfcINTVglRhcmFkzmHSTWn2cr
+         FI1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706202560; x=1706807360;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EemHHEVJxCejDW2IGmWybsIfYtaSynaTSK4azEaq/DU=;
+        b=tLS/trEJ43X1ZapXRL6Ad27rr6zf2FYTg54qNRuMWWeX1sFCg2rdzxptJxG+ZuY0L4
+         c4oCLp9fhVboofX739g0uiSp0sJx6WOOyr9P9r/lSFdQdOKWmjogrgl6uhJlbbaRYIrs
+         vMPVsBbl2U+O7+KvEnyeh0mJEkKQHHfqmjgw/B+EiqOuRHjWSd5gl9GR3HcnR+aa85qQ
+         PQ5Us2og3TINlVYVW/3mEaqxrINBCpgy6el9AALgurgwcHoNDfszC/Ot8lHew960QFGE
+         8vHtRac3YzX6YKlz3hpSKjaS+9xLeFyd6r+guSIFYoUZPAqLOBRIlBmPtkaWDZ8x/jVT
+         9B0g==
+X-Gm-Message-State: AOJu0Yxd9BH6BIF4ZXfxylMAhGxwhZRn19E9rmFCEOCJry+EkKwAHoOB
+	Vc++zELsi2CR3GNnzbU7cTxN/cuiZ2QX0ANb2hJ5uy22cVxkeTU9MRUUBtBEHVc=
+X-Google-Smtp-Source: AGHT+IG/zy1hPfIMx5+FBiFJ5BLS8zAqpVXvwWyHDpqTcM52HEkGIjepOlIdme6VNMNiF/zcKBKxqQ==
+X-Received: by 2002:a05:6a00:b4f:b0:6db:ac96:f530 with SMTP id p15-20020a056a000b4f00b006dbac96f530mr221939pfo.24.1706202559878;
+        Thu, 25 Jan 2024 09:09:19 -0800 (PST)
+Received: from debug.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id w128-20020a626286000000b006dde0724247sm180477pfb.149.2024.01.25.09.09.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 09:09:19 -0800 (PST)
+Date: Thu, 25 Jan 2024 09:09:14 -0800
+From: Deepak Gupta <debug@rivosinc.com>
+To: Stefan O'Rear <sorear@fastmail.com>
+Cc: rick.p.edgecombe@intel.com, broonie@kernel.org, Szabolcs.Nagy@arm.com,
+	"kito.cheng@sifive.com" <kito.cheng@sifive.com>,
+	Kees Cook <keescook@chromium.org>,
+	Andrew Jones <ajones@ventanamicro.com>, paul.walmsley@sifive.com,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Conor Dooley <conor.dooley@microchip.com>, cleger@rivosinc.com,
+	Atish Patra <atishp@atishpatra.org>,
+	Alexandre Ghiti <alex@ghiti.fr>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Jonathan Corbet <corbet@lwn.net>, Albert Ou <aou@eecs.berkeley.edu>,
+	oleg@redhat.com, akpm@linux-foundation.org, arnd@arndb.de,
+	"Eric W. Biederman" <ebiederm@xmission.com>, shuah@kernel.org,
+	Christian Brauner <brauner@kernel.org>, guoren <guoren@kernel.org>,
+	samitolvanen@google.com, Evan Green <evan@rivosinc.com>,
+	xiao.w.wang@intel.com, Anup Patel <apatel@ventanamicro.com>,
+	mchitale@ventanamicro.com, waylingii@gmail.com,
+	greentime.hu@sifive.com, Heiko Stuebner <heiko@sntech.de>,
+	Jisheng Zhang <jszhang@kernel.org>, shikemeng@huaweicloud.com,
+	david@redhat.com, Charlie Jenkins <charlie@rivosinc.com>,
+	panqinglin2020@iscas.ac.cn, willy@infradead.org,
+	Vincent Chen <vincent.chen@sifive.com>,
+	Andy Chiu <andy.chiu@sifive.com>, Greg Ungerer <gerg@kernel.org>,
+	jeeheng.sia@starfivetech.com, mason.huo@starfivetech.com,
+	ancientmodern4@gmail.com, mathis.salmen@matsal.de,
+	cuiyunhui@bytedance.com, bhe@redhat.com, ruscur@russell.cc,
+	bgray@linux.ibm.com, alx@kernel.org, baruch@tkos.co.il,
+	zhangqing@loongson.cn, Catalin Marinas <catalin.marinas@arm.com>,
+	revest@chromium.org, josh@joshtriplett.org, joey.gouly@arm.com,
+	shr@devkernel.io, omosnace@redhat.com, ojeda@kernel.org,
+	jhubbard@nvidia.com, linux-doc@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-arch@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH v1 02/28] riscv: envcfg save and restore on trap
+ entry/exit
+Message-ID: <ZbKVutBWoelt33GM@debug.ba.rivosinc.com>
+References: <20240125062739.1339782-1-debug@rivosinc.com>
+ <20240125062739.1339782-3-debug@rivosinc.com>
+ <23d023c0-27cf-44fa-be0a-000d1534ef86@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="G03XcziqO5uHVHWG"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20240125101457.9873-2-francesco@dolcini.it>
+In-Reply-To: <23d023c0-27cf-44fa-be0a-000d1534ef86@app.fastmail.com>
 
+On Thu, Jan 25, 2024 at 02:19:29AM -0500, Stefan O'Rear wrote:
+>On Thu, Jan 25, 2024, at 1:21 AM, debug@rivosinc.com wrote:
+>> From: Deepak Gupta <debug@rivosinc.com>
+>>
+>> envcfg CSR defines enabling bits for cache management instructions and soon
+>> will control enabling for control flow integrity and pointer masking features.
+>>
+>> Control flow integrity enabling for forward cfi and backward cfi is controlled
+>> via envcfg and thus need to be enabled on per thread basis.
+>>
+>> This patch creates a place holder for envcfg CSR in `thread_info` and adds
+>> logic to save and restore on trap entry and exits.
+>
+>Should only be "restore"?  I don't see saving.
 
---G03XcziqO5uHVHWG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It's always saved in `thread_info` and user mode can't change it.
+So no point saving it.
 
-On Thu, Jan 25, 2024 at 11:14:56AM +0100, Francesco Dolcini wrote:
-> From: Joao Paulo Goncalves <joao.goncalves@toradex.com>
->=20
-> Add the toradex,apalis-imx8-eval-v1.2 and
-> toradex,apalis-imx8-v1.1-eval-v1.2 compatible strings for version 1.2
-> of the Apalis Evaluation Board.
->=20
-> Version v1.2 includes the following changes compared to v1.1:
->=20
-> - 8-bit MMC connector replaced with a 4-bit uSD connector.
-> - Audio codec NAU88C22 added.
-> - M24C02 EEPROM i2c added.
-> - MIPI-CSI-2 connector directly to the board added.
-> - PCIe switch PEX8605 removed and PCIe now is routed directly to Mini
-> PCIe connector.
-> - Power measurement IC INA219 added.
-> - Replaced DVI with HDMI connector.
-> - Single-channel USB to UART converter replaced with four-channel USB
-> to UART/JTAG.
-> - Temperature sensor TMP75 added.
->=20
-> Please note that board version v1.0 (which reached EOL) is compatible with
-> v1.1, therefore toradex,apalis-imx8-eval and toradex,apalis-v1.1-imx8-eval
-> compatible strings should be used for both v1.0 and v1.1.
->=20
-> Signed-off-by: Joao Paulo Goncalves <joao.goncalves@toradex.com>
-> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+>
+>>
+>> Signed-off-by: Deepak Gupta <debug@rivosinc.com>
+>> ---
+>>  arch/riscv/include/asm/thread_info.h | 1 +
+>>  arch/riscv/kernel/asm-offsets.c      | 1 +
+>>  arch/riscv/kernel/entry.S            | 4 ++++
+>>  3 files changed, 6 insertions(+)
+>>
+>> diff --git a/arch/riscv/include/asm/thread_info.h
+>> b/arch/riscv/include/asm/thread_info.h
+>> index 574779900bfb..320bc899a63b 100644
+>> --- a/arch/riscv/include/asm/thread_info.h
+>> +++ b/arch/riscv/include/asm/thread_info.h
+>> @@ -57,6 +57,7 @@ struct thread_info {
+>>  	long			user_sp;	/* User stack pointer */
+>>  	int			cpu;
+>>  	unsigned long		syscall_work;	/* SYSCALL_WORK_ flags */
+>> +	unsigned long envcfg;
+>>  #ifdef CONFIG_SHADOW_CALL_STACK
+>>  	void			*scs_base;
+>>  	void			*scs_sp;
+>> diff --git a/arch/riscv/kernel/asm-offsets.c
+>> b/arch/riscv/kernel/asm-offsets.c
+>> index a03129f40c46..cdd8f095c30c 100644
+>> --- a/arch/riscv/kernel/asm-offsets.c
+>> +++ b/arch/riscv/kernel/asm-offsets.c
+>> @@ -39,6 +39,7 @@ void asm_offsets(void)
+>>  	OFFSET(TASK_TI_PREEMPT_COUNT, task_struct, thread_info.preempt_count);
+>>  	OFFSET(TASK_TI_KERNEL_SP, task_struct, thread_info.kernel_sp);
+>>  	OFFSET(TASK_TI_USER_SP, task_struct, thread_info.user_sp);
+>> +	OFFSET(TASK_TI_ENVCFG, task_struct, thread_info.envcfg);
+>>  #ifdef CONFIG_SHADOW_CALL_STACK
+>>  	OFFSET(TASK_TI_SCS_SP, task_struct, thread_info.scs_sp);
+>>  #endif
+>> diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+>> index 54ca4564a926..63c3855ba80d 100644
+>> --- a/arch/riscv/kernel/entry.S
+>> +++ b/arch/riscv/kernel/entry.S
+>> @@ -129,6 +129,10 @@ SYM_CODE_START_NOALIGN(ret_from_exception)
+>>  	addi s0, sp, PT_SIZE_ON_STACK
+>>  	REG_S s0, TASK_TI_KERNEL_SP(tp)
+>>
+>> +	/* restore envcfg bits for current thread */
+>> +	REG_L s0, TASK_TI_ENVCFG(tp)
+>> +	csrw CSR_ENVCFG, s0
+>> +
+>
+>This is redundant if we're repeatedly processing interrupts or exceptions
+>within a single task.  We should only be writing envcfg when switching
+>between tasks or as part of the prctl.
+>
+>We need to use an ALTERNATIVE for this since the oldest supported hardware
+>does not have envcfg csrs.
 
-I was convinced that I acked this already a few days ago, but no:
-https://lore.kernel.org/all/20240124141849.26254-2-hiagofranco@gmail.com/
+Yeah fixing that in next series. Thanks
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor.
-
-> ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentati=
-on/devicetree/bindings/arm/fsl.yaml
-> index 228dcc5c7d6f..b877f940490a 100644
-> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> @@ -1194,7 +1194,8 @@ properties:
->        - description: i.MX8QM Boards with Toradex Apalis iMX8 Modules
->          items:
->            - enum:
-> -              - toradex,apalis-imx8-eval            # Apalis iMX8 Module=
- on Apalis Evaluation Board
-> +              - toradex,apalis-imx8-eval            # Apalis iMX8 Module=
- on Apalis Evaluation V1.0/V1.1 Board
-> +              - toradex,apalis-imx8-eval-v1.2       # Apalis iMX8 Module=
- on Apalis Evaluation V1.2 Board
->                - toradex,apalis-imx8-ixora-v1.1      # Apalis iMX8 Module=
- on Ixora V1.1 Carrier Board
->            - const: toradex,apalis-imx8
->            - const: fsl,imx8qm
-> @@ -1202,7 +1203,8 @@ properties:
->        - description: i.MX8QM Boards with Toradex Apalis iMX8 V1.1 Modules
->          items:
->            - enum:
-> -              - toradex,apalis-imx8-v1.1-eval       # Apalis iMX8 V1.1 M=
-odule on Apalis Eval. Board
-> +              - toradex,apalis-imx8-v1.1-eval       # Apalis iMX8 V1.1 M=
-odule on Apalis Eval. V1.0/V1.1 Board
-> +              - toradex,apalis-imx8-v1.1-eval-v1.2  # Apalis iMX8 V1.1 M=
-odule on Apalis Eval. V1.2 Board
->                - toradex,apalis-imx8-v1.1-ixora-v1.1 # Apalis iMX8 V1.1 M=
-odule on Ixora V1.1 C. Board
->                - toradex,apalis-imx8-v1.1-ixora-v1.2 # Apalis iMX8 V1.1 M=
-odule on Ixora V1.2 C. Board
->            - const: toradex,apalis-imx8-v1.1
-> --=20
-> 2.39.2
->=20
-
---G03XcziqO5uHVHWG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbKVdAAKCRB4tDGHoIJi
-0k1uAQDJEsSzP9Dn7ZbijgWvm6jFf4fSgLV6t0SmvLAG4DSHVwEAlDIHQnE1ionO
-Hu1NVhWyn9DTkBsNbO+5Lju+D7DX/QA=
-=drxf
------END PGP SIGNATURE-----
-
---G03XcziqO5uHVHWG--
+>
+>-s
+>
+>>  	/* Save the kernel shadow call stack pointer */
+>>  	scs_save_current
+>>
+>> --
+>> 2.43.0
+>>
+>>
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
