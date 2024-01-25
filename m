@@ -1,141 +1,135 @@
-Return-Path: <linux-kernel+bounces-39121-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39122-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD83183CB18
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:32:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AD3183CB19
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:32:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 988AEB256C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:32:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BB6E1F21003
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:32:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0AE81386BB;
-	Thu, 25 Jan 2024 18:28:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AC4A1386D2;
+	Thu, 25 Jan 2024 18:28:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BZkHsCxq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mO9UXfzr"
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D306D134757;
-	Thu, 25 Jan 2024 18:28:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ED1313473D
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 18:28:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706207296; cv=none; b=IuU8QUgJyM0MnDvLspwCRMf4q470ZaeC6jD/uQ7lF5aueYWiWhvkRld8FxkW5A50oi02oIwCKuCcIzVHxNVIQuRtR3B1IXWXV5ZIhY6Q9h/iax6IZzA4Gzvepe9B9RlggwvZPNNfMABNVMXqWDWQPS9bArkszM/CVFaCavBEIMk=
+	t=1706207324; cv=none; b=WJLA8Ka7C4Riix9VBcYOUnKD7irqjuQ5ZgcyR2Gh6snpWcxuHPmB6VjJKXsLLjflTE2M9ZjNQ/6AMOXGvyvCY/BIihNq8vaxLmH6s/GKW/QtZ0RxLlhJXBzCkqAlWy4XhcwsbnqQdXGvrAHm2qzEzL1XNfLyqTffbP2AlCON3Wg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706207296; c=relaxed/simple;
-	bh=N6ZEDuiUthyrFTNfqDI04qaw+c0qqDUfP3nYRGcwyjI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sMTOyYfwPUVlG+YSYDuF6XZ7fqW2Eu6Fu+VA8PSJYI6A6sODFFCq69/rivgruoYa8Hv6MxCPKE9+1+EaJErev2EjAfK/HSMLH4wYFi1wTE0Dk/biUVwSR8MdbFYaO7qjjxyTZvuSyASZ+7xAJikx5lGii4cd0+XmJVmoh2XxzP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BZkHsCxq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81F4BC43390;
-	Thu, 25 Jan 2024 18:28:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706207296;
-	bh=N6ZEDuiUthyrFTNfqDI04qaw+c0qqDUfP3nYRGcwyjI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=BZkHsCxqRg4uKfWIIAzrh35ZHF7uOs8Fold3RkOXJ8QpcxrOvoVP6RdBSCMFwzcHf
-	 YFkyhLj8woDGjGb6oHqlimvo0hi5+1LR00Cq0FhMCEoxELdwkjRDf+3Cloebwsmv3Z
-	 7OdYixQINOjG146LOn12MJj1UdZ1v4mRvgzuzHoYt8IfnL0ex0yuWemnlDrw+YJ7C3
-	 ou1rLvom/37mMFfjPK8ziz+IdFlxdbbWXUe43KyhIYT8nIy5OF3magR6ZIwTOjZwEw
-	 wkAfL3cLYULfY9V2bvsJckv0ea0Um/ptsrs7iNBglrnw3UM+hxOyJdEmbgyMZPMe9+
-	 ZhMuAFfPJPhFA==
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cf33b909e8so9713321fa.0;
-        Thu, 25 Jan 2024 10:28:16 -0800 (PST)
-X-Gm-Message-State: AOJu0YyvLkpEuGWVi6YX3OzM14VlBpoPP3M7dxkOB1CDPTEmQcufMQ3y
-	nsgPd8ylp9Knl6w1+DZjb0lqTc9R4C64bK7dDGO5UKYnPISaD7wbXXOxBji67SqTGfYFPHiZo9A
-	r+NHw7IIID64+lOARE3E2BRerWVw=
-X-Google-Smtp-Source: AGHT+IF4A+Ju+VLoXBiDORGvr3AIpO6hZuYmyrpVf8uXLhHDJf4q1S9Z2/98OeaA5FJkEYmlY6Xk9DZVHViKbc6Mtb0=
-X-Received: by 2002:a2e:be20:0:b0:2cf:15be:462e with SMTP id
- z32-20020a2ebe20000000b002cf15be462emr185537ljq.11.1706207294732; Thu, 25 Jan
- 2024 10:28:14 -0800 (PST)
+	s=arc-20240116; t=1706207324; c=relaxed/simple;
+	bh=756udnWKPUnYu+tviVP/6MzNK65B+hc7fr7/t17LzaA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ntnzcAwJ+c8q/Jkh6Bj2GnUBmnLd1qp/75UcxDAUFVUHuGaqA0RIACgqCpyrK33qcZ6kCiFNdrONBoTisac3hcYAu5A5CCLwdn0T00MI4dJdx/c//2eReyJfnGMR0D4cJ9R6uhcC2L66hJzA9uBlucNZOpVXipkEwkWNNbLHT34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mO9UXfzr; arc=none smtp.client-ip=209.85.222.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-78333ad3a17so562264485a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 10:28:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706207320; x=1706812120; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uLhCwnRRIZ1E72pj3tBhSpsWi74rqeA6ru7YY86vWc8=;
+        b=mO9UXfzr7iiYQ0LltAqd+UVA5xLXhbhgv5Racbh+U7Y2WbE6myGOdYLM0pxDznQhbq
+         sNfl5C5A+EgT3vNGE8vXXyVcPNvP240ERHJW/ieU6o8Gh8eQgq/GoTWXGCvMZ6x016/C
+         xV4PfB6r1w3p1T2ml75ITKn6kFgcvayy0TMclD8HBpaTq+U7LCgDvTZwznupuUVMYfwl
+         1yvQHLkuZ1fcHfOWaEzbpqzdMFYQC2Vt3PFSbBiF/T4/9OzdovZvgs9AntddZ8IvGZ+9
+         Ag/v1iqVDb3YrBhm/R19qui3PT2NHKgEuhI/9XAhOKGb6B29Mz1rBhAPCoQNo+UEFEa+
+         L/BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706207320; x=1706812120;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uLhCwnRRIZ1E72pj3tBhSpsWi74rqeA6ru7YY86vWc8=;
+        b=CTdJ+VrrvOIJwToYVaaWdmtJMUU2SyjKRkhfj0oylBWqV4EOLAmicy9gDU9jAGEprF
+         M5jzf9PQizwNrq8JP2Y2ANEBo2CkFUTrrVKmAIdAUKTB1qfGjZLPxlUrd/Oih0xOsDsA
+         goRcYBzIh86b4yBALM06ok4EXoc5kKFkMXIr36vfrP8WjsJI9ObGoowD+TpmD9w1tWRv
+         7mUuHpPwxt1qe3NaNu2szziq96gBkwBGWEO7BFHGAQQQH4HyGgHN8ToqXv38OQVdMVtJ
+         3gWh20f4vAG/KqaZWzKalURNDHthM0WWFNCEIThV+z1D+uKyLj1uDUI/c4bfdEYBPmyv
+         x2wQ==
+X-Gm-Message-State: AOJu0YyUKYsDGqG6EKJBRgpBu0WyM6vVLMS4sqUSeRU2Znlqbana/t+y
+	X49IfS/9T9mHZw3tdZWSyf69ti+dZdnCnbUFv9Na69XOmT9ILL9dbflPTMZi
+X-Google-Smtp-Source: AGHT+IENIfq2UC3Og9qo2vh57IZoVlyR7hwFppNQFJocCbIrcZLJZCfEHxBEHlZFM1RVSvBhlQNCNQ==
+X-Received: by 2002:a05:620a:8529:b0:781:2dfe:787 with SMTP id pe41-20020a05620a852900b007812dfe0787mr101689qkn.111.1706207320207;
+        Thu, 25 Jan 2024 10:28:40 -0800 (PST)
+Received: from pm2-ws13.praxislan02.com (207-172-141-204.s8906.c3-0.slvr-cbr1.lnh-slvr.md.cable.rcncustomer.com. [207.172.141.204])
+        by smtp.gmail.com with ESMTPSA id c21-20020a05620a201500b007831ffa4234sm5285373qka.42.2024.01.25.10.28.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 10:28:39 -0800 (PST)
+From: Jason Andryuk <jandryuk@gmail.com>
+To: linux-kernel@vger.kernel.org
+Cc: Jason Andryuk <jandryuk@gmail.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH] x86/mm/cpa-test: Ensure pfn isn't already in use
+Date: Thu, 25 Jan 2024 13:28:35 -0500
+Message-ID: <20240125182837.52467-1-jandryuk@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123234731.work.358-kees@kernel.org> <CAMj1kXGcKBPnHOm6PtsrxePdv5a6AokB=qvMrwvGmPh_Uk6vsA@mail.gmail.com>
- <202401250958.11B29BE48@keescook>
-In-Reply-To: <202401250958.11B29BE48@keescook>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Thu, 25 Jan 2024 19:28:03 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHKTWy7kyHNYD0+JbbDqEreL7efatDZ9VLKPbXhVVVdqw@mail.gmail.com>
-Message-ID: <CAMj1kXHKTWy7kyHNYD0+JbbDqEreL7efatDZ9VLKPbXhVVVdqw@mail.gmail.com>
-Subject: Re: [PATCH] smb: Work around Clang __bdos() type confusion
-To: Kees Cook <keescook@chromium.org>
-Cc: Steve French <sfrench@samba.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Paulo Alcantara <pc@manguebit.com>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, 
-	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>, linux-cifs@vger.kernel.org, 
-	llvm@lists.linux.dev, Nick Desaulniers <ndesaulniers@google.com>, 
-	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org, 
-	linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Thu, 25 Jan 2024 at 19:00, Kees Cook <keescook@chromium.org> wrote:
->
-> On Thu, Jan 25, 2024 at 01:19:19PM +0100, Ard Biesheuvel wrote:
-> > On Wed, 24 Jan 2024 at 00:47, Kees Cook <keescook@chromium.org> wrote:
-> > >
-> > > Recent versions of Clang gets confused about the possible size of the
-> > > "user" allocation, and CONFIG_FORTIFY_SOURCE ends up emitting a
-> > > warning[1]:
-> > >
-> > > repro.c:126:4: warning: call to '__write_overflow_field' declared with 'warning' attribute: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Wattribute-warning]
-> > >   126 |                         __write_overflow_field(p_size_field, size);
-> > >       |                         ^
-> > >
-> > > for this memset():
-> > >
-> > >         int len;
-> > >         __le16 *user;
-> > >         ...
-> > >         len = ses->user_name ? strlen(ses->user_name) : 0;
-> > >         user = kmalloc(2 + (len * 2), GFP_KERNEL);
-> > >         ...
-> > >         if (len) {
-> > >                 ...
-> > >         } else {
-> > >                 memset(user, '\0', 2);
-> > >         }
-> > >
-> > > While Clang works on this bug[2], switch to using a direct assignment,
-> > > which avoids memset() entirely which both simplifies the code and silences
-> > > the false positive warning. (Making "len" size_t also silences the
-> > > warning, but the direct assignment seems better.)
-> > >
-> > > Reported-by: Nathan Chancellor <nathan@kernel.org>
-> > > Closes: https://github.com/ClangBuiltLinux/linux/issues/1966 [1]
-> > > Link: https://github.com/llvm/llvm-project/issues/77813 [2]
-> > > Cc: Steve French <sfrench@samba.org>
-> > > Cc: Paulo Alcantara <pc@manguebit.com>
-> > > Cc: Ronnie Sahlberg <ronniesahlberg@gmail.com>
-> > > Cc: Shyam Prasad N <sprasad@microsoft.com>
-> > > Cc: Tom Talpey <tom@talpey.com>
-> > > Cc: linux-cifs@vger.kernel.org
-> > > Cc: llvm@lists.linux.dev
-> > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > ---
-> > >  fs/smb/client/cifsencrypt.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/fs/smb/client/cifsencrypt.c b/fs/smb/client/cifsencrypt.c
-> > > index ef4c2e3c9fa6..6322f0f68a17 100644
-> > > --- a/fs/smb/client/cifsencrypt.c
-> > > +++ b/fs/smb/client/cifsencrypt.c
-> > > @@ -572,7 +572,7 @@ static int calc_ntlmv2_hash(struct cifs_ses *ses, char *ntlmv2_hash,
-> > >                 len = cifs_strtoUTF16(user, ses->user_name, len, nls_cp);
-> > >                 UniStrupr(user);
-> > >         } else {
-> > > -               memset(user, '\0', 2);
-> > > +               *(u16 *)user = 0;
-> >
-> > Is 'user' guaranteed to be 16-bit aligned?
->
-> It's the first two bytes of a kmalloced address range, which I'm nearly
-> certain will be sanely aligned, as those allocs are commonly used for
-> holding structs, etc.
->
+Ensure pfn isn't already in use before assigning to addr[i].  Retry if
+in use.  The subsequent pfns were checked against the bitmap, but not
+the initial selection.
 
-Ah yes, this kmalloc() was carefully hidden in the commit log :-)
+This prevents some false positives on a machine with a small amount of
+RAM where pfn collisions are more likely to be seen.
+
+A Xen HVM first showed:
+[ 3640.227939] CPA ffff88800869c000: bad pte 800000000869c163
+[ 3640.227982] CPA ffff88800104e000: bad pte 800000000104e161
+
+Testing this patch with a Xen PV guest with one 192MB of RAM showed
+varying numbers of addresses like:
+[ 2768.082971] CPA test 5 pfn 930d in use
+
+Signed-off-by: Jason Andryuk <jandryuk@gmail.com>
+---
+This could infinite loop on a machine with a small amount of RAM - is
+that worth handling?  Just skip an in-use pfn instead?
+---
+ arch/x86/mm/pat/cpa-test.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/mm/pat/cpa-test.c b/arch/x86/mm/pat/cpa-test.c
+index ad3c1feec990..bbf337e3e246 100644
+--- a/arch/x86/mm/pat/cpa-test.c
++++ b/arch/x86/mm/pat/cpa-test.c
+@@ -136,7 +136,14 @@ static int pageattr_test(void)
+ 	failed += print_split(&sa);
+ 
+ 	for (i = 0; i < NTEST; i++) {
+-		unsigned long pfn = get_random_u32_below(max_pfn_mapped);
++		unsigned long pfn;
++
++ retry:
++		pfn = get_random_u32_below(max_pfn_mapped);
++		if (test_bit(pfn, bm)) {
++			pr_debug("CPA test %d pfn %lx in use\n", i, pfn);
++			goto retry;
++		}
+ 
+ 		addr[i] = (unsigned long)__va(pfn << PAGE_SHIFT);
+ 		len[i] = get_random_u32_below(NPAGES);
+-- 
+2.43.0
+
 
