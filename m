@@ -1,121 +1,241 @@
-Return-Path: <linux-kernel+bounces-38839-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41B4683C719
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:45:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F16783C722
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:46:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D66C01F249F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:45:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B824FB22C4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:46:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A28A73187;
-	Thu, 25 Jan 2024 15:45:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8272474E2D;
+	Thu, 25 Jan 2024 15:45:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FkZxV+zU"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="lSiZzWYQ"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB19C6E2C9
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 15:45:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C393C7317A;
+	Thu, 25 Jan 2024 15:45:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706197538; cv=none; b=BAHBUS2vuNRQIPAgHa5NIGj5vRkXMEq60p5gwp+ndt5HIc9WQrr+Oe23ozIAVUake0pQVqz7opVL8V8nZizUgUU6LiTnCXAnL3Wk8phkcJEel3f37kB7qIB72+/0DTGdB5aLt0ruQGHecxn5Pa1kJI/lPZlj8KYI1nAhPoIIhHY=
+	t=1706197552; cv=none; b=q+BpVTTcQLxWkUqJchbQFyir414KryNE4T3p/Cwh1iPW2ZglSntV3M208Si2h/9zK1LDnQMaSVyNlxUcwZe5jfJMPDvnlzzoyxAQCQTuwMLp3idiFT/pk9Yvc355ALUm2PVlXLvGNTMvBbBbpvTiVUCy9OCPolL8Ng6PZdKpBoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706197538; c=relaxed/simple;
-	bh=q1qkIXtslpnOwyKogLlXnCMaPNppQH6HlI4rFEyb7Bg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=M0Qdg+vm7NKUOT449WMdJmfrE5KppypYmKTAaE6lqR+ptNjp44Wmnxd84IjWAMmmWxqzoWqR8zx/f5LugY5LJEkzL6bB2aQNF+4wuKfrZTI8JX1RGFgk2aKGx5fFGUmnMLyaJkbRL+dk+KVj7PL4wT58kqRg9mZPJBsxzcG5dO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FkZxV+zU; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40e8fec0968so88320375e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 07:45:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706197535; x=1706802335; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/ZKp3uqQYAmq1YVDENjbc/8chIdFJnXVp5TeqqADjso=;
-        b=FkZxV+zUVnyuTCuXiMSYx561hRcu9OrmwxksFuutHP6M8iqftS86fp5FkFT5NhmdHE
-         FE6EoOTZiQkfyCYR63rNZEM7pVp2N3L58vGawFBw/WetCS1CB3i1YkAP11FKBm5zPOER
-         EoSAxE8dgrEm7LujSJ6DcASMPSZqWfkYnBcWEQmruyuTUVAx0MuOgkbPezstfPRkcQ1C
-         MsYZ8yEr23jIZX+6O2+V9ccgkCZVAVEWYY80Yq4fHWnQ2MPJYRVZsgFYb/bVyBb//zB6
-         bW4pBis+2V0P3TvfQYzNHi0ZF5vwzB0bqd9eZTz8FFNAMws3zcJQrp+/w1Y8zelAk5eK
-         t45g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706197535; x=1706802335;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/ZKp3uqQYAmq1YVDENjbc/8chIdFJnXVp5TeqqADjso=;
-        b=QSDf1nB3yOg3fu40JOmvyzH5c1kkAoivRVnGPZmUhrZoBi/IzBfnoiErj3fJ3LDkr4
-         wVdDpPTHZ3z2FaTabJPCMN9x1U3x8FwbJTNJfbCM5gyPnDfp2a9p5f5YMQmneAYVGLmy
-         gq3dgK1IMSSaJTIiOcwV4dGKFPrqsG8SL31WVdJFrpzz9Key0Ubst9RbtPaJooVwCNWr
-         JBY8QTKow/tMPtzkubiiGVEtlykEoiWexZFcAJ6IQocoxlb+SPZZiHmLh0m0MFn7+2mh
-         eFNwgKgy4JwjyAflD2OT5LIo4q3Y6pewJmw2F7MZhZw6dFVN4R9XuXa1FK+Pop1aW1QO
-         /bzA==
-X-Gm-Message-State: AOJu0YwHvj/3m7OxVwAcGcgDSl0BObNqJEeU1gzYxFGqRVwhZA8JUjP/
-	G0SngBVt1w6UHHFUTyLZ14Tro9haVCUHEFvIt7c8onLMVNCtp2vIlHyceHSEuYE=
-X-Google-Smtp-Source: AGHT+IHuoNdaRTPK5NXqlIvnrcXgXqBejZK0Hmr6tF0tLG1/F4avGqmk5r5MmRqsRsj/fcgf5Ba8Jw==
-X-Received: by 2002:a05:600c:4e88:b0:40e:b95b:e482 with SMTP id f8-20020a05600c4e8800b0040eb95be482mr672975wmq.115.1706197534905;
-        Thu, 25 Jan 2024 07:45:34 -0800 (PST)
-Received: from krzk-bin.. ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id v17-20020a05600c471100b0040ec7fcaea6sm2986552wmo.37.2024.01.25.07.45.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 07:45:34 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] arm64: dts: qcom: sc8280xp-x13s: correct analogue microphone route
-Date: Thu, 25 Jan 2024 16:45:31 +0100
-Message-Id: <20240125154531.417098-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706197552; c=relaxed/simple;
+	bh=McB6NIE61BwGjTvv9ED9Vb50EqOQdx98eH1ZoiQXBpQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=RbfTe+BSUyPVJgIBibC2SiY1u2Fak+lnS5//kdgiJrMvTopZFPpRfNsFgCxovW+Z6cgWnic1QRhRzQPllkYIQsDZM8M7CjsRJq30uhcRYxuXphAJvz4WHjHoiwgVuw3bu5ftmXGOOo/DqDEZetX+p4p7WbzJzP4/yXO/MjBPRRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=lSiZzWYQ; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40PFjeiO037894;
+	Thu, 25 Jan 2024 09:45:40 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706197540;
+	bh=swdj5R8LjyDTSfvkm8i15amLpOZddgXK39R/tFg7qGM=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=lSiZzWYQnIylBlzW0Pp/f3AmCyQMnoUi//umQavH3biwszJWz0QjFvh0r/ovSeDIx
+	 URsHKDLm+pLR1eLytgiFW7rTkKaCicrDIZKhIhDe927gywuBnEmjGvXmHaKvB789BS
+	 S5PCbjnagCQyE8OXZ4Ah7CZzP7WVpzDATsgj7wZM=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40PFjeSu020562
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 25 Jan 2024 09:45:40 -0600
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 25
+ Jan 2024 09:45:39 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 25 Jan 2024 09:45:39 -0600
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40PFjdK7110154;
+	Thu, 25 Jan 2024 09:45:39 -0600
+Message-ID: <7872f641-8a72-424f-b345-99c27403d7c6@ti.com>
+Date: Thu, 25 Jan 2024 09:45:39 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] udmabuf: Sync buffer mappings for attached devices
+Content-Language: en-US
+To: "Kasireddy, Vivek" <vivek.kasireddy@intel.com>,
+        Gerd Hoffmann
+	<kraxel@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Paul Cercueil
+	<paul@crapouillou.net>
+CC: "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
+References: <20240123221227.868341-1-afd@ti.com>
+ <20240123221227.868341-2-afd@ti.com>
+ <IA0PR11MB7185DDD7A972ED546B4CEA10F87B2@IA0PR11MB7185.namprd11.prod.outlook.com>
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <IA0PR11MB7185DDD7A972ED546B4CEA10F87B2@IA0PR11MB7185.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Starting with Qualcomm SM8350 SoC, so Low Power Audio SubSystem (LPASS)
-block version v9.2, the register responsible for TX SMIC MUXn muxes is
-different.  The LPASS TX macro codec driver is being fixed to handle
-that difference, so the DTS must be updated as well for new widget name.
+On 1/24/24 5:05 PM, Kasireddy, Vivek wrote:
+> Hi Andrew,
+> 
+>> Currently this driver creates a SGT table using the CPU as the
+>> target device, then performs the dma_sync operations against
+>> that SGT. This is backwards to how DMA-BUFs are supposed to behave.
+>> This may have worked for the case where these buffers were given
+>> only back to the same CPU that produced them as in the QEMU case.
+>> And only then because the original author had the dma_sync
+>> operations also backwards, syncing for the "device" on begin_cpu.
+>> This was noticed and "fixed" in this patch[0].
+>>
+>> That then meant we were sync'ing from the CPU to the CPU using
+>> a pseudo-device "miscdevice". Which then caused another issue
+>> due to the miscdevice not having a proper DMA mask (and why should
+>> it, the CPU is not a DMA device). The fix for that was an even
+>> more egregious hack[1] that declares the CPU is coherent with
+>> itself and can access its own memory space..
+>>
+>> Unwind all this and perform the correct action by doing the dma_sync
+>> operations for each device currently attached to the backing buffer.
+> Makes sense.
+> 
+>>
+>> [0] commit 1ffe09590121 ("udmabuf: fix dma-buf cpu access")
+>> [1] commit 9e9fa6a9198b ("udmabuf: Set the DMA mask for the udmabuf
+>> device (v2)")
+>>
+>> Signed-off-by: Andrew Davis <afd@ti.com>
+>> ---
+>>   drivers/dma-buf/udmabuf.c | 41 +++++++++++++++------------------------
+>>   1 file changed, 16 insertions(+), 25 deletions(-)
+>>
+>> diff --git a/drivers/dma-buf/udmabuf.c b/drivers/dma-buf/udmabuf.c
+>> index 3a23f0a7d112a..ab6764322523c 100644
+>> --- a/drivers/dma-buf/udmabuf.c
+>> +++ b/drivers/dma-buf/udmabuf.c
+>> @@ -26,8 +26,6 @@ MODULE_PARM_DESC(size_limit_mb, "Max size of a
+>> dmabuf, in megabytes. Default is
+>>   struct udmabuf {
+>>   	pgoff_t pagecount;
+>>   	struct page **pages;
+>> -	struct sg_table *sg;
+>> -	struct miscdevice *device;
+>>   	struct list_head attachments;
+>>   	struct mutex lock;
+>>   };
+>> @@ -169,12 +167,8 @@ static void unmap_udmabuf(struct
+>> dma_buf_attachment *at,
+>>   static void release_udmabuf(struct dma_buf *buf)
+>>   {
+>>   	struct udmabuf *ubuf = buf->priv;
+>> -	struct device *dev = ubuf->device->this_device;
+>>   	pgoff_t pg;
+>>
+>> -	if (ubuf->sg)
+>> -		put_sg_table(dev, ubuf->sg, DMA_BIDIRECTIONAL);
+> What happens if the last importer maps the dmabuf but erroneously
+> closes it immediately? Would unmap somehow get called in this case?
+> 
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Good question, had to scan the framework code a bit here. I thought
+closing a DMABUF handle would automatically unwind any current
+attachments/mappings, but it seems nothing in the framework does that.
 
----
+Looks like that is up to the importing drivers[0]:
 
-This unfortunately depends on:
-https://lore.kernel.org/alsa-devel/20240125153110.410295-1-krzysztof.kozlowski@linaro.org/T/#m62da29e6b80fa419e6339d3c27439894cb04cecb
+> Once a driver is done with a shared buffer it needs to call
+> dma_buf_detach() (after cleaning up any mappings) and then
+> release the reference acquired with dma_buf_get() by
+> calling dma_buf_put().
 
-and my tries to make it backwards compatible failed.
----
- arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+So closing a DMABUF after mapping without first unmapping it would
+be a bug in the importer, it is not the exporters problem to check
+for (although some more warnings in the framework checking for that
+might not be a bad idea..).
 
-diff --git a/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts b/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
-index def3976bd5bb..0165492e4e11 100644
---- a/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
-+++ b/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
-@@ -986,7 +986,7 @@ &sound {
- 		"VA DMIC0", "VA MIC BIAS1",
- 		"VA DMIC1", "VA MIC BIAS1",
- 		"VA DMIC2", "VA MIC BIAS3",
--		"TX SWR_ADC1", "ADC2_OUTPUT";
-+		"TX SWR_INPUT1", "ADC2_OUTPUT";
- 
- 	wcd-playback-dai-link {
- 		link-name = "WCD Playback";
--- 
-2.34.1
+Andrew
 
+[0] https://www.kernel.org/doc/html/v6.7/driver-api/dma-buf.html
+
+> Thanks,
+> Vivek
+> 
+>> -
+>>   	for (pg = 0; pg < ubuf->pagecount; pg++)
+>>   		put_page(ubuf->pages[pg]);
+>>   	kfree(ubuf->pages);
+>> @@ -185,33 +179,31 @@ static int begin_cpu_udmabuf(struct dma_buf
+>> *buf,
+>>   			     enum dma_data_direction direction)
+>>   {
+>>   	struct udmabuf *ubuf = buf->priv;
+>> -	struct device *dev = ubuf->device->this_device;
+>> -	int ret = 0;
+>> -
+>> -	if (!ubuf->sg) {
+>> -		ubuf->sg = get_sg_table(dev, buf, direction);
+>> -		if (IS_ERR(ubuf->sg)) {
+>> -			ret = PTR_ERR(ubuf->sg);
+>> -			ubuf->sg = NULL;
+>> -		}
+>> -	} else {
+>> -		dma_sync_sg_for_cpu(dev, ubuf->sg->sgl, ubuf->sg->nents,
+>> -				    direction);
+>> -	}
+>> +	struct udmabuf_attachment *a;
+>>
+>> -	return ret;
+>> +	mutex_lock(&ubuf->lock);
+>> +
+>> +	list_for_each_entry(a, &ubuf->attachments, list)
+>> +		dma_sync_sgtable_for_cpu(a->dev, a->table, direction);
+>> +
+>> +	mutex_unlock(&ubuf->lock);
+>> +
+>> +	return 0;
+>>   }
+>>
+>>   static int end_cpu_udmabuf(struct dma_buf *buf,
+>>   			   enum dma_data_direction direction)
+>>   {
+>>   	struct udmabuf *ubuf = buf->priv;
+>> -	struct device *dev = ubuf->device->this_device;
+>> +	struct udmabuf_attachment *a;
+>>
+>> -	if (!ubuf->sg)
+>> -		return -EINVAL;
+>> +	mutex_lock(&ubuf->lock);
+>> +
+>> +	list_for_each_entry(a, &ubuf->attachments, list)
+>> +		dma_sync_sgtable_for_device(a->dev, a->table, direction);
+>> +
+>> +	mutex_unlock(&ubuf->lock);
+>>
+>> -	dma_sync_sg_for_device(dev, ubuf->sg->sgl, ubuf->sg->nents,
+>> direction);
+>>   	return 0;
+>>   }
+>>
+>> @@ -307,7 +299,6 @@ static long udmabuf_create(struct miscdevice
+>> *device,
+>>   	exp_info.priv = ubuf;
+>>   	exp_info.flags = O_RDWR;
+>>
+>> -	ubuf->device = device;
+>>   	buf = dma_buf_export(&exp_info);
+>>   	if (IS_ERR(buf)) {
+>>   		ret = PTR_ERR(buf);
+>> --
+>> 2.39.2
+> 
 
