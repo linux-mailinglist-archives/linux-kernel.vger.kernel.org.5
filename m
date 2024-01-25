@@ -1,198 +1,161 @@
-Return-Path: <linux-kernel+bounces-38451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38415-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 758DF83C008
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:03:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 524BC83BF90
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:52:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BB581C20A7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:03:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8810B2EBFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:46:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18E5967E79;
-	Thu, 25 Jan 2024 10:45:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F7444F203;
+	Thu, 25 Jan 2024 10:43:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="genccXEu"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c0fQQDUb"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37007679E3;
-	Thu, 25 Jan 2024 10:45:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C22DF482D5;
+	Thu, 25 Jan 2024 10:43:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706179537; cv=none; b=pHcyjTJGttc5Wq+9OhG+goyW3wewC/KiHEUlCr793j6Mgb4A9yGvx0iGdsEPHvdbEVJM0LCdZxiqmaAaxhg9iIsGa3qp7IMh0PDPUS2LYJ93LmD2RulZUNZGtTsk95zgUBQZPnj50cJ6u8ElVokWyd7+1IZBQZGUmsUucaxe0w0=
+	t=1706179412; cv=none; b=uRKMQxczMgf5iM1lnlNH0eKkjNwi9L5JyS1EPiLZc+oY4fllE7JaD81XTKSp0I9eZu0yJpcPyMGZPhgVQOJ0lzcAnJMxRzcvKHWhIR3qJjXpcV3yg0oScvl2sEjdQhwOx1uB72PotxbQeuEZEL74OhNR6qADa2kJwSAH1NVyutw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706179537; c=relaxed/simple;
-	bh=5PoLST2zhBI/R2hv821tOsWlAsgfBTelNfMTVnihNDs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=OEEncDpb9sGFLmOZX74SKFSHR/+KWcTv71F5bS5Hmh9mvUIakBMCX1nGEzx1RZQOIFjj6vwxF5CpeD2IDYYHk3cPRhdfdn/laDyepaooKY8wYxvqNJdS+pe7cV6soneAdlpR2wmaRQyV0jGhmNHevnggH0OTPmd7bA3bZA5xoxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=genccXEu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C095C433F1;
-	Thu, 25 Jan 2024 10:45:33 +0000 (UTC)
+	s=arc-20240116; t=1706179412; c=relaxed/simple;
+	bh=Py2LF73U8shcDntKXm/CgbRPin2JI3Z+P47Hz2OLILE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CDVDhhGmqTFhu+e4RzZLWFjFNyfdHiMhepABVqZZa5QoSFEVkN7ayo1AtcQ2GdAkFj1I4MxDFIjL7iOhXnIWEbfNAPk2qugbJbrWsnmdA2OvjflPApT2VxQ42Xqd7sHmYDJi5UmedGCCqv01zARWFBCcxdJMLNiIAJsxR/zdaTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c0fQQDUb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58926C43142;
+	Thu, 25 Jan 2024 10:43:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706179537;
-	bh=5PoLST2zhBI/R2hv821tOsWlAsgfBTelNfMTVnihNDs=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=genccXEuScIA1iHXfQ45jPkJ1+8Gk5yVcHD+PneDArmXuS3+TL+w1ySWIY9pT4yhK
-	 nRgmW/JsSPKxrzAdFJEkv6MgT6bNAQtg2r3ZsFBf09/hR/0UZyANzcqZGcgphUfeSX
-	 mpv/BguU1kf1mSqAWTHEf7t11rr0OCJUNh2zJFEuBCr4XO1fWO79mSlB7Vqb2OiyD6
-	 PhHoZxzipM7uJzswrhK04qtBYSWXKPDcsOkEb6iAjJ5XPJsaHCAqmoGZInHby5cdHh
-	 V6jbuvv6eR0Uxzg0ZWVRPgU+OPIrX9LM+3xjtyqTzHCaqbH7p+pgfqN1X6Ep+NfF/O
-	 BzgGyd+Q8X4qg==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Thu, 25 Jan 2024 05:43:18 -0500
-Subject: [PATCH v2 37/41] ocfs2: adapt to breakup of struct file_lock
+	s=k20201202; t=1706179412;
+	bh=Py2LF73U8shcDntKXm/CgbRPin2JI3Z+P47Hz2OLILE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=c0fQQDUbUaQhgtZliLg1cQUQi17sxDSt6cvuB75NXdzyq5Q6hcUYch57y8SZS04Ym
+	 EsBMfOCAvBYOZMR+p/HVbLREs40lr94g1LsKP+AZh4iWwDRr576GQCLpHRZuCt3T4H
+	 JXPxl4RjJ2jwNy82JGDvsBPZu1CFEusYHFeB571AK4Uqv2YZbFToVgn5bmA/PIvx2g
+	 ti2OywY4B1SKvi+R7FWKyaXPQC0SFLBSdgt8WDo7GkE2Ip0irgDhdwyHja76+GcZd+
+	 FdSSnBGF6Wav8Dw8e0iVSZbtEV/LBQyDv3s0yd3ICsATiU8Vf4xIOwkLas6cfyDc4/
+	 Nt0xeSwn2Wl1w==
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-5100ed2b33dso2735563e87.0;
+        Thu, 25 Jan 2024 02:43:32 -0800 (PST)
+X-Gm-Message-State: AOJu0YzyoUCFFNUNboXU66TX5Z0uqqy49OwY29+1DwgdkZDl4dnnYXdr
+	oHM7vhobmiSh3suTMr1ptBDcSjDBTL+LV3I+QvfiunVt5W4r215kUwNipOMBUv0COJVCHXzJOQB
+	pIU8FnzjQwRuUJMo+wXbkppeV+P0=
+X-Google-Smtp-Source: AGHT+IFzqU6KFy5dmynIG7b/rjXy30IO4eSr+xkdm3d1vUzKQXjGUXxD9uNgwDzmUhavcOnStrzpF48+sogOE7LAs2Y=
+X-Received: by 2002:ac2:5459:0:b0:50e:76b0:7374 with SMTP id
+ d25-20020ac25459000000b0050e76b07374mr320004lfn.32.1706179410416; Thu, 25 Jan
+ 2024 02:43:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240125-flsplit-v2-37-7485322b62c7@kernel.org>
-References: <20240125-flsplit-v2-0-7485322b62c7@kernel.org>
-In-Reply-To: <20240125-flsplit-v2-0-7485322b62c7@kernel.org>
-To: Christian Brauner <brauner@kernel.org>, 
- Alexander Viro <viro@zeniv.linux.org.uk>, 
- Eric Van Hensbergen <ericvh@kernel.org>, 
- Latchesar Ionkov <lucho@ionkov.net>, 
- Dominique Martinet <asmadeus@codewreck.org>, 
- Christian Schoenebeck <linux_oss@crudebyte.com>, 
- David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
- Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, 
- Alexander Aring <aahringo@redhat.com>, David Teigland <teigland@redhat.com>, 
- Miklos Szeredi <miklos@szeredi.hu>, 
- Andreas Gruenbacher <agruenba@redhat.com>, 
- Trond Myklebust <trond.myklebust@hammerspace.com>, 
- Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, 
- Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, 
- Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
- Jan Kara <jack@suse.cz>, Mark Fasheh <mark@fasheh.com>, 
- Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, 
- Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>, 
- Shyam Prasad N <sprasad@microsoft.com>, Namjae Jeon <linkinjeon@kernel.org>, 
- Sergey Senozhatsky <senozhatsky@chromium.org>, 
- Steven Rostedt <rostedt@goodmis.org>, 
- Masami Hiramatsu <mhiramat@kernel.org>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
- Ronnie Sahlberg <ronniesahlberg@gmail.com>
-Cc: linux-kernel@vger.kernel.org, v9fs@lists.linux.dev, 
- linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org, 
- gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
- linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev, 
- linux-cifs@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
- Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3086; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=5PoLST2zhBI/R2hv821tOsWlAsgfBTelNfMTVnihNDs=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBlsjs+cYYPuaTS142Pzq5o0u79qjV9PREOI8bdv
- 9wk/89Hr42JAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZbI7PgAKCRAADmhBGVaC
- Fc7pEACt6yf1pSeRKhHC5jklKwZrsjWmKF/7k6kOz4a4s1C4NLlKt7j4lcg4yTS91bL2y8LGZjH
- MUj3VyZOh6v7U4CYmyeV8iS94NVYEdz/vDDkFs+nJTMxpx1j3P1G9fHmSDcdhxw8nAE9yzEKHCY
- Lx6ei2jMcPcakXbu/B8ECO/DQH9/gR4lK7l84HCvcFyocWTrgbtavX5gnFaHnJA8paHJqfy0LNT
- oCb4M+DpFtcegwAQCHXlTL9BdnkIh1LpJS/GcacoNG92pSUd7YDdyt6bhv30C7m8zgMzRuNxpUg
- h/GazImYZ/3CvpwbGmDqHdvvBQXesLmytfDhKm2SXyD3mzE9Zm0jqn8jYNk7U+MD7bjhHBiocOc
- FWCfuoOj9Q4SSVMuGjcKbX1x4kSoJgBu3gC00bQjF0zMyeME+nBN94gg9430eDM3+avqrgeHcO4
- tX3dEiUO3qRFYCTRX4koHDKm9TWsTwtTOhpV7iDDEZoe+Hq7F2jGOj9OPPhqD4Q6PFShbu6XwBF
- TntQBiMJkWY39mAZACq+q5qOtemFLHnMREGgduiED1v/+VOHykYnVtv9qJlA9Zei0dFsmTKoeAe
- bTjApIfwkgwj3imcxArcYXhH0WLfXJuTeiucDoC+hNCQgUr3ofDN3zYYEjug3IbmQjezAdZCr2a
- JUl7YTPZePJXGrg==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+References: <20240122090851.851120-7-ardb+git@google.com> <20240122090851.851120-11-ardb+git@google.com>
+ <CAMzpN2jcWxCy=H-1uvS7kN8gVohee2_cMwyC0SbSEwEoedo3WQ@mail.gmail.com> <20240122224417.GC141255@dev-fedora.aadp>
+In-Reply-To: <20240122224417.GC141255@dev-fedora.aadp>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Thu, 25 Jan 2024 11:43:18 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXG+97DPc9Ws-5=QrrHmf+KyvfqgoDFwLCV2Afy3ZJQM2Q@mail.gmail.com>
+Message-ID: <CAMj1kXG+97DPc9Ws-5=QrrHmf+KyvfqgoDFwLCV2Afy3ZJQM2Q@mail.gmail.com>
+Subject: Re: [RFC PATCH 4/5] x86/head64: Replace pointer fixups with PIE codegen
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Brian Gerst <brgerst@gmail.com>, Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
+	Kevin Loughlin <kevinloughlin@google.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
+	Dionna Glaze <dionnaglaze@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Most of the existing APIs have remained the same, but subsystems that
-access file_lock fields directly need to reach into struct
-file_lock_core now.
+On Mon, 22 Jan 2024 at 23:44, Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> On Mon, Jan 22, 2024 at 02:34:46PM -0500, Brian Gerst wrote:
+> > On Mon, Jan 22, 2024 at 4:14=E2=80=AFAM Ard Biesheuvel <ardb+git@google=
+com> wrote:
+> > >
+> > > From: Ard Biesheuvel <ardb@kernel.org>
+> > >
+> > > Some of the C code in head64.c may be called from a different virtual
+> > > address than it was linked at. Currently, we deal with this by using
+> > > ordinary, position dependent codegen, and fixing up all symbol
+> > > references on the fly. This is fragile and tricky to maintain. It is
+> > > also unnecessary: we can use position independent codegen (with hidde=
+n
+> > > visibility) to ensure that all compiler generated symbol references a=
+re
+> > > RIP-relative, removing the need for fixups entirely.
+> > >
+> > > It does mean we need explicit references to kernel virtual addresses =
+to
+> > > be generated by hand, so generate those using a movabs instruction in
+> > > inline asm in the handful places where we actually need this.
+> > >
+> > > While at it, move these routines to .inittext where they belong.
+> > >
+> > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > > ---
+> > >  arch/x86/Makefile                 |  11 ++
+> > >  arch/x86/boot/compressed/Makefile |   2 +-
+> > >  arch/x86/include/asm/init.h       |   2 -
+> > >  arch/x86/include/asm/setup.h      |   2 +-
+> > >  arch/x86/kernel/Makefile          |   4 +
+> > >  arch/x86/kernel/head64.c          | 117 +++++++-------------
+> > >  6 files changed, 60 insertions(+), 78 deletions(-)
+> > >
+> > > diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+> > > index 1a068de12a56..bed0850d91b0 100644
+> > > --- a/arch/x86/Makefile
+> > > +++ b/arch/x86/Makefile
+> > > @@ -168,6 +168,17 @@ else
+> > >          KBUILD_CFLAGS +=3D -mcmodel=3Dkernel
+> > >          KBUILD_RUSTFLAGS +=3D -Cno-redzone=3Dy
+> > >          KBUILD_RUSTFLAGS +=3D -Ccode-model=3Dkernel
+> > > +
+> > > +       PIE_CFLAGS :=3D -fpie -mcmodel=3Dsmall \
+> > > +                     -include $(srctree)/include/linux/hidden.h
+> > > +
+> > > +       ifeq ($(CONFIG_STACKPROTECTOR),y)
+> > > +               ifeq ($(CONFIG_SMP),y)
+> > > +                       PIE_CFLAGS +=3D -mstack-protector-guard-reg=
+=3Dgs
+> > > +               endif
+> >
+> > This compiler flag requires GCC 8.1 or later.  When I posted a patch
+> > series[1] to convert the stack protector to a normal percpu variable
+> > instead of the fixed offset, there was pushback over requiring GCC 8.1
+> > to keep stack protector support.  I added code to objtool to convert
+> > code from older compilers, but there hasn't been any feedback since.
+> > Similar conversion code would be needed in objtool for this unless the
+> > decision is made to require GCC 8.1 for stack protector support going
+> > forward.
+> >
+> > Brian Gerst
+> >
+> > [1] https://lore.kernel.org/lkml/20231115173708.108316-1-brgerst@gmail.=
+com/
+>
+> I was going to comment on this as well, as that flag was only supported
+> in clang 12.0.0 and newer. It should not be too big of a deal for us
+> though, as I was already planning on bumping the minimum supported
+> version of clang for building the kernel to 13.0.1 (but there may be
+> breakage reports if this series lands before that):
+>
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/ocfs2/locks.c      | 13 ++++++-------
- fs/ocfs2/stack_user.c |  3 +--
- 2 files changed, 7 insertions(+), 9 deletions(-)
+Thanks for pointing this out.
 
-diff --git a/fs/ocfs2/locks.c b/fs/ocfs2/locks.c
-index 8a9970dc852e..b86df9b59719 100644
---- a/fs/ocfs2/locks.c
-+++ b/fs/ocfs2/locks.c
-@@ -8,7 +8,6 @@
-  */
- 
- #include <linux/fs.h>
--#define _NEED_FILE_LOCK_FIELD_MACROS
- #include <linux/filelock.h>
- #include <linux/fcntl.h>
- 
-@@ -28,7 +27,7 @@ static int ocfs2_do_flock(struct file *file, struct inode *inode,
- 	struct ocfs2_file_private *fp = file->private_data;
- 	struct ocfs2_lock_res *lockres = &fp->fp_flock;
- 
--	if (fl->fl_type == F_WRLCK)
-+	if (fl->fl_core.flc_type == F_WRLCK)
- 		level = 1;
- 	if (!IS_SETLKW(cmd))
- 		trylock = 1;
-@@ -54,8 +53,8 @@ static int ocfs2_do_flock(struct file *file, struct inode *inode,
- 		 */
- 
- 		locks_init_lock(&request);
--		request.fl_type = F_UNLCK;
--		request.fl_flags = FL_FLOCK;
-+		request.fl_core.flc_type = F_UNLCK;
-+		request.fl_core.flc_flags = FL_FLOCK;
- 		locks_lock_file_wait(file, &request);
- 
- 		ocfs2_file_unlock(file);
-@@ -101,14 +100,14 @@ int ocfs2_flock(struct file *file, int cmd, struct file_lock *fl)
- 	struct inode *inode = file->f_mapping->host;
- 	struct ocfs2_super *osb = OCFS2_SB(inode->i_sb);
- 
--	if (!(fl->fl_flags & FL_FLOCK))
-+	if (!(fl->fl_core.flc_flags & FL_FLOCK))
- 		return -ENOLCK;
- 
- 	if ((osb->s_mount_opt & OCFS2_MOUNT_LOCALFLOCKS) ||
- 	    ocfs2_mount_local(osb))
- 		return locks_lock_file_wait(file, fl);
- 
--	if (fl->fl_type == F_UNLCK)
-+	if (fl->fl_core.flc_type == F_UNLCK)
- 		return ocfs2_do_funlock(file, cmd, fl);
- 	else
- 		return ocfs2_do_flock(file, inode, cmd, fl);
-@@ -119,7 +118,7 @@ int ocfs2_lock(struct file *file, int cmd, struct file_lock *fl)
- 	struct inode *inode = file->f_mapping->host;
- 	struct ocfs2_super *osb = OCFS2_SB(inode->i_sb);
- 
--	if (!(fl->fl_flags & FL_POSIX))
-+	if (!(fl->fl_core.flc_flags & FL_POSIX))
- 		return -ENOLCK;
- 
- 	return ocfs2_plock(osb->cconn, OCFS2_I(inode)->ip_blkno, file, cmd, fl);
-diff --git a/fs/ocfs2/stack_user.c b/fs/ocfs2/stack_user.c
-index 460c882c5384..70fa466746d3 100644
---- a/fs/ocfs2/stack_user.c
-+++ b/fs/ocfs2/stack_user.c
-@@ -9,7 +9,6 @@
- 
- #include <linux/module.h>
- #include <linux/fs.h>
--#define _NEED_FILE_LOCK_FIELD_MACROS
- #include <linux/filelock.h>
- #include <linux/miscdevice.h>
- #include <linux/mutex.h>
-@@ -745,7 +744,7 @@ static int user_plock(struct ocfs2_cluster_connection *conn,
- 		return dlm_posix_cancel(conn->cc_lockspace, ino, file, fl);
- 	else if (IS_GETLK(cmd))
- 		return dlm_posix_get(conn->cc_lockspace, ino, file, fl);
--	else if (fl->fl_type == F_UNLCK)
-+	else if (fl->fl_core.flc_type == F_UNLCK)
- 		return dlm_posix_unlock(conn->cc_lockspace, ino, file, fl);
- 	else
- 		return dlm_posix_lock(conn->cc_lockspace, ino, file, cmd, fl);
+Given that building the entire kernel with fPIC is neither necessary
+nor sufficient, I am going to abandon this approach.
 
--- 
-2.43.0
-
+If we apply fPIC to only a handful of compilation units containing
+code that runs from the 1:1 mapping, it is not unreasonable to simply
+disable the stack protector altogether for those pieces too. This
+works around the older GCC issue.
 
