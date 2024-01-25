@@ -1,181 +1,110 @@
-Return-Path: <linux-kernel+bounces-38493-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C89883C09D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:17:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03CD583C09F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:17:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11921288EAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:17:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D8FA289A06
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:17:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9145945C0E;
-	Thu, 25 Jan 2024 11:14:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="wJQsllC7"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05EA328DC4;
-	Thu, 25 Jan 2024 11:14:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B31B82D630;
+	Thu, 25 Jan 2024 11:15:54 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DECD28DC4;
+	Thu, 25 Jan 2024 11:15:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706181298; cv=none; b=OfkgbXIghul6tw66KcKA4Vstr3XPayXlMAOkmhmNq12ROuL6mKmAVQx0sP5drVmWs94Fafj45WaVVs1U4fD+IUygvNL7ofIjAqwZjgBBOnEdKSfeBT8ZfgZcBUOla2oCyfvbfBZPnwXSPmmo8at0n9EAPS/IlXmzcSRypFEWptI=
+	t=1706181354; cv=none; b=tzATanpQmsuccSM/S+JRGSaVC+9/T4DHUSrwiGHalmrG5OBARKV2HdiwlvwZeSs8LPUKQ+OZWZgt5Jtq4OhYVSy8VXz9DPvgWz/DOjhSxVwSkX6pnqcjH/GQUDVc4oqBmxFEwGjcptxrACEbhrlaJ+YLKXh0X4eiT9foCA01ENU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706181298; c=relaxed/simple;
-	bh=HZxAE4+693ZGgkuVWmJaA59ddkhcAmD22T3imvZcIGA=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=iHz906E8dpnpTonmNXUymwXXy+Ee2XbO9XaIn5mB5jOpFbH+bQmQOVAPKPKjcGZb8HIIE81KSyeQ8eAXS7WctGAJ9CfX+UzjZx9L+PnVOG6LdbfUJlzD/oHH8nfhgbHn8vgqdyBiXu/A3vvG0kMinXrCDqBSh12WKbTUo/rNdGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=wJQsllC7; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40PBEqpV084295;
-	Thu, 25 Jan 2024 05:14:52 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706181292;
-	bh=zwL0qHW+HcUrrm4Rz75LXs6hgLXZji8xSGHiZZgScfU=;
-	h=From:To:CC:Subject:Date;
-	b=wJQsllC7UEvtwMm+JK/2Lp50j+YRGK+yXfVqFGtEJH24LO1Wyb9C1yVaZwa3ly3hU
-	 CasYrIgj11BN2uZsdu0Z+ffvK+zVeb7e0erUGGKipa7Huq7sn2u2/n/GIgK18/Kcbj
-	 BpYP8ieo2fzZcGGHi7wrqaYw8LfGZVuKgmQ3iqaM=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40PBEqNj080677
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 25 Jan 2024 05:14:52 -0600
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 25
- Jan 2024 05:14:52 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 25 Jan 2024 05:14:52 -0600
-Received: from uda0490681.dhcp.ti.com ([10.24.69.142])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40PBEn8u089844;
-	Thu, 25 Jan 2024 05:14:50 -0600
-From: Vaishnav Achath <vaishnav.a@ti.com>
-To: <vkoul@kernel.org>, <peter.ujfalusi@gmail.com>
-CC: <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <vaishnav.a@ti.com>, <u-kumar1@ti.com>, <j-choudhary@ti.com>
-Subject: [PATCH] dmaengine: ti: k3-psil-j721s2: Add entry for CSI2RX
-Date: Thu, 25 Jan 2024 16:44:49 +0530
-Message-ID: <20240125111449.855876-1-vaishnav.a@ti.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706181354; c=relaxed/simple;
+	bh=LoZQkUCiJrTcqIGsEcCsADbEl/lrWM+ebsBNPEVB6YE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZHHM13aHvkuZEDvfxCwHoHzWj++QPQSWF4Q2T2WjeCNLV2wn1T/jqyCt1wD/0RaykUxXcg9uyzhBs5osJvgPgmKFmp6zMOcW6ROKNzsngYJUyNqmBrbWu/c5afLnCrecGHq7DURgI4VtpfHcvqyZn51c/wVb8ROAQljRX/zsuV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF1841FB;
+	Thu, 25 Jan 2024 03:16:35 -0800 (PST)
+Received: from bogus (unknown [10.57.78.12])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8A5E73F73F;
+	Thu, 25 Jan 2024 03:15:47 -0800 (PST)
+Date: Thu, 25 Jan 2024 11:15:44 +0000
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Cc: x86@kernel.org, Andreas Herrmann <aherrmann@suse.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Chen Yu <yu.c.chen@intel.com>, Len Brown <len.brown@intel.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Radu Rendec <rrendec@redhat.com>,
+	Pierre Gondois <Pierre.Gondois@arm.com>, Pu Wen <puwen@hygon.cn>,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+	Will Deacon <will@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
+	Huang Ying <ying.huang@intel.com>,
+	"Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+	stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 1/4] cacheinfo: Check for null last-level cache info
+Message-ID: <20240125111544.xhiomitgeazxm7cw@bogus>
+References: <20231212222519.12834-1-ricardo.neri-calderon@linux.intel.com>
+ <20231212222519.12834-2-ricardo.neri-calderon@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212222519.12834-2-ricardo.neri-calderon@linux.intel.com>
 
-The CSI2RX subsystem uses PSI-L DMA to transfer frames to memory. It can
-have up to 32 threads per instance. J721S2 has two instances of the
-subsystem, so there are 64 threads total, Add them to the endpoint map.
+On Tue, Dec 12, 2023 at 02:25:16PM -0800, Ricardo Neri wrote:
+> Before determining the validity of the last-level cache info, ensure that
+> it has been allocated. Simply checking for non-zero cache_leaves() is not
+> sufficient, as some architectures (e.g., Intel processors) have non-zero
+> cache_leaves() before allocation.
+> 
+> Dereferencing NULL cacheinfo can occur in update_per_cpu_data_slice_size().
+> This function iterates over all online CPUs. However, a CPU may have come
+> online recently, but its cacheinfo may not have been allocated yet.
+> 
+> Cc: Andreas Herrmann <aherrmann@suse.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Chen Yu <yu.c.chen@intel.com>
+> Cc: Huang Ying <ying.huang@intel.com>
+> Cc: Len Brown <len.brown@intel.com>
+> Cc: Radu Rendec <rrendec@redhat.com>
+> Cc: Pierre Gondois <Pierre.Gondois@arm.com>
+> Cc: Pu Wen <puwen@hygon.cn>
+> Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+> Cc: Sudeep Holla <sudeep.holla@arm.com>
 
-Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
----
-Tested on J721S2 EVM on 6.8.0-rc1-next-20240124 for CSI2RX capture with
-OV5640: https://gist.github.com/vaishnavachath/e6918ae4dadeb34c4cbad515bffcc558
+If you respin, you can address the below minor nit. I am fine as is as
+well.
 
- drivers/dma/ti/k3-psil-j721s2.c | 73 +++++++++++++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
+Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
 
-diff --git a/drivers/dma/ti/k3-psil-j721s2.c b/drivers/dma/ti/k3-psil-j721s2.c
-index 1d5430fc5724..ba08bdcdcd2b 100644
---- a/drivers/dma/ti/k3-psil-j721s2.c
-+++ b/drivers/dma/ti/k3-psil-j721s2.c
-@@ -57,6 +57,14 @@
- 		},					\
- 	}
- 
-+#define PSIL_CSI2RX(x)					\
-+	{						\
-+		.thread_id = x,				\
-+		.ep_config = {				\
-+			.ep_type = PSIL_EP_NATIVE,	\
-+		},					\
-+	}
-+
- /* PSI-L source thread IDs, used for RX (DMA_DEV_TO_MEM) */
- static struct psil_ep j721s2_src_ep_map[] = {
- 	/* PDMA_MCASP - McASP0-4 */
-@@ -114,6 +122,71 @@ static struct psil_ep j721s2_src_ep_map[] = {
- 	PSIL_PDMA_XY_PKT(0x4707),
- 	PSIL_PDMA_XY_PKT(0x4708),
- 	PSIL_PDMA_XY_PKT(0x4709),
-+	/* CSI2RX */
-+	PSIL_CSI2RX(0x4940),
-+	PSIL_CSI2RX(0x4941),
-+	PSIL_CSI2RX(0x4942),
-+	PSIL_CSI2RX(0x4943),
-+	PSIL_CSI2RX(0x4944),
-+	PSIL_CSI2RX(0x4945),
-+	PSIL_CSI2RX(0x4946),
-+	PSIL_CSI2RX(0x4947),
-+	PSIL_CSI2RX(0x4948),
-+	PSIL_CSI2RX(0x4949),
-+	PSIL_CSI2RX(0x494a),
-+	PSIL_CSI2RX(0x494b),
-+	PSIL_CSI2RX(0x494c),
-+	PSIL_CSI2RX(0x494d),
-+	PSIL_CSI2RX(0x494e),
-+	PSIL_CSI2RX(0x494f),
-+	PSIL_CSI2RX(0x4950),
-+	PSIL_CSI2RX(0x4951),
-+	PSIL_CSI2RX(0x4952),
-+	PSIL_CSI2RX(0x4953),
-+	PSIL_CSI2RX(0x4954),
-+	PSIL_CSI2RX(0x4955),
-+	PSIL_CSI2RX(0x4956),
-+	PSIL_CSI2RX(0x4957),
-+	PSIL_CSI2RX(0x4958),
-+	PSIL_CSI2RX(0x4959),
-+	PSIL_CSI2RX(0x495a),
-+	PSIL_CSI2RX(0x495b),
-+	PSIL_CSI2RX(0x495c),
-+	PSIL_CSI2RX(0x495d),
-+	PSIL_CSI2RX(0x495e),
-+	PSIL_CSI2RX(0x495f),
-+	PSIL_CSI2RX(0x4960),
-+	PSIL_CSI2RX(0x4961),
-+	PSIL_CSI2RX(0x4962),
-+	PSIL_CSI2RX(0x4963),
-+	PSIL_CSI2RX(0x4964),
-+	PSIL_CSI2RX(0x4965),
-+	PSIL_CSI2RX(0x4966),
-+	PSIL_CSI2RX(0x4967),
-+	PSIL_CSI2RX(0x4968),
-+	PSIL_CSI2RX(0x4969),
-+	PSIL_CSI2RX(0x496a),
-+	PSIL_CSI2RX(0x496b),
-+	PSIL_CSI2RX(0x496c),
-+	PSIL_CSI2RX(0x496d),
-+	PSIL_CSI2RX(0x496e),
-+	PSIL_CSI2RX(0x496f),
-+	PSIL_CSI2RX(0x4970),
-+	PSIL_CSI2RX(0x4971),
-+	PSIL_CSI2RX(0x4972),
-+	PSIL_CSI2RX(0x4973),
-+	PSIL_CSI2RX(0x4974),
-+	PSIL_CSI2RX(0x4975),
-+	PSIL_CSI2RX(0x4976),
-+	PSIL_CSI2RX(0x4977),
-+	PSIL_CSI2RX(0x4978),
-+	PSIL_CSI2RX(0x4979),
-+	PSIL_CSI2RX(0x497a),
-+	PSIL_CSI2RX(0x497b),
-+	PSIL_CSI2RX(0x497c),
-+	PSIL_CSI2RX(0x497d),
-+	PSIL_CSI2RX(0x497e),
-+	PSIL_CSI2RX(0x497f),
- 	/* MAIN SA2UL */
- 	PSIL_SA2UL(0x4a40, 0),
- 	PSIL_SA2UL(0x4a41, 0),
+[...]
+
+> diff --git a/drivers/base/cacheinfo.c b/drivers/base/cacheinfo.c
+> index f1e79263fe61..967c5cf3fb1d 100644
+> --- a/drivers/base/cacheinfo.c
+> +++ b/drivers/base/cacheinfo.c
+> @@ -61,6 +61,9 @@ bool last_level_cache_is_valid(unsigned int cpu)
+>  	if (!cache_leaves(cpu))
+>  		return false;
+>  
+> +	if (!per_cpu_cacheinfo(cpu))
+> +		return false;
+> +
+
+[nit] You can even combine this with above if condition.
+
 -- 
-2.34.1
-
+Regards,
+Sudeep
 
