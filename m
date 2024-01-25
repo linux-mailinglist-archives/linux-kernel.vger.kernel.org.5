@@ -1,107 +1,93 @@
-Return-Path: <linux-kernel+bounces-39264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39266-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF97683CDC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:48:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADBF083CDCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:50:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74E9BB22D28
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:48:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CF2C1F27718
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:50:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EB801386B9;
-	Thu, 25 Jan 2024 20:47:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27F9B13A248;
+	Thu, 25 Jan 2024 20:50:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="N6o2AsrF"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cb38I28h"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 077A9135416;
-	Thu, 25 Jan 2024 20:47:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B166137C57;
+	Thu, 25 Jan 2024 20:50:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706215671; cv=none; b=QG9zigUpoRqey5O04H5sLHa7BoPZFMuZxcaJ31cRcGDts5GwZcwXfuzyd/7A19tOjFe0D1aWjcPsNBJNzdFF5yimqhRUg2L6L0jbNvUMeI87Jv3kRix1SHmKPmodd0CQrz9jy0tBHfTWVm58IGGuJHwhjdVfrn4hOTBh40TUXWk=
+	t=1706215826; cv=none; b=AAaXR/1CiBZsiJxLyvOx/10BjUjrso0GQ9Ly7KkkaG3VhuhsWLswqxYXd4aQY9eUDyGQxuZ/wfqF3zRMwLJXZQxAboGWGpu4l9I5z/KsN4s5XrNGn9V1ecsOsXgnOfKKpolfZ0VSeSKuHgXuxeTzjF1Bj8Px81+CZYUPeufm/oY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706215671; c=relaxed/simple;
-	bh=56c8o/PnnsFZL82o5Qr1kNlTvUosM/c1XaHFOGIRpPM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=smQO3FD5vW83sjpvDUJmAwI7oJPCsx6Ul120n7sSriXqVOy7ejPqeENZW51A99PuAoQx65YWIDD+ojNwE4VKLBgF1qGhwxNdMbaOhhyAz5FL9s477CFHYK2ydaoJNjgiE3UF0WIEiZ5lmI5hLwOC9DtbjfUdIZnUU0Hz96oJDEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=N6o2AsrF; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=BBqOb/ZqrKdawgvhDpAKr22AD6q4pmmVnTFBoWIGiU8=; b=N6o2AsrFBnAxGhkLunHLObyk6I
-	e4zIFiWfoXqIX1uGE4X5PvacBk28dmC5837lBiaHc/0AwORUO7ROgg+Nl8jhP+maRD+1utRm1Bh87
-	oEL1gHoCpSocSeYW41GJz3OCLXYq1nTa7wVQqyohz3CxubRixhcW07tzQGKL/q3eQ+HANlwcc+W3Q
-	Im+GTbC7oygnNpQRb7DI/08r6ASMkp1NGYRXZUA6iBam2ELid26Sve4ryqWxQBBMSdKIbjI+VGP0t
-	Bdt8FM3sEOJrJdcoFkIeGXjiHxvruvxzYaK90OD1m4gPm/RJuL6zdClJzEDiEWxpRaVf/KfMY3YtY
-	qnxp6K/g==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rT6dP-0000000B791-1vmr;
-	Thu, 25 Jan 2024 20:47:39 +0000
-Date: Thu, 25 Jan 2024 20:47:39 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Pankaj Raghav <p.raghav@samsung.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
-	Yangtao Li <frank.li@vivo.com>, chao@kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org, fengnanchang@gmail.com,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	vishal.moola@gmail.com,
-	Javier =?iso-8859-1?Q?Gonz=E1lez?= <javier.gonz@samsung.com>,
-	Adam Manzanares <a.manzanares@samsung.com>
-Subject: Re: [PATCH] f2fs: Support enhanced hot/cold data separation for f2fs
-Message-ID: <ZbLI63UHBErD6_L2@casper.infradead.org>
-References: <Y4ZaBd1r45waieQs@casper.infradead.org>
- <20221130124804.79845-1-frank.li@vivo.com>
- <Y4d0UReDb+EmUJOz@casper.infradead.org>
- <Y5D8wYGpp/95ShTV@bombadil.infradead.org>
+	s=arc-20240116; t=1706215826; c=relaxed/simple;
+	bh=EGPXup5wTorebySd/H/IW/H3xweM3JbfKLa6avHjXcs=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=qQl6YQegST4LrtcyYUVUELSA1CLy9NWSVC4++ZEwlbk+pZuGbBU5EexvzbBi5ryitpEoxrloK1+4tS6tef/Saw4jqP7WOSMhef8kB7gEsYsfFy9L6HEJbjXlIF6vdNv/BcwsPqhzeFXAnBojJAbs+9jg7cePjrpofLUbMH8q4DQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cb38I28h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id EDC50C43399;
+	Thu, 25 Jan 2024 20:50:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706215826;
+	bh=EGPXup5wTorebySd/H/IW/H3xweM3JbfKLa6avHjXcs=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=Cb38I28h0HCYCNUweYziq92qdAMHcyOfqhihhJriPh8VL5hb8V1V9dknPXoyMJqja
+	 5tIHQwO5wfOtgpPUFev9imujJggTartxvRZeY6gTHyAa9MvgaL2eH1feo7ARzYaZgK
+	 7TbtSJghlVLD9bQ6CHt+7SEfebpokjiYPZARMB097u0frmatrkLfdGF/cqqysAqNfA
+	 5op2xfPZeKv/87KHeb7Y22smrhFctorepOZnNngmcr757st/bf85sXMoybiAF/3vfx
+	 iaJJ/0VCCOAo2vadBLk9oqIn5+F5naJnXw3WZ1tIuywQ6GnlD9LLR1aAzbOLAGuZbZ
+	 mM+OUq04WKoNg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D127CDC9A05;
+	Thu, 25 Jan 2024 20:50:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y5D8wYGpp/95ShTV@bombadil.infradead.org>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH next] bluetooth/btintel: fix null ptr deref in
+ btintel_read_version
+From: patchwork-bot+bluetooth@kernel.org
+Message-Id: 
+ <170621582585.16174.6159364307548424799.git-patchwork-notify@kernel.org>
+Date: Thu, 25 Jan 2024 20:50:25 +0000
+References: <tencent_E60894D8E85AEEF2CD9C787A6CA82F656C0A@qq.com>
+In-Reply-To: <tencent_E60894D8E85AEEF2CD9C787A6CA82F656C0A@qq.com>
+To: Edward Adam Davis <eadavis@qq.com>
+Cc: syzbot+830d9e3fa61968246abd@syzkaller.appspotmail.com,
+ johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+ linux-kernel@vger.kernel.org, luiz.dentz@gmail.com, marcel@holtmann.org,
+ syzkaller-bugs@googlegroups.com
 
-On Wed, Dec 07, 2022 at 12:51:13PM -0800, Luis Chamberlain wrote:
-> On Wed, Nov 30, 2022 at 03:18:41PM +0000, Matthew Wilcox wrote:
-> > From a filesystem point of view, you need to ensure that you handle folios
-> > larger than PAGE_SIZE correctly.  The easiest way is to spread the use
-> > of folios throughout the filesystem.  For example, today the first thing
-> > we do in f2fs_read_data_folio() is convert the folio back into a page.
-> > That works because f2fs hasn't told the kernel that it supports large
-> > folios, so the VFS won't create large folios for it.
-> > 
-> > It's a lot of subtle things.  Here's an obvious one:
-> >                         zero_user_segment(page, 0, PAGE_SIZE);
-> > There's a folio equivalent that will zero an entire folio.
-> > 
-> > But then there is code which assumes the number of blocks per page (maybe
-> > not in f2fs?) and so on.  Every filesystem will have its own challenges.
-> > 
-> > One way to approach this is to just enable large folios (see commit
-> > 6795801366da or 8549a26308f9) and see what breaks when you run xfstests
-> > over it.  Probably quite a lot!
-> 
-> Me and Pankaj are very interested in helping on this front. And so we'll
-> start to organize and talk every week about this to see what is missing.
-> First order of business however will be testing so we'll have to
-> establish a public baseline to ensure we don't regress. For this we intend
-> on using kdevops so that'll be done first.
-> 
-> If folks have patches they want to test in consideration for folio /
-> iomap enhancements feel free to Cc us :)
-> 
-> After we establish a baseline we can move forward with taking on tasks
-> which will help with this conversion.
+Hello:
 
-So ... it's been a year.  How is this project coming along?  There
-weren't a lot of commits to f2fs in 2023 that were folio related.
+This patch was applied to bluetooth/bluetooth-next.git (master)
+by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
+
+On Thu, 18 Jan 2024 12:40:34 +0800 you wrote:
+> If hci_cmd_sync_complete() is triggered and skb is NULL, then hdev->req_skb is NULL,
+> which will cause this issue.
+> 
+> Reported-and-tested-by: syzbot+830d9e3fa61968246abd@syzkaller.appspotmail.com
+> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> ---
+>  drivers/bluetooth/btintel.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Here is the summary with links:
+  - [next] bluetooth/btintel: fix null ptr deref in btintel_read_version
+    https://git.kernel.org/bluetooth/bluetooth-next/c/693a94db9e8c
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
