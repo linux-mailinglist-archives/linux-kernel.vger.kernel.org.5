@@ -1,304 +1,203 @@
-Return-Path: <linux-kernel+bounces-37840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B7B883B64D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 01:59:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CF4B83B653
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 02:01:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70B8A1C23E9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 00:59:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCF1F1F237FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 01:01:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A33D1369;
-	Thu, 25 Jan 2024 00:59:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB59517C2;
+	Thu, 25 Jan 2024 01:01:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LeP7lTCm"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fs9IGCqt"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4808010E6;
-	Thu, 25 Jan 2024 00:59:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42B227F8;
+	Thu, 25 Jan 2024 01:01:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706144347; cv=none; b=WFdelNe3nq7rBGdl3ShKEz5JgTa4TgyGDFymYNEHH/a4rZ2Uw+UeVgluCu+z0GMyc7GDc+i4tKbtxuxtDmuBJ1uQTD4GEhoalVVdcoIaOV+US7Y8SVLwwViRGNNehxMxLw+WgGpXIAwDB83szs1MlKGBCsvOh+QY0g7rtzQrU0E=
+	t=1706144476; cv=none; b=scytJxutzDghDd+0HoPT3hYaiS25o1FrFDjGEpyhu2uAJVdC2O2D7qA+eB2OcenUlb4lF9Vy3zcxFL259+K/XD/ubPqC/GUQUaUDRz0/sVcWtNPNg7rYXn/L3DgCTCrP8mXB17wU0fYUXn9md75NtI4x4vsbc9DLn4505CpNDkw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706144347; c=relaxed/simple;
-	bh=8zx8VInJbEn6Il+2QJF2mOpf6Byv0juF37c3fzeDGsM=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=iDdgMfvE/JmHVM4+1iLilRGVA3l2Bu6lOj966d3isnxH+2cwJ19Som9jgJVVGvQb3ZjEL2tQfzjPudkS96Qg9NRqj+2OTTAjWl29LRsKR4T7zdUCVyjAKKfRJgqOdUAyoXfAcgws/E8MqERzDQymQKQxoKQQPWhi3ab8dBSPzWQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LeP7lTCm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 994DAC433F1;
-	Thu, 25 Jan 2024 00:59:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706144346;
-	bh=8zx8VInJbEn6Il+2QJF2mOpf6Byv0juF37c3fzeDGsM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=LeP7lTCmYa8/HJAfzgqmPmZ+5zZ6iIL2pMuLubPgov9S1nzLT1ihkRPRowqH36NwM
-	 /pHjxp0h3eIa1oltXtlrnnnM2KE7edXd44SZwuoXYme+3jFazQ0sjvMx/xfKXXOXQI
-	 /+BI6E8/nZBT7YYJGKNZaOXwJEbIEuX35qyzGJUDUFUtusyX3wAkSJsk4KzCcsElmb
-	 7bfrQ2GqMkSxPRhcfkz7H9x2mN3/ZqxsNH3CGqOx5kCFD1VwGdSRZMJxpn67W5sKYi
-	 3aUtFe8VIAmGp4aQ9DHr6xDapomO+IxLpzISGqkyE9iSF3s5OaIX1Ytv8RMDDcMaY7
-	 phNxjNMp1MPvg==
-Date: Thu, 25 Jan 2024 09:59:03 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Beau Belgrave <beaub@linux.microsoft.com>
-Cc: rostedt@goodmis.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH 1/4] tracing/user_events: Prepare find/delete for same
- name events
-Message-Id: <20240125095903.747d657ef53bbf8cf0ddb31c@kernel.org>
-In-Reply-To: <20240123220844.928-2-beaub@linux.microsoft.com>
-References: <20240123220844.928-1-beaub@linux.microsoft.com>
-	<20240123220844.928-2-beaub@linux.microsoft.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706144476; c=relaxed/simple;
+	bh=aAY/Pry5Kjaz4wqkv7lOYDN55tnggAzWhDbTtjVonGw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BgjcGiPPl6uzGfsRcG8rUnANALAP2j2GzycziXJsmVZ77ZvRo2UeJKBKLxGCeza6FuEGNL12tqe1/OaDEAho3jS6tTj7RrypZoTcJyRXRKphEbB4sjhjP12Zv5vfcpfuX40VjKh04JapjVZi9arvMvxK8WvgpzrXkzuRJbFpvW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fs9IGCqt; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55cd798b394so454025a12.0;
+        Wed, 24 Jan 2024 17:01:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706144472; x=1706749272; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9wlytBSogeuOwCdynHPj1+lp6nTAVWkrJDq1Bxhe/cg=;
+        b=Fs9IGCqtnHQYJI8IX0l47RA9Q9vxZSERn/hMuOnuxI9JJOdbUp5Mz9znS7FwiznAYK
+         il03fhqN//fLfPpaiWEF6JUgpcEzngS0N1DhHFhvUZ/TH6oZ1rcjwcag5ZJzLBV34PXL
+         qcs+MQrcbFVEGiKv3LwHuh0n8wfpxoKP7BCRaCpx1lXreFvhVkLY+7SQOWkd0KxutHuW
+         IDrO1G9ah6Ofdgfu5qi9KUxw9KBCmvpxW1DO6UYFhHtkRx6Qv6r9m+p5YMgV8YzzTkBa
+         7gSaa/eUliVriQn5LmmD5ZvUN2Yvy5gq4uhuBnCQk+DmSpg0ryFKu0/cZ5Rr2kMhZKGP
+         48Qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706144472; x=1706749272;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9wlytBSogeuOwCdynHPj1+lp6nTAVWkrJDq1Bxhe/cg=;
+        b=HhAtiZV2ocFF80fNiwqNfed1f2byfN+Q3VbHRH856GRFsedp8wsh1jg+q1qCqB7rJr
+         Dj0K9QzqORHY2hwXB67afZ934Nlblq0S5TrCDBYhIfhzAHyUSYqWqvUaLdRcIzVRsER1
+         CH5z6BbKP7m6ON9D8aUVarJ8n+lWxnyM5l8OgIqg08Nw3VSTN3BRoREjxtjJjcK19C7J
+         DDwUoM91dbOXPAkVY/LfuegVRwdbbSkEz6mFXQx28yVqXpleox0SF+hg9Udy5Nfhf8kQ
+         06jmiZXv0ZJEEAdUCcJTLQRq5lHZNJsiGeum74xn/P3EMJjo+ACCsViTJgF+ShUibBTy
+         Ob5Q==
+X-Gm-Message-State: AOJu0YygxUGDcv8TOhpH7h2v5XpAu9Z5XdhK9IKrhT5PNjK/m9LD3axl
+	8/cVVGsHbU8AzCzHfsrlFRooXHvHD08fxqfM1ont7cYCDk3vrMXsGpnMrWVCt6TjKFmmTRbyy5R
+	Oh6leXHZF29vRNmHiYQjEwXN3m0LZPS70
+X-Google-Smtp-Source: AGHT+IHQD5LlBm8SJXBxKjam2afeKPNXa2zBEHx9DJF/ZanTf+IoePmuXYN2ChhXANTvSOymlaHkgrytu+GA5VFFY84=
+X-Received: by 2002:a17:907:d501:b0:a28:abfa:e405 with SMTP id
+ wb1-20020a170907d50100b00a28abfae405mr200905ejc.58.1706144472329; Wed, 24 Jan
+ 2024 17:01:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20240115144538.12018-1-max@enpas.org> <20240115144538.12018-7-max@enpas.org>
+In-Reply-To: <20240115144538.12018-7-max@enpas.org>
+From: Roderick Colenbrander <thunderbird2k@gmail.com>
+Date: Wed, 24 Jan 2024 17:01:00 -0800
+Message-ID: <CAEc3jaBvsr5vnc_Dfm2YsThxBr94TkE3i16GLQipVZM+4KH3cw@mail.gmail.com>
+Subject: Re: [PATCH v1 6/7] HID: playstation: Simplify device type ID
+To: Max Staudt <max@enpas.org>
+Cc: Roderick Colenbrander <roderick.colenbrander@sony.com>, Jiri Kosina <jikos@kernel.org>, 
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>, linux-input@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 23 Jan 2024 22:08:41 +0000
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
-
-> The current code for finding and deleting events assumes that there will
-> never be cases when user_events are registered with the same name, but
-> different formats. In the future this scenario will exist to ensure
-> user programs can be updated or modify their events and run different
-> versions of their programs side-by-side without being blocked.
-
-Ah, this is a very important point. Kernel always has only one instance
-but user program doesn't. Thus it can define the same event name.
-For the similar problem, uprobe event assumes that the user (here
-admin) will define different group name to avoid it. But for the user
-event, it is embedded, hmm.
-
-> 
-> This change does not yet allow for multi-format events. If user_events
-> are registered with the same name but different arguments the programs
-> see the same return values as before. This change simply makes it
-> possible to easily accomodate for this in future changes.
-> 
-> Update find_user_event() to take in argument parameters and register
-> flags to accomodate future multi-format event scenarios. Have find
-> validate argument matching and return error pointers to cover address
-> in use cases, or allocation errors. Update callers to handle error
-> pointer logic.
-
-Understand, that is similar to what probe events do.
-
-> 
-> Move delete_user_event() to use hash walking directly now that find has
-> changed. Delete all events found that match the register name, stop
-> if an error occurs and report back to the user.
-
-What happen if we run 2 different version of the applications and terminate
-one of them? The event which is used by others will be kept?
-
-Thank you,
-
-> 
-> Update user_fields_match() to cover list_empty() scenarios instead of
-> each callsite doing it now that find_user_event() uses it directly.
-> 
-> Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+On Mon, Jan 15, 2024 at 6:55=E2=80=AFAM Max Staudt <max@enpas.org> wrote:
+>
+> Distinguish PS4/PS5 type controllers using .driver_data in
+> MODULE_DEVICE_TABLE rather than by VID/PID.
+>
+> This allows adding compatible controllers with different VID/PID.
+>
+> Signed-off-by: Max Staudt <max@enpas.org>
 > ---
->  kernel/trace/trace_events_user.c | 106 +++++++++++++++++--------------
->  1 file changed, 58 insertions(+), 48 deletions(-)
-> 
-> diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-> index 9365ce407426..0480579ba563 100644
-> --- a/kernel/trace/trace_events_user.c
-> +++ b/kernel/trace/trace_events_user.c
-> @@ -202,6 +202,8 @@ static struct user_event_mm *user_event_mm_get(struct user_event_mm *mm);
->  static struct user_event_mm *user_event_mm_get_all(struct user_event *user);
->  static void user_event_mm_put(struct user_event_mm *mm);
->  static int destroy_user_event(struct user_event *user);
-> +static bool user_fields_match(struct user_event *user, int argc,
-> +			      const char **argv);
->  
->  static u32 user_event_key(char *name)
->  {
-> @@ -1493,17 +1495,24 @@ static int destroy_user_event(struct user_event *user)
->  }
->  
->  static struct user_event *find_user_event(struct user_event_group *group,
-> -					  char *name, u32 *outkey)
-> +					  char *name, int argc, const char **argv,
-> +					  u32 flags, u32 *outkey)
->  {
->  	struct user_event *user;
->  	u32 key = user_event_key(name);
->  
->  	*outkey = key;
->  
-> -	hash_for_each_possible(group->register_table, user, node, key)
-> -		if (!strcmp(EVENT_NAME(user), name))
-> +	hash_for_each_possible(group->register_table, user, node, key) {
-> +		if (strcmp(EVENT_NAME(user), name))
-> +			continue;
+>  drivers/hid/hid-playstation.c | 40 +++++++++++++++++++++++------------
+>  1 file changed, 26 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/hid/hid-playstation.c b/drivers/hid/hid-playstation.=
+c
+> index 086b0768fa51..a0eb36d695d9 100644
+> --- a/drivers/hid/hid-playstation.c
+> +++ b/drivers/hid/hid-playstation.c
+> @@ -27,6 +27,11 @@ static DEFINE_IDA(ps_player_id_allocator);
+>
+>  #define HID_PLAYSTATION_VERSION_PATCH 0x8000
+>
+> +enum PS_TYPE {
+> +       PS_TYPE_PS4_DUALSHOCK4,
+> +       PS_TYPE_PS5_DUALSENSE,
+> +};
 > +
-> +		if (user_fields_match(user, argc, argv))
->  			return user_event_get(user);
->  
-> +		return ERR_PTR(-EADDRINUSE);
-> +	}
+>  /* Base class for playstation devices. */
+>  struct ps_device {
+>         struct list_head list;
+> @@ -2690,17 +2695,14 @@ static int ps_probe(struct hid_device *hdev, cons=
+t struct hid_device_id *id)
+>                 goto err_stop;
+>         }
+>
+> -       if (hdev->product =3D=3D USB_DEVICE_ID_SONY_PS4_CONTROLLER ||
+> -               hdev->product =3D=3D USB_DEVICE_ID_SONY_PS4_CONTROLLER_2 =
+||
+> -               hdev->product =3D=3D USB_DEVICE_ID_SONY_PS4_CONTROLLER_DO=
+NGLE) {
+> +       if (id->driver_data =3D=3D PS_TYPE_PS4_DUALSHOCK4) {
+>                 dev =3D dualshock4_create(hdev);
+>                 if (IS_ERR(dev)) {
+>                         hid_err(hdev, "Failed to create dualshock4.\n");
+>                         ret =3D PTR_ERR(dev);
+>                         goto err_close;
+>                 }
+> -       } else if (hdev->product =3D=3D USB_DEVICE_ID_SONY_PS5_CONTROLLER=
+ ||
+> -               hdev->product =3D=3D USB_DEVICE_ID_SONY_PS5_CONTROLLER_2)=
+ {
+> +       } else if (id->driver_data =3D=3D PS_TYPE_PS5_DUALSENSE) {
+>                 dev =3D dualsense_create(hdev);
+>                 if (IS_ERR(dev)) {
+>                         hid_err(hdev, "Failed to create dualsense.\n");
+> @@ -2734,16 +2736,26 @@ static void ps_remove(struct hid_device *hdev)
+>
+>  static const struct hid_device_id ps_devices[] =3D {
+>         /* Sony DualShock 4 controllers for PS4 */
+> -       { HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_SONY, USB_DEVICE_ID_SONY_PS4=
+_CONTROLLER) },
+> -       { HID_USB_DEVICE(USB_VENDOR_ID_SONY, USB_DEVICE_ID_SONY_PS4_CONTR=
+OLLER) },
+> -       { HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_SONY, USB_DEVICE_ID_SONY_PS4=
+_CONTROLLER_2) },
+> -       { HID_USB_DEVICE(USB_VENDOR_ID_SONY, USB_DEVICE_ID_SONY_PS4_CONTR=
+OLLER_2) },
+> -       { HID_USB_DEVICE(USB_VENDOR_ID_SONY, USB_DEVICE_ID_SONY_PS4_CONTR=
+OLLER_DONGLE) },
+> +       { HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_SONY, USB_DEVICE_ID_SONY_PS4=
+_CONTROLLER),
+> +               .driver_data =3D PS_TYPE_PS4_DUALSHOCK4 },
+> +       { HID_USB_DEVICE(USB_VENDOR_ID_SONY, USB_DEVICE_ID_SONY_PS4_CONTR=
+OLLER),
+> +               .driver_data =3D PS_TYPE_PS4_DUALSHOCK4 },
+> +       { HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_SONY, USB_DEVICE_ID_SONY_PS4=
+_CONTROLLER_2),
+> +               .driver_data =3D PS_TYPE_PS4_DUALSHOCK4 },
+> +       { HID_USB_DEVICE(USB_VENDOR_ID_SONY, USB_DEVICE_ID_SONY_PS4_CONTR=
+OLLER_2),
+> +               .driver_data =3D PS_TYPE_PS4_DUALSHOCK4 },
+> +       { HID_USB_DEVICE(USB_VENDOR_ID_SONY, USB_DEVICE_ID_SONY_PS4_CONTR=
+OLLER_DONGLE),
+> +               .driver_data =3D PS_TYPE_PS4_DUALSHOCK4 },
 > +
->  	return NULL;
->  }
->  
-> @@ -1860,6 +1869,9 @@ static bool user_fields_match(struct user_event *user, int argc,
->  	struct list_head *head = &user->fields;
->  	int i = 0;
->  
-> +	if (argc == 0)
-> +		return list_empty(head);
-> +
->  	list_for_each_entry_reverse(field, head, link) {
->  		if (!user_field_match(field, argc, argv, &i))
->  			return false;
-> @@ -1880,10 +1892,8 @@ static bool user_event_match(const char *system, const char *event,
->  	match = strcmp(EVENT_NAME(user), event) == 0 &&
->  		(!system || strcmp(system, USER_EVENTS_SYSTEM) == 0);
->  
-> -	if (match && argc > 0)
-> +	if (match)
->  		match = user_fields_match(user, argc, argv);
-> -	else if (match && argc == 0)
-> -		match = list_empty(&user->fields);
->  
->  	return match;
->  }
-> @@ -1922,11 +1932,11 @@ static int user_event_parse(struct user_event_group *group, char *name,
->  			    char *args, char *flags,
->  			    struct user_event **newuser, int reg_flags)
->  {
-> -	int ret;
-> -	u32 key;
->  	struct user_event *user;
-> +	char **argv = NULL;
->  	int argc = 0;
-> -	char **argv;
-> +	int ret;
-> +	u32 key;
->  
->  	/* Currently don't support any text based flags */
->  	if (flags != NULL)
-> @@ -1935,41 +1945,34 @@ static int user_event_parse(struct user_event_group *group, char *name,
->  	if (!user_event_capable(reg_flags))
->  		return -EPERM;
->  
-> +	if (args) {
-> +		argv = argv_split(GFP_KERNEL, args, &argc);
-> +
-> +		if (!argv)
-> +			return -ENOMEM;
-> +	}
-> +
->  	/* Prevent dyn_event from racing */
->  	mutex_lock(&event_mutex);
-> -	user = find_user_event(group, name, &key);
-> +	user = find_user_event(group, name, argc, (const char **)argv,
-> +			       reg_flags, &key);
->  	mutex_unlock(&event_mutex);
->  
-> -	if (user) {
-> -		if (args) {
-> -			argv = argv_split(GFP_KERNEL, args, &argc);
-> -			if (!argv) {
-> -				ret = -ENOMEM;
-> -				goto error;
-> -			}
-> +	if (argv)
-> +		argv_free(argv);
->  
-> -			ret = user_fields_match(user, argc, (const char **)argv);
-> -			argv_free(argv);
-> -
-> -		} else
-> -			ret = list_empty(&user->fields);
-> -
-> -		if (ret) {
-> -			*newuser = user;
-> -			/*
-> -			 * Name is allocated by caller, free it since it already exists.
-> -			 * Caller only worries about failure cases for freeing.
-> -			 */
-> -			kfree(name);
-> -		} else {
-> -			ret = -EADDRINUSE;
-> -			goto error;
-> -		}
-> +	if (IS_ERR(user))
-> +		return PTR_ERR(user);
-> +
-> +	if (user) {
-> +		*newuser = user;
-> +		/*
-> +		 * Name is allocated by caller, free it since it already exists.
-> +		 * Caller only worries about failure cases for freeing.
-> +		 */
-> +		kfree(name);
->  
->  		return 0;
-> -error:
-> -		user_event_put(user, false);
-> -		return ret;
->  	}
->  
->  	user = kzalloc(sizeof(*user), GFP_KERNEL_ACCOUNT);
-> @@ -2052,25 +2055,32 @@ static int user_event_parse(struct user_event_group *group, char *name,
->  }
->  
->  /*
-> - * Deletes a previously created event if it is no longer being used.
-> + * Deletes previously created events if they are no longer being used.
->   */
->  static int delete_user_event(struct user_event_group *group, char *name)
->  {
-> -	u32 key;
-> -	struct user_event *user = find_user_event(group, name, &key);
-> +	struct user_event *user;
-> +	u32 key = user_event_key(name);
-> +	int ret = -ENOENT;
->  
-> -	if (!user)
-> -		return -ENOENT;
-> +	/* Attempt to delete all event(s) with the name passed in */
-> +	hash_for_each_possible(group->register_table, user, node, key) {
-> +		if (strcmp(EVENT_NAME(user), name))
-> +			continue;
->  
-> -	user_event_put(user, true);
-> +		if (!user_event_last_ref(user))
-> +			return -EBUSY;
->  
-> -	if (!user_event_last_ref(user))
-> -		return -EBUSY;
-> +		if (!user_event_capable(user->reg_flags))
-> +			return -EPERM;
->  
-> -	if (!user_event_capable(user->reg_flags))
-> -		return -EPERM;
-> +		ret = destroy_user_event(user);
->  
-> -	return destroy_user_event(user);
-> +		if (ret)
-> +			goto out;
-> +	}
-> +out:
-> +	return ret;
->  }
->  
->  /*
-> -- 
-> 2.34.1
-> 
+>         /* Sony DualSense controllers for PS5 */
+> -       { HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_SONY, USB_DEVICE_ID_SONY_PS5=
+_CONTROLLER) },
+> -       { HID_USB_DEVICE(USB_VENDOR_ID_SONY, USB_DEVICE_ID_SONY_PS5_CONTR=
+OLLER) },
+> -       { HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_SONY, USB_DEVICE_ID_SONY_PS5=
+_CONTROLLER_2) },
+> -       { HID_USB_DEVICE(USB_VENDOR_ID_SONY, USB_DEVICE_ID_SONY_PS5_CONTR=
+OLLER_2) },
+> +       { HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_SONY, USB_DEVICE_ID_SONY_PS5=
+_CONTROLLER),
+> +               .driver_data =3D PS_TYPE_PS5_DUALSENSE },
+> +       { HID_USB_DEVICE(USB_VENDOR_ID_SONY, USB_DEVICE_ID_SONY_PS5_CONTR=
+OLLER),
+> +               .driver_data =3D PS_TYPE_PS5_DUALSENSE },
+> +       { HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_SONY, USB_DEVICE_ID_SONY_PS5=
+_CONTROLLER_2),
+> +               .driver_data =3D PS_TYPE_PS5_DUALSENSE },
+> +       { HID_USB_DEVICE(USB_VENDOR_ID_SONY, USB_DEVICE_ID_SONY_PS5_CONTR=
+OLLER_2),
+> +               .driver_data =3D PS_TYPE_PS5_DUALSENSE },
+>         { }
+>  };
+>  MODULE_DEVICE_TABLE(hid, ps_devices);
+> --
+> 2.39.2
+>
+>
 
+Hi Max,
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+This one looks good to me.
+
+Roderick
 
