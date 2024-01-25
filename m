@@ -1,235 +1,210 @@
-Return-Path: <linux-kernel+bounces-38526-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38527-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4359783C10A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:38:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FCEC83C10E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:39:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76A511C24137
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:38:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23D102945A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:39:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD49C2C696;
-	Thu, 25 Jan 2024 11:35:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09A5E4F61D;
+	Thu, 25 Jan 2024 11:36:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Yupcpdxb"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IYLk69zg"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D1802C68A
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 11:35:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CC814F601
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 11:36:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706182538; cv=none; b=RbYg9iVqrrURmBDsvs5uyIYaek/Cgy/pDVaEWz+UrUgIKvG7DSWOgu4VWBOQfYdz5f2wC7XXqFDOa82GVZqlueNbJG8YfavGOz7VGcL2xVMvHbgsW0oKo0akNpPtoltnsnM0snMXlxftkQ6mTSWl4w7DWeRnyZv8U2U5ED5Kw9c=
+	t=1706182571; cv=none; b=DcL1/7QOSsK9mdss7tj0qNLNAFa3xGZy2Z+XbBfZpjnfUt4gFgc5UrIqbEBK8g0a5Xt/ZTl6n64OJ8b9yvzDLjyHsZe47E9LpdIQjrJsebIfNkbsri5Hh3F8qsXJThdh92HtQ7to8PnQld0sVdsgF3AldF3JozAp+7UsorTlTTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706182538; c=relaxed/simple;
-	bh=QkSifBmhNnh9J/ox6L1kLoVfm7f2dkDpGrgfAkkmiqc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=ZaGs0Chz0GyrnZKEO9J+ukrrQk8c6SLnE3OIfTP+DcGieuWvVChZiSHUXM6XV4f/MpizFeVwTlxhD0R/ltN6r5xKm7O6nSE2ytDvSgMz6mQpidT3RITgkLBOLXPaqVtPG/zgbKpcvxeTlcJo2HqeJfGifi/ERGeWtiY/MYlZOYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Yupcpdxb; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1706182571; c=relaxed/simple;
+	bh=rSZZ+121Id9exraW2ap4CNA3Q9zojf36UA0v6YWYSrk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jopbhkfY0xyzmVBZalyyR8j8GJdvlgQHtVQMDxm6Fh1hrrVruaCVDeC1TjMX5cZW+mwgvqqtrVH+WQ+7Re2PfqEuUuU4Mb2fsxMXcUhbHLMIq7ABddX7P8Rz7TPReHHbeFk/QkkjYYbHUcQcNKSdFtuhhZEbslDlMnO9sBh91F8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IYLk69zg; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706182535;
+	s=mimecast20190719; t=1706182568;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=ND0M38vqg/f3DX4i2e40ekWPh2ueLITyqRBQvx6nxv0=;
-	b=YupcpdxbYUoxVsvZ7Y+UYCiAeelQyMHRjcD1Yj4xyZTrTikhqstNODWD/KaToHgvXUKoL4
-	WYdwqSLMqt7hZ54rBxGcDXuVKvqNJDK1Sx+ul6yI4onJC0mTCxqBk5a52jj6ZJqsEfq3fN
-	5pXZv6SFLLdpzUufXhF6pnSwq8Ru240=
-Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com
- [209.85.128.200]) by relay.mimecast.com with ESMTP with STARTTLS
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LUB/oUuKqmGeoEi6m3WaYGxwlHU6PfpvbttetKqgWmA=;
+	b=IYLk69zgslZnoiLEwN82gxMrgmQDlFNRYofvsD9mielrBDjf4i7CFZv6AUPIUFFIqtb+8y
+	LPpUFS22FIG6n9IBGdM8XYmqS/ZYpON7xemB68PW++Coq+sACraRWBgtpU0IfhHpWf6aKe
+	u2caqAZXqdAMsa2k3phC5UN/xQzrQdY=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-591-ECwceqxpMzi3xSahm9SBQw-1; Thu, 25 Jan 2024 06:35:33 -0500
-X-MC-Unique: ECwceqxpMzi3xSahm9SBQw-1
-Received: by mail-yw1-f200.google.com with SMTP id 00721157ae682-5f6c12872fbso103077357b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 03:35:33 -0800 (PST)
+ us-mta-126-71-qjmevN1uRJYro3fj_Jw-1; Thu, 25 Jan 2024 06:36:07 -0500
+X-MC-Unique: 71-qjmevN1uRJYro3fj_Jw-1
+Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5c17cff57f9so3934990a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 03:36:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706182531; x=1706787331;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1706182566; x=1706787366;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ND0M38vqg/f3DX4i2e40ekWPh2ueLITyqRBQvx6nxv0=;
-        b=c9NxuregroCR5ayVHkwKigg4ea6/0bXWw6MldrJCnpljf57tTPYaHvKQsVqCARpKRa
-         l48/7nPNYoM0InCGiteLqOXCw9G/ScCi0RIn2URJMIQ6dXM8e/bcDaYyc5oQcxJBWQoJ
-         8iSIpx1yqtiEYfo6IevC7YzfzO0rYS6xLqUpr0oHxTvP8poulj/Pbxc1fbGeiIina5an
-         ViQIMCJLJrJhqkb6u64/xqCWpvjz8aH4Tp6SE9qX7opJffIcEYJbO7d0GteA+HRr/bL8
-         GP9zFzdcyA+NudGvUtVYqFe7pXEHz16+yzljrTEOFtl/vcMQq++gT/Ybtieneoj2Z1Oc
-         7ZVw==
-X-Gm-Message-State: AOJu0YyKaS1xcGBYA0YRldNa2Q9W5Wcwl+KNmBI91aLEzc6HJqlkgE6W
-	LpbBIYuE7JvAaSwmVMWQZV8fJ76QaVN519g1D0LfTeyovNUnDFroQV0ZS/hkKqrpT99zLwTarVr
-	7uKlYNjvHaFLa/3DS+A0rFT0bM2oirakr4nTPeE5k2gHuV76/7IlSTjTbymPWdg==
-X-Received: by 2002:a81:5702:0:b0:5ff:97d0:6535 with SMTP id l2-20020a815702000000b005ff97d06535mr552293ywb.83.1706182531059;
-        Thu, 25 Jan 2024 03:35:31 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFlpvmBp8xlQD5XCxbHNI/yAx/NEl7+aASAlI1TcIgGwaDJTRqIImA/z84168W/ZHhbcdOW+g==
-X-Received: by 2002:a81:5702:0:b0:5ff:97d0:6535 with SMTP id l2-20020a815702000000b005ff97d06535mr552276ywb.83.1706182530618;
-        Thu, 25 Jan 2024 03:35:30 -0800 (PST)
-Received: from localhost.localdomain ([2a00:23c6:4a05:9f01:cede:7b45:1f9d:67f])
-        by smtp.gmail.com with ESMTPSA id bp31-20020a05620a459f00b007833c4dddfdsm4924094qkb.53.2024.01.25.03.35.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 03:35:30 -0800 (PST)
-Date: Thu, 25 Jan 2024 11:35:26 +0000
-From: Juri Lelli <juri.lelli@redhat.com>
-To: linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-rt-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Lorenzo Pieralisi <lorenzo.pieralisi@linaro.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Georges Da Costa <georges.da-costa@irit.fr>
-Subject: [ANNOUNCE][CFP] Power Management and Scheduling in the Linux Kernel
- VI edition (OSPM-summit 2024)
-Message-ID: <ZbJHfiWnujLz2Pfm@localhost.localdomain>
+        bh=LUB/oUuKqmGeoEi6m3WaYGxwlHU6PfpvbttetKqgWmA=;
+        b=GpY4ofSC2oTtfDjSIokY2vI32c9KbWZS43PjAZJnOtd4khQBZcI9EW3EmIPCr2cqIl
+         SGFxEwk8pzBkxZot9wxCW6GLQx7Tol3NGav26UNUZnj86Jb+dFZet8e0CIBsCzlWBsJY
+         2fpVhg/fsgyv2yXWtODkjKlnVnusD/KQFzzPch0jqMCmEnKNVi/DGk5PKvSnVKLfo0+Z
+         DCKX7EhoAbN42whfqB5fjoFZn5qM2TRO6raCdvQeODINPamDgGa/+oVgIVLaVigcS8jE
+         KqOjYFpx4DZPSAGepDgwqNauXWry9ywQkqF+nJSTmyEuJnIcMVd+P6zIgeA44AKatMtQ
+         xBUQ==
+X-Gm-Message-State: AOJu0YwhSchSlG97tascyK2Kv8dPeiL0PDneyKj42vxi14xtP4obd23N
+	k5fRZrQi+J7APmL065HbqZ2RIFEBXugIV29vdWD2ugK2fZ+REKg0voosfJsa0XTJz/H05pz7Ghi
+	J3R3/AwztWt+8bUzYSuZPzSIOMoGrOWKtgMU5Ff2LjjCmJqxLXxrXApdPa42kLZ4plRE9G07EGk
+	VDxZgfbqb3E51xhZM4V+65UpZeJbS4CAd+yj3m
+X-Received: by 2002:a05:6a20:8e02:b0:19c:5491:f4f7 with SMTP id y2-20020a056a208e0200b0019c5491f4f7mr837548pzj.45.1706182566088;
+        Thu, 25 Jan 2024 03:36:06 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGG8V9lqIfdb+wLnigwfAaiAbM2ddgygoWd+RUIdAjz82NuASn1qniUQNabuk+VXao+g5reeZwDg4D9GpV5JOI=
+X-Received: by 2002:a05:6a20:8e02:b0:19c:5491:f4f7 with SMTP id
+ y2-20020a056a208e0200b0019c5491f4f7mr837529pzj.45.1706182565506; Thu, 25 Jan
+ 2024 03:36:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20240124091421.1261579-1-yukuai3@huawei.com> <20240124091421.1261579-6-yukuai3@huawei.com>
+In-Reply-To: <20240124091421.1261579-6-yukuai3@huawei.com>
+From: Xiao Ni <xni@redhat.com>
+Date: Thu, 25 Jan 2024 19:35:54 +0800
+Message-ID: <CALTww2_V6Cr4j7hMPnMMt-g2w_xfCHQvwBpwbyOk=5rGcap6YA@mail.gmail.com>
+Subject: Re: [PATCH v2 05/11] md: export helpers to stop sync_thread
+To: Yu Kuai <yukuai3@huawei.com>
+Cc: agk@redhat.com, snitzer@kernel.org, mpatocka@redhat.com, 
+	dm-devel@lists.linux.dev, song@kernel.org, neilb@suse.de, heinzm@redhat.com, 
+	shli@fb.com, akpm@osdl.org, linux-kernel@vger.kernel.org, 
+	linux-raid@vger.kernel.org, yukuai1@huaweicloud.com, yi.zhang@huawei.com, 
+	yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Power Management and Scheduling in the Linux Kernel (OSPM-summit) VI
-edition
+Hi all
 
-May 30-31, 2024
-Institut de Recherche en Informatique de Toulouse
-Toulouse, France
+This is the result of lvm2 tests:
+make check
+### 426 tests: 319 passed, 74 skipped, 0 timed out, 5 warned, 28
+failed   in 56:04.914
+make[1]: *** [Makefile:138: check] Error 1
+make[1]: Leaving directory '/root/lvm2/test'
+make: *** [Makefile:89: check] Error 2
 
----
+Do you know where to check which cases fail?
 
-:: FOCUS
+Best Regards
+Xiao
 
-OSPM is moving to France!
-
-The VI edition of the Power Management and Scheduling in the Linux
-Kernel (OSPM) summit aims at fostering discussions on power management
-and (real-time) scheduling techniques. Summit will be held in Toulouse
-(France) on May 30-31, 2024.
-
-We welcome anybody interested in having discussions on the broad scope
-of scheduler techniques for reducing energy consumption while meeting
-performance and latency requirements, real-time systems, real-time and
-non-real-time scheduling, tooling, debugging and tracing.
-
-Feel free to take a look at what happened previous years:
-
- I   edition - https://lwn.net/Articles/721573/
- II  edition - https://lwn.net/Articles/754923/
- III edition - https://lwn.net/Articles/793281/
- IV  edition - https://lwn.net/Articles/820337/ (online)
- V   edition - https://lwn.net/Articles/934142/
-               https://lwn.net/Articles/934459/
-               https://lwn.net/Articles/935180/
-
-:: FORMAT
-
-The summit is organized to cover two days of discussions and talks.
-
-The list of topics of interest includes (but it is not limited to):
-
- * Power management techniques
- * Scheduling techniques (real-time and non real-time)
- * Energy consumption and CPU capacity aware scheduling
- * Real-time virtualization
- * Mobile/Server power management real-world use cases (successes and
-   failures)
- * Power management and scheduling tooling (configuration, integration,
-   testing, etc.)
- * Tracing
- * Recap/lightning talks
-
-Presentations (50 min) can cover recently developed technologies,
-ongoing work and new ideas. Please understand that this workshop is not
-intended for presenting sales and marketing pitches.
-
-:: ATTENDING
-
-Attending the OSPM-summit is free of charge, but registration to the
-event is mandatory. The event can allow a maximum of 50 people (so, be
-sure to register early!).
-
-Registrations open on February 26th, 2024.
-To register fill in the registration form available at
-https://forms.gle/SooSmYMChBcn5rmM8
-
-While it is not strictly required to submit a topic/presentation (see
-below), registrations with a topic/presentation proposal will take
-precedence.
-
-:: SUBMIT A TOPIC/PRESENTATION
-
-To submit a topic/presentation add its details to this list:
-https://docs.google.com/spreadsheets/d/13lOYsbNWhQU7pNbyHI97fC7GT0Eu8aMbU9ATvPJfV0A/edit?usp=sharing
-
-Or, if you prefer, simply reply (only to me, please :) to this email
-specifying:
-
-- name/surname
-- affiliation
-- short bio
-- email address
-- title
-- abstract
-
-Deadline for submitting topics/presentations is 19th of February 2024.
-Notifications for accepted topics/presentations will be sent out 26th of
-February 2024.
-
-:: VENUE
-
-The workshop will take place at IRIT [1], University of Toulouse [2],
-France.
-
-The workshop venue is accessible [3] from downtown, where you can find
-most of the hotels/accommodations suggested below, by metro (line B) in
-30 minutes [4]. You can reach IRIT by the metro B (approx one every 2
-minutes in rush hours) or by bus (several lines, between 40 and 60
-minutes depending on the line and the traffic). Several buses arrive at
-the metro station of the university. A map of the city center with the
-venue, transportation and food/drinks places is provided here [5].
-
-It is recommended to pick a hotel close to a “Ligne B” subway station,
-anywhere between “Jean-Jaures” and “Les Carmes”.
-
-From the station, choose “Ramonville” direction and get off at the
-station “Université Paul Sabatier” [6]. The station is right inside the
-university. From there follow the map [7] to reach the IRIT building
-entrance. 
-
-Toulouse airport, “Aéroport Toulouse-Blagnac (TLS), Blagnac”, has a lot
-of direct flights from European airports like Paris, Amsterdam, London,
-Munich among others. There is a shuttle “La Navette” [8], every 20
-minutes, bringing you to downtown in more or less 30 minutes depending
-on the traffic. 
-
-A list of hotels on the metro line B (direct to the workshop location):
-http://www.hotel-oursblanc.com/
-https://www.athome-ah.com/
-https://www.discoverasr.com/fr/citadines/france/citadines-wilson-toulouse
-https://www.pullman-toulouse-centre-ramblas.fr
-
-[1] https://www.irit.fr/
-[2] https://www.univ-tlse3.fr/
-[3] https://maps.app.goo.gl/rdcrKx6x8ntm4uij6
-[4] https://maps.app.goo.gl/Y8UPRvHmbrjCSnvu5
-[5] https://www.toulouse-visit.com/interactive-map
-[6] https://metro-toulouse.com/ligne-B-metro-toulouse.php
-[7] https://goo.gl/maps/ojiAeQoL5Ewgb2gp7
-[8] https://www.toulouse.aeroport.fr/en/transports/public-transport?tabs4633=tab_4631
-
-:: ORGANIZERS
-
-Juri Lelli (Red Hat)
-Daniel Bristot de Oliveira (Red Hat)
-Daniel Lezcano(Linaro)
-Georges Da Costa (IRIT)
-Tommaso Cucinotta (SSSA)
-Lorenzo Pieralisi (Linaro)
+On Wed, Jan 24, 2024 at 5:19=E2=80=AFPM Yu Kuai <yukuai3@huawei.com> wrote:
+>
+> The new heleprs will be used in dm-raid in later patches to fix
+> regressions and prevent calling md_reap_sync_thread() directly.
+>
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>  drivers/md/md.c | 41 +++++++++++++++++++++++++++++++++++++----
+>  drivers/md/md.h |  3 +++
+>  2 files changed, 40 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index 6c5d0a372927..90cf31b53804 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -4915,30 +4915,63 @@ static void stop_sync_thread(struct mddev *mddev,=
+ bool locked, bool check_seq)
+>                 mddev_lock_nointr(mddev);
+>  }
+>
+> -static void idle_sync_thread(struct mddev *mddev)
+> +void md_idle_sync_thread(struct mddev *mddev)
+>  {
+> +       lockdep_assert_held(mddev->reconfig_mutex);
+> +
+>         mutex_lock(&mddev->sync_mutex);
+>         clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+> +       stop_sync_thread(mddev, true, true);
+> +       mutex_unlock(&mddev->sync_mutex);
+> +}
+> +EXPORT_SYMBOL_GPL(md_idle_sync_thread);
+> +
+> +void md_frozen_sync_thread(struct mddev *mddev)
+> +{
+> +       lockdep_assert_held(mddev->reconfig_mutex);
+> +
+> +       mutex_lock(&mddev->sync_mutex);
+> +       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+> +       stop_sync_thread(mddev, true, false);
+> +       mutex_unlock(&mddev->sync_mutex);
+> +}
+> +EXPORT_SYMBOL_GPL(md_frozen_sync_thread);
+>
+> +void md_unfrozen_sync_thread(struct mddev *mddev)
+> +{
+> +       lockdep_assert_held(mddev->reconfig_mutex);
+> +
+> +       mutex_lock(&mddev->sync_mutex);
+> +       clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+> +       set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
+> +       md_wakeup_thread(mddev->thread);
+> +       sysfs_notify_dirent_safe(mddev->sysfs_action);
+> +       mutex_unlock(&mddev->sync_mutex);
+> +}
+> +EXPORT_SYMBOL_GPL(md_unfrozen_sync_thread);
+> +
+> +static void idle_sync_thread(struct mddev *mddev)
+> +{
+>         if (mddev_lock(mddev)) {
+>                 mutex_unlock(&mddev->sync_mutex);
+>                 return;
+>         }
+>
+> +       mutex_lock(&mddev->sync_mutex);
+> +       clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+>         stop_sync_thread(mddev, false, true);
+>         mutex_unlock(&mddev->sync_mutex);
+>  }
+>
+>  static void frozen_sync_thread(struct mddev *mddev)
+>  {
+> -       mutex_lock(&mddev->sync_mutex);
+> -       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+> -
+>         if (mddev_lock(mddev)) {
+>                 mutex_unlock(&mddev->sync_mutex);
+>                 return;
+>         }
+>
+> +       mutex_lock(&mddev->sync_mutex);
+> +       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+>         stop_sync_thread(mddev, false, false);
+>         mutex_unlock(&mddev->sync_mutex);
+>  }
+> diff --git a/drivers/md/md.h b/drivers/md/md.h
+> index 8d881cc59799..437ab70ce79b 100644
+> --- a/drivers/md/md.h
+> +++ b/drivers/md/md.h
+> @@ -781,6 +781,9 @@ extern void md_rdev_clear(struct md_rdev *rdev);
+>  extern void md_handle_request(struct mddev *mddev, struct bio *bio);
+>  extern int mddev_suspend(struct mddev *mddev, bool interruptible);
+>  extern void mddev_resume(struct mddev *mddev);
+> +extern void md_idle_sync_thread(struct mddev *mddev);
+> +extern void md_frozen_sync_thread(struct mddev *mddev);
+> +extern void md_unfrozen_sync_thread(struct mddev *mddev);
+>
+>  extern void md_reload_sb(struct mddev *mddev, int raid_disk);
+>  extern void md_update_sb(struct mddev *mddev, int force);
+> --
+> 2.39.2
+>
 
 
