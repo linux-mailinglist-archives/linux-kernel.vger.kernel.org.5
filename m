@@ -1,171 +1,138 @@
-Return-Path: <linux-kernel+bounces-38573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0751C83C26A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:18:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F01C83C26D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:19:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D82EFB28B78
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:16:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6445E1C2423F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:19:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A196A45033;
-	Thu, 25 Jan 2024 12:16:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E87845BF5;
+	Thu, 25 Jan 2024 12:19:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fTviEwe6"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oEcmHnK8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BFAD45BFA;
-	Thu, 25 Jan 2024 12:16:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D560336B10;
+	Thu, 25 Jan 2024 12:19:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706184990; cv=none; b=ZiqE6UXB4jOd4w25xAxtSRIxYOn0ru1hhvjKGtiySw4WCjY/WOLqZP13aR3s8k8ENrBVym1+gKOLJ5uAEdxGZf3kOVNuMTySTJJRTZ8ZLYaR/X0yJAOzMtYNGpdovgfqvH8ChpA1zTKsudvpOdXxj90D2FdmrXF/XcKfldc1QEw=
+	t=1706185172; cv=none; b=rb/NCgt05+ppoLc0f3dvLGUwNOr4Yk3JhL35P60cbkSIHgzW0nWJdUAW0wvShDUPWFPUW18Iz5Ud7T39l8Jpl+dDLAE24o+619aoClMVZPo/5FIAMJjeJGzjYXrVdJvF7XTltKFHwlAS4B2LxjVaI6Q5qG/6flnw3Q/XrDaDqAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706184990; c=relaxed/simple;
-	bh=HwBQsm7MBgHhSyzAfl7jjyQrBcB7NcfolPyNJzRBR24=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=kZijhcnsvmpwHLyRVrT9QzTCFBJgyjfRLA5zIJhWgzyMp4VVYy0vnlbN1+5cMCpILdKELXOdmlxAVuRzWnu754FM8TXVpfCc/no3Z9ZcI5RJbYHPHNUrPAL1btcKeTQEUrhmv2nlTbLTmZXluAitQ49B4olMXZkAJtmYjH0HVoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fTviEwe6; arc=none smtp.client-ip=192.55.52.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706184989; x=1737720989;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=HwBQsm7MBgHhSyzAfl7jjyQrBcB7NcfolPyNJzRBR24=;
-  b=fTviEwe6cEsoG2IIZ8LDIKg6skdvj+ETVE7yN1Sv2ZxxrzsA9n3oWL/Y
-   M7fGfpA0iya3UrpCW9EsgcykVEccXN0ZERnIL0xdKK4djD0GjyAJiTgly
-   iI/Xrp4zfB9w6/PbFUzo73RX3LmU/dU7uPRu8piOwR08RAWkDDl9KNIex
-   fzYun0ZjQ5LjOiLj/CJMCpGMqnzEYDpfoidZoQDvWKAQrTiAXMB5W9K6z
-   X1TPuK705CpNCetsJnPzynxPOENBdfnF93rRR5bbgtgba532FR7L/+gQN
-   ae3DiA8HBECS2m1sC0YZ+4Zi3Iao8afFaeik6+waAB9nzK5sIFUAkhaMq
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="400999114"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="400999114"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 04:16:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="736300929"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="736300929"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.94.252.55])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 04:16:25 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Thu, 25 Jan 2024 14:16:20 +0200 (EET)
-To: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-cc: Reinette Chatre <reinette.chatre@intel.com>, shuah@kernel.org, 
-    fenghua.yu@intel.com, LKML <linux-kernel@vger.kernel.org>, 
-    linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v3 4/5] selftests/resctrl: Add
- resource_info_file_exists()
-In-Reply-To: <e73a79210076d6b1b7b584b12d0499e2f2e5f4fe.1706180726.git.maciej.wieczor-retman@intel.com>
-Message-ID: <7452603a-4347-a51e-c91f-ff0b17cc99ad@linux.intel.com>
-References: <cover.1706180726.git.maciej.wieczor-retman@intel.com> <e73a79210076d6b1b7b584b12d0499e2f2e5f4fe.1706180726.git.maciej.wieczor-retman@intel.com>
+	s=arc-20240116; t=1706185172; c=relaxed/simple;
+	bh=zfYp4IY/7X/+LaY5xSNFJhQT56Y8mXFU7V7bnUDoJjI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=e/wCVAsC9jRzD+UgA51YTMaVkYKYTPWj/CdYm/nlFDH2dTGL/l4mBhUwhDKZnswn41NgxZxmhqB2O3+sXnrknrm/27pfB68hFbx+lFdjIbXcHsS/lwj9laZn2etfBYc9fY3PtjbAPRc4+b8aM3Y1ZEN+hmbSkjg08CgHSgtG7/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oEcmHnK8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51006C43390;
+	Thu, 25 Jan 2024 12:19:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706185172;
+	bh=zfYp4IY/7X/+LaY5xSNFJhQT56Y8mXFU7V7bnUDoJjI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=oEcmHnK818I/Jm5CIXPiXFRUVUEYppaXM9myPO1toFGfuJwKcHJFeNfruu/o4VNH7
+	 mG5lnXC/ogO/j3r8AWdOzk1rEjQ6CpXLoTlLn0g4Ghmlg9LxTy7GN7qpl2Rd65wuID
+	 vAIoOp5UL9HsZwrZRVwigOzTPHk5tEv6m0XHjEzTHa+U0oomwBAaS3WwLb1+DyEmI3
+	 5HGyspNEW+lOfq4NzmbgDy/FlFw2lCnTEper9YWLPwq1bpkV2SJ60dGJ6TT0MhdXeV
+	 LD70rg68/nxLe0fH/QlHKshy3vLyCqqPOUWf1UZyUDO94iMSRorQDmDwxCptZySMg8
+	 xFgBo8GhurSjQ==
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2cf354613easo7720421fa.1;
+        Thu, 25 Jan 2024 04:19:32 -0800 (PST)
+X-Gm-Message-State: AOJu0Yz6ylV7viiRwEYrBzfr2n+XsPXPuakECkNGnIMlqiXZAzDfuYPy
+	jN+N9NieEkwzllFDlg6t5KAgVM8kr3HpnpT/XzEXIpGHEAA2eGiBwqxpdU3Gir3Y9jXbarHy6O0
+	oMwy7MpaP6W5MfvVJLnCok4h4V5I=
+X-Google-Smtp-Source: AGHT+IE8X5NPhlKrP0UhMcQQq+MZ5eT7JN3M8CYIYwk0DIMhpjZasu6rhPJKWZjXj4l33/9dJOZOjkHZn/BkUxXAkqs=
+X-Received: by 2002:ac2:5f77:0:b0:50f:15fe:f91a with SMTP id
+ c23-20020ac25f77000000b0050f15fef91amr417674lfc.88.1706185170550; Thu, 25 Jan
+ 2024 04:19:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-1973767011-1706184980=:1444"
+References: <20240123234731.work.358-kees@kernel.org>
+In-Reply-To: <20240123234731.work.358-kees@kernel.org>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Thu, 25 Jan 2024 13:19:19 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGcKBPnHOm6PtsrxePdv5a6AokB=qvMrwvGmPh_Uk6vsA@mail.gmail.com>
+Message-ID: <CAMj1kXGcKBPnHOm6PtsrxePdv5a6AokB=qvMrwvGmPh_Uk6vsA@mail.gmail.com>
+Subject: Re: [PATCH] smb: Work around Clang __bdos() type confusion
+To: Kees Cook <keescook@chromium.org>
+Cc: Steve French <sfrench@samba.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Paulo Alcantara <pc@manguebit.com>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, 
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>, linux-cifs@vger.kernel.org, 
+	llvm@lists.linux.dev, Nick Desaulniers <ndesaulniers@google.com>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323328-1973767011-1706184980=:1444
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-
-On Thu, 25 Jan 2024, Maciej Wieczor-Retman wrote:
-
-> Feature checking done by resctrl_mon_feature_exists() covers features
-> represented by the feature name presence inside the 'mon_features' file
-> in /sys/fs/resctrl/info/L3_MON directory. There exists a different way
-> to represent feature support and that is by the presence of 0 or 1 in a
-> single file in the info/resource directory. In this case the filename
-> represents what feature support is being indicated.
->=20
-> Add a generic function to check file presence in the
-> /sys/fs/resctrl/info/<RESOURCE> directory.
->=20
-> Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+On Wed, 24 Jan 2024 at 00:47, Kees Cook <keescook@chromium.org> wrote:
+>
+> Recent versions of Clang gets confused about the possible size of the
+> "user" allocation, and CONFIG_FORTIFY_SOURCE ends up emitting a
+> warning[1]:
+>
+> repro.c:126:4: warning: call to '__write_overflow_field' declared with 'warning' attribute: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Wattribute-warning]
+>   126 |                         __write_overflow_field(p_size_field, size);
+>       |                         ^
+>
+> for this memset():
+>
+>         int len;
+>         __le16 *user;
+>         ...
+>         len = ses->user_name ? strlen(ses->user_name) : 0;
+>         user = kmalloc(2 + (len * 2), GFP_KERNEL);
+>         ...
+>         if (len) {
+>                 ...
+>         } else {
+>                 memset(user, '\0', 2);
+>         }
+>
+> While Clang works on this bug[2], switch to using a direct assignment,
+> which avoids memset() entirely which both simplifies the code and silences
+> the false positive warning. (Making "len" size_t also silences the
+> warning, but the direct assignment seems better.)
+>
+> Reported-by: Nathan Chancellor <nathan@kernel.org>
+> Closes: https://github.com/ClangBuiltLinux/linux/issues/1966 [1]
+> Link: https://github.com/llvm/llvm-project/issues/77813 [2]
+> Cc: Steve French <sfrench@samba.org>
+> Cc: Paulo Alcantara <pc@manguebit.com>
+> Cc: Ronnie Sahlberg <ronniesahlberg@gmail.com>
+> Cc: Shyam Prasad N <sprasad@microsoft.com>
+> Cc: Tom Talpey <tom@talpey.com>
+> Cc: linux-cifs@vger.kernel.org
+> Cc: llvm@lists.linux.dev
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 > ---
-> Changelog v3:
-> - Split off the new function into this patch. (Reinette)
->=20
-> Changelog v2:
-> - Add this patch.
->=20
->  tools/testing/selftests/resctrl/resctrl.h   |  2 ++
->  tools/testing/selftests/resctrl/resctrlfs.c | 26 +++++++++++++++++++++
->  2 files changed, 28 insertions(+)
->=20
-> diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/se=
-lftests/resctrl/resctrl.h
-> index 4603b215b97e..c39105f46da9 100644
-> --- a/tools/testing/selftests/resctrl/resctrl.h
-> +++ b/tools/testing/selftests/resctrl/resctrl.h
-> @@ -138,6 +138,8 @@ int umount_resctrlfs(void);
->  int validate_bw_report_request(char *bw_report);
->  bool resctrl_resource_exists(const char *resource);
->  bool resctrl_mon_feature_exists(const char *feature);
-> +bool resource_info_file_exists(const char *resource,
-> +=09=09=09       const char *feature);
->  bool test_resource_feature_check(const struct resctrl_test *test);
->  char *fgrep(FILE *inf, const char *str);
->  int taskset_benchmark(pid_t bm_pid, int cpu_no, cpu_set_t *old_affinity)=
-;
-> diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/=
-selftests/resctrl/resctrlfs.c
-> index e4ba8614fb7b..a6427732e0ad 100644
-> --- a/tools/testing/selftests/resctrl/resctrlfs.c
-> +++ b/tools/testing/selftests/resctrl/resctrlfs.c
-> @@ -763,6 +763,32 @@ bool resctrl_mon_feature_exists(const char *feature)
->  =09return !!res;
->  }
-> =20
-> +/*
-> + * resource_info_file_exists - Check if a file is present inside
-> + * /sys/fs/resctrl/info/RESOURCE.
-> + * @resource:=09Required resource (Eg: MB, L3, L2, etc.)
-> + * @feature:=09Required feature.
-> + *
-> + * Return: True if the file exists, else false.
-> + */
-> +bool resource_info_file_exists(const char *resource,
-> +=09=09=09       const char *feature)
+>  fs/smb/client/cifsencrypt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/smb/client/cifsencrypt.c b/fs/smb/client/cifsencrypt.c
+> index ef4c2e3c9fa6..6322f0f68a17 100644
+> --- a/fs/smb/client/cifsencrypt.c
+> +++ b/fs/smb/client/cifsencrypt.c
+> @@ -572,7 +572,7 @@ static int calc_ntlmv2_hash(struct cifs_ses *ses, char *ntlmv2_hash,
+>                 len = cifs_strtoUTF16(user, ses->user_name, len, nls_cp);
+>                 UniStrupr(user);
+>         } else {
+> -               memset(user, '\0', 2);
+> +               *(u16 *)user = 0;
 
-Fits to one line.
+Is 'user' guaranteed to be 16-bit aligned?
 
-> +{
-> +=09char res_path[PATH_MAX];
-> +=09struct stat statbuf;
-> +
-> +=09if (!feature || !resource)
-> +=09=09return false;
-> +
-> +=09snprintf(res_path, sizeof(res_path), "%s/%s/%s", INFO_PATH, resource,
-> +=09=09 feature);
-> +
-> +=09if (stat(res_path, &statbuf))
-> +=09=09return false;
-> +
-> +=09return true;
-> +}
-> +
->  bool test_resource_feature_check(const struct resctrl_test *test)
->  {
->  =09return resctrl_resource_exists(test->resource);
->=20
-
-Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
-
---=20
- i.
-
---8323328-1973767011-1706184980=:1444--
+>         }
+>
+>         rc = crypto_shash_update(ses->server->secmech.hmacmd5,
+> --
+> 2.34.1
+>
+>
 
