@@ -1,127 +1,201 @@
-Return-Path: <linux-kernel+bounces-38317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A4D583BDC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:46:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E2A683BDC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:47:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52754285279
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:46:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 286542837EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:47:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1364D1CA80;
-	Thu, 25 Jan 2024 09:45:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HNTpD/NK"
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA3AF1C6AB
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:45:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BDCA1CAA3;
+	Thu, 25 Jan 2024 09:45:21 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE56D1C6AE;
+	Thu, 25 Jan 2024 09:45:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706175919; cv=none; b=YcCPFEmj1bOCpFa/NLzD9jFAOfivKNCoVvJ9VU3L/xYN2YGApMkXDUGhmH7D/ib0zcHP2EqzjYTpW0CWBreMh61BJWnGhJgZWgnZt+5cVNHKevy8scxXt2qTSEH6bKEP/NWV89DC/Q19MzpDVuSzoHz5nWreHga70mpIO2oNM6c=
+	t=1706175920; cv=none; b=B/Ich17DAgWEjz7Pqpzxz2Hem/stCHcLZcOvFg8oG7TGwHAieIrg3mLPgA96o/mPYjDRcMfJ/vnQX0MDU046hzouAiBqACGrFYo+mXB817R2o9APgo2NZ8O9JNUpBemgegNLgb80FCAaNZPW+6ZcC28pjghdwLP0nCHM61YDKGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706175919; c=relaxed/simple;
-	bh=cWPOC7NSGBppl4zfjZkFzAGHP/WbY62dZdXQCjP/xdY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qHS40I+uuX5EIiZ7jQsIGTC5f6V8+bblZNKzxjn0ajqwpyk/6z4qMpUo1c4ccFCShjggY/CdtVfhnZkll7YjkFBbsv4G63VBYByj+mQYBX1FtVsWgYRMDXszkrFMQ+iukHR5HYeNm0ptyyhWqXrb+4K1oeVKPlf3HY7iCAH4hdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HNTpD/NK; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2cf1288097aso30041131fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 01:45:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706175916; x=1706780716; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DIOuj7bR7enUuseulkrPOknNgIfgoOuomvKOHhgQg6I=;
-        b=HNTpD/NKQ09l85DOQ3NB4UWYZ8zjnLYQVjeWPA6N3CncDrj/WL428qjpXGnHwjFp1v
-         /DpYIiTVrqBrgVISGkp8zwtLAS56Kflqcmajdw9Lk0PHKqRbWakQA2OLrRFNkVMHw9yr
-         6tJceIljequMnKWJRofvVIqivBPyQkGmqen7K0iXSbwX/4GytlzKfNn/Og089jcWPg6n
-         nwRKJ7zx4MordGn1syhelPPdUVccgOF5qA8sbC4x8NH1sTaSrnMRrdZmyLoULjuDoDIq
-         9UiR9aSI2SqhJY7Z0iwwJH+vg8Az/fpKPg/ECGy4oTorkljz2TDduuRdbz63bGtiSaci
-         LCvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706175916; x=1706780716;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DIOuj7bR7enUuseulkrPOknNgIfgoOuomvKOHhgQg6I=;
-        b=P9C6jrxppdw97Fpl0bPiFlgyDUXvvEHoGjxiJny54RSg7656KSE7VC+A35uRhHbJ9M
-         0ztT/f/lQYoSYTuZyZEpkWeHR8tnd4o+3uOtLUdw5vKGJqERa5RBz0owcV6KCJPRzm6p
-         pn50NaShhBA3jHBzJpGng6OLahmiolX2XRfZPwcGHlV0PC/rm/ciMSib8mkPD/rkoXPX
-         IqqLDMd9SP8wxFmTh5s4halq7yG7An6HDcGqd1Bszum2E2X3LxukMXWddYoLmL43o7Hx
-         FALhjtYeY7HBYkECmZhzG7EcvScW/fVSuM0GUbX7n0Yx8e6ZiBnuhjRLjnrs3IjC+Fgj
-         mXsQ==
-X-Gm-Message-State: AOJu0Yzyv3XlS6pH5O4ElMgK6cfdNf+fzPwmNDt8jalZSm2kDkRLdJoS
-	EWgz7JlWku8AaWezwX4Fm2HownyrLllZDzvhslTn3kKQCPIpdGPwWoRDzL7xeBM=
-X-Google-Smtp-Source: AGHT+IFG+yauXBwOK/woS6AE2eb7O0Y/xtBvYSRv33al+j3vbOLwgE19T/bjbbonr4enfPCkmco7kg==
-X-Received: by 2002:a2e:a608:0:b0:2cd:fdc1:8e52 with SMTP id v8-20020a2ea608000000b002cdfdc18e52mr415985ljp.71.1706175915573;
-        Thu, 25 Jan 2024 01:45:15 -0800 (PST)
-Received: from [172.30.205.155] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id p3-20020a2e8043000000b002cd91d0ceefsm232472ljg.33.2024.01.25.01.45.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 01:45:15 -0800 (PST)
-Message-ID: <b4a9ad3e-392f-42ff-8fed-dd86b013176b@linaro.org>
-Date: Thu, 25 Jan 2024 10:45:12 +0100
+	s=arc-20240116; t=1706175920; c=relaxed/simple;
+	bh=BBBMj/+LwJcWhyi1zR7X13yXCz0XNJvnrWKsG9hK2Bw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iZos4rospTcDewzCP9PgjsmdpxM9ZN77iTcny3yiJENYhHOzofzuqW9VprwnocJTKeHCkcl4/tGvtqLlh+qp1qe3WotLPdVEjSIk3m67n2hSvdBfY++6FAG8Wu1H6vYf4lML6cqfZ2T1wUwYRnEzwciW6DBJPeAt715PG9q6S6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC8A3153B;
+	Thu, 25 Jan 2024 01:46:02 -0800 (PST)
+Received: from pluto (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 03AE83F73F;
+	Thu, 25 Jan 2024 01:45:16 -0800 (PST)
+Date: Thu, 25 Jan 2024 09:45:14 +0000
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: Peng Fan <peng.fan@nxp.com>, Guenter Roeck <linux@roeck-us.net>
+Cc: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+	"groeck7@gmail.com" <groeck7@gmail.com>,
+	"sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+	"jdelvare@suse.com" <jdelvare@suse.com>,
+	"linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V3] hwmon: scmi-hwmon: implement change_mode for thermal
+ zones
+Message-ID: <ZbItqjt6RvCq306q@pluto>
+References: <20240125064422.347002-1-peng.fan@oss.nxp.com>
+ <b839f83f-c8c7-4fa8-8597-bdde1b40168a@roeck-us.net>
+ <DU0PR04MB9417DAD2DBB8820344FEFB07887A2@DU0PR04MB9417.eurprd04.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND] arm64: dts: qcom: qcm6490-idp: Add support for
- PM7250B PMIC
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Umang Chheda <quic_uchheda@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Kamal Wadhwa <quic_kamalw@quicinc.com>
-References: <20240123102817.2414155-1-quic_uchheda@quicinc.com>
- <CAA8EJppwboaEbKFFACr3LO0OHg4iOJPapKRqoH2EGEYcjV6HfA@mail.gmail.com>
- <735575f5-ee46-4c91-b0bd-e9c6fb97361c@quicinc.com>
- <CAA8EJpr6XrhNp2gdbqmCow7ShXLNXEwGZ-a_Yxr08bcxtORg6A@mail.gmail.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <CAA8EJpr6XrhNp2gdbqmCow7ShXLNXEwGZ-a_Yxr08bcxtORg6A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DU0PR04MB9417DAD2DBB8820344FEFB07887A2@DU0PR04MB9417.eurprd04.prod.outlook.com>
 
-
-
-On 1/25/24 09:26, Dmitry Baryshkov wrote:
-> On Thu, 25 Jan 2024 at 10:10, Umang Chheda <quic_uchheda@quicinc.com> wrote:
->>
->> Hi Dmitry,
->>
->> On 1/23/2024 5:48 PM, Dmitry Baryshkov wrote:
->>> On Tue, 23 Jan 2024 at 12:28, Umang Chheda <quic_uchheda@quicinc.com> wrote:
->>>>
->>>> qcm6490-idp platform supports PM7250B PMIC as well.
->>>> Add support for the same.
->>>
->>> The platform can not "support" PMIC. Please fix the commit message.
->> Shall I change the commit message as below in the next patch ?
->> "Add PM7250B PMIC support for qcm6490-idp"
+On Thu, Jan 25, 2024 at 07:06:25AM +0000, Peng Fan wrote:
+> Hi Guenter,
 > 
-> This is also not accurate. You are not adding support for the PMIC.
-> You are describing PMICs present on the board.
 
-Umang, consider one of:
+Hi,
 
-arm64: dts: qcom: qcm6490-idp:
+> > Subject: Re: [PATCH V3] hwmon: scmi-hwmon: implement change_mode for
+> > thermal zones
+> > 
+> > On 1/24/24 22:44, Peng Fan (OSS) wrote:
+> > > From: Peng Fan <peng.fan@nxp.com>
+> > >
+> > > The thermal sensors maybe disabled before kernel boot, so add
+> > > change_mode for thermal zones to support configuring the thermal
+> > > sensor to enabled state. If reading the temperature when the sensor is
+> > > disabled, there will be error reported.
+> > >
+> > > The cost is an extra config_get all to SCMI firmware to get the status
+> > > of the thermal sensor. No function level impact.
+> > >
+> > > Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
+> > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > > ---
+> > >
+> > > V3:
+> > >   Update commit log to show it only applys to thermal
+> > >   Add comments in code
+> > >   Add R-b from Cristian
+> > >
+> > 
+> > You didn't address my question regarding the behavior of hwmon attributes if
+> > a sensor is disabled.
+> 
+> Would you please share a bit more on what attributes?
+> You mean the files under /sys/class/hwmon/hwmon0?
+> 
+> If the sensor is disabled, when cat temp[x]_input, it will
+> report:
+> root@imx95-19x19-lpddr5-evk:/sys/class/hwmon/hwmon0# cat temp3_input
+> cat: temp3_input: Protocol error
+> 
+> For enabled, it will report value:
+> root@imx95-19x19-lpddr5-evk:/sys/class/hwmon/hwmon0# cat temp1_input
+> 31900
+> 
+> > 
+> > >   Guenter, I Cced linux@roeck-us.net when sending V1/V2
+> > >   Let me Cc Guenter Roeck <groeck7@gmail.com> in V3, hope you not mind
+> > >
+> > This time I received it twice ;-).
+> > 
+> > > V2:
+> > >   Use SCMI_SENS_CFG_IS_ENABLED & clear BIT[31:9] before update
+> > > config(Thanks Cristian)
+> > >
+> > >   drivers/hwmon/scmi-hwmon.c | 39
+> > ++++++++++++++++++++++++++++++++++++++
+> > >   1 file changed, 39 insertions(+)
+> > >
+> > > diff --git a/drivers/hwmon/scmi-hwmon.c b/drivers/hwmon/scmi-hwmon.c
+> > > index 364199b332c0..af2267fea5f0 100644
+> > > --- a/drivers/hwmon/scmi-hwmon.c
+> > > +++ b/drivers/hwmon/scmi-hwmon.c
+> > > @@ -151,7 +151,46 @@ static int scmi_hwmon_thermal_get_temp(struct
+> > thermal_zone_device *tz,
+> > >   	return ret;
+> > >   }
+> > >
+> > > +static int scmi_hwmon_thermal_change_mode(struct
+> > thermal_zone_device *tz,
+> > > +					  enum thermal_device_mode
+> > new_mode) {
+> > > +	int ret;
+> > > +	u32 config;
+> > > +	enum thermal_device_mode cur_mode =
+> > THERMAL_DEVICE_DISABLED;
+> > > +	struct scmi_thermal_sensor *th_sensor =
+> > > +thermal_zone_device_priv(tz);
+> > > +
+> > > +	ret = sensor_ops->config_get(th_sensor->ph, th_sensor->info->id,
+> > > +				     &config);
+> > > +	if (ret)
+> > > +		return ret;
+> > > +
+> > > +	if (SCMI_SENS_CFG_IS_ENABLED(config))
+> > > +		cur_mode = THERMAL_DEVICE_ENABLED;
+> > > +
+> > > +	if (cur_mode == new_mode)
+> > > +		return 0;
+> > > +
+> > > +	/*
+> > > +	 * Per SENSOR_CONFIG_SET sensor_config description:
+> > > +	 * BIT[31:11] should be set to 0 if the sensor update interval does
+> > > +	 * not need to be updated, so clear them.
+> > > +	 * And SENSOR_CONFIG_GET does not return round up/down, so also
+> > clear
+> > > +	 * BIT[10:9] round up/down.
+> > 
+> > What does "clear" mean ? Is it going to round up ? Round down ? And why
+> > would it be necessary to clear those bits if SENSOR_CONFIG_GET does not
+> > return the current setting in the first place ?
+> 
+> This is to follow Cristian's suggestion to clear [31:9], because we only need
+> to set the sensor to enabled state, no other attributes.
+> My understanding is with BIT[31:11] set to 0, BIT[10:9] will not take effect.
+> Cristian may help comment more since he suggested to clear them in V1/V2
+> 
+> You are right, currently config_get will return [10:2] as reserved,
+> so config_set bit[10:9] no need touch. But config_get bit[10:2]
+> may update to return the value in future SCMI spec?
+> 
+> Cristian or Sudeep may help comment here.
 
-"Include PM7250B"
+From the spec SENSOR_CONFIG_SET can also be used to set the chosen
+update-interval for the sensor and the rounding-mode, but the specified
+rounding mode refers only to the currently issued CONFIG_SET operation,
+it is not a permanent configuration for the sensor: for this reason when
+you instead issue a CONFIG_GET it does not make any sense to return the
+rounding mode, since the interval returned by the GET is the already
+(previously) rounded final value configured on the sensor.
+So the spec is right and does not need any change in these regards.
 
-"Enable PM7250B"
+By the spec, also, if you set the update-interval to 0 in a CONFIG_SET,
+the chosen interval will remain unchanged, so the value of the ROUND bits
+is indeed irrelevant.
 
-"Configure PM7250B"
+Now, my (probably ill) advice to anyway clear also the round bits was aimed
+at using some sort of well-known value in the SET (even though ignored)
+given that the GET does specify those bits as reserved but you cannot be sure
+what the previous GET just returned from the fw-of-the-day (maybe by mistake),
+and if those bits will be effectively ignored on the SET given the
+zeroed interval value.
 
-Konrad
+Indeed, looking at this again, all of this is maybe just overthinking and it just
+confusing at this point to needlessly clear also those ROUNDING bits, since not
+required by the spec.
+
+Just clear the interval bits, my bad.
+
+Thanks,
+Cristian
 
