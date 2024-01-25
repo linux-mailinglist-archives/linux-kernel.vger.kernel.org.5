@@ -1,102 +1,115 @@
-Return-Path: <linux-kernel+bounces-38666-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38667-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ACE683C3DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:39:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6675483C3E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:41:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51B621F2495A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:39:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D431292B1E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:41:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2507456466;
-	Thu, 25 Jan 2024 13:39:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p5eHH+W3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C6D256767;
+	Thu, 25 Jan 2024 13:41:16 +0000 (UTC)
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6329A58115;
-	Thu, 25 Jan 2024 13:39:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 802B94503F;
+	Thu, 25 Jan 2024 13:41:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706189956; cv=none; b=byaCnv0EE8TL950pYIj9TN7oDP44u1HDwKVWx9xuaC6nhqkzbQGRBRhYfgFbg2Yo/rK3kh/L6fZfpQbb7TKq55JCgQvAp/DVhCZdNtQQCbP47s3A+TVl0loOarSannrJ95vFl/2dZN4Z7U0+MQ/wnIwPspBXif+NL1gQgiw52sg=
+	t=1706190076; cv=none; b=hdAzTqlzQOefus8LhoPFJ90IOD/ajLc7dPHiK2tPxKeoQkKaDYTsDPhubdD/1D/8n+HlwOy021j9P+xssiUTxIebVVe88nO96ozlQt50tcGLwEFRMPA0LjvhK5V1ON1NQamINJFFwQx2N6o0Udk5VHpWvWavyHYWRQb6ZRIU1Lc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706189956; c=relaxed/simple;
-	bh=25UBNvhMxiqFOHiYLxmtgtWnMrtX2HH33lq0Ekw4/6U=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=igSD3WC9aTjk/tTwH3l5B+hV5NFm5OXoORK9UcKp2QnIvOGNYLHOIT3tImcLlyDBKQF9FuXKrAxZfg0+lBnQbrIsFCE9pySnZviAs6gwR9s8COkCQ0aI6r79brGX/gmqvyHIuVXGyBip+Vy/NmanToLF+MQfOJLZnzRRftWkVfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p5eHH+W3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BDDEC433F1;
-	Thu, 25 Jan 2024 13:39:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706189955;
-	bh=25UBNvhMxiqFOHiYLxmtgtWnMrtX2HH33lq0Ekw4/6U=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=p5eHH+W3nPMe/y4cHYa4nd9DSYCc/HzO8CegT4O7m7P2Fen9uu+XjA+WEnMH3xPC7
-	 Okll24pHczi28dGuaMQCJjQoEbQ63Nxum50yd7VJ3NK1Yle0VbSL0eNS1SQoKTawCO
-	 vD1maq4cmFAApVm+cujpr10G+RcALTmfSLs4+Thwbh0ys1hxbrx0Ak2+wkPMBcof8Y
-	 8VDJn/RnBmDg9xYGuRzYkFXpqzm9xBrto4kx6qhuvmKV7349LFNeeOSXdQuhbLhpBZ
-	 KZtPf3G0aHF05WFpenHz9EUC8booijNYZHROIqcH9buPy1iHpd2y750y8lyDwK/159
-	 PvKbpLWeLoEtg==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, 
- Yang Li <yang.lee@linux.alibaba.com>
-Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240124004425.54020-1-yang.lee@linux.alibaba.com>
-References: <20240124004425.54020-1-yang.lee@linux.alibaba.com>
-Subject: Re: [PATCH -next] ASoC: codecs: Remove unneeded semicolon
-Message-Id: <170618995429.31781.12764498423630220145.b4-ty@kernel.org>
-Date: Thu, 25 Jan 2024 13:39:14 +0000
+	s=arc-20240116; t=1706190076; c=relaxed/simple;
+	bh=s7thh3IrEnKt/va13x2HmHZo7BtbjpTbPqnPXSHPl2Y=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NYmXzRRLO8D5UFcZu3pHOU9ILoHHw8k55rcikKfryA0ITHaXVaEFyhPVw4E7tjgSGI6wEEsIDaTDPeR49j0uiy/sTwHj+4bObupZzkMR1s1IxxfJAnnoq7n+381Pt8s81v0qpVpHoArl43RJwFl+whdLF1mdkuHVtwdyRc/vjIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a3150c9568bso162729366b.1;
+        Thu, 25 Jan 2024 05:41:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706190072; x=1706794872;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xIHT2FEEOX1ZJah2HSsYQgk3eFyVlJ0iWR+awgo71w8=;
+        b=d+kyXPbLJWlwEKLPXUsC9qrziYp8r8J9gbr5sRhWIwAkDjcCh68OjtoGsxxq2KbUn0
+         J5zRCYkEdNQDlcdesq/4nDCmcDqpyVA99EJSUGdxkOjsMqAr9Yx4EzTGdfXUF+0YXZ2T
+         wcEtK7psgiS2QHIHRGjP6p/FGU52nUgnaSu9sQd96esbhoaBQP2uDG62QAo0vwUzzDGy
+         In7f7KuoQyPt0OR0FhuiAEDXDFcTWwacecaplP6qaiD+bfoWrhmc5uuevPOkf6g0ZGSy
+         mopC7bjvOjEi1OKGNx9iqviXLsJnhzY7zr9HOogTCGazBFjF7tMnkpyZUSF3z+WTBr7s
+         DWcQ==
+X-Gm-Message-State: AOJu0YyHhizM6iBVZEitfyIBtstWiIaECLS/fbz4LYKBgaj5G3++szJe
+	bzWVKWSQmciovMrBoJd+Tj9MbnI2XOV3G2qSUAaM976flCa4CUa4
+X-Google-Smtp-Source: AGHT+IFrrc6UlUqnrfe72DtQ5Nit/8WYSmUDgAp71S3LZyV5+TdHGbJ/kzhuo5notPN5hL/jCgl51A==
+X-Received: by 2002:a17:906:b78c:b0:a2e:81d4:524e with SMTP id dt12-20020a170906b78c00b00a2e81d4524emr396447ejb.12.1706190072282;
+        Thu, 25 Jan 2024 05:41:12 -0800 (PST)
+Received: from localhost (fwdproxy-cln-012.fbsv.net. [2a03:2880:31ff:c::face:b00c])
+        by smtp.gmail.com with ESMTPSA id hu22-20020a170907a09600b00a318b8650bbsm471832ejc.9.2024.01.25.05.41.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 05:41:11 -0800 (PST)
+From: Breno Leitao <leitao@debian.org>
+To: pavan.chebbi@broadcom.com,
+	Michael Chan <michael.chan@broadcom.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Richard Cochran <richardcochran@gmail.com>
+Cc: gospo@broadcom.com,
+	netdev@vger.kernel.org (open list:BROADCOM BNXT_EN 50 GIGABIT ETHERNET DRIVER),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net] bnxt_en: Make PTP timestamp HWRM more silent
+Date: Thu, 25 Jan 2024 05:41:03 -0800
+Message-Id: <20240125134104.2045573-1-leitao@debian.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-a684c
+Content-Transfer-Encoding: 8bit
 
-On Wed, 24 Jan 2024 08:44:25 +0800, Yang Li wrote:
-> In the wcd939x codec driver, there are two instances where semicolons
-> are used after closing braces of a switch-case statement. These
-> semicolons are not required and do not adhere to the coding style
-> guidelines.
-> 
-> This patch removes the unnecessary semicolons at the end of the
-> switch-case statements which cleans up the code and ensures consistency
-> with the rest of the kernel coding style.
-> 
-> [...]
+commit 056bce63c469 ("bnxt_en: Make PTP TX timestamp HWRM query silent")
+changed a netdev_err() to netdev_WARN_ONCE().
 
-Applied to
+netdev_WARN_ONCE() is it generates a kernel WARNING, which is bad, for
+the following reasons:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+ * You do not a kernel warning if the firmware queries are late
+ * In busy networks, timestamp query failures fairly regularly
+ * A WARNING message doesn't bring much value, since the code path
+is clear.
+(This was discussed in-depth in [1])
 
-Thanks!
+Transform the netdev_WARN_ONCE() into a netdev_warn_once(), and print a
+more well-behaved message, instead of a full WARN().
 
-[1/1] ASoC: codecs: Remove unneeded semicolon
-      commit: e7214441ca1562fbfb002200f46d7f83bbc2e621
+	bnxt_en 0000:67:00.0 eth0: TS query for TX timer failed rc = fffffff5
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+[1] Link: https://lore.kernel.org/all/ZbDj%2FFI4EJezcfd1@gmail.com/
+Signed-off-by: Breno Leitao <leitao@debian.org>
+---
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ptp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ptp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ptp.c
+index adad188e38b8..cc07660330f5 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ptp.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ptp.c
+@@ -684,7 +684,7 @@ static void bnxt_stamp_tx_skb(struct bnxt *bp, struct sk_buff *skb)
+ 		timestamp.hwtstamp = ns_to_ktime(ns);
+ 		skb_tstamp_tx(ptp->tx_skb, &timestamp);
+ 	} else {
+-		netdev_WARN_ONCE(bp->dev,
++		netdev_warn_once(bp->dev,
+ 				 "TS query for TX timer failed rc = %x\n", rc);
+ 	}
+ 
+-- 
+2.34.1
 
 
