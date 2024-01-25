@@ -1,89 +1,113 @@
-Return-Path: <linux-kernel+bounces-39011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39012-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CC3083C9A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:15:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8302A83C9A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:15:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8950289ED7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:15:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6A591C2485D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:15:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B70331339B9;
-	Thu, 25 Jan 2024 17:09:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AECEA13474E;
+	Thu, 25 Jan 2024 17:10:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DatNNHTp"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="i4kTSfJW"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B6541339AB;
-	Thu, 25 Jan 2024 17:09:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D75B134740;
+	Thu, 25 Jan 2024 17:10:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706202571; cv=none; b=rMUtcOMnvyqNtdBoWf41iLAAZbvw2k/yZpTUJaz5m0VK3Fr+AXPPfFTcBJMuc5R4GK9iDMKAM0RUVJugZ9qpbgm3wTujiTNZPL1qyR3jsOZadGj+KLvkC8MKx2onL9uuN0vqmhT27pQ/4kPFuwnG2Xe5jegNMbzTxKIntttETeI=
+	t=1706202621; cv=none; b=YDl2nuZmsMlp9qUYRRC2bM1KSvVLqrTcD60kHuh2tw5Lk1dxwHDRR8Qx0cgX4wPuPO9jeOgILM94j6RtuhkKiIbKh0Ah1i57gQyLOePlo7NvlZ4FLefac2izpN3F/8OZPN3iSKfL8tgFvYMVgEm1ZAsk8MeWjEuhCIq7KMTuLHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706202571; c=relaxed/simple;
-	bh=pu8IV/oM2GXGcXE2FRrF9Az35Or5t0xaqQKFZwXlfCY=;
+	s=arc-20240116; t=1706202621; c=relaxed/simple;
+	bh=hoy6NzodINKskmf/TeFa/RWzHNCzvbvzMc/mq5Qsavw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jWGYQ2KWAzDb0niKoBYCkOL8zMxWkCXkvvrmrIT/SWDsX+oHl2A0aIa12H01U324ARn6t1/JH59ol8KiY2zyUzwchlzQnNEUgHEoMFRfEDc42twYNeSXg8tHMSiwZTPhz4J3uagyzVCQTF+yfuI5PJw7H4TMDFxbg8lJzWDbSPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DatNNHTp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06A36C43390;
-	Thu, 25 Jan 2024 17:09:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706202570;
-	bh=pu8IV/oM2GXGcXE2FRrF9Az35Or5t0xaqQKFZwXlfCY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DatNNHTpMR3nUM8xW0u0Sza8gYNdNaU0vGnczxG30GBqGHudI0IEVdQIT2CwZ+n8z
-	 Jdi+/bn2IlJ5yA0DRAlkljGe1aMgcpyPufzsCsRNdniNv4KvykSr9FftuNq1g0zOLO
-	 Q+kpaQ8TxuE6v+pMFgcbyIOGPZ2Oq3h8SqTqRzreEZMZgQrpt26Zl2Xv6PcqBJZIJ0
-	 e7QuP5gsVBH59vIpBkwiMBUZfxouEtCFlVKaesVGvQ6DInL/EsbJN5zE0BThiV6u3N
-	 gdGA4uK4KOGztLePEZ6SaroUkOtzIljOgbQhdS3qm4rR1JPB3Do4BF2TigpxQXE8MJ
-	 iP59zSeaGvJBw==
-Date: Thu, 25 Jan 2024 17:09:25 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Chen Wang <unicorn_wang@outlook.com>
-Cc: AnnanLiu <annan.liu.xdu@outlook.com>, chao.wei@sophgo.com,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
-	aou@eecs.berkeley.edu, devicetree@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] riscv: dts: sophgo: add watchdog dt node for CV1800
-Message-ID: <20240125-gurgle-mute-03c6cad0b972@spud>
-References: <DM6PR20MB2316366FC9ADCBC7B6E9C289AB7A2@DM6PR20MB2316.namprd20.prod.outlook.com>
- <MA0P287MB2822D37F523A075320BDA99AFE7A2@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
+	 Content-Type:Content-Disposition:In-Reply-To; b=QIB2Y2ZsdSYrsizxKuoub11CDqdQbC4wiRKMCnn8gavVUr0HeVFg4EXOEjWfEgb0MXea0qZ9JIe06FOtHT7nVZBoHpyi5ohePA2FyE1i/fvJFTKSOkZjpEF9oZ04Rzx+1nZj5vKwmHXr5N6gMRWjiFmn4MG1kTLb/blYEYB4yDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=i4kTSfJW; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=VopbMPXtrem8Fa4qu37vThYAtxXb9VUpg0EXsR2tYnY=; b=i4kTSfJWYIWI1vHQmBwECBZ063
+	oT9tMDdbMVKUDVsAVn/39mz89nBrdCpqoXp2EAky9FnHoTg+POsDzDhDQSuXKM1rzZ0KrceUq/u1t
+	gc2no9wb1uuUfQhcifk+yX/a3rPO9fn5m1Q0MejGFUczeB7PgEsozJosPFtrEZ8F5VS4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rT3F1-0066Y1-7d; Thu, 25 Jan 2024 18:10:15 +0100
+Date: Thu, 25 Jan 2024 18:10:15 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	thomas.petazzoni@bootlin.com, Eric Dumazet <edumazet@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Russell King <linux@armlinux.org.uk>,
+	linux-arm-kernel@lists.infradead.org,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Herve Codina <herve.codina@bootlin.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Vladimir Oltean <vladimir.oltean@nxp.com>,
+	=?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+	Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	=?iso-8859-1?Q?Nicol=F2?= Veronese <nicveronese@gmail.com>,
+	Simon Horman <horms@kernel.org>
+Subject: Re: [PATCH net-next v5 07/13] net: ethtool: Introduce a command to
+ list PHYs on an interface
+Message-ID: <c0d1c08e-e9a7-44d2-bc66-bb8179f5a170@lunn.ch>
+References: <20231221180047.1924733-1-maxime.chevallier@bootlin.com>
+ <20231221180047.1924733-8-maxime.chevallier@bootlin.com>
+ <20240104153401.08ff9809@kernel.org>
+ <20240105104311.03a35622@device-28.home>
+ <2c955f94-7c95-4f66-b739-f0967ec9c171@lunn.ch>
+ <20240124145033.1c711fd1@device-28.home>
+ <1092441f-c347-4f61-8405-7cc8a07d5850@lunn.ch>
+ <20240125092225.45cdaa09@device-28.home>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="SIZWS90p3InuhLKb"
-Content-Disposition: inline
-In-Reply-To: <MA0P287MB2822D37F523A075320BDA99AFE7A2@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
-
-
---SIZWS90p3InuhLKb
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20240125092225.45cdaa09@device-28.home>
 
-On Thu, Jan 25, 2024 at 08:15:32PM +0800, Chen Wang wrote:
-> hi, Annan, I see another email with same title, any difference between them
-> two? Which one you want us to review? Maybe you should void one of them.
+> I do face a problem with fixed_phy though now that I've played around
+> with it. As fixed_phys share the same global MDIO bus, what can happen
+> is that netdevsim-registered PHYs can starve the dummy MDIO bus by
+> exhausting all 32 mdio addresses, preventing real interfaces from
+> getting their own fixed-phy instance.
+> 
+> I'll probably register a dedicated mdio bus per netdevsim (or even
+> per-phy, so that we can imagine controling the returned register
+> values), let's see how it goes.
 
-This one I think, the other did not get sent to the mailing lists.
+I can see it being a problem, but how theoretical is it?
 
---SIZWS90p3InuhLKb
-Content-Type: application/pgp-signature; name="signature.asc"
+Anything using phylink does not need a fixed-link device, its just MAC
+drivers making use of phylib. Its also only typically used with MACs
+connected to switches, and you tend not to have too many of them on a
+machine. And lastly, netdevsim is only really used for testing, and i
+guess most tests run either on a desktop or server like machine which
+does not have switches, probably does not even make use phylib, or the
+tests are run in a VM which does not even have any PHYs, fixed or not.
 
------BEGIN PGP SIGNATURE-----
+So i'm wondering how much effort should be put into this, or should
+the time be spent on other things?
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbKVxQAKCRB4tDGHoIJi
-0pF+AQDKYDVWZwKYqeMxVI0xdihLBxXitCKFLCCodXag9cndjgD/Wddnsu6w9uKh
-uAAm31GYUWE0rEgZgKBpGRKH84OoyAY=
-=cf4g
------END PGP SIGNATURE-----
+    Andrew
 
---SIZWS90p3InuhLKb--
+
 
