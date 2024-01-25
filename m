@@ -1,146 +1,166 @@
-Return-Path: <linux-kernel+bounces-38619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0607183C34A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:08:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7182F83C34B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:09:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2444292E2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:08:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89104B257A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:08:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23C825820B;
-	Thu, 25 Jan 2024 13:06:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E02F2C69C;
+	Thu, 25 Jan 2024 13:07:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ksk4o+Cd"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="jKf/t//U"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51BD556B6B
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 13:06:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5821F59B49
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 13:06:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706188005; cv=none; b=Ttbl+ZoFZkLkF3dQuHtI36CUuT8Lr9eHob1LbT6m0xijqiM5c0iGB0woJZtC38wPCLCPIvqPem7xaoiIMXhuRDvC23LuMmuvLXFvoHfIK5xQ2/1T6p+CHk2w4IxfqZTGJXu6hNu+FMWq//VUC1mCqI+uQpICr/Pe3HJtfnp0p0g=
+	t=1706188018; cv=none; b=i/rp3ts9+ZzLTAedaal4O+0y0BR1n8O8IygT+RbPz88uMmrUrmifOsvZ4cn3YLoyhYhtQE0WKNx731TjNlfA+MbLSeaCzNLgb+e9v/FsSQ1cUUOfNgG3Onm8o2DWyuG4de3aaBMqrw8MPNAlL6jAB1xB27kTPHONycv5hyEEa7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706188005; c=relaxed/simple;
-	bh=Vm8FYWkCbiN6pEEwfgqVnqgx6X6dabUYF1SQcOeQgi4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=K8DCGpWCBpzM8Vd2nPZR2AHSlAUCJxa1T7l+2GD1hcDl+Yi5Ja0GsHmjDHmqFMHeii661jgkER7w5xNWRcxRvFBiRFpFE2IE31EUoNb3CUhVwCYKOSMaMVH3dj+bM0C6u+tXKsgVhIS8KS7XtHgbDtmMo56T7JY12rn3nO9ecog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Ksk4o+Cd; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55a8fd60af0so6221681a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 05:06:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706188001; x=1706792801; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Hz4UOUwLaTrVZVjKRBIuuQV1CZ1n1JSNcVoZKpZXtzg=;
-        b=Ksk4o+CdSuwqgXZZ1vMSQQhoXKBocWFevZyu4NuT9i3uFKhB5ZquGNzcHPZMjuTfW7
-         UepuOrSB+CKGVq/Lg6tb2Jq22em++JBoBQrxUqWKF96MB8H/bp1T9iB7CCWd6TBq33cP
-         Rqz3Y+Dn+ySFKmNKR5axj7BB/pXlkdRvPX5jdrjH2VcCsvwNihDtxS0zRH0ty7HlRpPX
-         Obqk9BnOcmA2WM1fInPh/ANB0u2bYGUr5c+9+UCZ/bJYAZHnoVHmdKH3q/NcYevxso+a
-         y1TXk3BSUUQWvR2pjBFZqvTbZF7zqLwo8zUb/na514yY0GolgvoCcRrSW2CTJY6z7NoI
-         0NyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706188001; x=1706792801;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Hz4UOUwLaTrVZVjKRBIuuQV1CZ1n1JSNcVoZKpZXtzg=;
-        b=QyE5MBFvD17Pa/a1GRxF8s3auAUoBBxnVEzQOtbJMyt2job83IUsI9hP/AmChogQMY
-         cc4rVBgeCHki88qUo4eZdV+fyD/km7A5C0PLe575dzUZGQO7KIFHBVhcWA8r078NMx7q
-         9aX7gOX94/OLx9y39rPNAy/Rtvz9bhR9Au/E9G+GhIQhbyHjyrXhX3449P4+oxGFNAZz
-         EIHoUKCmv3G6xTmVATY7YfYpJvBwRMlVM6l6jkZVQHMbhmx8bKuJnw1Ty/QjXsSLYRVy
-         Z9+oCa87hazB6uF1ix8Ub5WMYb45ejIbb9Kfj6w+S+wA4M3LTO3aGWKpIEJZgXxYZYhS
-         BDuA==
-X-Gm-Message-State: AOJu0YzMRsA29sf9XrFNYu1QRO4DAkRJiBZTmm3iXlt2DINEc/2Mtj/0
-	igOqBZbLCsIeMERzzlU9lBCpoucc1P8NaZnw4rQjw6q563WHltaJr+r1jmYhIG0=
-X-Google-Smtp-Source: AGHT+IHm6+LA7xKQVSTlAszsDlUkRYqXhWF42y0uqkcwpk8+pO6DRmRsYDU9XLKhjy6W3WVccCpC/Q==
-X-Received: by 2002:a50:99de:0:b0:55c:fd62:18a4 with SMTP id n30-20020a5099de000000b0055cfd6218a4mr283034edb.82.1706188001502;
-        Thu, 25 Jan 2024 05:06:41 -0800 (PST)
-Received: from krzk-bin.. ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id ig1-20020a056402458100b0055ca5ce62ddsm1873315edb.12.2024.01.25.05.06.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 05:06:40 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 6/6] arm64: dts: qcom: sm8650: describe all PCI MSI interrupts
-Date: Thu, 25 Jan 2024 14:06:26 +0100
-Message-Id: <20240125130626.390850-6-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240125130626.390850-1-krzysztof.kozlowski@linaro.org>
-References: <20240125130626.390850-1-krzysztof.kozlowski@linaro.org>
+	s=arc-20240116; t=1706188018; c=relaxed/simple;
+	bh=4tD1G/Ca5v+ls1TNb0SRTW2WCwsF3A3UVdT684WBzZU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=XEjp8baC/kCHG27hpbyVnUOk9w3auJ2eTUwiqeUSXxj8OfIrFIRFIMPAgVolrC+1tUyEroo3a5MYtopym4hthZuhNXivSu7cxbGvOTwaMJjFhki9qa9lbOevqGZM2hqrysmUTIn8LkBykngSRnNp3S+VkeyNhi8fFoQwNgVolAA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=jKf/t//U; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 46857FF813;
+	Thu, 25 Jan 2024 13:06:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706188007;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=n7Q6OTUTtuT1kEA4hYWIhFboomzzNbDeo6fWM/l/3aI=;
+	b=jKf/t//UerWLWfg6Vqq9e7kwmRYFXkYJBpEsiTgHZmzXhw24mrMg5Aa5YJfaDnhi8hlkrU
+	jhu9eg+TpTjcmZ9EKC+1PRQ1GYPe3YaiciZL32VWZdR8oiJsxtZuZ+HDns9hVOTyFPgOLV
+	/fAQU9pduD1N+cx4qSqqUBauxTZ4X8/PC7gRhIpvJOc2jaKpiPnXmVWwRtzuphh/mNMkYD
+	3IfC2c0rSGfThTdzgO3mx5SIFEREsrn4APlNVgSPSwsDS+ypBVYcY1Uf3JXBZjm5yCWHmS
+	7fjVNPNXUlFy3NCUolyyu+QkMfM/dJKcl1wYAbFynMKewrbKX614h517YPDulg==
+Date: Thu, 25 Jan 2024 14:06:45 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: "Arnd Bergmann" <arnd@arndb.de>
+Cc: "Arnd Bergmann" <arnd@kernel.org>, "Srinivas Kandagatla"
+ <srinivas.kandagatla@linaro.org>, regressions@lists.linux.dev,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, "Chen-Yu Tsai"
+ <wenst@chromium.org>, "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+ asahi@lists.linux.dev, "Sven Peter" <sven@svenpeter.dev>, "Michael Walle"
+ <michael@walle.cc>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nvmem: include bit index in cell sysfs file name
+Message-ID: <20240125140645.0c629760@xps-13>
+In-Reply-To: <911c4a6b-83af-46a8-8f7e-250da4f0f1ad@app.fastmail.com>
+References: <20240122153442.7250-1-arnd@kernel.org>
+	<20240124182256.776c164b@xps-13>
+	<1d13250c-e48b-4e31-b449-5b54837a0d40@app.fastmail.com>
+	<20240124231120.562f06f3@xps-13>
+	<911c4a6b-83af-46a8-8f7e-250da4f0f1ad@app.fastmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-Each group of MSI interrupts is mapped to the separate host interrupt.
-Describe each of interrupts in the device tree for PCIe hosts.  Not
-tested on hardware.
+Hi Arnd,
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8650.dtsi | 24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
+arnd@arndb.de wrote on Thu, 25 Jan 2024 13:15:26 +0100:
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-index 2df77123a8c7..9fc4f3e37a8c 100644
---- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-@@ -2213,8 +2213,16 @@ pcie0: pci@1c00000 {
- 			      <0 0x60100000 0 0x100000>;
- 			reg-names = "parf", "dbi", "elbi", "atu", "config";
- 
--			interrupts = <GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH>;
--			interrupt-names = "msi";
-+			interrupts = <GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 144 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 145 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 146 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 147 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 148 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "msi0", "msi1", "msi2", "msi3",
-+					  "msi4", "msi5", "msi6", "msi7";
- 
- 			clocks = <&gcc GCC_PCIE_0_AUX_CLK>,
- 				 <&gcc GCC_PCIE_0_CFG_AHB_CLK>,
-@@ -2317,8 +2325,16 @@ pcie1: pci@1c08000 {
- 				    "atu",
- 				    "config";
- 
--			interrupts = <GIC_SPI 307 IRQ_TYPE_LEVEL_HIGH>;
--			interrupt-names = "msi";
-+			interrupts = <GIC_SPI 307 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 308 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 309 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 312 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 313 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 314 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 374 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 375 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "msi0", "msi1", "msi2", "msi3",
-+					  "msi4", "msi5", "msi6", "msi7";
- 
- 			clocks = <&gcc GCC_PCIE_1_AUX_CLK>,
- 				 <&gcc GCC_PCIE_1_CFG_AHB_CLK>,
--- 
-2.34.1
+> On Wed, Jan 24, 2024, at 23:11, Miquel Raynal wrote:
+> > Hi Arnd,
+> >
+> > arnd@arndb.de wrote on Wed, 24 Jan 2024 20:49:53 +0100:
+> > =20
+> >> On Wed, Jan 24, 2024, at 18:22, Miquel Raynal wrote: =20
+> >> > arnd@kernel.org wrote on Mon, 22 Jan 2024 16:34:10 +0100:
+> >> >   =20
+> >> >> From: Arnd Bergmann <arnd@arndb.de>
+> >> >>=20
+> >> >>=20
+> >> >> As far as I can tell, this is a problem for any device with multipl=
+e cells on
+> >> >> different bits of the same address. Avoid the issue by changing the=
+ file name
+> >> >> to include the first bit number.   =20
+> >> >
+> >> > There is only one bit number right? We are talking about byte offsets
+> >> > so this value can only range from 0 to 7? If we understand each other
+> >> > correctly then why not, I'm fine with the extra ",0" thing.   =20
+> >>=20
+> >> On the Apple M1, the nvmem registers are 32 bit wide, so the
+> >> bit numbers can go up to 31. I can imagine some system using
+> >> 64-bit registers, but it's unlikely to be higher than that. =20
+> >
+> > In this case we will soon or later have a problem again. Can we include
+> > the full offset of the bit and not just the first digit? =20
+>=20
+> I thought that is what my patch does, maybe I don't
+> undestand the problem you are referring to. This is what
+> I see on my system with the patch applied:
+>=20
+> $ cd /sys/devices/platform/soc@200000000/2922bc000.efuse
+> $ find . -name efuse\*
+> ./apple_efuses_nvmem0/cells/efuse@a24,11
 
+Sorry for the misunderstanding, I thought the above situation would
+be:
+
+  ./apple_efuses_nvmem0/cells/efuse@a24,1
+
+But the below output is actually fine.
+
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+> ./apple_efuses_nvmem0/cells/efuse@a24,9
+> ./apple_efuses_nvmem0/cells/efuse@a1c,f
+> ./apple_efuses_nvmem0/cells/efuse@a20,17
+> ./apple_efuses_nvmem0/cells/efuse@a20,1e
+> ./apple_efuses_nvmem0/cells/efuse@a18,0
+> ./apple_efuses_nvmem0/cells/efuse@a14,b
+> ./apple_efuses_nvmem0/cells/efuse@a1c,1f
+> ./apple_efuses_nvmem0/cells/efuse@a1c,d
+> ./apple_efuses_nvmem0/cells/efuse@a20,1c
+> ./apple_efuses_nvmem0/cells/efuse@a18,15
+> ./apple_efuses_nvmem0/cells/efuse@a14,0
+> ./apple_efuses_nvmem0/cells/efuse@a1c,14
+> ./apple_efuses_nvmem0/cells/efuse@a24,3
+> ./apple_efuses_nvmem0/cells/efuse@a20,7
+> ./apple_efuses_nvmem0/cells/efuse@a18,5
+> ./apple_efuses_nvmem0/cells/efuse@a10,16
+> ./apple_efuses_nvmem0/cells/efuse@a1c,12
+> ./apple_efuses_nvmem0/cells/efuse@a20,5
+> ./apple_efuses_nvmem0/cells/efuse@a18,3
+> ./apple_efuses_nvmem0/cells/efuse@a18,a
+> ./apple_efuses_nvmem0/cells/efuse@a10,1b
+> ./apple_efuses_nvmem0/cells/efuse@a14,5
+> ./apple_efuses_nvmem0/cells/efuse@a1c,19
+> ./apple_efuses_nvmem0/cells/efuse@a24,f
+> ./apple_efuses_nvmem0/cells/efuse@a18,1d
+> ./apple_efuses_nvmem0/cells/efuse@a14,13
+> ./apple_efuses_nvmem0/cells/efuse@a18,8
+> ./apple_efuses_nvmem0/cells/efuse@a18,f
+> ./apple_efuses_nvmem0/cells/efuse@a20,14
+> ./apple_efuses_nvmem0/cells/efuse@a10,19
+> ./apple_efuses_nvmem0/cells/efuse@a18,1b
+> ./apple_efuses_nvmem0/cells/efuse@a14,11
+> ./apple_efuses_nvmem0/cells/efuse@a1c,a
+> ./apple_efuses_nvmem0/cells/efuse@a10,1e
+> ./apple_efuses_nvmem0/cells/efuse@a20,19
+>=20
+>       Arnd
+
+
+Thanks,
+Miqu=C3=A8l
 
