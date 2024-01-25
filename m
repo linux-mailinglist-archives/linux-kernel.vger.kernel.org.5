@@ -1,111 +1,145 @@
-Return-Path: <linux-kernel+bounces-38109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1099F83BB08
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:54:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72B3D83BB0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:55:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD5D328A5A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:54:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2192E1F26671
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:55:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E8013FF1;
-	Thu, 25 Jan 2024 07:54:33 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 307C217753;
+	Thu, 25 Jan 2024 07:55:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="WK3Apdcn"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C645217727;
-	Thu, 25 Jan 2024 07:54:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED5EC17727
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 07:55:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706169273; cv=none; b=A6uRMVVBUhPOedCE3oFRkCGtyEYV+0DQ2b0+Gx/5++nEplAVX6tfLmNLx6KH5/9INBK960jlKR69IUV26C8QvnORqVPC6tGQaWwYGXCPPihybd3H4Y1C6XOFBGrSUOpesCUod+jcv/yaengSRr33Ve2AiiHvBxxXx2qnLSEDy4M=
+	t=1706169302; cv=none; b=hEiAVgce7muCSqrS+XPLY8cZmzc3LX1qqtyZkcZjTUwWoyNMLOCLm2Wft7odyX9i9d8Cf7URIE/YJJal9nRqsdOPxIPh5ZR2IzmaCFx5l4H5Nu8Yp2QdzyDy7lUYV8CYaC/srcSGDWtDXkZN5i0eJae97WErgXFciJdNXfOMNa4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706169273; c=relaxed/simple;
-	bh=UMDbxq3jf+9EqNgsfHnnGSI8sD1Rgib9GfvR7FCbXDk=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=nEL3qu66ESZ1f79y/mMIdc6knUsl+Mrw/8lwrWrJ/lvJAIOL7V1q4j1pe483ptEreHqMfz1t6T1zORhlJhITjDtp0Jp8mVLd8b5CwU69NjoD8eILefHJLet9gOhcBPMUTqBNzjNO7hOobb8W8aOZj7DjGT0ZX+Sp81HUP4jrV44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TLClM333vz4f3kjC;
-	Thu, 25 Jan 2024 15:54:23 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 5E7601A027B;
-	Thu, 25 Jan 2024 15:54:27 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgBXJxCtE7JlzoysBw--.1154S2;
-	Thu, 25 Jan 2024 15:54:24 +0800 (CST)
-Subject: Re: [PATCH bpf 3/3] selftest/bpf: Test the read of vsyscall page
- under x86-64
-To: Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org, bpf@vger.kernel.org
-Cc: Dave Hansen <dave.hansen@linux.intel.com>,
- Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>,
- linux-kernel@vger.kernel.org, xingwei lee <xrivendell7@gmail.com>,
- Jann Horn <jannh@google.com>, houtao1@huawei.com
-References: <20240119073019.1528573-1-houtao@huaweicloud.com>
- <20240119073019.1528573-4-houtao@huaweicloud.com>
- <1c260ab1-d4c0-48e6-bf2b-df69bf083d27@intel.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <01ce6947-8b46-9e27-6ce2-ce5763e3c5a9@huaweicloud.com>
-Date: Thu, 25 Jan 2024 15:54:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1706169302; c=relaxed/simple;
+	bh=gTC2c9jN7tUYX1r6K+w1+v29WYz2GaNbGcR4mUy+84s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fvyYHFuskLP1MJ9jMeuZNATKkeJvNEIsp94aafues3ln+2LTBOheu2hUcpyWSBK+7DCKm+K/QdxO755UODHgNFvqpr4NYVi9DbSOxEqd4qBdtRa1yooPAgf55dnL9oB75Cx9ImcOm0y/bRVF3QSkzJL/HFjKlIaLTM5VCfN17fM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=WK3Apdcn; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6ddc5faeb7fso630427b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 23:55:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shopee.com; s=shopee.com; t=1706169300; x=1706774100; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5OROYfvMkNNHoS7DwRqESXxsnw6XTxOyVsoUr8hVxqY=;
+        b=WK3ApdcndW0lj0k/QzwPGa252QUBzBy5KpEGg2w4cFuvi2aTu1jSoBgSC62rEgfOSf
+         pttJtmcuS6WZHhCDO1k/qltbihv+5bFMJC46szepc0ucPNHtU/TmOYfbTtqdi4g1i9Hi
+         9lCAVIS41VCM1xNA8T7N5TunGhOU3z7i5stn/rSXKfjtsFLgHNZzC4jEcwoLferRDb6L
+         Y04Q/Y//nW4R4GKY3Z7D7GavC5H981mrNY+QjcIln0GLdTmQfEyWIFAqWcJjOJw5n+FI
+         KCc3mht6+f8mxQzSeMFphCCoopl2J0EQMnIqS0tmvHllD5+W9y6YbEAVaHZw9IP5NO5S
+         Haeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706169300; x=1706774100;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=5OROYfvMkNNHoS7DwRqESXxsnw6XTxOyVsoUr8hVxqY=;
+        b=d+l8fVPIqaAHq2tEPATVUkhKNBHOlliFKb8q8HxaGffn5bOUCMThZiqi5WOYTUr5dl
+         cUO7XFgoU4JCAjPhK2EkK5zxxKym3uvMNUOI27h22ztYbx9qb6gEeBH6PCOfbL/SeSIy
+         uvQX8j4pQof2oXixKF4RpZkJbZc7YUGR0rLCKAM5iRE7t78iKJhQecYRrT9GLTcFnD1u
+         gFwVZ2NgxMJ5mDVrN3tJDnuV0nUUORhe3uFiJGs6dAwxGfbax0x4FrnkAL47SEL1QFZI
+         oma1voW2x0WueiSBxi33UNGxFm5CEmumfAu+HMzJpbQUf/PrkasQtHeErHSH+LIlQxbh
+         XPBg==
+X-Gm-Message-State: AOJu0Yz40vfuD8H070lezKDIoZhs4Q9UozLWkCSaq3bpqJehERqNYo6q
+	tI9Y9Ku56SnU2BtDZu6vZCn+0NZx4/AVHPksl3D1q3PgrW5iPcmla2RBCCaOzu4=
+X-Google-Smtp-Source: AGHT+IHPj34+BjxeQU5RJ5hi0SAajOGsqZbqfp1sq3sB3OlcUAa1sEKHnRxffsrFMyH2FoKX03G36w==
+X-Received: by 2002:a05:6a20:7350:b0:199:3b3f:25d8 with SMTP id v16-20020a056a20735000b001993b3f25d8mr772619pzc.61.1706169300307;
+        Wed, 24 Jan 2024 23:55:00 -0800 (PST)
+Received: from [10.54.24.52] (static-ip-148-99-134-202.rev.dyxnet.com. [202.134.99.148])
+        by smtp.gmail.com with ESMTPSA id u6-20020a056a00124600b006dbc5569599sm11436690pfi.10.2024.01.24.23.54.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Jan 2024 23:54:59 -0800 (PST)
+Message-ID: <fcbf3eec-e67b-4377-a888-a59b2583ab5f@shopee.com>
+Date: Thu, 25 Jan 2024 15:54:55 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <1c260ab1-d4c0-48e6-bf2b-df69bf083d27@intel.com>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] x86/resctrl: Display cache occupancy of busy RMIDs
+To: Reinette Chatre <reinette.chatre@intel.com>
+Cc: fenghua.yu@intel.com, babu.moger@amd.com, peternewman@google.com,
+ x86@kernel.org, linux-kernel@vger.kernel.org,
+ James Morse <james.morse@arm.com>
+References: <20240123092024.1271882-3-haifeng.xu@shopee.com>
+ <8abb0237-90e3-484e-a549-d74f540d4045@intel.com>
+From: Haifeng Xu <haifeng.xu@shopee.com>
+In-Reply-To: <8abb0237-90e3-484e-a549-d74f540d4045@intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgBXJxCtE7JlzoysBw--.1154S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZF15KF4fCFy5KF1xXrW8WFg_yoWDXrX_u3
-	9IkFyDJw4xJw17AF43X345uFW2grWDCFy5J39rurW7tryrJasxJwsY9rWruF15GFWIgrs8
-	GF4Iqa1UKr1Y9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbIkYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 
 
-On 1/23/2024 8:25 AM, Sohil Mehta wrote:
-> On 1/18/2024 11:30 PM, Hou Tao wrote:
->
->> vsyscall page could be disabled by CONFIG_LEGACY_VSYSCALL_NONE or
->> vsyscall=none boot cmd-line, but it doesn't affect the reproduce of the
->> problem and the returned error codes.
+On 2024/1/25 06:25, Reinette Chatre wrote:
+> (+James)
+> 
+> Hi Haifeng,
+> 
+> On 1/23/2024 1:20 AM, Haifeng Xu wrote:
+>> If llc_occupany is enabled, the RMID may not be freed immediately unless
+>> its llc_occupany is less than the resctrl_rmid_realloc_threshold.
 >>
-> With vsyscall=emulate a direct read of the vsyscall address from
-> userspace is expected to go through. This is mode deprecated so maybe it
-> wouldn't matter much. Without the fix in patch 2/3, do you see the same
-> behavior with vsyscall=emulate set in the cmdline?
+>> In our production environment, those unused RMIDs get stuck in the limbo
+>> list forever because their llc_occupancy are larger than the threshold.
+>> After turning it up , we can successfully free unused RMIDs and create
+>> new monitor groups. In order to accquire the llc_occupancy of RMIDs in
+>> each rdt domain, we use perf tool to track and filter the log manually.
+>>
+>> It's not efficient enough. Therefore, we can add a RFTYPE_TOP_INFO file
+>> 'busy_rmids_info' that tells users the llc_occupancy of busy RMIDs. It
+>> can also help to guide users how much the resctrl_rmid_realloc_threshold
+>> should be.
+> 
+> I am addressing both patch 2/3 and patch 3/3 here.
+> 
+> First, please note that resctrl is obtaining support for Arm's Memory 
+> System Resource Partitioning and Monitoring (MPAM) and MPAM's monitoring
+> is done with a monitoring group that is dependent on the control group,
+> not independent as Intel and AMD. Please see [1] for more details.
+> 
+> resctrl is the generic interface that will be used to interact with RDT
+> on Intel, PQoS on AMD, and also MPAM on Arm. We thus need to ensure that
+> the interface is appropriate for all. Specifically, for Arm there is
+> no global "free RMID list", on Arm the free RMIDs (PMG in Arm language,
+> but rmid is the term that made it into resctrl) are per control group.
+> 
+> Second, this addition seems to be purely a debugging aid. I thus don't see
+> this as something that users may want/need all the time, yet when users do
+> want/need it, accurate data is preferred. To that end, the limbo
+> code already walks the busy list once per second. What if there is a
+> new tracepoint within the limbo code that shares the exact data used during
+> limbo list management?
 
-Er, I think it depends on whether or not SMAP [1] feature is available.
-When SMAP feature is enabled, even the vsyscall page is populated,
-reading the vsyscall page through bpf_read_kernel() will trigger a page
-fault and then oops. But when there is not SMAP, bpf_read_kernel() will
-succeed. So I think the test may need to be skipped if vsyscall_mode is
-emulate.
+OK, I'll try this way.
 
-[1]: https://en.wikipedia.org/wiki/Supervisor_Mode_Access_Prevention
->
-> Sohil
+ From what I can tell, this data, combined with the
+> per-monitor-group "mon_hw_id", should give user space sufficient data to
+> debug the scenarios mentioned in these patches.
+> 
+> I did add James to this discussion to make him aware of your requirements.
+> Please do include him in future submissions.
+> 
+> Reinette
+> 
+> [1] https://urldefense.proofpoint.com/v2/url?u=https-3A__lore.kernel.org_all_20231215174343.13872-2D1-2Djames.morse-40arm.com_&d=DwICaQ&c=R1GFtfTqKXCFH-lgEPXWwic6stQkW4U7uVq33mt-crw&r=3uoFsejk1jN2oga47MZfph01lLGODc93n4Zqe7b0NRk&m=-XE6uI2GOyk-qzRRAWvuDzQ9NgM2-QK-KLArnJEYmu02heN9gOh6VMbPeF1iZUZe&s=FySup-TxYl6c-jaA7Q8OFIVwbMdsMxZ3ChQ6Sj0HaLA&e= 
 
+Thanks.
 
