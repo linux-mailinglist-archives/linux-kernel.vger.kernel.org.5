@@ -1,116 +1,180 @@
-Return-Path: <linux-kernel+bounces-38286-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5737583BD83
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:38:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96D3883BD34
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:27:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A7AC1C22AD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:38:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBA621C21E65
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:27:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F83B1CD1C;
-	Thu, 25 Jan 2024 09:37:20 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 392361BDC8;
+	Thu, 25 Jan 2024 09:27:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="aamXmgNw"
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F389F1CA9A
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:37:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C16301B967
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:27:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706175439; cv=none; b=fLSNdebKxKMJXSKM5jRr6G+qHBJeJ65cGJjdQ7zylS1dxjxm3WlaQpgprQUlw5WJml2pknwTm4bgAtO+cJjHPPcL1M9vpKm0db8r3NSBIqwFw1SRWjPRZWXHFwPQvmyXRhSn8wN4acVLrcNSi64PReaztVx64IL4PVFxbJ/kYMU=
+	t=1706174826; cv=none; b=rHkHblp3rrAEbAYkARrR/W+/fzSkUCsX28lWdxPi4ywBeKUejPnvjr+2s65Oc1o2IMCws5BWBtV6FQSsIeEBig6bL9RVhl3myl/tjcYg9WMNB/UHdVr1YOeMVo3kLja6EDVEUCfaNrBwlXYW7j63fuN2ZunZo/PvpTA7UsnKNmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706175439; c=relaxed/simple;
-	bh=zqW0i7Mt28UhG8E6gHi0hyAhHECwgXyrINp2Clw78K8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tRL31PN8vO3DFLf3gHWoA7Fyjy6T3aMqUe/5j59LlAzDCzV45USon19KYl78hNQPVgEKJDRYjnNA6Li15vu2dB/vEf+kg3W/nfvkf8b7tj7umZCbKWTRWwyqjMKSW86D0zX8RHHAZvYuKIuHSNVoI7toN1gCPMWGkGZ86A5KUBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 64fd2d18a7e4437c8889442e3c4bdec7-20240125
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:43234eab-9fd4-4712-a46a-9edd81ef7d9f,IP:20,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:5
-X-CID-INFO: VERSION:1.1.35,REQID:43234eab-9fd4-4712-a46a-9edd81ef7d9f,IP:20,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:5
-X-CID-META: VersionHash:5d391d7,CLOUDID:9ff4be7f-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:240125172630BJ3E7V88,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
-	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 64fd2d18a7e4437c8889442e3c4bdec7-20240125
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 2129244633; Thu, 25 Jan 2024 17:26:27 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 454FBE000EB9;
-	Thu, 25 Jan 2024 17:26:27 +0800 (CST)
-X-ns-mid: postfix-65B22942-199714737
-Received: from kernel.. (unknown [172.20.15.234])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 8E2EDE000EB9;
-	Thu, 25 Jan 2024 17:26:25 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: mpe@ellerman.id.au,
-	npiggin@gmail.com,
-	christophe.leroy@csgroup.eu,
-	aneesh.kumar@kernel.org,
-	naveen.n.rao@linux.ibm.com
-Cc: linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH] powerpc/mm: Code cleanup for __hash_page_thp
-Date: Thu, 25 Jan 2024 17:26:24 +0800
-Message-Id: <20240125092624.537564-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1706174826; c=relaxed/simple;
+	bh=488//va03Lc+B/1ZyVuMhHZy+u75yY7UHFrjzmg8sAw=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BppcVuSMVdeDz8/73ykJBgz5xChdebDov/aK41MGf0gQssMAA98DnNw6VvnGVx3TAtcYws7n1gFqg6Pjo3tgTQvhpFzjk0e2hblJTbcyAU8qIsU84P7de5A+BRxJvZSrHc846iqATj6SXp/c8iDmna5/gAbBGcdT7Mk30UuCBSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=aamXmgNw; arc=none smtp.client-ip=185.70.40.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1706174821; x=1706434021;
+	bh=VXueD5sixGPDTa6BhUDnnsLagnOCQf9tNkKiKlaVKTY=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=aamXmgNwwKSW97xc2/lztAj/XZ+IpEf9YCkJzEPQSBQ/t+QV3TP1t/iDzLXjOM1jb
+	 nAD+PCQjoglFNEwp6zs+OXw5VvPw7KFfSrZuIbgr1prXnZ4kAs31BR+N5Z2GhLW+Bz
+	 XMLK2ifAfUy+ciRK7qzOHpl+x/tLH/8+1VaHh4gtzJt0b9+cNvqs2DLmSdUk4VRCHe
+	 35K9zn/vLG5P6Pl0D6tdwY+eQiz8sP+Ho8ZEZjCeMtD/h8jgczNV7/pKV9Y3DSwkGv
+	 ce8Z/telLXlvihEO18bufrzoFnncbx1CHRGrPYgv1aEQxzZKyrVN02ecQ2fAYwVfIL
+	 VLAEudG8EbFzw==
+Date: Thu, 25 Jan 2024 09:26:52 +0000
+To: "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>, Damien Le Moal <Damien.LeMoal@wdc.com>, Hannes Reinecke <hare@suse.de>, lsf-pc@lists.linux-foundation.org, rust-for-linux@vger.kernel.org, linux-block@vger.kernel.org, Matthew Wilcox <willy@infradead.org>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, linux-kernel@vger.kernel.org, gost.dev@samsung.com
+Subject: Re: [RFC PATCH 03/11] rust: block: introduce `kernel::block::mq` module
+Message-ID: <59f007a0-bb30-4291-ab49-0e69112e2566@proton.me>
+In-Reply-To: <874jf3kflx.fsf@metaspace.dk>
+References: <20230503090708.2524310-1-nmi@metaspace.dk> <20230503090708.2524310-4-nmi@metaspace.dk> <iL2M45BoRlK6yS9y8uo0A5yUXcZWMkdk3vtH3LRFSWXfvPVagVZ-0YC7taIKOBFUcjJYA_2xNNFPoC4WL-_ulCHOLkbqvsZlIshE_LEeYtU=@proton.me> <87il3kjgk0.fsf@metaspace.dk> <104a22f7-a5bb-4fb6-9ce9-aa2d4e63417f@proton.me> <874jf3kflx.fsf@metaspace.dk>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-This part was commented from commit 6d492ecc6489
-("powerpc/THP: Add code to handle HPTE faults for hugepages")
-in about 11 years before.
+On 23.01.24 19:39, Andreas Hindborg (Samsung) wrote:
+>>>>> +/// A generic block device
+>>>>> +///
+>>>>> +/// # Invariants
+>>>>> +///
+>>>>> +///  - `gendisk` must always point to an initialized and valid `stru=
+ct gendisk`.
+>>>>> +pub struct GenDisk<T: Operations> {
+>>>>> +    _tagset: Arc<TagSet<T>>,
+>>>>> +    gendisk: *mut bindings::gendisk,
+>>>>
+>>>> Why are these two fields not embedded? Shouldn't the user decide where
+>>>> to allocate?
+>>>
+>>> The `TagSet` can be shared between multiple `GenDisk`. Using an `Arc`
+>>> seems resonable?
+>>>
+>>> For the `gendisk` field, the allocation is done by C and the address
+>>> must be stable. We are owning the pointee and must drop it when it goes=
+ out
+>>> of scope. I could do this:
+>>>
+>>> #[repr(transparent)]
+>>> struct GenDisk(Opaque<bindings::gendisk>);
+>>>
+>>> struct UniqueGenDiskRef {
+>>>       _tagset: Arc<TagSet<T>>,
+>>>       gendisk: Pin<&'static mut GenDisk>,
+>>>
+>>> }
+>>>
+>>> but it seems pointless. `struct GenDisk` would not be pub in that case.=
+ What do you think?
+>>
+>> Hmm, I am a bit confused as to how you usually use a `struct gendisk`.
+>> You said that a `TagSet` might be shared between multiple `GenDisk`s,
+>> but that is not facilitated by the C side?
+>>
+>> Is it the case that on the C side you create a struct containing a
+>> tagset and a gendisk for every block device you want to represent?
+>=20
+> Yes, but the `struct tag_set` can be shared between multiple `struct
+> gendisk`.
+>=20
+> Let me try to elaborate:
+>=20
+> In C you would first allocate a `struct tag_set` and partially
+> initialize it. The allocation can be dynamic, static or part of existing
+> allocation. You would then partially initialize the structure and finish
+> the initialization by calling `blk_mq_alloc_tag_set()`. This populates
+> the rest of the structure which includes more dynamic allocations.
+>=20
+> You then allocate a `struct gendisk` by calling `blk_mq_alloc_disk()`,
+> passing in a pointer to the `struct tag_set` you just created. This
+> function will return a pointer to a `struct gendisk` on success.
+>=20
+> In the Rust abstractions, we allocate the `TagSet`:
+>=20
+> #[pin_data(PinnedDrop)]
+> #[repr(transparent)]
+> pub struct TagSet<T: Operations> {
+>      #[pin]
+>      inner: Opaque<bindings::blk_mq_tag_set>,
+>      _p: PhantomData<T>,
+> }
+>=20
+> with `PinInit` [^1]. The initializer will partially initialize the struct=
+ and
+> finish the initialization like C does by calling
+> `blk_mq_alloc_tag_set()`. We now need a place to point the initializer.
+> `Arc::pin_init()` is that place for now. It allows us to pass the
+> `TagSet` reference to multiple `GenDisk` if required. Maybe we could be
+> generic over `Deref<TagSet>` in the future. Bottom line is that we need
+> to hold on to that `TagSet` reference until the `GenDisk` is dropped.
 
-If there are no plans to enable this part code in the future,
-we can remove this dead code.
+I see, thanks for the elaborate explanation! I now think that using `Arc`
+makes sense.
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- arch/powerpc/mm/book3s64/hash_hugepage.c | 10 ----------
- 1 file changed, 10 deletions(-)
+> `struct tag_set` is not reference counted on the C side. C
+> implementations just take care to keep it alive, for instance by storing
+> it next to a pointer to `struct gendisk` that it is servicing.
 
-diff --git a/arch/powerpc/mm/book3s64/hash_hugepage.c b/arch/powerpc/mm/b=
-ook3s64/hash_hugepage.c
-index c0fabe6c5a12..127a3a2c174b 100644
---- a/arch/powerpc/mm/book3s64/hash_hugepage.c
-+++ b/arch/powerpc/mm/book3s64/hash_hugepage.c
-@@ -59,16 +59,6 @@ int __hash_page_thp(unsigned long ea, unsigned long ac=
-cess, unsigned long vsid,
-=20
- 	rflags =3D htab_convert_pte_flags(new_pmd, flags);
-=20
--#if 0
--	if (!cpu_has_feature(CPU_FTR_COHERENT_ICACHE)) {
--
--		/*
--		 * No CPU has hugepages but lacks no execute, so we
--		 * don't need to worry about that case
--		 */
--		rflags =3D hash_page_do_lazy_icache(rflags, __pte(old_pte), trap);
--	}
--#endif
- 	/*
- 	 * Find the slot index details for this ea, using base page size.
- 	 */
+This is interesting, is this also done in the case where it is shared
+among multiple `struct gendisk`s?
+Does this have some deeper reason? Or am I right to assume that creating
+`Gendisk`/`TagSet` is done rarely (i.e. only at initialization of the
+driver)?
+
+>> And you decided for the Rust abstractions that you want to have only a
+>> single generic struct for any block device, distinguished by the generic
+>> parameter?
+>=20
+> Yes, we have a single generic struct (`GenDisk`) representing the C
+> `struct gendisk`, and a single generic struct (`TagSet`) representing
+> the C `struct tag_set`. These are both generic over `T: Operations`.
+> `Operations` represent a C vtable (`struct blk_mq_ops`) attached to the
+> `struct tag_set`. This vtable is provided by the driver and holds
+> function pointers that allow the kernel to perform actions such as queue
+> IO requests with the driver. A C driver can instantiate multiple `struct
+> gendisk` and service them with the same `struct tag_set` and thereby the
+> same vtable. Or it can use separate tag sets and the same vtable. Or a
+> separate tag_set and vtable for each gendisk.
+>=20
+>> I think these kinds of details would be nice to know. Not only for
+>> reviewers, but also for veterans of the C APIs.
+>=20
+> I should write some module level documentation clarifying the use of
+> these types. The null block driver is a simple example, but it is just
+> code. I will include more docs in the next version.
+
+Thanks a lot for explaining!
+
 --=20
-2.39.2
+Cheers,
+Benno
+
 
 
