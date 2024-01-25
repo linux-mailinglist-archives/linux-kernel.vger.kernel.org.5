@@ -1,117 +1,95 @@
-Return-Path: <linux-kernel+bounces-39337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B78E83CEE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:52:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B6B883CF17
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:00:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EADD6B275FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:52:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E066D1F232DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:00:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 134CD1CA89;
-	Thu, 25 Jan 2024 21:52:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="DjKPBOn5"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 595DA13AA4B;
+	Thu, 25 Jan 2024 22:00:18 +0000 (UTC)
+Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E11B83173A
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 21:52:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BDD31CA89;
+	Thu, 25 Jan 2024 22:00:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706219546; cv=none; b=i1taoC4aEzIEGApIBljSq5nV1ZZyQg5dNLh7wM71WIqIFY6yKUn+ftTu2l6kM/DKpfJd5FaegChgbi4a8eC66H8761H82VTvbuSbkzx4NoaorsF6k0xewM/P65R6UrfPvbANTBVs3xHOjn5WPshazKE+4crvWfnUrMtWjH3kT3Y=
+	t=1706220017; cv=none; b=ZZo/aETtuoE3pOMbhFpdyMVhEK/x6+M3ZTTkFxU0TQLLG2u5nFp2VFrHdeeio5wUa9+UnqFTSK5vqXmeUNFaW/j0FxjOOsXz834Fv9hmpKWGAv+C/3rU7QhuMUNu8/fdYEp2L2/NDIfsozXbf+mcqYRZgGsWcNCNrn1yJxKZvuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706219546; c=relaxed/simple;
-	bh=HmHb/1j56mYypkJHtCxMuyE8iJQuLLhZ2r3pRbNJ0Ek=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=o7S9Yqqbu2NokAYvfWdWFz34tdOcSFViSsFqHVF9+17NpBdqhPpwfpFd3zV2jhc+pu60fDh8cn8eKt3BSajqzyEN55w13nyPxf9KSnu2+iG2PyI2iN4b9TClRvtaZstTt8BP75sB4Jz47LWf0sTcFqJDL489c9ARHj/D7jhKwqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=DjKPBOn5; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706219543;
-	bh=HmHb/1j56mYypkJHtCxMuyE8iJQuLLhZ2r3pRbNJ0Ek=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=DjKPBOn5DkLFgqwP0WrFz5zmWSBPLMUa00i2AzL5gujzFWsxBQJZtLk7yLL4Fk3mw
-	 qmf8pOZT2aIxEOOBFymm2cbk1Njwpow9/hYB9Dk8zf/mhLP307VzkWdqq4xBJF8wLf
-	 tlsvHel51nr4LS9KByd5zZvHCDSOwM61iCe7TAo8h0bWYUdSRNwZixl4i54JTwVIm6
-	 yFQaOuEc9iAfV7ZRTQ4jdqHSm1HsPVgPgqP/FIYD2UOvIMWRoFH4wpvvrVhztuII52
-	 DN7YkZbkTJfLwGjonrp80UCfEH/C+yzfA/rfDazDfJeZw/6PzT2FLOrO2Mlo4WEFVO
-	 a/Iznos2DQfjg==
-Received: from [100.109.49.129] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: dmitry.osipenko)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id C958D37813DA;
-	Thu, 25 Jan 2024 21:52:21 +0000 (UTC)
-Message-ID: <ddcae9fe-6155-4542-898c-bfb06e8721b8@collabora.com>
-Date: Fri, 26 Jan 2024 00:52:19 +0300
+	s=arc-20240116; t=1706220017; c=relaxed/simple;
+	bh=RItmqS9jqdMPP9X0BIiJ7ScnCDLQTWAEQYeO6/47XXI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=B6xeIZFJIE9U9Y6bnkMfePrqfFllHCuyCwFtiw90SHV3VRo+oz2y5g4xxNpA9p/zFm5ra/N9Ckh9vPxbPaQlLTresEkksMPdbpe7mf15SCFGkonJc5mRUzOF79mNQ1GULBywIeY7eVPw0CQvuhnpA0WRmiESE7QP4QGIiZQ0vOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com; spf=pass smtp.mailfrom=perches.com; arc=none smtp.client-ip=216.40.44.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=perches.com
+Received: from omf14.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay06.hostedemail.com (Postfix) with ESMTP id 311EAA1AEA;
+	Thu, 25 Jan 2024 21:54:18 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf14.hostedemail.com (Postfix) with ESMTPA id 9578F2D;
+	Thu, 25 Jan 2024 21:54:06 +0000 (UTC)
+Message-ID: <443a7a529f6987eb53b8b399c0cf9375e05e993c.camel@perches.com>
+Subject: Re: [HID Patchsets for Samsung driver v4 2/6] HID: Samsung : Fix
+ the checkpatch complain. Rewritten code using memcmp where applicable.
+From: Joe Perches <joe@perches.com>
+To: Sandeep C S <sandeep.cs@samsung.com>, Jiri Kosina <jikos@kernel.org>, 
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: gaudium.lee@samsung.com, ih0923.kim@samsung.com,
+ suhyun_.kim@samsung.com,  jitender.s21@samsung.com, junwan.cho@samsung.com,
+ linux-input@vger.kernel.org,  linux-kernel@vger.kernel.org
+Date: Thu, 25 Jan 2024 13:54:04 -0800
+In-Reply-To: <20240125043630.4031634-3-sandeep.cs@samsung.com>
+References: <20240125043630.4031634-1-sandeep.cs@samsung.com>
+	 <CGME20240125043702epcas5p33d9ef989dc51276185972d4517ba80fd@epcas5p3.samsung.com>
+	 <20240125043630.4031634-3-sandeep.cs@samsung.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 09/30] drm/shmem-helper: Add and use lockless
- drm_gem_shmem_get_pages()
-Content-Language: en-US
-To: David Airlie <airlied@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>,
- Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
- <olvaffe@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Qiang Yu <yuq825@gmail.com>, Steven Price <steven.price@arm.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- kernel@collabora.com, virtualization@lists.linux-foundation.org
-References: <20240105184624.508603-1-dmitry.osipenko@collabora.com>
- <20240105184624.508603-10-dmitry.osipenko@collabora.com>
- <ZbKZNCbZoV4ovWTH@phenom.ffwll.local>
-From: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <ZbKZNCbZoV4ovWTH@phenom.ffwll.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 9578F2D
+X-Stat-Signature: netg7ytrkhf5yn7g9ss3rqtp6edq4y1x
+X-Rspamd-Server: rspamout01
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+/lgHE9tEIP3LCpllBaSnMinnSVYZnflU=
+X-HE-Tag: 1706219646-171183
+X-HE-Meta: U2FsdGVkX19q5nfWT/ncDEf0UGPqNDNT0bD1dD26L+l3U0BVk/FyRVy+8f9eZWqHq5bLV82zlpvR9tuWcE6/ER7oX3p5u99J8rt2u5JESFzHamwHXOJnDSTRwcS3ucnC8NgSxPnHj22qGi49gamdUVu5oXD1Di9q5/fzr8kK5Qsu01Nb3qY6NKjQNQ+g6pq7U61pQk4Tw0XMXPNln3gkICanL/V7CsIzRZcbJ62bhjUbql1GapkB1RBmYiNEh3fW0vX/0NCSTumAXQzOWwxxINQs6B6Teso/3uwuQIzDwauNnMtYjxfljCON+NJ31W3rj1DTFkV5AvPRAdAMHiaDvM4FqwJA+kfKA7QcI6BBP0WrorFc/UPE/p+KWNXaUNU1vaHPZ7OipTbmdNi6FummXm6skyHmOvrZ5MdBowO77hxNzc3b3FTx1TAzt4OiQ1c5
 
-On 1/25/24 20:24, Daniel Vetter wrote:
-> On Fri, Jan 05, 2024 at 09:46:03PM +0300, Dmitry Osipenko wrote:
->> Add lockless drm_gem_shmem_get_pages() helper that skips taking reservation
->> lock if pages_use_count is non-zero, leveraging from atomicity of the
->> refcount_t. Make drm_gem_shmem_mmap() to utilize the new helper.
->>
->> Acked-by: Maxime Ripard <mripard@kernel.org>
->> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
->> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
->> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
->> ---
->>  drivers/gpu/drm/drm_gem_shmem_helper.c | 19 +++++++++++++++----
->>  1 file changed, 15 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
->> index cacf0f8c42e2..1c032513abf1 100644
->> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
->> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
->> @@ -226,6 +226,20 @@ void drm_gem_shmem_put_pages_locked(struct drm_gem_shmem_object *shmem)
->>  }
->>  EXPORT_SYMBOL_GPL(drm_gem_shmem_put_pages_locked);
->>  
->> +static int drm_gem_shmem_get_pages(struct drm_gem_shmem_object *shmem)
->> +{
->> +	int ret;
-> 
-> Just random drive-by comment: a might_lock annotation here might be good,
-> or people could hit some really interesting bugs that are rather hard to
-> reproduce ...
-> -Sima
+On Thu, 2024-01-25 at 10:06 +0530, Sandeep C S wrote:
+> Resolved warnings found by checkpatch.pl script.
+[]
+> diff --git a/drivers/hid/hid-samsung.c b/drivers/hid/hid-samsung.c
+> @@ -107,17 +99,39 @@ static int samsung_kbd_mouse_input_mapping(struct hi=
+d_device *hdev,
+> =20
+>  	switch (usage->hid & HID_USAGE) {
+>  	/* report 2 */
+> -	case 0x183: samsung_kbd_mouse_map_key_clear(KEY_MEDIA); break;
+> -	case 0x195: samsung_kbd_mouse_map_key_clear(KEY_EMAIL);	break;
+> -	case 0x196: samsung_kbd_mouse_map_key_clear(KEY_CALC); break;
+> -	case 0x197: samsung_kbd_mouse_map_key_clear(KEY_COMPUTER); break;
+> -	case 0x22b: samsung_kbd_mouse_map_key_clear(KEY_SEARCH); break;
+> -	case 0x22c: samsung_kbd_mouse_map_key_clear(KEY_WWW); break;
+> -	case 0x22d: samsung_kbd_mouse_map_key_clear(KEY_BACK); break;
+> -	case 0x22e: samsung_kbd_mouse_map_key_clear(KEY_FORWARD); break;
+> -	case 0x22f: samsung_kbd_mouse_map_key_clear(KEY_FAVORITES); break;
+> -	case 0x230: samsung_kbd_mouse_map_key_clear(KEY_REFRESH); break;
+> -	case 0x231: samsung_kbd_mouse_map_key_clear(KEY_STOP); break;
 
-Thanks for the suggestion!
 
--- 
-Best regards,
-Dmitry
+It's rather smaller code to remove the call duplication and use
+a static const struct and for loop as suggested here:
+
+https://lore.kernel.org/lkml/10aeef4ddd523b85ab34327bf384119d0d4b6567.camel=
+@perches.com/
 
 
