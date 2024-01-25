@@ -1,171 +1,191 @@
-Return-Path: <linux-kernel+bounces-38745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F1CA83C524
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:48:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF42A83C549
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:51:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 549E61C230B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:48:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 930FDB25CEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:51:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CD246E2DB;
-	Thu, 25 Jan 2024 14:48:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04A8C6EB76;
+	Thu, 25 Jan 2024 14:50:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PW0TNtLa"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C529A4F209;
-	Thu, 25 Jan 2024 14:48:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706194109; cv=none; b=Nu/4tvfQbG1/jFoD6HfaL/uxt7b/C2nqM86zfj0ua03t4vZHiuiaEwcaugMDOCGN0V5lgxruFb9DQ/Vk7Ioz9icer0BXq2MVyUzYxYcVrOIHQVPMOzrGnsEzPFMyFS7AFOdiFdDrNcULVUncmDkL0r4Sqh4BXufOf4HRdjWNTdQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706194109; c=relaxed/simple;
-	bh=spqCaUCwgind5qF3rdv4vTorSXO63Lqv5cjjfoCGhy8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Fk12uirKB/wZKWW6r/KMfhaYWZMr0T75iMWZB7BiRwmGrOkYLgH/tEoavP602i6r4ne0qVAUHhXnpou4nddGDfaITYM4ve6WKW7ErjssUngjRfDA8mTqmiz3YKJO13Nfp1q7TZpVMDrwWol8a3nngoAMj58bSWZvvNCL8/ff7iE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PW0TNtLa; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706194107; x=1737730107;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=spqCaUCwgind5qF3rdv4vTorSXO63Lqv5cjjfoCGhy8=;
-  b=PW0TNtLaIo9uPmcWXxmYS6PUOc6XM382BajV2NyxIpttMK8mBSejnhIR
-   h+DA1ESOElPKeLf6LrTuF+N/H7OBV/pPvIn0FfoxfUxODFzcEuo8y/maB
-   +w0ahmE7ekka1V67Gggn/dspbBX89y2e2u5e/HLe9EdnggaYcdYAHUyt2
-   yxZkJE6ok8TzqPlHfOr8YokwFbFCwYNNRMH/neg00tI/gAG3NA1w8QdTD
-   fdTvTh+BdFm/y35znrAyMnUKYxC3vuGW3Lcs+c2Yp3A80wJMXjaqmBrhY
-   TPnhloEDNME9zTJqmy6KBhFu1p31wdgP5COt/rqr1Ls1U+KXfpamno7m0
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="2070134"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="2070134"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 06:48:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="910019714"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="910019714"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 06:48:25 -0800
-Received: from [10.209.135.136] (kliang2-mobl1.ccr.corp.intel.com [10.209.135.136])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CIqZLFcg"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by linux.intel.com (Postfix) with ESMTPS id 56A5E580CBC;
-	Thu, 25 Jan 2024 06:48:23 -0800 (PST)
-Message-ID: <31c90c4d-f6db-4f98-9b38-83260b0f8aa2@linux.intel.com>
-Date: Thu, 25 Jan 2024 09:48:22 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCEB86EB45
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 14:50:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706194214; cv=none; b=TgiEGfspfTOYZIO5/QNjxvSllgQXjD9yETcyZXjZIVvXltZN1o7QcD+qQgxY9m4pyBxiS+SNDuJ03q27FYTLdYI30gEeJmTCf/elDeLP6WjzYzNCG6qQlQ++JDalnpkX7N3eJMQqNPEdAhEgfbmNgcqHwUXsd4L9BItIt4zHwBk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706194214; c=relaxed/simple;
+	bh=Q0ynWyqlB+TEhw6MG3HTpcZ4T0RZOvGsOvLniQtNrzE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=d20An4yQW8Xbhi7rTyYLZcvGvwol5527/SgXQNBfEbyoLLUBbZfkJzP1/SmVQbC7Ly9CWa/F4JpfUYQuALlJFwL2opLBlVNBfgmek8g7GdPWZfMwG5QGT0ZS9Dveb4XJYoluqrqKHlDi5EXnxlPBlHWW7hKLYHJJtciojYhD4n4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CIqZLFcg; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40e60e135a7so66729275e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 06:50:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706194211; x=1706799011; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7ZI/5KwC+xCytuTFH+W+O2jy1GV4Q+e+HfUN4cLRoNQ=;
+        b=CIqZLFcgStI76l5gK60XB9FOirDUKaEc+dBxdcFYGFCNWAAXXzM0pSoFMUL5nViQfc
+         Ezv+kXdCJFk11rkDi3oVOvZd4PwQwaPgOCI2P6rFsot6/Y5h5fFzxWZ3rJVZk3xxX3+r
+         u11M/A+boLvDERrtQk5fMfGrTZ/Ov64geFky2TA48/YnlkC0VZbmi1ylWzXs7pcz7/Cg
+         IlLjsyVytN6Zw1EECIzQ+OF+P+x/t5vFgasO1ZlPh0hKaUmIW46hTGIzVCJXtNFhXGYo
+         ZnK9xCH/0/ZrjLgpvgqKjCJ1EjMTuJZAURH5JiFBTDiWTxz06zEFKCLLXPoXQuoHMJfs
+         0Ppg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706194211; x=1706799011;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7ZI/5KwC+xCytuTFH+W+O2jy1GV4Q+e+HfUN4cLRoNQ=;
+        b=cKaegrPT6Z2s6mg6S1qBfCzWD2xcyoX+fvkOOrd+IkbhaiKtCnW+uZD9viKKwm+7xW
+         mc++Uo5r0IYEjFDx99moeRNHusul8FL+b293OdSLkDWEFV5ElezGMIaH7BiePdb1uqIK
+         LBdjwJR0BLIeUKoKGXIe7DcQ2pk5FQIOt4RP+TD4/RfT+pwUiYk7p5qs4hkXRkfK/OjL
+         Drn3TxQIJP+3X+kICyTwsxRB9AHXTGpnpkYaRs5MYrGyhaOBxas4eQuXXnjXDD7VEPQq
+         0+aUQdHEckIvD4RQ6/BUinofYo9/jO0tOV3yiU4FktAXKRytN8w7K0PYmDg493b7f8rO
+         Hn+w==
+X-Gm-Message-State: AOJu0YywQZwFvOG5G8woFheSOu8JUkh4qVxeaoynpCExqm6NYsQ5wHvm
+	EMiBQTKf6L1QWeKnm9FdTQoblRi2VuZ9kNXnEUo4rimYYoQj/kRIyO9M+j4K0CI=
+X-Google-Smtp-Source: AGHT+IErX2MgfpP0Fe4RLqMkR9jYxbhETFvxJ2DoDmgkGrm1I0WK2BsVFDTJMWeO23FcBD4LNFaINA==
+X-Received: by 2002:adf:f28f:0:b0:337:c6ee:204a with SMTP id k15-20020adff28f000000b00337c6ee204amr824782wro.93.1706194210889;
+        Thu, 25 Jan 2024 06:50:10 -0800 (PST)
+Received: from ta2.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
+        by smtp.gmail.com with ESMTPSA id v17-20020a05600c471100b0040d91fa270fsm2875875wmo.36.2024.01.25.06.50.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 06:50:10 -0800 (PST)
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+To: broonie@kernel.org,
+	andi.shyti@kernel.org,
+	arnd@arndb.de
+Cc: robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	alim.akhtar@samsung.com,
+	linux-spi@vger.kernel.org,
+	linux-samsung-soc@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-arch@vger.kernel.org,
+	andre.draszik@linaro.org,
+	peter.griffin@linaro.org,
+	semen.protsenko@linaro.org,
+	kernel-team@android.com,
+	willmcvicker@google.com,
+	Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [PATCH v2 00/28] spi: s3c64xx: winter cleanup and gs101 support
+Date: Thu, 25 Jan 2024 14:49:38 +0000
+Message-ID: <20240125145007.748295-1-tudor.ambarus@linaro.org>
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] perf pmu: Treat the msr pmu as software
-Content-Language: en-US
-To: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
- James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, Perry Taylor <perry.taylor@intel.com>,
- Samantha Alt <samantha.alt@intel.com>,
- Caleb Biggers <caleb.biggers@intel.com>, Weilin Wang
- <weilin.wang@intel.com>, Edward Baker <edward.baker@intel.com>
-References: <20240124234200.1510417-1-irogers@google.com>
-From: "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20240124234200.1510417-1-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+Hi,
 
+Special attention is needed for:
+``asm-generic/io.h: add iowrite{8,16}_32 accessors``
+as it's not under SPI's umbrella.
 
-On 2024-01-24 6:42 p.m., Ian Rogers wrote:
-> The msr PMU is a software one, meaning msr events may be grouped
-> with events in a hardware context. As the msr PMU isn't marked as a
-> software PMU by perf_pmu__is_software, groups with the msr PMU in
-> are broken and the msr events placed in a different group. This
-> may lead to multiplexing errors where a hardware event isn't
-> counted while the msr event, such as tsc, is. Fix all of this by
-> marking the msr PMU as software, which agrees with the driver.
+If the accessors are fine, I expect they'll be queued either to the
+SPI tree or to the ASM header files tree, but by providing an immutable
+tag, so that the other tree can merge them too.
 
-Yes, the MSR PMU is in SW context, perf_sw_context.
+The spi dt-bindings patches can be queued through the SPI tree, but
+they'll need an immutable tag too. They'll be needed in the samsung tree
+as I'll follow with patches for the samsung device trees to use the
+"samsung,spi-fifosize" property.
 
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+The patch set cleans a bit the driver and adds support for gs101 SPI.
+For the cleaning part, I removed the unfortunate dependency between the
+SPI of_alias and the fifo_lvl_mask array from the driver.  The SPI
+of_alias was used as an index into the fifo_lvl_mask to determine the
+FIFO depth of the SPI node. Changing the alias ID into the device tree
+would make the driver choose a wrong FIFO size configuration, if not
+accessing past the fifo_lvl_mask array boundaries. Not specifying an SPI
+alias would make the driver fail to probe, which is wrong too.
 
-Thanks,
-Kan
+Apart of the SPI patches, I added support for iowrite{8,16}_32 accessors
+in asm-generic/io.h. This will allow devices that require 32 bits
+register accesses to write data in chunks of 8 or 16 bits (a typical use
+case is SPI, where clients can request transfers in words of 8 bits for
+example). GS101 only allows 32bit register accesses otherwise it raisses
+a Serror Interrupt and hangs the system, thus the accessors are needed
+here.
 
-> 
-> Before:
-> ```
-> $ perf stat -e '{slots,tsc}' -a true
-> WARNING: events were regrouped to match PMUs
-> 
->  Performance counter stats for 'system wide':
-> 
->          1,750,335      slots
->          4,243,557      tsc
-> 
->        0.001456717 seconds time elapsed
-> ```
-> 
-> After:
-> ```
-> $ perf stat -e '{slots,tsc}' -a true
->  Performance counter stats for 'system wide':
-> 
->         12,526,380      slots
->          3,415,163      tsc
-> 
->        0.001488360 seconds time elapsed
-> ```
-> 
-> Fixes: 251aa040244a ("perf parse-events: Wildcard most "numeric" events")
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
-> The fixes tag is close enough rather than being fully accurate. The
-> regression was introduced earlier by the automatic event regrouping.
-> ---
->  tools/perf/util/pmu.c | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> index 3c9609944a2f..88b9aa7d3a27 100644
-> --- a/tools/perf/util/pmu.c
-> +++ b/tools/perf/util/pmu.c
-> @@ -1760,6 +1760,12 @@ bool pmu__name_match(const struct perf_pmu *pmu, const char *pmu_name)
->  
->  bool perf_pmu__is_software(const struct perf_pmu *pmu)
->  {
-> +	const char *known_sw_pmus[] = {
-> +		"kprobe",
-> +		"msr",
-> +		"uprobe",
-> +	};
-> +
->  	if (pmu->is_core || pmu->is_uncore || pmu->auxtrace)
->  		return false;
->  	switch (pmu->type) {
-> @@ -1771,7 +1777,11 @@ bool perf_pmu__is_software(const struct perf_pmu *pmu)
->  	case PERF_TYPE_BREAKPOINT:	return true;
->  	default: break;
->  	}
-> -	return !strcmp(pmu->name, "kprobe") || !strcmp(pmu->name, "uprobe");
-> +	for (size_t i = 0; i < ARRAY_SIZE(known_sw_pmus); i++) {
-> +		if (!strcmp(pmu->name, known_sw_pmus[i]))
-> +			return true;
-> +	}
-> +	return false;
->  }
->  
->  FILE *perf_pmu__open_file(const struct perf_pmu *pmu, const char *name)
+The first 3 patches are fixes and they are intentionally put at the
+beginning of the series so that they can be easily queued to the stable
+kernels.
+
+The SPI patches were tested with the spi-loopback-test on the gs101
+controller.
+
+Thanks!
+ta
+
+Changes in v2:
+- move fixes at the beginning of the series so that they can be queued
+  easily to the stable kernels.
+- break the dependency between the SPI of_alias, the fifo_lvl_mask and
+  the FIFO depth. Provide alternatives to either infer the FIFO size
+  from the compatible, where the SoC uses the same FIFO size for all the
+  instances of the IP, or by using the "samsung,spi-fifosize" dt
+  property, where the SoC uses different FIFO sizes for the instances of
+  the IP.
+- split patches or other cosmetic changes, collect R-b tags.
+
+Tudor Ambarus (28):
+  spi: s3c64xx: explicitly include <linux/io.h>
+  spi: s3c64xx: explicitly include <linux/bits.h>
+  spi: s3c64xx: avoid possible negative array index
+  spi: dt-bindings: samsung: add google,gs101-spi compatible
+  spi: dt-bindings: samsung: add samsung,spi-fifosize property
+  spi: s3c64xx: sort headers alphabetically
+  spi: s3c64xx: remove unneeded (void *) casts in of_match_table
+  spi: s3c64xx: remove else after return
+  spi: s3c64xx: use bitfield access macros
+  spi: s3c64xx: use full mask for {RX, TX}_FIFO_LVL
+  spi: s3c64xx: move common code outside if else
+  spi: s3c64xx: check return code of dmaengine_slave_config()
+  spi: s3c64xx: propagate the dma_submit_error() error code
+  spi: s3c64xx: rename prepare_dma() to s3c64xx_prepare_dma()
+  spi: s3c64xx: return ETIMEDOUT for wait_for_completion_timeout()
+  spi: s3c64xx: simplify s3c64xx_wait_for_pio()
+  spi: s3c64xx: drop blank line between declarations
+  spi: s3c64xx: fix typo, s/configuartion/configuration
+  spi: s3c64xx: downgrade dev_warn to dev_dbg for optional dt props
+  spi: s3c64xx: add support for inferring fifosize from the compatible
+  spi: s3c64xx: infer fifosize from the compatible
+  spi: s3c64xx: drop dependency on of_alias where possible
+  spi: s3c64xx: retrieve the FIFO size from the device tree
+  spi: s3c64xx: mark fifo_lvl_mask as deprecated
+  asm-generic/io.h: add iowrite{8,16}_32 accessors
+  spi: s3c64xx: add iowrite{8,16}_32_rep accessors
+  spi: s3c64xx: add support for google,gs101-spi
+  MAINTAINERS: add Tudor Ambarus as R for the samsung SPI driver
+
+ .../devicetree/bindings/spi/samsung,spi.yaml  |   6 +
+ MAINTAINERS                                   |   1 +
+ drivers/spi/spi-s3c64xx.c                     | 530 ++++++++++--------
+ include/asm-generic/io.h                      |  50 ++
+ include/asm-generic/iomap.h                   |   2 +
+ 5 files changed, 345 insertions(+), 244 deletions(-)
+
+-- 
+2.43.0.429.g432eaa2c6b-goog
+
 
