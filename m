@@ -1,82 +1,112 @@
-Return-Path: <linux-kernel+bounces-38279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB4BB83BD74
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:36:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D4C9A83BD76
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:36:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7217A28D291
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:36:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87FFA28CD33
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:36:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 415A31C6A5;
-	Thu, 25 Jan 2024 09:33:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="xmSUjE9T";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Yb6fLBhx"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC0161C6B1;
+	Thu, 25 Jan 2024 09:34:14 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46F1C1C686
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:33:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4B2D1BF3D
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:34:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706175229; cv=none; b=fQvsIWUZqlTMjtsPuT85NnCJbR+2NhGg3kjlE5xpk//mSDImm2Tkn0Kg7F4O3KdWoWx3ANf8ZhCnJTjNKf04pozjIkY/JPJM28vl1Rz1aoPNufowNkz9Ry9WcTihAgZ5NzZ5HeWf874U0vBLs90vJGRw7UbAIAiXd1O8eXlj24I=
+	t=1706175254; cv=none; b=nBX5TcXBRDZNRvUNr5QuaoxsQMjJwNUJFxPft5AggMLJlTqmI7byvDEhED91SMEc4JfaZ0TfyBSFCGu6rSqLH02HLxU4phHEOP/CF9AZfkLDZtdynHHvdPkG4wgxa9c9VlmXuzLx1Lm4MSDbP+FjhITRQcO2zNANYv5eaIZLMMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706175229; c=relaxed/simple;
-	bh=yo0rhXWM9QETEM2P5yv6ibPUP/SlSUa5WyJ9O8BKEGo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=SzKjmgtD+/lEpjZKyUsWJnKyCT2tnZHF6HjgbEWtdv7QIEdAZpL81YAoX3FH/PJz08KicGqBilKJkfHi9I2A0KSstQaQyB3C2OytcMSxtDla9nGPY+h5YNV4aMpM5AVzygSymmnTjdNbeK56Jhhgrkb92zNMV/80p6ywvxzyw+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=xmSUjE9T; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Yb6fLBhx; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706175226;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yo0rhXWM9QETEM2P5yv6ibPUP/SlSUa5WyJ9O8BKEGo=;
-	b=xmSUjE9THglvVIBgewP8zvNHcCFT1gK4C45oaE61+9tTUtyAOxBjO3+Wc/dBe0FUpzoXZJ
-	5BcCKHGwp0UzMWM7Ua9PdGueJGuXiMbHqKoJ4L0n/WUW+vdZXSp9HQ0S4SFPOEWdWxt4sA
-	lVhJ328bzvDzliCR6QyDPNE0Fy7R8TIzIUnKPq+ZY8rQrpjs+kWfzD8qh9KkP47beBVHSm
-	2XVv08aNYdPPunOLEefGD4Q3i6Zv7JZEuFtwcZ+jmgaq41SdtawqKRc9BrtUQ9stIr6iS7
-	51ehE3xhKMcw/N1fD1bq3/K0Vo58w6/kp6ZBGI6Lah79kdi5Ra81gYdn0ChZEg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706175226;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yo0rhXWM9QETEM2P5yv6ibPUP/SlSUa5WyJ9O8BKEGo=;
-	b=Yb6fLBhxUqFSnnzEL7nsWuLrmCIVN3dSxhWKQB+Fr70bfZ/cCwVsHV1dkCcttMsXUGLNiR
-	WmcxppEvf5o7cICA==
-To: Frederic Weisbecker <frederic@kernel.org>, LKML
- <linux-kernel@vger.kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>, Ingo Molnar
- <mingo@kernel.org>, Anna-Maria Behnsen <anna-maria@linutronix.de>, Peng
- Liu <liupeng17@lenovo.com>, Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 06/15] tick: No need to clear ts->next_tick again
-In-Reply-To: <20240124170459.24850-7-frederic@kernel.org>
-References: <20240124170459.24850-1-frederic@kernel.org>
- <20240124170459.24850-7-frederic@kernel.org>
-Date: Thu, 25 Jan 2024 10:33:46 +0100
-Message-ID: <8734ulkb9h.ffs@tglx>
+	s=arc-20240116; t=1706175254; c=relaxed/simple;
+	bh=+HM7ZIgfkzs+RxyDpfsP/OxJC75F+qDscpolVrnkeY4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=UnM5J+jW+oCKAx2B+T9D2FQAhYnM1xMfYN+4Ubt5T2cNLScEqbmbkt/7v4SuZU/nJ0cYgt4I3TZSduv3BxOychPuCru9DOSRn7ZCvcA4yg/R9FoDc9gBDki9/hH2ptS2G+MgWIHdepkrzXPWURXxsyBTr+NqyeDB1KpWsBP6sN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rSw7X-0001la-Qq; Thu, 25 Jan 2024 10:34:03 +0100
+Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rSw7W-002Fia-PR; Thu, 25 Jan 2024 10:34:02 +0100
+Received: from pza by lupine with local (Exim 4.96)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rSw7W-0003Ri-2M;
+	Thu, 25 Jan 2024 10:34:02 +0100
+Message-ID: <2baf1f8c0b3d116da55d75621929ad186b33afd7.camel@pengutronix.de>
+Subject: Re: [PATCH 3/3] gpiolib: add gpio_device_get_label() stub for
+ !GPIOLIB
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: Bartosz Golaszewski <brgl@bgdev.pl>, Krzysztof Kozlowski
+	 <krzysztof.kozlowski@linaro.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Peter Rosin <peda@axentia.se>,
+  linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org,  kernel test robot <lkp@intel.com>
+Date: Thu, 25 Jan 2024 10:34:02 +0100
+In-Reply-To: <CAMRc=MdXRm5UGu3abXXwtGhw5TG7NC0O5w6_X_RoZRH_C6YgdA@mail.gmail.com>
+References: <20240125081601.118051-1-krzysztof.kozlowski@linaro.org>
+	 <20240125081601.118051-3-krzysztof.kozlowski@linaro.org>
+	 <CAMRc=MfYg5MgndDZtrAaScmtjXm4-AX6y1np7V3p4ngBKZG-pw@mail.gmail.com>
+	 <0039e8e3-bfb7-43af-ab04-53aeaa02f4b0@linaro.org>
+	 <CAMRc=MdXRm5UGu3abXXwtGhw5TG7NC0O5w6_X_RoZRH_C6YgdA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Wed, Jan 24 2024 at 18:04, Frederic Weisbecker wrote:
+On Do, 2024-01-25 at 10:28 +0100, Bartosz Golaszewski wrote:
+> On Thu, Jan 25, 2024 at 10:14=E2=80=AFAM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+> >=20
+> > On 25/01/2024 10:04, Bartosz Golaszewski wrote:
+> > > On Thu, Jan 25, 2024 at 9:16=E2=80=AFAM Krzysztof Kozlowski
+> > > <krzysztof.kozlowski@linaro.org> wrote:
+> > > >=20
+> > > > Add empty stub of gpio_device_get_label() when GPIOLIB is not enabl=
+ed.
+> > > >=20
+> > > > Cc: <stable@vger.kernel.org>
+> > > > Fixes: d1f7728259ef ("gpiolib: provide gpio_device_get_label()")
+> > > > Suggested-by: kernel test robot <lkp@intel.com>
+> > > > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > > >=20
+> > > > ---
+> > > >=20
+> > > > Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> > > >=20
+> > > > Reset framework will need it:
+> > > > https://lore.kernel.org/oe-kbuild-all/202401250958.YksQmnWj-lkp@int=
+el.com/
+> > >=20
+> > > And I suppose you'll want an immutable branch for that?
+> >=20
+> > I guess that's the question to Philipp, but other way could be an Ack.
+> >=20
+>=20
+> I prefer it to go through my tree in case of conflicts as I have a big
+> refactor coming up. I'll give it a day or two on the list and set up a
+> tag for Philipp.
 
-> The tick sched structure is already cleared from
-> tick_cancel_sched_timer(), so there is no need to clear that field
-> again.
->
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Works for me, thank you.
 
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+regards
+Philipp
 
