@@ -1,77 +1,104 @@
-Return-Path: <linux-kernel+bounces-38661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED05A83C3C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:35:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89DCF83C3CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:36:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A649B2925F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:35:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 276361F24AF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:36:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 848F455E6E;
-	Thu, 25 Jan 2024 13:35:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 478EE55E5A;
+	Thu, 25 Jan 2024 13:36:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CCbseu+f"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c62WQUIO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6B855579A;
-	Thu, 25 Jan 2024 13:35:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 826BA2C6A0;
+	Thu, 25 Jan 2024 13:36:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706189744; cv=none; b=CMIfXQLLMJflf0W8jjc70Gy/KAcyh0iG9PwiAdvJoKFWsZYUNNOCooc3Eut6VjJ/PM+fuvO4Dm4IDXM5jeyNiqrt9QSx8KkoyzNjHCW3wL7HEczzBS4peFlnNDCImKer4pfFmmuqVSaZ5e2/XaGIXMigoEpS+8rmXv0fIpjhQPk=
+	t=1706189803; cv=none; b=lyG9TrTCK5O+ahBjb98o/99QaMFSxKR8yLp6aYJX0eKKKOAVRunKYIaJoZOBNays0tYrPfhFRyxElTNEHPNiDqoTc6k2bIySqYDYz0696vEwUElxmIJ15U7JPvuojrWhI/nDQsGJWLiZAm+WgTc5CuEp/FJlzZLmQADfmaLiM78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706189744; c=relaxed/simple;
-	bh=QTIZOrZxp7RFBRPvQefgAY8paDjFrKKof5RvSncdQeM=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=N4yj+gNmugYKCck1iGGne+CQLn4fTjfxmL/OKM1IQQLoZtFIYSj5dgi6duRpOzmIzZqh0/SD/+tOC2VK7expWusbHktF67xDudTWaFH+rGDQ0iSzSP9gW+Hy9RSKkpwjRKMSiZ2A6afRR0MbLPJ9Z7n8IUzHZhYP0ALMSmJSQ9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CCbseu+f; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7B81C433C7;
-	Thu, 25 Jan 2024 13:35:42 +0000 (UTC)
+	s=arc-20240116; t=1706189803; c=relaxed/simple;
+	bh=2wE9pszrJXYYWzXdBYhMimVXesmv6YhDjZ0hAAU/1hU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ser7RGMLWYu4ohVLU2A0bST5eQ4VYkvDVeaEnGTKK/5/42Z7FmwRrAuEm6kM5Xls2RMAHPsWNTt3sq9haGI/sffUN3aoWRQCB0Wjl/W56xg6tzRyMGtfrIZbrqwXtx/uRdRB5ObhjUjbqmyfe2IlTnYBBD/LUdcZBOVreDEv/yA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c62WQUIO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04832C433F1;
+	Thu, 25 Jan 2024 13:36:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706189744;
-	bh=QTIZOrZxp7RFBRPvQefgAY8paDjFrKKof5RvSncdQeM=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=CCbseu+f02HKsAnVshZMrillOF83BZHZW53nihwq/8Z7TWRVLcUEHNXEeCbc5slH3
-	 HspA1cj31rpXXGi7gFY4PcFvbYIRgialXwiJZh7eeb03980/Nxj7xxs10raQmWou+X
-	 iIwh+ogpbXyUIlBgTUD3CSEU9RlkmZznx3aLVat7nMi2iEGoseLitQdGdL8oUWsGRf
-	 iSu1UEmu+3iEB3rhuUqoPz+VwbZN8pzXoeUDBCizoEnkhWDJlNOm9WRuxqO7FU1kJ6
-	 cugUNVeFArcB+ybIv9lFoBT59jVCSc44Myb9kI7Opibv9eTZqLE5ezN29oOZ9cl2T2
-	 eh9TGB+wfFvUg==
-From: Lee Jones <lee@kernel.org>
-To: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, 
- linux-leds@vger.kernel.org, Colin Ian King <colin.i.king@gmail.com>
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240119232630.2752239-1-colin.i.king@gmail.com>
-References: <20240119232630.2752239-1-colin.i.king@gmail.com>
-Subject: Re: (subset) [PATCH][next] leds: aw200xx: make read-only array
- coeff_table static const
-Message-Id: <170618974266.1467696.8699931696852228377.b4-ty@kernel.org>
-Date: Thu, 25 Jan 2024 13:35:42 +0000
+	s=k20201202; t=1706189803;
+	bh=2wE9pszrJXYYWzXdBYhMimVXesmv6YhDjZ0hAAU/1hU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=c62WQUIO/bM34f71tPT6LXaCJVxNV6BKb/jgVTYYIlNfd0s2tPzvPhHLoZnU7D4Jg
+	 v6IO989dHhjMsGb841KfoX/1A4aivJklt5hRvNuSnPcqEWVpSCiIpTru0JPJK59OnC
+	 jyQnbkpzZ3Wah019Ia+ubRH49ey9btWC8OgUzjnEAMBtyhjl56YbEGmpa1xxyMzoZf
+	 Yr7XQ3rmwcBoS23A9ivQMRNfufLXcAF6jUY4TmSAQzgLiB7lBP13EU1Mw09dCJRgSG
+	 zRLWIyHphOgryZNkHad1aBeQL2NKhN0YDnFRsdPrIYzkRTT6xzK3BmDMDSNjmPrZ4m
+	 OEAw7F4jnAUaw==
+Date: Thu, 25 Jan 2024 13:36:37 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Sam Protsenko <semen.protsenko@linaro.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Tomasz Figa <tomasz.figa@gmail.com>,
+	Chanwoo Choi <cw00.choi@samsung.com>, linux-spi@vger.kernel.org,
+	linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 0/2] spi: samsung: Add Exynos850 support
+Message-ID: <1f9b4b04-94e7-454c-b9b3-a53eefc05d20@sirena.org.uk>
+References: <20240125013536.30887-1-semen.protsenko@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.3
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="VftbKyz1yOPyZZGU"
+Content-Disposition: inline
+In-Reply-To: <20240125013536.30887-1-semen.protsenko@linaro.org>
+X-Cookie: Entropy isn't what it used to be.
 
-On Fri, 19 Jan 2024 23:26:30 +0000, Colin Ian King wrote:
-> Don't populate the read-only array coeff_table on the stack at
-> run time, instead make it static const.
-> 
-> 
 
-Applied, thanks!
+--VftbKyz1yOPyZZGU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-[1/1] leds: aw200xx: make read-only array coeff_table static const
-      commit: bcc7f2ee83dc1dace6eeb6b25014f253ca2a2a51
+On Wed, Jan 24, 2024 at 07:35:34PM -0600, Sam Protsenko wrote:
+> Enable SPI support for Exynos850 SoC in spi-s3c64xx driver, and add the
+> corresponding bindings. It was tested using `spidev_test' tool in all
+> possible modes:
 
---
-Lee Jones [李琼斯]
+Please do not submit new versions of already applied patches, please
+submit incremental updates to the existing code.  Modifying existing
+commits creates problems for other users building on top of those
+commits so it's best practice to only change pubished git commits if
+absolutely essential.
 
+--VftbKyz1yOPyZZGU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWyY+QACgkQJNaLcl1U
+h9AQxwf/WDMXOqW7e8q+2IqWPV6uFaW1PCB68o4iUeydg2WQL4wlwxCSHkgQedaK
+p7L5p3+P/cdteuIaiog07I/8bgE2vGcIlH5a1QVDSdJr+YOKWBIhrpYZGk4CClrj
+sRhYVMAxK2z8Z1vvbt9w9q45G9bUTMJMoesnHjaimJEqhrJy6VYshYDR7Amj00Hf
+ykxzLSsK0Trjl22qxOj0Qf1CwEGloGSdyYm/ShPOxOqtRPfu+dQRHCU1PxThk3Mo
+ssNdEDM0L5pD6H7KBPJZSzvFlKcgGbkF2/Q+p3AOn+/b+L9g3mBcjuO71YMKVBHk
+gDUBlwbPT1xnx5kk9MPX+3iRdPJZhA==
+=rHn+
+-----END PGP SIGNATURE-----
+
+--VftbKyz1yOPyZZGU--
 
