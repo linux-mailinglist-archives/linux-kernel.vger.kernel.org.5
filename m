@@ -1,95 +1,110 @@
-Return-Path: <linux-kernel+bounces-38139-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09FD083BB5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:12:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A380C83BB62
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:12:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DABD1C20AA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:12:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A4CC1F211F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:12:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 688AC1759D;
-	Thu, 25 Jan 2024 08:12:14 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD19017BA9;
+	Thu, 25 Jan 2024 08:12:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OKzD/Zxy"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEE1C17551;
-	Thu, 25 Jan 2024 08:12:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8A81179A7;
+	Thu, 25 Jan 2024 08:12:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706170334; cv=none; b=Zl3/tusXh2fLCXG+nyFiwzC2/j1i4U7EVxDrPgaFuiQwU/WUC3qmz/oar5LV3vX0CSUXSABRpWBubRIiHShVL7Wc4jOgVC17PcEd/aTN1GejLPmcvvL8oIdrFByGfLFOKBNYHBxtjcMUMGzcuP7vOGXPC9C0LWgUMdbXByM0V6o=
+	t=1706170367; cv=none; b=q/Kpaqtfoq6a5HSKc8UjfQtfZxDuUxhzy8O3gcOXw3jrork32COA6dV34giGdYMni4j/gfjocw6Zmw1eMerCll6Ru7GoKZR5TZs9pvjcgS2204BpRS7JH5fLgX1pB3Fs/hg8CnAhKt2vL563EKSvfHRKcn78f5hhSvXDG4aXTaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706170334; c=relaxed/simple;
-	bh=I2fHAq42LqYmEoDLvPKCloJ+PeKaM0SJ2tT5lbcL5YM=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=Xmiy3Y86tx/o8LMa3WHf8u8poptSuTAR0QJxvaSzCnz4JPXVocn5KD8cJ/N7Y74BCoBiAtRDcr6oE7hgPcOqwwkFbE24QlX0FuSBXCFDyL729azdULS4ymmS3C7DAt/2SBOqAnwdagy+UvmUUcuxetQQ1MkdJDSalZuOm4toAmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4TLD6p2YgGzNlXl;
-	Thu, 25 Jan 2024 16:11:14 +0800 (CST)
-Received: from kwepemm600005.china.huawei.com (unknown [7.193.23.191])
-	by mail.maildlp.com (Postfix) with ESMTPS id 29CAC18007D;
-	Thu, 25 Jan 2024 16:12:08 +0800 (CST)
-Received: from [10.67.121.110] (10.67.121.110) by
- kwepemm600005.china.huawei.com (7.193.23.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 25 Jan 2024 16:12:07 +0800
-Subject: Re: [PATCH 0/3] add debugfs to hisilicon migration driver
-To: <alex.williamson@redhat.com>, <jgg@nvidia.com>,
-	<shameerali.kolothum.thodi@huawei.com>, <jonathan.cameron@huawei.com>
-CC: <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linuxarm@openeuler.org>
-References: <20240125075525.42168-1-liulongfang@huawei.com>
-From: liulongfang <liulongfang@huawei.com>
-Message-ID: <ca04c04f-7e5e-1365-5eeb-74f22dfe8793@huawei.com>
-Date: Thu, 25 Jan 2024 16:12:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1706170367; c=relaxed/simple;
+	bh=KYhAA6lbh1xlFPF4g0tLNLt2+ZEzx+nnfioRTgNZ+Pk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QqdzgWrpspDeZ3q2cZSWssn/CmsHND7J2P0Z8gipHeh/htTPNg+kdPPA7LoE93Lbp76Ll54XRHkg6z/cPEdl+hRHKcZUobN5PlbBZTPFQ2fhQSmHH0pSVpnSLc+z2ubllmq2M5Jk8siP9+lr/uN4tBntJYwS64yoQ54KuB9saJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OKzD/Zxy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 633CCC43399;
+	Thu, 25 Jan 2024 08:12:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706170366;
+	bh=KYhAA6lbh1xlFPF4g0tLNLt2+ZEzx+nnfioRTgNZ+Pk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=OKzD/ZxyGHc+z0bHJb1IHx9Uz9aB3Hs8MyqrZOkb2rxEMoe04osHQidq0G79q99j9
+	 nfE5+zzGjsy5p6r/g706f594qOn7Xjw5dV3M2DSScJzJDXSniIPYATEYX/nKVMvoLW
+	 H+gnXV3I9TwrPs3IJX3ABmkh3Lcx1IY1paBXbZrD8dqUZjZGpb6HOwLvjNBvSY1PoO
+	 IGMjV7UTaE8EwE/Yhh39ShGUhMowxmydfhA+QHiuDOMi0TBQAMuYe9Ti8wUT5k+bX1
+	 ErEfXC7wYUGIblhdTB8eUeiaA2Ncm2WkNgejUPR0pWz5qb39wAbOnyyyOEOsX3yNXW
+	 sAoKw/w7tAgIg==
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50e7d6565b5so8045982e87.0;
+        Thu, 25 Jan 2024 00:12:46 -0800 (PST)
+X-Gm-Message-State: AOJu0Yyp9SV7F2qay2ZA246uUO6aw2Vc5pz2LNKqj4i8bdpTY3ZE3WWY
+	/dkX0kMociEXCr/XxEJ+O1hY6l+vPHOSXyh+M+izIyeucFjfijU/yQqm0vVhR175fm40M6CUbuU
+	5Icxi6XQFCr4M4VCaXH2CGJelYBA=
+X-Google-Smtp-Source: AGHT+IEzX6x1uB9XZGr96SYyMy6G30ijHjldN1YhIU6+Shq6eYNHzD8BbKTQbvRQqwDcA/k0tQfpNbWEGHAKQhmivn8=
+X-Received: by 2002:a05:6512:2388:b0:510:cfb:5817 with SMTP id
+ c8-20020a056512238800b005100cfb5817mr408947lfv.53.1706170364598; Thu, 25 Jan
+ 2024 00:12:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240125075525.42168-1-liulongfang@huawei.com>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600005.china.huawei.com (7.193.23.191)
+References: <20240122231507.1307793-1-timschumi@gmx.de> <CAMj1kXHSSRacU3hp6D3sdUKDESi1FoD33Qi=5Df+=_biZ-vqhA@mail.gmail.com>
+ <223a4e75-2e06-4bc6-a70c-823f0eb308d7@gmx.de> <CAMj1kXEKF_a6wLtoMYCwBKEVDo6k1u=Cas-=4Ar4WnANHNu+cg@mail.gmail.com>
+ <b58a112f-767f-4918-8262-63ac1dbfebbf@gmx.de> <CA+g+hrh_REk-bcTt-D+eSngofxdejeRXuXKhf1O15wzn+qMy6Q@mail.gmail.com>
+In-Reply-To: <CA+g+hrh_REk-bcTt-D+eSngofxdejeRXuXKhf1O15wzn+qMy6Q@mail.gmail.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Thu, 25 Jan 2024 09:12:33 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXG1Fkpy2UDFAuGr9czTCft6N-tUQ0CTOvysqW5mX_xMTQ@mail.gmail.com>
+Message-ID: <CAMj1kXG1Fkpy2UDFAuGr9czTCft6N-tUQ0CTOvysqW5mX_xMTQ@mail.gmail.com>
+Subject: Re: [PATCH] efivarfs: Iterate variables with increasing name buffer sizes
+To: Peter Jones <pjones@redhat.com>
+Cc: Tim Schumacher <timschumi@gmx.de>, Matthew Garrett <mjg59@srcf.ucam.org>, linux-efi@vger.kernel.org, 
+	Jeremy Kerr <jk@ozlabs.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/1/25 15:55, Longfang Liu wrote:
-> Add a debugfs function to the hisilicon migration driver in VFIO to
-> provide intermediate state values and data during device migration.
-> 
-> When the execution of live migration fails, the user can view the
-> status and data during the migration process separately from the
-> source and the destination, which is convenient for users to analyze
-> and locate problems.
-> 
-> Longfang Liu (3):
->   hisi_acc_vfio_pci: extract public functions for container_of
+On Wed, 24 Jan 2024 at 22:25, Peter Jones <pjones@redhat.com> wrote:
+>
+> On Tue, Jan 23, 2024 at 12:33=E2=80=AFPM Tim Schumacher <timschumi@gmx.de=
+> wrote:
+> >
+> > On 23.01.24 15:09, Ard Biesheuvel wrote:
+> > > On Tue, 23 Jan 2024 at 14:55, Tim Schumacher <timschumi@gmx.de> wrote=
+:
+> > >>
+> > >> I'd rather avoid introducing deviations from the specifications on t=
+he
+> > >> kernel side as well.
+> > >
+> > > Which specification would this deviate from?
+> >
+> > The preexisting comment claims "Per EFI spec", and it appears that I go=
+t
+> > mislead by that. Neither the UEFI specification, nor the newest revisio=
+n
+> > of the EFI specification (which I guess is what would have been current
+> > back in 2004, when this comment was introduced) seem to make any mentio=
+n
+> > of a maximum length for the variable name.
+>
+> Curiously, I can't find it in the 1.02 spec (the oldest I can find)
+> either.  When I inherited efibootmgr around 2013, this was a
+> limitation there, but I don't see anything in that tree that claims
+> it's a spec limitation either.  My suspicion is this is a former
+> Itanium firmware limit that got promoted to "the spec says" by word of
+> mouth, or was in some very early ia64 implementation spec.
+>
 
+Also, the comment (and similar ones I've seen in the past) seem to
+refer to the entire variable (name + payload) rather than just the
+name.
 
-This patch was previously reviewed and added Reviewed-by: Jason Gunthorpe.
-
-As the first version of this set of patches, I removed it and sent it again.
-
-Thanks.
-
-Longfang.
-
->   hisi_acc_vfio_pci: register debugfs for hisilicon migration driver
->   Documentation: add debugfs description for hisi migration
-> 
->  .../ABI/testing/debugfs-hisi-migration        |  34 +++
->  MAINTAINERS                                   |   1 +
->  .../vfio/pci/hisilicon/hisi_acc_vfio_pci.c    | 211 +++++++++++++++++-
->  .../vfio/pci/hisilicon/hisi_acc_vfio_pci.h    |   5 +
->  4 files changed, 241 insertions(+), 10 deletions(-)
->  create mode 100644 Documentation/ABI/testing/debugfs-hisi-migration
-> 
+So I am still leaning towards simply reducing this to 512 bytes.
 
