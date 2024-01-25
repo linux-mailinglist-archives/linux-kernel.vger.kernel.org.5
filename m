@@ -1,134 +1,176 @@
-Return-Path: <linux-kernel+bounces-39372-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BB5983CF90
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DF00E83CF92
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:48:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99AD71C23E98
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:45:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D94B1C209CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:48:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DBBC11706;
-	Thu, 25 Jan 2024 22:45:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99AB911CB9;
+	Thu, 25 Jan 2024 22:48:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="jiln+mWM"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CEyN+OJI"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 672F711CB1;
-	Thu, 25 Jan 2024 22:45:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04FE110A24
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 22:48:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706222709; cv=none; b=jea2sUqiIdRBzPgA/O8aH7AXLyUwZ3GVNKEoalFnxQcojagMF3/ZXbet3e0/MYU1puFdSQn8emN2vZ9308VoJUZf80koj2qpzLZmnmSLhViLkz58jEj8hppdYYYPfd54Nn8mOZk5SXKMZGk+SbU0Bua0Eaa+0u4SuUvFE5fXmKo=
+	t=1706222892; cv=none; b=Jurf9QkV6i213VqRAqiLC2zzv7228sFqg3EX5C9ss03I+C/VCkHvws1gEQ/lfwHxYFzVmucQ+nQt4s9M4VU65ODwbxTskgJK9C9IIuegstGrGBDPNT1MKlpF5Sb/mYU6VveXPvCRu2MMBu6fLuhSqckodD1m4qWiGhwj19tQl/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706222709; c=relaxed/simple;
-	bh=8UHUgio5bcGdOCke7+Q8iL/iKM1UTq80mrwqMurYWVg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JKzWmmPDQCNaQbqq6QLqxo7UT4fyq0hwLhVdKHZq+RbCpOxdLERpgDEOqoayV/IDthPNj3Yx+6NMRdvtVYKiEtN8ecOL5JtDu7s2ygoIzLlvqZPQm8AGWiwuLr3EclxEq5+N2DSrjrsNHwMoCwod1dzDJlUcWESI5IoWyiycqlg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=jiln+mWM; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7AC621BF204;
-	Thu, 25 Jan 2024 22:44:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1706222704;
+	s=arc-20240116; t=1706222892; c=relaxed/simple;
+	bh=Ozpy2C3AVxBhEeZpBWtDgZqOuPhFK4pg9APHglEez3o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fDr3C/HyWPyHWpIYIQ6s0i6D3HZOXvBOLoIWuvQBUQR+HmOkMwnLe6xK+ZG45wNtyPr/Bu7yxbgp8Dv7U804nGhMCwFNmc+/eFOw/c0BVJPLIZNI1NlDHtOU/EDXWEkd7rAqBYU0WbHirMUC+utNn1O2cqzxVoPae16JwHajqLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CEyN+OJI; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706222889;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/wfCo1mRfWcIdpnT9reav4j0aC7oEhRFsNtNutPWFwI=;
-	b=jiln+mWMiPebOcn9uW9BmCuY9qLY2XvRvbb9ncjNF/Cx2PjQjCgIyT/oeNmPnCJ1I13y86
-	coEVjjk2+lsBiiaXa0EkztIz9t2ZrMrRXCznqqGerkMj9V7WFFmAX1ynB6uuVJVUhCJm/p
-	qrA5brRtgGWpRuXVona3kstZ0u6s7JkrHzozhJ64Z79mD2ZgHtWKtq2s3tMhPOAt63cFzF
-	uDZDp8kiSlUAanWHXuxLaxen69N2J+nUYmnjlQdeuC0bT34DYM/fZqHlnVynuTr7ACqMYt
-	dkia8tFNa/42GWIx2avBW8dnp9VoyQRCo4kwaD+nWE7FTEzr3SCOIosNN57IRw==
-Message-ID: <99a038f3-18d2-44ca-8135-1faf7a37892a@arinc9.com>
-Date: Fri, 26 Jan 2024 01:44:57 +0300
+	bh=2FcJ0y8NFfuXCEfad7FVZRFQBMW2B2FwtGevEF8U6+E=;
+	b=CEyN+OJIIigfeNCvtE+/z5SlMUbB7h5YlqWTpzC0LQDtNHDOKDkxua5zvk8Y5LSknVQ6zT
+	rcUDdCS5jVpA0xzOIBL2ZOPRh7M2pTzFmkD8t4Xos2x2oAm4ODJy0jKGTpGxIVyiFhKH+O
+	0ERBzOCCr1K5BkCSYzpgh8iyE3Nkn8E=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-50-qtp4vxoZPwORwKpyhW-IGA-1; Thu, 25 Jan 2024 17:48:08 -0500
+X-MC-Unique: qtp4vxoZPwORwKpyhW-IGA-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40e4478a3afso5603695e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 14:48:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706222887; x=1706827687;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2FcJ0y8NFfuXCEfad7FVZRFQBMW2B2FwtGevEF8U6+E=;
+        b=D6fU5MQLSvRGuMfze1+4rQIviHY79Tg4fKQ7okusYNMiwKwYiMoSiylN+NvSKYE8Oy
+         Cp7PYn6drA8Txb1z/vKPNBso2D8c/lnz6YMUXkV4UOlhCkKH8brNp3yXOx/2IjCLmQIE
+         bvGXsOwo+PxUUcOms87DwcgcjcA91Lw/3m/vVeAtfHs8+xYVrX8sPE46FbIVKyqj6goa
+         oAjhhfBcuWe/0LzJ/Jo8ONDyiQgFf/AmlBFu2pW+6a6BAOhALqWjg7fEpVLyOVwp9Oz2
+         LlYPL4ATkx4mGf+ciOvCfwy6aaDEq6HwBzNzURyzDQsqCxUQJX7Ak0gRBB4cn6HzhaCk
+         HWoQ==
+X-Gm-Message-State: AOJu0Yyd3HL5WnZv+b1ndeXIw5SnqMaQa9ZkgcgfHHRtlCQP4kKgX+aT
+	Y/+H5l3TMbiXDUt4jHaEuq4EDKpEZDK9QKzVkRwl6WghwmKYtEQTVIifGasROK4h84gbDiDy0w/
+	YU5YyHKE8S3eKqqHWDedAvik0i5j9IosP3FwPnwo8588HQByR+IPoFv3IIYZ7LA==
+X-Received: by 2002:a05:600c:1f81:b0:40d:87b9:3525 with SMTP id je1-20020a05600c1f8100b0040d87b93525mr6948wmb.9.1706222886837;
+        Thu, 25 Jan 2024 14:48:06 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH1+HglQtwTt9mC00xoB9/Ny/lXRTPJrlYgGjDEq89/GGxy9yTpCyIYNf5wz8BxXp9cpJHHLg==
+X-Received: by 2002:a05:600c:1f81:b0:40d:87b9:3525 with SMTP id je1-20020a05600c1f8100b0040d87b93525mr6940wmb.9.1706222886528;
+        Thu, 25 Jan 2024 14:48:06 -0800 (PST)
+Received: from redhat.com ([2.52.130.36])
+        by smtp.gmail.com with ESMTPSA id b14-20020a05600c4e0e00b0040e559e0ba7sm3941969wmq.26.2024.01.25.14.48.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 14:48:05 -0800 (PST)
+Date: Thu, 25 Jan 2024 17:48:02 -0500
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+	Feng Liu <feliu@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>
+Subject: Re: [PATCH] virtio: uapi: Drop __packed attribute in
+ linux/virtio_pci.h:
+Message-ID: <20240125174705-mutt-send-email-mst@kernel.org>
+References: <20240124172345.853129-1-suzuki.poulose@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] net: dsa: mt7530: fix 10M/100M speed on MT7988 switch
-To: Daniel Golle <daniel@makrotopia.org>
-Cc: DENG Qingfang <dqfext@gmail.com>, Sean Wang <sean.wang@mediatek.com>,
- Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
- Vladimir Oltean <olteanv@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- John Crispin <john@phrozen.org>
-References: <a5b04dfa8256d8302f402545a51ac4c626fdba25.1706071272.git.daniel@makrotopia.org>
- <accda24c-9f12-4cfe-b532-a9c60ec97fca@arinc9.com>
- <ZbKJv84vGXInRIo1@makrotopia.org>
-Content-Language: en-US
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <ZbKJv84vGXInRIo1@makrotopia.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240124172345.853129-1-suzuki.poulose@arm.com>
 
-On 25.01.2024 19:18, Daniel Golle wrote:
-> On Thu, Jan 25, 2024 at 12:49:19PM +0300, Arınç ÜNAL wrote:
->> On 24/01/2024 08:17, Daniel Golle wrote:
->>> Setup PMCR port register for actual speed and duplex on internally
->>> connected PHYs of the MT7988 built-in switch. This fixes links with
->>> speeds other than 1000M.
->>>
->>> Fixes: ("110c18bfed414 net: dsa: mt7530: introduce driver for MT7988 built-in switch")
->>> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
->>
->> Acked-by: Arınç ÜNAL <arinc.unal@arinc9.com>
->>
->> I'm wondering why we manually set speed and duplex for these interface
->> modes in the first place. I don't how it works for
->> PHY_INTERFACE_MODE_INTERNAL but, at least for PHY_INTERFACE_MODE_TRGMII and
->> 802.3z interfaces, phylink should already supply proper speed and duplex.
+On Wed, Jan 24, 2024 at 05:23:45PM +0000, Suzuki K Poulose wrote:
+> Commit 92792ac752aa ("virtio-pci: Introduce admin command sending function")
+> added "__packed" structures to UAPI header linux/virtio_pci.h. This triggers
+> build failures in the consumer userspace applications without proper "definition"
+> of __packed (e.g., kvmtool build fails).
 > 
-> It's true that duplex should always be set to full-duplex already by
-> phylink. However, speed could be 2500MBit/s (2500Base-X) or 2000MBit/s
-> (?, TRGMII) and we yet need to program the PCR like if it was
-> 1000MBit/s.
+> Moreover, the structures are already packed well, and doesn't need explicit
+> packing, similar to the rest of the structures in all virtio_* headers. Remove
+> the __packed attribute.
 > 
-> Regarding the INTERNAL case: it was added by mistake. In case of
-> MT7988, all ports of the switch are connected via INTERNAL links,
-> however, the PHYs still need adjustment of the PCR register just like
-> on all other MT753x switches and the CPU port is setup elsewhere
-> anyway.
+> Fixes: commit 92792ac752aa ("virtio-pci: Introduce admin command sending function")
 
-It's not necessarily PHYs needing adjustment of the port MAC control
-register. After reset, speed, duplex mode, etc. will be determined by
-polling the PHY connected to the switch MAC. We're forcing these properties
-on the PMCR because we're also configuring switch MACs that are not
-connected to PHYs, meaning the switch cannot determine these properties by
-polling a PHY.
 
- From what I understand, this code block is for overriding the speed and
-duplex variables to make the operations on the PMCR below work. It seems
-that this is actually only useful for PHY_INTERFACE_MODE_2500BASEX.
-PHY_INTERFACE_MODE_TRGMII is given SPEED_1000 by
-drivers/net/phy/phylink.c:phylink_interface_max_speed().
-PHY_INTERFACE_MODE_2500BASEX is given SPEED_2500. Overriding the duplex
-variable looks unnecessary.
+Proper form is:
 
-Your patch here doesn't affect CPU ports because MT7531 and MT7988 PMCRs
-are configured with cpu_port_config before mt753x_phylink_mac_link_up(),
-and PHY_INTERFACE_MODE_INTERNAL is not used for MT7530 which, for MT7530,
-PMCRs will be set only on mt753x_phylink_mac_link_up().
+Fixes: 92792ac752aa ("virtio-pci: Introduce admin command sending function")
 
-PMCR_FORCE_SPEED_1000 is set on cpu_port_config. If someone were to get rid
-of cpu_port_config because of its utter uselessness, PMCR_FORCE_SPEED_1000
-would not be set, causing the link between port 6 MAC and SoC MAC to break.
+> Cc: Feng Liu <feliu@nvidia.com>
+> Cc: Michael S. Tsirkin <mst@redhat.com>
+> Cc: Yishai Hadas <yishaih@nvidia.com>
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+>  include/uapi/linux/virtio_pci.h | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
+> index ef3810dee7ef..a8208492e822 100644
+> --- a/include/uapi/linux/virtio_pci.h
+> +++ b/include/uapi/linux/virtio_pci.h
+> @@ -240,7 +240,7 @@ struct virtio_pci_cfg_cap {
+>  #define VIRTIO_ADMIN_CMD_LEGACY_DEV_CFG_READ		0x5
+>  #define VIRTIO_ADMIN_CMD_LEGACY_NOTIFY_INFO		0x6
+>  
+> -struct __packed virtio_admin_cmd_hdr {
+> +struct virtio_admin_cmd_hdr {
+>  	__le16 opcode;
+>  	/*
+>  	 * 1 - SR-IOV
+> @@ -252,20 +252,20 @@ struct __packed virtio_admin_cmd_hdr {
+>  	__le64 group_member_id;
+>  };
+>  
+> -struct __packed virtio_admin_cmd_status {
+> +struct virtio_admin_cmd_status {
+>  	__le16 status;
+>  	__le16 status_qualifier;
+>  	/* Unused, reserved for future extensions. */
+>  	__u8 reserved2[4];
+>  };
+>  
+> -struct __packed virtio_admin_cmd_legacy_wr_data {
+> +struct virtio_admin_cmd_legacy_wr_data {
+>  	__u8 offset; /* Starting offset of the register(s) to write. */
+>  	__u8 reserved[7];
+>  	__u8 registers[];
+>  };
+>  
+> -struct __packed virtio_admin_cmd_legacy_rd_data {
+> +struct virtio_admin_cmd_legacy_rd_data {
+>  	__u8 offset; /* Starting offset of the register(s) to read. */
+>  };
+>  
+> @@ -275,7 +275,7 @@ struct __packed virtio_admin_cmd_legacy_rd_data {
+>  
+>  #define VIRTIO_ADMIN_CMD_MAX_NOTIFY_INFO 4
+>  
+> -struct __packed virtio_admin_cmd_notify_info_data {
+> +struct virtio_admin_cmd_notify_info_data {
+>  	__u8 flags; /* 0 = end of list, 1 = owner device, 2 = member device */
+>  	__u8 bar; /* BAR of the member or the owner device */
+>  	__u8 padding[6];
 
-In conclusion, I will add "case SPEED_10000:" to the operations where the
-speed and EEE bits are set on my patch for getting rid of cpu_port_config.
 
-Arınç
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
+
+I will queue this.
+
+> -- 
+> 2.34.1
+
 
