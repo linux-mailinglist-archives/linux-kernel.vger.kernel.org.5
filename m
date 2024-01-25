@@ -1,72 +1,72 @@
-Return-Path: <linux-kernel+bounces-38392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A89683BEC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:29:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AC0883BEC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:30:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 400F31C223A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:29:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE7E72902C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:30:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 032151CF98;
-	Thu, 25 Jan 2024 10:27:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 580BB1D554;
+	Thu, 25 Jan 2024 10:28:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MWTDfv0K"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hylMrcpu"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9620A1CF8F
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 10:27:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 035151CFAB
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 10:28:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706178463; cv=none; b=UD7g01RkiiS1s5aCnSO32ESA2rxDJZXgKd7VQN084QkXNmaTJxKrIhGrIOYarfSR25/dPeeSUUg375WU/JJh37q/t7BbY/GCpdUnL3Hs0QOTANPg+BI3yr5ZFx5g40fxsT4G04VHqHHHSubRAZnQcR6bLCt07YE5MsSSkpBlrsE=
+	t=1706178504; cv=none; b=l5kwupsJTei0y2LrUOiaOQvmm5X/zAi8Mfo17UReo3PELu5mlf8qzFv//364cj4scbWjwga3wuk4OZLSGhtHKK4Zaxazv7zsqOixfi8uEMGSVMdEmO19KtDMjih0Jasj6nh8YoM+4IYiHkYrDGI4LMkbNnPKcVYyeGdkYUKYMTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706178463; c=relaxed/simple;
-	bh=YtFNpGDYsCivUz1wf8vRxMwoBoVkCYcCceTNNZS180w=;
+	s=arc-20240116; t=1706178504; c=relaxed/simple;
+	bh=1BUV/n0pld+xzfDrWvK34M5kcqqzdhpPi6FvpKMqCf4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FK7BMEJ/q2Jn03sosP/TuVr1ychgEbBcWlxaH8qSFp85AMKWfY3YxxvZjrhdyjb2Z5YdCciTWzAJsNQb5N9Xp4qJPBgFdoywHi3Zls0o1qch/TrKIjZHds6+z9yxPKWV+zWc/FznpPtBb1Y/Ubb2IPpOU8LZv57/iFy2uu1ug/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MWTDfv0K; arc=none smtp.client-ip=209.85.218.48
+	 In-Reply-To:Content-Type; b=OvOPW6hvsqzigQ6Zksn0+P1+LBwWYusi8Wux/CScf+gEUNMh9pry1IDcs6Wp1uN0+woY79ph92bKvz6btr1jJyRkRx/d1vYA496SOp7TohTu8iuWhCckVI1UZwY7TzCK4cj2fZLC2IJoIg0XSNCJCnT0KaI2eWMl3CTIdYKcJa8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hylMrcpu; arc=none smtp.client-ip=209.85.218.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a27733ae1dfso683680066b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 02:27:41 -0800 (PST)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a29c4bbb2f4so639929266b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 02:28:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706178460; x=1706783260; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706178501; x=1706783301; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=V9gvMSv3+q7H3h79v5kkDnU5d5N9R7IDK8L4QtD2T7Q=;
-        b=MWTDfv0KE7Y552jtQpEwKEPPqV1nASlzfYHSvyezekWpKY0bhy51difTPdZN+XuTZT
-         yUV4usEbXh59C8SjZxVOsIvqmkXjeFJOaar4g1ZJR3N83ASSvmddY4khbzabfQGwE5no
-         cMnS3cAJXHK9QSf3USc/ZmPcWe4VdWXeiZkn1/o9G+VyBDZujJ6H5QvXg/AXwL0coGFl
-         OmfVqjGTczITxNAplKdvjPOIg/kzcXdDUHDfSIusr+qw8Xjpy8j7OGqA7TqAq4T/XM24
-         1L9rxiyABgehtnUx4j18b5BLb4dP77jmNWje+VZ9EGAAPl/m9kPC5FeiLCEb8y6y8Jcg
-         1b/Q==
+        bh=qS872QzcI9RYx6rQ9UXd6xffNXdTKVLXMYNRjv3PA84=;
+        b=hylMrcpuvfUX6gabUEJrxkHhXOYjorNn1PvkjjTmlBR8GqdkctsCx6x+u8u0q08sgH
+         sCNB1vSDXw5o/iJEMhABqEU18ioaDsIhB0314N85Ue7F4BZsUJwGqkgmFNzefHHjgJf/
+         Z7D44s83jRCmVGD8AWzbASYcMhj0v++Ry2v92ll2j+ZvE3sRFcKez/S96bitfWjGIl9C
+         fEjckCQCQmTqhbqr9J367fkao4IbnaE8eGByhErnYwpwqy/voyNkIs/C/j/1aipZZ2K/
+         hIV2Y6Ykb8YxPQY6Api7Q/TtqVABERurEXXc6GfH6dqoGjHpiXth8iS9QWIdJKlnnl2v
+         Hb4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706178460; x=1706783260;
+        d=1e100.net; s=20230601; t=1706178501; x=1706783301;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V9gvMSv3+q7H3h79v5kkDnU5d5N9R7IDK8L4QtD2T7Q=;
-        b=VCGESsVzJbRsSkUqEa5PBPQaQi6kjb310K/TYMfe1NexkMsWqML6I/GOD90OKSuWaa
-         mkUUsDg6eIfzVnSpjjrWZqEuHV7XkUi8GmksAHzS1bNzobFAJcEuswbQXyEU/mk7JG+P
-         FLhMVj+Immh9B5fjKNO1axiLWf8ieIvISuhOOspVaG4o98qYXOlRlzqndbRYDzwzQXMp
-         0VcsEthwyaJKACH1E8MnC/4vnmTw3VxmnSvs4B5W4w8QYuUIZy7HBjbL7fY/snoXgp3t
-         EgqzdTntDbi4VHBKNwWwe9ms7QMeTUufcNEKiLTriyBFnFG3cS8laQusTTLfJsnkDTel
-         aeXg==
-X-Gm-Message-State: AOJu0Yz0Bshr7asBDihBHGBDOUA5FxCt8tnxlgC3MBDEOrtMx1OWpmW6
-	ThsTv/owm6JmwEqIA3tkDCjmDgDqnJ/bdxw01PaonRLO4DNZxOi7UL69cUHw3MQ=
-X-Google-Smtp-Source: AGHT+IEnFE+kVE6wnGzV+nC41HNIgBzA646SU5hXBNWKIIB6uNlwYtHbNxIbJ9RTF+GbVyiur/pEMw==
-X-Received: by 2002:a17:906:b746:b0:a31:6f39:9517 with SMTP id fx6-20020a170906b74600b00a316f399517mr207210ejb.299.1706178459780;
-        Thu, 25 Jan 2024 02:27:39 -0800 (PST)
+        bh=qS872QzcI9RYx6rQ9UXd6xffNXdTKVLXMYNRjv3PA84=;
+        b=UIRWIhDbz9X7dCVtc/xv5T6+0ICFwkdYqkdgGejvUsa60qhbmam20gr3wvw1anE6Kz
+         Kw0zlYMev022jUFuUwHDVYMSrHN1ZkhZGqd+FFe/vDTelIPLGKP1yxuTJSDS6t4yr5IF
+         5g9mQTIRByNqi0EObrd+mhTfCmCynAkYm/G0yk9R5ZQSBCgQTt7jLgD+6i4HRE1vpLkK
+         Nc21o8i6PooZ29SSoFEeBRK6Y/Q5F1R2XPsSwLtzSp1IsymkaAW17GSQ7ulO0EjCMqI/
+         wmgbBhH14IIwpA2LZ62bmY7OBsnLpBjUJH/BQ4eLGUVehKS6Q7sVJNShaNMY0mhYs63U
+         KvMA==
+X-Gm-Message-State: AOJu0Ywwq7BaHvN+WUQvsuQPXFv7Qebhm3oGa5PRgqnJYLtAhLsEoF6v
+	m9LxeiHRGIvwhhw8X1SRafDdvIK71hsSxwm3h0kld5YKSo8ON5HoNjQutTdGGNE=
+X-Google-Smtp-Source: AGHT+IG7W1x1ChGNejBuzNVo8nbpwbtXbh1ez79+xb/HQzHaLcoMRrZt/DH19dECmI7UVZur8qmgCg==
+X-Received: by 2002:a17:907:c20e:b0:a31:fff9:30cd with SMTP id ti14-20020a170907c20e00b00a31fff930cdmr128912ejc.48.1706178501224;
+        Thu, 25 Jan 2024 02:28:21 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id fj5-20020a1709069c8500b00a318504ecadsm386588ejc.10.2024.01.25.02.27.38
+        by smtp.gmail.com with ESMTPSA id fj5-20020a1709069c8500b00a318504ecadsm386588ejc.10.2024.01.25.02.28.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 02:27:39 -0800 (PST)
-Message-ID: <38852c07-ee51-44de-a616-7c3e86e88a8b@linaro.org>
-Date: Thu, 25 Jan 2024 11:27:37 +0100
+        Thu, 25 Jan 2024 02:28:20 -0800 (PST)
+Message-ID: <cc01d34f-97f4-499b-963f-77204055faa6@linaro.org>
+Date: Thu, 25 Jan 2024 11:28:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,7 +74,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: Unify "input-debounce" schema
+Subject: Re: [PATCH 2/2] dt-bindings: pinctrl: nuvoton,npcm845: Drop redundant
+ type for "slew-rate"
 Content-Language: en-US
 To: Rob Herring <robh@kernel.org>,
  Charles Keepax <ckeepax@opensource.cirrus.com>,
@@ -91,6 +92,7 @@ Cc: alsa-devel@alsa-project.org, linux-gpio@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  openbmc@lists.ozlabs.org
 References: <20240124190106.1540585-1-robh@kernel.org>
+ <20240124190106.1540585-2-robh@kernel.org>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -136,17 +138,17 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240124190106.1540585-1-robh@kernel.org>
+In-Reply-To: <20240124190106.1540585-2-robh@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 24/01/2024 20:01, Rob Herring wrote:
-> nuvoton,npcm845-pinctrl defines the common "input-debounce" property as
-> an array rather than an scalar. Update the common definition to expand
-> it to an uint32-array, and update all the users of the property with
-> array constraints.
+> pincfg-node.yaml already defines the type for "slew-rate", so drop the
+> type from the nuvoton,npcm845-pinctrl binding.
 > 
 > Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
