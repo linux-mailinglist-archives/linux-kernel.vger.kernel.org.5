@@ -1,112 +1,177 @@
-Return-Path: <linux-kernel+bounces-37837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2879283B640
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 01:52:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5BDA83B645
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 01:54:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD8A1B22561
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 00:52:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15C1EB21F08
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 00:54:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DE1F3236;
-	Thu, 25 Jan 2024 00:52:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F49D136F;
+	Thu, 25 Jan 2024 00:54:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kjVf039j"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ChTDwg+C"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B17EF193;
-	Thu, 25 Jan 2024 00:52:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A8D3EA9;
+	Thu, 25 Jan 2024 00:54:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706143939; cv=none; b=uoPgycZ6+RW/3scGPqz9qpL9X6hyiXcfmLJ+a7ebI9ncSPxmbMW8ykSZi7YfLM2BV86YIg61ZLSP4AE1jJJchCQixQOm8HGfGqNpNfTSDqrmLpYzFgrsk3oMMvKTswYzCMBaI2BHkzdEJt9BweYUbqBepyn4QDlmqBU4LpjAXec=
+	t=1706144079; cv=none; b=HOWyCxBrz2DaPgtW7cU5gLTlvHfWCaFtAnXOTHZXUI8DePyVwSbcVheTgZDVmqwZY+J/kYnCcFX2SdOculVW8IArFE8jFe11wGYd7aHiPu67Bysw6/Oxu4HN8ru6GvG7C1g+1nff10BBRyPHbmT+kzb8f7J4lfVsZ9G0uPKiwLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706143939; c=relaxed/simple;
-	bh=OC+XjcopZnLmb3krF+LmINeVCFSSzz1GKe4Bd/HF3is=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EfsSGH1+EOKHhba5bWNYBRYtKq5By0yfteYIkJy7eQ6Su0YLKeaF7/4MWnTo+QWOHmEJKfAGSuqgZ126UaJ1juAhhBRIglyv1BaxFQYKKoARFrUrSTljJkerej50QcJB3Sh+c1fMaMOXenUyA6B5RZlZuePf4yhwohXMcOVYaCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kjVf039j; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC799C433F1;
-	Thu, 25 Jan 2024 00:52:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706143939;
-	bh=OC+XjcopZnLmb3krF+LmINeVCFSSzz1GKe4Bd/HF3is=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kjVf039jecmwPe9R72x3rAlCy7CKTs7nEXwzknpB92pT0W5/sT6udGTVQ1r1ooKkL
-	 QzygMx99xtOFMc3xgRjzEjiK+KWse1MhzwiXhemYGRiX8tYKNg8QrmAsy3j4c2v0R2
-	 MG3n1VtEdNMKgyUKQ5qZhb0lvf0cQfJWPcLs5RWaZNvT0nJLMz7b+1jI1i+oY8oMEw
-	 DX3Aoi7n6PZuvySPFQic7XTReDwm7uxPykDUoTEr8ORokUt+x2GyV19gA+bKhDYRAb
-	 f404L0eJjoURXfAbvQ/nUgC8vpiaVgoUFMq+GyeYm+RXAJCQcF3iwweOPAEx4Z07fw
-	 bROl+5bpH/8lA==
-Date: Wed, 24 Jan 2024 17:52:15 -0700
-From: Keith Busch <kbusch@kernel.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: axboe@kernel.dk, hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, djwong@kernel.org,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
-	jack@suse.cz, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
-	ming.lei@redhat.com, ojaswin@linux.ibm.com, bvanassche@acm.org,
-	Alan Adamson <alan.adamson@oracle.com>
-Subject: Re: [PATCH v3 15/15] nvme: Ensure atomic writes will be executed
- atomically
-Message-ID: <ZbGwv4uFdJyfKtk5@kbusch-mbp.dhcp.thefacebook.com>
-References: <20240124113841.31824-1-john.g.garry@oracle.com>
- <20240124113841.31824-16-john.g.garry@oracle.com>
+	s=arc-20240116; t=1706144079; c=relaxed/simple;
+	bh=FzqykWuCJoJoX4tybj34XyCUyvzGyTun6uDYiAW2pF0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rlheHPobVg6v3Djyxr9RXxOvTWB17JCUBDql8ha32OJ9dDXZYl162TeLay5+R7fSbY6TgormGhjd8+fgacriy8AsY/YyyiKLvhaUXhrJhGp9Es6C6uChNX9iLpXsLMFPd0KdA0QUYsnzQVtoL2tScHSwdRcrNO+LR9ds9gQXat0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ChTDwg+C; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-336c8ab0b20so6001520f8f.1;
+        Wed, 24 Jan 2024 16:54:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706144076; x=1706748876; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a3GLAs2BQsaDpmFe+ANpjbfXLSKm2rkObjJFpjMlSgg=;
+        b=ChTDwg+Ceb63BN8Ze8Ja4u/fnxbTEckj0wgqV3JHYL1gfQrx03SdIuN/1GvakJpaUU
+         71oVyISfjU95UNeQKkgJrRYbYLVgokf3kEdE5L+4JvnEOZZT1eA8vSpXYoMdq2QxSWNQ
+         d3fHVhWvk9zqMRJpIUcXSFM045snetw7T02fM29rXWEMyQe3BEb6wQ451cuTgxvPUp2I
+         jGtKe1M3I91FnrFgn5GtIghDmPHNLxOJE8IGKdmeMQBLTwIX/XJSiZ8viAQMyjoJWmKn
+         FHf4HpKPKk9wHu6dRvmsGwIzz01NwxpDFKlMrf4w68bXYLPSoIvgxLn3n20oCff1Olvw
+         3cqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706144076; x=1706748876;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a3GLAs2BQsaDpmFe+ANpjbfXLSKm2rkObjJFpjMlSgg=;
+        b=VSfynBxR7BeFcaoUi3NG4ZAI5ndHFyw86qpWnNTpaDwBCIC32uZ5neo5npc43F5Z0q
+         TbwQf5Azp2UHPsmBu76RiLibrzF3fLKOzE+Uw44bu8r1xlo4aup6XZl98b06e2icxzoH
+         qv7LQ7mPSd7kx1p+ZqX5f3C1cflssYq3dmNqTMCTn4XTL+RsYIAMvDKZ7IZRnK4sJCN1
+         gLHVwwy7qJD7leGZcLrHd1MFxczn+KznoaRnaNr9B7cIqPaRT2X0FRETrkVr+9e/v1O9
+         bIAceONkeDhyHx/EeuqcjsvUZeJcUSpVgp8gZjoc9lbBFEDnit+8d0tF1jAAZEaWkH9p
+         HISg==
+X-Gm-Message-State: AOJu0Ywy7a5/KnjgHIWCrX/RdKOaokMUUBnnKlb+i3HYOYWI2X5ZSqot
+	Tfmhi22ynanYordpv362aJYkQ9/0QfDHWysDpttqd/CTYi2q+zveS03f9g8ClGb8QdqdGCSkmmG
+	bmq3GPJIgk0+sFkBf/sCoNtotHv0=
+X-Google-Smtp-Source: AGHT+IEzwiwY5RszluMn7OqT13AbBUtnewaJ0/R/SanG04IhAzps06ydKPEVCj9zr3Txlqe2GX/YPGi3TF8NqSqdJq8=
+X-Received: by 2002:a5d:56c5:0:b0:337:9f44:a0b4 with SMTP id
+ m5-20020a5d56c5000000b003379f44a0b4mr99803wrw.24.1706144075979; Wed, 24 Jan
+ 2024 16:54:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240124113841.31824-16-john.g.garry@oracle.com>
+References: <20240115144538.12018-1-max@enpas.org> <20240115144538.12018-6-max@enpas.org>
+In-Reply-To: <20240115144538.12018-6-max@enpas.org>
+From: Roderick Colenbrander <thunderbird2k@gmail.com>
+Date: Wed, 24 Jan 2024 16:54:24 -0800
+Message-ID: <CAEc3jaCYWpXX=YgeNzXJd0Pg4yn4WKqL=GBSAzaWNzo=3RSw1A@mail.gmail.com>
+Subject: Re: [PATCH v1 5/7] HID: playstation: DS4: Parse minimal report 0x01
+To: Max Staudt <max@enpas.org>
+Cc: Roderick Colenbrander <roderick.colenbrander@sony.com>, Jiri Kosina <jikos@kernel.org>, 
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>, linux-input@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 24, 2024 at 11:38:41AM +0000, John Garry wrote:
-> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-> index 5045c84f2516..6a34a5d92088 100644
-> --- a/drivers/nvme/host/core.c
-> +++ b/drivers/nvme/host/core.c
-> @@ -911,6 +911,32 @@ static inline blk_status_t nvme_setup_rw(struct nvme_ns *ns,
->  	if (req->cmd_flags & REQ_RAHEAD)
->  		dsmgmt |= NVME_RW_DSM_FREQ_PREFETCH;
->  
-> +	/*
-> +	 * Ensure that nothing has been sent which cannot be executed
-> +	 * atomically.
-> +	 */
-> +	if (req->cmd_flags & REQ_ATOMIC) {
-> +		struct nvme_ns_head *head = ns->head;
-> +		u32 boundary_bytes = head->atomic_boundary;
-> +
-> +		if (blk_rq_bytes(req) > ns->head->atomic_max)
-> +			return BLK_STS_IOERR;
-> +
-> +		if (boundary_bytes) {
-> +			u32 mask = boundary_bytes - 1, imask = ~mask;
-> +			u32 start = blk_rq_pos(req) << SECTOR_SHIFT;
-> +			u32 end = start + blk_rq_bytes(req);
-> +
-> +			if (blk_rq_bytes(req) > boundary_bytes)
-> +				return BLK_STS_IOERR;
-> +
-> +			if (((start & imask) != (end & imask)) &&
-> +			    (end & mask)) {
-> +				return BLK_STS_IOERR;
-> +			}
-> +		}
-> +	}
+Hi Max,
 
-Aren't these new fields, atomic_max and atomic_boundary, duplicates of
-the equivalent queue limits? Let's just use the queue limits instead.
+On Mon, Jan 15, 2024 at 6:52=E2=80=AFAM Max Staudt <max@enpas.org> wrote:
+>
+> Some third-party controllers never switch to the full 0x11 report.
+>
+> They keep sending the short 0x01 report, so let's parse that instead.
+>
+> Signed-off-by: Max Staudt <max@enpas.org>
+> ---
+>  drivers/hid/hid-playstation.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+>
+> diff --git a/drivers/hid/hid-playstation.c b/drivers/hid/hid-playstation.=
+c
+> index 2bf44bd3cc8a..086b0768fa51 100644
+> --- a/drivers/hid/hid-playstation.c
+> +++ b/drivers/hid/hid-playstation.c
+> @@ -287,6 +287,8 @@ struct dualsense_output_report {
+>
+>  #define DS4_INPUT_REPORT_USB                   0x01
+>  #define DS4_INPUT_REPORT_USB_SIZE              64
+> +#define DS4_INPUT_REPORT_BT_MINIMAL            0x01
+> +#define DS4_INPUT_REPORT_BT_MINIMAL_SIZE       10
+>  #define DS4_INPUT_REPORT_BT                    0x11
+>  #define DS4_INPUT_REPORT_BT_SIZE               78
+>  #define DS4_OUTPUT_REPORT_USB                  0x05
+> @@ -2198,6 +2200,7 @@ static int dualshock4_parse_report(struct ps_device=
+ *ps_dev, struct hid_report *
+>         int battery_status, i, j;
+>         uint16_t sensor_timestamp;
+>         unsigned long flags;
+> +       bool is_minimal =3D false;
+>
+>         /*
+>          * DualShock4 in USB uses the full HID report for reportID 1, but
+> @@ -2225,6 +2228,18 @@ static int dualshock4_parse_report(struct ps_devic=
+e *ps_dev, struct hid_report *
+>                 ds4_report =3D &bt->common;
+>                 num_touch_reports =3D bt->num_touch_reports;
+>                 touch_reports =3D bt->touch_reports;
+> +       } else if (hdev->bus =3D=3D BUS_BLUETOOTH &&
+> +                  report->id =3D=3D DS4_INPUT_REPORT_BT_MINIMAL &&
+> +                        size =3D=3D DS4_INPUT_REPORT_BT_MINIMAL_SIZE) {
+> +               /* Some third-party pads never switch to the full 0x11 re=
+port.
+> +                * The short 0x01 report is 10 bytes long:
+> +                *   u8 report_id =3D=3D 0x01
+> +                *   u8 first_bytes_of_full_report[9]
+> +                * So let's reuse the full report parser, and stop it aft=
+er
+> +                * parsing the buttons.
+> +                */
+> +               ds4_report =3D (struct dualshock4_input_report_common *)&=
+data[1];
+> +               is_minimal =3D true;
+>         } else {
+>                 hid_err(hdev, "Unhandled reportID=3D%d\n", report->id);
+>                 return -1;
+> @@ -2258,6 +2273,9 @@ static int dualshock4_parse_report(struct ps_device=
+ *ps_dev, struct hid_report *
+>         input_report_key(ds4->gamepad, BTN_MODE,   ds4_report->buttons[2]=
+ & DS_BUTTONS2_PS_HOME);
+>         input_sync(ds4->gamepad);
+>
+> +       if (is_minimal)
+> +               goto finish_minimal;
+> +
 
-And couldn't we generically validate the constraints are not violated in
-submit_bio_noacct() instead of doing that in the low level driver? The
-driver assumes all other requests are already sanity checked, so I don't
-think we should change the responsibility for that just for this flag.
+I would say let's turn this into a 'return 0'. The goto is not useful
+since there is no need for any common cleanup or some other common
+logic later.
+
+>         /* Parse and calibrate gyroscope data. */
+>         for (i =3D 0; i < ARRAY_SIZE(ds4_report->gyro); i++) {
+>                 int raw_data =3D (short)le16_to_cpu(ds4_report->gyro[i]);
+> @@ -2365,6 +2383,7 @@ static int dualshock4_parse_report(struct ps_device=
+ *ps_dev, struct hid_report *
+>         ps_dev->battery_status =3D battery_status;
+>         spin_unlock_irqrestore(&ps_dev->lock, flags);
+>
+> +finish_minimal:
+>         return 0;
+>  }
+>
+> --
+> 2.39.2
+>
+>
+
+Thanks,
+Roderick
 
