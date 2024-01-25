@@ -1,180 +1,142 @@
-Return-Path: <linux-kernel+bounces-38254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96D3883BD34
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:27:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26E2F83BD35
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:27:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBA621C21E65
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:27:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 330EEB2BB45
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:27:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 392361BDC8;
-	Thu, 25 Jan 2024 09:27:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F9EB1BC5C;
+	Thu, 25 Jan 2024 09:27:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="aamXmgNw"
-Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2RdueRfj"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C16301B967
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:27:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 289771BC3E
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:27:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706174826; cv=none; b=rHkHblp3rrAEbAYkARrR/W+/fzSkUCsX28lWdxPi4ywBeKUejPnvjr+2s65Oc1o2IMCws5BWBtV6FQSsIeEBig6bL9RVhl3myl/tjcYg9WMNB/UHdVr1YOeMVo3kLja6EDVEUCfaNrBwlXYW7j63fuN2ZunZo/PvpTA7UsnKNmM=
+	t=1706174855; cv=none; b=QJ4CuUwVX4mRawo4JzyG5mIGWk6Da4wWHcKYFKeXd/8X0R4TD5jEo3j2ydFaRknSqSlCqCM8bC7/ptsDy2V4AMBzwP9/V1NyaY8Zyb/sEEFsv1ndZfYDG5SW645UCqgnDuYYQ8Dok0q7Uzwltnvw5oN20y/aXk8zL/YDPpPYXbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706174826; c=relaxed/simple;
-	bh=488//va03Lc+B/1ZyVuMhHZy+u75yY7UHFrjzmg8sAw=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BppcVuSMVdeDz8/73ykJBgz5xChdebDov/aK41MGf0gQssMAA98DnNw6VvnGVx3TAtcYws7n1gFqg6Pjo3tgTQvhpFzjk0e2hblJTbcyAU8qIsU84P7de5A+BRxJvZSrHc846iqATj6SXp/c8iDmna5/gAbBGcdT7Mk30UuCBSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=aamXmgNw; arc=none smtp.client-ip=185.70.40.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1706174821; x=1706434021;
-	bh=VXueD5sixGPDTa6BhUDnnsLagnOCQf9tNkKiKlaVKTY=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=aamXmgNwwKSW97xc2/lztAj/XZ+IpEf9YCkJzEPQSBQ/t+QV3TP1t/iDzLXjOM1jb
-	 nAD+PCQjoglFNEwp6zs+OXw5VvPw7KFfSrZuIbgr1prXnZ4kAs31BR+N5Z2GhLW+Bz
-	 XMLK2ifAfUy+ciRK7qzOHpl+x/tLH/8+1VaHh4gtzJt0b9+cNvqs2DLmSdUk4VRCHe
-	 35K9zn/vLG5P6Pl0D6tdwY+eQiz8sP+Ho8ZEZjCeMtD/h8jgczNV7/pKV9Y3DSwkGv
-	 ce8Z/telLXlvihEO18bufrzoFnncbx1CHRGrPYgv1aEQxzZKyrVN02ecQ2fAYwVfIL
-	 VLAEudG8EbFzw==
-Date: Thu, 25 Jan 2024 09:26:52 +0000
-To: "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>, Damien Le Moal <Damien.LeMoal@wdc.com>, Hannes Reinecke <hare@suse.de>, lsf-pc@lists.linux-foundation.org, rust-for-linux@vger.kernel.org, linux-block@vger.kernel.org, Matthew Wilcox <willy@infradead.org>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, linux-kernel@vger.kernel.org, gost.dev@samsung.com
-Subject: Re: [RFC PATCH 03/11] rust: block: introduce `kernel::block::mq` module
-Message-ID: <59f007a0-bb30-4291-ab49-0e69112e2566@proton.me>
-In-Reply-To: <874jf3kflx.fsf@metaspace.dk>
-References: <20230503090708.2524310-1-nmi@metaspace.dk> <20230503090708.2524310-4-nmi@metaspace.dk> <iL2M45BoRlK6yS9y8uo0A5yUXcZWMkdk3vtH3LRFSWXfvPVagVZ-0YC7taIKOBFUcjJYA_2xNNFPoC4WL-_ulCHOLkbqvsZlIshE_LEeYtU=@proton.me> <87il3kjgk0.fsf@metaspace.dk> <104a22f7-a5bb-4fb6-9ce9-aa2d4e63417f@proton.me> <874jf3kflx.fsf@metaspace.dk>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1706174855; c=relaxed/simple;
+	bh=jxu9V88yZ4UG+aRX+313RxWb5ML+i/iwlaR54KeMD+s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qbmUMtvbLUwjAIohB0P+y7T5RtqVXG/UWueL7vgSFRWjSNay6/q6lVZoto14xa0i3+77KYDoOmZiTEOVW6NbLP0ZXCcYp3QPcsLUP9pJMVbEmJP1EkrjNwWhArm/dItJIb6x/aIjtO3eGZ0hDBn62DhoheDgfK/grWq9XG9LtM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2RdueRfj; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a30b3a9e9c6so351542866b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 01:27:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706174852; x=1706779652; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jxu9V88yZ4UG+aRX+313RxWb5ML+i/iwlaR54KeMD+s=;
+        b=2RdueRfj+ygV1uHTW+ycrqr2NObDygr5/nJmTxoRqCwlNNn49fQhrA35+b1d+2qNvS
+         HJSdrbTErPq/TLmhXB22+9MxVvIdanOxihqQnmdsBDsjBIsSXK6UwHgLgTzP1wEw4xFz
+         4cpvVSLgYMXITMol0lZhW0fHLhEyT23GRhJJ0BaafByTh1QI3cqKTc+Ubt7R4/OdMVxo
+         0jgsNL56y5soz4I2wvymoWdSU8e9YI0JNs1cLcPJmLOJwwlmmTEGSSW4HONqEAK6+7oK
+         AwsYRpZn7xPLdLkbb6n7UTrploKzdaJdpl2ewJfmKg9pgn1aUezRFwcGHHkWj8Jkcqoz
+         /zzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706174852; x=1706779652;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jxu9V88yZ4UG+aRX+313RxWb5ML+i/iwlaR54KeMD+s=;
+        b=pj6OaON1AChr4nxOcKe7c252MKSR1t6JS0t4NraFPZ61Yn+SKNxSDY8A8/nnDkmqcL
+         zjvwey68B4BusbXfneNmEvNoDEhgZRGsyWIwei38QdFmMZjiZEmz6A0IpYIZ1IzpeF78
+         pc6UpbDKq55ry9KETmO/cBxAlS9Ak/B2/JsJZzJIuFXIZww3vpOx5cEYwXzHR2zCfDn4
+         DsioGmhPF+/cL/Dq8g6qC0tvSrgqJTcLtFr9qk61ltqDEARu/aMMsvVH5RUTNeUmRAQU
+         c/URzI0p8TUkW982TbiMwg4rB26V3mMbyc0ZXgbHlgcZJBMlOl4lemZYnXGUldY1rPVG
+         /l5A==
+X-Gm-Message-State: AOJu0Yzwn0MitLONesuAD9pvsWyrLkq/zNGKPMH+PtrRYMqoxsphUGbr
+	4f9iObor3hF3r7aJC3S1nFiCJDGjrBhcqXidZV0oMIQ6gaa9Jnd+rjdXNmMKbjk0HZqGamPVQG2
+	jhV8szXUx79Wx2umGYS3khh+W8z42Q5t0uGjY4jtmk7qCtZ12Wz16
+X-Google-Smtp-Source: AGHT+IHbGQaeXi5No/2WNrUVDS8iMvqeU07IVEV094Noq1vLvOQCbf1UJl4TTMMDDGyNMp2P8E1fyOD057RP4WlyE1I=
+X-Received: by 2002:a17:906:c056:b0:a30:deb6:1bb7 with SMTP id
+ bm22-20020a170906c05600b00a30deb61bb7mr211283ejb.132.1706174852166; Thu, 25
+ Jan 2024 01:27:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20240120024007.2850671-1-yosryahmed@google.com>
+ <20240120024007.2850671-3-yosryahmed@google.com> <20240122201906.GA1567330@cmpxchg.org>
+ <CAJD7tkaATS48HVuBfbOmPM3EvRUoPFr66WhF64UC4FkyVH5exg@mail.gmail.com>
+ <20240123153851.GA1745986@cmpxchg.org> <CAJD7tkasHsRnT_75-TXsEe58V9_OW6m3g6CF7Kmsvz8CKRG_EA@mail.gmail.com>
+ <20240123201234.GC1745986@cmpxchg.org> <CAJD7tkZC6w2EaE=j2NEVWn1s7Lo2A7YZh8LiZ+w72jQzFFWLUQ@mail.gmail.com>
+ <f3fa799f-1815-4cfe-abc8-3ba929fcd1ba@bytedance.com> <CAJD7tka6UuEuuP=df-1V3vwsi0T0QhLORTRDs6qDvA81iY6SGA@mail.gmail.com>
+ <1496dce3-a4bb-4ccf-92d6-701a45b67da3@bytedance.com> <CAJD7tkbrQw7FWx-EDKKCtH_E03xEd5Y+8BqRjE8d29JSOCGybg@mail.gmail.com>
+ <35c3b0e5-a5eb-44b2-aa7d-3167f4603c73@bytedance.com> <CAJD7tkak+ZA8t+AVbYNXYWnrmVBBs=NfMTBQBsnHJQni2=gG2Q@mail.gmail.com>
+ <1a8a513f-fa84-41ca-b7f4-62726e78fd31@bytedance.com>
+In-Reply-To: <1a8a513f-fa84-41ca-b7f4-62726e78fd31@bytedance.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Thu, 25 Jan 2024 01:26:56 -0800
+Message-ID: <CAJD7tkYBLkh82VQ6DmNQNXtnCxTVOY_7JRjARRtDrkKfKyTFSQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm: zswap: remove unnecessary tree cleanups in zswap_swapoff()
+To: Chengming Zhou <zhouchengming@bytedance.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Nhat Pham <nphamcs@gmail.com>, Chris Li <chrisl@kernel.org>, Huang Ying <ying.huang@intel.com>, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On 23.01.24 19:39, Andreas Hindborg (Samsung) wrote:
->>>>> +/// A generic block device
->>>>> +///
->>>>> +/// # Invariants
->>>>> +///
->>>>> +///  - `gendisk` must always point to an initialized and valid `stru=
-ct gendisk`.
->>>>> +pub struct GenDisk<T: Operations> {
->>>>> +    _tagset: Arc<TagSet<T>>,
->>>>> +    gendisk: *mut bindings::gendisk,
->>>>
->>>> Why are these two fields not embedded? Shouldn't the user decide where
->>>> to allocate?
->>>
->>> The `TagSet` can be shared between multiple `GenDisk`. Using an `Arc`
->>> seems resonable?
->>>
->>> For the `gendisk` field, the allocation is done by C and the address
->>> must be stable. We are owning the pointee and must drop it when it goes=
- out
->>> of scope. I could do this:
->>>
->>> #[repr(transparent)]
->>> struct GenDisk(Opaque<bindings::gendisk>);
->>>
->>> struct UniqueGenDiskRef {
->>>       _tagset: Arc<TagSet<T>>,
->>>       gendisk: Pin<&'static mut GenDisk>,
->>>
->>> }
->>>
->>> but it seems pointless. `struct GenDisk` would not be pub in that case.=
- What do you think?
->>
->> Hmm, I am a bit confused as to how you usually use a `struct gendisk`.
->> You said that a `TagSet` might be shared between multiple `GenDisk`s,
->> but that is not facilitated by the C side?
->>
->> Is it the case that on the C side you create a struct containing a
->> tagset and a gendisk for every block device you want to represent?
->=20
-> Yes, but the `struct tag_set` can be shared between multiple `struct
-> gendisk`.
->=20
-> Let me try to elaborate:
->=20
-> In C you would first allocate a `struct tag_set` and partially
-> initialize it. The allocation can be dynamic, static or part of existing
-> allocation. You would then partially initialize the structure and finish
-> the initialization by calling `blk_mq_alloc_tag_set()`. This populates
-> the rest of the structure which includes more dynamic allocations.
->=20
-> You then allocate a `struct gendisk` by calling `blk_mq_alloc_disk()`,
-> passing in a pointer to the `struct tag_set` you just created. This
-> function will return a pointer to a `struct gendisk` on success.
->=20
-> In the Rust abstractions, we allocate the `TagSet`:
->=20
-> #[pin_data(PinnedDrop)]
-> #[repr(transparent)]
-> pub struct TagSet<T: Operations> {
->      #[pin]
->      inner: Opaque<bindings::blk_mq_tag_set>,
->      _p: PhantomData<T>,
-> }
->=20
-> with `PinInit` [^1]. The initializer will partially initialize the struct=
- and
-> finish the initialization like C does by calling
-> `blk_mq_alloc_tag_set()`. We now need a place to point the initializer.
-> `Arc::pin_init()` is that place for now. It allows us to pass the
-> `TagSet` reference to multiple `GenDisk` if required. Maybe we could be
-> generic over `Deref<TagSet>` in the future. Bottom line is that we need
-> to hold on to that `TagSet` reference until the `GenDisk` is dropped.
+On Thu, Jan 25, 2024 at 1:22=E2=80=AFAM Chengming Zhou
+<zhouchengming@bytedance.com> wrote:
+>
+> On 2024/1/25 17:03, Yosry Ahmed wrote:
+> >>>>>> The second difference is the handling of lru entry, which is easy =
+that we
+> >>>>>> just zswap_lru_del() in tree lock.
+> >>>>>
+> >>>>> Why do we need zswap_lru_del() at all? We should have already isola=
+ted
+> >>>>> the entry at that point IIUC.
+> >>>>
+> >>>> I was thinking how to handle the "zswap_lru_putback()" if not writeb=
+ack,
+> >>>> in which case we can't use the entry actually since we haven't got r=
+eference
+> >>>> of it. So we can don't isolate at the entry, and only zswap_lru_del(=
+) when
+> >>>> we are going to writeback actually.
+> >>>
+> >>> Why not just call zswap_lru_putback() before we unlock the folio?
+> >>
+> >> When early return because __read_swap_cache_async() return NULL or !fo=
+lio_was_allocated,
+> >> we don't have a locked folio yet. The entry maybe invalidated and free=
+d concurrently.
+> >
+> > Oh, that path, right.
+> >
+> > If we don't isolate the entry straightaway, concurrent reclaimers will
+> > see the same entry, call __read_swap_cache_async(), find the folio
+> > already in the swapcache and stop shrinking. This is because usually
+> > this means we are racing with swapin and hitting the warmer part of
+> > the zswap LRU.
+> >
+> > I am not sure if this would matter in practice, maybe Nhat knows
+> > better. Perhaps we can rotate the entry in the LRU before calling
+> > __read_swap_cache_async() to minimize the chances of such a race? Or
+> > we can serialize the calls to __read_swap_cache_async() but this may
+> > be an overkill.
+>
+> Also, not sure, rotate the entry maybe good IMHO since we will zswap_lru_=
+del()
+> once we checked the invalidate race.
 
-I see, thanks for the elaborate explanation! I now think that using `Arc`
-makes sense.
-
-> `struct tag_set` is not reference counted on the C side. C
-> implementations just take care to keep it alive, for instance by storing
-> it next to a pointer to `struct gendisk` that it is servicing.
-
-This is interesting, is this also done in the case where it is shared
-among multiple `struct gendisk`s?
-Does this have some deeper reason? Or am I right to assume that creating
-`Gendisk`/`TagSet` is done rarely (i.e. only at initialization of the
-driver)?
-
->> And you decided for the Rust abstractions that you want to have only a
->> single generic struct for any block device, distinguished by the generic
->> parameter?
->=20
-> Yes, we have a single generic struct (`GenDisk`) representing the C
-> `struct gendisk`, and a single generic struct (`TagSet`) representing
-> the C `struct tag_set`. These are both generic over `T: Operations`.
-> `Operations` represent a C vtable (`struct blk_mq_ops`) attached to the
-> `struct tag_set`. This vtable is provided by the driver and holds
-> function pointers that allow the kernel to perform actions such as queue
-> IO requests with the driver. A C driver can instantiate multiple `struct
-> gendisk` and service them with the same `struct tag_set` and thereby the
-> same vtable. Or it can use separate tag sets and the same vtable. Or a
-> separate tag_set and vtable for each gendisk.
->=20
->> I think these kinds of details would be nice to know. Not only for
->> reviewers, but also for veterans of the C APIs.
->=20
-> I should write some module level documentation clarifying the use of
-> these types. The null block driver is a simple example, but it is just
-> code. I will include more docs in the next version.
-
-Thanks a lot for explaining!
-
---=20
-Cheers,
-Benno
-
-
+Not sure what you mean. If we rotate first, we won't have anything to
+do in the failure case (if the folio is not locked). We will have to
+do zswap_lru_del() if actually writeback, yes, but in this case no
+synchronization is needed because the folio is locked, right?
 
