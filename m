@@ -1,116 +1,477 @@
-Return-Path: <linux-kernel+bounces-37956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EC2C83B8C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 05:50:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2334283B8C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 05:49:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 527E0287C9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 04:50:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E8C5B24275
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 04:49:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21D1E848E;
-	Thu, 25 Jan 2024 04:50:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 054A8D287;
+	Thu, 25 Jan 2024 04:48:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="G+IdD3WA"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eV7QK4TR"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C25E79C6
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 04:50:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F281579C3
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 04:48:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706158242; cv=none; b=UpHpXj75FvTTjwdK9ZqN4wIwTCXTnNVcOWs4XvjMKF4VUDCO/gzTnbNSBB2yCXMT4XjNMycENPOgU0WWV7jleAGoY0l6bDTGi+6QkGnBdaOEF6pWlx/u8N1eDt6GraxEpcpyC35PUyww5U+K70kPm7/chNwD+yCvUoCJ4CNLmWU=
+	t=1706158136; cv=none; b=fHGYD9+usoczvBGbQf3XU/mxthZ/QmsnquMCHdLC5qAqXhXvAKLWAAxAMDFQZlGAduM2Ro5z7K8fqhF2HhpwiNjLuvf56S+zu+2j0D+Ho8A+L44AjTLG+iR2VBu5SHwCCwHmEzSgHRH25BlUzBFn14LTBwY5arl9slWQjq/ePwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706158242; c=relaxed/simple;
-	bh=2RWN9M36qX+9GZm4Tq3aYzHlPiLa+w1ufmGXtNpU1A8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Cw9tpv5K5jqctLJS90EEWqColovUXSDdb7W792KwrhrVyFwkaEsY+NKCZF7PYOpNaD2yls+XEHaRPv8USu4Z/t1OECCH3U1KefuP175THHUsbsNn51vgH/aqHc2tbBGZ2HhK0hbvQ/2GP2sJAiugT15Revro8GGIfoGc5XkC8qM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=G+IdD3WA; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1706158136; c=relaxed/simple;
+	bh=6DdzQ2E9OeQMD4Ll7S27cDySmDqNA/T9HcWDxZD1J/8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ykbnpf1xBP7VNYk+sxZakBDHzJXHFX1XDZF33ka3G7vjdjsg49HQFSPATDvP+ryOVbcxsxh2u6RhJK9ufA8R2nul3yZWDL0M23F3S3yCGNUQJ3ZthzvCwTUofnc8OV1YPHtceQgiMzRIsWNVJeDllhg8xg/fZnj7yBeFA/0oa+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eV7QK4TR; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706158239;
+	s=mimecast20190719; t=1706158133;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=G6eOL3R6irziHLXuND4grbP4rQI+ngEPSNB6hi5Up78=;
-	b=G+IdD3WA1yrcgdJsB03bB2s9bBpjEc2RknbD+FhqNMFQKDz1jDgarHApdG25E96/9w5tcp
-	wWL9fZR27K1doTps08offnl9evngyVtPKog7XmsJ+FjDSGwNJwt153HdIWEjJv2Dxlpqee
-	E4ad0dyCfpu/ptIf5CbMaFjvg8Folmw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5DnZRXqjQvdY1jAfdan5L6v5dW2MXXnZETrlS+Qv9f4=;
+	b=eV7QK4TRVWuynFxTEz4I0ND3zGBKGiXdSlN9dI8fIMqszPhs5piQIWqVHcuV0u/Xis7btH
+	LldPe0G/XlDQH92W5cpkJ3vTlxrQKZU/3ek9M51eB7Mg+E2D62zgZwSiFXINpr7MWVDGK0
+	N8hcUDbCc/FSeLJ56J9OPb0koNWR4L4=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-206-7r5lIxgdMr2uRCoLCWVw7g-1; Wed, 24 Jan 2024 23:50:34 -0500
-X-MC-Unique: 7r5lIxgdMr2uRCoLCWVw7g-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 090658828C3;
-	Thu, 25 Jan 2024 04:50:34 +0000 (UTC)
-Received: from li-a71a4dcc-35d1-11b2-a85c-951838863c8d.ibm.com.com (unknown [10.72.112.211])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 9CAE93C2E;
-	Thu, 25 Jan 2024 04:50:29 +0000 (UTC)
-From: xiubli@redhat.com
-To: linux-fscrypt@vger.kernel.org
-Cc: ebiggers@kernel.org,
-	tytso@mit.edu,
-	jaegeuk@kernel.org,
-	linux-kernel@vger.kernel.org,
-	idryomov@gmail.com,
-	ceph-devel@vger.kernel.org,
-	jlayton@kernel.org,
-	vshankar@redhat.com,
-	Xiubo Li <xiubli@redhat.com>
-Subject: [PATCH] fscrypt: to make sure the inode->i_blkbits is correctly set
-Date: Thu, 25 Jan 2024 12:48:25 +0800
-Message-ID: <20240125044826.1294268-1-xiubli@redhat.com>
+ us-mta-352-zD4t-2TfNCasJ3LvxVONmQ-1; Wed, 24 Jan 2024 23:48:51 -0500
+X-MC-Unique: zD4t-2TfNCasJ3LvxVONmQ-1
+Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-59900bec87eso6363580eaf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 20:48:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706158130; x=1706762930;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5DnZRXqjQvdY1jAfdan5L6v5dW2MXXnZETrlS+Qv9f4=;
+        b=VEykm8zrCXJsSs9/SOR0cgdmlkeR7X6r0c1uZQ9mLLgkPnNgPF2g5vKBz5fF+ZOtsU
+         HKJkY2/ZsHtEvUM3qaAhvJM1we0adLutlgCexiKh9zhHvIavMcyVWnrrnQIXpPc53kbx
+         djy+m08QN2m6D/zT8xIzNJHZAlTjnpKyLdDyV4toWaeP+cBFyUphvgeL+/ekipUrY22Z
+         oFVpcxJxMTtjp52m1tRxCLQav2e7VnfVeLLhiJ0e1RZ2XLiYoXpWfeQk/IZ+Q3/+9gVz
+         okI9qbbQGr/bMAGaaWbc49crPvQgAYikmryRrrSxaIC1glAOJACV8phJPvIj0e+NCy78
+         6ZrA==
+X-Gm-Message-State: AOJu0Yw5FOm6zpF5C/HcYcYTWsNdzAQeXD5qnNB3uEqU/GyBk2a6PuBi
+	vnKJkw7SrUMnUUa3cVCWoPIp8x+SBK5NO3d+Id7zqlAjzEA+Z+1aky8ElxsrU7PD/XW/5h408Rd
+	dqCovHRJ8c48l6XdJwAZ7XLQ8O2Am1Hc9gJNJSPJoTRirjizr1+hg4nYuVWV0P7aj000nPPeOw1
+	vU6yUBi3KfGP4Brluu9AicwKoS2GborP3FDYXG
+X-Received: by 2002:a05:6358:880a:b0:176:7d13:d70e with SMTP id hv10-20020a056358880a00b001767d13d70emr611994rwb.16.1706158130345;
+        Wed, 24 Jan 2024 20:48:50 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFddJIzi0ITLTVUmZVAdoejjTy2B/LClBNQ5q3+0akCp/DD67U3ZDcor5HcvQgQAKcj2DPfjkq9KQFUSYNFNKM=
+X-Received: by 2002:a05:6358:880a:b0:176:7d13:d70e with SMTP id
+ hv10-20020a056358880a00b001767d13d70emr611981rwb.16.1706158129995; Wed, 24
+ Jan 2024 20:48:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+References: <1706089075-16084-1-git-send-email-wangyunjian@huawei.com>
+In-Reply-To: <1706089075-16084-1-git-send-email-wangyunjian@huawei.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Thu, 25 Jan 2024 12:48:38 +0800
+Message-ID: <CACGkMEu5PaBgh37X4KysoF9YB8qy6jM5W4G6sm+8fjrnK36KXA@mail.gmail.com>
+Subject: Re: [PATCH net-next 2/2] tun: AF_XDP Rx zero-copy support
+To: Yunjian Wang <wangyunjian@huawei.com>
+Cc: mst@redhat.com, willemdebruijn.kernel@gmail.com, kuba@kernel.org, 
+	davem@davemloft.net, magnus.karlsson@intel.com, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
+	virtualization@lists.linux.dev, xudingke@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Xiubo Li <xiubli@redhat.com>
+On Wed, Jan 24, 2024 at 5:38=E2=80=AFPM Yunjian Wang <wangyunjian@huawei.co=
+m> wrote:
+>
+> Now the zero-copy feature of AF_XDP socket is supported by some
+> drivers, which can reduce CPU utilization on the xdp program.
+> This patch set allows tun to support AF_XDP Rx zero-copy feature.
+>
+> This patch tries to address this by:
+> - Use peek_len to consume a xsk->desc and get xsk->desc length.
+> - When the tun support AF_XDP Rx zero-copy, the vq's array maybe empty.
+> So add a check for empty vq's array in vhost_net_buf_produce().
+> - add XDP_SETUP_XSK_POOL and ndo_xsk_wakeup callback support
+> - add tun_put_user_desc function to copy the Rx data to VM
 
-The inode->i_blkbits should be already set before calling
-fscrypt_get_encryption_info() and it will be used this to setup the
-ci_data_unit_bits.
+Code explains themselves, let's explain why you need to do this.
 
-Signed-off-by: Xiubo Li <xiubli@redhat.com>
----
- fs/crypto/keysetup.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+1) why you want to use peek_len
+2) for "vq's array", what does it mean?
+3) from the view of TUN/TAP tun_put_user_desc() is the TX path, so I
+guess you meant TX zerocopy instead of RX (as I don't see codes for
+RX?)
 
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index d71f7c799e79..909187e52bae 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -702,6 +702,9 @@ int fscrypt_get_encryption_info(struct inode *inode, bool allow_unsupported)
-  * This doesn't persist the new inode's encryption context.  That still needs to
-  * be done later by calling fscrypt_set_context().
-  *
-+ * Please note that the inode->i_blkbits should be already set before calling
-+ * this and later it will be used to setup the ci_data_unit_bits.
-+ *
-  * Return: 0 on success, -ENOKEY if the encryption key is missing, or another
-  *	   -errno code
-  */
-@@ -717,6 +720,9 @@ int fscrypt_prepare_new_inode(struct inode *dir, struct inode *inode,
- 	if (IS_ERR(policy))
- 		return PTR_ERR(policy);
- 
-+	if (WARN_ON_ONCE(inode->i_blkbits == 0))
-+		return -EINVAL;
-+
- 	if (WARN_ON_ONCE(inode->i_mode == 0))
- 		return -EINVAL;
- 
--- 
-2.43.0
+A big question is how could you handle GSO packets from userspace/guests?
+
+>
+> Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
+> ---
+>  drivers/net/tun.c   | 165 +++++++++++++++++++++++++++++++++++++++++++-
+>  drivers/vhost/net.c |  18 +++--
+>  2 files changed, 176 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+> index afa5497f7c35..248b0f8e07d1 100644
+> --- a/drivers/net/tun.c
+> +++ b/drivers/net/tun.c
+> @@ -77,6 +77,7 @@
+>  #include <net/ax25.h>
+>  #include <net/rose.h>
+>  #include <net/6lowpan.h>
+> +#include <net/xdp_sock_drv.h>
+>
+>  #include <linux/uaccess.h>
+>  #include <linux/proc_fs.h>
+> @@ -145,6 +146,10 @@ struct tun_file {
+>         struct tun_struct *detached;
+>         struct ptr_ring tx_ring;
+>         struct xdp_rxq_info xdp_rxq;
+> +       struct xdp_desc desc;
+> +       /* protects xsk pool */
+> +       spinlock_t pool_lock;
+> +       struct xsk_buff_pool *pool;
+>  };
+>
+>  struct tun_page {
+> @@ -208,6 +213,8 @@ struct tun_struct {
+>         struct bpf_prog __rcu *xdp_prog;
+>         struct tun_prog __rcu *steering_prog;
+>         struct tun_prog __rcu *filter_prog;
+> +       /* tracks AF_XDP ZC enabled queues */
+> +       unsigned long *af_xdp_zc_qps;
+>         struct ethtool_link_ksettings link_ksettings;
+>         /* init args */
+>         struct file *file;
+> @@ -795,6 +802,8 @@ static int tun_attach(struct tun_struct *tun, struct =
+file *file,
+>
+>         tfile->queue_index =3D tun->numqueues;
+>         tfile->socket.sk->sk_shutdown &=3D ~RCV_SHUTDOWN;
+> +       tfile->desc.len =3D 0;
+> +       tfile->pool =3D NULL;
+>
+>         if (tfile->detached) {
+>                 /* Re-attach detached tfile, updating XDP queue_index */
+> @@ -989,6 +998,13 @@ static int tun_net_init(struct net_device *dev)
+>                 return err;
+>         }
+>
+> +       tun->af_xdp_zc_qps =3D bitmap_zalloc(MAX_TAP_QUEUES, GFP_KERNEL);
+> +       if (!tun->af_xdp_zc_qps) {
+> +               security_tun_dev_free_security(tun->security);
+> +               free_percpu(dev->tstats);
+> +               return -ENOMEM;
+> +       }
+> +
+>         tun_flow_init(tun);
+>
+>         dev->hw_features =3D NETIF_F_SG | NETIF_F_FRAGLIST |
+> @@ -1009,6 +1025,7 @@ static int tun_net_init(struct net_device *dev)
+>                 tun_flow_uninit(tun);
+>                 security_tun_dev_free_security(tun->security);
+>                 free_percpu(dev->tstats);
+> +               bitmap_free(tun->af_xdp_zc_qps);
+>                 return err;
+>         }
+>         return 0;
+> @@ -1222,11 +1239,77 @@ static int tun_xdp_set(struct net_device *dev, st=
+ruct bpf_prog *prog,
+>         return 0;
+>  }
+>
+> +static int tun_xsk_pool_enable(struct net_device *netdev,
+> +                              struct xsk_buff_pool *pool,
+> +                              u16 qid)
+> +{
+> +       struct tun_struct *tun =3D netdev_priv(netdev);
+> +       struct tun_file *tfile;
+> +       unsigned long flags;
+> +
+> +       rcu_read_lock();
+> +       tfile =3D rtnl_dereference(tun->tfiles[qid]);
+> +       if (!tfile) {
+> +               rcu_read_unlock();
+> +               return -ENODEV;
+> +       }
+> +
+> +       spin_lock_irqsave(&tfile->pool_lock, flags);
+> +       xsk_pool_set_rxq_info(pool, &tfile->xdp_rxq);
+> +       tfile->pool =3D pool;
+> +       spin_unlock_irqrestore(&tfile->pool_lock, flags);
+> +
+> +       rcu_read_unlock();
+> +       set_bit(qid, tun->af_xdp_zc_qps);
+> +
+> +       return 0;
+> +}
+> +
+> +static int tun_xsk_pool_disable(struct net_device *netdev, u16 qid)
+> +{
+> +       struct tun_struct *tun =3D netdev_priv(netdev);
+> +       struct tun_file *tfile;
+> +       unsigned long flags;
+> +
+> +       if (!test_bit(qid, tun->af_xdp_zc_qps))
+> +               return 0;
+> +
+> +       clear_bit(qid, tun->af_xdp_zc_qps);
+> +
+> +       rcu_read_lock();
+> +       tfile =3D rtnl_dereference(tun->tfiles[qid]);
+> +       if (!tfile) {
+> +               rcu_read_unlock();
+> +               return 0;
+> +       }
+> +
+> +       spin_lock_irqsave(&tfile->pool_lock, flags);
+> +       if (tfile->desc.len) {
+> +               xsk_tx_completed(tfile->pool, 1);
+> +               tfile->desc.len =3D 0;
+> +       }
+> +       tfile->pool =3D NULL;
+> +       spin_unlock_irqrestore(&tfile->pool_lock, flags);
+> +
+> +       rcu_read_unlock();
+> +       return 0;
+> +}
+> +
+> +int tun_xsk_pool_setup(struct net_device *dev, struct xsk_buff_pool *poo=
+l,
+> +                      u16 qid)
+> +{
+> +       return pool ? tun_xsk_pool_enable(dev, pool, qid) :
+> +               tun_xsk_pool_disable(dev, qid);
+> +}
+> +
+>  static int tun_xdp(struct net_device *dev, struct netdev_bpf *xdp)
+>  {
+>         switch (xdp->command) {
+>         case XDP_SETUP_PROG:
+>                 return tun_xdp_set(dev, xdp->prog, xdp->extack);
+> +       case XDP_SETUP_XSK_POOL:
+> +               return tun_xsk_pool_setup(dev, xdp->xsk.pool,
+> +                                          xdp->xsk.queue_id);
+>         default:
+>                 return -EINVAL;
+>         }
+> @@ -1331,6 +1414,19 @@ static int tun_xdp_tx(struct net_device *dev, stru=
+ct xdp_buff *xdp)
+>         return nxmit;
+>  }
+>
+> +static int tun_xsk_wakeup(struct net_device *dev, u32 qid, u32 flags)
+> +{
+> +       struct tun_struct *tun =3D netdev_priv(dev);
+> +       struct tun_file *tfile;
+> +
+> +       rcu_read_lock();
+> +       tfile =3D rcu_dereference(tun->tfiles[qid]);
+> +       if (tfile)
+> +               __tun_xdp_flush_tfile(tfile);
+> +       rcu_read_unlock();
+> +       return 0;
+> +}
+> +
+>  static const struct net_device_ops tap_netdev_ops =3D {
+>         .ndo_init               =3D tun_net_init,
+>         .ndo_uninit             =3D tun_net_uninit,
+> @@ -1347,6 +1443,7 @@ static const struct net_device_ops tap_netdev_ops =
+=3D {
+>         .ndo_get_stats64        =3D dev_get_tstats64,
+>         .ndo_bpf                =3D tun_xdp,
+>         .ndo_xdp_xmit           =3D tun_xdp_xmit,
+> +       .ndo_xsk_wakeup         =3D tun_xsk_wakeup,
+>         .ndo_change_carrier     =3D tun_net_change_carrier,
+>  };
+>
+> @@ -1404,7 +1501,8 @@ static void tun_net_initialize(struct net_device *d=
+ev)
+>                 /* Currently tun does not support XDP, only tap does. */
+>                 dev->xdp_features =3D NETDEV_XDP_ACT_BASIC |
+>                                     NETDEV_XDP_ACT_REDIRECT |
+> -                                   NETDEV_XDP_ACT_NDO_XMIT;
+> +                                   NETDEV_XDP_ACT_NDO_XMIT |
+> +                                   NETDEV_XDP_ACT_XSK_ZEROCOPY;
+>
+>                 break;
+>         }
+> @@ -2213,6 +2311,37 @@ static void *tun_ring_recv(struct tun_file *tfile,=
+ int noblock, int *err)
+>         return ptr;
+>  }
+>
+> +static ssize_t tun_put_user_desc(struct tun_struct *tun,
+> +                                struct tun_file *tfile,
+> +                                struct xdp_desc *desc,
+> +                                struct iov_iter *iter)
+> +{
+> +       size_t size =3D desc->len;
+> +       int vnet_hdr_sz =3D 0;
+> +       size_t ret;
+> +
+> +       if (tun->flags & IFF_VNET_HDR) {
+> +               struct virtio_net_hdr_mrg_rxbuf gso =3D { 0 };
+> +
+> +               vnet_hdr_sz =3D READ_ONCE(tun->vnet_hdr_sz);
+> +               if (unlikely(iov_iter_count(iter) < vnet_hdr_sz))
+> +                       return -EINVAL;
+> +               if (unlikely(copy_to_iter(&gso, sizeof(gso), iter) !=3D
+> +                            sizeof(gso)))
+> +                       return -EFAULT;
+> +               iov_iter_advance(iter, vnet_hdr_sz - sizeof(gso));
+> +       }
+> +
+> +       ret =3D copy_to_iter(xsk_buff_raw_get_data(tfile->pool, desc->add=
+r),
+> +                          size, iter) + vnet_hdr_sz;
+> +
+> +       preempt_disable();
+> +       dev_sw_netstats_tx_add(tun->dev, 1, ret);
+> +       preempt_enable();
+> +
+> +       return ret;
+> +}
+> +
+>  static ssize_t tun_do_read(struct tun_struct *tun, struct tun_file *tfil=
+e,
+>                            struct iov_iter *to,
+>                            int noblock, void *ptr)
+> @@ -2226,6 +2355,22 @@ static ssize_t tun_do_read(struct tun_struct *tun,=
+ struct tun_file *tfile,
+>         }
+>
+>         if (!ptr) {
+> +               /* Read frames from xsk's desc */
+> +               if (test_bit(tfile->queue_index, tun->af_xdp_zc_qps)) {
+> +                       spin_lock(&tfile->pool_lock);
+> +                       if (tfile->pool) {
+> +                               ret =3D tun_put_user_desc(tun, tfile, &tf=
+ile->desc, to);
+> +                               xsk_tx_completed(tfile->pool, 1);
+> +                               if (xsk_uses_need_wakeup(tfile->pool))
+> +                                       xsk_set_tx_need_wakeup(tfile->poo=
+l);
+> +                               tfile->desc.len =3D 0;
+> +                       } else {
+> +                               ret =3D -EBADFD;
+> +                       }
+> +                       spin_unlock(&tfile->pool_lock);
+> +                       return ret;
+> +               }
+> +
+>                 /* Read frames from ring */
+>                 ptr =3D tun_ring_recv(tfile, noblock, &err);
+>                 if (!ptr)
+> @@ -2311,6 +2456,7 @@ static void tun_free_netdev(struct net_device *dev)
+>
+>         BUG_ON(!(list_empty(&tun->disabled)));
+>
+> +       bitmap_free(tun->af_xdp_zc_qps);
+>         free_percpu(dev->tstats);
+>         tun_flow_uninit(tun);
+>         security_tun_dev_free_security(tun->security);
+> @@ -2666,7 +2812,19 @@ static int tun_peek_len(struct socket *sock)
+>         if (!tun)
+>                 return 0;
+>
+> -       ret =3D PTR_RING_PEEK_CALL(&tfile->tx_ring, tun_ptr_peek_len);
+> +       if (test_bit(tfile->queue_index, tun->af_xdp_zc_qps)) {
+> +               spin_lock(&tfile->pool_lock);
+> +               if (tfile->pool && xsk_tx_peek_desc(tfile->pool, &tfile->=
+desc)) {
+
+Does it mean if userspace doesn't peek, we can't read anything?
+
+We need to make sure syscall read works as well as vhost_net.
+
+> +                       xsk_tx_release(tfile->pool);
+> +                       ret =3D tfile->desc.len;
+> +                       /* The length of desc must be greater than 0 */
+> +                       if (!ret)
+> +                               xsk_tx_completed(tfile->pool, 1);
+> +               }
+> +               spin_unlock(&tfile->pool_lock);
+> +       } else {
+> +               ret =3D PTR_RING_PEEK_CALL(&tfile->tx_ring, tun_ptr_peek_=
+len);
+> +       }
+>         tun_put(tun);
+>
+>         return ret;
+> @@ -3469,8 +3627,11 @@ static int tun_chr_open(struct inode *inode, struc=
+t file * file)
+>
+>         mutex_init(&tfile->napi_mutex);
+>         RCU_INIT_POINTER(tfile->tun, NULL);
+> +       spin_lock_init(&tfile->pool_lock);
+>         tfile->flags =3D 0;
+>         tfile->ifindex =3D 0;
+> +       tfile->pool =3D NULL;
+> +       tfile->desc.len =3D 0;
+>
+>         init_waitqueue_head(&tfile->socket.wq.wait);
+>
+> diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+> index f2ed7167c848..a1f143ad2341 100644
+> --- a/drivers/vhost/net.c
+> +++ b/drivers/vhost/net.c
+> @@ -169,9 +169,10 @@ static int vhost_net_buf_is_empty(struct vhost_net_b=
+uf *rxq)
+>
+>  static void *vhost_net_buf_consume(struct vhost_net_buf *rxq)
+>  {
+> -       void *ret =3D vhost_net_buf_get_ptr(rxq);
+> -       ++rxq->head;
+> -       return ret;
+> +       if (rxq->tail =3D=3D rxq->head)
+> +               return NULL;
+> +
+> +       return rxq->queue[rxq->head++];
+>  }
+>
+>  static int vhost_net_buf_produce(struct vhost_net_virtqueue *nvq)
+> @@ -993,12 +994,19 @@ static void handle_tx(struct vhost_net *net)
+>
+>  static int peek_head_len(struct vhost_net_virtqueue *rvq, struct sock *s=
+k)
+>  {
+> +       struct socket *sock =3D sk->sk_socket;
+>         struct sk_buff *head;
+>         int len =3D 0;
+>         unsigned long flags;
+>
+> -       if (rvq->rx_ring)
+> -               return vhost_net_buf_peek(rvq);
+> +       if (rvq->rx_ring) {
+> +               len =3D vhost_net_buf_peek(rvq);
+> +               if (likely(len))
+> +                       return len;
+> +       }
+> +
+> +       if (sock->ops->peek_len)
+> +               return sock->ops->peek_len(sock);
+
+What prevents you from reusing the ptr_ring here? Then you don't need
+the above tricks.
+
+Thanks
+
+
+>
+>         spin_lock_irqsave(&sk->sk_receive_queue.lock, flags);
+>         head =3D skb_peek(&sk->sk_receive_queue);
+> --
+> 2.33.0
+>
 
 
