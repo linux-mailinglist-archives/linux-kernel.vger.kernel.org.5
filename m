@@ -1,89 +1,82 @@
-Return-Path: <linux-kernel+bounces-39233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B44583CD32
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:12:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDFB983CD35
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:13:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BE2B1C23E80
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:12:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74D2A1F26C6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:13:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2E23137C2B;
-	Thu, 25 Jan 2024 20:12:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="qR5345bb"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C86DE137C23;
+	Thu, 25 Jan 2024 20:12:56 +0000 (UTC)
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DE75135A5D;
-	Thu, 25 Jan 2024 20:12:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49732134730;
+	Thu, 25 Jan 2024 20:12:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706213527; cv=none; b=pPd4lIBlbL4z/P+qcX0GyRzKA/kdfUNdriQteEQx0qoOwqW0fZIKrnT1JDT0D3aUedUaxkFjS0Ij+n8Pkx919hxO5hyyi3FR0z182g3hk4PxEWfC08eoi9VhAeLGWTeXf4JqEDo0vmdHiaBzruE35vCbDPbsHTOWGmCl03YHlmM=
+	t=1706213576; cv=none; b=Mc+lb4eZo2RVJJuqDdmB2g7Jug9A4m+oX/56lipUdT387SbAmbAExBtARd/kYj+kregjc4eoasFF2ppZyfI0DDA/kT6tASCgh6NZ4ZDxxWEtJ/pU+HFqd/Gf+lvPd/J4fDaY/RFnnrQ7LoQoEamV6GLeuzkDJ1e31/IWak2exw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706213527; c=relaxed/simple;
-	bh=27T1NLakmj/1AjMRk4+ROq1pwjUNd9JBGAB/g87CZHA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BjTLw2B2iqkJXwoVEphlQ6bAqe4WPFzc+t+gbxbgrcm2ZWyPbB5mtc0ajwt41XUc2+nSPaTX8IjDW0xrs+7H6yfrxZ4SzQ0618GZqqYIc2b7AfQNJXKbP2/UTBxNoO1UdSItRDhbqSzpbkaHUrclSsZ4RfYrWZZdsqDmcOXjJE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=qR5345bb; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=Tz53wyPc4pe7G+zHxuZ+8kfW0OKtKOOeDrNRA5aAh9A=; b=qR5345bbvV3FW3dFU60qy6qAtU
-	w9Fi8jlp17mR78eUdVfv7ptyiU5xkkV7QdVDaGii0+VhpfUEZgERbU59ShuajSe2EQYxRvk43QdlL
-	X1KurnZRnC+vzAF0tagW5AdIxZirEUyc4egP/lBzY7mgIX8GAmWeRg3tbQ8fnvbXz9Cw=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rT64t-0067PO-3X; Thu, 25 Jan 2024 21:11:59 +0100
-Date: Thu, 25 Jan 2024 21:11:59 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, netdev@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 4/8] clk: qcom: ipq5332: add gpll0_out_aux clock
-Message-ID: <635f5e41-1ca2-4b4e-86a5-fdb8f7b27ef9@lunn.ch>
-References: <20240122-ipq5332-nsscc-v4-0-19fa30019770@quicinc.com>
- <20240122-ipq5332-nsscc-v4-4-19fa30019770@quicinc.com>
+	s=arc-20240116; t=1706213576; c=relaxed/simple;
+	bh=SPInEJ3VDLMNhJYNeCiPbmOKLBD/E9BpkK6CTvaMt9g=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=UskZS++RZLQlyiDcu7qoNE4bFcmhNhkOn5jAk18i4zMpaA6SGpRY3K2DvzR/MWgngzmmhZSPldsXkOQ8cQoTCzCnu1FaiOCl1L2BFnCltsBSqmVNGfAxndnB22ojoKgrDkIkA+PYeiH1uxA7j5lviUgY9j88fNAaYQyeK1KpTuY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
+Received: from [194.95.143.137] (helo=phil.localnet)
+	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <heiko@sntech.de>)
+	id 1rT65f-0001TY-4Y; Thu, 25 Jan 2024 21:12:47 +0100
+From: Heiko Stuebner <heiko@sntech.de>
+To: Jonas Karlman <jonas@kwiboo.se>, Trevor Woerner <twoerner@gmail.com>
+Cc: Chen-Yu Tsai <wens@csie.org>, linux-kernel@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org
+Subject:
+ Re: [PATCH 2/2] arm64: dts: rockchip: rock-pi-e: fix location of snps
+ properties
+Date: Thu, 25 Jan 2024 21:12:46 +0100
+Message-ID: <1976352.usQuhbGJ8B@phil>
+In-Reply-To: <20240118230312.GB14779@localhost>
+References:
+ <20240116204103.29318-1-twoerner@gmail.com>
+ <df78489b-7546-46ea-b09f-39a80692a962@kwiboo.se>
+ <20240118230312.GB14779@localhost>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240122-ipq5332-nsscc-v4-4-19fa30019770@quicinc.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-On Mon, Jan 22, 2024 at 11:27:00AM +0530, Kathiravan Thirumoorthy wrote:
-> Add support for gpll0_out_aux clock which acts as the parent for
-> certain networking subsystem (NSS) clocks.
+Hi,
 
-This answers the question i asked for the previous patch.
+Am Freitag, 19. Januar 2024, 00:03:12 CET schrieb Trevor Woerner:
+> On Thu 2024-01-18 @ 08:31:30 AM, Jonas Karlman wrote:
+> > On 2024-01-17 09:15, Jonas Karlman wrote:
+> > I have just sent out a U-Boot series that fix ethernet on the v1.21
+> > revision of the ROCK Pi E board, see [2].
+> 
+> Thank you! I have tested your patches both in U-Boot and Linux and they work
+> perfectly.
 
-Why did you split this into two patches?
+if I'm reading this correctly, this patch is not needed anymore, right?
 
-Please also give a more detailed description, rather than the vague
-'certain networking subsystem (NSS) clocks'
+I'm not yet sure about the first patch, as it really is
+just a cosmetic ;-)
 
-If you device tree and drivers are correct, i should be able to work
-out what the clock tree looks like, so there is no point trying to
-hide the information.
 
-     Andrew
+Heiko
+
+
 
