@@ -1,121 +1,106 @@
-Return-Path: <linux-kernel+bounces-38552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E78D83C168
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:57:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B245283C172
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:58:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C68B128C1A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:57:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69DAD1F25AB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:58:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06AAF35EF1;
-	Thu, 25 Jan 2024 11:57:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE5C43C46F;
+	Thu, 25 Jan 2024 11:58:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PTbKPb73"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b="KjTozkX3"
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42BA3321AF
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 11:57:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5FFA33CD4
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 11:58:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706183829; cv=none; b=RBqCZGBQtPcsBJjOrrw7c66tASProHs2Q9Ry7t3A3JDqx0Rus4nLKredimL9mcbGgzLLeUl0NGtIPgerbxAa7nKMBXX81yi6MlHtlR5BFcz2XIyvQ9b7XZ3qjNUigxB8IU0HYojiD3s1YY7iSG4U+cR6PivPVO8K88tvKssdlgI=
+	t=1706183922; cv=none; b=a98SrCMWW8EF6sqVjKztwMPE0SKpcxQDIBNhWRRky2XrAHHnF7vhf6wYubUJEJnWKmDharfNucmhiy7sC2r/t68DG6HrSm2xIeP1uoIlI9EUizmlJtviYSRyV9JeHqfQ5S71jFs64N5vedwQ4kcknFWNdUWd2pxVafp2k0XwC/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706183829; c=relaxed/simple;
-	bh=BGJEiMlRzKX4t3iaxmTX45WOVv5F3++XmfXJuH9STFA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XaZAFbzmAYMY0OG6oGaF168t7lifclHn2vf6HyCREQbOGxjfiJ35sL122aZmKIk5/B4uiEDIDGIqwtYl2vbZMI1JvF9lG3rByej4V+WOiqhnhDy8UNdYewEX0VywE5HNkyaDHJsr/EZNviY4kbkY1DL+wA0+dE9b6jKovCy53w0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PTbKPb73; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4005BC433F1;
-	Thu, 25 Jan 2024 11:57:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706183828;
-	bh=BGJEiMlRzKX4t3iaxmTX45WOVv5F3++XmfXJuH9STFA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PTbKPb73asJ5zmYLUHClgodfcyX+3wmYXgyhUeOVMf6lQfOqwoYe/P141miqkwhID
-	 bv8nBLnzi/511BpJ8ghZIG5Oe62x2cjhcbt9Q/2klP/f79n32FevjzI3F0zqyBr1/u
-	 LCrkohXipQYpNVKUj7X7BDAJYvh/OdMzEzu7Pg3Mvs14G5kV3RLCGbgVhpe2v5EP00
-	 XfbW3zpUGO9nNdLwNHsSL7Xwg72fT9XXEMikEbLxmT64QfeOGSQ9K5ntB4Ua89Flqx
-	 w5pzzDKcxySYWkvLYG5rKDr6Z51s0udZLpVg7YgSPzzh6DUKa0RbRsdY93QSA88Ccd
-	 hZhbjcbmnccSg==
-Date: Thu, 25 Jan 2024 12:57:05 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, Peng Liu <liupeng17@lenovo.com>,
-	Ingo Molnar <mingo@kernel.org>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 01/15] tick/nohz: Remove duplicate between
- tick_nohz_switch_to_nohz() and tick_setup_sched_timer()
-Message-ID: <ZbJMkautxpj1sQEJ@lothringen>
-References: <20240124170459.24850-1-frederic@kernel.org>
- <20240124170459.24850-2-frederic@kernel.org>
- <87h6j1kc97.ffs@tglx>
+	s=arc-20240116; t=1706183922; c=relaxed/simple;
+	bh=c1MXNU8fBQIq7CZAvmDVQrraCezkC83dzdTmFADzH6c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=NKvBBhBpY8KXf3i8Pf14fif7Npd9MIu0DiTBW6eY/MFnzjdwfmv/lHDPXSg6UPgL4CfEK6gm9+85KsKYZWCE1+iVS5nr8fgXknCZUC6PiIUx+GEHp2pnsYt0oMad3gi390Crz78RRcQHDME8gtJbLqR6BdgCZVn5TLJ8aQFarLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com; spf=pass smtp.mailfrom=9elements.com; dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b=KjTozkX3; arc=none smtp.client-ip=209.85.215.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=9elements.com
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5cdbc4334edso3252473a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 03:58:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1706183920; x=1706788720; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=c1MXNU8fBQIq7CZAvmDVQrraCezkC83dzdTmFADzH6c=;
+        b=KjTozkX3byEp4c7Cm9xbyivUYjZgNidkhHhNTgnASbYgx7RfDW47rOxGp9sm2SUFsR
+         0btAmWE8iK8yKT1UbrZv3CwN/Ut4n3CKY8EyVEIImjzFWK5IJ+cRoMXNuVrwR1C9TECC
+         2kqe/4FW9+U4yKb8uT659zR2V4ignmtJnaOd4dx38v5mFMc+7/vVysYYyfx3zfZYW28Q
+         NFQC7wAoFyz7xo8uBz+l7q2RBDHKWrUHg/i9CHBfkzH6uVKpeAbm205xOWXpQIZv4FaV
+         h/c8z/02x2SkNOPBkVRaGtyMFQWrHLKjEOnhlyelNb82F+AWomQLZYPgNtK91LF6J0Db
+         3MMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706183920; x=1706788720;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=c1MXNU8fBQIq7CZAvmDVQrraCezkC83dzdTmFADzH6c=;
+        b=XEuHAJnhvOcsymJkeTOVFzxuFLfE/TJ5WLqA8mnXD+iVB6M/75e3PWlp8asmTlvWzh
+         8IFkfb8G3CHFT2dasKEOE0iIdIUhp3WD0xBKwna+mf613MaCHbrZfR97ssG2FDl3SFEW
+         e4LCHQpBjTcWXl7j8Lz60BYjm6orhTL2J8pILkiZgFJCqVm2sM/BKsTUDjW842B9cu1W
+         P1gq/NrUHOiA0Aw38Ft7SOtYUXizjRhgBNEuXjCPrKHPehIO8SG24ipiDZZpjHlwNbEa
+         yCRONVNIAhetWXt9NEtc41OSONi1uatPz7Wx9iSD3eRyDbz92DXNaFxLBAqIOeFtBnhE
+         D7tg==
+X-Gm-Message-State: AOJu0YyyTI1juv1HQIckWU5M/Pe1xXkBfzbgudli1uFFkeUpDpO5gViE
+	Sjw45MNcH1vev7sTvFWSnZr3Z2YvERB1i/P9Fsvu1FIb4fxuK4hTD/cX81ocBNxedasPg9NGt2N
+	UphX/USvTVXp9oPPW2WLdrX9pAyDWyftSOa1Tcg==
+X-Google-Smtp-Source: AGHT+IGVGqvZTn0517bIq0KM9GtuUE40zBP+m/ZFjGMQb49WTfSmNYb/qaIO9kLZQYy7D4bbUFW9PXU6IfiojJjRAd0=
+X-Received: by 2002:a05:6a20:b809:b0:19c:5e76:d81f with SMTP id
+ fi9-20020a056a20b80900b0019c5e76d81fmr628988pzb.66.1706183920112; Thu, 25 Jan
+ 2024 03:58:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87h6j1kc97.ffs@tglx>
+References: <20231220082803.345153-1-naresh.solanki@9elements.com>
+ <ZYNTfKLFGrLq8qGY@shikoro> <497e6eda-a416-415a-b468-fe764c14a8aa@linaro.org> <ZYVmZXpwgHJhS8Nf@shikoro>
+In-Reply-To: <ZYVmZXpwgHJhS8Nf@shikoro>
+From: Naresh Solanki <naresh.solanki@9elements.com>
+Date: Thu, 25 Jan 2024 17:28:31 +0530
+Message-ID: <CABqG17jucw00M3PxjAUrmTUuHajFT4qBjNMx5BsN59bsRrDEXQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH v5 1/2] dt-bindings: i2c: pca954x: Add custom
+ properties for MAX7357
+To: Wolfram Sang <wsa@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+	Naresh Solanki <naresh.solanki@9elements.com>, Rob Herring <robh+dt@kernel.org>, 
+	Peter Rosin <peda@axentia.se>, Andi Shyti <andi.shyti@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+	Patrick Rudolph <patrick.rudolph@9elements.com>, Rob Herring <robh@kernel.org>, 
+	linux-i2c@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Jan 25, 2024 at 10:12:20AM +0100, Thomas Gleixner wrote:
-> On Wed, Jan 24 2024 at 18:04, Frederic Weisbecker wrote:
-> >  
-> >  /**
-> >   * tick_setup_sched_timer - setup the tick emulation timer
-> > + * @mode: tick_nohz_mode to setup for
-> >   */
-> > -void tick_setup_sched_timer(void)
-> > +void tick_setup_sched_timer(int mode)
-> >  {
-> >  	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
-> > -	ktime_t now = ktime_get();
-> >  
-> >  	/* Emulate tick processing via per-CPU hrtimers: */
-> >  	hrtimer_init(&ts->sched_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_HARD);
-> > -	ts->sched_timer.function = tick_nohz_highres_handler;
-> > +#ifdef CONFIG_HIGH_RES_TIMERS
-> > +	if (mode == NOHZ_MODE_HIGHRES)
-> > +		ts->sched_timer.function = tick_nohz_highres_handler;
-> > +#endif
-> 
-> Adding
-> 
-> #define tick_nohz_highres_handler NULL
-> 
-> for CONFIG_HIGH_RES_TIMERS=n somewhere allows you to write that as:
-> 
-> 	if (IS_ENABLED(CONFIG_HIGH_RES_TIMERS) && mode == NOHZ_MODE_HIGHRES)
-> 		ts->sched_timer.function = tick_nohz_highres_handler;
+Hi Wolfram,
 
-So the next patch does:
+On Fri, 22 Dec 2023 at 16:05, Wolfram Sang <wsa@kernel.org> wrote:
+>
+>
+> > Some explanation was provided here:
+> > https://lore.kernel.org/all/CABqG17g8QOgU7cObe=4EMLbEC1PeZWxdPXt7zzFs35JGqpRbfg@mail.gmail.com/
+> >
+> > AFAIU, these properties are board-design choice.
+>
+> Hey, thanks for the heads up. I agree that these options should not be
+> "on" by default. I am still not fully convinced they serve as hardware
+> description, though. Need to think about it some more...
+Any update on this ? Let me know if I can help with additional information.
 
-if (mode == NOHZ_MODE_HIGHRES)
-    ts->sched_timer.function = tick_nohz_highres_handler;
-
-Because that condition only happens in CONFIG_HIGH_RES_TIMERS anyway
-and the function field exists in any case.
-
-I can move that to the current patch though.
-
->     
-> > +	hrtimer_forward_now(&ts->sched_timer, TICK_NSEC);
-> > +	if (mode == NOHZ_MODE_HIGHRES)
-> 
-> Wants a (IS_ENABLED(HIGRES) && mode == ...) no?
-
-Hmm, indeed hrtimer_start_range_ns() called by hrtimer_start_expires()
-is only defined if CONFIG_HIGH_RES_TIMERS=y. I'll resend.
-
-Thanks.
-
-> 
-> Thanks,
-> 
->         tglx
+Regards,
+Naresh
+>
 
