@@ -1,72 +1,72 @@
-Return-Path: <linux-kernel+bounces-38869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C588783C790
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:09:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 025D883C79C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:11:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 705DE1F27296
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:09:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 352651C2506B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:11:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C12AA129A65;
-	Thu, 25 Jan 2024 16:09:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D398129A72;
+	Thu, 25 Jan 2024 16:11:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="PSBvhXYp"
-Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="WpSZFiJC"
+Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E62A1292E7
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 16:09:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EB6986143
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 16:11:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706198989; cv=none; b=ckdEGrVXhlzVCZzaPXL/yt4b8S/naGnK3Tm2X65ROKSixF/8zcbrqOYbcbHK/w/Vv7oCvMRkcZDP4vMH+pX6cawt6sn4gbTQGvDB3gPhwAnxhYjm5gO1sVtNNSa0rTEbg3EK044rA4mB7Bhp8znjnVuaUaj+tfsr4S9Q/7nycAo=
+	t=1706199098; cv=none; b=EukUrt0ERMOg3Tg3jLytCirqFo6vsFzmKfkMVu4pvRnhNz5xmkVu5f0pHdqyqb6ZBi+msNlUxPyL7AJjcrQNhDVMdgpeM2DphEPIK+WyomelD12Y5B3ubntjvMCyAV+GadLW0NeC/OH3U6F05t1vNZQwaw34mBTSHEgfEqYf26c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706198989; c=relaxed/simple;
-	bh=tbH3ZcfEZi1hTyHe1rC+rgg4mr+vvSHAw05EM4mwVZQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jePLq2CErweWt4FSgtQHwcse9oCbUljQ4evGSeFIV/+rgNQxp9NkTYpJDocxsNdna/LMxKt2dPCGBwax+PMNdnQfDbGT81R4Kjz2SQ/xATkstOqOM/4w+9XRwR5Vv6FiRZntp91qzatvq//3OcWwLZPNdBL8XOJsio6U3ylMsYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=PSBvhXYp; arc=none smtp.client-ip=209.85.166.181
+	s=arc-20240116; t=1706199098; c=relaxed/simple;
+	bh=sJvQIDfKJSXmACGVyDxOuvYeKXaNLXeOpOjnvIPcb60=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=foKx5hg53cdCdvxEczt505yXs/WCI8V1dNpDXoetE6BXBX9KIk9zhG4FhPO0iO4t7r/8Ccjd/689Xte+s3kzpJHyQZ/mD/5Q24uBEzw6kJRPzdY+DUb5/HErlX4ZSsPoRMIEe/pwwAmd5+CVMFPJ97Fhvj/wjQdIq/XGbwrk4b8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=WpSZFiJC; arc=none smtp.client-ip=209.85.166.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-361a8f20e22so633175ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:09:45 -0800 (PST)
+Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-7bbdd28a52aso86958839f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:11:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1706198985; x=1706803785; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WyHxjKtVXGSwGC6zU0Wll0qpN4a6mMfynNab9F2/w+A=;
-        b=PSBvhXYpNkFCyR7iGOAemGEYqQ5+s1kqmfy9SH7e7fCf9TnRN6c3qDxJhmkyoAmMJz
-         bP/h1TcjdcHjG5sW0L/BubkqzKkUzpvs7Zh2lXOlVB3Q0e1R/UP+IEqNnBYY3jSrXu0L
-         /KkJGWfhBDxuCfzQxl4AoCqu1HBNjZtFgEF1mRCMhnsD8SlvxMSH8s8VT+3zl+oIEaKo
-         mSjJPEcHD8ug9QiZhwJ+k2BQPyEEjlhxxtEuW3+ugm/lU26OXNAgpoyf4+A43vaI5VKV
-         rMkA+hsexEbhk2NnV746wgMAqllVMzCIe86CIFvsZYZs2246yxWpROQ5qpdIb81pIlBt
-         vmoA==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1706199096; x=1706803896; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=oXHpAvGT0l+OrcMVhCzIisM9di93nFyOAmu8umEvyYc=;
+        b=WpSZFiJC+gCkaTAxVghL+0TziKvTsW3cXquxSB2MDTRybISiN/VP7Ez5bVYU06ZP9/
+         TtFdqwmte6uhom2hQRBG7O+XasO47sVCGNXdKmFJzEaRQpIZmJVQm/B5KZO7mckPynIl
+         pS9U7LAvO+P0kFe6dFEJu1UQMEYFqDP1sSCq6kyhBsqJ+dzD9KpQez5pWC6n73ClE7RQ
+         8dG7YRBNKQABMDWVZKi+jY22+T90d4d41lkkHwz/S0Qg5QGEpMgP4yXE1SbXaj9Q/Nfo
+         yeOSJW3b/QugMVgTs8FWYWBCQ/PhmsPb+VKByWydTbLncZshx1pkDtwKeodXldxBh10E
+         Ct8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706198985; x=1706803785;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1706199096; x=1706803896;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WyHxjKtVXGSwGC6zU0Wll0qpN4a6mMfynNab9F2/w+A=;
-        b=rYDU/TPqLWpfALpyH3eiDMRnkV2jdbOmjqhhPXVVlmPo5hGsI+5NKocY1FBIbE4R3B
-         uafbBCQGiwN0u5bvA2VMZzOMBeMxSyxGnkHLBOxlhNcW/93iE9bspBMca2BJBU7f/Ted
-         M/XzyJ6vJ+n8jNPnf0uO5XX4mmt1qKcU4mLaeqWZbybR75HTNfrYaf7VRBFquoA/oodT
-         782yEXcO6wniil+oITSyxQtHqHfitvHILCqw/0VOx+pfz8gqA90TR1ltHf0sq3UBqy3V
-         3z2Nmek4xqQkjlW9zwoyWoUZHvZ8GeNec5CJQCIeA+a4AR7QdeXQaAl3cVymibNXaKnG
-         gTuA==
-X-Gm-Message-State: AOJu0YzVOPU0Kj4rkoCaf8iUh4oYUFymjTLoUn4XjBwX1tihZ4grSUKn
-	7w6p5pAiXMZc6zWVnDuiQiKMY3sbz74dkrsIx2J//64pYz26QXfNxauIFoEZbdg=
-X-Google-Smtp-Source: AGHT+IFCFF1erf4MT7gNzcrY0j99+IrW8aynC/2V1tHd5SfWQOYOTsc0TDco8BBXVgJlZq753TCFpQ==
-X-Received: by 2002:a92:cd83:0:b0:361:9667:9390 with SMTP id r3-20020a92cd83000000b0036196679390mr2721223ilb.1.1706198985222;
-        Thu, 25 Jan 2024 08:09:45 -0800 (PST)
+        bh=oXHpAvGT0l+OrcMVhCzIisM9di93nFyOAmu8umEvyYc=;
+        b=qr1savO8M38HXZCdJGsHmai+BfAjyLQ2SbdtaT9VC8sZjhkKOgN177/FQxFg9F7uah
+         OztOXVubNxNJM8xgAXVjtbxb7yhiIPLbHshHTs7xT0hBBtUJmrjWaikPDnFsroRjfnfp
+         kRwjVyUDoBwZ15vPwGiRRIyO/a/VS9teVileVgUev3gCC8ckou5claeDScdcJzUmCEIa
+         4VhyWDVJXb5UFfZR2scQjpbpl3P4V0KGnpPvAAv8s3EN6eK4h9dDUROckygrcjE56F6n
+         RJcdyiiDnNTKDdOKvgUFpf0YSSCTUAlmxQ+sXAJeXkW2X43bQeiwuFXIXIFbOR2aGw4g
+         QKyw==
+X-Gm-Message-State: AOJu0YxI/mTlgt1m/HMW1YVfs530gRrTHEBkBy6P7SlvWppqyU8v5y3f
+	uD68baqPuWUmc6yxfsoOKCVwnCaw3/wqXrZpRWXkdMkRpLXRpLJ8gk2osgT3jEg=
+X-Google-Smtp-Source: AGHT+IEK/ThZ75X0mSLf5JYVYvXq2E1lW6GL1EM0E56z9MRc0RzZ+JHgPgmxc0oiVIA9uU/EKwDlBA==
+X-Received: by 2002:a5e:9205:0:b0:7bc:207d:5178 with SMTP id y5-20020a5e9205000000b007bc207d5178mr2457404iop.2.1706199095804;
+        Thu, 25 Jan 2024 08:11:35 -0800 (PST)
 Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id s2-20020a02c502000000b0046df6e19b9csm4572238jam.34.2024.01.25.08.09.44
+        by smtp.gmail.com with ESMTPSA id b18-20020a0566380b9200b0046cf80c799fsm4619524jad.120.2024.01.25.08.11.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 08:09:44 -0800 (PST)
-Message-ID: <07de550c-2048-4b2f-8127-e20de352ffde@kernel.dk>
-Date: Thu, 25 Jan 2024 09:09:44 -0700
+        Thu, 25 Jan 2024 08:11:35 -0800 (PST)
+Message-ID: <11868eb4-0528-4298-b8bc-2621fd1aac83@kernel.dk>
+Date: Thu, 25 Jan 2024 09:11:34 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,46 +74,54 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH, RFC] block: set noio context in submit_bio_noacct_nocheck
-Content-Language: en-US
-To: Christoph Hellwig <hch@lst.de>
-Cc: linux-block@vger.kernel.org, tj@kernel.org, jiangshanlai@gmail.com,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20240124093941.2259199-1-hch@lst.de>
- <be690355-03c6-42e2-a13f-b593ad1c0edd@kernel.dk>
- <20240125081050.GA21006@lst.de>
 From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20240125081050.GA21006@lst.de>
+Subject: Re: [syzbot] [jfs?] INFO: task hung in path_mount (2)
+To: Christian Brauner <brauner@kernel.org>
+Cc: syzbot <syzbot+fb337a5ea8454f5f1e3f@syzkaller.appspotmail.com>,
+ hdanton@sina.com, jack@suse.cz, jfs-discussion@lists.sourceforge.net,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ shaggy@kernel.org, syzkaller-bugs@googlegroups.com
+References: <00000000000083513f060340d472@google.com>
+ <000000000000e5e71a060fc3e747@google.com>
+ <20240125-legten-zugleich-21a988d80b45@brauner>
+Content-Language: en-US
+In-Reply-To: <20240125-legten-zugleich-21a988d80b45@brauner>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 1/25/24 1:10 AM, Christoph Hellwig wrote:
-> On Wed, Jan 24, 2024 at 08:40:28AM -0700, Jens Axboe wrote:
->> On 1/24/24 2:39 AM, Christoph Hellwig wrote:
->>> Make sure all in-line block layer submission runs in noio reclaim
->>> context.  This is a big step towards allowing GFP_NOIO, the other
->>> one would be to have noio (and nofs for that matter) workqueues for
->>> kblockd and driver internal workqueues.
->>
->> I really don't like adding this for no good reason. Who's doing non NOIO
->> allocations down from this path?
-> 
-> If there is a non-NOIO allocation right now that would be a bug,
-> although I would not be surprised if we had a few of them.
-> 
-> The reason to add this is a different one:  The MM folks want to
-> get rid of GFP_NOIO and GFP_NOFS and replace them by these context.
-> 
-> And doing this in the submission path and kblockd will cover almost
-> all of the noio context, with the rest probably covered by other
-> workqueues.  And this feels a lot less error prone than requiring
-> every driver to annotate the context in their submission routines.
+On Thu, Jan 25, 2024 at 9:08?AM Christian Brauner <brauner@kernel.org> wrote:
+>
+> On Thu, Jan 25, 2024 at 03:59:03AM -0800, syzbot wrote:
+> > syzbot suspects this issue was fixed by commit:
+> >
+> > commit 6f861765464f43a71462d52026fbddfc858239a5
+> > Author: Jan Kara <jack@suse.cz>
+> > Date:   Wed Nov 1 17:43:10 2023 +0000
+> >
+> >     fs: Block writes to mounted block devices
+> >
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13175a53e80000
+> > start commit:   2ccdd1b13c59 Linux 6.5-rc6
+> > git tree:       upstream
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=9c37cc0e4fcc5f8d
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=fb337a5ea8454f5f1e3f
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ba5d53a80000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14265373a80000
+> >
+> > If the result looks correct, please mark the issue as fixed by replying with:
+>
+> #syz fix: fs: Block writes to mounted block devices
 
-I think it'd be much better to add a DEBUG protected aid that checks for
-violating allocations. Nothing that isn't buggy should trigger this,
-right now, and then we could catch problems if there are any. If we do
-the save/restore there and call it good, then we're going to be stuck
-with that forever. Regardless of whether it's actually needed or not.
+Like Dave replied a few days ago, I'm kind of skeptical on all of these
+bugs being closed by this change. I'm guessing that they are all
+resolved now because a) the block writes while mounted option was set to
+Y, and b) the actual bug is just masked by that.
+
+Maybe this is fine, but it does seem a bit... sketchy? The bugs aren't
+really fixed, and what happens if someone doesn't turn on that option?
+If it's required, perhaps it should not be an option at all? Though
+that'd seem to be likely to break some funky use cases, whether they are
+valid or not.
 
 -- 
 Jens Axboe
