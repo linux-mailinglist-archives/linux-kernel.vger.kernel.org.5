@@ -1,150 +1,124 @@
-Return-Path: <linux-kernel+bounces-38460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A365783C03B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:07:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2598D83C028
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:06:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C90191C20DFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:07:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27D491C20EFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:06:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A82D91C6BF;
-	Thu, 25 Jan 2024 10:49:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F34947F50;
+	Thu, 25 Jan 2024 10:46:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ql1bxhnq"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pp3rJLDC"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46F5D2C69A
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 10:49:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AB3224B52;
+	Thu, 25 Jan 2024 10:46:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706179766; cv=none; b=t1Qyy4BEr4xKpyfD8kaB4oq13OlO/WxolAegLIkescoDw3ljeezDldTD+OAhTStxaaVVx5YOTIsNHETcx3KV2RqCiJKM81sxMlnhwcqoHY1DbRMY8YRNT5by+h7XONBoH0DnRNNDujOtjkgqEjUEaPqpmQGeDgJLhHU/mPDT7BQ=
+	t=1706179573; cv=none; b=IID5BxqVCqN8KUACmsBef6HNVA7I51igiG4rqB6tm+RnXDXBBwyE8qKBlY7LXAONG/LY0Artdj9uSpSS1Pf4fIM+JqVSpHZBk1wFBs3rNuSIqXAdC7koasc3GWenp/0v3BT9NCZ8jaZCqOu7V85tjnTDd6H657ZCDDY+DcwXB68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706179766; c=relaxed/simple;
-	bh=okODscfbgP/NEXtMfXADzLUO26Y9lxRYZZ6z8x2/kQ8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=P/pT/QZ43JNdxIKn3TZF/X9zFTpY6NakP74ng0khwHY4Rn1kqTIZKeHMJpbkC1+iJyZwq1NBCe9TUCqTJ7dgLp6B/XwwnDWhkz4ClpDfm+VwMiwRUnjrQciTtf/TWa1zGZSwJUpYWxw3xOh3bFdUoRXPQ2WXar+YJnHV906OYxk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ql1bxhnq; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40eccf4a91dso11607035e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 02:49:24 -0800 (PST)
+	s=arc-20240116; t=1706179573; c=relaxed/simple;
+	bh=T4KbaGa4I3/ArUbnVuhotCp6UuXKBebXUkOu4YXAWTs=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=GdyYGkkYXYZzKW4VDalLGggwpsBdtvI7ZITqT7bQ1YA8oY/rgqtVjZRHVv71v5HgG5V6EwP0v7ZAFICQkNSTfKNMIBxFfy0pfKOO6RQkFEez3lCyYmlU5FOp8IsiGJ7OW+2wieNy4xau6dbN4NHg92RZQrwGE65uRE22nTiq8q0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pp3rJLDC; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a30ed6dbdadso235604866b.1;
+        Thu, 25 Jan 2024 02:46:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706179762; x=1706784562; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sg9voFCh0OKdIMD1ScBUrg/Gel/xwqsPpRppsdKRtOE=;
-        b=ql1bxhnqJJuuQ1j23T/xoN4WV4mgbgbaytutH51ecW6vjfTZKDCi/x9viJ/OfsSawu
-         9DsZr/SJCr8QjTtmvt41iGX418R1yIkXZIimqxvRF3PBukD4uZ/tQ/Pin52+835zU43W
-         5GwqZIEFNoTAzwzm1OhjkQ0Zb7NbFfSNCULS8zjzN42yQYofLpyNM+NZTk7HFMENub2/
-         Rwpd4uX5FFurvULn2pYgSYCKGT5pco4XMq9ZXw983ela5l0AnawZgHWs6ChSnZX07Z79
-         yx5nya7yt4zphP8THQDCrlcZtyfI3EkYYWwowziz5ucvbktHGhrwE3ZEm3roQPUmsaRa
-         yaCw==
+        d=gmail.com; s=20230601; t=1706179570; x=1706784370; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=GjMvfTbRqWbP5YBJ9OcGAqttPOoukFPvsBKHDlQzSEg=;
+        b=Pp3rJLDCz4tcHPiPbd660Fo4jShICMShJShfVlQz+8LlplFSTjiMQi3taYimIqpjPf
+         qK8jcwNH1qir6BaQhTw7H5m1hFOND1x4rAhKsMJIC6i4CXgMW2qEF7ezMTnJjo0Awp0b
+         23eNNTUwVbFmjytJNJVO/wrBB+2il0d0lihwhep30z/iBiENu5Wc3DHIU1m4DAXZPokZ
+         8750oQ/dOSmpsqDnqcg/g932VgR71+ZhQNIvb7liY41p+Rj83FZv6ERi2hGQB5wlIYSh
+         eg9mtF0x6lwnY7EspR6lHUM/hd0JQ1YGBJHsLqTx3nZiebCwukcx03TVCl0kDUQi2Ahp
+         jA6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706179762; x=1706784562;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sg9voFCh0OKdIMD1ScBUrg/Gel/xwqsPpRppsdKRtOE=;
-        b=bBx92iy3rjutQvXyZP4HJAkiNa+lp/0P52XVIMnW+9Nni8rukZRfKQWpIIRCwP5tiL
-         0szNmsUF/L52kBp8DoenMLSLWABMwZCWCXchPaE+TB/eF/V7TG9qsP7xx9eOS3uUgeg4
-         nSHurr+sB+vQG7jCJr2RpZ5rOvzoJzxM3nAk1cNLZb90v9YolR4MeEN5IoS3YuRTXqmv
-         Uvh2xJXTuhgtWTyDWgygcfVNAC5Fht6PN2p+UrvrNDO+CeKPYiWxn8HkaHboFpF890DG
-         XizVHqvrApndRScmY+sOouhWls+VfBCpr57R0OHjRTvwi5Ns4QvYe+7rUZ8cPPzwOozB
-         1bgw==
-X-Gm-Message-State: AOJu0YyChqyMg6pGLDMc8a+1AF8mcLEBW+Ttx97M4QD1A77kKo674kfi
-	WNF38CEVxuNLcbT1F/4GbA1Kw1Knj5MySjOCizVvkCiEL6960VMOxcHz6U9o/A8=
-X-Google-Smtp-Source: AGHT+IHPkpEfMUwVk+L0mQez1wITeiV6sdtk0ftT+wRgTuKx4lRoauSM7hHb2RK/z43mmblkeA2aGA==
-X-Received: by 2002:a05:600c:6020:b0:40e:d231:498c with SMTP id az32-20020a05600c602000b0040ed231498cmr270880wmb.125.1706179762509;
-        Thu, 25 Jan 2024 02:49:22 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id i6-20020adfb646000000b00337bc2176f6sm20610248wre.81.2024.01.25.02.49.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 02:49:22 -0800 (PST)
-Message-ID: <1fd6ba07-e542-4220-9435-e51e2d81d536@linaro.org>
-Date: Thu, 25 Jan 2024 11:49:19 +0100
+        d=1e100.net; s=20230601; t=1706179570; x=1706784370;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GjMvfTbRqWbP5YBJ9OcGAqttPOoukFPvsBKHDlQzSEg=;
+        b=HNpXK2fzMdPjeOWHvTL5H6vzTfX6Zqk8BnX2iJ65bkPd6yJohu3aSyvMd0R36WFESb
+         xQX2jR5V5NnD5posK6L7Td/D+edOBUGtcT8i84ry4UVLWA7XnVTtfb7jJjKNXk0L5yfs
+         VbhEW69DT1/9vUbEtfW8KNLbsHcpFqHJxGXVTLH6UTEs/EHMu95AZvUg9nHxRrZZIhPq
+         9D4M5vVZQrFFj/DsclzZGmLZXpsUHot8P0X/o0VGgqzBzjnQp9Z0mgGSzZiFvBcd3v1e
+         e9sNvE8DyC4+7JNeQ97L8E9w/JqFeaGxe1kYE9Cq7ufOH4/IQ3NeNZ+arHM16ytSb/zh
+         7+VA==
+X-Gm-Message-State: AOJu0YxdZrYW7bcJ6FduIJSW2g6iSr0pApo94YGJvhEgR4D9if2HtMvC
+	AVxkPey+Vwv0LywM6oZVC4xTRSbNMSQtRudoHnGTdAQ+ecVrocDE
+X-Google-Smtp-Source: AGHT+IHsWSNyjDObd8W5fW6CkFUp4Chj6qYaZ1I1bunPgAEg7W36Q2pk60KYgFTt9nedMS/QRVowmA==
+X-Received: by 2002:a17:906:2797:b0:a30:cbc3:f46 with SMTP id j23-20020a170906279700b00a30cbc30f46mr409836ejc.56.1706179570242;
+        Thu, 25 Jan 2024 02:46:10 -0800 (PST)
+Received: from ?IPv6:2003:f6:ef1b:2000:15d4:fc17:481e:8afe? (p200300f6ef1b200015d4fc17481e8afe.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:15d4:fc17:481e:8afe])
+        by smtp.gmail.com with ESMTPSA id a21-20020a1709062b1500b00a2dbc664e2asm888960ejg.89.2024.01.25.02.46.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 02:46:09 -0800 (PST)
+Message-ID: <0a98e54735cc2a97f393eef6b1cdaf27c946d10e.camel@gmail.com>
+Subject: Re: [PATCH] iio: humidity: hdc3020: fix temperature offset
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: Dimitri Fedrau <dima.fedrau@gmail.com>
+Cc: Javier Carrasco <javier.carrasco.cruz@gmail.com>, Li peiyu
+ <579lpy@gmail.com>, Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen
+ <lars@metafoo.de>, linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Thu, 25 Jan 2024 11:49:25 +0100
+In-Reply-To: <20240125102641.3850938-1-dima.fedrau@gmail.com>
+References: <20240125102641.3850938-1-dima.fedrau@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/4] dt-bindings: pinctrl: Document nuvoton ma35d1 pin
- control
-Content-Language: en-US
-To: Jacky Huang <ychuang570808@gmail.com>, linus.walleij@linaro.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- p.zabel@pengutronix.de, j.neuschaefer@gmx.net
-Cc: linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- ychuang3@nuvoton.com, schung@nuvoton.com
-References: <20240123080637.1902578-1-ychuang570808@gmail.com>
- <20240123080637.1902578-3-ychuang570808@gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240123080637.1902578-3-ychuang570808@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-On 23/01/2024 09:06, Jacky Huang wrote:
-> From: Jacky Huang <ychuang3@nuvoton.com>
-> 
-> Add documentation to describe nuvoton ma35d1 pin control and GPIO.
-> 
-> Signed-off-by: Jacky Huang <ychuang3@nuvoton.com>
+Hi Dimitri,
+
+On Thu, 2024-01-25 at 11:26 +0100, Dimitri Fedrau wrote:
+> The temperature offset should be negative according to the datasheet.
+> Adding a minus to the existing offset results in correct temperature
+> calculations.
+>=20
+> Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
 > ---
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+This is a fix. You're missing a Fixes: tag in your commit message.
+git log --grep=3D"Fixes:" should give you some examples...
 
-Best regards,
-Krzysztof
+With that, feel free to add:
+
+Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+
+> =C2=A0drivers/iio/humidity/hdc3020.c | 2 +-
+> =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/iio/humidity/hdc3020.c b/drivers/iio/humidity/hdc302=
+0.c
+> index 4e3311170725..ed70415512f6 100644
+> --- a/drivers/iio/humidity/hdc3020.c
+> +++ b/drivers/iio/humidity/hdc3020.c
+> @@ -322,7 +322,7 @@ static int hdc3020_read_raw(struct iio_dev *indio_dev=
+,
+> =C2=A0		if (chan->type !=3D IIO_TEMP)
+> =C2=A0			return -EINVAL;
+> =C2=A0
+> -		*val =3D 16852;
+> +		*val =3D -16852;
+> =C2=A0		return IIO_VAL_INT;
+> =C2=A0
+> =C2=A0	default:
 
 
