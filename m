@@ -1,133 +1,140 @@
-Return-Path: <linux-kernel+bounces-38963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38964-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CADB483C90C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:01:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45B6183C910
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:01:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80D661F2379E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:01:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78E8B1C2660E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:01:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95355133981;
-	Thu, 25 Jan 2024 16:53:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80B1D13BE84;
+	Thu, 25 Jan 2024 16:53:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k2zHOe3H"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="H8RO9z9M"
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF4C113B7A9;
-	Thu, 25 Jan 2024 16:53:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6895A1353F5;
+	Thu, 25 Jan 2024 16:53:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.153.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706201603; cv=none; b=NIgmSexQ3m+bp4YGPnEwtgGHKD74UpJ1ufnTaGMOTPIrtHH0u7F8zDc8XjL2v8vw1nHEO2zTmj/eHv+sknbJNv7E4X813oA5f9c+zWE6b74dmU0aoI+GWTK8Z17pHy6cQ8Q3d32+eaGO/NcYPqz6TBtWdCs4+4QV7bUsv462Nyw=
+	t=1706201622; cv=none; b=nYkm4osvq9h/glYwJ9a5XJ8AxCyJR5IYITTgkU+2XBxk9zqwcGSXoldWHkn0ZePO0Bl1R+gS9h8L+i7oODA/G4G8/ojvgKuiT3fJMED+bt/pYcQUgrDmyYLlIizFQnXVEZvKBqipdb+CqftT8WvbYALZ5m+75UnNZfay3wnGZlg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706201603; c=relaxed/simple;
-	bh=fFqYQf2Ioug03KTYcEhivp25SqR4a74lXWToRhDCB5A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C/RMYXux+Ry34kJ4j2M9I2RPwghxixQ4og7E4KffavBbuda3QBdA0FMJMlBCiSIUW2uEgg6WzDsrC99jTZYbZc9M0d3+BSELQY9iC4zGz+hPXfdkfQa9jKVp4xinefEoBa+Yd6PC/A72m6GbZ4JJdxj/MkLZlCJJpxdHI0xP21E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k2zHOe3H; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36EFDC433C7;
-	Thu, 25 Jan 2024 16:53:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706201603;
-	bh=fFqYQf2Ioug03KTYcEhivp25SqR4a74lXWToRhDCB5A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=k2zHOe3HSp+eKRDlV3Qg6LSBTVwzBH+zN24FBQ7roQjk4a86ORFgTl+yH5A+rIFBE
-	 E3kro04MtEqR+cnxhq2mP8RmsrCXpl419C8lEV7a/F3xe/yvuMhPvPjshZdiGTDnHP
-	 mNZpMQdQB+kQFxLovuP0J8/8qW2aXhrWoPiK0CF9e//+K18ooG2gyEkPQDxAej2iO9
-	 3pMia+ApD1qEEWb7qnd/LVakVI6GPuyC05GWbJHlIY/SeVMpugqAngPRA5fzgVCW+b
-	 nvTbPfxzO7AhZatULg5V2ltFaHwQHHXpeyOn9DrwbySw12Ec6+1GuYMy2FJUr70L4k
-	 RIRwjLMSb+OnA==
-Date: Thu, 25 Jan 2024 16:53:17 +0000
-From: Conor Dooley <conor@kernel.org>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Bai Ping <ping.bai@nxp.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Marco Felsch <m.felsch@pengutronix.de>,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: timer: nxp,sysctr-timer: support
- i.MX95
-Message-ID: <20240125-hesitant-coronary-913ecc6bbd8b@spud>
-References: <20240125-imx-sysctr-v2-0-7332470cd7ae@nxp.com>
- <20240125-imx-sysctr-v2-1-7332470cd7ae@nxp.com>
+	s=arc-20240116; t=1706201622; c=relaxed/simple;
+	bh=0N4F/gjOaEHcA1EmZZhcmvU+dQFlqf6CupFhM16+QGk=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ezU1zmJXENWuguN4aOCj0mi/kzB6AuIdlnm064NiymksMDqgexKHO5rPG3zbv7/w2w/dS7tdPpaMQ6ZgCsTvFnqyVrzcLm0PyVg1KjYb+TY9sbaPcoQov1KO+BmMZxUJnzgp+oe156WWGaY1ZJx3CoH4YvCSZatyWFrOpE+flnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=H8RO9z9M; arc=none smtp.client-ip=216.71.153.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1706201620; x=1737737620;
+  h=from:subject:date:message-id:mime-version:
+   content-transfer-encoding:to:cc;
+  bh=0N4F/gjOaEHcA1EmZZhcmvU+dQFlqf6CupFhM16+QGk=;
+  b=H8RO9z9M4JzEsXfJ/iJwt16qt/EJEEE+a9KzFnTwCWXi0scmbnea/yXb
+   BvMZJnltkLVgWUpE923Jl5L0Qo57PBmRplh4ZTg/Gb5abidUp62TTqjB7
+   c/Q2nTwnwKzrxINkMtMErzucyJyAubobopAXhzVy7zXA2Fn1LXtgcBC3y
+   Go6pAOdAs0HD86N6ytNhJ8zR+IkRdLUN9RUEeMMDsczWKM0N/7vv+vGW6
+   3bbwtZK17GxgPpURCpOeLaBF7coERF1lhv0yZN7OoP0IY+uaKUge70M5V
+   ek2M9nZjC0snW/R09yr0jSh84L8MiezpnURfbXsUf3k0mtyyG0G/vQF0y
+   A==;
+X-CSE-ConnectionGUID: SLtgWUqwSFiSDx8PwaGf4Q==
+X-CSE-MsgGUID: S5aX1V9mQVOclfDjxcofgQ==
+X-IronPort-AV: E=Sophos;i="6.05,216,1701100800"; 
+   d="scan'208";a="8248247"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 26 Jan 2024 00:53:32 +0800
+IronPort-SDR: UlaRYi/mm3wurEb8x0tmGlxeSFNSbtEMOUa0qrcayk73aEt8h8L7aiSgs2m+pi0J8+W8nyak/g
+ vs0Juk/DByzg==
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 25 Jan 2024 08:03:32 -0800
+IronPort-SDR: OE+tRkmMpFkhDRa1z/PeEZo8HAAoGZY5dfaVEn8/s2a64gELw2HyRSw+9hYcenKw2PYuCiSi5y
+ qsHOshAr8N7g==
+WDCIronportException: Internal
+Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
+  by uls-op-cesaip01.wdc.com with ESMTP; 25 Jan 2024 08:53:29 -0800
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v2 0/5] block: remove gfp_mask for blkdev_zone_mgmt()
+Date: Thu, 25 Jan 2024 08:53:23 -0800
+Message-Id: <20240125-zonefs_nofs-v2-0-2d975c8c1690@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="3xUZ7W5LVUTSJCCk"
-Content-Disposition: inline
-In-Reply-To: <20240125-imx-sysctr-v2-1-7332470cd7ae@nxp.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAOSsmUC/1XMywrCMBCF4VcpszYymVYRV76HFLHJxM7CRDISL
+ 6XvbixuXP4HzjeBchZW2DcTZC6ikmINWjXgxnO8sBFfGwipQ2vRvFPkoKeYghrvLRMNxNhtoT5
+ umYM8F+3Y1x5F7ym/FrzY7/pzqP1zijVonMMBW9xxoM3h4d3apSv08zx/AOnqE66kAAAA
+To: Damien Le Moal <dlemoal@kernel.org>, 
+ Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, 
+ Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>, 
+ Mikulas Patocka <mpatocka@redhat.com>, dm-devel@lists.linux.dev, 
+ Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
+ David Sterba <dsterba@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>, 
+ Chao Yu <chao@kernel.org>, Jens Axboe <axboe@kernel.dk>, 
+ Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, 
+ Chaitanya Kulkarni <kch@nvidia.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
+ linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, 
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706201608; l=1733;
+ i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id;
+ bh=0N4F/gjOaEHcA1EmZZhcmvU+dQFlqf6CupFhM16+QGk=;
+ b=UDiRHl7vyONFeE/+Uc9h4ZkfV2sLDGr/bQXidpKeyTTKnEZ1boUAGnz1/g8SHkp2NIP1u8WfY
+ k+ntypLEWF8Dk7T6KptUtV/AFpEKDBwUlfE02SJfrjkjKtMj15vuipc
+X-Developer-Key: i=johannes.thumshirn@wdc.com; a=ed25519;
+ pk=TGmHKs78FdPi+QhrViEvjKIGwReUGCfa+3LEnGoR2KM=
 
+Fueled by the LSFMM discussion on removing GFP_NOFS initiated by Willy,
+I've looked into the sole GFP_NOFS allocation in zonefs. As it turned out,
+it is only done for zone management commands and can be removed.
 
---3xUZ7W5LVUTSJCCk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+After digging into more callers of blkdev_zone_mgmt() I came to the
+conclusion that the gfp_mask parameter can be removed alltogether.
 
-On Thu, Jan 25, 2024 at 07:09:47PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
->=20
-> Add i.MX95 System counter module compatible string, the SCMI
-> firmware blocks access to control register, so should not
-> add "nxp,sysctr-timer" as fallback.
->=20
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  Documentation/devicetree/bindings/timer/nxp,sysctr-timer.yaml | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/timer/nxp,sysctr-timer.yam=
-l b/Documentation/devicetree/bindings/timer/nxp,sysctr-timer.yaml
-> index 2b9653dafab8..161c09d9e2c3 100644
-> --- a/Documentation/devicetree/bindings/timer/nxp,sysctr-timer.yaml
-> +++ b/Documentation/devicetree/bindings/timer/nxp,sysctr-timer.yaml
-> @@ -18,7 +18,10 @@ description: |
-> =20
->  properties:
->    compatible:
-> -    const: nxp,sysctr-timer
-> +    items
+So this series switches all callers of blkdev_zone_mgmt() to either use
+GFP_KERNEL where possible or grab a memalloc_no{fs,io} context.
 
-This is just an enum, no need for the items.
+The final patch in this series is getting rid of the gfp_mask parameter.
 
-Thanks,
-Conor.
+Link: https://lore.kernel.org/all/ZZcgXI46AinlcBDP@casper.infradead.org/
 
-> +      - enum:
-> +          - nxp,imx95-sysctr-timer
-> +          - nxp,sysctr-timer
-> =20
->    reg:
->      maxItems: 1
->=20
-> --=20
-> 2.37.1
->=20
+---
+Changes in v2:
+- guard blkdev_zone_mgmt in dm-zoned-metadata.c with memalloc_noio context
+- Link to v1: https://lore.kernel.org/r/20240123-zonefs_nofs-v1-0-cc0b0308ef25@wdc.com
 
---3xUZ7W5LVUTSJCCk
-Content-Type: application/pgp-signature; name="signature.asc"
+---
+Johannes Thumshirn (5):
+      zonefs: pass GFP_KERNEL to blkdev_zone_mgmt() call
+      dm: dm-zoned: guard blkdev_zone_mgmt with noio scope
+      btrfs: zoned: call blkdev_zone_mgmt in nofs scope
+      f2fs: guard blkdev_zone_mgmt with nofs scope
+      block: remove gfp_flags from blkdev_zone_mgmt
 
------BEGIN PGP SIGNATURE-----
+ block/blk-zoned.c              | 19 ++++++++-----------
+ drivers/md/dm-zoned-metadata.c |  5 ++++-
+ drivers/nvme/target/zns.c      |  5 ++---
+ fs/btrfs/zoned.c               | 35 +++++++++++++++++++++++++----------
+ fs/f2fs/segment.c              | 15 ++++++++++++---
+ fs/zonefs/super.c              |  2 +-
+ include/linux/blkdev.h         |  2 +-
+ 7 files changed, 53 insertions(+), 30 deletions(-)
+---
+base-commit: 615d300648869c774bd1fe54b4627bb0c20faed4
+change-id: 20240110-zonefs_nofs-dd1e22b2e046
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbKR/QAKCRB4tDGHoIJi
-0ifmAQCP5ByEO4rLsnM1nRFgS/Pldy/Nt4in+j58Ai4EzqtfwgD/RSeJ/IdREcS5
-abSK65muMRwu0y69T/ZiAjWRUXbZsA4=
-=QIUL
------END PGP SIGNATURE-----
+Best regards,
+-- 
+Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
---3xUZ7W5LVUTSJCCk--
 
