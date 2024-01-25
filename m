@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-39429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EA9A83D106
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 00:58:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C01483D107
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 00:58:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B387E1C247FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:58:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBEEC28C6DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:58:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CADE91B596;
-	Thu, 25 Jan 2024 23:57:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 992D71B7E8;
+	Thu, 25 Jan 2024 23:57:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KM6zBS97"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AsXN9eHn"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90EF218EA1;
-	Thu, 25 Jan 2024 23:57:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8590175A1;
+	Thu, 25 Jan 2024 23:57:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706227057; cv=none; b=R/XM9D6j12Ij3WWtrcvaWOGMr/Xb56OIlz1nEFGZWfKDuzKeg/Xlj1a/g9HwLkwSB+d40oKNbt0rmUwFo8dQMvCTo4O77yD7ewzDa9rVplpuLBXuTfurOyGY5KrQM90E60dsHmYw/sko+L2CohZpiPdSFRRtCXT5PStaqPTVsrs=
+	t=1706227058; cv=none; b=J4ouqNL1UeZ9T71jh3ph9t2+lLvf4rVGTFYft0gvVNxV6DX0tbLZNdfHlXFa8HVRdiomtLU1V9mwUmVTt+c2nhMkHajoqRz+rWWr3DS/gl/85NY9D+nM/z1fq8Jd97G3p7x51nvkvdyYqdd1gFqgOLHYcTSuEf/ZeUrdb+jMrYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706227057; c=relaxed/simple;
-	bh=3uFlompF9soIL+QzuHer4RVOjpFnG41ZrxgVyatxx8I=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=O+vpE8ilzi/M+7qJ8mUjH2jE9MnVpvmPALXGh04OW1m+mMzAkj3oqWxT0Gvy62wYdJ6UbjpkLPaXzGo255Gk++3l6fea8ie9me53V8wy5PADFRPE4gXS9JwoK93ajMnwCpIT4FhClUccv9pFAIq6HPUwip5fr2xpPsevtMOuYEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KM6zBS97; arc=none smtp.client-ip=192.198.163.8
+	s=arc-20240116; t=1706227058; c=relaxed/simple;
+	bh=yZBuOVK56XcD+IZGWPAQUigedfDATjZAltUsMaV/oCg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=r0Cb6Q18M/7N8d41M04swciBYTGuNJ9DHTIAfN94cqVYtliLkLeKJi4aBf18UCcATxj/MEDiwzTp8mJP/Q/1akCmdqrvc8Sjb6L9OBCrv8QNGMzlxbdTYgvjQ3dsCcaAtdyZ1j8M9fOkJz8Z+0g7gGKAD+ZyZ4aHSC6E6AAdCYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AsXN9eHn; arc=none smtp.client-ip=192.198.163.8
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706227056; x=1737763056;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=3uFlompF9soIL+QzuHer4RVOjpFnG41ZrxgVyatxx8I=;
-  b=KM6zBS977o27qcXCShMYAJlvcMarJx/DOFiaMuh2R85okz5H66PHZuH3
-   SXkp3p6ORLEwIbpEm73AklHagXcGMvyUDMs8BmOzPJ6PaDKIw/8V6FmzC
-   kSFohTJBYqI2jtFr4oyFxAZkij5JgrvhbSYSBV+ZjHWq//xp96rqmAKaU
-   4wO4A6AC+SJCWo112bK48R5Lg22XsUnRJYvTnSvwQ4C+2WbY47/X2Gfwp
-   Rs/nMxp2rMS+nGRdNnt4DoiP/JObf4/K9wnbW/LOt5n0M7Jeovu358J0k
-   wHKkTeWbKS3pfdOaNlJLURdRfbY7iw+VRne24k4OA//+hz2uO8OusRUV7
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="15867558"
+  t=1706227057; x=1737763057;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=yZBuOVK56XcD+IZGWPAQUigedfDATjZAltUsMaV/oCg=;
+  b=AsXN9eHnOETaFKprBaa7HPHK0s94neoXJrTN+3vH99Sk9bxO707483Hp
+   Qkhufllppwk+HZi7/QRnG3b6Y8/icnD/Kpp0RFDLNxN8EkyQtfcv2mt6I
+   Z7SnN9ZW1p1QXVoBhNMbyZE4Lp84XuCbcDz4IQTFMSzjIeyqaP7hc+Srb
+   ZYzATNSaVvp6CGg8tugSfpu4PkWHY53ZvqNEVWrTQo9PPF8s5mUkHT09z
+   yzgClk6rO8oj+0A8OgVr5YGXYAexbbWxatDX9TbPF/ycmfHGMwmMfvBEy
+   Es7U8iYzSmdaDODftDzaO7d5sRVTIdgJaSzTzb9ppPWn2JKwhz3DYwU2E
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="15867562"
 X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="15867558"
+   d="scan'208";a="15867562"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
   by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 15:57:35 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="930191095"
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="930191098"
 X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="930191095"
+   d="scan'208";a="930191098"
 Received: from vcostago-mobl3.jf.intel.com ([10.24.14.99])
   by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 15:57:34 -0800
 From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
@@ -65,10 +66,12 @@ Cc: miklos@szeredi.hu,
 	linux-unionfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Subject: [RFC v2 0/4] overlayfs: Optimize override/revert creds
-Date: Thu, 25 Jan 2024 15:57:19 -0800
-Message-ID: <20240125235723.39507-1-vinicius.gomes@intel.com>
+Subject: [RFC v2 1/4] cleanup: Fix discarded const warning when defining guards
+Date: Thu, 25 Jan 2024 15:57:20 -0800
+Message-ID: <20240125235723.39507-2-vinicius.gomes@intel.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240125235723.39507-1-vinicius.gomes@intel.com>
+References: <20240125235723.39507-1-vinicius.gomes@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,126 +81,36 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Hi,
+When defining guards for const types the void* return implicitly
+discards the const modifier. Be explicit about it.
 
-It was noticed that some workloads suffer from contention on
-increasing/decrementing the ->usage counter in their credentials,
-those refcount operations are associated with overriding/reverting the
-current task credentials. (the linked thread adds more context)
+Compiler warning (gcc 13.2.1):
 
-In some specialized cases, overlayfs is one of them, the credentials
-in question have a longer lifetime than the override/revert "critical
-section". In the overlayfs case, the credentials are created when the
-fs is mounted and destroyed when it's unmounted. In this case of long
-lived credentials, the usage counter doesn't need to be
-incremented/decremented.
+/include/linux/cleanup.h:154:18: warning: return discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+  154 |         { return *_T; }
+      |                  ^~~
+/include/linux/cred.h:193:1: note: in expansion of macro ‘DEFINE_GUARD’
+  193 | DEFINE_GUARD(cred, const struct cred *, _T = override_creds_light(_T),
+      | ^~~~~~~~~~~~
 
-Add a lighter version of credentials override/revert to be used in
-these specialized cases. To make sure that the override/revert calls
-are paired, add a cleanup guard macro. This was suggested here:
+Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+---
+ include/linux/cleanup.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-https://lore.kernel.org/all/20231219-marken-pochen-26d888fb9bb9@brauner/
-
-With a small number of tweaks:
- - Used inline functions instead of macros;
- - A small change to store the credentials into the passed argument,
-   the guard is now defined as (note the added '_T ='):
-   
-      DEFINE_GUARD(cred, const struct cred *, _T = override_creds_light(_T),
-                  revert_creds_light(_T));
-
- - Allow "const" arguments to be used with these kind of guards;
-
-Some comments:
- - If patch 1/4 is not a good idea (adding the cast), the alternative
-   I can see is using some kind of container for the credentials;
- - The only user for the backing file ops is overlayfs, so these
-   changes make sense, but may not make sense in the most general
-   case;
-
-For the numbers, some from 'perf c2c', before this series:
-(edited to fit)
-
-#
-#        ----- HITM -----                                        Shared                          
-#   Num  RmtHitm  LclHitm                      Symbol            Object         Source:Line  Node
-# .....  .......  .......  ..........................  ................  ..................  ....
-#
-  -------------------------
-      0      412     1028  
-  -------------------------
-          41.50%   42.22%  [k] revert_creds            [kernel.vmlinux]  atomic64_64.h:39     0  1
-          15.05%   10.60%  [k] override_creds          [kernel.vmlinux]  atomic64_64.h:25     0  1
-           0.73%    0.58%  [k] init_file               [kernel.vmlinux]  atomic64_64.h:25     0  1
-           0.24%    0.10%  [k] revert_creds            [kernel.vmlinux]  cred.h:266           0  1
-          32.28%   37.16%  [k] generic_permission      [kernel.vmlinux]  mnt_idmapping.h:81   0  1
-           9.47%    8.75%  [k] generic_permission      [kernel.vmlinux]  mnt_idmapping.h:81   0  1
-           0.49%    0.58%  [k] inode_owner_or_capable  [kernel.vmlinux]  mnt_idmapping.h:81   0  1
-           0.24%    0.00%  [k] generic_permission      [kernel.vmlinux]  namei.c:354          0
-
-  -------------------------
-      1       50      103  
-  -------------------------
-         100.00%  100.00%  [k] update_cfs_group  [kernel.vmlinux]  atomic64_64.h:15   0  1
-
-  -------------------------
-      2       50       98  
-  -------------------------
-          96.00%   96.94%  [k] update_cfs_group  [kernel.vmlinux]  atomic64_64.h:15   0  1
-           2.00%    1.02%  [k] update_load_avg   [kernel.vmlinux]  atomic64_64.h:25   0  1
-           0.00%    2.04%  [k] update_load_avg   [kernel.vmlinux]  fair.c:4118        0
-           2.00%    0.00%  [k] update_cfs_group  [kernel.vmlinux]  fair.c:3932        0  1
-
-after this series:
-
-#
-#        ----- HITM -----                                   Shared                        
-#   Num  RmtHitm  LclHitm                 Symbol            Object       Source:Line  Node
-# .....  .......  .......   ....................  ................  ................  ....
-#
-  -------------------------
-      0       54       88  
-  -------------------------
-         100.00%  100.00%   [k] update_cfs_group  [kernel.vmlinux]  atomic64_64.h:15   0  1
-
-  -------------------------
-      1       48       83  
-  -------------------------
-          97.92%   97.59%   [k] update_cfs_group  [kernel.vmlinux]  atomic64_64.h:15   0  1
-           2.08%    1.20%   [k] update_load_avg   [kernel.vmlinux]  atomic64_64.h:25   0  1
-           0.00%    1.20%   [k] update_load_avg   [kernel.vmlinux]  fair.c:4118        0  1
-
-  -------------------------
-      2       28       44  
-  -------------------------
-          85.71%   79.55%   [k] generic_permission      [kernel.vmlinux]  mnt_idmapping.h:81   0  1
-          14.29%   20.45%   [k] generic_permission      [kernel.vmlinux]  mnt_idmapping.h:81   0  1
-
-
-The contention is practically gone.
-
-Link: https://lore.kernel.org/all/20231018074553.41333-1-hu1.chen@intel.com/
-
-Vinicius Costa Gomes (4):
-  cleanup: Fix discarded const warning when defining guards
-  cred: Add a light version of override/revert_creds()
-  overlayfs: Optimize credentials usage
-  fs: Optimize credentials reference count for backing file ops
-
- fs/backing-file.c       | 124 +++++++++++++++++++---------------------
- fs/overlayfs/copy_up.c  |   4 +-
- fs/overlayfs/dir.c      |  22 +++----
- fs/overlayfs/file.c     |  70 ++++++++++++-----------
- fs/overlayfs/inode.c    |  60 ++++++++++---------
- fs/overlayfs/namei.c    |  21 ++++---
- fs/overlayfs/readdir.c  |  18 +++---
- fs/overlayfs/util.c     |  23 ++++----
- fs/overlayfs/xattrs.c   |  34 +++++------
- include/linux/cleanup.h |   2 +-
- include/linux/cred.h    |  21 +++++++
- kernel/cred.c           |   6 +-
- 12 files changed, 215 insertions(+), 190 deletions(-)
-
+diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
+index c2d09bc4f976..ac521c4521cd 100644
+--- a/include/linux/cleanup.h
++++ b/include/linux/cleanup.h
+@@ -151,7 +151,7 @@ static inline class_##_name##_t class_##_name##ext##_constructor(_init_args) \
+ #define DEFINE_GUARD(_name, _type, _lock, _unlock) \
+ 	DEFINE_CLASS(_name, _type, if (_T) { _unlock; }, ({ _lock; _T; }), _type _T); \
+ 	static inline void * class_##_name##_lock_ptr(class_##_name##_t *_T) \
+-	{ return *_T; }
++	{ return (void *)*_T; }
+ 
+ #define DEFINE_GUARD_COND(_name, _ext, _condlock) \
+ 	EXTEND_CLASS(_name, _ext, \
 -- 
 2.43.0
 
