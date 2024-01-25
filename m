@@ -1,161 +1,210 @@
-Return-Path: <linux-kernel+bounces-37905-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37906-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6874583B777
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 04:00:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1725B83B779
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 04:02:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 209C4281E63
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 03:00:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0C281C21564
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 03:02:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 590731FBF;
-	Thu, 25 Jan 2024 03:00:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D4955C9A;
+	Thu, 25 Jan 2024 03:01:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="QbMd3ANx"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RRM8uu+z"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDB0E1866;
-	Thu, 25 Jan 2024 03:00:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8FB01FB2
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 03:01:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706151605; cv=none; b=bWjFi/9TSDKc47jQlMTqY/AhrmBXM2qpeh24st2CkBfV4xH5lHBNUWOXbgbsS6K4RubGK441yAGxTg0/clKCwIRQy2MWkNAq3XS/rFQSm7bcRFZGmox6aZo3COA1vReqa1S5qE1QLwJKWRFWLAHFZ2k6jjDS9a98zqFsDpVT0Gw=
+	t=1706151713; cv=none; b=bFDH4P9AqDmkCrj0h/orydP8OQ+2Z51b1vZAb45P+p4STsrzVZL9fsZNr20GaeShF4dx9rJs20XctWO4Cog0X31SWrWmmzd5wUQxqVOpAAjAjDQbCTGQzoMdT9STg4cclgm4tF0AhQsAJmRXki4PFZF4wQUM2dgOMtku9exk5SY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706151605; c=relaxed/simple;
-	bh=CzCGo2cwBcCnpe1GOqCp97yh7LTPW/HI2epJpINBHwY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=g5F/jdHuTvFvRFLmzH9RX3HMHcysaM7yPaLosjMnD9uPL7JdIHx/tRyiAQ6/dRu+QDlCE6IEpEU5YBYxvNDcGs3d4VRVgDjtTDwUHhZ1hz3SysIEWVUdj8yHH423x7lxyqj78jl2KO9/OJ7lyizi1Q7bp1This0LU5MZ26qRa6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=QbMd3ANx; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40P2ktLR015835;
-	Thu, 25 Jan 2024 02:59:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=P0bdtGkJXJ10AYPIH4XmGaFlRnPnceLPtZRfk+9/dvs=; b=Qb
-	Md3ANxdwA9ak8p0Fu2rcnbgQOx8Dyt5tksj9xzYsGUWsrCdFLfP4FBDzAFCUBb3C
-	UqPEjpvEzHl2oS8paF6RMCWgNxXuA7NQmqejbjjMFKbYcqN+U/UBb4Cg9U2G9bR6
-	EFvAS/MHiZCSwSAqMPYctJnM8wfBkW9pg62Q5Hkjrxg6ggX0QVqqzgJBFzzHFo+j
-	fy4GWrU9erx1ZbvUbpXH6eXyGs9PjJj9IvnsLTyCnkkGMGG3L3K77cY6tJ3cJpgd
-	nZzvo/fmi4n8+DygC6DJU+GCbHj5G8Kb4k4xlFPe4kLpVEfI7lomBQEQTqMVG+ld
-	npC0LNOtqDpfXa/L1GaQ==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vu99b0pt0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Jan 2024 02:59:53 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40P2xqlW019041
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Jan 2024 02:59:52 GMT
-Received: from [10.239.34.220] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 24 Jan
- 2024 18:59:49 -0800
-Message-ID: <0a3f486d-0135-454e-9da6-b888e516a39e@quicinc.com>
-Date: Thu, 25 Jan 2024 10:59:32 +0800
+	s=arc-20240116; t=1706151713; c=relaxed/simple;
+	bh=0XZnJVSl9yT8NzFj11BZfz8A5Hu9fLHvy/N1lIZxJr4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CWHROXPvgI14hidc9gJ1Al32uCtB9N5zoBSet0b3rVb1nnC1O/ux92ybahu0xAa253pArDlVPZVnQM2q7gfXLh1xkpuZTVk+C+v0SXeKRlOKvbq6ByKx776Twrc/WZBjQt2+D6BywoEe27Up16ZmUbzagxcUMpvjL884mitFH80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RRM8uu+z; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55a86795a3bso6474622a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 19:01:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706151710; x=1706756510; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WGiyAHud1zklxr4w5Cvq4HldX0ROxrGXkPXnV56dMB4=;
+        b=RRM8uu+z+enLHr+u9lVSUNEGCnHN1jas6/xllbS0IiKjrhusMis+lPZQFR1uDMrGuP
+         MMTDJlOkrSUFTlfSlzI1FErcV2N5Skm/CfFPqwvziCfJTTuUws9H9oW6lQXdH9jIh3tn
+         yiBLa6gVMP0ReqXWmCbwn715qxy7k4Tws1o4IxgHKYu93Td3c/VF5vvT8pImYg41KbcN
+         JteS5HI96PyNBltCDoQdI8vsR1IqMOURizNO9pVEBGsgtA36guW7Wab6trwCaiRVChro
+         X6JK69EyIjNI5X2LJSjvzDcEQH56VTKou+38fF1hed12XfJJ+0q3BA2y06LzztffhFKF
+         qkLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706151710; x=1706756510;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WGiyAHud1zklxr4w5Cvq4HldX0ROxrGXkPXnV56dMB4=;
+        b=C1ihn2itn8CoFgv1sltTY3JZZKGP85JFY+BOJG1cFdYmVVBVZMsts1UcieBRR4YQmc
+         bTbrhbfY0Bvrk6FPmvu+tum9ANhewyj9utcggnv0AKDMSZWz9iGR0nu5w+VN3nIgpXrj
+         15PUzqh38lHQqolfF0l84T6pl1MfJJDkCqntiqqT3Cu3/w4WqT6wu1Bs27DLb61f9NhQ
+         QI4O33nJMJTHqBgcamUQ005lUbHUjuZ8EouSbX6l0tX49u3H2F03k/1kKlMyRQZZC332
+         mDgIgDxXUP/oqX1Xn3F6ln+sIW5cqDOCl+MhFB4yXFobvthyCd9zivco5HOkuLN5sfWC
+         TZJA==
+X-Gm-Message-State: AOJu0Yy/x3Feck2GvDlb9rr9oOYdIqsL/yfTIbAAy88HflrvXT7Q7ahw
+	iYGS2xheDapjgpSEM0fogtkiLED0bJbU08SpBJvAXQSu78LaCfM6VUKJiQ/y7OOHHCL15XmMSt+
+	jRFG937UsP9EBi5MDwfFxPLvFpBk=
+X-Google-Smtp-Source: AGHT+IEnoFE7ytn/E8cRDRjQCSJsv0fMwsa6UB/wMFssFu0dpTGk7NCfLiIJVRNBUYrudDH8UDT6tYTKKpzjT82hHrg=
+X-Received: by 2002:a05:6402:32f:b0:55c:972e:3e9c with SMTP id
+ q15-20020a056402032f00b0055c972e3e9cmr101429edw.80.1706151709630; Wed, 24 Jan
+ 2024 19:01:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] phy: qcom: qmp-pcie: Update PCIe PHY settings for
- SM8550
-To: <neil.armstrong@linaro.org>, <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>, <kishon@kernel.org>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>,
-        <quic_mrana@quicinc.com>
-References: <1703742157-69840-1-git-send-email-quic_qianyu@quicinc.com>
- <e6b8befb-82e8-4803-929c-32e86d1e825a@linaro.org>
-Content-Language: en-US
-From: Qiang Yu <quic_qianyu@quicinc.com>
-In-Reply-To: <e6b8befb-82e8-4803-929c-32e86d1e825a@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: QvtK0XzjqVZl3qlEtnNQuGk1Yb5P-uMV
-X-Proofpoint-ORIG-GUID: QvtK0XzjqVZl3qlEtnNQuGk1Yb5P-uMV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-24_12,2024-01-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- mlxlogscore=441 impostorscore=0 spamscore=0 suspectscore=0 malwarescore=0
- lowpriorityscore=0 clxscore=1011 adultscore=0 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401190000
- definitions=main-2401250020
+References: <1703502715-11936-1-git-send-email-zhiguo.niu@unisoc.com>
+ <74243f43-c129-4530-970c-4de2afcd307e@kernel.org> <CAHJ8P3KmnN3rc5yXh2ecg21Eu61srUJsJP8=TbPxfSu4dY91EQ@mail.gmail.com>
+ <b2a3268a-7087-4ff5-9148-dcbc7c95e2bb@kernel.org>
+In-Reply-To: <b2a3268a-7087-4ff5-9148-dcbc7c95e2bb@kernel.org>
+From: Zhiguo Niu <niuzhiguo84@gmail.com>
+Date: Thu, 25 Jan 2024 11:01:38 +0800
+Message-ID: <CAHJ8P3+GeS4TSdwAPJ8dO_R08Vvi1iv_ua+9SU2JY5weuN4hKw@mail.gmail.com>
+Subject: Re: [PATCH V1] f2fs: fix potentail deadloop issue in do_recover_data
+To: Chao Yu <chao@kernel.org>
+Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>, jaegeuk@kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
+	ke.wang@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi Chao,
 
-On 1/24/2024 4:58 PM, neil.armstrong@linaro.org wrote:
-> On 28/12/2023 06:42, Qiang Yu wrote:
->> Align PCIe0/PCIe1 PHY settings with SM8550 latest PCIe PHY Hardware
->> Programming Guide.
->>
->> Can Guo (1):
->>    phy: qcom: qmp-pcie: Update PCIe1 PHY settings for SM8550
->>
->> Qiang Yu (1):
->>    phy: qcom: qmp-pcie: Update PCIe0 PHY settings for SM8550
->>
->>   drivers/phy/qualcomm/phy-qcom-qmp-pcie.c             | 20 
->> ++++++++++++++------
->>   drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v6.h      |  2 ++
->>   drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v6_20.h   |  2 ++
->>   drivers/phy/qualcomm/phy-qcom-qmp-pcs-v6_20.h        |  1 +
->>   .../phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v6_20.h   |  2 ++
->>   5 files changed, 21 insertions(+), 6 deletions(-)
->>
+On Wed, Jan 24, 2024 at 10:54=E2=80=AFPM Chao Yu <chao@kernel.org> wrote:
 >
-> - On SM8550-HDK:
-> # lspci
-> 0000:00:00.0 PCI bridge: Qualcomm Device 0113
-> 0000:01:00.0 Network controller: Qualcomm Device 1107 (rev 01)
-> 0001:00:00.0 PCI bridge: Qualcomm Device 0113
-> 0001:01:00.0 Non-Volatile memory controller: Phison Electronics 
-> Corporation E12 NVMe Controller (rev 01)
+> Zhiguo,
+>m
+> Can you please check below version? Is it fine to you?
 >
+> https://lore.kernel.org/linux-f2fs-devel/20240124144915.19445-1-chao@kern=
+el.org
+it is ok to me and more reasonable than my  version
+thanks~
 >
-> # lspci -nvv
-> 0000:00:00.0 0604: 17cb:0113 (prog-if 00 [Normal decode])
->         LnkCap:    Port #0, Speed 8GT/s, Width x2, ASPM L0s L1, Exit 
-> Latency L0s <4us, L1 <8us
->         LnkSta:    Speed 5GT/s, Width x2
-> 0001:00:00.0 0604: 17cb:0113 (prog-if 00 [Normal decode])
->         LnkCap:    Port #0, Speed 16GT/s, Width x2, ASPM L0s L1, Exit 
-> Latency L0s <4us, L1 <8us
->         LnkSta:    Speed 8GT/s, Width x2
->
-> Tested-by: Neil Armstrong <neil.armstrong@linaro.org> # on SM8550-HDK
->
-> - On SM8550-QRD:
-> # lspci
-> 00:00.0 PCI bridge: Qualcomm Device 0113
-> 01:00.0 Network controller: Qualcomm Device 1107 (rev 01)
->
-> # lspci -nvv
->         LnkCap:    Port #0, Speed 8GT/s, Width x2, ASPM L0s L1, Exit 
-> Latency L0s <4us, L1 <8us
->         LnkSta:    Speed 5GT/s, Width x2
->
-> Tested-by: Neil Armstrong <neil.armstrong@linaro.org> # on SM8550-QRD
->
-> Thanks,
-> Neil
-
-Hi Neil,
-
-Thanks for testing this patch. I verified on aim300, did not see speed 
-downgrade. Let me have a try on HDK8550.
-
-Thanks,
-Qiang
-
+> On 2024/1/22 13:46, Zhiguo Niu wrote:
+> > Hi Chao
+> >
+> > On Mon, Jan 22, 2024 at 11:46=E2=80=AFAM Chao Yu <chao@kernel.org> wrot=
+e:
+> >>
+> >> On 2023/12/25 19:11, Zhiguo Niu wrote:
+> >>> There is a potentail deadloop issue in the corner case of
+> >>> CONFIG_F2FS_FAULT_INJECTION is enabled and the return value
+> >>> of f2fs_reserve_new_block is error but not -ENOSPC, such as
+> >>> this error case:
+> >>> if (unlikely(is_inode_flag_set(dn->inode, FI_NO_ALLOC)))
+> >>>                return -EPERM;
+> >>
+> >> I don't see any path to trigger this error? am I missing something?
+> >>
+> >>> besides, the mainly error -ENOSPC has been handled as bug on,
+> >>> so other error cases can be proecssed normally without looping.
+> >>
+> >> commit 975756c41332bc5e523e9f843271ed5ab6aaaaaa
+> >> Author: Jaegeuk Kim <jaegeuk@kernel.org>
+> >> Date:   Thu May 19 11:57:21 2016 -0700
+> >>
+> >>       f2fs: avoid ENOSPC fault in the recovery process
+> >>
+> >>       This patch avoids impossible error injection, ENOSPC, during rec=
+overy process.
+> >>
+> >> Please check above patch, I guess intention of adding such loop is
+> >> to avoid mount failure due to fault injection was triggered in
+> >> f2fs_reserve_new_block().
+> >>
+> >> What about change as blew?
+> >> - keep the loop to avoid mount failure.
+> >> - remove bug_on() to avoid panic due to fault injection error.
+> >>
+> >> #define DEFAULT_RETRY_COUNT             8
+> >>
+> >>                  for (loops =3D DEFAULT_RETRY_COUNT; loops > 0; loops-=
+-) {
+> >>                          err =3D f2fs_reserve_new_block(&dn);
+> >>                          if (!err ||
+> >>                                  !IS_ENABLED(CONFIG_F2FS_FAULT_INJECTI=
+ON))
+> >>                                  break;
+> >>                  }
+> >
+> > Thanks for your detailed explanation and I understand.
+> > It seems that the original process is also reasonable,
+> > so it=E2=80=99s okay to keep it as it is.
+> >>
+> >> Thanks,
+> >>
+> >>>
+> >>> Fixes: 956fa1ddc132 ("f2fs: fix to check return value of f2fs_reserve=
+_new_block()")
+> >>> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+> >>> ---
+> >>>    fs/f2fs/recovery.c | 26 ++++++++------------------
+> >>>    1 file changed, 8 insertions(+), 18 deletions(-)
+> >>>
+> >>> diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
+> >>> index 21381b7..5d658f6 100644
+> >>> --- a/fs/f2fs/recovery.c
+> >>> +++ b/fs/f2fs/recovery.c
+> >>> @@ -710,15 +710,10 @@ static int do_recover_data(struct f2fs_sb_info =
+*sbi, struct inode *inode,
+> >>>                 */
+> >>>                if (dest =3D=3D NEW_ADDR) {
+> >>>                        f2fs_truncate_data_blocks_range(&dn, 1);
+> >>> -                     do {
+> >>> -                             err =3D f2fs_reserve_new_block(&dn);
+> >>> -                             if (err =3D=3D -ENOSPC) {
+> >>> -                                     f2fs_bug_on(sbi, 1);
+> >>> -                                     break;
+> >>> -                             }
+> >>> -                     } while (err &&
+> >>> -                             IS_ENABLED(CONFIG_F2FS_FAULT_INJECTION)=
+);
+> >>> -                     if (err)
+> >>> +                     err =3D f2fs_reserve_new_block(&dn);
+> >>> +                     if (err =3D=3D -ENOSPC)
+> >>> +                             f2fs_bug_on(sbi, 1);
+> >>> +                     else if (err)
+> >>>                                goto err;
+> >>>                        continue;
+> >>>                }
+> >>> @@ -727,15 +722,10 @@ static int do_recover_data(struct f2fs_sb_info =
+*sbi, struct inode *inode,
+> >>>                if (f2fs_is_valid_blkaddr(sbi, dest, META_POR)) {
+> >>>
+> >>>                        if (src =3D=3D NULL_ADDR) {
+> >>> -                             do {
+> >>> -                                     err =3D f2fs_reserve_new_block(=
+&dn);
+> >>> -                                     if (err =3D=3D -ENOSPC) {
+> >>> -                                             f2fs_bug_on(sbi, 1);
+> >>> -                                             break;
+> >>> -                                     }
+> >>> -                             } while (err &&
+> >>> -                                     IS_ENABLED(CONFIG_F2FS_FAULT_IN=
+JECTION));
+> >>> -                             if (err)
+> >>> +                             err =3D f2fs_reserve_new_block(&dn);
+> >>> +                             if (err =3D=3D -ENOSPC)
+> >>> +                                     f2fs_bug_on(sbi, 1);
+> >>> +                             else if (err)
+> >>>                                        goto err;
+> >>>                        }
+> >>>    retry_prev:
 
