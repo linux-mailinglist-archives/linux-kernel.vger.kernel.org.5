@@ -1,229 +1,110 @@
-Return-Path: <linux-kernel+bounces-38698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAB7483C446
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:03:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 12DD383C442
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:03:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43A93B232C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:03:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73D23B22043
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:02:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B28306280E;
-	Thu, 25 Jan 2024 14:03:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F5D160EE5;
+	Thu, 25 Jan 2024 14:02:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DyklOWNG"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N4TkpIWN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45727627EF
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 14:03:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AD5760EC4;
+	Thu, 25 Jan 2024 14:02:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706191390; cv=none; b=T5YgiccoVLCI9ccDOvl2IVBloTyPMzEcpNTT3wub+lii0BuPYhsvnrtFHystopnt3ImTl2sRT3LyJN7z/8K6r/U55vmnclvsZlAQOJPg3PpgtCuPuHDJ5Y8wCYbXVa4wCSu8dHMbYIo9xJo/9sMaNkfhcfQesqzgr0e5AV/UzPc=
+	t=1706191367; cv=none; b=tQtgjJsWWavrThbH5mH3p8suC/q4PgHJRxPziaJg6u7TTJPXkkk50l1cho17HHOSdW+mDRDlhBBE6sEVLyANjdjHSoW6DFRtJ5mgIVOq+diS1g83VX5hLeyAHrKxMHAdV4d23rIaWtEXUgNPBU+wE/8lfSDE/CTltqCyDskdfgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706191390; c=relaxed/simple;
-	bh=j2gtjhl3d1XNksVxYRJqASiqF1b665xOwflpYSXVsyQ=;
-	h=From:To:cc:Subject:MIME-Version:Content-Type:Date:Message-ID; b=dIgnb4f7cttCSLWVIYSeTxV+KRZ5qbxyop5IpaYCk7HL+ArAwzalQcH/L/rEXYmwt6P9rY2Mkq6JO08Om6sJVVFF51mWD8hti2+axVl18RIUWR2Zy3XjJzQCUv/qahvdXeMGyHcU9Q3sfTzN1w8mLLm8oi5tNhJH99xDAcCrHzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DyklOWNG; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706191388;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=e12SznbgNVYlJuZvyyzaU+LAE5U/U9H1zetulJ+CfWs=;
-	b=DyklOWNGw/IDSN5Acp/N1Hz1zHwEXEfS9bOcPRFJGKQO6KHkrRBL5O3SqYS/nnvZYYiA4E
-	6k7AMUxtz3XsPiWlffpY6eKDwZof398X3ySsDd+WBRaq4ia/QgqYGlq7Ymho6TE2V5tpDS
-	0HZPmbxCWKTT/8Wz5L6wIbHhAbhaMUs=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-640-ak9liix9McKY6rZIJ6D-Rw-1; Thu,
- 25 Jan 2024 09:03:00 -0500
-X-MC-Unique: ak9liix9McKY6rZIJ6D-Rw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 831452837815;
-	Thu, 25 Jan 2024 14:02:29 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.245])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id CC13951D5;
-	Thu, 25 Jan 2024 14:02:27 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-To: Gao Xiang <xiang@kernel.org>
-cc: dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
-    Christian Brauner <brauner@kernel.org>,
-    Matthew Wilcox <willy@infradead.org>,
-    Eric Sandeen <esandeen@redhat.com>, v9fs@lists.linux.dev,
-    linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-    linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-    linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-    linux-kernel@vger.kernel.org
-Subject: Roadmap for netfslib and local caching (cachefiles)
+	s=arc-20240116; t=1706191367; c=relaxed/simple;
+	bh=hW+7KwLKI/bBlcGNcAWmmmbt2DqB5Fpalsq0UAOigPM=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=pFuPFm2ctjmDIMrZf98R7N+OgkKNVB0A+hgwMPAmTl6Zp5ugjv+H+jwurY+U+8yPKSxmx0RmQfrCCGBwqBP7WmxWmU5BgxjQN/JcRVK7aud9gYXvr4Nd/haK+rPnurYgP+RxmvwOmsE9980hJrBbGQcJHwfxS5eLypJO2r+iNIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N4TkpIWN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26D06C433C7;
+	Thu, 25 Jan 2024 14:02:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706191367;
+	bh=hW+7KwLKI/bBlcGNcAWmmmbt2DqB5Fpalsq0UAOigPM=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=N4TkpIWNTxnqtSfosttOzWNDmPZ2ZYsvTxL0myI5GpDkNU9ZvpFOO2zmmsD7czfzA
+	 HDwNl5P6IFmNpXBKtreSRDRglECxaHo+sV8ahx6TKXDuHlQiuyZ5NDZ20qNNDVvPaA
+	 RPKOQWpxH8OlCF9Iz7Pms/LiE4Q+D6clzU7pzVNfH1uC+tDNTbq/wF6tDhRHOUxn2H
+	 xNuZKDM63XZOHrB2b/iwB2fsGX8FU1ZU1JNtUspUYIGx7SfH/VQ4LsUgXEfJws/Z6a
+	 KEBGdRxpUt+ui/69T85DafdBLm+8nuHzlWygg6IZtGmw1i4iwcdUKNBRb0glA88Q9x
+	 e0Agwd3NHwKfw==
+From: Mark Brown <broonie@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Andi Shyti <andi.shyti@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Sam Protsenko <semen.protsenko@linaro.org>
+Cc: Alim Akhtar <alim.akhtar@samsung.com>, 
+ Sylwester Nawrocki <s.nawrocki@samsung.com>, 
+ Tomasz Figa <tomasz.figa@gmail.com>, Chanwoo Choi <cw00.choi@samsung.com>, 
+ linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org
+In-Reply-To: <20240120012948.8836-1-semen.protsenko@linaro.org>
+References: <20240120012948.8836-1-semen.protsenko@linaro.org>
+Subject: Re: (subset) [PATCH 0/7] arm64: exynos: Enable SPI for Exynos850
+Message-Id: <170619136385.38074.4377918274781683592.b4-ty@kernel.org>
+Date: Thu, 25 Jan 2024 14:02:43 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <520667.1706191347.1@warthog.procyon.org.uk>
-Date: Thu, 25 Jan 2024 14:02:27 +0000
-Message-ID: <520668.1706191347@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-a684c
 
-Here's a roadmap for the future development of netfslib and local caching
-(e.g. cachefiles).
+On Fri, 19 Jan 2024 19:29:41 -0600, Sam Protsenko wrote:
+> This series enables SPI for Exynos850 SoC. The summary:
+> 
+>   1. Enable PDMA, it's needed for SPI (dts, clk)
+>   2. Propagate SPI src clock rate change up to DIV clocks, to make it
+>      possible to change SPI frequency (clk driver)
+>   3. Add Exynos850 support in SPI driver
+>   4. Add SPI nodes to Exynos850 SoC dtsi
+> 
+> [...]
 
-Netfslib
-========
+Applied to
 
-[>] Current state:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-The netfslib write helpers have gone upstream now and are in v6.8-rc1, with
-both the 9p and afs filesystems using them.  This provides larger I/O size
-support to 9p and write-streaming and DIO support to afs.
+Thanks!
 
-The helpers provide their own version of generic_perform_write() that:
+[2/7] dt-bindings: spi: samsung: Add Exynos850 SPI
+      commit: 737cf74b38007fd5d5d2f15d4d4bc16e5f1cbfed
+[5/7] spi: s3c64xx: Add Exynos850 support
+      commit: 0229278bf33ea69cc1bba12c287f173e9b18c1f8
 
- (1) doesn't use ->write_begin() and ->write_end() at all, completely taking
-     over all of of the buffered I/O operations, including writeback.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
- (2) can perform write-through caching, setting up one or more write
-     operations and adding folios to them as we copy data into the pagecache
-     and then starting them as we finish.  This is then used for O_SYNC and
-     O_DSYNC and can be used with immediate-write caching modes in, say, cifs.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Filesystems using this then deal with iov_iters and ideally would not deal
-pages or folios at all - except incidentally where a wrapper is necessary.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-[>] Aims for the next merge window:
-
-Convert cifs to use netfslib.  This is now in Steve French's for-next branch.
-
-Implement content crypto and bounce buffering.  I have patches to do this, but
-it would only be used by ceph (see below).
-
-Make libceph and rbd use iov_iters rather than referring to pages and folios
-as much as possible.  This is mostly done and rbd works - but there's one bit
-in rbd that still needs doing.
-
-Convert ceph to use netfslib.  This is about half done, but there are some
-wibbly bits in the ceph RPCs that I'm not sure I fully grasp.  I'm not sure
-I'll quite manage this and it might get bumped.
-
-Finally, change netfslib so that it uses ->writepages() to write data to the
-cache, even data on clean pages just read from the server.  I have a patch to
-do this, but I need to move cifs and ceph over first.  This means that
-netfslib, 9p, afs, cifs and ceph will no longer use PG_private_2 (aka
-PG_fscache) and Willy can have it back - he just then has to wrest control
-from NFS and btrfs.
-
-
-[>] Aims for future merge windows:
-
-Using a larger chunk size than PAGE_SIZE - for instance 256KiB - but that
-might require fiddling with the VM readahead code to avoid read/read races.
-
-Cache AFS directories - there are just files and currently are downloaded and
-parsed locally for readdir and lookup.
-
-Cache directories from other filesystems.
-
-Cache inode metadata, xattrs.
-
-Add support for fallocate().
-
-Implement content crypto in other filesystems, such as cifs which has its own
-non-fscrypt way of doing this.
-
-Support for data transport compression.
-
-Disconnected operation.
-
-NFS.  NFS at the very least needs to be altered to give up the use of
-PG_private_2.
-
-
-Local Caching
-=============
-
-There are a number of things I want to look at with local caching:
-
-[>] Although cachefiles has switched from using bmap to using SEEK_HOLE and
-SEEK_DATA, this isn't sufficient as we cannot rely on the backing filesystem
-optimising things and introducing both false positives and false negatives.
-Cachefiles needs to track the presence/absence of data for itself.
-
-I had a partially-implemented solution that stores a block bitmap in an xattr,
-but that only worked up to files of 1G in size (with bits representing 256K
-blocks in a 512-byte bitmap).
-
-[>] An alternative cache format might prove more fruitful.  Various AFS
-implementations use a 'tagged cache' format with an index file and a bunch of
-small files each of which contains a single block (typically 256K in OpenAFS).
-
-This would offer some advantages over the current approach:
-
- - it can handle entry reuse within the index
- - doesn't require an external culling process
- - doesn't need to truncate/reallocate when invalidating
-
-There are some downsides, including:
-
- - each block is in a separate file
- - metadata coherency is more tricky - a powercut may require a cache wipe
- - the index key is highly variable in size if used for multiple filesystems
-
-But OpenAFS has been using this for something like 30 years, so it's probably
-worth a try.
-
-[>] Need to work out some way to store xattrs, directory entries and inode
-metadata efficiently.
-
-[>] Using NVRAM as the cache rather than spinning rust.
-
-[>] Support for disconnected operation to pin desirable data and keep
-track of changes.
-
-[>] A user API by which the cache for specific files or volumes can be
-flushed.
-
-
-Disconnected Operation
-======================
-
-I'm working towards providing support for disconnected operation, so that,
-provided you've got your working set pinned in the cache, you can continue to
-work on your network-provided files when the network goes away and resync the
-changes later.
-
-This is going to require a number of things:
-
- (1) A user API by which files can be preloaded into the cache and pinned.
-
- (2) The ability to track changes in the cache.
-
- (3) A way to synchronise changes on reconnection.
-
- (4) A way to communicate to the user when there's a conflict with a third
-     party change on reconnect.  This might involve communicating via systemd
-     to the desktop environment to ask the user to indicate how they'd like
-     conflicts recolved.
-
- (5) A way to prompt the user to re-enter their authentication/crypto keys.
-
- (6) A way to ask the user how to handle a process that wants to access data
-     we don't have (error/wait) - and how to handle the DE getting stuck in
-     this fashion.
-
-David
+Thanks,
+Mark
 
 
