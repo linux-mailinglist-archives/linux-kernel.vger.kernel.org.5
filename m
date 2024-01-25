@@ -1,102 +1,199 @@
-Return-Path: <linux-kernel+bounces-38002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F52683B988
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:24:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8147E83B9A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:29:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55322284FFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 06:24:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5B9B1C23389
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 06:29:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E349010A31;
-	Thu, 25 Jan 2024 06:24:14 +0000 (UTC)
-Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09454125AC;
+	Thu, 25 Jan 2024 06:28:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VgNY+BzZ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A3410A12;
-	Thu, 25 Jan 2024 06:24:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F8AF125BC;
+	Thu, 25 Jan 2024 06:28:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706163854; cv=none; b=WnafPK1LsZEzIkJKYc9ZfyxdIUWfCcJF8q9Vr19RI53J2UB7QoJjUvzH2mB3df3nMMY1Gg0W4mh5aqNuO7GU5DaX5+2z//3xNnjuNjg48BdGvkGWMDyY6q6uTwSIvOzBVkUA3l5XeHkpmRlF3LYtWeJdP7E5djr4ZDxEuU+T2fY=
+	t=1706164121; cv=none; b=RRfKDwm+iDWJc872fQHHgayM6tsd8cbEuhA1Kb9J63wovxVq0ZCfpD9bK6XqPSfAXMcGb3Q42q+jp0emnOiU0siqSCEYmoolNJ55DTZx9HOCes+fczHCqoag4NQDsoonVRORw67wUR0aazwAu2Vkyp85V4Ujkpcd4lQ+yTTcHq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706163854; c=relaxed/simple;
-	bh=IJnqiJ3su0ULAtCoiKNxfIa4lBJxYdBgJQZXApe+y2A=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EqJV3bUAMVwF7sSDvN7nUgMv2CIUz+o59UxiSKmZCUDAeilO67IsVBH4Aoh2ZvE4NIVEdndPRDEn8hqTc4AcBbjbGXI2Sibm68YafszVWSv6+MObbXcHDJze1cPqrBGGKlpDOoagbSsXAp9Kh14+PngGHnUUi17h/THiR8Tptdg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 40P6NZMG074726;
-	Thu, 25 Jan 2024 14:23:35 +0800 (+08)
-	(envelope-from Di.Shen@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TL9Z2408Nz2SKBpW;
-	Thu, 25 Jan 2024 14:16:10 +0800 (CST)
-Received: from bj10906pcu1.spreadtrum.com (10.0.73.72) by
- BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Thu, 25 Jan 2024 14:23:33 +0800
-From: Di Shen <di.shen@unisoc.com>
-To: <lukasz.luba@arm.com>, <rafael@kernel.org>, <daniel.lezcano@linaro.org>,
-        <rui.zhang@intel.com>
-CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <xuewen.yan@unisoc.com>, <zhanglyra@gmail.com>, <orsonzhai@gmail.com>,
-        <cindygm567@gmail.com>
-Subject: [PATCH V2] thermal: power_allocator: Avoid overwriting PID coefficients from setup time
-Date: Thu, 25 Jan 2024 14:23:31 +0800
-Message-ID: <20240125062331.28943-1-di.shen@unisoc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <1f8914cb-fc66-4068-8f7c-4d13b2454f7d@arm.com>
-References: <1f8914cb-fc66-4068-8f7c-4d13b2454f7d@arm.com>
+	s=arc-20240116; t=1706164121; c=relaxed/simple;
+	bh=pvMMZU0mlB2eFcvOm/oK0NtOQG6HPvn9mMao1fi7Zqc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GAi90WQsC2bhrGBFGU+IG5g5Vce+OXeV0RWUdS1lV+xTyv9NzpTDdysGiaGx3SoG8WFUzGjrNhnT5YSr86BwaBySiFAg9FbheW9RaTH6MCSzSo5tjZkWaETK3yzhnUg9Kx5daPZ5b6Z8caREOd505hxOsYpcksz9IpKEExORuao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VgNY+BzZ; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706164118; x=1737700118;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=pvMMZU0mlB2eFcvOm/oK0NtOQG6HPvn9mMao1fi7Zqc=;
+  b=VgNY+BzZO7tu02szbM5sY3egj0u72h+5cGdBc7pVVT5NVRIFtJueAD1x
+   bd2sMU86AYMm8EbyyAqsRL3O/l2x7DRmFigeiiFfWzh52sZJhYDRhUEUU
+   JAWs1TVccFwpydr/jmyd9qQU+wPA6UY3migkeskci8EpT2WgDoT0lLc7e
+   VWT80yR138Kk1Rj18d0Vu/AKK9dPvTgYDoJXgzZciCkwGxpEdPQOb/s+V
+   FOy/qrdAI3VdEDlR6sjyYiq0CRo2BZQ5jnO4gMhyl/CaA3n+o3eVdm2qF
+   W5gMYhL1ITWXTqTXOKMZ8hj53oaZctzAd3W2DoIY5wdBRmY/RkTZjMMRL
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="9456724"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="9456724"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 22:28:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="2122533"
+Received: from linchen5-mobl.ccr.corp.intel.com (HELO localhost) ([10.254.209.209])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 22:28:27 -0800
+From: "Wang, Qingshun" <qingshun.wang@linux.intel.com>
+To: linux-pci@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-acpi@vger.kernel.org
+Cc: chao.p.peng@linux.intel.com,
+	erwin.tsaur@intel.com,
+	feiting.wanyan@intel.com,
+	qingshun.wang@intel.com,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
+	James Morse <james.morse@arm.com>,
+	Tony Luck <tony.luck@intel.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Jonathan Cameron <jonathan.cameron@huawei.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Ira Weiny <ira.weiny@intel.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Bjorn Helgaas <helgaas@kernel.org>,
+	Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+	"Oliver O'Halloran" <oohall@gmail.com>,
+	Miaohe Lin <linmiaohe@huawei.com>,
+	Shiju Jose <shiju.jose@huawei.com>,
+	Adam Preble <adam.c.preble@intel.com>,
+	Li Yang <leoyang.li@nxp.com>,
+	Lukas Wunner <lukas@wunner.de>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+	Robert Richter <rrichter@amd.com>,
+	linux-kernel@vger.kernel.org,
+	linux-cxl@vger.kernel.org,
+	linux-edac@vger.kernel.org,
+	"Wang, Qingshun" <qingshun.wang@linux.intel.com>
+Subject: [PATCH v2 0/4] PCI/AER: Handle Advisory Non-Fatal properly
+Date: Thu, 25 Jan 2024 14:27:58 +0800
+Message-ID: <20240125062802.50819-1-qingshun.wang@linux.intel.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- BJMBX01.spreadtrum.com (10.0.64.7)
-X-MAIL:SHSQR01.spreadtrum.com 40P6NZMG074726
+Content-Transfer-Encoding: 8bit
 
-When the PID coefficients k_* are set via sysfs before the IPA
-algorithm is triggered then the coefficients would be overwritten after
-IPA throttle() is called. The old configuration values might be
-different than the new values estimated by the IPA internal algorithm.
+According to PCIe Base Specification Revision 6.1, Sections 6.2.3.4
+and 6.2.4.3, certain uncorrectable errors will signal ERR_COR instead
+of ERR_NONFATAL, logged as Advisory Non-Fatal Error, and set bits in
+both Correctable Error Status register and Uncorrectable Error Status
+register. Currently, when handling AER events the kernel will only look
+at CE status or UE status, but never both. In the Advisory
+Non-Fatal Error case, bits set in the UE status register will not be
+reported and cleared until the next Fatal/Non-Fatal error arrives.
 
-There might be a time delay when this overwriting happens. It
-depends on the thermal zone temperature value. The temperature value
-needs to cross the first trip point value then IPA algorithms start
-operating. Although, the PID coefficients setup time should not be
-affected or linked to any later operating phase and values must not be
-overwritten.
+For instance, previously, when the kernel receives an ANFE with Poisoned
+TLP in OS native AER mode, only the status of CE will be reported and
+cleared:
 
-This patch initializes params->sustainable_power when the governor
-binds to thermal zone to avoid overwriting k_*. The basic function won't
-be affected, as the k_* still can be estimated if the sustainable_power
-is modified.
+  AER: Corrected error received: 0000:b7:02.0
+  PCIe Bus Error: severity=Corrected, type=Transaction Layer, (Receiver ID)
+    device [8086:0db0] error status/mask=00002000/00000000
+     [13] NonFatalErr           
 
-Signed-off-by: Di Shen <di.shen@unisoc.com>
----
- drivers/thermal/gov_power_allocator.c | 2 ++
- 1 file changed, 2 insertions(+)
+If the kernel receives a Malformed TLP after that, two UE will be
+reported, which is unexpected. The Malformed TLP Header was lost since
+the previous ANFE gated the TLP header logs:
 
-diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
-index 81e061f183ad..1b17dc4c219c 100644
---- a/drivers/thermal/gov_power_allocator.c
-+++ b/drivers/thermal/gov_power_allocator.c
-@@ -711,6 +711,8 @@ static int power_allocator_bind(struct thermal_zone_device *tz)
- 
- 	if (!tz->tzp->sustainable_power)
- 		dev_warn(&tz->device, "power_allocator: sustainable_power will be estimated\n");
-+	else
-+		params->sustainable_power = tz->tzp->sustainable_power;
- 
- 	estimate_pid_constants(tz, tz->tzp->sustainable_power,
- 			       params->trip_switch_on,
+  PCIe Bus Error: severity=Uncorrected (Fatal), type=Transaction Layer, (Receiver ID)
+    device [8086:0db0] error status/mask=00041000/00180020
+     [12] TLP                    (First)
+     [18] MalfTLP       
+
+To handle this case properly, add additional fields in aer_err_info to
+track both CE and UE status/mask, UE severity, and Device Status.
+Use this information to determine the status bits that need to be cleared.
+
+Now, in the previous scenario, both CE status and related UE status will
+be reported and cleared after ANFE:
+
+  AER: Corrected error received: 0000:b7:02.0
+  PCIe Bus Error: severity=Corrected, type=Transaction Layer, (Receiver ID)
+    device [8086:0db0] error status/mask=00002000/00000000
+     [13] NonFatalErr           
+    Uncorrectable errors that may cause Advisory Non-Fatal:
+     [18] TLP
+
+Additionally, add more data to aer_event tracepoint, which would help
+to better understand ANFE and other errors for external observation.
+
+Note:
+checkpatch.pl will produce following errors and warnings on PATCH 4:
+
+  ERROR: space prohibited after that open parenthesis '('
+  #103: FILE: include/ras/ras_event.h:319:
+  +		__field(	u16,		link_status	)
+
+  ...similar errors omitted...
+
+  WARNING: quoted string split across lines
+  #126: FILE: include/ras/ras_event.h:342:
+  +	TP_printk("%s PCIe Bus Error: severity=%s, %s, TLP Header=%s, "
+  +		 "Correctable Error Status=0x%08x, "
+
+  ...similar warnings omitted...
+
+For readability reasons, these errors and warnings are not fixed,
+following the code style of existing examples in the kernel source tree.
+
+Change log:
+v2:
+  - Reference to the latest PCIe Specification in both commit messages
+    and comments, as suggested by Bjorn Helgaas.
+  - Describe the reason for storing additional information in
+    aer_err_info in the commit message of PATCH 1, as suggested by Bjorn
+    Helgaas.
+  - Add more details of behavior changes in the commit message of PATCH
+    2, as suggested by Bjorn Helgaas.
+
+v1: https://lore.kernel.org/linux-pci/20240111073227.31488-1-qingshun.wang@linux.intel.com/
+
+Wang, Qingshun (4):
+  PCI/AER: Store more information in aer_err_info
+  PCI/AER: Handle Advisory Non-Fatal properly
+  PCI/AER: Fetch information for FTrace
+  RAS: Trace more information in aer_event
+
+ drivers/acpi/apei/ghes.c      |  16 ++-
+ drivers/cxl/core/pci.c        |  15 ++-
+ drivers/pci/pci.h             |  12 ++-
+ drivers/pci/pcie/aer.c        | 191 +++++++++++++++++++++++++++-------
+ include/linux/aer.h           |   6 +-
+ include/linux/pci.h           |  27 +++++
+ include/ras/ras_event.h       |  48 ++++++++-
+ include/uapi/linux/pci_regs.h |   1 +
+ 8 files changed, 269 insertions(+), 47 deletions(-)
+
+
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
 -- 
-2.17.1
+2.42.0
 
 
