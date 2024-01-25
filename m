@@ -1,163 +1,123 @@
-Return-Path: <linux-kernel+bounces-38950-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38923-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D9D283C8E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:57:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEA2B83C884
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:47:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C79261F232D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:57:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75AE1296609
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:47:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB4F0137C48;
-	Thu, 25 Jan 2024 16:46:11 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73176137C42;
-	Thu, 25 Jan 2024 16:46:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C1D1132C18;
+	Thu, 25 Jan 2024 16:43:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="iUkcoNPZ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="BAKL2yrv"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4221F1386C9;
+	Thu, 25 Jan 2024 16:43:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706201171; cv=none; b=qBhU4UL2HTa7oyYogYYrxjI005A/0FwnRelTbwhESQvctXl84gXtLI+jco3QLjZiQaK2eK+JOZZJX/gacG6nk/5S8dlXXDVYxNYDc1NnaQt6NtjyzRosApgUXFMShchTWoO0DL2K4KxKnHmv1rkxN4JuiXD2Rf2kXpwaiSHsfhM=
+	t=1706201022; cv=none; b=rObEg3jA2j6Fu6xPILfKrGPnDA582yhABgn8TzFzR9QPkkoKJ+uTv0a9Vq/5RmCMkGR3JPrIOq8mkl6xwUG4IJsGKAL+/d+ec1LNADAGTh7hmelh/YvF6oIH4wtjdNeUlqfKPfs1Y0jNrSsF9CDYtYDt3UIJHrVnH4e0M4cp6V8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706201171; c=relaxed/simple;
-	bh=RYSkqFOQ01hFCkK6kdRl4zoorgEFa1qy6JwzzkzXoKc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=OJjmxybI1hql6mlmqZ9vubcCnUuFM/lw7XLXqbZEuqqTSqj3K2sP+Nfzf5Iqr3a0ohjbbnk2RzwUv5GXZr1PBbVUkts9dQxmIqFMejhkiTwudtuoBBirIAe/FSX5iyAjEfP24Uw0pgDjfbbpxbjSxtTtAukW7dk0rEvbgkeBa8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 908D41762;
-	Thu, 25 Jan 2024 08:46:53 -0800 (PST)
-Received: from e121798.cable.virginm.net (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A7DED3F5A1;
-	Thu, 25 Jan 2024 08:46:03 -0800 (PST)
-From: Alexandru Elisei <alexandru.elisei@arm.com>
-To: catalin.marinas@arm.com,
-	will@kernel.org,
-	oliver.upton@linux.dev,
-	maz@kernel.org,
-	james.morse@arm.com,
-	suzuki.poulose@arm.com,
-	yuzenghui@huawei.com,
-	arnd@arndb.de,
-	akpm@linux-foundation.org,
-	mingo@redhat.com,
-	peterz@infradead.org,
-	juri.lelli@redhat.com,
-	vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com,
-	rostedt@goodmis.org,
-	bsegall@google.com,
-	mgorman@suse.de,
-	bristot@redhat.com,
-	vschneid@redhat.com,
-	mhiramat@kernel.org,
-	rppt@kernel.org,
-	hughd@google.com
-Cc: pcc@google.com,
-	steven.price@arm.com,
-	anshuman.khandual@arm.com,
-	vincenzo.frascino@arm.com,
-	david@redhat.com,
-	eugenis@google.com,
-	kcc@google.com,
-	hyesoo.yu@samsung.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	kvmarm@lists.linux.dev,
-	linux-fsdevel@vger.kernel.org,
-	linux-arch@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH RFC v3 35/35] HACK! arm64: dts: Add fake tag storage to fvp-base-revc.dts
-Date: Thu, 25 Jan 2024 16:42:56 +0000
-Message-Id: <20240125164256.4147-36-alexandru.elisei@arm.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240125164256.4147-1-alexandru.elisei@arm.com>
-References: <20240125164256.4147-1-alexandru.elisei@arm.com>
+	s=arc-20240116; t=1706201022; c=relaxed/simple;
+	bh=qlZenJyIstVYdWiJcRf04ZXU4wRC9pZX/QYgGL3c40s=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=Tc7EKb8Tsw8go/y50X+KoaNL14quOlpb5Fux+Sdh2cUrKE8sxeW+l128IM4irSFylkOVqOJ/4Bt+015WH0R0spfxiJ2LvIaPPlcjfQ0rcakebZTV5gN8DLdJ0rw7w5RZCEHNfE+1hegwK4kcMZi81fbF7ILY6dq3XFU8ZWJCywE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=iUkcoNPZ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=BAKL2yrv; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 25 Jan 2024 16:43:37 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706201018;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/9alz6IhoFeSBeq+RLDCT53ipn+PBG+CbCy5oS/MiWY=;
+	b=iUkcoNPZdZW6zaapgJmGPJ5/7NO5k0g7nklK/z6nyl/fymgi+O4kWTC0xDzIUWFHE1lLNl
+	n3EDLrBeycJ25IZ0A/pAJ0pu490FPo4lHMR2UFm6Gp8uOoIIm4M50m8A+MYkv465oA9ZAV
+	VkHxVy4MWsRKTfe52HLXRgwqKhdSPO8XR1JFEyEIR3QoM0XUBEngYHxO8kILXquZEHWUn8
+	dcMNbsiteT5kX9J8htlj+EhOWBX1skQd83kvZ+bswnwpgdzw+7Hh1VowjXas/yBt3wTc4R
+	gwIcrm61wlXS5ebN4i7Ec9TXzXNPh4/rOmQ+jUwGM0L6N1ZUUJ8rzjsAJTYmkA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706201018;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/9alz6IhoFeSBeq+RLDCT53ipn+PBG+CbCy5oS/MiWY=;
+	b=BAKL2yrvb8IMgsso1FevVA91cagHzwlhEKA193ldPCDd7zaCjlsKUniYQkgUmusU+qL1cy
+	CWs2HFdsn6/yt1Cg==
+From: "tip-bot2 for Borislav Petkov (AMD)" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/misc] Documentation/maintainer-tip: Add Closes tag
+Cc: "Borislav Petkov (AMD)" <bp@alien8.de>,
+ Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240124205442.GAZbF5EmOB8LpKqlSc@fat_crate.local>
+References: <20240124205442.GAZbF5EmOB8LpKqlSc@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <170620101796.398.15398694905540241969.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-Faking a tag storage region for FVP is useful for testing.
+The following commit has been merged into the x86/misc branch of tip:
 
-Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+Commit-ID:     b37bf5ef177a1aae937451f2e272943a9333dd5c
+Gitweb:        https://git.kernel.org/tip/b37bf5ef177a1aae937451f2e272943a9333dd5c
+Author:        Borislav Petkov (AMD) <bp@alien8.de>
+AuthorDate:    Wed, 24 Jan 2024 21:51:50 +01:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Thu, 25 Jan 2024 17:31:17 +01:00
+
+Documentation/maintainer-tip: Add Closes tag
+
+Document where Closes: lands in the tag ordering.
+
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20240124205442.GAZbF5EmOB8LpKqlSc@fat_crate.local
 ---
+ Documentation/process/maintainer-tip.rst | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Changes since rfc v2:
-
-* New patch, not intended to be merged.
-
- arch/arm64/boot/dts/arm/fvp-base-revc.dts | 42 +++++++++++++++++++++--
- 1 file changed, 39 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/arm/fvp-base-revc.dts b/arch/arm64/boot/dts/arm/fvp-base-revc.dts
-index 60472d65a355..e9f44420cb62 100644
---- a/arch/arm64/boot/dts/arm/fvp-base-revc.dts
-+++ b/arch/arm64/boot/dts/arm/fvp-base-revc.dts
-@@ -165,10 +165,30 @@ C1_L2: l2-cache1 {
- 		};
- 	};
+diff --git a/Documentation/process/maintainer-tip.rst b/Documentation/process/maintainer-tip.rst
+index 08dd0f8..7993592 100644
+--- a/Documentation/process/maintainer-tip.rst
++++ b/Documentation/process/maintainer-tip.rst
+@@ -304,13 +304,15 @@ following tag ordering scheme:
  
--	memory@80000000 {
-+	memory0: memory@80000000 {
- 		device_type = "memory";
--		reg = <0x00000000 0x80000000 0 0x80000000>,
--		      <0x00000008 0x80000000 0 0x80000000>;
-+		reg = <0x00 0x80000000 0x00 0x80000000>;
-+		numa-node-id = <0x00>;
-+	};
-+
-+	/* tags0 */
-+	tags_memory0: memory@8f8000000 {
-+		device_type = "memory";
-+		reg = <0x08 0xf8000000 0x00 0x4000000>;
-+		numa-node-id = <0x00>;
-+	};
-+
-+	memory1: memory@880000000 {
-+		device_type = "memory";
-+		reg = <0x08 0x80000000 0x00 0x78000000>;
-+		numa-node-id = <0x01>;
-+	};
-+
-+	/* tags1 */
-+	tags_memory1: memory@8fc00000 {
-+		device_type = "memory";
-+		reg = <0x08 0xfc000000 0x00 0x3c00000>;
-+		numa-node-id = <0x01>;
- 	};
+  - Reported-by: ``Reporter <reporter@mail>``
  
- 	reserved-memory {
-@@ -183,6 +203,22 @@ vram: vram@18000000 {
- 			reg = <0x00000000 0x18000000 0 0x00800000>;
- 			no-map;
- 		};
++ - Closes: ``URL or Message-ID of the bug report this is fixing``
 +
-+		tags0: tag-storage@8f8000000 {
-+			compatible = "arm,mte-tag-storage";
-+			reg = <0x08 0xf8000000 0x00 0x4000000>;
-+			block-size = <0x1000>;
-+			tagged-memory = <&memory0>;
-+			reusable;
-+		};
-+
-+		tags1: tag-storage@8fc00000 {
-+			compatible = "arm,mte-tag-storage";
-+			reg = <0x08 0xfc000000 0x00 0x3c00000>;
-+			block-size = <0x1000>;
-+			tagged-memory = <&memory1>;
-+			reusable;
-+		};
- 	};
+  - Originally-by: ``Original author <original-author@mail>``
  
- 	gic: interrupt-controller@2f000000 {
--- 
-2.43.0
-
+  - Suggested-by: ``Suggester <suggester@mail>``
+ 
+  - Co-developed-by: ``Co-author <co-author@mail>``
+ 
+-   Signed-off: ``Co-author <co-author@mail>``
++   Signed-off-by: ``Co-author <co-author@mail>``
+ 
+    Note, that Co-developed-by and Signed-off-by of the co-author(s) must
+    come in pairs.
 
