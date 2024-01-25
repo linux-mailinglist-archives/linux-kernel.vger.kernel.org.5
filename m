@@ -1,164 +1,242 @@
-Return-Path: <linux-kernel+bounces-37967-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E007D83B8ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 06:09:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2337C83B8F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 06:13:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 808BD1F23AFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 05:09:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D1CBB215FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 05:13:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 498E8882A;
-	Thu, 25 Jan 2024 05:09:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 266E08832;
+	Thu, 25 Jan 2024 05:12:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Csu2L+Ey"
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2052.outbound.protection.outlook.com [40.107.92.52])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="TnCEtYXj"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10olkn2103.outbound.protection.outlook.com [40.92.42.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE9ED79EA
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 05:09:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6248B79F5;
+	Thu, 25 Jan 2024 05:12:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.42.103
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706159378; cv=fail; b=uJJK/gV11XKbKDuLYLVtzAqMHEszlDhtLbzpa9L6zbrq6KwrjR5H42b8+DLMkXMgoqtm+9SKyXYOJN+UgonYPPAmZQlBUnf0glkpn9kGBolo50PfIjzZ5g4CZEB9tvkNC/Uu1gatHSvO3VlZ/0jrxy1wyHpReNr7Kff2kklpvYY=
+	t=1706159570; cv=fail; b=HY2V5ruvxUXbd5iHuYKTh1igdJbCHmG8GTkbCx0brI4ozViUMVZJoWJTro2E2Cl++zXRd709oQLW9K1H/jIENmLj9wFpsfoWQM6krGzZY9sBHJZmKx3EdSdWjCFX/4cKPk+oZXsBE3Jny6k0GHMTOD7mMTFelPfZYovekcVJwic=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706159378; c=relaxed/simple;
-	bh=CTYj+rrUpAhnGbixaHAmJnoNUg5yFQfM2sNvvV9e2Pw=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IdRQPW5DG9ffq5MrgH5wmkifb3L86QykF84O9pIf/lXWz+Noh3qko+OFNmRqPlEs2QLSGkZYOJYoqMhOChFSzzi9TfjyN5cY0XQMXiWNBMsXPafwFOpDsP0ytoTfGxGt2Bg4JEHO4S8CkclyGGmJDVepFr5kfnA8LLI5jmhvmDk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Csu2L+Ey; arc=fail smtp.client-ip=40.107.92.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	s=arc-20240116; t=1706159570; c=relaxed/simple;
+	bh=+6r0NVAT7AGxrjGKlpRyZqMq+UYG9TIFljwhryPDvcs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=LrlYG6pUmo4sZ8iUU42Nimvf+tmezhWjgvcydCA5/GE3iKp6HvQT5wSNhj5XtMRKfI4ZG0JwSGMVv70VRP5IIcV+Y/VsT06i+b4SjkM1iGNfMnAWBxI2CS9Xvlvq+zLxt6Y2hLfT7cSjVAVyP4f/5U1/p3cuIsG4uls0yLerbfU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=TnCEtYXj; arc=fail smtp.client-ip=40.92.42.103
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YrMWmDdlbtm93LOMyb/lGwesUnFuIfRlA4/fNB/zJUB8iW48j30o1sJXtzkwCdbREhK68wTuIa9eqc14j/PlYZadX0BNxLPM1zNT1lbAtB86UuUzuUbWJqnSv/8btKchlmj7ZOdxrw2w5LV9WsfaU+b35rpzX3ujqg591csHr5S0sAtNzF+mqe97Fa/mZi7kPe8XnZcR45gIO0eMgrk5Zm47IMTiZuB4tGymv6vNJ3+UnSYX/B/jNf59c0ybvcYKvptmThnMo4RDZfJZQS7IvjDB1gsKcn/R9xjvY3XJzUCQdHPtE/I9uIjtduC4VMUDDkqzkZA37pCqUw3SyhgXHw==
+ b=dd777VtAPtOmKebxxwyRYH09k8ojvygXBj/mJFZPlQapgnPzhK5No+H/gsps31dHOVyh0RRhCjiAxDV23DwegYanK/XVg2x9SB+V3KM8e6VDOnl622GiBa4qnjYSM28RbBIukkwDdpJ6wkUL4hVghxoZfxd5M4m7X5g6rtnv/Nw6/Cq2gYr+hC95Mc2TKWOzZStWn9D520Qc18sjpP+Li1nBx/VUvh8uJun7O2JuaL+dcfWLp1glYVLO9YR4iHYUQTUvwuBTUTxkGdaa5+5uEvlrEx+mGZAsW9xOh8TsTwMWm4Ut1SOXzh7prBwI/IZ4ekvSEfXmuJ2npMGUhx8uYQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+yCxrTvVleZRYpxYm9ANgD4MX11mmB25b9SfkTJpDpI=;
- b=M5BBddt4QwyZvD1giWFsKZONXtnKpt4V3HQQqUFu0vjbt5xqPNthCXm9V5UeQ+vjUGKws+yVAlDXVOTlxcrrho8U7GlJRA2ZLkuntWx9QhLsq3DMgcapNahwckuk613cAIrFrPjd1p2Oo52pvyljiJclJqe3s7l4QL1Bn7CY7toMImiwEQhU2TK7cfrChrI2j+whe0HyxwGBUzTMOgzxENWm6t2LR5kj1EDbRDcqohtWgiwf0ms2kgTXQsr3N7T4EU+JJsRF7PE1d5FX0dvB3W69ZvDAAm6acURm4zYnsPiV/pbwxCnK1ru0MPOm7+e56+PZTvPRAIsk3K5aRAxytQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=huawei.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ bh=piEt+f2hjxMsWO9R+JZwe8J+xCJs/pLyITSwv0ELKus=;
+ b=IKTP2fpLC7Cccw3t0NUVGrwSZ0/5EkBt0az/DpEhEOC/mMEAB5IAb/Ed5pW6tvRl4p4L1M8MQujeXBMNSz0HGi/xeRMj3i4GRmcB0aUmkXiA5NaJ3nkO70BmZ6ipkystSMY6rYtoImkRSSYsHbBshJJSYtLkq1l/o/SndKHCcbqP9h/1fm+owYj08F3/eTUQ5oDvDq3f3+dk/aRr90il0LzEqZqNDxsi4xdfeyRcbcQqpjDd+7R39dmrA4x9ciry8ZScugUORSIt4iOOmJ0SJpR5F/MtIWzA/t61BYg8XT06UmN18kSC6xojyadygfTN2MBhT/9ClVEn/VnZs9tV2g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+yCxrTvVleZRYpxYm9ANgD4MX11mmB25b9SfkTJpDpI=;
- b=Csu2L+EyRte1ZsqCo8ZWvtpsCbzBxINy5CoiqHj3NVzbk4FHmfaNV7T6nKyGCLVLybkp1hNrxQOS4P1bf77hPgr8RgncTNdx5DvnKxEahTa+S77zsuhnejFRiZGFqaoKpZHQUygC8MT7GXBHz0FR8KUKCRn4HtXrA4BjxLSrkONEIwpn6IKWdzn6Vc558iwIxOsXxHw6hmvvgxv2w9fFVKYM4NpIOXWivQdiGuqwT7JssQ3LdgTnAlS6BoLyVRCh6OE4d46AahRRn2Hbfd6C9kfn77PMZTLSEj9XHP+LJAmmPBcCZ8vzPizVRAkbPcEkwH0HLDe+/bR7KGc8qsz4yw==
-Received: from BL0PR0102CA0005.prod.exchangelabs.com (2603:10b6:207:18::18) by
- DM6PR12MB4878.namprd12.prod.outlook.com (2603:10b6:5:1b8::24) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7228.26; Thu, 25 Jan 2024 05:09:33 +0000
-Received: from MN1PEPF0000F0E3.namprd04.prod.outlook.com
- (2603:10b6:207:18:cafe::2a) by BL0PR0102CA0005.outlook.office365.com
- (2603:10b6:207:18::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.37 via Frontend
- Transport; Thu, 25 Jan 2024 05:09:33 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- MN1PEPF0000F0E3.mail.protection.outlook.com (10.167.242.41) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7202.16 via Frontend Transport; Thu, 25 Jan 2024 05:09:32 +0000
-Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 24 Jan
- 2024 21:09:25 -0800
-Received: from drhqmail203.nvidia.com (10.126.190.182) by
- drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Wed, 24 Jan 2024 21:09:24 -0800
-Received: from Asurada-Nvidia (10.127.8.9) by mail.nvidia.com (10.126.190.182)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Wed, 24 Jan 2024 21:09:24 -0800
-Date: Wed, 24 Jan 2024 21:09:22 -0800
-From: Nicolin Chen <nicolinc@nvidia.com>
-To: "zhangzekun (A)" <zhangzekun11@huawei.com>
-CC: Jason Gunthorpe <jgg@nvidia.com>, "will@kernel.org" <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>, "joro@8bytes.org" <joro@8bytes.org>,
-	"jean-philippe@linaro.org" <jean-philippe@linaro.org>, Alistair Popple
-	<apopple@nvidia.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "iommu@lists.linux.dev"
-	<iommu@lists.linux.dev>
-Subject: Re: [PATCH 1/3] iommu/io-pgtable-arm: Add nents_per_pgtable in
- struct io_pgtable_cfg
-Message-ID: <ZbHtAobfttD2frwo@Asurada-Nvidia>
-References: <0fe68babdb3a07adf024ed471fead4e3eb7e703f.1692693557.git.nicolinc@nvidia.com>
- <f468b461-b203-5179-eb6d-9432b9911329@arm.com>
- <ZOTlcFs2NG6nJEPN@Asurada-Nvidia>
- <61f9b371-7c45-26b1-ec0f-600765280c89@arm.com>
- <ZO5R5i4n2WI2GnKQ@Asurada-Nvidia>
- <d234fa8d-d945-3f7f-1110-fe55bea88587@arm.com>
- <ZawmMd6BVqQpfbB5@Asurada-Nvidia>
- <20240122130152.GP734935@nvidia.com>
- <Za6kuE4KUPuwk7+j@Asurada-Nvidia>
- <098d64da-ecf5-4a23-bff9-a04840726ef0@huawei.com>
+ bh=piEt+f2hjxMsWO9R+JZwe8J+xCJs/pLyITSwv0ELKus=;
+ b=TnCEtYXjB13OJTB4ZpBjRKfXMIjSPk86SoPKDEzBUN+vwnBfjXGU3QndjWM5EavUPRKdxUyM6C+HugyqNC1Onje/L5OZWZ72qMAUQJk4B4gvOO2f/YwJsIhaYGAx8tKWdHyFOf5d68imBwFdobKbCER3Zu37IqkClahIsgFA1oT3H2M0YnCGFkLd/PwhsmcqDm2KgzTiY22pdkMLTzdN48P3lvVWrumSSMUEwOYBql9gvzXyNv7XFrjTbdDrEyZccV+HiEXWBF0g+TR32NCoSDVYIlkehyPOChMCLEvZ6T1vvrd8TpOQzCY20Arem+rL29qbDuxEOtUarddL3E2e3A==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by SJ0PR02MB8765.namprd02.prod.outlook.com (2603:10b6:a03:3dc::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.26; Thu, 25 Jan
+ 2024 05:12:45 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7228.022; Thu, 25 Jan 2024
+ 05:12:45 +0000
+From: Michael Kelley <mhklinux@outlook.com>
+To: Baoquan He <bhe@redhat.com>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"kexec@lists.infradead.org" <kexec@lists.infradead.org>, "x86@kernel.org"
+	<x86@kernel.org>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linuxppc-dev@lists.ozlabs.org"
+	<linuxppc-dev@lists.ozlabs.org>, "linux-s390@vger.kernel.org"
+	<linux-s390@vger.kernel.org>, "linux-sh@vger.kernel.org"
+	<linux-sh@vger.kernel.org>, "linux-mips@vger.kernel.org"
+	<linux-mips@vger.kernel.org>, "linux-riscv@lists.infradead.org"
+	<linux-riscv@lists.infradead.org>, "loongarch@lists.linux.dev"
+	<loongarch@lists.linux.dev>, "akpm@linux-foundation.org"
+	<akpm@linux-foundation.org>, "ebiederm@xmission.com" <ebiederm@xmission.com>,
+	"hbathini@linux.ibm.com" <hbathini@linux.ibm.com>, "piliu@redhat.com"
+	<piliu@redhat.com>, "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>
+Subject: RE: [PATCH linux-next v3 06/14] x86, crash: wrap crash dumping code
+ into crash related ifdefs
+Thread-Topic: [PATCH linux-next v3 06/14] x86, crash: wrap crash dumping code
+ into crash related ifdefs
+Thread-Index: AQHaToRG7EZBXaVit0yb4RXbyvoNjrDpkK1ggABa6ACAAA/3oA==
+Date: Thu, 25 Jan 2024 05:12:45 +0000
+Message-ID:
+ <SN6PR02MB4157E138C7EE4A281AB49C10D47A2@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240124051254.67105-1-bhe@redhat.com>
+ <20240124051254.67105-7-bhe@redhat.com>
+ <SN6PR02MB4157931105FA68D72E3D3DB8D47B2@SN6PR02MB4157.namprd02.prod.outlook.com>
+ <ZbHfACpwqi2U9vmK@MiWiFi-R3L-srv>
+In-Reply-To: <ZbHfACpwqi2U9vmK@MiWiFi-R3L-srv>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tmn: [NISCNTVr9jvOnz7R+68sGNU/5qSOTo7d]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|SJ0PR02MB8765:EE_
+x-ms-office365-filtering-correlation-id: 86f5c899-3c6c-4d09-678b-08dc1d6443e4
+x-ms-exchange-slblob-mailprops:
+ WaIXnCbdHrOwhXVdeGZL77uy/MCF2FXuH2O8XtKFoSBIWHiMUCm9GLLfTibU/DWp6D1JtO0RmblZV74wuiys1tuj463WIjqYkbbhbkZOdd6Gs6NRZWUi5kp1ImJ2mGTQzQEESoaw3Qz8Ie13a+gwvmKP6J/UVl9rIc6s55TNG/P0qVOvuobRL/ebdSF9Vt3aCfTPwv9gpkkHNUmdPKvR9sV9luuAPnXhPnFw+E3nLnIFSh4mL4zSKJZutPKavF88xvCxXRP2DpUfITULGmIcjmDQ7TVqn+GkCIcz3kO6KpPuE+V9+2r1w0K8dJfeuNr5Y4PX6KqYNTUglbmqsgUbgcuiidS6Fn1D3mro4o8J3Hz3bof/q8eZTFPSMNkpODastcr4fcfKufAUAJGD5ay19J8/3SVMvetdGMOZOitS4CGOy8WmN26uzL+Q/m7XTofJO7hZYl0Zz/o68gBkfpgfkSDMzcvKaWQTx/F/Vauo7GCk0D+OYCXZqpvrpqFJw+6s4szuANQ884hokmVXh6iofU7UyTFi5Gu5PVe7qpPQ9GzbrUe/p/hm8coza3W56I/JoPZASjSynt9jMIr5TiRn26UYfWszdnbUoHLCMzn1z3Honp4ynFvDFfN+JJA4AdKDwHwEQ59hFF/NM3J3uJ/Na6/bhsEOYXsf/fry4l1LAI7N5+izLTrlUUgRbgtrsjZjCsoe/GiYluHl376EOhckta31F1BYdMB8gVy91USaQ4L1Icsg/enZcW3onG39hzvc3aTDyyzhm2U=
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ alY3iC2hQhYnRfo9NbxslDGFp5e7TNjV5xVjVeWzfZcp2aUgIVdBRgGaSd+Xmt64+ZDhMhlH7ho89cwUwvVR+NZXF1wY97YQZ8x189d0DPEi3qhzVaXtHIOMXS4b61U1YaJ97VphCen6UGOZfQWDOnZ1xnGA0bcgeewrxdfh1ZiQa1rPQXui+Nh+DIu7Vl3AhutImSgr4NTb7Y1WjEPMVP1w5T4GoP/bhAgT19gSASVv2SmQbXXsCtJ+0KNY5CGtgwUmQb7ZYlnjH7G1Fe5/yPrkavBKwj//pwNec8cjAtcv1iFbbFvpc9HQ8IpyW6QrXhigdeKfytgQELnOCaHgsqsmpFtfHsgNzQ1RZ+bC02cjaLv3qZ7eiJznHfPUCUjTlCjUj+snSmYL0J7JOdx5WqEekQyTQvzMf58GYHbAAGbQ71EP6FO4z9hK8kJcoVuZlv/8O/iiRVVQOK5UokdUyg8EIN9ht99bgt7gAgoLwp4HKf/DPpKtc33fpa1MwKsOuokvkiR9gJjnf8ndRfCPENQH+GLtLxpxz0vIZQ9fI07r6irFMCV3SdfI2604HUzW
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?pKQibq74HeDVDTsxKq/hwFYAfYro3gf5RZHFnGtMhBXhV1XGZkdqx5tHt8zF?=
+ =?us-ascii?Q?H4kKli5yri/A6qH27LCxeeuvl3MKXgCJSqv+7Zrg3SMLQ/8GfOwQa9OfsGVU?=
+ =?us-ascii?Q?g/roiC9AbL5+sdlDi8uuLqbNVZbqXOTCensjiWhzz5mnWTp8acgIH0MRa5sS?=
+ =?us-ascii?Q?zGDoVRFTkMEJrGkMSu67m7VcmYkToR4WnN3sczC/q+vvmmejJFd9zaNUxrq1?=
+ =?us-ascii?Q?lFaC/UcNpjTS/+udX0N7e2pvtK3tvr9FziqO+6HY4duhkbcjb+zMeo4TEhXj?=
+ =?us-ascii?Q?L1v8mZWAKkfNFYgybdWMagCKykV658V35nOsZ1HYdv0iNmhm8QUqlqy5VUU7?=
+ =?us-ascii?Q?bFTyttXdkgWxW6pBZdInrVU0604gXeiPVX8GbDVl6TVvFTS2Ly+xKv1T4hUN?=
+ =?us-ascii?Q?IthKL9tP5vCwzfAIuEDDIht2EGIrAvKr1hbPv+SkeOCHBGttODdrA1R5bQUj?=
+ =?us-ascii?Q?ytiMpSE7K3dECWVRE1Spb/lZguZqC8GQD4tSx/WL6RukTWd73lK7BQE9l4PB?=
+ =?us-ascii?Q?NhRGmlOFBvg4SQtJmF2vwY1mDsSH1sg+/gRbI18rsSOEy4b9nXrVkkvblGoB?=
+ =?us-ascii?Q?epQE0MKvprGZB5QwYW8RaWQgaQqAVXiZxRf3TvcbhW0dL8IfyjVVYKk2uYey?=
+ =?us-ascii?Q?YyE583dBxkYJrya/6dGKJjrkPifm/2/gqE+ei0+jSDrs52lLsF85ULWH4HFo?=
+ =?us-ascii?Q?5vbWU6tb1a+aOJFktUYTdYnSHCPOOurkXyXvDu3APDm6xx3gldz6XlN6Icr2?=
+ =?us-ascii?Q?9KrGUjfZJfXXsg8/HArbg2uhuuMss3CZVZGURXpmQcuTY4BWSEts9o+VJXFr?=
+ =?us-ascii?Q?RJnTVmPSR/ZRt4Zms2jFKTeuDK/wkYoH28Wr+fz5mIXg6FsrANUEzaS5uX73?=
+ =?us-ascii?Q?5X8CAUaxAyhd1mEuFKloOp0XEwuNELEYHNWk/oc9W7f0OP3bIcvBXpalMMYK?=
+ =?us-ascii?Q?rbN0WRewERHmTbjWZ7nWP98BzdWtnrurhBYN2UNS4tULxMZOXrghAhu+yIsI?=
+ =?us-ascii?Q?G8l7vHcK9Y7MKjg13DyLVK+fXiTbKF5WVBeI1e0ZMwMJFmqCV3fQCfBtllkI?=
+ =?us-ascii?Q?peCADJtp3S+0OdUjYXdXzEshFEX9QAMs9kYMLRSSIB32fEY+2lkhg+NY+7Na?=
+ =?us-ascii?Q?w49pQ2XxBs56DFHwHJD3tdJky/tiJ0ZiCNMDs+MkyHnsWII8wp+A5KqbcqwI?=
+ =?us-ascii?Q?wr2fLdQ31HbjhFGfJcBGGiEF1zqeY/nx0cyHZw=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <098d64da-ecf5-4a23-bff9-a04840726ef0@huawei.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000F0E3:EE_|DM6PR12MB4878:EE_
-X-MS-Office365-Filtering-Correlation-Id: 52060eb3-4988-4682-0508-08dc1d63d154
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	uunFEdtvjz9R4Ld/sQe/W+k9598X9uAlV7SlmpC6xxrWJGumTalBICCWRoqzK3Un0mAF1AGTsCGVRtXv7JbNaPBtuhZPwDO/NgM4CoXhH0f9xL9Y1L67YShHcMmcZG6V+AwFFnHsc6NIsVJZ9sF+J2TQfumy80zApf3gxQeu2AbWIB9zZ7BQE0KpfBstaxA16+7enU7ciMMxGYqPyYT8FG8Oo0qClXSlj2NQOHmm8LOnKXBe68fzSd98m+P06EurmGp6pyYSoS2W5sK5l0bVQjFTSZbYqu7ApiT/0IcMwfM4Xzkxa/pvvAAMCEeLgstiFr+gP9RUIAeyKCIanuOwgdRNfaTCBVx9YhSliw4N9sdWqbMjkr/ugwk1XtPUEJOpalNFQfbE7WkJ1KRIWyJNTHbxjBSwDagawy66F1xOYOVR0yofyQgyUWTpgn04/EjgILhmmlsUUma8UdMIgj3MQALMNXINBJFqMAUat+Ix+8iKdM9epavaXJhxYhC4fWug1gnYgTCsGB0JpV31rUkhfbBV05F26fu9NjIojQCoqnOecMiiLOmxXmbHwVmZlRqQpQHQn2gRjhUaRND3domt5KmVxtzuuE8cmCv/fGEqKfTHKAc1JANSOFs6ua0Wp+uPLiww87hUbhs8ANltcA5/pQqC1JFYQK00sG1ToLu8QTOKJkSx5eSOKsWGpOT8drUCSVfDHxuEG31SyAlk10LGdGZp51m7UedPwOy4F9xrl0mpOzjkP7UZ2aWDlGXsR+pYmMxiI6o44L5slJoYX/bI8VW+WPGwjzDH/cAE2Q2HNtTQ76/OVQ/XWSCb4PV72Az8
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(136003)(376002)(346002)(39860400002)(396003)(230922051799003)(64100799003)(451199024)(82310400011)(186009)(1800799012)(40470700004)(36840700001)(46966006)(4744005)(83380400001)(2906002)(426003)(336012)(4326008)(5660300002)(356005)(36860700001)(33716001)(47076005)(41300700001)(966005)(55016003)(478600001)(26005)(86362001)(40460700003)(40480700001)(70586007)(70206006)(82740400003)(54906003)(6916009)(316002)(8936002)(8676002)(9686003)(7636003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jan 2024 05:09:32.8805
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 86f5c899-3c6c-4d09-678b-08dc1d6443e4
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jan 2024 05:12:45.2178
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 52060eb3-4988-4682-0508-08dc1d63d154
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MN1PEPF0000F0E3.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4878
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR02MB8765
 
-On Wed, Jan 24, 2024 at 02:20:14PM +0800, zhangzekun (A) wrote:
-> Also, it seems to me that SVA use cases and, say, DMA API cases are
-> somewhat different where we may be willing to wait longer for DMA API.
- 
-> Hmm, the lockup that my patch fixed was for an SVA case that
-> doesn't seem to involve DMA API:
-> https://lore.kernel.org/linux-iommu/20230901203904.4073-1-nicolinc@nvidia.com/
-> 
-> And the other lockup fix for a non-SVA case from Zhang doesn't
-> seem to involve DMA API either:
-> https://lore.kernel.org/linux-iommu/e74ea905-d107-4202-97ca-c2c509e7aa1e@huawei.com/
-> 
-> 
-> Hi, Nicolin
-> 
-> These patches do involve DMA APIs, because it modifies arm_smmu_tlb_inv_walk() which will be called when unmapping dma address space.
-> 
-> iommu_dma_unmap_page
->    __iommu_dma_unmap
->        __iommu_unmap
->            arm_smmu_unmap_pages
->                arm_lpae_unmap_pages
->                    io_pgtable_tlb_flush_walk
->                        arm_smmu_tlb_inv_walk
-> 
+From: Baoquan He <bhe@redhat.com> Sent: Wednesday, January 24, 2024 8:10 PM
+>=20
+> On 01/24/24 at 11:02pm, Michael Kelley wrote:
+> > > diff --git a/arch/x86/kernel/cpu/mshyperv.c
+> > > b/arch/x86/kernel/cpu/mshyperv.c
+> > > index 01fa06dd06b6..f8163a59026b 100644
+> > > --- a/arch/x86/kernel/cpu/mshyperv.c
+> > > +++ b/arch/x86/kernel/cpu/mshyperv.c
+> > > @@ -210,6 +210,7 @@ static void hv_machine_shutdown(void)
+> > >  		hyperv_cleanup();
+> > >  }
+> > >
+> > > +#ifdef CONFIG_CRASH_DUMP
+> > >  static void hv_machine_crash_shutdown(struct pt_regs *regs)
+> > >  {
+> > >  	if (hv_crash_handler)
+> > > @@ -221,6 +222,7 @@ static void hv_machine_crash_shutdown(struct pt_r=
+egs *regs)
+> > >  	/* Disable the hypercall page when there is only 1 active CPU. */
+> > >  	hyperv_cleanup();
+> > >  }
+> > > +#endif
+> > >  #endif /* CONFIG_KEXEC_CORE */
+> >
+> > Note that the #ifdef CONFIG_CRASH_DUMP is nested inside
+> > #ifdef CONFIG_KEXEC_CODE here, and in the other Hyper-V code
+> > just below.   It's also nested in xen_hvm_guest_init() at the bottom
+> > of this patch.  But the KVM case of setting crash_shutdown is
+> > not nested -- you changed #ifdef CONFIG_KEXEC_CORE to #ifdef
+> > CONFIG_CRASH_DUMP.
+> >
+> > I think both approaches work because CONFIG_CRASH_DUMP implies
+> > CONFIG_KEXEC_CORE, but I wonder if it would be better to *not* nest
+> > in all cases.  I'd like to see the cases be consistent so in the future
+> > someone doesn't wonder why there's a difference (unless there's
+> > a reason for the difference that I missed).
+>=20
+> I agree with you, it's a great suggestion. Thanks.
+>=20
+> Do you think below draft patch includes all changes you are concerned
+> about?
 
-Oh, thanks for clarifying. I was just looking at your trace log
-there, but overlooked other places.
+Yes, these changes look good as a delta to your original patch.
+
+But also look at xen_hvm_guest_init().  It looks like your original patch
+does nesting there as well, and it could probably be "un-nested".
+
+Michael
+
+>=20
+> diff --git a/arch/x86/kernel/cpu/mshyperv.c
+> b/arch/x86/kernel/cpu/mshyperv.c
+> index f8163a59026b..2e8cd5a4ae85 100644
+> --- a/arch/x86/kernel/cpu/mshyperv.c
+> +++ b/arch/x86/kernel/cpu/mshyperv.c
+> @@ -209,6 +209,7 @@ static void hv_machine_shutdown(void)
+>  	if (kexec_in_progress)
+>  		hyperv_cleanup();
+>  }
+> +#endif /* CONFIG_KEXEC_CORE */
+>=20
+>  #ifdef CONFIG_CRASH_DUMP
+>  static void hv_machine_crash_shutdown(struct pt_regs *regs)
+> @@ -222,8 +223,7 @@ static void hv_machine_crash_shutdown(struct
+> pt_regs *regs)
+>  	/* Disable the hypercall page when there is only 1 active CPU. */
+>  	hyperv_cleanup();
+>  }
+> -#endif
+> -#endif /* CONFIG_KEXEC_CORE */
+> +#endif /* CONFIG_CRASH_DUMP */
+>  #endif /* CONFIG_HYPERV */
+>=20
+>  static uint32_t  __init ms_hyperv_platform(void)
+> @@ -497,9 +497,11 @@ static void __init ms_hyperv_init_platform(void)
+>  	no_timer_check =3D 1;
+>  #endif
+>=20
+> -#if IS_ENABLED(CONFIG_HYPERV) && defined(CONFIG_KEXEC_CORE)
+> +#if IS_ENABLED(CONFIG_HYPERV)
+> +#if defined(CONFIG_KEXEC_CORE)
+>  	machine_ops.shutdown =3D hv_machine_shutdown;
+> -#ifdef CONFIG_CRASH_DUMP
+> +#endif
+> +#if defined(CONFIG_CRASH_DUMP)
+>  	machine_ops.crash_shutdown =3D hv_machine_crash_shutdown;
+>  #endif
+>  #endif
+> diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
+> index 1287b0d5962f..f3130f762784 100644
+> --- a/arch/x86/kernel/reboot.c
+> +++ b/arch/x86/kernel/reboot.c
+> @@ -826,7 +826,7 @@ void machine_halt(void)
+>  	machine_ops.halt();
+>  }
+>=20
+> -#ifdef CONFIG_KEXEC_CORE
+> +#ifdef CONFIG_CRASH_DUMP
+>  void machine_crash_shutdown(struct pt_regs *regs)
+>  {
+>  	machine_ops.crash_shutdown(regs);
+
 
