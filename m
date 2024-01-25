@@ -1,209 +1,148 @@
-Return-Path: <linux-kernel+bounces-38117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6974983BB1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:58:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A65F783BB1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:00:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 121D828BDF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:58:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 279161F26D78
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:00:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895AE15AF9;
-	Thu, 25 Jan 2024 07:57:58 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE4B0175AE;
+	Thu, 25 Jan 2024 07:59:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NTEkWIeh"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CDCC1798E;
-	Thu, 25 Jan 2024 07:57:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8061A1758F
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 07:59:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706169478; cv=none; b=bzNodbKQoC8/kn/XGuUD5nq/+yJ3C9c7nD9Wuz+TdXIaUSUEdt4ORLEhVpLNaTMrJemwxktgOI53FWgf+4hDyr7rxd1D3jR8HmOBXy62JWYh8pBRHztecEwmYaZT/XM2Q1LLfGxzuVbwX2YTrR7YgXIsrtt+XsSYVoeBx9uoG9o=
+	t=1706169594; cv=none; b=BXvM/VE5V5fRM4vHIBxa5M83TjHl3BiZta2wUOgdnZskOpyKMN+p3MDIDKHEBSN/+UrySjDQyiTFRW1axn9RV6yCkHVHuC/acCfUGxb9qYKBrvOOZXyRoZx3Kl2mDC9I2RMKWHOq6zWgM+BuNWIVuswaTj/gCE4Q48Oi6X6xkrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706169478; c=relaxed/simple;
-	bh=BS7mby3uI4AgQEdXF3cuczOSH/qGPB30Opbg7BnGykA=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=akDK4hGXZ7QErMZLel6WTkvT1Z2NjweaIoqG9k7ueBi6UcQ8i0pgiUwsLbiqMWsmq8W0zLtWAgSjqTCC+baCngHG2qItQzX6LFK4HDO26Dtf3eCkov19ZiNu1q/lmTuP9T/llb3r1p6uT1QQUVn5JwGgomflq+KvPAPpQm/KY10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TLCqF4TWCz4f3mHT;
-	Thu, 25 Jan 2024 15:57:45 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id E848E1A017A;
-	Thu, 25 Jan 2024 15:57:51 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgCXaBF9FLJltc6sBw--.4241S3;
-	Thu, 25 Jan 2024 15:57:51 +0800 (CST)
-Subject: Re: [PATCH v2 05/11] md: export helpers to stop sync_thread
-To: Xiao Ni <xni@redhat.com>
-Cc: agk@redhat.com, snitzer@kernel.org, mpatocka@redhat.com,
- dm-devel@lists.linux.dev, song@kernel.org, jbrassow@f14.redhat.com,
- neilb@suse.de, heinzm@redhat.com, shli@fb.com, akpm@osdl.org,
- linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
- yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20240124091421.1261579-1-yukuai3@huawei.com>
- <20240124091421.1261579-6-yukuai3@huawei.com>
- <CALTww2_hG2_YL1v-d0=uv2=bVzJ2wwpSJyQdBBGMCBx79bot-Q@mail.gmail.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <85eeb8e4-d526-aa20-c50d-7e755ca6c776@huaweicloud.com>
-Date: Thu, 25 Jan 2024 15:57:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1706169594; c=relaxed/simple;
+	bh=bQELMkFcYFews4tzTwFizOFP2dATmO+CBSBN1CERlhA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QnB1/JPTqUWrTxzXrNYWOV2CK0ZtS0wf+4LrbArw4HAZLrD9IGrys0LUzWR+ePUgnHot67Y5sL58i5VV9RsYIxtnWtvBme6EHKrOFqY8PzmcyLvkYYQru5YSwOyMMX0LGl+6pLre1w7t7MaD8wvAWkNHSL6G6doJ5KxdyLZXsDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NTEkWIeh; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a30ed6dbdadso217106666b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 23:59:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706169591; x=1706774391; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y1H6lVGRWuFfz+Z1+0jRYL727Z9vnxtvrMU1rUX5Q8w=;
+        b=NTEkWIehmGP4+Y/Xiitej7z/zMJCLUDi9tFgnsS3r3J32mxyDaryfUAjzLSFf/1/FB
+         2DaAH/+Gj5boKvUFXBGmX7POADzTo3g76X0S9x97/7Y4Z7mBEw9btS6XolpojDGcJ9qg
+         TW+GT1xb1aUkAmrihLBlhFmGRkeVNUlVC+gKeCZDawEP/ag4lTEhMUxapDiS4UoXc9kQ
+         qPLqyYeYrrXL0gx7XIUqDBYT0I62lUm//wZdoKVPHxXfViJP7ljEAwzPdmifWUOZKmHc
+         52YE6FnSOBNHyqo+wSMCe26TabeRjiE1dZxTa0G+u3GwhSvmI2JPEvzpxugD5D1RFSOC
+         1iKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706169591; x=1706774391;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=y1H6lVGRWuFfz+Z1+0jRYL727Z9vnxtvrMU1rUX5Q8w=;
+        b=jCCQmq8xgH4EvW9cW1kF5e4aoijql0EmqYtkMjo385zLsvbKu53bBUF/vFPnOWqcsz
+         DAun8MInreWCPB8HkKaHKWfbwICiMfSOe1Fn/fQquujCxx1kACJtIfX0onkkVoy3eMZb
+         FGDlgwm17nJUSAU5IF4saEhLFY+U93tiAlnsEFJtf6MrHnG3jS13+cWOEI+0GdHscnUk
+         Y9CSzVbMFo1KQ2JQJslG1IIk1P4SdxSYBJmaug1jfsqSpSGSS78GCYt96FdXvH2Uct+o
+         7tOUnJvixYGykhFldBXsKhayRTXOuOmcdVXJCFUE7/7mMmJH7eU++JW5cn+tb/NScKt4
+         ZkYA==
+X-Gm-Message-State: AOJu0YwK43tr75JUT0we4bEm1m+2A5gWvbBFfxBDT8hima3vchdpnee2
+	lf7NbxPjzm550eKjl0S5WmQV+nGmfuLBaME6ZvryISGwPIQA/VcdYIYzZ3NumTNrs71lkubCarA
+	vJ4CuYm9bdeZesgiO4kv7ij3rCl8VP1P6aCAd
+X-Google-Smtp-Source: AGHT+IEvyok96y4xvtk9mejVkFC+Yj+gray9xkaI9A2frC6J9UtpcfEu2BzocGyZkRxBJTYr6tHNwqdIbQMto9kX8ow=
+X-Received: by 2002:a17:906:b78c:b0:a2c:88d3:754c with SMTP id
+ dt12-20020a170906b78c00b00a2c88d3754cmr349013ejb.40.1706169590452; Wed, 24
+ Jan 2024 23:59:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CALTww2_hG2_YL1v-d0=uv2=bVzJ2wwpSJyQdBBGMCBx79bot-Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgCXaBF9FLJltc6sBw--.4241S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxXr1rKr4kWr47AF43GrWrGrg_yoWrXF4fp3
-	yktFs5Ar4YyrZxXry2qa4DuayFqwn2gFyqyrWfCa4fJas2krZrKF1Y93WUCFykCa48Gr1D
-	ta1jqFsxuFy8WrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
-	3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-	sGvfC2KfnxnUUI43ZEXa7VUbQVy7UUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+References: <20240120024007.2850671-1-yosryahmed@google.com>
+ <20240120024007.2850671-3-yosryahmed@google.com> <20240122201906.GA1567330@cmpxchg.org>
+ <CAJD7tkaATS48HVuBfbOmPM3EvRUoPFr66WhF64UC4FkyVH5exg@mail.gmail.com>
+ <20240123153851.GA1745986@cmpxchg.org> <CAJD7tkasHsRnT_75-TXsEe58V9_OW6m3g6CF7Kmsvz8CKRG_EA@mail.gmail.com>
+ <20240123201234.GC1745986@cmpxchg.org> <CAJD7tkZC6w2EaE=j2NEVWn1s7Lo2A7YZh8LiZ+w72jQzFFWLUQ@mail.gmail.com>
+ <CAJD7tkaVdJ9B_UDQs+o1nLdbs62CeKgbCyEXbMdezaBgOruEWw@mail.gmail.com> <CAF8kJuNkwGNw=Nnu1MVOewKiqT0ahj5DkKV_Z4VDqSpu+v=vmw@mail.gmail.com>
+In-Reply-To: <CAF8kJuNkwGNw=Nnu1MVOewKiqT0ahj5DkKV_Z4VDqSpu+v=vmw@mail.gmail.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Wed, 24 Jan 2024 23:59:14 -0800
+Message-ID: <CAJD7tkZViJot2+vFr_yAyRsRf7jTRPsb8wchqkf4R1tSsvLG+A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm: zswap: remove unnecessary tree cleanups in zswap_swapoff()
+To: Chris Li <chriscli@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Nhat Pham <nphamcs@gmail.com>, Chengming Zhou <zhouchengming@bytedance.com>, 
+	Huang Ying <ying.huang@intel.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Wed, Jan 24, 2024 at 9:29=E2=80=AFPM Chris Li <chriscli@google.com> wrot=
+e:
+>
+> Hi Yosry,
+>
+> On Tue, Jan 23, 2024 at 10:58=E2=80=AFPM Yosry Ahmed <yosryahmed@google.c=
+om> wrote:
+> >
+>
+> > >
+> > > Thanks for the great analysis, I missed the swapoff/swapon race mysel=
+f :)
+> > >
+> > > The first solution that came to mind for me was refcounting the zswap
+> > > tree with RCU with percpu-refcount, similar to how cgroup refs are
+> > > handled (init in zswap_swapon() and kill in zswap_swapoff()). I think
+> > > the percpu-refcount may be an overkill in terms of memory usage
+> > > though. I think we can still do our own refcounting with RCU, but it
+> > > may be more complicated.
+> >
+> > FWIW, I was able to reproduce the problem in a vm with the following
+> > kernel diff:
+>
+> Thanks for the great find.
+>
+> I was worry about the usage after free situation in this email:
+>
+> https://lore.kernel.org/lkml/CAF8kJuOvOmn7wmKxoqpqSEk4gk63NtQG1Wc+Q0e9FZ9=
+OFiUG6g@mail.gmail.com/
+>
+> Glad you are able to find a reproducible case. That is one of the
+> reasons I change the free to invalidate entries in my xarray patch.
+>
+> I think the swap_off code should remove the entry from the tree, just
+> wait for each zswap entry to drop to zero.  Then free it.
 
-在 2024/01/25 15:51, Xiao Ni 写道:
-> On Wed, Jan 24, 2024 at 5:19 PM Yu Kuai <yukuai3@huawei.com> wrote:
->>
->> The new heleprs will be used in dm-raid in later patches to fix
->> regressions and prevent calling md_reap_sync_thread() directly.
->>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->>   drivers/md/md.c | 41 +++++++++++++++++++++++++++++++++++++----
->>   drivers/md/md.h |  3 +++
->>   2 files changed, 40 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/md/md.c b/drivers/md/md.c
->> index 6c5d0a372927..90cf31b53804 100644
->> --- a/drivers/md/md.c
->> +++ b/drivers/md/md.c
->> @@ -4915,30 +4915,63 @@ static void stop_sync_thread(struct mddev *mddev, bool locked, bool check_seq)
->>                  mddev_lock_nointr(mddev);
->>   }
->>
->> -static void idle_sync_thread(struct mddev *mddev)
->> +void md_idle_sync_thread(struct mddev *mddev)
->>   {
->> +       lockdep_assert_held(mddev->reconfig_mutex);
->> +
-> 
-> Hi Kuai
-> 
-> There is a building error. It should give a pointer to
-> lockdep_assert_held. And same with the other two places in this patch.
+This doesn't really help. The swapoff code is already removing all the
+entries from the trees before zswap_swapoff() is called through
+zswap_invalidate(). The race I described occurs because the writeback
+code is accessing the entries through the LRU, not the tree. The
+writeback code could have isolated a zswap entry from the LRU before
+swapoff, then tried to access it after swapoff. Although the zswap
+entry itself is referenced and safe to use, accessing the tree to grab
+the tree lock and check if the entry is still in the tree is the
+problem.
 
-Yes, I forgot that I disabled all the debug config in order to let tests
-finish quickly.
+>
+> That way you shouldn't need to refcount the tree. The tree refcount is
+> effectively the combined refcount of all the zswap entries.
 
-Thanks for the notince, will fix this in v3.
+The problem is that given a zswap entry, you have no way to stabilize
+the zswap tree before trying to deference it with the current code.
+Chengming's suggestion of moving the swap cache pin before accessing
+the tree seems like the right way to go.
 
-Thanks,
-Kuai
+> Having refcount on the tree would be very high contention.
 
-> 
-> Regards
-> Xiao
-> 
->>          mutex_lock(&mddev->sync_mutex);
->>          clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->> +       stop_sync_thread(mddev, true, true);
->> +       mutex_unlock(&mddev->sync_mutex);
->> +}
->> +EXPORT_SYMBOL_GPL(md_idle_sync_thread);
->> +
->> +void md_frozen_sync_thread(struct mddev *mddev)
->> +{
->> +       lockdep_assert_held(mddev->reconfig_mutex);
->> +
->> +       mutex_lock(&mddev->sync_mutex);
->> +       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->> +       stop_sync_thread(mddev, true, false);
->> +       mutex_unlock(&mddev->sync_mutex);
->> +}
->> +EXPORT_SYMBOL_GPL(md_frozen_sync_thread);
->>
->> +void md_unfrozen_sync_thread(struct mddev *mddev)
->> +{
->> +       lockdep_assert_held(mddev->reconfig_mutex);
->> +
->> +       mutex_lock(&mddev->sync_mutex);
->> +       clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->> +       set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
->> +       md_wakeup_thread(mddev->thread);
->> +       sysfs_notify_dirent_safe(mddev->sysfs_action);
->> +       mutex_unlock(&mddev->sync_mutex);
->> +}
->> +EXPORT_SYMBOL_GPL(md_unfrozen_sync_thread);
->> +
->> +static void idle_sync_thread(struct mddev *mddev)
->> +{
->>          if (mddev_lock(mddev)) {
->>                  mutex_unlock(&mddev->sync_mutex);
->>                  return;
->>          }
->>
->> +       mutex_lock(&mddev->sync_mutex);
->> +       clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->>          stop_sync_thread(mddev, false, true);
->>          mutex_unlock(&mddev->sync_mutex);
->>   }
->>
->>   static void frozen_sync_thread(struct mddev *mddev)
->>   {
->> -       mutex_lock(&mddev->sync_mutex);
->> -       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->> -
->>          if (mddev_lock(mddev)) {
->>                  mutex_unlock(&mddev->sync_mutex);
->>                  return;
->>          }
->>
->> +       mutex_lock(&mddev->sync_mutex);
->> +       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->>          stop_sync_thread(mddev, false, false);
->>          mutex_unlock(&mddev->sync_mutex);
->>   }
->> diff --git a/drivers/md/md.h b/drivers/md/md.h
->> index 8d881cc59799..437ab70ce79b 100644
->> --- a/drivers/md/md.h
->> +++ b/drivers/md/md.h
->> @@ -781,6 +781,9 @@ extern void md_rdev_clear(struct md_rdev *rdev);
->>   extern void md_handle_request(struct mddev *mddev, struct bio *bio);
->>   extern int mddev_suspend(struct mddev *mddev, bool interruptible);
->>   extern void mddev_resume(struct mddev *mddev);
->> +extern void md_idle_sync_thread(struct mddev *mddev);
->> +extern void md_frozen_sync_thread(struct mddev *mddev);
->> +extern void md_unfrozen_sync_thread(struct mddev *mddev);
->>
->>   extern void md_reload_sb(struct mddev *mddev, int raid_disk);
->>   extern void md_update_sb(struct mddev *mddev, int force);
->> --
->> 2.39.2
->>
-> 
-> .
-> 
-
+A percpu refcount cannot be contended by definition :)
 
