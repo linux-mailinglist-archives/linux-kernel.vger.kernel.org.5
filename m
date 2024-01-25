@@ -1,114 +1,131 @@
-Return-Path: <linux-kernel+bounces-38223-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38224-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B51F83BCB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:06:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1665683BCBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:06:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E29AF1F2D40B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:06:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C381429109E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:06:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AF511BF29;
-	Thu, 25 Jan 2024 09:00:31 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 403471B96E;
+	Thu, 25 Jan 2024 09:00:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZmadJnP1"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A00EB1BF24
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:00:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F037F1B94F;
+	Thu, 25 Jan 2024 09:00:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706173231; cv=none; b=b0Y5Zq9JIt8c0fxKRId2kUr2rk7JulQvzuu4j5czoIdQjJlTKBWlcbVEPT4/6l/qlUCGiFTBbRlVfJv5036TUDVgY4oAgUOqrUIREJgjq+m2NBEpF3S47GhbkWPZvjfLQkoi6XIaJInVXsJJcT/GHhAMRkJ8HBOLpStMv4wdb6w=
+	t=1706173253; cv=none; b=KzY8+dZAtuecX1spDjGokjhEIkwaA+KDtclRwBYYJiG0ZAnIHeFXBGEgL3vo9lYP71vMK2ioeECcFmoz2hwRApbYZ/AlceDWmPFbw+3nEGDzJpIUErYHIipjseGWSvGSReuu39ELxsewCniCRb4nM8Pr85bWQHlJb9oZxmC0b+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706173231; c=relaxed/simple;
-	bh=yFIcOvnlYTCrUO5xbKup55uq7NaX8OnUUTiF+MaKEvA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TSq5h0cAQz77zkv8i++wm6M5WFh2kSduIqEvsToZyXT7s5FvDZUnO1EZBUEDtWhJ04YR2HUW/mr4Mdrdkjm2k/JFwWiOxWtosG/5QeYMfdW+Oj9SOmPpZtkb7HrPYDUAf+PNFJm9xtgqw05yyb4GusycgJNPX3FJzeYBm2gh2nA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 6cebea452a1842fabfae3d893bc41698-20240125
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:17b24cbb-1cba-4b9a-9edc-8b194eb99ba0,IP:10,
-	URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
-	ION:release,TS:-10
-X-CID-INFO: VERSION:1.1.35,REQID:17b24cbb-1cba-4b9a-9edc-8b194eb99ba0,IP:10,UR
-	L:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-10
-X-CID-META: VersionHash:5d391d7,CLOUDID:f888a58e-e2c0-40b0-a8fe-7c7e47299109,B
-	ulkID:240125170020J0U1LXW0,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
-	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 6cebea452a1842fabfae3d893bc41698-20240125
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 659315200; Thu, 25 Jan 2024 17:00:19 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 08A03E000EB9;
-	Thu, 25 Jan 2024 17:00:19 +0800 (CST)
-X-ns-mid: postfix-65B22322-586871580
-Received: from kernel.. (unknown [172.20.15.234])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 50E73E000EB9;
-	Thu, 25 Jan 2024 17:00:18 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: oleg@redhat.com,
-	linux@armlinux.org.uk
-Cc: linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH] ARM: ptrace: Code cleanup
-Date: Thu, 25 Jan 2024 17:00:16 +0800
-Message-Id: <20240125090016.536043-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1706173253; c=relaxed/simple;
+	bh=LoxX9dBFXRpqezdseXqTieo5vgHDE3MP1dCNWiKdj1A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ds4/b4J27JhBoWGu27k8iMpC26r53v5lQnH+7bBdKz3ZFzU1YMHI9diwfXXrFPWSHmHFXrei4iqhOoofnNKI1b86Kbc+s9BLBbfFs7WybMo0j2E3X0rea+UCQ0rk1VJq3bSdecA6kX/4Y1s0BygA5ppYaE/JtMqTrMQpnNI17lc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZmadJnP1; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2cd33336b32so86647331fa.0;
+        Thu, 25 Jan 2024 01:00:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706173249; x=1706778049; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=MOVBMzL6UNqR3dH+kMM9JTuFe/LvTcnh2ksCh4OpNI4=;
+        b=ZmadJnP17HBHCqDQ9VD6hIdz4fO0nMZfPHXcFwznsiLJo4dlmxqX5O1Og6AycqNkkj
+         w/1EDibcTD+WfYIMtueSvYlqlGYZb1/2AEkXY/dVGlb9+jTVQHNJkaYTf/UdfoBk3Gbt
+         ZY1WN7dGb4pStVIAN9w/XOrfVZCp/wIgNs4jxP/vKnDHYrcBcAB5nMUPxjWcX8ek6pTI
+         PcZMJrHgLzowAoGKrZwF9frktYD4RNiIjD8zATCWNgJOo0tp9Gng6KetHH/5frd6dl5T
+         8dE1M3bRBg+aDckFXDlJ4W976lheg2ZkM9eUm/oj72hhh5/M2xcRfiJCvpUpu/lFdGpH
+         KM7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706173249; x=1706778049;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MOVBMzL6UNqR3dH+kMM9JTuFe/LvTcnh2ksCh4OpNI4=;
+        b=bF7YmQnR7hxkl04WHTi4EOIdSjrBTFGhTcLL0RaTNAbc8zPfHVw/s1t2pEhcy4IvQ5
+         ZR8NazaubtcKsMgbCw7I95PVNg/QFrRSYgLzl7s++WKzDUx9x/zWllwooFadeSlQ/nF6
+         oWzyL+omJFafg9TeteVI9+LoPwPL0kC7H7xwbO+j/4H7R9ULxUgX1fAJXdaeHCdf9Oqg
+         a/WX2sHi5qXYSX+H1gJLaDkt5/VPX5nOrMhPddTNgKEaNVhkuaCmSPWtgLU5+4aPiJ21
+         vF6pIkeHpkagyALjmvVsu7Zh85wKsbC9tISZfK38ewInA7w5lj7nB/PVfuJIQwdd02pO
+         1LYA==
+X-Gm-Message-State: AOJu0YxUtPbTb4l6NkWCcWBeljICblhRRYJ+tOZcnFb4NHk6OhORQQ8H
+	Vd6FJdtvO/wBdKmnxNiQKL9ePcx4I1oEuxQb8vIOMcLL5gSPamCB
+X-Google-Smtp-Source: AGHT+IFW7KOc59kAiJo0rL2JBDdWlpY0XQeY9OVlOIPhtZgE7XzytL23vqJ7or8rbMg6UXPpQkyxpA==
+X-Received: by 2002:a2e:a271:0:b0:2cd:7830:5796 with SMTP id k17-20020a2ea271000000b002cd78305796mr357550ljm.5.1706173249070;
+        Thu, 25 Jan 2024 01:00:49 -0800 (PST)
+Received: from skbuf ([188.25.255.36])
+        by smtp.gmail.com with ESMTPSA id u11-20020a056402110b00b00558aa40f914sm16938831edv.40.2024.01.25.01.00.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 01:00:48 -0800 (PST)
+Date: Thu, 25 Jan 2024 11:00:46 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+	Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+	Alvin =?utf-8?Q?=C5=A0ipraga?= <ALSI@bang-olufsen.dk>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: dsa: remove OF-based MDIO bus registration
+ from DSA core
+Message-ID: <20240125090046.jyggdontwkhthqjh@skbuf>
+References: <20240122053348.6589-1-arinc.unal@arinc9.com>
+ <20240122053348.6589-1-arinc.unal@arinc9.com>
+ <20240123154431.gwhufnatxjppnm64@skbuf>
+ <d32d17ed-87b5-4032-b310-f387cea72837@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d32d17ed-87b5-4032-b310-f387cea72837@arinc9.com>
 
-This part was commented in about 19 years before.
+On Wed, Jan 24, 2024 at 08:30:11AM +0300, Arınç ÜNAL wrote:
+> On 23.01.2024 18:44, Vladimir Oltean wrote:
+> > On Mon, Jan 22, 2024 at 08:33:48AM +0300, Arınç ÜNAL wrote:
+> > > These subdrivers which control switches [with MDIO bus] probed on OF, will
+> > > lose the ability to register the MDIO bus OF-based:
+> > > 
+> > > drivers/net/dsa/b53/b53_common.c
+> > > drivers/net/dsa/lan9303-core.c
+> > > drivers/net/dsa/realtek/realtek-mdio.c
+> > > drivers/net/dsa/vitesse-vsc73xx-core.c
+> > > 
+> > > These subdrivers let the DSA core driver register the bus:
+> > > - ds->ops->phy_read() and ds->ops->phy_write() are present.
+> > > - ds->user_mii_bus is not populated.
+> > > 
+> > > The commit fe7324b93222 ("net: dsa: OF-ware slave_mii_bus") which brought
+> > > OF-based MDIO bus registration on the DSA core driver is reasonably recent
+> > > and, in this time frame, there have been no device trees in the Linux
+> > > repository that started describing the MDIO bus, or dt-bindings defining
+> > > the MDIO bus for the switches these subdrivers control. So I don't expect
+> > > any devices to be affected.
+> > 
+> > IIUC, Luiz made the original patch for the realtek switches. Shouldn't
+> > we wait until realtek registers ds->user_mii_bus on its own, before
+> > reverting? Otherwise, you're basically saying that Luiz made the DSA
+> > core patch without needing it.
+> 
+> My findings point to that. Luiz made the patch to optionally register the
+> MDIO bus of the MDIO controlled Realtek switches OF-based. So it's not
+> necessary to wait.
+> 
+> Arınç
 
-If there are no plans to enable this part code in the future,
-we can remove this dead code.
-
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- arch/arm/kernel/ptrace.c | 8 --------
- 1 file changed, 8 deletions(-)
-
-diff --git a/arch/arm/kernel/ptrace.c b/arch/arm/kernel/ptrace.c
-index c421a899fc84..71c0b2233f56 100644
---- a/arch/arm/kernel/ptrace.c
-+++ b/arch/arm/kernel/ptrace.c
-@@ -37,13 +37,6 @@
-  * in exit.c or in signal.c.
-  */
-=20
--#if 0
--/*
-- * Breakpoint SWI instruction: SWI &9F0001
-- */
--#define BREAKINST_ARM	0xef9f0001
--#define BREAKINST_THUMB	0xdf00		/* fill this in later */
--#else
- /*
-  * New breakpoints - use an undefined instruction.  The ARM architecture
-  * reference manual guarantees that the following instruction space
-@@ -54,7 +47,6 @@
-  */
- #define BREAKINST_ARM	0xe7f001f0
- #define BREAKINST_THUMB	0xde01
--#endif
-=20
- struct pt_regs_offset {
- 	const char *name;
---=20
-2.39.2
-
+Well, Luiz is copied, he can ack or nack if so.
 
