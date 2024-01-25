@@ -1,93 +1,139 @@
-Return-Path: <linux-kernel+bounces-37888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07E9B83B724
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 03:30:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46B7283B656
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 02:04:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B6521C21301
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 02:30:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBB3B1F23EB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 01:04:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10E656127;
-	Thu, 25 Jan 2024 02:29:56 +0000 (UTC)
-Received: from 10.mo575.mail-out.ovh.net (10.mo575.mail-out.ovh.net [46.105.79.203])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DCEF1388;
+	Thu, 25 Jan 2024 01:04:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gv6l9chR"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BE2E63AC
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 02:29:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.105.79.203
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1A2A7F8;
+	Thu, 25 Jan 2024 01:04:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706149795; cv=none; b=slHHDM4QjsrsyWYS8zffxorSyCh2jxapDnBMSlThgyQGsNaX2M1zaTgrZWNLujgfherU0LYFNv7PtpuyiTilBo5N1iS5kBaYfKS44DZGRuzXApToV+oRIMszvhOUmOVcUs17gneyoxYHDjW+r3IUfdvA4gzkQGuys3teks9y7mk=
+	t=1706144654; cv=none; b=o84tpWi+dmR9jO+Ts1lxK1rRrFh8Sb0FeVrCh42DZdClGU+AEUJHkOnveezN0ryH/esfXUv0dEWUbv1ANafij+Y/p5biWrci7ldwZZbCA5ysR6bOJdO+tEzapLdq+X/9P/A+5kX1UqRV4POtRYwC1xrm5GIVz0qvFoxNmQIgGm4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706149795; c=relaxed/simple;
-	bh=HGyNHMMKLOTJaC3+awYAmNT9tInVpb7Uuo75K5WBxn8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=s+83EpefWhZ3CFAvYGTeWUA90iiRqJeEYykRVGm9Hd62MZTFDuxHaiWjS90NfJ8N63CioaLpaIRdc8Tcq4g2BDEL5bI3Rz9mXM8PItbtkEEdKEzeFSfWOBjQFbXaEgFDjvupUG5PHUz+KYfCP3QK+l83e1fITyo8Y0qpJoWiSu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=etezian.org; arc=none smtp.client-ip=46.105.79.203
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etezian.org
-Received: from director1.ghost.mail-out.ovh.net (unknown [10.108.9.77])
-	by mo575.mail-out.ovh.net (Postfix) with ESMTP id E16C22709D
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 22:50:48 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-hj5nj (unknown [10.110.113.182])
-	by director1.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 0FEBE1FE70;
-	Wed, 24 Jan 2024 22:50:47 +0000 (UTC)
-Received: from etezian.org ([37.59.142.102])
-	by ghost-submission-6684bf9d7b-hj5nj with ESMTPSA
-	id I82xOkeUsWVyhRkA3HD0yg
-	(envelope-from <andi@etezian.org>); Wed, 24 Jan 2024 22:50:47 +0000
-Authentication-Results:garm.ovh; auth=pass (GARM-102R0047556fd25-d410-442e-97f9-46ad02d884c8,
-                    45966BE1DD11163008BB7B2F56A64F52B223FDBD) smtp.auth=andi@etezian.org
-X-OVh-ClientIp:194.230.145.39
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Wolfram Sang <wsa@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Peter Rosin <peda@axentia.se>,
-	linux-i2c <linux-i2c@vger.kernel.org>,
-	lkml <linux-kernel@vger.kernel.org>,
-	Andi Shyti <andi.shyti@kernel.org>
-Subject: [PATCH] MAINTAINERS: Update i2c host drivers repository
-Date: Wed, 24 Jan 2024 23:50:31 +0100
-Message-ID: <20240124225031.3152667-1-andi.shyti@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706144654; c=relaxed/simple;
+	bh=yrn1KceoCEV9E2X+gMdi5SB7RD3fOrfIAtwD5tqFxVE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lDesedane8Ktj9dw96OIVuYIV0J5VRfW53tAjDUz8s6ksOTYKEomCLpHodguOLPRIrdTWUu4WAfPhyPfdyPKYq1DSCYDoVw/stgO5kvD1U+iRlrcvZJsH6jXh2VzYy+TxrI45r3HimBSB3XAom5z0UN280Cyc4I75sOyZpQn4ow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gv6l9chR; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-55c2cf644f3so4085099a12.1;
+        Wed, 24 Jan 2024 17:04:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706144651; x=1706749451; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iAjy8o7mK2jxLO30WD6vuXRYXSBlcMTLyTUzMLzRzmM=;
+        b=gv6l9chRjqA+jnjP7jJOy3dztBPS5ABAJDzEGu5wZPqYGd5/LED3M8wxo45znYRKkR
+         dN8PZs6s61WAWmN38CzFU5tvhTMOaiFigz7hDyRL9Kjb8moTjyJ0JF32CnzttAHAPHnv
+         UT4xW7Xjibz3rmpkMH3wUlCAthnshQq+JkgMbGN2OWrFT/VlmnhpIts1kGFbgP9KEmVG
+         9/oej/qOSa/hNzsBicS5ZAIDMK9gTo5iLfSqu7o9aDrszudHUIiDKGtbZ2Bfv5GBijmi
+         tow+Hudp7mgSZdSKMbgfPXWGaQ8Z7a9CZP0recOHuTk8cnZQ3JZwv8OXhuaMQ1YPc9Zp
+         rW5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706144651; x=1706749451;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iAjy8o7mK2jxLO30WD6vuXRYXSBlcMTLyTUzMLzRzmM=;
+        b=jo/vlqqXzYXstsU/cNvdVlHU1ymaSW1eKjyutw2RENBiF25+yNs+jmzeThw3OIxEpb
+         9zJP1MC+2ocnYwwBNTV/PeuXJP6Si0XjfQmBveH0aN1EWkxuCUFtfJ3lULS4KVNLgog2
+         /6rrzeHFA3xIyNGoL1grQKx0H3dDyBD1nhq9faJgh1fi5BxWxM5P6MojT3nXvnJX+WCL
+         Rm0HSas7hZtoOHnnb386fsSW63JLLr5At1z5302tWhugODqnee+WnTgoQGvZP1ZrvSbA
+         Cc4UyBV1Nr3On5duNM5/IrV+T2Qg8GCgadIlLYuUwrI1kI4pd9Jz+wfHQGE98rFje0er
+         ALMw==
+X-Gm-Message-State: AOJu0Yw6nwQQoOwhov8DUOZdk6YYKpesFuNiNtJlMpSzHmzf7RbAWh9E
+	9tDKCn4IlHC4hSGTIzuRdxTBXQrUuGVt2hIR9XFxRk0l2qjw5uDvub6joRUMN1/Osd3HDe+Tp6H
+	jYRZNhnfap3L6nsmDV0vPfsDMPb0=
+X-Google-Smtp-Source: AGHT+IFfRQT8q2bTr2lvLvt1k3dEQYTmghKRBGQcSSdxPyWzD3wGRlFoNCG3ipXjXBP77gBYHfA0vH24LllOT5X9uRo=
+X-Received: by 2002:a17:907:a809:b0:a31:5773:9f9f with SMTP id
+ vo9-20020a170907a80900b00a3157739f9fmr64279ejc.32.1706144650803; Wed, 24 Jan
+ 2024 17:04:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 10684790117257185863
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdelvddgtddvucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkofgggfestdekredtredttdenucfhrhhomheptehnughiucfuhhihthhiuceorghnughirdhshhihthhisehkvghrnhgvlhdrohhrgheqnecuggftrfgrthhtvghrnhepudegkeetueefvdegkeevleekheevfeejfedtvefhveelgfeutddvhedvheefiefhnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpohiilhgrsghsrdhorhhgnecukfhppeduvdejrddtrddtrddupdduleegrddvfedtrddugeehrdefledpfeejrdehledrudegvddruddtvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoegrnhguihesvghtvgiiihgrnhdrohhrgheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehjeehpdhmohguvgepshhmthhpohhuth
+References: <20240115144538.12018-1-max@enpas.org> <20240115144538.12018-8-max@enpas.org>
+In-Reply-To: <20240115144538.12018-8-max@enpas.org>
+From: Roderick Colenbrander <thunderbird2k@gmail.com>
+Date: Wed, 24 Jan 2024 17:03:59 -0800
+Message-ID: <CAEc3jaBU3M0Zce2pdFvdBSG50a7Ky=GY4gLO3dkYdDrkYtiO0Q@mail.gmail.com>
+Subject: Re: [PATCH v1 7/7] HID: playstation: DS4: Add VID/PID for SZ-MYPOWER controllers
+To: Max Staudt <max@enpas.org>
+Cc: Roderick Colenbrander <roderick.colenbrander@sony.com>, Jiri Kosina <jikos@kernel.org>, 
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>, linux-input@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The i2c host patches are now set to be merged into the following
-repository:
+On Mon, Jan 15, 2024 at 6:52=E2=80=AFAM Max Staudt <max@enpas.org> wrote:
+>
+> It seems like this USB VID is not officially assigned, so let's create a
+> hid-ids.h entry without a vendor or product name.
+>
+> Signed-off-by: Max Staudt <max@enpas.org>
+> ---
+>  drivers/hid/hid-ids.h         | 3 +++
+>  drivers/hid/hid-playstation.c | 4 ++++
+>  2 files changed, 7 insertions(+)
+>
+> diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+> index 72046039d1be..df831ab464a4 100644
+> --- a/drivers/hid/hid-ids.h
+> +++ b/drivers/hid/hid-ids.h
+> @@ -22,6 +22,9 @@
+>  #define USB_DEVICE_ID_3M2256           0x0502
+>  #define USB_DEVICE_ID_3M3266           0x0506
+>
+> +#define USB_VENDOR_ID_7545             0x7545
+> +#define USB_DEVICE_ID_7545_0104                0x0104
+> +
+>  #define USB_VENDOR_ID_A4TECH           0x09da
+>  #define USB_DEVICE_ID_A4TECH_WCP32PU   0x0006
+>  #define USB_DEVICE_ID_A4TECH_X5_005D   0x000a
+> diff --git a/drivers/hid/hid-playstation.c b/drivers/hid/hid-playstation.=
+c
+> index a0eb36d695d9..0aa474f1e96f 100644
+> --- a/drivers/hid/hid-playstation.c
+> +++ b/drivers/hid/hid-playstation.c
+> @@ -2747,6 +2747,10 @@ static const struct hid_device_id ps_devices[] =3D=
+ {
+>         { HID_USB_DEVICE(USB_VENDOR_ID_SONY, USB_DEVICE_ID_SONY_PS4_CONTR=
+OLLER_DONGLE),
+>                 .driver_data =3D PS_TYPE_PS4_DUALSHOCK4 },
+>
+> +       /* Third-party controllers identifying as "SZ-MYPOWER" */
+> +       { HID_USB_DEVICE(USB_VENDOR_ID_7545, USB_DEVICE_ID_7545_0104),
+> +               .driver_data =3D PS_TYPE_PS4_DUALSHOCK4 },
+> +
+>         /* Sony DualSense controllers for PS5 */
+>         { HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_SONY, USB_DEVICE_ID_SONY_PS5=
+_CONTROLLER),
+>                 .driver_data =3D PS_TYPE_PS5_DUALSENSE },
+> --
+> 2.39.2
+>
+>
 
-git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
+I'm not familiar with this device, but if it indeed works. Then I'm
+okay with it.
 
-Signed-off-by: Andi Shyti <andi.shyti@kernel.org>
-Cc: Wolfram Sang <wsa@kernel.org>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 39219b144c239..ec0ffff6ded40 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10091,7 +10091,7 @@ L:	linux-i2c@vger.kernel.org
- S:	Maintained
- W:	https://i2c.wiki.kernel.org/
- Q:	https://patchwork.ozlabs.org/project/linux-i2c/list/
--T:	git git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git
-+T:	git git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
- F:	Documentation/devicetree/bindings/i2c/
- F:	drivers/i2c/algos/
- F:	drivers/i2c/busses/
--- 
-2.43.0
-
+Thanks,
+Roderick
 
