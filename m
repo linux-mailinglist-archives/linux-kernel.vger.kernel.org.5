@@ -1,384 +1,186 @@
-Return-Path: <linux-kernel+bounces-38220-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A706C83BCB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:05:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0EC283BCB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:05:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 576D828FE83
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:05:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59F9A1F2CD16
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:05:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A67046438;
-	Thu, 25 Jan 2024 08:59:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8C071BC39;
+	Thu, 25 Jan 2024 08:59:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="yI1+JGkK"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mE8glqlZ"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7E104594E;
-	Thu, 25 Jan 2024 08:59:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4252245C1C
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:59:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706173161; cv=none; b=DbTsKu3ziso7XUgKfAUkOta6ruQIHenkJ7DX2e36FNL7l2Duno07O/i7E8nAZMKcoYPwbB6Fb6DL72srDX1Dt8bfDXxGX7mxsMMj51BNR9TwUIMZN1DHbcKmPQczqhN+WCd1agBITkr0KnlB/8HEQImbSnawTbKFvNV/3y/4k1A=
+	t=1706173164; cv=none; b=MlBTYUBj6V073Fn/EqboL1Se86twleY0Ong8NvD1GSn5/cXY8Is71wDWAR5FvtbhOUYK5F1F94Pk7vPkuBaHUGhdnX1odx56z9vLNCcRtoOgi4x7Z3jBGqCQhiTuPRTLpF2xSVOd5NIdekTgir8gU+CTL0Wl+I7bdGPDeQD6Qwo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706173161; c=relaxed/simple;
-	bh=lbhGSsXDUwZ6iENmdMOouvcma3zNI00pVBrb4PXnuHI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jM+85TX7VToEpGcYjQwCeYUyJaTs5LFpO0GgoDALknmYqyfPl3Wd6n3BFBNev1hqMC3OctjCySV/iRXeXjSMaaasHMjoTRdFQ6JkE4xpbE/o3mS6eInWIOEE/rtr6nE8/8oIssZLDfYg6h1u/i37dG31AHDnBjc8Q0MR/fThwXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=yI1+JGkK; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=W1Pg45e3YPveg08TzLy7LzAEvB67BYDtIDXVWrYOF4k=; b=yI1+JGkKxGm9WfeiG/b4Yka18x
-	c1mXHaGCYgK6mkxGcVo5gAHbOKDx9+0SYzjipTUFCR7tVQHmx8jfKBwoUQSpzV0Hl0HSi6ZIxbk4X
-	o+ZvB7bpE8nEto805bTnTxGxRhJsSbfgcVGM8+wIdOoEikiUBttNbyBcb1DNZ8s75wbzeVEW07tpZ
-	qSvj6gzosLUHO646NIP3w95G/xf5aiufxBVQU+oWuTXercuNL6hOZVTSXRRdpOz7d754pCeI68r0r
-	Fhvwk5s7Jrh9Acbu4JXBI1UWYk3FH9vxl0k/up76e5MCS4mN1NhPBCzaj0pMgfN7TGLtGYAFIzxdR
-	l/0mO7bw==;
-Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSvZq-007Qbq-19;
-	Thu, 25 Jan 2024 08:59:14 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: linux-mm@kvack.org
-Cc: Matthew Wilcox <willy@infradead.org>,
-	Jan Kara <jack@suse.com>,
-	David Howells <dhowells@redhat.com>,
-	Brian Foster <bfoster@redhat.com>,
-	Christian Brauner <brauner@kernel.org>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 19/19] writeback: simplify writeback iteration
-Date: Thu, 25 Jan 2024 09:57:58 +0100
-Message-Id: <20240125085758.2393327-20-hch@lst.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240125085758.2393327-1-hch@lst.de>
-References: <20240125085758.2393327-1-hch@lst.de>
+	s=arc-20240116; t=1706173164; c=relaxed/simple;
+	bh=tlx2ckEz/OH8ARX5IfGa/yGe/4FJ1kSmrm3PuJXNAFk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KHIC0yAx0FWtcg+ZmRKlav29LBQFD9rqWy5skMMsPAn6dL+OEBXs0RkwiWXRR1gPeb5dANCxneklpkfmz2XNOB/cif04gwdfcMPiodHUnzrqcG4zKvVV/A2GGaa7QUKxVRMOQ4FE8yT/RqPQQlxwev2Y0dqlC/Jl1wv6ANWAw0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mE8glqlZ; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a31914e7493so22165566b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 00:59:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706173160; x=1706777960; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5p74A015/6G4sVWav+jkCsMA3W4osbHKdYXmaTePMgI=;
+        b=mE8glqlZF15PXnpqJpCKDRvzS4Z0xFbF5XKwObCqNXtx3Or86HiyFDOFAv8661VmDN
+         eYu0bjipW9PYB/rb8iEYF2L8/b400FpZQoTw7p4qvMak8u31VxzRQeoITdwcT4WTLK3P
+         8mdc1JvHKdeRqI2QC3tcApO0lTEJerwDkRfTP/R0cM+VJucHVcpTanwqYrZSTuIPOlVr
+         dVoohFBE20QZbaE4hemi0wtkiaLX8I+Tv8GbHfnDLxKBl9C9aQGKtrGwOTQlHO/0LqFq
+         Tt4b1BHHDGtuMH5Q5tdH4zmnsNj1RzgzSF9Aaf67AWKep6Ygy4Qxho7xJk4obTPzwD2t
+         IwJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706173160; x=1706777960;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5p74A015/6G4sVWav+jkCsMA3W4osbHKdYXmaTePMgI=;
+        b=Q/ub4WAblpmfEtK6Z7Yjq0wlJHvFSMFN09rfeEFThGkrkhJqDpXnA65m/M6L+cycjg
+         M031vNsSzgVzc2L4V4Jy6GhIFp1RwjQjPLu3AawCjIoLoMN5mTOr2S4wIbL5k2kWlDM5
+         lP9KV83NgwUyQbjrDNZ1tBAiTcWxAEt4RUqwONZ12iYi7hhmNCDBe58OQn95UQKQP8E5
+         eWXssG8C6uvkhs0Z4CR/dw7mEaRTrQ20xGT/z32VVX+t+bOuma5nmXHSwoQxBXrBADOO
+         4MXZ9OXb3G2o1MHkVTeWw3lAVDgP1fAeyUyND69FlUFAWZfOHFjvXWv/QRMkvWZ8cMr/
+         i3oQ==
+X-Gm-Message-State: AOJu0YzJ5ShB56us4BUu/shVaJ9a3YdcMUX7DkLYJ7S921BVNGPYOs8/
+	vW5oP2ULaucrPwY109ODKxwwc6CRE7knzMNb3BYIF5+YhhR9CEPAIp1uba3OI0HAhZ18OhHS4s6
+	Z
+X-Google-Smtp-Source: AGHT+IGqKUDCk+I6oMdp9KhcBiJXA3dZrcl4Po5aSnDqvlSXnfafDFROcN2I8d5qV12NRki7/mtQnQ==
+X-Received: by 2002:a17:906:890a:b0:a26:edeb:7635 with SMTP id fr10-20020a170906890a00b00a26edeb7635mr250672ejc.91.1706173160396;
+        Thu, 25 Jan 2024 00:59:20 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id gv21-20020a170906f11500b00a28a66028bcsm794592ejb.91.2024.01.25.00.59.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jan 2024 00:59:19 -0800 (PST)
+Message-ID: <a3d24e7d-404e-4c02-99a2-8838ee7028c9@linaro.org>
+Date: Thu, 25 Jan 2024 09:59:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] gpiolib: add gpiod_to_gpio_device() stub for !GPIOLIB
+Content-Language: en-US
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Peter Rosin <peda@axentia.se>,
+ linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>
+References: <20240125081601.118051-1-krzysztof.kozlowski@linaro.org>
+ <CAMRc=MesG1nYSxx0osmQEEXCvs-6B4s4=TFYW5wD8pOXpV+OcQ@mail.gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CAMRc=MesG1nYSxx0osmQEEXCvs-6B4s4=TFYW5wD8pOXpV+OcQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-Based on the feedback from Jan I've tried to figure out how to
-avoid the error magic in the for_each_writeback_folio.  This patch
-tries to implement this by switching to an open while loop over a
-single writeback_iter() function:
+On 25/01/2024 09:36, Bartosz Golaszewski wrote:
+> On Thu, Jan 25, 2024 at 9:16 AM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> Add empty stub of gpiod_to_gpio_device() when GPIOLIB is not enabled.
+>>
+>> Cc: <stable@vger.kernel.org>
+>> Fixes: 370232d096e3 ("gpiolib: provide gpiod_to_gpio_device()")
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>
+>> ---
+>>
+>> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+>> ---
+>>  include/linux/gpio/driver.h | 6 ++++++
+>>  1 file changed, 6 insertions(+)
+>>
+>> diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
+>> index 9a5c6c76e653..012797e7106d 100644
+>> --- a/include/linux/gpio/driver.h
+>> +++ b/include/linux/gpio/driver.h
+>> @@ -819,6 +819,12 @@ static inline struct gpio_chip *gpiod_to_chip(const struct gpio_desc *desc)
+>>         return ERR_PTR(-ENODEV);
+>>  }
+>>
+>> +static inline struct gpio_device *gpiod_to_gpio_device(struct gpio_desc *desc)
+>> +{
+>> +       WARN_ON(1);
+>> +       return ERR_PTR(-ENODEV);
+>> +}
+>> +
+>>  static inline int gpiochip_lock_as_irq(struct gpio_chip *gc,
+>>                                        unsigned int offset)
+>>  {
+>> --
+>> 2.34.1
+>>
+> 
+> Why is this needed? Users of gpio/driver.h should select GPIOLIB.
 
-	while ((folio = writeback_iter(mapping, wbc, folio, &error))) {
-		...
-	}
+The third patch shows you the user which will not select GPIOLIB. Why?
+Because there is no hard dependency between one core framework (RESET)
+on other core framework (GPIOLIB).
 
-the twist here is that the error value is passed by reference, so that
-the iterator can restore it when breaking out of the loop.
+The first two patches are added for the same purpose, even though there
+is no need currently.
 
-Additionally it moves the AOP_WRITEPAGE_ACTIVATE out of the iterator
-and into the callers, in preparation for eventually killing it off
-with the phase out of write_cache_pages().
 
-To me this form of the loop feels easier to follow, and it has the
-added advantage that writeback_iter() can actually be nicely used in
-nested loops, which should help with further iterizing the iomap
-writeback code.
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/iomap/buffered-io.c    |   7 +-
- include/linux/writeback.h |  11 +--
- mm/page-writeback.c       | 174 +++++++++++++++++++++-----------------
- 3 files changed, 102 insertions(+), 90 deletions(-)
-
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 58b3661f5eac9e..1593a783176ca2 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -1985,12 +1985,13 @@ iomap_writepages(struct address_space *mapping, struct writeback_control *wbc,
- 		struct iomap_writepage_ctx *wpc,
- 		const struct iomap_writeback_ops *ops)
- {
--	struct folio *folio;
--	int ret;
-+	struct folio *folio = NULL;
-+	int ret = 0;
- 
- 	wpc->ops = ops;
--	for_each_writeback_folio(mapping, wbc, folio, ret)
-+	while ((folio = writeback_iter(mapping, wbc, folio, &ret)))
- 		ret = iomap_do_writepage(folio, wbc, wpc);
-+
- 	if (!wpc->ioend)
- 		return ret;
- 	return iomap_submit_ioend(wpc, wpc->ioend, ret);
-diff --git a/include/linux/writeback.h b/include/linux/writeback.h
-index 2416da933440e2..fc4605627496fc 100644
---- a/include/linux/writeback.h
-+++ b/include/linux/writeback.h
-@@ -367,15 +367,8 @@ int balance_dirty_pages_ratelimited_flags(struct address_space *mapping,
- 
- bool wb_over_bg_thresh(struct bdi_writeback *wb);
- 
--struct folio *writeback_iter_init(struct address_space *mapping,
--		struct writeback_control *wbc);
--struct folio *writeback_iter_next(struct address_space *mapping,
--		struct writeback_control *wbc, struct folio *folio, int error);
--
--#define for_each_writeback_folio(mapping, wbc, folio, error)		\
--	for (folio = writeback_iter_init(mapping, wbc);			\
--	     folio || ((error = wbc->err), false);			\
--	     folio = writeback_iter_next(mapping, wbc, folio, error))
-+struct folio *writeback_iter(struct address_space *mapping,
-+		struct writeback_control *wbc, struct folio *folio, int *error);
- 
- typedef int (*writepage_t)(struct folio *folio, struct writeback_control *wbc,
- 				void *data);
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index 2a4b5aee5decd9..9e1cce9be63524 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -2360,29 +2360,6 @@ void tag_pages_for_writeback(struct address_space *mapping,
- }
- EXPORT_SYMBOL(tag_pages_for_writeback);
- 
--static void writeback_finish(struct address_space *mapping,
--		struct writeback_control *wbc, pgoff_t done_index)
--{
--	folio_batch_release(&wbc->fbatch);
--
--	/*
--	 * For range cyclic writeback we need to remember where we stopped so
--	 * that we can continue there next time we are called.  If  we hit the
--	 * last page and there is more work to be done, wrap back to the start
--	 * of the file.
--	 *
--	 * For non-cyclic writeback we always start looking up at the beginning
--	 * of the file if we are called again, which can only happen due to
--	 * -ENOMEM from the file system.
--	 */
--	if (wbc->range_cyclic) {
--		if (wbc->err || wbc->nr_to_write <= 0)
--			mapping->writeback_index = done_index;
--		else
--			mapping->writeback_index = 0;
--	}
--}
--
- static xa_mark_t wbc_to_tag(struct writeback_control *wbc)
- {
- 	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
-@@ -2442,10 +2419,8 @@ static struct folio *writeback_get_folio(struct address_space *mapping,
- 		filemap_get_folios_tag(mapping, &wbc->index, wbc_end(wbc),
- 				wbc_to_tag(wbc), &wbc->fbatch);
- 		folio = folio_batch_next(&wbc->fbatch);
--		if (!folio) {
--			writeback_finish(mapping, wbc, 0);
-+		if (!folio)
- 			return NULL;
--		}
- 	}
- 
- 	folio_lock(folio);
-@@ -2458,60 +2433,92 @@ static struct folio *writeback_get_folio(struct address_space *mapping,
- 	return folio;
- }
- 
--struct folio *writeback_iter_init(struct address_space *mapping,
--		struct writeback_control *wbc)
--{
--	if (wbc->range_cyclic)
--		wbc->index = mapping->writeback_index; /* prev offset */
--	else
--		wbc->index = wbc->range_start >> PAGE_SHIFT;
--
--	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
--		tag_pages_for_writeback(mapping, wbc->index, wbc_end(wbc));
--
--	wbc->err = 0;
--	folio_batch_init(&wbc->fbatch);
--	return writeback_get_folio(mapping, wbc);
--}
--
--struct folio *writeback_iter_next(struct address_space *mapping,
--		struct writeback_control *wbc, struct folio *folio, int error)
-+/**
-+ * writepage_iter - iterate folio of a mapping for writeback
-+ * @mapping: address space structure to write
-+ * @wbc: writeback context
-+ * @folio: previously iterated folio (%NULL to start)
-+ * @error: in-out pointer for writeback errors (see below)
-+ *
-+ * This function should be called in a while loop in the ->writepages
-+ * implementation and returns the next folio for the writeback operation
-+ * described by @wbc on @mapping.
-+ *
-+ * To start writeback @folio should be passed as NULL, for every following
-+ * iteration the folio returned by this function previously should be passed.
-+ * @error should contain the error from the previous writeback iteration when
-+ * calling writeback_iter.
-+ *
-+ * Once the writeback described in @wbc has finished, this function will return
-+ * %NULL and if there was an error in any iteration restore it to @error.
-+ *
-+ * Note: callers should not manually break out of the loop using break or goto.
-+ */
-+struct folio *writeback_iter(struct address_space *mapping,
-+		struct writeback_control *wbc, struct folio *folio, int *error)
- {
--	unsigned long nr = folio_nr_pages(folio);
-+	if (folio) {
-+		wbc->nr_to_write -= folio_nr_pages(folio);
-+		if (*error && !wbc->err)
-+			wbc->err = *error;
- 
--	wbc->nr_to_write -= nr;
--
--	/*
--	 * Handle the legacy AOP_WRITEPAGE_ACTIVATE magic return value.
--	 * Eventually all instances should just unlock the folio themselves and
--	 * return 0;
--	 */
--	if (error == AOP_WRITEPAGE_ACTIVATE) {
--		folio_unlock(folio);
--		error = 0;
-+		/*
-+		 * For integrity sync  we have to keep going until we have
-+		 * written all the folios we tagged for writeback prior to
-+		 * entering the writeback loop, even if we run past
-+		 * wbc->nr_to_write or encounter errors.
-+		 *
-+		 * This is because the file system may still have state to clear
-+		 * for each folio.  We'll eventually return the first error
-+		 * encountered.
-+		 *
-+		 * For background writeback just push done_index past this folio
-+		 * so that we can just restart where we left off and media
-+		 * errors won't choke writeout for the entire file.
-+		 */
-+		if (wbc->sync_mode == WB_SYNC_NONE &&
-+		    (wbc->err || wbc->nr_to_write <= 0))
-+			goto finish;
-+	} else {
-+		if (wbc->range_cyclic)
-+			wbc->index = mapping->writeback_index; /* prev offset */
-+		else
-+			wbc->index = wbc->range_start >> PAGE_SHIFT;
-+		if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
-+			tag_pages_for_writeback(mapping, wbc->index,
-+					wbc_end(wbc));
-+		folio_batch_init(&wbc->fbatch);
-+		wbc->err = 0;
- 	}
- 
--	if (error && !wbc->err)
--		wbc->err = error;
-+	folio = writeback_get_folio(mapping, wbc);
-+	if (!folio)
-+		goto finish;
-+	return folio;
-+
-+finish:
-+	folio_batch_release(&wbc->fbatch);
- 
- 	/*
--	 * For integrity sync  we have to keep going until we have written all
--	 * the folios we tagged for writeback prior to entering the writeback
--	 * loop, even if we run past wbc->nr_to_write or encounter errors.
--	 * This is because the file system may still have state to clear for
--	 * each folio.   We'll eventually return the first error encountered.
-+	 * For range cyclic writeback we need to remember where we stopped so
-+	 * that we can continue there next time we are called.  If  we hit the
-+	 * last page and there is more work to be done, wrap back to the start
-+	 * of the file.
- 	 *
--	 * For background writeback just push done_index past this folio so that
--	 * we can just restart where we left off and media errors won't choke
--	 * writeout for the entire file.
-+	 * For non-cyclic writeback we always start looking up at the beginning
-+	 * of the file if we are called again, which can only happen due to
-+	 * -ENOMEM from the file system.
- 	 */
--	if (wbc->sync_mode == WB_SYNC_NONE &&
--	    (wbc->err || wbc->nr_to_write <= 0)) {
--		writeback_finish(mapping, wbc, folio->index + nr);
--		return NULL;
-+	if (wbc->range_cyclic) {
-+		WARN_ON_ONCE(wbc->sync_mode != WB_SYNC_NONE);
-+		if (wbc->err || wbc->nr_to_write <= 0)
-+			mapping->writeback_index =
-+				folio->index + folio_nr_pages(folio);
-+		else
-+			mapping->writeback_index = 0;
- 	}
--
--	return writeback_get_folio(mapping, wbc);
-+	*error = wbc->err;
-+	return NULL;
- }
- 
- /**
-@@ -2549,13 +2556,18 @@ int write_cache_pages(struct address_space *mapping,
- 		      struct writeback_control *wbc, writepage_t writepage,
- 		      void *data)
- {
--	struct folio *folio;
--	int error;
-+	struct folio *folio = NULL;
-+	int error = 0;
- 
--	for_each_writeback_folio(mapping, wbc, folio, error)
-+	while ((folio = writeback_iter(mapping, wbc, folio, &error))) {
- 		error = writepage(folio, wbc, data);
-+		if (error == AOP_WRITEPAGE_ACTIVATE) {
-+			folio_unlock(folio);
-+			error = 0;
-+		}
-+	}
- 
--	return wbc->err;
-+	return error;
- }
- EXPORT_SYMBOL(write_cache_pages);
- 
-@@ -2563,13 +2575,17 @@ static int writeback_use_writepage(struct address_space *mapping,
- 		struct writeback_control *wbc)
- {
- 	struct blk_plug plug;
--	struct folio *folio;
--	int err;
-+	struct folio *folio = 0;
-+	int err = 0;
- 
- 	blk_start_plug(&plug);
--	for_each_writeback_folio(mapping, wbc, folio, err) {
-+	while ((folio = writeback_iter(mapping, wbc, folio, &err))) {
- 		err = mapping->a_ops->writepage(&folio->page, wbc);
- 		mapping_set_error(mapping, err);
-+		if (err == AOP_WRITEPAGE_ACTIVATE) {
-+			folio_unlock(folio);
-+			err = 0;
-+		}
- 	}
- 	blk_finish_plug(&plug);
- 
-@@ -2590,6 +2606,8 @@ int do_writepages(struct address_space *mapping, struct writeback_control *wbc)
- 			ret = mapping->a_ops->writepages(mapping, wbc);
- 		} else if (mapping->a_ops->writepage) {
- 			ret = writeback_use_writepage(mapping, wbc);
-+			if (!ret)
-+				ret = wbc->err;
- 		} else {
- 			/* deal with chardevs and other special files */
- 			ret = 0;
--- 
-2.39.2
+Best regards,
+Krzysztof
 
 
