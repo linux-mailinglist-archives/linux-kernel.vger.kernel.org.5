@@ -1,90 +1,161 @@
-Return-Path: <linux-kernel+bounces-38191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1692383BC3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:45:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B78083BC41
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:47:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4967F1C25D8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:45:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40D451C2287C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:47:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89D021B950;
-	Thu, 25 Jan 2024 08:45:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D6371B95E;
+	Thu, 25 Jan 2024 08:47:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="RTux1+pR";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Pt+4Up3Z"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="lTyuOyAp"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AB691B94B;
-	Thu, 25 Jan 2024 08:45:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E39381B948;
+	Thu, 25 Jan 2024 08:47:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706172318; cv=none; b=RAriFCyHrPp8tF7Xy5phOCRFwp0WNFRGOhzPDgVO/6b+IwP8MNttclmXyPVTOgr9/RGiemBTAw5criUfKm8auK4IXQcq1cWliyWP0WMhXVZRs96c1syusB+C/mlSs+G9u5XAxel4C+pj4d5m+7vvxrJMCkQn0JnSNhZFoq3mlDw=
+	t=1706172452; cv=none; b=BRAhQa8fpJhkXvCWMm+6Bi91E1xF2UkHeRei+p/n0UKTJkDRQ/X8xu50R6KnQKADIEqVbWcXED3E2xZfwUSdroX95LV6riiTnpFI9AswjhOD1zLWDEmiBozg3znQwUsRNxYNpdW75BSdgzz0nxOVHUIqArnu8S2JyPbb8VXe2ro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706172318; c=relaxed/simple;
-	bh=8/N8nHgaQvKTBhfxwCmzbJX3QzXCprpMyk/c3leHg08=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=g7eHy4Vf7oRZlVpJ26P4QBLxov/Qhq8w2IOdc4agdmbM/Z1p5vtg0TqTTt+o1AeMTH0bU3ikXESB0rdv86qyf0q+s1OY3eAhR9QsuTn/fFL+Pggexe8BOkEe6YTAyZx7Be+tLR/foLH9awfPuv9Pk3GFvp+ayyYR+4Ng4Q96ixU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=RTux1+pR; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Pt+4Up3Z; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706172309;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8/N8nHgaQvKTBhfxwCmzbJX3QzXCprpMyk/c3leHg08=;
-	b=RTux1+pRR18Wian+HDI6adTZ/YAeMMLdG1s7PChn0t52OXX4/qt1+s6W+rlN5lGv8l1mAm
-	uDImkHQhEwoMUSu27Qysj0N35xLmWQnLiminAaNU+kFEJYGBYkGERzGS8keWE2sIdnnhGL
-	ReSi69T5FCAck/QCeHqxcqRVqPBTJ+Ux0ZYOh6zw4q7L2J0gnFRg7lq+4ZQBLOWReboZ6T
-	Fhr2dClqzHYA1P28jSMsbKJ7gVOntd5+GRm1fM0KvmNsMB3Be69/s0XNhIIy2r9Lv8nhS1
-	K1IBGeJjkL/2y3s9NDfUupCpnv4CD1RPMvwhccE6mGIZ8mQ4/MAyUpVYf5tv9Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706172309;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8/N8nHgaQvKTBhfxwCmzbJX3QzXCprpMyk/c3leHg08=;
-	b=Pt+4Up3ZcUmLAxp2euhrRzuCu/V0OYU0xtyo6emPV1pORKWrqQqO7cbfKlPUiwy7H4DMKK
-	UGaqX01fpuOb+RCQ==
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Tim Chen <tim.c.chen@linux.intel.com>, Heiko Carstens
- <hca@linux.ibm.com>, Ingo Molnar <mingo@kernel.org>, Gerald Schaefer
- <gerald.schaefer@linux.ibm.com>, Alexander Gordeev
- <agordeev@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: Re: [PATCH] tick-sched: Preserve number of idle sleeps across CPU
- hotplug events
-In-Reply-To: <ZbFvDbFm1_EfajFf@pavilion.home>
-References: <20240122233534.3094238-1-tim.c.chen@linux.intel.com>
- <87v87ijzqj.ffs@tglx> <ZbFvDbFm1_EfajFf@pavilion.home>
-Date: Thu, 25 Jan 2024 09:45:09 +0100
-Message-ID: <87jznxkdii.ffs@tglx>
+	s=arc-20240116; t=1706172452; c=relaxed/simple;
+	bh=zSwWF0claKxQzQoWOkji0OUgq92XNb0vOhOBmzc21Qo=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=NW/4kvyWh/Tjx6lyzZ+Vawr9iD6nyHnFMuhZK8jo6PqxPPgC/MwPWSmT5AHmG9i/ujRzab7Jsa0yiIX5iZGrkGPZvR06Hf2th1gJeq7SDJoU8UAU5hrIdZCfxjLfR892nHwOeFZsejII6qCilE1NjZHyY5N29Bh7ruoX2wrAEPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=lTyuOyAp; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40P8kaks054089;
+	Thu, 25 Jan 2024 02:46:36 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706172396;
+	bh=zSwWF0claKxQzQoWOkji0OUgq92XNb0vOhOBmzc21Qo=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To;
+	b=lTyuOyApebTeO4Hz2PF8+GhoZ9ZACZUi78DQ55nT1sh/nahvtGUQc2ZijGmkqSNWq
+	 TxoQBRE8/R+Q+BYjqqOpfi8OxTI3kt1paVUEfztf0qlH/1MaRf/9Rfur6b1cs9oxVN
+	 5oHG4GLI/jSw3PwlxrFZcQJ7GlleTedvi/QlFTYw=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40P8kZ7J040244
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 25 Jan 2024 02:46:36 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 25
+ Jan 2024 02:46:35 -0600
+Received: from DLEE101.ent.ti.com ([fe80::91ee:60bc:bfb7:851c]) by
+ DLEE101.ent.ti.com ([fe80::91ee:60bc:bfb7:851c%18]) with mapi id
+ 15.01.2507.023; Thu, 25 Jan 2024 02:46:35 -0600
+From: "Ding, Shenghao" <shenghao-ding@ti.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        "broonie@kernel.org"
+	<broonie@kernel.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>
+CC: "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>,
+        "Lu,
+ Kevin" <kevin-lu@ti.com>, "Xu, Baojun" <baojun.xu@ti.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "perex@perex.cz"
+	<perex@perex.cz>,
+        "pierre-louis.bossart@linux.intel.com"
+	<pierre-louis.bossart@linux.intel.com>,
+        "13916275206@139.com"
+	<13916275206@139.com>,
+        "linux-sound@vger.kernel.org"
+	<linux-sound@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>,
+        "liam.r.girdwood@intel.com"
+	<liam.r.girdwood@intel.com>,
+        "soyer@irl.hu" <soyer@irl.hu>, "Huang, Jonathan"
+	<jkhuang3@ti.com>,
+        "tiwai@suse.de" <tiwai@suse.de>, "Djuandi, Peter"
+	<pdjuandi@ti.com>,
+        "McPherson, Jeff" <j-mcpherson@ti.com>,
+        "Navada Kanyana,
+ Mukund" <navada@ti.com>
+Subject: RE: [EXTERNAL] Re: [PATCH v1 4/4] ASoc: dt-bindings: Create yaml file
+ for pcm6240 codec driver
+Thread-Topic: [EXTERNAL] Re: [PATCH v1 4/4] ASoc: dt-bindings: Create yaml
+ file for pcm6240 codec driver
+Thread-Index: AQHaTe1hznwq6igpf0+r29xPdjuRgbDnplkAgAKAPWCAAGhXgP//qoQg
+Date: Thu, 25 Jan 2024 08:46:35 +0000
+Message-ID: <c107a70e42eb4327802748cda89d292f@ti.com>
+References: <20240123111411.850-1-shenghao-ding@ti.com>
+ <20240123111411.850-4-shenghao-ding@ti.com>
+ <92c1a3f3-6b3b-47cb-a4bf-0d20e4af95e5@linaro.org>
+ <a6c6cad6efc647ba8f0c828ffdb3a54f@ti.com>
+ <d8f00ea9-3bb2-4b17-bbc7-48800516e408@linaro.org>
+In-Reply-To: <d8f00ea9-3bb2-4b17-bbc7-48800516e408@linaro.org>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-exclaimer-md-config: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 24 2024 at 21:11, Frederic Weisbecker wrote:
-
-> Le Wed, Jan 24, 2024 at 08:30:28PM +0100, Thomas Gleixner a =C3=A9crit :
->> On Mon, Jan 22 2024 at 15:35, Tim Chen wrote:
->>=20
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commi=
-t/?id=3D71fee48fb772ac4f6cfa63dbebc5629de8b4cc09
->>=20
->
-> It's a different patch :-)
-
-I clearly can't read ....
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogS3J6eXN6dG9mIEtvemxv
+d3NraSA8a3J6eXN6dG9mLmtvemxvd3NraUBsaW5hcm8ub3JnPg0KPiBTZW50OiBUaHVyc2RheSwg
+SmFudWFyeSAyNSwgMjAyNCAzOjUwIFBNDQo+IFRvOiBEaW5nLCBTaGVuZ2hhbyA8c2hlbmdoYW8t
+ZGluZ0B0aS5jb20+OyBicm9vbmllQGtlcm5lbC5vcmc7DQo+IGNvbm9yK2R0QGtlcm5lbC5vcmcN
+Cj4gQ2M6IHJvYmgrZHRAa2VybmVsLm9yZzsgYW5kcml5LnNoZXZjaGVua29AbGludXguaW50ZWwu
+Y29tOyBMdSwgS2V2aW4NCj4gPGtldmluLWx1QHRpLmNvbT47IFh1LCBCYW9qdW4gPGJhb2p1bi54
+dUB0aS5jb20+Ow0KPiBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZzsgbGdpcmR3b29kQGdtYWls
+LmNvbTsgcGVyZXhAcGVyZXguY3o7DQo+IHBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGxpbnV4LmludGVs
+LmNvbTsgMTM5MTYyNzUyMDZAMTM5LmNvbTsgbGludXgtDQo+IHNvdW5kQHZnZXIua2VybmVsLm9y
+ZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsNCj4gbGlhbS5yLmdpcmR3b29kQGludGVs
+LmNvbTsgc295ZXJAaXJsLmh1OyBIdWFuZywgSm9uYXRoYW4NCj4gPGpraHVhbmczQHRpLmNvbT47
+IHRpd2FpQHN1c2UuZGU7IERqdWFuZGksIFBldGVyIDxwZGp1YW5kaUB0aS5jb20+Ow0KPiBNY1Bo
+ZXJzb24sIEplZmYgPGotbWNwaGVyc29uQHRpLmNvbT47IE5hdmFkYSBLYW55YW5hLCBNdWt1bmQN
+Cj4gPG5hdmFkYUB0aS5jb20+DQo+IFN1YmplY3Q6IFJlOiBbRVhURVJOQUxdIFJlOiBbUEFUQ0gg
+djEgNC80XSBBU29jOiBkdC1iaW5kaW5nczogQ3JlYXRlIHlhbWwNCj4gZmlsZSBmb3IgcGNtNjI0
+MCBjb2RlYyBkcml2ZXINCj4gDQo+IE9uIDI1LzAxLzIwMjQgMDg64oCKMzksIERpbmcsIFNoZW5n
+aGFvIHdyb3RlOiA+PiA+PiBXaHkgZG8geW91IHJlcGVhdCB0aGUNCj4gcmVnIGNvbnN0cmFpbnRz
+PyBUaGlzIGRvZXMgbm90IHNlZW0gbmVlZGVkLiA+PiA+Pj4gKyBpbnRlcnJ1cHRzOiBmYWxzZSA+
+Pj4NCj4gKyA+Pj4gKyAtIGlmOiA+Pj4gKyBwcm9wZXJ0aWVzOiA+Pj4gWmpRY21RUllGcGZwdEJh
+bm5lclN0YXJ0IFRoaXMgbWVzc2FnZQ0KPiB3YXMgc2VudCBmcm9tIG91dHNpZGUgb2YgVGV4YXMg
+SW5zdHJ1bWVudHMuDQo+IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVu
+bGVzcyB5b3UgcmVjb2duaXplIHRoZSBzb3VyY2Ugb2YNCj4gdGhpcyBlbWFpbCBhbmQga25vdyB0
+aGUgY29udGVudCBpcyBzYWZlLg0KPiANCj4gWmpRY21RUllGcGZwdEJhbm5lckVuZA0KPiBPbiAy
+NS8wMS8yMDI0IDA4OjM5LCBEaW5nLCBTaGVuZ2hhbyB3cm90ZToNCj4gPj4NCj4gPj4gV2h5IGRv
+IHlvdSByZXBlYXQgdGhlIHJlZyBjb25zdHJhaW50cz8gVGhpcyBkb2VzIG5vdCBzZWVtIG5lZWRl
+ZC4NCj4gPj4NCj4gPj4+ICsgICAgICAgIGludGVycnVwdHM6IGZhbHNlDQo+ID4+PiArDQo+ID4+
+PiArICAtIGlmOg0KPiA+Pj4gKyAgICAgIHByb3BlcnRpZXM6DQo+ID4+PiArICAgICAgICBjb21w
+YXRpYmxlOg0KPiA+Pj4gKyAgICAgICAgICBjb250YWluczoNCj4gPj4+ICsgICAgICAgICAgICBl
+bnVtOg0KPiA+Pj4gKyAgICAgICAgICAgICAgLSB0aSxwY20zMTQwDQo+ID4+PiArICAgICAgICAg
+ICAgICAtIHRpLHBjbTUxNDANCj4gPj4+ICsgICAgICAgICAgICAgIC0gdGkscGNtNjE0MA0KPiA+
+Pj4gKyAgICAgICAgICAgICAgLSB0aSxwY21kMzE4MA0KPiA+Pj4gKyAgICB0aGVuOg0KPiA+Pj4g
+KyAgICAgIHByb3BlcnRpZXM6DQo+ID4+PiArICAgICAgICByZWc6DQo+ID4+PiArICAgICAgICAg
+IGRlc2NyaXB0aW9uOg0KPiA+Pj4gKyAgICAgICAgICAgIEkyQyBhZGRyZXNzLCBpbiBtdWx0aXBs
+ZSBwY21kZXZpY2VzIGNhc2UsIGFsbCB0aGUgaTJjIGFkZHJlc3MNCj4gPj4+ICsgICAgICAgICAg
+ICBhZ2dyZWdhdGUgYXMgb25lIEF1ZGlvIERldmljZSB0byBzdXBwb3J0IG11bHRpcGxlIGF1ZGlv
+IHNsb3RzLg0KPiA+Pj4gKyAgICAgICAgICBtYXhJdGVtczogNA0KPiA+Pj4gKyAgICAgICAgICBt
+aW5JdGVtczogMQ0KPiA+Pg0KPiANCj4gWW91IGRpZCBub3QgcmVzcG9uZCB0byBhbnkgb2Ygb3Ro
+ZXIgY29tbWVudHMsIHRoZXJlZm9yZSBJIGFzc3VtZSB5b3UNCj4gYWdyZWUgd2l0aCB0aGVtIDEw
+MCUgYW5kIHlvdSB3aWxsIGltcGxlbWVudCB0aGVtIGZ1bGx5Lg0KPiANCj4gDQo+ID4+IERyb3Ag
+ZW50aXJlIGlmDQo+ID4gSG93IHRvIGNvbnZleSB0aSxwY20xNjkwIGRvZXMgbm90IHN1cHBvcnQg
+aW50ZXJydXB0LCBhbmQgb3RoZXJzDQo+ID4gc3VwcG9ydCBpZiBJIHJlbW92ZSB0aGlzIGlmDQo+
+IA0KPiBIb3c/IFRoZXJlIGlzIG5vIHBjbTE2OTAgaGVyZS4NCkhvdyBjYW4gb3RoZXJzIGtub3cg
+dGhhdCBwY20zMTQwLCBwY201MTQwLCBwY202MTQwIGFuZCBwY21kMzE4MA0KU3VwcG9ydCBpMmMg
+YWRkcmVzcyBmcm9tIDB4NGMgdG8gMHg0ZiwgaWYgdGhpcyBpZiBicmFuY2ggd2FzIHJlbW92ZWQu
+DQo+IA0KPiBCVFcsIGFkZCBtaXNzaW5nIGxpbmUgYnJlYWtzLCBlc3BlY2lhbGx5IGJlZm9yZSBu
+ZXh0IGJsb2NrcyBsaWtlDQo+IGFkZGl0aW9uYWxQcm9wZXJ0aWVzLg0KQWNjZXB0ZWQNCj4gDQo+
+ID4+DQo+ID4+PiArICAgICAgICAgIGl0ZW1zOg0KPiA+Pj4gKyAgICAgICAgICAgIG1pbmltdW06
+IDB4NGMNCj4gPj4+ICsgICAgICAgICAgICBtYXhpbXVtOiAweDRmDQo+ID4+PiArDQo+ID4NCj4g
+PiBCUg0KPiA+IFNoZW5naGFvIERpbmcNCj4gPg0KPiANCj4gQmVzdCByZWdhcmRzLA0KPiBLcnp5
+c3p0b2YNCg0K
 
