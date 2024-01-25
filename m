@@ -1,279 +1,261 @@
-Return-Path: <linux-kernel+bounces-38835-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BC9883C6BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:33:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9D2C83C69D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:31:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F00EF1F219FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:33:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10A831C22643
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:31:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEC7974E3F;
-	Thu, 25 Jan 2024 15:32:08 +0000 (UTC)
-Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C56B57316D;
+	Thu, 25 Jan 2024 15:31:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="ijNHiB46"
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2045.outbound.protection.outlook.com [40.107.7.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C89A73172;
-	Thu, 25 Jan 2024 15:32:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.186
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706196728; cv=none; b=J5qnrB/PfaGfvsLBkntqHS9HWE7opC3+vhn86F8lw2W3hMBDCXJ7t5d25hpvs01OsCVUUtDiCkyJOgXYbv552zsr/jbQ/A1Vuv9HtZwJCqw2g7Ch/HdwvaQpiQogYJnyatBd+WzYmFz5ubKKlJ3pR8B+YqVTwsl+0z5jJs/neXk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706196728; c=relaxed/simple;
-	bh=9oIB83pc/ZyTg66e328/z4fCGwof+pG+pI1cGESw4c0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=bta8KBPLbDARKgtIsjJLTe7SaB6I1CzA+APybOFnA8zslX8LsonUz7qQhba5KF2K9tuZL+geRDR8V/sBsPF1GpGlx20dLv2VANoMryL6+z5Jh9cOtf10B16outRryPQ+zqtFBEVs+WgIcXt+1gSb1n49bk+KL4xjwbiEQhS7rq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
-Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-	by mx.skole.hr (mx.skole.hr) with ESMTP id 10732862B0;
-	Thu, 25 Jan 2024 16:31:58 +0100 (CET)
-From: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date: Thu, 25 Jan 2024 16:30:56 +0100
-Subject: [PATCH v5 4/4] backlight: Add Kinetic KTD2801 backlight support
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DE5973160;
+	Thu, 25 Jan 2024 15:31:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.45
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706196677; cv=fail; b=UI0GHBm8gn6ulajjS2ar2RfRZouYi11QLNz/EjMxgyM0jaG7MAI32Sls561mTY7SG6XVrHRT11IdBh2uLjsXB+UI1IzgOVLtpAv+cQE/u0UlX0lEhnSNrKVIc+rA7o3eD1yStzRoH6D7n7ysGIHlBzqPMqHJE0QlW18tubEIEXg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706196677; c=relaxed/simple;
+	bh=E95Hl7N5eLEw4PmDTbEsfKwYVZwr9QT36k92cjo1khw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=dkPshStFBJeOVLnAx0yZ1ree/VLs2w6QOtmtU0yyvQOUEASkF0MZfoAhZIRxnUmukoXU9i8y0J6qwoZFGM0heExAIHJz2uNzfiUNereGAAXwmXH6LdMdvTVvqI+lX6hLwHYsQPc5j7/eex/2iyRE8G62nKrb1LXamx4ItKxt59Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=ijNHiB46; arc=fail smtp.client-ip=40.107.7.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=J4/KleVyGWJWyoddy5jLK07ymEmdqeNI14FXvsLrg4L+UMGkF2ztR28wIjA1h8nYlxLzKrl3KYrO3w3nWhCoee3rpEml3pnGbY29EFD6s+q17141t9AOxpgH1fuMiXqaHaJLJxMe87fvcMV04fpQ6yk+SrOSgm3e9pQF0jgbhLEGTdsnh+wM4JC5uBquHzoT6TfiM1XsZne9q2VeucDEqggi0UQMjA5/OOhRClyb2ZUXIylUh6xNRUlH1Us3gqcjn2AzdS99CvORGsCQdFHnEd27hbJNAdT9rDQ8hs20bjazz4hQHztwsF06zpQsoptyOPr9z0EUdb19P2F0rIoiYQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LuK+sVzB8Zi28Icf0Hx5lsUjWE4gViG8lvMZqWp93KE=;
+ b=Vz1ryrP3vAROkTsamGPw6IYky+32Dr6JwOLdjpgFZpAT9rw0UrClcLjnZvdoNvnOYGA/lrHL2cRuuEGbMml8u9BU8DocX49/qpMDoektQxSJ8HuYYEextC7n4XQAzkl9HIGKOty1bjXtixcjqZrrdwGSO2HP2Sp5QzdqyfX/sB3jd8bST8VkJM4OqPM4RNG9fyy2jFAvvlhjuLUfYjNaDGyfz/z23mmNPB+vLcQhPrdOeM1EqDafZeoDkEt8t3tmwdxcIWjd5HbufELCE3YQJnHRhwDnXWwSGnfysykkwgYiy8CKO0b98TY1UVunWRC3rNhA9vs2RjajcHX9Tij3iA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LuK+sVzB8Zi28Icf0Hx5lsUjWE4gViG8lvMZqWp93KE=;
+ b=ijNHiB46Jk4PCuBtzSxhIKqUY3V6QjrZKtUIr457hdVQPZtcyJgYUyBsfoNbU2tWr4XMtK6d4FmqRAEOa9TQwNEYYHVNz8fhqvnKCw+2Fs+krEIY1YrO4Px6WRUwuGEegZpRY7ncDNg8HQZ9hgROKOR36qCVeVPfY0StkVLK17Q=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by DB9PR04MB10033.eurprd04.prod.outlook.com (2603:10a6:10:4ee::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.32; Thu, 25 Jan
+ 2024 15:31:10 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7202.035; Thu, 25 Jan 2024
+ 15:31:10 +0000
+Date: Thu, 25 Jan 2024 10:31:00 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: lpieralisi@kernel.org
+Cc: bhelgaas@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org,
+	festevam@gmail.com, helgaas@kernel.org, hongxing.zhu@nxp.com,
+	imx@lists.linux.dev, kernel@pengutronix.de,
+	krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org,
+	kw@linux.com, l.stach@pengutronix.de,
+	linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	lpieralisi@kernel.org, robh@kernel.org, s.hauer@pengutronix.de,
+	shawnguo@kernel.org
+Subject: Re: [PATCH v9 00/16] PCI: imx6: Clean up and add imx95 pci support
+Message-ID: <ZbJ+tFPn3aOYHCwf@lizhi-Precision-Tower-5810>
+References: <20240119171122.3057511-1-Frank.Li@nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240119171122.3057511-1-Frank.Li@nxp.com>
+X-ClientProxiedBy: SJ0PR13CA0097.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c5::12) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240125-ktd2801-v5-4-e22da232a825@skole.hr>
-References: <20240125-ktd2801-v5-0-e22da232a825@skole.hr>
-In-Reply-To: <20240125-ktd2801-v5-0-e22da232a825@skole.hr>
-To: Lee Jones <lee@kernel.org>, 
- Daniel Thompson <daniel.thompson@linaro.org>, 
- Jingoo Han <jingoohan1@gmail.com>, Pavel Machek <pavel@ucw.cz>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Helge Deller <deller@gmx.de>, 
- Linus Walleij <linus.walleij@linaro.org>
-Cc: Karel Balej <balejk@matfyz.cz>, ~postmarketos/upstreaming@lists.sr.ht, 
- phone-devel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
- linux-leds@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org, 
- =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6508;
- i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=9oIB83pc/ZyTg66e328/z4fCGwof+pG+pI1cGESw4c0=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlsn7DzGjopG3zagxQdzO39RFkWfcgbL98E7cgE
- 6mQxJ+xqCuJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZbJ+wwAKCRCaEZ6wQi2W
- 4bK2EACrKqCjTzyf6knLrx0GBqRH1F4B3CAYyruA8cUQExJQWc5jI0nAF1hRrrfw3Z6OebH2Rmx
- mKQkFb9+2KL5Snf9cikzqHaIKj8ZyDhtUFqQKd4S0U8PRv+xWe8ieAb+rX/EoVnLZmDurNXTCnm
- vp/4PmXtd6swUY3Y0mge+QhwrBbmi3UQujerDHnDK+BoKnsTcdDFBqd20O+rFtsrXQeIqWIo8aY
- yhTHJCf1rvy3bTDg+s3jXxC9CRM7pyVhqpmfKSXnuvi24fobYkhMDB2EmiR0didy4CDlJavj3m+
- VvLZSlUyCMwlVy+eXj80A2KmsEf3RiaNZs7gxvaLjdTV8Z8+T3GEMa3/uPetlIApW4sEWiYKoDf
- ldHYX4m+Th2wIACdQbiDdclikspvaAGuzEluBgGT1DjeprvNfosTH5MRZLsN2Q0WIOYTh3suKPk
- HYLjnqaFZdYDkIkN0x4Pc8DQh5xLQ8Sl6OaRuajwDdy0hXLroFeLy0HSTpPiOW8UONZNA68XBCn
- wQadc/JfOJBQCgkwRiktmqAQgoUHsDufOpzWM+CpvI2HM7o9NpsMhRWd3gT8NuvMHjFTOfLGoue
- EvcvxhVf9phmwsSh1FErev7VBrRuTn1Lknu1sPpLD74CelV4mz3mwu4wcreCaPSvuxiCIQWHPBM
- 7YZDuatn7GBvkhA==
-X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
- fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DB9PR04MB10033:EE_
+X-MS-Office365-Filtering-Correlation-Id: d8605673-200c-4f41-f85a-08dc1dbaa81c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	zGmV+A4bdVCcAF6Kx2pSWCu56Qlpw8xqjGdRRYgIPygGNiNdwINuj28Etx534UXe03jueJqDcx+JV46fsmDeoRxyDDNvP6EtXtEGRw/7fKr1IIKZzQS8uZD2WQfB5dU+FUN95W9m8R2UrMGUzWIXJzWvMz2ZhfW894A4wBGGY/HdEr4nAiv7JdJB37glv0UuSU303qOl5CBfa1KMWmfoZcVmwHdKMZn8yQRbRDzBUtkLrhGgHhIEwmx3wpDiqRMbDAm3ULTZPzZ9vvxeIKDseicWkSqtJsx8NbXGOQT6F+TJe54QJuV+4CwN3WeWq72uIDBcpkKpW32lvvynSEOhbcPLLGBGrmitzTIo8/cyAGBonO5ZrBLN2G+aZDBBeDC7TY0aCznb07+LM4JZzZPKhN3j6U2xcf2C87lbZmm0GXcjxJMsbjhptqRyUaM17adW1BTFnWZpbE52qgXRXgKKMH4bo2DoArOlS0U+UjNsxfNw4MN2Qdbyju4/MeLFEShP2vTISc60krsbTPPEezvZge7/fbNLcRRcWp1M/T9DI94YXqSHCyGpheO7dZzCOhEx00L0/1k2EcRxhHuBbZEIWgdYtE59ZTXl5ngtHssDvV9tlvGqRd7oOG9oLs7TL4XdWFHONFkrOyx6LOTUAFKe4A==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(346002)(366004)(376002)(396003)(136003)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(5660300002)(6506007)(6666004)(52116002)(86362001)(41300700001)(38100700002)(33716001)(83380400001)(6916009)(8936002)(66476007)(4326008)(478600001)(26005)(6512007)(2906002)(66946007)(6486002)(316002)(7416002)(9686003)(66556008)(8676002)(38350700005)(67856001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?kivEgaLCE/VjxEnwqFJbv1jTUXm1uv5JOK0HKkdM28i7yIDpqhh5+jay1Krd?=
+ =?us-ascii?Q?j0VjS1qiuR2kVz0PfwIPB96/J9ytST5sl+A+Kvh9iT2w89RJwtT64vZXEj7u?=
+ =?us-ascii?Q?oRuv9l2Vdv0wzIaXlzVGnPDGIgo0+LwkKmUA64MgyoiwyyBiQniafHonxwPt?=
+ =?us-ascii?Q?W/aQRucj6a/i13L9TYK8tlla79CkUbxTM01mZHlvoY36AYzQBgl1rOW7217Q?=
+ =?us-ascii?Q?7goIfAiO5FkqRQyQ7xzuTclZCcMW7gP1Vnxbo3NpAW0+58D+M9wrezQnsxlw?=
+ =?us-ascii?Q?6O19k6dki26v+/1rh7JNX9tyTGhuEMuuLX8VmfvtOhVxt9Ch8WO51qlDtfEX?=
+ =?us-ascii?Q?OVoubpYTQW+CMDoar5HM/m6+mMhdKP+HZW/TyCfU6umpkxqCcykq5vyyfCrK?=
+ =?us-ascii?Q?hkV+he+IIz988X+1YzEGGqT4xHLlvBL8P2V1KhLmogE/xg4DinunAgi8iZ5Q?=
+ =?us-ascii?Q?r1l+6VhSxgF+lcMXWiVNxBkum9MKNJNpu3ewXQpXzjK6+F63Q5yRZDaz4In+?=
+ =?us-ascii?Q?F3Ba1xoZ/kHgcJhiYJUfy2J/ylT/G6NHaahf1yGb+qp4hN23MHBLJroocfp9?=
+ =?us-ascii?Q?p1ahm31nVeNNDOm0uGOIMPsvP36/vx2V8GHns8Mtx/v4S6BZ0NrzKRPVthDD?=
+ =?us-ascii?Q?P6mwkqoQAY05+2DfmEcREvUreLjV8incxIURmhbzzgmJL6L9Wp6jZwVQnbn9?=
+ =?us-ascii?Q?r7AY0Cr23vcOIP+KUwhfW7e37ouUpb6fiqd9Ll1Tx/AJuEZT/0AoDfPLtRTq?=
+ =?us-ascii?Q?MbYJE9egPyuf8/UmTxvx3H+wT33GHkeqXc+BdPb8gWILfGhwwX6QMxCYdXOT?=
+ =?us-ascii?Q?0Ug3jmqvBTvILhRxM6sMb98wZHD4Gs39QBz+55d4g9V0PFPpHW23BFEyxOGd?=
+ =?us-ascii?Q?avbxTX6sNkgbdNR7QgVa2bABsp5k691vutrrPWSVTVuCB9ahh8FvV7Ov4SWW?=
+ =?us-ascii?Q?KwFXm5ciH5jJ9WB7rSnZsVp6nXcaOJ5nDJrePr0psSMRW7OoK+cJsoKkQW/U?=
+ =?us-ascii?Q?GScb9AYrNWnURN0Ru+XoZBKoGjNPuAX1vJ/DmQhhczCllwxbRqdcYnz8dc06?=
+ =?us-ascii?Q?+/fmYDewqfrxscbUJdpE6no/MVVr5I4Ia8+2/EfBDowAWr/Hzh6XpKwyGbzy?=
+ =?us-ascii?Q?RR8LzdCE8DWDdSNYwBN+8btzs/t796PlDYYvq1OrW4XYTKqiEOT7+Fw0mzII?=
+ =?us-ascii?Q?jKrPhqxqE1Ansl9sEEokK0yeivv2gaoSRNsTcyN6jtk8FZoOViD/TCsZnlha?=
+ =?us-ascii?Q?Byavlk4Mcr0E+bagAFvTsW3LCD1KfK/1uFthzI296KM8EB37UTqgKiyLufT8?=
+ =?us-ascii?Q?f8fzzj+TAC+b92fYM57xM89BpsIPurDJarUu/jWlxrYFveRsjHNxpGv3Tesw?=
+ =?us-ascii?Q?wPsIrjPv35tN7o6LEiYDcpNewrv2auGJICBChA/e/xX/JKrXojGg9Gj7Xdrw?=
+ =?us-ascii?Q?BsDYLTW3zvQYmbycUfCvgVdaSoS66U2wVX+lLxDA1mVBXKnisJK9tjmCjTQA?=
+ =?us-ascii?Q?LwD/rQNmXBbO9FezIu4FFyoeO1n+TA2EZLgDXZt19tsHw3epJd4BXXMxdvEz?=
+ =?us-ascii?Q?KDGe/7oGmAT8Tz2Hv9LuPaQxw/jFrZm5EAYOVXtJ?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8605673-200c-4f41-f85a-08dc1dbaa81c
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jan 2024 15:31:10.2703
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: I7qhRlEYX3cHZxoB6CF5udOF4mDowYw1IwE2ZH5NHLieANJr97WxArsgA5bZSttVAX27b4mzCQ8OGK8SsImoxw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB10033
 
-KTD2801 is a LED backlight driver IC found in samsung,coreprimevelte.
-The brightness can be set using PWM or the ExpressWire protocol. Add
-support for the KTD2801.
+On Fri, Jan 19, 2024 at 12:11:06PM -0500, Frank Li wrote:
+> first 6 patches use drvdata: flags to simplify some switch-case code.
+> Improve maintaince and easy to read code.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
----
- MAINTAINERS                                 |   6 ++
- drivers/video/backlight/Kconfig             |   7 ++
- drivers/video/backlight/Makefile            |   1 +
- drivers/video/backlight/ktd2801-backlight.c | 128 ++++++++++++++++++++++++++++
- 4 files changed, 142 insertions(+)
+@lpieralisi:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e1c83e0e837a..01cd1a460907 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12052,6 +12052,12 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/leds/backlight/kinetic,ktd253.yaml
- F:	drivers/video/backlight/ktd253-backlight.c
- 
-+KTD2801 BACKLIGHT DRIVER
-+M:	Duje Mihanović <duje.mihanovic@skole.hr>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/leds/backlight/kinetic,ktd2801.yaml
-+F:	drivers/video/backlight/ktd2801-backlight.c
-+
- KTEST
- M:	Steven Rostedt <rostedt@goodmis.org>
- M:	John Hawley <warthog9@eaglescrag.net>
-diff --git a/drivers/video/backlight/Kconfig b/drivers/video/backlight/Kconfig
-index ea2d0d69bd8c..230bca07b09d 100644
---- a/drivers/video/backlight/Kconfig
-+++ b/drivers/video/backlight/Kconfig
-@@ -183,6 +183,13 @@ config BACKLIGHT_KTD253
- 	  which is a 1-wire GPIO-controlled backlight found in some mobile
- 	  phones.
- 
-+config BACKLIGHT_KTD2801
-+	tristate "Backlight Driver for Kinetic KTD2801"
-+	select LEDS_EXPRESSWIRE
-+	help
-+	  Say Y to enable the backlight driver for the Kinetic KTD2801 1-wire
-+	  GPIO-controlled backlight found in Samsung Galaxy Core Prime VE LTE.
-+
- config BACKLIGHT_KTZ8866
- 	tristate "Backlight Driver for Kinetic KTZ8866"
- 	depends on I2C
-diff --git a/drivers/video/backlight/Makefile b/drivers/video/backlight/Makefile
-index 06966cb20459..8d2cb252042d 100644
---- a/drivers/video/backlight/Makefile
-+++ b/drivers/video/backlight/Makefile
-@@ -34,6 +34,7 @@ obj-$(CONFIG_BACKLIGHT_HP680)		+= hp680_bl.o
- obj-$(CONFIG_BACKLIGHT_HP700)		+= jornada720_bl.o
- obj-$(CONFIG_BACKLIGHT_IPAQ_MICRO)	+= ipaq_micro_bl.o
- obj-$(CONFIG_BACKLIGHT_KTD253)		+= ktd253-backlight.o
-+obj-$(CONFIG_BACKLIGHT_KTD2801)		+= ktd2801-backlight.o
- obj-$(CONFIG_BACKLIGHT_KTZ8866)		+= ktz8866.o
- obj-$(CONFIG_BACKLIGHT_LM3533)		+= lm3533_bl.o
- obj-$(CONFIG_BACKLIGHT_LM3630A)		+= lm3630a_bl.o
-diff --git a/drivers/video/backlight/ktd2801-backlight.c b/drivers/video/backlight/ktd2801-backlight.c
-new file mode 100644
-index 000000000000..c020acff40f1
---- /dev/null
-+++ b/drivers/video/backlight/ktd2801-backlight.c
-@@ -0,0 +1,128 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Datasheet:
-+ * https://www.kinet-ic.com/uploads/web/KTD2801/KTD2801-04b.pdf
-+ */
-+#include <linux/backlight.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/leds-expresswire.h>
-+#include <linux/platform_device.h>
-+#include <linux/property.h>
-+
-+#define KTD2801_DEFAULT_BRIGHTNESS	100
-+#define KTD2801_MAX_BRIGHTNESS		255
-+
-+/* These values have been extracted from Samsung's driver. */
-+const struct expresswire_timing ktd2801_timing = {
-+	.poweroff_us = 2600,
-+	.detect_delay_us = 150,
-+	.detect_us = 270,
-+	.data_start_us = 5,
-+	.short_bitset_us = 5,
-+	.long_bitset_us = 15,
-+	.end_of_data_low_us = 10,
-+	.end_of_data_high_us = 350
-+};
-+
-+struct ktd2801_backlight {
-+	struct expresswire_common_props props;
-+	struct backlight_device *bd;
-+	bool was_on;
-+};
-+
-+static int ktd2801_update_status(struct backlight_device *bd)
-+{
-+	struct ktd2801_backlight *ktd2801 = bl_get_data(bd);
-+	u8 brightness = (u8) backlight_get_brightness(bd);
-+
-+	if (backlight_is_blank(bd)) {
-+		expresswire_power_off(&ktd2801->props);
-+		ktd2801->was_on = false;
-+		return 0;
-+	}
-+
-+	if (!ktd2801->was_on) {
-+		expresswire_enable(&ktd2801->props);
-+		ktd2801->was_on = true;
-+	}
-+
-+	expresswire_write_u8(&ktd2801->props, brightness);
-+
-+	return 0;
-+}
-+
-+static const struct backlight_ops ktd2801_backlight_ops = {
-+	.update_status = ktd2801_update_status,
-+};
-+
-+static int ktd2801_backlight_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct backlight_device *bd;
-+	struct ktd2801_backlight *ktd2801;
-+	u32 brightness, max_brightness;
-+	int ret;
-+
-+	ktd2801 = devm_kzalloc(dev, sizeof(*ktd2801), GFP_KERNEL);
-+	if (!ktd2801)
-+		return -ENOMEM;
-+	ktd2801->was_on = true;
-+	ktd2801->props.timing = ktd2801_timing;
-+
-+	ret = device_property_read_u32(dev, "max-brightness", &max_brightness);
-+	if (ret)
-+		max_brightness = KTD2801_MAX_BRIGHTNESS;
-+	if (max_brightness > KTD2801_MAX_BRIGHTNESS) {
-+		dev_err(dev, "illegal max brightness specified\n");
-+		max_brightness = KTD2801_MAX_BRIGHTNESS;
-+	}
-+
-+	ret = device_property_read_u32(dev, "default-brightness", &brightness);
-+	if (ret)
-+		brightness = KTD2801_DEFAULT_BRIGHTNESS;
-+	if (brightness > max_brightness) {
-+		dev_err(dev, "default brightness exceeds max\n");
-+		brightness = max_brightness;
-+	}
-+
-+	ktd2801->props.ctrl_gpio = devm_gpiod_get(dev, "ctrl", GPIOD_OUT_HIGH);
-+	if (IS_ERR(ktd2801->props.ctrl_gpio))
-+		return dev_err_probe(dev, PTR_ERR(ktd2801->props.ctrl_gpio),
-+				"failed to get backlight GPIO");
-+	gpiod_set_consumer_name(ktd2801->props.ctrl_gpio, dev_name(dev));
-+
-+	bd = devm_backlight_device_register(dev, dev_name(dev), dev, ktd2801,
-+			&ktd2801_backlight_ops, NULL);
-+	if (IS_ERR(bd))
-+		return dev_err_probe(dev, PTR_ERR(bd),
-+				"failed to register backlight");
-+
-+	bd->props.max_brightness = max_brightness;
-+	bd->props.brightness = brightness;
-+
-+	ktd2801->bd = bd;
-+	platform_set_drvdata(pdev, bd);
-+	backlight_update_status(bd);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id ktd2801_of_match[] = {
-+	{ .compatible = "kinetic,ktd2801" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, ktd2801_of_match);
-+
-+static struct platform_driver ktd2801_backlight_driver = {
-+	.driver = {
-+		.name = "ktd2801-backlight",
-+		.of_match_table = ktd2801_of_match,
-+	},
-+	.probe = ktd2801_backlight_probe,
-+};
-+module_platform_driver(ktd2801_backlight_driver);
-+
-+MODULE_IMPORT_NS(EXPRESSWIRE);
-+MODULE_AUTHOR("Duje Mihanović <duje.mihanovic@skole.hr>");
-+MODULE_DESCRIPTION("Kinetic KTD2801 Backlight Driver");
-+MODULE_LICENSE("GPL");
+	Could you please pick up these patches? All already reviewed by
+Mani. dt-binding part acked by rob/krzysztof. Add it only impact freecale
+imx platform.
 
--- 
-2.43.0
+Frank
 
-
+> 
+> Then add imx95 basic pci host function.
+> 
+> follow two patch do endpoint code clean up.
+> Then add imx95 basic endpont function.
+> 
+> Compared with v2, added EP function support and some fixes,  please change
+> notes at each patches.
+> 
+> dt-binding pass pcie node:
+> 
+> pcie0: pcie@4c300000 {
+>                         compatible = "fsl,imx95-pcie";
+>                         reg = <0 0x4c300000 0 0x40000>,
+>                                 <0 0x4c360000 0 0x10000>,
+>                                 <0 0x4c340000 0 0x20000>,
+>                                 <0 0x60100000 0 0xfe00000>;
+>                         reg-names = "dbi", "atu", "app", "config";
+>                         #address-cells = <3>;
+>                         #size-cells = <2>;
+>                         device_type = "pci";
+>                         linux,pci-domain = <0>;
+>                         bus-range = <0x00 0xff>;
+>                         ranges = <0x81000000 0x0 0x00000000 0x0 0x6ff00000 0 0x00100000>,
+>                                  <0x82000000 0x0 0x10000000 0x9 0x10000000 0 0x10000000>;
+>                         num-lanes = <1>;
+>                         num-viewport = <8>;
+>                         interrupts = <GIC_SPI 310 IRQ_TYPE_LEVEL_HIGH>;
+>                         interrupt-names = "msi";
+>                         #interrupt-cells = <1>;
+>                         interrupt-map-mask = <0 0 0 0x7>;
+>                         interrupt-map = <0 0 0 1 &gic 0 0 GIC_SPI 309 IRQ_TYPE_LEVEL_HIGH>,
+>                                         <0 0 0 2 &gic 0 0 GIC_SPI 308 IRQ_TYPE_LEVEL_HIGH>,
+>                                         <0 0 0 3 &gic 0 0 GIC_SPI 307 IRQ_TYPE_LEVEL_HIGH>,
+>                                         <0 0 0 4 &gic 0 0 GIC_SPI 306 IRQ_TYPE_LEVEL_HIGH>;
+>                         fsl,max-link-speed = <3>;
+>                         clocks = <&scmi_clk IMX95_CLK_HSIO>,
+>                                  <&scmi_clk IMX95_CLK_HSIOPLL>,
+>                                  <&scmi_clk IMX95_CLK_HSIOPLL_VCO>,
+>                                  <&scmi_clk IMX95_CLK_HSIOPCIEAUX>;
+>                         clock-names = "pcie", "pcie_bus", "pcie_phy", "pcie_aux";
+>                         assigned-clocks =<&scmi_clk IMX95_CLK_HSIOPLL_VCO>,
+>                                          <&scmi_clk IMX95_CLK_HSIOPLL>,
+>                                          <&scmi_clk IMX95_CLK_HSIOPCIEAUX>;
+>                         assigned-clock-rates = <3600000000>, <100000000>, <10000000>;
+>                         assigned-clock-parents = <0>, <0>,
+>                                                  <&scmi_clk IMX95_CLK_SYSPLL1_PFD1_DIV2>;
+>                         power-domains = <&scmi_devpd IMX95_PD_HSIO_TOP>;
+>                         /* 0x30~0x37 stream id for pci0 */
+>                         /*
+>                          * iommu-map = <0x000 &apps_smmu 0x30 0x1>,
+>                          * <0x100 &apps_smmu 0x31 0x1>;
+>                          */
+>                         status = "disabled";
+>                 };
+> 
+> pcie1: pcie-ep@4c380000 {
+>                         compatible = "fsl,imx95-pcie-ep";
+>                         reg = <0 0x4c380000 0 0x20000>,
+>                               <0 0x4c3e0000 0 0x1000>,
+>                               <0 0x4c3a0000 0 0x1000>,
+>                               <0 0x4c3c0000 0 0x10000>,
+>                               <0 0x4c3f0000 0 0x10000>,
+>                               <0xa 0 1 0>;
+>                         reg-names = "dbi", "atu", "dbi2", "app", "dma", "addr_space";
+>                         interrupts = <GIC_SPI 317 IRQ_TYPE_LEVEL_HIGH>;
+>                         interrupt-names = "dma";
+>                         fsl,max-link-speed = <3>;
+>                         clocks = <&scmi_clk IMX95_CLK_HSIO>,
+>                                  <&scmi_clk IMX95_CLK_HSIOPLL>,
+>                                  <&scmi_clk IMX95_CLK_HSIOPLL_VCO>,
+>                                  <&scmi_clk IMX95_CLK_HSIOPCIEAUX>;
+>                         clock-names = "pcie", "pcie_bus", "pcie_phy", "pcie_aux";
+>                         assigned-clocks =<&scmi_clk IMX95_CLK_HSIOPLL_VCO>,
+>                                          <&scmi_clk IMX95_CLK_HSIOPLL>,
+>                                          <&scmi_clk IMX95_CLK_HSIOPCIEAUX>;
+>                         assigned-clock-rates = <3600000000>, <100000000>, <10000000>;
+>                         assigned-clock-parents = <0>, <0>,
+>                                                  <&scmi_clk IMX95_CLK_SYSPLL1_PFD1_DIV2>;
+>                         power-domains = <&scmi_devpd IMX95_PD_HSIO_TOP>;
+>                         status = "disabled";
+>                 };
+> 
+> Frank Li (15):
+>   PCI: imx6: Simplify clock handling by using clk_bulk*() function
+>   PCI: imx6: Simplify phy handling by using IMX6_PCIE_FLAG_HAS_PHYDRV
+>   PCI: imx6: Simplify reset handling by using by using
+>     *_FLAG_HAS_*_RESET
+>   dt-bindings: imx6q-pcie: Add linux,pci-domain as required for iMX8MQ
+>   PCI: imx6: Using "linux,pci-domain" as slot ID
+>   PCI: imx6: Simplify ltssm_enable() by using ltssm_off and ltssm_mask
+>   PCI: imx6: Simplify configure_type() by using mode_off and mode_mask
+>   PCI: imx6: Simplify switch-case logic by involve init_phy callback
+>   dt-bindings: imx6q-pcie: Clean up irrationality clocks check
+>   dt-bindings: imx6q-pcie: Restruct reg and reg-name
+>   PCI: imx6: Add iMX95 PCIe Root Complex support
+>   PCI: imx6: Clean up get addr_space code
+>   PCI: imx6: Add epc_features in imx6_pcie_drvdata
+>   dt-bindings: imx6q-pcie: Add iMX95 pcie endpoint compatible string
+>   PCI: imx6: Add iMX95 Endpoint (EP) support
+> 
+> Richard Zhu (1):
+>   dt-bindings: imx6q-pcie: Add imx95 pcie compatible string
+> 
+>  .../bindings/pci/fsl,imx6q-pcie-common.yaml   |  28 +-
+>  .../bindings/pci/fsl,imx6q-pcie-ep.yaml       |  57 +-
+>  .../bindings/pci/fsl,imx6q-pcie.yaml          |  49 +-
+>  drivers/pci/controller/dwc/pci-imx6.c         | 640 ++++++++++--------
+>  4 files changed, 462 insertions(+), 312 deletions(-)
+> 
+> -- 
+> 2.34.1
+> 
 
