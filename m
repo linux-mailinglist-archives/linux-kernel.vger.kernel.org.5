@@ -1,153 +1,170 @@
-Return-Path: <linux-kernel+bounces-38588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92C7483C2AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:40:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5414F83C2AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:40:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C52EB1C224E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:40:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7931A1C21BC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:40:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34E7C481A8;
-	Thu, 25 Jan 2024 12:40:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C39BE45C0E;
+	Thu, 25 Jan 2024 12:40:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="n+6cKDfQ"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="tSwDac9F"
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEE2D37156
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 12:39:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9193D321AF
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 12:40:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706186399; cv=none; b=Zr+aQ8T+iItwG7EW5d8Hn5u2V9KkKf4oaiPplHAqodUXe253lyiM2okzjHZc4dZe0kuyVUY1mrkSAcPy0VEZynWMI/vI4VE64IwYX60LJRau6VQ0Fj/k1Bn3LVadOyHf9kwP27h4j4T3qddN9vwYFjRuYnq38JXwqY1pK+8gwDw=
+	t=1706186438; cv=none; b=C85syoozS6Q1dKI7wM60OmRkCAb1Un9zl/W6VYCKSZcmYJ9/58rIjz2K0Mvff5Jk4M2NAj2MAq56T64Efe4X2O9vvJW4Earyk18SzJgHGKvGIPNHR9aXLVtrDSxRi+YGbVI/nV2jNjFo/IM/F6yk+kA3R9gYGzlGcHuba5Jvwko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706186399; c=relaxed/simple;
-	bh=3ZuFOmti85kuqvIz9g1ji4HzpXornAinhau/HWMF6mM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=s1WB5FvVgq1wtBAf1+/uRvSo2An1xURAE3iDsOLpKBPEULMwSX4RKaFb/MpX0UViPasvgYp9crXBhxvSvwWBrhgSGr8z5wJ1BA7CjR75RiKDp2ng2Ym6W73cbjPLShXJOclKtv3IqpGDfHKGFRiJ5FeMSMl+MDuW0J8VhYjGwGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=n+6cKDfQ; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5100c3f7df1so3467523e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 04:39:57 -0800 (PST)
+	s=arc-20240116; t=1706186438; c=relaxed/simple;
+	bh=hM2iHfDe3tq4q5QhAuG5llL9QvEutMz9ZFyDgZKy5J0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DeDedp9HGbMxpTZb2xUIoRql4GRGEyd2c3V1Tm4gzBpZyQzB9fIFEicN2YJTrlLHrevjjFCYzSTpAEdXMrZvjZU5nvOiqN0b/b+yUQR79daMvGagAj7SzirNrwuZaeIjATPLds32MnOGXNDAmglljyFCqumsd4Ez6mNj/EZjjPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tSwDac9F; arc=none smtp.client-ip=209.85.222.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-7d2e1832d4dso1535379241.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 04:40:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706186396; x=1706791196; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aI26vRplbW/GhCDXdm3Ni3HuWgNba2vGputrnlHeaAI=;
-        b=n+6cKDfQh73UBSwCOW/4Ic3z0CNvfGr49V9TYw3atazwaTpILOtoNWk2UqZRiAaROD
-         iruiZpECBVnZkKhKd8iFmonTr/KAvzrLoN622qblwjxFMKgJtVY+ZOfInJVHe+Gr1Y9C
-         dZqlGe1nCOSBQx3e36u3QwSQ7XjOQQx8t6k12ZCIL1CWyCekXSSXfmF91Yu5TNlzE1pV
-         3IrvnQ7GGwBsMumn8vs9RZO8AMDUPXsH9A4h6jw5yAc5yARNLDYQuaful2J6nx+rUIHY
-         L/efMGzP2FOj3XSAxIcipBY4fTcqVQ9EJz39Hj1IdmOJAuQqaMMxwWrKh19gwr2w3AD+
-         Xdrg==
+        d=google.com; s=20230601; t=1706186435; x=1706791235; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZNi4MiQOUNCak4EWaCvvPwFzUIE3TXQJ5X1CGwYGEDU=;
+        b=tSwDac9F+Gq39agFJa7n4+dKGJ+3I5KVCjk23tNLJug/yMgk2yAfngenoG1KSddIjE
+         Q2k2ozYntrI0wxqrdpc2qHazuP/spOIrv14zBe9P9VTDfUCwuLjTrd36rigrqKzK8/Kk
+         kW3DfBU+oBb5VpCpM4go7nFE3eYhYLWC4Ug+H13I6eMsD5ql3Dzp3L7jJvZsFSlTK9hf
+         //anbCbNcdjKmQ03lmv1vne2w/5Ev4PsS2lPbgu79ayvZ2zDyw9JqV5OKEZE38cv6OBs
+         hYw2R95rtsaXLwGOJvoG11uBOWdBGfodK71LePGHQZUWZ+lYX41E+QpsiLqtyYkcrdWB
+         DjYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706186396; x=1706791196;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aI26vRplbW/GhCDXdm3Ni3HuWgNba2vGputrnlHeaAI=;
-        b=Z2p/38K33FYgxp8GuEiPNY0ZwwE9PtbCsspXdHwUntG3XvF5E4pWu3nfQCCfqw9zJV
-         pKJnLW10autcqlo9Sl1gKjw3EiiAWmit0pxD20XawhhdOHhOAEX4LxEjGhlz3HhNdzcH
-         a5fRyu/1pVHDHMaVVRibV59/QAipLslSkPoq/8YRnjIsHhVmBv/n1nWJJldfpSjoGxaw
-         ZnqyrAMUNtXxVlzmcH6NLbSksDzy7NP8PCNoZHYarY6FT1b9dFqXMbu4YAOcSbhk+VyB
-         o+xhSpoLgG2gD1RHghB0VkcYC624iIqYlpu5G9J4sPdImA2McSNr3CrlCwEZPScyxG4Z
-         vLyg==
-X-Gm-Message-State: AOJu0Yyx5fC5qVWxQk6jj4MB6edPgFA3jNxKnqcj/GttNk9XWeHjDO2L
-	Wfvu7mD6+6SlwEeHUbMtRJvBEwz490HKwFH8Ae64LYat5kD485b4j4wGiLiCjrw=
-X-Google-Smtp-Source: AGHT+IEtl+VtecbeiDpAaefQFqkqQ+VRih1/29/b8Qi4uWko5ioYhZPzqdmV6rPiydKp74gHaVWd6Q==
-X-Received: by 2002:a05:6512:3a8f:b0:50e:7dd5:e5f0 with SMTP id q15-20020a0565123a8f00b0050e7dd5e5f0mr1035333lfu.12.1706186395866;
-        Thu, 25 Jan 2024 04:39:55 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id t16-20020a192d50000000b0050ea9654654sm2930763lft.176.2024.01.25.04.39.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 04:39:55 -0800 (PST)
-Message-ID: <9f9a1f5f-2104-4a5c-a837-cd8d18e173d6@linaro.org>
-Date: Thu, 25 Jan 2024 13:39:51 +0100
+        d=1e100.net; s=20230601; t=1706186435; x=1706791235;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZNi4MiQOUNCak4EWaCvvPwFzUIE3TXQJ5X1CGwYGEDU=;
+        b=hTnqU9t6L6EnQAOjH5SsD+RxwpY29CKlEXiQaKqSqvP3dqcCr3XjKcBQyeeGKTI+te
+         yEO4E2US1JhXXrBA6z4Ww8rBqRbbNxWSZ1S2ZvJaJehNiB5/MTsDiJAYUvqeBY6C30lH
+         GkAV/o7NBCod9W32BFrtz3YgMNYXinsD72nr4JM5xctGEJb2k0ZhBTV+JCtbGBWtsrgG
+         EA6g+5wn4sqCpoyiQng2USy+fQsSjYIc0j24tfsZb6vmbWSrOpKVRZEz12zxffMu6gi2
+         lzTFHWAi4qsI2k37kzRWAuS1fTB0uuKtPxSYef1BFu4YOm7si5raDno9fM7zFZ0a+HM0
+         /bkQ==
+X-Gm-Message-State: AOJu0Yxc6D3d2Zmr5pWmXZMV2PLNOYP684d8Fx3q2LMc2H6Qw/w/9bEV
+	3lujXL/liUO2TfPagPavjfkLv0QbRgkfhro+kRM1ygaNN4P2dRW8SQVLglGtu4gs76b6/HCXy+m
+	ZUgu+f569bIjtnbaIRImcFIgYQWS/dgz8l0Tv
+X-Google-Smtp-Source: AGHT+IH1C55pZ2RrYSAI4VVBDqlGGHUKM5ynO7yFHVq9bA/uLjts2Z1tsbUOhk0J8KAoOccE1G3W7HnpyeekB5BCP+Q=
+X-Received: by 2002:a1f:c344:0:b0:4bd:3433:aac with SMTP id
+ t65-20020a1fc344000000b004bd34330aacmr271077vkf.15.1706186435236; Thu, 25 Jan
+ 2024 04:40:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] riscv: dts: sophgo: add watchdog dt node for CV1800
-Content-Language: en-US
-To: AnnanLiu <annan.liu.xdu@outlook.com>, chao.wei@sophgo.com,
- unicorn_wang@outlook.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
- devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <DM6PR20MB2316366FC9ADCBC7B6E9C289AB7A2@DM6PR20MB2316.namprd20.prod.outlook.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <DM6PR20MB2316366FC9ADCBC7B6E9C289AB7A2@DM6PR20MB2316.namprd20.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240124-alice-mm-v1-2-d1abcec83c44@google.com> <20240124234626.6435-1-kernel@valentinobst.de>
+In-Reply-To: <20240124234626.6435-1-kernel@valentinobst.de>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Thu, 25 Jan 2024 13:40:24 +0100
+Message-ID: <CAH5fLggBH4POm501a_-Yivvnu0A-rFw8nw87iwUQw2361=pq4A@mail.gmail.com>
+Subject: Re: [PATCH 2/3] rust: add typed accessors for userspace pointers
+To: Valentin Obst <kernel@valentinobst.de>
+Cc: a.hindborg@samsung.com, akpm@linux-foundation.org, alex.gaynor@gmail.com, 
+	arnd@arndb.de, arve@android.com, benno.lossin@proton.me, 
+	bjorn3_gh@protonmail.com, boqun.feng@gmail.com, brauner@kernel.org, 
+	cmllamas@google.com, gary@garyguo.net, gregkh@linuxfoundation.org, 
+	joel@joelfernandes.org, keescook@chromium.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, maco@android.com, ojeda@kernel.org, 
+	rust-for-linux@vger.kernel.org, surenb@google.com, tkjos@android.com, 
+	viro@zeniv.linux.org.uk, wedsonaf@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 25/01/2024 10:46, AnnanLiu wrote:
-> +
-> +		pclk: pclk {
-> +			#clock-cells = <0>;
-> +			compatible = "fixed-clock";
-> +			clock-frequency = <25000000>;
+On Thu, Jan 25, 2024 at 12:47=E2=80=AFAM Valentin Obst <kernel@valentinobst=
+de> wrote:
+>
+> > +/*
+>
+> nit: this would be the first comment in the kernel crate to use this
+> style, not sure if there is a rule about that though. Maybe still
+> preferable to keep it consistent.
+>
+> > + * These methods skip the `check_object_size` check that `copy_[to|fro=
+m]_user`
+> > + * normally performs.
+>
+> nit: They skip the (stronger, and also present without usercopy
+> hardening) `check_copy_size` wrapping that one.
 
-It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check W=1` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
+The only difference between check_object_size and check_copy_size is
+the extra check with __builtin_object_size, but that doesn't work
+across the C/Rust boundary, and Rust doesn't have a direct equivalent.
 
-Also, why do you describe internal clock as stub?
+> >                        In C, these checks are skipped whenever the leng=
+th is a
+> > + * compile-time constant, since when that is the case, the kernel poin=
+ter
+> > + * usually points at a local variable that is being initialized
+>
+> Question: I thought that this exemption is about dynamic size
+> calculations being more susceptible to bugs than hard-coded ones. Does
+> someone recall the original rationale for that?
+>
+> >                                                                  and th=
+e kernel
+> > + * pointer is trivially non-dangling.
+>
+> As far as I know the hardened usercopy checks are not meant to catch
+> UAFs but rather about OOB accesses (and some info leaks). For example,
+> if the object is on the heap they check if the copy size exceeds the
+> allocation size, or, if the object is on the stack, they verify the copy
+> size does not leave the stack frame.
 
-Best regards,
-Krzysztof
+Right, I can reword to say OOB instead of UAF.
 
+> > + *
+> > + * These helpers serve the same purpose in Rust. Whenever the length i=
+s known at
+> > + * compile-time, we call this helper to skip the check.
+> > + */
+> > +unsigned long rust_helper_copy_from_user_unsafe_skip_check_object_size=
+(void *to, const void __user *from, unsigned long n)
+> > +{
+> > +     unsigned long res;
+> > +
+> > +     might_fault();
+> > +     instrument_copy_from_user_before(to, from, n);
+> > +     if (should_fail_usercopy())
+> > +             return n;
+> > +     res =3D raw_copy_from_user(to, from, n);
+> > +     instrument_copy_from_user_after(to, from, n, res);
+> > +     return res;
+> > +}
+> > +EXPORT_SYMBOL_GPL(rust_helper_copy_from_user_unsafe_skip_check_object_=
+size);
+> > +
+> > +unsigned long rust_helper_copy_to_user_unsafe_skip_check_object_size(v=
+oid __user *to, const void *from, unsigned long n)
+> > +{
+> > +     might_fault();
+> > +     if (should_fail_usercopy())
+> > +             return n;
+> > +     instrument_copy_to_user(to, from, n);
+> > +     return raw_copy_to_user(to, from, n);
+> > +}
+> > +EXPORT_SYMBOL_GPL(rust_helper_copy_to_user_unsafe_skip_check_object_si=
+ze);
+>
+> Could those be wrapping `_copy_[to|from]_user` instead?
+
+Yeah maybe, see the other thread with Arnd Bergmann.
+
+Alice
 
