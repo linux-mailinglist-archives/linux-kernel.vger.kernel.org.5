@@ -1,39 +1,72 @@
-Return-Path: <linux-kernel+bounces-38248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54A3883BD10
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:19:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E1F583BD13
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:20:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 877DE1C23C64
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:19:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F90C1F2B484
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:20:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FBE31BC3F;
-	Thu, 25 Jan 2024 09:19:25 +0000 (UTC)
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 500321BC5B;
+	Thu, 25 Jan 2024 09:19:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sE4IMfbI"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79A5F1BC32
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:19:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D43901BC3D
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:19:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706174365; cv=none; b=aIcfr2eIlhLH2fP2Q4tINrDimsMlN1OF6G+H0QaX4qf/F0awUxToo+wPUMh1+BEAoac5n8ZWC5aZHN+jvSaNGU8SJjExz1WsjahaHDmhrtcuMfELop1Ya+xnKRZ7by7BaxNTjxioJZnqCtyQ4TwyIwU1arSWjw6UK6Y8+BQuYAs=
+	t=1706174391; cv=none; b=YTuN7lvAiQka4LoUuKQdFvCG06Rd1KMTmz4KnBUdC3Z9ejrSbZQp9YEN9944mpQmY05Iq6QJp+2e9CvMbhKKOzEEiiqqx97/mDmYJzOVMIAakbegKJ/+OLuTe5hkMnu7BbSVARJyzIcMC8BodsyFHWsO8auc7ynBLsvDLZKlOeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706174365; c=relaxed/simple;
-	bh=ajceh1Vt9XpWQUJnO01TtgADI5oINn2cCkqX/1zC4Gs=;
+	s=arc-20240116; t=1706174391; c=relaxed/simple;
+	bh=hY4QKISaa+b5z3JLeMajVJ/VnYmdjxa6qn7nKSvIo14=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NAFxsB0eCuntIN4waXCTx221bCKKWisqQ0U5wNrSmS+LELqEGP8RPJWSC20ae/En9X/2Q+ziD82W4l2kF7zfmTZ+v7Z1s7zY+cMRvhkxt72QiEb+U3rhdo/t9hFiqzmeRZbC4mqkS7gdq9iwtI0hsSV15/dmkrVdYB3MizKEcYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R461e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0W.JuoKJ_1706174358;
-Received: from 30.178.67.122(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W.JuoKJ_1706174358)
-          by smtp.aliyun-inc.com;
-          Thu, 25 Jan 2024 17:19:19 +0800
-Message-ID: <76a6cf81-fdf6-4583-aa4d-1e6a899bbb58@linux.alibaba.com>
-Date: Thu, 25 Jan 2024 17:19:18 +0800
+	 In-Reply-To:Content-Type; b=AhSRqeJtyXQL0YRtuXoeV4pojGgEbTk95Q7QKxXdHv0+rrVSNSHZte6FOvERIdwM2TcSpdPqkpoiuSpf2r3WMAfzcMxrcY80wO7+lg4dKoQZwySC9yQSzPbLv6H+QSTUBzGBa6jjlKPGFHINcugkxVM6248GijgfW+nOYo0sUEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sE4IMfbI; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3392291b21bso5462453f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 01:19:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706174388; x=1706779188; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4X+3bRBtP42tNMXuYBkK8DKxTBN/GwDVxxSGraNwbGQ=;
+        b=sE4IMfbIpRo00gYefnbsQR0nPmgkLSLGkh/4XXeZDudhMd41NoKDs7p6OluN86qAGh
+         QGpTGPQbi5TYrpNjObhcVhZogtB8Uy3M8MD7Qcu9Tn+MmbQxEEqtte4i3aD9BNvyIcfj
+         rv9woXdGxHvr8Md0xlqatKA7nQZRYpkajKFUwHzPgqFQgGzEgvBAbR9xgc0RkIpk4qOr
+         Ji2lTv+zIBmuqrgBtH2rs4voN2deop/C4HL+1JjcpJ64IEgaVK0Xbx+bf6oucsUMSFam
+         a1F5+GN9p6GhpqPVOEv/FUNOEzF7pA60iqULsznXMW8aOl39qiuIXqF3Yt+SsFMlp+MX
+         dSdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706174388; x=1706779188;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4X+3bRBtP42tNMXuYBkK8DKxTBN/GwDVxxSGraNwbGQ=;
+        b=tjVZAFpdVjVnwnZM1MYTqUtVWWMbvu49SDrtZdHtnZ7tfcnymDcDkDTJK08irFSgtZ
+         u0oipnPLZK5TZJb/BIxa3XHN65HPS5ani+M72DZ8YXnMcaNmQAfKprb60Vojf0fiqU/r
+         6sb6NX4tgrf+P8+4TivtVqQRTd8xGWtoZW303KShmB7apFyYltenGICvPXkjTEmv1NRn
+         tDb8Jbh4zh3kOjNfvkwCVDosUonegzdJcmO3ERpiTbK0bcNy4w7m14ZwsXYTljwHTAJn
+         e5/nMlOSMSKaWZX/lFUlvPlIoieQKKOo7YPXSjufjjv6X2H2AiOsN9ePK9/KRuc8KlMq
+         MRSA==
+X-Gm-Message-State: AOJu0Ywol2DUL16anTYV9unjCb6b1PcTYV0jtTCh50/W9kHeEYtNJ3jr
+	9fopsXmrXE3QM7mWayYdmfCjMDr6s2IpphLiyI6DiGgQhxhM4CPEWRoDl5hm5oM=
+X-Google-Smtp-Source: AGHT+IGSM37j5cCGKBhXBHBBRNisZ/yCBYOSZgstZR6wbZOnSOh1QlrDSppejQ5MaYdkyJoWTcHb+g==
+X-Received: by 2002:a05:600c:310f:b0:40e:aed3:e9b5 with SMTP id g15-20020a05600c310f00b0040eaed3e9b5mr284589wmo.103.1706174388180;
+        Thu, 25 Jan 2024 01:19:48 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id r12-20020a05600c35cc00b0040ecd258f29sm1914308wmq.0.2024.01.25.01.19.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jan 2024 01:19:47 -0800 (PST)
+Message-ID: <3adf7908-be27-4125-ae5b-6f2eb6100304@linaro.org>
+Date: Thu, 25 Jan 2024 10:19:45 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,53 +74,110 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] watchdog/softlockup: report the most time-consuming
- hardirq
-To: Doug Anderson <dianders@chromium.org>
-Cc: akpm@linux-foundation.org, pmladek@suse.com, tglx@linutronix.de,
- maz@kernel.org, liusong@linux.alibaba.com, linux-kernel@vger.kernel.org,
- yaoma@linux.alibaba.com
-References: <20240123121223.22318-1-yaoma@linux.alibaba.com>
- <20240123121223.22318-3-yaoma@linux.alibaba.com>
- <CAD=FV=X_uLqi1W7JuSjo=WXF5JEvtM=wxbSeFQQ2KhVcW9=Fcw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] dt-bindings: net: snps,dwmac: Add
+ time-based-scheduling property
 Content-Language: en-US
-From: Bitao Hu <yaoma@linux.alibaba.com>
-In-Reply-To: <CAD=FV=X_uLqi1W7JuSjo=WXF5JEvtM=wxbSeFQQ2KhVcW9=Fcw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: esben@geanix.com, Conor Dooley <conor@kernel.org>
+Cc: devicetree@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+ Jose Abreu <joabreu@synopsys.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <b365dc6f756a3fad4dfaa2675c98f4078aba8a55.1706105494.git.esben@geanix.com>
+ <30ce8f45b8752c603acc861ebb2f18d74d2f8a07.1706105494.git.esben@geanix.com>
+ <20240124-reptilian-icing-a95b20f123be@spud> <87bk99hj7q.fsf@geanix.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <87bk99hj7q.fsf@geanix.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
+On 25/01/2024 10:10, esben@geanix.com wrote:
+> Conor Dooley <conor@kernel.org> writes:
+> 
+>> On Wed, Jan 24, 2024 at 03:33:06PM +0100, Esben Haabendal wrote:
+>>> Time Based Scheduling can be enabled per TX queue, if supported by the
+>>> controller.
+>>
+>> If time based scheduling is not supported by the controller, then the
+>> property should not be present! The presence of a property like this
+>> should mean that the feature is supported, using it is up to the
+>> operating system.
+>>
+>> That said, why is this a property that should be in DT?
+> 
+> It is added to the tx-queues-config object of snps,dwmac bindings. This
+> entire object is about configuration of the ethernet controller, which
+> is also what the purpose of the snps,time-based-scheduling.
+> So yes, it is not specifically about describing what the hardware is
+> capable of, but how the hardware is configured. It is a continuation of
+> the current driver design.
+> 
+>> If support is per controller is it not sufficient to use the
+>> compatible to determine if this is supported?
+> 
+> Are you suggesting to include the mapping from all supported compatible
+> controllers to which TX queues supports TBS in the driver code?  What
+> would the benefit of that compared to describing it explicitly in the
+> binding?
 
+The benefit is complying with DT bindings rules, saying that bindings
+describe hardware pieces, not drivers.
 
-On 2024/1/25 08:19, Doug Anderson wrote:
-> 
-> I guess maybe (?) the case it wouldn't catch so well would be if you
-> had a loop that looked like:
-> 
-> * CPU from "storming" device takes ~10 ms and finishes.
-> * After the "storming" device finishes, we somehow manage to service a
-> whole pile of normal interrupts from non-storming devices.
-> * After the non-storming interrupts finished, then we went back to
-> servicing the slow storming interrupt.
-> 
-> I haven't dug into the bowels of the Linux IRQ handling well enough to
-> know if that would be possible. However, even if it was possible it
-> doesn't feel likely to happen. If those "normal" interrupts aren't
-> storming then it seems unlikely we'd see more than one of each of them
-> between the "storming" interrupts. Thus it feels like the "storming"
-> interrupt would still have the highest (or tied for the highest) count
-> on the locked up CPU. Maybe you could print the top 4 or 5 (instead of
-> the top 3) and you'd be pretty certain to catch even this case?
-> 
-Hi, I now understand your suggestion. Using interrupt time as a
-criterion of interrupt storm is suitable for scenarios where we don't
-know whether an interrupt storm has happened. However, in the context of
-this softlockup, we have in fact already determined that an interrupt
-storm might have occurred through the "hardirq time", so there's no need
-for a redundant determination. Thus, I agree that using IRQ counts
-seems like good enough to find "storming" interrupts.
+> And for the purpose of the above question, I am talking about it as if
+> the binding was describing the hardware capability and not the
+> configuration.
 
-> In any case, I'll wait before doing a more thorough review for now and
-> hope the above sounds right to you.
-> 
-> -Doug
+"if"? You wrote it is for driver design...
+
+Best regards,
+Krzysztof
+
 
