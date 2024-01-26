@@ -1,123 +1,116 @@
-Return-Path: <linux-kernel+bounces-40296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3131F83DDE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:44:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D51A83DDE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:45:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCD9F1F24C52
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:44:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29AC4288F16
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:45:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E2891D557;
-	Fri, 26 Jan 2024 15:44:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A5C51CFB4;
+	Fri, 26 Jan 2024 15:45:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="XPmKa4ht"
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="Ri8PJyjD"
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F21DD1DA38
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:44:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D44981CF99;
+	Fri, 26 Jan 2024 15:45:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706283871; cv=none; b=MRDJkTolCxblYIqcdVUckfrAaIgivioy2ubFSL0BOVg80mKzsGfsz5ccc5qupczofbuGJ1t+YC5J+WDTDGn1mlTIHLHlKz+/DcHm3snQN3mXAS8doU7qF0Laxqa3jKiQ9MOEhB0LxRR3oP6lIBJ1hUiydZ6Ts/AVLU+G67CR0uo=
+	t=1706283916; cv=none; b=cJnQUtzsFjFRuOkpyw1tX8HY1dVJV4dOYQVCLZDgbkGo6FJr1CSgGwcGmGR9JDc7GRIDiYNmmtiaqc7WT3wZoHKEVSYpTkmp7PT57ZFishHx37S13G4Y0rjz6FCXDZXfNHXuEl2KPmti6DLeXskfSnbV5YDyIAC5g9J/pjXKqNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706283871; c=relaxed/simple;
-	bh=UiLdiIVvMb83SWw7AGXvISH8OI0rahijuASgroB/Hlk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cFCRr3jWYBrrZUFc2pqRnXIjotSqRdomAdwtfRUSwCqScOLIhOXBXyf0G30QSS4bFNgvtMgf+Xy492mIldp+yBO7UTMxGeuQy1ruep9abT55EkGpE8Y3/IfrtOvojjYY2YOQwIL5C6xKzykD2fVP8pnNUg1o/FfVcCVVRrbJsk4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=XPmKa4ht; arc=none smtp.client-ip=209.85.160.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-206689895bfso328275fac.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 07:44:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1706283869; x=1706888669; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ifj3vKt8QC0k+Lvrl/eE4vaSsPq+S4SksoQKXsBRSXc=;
-        b=XPmKa4htdyIFQN5nkahRKFHwjBIj2w5nnjnY1CyS6eVuLv3IrPCwmLUgoyVIAkXD4U
-         P1jun110v+iDL6vurH48iPpOv8S1BmzzTMcimFbXtQCsXtQlviUT2tQMSKmyK+4XCXFe
-         n39GTlT4ZJyrynW6hqgC/kXgsU2hJlTH0dKRJsHzuRomi6ncG1mOu61Fd9roa6dwduUq
-         m8qJkDNwKT8M8M2KvISQ+ovcf4bY7EgZqz//rM9qPeJzVOx+t4W6XM16TiiOZiRRITMz
-         O5s22W3MQ/r6vJdV6wFmhQbFKMlzpxLGW/lfwvUrkFpPolQPZt4mVU3XDM44WmTHZEEM
-         lI/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706283869; x=1706888669;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ifj3vKt8QC0k+Lvrl/eE4vaSsPq+S4SksoQKXsBRSXc=;
-        b=O3URtzSupLvobWWCLTHJyFS41thRp2es9UFUNj/a59Aa6RkjG8+RWw1VhDzgOvVq5U
-         yRerslJCrVEaLip8xeXU61C8PmEEaaZf+tbhkEwegTmKpt/N+MzZt63lILcXW+BkWcxl
-         qNlNWkewLlXrrEJ7nOWlR1plKy9i/UaWjIFG0+GUL/h8D9XQF95JJ71ZeitCB/0YmPc7
-         lMu66OaxM+5SBqctHQ3rxEVqC5CG7ci2h9BOG/4uDtbztd18myun9b5ZM78Ub7M5XxCZ
-         De3G362jREoYDLwwPwg1iuQSM2cMXXeccRdTkiMSNhf23nLDnquNGIr6+6UUTFPhYxEe
-         HM/A==
-X-Gm-Message-State: AOJu0Yz6V3i8r3mv4sFghjaV8UO1VYVF970eO0/Ur1xwvF4A8rO/78f2
-	nbYCrxZpX8B1kcJdXBt/1MziZ1kmT5SZrBrYtpLDftCfS3AWr87WLNsM7XjbF00=
-X-Google-Smtp-Source: AGHT+IHvXs9zt8rzQimULCxVKWRw2gBSkFT+WcT7r0xChxJT011B7UN6s63xs55ItZMqKHL08VvUaA==
-X-Received: by 2002:a05:6871:2787:b0:214:2544:bfd9 with SMTP id zd7-20020a056871278700b002142544bfd9mr955769oab.43.1706283869008;
-        Fri, 26 Jan 2024 07:44:29 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id pl10-20020a0568704e0a00b0021837cadf53sm200549oab.39.2024.01.26.07.44.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 07:44:28 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rTONX-009SCu-NX;
-	Fri, 26 Jan 2024 11:44:27 -0400
-Date: Fri, 26 Jan 2024 11:44:27 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Timothy Pearson <tpearson@raptorengineering.com>
-Cc: Shivaprasad G Bhat <sbhat@linux.ibm.com>, iommu <iommu@lists.linux.dev>,
-	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>, npiggin <npiggin@gmail.com>,
-	christophe leroy <christophe.leroy@csgroup.eu>,
-	aneesh kumar <aneesh.kumar@kernel.org>,
-	naveen n rao <naveen.n.rao@linux.ibm.com>,
-	jroedel <jroedel@suse.de>, aik <aik@amd.com>,
-	bgray <bgray@linux.ibm.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	gbatra <gbatra@linux.vnet.ibm.com>, vaibhav <vaibhav@linux.ibm.com>
-Subject: Re: [PATCH 1/2] powerpc: iommu: Bring back table group
- release_ownership() call
-Message-ID: <20240126154427.GB50608@ziepe.ca>
-References: <170618450592.3805.8216395093813382208.stgit@ltcd48-lp2.aus.stglab.ibm.com>
- <170618451433.3805.9015493852395837391.stgit@ltcd48-lp2.aus.stglab.ibm.com>
- <20240125155017.GW50608@ziepe.ca>
- <b825dd04-3d32-4fbd-91e3-523ddf96fc7a@linux.ibm.com>
- <20240126151701.GZ50608@ziepe.ca>
- <392247278.10124607.1706282995795.JavaMail.zimbra@raptorengineeringinc.com>
- <20240126153806.GA50608@ziepe.ca>
- <1453449220.10126352.1706283596477.JavaMail.zimbra@raptorengineeringinc.com>
+	s=arc-20240116; t=1706283916; c=relaxed/simple;
+	bh=fqIG2jDZoTw9TE78+cnz0OxfSJ1D3qd3x/zWVd40lg4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=djjHx0Q0V3mt1W3CI4r6seUPwr5A0kxY6N+wdupDbfLjMbbGRDBi/NXOFIe3kLY4AS8w1Qeby1jxEixs9ugAM1fPZkJ8RQCzoK8WfD4GJ1FL2wiJKheAHdyRLrH3w51Kp3pYDA6x2MVAT/2gdtWKxcc+9LuBCWhOdltsGXzIvTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=Ri8PJyjD; arc=none smtp.client-ip=67.231.149.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40QAV94J011624;
+	Fri, 26 Jan 2024 09:44:52 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	PODMain02222019; bh=sTeLXv2n33njXj2pPXt/tcA9jUcN2EMferdUpNRom0c=; b=
+	Ri8PJyjDWJtzg8CIzUcE0ikkQ1nqkbryUAHzfBf0llpykpe3ffSObCi+gVCBOvv6
+	n4KEx4iA0veIgB0pKnPg46QOiXPpwp1sdzc8m6UXNWkWqlbI8G1t1Eon0Ty03z8i
+	hV/AbhvL3gRKHCue5Dz3gOZUG8TEW6KPql4/3dkWH0fMEFFOsMlwlUy2tuHx4pR1
+	1CHiHlvft8jpmqFbZun/9s4Ozy2otCZzE9zEBJf+4/kyPZEs5yESvpldsHurtgsj
+	RPihom5z4+IZrHmXJIL1N6CbER9KTUBSsyxLdmrMujcbFLmd8hplYX0AjOZEeP38
+	r8EtDkU9GnWU6VB5tJW4XQ==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3vtmfhm3ha-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Jan 2024 09:44:51 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 26 Jan
+ 2024 15:44:49 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40 via Frontend Transport; Fri, 26 Jan 2024 15:44:49 +0000
+Received: from [198.90.208.18] (ediswws06.ad.cirrus.com [198.90.208.18])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 060D6820246;
+	Fri, 26 Jan 2024 15:44:49 +0000 (UTC)
+Message-ID: <0d2aee4d-edc4-4e6e-99c3-d548eb6d6e18@opensource.cirrus.com>
+Date: Fri, 26 Jan 2024 15:44:48 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1453449220.10126352.1706283596477.JavaMail.zimbra@raptorengineeringinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 0/4] Support HP Models without _DSD
+To: Takashi Iwai <tiwai@suse.de>,
+        Stefan Binding
+	<sbinding@opensource.cirrus.com>
+CC: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
+References: <20240126113007.4084-1-sbinding@opensource.cirrus.com>
+ <87wmrwnn2n.wl-tiwai@suse.de>
+Content-Language: en-GB
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <87wmrwnn2n.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: 0A87Bz0BkaY1TQM-BuRqLl5iY_Dge84p
+X-Proofpoint-GUID: 0A87Bz0BkaY1TQM-BuRqLl5iY_Dge84p
+X-Proofpoint-Spam-Reason: safe
 
-On Fri, Jan 26, 2024 at 09:39:56AM -0600, Timothy Pearson wrote:
-> > Just forget about the weird KVM and SPAPR stuff, leave it under the
-> > kconfig of the old code and nobody will run it. Almost nobody already
-> > runs it, apparently.
+On 26/01/2024 15:14, Takashi Iwai wrote:
+> On Fri, 26 Jan 2024 12:30:03 +0100,
+> Stefan Binding wrote:
+>>
+>> Add Quirks and driver properties for Dell models.
+>> Driver properties are required since these models do not have _DSD.
+>> Some models require special handing for Speaker ID and cannot use
+>> the configuration table to add properties.
+>> Also fix an issue for Channel Index property, when set through the
+>> configuration table, to use the same method as when loading _DSD
+>> properties. This is needed for laptops with 4 amps where the
+>> channels do not alternate.
+>>
+>> Stefan Binding (4):
+>>    ALSA: hda: cs35l41: Set Channel Index correctly when system is missing
+>>      _DSD
+>>    ALSA: hda: cs35l41: Support additional HP Envy Models
+>>    ALSA: hda: cs35l41: Support HP models without _DSD using dual Speaker
+>>      ID
+>>    ALSA: hda/realtek: Add quirks for various HP ENVY models
 > 
-> We actually use QEMU/KVM/VFIO extensively at Raptor, so need the
-> support and need it to be performant...
+> The last one conflicts with the latest for-next branch due to the
+> recent change from Cirrus.  Could you rebase and resubmit?
+> 
 
-I wonder if you alone are the "almost" :)
+Yes, sorry. That's my fault for not syncing up with Stefan before
+sending the other patch.
 
-The KVM entanglement was hairy and scary. I never did figure out what
-was really going on there. Maybe you don't need all of it and can be
-successful with a more typical iommu working model?
-
-Suggest to tackle it after getting the first parts done.
-
-Jason
 
