@@ -1,199 +1,360 @@
-Return-Path: <linux-kernel+bounces-40133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C02483DAEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:33:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1222183DB1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:40:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22E16286DA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:33:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CA5B1F2592D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:40:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBA371B967;
-	Fri, 26 Jan 2024 13:33:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 727861BF22;
+	Fri, 26 Jan 2024 13:40:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eOYTEzaG"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Vkp8ebJL"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2048.outbound.protection.outlook.com [40.107.243.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3E301B943
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:33:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706275988; cv=none; b=p5F5yl0OnuTJ/FKfSH3bFg8vwiFSN1HGvsaqXD/vpYUzDOqL6J5RFP18uo0ho6pi9/VLJ/QsBeWaC2ffgCAfONQW7iNJDhADwIKECZofDurbvkhSFDcwSMQeiLUwDQZSQHwFQEiiQ4kxmh7DU+n2+65pFLe0/xAuIm19SvfEvHw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706275988; c=relaxed/simple;
-	bh=t75+ApVE4O2pChN2R4h66dZ7fB5ab5Ao7eh8CU5ennw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=opdOF/ElDr8IoMnzJ4PsS2azG49XsgAUTXAMBK1sG0p2bKSFqG42OKOWEQh2bHmpbYn3ZuHaaXxSoP//Vf8PeX8ppEXH16xn0MnyC32589XqFPS69SAkOey2WVed2hD6Z0RCF+WFTIp6yh2YV06y7vNjPrSZTzkPobxQUIqkDr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eOYTEzaG; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706275983;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=U3CYoF7To3W2OvR7Q0XItMhTSU3L3ntABi2tsSEqr9s=;
-	b=eOYTEzaGeqDyJTQ0LBWUYDAPoRYW8Ph+FqihlfnJdWpXwZIduNMfWEnFEJRyM+rYeWPq5X
-	4INJp2RtrBgjIICjqQ3DP9vz/IBCOnyg7IcYq9GIDev0nZnQxiWOGSJopaDdDrMY7dF5XZ
-	8sGi1/O6ksStmKMIS1OF0n7/ddU12ag=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-493-vGJDucMVM6-Whru6fw2yTg-1; Fri, 26 Jan 2024 08:33:02 -0500
-X-MC-Unique: vGJDucMVM6-Whru6fw2yTg-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a2c4e9cb449so11407866b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 05:33:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706275981; x=1706880781;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=U3CYoF7To3W2OvR7Q0XItMhTSU3L3ntABi2tsSEqr9s=;
-        b=huDIFlaqRTMDIGloK+iXJHXeLHo9BEThN4+S7uQ9Vdah6QNhEMW8j1wo/Z/JyuERQ0
-         QSf6M88mk8VHCC654svtKo46O5F9x+SkUJ2CbQDnOLrPlRA/64MvavtCZVbHEXLhPq8g
-         DXJD9NB3/RAmwG+FS1C47qvWCVXLh1maDgNCaG/UKlXlCmKsHlzTecQK55NwqcQebp+l
-         +VKuZt5zQI39+nZT1yZtJuNg0cXDR3RvVn3q+pwzi3Pb3ELeGl5cw+x1gE4cxfS/Pe4/
-         eKAW/sL6jGhy3ccrxj1Mwu01q0RL+DCFZjj53VjLWUdgcI4C8zd5HYdbXS8FhLay1k7x
-         O2pQ==
-X-Gm-Message-State: AOJu0Yzkf1RXiPSqPvJdLyWpsXx20iYkkPI7Ywb8gUCt8R5TVDf8/xMM
-	UYc7bkS1/AUBWtiXTlmp90R2gfMTEzGRb07pB/WhoFwE6YAZxn00Fnfo457PmjLLZt6DLAd9V1v
-	oRKz1TAz+DMZYMmZMjc4Nc5veMZIT/8BK84pEPfTkxLIEXjbr3CCGm7Lw2P0PJg==
-X-Received: by 2002:a17:906:1949:b0:a33:604d:2a42 with SMTP id b9-20020a170906194900b00a33604d2a42mr527115eje.25.1706275981154;
-        Fri, 26 Jan 2024 05:33:01 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHhKBLsSu7OcWJcv0AZ4I04EUiwRYyjkq++HEtrw6QvawvzQb9UNe2gW7BIw4ofNgZSMFoQWQ==
-X-Received: by 2002:a17:906:1949:b0:a33:604d:2a42 with SMTP id b9-20020a170906194900b00a33604d2a42mr527109eje.25.1706275980797;
-        Fri, 26 Jan 2024 05:33:00 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id un3-20020a170907cb8300b00a3516240ab3sm118189ejc.215.2024.01.26.05.33.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jan 2024 05:33:00 -0800 (PST)
-Message-ID: <5f70a174-7f18-43c0-b3a3-b72544a2631b@redhat.com>
-Date: Fri, 26 Jan 2024 14:32:59 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 994291BDC6;
+	Fri, 26 Jan 2024 13:40:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.48
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706276410; cv=fail; b=NkacR5Qpe0zYGpzbM9Hh/r2B7u4PzLrttQZGFx/ltfN4HNBUNqMG07idQElbqnslFhjckUDrPx1yy/gHJ6kuE7kS94kIxB4NrECL4yxhQcQA7FlN7RouDKI7GmbY5mpUUtDP8LDV3/kRaJoWXU+OCcGaOoWrx9qCfJ6pvwgt0mw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706276410; c=relaxed/simple;
+	bh=AwXi+mlub++Iu26+Id1stlbXhEq0G7wKbevcN0XhWAk=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uajWXGQFZeUppWCC9ytzyR2xrMCULXu2cjhr8co4EZZNdzy1r0PZNy4VM5Isy1qM2fklg72UNNae2qY0T8SY1gRLZueIIBWwLMOZ7gE3Cxje/GLXgCvBNf+ugvCv9egyzQDLs6fNh/F4arI7ajL9LtVvD6qDpLuiTZnEFz7rhMs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Vkp8ebJL; arc=fail smtp.client-ip=40.107.243.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q0YErVlVrelsdPhGmFkw8QsI689HC00vA20BElzNsTkHqa3jjKOhYb/VMbB2nkYZeW7ZRwE8V9FH+D9wc73HyPEnT0AXc2YHzzEeoy4d6U69rYls1/64/SWoibg8jQkQke1BdW5gvlkducNzexk3L+lq9Lyrf5g/rI36YNuKKbm+HQ/30wtkxmnjb3aMmCEmAlwFLe6Ldp3DeLvH8XWpJjXwVCMlF0n5NKEGBdSOsWoqay1khoWIXvom9T47OUTajgOr3sJePmNvfvESTuWMNpRNKZlikh2NEhdxcWyTEG2UyVo0/IXUPWIPX/CbRD32lTXSC4NgaR/uvBYATCxIYw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LlcHzIQWz/0eKoy4EoCOMQ5SAXWAI7gq3pqhJQBubZc=;
+ b=L2LOiV5TM85b9XLcoJs/XpX1FngOjtT/AkM+9RqED2LB0xcSMWyxb3QriWIy8bqmXDsfDuCpggxCjx1m4kb17YDgU8gJcnizdp/ZwamdRmO3AjEXKQQy4UDXC6fGzlojOEacnjH3ejc61BTkdsW1WSosayUqhPfBwtcBdkq2+Vct2U/YE+L9reLms8EHyu65IaWqEvFxwB3dQZ1RY7fp8QMxP72n/8ET3baPFMFarNDC+Z0M/kBQaq/JC3aDk4Wtr00Xp2gezBbLjoo0Wvoc5oxSr8FixQhbtr/6+yLYLEWUER5LIuaXcb1BgBU0kcqIrO8QBqHTaxU3Vrpr/WJEvA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=alien8.de smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LlcHzIQWz/0eKoy4EoCOMQ5SAXWAI7gq3pqhJQBubZc=;
+ b=Vkp8ebJLdRMUTSTx/Rfad8qO+yv1dPNZzbGQBTWPERM8/uTSY4oB11rMJfpS4FS1Fl4tn2pCGSXpksEMRC1AQZ3FvHScSgjEdTd1Z/9c8BSWOHdBLtydJb0Rl+/6wRCTbPFgSvbb1mf/acyAz2EzjCkPvAOKGZ/VtoN/mwtfe1E=
+Received: from BN9PR03CA0282.namprd03.prod.outlook.com (2603:10b6:408:f5::17)
+ by IA1PR12MB8496.namprd12.prod.outlook.com (2603:10b6:208:446::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.27; Fri, 26 Jan
+ 2024 13:40:04 +0000
+Received: from BN1PEPF0000468A.namprd05.prod.outlook.com
+ (2603:10b6:408:f5:cafe::c) by BN9PR03CA0282.outlook.office365.com
+ (2603:10b6:408:f5::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.27 via Frontend
+ Transport; Fri, 26 Jan 2024 13:40:04 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BN1PEPF0000468A.mail.protection.outlook.com (10.167.243.135) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7228.16 via Frontend Transport; Fri, 26 Jan 2024 13:40:04 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Fri, 26 Jan
+ 2024 07:40:03 -0600
+Date: Fri, 26 Jan 2024 07:38:10 -0600
+From: Michael Roth <michael.roth@amd.com>
+To: Borislav Petkov <bp@alien8.de>
+CC: <x86@kernel.org>, <kvm@vger.kernel.org>, <linux-coco@lists.linux.dev>,
+	<linux-mm@kvack.org>, <linux-crypto@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
+	<jroedel@suse.de>, <thomas.lendacky@amd.com>, <hpa@zytor.com>,
+	<ardb@kernel.org>, <pbonzini@redhat.com>, <seanjc@google.com>,
+	<vkuznets@redhat.com>, <jmattson@google.com>, <luto@kernel.org>,
+	<dave.hansen@linux.intel.com>, <slp@redhat.com>, <pgonda@google.com>,
+	<peterz@infradead.org>, <srinivas.pandruvada@linux.intel.com>,
+	<rientjes@google.com>, <tobin@ibm.com>, <vbabka@suse.cz>,
+	<kirill@shutemov.name>, <ak@linux.intel.com>, <tony.luck@intel.com>,
+	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
+	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
+	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>
+Subject: Re: [PATCH v1 21/26] crypto: ccp: Add panic notifier for SEV/SNP
+ firmware shutdown on kdump
+Message-ID: <20240126133810.whjr3wxinwyxzfgt@amd.com>
+References: <20231230161954.569267-1-michael.roth@amd.com>
+ <20231230161954.569267-22-michael.roth@amd.com>
+ <20240121114900.GLZa0ErBHIqvook5zK@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: PS/2 keyboard of laptop Dell XPS 13 9360 goes missing after S3
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: linux-input@vger.kernel.org, linux-pm@vger.kernel.org,
- Dell.Client.Kernel@dell.com, regressions@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <0aa4a61f-c939-46fe-a572-08022e8931c7@molgen.mpg.de>
- <f27b491c-2f1c-4e68-804c-24eeaa8d10de@redhat.com>
- <0b30c88a-6f0c-447f-a08e-29a2a0256c1b@molgen.mpg.de>
- <dde1bdfe-7877-41bd-b233-03bcdba0e2de@redhat.com>
- <f07333d2-ebb0-4531-a396-8fb3d1daa2c3@molgen.mpg.de>
-Content-Language: en-US, nl
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <f07333d2-ebb0-4531-a396-8fb3d1daa2c3@molgen.mpg.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240121114900.GLZa0ErBHIqvook5zK@fat_crate.local>
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN1PEPF0000468A:EE_|IA1PR12MB8496:EE_
+X-MS-Office365-Filtering-Correlation-Id: 78aed9d4-f3cf-45bf-f12e-08dc1e744d47
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	CVkXabAfi3or5k0wQLNHvMlyWPAlkDQLOkIDwpq1Xl9assWEqA37soOcka1kZMEJoGygWar3VWCGGWLpQzM6oMhZndrdLnAMdVXsPKHFZxOkNT/PcIaE+f4Zm60Ie9EyfkyGUNjoUbuQDBpeERHQGjx/lB926v2FEyY4EJfABqiFT2CB0fixPeurXZlbfMAMlwuuq+dZyt9eWs5yUzRfCbJ9kyY1q0RxuKgj6DXrpOYyizOi6eHae/M6uCNdRDM6xURBpyr8tblKmtcYTCUv5YQpYR3C21pyTlrIrt5IPXqePKZaFvMjUTVWxkM+ZUFINHRSH0ghmTGN/UEIiza9yM7k9X7VNIOEBlsgzgjcXJqlxzhQZqgrm1QPZXjLMAR13KNocEIgnoy3WzUaLRUg6bLKgkvm8hcidmJGQ+WghgCKGj6jmSukATbVFIU/6xjjpN1y0g+Bw8mfryyhHxp311TGyngMPBA5G+5cNPDuAUdBTVJQ4eXhwaqmHkGnKpU0WcD60B6Z6CYVpMT7Hu0XWyb/lLIkHm3U5HcYXvpLDd2hXUjFVVo0ljLNnDUycldn832gw/aEnOc1VmwHGoQqyfZ/LSSdn/tMCwIG5sRqttn5d5u1A3N3D8CBZA2TBWH0WoWlck6erCWmIfdbu85sDpSoiRdSLEsenDrZBjRFaws7lIfvcSYfeW7pA1P95xF1VSk3ALPrc4K9Q4pAndYrNvU8fClE3Ax81HI74khJId/lG6itZNVX2YrqHoUU1GD9cRp1YugrYx4owC4mGhwQqp0kHvc25HW2sc+s7DsNaifw17pKHpKE9lC525CgceLz
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(396003)(136003)(346002)(230922051799003)(230173577357003)(230273577357003)(64100799003)(186009)(1800799012)(82310400011)(451199024)(46966006)(40470700004)(36840700001)(966005)(82740400003)(7406005)(356005)(2906002)(7416002)(36860700001)(81166007)(5660300002)(44832011)(41300700001)(36756003)(426003)(336012)(26005)(16526019)(478600001)(1076003)(2616005)(6666004)(83380400001)(8676002)(4326008)(47076005)(8936002)(6916009)(54906003)(316002)(70206006)(70586007)(86362001)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 13:40:04.0742
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78aed9d4-f3cf-45bf-f12e-08dc1e744d47
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BN1PEPF0000468A.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8496
 
-Hi Paul,
-
-On 1/26/24 08:03, Paul Menzel wrote:
-> Dear Hans,
+On Sun, Jan 21, 2024 at 12:49:00PM +0100, Borislav Petkov wrote:
+> On Sat, Dec 30, 2023 at 10:19:49AM -0600, Michael Roth wrote:
+> > From: Ashish Kalra <ashish.kalra@amd.com>
+> > 
+> > Add a kdump safe version of sev_firmware_shutdown() registered as a
+> > crash_kexec_post_notifier, which is invoked during panic/crash to do
+> > SEV/SNP shutdown. This is required for transitioning all IOMMU pages
+> > to reclaim/hypervisor state, otherwise re-init of IOMMU pages during
+> > crashdump kernel boot fails and panics the crashdump kernel. This
+> > panic notifier runs in atomic context, hence it ensures not to
+> > acquire any locks/mutexes and polls for PSP command completion
+> > instead of depending on PSP command completion interrupt.
+> > 
+> > Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> > [mdr: remove use of "we" in comments]
+> > Signed-off-by: Michael Roth <michael.roth@amd.com>
 > 
+> Cleanups ontop, see if the below works too. Especially:
 > 
-> Thank you for your reply, and sorry for the delay on my side. I needed to set up an environment to easily build the Linux kernel.
+> * I've zapped the WBINVD before the TMR pages are freed because
+> __sev_snp_shutdown_locked() will WBINVD anyway.
 
-No problem thank you for testing this.
+As Ashish mentioned the wbinvd_on_all_cpus() is still needed for general
+TMR handling even outside of panic/SNP, but I think you're right about
+the panic==true where the handling is SNP-specific and so the wbinvd()
+that gets called later during SNP shutdown will take care of it, so I've
+adjusted things accordingly.
 
-> Am 22.01.24 um 14:43 schrieb Hans de Goede:
 > 
->> On 1/21/24 15:26, Paul Menzel wrote:
+> * The mutex_is_locked() check in snp_shutdown_on_panic() is silly
+> because the panic notifier runs on one CPU anyway.
+
+Based on discussion with Ashish I've updated the comments in v2
+regarding this to make it a little clearer why it might still be a good
+idea to keep that in to avoid weird unexpected behavior if we try to
+issue PSP commands while another one was already in-flight by another
+task before the panic.
+
+But I squashed in all the other changes here as-is.
+
+-Mike
+
 > 
-> […]
+> Thx.
 > 
->>> Am 20.01.24 um 21:26 schrieb Hans de Goede:
->>>
->>>> On 1/18/24 13:57, Paul Menzel wrote:
->>>>> #regzbot introduced v6.6.11..v6.7
->>>
->>>>> There seems to be a regression in Linux 6.7 on the Dell XPS 13 9360 (Intel i7-7500U).
->>>>>
->>>>>       [    0.000000] DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022
->>>>>
->>>>> The PS/2 keyboard goes missing after S3 resume¹. The problem does not happen with Linux 6.6.11.
->>>>
->>>> Thank you for reporting this.
->>>>
->>>> Can you try adding "i8042.dumbkbd=1" to your kernel commandline?
->>>>
->>>> This should at least lead to the device not disappearing from
->>>>
->>>> "sudo libinput list-devices"
->>>>
->>>> The next question is if the keyboard will still actually
->>>> work after suspend/resume with "i8042.dumbkbd=1". If it
->>>> stays in the list, but no longer works then there is
->>>> a problem with the i8042 controller; or interrupt
->>>> delivery to the i8042 controller.
->>>>
->>>> If "i8042.dumbkbd=1" somehow fully fixes things, then I guess
->>>> my atkbd driver fix for other laptop keyboards is somehow
->>>> causing issues for yours.
->>>
->>> Just a quick feedback, that booting with `i8042.dumbkbd=1` seems to fix the issue.
->>>
->>>> If "i8042.dumbkbd=1" fully fixes things, can you try building
->>>> your own 6.7.0 kernel with commit 936e4d49ecbc:
->>>>
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=936e4d49ecbc8c404790504386e1422b599dec39
->>>>
->>>> reverted?
->>>
->>> I am going to try that as soon as possible.
->>
->> Assuming this was not some one time glitch with 6.7.0,
->> I have prepared a patch hopefully fixing this (1) as well
->> as a follow up fix to address another potential issue which
->> I have noticed.
+> ---
 > 
-> Unfortunately, it wasn’t just a glitch.
+> diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
+> index 435ba9bc4510..27323203e593 100644
+> --- a/arch/x86/include/asm/sev.h
+> +++ b/arch/x86/include/asm/sev.h
+> @@ -227,6 +227,7 @@ int snp_issue_guest_request(u64 exit_code, struct snp_req_data *input, struct sn
+>  void snp_accept_memory(phys_addr_t start, phys_addr_t end);
+>  u64 snp_get_unsupported_features(u64 status);
+>  u64 sev_get_status(void);
+> +void kdump_sev_callback(void);
+>  #else
+>  static inline void sev_es_ist_enter(struct pt_regs *regs) { }
+>  static inline void sev_es_ist_exit(void) { }
+> @@ -255,6 +256,7 @@ static inline int snp_issue_guest_request(u64 exit_code, struct snp_req_data *in
+>  static inline void snp_accept_memory(phys_addr_t start, phys_addr_t end) { }
+>  static inline u64 snp_get_unsupported_features(u64 status) { return 0; }
+>  static inline u64 sev_get_status(void) { return 0; }
+> +static inline void kdump_sev_callback(void) {  }
+>  #endif
+>  
+>  #ifdef CONFIG_KVM_AMD_SEV
+> diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
+> index 23ede774d31b..64ae3a1e5c30 100644
+> --- a/arch/x86/kernel/crash.c
+> +++ b/arch/x86/kernel/crash.c
+> @@ -40,6 +40,7 @@
+>  #include <asm/intel_pt.h>
+>  #include <asm/crash.h>
+>  #include <asm/cmdline.h>
+> +#include <asm/sev.h>
+>  
+>  /* Used while preparing memory map entries for second kernel */
+>  struct crash_memmap_data {
+> @@ -59,12 +60,7 @@ static void kdump_nmi_callback(int cpu, struct pt_regs *regs)
+>  	 */
+>  	cpu_emergency_stop_pt();
+>  
+> -	/*
+> -	 * for SNP do wbinvd() on remote CPUs to
+> -	 * safely do SNP_SHUTDOWN on the local CPU.
+> -	 */
+> -	if (cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+> -		wbinvd();
+> +	kdump_sev_callback();
+>  
+>  	disable_local_APIC();
+>  }
+> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+> index c67285824e82..dbb2cc6b5666 100644
+> --- a/arch/x86/kernel/sev.c
+> +++ b/arch/x86/kernel/sev.c
+> @@ -2262,3 +2262,13 @@ static int __init snp_init_platform_device(void)
+>  	return 0;
+>  }
+>  device_initcall(snp_init_platform_device);
+> +
+> +void kdump_sev_callback(void)
+> +{
+> +	/*
+> +	 * Do wbinvd() on remote CPUs when SNP is enabled in order to
+> +	 * safely do SNP_SHUTDOWN on the the local CPU.
+> +	 */
+> +	if (cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+> +		wbinvd();
+> +}
+> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+> index 598878e760bc..c342e5e54e45 100644
+> --- a/drivers/crypto/ccp/sev-dev.c
+> +++ b/drivers/crypto/ccp/sev-dev.c
+> @@ -161,7 +161,6 @@ static int sev_wait_cmd_ioc(struct sev_device *sev,
+>  
+>  			udelay(10);
+>  		}
+> -
+>  		return -ETIMEDOUT;
+>  	}
+>  
+> @@ -1654,7 +1653,7 @@ static int sev_update_firmware(struct device *dev)
+>  	return ret;
+>  }
+>  
+> -static int __sev_snp_shutdown_locked(int *error, bool in_panic)
+> +static int __sev_snp_shutdown_locked(int *error, bool panic)
+>  {
+>  	struct sev_device *sev = psp_master->sev_data;
+>  	struct sev_data_snp_shutdown_ex data;
+> @@ -1673,7 +1672,7 @@ static int __sev_snp_shutdown_locked(int *error, bool in_panic)
+>  	 * In that case, a wbinvd() is done on remote CPUs via the NMI
+>  	 * callback, so only a local wbinvd() is needed here.
+>  	 */
+> -	if (!in_panic)
+> +	if (!panic)
+>  		wbinvd_on_all_cpus();
+>  	else
+>  		wbinvd();
+> @@ -2199,26 +2198,13 @@ int sev_dev_init(struct psp_device *psp)
+>  	return ret;
+>  }
+>  
+> -static void __sev_firmware_shutdown(struct sev_device *sev, bool in_panic)
+> +static void __sev_firmware_shutdown(struct sev_device *sev, bool panic)
+>  {
+>  	int error;
+>  
+>  	__sev_platform_shutdown_locked(NULL);
+>  
+>  	if (sev_es_tmr) {
+> -		/*
+> -		 * The TMR area was encrypted, flush it from the cache
+> -		 *
+> -		 * If invoked during panic handling, local interrupts are
+> -		 * disabled and all CPUs are stopped, so wbinvd_on_all_cpus()
+> -		 * can't be used. In that case, wbinvd() is done on remote CPUs
+> -		 * via the NMI callback, so a local wbinvd() is sufficient here.
+> -		 */
+> -		if (!in_panic)
+> -			wbinvd_on_all_cpus();
+> -		else
+> -			wbinvd();
+> -
+>  		__snp_free_firmware_pages(virt_to_page(sev_es_tmr),
+>  					  get_order(sev_es_tmr_size),
+>  					  true);
+> @@ -2237,7 +2223,7 @@ static void __sev_firmware_shutdown(struct sev_device *sev, bool in_panic)
+>  		snp_range_list = NULL;
+>  	}
+>  
+> -	__sev_snp_shutdown_locked(&error, in_panic);
+> +	__sev_snp_shutdown_locked(&error, panic);
+>  }
+>  
+>  static void sev_firmware_shutdown(struct sev_device *sev)
+> @@ -2262,26 +2248,18 @@ void sev_dev_destroy(struct psp_device *psp)
+>  	psp_clear_sev_irq_handler(psp);
+>  }
+>  
+> -static int sev_snp_shutdown_on_panic(struct notifier_block *nb,
+> -				     unsigned long reason, void *arg)
+> +static int snp_shutdown_on_panic(struct notifier_block *nb,
+> +				 unsigned long reason, void *arg)
+>  {
+>  	struct sev_device *sev = psp_master->sev_data;
+>  
+> -	/*
+> -	 * Panic callbacks are executed with all other CPUs stopped,
+> -	 * so don't wait for sev_cmd_mutex to be released since it
+> -	 * would block here forever.
+> -	 */
+> -	if (mutex_is_locked(&sev_cmd_mutex))
+> -		return NOTIFY_DONE;
+> -
+>  	__sev_firmware_shutdown(sev, true);
+>  
+>  	return NOTIFY_DONE;
+>  }
+>  
+> -static struct notifier_block sev_snp_panic_notifier = {
+> -	.notifier_call = sev_snp_shutdown_on_panic,
+> +static struct notifier_block snp_panic_notifier = {
+> +	.notifier_call = snp_shutdown_on_panic,
+>  };
+>  
+>  int sev_issue_cmd_external_user(struct file *filep, unsigned int cmd,
+> @@ -2322,7 +2300,7 @@ void sev_pci_init(void)
+>  		"-SNP" : "", sev->api_major, sev->api_minor, sev->build);
+>  
+>  	atomic_notifier_chain_register(&panic_notifier_list,
+> -				       &sev_snp_panic_notifier);
+> +				       &snp_panic_notifier);
+>  	return;
+>  
+>  err:
+> @@ -2339,5 +2317,5 @@ void sev_pci_exit(void)
+>  	sev_firmware_shutdown(sev);
+>  
+>  	atomic_notifier_chain_unregister(&panic_notifier_list,
+> -					 &sev_snp_panic_notifier);
+> +					 &snp_panic_notifier);
+>  }
 > 
->> Can you please give a 6.7.0 (2) kernel with the 2 attached
->> patches added a try ?
->>
->> I know building kernels can be a bit of work / takes time,
->> sorry. If you are short on time I would prefer testing these 2
->> patches and see if they fix things over trying a plain revert.
+> -- 
+> Regards/Gruss,
+>     Boris.
 > 
-> Applying both patches on v6.7.1
+> https://people.kernel.org/tglx/notes-about-netiquette
 > 
->     $ git log --oneline -3
->     053fa44c0de1 (HEAD -> v6.7.1) Input: atkbd - Do not skip atkbd_deactivate() when skipping ATKBD_CMD_GETID
->     0e0fa0113c7a Input: atkbd - Skip ATKBD_CMD_SETLEDS when skipping ATKBD_CMD_GETID
->     a91fdae50a6d (tag: v6.7.1, stable/linux-6.7.y, origin/linux-6.7.y) Linux 6.7.1
-> 
-> I am unable to reproduce the problem in eight ACPI S3 suspend/resume cycles. The DMAR errors [3] are also gone:
-
-Thanks.
-
-So thinking more about this I think the DMAR errors are actually the real cause of the issue here, specifically if we replace: f0 with 00 (I guess DMAR uses the high bits for its own purposes) in
-
-`[INTR-REMAP] Request device [f0:1f.0] fault index 0x0`
-
-then the device ID is 00:1f.0 which is the ISA bridge and [INTR-REMAP] errors are known to disable interrupts. The PS/2 controller (which sits behind the ISA bridge) interrupt getting disabled would explain the suspend/resume keyboard issue better then the atkbd.c changes I have been focusing on.
-
-So then the question becomes why does the 6.7.1 kernel not show the DMAR errors. I don't see anything between 6.7.0 and 6.7.1 which explains this. But maybe your local build is using a different configuration which explains this.
-
-Can you try your local 6.7.1 build without my 2 patches? The quickest way to do that would be to run: "git reset --hard HEAD~2" and then re-run the make commandos, this will re-use your previous build so it should be pretty quick.
-
-If things still work after that then the problem is not with the atkbd code.
-
-Regards,
-
-Hans
-
-
-
-
 
