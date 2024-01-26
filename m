@@ -1,130 +1,104 @@
-Return-Path: <linux-kernel+bounces-40622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C098A83E350
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:24:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1102483E352
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:24:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 752672886DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:24:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42EA91C22212
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:24:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F133222F17;
-	Fri, 26 Jan 2024 20:24:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 293DD22F12;
+	Fri, 26 Jan 2024 20:24:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="S7Fn+2q7"
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="J64cU7AZ"
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B288023742;
-	Fri, 26 Jan 2024 20:24:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A12022EE8
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 20:24:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706300662; cv=none; b=NvQEpN6tgb7Fbmnuv+cyM3UUmqrcN54wJsCzgwU9C5mUrlMQ+1mprq3QuELkga6zraiYJi5VaDATSqREAMtSx8zkkuJ+Ene9PbiBG23CTr17SFMg7zGwijLTj40sP2RA/ovSVKLRGv/7RDS8eEkMtVDfUalsf9MJ+viLV5yTdYw=
+	t=1706300682; cv=none; b=bAocQUcWP+Dtm5rbz9ecXSErlUbTpEk4w1Y1xtuUC8o+KRsCAz3HA5Wj0ytCW01wg4tFDIidi/ZKZz/df86oj666rpGIltz+O7w2mEyRMfRq+pg9bjmKbKhezQkWiCZT37YvVWR19DFzguNf3JHHnDYP7TWXmXLy0TfqGkfwxkk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706300662; c=relaxed/simple;
-	bh=MewhNM/AnMv4gHjnvJ36YA4iTJBmyf65fpyPqm7gGSs=;
+	s=arc-20240116; t=1706300682; c=relaxed/simple;
+	bh=aacVZUW/5mGUDYhkkYBJUGL/Gh8Ctd/YyoFEal95FVc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BzkXHZnCKDn+ZIwd/Jq5WGt3IZWQJlKyTfB7I4dDdjuE2A+MlEtscECYfjumeHET+VawHY7yodu7wddHANYelX+gw5E5apnuTDVu7qgSRUgECCbErauAxVlL1MIb2c7Asa9iUmIJPbMLmMwAaEncxVi2uv792HdOEhvexjdvMBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=S7Fn+2q7; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1706300657;
-	bh=MewhNM/AnMv4gHjnvJ36YA4iTJBmyf65fpyPqm7gGSs=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=S7Fn+2q7L/WWRHKaUQXYUdCAsI6rfmQG4XyHNpKQPkFyVLEAJNq2z2HSZjCtpUqkf
-	 U9B0tYXTnMcrRX0KND/ckeT8yez4CcuGxQ/QWstKiniki8Q4bz3agUHSljiU+a4n4i
-	 T+alU+hcHOfcTUTy47nhW6PNk91A2jtZcVHqVzmwTRC4RVwvX+Gow5EanLbhKmdbx0
-	 Zf0QGltHsQABkO40/h+PRbdnUPPFKuXxuQcQLUoEbz97nInjR2iHPWtHJNmH52nzKi
-	 XiBHWUj9xGkSOxa1J/yfokY2BmurjSI7Xpn1d2NuQWonWT7LV2SAs7HxqkSU5zUwJM
-	 0+ZQVOBmeZwUg==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TM8L93yJYzV3h;
-	Fri, 26 Jan 2024 15:24:17 -0500 (EST)
-Message-ID: <e3548c86-7422-432c-8b72-8de99fa9772f@efficios.com>
-Date: Fri, 26 Jan 2024 15:24:17 -0500
+	 In-Reply-To:Content-Type; b=c28j2h97Ugx/qlv1PbCElQ+HIbnojF4mLUBvlURoiWmM81ZEAmAclRW3c5bnlBZZCKfM1ElqnspjTc1V+bYMr3D26Crq4L89N2RgL1eAdYbya0DkQ8InTSAJo229BXzckZejVe5h+4LvnYuMpCfodw/tktQul4EGw5gqhThAXqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=J64cU7AZ; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <9f8343c3-7403-4346-9973-1b4421e3ad7d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706300677;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=x8oebQaftQNT6LeEHr7TKK0RzE3dlOdRvYdiT9hpg60=;
+	b=J64cU7AZQmfIOteP1Arx1fIFb/l+unLnQLiVc+IckZodSv/fH3ql/JCtI81f4qbE5AsP17
+	ROb9SXlR92gYbuPHBDIXPDL4wxR3Cc1Y+h0jmiucTF/uSLsONdhB3B3JNMj2k5jl50vCpa
+	hT3rq4jcrGqua93Dtgvvn4I1yp+6Ll4=
+Date: Fri, 26 Jan 2024 20:24:29 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND] [PATCH] eventfs: Have inodes have unique inode numbers
+Subject: Re: [PATCH v2 2/2] net: stmmac: dwmac-imx: set TSO/TBS TX queues
+ default settings
 Content-Language: en-US
-To: Steven Rostedt <rostedt@goodmis.org>, LKML
- <linux-kernel@vger.kernel.org>,
- Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Christian Brauner <brauner@kernel.org>, Ajay Kaher
- <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- Linus Torvalds <torvalds@linux-foundation.org>
-References: <20240126151251.74cb9285@gandalf.local.home>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20240126151251.74cb9285@gandalf.local.home>
+To: Esben Haabendal <esben@geanix.com>, netdev@vger.kernel.org,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Rohan G Thomas <rohan.g.thomas@intel.com>,
+ "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <cover.1706256158.git.esben@geanix.com>
+ <379f79687ca4a7d0394a04d14fb3890ce257e706.1706256158.git.esben@geanix.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <379f79687ca4a7d0394a04d14fb3890ce257e706.1706256158.git.esben@geanix.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On 2024-01-26 15:12, Steven Rostedt wrote:
-[...]
-> diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
-> index e1b172c0e091..2187be6d7b23 100644
-> --- a/fs/tracefs/inode.c
-> +++ b/fs/tracefs/inode.c
-> @@ -223,13 +223,41 @@ static const struct inode_operations tracefs_file_inode_operations = {
->   	.setattr	= tracefs_setattr,
->   };
+On 26/01/2024 09:10, Esben Haabendal wrote:
+> TSO and TBS cannot coexist. For now we set i.MX Ethernet QOS controller to
+> use the first TX queue with TSO and the rest for TBS.
+> 
+> TX queues with TBS can support etf qdisc hw offload.
+> 
+> Signed-off-by: Esben Haabendal <esben@geanix.com>
+> ---
+>   drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
+> index 8f730ada71f9..6b65420e11b5 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
+> @@ -353,6 +353,10 @@ static int imx_dwmac_probe(struct platform_device *pdev)
+>   	if (data->flags & STMMAC_FLAG_HWTSTAMP_CORRECT_LATENCY)
+>   		plat_dat->flags |= STMMAC_FLAG_HWTSTAMP_CORRECT_LATENCY;
 >   
-> +/* Copied from get_next_ino() but adds allocation for multiple inodes */
-> +#define LAST_INO_BATCH 1024
-> +#define LAST_INO_MASK (~(LAST_INO_BATCH - 1))
-> +static DEFINE_PER_CPU(unsigned int, last_ino);
+> +	/* Default TX Q0 to use TSO and rest TXQ for TBS */
+> +	for (int i = 1; i < plat_dat->tx_queues_to_use; i++)
+> +		plat_dat->tx_queues_cfg[i].tbs_en = 1;
 > +
-> +unsigned int tracefs_get_next_ino(int files)
-> +{
-> +	unsigned int *p = &get_cpu_var(last_ino);
-> +	unsigned int res = *p;
-> +
-> +#ifdef CONFIG_SMP
-> +	/* Check if adding files+1 overflows */
+>   	plat_dat->host_dma_width = dwmac->ops->addr_width;
+>   	plat_dat->init = imx_dwmac_init;
+>   	plat_dat->exit = imx_dwmac_exit;
 
-How does it handle a @files input where:
-
-* (files+1 > LAST_INO_BATCH) ?
-
-* (files+1 == LAST_INO_BATCH) ?
-
-> +	if (unlikely(!res || (res & LAST_INO_MASK) != ((res + files + 1) & LAST_INO_MASK))) {
-> +		static atomic_t shared_last_ino;
-> +		int next = atomic_add_return(LAST_INO_BATCH, &shared_last_ino);
-> +
-> +		res = next - LAST_INO_BATCH;
-> +	}
-> +#endif
-> +
-> +	res++;
-> +	/* get_next_ino should not provide a 0 inode number */
-> +	if (unlikely(!res))
-> +		res++;
-
-I suspect that bumping this res++ in the 0 case can cause inode range
-reservation issues at (files+1 == LAST_INO_BATCH-1).
-
-Thanks,
-
-Mathieu
-
-> +	*p = res + files;
-> +	put_cpu_var(last_ino);
-> +	return res;
-> +}
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+Reviewed-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
 
