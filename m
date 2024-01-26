@@ -1,159 +1,181 @@
-Return-Path: <linux-kernel+bounces-40264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F38083DD5C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:24:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 508B083DD63
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:25:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF87B282082
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:24:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 056721F219A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:25:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E5DC1CF92;
-	Fri, 26 Jan 2024 15:24:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 752531CF98;
+	Fri, 26 Jan 2024 15:24:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vLkxbsx0"
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="I5quX/oG"
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B9A215AD0
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:23:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFA061CF8C
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:24:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706282639; cv=none; b=QgUzoY7Uyr5oy3qASBvd2joOp5axIco9AMyYrqs6Rir07OhmAq7cOFZN9c3tGlzRCwEpqHmh2yLwEedlOs7C1ExrXuV2uSx+gGkYTqLzaAs6eYO4D3L/1LwypxgAhNdGxOsc2Uce1qU+hnbs3+5WnUONvXpooh7IvGGphIlwKV4=
+	t=1706282698; cv=none; b=QDH8DtIi9siY4bmvzTv+JL7SFeVP9r3G/R8kUrMOStd5fFKu23SKFJc02yWsRaRxk3Q24OJ3gkoK56fRjI8z/xSEYM0Tk43ThTcSUsVxiyt1RZA1E7bm1KjIUivYHmUqiTx5+Kq5TluzDlL9dXDZJqhiP9kGcn5tzubdiUbUVBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706282639; c=relaxed/simple;
-	bh=ydPZ3tu4FlaDxMtV6SOM9OK/z2p8/IzKH4YoVsZ330U=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=OqcPEx7sbhuQLuObHFynUOLypbnE8UkvhKdakMXQHyQPm5tRxonrI8qunEWrAGJXKmtkLxsYnoRSesru7RUKGYfGp7j129xsYGH/DW4dPhvl+wnJokJyuywE7wewhYLLJaSRxisiib7NhfVgIAV2Jpvqb2DPdCRtu5V3YWtayKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vLkxbsx0; arc=none smtp.client-ip=209.85.210.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6ddc261570cso582870b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 07:23:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706282638; x=1706887438; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uy3R1AKMbIaUlXE1Nr9/RuFwNoQzqIu4pzJFsA3j5jw=;
-        b=vLkxbsx03MC06Bfz8RTh7dCKiQYtJHKMutnW9AOzNBJYV/IoHT05IdRN8Wsa2PlAzh
-         vAPdKvsdBaWDs30FzNm+wgtzAcxE/OfmpBeKIIA3ENWm/eVvo29YlGf294kN9/ORIvDV
-         RMn7if9iR9uWNUEDc1anluTF6Xjp8Vgsx0SFlAoro+7SR4PoG3NpizTrYecLtYRdNRfy
-         oELeEOSTPC1X+vBZKHTbNoyntUPCruS7udz1lrl/dk0h5h/fFSO2I0hYI+qdHcELPv2o
-         13tWTFs27z48HDGJ6+9m5PNwU9QlXCvpg8RBYoqQ6UIfNRc9HQyJiotqCCb0vzoU49Js
-         tXmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706282638; x=1706887438;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=uy3R1AKMbIaUlXE1Nr9/RuFwNoQzqIu4pzJFsA3j5jw=;
-        b=QD/sQ3RD44Pw39eEkyi7ZTIvvY6k1eVCdYEU+obCZuZptPAHoLxhSVhTSeR0TKnyqq
-         u1Dye2mSjkZOKKznoVrjpttAe2FUaRp0pf6ADGGthk+JzmVJDkWeQjEsV9Hw0RKf1dkn
-         Tlo/ngWYtVL/TUWhrJKhwJl8CGGQ9MyJdEcgSo7u+rsHmli4ZtEyi4qmqycAGaTIkwdG
-         z5X6as52/6jpAhtsaypPRBCaws4QEfpQn0GP5/hFCgRY4xZzx8Q9Yt+/ZRny2zpIOMfI
-         t8mtAD/FSkMkIBLd31RdX01WnJEzEQD5nb0PFciotl3LMUcSVhueZAt5aB+a/E06a5yL
-         d1tA==
-X-Gm-Message-State: AOJu0Yw7h0rVa9piHv2L8mvDcFtysTZ4cFhaQiB4JOl8mUq31PLsKLtw
-	Cc0r3iLmTPfX3YPP0dxfrjvWjNRlngHH1PQAXDwp1CnIkSY2RqtenbMUG/GZwwlfDuFX0o3X/JW
-	zHA==
-X-Google-Smtp-Source: AGHT+IHQfxRoZeNwOqFJdXs7U9dhuzak/9AcePRZQYH58f/39D52wykb9ESAoZ9pjQpLXy9fdKdTaNW+gCM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:1d1d:b0:6de:622:2ebf with SMTP id
- a29-20020a056a001d1d00b006de06222ebfmr81316pfx.3.1706282637856; Fri, 26 Jan
- 2024 07:23:57 -0800 (PST)
-Date: Fri, 26 Jan 2024 07:23:55 -0800
-In-Reply-To: <20240126134230.1166943-1-kirill.shutemov@linux.intel.com>
+	s=arc-20240116; t=1706282698; c=relaxed/simple;
+	bh=lCrZACFRheTRgybLbHLBHBT1Wcn498DFz01Cjya20fk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LGle3RaiVgVm9yydxBQJDCv+o0wHakq0WNIZuOCubnvyRMrHYkdr0gEtAvPsjcc3YReQCFF7hjPqpnBp3srXWX7w5ttDHNM6GLwdbHOygQBo4H9k3To16oJVxt94ipuNuuQBFu4QbajcWVYabgIk7U0VfiTqmA/miZnUSolPjRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=I5quX/oG; arc=none smtp.client-ip=95.215.58.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706282692;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Lgnke4sUkqUF2pP50eUrQqO/+toTU6ZkY2mCk3wiX/M=;
+	b=I5quX/oGzhc+pgrMgx4pRy9+4HXJOwjBwGTQdCMAkq42FB1gw5jMK2DSusevSGdsUNcrqw
+	ZzLYiZiG34Xz60A5MQin1gbU/V616IT6k+rln3GYBxdT1h67K9dXBOQHtoK9x/ZlF2oGg0
+	vu07KdhJEhwl7dVWBsQPSWuhyjXbW8s=
+From: Gang Li <gang.li@linux.dev>
+To: David Hildenbrand <david@redhat.com>,
+	David Rientjes <rientjes@google.com>,
+	Mike Kravetz <mike.kravetz@oracle.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Tim Chen <tim.c.chen@linux.intel.com>
+Cc: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	ligang.bdlg@bytedance.com,
+	Gang Li <gang.li@linux.dev>
+Subject: [PATCH v5 0/7] hugetlb: parallelize hugetlb page init on boot
+Date: Fri, 26 Jan 2024 23:24:04 +0800
+Message-Id: <20240126152411.1238072-1-gang.li@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240126134230.1166943-1-kirill.shutemov@linux.intel.com>
-Message-ID: <ZbPOi0760srv0rE0@google.com>
-Subject: Re: [RFC] Randomness on confidential computing platforms
-From: Sean Christopherson <seanjc@google.com>
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, 
-	"Theodore Ts'o" <tytso@mit.edu>, "Jason A. Donenfeld" <Jason@zx2c4.com>, 
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, 
-	Elena Reshetova <elena.reshetova@intel.com>, Jun Nakajima <jun.nakajima@intel.com>, 
-	Tom Lendacky <thomas.lendacky@amd.com>, Ashish Kalra <ashish.kalra@amd.com>, 
-	linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Jan 26, 2024, Kirill A. Shutemov wrote:
-> Problem Statement
->=20
-> Currently Linux RNG uses the random inputs obtained from x86
-> RDRAND/RDSEED instructions (if present) during early initialization
-> stage (by mixing the obtained input into the random pool via
-> _mix_pool_bytes()), as well as for seeding/reseeding ChaCha-based CRNG.
-> When the calls to both RDRAND/RDSEED fail (including RDRAND internal
-> retries), the timing-based fallbacks are used in the latter case, and
-> during the early boot case this source of entropy input is simply
-> skipped. Overall Linux RNG has many other sources of entropy that it
-> uses (also depending on what HW is used), but the dominating one is
-> interrupts.
->=20
-> In a Confidential Computing Guest threat model, given the absence of any
-> special trusted HW for the secure entropy input, RDRAND/RDSEED
-> instructions is the only entropy source that is unobservable outside of
-> Confidential Computing Guest TCB. However, with enough pressure on these
-> instructions from multiple cores (see Intel SDM, Volume 1, Section
-> 7.3.17, =E2=80=9CRandom Number Generator Instructions=E2=80=9D), they can=
- be made to
-> fail on purpose and force the Confidential Computing Guest Linux RNG to
-> use only Host/VMM controlled entropy sources.
->=20
-> Solution options
->=20
-> There are several possible solutions to this problem and the intention
-> of this RFC is to initiate a joined discussion. Here are some options
-> that has been considered:
->=20
-> 1. Do nothing and accept the risk.
-> 2. Force endless looping on RDRAND/RDSEED instructions when run in a
->    Confidential Computing Guest (this patch). This option turns the
->    attack against the quality of cryptographic randomness provided by
->    Confidential Computing Guest=E2=80=99s Linux RNG into a DoS attack aga=
-inst
->    the Confidential Computing Guest itself (DoS attack is out of scope
->    for the Confidential Computing threat model).
-> 3. Panic after enough re-tries of RDRAND/RDSEED instructions fail.
->    Another DoS variant against the Guest.
-> 4. Exit to the host/VMM with an error indication after a Confidential
->    Computing Guest failed to obtain random input from RDRAND/RDSEED
->    instructions after reasonable number of retries. This option allows
->    host/VMM to take some correction action for cases when the load on
->    RDRAND/RDSEED instructions has been put by another actor, i.e. the
->    other guest VM. The exit to host/VMM in such cases can be made
->    transparent for the Confidential Computing Guest in the TDX case with
->    the assistance of the TDX module component.
+Hi all, hugetlb init parallelization has now been updated to v5.
 
-Hell no.  Develop better hardware if you want to guarantee forward progress=
-.
-Don't push more complexity into the host stack for something that in all li=
-kelihood
-will never happen outside of buggy software or hardware.
+This version is tested on next-20240125.
 
-> 5. Anything other better option?
+Update Summary:
+- Use prep_and_add_allocated_folios in 2M hugetlb parallelization
+- Update huge_boot_pages in arch/powerpc/mm/hugetlbpage.c
+- Revise struct padata_mt_job comment
+- Add 'max_threads' section in cover letter
+- Collect more Reviewed-by
 
-Give the admin the option to choose between "I don't care, carry-on with le=
-ss
-randomness" and "I'm paranoid, panic, panic, panic!".  In other words, let =
-the
-admin choose between #1 and #3 at boot time.  You could probably even let t=
-he
-admin control the number of retries, though that's probably a bit excessive=
-.
+# Introduction
+Hugetlb initialization during boot takes up a considerable amount of time.
+For instance, on a 2TB system, initializing 1,800 1GB huge pages takes 1-2
+seconds out of 10 seconds. Initializing 11,776 1GB pages on a 12TB Intel
+host takes more than 1 minute[1]. This is a noteworthy figure.
 
-And don't tie it to CoCo VMs, e.g. if someone is relying on randomness for =
-a bare
-metal workload, they might prefer to panic if hardware is acting funky.
+Inspired by [2] and [3], hugetlb initialization can also be accelerated
+through parallelization. Kernel already has infrastructure like
+padata_do_multithreaded, this patch uses it to achieve effective results
+by minimal modifications.
+
+[1] https://lore.kernel.org/all/783f8bac-55b8-5b95-eb6a-11a583675000@google.com/
+[2] https://lore.kernel.org/all/20200527173608.2885243-1-daniel.m.jordan@oracle.com/
+[3] https://lore.kernel.org/all/20230906112605.2286994-1-usama.arif@bytedance.com/
+[4] https://lore.kernel.org/all/76becfc1-e609-e3e8-2966-4053143170b6@google.com/
+
+# max_threads
+This patch use `padata_do_multithreaded` like this:
+
+```
+job.max_threads	= num_node_state(N_MEMORY) * multiplier;
+padata_do_multithreaded(&job);
+```
+
+To fully utilize the CPU, the number of parallel threads needs to be
+carefully considered. `max_threads = num_node_state(N_MEMORY)` does
+not fully utilize the CPU, so we need to multiply it by a multiplier.
+
+Tests below indicate that a multiplier of 2 significantly improves
+performance, and although larger values also provide improvements,
+the gains are marginal.
+
+  multiplier     1       2       3       4       5
+ ------------ ------- ------- ------- ------- -------
+  256G 2node   358ms   215ms   157ms   134ms   126ms
+  2T   4node   979ms   679ms   543ms   489ms   481ms
+  50G  2node   71ms    44ms    37ms    30ms    31ms
+
+Therefore, choosing 2 as the multiplier strikes a good balance between
+enhancing parallel processing capabilities and maintaining efficient
+resource management.
+
+# Test result
+      test case       no patch(ms)   patched(ms)   saved
+ ------------------- -------------- ------------- --------
+  256c2T(4 node) 1G           4745          2024   57.34%
+  128c1T(2 node) 1G           3358          1712   49.02%
+     12T         1G          77000         18300   76.23%
+
+  256c2T(4 node) 2M           3336          1051   68.52%
+  128c1T(2 node) 2M           1943           716   63.15%
+
+# Change log
+Changes in v5:
+- Use prep_and_add_allocated_folios in 2M hugetlb parallelization
+- Update huge_boot_pages in arch/powerpc/mm/hugetlbpage.c
+- Revise struct padata_mt_job comment
+- Add 'max_threads' section in cover letter
+- Collect more Reviewed-by
+
+Changes in v4:
+- https://lore.kernel.org/r/20240118123911.88833-1-gang.li@linux.dev
+- Make padata_do_multithreaded dispatch all jobs with a global iterator
+- Revise commit message
+- Rename some functions
+- Collect Tested-by and Reviewed-by
+
+Changes in v3:
+- https://lore.kernel.org/all/20240102131249.76622-1-gang.li@linux.dev/
+- Select CONFIG_PADATA as we use padata_do_multithreaded
+- Fix a race condition in h->next_nid_to_alloc
+- Fix local variable initialization issues
+- Remove RFC tag
+
+Changes in v2:
+- https://lore.kernel.org/all/20231208025240.4744-1-gang.li@linux.dev/
+- Reduce complexity with `padata_do_multithreaded`
+- Support 1G hugetlb
+
+v1:
+- https://lore.kernel.org/all/20231123133036.68540-1-gang.li@linux.dev/
+- parallelize 2M hugetlb initialization with workqueue
+
+Gang Li (7):
+  hugetlb: code clean for hugetlb_hstate_alloc_pages
+  hugetlb: split hugetlb_hstate_alloc_pages
+  padata: dispatch works on different nodes
+  hugetlb: pass *next_nid_to_alloc directly to
+    for_each_node_mask_to_alloc
+  hugetlb: have CONFIG_HUGETLBFS select CONFIG_PADATA
+  hugetlb: parallelize 2M hugetlb allocation and initialization
+  hugetlb: parallelize 1G hugetlb initialization
+
+ arch/powerpc/mm/hugetlbpage.c |   2 +-
+ fs/Kconfig                    |   1 +
+ include/linux/hugetlb.h       |   2 +-
+ include/linux/padata.h        |   2 +
+ kernel/padata.c               |  14 +-
+ mm/hugetlb.c                  | 234 +++++++++++++++++++++++-----------
+ mm/mm_init.c                  |   1 +
+ 7 files changed, 175 insertions(+), 81 deletions(-)
+
+-- 
+2.20.1
+
 
