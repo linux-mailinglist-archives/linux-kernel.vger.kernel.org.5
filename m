@@ -1,134 +1,131 @@
-Return-Path: <linux-kernel+bounces-39797-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62EA883D635
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:26:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0201083D6F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:56:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02D211F27A4A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:26:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE78DB2C71C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:46:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0CE3208B8;
-	Fri, 26 Jan 2024 08:54:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 498F914F52D;
+	Fri, 26 Jan 2024 08:58:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OHecq1xJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Tqs/wwmI"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33FCF208A0;
-	Fri, 26 Jan 2024 08:54:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 505BA14F522;
+	Fri, 26 Jan 2024 08:58:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706259280; cv=none; b=jJdAcHEYaOvLdba96MQgUUa2hoO4Wn6qeyB+qdLPBcP/ESwgQpcwUG+biJGW2/HiBp6LrHQKegrV880i01pTVvyIULarm450R5CyD5dyYxomgXczI4xDfy93/UbHlpsKFNc2F0+QsHcgqWWzvdv9vXXI4OY2D5ick4GXFgo79yg=
+	t=1706259510; cv=none; b=N5fO1D5w2UYpBWA4Kau7P9lweL1y8LQ9TNesS5V4Kvp96R5M2rcYH46oCSgQlZKHHG9AL6+oRX33cQ6iUFVFgtKrsm12MnvEgnVPTjJowbkqyLxPflp8XI8Mrx+q7oqT+9F2rWljxRB9hZVcwIi/jaVbVE4bWxIQ9Fr3OxMepvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706259280; c=relaxed/simple;
-	bh=Nco0gGCevkj+Z/D7Efv6Mu6IcwBISDdRJFLmz1/fUAw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AXHmZvEyLZsEqaTHhSXnajxNF/BzCun/a2MelKmLT84goO0qb7O7bJdFBK5TXUpthQTXBRreWdgpMx6bzgcLmgvX8hUWqDXKMV1s42iqOcRMyJqDcZJE0y2xaZqgx/6iZp3Jph1BtABX14LxaiRsG17/l3lLdInGDbr+VWpVEQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OHecq1xJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C846C433C7;
-	Fri, 26 Jan 2024 08:54:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706259279;
-	bh=Nco0gGCevkj+Z/D7Efv6Mu6IcwBISDdRJFLmz1/fUAw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OHecq1xJGmyd9yHQrt6uZSsjIEc8vx46L2qMiRCvpsb/pZd94WTS7RmcxpAEvkLRU
-	 8NHNawzrU0SRUFlz3V3eMzdfBMngS8sfoukQTUhJDXbhMFMZSjlW1HcSX8OkAuuBQm
-	 9OdHdWmt06gKKVgFnhBTTmFxBqrAOuxuxJ6RPOcehbx1DXr+p/AlSN57Kqek6V8EZV
-	 TatdPVNulhyp5x4ivTh1KCKFDt6xGLzSCJDrlixyJ6rUcEHEIxSXQzHCdIxE3sXQy/
-	 0kLclXE6aEYRc0xWSZbVg5rB3XNTKPY5jEQHEwJ/+aWws0+fykcynA5HYq8mx+ljF9
-	 ULrImWI/cChOA==
-Date: Fri, 26 Jan 2024 09:54:36 +0100
-From: Wolfram Sang <wsa@kernel.org>
-To: Andi Shyti <andi.shyti@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Peter Rosin <peda@axentia.se>,
-	linux-i2c <linux-i2c@vger.kernel.org>,
-	lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MAINTAINERS: Update i2c host drivers repository
-Message-ID: <ZbNzTKCFxBx9Bz6Y@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Peter Rosin <peda@axentia.se>,
-	linux-i2c <linux-i2c@vger.kernel.org>,
-	lkml <linux-kernel@vger.kernel.org>
-References: <20240124225031.3152667-1-andi.shyti@kernel.org>
+	s=arc-20240116; t=1706259510; c=relaxed/simple;
+	bh=lc30mIArQmDYKUSrlU3o4au3+PWflrmT0YtX99/0sZg=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ui6KgKgyiId+kJhREXcvhWdF7gjRrET5I8SCniKuXhzmI+k+NbgYAR+lpOXy+zIJxlJ+fsQA+LuSy3PA+urmFs86vH0V+YY57zMnezQz9W3apZkQM43BvEKAm0cLX4ZzykQV056Z/MfJA1dfBEbejpEOqUxroOYHa0JLd4s4uSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Tqs/wwmI; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706259509; x=1737795509;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=lc30mIArQmDYKUSrlU3o4au3+PWflrmT0YtX99/0sZg=;
+  b=Tqs/wwmI/OtgM+D4eRC89H0NlNzkGUf2/DJBkSPz8xIRB82NBE2gdZ11
+   Apev+K97+dDZngSX1Z+NBkzlVfIUzx96U0hXoI+vOo0O6WRg3n5GXizdJ
+   ZwnyBdFRuu3ohHEKDn4TJJYf6Z+4FOhFWLYfnOkkgzxEP9ZCI+ASrWIZu
+   yyyXDeDzYkLR/zxNlVyjgvfkc5maIgG4eZvgUvxgA3hYSv12H0hW8e9h8
+   1lklOh567mz/Md2oktPd2jsIGDJ4cjqmuSbHznkr8Oysmaezj3p9gp7MQ
+   /nu6f9H25YrRWqplrr7J7YuJjrNDqNo+YnzVul7941YHQctTmOUgzg1Uq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="9792978"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="9792978"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 00:58:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="930310425"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="930310425"
+Received: from yanli3-mobl.ccr.corp.intel.com (HELO xiongzha-desk1.ccr.corp.intel.com) ([10.254.213.178])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 00:58:23 -0800
+From: Xiong Zhang <xiong.y.zhang@linux.intel.com>
+To: seanjc@google.com,
+	pbonzini@redhat.com,
+	peterz@infradead.org,
+	mizhang@google.com,
+	kan.liang@intel.com,
+	zhenyuw@linux.intel.com,
+	dapeng1.mi@linux.intel.com,
+	jmattson@google.com
+Cc: kvm@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	zhiyuan.lv@intel.com,
+	eranian@google.com,
+	irogers@google.com,
+	samantha.alt@intel.com,
+	like.xu.linux@gmail.com,
+	chao.gao@intel.com,
+	xiong.y.zhang@linux.intel.com,
+	Xiong Zhang <xiong.y.zhang@intel.com>
+Subject: [RFC PATCH 34/41] KVM: x86/pmu: Intercept EVENT_SELECT MSR
+Date: Fri, 26 Jan 2024 16:54:37 +0800
+Message-Id: <20240126085444.324918-35-xiong.y.zhang@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
+References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="9Zj7cecOgPW9eitE"
-Content-Disposition: inline
-In-Reply-To: <20240124225031.3152667-1-andi.shyti@kernel.org>
+Content-Transfer-Encoding: 8bit
 
+From: Xiong Zhang <xiong.y.zhang@intel.com>
 
---9Zj7cecOgPW9eitE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Event selectors for GP counters are still intercepted for the purpose of
+security, i.e., preventing guest from using unallowed events to steal
+information or take advantages of any CPU errata.
 
-On Wed, Jan 24, 2024 at 11:50:31PM +0100, Andi Shyti wrote:
-> The i2c host patches are now set to be merged into the following
-> repository:
->=20
-> git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
->=20
-> Signed-off-by: Andi Shyti <andi.shyti@kernel.org>
-> Cc: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Xiong Zhang <xiong.y.zhang@intel.com>
+Signed-off-by: Mingwei Zhang <mizhang@google.com>
+---
+ arch/x86/kvm/vmx/pmu_intel.c | 1 -
+ arch/x86/kvm/vmx/vmx.c       | 1 -
+ 2 files changed, 2 deletions(-)
 
-Acked-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+index 9bbd5084a766..621922005184 100644
+--- a/arch/x86/kvm/vmx/pmu_intel.c
++++ b/arch/x86/kvm/vmx/pmu_intel.c
+@@ -809,7 +809,6 @@ void intel_passthrough_pmu_msrs(struct kvm_vcpu *vcpu)
+ 	int i;
+ 
+ 	for (i = 0; i < vcpu_to_pmu(vcpu)->nr_arch_gp_counters; i++) {
+-		vmx_set_intercept_for_msr(vcpu, MSR_ARCH_PERFMON_EVENTSEL0 + i, MSR_TYPE_RW, false);
+ 		vmx_set_intercept_for_msr(vcpu, MSR_IA32_PERFCTR0 + i, MSR_TYPE_RW, false);
+ 		if (fw_writes_is_enabled(vcpu))
+ 			vmx_set_intercept_for_msr(vcpu, MSR_IA32_PMC0 + i, MSR_TYPE_RW, false);
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index d28afa87be70..1a518800d154 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -698,7 +698,6 @@ static bool is_valid_passthrough_msr(u32 msr)
+ 	case MSR_LBR_CORE_FROM ... MSR_LBR_CORE_FROM + 8:
+ 	case MSR_LBR_CORE_TO ... MSR_LBR_CORE_TO + 8:
+ 		/* LBR MSRs. These are handled in vmx_update_intercept_for_lbr_msrs() */
+-	case MSR_ARCH_PERFMON_EVENTSEL0 ... MSR_ARCH_PERFMON_EVENTSEL0 + 7:
+ 	case MSR_IA32_PMC0 ... MSR_IA32_PMC0 + 7:
+ 	case MSR_IA32_PERFCTR0 ... MSR_IA32_PERFCTR0 + 7:
+ 	case MSR_CORE_PERF_FIXED_CTR_CTRL:
+-- 
+2.34.1
 
-Andi did a great job with the host controller drivers, and we concluded
-that it will be easier for all if he maintains his own branches. I will
-normally pull them into my I2C tree. If I am out-of-service for some
-reason, he can simply move to Greg instead. Thanks, Andi!
-
-> ---
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 39219b144c239..ec0ffff6ded40 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -10091,7 +10091,7 @@ L:	linux-i2c@vger.kernel.org
->  S:	Maintained
->  W:	https://i2c.wiki.kernel.org/
->  Q:	https://patchwork.ozlabs.org/project/linux-i2c/list/
-> -T:	git git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git
-> +T:	git git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
->  F:	Documentation/devicetree/bindings/i2c/
->  F:	drivers/i2c/algos/
->  F:	drivers/i2c/busses/
-> --=20
-> 2.43.0
->=20
-
---9Zj7cecOgPW9eitE
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmWzc0wACgkQFA3kzBSg
-KbaEKA/+LyN0BMyKrNSUO3DpZm4cP+TYl/8atdYDPiPT68yOSvpFLCPKWug2EY1W
-bXtmvAd0PXeWuJicSoZUmsWFWctDG4CTPC65+TeNTXRgqFEF2wTJRCT99VcYxVR8
-6qsfUyx296C4FfCwk6ftWl4OMEX98O61h74wms3UvQKDE4diInjN4uyeejCo9zVJ
-dZsOGXDQzMrgzuA7Ft5DuSu8SDCQK3eth4XL+W5DXKd/33fPBa8Uev7zKlcG3gQe
-f2KG9jQftrBYtnWoXkOcA6URhmEXzMmcFdkMQuiNxd5hbB+QDkay6dfWsHQpRhKx
-4yoMKLGgNnkb3R+pC0WGHvHgcOuaFgvxEKG5TVaUQkjE7O5/I6uVh1AllUOKtkcA
-5ns32gs6nVF1+Z126F+YJAbeJ+jzPZGucI9pQVaoJ7tjqOp4xHwreO3okEwe1Hf0
-2dCZFYqaqvvQs9i+dO+lXDsIsWlgjGLivtWwpfPomkxiArco08ckI5js8VmZk4Vd
-z3FQIkLWmtArkKDifs89kmLvpRQGqFGq1m1Aeto29+MeuG9cb1Mp+RSjLWHLTwxO
-BtLTKzaUQjtOeJqISQLjb9grgCDh63Pj+oMXIoGZjvPbldrqsvz33f774ijFawno
-u7bljlEM3B44WRXt8Tkbnn7+Qyk49eUMIVBaX1odS6+PbWTG1tM=
-=Td7Z
------END PGP SIGNATURE-----
-
---9Zj7cecOgPW9eitE--
 
