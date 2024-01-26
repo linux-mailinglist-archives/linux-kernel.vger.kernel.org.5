@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-40458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDE3D83E0C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 81B5283E0BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:45:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93FB0288495
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:45:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 353AB288495
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:45:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C228225AD;
-	Fri, 26 Jan 2024 17:43:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93DB6224CE;
+	Fri, 26 Jan 2024 17:43:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="jlyXhMlW"
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2060.outbound.protection.outlook.com [40.107.92.60])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="s+2XPMlQ"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2089.outbound.protection.outlook.com [40.107.243.89])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F209821A1A;
-	Fri, 26 Jan 2024 17:43:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.60
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 320A6219E0;
+	Fri, 26 Jan 2024 17:43:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.89
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706291000; cv=fail; b=dQv9vf5N+V13DuMDNCU0st3PFA83LIlPRrOtTBYOZA/W/etzfbleaG8hhEXNicUoSyz//68pBXvRXjWLJwEEbYYPB+hTcglw4Xxzw9h5hKIgo4xQGQQ9bI+M4m2gIScl69xn/tCzKyqCjWv3+y6Ldy3hYmdkHldNd3Y+MXJGh7s=
+	t=1706290999; cv=fail; b=rfqPQbedfhMl0m+0oWPSAIp7RjQXQupZ1tyVw5APqsAyHRtHK1y6NJmn51E+E9/8wKfuFG8OpRTakQKnQQB99mvpP9oakcidyTUKEHAM/rFWtgnOgpf5We1fv7L4E0SmNjKQ+7znQxfcvqGMbJM/j9gVyXyDG2Gp5MNOELqWUsA=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706291000; c=relaxed/simple;
-	bh=U6xPfMRjJEuLVn/pfcA4LRFtqgl6iM5I1JOTTyqSCzM=;
+	s=arc-20240116; t=1706290999; c=relaxed/simple;
+	bh=VqWB1kkSrvJyzbf+GfkH9BEeo9DF45blLgCZVzfVck8=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=N+oPBF3/AvJyw4Wi9eUeVeN79TyKAUpV5WHLHPDOpLfPfN5P/+FMhmFy2dXcj4y9ETYyeKu1Lc4CiarNa2ay+PH2a4wKU6ZmWp0/dnuonLMq6cO6THrj1F3edRhISXfo1i/A7u2/xPGyE52Ls2gmIRSgE1LOB0HdxsupYKnn5qM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=jlyXhMlW; arc=fail smtp.client-ip=40.107.92.60
+	 MIME-Version:Content-Type; b=oNHkC0pX1uols7ipNqjhBaLz19J9cdJJ/m9ku6WZ7e3kd/ungssLqDpQ8nLBIHVTCgtRFYvPEYHkTZu/Wzo1jXNn4Ua+XrEkxcRZ5g+OKJ7zsezQVsH4WgWkCVt0bMNcWS1BfFgIbU4KrqQ4hwMeXTF8rzX2DUmzvs9pLEAbAig=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=s+2XPMlQ; arc=fail smtp.client-ip=40.107.243.89
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UJ+sIIw8jVtrH7ZwhYn14P2+1tQ8D/QT0GOnVsXV/w+fEK25CyP2XdbjXV5OHcAk9H4iGvLk4KwuBaYfCDtlmDUXqzvKdo8Vtv4Eye16FVN8TPZmEU7cJ6rG+iyft5mpEdq1PhFAtqIiU6+TRyCf1Ql3iy4ok6IdIuV0lMnWRv9S7rtvyb2A0ExHO9lXUqD5CMZNBORjjyg7K12H1SU8vMmBqBI98Ank9fp4iNJ87poCxUC9wXZGNHBS2L+hhuwFIr9GNa9xum4A8e/wUKJKVAv5C8HR4FYRM9IqTUhfrZ+Dho0CBihbramOFcwUloomXk6ijrIlnssrzkvPMwwScA==
+ b=AE2rYYuumi1kFBwWF92EgLejgO8lWtdVenoQ8l3TkvOJ0KqZDhnlLvrfuYYQDSdgo9ni7JnyVADwj03sxFOjKpzspzl5d7zURWnt90MSZBpqNVqpEht9brREfhmIO+Ffa0pwq3TzxtPdanEatYfImtcnUxkyeXQEERfekkLge+S22nTWcPOj1TTAP5+XVHgaxLcwfqrdZ5KRqPf+wLb5EH2K7Aopmtvr5R03WelmUGs6B9oi5nA2ISWghUI29XdO8DVZg70saBzRPmy7J3jVWhDWqURSDkhIjmWCvUA6Vm+LiIBimshw07dSqF4eoRqmvXbTKAN8ybejDKcVkRO8Jw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=T2Z2QMGoaFhEwOf6ddByjZdN3SIzdKkrE8cQnwvgOZk=;
- b=GZV9yK+QQSysRj2PtOgx9/7krbwJ7l7+NyKMD2xK5QeQBcpHVpaMY+uQqGUWeJlvEyhQgPK2uuKtyXQ4ow7qLyd1U2uUlE1MgJTLCV9WzUsVQR9mIcE8KSboL9Kcb5vJIsN6IFS+sWjTHyGFoWBhk4q9Kd6BRUASxbVsAgvN5H9Cyo9RlMvtxwF1fpHYOX7e0s0YzdPZW1v46+zZWNXlyN8VsqBpYyjHdwGV1QHMJjnjVlveKanQd+7z50M2SnA9jeDwDxv+sTUoiL2VAw6rZACmOmG0MOEnSWXFiBWVl82J37yewWqk3EtZIqhEgtscQ/5vO8wHzSlrOloyrKRp2g==
+ bh=VK48TDjo5Ij7e6tm+AyS2U+SvbbvXi4xGAc71IdoQKE=;
+ b=du1jJcErbUJAH6PgPPIi7DWPY5RsPBf6qzVK82nUGyAjKEqLvweKc6KrLrf+rAXiebmNewL+qrx292k8NrJFsHKKNxpG6Xuub3XCQdjxGNhHYlmgB8YkvlOyXzRfN5xxbaTl5gxqzSL9nvbCQ8+dAMP5GB2zm0GPlWOul6d7cCPcQRNIJVIew63GqfeHRC8XczEm4kiiztZlnML75gCl32Kjcr2P/RX6j2ucrAHBs0JTuZDVU7Jv+5UHXVWE6o43pik7f/RhDGdWMELER4+Y/BkQXvKHiVFq5YuZK6R9dliuoaL/9E3MEIB0/XEeL8DxdzfOAIXHOPLeK9cCvQ6VHQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=davemloft.net smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T2Z2QMGoaFhEwOf6ddByjZdN3SIzdKkrE8cQnwvgOZk=;
- b=jlyXhMlWKttgMs2pPEcgDAZXyKz/IdY8NzN6tfvlh8jlu1AVi2Te/uAIRrbUWivA6jsFselrcQGwCZ499rQ1m2hy9kkuLc/ZEWpNr/Q3RhrdetUrrtao1t+/tJW8UKivFy9phbSmz0lh3BsV3qnArvnbIBO5NM6LcEhmyYaymkc=
-Received: from BN9PR03CA0649.namprd03.prod.outlook.com (2603:10b6:408:13b::24)
- by PH7PR12MB6563.namprd12.prod.outlook.com (2603:10b6:510:211::12) with
+ bh=VK48TDjo5Ij7e6tm+AyS2U+SvbbvXi4xGAc71IdoQKE=;
+ b=s+2XPMlQEnv+bG01GmZWshIpmuw0gUXUg8s5BGxwl5q4bOWgbLR3BlAy6c/8+ZcEASC9zwPU0Wx3x+GwsQEAvCn5uzCDWlyIuZCN0gWxBPlY9XKjMP6OOlKw5XfMCIKJJsHeW30jJEh49eSuKAsfKRYVM3bnHGmZM9scRjcqdjQ=
+Received: from BN9PR03CA0365.namprd03.prod.outlook.com (2603:10b6:408:f7::10)
+ by DS0PR12MB7828.namprd12.prod.outlook.com (2603:10b6:8:14b::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.26; Fri, 26 Jan
- 2024 17:43:14 +0000
-Received: from BN3PEPF0000B06B.namprd21.prod.outlook.com
- (2603:10b6:408:13b:cafe::f8) by BN9PR03CA0649.outlook.office365.com
- (2603:10b6:408:13b::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.24 via Frontend
- Transport; Fri, 26 Jan 2024 17:43:14 +0000
+ 2024 17:43:15 +0000
+Received: from BN3PEPF0000B06F.namprd21.prod.outlook.com
+ (2603:10b6:408:f7:cafe::97) by BN9PR03CA0365.outlook.office365.com
+ (2603:10b6:408:f7::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22 via Frontend
+ Transport; Fri, 26 Jan 2024 17:43:15 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -62,20 +62,20 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN3PEPF0000B06B.mail.protection.outlook.com (10.167.243.70) with Microsoft
+ BN3PEPF0000B06F.mail.protection.outlook.com (10.167.243.74) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7249.0 via Frontend Transport; Fri, 26 Jan 2024 17:43:14 +0000
+ 15.20.7249.0 via Frontend Transport; Fri, 26 Jan 2024 17:43:15 +0000
 Received: from driver-dev1.pensando.io (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Fri, 26 Jan
- 2024 11:43:12 -0600
+ 2024 11:43:14 -0600
 From: Brett Creeley <brett.creeley@amd.com>
 To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
 	<pabeni@redhat.com>, <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC: <shannon.nelson@amd.com>, <brett.creeley@amd.com>
-Subject: [PATCH v2 net-next 07/10] pds_core: Unmask adminq interrupt in work thread
-Date: Fri, 26 Jan 2024 09:42:52 -0800
-Message-ID: <20240126174255.17052-8-brett.creeley@amd.com>
+Subject: [PATCH v2 net-next 08/10] pds_core: Fix up some minor issues
+Date: Fri, 26 Jan 2024 09:42:53 -0800
+Message-ID: <20240126174255.17052-9-brett.creeley@amd.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240126174255.17052-1-brett.creeley@amd.com>
 References: <20240126174255.17052-1-brett.creeley@amd.com>
@@ -90,76 +90,83 @@ X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN3PEPF0000B06B:EE_|PH7PR12MB6563:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3f977373-b65b-4525-de6c-08dc1e964596
+X-MS-TrafficTypeDiagnostic: BN3PEPF0000B06F:EE_|DS0PR12MB7828:EE_
+X-MS-Office365-Filtering-Correlation-Id: 19264248-ac0d-4d1f-dcac-08dc1e96464a
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	EEP393KoWddaXTsEKVUfDglAstH66wN81XmrlHb7cr5xJRoBl4+AagxD7nDUZxpPoyEUXrHfAGv+KROP2oYIIcgUY/nsJfgLVzTf29pDuUBx61zdn1mD3JJuTGty0+Shan8oPT5iX+Tkh46i/zSaOSpkQaJM54mRNB9XMSTEKq0MeoOFE2EO2UwZMPVfbYewYKDe0YUTsXWJB7C3OVl6sA/z84UTqgCFwR1wfQYE68YwUZ5GkCirsmR3H+L2+dJI64yqn/WP5Gld6dJ/IwsKy/yxGtQ5z+IVh3yEP4KJZnQVXu96Q5nxT+wN9ZOx+l7fKnD7OZERY7MfMiXsNUh3d3imh9EkJm7KRXMvYPE3fXpth/EC7rMf1kG+3CHMUaN7GY37SYw7i7k1mUEgH9iiB5Uwg8Dpqu5U4330OslrfHQEfAxpm0GYQz3qg8FDkaDaNSXo5O6rvDLe7OQ2oZdoDJHASPllSwlmNkaCH/II5Dw/Fl4f50KMmnT1mt+LJQuM7pID6kZLKMc6REqd4ttgIgbUwbQgSPexT6JiEHmc/OZMYXSxCguIKVujxMiNFEN9TjLba2sESh4Mpnrc4vi2UA1h9YyXESqoPrSN47MIopg9QNNn6zNzOj+Whf/NfrgcAkLn7d7NSFNC9umQxvPWoqJPc2aoHGdl6drxHIkbBrIuEGjt5ZKi/p0QrRR4e+04gtoWKcd9Q37jP7rrNf/MDAHARG61qsM+hhUjHzgE3s+mnRZn/DUfWx73tBB1g04wxaFkPBrqyuBsuXn6n2Absg==
+	k7IRl+CjilliTT6of8NxJvZMBAQTfNwZNUP/xXR7AhcvV/p9lyh3IKRkWnnoyCPP3tMrzK1UNr3pOn3epzjXKBkibvDSKyaJ993caUYzrAo6cOyeEIgHOYrhoXQS74eWls0pMiSvQl/JzSba+rwMzwhr2dCBVglQdEsAomwfT/OMOzkFPlj9P62YmPOWm0MI/w9Gn/D4Knb5YeY3bRVnfIjwl2/akUHTWbgkotLjbs+qIGY44ivxkuhthyCD9vNPqFdpidVedPlmBQW+W7ThLqPfRuj8mQM15lSlu1kUX/2/nYTU62AO3OVayQlp4WOKti9q+CZKUcisXiSt/iLUCWmx4lcOTVOJH1qZpts1bwSwpoaN5KnjRzUJwYDtPjM0SGFI6wH9O+Td1SfWbTiAD0+gy9gsALqUgt06ki0V+kpRW2SoVhFLCczlinJcB9O6SjGqZyesEBH6SyHcrHMi8aA/pb0N0LIkYnH+ubPBdoc4X9AxTZiqsaOjsH63gN4un2/QMc+gRTuhs3BVIEEnKPhSCKBXDnNm20h8sxY5UvzpEVj0mdKQC3WoWWHOWJypThvY7kiy7jeG6P9Vmo57XSE9i7zvR1SkLQdgB+LWt+vd41As1gCIsDxXGgT191g9WBhOGSnsKnY4KTZccdk3S5hfRBqNr0cin2/HZOkI80luAdZ52pJk6tlwtrhIA8R8fZ83NAG80oAjdFThA8rGTS+A/A0WJIR2btzsZtlLth0=
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(376002)(346002)(136003)(230922051799003)(1800799012)(82310400011)(451199024)(64100799003)(186009)(46966006)(40470700004)(36840700001)(40480700001)(40460700003)(336012)(426003)(83380400001)(47076005)(86362001)(1076003)(2906002)(36860700001)(41300700001)(81166007)(16526019)(6666004)(36756003)(2616005)(4326008)(478600001)(82740400003)(8676002)(8936002)(26005)(316002)(54906003)(70206006)(70586007)(44832011)(5660300002)(110136005)(356005)(36900700001);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(136003)(346002)(376002)(230922051799003)(1800799012)(186009)(451199024)(82310400011)(64100799003)(46966006)(36840700001)(40470700004)(40460700003)(40480700001)(41300700001)(83380400001)(36756003)(86362001)(4326008)(36860700001)(81166007)(2616005)(16526019)(1076003)(26005)(426003)(336012)(82740400003)(356005)(110136005)(478600001)(2906002)(8936002)(5660300002)(316002)(70206006)(6666004)(70586007)(54906003)(44832011)(47076005)(8676002)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 17:43:14.0741
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 17:43:15.2538
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f977373-b65b-4525-de6c-08dc1e964596
+X-MS-Exchange-CrossTenant-Network-Message-Id: 19264248-ac0d-4d1f-dcac-08dc1e96464a
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BN3PEPF0000B06B.namprd21.prod.outlook.com
+	BN3PEPF0000B06F.namprd21.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6563
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7828
 
-Unmasking the interrupt during the pdsc_adminq_isr
-is a bit early and could cause unnecessary interrupts.
-Instead always unmask after processing the adminq
-and notifyq in pdsc_work_thread()->pdsc_process_adminq().
-Also, since we are always unmasking, there's no need
-for the local credits variable in pdsc_process_adminq().
+Running xmastree.py against the driver found some
+RCT issues, so fix them.
+
+Also, if allocating pdsc->intr_info in pdsc_dev_init()
+fails the driver still tries to free pdsc->intr_info.
+Fix this by just returning -ENOMEM since there's
+nothing to free at this point of failure.
 
 Signed-off-by: Brett Creeley <brett.creeley@amd.com>
 Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
-Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
 ---
- drivers/net/ethernet/amd/pds_core/adminq.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ drivers/net/ethernet/amd/pds_core/debugfs.c | 5 ++---
+ drivers/net/ethernet/amd/pds_core/dev.c     | 6 ++----
+ 2 files changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/ethernet/amd/pds_core/adminq.c b/drivers/net/ethernet/amd/pds_core/adminq.c
-index ea773cfa0af6..c83a0a80d533 100644
---- a/drivers/net/ethernet/amd/pds_core/adminq.c
-+++ b/drivers/net/ethernet/amd/pds_core/adminq.c
-@@ -82,7 +82,6 @@ void pdsc_process_adminq(struct pdsc_qcq *qcq)
- 	unsigned long irqflags;
- 	int nq_work = 0;
- 	int aq_work = 0;
--	int credits;
+diff --git a/drivers/net/ethernet/amd/pds_core/debugfs.c b/drivers/net/ethernet/amd/pds_core/debugfs.c
+index dd6aaeecfe0a..d56fdbb4cdb9 100644
+--- a/drivers/net/ethernet/amd/pds_core/debugfs.c
++++ b/drivers/net/ethernet/amd/pds_core/debugfs.c
+@@ -32,8 +32,8 @@ void pdsc_debugfs_del_dev(struct pdsc *pdsc)
  
- 	/* Don't process AdminQ when it's not up */
- 	if (!pdsc_adminq_inc_if_up(pdsc)) {
-@@ -128,11 +127,9 @@ void pdsc_process_adminq(struct pdsc_qcq *qcq)
+ static int identity_show(struct seq_file *seq, void *v)
+ {
+-	struct pdsc *pdsc = seq->private;
+ 	struct pds_core_dev_identity *ident;
++	struct pdsc *pdsc = seq->private;
+ 	int vt;
  
- credits:
- 	/* Return the interrupt credits, one for each completion */
--	credits = nq_work + aq_work;
--	if (credits)
--		pds_core_intr_credits(&pdsc->intr_ctrl[qcq->intx],
--				      credits,
--				      PDS_CORE_INTR_CRED_REARM);
-+	pds_core_intr_credits(&pdsc->intr_ctrl[qcq->intx],
-+			      nq_work + aq_work,
-+			      PDS_CORE_INTR_CRED_REARM);
- 	refcount_dec(&pdsc->adminq_refcnt);
- }
+ 	ident = &pdsc->dev_ident;
+@@ -102,8 +102,7 @@ static const struct debugfs_reg32 intr_ctrl_regs[] = {
  
-@@ -157,7 +154,6 @@ irqreturn_t pdsc_adminq_isr(int irq, void *data)
+ void pdsc_debugfs_add_qcq(struct pdsc *pdsc, struct pdsc_qcq *qcq)
+ {
+-	struct dentry *qcq_dentry, *q_dentry, *cq_dentry;
+-	struct dentry *intr_dentry;
++	struct dentry *qcq_dentry, *q_dentry, *cq_dentry, *intr_dentry;
+ 	struct debugfs_regset32 *intr_ctrl_regset;
+ 	struct pdsc_queue *q = &qcq->q;
+ 	struct pdsc_cq *cq = &qcq->cq;
+diff --git a/drivers/net/ethernet/amd/pds_core/dev.c b/drivers/net/ethernet/amd/pds_core/dev.c
+index 62a38e0a8454..b237cea65a5e 100644
+--- a/drivers/net/ethernet/amd/pds_core/dev.c
++++ b/drivers/net/ethernet/amd/pds_core/dev.c
+@@ -348,10 +348,8 @@ int pdsc_dev_init(struct pdsc *pdsc)
  
- 	qcq = &pdsc->adminqcq;
- 	queue_work(pdsc->wq, &qcq->work);
--	pds_core_intr_mask(&pdsc->intr_ctrl[qcq->intx], PDS_CORE_INTR_MASK_CLEAR);
- 	refcount_dec(&pdsc->adminq_refcnt);
+ 	/* Get intr_info struct array for tracking */
+ 	pdsc->intr_info = kcalloc(nintrs, sizeof(*pdsc->intr_info), GFP_KERNEL);
+-	if (!pdsc->intr_info) {
+-		err = -ENOMEM;
+-		goto err_out;
+-	}
++	if (!pdsc->intr_info)
++		return -ENOMEM;
  
- 	return IRQ_HANDLED;
+ 	err = pci_alloc_irq_vectors(pdsc->pdev, nintrs, nintrs, PCI_IRQ_MSIX);
+ 	if (err != nintrs) {
 -- 
 2.17.1
 
