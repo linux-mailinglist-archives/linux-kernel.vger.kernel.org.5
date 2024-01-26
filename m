@@ -1,234 +1,113 @@
-Return-Path: <linux-kernel+bounces-40099-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40100-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14FFB83DA48
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:45:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B70183DA50
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:52:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9991C28E132
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:45:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C999B2913F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:52:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37D351A29C;
-	Fri, 26 Jan 2024 12:45:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C632E1B5B1;
+	Fri, 26 Jan 2024 12:52:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HjENpqed"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X3dPaX1k"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5987B19452
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 12:45:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A95E51AACB;
+	Fri, 26 Jan 2024 12:52:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706273118; cv=none; b=Pr0q3RZwe0KtbXxOerfChHLxVOEn3YNGE66d4cFcfBHSLR7fsuM/3C+fuS1dWagMpA9+N5nf8MsyrXev+C7EEdKf5kaOp+djqVTRGMvftS8xicqqadnVJ98h9OIkEZdNrsGjydqaMx6BzvEiDuaKv88Tk0Gd3defAPVLXBTlfI0=
+	t=1706273546; cv=none; b=E22ewFTHnqiv2p76w8CB5CC/dB0VQjxRxUalJj1YZQw9VXTxcNV/eezL4HwCNYOnBSKg2lIZhiO3t0+BWqT4Mk7fIHAJan8CGDkkwV6eI3etMry3H50HcNMdUe6EUJqbyvfr0FMNlKBdS6fYoEL3FBvrvAFYiGqkK5pxSGXz3uY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706273118; c=relaxed/simple;
-	bh=XIAfNN2TnesbiltFdat/ZR5k0/YSTED9WyPg9/4Ukc8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YafiO3GmlblcPhyFmxqyYL+UR4hnXZ6ALgWdhuLBe88pQJN7FFO9J0G1OTlguv+KV8aBIcx1OHfBMGRkmQn1RNE5EVo7sW8Jgi9DR1sLNiIj7oueWGDHGvsxLkQaOuOQWnFNQRhps/SdG4wBr4CjR1KJEH+h7XZmaoIRTr8MBLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HjENpqed; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 927C8C433C7;
-	Fri, 26 Jan 2024 12:45:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706273117;
-	bh=XIAfNN2TnesbiltFdat/ZR5k0/YSTED9WyPg9/4Ukc8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HjENpqedemo2G0vGWINC6AuDVKw5FbZCLaoR+ix/1vANsdYKjcXoB8Mb5NUnSYP88
-	 Q6TqJar6Jg15K5mRmDFUvF1jXrlz3MPlfaFmNpBih4c1xXL44s5/ghPbmOPsf7NieU
-	 haWKbLYdVz1P7TXfnaN03AUSQtJ3qBlnVB0UcDR858s2P8SU4qqkEiGGpDOf0K2PYS
-	 qwLEjXQismRMMffKcZvXtdr1QVwAeXxa9ir2Apfw7BLh8VXcMSKCz5xb0rnTbmDMjX
-	 Cwvbr8LAWHFRCpOXgE9tQV7Gg+M4bFqqLvi4yQyBjClmCiHdtDktpwtujg+LyYJ9KT
-	 wsgP4ZEFRSjfQ==
-Date: Fri, 26 Jan 2024 13:45:15 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>, 
-	Jessica Zhang <quic_jesszhan@quicinc.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Sam Ravnborg <sam@ravnborg.org>, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>, 
-	David Airlie <airlied@gmail.com>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
-	Rob Clark <robdclark@gmail.com>
-Subject: Re: Re: [PATCH RFC 0/4] Support for Simulated Panels
-Message-ID: <hhmbghooegclx3jbsx2neryligk3mj77lq7gns5xegags5ltoz@acdu6hssqwlw>
-References: <20240116-jz-test-sim-panel-v1-0-f9511f46c9c7@quicinc.com>
- <x6wi5xnihnbpqsujjfjfw3ft6njncruta5l3xa44pds5oxmdkw@mmvv4bciy65s>
- <87cyu0qn81.fsf@intel.com>
- <e1f10583-1d5b-fdac-24bf-098a0ba06241@quicinc.com>
+	s=arc-20240116; t=1706273546; c=relaxed/simple;
+	bh=5GztzeRJ7QonXydbXi0LYB9tRSovYETdbDIFz1v4Qmw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ECQBWKVFVisRP7HfE/iCddW0ljlVkFbUSSeiZFmIflBd3FfaCcwMRT6ON/3N1XCuiaZrplKHYQhkIJGVwSZWgtpp6x9KiwgD09VEHpenniR/zua60xAQ/lOJmw0QZKwK8ILQr1hVsjTuhdpoO1vs4c8keqNXP7o3hGXDJTE5yYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X3dPaX1k; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dc223463ee4so512969276.2;
+        Fri, 26 Jan 2024 04:52:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706273543; x=1706878343; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5GztzeRJ7QonXydbXi0LYB9tRSovYETdbDIFz1v4Qmw=;
+        b=X3dPaX1kU5zaWUFcAcAOVCIcookzalkK12TyPx6VDWOTpVGUPB/gE/2lrcSEDL7xpF
+         7grJ+gosUiJi8mM22t/bKossMnUVoWUF+LeB/KT7RWFD4yfPjUVb473EinXw8p18G63e
+         h2nOYcHDBf/ny5gbw+TUHW8wInox5pze0AwAdV3P2sysQBTEJ0LPAq372INPRxbX8pwF
+         V+Bk6LfktsNcLEXQh8fn11pHUz2RYcrpLGLKgp/O/DQuqZzuHuY/2zvgGvfAPIDCPlSE
+         VtpjcrOp5YrGd17T0h00b60k1jFFplfIKWbMTom4rClPHu2C631nfF4Qxr0vGEtAGL/E
+         3Fiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706273543; x=1706878343;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5GztzeRJ7QonXydbXi0LYB9tRSovYETdbDIFz1v4Qmw=;
+        b=BeD21kViSbaEtS+qLEhKEdgwKs6fGVbOPCahGKBtO5cCl/Z8tERR0UWsYYnR/OzSEf
+         Kbf/TfBRShTNMHTV6C9K1M1/LiRFsdVgOGEz8B1tAeWNhLgfOS+5VEYxwSctJAXqM29i
+         ND8976FHFbMSI4IQwLld9p4QdpBcZEWX36g0fDSp1ur/waPC6rfBhRN1XpHPp87rH2y2
+         G/Is1jyAdk2TOpNZYOM7/GgtGC51KN69bL54DFXrrxUi2kocGaug/j/16MR0OUy1/cXd
+         n5nVQoYbgErqwXSRsTzOvs3pQPTNV2sOOJFs7u0SUjOSxLs9ntzUy5GbTH8nEn+KGTSr
+         Jv/g==
+X-Gm-Message-State: AOJu0Yx6A6XIsJmdaWXrThazTILHsSbxyVOTWdCH/nhs2uuDVmrxlBuu
+	t7pawZ1cz8/1CnpA2wjTd3G9FW4U9nMNSD7Qrix+nxJIAb+aTpo34KWgq/Ge4d2SDZ0tzitqwmR
+	XYfS5sQMOoLYSE/0gwkPc650Outjn0VCpc1GDaSedlZk=
+X-Google-Smtp-Source: AGHT+IHDUz3d4JvNDFrSYoB+OTb7JyrHZFIFiZZTWGcIVjetZDWCyRBa0ecedY7Ar33Ir88A6iXAXmaWFCnMv/QwZK0=
+X-Received: by 2002:a5b:f09:0:b0:dc6:3610:c344 with SMTP id
+ x9-20020a5b0f09000000b00dc63610c344mr899970ybr.13.1706273543622; Fri, 26 Jan
+ 2024 04:52:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ttyvot3alawck5nq"
-Content-Disposition: inline
-In-Reply-To: <e1f10583-1d5b-fdac-24bf-098a0ba06241@quicinc.com>
-
-
---ttyvot3alawck5nq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240118120347.61817-1-ioworker0@gmail.com> <CAK1f24=TfJvsDCEesaTa8rGP7ay62p6UiJem=XWnpFa9yfSA3A@mail.gmail.com>
+ <CAK1f24nS8MEA3wcS4za-uSp7ZBxvd+xqMRf8-u=m5uCvTs8yJQ@mail.gmail.com> <CAK1f24kOYDOw26ov5TVpAyNP13hCjm=cDo4rooOTPDuv8L6Pnw@mail.gmail.com>
+In-Reply-To: <CAK1f24kOYDOw26ov5TVpAyNP13hCjm=cDo4rooOTPDuv8L6Pnw@mail.gmail.com>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Fri, 26 Jan 2024 20:52:12 +0800
+Message-ID: <CAK1f24n0152CmPghBLQ7225=rwEuP6mMdBybWZz7heTLzemBqw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] mm/madvise: add MADV_F_COLLAPSE_LIGHT to process_madvise()
+To: akpm@linux-foundation.org, Michal Hocko <mhocko@suse.com>, 
+	"Zach O'Keefe" <zokeefe@google.com>, Yang Shi <shy828301@gmail.com>, 
+	David Hildenbrand <david@redhat.com>
+Cc: songmuchun@bytedance.com, peterx@redhat.com, mknyszek@google.com, 
+	minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	linux-api@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 17, 2024 at 09:36:20AM -0800, Abhinav Kumar wrote:
-> Hi Jani and Maxime
->=20
-> On 1/17/2024 2:16 AM, Jani Nikula wrote:
-> > On Wed, 17 Jan 2024, Maxime Ripard <mripard@kernel.org> wrote:
-> > > Hi,
-> > >=20
-> > > On Tue, Jan 16, 2024 at 02:22:03PM -0800, Jessica Zhang wrote:
-> > > > This series introduces a simulated MIPI DSI panel.
-> > > >=20
-> > > > Currently, the only way to validate DSI connectors is with a physic=
-al
-> > > > panel. Since obtaining physical panels for all possible DSI configu=
-rations
-> > > > is logistically infeasible, introduce a way for DSI drivers to simu=
-late a
-> > > > panel.
-> > > >=20
-> > > > This will be helpful in catching DSI misconfiguration bugs and catc=
-hing
-> > > > performance issues for high FPS panels that might not be easily
-> > > > obtainable.
-> > > >=20
-> > > > For now, the simulated panel driver only supports setting customized
-> > > > modes via the panel_simlation.mode modparam. Eventually, we would l=
-ike
-> > > > to add more customizations (such as configuring DSC, dual DSI, etc.=
-).
-> > >=20
-> > > I think that it's more complicated than it needs to be.
-> >=20
-> > Both too complicated and not complicated enough! :p
+On Fri, Jan 26, 2024 at 6:15=E2=80=AFPM Lance Yang <ioworker0@gmail.com> wr=
+ote:
+[...]
+> > If the kernel supports a more relaxed (opportunistic)
+> > MADV_COLLAPSE, we will modify the THP settings as follows:
+> >
+> > echo madvise >/sys/kernel/mm/transparent_hugepage/enabled
+> > echo madvise >/sys/kernel/mm/transparent_hugepage/defrag
 >
-> The end goal is to have a framework to be able to validate the display
-> pipeline with MIPI panels of any resolution , DSC/non-DSC, different MIPI
-> flags etc.
->=20
-> Historically, QC has been having an in-house framework to validate the
-> panels in a simulated way as its logistically not possible to procure eve=
-ry
-> panel from every vendor. This has been working pretty well but its not
-> upstream yet. So we would like to work with the community to work on a mo=
-del
-> which works for everyone and this RFC was initiated with that in mind.
+> The correct THP settings should be:
+> echo always >/sys/kernel/mm/transparent_hugepage/enabled
+> echo madvise >/sys/kernel/mm/transparent_hugepage/defrag
+>
 
-I think the goal was pretty clear. My point was more that there's no
-reason it should be driver specific, and having a second path for it
-doesn't really exert the actual panel path in the driver. I think a
-separate driver would be better.
+Apologize for the confusion in my previous email.
 
-> There is simulation infrastructure in place in upstream for HDMI/DP in the
-> form of chamelium based testing in IGT but no such fwk exists for DSI
-> displays.
->=20
-> Different MIPI panels and resolutions test out not only the DSI controller
-> but the entire display pipeline as based on resolution, compression and M=
-IPI
-> mode flags different parts of the pipeline can get exercised.
->=20
-> > > Why do we need to support (and switch to) both the actual and
-> > > "simulated" panel?
-> > >=20
->=20
-> As per my discussion on IRC with the panel/bridge maintainers and DT
-> maintainers, a simulation panel does not qualify for its own devicetree as
-> its not a real hardware so we needed to come up with a way to have a modu=
-le
-> which can be attached to the encoder without its own bindings and
-> devicetree. Thats what led to this RFC.
+The third type of requirements prefers not to use huge pages at all.
+The correct THP settings should be:
+echo madvise >/sys/kernel/mm/transparent_hugepage/enabled
+echo defer+madvise >/sys/kernel/mm/transparent_hugepage/defrag
 
-I still think it's worth trying, there's plenty of virtual drivers in
-the DT already. But even then, DT policies shouldn't dictate general
-framework design decisions: we have other ways to probe panels than
-using the DT (by loading overlays, registering devices by hand, etc.). I
-still think it would be a good idea to try though.
-
-> > > Wouldn't it be simpler if we had a vkms-like panel that we could eith=
-er
-> > > configure from DT or from debugfs that would just be registered the
-> > > usual way and would be the only panel we register?
-> >=20
->=20
-> No, we need to have validate actual hardware pipeline with the simulated
-> panel. With vkms, actual display pipeline will not be validated. With
-> incorrect display pipeline misconfigurations arising from different panel
-> combinations, this can easily be caught with any existing IGT CRC testing.
-> In addition, all performance related bugs can also be easily caught by
-> simulating high resolution displays.
-
-That's not what I meant. What I meant was that something like a
-user-configurable, generic, panel driver would be a good idea. Just like
-vkms (with the debugfs patches) is for a full blown KMS device.
-
-> > I get the idea of trying to test DSI code without panels, and looking at
-> > the goals above, I think your vkms suggestion is going to fall short of
-> > those goals.
-> >=20
-> > However, my gut feeling is that creating a simulated panel to catch DSI
-> > misconfiguration etc. is going to be insanely complicated, and this
-> > series doesn't even scratch the surface.
-> >=20
-> > I guess my questions are, what's the scope here really, are those goals
-> > realistic, does more code already exist beyond this skeleton?
-> >=20
->=20
->=20
-> This series is only a starting RFC to be able to validate any display mod=
-e.
-> This would have to be extended to be able to customize different pieces of
-> the panel. Lets talk about the customizable pieces:
->=20
-> 1) Display resolution with timings (drm_display_mode)
-> 2) Compression/non-compression
-> 3) Command mode/Video mode
-> 4) MIPI mode flags
-> 5) DCS commands for panel enable/disable and other panel sequences
-> 6) Power-up/Power-down sequence for the panel
->=20
-> Without a physical panel, yes its hard to validate if anything is wrong w=
-ith
-> (4) OR (5), the display might not come up at all visually. But from our
-> experience, thats only a small portion and the real benefit of this
-> framework will actually be from the validation failures we will catch from
-> (1) to (4).
->=20
-> This RFC only provides a way to customize (1) at the moment as we wanted =
-to
-> get some feedback from the community about the best way which will work f=
-or
-> everyone to customize all these parameters.
->=20
-> We are willing to expand this series based on the generic way we agree on=
- to
-> customize other params.
->=20
-> Yes, debugfs is an option too. But typically MIPI displays need some
-> parameters configured to attach the panel to the encoder. So perhaps we c=
-an
-> boot the simulation panel with a default resolution passed through command
-> line and then across a modeset switch (1) to (4).
-
-I think Jani's feeling was that it was going to be super complicated
-fairly fast so supporting more features would definitely help to get an
-idea of where this is going.
-
-Maxime
-
---ttyvot3alawck5nq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZbOpWgAKCRDj7w1vZxhR
-xW4KAQDTi1qXKjvMAV4J1VrSDEPWrm4HSLnPu0Mj7t4U/P/9MwEA/wS1UZ4TlVVL
-+nQ2ajQM6K66yUUIOLdzvskj3RYQ1A8=
-=kTxm
------END PGP SIGNATURE-----
-
---ttyvot3alawck5nq--
+> >
+> > Then, we will use process_madvise(MADV_COLLAPSE, xx_relaxed_flag)
+> > to address the requirements of the second type.
+[...]
 
