@@ -1,191 +1,156 @@
-Return-Path: <linux-kernel+bounces-40669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C79B83E3DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:25:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62C1483E3E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:26:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41AD51C21CF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:25:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0DB5B2211B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:26:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19C6C24B29;
-	Fri, 26 Jan 2024 21:25:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="0MsTTGuc"
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3985024A0D;
+	Fri, 26 Jan 2024 21:26:26 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BDB724B20
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 21:25:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDBA4249EA;
+	Fri, 26 Jan 2024 21:26:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706304304; cv=none; b=fO7N/irBec4qrnzkq2TuZlN2u0EgENNDVuzUOb415BqVKcAngk8Q5I+VhcCWKGkf7co/SIFAG6DeLyeKfkvDtRUYhFE7WSTMU4C+/M1qODmWKyQ8Yh4ezL3WPhmkXQoJ+p23gU8PjuWQ0T4EnAz9KpPVjYy4NmhrmHwL2Cx1pG8=
+	t=1706304385; cv=none; b=PL7zCA697Te1gG5ZX5Y/U79buhndpGSza1oeIbbyxy5GaUHJGJPD29LSzilSH5iFDe0uqpiuIVGg/w7xgVqlwlmnkXauUtFKa4beF8UkhZSqZIGDPBLfzYjtpSsf/gPJhfpZWbb6ShTBSgqTC7eztQJ/gQv9rADrn107lWw2gB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706304304; c=relaxed/simple;
-	bh=fAW9q4EkDHFfnVmOK3V3FffGHBBYnTq0r3oDKreuGGA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Mr4cZNd6GRcyT/0iaBMaymTuaWY4STKJKtKXg0Hm19hW5k2/6WC1PWKhyvf91fl7oaTJYEpC0nxEK1l+EvgJoK2gMWcma9KbEkuGVnFFKeJBdaNbZ4fJe8ihugQppRCb+Cmlr6cM9FKYxR3+Y5jDZ4igM0eqdkMoyqt/oH6plvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=0MsTTGuc; arc=none smtp.client-ip=209.85.210.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6e0cc84fe4dso674855a34.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:25:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1706304300; x=1706909100; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zvanse6LjWSfCjsaBajNTZhxwBoWqH9+J1P89qwYxic=;
-        b=0MsTTGucs2o00mXlglut6CAjnmfrqnTyoJlJ5+FEDR3n1lHOPzmfc8O2sanaz0wPJ4
-         txihaUGVjvcxkiFQiYmR7tRaKy1giP9OplPPMPs5uGiS+5JAhnMIuc1B2L2czP2s07+B
-         vi5uVAUHnkouPSE9sQKI/WpSfaKMsNqVGA7b2qqGrOGBOr9/TrGFK5EGJahcoHptTFAJ
-         4aZWjsvjP/evHT4VjUdL0yc8aACtReeyxD470fH+PZvjbCNG1p/7NX7Z1MZhaQQGHoQY
-         iNu6niNm2nUc8s06cExMf3Ph/A8C4t4dIpvg6jOmBNmkf+tdwQ9rnc7c9OkXWbjdof1e
-         2aEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706304300; x=1706909100;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zvanse6LjWSfCjsaBajNTZhxwBoWqH9+J1P89qwYxic=;
-        b=ZyhYevrcB2f/aogiePs1Ohl25bFBvwBMJX9VCnJqZXru8ORdkDiLuVgo44yA26eDNT
-         SGd4CYwgx73om5QWFjqndWb0wyuQ/wf8TlJJ+idiM96x8i0vUbvohGuo8uHHBNmqLMn0
-         ikk78RaquZirWYzFoU98Zn8k5bMR4oyEKeyDiCg5kdX7Yx40qJds52F1H9jx/tsEdYWB
-         CR7s19z5pvNHurQhJ0XKVsm+JSPIGv+cSdBoIemN7PvMxCzwKBkhWEznNAYdrCRWww/H
-         hXM0yWusq4u4qI27Ovz2HuMtIN+gSRc1OqBCIDFexWqrMlMOUtSuQGWUcLKxZA+pArST
-         ymGA==
-X-Gm-Message-State: AOJu0YzQ9BE5ih8mCl5FmHmm/0R+qqAdqY/BAna5YEUZbXgqH+gDocZ+
-	gJ5suKRoovFXQJ4eZEZLIU7plFYtDGN5st3iYx9ZFBx1E+uV2io7DlyAiYHq53StyjNAJzo6ggB
-	O
-X-Google-Smtp-Source: AGHT+IFLj7/DgBt1M2xRzu6g2VPEDSkWoraWV0/G8hOLyAaKFXIPk8opbTM8V38gETJOihr+oD1NAQ==
-X-Received: by 2002:a05:6870:1f12:b0:218:4bea:dcf2 with SMTP id pd18-20020a0568701f1200b002184beadcf2mr312517oab.55.1706304300405;
-        Fri, 26 Jan 2024 13:25:00 -0800 (PST)
-Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id hf22-20020a0568707a1600b0021451bfd968sm538575oab.50.2024.01.26.13.24.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 13:24:59 -0800 (PST)
-From: David Lechner <dlechner@baylibre.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: David Lechner <dlechner@baylibre.com>,
-	linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] spi: move split xfers for CS_WORD emulation
-Date: Fri, 26 Jan 2024 15:23:57 -0600
-Message-ID: <20240126212358.3916280-2-dlechner@baylibre.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706304385; c=relaxed/simple;
+	bh=eO2PbaoyRZQ7eFdXYsMoTI8zvWtJ7nAM+Z/kZ5vVv24=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=TfRhqEo1BhWiygswrfa9/FrnFIvK5urQN/ON5yw3p2wwXpYDclv+6DyVwUXBWahF2L5s4Ymfefeqc0ymVMSZhu6GNEh+9sMVjoy/0PfP1Bl3EBE5Ts8vhINjMQ17+cKEZouQTb7F3EB+Fhqk+dq2rPm38OfwpQb9DPG6wQNqtYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37A25C433C7;
+	Fri, 26 Jan 2024 21:26:24 +0000 (UTC)
+Date: Fri, 26 Jan 2024 16:26:26 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Devel
+ <linux-trace-devel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Christian Brauner <brauner@kernel.org>, Ajay Kaher
+ <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
+Message-ID: <20240126162626.31d90da9@gandalf.local.home>
+In-Reply-To: <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
+References: <20240126150209.367ff402@gandalf.local.home>
+	<CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-This moves splitting transfers for CS_WORD software emulation to the
-same place where we split transfers for controller-specific reasons.
+On Fri, 26 Jan 2024 12:25:05 -0800
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-This fixes a few subtle bugs.
+> Steven,
+>  stop making things more complicated than they need to be.
+> 
+> And dammit, STOP COPYING VFS LAYER FUNCTIONS.
+> 
+> It was a bad idea last time, it's a horribly bad idea this time too.
+> 
+> I'm not taking this kind of crap.
+> 
+> The whole "get_next_ino()" should be "atomic64_add_return()". End of story.
 
-The calculation for maxsize was wrong for bit sizes between 17 and 24.
-This is fixed by making use of spi_split_transfers_maxwords() which
-already has the correct calculation.
+I originally wrote it that way, and thought to myself that the VFS version
+is "faster" and switched to that.
 
-Also, since this indirectly calls spi_res_alloc(), to avoid leaking
-resources, spi_finalize_current_message() would need to be called
-on all error paths in __spi_validate() and callers of __spi_validate()
-would need to do the same. This is fixed by moving the call to
-__spi_pump_transfer_message() where it is already splitting transfers
-for other reasons and correctly releases resources in the subsequent
-error paths.
+My fault for being too much into micro-optimizations.
 
-Fixes: cbaa62e0094a ("spi: add software implementation for SPI_CS_WORD")
-Signed-off-by: David Lechner <dlechner@baylibre.com>
----
- drivers/spi/spi.c | 63 +++++++++++++++++++++++------------------------
- 1 file changed, 31 insertions(+), 32 deletions(-)
+> 
+> You arent' special. If the VFS functions don't work for you, you don't
+> use them, but dammit, you also don't then steal them without
+> understanding what they do, and why they were necessary.
+> 
+> The reason get_next_ino() is critical is because it's used by things
+> like pipes and sockets etc that get created at high rates, the the
+> inode numbers most definitely do not get cached.
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 53c25a351dab..a8b8474abc74 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -1747,13 +1747,37 @@ static int __spi_pump_transfer_message(struct spi_controller *ctlr,
- 
- 	trace_spi_message_start(msg);
- 
--	ret = spi_split_transfers_maxsize(ctlr, msg,
--					  spi_max_transfer_size(msg->spi),
--					  GFP_KERNEL | GFP_DMA);
--	if (ret) {
--		msg->status = ret;
--		spi_finalize_current_message(ctlr);
--		return ret;
-+	/*
-+	 * If an SPI controller does not support toggling the CS line on each
-+	 * transfer (indicated by the SPI_CS_WORD flag) or we are using a GPIO
-+	 * for the CS line, we can emulate the CS-per-word hardware function by
-+	 * splitting transfers into one-word transfers and ensuring that
-+	 * cs_change is set for each transfer.
-+	 */
-+	if ((msg->spi->mode & SPI_CS_WORD) && (!(ctlr->mode_bits & SPI_CS_WORD) ||
-+					       spi_is_csgpiod(msg->spi))) {
-+		ret = spi_split_transfers_maxwords(ctlr, msg, 1, GFP_KERNEL);
-+		if (ret) {
-+			msg->status = ret;
-+			spi_finalize_current_message(ctlr);
-+			return ret;
-+		}
-+
-+		list_for_each_entry(xfer, &msg->transfers, transfer_list) {
-+			/* Don't change cs_change on the last entry in the list */
-+			if (list_is_last(&xfer->transfer_list, &msg->transfers))
-+				break;
-+			xfer->cs_change = 1;
-+		}
-+	} else {
-+		ret = spi_split_transfers_maxsize(ctlr, msg,
-+						  spi_max_transfer_size(msg->spi),
-+						  GFP_KERNEL | GFP_DMA);
-+		if (ret) {
-+			msg->status = ret;
-+			spi_finalize_current_message(ctlr);
-+			return ret;
-+		}
- 	}
- 
- 	if (ctlr->prepare_message) {
-@@ -4065,31 +4089,6 @@ static int __spi_validate(struct spi_device *spi, struct spi_message *message)
- 
- 	message->spi = spi;
- 
--	/*
--	 * If an SPI controller does not support toggling the CS line on each
--	 * transfer (indicated by the SPI_CS_WORD flag) or we are using a GPIO
--	 * for the CS line, we can emulate the CS-per-word hardware function by
--	 * splitting transfers into one-word transfers and ensuring that
--	 * cs_change is set for each transfer.
--	 */
--	if ((spi->mode & SPI_CS_WORD) && (!(ctlr->mode_bits & SPI_CS_WORD) ||
--					  spi_is_csgpiod(spi))) {
--		size_t maxsize = BITS_TO_BYTES(spi->bits_per_word);
--		int ret;
--
--		ret = spi_split_transfers_maxsize(ctlr, message, maxsize,
--						  GFP_KERNEL);
--		if (ret)
--			return ret;
--
--		list_for_each_entry(xfer, &message->transfers, transfer_list) {
--			/* Don't change cs_change on the last entry in the list */
--			if (list_is_last(&xfer->transfer_list, &message->transfers))
--				break;
--			xfer->cs_change = 1;
--		}
--	}
--
- 	/*
- 	 * Half-duplex links include original MicroWire, and ones with
- 	 * only one data pin like SPI_3WIRE (switches direction) or where
--- 
-2.43.0
+Yes, I understood why it's optimized, and took it because it's been there
+since 2010 and figured it's pretty solid.
 
+> 
+> You copied that function without understanding why it does what it
+> does, and as a result your code IS GARBAGE.
+> 
+> AGAIN.
+> 
+> Honestly, kill this thing with fire. It was a bad idea. I'm putting my
+> foot down, and you are *NOT* doing unique regular file inode numbers
+> uintil somebody points to a real problem.
+> 
+> Because this whole "I make up problems, and then I write overly
+> complicated crap code to solve them" has to stop,.
+
+If I had just used the atomic_add_return() is it really that overly
+complicated? Yes, I copied from VFS because I figured if they put in the
+effort to make it faster then why not use that, even though it was overkill.
+
+> 
+> No more. This stops here.
+> 
+> I don't want to see a single eventfs patch that doesn't have a real
+> bug report associated with it. And the next time I see you copying VFS
+> functions (or any other core functions) without udnerstanding what the
+> f*ck they do, and why they do it, I'm going to put you in my
+> spam-filter for a week.
+> 
+> I'm done. I'm really *really* tired of having to look at eventfs garbage.
+
+So we keep the same inode number until something breaks with it, even
+though, using unique ones is not that complicated?
+
+I'd be happy to change that patch to what I originally did before deciding
+to copy get_next_ino():
+
+unsigned int tracefs_get_next_ino(int files)
+{
+	static atomic_t next_inode;
+	unsigned int res;
+
+	do {
+		res = atomic_add_return(files + 1, &next_inode);
+
+		/* Check for overflow */
+	} while (unlikely(res < files + 1));
+
+	return res - files;
+}
+
+If I knew going back and copying over get_next_ino() was going to piss you
+off so much, I wouldn't have done that.
+
+Not to mention that the current code calls into get_next_ino() and then
+throws it away. That is, eventfs gets its inode structure from tracefs that
+adds the inode number to it using the VFS get_next_ino(). That gets thrown
+away by the single inode assigned. This just makes it more likely that the
+global get_inode_ino() is going to overflow due to eventfs, even though
+eventfs isn't even using them.
+
+I only did the one inode number because that's what you wanted. Is it that
+you want to move away from having inode numbers completely? At least for
+pseudo file systems? If that's the case, then we can look to get people to
+start doing that. First it would be fixing tools like 'tar' to ignore the
+inode numbers.
+
+Otherwise, I really rather keep it the way it has always been. That is,
+each file has its own unique inode number, and not have to deal with some
+strange bug report because it's not. Is there another file system that has
+just one inode number?
+
+-- Steve
 
