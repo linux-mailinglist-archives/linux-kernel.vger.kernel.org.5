@@ -1,80 +1,125 @@
-Return-Path: <linux-kernel+bounces-40751-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D202283E548
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:23:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09E7583E54F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:24:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10FA71C24AD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:23:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DC601C24CBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:24:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 369E633CC5;
-	Fri, 26 Jan 2024 22:23:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15C4725631;
+	Fri, 26 Jan 2024 22:24:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q6o8451m"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Kt96DcjK"
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A10625636;
-	Fri, 26 Jan 2024 22:23:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE9CC2511A
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 22:24:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706307817; cv=none; b=O0uQ7W0smMiiF3ATjH3TjUh/OFTF0fNn3BPeLmGrZMhPQe69JM0OmTvQqqaS9O1uEi23SWlFoGjJTsqgvE90OLKdTX4d8FR+mhf9zydoKMlXrd9xAvgyDWm/09hdjVhw+4/zyKfF0PwnO8UHLmUfYISEzsa7H0yX00s88SkKCx4=
+	t=1706307849; cv=none; b=KOEBqpdohgfKn3XSU16EchBh7H5tJd/KqR319PWZQ6886mIYHI1qqQtIDEf7TxWOwm5HveiyBsj/1lL08u8CRQsa3+RvHWbpvlWL8UttM8lG4LSkrvTyVlI6Q7c5sMpdFDut0P+h7I2EiP1APWhXoGsnPjr3wBN6UGVT6mkaIck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706307817; c=relaxed/simple;
-	bh=3a2frhHXQISxXY9oeFM5r0zBXGcl8B7EtAddIILkH4M=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jPDSPOqWQ9WhzpukX8uLzl0iAcEnP2bZ0RVWjhkLPhImlTmSJ7tsua4WgepTK33mARRLcItqS+NKLEgj/jH9JfBRFD2by6LyWH5SwmGl90X2qRuIZ6NIy5Ss+vhAhzvNyFYlXqWjeLWKyrecJRhDieRgQ1dosDcqZCjWr7KsaKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q6o8451m; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B18FC433F1;
-	Fri, 26 Jan 2024 22:23:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706307816;
-	bh=3a2frhHXQISxXY9oeFM5r0zBXGcl8B7EtAddIILkH4M=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=q6o8451mPfBNpAwvrn79DeNRGR+zTb2WftPR95DqiosCUYNIl3w5CyDYjVQqde6iV
-	 b+K/NwDoxy8vnIwJy+WUArN85m6BXH1RZGNmmmR4hv4OoqG5AETTPbqe8naIBkO5oV
-	 iRl5er9RVSTPwXKOTxVn8yGM7yaSyb4NkElZ0cgpawI0osKPsOlf7pDt5M5cMbutyS
-	 nNopJCUXxXoSRuhz4+Yb7GQDciAGQ7AR3Vt2gi4azmxWW+u4yBmD/9aMvFPdBGsQAW
-	 u5qcIsO3YzLOj5R8y6FUkwWzVSpSFJwolST8eJHhec1/pRN7pzHnL5+PbQu2P7whji
-	 KBn4u0kn8BQFA==
-Date: Fri, 26 Jan 2024 14:23:35 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: syzkaller-bugs@googlegroups.com, Aleksandr Nogikh <nogikh@google.com>
-Cc: syzbot <syzbot+d99d2414db66171fccbb@syzkaller.appspotmail.com>,
- asmadeus@codewreck.org, ericvh@kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux_oss@crudebyte.com, lucho@ionkov.net,
- netdev@vger.kernel.org, v9fs@lists.linux.dev
-Subject: Re: [syzbot] [net?] [v9fs?] WARNING: refcount bug in p9_req_put (3)
-Message-ID: <20240126142335.6a01b39f@kernel.org>
-In-Reply-To: <000000000000ee5c6c060fd59890@google.com>
-References: <000000000000ee5c6c060fd59890@google.com>
+	s=arc-20240116; t=1706307849; c=relaxed/simple;
+	bh=SsDgh1/qxxOxnOUHCoY8liFdv/cFob22r3vkkHPCNeU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZdR/8aEj14a6rPB5lE/5KAdueKqJwdebFyD6WXfXlgsG1LvumVorUZqOG2VWtxJu5p8DAr8eZAI/Yad2xizAR9XX4sPQhxhYDm+4e0wLse6rwbYJ+xoHEvNs2rraWjxfmbAcsAejHjXljpD02zmFwKgEM57fitc27qzYt9nwhmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Kt96DcjK; arc=none smtp.client-ip=209.85.161.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-59a1948acf1so165192eaf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:24:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706307847; x=1706912647; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YNjTDm/3nOOc9T42E39x/f5ugwNL2q1NFWZyO0YlL50=;
+        b=Kt96DcjK3cfx8NVJMZSKaS2+OmVa3OLMqxLSpQPJXFc5+eG5lbFEHgHJRH5OIX5hYg
+         hhVTCs4Tn7K51YboRGX+6cdlTc3zAnfcoPK44BSQ9C/hyy3T5VZjBhmAI2mD3ShAuyFq
+         ebT29hesbCSJnfbJy0Ii5IJIfroKF04a6oTRM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706307847; x=1706912647;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YNjTDm/3nOOc9T42E39x/f5ugwNL2q1NFWZyO0YlL50=;
+        b=mxiZdqc8rHQ9zRciq0Umjv4sd4VkdPQOuco2lIk3oiRjnqM0AL+L95I1Y3344S84xp
+         WExhoIWW1LLeCvGWeWaHOMXmscfSTVH2DwYgvioneqqyYLz8PPhal06uR2jVQaLHB+Mr
+         P7x6xHzXFtHh6d5HjxpprB+kUdICENVM1viYBIxUDg1aK+GPR3hvePa0hlM45zDe20Bq
+         kGMF9VkvuKch7Rl31gB3bcnxM1WszBOsGu9ObJtWS5NaPe/IGnPpkXMevoNi6T/pYcjJ
+         cRSrK+mKgc5GQMRZBxDJH2/t5gmoNcxJV1h/yKkHqGAJRdF4Vw9AzIu7CiM7ucAcz0rP
+         yz8A==
+X-Gm-Message-State: AOJu0YzLAeluEydgIBOPtyppgyRAcymHXdJ8O95d5VJ7F8uH6nqGtPTW
+	dVu0kmmluBkcBwjxL1J2e0dKUxhq4TZHWxC5HnsXGKCUEkMJtLV76ZNGMiSXjQ==
+X-Google-Smtp-Source: AGHT+IGEnDcQTS7SnNR20li28GjLAf5EqupkVycmod63G3cSQkdng4abOodjIVFtLG7ZlpnwuWu1PQ==
+X-Received: by 2002:a05:6358:52c9:b0:176:cdb1:4414 with SMTP id z9-20020a05635852c900b00176cdb14414mr453949rwz.18.1706307846694;
+        Fri, 26 Jan 2024 14:24:06 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id p17-20020a056a0026d100b006d9accac5c4sm1602142pfw.35.2024.01.26.14.24.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 14:24:06 -0800 (PST)
+Date: Fri, 26 Jan 2024 14:24:05 -0800
+From: Kees Cook <keescook@chromium.org>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] Enable -Wstringop-overflow globally
+Message-ID: <202401261423.7AF702239@keescook>
+References: <Za6JwRpknVIlfhPF@work>
+ <CAHk-=wjG4jdE19-vWWhAX3ByfbNr4DJS-pwiN9oY38WkhMZ57g@mail.gmail.com>
+ <4907a7a3-8533-480a-bc3c-488573e18e66@embeddedor.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4907a7a3-8533-480a-bc3c-488573e18e66@embeddedor.com>
 
-On Fri, 26 Jan 2024 01:05:28 -0800 syzbot wrote:
-> HEAD commit:    4fbbed787267 Merge tag 'timers-core-2024-01-21' of git://g..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11bfbdc7e80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=4059ab9bf06b6ceb
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d99d2414db66171fccbb
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> userspace arch: i386
+On Fri, Jan 26, 2024 at 03:30:20PM -0600, Gustavo A. R. Silva wrote:
+> 
+> 
+> On 1/26/24 15:22, Linus Torvalds wrote:
+> > On Mon, 22 Jan 2024 at 07:29, Gustavo A. R. Silva <gustavoars@kernel.org> wrote:
+> > > 
+> > > Enable -Wstringop-overflow globally
+> > 
+> > I suspect I'll have to revert this.
+> > 
+> > On arm64, I get a "writing 16 bytes into a region of size 0" in the Xe driver
+> > 
+> >     drivers/gpu/drm/xe/xe_gt_pagefault.c:340
+> > 
+> > but I haven't looked into it much yet.
+> > 
+> > It's not some gcc-11 issue, though, this is with gcc version 13.2.1
+> > 
+> > It looks like the kernel test robot reported this too (for s390), at
+> > 
+> >      https://lore.kernel.org/all/202401161031.hjGJHMiJ-lkp@intel.com/T/
+> > 
+> > and in that case it was gcc-13.2.0.
+> > 
+> > So I don't think the issue is about gcc-11 at all, but about other
+> > random details.
+> 
+> Let me take a look.
 
-Hi Aleksandr,
+I think xe has some other weird problems too. This may be related (under
+allocating):
 
-we did add a X:	net/9p entry to MAINTAINERS back in November [1]
-but looks like 9p still gets counted as networking. Is it going
-to peter out over time or something's not parsing things right?
+./drivers/gpu/drm/xe/xe_vm.c: In function 'xe_vma_create':
+./drivers/gpu/drm/xe/xe_vm.c:806:21: warning: allocation of insufficient size '224' for type 'struct xe_vma' with size '368' [-Walloc-size]
+  806 |                 vma = kzalloc(sizeof(*vma) - sizeof(struct xe_userptr),
+      |                     ^
 
-[1]
-https://lore.kernel.org/all/CANp29Y77rtNrUgQA9HKcB3=bt8FrhbqUSnbZJi3_OGmTpSda6A@mail.gmail.com/
+
+-- 
+Kees Cook
 
