@@ -1,225 +1,104 @@
-Return-Path: <linux-kernel+bounces-40581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F7DC83E2BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:40:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E8C8083E2C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:42:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44EE7282E46
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:40:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBDFE281177
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:42:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37220225D8;
-	Fri, 26 Jan 2024 19:40:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 729C8225D9;
+	Fri, 26 Jan 2024 19:41:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="b9XTMAEZ"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pM9p+DFc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D20C4224E6
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 19:40:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAFDC1DDEA;
+	Fri, 26 Jan 2024 19:41:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706298050; cv=none; b=VcxpxgBuVNzLA69xRcMtGW33MdkqXtIlSRtqHhNy0LahOJvgAxK/nCEievBkrGiWLs3YcMGUgPGhZrohnlMZRp5jzo3RmilmwWSasa+zf2dOl0iQIiefs9jtouP3DtwtRs+Hy4TbJxsKSR6kWaBeUEF3Y7SmWpeZ4d9U+dqpwU0=
+	t=1706298111; cv=none; b=SgwMF+8sR/MdSSofvX1d1ItycEoEUUoGlAD7VUJYLvfQYSTlNPGvbHLQ0irj3Rj35Xdl1BN82L1nET+SatT6aRdSETv4OfyIgNAPcDls0JbjLXhX1qzSyEi6HMdSunAqNh5FaSh9Xq5T3c8/vaQ3CV7d1e15q4/mQtIY/lfHqMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706298050; c=relaxed/simple;
-	bh=OBj1MQ83FFOJOJoro90yvy1KezyhRGXOLXp4aKhIJAI=;
+	s=arc-20240116; t=1706298111; c=relaxed/simple;
+	bh=CBZ+J6S9RdRbbtTXo+VlAsnSPg7u6GA155LrshMp1yM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=H2eLscf4QM20yBP5E7rtajB+OgyokuZlwyRxYHeFF8BtgAnAteforEV38bdJZMQ8O+VO6Xfc3FR85WnD6MSmynRv/tnpEt5KbvjwvV0KD+0sssW0jP22tNhlg82SsHiPUvIu14J+bkXhEJehpOBHVGQS02nKOBbH8eOe8rvLSlc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=b9XTMAEZ; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ddc0c02665so527632b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 11:40:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706298048; x=1706902848; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IBbDvP0t0aTfbdb0HiCNofP6pAFpkV6GyeXeCF9Dz+g=;
-        b=b9XTMAEZEi4xfew5FbLUpnFrl2/v2yCC9CEARW4JjrVbQB71ZS7HfzojwBaWwlRL3i
-         o/lEp9arS7b5VsensJZBbvzqJKm2Pc1EU4AZ7wXFl5fjCuNNhZgA2k8rtLjRzP+SZnBA
-         YyMzx9EpkhXPHjQDRwt6SdMTcMztNoO6iOkUFJA4r1eVLfkUDyaEdHsFUe+Z1BEo4y85
-         9TinB+HSYsunGCBG/6TlJHz0BU0myzjII7eGehOj6DaDjazlj8dHyD1E60XJvYhZ9+5T
-         FKCU3CKAb/xuiFGLBZkmOmfvxDwHNHawuEchwsK5/pS54MkjGhLFiEXGfau/17M1fsbk
-         ZuBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706298048; x=1706902848;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IBbDvP0t0aTfbdb0HiCNofP6pAFpkV6GyeXeCF9Dz+g=;
-        b=h6mPo9YyJDYO9VGQLwXzsi/G6FqI7mJVoaIGclqlO4eQcg0sSVaMZiMtTu347i8Tkl
-         4YVgm8FrRLozvQZjps7fAeLGWCunwCz+ZUIKJUjYfabcd4tzt7nfzD+JMV+g3ua5LCYH
-         8h189OfBOnqnRqj2eb8wvXrx1BnsZkXWwP7N4K8wsbdVHayMibhOTxqsjdNSPYvDFbax
-         4Mhe2UJwP6ZTbpu66k12Rs2J4b4Mz94hjNkTbCnVAiSjkuvp2KXY983kOc4o2ihtzqBx
-         wktfo4AMtqdfxVht2x0bxIKkxn3HSJyu3ePndWERc00ku+GV7phE2siZk2sUgb+b5lB9
-         aj3w==
-X-Gm-Message-State: AOJu0YxmcX3DFADroMFAiWOIORorq+F67GyK5IQZ94/sYTwoQUmNd/Ji
-	cIb2vtSxImRf3yRLnOk94GI9VfXKQolNFZwZSeskYMSPZP8YfpctYn2EBCd4lsybX45vEo4/hly
-	EdCfhCf1xe+kCL2wigCxIlKi6+wsUgKl+2CfhaQ==
-X-Google-Smtp-Source: AGHT+IEMMgoTsBz+FBptiMPa1pqE4iSooChOPZ0bqJTF6Z9PIPSATEYE9Y7LOnEFRlmJSEKdIL5mxk5heq+bSm7H+OE=
-X-Received: by 2002:a05:6a00:b51:b0:6dd:7b96:b4b7 with SMTP id
- p17-20020a056a000b5100b006dd7b96b4b7mr378122pfo.41.1706298048159; Fri, 26 Jan
- 2024 11:40:48 -0800 (PST)
+	 To:Cc:Content-Type; b=KK2F7neKO4emZL3TtqUf07+cUd4AcBWUei/yyrb9SzUfwpm35LuGfsc434IsTv4gEdtyLkMSN5cna35n+m5Yv3jhB2MAiXMxkymU5nLyb7E7yw+/L+Kkw4WBUxb3wGG8keKxn2dzoflJfWYRKSpwsL5AwS3JpoR2gj6eV9LsORg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pM9p+DFc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D1C2C43390;
+	Fri, 26 Jan 2024 19:41:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706298111;
+	bh=CBZ+J6S9RdRbbtTXo+VlAsnSPg7u6GA155LrshMp1yM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=pM9p+DFcsjEEP20b8WVertpY4ouFDFOiUdqCMy5SmBJucmcEgHDZHGkZ9AQy7krgj
+	 0RcYBBpS1NHCNKLdjDmLHsnyxeGW/u+s05Yd0wOOJpiSLtPsb9YEeSQh03UjHzqDNR
+	 XJuCKsVbbWqDeR2MApQJvj4UsJ6jiA289nT59rT/Re57DfMwLYs0jVcQcje5cWHspH
+	 iDyNMaaCcXSEc6mG4PJCJtLMxZD4eJr463B3Omr3BLd+8VV61Z2/Hz3HlF6yK0O5p6
+	 27K0PSvXT9s0XcQalvCzad0M9SygDD5PUYS6rz1FHGPzfRKXxYnBtY/nPAcBAEe7Ra
+	 6YHucqTHz5Mhg==
+Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-20451ecbb80so395728fac.2;
+        Fri, 26 Jan 2024 11:41:51 -0800 (PST)
+X-Gm-Message-State: AOJu0YzLKMPev+dcAHOq6exRLHVKqHR3sI+3hXVGUCPTCS+YkVeqfScj
+	kjC9zCtpM4r91x4UBk3K8NgKGs2ggNV/0klxEuQTabsI27T+a/iTMrJdPBc34tcaM8XMqGnqrhE
+	4XdqGr6oUlDzxsAx9Osi0U+iv5fo=
+X-Google-Smtp-Source: AGHT+IHZvRiQEf8wAo3wUkkTo/ouDUD8ffSn+dV1E2i8xeRgoYrzI3JmI7twzN3Qz8ehUcT8UMvga0+c/7ug/YlYNk8=
+X-Received: by 2002:a05:6870:c192:b0:210:c59c:dae8 with SMTP id
+ h18-20020a056870c19200b00210c59cdae8mr152610oad.55.1706298110530; Fri, 26 Jan
+ 2024 11:41:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125145007.748295-1-tudor.ambarus@linaro.org>
- <20240125145007.748295-8-tudor.ambarus@linaro.org> <CAPLW+4kGGtG2BxeN0wRXMD5M2TR+eMUHZpL2KDaEFubBCP7jdg@mail.gmail.com>
- <cad69841-9ca2-45af-9db2-4c4aced63d5e@linaro.org>
-In-Reply-To: <cad69841-9ca2-45af-9db2-4c4aced63d5e@linaro.org>
-From: Sam Protsenko <semen.protsenko@linaro.org>
-Date: Fri, 26 Jan 2024 13:40:36 -0600
-Message-ID: <CAPLW+4mJ5BxwhKwi2Z2pMOu1D0N0KaaW7=C1sZ0PV51iOHSw8Q@mail.gmail.com>
-Subject: Re: [PATCH v2 07/28] spi: s3c64xx: remove unneeded (void *) casts in of_match_table
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: broonie@kernel.org, andi.shyti@kernel.org, arnd@arndb.de, 
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	alim.akhtar@samsung.com, linux-spi@vger.kernel.org, 
-	linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-arch@vger.kernel.org, andre.draszik@linaro.org, 
-	peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com
+References: <20240126163032.1613731-1-yoann.congal@smile.fr> <CAK7LNATBvhcyQXt58j74Q++Y74ZgjdC3r3rtnAuU0YMt_K_A7g@mail.gmail.com>
+In-Reply-To: <CAK7LNATBvhcyQXt58j74Q++Y74ZgjdC3r3rtnAuU0YMt_K_A7g@mail.gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sat, 27 Jan 2024 04:41:14 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATAp6mHqepAJsbFXCsMEX6zmAP6owfSPwmYbV_2PHvGvA@mail.gmail.com>
+Message-ID: <CAK7LNATAp6mHqepAJsbFXCsMEX6zmAP6owfSPwmYbV_2PHvGvA@mail.gmail.com>
+Subject: Re: [PATCH] treewide: Change CONFIG_BASE_SMALL to bool type
+To: Yoann Congal <yoann.congal@smile.fr>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kbuild@vger.kernel.org, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Matthew Wilcox <willy@infradead.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Darren Hart <dvhart@infradead.org>, 
+	Davidlohr Bueso <dave@stgolabs.net>, =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>, 
+	"Luis R. Rodriguez" <mcgrof@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 26, 2024 at 2:24=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro=
-org> wrote:
+On Sat, Jan 27, 2024 at 4:28=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.o=
+rg> wrote:
 >
-> Thanks for the review feedback, Sam, great catches so far!
->
-> On 1/25/24 19:04, Sam Protsenko wrote:
-> > On Thu, Jan 25, 2024 at 8:50=E2=80=AFAM Tudor Ambarus <tudor.ambarus@li=
-naro.org> wrote:
-> >>
-> >> of_device_id::data is an opaque pointer. No explicit cast is needed.
-> >> Remove unneeded (void *) casts in of_match_table. While here align the
-> >> compatible and data members.
-> >>
-> >> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
-> >> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> >> ---
-> >>  drivers/spi/spi-s3c64xx.c | 45 +++++++++++++++++++++++---------------=
--
-> >>  1 file changed, 27 insertions(+), 18 deletions(-)
-> >>
-> >> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-> >> index 230fda2b3417..137faf9f2697 100644
-> >> --- a/drivers/spi/spi-s3c64xx.c
-> >> +++ b/drivers/spi/spi-s3c64xx.c
-> >> @@ -1511,32 +1511,41 @@ static const struct platform_device_id s3c64xx=
-_spi_driver_ids[] =3D {
-> >>  };
-> >>
-> >>  static const struct of_device_id s3c64xx_spi_dt_match[] =3D {
-> >> -       { .compatible =3D "samsung,s3c2443-spi",
-> >> -                       .data =3D (void *)&s3c2443_spi_port_config,
-> >
-> > I support removing (void *) cast. But this new braces style:
-> >
-> >       },
-> >       {
->
-> this style was there before my patch.
-> >
-> > seems to bloat the code a bit. For my taste, having something like },
-> > { on the same line would be more compact, and more canonical so to
->
-> I don't lean towards neither of the styles, I'm ok with both
->
-> > speak. Or even preserving the existing style would be ok too, for that
-> > matter.
-> >
->
-> seeing .compatible and .data unaligned hurt my eyes and I think that
-> aligning them while dropping the cast is fine. I don't really want to do
-> the style change unless you, Andi or Mark insist. Would you please come
-> with a patch on top if you really want them changed?
->
+> (+CC: Luis R. Rodriguez, author of 23b2899f7f194)
 
-But that would completely undermine the whole point of the review? I'd
-prefer this style:
 
-.. =3D {
-    {
-        .compatible =3D
-        .data =3D
-    }, {
-        .compatible =3D
-        .data =3D
-    },
-    { /* sentinel */ },
-};
 
-That seems more canonical to me, and more compact too, with no
-contradictions to your preference about alignment too. But that's only
-my opinion, as a reviewer.
+Just a nit.
 
-> > Assuming the braces style is fixed, you can add:
-> >
-> > Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
-> >
-> >> +       {
-> >> +               .compatible =3D "samsung,s3c2443-spi",
-> >> +               .data =3D &s3c2443_spi_port_config,
-> >>         },
-> >> -       { .compatible =3D "samsung,s3c6410-spi",
-> >> -                       .data =3D (void *)&s3c6410_spi_port_config,
-> >> +       {
-> >> +               .compatible =3D "samsung,s3c6410-spi",
-> >> +               .data =3D &s3c6410_spi_port_config,
-> >>         },
-> >> -       { .compatible =3D "samsung,s5pv210-spi",
-> >> -                       .data =3D (void *)&s5pv210_spi_port_config,
-> >> +       {
-> >> +               .compatible =3D "samsung,s5pv210-spi",
-> >> +               .data =3D &s5pv210_spi_port_config,
-> >>         },
-> >> -       { .compatible =3D "samsung,exynos4210-spi",
-> >> -                       .data =3D (void *)&exynos4_spi_port_config,
-> >> +       {
-> >> +               .compatible =3D "samsung,exynos4210-spi",
-> >> +               .data =3D &exynos4_spi_port_config,
-> >>         },
-> >> -       { .compatible =3D "samsung,exynos7-spi",
-> >> -                       .data =3D (void *)&exynos7_spi_port_config,
-> >> +       {
-> >> +               .compatible =3D "samsung,exynos7-spi",
-> >> +               .data =3D &exynos7_spi_port_config,
-> >>         },
-> >> -       { .compatible =3D "samsung,exynos5433-spi",
-> >> -                       .data =3D (void *)&exynos5433_spi_port_config,
-> >> +       {
-> >> +               .compatible =3D "samsung,exynos5433-spi",
-> >> +               .data =3D &exynos5433_spi_port_config,
-> >>         },
-> >> -       { .compatible =3D "samsung,exynos850-spi",
-> >> -                       .data =3D (void *)&exynos850_spi_port_config,
-> >> +       {
-> >> +               .compatible =3D "samsung,exynos850-spi",
-> >> +               .data =3D &exynos850_spi_port_config,
-> >>         },
-> >> -       { .compatible =3D "samsung,exynosautov9-spi",
-> >> -                       .data =3D (void *)&exynosautov9_spi_port_confi=
-g,
-> >> +       {
-> >> +               .compatible =3D "samsung,exynosautov9-spi",
-> >> +               .data =3D &exynosautov9_spi_port_config,
-> >>         },
-> >> -       { .compatible =3D "tesla,fsd-spi",
-> >> -                       .data =3D (void *)&fsd_spi_port_config,
-> >> +       {
-> >> +               .compatible =3D "tesla,fsd-spi",
-> >> +               .data =3D &fsd_spi_port_config,
-> >>         },
-> >>         { },
-> >>  };
-> >> --
-> >> 2.43.0.429.g432eaa2c6b-goog
-> >>
+
+I think "printk:" is more suitable for the subject prefix
+than "treewide:".
+
+Thanks.
+
+
+
+
+
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
