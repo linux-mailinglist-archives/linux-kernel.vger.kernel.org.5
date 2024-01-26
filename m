@@ -1,197 +1,120 @@
-Return-Path: <linux-kernel+bounces-40557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0918683E268
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:22:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E94A83E270
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:23:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DE921C21E83
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:22:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A484B23F5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:23:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C059322EF2;
-	Fri, 26 Jan 2024 19:21:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42289224DA;
+	Fri, 26 Jan 2024 19:23:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="311GBVSb"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zDUE7lCj"
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 552BA224DA;
-	Fri, 26 Jan 2024 19:21:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B219224D8
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 19:23:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706296908; cv=none; b=cjjfBjla/0ObozzBi5UD0zfxGfeFUBhKrjuyJT3Z9TgZOQqa7aKEv58Eoi9kSICZsDyzyPrPxksKRrJuFF66qbdQ3ZDGVeUzYDGeBNB90BbEBFhU+qCgQ8yAvCSdHNYzICUqQbIbSmOofsVcbDr5YhWEN6HeS3h3DGgzNrzDUO8=
+	t=1706297017; cv=none; b=nnlsIgKvmTwXP7x1b3uhWI/vbtgM1dY8pl495CyLy0hHHYO021XTRpahQf/Enw1TvzJr/QUNHRaL+DuMFNoHWG9X3N3kxuUFkgi5LkkqiGvPBj8KuppSl9VwW8E7JuZ62tXXIQ6z6h+JihQy66aR3hVClKE6DqNsh6/mqDK469c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706296908; c=relaxed/simple;
-	bh=WQe4wDwRNT0S65UeCvFunjCWa8R+Rf3G+Co3wYKG0EU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iC6iO+/qRARoeFINBplHpnKMrdu0nWu8eDeTn2zXxrLpeEPeBgIWeRSEpPjToPjO7/kccfCiEIJMo6dRYb4cNzp8BkEx3EUVYsUyTPkg5NeoagVBGhU56MsXFT2DF1Win9OKODs40//paO76ayNGVjtNq03GAsC6Zwu3e/KtVwg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=311GBVSb; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706296904;
-	bh=WQe4wDwRNT0S65UeCvFunjCWa8R+Rf3G+Co3wYKG0EU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=311GBVSbo+T/wQRgYiIOl2xibolvW59jtWlTeVmFrUjMgYHTFocqch27G1J3v/DlH
-	 /0RD52FART9t1NnW19GVOIIeDmbQbGgeJpmK3Gu247GkkG8uoEnLG4J7BOqzcXZeSl
-	 gT4jwaZ9Hmhfur2gDBYxbu2Tl+K7tAOTH2GFDcS0Mz2FDTwjy6jbwYCuU+WAnimCES
-	 NAfMKZQ3HDa8fz6pzGtKXwlUq/dyZoOXy6Mk79Uq5bd6iIyhUQ9UqCBHY7O7kTURM5
-	 1En/bi8h4U4mh6h0XYpM3XgORY5pP9ni9xqcfRRBgZ7f/scgdSJPORyPBxaYk4BzkB
-	 T4JylAtLd2qfg==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: cristicc)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 73EB73782076;
-	Fri, 26 Jan 2024 19:21:44 +0000 (UTC)
-From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Emil Renner Berthing <kernel@esmil.dk>,
-	Samin Guo <samin.guo@starfivetech.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Jacob Keller <jacob.e.keller@intel.com>
-Cc: netdev@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	kernel@collabora.com
-Subject: [RESEND PATCH v4 2/2] net: stmmac: dwmac-starfive: Add support for JH7100 SoC
-Date: Fri, 26 Jan 2024 21:21:26 +0200
-Message-ID: <20240126192128.1210579-3-cristian.ciocaltea@collabora.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240126192128.1210579-1-cristian.ciocaltea@collabora.com>
-References: <20240126192128.1210579-1-cristian.ciocaltea@collabora.com>
+	s=arc-20240116; t=1706297017; c=relaxed/simple;
+	bh=TtYMN3GShHRZCc1Drpo4X80E/CnRWO/M7L6zj37FsEg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UobI2VILhH4DFIZLPSHpHxKqA+rgBH6I8aqTudd1EO3SE5f0V+wMBFWPPtkt7HOT7lUiUdIfmHjupPdQnp0JhIanWD4MzaXNYl2g0q6Ybq2OVekGtLdec1UY9PjluN/kPyEUQlTfFEYBrUHMi/BVSP3HYHaZgrfGOP8WPLnsCxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zDUE7lCj; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2907a17fa34so777453a91.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 11:23:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706297015; x=1706901815; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pci4l1Zh4vLDqka8iPuTXs2/4isIF6x5bfsHnKL71CI=;
+        b=zDUE7lCjImOXhTG4/rDFQGpnDXGjcRVnYsBekoisGzpNNit2dPB/9KRa0O6ecOBXQ8
+         o3GCo/zm7MlY3gDBs35gV8FdxGL/ELKZl+o2H7I7tMQHDaB+gpQ8A8XRc9d/VIoFb67l
+         gFYUj7St4fv6ZwgwBHNheVvc0+/XRrdY7scmXIvmRDwkY5VWWGCcjOsjjaBC13Go72oS
+         JNvQp2zzs57LEpc6Va4FvIKXkNKPB3rjta7oJIMWevnyaWa81GW3TnFEpf4N/2MG9TCl
+         uUHp4Qe2S3TdlDwuymM0VbJCACrHaVr20uJ5fqHY2Jmlzj2lHTp4xKfMyyqbl9Yu1c4a
+         qUsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706297015; x=1706901815;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pci4l1Zh4vLDqka8iPuTXs2/4isIF6x5bfsHnKL71CI=;
+        b=PMYK539/Lug3VzRwx7OvcAfJ/wxJZgH/Z/Hwv+3eg4yaYVjDVjuBuVFxaRa4u79v3g
+         dtNkWx7StPX5CvPSvzbxc8/xgtXNaKoBN1CAWhpjnLylh+lwP0YzYBnXs3H2YCAseF5m
+         iFsb8YFmVD89CTrWenMxCyJfHiOhiFWV5Q8WMlo1eL4H0aSFPZ0yDukS0AjzFBgwkXRh
+         OjAuokBFwX2/ls0zRL8UrGtFwPr55BVO4+DRli/a4VO1C9qXYDzqAzjTbHjQE8ymHMkQ
+         QYtlko7SPccslzTPEukzYWx/UkzI/A1XIc9Z2qb56ksiSubMehcLs76D8XDw0ESos/UV
+         4uzA==
+X-Gm-Message-State: AOJu0YyGxOQaStRN9icBNnYjzMQYSE8bhJU0FqF61ZIQso65zNkju50u
+	vkbbqiXYhMRkn+EwuG+KKwHA2SOzlSnpjJJVGTmbcj7K4JVwFf7W3xYlN64TS0tr3yo7LwZOnbW
+	fiwf4zO8FIJ9muVfVlR9kCBHKvEmNjqt0Vo98eA==
+X-Google-Smtp-Source: AGHT+IFyVG+TAGYzMvyT5Wl++btmO1JDRT8TGoWOEDu8WDjuLaYb7yHih34riUmaKg0bO8OqD8M0VDuhQbwcWOYhlCA=
+X-Received: by 2002:a17:90a:b28d:b0:294:3cb1:a8c5 with SMTP id
+ c13-20020a17090ab28d00b002943cb1a8c5mr351761pjr.28.1706297015515; Fri, 26 Jan
+ 2024 11:23:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240125145007.748295-1-tudor.ambarus@linaro.org>
+ <20240125145007.748295-24-tudor.ambarus@linaro.org> <1e117c5c-1e82-47ae-82f4-cdcf0a087f5f@sirena.org.uk>
+In-Reply-To: <1e117c5c-1e82-47ae-82f4-cdcf0a087f5f@sirena.org.uk>
+From: Sam Protsenko <semen.protsenko@linaro.org>
+Date: Fri, 26 Jan 2024 13:23:24 -0600
+Message-ID: <CAPLW+4kTUmG=uPQadJC5pyfDvydvr1dKnJY6UxQva2Ch-x7v3g@mail.gmail.com>
+Subject: Re: [PATCH v2 23/28] spi: s3c64xx: retrieve the FIFO size from the
+ device tree
+To: Mark Brown <broonie@kernel.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, andi.shyti@kernel.org, arnd@arndb.de, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	alim.akhtar@samsung.com, linux-spi@vger.kernel.org, 
+	linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-arch@vger.kernel.org, andre.draszik@linaro.org, 
+	peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add a missing quirk to enable support for the StarFive JH7100 SoC.
+On Thu, Jan 25, 2024 at 11:33=E2=80=AFAM Mark Brown <broonie@kernel.org> wr=
+ote:
+>
+> On Thu, Jan 25, 2024 at 02:50:01PM +0000, Tudor Ambarus wrote:
+>
+> > Allow SoCs that have multiple instances of the SPI IP with different
+> > FIFO sizes to specify their FIFO size via the "samsung,spi-fifosize"
+> > device tree property. With this we can break the dependency between the
+> > SPI alias, the fifo_lvl_mask and the FIFO size.
+>
+> OK, so we do actually have SoCs with multiple instances of the IP with
+> different FIFO depths (and who knows what else other differences)?
 
-Additionally, for greater flexibility in operation, allow using the
-rgmii-rxid and rgmii-txid phy modes.
+I think that's why we can see .fifo_lvl_mask[] with different values
+for different IP instances. For example, ExynosAutoV9 has this (in
+upstream driver, yes):
 
-Co-developed-by: Emil Renner Berthing <kernel@esmil.dk>
-Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
----
- drivers/net/ethernet/stmicro/stmmac/Kconfig   |  6 ++--
- .../ethernet/stmicro/stmmac/dwmac-starfive.c  | 32 ++++++++++++++++---
- 2 files changed, 31 insertions(+), 7 deletions(-)
+    .fifo_lvl_mask =3D { 0x1ff, 0x1ff, 0x7f, 0x7f, 0x7f, 0x7f, 0x1ff,
+0x7f, 0x7f, 0x7f, 0x7f, 0x7f},
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-index 85dcda51df05..4ec61f1ee71a 100644
---- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
-+++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-@@ -165,9 +165,9 @@ config DWMAC_STARFIVE
- 	help
- 	  Support for ethernet controllers on StarFive RISC-V SoCs
- 
--	  This selects the StarFive platform specific glue layer support for
--	  the stmmac device driver. This driver is used for StarFive JH7110
--	  ethernet controller.
-+	  This selects the StarFive platform specific glue layer support
-+	  for the stmmac device driver. This driver is used for the
-+	  StarFive JH7100 and JH7110 ethernet controllers.
- 
- config DWMAC_STI
- 	tristate "STi GMAC support"
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c
-index 5d630affb4d1..4e1076faee0c 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c
-@@ -15,13 +15,20 @@
- 
- #include "stmmac_platform.h"
- 
--#define STARFIVE_DWMAC_PHY_INFT_RGMII	0x1
--#define STARFIVE_DWMAC_PHY_INFT_RMII	0x4
--#define STARFIVE_DWMAC_PHY_INFT_FIELD	0x7U
-+#define STARFIVE_DWMAC_PHY_INFT_RGMII		0x1
-+#define STARFIVE_DWMAC_PHY_INFT_RMII		0x4
-+#define STARFIVE_DWMAC_PHY_INFT_FIELD		0x7U
-+
-+#define JH7100_SYSMAIN_REGISTER49_DLYCHAIN	0xc8
-+
-+struct starfive_dwmac_data {
-+	unsigned int gtxclk_dlychain;
-+};
- 
- struct starfive_dwmac {
- 	struct device *dev;
- 	struct clk *clk_tx;
-+	const struct starfive_dwmac_data *data;
- };
- 
- static void starfive_dwmac_fix_mac_speed(void *priv, unsigned int speed, unsigned int mode)
-@@ -67,6 +74,8 @@ static int starfive_dwmac_set_mode(struct plat_stmmacenet_data *plat_dat)
- 
- 	case PHY_INTERFACE_MODE_RGMII:
- 	case PHY_INTERFACE_MODE_RGMII_ID:
-+	case PHY_INTERFACE_MODE_RGMII_RXID:
-+	case PHY_INTERFACE_MODE_RGMII_TXID:
- 		mode = STARFIVE_DWMAC_PHY_INFT_RGMII;
- 		break;
- 
-@@ -89,6 +98,14 @@ static int starfive_dwmac_set_mode(struct plat_stmmacenet_data *plat_dat)
- 	if (err)
- 		return dev_err_probe(dwmac->dev, err, "error setting phy mode\n");
- 
-+	if (dwmac->data) {
-+		err = regmap_write(regmap, JH7100_SYSMAIN_REGISTER49_DLYCHAIN,
-+				   dwmac->data->gtxclk_dlychain);
-+		if (err)
-+			return dev_err_probe(dwmac->dev, err,
-+					     "error selecting gtxclk delay chain\n");
-+	}
-+
- 	return 0;
- }
- 
-@@ -114,6 +131,8 @@ static int starfive_dwmac_probe(struct platform_device *pdev)
- 	if (!dwmac)
- 		return -ENOMEM;
- 
-+	dwmac->data = device_get_match_data(&pdev->dev);
-+
- 	dwmac->clk_tx = devm_clk_get_enabled(&pdev->dev, "tx");
- 	if (IS_ERR(dwmac->clk_tx))
- 		return dev_err_probe(&pdev->dev, PTR_ERR(dwmac->clk_tx),
-@@ -144,8 +163,13 @@ static int starfive_dwmac_probe(struct platform_device *pdev)
- 	return stmmac_dvr_probe(&pdev->dev, plat_dat, &stmmac_res);
- }
- 
-+static const struct starfive_dwmac_data jh7100_data = {
-+	.gtxclk_dlychain = 4,
-+};
-+
- static const struct of_device_id starfive_dwmac_match[] = {
--	{ .compatible = "starfive,jh7110-dwmac"	},
-+	{ .compatible = "starfive,jh7100-dwmac", .data = &jh7100_data },
-+	{ .compatible = "starfive,jh7110-dwmac" },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, starfive_dwmac_match);
--- 
-2.43.0
+And I'm pretty sure the comment (in struct s3c64xx_spi_port_config)
+for .fifo_lvl_mask field is not correct anymore:
 
+     * @fifo_lvl_mask: Bit-mask for {TX|RX}_FIFO_LVL bits in
+SPI_STATUS register.
+
+Maybe it used to indicate the bit number in SPI_STATUS register for
+{TX|RX}_FIFO_LVL fields, but not anymore. Nowadays it looks like
+fifo_lvl_mask just specifies FIFO depth for each IP instance.
 
