@@ -1,131 +1,134 @@
-Return-Path: <linux-kernel+bounces-40577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C25AB83E2AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:34:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 217DF83E2B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:37:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01A331C21CC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:34:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 532991C21E8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:37:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C982622635;
-	Fri, 26 Jan 2024 19:34:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE5B2225AD;
+	Fri, 26 Jan 2024 19:37:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OPm+4IVZ"
-Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vhGoTgrv"
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC14022609
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 19:34:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 582C1224E6
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 19:36:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706297674; cv=none; b=mVlbJiAf7QfAgvEfywxUCxXULPGgS7BYTaToHXYX8rAHMDUw5xnKlybzQRGgFfY2hL9jeUVA96p4wGdE4aHpujeNRCQFeJ71s6y93nTiYTnB41Pxfw7upStqWLRiAWaoHndK6YMZgfMJ5KmpKZim1HU2N+EHA93lT1cD2lbNPqA=
+	t=1706297820; cv=none; b=Gjmz/i3Jp7D23rr2hP6DX12fgIQYBv0mIC+IxKBqNJa7d9Ul04GK+9peOTzGlgJ4/Gv4Re5nbwgaS8cqTWgCZd1CD0WX5hIVfAB24CwQcx62gkKnkHNavCaYi/q75h4nMUtcEH+uqhd3NhN8nbvBRMxgpoeouoNuwAuSY6LoApk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706297674; c=relaxed/simple;
-	bh=N9Ey+GNs6mImmS+vqlu63GW6nIrlmLmxZOJyPG76Uvg=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=fsM5pvJRoMVZpGPAT/6td7khrerH3qHSQvBHloJPrhCLcqn36CGZ+lykoOsy8XgVr/Uch2h3PWjaLuBpOJDG9EpfJZH2E1yn7MBbkV7lM9kv0a6HPDBOah8+qQePPoa8hTQmmJOmwh/S9GM6DDJdBEep6qu18vdAlVKzGwp0MlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OPm+4IVZ; arc=none smtp.client-ip=209.85.214.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1d73f8cc1c1so23016355ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 11:34:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706297672; x=1706902472; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VDi21S2WSjOuRBpM9Lk1FIKTWvNjyTGMc+fXaSns+7w=;
-        b=OPm+4IVZZ5nYF1QTrktjGgLa9H4ZehC4010UmB9UJILUkF8Gub7hElGKlKsqYvAQQ4
-         9BVZaws7Jh9bVBVPZSCH28iJ3bjpepycVCYo8CKLaskcytqCel7qTnovTDQJOJ6UC+no
-         iAY+/KZW9VygCEwh5A1FhmDqlge3ny6lGrTFV8rmBu2pQJ+XZDiN1YOU6x3GyKp4DVxn
-         8IjwL0Xb09mH6WQTo6lGpPRGwppRAgex0mxAFMH+swkj53Jv+98m60sF78194y6TZ1Tm
-         HoH90RWChDK/WOE7DwDKvRMgSGtuzm4BxQSWUI+UWqqACoh4DdMYVSqMwGHuRntI0CwP
-         g0rA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706297672; x=1706902472;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VDi21S2WSjOuRBpM9Lk1FIKTWvNjyTGMc+fXaSns+7w=;
-        b=RXGZw7S0lcJHOfjjmKrNN+0DKXsnWFFPtF9XeyaxmgxXmel9mfUHwV9J2qzhBG7PcW
-         cnsJuj7JDmABEl+MjflgtOXYkksOgyKiTzh8Z9/40eIm87w4cg1rR11vpkK1OPJHMZz8
-         FZ0H5d6jQ2Ll1Ixu3RHvwoVHxahUmmGfrBTy/mWLRrggttZEK+sC9Y7sXHU3/v/EiPRO
-         KuymJ5VL0cl+OcivggMUbuBXSGSTeFFa2kU1vzqaiRKCA7BD4UMLQSstFEAzEbwfJKs/
-         sCQcUlwdcEdcdAFXE4/5c5dmHc5TUp/WoG+FslaqVyUabW3Ov/MgtanMG08XiOO/Piq1
-         dPmg==
-X-Gm-Message-State: AOJu0YykwcpVTKZjUbREPfyjxG2+JDtdMXHrDKNEAeGsrBWzjiYg4grh
-	6OsErRlfWhwFF/LAUChKWLcX2i9JDUD7yVAuc7AdZJyOah2dQ76g3qTBLfjikMM0UFl/64OiSoI
-	hjA==
-X-Google-Smtp-Source: AGHT+IG6iDfrXKF60Mn1tXIVcYuPyDJTeL9v6HNsiYCB2kJPLXZPTB5XEhh6DLfPtzAqTXhO4WuuZTwYFVw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:238f:b0:1d5:693a:8906 with SMTP id
- v15-20020a170903238f00b001d5693a8906mr2053plh.3.1706297672003; Fri, 26 Jan
- 2024 11:34:32 -0800 (PST)
-Date: Fri, 26 Jan 2024 11:34:30 -0800
-In-Reply-To: <CAL715WKMpui=+U56Qc5AiuLhUw_g-bjvtN5OmVz_hGdJmF1M5g@mail.gmail.com>
+	s=arc-20240116; t=1706297820; c=relaxed/simple;
+	bh=uxac+B2JSnMISJQXpWFxm1pKIyER1ZrasfJLcPmesmU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uya5p7hIIrlSB7hOTpES1jQ04qZIf+20d7loDX/VV+OWy28+jrz3oJOIgTyPlL0uBQ5zc+njyAgiamaos1nZOcvM1oyZupWl//xESbU73YydcyDb5Q/U5/6jAeXCf3dIqGPgTh7Y4gNP/UwijTRp2y7ezSAhKQUZKpOmv3ZUfS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vhGoTgrv; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <d4859e88-d105-4de2-b19c-f59bf7bd5e88@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706297816;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KEVd0QafPgt3Yab5rVKzY8wr3GSCC3qWRHifh5DcWZ0=;
+	b=vhGoTgrvH/0NZsFkHqENAmU0SSZn3JpCHs8TfdckqNJrksIb122b3AEoLVwebtkbRxp1hT
+	g8U9j1TPUr/Te+IC6VLfrg7sq8jjg4IJz7MTFkjKIWSgyqPhk9Pz10Cz/j/rdNWMtGKwPK
+	e358/DPprgYwehYRy+see+F/9kfDzY0=
+Date: Fri, 26 Jan 2024 11:36:48 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240124003858.3954822-1-mizhang@google.com> <20240124003858.3954822-2-mizhang@google.com>
- <ZbExcMMl-IAzJrfx@google.com> <CAAAPnDFAvJBuETUsBScX6WqSbf_j=5h_CpWwrPHwXdBxDg_LFQ@mail.gmail.com>
- <ZbGAXpFUso9JzIjo@google.com> <ZbGOK9m6UKkQ38bK@google.com>
- <ZbGUfmn-ZAe4lkiN@google.com> <ZbGn8lAj4XxiecFn@google.com>
- <ZbP7BTvdZ1-b3MmE@google.com> <CAL715WKMpui=+U56Qc5AiuLhUw_g-bjvtN5OmVz_hGdJmF1M5g@mail.gmail.com>
-Message-ID: <ZbQJRtaxhpZR7ntT@google.com>
-Subject: Re: [PATCH 1/2] KVM: x86/pmu: Reset perf_capabilities in vcpu to 0 if
- PDCM is disabled
-From: Sean Christopherson <seanjc@google.com>
-To: Mingwei Zhang <mizhang@google.com>
-Cc: Frederick Mayle <fmayle@google.com>, Steven Moreland <smoreland@google.com>, 
-	Aaron Lewis <aaronlewis@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	"H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Subject: Re: [PATCH bpf v2 3/3] selftest/bpf: Test the read of vsyscall page
+ under x86-64
+Content-Language: en-GB
+To: Hou Tao <houtao@huaweicloud.com>, x86@kernel.org, bpf@vger.kernel.org
+Cc: Dave Hansen <dave.hansen@linux.intel.com>,
+ Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>,
+ linux-kernel@vger.kernel.org, xingwei lee <xrivendell7@gmail.com>,
+ Jann Horn <jannh@google.com>, Sohil Mehta <sohil.mehta@intel.com>,
+ houtao1@huawei.com
+References: <20240126115423.3943360-1-houtao@huaweicloud.com>
+ <20240126115423.3943360-4-houtao@huaweicloud.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20240126115423.3943360-4-houtao@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Jan 26, 2024, Mingwei Zhang wrote:
-> +Frederick Mayle +Steven Moreland
->=20
-> On Fri, Jan 26, 2024 at 10:33=E2=80=AFAM Sean Christopherson <seanjc@goog=
-le.com> wrote:
-> >
-> > On Thu, Jan 25, 2024, Mingwei Zhang wrote:
-> > > On Wed, Jan 24, 2024, Sean Christopherson wrote:
-> > > > On Wed, Jan 24, 2024, Mingwei Zhang wrote:
-> > > > > I think this makes a lot of confusions on migration where VMM on =
-the source
-> > > > > believes that a non-zero value from KVM_GET_MSRS is valid and the=
- VMM on the
-> > > > > target will find it not true.
-> > > >
-> > > > Yes, but seeing a non-zero value is a KVM bug that should be fixed.
-> > > >
-> > > How about adding an entry in vmx_get_msr() for
-> > > MSR_IA32_PERF_CAPABILITIES and check pmu_version? This basically pair=
-s
-> > > with the implementation in vmx_set_msr() for MSR_IA32_PERF_CAPABILITI=
-ES.
-> > > Doing so allows KVM_GET_MSRS return 0 for the MSR instead of returnin=
-g
-> > > the initial permitted value.
-> >
-> > Hrm, I don't hate it as a stopgap.  But if we are the only people that =
-are affected,
-> > because again I'm pretty sure QEMU is fine, I would rather we just fix =
-things in
-> > our VMM and/or internal kernel.
->=20
-> It is not just QEMU. crossvm is another open source VMM that suffers
-> from this one.
 
-Does CrosVM support migration or some other form of save/restore (RR?)?  An=
-d if
-so, does CrosVM do that in conjunction with hiding the vPMU from the guest?
+On 1/26/24 3:54 AM, Hou Tao wrote:
+> From: Hou Tao <houtao1@huawei.com>
+>
+> Under x86-64, when using bpf_probe_read_kernel{_str}() or
+> bpf_probe_read{_str}() to read vsyscall page, the read may trigger oops,
+> so add one test case to ensure that the problem is fixed. Beside those
+> four bpf helpers mentioned above, testing the read of vsyscall page by
+> using bpf_probe_read_user{_str} and bpf_copy_from_user{_task}() as well.
+>
+> The test case passes the address of vsyscall page to these six helpers
+> and checks whether the returned values are expected:
+>
+> 1) For bpf_probe_read_kernel{_str}()/bpf_probe_read{_str}(), the
+>     expected return value is -ERANGE as shown below:
+>
+> bpf_probe_read_kernel_common
+>    copy_from_kernel_nofault
+>      // false, return -ERANGE
+>      copy_from_kernel_nofault_allowed
+>
+> 2) For bpf_probe_read_user{_str}(), the expected return value is -EFAULT
+>     as show below:
+>
+> bpf_probe_read_user_common
+>    copy_from_user_nofault
+>      // false, return -EFAULT
+>      __access_ok
+>
+> 3) For bpf_copy_from_user(), the expected return value is -EFAULT:
+>
+> // return -EFAULT
+> bpf_copy_from_user
+>    copy_from_user
+>      _copy_from_user
+>        // return false
+>        access_ok
+>
+> 4) For bpf_copy_from_user_task(), the expected return value is -EFAULT:
+>
+> // return -EFAULT
+> bpf_copy_from_user_task
+>    access_process_vm
+>      // return 0
+>      vma_lookup()
+>      // return 0
+>      expand_stack()
+>
+> The occurrence of oops depends on the availability of CPU SMAP [1]
+> feature and there are three possible configurations of vsyscall page in
+> boot cmd-line: vsyscall={xonly|none|emulate}, so there are totally six
+> possible combinations. Under all these combinations, the running of the
+> test case succeeds.
+>
+> [1]: https://en.wikipedia.org/wiki/Supervisor_Mode_Access_Prevention
+>
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
 
-Because if not, then I think we can squeak by.
+The first two patches look good to me but I think it would be better
+if x86 folks can ack on them. The selftest patch LGTM.
+
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+
 
