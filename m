@@ -1,90 +1,78 @@
-Return-Path: <linux-kernel+bounces-40121-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40122-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E51A83DA8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:12:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9693B83DA98
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:16:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B65B21F2432E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:12:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 370F11F21059
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:16:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCD621B80B;
-	Fri, 26 Jan 2024 13:12:06 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C63BA1B810;
+	Fri, 26 Jan 2024 13:16:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="4jIEQT8Y"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 029C51B7F0
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:12:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A16F01B7F9;
+	Fri, 26 Jan 2024 13:15:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706274726; cv=none; b=ad1DZ/Rawp4tYv2tlQQZ1SjSFOPuv3l+OmCnRD8nAXyOrd0uFPlqZ0V9q8ArkspIa2j1hPEn8S/IOYb6Xyudd3MxQ/Q4Bs8mp1ToNX2akI1ZBO6ooxlQ3SLui+wfEVPCENeQgCWSC3XwP3k2Moa3eSXIIq+AYGoj9+ZamzReysY=
+	t=1706274960; cv=none; b=t/4uly3gUmErHY+3hePjs5nIasG4U3y10pQeOYQiyOXcMzuweG6FT9fdt1Y1u8KKCDO/qyS98mP8yHQGtZndC0q3SWdk02zpan9M2a42VKG9AiCsqVmahMP/6JWX3jNqSH9x6D3fMs1a85DrQ+6rf3f/sXiF+6jMRG+/d5bqmoE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706274726; c=relaxed/simple;
-	bh=NEzJ7pNKUuAaHWHT3ELgKK4hFQyY6cM6yjnMJL7fkNE=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=AsMaBB2NpJv57raAmY6LLmIhphA8gtK+LPui9EZkrCAqb6WTif4lAN1ruO7v8G92X0MZramMY31dj1Ye2Wa2cXyNNRbHYI1nmp4NiMquySP0h9soTaYxwItPxPzbp/HfHAFaNnC8fXJmgC4lhnwvn0fEa8YaWUcaxudaWwnuOXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-361a7ea0c21so1500455ab.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 05:12:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706274724; x=1706879524;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O0x/ov2Zs03p8CkOaE9SqfLyn/5v8ep9jX8D61t7VpY=;
-        b=JMggpMtuTqZzTLrc9bgKudh3Js7Wvoe/SeNYpfXb550au8bxJj5nxyXWWiM2pW2lGz
-         uccxwkLg2wQBIGQ5Ccs7zjB/Nbfb6JZNc673RCI9V9ID8a+mjDEC2DJI1DC6NOQDgwJb
-         zl+nuSSg9kMml/Ch/4+17M5cL6aNqToHZD3DBJAHwNYDpXx72HPVv4SpB9OrhsKL6Vn6
-         X8i9/ZysXETh408r0gOtK9i9EL9s7pEp0Zt8KOTe/7OFkNl2/7mjBpK+PPGHVwYDKTda
-         iywRG/GI/D/fcLVuTb+6MSS4Hhq0tNCEj61lYnNaaL/ixxmvrUIycJxLKT/ZoeA8I97G
-         4V2A==
-X-Gm-Message-State: AOJu0YxBkKyRxjsqvqA5QHdO0nQE9Vgf8l8XFnlXltZvSywp/PfF2q2H
-	jmNo3ywEs9fn+Y1buLfD7ehTAe5qA6gSHQ8UZfYOLVXSBKNehCBSA9qL7mI4n+T4NwLS4SpB4vZ
-	Ejcpl3dCQ6gcYVGiKcH5F/qIM75Vvv5d97/KFOS/kT/EJ9WVPa9FdnV8=
-X-Google-Smtp-Source: AGHT+IHo7HCHW50KV8UXER7bHFe4guV2lkXOibpd+2Fe3a7VsPlzPa0SV3RLXftlVl7IBeDDB+jx/eCvFnMS3FQErE5eKkkrwzBd
+	s=arc-20240116; t=1706274960; c=relaxed/simple;
+	bh=FGY+lD+y60lvRkLTTesPfWuaivVUyv7pYO/2UAczccA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TH6WWTKh1+LVvazY9wPif5HvmyDRqAen9ypaY0uljRII0ysC4Wk9USRDsxTgN2i/xpny93V0lgTr5dfCjJ1soRVwU8vPIGe5U2sRAtGaJlVCdgcpZdmF11flVv0HX3Hi6KooH8kEbjMh6Gs8wkOAKaP17e/6wGfkfm9w0cTcNOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=4jIEQT8Y; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=50z3iua35YdHF3I4F9KF6AiAKfWmqunUUJx8CeyD42I=; b=4jIEQT8Y909onTWoy8B8fayYei
+	/1O+LlSWYYQgibr7K/vjXYCTR0szYmjhB/dEQOVyysqtaDy3RIY93Am++wBoL7QyCLHOWmfw9N62W
+	HcPVV/KiX3odBWaQkRjIx4YlAWtux1XRbQ7Lu+EDpMqbns4mpneZewmbWX7hv/ncYPlI=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rTM3X-006AmJ-5i; Fri, 26 Jan 2024 14:15:39 +0100
+Date: Fri, 26 Jan 2024 14:15:39 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Cc: Horatiu Vultur <horatiu.vultur@microchip.com>, hkallweit1@gmail.com,
+	linux@armlinux.org.uk, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, richardcochran@gmail.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	UNGLinuxDriver@microchip.com,
+	Maxime Chevallier <maxime.chevallier@bootlin.com>,
+	Divya Koppera <divya.koppera@microchip.com>
+Subject: Re: [PATCH net-next] net: micrel: Fix set/get PHC time for lan8814
+Message-ID: <a962b46c-343d-411b-9152-514b35aa4f00@lunn.ch>
+References: <20240126073042.1845153-1-horatiu.vultur@microchip.com>
+ <8da0a157-6a09-4d82-ad36-7428fdb27f9b@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1be5:b0:361:9a4c:8bf5 with SMTP id
- y5-20020a056e021be500b003619a4c8bf5mr173164ilv.6.1706274724126; Fri, 26 Jan
- 2024 05:12:04 -0800 (PST)
-Date: Fri, 26 Jan 2024 05:12:04 -0800
-In-Reply-To: <000000000000f8389205e9f9ec5f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d227b6060fd90a48@google.com>
-Subject: Re: [syzbot] [udf?] KASAN: use-after-free Read in crc_itu_t
-From: syzbot <syzbot+d8fc21bfa138a5ae916d@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, brauner@kernel.org, jack@suse.com, jack@suse.cz, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8da0a157-6a09-4d82-ad36-7428fdb27f9b@linux.dev>
 
-syzbot suspects this issue was fixed by commit:
+> > +	*sec |= lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_MID);
+> 
+> lanphy_read_page_reg returns int, but only 16 bits have meanings here.
+> Is it safe to assume that other 16 bits will be zeros always?
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+Yes. __phy_read() should only return a negative error code, or a value
+which fits in a u16. If any of the top bits are set, its a bug in the
+MDIO driver which needs finding and fixing.
 
-    fs: Block writes to mounted block devices
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1204f1efe80000
-start commit:   a4d7d7011219 Merge tag 'spi-fix-v6.4-rc5' of git://git.ker..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7474de833c217bf4
-dashboard link: https://syzkaller.appspot.com/bug?extid=d8fc21bfa138a5ae916d
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1442e70b280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16db80dd280000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: fs: Block writes to mounted block devices
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+     Andrew
 
