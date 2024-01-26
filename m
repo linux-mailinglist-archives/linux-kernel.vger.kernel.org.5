@@ -1,278 +1,370 @@
-Return-Path: <linux-kernel+bounces-39671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62B9183D4E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:51:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C6DD83D4EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:52:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87AD61C24BDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 08:51:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31392286A1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 08:52:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 031CF200BA;
-	Fri, 26 Jan 2024 06:45:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B19A20B3D;
+	Fri, 26 Jan 2024 06:55:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="njdQswJs"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Xd0wNFw2"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36EAD200A6;
-	Fri, 26 Jan 2024 06:45:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB86A20DF6
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 06:55:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706251512; cv=none; b=D9DQTTCQhP9rV2TwFKoBFxW/SHuaenTTbfvBjEv9A487+U02fLFcR0HTHvdW5C6pjAKm9LyEt5vfS7Xz6rL5DxMkPhoQ1QEfXXwSV90pd6FvexL2zezEicqwB5tVx1VewtZRI7uKOdcwmNGNO49c0M2AgrNZOruR756iCejoGwQ=
+	t=1706252143; cv=none; b=pu8EtWWhyZXsQHx2iuv2ovcAVKruSDAtxuJ9TXOQTHdcAFhH/4BT/CGa7yVij/zRKTYCh2Rzbl9hosLOL6nn2000gBQTW6b+mk7mSbym73VeX5Iphxib62lYHKsjTYvuo6UxPQZitvtsn/0zePDHVT0iSj+grvZT1AQp7g3v3sc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706251512; c=relaxed/simple;
-	bh=BOxflLzIeMNhS+RFdg54XOCOCuypggJ+q3Ri8WKOQNA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=COJu9Phvr89YyVqxiEIs7CdnVbcPNokIzXgdfGBWwfVRXj4cWirAraeB4dONZnK+JCXW/MC8ClttdAg6AkUdLdC/4rhvUk0WhstWfv3Dq9Q4ZyGWgBp1tAHPPcDy7hPnWafUXSHKGd/4FFpEv8WF1+C63071YrIZiINLAVmI/iw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=njdQswJs; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40eacb6067dso687545e9.1;
-        Thu, 25 Jan 2024 22:45:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706251508; x=1706856308; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3bj886cdMGlDeruMyVMMYt4Qd50oLO2t4eNJsFe4wLA=;
-        b=njdQswJsKHZsDGzzwhcRra+yfGjI6BdYJWlhOSFRM6TxafUX8uyG22Hnb7aSMGNpKE
-         FV2P9BtI0Is91CQKn/G1ZQoDxFv2jouQhaT5JsoIDSBqFKxbhxvgKqp6vphpNEKXK8J0
-         dKh/AHfSKZL+UB/TQuCNfVHzxm3ZBnAWi2AOEdF1eF/qKLEdNTpjfvYc5N0RMoE60f2q
-         pI04XGYcmLrRiuPMkKS+DbQqjS4dwm8tH+0E2ymwXaRfYBYU/MNXR0LM9nUHxTF3N9bg
-         QOZswJidAzTLBWNndZpJ9g7z13pBNQl46Xn8HIaP2psFqjqb5C5ytqegYyAr8u/elN+h
-         xfDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706251508; x=1706856308;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3bj886cdMGlDeruMyVMMYt4Qd50oLO2t4eNJsFe4wLA=;
-        b=nzPv9lW2YZcvqDTWSElMff8e5+rGWe9Y+slckznYZLHuQ4xzCIpUWzYV2x35A3hioB
-         nOLR6v4BVjnJ0qLtCAKuWVsEBIclfdv0m/yAdHIzTFAg02pbyuxV8u5e+dhxSeiisb1c
-         63VYluq0WsjMhKKkhcb/1qMtgKFbqwXVbvdtyq0WwImxJS5s4iSbMsdptPgvUQhjoaYY
-         b3Sz9rRL9//W0xl4gL6G0kp20vQedktaVQaKBOGDtBoZYIGyRqkqZEuag1HjZoYjOOb9
-         TBjJ4GbtTh4GyUosVgxTUo+bXoPROkG/wR4YcgOgCNeKQPnCQGDpGNz02MNR7mi+u6/m
-         xrXw==
-X-Gm-Message-State: AOJu0Yxtx5K+ukH5Qi2ZWg1rHt6TofZ6DRUYSntWiXwP7FYSuQTwP/I9
-	LVcDWp/r8mBjtATXmQQPl8O6OaQKijxC4bU/O5/nr0gqWeP//2ljAnufr/RrWzRvkFqHE7zUqDu
-	twghw/0iTZcw+weuzv3l1Eg8WlnxZ/dstZS00Hg==
-X-Google-Smtp-Source: AGHT+IGwFn9jkWBi6z7hbIpnvIc8UUhXAaug5oMycuE622T+gwOxMHYEeneieu3ES3qyNNlnF6tWqAzIfU5vFCVLHB4=
-X-Received: by 2002:a05:600c:1554:b0:40e:b908:30f4 with SMTP id
- f20-20020a05600c155400b0040eb90830f4mr280657wmg.88.1706251507902; Thu, 25 Jan
- 2024 22:45:07 -0800 (PST)
+	s=arc-20240116; t=1706252143; c=relaxed/simple;
+	bh=J0vtX0qiYjjv/gvWeWrYsnqKGhBgKUexuBCwtcnJmcY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QxAH97UHWeZN+mwlykxAy/18U+IFiDKPycxFxzGfI0Vb7af8y1wesC/wc1L3U7eguZveF1sHYVsqTrP4SP3kJ8J2qou0lOoQaO04FlqD+LRcG6EPXnOC38MF9sfMS8eQD6vSNGnFQbiv2k2pw2HMjr9ZpWbzcoYG4TXTj+oBs+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Xd0wNFw2; arc=none smtp.client-ip=134.134.136.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706252141; x=1737788141;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=J0vtX0qiYjjv/gvWeWrYsnqKGhBgKUexuBCwtcnJmcY=;
+  b=Xd0wNFw29/6vZ/bOqrqL+fpeV6bdsYX8QR+H7VGMz+kvQZwT+t2104s1
+   dfrq+iIWzG9dRgAjofHm37bUULKPqFir58J65zRl0yJCTtzGyfZ2xFyFm
+   G5n/1w9yyzl60arYfs8Bi8T5j1ObwZVB862PPaZ+WT+4jC5/lr0hRYGtk
+   qL8RYU9K/XnhRZCJFGidM6yDZpCt2cTwRHhhtU6qtVsrzhRvb2O6OT2ia
+   btw4r5UHHBc2WvwsnGVD5Vk0BtzO7dnsEkSTziFDBSxEHUFdcrQoHvW3o
+   Jb/TylSBktsm+PzTAGWc26QzhrlEwqEpj6Xvh/mBFBpv5a8fT0p30N6OI
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="406139492"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="406139492"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 22:55:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="906230383"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="906230383"
+Received: from cascade.sh.intel.com ([10.239.48.35])
+  by fmsmga002.fm.intel.com with ESMTP; 25 Jan 2024 22:55:38 -0800
+From: Jingqi Liu <Jingqi.liu@intel.com>
+To: iommu@lists.linux.dev,
+	Lu Baolu <baolu.lu@linux.intel.com>,
+	Tian Kevin <kevin.tian@intel.com>,
+	Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>
+Cc: linux-kernel@vger.kernel.org,
+	Jingqi Liu <Jingqi.liu@intel.com>
+Subject: [PATCH v2] Documentation: iommu/vt-d: Add the document for Intel IOMMU debugfs
+Date: Fri, 26 Jan 2024 14:47:04 +0800
+Message-Id: <20240126064704.14292-1-Jingqi.liu@intel.com>
+X-Mailer: git-send-email 2.21.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125-rk-dts-additions-v1-0-5879275db36f@gmail.com>
- <20240125-rk-dts-additions-v1-4-5879275db36f@gmail.com> <731aac66-f698-4a1e-b9ee-46a7f24ecae5@linaro.org>
- <ccc004cfae513195351ce0a79e12f6af@manjaro.org>
-In-Reply-To: <ccc004cfae513195351ce0a79e12f6af@manjaro.org>
-From: Alexey Charkov <alchark@gmail.com>
-Date: Fri, 26 Jan 2024 10:44:56 +0400
-Message-ID: <CABjd4YxSTLZjrnSCn0fh81US682-uhZ16-cgydzz97shhCpq4w@mail.gmail.com>
-Subject: Re: [PATCH 4/4] arm64: dts: rockchip: Add OPP data for CPU cores on RK3588
-To: Dragan Simic <dsimic@manjaro.org>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, Viresh Kumar <viresh.kumar@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jan 26, 2024 at 10:32=E2=80=AFAM Dragan Simic <dsimic@manjaro.org> =
-wrote:
->
-> Hello Daniel,
->
-> On 2024-01-25 10:30, Daniel Lezcano wrote:
-> > On 24/01/2024 21:30, Alexey Charkov wrote:
-> >> By default the CPUs on RK3588 start up in a conservative performance
-> >> mode. Add frequency and voltage mappings to the device tree to enable
-> >> dynamic scaling via cpufreq
-> >>
-> >> Signed-off-by: Alexey Charkov <alchark@gmail.com>
-> >> ---
-> >>   arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 209
-> >> ++++++++++++++++++++++++++++++
-> >>   1 file changed, 209 insertions(+)
-> >>
-> >> diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> >> b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> >> index 131b9eb21398..e605be531a0f 100644
-> >> --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> >> +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> >> @@ -97,6 +97,7 @@ cpu_l0: cpu@0 {
-> >>                      clocks =3D <&scmi_clk SCMI_CLK_CPUL>;
-> >>                      assigned-clocks =3D <&scmi_clk SCMI_CLK_CPUL>;
-> >>                      assigned-clock-rates =3D <816000000>;
-> >> +                    operating-points-v2 =3D <&cluster0_opp_table>;
-> >>                      cpu-idle-states =3D <&CPU_SLEEP>;
-> >>                      i-cache-size =3D <32768>;
-> >>                      i-cache-line-size =3D <64>;
-> >> @@ -116,6 +117,7 @@ cpu_l1: cpu@100 {
-> >>                      enable-method =3D "psci";
-> >>                      capacity-dmips-mhz =3D <530>;
-> >>                      clocks =3D <&scmi_clk SCMI_CLK_CPUL>;
-> >> +                    operating-points-v2 =3D <&cluster0_opp_table>;
-> >>                      cpu-idle-states =3D <&CPU_SLEEP>;
-> >>                      i-cache-size =3D <32768>;
-> >>                      i-cache-line-size =3D <64>;
-> >> @@ -135,6 +137,7 @@ cpu_l2: cpu@200 {
-> >>                      enable-method =3D "psci";
-> >>                      capacity-dmips-mhz =3D <530>;
-> >>                      clocks =3D <&scmi_clk SCMI_CLK_CPUL>;
-> >> +                    operating-points-v2 =3D <&cluster0_opp_table>;
-> >>                      cpu-idle-states =3D <&CPU_SLEEP>;
-> >>                      i-cache-size =3D <32768>;
-> >>                      i-cache-line-size =3D <64>;
-> >> @@ -154,6 +157,7 @@ cpu_l3: cpu@300 {
-> >>                      enable-method =3D "psci";
-> >>                      capacity-dmips-mhz =3D <530>;
-> >>                      clocks =3D <&scmi_clk SCMI_CLK_CPUL>;
-> >> +                    operating-points-v2 =3D <&cluster0_opp_table>;
-> >>                      cpu-idle-states =3D <&CPU_SLEEP>;
-> >>                      i-cache-size =3D <32768>;
-> >>                      i-cache-line-size =3D <64>;
-> >> @@ -175,6 +179,7 @@ cpu_b0: cpu@400 {
-> >>                      clocks =3D <&scmi_clk SCMI_CLK_CPUB01>;
-> >>                      assigned-clocks =3D <&scmi_clk SCMI_CLK_CPUB01>;
-> >>                      assigned-clock-rates =3D <816000000>;
-> >> +                    operating-points-v2 =3D <&cluster1_opp_table>;
-> >>                      cpu-idle-states =3D <&CPU_SLEEP>;
-> >>                      i-cache-size =3D <65536>;
-> >>                      i-cache-line-size =3D <64>;
-> >> @@ -194,6 +199,7 @@ cpu_b1: cpu@500 {
-> >>                      enable-method =3D "psci";
-> >>                      capacity-dmips-mhz =3D <1024>;
-> >>                      clocks =3D <&scmi_clk SCMI_CLK_CPUB01>;
-> >> +                    operating-points-v2 =3D <&cluster1_opp_table>;
-> >>                      cpu-idle-states =3D <&CPU_SLEEP>;
-> >>                      i-cache-size =3D <65536>;
-> >>                      i-cache-line-size =3D <64>;
-> >> @@ -215,6 +221,7 @@ cpu_b2: cpu@600 {
-> >>                      clocks =3D <&scmi_clk SCMI_CLK_CPUB23>;
-> >>                      assigned-clocks =3D <&scmi_clk SCMI_CLK_CPUB23>;
-> >>                      assigned-clock-rates =3D <816000000>;
-> >> +                    operating-points-v2 =3D <&cluster2_opp_table>;
-> >>                      cpu-idle-states =3D <&CPU_SLEEP>;
-> >>                      i-cache-size =3D <65536>;
-> >>                      i-cache-line-size =3D <64>;
-> >> @@ -234,6 +241,7 @@ cpu_b3: cpu@700 {
-> >>                      enable-method =3D "psci";
-> >>                      capacity-dmips-mhz =3D <1024>;
-> >>                      clocks =3D <&scmi_clk SCMI_CLK_CPUB23>;
-> >> +                    operating-points-v2 =3D <&cluster2_opp_table>;
-> >>                      cpu-idle-states =3D <&CPU_SLEEP>;
-> >>                      i-cache-size =3D <65536>;
-> >>                      i-cache-line-size =3D <64>;
-> >> @@ -348,6 +356,207 @@ l3_cache: l3-cache {
-> >>              };
-> >>      };
-> >>   +  cluster0_opp_table: opp-table-cluster0 {
-> >> +            compatible =3D "operating-points-v2";
-> >> +            opp-shared;
-> >> +
-> >> +            opp-408000000 {
-> >> +                    opp-hz =3D /bits/ 64 <408000000>;
-> >> +                    opp-microvolt =3D <675000 675000 950000>;
-> >> +                    clock-latency-ns =3D <40000>;
-> >> +            };
-> >> +            opp-600000000 {
-> >> +                    opp-hz =3D /bits/ 64 <600000000>;
-> >> +                    opp-microvolt =3D <675000 675000 950000>;
-> >> +                    clock-latency-ns =3D <40000>;
-> >> +            };
-> >> +            opp-816000000 {
-> >> +                    opp-hz =3D /bits/ 64 <816000000>;
-> >> +                    opp-microvolt =3D <675000 675000 950000>;
-> >> +                    clock-latency-ns =3D <40000>;
-> >> +            };
-> >> +            opp-1008000000 {
-> >> +                    opp-hz =3D /bits/ 64 <1008000000>;
-> >> +                    opp-microvolt =3D <675000 675000 950000>;
-> >> +                    clock-latency-ns =3D <40000>;
-> >> +            };
-> >
-> > It is not useful to introduce OPP with the same voltage. There is no
-> > gain in terms of energy efficiency as the compute capacity is linearly
-> > tied with power consumption (P=3DCxFxV=C2=B2) in this case.
-> >
-> > For example, opp-408 consumes 2 bogoWatts and opp-816 consumes 4
-> > bogoWatts (because of the same voltage).
-> >
-> > For a workload, opp-408 takes 10 sec and opp-816 takes 5 sec because
-> > it is twice faster.
-> >
-> > The energy consumption is:
-> >
-> > opp-408 =3D 10 x 2 =3D 20 BogoJoules
-> > opp-816 =3D 5 x 4 =3D 20 BogoJoules
->
-> I'd respectfully disagree that including multiple OPPs with the same
-> voltage
-> but different frequencies isn't useful.  Please allow me to explain.
->
-> See, the total amount of consumed energy is, in general, the same for
-> such
-> OPPs and the same CPU task(s), if we ignore the static leakage current
-> and
-> such stuff, which isn't important here.  Though, the emphasis here is on
-> "total", i.e. without taking into account the actual amount of time
-> required
-> for the exemplified CPU task(s) to complete.  If the total amount of
-> time
-> is quite short, we aren't going to heat up the package and the board
-> enough
-> to hit the CPU thermal throttling;  this approach is also sometimes
-> referred
-> to as "race to idle", which is actually quite effective for
-> battery-powered
-> mobile devices that tend to load their CPU cores in bursts, while
-> remaining
-> kind of inactive for the remaining time.
->
-> However, if the CPU task(s) last long enough to actually saturate the
-> thermal
-> capacities of the package and the board or the device, we're getting
-> into the
-> CPU throttling territory, in which running the CPU cores slower, but
-> still as
-> fast as possible, may actually be beneficial for the overall CPU
-> performance.
-> By running the CPU cores slower, we're lowering the power and
-> "spreading" the
-> total energy consumption over time, i.e. we're making some time to allow
-> the
-> generated heat to dissipate into the surroundings.  As we know, having
-> more
-> energy consumed by the SoC means more heat generated by the SoC, but the
-> resulting temperature of the SoC depends on how fast the energy is
-> consumed,
-> which equals to how fast the CPUs run;  of course, all that is valid
-> under
-> the reasonable assumption that the entire cooling setup, including the
-> board
-> surroundings, remains unchanged all the time.
+This document guides users to dump the Intel IOMMU internals by debugfs.
 
-On the other hand, convective heat dissipation is approximately
-proportional to the temperature differential, therefore heating up the
-core to a higher temperature over a shorter period of time would let
-it dissipate the same joule amount faster. Given that total joules
-generated for a particular load are approximately the same for
-different frequencies as long as voltage remains the same (as Daniel
-pointed out), higher frequency seems to lead to better heat transfer
-to the environment for the same load. And also the task completes
-sooner, which is probably always good, ceteris paribus.
+Signed-off-by: Jingqi Liu <Jingqi.liu@intel.com>
+---
+ Documentation/ABI/testing/debugfs-intel-iommu | 276 ++++++++++++++++++
+ 1 file changed, 276 insertions(+)
+ create mode 100644 Documentation/ABI/testing/debugfs-intel-iommu
 
-Not sure how that all changes when throttling enters the game though :)
+diff --git a/Documentation/ABI/testing/debugfs-intel-iommu b/Documentation/ABI/testing/debugfs-intel-iommu
+new file mode 100644
+index 000000000000..6c17e55c3379
+--- /dev/null
++++ b/Documentation/ABI/testing/debugfs-intel-iommu
+@@ -0,0 +1,276 @@
++What:		/sys/kernel/debug/iommu/intel/iommu_regset
++Date:		December 2023
++Contact:	Jingqi Liu <Jingqi.liu@intel.com>
++Description:
++		This file dumps all the register contents for each IOMMU device.
++
++		Example in Kabylake:
++
++		::
++
++		 $ sudo cat /sys/kernel/debug/iommu/intel/iommu_regset
++
++		 IOMMU: dmar0 Register Base Address: 26be37000
++
++		 Name                    Offset          Contents
++		 VER                     0x00            0x0000000000000010
++		 GCMD                    0x18            0x0000000000000000
++		 GSTS                    0x1c            0x00000000c7000000
++		 FSTS                    0x34            0x0000000000000000
++		 FECTL                   0x38            0x0000000000000000
++
++		 [...]
++
++		 IOMMU: dmar1 Register Base Address: fed90000
++
++		 Name                    Offset          Contents
++		 VER                     0x00            0x0000000000000010
++		 GCMD                    0x18            0x0000000000000000
++		 GSTS                    0x1c            0x00000000c7000000
++		 FSTS                    0x34            0x0000000000000000
++		 FECTL                   0x38            0x0000000000000000
++
++		 [...]
++
++		 IOMMU: dmar2 Register Base Address: fed91000
++
++		 Name                    Offset          Contents
++		 VER                     0x00            0x0000000000000010
++		 GCMD                    0x18            0x0000000000000000
++		 GSTS                    0x1c            0x00000000c7000000
++		 FSTS                    0x34            0x0000000000000000
++		 FECTL                   0x38            0x0000000000000000
++
++		 [...]
++
++What:		/sys/kernel/debug/iommu/intel/ir_translation_struct
++Date:		December 2023
++Contact:	Jingqi Liu <Jingqi.liu@intel.com>
++Description:
++		This file dumps the table entries for Interrupt
++		remapping and Interrupt posting.
++
++		Example in Kabylake:
++
++		::
++
++		 $ sudo cat /sys/kernel/debug/iommu/intel/ir_translation_struct
++
++		 Remapped Interrupt supported on IOMMU: dmar0
++		 IR table address:100900000
++
++		 Entry SrcID   DstID    Vct IRTE_high           IRTE_low
++		 0     00:0a.0 00000080 24  0000000000040050    000000800024000d
++		 1     00:0a.0 00000001 ef  0000000000040050    0000000100ef000d
++
++		 Remapped Interrupt supported on IOMMU: dmar1
++		 IR table address:100300000
++		 Entry SrcID   DstID    Vct IRTE_high           IRTE_low
++		 0     00:02.0 00000002 26  0000000000040010    000000020026000d
++
++		 [...]
++
++		 ****
++
++		 Posted Interrupt supported on IOMMU: dmar0
++		 IR table address:100900000
++		 Entry SrcID   PDA_high PDA_low  Vct IRTE_high          IRTE_low
++
++What:		/sys/kernel/debug/iommu/intel/dmar_translation_struct
++Date:		December 2023
++Contact:	Jingqi Liu <Jingqi.liu@intel.com>
++Description:
++		This file dumps Intel IOMMU DMA remapping tables, such
++		as root table, context table, PASID directory and PASID
++		table entries in debugfs. For legacy mode, it doesn't
++		support PASID, and hence PASID field is defaulted to
++		'-1' and other PASID related fields are invalid.
++
++		Example in Kabylake:
++
++		::
++
++		 $ sudo cat /sys/kernel/debug/iommu/intel/dmar_translation_struct
++
++		 IOMMU dmar1: Root Table Address: 0x103027000
++		 B.D.F   Root_entry
++		 00:02.0 0x0000000000000000:0x000000010303e001
++
++		 Context_entry
++		 0x0000000000000102:0x000000010303f005
++
++		 PASID   PASID_table_entry
++		 -1      0x0000000000000000:0x0000000000000000:0x0000000000000000
++
++		 IOMMU dmar0: Root Table Address: 0x103028000
++		 B.D.F   Root_entry
++		 00:0a.0 0x0000000000000000:0x00000001038a7001
++
++		 Context_entry
++		 0x0000000000000000:0x0000000103220e7d
++
++		 PASID   PASID_table_entry
++		 0       0x0000000000000000:0x0000000000800002:0x00000001038a5089
++
++		 [...]
++
++What:		/sys/kernel/debug/iommu/intel/invalidation_queue
++Date:		December 2023
++Contact:	Jingqi Liu <Jingqi.liu@intel.com>
++Description:
++		This file exports invalidation queue internals of each
++		IOMMU device.
++
++		Example in Kabylake:
++
++		::
++
++		 $ sudo cat /sys/kernel/debug/iommu/intel/invalidation_queue
++
++		 Invalidation queue on IOMMU: dmar0
++		 Base: 0x10022e000      Head: 20        Tail: 20
++		 Index          qw0                    qw1                     qw2
++		     0   0000000000000014        0000000000000000        0000000000000000
++		     1   0000000200000025        0000000100059c04        0000000000000000
++		     2   0000000000000014        0000000000000000        0000000000000000
++
++		      		qw3                  status
++			 0000000000000000        0000000000000000
++			 0000000000000000        0000000000000000
++			 0000000000000000        0000000000000000
++
++		 [...]
++
++		 Invalidation queue on IOMMU: dmar1
++		 Base: 0x10026e000      Head: 32        Tail: 32
++		 Index           qw0                     qw1                   status
++		     0   0000000000000004        0000000000000000         0000000000000000
++		     1   0000000200000025        0000000100059804         0000000000000000
++		     2   0000000000000011        0000000000000000         0000000000000000
++
++		 [...]
++
++What:		/sys/kernel/debug/iommu/intel/dmar_perf_latency
++Date:		December 2023
++Contact:	Jingqi Liu <Jingqi.liu@intel.com>
++Description:
++		This file is used to control and show counts of
++		execution time ranges for various types per DMAR.
++
++		Firstly, write a value to
++		/sys/kernel/debug/iommu/intel/dmar_perf_latency
++		to enable sampling.
++
++		The possible values are as follows:
++
++		* 0 - disable sampling all latency data
++
++		* 1 - enable sampling IOTLB invalidation latency data
++
++		* 2 - enable sampling devTLB invalidation latency data
++
++		* 3 - enable sampling intr entry cache invalidation latency data
++
++		Next, read /sys/kernel/debug/iommu/intel/dmar_perf_latency gives
++		a snapshot of sampling result of all enabled monitors.
++
++		Examples in Kabylake:
++
++		::
++
++		 1) Disable sampling all latency data:
++
++		 $ sudo echo 0 > /sys/kernel/debug/iommu/intel/dmar_perf_latency
++
++		 2) Enable sampling IOTLB invalidation latency data
++
++		 $ sudo echo 1 > /sys/kernel/debug/iommu/intel/dmar_perf_latency
++
++		 $ sudo cat /sys/kernel/debug/iommu/intel/dmar_perf_latency
++
++		 IOMMU: dmar0 Register Base Address: 26be37000
++				 <0.1us   0.1us-1us    1us-10us  10us-100us   100us-1ms
++		 inv_iotlb           0           0           0           0           0
++
++		 		 1ms-10ms      >=10ms     min(us)     max(us) average(us)
++		 inv_iotlb           0           0           0           0           0
++
++		 [...]
++
++		 IOMMU: dmar2 Register Base Address: fed91000
++		 		 <0.1us   0.1us-1us    1us-10us  10us-100us   100us-1ms
++		 inv_iotlb           0           0          18           0           0
++
++				 1ms-10ms      >=10ms     min(us)     max(us) average(us)
++		 inv_iotlb           0           0           2           2           2
++
++		 3) Enable sampling devTLB invalidation latency data
++
++		 $ sudo echo 2 > /sys/kernel/debug/iommu/intel/dmar_perf_latency
++
++		 $ sudo cat /sys/kernel/debug/iommu/intel/dmar_perf_latency
++
++		 IOMMU: dmar0 Register Base Address: 26be37000
++				 <0.1us   0.1us-1us    1us-10us  10us-100us   100us-1ms
++		 inv_devtlb           0           0           0           0           0
++
++				 >=10ms     min(us)     max(us) average(us)
++		 inv_devtlb           0           0           0           0
++
++		 [...]
++
++What:		/sys/kernel/debug/iommu/intel/<bdf>/domain_translation_struct
++Date:		December 2023
++Contact:	Jingqi Liu <Jingqi.liu@intel.com>
++Description:
++		This file dumps a specified page table of Intel IOMMU
++		in legacy mode or scalable mode.
++
++		For a device that only supports legacy mode, dump its
++		page table by the debugfs file in the debugfs device
++		directory. e.g.
++		/sys/kernel/debug/iommu/intel/0000:00:02.0/domain_translation_struct.
++
++		For a device that supports scalable mode, dump the
++		page table of specified pasid by the debugfs file in
++		the debugfs pasid directory. e.g.
++		/sys/kernel/debug/iommu/intel/0000:00:02.0/1/domain_translation_struct.
++
++		Examples in Kabylake:
++
++		::
++
++		 1) Dump the page table of device "0000:00:02.0" that only supports legacy mode.
++
++		 $ sudo cat /sys/kernel/debug/iommu/intel/0000:00:02.0/domain_translation_struct
++
++		 Device 0000:00:02.0 @0x1017f8000
++		 IOVA_PFN                PML5E                   PML4E
++		 0x000000008d800 |       0x0000000000000000      0x00000001017f9003
++		 0x000000008d801 |       0x0000000000000000      0x00000001017f9003
++		 0x000000008d802 |       0x0000000000000000      0x00000001017f9003
++
++		 PDPE                    PDE                     PTE
++		 0x00000001017fa003      0x00000001017fb003      0x000000008d800003
++		 0x00000001017fa003      0x00000001017fb003      0x000000008d801003
++		 0x00000001017fa003      0x00000001017fb003      0x000000008d802003
++
++		 [...]
++
++		 2) Dump the page table of device "0000:00:0a.0" with PASID "1" that
++		 supports scalable mode.
++
++		 $ sudo cat /sys/kernel/debug/iommu/intel/0000:00:0a.0/1/domain_translation_struct
++
++		 Device 0000:00:0a.0 with pasid 1 @0x10c112000
++		 IOVA_PFN                PML5E                   PML4E
++		 0x0000000000000 |       0x0000000000000000      0x000000010df93003
++		 0x0000000000001 |       0x0000000000000000      0x000000010df93003
++		 0x0000000000002 |       0x0000000000000000      0x000000010df93003
++
++		 PDPE                    PDE                     PTE
++		 0x0000000106ae6003      0x0000000104b38003      0x0000000147c00803
++		 0x0000000106ae6003      0x0000000104b38003      0x0000000147c01803
++		 0x0000000106ae6003      0x0000000104b38003      0x0000000147c02803
++
++		 [...]
+-- 
+2.21.3
 
-Best regards,
-Alexey
 
