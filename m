@@ -1,133 +1,124 @@
-Return-Path: <linux-kernel+bounces-39452-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39453-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C02C983D15E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 01:11:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37B9683D162
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 01:14:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30C231F26250
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 00:11:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44D712910E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 00:14:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AF9A138C;
-	Fri, 26 Jan 2024 00:11:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B837E10EB;
+	Fri, 26 Jan 2024 00:14:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="SLpqS0QE"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eCEcaTNX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AEFA64C
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 00:11:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05973633;
+	Fri, 26 Jan 2024 00:14:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706227894; cv=none; b=RJ8bchxpOFeTwNc7Xu1KgX1SPINJuBDQoj32Cct5tLbPK9yq4dOHU8c1Tga/0Kh2MqfSMjCXBgQIqCjQZjyTEgKOezsyGfDtthVQ/bxqFy/q+jIGQLRkOGoatXtlRtgQLJy6AlsgtVIOdSnsLxOfwcbslxPUg1UCvCjceBfQfR8=
+	t=1706228073; cv=none; b=gdMDdUscS2XhkMbvQeXQ9DUnE1/W9gyPQ9D+n54t2KHJZ4RW8zWnIJMkD5so9izeVkP7ii+FIGKN0saJw9286SspyzwtDRkMydFdVvzWnkbETWl2GNgBnBmL3nBQvqRcavRc9wmxyXDnRUm1EU9095u8sVvY7WcM3W7E3+dUdnk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706227894; c=relaxed/simple;
-	bh=tS1D/gC3eczV4hc9F7HIorCotTTkm6mnvxscD4v6Lmw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=exhSYh568znXmsiUYFuPxxygd8Nl7wXIZRcKc/U6dwpqOVryZ4+8Cv//8wW85t/JqcWArMRQbpQqF9S4Re8LnzVA5vw9qSuPGOPsq8rxAqVEXL/+AdZWRfMvAE26Wm9bXSEtwugdZLz0vBJUnrye5ZtRRtFXPHIDZ3h5W70DFPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=SLpqS0QE; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d88e775d91so9700225ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 16:11:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1706227893; x=1706832693; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GloqAGaE/8Xt5EH+nEjxDsFciv6uGLru4K2wOJLFbuY=;
-        b=SLpqS0QE4w8luvxKbPVs2v4sG9kn8FfJ5NXxIFbRIQSvf5cDB4lSzet3I+FEf6DH6k
-         Ya4COsKKQjC8B0wvlVvLpmI3NuhfaMh1LzQE4ar1m5np4jmPDIftq1T8QG4lzO7YXx1b
-         MgGab/TqBd6SZa9Wsvjbc68+8v8NB0nHsqBlY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706227893; x=1706832693;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GloqAGaE/8Xt5EH+nEjxDsFciv6uGLru4K2wOJLFbuY=;
-        b=D+/X7betVeNkJNqy9uDEV4/cMqskKBXrL3/d30bLI2Iv/hMwNUswf1crjP+P4brKYl
-         wcOUw8BjKJyaN45H9fv/4pjxxVGRQOITXDHaGnlpqGWMU+bhPThv1azlS9/MZeu+dPVM
-         jHntldJk+nxciBy/iqKEXCvTHffU6FcLIu2UCknD/OZjMYTweJ9ZAWJCNAP5Mn8cmJqI
-         lqlcVbtvMYydm/Oq20GTCrbon8/Ez2Al7+0XHyYNpSfa77jyYh47XAloLVs3IjQtNu9G
-         8BKpD4HAMgKntcmvvKCwSUwQD3HZrqyDFTRabq+1XxUUcXeNnElRxCGpeOjzFuS4NG1I
-         qvgg==
-X-Gm-Message-State: AOJu0Yw4hKVN8pVelQqhK07oBSV+CVyyVvfdEhkBaG1YRE4I6FVQBAw8
-	x4Q3ZsPwMgnkqAB5UnmkAc6PhBET3pSJwWZgJmzYETQTehQ3ydVlQZCKYMllRGU=
-X-Google-Smtp-Source: AGHT+IGBb/9rSx28R5bqGae1Ih6pLXBUZpviP2v/EZH+ry1x0sFiesGEC78wJnmgSEFLUxy3GHYlvg==
-X-Received: by 2002:a17:902:6509:b0:1d4:868b:7ccc with SMTP id b9-20020a170902650900b001d4868b7cccmr455778plk.111.1706227892703;
-        Thu, 25 Jan 2024 16:11:32 -0800 (PST)
-Received: from fastly.com (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
-        by smtp.gmail.com with ESMTPSA id mn7-20020a1709030a4700b001d49a08495esm66286plb.118.2024.01.25.16.11.30
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 25 Jan 2024 16:11:32 -0800 (PST)
-Date: Thu, 25 Jan 2024 16:11:28 -0800
-From: Joe Damato <jdamato@fastly.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	chuck.lever@oracle.com, jlayton@kernel.org,
-	linux-api@vger.kernel.org, brauner@kernel.org, edumazet@google.com,
-	davem@davemloft.net, alexander.duyck@gmail.com,
-	sridhar.samudrala@intel.com, kuba@kernel.org,
-	willemdebruijn.kernel@gmail.com, weiwan@google.com,
-	Jonathan Corbet <corbet@lwn.net>,
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nathan Lynch <nathanl@linux.ibm.com>,
-	Steve French <stfrench@microsoft.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Julien Panis <jpanis@baylibre.com>, Arnd Bergmann <arnd@arndb.de>,
-	Andrew Waterman <waterman@eecs.berkeley.edu>,
-	Thomas Huth <thuth@redhat.com>, Palmer Dabbelt <palmer@dabbelt.com>,
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-	"open list:FILESYSTEMS (VFS and infrastructure)" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH net-next v3 3/3] eventpoll: Add epoll ioctl for
- epoll_params
-Message-ID: <20240126001128.GC1987@fastly.com>
-References: <20240125225704.12781-1-jdamato@fastly.com>
- <20240125225704.12781-4-jdamato@fastly.com>
- <2024012551-anyone-demeaning-867b@gregkh>
+	s=arc-20240116; t=1706228073; c=relaxed/simple;
+	bh=Qm9TZuL9HTa2j4FLC1XOdPmC6N+VcY2tavBjeFAxuxM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qShPzejpKniluvEa94TId9KMPVSwbhXdkKhwyh6Zn1pdG5s13xFLeKX2Bvm1WQlnwHU5YChS02kg0bOkfu3b1zGZ6SSB/cv4zDfc1tqzBhRopTjri//7yKtZdDFySA3yYuLUG75TvkRMr6WRdaz5mOe8xPBqDbS0Ph0qXFtzTcE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eCEcaTNX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 637D6C433F1;
+	Fri, 26 Jan 2024 00:14:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706228072;
+	bh=Qm9TZuL9HTa2j4FLC1XOdPmC6N+VcY2tavBjeFAxuxM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=eCEcaTNXiNSoEbAtz/bVrD+OPWQMdE8uaZ2TlIpTbOwFiQpLtLJLR54n5zKLQNlUi
+	 SIO9KpHd1ukJQQKlt+k56I1yu8RFvzvLhLQ8JfiCRxLOv7sP4w6FgkeUwBG9COMoXb
+	 0RMbAw5yObcGhcoIat1xX4W84AqswkumhvPb5u7/PVx9rPXGdh3qPAOY1ZCcTIR604
+	 B6Loc6VuXEd6+RbyUcuMgUh750oxVHnRVlwMLQAQMEt0/WbiKmryDoeKcZhJdBcbT4
+	 vbgfZXYm99Hj3ihk6XIiAHgE4aklieGb6fIjJGzU2OWRztUy0C2BJyi8nYSlY1IT59
+	 9Cye0cSAZI40A==
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51021ba75edso1035268e87.3;
+        Thu, 25 Jan 2024 16:14:32 -0800 (PST)
+X-Gm-Message-State: AOJu0YwNMDNonu/5YSQPKRVnYm8Yh8/O+md9ZKURQfswmM3hN016BPLF
+	ao0GXavwkiI4TsAVkeydEGAT5lqGFIE9yg1DNoVO10jugiTuAFfKkasacqy3khe5dz2sOxdKIlh
+	OXMi9iNHORWJqSc/ETeSaTd/tldQ=
+X-Google-Smtp-Source: AGHT+IED9CJWsDJSk49BPkNStrwuc6tSM4rMBKOHwZqetFqvJrPjTD8O/vlKnTlptPI5eCGjFtZBcMGLEwtLw1lUEyY=
+X-Received: by 2002:a05:6512:3b2c:b0:50e:36ad:5f6e with SMTP id
+ f44-20020a0565123b2c00b0050e36ad5f6emr344390lfv.20.1706228070641; Thu, 25 Jan
+ 2024 16:14:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024012551-anyone-demeaning-867b@gregkh>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20240124091421.1261579-1-yukuai3@huawei.com> <20240124091421.1261579-6-yukuai3@huawei.com>
+ <CALTww291wiYYMWuqUdDf1t7cKkHFs9gGQSRw+iPhUCsNv-Y6yg@mail.gmail.com>
+In-Reply-To: <CALTww291wiYYMWuqUdDf1t7cKkHFs9gGQSRw+iPhUCsNv-Y6yg@mail.gmail.com>
+From: Song Liu <song@kernel.org>
+Date: Thu, 25 Jan 2024 16:14:18 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW4kauNB8jAsXYjRohCBMDvY15y0CzzWYqzGvNsqAJ59jQ@mail.gmail.com>
+Message-ID: <CAPhsuW4kauNB8jAsXYjRohCBMDvY15y0CzzWYqzGvNsqAJ59jQ@mail.gmail.com>
+Subject: Re: [PATCH v2 05/11] md: export helpers to stop sync_thread
+To: Xiao Ni <xni@redhat.com>
+Cc: Yu Kuai <yukuai3@huawei.com>, agk@redhat.com, snitzer@kernel.org, 
+	mpatocka@redhat.com, dm-devel@lists.linux.dev, jbrassow@f14.redhat.com, 
+	neilb@suse.de, heinzm@redhat.com, shli@fb.com, akpm@osdl.org, 
+	linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org, 
+	yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 25, 2024 at 03:21:46PM -0800, Greg Kroah-Hartman wrote:
-> On Thu, Jan 25, 2024 at 10:56:59PM +0000, Joe Damato wrote:
-> > +struct epoll_params {
-> > +	u64 busy_poll_usecs;
-> > +	u16 busy_poll_budget;
-> > +
-> > +	/* for future fields */
-> > +	u8 data[118];
-> > +} EPOLL_PACKED;
-> 
-> variables that cross the user/kernel boundry need to be __u64, __u16,
-> and __u8 here.
+Hi Xiao,
 
-I'll make that change for the next version, thank you.
+On Thu, Jan 25, 2024 at 5:33=E2=80=AFAM Xiao Ni <xni@redhat.com> wrote:
+>
+> Hi all
+>
+> I build the kernel 6.7.0-rc8 with this patch set. The lvm2 regression
+> test result:
 
-> And why 118?
-
-I chose this arbitrarily. I figured that a 128 byte struct would support 16
-u64s in the event that other fields needed to be added in the future. 118
-is what was left after the existing fields. There's almost certainly a
-better way to do this - or perhaps it is unnecessary as per your other
-message.
-
-I am not sure if leaving extra space in the struct is a recommended
-practice for ioctls or not - I thought I noticed some code that did and
-some that didn't in the kernel so I err'd on the side of leaving the space
-and probably did it in the worst way possible.
+I believe the patchset is built on top of upstream (6.8-rc1). There are
+quite some md and dm changes between 6.7-rc8 and 6.8-rc1. Could
+you please rerun the test on top of 6.8-rc1? Once we identify the right
+set of fixes, we will see which ones to back port to older kernels.
 
 Thanks,
-Joe
+Song
+
+> ###       failed: [ndev-vanilla] shell/integrity.sh
+> ###       failed: [ndev-vanilla] shell/lvchange-partial-raid10.sh
+> ###       failed: [ndev-vanilla] shell/lvchange-raid-transient-failures.s=
+h
+> ###       failed: [ndev-vanilla] shell/lvchange-raid10.sh
+> ###       failed: [ndev-vanilla] shell/lvchange-rebuild-raid.sh
+> ###       failed: [ndev-vanilla] shell/lvconvert-cache-abort.sh
+> ###       failed: [ndev-vanilla] shell/lvconvert-raid-regionsize.sh
+> ###       failed: [ndev-vanilla]
+> shell/lvconvert-raid-reshape-linear_to_raid6-single-type.sh
+> ###       failed: [ndev-vanilla] shell/lvconvert-raid-reshape.sh
+> ###       failed: [ndev-vanilla] shell/lvconvert-raid-takeover-alloc-fail=
+ure.sh
+> ###       failed: [ndev-vanilla] shell/lvconvert-raid-takeover-thin.sh
+> ###       failed: [ndev-vanilla] shell/lvconvert-raid-takeover.sh
+> ###       failed: [ndev-vanilla] shell/lvconvert-raid0-striped.sh
+> ###       failed: [ndev-vanilla] shell/lvconvert-raid0_to_raid10.sh
+> ###       failed: [ndev-vanilla] shell/lvconvert-raid10.sh
+> ###       failed: [ndev-vanilla] shell/lvconvert-raid5_to_raid10.sh
+> ###       failed: [ndev-vanilla] shell/lvconvert-repair-raid.sh
+> ###       failed: [ndev-vanilla] shell/lvconvert-striped-raid0.sh
+> ###       failed: [ndev-vanilla] shell/lvcreate-large-raid10.sh
+> ###       failed: [ndev-vanilla] shell/lvcreate-raid-nosync.sh
+> ###       failed: [ndev-vanilla] shell/lvcreate-raid10.sh
+> ###       failed: [ndev-vanilla] shell/lvdisplay-raid.sh
+> ###       failed: [ndev-vanilla] shell/lvextend-thin-raid.sh
+> ###       failed: [ndev-vanilla] shell/lvresize-fs-crypt.sh
+> ###       failed: [ndev-vanilla] shell/lvresize-raid.sh
+> ###       failed: [ndev-vanilla] shell/lvresize-raid10.sh
+> ###       failed: [ndev-vanilla] shell/pvck-dump.sh
+> ###       failed: [ndev-vanilla] shell/pvmove-raid-segtypes.sh
+> ###       failed: [ndev-vanilla] shell/select-report.sh
 
