@@ -1,125 +1,174 @@
-Return-Path: <linux-kernel+bounces-39660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D18F83D481
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 08:49:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89EE683D4B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:28:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 906A91C24406
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 07:49:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C8B01C23371
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 08:28:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E45F713FE4;
-	Fri, 26 Jan 2024 06:27:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D4EB1BF51;
+	Fri, 26 Jan 2024 06:29:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="cyUYfSAf";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="mb027GcG"
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="KI4HUP2Y"
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70541C2FE
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 06:27:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE5B311184;
+	Fri, 26 Jan 2024 06:29:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706250467; cv=none; b=kgMkaOoo41BPFkh+jlvSls5+oj1AAMunDqDFVH8BDxtGHwfTW5GT13JftPu5/TZoCOrz7IuiXWDet7Bm075oWSZ4vxoNt36weNOSb5UO+Ngkv2wgwGDZrBfI5HzQJn5IllC4FOnDmZ5AMxLQwXqbkNjiPcw1HHUd39vQKYi/P7M=
+	t=1706250566; cv=none; b=lmsrsc7rm5a9p7kptHpN1Nsgfz7KfbpbSOWxu1hCpfwGf+ez1nclXmJEcmkMl/50aO8TAiaRnwk84zIAtW59aSCcDo2eOvvibWAjI5FwkBPJFmU4YZuVh+6qDQlr8OLpdzmtNzdu7LUGd+W+ieDXI/4DWAW7OfZ5UMFXv89UNmY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706250467; c=relaxed/simple;
-	bh=FBL7hTT/AQ8zcejU8o0lB8qQ7Lub365PDThqd6QKVIE=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=f/jOoI4/zRoan1l6nw19YLnZEjKpwFdXIzKvBI7t9/QLo7qExITDzUpdeqXPtAgWotyAvBMpAJgqJJoX1FWpArmLy3Z/vDgXXW3o0TkSZtz/0a64A0wbE9bB1bfOjm1q3Io7ykMxeh9/iB+iwKpTX9+xhF3BCyrAloJesycNypU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=cyUYfSAf; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=mb027GcG; arc=none smtp.client-ip=66.111.4.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id 5CE0B5C00E6;
-	Fri, 26 Jan 2024 01:27:44 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Fri, 26 Jan 2024 01:27:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1706250464; x=1706336864; bh=7RrmUgGenu
-	Qn/HaNj6HFZoaaojIW34eE1x1H/iTMOvE=; b=cyUYfSAfcE+s3rk93DNCSvy3r0
-	ngicuukkvqN5cjrIZZcQXUOsxXM2j/KX1jQ/XTFHSnKbhB3ONeiTmgGsLSCfjal3
-	1kjVwTVQ+uAAeKnUsKOVYB3hQ43lHg5hphvt+YL7Ym2OD8Odz4e5eN3g3CnTVDL4
-	+RJStzgxZgTM2c1QRXkWAFLz3Jmqhtn/zG8cPah6bxHpw88Pqw3JadIwuz4llNae
-	av84nC+D+VEiNeyjHtyGqxjJW/T2jvwkdVoj/Hb7WNDmMr/h2ta1mWta2Iyf2qxS
-	23on7SqdafRa+52DJ20R7IvT9x6lRb/T+n3E2xP4YMxwi08a9xLIxyzR93gg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1706250464; x=1706336864; bh=7RrmUgGenuQn/HaNj6HFZoaaojIW
-	34eE1x1H/iTMOvE=; b=mb027GcGfOmjbjYfuilqqkpJFkedsZFFwMivRD71Bf1X
-	UhQ4AhRNXOBTLJU3ySqEQdSo7c2oP+9EP4j/dYMfsRwFHXizD9/E0Gld442pO+Q7
-	9TNCoCUMaKiorN66Hrwueyc7abWyOITPz73pIZ87IuWlLaB4iRrrWTrVfIrrnd3I
-	BgBB9rQyGAP7SfQlznwPfGZv1x+TU3HaGw+eJ3xdJBljfE5e13yN8gUfDRpUa+Vj
-	rpwrsFVUS91Z6WDByOMNnPbhZiBX+Sdnk9vP5ooS0Scj1IP1H/gzpQFlFoPO1+pq
-	ut6eiAVp7F9kOKRGODd4ZpvazB0fvCgInteggLTpQg==
-X-ME-Sender: <xms:31CzZadCyA9bjOx7J0bHRtIcq06G171pSxL_kKHi5Y0WikW4bWCZwQ>
-    <xme:31CzZUOHEDBO9Nr-i2_7LTOObn7qaqxRs-8pSDrdX_3An964CujcHHjkouIGrTXvC
-    MLlWHGSmjyJ7gXqgso>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeliedgleefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:31CzZbghtBPd7iRpeihXGFnW8pg_KAm-YPY4qivD8ADvkHktdddm7g>
-    <xmx:31CzZX8XgSQU09D8Ax7CyVrAYdhr6X5KxVsBoCXY9fIZYa3dS4oyZw>
-    <xmx:31CzZWvfao0K_pThCotYkdM-sbqTNEGxxBmO2aUF2Mw8LSNjUAjN8A>
-    <xmx:4FCzZaifdxHRQpJOdU_vlPdB9Wd_Neu04B9Thbzv9dWlzrXeKPWbVg>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 89F82B6008D; Fri, 26 Jan 2024 01:27:43 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-119-ga8b98d1bd8-fm-20240108.001-ga8b98d1b
+	s=arc-20240116; t=1706250566; c=relaxed/simple;
+	bh=1oKgDqQmkrliWI/8sRTPCwLf90bKib+H0y0+WavBNMo=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=KuKHBXJuzmaakf18QWFVMD87+HhxlbqcatO1G6JHMOocYW+h/nAv4dtxtCQJ9oyPu/o8xskzP9G4fRGUPKOCrHgvAXnEZfaymoBAsAMUYT1uNGzjf6DFBjPJ3NtRFQz2mcwHkCzTx/MqkNZaOaffX5kMSp4hISZN0aBrt766w8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=KI4HUP2Y; arc=none smtp.client-ip=115.124.30.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1706250553; h=Message-ID:Date:MIME-Version:Subject:From:To:Content-Type;
+	bh=NT8hdE7ND84hHJW5HWIw/4V07Z4gRS7n8kgPyH9udd8=;
+	b=KI4HUP2Y80uIOGY/aCB3L7VHV2S45yx2GiRULjXq+gtD0GL7xsarI+dKI3HETPGN1lPzudqIvjzimRCM1UXjS3oGA6atD3q002qIwUZTs/YVp5o3Q87dtrPSzEw+P5sy6vHDskIKelV5HlaB+/DXRqAiy/Docqvq1DXO7ahPE8E=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R691e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0W.Moqkw_1706250552;
+Received: from 30.221.147.50(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W.Moqkw_1706250552)
+          by smtp.aliyun-inc.com;
+          Fri, 26 Jan 2024 14:29:13 +0800
+Message-ID: <b4e6b930-ed06-4e0d-b17d-61d05381ac92@linux.alibaba.com>
+Date: Fri, 26 Jan 2024 14:29:09 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <fbae8c8e-6788-4749-b7e0-b64c9fffe85a@app.fastmail.com>
-In-Reply-To: <20240126021258.574916-1-chentao@kylinos.cn>
-References: <20240126021258.574916-1-chentao@kylinos.cn>
-Date: Fri, 26 Jan 2024 07:27:23 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Kunwu Chan" <chentao@kylinos.cn>, "Jeremy Kerr" <jk@ozlabs.org>,
- "Michael Ellerman" <mpe@ellerman.id.au>,
- "Nicholas Piggin" <npiggin@gmail.com>,
- "Christophe Leroy" <christophe.leroy@csgroup.eu>, aneesh.kumar@kernel.org,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] powerpc/cell: Code cleanup for spufs_mfc_flush
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fuse: increase FUSE_MAX_MAX_PAGES limit
+Content-Language: en-US
+From: Jingbo Xu <jefflexu@linux.alibaba.com>
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ zhangjiachen.jaycee@bytedance.com
+References: <20240124070512.52207-1-jefflexu@linux.alibaba.com>
+ <CAJfpegs10SdtzNXJfj3=vxoAZMhksT5A1u5W5L6nKL-P2UOuLQ@mail.gmail.com>
+ <6e6bef3d-dd26-45ce-bc4a-c04a960dfb9c@linux.alibaba.com>
+In-Reply-To: <6e6bef3d-dd26-45ce-bc4a-c04a960dfb9c@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jan 26, 2024, at 03:12, Kunwu Chan wrote:
-> This part was commented from commit a33a7d7309d7
-> ("[PATCH] spufs: implement mfc access for PPE-side DMA")
-> in about 18 years before.
->
-> If there are no plans to enable this part code in the future,
-> we can remove this dead code.
->
-> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-> Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-Nobody is actively working on this code, so it clearly won't
-be needed in the future.
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+On 1/24/24 8:47 PM, Jingbo Xu wrote:
+> 
+> 
+> On 1/24/24 8:23 PM, Miklos Szeredi wrote:
+>> On Wed, 24 Jan 2024 at 08:05, Jingbo Xu <jefflexu@linux.alibaba.com> wrote:
+>>>
+>>> From: Xu Ji <laoji.jx@alibaba-inc.com>
+>>>
+>>> Increase FUSE_MAX_MAX_PAGES limit, so that the maximum data size of a
+>>> single request is increased.
+>>
+>> The only worry is about where this memory is getting accounted to.
+>> This needs to be thought through, since the we are increasing the
+>> possible memory that an unprivileged user is allowed to pin.
 
-On the other hand there is probably little use in removing
-the dead code either. It looks you sent a lot of these
-patches with identical changelog texts to remove blocks
-of dead code, which does not seem productive to me as
-these were clearly all left in the code to document
-something.
+Apart from the request size, the maximum number of background requests,
+i.e. max_background (12 by default, and configurable by the fuse
+daemon), also limits the size of the memory that an unprivileged user
+can pin.  But yes, it indeed increases the number proportionally by
+increasing the maximum request size.
 
-      Arnd
+
+> 
+>>
+>>
+>>
+>>>
+>>> This optimizes the write performance especially when the optimal IO size
+>>> of the backend store at the fuse daemon side is greater than the original
+>>> maximum request size (i.e. 1MB with 256 FUSE_MAX_MAX_PAGES and
+>>> 4096 PAGE_SIZE).
+>>>
+>>> Be noted that this only increases the upper limit of the maximum request
+>>> size, while the real maximum request size relies on the FUSE_INIT
+>>> negotiation with the fuse daemon.
+>>>
+>>> Signed-off-by: Xu Ji <laoji.jx@alibaba-inc.com>
+>>> Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+>>> ---
+>>> I'm not sure if 1024 is adequate for FUSE_MAX_MAX_PAGES, as the
+>>> Bytedance floks seems to had increased the maximum request size to 8M
+>>> and saw a ~20% performance boost.
+>>
+>> The 20% is against the 256 pages, I guess. 
+> 
+> Yeah I guess so.
+> 
+> 
+>> It would be interesting to
+>> see the how the number of pages per request affects performance and
+>> why.
+> 
+> To be honest, I'm not sure the root cause of the performance boost in
+> bytedance's case.
+> 
+> While in our internal use scenario, the optimal IO size of the backend
+> store at the fuse server side is, e.g. 4MB, and thus if the maximum
+> throughput can not be achieved with current 256 pages per request. IOW
+> the backend store, e.g. a distributed parallel filesystem, get optimal
+> performance when the data is aligned at 4MB boundary.  I can ask my folk
+> who implements the fuse server to give more background info and the
+> exact performance statistics.
+
+Here are more details about our internal use case:
+
+We have a fuse server used in our internal cloud scenarios, while the
+backend store is actually a distributed filesystem.  That is, the fuse
+server actually plays as the client of the remote distributed
+filesystem.  The fuse server forwards the fuse requests to the remote
+backing store through network, while the remote distributed filesystem
+handles the IO requests, e.g. process the data from/to the persistent store.
+
+Then it comes the details of the remote distributed filesystem when it
+process the requested data with the persistent store.
+
+[1] The remote distributed filesystem uses, e.g. a 8+3 mode, EC
+(ErasureCode), where each fixed sized user data is split and stored as 8
+data blocks plus 3 extra parity blocks. For example, with 512 bytes
+block size, for each 4MB user data, it's split and stored as 8 (512
+bytes) data blocks with 3 (512 bytes) parity blocks.
+
+It also utilize the stripe technology to boost the performance, for
+example, there are 8 data disks and 3 parity disks in the above 8+3 mode
+example, in which each stripe consists of 8 data blocks and 3 parity
+blocks.
+
+[2] To avoid data corruption on power off, the remote distributed
+filesystem commit a O_SYNC write right away once a write (fuse) request
+received.  Since the EC described above, when the write fuse request is
+not aligned on 4MB (the stripe size) boundary, say it's 1MB in size, the
+other 3MB is read from the persistent store first, then compute the
+extra 3 parity blocks with the complete 4MB stripe, and finally write
+the 8 data blocks and 3 parity blocks down.
+
+
+Thus the write amplification is un-neglectable and is the performance
+bottleneck when the fuse request size is less than the stripe size.
+
+Here are some simple performance statistics with varying request size.
+With 4MB stripe size, there's ~3x bandwidth improvement when the maximum
+request size is increased from 256KB to 3.9MB, and another ~20%
+improvement when the request size is increased to 4MB from 3.9MB.
+
+
+
+-- 
+Thanks,
+Jingbo
 
