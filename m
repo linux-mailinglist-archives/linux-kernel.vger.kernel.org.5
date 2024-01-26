@@ -1,444 +1,135 @@
-Return-Path: <linux-kernel+bounces-39664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39665-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC87983D48B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:00:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18B4783D4D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:47:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 240531F25B98
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 08:00:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E6D51C218EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 08:47:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A2E814282;
-	Fri, 26 Jan 2024 06:33:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 751E614288;
+	Fri, 26 Jan 2024 06:35:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="no93Fid2"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bxpTrb+M"
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 974C91CD09;
-	Fri, 26 Jan 2024 06:33:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B22B1D54F
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 06:35:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706250805; cv=none; b=grkq/90Wij5PwsTJfDFQQV2lZnETqCvWM06NaRY7tfSwZaKmC6gQvVToBpA9K/4XQAClwtVdsAY9YMqyP1c60TlXZ3Gl/2byqBMWpIT2dfortqNzHlNd95ZSqcABOK7FbSQUj2fnUysJl/PXUfduRUgKzOaznsSi4w1WWuYgSwY=
+	t=1706250907; cv=none; b=dNsunUiIHjO2Llv/8/R0oKAsn55DQnVfBohG2i0KEttd54Z4gqnAIyWPf+JTrOBCJrSikRWhMC+X33hAJgf4wIlAx+kAshSqrTQ/UZRV9vwL0ocpI82Tie2BA7NnBWJBHZPGTs37g5onyFNd6IBelZhqbGTiet9DAFY9z+UUkco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706250805; c=relaxed/simple;
-	bh=offJf0VyPfS398yjWNlM0xXnYpWKsuZjYq2pMB/MOvw=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=NWPUB6qtR7NHEWfNVw0ZDP8M+Qr4ASJmY9wZRnBRkwoq6jYR6k7zWnaFDbB0kS8RfnEy7XyMpKgjzy7zQkM7+oE7UGyCWnPyNyJh2rc/5WFvOfDU6Mc9DxS5i4EN4c8W89Rku3QCK74sMxQHFkU++ynMonLC8stYu2R7E5qfqOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=no93Fid2; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1706250907; c=relaxed/simple;
+	bh=NH2euUCqwPzQ8EOeRcSGE0TtlrdDDvu0F19oCXj/2VM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JYB+/9W8fwgKrkd+8ek9+g5157RLr8Wm/iP9G/ndNlnpLx1qFiIvOgJHswxO6XWXDVJug3C4/a6dBRf+VGegNSgpWaF5GmPKipkpYdvHDTEWBDRNUv6hNotUnhi9/jiYOi20dWr5OKCECeGzEbzs/gTlEDcc0ifiunjZgzaXvGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=bxpTrb+M; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5ce74ea4bf2so36804a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 22:35:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706250905; x=1706855705; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ySgp2UiszzMfNCnD6O5mfCcxxHNvIaL6WmT8mRfAk0M=;
+        b=bxpTrb+MRMOYJIzkdauCkxaRZKK01HcEuQMG3e070C9PhDFEutxkdCGlJK8NSYYFcc
+         8vx0bH2a/ZrlIG/rdsbLbIwEhWHY9XZkwA5o9+LvuIc/H8rgRluf5iDRk6Dkovr7gnFH
+         xWjfxdQiW1+Om+itQt9LKXpd6ld3gNTjBLfok=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706250905; x=1706855705;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ySgp2UiszzMfNCnD6O5mfCcxxHNvIaL6WmT8mRfAk0M=;
+        b=fDaZ10ScEEDMns9Oa3U6c6NcY8RPSkL86sIrfhyvnkL9y70uHl8SJupccgQRD1xHDp
+         1p7vV1l4SthZbi7DDCCpd+XNLGp0c1CADCS2nWv1o9jabxjZZ11G2PIDaR4CNn89EYke
+         tNdpVW3g7RIUGkZv4/JVHVAFnWS1CxwSX84llIbv85pWRMQT46RN+6EkznQC1cyNef22
+         k9NuXVh2tNsxHx3VBJtkwnTQ6XfDnCQiPCAxSAzpik4IgOwgEmuMRbtpMeMavVPsd4lX
+         QL5V4TczM2KAmEQpdiTMezUgAecDViff25M3DxU20+/JhjtAdCYHTKFTKlaYkfaBGg34
+         FoIA==
+X-Gm-Message-State: AOJu0YzNfDeiS2F+tqYLUcAMNeVU5fV+gzwr2Z/Xc7i1miWEUdYS+pKG
+	800kcrFMGnr5YOpTuv8ecDZxyaIT1qLeV+UaUtiyl3kxzGiaJlKPui/5In3Pug==
+X-Google-Smtp-Source: AGHT+IF1szoUbF1JDZy6toVdzGRAw8HhVOL8J8FWhgQ/IhKqWQPq084VnvUGMXytbOdxbOyYMcX4MA==
+X-Received: by 2002:a05:6a21:3987:b0:19c:53ab:d7d0 with SMTP id ad7-20020a056a21398700b0019c53abd7d0mr684905pzc.50.1706250905647;
+        Thu, 25 Jan 2024 22:35:05 -0800 (PST)
+Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:2614:bbbd:8db2:1f54])
+        by smtp.gmail.com with ESMTPSA id ka3-20020a056a00938300b006db13a02921sm488735pfb.183.2024.01.25.22.35.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 22:35:05 -0800 (PST)
+From: Chen-Yu Tsai <wenst@chromium.org>
+To: Marcel Holtmann <marcel@holtmann.org>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Chen-Yu Tsai <wenst@chromium.org>,
+	Sean Wang <sean.wang@mediatek.com>,
+	linux-bluetooth@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-mediatek@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] bluetooth: mt7921s: Add binding and fixup existing dts
+Date: Fri, 26 Jan 2024 14:34:56 +0800
+Message-ID: <20240126063500.2684087-1-wenst@chromium.org>
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1706250777;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0MRXlIIy0VD0/u+N1s9Ud2jR0dqZGBtr7S8gaTLUY6A=;
-	b=no93Fid2gKwZxc/LA/Zhl/z4VJlThQTh9J+jTG7pzoFUX2SFJyMy1ipzg+Y8e2f9maC+Yh
-	34RLPbl7mfbjEU7WBbhbyf3j7GROGpOmxlLBFfuiQg4248OeDuuIBqPv02QFrBEwnLeUfa
-	bLNwDDujQN8irHGX0RNYCZo8yUICInDPaGH+TiY4HEMYby+LKt1TsdMc2Yg4BmQvN/NyTC
-	TaUkfxq1GWzbIQh8qORPfX2skYnCKvjbNtsAMue+hd3yqJ/nUUcQvTwEWQQ3d6UfGC6nYK
-	HtwgkBYqinII6RRCF5u2rDkBhYHW4UCvBijHSlvn3awElzaLJqWNN7DwpI1Qpw==
-Date: Fri, 26 Jan 2024 07:32:55 +0100
-From: Dragan Simic <dsimic@manjaro.org>
-To: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Alexey Charkov <alchark@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, Viresh
- Kumar <viresh.kumar@linaro.org>
-Subject: Re: [PATCH 4/4] arm64: dts: rockchip: Add OPP data for CPU cores on
- RK3588
-In-Reply-To: <731aac66-f698-4a1e-b9ee-46a7f24ecae5@linaro.org>
-References: <20240125-rk-dts-additions-v1-0-5879275db36f@gmail.com>
- <20240125-rk-dts-additions-v1-4-5879275db36f@gmail.com>
- <731aac66-f698-4a1e-b9ee-46a7f24ecae5@linaro.org>
-Message-ID: <ccc004cfae513195351ce0a79e12f6af@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
 Content-Transfer-Encoding: 8bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-Hello Daniel,
+Hi everyone,
 
-On 2024-01-25 10:30, Daniel Lezcano wrote:
-> On 24/01/2024 21:30, Alexey Charkov wrote:
->> By default the CPUs on RK3588 start up in a conservative performance
->> mode. Add frequency and voltage mappings to the device tree to enable
->> dynamic scaling via cpufreq
->> 
->> Signed-off-by: Alexey Charkov <alchark@gmail.com>
->> ---
->>   arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 209 
->> ++++++++++++++++++++++++++++++
->>   1 file changed, 209 insertions(+)
->> 
->> diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi 
->> b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
->> index 131b9eb21398..e605be531a0f 100644
->> --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
->> +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
->> @@ -97,6 +97,7 @@ cpu_l0: cpu@0 {
->>   			clocks = <&scmi_clk SCMI_CLK_CPUL>;
->>   			assigned-clocks = <&scmi_clk SCMI_CLK_CPUL>;
->>   			assigned-clock-rates = <816000000>;
->> +			operating-points-v2 = <&cluster0_opp_table>;
->>   			cpu-idle-states = <&CPU_SLEEP>;
->>   			i-cache-size = <32768>;
->>   			i-cache-line-size = <64>;
->> @@ -116,6 +117,7 @@ cpu_l1: cpu@100 {
->>   			enable-method = "psci";
->>   			capacity-dmips-mhz = <530>;
->>   			clocks = <&scmi_clk SCMI_CLK_CPUL>;
->> +			operating-points-v2 = <&cluster0_opp_table>;
->>   			cpu-idle-states = <&CPU_SLEEP>;
->>   			i-cache-size = <32768>;
->>   			i-cache-line-size = <64>;
->> @@ -135,6 +137,7 @@ cpu_l2: cpu@200 {
->>   			enable-method = "psci";
->>   			capacity-dmips-mhz = <530>;
->>   			clocks = <&scmi_clk SCMI_CLK_CPUL>;
->> +			operating-points-v2 = <&cluster0_opp_table>;
->>   			cpu-idle-states = <&CPU_SLEEP>;
->>   			i-cache-size = <32768>;
->>   			i-cache-line-size = <64>;
->> @@ -154,6 +157,7 @@ cpu_l3: cpu@300 {
->>   			enable-method = "psci";
->>   			capacity-dmips-mhz = <530>;
->>   			clocks = <&scmi_clk SCMI_CLK_CPUL>;
->> +			operating-points-v2 = <&cluster0_opp_table>;
->>   			cpu-idle-states = <&CPU_SLEEP>;
->>   			i-cache-size = <32768>;
->>   			i-cache-line-size = <64>;
->> @@ -175,6 +179,7 @@ cpu_b0: cpu@400 {
->>   			clocks = <&scmi_clk SCMI_CLK_CPUB01>;
->>   			assigned-clocks = <&scmi_clk SCMI_CLK_CPUB01>;
->>   			assigned-clock-rates = <816000000>;
->> +			operating-points-v2 = <&cluster1_opp_table>;
->>   			cpu-idle-states = <&CPU_SLEEP>;
->>   			i-cache-size = <65536>;
->>   			i-cache-line-size = <64>;
->> @@ -194,6 +199,7 @@ cpu_b1: cpu@500 {
->>   			enable-method = "psci";
->>   			capacity-dmips-mhz = <1024>;
->>   			clocks = <&scmi_clk SCMI_CLK_CPUB01>;
->> +			operating-points-v2 = <&cluster1_opp_table>;
->>   			cpu-idle-states = <&CPU_SLEEP>;
->>   			i-cache-size = <65536>;
->>   			i-cache-line-size = <64>;
->> @@ -215,6 +221,7 @@ cpu_b2: cpu@600 {
->>   			clocks = <&scmi_clk SCMI_CLK_CPUB23>;
->>   			assigned-clocks = <&scmi_clk SCMI_CLK_CPUB23>;
->>   			assigned-clock-rates = <816000000>;
->> +			operating-points-v2 = <&cluster2_opp_table>;
->>   			cpu-idle-states = <&CPU_SLEEP>;
->>   			i-cache-size = <65536>;
->>   			i-cache-line-size = <64>;
->> @@ -234,6 +241,7 @@ cpu_b3: cpu@700 {
->>   			enable-method = "psci";
->>   			capacity-dmips-mhz = <1024>;
->>   			clocks = <&scmi_clk SCMI_CLK_CPUB23>;
->> +			operating-points-v2 = <&cluster2_opp_table>;
->>   			cpu-idle-states = <&CPU_SLEEP>;
->>   			i-cache-size = <65536>;
->>   			i-cache-line-size = <64>;
->> @@ -348,6 +356,207 @@ l3_cache: l3-cache {
->>   		};
->>   	};
->>   +	cluster0_opp_table: opp-table-cluster0 {
->> +		compatible = "operating-points-v2";
->> +		opp-shared;
->> +
->> +		opp-408000000 {
->> +			opp-hz = /bits/ 64 <408000000>;
->> +			opp-microvolt = <675000 675000 950000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-600000000 {
->> +			opp-hz = /bits/ 64 <600000000>;
->> +			opp-microvolt = <675000 675000 950000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-816000000 {
->> +			opp-hz = /bits/ 64 <816000000>;
->> +			opp-microvolt = <675000 675000 950000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-1008000000 {
->> +			opp-hz = /bits/ 64 <1008000000>;
->> +			opp-microvolt = <675000 675000 950000>;
->> +			clock-latency-ns = <40000>;
->> +		};
-> 
-> It is not useful to introduce OPP with the same voltage. There is no
-> gain in terms of energy efficiency as the compute capacity is linearly
-> tied with power consumption (P=CxFxV²) in this case.
-> 
-> For example, opp-408 consumes 2 bogoWatts and opp-816 consumes 4
-> bogoWatts (because of the same voltage).
-> 
-> For a workload, opp-408 takes 10 sec and opp-816 takes 5 sec because
-> it is twice faster.
-> 
-> The energy consumption is:
-> 
-> opp-408 = 10 x 2 = 20 BogoJoules
-> opp-816 = 5 x 4 = 20 BogoJoules
+This is v2 of my MT7921S Bluetooth binding series.
 
-I'd respectfully disagree that including multiple OPPs with the same 
-voltage
-but different frequencies isn't useful.  Please allow me to explain.
+Changes since v1:
+- Reworded descriptions in binding
+- Moved binding maintainer section before binding description
+- Added missing reference to bluetooth-controller.yaml
+- Added missing GPIO header to example
 
-See, the total amount of consumed energy is, in general, the same for 
-such
-OPPs and the same CPU task(s), if we ignore the static leakage current 
-and
-such stuff, which isn't important here.  Though, the emphasis here is on
-"total", i.e. without taking into account the actual amount of time 
-required
-for the exemplified CPU task(s) to complete.  If the total amount of 
-time
-is quite short, we aren't going to heat up the package and the board 
-enough
-to hit the CPU thermal throttling;  this approach is also sometimes 
-referred
-to as "race to idle", which is actually quite effective for 
-battery-powered
-mobile devices that tend to load their CPU cores in bursts, while 
-remaining
-kind of inactive for the remaining time.
+This short series adds a binding document for the MT7921S SDIO Bluetooth
+controller. The MT7921S is a SDIO-based WiFi/Bluetooth combo. WiFi and
+Bluetooth are separate SDIO functions. The chip has extra per-subsystem
+reset lines that can reset only WiFi or Bluetooth cores.
 
-However, if the CPU task(s) last long enough to actually saturate the 
-thermal
-capacities of the package and the board or the device, we're getting 
-into the
-CPU throttling territory, in which running the CPU cores slower, but 
-still as
-fast as possible, may actually be beneficial for the overall CPU 
-performance.
-By running the CPU cores slower, we're lowering the power and 
-"spreading" the
-total energy consumption over time, i.e. we're making some time to allow 
-the
-generated heat to dissipate into the surroundings.  As we know, having 
-more
-energy consumed by the SoC means more heat generated by the SoC, but the
-resulting temperature of the SoC depends on how fast the energy is 
-consumed,
-which equals to how fast the CPUs run;  of course, all that is valid 
-under
-the reasonable assumption that the entire cooling setup, including the 
-board
-surroundings, remains unchanged all the time.
+Patch 1 documents the SDIO function and the reset line, based on
+existing device tree and driver usage. I listed Sean Wang, the original
+driver author and maintainer, as the maintainer of the binding.
 
-Having all that in mind, having a few OPPs with the same voltage but 
-different
-frequencies can actually help us achieve better CPU performance.  That 
-way,
-throttling won't have to slow the CPUs more than it's actually needed to 
-hit
-and maintain the desired thermal trip temperatures.
+Patch 2 fixes up the sole existing usage of the compatible string by
+making it a proper SDIO function node.
 
->> +		opp-1200000000 {
->> +			opp-hz = /bits/ 64 <1200000000>;
->> +			opp-microvolt = <712500 712500 950000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-1416000000 {
->> +			opp-hz = /bits/ 64 <1416000000>;
->> +			opp-microvolt = <762500 762500 950000>;
->> +			clock-latency-ns = <40000>;
->> +			opp-suspend;
->> +		};
->> +		opp-1608000000 {
->> +			opp-hz = /bits/ 64 <1608000000>;
->> +			opp-microvolt = <850000 850000 950000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-1800000000 {
->> +			opp-hz = /bits/ 64 <1800000000>;
->> +			opp-microvolt = <950000 950000 950000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +	};
->> +
->> +	cluster1_opp_table: opp-table-cluster1 {
->> +		compatible = "operating-points-v2";
->> +		opp-shared;
->> +
->> +		opp-408000000 {
->> +			opp-hz = /bits/ 64 <408000000>;
->> +			opp-microvolt = <675000 675000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +			opp-suspend;
->> +		};
->> +		opp-600000000 {
->> +			opp-hz = /bits/ 64 <600000000>;
->> +			opp-microvolt = <675000 675000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-816000000 {
->> +			opp-hz = /bits/ 64 <816000000>;
->> +			opp-microvolt = <675000 675000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-1008000000 {
->> +			opp-hz = /bits/ 64 <1008000000>;
->> +			opp-microvolt = <675000 675000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
-> 
-> same comment
-> 
->> +		opp-1200000000 {
->> +			opp-hz = /bits/ 64 <1200000000>;
->> +			opp-microvolt = <675000 675000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-1416000000 {
->> +			opp-hz = /bits/ 64 <1416000000>;
->> +			opp-microvolt = <725000 725000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-1608000000 {
->> +			opp-hz = /bits/ 64 <1608000000>;
->> +			opp-microvolt = <762500 762500 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-1800000000 {
->> +			opp-hz = /bits/ 64 <1800000000>;
->> +			opp-microvolt = <850000 850000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-2016000000 {
->> +			opp-hz = /bits/ 64 <2016000000>;
->> +			opp-microvolt = <925000 925000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-2208000000 {
->> +			opp-hz = /bits/ 64 <2208000000>;
->> +			opp-microvolt = <987500 987500 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-2256000000 {
->> +			opp-hz = /bits/ 64 <2256000000>;
->> +			opp-microvolt = <1000000 1000000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-2304000000 {
->> +			opp-hz = /bits/ 64 <2304000000>;
->> +			opp-microvolt = <1000000 1000000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-2352000000 {
->> +			opp-hz = /bits/ 64 <2352000000>;
->> +			opp-microvolt = <1000000 1000000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-2400000000 {
->> +			opp-hz = /bits/ 64 <2400000000>;
->> +			opp-microvolt = <1000000 1000000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
-> 
-> Same comment
-> 
->> +	};
->> +
->> +	cluster2_opp_table: opp-table-cluster2 {
->> +		compatible = "operating-points-v2";
->> +		opp-shared;
->> +
->> +		opp-408000000 {
->> +			opp-hz = /bits/ 64 <408000000>;
->> +			opp-microvolt = <675000 675000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +			opp-suspend;
->> +		};
->> +		opp-600000000 {
->> +			opp-hz = /bits/ 64 <600000000>;
->> +			opp-microvolt = <675000 675000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-816000000 {
->> +			opp-hz = /bits/ 64 <816000000>;
->> +			opp-microvolt = <675000 675000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-1008000000 {
->> +			opp-hz = /bits/ 64 <1008000000>;
->> +			opp-microvolt = <675000 675000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-1200000000 {
->> +			opp-hz = /bits/ 64 <1200000000>;
->> +			opp-microvolt = <675000 675000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-1416000000 {
->> +			opp-hz = /bits/ 64 <1416000000>;
->> +			opp-microvolt = <725000 725000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-1608000000 {
->> +			opp-hz = /bits/ 64 <1608000000>;
->> +			opp-microvolt = <762500 762500 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-1800000000 {
->> +			opp-hz = /bits/ 64 <1800000000>;
->> +			opp-microvolt = <850000 850000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-2016000000 {
->> +			opp-hz = /bits/ 64 <2016000000>;
->> +			opp-microvolt = <925000 925000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-2208000000 {
->> +			opp-hz = /bits/ 64 <2208000000>;
->> +			opp-microvolt = <987500 987500 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-2256000000 {
->> +			opp-hz = /bits/ 64 <2256000000>;
->> +			opp-microvolt = <1000000 1000000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-2304000000 {
->> +			opp-hz = /bits/ 64 <2304000000>;
->> +			opp-microvolt = <1000000 1000000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-2352000000 {
->> +			opp-hz = /bits/ 64 <2352000000>;
->> +			opp-microvolt = <1000000 1000000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
->> +		opp-2400000000 {
->> +			opp-hz = /bits/ 64 <2400000000>;
->> +			opp-microvolt = <1000000 1000000 1000000>;
->> +			clock-latency-ns = <40000>;
->> +		};
-> 
-> Same comment
-> 
->> +	};
->> +
->>   	firmware {
->>   		optee: optee {
->>   			compatible = "linaro,optee-tz";
->> 
+Please take a look. Not sure which tree patch 1 should be merged
+through? I suppose with proper acks it could go through the soc/mediatek
+tree together with patch 2.
+
+
+Regards
+ChenYu
+
+
+Chen-Yu Tsai (2):
+  dt-bindings: net: bluetooth: Add MediaTek MT7921S SDIO Bluetooth
+  arm64: dts: mediatek: mt8183-pico6: Fix bluetooth node
+
+ .../bluetooth/mediatek,mt7921s-bluetooth.yaml | 53 +++++++++++++++++++
+ MAINTAINERS                                   |  1 +
+ .../mediatek/mt8183-kukui-jacuzzi-pico6.dts   |  3 +-
+ 3 files changed, 56 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-bluetooth.yaml
+
+-- 
+2.43.0.429.g432eaa2c6b-goog
+
 
