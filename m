@@ -1,231 +1,200 @@
-Return-Path: <linux-kernel+bounces-39548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE4F383D2A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 03:38:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF9E383D2A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 03:39:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F072B1C2633D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 02:38:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47397290198
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 02:39:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2088DB657;
-	Fri, 26 Jan 2024 02:38:27 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BFB28F54;
+	Fri, 26 Jan 2024 02:39:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Rx1CsyTW"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66EBF8F44;
-	Fri, 26 Jan 2024 02:38:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 958B28C02
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 02:39:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706236706; cv=none; b=AMmneK7G6SKBuXI11NIrsrYhTD/VfmveoJ41kG2a+1INjn82ljAtKRpJHBOqAeK0bmhQ+T4I2F/DZBYZWQdhlo7Meo1W/kMy3XwsJWsIJtAgHbTEqu5YdNYkZz3L3gIYzNS3irFOfukd/iHP/wl/bNlu1PEK9oUjx5YCRTKCn3s=
+	t=1706236758; cv=none; b=mrP5Zqtc7rPEADIw+jCe6oqrAUAxUo/tW6QySzqwK4OIiFv7IPdlmvh1vhrXp0wG5hhYhBtiR+YvTYztsw3JT/L37+I5EB17Vl5AZNzSVA32nAGD7UkWZ79eGvE8MJXpuU/dIaVwqFnOaUyXpJvTDsDzUApJNciirgWPRx4+z20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706236706; c=relaxed/simple;
-	bh=2ZViTyAtp+CTtBgXqyCI+DXuvTv6gWYIoVmUj6b7Acc=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=V2fvpYnAn7Qrb1WAgIo0TMwN6D7r/3FLm32I43ZHnGBjwVWPOESkyFCb1588ImnJNHRdy685T7Gh8/5UKnl1rKdYes9H33/H9p/xmpYTcb+cuwfBkuLAzlT8/vBdf8zR+sg3lEDnGVhbBSnKwVTOHZ0DzqSiIE123viBNJhFyW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TLhh16kpHz4f3kG0;
-	Fri, 26 Jan 2024 10:38:09 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id E34F21A0272;
-	Fri, 26 Jan 2024 10:38:13 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgDHlxATG7Nlj97_Bw--.64714S3;
-	Fri, 26 Jan 2024 10:38:13 +0800 (CST)
-Subject: Re: [PATCH v2 05/11] md: export helpers to stop sync_thread
-To: Yu Kuai <yukuai1@huaweicloud.com>, Xiao Ni <xni@redhat.com>
-Cc: agk@redhat.com, snitzer@kernel.org, mpatocka@redhat.com,
- dm-devel@lists.linux.dev, song@kernel.org, jbrassow@f14.redhat.com,
- neilb@suse.de, heinzm@redhat.com, shli@fb.com, akpm@osdl.org,
- linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
- yi.zhang@huawei.com, yangerkun@huawei.com,
- "yukuai3 >> yukuai (C)" <yukuai3@huawei.com>
-References: <20240124091421.1261579-1-yukuai3@huawei.com>
- <20240124091421.1261579-6-yukuai3@huawei.com>
- <CALTww2_hG2_YL1v-d0=uv2=bVzJ2wwpSJyQdBBGMCBx79bot-Q@mail.gmail.com>
- <85eeb8e4-d526-aa20-c50d-7e755ca6c776@huaweicloud.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <118fabe2-f2ac-e80a-32f9-0eeee2be3574@huaweicloud.com>
-Date: Fri, 26 Jan 2024 10:38:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1706236758; c=relaxed/simple;
+	bh=+4tSwa8xEYSJtn8456UIP6EXLxlrRpE8qtbh+wOeVX8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TMEUUOjSh5ZzEO14y4GeLo9E0OY4cFbHm2Fv9O4YWqxPDhFCRozbc1eBO8TbQLUW/LsW0TzBbxZpBDXOQ3DgO9Aigo3xKcPHN7I6N4GWmksnRFdwoP2/VJmuCQM3YwixHByWXYd1/iRJaahmvX5z65s2m2ivQ/0I2exZpyds108=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Rx1CsyTW; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706236756; x=1737772756;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+4tSwa8xEYSJtn8456UIP6EXLxlrRpE8qtbh+wOeVX8=;
+  b=Rx1CsyTWyWB05QeXP3tbjT5aK+0mRwWwZpBhV2L7jbbPzt5Feij0jqyY
+   PEfxmMHYa2xPFF6sKls2W2arNzD0u4NZ7sh3w2Di2i03US7f+6rPkItWE
+   b9wJ90ZJYgWC4QIbo4glMks7WBr3BN5JT4/8Rdq4OGf71bm2u+TZR/3dd
+   yST+1kO9mGrT6CNlyMvs55O9EGNVDEYIB3MUEPngirVaZsfDjVf3DUAeP
+   2I3lUuR86k/OXJComZPu4CjizjfCg1lxLr8dKE4vEiYlVwUR3mmvIKoxL
+   DdQora/yB6stOiCaUXFcmtJbXTctsBymiI/a4Km73jpI2z7NaJ8A+v45x
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="2210702"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="2210702"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 18:39:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="28687353"
+Received: from xiaoyudo-mobl.ccr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.255.29.83])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 18:39:08 -0800
+From: Kai Huang <kai.huang@intel.com>
+To: linux-kernel@vger.kernel.org
+Cc: x86@kernel.org,
+	dave.hansen@intel.com,
+	kirill.shutemov@linux.intel.com,
+	tglx@linutronix.de,
+	bp@alien8.de,
+	mingo@redhat.com,
+	peterz@infradead.org,
+	rafael@kernel.org,
+	dan.j.williams@intel.com,
+	hpa@zytor.com,
+	geert@linux-m68k.org,
+	bhe@redhat.com,
+	akpm@linux-foundation.org,
+	rppt@kernel.org,
+	frederic@kernel.org,
+	dave.jiang@intel.com,
+	xin3.li@intel.com,
+	rick.p.edgecombe@intel.com,
+	isaku.yamahata@intel.com,
+	yuan.yao@intel.com
+Subject: [RESEND PATCH] x86/asm: Remove the __iomem annotation of movdir64b()'s dst argument
+Date: Fri, 26 Jan 2024 15:38:52 +1300
+Message-ID: <20240126023852.11065-1-kai.huang@intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <85eeb8e4-d526-aa20-c50d-7e755ca6c776@huaweicloud.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDHlxATG7Nlj97_Bw--.64714S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3AF4fWF1furWxWw4kKrWrAFb_yoW7WFyxpr
-	4ktFZ8JrWYyrZ3Xr12ga4DZa4Yqw18ta4DtryfJFy8JrnrtrnFgr1Uur1q9rykAay8Jr1U
-	tw15WFsxZFy5Jr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
-	3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-	sGvfC2KfnxnUUI43ZEXa7VUbQVy7UUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-Hi,
+Commit e56d28df2f66 ("x86/virt/tdx: Configure global KeyID on all
+packages") causes below sparse check warning:
 
-在 2024/01/25 15:57, Yu Kuai 写道:
-> Hi,
-> 
-> 在 2024/01/25 15:51, Xiao Ni 写道:
->> On Wed, Jan 24, 2024 at 5:19 PM Yu Kuai <yukuai3@huawei.com> wrote:
->>>
->>> The new heleprs will be used in dm-raid in later patches to fix
->>> regressions and prevent calling md_reap_sync_thread() directly.
->>>
->>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->>> ---
->>>   drivers/md/md.c | 41 +++++++++++++++++++++++++++++++++++++----
->>>   drivers/md/md.h |  3 +++
->>>   2 files changed, 40 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/md/md.c b/drivers/md/md.c
->>> index 6c5d0a372927..90cf31b53804 100644
->>> --- a/drivers/md/md.c
->>> +++ b/drivers/md/md.c
->>> @@ -4915,30 +4915,63 @@ static void stop_sync_thread(struct mddev 
->>> *mddev, bool locked, bool check_seq)
->>>                  mddev_lock_nointr(mddev);
->>>   }
->>>
->>> -static void idle_sync_thread(struct mddev *mddev)
->>> +void md_idle_sync_thread(struct mddev *mddev)
->>>   {
->>> +       lockdep_assert_held(mddev->reconfig_mutex);
->>> +
->>
->> Hi Kuai
->>
->> There is a building error. It should give a pointer to
->> lockdep_assert_held. And same with the other two places in this patch.
-> 
-> Yes, I forgot that I disabled all the debug config in order to let tests
-> finish quickly.
+  arch/x86/virt/vmx/tdx/tdx.c:683:27: warning: incorrect type in argument 1 (different address spaces)
+  arch/x86/virt/vmx/tdx/tdx.c:683:27:    expected void [noderef] __iomem *dst
+  arch/x86/virt/vmx/tdx/tdx.c:683:27:    got void *
 
-I enabled these debuging conifg, and turns out this patch has some
-problem, see below.
-> 
-> Thanks for the notince, will fix this in v3.
-> 
-> Thanks,
-> Kuai
-> 
->>
->> Regards
->> Xiao
->>
->>>          mutex_lock(&mddev->sync_mutex);
->>>          clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->>> +       stop_sync_thread(mddev, true, true);
->>> +       mutex_unlock(&mddev->sync_mutex);
->>> +}
->>> +EXPORT_SYMBOL_GPL(md_idle_sync_thread);
->>> +
->>> +void md_frozen_sync_thread(struct mddev *mddev)
->>> +{
->>> +       lockdep_assert_held(mddev->reconfig_mutex);
->>> +
->>> +       mutex_lock(&mddev->sync_mutex);
->>> +       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->>> +       stop_sync_thread(mddev, true, false);
+The reason is TDX must use the MOVDIR64B instruction to convert TDX
+private memory (which is normal RAM but not MMIO) back to normal.  The
+TDX code uses existing movdir64b() helper to do that, but the first
+argument @dst of movdir64b() is annotated with __iomem.
 
-stop_sync_thread() may release 'reconfig_mutex' and grab it again, hence
-it's not right to grab 'sync_mutex' before 'reconfig_mutex'.
+When movdir64b() was firstly introduced in commit 0888e1030d3e
+("x86/asm: Carve out a generic movdir64b() helper for general usage"),
+it didn't have the __iomem annotation.  But this commit also introduced
+the same "incorrect type" sparse warning because the iosubmit_cmds512(),
+which was the solo caller of movdir64b(), has the __iomem annotation.
 
-Since 'sync_mutex' is introduced to serialize sysfs api 'sync_action'
-writers, while is not involved for dm-raid. I'll remove 'sync_mutex' for
-the new helper in v3.
+This was later fixed by commit 6ae58d871319 ("x86/asm: Annotate
+movdir64b()'s dst argument with __iomem").  That fix was reasonable
+because until TDX code the movdir64b() was only used to move data to
+MMIO location, as described by the commit message:
 
-Thanks,
-Kuai
+  ... The current usages send a 64-bytes command descriptor to an MMIO
+  location (portal) on a device for consumption. When future usages for
+  the MOVDIR64B instruction warrant a separate variant of a memory to
+  memory operation, the argument annotation can be revisited.
 
->>> +       mutex_unlock(&mddev->sync_mutex);
->>> +}
->>> +EXPORT_SYMBOL_GPL(md_frozen_sync_thread);
->>>
->>> +void md_unfrozen_sync_thread(struct mddev *mddev)
->>> +{
->>> +       lockdep_assert_held(mddev->reconfig_mutex);
->>> +
->>> +       mutex_lock(&mddev->sync_mutex);
->>> +       clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->>> +       set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
->>> +       md_wakeup_thread(mddev->thread);
->>> +       sysfs_notify_dirent_safe(mddev->sysfs_action);
->>> +       mutex_unlock(&mddev->sync_mutex);
->>> +}
->>> +EXPORT_SYMBOL_GPL(md_unfrozen_sync_thread);
->>> +
->>> +static void idle_sync_thread(struct mddev *mddev)
->>> +{
->>>          if (mddev_lock(mddev)) {
->>>                  mutex_unlock(&mddev->sync_mutex);
->>>                  return;
->>>          }
->>>
->>> +       mutex_lock(&mddev->sync_mutex);
->>> +       clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->>>          stop_sync_thread(mddev, false, true);
->>>          mutex_unlock(&mddev->sync_mutex);
->>>   }
->>>
->>>   static void frozen_sync_thread(struct mddev *mddev)
->>>   {
->>> -       mutex_lock(&mddev->sync_mutex);
->>> -       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->>> -
->>>          if (mddev_lock(mddev)) {
->>>                  mutex_unlock(&mddev->sync_mutex);
->>>                  return;
->>>          }
->>>
->>> +       mutex_lock(&mddev->sync_mutex);
->>> +       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->>>          stop_sync_thread(mddev, false, false);
->>>          mutex_unlock(&mddev->sync_mutex);
->>>   }
->>> diff --git a/drivers/md/md.h b/drivers/md/md.h
->>> index 8d881cc59799..437ab70ce79b 100644
->>> --- a/drivers/md/md.h
->>> +++ b/drivers/md/md.h
->>> @@ -781,6 +781,9 @@ extern void md_rdev_clear(struct md_rdev *rdev);
->>>   extern void md_handle_request(struct mddev *mddev, struct bio *bio);
->>>   extern int mddev_suspend(struct mddev *mddev, bool interruptible);
->>>   extern void mddev_resume(struct mddev *mddev);
->>> +extern void md_idle_sync_thread(struct mddev *mddev);
->>> +extern void md_frozen_sync_thread(struct mddev *mddev);
->>> +extern void md_unfrozen_sync_thread(struct mddev *mddev);
->>>
->>>   extern void md_reload_sb(struct mddev *mddev, int raid_disk);
->>>   extern void md_update_sb(struct mddev *mddev, int force);
->>> -- 
->>> 2.39.2
->>>
->>
->> .
->>
-> 
-> .
-> 
+Now TDX code uses MOVDIR64B to move data to normal memory so it's time
+to revisit.
+
+The SDM says the destination of MOVDIR64B is "memory location specified
+in a general register", thus it's more reasonable that movdir64b() does
+not have the __iomem annotation on the @dst.
+
+Remove the __iomem annotation from the @dst argument of movdir64b() to
+fix the sparse warning in TDX code.  Similar to memset_io(), introduce a
+new movdir64b_io() to cover the case where the destination is an MMIO
+location, and change the solo caller iosubmit_cmds512() to use the new
+movdir64b_io().
+
+In movdir64b_io() explicitly use __force in the type casting otherwise
+there will be below sparse warning:
+
+  warning: cast removes address space '__iomem' of expression
+
+Fixes: e56d28df2f66 ("x86/virt/tdx: Configure global KeyID on all packages")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202312311924.tGjsBIQD-lkp@intel.com/
+Signed-off-by: Kai Huang <kai.huang@intel.com>
+Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Yuan Yao <yuan.yao@intel.com>
+---
+
+Resend:
+  - Added Reviewed-by tags from Dave J/Kirill/Yuan (Thanks!)
+  - Regenerate the patch based on latest tip/master
+
+---
+ arch/x86/include/asm/io.h            | 2 +-
+ arch/x86/include/asm/special_insns.h | 9 +++++++--
+ 2 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
+index 3814a9263d64..294cd2a40818 100644
+--- a/arch/x86/include/asm/io.h
++++ b/arch/x86/include/asm/io.h
+@@ -379,7 +379,7 @@ static inline void iosubmit_cmds512(void __iomem *dst, const void *src,
+ 	const u8 *end = from + count * 64;
+ 
+ 	while (from < end) {
+-		movdir64b(dst, from);
++		movdir64b_io(dst, from);
+ 		from += 64;
+ 	}
+ }
+diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
+index d6cd9344f6c7..f661277e52d6 100644
+--- a/arch/x86/include/asm/special_insns.h
++++ b/arch/x86/include/asm/special_insns.h
+@@ -224,10 +224,10 @@ static inline void serialize(void)
+ }
+ 
+ /* The dst parameter must be 64-bytes aligned */
+-static inline void movdir64b(void __iomem *dst, const void *src)
++static inline void movdir64b(void *dst, const void *src)
+ {
+ 	const struct { char _[64]; } *__src = src;
+-	struct { char _[64]; } __iomem *__dst = dst;
++	struct { char _[64]; } *__dst = dst;
+ 
+ 	/*
+ 	 * MOVDIR64B %(rdx), rax.
+@@ -245,6 +245,11 @@ static inline void movdir64b(void __iomem *dst, const void *src)
+ 		     :  "m" (*__src), "a" (__dst), "d" (__src));
+ }
+ 
++static inline void movdir64b_io(void __iomem *dst, const void *src)
++{
++	movdir64b((void __force *)dst, src);
++}
++
+ /**
+  * enqcmds - Enqueue a command in supervisor (CPL0) mode
+  * @dst: destination, in MMIO space (must be 512-bit aligned)
+
+base-commit: 0d4f19418f067465b0a84a287d9a51e443a0bc3a
+-- 
+2.43.0
 
 
