@@ -1,129 +1,101 @@
-Return-Path: <linux-kernel+bounces-40703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B98883E45C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:56:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7065583E457
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:55:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C61D41F218DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:56:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C6411C21FEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:55:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFAE52556C;
-	Fri, 26 Jan 2024 21:55:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SqFGMHFy"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CF3B24B33;
+	Fri, 26 Jan 2024 21:55:37 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2FE82554F;
-	Fri, 26 Jan 2024 21:55:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D0331CD34
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 21:55:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706306143; cv=none; b=nNrmF7bRuPm8qNyNmxP3SWOiSP+Td1J+WJ/kgNAxPE0MbWt0cQyJ2wxyrWLjUsYmJZ1UbdDFmNNFcWNgC1VpLU/mK7gsvFwKBFtsVg2Oebxw+opc5MmZZQ+Wdw6iiy0WCJvhU/GIySfW18R5Dg74ql6xS9eXkNkE5pxxITZtDZk=
+	t=1706306136; cv=none; b=ejbynECoZlXIKY6IPSMDKae0Xtsh9GSn0BGlhhYTJ3HZuVz9aWEwcObtI1oPM6+VKhGxC5jz2MRtoPImeNhDDPbJlxwDgOo5MmP9pBxWpilAJ/gaQbdNkswAT1SJ3hGW8HuxtzF6nGHEfiYpA8YCFp03B/0gPTDb6EyFvIIiTr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706306143; c=relaxed/simple;
-	bh=WhxgiR2rTnnQ+bwG5tvmMIB6amadVcuzuZ7pAt5Crcw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oLE1sgB8j5T2M62qIT85uYZMv7Td7XmsAJgQdY6/TjJaII3ODNkJhHtkRK+WYoJ9ZJ9mX4uFrkVMUP4KrYyHHbFVOs3iMuZDQFm1RtriKPQyQOkh2FQu21W8oI5fAX12opDf+NAYcbE2w9FMG4O7EGqeb8fiPKUDgosAZEo3GZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SqFGMHFy; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a271a28aeb4so77238966b.2;
-        Fri, 26 Jan 2024 13:55:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706306140; x=1706910940; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7Eex8zgmPiS6cd/0RWckNbah/punqtBDfU6VumuTjFQ=;
-        b=SqFGMHFygI5gTmwDbsFHGC7dvL0kz73tWiRzt8X3RQWYZ3itGM1m15e8qqyx/CIMbQ
-         S5/is2J/Jzbko04aTAa86zC1qIMOAX3WPCAPVU/jpFi8ZchgNFrpC8QSgwY5Zcycunik
-         /rflsT6gEYX41osiZjZtZyxnmMOIsbJqzdNffSIdtUSDGiOF+fUR5c4op9jpeUIRKkjm
-         y9OOc5pPcwXvyKQnQcPEMRCYGI9Bm5rYeNaUwy9AHdggxvYEZMRI8jCpJxf/hoeDwJQ1
-         LbbxbxVGJv6kvaHDaZvpI2cVCr5YiaOcYQBZVxtGKknmi3Z3HfWqiuRmGcUPW4R++hsT
-         j2Ag==
+	s=arc-20240116; t=1706306136; c=relaxed/simple;
+	bh=p6YVvKXOOwohPb6oUgioCbBxsKbg/UXAcY0gQZK0lJI=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=hZUbNKYbv/oGXfNwn3nsPnXHvHHBYVPlnaLH0tKnmjh9V9s+LpHjobX115DqvPlWazwg4eq+seOs1tCN5+g8Hbe3SptGv2QPv+qvMzvTq+YtAqUKppp0yEWxZnQ1LOSfL2U237J/yVs9qkNZjKntlFZOtCi+sdnlJ8AeWp7DKPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7bf2a953988so50862939f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:55:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706306140; x=1706910940;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7Eex8zgmPiS6cd/0RWckNbah/punqtBDfU6VumuTjFQ=;
-        b=XtzASeSVHc3cpZUOE3VLQ+nvtxD5imZ5Ce40krVQ+qa3m8o3yPI+cu3kERTh71Qlkc
-         /FFAGPhFWv4z832QMjXatPizGdFeFwjnVwcxYSADVCpzewpaLsDFowvOEl270ux+v/uW
-         nzYMeTBKkSixXNdDtaFJfR/ALZNg/953ppDn86FFOvrrFOlRsmBocJ0X4yvd2rqi3R0i
-         sJsZDKWtkLzAkuXdC2x1cKUnX39NJ5eyKgPwRRfLgyfWTgJIOAwwBSLzK2+Y6j7XZvic
-         HTGoC10bUAlR8JnsMXGwqRAJBUmCGo8aq2VgtdAdm6z3pZsnfgmarNdJTuXIa23i5NHc
-         M2Fw==
-X-Gm-Message-State: AOJu0YyIESfSoz4viGII38E8c9lYgox0WCTZLOEBW4rau7pOspO2015q
-	OGJIDS715lSD+degtAwaLdaa7cXhCM5NsewhurAHjMeUcxm8az5QndlicBk86Q+7qIwhIfrj2Jv
-	Vz0j/l6guifUKNc7ktEiPGH1v0mg=
-X-Google-Smtp-Source: AGHT+IEBOcQl+eA0DkV9Z5QVSjTUy7lBkqFnE6O8BX8N2DGGcgPCadgeO4ln7Re5ueD6foFwcdrwD9BT1gB5PR9Nesc=
-X-Received: by 2002:a17:906:9ac9:b0:a27:6615:15ed with SMTP id
- ah9-20020a1709069ac900b00a27661515edmr221845ejc.42.1706306139794; Fri, 26 Jan
- 2024 13:55:39 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706306134; x=1706910934;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8lZ+RoLccba6Zyj0Ry1n2ZHFwWTBO9rUbxTQO1+BOxI=;
+        b=bJbtIii/5a77Q6z9QJyr3Gd0DP9mai45NcMhnRHANITilQP5bf4Z7koSgQWREoaWyd
+         ltsysZax8Trv8KjRVCRsV4sBCTEIDTmUsNRezhRq6GnkDzoQAM25N6HLgy+IxwyWsM6p
+         5qZg2HX0ZqAasRtzQj0KJQ8HNw+aTpy4Pky73C53lcgLrrA0gL+YtGQYnxW7wY6pXIEQ
+         tNkSx3rzRJCSBvrjhVn8sEK+k2FJuYhPiNVjwxP/Pmi8d9244vx/ky6l2nMck9KOyNIG
+         GSqtpXhxcu6gxvxSBvzTeRKOTjqMX0S2YSYHmH1LQ5Fn9maIQ71D2VXjwp9IeawAa2ee
+         6XNA==
+X-Gm-Message-State: AOJu0Yx3M6oh0GqwhFNOghWl+WJW3f0FbyQ4P5cecu9CXOaqvYfruWzp
+	CySir9oQ5XHTnJ9ZPAkcL3+9zeJU+LH6lmAedUPgdfLHoYr+7PAxk+u5Aka/JbeZxU8+QCFc2KT
+	d4x9ndU4eAsjkau8ICA7i+3toZvREIbp47keEo0KU7Cpqe1nGZsVGyC9KaA==
+X-Google-Smtp-Source: AGHT+IHQ700lnngjM8exNANwdaXeYMkQsFXucd8GzIxnkP9wyO9vyxY5mAvAf7ult6g4a2xA0mgs/oHi5dyj9+DZY5cU1kvyZsOj
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102-j7200-pcie-s2r-v2-0-8e4f7d228ec2@bootlin.com> <20240102-j7200-pcie-s2r-v2-15-8e4f7d228ec2@bootlin.com>
-In-Reply-To: <20240102-j7200-pcie-s2r-v2-15-8e4f7d228ec2@bootlin.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Fri, 26 Jan 2024 23:55:03 +0200
-Message-ID: <CAHp75Vfzvi-08DUvmBO8Lt1a-orozD+Z=YNOQJykJKWDZA5gGA@mail.gmail.com>
-Subject: Re: [PATCH v2 15/15] PCI: j721e: add suspend and resume support
-To: Thomas Richard <thomas.richard@bootlin.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
-	Andy Shevchenko <andy@kernel.org>, Tony Lindgren <tony@atomide.com>, 
-	Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>, 
-	Aaro Koskinen <aaro.koskinen@iki.fi>, Janusz Krzysztofik <jmkrzyszt@gmail.com>, 
-	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, Vinod Koul <vkoul@kernel.org>, 
-	Kishon Vijay Abraham I <kishon@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
-	Tom Joseph <tjoseph@cadence.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	linux-phy@lists.infradead.org, linux-pci@vger.kernel.org, 
-	gregory.clement@bootlin.com, theo.lebrun@bootlin.com, 
-	thomas.petazzoni@bootlin.com, u-kumar1@ti.com
+X-Received: by 2002:a05:6e02:1b83:b0:360:795e:a6b3 with SMTP id
+ h3-20020a056e021b8300b00360795ea6b3mr57972ili.4.1706306134405; Fri, 26 Jan
+ 2024 13:55:34 -0800 (PST)
+Date: Fri, 26 Jan 2024 13:55:34 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000004fa23060fe05bdd@google.com>
+Subject: [syzbot] Monthly trace report (Jan 2024)
+From: syzbot <syzbot+list6f10f18d2d6a90df46a7@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	mhiramat@kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 26, 2024 at 4:38=E2=80=AFPM Thomas Richard
-<thomas.richard@bootlin.com> wrote:
->
-> From: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
->
-> Add suspend and resume support. Only the rc mode is supported.
->
-> During the suspend stage PERST# is asserted, then deasserted during the
-> resume stage.
+Hello trace maintainers/developers,
 
-..
+This is a 31-day syzbot report for the trace subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/trace
 
-> +static int j721e_pcie_suspend_noirq(struct device *dev)
-> +{
-> +       struct j721e_pcie *pcie =3D dev_get_drvdata(dev);
-> +
-> +       if (pcie->mode =3D=3D PCI_MODE_RC) {
-> +               gpiod_set_value_cansleep(pcie->reset_gpio, 0);
-> +               clk_disable_unprepare(pcie->refclk);
+During the period, 2 new issues were detected and 0 were fixed.
+In total, 8 issues are still open and 29 have been fixed so far.
 
-Same Q as in a few mails before: Do you need unprepare? What will be
-the benefit from a PM perspective?
+Some of the still happening issues:
 
-> +       }
-> +
-> +       cdns_pcie_disable_phy(pcie->cdns_pcie);
-> +
-> +       return 0;
-> +}
+Ref Crashes Repro Title
+<1> 8174    Yes   possible deadlock in task_fork_fair
+                  https://syzkaller.appspot.com/bug?extid=1a93ee5d329e97cfbaff
+<2> 235     Yes   WARNING in format_decode (3)
+                  https://syzkaller.appspot.com/bug?extid=e2c932aec5c8a6e1d31c
+<3> 26      Yes   WARNING in blk_register_tracepoints
+                  https://syzkaller.appspot.com/bug?extid=c54ded83396afee31eb1
+<4> 12      Yes   INFO: task hung in blk_trace_ioctl (4)
+                  https://syzkaller.appspot.com/bug?extid=ed812ed461471ab17a0c
+<5> 5       Yes   WARNING in get_probe_ref
+                  https://syzkaller.appspot.com/bug?extid=8672dcb9d10011c0a160
 
---=20
-With Best Regards,
-Andy Shevchenko
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
