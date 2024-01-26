@@ -1,190 +1,155 @@
-Return-Path: <linux-kernel+bounces-40187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 228E983DBF6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:34:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 64F6983DBFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:34:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 813F6B21B5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:34:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EAD83B28832
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:34:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE11A1C697;
-	Fri, 26 Jan 2024 14:34:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24FA61CD23;
+	Fri, 26 Jan 2024 14:34:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NmoiS7im"
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nMMN5vKw"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE2B61C683;
-	Fri, 26 Jan 2024 14:34:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 352601CD1B
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:34:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706279674; cv=none; b=FOH3YORLcQEgjD01LsOsNxPEKZygrHlcm3yE+XLqZ0Jt3vwQ3Y5Oy283yNtYeW5/C0JiV4dc62Gb8Pu9DnJEZFRB2STQVUZQYk26FoTIQiS69QhgAgcZTXsbeePje9JXC0BT8WD2ZDNb0iVHnKhoHVMr/e6aSqSx/xvBKDOkZDE=
+	t=1706279686; cv=none; b=pa2cvpTvhaJitxxn2Lx+2e8tT5ZbTCAyW4v0PBD6XHORfMZLwy29uPlncVkH448+37QgvGMxZ+DAXDn0HZpJ6PXO+EQGuxi0Yl7xRbfH+vsOV4Mz2/kbObp1gp+Oy5k64GkomBQucuouULvbCzRivithSJfhMnUM9ZZ5NXgogEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706279674; c=relaxed/simple;
-	bh=VlHEm8CiSi592wojj3UsutYwrubNjD27MWN2kaDZJdc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VFjgmSz1x1I9+gPGi1u15c0MLSDQXdL47PvUIj+Jz0FnYMUYnK2ExtRXilZVnsloaVpTQanToHAnuoBCC5OzlhCYtwc3fovxeKvRNNeoJ/gULeWBXjZGCbH2njTinfPqOT5Bh3XNu4Ue10TSfmhYG4zAka4N7qrSjJtD3/6BZUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NmoiS7im; arc=none smtp.client-ip=209.85.210.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6de424cef01so229260a34.2;
-        Fri, 26 Jan 2024 06:34:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706279672; x=1706884472; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=emTp1NUA7NOW6whRrPCnnRtv6Gl2tOXIM2ZOxRmunDs=;
-        b=NmoiS7imJiUtRUi5c4YdV5gWnq1RBF+J7v5gncs243EgcIHrX8hFnoMSuHdL5+dokC
-         zJZKNvFZYVW1XzPVAK/dyAxlrPDYPgQ5HYZqEByrLUOBV7st2W3Ioq+nV/ByUKj0qEOl
-         cTrFbQD7EhmOIqEf9V+l1dDON53/XRhfVPm7V8vxi+/pHSrcXD9OEd5rP3uWZhPOVSqz
-         Wk2OecxIzmtxDxIy7CD8jt0tSpXKVVgvdWsNxRXpRXToRAHPHaJSIghvGwSpKVjzrElZ
-         ri2f5Wcwl7mf1EogrNqgjLO7jutY+vr5ujtc4Dy9227RjsJtRs0cvSeYqPZYZLXXvuzs
-         01mQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706279672; x=1706884472;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=emTp1NUA7NOW6whRrPCnnRtv6Gl2tOXIM2ZOxRmunDs=;
-        b=LERoHmJw2yHEtw2179d4ATivuyVBUJjvdvcoGA35f5HRtbuKeYgLjl3/KLrYzjhu+A
-         pqmNs+umsrCrzzUqWEC6cgVQuRfNrQhUZs7SDp8zsmelicRXc+5gul1abvd4lpk1REey
-         /xFp9U+GXyoG3XKq1wTHZ9SXrYbBKkTFHd48BbUzr0SnwvPT2AG0hgg/3OJIfpiesCVE
-         a38/znwdCIfzSQdEIRoPQXGLl3F96pu16in6KoCYCuFNJNUEP1Tc04LYza2MUoSDJOJW
-         Yi2nYDem2NoMJY5P+Mm2lcMS6Ql8AjTyl/IHsCS2IQ+gBz2vakLh4T4gTNq/UAL97RbM
-         z1FQ==
-X-Gm-Message-State: AOJu0YxvYtQMrpF/TQP6uBvw3wRd2ng7XljyM3pMNYFiSRs6y9RD7qbZ
-	nkbjBE/B+WsjkwkWm17kd0CRq7eF0C7nlicPtJZxjl2FOyrgOIiH/fwZeoS4lMxUhV+yaDXwIeY
-	Wi2oNVi+qTwORWSt3L0oa9hj7z4s=
-X-Google-Smtp-Source: AGHT+IGIJkLlZ+UTplYO6j9R8JlnlWzWhYP6rN8VJcdVk46vCMIHJg3EEg4FExa5Jc1uBoaE0JhsxxNQUoUWczOIZNo=
-X-Received: by 2002:a05:6830:33fc:b0:6e1:3a1:3358 with SMTP id
- i28-20020a05683033fc00b006e103a13358mr1343858otu.52.1706279671719; Fri, 26
- Jan 2024 06:34:31 -0800 (PST)
+	s=arc-20240116; t=1706279686; c=relaxed/simple;
+	bh=m9PT2Y6MD4xV1VmnnGIAd5vfJa/7eZ8Onp2JUOf3Gts=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=OEXTvDxlo5dX3a4UjWgbBYBJ07zAVviMx5EGZb8Y2ZtWdiOXUBln3KLQjYHy7OkvZBrWf+KSBlMsOO6m7OGsQ31Te8luP+r7cxsPqWgp8sO6vnFI4CJPkkF55CSI9dZ6bgd7Xb1XvepSl/FhFAYodkf7kxJbu4kCgTyJzpB4Q3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nMMN5vKw; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706279684; x=1737815684;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=m9PT2Y6MD4xV1VmnnGIAd5vfJa/7eZ8Onp2JUOf3Gts=;
+  b=nMMN5vKwJHEEJqI9JbO9z35IYk6CdfvlhU/02rTn3fZwP7Muba6v9BAS
+   Wji+iFlPqIDMlQRnf5lwqPD+Ka4rQJLITL8Ferhb2tmcwry/KYYazz4wL
+   gONCfgTs9zKoOcWRGVJf23MnsihXIQNDSjlhN+pJvYb+hxs81o4x2DXG3
+   bP9y1POAfykt6ZpZY5qoif8PuwKb5IYXHbd7OHBulLLtwUSS6+Z6oApHc
+   JE8S8ygq1fFCCC2NvV7TOTUYczj/PL/e3ZgLUJ+oTfvL9tEFQl4dCxxfK
+   kyqgAOllUuluuDhfahMfgjBTurA2agW+9USIlZo3Wx4E0ziLYO4yzBcos
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="9139832"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="9139832"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 06:34:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="906320961"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="906320961"
+Received: from tgl-lenovo-03.sh.intel.com ([10.239.87.93])
+  by fmsmga002.fm.intel.com with ESMTP; 26 Jan 2024 06:34:36 -0800
+From: wangxiaoming321 <xiaoming.wang@intel.com>
+To: lucas.demarchi@intel.com,
+	ogabbay@kernel.org,
+	thomas.hellstrom@linux.intel.com,
+	maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org,
+	tzimmermann@suse.de,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	intel-xe@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Cc: wangxiaoming321 <xiaoming.wang@intel.com>
+Subject: [PATCH] drm/xe/display: Fix memleak in display initialization
+Date: Fri, 26 Jan 2024 22:34:33 +0800
+Message-Id: <20240126143433.997078-1-xiaoming.wang@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240125063633.989944-1-xiaoming.wang@intel.com>
+References: <20240125063633.989944-1-xiaoming.wang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125235723.39507-1-vinicius.gomes@intel.com> <20240125235723.39507-3-vinicius.gomes@intel.com>
-In-Reply-To: <20240125235723.39507-3-vinicius.gomes@intel.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 26 Jan 2024 16:34:20 +0200
-Message-ID: <CAOQ4uxgZG487EMwDsxH-KkMeDExGPEFQP3zQVKk8BaKkWuZwDQ@mail.gmail.com>
-Subject: Re: [RFC v2 2/4] cred: Add a light version of override/revert_creds()
-To: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Cc: brauner@kernel.org, hu1.chen@intel.com, miklos@szeredi.hu, 
-	malini.bhandaru@intel.com, tim.c.chen@intel.com, mikko.ylinen@intel.com, 
-	lizhen.you@intel.com, linux-unionfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jan 26, 2024 at 1:57=E2=80=AFAM Vinicius Costa Gomes
-<vinicius.gomes@intel.com> wrote:
->
-> Add a light version of override/revert_creds(), this should only be
-> used when the credentials in question will outlive the critical
-> section and the critical section doesn't change the ->usage of the
-> credentials.
->
-> To make their usage less error prone, introduce cleanup guards asto be
-> used like this:
->
->      guard(cred)(credentials_to_override_and_restore);
->
-> or this:
->
->      scoped_guard(cred, credentials_to_override_and_restore) {
->              /* with credentials overridden */
->      }
->
-> Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+intel_power_domains_init has been called twice in xe_device_probe:
+xe_device_probe -> xe_display_init_nommio -> intel_power_domains_init(xe)
+xe_device_probe -> xe_display_init_noirq -> intel_display_driver_probe_noirq
+-> intel_power_domains_init(i915)
 
-You may add:
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+It needs add a flag to avoid power_domains->power_wells double malloc.
 
-I would also add:
-Suggested-by: Christian Brauner <brauner@kernel.org>
+unreferenced object 0xffff88811150ee00 (size 512):
+  comm "systemd-udevd", pid 506, jiffies 4294674198 (age 3605.560s)
+  hex dump (first 32 bytes):
+    10 b4 9d a0 ff ff ff ff ff ff ff ff ff ff ff ff  ................
+    ff ff ff ff ff ff ff ff 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff8134b901>] __kmem_cache_alloc_node+0x1c1/0x2b0
+    [<ffffffff812c98b2>] __kmalloc+0x52/0x150
+    [<ffffffffa08b0033>] __set_power_wells+0xc3/0x360 [xe]
+    [<ffffffffa08562fc>] xe_display_init_nommio+0x4c/0x70 [xe]
+    [<ffffffffa07f0d1c>] xe_device_probe+0x3c/0x5a0 [xe]
+    [<ffffffffa082e48f>] xe_pci_probe+0x33f/0x5a0 [xe]
+    [<ffffffff817f2187>] local_pci_probe+0x47/0xa0
+    [<ffffffff817f3db3>] pci_device_probe+0xc3/0x1f0
+    [<ffffffff8192f2a2>] really_probe+0x1a2/0x410
+    [<ffffffff8192f598>] __driver_probe_device+0x78/0x160
+    [<ffffffff8192f6ae>] driver_probe_device+0x1e/0x90
+    [<ffffffff8192f92a>] __driver_attach+0xda/0x1d0
+    [<ffffffff8192c95c>] bus_for_each_dev+0x7c/0xd0
+    [<ffffffff8192e159>] bus_add_driver+0x119/0x220
+    [<ffffffff81930d00>] driver_register+0x60/0x120
+    [<ffffffffa05e50a0>] 0xffffffffa05e50a0
 
-Thanks,
-Amir.
+Signed-off-by: wangxiaoming321 <xiaoming.wang@intel.com>
+---
+ drivers/gpu/drm/i915/display/intel_display_power.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-> ---
->  include/linux/cred.h | 21 +++++++++++++++++++++
->  kernel/cred.c        |  6 +++---
->  2 files changed, 24 insertions(+), 3 deletions(-)
->
-> diff --git a/include/linux/cred.h b/include/linux/cred.h
-> index 2976f534a7a3..e9f2237e4bf8 100644
-> --- a/include/linux/cred.h
-> +++ b/include/linux/cred.h
-> @@ -172,6 +172,27 @@ static inline bool cap_ambient_invariant_ok(const st=
-ruct cred *cred)
->                                           cred->cap_inheritable));
->  }
->
-> +/*
-> + * Override creds without bumping reference count. Caller must ensure
-> + * reference remains valid or has taken reference. Almost always not the
-> + * interface you want. Use override_creds()/revert_creds() instead.
-> + */
-> +static inline const struct cred *override_creds_light(const struct cred =
-*override_cred)
-> +{
-> +       const struct cred *old =3D current->cred;
-> +
-> +       rcu_assign_pointer(current->cred, override_cred);
-> +       return old;
-> +}
-> +
-> +static inline void revert_creds_light(const struct cred *revert_cred)
-> +{
-> +       rcu_assign_pointer(current->cred, revert_cred);
-> +}
-> +
-> +DEFINE_GUARD(cred, const struct cred *, _T =3D override_creds_light(_T),
-> +            revert_creds_light(_T));
-> +
->  /**
->   * get_new_cred_many - Get references on a new set of credentials
->   * @cred: The new credentials to reference
-> diff --git a/kernel/cred.c b/kernel/cred.c
-> index c033a201c808..f95f71e3ac1d 100644
-> --- a/kernel/cred.c
-> +++ b/kernel/cred.c
-> @@ -485,7 +485,7 @@ EXPORT_SYMBOL(abort_creds);
->   */
->  const struct cred *override_creds(const struct cred *new)
->  {
-> -       const struct cred *old =3D current->cred;
-> +       const struct cred *old;
->
->         kdebug("override_creds(%p{%ld})", new,
->                atomic_long_read(&new->usage));
-> @@ -499,7 +499,7 @@ const struct cred *override_creds(const struct cred *=
-new)
->          * visible to other threads under RCU.
->          */
->         get_new_cred((struct cred *)new);
-> -       rcu_assign_pointer(current->cred, new);
-> +       old =3D override_creds_light(new);
->
->         kdebug("override_creds() =3D %p{%ld}", old,
->                atomic_long_read(&old->usage));
-> @@ -521,7 +521,7 @@ void revert_creds(const struct cred *old)
->         kdebug("revert_creds(%p{%ld})", old,
->                atomic_long_read(&old->usage));
->
-> -       rcu_assign_pointer(current->cred, old);
-> +       revert_creds_light(old);
->         put_cred(override);
->  }
->  EXPORT_SYMBOL(revert_creds);
-> --
-> 2.43.0
->
+diff --git a/drivers/gpu/drm/i915/display/intel_display_power.c b/drivers/gpu/drm/i915/display/intel_display_power.c
+index bf9685acf75a..3b48a1cb7c54 100644
+--- a/drivers/gpu/drm/i915/display/intel_display_power.c
++++ b/drivers/gpu/drm/i915/display/intel_display_power.c
+@@ -36,6 +36,8 @@
+ 	for_each_power_well_reverse(__dev_priv, __power_well)		        \
+ 		for_each_if(test_bit((__domain), (__power_well)->domains.bits))
+ 
++static int intel_power_domains_init_flag = 0;
++
+ const char *
+ intel_display_power_domain_str(enum intel_display_power_domain domain)
+ {
+@@ -1016,6 +1018,11 @@ int intel_power_domains_init(struct drm_i915_private *dev_priv)
+ {
+ 	struct i915_power_domains *power_domains = &dev_priv->display.power.domains;
+ 
++	if(intel_power_domains_init_flag == 1)
++		return 0;
++
++	intel_power_domains_init_flag++;
++
+ 	dev_priv->display.params.disable_power_well =
+ 		sanitize_disable_power_well_option(dev_priv,
+ 						   dev_priv->display.params.disable_power_well);
+@@ -1041,6 +1048,7 @@ int intel_power_domains_init(struct drm_i915_private *dev_priv)
+  */
+ void intel_power_domains_cleanup(struct drm_i915_private *dev_priv)
+ {
++	intel_power_domains_init_flag = 0;
+ 	intel_display_power_map_cleanup(&dev_priv->display.power.domains);
+ }
+ 
+-- 
+2.25.1
+
 
