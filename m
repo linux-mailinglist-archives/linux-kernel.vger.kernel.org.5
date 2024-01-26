@@ -1,44 +1,45 @@
-Return-Path: <linux-kernel+bounces-40111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 516F183DA6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:00:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 628AE83DA70
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:00:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 846511C21085
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:00:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E583293505
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:00:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F7AB1B7F7;
-	Fri, 26 Jan 2024 13:00:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD96B1B81F;
+	Fri, 26 Jan 2024 13:00:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S4yc541M"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KugkZavx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3EBE1B7E8;
-	Fri, 26 Jan 2024 13:00:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 087CE1B7E8;
+	Fri, 26 Jan 2024 13:00:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706274001; cv=none; b=N3Yoq1vT7LY71gyhaMo8gCjmZp65Gbfgk/OYy3fZRPQto4eo6weoktp8w0Ae4dJr6UtAViZNAkvOsiluu4K5QbllOM2mkWY5B0QqOeehSOEFuQOT2D2bQVmCULIuRODaucRX0qph1XC1F3DJuseqtn8AAfp3iHqEnPNma5+awYA=
+	t=1706274005; cv=none; b=rrdkDutJPAQsbo5NcNJH4PPZSDTVohuBEzf7kq1/1lmAP2rVZ/xxaTuj79bnYG9+J/w+rweXLZfCQOCXtrLakDmsb9xOgA6sFg6CjK/ewKAamZ7DmkwfSyYjGt8J0UWmodEllJ9L7pO/0LsDabBJSNNf2eZYJJl06l/WffGbc5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706274001; c=relaxed/simple;
-	bh=eh/r7bLiG2ewx2BxWDgtR/LX/zo08ToBq3IPFhfP/kI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tUd9ALzwPKXgV0UFgLGmzAdzeqR/zZrwpfyHZ2A2k8fv6kwBzPPnU1eSUwLnhJJsVz4jijlCvQthGz+dCsrhyuapwsWeOexeKsJ1CWXBDRIEV5zLHdup2pQ2bij7wRfJ+96tBhLBE7HNf89BZIK1nXbdWa/meoVLxZA0c+0brrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S4yc541M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4179AC433F1;
-	Fri, 26 Jan 2024 12:59:58 +0000 (UTC)
+	s=arc-20240116; t=1706274005; c=relaxed/simple;
+	bh=tadW/B1Jf4kenc47EyR6zHxkmDu+fltrsntNV6/oFAE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=pzAkP7sANa9LcgG8/3pSdR51D91CVC/cFmSW8Y6aGrajt33dTjsvq7a5lZ/WBS3zKZ3JDCfttiueICytgW70aMM84JCZfFRCxcM+XxTMN/IPebF5sEVSZfPXZlzDh7tZkBI6mCVMdTI7lTfjVBHp1+v7m5xqKlMtPaGrY28WRsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KugkZavx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0279C43390;
+	Fri, 26 Jan 2024 13:00:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706274001;
-	bh=eh/r7bLiG2ewx2BxWDgtR/LX/zo08ToBq3IPFhfP/kI=;
-	h=From:To:Cc:Subject:Date:From;
-	b=S4yc541MawbI5TGCpoh8k6vWLuBkddYAYxUA58A+xazhwK7/EN3TRUsWOiQcDyExN
-	 tJJbZWb/X8LSL/DZAz1kLGSU7qUvgNxHHMAzOGhzwxyx2lZWNxvMaXoQNTIOoW+8bV
-	 Ov9nxsfZ0dppG09hWQkkBRreTP/Worbh0V6UwAgqNroDMMjtDuUkuNeC9gerfIGlji
-	 8ok6ln1ZudgHq90uyaw39JtdG3m7ley2ULwcvpPL9LckUJbGxxatMvxn0mkJ11IjAk
-	 0HNU7PUsGxxtTV+F+F3x760wY8dthVurcc9SOTL2QvT5wjjdRnuFdmA3D7rFkhj6FX
-	 WZJuIygur4Vpg==
+	s=k20201202; t=1706274004;
+	bh=tadW/B1Jf4kenc47EyR6zHxkmDu+fltrsntNV6/oFAE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=KugkZavx1HvChtd85MbaF4IjcPdHjjuz2NnYibOAT3swXxxgmfcKYoBWhjp2Zv9aK
+	 177IrhvwePjLKJAa58G0sDTCcQaA7KCNHq5kN7LaVv2Iknc3GYSGyjs7L267MUGbn4
+	 nOHG8qGKkpiaepZfkFBjfuyhWpZbj7Q36lwbFLa1RXKJuZnwVJKeLgMP7QlnXjY6pz
+	 jq8Or+yCFyEvssnqjsJ8gDbqv8sRxbh/rkIfWT/CMs8W3RHDIuzaMYKGnPRtJTwEFX
+	 Zj0+TezhhdhJnZKwIZsjPQeh6U/41OGGp+Z8EivP8i6W4zWJ4swHySQQy4gXkN4nf8
+	 XH62tisfr3ztg==
 From: Roger Quadros <rogerq@kernel.org>
 To: nm@ti.com,
 	vigneshr@ti.com
@@ -52,10 +53,12 @@ Cc: afd@ti.com,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Roger Quadros <rogerq@kernel.org>
-Subject: [PATCH 0/2] arm64: dts: ti: am62: Add USB support for k3-am62p
-Date: Fri, 26 Jan 2024 14:59:49 +0200
-Message-Id: <20240126125951.18585-1-rogerq@kernel.org>
+Subject: [PATCH 1/2] arm64: dts: ti: k3-am62/a/p: use sub-node for USB_PHY_CTRL registers
+Date: Fri, 26 Jan 2024 14:59:50 +0200
+Message-Id: <20240126125951.18585-2-rogerq@kernel.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240126125951.18585-1-rogerq@kernel.org>
+References: <20240126125951.18585-1-rogerq@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,34 +67,126 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+Exposing the entire CTRL_MMR space to syscon is not a good idea.
+Add sub-nodes for USB0_PHY_CTRL and USB1_PHY_CTRL and use them
+in the USB0/USB1 nodes.
 
-This series first adds device nodes for USB0_PHY_CTRL and USB1_PHY_CTRL
-in the wkup_conf node and fixus up the USB nodes to use the newly
-added nodes.
+Signed-off-by: Roger Quadros <rogerq@kernel.org>
+---
+ arch/arm64/boot/dts/ti/k3-am62-main.dtsi    |  4 ++--
+ arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi  | 10 ++++++++++
+ arch/arm64/boot/dts/ti/k3-am62a-main.dtsi   |  4 ++--
+ arch/arm64/boot/dts/ti/k3-am62a-wakeup.dtsi | 10 ++++++++++
+ arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi | 10 ++++++++++
+ 5 files changed, 34 insertions(+), 4 deletions(-)
 
-Then it adds USB support for AM62P5-SK board.
-
-cheers,
--roger
-
-Roger Quadros (1):
-  arm64: dts: ti: k3-am62/a/p: use sub-node for USB_PHY_CTRL registers
-
-Vignesh Raghavendra (1):
-  arm64: dts: ti: k3-am62p: add the USB sub-system
-
- arch/arm64/boot/dts/ti/k3-am62-main.dtsi    |  4 +-
- arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi  | 10 +++
- arch/arm64/boot/dts/ti/k3-am62a-main.dtsi   |  4 +-
- arch/arm64/boot/dts/ti/k3-am62a-wakeup.dtsi | 10 +++
- arch/arm64/boot/dts/ti/k3-am62p-main.dtsi   | 46 ++++++++++++++
- arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi | 10 +++
- arch/arm64/boot/dts/ti/k3-am62p5-sk.dts     | 67 +++++++++++++++++++++
- 7 files changed, 147 insertions(+), 4 deletions(-)
-
-
-base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+index 464b7565d085..9432ed344d52 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+@@ -625,7 +625,7 @@ usbss0: dwc3-usb@f900000 {
+ 		reg = <0x00 0x0f900000 0x00 0x800>;
+ 		clocks = <&k3_clks 161 3>;
+ 		clock-names = "ref";
+-		ti,syscon-phy-pll-refclk = <&wkup_conf 0x4008>;
++		ti,syscon-phy-pll-refclk = <&usb0_phy_ctrl 0x0>;
+ 		#address-cells = <2>;
+ 		#size-cells = <2>;
+ 		power-domains = <&k3_pds 178 TI_SCI_PD_EXCLUSIVE>;
+@@ -648,7 +648,7 @@ usbss1: dwc3-usb@f910000 {
+ 		reg = <0x00 0x0f910000 0x00 0x800>;
+ 		clocks = <&k3_clks 162 3>;
+ 		clock-names = "ref";
+-		ti,syscon-phy-pll-refclk = <&wkup_conf 0x4018>;
++		ti,syscon-phy-pll-refclk = <&usb1_phy_ctrl 0x0>;
+ 		#address-cells = <2>;
+ 		#size-cells = <2>;
+ 		power-domains = <&k3_pds 179 TI_SCI_PD_EXCLUSIVE>;
+diff --git a/arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi
+index fef76f52a52e..bd09662a3c29 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi
+@@ -19,6 +19,16 @@ chipid: chipid@14 {
+ 			compatible = "ti,am654-chipid";
+ 			reg = <0x14 0x4>;
+ 		};
++
++		usb0_phy_ctrl: syscon@4008 {
++			compatible = "syscon";
++			reg = <0x4008 0x4>;
++		};
++
++		usb1_phy_ctrl: syscon@4018 {
++			compatible = "syscon";
++			reg = <0x4018 0x4>;
++		};
+ 	};
+ 
+ 	wkup_uart0: serial@2b300000 {
+diff --git a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
+index f0b8c9ab1459..8311c7c44cd3 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
+@@ -566,7 +566,7 @@ usbss0: dwc3-usb@f900000 {
+ 		reg = <0x00 0x0f900000 0x00 0x800>;
+ 		clocks = <&k3_clks 161 3>;
+ 		clock-names = "ref";
+-		ti,syscon-phy-pll-refclk = <&wkup_conf 0x4008>;
++		ti,syscon-phy-pll-refclk = <&usb0_phy_ctrl 0x0>;
+ 		#address-cells = <2>;
+ 		#size-cells = <2>;
+ 		power-domains = <&k3_pds 178 TI_SCI_PD_EXCLUSIVE>;
+@@ -589,7 +589,7 @@ usbss1: dwc3-usb@f910000 {
+ 		reg = <0x00 0x0f910000 0x00 0x800>;
+ 		clocks = <&k3_clks 162 3>;
+ 		clock-names = "ref";
+-		ti,syscon-phy-pll-refclk = <&wkup_conf 0x4018>;
++		ti,syscon-phy-pll-refclk = <&usb1_phy_ctrl 0x0>;
+ 		#address-cells = <2>;
+ 		#size-cells = <2>;
+ 		power-domains = <&k3_pds 179 TI_SCI_PD_EXCLUSIVE>;
+diff --git a/arch/arm64/boot/dts/ti/k3-am62a-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am62a-wakeup.dtsi
+index 4e8279fa01e1..26e9fd9da78f 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62a-wakeup.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62a-wakeup.dtsi
+@@ -17,6 +17,16 @@ chipid: chipid@14 {
+ 			compatible = "ti,am654-chipid";
+ 			reg = <0x14 0x4>;
+ 		};
++
++		usb0_phy_ctrl: syscon@4008 {
++			compatible = "syscon";
++			reg = <0x4008 0x4>;
++		};
++
++		usb1_phy_ctrl: syscon@4018 {
++			compatible = "syscon";
++			reg = <0x4018 0x4>;
++		};
+ 	};
+ 
+ 	wkup_uart0: serial@2b300000 {
+diff --git a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
+index 19f42b39394e..0893e63c399a 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
+@@ -18,6 +18,16 @@ chipid: chipid@14 {
+ 			reg = <0x14 0x4>;
+ 			bootph-all;
+ 		};
++
++		usb0_phy_ctrl: syscon@4008 {
++			compatible = "syscon";
++			reg = <0x4008 0x4>;
++		};
++
++		usb1_phy_ctrl: syscon@4018 {
++			compatible = "syscon";
++			reg = <0x4018 0x4>;
++		};
+ 	};
+ 
+ 	wkup_uart0: serial@2b300000 {
 -- 
 2.34.1
 
