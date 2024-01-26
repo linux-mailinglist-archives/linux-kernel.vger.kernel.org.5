@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-39557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E993F83D2CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 04:02:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C78F483D2D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 04:03:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2894C1C23AA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 03:02:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56FB6B22353
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 03:03:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C22C4AD5C;
-	Fri, 26 Jan 2024 03:02:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64897DDBD;
+	Fri, 26 Jan 2024 03:02:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nZzlezDa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rMDCEg4a"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 043628F77;
-	Fri, 26 Jan 2024 03:02:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CE08CA47;
+	Fri, 26 Jan 2024 03:02:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706238136; cv=none; b=rbTqdNbDboKykWGpK/I9vcgPZyXqMdx28w4uOzL4BmcRjdXrT8+AhQA6wn2AY2hqLa/Y7wz5tzaNoA7SuQZOyWpwTMKO5vlYqqrW94Ypl8b8OXBxc7hn9OYjagleTSKNMbq4k7HOxZ1JFY9C6hibBtfkf5yImmyra+n4Pc1IykE=
+	t=1706238141; cv=none; b=et98Fc9BvCeqO0/UnP/fqLrz2Y9d+ws8fPtpzhaQutMqL0zlilFDQljJ7JQgeYfJWsP04ma0koAWsTGuUvnHUSR556x69Kx/qTKI5kO8ATUcfl8wmGGfnv8191am2Ft3Th7Y6A44ams1sMwrdYAz5XRdegPBNyOQX+yLjcwxdrA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706238136; c=relaxed/simple;
-	bh=GJ7CkH9DB4f6yRUN3yKrBTO9cZaC2If9JB2hPEvgamI=;
+	s=arc-20240116; t=1706238141; c=relaxed/simple;
+	bh=r9G4OZgWE+kQAAnHVLTuQu4pUWRCO754y65LPOoZ4ZA=;
 	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=oEZJ+rh1rs2vT0d0W5zJj9SsN5oOuB0C0c8z0mupnhXynfe+UEh2KBdGhfyTBs5l3IK97l1ghHDVEby/sNwnAD7p3P1FmcacvAEivt235cuwDHx+RrwyZ3LzWskEBMIYr71O8SNKrAh/TF3Hh6QmdYAXTLspjWwunRiv9JI5WS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nZzlezDa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18393C433F1;
-	Fri, 26 Jan 2024 03:02:14 +0000 (UTC)
+	 Message-Id:Subject; b=cOKACpDRODs4o5hBrdQk1vxbx0NnBOsxPyt52gQJ4PA+FQ4AX+Prk5DrpD955FPjrBN6Q0G1rwtOSteaCWMXWy+weAoofiiAN6krSY16letxeeBpbijQebz1ixaMHHYZRA6E1JNJBH8DswCFsk9s8proPVtWJpNGDSL3ETNyeAo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rMDCEg4a; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0AC0C433C7;
+	Fri, 26 Jan 2024 03:02:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706238135;
-	bh=GJ7CkH9DB4f6yRUN3yKrBTO9cZaC2If9JB2hPEvgamI=;
+	s=k20201202; t=1706238141;
+	bh=r9G4OZgWE+kQAAnHVLTuQu4pUWRCO754y65LPOoZ4ZA=;
 	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=nZzlezDaaMQOd65G0n3/0b1XsyY/gxUNwjTF53/nLwWnRaTLL9X01V8bs/FmW8T8s
-	 3iO915tzSuO8FAkhWUfLHfrb13vEX+ILVW7LpvZLAk6HTLe7W5O50H+sBqvjwuUpBH
-	 8EbKqO/Tw3/5/MCZuW1SoxmamgCfCspm5vmkJxusAhMELsQt2UlQ3hZBj6IP1E1Qq0
-	 Wtbxg/d0CxGdzy4ypCiPWHf/pPESyjms6/5kkWaYoWy3lLOx7dOwgv2RFmCsK7G6we
-	 W9A4LMOdXRGwDF4uayDaSl7pW0SvVbpfc7CylnoaxOHGLLtFZYGNhdNdZy+y5tepEm
-	 NGvgSUQqXgJLg==
-Date: Thu, 25 Jan 2024 21:02:13 -0600
+	b=rMDCEg4a0T5ikq4vs10UbosLswFsGBZVAPtEQiFCByn2lKVPohK+KBrEj2j7LrgT9
+	 rb/W8jL9N284WcB206GsNjrvJA0nPbLgXNrEyqvFxF/gmSZZzuaD5U1MaYn16ElSo/
+	 kjfllcvZ6v+9ArYm+g32UrVpC/eXeqyr/w5HzsRNKbGPC49Fx73e/Fcs59C+Cq+5YC
+	 ph80YBjwLFF1MEeF6oT0LIZF3QXjXGCEIGlQdK8CHMb5ed/4sFiSMKbifIOVT4A20P
+	 nxbuDuXb7JjbHc7bUkXi9fGX+LTciyHz7cvzmJMpB+mMiCey8P2kv52wX0IBHPXoz+
+	 eBfn5RE8Yvamg==
+Date: Thu, 25 Jan 2024 21:02:19 -0600
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -50,41 +50,40 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 From: Rob Herring <robh@kernel.org>
-To: Chen-Yu Tsai <wenst@chromium.org>
-Cc: Sean Wang <sean.wang@mediatek.com>, 
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, 
+ Manivannan Sadhasivam <mani@kernel.org>, 
+ =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+ devicetree@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Lorenzo Pieralisi <lpieralisi@kernel.org>, linux-arm-msm@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>, 
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- devicetree@vger.kernel.org, Matthias Brugger <matthias.bgg@gmail.com>, 
- Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
- Marcel Holtmann <marcel@holtmann.org>, netdev@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
- linux-kernel@vger.kernel.org, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
- linux-bluetooth@vger.kernel.org
-In-Reply-To: <20240125095240.2308340-2-wenst@chromium.org>
-References: <20240125095240.2308340-1-wenst@chromium.org>
- <20240125095240.2308340-2-wenst@chromium.org>
-Message-Id: <170623813065.6681.12186645553031730572.robh@kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: net: bluetooth: Add MediaTek MT7921S
- SDIO Bluetooth
+ linux-pci@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+In-Reply-To: <20240125-dt-bindings-pci-qcom-split-v2-2-6b58efd91a7a@linaro.org>
+References: <20240125-dt-bindings-pci-qcom-split-v2-0-6b58efd91a7a@linaro.org>
+ <20240125-dt-bindings-pci-qcom-split-v2-2-6b58efd91a7a@linaro.org>
+Message-Id: <170623813219.6729.5150130088127136653.robh@kernel.org>
+Subject: Re: [PATCH v2 2/6] dt-bindings: PCI: qcom,pcie-sm8450: move SM8450
+ to dedicated schema
 
 
-On Thu, 25 Jan 2024 17:52:37 +0800, Chen-Yu Tsai wrote:
-> The MediaTek MT7921S is a WiFi/Bluetooth combo chip that works over
-> SDIO. While the Bluetooth function is fully discoverable, the chip
-> has a pin that can reset just the Bluetooth side, as opposed to the
-> full chip. This needs to be described in the device tree.
+On Thu, 25 Jan 2024 14:03:25 +0100, Krzysztof Kozlowski wrote:
+> Move SM8450 PCIe devices from qcom,pcie.yaml binding to a dedicated file
+> to make reviewing easier.
 > 
-> Add a device tree binding for MT7921S Bluetooth over SDIO specifically
-> ot document the reset line.
+> This creates equivalent schema file, except:
+>  - Missing required compatible which is actually redundant.
+>  - Expecting eight MSI interrupts, instead of only one, which was
+>    incomplete hardware description.
 > 
-> Cc: Sean Wang <sean.wang@mediatek.com>
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+> Acked-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
->  .../bluetooth/mediatek,mt7921s-bluetooth.yaml | 49 +++++++++++++++++++
->  MAINTAINERS                                   |  1 +
->  2 files changed, 50 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-bluetooth.yaml
+>  .../devicetree/bindings/pci/qcom,pcie-sm8450.yaml  | 175 +++++++++++++++++++++
+>  .../devicetree/bindings/pci/qcom,pcie.yaml         |  67 --------
+>  2 files changed, 175 insertions(+), 67 deletions(-)
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -93,16 +92,12 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-bluetooth.example.dts:25.39-40 syntax error
-FATAL ERROR: Unable to parse input tree
-make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-bluetooth.example.dtb] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1428: dt_binding_check] Error 2
-make: *** [Makefile:240: __sub-make] Error 2
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/pci/qcom,pcie-sm8450.example.dtb: pcie@1c00000: Unevaluated properties are not allowed ('#address-cells', '#interrupt-cells', '#size-cells', 'bus-range', 'device_type', 'interrupt-map', 'interrupt-map-mask', 'iommu-map', 'linux,pci-domain', 'max-link-speed', 'msi-map', 'msi-map-mask', 'num-lanes', 'perst-gpios', 'phy-names', 'phys', 'power-domains', 'ranges', 'wake-gpios' were unexpected)
+	from schema $id: http://devicetree.org/schemas/pci/qcom,pcie-sm8450.yaml#
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240125095240.2308340-2-wenst@chromium.org
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240125-dt-bindings-pci-qcom-split-v2-2-6b58efd91a7a@linaro.org
 
 The base for the series is generally the latest rc1. A different dependency
 should be noted in *this* patch.
