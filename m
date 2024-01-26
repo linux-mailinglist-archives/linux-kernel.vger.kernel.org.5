@@ -1,191 +1,111 @@
-Return-Path: <linux-kernel+bounces-39695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56C2083D50C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:57:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C05883D511
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:57:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0955D28609C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 08:57:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4EAF1F21819
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 08:57:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD6E91B5A0;
-	Fri, 26 Jan 2024 07:21:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3BC239AC0;
+	Fri, 26 Jan 2024 07:21:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Xjb5OzC/"
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="H5e120DQ"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2BDB29CEB;
-	Fri, 26 Jan 2024 07:21:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE3C938387
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 07:21:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706253688; cv=none; b=EsLhLSIrcaHYdwWarDXeZ3r7V/PEvt/XAWYVQLGTEAiVeIO4nNMNvgeiZUEFUyf4wAgFs/JZ3Yz3uvEo7UuaI+cKS/m18o6UXgrKR6jdKSLTXIsgwwKulujjkQ4YpzaWzvOU0r1IKAFUhg8GfSa/ofxzeP0EbphwkohG7ofR3x0=
+	t=1706253703; cv=none; b=QjJy1qhkr8FSCRZ5BpBbKR8HoSzwA1Ff52+4/FoTfVTm/5dXyVtpXzfBtRTWhaflYpR+MRSsywJjHht/E6FXAmgRf5xpjSByfqUWS4FwDd3pNmc8dhUVZq3wG0qcXUYWoUAhjqZlz9qWk9xkEhTHuc/KDGg0pHxCkNE+gZnNA/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706253688; c=relaxed/simple;
-	bh=COyy1DJiB/eIbsONRHi+Oz1etgAGUzR7mzSxa4AmNuQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HRiq6XxGl0CJsje+e+Q6FtCyceBg2H3QkZ8VEHlaClf/4dWo4jAQMOCAnWTO22dlq8YO8DvjcRIZOVPX1nbrKOY9aCTMtiQmWsf7xQgXgM2XyLimvITb+98uAZDoqBqCUGVG7T+1Vkuy1kkEfblulk32ZHEzaFhzUblaIE8HPb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Xjb5OzC/; arc=none smtp.client-ip=115.124.30.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1706253681; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=vBYVt2s6HvfR/oouT1QKkutgOgH1lvtbeCB5EqxVH0c=;
-	b=Xjb5OzC/IpQNxe/HkEiSnKNPhd4EULfe6LUBFsBWbkqyaR5lzeyVjBCAeuPG5Xe+nFTkA/7xawlKBjXkrCDlExvnJX1AoEbMqZZ+W/YTwOHgts6NayMP7NYPVTCWTaWTka/5XcWyEJT5TFFAkubMyA7O0YALNy+uQXXn3awgpYI=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0W.MyK51_1706253680;
-Received: from localhost(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W.MyK51_1706253680)
-          by smtp.aliyun-inc.com;
-          Fri, 26 Jan 2024 15:21:21 +0800
-From: Jingbo Xu <jefflexu@linux.alibaba.com>
-To: miklos@szeredi.hu,
-	linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	amir73il@gmail.com
-Subject: [PATCH v2] fuse: add support for explicit export disabling
-Date: Fri, 26 Jan 2024 15:21:20 +0800
-Message-Id: <20240126072120.71867-1-jefflexu@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
+	s=arc-20240116; t=1706253703; c=relaxed/simple;
+	bh=Qqs2cdGj2JKXrK2vdbzBgigcaqwqPehTD4VKYAKqeo4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MjpY/5FIEp7uEKlAedKJNXSrvxfsc446cQT62ihng375xjRT2HFas6yRZfTcUirm/+vVUYoa6oMhhQMAa0pHs+sr0L2DrX45RvXTjadjYa+oxBm74ZjZu2qcSbm58E6BFp6Uog36bS+WiolaohdP8EzRe4ivxd8Ub0uUiiyQ0TE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=H5e120DQ; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40ed232ea06so444445e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 23:21:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706253700; x=1706858500; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Qqs2cdGj2JKXrK2vdbzBgigcaqwqPehTD4VKYAKqeo4=;
+        b=H5e120DQ7ky1aoAIoS/Sa+JfS7bOFT/O7qQDMq5AKNsaunV+/JqhD3p3KQ0eYrkElD
+         HpREsjix+F7CzqhDI2TDPa74JlQ8q6wOr+X4xZG0n/SXX18XWA7X9xZ7kxVeVIhJ3gLE
+         +67fCREFKr4BGgPJNw2FMbgFCRrHFt8eu/l2NOwE2HSwKXFQPsFpMt21pwmMAzs15vhd
+         QsctlwlM11c3hyo0Iue/OhadjEx0xEB1X0HX2DPn8zq+D/qGGGk9LapSdRkmmXTDIa1M
+         5KFIQ4rXtCzm5CC04RWtqH6lrGdnvf8SXCsk0NA5bXaV5gJVMBmEopIreb5JQ2OVpX1M
+         RnMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706253700; x=1706858500;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Qqs2cdGj2JKXrK2vdbzBgigcaqwqPehTD4VKYAKqeo4=;
+        b=p6TCybJ5x7sR9gQOuh+uZU0U7jSM5zO7IQLf/kJLRjruYIKJsNENfa8LuO5JZsWnX4
+         h3frw0RwWwRdFWhyNcRQ1rnbnBhpKO+nSaXB9397wvcy9AEkF/L1fVE83WTMncQaj4hq
+         4NcE1QeaWfiSQnEr8VagBQ9KX+XACH1sXwvTbWTFtVEypzqcWz4lhkYzMLentbwBMRCk
+         ajE3YRDljZA7B5knNyjiEm8f7lmzzAyMw7r0EvkcuY7wnbW/HRuZmD3YWWnjhvNmkfML
+         +GYm3H2lHMT1P3VSLzFwF5dH3nx8qPtj+D16Y2zBSk5HB2cP71nrai9hn9Hf+irsv/no
+         os5g==
+X-Gm-Message-State: AOJu0Yw71gyOuvdwOsZ276ZnglqofEHYTODY915wDztN3zaomlnpumvx
+	Mr3920oFi4zIDk8SOZW6u0AXjNYok79w67xXLcIlD0LmaGTNGKYvVFD44/qfMOk=
+X-Google-Smtp-Source: AGHT+IFgth+c5V2TpCXrE0m0JpTlmPOCL1AgrxkX6Qg8BBS3HUskyuuakorYsWB4EK7/vNA2m8s4OQ==
+X-Received: by 2002:a5d:5cc8:0:b0:337:bd79:3434 with SMTP id cg8-20020a5d5cc8000000b00337bd793434mr834137wrb.64.1706253699969;
+        Thu, 25 Jan 2024 23:21:39 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id bw3-20020a0560001f8300b0033953f87085sm614364wrb.35.2024.01.25.23.21.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jan 2024 23:21:39 -0800 (PST)
+Message-ID: <50dc8cf7-525c-4261-b225-7db1f7e5ace0@linaro.org>
+Date: Fri, 26 Jan 2024 07:21:36 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 25/28] asm-generic/io.h: add iowrite{8,16}_32 accessors
+To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
+ Andi Shyti <andi.shyti@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>, krzysztof.kozlowski+dt@linaro.org,
+ Conor Dooley <conor+dt@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>,
+ linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Linux-Arch
+ <linux-arch@vger.kernel.org>, =?UTF-8?Q?Andr=C3=A9_Draszik?=
+ <andre.draszik@linaro.org>, Peter Griffin <peter.griffin@linaro.org>,
+ Sam Protsenko <semen.protsenko@linaro.org>, kernel-team@android.com,
+ William McVicker <willmcvicker@google.com>
+References: <20240125145007.748295-1-tudor.ambarus@linaro.org>
+ <20240125145007.748295-26-tudor.ambarus@linaro.org>
+ <01d24044-6cac-4034-a9de-5b69c2dab139@app.fastmail.com>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <01d24044-6cac-4034-a9de-5b69c2dab139@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-open_by_handle_at(2) can fail with -ESTALE with a valid handle returned
-by a previous name_to_handle_at(2) for evicted fuse inodes, which is
-especially common when entry_valid_timeout is 0, e.g. when the fuse
-daemon is in "cache=none" mode.
 
-The time sequence is like:
 
-	name_to_handle_at(2)	# succeed
-	evict fuse inode
-	open_by_handle_at(2)	# fail
+On 1/25/24 21:23, Arnd Bergmann wrote:
+> My feeling is that this operation is rare enough that I'd prefer
+> it to be open-coded in the driver than made generic here. Making
+> it work for all corner cases is possible but probably not worth
+> it.
 
-The root cause is that, with 0 entry_valid_timeout, the dput() called in
-name_to_handle_at(2) will trigger iput -> evict(), which will send
-FUSE_FORGET to the daemon.  The following open_by_handle_at(2) will send
-a new FUSE_LOOKUP request upon inode cache miss since the previous inode
-eviction.  Then the fuse daemon may fail the FUSE_LOOKUP request with
--ENOENT as the cached metadata of the requested inode has already been
-cleaned up during the previous FUSE_FORGET.  The returned -ENOENT is
-treated as -ESTALE when open_by_handle_at(2) returns.
+Thanks for all the explanations, Arnd. I'll open-code the op in the SPI
+driver for now.
 
-This confuses the application somehow, as open_by_handle_at(2) fails
-when the previous name_to_handle_at(2) succeeds.  The returned errno is
-also confusing as the requested file is not deleted and already there.
-It is reasonable to fail name_to_handle_at(2) early in this case, after
-which the application can fallback to open(2) to access files.
-
-Since this issue typically appears when entry_valid_timeout is 0 which
-is configured by the fuse daemon, the fuse daemon is the right person to
-explicitly disable the export when required.
-
-Also considering FUSE_EXPORT_SUPPORT actually indicates the support for
-lookups of "." and "..", and there are existing fuse daemons supporting
-export without FUSE_EXPORT_SUPPORT set, for compatibility, we add a new
-INIT flag for such purpose.
-
-Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
----
-v2:
-- rename to "fuse_export_fid_operations"
-- bump FUSE_KERNEL_MINOR_VERSION
-
-v1: https://lore.kernel.org/linux-fsdevel/20240124113042.44300-1-jefflexu@linux.alibaba.com/
-RFC: https://lore.kernel.org/all/20240123093701.94166-1-jefflexu@linux.alibaba.com/
----
- fs/fuse/inode.c           | 11 ++++++++++-
- include/uapi/linux/fuse.h |  7 ++++++-
- 2 files changed, 16 insertions(+), 2 deletions(-)
-
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index 2a6d44f91729..eee200308482 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -1110,6 +1110,11 @@ static struct dentry *fuse_get_parent(struct dentry *child)
- 	return parent;
- }
- 
-+/* only for fid encoding; no support for file handle */
-+static const struct export_operations fuse_export_fid_operations = {
-+	.encode_fh	= fuse_encode_fh,
-+};
-+
- static const struct export_operations fuse_export_operations = {
- 	.fh_to_dentry	= fuse_fh_to_dentry,
- 	.fh_to_parent	= fuse_fh_to_parent,
-@@ -1284,6 +1289,8 @@ static void process_init_reply(struct fuse_mount *fm, struct fuse_args *args,
- 				fc->create_supp_group = 1;
- 			if (flags & FUSE_DIRECT_IO_ALLOW_MMAP)
- 				fc->direct_io_allow_mmap = 1;
-+			if (flags & FUSE_NO_EXPORT_SUPPORT)
-+				fm->sb->s_export_op = &fuse_export_fid_operations;
- 		} else {
- 			ra_pages = fc->max_read / PAGE_SIZE;
- 			fc->no_lock = 1;
-@@ -1330,7 +1337,8 @@ void fuse_send_init(struct fuse_mount *fm)
- 		FUSE_NO_OPENDIR_SUPPORT | FUSE_EXPLICIT_INVAL_DATA |
- 		FUSE_HANDLE_KILLPRIV_V2 | FUSE_SETXATTR_EXT | FUSE_INIT_EXT |
- 		FUSE_SECURITY_CTX | FUSE_CREATE_SUPP_GROUP |
--		FUSE_HAS_EXPIRE_ONLY | FUSE_DIRECT_IO_ALLOW_MMAP;
-+		FUSE_HAS_EXPIRE_ONLY | FUSE_DIRECT_IO_ALLOW_MMAP |
-+		FUSE_NO_EXPORT_SUPPORT;
- #ifdef CONFIG_FUSE_DAX
- 	if (fm->fc->dax)
- 		flags |= FUSE_MAP_ALIGNMENT;
-@@ -1527,6 +1535,7 @@ static int fuse_fill_super_submount(struct super_block *sb,
- 	sb->s_bdi = bdi_get(parent_sb->s_bdi);
- 
- 	sb->s_xattr = parent_sb->s_xattr;
-+	sb->s_export_op = parent_sb->s_export_op;
- 	sb->s_time_gran = parent_sb->s_time_gran;
- 	sb->s_blocksize = parent_sb->s_blocksize;
- 	sb->s_blocksize_bits = parent_sb->s_blocksize_bits;
-diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
-index e7418d15fe39..38d9f285a599 100644
---- a/include/uapi/linux/fuse.h
-+++ b/include/uapi/linux/fuse.h
-@@ -211,6 +211,9 @@
-  *  7.39
-  *  - add FUSE_DIRECT_IO_ALLOW_MMAP
-  *  - add FUSE_STATX and related structures
-+ *
-+ *  7.40
-+ *  - add FUSE_NO_EXPORT_SUPPORT
-  */
- 
- #ifndef _LINUX_FUSE_H
-@@ -246,7 +249,7 @@
- #define FUSE_KERNEL_VERSION 7
- 
- /** Minor version number of this interface */
--#define FUSE_KERNEL_MINOR_VERSION 39
-+#define FUSE_KERNEL_MINOR_VERSION 40
- 
- /** The node ID of the root inode */
- #define FUSE_ROOT_ID 1
-@@ -410,6 +413,7 @@ struct fuse_file_lock {
-  *			symlink and mknod (single group that matches parent)
-  * FUSE_HAS_EXPIRE_ONLY: kernel supports expiry-only entry invalidation
-  * FUSE_DIRECT_IO_ALLOW_MMAP: allow shared mmap in FOPEN_DIRECT_IO mode.
-+ * FUSE_NO_EXPORT_SUPPORT: explicitly disable export support
-  */
- #define FUSE_ASYNC_READ		(1 << 0)
- #define FUSE_POSIX_LOCKS	(1 << 1)
-@@ -449,6 +453,7 @@ struct fuse_file_lock {
- #define FUSE_CREATE_SUPP_GROUP	(1ULL << 34)
- #define FUSE_HAS_EXPIRE_ONLY	(1ULL << 35)
- #define FUSE_DIRECT_IO_ALLOW_MMAP (1ULL << 36)
-+#define FUSE_NO_EXPORT_SUPPORT	(1ULL << 37)
- 
- /* Obsolete alias for FUSE_DIRECT_IO_ALLOW_MMAP */
- #define FUSE_DIRECT_IO_RELAX	FUSE_DIRECT_IO_ALLOW_MMAP
--- 
-2.19.1.6.gb485710b
-
+Cheers,
+ta
 
