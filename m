@@ -1,143 +1,123 @@
-Return-Path: <linux-kernel+bounces-39890-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B622883D844
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:33:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B9CB083D613
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:23:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F8CDB32894
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:58:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44F9DB278B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:23:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AC2E61667;
-	Fri, 26 Jan 2024 09:08:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A09FA1CA91;
+	Fri, 26 Jan 2024 08:44:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="qhQ+aznB"
-Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DJrwKq0Y"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76DC860ED5;
-	Fri, 26 Jan 2024 09:08:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.30.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3C6014276;
+	Fri, 26 Jan 2024 08:44:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706260134; cv=none; b=e15QsUn5GXgw0Zld4O4x90xB+wmZUl0aV0ABTpcXEnU4Sjoh+OrNLaG6kXmiLpZTiO57+7qpIs7KyOlMjZy/gJ37OSlkhWjJa3a9e+PFIrPjsunt/Ux9Zn7vUwA+Wih9vhlmVE7XigFSqURlU9SG4g/P+2h+j53h10YbpOyeHXQ=
+	t=1706258691; cv=none; b=eNYyBp6csFBDU2OSGyXT6UjBMXIBqbMfpLREvOTCYX8Lh7BJ0xGJh1yjxCAA59sWiSegOUa6de2R85pyRnCUTyHAtgJzOXsmA6fbijy/0VJOlwqT0zGRD7u4YXEc8KwpqcN/vb/bg67Mv6DynKkyRMjp7OcsjAt7L4FwL8Pv9fs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706260134; c=relaxed/simple;
-	bh=+iBdilf2oAlb3QWslakRcDz4Slj2S/vo74OJbOpf7io=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=u+AS+h6e+EB6kzV+2NBhUL8CsyW36hXqgqG0oVd0hiOPutyNizo8iZ/+ULEBPVagOJyF9mIN23mHmuC11Wg+xobX9wrdxLJiG3cCW24ApN0fqxiaggdZrZIfblbJKRs3lBUAeH2kuTLwDiH6feBDtyWxFzSU18kW8aBhWkGP4ZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com; spf=pass smtp.mailfrom=geanix.com; dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b=qhQ+aznB; arc=none smtp.client-ip=188.40.30.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geanix.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
-	s=default2211; h=Content-Type:MIME-Version:Message-ID:Date:References:
-	In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=PUfxJlZFVfmPhNLMt5rpstbfpKShoNxijw+jhoG4IIQ=; b=qhQ+aznBBExDH5jZPmD78Y4aEl
-	8AGLUycpgv2X48qKwFSdTpu0TvBGX9DeIgtBi5WsujLd4bS2Zhk4nuIPMCzzn6BV6Rq/1n/gIHCm9
-	nKxz8qwTLQqzd7B/VcTl/eteW1uBuGjqqU86wiZHpJmgO0casflUaxMcIU4jm2gSgiQ9k/F9z0d3d
-	Vt3wBK2LJbhhJQMrLaTejZOB+mnXokTB0YMlfid+Gur3Yke93LIfiRTEYkVfO3nvd7PPOKVtIpRUo
-	5kpwVCPRUpwGSjB6tJoQv7rr4mBywoyWdNKNRQyqDzmlOqPzNONvwV8T24J3sjRxSEY1OvewUg1KY
-	476+OxDA==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <esben@geanix.com>)
-	id 1rTHoA-000CBk-GH; Fri, 26 Jan 2024 09:43:30 +0100
-Received: from [87.49.42.9] (helo=localhost)
-	by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <esben@geanix.com>)
-	id 1rTHo9-000Kqi-0v; Fri, 26 Jan 2024 09:43:29 +0100
-From: Esben Haabendal <esben@geanix.com>
-To: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
-Cc: Rohan G Thomas <rohan.g.thomas@intel.com>,  "David S . Miller"
- <davem@davemloft.net>,  Alexandre Torgue <alexandre.torgue@foss.st.com>,
-  "Jose Abreu" <joabreu@synopsys.com>,  Eric Dumazet <edumazet@google.com>,
-  "Jakub Kicinski" <kuba@kernel.org>,  Paolo Abeni <pabeni@redhat.com>,
-  Maxime Coquelin <mcoquelin.stm32@gmail.com>,  Rob Herring
- <robh+dt@kernel.org>,  "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley <conor+dt@kernel.org>,
-  Giuseppe Cavallaro <peppe.cavallaro@st.com>,  "Serge Semin"
- <fancer.lancer@gmail.com>,  Andrew Halaney <ahalaney@redhat.com>,
-  <elder@linaro.org>,  <netdev@vger.kernel.org>,
-  <linux-stm32@st-md-mailman.stormreply.com>,
-  <linux-arm-kernel@lists.infradead.org>,  <devicetree@vger.kernel.org>,
-  <linux-kernel@vger.kernel.org>,  <quic_bhaviks@quicinc.com>,
-  <kernel.upstream@quicinc.com>
-Subject: Re: [PATCH net-next 2/2] net: stmmac: TBS support for platform driver
-In-Reply-To: <92892988-bb77-4075-812e-19f6112f436e@quicinc.com> (Abhishek
-	Chauhan's message of "Wed, 10 Jan 2024 12:19:29 -0800")
-References: <20230927130919.25683-1-rohan.g.thomas@intel.com>
-	<20230927130919.25683-3-rohan.g.thomas@intel.com>
-	<92892988-bb77-4075-812e-19f6112f436e@quicinc.com>
-Date: Fri, 26 Jan 2024 09:43:28 +0100
-Message-ID: <87r0i44h8v.fsf@geanix.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1706258691; c=relaxed/simple;
+	bh=gaO5xq4+iqo/CpWSTXlZvHIwYFC0rTJKMRPwhqMBRbo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dPRevf5e/WOCCNTPlvdDY5B3BhR8QCfgUYzORMWuRdxswXxxqQEQvI8nlEIXA8cNeiDh6mt5nM0yAGM0GTpKcdIdXtvGW34w4JJzpbCqeBuEn3Zo1GWHg3nO1jLhDZMvnMdIbRGx5nRRQ1enx+5LwCOkvdyAd6lEI2UZ/0Y7Aco=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DJrwKq0Y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD862C433B1;
+	Fri, 26 Jan 2024 08:44:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706258690;
+	bh=gaO5xq4+iqo/CpWSTXlZvHIwYFC0rTJKMRPwhqMBRbo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=DJrwKq0YiCYXRsEOAkgnCozSU3DFfNvol2WhYcL+1l7yRpdzxU97/wyN6dC3VvYZi
+	 AVQrz3RS5yS9M7Hi26EsL4tQTmix5gNZ5L0ydLrSsRJfcNqq9PHgR+uVj5mHn1WoZI
+	 w6eKuPT/PK1ycyJoVYkSgq6yOWbT1hVxSy2lEw4XNllrCqh0ZZWQg0Lc1VLQ/IoXf7
+	 OzdDPBQ+w7d3Qu7cq8kqO78yyb64RHjG1yNfiB0cAkxIrPoxGYUrOFuyKV5i8wbpaw
+	 KysOQx0Yb2GKXV3kpzSNrUgl5Gm78WWcQfaMo6z2arb6GFDNu0TQ1ZGHESve7lNNZ9
+	 tcWnTV9YcfvRQ==
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5102188d2aeso94365e87.2;
+        Fri, 26 Jan 2024 00:44:50 -0800 (PST)
+X-Gm-Message-State: AOJu0Ywei91T/6fI16Pu0chJJNH6KVZZ3KJweRdUVX9ZiugojvnHu8S5
+	Y9YZjFy8HhEwz2Hs1aPpC6yaSklYIGc6/WyVT/pVnwb9isnDYsURS+t+guuGb3NY5TncblghSwA
+	ORtnplGK9iIFYjylgK/Oy2JeUvlA=
+X-Google-Smtp-Source: AGHT+IFjNDG5Tm3UEEPA7ACJkYs/KdrtCbDYforcV54CpZLqF2gkX9FCsY5ZA2v/40T7zrcJxSycn+IRI/2GHFp2hns=
+X-Received: by 2002:a05:6512:2246:b0:50e:7410:d5b0 with SMTP id
+ i6-20020a056512224600b0050e7410d5b0mr669457lfu.28.1706258688908; Fri, 26 Jan
+ 2024 00:44:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Authenticated-Sender: esben@geanix.com
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27165/Thu Jan 25 10:51:15 2024)
+References: <20240125-bump-min-llvm-ver-to-13-0-1-v1-0-f5ff9bda41c5@kernel.org>
+ <20240125-bump-min-llvm-ver-to-13-0-1-v1-4-f5ff9bda41c5@kernel.org>
+In-Reply-To: <20240125-bump-min-llvm-ver-to-13-0-1-v1-4-f5ff9bda41c5@kernel.org>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Fri, 26 Jan 2024 09:44:37 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXFzi=ijUBU0i3gq4Q9rcCvMw-a1wLc1u7fXRRN8QbN9hw@mail.gmail.com>
+Message-ID: <CAMj1kXFzi=ijUBU0i3gq4Q9rcCvMw-a1wLc1u7fXRRN8QbN9hw@mail.gmail.com>
+Subject: Re: [PATCH 04/11] ARM: Remove Thumb2 __builtin_thread_pointer
+ workaround for Clang
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: akpm@linux-foundation.org, masahiroy@kernel.org, nicolas@fjasle.eu, 
+	linux-kbuild@vger.kernel.org, llvm@lists.linux.dev, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, linux@armlinux.org.uk, 
+	linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 
-"Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com> writes:
-
-> Qualcomm had similar discussions with respect to enabling of TBS for a
-> particular queue. We had similar discussion on these terms yesterday
-> with Redhat. Adding Andrew from Redhat here
+On Thu, 25 Jan 2024 at 23:56, Nathan Chancellor <nathan@kernel.org> wrote:
 >
-> What we discovered as part of the discussions is listed below.
+> Now that the minimum supported version of LLVM for building the kernel
+> has been bumped to 13.0.1, the conditional expression added to
+> get_current() by commit c1e42efacb9b ("ARM: 9151/1: Thumb2: avoid
+> __builtin_thread_pointer() on Clang") is always true, as the build will
+> fail during the configuration stage for older LLVM versions. Remove it,
+> effectively reverting the aforementioned change.
 >
-> 1. Today upstream stmmac code is designed in such a way that TBS flag
-> is put as part of queue configurations(see below snippet) and as well
-> know that stmmac queue configuration comes from the dtsi file.
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+
+Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+
+> ---
+> Cc: linux@armlinux.org.uk
+> Cc: ardb@kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> ---
+>  arch/arm/include/asm/current.h | 8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
 >
-> //ndo_open => stmmac_open
-> int tbs_en = priv->plat->tx_queues_cfg[chan].tbs_en;(comes from tx_queues_cfg)
+> diff --git a/arch/arm/include/asm/current.h b/arch/arm/include/asm/current.h
+> index 1e1178bf176d..5225cb1c803b 100644
+> --- a/arch/arm/include/asm/current.h
+> +++ b/arch/arm/include/asm/current.h
+> @@ -18,18 +18,12 @@ static __always_inline __attribute_const__ struct task_struct *get_current(void)
+>  {
+>         struct task_struct *cur;
 >
-> /* Setup per-TXQ tbs flag before TX descriptor alloc */
-> tx_q->tbs |= tbs_en ? STMMAC_TBS_AVAIL : 0;
+> -#if __has_builtin(__builtin_thread_pointer) && \
+> -    defined(CONFIG_CURRENT_POINTER_IN_TPIDRURO) && \
+> -    !(defined(CONFIG_THUMB2_KERNEL) && \
+> -      defined(CONFIG_CC_IS_CLANG) && CONFIG_CLANG_VERSION < 130001)
+> +#if __has_builtin(__builtin_thread_pointer) && defined(CONFIG_CURRENT_POINTER_IN_TPIDRURO)
+>         /*
+>          * Use the __builtin helper when available - this results in better
+>          * code, especially when using GCC in combination with the per-task
+>          * stack protector, as the compiler will recognize that it needs to
+>          * load the TLS register only once in every function.
+> -        *
+> -        * Clang < 13.0.1 gets this wrong for Thumb2 builds:
+> -        * https://github.com/ClangBuiltLinux/linux/issues/1485
+>          */
+>         cur = __builtin_thread_pointer();
+>  #elif defined(CONFIG_CURRENT_POINTER_IN_TPIDRURO) || defined(CONFIG_SMP)
 >
-> 2. There is a no way to do this dynamically from user space because we don't have any 
-> API exposed which can do it from user space
-
-Not now. But why not extend ethtool API to allow enabling TBS for
-supported controllers?
-
-> and also TBS rely on special descriptors aka enhanced desc this cannot
-> be done run time and stmmac has to be aware of it before we do
-> DMA/MAC/MTL start.
-
-Isn't this somewhat similar to changing the RX/TX ring parameters, which
-I believe also is quite difficult to do at run time, and ethtool
-therefore requires the interface to be down in oroer to change them?
-
-> To do this dynamically would only mean stopping DMA/MAC/MTL realloc
-> resources for enhanced desc and the starting MAC/DMA/MTL. This means
-> we are disrupting other traffic(By stopping MAC block).
-
-Yes. But you would be disrupting traffic less than by requiring a
-complete reboot of the target which is needed if the devicetree must be
-changed.
-
-> 3. I dont think there is a way we can enable this dynamically today. I
-> would like upstream community to share your thoughts as well.
-
-Hereby done. Could we investigate the possibility of using ethtool to
-change TBS enable/disable "run-time"?
-
-> 4. I agree with Rohan's patch here and want upstream community to
-> accept it. This will allow use to configure the queues where TBS needs
-> to be enabled as hardcoding in the code unless upstream has better way
-> to this using userspace.
+> --
+> 2.43.0
 >
-> Please let us know if you think otherwise. 
-
-/Esben
 
