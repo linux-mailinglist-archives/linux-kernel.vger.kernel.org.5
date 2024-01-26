@@ -1,139 +1,152 @@
-Return-Path: <linux-kernel+bounces-39789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2897D83D61A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:24:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62E4783D61F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:24:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA904286016
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:24:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3FC5AB2271E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:24:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A1E12CDA4;
-	Fri, 26 Jan 2024 08:48:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E63C31D69D;
+	Fri, 26 Jan 2024 08:49:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TvFncENm"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QjOvfehB"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FC0B14271;
-	Fri, 26 Jan 2024 08:48:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9503A12CDBA
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:49:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706258915; cv=none; b=tOvMYCD5aQNY8n+983xP6gKnojQqJotYPHChPM9hS75Zt4au44mwqWttmYYAa90am9n8iDTeCC7KEpLGt3nAVR19enc4UhPnGE0E310dqyvoYAtod743s5XnAIkbGMwTwPD27XpHcC3nAW97Q3Nv395sMcvZ1YHK810ZeYfO3V8=
+	t=1706258968; cv=none; b=hGRUgnHEawok15I9Tu8FzDbklv0a4K/mLfUVlcJcfkrKj25YaBPcJsubHSX/71g31HCsoGEnOPOMpzbXh6ENeMSNKAQnKc/yJ5GZF3CLGZehtkYT0UzJZsl4B4b6+/vTaWjktpcRJUQjerbh6pDpIv08wpivGC1gaqVU0dVVTRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706258915; c=relaxed/simple;
-	bh=A7lMnjB+Aaj8pkHbSGZqjInOm+WxB4FCR3WUWFKf5CI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=MWXH32pWAzlFs6+po4w+ySQJi4Ago0kIICMHHvBWbwPbTdgUXHkYmlPK5QDl54V4WnTeWm9v7gfmKE1iY9G8ImUc0Wj8xWgJFHWgDCzsjoK/ezMenUL+ZNrWNsa/5wZAwXwx8zKjufq9+L2eQj8K6pKKCZeovAkcWoduAIf3dXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TvFncENm; arc=none smtp.client-ip=134.134.136.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706258913; x=1737794913;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=A7lMnjB+Aaj8pkHbSGZqjInOm+WxB4FCR3WUWFKf5CI=;
-  b=TvFncENmPi4g/aElWfCYaxATw4JdHNonQtbWeZ2wCKzXZys1NzgzVU0g
-   Y3MBcMNMgrSlX5jSupPISuVt7mospmKAMpzAdBXZHsktBGfRS4kBOwMXO
-   dn0KxkT3SBTE0RRet/htyvRdi2MF386SB1S/onQ8OZAiUal3bmC5ZZ3U3
-   yI5N2vU/HlAcxvuHmeBDttQGtEk/BfcO7OvZPAflqzkr6En+sSDvSAaqE
-   b+qywHYH+evtOfsTmXeJuvctMl3m9mrdOyf3/vygcJFPdfZqMeE3ier1S
-   q0WSM60Bk+TL3Suk1rV1xT4sYiziaKadrZTR+Ik4/Ev31Hv0VSLVcpPw/
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="466698840"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="466698840"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 00:48:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="960153916"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="960153916"
-Received: from clillies-mobl1.ger.corp.intel.com (HELO [10.249.254.111]) ([10.249.254.111])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 00:48:30 -0800
-Message-ID: <da82b69db55c414699429a81150d20ff52032304.camel@linux.intel.com>
-Subject: Re: linux-next: build warning after merge of the drm tree
-From: Thomas =?ISO-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>, Dave Airlie <airlied@redhat.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>, Badal Nilawar
- <badal.nilawar@intel.com>, DRI <dri-devel@lists.freedesktop.org>, Rodrigo
- Vivi <rodrigo.vivi@intel.com>
-Date: Fri, 26 Jan 2024 09:48:27 +0100
-In-Reply-To: <20240125113345.291118ff@canb.auug.org.au>
-References: <20240105174745.78b94cb5@canb.auug.org.au>
-	 <20240125113345.291118ff@canb.auug.org.au>
-Autocrypt: addr=thomas.hellstrom@linux.intel.com; prefer-encrypt=mutual;
- keydata=mDMEZaWU6xYJKwYBBAHaRw8BAQdAj/We1UBCIrAm9H5t5Z7+elYJowdlhiYE8zUXgxcFz360SFRob21hcyBIZWxsc3Ryw7ZtIChJbnRlbCBMaW51eCBlbWFpbCkgPHRob21hcy5oZWxsc3Ryb21AbGludXguaW50ZWwuY29tPoiTBBMWCgA7FiEEbJFDO8NaBua8diGTuBaTVQrGBr8FAmWllOsCGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQuBaTVQrGBr/yQAD/Z1B+Kzy2JTuIy9LsKfC9FJmt1K/4qgaVeZMIKCAxf2UBAJhmZ5jmkDIf6YghfINZlYq6ixyWnOkWMuSLmELwOsgPuDgEZaWU6xIKKwYBBAGXVQEFAQEHQF9v/LNGegctctMWGHvmV/6oKOWWf/vd4MeqoSYTxVBTAwEIB4h4BBgWCgAgFiEEbJFDO8NaBua8diGTuBaTVQrGBr8FAmWllOsCGwwACgkQuBaTVQrGBr/P2QD9Gts6Ee91w3SzOelNjsus/DcCTBb3fRugJoqcfxjKU0gBAKIFVMvVUGbhlEi6EFTZmBZ0QIZEIzOOVfkaIgWelFEH
-Organization: Intel Sweden AB, Registration Number: 556189-6027
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+	s=arc-20240116; t=1706258968; c=relaxed/simple;
+	bh=t/ysEWbT7DsgI1OKWJZlsnVlTSlU/XcsSNTRoDVp2uI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZepTHATWQ6unJelJNFNW+uIRRFLUUAdDxGbabtxl6zefQBtcEYuH4io2yqvcahUHTtjTjgKbR8HzCNqgDbTbhYqUwV51nof7vmIKhjiMOh/zISb2c9Hl8rT8xYqxqDKUnxVkTufggPKJ7n7KnKcxLknwAzm1sm73mak2Pnmx8T8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QjOvfehB; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-339289fead2so135212f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 00:49:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706258965; x=1706863765; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SxXvp45WIZMJk6naBF28BXtWC3N8nQIyBhkXmU92Lmo=;
+        b=QjOvfehBwf3WuBI044r7UjrgnPxxU39vStixilzothah09+vwDEy9YXFQ6+edgLDiG
+         ZOv2bsgCReYBPgbk/DHLkAGUZuTuOOvTofof8IiVAMd3etlGcY2twJzUv26qONkUp6C0
+         AhzhyygS5v/2LCdC7mqhry3z4rmHopRr8NzPxx5DgPxpiML2uu6ASugxyU9aEm6U5DzY
+         jtbzmEt791PMCbWPEvsS3lovtIejCjNjtiV0Y87F37jul6VkAW+/+9Qw8c3wJIxIAwhh
+         kySUgW40NjmUsEiUvw/wyzUVOqpBuf+5krxiL9du/KcZ6mcvS43YXWzRcvPs0FWK03EN
+         7hyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706258965; x=1706863765;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SxXvp45WIZMJk6naBF28BXtWC3N8nQIyBhkXmU92Lmo=;
+        b=gfvK7TtxGpdUXmp0e35PdV17qpbR/RhXyFziXdiL8RA39tc4LC6hlhmI63gNdy90F3
+         hdD/ocUIGsg+uyGYLxnDZHeZeGgNbD9Ma8//zU113yEzQI+i8WvvhLl7tT0Ko9nIQ48d
+         tixFbTJYz6uYBbYmBN0F6HCuUNVZh2UErzirM6KY5nJgyQhys9zDIne4/d7kSmEPRQAD
+         4xWdEOfUr5Z+ddev5MG5BiJmezzZa6RpGGBNDgMFi/qReFk8tM0U9xex07GhTe9ggkYR
+         5RQEKbSGCeXVOYgcL/EHDnLqyN8GNAl7NnTfnenVaOrl6rpHFb9PkWahJInX6F9zgw3x
+         7Nfw==
+X-Gm-Message-State: AOJu0YzTlguFoc5ZGRbulIr7di4u0uJXFoPQ3VZjexsk0tVI9vu/ElsM
+	X3xgCr5v3sLL82kw/vc74O1I/GmPwReUBCXKglS7DiJibIiETbKNQA4Xmjme77g=
+X-Google-Smtp-Source: AGHT+IGrlYodbtoFOzQTpnpmPPg9xGCmxcz+GDpPReJccTb8HS+VxG5L6fwYLtI5QMAZCz4OUzPawQ==
+X-Received: by 2002:a05:600c:19c8:b0:40e:b95b:e482 with SMTP id u8-20020a05600c19c800b0040eb95be482mr598802wmq.115.1706258964791;
+        Fri, 26 Jan 2024 00:49:24 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id r12-20020a05600c35cc00b0040ecd258f29sm5158250wmq.0.2024.01.26.00.49.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Jan 2024 00:49:24 -0800 (PST)
+Message-ID: <ee4107c3-1141-45ab-874c-03474d8ec18d@linaro.org>
+Date: Fri, 26 Jan 2024 08:49:22 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-
-On Thu, 2024-01-25 at 11:33 +1100, Stephen Rothwell wrote:
-> Hi all,
->=20
-> On Fri, 5 Jan 2024 17:47:45 +1100 Stephen Rothwell
-> <sfr@canb.auug.org.au> wrote:
-> >=20
-> > After merging the drm tree, today's linux-next build (htmldocs)
-> > produced
-> > this warning:
-> >=20
-> > Warning: /sys/devices/.../hwmon/hwmon<i>/curr1_crit is defined 2
-> > times:=C2=A0 Documentation/ABI/testing/sysfs-driver-intel-xe-hwmon:35=
-=C2=A0
-> > Documentation/ABI/testing/sysfs-driver-intel-i915-hwmon:52
-> > Warning: /sys/devices/.../hwmon/hwmon<i>/energy1_input is defined 2
-> > times:=C2=A0 Documentation/ABI/testing/sysfs-driver-intel-xe-hwmon:54=
-=C2=A0
-> > Documentation/ABI/testing/sysfs-driver-intel-i915-hwmon:65
-> > Warning: /sys/devices/.../hwmon/hwmon<i>/in0_input is defined 2
-> > times:=C2=A0 Documentation/ABI/testing/sysfs-driver-intel-xe-hwmon:46=
-=C2=A0
-> > Documentation/ABI/testing/sysfs-driver-intel-i915-hwmon:0
-> > Warning: /sys/devices/.../hwmon/hwmon<i>/power1_crit is defined 2
-> > times:=C2=A0 Documentation/ABI/testing/sysfs-driver-intel-xe-hwmon:22=
-=C2=A0
-> > Documentation/ABI/testing/sysfs-driver-intel-i915-hwmon:39
-> > Warning: /sys/devices/.../hwmon/hwmon<i>/power1_max is defined 2
-> > times:=C2=A0 Documentation/ABI/testing/sysfs-driver-intel-xe-hwmon:0=C2=
-=A0
-> > Documentation/ABI/testing/sysfs-driver-intel-i915-hwmon:8
-> > Warning: /sys/devices/.../hwmon/hwmon<i>/power1_max_interval is
-> > defined 2 times:=C2=A0 Documentation/ABI/testing/sysfs-driver-intel-xe-
-> > hwmon:62=C2=A0 Documentation/ABI/testing/sysfs-driver-intel-i915-
-> > hwmon:30
-> > Warning: /sys/devices/.../hwmon/hwmon<i>/power1_rated_max is
-> > defined 2 times:=C2=A0 Documentation/ABI/testing/sysfs-driver-intel-xe-
-> > hwmon:14=C2=A0 Documentation/ABI/testing/sysfs-driver-intel-i915-
-> > hwmon:22
-> >=20
-> > Introduced by commits
-> >=20
-> > =C2=A0 fb1b70607f73 ("drm/xe/hwmon: Expose power attributes")
-> > =C2=A0 92d44a422d0d ("drm/xe/hwmon: Expose card reactive critical
-> > power")
-> > =C2=A0 fbcdc9d3bf58 ("drm/xe/hwmon: Expose input voltage attribute")
-> > =C2=A0 71d0a32524f9 ("drm/xe/hwmon: Expose hwmon energy attribute")
-> > =C2=A0 4446fcf220ce ("drm/xe/hwmon: Expose power1_max_interval")
->=20
-> I am still getting these warnings.
->=20
-
-We're looking at fixing those.
-
-Thanks,
-Thomas
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 09/28] spi: s3c64xx: use bitfield access macros
+Content-Language: en-US
+To: Sam Protsenko <semen.protsenko@linaro.org>,
+ Mark Brown <broonie@kernel.org>
+Cc: broonie@kernel.org, andi.shyti@kernel.org, arnd@arndb.de,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ alim.akhtar@samsung.com, linux-spi@vger.kernel.org,
+ linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-arch@vger.kernel.org, andre.draszik@linaro.org,
+ peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com
+References: <20240125145007.748295-1-tudor.ambarus@linaro.org>
+ <20240125145007.748295-10-tudor.ambarus@linaro.org>
+ <CAPLW+4mDM2aJdPwPRKt9yLtwx5zEHwBr6OSyYbGgZU7w9OiYkg@mail.gmail.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <CAPLW+4mDM2aJdPwPRKt9yLtwx5zEHwBr6OSyYbGgZU7w9OiYkg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 
+
+On 1/25/24 19:50, Sam Protsenko wrote:
+> On Thu, Jan 25, 2024 at 8:50 AM Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+>>
+>> Use the bitfield access macros in order to clean and to make the driver
+>> easier to read.
+>>
+>> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+>> ---
+>>  drivers/spi/spi-s3c64xx.c | 196 +++++++++++++++++++-------------------
+>>  1 file changed, 99 insertions(+), 97 deletions(-)
+>>
+>> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
+>> index 1e44b24f6401..d046810da51f 100644
+>> --- a/drivers/spi/spi-s3c64xx.c
+>> +++ b/drivers/spi/spi-s3c64xx.c
+>> @@ -4,6 +4,7 @@
+
+cut
+
+>> +#define S3C64XX_SPI_PSR_MASK                   GENMASK(15, 0)
+> 
+> But it was 0xff (7:0) originally, and here you extend it up to 15:0.
+
+this is a bug from my side, I'll fix it, thanks!
+
+cut
+
+>>         default:
+>> -               val |= S3C64XX_SPI_MODE_BUS_TSZ_BYTE;
+>> -               val |= S3C64XX_SPI_MODE_CH_TSZ_BYTE;
+>> +               val |= FIELD_PREP(S3C64XX_SPI_MODE_BUS_TSZ_MASK,
+>> +                                 S3C64XX_SPI_MODE_BUS_TSZ_BYTE) |
+>> +                      FIELD_PREP(S3C64XX_SPI_MODE_CH_TSZ_MASK,
+>> +                                 S3C64XX_SPI_MODE_CH_TSZ_BYTE);
+> 
+> I don't know. Maybe it's me, but using this FIELD_PREP() macro seems
+> to only making the code harder to read. At least in cases like this. I
+> would vote against its usage, to keep the code compact and easy to
+> read.
+
+I saw Andi complained about this too, maybe Mark can chime in.
+
+To me this is not a matter of taste, it's how it should be done. In this
+particular case you have more lines when using FIELD_PREP because the
+mask starts from bit 0. If the mask ever changes for new IPs then you'd
+have to hack the code, whereas if using FIELD_PREP you just have to
+update the mask field, something like:
+
+	FIELD_PREP(drv_prv_data->whatever_reg.field_mask,
+		   S3C64XX_SPI_MODE_CH_TSZ_BYTE);
+
+Thus it makes the code generic and more friendly for new IP additions.
+And I have to admit I like it better too. I know from the start that
+we're dealing with register fields and not some internal driver mask.
 
