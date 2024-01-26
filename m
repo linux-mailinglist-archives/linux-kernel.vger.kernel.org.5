@@ -1,129 +1,180 @@
-Return-Path: <linux-kernel+bounces-40308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C255783DE2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:59:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07EDC83DE33
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:01:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7BE9A2819F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:59:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27F551C226A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:01:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A0AC1D54C;
-	Fri, 26 Jan 2024 15:59:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 940791D557;
+	Fri, 26 Jan 2024 16:01:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="P8QcMZyK"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oHi6sI9G"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 326BB1D53F
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:58:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A2BB1D545
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 16:01:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706284739; cv=none; b=DMMEqCSQlXXPH/OVxgghVHsH9g3+kzyBVpyEwXDX5RpeXT3D2BLlfxXzm+Y4UsSgj+WJXrpKwwPhTGAxesnFWY5kLr1yq4manOxIwqgfvS5NXGdrrLNCg3FcmSec/M5JAgJBaCtxOY9aDjRuN/6L6nNwWHp0AzuzOSjDuvGKdVk=
+	t=1706284867; cv=none; b=Od0WQmxk4vUZ1LwOt97XOvfj0w86kvBo9xcDza+t1VV87N/D1KhmPyBwSq07I4yFxhPTerG88J9fPvyF2VON5qavfbZ3qNSfRJdAuX576rQgVGU1tPVZv0e+eLWvJkLmDn39L+tI68zWpL52l9p6H4PzGJavRBJ25atz6dy7iJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706284739; c=relaxed/simple;
-	bh=YWkDD+P9zXOPy7HrIWKfAZv0AuLrjivBLh5euG8T+I4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LM4PH/6ZIRGErjgAsveugdqArejmuf6WuqqEY1yGZdO+H+0OGUQ2Z/xbU12qpevwUUsY1CMTk8vmtqqYgXQUOGVQ/bzkDADB3kO848gDD+Q41Bk2Cwr6OF5wlotNd+hWepviPmgHba9uHNJHaJ/Xw0bb6EC7FXVqzLDFI7Ytr1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=P8QcMZyK; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a298accc440so83729566b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 07:58:57 -0800 (PST)
+	s=arc-20240116; t=1706284867; c=relaxed/simple;
+	bh=O6eB/dHkDWZSGRpKvzb1DoxNbZqZM2ER4Jj6Chho4MA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bUI/LrMCCNHokRJB2/ln5pCD9/UIztQDc0LC1hB2JYM0cTEEVLAcZef8HZrn4Unild+qELdl3N4aM9FMBLeKmU49GK7KyXv5m3khm0wGM9z3Hi/EDfhVdep3g4CiLFIPoP9nkbzanydr7AA7F2wO9xpGDErT7WJcj1M4I5gqfVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oHi6sI9G; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40ea5653f6bso9543145e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:01:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706284735; x=1706889535; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GB/kmGUfsYpo5IS5Ji1QQ5HUPpqXNxhbTQeBAKirZjM=;
-        b=P8QcMZyKyWZOYTjEw/5pvofCFdfC+TkY3O93UoMKqApDhLLUHCwKfAKYRrcEhDjB4N
-         pqGzFKyzVDAeXreRfFDSHhFRn7tHgsYxCRvzydY9XzYCeeGqTzWKKiM+WAo/c5eGaOpI
-         GhUfz0dEKfubGYe126+SCMUoPi+pvf0YG/sHw=
+        d=linaro.org; s=google; t=1706284864; x=1706889664; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wzaI7e/2MIPP8GvvTStJuTLixLuV/1UG9lwv+B7KQjc=;
+        b=oHi6sI9GEFrqksBJ6bUNhcpILOY92eO0o3wmXax74HMsgy2EsMZue8Z02TPD7NoRm2
+         RROyqNWdbZ8gBFaJiLU4S8Jsh1YTRaynHSMbkAPidxcGVAZ7InGUUrBuX178qy/iaHZR
+         klqkXD3TT7lq8ya1k30fXsbCnIo3Odqq8V38LGdZ3X3dV9e/8XCpy3HjYiEFW68SkQWC
+         qUHNjvM6MQqj7HUq3NyokVJjMSBzm+O5e/zYiq1PxgHa/O0YU6lpx82Z4rwdOv6Cm6y6
+         /L17Om4FZ2cKdyVQ8bu5e6lu9MuzQujKoml1yyTv7ciiSOWY8PAlq2HhTOyDSM9n7oD/
+         QG5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706284735; x=1706889535;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GB/kmGUfsYpo5IS5Ji1QQ5HUPpqXNxhbTQeBAKirZjM=;
-        b=vOUf/IGIhLAhwQUaN94StFaxgV3ME1DuMgZbXu/4p4wSWNrkfY2p13z3z/JSLpNkKx
-         tLl7GBM4/RjkuO6c7HO5Gc90qFLFPZzTGd49OR8pGQoqW1B3PV4/eGItVF7ig4N0bZh/
-         Mlc5cDENpbkT1+L5qGC6lV2cI47aa0Cl/r40Iyn61tJvVUnZ8zhak0t66Uky7R/p1Gvs
-         XGJeHsPWx3LlCVO/50njp2K9B1YX/Zy9YsaXKYFeYXp+FIHn0phgRHCBISLWLIg1iR8P
-         liAmE3SzUVJLqkB5eaOjk4f7EnF3p9u3Jd5a/eP0siqcuX06KemLeoHX69g8LL7vTpzl
-         Vq1w==
-X-Gm-Message-State: AOJu0Yzau7yOZfmN/ZmmtBX4ggg49K5HFx1YSOQ1WcsCA/sfbwJV1K83
-	92sELgGsGUtvetLBft7nX+yUHHoJfXNUY9x+Y61Te5znBMK24k2Mr3jidm1zWtXdvWnRIt470XK
-	RegoB
-X-Google-Smtp-Source: AGHT+IFIY4XRKYzivDFm0OAMwyw4FifMdfHekc40a+eTmH0oQ4rNiQlPOKkVgQoSjg/RTRzYfHEbHA==
-X-Received: by 2002:a17:906:5a87:b0:a31:7af3:f46f with SMTP id l7-20020a1709065a8700b00a317af3f46fmr1403335ejq.77.1706284735409;
-        Fri, 26 Jan 2024 07:58:55 -0800 (PST)
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com. [209.85.208.49])
-        by smtp.gmail.com with ESMTPSA id fx20-20020a170906b75400b00a34b15c5cedsm772797ejb.170.2024.01.26.07.58.54
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20230601; t=1706284864; x=1706889664;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wzaI7e/2MIPP8GvvTStJuTLixLuV/1UG9lwv+B7KQjc=;
+        b=HNwYSMua7QVWt+5bWJCfe+PgU1Jts06HhdUiAENwv+cm4dHbRcseX3Ss6Y7vBLFI5e
+         /ABZOqk77DVJ19ABZH+Qo/SpQr5huDo9trvvHEytlj6Dh+h4VFPH1NjlImEDHOhCWjBV
+         xMWEJDHSQYQ++2A3msyGxc3qSLNXQ6oLkTuLhb6hpYESeqSEmOiPXnZ5HMhahHdY2gdh
+         jkGXSqF1tziPtCFclDF0hS6SwgkNd9Q1/0v+Awhr/PrPNjgjMyirm3lp1aaiYoxatdGF
+         eeneKxKws/FU5mIXUPsU8F7W8VRlVO4niF8fZ6AKQPhDyashDjnXrsC5MvP712HZ3f3W
+         cEPg==
+X-Gm-Message-State: AOJu0YwpQjAlLvAT2u6hiYz8S2vLF5jcuHp1DaQIEaqi+39MhGcKncVK
+	o3/+ekGmbAaX3rB1C748ucyI0IznP4+mJ5Rchf/ju4VqM+patnLfsEOhmURpWk4=
+X-Google-Smtp-Source: AGHT+IEam2l6RI5oxnHiolMzwCDGY+WvEEvHjUwyBijkisQS0I9MmljB3+O4QLPl1jFYJdzBr6b6hg==
+X-Received: by 2002:a05:600c:695:b0:40e:52de:156f with SMTP id a21-20020a05600c069500b0040e52de156fmr1076477wmn.210.1706284864330;
+        Fri, 26 Jan 2024 08:01:04 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id d8-20020a5d6448000000b00337d941604bsm1521341wrw.98.2024.01.26.08.01.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jan 2024 07:58:54 -0800 (PST)
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55c89dbef80so4646a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 07:58:54 -0800 (PST)
-X-Received: by 2002:a05:6402:b6f:b0:55c:e4da:760d with SMTP id
- cb15-20020a0564020b6f00b0055ce4da760dmr163470edb.1.1706284734205; Fri, 26 Jan
- 2024 07:58:54 -0800 (PST)
+        Fri, 26 Jan 2024 08:01:03 -0800 (PST)
+Message-ID: <93ac4474-e6c1-4fc5-a628-ad69de0d484e@linaro.org>
+Date: Fri, 26 Jan 2024 16:01:01 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126072852.1.Ib065e528a8620474a72f15baa2feead1f3d89865@changeid>
-In-Reply-To: <20240126072852.1.Ib065e528a8620474a72f15baa2feead1f3d89865@changeid>
-From: Doug Anderson <dianders@chromium.org>
-Date: Fri, 26 Jan 2024 07:58:37 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=VHiZ1VZ6bzV0P1Ns3Dapy-_q-c0ddEb3AzSLZX_AHC3A@mail.gmail.com>
-Message-ID: <CAD=FV=VHiZ1VZ6bzV0P1Ns3Dapy-_q-c0ddEb3AzSLZX_AHC3A@mail.gmail.com>
-Subject: Re: [PATCH] lkdtm/bugs: In lkdtm_HUNG_TASK() use BUG(), not BUG_ON(1)
-To: Kees Cook <keescook@chromium.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 09/28] spi: s3c64xx: use bitfield access macros
+Content-Language: en-US
+To: Sam Protsenko <semen.protsenko@linaro.org>
+Cc: broonie@kernel.org, andi.shyti@kernel.org, arnd@arndb.de,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ alim.akhtar@samsung.com, linux-spi@vger.kernel.org,
+ linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-arch@vger.kernel.org, andre.draszik@linaro.org,
+ peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com
+References: <20240125145007.748295-1-tudor.ambarus@linaro.org>
+ <20240125145007.748295-10-tudor.ambarus@linaro.org>
+ <CAPLW+4mDM2aJdPwPRKt9yLtwx5zEHwBr6OSyYbGgZU7w9OiYkg@mail.gmail.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <CAPLW+4mDM2aJdPwPRKt9yLtwx5zEHwBr6OSyYbGgZU7w9OiYkg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi,
+Hi, Sam,
 
-On Fri, Jan 26, 2024 at 7:29=E2=80=AFAM Douglas Anderson <dianders@chromium=
-org> wrote:
->
-> In commit edb6538da3df ("lkdtm/bugs: Adjust lkdtm_HUNG_TASK() to avoid
-> tail call optimization") we marked lkdtm_HUNG_TASK() as
-> __noreturn. The compiler gets unhappy if it thinks a __noreturn
-> function might return, so there's a BUG_ON(1) at the end. Any human
-> can see that the function won't return and the compiler can figure
-> that out too. Except when it can't.
->
-> The MIPS architecture defines HAVE_ARCH_BUG_ON and defines its own
-> version of BUG_ON(). The MIPS version of BUG_ON() is not a macro but
-> is instead an inline function. Apparently this prevents the compiler
-> from realizing that the condition to BUG_ON() is constant and that the
-> function will never return.
->
-> Let's change the BUG_ON(1) to just BUG(), which it should have been to
-> begin with. The only reason I used BUG_ON(1) to begin with was because
-> I was used to using WARN_ON(1) when writing test code and WARN() and
-> BUG() are oddly inconsistent in this manner. :-/
->
-> Fixes: edb6538da3df ("lkdtm/bugs: Adjust lkdtm_HUNG_TASK() to avoid tail =
-call optimization")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
->
->  drivers/misc/lkdtm/bugs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+I just noticed that I haven't responded to a question you had.
 
-Ugh. I just realized I forgot these. Kees: hopefully you can add them...
+On 1/25/24 19:50, Sam Protsenko wrote:
+> On Thu, Jan 25, 2024 at 8:50 AM Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+>>
+>> Use the bitfield access macros in order to clean and to make the driver
+>> easier to read.
+>>
+>> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+>> ---
+>>  drivers/spi/spi-s3c64xx.c | 196 +++++++++++++++++++-------------------
+>>  1 file changed, 99 insertions(+), 97 deletions(-)
+>>
+>> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
+>> index 1e44b24f6401..d046810da51f 100644
+>> --- a/drivers/spi/spi-s3c64xx.c
+>> +++ b/drivers/spi/spi-s3c64xx.c
+>> @@ -4,6 +4,7 @@
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202401262204.wUFKRYZF-lkp@int=
-el.com/
+cut
 
--Doug
+
+>> +#define S3C64XX_SPI_MAX_TRAILCNT_MASK          GENMASK(28, 19)
+
+cut
+
+>> +#define S3C64XX_SPI_CS_NSC_CNT_MASK            GENMASK(9, 4)
+
+I was wrong introducing this mask because I can't tell if it applies to
+all the versions of the IP. Thus I'll keep S3C64XX_SPI_CS_NSC_CNT_2
+defined as (2 << 4) and add the following comment on top of it:
+
+/*
+
+ * S3C64XX_SPI_CS_NSC_CNT_2 is a value into the NCS_TIME_COUNT field. In
+newer
+ * datasheets this field is defined as GENMASK(9, 4). We don't know if
+this mask
+ * applies to all the versions of the IP, thus we can't yet define
+
+ * S3C64XX_SPI_CS_NSC_CNT_2 as a value and the register field as a mask.
+
+ */
+
+#define S3C64XX_SPI_CS_NSC_CNT_2                (2 << 4)
+
+
+cut
+
+>> -#define S3C64XX_SPI_MAX_TRAILCNT       0x3ff
+>> -#define S3C64XX_SPI_TRAILCNT_OFF       19
+>> -
+>> -#define S3C64XX_SPI_TRAILCNT           S3C64XX_SPI_MAX_TRAILCNT
+>> -
+
+cut
+
+>> @@ -1091,8 +1094,7 @@ static void s3c64xx_spi_hwinit(struct s3c64xx_spi_driver_data *sdd)
+>>
+>>         val = readl(regs + S3C64XX_SPI_MODE_CFG);
+>>         val &= ~S3C64XX_SPI_MODE_4BURST;
+>> -       val &= ~(S3C64XX_SPI_MAX_TRAILCNT << S3C64XX_SPI_TRAILCNT_OFF);
+> 
+> Doesn't it change the behavior?
+
+No, I don't think it does.
+
+so above we wipe the mask, it's equivalent to:
+val &= ~(GENMASK(28, 19))
+> 
+>> -       val |= (S3C64XX_SPI_TRAILCNT << S3C64XX_SPI_TRAILCNT_OFF);
+and above we set the entire mask:
+val |= GENMASK(28, 19)
+
+the wipe is not necessary. This can be done in a separate patch of
+course, but I considered that if I removed the shift, the value and
+replaced them with the mask, I get the liberty of using the mask
+directly. I'll split this op in a separate patch (it starts to feel tiring).
+
+I verified the entire patch again, apart of the problem with the wrong
+mask for S3C64XX_SPI_PSR_MASK and the problem that I specified with
+S3C64XX_SPI_CS_NSC_CNT_MASK everything shall be fine. All the bits
+handling shall be equivalent.
 
