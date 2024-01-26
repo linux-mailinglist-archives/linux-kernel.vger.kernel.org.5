@@ -1,265 +1,169 @@
-Return-Path: <linux-kernel+bounces-40034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 909DF83D935
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:20:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A72F683D969
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:34:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 412BC28BC9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:20:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 751EAB2E524
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:21:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 825A71429A;
-	Fri, 26 Jan 2024 11:20:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFE081427F;
+	Fri, 26 Jan 2024 11:21:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="I3KoTJ6J"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Eo4Ds7gZ"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAF341426E
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 11:20:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6476317BA3;
+	Fri, 26 Jan 2024 11:21:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706268041; cv=none; b=QqjAE1nWUX4lsMElgAqK9BFR+orAwjNSaL/fvMZgoAG8OPdWTJqWNSpp6a3Ba4+GoPRe3r8z+qcpA/YT3x7ivDm4IXP37FfjrW/H9o97ey5tqjvSSgiS5diQyaO7TfL6aUUWiWLDbyWdTEazlc4W22TwyYKW74iLY1qYF5Pdni4=
+	t=1706268096; cv=none; b=UrCRisd6gL/fEctRsBIS6uFsy/rODNhqK2EEl+SGmWD4qQzk4w8H1rLxSwgmDyGJSJGu4kn6+yIW1Q8OBIl3MFemGINw85RoW1IQdSy94wKSAlfrFGBuROoxIsbkSo5WE0N7h7GfzEttePPkPKk00L/LLc8TQgv61XaUes2fiwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706268041; c=relaxed/simple;
-	bh=rUDCyjkqCSegFTrxzDZFLtSC0X1851BiYh6zk6ILQUo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YU8BckT7QDC5mvO5ZuIfNWIEru7x7WEjOhh9rB9HhJOQQv3vCslLlfhdN4m6A+z3SfN7F/hgNhmY8dFWdSl7rivXFMVCQFQFvjxMUYZUoIvPYNefgLhxNB8C+99pgMaR1vNWztLU9C2gndUA1Fr/iHFFIcBnkNunAeZjZJ1HzJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=I3KoTJ6J; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706268038;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=adKrKcsVsy8nxrIIG/cxmKvYrilkzcpLV+j2FAcibZc=;
-	b=I3KoTJ6J0l9oaJKG7d1aAeTwTuSqI3blcDg4KYFISmbHsscv2C0Vz7DtRTDH5sWK/GQMgx
-	xVBYmK4eqr8EjM47Pgoy1mQmCNBIJzjSNWBamYXryEAVUe3HXNuJgXShBdRspEZPHMwKhg
-	T6MsYCW1Xu6n+2DKz09EXTI7+0dLfs0=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-34-B1_3b5OPPk23GxeaUJbdHw-1; Fri, 26 Jan 2024 06:20:37 -0500
-X-MC-Unique: B1_3b5OPPk23GxeaUJbdHw-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a35118e98caso7723166b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 03:20:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706268035; x=1706872835;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=adKrKcsVsy8nxrIIG/cxmKvYrilkzcpLV+j2FAcibZc=;
-        b=NSVrKaakEeyQcBk6nIuCHRmOM+1M4uPKYtDOhNc6HF2jN4RmJHa+8n9qXHw+ZCKpnQ
-         ZJhLvIunOuCqT1SqdcdocPsf5+RTWro6PE4//FkK98sNr4AQtNDPGTnzBvbYVS95Zai2
-         4vjWoqCldXBPtw1Cln44DJgMRzNrV4p0EX/Fcx/irTXWXSDkWOPQpytHHFwQoMcax/Q4
-         JYeA4WtBN7r0F1tCwRX35WQSW6gaNIocRyHkftimeBDDR3B//lzlcAoRSNTolDtrY6md
-         A/D6QiOGyl+hyhxCkMp46weLsZj7sFXSZ9y/Mo2KqIWPjV9r/cle2t6ZIG2ZGqmTPoSl
-         31PA==
-X-Gm-Message-State: AOJu0YyZpDz0E+1xQnx+pVU0Uwn5Pa1zuZZPW2+9W9dsyd9x0qIo9xmN
-	SVYRJ1BWQ80jM+yRxpVy6zV/2AO35AiTUiqke4nBxW17bK5FQOV6/VAvH7rc1gxwiBrfjpik131
-	7j17YaUUZtZAbf9woqteL6KjSkAhHTv/B78hA4/CtIPcY0OGCXYlGwfUKNXjP3B0+XZ6TWhQNOw
-	UibAAxCrtjgvYkxz0MVxTBzQed9pB8cLY09c5qiAv6IqTl
-X-Received: by 2002:a17:906:1b57:b0:a33:2ea8:6c45 with SMTP id p23-20020a1709061b5700b00a332ea86c45mr1153422ejg.19.1706268035453;
-        Fri, 26 Jan 2024 03:20:35 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHFXUuQde2ZQSJlUg0Q4EcQL0ZwIpzUDUFkwVkwVyFgYDxpfpgyPr4TsY9axdE6ilwDji2IFnSyFKy2lexowRo=
-X-Received: by 2002:a17:906:1b57:b0:a33:2ea8:6c45 with SMTP id
- p23-20020a1709061b5700b00a332ea86c45mr1153407ejg.19.1706268035096; Fri, 26
- Jan 2024 03:20:35 -0800 (PST)
+	s=arc-20240116; t=1706268096; c=relaxed/simple;
+	bh=zr0XdrCeozGCHNrEz9eIS0AqUmrXwsL2hLb6jsLfr0Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Li+sUi38BVDGIA7XAvaPLcBD/g79tVSEXS2NcR1LP9lUQj8c4h4kRgsfR5PDwyBl6u7FN591mRQ2F9Tnq3w5oDeuvl52jX0DJoeLL6OQK9CzuBbKhudtraSKmnnesjL2gPhtNNGAM9UeRYtwD8uWLPejyoSX/PGuRgfjSEWRIes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Eo4Ds7gZ; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706268092;
+	bh=zr0XdrCeozGCHNrEz9eIS0AqUmrXwsL2hLb6jsLfr0Y=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Eo4Ds7gZ0n2T2bHkapPWCIldbMKQXWdm+7CVk8150CPq/ZGvWKp3/E1zTxJas7uvu
+	 83oi/D4WO04eqIYu0a0qVMWLJ4x1xKAdQfxecmV8wSyxID6hrRAiqghTSbaU9ycl//
+	 cxknX56Yg42Mu7l4RIFG4ga0CLPx5YjcsjBYctX+nJWWeB/T1Cnmt9gP+OKpURA1Ph
+	 JFa8C/KAx/Uce4l6WMkjPpc5guCMqJcVckIloWKp0zD1PsFD0OfhPxBu2+jeBvVpYl
+	 yceXbDGg25Mk2bttqkiggQGRjAuPWPLqBemd8A51ApZ6O+4VpxmiMpJ2JFWDf8JLM7
+	 uzElHOGqwpxhA==
+Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4B6ED3782072;
+	Fri, 26 Jan 2024 11:21:30 +0000 (UTC)
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Shuah Khan <shuah@kernel.org>
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	kernel@collabora.com,
+	linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v4 1/7] selftests/mm: hugepage-shm: conform test to TAP format output
+Date: Fri, 26 Jan 2024 16:21:20 +0500
+Message-ID: <20240126112129.1480265-1-usama.anjum@collabora.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124-b4-hid-bpf-fixes-v2-0-052520b1e5e6@kernel.org> <20240124-b4-hid-bpf-fixes-v2-2-052520b1e5e6@kernel.org>
-In-Reply-To: <20240124-b4-hid-bpf-fixes-v2-2-052520b1e5e6@kernel.org>
-From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date: Fri, 26 Jan 2024 12:20:23 +0100
-Message-ID: <CAO-hwJ+xOF=GH115_KcWKjXLqeKU-BzXmNY0bvOzhZQb0WkEDg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] HID: bpf: actually free hdev memory after
- attaching a HID-BPF program
-To: Benjamin Tissoires <bentiss@kernel.org>
-Cc: Jiri Kosina <jikos@kernel.org>, Dan Carpenter <dan.carpenter@linaro.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 24, 2024 at 12:27=E2=80=AFPM Benjamin Tissoires <bentiss@kernel=
-org> wrote:
->
-> Turns out that I got my reference counts wrong and each successful
-> bus_find_device() actually calls get_device(), and we need to manually
-> call put_device().
->
-> Ensure each bus_find_device() gets a matching put_device() when releasing
-> the bpf programs and fix all the error paths.
->
-> Cc: stable@vger.kernel.org
-> Fixes: f5c27da4e3c8 ("HID: initial BPF implementation")
-> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
->
-> ---
->
-> new in v2
-> ---
->  drivers/hid/bpf/hid_bpf_dispatch.c  | 29 +++++++++++++++++++++++------
->  drivers/hid/bpf/hid_bpf_jmp_table.c | 19 ++++++++++++++++---
->  2 files changed, 39 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/hid/bpf/hid_bpf_dispatch.c b/drivers/hid/bpf/hid_bpf=
-_dispatch.c
-> index 5111d1fef0d3..7903c8638e81 100644
-> --- a/drivers/hid/bpf/hid_bpf_dispatch.c
-> +++ b/drivers/hid/bpf/hid_bpf_dispatch.c
-> @@ -292,7 +292,7 @@ hid_bpf_attach_prog(unsigned int hid_id, int prog_fd,=
- __u32 flags)
->         struct hid_device *hdev;
->         struct bpf_prog *prog;
->         struct device *dev;
-> -       int fd;
-> +       int err, fd;
->
->         if (!hid_bpf_ops)
->                 return -EINVAL;
-> @@ -311,14 +311,24 @@ hid_bpf_attach_prog(unsigned int hid_id, int prog_f=
-d, __u32 flags)
->          * on errors or when it'll be detached
->          */
->         prog =3D bpf_prog_get(prog_fd);
-> -       if (IS_ERR(prog))
-> -               return PTR_ERR(prog);
-> +       if (IS_ERR(prog)) {
-> +               err =3D PTR_ERR(prog);
-> +               goto out_dev_put;
-> +       }
->
->         fd =3D do_hid_bpf_attach_prog(hdev, prog_fd, prog, flags);
-> -       if (fd < 0)
-> -               bpf_prog_put(prog);
-> +       if (fd < 0) {
-> +               err =3D fd;
-> +               goto out_prog_put;
-> +       }
->
->         return fd;
-> +
-> + out_prog_put:
-> +       bpf_prog_put(prog);
-> + out_dev_put:
-> +       put_device(dev);
-> +       return err;
->  }
->
->  /**
-> @@ -345,8 +355,10 @@ hid_bpf_allocate_context(unsigned int hid_id)
->         hdev =3D to_hid_device(dev);
->
->         ctx_kern =3D kzalloc(sizeof(*ctx_kern), GFP_KERNEL);
-> -       if (!ctx_kern)
-> +       if (!ctx_kern) {
-> +               put_device(dev);
->                 return NULL;
-> +       }
->
->         ctx_kern->ctx.hid =3D hdev;
->
-> @@ -363,10 +375,15 @@ noinline void
->  hid_bpf_release_context(struct hid_bpf_ctx *ctx)
->  {
->         struct hid_bpf_ctx_kern *ctx_kern;
-> +       struct hid_device *hid;
->
->         ctx_kern =3D container_of(ctx, struct hid_bpf_ctx_kern, ctx);
-> +       hid =3D (struct hid_device *)ctx_kern->ctx.hid; /* ignore const *=
-/
->
->         kfree(ctx_kern);
-> +
-> +       /* get_device() is called by bus_find_device() */
-> +       put_device(&hid->dev);
->  }
->
->  /**
-> diff --git a/drivers/hid/bpf/hid_bpf_jmp_table.c b/drivers/hid/bpf/hid_bp=
-f_jmp_table.c
-> index 12f7cebddd73..85a24bc0ea25 100644
-> --- a/drivers/hid/bpf/hid_bpf_jmp_table.c
-> +++ b/drivers/hid/bpf/hid_bpf_jmp_table.c
-> @@ -196,6 +196,7 @@ static void __hid_bpf_do_release_prog(int map_fd, uns=
-igned int idx)
->  static void hid_bpf_release_progs(struct work_struct *work)
->  {
->         int i, j, n, map_fd =3D -1;
-> +       bool hdev_destroyed;
->
->         if (!jmp_table.map)
->                 return;
-> @@ -220,6 +221,12 @@ static void hid_bpf_release_progs(struct work_struct=
- *work)
->                 if (entry->hdev) {
->                         hdev =3D entry->hdev;
->                         type =3D entry->type;
-> +                       /*
-> +                        * hdev is still valid, even if we are called aft=
-er hid_destroy_device():
-> +                        * when hid_bpf_attach() gets called, it takes a =
-ref on the dev through
-> +                        * bus_find_device()
-> +                        */
-> +                       hdev_destroyed =3D hdev->bpf.destroyed;
->
->                         hid_bpf_populate_hdev(hdev, type);
->
-> @@ -232,12 +239,18 @@ static void hid_bpf_release_progs(struct work_struc=
-t *work)
->                                 if (test_bit(next->idx, jmp_table.enabled=
-))
->                                         continue;
->
-> -                               if (next->hdev =3D=3D hdev && next->type =
-=3D=3D type)
-> +                               if (next->hdev =3D=3D hdev && next->type =
-=3D=3D type) {
-> +                                       /*
-> +                                        * clear the hdev reference and d=
-ecrement the device ref
-> +                                        * that was taken during bus_find=
-_device() while calling
-> +                                        * hid_bpf_attach()
-> +                                        */
->                                         next->hdev =3D NULL;
-> +                                       put_device(&hdev->dev);
+Conform the layout, informational and status messages to TAP. No
+functional change is intended other than the layout of output messages.
 
-sigh... I can't make a correct patch these days... Missing a '}' here
-to match the open bracket added above :(
+The "." was being printed inside for loop to indicate the writes
+progress. This was extraneous and hence removed in the patch.
 
-I had some debug information put there to check if the device was
-actually freed, and the closing bracket got lost while cleaning this
-up.
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+---
+Changes since v3:
+- Rebased on top of next-20230125
+---
+ tools/testing/selftests/mm/hugepage-shm.c | 47 +++++++++++------------
+ 1 file changed, 22 insertions(+), 25 deletions(-)
 
-Cheers,
-Benjamin
-
->                         }
->
-> -                       /* if type was rdesc fixup, reconnect device */
-> -                       if (type =3D=3D HID_BPF_PROG_TYPE_RDESC_FIXUP)
-> +                       /* if type was rdesc fixup and the device is not =
-gone, reconnect device */
-> +                       if (type =3D=3D HID_BPF_PROG_TYPE_RDESC_FIXUP && =
-!hdev_destroyed)
->                                 hid_bpf_reconnect(hdev);
->                 }
->         }
->
-> --
-> 2.43.0
->
+diff --git a/tools/testing/selftests/mm/hugepage-shm.c b/tools/testing/selftests/mm/hugepage-shm.c
+index 478bb1e989e9f..f949dbbc34540 100644
+--- a/tools/testing/selftests/mm/hugepage-shm.c
++++ b/tools/testing/selftests/mm/hugepage-shm.c
+@@ -34,11 +34,10 @@
+ #include <sys/ipc.h>
+ #include <sys/shm.h>
+ #include <sys/mman.h>
++#include "../kselftest.h"
+ 
+ #define LENGTH (256UL*1024*1024)
+ 
+-#define dprintf(x)  printf(x)
+-
+ /* Only ia64 requires this */
+ #ifdef __ia64__
+ #define ADDR (void *)(0x8000000000000000UL)
+@@ -54,44 +53,42 @@ int main(void)
+ 	unsigned long i;
+ 	char *shmaddr;
+ 
++	ksft_print_header();
++	ksft_set_plan(1);
++
+ 	shmid = shmget(2, LENGTH, SHM_HUGETLB | IPC_CREAT | SHM_R | SHM_W);
+-	if (shmid < 0) {
+-		perror("shmget");
+-		exit(1);
+-	}
+-	printf("shmid: 0x%x\n", shmid);
++	if (shmid < 0)
++		ksft_exit_fail_msg("shmget: %s\n", strerror(errno));
++
++	ksft_print_msg("shmid: 0x%x\n", shmid);
+ 
+ 	shmaddr = shmat(shmid, ADDR, SHMAT_FLAGS);
+ 	if (shmaddr == (char *)-1) {
+-		perror("Shared memory attach failure");
+ 		shmctl(shmid, IPC_RMID, NULL);
+-		exit(2);
++		ksft_exit_fail_msg("Shared memory attach failure: %s\n", strerror(errno));
+ 	}
+-	printf("shmaddr: %p\n", shmaddr);
+ 
+-	dprintf("Starting the writes:\n");
+-	for (i = 0; i < LENGTH; i++) {
++	ksft_print_msg("shmaddr: %p\n", shmaddr);
++
++	ksft_print_msg("Starting the writes:");
++	for (i = 0; i < LENGTH; i++)
+ 		shmaddr[i] = (char)(i);
+-		if (!(i % (1024 * 1024)))
+-			dprintf(".");
+-	}
+-	dprintf("\n");
++	ksft_print_msg("Done.\n");
+ 
+-	dprintf("Starting the Check...");
++	ksft_print_msg("Starting the Check...");
+ 	for (i = 0; i < LENGTH; i++)
+-		if (shmaddr[i] != (char)i) {
+-			printf("\nIndex %lu mismatched\n", i);
+-			exit(3);
+-		}
+-	dprintf("Done.\n");
++		if (shmaddr[i] != (char)i)
++			ksft_exit_fail_msg("\nIndex %lu mismatched\n", i);
++	ksft_print_msg("Done.\n");
+ 
+ 	if (shmdt((const void *)shmaddr) != 0) {
+-		perror("Detach failure");
+ 		shmctl(shmid, IPC_RMID, NULL);
+-		exit(4);
++		ksft_exit_fail_msg("Detach failure: %s\n", strerror(errno));
+ 	}
+ 
+ 	shmctl(shmid, IPC_RMID, NULL);
+ 
+-	return 0;
++	ksft_test_result_pass("Completed test\n");
++
++	ksft_finished();
+ }
+-- 
+2.42.0
 
 
