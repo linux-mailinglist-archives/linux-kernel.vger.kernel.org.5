@@ -1,86 +1,115 @@
-Return-Path: <linux-kernel+bounces-40687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A835383E41D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:42:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66FCC83E422
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:43:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 474C31F229C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:42:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 999141C2338D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:43:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5737924B31;
-	Fri, 26 Jan 2024 21:42:10 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E0B324B59;
+	Fri, 26 Jan 2024 21:43:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A1sHRgpK"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC8E924A02;
-	Fri, 26 Jan 2024 21:42:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C6C224A07;
+	Fri, 26 Jan 2024 21:43:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706305329; cv=none; b=d9CEXaXKag5CxuGiOFyEWFOtLOrTkcbo0Ds+0u4PqfDmIaONG+ghKUy4HJsLcwic6Z6NrIzwId6YlAljNmaS237H45JsgI+bkKn+KKLEYFVuYBjulKCMKloeLhTDPyDm+EvsGskdzVTcin4SgD0FsdPAr117qhXTxw41LrKFk2s=
+	t=1706305385; cv=none; b=Vr9Na7QjitQ3aDtI2IKxWHT8KawBOW+lbmdH76Nu9QT0vIADQrZ8w4kksQT/Wt1T6H+XAGqDWFvZLRjON8e6PwA3g3VG3vc6no2tvzTJK5LLHt2aMshzLK4bFGT5+Br5UuP3SFByGEwl4knu+xYmQ6isQnm2FeX824PIXRyUvEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706305329; c=relaxed/simple;
-	bh=M+qWWIk9HH5ZKtcGJLB0VA1tZ9Q0fzWbKtbJsBsOrBk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=coqye95NkaaJqbRaC0CeaOZnjBGvvW1iSal4mjXNRxWZ+N9iR8zJEUWXrpc1nCufKZZgSzqq3QUjANHbXzxNrIDxb/HLRZ0oKhNfk54LvsW/NgyX3koymCC2QEyXqkBQXpM9c/gvHR8FQkm3XRY90yzuL9O1QFxX+7AzYgSsYRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4EFBC433C7;
-	Fri, 26 Jan 2024 21:42:07 +0000 (UTC)
-Date: Fri, 26 Jan 2024 16:42:06 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Devel
- <linux-trace-devel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Christian Brauner <brauner@kernel.org>, Ajay Kaher
- <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
-Message-ID: <20240126164206.637ba8bd@rorschach.local.home>
-In-Reply-To: <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
-References: <20240126150209.367ff402@gandalf.local.home>
-	<CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
-	<20240126162626.31d90da9@gandalf.local.home>
-	<CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706305385; c=relaxed/simple;
+	bh=l844N/dg8GdFFFpd9Lg/s+HDI1ZVzWfEpP4x9q44NC8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ayFlDJOiNOGfUlWZlaJspN7X+EXGdeM6Gd9FhgyY1klgHMPmWYDXNdKS+f95G0l7ZvInQKRRwXU3I4joBbA7G2GWWRZdK8ZWCOQKFQoL7hdLyY7cU9UF4YIcrRncFv0rgcBaHkyiudkFu2Q+QhcIWZ6uVJIV3IgHcYnRf3HFvmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A1sHRgpK; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33adec41b55so804016f8f.0;
+        Fri, 26 Jan 2024 13:43:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706305382; x=1706910182; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KCY7DfVxPDzCt0r7rxE9b/4fx28xL+DoQHrlqF+MZ08=;
+        b=A1sHRgpK39Uq6rg8KTkxr9YA0BsM9YEh9V5p26KCfW7aNLPdq1MXk/K7pGfl1Uvh2a
+         X7sOteUh/klIzaXML/yR2diledzH9jvA3dDEJIj3VH/9KQPHkA1dHjj+o7QtzTQGNGNF
+         5tvoSfqZrRbmUYQe8VqdoatSnXcu1cEPy9ea9tcWknfjyuUSPbOCitugwGX9o3ViZPWl
+         AU0rdKIRIGMB+T44gBpTfy3fq3KguGkHzjloXIsU8woi+10+wDHuUz+T6a6nVgwgT3Ds
+         O5USX4s1vQbQFTQ/kCJUQ9d/5gUj/n9UPKpXg+WhqjgVnJpDUsK/VeD9SfP8MTvlcJ/m
+         BvuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706305382; x=1706910182;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KCY7DfVxPDzCt0r7rxE9b/4fx28xL+DoQHrlqF+MZ08=;
+        b=EPhRQCnK+P8DvLNRflfTSiHyo17vmPq3uPvwEm7C9w3FmandnVzNfCYhAj6LS6z38u
+         50xfTQGCGa2auboS//+ZAaeWoHrPIWpEGyq35iCyalGhCdhW1YI9l9ZjrqEJK3+YGEQ1
+         EfgCJnXuCwbJIhKdWEI4Rd1MmA3mOg43Xu9+7tdrPW57bRzWPFhbCWDOS6mZrcTh9hnz
+         DoNDln+Va/tx8ub4uAHt0d75tI+vzJFxI/MVnTu4Ifye5QPJl30/394uAI8i/jBUHI1e
+         hzNR2JqGbyScEbw7L1NYedndxmxVmGXlPbyssAzbgfY7DfHfs5RneJnantpVW2fhZkRh
+         h5Cw==
+X-Gm-Message-State: AOJu0YxoMdKVTno30xI5h29YarlUi+mWyOeu6ACtKEa2T+mviLSWF8jX
+	YezPBS2/kEdnRTsT50SHtb8Cex8TTRCx8k3Bmp2ySWv2U3GeXqWfYCgEd3VNEdmzzaqx2EZxS5N
+	rskgPxmFDGRdSrTOUxHqOsKhhPK8=
+X-Google-Smtp-Source: AGHT+IGXCFdU/1d13+ZL3B18u4Okv5jOUq1bO6J9WAzacX+znmFb/mlBJZIwMCKI9bcTP10UqXDA4vMuveB8Ugll31Q=
+X-Received: by 2002:a5d:52c3:0:b0:337:be12:5846 with SMTP id
+ r3-20020a5d52c3000000b00337be125846mr128038wrv.163.1706305382206; Fri, 26 Jan
+ 2024 13:43:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240102-j7200-pcie-s2r-v2-0-8e4f7d228ec2@bootlin.com> <20240102-j7200-pcie-s2r-v2-7-8e4f7d228ec2@bootlin.com>
+In-Reply-To: <20240102-j7200-pcie-s2r-v2-7-8e4f7d228ec2@bootlin.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Fri, 26 Jan 2024 23:42:26 +0200
+Message-ID: <CAHp75Vf3HUYYkMAmRH9V_5S-HOOm7Wv+hVgRs7BbVJeSDRgDrw@mail.gmail.com>
+Subject: Re: [PATCH v2 07/15] phy: ti: phy-j721e-wiz: add resume support
+To: Thomas Richard <thomas.richard@bootlin.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
+	Andy Shevchenko <andy@kernel.org>, Tony Lindgren <tony@atomide.com>, 
+	Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>, 
+	Aaro Koskinen <aaro.koskinen@iki.fi>, Janusz Krzysztofik <jmkrzyszt@gmail.com>, 
+	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, Vinod Koul <vkoul@kernel.org>, 
+	Kishon Vijay Abraham I <kishon@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
+	Tom Joseph <tjoseph@cadence.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	linux-phy@lists.infradead.org, linux-pci@vger.kernel.org, 
+	gregory.clement@bootlin.com, theo.lebrun@bootlin.com, 
+	thomas.petazzoni@bootlin.com, u-kumar1@ti.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 26 Jan 2024 13:36:20 -0800
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+On Fri, Jan 26, 2024 at 4:37=E2=80=AFPM Thomas Richard
+<thomas.richard@bootlin.com> wrote:
+>
+> Add resume support.
+> It has been tested on J7200 SR1.0 and SR2.0.
 
-> On Fri, 26 Jan 2024 at 13:26, Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > I'd be happy to change that patch to what I originally did before deciding
-> > to copy get_next_ino():
-> >
-> > unsigned int tracefs_get_next_ino(int files)
-> > {
-> >         static atomic_t next_inode;
-> >         unsigned int res;
-> >
-> >         do {
-> >                 res = atomic_add_return(files + 1, &next_inode);
-> >
-> >                 /* Check for overflow */
-> >         } while (unlikely(res < files + 1));
-> >
-> >         return res - files;  
-> 
-> Still entirely pointless.
-> 
-> If you have more than 4 billion inodes, something is really really wrong.
+..
 
-No, but you can trivially make a loop that creates and destroys
-directories that will eventually overflow the count.
+> +err_get_sync:
+> +
 
--- Steve
+An useless label. Just return directly.
+
+> +       return ret;
+> +}
+
+--=20
+With Best Regards,
+Andy Shevchenko
 
