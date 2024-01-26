@@ -1,265 +1,150 @@
-Return-Path: <linux-kernel+bounces-40654-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9864483E3B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:10:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEF2083E3B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:12:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9DF81C220CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:10:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F70F281576
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:12:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0B76249EE;
-	Fri, 26 Jan 2024 21:10:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A02E4249EC;
+	Fri, 26 Jan 2024 21:11:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QbW8b0x5"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="je6n8BpD"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BDD924219;
-	Fri, 26 Jan 2024 21:10:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.14
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706303424; cv=fail; b=iplj7CVE/imlkKAiZTne1xSE6txkIeRDiBjZR+IuBp6eUm13EkwLe+C3hsB9xfuyylhY2bmkBt0wchxS3g6HgqmqZJwih2U6+xX1ULob3KqZZwY0r6QBvxEAg6zvhCrEGk56zZ7cOby4w4y9vK6TLHZuxO92Lz7Mxqh9ie5bW9w=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706303424; c=relaxed/simple;
-	bh=Jcs1vKdMfBuyz6Zfo3Kndu6LY5uBbGTjKVDdSheWFiY=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=vB/F4S8SFgTeSeamvCKsoZKl1x0wFKY9jS15+IEzjMgpwUPU0x8Okoda90B0eUKkghN8nYBOo5O9Kef8cUrp3OJlEb8KeB72dnRW+HzdSnCyJ5Jh5Xbab57cxj0rfHY0g5FP8EqugXbn//hjWyzT3KO9zsu8QA47+yLKnOFT2f4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QbW8b0x5; arc=fail smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706303422; x=1737839422;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Jcs1vKdMfBuyz6Zfo3Kndu6LY5uBbGTjKVDdSheWFiY=;
-  b=QbW8b0x5Zj6DA27oJ7q9N1Ckd8fIsJkx0kxRwjM2N5K/PMHRnzfFwIUZ
-   t8SNx4AGeNmztklnmhmz1PqpYYAiZTxc5Rl8qLq5ciu9XS+wB7AnimybE
-   /Xhwg3n+bFqw4vdG52EpprEC8ZIuFAYDlT+RjfKDg6TgU+68Sou/GU8ig
-   sSS8o8i4hguhMfcfl7mESGmlvvU8jfowj57ySYpndcVmq2JcJz4UwtCJd
-   sFEHXAYEnRgBY5aDxqA8XJ60hMyFPMnZfVsiK/3qYiRYK59PC1NdD+gQ9
-   aykhDoIKmUeR0bv66i4RLBKfNPAAHf6KyL+1j46ejjTEa/XWR1Rr5s7Ds
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="2460148"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="2460148"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 13:10:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="35543846"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Jan 2024 13:10:21 -0800
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 26 Jan 2024 13:10:20 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 26 Jan 2024 13:10:20 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 26 Jan 2024 13:10:20 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=myK+CCD5C5M896MPuaemBD5ZqtQtkVOxZumCD023GkFKn+FawP5EIc6Zhpf39/Lh02q4luLNnw9RRjtJ20CerZOvfuW6c4MHm6oGNZL1joWbThQt710UWbYLRN1sZtPYmzFElvl9t5RKURxfW2znqDIU04zeD2Cn+6So0E9+QmmzxiQabt3pouWtoEuwarVqYSoX/szY40ye46bH66vuxZKWFXEWfJoPwCwYhsmX6UIvoVYH8lKwPuWfBJMQRx2txXZtmIwGkWBK0HM83GnPnEvQy+fnQKZBsxvgXDX4ev0+K0MqKcEflrVWZOebgC9dUtCAR1vOFdB8/wB20mIirg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=q2SSkW/AFHvWOi/7xyqEpXP1hVMfMGFySQzGjsHibg0=;
- b=ChZx04ktcO/Fg/TTx1UD1TmrVmNt+QmFNge8lbpHRzXzvJTKEOh62oITtVmdxKg5I9saKK8HUCeqCZxMYqo69n2eC1BFkVB6C5CepcW8D5ihMxgaQR1kjyi976uizSINSJ+CqgYYpNoobSihV8vhdIZkJoQ8y8ObMNK/SR2keE4STm1zpamWQpao7ZODi1T1V3uLI3zLToBsWR2PR05RFGhFLlUO5t2ER3QNzll2W4yFQi2JyTlWlEgsqCZuo++Jgfjp8YQgP2tQ5pCarbDNEs2+FOeQ8mucwZ/4M3xtSc0xnaKs2BIkTHXZ2P6tAlqk+kYtQ1si9KMqX2wYavMbxQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by DM6PR11MB4723.namprd11.prod.outlook.com (2603:10b6:5:2a0::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.27; Fri, 26 Jan
- 2024 21:10:18 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::c903:6ee5:ed69:f4fa]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::c903:6ee5:ed69:f4fa%7]) with mapi id 15.20.7228.027; Fri, 26 Jan 2024
- 21:10:18 +0000
-Message-ID: <db08ba56-ae73-4c70-87fb-aae59e524238@intel.com>
-Date: Fri, 26 Jan 2024 13:10:18 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 5/5] selftests/resctrl: Add non-contiguous CBMs CAT
- test
-Content-Language: en-US
-To: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-	<fenghua.yu@intel.com>, <shuah@kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-	<ilpo.jarvinen@linux.intel.com>
-References: <cover.1706180726.git.maciej.wieczor-retman@intel.com>
- <647fbfd449f8b0e0ad6cfe58bb280ff44ee162b8.1706180726.git.maciej.wieczor-retman@intel.com>
-From: Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <647fbfd449f8b0e0ad6cfe58bb280ff44ee162b8.1706180726.git.maciej.wieczor-retman@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR03CA0058.namprd03.prod.outlook.com
- (2603:10b6:303:8e::33) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 637E6249E4;
+	Fri, 26 Jan 2024 21:11:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706303515; cv=none; b=ZyNElmQC1giHGBIllelnZQU5XORjsLwCyU6M4ekrN1HB2/WyoHb/UoYToC+brJcu1HP6SLlaVy36TSY428j2ZApkveLAOM4nQTJvHNTQQsM/XjHJOor/Yu6LaLK6UWBBoAde65r3yuTppsDxHa+vdF1pumHI0IQ4p0SaGQG+ogs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706303515; c=relaxed/simple;
+	bh=/r2Rij94/j4jISWkYEotH6eOuOW5IZKkrIcWB7ZQOcU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=exSXImkR0GQxwgXFi9hsCYQFnay7l2vyFUuEFDzsomztmfO6hK5/Oj78XAenlay+oVRStYHu5jg9mmrNf6D8dUZvq61+wRog3T83EU/dbY+VYpvlLBZEk6hy8oY35ZfxmWshB6g15VkWSvjpHzZuICCcbDRbNUv+HSBdnvZnhTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=je6n8BpD; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 9B8C540E0196;
+	Fri, 26 Jan 2024 21:11:49 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id I1xJBykZ4bcf; Fri, 26 Jan 2024 21:11:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706303507; bh=V5F7Y+vNA0nhBBTS1anKbuX0bJPun4q/tCXrSChYffk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=je6n8BpDZHwh4OjBwAU2NOM+YCYPsEV2yc44p1qV2ULMxNtwqqAPGTozt10pnZo74
+	 qUap0fFAw5tv86ePyQfF763Yd0EeSVxKAOK/kbO8gK5LlVuSzd10oSaiJwf8zcahG+
+	 BN52arQ9mJk2nNnWdXVyHn+dSPtcOgiY2R5Eo649SMJG/T8dETt51lkk8HMBBBZWlA
+	 KHU7qS/BX83NYD/DOTbKcMZa8Yi1zs5HvrVPlqddYiPJIa6oCNJ2fOnrJxMMw7OXoy
+	 WL7+xUbGpRxJPwZeam5oWJbFpF51mQzscMFvA28iXB/gBICXTKyaOQQOKDlP60bSkc
+	 /cfVdg1lasVb5uSPhQyiwM+czw8Aws4PRBh7f//T0f5/0FARwP4GXZgKi30L7UmLDu
+	 Fu+4nZsKgDDx3em/VdwNEVvtZvMg27h8SayJrdEJ8w+TW+SldpPVL0hUwzsb3LC7ao
+	 XDObF9tW8XsfXsaWXeAGOus9DE0dmmwieJQerIaQ5PLyz0YRXBmJZZf5wDof+62aek
+	 xthizd/uuh/x3tc9jMhfBpLWLi4rdNb9Cv6GIplsBP/jlp+YgPXP5U0DUgeIKevT6l
+	 MZPrBzggYdj6JE7OmI5FPZaXufYPXEGH85I1OCTp+VEUdbp8jYih/0zg4J4n6imzFt
+	 qz/fDijnQ+Dybs6Si7gt//70=
+Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1D70C40E00C5;
+	Fri, 26 Jan 2024 21:11:38 +0000 (UTC)
+Date: Fri, 26 Jan 2024 22:11:33 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Luck, Tony" <tony.luck@intel.com>
+Cc: Avadhut Naik <avadhut.naik@amd.com>,
+	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
+	"linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+	"rostedt@goodmis.org" <rostedt@goodmis.org>,
+	"x86@kernel.org" <x86@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
+	"avadnaik@amd.com" <avadnaik@amd.com>
+Subject: Re: [PATCH v2 0/2] Update mce_record tracepoint
+Message-ID: <20240126211133.GHZbQgBfqX4Qkdbmu_@fat_crate.local>
+References: <20240125184857.851355-1-avadhut.naik@amd.com>
+ <20240125185821.GDZbKvTW93APAiY1LP@fat_crate.local>
+ <SJ1PR11MB6083DAA7A6EDBBDAF5987A80FC7A2@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240126102721.GCZbOJCTqTVmvgOEuM@fat_crate.local>
+ <SJ1PR11MB60839509241AA98A59B78D15FC792@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240126185649.GFZbQAccZphdW_0CkH@fat_crate.local>
+ <SJ1PR11MB6083E6BF178B9D394BD58DDBFC792@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240126194522.GGZbQL0gTwpniYGDHw@fat_crate.local>
+ <SJ1PR11MB6083E1000D4B267CF4271135FC792@SJ1PR11MB6083.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|DM6PR11MB4723:EE_
-X-MS-Office365-Filtering-Correlation-Id: 68975460-4cd7-49f8-1c9e-08dc1eb33325
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /QIT7IuJImh4EyMHn6Q0LIgNYQU1jMHbcsFVHdiNSBUgSFvnsGQQmdVu0yQFHzf3WUGbmd211nZV0i7wgQwwaTn876JH7N3bKbh01l0JPlRykZGFexyx7eA3gTSvGoLS7+oyBw5N+ccwtVJr+XATqr76gbUDYFnBkV6Swnn5OSNDbklAwCbrBsoewpbM8Qm9/683PS1eP+sZHhVc2XMchPcmt9MsZQtGQJWbp5Lq1PEgi3WywChIk/KmrCsdZQVt8b8a5P/Y6S0jAbq3OqBUIvSVG97/fhiCcKZSi6usaUZex59rthHDyAiFmi77+hcVi/+P++PLL0bD9kLZDAkNURxzCegBJRrftsn2xAf6pHrkoFiWjFo5DLeEe7ecVDMQurz0LuWBDz2UW15dTRPuPxcX0M/Bbax5C4W5tlSsgZq1aj3mSfu1PDWaSeb1NC+hwIVII8YZOx0Hb1bVfZ8eSGBvhMefXqtOxcolPwM6/Eb3W64b3ihKySDO54vvW0gj6o8qEENDPj0bILqHRvsAevavRZz9GaUwV3z4bwtBe0gE6SuJXju7s05PeP6n/ZlrIT237oK6DphSY2KGSOTDSm6Dkka8wHECkgqxBexJvq94dlMTog0EaexwatYDnmDWMqBUQyZP41h6Ydv++vVMaQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(346002)(136003)(396003)(376002)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(82960400001)(86362001)(66946007)(316002)(6486002)(66476007)(31696002)(66556008)(966005)(478600001)(38100700002)(44832011)(26005)(2616005)(6506007)(4326008)(8676002)(5660300002)(53546011)(83380400001)(6512007)(8936002)(36756003)(2906002)(31686004)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NVRLc2FTcElwTDFBRHpxWGkydU1NR1RDY3Rudm5MVmVDS3JQWDhMRjhEaFNx?=
- =?utf-8?B?Y1U5blREbFIwYVRCZzVwSGwzOEZ1c0MwaklleEVOT3RBcjVJaGxxM0tXRU5y?=
- =?utf-8?B?Mm9JSURLRFpVaFNvRkVyOE1ERG0rMnhRaDVxdzJXZGhhSEYzUjdPSDB1S05s?=
- =?utf-8?B?UFlIcGNBY2lXUHFOeVBmdUZDbTV5bGdGTnptRTVRUGd2aWc4dkhWMUh5UExZ?=
- =?utf-8?B?STBROG1TSldrZVB1VXhhSmJwS0R4NXZrRTFsbkdTbFpvTVZVb2czc0tkQVZp?=
- =?utf-8?B?ZEJEYWpTM2ZzVGUwcFBmN0FpaG1EQ2hHdDVrbjdyek5kcDFza2o2dUp4QlEx?=
- =?utf-8?B?UTVDejhaWS8zQ1JBWUhkMk44anFQRTJVLzhwUTdGQlRuNlNNbXlMZTJOVVM1?=
- =?utf-8?B?UXg5MytvVnBFbnlVdTBoM2UxS1Q1QXNKYW9veEZ4QkRzTU5oZFRzOTE1MzR0?=
- =?utf-8?B?TnZJdlM1NlJ1c0xzVmlVVWlMVjFJVnVac3UvU1dYOXkralpVbE9kWDV1aXJ3?=
- =?utf-8?B?a0NSaTBWbEkzSlpHOUNRa3UwZ1luWllqL01aaE1PT1N6MTBpWk9ZdUtqZEJx?=
- =?utf-8?B?OWo1TnN0MDZZMFVxNyt4NnRObkduR21xTHVvQklNQmdNa3cyeVg2Y2NGWnp5?=
- =?utf-8?B?b2toaGdESkVNQ1FTS1VJdGR2OEx2RitBSWhHUVAyTHVoMzR5aWZOTnpZUVh6?=
- =?utf-8?B?UEFlSGR5WlZUOEhUMFRQYjZuT2RsL1VLTnBXYVNFR0cxRHA5bS91Q0J0QUNu?=
- =?utf-8?B?RW1Pa1hWUGpUem43Z0FYRndqREo4dWZoYmZjMllhdTl6V1RXTmo2NDdHRkJj?=
- =?utf-8?B?Q2ZKK1ZDWEVmaTlmdHJ5dkFsMkN2OFoxU1pXUU9xcVdyR2NSU2U2aGZkZGdz?=
- =?utf-8?B?dHErWWcxcVRIZlV5WllmZWtCaWRJL3JJMlUxMmVHRm5rbW9vWFp2Rk9McUNi?=
- =?utf-8?B?eTJSd2tQMzczNm9ZRWRtRStOQmpFdWg4bzRFNE9ONHpMYWZTdGM0L2Y2QXp0?=
- =?utf-8?B?MTdIUUJtQm1QTDd1REh3RVBhaitSdFk2VDZoODQrTlFkaEF1RUFTdDl2NzhC?=
- =?utf-8?B?Q0M1bmlRWW9KNjZibHp2d2ZaaEl1TUFzNEE2WFFFdndqM2xDVTlRd2JQbFhl?=
- =?utf-8?B?bkhkMTVrV09FTUZscHgwbUxWSUhjUnZnUC9WV3ZCcEovZjUyNVk5TG12VmZR?=
- =?utf-8?B?RjQwY0wwZi90Yi9hcGMrdDZVL0wzT0ZPSlZsQTZ0QmhmQTdLVGpOZjBOWGdD?=
- =?utf-8?B?QjEzUW5rMGVmYXBuS0liWUJ2bGFDWU5seEYrY1JBWDJUVi9ENndscHYrOWo2?=
- =?utf-8?B?RlRVbGc3U1dtSFpkWDB2QlNnNUVZNlBkQklTSEJKTUs4RjdxMWYwT1pLTk1L?=
- =?utf-8?B?MGFvY1Y0cmplQzZaSFU0UUQwd0g2aWNtZ2p1S1JVZTBVcldmR1kyWHNjVVFV?=
- =?utf-8?B?MitVR2F4SmhSeVhSWjR2bFQ5OEJnU3BQRVI5R3ZPeGx3cUlrcHJ2VXF6Vnlh?=
- =?utf-8?B?NXlSc241K1p4dUVhQ3NFeER3UlFJU0FOS0l0TXdMUTcvc0JBS3JBOTNZSVJ5?=
- =?utf-8?B?S0JrTkF6VlpZdFJQM1d5eHVTV1NWaGJXWnJ0aFNGOWRJeUJSRG8zOTJyRXUy?=
- =?utf-8?B?Z3hSa21LRE9NeEYzcmpsUTgxMm5RUDgzVTB5YURjVC9NUVdrd1FyUXZXaWVO?=
- =?utf-8?B?dmE4a3V5VGIzR3Z6RzdHbGhZOVJtZ2pLUVNNVFhwV1RyZFBjYWpMc1grWVpL?=
- =?utf-8?B?cWU4WVZaTXdMKzgvT0dhSytPSFByc2hFSXAzbUNWcittcjErK1dqQys5a1lQ?=
- =?utf-8?B?d0V5Y0swSjBEd3hzaTc4bjk0WWhTZTh5OVlkZUdMc2pDdDArbHI5RlNZT1BL?=
- =?utf-8?B?b09JUWR6eWpnM1lMVmVzWmN5MTcybVBTT0JqbnNhL1duRldIOXI5K05vQUdD?=
- =?utf-8?B?Ukc4VndFc2RDVnFnaVZrNG1rdUUvaHJhL2VmSlZFS0Y3RmNKZXplNGtNV2tT?=
- =?utf-8?B?dFNObnNGVXpNTDVMKy80UU95VW5DQXZ1bDFMUkNoLzFZanVYbkhDdjEvQUJl?=
- =?utf-8?B?cnpmd210WWxNOE9BZEd3R0pLYk5UNzlUUXRMUnBGVEQ2UWpaYTYrTU9pK2cy?=
- =?utf-8?B?d1ZpTFpPZ1FyUnRVc3VBK0o2RHArT2JOYVV5a2pWSUxFQUJNNVhZVzhxV0Z1?=
- =?utf-8?B?bHc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 68975460-4cd7-49f8-1c9e-08dc1eb33325
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 21:10:18.6957
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eKnBjGLA4iWDPAFL5SbK+KqAf5N4qYqazyfEgCPySOB0dghfCWTjZQVt7SlcBxzX2+rzkj2DTFfJ6Brb6I3zkd7vw7iQB+SEoYYG1Avw4aE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4723
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <SJ1PR11MB6083E1000D4B267CF4271135FC792@SJ1PR11MB6083.namprd11.prod.outlook.com>
 
-Hi Maciej,
-
-On 1/25/2024 3:13 AM, Maciej Wieczor-Retman wrote:
-> Add tests for both L2 and L3 CAT to verify the return values
-> generated by writing non-contiguous CBMs don't contradict the
-> reported non-contiguous support information.
+On Fri, Jan 26, 2024 at 08:49:03PM +0000, Luck, Tony wrote:
+> Every patch that adds new code or data structures adds to the kernel
+> memory footprint. Each should be considered on its merits. The basic
+> question being:
 > 
-> Use a logical XOR to confirm return value of write_schemata() and
-> non-contiguous CBMs support information match.
+>    "Is the new functionality worth the cost?"
 > 
-> Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-> ---
-> Changelog v3:
-> - Roll back __cpuid_count part. (Reinette)
-> - Update function name to read sparse_masks file.
-> - Roll back get_cache_level() changes.
-> - Add ksft_print_msg() to contiguous schemata write error handling
->   (Reinette).
+> Where does it end? It would end if Linus declared:
 > 
-> Changelog v2:
-> - Redo the patch message. (Ilpo)
-> - Tidy up __cpuid_count calls. (Ilpo)
-> - Remove redundant AND in noncont_mask calculations (Ilpo)
-> - Fix bit_center offset.
-> - Add newline before function return. (Ilpo)
-> - Group non-contiguous tests with CAT tests. (Ilpo)
-> - Use a helper for reading sparse_masks file. (Ilpo)
-> - Make get_cache_level() available in other source files. (Ilpo)
+>   "Linux is now complete. Stop sending patches".
 > 
->  tools/testing/selftests/resctrl/cat_test.c    | 81 +++++++++++++++++++
->  tools/testing/selftests/resctrl/resctrl.h     |  2 +
->  .../testing/selftests/resctrl/resctrl_tests.c |  2 +
->  3 files changed, 85 insertions(+)
+> I.e. it is never going to end.
+
+No, it's not that - it is the merit thing which determines.
+
+> 1) PPIN
+> Cost = 8 bytes.
+> Benefit: Emdeds a system identifier into the trace record so there
+> can be no ambiguity about which machine generated this error.
+> Also definitively indicates which socket on a multi-socket system.
 > 
-> diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
-> index 39fc9303b8e8..9086bf359072 100644
-> --- a/tools/testing/selftests/resctrl/cat_test.c
-> +++ b/tools/testing/selftests/resctrl/cat_test.c
-> @@ -294,6 +294,71 @@ static int cat_run_test(const struct resctrl_test *test, const struct user_param
->  	return ret;
->  }
->  
-> +static int noncont_cat_run_test(const struct resctrl_test *test,
-> +				const struct user_params *uparams)
-> +{
-> +	unsigned long full_cache_mask, cont_mask, noncont_mask;
-> +	unsigned int eax, ebx, ecx, edx, ret, sparse_masks;
-> +	char schemata[64];
-> +	int bit_center;
-> +
-> +	/* Check to compare sparse_masks content to CPUID output. */
-> +	ret = resource_info_unsigned_get(test->resource, "sparse_masks", &sparse_masks);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (!strcmp(test->resource, "L3"))
-> +		__cpuid_count(0x10, 1, eax, ebx, ecx, edx);
-> +	else if (!strcmp(test->resource, "L2"))
-> +		__cpuid_count(0x10, 2, eax, ebx, ecx, edx);
-> +	else
-> +		return -EINVAL;
-> +
-> +	if (sparse_masks != ((ecx >> 3) & 1)) {
-> +		ksft_print_msg("CPUID output doesn't match 'sparse_masks' file content!\n");
-> +		return -1;
+> 2) MICROCODE
+> Cost = 4 bytes
+> Benefit: Certainty about the microcode version active on the core
+> at the time the error was detected.
+> 
+> RAS = Reliability, Availability, Serviceability
+> 
+> These changes fall into the serviceability bucket. They make it
+> easier to diagnose what went wrong.
 
-If I understand correctly this falls into the "test failure" [1] category
-and should return 1? ...
+So does dmesg. Let's add it to the tracepoint...
 
-> +	}
-> +
-> +	/* Write checks initialization. */
-> +	ret = get_full_cbm(test->resource, &full_cache_mask);
-> +	if (ret < 0)
-> +		return ret;
-> +	bit_center = count_bits(full_cache_mask) / 2;
-> +	cont_mask = full_cache_mask >> bit_center;
-> +
-> +	/* Contiguous mask write check. */
-> +	snprintf(schemata, sizeof(schemata), "%lx", cont_mask);
-> +	ret = write_schemata("", schemata, uparams->cpu, test->resource);
-> +	if (ret) {
-> +		ksft_print_msg("Write of contiguous CBM failed\n");
-> +		return ret;
+But no, that's not the right question to ask.
 
-.. although here I think the goal to distinguish between test error and test failure
-falls apart since it is not possible to tell within the test if the failure is
-because of error in the test or if test failed.
+It is rather: which bits of information are very relevant to an error
+record and which are transient enough so that they cannot be gathered
+from a system by other means or only gathered in a difficult way, and
+should be part of that record.
 
-Reinette
+The PPIN is not transient but you have to go map ->extcpu to the PPIN so
+adding it to the tracepoint is purely a convenience thing. More or less.
 
-[1] https://lore.kernel.org/all/33787043-5823-6de4-4e5c-a24a136ba541@linux.intel.com/
+The microcode revision thing I still don't buy but it is already there
+so whateva...
 
+So we'd need a rule hammered out and put there in a prominent place so
+that it is clear what goes into struct mce and what not.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
