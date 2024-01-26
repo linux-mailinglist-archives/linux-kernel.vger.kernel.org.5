@@ -1,113 +1,188 @@
-Return-Path: <linux-kernel+bounces-40224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A735683DCB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:47:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98B3D83DCBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:51:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD245B2500E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:47:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 285991F21F8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:51:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D7F51C68F;
-	Fri, 26 Jan 2024 14:46:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B644C1CA95;
+	Fri, 26 Jan 2024 14:50:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Yp/CFcUx"
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MfcM1juL"
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E5C8134A6
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:46:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80E891C2A5;
+	Fri, 26 Jan 2024 14:50:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706280417; cv=none; b=SynqwxbWbhHWtmL2xPAVqU18FpMfyhwL/ErVRAhOpHvz7k2yRPknLeJ2tZR7lOVzqurNu4m32hnl1rY9UKrnf6asDHeJAYd7maMSsyWJoxM1ZG0Jcal/2pqkXCPIG/r7yNwsvPWwjEvHx95xR4yxAjL1werhPjrCxZDyCC7UMdg=
+	t=1706280658; cv=none; b=F0rEIpPdRVvjYIS4A/ZC/+nxBZsVjcMjuETmod7uwefeK7HC60lPKJL7B4qLCDENnY4ivpNvSYshoT/7KMH880y7j5fq1Jy3vUu089R8RT3sIhhR8256wUlOIaq1ReDLItdm9NDv5coM1vZ/sDXMBOOwE4ii3gP2k2lLTFAvGlE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706280417; c=relaxed/simple;
-	bh=W/FdB88dbo4Ofig9JphpMVHHe94m8b1+hdrjMoRC/H4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MssVj79Uk3SF6qVnI6R8NzCTzrQwb9G2jw6C1VkXc4H6K+GSGix5KcnjvkmdW3SZOnU9bpCR3ugsPpmeHz/ql/b3ajlPaAW1YmdprCgx5tWac6vgAdPyDlNw7c37b1jRvIhFriNHnHgSbSYIRsRztZEjeBG0/iDxCbrkAZA1Lpk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Yp/CFcUx; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33ade380b9fso595568f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 06:46:54 -0800 (PST)
+	s=arc-20240116; t=1706280658; c=relaxed/simple;
+	bh=mZggQAMt5w4u5uqa7pG20qzshBhYgUUvPobmKDHLKEw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=g4ebYcAnMqO4RJzUPdd1TLGjTsE7SMaVbRjfMZEZsBjEvGMkLo4U9OZ72l+i4izCCUvmd3tPoYCoTqSiikGgqYYCctUuOHTPfFQyWLazAx5Og+vYvrvwc/1equZX6+ZPmqaseikjlcY6tAj5Fty3drUJq/5TvF2MJGUAGUuCZmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MfcM1juL; arc=none smtp.client-ip=209.85.222.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-783cd245ec0so39217085a.3;
+        Fri, 26 Jan 2024 06:50:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1706280413; x=1706885213; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GwKl7KA16kSrc3QBUn+TdenGDtEm5u8vFzJscSXHTTY=;
-        b=Yp/CFcUxkz0yT1b9rPh1vhuouStDf6hceu4d9tuBIml6lRs8uGr35B1ZQHfZwdjFBX
-         AeZbLH3enQaGc2JrB7ZKLQrp0zNCXWWhNsxsTHRkVfcyCdl0W9RFwtzjFPUId7YvL0X3
-         tEQ2P2Bjn8nYIhV4gRCBhaft1WOEPLCdbqNR1M8SpgMJC7fxrC9k0PbcniFZVBEdp0Gx
-         YFzzFX98qRPOutT36yyHIQeEhVS1EAYnMlRNEsw6VABEOtpLpCZuf0wWzKvd4oIQZ+DH
-         5iOfV+iUBYdFsEYMJOxFOB94V/flwNTQSK6nK6Qw+5hnxA8+SNkbU/VVDdOmDQKPKx+I
-         YUKA==
+        d=gmail.com; s=20230601; t=1706280655; x=1706885455; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u/1++r8v+pWoipgYyku3vmpCyA0Gff5YNQqLULNAGzs=;
+        b=MfcM1juLHtrmiYVsD05HvnLPTCnE+SWqd0UTsvmRo/4XRE32DINmn9btk698dXdXbo
+         wglgiVdUciIglL1uk8q02z2O6dlZzXV7FzqV2loZpNJqp9pn+S/h6IGy+gphvAN7fGtr
+         NSUmvKO06Xwm7HUVMKlIvmz6D6khPBVOFoXeF6Ug5emoT1NYUxiJBaUZ2HiKbPQv+tzL
+         86RZnNztcLJN8i9Nxg6h4vV4eTsVZ5vcCycnraEn3DUR9/a3Y8MzTOsKuRLCxTgatSZY
+         5TWqkp9cyTXVhaRolsjzCYaG0obZCa28l5bu81qjped4wqY4GLA09DYDP4PBWizCXfaU
+         7NwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706280413; x=1706885213;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GwKl7KA16kSrc3QBUn+TdenGDtEm5u8vFzJscSXHTTY=;
-        b=UzFSPG2h82S+/Iz5gSKAtFBEQxngnVRSo/mVvGc31x33pxrbJJrhcejnujvCvyJazH
-         6N9eMYgIDchrqrXT45Z7adktWnBLckK5VesoWL3glPOsd99P05fTEQZ7qeWpm3rzaXSQ
-         MCWjKOu5l6GVlhRHSqADUP0uaj3YjXX3vEsayvlJ6nzTMiNLOtyT823AM4bgD6ankE/H
-         CT6lMaiLOylvcm9eYNF3TaW36A0yzezK4KVMmfpbHY9MEH0SNubzIkZa6bb23p1mjQ1v
-         diSkgq20/LvPWjoPd83tx2xw9ZuNH2sM0KZYEK904PsqtI/JiLHH1oln/JAXnmKzwcxu
-         G72w==
-X-Gm-Message-State: AOJu0YwrwVy6ALJ1Ic+HEV+KpEjCrtncskOuF301E4x5ah7obHXfmfOp
-	GkhgMbioSXP2MRkauz6naQaZOmI/c+H0vbA48vMFTGk8ORud/kntDsPYTOVJ+Qc=
-X-Google-Smtp-Source: AGHT+IG3veE69nenUkhE2SVXbzrVU0L/Do3gd+wEYCsuXJnu1R0yOSVv6LwLj/j5xNSNy2+GDv7Ukg==
-X-Received: by 2002:adf:e3c6:0:b0:339:611b:bcb4 with SMTP id k6-20020adfe3c6000000b00339611bbcb4mr568107wrm.117.1706280412721;
-        Fri, 26 Jan 2024 06:46:52 -0800 (PST)
-Received: from ?IPV6:2a10:bac0:b000:7589:7285:c2ff:fedd:7e3a? ([2a10:bac0:b000:7589:7285:c2ff:fedd:7e3a])
-        by smtp.gmail.com with ESMTPSA id n11-20020a056000170b00b00337d6db207dsm1437927wrc.30.2024.01.26.06.46.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jan 2024 06:46:52 -0800 (PST)
-Message-ID: <6afe76be-90a7-4cf7-8c6c-23e6a14f8116@suse.com>
-Date: Fri, 26 Jan 2024 16:46:50 +0200
+        d=1e100.net; s=20230601; t=1706280655; x=1706885455;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u/1++r8v+pWoipgYyku3vmpCyA0Gff5YNQqLULNAGzs=;
+        b=a3FELIKSCr59Q542LJQIlFNO71gG20MuST7Ppwa+5eVtcdk2GOpPgdeZ7vVStH+mV6
+         Quro1csd3najJxuIEzmqg+Q89bFDWT/1UqbQDN+SS7hr5m4qf1ifn8vZfH0W4IQJP6CF
+         w0S75fGZHsoLlX44Dwd3DlkEJJygYIVySv7y4gVlG+MIGr86+uUmzIQPYa73RkZs+Hmt
+         DNq3mTml/Ylwtp7IQ/sbKHlPsOHn+3B+k+P4JyEH5USm9BSECiGZpLmhFRibud2Z5ICZ
+         u95Q1a3B7V4cFGwae0MhaKaxoZ22BCEsjv0js3wALv4955YHGmrijNruPtnzCrmUgLl0
+         HU1Q==
+X-Gm-Message-State: AOJu0YzgzvZqKXyM1SazULTGCqdakNQzWzbPI63mr4zyg5/BbOkar5GH
+	/o74YTBiKu40sfNm9gIHyNnimYbWM/mE7FjcZhIKaQ7f8ZbBwnuClhVJESch4KzbO93Z5QF0hua
+	T8MpDqCNzLmCwfYmKx9cEVsN7y6Q=
+X-Google-Smtp-Source: AGHT+IHqG5hPV121VyvqSLJuvMpWc8n3AhmTweSV27h0xeAidMXggDOPVqthD4Wl6Q6T7ZtzZM9wlN/+WfOxCbB9zB8=
+X-Received: by 2002:ad4:5bcc:0:b0:680:f9a3:ce50 with SMTP id
+ t12-20020ad45bcc000000b00680f9a3ce50mr1436445qvt.111.1706280655325; Fri, 26
+ Jan 2024 06:50:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] Randomness on confidential computing platforms
-Content-Language: en-US
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
- Theodore Ts'o <tytso@mit.edu>, "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
- Elena Reshetova <elena.reshetova@intel.com>,
- Jun Nakajima <jun.nakajima@intel.com>, Tom Lendacky
- <thomas.lendacky@amd.com>, "Kalra, Ashish" <ashish.kalra@amd.com>,
- Sean Christopherson <seanjc@google.com>, linux-coco@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <20240126134230.1166943-1-kirill.shutemov@linux.intel.com>
-From: Nikolay Borisov <nik.borisov@suse.com>
-In-Reply-To: <20240126134230.1166943-1-kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240125235723.39507-1-vinicius.gomes@intel.com> <20240125235723.39507-5-vinicius.gomes@intel.com>
+In-Reply-To: <20240125235723.39507-5-vinicius.gomes@intel.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Fri, 26 Jan 2024 16:50:44 +0200
+Message-ID: <CAOQ4uxi7MtVZECGXo-30YWjSU5ZFZP0AQzgBXLyowdOmNUc5DA@mail.gmail.com>
+Subject: Re: [RFC v2 4/4] fs: Optimize credentials reference count for backing
+ file ops
+To: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Cc: brauner@kernel.org, hu1.chen@intel.com, miklos@szeredi.hu, 
+	malini.bhandaru@intel.com, tim.c.chen@intel.com, mikko.ylinen@intel.com, 
+	lizhen.you@intel.com, linux-unionfs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Jan 26, 2024 at 1:57=E2=80=AFAM Vinicius Costa Gomes
+<vinicius.gomes@intel.com> wrote:
+>
+> For backing file operations, users are expected to pass credentials
+> that will outlive the backing file common operations.
+>
+> Use the specialized guard statements to override/revert the
+> credentials.
+>
 
+As I wrote before, I prefer to see this patch gets reviewed and merged
+before the overlayfs large patch, so please reorder the series.
 
-On 26.01.24 г. 15:42 ч., Kirill A. Shutemov wrote:
-> 4. Exit to the host/VMM with an error indication after a Confidential
->     Computing Guest failed to obtain random input from RDRAND/RDSEED
->     instructions after reasonable number of retries. This option allows
->     host/VMM to take some correction action for cases when the load on
->     RDRAND/RDSEED instructions has been put by another actor, i.e. the
->     other guest VM. The exit to host/VMM in such cases can be made
->     transparent for the Confidential Computing Guest in the TDX case with
->     the assistance of the TDX module component.
+> Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+> ---
+>  fs/backing-file.c | 124 ++++++++++++++++++++++------------------------
+>  1 file changed, 60 insertions(+), 64 deletions(-)
+>
+> diff --git a/fs/backing-file.c b/fs/backing-file.c
+> index a681f38d84d8..9874f09f860f 100644
+> --- a/fs/backing-file.c
+> +++ b/fs/backing-file.c
+> @@ -140,7 +140,7 @@ ssize_t backing_file_read_iter(struct file *file, str=
+uct iov_iter *iter,
+>                                struct backing_file_ctx *ctx)
+>  {
+>         struct backing_aio *aio =3D NULL;
+> -       const struct cred *old_cred;
+> +       const struct cred *old_cred =3D ctx->cred;
+>         ssize_t ret;
+>
+>         if (WARN_ON_ONCE(!(file->f_mode & FMODE_BACKING)))
+> @@ -153,29 +153,28 @@ ssize_t backing_file_read_iter(struct file *file, s=
+truct iov_iter *iter,
+>             !(file->f_mode & FMODE_CAN_ODIRECT))
+>                 return -EINVAL;
+>
+> -       old_cred =3D override_creds(ctx->cred);
+> -       if (is_sync_kiocb(iocb)) {
+> -               rwf_t rwf =3D iocb_to_rw_flags(flags);
+> +       scoped_guard(cred, old_cred) {
 
-But is this really a viable solution in the face of malicious VMM? It 
-assumes that if the VMM is signaled that randomness has been exhausted 
-it will try to rectify it, what if such a signal can instead be 
-repurposed for malicious purposes? Could it perhaps be used as some sort 
-of a side channel attack ?
+This reads very strage.
+
+Also, I see that e.g. scoped_guard(spinlock_irqsave, ... hides the local va=
+r
+used for save/restore of flags inside the macro.
+
+Perhaps you use the same technique for scoped_guard(cred, ..
+loose the local old_cred variable in all those functions and then the
+code will read:
+
+scoped_guard(cred, ctx->cred) {
+
+which is nicer IMO.
+
+> +               if (is_sync_kiocb(iocb)) {
+> +                       rwf_t rwf =3D iocb_to_rw_flags(flags);
+>
+> -               ret =3D vfs_iter_read(file, iter, &iocb->ki_pos, rwf);
+> -       } else {
+> -               ret =3D -ENOMEM;
+> -               aio =3D kmem_cache_zalloc(backing_aio_cachep, GFP_KERNEL)=
+;
+> -               if (!aio)
+> -                       goto out;
+> +                       ret =3D vfs_iter_read(file, iter, &iocb->ki_pos, =
+rwf);
+> +               } else {
+> +                       ret =3D -ENOMEM;
+> +                       aio =3D kmem_cache_zalloc(backing_aio_cachep, GFP=
+_KERNEL);
+> +                       if (!aio)
+> +                               goto out;
+>
+> -               aio->orig_iocb =3D iocb;
+> -               kiocb_clone(&aio->iocb, iocb, get_file(file));
+> -               aio->iocb.ki_complete =3D backing_aio_rw_complete;
+> -               refcount_set(&aio->ref, 2);
+> -               ret =3D vfs_iocb_iter_read(file, &aio->iocb, iter);
+> -               backing_aio_put(aio);
+> -               if (ret !=3D -EIOCBQUEUED)
+> -                       backing_aio_cleanup(aio, ret);
+> +                       aio->orig_iocb =3D iocb;
+> +                       kiocb_clone(&aio->iocb, iocb, get_file(file));
+> +                       aio->iocb.ki_complete =3D backing_aio_rw_complete=
+;
+> +                       refcount_set(&aio->ref, 2);
+> +                       ret =3D vfs_iocb_iter_read(file, &aio->iocb, iter=
+);
+> +                       backing_aio_put(aio);
+> +                       if (ret !=3D -EIOCBQUEUED)
+> +                               backing_aio_cleanup(aio, ret);
+> +               }
+
+if possible, I would rather avoid all this churn in functions that mostly
+do work with the new cred, so either use guard(cred, ) directly or split a
+helper that uses guard(cred, ) form the rest.
+
+Thanks,
+Amir.
 
