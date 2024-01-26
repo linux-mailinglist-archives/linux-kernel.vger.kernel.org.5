@@ -1,195 +1,217 @@
-Return-Path: <linux-kernel+bounces-40349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBDA783DEE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:37:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 65EFC83DEE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:38:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70B3E1F24A5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:37:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E4BDB1F226D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:38:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9953D1DDE9;
-	Fri, 26 Jan 2024 16:37:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE51D1DDF5;
+	Fri, 26 Jan 2024 16:38:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Jcz5+gQl";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="6ZpWjxSA"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b="GCHV494j"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2079.outbound.protection.outlook.com [40.107.93.79])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70E0B1DFEA;
-	Fri, 26 Jan 2024 16:37:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706287051; cv=none; b=BXw4abH4GJTrdBQzzUji+Cg0JwvTAEOHBYJJBNfyNqVggm7ddFfpcLnHPDK08+tCs+Lp1M4HYONHpihaQbo3HcE2esOYyx+gimUBaZCfJd9Q0R7uu+QgdR82W/ASCeZLc662LrqnIWbQi2POFHNU5GYAImlvu+dDFzAsNZF+CYY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706287051; c=relaxed/simple;
-	bh=+Xme+ikfMEKMTsKLOA+gQptcLYSTs2t0fjbp0qPxyW8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=f3ovrXtg7JsW1eIOH1Iz/GK2Z/4YQghxkIQLl1est7YxzIkl+RYAKfqDRA2bHYkYA1cEX7mG3JB3CHotpHHCVdat4pmdOY44A/GEeL73PifmKdDkitpKOwncv6F5ljtvNepB/+CgDU1nlc8kuZOHA3saRqvZ9if0z5tfRGeLVoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Jcz5+gQl; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=6ZpWjxSA; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 26 Jan 2024 17:37:25 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706287047;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=ESlukLMkM/rsc2x1VVf3cll5G9fPHn1HY7uNw+yziRs=;
-	b=Jcz5+gQl+Sc+KwAviV8VDgCniva/xd5/TrQ591Hlz6VHEZYZ38FM4a9o4aT5WuUTUbe6Yi
-	63KKIk0xmDcbXnerYCz9exDoAoCPdKDoWR5Ojte9Az1tcP8IyLevXMz6DbTi6W4zzJsSmZ
-	2hjYbGDtanhLWaV3EHAUsTtzmLS2NZ2V2GwfpmSpd0Jwm3SFfsxEvzYJFlhZok/LxN5wne
-	yacvYkk0xB66ZXmhLxltmHrEpOqmv2Qd6cCsOcg+012ve+73fbH9bOZlccc6Isu3y25jpP
-	Gr+UXBs4SOLD/Krjrq4PoS4nTdAeUQdIMmA0H+4BFt6b3MuUvjXLkPic4BkJrA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706287047;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=ESlukLMkM/rsc2x1VVf3cll5G9fPHn1HY7uNw+yziRs=;
-	b=6ZpWjxSAwE7n7UO/l8Sb7qAy+zJcvA2Qok2jbwkuQBu5wninAJOUtFx0lcDA880YkgOImI
-	Xg8ojX4aKZJwxtAg==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, linux-rt-users@vger.kernel.org,
-	Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v6.8-rc1-rt2
-Message-ID: <20240126163725.kQgJktTk@linutronix.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E78D1D545;
+	Fri, 26 Jan 2024 16:38:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.79
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706287096; cv=fail; b=t2F4qyKf8tslKKF22k31/rz5pFz7pYDQIBdxX1dA1U4Iw6B1LLEEljoJDu10j9uJRE8G1gfPRKJ3jt7xJNDppqFgO8eEZLcZAmJtNCaVFqLk+3EdyHgEJxDRBiWjGp+jbBo/Hd1VzPCkkjWQgAQ5v1MuI4k3KZfhphIpIgFlViQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706287096; c=relaxed/simple;
+	bh=25RQDc0+dCvtN9XR5hMskUU7VDhwvLPiI+HpQ2qMVQk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=tCrR9XhNS599NzSo+m33ibGInVFqn7H8nHNV8rA5o07FVTQGgvSAC+jwg4cxI4Sl2eW4m27XTKP1pRg5BzceSlm3R8XNxh2jeMUGLvN9dUm3o91SU7XxC9MIE0x/D910IPF4lSUKRsr4MWQDZCBh3wS+TSjYYshHWP2eCa+Ych8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com; spf=pass smtp.mailfrom=memverge.com; dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b=GCHV494j; arc=fail smtp.client-ip=40.107.93.79
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=memverge.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TRd1+SywwMuQiYLpLiDm3SiXSgxlxohD3lzqvhtVp0KBMIgin+3im8AGP35HySinAZ8RGOhYgIS4CpW8r4aSMkaGQsA/Xgr6LENFdMF5E9l7DBY8re6z1TAHFIl6YkovKPUbquhlmJ/YLVmETUlZHBuWmAjjvJmJ1KtVbnwim2H61B0vYpgNAg9XQsM8cKO6JwMXt3pkja/RKBrxomptkRxACqO7QYg+JfvKFtRzgt3TmAlU4w7C9Lw4eGfIbmZ1RFwH7gUI+kKLROTUdrG4+CDO6d+CnMIhyJ8ajHAvYYdh1la4zsgQC6CIGNga1WxpSOjIgQ89aSTpr3cQM6Hs1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uyvE83uNCyl5GXlZUT2iW4d834QAQmbuEb0YkKBEjWw=;
+ b=nvaLV9k67y+XNKQ+lpVOR/Q4nh7CXZAsW9cKBpB27/qOt9xDc3Ng61jxnQdecy/mSbeldMmw1T8EIiIy1sLrq1R3BE1bXHFOAyW4i+09i+32w8wFjEBOGHJwEgWRNIc7vU984ajLV4k3bSjFvdCcfmxrKFxBFolLbXWmczOy2GpD3UDGRsBb0BZDSuWBxRUXSQEyrv8HZVm3pUzFnxV5w6AiroVGXCN89Px4LT03/wg76Tss5xiuvugShDW5FrmzJZS9vi0uesb2vOeUcfvu3IeDBXjSgMeaRNrp+Xj1fmi0SQEw3aXBg3cTRjLOs2uS3OYGV71uoG+hl+h4xW6RHA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
+ dkim=pass header.d=memverge.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uyvE83uNCyl5GXlZUT2iW4d834QAQmbuEb0YkKBEjWw=;
+ b=GCHV494juis3lREmlSvGzEalF5txu3B7kDKFydUu6+oJhnpRYW6MCEh4l3JGRY9vgEdLLGJb/OSJ1oA1b8PwKvuJzqVRcTTsqUj+ZsdqqgEMbgomBSl4a2d+aiom0w1x7Pz4bGP7L61cU5EZaK6mRIBSOd14eVmzvQlaIus8JOs=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=memverge.com;
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
+ by MW4PR17MB4537.namprd17.prod.outlook.com (2603:10b6:303:ba::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.26; Fri, 26 Jan
+ 2024 16:38:11 +0000
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::7a04:dc86:2799:2f15]) by SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::7a04:dc86:2799:2f15%5]) with mapi id 15.20.7228.023; Fri, 26 Jan 2024
+ 16:38:11 +0000
+Date: Fri, 26 Jan 2024 11:38:01 -0500
+From: Gregory Price <gregory.price@memverge.com>
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
+	corbet@lwn.net, akpm@linux-foundation.org, honggyu.kim@sk.com,
+	rakie.kim@sk.com, hyeongtak.ji@sk.com, mhocko@kernel.org,
+	vtavarespetr@micron.com, jgroves@micron.com,
+	ravis.opensrc@micron.com, sthanneeru@micron.com,
+	emirakhur@micron.com, Hasan.Maruf@amd.com, seungjun.ha@samsung.com,
+	hannes@cmpxchg.org, dan.j.williams@intel.com
+Subject: Re: [PATCH v3 4/4] mm/mempolicy: change cur_il_weight to atomic and
+ carry the node with it
+Message-ID: <ZbPf6d2cQykdl3Eb@memverge.com>
+References: <20240125184345.47074-1-gregory.price@memverge.com>
+ <20240125184345.47074-5-gregory.price@memverge.com>
+ <87sf2klez8.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87sf2klez8.fsf@yhuang6-desk2.ccr.corp.intel.com>
+X-ClientProxiedBy: BYAPR07CA0061.namprd07.prod.outlook.com
+ (2603:10b6:a03:60::38) To SJ0PR17MB5512.namprd17.prod.outlook.com
+ (2603:10b6:a03:394::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|MW4PR17MB4537:EE_
+X-MS-Office365-Filtering-Correlation-Id: 88dba959-1831-475e-58f7-08dc1e8d2f1e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	kNzSFZE5u/LPp2srox+xt858t1kbyugRByX757vFZO13lPGXTHfKPPnKMzLYXQHA1kgf59wkisqjVDJVi2+lrJzyQkzTYpnl/WZGUwj3IKt/pv7zXMrRC6GpbW3YNw2aCr0500UnCgiF1vrb6wKznTbAbCqinSPwQ3y06en2ZK7QT22MUcnEyh6qFuE1dJB94Uafo2plDCdzEGzSNqybRD4eIVJtkA8kJ922VtPkIa8hOW+P5+Yib24TBrwLmQD/oyBeQ1f/Z7cbujGr7S5WqtZ4aq/eMiUumKUD5QC5d5k37llYTEyYN23xvf4l2Pv6chx3vmyqV+6FaH3iUGvCvebALLFUOugyRLu11FSnZ6gwmWTzUSe4sO1MSUdnAtLLnaf7uXr1u5IiexxGA2uP3HVwYgyKzJ5XOWLfyDMZAea3CMFH1PqHc++0H153lWXKv3TUizKArEM6FvattYC6cbzswPO86YUbeKTZwiVed6sBTBOo+lfxyOgs5DxuqvgijDPIyRgRYSqmKK5RGGM8d9VOPPFwyd5oCNjBUWaZy2+cw8P+u9lFrcc2nuu1Abn9Z2e817RgielLTybKGuTVl/ScjABeNF+/hnRIs91LkIo=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(366004)(136003)(39840400004)(346002)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(478600001)(6486002)(6666004)(2616005)(38100700002)(26005)(36756003)(41300700001)(83380400001)(86362001)(6506007)(6512007)(44832011)(8936002)(5660300002)(7416002)(8676002)(4326008)(2906002)(6916009)(66556008)(316002)(66946007)(66476007)(16393002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?Z+WugfFt/IfMKlE48oWzkeEtFD3c73JgpgUGNff7+eGpKhwtHRXjpWajW73O?=
+ =?us-ascii?Q?NANm9o/LnfC2mZF3N92Hf5XNA4J1xQfKkvogxwGfE8yDWcbxvh7kxLnJMYuh?=
+ =?us-ascii?Q?uIqz1LGm+yXJj+TF9ZdgArTBXf8hD6GhyXq3dJT+V4xWhhv9WpppvyHvJ8rM?=
+ =?us-ascii?Q?A1hs9sI5mnXPP7+8GyKnxX8BcG7ALGY6f92yz0RfGe+wm67WFoIGqr6aHj8T?=
+ =?us-ascii?Q?gwRObPT8FT2mndhdqgd7Htzk9GyDmFIUXeMqd+xdcOyAQ+Ph2oetcl9fJnuF?=
+ =?us-ascii?Q?8vQT+WlBNRbVfBSgkyKUyYfYiYHJAzv4WYcWXy4b9vFwoB9CJUr4fHhzAagP?=
+ =?us-ascii?Q?U3pmZnZslE8FG9zHHkl3y6ZpAAPKqFXJgc0Llu/COGUt75vmGPDjqsDjuovl?=
+ =?us-ascii?Q?IqIkJ3OeBs0Kai+KQ20rt7vx64T6+plFztptNC/grdpnXCsh8nVB4JbQ8nmX?=
+ =?us-ascii?Q?39cceuxS9roVStwLbHqqFu30AhW+byzeO2wcTtdLg/ScgSns73DjsPor3H5h?=
+ =?us-ascii?Q?uH+0LJ+TqP5iCjlOza3VarlM71kArvghS+9n6zYKCuJZYGu5NkrBeqxHzHqs?=
+ =?us-ascii?Q?U+Y5FlpwicEJUC1g3OfJ8MtFEROTmIG1qAO6vjYOD++YqjtneXY3plI6bYn+?=
+ =?us-ascii?Q?NFfwTWfIqQSU27wUE0oZi9xkpMMbLfA/GTIoVXiJA+F9lSnEmrPbhHUK4Bwq?=
+ =?us-ascii?Q?egQ1DdycELrvVt3l64HfxwnA2mih0kIJchCWZQU5UuO3pQyWUGhnHp98kOH7?=
+ =?us-ascii?Q?ncjxgHtvJUobjlkGEDGUAAKI3wqYn59bLzuktJODl1VPuQ0H36TDrG6qPFzS?=
+ =?us-ascii?Q?5gAD8eyfOao79A8fWZWO4aMme2grSLm2w6N2nZCXGbjZnRdaeYiR4J2jC0Qc?=
+ =?us-ascii?Q?3YSYXkspFHrRXNim310Hp0H2KNl/fy/vmagjM+qCicR0Djs7CJlf+O0HaIEH?=
+ =?us-ascii?Q?/azu8Xnd5SEcMHvo99hwFc+JjVfqHhWxt3kpwd8zI4gA7WBcy7aa7qtIP0Hh?=
+ =?us-ascii?Q?VBBJ5vinwZv0joLbJrjt0skXERUsbbmYzwhZLQWLoLFiLCDqwkt49j0noGVv?=
+ =?us-ascii?Q?3+IpWS4djnaVz1/X/s+/Km4DAxjka9473JV86W/X31WyK/WffujKZMEtAMU7?=
+ =?us-ascii?Q?LTamtTCdAIi4SzDoyemi28qkly4Voxxa/YLtRMd97VCkS5Wq1ijoiAgDFbVl?=
+ =?us-ascii?Q?0G8hbqjqLNBmbVYctFTGxMuyTlzWWO59Zqgk8IeaiG9qEHd0SNM7AjXC/Izy?=
+ =?us-ascii?Q?qZJB9V7YljVLclEfCQVg230h55I022ybpX6ZFB+yUFIKP6flwMCxp8qcLsHl?=
+ =?us-ascii?Q?ZGnPRPupQJxLCZ3js0wP4Ts3BxrgfvT4aIBIEgse5FXz2Qj2+xI3TTx9HuBL?=
+ =?us-ascii?Q?f7dATMb8Yu14wWTeiGZESfqWZHCuvCs99Rpdl7XDqdviQD31ROgrLCEiBPm9?=
+ =?us-ascii?Q?Ld/4peZ0EN7428dOdaO81I4N74x3gJPex7EcZX1MXrAQJY3Knw3vwX3QeOsV?=
+ =?us-ascii?Q?5UJWgB5eXTkNm4SjMjf9aFoW0o8/eJxQl4OSHzzg4zsNmVyiapqtaVwKb6ar?=
+ =?us-ascii?Q?MahM/VLMuHio+jsNRxfEUXvyiBC3eCT8PbuErewAAMQdonhXMHKba6an/ULi?=
+ =?us-ascii?Q?pg=3D=3D?=
+X-OriginatorOrg: memverge.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 88dba959-1831-475e-58f7-08dc1e8d2f1e
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 16:38:11.0983
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oe4gaOmOY38dGHbGizVvHnUEnlx5c5PGJs5QEk4eAB83HzK99r3R3oWxVRq/rA2PbLLxLWx3rYVWEwo7FkGsp9tKNDujiBPEZCSbiPmeOQo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR17MB4537
 
-Dear RT folks!
+On Fri, Jan 26, 2024 at 03:40:27PM +0800, Huang, Ying wrote:
+> Gregory Price <gourry.memverge@gmail.com> writes:
+> 
+> > Two special observations:
+> > - if the weight is non-zero, cur_il_weight must *always* have a
+> >   valid node number, e.g. it cannot be NUMA_NO_NODE (-1).
+> 
+> IIUC, we don't need that, "MAX_NUMNODES-1" is used instead.
+> 
 
-I'm pleased to announce the v6.8-rc1-rt2 patch set. 
+Correct, I just thought it pertinent to call this out explicitly since
+I'm stealing the top byte, but the node value has traditionally been a
+full integer.
 
-Changes since v6.8-rc1-rt1:
+This may be relevant should anyone try to carry, a random node value
+into this field. For example, if someone tried to copy policy->home_node
+into cur_il_weight for whatever reason.
 
-  - Junxiao Chang reported an unbalanced invocation of the acquire/
-    release functions for the non-BLK console. Only the 8250 serial
-    driver is affected if more than one ttyS console is passed as boot
-    argument to console=. Patch by Junxiao Chang.
+It's worth breaking out a function to defend against this - plus to hide
+the bit operations directly as you recommend below.
 
-  - On ARM with HIGHMEM, HIGHPTE and LPAE enabled a sleeping while
-    atomic warning can be triggered from the FUTEX code (and other
-    users).
+> >  	/* Weighted interleave settings */
+> > -	u8 cur_il_weight;
+> > +	atomic_t cur_il_weight;
+> 
+> If we use this field for node and weight, why not change the field name?
+> For example, cur_wil_node_weight.
+> 
 
-Known issues
-     Pierre Gondois reported crashes on ARM64 together with "rtla timerlat
-     hist" as trigger. It is not yet understood. The report is at
-	https://lore.kernel.org/70c08728-3d4f-47a6-8a3e-114e4877d120@arm.com
+ack.
 
-The delta patch against v6.8-rc1-rt1 is appended below and can be found here:
- 
-     https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.8/incr/patch-6.8-rc1-rt1-rt2.patch.xz
+> > +			if (cweight & 0xFF)
+> > +				*policy = cweight >> 8;
+> 
+> Please define some helper functions or macros instead of operate on bits
+> directly.
+> 
 
-You can get this release via the git tree at:
+ack.
 
-    https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v6.8-rc1-rt2
+> >  			else
+> >  				*policy = next_node_in(current->il_prev,
+> >  						       pol->nodes);
+> 
+> If we record current node in pol->cur_il_weight, why do we still need
+> curren->il_prev.  Can we only use pol->cur_il_weight?  And if so, we can
+> even make current->il_prev a union.
+> 
 
-The RT patch against v6.8-rc1 can be found here:
+I just realized that there's a problem here for shared memory policies.
 
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.8/older/patch-6.8-rc1-rt2.patch.xz
+from weighted_interleave_nodes, I do this:
 
-The split quilt queue is available at:
+cur_weight = atomic_read(&policy->cur_il_weight);
+..
+weight--;
+..
+atomic_set(&policy->cur_il_weight, cur_weight);
 
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.8/older/patches-6.8-rc1-rt2.tar.xz
+On a shared memory policy, this is a race condition.
 
-Sebastian
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 24709aee69ee0..25424a7468d95 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -99,7 +99,7 @@ config ARM
- 	select HAVE_DYNAMIC_FTRACE_WITH_REGS if HAVE_DYNAMIC_FTRACE
- 	select HAVE_EFFICIENT_UNALIGNED_ACCESS if (CPU_V6 || CPU_V6K || CPU_V7) && MMU
- 	select HAVE_EXIT_THREAD
--	select HAVE_FAST_GUP if ARM_LPAE
-+	select HAVE_FAST_GUP if ARM_LPAE && !(PREEMPT_RT && HIGHPTE)
- 	select HAVE_FTRACE_MCOUNT_RECORD if !XIP_KERNEL
- 	select HAVE_FUNCTION_ERROR_INJECTION
- 	select HAVE_FUNCTION_GRAPH_TRACER
-diff --git a/include/linux/console.h b/include/linux/console.h
-index 79ef2fd2bd155..467dee94f73a5 100644
---- a/include/linux/console.h
-+++ b/include/linux/console.h
-@@ -311,7 +311,6 @@ struct nbcon_write_context {
-  * @nbcon_state:	State for nbcon consoles
-  * @nbcon_seq:		Sequence number of the next record for nbcon to print
-  * @pbufs:		Pointer to nbcon private buffer
-- * @locked_port:	True, if the port lock is locked by nbcon
-  * @kthread:		Printer kthread for this console
-  * @rcuwait:		RCU-safe wait object for @kthread waking
-  * @irq_work:		Defer @kthread waking to IRQ work context
-@@ -345,7 +344,6 @@ struct console {
- 	atomic_t		__private nbcon_state;
- 	atomic_long_t		__private nbcon_seq;
- 	struct printk_buffers	*pbufs;
--	bool			locked_port;
- 	struct task_struct	*kthread;
- 	struct rcuwait		rcuwait;
- 	struct irq_work		irq_work;
-diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
-index 04e9b12d22002..4d45b8f9ec9ee 100644
---- a/include/linux/serial_core.h
-+++ b/include/linux/serial_core.h
-@@ -488,6 +488,7 @@ struct uart_port {
- 	struct uart_icount	icount;			/* statistics */
- 
- 	struct console		*cons;			/* struct console, if any */
-+	bool			nbcon_locked_port;	/* True, if the port is locked by nbcon */
- 	/* flags must be updated while holding port mutex */
- 	upf_t			flags;
- 
-diff --git a/kernel/printk/nbcon.c b/kernel/printk/nbcon.c
-index 1b1b585b1675b..b53d93585ee71 100644
---- a/kernel/printk/nbcon.c
-+++ b/kernel/printk/nbcon.c
-@@ -1586,7 +1586,7 @@ void nbcon_acquire(struct uart_port *up)
- 	if (!uart_is_nbcon(up))
- 		return;
- 
--	WARN_ON_ONCE(con->locked_port);
-+	WARN_ON_ONCE(up->nbcon_locked_port);
- 
- 	do {
- 		do {
-@@ -1597,7 +1597,7 @@ void nbcon_acquire(struct uart_port *up)
- 
- 	} while (!nbcon_context_enter_unsafe(&ctxt));
- 
--	con->locked_port = true;
-+	up->nbcon_locked_port = true;
- }
- EXPORT_SYMBOL_GPL(nbcon_acquire);
- 
-@@ -1623,13 +1623,13 @@ void nbcon_release(struct uart_port *up)
- 		.prio		= NBCON_PRIO_NORMAL,
- 	};
- 
--	if (!con->locked_port)
-+	if (!up->nbcon_locked_port)
- 		return;
- 
- 	if (nbcon_context_exit_unsafe(&ctxt))
- 		nbcon_context_release(&ctxt);
- 
--	con->locked_port = false;
-+	up->nbcon_locked_port = false;
- }
- EXPORT_SYMBOL_GPL(nbcon_release);
- 
-diff --git a/localversion-rt b/localversion-rt
-index 6f206be67cd28..c3054d08a1129 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt1
-+-rt2
+I don't think we can combine il_prev and cur_wil_node_weight because
+the task policy may be different than the current policy.
+
+i.e. it's totally valid to do the following:
+
+1) set_mempolicy(MPOL_INTERLEAVE)
+2) mbind(..., MPOL_WEIGHTED_INTERLEAVE)
+
+Using current->il_prev between these two policies, is just plain incorrect,
+so I will need to rethink this, and the existing code will need to be
+updated such that weighted_interleave does not use current->il_prev.
+
+~Gregory
+
 
