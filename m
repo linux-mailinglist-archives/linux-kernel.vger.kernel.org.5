@@ -1,112 +1,99 @@
-Return-Path: <linux-kernel+bounces-40491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF7E783E195
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:31:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D33383E197
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:32:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6573F1F28C53
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:31:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFB611F290B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:32:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 970B120B38;
-	Fri, 26 Jan 2024 18:31:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A58520B38;
+	Fri, 26 Jan 2024 18:32:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Wx2A9qie"
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="cz9CQuHo"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28049219F6
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 18:31:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ECDE18EAB
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 18:32:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706293888; cv=none; b=nsxOBsljejegJ/JG1oRvSpE+i3jNZdGoyQFp/S1cTQQAUsQXoKiyrGQ6DfJjtVdTwi9srn7nEgr9uf3Y76oteAM5yK04B/UflKGAg8w08oHdi6Y2Jy8Yi44INGG4dRUio46wcq2MFL9XaqBB/0b9mpVd4na+IqckJlw9W2ME630=
+	t=1706293932; cv=none; b=KfRxyw4m9jxzR77+8Nf0iSzAAzsWXrrT34DmJSEpuv6zZNFXUDk0oBIjtjDB2ZOf6R+RvU2lB0/93wTR42z2yY6gt305V3CTLPnhHyZngDsDpw/0KvPUL7V0xqEP/5WDK56jD20JtttKbQCntvBfZXkXnpOjNMcE1NbopPOJS2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706293888; c=relaxed/simple;
-	bh=W7B76i3+B9hYS0jCDzE1qW/RvQJCSXTVBuxx+AfGDdo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=F7OjNW48lUZeXjEym4Evqzo+VK8gS0fQyluaw05U5x97WwPvG3oBP+mjgmOJrBKYtIUTOJZUMj0rY7DWr643yiYPmWsA1u5qAZSG50v6MklDe5Le+Zq/6an5QhqQlIcdsmEVw/Y5X92YT/U3jrnQ2Dk5i1PiEObFNTqSWpA7z+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Wx2A9qie; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2cf3ed3b917so6841021fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:31:26 -0800 (PST)
+	s=arc-20240116; t=1706293932; c=relaxed/simple;
+	bh=npphpisri3XPKAbtB0a0IVCBAoWiXMc97DCOBdOZfzE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FD7vD/qbjAg6ja/p7gTeuJaxMwGdAoqE2V5rN2LXkBjwzZWi9KhZdcTOgGkhft8bREp4D8KLVKiTaCbS5ogCZz9KdqW1b3dlziwT6RT5dFYBUAciAecKDObLZQSNGyxtqM5ebmBbk3iTjYS8Xe2LphCf3thkCITaZHcf5Xpos2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=cz9CQuHo; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6ddd19552e6so437681b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:32:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1706293885; x=1706898685; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=mdy4NXmtqUV6APWQzUWxFYpWUDUY5MY8BJqI1nPSu7g=;
-        b=Wx2A9qieYIbSrzzcEStmTkov8NiyT7165kKVH7ip7ciWsRocp0fzGNISspD3qf1NKH
-         hQRA6hLnrrf8rdBpzJWu19hewRfRfOidN6aBT1RQxpj4xTLVZ/X0nTmUrqYwlPMU0XKj
-         lY7eTZ+yH2qp5ZnSQCEAMCZ9Z8kzTW3SEFKlA=
+        d=chromium.org; s=google; t=1706293930; x=1706898730; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JdX+qj0yNqnHj9tuX5qSNRIW39sn49NKdS7uftFX8bg=;
+        b=cz9CQuHoGDLBfAcMdTVQ6H43lb6pl4SQDF6X1RPSneXa8WSmIsEKHyGZsDAiXgDkRM
+         Mgr3l7nGjLYGyyoLa2fKQEdBD1r3gSGTvE9ohbfL3nfuI468riT+6WFFPXLBouz76oa0
+         pgTxxMvMsUeWgUukUu09M6u4PWsVra6pcoxqA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706293885; x=1706898685;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mdy4NXmtqUV6APWQzUWxFYpWUDUY5MY8BJqI1nPSu7g=;
-        b=nPfuwRdgAo34WWzlrm5NKDxuMtbOwgdL/zbufLz0DpdO4ljqHDS8+rnQSQHoxttCm/
-         kYe4OhCOKkjz5fLCG+9Nu05DiKPTOyf/Fs5LNfuNI+UhQb5LfVY0YcrZl7yW+pxkv9f3
-         tDT9RCESR/wdAmUUVsD1m4VMWSttQbK+UDJSimsp4csBbWsiGDo5uN7bQDr9I2ZaZN/I
-         GarYvwxiRz6o7KdaCjCl1kbbEl/PeCfL7OANk9uUbGF3cHVTh0krLCF//ixoYKK6W0jt
-         XMkqGJO+/k7ZSWPo7DYTJaVlVZs0vZEG148ndpObC4N4M9O3Kb7LebgZZiqBPDjHSG79
-         fP7A==
-X-Gm-Message-State: AOJu0YyH16KXJRpbeR8E4hxKM8iLMzGgS2rWCW4hSgOGv6PkneP2IEkb
-	u5jLamUGHOf9RGgvzlbLyOJwmx2+DYBZCmRohfJhjyLmHzXi2SUxhXH/x1PYGjWR04cDDnFzMjc
-	bGKU=
-X-Google-Smtp-Source: AGHT+IE8P1Dv6WwhpmMXN2aoqOtM8BQYoEqM6HHzP39FTQHNkRIfon8tx2WpW4bP7zyyH+N6pkv17w==
-X-Received: by 2002:a05:651c:626:b0:2cc:de75:71b4 with SMTP id k38-20020a05651c062600b002ccde7571b4mr87731lje.188.1706293884678;
-        Fri, 26 Jan 2024 10:31:24 -0800 (PST)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id t9-20020a2e7809000000b002ce06c6ee29sm231681ljc.77.2024.01.26.10.31.24
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jan 2024 10:31:24 -0800 (PST)
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2cf4a22e10dso7556291fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:31:24 -0800 (PST)
-X-Received: by 2002:a2e:be8a:0:b0:2cf:12a2:c1fa with SMTP id
- a10-20020a2ebe8a000000b002cf12a2c1famr96305ljr.215.1706293883810; Fri, 26 Jan
- 2024 10:31:23 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706293930; x=1706898730;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JdX+qj0yNqnHj9tuX5qSNRIW39sn49NKdS7uftFX8bg=;
+        b=w5t9HzOv8JQFs3FceF2ML5WlprFXp+6GKMESPfbY1U9hG7vbk1zWhaS9e6BA5WkT3f
+         kxrSLnl/e4RuyW7jd2tLKgRSQqYIvYdAzfJ2OL6EkgPCloqqf7ND2Iswoe//c/2J8gUi
+         8vlaGX7sss3b1QQeYHpmvl8GMB4Jv0OS5cuYV3a5DJB3AcWKP1nGdESeu/SuSsY4sNqP
+         fxEvVtPH6614/g6P+2PWpdTqAk0zpRk3vZsdmafiVWvTZ02+pLsUEEIVXd9DBL1smRHi
+         GAK/FmI7DF8/09ZtHhHCa+ht5B7oLJct0OV3hhC3zOSj+LPDHG8JR3LOf9Izq9xLhVqQ
+         zyow==
+X-Gm-Message-State: AOJu0YwqAlJ1sFRUsCpYhQYU4BTkz2uME9aLRqVXPqM+pkHQ6QVjv1gN
+	Xp2Q8QDXEeX1+zQFKo557MH/WTXpkxl6yxzb2nKOpwHltXBXN55HXnMjncW1fg==
+X-Google-Smtp-Source: AGHT+IHMQ8+WfnqXmO8t95sK/Rlm2mUekflUv4KpnP6ah1WQJ/+BLzZNOFgmY70/He3L42StAR2hFg==
+X-Received: by 2002:a05:6a00:1d1e:b0:6d9:e97d:c68a with SMTP id a30-20020a056a001d1e00b006d9e97dc68amr307550pfx.23.1706293930539;
+        Fri, 26 Jan 2024 10:32:10 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id r19-20020aa78453000000b006ddc1ae04eesm1392548pfn.192.2024.01.26.10.32.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 10:32:10 -0800 (PST)
+Date: Fri, 26 Jan 2024 10:32:09 -0800
+From: Kees Cook <keescook@chromium.org>
+To: j.granados@samsung.com
+Cc: Luis Chamberlain <mcgrof@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: Update sysctl tree location
+Message-ID: <202401261032.F8C0375E2@keescook>
+References: <20240126-for-6-8-v1-1-9695cdd9f8ef@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126131837.36dbecc8@gandalf.local.home>
-In-Reply-To: <20240126131837.36dbecc8@gandalf.local.home>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 26 Jan 2024 10:31:07 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whA8562VjU3MVBPMLsJ4u=ixecRpn=0UnJPPAxsBr680Q@mail.gmail.com>
-Message-ID: <CAHk-=whA8562VjU3MVBPMLsJ4u=ixecRpn=0UnJPPAxsBr680Q@mail.gmail.com>
-Subject: Re: [PATCH] eventfs: Give files a default of PAGE_SIZE size
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, 
-	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner <brauner@kernel.org>, 
-	Ajay Kaher <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240126-for-6-8-v1-1-9695cdd9f8ef@samsung.com>
 
-On Fri, 26 Jan 2024 at 10:18, Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> By following what sysfs does, and give files a default size of PAGE_SIZE,
-> it allows the tar to work. No event file is greater than PAGE_SIZE.
+On Fri, Jan 26, 2024 at 12:53:10PM +0100, Joel Granados via B4 Relay wrote:
+> From: Joel Granados <j.granados@samsung.com>
+> 
+> To more efficiently co-maintain the sysctl subsystem a shared repository
+> has been created at https://git.kernel.org/pub/scm/linux/kernel/git/sysctl/sysctl.git
+> and the sysctl-next branch that Luis Chamberlain (mcgrof@kernel.org) maintained at
+> https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/log/?h=sysctl-next
+> has moved to the shared sysctl-next branch located at
+> https://git.kernel.org/pub/scm/linux/kernel/git/sysctl/sysctl.git/log/?h=sysctl-next.
+> This commit changes the sysctl tree in MAINTAINERS to reflect this change.
+> 
+> Signed-off-by: Joel Granados <j.granados@samsung.com>
 
-No, please. Just don't.
+Acked-by: Kees Cook <keescook@chromium.org>
 
-Nobody has asked for this, and nobody sane should use 'tar' on tracefs anyway.
-
-It hasn't worked before, so saying "now you can use tar" is just a
-*bad* idea. There is no upside, only downsides, with tar either (a)
-not working at all on older kernels or (b) complaining about how the
-size isn't reliable on newer ones.
-
-So please. You should *NOT* look at "this makes tar work, albeit badly".
-
-You should look at whether it improves REAL LOADS. And it doesn't. All
-it does is add a hack for a bad idea. Leave it alone.
-
-                   Linus
+-- 
+Kees Cook
 
