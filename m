@@ -1,132 +1,109 @@
-Return-Path: <linux-kernel+bounces-39699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA36883D514
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:58:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ACC683D51B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:58:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDB471C24231
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 08:58:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0BEDB2747D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 08:58:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AE8244C97;
-	Fri, 26 Jan 2024 07:27:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="K/LOaOpm"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61C2644C8D
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 07:27:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 183BB47F50;
+	Fri, 26 Jan 2024 07:28:00 +0000 (UTC)
+Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net (zg8tmja2lje4os4yms4ymjma.icoremail.net [206.189.21.223])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D492111A2;
+	Fri, 26 Jan 2024 07:27:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=206.189.21.223
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706254026; cv=none; b=iN7sYMG/EX06OGc0qdF099XxNumhDbMJ07kjyFxMNFK8Uv4ciIYNy9SdgiMjA3J1q4HEdMzEYgenrikxLWXvW07+iz4360cOOzzL3QziVg3Y7F6QGRVLonaZurHb/SUpDl0e5oVPSlDO3D8MOeY3IvVkW9tMbqZFYPwSanZ7xQY=
+	t=1706254079; cv=none; b=DxpBjua+mgiTaGdSLubcczDOGD+CJVhDfjxR6bqvNc1D4omJzd1R5ESlvS6Yse8XCR3AvXSrqoFdkCjUqRD0degjSPP0cOHBB2fNqjwtweJOo6MS1gMuZczNmA/paz93KDNQwwI4CoSdvvU/I0cQMom0EddSnNnIWJCO4Gr823k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706254026; c=relaxed/simple;
-	bh=PeMyJfDpnk2i+5sA83xjMKB+MOlBBxSjJp10y9Cb9lM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Toyy/aNRvvysNpKLGoqGo3b+c836UfFdwu1GiJcMxanUwd3Uj08x8ZPe9Mm4fWQkEBA64wmquZgq3Ofo0ASrkp8GhAbGcUrAjegOli7qGm7Y0gW61uqFVzK/4MfJ/SAon8l1oGB79Z7IOTdxAlq0rRAR3pIC4TK+4v1N8vX0PR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=K/LOaOpm; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40ea5653f6bso876155e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 23:27:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706254022; x=1706858822; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=731Y0O4P28eUOEwYYfDx4qMG9ZVWKGkvhdRiYGuXrbY=;
-        b=K/LOaOpmWCcWG9F98BD9+usBXU+a2inQh96ZbpA4ulQrIPs785dT78dyfD6tzFn1zt
-         kdU4GsJPKTy9gHNAK8eQ9hdniJOq9xlfiUwxiRrZWBIE9hP/3Dq+9JV5hhhTXE7hoO1G
-         IMvAo0b8NSDuo2ffJnCwB0UzY6AOjlgm7pdtB+6Im8KzaZbb7eqlu1E6t+o/ppPflMk7
-         ZfCEuJVgnrEdoM4WKnXYS5DF4PB222BTM5w7yQu/JO+k+45q1hsMlXWmZdqIDih+nbdv
-         9QQ/uSB2o2Zio6FuY3LlnxpBf0+rO8Bz0qVh0B1VP9W/GJTbMAjZOyxUHUPa2f4DPgBN
-         eJIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706254022; x=1706858822;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=731Y0O4P28eUOEwYYfDx4qMG9ZVWKGkvhdRiYGuXrbY=;
-        b=eXuZ0xfGiDX2GFJCd9bOoEA4tPyGVFlf0d08m1T9LwUFjgRJks+G6FbM2Sm3NzaFEm
-         ems2et9s++KxLAjrNbVnl8v8p4eIgTmuaBZBVWHfmwyd8n+bK2ZPSy2YUNCUjp8K6ghW
-         s4ie/g6EJHg5FdsDx4amyX2pPvCClVTgPiPzskUJ1qy6DoTlEA1WodA59S2O8dt3OzXM
-         yxZDdpEtSViA78ITvtwkE2DhSnDPg3VV+wAFYhWUb9acnUaj3yBW6Md6fG3ccSeeDial
-         QnveBcQjSJyYZ24AGXUuyhrwvlp/kObVRtgkshhj4rUtUUS1+zUnmI2Sh7sIkFy/ZybT
-         J9nQ==
-X-Gm-Message-State: AOJu0YyAt12DXSRWRxzz5Rcn6G2KNJkItxdytuS8KDbi6jbQwWEXTPYe
-	GgNGBDHOjuhJoJMDeERHJbsatSLS6oDR0dKL5Gl/s9BL2/6lQCmX74g+GaGCLlU=
-X-Google-Smtp-Source: AGHT+IE+eU0ILS2SbeLlm9XVK5F1FcB1sUPlbR4/ZahYQIzIZIq5ZdqloRBzfOFei+0HE4QMbwS1MQ==
-X-Received: by 2002:a05:600c:1f91:b0:40e:5ad1:5820 with SMTP id je17-20020a05600c1f9100b0040e5ad15820mr494864wmb.161.1706254022568;
-        Thu, 25 Jan 2024 23:27:02 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id p33-20020a05600c1da100b0040ed4deaf2bsm1861243wms.43.2024.01.25.23.27.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 23:27:02 -0800 (PST)
-Message-ID: <6a157604-16dd-43b2-90aa-466e8185ff53@linaro.org>
-Date: Fri, 26 Jan 2024 07:27:00 +0000
+	s=arc-20240116; t=1706254079; c=relaxed/simple;
+	bh=5QnklExlc4DdUFMJs23OBWqLW5U2p8WOgQXGSW6e8qQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
+	 MIME-Version:Message-ID; b=SRPoV/ZJN+K62sSXR7inKULSJz0tB6Se3rmHzd8oSAcycHzZs8Dlkrs07kZ/cCAMyY8Qe9dWFChkmatUaTumrWT0xyQIJKjkwTIzlFoWaAPzShOIFGVTaXddD0bKw7cj6olFgyCqXuL3rIIPhkfrdj9fjrhy82LfvGS/MhV+69g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=206.189.21.223
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from alexious$zju.edu.cn ( [124.90.105.91] ) by
+ ajax-webmail-mail-app4 (Coremail) ; Fri, 26 Jan 2024 15:27:35 +0800
+ (GMT+08:00)
+Date: Fri, 26 Jan 2024 15:27:35 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From: alexious@zju.edu.cn
+To: "Simon Horman" <horms@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	"Eric Dumazet" <edumazet@google.com>,
+	"Jakub Kicinski" <kuba@kernel.org>,
+	"Paolo Abeni" <pabeni@redhat.com>,
+	"Taku Izumi" <izumi.taku@jp.fujitsu.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] fjes: fix memleaks in fjes_hw_setup
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.4-cmXT5 build
+ 20231205(37e20f0e) Copyright (c) 2002-2024 www.mailtech.cn
+ mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
+In-Reply-To: <20240122210538.GJ126470@kernel.org>
+References: <20240122172445.3841883-1-alexious@zju.edu.cn>
+ <20240122210538.GJ126470@kernel.org>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 21/28] spi: s3c64xx: infer fifosize from the compatible
-Content-Language: en-US
-To: Sam Protsenko <semen.protsenko@linaro.org>
-Cc: broonie@kernel.org, andi.shyti@kernel.org, arnd@arndb.de,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- alim.akhtar@samsung.com, linux-spi@vger.kernel.org,
- linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-arch@vger.kernel.org, andre.draszik@linaro.org,
- peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com
-References: <20240125145007.748295-1-tudor.ambarus@linaro.org>
- <20240125145007.748295-22-tudor.ambarus@linaro.org>
- <CAPLW+4mG_xVvZRrE_jfMxK2zO9GnLAPrHPdzW5bCOPpoiuCjsA@mail.gmail.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <CAPLW+4mG_xVvZRrE_jfMxK2zO9GnLAPrHPdzW5bCOPpoiuCjsA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Message-ID: <9c63817.dd25.18d44aab80c.Coremail.alexious@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:cS_KCgB3k4LoXrNlOyemAA--.13255W
+X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/1tbiAg0MAGWyq+MR-wAAsy
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+	daVFxhVjvjDU=
 
-
-
-On 1/25/24 22:28, Sam Protsenko wrote:
-> On Thu, Jan 25, 2024 at 8:50 AM Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
->> Infer the FIFO size from the compatible, where all the instances of the
->> SPI IP have the same FIFO size. This way we no longer depend on the SPI
->> alias from the device tree to select the FIFO size, thus we remove the
->> dependency of the driver on the SPI alias.
->>
->> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
->> ---
->>  drivers/spi/spi-s3c64xx.c | 8 ++++----
->>  1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
->> index 5a93ed4125b0..b86eb0a77b60 100644
->> --- a/drivers/spi/spi-s3c64xx.c
->> +++ b/drivers/spi/spi-s3c64xx.c
->> @@ -1381,7 +1381,7 @@ static const struct dev_pm_ops s3c64xx_spi_pm = {
->>  };
->>
->>  static const struct s3c64xx_spi_port_config s3c2443_spi_port_config = {
->> -       .fifo_lvl_mask  = { 0x7f },
-> How will it work with already existing out-of-tree dts's, if only
-> kernel image gets updated? I wonder if it's considered ok to break
-> that compatibility like this.
-> 
-
-ah, good catch, Sam! I prepared everything to not break older device
-trees and then I removed this :).
-
->> +       .fifosize       = 64,
-
-Adding .fifosize and keeping fifo_lvl_mask will not break backward
-compatibility. In s3c64xx_spi_get_fifosize() I first check if .fifosize
-is set and use that, and if not set, use the .fifo_lvl_mask.
-
+PiBPbiBUdWUsIEphbiAyMywgMjAyNCBhdCAwMToyNDo0MkFNICswODAwLCBaaGlwZW5nIEx1IHdy
+b3RlOgo+ID4gSW4gZmplc19od19zZXR1cCwgaXQgYWxsb2NhdGVzIHNldmVyYWwgbWVtb3J5IGFu
+ZCBkZWxheSB0aGUgZGVhbGxvY2F0aW9uCj4gPiB0byB0aGUgZmplc19od19leGl0IGluIGZqZXNf
+cHJvYmUgdGhyb3VnaCB0aGUgZm9sbG93aW5nIGNhbGwgY2hhaW46Cj4gPiAKPiA+IGZqZXNfcHJv
+YmUKPiA+ICAgfC0+IGZqZXNfaHdfaW5pdAo+ID4gICAgICAgICB8LT4gZmplc19od19zZXR1cAo+
+ID4gICB8LT4gZmplc19od19leGl0Cj4gPiAKPiA+IEhvd2V2ZXIsIHdoZW4gZmplc19od19zZXR1
+cCBmYWlscywgZmplc19od19leGl0IHdvbid0IGJlIGNhbGxlZCBhbmQgdGh1cwo+ID4gYWxsIHRo
+ZSByZXNvdXJjZXMgYWxsb2NhdGVkIGluIGZqZXNfaHdfc2V0dXAgd2lsbCBiZSBsZWFrZWQuIElu
+IHRoaXMKPiA+IHBhdGNoLCB3ZSBmcmVlIHRob3NlIHJlc291cmNlcyBpbiBmamVzX2h3X3NldHVw
+IGFuZCBwcmV2ZW50cyBzdWNoIGxlYWtzLgo+ID4gCj4gPiBGaXhlczogMmZjYmNhNjg3NzAyICgi
+ZmplczogcGxhdGZvcm1fZHJpdmVyJ3MgLnByb2JlIGFuZCAucmVtb3ZlIHJvdXRpbmUiKQo+ID4g
+U2lnbmVkLW9mZi1ieTogWmhpcGVuZyBMdSA8YWxleGlvdXNAemp1LmVkdS5jbj4KPiAKPiBIaSBa
+aGlwZW5nIEx1LAo+IAo+IEl0IGxvb2tzIGxpa2UgdGhlIGxhc3Qgbm9uLXRyaXZpYWwgY2hhbmdl
+IHRvIHRoaXMgZHJpdmVyIHdhcyBpbiAyMDE2Lgo+IFNvIHBlcmhhcHMgaXQgaXMgYmV0dGVyIHRv
+IGxlYXZlIGl0IGJlLgo+IAo+IEJ1dCBpZiBub3QsIHRoaXMgcGF0Y2ggZG9lcyBsb29rIGNvcnJl
+Y3QgdG8gbWUuCj4gCj4gUmV2aWV3ZWQtYnk6IFNpbW9uIEhvcm1hbiA8aG9ybXNAa2VybmVsLm9y
+Zz4KCkkgdGhpbmsgdGhpcyBwYXRjaCBkb2Vzbid0IGNoYW5nZSBhIGxvdCBzaW5jZSBpdCBqdXN0
+IHJlZmFjdG9yIHRoZSBkZWFsbG9jYXRpb24Kd2F5cyBpbnRvIHVud2luZCBsYWRkZXJzIHdoaWxl
+IGZpeCBhIG1lbWxlYWsuCgo+IAo+IC4uLgo+IAo+ID4gQEAgLTI3Myw2ICsyNzcsMjUgQEAgc3Rh
+dGljIGludCBmamVzX2h3X3NldHVwKHN0cnVjdCBmamVzX2h3ICpodykKPiA+ICAJZmplc19od19p
+bml0X2NvbW1hbmRfcmVnaXN0ZXJzKGh3LCAmcGFyYW0pOwo+ID4gIAo+ID4gIAlyZXR1cm4gMDsK
+PiA+ICsKPiA+ICtmcmVlX2VwYnVmOgo+ID4gKwlmb3IgKGVwaWR4ID0gMDsgZXBpZHggPCBody0+
+bWF4X2VwaWQgOyBlcGlkeCsrKSB7Cj4gPiArCQlpZiAoZXBpZHggPT0gaHctPm15X2VwaWQpCj4g
+PiArCQkJY29udGludWU7Cj4gPiArCQlmamVzX2h3X2ZyZWVfZXBidWYoJmh3LT5lcF9zaG1faW5m
+b1tlcGlkeF0udHgpOwo+ID4gKwkJZmplc19od19mcmVlX2VwYnVmKCZody0+ZXBfc2htX2luZm9b
+ZXBpZHhdLnJ4KTsKPiA+ICsJfQo+ID4gKwlmamVzX2h3X2ZyZWVfc2hhcmVkX3N0YXR1c19yZWdp
+b24oaHcpOwo+ID4gK2ZyZWVfcmVzX2J1ZjoKPiA+ICsJa2ZyZWUoaHctPmh3X2luZm8ucmVzX2J1
+Zik7Cj4gPiArCWh3LT5od19pbmZvLnJlc19idWYgPSBOVUxMOwo+ID4gK2ZyZWVfcmVxX2J1ZjoK
+PiA+ICsJa2ZyZWUoaHctPmh3X2luZm8ucmVxX2J1Zik7Cj4gPiArCWh3LT5od19pbmZvLnJlcV9i
+dWYgPSBOVUxMOwo+ID4gK2ZyZWVfZXBfaW5mbzoKPiA+ICsJa2ZyZWUoaHctPmVwX3NobV9pbmZv
+KTsKPiA+ICsJaHctPmVwX3NobV9pbmZvID0gTlVMTDsKPiA+ICsJcmV0dXJuIHJlc3VsdDsKPiAK
+PiBGV0lJVywgSSdtIG5vdCBzdXJlIGl0IGlzIG5lY2Vzc2FyeSB0byBzZXQgdGhlc2UgcG9pbnRl
+cnMgTlVMTCwKPiBhbHRob3VnaCBpdCBkb2Vzbid0IGRvIGFueSBoYXJtLgoKSSBzZXQgdGhlc2Ug
+cG9pbnRlcnMgdG8gTlVMTCBzaW5jZSBpdHMgY2xlYW4gdXAgZnVuY3Rpb24gZmplc19od19jbGVh
+bnVwCmRvIHNvLiBQZXJzb25hbGx5LCBJIHRlbmQgdG8gZm9sbG93aW5nIHRoZSBleGlzdGluZyBj
+b2RlIHN0eWxlIGluIHRoZSAKc2FtZSBtb2R1bGUuCgo+IAo+IEFsc28sIGlmIHRoaXMgZnVuY3Rp
+b24gcmV0dXJucyBhbiBlcnJvciwKPiBkb2VzIHRoZSBjYWxsZXIgKGZqZXNfaHdfaW5pdCgpKSBs
+ZWFrIGh3LT5od19pbmZvLnRyYWNlPwoKV2VsbCwgeWVzLCBpdCdzIGEgbGl0dGxlIGJpdCB3aXJl
+ZCB0aGF0IGZqZXNfaHdfaW5pdCBkb2Vzbid0IGhhbmRsZSAKZXJyb3JzIG9mIGZqZXNfaHdfc2V0
+dXAgYW5kIHZ6YWxsb2Mgb2YgaHctPmh3X2luZm8udHJhY2UgYXMgbm9ybWFsCmZ1bmN0aW9ucyBk
+by4KTWF5YmUgYW5vdGhlciBwYXRjaCBuZWVkIHRvIGJlIHN1Ym1pdHRlZCB0byBkZWFsIHdpdGgg
+dGhpcyBwcm9ibGVtLgoKPiAKPiA+ICB9Cj4gPiAgCj4gPiAgc3RhdGljIHZvaWQgZmplc19od19j
+bGVhbnVwKHN0cnVjdCBmamVzX2h3ICpodykKPiA+IC0tIAo+ID4gMi4zNC4xCj4gPiAK
 
