@@ -1,78 +1,97 @@
-Return-Path: <linux-kernel+bounces-40122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9693B83DA98
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:16:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62C5F83DA99
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:16:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 370F11F21059
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:16:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95A121C21CC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:16:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C63BA1B810;
-	Fri, 26 Jan 2024 13:16:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="4jIEQT8Y"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 114DF1B7F9;
+	Fri, 26 Jan 2024 13:16:17 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A16F01B7F9;
-	Fri, 26 Jan 2024 13:15:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C2701B801
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:16:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706274960; cv=none; b=t/4uly3gUmErHY+3hePjs5nIasG4U3y10pQeOYQiyOXcMzuweG6FT9fdt1Y1u8KKCDO/qyS98mP8yHQGtZndC0q3SWdk02zpan9M2a42VKG9AiCsqVmahMP/6JWX3jNqSH9x6D3fMs1a85DrQ+6rf3f/sXiF+6jMRG+/d5bqmoE=
+	t=1706274976; cv=none; b=ow9KnxqpEgAPPp37NHv/sdfupl8tLELWW7ZohQ/+gMd2JRUpmo1SYfvklhuJPscrTlPXamMGxJKVI9ur8IbtFEY44PyN2ivSqWN31jbXWz6l9/RuOHfhANELBrrK+bnHJWB9LCM+prKGXl5dxdnlpVLXj++CKXwQZupDHSknhIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706274960; c=relaxed/simple;
-	bh=FGY+lD+y60lvRkLTTesPfWuaivVUyv7pYO/2UAczccA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TH6WWTKh1+LVvazY9wPif5HvmyDRqAen9ypaY0uljRII0ysC4Wk9USRDsxTgN2i/xpny93V0lgTr5dfCjJ1soRVwU8vPIGe5U2sRAtGaJlVCdgcpZdmF11flVv0HX3Hi6KooH8kEbjMh6Gs8wkOAKaP17e/6wGfkfm9w0cTcNOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=4jIEQT8Y; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=50z3iua35YdHF3I4F9KF6AiAKfWmqunUUJx8CeyD42I=; b=4jIEQT8Y909onTWoy8B8fayYei
-	/1O+LlSWYYQgibr7K/vjXYCTR0szYmjhB/dEQOVyysqtaDy3RIY93Am++wBoL7QyCLHOWmfw9N62W
-	HcPVV/KiX3odBWaQkRjIx4YlAWtux1XRbQ7Lu+EDpMqbns4mpneZewmbWX7hv/ncYPlI=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rTM3X-006AmJ-5i; Fri, 26 Jan 2024 14:15:39 +0100
-Date: Fri, 26 Jan 2024 14:15:39 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-Cc: Horatiu Vultur <horatiu.vultur@microchip.com>, hkallweit1@gmail.com,
-	linux@armlinux.org.uk, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, richardcochran@gmail.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	UNGLinuxDriver@microchip.com,
-	Maxime Chevallier <maxime.chevallier@bootlin.com>,
-	Divya Koppera <divya.koppera@microchip.com>
-Subject: Re: [PATCH net-next] net: micrel: Fix set/get PHC time for lan8814
-Message-ID: <a962b46c-343d-411b-9152-514b35aa4f00@lunn.ch>
-References: <20240126073042.1845153-1-horatiu.vultur@microchip.com>
- <8da0a157-6a09-4d82-ad36-7428fdb27f9b@linux.dev>
+	s=arc-20240116; t=1706274976; c=relaxed/simple;
+	bh=6WEf8P0PdldtUGk1fUeRoFVpMCxznnbJzYhHiJCgxc8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=O/57gmcsozt6FV+6wdWWzyx0lvBMG+PT01X0gzxJ0ICyf25o6vCvnPDIydM3NAcg0dXib4I2TQWo9DIU9ZkoofoakUYXOb0VrYvpu7UjKDF5jNrXkpGHmEF7EXcNipqShkkRmus1nn2ynyV5NSdqZi9WqNF4lTkd3OBG5N4tQH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5AC1C433F1;
+	Fri, 26 Jan 2024 13:16:14 +0000 (UTC)
+Date: Fri, 26 Jan 2024 08:16:16 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Christian Brauner <brauner@kernel.org>, Linus Torvalds
+ <torvalds@linux-foundation.org>, Kees Cook <keescook@chromium.org>,
+ linux-kernel@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, Mark
+ Rutland <mark.rutland@arm.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Andrew Morton
+ <akpm@linux-foundation.org>, Al Viro <viro@zeniv.linux.org.uk>, Ajay Kaher
+ <ajay.kaher@broadcom.com>
+Subject: Re: [for-linus][PATCH 1/3] eventfs: Have the inodes all for files
+ and directories all be the same
+Message-ID: <20240126081616.28c02f10@gandalf.local.home>
+In-Reply-To: <CAMuHMdU-+RmngWJwpHYPjVcaOe3NO37Cu8msLvqePdbyk8qmZA@mail.gmail.com>
+References: <20240117143548.595884070@goodmis.org>
+	<20240117143810.531966508@goodmis.org>
+	<CAMuHMdXKiorg-jiuKoZpfZyDJ3Ynrfb8=X+c7x0Eewxn-YRdCA@mail.gmail.com>
+	<20240122100630.6a400dd3@gandalf.local.home>
+	<CAMuHMdXD0weO4oku8g2du6fj-EzxGaF+0i=zrPScSXwphFAZgg@mail.gmail.com>
+	<20240122114743.7e46b7cb@gandalf.local.home>
+	<CAHk-=wiq5mr+wSb6pmtt7QqBhQo_xr7ip=yMwQ5ryWVwCyMhfg@mail.gmail.com>
+	<CAHk-=wjGxVVKvxVf=NDnMhB3=eQ_NMiEY3onG1wRAjJepig=aw@mail.gmail.com>
+	<CAHk-=wiLqJYT2GGSBhKuJS-Uq1DVq3S32oP0SwqQiATuBivxcg@mail.gmail.com>
+	<20240122144443.0f9cf5b9@gandalf.local.home>
+	<20240125-deportation-sogenannten-2d57a7ce8f81@brauner>
+	<20240125130731.3b0e2a42@gandalf.local.home>
+	<20240125130821.0a1cd3a7@gandalf.local.home>
+	<CAMuHMdU-+RmngWJwpHYPjVcaOe3NO37Cu8msLvqePdbyk8qmZA@mail.gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8da0a157-6a09-4d82-ad36-7428fdb27f9b@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-> > +	*sec |= lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_MID);
-> 
-> lanphy_read_page_reg returns int, but only 16 bits have meanings here.
-> Is it safe to assume that other 16 bits will be zeros always?
+On Fri, 26 Jan 2024 09:07:06 +0100
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-Yes. __phy_read() should only return a negative error code, or a value
-which fits in a u16. If any of the top bits are set, its a bug in the
-MDIO driver which needs finding and fixing.
+> Hi Steven.
+>=20
+> On Thu, Jan 25, 2024 at 7:08=E2=80=AFPM Steven Rostedt <rostedt@goodmis.o=
+rg> wrote:
+> > On Thu, 25 Jan 2024 13:07:31 -0500
+> > Steven Rostedt <rostedt@goodmis.org> wrote: =20
+> > > Actually, inodes isn't the biggest issue of tar, as tar *is* a common
+> > > operation on tracefs. =20
+> >
+> > Correction. tar would be a common operation if it worked ;-) =20
+>=20
+> What would be needed to fix that?  I regularly use tar on other virtual
+> file systems (e.g. /sys/firmware/devicetree/), which works fine.
 
-     Andrew
+Looks like all /sys files have one page in size. I could change the default
+file size to one page and it might work (if the inodes had different
+numbers), as I don't see any format file greater than 4k.
+
+This would fix the events for tar, but it couldn't do the same for tracing.
+As some files don't actually have a size.
+
+-- Steve
+
+
+
 
