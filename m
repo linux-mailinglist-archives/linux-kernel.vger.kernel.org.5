@@ -1,200 +1,203 @@
-Return-Path: <linux-kernel+bounces-40221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40196-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA02683DCAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:45:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3717E83DC16
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:36:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 759231F2BF6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:45:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69C4B1C20A8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:36:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FF5B1CFBF;
-	Fri, 26 Jan 2024 14:45:01 +0000 (UTC)
-Received: from mail.aperture-lab.de (mail.aperture-lab.de [116.203.183.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 820911CF8B;
-	Fri, 26 Jan 2024 14:44:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.183.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E855E1CA91;
+	Fri, 26 Jan 2024 14:36:31 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB0F81CA8D;
+	Fri, 26 Jan 2024 14:36:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706280300; cv=none; b=FKFmztut/kZ18CV6ETVyaEC34FaYvUQoK6TrdzwIg91aN3PiyuUrd5XuaMEZH6ZIuhieilQh8HWVbGxh5hQ1PenZHr1y6UGJdcx3MatZkemB/KeD6BbRBPJcTOEH80p43llWZ7bk3Q77GXvTuf34Lo1jyaYo/QQUGy3rh2RcGdQ=
+	t=1706279791; cv=none; b=k0HXItufyKCIytnlYDMQWoe0syQsMZ5vJZFIkHrOnhMMhQz4NWKHicAkxgDJabihZEtZgj9JDMPycJZZ4nZoYf8qAG0vd3/3wLwb5MFu8airB7yKT9C8ow1nygpsi2iKi99CYkjEa/4y4bPtyz0S4J8FHyj9BwyOr59P6wW2E4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706280300; c=relaxed/simple;
-	bh=uHtepOo8gbOXT2LRNekmrAe1Ci4v1SSIgleK9lZ3iak=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Yd/wNtyr2sjnkD/29L34Udsqmw/M2hRvIVJtTJdKpTiA3foPe01to4lT4NgkaciDvf/aHCC3XiEkgC0hYBeSiO/Hn7UeuNdui71WIRoPqxUpkMwk+kFkRv7ljasVmWRcPDyvk/VXFHqorPkCzcnmPBGi04CXGFhk4uVeQiq+/vE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c0d3.blue; spf=pass smtp.mailfrom=c0d3.blue; arc=none smtp.client-ip=116.203.183.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c0d3.blue
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c0d3.blue
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 25D5040B8F;
-	Fri, 26 Jan 2024 15:36:37 +0100 (CET)
-From: =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
-To: netdev@vger.kernel.org
-Cc: bridge@lists.linux.dev,
-	b.a.t.m.a.n@lists.open-mesh.org,
-	linux-kernel@vger.kernel.org,
-	Roopa Prabhu <roopa@nvidia.com>,
-	Nikolay Aleksandrov <razor@blackwall.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	=?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
-Subject: [PATCH net] bridge: mcast: fix disabled snooping after long uptime
-Date: Fri, 26 Jan 2024 15:36:07 +0100
-Message-ID: <20240126143607.5649-1-linus.luessing@c0d3.blue>
-X-Mailer: git-send-email 2.42.0
+	s=arc-20240116; t=1706279791; c=relaxed/simple;
+	bh=fCnJQJroZAwwsS6L657G3W7qNfWzolJI1ZIvcLI9x44=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HRDid4+Z1CcComGw9QW++fifrD217EhqQ/BVmcB8/XLa9pKFuGgsLl840utJXasOU20AWIEbi4SBH+ZHKreyFUN4gl52d1sh292ZlxP63mZsyeUb6t+nO44T9uoJM87i8x+PhZUk9Dm+KQu3JVPvDvE5pZ0Jachi8FzYo722PFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4205D1FB;
+	Fri, 26 Jan 2024 06:37:12 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.47.163])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 644823F73F;
+	Fri, 26 Jan 2024 06:36:25 -0800 (PST)
+Date: Fri, 26 Jan 2024 14:36:16 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Marc Zyngier <maz@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Hector Martin <marcan@marcan.st>,
+	Ian Rogers <irogers@google.com>, acme@redhat.com,
+	james.clark@arm.com, john.g.garry@oracle.com, leo.yan@linaro.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-perf-users@vger.kernel.org, mike.leach@linaro.org,
+	namhyung@kernel.org, suzuki.poulose@arm.com, tmricht@linux.ibm.com,
+	will@kernel.org
+Subject: Re: [PATCH] perf print-events: make is_event_supported() more robust
+Message-ID: <ZbPDYG2Bd2H7C_Es@FVFF77S0Q05N>
+References: <20240116170348.463479-1-mark.rutland@arm.com>
+ <8734uwxrca.wl-maz@kernel.org>
+ <ZafEFU7kwf6W0_Qx@FVFF77S0Q05N.cambridge.arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZafEFU7kwf6W0_Qx@FVFF77S0Q05N.cambridge.arm.com>
 
-The original idea of the delay_time check was to not apply multicast
-snooping too early when an MLD querier appears. And to instead wait at
-least for MLD reports to arrive before switching from flooding to group
-based, MLD snooped forwarding, to avoid temporary packet loss.
+On Wed, Jan 17, 2024 at 12:12:05PM +0000, Mark Rutland wrote:
+> On Wed, Jan 17, 2024 at 09:05:25AM +0000, Marc Zyngier wrote:
+> > However, I'm seeing some slightly odd behaviours:
 
-However in a batman-adv mesh network it was noticed that after 248 days of
-uptime 32bit MIPS based devices would start to signal that they had
-stopped applying multicast snooping due to missing queriers - even though
-they were the elected querier and still sending MLD queries themselves.
+I believe that this is a separate issue; info dump below.
+> > $ sudo ./perf stat -e cycles:k ~/hackbench 100 process 1000
+> > Running with 100*40 (== 4000) tasks.
+> > Time: 3.313
+> > 
+> >  Performance counter stats for '/home/maz/hackbench 100 process 1000':
+> > 
+> >    <not supported>      apple_firestorm_pmu/cycles:k/                                         
+> >    <not supported>      apple_icestorm_pmu/cycles:k/                                          
+> > 
+> >        3.467568841 seconds time elapsed
+> > 
+> >       13.080111000 seconds user
+> >       53.162099000 seconds sys
+> > 
+> > I would have expected it to count, but it didn't. For that to work, I
+> > have to add the 'H' modifier:
 
-While time_is_before_jiffies() generally is safe against jiffies
-wrap-arounds, like the code comments in jiffies.h explain, it won't
-be able to track a difference larger than ULONG_MAX/2. With a 32bit
-large jiffies and one jiffies tick every 10ms (CONFIG_HZ=100) on these MIPS
-devices running OpenWrt this would result in a difference larger than
-ULONG_MAX/2 after 248 (= 2^32/100/60/60/24/2) days and
-time_is_before_jiffies() would then start to return false instead of
-true. Leading to multicast snooping not being applied to multicast
-packets anymore.
+I gave that a spin with the aforementioned hacked-up PMUv3 driver, and I see
+the same:
 
-Fix this issue by using a proper timer_list object which won't have this
-ULONG_MAX/2 difference limitation.
+| # ./perf-after stat -e cycles true
+| 
+|  Performance counter stats for 'true':
+| 
+|      <not counted>      armv8_pmuv3_0/cycles/                                                   (0.00%)
+|            1375271      armv8_pmuv3_1/cycles/                                                 
+| 
+|        0.001153070 seconds time elapsed
+| 
+|        0.001204000 seconds user
+|        0.000000000 seconds sys
+| 
+| 
+| # ./perf-after stat -e cycles:k true
+| 
+|  Performance counter stats for 'true':
+| 
+|    <not supported>      armv8_pmuv3_0/cycles:k/                                               
+|    <not supported>      armv8_pmuv3_1/cycles:k/                                               
+| 
+|        0.000983130 seconds time elapsed
+| 
+|        0.001037000 seconds user
+|        0.000000000 seconds sys
+| 
+| 
+| # ./perf-after stat -e cycles:kH true
+| 
+|  Performance counter stats for 'true':
+| 
+|      <not counted>      armv8_pmuv3_0/cycles:kH/                                                (0.00%)
+|             932067      armv8_pmuv3_1/cycles:kH/                                              
+| 
+|        0.001090100 seconds time elapsed
+| 
+|        0.001125000 seconds user
+|        0.000000000 seconds sys
 
-Fixes: b00589af3b04 ("bridge: disable snooping if there is no querier")
-Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
----
- net/bridge/br_multicast.c | 20 +++++++++++++++-----
- net/bridge/br_private.h   |  4 ++--
- 2 files changed, 17 insertions(+), 7 deletions(-)
+.. though interestingly 'cycles:u' works:
 
-diff --git a/net/bridge/br_multicast.c b/net/bridge/br_multicast.c
-index d7d021af1029..df14ee36ea20 100644
---- a/net/bridge/br_multicast.c
-+++ b/net/bridge/br_multicast.c
-@@ -1762,6 +1762,10 @@ static void br_ip6_multicast_querier_expired(struct timer_list *t)
- }
- #endif
- 
-+static inline void br_multicast_query_delay_expired(struct timer_list *t)
-+{
-+}
-+
- static void br_multicast_select_own_querier(struct net_bridge_mcast *brmctx,
- 					    struct br_ip *ip,
- 					    struct sk_buff *skb)
-@@ -3198,7 +3202,7 @@ br_multicast_update_query_timer(struct net_bridge_mcast *brmctx,
- 				unsigned long max_delay)
- {
- 	if (!timer_pending(&query->timer))
--		query->delay_time = jiffies + max_delay;
-+		mod_timer(&query->delay_timer, jiffies + max_delay);
- 
- 	mod_timer(&query->timer, jiffies + brmctx->multicast_querier_interval);
- }
-@@ -4041,13 +4045,11 @@ void br_multicast_ctx_init(struct net_bridge *br,
- 	brmctx->multicast_querier_interval = 255 * HZ;
- 	brmctx->multicast_membership_interval = 260 * HZ;
- 
--	brmctx->ip4_other_query.delay_time = 0;
- 	brmctx->ip4_querier.port_ifidx = 0;
- 	seqcount_spinlock_init(&brmctx->ip4_querier.seq, &br->multicast_lock);
- 	brmctx->multicast_igmp_version = 2;
- #if IS_ENABLED(CONFIG_IPV6)
- 	brmctx->multicast_mld_version = 1;
--	brmctx->ip6_other_query.delay_time = 0;
- 	brmctx->ip6_querier.port_ifidx = 0;
- 	seqcount_spinlock_init(&brmctx->ip6_querier.seq, &br->multicast_lock);
- #endif
-@@ -4056,6 +4058,8 @@ void br_multicast_ctx_init(struct net_bridge *br,
- 		    br_ip4_multicast_local_router_expired, 0);
- 	timer_setup(&brmctx->ip4_other_query.timer,
- 		    br_ip4_multicast_querier_expired, 0);
-+	timer_setup(&brmctx->ip4_other_query.delay_timer,
-+		    br_multicast_query_delay_expired, 0);
- 	timer_setup(&brmctx->ip4_own_query.timer,
- 		    br_ip4_multicast_query_expired, 0);
- #if IS_ENABLED(CONFIG_IPV6)
-@@ -4063,6 +4067,8 @@ void br_multicast_ctx_init(struct net_bridge *br,
- 		    br_ip6_multicast_local_router_expired, 0);
- 	timer_setup(&brmctx->ip6_other_query.timer,
- 		    br_ip6_multicast_querier_expired, 0);
-+	timer_setup(&brmctx->ip6_other_query.delay_timer,
-+		    br_multicast_query_delay_expired, 0);
- 	timer_setup(&brmctx->ip6_own_query.timer,
- 		    br_ip6_multicast_query_expired, 0);
- #endif
-@@ -4197,10 +4203,12 @@ static void __br_multicast_stop(struct net_bridge_mcast *brmctx)
- {
- 	del_timer_sync(&brmctx->ip4_mc_router_timer);
- 	del_timer_sync(&brmctx->ip4_other_query.timer);
-+	del_timer_sync(&brmctx->ip4_other_query.delay_timer);
- 	del_timer_sync(&brmctx->ip4_own_query.timer);
- #if IS_ENABLED(CONFIG_IPV6)
- 	del_timer_sync(&brmctx->ip6_mc_router_timer);
- 	del_timer_sync(&brmctx->ip6_other_query.timer);
-+	del_timer_sync(&brmctx->ip6_other_query.delay_timer);
- 	del_timer_sync(&brmctx->ip6_own_query.timer);
- #endif
- }
-@@ -4643,13 +4651,15 @@ int br_multicast_set_querier(struct net_bridge_mcast *brmctx, unsigned long val)
- 	max_delay = brmctx->multicast_query_response_interval;
- 
- 	if (!timer_pending(&brmctx->ip4_other_query.timer))
--		brmctx->ip4_other_query.delay_time = jiffies + max_delay;
-+		mod_timer(&brmctx->ip4_other_query.delay_timer,
-+			  jiffies + max_delay);
- 
- 	br_multicast_start_querier(brmctx, &brmctx->ip4_own_query);
- 
- #if IS_ENABLED(CONFIG_IPV6)
- 	if (!timer_pending(&brmctx->ip6_other_query.timer))
--		brmctx->ip6_other_query.delay_time = jiffies + max_delay;
-+		mod_timer(&brmctx->ip6_other_query.delay_timer,
-+			  jiffies + max_delay);
- 
- 	br_multicast_start_querier(brmctx, &brmctx->ip6_own_query);
- #endif
-diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
-index b0a92c344722..86ea5e6689b5 100644
---- a/net/bridge/br_private.h
-+++ b/net/bridge/br_private.h
-@@ -78,7 +78,7 @@ struct bridge_mcast_own_query {
- /* other querier */
- struct bridge_mcast_other_query {
- 	struct timer_list		timer;
--	unsigned long			delay_time;
-+	struct timer_list		delay_timer;
- };
- 
- /* selected querier */
-@@ -1159,7 +1159,7 @@ __br_multicast_querier_exists(struct net_bridge_mcast *brmctx,
- 		own_querier_enabled = false;
- 	}
- 
--	return time_is_before_jiffies(querier->delay_time) &&
-+	return !timer_pending(&querier->delay_timer) &&
- 	       (own_querier_enabled || timer_pending(&querier->timer));
- }
- 
--- 
-2.43.0
+| # ./perf-after stat -e cycles:u true
+| 
+|  Performance counter stats for 'true':
+| 
+|             369753      armv8_pmuv3_0/cycles:u/                                               
+|      <not counted>      armv8_pmuv3_1/cycles:u/                                                 (0.00%)
+| 
+|        0.001171980 seconds time elapsed
+| 
+|        0.001245000 seconds user
+|        0.000000000 seconds sys
 
+Looking at the output with '-vvv' the perf tool implicitly sets exclude_guest
+for 'cycles', 'cycles:u', and 'cycles:kH', but does not set exclude_guest for
+'cycles:k'.
+
+It looks like that's consistent with the behaviour of opening separate events
+prior to this patch:
+
+| # ./perf-before stat -e armv8_pmuv3_0/cycles/ -e armv8_pmuv3_1/cycles/ true
+| 
+|  Performance counter stats for 'true':
+| 
+|            1407624      armv8_pmuv3_0/cycles/                                                 
+|      <not counted>      armv8_pmuv3_1/cycles/                                                   (0.00%)
+| 
+|        0.001179205 seconds time elapsed
+| 
+|        0.001217000 seconds user
+|        0.000000000 seconds sys
+| 
+| 
+| # ./perf-before stat -e armv8_pmuv3_0/cycles/u -e armv8_pmuv3_1/cycles/u true
+| 
+|  Performance counter stats for 'true':
+| 
+|             329212      armv8_pmuv3_0/cycles/u                                                
+|      <not counted>      armv8_pmuv3_1/cycles/u                                                  (0.00%)
+| 
+|        0.001050550 seconds time elapsed
+| 
+|        0.001081000 seconds user
+|        0.000000000 seconds sys
+| 
+| 
+| # ./perf-before stat -e armv8_pmuv3_0/cycles/k -e armv8_pmuv3_1/cycles/k true
+| 
+|  Performance counter stats for 'true':
+| 
+|    <not supported>      armv8_pmuv3_0/cycles/k                                                
+|    <not supported>      armv8_pmuv3_1/cycles/k                                                
+| 
+|        0.000944285 seconds time elapsed
+| 
+|        0.000985000 seconds user
+|        0.000000000 seconds sys
+| 
+| 
+| # ./perf-before stat -e armv8_pmuv3_0/cycles/kH -e armv8_pmuv3_1/cycles/kH true
+| 
+|  Performance counter stats for 'true':
+| 
+|            1016160      armv8_pmuv3_0/cycles/kH                                               
+|      <not counted>      armv8_pmuv3_1/cycles/kH                                                 (0.00%)
+| 
+|        0.001179220 seconds time elapsed
+| 
+|        0.001239000 seconds user
+|        0.000000000 seconds sys
+
+.. and per '-vvv', exclude_guest is set in the same cases.
+
+I agree it's a bit weird that the tool sets exclude_guest for unfilted and ':u'
+events, but not ':k' events, but it looks like that's separate from the way
+events get expanded.
+
+Thanks,
+Mark.
 
