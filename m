@@ -1,149 +1,81 @@
-Return-Path: <linux-kernel+bounces-39477-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CEC783D1C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 01:56:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B55283D1CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 01:58:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B91BB269F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 00:56:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B5C61F24E8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 00:58:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6E7E816;
-	Fri, 26 Jan 2024 00:56:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0FF764F;
+	Fri, 26 Jan 2024 00:57:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NbAonHmC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="aJzEIXpg"
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C02B387
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 00:56:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A7CB385
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 00:57:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706230590; cv=none; b=B5/wROnQnTWXbixKymJekmYwKkYRIPl90oYH1SoU+y7PWGZnZ99mwLzLM2Usw+eIGQVnc1yIkIUWdyqi7xTQWPWloCErQu+6zFRVsP1u0AucYe7NxfX7DKKtGZhWjbmMjYtColm8ibdXkNi2bKyxrt3IRe0eF7z2M2tN1v9z2pk=
+	t=1706230673; cv=none; b=b0ABXbTo9m2hSwXr2CsO0pow21f74f2EFzUVNlyJVVDPZwXmE4j1DJguRP65t7xor318vFsb1o5d1wSQcLfISArY2d5VASsQCnJJstT6/gl0+nPgfrTk9mZ8a/Oz7bF87sGcjXZIKkwZ8+hN4y7n9FQgVESbeV+9QJkxiEXOzs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706230590; c=relaxed/simple;
-	bh=WbcgTvp8TfQS/w6R/mlYgDgTg9ShuwbJ49WG68DhQG4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OSX8Z3Jvkiop0MArh7YvAUZ8ux9607lJEKbcRgT5DBpGdxNGb/VPDT+IGVxit44q5NMrzsFCCI5ZKPM7/PelAXjKKnwsIBEVOAZnAJ39BNq7TKaiNNPQVl/sheTnWv12hmZvwABbndj3wa36mUqgV4iGPEyMQmluOJRX2pybd5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NbAonHmC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74933C433F1;
-	Fri, 26 Jan 2024 00:56:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706230589;
-	bh=WbcgTvp8TfQS/w6R/mlYgDgTg9ShuwbJ49WG68DhQG4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NbAonHmCb1uEHhagz9V59i37+JdZmwW/mX2o1B9LYr5vWW2oUobKAKLPSx62sJC55
-	 2eMNxfkmknCfnuaU3MXbBidqvfz7Uh5ImMh9iqAGvZkRiOP7o6actc3E6AYd4t3LfU
-	 nfQYnXKQ8Sk0c7VEZdTB4NUZofcK2em+UCmHhA1sG9zYVkmwGvZiM+yezDb8+i2i+1
-	 mS5UHjzl9WzUMXtBTb667aBfu/TIGklkHPY+fi9e34/Bwh0gQNiqnVn0M0rYF4Leiq
-	 qOpGRn+/B5qquUOJOoMLIXHnBNOZ0twi7gHHa3TZfIaGipRLe6lWQKmgPvEjkgppzI
-	 Sn9OKxRhVmaUQ==
-Date: Thu, 25 Jan 2024 16:56:27 -0800
-From: Chris Li <chrisl@kernel.org>
-To: Kairui Song <ryncsn@gmail.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-	Yu Zhao <yuzhao@google.com>, Wei Xu <weixugc@google.com>,
-	Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] mm, lru_gen: try to prefetch next page when
- scanning LRU
-Message-ID: <ZbMDO5mkAFmN2LHz@google.com>
-References: <20240123184552.59758-1-ryncsn@gmail.com>
- <20240123184552.59758-2-ryncsn@gmail.com>
- <CAF8kJuNZP-uvsSshVrEY0bPsYLB+5Oi-bQKsEQ3RV6yOW+RgNA@mail.gmail.com>
- <CAMgjq7CbxZQ2CmWNjsNjJajBEVkZ839_X5twwLfiiv0-ZgN32A@mail.gmail.com>
+	s=arc-20240116; t=1706230673; c=relaxed/simple;
+	bh=kHudmBPINusm2w6k2rIG1aaCRzhkHkSauwC48cvfedk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=G4HVWmnp9v9kaGRRWK5iPyvViEkZobZAwD/AgYtPbuJskgkHLVHxQw8kI7vUEomB6IKYerwRDRO05cLMayEYF6Pfg/9rDt/Obw/Ir8qbix1X2y0GrW+qFvihxoT/Z6hHMtfaIBcuuj45alQVJrvGkkUnctCPkeDSF0lExgq6Fb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=aJzEIXpg; arc=none smtp.client-ip=115.124.30.112
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1706230667; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=6eOqHqoVnxkqq7rfHLN/88N72xWcS7f6JQdNTv4/SmU=;
+	b=aJzEIXpgoaiIyqc3d06BoRPAZHEUI+WhIUfGcMSkpBO9awDLNUM5TGS3QaEnKoHTs018p0lJqclEQpcRnmLzJMCrQeYtpc+zaq0dBm1D0jmAi3fF67L5nlJjRaqrpzbY+ier/kfYZVn+jmmULN0QiCdrJSz7D0wgMP3BqGIcFE0=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0W.Ld7Nn_1706230666;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0W.Ld7Nn_1706230666)
+          by smtp.aliyun-inc.com;
+          Fri, 26 Jan 2024 08:57:47 +0800
+From: Yang Li <yang.lee@linux.alibaba.com>
+To: bhe@redhat.com,
+	akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org,
+	Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH -next] crash: Remove duplicated include in vmcore_info.c
+Date: Fri, 26 Jan 2024 08:57:44 +0800
+Message-Id: <20240126005744.16561-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMgjq7CbxZQ2CmWNjsNjJajBEVkZ839_X5twwLfiiv0-ZgN32A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jan 26, 2024 at 01:51:44AM +0800, Kairui Song wrote:
-> > >  mm/vmscan.c | 30 ++++++++++++++++++++++++++----
-> > >  1 file changed, 26 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > > index 4f9c854ce6cc..03631cedb3ab 100644
-> > > --- a/mm/vmscan.c
-> > > +++ b/mm/vmscan.c
-> > > @@ -3681,15 +3681,26 @@ static bool inc_min_seq(struct lruvec *lruvec, int type, bool can_swap)
-> > >         /* prevent cold/hot inversion if force_scan is true */
-> > >         for (zone = 0; zone < MAX_NR_ZONES; zone++) {
-> > >                 struct list_head *head = &lrugen->folios[old_gen][type][zone];
-> > > +               struct folio *prev = NULL;
-> > >
-> > > -               while (!list_empty(head)) {
-> > > -                       struct folio *folio = lru_to_folio(head);
-> > > +               if (!list_empty(head))
-> > > +                       prev = lru_to_folio(head);
-> > > +
-> > > +               while (prev) {
-> > > +                       struct folio *folio = prev;
-> > >
-> > >                         VM_WARN_ON_ONCE_FOLIO(folio_test_unevictable(folio), folio);
-> > >                         VM_WARN_ON_ONCE_FOLIO(folio_test_active(folio), folio);
-> > >                         VM_WARN_ON_ONCE_FOLIO(folio_is_file_lru(folio) != type, folio);
-> > >                         VM_WARN_ON_ONCE_FOLIO(folio_zonenum(folio) != zone, folio);
-> > >
-> > > +                       if (unlikely(list_is_first(&folio->lru, head))) {
-> > > +                               prev = NULL;
-> > > +                       } else {
-> > > +                               prev = lru_to_folio(&folio->lru);
-> > > +                               prefetchw(&prev->flags);
-> > > +                       }
-> >
-> > This makes the code flow much harder to follow. Also for architecture
-> > that does not support prefetch, this will be a net loss.
-> >
-> > Can you use refetchw_prev_lru_folio() instead? It will make the code
-> > much easier to follow. It also turns into no-op when prefetch is not
-> > supported.
-> >
-> > Chris
-> >
-> 
-> Hi Chris,
-> 
-> Thanks for the suggestion.
-> 
-> Yes, that's doable, I made it this way because in previous series (V1
-> & V2) I applied the bulk move patch first which needed and introduced
-> the `prev` variable here, so the prefetch logic just used it.
-> For V3 I did a rebase and moved the prefetch commit to be the first
-> one, since it seems to be the most effective one, and just kept the
+The header files kexec.h is included twice in vmcore_info.c,
+so one inclusion can be removed.
 
-Maybe something like this? Totally not tested. Feel free to use it any way you want.
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ kernel/vmcore_info.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Chris
-
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 4f9c854ce6cc..2100e786ccc6 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -3684,6 +3684,7 @@ static bool inc_min_seq(struct lruvec *lruvec, int type, bool can_swap)
+diff --git a/kernel/vmcore_info.c b/kernel/vmcore_info.c
+index 8f48c0a42e2e..8f77e238a54f 100644
+--- a/kernel/vmcore_info.c
++++ b/kernel/vmcore_info.c
+@@ -13,7 +13,6 @@
+ #include <linux/memory.h>
+ #include <linux/cpuhotplug.h>
+ #include <linux/memblock.h>
+-#include <linux/kexec.h>
+ #include <linux/kmemleak.h>
  
- 		while (!list_empty(head)) {
- 			struct folio *folio = lru_to_folio(head);
-+			prefetchw_prev_lru_folio(folio, head, flags);
- 
- 			VM_WARN_ON_ONCE_FOLIO(folio_test_unevictable(folio), folio);
- 			VM_WARN_ON_ONCE_FOLIO(folio_test_active(folio), folio);
-@@ -4346,7 +4347,10 @@ static int scan_folios(struct lruvec *lruvec, struct scan_control *sc,
- 
- 		while (!list_empty(head)) {
- 			struct folio *folio = lru_to_folio(head);
--			int delta = folio_nr_pages(folio);
-+			int delta;
-+
-+			prefetchw_prev_lru_folio(folio, head, flags);
-+			delta = folio_nr_pages(folio);
- 
- 			VM_WARN_ON_ONCE_FOLIO(folio_test_unevictable(folio), folio);
- 			VM_WARN_ON_ONCE_FOLIO(folio_test_active(folio), folio);
+ #include <asm/page.h>
+-- 
+2.20.1.7.g153144c
 
 
