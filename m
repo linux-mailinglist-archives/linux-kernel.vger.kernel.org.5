@@ -1,150 +1,117 @@
-Return-Path: <linux-kernel+bounces-40118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95BE983DA81
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:05:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90BC483DA84
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:05:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35A7D1F27A38
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:05:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16F79B2B12B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:05:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFFF01B809;
-	Fri, 26 Jan 2024 13:04:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D53D01B806;
+	Fri, 26 Jan 2024 13:05:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=paragon-software.com header.i=@paragon-software.com header.b="j/67QaIG"
-Received: from relayaws-01.paragon-software.com (relayaws-01.paragon-software.com [35.157.23.187])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3Uhbhcg7";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="12qfUbjT"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A96D1B599;
-	Fri, 26 Jan 2024 13:04:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.157.23.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C14CE1B599;
+	Fri, 26 Jan 2024 13:05:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706274292; cv=none; b=psccPu/0FrfVhwgKcR+Ov6oXAiu5f9pINLdKJIiqqnOgDYbXVyv81OPNlo1YzBLKfx3/tK+n6pNEEiTRxK0CztS/eQtPGD4RETcXpHQm7pnKo/e7ahank34ywSjoJviA5mlDJq8LGKy5pk4hUYJciWcB00Z+ENy4yi4dBsyEw7g=
+	t=1706274326; cv=none; b=ZHJ89n3IeIP204bM/0YCA4/cHJnVXAP2c1TdtvaY/sHzttdBk1QAWSNIPhVLt+12k2jqh9APv5Ycknjxtc5iPhYNLKiM7qXqF8uWBUc5NQCo7fL5sJ/yFOUhn9/OSJsUUy5ogwQzB0py0s2pI9he2fI+C3ZOauLsnQbzqB7G1tM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706274292; c=relaxed/simple;
-	bh=gCq4g1b3O8Oeg4N8ujXRTfw/tL+4gbF4FTm8029MUrM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=kBhtQlsJnzDEZ8oQE0WjvOyBsw3cttjh1jMs1WJYOx3dBAgtt17vsggQq7gFwcNRow9HBPYpUIx5h1gEEA+jc0taagfA3FKjHJIuhEu8CPEA2gtKyGEerXAnlD84GRyZN1gHYvxqP57tRfD9y1Lx4ghrtfbzkFbTfoWZCpug6vE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=paragon-software.com; spf=pass smtp.mailfrom=paragon-software.com; dkim=pass (1024-bit key) header.d=paragon-software.com header.i=@paragon-software.com header.b=j/67QaIG; arc=none smtp.client-ip=35.157.23.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=paragon-software.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paragon-software.com
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-	by relayaws-01.paragon-software.com (Postfix) with ESMTPS id C7CAC1DA1;
-	Fri, 26 Jan 2024 12:50:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=paragon-software.com; s=mail; t=1706273447;
-	bh=9EfuMGzeWNG4VV/qzBMKHVckt4mYsHngjUttdA846ZA=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=j/67QaIGKRoxhLEOdLCQfd7Q7ZvtuN+BJhpzpy7NVZFbr27ajjfS2OIviyErZWDEU
-	 G+99jEC7OP9wVCjSO9Q4SbjRXkDayos1TOgk4DZjwvHe8UrKQ5fKFkrD2NvOnG990Y
-	 cm/c0w8vIflwmAiosbQIhfTXfpkTYOFqRgg0NvqA=
-Received: from [192.168.211.144] (192.168.211.144) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Fri, 26 Jan 2024 15:57:36 +0300
-Message-ID: <97660d80-fbea-4eb8-83af-78f59a6302c7@paragon-software.com>
-Date: Fri, 26 Jan 2024 15:57:35 +0300
+	s=arc-20240116; t=1706274326; c=relaxed/simple;
+	bh=Nr8QKXIT9eS/FyyD/NH8+PF7e0exuuXWzw58fkOb0Tw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=LfS0P1aPOmAL7MRDtlwww/RHMDOl/kZ96X07slg/3cgYN8FmIQ9w6SUsqyfoFw82O5aJm6z5Lwq5HMdGtDkw0wbTx3Y8SRTi4NXQ9m84SlpcqXjTme7qlQ9B1R/9VWLt6tqJhtEPGqCNOhC0+GPx0frPmSzCx8ntMz2/yjCZuuw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=3Uhbhcg7; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=12qfUbjT; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Kurt Kanzenbach <kurt@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706274323;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Nr8QKXIT9eS/FyyD/NH8+PF7e0exuuXWzw58fkOb0Tw=;
+	b=3Uhbhcg7EaINbhkZZsqTT4dahBwElAFdmYSv4WTRtFnJ2Gk5VEtDVrCXxj5VQC5QU6DICG
+	Zk++iotOh+WSjveTl+Rj/zatNPKA49mwawGn0M58UEnTjGv+aarSi+Gj+slsDRdkrUZVdF
+	N/dYwYnc72/eNLu01AwWMx4B4Y/Dg26Dw5xao552cBYqE/buzyMOKDiy5yxuH+3GXLeniM
+	eoD8AX1hYOR23j72x2yaXVzFg66dfdX98MGM2vCOF4QeHgC6xlTnVXrQfCeprdqmh9nHuY
+	0l0BTb+/c7vnGF8a1JpiCzTaWWohqYAJEVmIVffoXr6nOumo/OI1TZxMjHuaVw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706274323;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Nr8QKXIT9eS/FyyD/NH8+PF7e0exuuXWzw58fkOb0Tw=;
+	b=12qfUbjTTs06WtM/BZ2qEmPP4CDsQDtjCiphcmppyP7CsZPkkOX3VfvQDdmST9wOhYxG8a
+	D3WhyJAojGBjHVDw==
+To: Esben Haabendal <esben@geanix.com>, netdev@vger.kernel.org, Alexandre
+ Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer
+ <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Rohan G Thomas <rohan.g.thomas@intel.com>, "Abhishek Chauhan (ABC)"
+ <quic_abchauha@quicinc.com>, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] net: stmmac: dwmac-imx: set TSO/TBS TX queues
+ default settings
+In-Reply-To: <379f79687ca4a7d0394a04d14fb3890ce257e706.1706256158.git.esben@geanix.com>
+References: <cover.1706256158.git.esben@geanix.com>
+ <379f79687ca4a7d0394a04d14fb3890ce257e706.1706256158.git.esben@geanix.com>
+Date: Fri, 26 Jan 2024 14:05:19 +0100
+Message-ID: <87sf2kmei8.fsf@kurt.kurt.home>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [regressions] ntfs3: empty file on update without forced cache
- drop
-Content-Language: en-US
-To: Linux regressions mailing list <regressions@lists.linux.dev>, Alexander
- Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>
-CC: <ntfs3@lists.linux.dev>, Kari Argillander
-	<kari.argillander@stargateuniverse.net>, Linux-fsdevel
-	<linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, Anton
- Altaparmakov <anton@tuxera.com>, Linus Torvalds
-	<torvalds@linux-foundation.org>
-References: <138ed123-0f84-4d7a-8a17-67fe2418cf29@leemhuis.info>
- <24aa7a8b-40ed-449b-a722-df4abf65f114@leemhuis.info>
- <d5f4c2d7-0a98-4ff8-9848-a34133199450@leemhuis.info>
-From: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-In-Reply-To: <d5f4c2d7-0a98-4ff8-9848-a34133199450@leemhuis.info>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha512; protocol="application/pgp-signature"
 
-On 21.01.2024 12:14, Thorsten Leemhuis wrote:
-> On 05.12.23 13:49, Linux regression tracking (Thorsten Leemhuis) wrote:
->> [adding a bunch of people and two lists to the recipients, as Konstantin
->> apparently hasn't sent any mail to any lists archived on lore for ~six
->> weeks; maybe someone knows what's up or is willing to help out]
-> [CCing Linus now as well]
->
-> JFYI for the VFS maintainers and everyone else who might care:
->
-> Konstantin afaics still did not look into below regression. Neither did
-> anyone else afaics.
->
-> But Konstantin is still around, as he recently showed up to post a patch
-> for review:
-> https://lore.kernel.org/all/667a5bc4-8cb5-47ce-a7f1-749479b25bec@paragon-software.com/
->
-> I replied to it in the hope of catch his attention and make him look at
-> this regression, but that did not work out.
->
-> So it seems we sadly are kinda stuck here. :-/
->
-> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
->
->> On 27.11.23 07:18, Thorsten Leemhuis wrote:
->>> Hi, Thorsten here, the Linux kernel's regression tracker.
->>>
->>> Konstantin, I noticed a regression report in bugzilla.kernel.org.
->>> Apparently it's cause by a change of yours.
->>>
->>> As many (most?) kernel developers don't keep an eye on bugzilla, I
->>> decided to forward it by mail. Note, you have to use bugzilla to reach
->>> the reporter, as I sadly[1] can not CCed them in mails like this.
->>>
->>> Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=218180 :
->> Konstantin, are you still around? Would be great if you could look into
->> this regression, as this sounds somewhat worrying.
->>
->>>> The problem I am facing is the following:
->>>> 1. I mount an NTFS partition via NTFS3
->>>> 2. I create a file
->>>> 3. I write to the file
->>>> 4. The file is empty
->>>> 5. I remount the partition
->>>> 6. The file has the changes I made before the remount
->>>>
->>>> I can avoid the remount by doing:
->>>> sudo sysctl vm.drop_caches=3
->>> See the ticket for more details. It according to the report happens
->>> still happens with 6.7-rc2, but not with 6.1.y. The reporter bisected
->>> the problem to ad26a9c84510af ("fs/ntfs3: Fixing wrong logic in
->>> attr_set_size and ntfs_fallocate") [v6.2-rc1].
->>>
->>> Side note: while briefly checking lore for existing problems caused by
->>> that change I noticed two syzbot reports about it that apparently nobody
->>> looked into:
->>>
->>> https://lore.kernel.org/all/000000000000bdf37505f1a7fc09@google.com/
->>> https://lore.kernel.org/all/00000000000062174006016bc386@google.com/
->>> [...]
-> --
-> Everything you wanna know about Linux kernel regression tracking:
-> https://linux-regtracking.leemhuis.info/about/#tldr
-> If I did something stupid, please tell me, as explained on that page.
->
-> #regzbot poke
-Hello Thorsten,
+--=-=-=
+Content-Type: text/plain
 
-I apologize for the horrible delay in responding to the bug. I was able 
-to reproduce it in a scenario involving a compressed file. The patch 
-will be ready within the next few days (the response in Bugzilla will 
-also follow).
+On Fri Jan 26 2024, Esben Haabendal wrote:
+> TSO and TBS cannot coexist. For now we set i.MX Ethernet QOS controller to
+> use the first TX queue with TSO and the rest for TBS.
+>
+> TX queues with TBS can support etf qdisc hw offload.
+>
+> Signed-off-by: Esben Haabendal <esben@geanix.com>
 
-Best regards,
-Konstantin
+Thanks for fixing this,
+
+Reviewed-by: Kurt Kanzenbach <kurt@linutronix.de>
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJHBAEBCgAxFiEEvLm/ssjDfdPf21mSwZPR8qpGc4IFAmWzrg8THGt1cnRAbGlu
+dXRyb25peC5kZQAKCRDBk9HyqkZzgsR4EACAixCTExVVvJKDoEaA5WUUXJCVboIg
+jdMPpZgrqtDW5yPCCZ4KJYSGxhvinkc1aBi3M+SUwHodKYbLHea/0un3H9d4ejJp
+Y4ly+Y5bJSquL/Hj53W0RsnNcsFDUN51un1at8EukUfGWBPoYJqsDG97KUvGF9sg
+fb1pP0JuXOeUhKp3Mp2+e0sFjAhQwQrfGzSRnHkmRpModiKfysal3sLzynuLc1yV
+YuqsHvoJLnlYdKIF9d8Cs6V5vZ0Qhxr59PGD7x/Drf/YLF/JZIKSNzTMpYzuD1zM
+Ojed8Tyk5CBjNpb2+zX2Emce8m+bziw5XEUJ0xf/HpXUFBoyUwbYBYSRyFbNZsNP
+h7cwZhBtybYzO49wVaaYC+1S/Y38/REMMVgh5sRBo35WFiVPtrVs+R3Q8Y69JXaw
+87bA0z0iCQIHNUiId+exblegAj5wn+X1GfUCWoAcbOH9GgyrvEnmU7MxwEEBgPTZ
+clROPBVOFdnCh6wenznF92XKJK/mmmDbUXw3me/DkYh4OwnVZ9ROgFDHxWIn2P6O
+st/SsoqbfdOZmNTFnRit3EWhUbVozx/Ml8wAitITfbCBuwKl41mN3rR2sWtJHWtK
+840sKRtZoGO5qoFk5L7of1cCKWQalUqlpqbBhBrIxlx8qw81Nt4gTvE0Fa80c6Cv
+YU+SenSIi7lCxA==
+=/9bz
+-----END PGP SIGNATURE-----
+--=-=-=--
 
