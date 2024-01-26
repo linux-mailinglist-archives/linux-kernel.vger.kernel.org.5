@@ -1,145 +1,154 @@
-Return-Path: <linux-kernel+bounces-40316-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40317-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2D5F83DE5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:10:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FE1983DE61
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:13:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8246D1F254D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:10:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45623281F2D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:13:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D6D61D559;
-	Fri, 26 Jan 2024 16:10:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B16C1D6BE;
+	Fri, 26 Jan 2024 16:12:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tb6NbSgI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BeIACOUa"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D624E1CD1F;
-	Fri, 26 Jan 2024 16:10:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21D711D54C
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 16:12:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706285428; cv=none; b=qGtGaK3/RwH1EYdVkfMMfYYwNcbHX1nuc+kcZ7Gw3991jr/pb55M465MM33NCSkT2vc7+G3N6zvswOPgKWn9NjZoDUN9JhDm+AmG62X1goibGQgFIjHuWbLz8ui/DOy8fog4faiH807LN0vONNyBKYBVT7451EX5O4ozN9ssCNY=
+	t=1706285572; cv=none; b=bvGgjR0ME1fsL8hwqJJInesyjrGxqEsbt8Uj6eVJZwz/pW4gZMmUSliMDlrOyYoTCMvy4lgUivH2eidTpaBYh13nDld7poy+fQ/LUL0e0m5aiOnZF71LzBwWVw/Jpn6krIfkCsM1Cv/1xWWnNVFZaIyQwMziLaEJyidQJViQdtE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706285428; c=relaxed/simple;
-	bh=dCh3Q7IJrxBpqeaYZ3wZ62jWq+kUi+XKjTJ8+Wu15U4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EgbzEvzAXaZ7sbQw+fGUNdQkocZzwV0rKHi2I1VZK27eb/9KTzRG7SR5IMHD1YwI9oh9G408mJjjB3QzCt49sEcAfE86yYjmmwqdBoY8BAjrvk7i3u50MUgkKc9fp3z6iOcLx7/Xil03MZ0iLDHtVB8NN9PyWbo8Z8dj8itSnJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tb6NbSgI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD07AC43390;
-	Fri, 26 Jan 2024 16:10:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706285427;
-	bh=dCh3Q7IJrxBpqeaYZ3wZ62jWq+kUi+XKjTJ8+Wu15U4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Tb6NbSgIH5Jh9xM0TXplcprBK9xu5xjIlahezLx9JjLaeV3D++84RBlfi1tb0r+B6
-	 ktXLrOiruZrF5P4D+icn+bveWbxq5S9iaVGmCWyDqHYgdYlor6C12TOGUJXC2fwIup
-	 JiJdoKB8O18h/S6XqG30/QvhL/xLfKuqHzAzq9xoIu9cq4OZnFIl67icBw+brpRL9j
-	 EKs4VLlE39mii6pG12TJ1NjeyCv9vje0I64wtexLpUrozbiZ07z+sDcY8DNuFx0e9H
-	 RKPT/DXqqc9f2IHsymkR/kWJq1L9uriLoVILEXVBRw162F/Sm86OMkHbhe+ruZwnFq
-	 kDB+ARKOuczmg==
-Date: Fri, 26 Jan 2024 09:10:25 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: akpm@linux-foundation.org, masahiroy@kernel.org, nicolas@fjasle.eu,
-	linux-kbuild@vger.kernel.org, llvm@lists.linux.dev,
-	patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-	catalin.marinas@arm.com, will@kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 05/11] arm64: Kconfig: Clean up tautological LLVM version
- checks
-Message-ID: <20240126161025.GA3265550@dev-arch.thelio-3990X>
-References: <20240125-bump-min-llvm-ver-to-13-0-1-v1-0-f5ff9bda41c5@kernel.org>
- <20240125-bump-min-llvm-ver-to-13-0-1-v1-5-f5ff9bda41c5@kernel.org>
- <ZbOsvhDB-6LMVACP@FVFF77S0Q05N>
+	s=arc-20240116; t=1706285572; c=relaxed/simple;
+	bh=NGUuwyDUt/V8BbgO0Ikz6ekMH3s9pITV7aBg2GJNeyw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IsTApoDbQmShuXnVxFJzgsCofp8UXENrMYcbHxVRo3sqGHt3f/nuAoQkeyJ6ukvrSIj8gFGgYO1FCbil51pNcEswYjytz9kwJOVWDuO2NGo7yc/hRE4Dg4IA+caDxPyxJN6ydD8moPRtquuNxoMXsivBiXgbqkwKfoY/taMdhoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BeIACOUa; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55a90b2b554so670760a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:12:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706285569; x=1706890369; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Lcg3AUd2cqMzWvqXgXxGKA4Vgsv4bHXjz07Z4n2FDK4=;
+        b=BeIACOUaUbltTIQ5Oespza4D2lupH9bhKbTv9eu/2wYoz3ef5Xu/rlOXNsxKaRZOMv
+         r8UlPU8PlPZav4yXbYJA3d7jv4bSQ/Y8r8Vr9ds7yDGG5CiKPNEWLmo8mmX82ZEsIfcG
+         LB80cWn8KkLgwNl/mUI/Ea0RaIZVG98/HCrkMmjMhvCZIxF0J1yiaJUwqA9tua9QUcuO
+         I825pEW+xlDHsUZdl7W0ebBiy78k8pN8PQBZ+voOyHZLRm3W1mPxaG5omgP8rc/vX+b0
+         xV/3jyLSlc9R0nrVsrDoIhh6lHDVRkWAwCXDu62ijRff1Ff7KKI2wayjDlK//vTHVCoO
+         S5Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706285569; x=1706890369;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Lcg3AUd2cqMzWvqXgXxGKA4Vgsv4bHXjz07Z4n2FDK4=;
+        b=ACDlxp2GbUWvrr/gT5OJFsKXCuP0y80hwS6/PJyCituxd2HQd9u3ogoo6uppLq+fji
+         Hli38YKwGGpTIZ5JDBlW+wFV1Ab4XZXEmNQYTvNK5YUTMXLq7Wb31wg9wd7yu9kiC7Zf
+         ch+RDsx2WAWqIc62nOxGQPgC2titcR+Sy7/bigeKY8DK7ThNn+CiwFFdil8GLL7ZIkul
+         wbAJLDYTO3yFl/+FwVgxKEx/oQDNWW2i/SAOFFuGfUrAuVDU2kMiqgjtT9P1pe31gbl4
+         G7mLFrSGRjP3Zctse5haHUYGrU9Mrb7EImJMKBthpv6NDCgGlLHFP1IsuuJjPbiytGhi
+         Ou2A==
+X-Gm-Message-State: AOJu0YwtriH7eELQKlXQusJMtzbhHJPZbbe9ma42U2EW5PI61OsawYPB
+	ZKBc0ynAOkPH8o+IDbtra1KvtXHVPdDMNBiMXoH5A5swEmiCpGFubL7HVYlC5QBUH0+Ag7dSkNe
+	R5x50XCdWWBqHItxRQRylYMoDF+CPAJACkEti/w==
+X-Google-Smtp-Source: AGHT+IFne1/xTwjOzXN0LiDrNgwHDmNg5oG+ktcyzY3HamyfJjBqdydrqWcvun6DTJpyaQxuZu8/43tMMiwe93Fpzl8=
+X-Received: by 2002:a17:906:6d4e:b0:a34:977e:aa7d with SMTP id
+ a14-20020a1709066d4e00b00a34977eaa7dmr1633817ejt.70.1706285568955; Fri, 26
+ Jan 2024 08:12:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbOsvhDB-6LMVACP@FVFF77S0Q05N>
+References: <20240105160103.183092-1-ulf.hansson@linaro.org>
+In-Reply-To: <20240105160103.183092-1-ulf.hansson@linaro.org>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Fri, 26 Jan 2024 17:12:12 +0100
+Message-ID: <CAPDyKFoGozKrNrAc0vpnNVuKvnorAuN_fg37DU4j0rq=egJ6Hg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] PM: domains: Add helpers for multi PM domains to
+ avoid open-coding
+To: "Rafael J . Wysocki" <rafael@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Sudeep Holla <sudeep.holla@arm.com>, Kevin Hilman <khilman@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, linux-pm@vger.kernel.org, 
+	Viresh Kumar <viresh.kumar@linaro.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Nikunj Kela <nkela@quicinc.com>, Prasad Sodagudi <psodagud@quicinc.com>, 
+	Stephan Gerhold <stephan@gerhold.net>, Ben Horgan <Ben.Horgan@arm.com>, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-remoteproc@vger.kernel.org, 
+	linux-media@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Jan 26, 2024 at 12:59:55PM +0000, Mark Rutland wrote:
-> On Thu, Jan 25, 2024 at 03:55:11PM -0700, Nathan Chancellor wrote:
-> > Now that the minimum supported version of LLVM for building the kernel
-> > has been bumped to 13.0.1, several conditions become tautologies, as
-> > they will always be true because the build will fail during the
-> > configuration stage for older LLVM versions. Drop them, as they are
-> > unnecessary.
-> > 
-> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> > ---
-> > Cc: catalin.marinas@arm.com
-> > Cc: will@kernel.org
-> > Cc: mark.rutland@arm.com
-> > Cc: linux-arm-kernel@lists.infradead.org
-> > ---
-> >  arch/arm64/Kconfig | 5 +----
-> >  1 file changed, 1 insertion(+), 4 deletions(-)
-> > 
-> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> > index 5a8acca4dbf4..cb34e7d780c0 100644
-> > --- a/arch/arm64/Kconfig
-> > +++ b/arch/arm64/Kconfig
-> > @@ -383,7 +383,7 @@ config BUILTIN_RETURN_ADDRESS_STRIPS_PAC
-> >  	bool
-> >  	# Clang's __builtin_return_adddress() strips the PAC since 12.0.0
-> >  	# https://github.com/llvm/llvm-project/commit/2a96f47c5ffca84cd774ad402cacd137f4bf45e2
-> > -	default y if CC_IS_CLANG && (CLANG_VERSION >= 120000)
-> > +	default y if CC_IS_CLANG
-> >  	# GCC's __builtin_return_address() strips the PAC since 11.1.0,
-> >  	# and this was backported to 10.2.0, 9.4.0, 8.5.0, but not earlier
-> >  	# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=94891
-> > @@ -1387,7 +1387,6 @@ choice
-> >  
-> >  config CPU_BIG_ENDIAN
-> >  	bool "Build big-endian kernel"
-> > -	depends on !LD_IS_LLD || LLD_VERSION >= 130000
-> >  	# https://github.com/llvm/llvm-project/commit/1379b150991f70a5782e9a143c2ba5308da1161c
-> 
-> We can delete the URL here, since that was just to describe why this depended
-> upon LLVM 13+; it's weird for it to sit here on its own.
+On Fri, 5 Jan 2024 at 17:01, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> Updates in v2:
+>         - Ccing Daniel Baluta and Iuliana Prodan the NXP remoteproc patches to
+>         requests help with testing.
+>         - Fixed NULL pointer bug in patch1, pointed out by Nikunj.
+>         - Added some tested/reviewed-by tags.
+>
+>
+> Attaching/detaching of a device to multiple PM domains has started to become a
+> common operation for many drivers, typically during ->probe() and ->remove().
+> In most cases, this has lead to lots of boilerplate code in the drivers.
+>
+> This series adds a pair of helper functions to manage the attach/detach of a
+> device to its multiple PM domains. Moreover, a couple of drivers have been
+> converted to use the new helpers as a proof of concept.
+>
+> Note 1)
+> The changes in the drivers have only been compile tested, while the helpers
+> have been tested along with a couple of local dummy drivers that I have hacked
+> up to model both genpd providers and genpd consumers.
+>
+> Note 2)
+> I was struggling to make up mind if we should have a separate helper to attach
+> all available power-domains described in DT, rather than providing "NULL" to the
+> dev_pm_domain_attach_list(). I decided not to, but please let me know if you
+> prefer the other option.
+>
+> Note 3)
+> For OPP integration, as a follow up I am striving to make the
+> dev_pm_opp_attach_genpd() redundant. Instead I think we should move towards
+> using dev_pm_opp_set_config()->_opp_set_required_devs(), which would allow us to
+> use the helpers that $subject series is adding.
+>
+> Kind regards
+> Ulf Hansson
 
-I think this is the URL for the fix for the problem brought up by
-commit 146a15b87335 ("arm64: Restrict CPU_BIG_ENDIAN to GNU as or LLVM
-IAS 15.x or newer"), so I think it should stay? It does not look like I
-ever added a link or context for the LLD line, I definitely should have.
+Rafael, Greg, do have any objections to this series or would you be
+okay that I queue this up via my pmdomain tree?
 
-> The URL above for __builtin_return_address() can stay or go; it may as well
-> stay since we have the comment aboout LLvm 12+ above it.
+Kind regards
+Uffe
 
-That's the conclusion I came to as well.
-
-Thanks a lot for taking a look!
-
-Cheers,
-Nathan
-
-> With that:
-> 
-> Acked-by: Mark Rutland <mark.rutland@arm.com>
-> 
-> Mark.
-> 
-> >  	depends on AS_IS_GNU || AS_VERSION >= 150000
-> >  	help
-> > @@ -2018,8 +2017,6 @@ config ARM64_BTI_KERNEL
-> >  	depends on !CC_IS_GCC || GCC_VERSION >= 100100
-> >  	# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=106671
-> >  	depends on !CC_IS_GCC
-> > -	# https://github.com/llvm/llvm-project/commit/a88c722e687e6780dcd6a58718350dc76fcc4cc9
-> > -	depends on !CC_IS_CLANG || CLANG_VERSION >= 120000
-> >  	depends on (!FUNCTION_GRAPH_TRACER || DYNAMIC_FTRACE_WITH_ARGS)
-> >  	help
-> >  	  Build the kernel with Branch Target Identification annotations
-> > 
-> > -- 
-> > 2.43.0
-> > 
-> 
+>
+>
+> Ulf Hansson (5):
+>   PM: domains: Add helper functions to attach/detach multiple PM domains
+>   remoteproc: imx_dsp_rproc: Convert to
+>     dev_pm_domain_attach|detach_list()
+>   remoteproc: imx_rproc: Convert to dev_pm_domain_attach|detach_list()
+>   remoteproc: qcom_q6v5_adsp: Convert to
+>     dev_pm_domain_attach|detach_list()
+>   media: venus: Convert to dev_pm_domain_attach|detach_list() for vcodec
+>
+>  drivers/base/power/common.c                   | 134 +++++++++++++++
+>  drivers/media/platform/qcom/venus/core.c      |  12 +-
+>  drivers/media/platform/qcom/venus/core.h      |   7 +-
+>  .../media/platform/qcom/venus/pm_helpers.c    |  48 ++----
+>  drivers/remoteproc/imx_dsp_rproc.c            |  82 +--------
+>  drivers/remoteproc/imx_rproc.c                |  73 +-------
+>  drivers/remoteproc/qcom_q6v5_adsp.c           | 160 ++++++++----------
+>  include/linux/pm_domain.h                     |  38 +++++
+>  8 files changed, 289 insertions(+), 265 deletions(-)
+>
+> --
+> 2.34.1
 
