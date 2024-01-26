@@ -1,116 +1,153 @@
-Return-Path: <linux-kernel+bounces-40662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40663-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09CDB83E3CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:20:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D37C83E3D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:20:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA4E528731F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:19:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 604741C23B47
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:20:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C362B249FC;
-	Fri, 26 Jan 2024 21:19:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53B7E24B29;
+	Fri, 26 Jan 2024 21:19:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0Cl1ia1m"
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KPqrGKi+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A816425563
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 21:19:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99F27241F8
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 21:19:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706303972; cv=none; b=pnl4A8OgPfNuBOO84IvZw1aDZTd4nBYyQlYIF1GRzp6hV41bNR5yd1nfH88yo4qGCBlnOwJO/yLZUdYQD2tvjG1IUc+ulFO8azTa5tudtl7/reHIkEmov1p1NDGDan+Pyhb/OwF+OVypx5r/glpGyv0DBvzoKYfDPlg4d85vfIo=
+	t=1706303992; cv=none; b=B2eWLee0GQUQGIrV7C+FfKQw67fxM+DqWotnFYmvyKugkMnamcDuA65Kr2AE8Q2zwDLZFAMY1OGuSJsqTQvkqJS5+f2oPy/B4L7lvqni3A3opfWKG9UPDgZE4BouJFAazsHtAbAiKu7NCxM9coouWSUZ9ft1JGUaVQ1vyXp0mLY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706303972; c=relaxed/simple;
-	bh=iZ9/NOwULnLgCu30iHG6IXsA/6yP47MV5xrO2yo/sEU=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=lb6RS2sUzOyi5JO/zDhAUZd5M81MJIlT5IYfn7NNkL11Pwaqt2d6HAEemf+zppCfoZy793pt+R7Xkw5wF6Oc795ZnahpUbSiqDdX/NFbZA7SAOsOXHgtIUBLatvUFfu0aMCGxaXR3y7eEf+FrNAVOgPjDgs5K6FPQOMe6fuJR7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0Cl1ia1m; arc=none smtp.client-ip=209.85.215.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5d63c7c4248so1875906a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:19:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706303970; x=1706908770; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=SSSmPXy+o6tjb/tu3Cmmv9kAukC4V0XKiEOwf1LwTRI=;
-        b=0Cl1ia1mjVSvnyvNpTdyBGKkPkxbDfvd/D28Rz2RlDHbXgmxWaCDiGnX/SUPuL3X+l
-         vfbGLDRErommMjd98e2NUSIHyrcJrz61H+xxiWJlqU9Cn7a9CvSA31LlY6rKO2KjTSrv
-         RLmn2NiXUxmvou8ISv46xYkHvKkKwdXDKOB7TJA+FVyT/7jGfjR526Gg4StjgFxMPBdy
-         BE4smedOVTATzy0H8JVpjABHz1rshRy+9qclhQBJ7KzUZdfv0W1g1u1I21Ej2ZrfJDIE
-         eDTFGJ8gDWyolb0sj014jGO2ujKYFj5HqIBb7kzIMBAkbfyOvY6KTf3NNkoJphFkaeqZ
-         2epw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706303970; x=1706908770;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SSSmPXy+o6tjb/tu3Cmmv9kAukC4V0XKiEOwf1LwTRI=;
-        b=AHdVAeHlm0MbPvxWdUSsw4FCR/ggfJPYSxgdXpkT+81jhfqAYzzA0mWXgfkFcy6KWD
-         eydPwGdmEwKlZuVzACo27hnhykwpzieUuG4Zixszh9pYYIkMR27qxHmxxdgePHEJavre
-         7fw8VyHocNzNnI8y/J6slLpSME3J+pyX1g09F3AZcLqXKA17U7eopnbYMk3P2c0mzsHD
-         dLifDW/hAcCOBquKS+KoXSBr1QrMEQEknNm6BZiiBkfrjvW3zukpcW+UWShQ/lm5lHbv
-         tHQ36S6/qxox1PG2sJ2XhZeJcR8h+xihGmVcnc2c51T5BstHlHSjuCunaVNc4iLoRZtt
-         MclA==
-X-Gm-Message-State: AOJu0Yw4OBe7OCLkQP9rSpHMZuktmtVnAB3q+QW42xS7WF5nl7RsjplS
-	wNBubp28dzwFxU4MGWd8dvWS4jlJBICa6mA2F4rDHRFV9PblGVrFoFYnwviDVUYThPqMBO+PyKv
-	BE3WRmixYXfmyaw==
-X-Google-Smtp-Source: AGHT+IGcJWdPGw8oLDxI59hFrmxzukTd0LWse+OHibEL8NCT4Uo50G49MeRK/UoAadCeD0k85qrwHAnVrXGgL4Y=
-X-Received: from tj-virt.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5683])
- (user=tjmercier job=sendgmr) by 2002:a17:902:8218:b0:1d4:3238:37ce with SMTP
- id x24-20020a170902821800b001d4323837cemr10104pln.5.1706303970014; Fri, 26
- Jan 2024 13:19:30 -0800 (PST)
-Date: Fri, 26 Jan 2024 21:19:25 +0000
+	s=arc-20240116; t=1706303992; c=relaxed/simple;
+	bh=g+ueImr0RPbrGmsoFelyQwne/GFqsa3s9BFQ3P7pP6E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=osmKlq4gbg5+gNQzJYGMexPLA9i5joAt6aKtWz15Zkxf4nJPR0qy2Mh8KQOFKwGeg6C7dKaQWdTMXU4JgemjDGkA0KqJWHZq/tpco+SfQgoxsE70jcXVLoWQttpylKSit4nyBH7RoqdhmP/fPDqwIbrXh3rAZ/PKp0VoSSFef7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KPqrGKi+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16E79C43394
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 21:19:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706303992;
+	bh=g+ueImr0RPbrGmsoFelyQwne/GFqsa3s9BFQ3P7pP6E=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=KPqrGKi+69qOSpmZ+KbmvKosdLUluUxXRyfLOKziZHf9SYTF5dg5nDohrX04Mtd2f
+	 O9MzBiJ0xZjyddx5W9BmphG4RxbxpQpVAb4JqJOJGJYRD2AFNboETG8o3V1RW0bvy2
+	 IyBqnUBcZBH0p51/eWSIp6C6LumoSXi3fUcD4MlxQkqg103La62mLfa7tb9J/f4d13
+	 kvfVJCw5Wk0YUa2YnsZrEFGlrr3ihDzOWvuQRu8DVU4Swg/I4A/bPjkiBKx4ZU6vAq
+	 82POnO6+1+sAv35vwdkN02k0HnnUIaTPrdHfMjLhPUWIMvDimgSKFettCpXQKKB8I3
+	 zS39aLdK7Dj9g==
+Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-361a38dd171so1312845ab.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:19:52 -0800 (PST)
+X-Gm-Message-State: AOJu0YzXDW9k9llTLlsnOC9v2FRkNTEttdpqtsgSsIL5kB5n7bIfU3QO
+	Ens8QcsIfB6bcDKvVy3AOIrcuWUKzussGXRgzWHdYo8f4aQmu/6FOkbVO9vvjvIcEQrOhDwURUt
+	m5iULB9InJ7cU/4qktMWRsjmhjIW93dbzVDm2
+X-Google-Smtp-Source: AGHT+IHjoovFGYhfrOsOiX2J7Q/RG5loa0jY/XGn0WfkMb+S6mul0iXCkOLNTpoaFmkgcvgll6/NAc0ys0f70Vs1YYg=
+X-Received: by 2002:a05:6e02:1d15:b0:362:8bdf:45cc with SMTP id
+ i21-20020a056e021d1500b003628bdf45ccmr516586ila.17.1706303991343; Fri, 26 Jan
+ 2024 13:19:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Message-ID: <20240126211927.1171338-1-tjmercier@google.com>
-Subject: [PATCH v2] mm: memcg: Don't periodically flush stats when memcg is disabled
-From: "T.J. Mercier" <tjmercier@google.com>
-To: tjmercier@google.com, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: android-mm@google.com, Minchan Kim <minchan@google.com>, cgroups@vger.kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+MIME-Version: 1.0
+References: <20240123184552.59758-1-ryncsn@gmail.com> <20240123184552.59758-2-ryncsn@gmail.com>
+ <CAF8kJuNZP-uvsSshVrEY0bPsYLB+5Oi-bQKsEQ3RV6yOW+RgNA@mail.gmail.com>
+ <CAMgjq7CbxZQ2CmWNjsNjJajBEVkZ839_X5twwLfiiv0-ZgN32A@mail.gmail.com>
+ <ZbMDO5mkAFmN2LHz@google.com> <CAMgjq7AMZv7dmhoL_XgROnfHFWhsDDvFhZ--b-jzC47j=z-8ug@mail.gmail.com>
+In-Reply-To: <CAMgjq7AMZv7dmhoL_XgROnfHFWhsDDvFhZ--b-jzC47j=z-8ug@mail.gmail.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Fri, 26 Jan 2024 13:19:39 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuOz4x_-yG=RHqMU2NP-TxSYNZ_kuDRK8avA3Xfjc3ZoVQ@mail.gmail.com>
+Message-ID: <CAF8kJuOz4x_-yG=RHqMU2NP-TxSYNZ_kuDRK8avA3Xfjc3ZoVQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] mm, lru_gen: try to prefetch next page when
+ scanning LRU
+To: Kairui Song <ryncsn@gmail.com>
+Cc: linux-mm <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Yu Zhao <yuzhao@google.com>, Wei Xu <weixugc@google.com>, 
+	Matthew Wilcox <willy@infradead.org>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The root memcg is onlined even when memcg is disabled. When it's onlined
-a 2 second periodic stat flush is started, but no stat flushing is
-required when memcg is disabled because there can be no child memcgs.
-Most calls to flush memcg stats are avoided when memcg is disabled as a
-result of the mem_cgroup_disabled check added in 7d7ef0a4686a
-("mm: memcg: restore subtree stats flushing"), but the periodic flushing
-started in mem_cgroup_css_online is not. Skip it.
+On Fri, Jan 26, 2024 at 2:31=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wrot=
+e:
+>
 
-Fixes: aa48e47e3906 ("memcg: infrastructure to flush memcg stats")
-Reported-by: Minchan Kim <minchan@google.com>
-Signed-off-by: T.J. Mercier <tjmercier@google.com>
-Acked-by: Shakeel Butt <shakeelb@google.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
----
- mm/memcontrol.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > This makes the code flow much harder to follow. Also for architectu=
+re
+> > > > that does not support prefetch, this will be a net loss.
+> > > >
+> > > > Can you use refetchw_prev_lru_folio() instead? It will make the cod=
+e
+> > > > much easier to follow. It also turns into no-op when prefetch is no=
+t
+> > > > supported.
+> > > >
+> > > > Chris
+> > > >
+> > >
+> > > Hi Chris,
+> > >
+> > > Thanks for the suggestion.
+> > >
+> > > Yes, that's doable, I made it this way because in previous series (V1
+> > > & V2) I applied the bulk move patch first which needed and introduced
+> > > the `prev` variable here, so the prefetch logic just used it.
+> > > For V3 I did a rebase and moved the prefetch commit to be the first
+> > > one, since it seems to be the most effective one, and just kept the
+> >
+> > Maybe something like this? Totally not tested. Feel free to use it any =
+way you want.
+> >
+> > Chris
+> >
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index 4f9c854ce6cc..2100e786ccc6 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -3684,6 +3684,7 @@ static bool inc_min_seq(struct lruvec *lruvec, in=
+t type, bool can_swap)
+> >
+> >                 while (!list_empty(head)) {
+> >                         struct folio *folio =3D lru_to_folio(head);
+> > +                       prefetchw_prev_lru_folio(folio, head, flags);
+> >
+> >                         VM_WARN_ON_ONCE_FOLIO(folio_test_unevictable(fo=
+lio), folio);
+> >                         VM_WARN_ON_ONCE_FOLIO(folio_test_active(folio),=
+ folio);
+> > @@ -4346,7 +4347,10 @@ static int scan_folios(struct lruvec *lruvec, st=
+ruct scan_control *sc,
+> >
+> >                 while (!list_empty(head)) {
+> >                         struct folio *folio =3D lru_to_folio(head);
+> > -                       int delta =3D folio_nr_pages(folio);
+> > +                       int delta;
+> > +
+> > +                       prefetchw_prev_lru_folio(folio, head, flags);
+> > +                       delta =3D folio_nr_pages(folio);
+> >
+> >                         VM_WARN_ON_ONCE_FOLIO(folio_test_unevictable(fo=
+lio), folio);
+> >                         VM_WARN_ON_ONCE_FOLIO(folio_test_active(folio),=
+ folio);
+> >
+>
+> Thanks!
+>
+> Actually if benefits from 2/3 and 3/3 is trivial compared to the complexi=
+ty and not appealing, then let's only keep the prefetch one, which will be =
+just a one liner change with good result.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index e4c8735e7c85..bad8f9dfc9ab 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5586,7 +5586,7 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
- 	if (alloc_shrinker_info(memcg))
- 		goto offline_kmem;
- 
--	if (unlikely(mem_cgroup_is_root(memcg)))
-+	if (unlikely(mem_cgroup_is_root(memcg)) && !mem_cgroup_disabled())
- 		queue_delayed_work(system_unbound_wq, &stats_flush_dwork,
- 				   FLUSH_TIME);
- 	lru_gen_online_memcg(memcg);
--- 
-2.43.0.429.g432eaa2c6b-goog
+That is great. I did take a look at 2/3 and 3/3 and come to the same
+conclusion regarding the complexity part.
 
+If you resend the one liner for 1/3, you can consider it having my Ack.
+
+Chris
 
