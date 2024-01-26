@@ -1,154 +1,170 @@
-Return-Path: <linux-kernel+bounces-40498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E45B83E1A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:37:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A55FD83E1A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:38:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCE722837D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:37:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ACBD6B25456
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:38:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A8002232B;
-	Fri, 26 Jan 2024 18:37:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F05A8210F3;
+	Fri, 26 Jan 2024 18:37:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fgkjZPbs"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="VZRmIzkd"
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3585A22098
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 18:37:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A343E208BC
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 18:37:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706294225; cv=none; b=VeepfQWe/B5BrE37Itrfllmecwx4UykJbn6GJfQWcl6mbhsKH1p5F3p11B55aMls33/jsWpLhaT5h2O/3XUs/motf9JGahuMAlJI7keLVuPlYFcGoAjbr3C1KaAr3WSeOJBUVQwMMOf8U0zLVYyT0/DslC5Rdi9ZJNollHqv/yM=
+	t=1706294272; cv=none; b=fODgXqGDuX4fgvCrbipyTQ0gtYpm1jWdPwgBiz4hqllCrvmCCFbaFuvRkMwon6x9UfpJPrzbETxwvkS8Cyo3E+L15wfWsNRq7saJFWXWdUvsuCazW1ml13ndtG9ZxnghUP9bUpt9w72hcpLeebODNZyy/Ol2xWJnsuUm4M1xp+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706294225; c=relaxed/simple;
-	bh=S1fRMeft88UCS9XJ3ihj3GA2+mAls0h3Pf4XzLDD89s=;
+	s=arc-20240116; t=1706294272; c=relaxed/simple;
+	bh=XZ2hRyKad9HfIgpa+F9en0MefeDawNEJlY0vs6zijUE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XATwYFRjpHH7eF4xPjUnhqYp0EvSuhBlN0pmKqNpBwuTDJT2k5QFy6/zhKTauQ1T2XD/WAnk6UUGTTmYa2D8jXlmFX0aq0AXWbGaWZ6cRIiI5+se3SFkKPRL5/XWc5/rIbytoe0IgRUuNOWsjJ8pMDsl6RddXMRU2BAt76A7bZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fgkjZPbs; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706294223;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YtidRzgIyGrU6IJcvdjLJw1+3TfGvDrbdoaLpd1wvgI=;
-	b=fgkjZPbsmTdOSKdwd7C8tc0+Z5C1gEpcxgzoqRLq02Mz3yl1BC5tQGod2ySU3MugwuMXig
-	8uGcPAPVUwcxUz2gyEzIN0QnLfjhN3ZjYeIjGNqV6m+UL/E8BMcbGAP4ym0Eag0b8bLxUV
-	p6apW0AI7hHc7IU2RvQ/sMl7yh7JNw8=
-Received: from mail-ua1-f71.google.com (mail-ua1-f71.google.com
- [209.85.222.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-456-LWfihVDpODiY3_hIPZwzPg-1; Fri, 26 Jan 2024 13:37:01 -0500
-X-MC-Unique: LWfihVDpODiY3_hIPZwzPg-1
-Received: by mail-ua1-f71.google.com with SMTP id a1e0cc1a2514c-7d2dfa4c664so366000241.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:37:00 -0800 (PST)
+	 To:Cc:Content-Type; b=bLKkDUBwEI6C3SZAZOFeaZGMHSjsEodKBbVU5CtXoncrRPkhM/w+ZgkOovy1qY+VgFzGIDs90LE/cf9pkOi0N5+9ofleSqu98g0QQQxej+Cy3THXgASpTS61uASbFmhSoMlt1ptigjsBrVPKtWIvCmsVwytvfiecDCWth7A/DsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=VZRmIzkd; arc=none smtp.client-ip=209.85.219.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc6432ee799so893872276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:37:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706294269; x=1706899069; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uQ9LWpRZqhGXr17Sut+fsyT3gP0HQr5bswuLlV5/xTo=;
+        b=VZRmIzkd5BF7pS+vQAVSqz58UIJHWRKEaMNxNCUEZv3Gn6lQp8+FDfdTostyjJDni1
+         ySrE8rj/M88GIXWywMOFXHiXFDzxGesIriZqaTT+ks1dnOcWKyIPvygZA25AYuGfSfgk
+         IMAph3bzCvUEq5oVejaykqE+az7hbEcTM/p1s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706294220; x=1706899020;
+        d=1e100.net; s=20230601; t=1706294269; x=1706899069;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YtidRzgIyGrU6IJcvdjLJw1+3TfGvDrbdoaLpd1wvgI=;
-        b=YjaYw+vcoO6Ek52y34kqWAHKe5zhKdwLx1duudtVkbAeYiEz/ZRB+tNrQ9MtEniEJ3
-         wxrPd3pxxKBvk4Xz5n86YeBrHoTY8spVdRBqWuvg0lDlqqZO+w1Ktf4NXl7FqmTDMBqo
-         ldy2VcTsZbi8avZ9zLDhwA0Wh9vZkK08o1PqABn3lcjxnziR1Z7EFW378j85QfwIt5c8
-         y/+TIIqD5OZc0fxTit2SikzqRAYH9hoMgo6fcGdWSfLKoVhhQACYqobc9qS8GLmZDYD1
-         yjQ6oSqOhqjzagcOz0bU9A8cS8+blQjZaOVIA4nx83EfFu5qs2GTL2XcWZM1d7jG/IT+
-         4lLg==
-X-Gm-Message-State: AOJu0YyXF42JNTBUMKwMpOYINZwotRm9P44pfnd0NxmCIIV4UMAkk8mk
-	pmfHeqtf0DeMHLAFdS3fUm2+uy7YpTlPBVudF5g4chnINk2N2g2EPFydsKyW0Qu0S98i827J+O1
-	KAoU7pc0hbfRk624Az2mWRXdNUsy9or+AM2vWSNtk3V2XdR3JaQ0Yr7jHYjaEFf5M+QcmlEH1Y/
-	ZLlU3km0wN0ckBRkGjP7ppxLJeWyR/fWCm/wpH
-X-Received: by 2002:a67:ebd4:0:b0:46b:1408:bbad with SMTP id y20-20020a67ebd4000000b0046b1408bbadmr198420vso.14.1706294220516;
-        Fri, 26 Jan 2024 10:37:00 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHEeg7aOHdJJCfQQbPMee0o+6vpKuc0K0Nk3OoMbEjhiU4ZqbmHCHJWBpLEKUXk5wz5VWKDRBo7LPYo1lJnIDk=
-X-Received: by 2002:a67:ebd4:0:b0:46b:1408:bbad with SMTP id
- y20-20020a67ebd4000000b0046b1408bbadmr198415vso.14.1706294220297; Fri, 26 Jan
- 2024 10:37:00 -0800 (PST)
+        bh=uQ9LWpRZqhGXr17Sut+fsyT3gP0HQr5bswuLlV5/xTo=;
+        b=gk3d1m5Ju+7IiZR2eJE1LuGxImDCF2gEWLlJz+YEOVrVJoE+peap5t1wxj8QhN4DxL
+         FpAz4gNy7E3V4DGxDNl5VePj+mgRvXZ83BHO7sETOAssRANt3kUvWsMO73oIan1JYMbo
+         JYx41hPNWOubTNeFA/wTxgbYcW61qAZO7BooC0WhYYM6uGM8IdAX0wXWzhntgqApPPie
+         l1qIvhX1pyNNEfF2jh9qVdzr0yPPplamL3V5Z09EkXCCnNNIAy3jQ9sh4FVuysG/0sMy
+         FTi6ZCeHaRr+hCYdQezhaCyUn2Z0NepcQRlwEfShwO14zjGxqZYIPKA4VM8BZHsviz/r
+         3eeg==
+X-Gm-Message-State: AOJu0YwlhAqLnQwo+FUaq6WAgTKW8i8c6JQ+NZiNi5q0e1KBPjqrXYlv
+	6RLZ7jP/j9gBrLzcOUYElrAPx2YNifJ9RKLO6WXE63LuFM3QJ1p7b+yI1tomWmDFoSo1xa0/og5
+	GXRzwUGNBWpsypaWW5DMj39NRaQ/xt+ueZPJM
+X-Google-Smtp-Source: AGHT+IEpHnEbx0+AMZ0M2gO/OYPS/R7gEZJGXz4BLNVvBTAgAaTOXAb/wCVHOzmASX9xMb1zXAS5xStp87PXvBxk7XA=
+X-Received: by 2002:a5b:80c:0:b0:dc6:57cf:d905 with SMTP id
+ x12-20020a5b080c000000b00dc657cfd905mr125981ybp.7.1706294269467; Fri, 26 Jan
+ 2024 10:37:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <b83ab45c5e239e5d148b0ae7750133a67ac9575c.1706127425.git.maciej.szmigiero@oracle.com>
-In-Reply-To: <b83ab45c5e239e5d148b0ae7750133a67ac9575c.1706127425.git.maciej.szmigiero@oracle.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Fri, 26 Jan 2024 19:36:48 +0100
-Message-ID: <CABgObfZ1YzigovNEiYF7pbmRxv-SUzEFqnpaQZ4GT_hDssm65g@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86: Give a hint when Win2016 might fail to boot due
- to XSAVES erratum
-To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc: Sean Christopherson <seanjc@google.com>, Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20240125004456.575891-1-abhishekpandit@google.com>
+ <20240124164443.v2.2.I3d909e3c9a200621e3034686f068a3307945fd87@changeid>
+ <2024012512-haphazard-mobster-f566@gregkh> <CANFp7mWzA5df9iFpCWFRpXuOP06yDmBehYDYNACjrW2fPvp_Ow@mail.gmail.com>
+ <2024012555-nuclear-chummy-6079@gregkh> <CANFp7mVPahm+6MjD_+MWMNUz=RViNh777h=Q2dW0UVVDK6dA0A@mail.gmail.com>
+ <2024012612-giggling-diabetes-3a74@gregkh>
+In-Reply-To: <2024012612-giggling-diabetes-3a74@gregkh>
+From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Date: Fri, 26 Jan 2024 10:37:38 -0800
+Message-ID: <CANFp7mWQZru7uR-vi=s1j5XT1Wz5FYZhBrCjwwtv38PeBOYLqw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] usb: typec: ucsi: Update connector cap and status
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Abhishek Pandit-Subedi <abhishekpandit@google.com>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, linux-usb@vger.kernel.org, 
+	jthies@google.com, pmalani@chromium.org, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Rajaram Regupathy <rajaram.regupathy@intel.com>, Saranya Gopal <saranya.gopal@intel.com>, 
+	linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 24, 2024 at 9:18=E2=80=AFPM Maciej S. Szmigiero
-<mail@maciej.szmigiero.name> wrote:
-> +static void kvm_hv_xsaves_xsavec_maybe_warn_unlocked(struct kvm_vcpu *vc=
-pu)
-
-Calling this function "unlocked" is confusing (others would say
-"locked" is confusing instead). The double-underscore convention is
-more common.
-
-> +{
-> +       struct kvm *kvm =3D vcpu->kvm;
-> +       struct kvm_hv *hv =3D to_kvm_hv(kvm);
-> +
-> +       if (hv->xsaves_xsavec_warned)
-> +               return;
-> +
-> +       if (!vcpu->arch.hyperv_enabled)
-> +               return;
-
-I think these two should be in kvm_hv_xsaves_xsavec_maybe_warn(),
-though the former needs to be checked again under the lock.
-
-> +       if ((hv->hv_guest_os_id & KVM_HV_WIN2016_GUEST_ID_MASK) !=3D
-> +           KVM_HV_WIN2016_GUEST_ID)
-> +               return;
-
-At this point there is no need to return. You can set
-xsaves_xsavec_warned and save the checks in the future.
-
-> +       /* UP configurations aren't affected */
-> +       if (atomic_read(&kvm->online_vcpus) < 2)
-> +               return;
-> +
-> +       if (boot_cpu_has(X86_FEATURE_XSAVES) ||
-> +           !guest_cpuid_has(vcpu, X86_FEATURE_XSAVEC))
-> +               return;
-
-boot_cpu_has can also be done first to cull the whole check.
-
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 27e23714e960..db0a2c40d749 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -1782,6 +1782,10 @@ static int set_efer
->        if ((efer ^ old_efer) & KVM_MMU_EFER_ROLE_BITS)
->                kvm_mmu_reset_context(vcpu);
+On Fri, Jan 26, 2024 at 10:30=E2=80=AFAM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> +       if (guest_cpuid_is_amd_or_hygon(vcpu) &&
-> +           efer & EFER_SVME)
-> +               kvm_hv_xsaves_xsavec_maybe_warn(vcpu);
-> +
->        return 0;
-> }
+> On Fri, Jan 26, 2024 at 10:08:16AM -0800, Abhishek Pandit-Subedi wrote:
+> > On Thu, Jan 25, 2024 at 5:50=E2=80=AFPM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Thu, Jan 25, 2024 at 04:21:47PM -0800, Abhishek Pandit-Subedi wrot=
+e:
+> > > > On Thu, Jan 25, 2024 at 3:03=E2=80=AFPM Greg Kroah-Hartman
+> > > > <gregkh@linuxfoundation.org> wrote:
+> > > > >
+> > > > > On Wed, Jan 24, 2024 at 04:44:53PM -0800, Abhishek Pandit-Subedi =
+wrote:
+> > > > > > diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/=
+ucsi/ucsi.h
+> > > > > > index bec920fa6b8a..94b373378f63 100644
+> > > > > > --- a/drivers/usb/typec/ucsi/ucsi.h
+> > > > > > +++ b/drivers/usb/typec/ucsi/ucsi.h
+> > > > > > @@ -3,6 +3,7 @@
+> > > > > >  #ifndef __DRIVER_USB_TYPEC_UCSI_H
+> > > > > >  #define __DRIVER_USB_TYPEC_UCSI_H
+> > > > > >
+> > > > > > +#include <asm-generic/unaligned.h>
+> > > > >
+> > > > > Do you really need to include a asm/ include file?  This feels ve=
+ry
+> > > > > wrong.
+> > > >
+> > > > I didn't see any header in include/linux that already had these
+> > > > unaligned access functions so I opted to include
+> > > > asm-generic/unaligned.h. Is there a reason not to use an asm/ inclu=
+de
+> > > > file?
+> > >
+> > > Yes, you should never need to include a asm/ file, unless you are
+> > > arch-specific code.
+> > >
+> > > But the big issue is that you don't really need this, right?
+> >
+> > The UCSI struct definitions have lots of unaligned bit ranges (and I
+> > will be refactoring <linux/bitfield.h> to support this but that's
+> > coming later). As an example, the GET_CONNECTOR_STATUS data structure
+> > has unaligned fields from bit 88-145.
+> > Rather than define my own macro, it was suggested I use the
+> > get_unaligned_le32 functions (see
+> > https://chromium-review.googlesource.com/c/chromiumos/third_party/kerne=
+l/+/5195032/3..4/drivers/usb/typec/ucsi/ucsi.h#b183).
+> >
+> > I did a quick ripgrep on the drivers folder -- it looks like the "You
+> > should never need to include a asm/ file unless you are arch specific"
+> > isn't being followed for this file:
+> >   $ (cd drivers && rg -g '*.h' "unaligned\.h" -l) | wc -l
+> >   22
+> >
+> > The unaligned access functions (get_unaligned_le16,
+> > get_unaligned_le32, etc) are really useful and widely used. Maybe they
+> > SHOULD be exposed from a <linux/unaligned.h> since they are so useful?
+> > I can send a follow-on patch that creates <linux/unaligned.h> (that
+> > simply just includes <asm/unaligned.h>) and moves all includes of
+> > <asm/unaligned.h> outside of "arch" to the linux header instead (this
+> > will also create a checkpatch warning now as you are expecting).
+>
+> This is being worked on, see:
+>         https://lore.kernel.org/r/20231212024920.GG1674809@ZenIV
+>
+> thanks,
+>
+> greg k-h
 
-Checking guest_cpuid_is_amd_or_hygon() is relatively expensive, it
-should be done after "efer & EFER_SVME" but really the bug can happen
-just as well on Intel as far as I understand? It's just less likely
-due to the AMD erratum.
+Thanks, I see the move here:
+https://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git/commit/?h=3Dhe=
+aders.unaligned&id=3D3169da8e80dfca2bcbfb6e998e2f36bcdcd5895a
+I'm not sure how the logistics of this is going to work but I assume
+it's ok to merge with <asm/unaligned.h> for now and let the later
+merge from viro fix this? (+Viro as FYI)
 
-I'll send a v2.
+I'll send up Patch 3 of this series with the fixes discussed (use
+asm/unaligned.h and reorder includes)
 
-Paolo
-
+Abhishek
 
