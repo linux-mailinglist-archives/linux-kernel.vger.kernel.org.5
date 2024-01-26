@@ -1,80 +1,76 @@
-Return-Path: <linux-kernel+bounces-40728-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40729-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39B7383E4E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:13:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 092ED83E4E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:13:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E5D81C23497
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:13:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 882451F2141B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:13:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BF8551019;
-	Fri, 26 Jan 2024 22:11:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E80325564;
+	Fri, 26 Jan 2024 22:13:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="gmp6me5v"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2046.outbound.protection.outlook.com [40.107.94.46])
+	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="bhHnP1fw"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2091.outbound.protection.outlook.com [40.107.93.91])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD2FD50A9B;
-	Fri, 26 Jan 2024 22:11:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAECF225A5
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 22:13:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.91
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706307080; cv=fail; b=phLJqTcmyz4JqbwceBrCvuWE+ueq6F0GBNcgGBOlVrXSw4otl2FYnoCuTS22sE2KBLjOHMZ8fZHzokcKCJHREB25jdilRAhNLmHJp+NZo0U3TOGYhLqGZQWW4KZBCXS+nUCfmXscH+ieEPzmwzt2Y60LFdO2bZUn0y+MtHe202c=
+	t=1706307183; cv=fail; b=usMsYtxHocbT/IgaB1fgNgPAG5lY6C4FwLWGnwPumGhhexJZ2twu/+ibG+tPG+DVLaynTBBlirWXmFYveDXqNJx/ghXaSMZKY6sE/00I1tMBO62Gzz45euOOnYacdgOvUBIUnHMcTAs289H9zg8AOnUdtqX+tAAi6FyE9R5nP/o=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706307080; c=relaxed/simple;
-	bh=KaAqVIxioAWfLaxxgkDvI+w7m6OSuCDz75OpVr4pwes=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=r7LMqWrkRGKeKrbBdQ19NFQRetSsSL63MolorUzHsCFh47YoUGi3CTJ1Z5G/XjAL006G3vHFYZs90eZiU6fV5vDi0yOSSssGPMVXX7pGcyXFvkK14yBsLhuKPOZdePSwoM8JulVlOg1Jq8CpybmVgkG5lfN8K2CAnrd/A+LsGd0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=gmp6me5v; arc=fail smtp.client-ip=40.107.94.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+	s=arc-20240116; t=1706307183; c=relaxed/simple;
+	bh=Jxsf2ZA6ZIVfyPQZaedV6wbPrDvsE/3BMh2yCFTZNt4=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=nJF0qWbIQ/HbjQ8Pgxh2Olxdl7sv0GtVunB2T1MbizT/oREqD4sSMhmeyoqJSB3kCK0pZGzoj5FTtWvm8MNbYnL0md9QRfEC9Y/oGnW7uWPbRYLAKRVKvq8W8KGdGkEBbWQuoAez8hOGoxEChyb+FT5SypkOpe9d1bBuT0ftrak=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=bhHnP1fw; arc=fail smtp.client-ip=40.107.93.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T+Ocmiq0yNaIWjOEE5CAwWiv0E+myMi2mG8wA4EJZX8+Meb9IQk1ZHlJdLwMMkfFvH1YbJE2ChH8YGbJevZFHNGY4rX+TrqF8n19aLvvcoQYnp7ZRttgqmfHdXufy9CQibXCYMGbCoBCqafY07cEx7msysoGVoNIHdpPzgQwtQXl2RvHblONBxXuyG4zw4AAsgUxy5vSoai+rMp1vwSxS3JbO38CxjdZSmjdIF6YfJ2kD0WULlLz1o2bJI2JkAJBTwrYZ/SN4+9yoMkg6ZTJAnxzEmB6+jfGxNYStqK6nSTv6wvirdGOwzJjbJm23ysyWSPDJSptiMWBU/JTiIUSpg==
+ b=T99B6BvsrW7LVUJVlN52XTTfm0jpFxEbhDfqR0GFNWLMKXP5G+u79CZF2+SbzIHFzMvo7hkE4OF4iAVnulMPUUQRBqGs58gO/Zqo7XYCBhJQPOX7Q4WpihYxhhBZQfkgWb/ncPmBkUewbOj5hqp6jalHRQ66PHy0IM098yntNaLZVdsOBBI18Ndc2QMTfM/iRHngBaURg3Be2ZxLz313UUQ20wW9gqGNH7FcldCKBxtcwCTK+2H/TSEZozL/Pt/v7fBlLMEHDhFsMOxDg2O2KL0euY+JTI7iBBj5Cm3ykY5ObcQeN/2+sicg70RQzalyPCISdP2+uv+OJ8fTbJULmw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fAZNIsMrtlluLqeDHpluf5YDg9+gPi+AP4H7IIeGK98=;
- b=jqWSdrirGbnXjfsJAv/boXBpt3yzuHSw53i1C262GHV1rDql2mpzYWqZAkN3Pvye8yRzyQCPNQ25sIn5b8YBwAq/TX7SQ7ZtHQOmHV55zbw2lpvBWxYI8VdLNh2ns0JpkHhQNqUptPrwhi+yOntmdVozktiKmY98PylUQ7aUzu/zAxiIkZwJVxPY+pIbCw33OLX31FXMfJ/uE0i/jRjskmVt956h8o/GwfOkJPey+F1BottBeYB+k1qOH5rbd3/S6yUb9wdL89w7eq8P6ij304Fcaw00TIS6JlIUxHqKLkr/k2/H/jAR4VTdrIlW91fDKDEVtZEAC7iPaSeDYCAMVg==
+ bh=HckM0fbTP73H1uWNe2kOQ9AzAH0jZg4sNAuF1mBzrSo=;
+ b=VEQasmG+2Bsscp26y9pmebGSO0lRw71EJxDotGRgnv7ZGq+DZsAQMO/klq4rKFSj5cxIK3dLUiQZE3DNd1wk78Lb3gKDXnmOQtwHi6/yP4FLpth+XMK6NHvUjB+h6uUPbJbb4zsIjZDz81Z0G64eGiuYYtQrRfQbTqvYU/s0GGVnjifm/a52xUWoBAQDcMtrXqivYD1WQHr3vtrfJzqfHpGF/QvKYF2jztAbW6QyWtEQCjs3kGbmEmT9tUlei5+NrZQWSHA/Gw0OjUpMv3ZghqMaBs1E22o0Ar0eRrbdV0J1aFIFXJs2W5ebCNCfRaHXm982Zw7c1JO8Kv892xisgA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fAZNIsMrtlluLqeDHpluf5YDg9+gPi+AP4H7IIeGK98=;
- b=gmp6me5vZVFEcNr70QgNXDWEc5S508XsUdLabW8R2ogWFb9YurbGWWMf16zMZs//ddoDgqmVBWrsXnr8bb/LUN2dZW8K9k8hbWN9wMgCBlDkaNc8FRwV7LZH803PDlJL1dmi3BWblDupj3Dgc6BAELemTif8uZwDw7hXRWXNCl8=
+ bh=HckM0fbTP73H1uWNe2kOQ9AzAH0jZg4sNAuF1mBzrSo=;
+ b=bhHnP1fwqTv17IOmh3QvlB51rHhOC7ZhfaovkMEDAuaXBuJaqOl5RnV74IrF/tkNr1PSLgHAH2aDAoNnPh+78i0cOU/uGEomc+badlZYT38QYml7MApvMDown7pYfLvincKervUNropSdrpnRMYGxrq8kKF2Uog+4QDtzqE2h48=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
- by CO6PR12MB5473.namprd12.prod.outlook.com (2603:10b6:303:13e::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Fri, 26 Jan
- 2024 22:11:16 +0000
-Received: from BL1PR12MB5732.namprd12.prod.outlook.com
- ([fe80::200:c1d0:b9aa:e16c]) by BL1PR12MB5732.namprd12.prod.outlook.com
- ([fe80::200:c1d0:b9aa:e16c%4]) with mapi id 15.20.7228.027; Fri, 26 Jan 2024
- 22:11:16 +0000
-Message-ID: <47bbe1e6-e9c6-cff8-987e-e244581f689b@amd.com>
-Date: Fri, 26 Jan 2024 16:11:13 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v7 06/16] virt: sev-guest: Move SNP Guest command mutex
-Content-Language: en-US
-To: Nikunj A Dadhania <nikunj@amd.com>, linux-kernel@vger.kernel.org,
- x86@kernel.org, kvm@vger.kernel.org
-Cc: bp@alien8.de, mingo@redhat.com, tglx@linutronix.de,
- dave.hansen@linux.intel.com, dionnaglaze@google.com, pgonda@google.com,
- seanjc@google.com, pbonzini@redhat.com
-References: <20231220151358.2147066-1-nikunj@amd.com>
- <20231220151358.2147066-7-nikunj@amd.com>
-From: Tom Lendacky <thomas.lendacky@amd.com>
-In-Reply-To: <20231220151358.2147066-7-nikunj@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA1P222CA0004.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:806:22c::14) To BL1PR12MB5732.namprd12.prod.outlook.com
- (2603:10b6:208:387::17)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from PH0PR01MB8166.prod.exchangelabs.com (2603:10b6:510:293::17) by
+ PH0PR01MB7491.prod.exchangelabs.com (2603:10b6:510:f2::21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7228.24; Fri, 26 Jan 2024 22:12:56 +0000
+Received: from PH0PR01MB8166.prod.exchangelabs.com
+ ([fe80::67b9:4671:4fdb:2dbf]) by PH0PR01MB8166.prod.exchangelabs.com
+ ([fe80::67b9:4671:4fdb:2dbf%5]) with mapi id 15.20.7228.023; Fri, 26 Jan 2024
+ 22:12:56 +0000
+From: Ilkka Koskinen <ilkka@os.amperecomputing.com>
+To: Robin Murphy <robin.murphy@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>
+Cc: Ilkka Koskinen <ilkka@os.amperecomputing.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] perf/arm-cmn: Add support for tertiary match group
+Date: Fri, 26 Jan 2024 14:12:12 -0800
+Message-Id: <20240126221215.1537377-1-ilkka@os.amperecomputing.com>
+X-Mailer: git-send-email 2.40.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: CH5P221CA0002.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:610:1f2::27) To PH0PR01MB8166.prod.exchangelabs.com
+ (2603:10b6:510:293::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,239 +78,71 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5732:EE_|CO6PR12MB5473:EE_
-X-MS-Office365-Filtering-Correlation-Id: bfe73e8e-8166-42e9-afea-08dc1ebbb734
+X-MS-TrafficTypeDiagnostic: PH0PR01MB8166:EE_|PH0PR01MB7491:EE_
+X-MS-Office365-Filtering-Correlation-Id: facf96b0-6199-4234-f1b0-08dc1ebbf2d8
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	U4To2KAPJKiE46qTtvf8bKb/MJmZuHuQQ7yL0ZibYpd+4UUltwFukibToqbTmX1OMUbWBd+PgR4wNPsVFb71haHV56WaCxCLCphnwM079j934QgnI50eTDJ0DFrusXiWJf4Vl6Y2meUUiiAulmxPm0pOogaRm+rYY0zpJ7DckBnAQSPqpYcbKodIR5LpzuYG4abTioZlDsk1AByC8x7aMUQ1kyRzvYIOxFjYrxKJCekdnjXsJhSp1KL+LEJt6tCXkcXmjPke+Zw+UYbxJhvK5QniwyWYaoBpY8nivoXlKukmb0XLRo5oUz9k8TX2wN/CWAGnfvfiVU2cl/Y/+/sVSpdZJIHydp4qTwJ36rWcplRLhRT9i/ZiwiFRhzi5Ze4VVw6I/sIygvnqHQyXuLi8Ck6FIyq4gq/e4JH03bp5WkXCwvHPCeIWaxKlcnK9kibsCbUGa+uTuvwqPSSNJzlyDsSGk3QLZGE7u7JGZt0hcd02yJLLm+35GmZlFUNOSHwdfE/xVvDgbrsIcrP7GyWP22ZugMTK0YU73dsGW6vBwDTsnOwxGCJ3lgKdEQZes+RpwhWqXWoIok7/9GYgCdbzUh+5bgYq2KouLLzjANtI6RPVYA0h4ymKoKa93iTdWVESudhblj5UqcIzCxAz25tDjw==
+	Dv/n2n1id4jGOPpmsqzYbaouyRi7+e1VAI53PbKsRH5axh8ENGXOb0HmR+Q0ErfHt7MZBHNcVFq93tos0OupDcWLnAEqoKw5PBL1haQldX0hhxqqEvuwOxEKTeHM9Itv5bkahOfkNe385FgLt8TffhTWq6c5TozM3GdkMpHx+Vlw9PN5QY4EJdytjABw7uF8G+Y5MsRd3MX/fUzcDHnZLaSY+TFFXkn9zCkYtAcc/aLLB91WgVUv1yeGbAUd9V02Q2WBgsKB/8JpJhfWSWsBmpd/eOBqRi3+PFun9ODzZU8/GEqRGcr0UXav3fdj46lytnSyM3oDs/nmDVyw3nos8NWPQyvjY/8Q4A+PgUX3VuD22MqQFrh85ajHqrDWAPbRL0iav/e+Dgs6Z+sb4MmON0v09UQsgjZ2miFOgUZ2IQM5cAEa4r3gpbAOxJGvgINVbVTpXJ7HyIfQUA9kGlkfuxpBsonjcqj0Nh+a5sByHxujHX52J6XJvu9Hwreqy5Ft8vJYPcJ1U54lpt7er+am/h+OHEbmYBNXlckWFwVEBMBj9wUZORj3LPjPxQqQG7I8KVzYIwqSarn7BuIlXNxIonJMFA+g+dautSDS6HUaiR2zs7Licr9JkNDsfn0uVbOL
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(346002)(366004)(39860400002)(136003)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(478600001)(38100700002)(2906002)(86362001)(31696002)(36756003)(41300700001)(316002)(66476007)(6506007)(66556008)(6512007)(5660300002)(66946007)(53546011)(6486002)(6666004)(83380400001)(2616005)(4326008)(7416002)(8936002)(26005)(8676002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB8166.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39850400004)(136003)(366004)(396003)(346002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(5660300002)(66476007)(4744005)(8936002)(2906002)(66946007)(8676002)(316002)(4326008)(66556008)(86362001)(110136005)(41300700001)(478600001)(6486002)(1076003)(83380400001)(6512007)(52116002)(38100700002)(38350700005)(6666004)(2616005)(6506007)(26005);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?NmlFeGF0N3pic1RvUC96VGk2ZzhxV2xDMFJ1VTRKVGc3SCtndFRuTExmNEJW?=
- =?utf-8?B?cjdsWEsycG9qdkR0Mm5wcnRaYmJ3Q0ZYZE5TM3BoZlBWTEt6THJMOWVsamFD?=
- =?utf-8?B?dk5RLy9NUEsraXFPSVRjMFdFV3ZvaXd1N1Vwd0NzcnR6aUJIZ3Z5bDlNUEI3?=
- =?utf-8?B?TFlTVVMxb1ZtQ0tPTnIvUGN1dkE0eE5JQ1lmQkxtak1YeHZ0Ym5UY2JSN09l?=
- =?utf-8?B?OUZyOExWNUVFS1dNUjFkV3Qwa2gzbzFEV29Jb0F2Zmc3NWJvaXlyNHRrTEJM?=
- =?utf-8?B?WW5XK2twdjJZaFgvL2pOam1CeXplZEVtU0dybWF5ejhXMmVCUnpoQ2o3RHpF?=
- =?utf-8?B?Q0pTdElYS21CbHRBL1Yva3lkdjk3Q0ZjQjhFK1RTbm4vTkRuT1NzaDQ3b3hz?=
- =?utf-8?B?SE83ZlR5VmpkK25WSFU5ZTgrVm91Q0hzTlA2OFBtbE03VHN5ZGlnNGkzUHNI?=
- =?utf-8?B?d09GQWZkd1ZNNDhnbU5TTk02ZCtoaEpkN1ZjbElnako0cS92OWFGdUlvZnlz?=
- =?utf-8?B?K1VwUDhwZkxRNENoSExmZ3VUdlpycHozQ2VldDdPL3d4Nm1zZ0pPVkVnUkgx?=
- =?utf-8?B?UTJ2Ly9pMWhqUmRCd2t5MFZzUkJYa3hGUVYvZzBBODRHNjFCRGpFM2Y2R1NX?=
- =?utf-8?B?a2FpajlYTHRRWTl0ZmlNc2h0S1J2eE9PeE4yUlRPc2JMRFlRaHdIV0NoQW9W?=
- =?utf-8?B?aWNhTVpHZytTZFROaS9TeFJhcnpFTll5b29QWGQ0NEExNFZ3QW1nNUJmZ2pj?=
- =?utf-8?B?cTQwWmJCNlR6VUc3T2pWdGRjSmpOVi9qbmcrTUJOTTBnS0lHQXV5MjhialVj?=
- =?utf-8?B?Ti9PeWJ0L2lHc2I0VGs4M1RnRmtSOXMwNW1ZQlkrRVE5Y0JxZU92bEtBQlU2?=
- =?utf-8?B?VENQdmgzS015ZGI4dEN0RWJ5Y3o0eWJRMzNPRGF2eTdIbG9UR1ZyQ0hnczVG?=
- =?utf-8?B?RXlQZ1p6RHp6dGFtVi8ranFWT0dnWTV5SU5YcnRqUFVzSzNvaDFmakJPV0dh?=
- =?utf-8?B?SndhV01zalMzMUc4SUhCMVZJRDFWdDk0N1RYQllzZ21nOC9Uc2hibzVTYlhr?=
- =?utf-8?B?dmtmekRkOG5oc2V6YlcyODM0MXBBaDE3WVMwbStXTVRFd0YxMnYwN3YxRnRC?=
- =?utf-8?B?cVhPVUltWDJJTU5uUWdFMFJNSXhQeENHdzZFK1JMdGplV0sxdERTMHpUYVRl?=
- =?utf-8?B?SGtYV3ozNWttZnY2dCtaL3hHOGw2UW85R2FGVXFBYW02anAyMGhqUldNTkt6?=
- =?utf-8?B?ZFRveHY2VEE1VFRkU3Uvd2hmT0lTUjMwZ3kwcjlxU3MzWklTeWNpSEhGNjhw?=
- =?utf-8?B?ZXRnbGsvejM3amF3cUhTVk9rQzRRTnUvbnlyc00xbThDNHZza1RvMW9Dc2Fa?=
- =?utf-8?B?bkcyOWdDSWRJVGRSVmtQM2JIbnkwaE50TDJNVHBIVmROcTFkSGtncmUzbFpD?=
- =?utf-8?B?YmNndkFvYkJLOUEzc0tnQ2RmbG5Ta1M0WTcwdkJEQ1ZmWWhEZzd6VlFsaDlY?=
- =?utf-8?B?aWwyUmxidWhYNWloQTg2WFp5ZlhMRDVEeUxiak04MGFuVkhiZ3g5dzVhaWla?=
- =?utf-8?B?aVpKSkxTVFRtdENBSG1jUnFsSTdmQjZxY2l4dmhVMld6T0lQQ1F5RzNScUtB?=
- =?utf-8?B?cVJqM01IVEIvZjhlcllFMVZTR204OGFLUHB0cUpQaERaempqTzhBRkJFclhP?=
- =?utf-8?B?SDVIcUxHMlc4TUxOS2g1U09IMWRPU1lLQ2s0aFVTbElPRHUyTTY5bDdVdU5G?=
- =?utf-8?B?dU1TOW9zTVhUUWVIT2M3NEJuV0tpd1dVYkw0eTJrVHlqbCtMQ0R6S2RkK0VO?=
- =?utf-8?B?VzNVQlF3Q1ZTSnBFa09zeGxvdDBHcnlqcjlydmc3RnhaYnUwNGQ5TWd5alg2?=
- =?utf-8?B?dmVTTjhSYU1SVlQrNGFYSGEyRi8wMkFlVjcyU1JlVWRDSW9wUW1KZTdJZEwr?=
- =?utf-8?B?OUVmMVkvbm9weldNRXp4VGxPNWx5TjN4TFFEMUMxWE1mK3hKaGQ2cHZBQVZK?=
- =?utf-8?B?cUdpa252dGlCMlN5QWxzWXZCYXFEY1U3OW56UDgrcFR3L2N1QVdXcjM4d0Nz?=
- =?utf-8?B?VzFySUpWUWQybWZVbXJVREMvcHc3NVNNRHZOak4yZ2lpUGt4MGRVZ3NMZSs2?=
- =?utf-8?Q?Rejrh5PKeAVJkXgYRn7eybAO7?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bfe73e8e-8166-42e9-afea-08dc1ebbb734
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5732.namprd12.prod.outlook.com
+	=?us-ascii?Q?Een5PoLojZE5Ief4GI5i3M3tkRiFB5RbZMx7ZBqh8L9D1CpV+P7lxo2fKyH/?=
+ =?us-ascii?Q?sILmBdRs/6gz6bUlXAcRZaonJuVKpcUYnFquviHpSCxvchmczLXprknxh67z?=
+ =?us-ascii?Q?ILVq/XNgoPles/JjeBBo17RHCk8xVUWlIVb09TdT1qqlp8I/8L3DN24rzOL8?=
+ =?us-ascii?Q?HR0SKlb8wZOn0nH3MaYuabZUYFJAi1sovuTs9Vdst4ejDlqdqu1IxVsU2GK7?=
+ =?us-ascii?Q?NDDpVrYVCoIT1AWqYQT5s2uNO/kGHqzF99UtuGPVQ0e+i9mkQyY3qCB1Tw/P?=
+ =?us-ascii?Q?SJ5EVQkloRekUP4AVABBfmx3UDrLQdses023283nIv1P8cQRJYsCuGj/ckQ2?=
+ =?us-ascii?Q?NzkIT+zutzi9hqqpJWrlrm5Yfl4xaThO30oEiV7RhckDrvP69hCLRnYvOK2M?=
+ =?us-ascii?Q?3kgHYDIIx7mHZkMj1eNLx+a0weLNxv8FbYVIz4PeIFpMdcP3oeBY9MNn8SOn?=
+ =?us-ascii?Q?eSHZCXlxgf2OC9oUA5ClmDYSIfwKIEz1V0RorlmtZ7S8Yll7fufykeBNRvb1?=
+ =?us-ascii?Q?jx9jw3qs/fnKYYAgczHv4Giq1uPYZ01djakpQ2CMXNGQybkUrce+WkvEDrin?=
+ =?us-ascii?Q?Oix61KJ9B8TQMtYXn6pFNXhu84L0SG/U5FjsZPRGPRNC62g5g/u2T/wH7VKM?=
+ =?us-ascii?Q?/xKUENQ3hbfz5910Td++LD/AFEg187noYJGGdh/gWS6v9N1MrgereCDAYu/d?=
+ =?us-ascii?Q?/RdM5ihqEWjvyM3WE62+MzqHa+lYknqE9A9YiMDjmu9IOUsve6PqbKQK6Gwb?=
+ =?us-ascii?Q?L75ZFeAk2w6I0SDI0YrQdwUpYxXUqKyqLpZwh3XSzWmoKaz5bkeuXtSv+YSL?=
+ =?us-ascii?Q?4x7zTEuvun7hk7uRs/G24x6/BslUeUMmEIFrBR6zYfVhoTp5wh/+UJgSqvcx?=
+ =?us-ascii?Q?//5msC354JKKYScVG3O4kfJUJTPWdBoKYyyvQGe74vWf2NwDY9nAr7J7YxQV?=
+ =?us-ascii?Q?+RxBdNymf3kE5JeixANODNkQnsuOHpY438ru94eK+vNtiOXCQll+faYcNrRj?=
+ =?us-ascii?Q?oO+KJf0IuGp/JMe2ANJHQjtvxn8oumutn3X8Qp8gm6SaYJQpI+VqQJZRcCe/?=
+ =?us-ascii?Q?qaQmCd2nEg5QjhXrjIYmCls9SfWdRRw2yXNHMO2OGalrWuqUG+3+rdpBk8kG?=
+ =?us-ascii?Q?DFsrIltccLgK/IDYjNKYsjpzg8fPaXvf7i/gcU+wwzw5DEgtUWrNAJT+C7ln?=
+ =?us-ascii?Q?wIF8g9V779O6JX4umIRoso6THbevX5jZwNT+n+F4+XNFYCXErcdJ3rGlc9yh?=
+ =?us-ascii?Q?OeSFxBXD4JtXb55OyIeiYMMF6PQ/ADUL7wdBJewRh6RhM621df2hLt7AIcNZ?=
+ =?us-ascii?Q?yXyI7hnPYy3K57xDyEwsE0iBmd5vE0fnndl9fe2gvxQbQ+rmasJ5nLmzgRoB?=
+ =?us-ascii?Q?rli0yvtkBakRi8/aK3NahLBRgGqASLreEbM483zm8IaWMSeYCZRw4vemYjL4?=
+ =?us-ascii?Q?9PYTpFpVRKkeNAxeRwrCBK1E8/ef572K09tM1gkthHPPTVgV2EkdGBrD6Sw4?=
+ =?us-ascii?Q?6hZo3Eg9BYvTVJHG8/0pVrznr9J2wYCskSu4f8pc2cdNX0CBOdrLzrp1v/Hz?=
+ =?us-ascii?Q?Dhsj6WpwaKMfGcDO7bIz4jUPTlP6Gbd8aBCGck/YKffAL8GpdAgJEvs4opfP?=
+ =?us-ascii?Q?f+aKq7zOt+Sp9gZ1/EwKIx4=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: facf96b0-6199-4234-f1b0-08dc1ebbf2d8
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB8166.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 22:11:16.2159
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 22:12:56.3737
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VNMKJCz2aF0c3VNIyUUxmWYGbFIcn5YClSVKdc6Pz/ctF0MWJ8lNnOFuA2njULt1agCrkORt5CohQJJlYuUPVQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5473
+X-MS-Exchange-CrossTenant-UserPrincipalName: McmEZaiFgCXiWZVrYNaTsxB+WhzXJkPCU9hYFv6G0S3BfQ9QRjs6luWkMefs6jgu2pbHDNmmsGO9hRJJc6awOyXw+U0hoTqPr++023hLrxoXnwUuAq4DIdh+QVshWQw4
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB7491
 
-On 12/20/23 09:13, Nikunj A Dadhania wrote:
-> SNP command mutex is used to serialize the shared buffer access, command
-> handling and message sequence number races. Move the SNP guest command
-> mutex out of the sev guest driver and provide accessors to sev-guest
-> driver. Remove multiple lockdep check in sev-guest driver, next patch adds
-> a single lockdep check in snp_send_guest_request().
-> 
-> Signed-off-by: Nikunj A Dadhania <nikunj@amd.com>
-> ---
->   arch/x86/include/asm/sev-guest.h        |  3 +++
->   arch/x86/kernel/sev.c                   | 21 +++++++++++++++++++++
->   drivers/virt/coco/sev-guest/sev-guest.c | 23 +++++++----------------
->   3 files changed, 31 insertions(+), 16 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/sev-guest.h b/arch/x86/include/asm/sev-guest.h
-> index 27cc15ad6131..2f3cceb88396 100644
-> --- a/arch/x86/include/asm/sev-guest.h
-> +++ b/arch/x86/include/asm/sev-guest.h
-> @@ -81,4 +81,7 @@ struct snp_guest_req {
->   
->   int snp_issue_guest_request(struct snp_guest_req *req, struct snp_req_data *input,
->   			    struct snp_guest_request_ioctl *rio);
-> +void snp_guest_cmd_lock(void);
-> +void snp_guest_cmd_unlock(void);
-> +
->   #endif /* __VIRT_SEVGUEST_H__ */
-> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-> index 6aa0bdf8a7a0..191193924b22 100644
-> --- a/arch/x86/kernel/sev.c
-> +++ b/arch/x86/kernel/sev.c
-> @@ -941,6 +941,21 @@ static void snp_cleanup_vmsa(struct sev_es_save_area *vmsa)
->   		free_page((unsigned long)vmsa);
->   }
->   
-> +/*  SNP Guest command mutex to serialize the shared buffer access and command handling. */
-> +static struct mutex snp_guest_cmd_mutex;
+Tertiary match group was added to CMN-650 and newer implementations.
+This patchset makes the parameters model specific to support properly
+various models. Also, wp_config registers and filter groups numbers are
+decoupled to enable the new match group.
 
-You should probably use:
+Ilkka Koskinen (3):
+  perf/arm-cmn: Decouple wp_config registers from filter group number
+  perf/arm-cmn: Add support for model specific parameters
+  perf/arm-cmn: Enable support for tertiary match group
 
-static DEFINE_MUTEX(snp_guest_cmd_mutex);
+ drivers/perf/arm-cmn.c | 118 ++++++++++++++++++++++++++++++++---------
+ 1 file changed, 92 insertions(+), 26 deletions(-)
 
-That way you can avoid the initialization in snp_init_platform_device().
+-- 
+2.40.1
 
-With that:
-
-Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
-
-> +
-> +void snp_guest_cmd_lock(void)
-> +{
-> +	mutex_lock(&snp_guest_cmd_mutex);
-> +}
-> +EXPORT_SYMBOL_GPL(snp_guest_cmd_lock);
-> +
-> +void snp_guest_cmd_unlock(void)
-> +{
-> +	mutex_unlock(&snp_guest_cmd_mutex);
-> +}
-> +EXPORT_SYMBOL_GPL(snp_guest_cmd_unlock);
-> +
->   static int wakeup_cpu_via_vmgexit(u32 apic_id, unsigned long start_ip)
->   {
->   	struct sev_es_save_area *cur_vmsa, *vmsa;
-> @@ -2240,6 +2255,12 @@ static int __init snp_init_platform_device(void)
->   		return -ENODEV;
->   	}
->   
-> +	/*
-> +	 * Initialize snp command mutex that is used to serialize the shared
-> +	 * buffer access and use of the vmpck and message sequence number
-> +	 */
-> +	mutex_init(&snp_guest_cmd_mutex);
-> +
->   	data.secrets_gpa = secrets_pa;
->   	if (platform_device_add_data(&sev_guest_device, &data, sizeof(data)))
->   		return -ENODEV;
-> diff --git a/drivers/virt/coco/sev-guest/sev-guest.c b/drivers/virt/coco/sev-guest/sev-guest.c
-> index 9c0ff69a16da..bd30a9ff82c1 100644
-> --- a/drivers/virt/coco/sev-guest/sev-guest.c
-> +++ b/drivers/virt/coco/sev-guest/sev-guest.c
-> @@ -63,9 +63,6 @@ static u32 vmpck_id;
->   module_param(vmpck_id, uint, 0444);
->   MODULE_PARM_DESC(vmpck_id, "The VMPCK ID to use when communicating with the PSP.");
->   
-> -/* Mutex to serialize the shared buffer access and command handling. */
-> -static DEFINE_MUTEX(snp_cmd_mutex);
-> -
->   static inline u8 *snp_get_vmpck(struct snp_guest_dev *snp_dev)
->   {
->   	return snp_dev->layout->vmpck0 + snp_dev->vmpck_id * VMPCK_KEY_LEN;
-> @@ -115,8 +112,6 @@ static inline u64 __snp_get_msg_seqno(struct snp_guest_dev *snp_dev)
->   	u32 *os_area_msg_seqno = snp_get_os_area_msg_seqno(snp_dev);
->   	u64 count;
->   
-> -	lockdep_assert_held(&snp_cmd_mutex);
-> -
->   	/* Read the current message sequence counter from secrets pages */
->   	count = *os_area_msg_seqno;
->   
-> @@ -409,8 +404,6 @@ static int get_report(struct snp_guest_dev *snp_dev, struct snp_guest_request_io
->   	struct snp_report_resp *resp;
->   	int rc, resp_len;
->   
-> -	lockdep_assert_held(&snp_cmd_mutex);
-> -
->   	if (!arg->req_data || !arg->resp_data)
->   		return -EINVAL;
->   
-> @@ -457,8 +450,6 @@ static int get_derived_key(struct snp_guest_dev *snp_dev, struct snp_guest_reque
->   	/* Response data is 64 bytes and max authsize for GCM is 16 bytes. */
->   	u8 buf[64 + 16];
->   
-> -	lockdep_assert_held(&snp_cmd_mutex);
-> -
->   	if (!arg->req_data || !arg->resp_data)
->   		return -EINVAL;
->   
-> @@ -507,8 +498,6 @@ static int get_ext_report(struct snp_guest_dev *snp_dev, struct snp_guest_reques
->   	sockptr_t certs_address;
->   	int ret, resp_len;
->   
-> -	lockdep_assert_held(&snp_cmd_mutex);
-> -
->   	if (sockptr_is_null(io->req_data) || sockptr_is_null(io->resp_data))
->   		return -EINVAL;
->   
-> @@ -604,12 +593,12 @@ static long snp_guest_ioctl(struct file *file, unsigned int ioctl, unsigned long
->   	if (!input.msg_version)
->   		return -EINVAL;
->   
-> -	mutex_lock(&snp_cmd_mutex);
-> +	snp_guest_cmd_lock();
->   
->   	/* Check if the VMPCK is not empty */
->   	if (snp_is_vmpck_empty(snp_dev)) {
->   		dev_err_ratelimited(snp_dev->dev, "VMPCK is disabled\n");
-> -		mutex_unlock(&snp_cmd_mutex);
-> +		snp_guest_cmd_unlock();
->   		return -ENOTTY;
->   	}
->   
-> @@ -634,7 +623,7 @@ static long snp_guest_ioctl(struct file *file, unsigned int ioctl, unsigned long
->   		break;
->   	}
->   
-> -	mutex_unlock(&snp_cmd_mutex);
-> +	snp_guest_cmd_unlock();
->   
->   	if (input.exitinfo2 && copy_to_user(argp, &input, sizeof(input)))
->   		return -EFAULT;
-> @@ -724,14 +713,14 @@ static int sev_report_new(struct tsm_report *report, void *data)
->   	if (!buf)
->   		return -ENOMEM;
->   
-> -	guard(mutex)(&snp_cmd_mutex);
-> -
->   	/* Check if the VMPCK is not empty */
->   	if (snp_is_vmpck_empty(snp_dev)) {
->   		dev_err_ratelimited(snp_dev->dev, "VMPCK is disabled\n");
->   		return -ENOTTY;
->   	}
->   
-> +	snp_guest_cmd_lock();
-> +
->   	cert_table = buf + report_size;
->   	struct snp_ext_report_req ext_req = {
->   		.data = { .vmpl = desc->privlevel },
-> @@ -752,6 +741,8 @@ static int sev_report_new(struct tsm_report *report, void *data)
->   	};
->   
->   	ret = get_ext_report(snp_dev, &input, &io);
-> +	snp_guest_cmd_unlock();
-> +
->   	if (ret)
->   		return ret;
->   
 
