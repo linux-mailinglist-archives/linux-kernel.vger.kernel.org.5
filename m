@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-40745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13DFC83E513
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:18:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C09A583E514
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:19:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38C511C232A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:18:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37A3E1F23B04
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:19:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8CF555C37;
-	Fri, 26 Jan 2024 22:17:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83E115811B;
+	Fri, 26 Jan 2024 22:17:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="XUtj3Y+u"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2085.outbound.protection.outlook.com [40.107.94.85])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="r8q3pmV3"
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2073.outbound.protection.outlook.com [40.107.102.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 581D955797
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 22:17:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.85
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07B415732D
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 22:17:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.73
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706307426; cv=fail; b=o3Xt/PBsevRqcyUDrLpFhjedGaeZ1s/29aqaaAeRPfpFOM05JJPQpYaaxraFPenUBsFwR4pIrboIeKnWiVwpHU3O9J2+fFGlr3SL8Vr3h4jJ2ckZxql1YfSKmIwBvfzZiI3dlfKqCjtVVTCXmRR6Pan7WXXZ+QFaamsC+83TIy4=
+	t=1706307432; cv=fail; b=RVlqntnkg+x0tMyZ+kb8l6jmFrb5dBRlMHHbZb5KMYZPB/dFif5FmB8ANNkDDlck4684CFLMP1iFMOOH9crv92bE0VjQ/KSlGIBcbI9mNfPMZJPzUxaUBPUqZsA0D6Ajdy97vNo6FJpcAg9zwBhRFQwSkIXmkCzC8pmlG7O1XHs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706307426; c=relaxed/simple;
-	bh=oq7YfFD2dDgLtmFugXOCuVkrbCbu3KiOTFU9CGemJhQ=;
+	s=arc-20240116; t=1706307432; c=relaxed/simple;
+	bh=0n6m2Zsfr66giVTEkIIr/zW0oHNb8RD5ygAUH7zWIEw=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=V+Y7Jpr+Hejuvf23ZDYd+Yl1SADrq0SeCINK4qIZLw1oPOXOKr2IY2MZn08JM6nDoqh+tOOi3V6pJIbJuay3cEXg7uTn+mAPpNC9E2nyQnePNWeQ7Xw/fQopSxNrRHa7idMm/pLMeRBP4Jr7Y30URtsI38r5PsnKJe88BnACxDE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=XUtj3Y+u; arc=fail smtp.client-ip=40.107.94.85
+	 MIME-Version:Content-Type; b=cJtDY+pIB/iAbDj5Ts7qYGSAnsdznDKp9EVImPkuYwlkxJkOAzQ/X+yC4eB0oXJfngHiJQM+MLw7iNIXLt15+OlofzZfkjj3oulbAxFcmDDwAh8wpwBB3Mgfb6Scspe/HGtIqXofVmlMC/agmR2S2rbu/0wZ+UX7kNhhSvJvuDk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=r8q3pmV3; arc=fail smtp.client-ip=40.107.102.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ey2/y6PURau74jarG44Qct48JwldZ0FEl+pTkSIwQDf1AT6w1B9QjAcpjy56jAUZM9UcrV7rZ63/KASehYF6RbVS7XfppYkLUQGHoM5ZqPbXFSZhrJnstLCAwPw/JDMKbtcUKcO9a/GoFqKt1ydHXZLpUdIf1EyVqilBbhCPNqKrWQmgYNGCRJJU4m7TiStrAruWGwWnVrzh7xyS+aMcSBDwyxH+I17tSz+PgqbjfHkA5H6DijsfR1JEawxzrS3o3/7+dfUvZ0tJJ9y6Tn6lHord0cnmovtdCFtEzVn97d+FA8DA3Dib7gUavJv2sQWuhyDOFTu96LqSxke9VqZS+w==
+ b=N3bZZYXvkrjzSH8vW8q1FNCtwCL0Sw2Ukgl7RK/X5/26OTKLDgtSbfirvmQ3cbti8BmF+qV94nK092DIwdzBvTVd2b9qBIF71HQnuLW7NB5HyyjE0uLRBtrScRZM9STZaaBtmiWxkpiYxpjC24CQhLhgmrfzK/tVG0lfP7SayPXP0xORchu3txKUWDFe7735URC81W8ynpez7HsP7664MR6+TQ0/ZfCmxIb7nA3Fz3wMsqAl2JyGxus1EIlMlAEdE8SRyRzezajjxtHyczhRMJpBGVWyvX0kr2aNTg4GDv8M58no1rie51LfC9lw4uV0XXfWTS3wEQK5lnV0c/MAxA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ky/2oTXlLBO58QPkIvtKmVm+qw3qmD3XCklbrcvsxII=;
- b=QMWAva9xdTnSN9RnijUCA7iUM0XLLDXKQ+zn21RXeTKv/RbSItXKEkGr7xoo7yjTsII4FnWOygR9/8QkFUSkyOSukKf+bW6G2BaLxU+vJGCVWL3YqU9nwsJnC+6RQO52GMJ9ctLU9SqXpsmO1wt1vtYl3aJTjt9OR216yHPEAbq/qlCsMmyY62ISgm+kNiqWTwMHWK2CTq5OZ2lpgk3LGwLGuDpr6DED//O0lQOL5HwXDpxUxWYfrEPzuvFKk4eKI3AkFURWLF6Ex+bxSI8BIU0ni/2ae38xrujaW/EmUK81ZmpLuzdPaByZ9PsZVs301VK23B1/Rojk5FlUsfDvKg==
+ bh=EKMspNQivsAnHFX55tmTi7IRJ3oYh7RnrB9iZYusHCY=;
+ b=XEKqV6ugSI11+uD2ihU2QKppItOuefDX6INzHk0DVPaqBqkHmA7aE0KHSFeLR8zWdXilexV4iOBwcv3t9blpcTN5sZG6KREBs+VuGRzYh9eGbQXU5EA/Z1vkWCf5zlWM6dhxNHW2fQgiHx11AB7mdtXiPiOwwjgW14CIZrdWfIOv5XsXLtRi3FYvma5yOPW/8VUaqB6fuCP8NvuJfhc+lC2rD7R11ysDNqbePdl59gdzZFxDxNwgD6q1psb8JOW/vRlDY1wyoFYmg6vnHIhxQoA4XLS5/86r8hHR9FmC0OKGuUQQE+7ut/PUnqM3qZoOuos04Ofk686ZzehhIN3ZBg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ky/2oTXlLBO58QPkIvtKmVm+qw3qmD3XCklbrcvsxII=;
- b=XUtj3Y+uV8W67wsXXrpUuXr14ngM3kNfhUSZsSbAAZOHP8LkSa/hbllVC3Kc9Y1QETO3ohsRDkV7B+Ak4Pq4hVahbggpPkWxMpR0hsuDN3eIHTaMeQ/ZH5CvObOlva2jO8kRbwjcpxwfrWlw4dSKlGnIq7xMud2DtqvmA3z1w4A=
-Received: from DM5PR07CA0072.namprd07.prod.outlook.com (2603:10b6:4:ad::37) by
- PH7PR12MB5757.namprd12.prod.outlook.com (2603:10b6:510:1d0::13) with
+ bh=EKMspNQivsAnHFX55tmTi7IRJ3oYh7RnrB9iZYusHCY=;
+ b=r8q3pmV34FAW64YvSFMM00lS4NlprIgRhMZKyLV7Rq1/Nk8yd55Zto2JS1ntcnTwDXGVVIbvBTQx2JH7khfq0/tGtJeITeq6j1XkBvvV8Tbwy2BjytsoxC9MS2STZngSkMPpwZX13WQ5TjMI4/rPrpO00Y/2j1LbcVqMqvjhFUA=
+Received: from SJ0PR03CA0032.namprd03.prod.outlook.com (2603:10b6:a03:33e::7)
+ by PH7PR12MB7259.namprd12.prod.outlook.com (2603:10b6:510:207::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Fri, 26 Jan
- 2024 22:17:02 +0000
-Received: from DS2PEPF00003440.namprd02.prod.outlook.com
- (2603:10b6:4:ad:cafe::f0) by DM5PR07CA0072.outlook.office365.com
- (2603:10b6:4:ad::37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.26 via Frontend
- Transport; Fri, 26 Jan 2024 22:17:01 +0000
+ 2024 22:17:08 +0000
+Received: from DS2PEPF0000343D.namprd02.prod.outlook.com
+ (2603:10b6:a03:33e:cafe::48) by SJ0PR03CA0032.outlook.office365.com
+ (2603:10b6:a03:33e::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22 via Frontend
+ Transport; Fri, 26 Jan 2024 22:17:08 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -62,13 +62,13 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS2PEPF00003440.mail.protection.outlook.com (10.167.18.43) with Microsoft
+ DS2PEPF0000343D.mail.protection.outlook.com (10.167.18.40) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7228.16 via Frontend Transport; Fri, 26 Jan 2024 22:17:01 +0000
+ 15.20.7228.16 via Frontend Transport; Fri, 26 Jan 2024 22:17:08 +0000
 Received: from tlendack-t1.amdoffice.net (10.180.168.240) by
  SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Fri, 26 Jan 2024 16:17:00 -0600
+ 15.1.2507.34; Fri, 26 Jan 2024 16:17:07 -0600
 From: Tom Lendacky <thomas.lendacky@amd.com>
 To: <linux-kernel@vger.kernel.org>, <x86@kernel.org>
 CC: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
@@ -76,9 +76,9 @@ CC: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
 	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, "Peter
  Zijlstra" <peterz@infradead.org>, Dan Williams <dan.j.williams@intel.com>,
 	Michael Roth <michael.roth@amd.com>, Ashish Kalra <ashish.kalra@amd.com>
-Subject: [PATCH 07/11] x86/sev: Provide SVSM discovery support
-Date: Fri, 26 Jan 2024 16:16:00 -0600
-Message-ID: <2518c82f24f3e5d7533eea72512cea9ce985704b.1706307364.git.thomas.lendacky@amd.com>
+Subject: [PATCH 08/11] x86/sev: Provide guest VMPL level to userspace
+Date: Fri, 26 Jan 2024 16:16:01 -0600
+Message-ID: <61316ac5a8217f0397da87c78c2db08580ad75a5.1706307364.git.thomas.lendacky@amd.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1706307364.git.thomas.lendacky@amd.com>
 References: <cover.1706307364.git.thomas.lendacky@amd.com>
@@ -94,108 +94,87 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF00003440:EE_|PH7PR12MB5757:EE_
-X-MS-Office365-Filtering-Correlation-Id: cff1de95-a4d2-4c0e-d588-08dc1ebc8522
+X-MS-TrafficTypeDiagnostic: DS2PEPF0000343D:EE_|PH7PR12MB7259:EE_
+X-MS-Office365-Filtering-Correlation-Id: d872a322-783d-46ba-33b8-08dc1ebc8939
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	SXSlH4D8/AeaUUKxr9VHGIb5taeo6Om/aqe9/vERlGVEXvFihKTl7d22LwP/IODMuMdJUEBg0RaiiFOOH7Ln+NDGa7R01+HyMSsBOoay03A6sBLfHLCw10ROXc19sN5WgFJnem/XdLumZW5KVVcix1HKKpO6AKBTjdVgZIFbFpvfewg5yj0OT6VeBeskt4kB7TKNKG2+s3JL3MJ5YmbjGeBZ5xc5ZKndEdDOhoBubDEus8a8470vlw8LYadOhCU7desJefXE58lMeXnyEWM6ZRY5wTQ5055dtasVqqA3T+a9iCADGP3Mz5Rf1crGFtLPjB2MieKsZl4GFABEjH/r3ZvmhvgmKUCEctYJLPrALNok2WBHQITheJ3IJrq+mmHcOkUyqDPapx+E4GLFEuGkfioIscZXW8i/xHvYgB3zkEP8hxLBOgOscVsdtgg+p5RXha8+Pq2fSDdF/ftIkKTjL8VR0w6yGARIbgg6/RltRay18ywxH3ODgUHlEuIDqzjCn8LEMn3NrU2kZqayuRRagVjEiZe1tO6B7O3NlTPR09YYkqKAKRYSvMdXNu3eMOrbtUeH66xLk4WdjbaQ3cQh7aDTNtTlYyrEb1gNc0iHvKpOtbVCgZ4zO9N4bnkieJFUVCfxjFaFw3XPZQqrnec7kasLhwI0HD1KdRl8PsgiexrE33JKEkwAID7kkQ8xR5PoR4t+iYdaTzstyXOzSKVyavoj5wb8ksciCKTy2Zyyo7g87xlJku0/i+jX6FvMvObVpoIAg483HeshD4tYPpfTXg==
+	p0d1a6xWCJESKieas5AN8KtPyghMdNawWIKYBYY3OsZWTZ/c0zmAjj82Ki6Qf16ZGRQcZ4h/JP+WpJv6n8hwGrcNkSlP3mPOtoQDEtqR1DJlpoBrVFWwGE8jPPqKylBsH0XeK2HIKWCflSGWknFb1z+x+6+sQjOkYVnVVVTLcqXzhRIruOppMaU8a8w9OLJkpz4TIpdgxL2ABNxis5adQK2gOJdLX9cEwok8a/FoTvlFXFxVX5tQew9jo480hAwEywyBbzcAqwp6T23ZOrsKytDoB5VotZh73e+GTeo6E9CaaCBitzv7VUFp8gv4ILLTVKxTdSr7LM9wpfc1O4V2UQWD3NKa8GJpo7v1YaKD6+7+PBMkf/fofCXGBr8kzFWIzhejHkiDw4RmdB2ETTaONrJ04l+EsjbzVIofFX9UOPyCGT29Tttjb57hy194nz6M2o+X5OY6or8C1HcCh8K5c6jVYu1IqhgDcjrpioahV+ornZAiAusrHRbkcU8yoCTgRgut3y+Zf/xN+2DE0IXcoP1nBzB6+gMSfbpJ5CEdNwt6nRLWvgICe+whl9B8DWw7rz2BpRKQrKgVBijjq7WNkl6uVNia0tUCoGE+Ki8/oQMwFLtL+EMkzgrgohQS07zp1P5IXNwca/G7V1iHLVzz4ekcOi+MhgPxyZtRnpYJLsXbOfkv1KG3KpFxODQzMl8whpgdnRzS+rxCQXD5sF+LQOTiLV1Jiz5EWK32fFz1LIWv0TW712lpvHFrI3nCOujkJ8r2aWXpvcnMerde+U5Wxw==
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(136003)(396003)(39860400002)(230922051799003)(82310400011)(186009)(64100799003)(1800799012)(451199024)(36840700001)(40470700004)(46966006)(2906002)(40480700001)(40460700003)(36860700001)(478600001)(7416002)(5660300002)(83380400001)(356005)(70586007)(110136005)(316002)(2616005)(54906003)(36756003)(4326008)(41300700001)(8676002)(8936002)(86362001)(426003)(16526019)(336012)(26005)(81166007)(70206006)(82740400003)(47076005)(36900700001);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(136003)(376002)(396003)(230922051799003)(82310400011)(1800799012)(186009)(451199024)(64100799003)(40470700004)(46966006)(36840700001)(40480700001)(40460700003)(70586007)(2906002)(426003)(6666004)(316002)(110136005)(2616005)(26005)(7416002)(336012)(8676002)(356005)(54906003)(16526019)(5660300002)(36860700001)(83380400001)(82740400003)(4326008)(36756003)(41300700001)(81166007)(478600001)(86362001)(70206006)(47076005)(8936002)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 22:17:01.5324
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 22:17:08.3898
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cff1de95-a4d2-4c0e-d588-08dc1ebc8522
+X-MS-Exchange-CrossTenant-Network-Message-Id: d872a322-783d-46ba-33b8-08dc1ebc8939
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	DS2PEPF00003440.namprd02.prod.outlook.com
+	DS2PEPF0000343D.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5757
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7259
 
-The SVSM specification documents an alternative method of discovery for
-the SVSM using a reserved CPUID bit and a reserved MSR.
+Requesting an attestation report from userspace involves providing the
+VMPL level for the report. Currently any value from 0-3 is valid because
+Linux enforces running at VMPL0.
 
-For the CPUID support, the #VC handler of an SEV-SNP guest should modify
-the returned value in the EAX register for the 0x8000001f CPUID function
-by setting bit 28 when an SVSM is present.
-
-For the MSR support, new reserved MSR 0xc001f000 has been defined. A #VC
-should be generated when accessing this MSR. The #VC handler is expected
-to ignore writes to this MSR and return the physical calling area address
-(CAA) on reads of this MSR.
+When an SVSM is present, though, Linux will not be running at VMPL0 and
+only VMPL values starting at the VMPL level Linux is running at to 3 are
+valid. In order to allow userspace to determine the minimum VMPL value
+that can be supplied to an attestation report, create a sysfs entry that
+can be used to retrieve the current VMPL level of Linux.
 
 Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
 ---
- arch/x86/include/asm/msr-index.h |  2 ++
- arch/x86/kernel/sev-shared.c     |  4 ++++
- arch/x86/kernel/sev.c            | 17 +++++++++++++++++
- 3 files changed, 23 insertions(+)
+ arch/x86/kernel/sev.c | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index f1bd7b91b3c6..4746135cbe21 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -622,6 +622,8 @@
- 
- #define MSR_AMD64_VIRT_SPEC_CTRL	0xc001011f
- 
-+#define MSR_SVSM_CAA			0xc001f000
-+
- /* AMD Collaborative Processor Performance Control MSRs */
- #define MSR_AMD_CPPC_CAP1		0xc00102b0
- #define MSR_AMD_CPPC_ENABLE		0xc00102b1
-diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
-index f26e872bc5d0..9bd7d7e75b31 100644
---- a/arch/x86/kernel/sev-shared.c
-+++ b/arch/x86/kernel/sev-shared.c
-@@ -628,6 +628,10 @@ static int snp_cpuid_postprocess(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
- 		/* node ID */
- 		leaf->ecx = (leaf->ecx & GENMASK(31, 8)) | (leaf_hv.ecx & GENMASK(7, 0));
- 		break;
-+	case 0x8000001f:
-+		if (vmpl)
-+			leaf->eax |= BIT(28);
-+		break;
- 	default:
- 		/* No fix-ups needed, use values as-is. */
- 		break;
 diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index ddb9141f0959..121a9bad86c9 100644
+index 121a9bad86c9..9844c772099c 100644
 --- a/arch/x86/kernel/sev.c
 +++ b/arch/x86/kernel/sev.c
-@@ -1326,12 +1326,29 @@ int __init sev_es_efi_map_ghcbs(pgd_t *pgd)
- 	return 0;
+@@ -2479,3 +2479,40 @@ void __init snp_remap_svsm_ca(void)
+ 	/* Update the CAA to a proper kernel address */
+ 	boot_svsm_caa = &boot_svsm_ca_page;
  }
- 
-+static enum es_result vc_handle_svsm_caa_msr(struct es_em_ctxt *ctxt)
++
++static ssize_t vmpl_show(struct kobject *kobj,
++			 struct kobj_attribute *attr, char *buf)
 +{
-+	struct pt_regs *regs = ctxt->regs;
-+
-+	/* Writes to the SVSM CAA msr are ignored */
-+	if (ctxt->insn.opcode.bytes[1] == 0x30)
-+		return ES_OK;
-+
-+	regs->ax = lower_32_bits(this_cpu_read(svsm_caa_pa));
-+	regs->dx = upper_32_bits(this_cpu_read(svsm_caa_pa));
-+
-+	return ES_OK;
++	return sysfs_emit(buf, "%d\n", vmpl);
 +}
 +
- static enum es_result vc_handle_msr(struct ghcb *ghcb, struct es_em_ctxt *ctxt)
- {
- 	struct pt_regs *regs = ctxt->regs;
- 	enum es_result ret;
- 	u64 exit_info_1;
- 
-+	if (regs->cx == MSR_SVSM_CAA)
-+		return vc_handle_svsm_caa_msr(ctxt);
++static struct kobj_attribute vmpl_attr = __ATTR_RO(vmpl);
 +
- 	/* Is it a WRMSR? */
- 	exit_info_1 = (ctxt->insn.opcode.bytes[1] == 0x30) ? 1 : 0;
- 
++static struct attribute *vmpl_attrs[] = {
++	&vmpl_attr.attr,
++	NULL
++};
++
++static struct attribute_group sev_attr_group = {
++	.attrs = vmpl_attrs,
++};
++
++static int __init sev_sysfs_init(void)
++{
++	struct kobject *sev_kobj;
++	int ret;
++
++	if (!cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
++		return -ENODEV;
++
++	sev_kobj = kobject_create_and_add("sev", kernel_kobj);
++	if (!sev_kobj)
++		return -ENOMEM;
++
++	ret = sysfs_create_group(sev_kobj, &sev_attr_group);
++	if (ret)
++		kobject_put(sev_kobj);
++
++	return ret;
++}
++arch_initcall(sev_sysfs_init);
 -- 
 2.42.0
 
