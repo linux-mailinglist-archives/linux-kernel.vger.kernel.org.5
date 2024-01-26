@@ -1,86 +1,90 @@
-Return-Path: <linux-kernel+bounces-39510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DD1383D230
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 02:43:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB59283D233
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 02:44:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5022F1C2625B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 01:43:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E503F1C262C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 01:44:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7EB84C9F;
-	Fri, 26 Jan 2024 01:43:07 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 580EF1115;
+	Fri, 26 Jan 2024 01:44:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="mmWYdPED"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 251124683
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 01:43:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DA8F7465;
+	Fri, 26 Jan 2024 01:44:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706233387; cv=none; b=Rulg8nsvxajLd0yL42veRzRNM09HY+LwezuncgUbwQ6tlI7GEhi5L+PX0IhWadYCQG/otimsf9hXhb7dvl8GrmjAPz0u62MqOVZDcpVEdy+XgKC/n2K+rY1VQ8lbZg/Pi65ut1Bml1iTEduhDa3nZ168yRsHfTqStnYc7YpnaXE=
+	t=1706233441; cv=none; b=Bx7yi4/MVB+cKnGLmxQAst4NXgVmQwqP57DLF1b11d9PqkV0/kmd/hmZXzzTaxTlxGhdL1MxIbVbAqRbkKhgZrpydr2NC4iQbNffTRg9wAuVKx5ACzOrjyhytDjXkyM+4OrjAtqkG28kzTjFEwRXCNGya7Dm8PwWNHuGlo8lpug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706233387; c=relaxed/simple;
-	bh=W4sKgLf37l/hG3tnz8eexsaxMPkwfwvTiafPvJkL+ZE=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=tm8jE735VvuOrCtnjoUZCvLOBr5gvqygiWK1Lj7qVVjm+j3Vsik6R9RiNGikojKbnXup395t5mfu1WxxL+xOjlGXdSNUOjtf4eBr6WU9zld1SCSde0CFpgpx5L854CIb0Ejb5yfHq/dHWpIkjbiOOpt6fDM+G+lTiKQJckBoaR8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-361aaf3f03bso52770765ab.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 17:43:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706233385; x=1706838185;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=61lwJK50aEyzlC5X3GEgrgc10KRILCmEU5SsNvi/Amo=;
-        b=HPFGXYrif9FB01HGNyGNmJKOIPaheVVf6g1mi9HPGHedKSzcOF3GWx2DS/Rx73P5yc
-         1ip7ZoNGTaQcRXvdX43NzzidEBG9+iX3adBc4Mlccg7WG2OoFFHrePyskkY0fhA/sDeR
-         HkFcTw/vbyxTFusj78OXUVXNIQEi2qKRWdrtWijfGSbfsq6KhUURn6jEX2uneFiweUhn
-         tbCtsbaa5dA/fz/URy2IqzcuzKC2B3hbpKdF2RcUBafinzZa7uI0FNAkxrkvcaK7VDhP
-         YF6MZUfKlHoP8MtMnw6FZ0UdIp40XkxIhlQUFoa/uRVo1Ag1VtHLupPF0fjsKE7pA0uf
-         7Vng==
-X-Gm-Message-State: AOJu0Yzqg6URkIQVgy7XaWVGaQza0QimgTZQj1G/iPsKX5Y7tffeMfxE
-	94jIh0/atXFLh3pN5FDFscsaafvihxJ1to9gsXAs9IZqDvp2Gb+3sVS2+fFSgRybDsUcv/isspf
-	hDdKmCD7co6kOwgTbk4uoFnDbb42sM2Xinujd6uMJH8fKVaXOaT/G2a0=
-X-Google-Smtp-Source: AGHT+IFzHOtoyv4YKjv3Py/sXSJJzaYjUbKsh008dEE93obhGasHI5JJCjhTZUpK9RfSUCcmciOqqUg+nHZAYk89qW9131umvgs+
+	s=arc-20240116; t=1706233441; c=relaxed/simple;
+	bh=wWiDiMeWoSlCCvhLdyjnd8NOVWU10SYkwMYuvm1Cvwo=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=gZwBlfco5Lq4arL1IeEqyN+I0DoqzlnhhoZt2T3KFw7dmyQ2kz1NNwRIoNXWIRAIP9P4TOkgSI7db0hxsqVR/HqJtgSUywe1r+CoK6tL+suL8gXNOrAkjdUfowcNkDt0CRjitI+owK8eokpuYGK4B2RcuREZ+ChkMa21d9o7Ywg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=mmWYdPED; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 153C5C433F1;
+	Fri, 26 Jan 2024 01:43:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1706233441;
+	bh=wWiDiMeWoSlCCvhLdyjnd8NOVWU10SYkwMYuvm1Cvwo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=mmWYdPEDIXpbLZGTVzSt0GPSULdfPOK/mNSysWrmKiUtTJ1nu601UGe6phcaZjVJO
+	 EkvZvMOcdEU+OvqVSKp0y9r74UhZ3NV5yoZKQTSP4yVV1xf0Dwis1BtKPLiy6TCErK
+	 50XiBG7d11gOUz1XTopcBJSsnAbeHgGVY5FaTROk=
+Date: Thu, 25 Jan 2024 17:43:56 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Audra Mitchell <audra@redhat.com>
+Cc: shuah@kernel.org, linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, raquini@redhat.com, Adam Sindelar
+ <adam@wowsignal.io>
+Subject: Re: [PATCH] selftests/mm: Update va_high_addr_switch.sh to check
+ CPU for la57 flag
+Message-Id: <20240125174356.199f44f329e137f9a6437648@linux-foundation.org>
+In-Reply-To: <ZbETFZX33L2ELujO@fedora>
+References: <20240119205801.62769-1-audra@redhat.com>
+	<20240121143153.5dcfe26dea53ba0e896dbf85@linux-foundation.org>
+	<ZbETFZX33L2ELujO@fedora>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a4a:b0:361:9322:6ae0 with SMTP id
- u10-20020a056e021a4a00b0036193226ae0mr67103ilv.6.1706233385380; Thu, 25 Jan
- 2024 17:43:05 -0800 (PST)
-Date: Thu, 25 Jan 2024 17:43:05 -0800
-In-Reply-To: <tencent_613652973C377A4AEC7507777B66C63C8309@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d6f6d6060fcf6ac6@google.com>
-Subject: Re: [syzbot] [mm] KMSAN: uninit-value in virtqueue_add (4)
-From: syzbot <syzbot+d7521c1e3841ed075a42@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On Wed, 24 Jan 2024 08:39:33 -0500 Audra Mitchell <audra@redhat.com> wrote:
 
-syzbot tried to test the proposed patch but the build/boot failed:
+> > A more complete description of these "test failures" would be helpful
+> > please.
+> > 
+> 
+> Hey, sorry for the incomplete description. The test does a series of mmap
+> calls including three using the MAP_FIXED flag and specifying an address that
+> is 1<<47 or 1<<48. These addresses are only available if you are using level 5
+> page tables, which requires both the CPU to have the capabiltiy (la57 flag)
+> and the kernel to be configured. Currently the test only checks for the kernel
+> configuration option, so this test can still report a false positive. Here are
+> the three failing lines:
+> 
+> $ ./va_high_addr_switch | grep FAILED
+> mmap(ADDR_SWITCH_HINT, 2 * PAGE_SIZE, MAP_FIXED): 0xffffffffffffffff - FAILED
+> mmap(HIGH_ADDR, MAP_FIXED): 0xffffffffffffffff - FAILED
+> mmap(ADDR_SWITCH_HINT, 2 * PAGE_SIZE, MAP_FIXED): 0xffffffffffffffff - FAILED
+> 
+> I thought (for about a second) refactoring the test so that these three mmap
+> calls will only be run on systems with the level 5 page tables available, but
+> the whole point of the test is to check the level 5 feature...
+> 
+> If you would like me to also update the description on the patch let me know
+> and I'll update it and resubmit. Thanks!
 
-failed to checkout kernel repo https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git on commit fbafc3e621c3: failed to run ["git" "fetch" "--force" "--tags" "4d52a57a3858a6eee0d0b25cc3a0c9533f747d8f" "fbafc3e621c3"]: exit status 128
-fatal: couldn't find remote ref fbafc3e621c3
-
-
-
-Tested on:
-
-commit:         [unknown 
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git fbafc3e621c3
-kernel config:  https://syzkaller.appspot.com/x/.config?x=656820e61b758b15
-dashboard link: https://syzkaller.appspot.com/bug?extid=d7521c1e3841ed075a42
-compiler:       
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=132ce437e80000
-
+I pasted the above into the changelog, thanks.
 
