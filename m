@@ -1,236 +1,113 @@
-Return-Path: <linux-kernel+bounces-40781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46D3A83E591
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:37:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C33C83E592
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:37:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8BE21F250D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:37:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6EA51F215A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:37:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 134BC51C25;
-	Fri, 26 Jan 2024 22:35:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C917250FD;
+	Fri, 26 Jan 2024 22:36:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gC/B7Nym"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="PpQnaLrF"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E107151019;
-	Fri, 26 Jan 2024 22:35:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8001654BC0
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 22:36:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706308558; cv=none; b=RzxWwi9NHJpoD+z3n8ESq4TT54FRYTbPJUiFTZY0A7/qJuVSFQmBteK6mPpKAsNfhJfVmBOJErl5xoHW04f+P9Az7waP/eSTfmMDikmfdjImOaKSPc8GAbUIPdO4U2NxbYYQn952wNQnHgznPjB63FJo5JS3hrkLMBDgR7D5BTg=
+	t=1706308594; cv=none; b=NjhyH6tWHtmdXwYJh4NvQGJDcGooDIvVnQiJLnbcWbGDgEDaNWEGx0lZDL41uGaci9bIJ7xMTsNVUzG6OVfRSkDfPm791K+c/PPPRdingtiTErf04DhXuk5Zw8YFQG0fWjpvIHhbMP3h55+wPDe2kXy37X3v3B1goizFh7GasIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706308558; c=relaxed/simple;
-	bh=cpnZy6aqoqEx+3o5SdyKLH4E9s3+M4Sqxz69bryI5vg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Qc0k77pPCnL89PEdY7rA8dU4gbkAYE8UH//1IulBUYAqI2U34VtNibwimUVLDqtMLalyKLdkO64RvdySvi6aoKkfl78AxTb6yTEbGyQ56uKhxKHxGxFsSeU0zFCqdCzvYOD5K78iRQWJSViKYuqzwRa0sl4H93lTUzYUGJCTgVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gC/B7Nym; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB5F2C433C7;
-	Fri, 26 Jan 2024 22:35:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706308557;
-	bh=cpnZy6aqoqEx+3o5SdyKLH4E9s3+M4Sqxz69bryI5vg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gC/B7NymVhZAQcUX/xq9XUF5O8zxGf7QP+7nrDYuwk0jAlVPPFIDXcPJEzghWaGhg
-	 FHC9PZKWsdwS209m5MSvJy9MgJ83uCDGXmY836wXRp+RvJkfMWUgfmJXs6OpGWpd6M
-	 fLqu9ZxLnvsQ0x6cisl1PI9hyv7AoNyGXtRBFUrMRRZxm/ANQ4lofDTfaWq40a+PyR
-	 YNyamzJNBYDbmYexT2mLV/9u0fFluiy70U2XS/drfQlIEKiixSWXMLDQfdWqn1hXQM
-	 ABYWQ1Pd/9Ca3aW1efd68f1y3RvQu8Gm/NI1yUUAGO6DayXC1rt2lN4E7CFwcfhkYh
-	 12SC2bEj1VGOw==
-Date: Fri, 26 Jan 2024 15:35:54 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org,
-	patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org, llvm@lists.linux.dev,
-	keescook@chromium.org, arei.gonglei@huawei.com, mst@redhat.com,
-	jasowang@redhat.com, virtualization@lists.linux.dev,
-	linux-crypto@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/286] 5.10.209-rc1 review
-Message-ID: <20240126223554.GA1320833@dev-arch.thelio-3990X>
-References: <20240122235732.009174833@linuxfoundation.org>
- <6b563537-b62f-428e-96d1-2a228da99077@roeck-us.net>
- <2024012636-clubbed-radial-1997@gregkh>
- <2f342268-8517-4c06-8785-96a588d20c63@roeck-us.net>
- <20240126203436.GA913905@dev-arch.thelio-3990X>
- <0a194a79-e3a3-45e7-be98-83abd3e1cb7e@roeck-us.net>
+	s=arc-20240116; t=1706308594; c=relaxed/simple;
+	bh=TuLldHRMoPdhbvg4tAmasRPjnDmfBZBh2qMiSNy3aIk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kOuCQ/BOHc/eFbrPMMwEPEkypK6PhMdCCE7c4qa1r88eT/UmHn9HulNvzDl3nIXETgcwATnlnfQZ171grh/buDJVwnvTJ11IQ8V1qm56hsSWsl6R2pVVFJwSljZSg4YeCErg1it3AoKm9xk0IRYyXgbNqA9MV2khIdohQa3JlCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=PpQnaLrF; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a28a6cef709so83741966b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:36:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1706308590; x=1706913390; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3vb86YnCobjeOJ1buOfJZ8O/sRnmqyBtak+zDHciKpI=;
+        b=PpQnaLrFhwvHKLjwPrX3w0S0GFitSutYIKMHGe/Xb8n5kUgWcriDKfDrSqnRoAlenP
+         R++3lIhpFDBg0KWd1NjPC3wQHlwHNbEllaz1KLctTAiQ6gJ9svUHyX+iZsBspI+JwlcV
+         m1/N2pIqc4GuNq8hn9FaaL1QWmvgrjWo37P5w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706308590; x=1706913390;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3vb86YnCobjeOJ1buOfJZ8O/sRnmqyBtak+zDHciKpI=;
+        b=r2VnyvZQA1YUbj8boT202h56Bz2atEE0YRdMP9EHctk23U13NhwO/R85LJmX5hEl7P
+         PUTt0FQ+R8q16PbPKjBtgUA3q3BGMnZrg4Nrt2g3paml4rgFe7U6e2pxxI1GC7iGSJD8
+         MYhvN67dkLEPA/OEux6fUw8ole0dkGWqNS5QiWCxKqpjZlsk7TzjsTbRu40eQtOYk8+c
+         cqkGby4PpnFp/6yfl3yCuIWvnuubUWOR3DPT2xpAkgb+cVCaxuBn2B/W/xH0H+7lSqUt
+         hQYfhGsBgf3kn5jsTLbJ4ZPqDcaXtZ7YsQ+bxChVWe/97Jjy/1PVjLH/Fys+iAN5lZTo
+         mAAg==
+X-Gm-Message-State: AOJu0YxNz17ftXW4CDPR6bTW50rBz2pN2huAzscI0zEhg0+Fx8ItBbuf
+	a1R5OmR/m+dy/RR6cy14456Ua3bNpDB0hu9Qx//hWJ2QP2VpNWBc7ShxrHxxWsA3vOe8i14SLJC
+	53IgxQQ==
+X-Google-Smtp-Source: AGHT+IFeQxcqhEiVu5E6IRaugmrzcoqvTYQVVLvb+u2ITiftA0wZ8Xm3dysl31SVLS1T2opAkCnCMg==
+X-Received: by 2002:a17:906:1c02:b0:a30:d5ae:2833 with SMTP id k2-20020a1709061c0200b00a30d5ae2833mr248775ejg.56.1706308590613;
+        Fri, 26 Jan 2024 14:36:30 -0800 (PST)
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
+        by smtp.gmail.com with ESMTPSA id f19-20020a170906085300b00a30c4871712sm1062268ejd.202.2024.01.26.14.36.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Jan 2024 14:36:30 -0800 (PST)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55a5e7fa471so655951a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:36:30 -0800 (PST)
+X-Received: by 2002:a05:6402:180f:b0:55e:825b:724a with SMTP id
+ g15-20020a056402180f00b0055e825b724amr263564edy.16.1706308589610; Fri, 26 Jan
+ 2024 14:36:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0a194a79-e3a3-45e7-be98-83abd3e1cb7e@roeck-us.net>
+References: <Za6JwRpknVIlfhPF@work> <CAHk-=wjG4jdE19-vWWhAX3ByfbNr4DJS-pwiN9oY38WkhMZ57g@mail.gmail.com>
+ <4907a7a3-8533-480a-bc3c-488573e18e66@embeddedor.com> <202401261423.7AF702239@keescook>
+In-Reply-To: <202401261423.7AF702239@keescook>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 26 Jan 2024 14:36:13 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiaaCatzmF6GXxP97pa8oEX7e4rBpd4JgsbKex3Ek1_9A@mail.gmail.com>
+Message-ID: <CAHk-=wiaaCatzmF6GXxP97pa8oEX7e4rBpd4JgsbKex3Ek1_9A@mail.gmail.com>
+Subject: Re: [GIT PULL] Enable -Wstringop-overflow globally
+To: Kees Cook <keescook@chromium.org>
+Cc: "Gustavo A. R. Silva" <gustavo@embeddedor.com>, "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-(slimming up the CC list, I don't think this is too relevant to the
-wider stable community)
+On Fri, 26 Jan 2024 at 14:24, Kees Cook <keescook@chromium.org> wrote:
+>
+> I think xe has some other weird problems too. This may be related (under
+> allocating):
+>
+> ../drivers/gpu/drm/xe/xe_vm.c: In function 'xe_vma_create':
+> ../drivers/gpu/drm/xe/xe_vm.c:806:21: warning: allocation of insufficient size '224' for type 'struct xe_vma' with size '368' [-Walloc-size]
+>   806 |                 vma = kzalloc(sizeof(*vma) - sizeof(struct xe_userptr),
+>       |                     ^
 
-On Fri, Jan 26, 2024 at 01:01:15PM -0800, Guenter Roeck wrote:
-> On 1/26/24 12:34, Nathan Chancellor wrote:
-> > On Fri, Jan 26, 2024 at 10:17:23AM -0800, Guenter Roeck wrote:
-> > > On 1/26/24 09:51, Greg Kroah-Hartman wrote:
-> > > > On Fri, Jan 26, 2024 at 08:46:42AM -0800, Guenter Roeck wrote:
-> > > > > On 1/22/24 15:55, Greg Kroah-Hartman wrote:
-> > > > > > This is the start of the stable review cycle for the 5.10.209 release.
-> > > > > > There are 286 patches in this series, all will be posted as a response
-> > > > > > to this one.  If anyone has any issues with these being applied, please
-> > > > > > let me know.
-> > > > > > 
-> > > > > > Responses should be made by Wed, 24 Jan 2024 23:56:49 +0000.
-> > > > > > Anything received after that time might be too late.
-> > > > > > 
-> > > > > [ ... ]
-> > > > > 
-> > > > > > zhenwei pi <pizhenwei@bytedance.com>
-> > > > > >        virtio-crypto: implement RSA algorithm
-> > > > > > 
-> > > > > 
-> > > > > Curious: Why was this (and its subsequent fixes) backported to v5.10.y ?
-> > > > > It is quite beyond a bug fix. Also, unless I am really missing something,
-> > > > > the series (or at least this patch) was not applied to v5.15.y, so we now
-> > > > > have functionality in v5.10.y which is not in v5.15.y.
-> > > > 
-> > > > See the commit text, it was a dependency of a later fix and documented
-> > > > as such.
-> > > > 
-> > > > Having it in 5.10 and not 5.15 is a bit odd, I agree, so patches are
-> > > > gladly accepted :)
-> > > > 
-> > > 
-> > > We reverted the entire series from the merge because it results in a build
-> > > failure for us.
-> > > 
-> > > In file included from /home/groeck/src/linux-chromeos/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c:10:
-> > > In file included from /home/groeck/src/linux-chromeos/include/linux/mpi.h:21:
-> > > In file included from /home/groeck/src/linux-chromeos/include/linux/scatterlist.h:5:
-> > > In file included from /home/groeck/src/linux-chromeos/include/linux/string.h:293:
-> > > /home/groeck/src/linux-chromeos/include/linux/fortify-string.h:512:4: error: call to __read_overflow2_field declared with 'warning' attribute: detected read beyond size of field (2nd parameter); maybe use struct_group()? [-Werror,-Wattribute-warning]
-> > >                          __read_overflow2_field(q_size_field, size);
-> > 
-> > For what it's worth, this is likely self inflicted for chromeos-5.10,
-> > which carries a revert of commit eaafc590053b ("fortify: Explicitly
-> > disable Clang support") as commit c19861d34c003 ("CHROMIUM: Revert
-> > "fortify: Explicitly disable Clang support""). I don't see the series
-> > that added proper support for clang to fortify in 5.18 that ended with
-> > commit 281d0c962752 ("fortify: Add Clang support") in that ChromeOS
-> > branch, so this seems somewhat expected.
-> > 
-> 
-> That explains that ;-). I don't mind if the patches stay in v5.10.y,
-> we have them reverted anyway.
-> 
-> The revert was a pure process issue, as you may see when looking into
-> commit c19861d34c003, so, yes, I agree that it is self-inflicted damage.
-> Still, that doesn't explain why the problem exists in 5.18+.
-> 
-> > > I also see that upstream (starting with 6.1) when trying to build it with clang,
-> > > so I guess it is one of those bug-for-bug compatibility things. I really have
-> > > no idea what causes it, or why we don't see the problem when building
-> > > chromeos-6.1 or chromeos-6.6, but (so far) only with chromeos-5.10 after
-> > > merging 5.10.209 into it. Making things worse, the problem isn't _always_
-> > > seen. Sometimes I can compile the file in 6.1.y without error, sometimes not.
-> > > I have no idea what triggers the problem.
-> > 
-> > Have a .config that reproduces it on upstream? I have not personally
-> > seen this warning in my build matrix nor has our continuous-integration
-> > matrix (I don't see it in the warning output at the bottom but that
-> > could have missed something for some reason) in 6.1:
-> > 
-> 
-> The following command sequence reproduces the problem for me with all stable
-> branches starting with 5.18.y (plus mainline).
-> 
-> rm -rf /tmp/crypto-build
-> mkdir /tmp/crypto-build
-> make -j CC=clang-15 mrproper >/dev/null 2>&1
-> make -j O=/tmp/crypto-build CC=clang-15 allmodconfig >/dev/null 2>&1
-> make -j O=/tmp/crypto-build W=1 CC=clang-15 drivers/crypto/virtio/virtio_crypto_akcipher_algs.o
-> 
-> I tried clang versions 14, 15, and 16. This is with my home system running
-> Ubuntu 22.04, no ChromeOS or Google specifics/internals involved. For clang-15,
-> the version is
-> 
-> Ubuntu clang version 15.0.7
-> Target: x86_64-pc-linux-gnu
-> Thread model: posix
-> InstalledDir: /usr/bin
+That code is indeed odd, but there's a comment in the xe_vma definition
 
-Okay interesting, this warning is hidden behind W=1, which our CI does
-not test with. Looks like it has been that way since the introduction of
-these checks in f68f2ff91512 ("fortify: Detect struct member overflows
-in memcpy() at compile-time").
+        /**
+         * @userptr: user pointer state, only allocated for VMAs that are
+         * user pointers
+         */
+        struct xe_userptr userptr;
 
-I think this is a legitimate warning though. It is complaining about the
-second memcpy() in virtio_crypto_alg_akcipher_init_session():
+although I agree that it should probably simply be made a final
+variably-sized array instead (and then you make that array size be
+0/1).
 
-  memcpy(&ctrl->u, para, sizeof(ctrl->u));
-
-where ctrl is:
-
-  struct virtio_crypto_op_ctrl_req {
-          struct virtio_crypto_ctrl_header header;         /*     0    16 */
-          union {
-                  struct virtio_crypto_sym_create_session_req sym_create_session; /*    16    56 */
-                  struct virtio_crypto_hash_create_session_req hash_create_session; /*    16    56 */
-                  struct virtio_crypto_mac_create_session_req mac_create_session; /*    16    56 */
-                  struct virtio_crypto_aead_create_session_req aead_create_session; /*    16    56 */
-                  struct virtio_crypto_akcipher_create_session_req akcipher_create_session; /*    16    56 */
-                  struct virtio_crypto_destroy_session_req destroy_session; /*    16    56 */
-                  __u8               padding[56];          /*    16    56 */
-          } u;                                             /*    16    56 */
-          union {
-                  struct virtio_crypto_sym_create_session_req sym_create_session; /*     0    56 */
-                  struct virtio_crypto_hash_create_session_req hash_create_session; /*     0    56 */
-                  struct virtio_crypto_mac_create_session_req mac_create_session; /*     0    56 */
-                  struct virtio_crypto_aead_create_session_req aead_create_session; /*     0    56 */
-                  struct virtio_crypto_akcipher_create_session_req akcipher_create_session; /*     0    56 */
-                  struct virtio_crypto_destroy_session_req destroy_session; /*     0    56 */
-                  __u8                       padding[56];          /*     0    56 */
-          };
-
-
-          /* size: 72, cachelines: 2, members: 2 */
-          /* last cacheline: 8 bytes */
-  };
-
-(so size and p_size_field should be 56) and the type of the para
-parameter in virtio_crypto_alg_akcipher_init_session() is 'void *' but
-the para passed by reference to
-virtio_crypto_alg_akcipher_init_session() in virtio_crypto_rsa_set_key()
-has a type of 'struct virtio_crypto_akcipher_session_para':
-
-  struct virtio_crypto_akcipher_session_para {
-          __le32                     algo;                 /*     0     4 */
-          __le32                     keytype;              /*     4     4 */
-          __le32                     keylen;               /*     8     4 */
-          union {
-                  struct virtio_crypto_rsa_session_para rsa; /*    12     8 */
-                  struct virtio_crypto_ecdsa_session_para ecdsa; /*    12     8 */
-          } u;                                             /*    12     8 */
-          union {
-                  struct virtio_crypto_rsa_session_para rsa;       /*     0     8 */
-                  struct virtio_crypto_ecdsa_session_para ecdsa;   /*     0     8 */
-          };
-
-
-          /* size: 20, cachelines: 1, members: 4 */
-          /* last cacheline: 20 bytes */
-  };
-
-(so q_size_field would be 20 if clang were able to do inlining to see
-through the 'void *'...?), which would result in the
-
-  __compiletime_lessthan(q_size_field, size)
-
-check succeeding and triggering the warning because 20 < 56, so it does
-seem like there is an overread of the source buffer here? Adding the
-maintainers of the driver and subsystem in question.
-
-Cheers,
-Nathan
+               Linus
 
