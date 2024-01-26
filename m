@@ -1,339 +1,324 @@
-Return-Path: <linux-kernel+bounces-40159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9A5C83DB66
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:59:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95A3783DB68
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:02:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 705BA294C6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:59:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB44E1C21AB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:02:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73EF41BDE3;
-	Fri, 26 Jan 2024 13:59:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BD6412B7C;
+	Fri, 26 Jan 2024 14:02:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DyJ4wgMD"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="N+v+t2uv"
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E85F1B7F2
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:59:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44BB31BC21
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:01:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706277568; cv=none; b=CBs9b6b5tnFvWYP/tG0Jz9/4ntiRI1DNiiwvTGl8YumM9VYuzcKX6iZaF6LSjEkuAJOsi5JXrxVGEg1o2NPHIpZE0CUpGyFp9mZ+mlahu4wDWHW/kVqWKLt0/L8eWDbh3PP226hnDyB6y7Wb47wN2fiRRSVeP6mlE8Kfhk3bU5Y=
+	t=1706277720; cv=none; b=aSTAGM/R0Qx7Fqt/Te9lBeFx//DgKBaP7wDCqBHi2Z1TN+0IhgMvuwHd6RAw+O5P29lwf2YhnLkdOcHmlQvF0hL8k3zW5Rwc4W1S9OMyLWICrAv13Is/3I5htIgiMUHOn6EcomeEqQt0tv0A8NGtgBEkEWWq4rrtMb9LwZYo3tQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706277568; c=relaxed/simple;
-	bh=fJejqZYOfXgwK8F3Hxl8RSz24iyChMNUrblvezh1xxo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=aIu5Ap1aCTUdmAyGjw2fqPAj8Z9lwf41r650YBo8f9ttOpJFhe9V78kC9QriNz5LKXV1xGOC2QzLKQNUfTF+gXp3AG3E+tnqf0L955xB7sb2KwbrIFDbxKZdEkT8yv/Cz+D7A4VISow+3s6ZaJ09mF9kIN0YmrqnW6YRpQkC8h0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DyJ4wgMD; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706277565;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0rNh/dyL0TEUa+CbzPgZ/Hn2/8Lct1V89YIfXFANJkQ=;
-	b=DyJ4wgMDgj3pK3STXaeK77PaNMqiYelOwJpCzxHGonrg+hXEFGpaylUCGOJyER1z3m7q96
-	L1NYIrSHMB882QLTQLIeTHtgYJOF253Md0x6YYX6uVFtdE4V4Bv2erryBM4xRnCqDw4a0K
-	qys3Jq3h6YbbyRPUIvC2vw59kSsjd9s=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-690-fSp8s7L4OeCPoYjv8BATJQ-1; Fri, 26 Jan 2024 08:59:24 -0500
-X-MC-Unique: fSp8s7L4OeCPoYjv8BATJQ-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a350bec526eso5553066b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 05:59:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706277563; x=1706882363;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0rNh/dyL0TEUa+CbzPgZ/Hn2/8Lct1V89YIfXFANJkQ=;
-        b=Z1yrrtJww9V0TAP2ph5zcq85nvjonaBqCUvG5046UKmQOEKkMioV0sNr6TU/TN48VB
-         tcHOS5DxfdbIEaKW8BNSF8HKb2+wCcq6FJQRHIZkKOSNh60yxkUUCi/D/rVTigqDOz1H
-         q/INam+bmSavt9NYC2FSEDaKLZrS0eW3ON95+LQTniEqigILAJueIjA3QkIuO0HlLKht
-         XvFaUAZOyMfTAsdwDrz+iBKScd1QR9/l50cq+It2rmhQO38rnSw9Jr11y9FsL4ZJX9Uw
-         5lJ8aVm0gxZKl27VkbxkwUVz0FcVE6InB3NuvK1cbLhvPbQQjr80gvlV6O8EdN+VT7ZK
-         0RfQ==
-X-Gm-Message-State: AOJu0Yxeaz5wd8F+/wMrZMH/95BNLXYpa/A3cE6zD1JDEWtCbN/Tr58l
-	FpOd2MxIZWUhWOGA4SJ/vHCJvK0ZhmjDSrm212B2MwKAkZc2gQ1ZMy1GoLqW4bHinZFLcfG63Sz
-	SO/pm+hyCrXRjz80baiEDjB4Y9U42QkMtuOjDjSlbztY/YoB+XDIjF2dbBZ7Ilg==
-X-Received: by 2002:a17:906:4948:b0:a31:410a:18e4 with SMTP id f8-20020a170906494800b00a31410a18e4mr1687810ejt.4.1706277563112;
-        Fri, 26 Jan 2024 05:59:23 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF0BRR4OBp1G9wImLm/ETkLCDi3wAIz3dL10kd4WAqDMvqh3I6OUmDukvt2Qv+RCnofw4jcOg==
-X-Received: by 2002:a17:906:4948:b0:a31:410a:18e4 with SMTP id f8-20020a170906494800b00a31410a18e4mr1687795ejt.4.1706277562739;
-        Fri, 26 Jan 2024 05:59:22 -0800 (PST)
-Received: from pstanner-thinkpadt14sgen1.remote.csb ([2001:9e8:32d0:ca00:227b:d2ff:fe26:2a7a])
-        by smtp.gmail.com with ESMTPSA id n24-20020a170906841800b00a32abfbcd6asm661415ejx.31.2024.01.26.05.59.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 05:59:22 -0800 (PST)
-Message-ID: <70b8db3ec0f8730fdd23dae21edc1a93d274b048.camel@redhat.com>
-Subject: Re: [PATCH v5 RESEND 5/5] lib, pci: unify generic pci_iounmap()
-From: Philipp Stanner <pstanner@redhat.com>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>, 
- Johannes Berg <johannes@sipsolutions.net>, Randy Dunlap
- <rdunlap@infradead.org>, NeilBrown <neilb@suse.de>,  John Sanpe
- <sanpeqf@gmail.com>, Kent Overstreet <kent.overstreet@gmail.com>, Niklas
- Schnelle <schnelle@linux.ibm.com>, Dave Jiang <dave.jiang@intel.com>,
- Uladzislau Koshchanka <koshchanka@gmail.com>, "Masami Hiramatsu (Google)"
- <mhiramat@kernel.org>, David Gow <davidgow@google.com>, Kees Cook
- <keescook@chromium.org>, Rae Moar <rmoar@google.com>, Geert Uytterhoeven
- <geert@linux-m68k.org>, "wuqiang.matt" <wuqiang.matt@bytedance.com>, Yury
- Norov <yury.norov@gmail.com>, Jason Baron <jbaron@akamai.com>, Thomas
- Gleixner <tglx@linutronix.de>, Marco Elver <elver@google.com>, Andrew
- Morton <akpm@linux-foundation.org>, Ben Dooks <ben.dooks@codethink.co.uk>,
- dakr@redhat.com, linux-kernel@vger.kernel.org,  linux-pci@vger.kernel.org,
- linux-arch@vger.kernel.org, stable@vger.kernel.org,  Arnd Bergmann
- <arnd@kernel.org>
-Date: Fri, 26 Jan 2024 14:59:20 +0100
-In-Reply-To: <20240123210553.GA326783@bhelgaas>
-References: <20240123210553.GA326783@bhelgaas>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	s=arc-20240116; t=1706277720; c=relaxed/simple;
+	bh=VJkYY8oo0S6vxPMfZqVkbe/8cBLQLhLDDGHKoG4GtCI=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=RD7IoXa+nz9iYtZuOLDGhm8ib9oqdo8Teu8Q2crfV43LZ0EiY6x0hQ4AYLMVxbXKo03Znog4rm5rTpZL02Z59Q78lxKuTsDlFJZVgYkOAyQLVmT8b5u1+ZGwf+gdkoNr2oBirNOfMiCSnmSrfsgM1ypQIyBUyCrpuhROloHy5uk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=N+v+t2uv; arc=none smtp.client-ip=115.124.30.97
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1706277713; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=93D3wE2+5xFWrmAtrez65texoayu6JZM1/MGs4aQnKI=;
+	b=N+v+t2uvaPZEGnmx8VGlmdLNdLS1qQQJy62A1DmMY5E5QsbX9+Svi+vANArAdVNBTXjJXuv7RS3OFCYIuWdm45WtlcUMJWV+fzfmjF6zBHqboe+VjZsSEOIcLtmZqKiKDgI9vJ947J0cFKW1kdC01cxjUZaYyHY6vLyvLLeNnYc=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0W.Nwcs0_1706277703;
+Received: from e69b19392.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W.Nwcs0_1706277703)
+          by smtp.aliyun-inc.com;
+          Fri, 26 Jan 2024 22:01:53 +0800
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
+To: linux-erofs@lists.ozlabs.org
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Yue Hu <zbestahu@gmail.com>,
+	Chunhai Guo <guochunhai@vivo.com>,
+	Gao Xiang <xiang@kernel.org>,
+	Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: [PATCH v4] erofs: relaxed temporary buffers allocation on readahead
+Date: Fri, 26 Jan 2024 22:01:42 +0800
+Message-Id: <20240126140142.201718-1-hsiangkao@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20240126184656.0000561c.zbestahu@gmail.com>
+References: <20240126184656.0000561c.zbestahu@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Tue, 2024-01-23 at 15:05 -0600, Bjorn Helgaas wrote:
-> On Thu, Jan 11, 2024 at 09:55:40AM +0100, Philipp Stanner wrote:
-> > The implementation of pci_iounmap() is currently scattered over two
-> > files, drivers/pci/iomap.c and lib/iomap.c. Additionally,
-> > architectures can define their own version.
-> >=20
-> > To have only one version, it's necessary to create a helper
-> > function,
-> > iomem_is_ioport(), that tells pci_iounmap() whether the passed
-> > address
-> > points to an ioport or normal memory.
-> >=20
-> > iomem_is_ioport() can be provided through two different ways:
-> > =C2=A0 1. The architecture itself provides it. As of today, the version
-> > =C2=A0=C2=A0=C2=A0=C2=A0 coming from lib/iomap.c de facto is the x86-sp=
-ecific version
-> > and
-> > =C2=A0=C2=A0=C2=A0=C2=A0 comes into play when CONFIG_GENERIC_IOMAP is s=
-elected. This
-> > rather
-> > =C2=A0=C2=A0=C2=A0=C2=A0 confusing naming is an artifact left by the re=
-moval of IA64.
-> > =C2=A0 2. As a default version in include/asm-generic/io.h for those
-> > =C2=A0=C2=A0=C2=A0=C2=A0 architectures that don't use CONFIG_GENERIC_IO=
-MAP, but also
-> > don't
-> > =C2=A0=C2=A0=C2=A0=C2=A0 provide their own version of iomem_is_ioport()=
-.
-> >=20
-> > Once all architectures that support ports provide
-> > iomem_is_ioport(), the
-> > arch-specific definitions for pci_iounmap() can be removed and the
-> > archs
-> > can use the generic implementation, instead.
-> >=20
-> > Create a unified version of pci_iounmap() in drivers/pci/iomap.c.
-> > Provide the function iomem_is_ioport() in include/asm-generic/io.h
-> > (generic) and lib/iomap.c ("pseudo-generic" for x86).
-> >=20
-> > Remove the CONFIG_GENERIC_IOMAP guard around
-> > ARCH_WANTS_GENERIC_PCI_IOUNMAP so that configs that set
-> > CONFIG_GENERIC_PCI_IOMAP without CONFIG_GENERIC_IOMAP still get the
-> > function.
-> >=20
-> > Add TODOs for follow-up work on the "generic is not generic but
-> > x86-specific"-Problem.
-> > ...
->=20
-> > +++ b/drivers/pci/iomap.c
-> > @@ -135,44 +135,30 @@ void __iomem *pci_iomap_wc(struct pci_dev
-> > *dev, int bar, unsigned long maxlen)
-> > =C2=A0EXPORT_SYMBOL_GPL(pci_iomap_wc);
-> > =C2=A0
-> > =C2=A0/*
-> > - * pci_iounmap() somewhat illogically comes from lib/iomap.c for
-> > the
-> > - * CONFIG_GENERIC_IOMAP case, because that's the code that knows
-> > about
-> > - * the different IOMAP ranges.
-> > + * This check is still necessary due to legacy reasons.
-> > =C2=A0 *
-> > - * But if the architecture does not use the generic iomap code,
-> > and if
-> > - * it has _not_ defined it's own private pci_iounmap function, we
-> > define
-> > - * it here.
-> > - *
-> > - * NOTE! This default implementation assumes that if the
-> > architecture
-> > - * support ioport mapping (HAS_IOPORT_MAP), the ioport mapping
-> > will
-> > - * be fixed to the range [ PCI_IOBASE, PCI_IOBASE+IO_SPACE_LIMIT
-> > [,
-> > - * and does not need unmapping with 'ioport_unmap()'.
-> > - *
-> > - * If you have different rules for your architecture, you need to
-> > - * implement your own pci_iounmap() that knows the rules for where
-> > - * and how IO vs MEM get mapped.
-> > - *
-> > - * This code is odd, and the ARCH_HAS/ARCH_WANTS #define logic
-> > comes
-> > - * from legacy <asm-generic/io.h> header file behavior. In
-> > particular,
-> > - * it would seem to make sense to do the iounmap(p) for the non-
-> > IO-space
-> > - * case here regardless, but that's not what the old header file
-> > code
-> > - * did. Probably incorrectly, but this is meant to be bug-for-bug
-> > - * compatible.
->=20
-> Moving this comment update to the patch that adds the ioport_unmap()
-> call would make that patch more consistent and simplify this patch.
+From: Chunhai Guo <guochunhai@vivo.com>
 
-The bugfix from patch #1 you mean.
-I can take care of that when splitting that patch as you suggested
+Even with inplace decompression, sometimes very few temporary buffers
+may be still needed for a single decompression shot (e.g. 16 pages for
+64k sliding window or 4 pages for 16k sliding window).  In low-memory
+scenarios, it would be better to try to allocate with GFP_NOWAIT on
+readahead first.  That can help reduce the time spent on page allocation
+under durative memory pressure.
 
+Here are detailed performance numbers under multi-app launch benchmark
+workload [1] on ARM64 Android devices (8-core CPU and 8GB of memory)
+running a 5.15 LTS kernel with EROFS of 4k pclusters:
 
->=20
-> > + * TODO: Have all architectures that provide their own
-> > pci_iounmap() provide
-> > + * iomem_is_ioport() instead. Remove this #if afterwards.
-> > =C2=A0 */
-> > =C2=A0#if defined(ARCH_WANTS_GENERIC_PCI_IOUNMAP)
-> > =C2=A0
-> > -void pci_iounmap(struct pci_dev *dev, void __iomem *p)
-> > +/**
-> > + * pci_iounmap - Unmapp a mapping
-> > + * @dev: PCI device the mapping belongs to
-> > + * @addr: start address of the mapping
-> > + *
-> > + * Unmapp a PIO or MMIO mapping.
->=20
-> s/Unmapp/Unmap/ (twice)
++----------------------------------------------+
+|      LZ4       | vanilla | patched |  diff   |
+|----------------+---------+---------+---------|
+|  Average (ms)  |  3364   |  2684   | -20.21% | [64k sliding window]
+|----------------+---------+---------+---------|
+|  Average (ms)  |  2079   |  1610   | -22.56% | [16k sliding window]
++----------------------------------------------+
 
-OK
+The total size of system images for 4k pclusters is almost unchanged:
+(64k sliding window)  9,117,044 KB
+(16k sliding window)  9,113,096 KB
 
->=20
-> > + */
-> > +void pci_iounmap(struct pci_dev *dev, void __iomem *addr)
->=20
-> Maybe move the "p" to "addr" rename to the patch that fixes the
-> pci_iounmap() #ifdef problem, since that's a trivial change that
-> already has to do with handling both PIO and MMIO?=C2=A0 Then this patch
-> would be a little more focused.
+Therefore, in addition to switch the sliding window from 64k to 16k,
+after applying this patch, it can eventually save 52.14% (3364 -> 1610)
+on average with no memory reservation.  That is particularly useful for
+embedded devices with limited resources.
 
-OK
+[1] https://lore.kernel.org/r/20240109074143.4138783-1-guochunhai@vivo.com
 
->=20
-> The kernel-doc addition could possibly also move there since it isn't
-> related to the unification.
+Suggested-by: Gao Xiang <xiang@kernel.org>
+Signed-off-by: Chunhai Guo <guochunhai@vivo.com>
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+---
+change since v3:
+ - reposition `pcl->besteffort = false;` suggested by Yue;
 
-You mean the one from my devres-patch-series? Or documentation
-specifically about pci_iounmap()?
+ fs/erofs/compress.h             |  5 ++---
+ fs/erofs/decompressor.c         |  5 +++--
+ fs/erofs/decompressor_deflate.c | 19 +++++++++++++------
+ fs/erofs/decompressor_lzma.c    | 17 ++++++++++++-----
+ fs/erofs/zdata.c                | 16 ++++++++++++----
+ 5 files changed, 42 insertions(+), 20 deletions(-)
 
->=20
-> > =C2=A0{
-> > -#ifdef ARCH_HAS_GENERIC_IOPORT_MAP
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0uintptr_t start =3D (uintptr=
-_t) PCI_IOBASE;
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0uintptr_t addr =3D (uintptr_=
-t) p;
-> > -
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (addr >=3D start && addr =
-< start + IO_SPACE_LIMIT) {
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0ioport_unmap(p);
-> > +#ifdef CONFIG_HAS_IOPORT_MAP
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (iomem_is_ioport(addr)) {
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0ioport_unmap(addr);
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0return;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> > =C2=A0#endif
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0iounmap(p);
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0iounmap(addr);
-> > =C2=A0}
->=20
-> > + * If CONFIG_GENERIC_IOMAP is selected and the architecture does
-> > NOT provide its
-> > + * own version, ARCH_WANTS_GENERIC_IOMEM_IS_IOPORT makes sure that
-> > the generic
-> > + * version from asm-generic/io.h is NOT used and instead the
-> > second "generic"
-> > + * version from this file here is used.
-> > + *
-> > + * There are currently two generic versions because of a difficult
-> > cleanup
-> > + * process. Namely, the version in lib/iomap.c once was really
-> > generic when IA64
-> > + * still existed. Today, it's only really used by x86.
-> > + *
-> > + * TODO: Move this function to x86-specific code.
->=20
-> Some of these TODOs look fairly simple.=C2=A0 Are they actually hard, or
-> could they just be done now?
-
-If they were simple from my humble POV I would have implemented them.
-The information about the x86-specficity is from Arnd Bergmann, the
-header-maintainer.
-
-I myself am not that sure how much work it would be to move the entire
-lib/iomap.c file to x86. At least some (possibley "dead") hooks to it
-still exist, for example here:
-arch/powerpc/platforms/Kconfig  # L.189
-
->=20
-> It seems like implementing iomem_is_ioport() for the other arches
-> would be straightforward and if done first, could make this patch
-> look
-> tidier.
-
-That would be the cleanest solution. But the cleaner you want to be,
-the more time you have to spend ;)
-I can take another look and see if I could do that with reasonable
-effort.
-Otherwise I'd go for:
-
-> Or if the TODOs can't be done now, maybe the iomem_is_ioport()
-> addition could be done as a separate patch to make the unification
-> more obvious.
-
-sic
-
-Thx,
-P.
-
->=20
-> > + */
-> > +#if defined(ARCH_WANTS_GENERIC_IOMEM_IS_IOPORT)
-> > +bool iomem_is_ioport(void __iomem *addr)
-> > =C2=A0{
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0IO_COND(addr, /* nothing */,=
- iounmap(addr));
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0unsigned long port =3D (unsi=
-gned long __force)addr;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (port > PIO_OFFSET && por=
-t < PIO_RESERVED)
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0return true;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return false;
-> > =C2=A0}
-> > -EXPORT_SYMBOL(pci_iounmap);
-> > -#endif /* CONFIG_PCI */
-> > +#endif /* ARCH_WANTS_GENERIC_IOMEM_IS_IOPORT */
-> > --=20
-> > 2.43.0
-> >=20
->=20
+diff --git a/fs/erofs/compress.h b/fs/erofs/compress.h
+index 279933e007d2..7cc5841577b2 100644
+--- a/fs/erofs/compress.h
++++ b/fs/erofs/compress.h
+@@ -11,13 +11,12 @@
+ struct z_erofs_decompress_req {
+ 	struct super_block *sb;
+ 	struct page **in, **out;
+-
+ 	unsigned short pageofs_in, pageofs_out;
+ 	unsigned int inputsize, outputsize;
+ 
+-	/* indicate the algorithm will be used for decompression */
+-	unsigned int alg;
++	unsigned int alg;       /* the algorithm for decompression */
+ 	bool inplace_io, partial_decoding, fillgaps;
++	gfp_t gfp;      /* allocation flags for extra temporary buffers */
+ };
+ 
+ struct z_erofs_decompressor {
+diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
+index 072ef6a66823..d4cee95af14c 100644
+--- a/fs/erofs/decompressor.c
++++ b/fs/erofs/decompressor.c
+@@ -111,8 +111,9 @@ static int z_erofs_lz4_prepare_dstpages(struct z_erofs_lz4_decompress_ctx *ctx,
+ 			victim = availables[--top];
+ 			get_page(victim);
+ 		} else {
+-			victim = erofs_allocpage(pagepool,
+-						 GFP_KERNEL | __GFP_NOFAIL);
++			victim = erofs_allocpage(pagepool, rq->gfp);
++			if (!victim)
++				return -ENOMEM;
+ 			set_page_private(victim, Z_EROFS_SHORTLIVED_PAGE);
+ 		}
+ 		rq->out[i] = victim;
+diff --git a/fs/erofs/decompressor_deflate.c b/fs/erofs/decompressor_deflate.c
+index 4a64a9c91dd3..b98872058abe 100644
+--- a/fs/erofs/decompressor_deflate.c
++++ b/fs/erofs/decompressor_deflate.c
+@@ -95,7 +95,7 @@ int z_erofs_load_deflate_config(struct super_block *sb,
+ }
+ 
+ int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
+-			       struct page **pagepool)
++			       struct page **pgpl)
+ {
+ 	const unsigned int nrpages_out =
+ 		PAGE_ALIGN(rq->pageofs_out + rq->outputsize) >> PAGE_SHIFT;
+@@ -158,8 +158,12 @@ int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
+ 			strm->z.avail_out = min_t(u32, outsz, PAGE_SIZE - pofs);
+ 			outsz -= strm->z.avail_out;
+ 			if (!rq->out[no]) {
+-				rq->out[no] = erofs_allocpage(pagepool,
+-						GFP_KERNEL | __GFP_NOFAIL);
++				rq->out[no] = erofs_allocpage(pgpl, rq->gfp);
++				if (!rq->out[no]) {
++					kout = NULL;
++					err = -ENOMEM;
++					break;
++				}
+ 				set_page_private(rq->out[no],
+ 						 Z_EROFS_SHORTLIVED_PAGE);
+ 			}
+@@ -211,8 +215,11 @@ int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
+ 
+ 			DBG_BUGON(erofs_page_is_managed(EROFS_SB(sb),
+ 							rq->in[j]));
+-			tmppage = erofs_allocpage(pagepool,
+-						  GFP_KERNEL | __GFP_NOFAIL);
++			tmppage = erofs_allocpage(pgpl, rq->gfp);
++			if (!tmppage) {
++				err = -ENOMEM;
++				goto failed;
++			}
+ 			set_page_private(tmppage, Z_EROFS_SHORTLIVED_PAGE);
+ 			copy_highpage(tmppage, rq->in[j]);
+ 			rq->in[j] = tmppage;
+@@ -230,7 +237,7 @@ int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
+ 			break;
+ 		}
+ 	}
+-
++failed:
+ 	if (zlib_inflateEnd(&strm->z) != Z_OK && !err)
+ 		err = -EIO;
+ 	if (kout)
+diff --git a/fs/erofs/decompressor_lzma.c b/fs/erofs/decompressor_lzma.c
+index 2dd14f99c1dc..6ca357d83cfa 100644
+--- a/fs/erofs/decompressor_lzma.c
++++ b/fs/erofs/decompressor_lzma.c
+@@ -148,7 +148,7 @@ int z_erofs_load_lzma_config(struct super_block *sb,
+ }
+ 
+ int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
+-			    struct page **pagepool)
++			    struct page **pgpl)
+ {
+ 	const unsigned int nrpages_out =
+ 		PAGE_ALIGN(rq->pageofs_out + rq->outputsize) >> PAGE_SHIFT;
+@@ -215,8 +215,11 @@ int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
+ 						   PAGE_SIZE - pageofs);
+ 			outlen -= strm->buf.out_size;
+ 			if (!rq->out[no] && rq->fillgaps) {	/* deduped */
+-				rq->out[no] = erofs_allocpage(pagepool,
+-						GFP_KERNEL | __GFP_NOFAIL);
++				rq->out[no] = erofs_allocpage(pgpl, rq->gfp);
++				if (!rq->out[no]) {
++					err = -ENOMEM;
++					break;
++				}
+ 				set_page_private(rq->out[no],
+ 						 Z_EROFS_SHORTLIVED_PAGE);
+ 			}
+@@ -258,8 +261,11 @@ int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
+ 
+ 			DBG_BUGON(erofs_page_is_managed(EROFS_SB(rq->sb),
+ 							rq->in[j]));
+-			tmppage = erofs_allocpage(pagepool,
+-						  GFP_KERNEL | __GFP_NOFAIL);
++			tmppage = erofs_allocpage(pgpl, rq->gfp);
++			if (!tmppage) {
++				err = -ENOMEM;
++				goto failed;
++			}
+ 			set_page_private(tmppage, Z_EROFS_SHORTLIVED_PAGE);
+ 			copy_highpage(tmppage, rq->in[j]);
+ 			rq->in[j] = tmppage;
+@@ -277,6 +283,7 @@ int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
+ 			break;
+ 		}
+ 	}
++failed:
+ 	if (no < nrpages_out && strm->buf.out)
+ 		kunmap(rq->out[no]);
+ 	if (ni < nrpages_in)
+diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+index c1c77166b30f..ff0aa72b0db3 100644
+--- a/fs/erofs/zdata.c
++++ b/fs/erofs/zdata.c
+@@ -82,6 +82,9 @@ struct z_erofs_pcluster {
+ 	/* L: indicate several pageofs_outs or not */
+ 	bool multibases;
+ 
++	/* L: whether extra buffer allocations are best-effort */
++	bool besteffort;
++
+ 	/* A: compressed bvecs (can be cached or inplaced pages) */
+ 	struct z_erofs_bvec compressed_bvecs[];
+ };
+@@ -960,7 +963,7 @@ static int z_erofs_read_fragment(struct super_block *sb, struct page *page,
+ }
+ 
+ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+-				struct page *page)
++				struct page *page, bool ra)
+ {
+ 	struct inode *const inode = fe->inode;
+ 	struct erofs_map_blocks *const map = &fe->map;
+@@ -1010,6 +1013,7 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+ 		err = z_erofs_pcluster_begin(fe);
+ 		if (err)
+ 			goto out;
++		fe->pcl->besteffort |= !ra;
+ 	}
+ 
+ 	/*
+@@ -1276,6 +1280,9 @@ static int z_erofs_decompress_pcluster(struct z_erofs_decompress_backend *be,
+ 					.inplace_io = overlapped,
+ 					.partial_decoding = pcl->partial,
+ 					.fillgaps = pcl->multibases,
++					.gfp = pcl->besteffort ?
++						GFP_KERNEL | __GFP_NOFAIL :
++						GFP_NOWAIT | __GFP_NORETRY
+ 				 }, be->pagepool);
+ 
+ 	/* must handle all compressed pages before actual file pages */
+@@ -1318,6 +1325,7 @@ static int z_erofs_decompress_pcluster(struct z_erofs_decompress_backend *be,
+ 	pcl->length = 0;
+ 	pcl->partial = true;
+ 	pcl->multibases = false;
++	pcl->besteffort = false;
+ 	pcl->bvset.nextpage = NULL;
+ 	pcl->vcnt = 0;
+ 
+@@ -1787,7 +1795,7 @@ static void z_erofs_pcluster_readmore(struct z_erofs_decompress_frontend *f,
+ 			if (PageUptodate(page))
+ 				unlock_page(page);
+ 			else
+-				(void)z_erofs_do_read_page(f, page);
++				(void)z_erofs_do_read_page(f, page, !!rac);
+ 			put_page(page);
+ 		}
+ 
+@@ -1808,7 +1816,7 @@ static int z_erofs_read_folio(struct file *file, struct folio *folio)
+ 	f.headoffset = (erofs_off_t)folio->index << PAGE_SHIFT;
+ 
+ 	z_erofs_pcluster_readmore(&f, NULL, true);
+-	err = z_erofs_do_read_page(&f, &folio->page);
++	err = z_erofs_do_read_page(&f, &folio->page, false);
+ 	z_erofs_pcluster_readmore(&f, NULL, false);
+ 	z_erofs_pcluster_end(&f);
+ 
+@@ -1849,7 +1857,7 @@ static void z_erofs_readahead(struct readahead_control *rac)
+ 		folio = head;
+ 		head = folio_get_private(folio);
+ 
+-		err = z_erofs_do_read_page(&f, &folio->page);
++		err = z_erofs_do_read_page(&f, &folio->page, true);
+ 		if (err && err != -EINTR)
+ 			erofs_err(inode->i_sb, "readahead error at folio %lu @ nid %llu",
+ 				  folio->index, EROFS_I(inode)->nid);
+-- 
+2.39.3
 
 
