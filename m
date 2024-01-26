@@ -1,129 +1,147 @@
-Return-Path: <linux-kernel+bounces-39544-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39545-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FBBF83D293
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 03:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2246783D298
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 03:36:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D08061F24FE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 02:34:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE4C91F2633C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 02:36:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAE398F47;
-	Fri, 26 Jan 2024 02:34:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1D11A947;
+	Fri, 26 Jan 2024 02:36:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="TkzBq7wT"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="rlQ+xDLI"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80A2B8F44;
-	Fri, 26 Jan 2024 02:34:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AE978BF3
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 02:36:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706236485; cv=none; b=KOHk1rTzTPaMLwfDyDDUC17U67vShgx1ys0D6F1BBMbGZSE1mUkcrQGZC5w13qtBcSezTrEUa/0zqfp1oBFBj2KtOkpmfrDM/KHKl5J4jivgcU/xoskqaPluPtOC5tuVGVBHdQxBPdKIXKchT95mxHmu4UE2nqgbVlcqN9KayuE=
+	t=1706236597; cv=none; b=sIVFPX4CXX4WGbLH7xZGa6QcKmOmef2kiWcaw4aWtIRg38yplgt1XenL4rJq+bz5m0jiNTYQqsMaER+1mXopGMFg8gL840/LzthPLbRJuQc68RDZa8GM2KI7ugrKZyZd1SaCBWlrvrXurIQdlCkmQaHKJqAd8FgtBVHusNiGKiY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706236485; c=relaxed/simple;
-	bh=gEFdeH1dz5MeH3OyYmFVrtxyGmyY5C/fWJsuhHJJiBg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Kz4JXOBFxs2Gag8TLiAfvKAHNU8jKJjyTeVfXSJ1g6UbeVBq1S3nIjRo7Unl6fowwjp1zOLtPDEVl/z8CAAapxUetS6MpejzXz+UAXikvCbt2QGOsYPtjRndwADsTlidpOb35Gd48Pn38BjmrhRPb+QiSegFM2OOalO7dK0mayY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=TkzBq7wT; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40Q0qqsK019345;
-	Fri, 26 Jan 2024 02:34:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=7aCazePiOgGahy5501KDly4q9vHVLXT5EBlhyF1E9P8=; b=Tk
-	zBq7wTSWNYn00NM23lg7QZMIx6/Tert/9D9CXHgr7XUR+CVAHsKALu38DgqcIxkx
-	54ullmmC/hgyT3WN56gBNmF1U3IhZyaVZvRHxOtMBahmJiLUntE6AFM/be+6s5pU
-	mBojgS4NO5XHexqhS4TBp67srTwxVO1Lg53q+IrnMkvYocyDBiQYEAzoGjBWL8+y
-	wATMoLhi8bGWI0/xvEg2/VLP18YEkeD2iBynkPidgayFNyp9xDHzL1vpRXdATDrn
-	TrCzKRkVE4GeRAfjoRaQFS5z1wTy9IPTadv7++WM9DMZuXdI0/4U4ePh8YjF1Wv/
-	ZccaJUQhXTHdmtZU51iw==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vup2tj82c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Jan 2024 02:34:39 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40Q2Ycvt027670
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Jan 2024 02:34:38 GMT
-Received: from [10.239.29.49] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 25 Jan
- 2024 18:34:31 -0800
-Message-ID: <05a5402e-9c9e-4dbe-88a6-f990c5c2fbf0@quicinc.com>
-Date: Fri, 26 Jan 2024 10:34:26 +0800
+	s=arc-20240116; t=1706236597; c=relaxed/simple;
+	bh=06iOWtBmY1uz/cbk56SyVECHI/J8jgo6lHGM0mSRSdo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VVlIakeFOEsLegEmU8i8jwCeJVxJUkK3Y0Ji+s31UQwC+19kiV2xUa4FdYqlEkE4hgqyKIPw+MNfTqU6IhJcr7GdK42B9DPiScPP3N4SRw52pZznGLgnKzt5cbPQDCPLUVa7GwVnonFZV2IoTPvoquGhNgr7BctmCREspRZjqWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=rlQ+xDLI; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6da9c834646so144352b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 18:36:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1706236595; x=1706841395; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6B1vw/CIwx1Do8klJnuzzBB1TAr7vs5mOYS9VgO2qwk=;
+        b=rlQ+xDLIF9YkOxlYbX1Pa/jH709CJKK3pnqW5OqPJkQ5DjkYzTQU84zQp4ledB8xbl
+         bVjdi6/SGQSW6ZlmLrZ+vyJe469NiWBLDbnJy0r6bXNi9C/b4Y33WZ7dy1SweMu9vmUx
+         z3YTRVZQS79/RiorZzAyARyjAi38iXLtdDPzw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706236595; x=1706841395;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6B1vw/CIwx1Do8klJnuzzBB1TAr7vs5mOYS9VgO2qwk=;
+        b=CBsE74lGGb0HxsrcpTtkiHYaiXx/fgQbgTQT5WKrIR8od0BQYZLi/2vnwNhxAMG2r9
+         y/KLs2XGqgHYYTXzqHQE9hIjYl7SxiA2o0unJ/lrWOSyf5bz84EvFojuBaekpHYAH5JJ
+         dBMF1XMD+/t55Mz2nnF/iY9BpZj557HfSLxf8tPEU+E++Mv9pbMSCZ/ElCbM465iJUYu
+         UBi8y1ofd0v8Bum1IKA6vvEEPY7MQJjG/1q+Nv5VZHU634aJftrSLRTtabsJy4oGMIud
+         iTgSoZObq6G/MJG5hcSeGiWDGNBcYViw1sRsYRzAnhYjxMd2DPSjlp4A9KeoaKBS3aF2
+         qY0w==
+X-Gm-Message-State: AOJu0Yz2iUYcn1dIGGrj3I6DnuWCZaER6k54N4u4GiHX5VpJuh94s1RL
+	c+AOuuTqrj4wq8iSQDL/CjWvf0IqvomJQeQVrpO0vOv8nNhS4IhzPkkZMIxgf0k=
+X-Google-Smtp-Source: AGHT+IFZBZg5EPv1XzUPhN040Dpw3PbiPtsmYRCU6w52snmy8gDwXg2o9W7xOOc88roFZeqJ6p5cQQ==
+X-Received: by 2002:a05:6a00:4583:b0:6db:d93e:5cdb with SMTP id it3-20020a056a00458300b006dbd93e5cdbmr632741pfb.15.1706236594820;
+        Thu, 25 Jan 2024 18:36:34 -0800 (PST)
+Received: from fastly.com (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id o123-20020a62cd81000000b006ddc133f1d3sm222692pfg.194.2024.01.25.18.36.32
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 25 Jan 2024 18:36:34 -0800 (PST)
+Date: Thu, 25 Jan 2024 18:36:30 -0800
+From: Joe Damato <jdamato@fastly.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	chuck.lever@oracle.com, jlayton@kernel.org,
+	linux-api@vger.kernel.org, brauner@kernel.org, edumazet@google.com,
+	davem@davemloft.net, alexander.duyck@gmail.com,
+	sridhar.samudrala@intel.com, kuba@kernel.org,
+	willemdebruijn.kernel@gmail.com, weiwan@google.com,
+	Jonathan Corbet <corbet@lwn.net>,
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nathan Lynch <nathanl@linux.ibm.com>,
+	Steve French <stfrench@microsoft.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Julien Panis <jpanis@baylibre.com>, Arnd Bergmann <arnd@arndb.de>,
+	Andrew Waterman <waterman@eecs.berkeley.edu>,
+	Thomas Huth <thuth@redhat.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+	"open list:FILESYSTEMS (VFS and infrastructure)" <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH net-next v3 3/3] eventpoll: Add epoll ioctl for
+ epoll_params
+Message-ID: <20240126023630.GA1235@fastly.com>
+References: <20240125225704.12781-1-jdamato@fastly.com>
+ <20240125225704.12781-4-jdamato@fastly.com>
+ <2024012551-anyone-demeaning-867b@gregkh>
+ <20240126001128.GC1987@fastly.com>
+ <2024012525-outdoors-district-2660@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] arm64: dts: qcom: sm8550: Add dma-coherent property
-Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>, <andersson@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-CC: <quic_kuiw@quicinc.com>, <quic_ekangupt@quicinc.com>, <kernel@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20240125102413.3016-1-quic_lxu5@quicinc.com>
- <20240125102413.3016-2-quic_lxu5@quicinc.com>
- <918d1d55-e95a-4b00-af59-7b5d7057b9fb@linaro.org>
-From: Ling Xu <quic_lxu5@quicinc.com>
-In-Reply-To: <918d1d55-e95a-4b00-af59-7b5d7057b9fb@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: lzknJc3C8nQLOzuySaw82gYcgQJhLq8K
-X-Proofpoint-ORIG-GUID: lzknJc3C8nQLOzuySaw82gYcgQJhLq8K
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-25_14,2024-01-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 spamscore=0 mlxlogscore=587 phishscore=0 mlxscore=0
- priorityscore=1501 adultscore=0 malwarescore=0 clxscore=1015
- impostorscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2401190000 definitions=main-2401260018
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2024012525-outdoors-district-2660@gregkh>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 
-在 2024/1/26 0:38, Konrad Dybcio 写道:
+On Thu, Jan 25, 2024 at 04:23:58PM -0800, Greg Kroah-Hartman wrote:
+> On Thu, Jan 25, 2024 at 04:11:28PM -0800, Joe Damato wrote:
+> > On Thu, Jan 25, 2024 at 03:21:46PM -0800, Greg Kroah-Hartman wrote:
+> > > On Thu, Jan 25, 2024 at 10:56:59PM +0000, Joe Damato wrote:
+> > > > +struct epoll_params {
+> > > > +	u64 busy_poll_usecs;
+> > > > +	u16 busy_poll_budget;
+> > > > +
+> > > > +	/* for future fields */
+> > > > +	u8 data[118];
+> > > > +} EPOLL_PACKED;
+> > > 
+> > > variables that cross the user/kernel boundry need to be __u64, __u16,
+> > > and __u8 here.
+> > 
+> > I'll make that change for the next version, thank you.
+> > 
+> > > And why 118?
+> > 
+> > I chose this arbitrarily. I figured that a 128 byte struct would support 16
+> > u64s in the event that other fields needed to be added in the future. 118
+> > is what was left after the existing fields. There's almost certainly a
+> > better way to do this - or perhaps it is unnecessary as per your other
+> > message.
+> > 
+> > I am not sure if leaving extra space in the struct is a recommended
+> > practice for ioctls or not - I thought I noticed some code that did and
+> > some that didn't in the kernel so I err'd on the side of leaving the space
+> > and probably did it in the worst way possible.
 > 
-> 
-> On 1/25/24 11:24, Ling Xu wrote:
->> Add dma-coherent property to fastRPC context bank nodes to pass dma
->> sequence test in fastrpc sanity test, ensure that data integrity is
->> maintained during DMA operations.
->>
->> Signed-off-by: Ling Xu <quic_lxu5@quicinc.com>
->> ---
-> 
-> How can we replicate this validation?
-> 
-> Konrad
+> It's not really a good idea unless you know exactly what you are going
+> to do with it.  Why not just have a new ioctl if you need new
+> information in the future?  That's simpler, right?
 
-Without this change, case8 and case14 about DMA sequence test in fastRPC sanity test can not pass.
+Sure, that makes sense to me. I'll remove it in the v4 alongside the other
+changes you've requested.
 
-The steps to do fastRPC sanity test is:
-1.download code
-p4 login
-export PATH="$PATH:/prj/qct/asw/qctss/linux/bin/vce"
-vce.py view --base fastrpctest.common.1.0 --checkout=<username> --root .
-2.compile command
-chmod -R 777 ./fastrpc_tests && python3 ./fastrpc_tests/build_fastrpc_test.py -target=LE
-3.run fastRPC test
-fastrpc_tests_ReleaseG_push_LE.bat
-adb shell fastrpc_tests -e (case number) -d 3
+Thanks for your time and patience reviewing my code. I greatly appreciate
+your helpful comments and feedback.
 
--- 
-Thx and BRs,
-Ling Xu
-
+Thanks,
+Joe
 
