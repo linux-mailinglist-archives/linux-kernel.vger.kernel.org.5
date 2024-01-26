@@ -1,167 +1,203 @@
-Return-Path: <linux-kernel+bounces-39941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D94D83D7A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:16:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83FE583D7B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:17:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E222293895
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:15:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8BB51C2E378
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:17:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 349ED6A00C;
-	Fri, 26 Jan 2024 09:38:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3E4A6BB5D;
+	Fri, 26 Jan 2024 09:39:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lXiC517D"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vtwIJfrR";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="SsMjlvWF"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D671F67E73
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 09:38:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E56CD6A340;
+	Fri, 26 Jan 2024 09:39:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706261937; cv=none; b=cu+DRD8CmqPKIULt98FU7JiQhsTfN3AX/JGEpiCeS7V5nBxx42KIE6+20+fml8l0HjGKJY34qrB/UQJADn8QUC8USCvQp4lhLqkQTu8wXHBlpOB62kDzn/lj+hHgjPWTbnCXazLq/nN5N/5wvi5yh/y2GNeCdncAu0jP7/q2kgQ=
+	t=1706261961; cv=none; b=uQ/GioFzYstJVa61Yo8eXcIt3G+G26dfrUm1upGAxT+0tZ6NABOlKF7VkiVgDyUA8UGBToCcfQFPbnJczoqnXlsdO60BfzyTUgkMlRpZxDUf21FzfnXUelcW+BofTS66ie6ptMtgt8WXcZsy67YAbYcvwgn7RNAXW+Ej6S1idw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706261937; c=relaxed/simple;
-	bh=nQauooNszPqyoOEzr4ZhxIxb76HgfibvoZ0QLd8mhA8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=R/L4X3MjwoF45XPvpWqdK53PQZOwQGxvnPkTqO7zCrGkZIwplS1B/RnSJLuPEIdxFAKcwqk5t5opZhNDzvbETWxuN7sBXkIcTyd3yWI56MeoiyYO61MqCWHbpWKl5I2z/gf8YBhLNNjVGSHHtPBPuMMMox70TBbRHnR6n4Mg6rI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lXiC517D; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40ed28f8666so2467895e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 01:38:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706261934; x=1706866734; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fTfvoetsxB4izWqxVfPVkINLcASVeBfA1M4tEFaPm+E=;
-        b=lXiC517D/rhoK+yrm5YQ9jX+TtrtX6f31UPwQ/DAPCLTHBdcHAXVUocz+oiyuJPBz7
-         0Xzr0S8/VO5zuOxDmJtEbyqIt3Ot5E6xVDnnEj2QN4hD6pFCYMqwJeGX+hKk4kyknjER
-         hX+hQlXhYnYLH05JghYl4MaYfBeDEaGCFq27YldOcxPe5maJqHNql00oHMKVU8kJ/N/5
-         D1PJosZIlx3aT/Rit5blTyEapnTWDCTz/BPzk4/y03FHKSjdEugMd2QY1wkz8mQB6qor
-         fieepjKbdOIAp1Mm3U/BKGLogj5u5hvvpJm2CNauKaUilfkSgJhld68J6Yxl7C2a0dZW
-         KwQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706261934; x=1706866734;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fTfvoetsxB4izWqxVfPVkINLcASVeBfA1M4tEFaPm+E=;
-        b=Tu6YGpHM/YZ4AXhWzKHgnfRYCr16B7XgcGCpcnW6S0Nqy2G15qWi5uIJ5DPKtO4O2a
-         21E/DfrOtfqEFYNaF1qm6CWupy49HM8ji4t+XbWiwKtXO9EsoUK6DS4tprR1SMbb+n6i
-         RTlyxqUmTdKEGJlE7PDZAkZkMYjl518q2Q0J5oGTlOBdVLtXo7GkSwH+BBXR9RUc0TNC
-         UOBmKdx3H16hDU+WIgGiid/PKLkM1Z6RgjhC38WKJRS583njid1uafIw04ZzHKLTrQ2i
-         /6Qg+flueSslPhIoHlrAgtbTCaKGNOnpEC3RNkcI5ABHsTXi+Ms19z/z/jPTx5BxFBbY
-         g0jg==
-X-Gm-Message-State: AOJu0YzstbTzQ6koTosyTEy4yufvwE445JGqL/I9/1yYJy/vpeFcITVN
-	oWhqaE8x2looXdFlgnVatHqGZEwT2rZayrCGk6l9u/r5QzWk7R5EnVumRgjkEGKZd7BCRPw6YNF
-	u
-X-Google-Smtp-Source: AGHT+IHU/z3D4W06U6n/VuLJxAd6TPywr1NjcWdnWvlfsxjMufKrmVX5TEMTCFwxTic2zQPgeDrnOA==
-X-Received: by 2002:a05:600c:1f0e:b0:40e:67c2:65a5 with SMTP id bd14-20020a05600c1f0e00b0040e67c265a5mr602762wmb.141.1706261934288;
-        Fri, 26 Jan 2024 01:38:54 -0800 (PST)
-Received: from [127.0.1.1] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id se27-20020a170906ce5b00b00a349318ea10sm426768ejb.199.2024.01.26.01.38.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 01:38:53 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Fri, 26 Jan 2024 10:38:36 +0100
-Subject: [PATCH v2 7/7] arm64: dts: qcom: split PCIe interrupt-names
- entries per lines
+	s=arc-20240116; t=1706261961; c=relaxed/simple;
+	bh=8/nGVc25hEsrpaBi3vcfC0ze3rFc+5uJq/40Iyl91Xg=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=JBbpsZ8GbaXll/AO6vj6s02KEngTf98YaI/ievdoMtdIIbm3aCb50G74UKtOaovKLx2ZsrmswcSKB02iugqcErToHK7RBm6ddKdU2cjXIipti42BdA7gbZnR2NA5Y2sy0tedo747U96ENIDGJsv3q6YayUc/vIQEqMACFmFbAjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=vtwIJfrR; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=SsMjlvWF; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 26 Jan 2024 09:39:11 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706261952;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/kptBAk4WpxQXuqRz6AFSlDXWJzh5Pf1EtgT7ZTLVJY=;
+	b=vtwIJfrRDWFMvNnG76AyALe2O9fv0z5oPDVBCUavXX+cvvCFS8MxOQVHjBI43TH4qmJsd9
+	2oScwKTDMDsobsWiRV2r1/nvfwyRhIHDXJfKGpXl6Fi/poHg0DcE7Fa8+mxe78pmxKYNu2
+	qNWENxgZKQG8mn3NA9sJ4/zErPa8SX4NVTGS7xW4zJ8iCcOljwr3zcMHUifObYtAKrDTkq
+	l/iwQiDeBcF9LqMtKcZa46m1/NfyFMc0dBNEC/Q3ZH+6X3htG8A+RhGB3JYS03Ar5/mSbm
+	xHiwGoFzNJZOg3ra0PpOi9AcV8FaFBNkO+wQ63eonHC5P7WM1tOm7BZcAkSIUA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706261952;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/kptBAk4WpxQXuqRz6AFSlDXWJzh5Pf1EtgT7ZTLVJY=;
+	b=SsMjlvWFAIHic/Vbg1uBsR0+hgBQcTAiIlLX2TuCFW4UG8P8ypARN89MBIjY1DGZ0ggBKR
+	0RRV+uwsn3YzdvCg==
+From: "tip-bot2 for Linus Torvalds" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/mm] x86/mm: Get rid of conditional IF flag handling in page
+ fault path
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+ Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>,
+ Denys Vlasenko <dvlasenk@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ Josh Poimboeuf <jpoimboe@redhat.com>, Uros Bizjak <ubizjak@gmail.com>,
+ Sean Christopherson <seanjc@google.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240125173457.1281880-1-torvalds@linux-foundation.org>
+References: <20240125173457.1281880-1-torvalds@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Message-ID: <170626195136.398.16499632195121642580.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240126-b4-dt-bindings-pci-qcom-split-dts-v2-7-0bb067f73adb@linaro.org>
-References: <20240126-b4-dt-bindings-pci-qcom-split-dts-v2-0-0bb067f73adb@linaro.org>
-In-Reply-To: <20240126-b4-dt-bindings-pci-qcom-split-dts-v2-0-0bb067f73adb@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
- Neil Armstrong <neil.armstrong@linaro.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1951;
- i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=nQauooNszPqyoOEzr4ZhxIxb76HgfibvoZ0QLd8mhA8=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBls32grRZQoWYTB0A3dCFzDsC1rtwP2mpxbfZxW
- JAl9k5vWEuJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZbN9oAAKCRDBN2bmhouD
- 18ahD/9mgbiUUmRvdztNj3QfsOT1DPTAZF7LKo84G4+PNpF/Q9G9HzTU2yZAX6WZLDvq9JEMpZr
- 2AB+FSgi3zyUdJ3abjSbgwsf6jkpnR4L1Ae0XWRwEgkFLc8BprGvKvCq6tLQz0HMaroB30Fp5HZ
- KKXlYrOgK4/8Qwzc+KrXhWVbWEyHSVT/OPbcEjsiRP25Tmjw81flvQ1CUUTo8T86we9DzsvNhYL
- TB9ucoiKOQR6KNZMv/kHr95JRfNpg1U3BCD1c67Zru52boqDtLgW/pYTR3au7a00sv1jU+nCnQo
- 45ngq74AsuHSsPoxbermFxnEYu84cDNNMhk9kbcw4XuzOd6xv3JQzY44BBfOOX/XYFCPFIhhygY
- N7iTJcDlFfEUfc1INOObYJ0rOZcQzQE8MufN5onIcY3iuoRjOY4msWLoqHrS3N1lxsm8gJCWc+H
- 4CgX70l4QvaQe4lPIoZDJtWp+6JxnweMLEvpQtAg4GaKF6/t/lZ0geZL/GkuDSf0B9P9gZVLvZX
- a7vhE25LeD6T534++xDYXn16j3h9fEcJWzl+e/6u5gfA9u0OZ8X/AnvnOvB5U/NP9rK5QW5eEsC
- t2yZulU+8VRnBDLaBXrGuAbEQV5NiicMehpDcaXO1CcdzC/M7tZdqTA3MAmkECzVggfI8rhIciO
- v6mBDthoQbQnD3Q==
-X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
- fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
-Other PCIe nodes in SM8250 and SM8350 have one interrupt name per
-line, so adjust PCIe0 to match the style.
+The following commit has been merged into the x86/mm branch of tip:
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Commit-ID:     8f588afe6256c50b3d1f8a671828fc4aab421c05
+Gitweb:        https://git.kernel.org/tip/8f588afe6256c50b3d1f8a671828fc4aab421c05
+Author:        Linus Torvalds <torvalds@linux-foundation.org>
+AuthorDate:    Thu, 25 Jan 2024 09:34:57 -08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Fri, 26 Jan 2024 10:27:54 +01:00
+
+x86/mm: Get rid of conditional IF flag handling in page fault path
+
+We had this nonsensical code that would happily handle kernel page
+faults with interrupts disabled, which makes no sense at all.
+
+It turns out that this is legacy code that _used_ to make sense, back
+when we enabled IRQs as early as possible, and we used to have this code
+sequence essentially immediately after reading the faulting address from
+the %cr2 register.
+
+Back then, we could have kernel page faults to populate the vmalloc area
+with interrupts disabled, and they would need to stay disabled for that
+case.
+
+However, the code in question has been moved down in the page fault
+handling, and is now in the "handle faults in user addresses" section,
+and apparently nobody ever noticed that it no longer makes sense to
+handle these page faults with interrupts conditionally disabled.
+
+So replace the conditional IRQ enable:
+
+        if (regs->flags & X86_EFLAGS_IF)
+                local_irq_enable();
+
+with an unconditional one, and add a temporary WARN_ON_ONCE() if some
+codepath actually does do page faults with interrupts disabled (without
+also doing a pagefault_disable(), of course).
+
+NOTE! We used to allow user space to disable interrupts with iopl(3).
+That is no longer true since commits:
+
+ a24ca9976843 ("x86/iopl: Remove legacy IOPL option")
+ b968e84b509d ("x86/iopl: Fake iopl(3) CLI/STI usage")
+
+so the WARN_ON_ONCE() is valid for both the kernel and user situation.
+
+For some of the history relevant to this code, see particularly commit
+8c914cb704a1 ("x86_64: actively synchronize vmalloc area when
+registering certain callbacks"), which moved this below the vmalloc fault
+handling.
+
+Now that the user_mode() check is irrelevant, we can also move the
+FAULT_FLAG_USER flag setting down to where the other flag settings are
+done.
+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Brian Gerst <brgerst@gmail.com>
+Cc: Denys Vlasenko <dvlasenk@redhat.com>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Uros Bizjak <ubizjak@gmail.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Link: https://lore.kernel.org/r/20240125173457.1281880-1-torvalds@linux-foundation.org
 ---
- arch/arm64/boot/dts/qcom/sm8250.dtsi | 10 ++++++++--
- arch/arm64/boot/dts/qcom/sm8350.dtsi | 10 ++++++++--
- 2 files changed, 16 insertions(+), 4 deletions(-)
+ arch/x86/mm/fault.c | 27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index decb2e5794ee..99fad4f1ad2e 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -2152,8 +2152,14 @@ pcie0: pcie@1c00000 {
- 				     <GIC_SPI 146 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 147 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 148 IRQ_TYPE_LEVEL_HIGH>;
--			interrupt-names = "msi0", "msi1", "msi2", "msi3",
--					  "msi4", "msi5", "msi6", "msi7";
-+			interrupt-names = "msi0",
-+					  "msi1",
-+					  "msi2",
-+					  "msi3",
-+					  "msi4",
-+					  "msi5",
-+					  "msi6",
-+					  "msi7";
- 			#interrupt-cells = <1>;
- 			interrupt-map-mask = <0 0 0 0x7>;
- 			interrupt-map = <0 0 0 1 &intc 0 149 IRQ_TYPE_LEVEL_HIGH>, /* int_a */
-diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-index ad65f6b48e25..340147582f0f 100644
---- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-@@ -1526,8 +1526,14 @@ pcie0: pcie@1c00000 {
- 				     <GIC_SPI 146 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 147 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 148 IRQ_TYPE_LEVEL_HIGH>;
--			interrupt-names = "msi0", "msi1", "msi2", "msi3",
--					  "msi4", "msi5", "msi6", "msi7";
-+			interrupt-names = "msi0",
-+					  "msi1",
-+					  "msi2",
-+					  "msi3",
-+					  "msi4",
-+					  "msi5",
-+					  "msi6",
-+					  "msi7";
- 			#interrupt-cells = <1>;
- 			interrupt-map-mask = <0 0 0 0x7>;
- 			interrupt-map = <0 0 0 1 &intc 0 149 IRQ_TYPE_LEVEL_HIGH>, /* int_a */
-
--- 
-2.34.1
-
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index 679b09c..150e002 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -1302,21 +1302,14 @@ void do_user_addr_fault(struct pt_regs *regs,
+ 		return;
+ 	}
+ 
+-	/*
+-	 * It's safe to allow irq's after cr2 has been saved and the
+-	 * vmalloc fault has been handled.
+-	 *
+-	 * User-mode registers count as a user access even for any
+-	 * potential system fault or CPU buglet:
+-	 */
+-	if (user_mode(regs)) {
+-		local_irq_enable();
+-		flags |= FAULT_FLAG_USER;
+-	} else {
+-		if (regs->flags & X86_EFLAGS_IF)
+-			local_irq_enable();
++	/* Legacy check - remove this after verifying that it doesn't trigger */
++	if (WARN_ON_ONCE(!(regs->flags & X86_EFLAGS_IF))) {
++		bad_area_nosemaphore(regs, error_code, address);
++		return;
+ 	}
+ 
++	local_irq_enable();
++
+ 	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+ 
+ 	/*
+@@ -1332,6 +1325,14 @@ void do_user_addr_fault(struct pt_regs *regs,
+ 	if (error_code & X86_PF_INSTR)
+ 		flags |= FAULT_FLAG_INSTRUCTION;
+ 
++	/*
++	 * We set FAULT_FLAG_USER based on the register state, not
++	 * based on X86_PF_USER. User space accesses that cause
++	 * system page faults are still user accesses.
++	 */
++	if (user_mode(regs))
++		flags |= FAULT_FLAG_USER;
++
+ #ifdef CONFIG_X86_64
+ 	/*
+ 	 * Faults in the vsyscall page might need emulation.  The
 
