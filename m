@@ -1,146 +1,138 @@
-Return-Path: <linux-kernel+bounces-40335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E3FD83DEAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:27:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2818E83DEB2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:28:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6A51B21CF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:27:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7E3528B96F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:28:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6B6A1DA3A;
-	Fri, 26 Jan 2024 16:27:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EE2D1DFE8;
+	Fri, 26 Jan 2024 16:28:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RDe6Slbw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="sCBvO4UI"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 159761CD0A;
-	Fri, 26 Jan 2024 16:27:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B365C1DDD5
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 16:28:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706286440; cv=none; b=PjZeJI7zoxXLVqM668+N3XXkS/mv1UOvyL4hsLAA0df+Y2K/5QUGvI6ZIVY3/5zTxqZC342372DVUU4sc2KGkTKjwT9iaVb6K7XF6SUhmovjq1d7kzz18NGzuH/5Egyarv46JXTeRt8iq3+JCJhqR6uSk0L6R6oTfmxeYqqhHTM=
+	t=1706286483; cv=none; b=QYyIm5+CrModG2slUnVGhbsuSLeVktbbk5x1c0BCOJh/vX8Ir+OlQqMu9mh/CXOddDBTLltBJV/TvSalwpePyCo4yTSEbfQ6Y6JbC5dQS58S1veDcfBT5LTvf1ioUfmHXmBVmZQ5diXTy44kDXcgD6eFRUVBS9ug8SvVKq9x1rU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706286440; c=relaxed/simple;
-	bh=5iYUflzMQ861be+XTIVmFUr4Ln1Nim3H4SbxbbWe3ZQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YKpWgvVgpxJeLMh8VhEs1mx9vLfXioiEBXBoYn7D6LMF5uaelxyIr/UfWA3KHjpeb/bZ6WvNU3q1gzoBGp1XJmYe9DioRWruk4vego6un8qWUUY7Voz+0OBx7MnL1ZuvXWOjCef5V57kkWwXyV9MYpOwR9Qb3QhCvVcAa9TbOrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RDe6Slbw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE93FC43390;
-	Fri, 26 Jan 2024 16:27:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706286439;
-	bh=5iYUflzMQ861be+XTIVmFUr4Ln1Nim3H4SbxbbWe3ZQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RDe6SlbwjI+YPW9Mq3T+ljgPcYzX/eBo9He4PP7xnAkQ3UIHA1WPDWOOgFnCWxTMX
-	 sbyVew7uKtuwUQY4TByWSHuO6vaiaJtVDqNewZEeaCSskHi0gt3PpGTuk8dcv4289E
-	 PRbgshtnZZP6EICURAZ6LAnGEe+ghr/mPM2wyY+CK6a2juWrTMtPM/aodsxN8MXpBU
-	 3RomL+greBDmnbBhFByxPOczWjQfWah3NNndvSZmlsvETcI2TYXFovfVKc4ZoAFw/j
-	 22AeT4kZ2SPTXDgvlkDvJiYLnbkRpSSr65VRZfhJlzCgyJeWDJqxzxooXRc5cCLuX8
-	 LdAswQElQIAOA==
-Date: Fri, 26 Jan 2024 16:27:12 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Yannic Moog <y.moog@phytec.de>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Primoz Fiser <primoz.fiser@norik.com>,
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	upstream@lists.phytec.de
-Subject: Re: [PATCH RFC for upstream 1/4] dt-bindings: display: panel-simple:
- add ETML1010G3DRA
-Message-ID: <20240126-briskly-clang-d1e6ad7d40e8@spud>
-References: <20240126-wip-y-moog-phytec-de-upstream-pollux-lvds-v1-0-8ec5b48eec05@phytec.de>
- <20240126-wip-y-moog-phytec-de-upstream-pollux-lvds-v1-1-8ec5b48eec05@phytec.de>
+	s=arc-20240116; t=1706286483; c=relaxed/simple;
+	bh=bfATvgFGy1C+UULaXubImPOXGtd8BvEu9bs2VEk+/Dw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nFjairWMImU6XmwrFq0UKTxLNYG10idy18AYJA1fEHJaqg5OeU7IhE9A1jk/n3KJWLQzdq2au/s9jLGI+vWweygJYvrcecXHJ3WC3nWbQTXPAT799hfi1L5JklV7p/cIRUaqNqyQ+aQOMFGGiBh+WAeEPf48G9HRWTHiddZ/cAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=sCBvO4UI; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706286473;
+	bh=bfATvgFGy1C+UULaXubImPOXGtd8BvEu9bs2VEk+/Dw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=sCBvO4UIouCEmJXzxqhm0SshcENzhxQdzX0Ocvo34m24MIWT1NPDpdD8VvY6p0fy0
+	 hX9gcK9H2vZArf3s2YTSQDD35NhF3W+dJJX66Jr4xNCsb2yyHujIzRw+8u1iMqHydj
+	 MYXEo3txYBnr2zSxMgLextGneTBTMta24DazKJLef/lU05FoJ3FGXEsU1K9I9kRwrb
+	 UE7DOoB/eP3bW6+HrZgT6rVfw9Uj/sMVVhXIMemG7R2sKwrg+G4RC9bpoLOOzkUjc8
+	 r/eppjQtRE0/C3od/3tcmkeiNkjDwNLut4TejaqdnPhosvebrZH50F69DQA+EVnGMa
+	 vQzB+px0U5RVA==
+Received: from [100.109.49.129] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: dmitry.osipenko)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2322A378107C;
+	Fri, 26 Jan 2024 16:27:52 +0000 (UTC)
+Message-ID: <fab38fed-635c-4dbe-aa13-dcdf8f267988@collabora.com>
+Date: Fri, 26 Jan 2024 19:27:49 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="r9lRgXrshhnzpKAU"
-Content-Disposition: inline
-In-Reply-To: <20240126-wip-y-moog-phytec-de-upstream-pollux-lvds-v1-1-8ec5b48eec05@phytec.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 22/30] drm/shmem-helper: Add common memory shrinker
+Content-Language: en-US
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Cc: David Airlie <airlied@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>,
+ Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
+ <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Qiang Yu <yuq825@gmail.com>, Steven Price <steven.price@arm.com>,
+ Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ kernel@collabora.com, virtualization@lists.linux-foundation.org
+References: <20240105184624.508603-1-dmitry.osipenko@collabora.com>
+ <20240105184624.508603-23-dmitry.osipenko@collabora.com>
+ <20240125111946.797a1e1e@collabora.com>
+ <f4870543-e7f8-4ee6-924a-68ec7c25b293@collabora.com>
+ <20240126105537.67b1613e@collabora.com>
+From: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <20240126105537.67b1613e@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+On 1/26/24 12:55, Boris Brezillon wrote:
+> On Fri, 26 Jan 2024 00:56:47 +0300
+> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+> 
+>> On 1/25/24 13:19, Boris Brezillon wrote:
+>>> On Fri,  5 Jan 2024 21:46:16 +0300
+>>> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+>>>   
+>>>> +static bool drm_gem_shmem_is_evictable(struct drm_gem_shmem_object *shmem)
+>>>> +{
+>>>> +	return (shmem->madv >= 0) && shmem->base.funcs->evict &&
+>>>> +		refcount_read(&shmem->pages_use_count) &&
+>>>> +		!refcount_read(&shmem->pages_pin_count) &&
+>>>> +		!shmem->base.dma_buf && !shmem->base.import_attach &&
+>>>> +		!shmem->evicted;  
+>>>
+>>> Are we missing
+>>>
+>>>                 && dma_resv_test_signaled(shmem->base.resv,
+>>> 					  DMA_RESV_USAGE_BOOKKEEP)
+>>>
+>>> to make sure the GPU is done using the BO?
+>>> The same applies to drm_gem_shmem_is_purgeable() BTW.
+>>>
+>>> If you don't want to do this test here, we need a way to let drivers
+>>> provide a custom is_{evictable,purgeable}() test.
+>>>
+>>> I guess we should also expose drm_gem_shmem_shrinker_update_lru_locked()
+>>> to let drivers move the GEMs that were used most recently (those
+>>> referenced by a GPU job) at the end of the evictable LRU.  
+>>
+>> We have the signaled-check in the common drm_gem_evict() helper:
+>>
+>> https://elixir.bootlin.com/linux/v6.8-rc1/source/drivers/gpu/drm/drm_gem.c#L1496
+> 
+> Ah, indeed. I'll need DMA_RESV_USAGE_BOOKKEEP instead of
+> DMA_RESV_USAGE_READ in panthor, but I can add it in the driver specific
+> ->evict() hook (though that means calling dma_resv_test_signaled()
+> twice, which is not great, oh well).
 
---r9lRgXrshhnzpKAU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Maybe we should change drm_gem_evict() to use BOOKKEEP. The
+test_signaled(BOOKKEEP) should be a "stronger" check than
+test_signaled(READ)?
 
-Hey,
+> The problem about the evictable LRU remains though: we need a way to let
+> drivers put their BOs at the end of the list when the BO has been used
+> by the GPU, don't we?
 
-On Fri, Jan 26, 2024 at 09:57:23AM +0100, Yannic Moog wrote:
-> Add Emerging Display Technology Corp. etml1010g3dra 10.1" LCD-TFT LVDS
-> panel compatible string.
->=20
-> Signed-off-by: Yannic Moog <y.moog@phytec.de>
+If BO is use, then it won't be evicted, while idling BOs will be
+evicted. Hence, the used BOs will be naturally moved down the LRU list
+each time shrinker is invoked.
 
-> [PATCH RFC for upstream 1/4]
+-- 
+Best regards,
+Dmitry
 
-The "for upstream" here is not really relevant, what else would the
-patch be for?
-
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-Thanks,
-Conor.
-
-
-> ---
->  Documentation/devicetree/bindings/display/panel/panel-simple.yaml | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple=
-=2Eyaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-> index 11422af3477e..b6bbdb3dd2b2 100644
-> --- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-> +++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-> @@ -139,6 +139,8 @@ properties:
->        - edt,etm0700g0edh6
->          # Emerging Display Technology Corp. LVDS WSVGA TFT Display with =
-capacitive touch
->        - edt,etml0700y5dha
-> +        # Emerging Display Technology Corp. 10.1" LVDS WXGA TFT Display =
-with capacitive touch
-> +      - edt,etml1010g3dra
->          # Emerging Display Technology Corp. 5.7" VGA TFT LCD panel with
->          # capacitive touch
->        - edt,etmv570g2dhu
->=20
-> --=20
-> 2.34.1
->=20
-
---r9lRgXrshhnzpKAU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbPdYAAKCRB4tDGHoIJi
-0sEDAQCUbSvrqkTDCHq38e07WTqHt54ixj8xqFG0ivlbAW5U1gEA4waKpK8VdRA+
-t7JzmgjefDRvuYrmKoTlMNWpj1KBcAE=
-=FDIS
------END PGP SIGNATURE-----
-
---r9lRgXrshhnzpKAU--
 
