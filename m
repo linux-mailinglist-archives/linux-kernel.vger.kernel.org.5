@@ -1,181 +1,151 @@
-Return-Path: <linux-kernel+bounces-40116-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40117-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3379283DA78
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:02:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C45F83DA7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:02:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57EE21C209D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:02:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AED01F27C36
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:02:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2A5A1B7FC;
-	Fri, 26 Jan 2024 13:02:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 789DA1B956;
+	Fri, 26 Jan 2024 13:02:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="IN36Wbo+"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RXnoB0RI"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 880271B7EF
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:02:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00B781B80E
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:02:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706274155; cv=none; b=PZn5Y93V86U5uY3/WIQ91BKuLYSPgbiG9H1H3GkkUPGN25YYZy3cq1zSbXgv7FmwZS/a1oef/54jQ9BFL/FFvLhtGAG3lzAP68t8rGwarbzrWUxHCr5VD0CWPh2CVuJwb7Zr+vpIQwMociGAKVLv9vU3P3WeB1gA2yw0fJh8JA8=
+	t=1706274158; cv=none; b=Kz7otqrKJya6HrAzrV9kw99LFCfVEJO2asSIfqNCZXR/+nLf5llANZqHUMeL2VxGmyDaNnzXmUW29UfP7yXXqBZB6CRx0YDMc68husXSD+498mtcNjMSpxwoioHKrAIfD2wdEYP6f7GVoU7WTgRDTyoF5nj+4959f4UD2uFyrAw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706274155; c=relaxed/simple;
-	bh=EDXuefEciKTCME/A2dMElXxs/lWJf3XhIt3Ju7eSQVk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Xn/eBE76sT6IN8Bd5zIIVNru2gAuJludflq02amXdNRnUU1o3QUdvkJT5sKwWJHv/hz7edU/ML/HCClmnUZf/LuahfRHjUcgvMdSeiIe8kyMvJoNMLZywGoQfQ1CrSaAV28+LNtKr/ElWaFlR/hi5LY+uCGutRFlfr2oV/+qSkg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=IN36Wbo+; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d71cb97937so1993415ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 05:02:33 -0800 (PST)
+	s=arc-20240116; t=1706274158; c=relaxed/simple;
+	bh=mBXiWmO43x4IedI7eW45Poke+eFkqHYazw7gPasItoA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Fgmvf5LT0Np28SvWaf0wYxE/sCjr1mJmcfU8dnK4rVZJPuRF3AFFT/w+6kh64YxIKHz17tQEFOm0VLBRSN0RpFJIm4W8QQBHoz9C9XXmJviRD2k2R4DjT/VLLkl5Phrw4X3I87+/bRq9/UrlCmRnbVuH8P3ejueW8HuT4e09CHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=RXnoB0RI; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-337d5480a6aso400106f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 05:02:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1706274153; x=1706878953; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=t9J/yZkugauITzzzeewJF5kZsPK6ngxJQMvu/7HtZ40=;
-        b=IN36Wbo+zE4QyaVLyrQTO4zpB+Mo8mKUqWPAZcgvh4P7M/Lk+BYGt76PRcpEeGDkcX
-         GBn6efG2esUlMf5IbsCe0BTohJa+8kYt3u7EZcagk5oscE8nUucK/ygNjx2jywfUcPgw
-         cgQ8if2RaxrrMgnjTAYqIqWUNPi4isntG+zTG37M1tWh0FT8LAZiUokDLGfjuOcft88k
-         gBzJY6MgpbFhJ8J0NOsxU5ktuV/3DDFC34rLwAaid5E5ZoBog+Z1ga8WCR8dNWJNXC2i
-         DboLFg0PdD56VYKYXT45v9FsdEngjCpEDCzBuks95l8aYlmaFzsI4cjGc/4EkSDWc4xk
-         s4BA==
+        d=linaro.org; s=google; t=1706274155; x=1706878955; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=a3+07jRFtwaufVPIk/XTD0i2kvGZ4Tbho2wTMEbnG0c=;
+        b=RXnoB0RIxwv/NQSIzOtszHrLgNebcQjJd5nF1JqvwwYVz0q2yhfZPY/L8RSal11skC
+         0ZLnJHAP1vWwaqCKFDknubpEnWq6HawZenu5H0jfUMAnitZEbDSKHejVlGIMnwtlJo24
+         qBwednnHhCsH4QOLccTxqHyzIJwDtfYbdKwlRaXgNx/AHt0mhGSm6d4RO7C3Odz4VQgY
+         13EiuJgpOBB9HUrqhoPlKm8hF7gwHv6YzMe83QYeFsyb88Jwik4v1o2giVllb/nsyK3q
+         54g3HtS5qPh+8gqqNHeJrI/0+ns8wzghbXPKWd0NzKJYod00DAWE8LWccLtSy3bhSSGJ
+         Ak8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706274153; x=1706878953;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=t9J/yZkugauITzzzeewJF5kZsPK6ngxJQMvu/7HtZ40=;
-        b=SQTrIqYGVBwFgJcNSYnFCxygJ211B4/xTZ9bDKXf6QBMpO6nTDBRnlIQne4b/xMzTq
-         HQCwipgronLkmlpDq4EbGhWOCXwFIb4sqgbekXi9ilDMvailwJKau5ngEOyih4NJPEU8
-         YZeAW9l0vMsi5fxgR0eVPTh7yU+n4LRs11GWQm+xLOIEHpb4nld89bITLN1uNBQlgTYI
-         V6mo3WtgqEeOpXfrDZLqp+tEIN2BoH0bDlmfjttgOkCcgy4jF6iXTLTygwH8PHdRmn3+
-         57q1mbFAb2Yg33sGDm/+7skBjFXWsaSaKigxRQhetqE0DwRQwpW2Y3vJV9PsRbKrramN
-         gvaA==
-X-Gm-Message-State: AOJu0Yzz7tiTIjWmkH9ZnU9bFf8jkNKhbpinLs+BZFbED9bKp2Xowcs9
-	s+HAvDhHrB/VWR4E3sPbT/Eq6EbvD9Dx2r9tQ7IJ38Z7gJ9WU/2lw6cH4qi7vSY=
-X-Google-Smtp-Source: AGHT+IF8YOXQY78u8Ud9V14+ScFszVUf3XLLG4GU9m9SRZM6QnSj1wvcbZNaDKsexFkB7TTg2bpNzg==
-X-Received: by 2002:a17:902:ee4c:b0:1d7:3adf:b103 with SMTP id 12-20020a170902ee4c00b001d73adfb103mr980734plo.114.1706274152811;
-        Fri, 26 Jan 2024 05:02:32 -0800 (PST)
-Received: from ubuntu-haifeng.default.svc.cluster.local ([101.127.248.173])
-        by smtp.gmail.com with ESMTPSA id s22-20020a635256000000b005ca0ae17983sm1020098pgl.8.2024.01.26.05.02.30
+        d=1e100.net; s=20230601; t=1706274155; x=1706878955;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a3+07jRFtwaufVPIk/XTD0i2kvGZ4Tbho2wTMEbnG0c=;
+        b=YW8l0FDfv+ojv7eskeOlW4ZGOGph/+8Le1jFleRH2OPijZbynGC8TNjoh6GaaVkXIR
+         7qVJHx5KICUoBihF/drffEnqnvLWajlgV1UeBVJ2v3p1+B7GR+nT2gWEa2zuBW4KNIzT
+         ZGy92iu6znAoSXa73IodEVO8IPeSdry2C/JvSsdSMMXMhpmQADWK1vmbzKOFOG5dREkr
+         /spgpJRet2c8NwYnV3YBJRMZ2dwFby1axk/iM6HIrBLU+doRaOnvwQu+MVe3IJOPpPLU
+         KUdtdmSdleNJv5xfcDpN/ep8iAlgJScPfCkJkI+O6vBwmkrjc7uGFPZWDFDg7Qj+R0ZL
+         DNPw==
+X-Gm-Message-State: AOJu0YzYG1yb3+MEPDlQTlaKopEaU7h9uYo6JTzar7srNiEdHDaobYpa
+	yixQabvgJLUpGONjqKnLwAr0K/9cDGmCZXtZABXNzPhU84anoRyOYaIaqqUa1iI=
+X-Google-Smtp-Source: AGHT+IFJEnTrtRkieL7052tDdsHf4QprHoC8IvOe6lXVFTMJ1+IvvGQj1R8OZsfDteVBTHZ4Kx1Eyw==
+X-Received: by 2002:a5d:694e:0:b0:33a:dec4:1d88 with SMTP id r14-20020a5d694e000000b0033adec41d88mr10537wrw.75.1706274155128;
+        Fri, 26 Jan 2024 05:02:35 -0800 (PST)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id j17-20020adfe511000000b00339214d70b5sm1231554wrm.85.2024.01.26.05.02.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 05:02:32 -0800 (PST)
-From: Haifeng Xu <haifeng.xu@shopee.com>
-To: reinette.chatre@intel.com
-Cc: fenghua.yu@intel.com,
-	babu.moger@amd.com,
-	peternewman@google.com,
-	james.morse@arm.com,
-	x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	Haifeng Xu <haifeng.xu@shopee.com>
-Subject: [PATCH] x86/resctrl: Add tracepoint for llc_occupancy tracking
-Date: Fri, 26 Jan 2024 13:02:13 +0000
-Message-Id: <20240126130213.159339-1-haifeng.xu@shopee.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 26 Jan 2024 05:02:34 -0800 (PST)
+Date: Fri, 26 Jan 2024 13:02:32 +0000
+From: Daniel Thompson <daniel.thompson@linaro.org>
+To: Johan Hovold <johan@kernel.org>
+Cc: Bjorn Andersson <quic_bjorande@quicinc.com>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+	Jiri Kosina <jikos@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	linux-arm-msm@vger.kernel.org, linux-input@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Konrad Dybcio <konrad.dybcio@somainline.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: sc8280xp-x13s: Fix/enable
+ touchscreen
+Message-ID: <20240126130232.GA5506@aspen.lan>
+References: <20240125-x13s-touchscreen-v1-0-ab8c882def9c@quicinc.com>
+ <20240125-x13s-touchscreen-v1-2-ab8c882def9c@quicinc.com>
+ <ZbNpdaSyFS9tYrkd@hovoldconsulting.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZbNpdaSyFS9tYrkd@hovoldconsulting.com>
 
-If llc_occupany is enabled, the rmid may not be freed immediately unless
-its llc_occupany is less than the resctrl_rmid_realloc_threshold.
+On Fri, Jan 26, 2024 at 09:12:37AM +0100, Johan Hovold wrote:
+> On Thu, Jan 25, 2024 at 07:55:14PM -0800, Bjorn Andersson wrote:
+> > The failing read-test in __i2c_hid_core_probe() determines that there's
+> > nothing connected at the documented address of the touchscreen.
+> >
+> > Introduce the 5ms after-power and 200ms after-reset delays found in the
+> > ACPI tables. Also wire up the reset-gpio, for good measure.
+>
+> As the supplies for the touchscreen are always on (and left on by the
+> bootloader) it would seem that it is really the addition of the reset
+> gpio which makes things work here. Unless the delay is needed for some
+> other reason.
+>
+> (The power-on delay also looks a bit short compared to what is used for
+> other devices.)
+>
+> Reset support was only recently added with commit 2be404486c05 ("HID:
+> i2c-hid-of: Add reset GPIO support to i2c-hid-of") so we should not
+> backport this one before first determining that.
 
-In our production environment, those unused rmids get stuck in the limbo
-list forever because their llc_occupancy are larger than the threshold.
-After turning it up, we can successfully free unused rmids and create
-new monitor groups. In order to acquire the llc_occupancy of rmids in
-each rdt domain, we use perf tool to track and filter the log manually.
+This comment attracted my attention so I tried booting with each of the
+three lines individually.
 
-It's not efficient enough. Therefore, we can add a new tracepoint that
-shows the llc_occupancy of busy rmids when scanning the limbo list. It
-can help us to adjust the resctrl_rmid_realloc_threshold to a reasonable
-value.
 
-Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
----
- arch/x86/kernel/cpu/resctrl/Makefile        |  1 +
- arch/x86/kernel/cpu/resctrl/monitor.c       |  5 ++++
- arch/x86/kernel/cpu/resctrl/monitor_event.h | 30 +++++++++++++++++++++
- 3 files changed, 36 insertions(+)
- create mode 100644 arch/x86/kernel/cpu/resctrl/monitor_event.h
+On Thu, Jan 25, 2024 at 07:55:14PM -0800, Bjorn Andersson wrote:
+> +             reset-gpios = <&tlmm 99 GPIO_ACTIVE_LOW>;
 
-diff --git a/arch/x86/kernel/cpu/resctrl/Makefile b/arch/x86/kernel/cpu/resctrl/Makefile
-index 4a06c37b9cf1..0d3031850d26 100644
---- a/arch/x86/kernel/cpu/resctrl/Makefile
-+++ b/arch/x86/kernel/cpu/resctrl/Makefile
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_X86_CPU_RESCTRL)	+= core.o rdtgroup.o monitor.o
- obj-$(CONFIG_X86_CPU_RESCTRL)	+= ctrlmondata.o pseudo_lock.o
-+CFLAGS_monitor.o = -I$(src)
- CFLAGS_pseudo_lock.o = -I$(src)
-diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-index f136ac046851..a6f94fcae174 100644
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -24,6 +24,10 @@
- 
- #include "internal.h"
- 
-+#define CREATE_TRACE_POINTS
-+#include "monitor_event.h"
-+#undef CREATE_TRACE_POINTS
-+
- struct rmid_entry {
- 	u32				rmid;
- 	int				busy;
-@@ -302,6 +306,7 @@ void __check_limbo(struct rdt_domain *d, bool force_free)
- 			}
- 		}
- 		crmid = nrmid + 1;
-+		trace_rmid_llc_occupancy(nrmid, d->id, val);
- 	}
- }
- 
-diff --git a/arch/x86/kernel/cpu/resctrl/monitor_event.h b/arch/x86/kernel/cpu/resctrl/monitor_event.h
-new file mode 100644
-index 000000000000..91265a2dd2c9
---- /dev/null
-+++ b/arch/x86/kernel/cpu/resctrl/monitor_event.h
-@@ -0,0 +1,30 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM resctrl
-+
-+#if !defined(_TRACE_MONITOR_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define _TRACE_MONITOR_H
-+
-+#include <linux/tracepoint.h>
-+
-+TRACE_EVENT(rmid_llc_occupancy,
-+	    TP_PROTO(u32 rmid, int id, u64 occupancy),
-+	    TP_ARGS(rmid, id, occupancy),
-+	    TP_STRUCT__entry(__field(u32, rmid)
-+			     __field(int, id)
-+			     __field(u64, occupancy)),
-+	    TP_fast_assign(__entry->rmid = rmid;
-+			   __entry->id = id;
-+			   __entry->occupancy = occupancy;),
-+	    TP_printk("rmid=%u domain=%d occupancy=%llu",
-+		      __entry->rmid, __entry->id, __entry->occupancy)
-+	   );
-+
-+#endif /* _TRACE_MONITOR_H */
-+
-+#undef TRACE_INCLUDE_PATH
-+#define TRACE_INCLUDE_PATH .
-+#define TRACE_INCLUDE_FILE monitor_event
-+
-+/* This part must be outside protection */
-+#include <trace/define_trace.h>
--- 
-2.25.1
+This is not enough, on it's own, to get the touch screen running.
 
+I guess that's not so much of a surprise since the rebind-the-driver
+from userspace trick wouldn't have been touching this reset.
+
+
+> +             post-power-on-delay-ms = <5>;
+
+This line alone is enough (in v6.7.1).
+
+
+> +             post-reset-deassert-delay-ms = <200>;
+
+This line alone is also enough!
+
+In short it looks like the delays make the difference and, even a short
+delay, can fix the problem.
+
+Of course, regardless of the line-by-line results I also ran with all
+the changes so, FWIW:
+Tested-by: Daniel Thompson <daniel.thompson@linaro.org>
+
+
+Daniel.
 
