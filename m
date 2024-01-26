@@ -1,132 +1,173 @@
-Return-Path: <linux-kernel+bounces-40078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40079-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD6C483D9CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:57:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E097983D9CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:58:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A5CC281563
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:57:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DE452861FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:58:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D7E018E06;
-	Fri, 26 Jan 2024 11:57:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47ED618E25;
+	Fri, 26 Jan 2024 11:57:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LFjWPSH5"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b="L03Nu2Tq"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E05B17BB9;
-	Fri, 26 Jan 2024 11:57:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41F811A71F
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 11:57:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706270243; cv=none; b=vGjzKz/qwMN4XSf0Kj7RCKhqlc4utenEFXfkJSxhz06GePMn5eJ8940SK/doSNN0t/ripolvI6A4L+bBnPAcA4EDthW+UXKDd8kGuv3G64kW8YiiVs+aZM6v0i6SErWIYM0MNIqEh63JapOF/ajH3fBjfD1AQCsjUEs0L6hv478=
+	t=1706270277; cv=none; b=YzizzWlhjR8XDXPiT1vOU/JaTRjcJHcE+m1Ud/jIp7+UCnu63WngGh3x//1iaq/3xPP/tOquUKRXbXcWGSwzzwSrGRuK4stOX26SzcGu3O/pQfJp8V9ErSeP1EPSbLF5c3XwB4iBP/JTk/Z0Jk7bA7P7vlMqipDtYIGHLzQ/urg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706270243; c=relaxed/simple;
-	bh=tN3dkWpIc3gME9QQTNhlZjc9wz+9nnvN5lcfplh8yV8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n2nfP1Wvzi/2cPq/oebfFL5ynlKdxs9VMBJlIVqiCb//f57B/GwPQsoqnL6vhZkvC7fhZH9D74n3OC0vA+kUofTxkAgMToBcjyWhSQ7DJu52NmCx7JJzad9jWQ704MbyxERa6Rv9VOWh9ORA/yfP0SmpLWnoHgn6Ud6vpuDt7bs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LFjWPSH5; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706270239; x=1737806239;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=tN3dkWpIc3gME9QQTNhlZjc9wz+9nnvN5lcfplh8yV8=;
-  b=LFjWPSH5EnLAJLph/YxhjeTKHLuLsQUt9amaxImTlLxylyUco1/2awkZ
-   OpgoKAiQBeBO67eOpJnXWEqC+24SLqnFEdMT21ijPm14wNiLIltStEgvu
-   auBKz3SkBTtHvH+ljjMbWBqRPue5zbe5cYSFcTKr8lM3nN5j6pnvYRpiy
-   xLZPcdm4dho6IkbzR580Yih1hlFJsycFWkbien29CVFHQiCaqsohSA3Ry
-   540rFnJELVpPs+w/LuGSMQUo65P6BPN+Zisy63ST3e4yN3s9fizFHfLhH
-   AZgHoI3QswtPLDlejnKzW+Jw/fN2kRXrF0uVo9ip6LLEcK7u9pv/MbKHS
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="9131838"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="9131838"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 03:57:19 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="930348517"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="930348517"
-Received: from lkp-server01.sh.intel.com (HELO 370188f8dc87) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 26 Jan 2024 03:57:16 -0800
-Received: from kbuild by 370188f8dc87 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rTKpe-0000zs-0c;
-	Fri, 26 Jan 2024 11:57:14 +0000
-Date: Fri, 26 Jan 2024 19:56:37 +0800
-From: kernel test robot <lkp@intel.com>
-To: Andrew Davis <afd@ti.com>, Sebastian Reichel <sre@kernel.org>,
-	Support Opensource <support.opensource@diasemi.com>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Andrew Davis <afd@ti.com>
-Subject: Re: [PATCH 08/21] power: supply: max77693: Use
- devm_power_supply_register() helper
-Message-ID: <202401261917.tA05PFDO-lkp@intel.com>
-References: <20240123163653.384385-9-afd@ti.com>
+	s=arc-20240116; t=1706270277; c=relaxed/simple;
+	bh=fww9EB7dHTt266qwXpxXlSuJ7F6luyRDgiG70yImJ/g=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=e2pe2/o5twBrZCx8+2LJb3Jvih0Ns+Y1Ds8AuD3n4zrslM2bk5RzHzcaFYxe5tLNYp+1eCnlJGs95aRjWJaViW9UjqYM3AVKso9z1E6XcOJIqs2W8Ti+Ur0PcbZIAV5SEpoXL6Kr7k4paqto+rFkwjeZBlO3kkrHVjgYOAmt0XM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com; spf=pass smtp.mailfrom=9elements.com; dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b=L03Nu2Tq; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=9elements.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40ee705e9bfso1914895e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 03:57:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1706270273; x=1706875073; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6igzwQypdxPSe5LiU4uAuaHmPYLT8/p0hJRSsz2288A=;
+        b=L03Nu2TqrDfKunvmkedqLYo36Khot4vBn0yMINlhwvf2DW3AkYCLiGjr9MhHThM/at
+         Z34K2d9kbmfoQ74FxtIltK8zPpMHcIf4nfWq6ZZ56RBy6fltLquqMSictYTVlMvfF7mv
+         3HpsyeIHVulVbFkFQo6MWBlilzTUN5znFe19350v1GsnWUYKszigzI1d4W1ItGOSJnyP
+         BsccWyFBn8yhUHMQXdWQ7h+22f3+6+Nk9EbxgWV7lZ7OVLzpQc2IlSJ3SKM1qUfvRBKC
+         pZR1QbM7OysDVvHWv+ngOFZkK9zaBmH0fHWNNpKxyDpYyOdubMkm3u+6kkF2wUXOPMQy
+         5aBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706270273; x=1706875073;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6igzwQypdxPSe5LiU4uAuaHmPYLT8/p0hJRSsz2288A=;
+        b=Vt+cdJBV2H8OpU2D66RKWJh5yPu4GPICIY9RehMZd+/rfgqFVs3jxmXJi50e0eLpDq
+         MyZZTQkqL3+fEOD5xevJ0bbccbWcYr/zm6PwdvmPQJ6lUeR4eFn5l6e3fofmPSsiKROM
+         1Hiaz5mHvNDH8hRHN++k6flY6N//FuzpNu4gYx+65tJXRAPw0IfnMx4QMOSgmPuKwIXF
+         4hNkdou6MAbvBw4kfUZaCaCOq0BPdgtktMii8PMgQPoATXj9KVVwfzDkoqAKfn7uexW1
+         w30rJiwlcVh5iXv6Mh4XdhMCOT4giUGetDQTgR9/lmMoLiwPynIQsIvHMHELpaxhGHbh
+         DffQ==
+X-Gm-Message-State: AOJu0YxhRXlw3xte0ZXO/9b722Ev8immsTrEN5XrQ3xSZbOfsu8phaCz
+	IiJu2o1n2+ico0mBlKeNo1wFksyEbbWLWqlTS2ULuaKYqK80BXku9qy3rBqdYxc=
+X-Google-Smtp-Source: AGHT+IH/g7DbFsBW/D5Q0U6E+tjhovnYwoTtkSRKVmze6lMSQku+rRgaWgmlm+VXvHeX7yyey18UCA==
+X-Received: by 2002:a1c:7506:0:b0:40e:86eb:9e7e with SMTP id o6-20020a1c7506000000b0040e86eb9e7emr823322wmc.142.1706270273511;
+        Fri, 26 Jan 2024 03:57:53 -0800 (PST)
+Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
+        by smtp.gmail.com with ESMTPSA id bd19-20020a05600c1f1300b0040ed1d6ce7csm1682149wmb.46.2024.01.26.03.57.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 03:57:53 -0800 (PST)
+From: Naresh Solanki <naresh.solanki@9elements.com>
+To: Linus Walleij <linus.walleij@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Patrick Rudolph <patrick.rudolph@9elements.com>
+Cc: mazziesaccount@gmail.com,
+	Naresh Solanki <naresh.solanki@9elements.com>,
+	linux-gpio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: pinctrl: cy8x95x0: Minor fix & update
+Date: Fri, 26 Jan 2024 17:27:48 +0530
+Message-ID: <20240126115748.1491642-1-naresh.solanki@9elements.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240123163653.384385-9-afd@ti.com>
 
-Hi Andrew,
+Update maxItems to 60 for gpio-reserved-ranges.
+Add input-enable property.
+Rearrange allOf
+Update example.
 
-kernel test robot noticed the following build warnings:
+TEST=Run below command make sure there is no error.
+make DT_CHECKER_FLAGS=-m dt_binding_check
 
-[auto build test WARNING on sre-power-supply/for-next]
-[also build test WARNING on linus/master v6.8-rc1 next-20240125]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+---
+ .../bindings/pinctrl/cypress,cy8c95x0.yaml    | 28 +++++++++++++++----
+ 1 file changed, 23 insertions(+), 5 deletions(-)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Andrew-Davis/power-supply-da9030-Use-devm_power_supply_register-helper/20240124-004253
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-supply.git for-next
-patch link:    https://lore.kernel.org/r/20240123163653.384385-9-afd%40ti.com
-patch subject: [PATCH 08/21] power: supply: max77693: Use devm_power_supply_register() helper
-config: i386-buildonly-randconfig-006-20240126 (https://download.01.org/0day-ci/archive/20240126/202401261917.tA05PFDO-lkp@intel.com/config)
-compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240126/202401261917.tA05PFDO-lkp@intel.com/reproduce)
+diff --git a/Documentation/devicetree/bindings/pinctrl/cypress,cy8c95x0.yaml b/Documentation/devicetree/bindings/pinctrl/cypress,cy8c95x0.yaml
+index 7f30ec2f1e54..89ce0cb68834 100644
+--- a/Documentation/devicetree/bindings/pinctrl/cypress,cy8c95x0.yaml
++++ b/Documentation/devicetree/bindings/pinctrl/cypress,cy8c95x0.yaml
+@@ -45,7 +45,8 @@ properties:
+     maxItems: 1
+ 
+   gpio-reserved-ranges:
+-    maxItems: 1
++    minItems: 1
++    maxItems: 60
+ 
+   vdd-supply:
+     description:
+@@ -85,6 +86,8 @@ patternProperties:
+ 
+       bias-disable: true
+ 
++      input-enable: true
++
+       output-high: true
+ 
+       output-low: true
+@@ -101,6 +104,9 @@ patternProperties:
+ 
+     additionalProperties: false
+ 
++allOf:
++  - $ref: pinctrl.yaml#
++
+ required:
+   - compatible
+   - reg
+@@ -112,9 +118,6 @@ required:
+ 
+ additionalProperties: false
+ 
+-allOf:
+-  - $ref: pinctrl.yaml#
+-
+ examples:
+   - |
+     #include <dt-bindings/interrupt-controller/arm-gic.h>
+@@ -133,6 +136,21 @@ examples:
+         interrupts = <GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>;
+         interrupt-controller;
+         vdd-supply = <&p3v3>;
+-        gpio-reserved-ranges = <5 1>;
++        gpio-reserved-ranges = <1 2>, <6 1>, <10 1>, <15 1>;
++
++        pinctrl-0 = <&U62160_pins>, <&U62160_ipins>;
++        pinctrl-names = "default";
++        U62160_pins: cfg-pins {
++                        pins = "gp03", "gp16", "gp20", "gp50", "gp51";
++                        function = "gpio";
++                        input-enable;
++                        bias-pull-up;
++        };
++        U62160_ipins: icfg-pins {
++                        pins = "gp04", "gp17", "gp21", "gp52", "gp53";
++                        function = "gpio";
++                        input-enable;
++                        bias-pull-up;
++        };
+       };
+     };
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401261917.tA05PFDO-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/power/supply/max77693_charger.c:733:27: warning: unused variable 'chg' [-Wunused-variable]
-     733 |         struct max77693_charger *chg = platform_get_drvdata(pdev);
-         |                                  ^~~
-   1 warning generated.
-
-
-vim +/chg +733 drivers/power/supply/max77693_charger.c
-
-87c2d9067893cd drivers/power/max77693_charger.c        Krzysztof Kozlowski 2015-01-20  730  
-1d138270d2963b drivers/power/supply/max77693_charger.c Uwe Kleine-König    2023-09-18  731  static void max77693_charger_remove(struct platform_device *pdev)
-87c2d9067893cd drivers/power/max77693_charger.c        Krzysztof Kozlowski 2015-01-20  732  {
-87c2d9067893cd drivers/power/max77693_charger.c        Krzysztof Kozlowski 2015-01-20 @733  	struct max77693_charger *chg = platform_get_drvdata(pdev);
-87c2d9067893cd drivers/power/max77693_charger.c        Krzysztof Kozlowski 2015-01-20  734  
-87c2d9067893cd drivers/power/max77693_charger.c        Krzysztof Kozlowski 2015-01-20  735  	device_remove_file(&pdev->dev, &dev_attr_top_off_timer);
-87c2d9067893cd drivers/power/max77693_charger.c        Krzysztof Kozlowski 2015-01-20  736  	device_remove_file(&pdev->dev, &dev_attr_top_off_threshold_current);
-87c2d9067893cd drivers/power/max77693_charger.c        Krzysztof Kozlowski 2015-01-20  737  	device_remove_file(&pdev->dev, &dev_attr_fast_charge_timer);
-87c2d9067893cd drivers/power/max77693_charger.c        Krzysztof Kozlowski 2015-01-20  738  }
-87c2d9067893cd drivers/power/max77693_charger.c        Krzysztof Kozlowski 2015-01-20  739  
-
+base-commit: ecb1b8288dc7ccbdcb3b9df005fa1c0e0c0388a7
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.0
+
 
