@@ -1,51 +1,52 @@
-Return-Path: <linux-kernel+bounces-40555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 709ED83E262
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:21:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFF2D83E265
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:22:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82B3D1C21E28
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:21:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C3F71F2355C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:22:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E20A4224EF;
-	Fri, 26 Jan 2024 19:21:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C943A22606;
+	Fri, 26 Jan 2024 19:21:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="JSDjQkFE"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Vpoje6mm"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C766224CC;
-	Fri, 26 Jan 2024 19:21:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77A64224D2;
+	Fri, 26 Jan 2024 19:21:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706296906; cv=none; b=VmegwvEA/fyNQbmJqZsz3CZ7GijCbVLXKo/0bSZA0FS4Z8/+jbvRFKEmiNW6sX5DotxgMlmK9scan4yXPXM/VUvfY9pUMKMwnHdD+m+RiOTN29kOsvtiSwlgSEtQ794S94pzJfCsgTbZxY7PQwzg47dYpOV/7d0QSyxkACbpK7c=
+	t=1706296907; cv=none; b=OfCsG36SaruGnfYwB8B3m14OS5rxczhrtScJRQtEPdE1K6BSMvoKZ2qiwWfp8wdL1zgwlFtiTo2iutVr52gdLOnpdxQqbeizM671hURUSYyUBakcr44WcV67GkXnN9szWkprZRF10DUlejgMMN08fq1572qUE0/BRVU2nIetMbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706296906; c=relaxed/simple;
-	bh=7mhZb9ygDhp+lMS6hHQyI5VsLJG0EHa6YD7w0sZalvQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WJ1Qw0JFjOWHkWlLR5jPPdz49XWM0sjhGZoDYqkc4RlLLRsGA1V8fL2ucWNOzhocF/fD94dJCWxp5U427/IfJlqJoskHbFOwg1Mvmz5XnQVkX/i0VlT6eiMK/PrY+812D00tz1uBiJVZg6GUOUrOMJg+H0F6F1oWVsB4bWpzER4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=JSDjQkFE; arc=none smtp.client-ip=46.235.227.194
+	s=arc-20240116; t=1706296907; c=relaxed/simple;
+	bh=tNQN+/EVghN2FdU9X9Tv/1/SnQINmDUfhsoTjTez2SA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=u9wwz1O3uRmQaMPHAdMfqnrRA7dtcKV0ZiCXjUP7+nt3FHZc5EgkZUM8jqOaj4r4fs4UsdIHlBcuLTP/nk/MZdxPKJf0iL7canhRqis69iyHY2hU1mAr/vkdxemCBmXwYPG/mM3jN+tyB6+QTQn0e1SqlqlMUEw76L0ajJqvffw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Vpoje6mm; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706296902;
-	bh=7mhZb9ygDhp+lMS6hHQyI5VsLJG0EHa6YD7w0sZalvQ=;
-	h=From:To:Cc:Subject:Date:From;
-	b=JSDjQkFEorkj0X7MovCc69VTRxUVTLipp8ZQ5q3/F9LdC4wnu9pTKnOOyxVvaMfiJ
-	 afIb6JAeT9JejAjy0wYdKPc2eAJQAAIOe7OImaa0oWxdFXPaKadl+2i+xzs8kXGnuF
-	 j0eeChNMiKHCZcQ0slCgaCqaMw4weHpCT6198egLV01r/PvwArCenBXakgyYbOEtJj
-	 Ii5O+8ZH+H79d1DKp7lityrXR1PWy6DcGnnGEeIBCHA1xCl2DAExuca3K8sQKFgeRQ
-	 T2NzcFas/csoJ9LqOmKbNb7bJNMlvp1TVZyf/xel61spqiX83sBaBmSfRNj5abDkmg
-	 HVgm03/CdX1vQ==
+	s=mail; t=1706296903;
+	bh=tNQN+/EVghN2FdU9X9Tv/1/SnQINmDUfhsoTjTez2SA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Vpoje6mmCFLA1LNuGhucBlCJrWG40YY81EjTXcdxF5xaBnasEd4HujIavHWn+4lj0
+	 wVUJyUtlSFc9WO1onlpBy/sveFCTVumm0K9VIFkQ0ihHkWycMI+ZNFPdRH6XKI8VoH
+	 RdhV/DFrPtuCE2PtF9n1oURuroHLq3lUKev5z6s6NySYWLq0LlKL+oUlO7hXhsUg82
+	 14+ts86lVcp+ES2W2EXBI5cMKZRf1CKmod88FWpRzKwpnU68llu1IezwT750NwKO5Z
+	 yPE8vYm5Cpi3chpiZjnGAJHFNm3VorsPHKya5dvhnXecJ7YJhQWYRXB/nD5Kw959fk
+	 WOP7RgIquAuAA==
 Received: from localhost (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: cristicc)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id EC9363780022;
-	Fri, 26 Jan 2024 19:21:41 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 694363780629;
+	Fri, 26 Jan 2024 19:21:43 +0000 (UTC)
 From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -68,10 +69,12 @@ Cc: netdev@vger.kernel.org,
 	linux-stm32@st-md-mailman.stormreply.com,
 	linux-arm-kernel@lists.infradead.org,
 	kernel@collabora.com
-Subject: [RESEND PATCH v4 0/2] StarFive DWMAC support for JH7100
-Date: Fri, 26 Jan 2024 21:21:24 +0200
-Message-ID: <20240126192128.1210579-1-cristian.ciocaltea@collabora.com>
+Subject: [RESEND PATCH v4 1/2] dt-bindings: net: starfive,jh7110-dwmac: Add JH7100 SoC compatible
+Date: Fri, 26 Jan 2024 21:21:25 +0200
+Message-ID: <20240126192128.1210579-2-cristian.ciocaltea@collabora.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240126192128.1210579-1-cristian.ciocaltea@collabora.com>
+References: <20240126192128.1210579-1-cristian.ciocaltea@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,38 +83,166 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This is just a subset of the initial patch series [1] adding networking
-support for StarFive JH7100 SoC.
+The Synopsys DesignWare MAC found on StarFive JH7100 SoC is mostly
+similar to the newer JH7110, but it requires only two interrupts and a
+single reset line, which is 'ahb' instead of the commonly used
+'stmmaceth'.
 
-[1]: https://lore.kernel.org/lkml/20231218214451.2345691-1-cristian.ciocaltea@collabora.com/
+Since the common binding 'snps,dwmac' allows selecting 'ahb' only in
+conjunction with 'stmmaceth', extend the logic to also permit exclusive
+usage of the 'ahb' reset name.  This ensures the following use cases are
+supported:
 
-Changes in v4:
- - Rebased series onto next-20240125
- - Added R-b tag from Rob in PATCH 1
- - v3:
-   https://lore.kernel.org/lkml/20231222101001.2541758-1-cristian.ciocaltea@collabora.com/
+  JH7110: reset-names = "stmmaceth", "ahb";
+  JH7100: reset-names = "ahb";
+  other:  reset-names = "stmmaceth";
 
-Changes in v3:
- - Optimized jh7110 resets & reset-names properties (Rob)
- - Added R-b tag from Jacob in PATCH 1
- - v2:
-   https://lore.kernel.org/lkml/20231220002824.2462655-1-cristian.ciocaltea@collabora.com/
+Also note the need to use a different dwmac fallback, as v5.20 applies
+to JH7110 only, while JH7100 relies on v3.7x.
 
-Changes in v2:
- - Add the missing binding patch (Conor)
- - v1:
-   https://lore.kernel.org/lkml/20231219231040.2459358-1-cristian.ciocaltea@collabora.com/
+Additionally, drop the reset description items from top-level binding as
+they are already provided by the included snps,dwmac schema.
 
-Cristian Ciocaltea (2):
-  dt-bindings: net: starfive,jh7110-dwmac: Add JH7100 SoC compatible
-  net: stmmac: dwmac-starfive: Add support for JH7100 SoC
-
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
  .../devicetree/bindings/net/snps,dwmac.yaml   | 11 +--
  .../bindings/net/starfive,jh7110-dwmac.yaml   | 72 +++++++++++++------
- drivers/net/ethernet/stmicro/stmmac/Kconfig   |  6 +-
- .../ethernet/stmicro/stmmac/dwmac-starfive.c  | 32 +++++++--
- 4 files changed, 88 insertions(+), 33 deletions(-)
+ 2 files changed, 57 insertions(+), 26 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+index 5c2769dc689a..90c4db178c67 100644
+--- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
++++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+@@ -95,6 +95,7 @@ properties:
+         - snps,dwmac-5.20
+         - snps,dwxgmac
+         - snps,dwxgmac-2.10
++        - starfive,jh7100-dwmac
+         - starfive,jh7110-dwmac
+ 
+   reg:
+@@ -144,10 +145,12 @@ properties:
+       - description: AHB reset
+ 
+   reset-names:
+-    minItems: 1
+-    items:
+-      - const: stmmaceth
+-      - const: ahb
++    oneOf:
++      - items:
++          - enum: [stmmaceth, ahb]
++      - items:
++          - const: stmmaceth
++          - const: ahb
+ 
+   power-domains:
+     maxItems: 1
+diff --git a/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml b/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml
+index 5e7cfbbebce6..0d1962980f57 100644
+--- a/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml
++++ b/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml
+@@ -16,16 +16,20 @@ select:
+     compatible:
+       contains:
+         enum:
++          - starfive,jh7100-dwmac
+           - starfive,jh7110-dwmac
+   required:
+     - compatible
+ 
+ properties:
+   compatible:
+-    items:
+-      - enum:
+-          - starfive,jh7110-dwmac
+-      - const: snps,dwmac-5.20
++    oneOf:
++      - items:
++          - const: starfive,jh7100-dwmac
++          - const: snps,dwmac
++      - items:
++          - const: starfive,jh7110-dwmac
++          - const: snps,dwmac-5.20
+ 
+   reg:
+     maxItems: 1
+@@ -46,24 +50,6 @@ properties:
+       - const: tx
+       - const: gtx
+ 
+-  interrupts:
+-    minItems: 3
+-    maxItems: 3
+-
+-  interrupt-names:
+-    minItems: 3
+-    maxItems: 3
+-
+-  resets:
+-    items:
+-      - description: MAC Reset signal.
+-      - description: AHB Reset signal.
+-
+-  reset-names:
+-    items:
+-      - const: stmmaceth
+-      - const: ahb
+-
+   starfive,tx-use-rgmii-clk:
+     description:
+       Tx clock is provided by external rgmii clock.
+@@ -94,6 +80,48 @@ required:
+ allOf:
+   - $ref: snps,dwmac.yaml#
+ 
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: starfive,jh7100-dwmac
++    then:
++      properties:
++        interrupts:
++          minItems: 2
++          maxItems: 2
++
++        interrupt-names:
++          minItems: 2
++          maxItems: 2
++
++        resets:
++          maxItems: 1
++
++        reset-names:
++          const: ahb
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: starfive,jh7110-dwmac
++    then:
++      properties:
++        interrupts:
++          minItems: 3
++          maxItems: 3
++
++        interrupt-names:
++          minItems: 3
++          maxItems: 3
++
++        resets:
++          minItems: 2
++
++        reset-names:
++          minItems: 2
++
+ unevaluatedProperties: false
+ 
+ examples:
 -- 
 2.43.0
 
