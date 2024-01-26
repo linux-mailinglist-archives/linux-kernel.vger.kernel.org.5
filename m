@@ -1,67 +1,67 @@
-Return-Path: <linux-kernel+bounces-39770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8237883D5EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:19:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A41D83D5EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:19:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1E631C265C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:18:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABC4B1F281CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:19:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE2F51DFDC;
-	Fri, 26 Jan 2024 08:38:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C51D823A0;
+	Fri, 26 Jan 2024 08:38:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ido/6WbC"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Itne4E/U"
 Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 646721CF89
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:38:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2A3C7F7F8
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:38:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706258298; cv=none; b=q2qQo4aTKn+Mc80gUJ9r30DCDda05yNKcxjF5cbiNMw1MjvEZfmD21MX/Fm942Qw9PRSzV+tz96snRyaW79zrRbvMxxA3QWxhqdAffD/YONEMMwnxkmD1LGckY0nUkRaVR6bvdQsAlEFEM+yJ9z1PwAXRAJNnqguZuc7OgoltJs=
+	t=1706258300; cv=none; b=GT5NnKC6X1BbhTS3vBWXL+TPP8Y0Czp2qyBGkv21hW8zxJ1r7oE9U29nOgpZGwwPk9Tb5YUbRwWXV3Lj282gk/r5OoGfsEdKOHE2DBw2xx6+9xKeVxMk78IoRbcblE3PO0gtuc/s/LikDoTxQSgXKVgpbassQQtbFqwFlR+noOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706258298; c=relaxed/simple;
-	bh=TU+al1btcRCFuEg2mYMUIO4F1n9jUTjsi6M0Gg/QFwI=;
+	s=arc-20240116; t=1706258300; c=relaxed/simple;
+	bh=UqrS3dVMO/6GnZNzZMI5I26QwPpIldmkuk+o681+rv8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PCviMCk3dYjgmmI9ov/wrM1pqESO/dtY4NfHhgaN96TKxNegnTjuxn4czrpMl1q2wNPp2zSZnEUtXXHWZ8CeNbXhAA1qc697DJ+7LROb+yL2l6qd9B6TBS9WeAPmsGdps7YZr1A80Twg7RoDlyIMHcMwqSWFzhqmQOWDr23T3nc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ido/6WbC; arc=none smtp.client-ip=209.85.214.170
+	 MIME-Version; b=P+QwXUaRp+FKgRBxcaQkQ61Rm74RB98ksxk4eWmrnTGHj9vouFTDN0V6Ubn30xQfgekH9EBAlUUWiLjlEgSC/8tTRTKVNvQfoOeuRDxIZyiUyXCFHZPgGllhVuz+uV3bGmDG8PvP9QqEJE5SySsXpjfd7a68KGEwNVb76iOKC+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Itne4E/U; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d780a392fdso916735ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 00:38:16 -0800 (PST)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d76671e5a4so1024685ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 00:38:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706258296; x=1706863096; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1706258298; x=1706863098; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gS8snO1/vF+ftwDIApC4LGz0nYBLwZc4VG0Le1Mma9k=;
-        b=ido/6WbC+LV0yUV1lJBhZEyJdbqCbVJMUnFUkbmWE9rGRpZnyPEUnQsJMbhKT+ZAsO
-         fKJ+uVY+KL6kb9XLdlYIeaAx1yvo9tf9yh9zvvRSpH/jUBPMPLcjicuRm74lPfAzBum8
-         pm5VpWoMw6w9kYvS2OQJDAtw14yoa8c658oCA=
+        bh=Cogi64Y0F2tp8CwfE9RTV56n6beiSf1YYbgAclTRDJg=;
+        b=Itne4E/UMs6JehpvFBIv1D052N8heeFdKPO8fkHQgTogZFQ4mt2kH66O/8m18SUs6L
+         /Md0F5IPQLkjwuThF7b1ZLsKWDfJPQF1dhdt/8LdEv70VX/7kIBp3aqhfkhM6yRjU180
+         oy4jNAnUmTqeSwnT2pdhB3LSSZN5SUU2DI1Zk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706258296; x=1706863096;
+        d=1e100.net; s=20230601; t=1706258298; x=1706863098;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gS8snO1/vF+ftwDIApC4LGz0nYBLwZc4VG0Le1Mma9k=;
-        b=l/pvp1DcXDygzC5ot7rLZ7lEekqvhkKxokTLYs6QBBukRBbtY/p4npztbBitZ7lhxT
-         Pywf/6KLdnrlFEL11zdoG2X+9IIkrDkyYMYuiSUwToJPJZRyYKqdPTeWvoiFNJTHuDCj
-         1xS6g/20SothVZxvT7ARc5fnBjS1Y/OzBJa7SGPguguhcKN965I+xZ6RJSre8tkbeZG9
-         mpHzTMmp9z9FhVlV1wRbZWY22hiS+mfWYRMLrJVPojsK2YuT/3QGnZpNUs3+Wh0dJCyg
-         vVRGO+Tw7CsNCRE7CYqekTPr6Lu4hSvwre++eP0//Qr8XmxT/ve4CMWmf6iYnqpB/knP
-         ubHg==
-X-Gm-Message-State: AOJu0YwdtJHjcAOoj244mnWfqA3Q2eEThZLQiuHbOzVZS81+46PVOPM4
-	kDQayv3qvgZ3gex2M5CRayY3UBuE2jKTfZBch7rnMGZS6GfwXyFWhD5LchZ64w==
-X-Google-Smtp-Source: AGHT+IGb1iSrCmFpZJqA/bh3JVr7eCv2x6g8CWMwfTDUGnDZw5Z2uX2Beiufw/YNw73Dkv40JOHk9g==
-X-Received: by 2002:a17:902:e546:b0:1d7:450c:be68 with SMTP id n6-20020a170902e54600b001d7450cbe68mr1389129plf.66.1706258295724;
-        Fri, 26 Jan 2024 00:38:15 -0800 (PST)
+        bh=Cogi64Y0F2tp8CwfE9RTV56n6beiSf1YYbgAclTRDJg=;
+        b=N0m9RHK6QROqjN+klsYhSo5wnfjxA3Z9DjIl8GwfLTkHXuoVJSEGIAdv1JmYAtCG2Z
+         SoxGjbdSAqIEMdGD8T6ylFHmE/XSNVCDUc5eEc888YJOe2URjU6ta1mVIZtmM7I+gQjN
+         1XCRgNvNNsIaMrq9jmhAAMERj/tZelmAf3OCqdXF/81D1gk8KQaeOW4CFcGezFX4IMPK
+         IRPUcmQanTIUeXNtXcPmJDnOo/MvPCsCQVcIwAl79g7VNYtQA1f2+Q81jSlcHLo4SZzY
+         Y23vHlIM555nLE+NgeixsxJY6nqOjhAghx/hX/i2CvsLbkiEZlT0DZGp0rM+DxfrmO64
+         CYKA==
+X-Gm-Message-State: AOJu0YyFTMBBU2S934cuOP+0R/23SmSwRKhk8QujQtjMFLPbHoDWa9e3
+	nKuhNR7rudZ6L8AkeSCi1KCqKWFNK33uXFz3vPjV02d4/mX7oyc59Osxu7TrxQ==
+X-Google-Smtp-Source: AGHT+IF0U9j/ZKLnUWSANBPy/KQZ3zWCgPlpALjoSGydw/Yn0Zd9JE0GDdtVYJQnpHfDdP9rJ6bjKA==
+X-Received: by 2002:a17:902:ced0:b0:1d7:3d44:7a0e with SMTP id d16-20020a170902ced000b001d73d447a0emr1181869plg.11.1706258298357;
+        Fri, 26 Jan 2024 00:38:18 -0800 (PST)
 Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:2614:bbbd:8db2:1f54])
-        by smtp.gmail.com with ESMTPSA id b2-20020a170902a9c200b001d6ff1795aesm589529plr.8.2024.01.26.00.38.13
+        by smtp.gmail.com with ESMTPSA id b2-20020a170902a9c200b001d6ff1795aesm589529plr.8.2024.01.26.00.38.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 00:38:15 -0800 (PST)
+        Fri, 26 Jan 2024 00:38:18 -0800 (PST)
 From: Chen-Yu Tsai <wenst@chromium.org>
 To: Matthias Brugger <matthias.bgg@gmail.com>,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
@@ -75,9 +75,9 @@ Cc: Chen-Yu Tsai <wenst@chromium.org>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Conor Dooley <conor.dooley@microchip.com>
-Subject: [PATCH v5 1/9] dt-bindings: arm: mediatek: Sort entries by SoC then board compatibles
-Date: Fri, 26 Jan 2024 16:37:50 +0800
-Message-ID: <20240126083802.2728610-2-wenst@chromium.org>
+Subject: [PATCH v5 2/9] dt-bindings: arm: mediatek: Add MT8186 Tentacruel / Tentacool Chromebooks
+Date: Fri, 26 Jan 2024 16:37:51 +0800
+Message-ID: <20240126083802.2728610-3-wenst@chromium.org>
 X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
 In-Reply-To: <20240126083802.2728610-1-wenst@chromium.org>
 References: <20240126083802.2728610-1-wenst@chromium.org>
@@ -89,200 +89,75 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Some of the new MediaTek board entries were inserted in a chronological
-order, or just randomly. This makes it harder to search for an entry.
+Add entries for MT8186 based Tentacruel / Tentacool Chromebooks. The two
+are based on the same board design: the former is a convertible device
+with a touchscreen, stylus, and some extra buttons; the latter is a
+clamshell device and lacks these additional features.
 
-Sort the entries by first grouping by SoC, then sorting by board
-compatible strings. Also add a comment at the top asking people to do
-the same.
+The two devices both have two variants. The difference is a second
+source trackpad controller that shares the same address as the original,
+but is incompatible.
+
+The extra SKU IDs for the Tentacruel devices map to different sensor
+components attached to the Embedded Controller. These are not visible
+to the main processor.
 
 Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
 Acked-by: Conor Dooley <conor.dooley@microchip.com>
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
 Changes since v4:
-- Rebased and fit in mt8188-evb
+- Minor: change "touchpad" to "trackpad" in description
+
 Changes since v3:
 - Collected reviewed-by from Angelo
+
 Changes since v2:
-- none
+- Picked up Conor's ack
+
 Changes since v1:
-- Collected ack from Conor
+- Reorder SKU numbers in descending order.
 ---
- .../devicetree/bindings/arm/mediatek.yaml     | 131 +++++++++---------
- 1 file changed, 66 insertions(+), 65 deletions(-)
+ .../devicetree/bindings/arm/mediatek.yaml     | 26 +++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
-index 12cf02b30967..dd5240b03d6c 100644
+index dd5240b03d6c..d9fdc1196b10 100644
 --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
 +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
-@@ -17,6 +17,7 @@ properties:
-     const: '/'
-   compatible:
-     oneOf:
-+      # Sort by SoC (last) compatible, then board compatible
-       - items:
-           - enum:
-               - mediatek,mt2701-evb
-@@ -137,75 +138,10 @@ properties:
-           - enum:
-               - mediatek,mt8173-evb
-           - const: mediatek,mt8173
--      - items:
--          - enum:
--              - mediatek,mt8183-evb
--          - const: mediatek,mt8183
--      - description: Google Hayato rev5
--        items:
--          - const: google,hayato-rev5-sku2
--          - const: google,hayato-sku2
--          - const: google,hayato
--          - const: mediatek,mt8192
--      - description: Google Hayato
--        items:
--          - const: google,hayato-rev1
--          - const: google,hayato
--          - const: mediatek,mt8192
--      - description: Google Spherion rev4 (Acer Chromebook 514)
--        items:
--          - const: google,spherion-rev4
--          - const: google,spherion
--          - const: mediatek,mt8192
--      - description: Google Spherion (Acer Chromebook 514)
--        items:
--          - const: google,spherion-rev3
--          - const: google,spherion-rev2
--          - const: google,spherion-rev1
--          - const: google,spherion-rev0
--          - const: google,spherion
--          - const: mediatek,mt8192
--      - description: Acer Tomato (Acer Chromebook Spin 513 CP513-2H)
--        items:
--          - enum:
--              - google,tomato-rev2
--              - google,tomato-rev1
--          - const: google,tomato
--          - const: mediatek,mt8195
--      - description: Acer Tomato rev3 - 4 (Acer Chromebook Spin 513 CP513-2H)
--        items:
--          - const: google,tomato-rev4
--          - const: google,tomato-rev3
--          - const: google,tomato
--          - const: mediatek,mt8195
--      - items:
--          - enum:
--              - mediatek,mt8186-evb
--          - const: mediatek,mt8186
--      - items:
--          - enum:
--              - mediatek,mt8188-evb
--          - const: mediatek,mt8188
--      - items:
--          - enum:
--              - mediatek,mt8192-evb
--          - const: mediatek,mt8192
--      - items:
--          - enum:
--              - mediatek,mt8195-demo
--              - mediatek,mt8195-evb
--          - const: mediatek,mt8195
-       - description: Google Burnet (HP Chromebook x360 11MK G3 EE)
-         items:
-           - const: google,burnet
-           - const: mediatek,mt8183
--      - description: Google Krane (Lenovo IdeaPad Duet, 10e,...)
--        items:
--          - enum:
--              - google,krane-sku0
--              - google,krane-sku176
--          - const: google,krane
--          - const: mediatek,mt8183
-       - description: Google Cozmo (Acer Chromebook 314)
-         items:
-           - const: google,cozmo
-@@ -263,6 +199,13 @@ properties:
-               - google,kodama-sku32
-           - const: google,kodama
-           - const: mediatek,mt8183
-+      - description: Google Krane (Lenovo IdeaPad Duet, 10e,...)
-+        items:
-+          - enum:
-+              - google,krane-sku0
-+              - google,krane-sku176
-+          - const: google,krane
-+          - const: mediatek,mt8183
-       - description: Google Makomo (Lenovo 100e Chromebook 2nd Gen MTK 2)
-         items:
-           - enum:
-@@ -284,10 +227,68 @@ properties:
-               - google,willow-sku1
-           - const: google,willow
-           - const: mediatek,mt8183
-+      - items:
-+          - enum:
-+              - mediatek,mt8183-evb
-+          - const: mediatek,mt8183
-       - items:
+@@ -235,6 +235,32 @@ properties:
            - enum:
                - mediatek,mt8183-pumpkin
            - const: mediatek,mt8183
-+      - items:
-+          - enum:
-+              - mediatek,mt8186-evb
++      - description: Google Tentacruel (ASUS Chromebook CM14 Flip CM1402F)
++        items:
++          - const: google,tentacruel-sku262147
++          - const: google,tentacruel-sku262146
++          - const: google,tentacruel-sku262145
++          - const: google,tentacruel-sku262144
++          - const: google,tentacruel
 +          - const: mediatek,mt8186
-+      - items:
-+          - enum:
-+              - mediatek,mt8188-evb
-+          - const: mediatek,mt8188
-+      - description: Google Hayato
++      - description: Google Tentacruel (ASUS Chromebook CM14 Flip CM1402F)
 +        items:
-+          - const: google,hayato-rev1
-+          - const: google,hayato
-+          - const: mediatek,mt8192
-+      - description: Google Hayato rev5
++          - const: google,tentacruel-sku262151
++          - const: google,tentacruel-sku262150
++          - const: google,tentacruel-sku262149
++          - const: google,tentacruel-sku262148
++          - const: google,tentacruel
++          - const: mediatek,mt8186
++      - description: Google Tentacool (ASUS Chromebook CM14 CM1402C)
 +        items:
-+          - const: google,hayato-rev5-sku2
-+          - const: google,hayato-sku2
-+          - const: google,hayato
-+          - const: mediatek,mt8192
-+      - description: Google Spherion (Acer Chromebook 514)
++          - const: google,tentacruel-sku327681
++          - const: google,tentacruel
++          - const: mediatek,mt8186
++      - description: Google Tentacool (ASUS Chromebook CM14 CM1402C)
 +        items:
-+          - const: google,spherion-rev3
-+          - const: google,spherion-rev2
-+          - const: google,spherion-rev1
-+          - const: google,spherion-rev0
-+          - const: google,spherion
-+          - const: mediatek,mt8192
-+      - description: Google Spherion rev4 (Acer Chromebook 514)
-+        items:
-+          - const: google,spherion-rev4
-+          - const: google,spherion
-+          - const: mediatek,mt8192
-+      - items:
-+          - enum:
-+              - mediatek,mt8192-evb
-+          - const: mediatek,mt8192
-+      - description: Acer Tomato (Acer Chromebook Spin 513 CP513-2H)
-+        items:
-+          - enum:
-+              - google,tomato-rev2
-+              - google,tomato-rev1
-+          - const: google,tomato
-+          - const: mediatek,mt8195
-+      - description: Acer Tomato rev3 - 4 (Acer Chromebook Spin 513 CP513-2H)
-+        items:
-+          - const: google,tomato-rev4
-+          - const: google,tomato-rev3
-+          - const: google,tomato
-+          - const: mediatek,mt8195
-+      - items:
-+          - enum:
-+              - mediatek,mt8195-demo
-+              - mediatek,mt8195-evb
-+          - const: mediatek,mt8195
++          - const: google,tentacruel-sku327683
++          - const: google,tentacruel
++          - const: mediatek,mt8186
        - items:
            - enum:
-               - mediatek,mt8365-evk
+               - mediatek,mt8186-evb
 -- 
 2.43.0.429.g432eaa2c6b-goog
 
