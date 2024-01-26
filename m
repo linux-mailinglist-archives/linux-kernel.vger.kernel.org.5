@@ -1,145 +1,178 @@
-Return-Path: <linux-kernel+bounces-40633-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43DE983E36E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:34:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7F3383E374
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:40:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EAE841F26E95
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:34:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E49251C23358
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:40:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CC7224205;
-	Fri, 26 Jan 2024 20:34:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFD86241F4;
+	Fri, 26 Jan 2024 20:40:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cBHALqoS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bO6mjgAD"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78C23250EC;
-	Fri, 26 Jan 2024 20:34:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FB2122630
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 20:40:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706301279; cv=none; b=MvOXiSj+eMCmzZifKWA4wr7bJIdxVbD3ENu1UOo8bEme/XwJfF1vbtrI7YVIwVsB6+tmTSYpwvShkhM2aqLJt+YGQBRx79Y8vmbAKF1c30tHGZo6W8fpU9+lbu5YFFV5yuD8rdZm/fTWNW/mf3Opvgx1PFVeM2VpoQCSpCvxNVQ=
+	t=1706301649; cv=none; b=rG7KHiVhE5Eyul0eVfjeDonZkNzDtJKSb4IOwmOd3X9ukogi8ECNUq3tf5B21WRCgvtJcawxxA5iFeNkA0OrjzFEd4NocEJoRvw7e1yTKJtX4BDFS7NQMhOmoRzPT5npvXfXJw6aKl8vckyo5Fdp6l4m+0zj3B0SQgjcXJi2pw0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706301279; c=relaxed/simple;
-	bh=fKXandC+5QOPgaaNNK48snxQs+rXCoRJZv+oHcWZwXc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rtzmubQwGuDpppc/WY4xlsJzvpp1BxH3nQXicd8ENIdkUbtbqTfzE+EzDFJhaJU73NiAx3w0xLXZXfB4KltIGWXF6xcdA7u6DBVs8XrPuhGLs3k3scEAzbyIM4dsgCEy5KoNqBEq5k7+iSWmws5qTLBEsORqcf149On+6gPol5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cBHALqoS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0674C433C7;
-	Fri, 26 Jan 2024 20:34:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706301278;
-	bh=fKXandC+5QOPgaaNNK48snxQs+rXCoRJZv+oHcWZwXc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cBHALqoSmF/TAHePeBhX/syG9ctKGwupCxyx8jKndDgbJpbm7EWnsgjvjT7Vrx2DY
-	 2Hj3E2tlWwXS00a+C4+TdFMfIVO3SnoY9yZpS67owsD6d6mZHp1suJb4GVWVRg2R8b
-	 k6XY4XmoYuyiaSlucogkXWHktINh5FIwfXn4i52Po2ZoWMM0rk9H3uDXofwGsPZ8Dg
-	 xij+uHtg0x5OISKjzS24Cl/kW4q1ygl0Ja9uPMFNu0bqZOuRFaNIGARh/Xkz6rFNuz
-	 mQBjnQzkiOfUqwhjDs15QLxiAMAsYCMJbj1LL5UYNyEn/LD6B+42yYsmzGK8KcWYqP
-	 cGu2VWgCtdVyQ==
-Date: Fri, 26 Jan 2024 13:34:36 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org,
-	patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	shuah@kernel.org, patches@kernelci.org,
-	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-	allen.lkml@gmail.com, llvm@lists.linux.dev, keescook@chromium.org
-Subject: Re: [PATCH 5.10 000/286] 5.10.209-rc1 review
-Message-ID: <20240126203436.GA913905@dev-arch.thelio-3990X>
-References: <20240122235732.009174833@linuxfoundation.org>
- <6b563537-b62f-428e-96d1-2a228da99077@roeck-us.net>
- <2024012636-clubbed-radial-1997@gregkh>
- <2f342268-8517-4c06-8785-96a588d20c63@roeck-us.net>
+	s=arc-20240116; t=1706301649; c=relaxed/simple;
+	bh=6OXb8yisA+wOMTyjl6MEUJlWvpsc7TPctZSOTFP70u4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=TvlZ9ppMeLV2QIYOQA7wd1T8S42BsfePq6vqYutBYBnCkrXjnz7eA/rTzMTPeGzdrGUbTsL+kXD9cmoxe4+BOQznTuebV4RGjn7OzysjRbWMp6vJveGGD0PxOlsYutj0KMjQvuOBMSaz/SHJZZgablRu9xXpF1sRnjVCJwO1BIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bO6mjgAD; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d76f1e3e85so27925ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 12:40:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706301647; x=1706906447; darn=vger.kernel.org;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=H6OTEPwP1MRtepPp6KWjNIn59HVlFqvRSia0WO706Bo=;
+        b=bO6mjgADMAH4BNKD29Ion9jDYJiOSfG5Q6mgMs6J9iES/fGB+UT6rTE8XwcEUH+i9F
+         Mg6GVXVYlOlGI3ZZxO+X5jChGhZCktZcrtT/V39Zjt2CV28wrAUBef54O8fn/aZNkhWN
+         XkYdg1qqLWo7vRgZpRlRJftmkhhVMlwPcpu5IFUKiXuvlUianHq4q/vBcWuxY6TUrvDI
+         lJAenC9BimUdY6Y2riLnE5HpdGw7VYQ+SsDB/UCHY7SmC9NXeegm/gLifAP4KybUAyJt
+         2W90ez2A9WqdD2JHDqEDsZ4u66fliPO+I1yC1ssHZ5DGZuDSOGV21Yl9/dZVnT3/tuZe
+         MAyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706301647; x=1706906447;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H6OTEPwP1MRtepPp6KWjNIn59HVlFqvRSia0WO706Bo=;
+        b=d9/8f95FFFHaYvD09bDfBUHaw7hXsY0+YOYH7psVfWwLladNqeylAeApOFkFt/Th9I
+         uU7Iq6rhENAS/v1hZJKEJRgVxpH9RWi+fnU7ujw9meqicqo56HCTLteStOs5lW6zMTZn
+         tVdGY/m2TR5kVPXTIF197RWXhwZsfuhGxkDpaNyt++RWIvkxgkB4euag2u66MPeKhUEw
+         kUvduUyMXgJJHZnU8FV9tyqx+I4+AHnmy7qsEnKeVnH3lhDarVV0wVOIomnS9g6IRpug
+         Q73MorzG1opda2XqmheheAWlDR8XJ2yADm93ZmYGdn9jJvLigFoh1QVFXQ+OSd72EO6O
+         5C0Q==
+X-Gm-Message-State: AOJu0Yz617MQNwJ/C3Ss909/CX7PqCzwf4Nrkc6Hu/w7nL/AqmYhjr7J
+	mSVknDA5j8sx3p1HjwA4Ol9g5E0PvgflwHwN0bmbtamh4kyWJOGo3LrBQnRv0qg/Cjo2HmXj9C+
+	8aQ==
+X-Google-Smtp-Source: AGHT+IFS/S63C5F55yuuzBV3E/UsVCD1WdQTTaGa1I8BNB5qUUMQTHp6p2ZyCqDBmKt+Tnn/Ht/vog==
+X-Received: by 2002:a17:903:1ca:b0:1d5:a08c:46a2 with SMTP id e10-20020a17090301ca00b001d5a08c46a2mr298319plh.2.1706301647182;
+        Fri, 26 Jan 2024 12:40:47 -0800 (PST)
+Received: from bsegall-glaptop.localhost (c-73-202-176-14.hsd1.ca.comcast.net. [73.202.176.14])
+        by smtp.gmail.com with ESMTPSA id y12-20020aa7854c000000b006ddcf5d5b0bsm1508884pfn.153.2024.01.26.12.40.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 12:40:46 -0800 (PST)
+From: Benjamin Segall <bsegall@google.com>
+To: Hillf Danton <hdanton@sina.com>
+Cc: Peter Zijlstra <peterz@infradead.org>,  Ingo Molnar <mingo@redhat.com>,
+  Will Deacon <will@kernel.org>,  Waiman Long <longman@redhat.com>,  Boqun
+ Feng <boqun.feng@gmail.com>,  linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] locking/percpu-rwsem: do not do lock handoff in
+ percpu_up_write
+In-Reply-To: <20240126122230.838-1-hdanton@sina.com> (Hillf Danton's message
+	of "Fri, 26 Jan 2024 20:22:30 +0800")
+References: <xm26zfwx7z5p.fsf@google.com>
+	<20240123150541.1508-1-hdanton@sina.com>
+	<20240125110456.783-1-hdanton@sina.com>
+	<20240126122230.838-1-hdanton@sina.com>
+Date: Fri, 26 Jan 2024 12:40:43 -0800
+Message-ID: <xm26sf2j3k1g.fsf@google.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2f342268-8517-4c06-8785-96a588d20c63@roeck-us.net>
+Content-Type: text/plain
 
-On Fri, Jan 26, 2024 at 10:17:23AM -0800, Guenter Roeck wrote:
-> On 1/26/24 09:51, Greg Kroah-Hartman wrote:
-> > On Fri, Jan 26, 2024 at 08:46:42AM -0800, Guenter Roeck wrote:
-> > > On 1/22/24 15:55, Greg Kroah-Hartman wrote:
-> > > > This is the start of the stable review cycle for the 5.10.209 release.
-> > > > There are 286 patches in this series, all will be posted as a response
-> > > > to this one.  If anyone has any issues with these being applied, please
-> > > > let me know.
-> > > > 
-> > > > Responses should be made by Wed, 24 Jan 2024 23:56:49 +0000.
-> > > > Anything received after that time might be too late.
-> > > > 
-> > > [ ... ]
-> > > 
-> > > > zhenwei pi <pizhenwei@bytedance.com>
-> > > >       virtio-crypto: implement RSA algorithm
-> > > > 
-> > > 
-> > > Curious: Why was this (and its subsequent fixes) backported to v5.10.y ?
-> > > It is quite beyond a bug fix. Also, unless I am really missing something,
-> > > the series (or at least this patch) was not applied to v5.15.y, so we now
-> > > have functionality in v5.10.y which is not in v5.15.y.
-> > 
-> > See the commit text, it was a dependency of a later fix and documented
-> > as such.
-> > 
-> > Having it in 5.10 and not 5.15 is a bit odd, I agree, so patches are
-> > gladly accepted :)
-> > 
-> 
-> We reverted the entire series from the merge because it results in a build
-> failure for us.
-> 
-> In file included from /home/groeck/src/linux-chromeos/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c:10:
-> In file included from /home/groeck/src/linux-chromeos/include/linux/mpi.h:21:
-> In file included from /home/groeck/src/linux-chromeos/include/linux/scatterlist.h:5:
-> In file included from /home/groeck/src/linux-chromeos/include/linux/string.h:293:
-> /home/groeck/src/linux-chromeos/include/linux/fortify-string.h:512:4: error: call to __read_overflow2_field declared with 'warning' attribute: detected read beyond size of field (2nd parameter); maybe use struct_group()? [-Werror,-Wattribute-warning]
->                         __read_overflow2_field(q_size_field, size);
+Hillf Danton <hdanton@sina.com> writes:
 
-For what it's worth, this is likely self inflicted for chromeos-5.10,
-which carries a revert of commit eaafc590053b ("fortify: Explicitly
-disable Clang support") as commit c19861d34c003 ("CHROMIUM: Revert
-"fortify: Explicitly disable Clang support""). I don't see the series
-that added proper support for clang to fortify in 5.18 that ended with
-commit 281d0c962752 ("fortify: Add Clang support") in that ChromeOS
-branch, so this seems somewhat expected.
+> On Thu, 25 Jan 2024 13:08:02 -0800 Benjamin Segall <bsegall@google.com>
+>> Hillf Danton <hdanton@sina.com> writes:
+>> > On Wed, 24 Jan 2024 14:10:43 -0800 Benjamin Segall <bsegall@google.com>
+>> >> Hillf Danton <hdanton@sina.com> writes:
+>> >> > On Mon, 22 Jan 2024 14:59:14 -0800 Benjamin Segall <bsegall@google.com>
+>> >> >> So the actual problem we saw was that one job had severe slowdowns
+>> >> >> during startup with certain other jobs on the machine, and the slowdowns
+>> >> >> turned out to be some cgroup moves it did during startup. The antagonist
+>> >> >> jobs were spawning huge numbers of threads and some other internal bugs
+>> >> >> were exacerbating their contention. The lock handoff meant that a batch
+>> >> >> of antagonist threads would receive the read lock of
+>> >> >> cgroup_threadgroup_rwsem and at least some of those threads would take a
+>> >> >> long time to be scheduled.
+>> >> >
+>> >> > If you want to avoid starved lock waiter, take a look at RWSEM_FLAG_HANDOFF
+>> >> > in rwsem_down_read_slowpath().
+>> >> 
+>> >> rwsem's HANDOFF flag is the exact opposite of what this patch is doing.
+>> >
+>> > You and I are not on the same page.
+>> >
+>> >> Percpu-rwsem's current code has perfect handoff for read->write, and a very
+>> >> short window for write->read (or write->write) to be beaten by a new writer.
+>> >
+>> > Given no chance left for spin on owner who is legal to take a ten-minute nap,
+>> > the right thing known to do on behalf of starved waiters is to add the HANDOFF
+>> > mechanism without any heuristic like you proposed for instance, in order to
+>> > force lock acquirers to go the slow path.
+>> >
+>> > Only for thoughts.
+>> 
+>> This is not the type of slowdown that is the problem my patch is trying
+>> to address. (And due to the way percpu-rwsem works sem->ww is nearly
+>> entirely redundant with sem->block - the first waiting writer is instead
+>> waiting on rcuwait and holds sem->block while doing so)
+>> 
+>> The problem that my patch addresses is:
+>> 
+>> Writer is done: percpu_up_write
+>>   atomic_set_release(&sem->block, 0);  // #1
+>>   wake a batch of readers:
+>>     percpu_rwsem_wake_function -> __percpu_rwsem_trylock(reader) // #2
+>>   wake a single writer
+>>     percpu_rwsem_wake_function -> __percpu_rwsem_trylock(writer) // #3
+>> new writer wakes up (holding sem->block from #3)
+>>   sees the readers holding the lock from #2, now sleeps on rcuwait
+>> time passes // #4
+>> readers finally get to run, run quickly and release the lock
+>> now the writer gets to run
+>> 
+>> Currently the only source of unfairness/optimistic locking is the window
+>> between #1 and #2, which occur in quick succession, on the same thread,
+>> and with no SPIN_ON_OWNER to make this window more likely than it
+>> otherwise would be.
+>
+> The sem->ww introduced closes the window between #1 and #2 by define
+> as it is derived from rwsem's HANDOFF.
 
-> I also see that upstream (starting with 6.1) when trying to build it with clang,
-> so I guess it is one of those bug-for-bug compatibility things. I really have
-> no idea what causes it, or why we don't see the problem when building
-> chromeos-6.1 or chromeos-6.6, but (so far) only with chromeos-5.10 after
-> merging 5.10.209 into it. Making things worse, the problem isn't _always_
-> seen. Sometimes I can compile the file in 6.1.y without error, sometimes not.
-> I have no idea what triggers the problem.
+Yes.
 
-Have a .config that reproduces it on upstream? I have not personally
-seen this warning in my build matrix nor has our continuous-integration
-matrix (I don't see it in the warning output at the bottom but that
-could have missed something for some reason) in 6.1:
+>> 
+>> My patch makes the entire #4 available to writers (or new readers), so
+>> that the woken writer will instead get to run immediately. This is
+>
+> Victims rise in case the woken readers at #2 have been waiting more
+> than a minute while the woken writer less than 20ms.
+>
+>> obviously much less fair, but provides much better throughput (ideally
+>> it might have some sort of delay, so that in more normal circumstances
+>> readers don't have to win the wakeup race by luck and being woken
+>> slightly sooner, but I don't have that).
+>> 
+>> This is also only useful because of the assumption that readers will
+>> almost always not actually block (among other required assumptions) - if
+>
+> Like heuristic, any assumption makes the locking game more complex than
+> thought without real win.
+>
 
-https://github.com/ClangBuiltLinux/continuous-integration2/actions/runs/7662499796
-https://github.com/ClangBuiltLinux/continuous-integration2/actions/runs/7662534888
-
-Reverting this series from 5.10 seems reasonable given your other
-comments but if there is still something to sort out upstream, I
-definitely want to.
-
-> Of course, on top of all that, the error message is completely useless.
-
-Indeed, outstanding papercut unfortunately:
-https://github.com/ClangBuiltLinux/linux/issues/1571
-
-Cheers,
-Nathan
+I'm fine with "no, fairness is more important than these performance
+numbers or mitigating already-sorta-broken situations", but it's not
+clear to me you've even understood the patch, because you keep only
+talking about completely different forms of starvation, and suggesting
+changes that would if anything make the situation worse.
 
