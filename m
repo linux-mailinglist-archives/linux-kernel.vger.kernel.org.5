@@ -1,177 +1,154 @@
-Return-Path: <linux-kernel+bounces-40497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 428B983E1A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:37:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E45B83E1A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:37:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 936EBB24A14
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:37:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCE722837D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:37:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CAAC210F3;
-	Fri, 26 Jan 2024 18:37:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A8002232B;
+	Fri, 26 Jan 2024 18:37:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R0nHJgqg"
-Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fgkjZPbs"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28CA01EF1E
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 18:36:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3585A22098
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 18:37:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706294219; cv=none; b=uCqeDpM8ZMNhszLmzX8j+x7PRZC6MJA7CLZu49GtEWGt50BPtbFAB4REhn6pLfBqS9dEXoiwQyGZtYln+5gl1cOpQijFiE2/NmcnXgcVGiTtEMTvOFlyM+drdmeGVc0YLYC2N3dJyDKVIR8v1zUcnTpYlay2hooQXaG36gro6oY=
+	t=1706294225; cv=none; b=VeepfQWe/B5BrE37Itrfllmecwx4UykJbn6GJfQWcl6mbhsKH1p5F3p11B55aMls33/jsWpLhaT5h2O/3XUs/motf9JGahuMAlJI7keLVuPlYFcGoAjbr3C1KaAr3WSeOJBUVQwMMOf8U0zLVYyT0/DslC5Rdi9ZJNollHqv/yM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706294219; c=relaxed/simple;
-	bh=XbBNz5Xjkbj/AigQvzkQA0KxKZPt6W9V1ChoC5N95fg=;
+	s=arc-20240116; t=1706294225; c=relaxed/simple;
+	bh=S1fRMeft88UCS9XJ3ihj3GA2+mAls0h3Pf4XzLDD89s=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=s165kd/iwAC6Pw03ou05LqcVcmN1WahEaiGT/8zDbMam+Z7veURyof1QPkdO7/N+tLxyAgyFp3olsoUTdrNj6NH+eF0h9Lysi4HqcMGX9JRPVBdEFoWiOnBDi/+6Se8u8x8HjP2wswkPYHeZMPAi/6ySAEdTc51+Rv37bTsc1rI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R0nHJgqg; arc=none smtp.client-ip=209.85.222.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-7d2dfbe5363so300970241.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:36:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706294217; x=1706899017; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TqXd2LbuyI9Qqh/FQNpz2+SVm8Ny+cq215471CRHkUI=;
-        b=R0nHJgqgxv0qdog4A8pOsl2Cz+7jt7hTWx4EYYF9Ho05YjzWZd8+ub9OVZi0WNAn5T
-         iwQ+PsVYM0Fh1bzxLxdB0d/L/0iF85zKGGGOLSSr+zpt5u3qkUGhWNpm6Yxyb6rYtaTG
-         ic901xgFsGnjmvR7/BQ3ZyhmhobSUC/HwTo8X0G+hRhHmOHWy75GvneckJj1GUN12ArJ
-         6rjjUjr1rhoZTcCCsxVy26yO9msup4O368mGm/lzzSIctKxr8E83JpvQ3Xk8iiRNCurk
-         EkeCMOKtqFrCBbjyDTTE2I1UJtl/xh5qVxrUd0qINQsN+0ezKGkCpPwuhfPd/yQEGU8C
-         edMg==
+	 To:Cc:Content-Type; b=XATwYFRjpHH7eF4xPjUnhqYp0EvSuhBlN0pmKqNpBwuTDJT2k5QFy6/zhKTauQ1T2XD/WAnk6UUGTTmYa2D8jXlmFX0aq0AXWbGaWZ6cRIiI5+se3SFkKPRL5/XWc5/rIbytoe0IgRUuNOWsjJ8pMDsl6RddXMRU2BAt76A7bZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fgkjZPbs; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706294223;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YtidRzgIyGrU6IJcvdjLJw1+3TfGvDrbdoaLpd1wvgI=;
+	b=fgkjZPbsmTdOSKdwd7C8tc0+Z5C1gEpcxgzoqRLq02Mz3yl1BC5tQGod2ySU3MugwuMXig
+	8uGcPAPVUwcxUz2gyEzIN0QnLfjhN3ZjYeIjGNqV6m+UL/E8BMcbGAP4ym0Eag0b8bLxUV
+	p6apW0AI7hHc7IU2RvQ/sMl7yh7JNw8=
+Received: from mail-ua1-f71.google.com (mail-ua1-f71.google.com
+ [209.85.222.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-456-LWfihVDpODiY3_hIPZwzPg-1; Fri, 26 Jan 2024 13:37:01 -0500
+X-MC-Unique: LWfihVDpODiY3_hIPZwzPg-1
+Received: by mail-ua1-f71.google.com with SMTP id a1e0cc1a2514c-7d2dfa4c664so366000241.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:37:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706294217; x=1706899017;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TqXd2LbuyI9Qqh/FQNpz2+SVm8Ny+cq215471CRHkUI=;
-        b=X+Xwq2k7BImYnHUzt4fUH813W4YV8GO3z6MuPe8XOFjCy2USw9zOXfcp11cBYILaNL
-         GReINqX60TWPyO/B2V9fVPz+jUT4Y88EKZIr7Ce5VoOAZJyrDd54ys/yl+1MrUg1kAzQ
-         naBLduH0sqj3oY0Mj6677GrU6NJu+I35AeFR7CYqROBpZGHuhh2SUYcSwTbo27qHAEY8
-         jsJ73rUzns7gsppNrGaMemFIGBp1ZCMNVhMY2bUVc8w3//725WTLdKYHVH0rNDcMs8DW
-         Cp7RCyys0bM6yAJ6S0yY91KJ3gREqQWJcJzwbvYqe0qDE3gjph7Zfz47k3gQsKGmGaS0
-         00fg==
-X-Gm-Message-State: AOJu0Yw7EiUdOXW0DEh6fuMfZ7dQBTxEeyA9A/J036RDMdT0Q9LYrcNa
-	tQZ70bejDG72zoKmpxtaNNQyOHBE1NXC4GbBp2ME7pK0Tb1knT6gisyfbaIDsFusfqFLf8BAiHp
-	m/IF3bF7th7XtnPYCfYQcRHIdZ1E=
-X-Google-Smtp-Source: AGHT+IE1MLjGKr2ux1azYw+58wmOiUvg8E5WXoQmTYbkOgivsJfz1JIsqBfE4B/XNtYEHyZgtl89a1r7kKpPcLkAmz0=
-X-Received: by 2002:a05:6122:4c0f:b0:4b6:e383:5f with SMTP id
- ff15-20020a0561224c0f00b004b6e383005fmr235259vkb.25.1706294216914; Fri, 26
- Jan 2024 10:36:56 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706294220; x=1706899020;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YtidRzgIyGrU6IJcvdjLJw1+3TfGvDrbdoaLpd1wvgI=;
+        b=YjaYw+vcoO6Ek52y34kqWAHKe5zhKdwLx1duudtVkbAeYiEz/ZRB+tNrQ9MtEniEJ3
+         wxrPd3pxxKBvk4Xz5n86YeBrHoTY8spVdRBqWuvg0lDlqqZO+w1Ktf4NXl7FqmTDMBqo
+         ldy2VcTsZbi8avZ9zLDhwA0Wh9vZkK08o1PqABn3lcjxnziR1Z7EFW378j85QfwIt5c8
+         y/+TIIqD5OZc0fxTit2SikzqRAYH9hoMgo6fcGdWSfLKoVhhQACYqobc9qS8GLmZDYD1
+         yjQ6oSqOhqjzagcOz0bU9A8cS8+blQjZaOVIA4nx83EfFu5qs2GTL2XcWZM1d7jG/IT+
+         4lLg==
+X-Gm-Message-State: AOJu0YyXF42JNTBUMKwMpOYINZwotRm9P44pfnd0NxmCIIV4UMAkk8mk
+	pmfHeqtf0DeMHLAFdS3fUm2+uy7YpTlPBVudF5g4chnINk2N2g2EPFydsKyW0Qu0S98i827J+O1
+	KAoU7pc0hbfRk624Az2mWRXdNUsy9or+AM2vWSNtk3V2XdR3JaQ0Yr7jHYjaEFf5M+QcmlEH1Y/
+	ZLlU3km0wN0ckBRkGjP7ppxLJeWyR/fWCm/wpH
+X-Received: by 2002:a67:ebd4:0:b0:46b:1408:bbad with SMTP id y20-20020a67ebd4000000b0046b1408bbadmr198420vso.14.1706294220516;
+        Fri, 26 Jan 2024 10:37:00 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHEeg7aOHdJJCfQQbPMee0o+6vpKuc0K0Nk3OoMbEjhiU4ZqbmHCHJWBpLEKUXk5wz5VWKDRBo7LPYo1lJnIDk=
+X-Received: by 2002:a67:ebd4:0:b0:46b:1408:bbad with SMTP id
+ y20-20020a67ebd4000000b0046b1408bbadmr198415vso.14.1706294220297; Fri, 26 Jan
+ 2024 10:37:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <82b964f0-c2c8-a2c6-5b1f-f3145dc2c8e5@redhat.com> <CAHk-=wjDW53w4-YcSmgKC5RruiRLHmJ1sXeYdp_ZgVoBw=5byA@mail.gmail.com>
-In-Reply-To: <CAHk-=wjDW53w4-YcSmgKC5RruiRLHmJ1sXeYdp_ZgVoBw=5byA@mail.gmail.com>
-From: Allen <allen.lkml@gmail.com>
-Date: Fri, 26 Jan 2024 10:36:45 -0800
-Message-ID: <CAOMdWSKu9PhyjfWga-eMcAUiBF4Fg9dnt+husNRZgkL1rp_HFQ@mail.gmail.com>
-Subject: Re: [PATCH] softirq: fix memory corruption when freeing tasklet_struct
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Mikulas Patocka <mpatocka@redhat.com>, Tejun Heo <tj@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev, 
-	Mike Snitzer <msnitzer@redhat.com>, Ignat Korchagin <ignat@cloudflare.com>, 
-	Damien Le Moal <damien.lemoal@wdc.com>, Bob Liu <bob.liu@oracle.com>, Hou Tao <houtao1@huawei.com>, 
-	Nathan Huckleberry <nhuck@google.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@elte.hu>
+References: <b83ab45c5e239e5d148b0ae7750133a67ac9575c.1706127425.git.maciej.szmigiero@oracle.com>
+In-Reply-To: <b83ab45c5e239e5d148b0ae7750133a67ac9575c.1706127425.git.maciej.szmigiero@oracle.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Fri, 26 Jan 2024 19:36:48 +0100
+Message-ID: <CABgObfZ1YzigovNEiYF7pbmRxv-SUzEFqnpaQZ4GT_hDssm65g@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86: Give a hint when Win2016 might fail to boot due
+ to XSAVES erratum
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc: Sean Christopherson <seanjc@google.com>, Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> > There's a problem with the tasklet API - there is no reliable way how to
-> > free a structure that contains tasklet_struct. The problem is that the
-> > function tasklet_action_common calls task_unlock(t) after it called the
-> > callback. If the callback does something that frees tasklet_struct,
-> > task_unlock(t) would write into free memory.
->
-> Ugh.
->
-> I see what you're doing, but I have to say, I dislike this patch
-> immensely. It feels like a serious misdesign that is then papered over
-> with a hack.
->
-> I'd much rather see us trying to move away from tasklets entirely in
-> cases like this. Just say "you cannot do that".
->
- The idea of moving away from using tasklets has been discussed several times.
-I am working on entirely moving away from using tasklets. Ofcourse, we have
-some subsystems(like DMA), where we need to do a little more.
+On Wed, Jan 24, 2024 at 9:18=E2=80=AFPM Maciej S. Szmigiero
+<mail@maciej.szmigiero.name> wrote:
+> +static void kvm_hv_xsaves_xsavec_maybe_warn_unlocked(struct kvm_vcpu *vc=
+pu)
 
-> In fact, of the two cases that want this new functionality, at least
-> dm-verity already makes tasklets a conditional feature that isn't even
-> enabled by default, and that was only introduced in the last couple of
-> years.
+Calling this function "unlocked" is confusing (others would say
+"locked" is confusing instead). The double-underscore convention is
+more common.
+
+> +{
+> +       struct kvm *kvm =3D vcpu->kvm;
+> +       struct kvm_hv *hv =3D to_kvm_hv(kvm);
+> +
+> +       if (hv->xsaves_xsavec_warned)
+> +               return;
+> +
+> +       if (!vcpu->arch.hyperv_enabled)
+> +               return;
+
+I think these two should be in kvm_hv_xsaves_xsavec_maybe_warn(),
+though the former needs to be checked again under the lock.
+
+> +       if ((hv->hv_guest_os_id & KVM_HV_WIN2016_GUEST_ID_MASK) !=3D
+> +           KVM_HV_WIN2016_GUEST_ID)
+> +               return;
+
+At this point there is no need to return. You can set
+xsaves_xsavec_warned and save the checks in the future.
+
+> +       /* UP configurations aren't affected */
+> +       if (atomic_read(&kvm->online_vcpus) < 2)
+> +               return;
+> +
+> +       if (boot_cpu_has(X86_FEATURE_XSAVES) ||
+> +           !guest_cpuid_has(vcpu, X86_FEATURE_XSAVEC))
+> +               return;
+
+boot_cpu_has can also be done first to cull the whole check.
+
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 27e23714e960..db0a2c40d749 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -1782,6 +1782,10 @@ static int set_efer
+>        if ((efer ^ old_efer) & KVM_MMU_EFER_ROLE_BITS)
+>                kvm_mmu_reset_context(vcpu);
 >
-> So I think dm-verity would be better off just removing tasklet use,
-> and we should check whether there are better models for handling the
-> latency issue.
->
-> The dm-crypt.c case looks different, but similar. I'm not sure why it
-> doesn't just use the workqueue for the "in interrupt" case. Like
-> dm-verity, it already does have a workqueue option, and it's a
-> setup-time option to say "don't use the workqueue for reads / writes".
-> But it feels like the code should just say "tough luck, in interrupt
-> context we *will* use workqueues".
->
-> So honestly, both of the cases you bring up seem to be just BUGGY. The
-> fix is not to extend tasklets to a new thing, the fix is to say "those
-> two uses of tasklets were broken, and should go away".
->
-> End result: I would suggest:
->
->  - just get rid of the actively buggy use of tasklets. It's not
-> necessary in either case.
->
->  - look at introducing a "low-latency atomic workqueue" that looks
-> *exactly* like a regular workqueue, but has the rule that it's per-cpu
-> and functions on it cannot sleep
->
-> because I think one common issue with workqueues - which are better
-> designed than tasklets - is that scheduling latency.
->
-> I think if we introduced a workqueue that worked more like a tasklet -
-> in that it's run in softirq context - but doesn't have the interface
-> mistakes of tasklets, a number of existing workqueue users might
-> decide that that is exactly what they want.
->
-> So we could have a per-cpu 'atomic_wq' that things can be scheduled
-> on, and that runs from softirqs just like tasklets, and shares the
-> workqueue queueing infrastructure but doesn't use the workqueue
-> threads.
->
-> Yes, the traditional use of workqueues is to be able to sleep and do
-> things in process context, so that sounds a bit odd, but let's face
-> it, we
->
->  (a) already have multiple classes of workqueues
->
->  (b) avoiding deep - and possibly recursive - stack depths is another
-> reason people use workqueues
->
->  (c) avoiding interrupt context is a real concern, even if you don't
-> want to sleep
->
-> and I really *really* would like to get rid of tasklets entirely.
->
-> They started as this very specific hardcoded softirq thing used by
-> some drivers, and then the notion was generalized.
->
-> And I think it was generalized badly, as shown by this example.
->
-> I have added Tejun to the cc, so that he can throw his hands up in
-> horror and say "Linus, you're crazy, your drug-fueled idea would be
-> horrid because of Xyz".
->
-> But *maybe* Tejun has been taking the same drugs I have, and goes
-> "yeah, that would fit well".
->
-> Tejun? Please tell me I'm not on some bad crack..
->
->                Linus
->
-       - Allen
+> +       if (guest_cpuid_is_amd_or_hygon(vcpu) &&
+> +           efer & EFER_SVME)
+> +               kvm_hv_xsaves_xsavec_maybe_warn(vcpu);
+> +
+>        return 0;
+> }
+
+Checking guest_cpuid_is_amd_or_hygon() is relatively expensive, it
+should be done after "efer & EFER_SVME" but really the bug can happen
+just as well on Intel as far as I understand? It's just less likely
+due to the AMD erratum.
+
+I'll send a v2.
+
+Paolo
+
 
