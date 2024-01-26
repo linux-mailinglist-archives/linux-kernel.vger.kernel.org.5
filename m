@@ -1,79 +1,79 @@
-Return-Path: <linux-kernel+bounces-39581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39583-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08F6A83D32E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 04:59:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8484783D332
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 05:00:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D6CD1C234B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 03:59:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3318F28CFF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 04:00:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DEFD10A19;
-	Fri, 26 Jan 2024 03:59:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B3561171C;
+	Fri, 26 Jan 2024 03:59:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FL+xRFuk"
-Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MwjB1pYo"
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A298C148;
-	Fri, 26 Jan 2024 03:59:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D4C3D29B;
+	Fri, 26 Jan 2024 03:59:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706241561; cv=none; b=hmV3vQSfXxigq3LVwnsIayemD5VMfpTkDE6sOLNp6Nx7jKR13C09tEwg0XxtJ6gqt3KeAqaS2lKfEvyan7ZhIlx/NC2Q7Vs9plYrP68pqq+VkyUcYxU+0gEzDrhSq25Kp05L5NHcM4SSSex6HJwEkh7IKD5ENTp7GPsSVA134F4=
+	t=1706241564; cv=none; b=HAWXlMmP6dv0lmMHs7tpZNvkQjxH6R8LAPdgETwSzy2qrqxkeRF3eYcymti+xQXumoGsMvJZqqmGbln7xYWevsWFvc7p9UVGu8I8HlhDfhpkp5CgE532jddmcewseMR62Izytwv206c8DsutE1DrwnntnO9D2/zwjyh2YNKXL8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706241561; c=relaxed/simple;
-	bh=h1Y/gwFxOJFXt01gnNFKLO6v78F6N7Su/jOY8g6xKP0=;
+	s=arc-20240116; t=1706241564; c=relaxed/simple;
+	bh=FNWtIgM9IxJJ/n1X7p2clj7JyxfCP6T+ugF4coDERKU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GBsYlwLdIfM2j4o+zaCHiU3LduC6AZkqRaGIIXRX4COhWh94GazyjNZt0dT/3tcKnqHoCjziruEH8IB1GznPVy0bLxgDEPQw6ydkfvGvT2zMHKOXoqlk+LPyzq/betlpm+BY2H+zuSxgHpHrwJUEinP4EmYtzPteFAlMcDCVfO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FL+xRFuk; arc=none smtp.client-ip=209.85.222.172
+	 MIME-Version; b=bxLN2IoAqPsjhQi876TqoWKydPvUsMFLax2chvDZiTAXXWrJEaqH9qguqmVaS/hjg0T0RKA677n/Nn/YG2uY3XKk9aFjnJGJiXUOPQcDCPte4sbMTqNqHuwseQ54pmpgnDrtLJRlEuuDaPV8+THBIPm+EY2eAJqiycJFCuNW0RQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MwjB1pYo; arc=none smtp.client-ip=209.85.160.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-783045e88a6so33971785a.0;
-        Thu, 25 Jan 2024 19:59:15 -0800 (PST)
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-4298b23abffso1711511cf.0;
+        Thu, 25 Jan 2024 19:59:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706241554; x=1706846354; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706241556; x=1706846356; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=mN9urTWgOs5yxGqYWGcDWpJNj/mjOSJkCC13yHHIGOY=;
-        b=FL+xRFukscp+HWqcrFUT+7STUBnnfJzJE3/xHNQlmrKYzUOsRusGi/3WRo3nWz6P/I
-         wcJbmOnLpl/EHy6mLoDX9DTvbVA1yevZF7k0XiwsD9t19TBQ0TjWnmzRKKTDocq+gN9b
-         y0ZW4qHApkGLW7dFRHwJn6jWPXdTufii/vGI6s4VllmQrjgHLKGK5etyPdmSceKh3yiE
-         YoiUv+kZ7lHFunvfqqQJxOigbNWRjsFM98FZ5x4faDBBw4St609cOj1p/xCih8q72nVD
-         5pTB6qIIkguhfWrHOWO6fYiWt3jQKcqp2eWh9b0UXOMadfCOgtPcK1HLo/4tXZFLABpB
-         CHmg==
+        bh=Ec+oZMGt7I/sXDo2HDWfHkpmX9raXfcV0tRYDCJOyxY=;
+        b=MwjB1pYod4O4utrPNBGSbWwbRB3So9ck4iszaKQx1UFG/KLFV/uQWD2Pk8pMxIyqbS
+         CkSrKJIzQZ9HrMpIUNHNRUsrq21m5DaPJEexSKSEut3ixRlr/bjz+dNKKyy/1jE0w3vM
+         tTQHfbZqy5dE6muGEbHgzf2R8PMCm5DyeuxQU1e1tHHjEvvIo7w6vx9cB+Yi1Mzck/Md
+         3athfiWcZI7wKtPe80/XktIlu2xwO9iRk5pXGF6FpibWVshINAfRKfzCJTHT7hlC1Xk7
+         kJhHllfY2vOKx4jSy7VbL7JZ+mQ0OBApDVMCbxlBsa8Ht2cDMg2QrT0KkteVDZPI0XYd
+         o4Ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706241554; x=1706846354;
+        d=1e100.net; s=20230601; t=1706241556; x=1706846356;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=mN9urTWgOs5yxGqYWGcDWpJNj/mjOSJkCC13yHHIGOY=;
-        b=XUGkcO2GndY0BbhyBu4ZonTR+J6ovjTGCQhJ//iiTENzCL9qlfdiiLLNXbA3142UZv
-         jICJ2/llKy7JXdL3jTClQ/GwPr4bM0MFjZT721VAdDBb9rNE9wO2Pvm0fNagaJorvbpM
-         8BSm5tWdR2g5H2ccRpB+wysGa5WY4BjGwGbSAU4AVnPdY7SLmoD9SniAlBjlcRdVv1ng
-         OPTZBT6jHlSOP3h+8bzsdL7rM419ceqNMMwsbytl1aLXr5uLq6ehdIDNzq4Ak+5BuA3U
-         JhorNKqOdPqHAPzl6zqPrjFSMYcQo0zrppMggmlLTWVXtSD98jJn1L0YFpesgndcCRlu
-         xdQA==
-X-Gm-Message-State: AOJu0Yz1BZSNXSipHVfoYHeNGeKolumytZ//8W21de/UViMQQJCCS/c1
-	SBkX3tZDPY0E8qBc0OpYAsszHJnEhcueylhwNBwPfhh0XCiWE6Rr
-X-Google-Smtp-Source: AGHT+IEr5lwYyeK+DAlCMywYxD/dVhVnliPCsQ1+/5GTanEYCSEwv958X2LO0qsdK5nBmhofDuhU+A==
-X-Received: by 2002:a05:620a:29c7:b0:783:1f5b:9c5 with SMTP id s7-20020a05620a29c700b007831f5b09c5mr1185613qkp.80.1706241554190;
-        Thu, 25 Jan 2024 19:59:14 -0800 (PST)
+        bh=Ec+oZMGt7I/sXDo2HDWfHkpmX9raXfcV0tRYDCJOyxY=;
+        b=thOjcD4efJmaGOOKt81iOCD7RcS0kOFq3QENRiQTVgersH5xRkay4Oj6Q08xVac6LP
+         J3Fm8VlY/1rF3wREMqzFU/FBH3sbKO6DG8v5fezu/Qt2fpZDtFiR/4XjausgJDJdZtJ5
+         927DhYqVULoKiozlbIzvPl+Do+Z/MbtYSRUs8Nx+UWfYGk9c+fUA/Q8smlv//fuNYDQV
+         y0ecs1tAEoly6IIbKMeHTq4dUbZh1bdZypw1rPpJgYpRg7RdeDEldmSHT6afUoxYzi9J
+         3ck8nxn3Lrmds0a2UJlucSd+i5+2Zz+ct1zLP+VGBe6ajR8m0c4ZailfNWgLYZqRKGwd
+         srgg==
+X-Gm-Message-State: AOJu0YxVKn9L6G+JeeHiOK/1WWA0KglVEL4flXj5xyz3mZvvU3QMAAPI
+	44got8cAFWDtR9Q+p6icxjxQ6moYP384dbQTznQvv05JuWPk4KpH
+X-Google-Smtp-Source: AGHT+IGeshD2bZzndtui5NhXwd4hSS/vcea7AvTLd5mvDiVIP11+gSlxO5rQiEsgBOMvR0efH9/fcA==
+X-Received: by 2002:a05:622a:5d97:b0:42a:751e:c2c2 with SMTP id fu23-20020a05622a5d9700b0042a751ec2c2mr473591qtb.40.1706241555874;
+        Thu, 25 Jan 2024 19:59:15 -0800 (PST)
 Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id m25-20020a05620a215900b0078325452a32sm212464qkm.28.2024.01.25.19.59.13
+        by smtp.gmail.com with ESMTPSA id cq11-20020a05622a424b00b0042a109265d5sm152988qtb.20.2024.01.25.19.59.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 19:59:13 -0800 (PST)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailauth.nyi.internal (Postfix) with ESMTP id 6FD3F27C0060;
-	Thu, 25 Jan 2024 22:59:13 -0500 (EST)
+        Thu, 25 Jan 2024 19:59:15 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailauth.nyi.internal (Postfix) with ESMTP id 2E7F727C005B;
+	Thu, 25 Jan 2024 22:59:15 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 25 Jan 2024 22:59:13 -0500
-X-ME-Sender: <xms:ES6zZV40ASohajaSOhP5Z9FXMA4On_jsA73SoHWHSiiAAspDf58wgA>
-    <xme:ES6zZS7cLQrmuRAVpt-_nWkdgEPYbpa4tw9nTIzfGooZ2d--2Ku3QaZzN9pt8OYRU
-    ZM7cNGNzkoD-f75zA>
-X-ME-Received: <xmr:ES6zZcdrIF88p7InAovlZvhxCJM0Lh2D4QGT479uEkH9p076BicsQTppnXU>
+  by compute3.internal (MEProxy); Thu, 25 Jan 2024 22:59:15 -0500
+X-ME-Sender: <xms:Ei6zZaNSMTo3tyXdFAiOxFJ0lfjI6q743cGrkWKRDaqyvvBySrTJ3A>
+    <xme:Ei6zZY-9eOeb9aAB8cFA9Q0nBQAEW23f4yCdsvcA89AaZq_iokLmKhWeJc5-cHRia
+    OWeQ6ygEtUK9d_0Qg>
+X-ME-Received: <xmr:Ei6zZRSI68G329kz-824Fleo0VKfcmeiPjjkIahtm-_76pVxk7efD2lEr6c>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeliedgieefucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
@@ -84,13 +84,13 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeliedgieefucetufdoteggod
     gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
     gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
     igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:ES6zZeIZ-tMlfGgeI7nvonQp53Cyg_KuYClT-_IP5ZGPoaeMGRHf5w>
-    <xmx:ES6zZZLVWQkibapkpu7Zu2lIcIpNQVG4DdxkAjTEDUB5i4FmKJcWSQ>
-    <xmx:ES6zZXy3n7B0rcUr3YDxdVEqIymIwnVHEP53bJ7mgzEC67VCLC1xlw>
-    <xmx:ES6zZTAS1TVLbVFGyeTYW8oqpU0jr7KRQGTM1Ay4l4JgMt36UN21xg>
+X-ME-Proxy: <xmx:Ei6zZatU3jxt4LHnHBa5uYdv-S_POTFJCKYTVQxIAJzKuZiOUDEYAw>
+    <xmx:Ei6zZSdzoz4elDkBwWlXi_G20NyOcW_anFNMXmXv6Pi-GyTiXZ5x5A>
+    <xmx:Ei6zZe2t5_9zZfLM8eP7kz9kVJhNnqqxufhJXcjFOdkIzmQAXgPwtQ>
+    <xmx:Ey6zZY3Hd4uuD4GVCEcV1Zy_z83Vt5AmiWyGwhEzWdeqtO33xiLClA>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 25 Jan 2024 22:59:12 -0500 (EST)
+ 25 Jan 2024 22:59:14 -0500 (EST)
 From: Boqun Feng <boqun.feng@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	rcu@vger.kernel.org,
@@ -106,9 +106,9 @@ Cc: Jonathan Corbet <corbet@lwn.net>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>
-Subject: [PATCH 2/8] doc: Make whatisRCU.rst note that spinlocks are RCU readers
-Date: Thu, 25 Jan 2024 19:58:05 -0800
-Message-ID: <20240126035816.3129296-3-boqun.feng@gmail.com>
+Subject: [PATCH 3/8] doc: Make checklist.rst note that spinlocks are implied RCU readers
+Date: Thu, 25 Jan 2024 19:58:06 -0800
+Message-ID: <20240126035816.3129296-4-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240126035816.3129296-1-boqun.feng@gmail.com>
 References: <20240126035816.3129296-1-boqun.feng@gmail.com>
@@ -126,45 +126,39 @@ In kernels built with CONFIG_PREEMPT_RT=n, spinlock critical sections
 are RCU readers because they disable preemption.  However, they are also
 RCU readers in CONFIG_PREEMPT_RT=y because in that case the locking
 primitives contain rcu_read_lock() and rcu_read_unlock().  Therefore,
-upgrade whatisRCU.rst to document this non-obvious case.
+upgrade checklist.rst to document this non-obvious case.
+
+While in the area, fix a typo by changing "read-side critical" to
+"read-side critical section".
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/RCU/whatisRCU.rst | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ Documentation/RCU/checklist.rst | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
-index 60ce02475142..246ce0d0b4d1 100644
---- a/Documentation/RCU/whatisRCU.rst
-+++ b/Documentation/RCU/whatisRCU.rst
-@@ -172,14 +172,25 @@ rcu_read_lock()
- 	critical section.  Reference counts may be used in conjunction
- 	with RCU to maintain longer-term references to data structures.
+diff --git a/Documentation/RCU/checklist.rst b/Documentation/RCU/checklist.rst
+index 2d42998a89a6..98a622f77248 100644
+--- a/Documentation/RCU/checklist.rst
++++ b/Documentation/RCU/checklist.rst
+@@ -68,7 +68,8 @@ over a rather long period of time, but improvements are always welcome!
+ 	rcu_read_lock_sched(), or by the appropriate update-side lock.
+ 	Explicit disabling of preemption (preempt_disable(), for example)
+ 	can serve as rcu_read_lock_sched(), but is less readable and
+-	prevents lockdep from detecting locking issues.
++	prevents lockdep from detecting locking issues.  Acquiring a
++	spinlock also enters an RCU read-side critical section.
  
-+	Note that anything that disables bottom halves, preemption,
-+	or interrupts also enters an RCU read-side critical section.
-+	Acquiring a spinlock also enters an RCU read-side critical
-+	sections, even for spinlocks that do not disable preemption,
-+	as is the case in kernels built with CONFIG_PREEMPT_RT=y.
-+	Sleeplocks do *not* enter RCU read-side critical sections.
-+
- rcu_read_unlock()
- ^^^^^^^^^^^^^^^^^
- 	void rcu_read_unlock(void);
+ 	Please note that you *cannot* rely on code known to be built
+ 	only in non-preemptible kernels.  Such code can and will break,
+@@ -444,7 +445,7 @@ over a rather long period of time, but improvements are always welcome!
+ 	real-time workloads than is synchronize_rcu_expedited().
  
- 	This temporal primitives is used by a reader to inform the
- 	reclaimer that the reader is exiting an RCU read-side critical
--	section.  Note that RCU read-side critical sections may be nested
--	and/or overlapping.
-+	section.  Anything that enables bottom halves, preemption,
-+	or interrupts also exits an RCU read-side critical section.
-+	Releasing a spinlock also exits an RCU read-side critical section.
-+
-+	Note that RCU read-side critical sections may be nested and/or
-+	overlapping.
- 
- synchronize_rcu()
- ^^^^^^^^^^^^^^^^^
+ 	It is also permissible to sleep in RCU Tasks Trace read-side
+-	critical, which are delimited by rcu_read_lock_trace() and
++	critical section, which are delimited by rcu_read_lock_trace() and
+ 	rcu_read_unlock_trace().  However, this is a specialized flavor
+ 	of RCU, and you should not use it without first checking with
+ 	its current users.  In most cases, you should instead use SRCU.
 -- 
 2.43.0
 
