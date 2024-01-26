@@ -1,202 +1,149 @@
-Return-Path: <linux-kernel+bounces-40719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E91983E4AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:08:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13C7683E4A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:08:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 680E1282BC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:08:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E9651F22CD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:08:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 629882556B;
-	Fri, 26 Jan 2024 22:06:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D1715A783;
+	Fri, 26 Jan 2024 22:05:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hjvpsiEe"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Wun/mJBa"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C38272555E
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 22:06:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 234D659B73;
+	Fri, 26 Jan 2024 22:05:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706306775; cv=none; b=HhMPfprMCAk9uH6peOyhqhBT5ucrcC7kNkUdpv+yJuU1rxtkOqi1MCdzefyM6q+xahxcqYFMU0sVrTkIPKrdmq3gaCc3+26gg6hXwR93mBhyympj5p+b0YuENBCAlysV4WGT7t0sLSDGG7Cf6OZZvhIoYHxh6/yxcQB60+bBzbU=
+	t=1706306749; cv=none; b=hUj3hIxfSxCOKQPblTKIIiWaTyh7E7tBgpSeAKUk0G4FoZzkF1UQrelNUoNNVucI6MkY/YiE0dYVnP4SewnwfzmUwGEA0XOFeYJNKTAHrsoPLNuTH3CeGicsP4HaQhsGm0RweI/FHLT7lyad5UR2jgkLl0JB06PKqI9DHuJmTHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706306775; c=relaxed/simple;
-	bh=dCpJQu3vfIDAJ1Aq2AGyqLIgVqEbRZWCZQ8ESsL/WSA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type:Content-Disposition; b=bCGG4ghZlSBrmTgwqdXPz0b3TVz8CFrOQIqMFq1IKVKHGiRuYApzCvOcf4qn6JA7uW7QbbJ6rp3XOmHHAmv/O6Ik2qk4xXsc9avAr2rOleadtGlnxOKWdDU/rCNJMZNuoO4245DAlk+1hCJNiU51eAN6CX96vfC+bGYrLh3G4kg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hjvpsiEe; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706306772;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6GSjdcoXRL5trov+iE2hoQky/bCBVVYnxpaGKh3qlLE=;
-	b=hjvpsiEeJ88pr+vkYhg2awtsP2Uh7SFaIEVzOazpaqUqnFKLUR8r5L0vpTTF2+jkcJrqiQ
-	ofJkbsJr4UoC5VTUdoiFm49H29joBjH0F5BD28z+KTmZRmiYdWpPNXi3GD++go5BR9oWGg
-	BRSWk1TeD9TDacYI/51wYVOcF9pBFmw=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-294-Y0XBGdtZPje1rwYm68gYaw-1; Fri, 26 Jan 2024 17:06:10 -0500
-X-MC-Unique: Y0XBGdtZPje1rwYm68gYaw-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-783c781aa5dso137058585a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:06:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706306770; x=1706911570;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6GSjdcoXRL5trov+iE2hoQky/bCBVVYnxpaGKh3qlLE=;
-        b=N/H4Kuml3o+HyrZt2i0Yi1RoekA6UcBm8htsTI6SSY8K0GIaM5se/xh4SNmrNic+0D
-         85oLIiAxzxH6kzACx0I5V01QPPj5QUNHRYsCYfRKLzWyNl1KQfePta4GO/Uh32sQ0k36
-         m3u56PfulxGMCCRjt4NVI8sqt+NI1CSzSu9LLvEgiNYxmAWrbrIiUCfuN+9AFJtOW9lU
-         VGuh67hJxBugudETMoIdfOP/lYg98yTTFZAvjwQ0D6JgBT0J6RdQMnhj6XB6YFbpWf6F
-         SFI0QyQjjW/6pij+ZpBTg8yCqHgKza3emJtwnL6OTgFNK4bw9ajTOpkcNVlMwYboO+jy
-         Irww==
-X-Gm-Message-State: AOJu0Yz8X00UIlSYHG3g4JnRvPUWH6qP3X4X7G/iAYaTlirotCHcPImB
-	HxojrLMBKPRCWfQEJSnvyDyfsazPGLS0sOqABVnWKRd4IyBHeiMWf1jDsCAJCdZBA3P7F/k6CiC
-	saEJ5J+QLHYtk/OTj3xdcF9/sbyEvaKnYa2fs0F1/mhsb1HeUoCw6dwK47m0nBeTw53UEQg==
-X-Received: by 2002:a05:620a:21c9:b0:783:bfad:6b7c with SMTP id h9-20020a05620a21c900b00783bfad6b7cmr470415qka.81.1706306770112;
-        Fri, 26 Jan 2024 14:06:10 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG6Ua082hX1o6w3Alg70OFXopnpnd8uZm0FMet0DILAUPDHTbUOrSYeO1M+o4ytf88wID/Zcw==
-X-Received: by 2002:a05:620a:21c9:b0:783:bfad:6b7c with SMTP id h9-20020a05620a21c900b00783bfad6b7cmr470407qka.81.1706306769792;
-        Fri, 26 Jan 2024 14:06:09 -0800 (PST)
-Received: from LeoBras.redhat.com ([2804:1b3:a803:96a5:ba81:becc:80f3:6a79])
-        by smtp.gmail.com with ESMTPSA id b1-20020a05620a04e100b0078397efd1e3sm917750qkh.31.2024.01.26.14.06.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 14:06:09 -0800 (PST)
-From: Leonardo Bras <leobras@redhat.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: Leonardo Bras <leobras@redhat.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] wq: Avoid using isolated cpus' timers on unbounded queue_delayed_work
-Date: Fri, 26 Jan 2024 19:05:35 -0300
-Message-ID: <ZbQsr1pNSoiMbDrO@LeoBras>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <ZbQozqY9qOa4Q8KR@slm.duckdns.org>
-References: <20240126010321.2550286-1-leobras@redhat.com> <ZbQozqY9qOa4Q8KR@slm.duckdns.org>
+	s=arc-20240116; t=1706306749; c=relaxed/simple;
+	bh=quovCUEiBJzRcC6tpz1IJ7bTQOD+HpTMRkt5AyBCYDU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VleeToeVxByvQeEBrAFwwdeRNWCszbhyeMHr+nooQOhTNwZgjmivJIkA1Sbx5C3ytL7RRQ+xF7/C4V5q8Ut7ddX5smpUysjKi+YmtpHySj+wBwlvG0jTYmxzfkM3SLlyTUjcx/SqzbHx1TXAlg+kqOPZoVrxQemgJn4piRF00eg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Wun/mJBa; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1706306743; x=1706911543; i=quwenruo.btrfs@gmx.com;
+	bh=quovCUEiBJzRcC6tpz1IJ7bTQOD+HpTMRkt5AyBCYDU=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=Wun/mJBaip6NFrp5muOf6Z3rJTfgH00zXoLhhDynRnACkx4JPWDXyb8uUYsMU3m7
+	 Z6LL5zYt6Ra7p2Hx1TKygWa2V9bJ1d71nhAMH5VffqcJywTvihWeQ4LAIKlW/SANK
+	 /10bkttgWAuYKm0ZmgR96PpAh757h/VeQnlFOiyDqYvS064ORAZxHmtRrV4UDw6EL
+	 Q3wXDnsdNBHoIt0KzjbgG0pSbugekVBGIrAOdNbzJZdgYPh6kPmAYRi/b3lJ558BA
+	 PiQ9eV2CTRE6wIN42ASQN4NZGMNxIhVqwmTmWyGujHlRSP2cG+FnXU5JPievqauHz
+	 a9VxRLfkyyMeYvOpcQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([61.245.157.120]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MbzuB-1qwLIv3cT9-00dWG5; Fri, 26
+ Jan 2024 23:05:43 +0100
+Message-ID: <cbd72a58-6d6b-4e78-8028-63e92ad9502c@gmx.com>
+Date: Sat, 27 Jan 2024 08:35:39 +1030
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [GIT PULL] Btrfs fixes for 6.8-rc2
+Content-Language: en-US
+To: Linus Torvalds <torvalds@linux-foundation.org>, Qu Wenruo <wqu@suse.com>
+Cc: dsterba@suse.cz, David Sterba <dsterba@suse.com>,
+ linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1705946889.git.dsterba@suse.com>
+ <CAHk-=whNdMaN9ntZ47XRKP6DBes2E5w7fi-0U3H2+PS18p+Pzw@mail.gmail.com>
+ <20240126200008.GT31555@twin.jikos.cz>
+ <8b2c6d1f-2e14-43a0-b48a-512a3d4a811d@suse.com>
+ <CAHk-=wjhtqo_FEqZkPuOVUNZzsGhjftdcN9aQpA3f3WD0qS1pA@mail.gmail.com>
+ <7c4bc81e-51b4-4b93-8cae-f16663b1c820@suse.com>
+ <CAHk-=wj1h8GhhEuqmiCMZW7iBu3k7hn3mJSO9kTm7P31BCZExA@mail.gmail.com>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <CAHk-=wj1h8GhhEuqmiCMZW7iBu3k7hn3mJSO9kTm7P31BCZExA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:QPU7Y2ELcU5BU3RNadFFUpS77GELHdeUSviHfF3gCeLc+U8cHx5
+ 2UAVC+dovE3CsmoNOCiCUjGRFi2PR9JLGhaHt/CrHuzdbYSVRWAbniu57A4qYWmR8bjW+A3
+ gaf9UHxbFuNGY1AefNh3pHxb0yPfj4KJLPIZdYUDvJ8NOC0uvjZ90mWAYRa4b27yCG6lddZ
+ JKXqXdECOx+FqqrZToZCQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:AwyVdHZMhf4=;VOAhamGl0dDKzNkWnG+WDmnE3AN
+ 0dA4NJTNGpPGxs4sAvBxsR5uBoRTkNgmquoFIC6jf6c/kcpczIuioL8jyNhK1mG4+KGmaBcm0
+ AqttJUKLQKm/8Kk8zPJs/ulfPuUvLWuY4x0VnB+PFrEfsdpWmmgqkjMxwM+KxLOKtQosaFYFY
+ 7wOtXw9r71C5JaIr8m1DQBg9RrA+YiPMbHS2d+wJNY1vge2H4egajpiuwyvZu0EodA88yMZy7
+ jU5qOIyK/06HdA+7+Vy7ccLh/4xvPD1xk/UwOqlVYo0ueTMXm1hID+OSq37NYYaLVSqA0YXVQ
+ DXQ3hSXTRlLJYxYSnFZHjEzhEEmzmTmSa2dtFjQ6RUsMLss4mE/9jftdGyJBN6Gike6s03XdA
+ B9jgASrnVlj/cdC0L0YXbDNc9zPYUiXGnddH/QIiEaemBK4KdL3sMxp2+K3/Dq8SRbev23JWR
+ iE2MFKp65l0j/BcrBW7qwMfS2Vd+Ng3rAoKH5JzMDeIbuRNWwbjJ7Pu0z0uufT7t7Q7tCccCX
+ DNlr1JoT9tyqL4xw/CvKb7Ric3nATWp2dZU7AHwuBGOO7uBwgUNabHMNHzkJm3K0lTDqel9NW
+ Rve+T5wv7v5wa9dOyjp+k63hHKO9q5p6ugAHD1ENml0cUGbwviG/CJePJQOaImicXmvhOkIvk
+ uLQzF7+Udb4GNQtPbJHp1jxizE3bBWtK6dSeaIW1IUVf23XeA49cDFxd3wBkqgZNGm4xoy6MU
+ smt+LKUD+t//4mOEQYMrX/9EhgoSE0KZvBAWdY1yYlX9+PDWo5LZbS7HnYmdhacu8XPVfWQI5
+ kYvWHDyxDd/OxO6LSMscT9V6GOzULzkrJ+wa5vIv+i/GZLR9LWGTEHsIzA7fXihlMRAe/tQ77
+ ICN+AS1sgLEJLO4xsjEGdR12YfLkKSNn9ncEL6mMBIXq2K1cM5TXx9tWRpBDsHZpVtKWeRlmS
+ J9fQteMqi9cOYk+NCQqgq/4Ct1c=
 
-On Fri, Jan 26, 2024 at 11:49:02AM -1000, Tejun Heo wrote:
-> Hello,
-> 
-> On Thu, Jan 25, 2024 at 10:03:20PM -0300, Leonardo Bras wrote:
-> ...
-> > AS an optimization, if the current cpu is not isolated, use it's timer
->   ^                                                           ^
->   As                                                          its
-> 
-> > instead of looking for another candidate.
-> 
-> The sentence reads weird tho. It's always the same timer. We're deciding
-> which CPU to queue the timer on.
-> 
-
-Hello,
-
-Thanks for pointing that out, I will improve it in the v2.
 
 
+On 2024/1/27 08:32, Linus Torvalds wrote:
+> On Fri, 26 Jan 2024 at 13:56, Qu Wenruo <wqu@suse.com> wrote:
+>>
+>> On 2024/1/27 08:21, Linus Torvalds wrote:
+>>>
+>>> Allocation lifetime problems?
+>>
+>> Could be, thus it may be better to output the flags of the first page
+>> for tree-checker.
+>
+> Note that the fact that it magically went away certainly implies that
+> it never "really" existed, and that something was using a pointer or
+> similar.
+>
+> IOW, this is not some IO that got scribbled over, or a cache that got
+> corrupted. If it had been real corruption, I would have expected that
+> it would have stayed around in memory.
 
-> > @@ -1958,10 +1958,24 @@ static void __queue_delayed_work(int cpu, struct workqueue_struct *wq,
-> >  	dwork->cpu = cpu;
-> >  	timer->expires = jiffies + delay;
-> >  
-> > -	if (unlikely(cpu != WORK_CPU_UNBOUND))
-> > -		add_timer_on(timer, cpu);
-> > -	else
-> > -		add_timer(timer);
-> > +	if (likely(cpu == WORK_CPU_UNBOUND)) {
-> > +		if (!housekeeping_enabled(HK_TYPE_TIMER)) {
-> > +			/* Reuse the same timer */
-> 
-> This comment is confusing because it's always the same timer.
+Yep, thus it makes sense to show the page status of an eb.
 
-Thanks, I will point out this being the last cpu used to handle the timer.
-
-> 
-> > +			add_timer(timer);
-> > +			return;
-> > +		}
-> > +
-> > +		/*
-> > +		 * If the work is cpu-unbound, and cpu isolation is in place,
-> > +		 * only use timers from housekeeping cpus.
-> > +		 * If the current cpu is a housekeeping cpu, use it instead.
-> > +		 */
-> > +		cpu = smp_processor_id();
-> > +		if (!housekeeping_test_cpu(cpu, HK_TYPE_TIMER))
-> > +			cpu = housekeeping_any_cpu(HK_TYPE_TIMER);
-> > +	}
-> > +
-> > +	add_timer_on(timer, cpu);
-> >  }
-> 
-> I find the control flow a bit difficult to follow. It's not the end of the
-> world to have two add_timer_on() calls. Would something like the following
-> be easier to read?
-> 
-> 	if (housekeeping_enabled(HK_TYPE_TIMER)) {
-> 		cpu = smp_processor_id();
-> 		if (!housekeeping_test_cpu(cpu, HK_TYPE_TIMER))
-> 			cpu = housekeeping_any_cpu(HK_TYPE_TIMER);
-> 		add_timer_on(timer, cpu);
-> 	} else {
-> 		if (likely(cpu == WORK_CPU_UNBOUND))
-> 			add_timer(timer, cpu);
-> 		else
-> 			add_timer_on(timer, cpu);
-> 	}
-> 
-> Thanks.
-
-I am not really against it, but for me it's kind of weird to have that many 
-calls to add_timer_on() if we can avoid it. 
-
-I would rather go with:
-
-###
-if (unlikely(cpu != WORK_CPU_UNBOUND)) {
-	add_timer_on(timer, cpu);
-	return;
-}
-
-if (!housekeeping_enabled(HK_TYPE_TIMER)) {
-	add_timer(timer);
-	return;
-}
-
-cpu = smp_processor_id();
-if (!housekeeping_test_cpu(cpu, HK_TYPE_TIMER))
-	cpu = housekeeping_any_cpu(HK_TYPE_TIMER);
-
-add_timer_on(timer, cpu);
-###
-
-What do you think?
+It could be some race that the eb pages are not properly hold, thus its
+content changed unexpectedly.
 
 Thanks,
-Leo
+Qu
 
-> 
-> -- 
-> tejun
-> 
-
+>
+>                   Linus
+>
 
