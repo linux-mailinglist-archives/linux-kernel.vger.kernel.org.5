@@ -1,117 +1,362 @@
-Return-Path: <linux-kernel+bounces-40425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F3EA83DFE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:21:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D09C83DFE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:22:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CBBB2825DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:21:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31AD81C21D26
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:22:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05973200BA;
-	Fri, 26 Jan 2024 17:21:33 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E5B01EB45;
-	Fri, 26 Jan 2024 17:21:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 709111EB4F;
+	Fri, 26 Jan 2024 17:22:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nLA67ZYn"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E04A1EB41;
+	Fri, 26 Jan 2024 17:22:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706289692; cv=none; b=rulr+klGCW4qaPVvs964eg5szPpZERXf945MWfwktgDcXTyd/GIo50EUKvIh1zfh2nTOWCbJv4ik6Mgb+SEDx1vpXydavRyteRI6qwfN1zM26NeCDpobshoo4GvZXNr8f6YDoTlBoJt9+daACm6uqjsIQxECBK1UPvtcp0Ul6Zc=
+	t=1706289751; cv=none; b=OmI+yyukRIZ/RjKktGCfpEL5G4qcPxe6VArgaRgBtQ5p33rfybpVTDvZ2HUeuXUaiSW+rj3TvLW3uh7c6xqGqKJ1SlrFsIYKWbjoRIu0Is3BPbsraTQYGlKPlXsm6pPLIoyqAxPdfLmIWlhIDPF7h9cx3gViKbsrMf/2KRHCH0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706289692; c=relaxed/simple;
-	bh=f+GiwjdOekcSqEi3/DLPCaEvvf4ah7db8RL/lfaPNZ4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cGjwVIv5FUTX2ruMfmUEc1j2hDEk83iCy36YFJpY1qf8nAw4cMRmUBjnTk84v0akjjaO76/q5aCUkABFU/OLWPnu7sunTGAhL6acMvCnVSg6XW4v3Lk8qDki2RM4PKlLUOqYUn2GMF2qglQPyxsdHify1nFWesHuxogPqT7CAK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1111D1FB;
-	Fri, 26 Jan 2024 09:22:14 -0800 (PST)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 782C13F762;
-	Fri, 26 Jan 2024 09:21:26 -0800 (PST)
-Message-ID: <0cf72c00-21d9-4f1a-be14-80336da5dff4@arm.com>
-Date: Fri, 26 Jan 2024 17:21:24 +0000
+	s=arc-20240116; t=1706289751; c=relaxed/simple;
+	bh=faMjkaHk7os/E2kEVOp/ZNX+EUZRZ1j9yZusNn3y15I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KdlzdNPSek1Yvvof/P1RFBZCC92kV/weIzRB2PT1Cxs6fHuJ9p6z0gaXqYgYnROWjM5gYZDbtx7AeWP+KNtER6Kr+B7ytyoS7GbSBQPlUdCnpiTa1kIbtkVx/vAdTCfGP0JhapeXqh8zcIhAqSbtXnQcC7LHiBbNQYtpIpUt+h0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nLA67ZYn; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a27733ae1dfso38730666b.3;
+        Fri, 26 Jan 2024 09:22:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706289747; x=1706894547; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=frHohxChucR+396ZZyvCVKe3rd87cMANH2LHlTV9uT0=;
+        b=nLA67ZYnjSHHKr+QIFNsvOqKwNFbP9hamzg/k617hWKUUwvK8FpETCYc0yYgP4LeOr
+         MA1OMxHgifcxaE1bLQTwZT9benspt8sMfAREaSWyeEbiOaKNR3PxPEjP4QTh+cynlkkh
+         ZvGNRI7kybaA71ld98tOsTKYEM8r6riQK2y5dLerKustUyCWD3xoZOuqURZkp8A8bzm0
+         4226Nk33HIazX8JleqrSW35guL3/Y+zhhizei8M3iwqV6YGDegp7KWxePeNpWDxF+xSx
+         PACjdHKlianwqcmuiodkM0myNxMAh+tMYcvy4nE+XEurQ+xvrXWyJheP9CbgaxQPte4b
+         Uo1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706289747; x=1706894547;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=frHohxChucR+396ZZyvCVKe3rd87cMANH2LHlTV9uT0=;
+        b=fhGxjPdFphRCW24sCTiilzpx8yb/EoXDR07ld4doUda2QxtTaBv8qNvWaw20wFHQal
+         MKsXcg0lynsni1dgdN69oZap+Pc6jtuA3rjDAUN/bPneFCHhtiyDfokVf1//hWsfzvAY
+         S4P8ZLXuM7cbPZA5bGi1KW5IFX8MAEYqt+MS36oCuyjYMa/Cw1p33Wwt3ZChH0Yw4UrD
+         IZliQaob8i8rPkheO9hbDeCOW1of3YH23RbZaOXrZOH9j6LF4vvIV0S82Dw7OhbDYqmh
+         kYtlSoPZQsed/V4nTgdT0O8G2K2I+EZw/CpY3ARv3GnQfCDKa41IIA1tN/wrDoe4a2XL
+         MN+Q==
+X-Gm-Message-State: AOJu0Yw9YEG1wKNa1uG7GzpYaCB0emtXBbgYzQN2rnIomoqXrx5O3lv9
+	31yU1uFwKffHNYAaJpoNbe5Krdnm6W+Lp/hVJsgkBPnbRbgZDzjb5Wfyq6hrCHw8MOHZjxP5QM0
+	5FvFCVCbD5VbSsQIyRA8H2f4tL/U=
+X-Google-Smtp-Source: AGHT+IEv+VzPTgkhlM0Iyu9mf/bHiSiJ5tBWQ5F4heJdFo1RrwTSJwMPOP7fFmT7DWgwCzAtgYHxTGLHWB376hQqNSk=
+X-Received: by 2002:a17:906:bc5b:b0:a31:6811:bf99 with SMTP id
+ s27-20020a170906bc5b00b00a316811bf99mr570470ejv.56.1706289747305; Fri, 26 Jan
+ 2024 09:22:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 2/7] dma: avoid expensive redundant calls for
- sync operations
-Content-Language: en-GB
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Christoph Hellwig <hch@lst.de>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Alexander Duyck <alexanderduyck@fb.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240126135456.704351-1-aleksander.lobakin@intel.com>
- <20240126135456.704351-3-aleksander.lobakin@intel.com>
- <0f6f550c-3eee-46dc-8c42-baceaa237610@arm.com>
- <7ff3cf5d-b3ff-4b52-9031-30a1cb71c0c9@intel.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <7ff3cf5d-b3ff-4b52-9031-30a1cb71c0c9@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240125235723.39507-1-vinicius.gomes@intel.com> <20240125235723.39507-4-vinicius.gomes@intel.com>
+In-Reply-To: <20240125235723.39507-4-vinicius.gomes@intel.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Fri, 26 Jan 2024 19:22:14 +0200
+Message-ID: <CAOQ4uxh15X9pMY7Ck=iigaaKX11_77x5sZE9jxakTG9VpkuG6g@mail.gmail.com>
+Subject: Re: [RFC v2 3/4] overlayfs: Optimize credentials usage
+To: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Cc: brauner@kernel.org, hu1.chen@intel.com, miklos@szeredi.hu, 
+	malini.bhandaru@intel.com, tim.c.chen@intel.com, mikko.ylinen@intel.com, 
+	lizhen.you@intel.com, linux-unionfs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 26/01/2024 4:45 pm, Alexander Lobakin wrote:
-> From: Robin Murphy <robin.murphy@arm.com>
-> Date: Fri, 26 Jan 2024 15:48:54 +0000
-> 
->> On 26/01/2024 1:54 pm, Alexander Lobakin wrote:
->>> From: Eric Dumazet <edumazet@google.com>
->>>
->>> Quite often, NIC devices do not need dma_sync operations on x86_64
->>> at least.
->>> Indeed, when dev_is_dma_coherent(dev) is true and
->>> dev_use_swiotlb(dev) is false, iommu_dma_sync_single_for_cpu()
->>> and friends do nothing.
->>>
->>> However, indirectly calling them when CONFIG_RETPOLINE=y consumes about
->>> 10% of cycles on a cpu receiving packets from softirq at ~100Gbit rate.
->>> Even if/when CONFIG_RETPOLINE is not set, there is a cost of about 3%.
->>>
->>> Add dev->skip_dma_sync boolean which is set during the device
->>> initialization depending on the setup: dev_is_dma_coherent() for direct
->>> DMA, !(sync_single_for_device || sync_single_for_cpu) or positive result
->>> from the new callback, dma_map_ops::can_skip_sync for non-NULL DMA ops.
->>> Then later, if/when swiotlb is used for the first time, the flag
->>> is turned off, from swiotlb_tbl_map_single().
->>
->> I think you could probably just promote the dma_uses_io_tlb flag from
->> SWIOTLB_DYNAMIC to a general SWIOTLB thing to serve this purpose now.
-> 
-> Nice catch!
-> 
->>
->> Similarly I don't think a new op is necessary now that we have
->> dma_map_ops.flags. A simple static flag to indicate that sync may be> skipped under the same conditions as implied for dma-direct - i.e.
->> dev_is_dma_coherent(dev) && !dev->dma_use_io_tlb - seems like it ought
->> to suffice.
-> 
-> In my initial implementation, I used a new dma_map_ops flag, but then I
-> realized different DMA ops may require or not require syncing under
-> different conditions, not only dev_is_dma_coherent().
-> Or am I wrong and they would always be the same?
+On Fri, Jan 26, 2024 at 1:57=E2=80=AFAM Vinicius Costa Gomes
+<vinicius.gomes@intel.com> wrote:
+>
+> File operations in overlayfs also check against the credentials of the
+> mounter task, stored in the superblock, this credentials will outlive
+> most of the operations. For these cases, use the recently introduced
+> guard statements to guarantee that override/revert_creds() are paired.
+>
+> Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+> ---
+>  fs/overlayfs/copy_up.c |  4 +--
+>  fs/overlayfs/dir.c     | 22 +++++++------
+>  fs/overlayfs/file.c    | 70 ++++++++++++++++++++++--------------------
+>  fs/overlayfs/inode.c   | 60 +++++++++++++++++++-----------------
+>  fs/overlayfs/namei.c   | 21 ++++++-------
+>  fs/overlayfs/readdir.c | 18 +++++------
+>  fs/overlayfs/util.c    | 23 +++++++-------
+>  fs/overlayfs/xattrs.c  | 34 ++++++++++----------
+>  8 files changed, 130 insertions(+), 122 deletions(-)
+>
+> diff --git a/fs/overlayfs/copy_up.c b/fs/overlayfs/copy_up.c
+> index b8e25ca51016..55d1f2b60775 100644
+> --- a/fs/overlayfs/copy_up.c
+> +++ b/fs/overlayfs/copy_up.c
+> @@ -1202,7 +1202,8 @@ static int ovl_copy_up_flags(struct dentry *dentry,=
+ int flags)
+>         if (err)
+>                 return err;
+>
+> -       old_cred =3D ovl_override_creds(dentry->d_sb);
+> +       old_cred =3D ovl_creds(dentry->d_sb);
+> +       guard(cred)(old_cred);
+>         while (!err) {
+>                 struct dentry *next;
+>                 struct dentry *parent =3D NULL;
+> @@ -1227,7 +1228,6 @@ static int ovl_copy_up_flags(struct dentry *dentry,=
+ int flags)
+>                 dput(parent);
+>                 dput(next);
+>         }
+> -       revert_creds(old_cred);
+>
+>         return err;
+>  }
+> diff --git a/fs/overlayfs/dir.c b/fs/overlayfs/dir.c
+> index 0f8b4a719237..5aa43a3a7b3e 100644
+> --- a/fs/overlayfs/dir.c
+> +++ b/fs/overlayfs/dir.c
+> @@ -687,9 +687,9 @@ static int ovl_set_link_redirect(struct dentry *dentr=
+y)
+>         const struct cred *old_cred;
+>         int err;
+>
+> -       old_cred =3D ovl_override_creds(dentry->d_sb);
+> +       old_cred =3D ovl_creds(dentry->d_sb);
+> +       guard(cred)(old_cred);
+>         err =3D ovl_set_redirect(dentry, false);
+> -       revert_creds(old_cred);
+>
+>         return err;
+>  }
+> @@ -894,12 +894,13 @@ static int ovl_do_remove(struct dentry *dentry, boo=
+l is_dir)
+>         if (err)
+>                 goto out;
+>
+> -       old_cred =3D ovl_override_creds(dentry->d_sb);
+> -       if (!lower_positive)
+> -               err =3D ovl_remove_upper(dentry, is_dir, &list);
+> -       else
+> -               err =3D ovl_remove_and_whiteout(dentry, &list);
+> -       revert_creds(old_cred);
+> +       old_cred =3D ovl_creds(dentry->d_sb);
+> +       scoped_guard(cred, old_cred) {
+> +               if (!lower_positive)
+> +                       err =3D ovl_remove_upper(dentry, is_dir, &list);
+> +               else
+> +                       err =3D ovl_remove_and_whiteout(dentry, &list);
+> +       }
+>         if (!err) {
+>                 if (is_dir)
+>                         clear_nlink(dentry->d_inode);
+> @@ -1146,7 +1147,8 @@ static int ovl_rename(struct mnt_idmap *idmap, stru=
+ct inode *olddir,
+>                         goto out;
+>         }
+>
+> -       old_cred =3D ovl_override_creds(old->d_sb);
+> +       old_cred =3D ovl_creds(old->d_sb);
+> +       old_cred =3D override_creds_light(old_cred);
+>
+>         if (!list_empty(&list)) {
+>                 opaquedir =3D ovl_clear_empty(new, &list);
+> @@ -1279,7 +1281,7 @@ static int ovl_rename(struct mnt_idmap *idmap, stru=
+ct inode *olddir,
+>  out_unlock:
+>         unlock_rename(new_upperdir, old_upperdir);
+>  out_revert_creds:
+> -       revert_creds(old_cred);
+> +       revert_creds_light(old_cred);
+>         if (update_nlink)
+>                 ovl_nlink_end(new);
+>         else
 
-I think it's safe to assume that, as with P2P support, this will only 
-matter for dma-direct and iommu-dma for the foreseeable future, and 
-those do currently share the same conditions as above. Thus we may as 
-well keep things simple for now, and if anything ever does have cause to 
-change, it can be the future's problem to keep this mechanism working as 
-intended.
+Most of my comments on this patch are identical to the ones I have made on
+backing file, so rather complete that review before moving on to this bigge=
+r
+patch.
+
+I even wonder if we need a specialized macro for overlayfs
+guard(ovl_creds, ofs); or if
+guard(cred, ovl_override_creds(dentry->d_sb));
+is good enough.
+
+One thing that stands out in functions like ovl_rename() is that,
+understandably, you tried to preserve logic, but in fact, the scope of
+override_creds/revert_creds() in some of the overlayfs functions ir rather
+arbitrary.
+
+The simplest solution for functions like the above is to use guard(cred, ..
+and extend the scope till the end of the function.
+This needs more careful review, but the end result will be much cleaner.
+
+> diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
+> index 05536964d37f..482bf78555e2 100644
+> --- a/fs/overlayfs/file.c
+> +++ b/fs/overlayfs/file.c
+> @@ -42,7 +42,8 @@ static struct file *ovl_open_realfile(const struct file=
+ *file,
+>         if (flags & O_APPEND)
+>                 acc_mode |=3D MAY_APPEND;
+>
+> -       old_cred =3D ovl_override_creds(inode->i_sb);
+> +       old_cred =3D ovl_creds(inode->i_sb);
+> +       guard(cred)(old_cred);
+>         real_idmap =3D mnt_idmap(realpath->mnt);
+>         err =3D inode_permission(real_idmap, realinode, MAY_OPEN | acc_mo=
+de);
+>         if (err) {
+> @@ -54,7 +55,6 @@ static struct file *ovl_open_realfile(const struct file=
+ *file,
+>                 realfile =3D backing_file_open(&file->f_path, flags, real=
+path,
+>                                              current_cred());
+>         }
+> -       revert_creds(old_cred);
+>
+>         pr_debug("open(%p[%pD2/%c], 0%o) -> (%p, 0%o)\n",
+>                  file, file, ovl_whatisit(inode, realinode), file->f_flag=
+s,
+> @@ -214,9 +214,9 @@ static loff_t ovl_llseek(struct file *file, loff_t of=
+fset, int whence)
+>         ovl_inode_lock(inode);
+>         real.file->f_pos =3D file->f_pos;
+>
+> -       old_cred =3D ovl_override_creds(inode->i_sb);
+> -       ret =3D vfs_llseek(real.file, offset, whence);
+> -       revert_creds(old_cred);
+> +       old_cred =3D ovl_creds(inode->i_sb);
+> +       scoped_guard(cred, old_cred)
+> +               ret =3D vfs_llseek(real.file, offset, whence);
+>
+>         file->f_pos =3D real.file->f_pos;
+>         ovl_inode_unlock(inode);
+> @@ -388,7 +388,6 @@ static ssize_t ovl_splice_write(struct pipe_inode_inf=
+o *pipe, struct file *out,
+>  static int ovl_fsync(struct file *file, loff_t start, loff_t end, int da=
+tasync)
+>  {
+>         struct fd real;
+> -       const struct cred *old_cred;
+>         int ret;
+>
+>         ret =3D ovl_sync_status(OVL_FS(file_inode(file)->i_sb));
+> @@ -401,9 +400,11 @@ static int ovl_fsync(struct file *file, loff_t start=
+, loff_t end, int datasync)
+>
+>         /* Don't sync lower file for fear of receiving EROFS error */
+>         if (file_inode(real.file) =3D=3D ovl_inode_upper(file_inode(file)=
+)) {
+> -               old_cred =3D ovl_override_creds(file_inode(file)->i_sb);
+> +               const struct cred *old_cred;
+> +
+> +               old_cred =3D ovl_creds(file_inode(file)->i_sb);
+> +               guard(cred)(old_cred);
+>                 ret =3D vfs_fsync_range(real.file, start, end, datasync);
+> -               revert_creds(old_cred);
+>         }
+>
+>         fdput(real);
+> @@ -441,9 +442,9 @@ static long ovl_fallocate(struct file *file, int mode=
+, loff_t offset, loff_t len
+>         if (ret)
+>                 goto out_unlock;
+>
+> -       old_cred =3D ovl_override_creds(file_inode(file)->i_sb);
+> -       ret =3D vfs_fallocate(real.file, mode, offset, len);
+> -       revert_creds(old_cred);
+> +       old_cred =3D ovl_creds(file_inode(file)->i_sb);
+> +       scoped_guard(cred, old_cred)
+> +               ret =3D vfs_fallocate(real.file, mode, offset, len);
+>
+>         /* Update size */
+>         ovl_file_modified(file);
+> @@ -466,9 +467,9 @@ static int ovl_fadvise(struct file *file, loff_t offs=
+et, loff_t len, int advice)
+>         if (ret)
+>                 return ret;
+>
+> -       old_cred =3D ovl_override_creds(file_inode(file)->i_sb);
+> -       ret =3D vfs_fadvise(real.file, offset, len, advice);
+> -       revert_creds(old_cred);
+> +       old_cred =3D ovl_creds(file_inode(file)->i_sb);
+> +       scoped_guard(cred, old_cred)
+> +               ret =3D vfs_fadvise(real.file, offset, len, advice);
+>
+>         fdput(real);
+>
+> @@ -509,25 +510,25 @@ static loff_t ovl_copyfile(struct file *file_in, lo=
+ff_t pos_in,
+>                 goto out_unlock;
+>         }
+>
+> -       old_cred =3D ovl_override_creds(file_inode(file_out)->i_sb);
+> -       switch (op) {
+> -       case OVL_COPY:
+> -               ret =3D vfs_copy_file_range(real_in.file, pos_in,
+> -                                         real_out.file, pos_out, len, fl=
+ags);
+> -               break;
+> +       old_cred =3D ovl_creds(file_inode(file_out)->i_sb);
+> +       scoped_guard(cred, old_cred)
+> +               switch (op) {
+> +               case OVL_COPY:
+> +                       ret =3D vfs_copy_file_range(real_in.file, pos_in,
+> +                                                 real_out.file, pos_out,=
+ len, flags);
+> +                       break;
+>
+> -       case OVL_CLONE:
+> -               ret =3D vfs_clone_file_range(real_in.file, pos_in,
+> -                                          real_out.file, pos_out, len, f=
+lags);
+> -               break;
+> +               case OVL_CLONE:
+> +                       ret =3D vfs_clone_file_range(real_in.file, pos_in=
+,
+> +                                                  real_out.file, pos_out=
+, len, flags);
+> +                       break;
+>
+> -       case OVL_DEDUPE:
+> -               ret =3D vfs_dedupe_file_range_one(real_in.file, pos_in,
+> -                                               real_out.file, pos_out, l=
+en,
+> -                                               flags);
+> -               break;
+> -       }
+> -       revert_creds(old_cred);
+> +               case OVL_DEDUPE:
+> +                       ret =3D vfs_dedupe_file_range_one(real_in.file, p=
+os_in,
+> +                                                       real_out.file, po=
+s_out, len,
+> +                                                       flags);
+> +                       break;
+> +               }
+>
+>         /* Update size */
+>         ovl_file_modified(file_out);
+
+This is another case where extending the scope to the end of the function
+is the simpler/cleaner solution.
 
 Thanks,
-Robin.
+Amir.
 
