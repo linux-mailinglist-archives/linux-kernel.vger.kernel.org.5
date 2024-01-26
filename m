@@ -1,62 +1,55 @@
-Return-Path: <linux-kernel+bounces-40274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F38183DD6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:26:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A49E883DD5D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:24:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5366C1C21E1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:26:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 566111F21A8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:24:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA0C31D6AA;
-	Fri, 26 Jan 2024 15:25:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A05D1D539;
+	Fri, 26 Jan 2024 15:24:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qwIcy4O8"
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TP/gAuUa"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 733591D697
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:25:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 961B21D52C
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:24:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706282742; cv=none; b=KilYz0wc6iztOE3Ne7WJvZO+6fPaFGrTWIpHuOOgjfGuGTHxVSX0HjbFjb0ohPiivUbCm9vr9MtS4313VNFlYYSlZMuNeq1wbEu++ME2PATfunQyfSWtE0M5P+7wqpw05CegvJ3U2kBb6WUIsZmNa9ycy8W7sNTuhxeErxW72hU=
+	t=1706282656; cv=none; b=d/AGS2fbrM1W7MT/Q0p8UvL3/9lAIeyMui0NoeMB9FcxGke1QFkgT6SP7tgo6PFVDtIcsDf9r3LjJDdy1Rq6swIT+bKE14PKHKdnBRDHz5avbViyRlwmwDb186Cf39rVEm9momP2Vr1metCt0ocFsNhKWrFRTmBFdrk5uEO/4K0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706282742; c=relaxed/simple;
-	bh=1MgYoEYA0TYAFs7M4fp1D81Bw+npp83XpLElfpWHMK8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eBv3xNdrqoqeOqYEIjz0vH6pBkefL/CqZSOBqNQqBTO6HI0s/d4cJRRFtX+uXwzK3Ih2ISv1GxXJIB0kHFv2tKeguQuZkkIq3fnw+R34JKqYSKmOWAlNspPegdX7PIk4QL2wPuLf1cY8eng/4HSKz5rikYVqHd34nGXwDIRQwLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qwIcy4O8; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706282738;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jedycsf2hoazZl2VD5dKzn3Ogz/yNT2KcxNdOLYavB4=;
-	b=qwIcy4O8oYc6ieAe8OwvpEKH4wyBee3Jlif+nxuPJKFmuXp+E3oYFgTjBUsVhVcTbe3PJO
-	LbG1Yp4MWWpIydaJlX5rrJfhgvOcuD2EKuJO/Yme8P9fG6DM1ACjVdMyPO1FZ4Ag0JyV0D
-	a0k79BNlAPNr4wc8ZdQcdQUIK48SoXc=
-From: Gang Li <gang.li@linux.dev>
-To: David Hildenbrand <david@redhat.com>,
-	David Rientjes <rientjes@google.com>,
-	Mike Kravetz <mike.kravetz@oracle.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Tim Chen <tim.c.chen@linux.intel.com>
-Cc: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	ligang.bdlg@bytedance.com,
-	Gang Li <gang.li@linux.dev>
-Subject: [PATCH v5 6/7] hugetlb: parallelize 2M hugetlb allocation and initialization
-Date: Fri, 26 Jan 2024 23:24:10 +0800
-Message-Id: <20240126152411.1238072-7-gang.li@linux.dev>
-In-Reply-To: <20240126152411.1238072-1-gang.li@linux.dev>
-References: <20240126152411.1238072-1-gang.li@linux.dev>
+	s=arc-20240116; t=1706282656; c=relaxed/simple;
+	bh=lhfvdd0CQ97+F2PLgTG9KuevanbLcfk73SxBk1IuAQc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Ifv+sPFbfB5tcq3w9k0UmaIO4Df64YfDBPM0Ew66Izo2s6mZ0nGjqKXaG+oExi1jihY51ThfAl6ANiW2KBbhpqNdS+DAWvoK742jm0I/axS1niSk9fV8EwaeD+el30rK2Iqi1VGKVpgO9KXOqkLhbRqlkqucLa70NLEme0B7Q4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TP/gAuUa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3396C433F1;
+	Fri, 26 Jan 2024 15:24:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706282656;
+	bh=lhfvdd0CQ97+F2PLgTG9KuevanbLcfk73SxBk1IuAQc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=TP/gAuUaUu7icEys+fJSftia5Z2bBywBvzDtxCrryqHpAd9V259yshOGhMVtg4BDR
+	 aY9Ru6nX6qbLRwxHyHLWTh4rECc7wgBRSPLBaG9f8HbHMlmvlzOmGuxdSxJURsFp0d
+	 WSIBDAYsampsbf3sdJmmRG7uetx/NuQCIQUjYAYV8hNZYpzjeyM3rzUFVSZz3L+2MC
+	 TNPN4NjrWbZPXaKAxMrmoYmZdrHrqcByle4gAEtUY+RliW9Rq1rEbesLkjwyVYMOJe
+	 1YCnSnX8lrhbCzVkgzzIjgFl3/CRNKJrPziHRCeHpqxWTdzXV4JvsrFLzZPQnybX8L
+	 ai8dLo7R1QALA==
+From: Will Deacon <will@kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: kernel-team@android.com,
+	Will Deacon <will@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	David Brazdil <dbrazdil@google.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH] misc: open-dice: Fix spurious lockdep warning
+Date: Fri, 26 Jan 2024 15:24:10 +0000
+Message-Id: <20240126152410.10148-1-will@kernel.org>
+X-Mailer: git-send-email 2.20.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,126 +57,47 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-By distributing both the allocation and the initialization tasks across
-multiple threads, the initialization of 2M hugetlb will be faster,
-thereby improving the boot speed.
+When probing the open-dice driver with PROVE_LOCKING=y, lockdep
+complains that the mutex in 'drvdata->lock' has a non-static key:
 
-Here are some test results:
-      test case        no patch(ms)   patched(ms)   saved
- ------------------- -------------- ------------- --------
-  256c2T(4 node) 2M           3336          1051   68.52%
-  128c1T(2 node) 2M           1943           716   63.15%
+ | INFO: trying to register non-static key.
+ | The code is fine but needs lockdep annotation, or maybe
+ | you didn't initialize this object before use?
+ | turning off the locking correctness validator.
 
-Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
-Tested-by: David Rientjes <rientjes@google.com>
+Fix the problem by initialising the mutex memory with mutex_init()
+instead of __MUTEX_INITIALIZER().
+
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: David Brazdil <dbrazdil@google.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Will Deacon <will@kernel.org>
 ---
- mm/hugetlb.c | 73 ++++++++++++++++++++++++++++++++++++++++------------
- 1 file changed, 56 insertions(+), 17 deletions(-)
+ drivers/misc/open-dice.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index e4e8ffa1c145a..385840397bce5 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -35,6 +35,7 @@
- #include <linux/delayacct.h>
- #include <linux/memory.h>
- #include <linux/mm_inline.h>
-+#include <linux/padata.h>
+diff --git a/drivers/misc/open-dice.c b/drivers/misc/open-dice.c
+index 8aea2d070a40..d279a4f195e2 100644
+--- a/drivers/misc/open-dice.c
++++ b/drivers/misc/open-dice.c
+@@ -140,7 +140,6 @@ static int __init open_dice_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
  
- #include <asm/page.h>
- #include <asm/pgalloc.h>
-@@ -3510,6 +3511,30 @@ static void __init hugetlb_hstate_alloc_pages_errcheck(unsigned long allocated,
- 	}
- }
+ 	*drvdata = (struct open_dice_drvdata){
+-		.lock = __MUTEX_INITIALIZER(drvdata->lock),
+ 		.rmem = rmem,
+ 		.misc = (struct miscdevice){
+ 			.parent	= dev,
+@@ -150,6 +149,7 @@ static int __init open_dice_probe(struct platform_device *pdev)
+ 			.mode	= 0600,
+ 		},
+ 	};
++	mutex_init(&drvdata->lock);
  
-+static void __init hugetlb_pages_alloc_boot_node(unsigned long start, unsigned long end, void *arg)
-+{
-+	struct hstate *h = (struct hstate *)arg;
-+	int i, num = end - start;
-+	nodemask_t node_alloc_noretry;
-+	LIST_HEAD(folio_list);
-+	int next_node = first_online_node;
-+
-+	/* Bit mask controlling how hard we retry per-node allocations.*/
-+	nodes_clear(node_alloc_noretry);
-+
-+	for (i = 0; i < num; ++i) {
-+		struct folio *folio = alloc_pool_huge_folio(h, &node_states[N_MEMORY],
-+						&node_alloc_noretry, &next_node);
-+		if (!folio)
-+			break;
-+
-+		list_move(&folio->lru, &folio_list);
-+		cond_resched();
-+	}
-+
-+	prep_and_add_allocated_folios(h, &folio_list);
-+}
-+
- static unsigned long __init hugetlb_gigantic_pages_alloc_boot(struct hstate *h)
- {
- 	unsigned long i;
-@@ -3525,26 +3550,40 @@ static unsigned long __init hugetlb_gigantic_pages_alloc_boot(struct hstate *h)
- 
- static unsigned long __init hugetlb_pages_alloc_boot(struct hstate *h)
- {
--	unsigned long i;
--	struct folio *folio;
--	LIST_HEAD(folio_list);
--	nodemask_t node_alloc_noretry;
--
--	/* Bit mask controlling how hard we retry per-node allocations.*/
--	nodes_clear(node_alloc_noretry);
-+	struct padata_mt_job job = {
-+		.fn_arg		= h,
-+		.align		= 1,
-+		.numa_aware	= true
-+	};
- 
--	for (i = 0; i < h->max_huge_pages; ++i) {
--		folio = alloc_pool_huge_folio(h, &node_states[N_MEMORY],
--						&node_alloc_noretry);
--		if (!folio)
--			break;
--		list_add(&folio->lru, &folio_list);
--		cond_resched();
--	}
-+	job.thread_fn	= hugetlb_pages_alloc_boot_node;
-+	job.start	= 0;
-+	job.size	= h->max_huge_pages;
- 
--	prep_and_add_allocated_folios(h, &folio_list);
-+	/*
-+	 * job.max_threads is twice the num_node_state(N_MEMORY),
-+	 *
-+	 * Tests below indicate that a multiplier of 2 significantly improves
-+	 * performance, and although larger values also provide improvements,
-+	 * the gains are marginal.
-+	 *
-+	 * Therefore, choosing 2 as the multiplier strikes a good balance between
-+	 * enhancing parallel processing capabilities and maintaining efficient
-+	 * resource management.
-+	 *
-+	 * +------------+-------+-------+-------+-------+-------+
-+	 * | multiplier |   1   |   2   |   3   |   4   |   5   |
-+	 * +------------+-------+-------+-------+-------+-------+
-+	 * | 256G 2node | 358ms | 215ms | 157ms | 134ms | 126ms |
-+	 * | 2T   4node | 979ms | 679ms | 543ms | 489ms | 481ms |
-+	 * | 50G  2node | 71ms  | 44ms  | 37ms  | 30ms  | 31ms  |
-+	 * +------------+-------+-------+-------+-------+-------+
-+	 */
-+	job.max_threads	= num_node_state(N_MEMORY) * 2;
-+	job.min_chunk	= h->max_huge_pages / num_node_state(N_MEMORY) / 2;
-+	padata_do_multithreaded(&job);
- 
--	return i;
-+	return h->nr_huge_pages;
- }
- 
- /*
+ 	/* Index overflow check not needed, misc_register() will fail. */
+ 	snprintf(drvdata->name, sizeof(drvdata->name), DRIVER_NAME"%u", dev_idx++);
 -- 
-2.20.1
+2.43.0.429.g432eaa2c6b-goog
 
 
