@@ -1,167 +1,140 @@
-Return-Path: <linux-kernel+bounces-40602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88E4583E30A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:04:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E4A683E30C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:05:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A635B20CDF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:04:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3128C1F26529
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:05:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9703F22EE3;
-	Fri, 26 Jan 2024 20:04:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4140A22F1A;
+	Fri, 26 Jan 2024 20:04:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="i/lX5Faq"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Il1IIDZV"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3D3622616;
-	Fri, 26 Jan 2024 20:04:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8BE622627;
+	Fri, 26 Jan 2024 20:04:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706299459; cv=none; b=ijig1lA91DuTJNt7Rn1YXrfigMuRP1jmzv8htRGl8vOfXQFoqc76AvE0/8eJGUU6Qa7r5V6u2wzzjvmHFzD898FqKSuNmooV/Y6Sle2grxpJRgh1XQtyALd/CFMSWLfe8mpXK94Di5oe4Wwutk0fYPnhadYnrnxEx8yr+0eFzvc=
+	t=1706299486; cv=none; b=kGyGXlcnXECVwh1pFXhuKm4kjlw/quDacPS1BEJWyyQMJbuUYQIHAoJfzeUN7s8OWQE2HK8MKblFcnTS/C7DNUMwHqNdyUdwGwKpbcpqB0sNTBpxcakpGSyz5R/+eUmpK8N+GHOxF0hB6PPqiprhJ6Ki3pXlfx0SV5SHUP+rzKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706299459; c=relaxed/simple;
-	bh=WpeuBB6OF2cH1n6dbWfQ48jzm0zZaAYZoCRX4MyWQ8E=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=gXlxDSnTFQc29ndFquweFIGKlhS0Z9eeczmfV7htn4RCVHcWqac1pmsWXQcYBSPrK/ooE+SPyH9NlRzbTARbGQHYmpgSLCp2lZyel5pFUQYhGMBC0gmueJSMYuP33d3o5cQp25/m3j+bOhV95hisVoYARPH4QIbmOQKj8ako9cE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=i/lX5Faq; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1706299486; c=relaxed/simple;
+	bh=ccMl1PBgz/NjqHuJ3/eVNttfjTwPLda4GTqEe0hDckI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cfjp16J+kxxMFMOHBkcsYiMuHClY/oX8Y1OPA76sut+NvRfLHV8cCBS+ae2uXKbPKIDNiM21yKjmYamT/Pzl4VUUWiNnQCNwL54BXQeLT7BeDaj0jltObn3/WoaGNOI35pc87NPG7tzwDX/6N9E4EwW60OCjjUTv8yRaNXwrJlk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Il1IIDZV; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=jnmyjvSQEp/q0Ynx/vobufARP3No6TCftfqQmRh9fMk=; b=Il1IIDZVBS/VzUt1WtD259RrFI
+	8MtFMppx7LpmljStyWkBjpRUCfi92AfoBvWG9c+I5TzsWH3ZtNjOu0f6Je4+13YeieRvZa+4VH6nD
+	D7WV05AGGwWgBvsYNeSYe+SHXFf/kK2iB7+82vwjHk1TcZ09gEY5iGZErvn2JH5FF0HP4pGUfFXib
+	509XCEb8DkYbFt5kfrPfeVl+IEYn3xq4BgfpOOW2BAmGJePJ24+FwoODa/wJWn0xZVI7Pe0PpJ9mA
+	GB7syuG1ClK8Jy0LBb5lsEGzB1SqrozsONGhzbiVq4sS7z9dDnClx1KWM6KdEbkXUJqO9BJdpCaTz
+	pJXkvuyw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rTSRQ-00000005Jol-1izF;
+	Fri, 26 Jan 2024 20:04:44 +0000
+Date: Fri, 26 Jan 2024 12:04:44 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: kernel test robot <oliver.sang@intel.com>,
+	Daniel Gomez <da.gomez@samsung.com>, oe-lkp@lists.linux.dev,
+	lkp@intel.com, linux-kernel@vger.kernel.org,
+	"gost.dev@samsung.com" <gost.dev@samsung.com>,
+	Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH 1/2] test_xarray: add tests for advanced multi-index use
+Message-ID: <ZbQQXO5YhKhdr1Ou@bombadil.infradead.org>
+References: <20231104005747.1389762-2-da.gomez@samsung.com>
+ <202311152254.610174ff-oliver.sang@intel.com>
+ <ZVfS8fiudvHADtoR@bombadil.infradead.org>
+ <ZVfT3bs9+F0jqIAw@casper.infradead.org>
+ <ZVfUnhzv4UDigZKa@bombadil.infradead.org>
+ <ZbQEA6WIh0HrFTbP@bombadil.infradead.org>
+ <ZbQHWf0Hh04OwoZx@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1706299453;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GSe9cmELggsROW8Xa3K0sEdzswCwt2lkxHp4I65nO1s=;
-	b=i/lX5FaqbJSyzbAnEJyyaHyMOF4YfJwfmEhG3d7hPKYl5Gdati1LZW5uuDVPxyQm5GvoOB
-	JQrwFbRDLuiKl/9c6olOazGw5ERUg/IQKZk9vb/GZhnHAnNVGGEUxNMqpi/k2vzTM3K9nx
-	SwMQ0ipJknBOEbTbruAhcgqotsJkjWO8FjFj5biTohvmu3IBvwlSYngGrb7H6XwmpnFZqm
-	tZlzcD4AGC/qI7jxs92HXlXo6ojYJrvUaXnDCOqfftK24KdQw3RTVAElogAJIyFiGvLhsZ
-	e9T0SjMPoeI50YvU93d8zHFdNmArScFaon66WpNc0BIC+N2ZInwLyGLLs7tPbA==
-Date: Fri, 26 Jan 2024 21:04:12 +0100
-From: Dragan Simic <dsimic@manjaro.org>
-To: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Alexey Charkov <alchark@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, Viresh
- Kumar <viresh.kumar@linaro.org>
-Subject: Re: [PATCH 4/4] arm64: dts: rockchip: Add OPP data for CPU cores on
- RK3588
-In-Reply-To: <9b72b688-be63-464e-a5dc-cf6051ccee12@linaro.org>
-References: <20240125-rk-dts-additions-v1-0-5879275db36f@gmail.com>
- <20240125-rk-dts-additions-v1-4-5879275db36f@gmail.com>
- <731aac66-f698-4a1e-b9ee-46a7f24ecae5@linaro.org>
- <ccc004cfae513195351ce0a79e12f6af@manjaro.org>
- <CABjd4YxSTLZjrnSCn0fh81US682-uhZ16-cgydzz97shhCpq4w@mail.gmail.com>
- <1f0608831cfb95c80edf16cd751eee76@manjaro.org>
- <CABjd4Yx06igrZQvHA4q-mcr2oSEf7eQyUS+KEATUGbw6qLc2sg@mail.gmail.com>
- <528a37d84cdd871e717b4ebf648bb8a7@manjaro.org>
- <9b72b688-be63-464e-a5dc-cf6051ccee12@linaro.org>
-Message-ID: <0ed47e91c2d69ade447bd79bdfe5637a@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZbQHWf0Hh04OwoZx@casper.infradead.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-On 2024-01-26 13:56, Daniel Lezcano wrote:
-> On 26/01/2024 08:49, Dragan Simic wrote:
->> On 2024-01-26 08:30, Alexey Charkov wrote:
->>> On Fri, Jan 26, 2024 at 11:05 AM Dragan Simic <dsimic@manjaro.org> 
->>> wrote:
->>>> On 2024-01-26 07:44, Alexey Charkov wrote:
->>>> > On Fri, Jan 26, 2024 at 10:32 AM Dragan Simic <dsimic@manjaro.org>
->>>> > wrote:
->>>> >> On 2024-01-25 10:30, Daniel Lezcano wrote:
->>>> >> > On 24/01/2024 21:30, Alexey Charkov wrote:
->>>> >> >> By default the CPUs on RK3588 start up in a conservative performance
->>>> >> >> mode. Add frequency and voltage mappings to the device tree to enable
+On Fri, Jan 26, 2024 at 07:26:17PM +0000, Matthew Wilcox wrote:
+> On Fri, Jan 26, 2024 at 11:12:03AM -0800, Luis Chamberlain wrote:
+> > On Fri, Nov 17, 2023 at 01:01:18PM -0800, Luis Chamberlain wrote:
+> > > On Fri, Nov 17, 2023 at 08:58:05PM +0000, Matthew Wilcox wrote:
+> > > > On Fri, Nov 17, 2023 at 12:54:09PM -0800, Luis Chamberlain wrote:
+> > > > > +/*
+> > > > > + * Can be used in contexts which busy loop on large number of entries but can
+> > > > > + * sleep and timing is if no importance to test correctness.
+> > > > > + */
+> > > > > +#define XA_BUG_ON_RELAX(xa, x) do {				\
+> > > > > +	if ((tests_run % 1000) == 0)				\
+> > > > > +		schedule();					\
+> > > > > +	XA_BUG_ON(xa, x);					\
+> > > > > +} while (0)
+> > > > 
+> > > > That is awful.  Please don't do that.  You're mixing two completely
+> > > > unrelated thing into the same macro, which makes no sense.  Not only
+> > > > that, it's a macro which refers to something in the containing
+> > > > environment that isn't a paramter to the macro.
+> > > 
+> > > I figured you'd puke. Would you prefer I just open code the check on the loop
+> > > though? I'm sure another alternative is we *not care* about these
+> > > overloaded systems running the test. What would you prefer?
+> > 
+> > OK without any particular preferences outlined this is what I have,
+> > splitting the two contexts and making the busy loop fix clearer.
+> > 
+> > +#define XA_BUSY_LOOP_RELAX(xa, x) do {                         \
+> > +       if ((i % 1000) == 0)                                    \
+> > +               schedule();                                     \
+> > +} while (0)
+> > +
+> > +/*
+> > + * Can be used in contexts which busy loop on large number of entries but can
+> > + * sleep and timing is if no importance to test correctness.
+> > + */
+> > +#define XA_BUG_ON_RELAX(i, xa, x) do {                         \
+> > +       XA_BUSY_LOOP_RELAX(i);                                  \
+> > +       XA_BUG_ON(xa, x);                                       \
+> > +} while (0)
 > 
-> [ ... ]
+> No.  XA_BUG_ON_RELAX is not OK.  Really.
 > 
->>> Throttling would also lower the voltage at some point, which cools it
->>> down much faster!
->> 
->> Of course, but the key is not to cool (and slow down) the CPU cores 
->> too
->> much, but just enough to stay within the available thermal envelope,
->> which is where the same-voltage, lower-frequency OPPs should shine.
+> We have a perfectly good system for "relaxing":
 > 
-> That implies the resulting power is sustainable which I doubt it is the 
-> case.
+>         xas_for_each_marked(&xas, page, end, PAGECACHE_TAG_DIRTY) {
+>                 xas_set_mark(&xas, PAGECACHE_TAG_TOWRITE);
+>                 if (++tagged % XA_CHECK_SCHED)
+>                         continue;
+> 
+>                 xas_pause(&xas);
+>                 xas_unlock_irq(&xas);
+>                 cond_resched();
+>                 xas_lock_irq(&xas);
+>         }
 
-Hmm, why wouldn't it be sustainable?  Would you elaborate a bit, please?
-I mean, there are so many factors that can't be known for sure in 
-advance,
-so providing additional CPU throttling granularity can only be helpful.
+And yet we can get a soft lockup with order 20 (1,048,576 entries),
+granted busy looping over 1 million entries is insane, but it seems it
+the existing code may not be enough to avoid the soft lockup. Also
+cond_resched() may be eventually removed [0].
 
-> The voltage scaling makes the cooling effect efficient not the 
-> frequency.
-> 
-> For example:
-> 	opp5 = opp(2GHz, 1V) => 2 BogoWatt
-> 	opp4 = opp(1.9GHz, 1V) => 1.9 BogoWatt
-> 	opp3 = opp(1.8GHz, 0.9V) => 1.458 BogoWatt
-> 	[ other states but we focus on these 3 ]
-> 
-> opp5->opp4 => -5% compute capacity, -5% power, ratio=1
-> opp4->opp3 => -5% compute capacity, -23.1% power, ratio=21,6
-> 
-> opp5->opp3 => -10% compute capacity, -27.1% power, ratio=36.9
-> 
-> In burst operation (no thermal throttling), opp4 is pointless we agree 
-> on that.
+Anyway, we can ignore the soft lockup then.
 
-Well, if there's no thermal throtting at all, the opp3 is also not
-needed.  In an unlikely scenario like that, the opp5 is all we need.
+[0] https://lwn.net/Articles/950581/
 
-> IMO the following will happen: in burst operation with thermal
-> throttling we hit the trip point and then the step wise governor
-> reduces opp5 -> opp4. We have slight power reduction but the
-> temperature does not decrease, so at the next iteration, it is
-> throttle at opp3. And at the end we have opp4 <-> opp3 back and forth
-> instead of opp5 <-> opp3.
-
-Why should the temperature not decrease when switching from the opp5
-to the opp4?  See, we can't assume or know in advance that reducing
-the power consumption by 5% wouldn't do anything;  5% is actually
-quite a lot.  If that would do absolutely nothing, then something
-else would probably be wrong or not as expected.
-
-Also, for some workloads it might be better to have rather frequent
-transitions between the opp4 and the opp3, instead of staying at the
-opp3 for longer priods of time.  Running 100 MHz faster can be quite
-significant, especially on two CPU cores.
-
-> It is probable we end up with an equivalent frequency average (or
-> compute capacity avg).
-> 
-> opp4 <-> opp3 (longer duration in states, less transitions)
-> opp5 <-> opp3 (shorter duration in states, more transitions)
-> 
-> Some platforms had their higher OPPs with the same voltage and they
-> failed to cool down the CPU in the long run.
-> 
-> Anyway, there is only one way to check it out :)
-> 
-> Alexey, is it possible to compare the compute duration for 'dhrystone'
-> with these voltage OPP and without ? (with a period of cool down
-> between the test in order to start at the same thermal condition) ?
-
-I agree that testing and recording as much data as possible is the best
-approach.  However, quite frankly, we should run more different tests,
-not only one synthetic test.
+  Luis
 
