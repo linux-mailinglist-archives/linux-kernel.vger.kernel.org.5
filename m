@@ -1,132 +1,116 @@
-Return-Path: <linux-kernel+bounces-39714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCE5983D543
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:02:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7179A83D548
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:03:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BE111C25187
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:02:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A02151C25B51
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:03:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D1805C5E7;
-	Fri, 26 Jan 2024 07:42:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="C4LPTNxN"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE0CF5FDCF;
+	Fri, 26 Jan 2024 07:43:27 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECDE8D272
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 07:42:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FEB75FB98
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 07:43:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706254940; cv=none; b=WwQ9lBWphkibshBS6a57VWifoyVSsww/9P6YGqtCfpOEMcCnz5NMHsID11/hK0w/nXwLMA/VmhxwTuaHqQyBXQzDLQ916lzeRPxV9swuL0MPz0ongU0BML0n5f6hXbiVu/B3hfxljoS/+b5E81wbLlP6AKP+kTt0zljgqTua48g=
+	t=1706255007; cv=none; b=QiXZjDBwJ5XIAlVKGnUW51FflUgA3agF5wTteNPqePir1SNFF8mkKP4JfXZ5KnoHtrsG+FJ06T0MXbyngqqIc712JtqJgOADkexKx+hrgg6hy2ExI7+7Zbf9G0BhQuq0UcwH++MngdHNxfUZXShfKcBPTH3UyfMt5rlQX/Dkvws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706254940; c=relaxed/simple;
-	bh=tQ2c/cEw5aGWnB+naAPEzDYby+wwji15e2euP5qvuIY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JdIGVQ1jucGNFPvQP4lqn2nXVthaev16xuunA2vrasnd0FkagyObYy2KBsAlU7CanfG5+0WfNp/7ps5aXJ2at8GoqvoLc/4+R43eqEcZCO8b3nbblH76KC5OwpofWn/AgcAn57FGrEAXDbs+VyF5qcXnr1zGY7uMv4QvzH44Czg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=C4LPTNxN; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-339289fead2so76133f8f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 23:42:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706254937; x=1706859737; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bnzF4d7oKuUxVxb8z8zdPhok7BTrKRtoEsaABtyF68M=;
-        b=C4LPTNxNkVmvTzzpl2deAb7f9nHS9gfz7uijCtITPNBUjkDENwiM+Zkr2uXoKw9SCp
-         16k3alnceek0xjqhbutM5qwgnTUPR5rBeFYcajLF1WQqXdcQlbAOiY++tu6wjjs8qvGB
-         C6iEV04jHiWdVdPKiCIgsM9fX+yA/mHiDyMYPuq85Si0XHirS+tuo0L4x+jsgzXiY6Ey
-         d4QGtlN0QbC1LC24AeXpww4CnNJi+r6qeHbgueOjJOSqape+J4DgMpdrxtdXZcMBw1Lr
-         UUW8o4OXVLs3POhQZO9As2708Q7r5nOCasg4sCcFInRJ/ui5OXWGXA1FF5vfJysieZvJ
-         Sf/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706254937; x=1706859737;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bnzF4d7oKuUxVxb8z8zdPhok7BTrKRtoEsaABtyF68M=;
-        b=p6QkbIr3XHNxvtsL/irwD35SnI8E/tU4cZMcvf7ACAe/k+L4onNgDJv0csir6wZrus
-         60Q9kozIjQjAi9c9QRY5tfpXm51GSjXO2lZqHtlG4mfs9tEHVB6Z6AFANqLO0lCbBLh8
-         VgTZWe0EmDhQ7Ci8x0BtlTY0VUnhFoJyOa/I/gBnLhGXcZs2BUx3pFm64S6ICjGObYC7
-         rSekPe69LboVEkRA4KyINXqrVJ6xgO9XvhgZhFJQe+g74VWtYAlQR1/F8ZlXvlr55Vj3
-         Vv7Ln5a12nl363m53N0x6ZMKLhz2ocZAci4OXE/14edzYFljZbcrSgSR3sVa3ds6E+zf
-         eafg==
-X-Gm-Message-State: AOJu0Yy8FaSWppkpCVm+QFWn9TrB4Ru8PvNzHr4OyfhaW0JhmM9ehVZ+
-	vDT9w0bI4P0446r5ze/MLspd5KeRybOV+GR57y540F/EkcbZilJyOc3CJGK/TwE=
-X-Google-Smtp-Source: AGHT+IGxzskXsWJhluWdGE+2pAIX5uI6zyafuzHDyLWiX8QqbRioRlYV/axGVinNGwk1ssNvCZdZyA==
-X-Received: by 2002:a5d:5302:0:b0:339:3edd:1435 with SMTP id e2-20020a5d5302000000b003393edd1435mr651614wrv.56.1706254937133;
-        Thu, 25 Jan 2024 23:42:17 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id b26-20020adf9b1a000000b0033924b4d1f9sm651781wrc.94.2024.01.25.23.42.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 23:42:16 -0800 (PST)
-Message-ID: <04da0787-0b44-4c60-94c5-e3a521af2381@linaro.org>
-Date: Fri, 26 Jan 2024 07:42:15 +0000
+	s=arc-20240116; t=1706255007; c=relaxed/simple;
+	bh=bh4DnAIp844o0MAVMefmOG3k05BtVm3TzcLgj5nvm4w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=snzdFbTU7qOOGsyNIa6VyHYEafI3+1CUdOrH2+jVGM0LPS3UVzU+rbfEppI6Z1qkUyEw1DPbqLKBe7HvIYFBtuH0TBVqaeA51y0d87tEF/mBWZGGz65emELdtjui33+XbAFyZsFtATP4m1z6V2CO57bi1oSWhSasCHOGRrWpEIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rTGru-0001Ke-Ir; Fri, 26 Jan 2024 08:43:18 +0100
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rTGrr-002Sf6-CF; Fri, 26 Jan 2024 08:43:15 +0100
+Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rTGrr-001sXQ-9R; Fri, 26 Jan 2024 08:43:15 +0100
+Date: Fri, 26 Jan 2024 08:43:15 +0100
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Esben Haabendal <esben@geanix.com>
+Cc: Andi Shyti <andi.shyti@kernel.org>,
+	Alexander Stein <alexander.stein@ew.tq-group.com>,
+	Fabio Estevam <festevam@gmail.com>,
+	Sascha Hauer <s.hauer@pengutronix.de>, linux-kernel@vger.kernel.org,
+	Gregor Herburger <gregor.herburger@ew.tq-group.com>,
+	linux-i2c@vger.kernel.org,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Jinjie Ruan <ruanjinjie@huawei.com>,
+	linux-arm-kernel@lists.infradead.org,
+	NXP Linux Team <linux-imx@nxp.com>
+Subject: Re: [PATCH] i2c: imx: move to generic GPIO recovery
+Message-ID: <20240126074315.GE381737@pengutronix.de>
+References: <01abf8ccc0af74b4fb0124977ed6bdfb9d7107b6.1706190706.git.esben@geanix.com>
+ <20240126060719.GD381737@pengutronix.de>
+ <875xzgh7dr.fsf@geanix.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 13/28] spi: s3c64xx: propagate the dma_submit_error()
- error code
-Content-Language: en-US
-To: Sam Protsenko <semen.protsenko@linaro.org>
-Cc: broonie@kernel.org, andi.shyti@kernel.org, arnd@arndb.de,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- alim.akhtar@samsung.com, linux-spi@vger.kernel.org,
- linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-arch@vger.kernel.org, andre.draszik@linaro.org,
- peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com
-References: <20240125145007.748295-1-tudor.ambarus@linaro.org>
- <20240125145007.748295-14-tudor.ambarus@linaro.org>
- <CAPLW+4m6W-SC=gijBkx_-pK7RvcxFQgnkQzpA23hbO5TEYd_3A@mail.gmail.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <CAPLW+4m6W-SC=gijBkx_-pK7RvcxFQgnkQzpA23hbO5TEYd_3A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <875xzgh7dr.fsf@geanix.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-
-
-On 1/25/24 20:23, Sam Protsenko wrote:
-> On Thu, Jan 25, 2024 at 8:50 AM Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
->>
->> Propagate the dma_submit_error() error code, don't overwrite it.
+On Fri, Jan 26, 2024 at 08:38:08AM +0100, Esben Haabendal wrote:
+> Oleksij Rempel <o.rempel@pengutronix.de> writes:
 > 
-> But why? What would be the benefit over -EIO
-
-I'd like to see why dma submit fail rather than "oh, it's an EIO".
-DMA submit should just add the dma descriptor to a queue, without firing
-it, thus EIO looks very wrong here, and it's misleading.
-
+> > ....
+> >> +	struct i2c_bus_recovery_info *bri = &i2c_imx->rinfo;
+> >>  
+> >> -	dev_dbg(&pdev->dev, "using scl%s for recovery\n",
+> >> -		rinfo->sda_gpiod ? ",sda" : "");
+> >> +	bri->pinctrl = devm_pinctrl_get(&pdev->dev);
+> >> +	if (IS_ERR(bri->pinctrl))
+> >> +		return PTR_ERR(bri->pinctrl);
+> >
+> > According to the commit message - "pinctrl becomes optional", but this
+> > code stops probe if pinctrl will fail for one or another reason. I do
+> > not see any place returning NULL on fail. Do I'm missing something?
 > 
->>
->> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
->> ---
->>  drivers/spi/spi-s3c64xx.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
->> index 48b87c5e2dd2..25d642f99278 100644
->> --- a/drivers/spi/spi-s3c64xx.c
->> +++ b/drivers/spi/spi-s3c64xx.c
->> @@ -316,7 +316,7 @@ static int prepare_dma(struct s3c64xx_spi_dma_data *dma,
->>         ret = dma_submit_error(dma->cookie);
->>         if (ret) {
->>                 dev_err(&sdd->pdev->dev, "DMA submission failed");
->> -               return -EIO;
->> +               return ret;
->>         }
->>
->>         dma_async_issue_pending(dma->ch);
->> --
->> 2.43.0.429.g432eaa2c6b-goog
->>
+> The caller, i2c_imx_probe(), does only check for -EPROBE_DEFER, and
+> simply ignores any other error codes.
+> 
+> I assume it is on purpose, so any problems with initializing i2c
+> recovery does not cause complete failure of the i2c controller, which
+> seems sane to me.
+
+Good point, this is what I overlooked :)
+
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
