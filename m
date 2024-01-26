@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-40827-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B62D83E69F
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 00:20:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CC5583E6A0
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 00:20:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4287328D7D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:20:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09C201F27B53
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:20:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79AB660EF2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCAC4612CB;
 	Fri, 26 Jan 2024 23:16:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="X03KjJAO"
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YF9wJFWW"
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36B2960874
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 23:16:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A53604D8
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 23:16:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706310979; cv=none; b=ZajMQ8PQrybOptwwOSS36v4I3SrwUsQ7gKEgVnpUEPf0oYm/QXy8qxmj512umze3LZVRjVzGNw9jRDeS702bgQ1Cy9KsXtNAJ0SqPgC2GWg1MOWbQIHkGUKYbT7I7GeOsYhG8IA/otgU2legAZqM+B6p3dliFIyxnL5+tbR8G/0=
+	t=1706310979; cv=none; b=tNWfsriqRx1VtkmBF4x+rJqqz4pRY3Mc+7IBQxdE+zvolFBUV1YdZYDYhLCT42/C0N411zhOciWy6b+RbQcYoSXcuX9YXNftWBHT1uB4T6ALA5WiwwJL6+GRzRvyTDD4Hdb4EBjUYAu7VFvya2380z/wx5GpF4wkQYzg7Clib4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706310979; c=relaxed/simple;
-	bh=B6zEqxG5rqQR51zJ3+OSzp49ESM0jCrcuqW7/EIH/N8=;
+	bh=D9jb+fZPg4cu81svPtGcxnqe5Dh39wQmeEcuV3Gqubk=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=CE4XYYJm7lR628+AoVpZfgzyGMUhQda+NItn7vQgfoAr9B/nTL7NZ6VlrALC8qdCEXxrD/A+dgbrdvJWV75tvH0Gcw5kHJylfGEVmeJRNy3i+P6wkC9csslOuA8gq92kjlwKyT/eTy5yy6wPCe+BdbuqPp/tqcGmggbr3Wg4Sd4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=X03KjJAO; arc=none smtp.client-ip=209.85.222.175
+	 In-Reply-To:To:Cc; b=J750ySZZRxOtltLrhwY9Gov2UMeokgKsUDBMTFw3Jg8BQRw1AfY9ZsZTkYW9i7EDAMw6Auh3WuhMgxed6gJgWMpaNd9MDAPKANxQdDffTsOzYNGNJrEIcONYiHOfYaTC//UPbGojDJfCokP/SiQ/ABt+sRQISF98NGyvXZVzMlU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=YF9wJFWW; arc=none smtp.client-ip=209.85.222.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-7835aea8012so87058585a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:16:15 -0800 (PST)
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7831806c51bso75191885a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:16:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706310975; x=1706915775; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1706310976; x=1706915776; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=2rgIqJyES8gEo830PNonJo5H+atO47Cm+Ctp+2scN+Q=;
-        b=X03KjJAOtHHkcbio9vuB774lyQE5gTPbIxFDq3+oBdoVy1Ec4Hadk9WVPZDOQMbwwm
-         wNW9/tIZazaspHSt/jxrdxS8MpD7qx9lTER6oC0QHg0xyBhqDepO4rYeENBzNOuCjQ35
-         EAq6Sqq4kVf1El/wPQB+JrK+wmuFYorionnSw=
+        bh=ppFxbOlS/v6G/Iyc2Jdz2aiKlAo+YrKUjtIhEQOSvas=;
+        b=YF9wJFWW8riAvKbdCSLBp5VIkAkfizSXjINh56Ek8ykITvI/uKDpqmBdwavsJvMcXG
+         Er4tIHo5oroL+OdkIf6Xj5j6quybpiI0IvFrIuv4AsZ3ZgFeNCD028RPiISUTZ4b9uJU
+         AnI61mWZLw6N9Nk3AW7tF1BOYdggr/H7GzYbE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706310975; x=1706915775;
+        d=1e100.net; s=20230601; t=1706310976; x=1706915776;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2rgIqJyES8gEo830PNonJo5H+atO47Cm+Ctp+2scN+Q=;
-        b=Em5+7RK+KSqA2klIHOgph1nNuQmBa7IDMP/cCNidlOn/qAveNscF2Sd2xXHNOMX6Oo
-         HFnyi9UTaoEadi1FKOrxGG+hmvnO0523rysMeod3rDBE6a87T68+j7LQVUw7K0WeP9Jy
-         ujCNJ0UlCDQCzf6ARs2DuJcSU9LBKRP6JwleAcPKvizjA3oUZvMgRu5KDtQFxQXuR+PD
-         anaahNE25W8w5VMZJkZ0oA26WFn5VcTx4m/4OUDYX6FML2xhGQPnEZmQnA/LgXhumoaA
-         MxwINzgb4uvdUILQD2GgnUnqJ5C+QdXCRB3imv2n3/+49yJewxgKDHNW02szvJ+wYfKB
-         SOjA==
-X-Gm-Message-State: AOJu0YyvNL4nnNq/6WFv9STBiQKVu6lmf2oSUbVq5fNkRAruCmrUK1UX
-	VHQhhy/BmkiG4HlGL2J7a0gqNy5wghtrFEQYp88jlOUHqHwoIXSUh0e7mzz6Ag==
-X-Google-Smtp-Source: AGHT+IFd4epluudoTRMCuHg+DI2SZnbO+Lp5toeNsVP6WGNIo3gmA/FS5q4GFf/JRmu/UhK6CO/sRA==
-X-Received: by 2002:a05:620a:137c:b0:783:9ab7:374 with SMTP id d28-20020a05620a137c00b007839ab70374mr557152qkl.8.1706310975053;
-        Fri, 26 Jan 2024 15:16:15 -0800 (PST)
+        bh=ppFxbOlS/v6G/Iyc2Jdz2aiKlAo+YrKUjtIhEQOSvas=;
+        b=PTxG3o/p00WTPn+EViuRH7Px9kFmAeWIIXzRUWim5KVVqrnUSc3EwGpIcBwYJtI3yS
+         GlO+t6yQpUrxf3VOqW0UQCAQS7uVQAmwUYVKsEphy0Jh0RQDuMb1Yp4aCjTbmbQxaosy
+         uXT556c9wEnFZZWk0k30Yu6jmi2xHb3dD1gis6Ha5JkNSY6xPfOfTcMN868GkjAZTBmw
+         ey6ufiTOJBLrquMzD11lLv5Du/ErhtWO+WaGurlKzqH6zR3vazJRqZyXTjHTIMVfs0lM
+         PSLW8vJ2L2BU/ewXvqe5mHqz6sDXzU55GrvPRWuLKfiT9W+lc/ZBYfDIxrknWmMc5FUS
+         uBKg==
+X-Gm-Message-State: AOJu0YySakE77bTIztbsB6nHAmpItCpPNsDCmCCtNS9rc0oM2FmOcWr+
+	uwlveqOiWKMuiduka5tZgsu6MpIniv4AXw29axeQHGObZn5uiJYllK/UttiNNg==
+X-Google-Smtp-Source: AGHT+IGIpAsQSjaDQPGQ6LECGQr9cN1m4828+DZymi0+3bzM+4XluVJo4MprbQD7HbxK6yJ3CFbmNg==
+X-Received: by 2002:a05:620a:2182:b0:783:e064:aa09 with SMTP id g2-20020a05620a218200b00783e064aa09mr622459qka.115.1706310976118;
+        Fri, 26 Jan 2024 15:16:16 -0800 (PST)
 Received: from denia.c.googlers.com (240.157.150.34.bc.googleusercontent.com. [34.150.157.240])
-        by smtp.gmail.com with ESMTPSA id m4-20020a05620a290400b00783de3ddf5esm507358qkp.70.2024.01.26.15.16.14
+        by smtp.gmail.com with ESMTPSA id m4-20020a05620a290400b00783de3ddf5esm507358qkp.70.2024.01.26.15.16.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 15:16:14 -0800 (PST)
+        Fri, 26 Jan 2024 15:16:15 -0800 (PST)
 From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Fri, 26 Jan 2024 23:16:08 +0000
-Subject: [PATCH 09/17] media: mediatek: vcodec: Fix kerneldoc
+Date: Fri, 26 Jan 2024 23:16:09 +0000
+Subject: [PATCH 10/17] media: verisilicon: Fix kerneldoc
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,7 +73,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240126-gix-mtk-warnings-v1-9-eed7865fce18@chromium.org>
+Message-Id: <20240126-gix-mtk-warnings-v1-10-eed7865fce18@chromium.org>
 References: <20240126-gix-mtk-warnings-v1-0-eed7865fce18@chromium.org>
 In-Reply-To: <20240126-gix-mtk-warnings-v1-0-eed7865fce18@chromium.org>
 To: Tiffany Lin <tiffany.lin@mediatek.com>, 
@@ -111,51 +111,25 @@ Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-amlogic@lists.infradead.org, Ricardo Ribalda <ribalda@chromium.org>
 X-Mailer: b4 0.12.3
 
-Those fields have been removed. They do not need to be documented.
+The field is not part of the structure. Remove the doc.
 
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.h | 1 -
- drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.h    | 1 -
- drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.h | 1 -
- 3 files changed, 3 deletions(-)
+ drivers/media/platform/verisilicon/hantro.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.h b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.h
-index ece27c880e50..1af075fc0194 100644
---- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.h
-+++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.h
-@@ -39,7 +39,6 @@ struct vdec_fb {
- /**
-  * struct mtk_video_dec_buf - Private data related to each VB2 buffer.
-  * @m2m_buf:	M2M buffer
-- * @list:	link list
-  * @used:	Capture buffer contain decoded frame data and keep in
-  *			codec data structure
-  * @queued_in_vb2:	Capture buffer is queue in vb2
-diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.h b/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.h
-index fbb3f34a73f0..aa7d08afc2f4 100644
---- a/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.h
-+++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.h
-@@ -22,7 +22,6 @@ struct mtk_vcodec_dec_ctx;
-  *                in place of inst_addr in messages.
-  * @signaled    : 1 - Host has received ack message from VPU, 0 - not received
-  * @ctx         : context for v4l2 layer integration
-- * @dev		: platform device of VPU
-  * @wq          : wait queue to wait VPU message ack
-  * @handler     : ipi handler for each decoder
-  * @codec_type     : use codec type to separate different codecs
-diff --git a/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.h b/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.h
-index 82246401ed4a..908d8179b2d2 100644
---- a/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.h
-+++ b/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.h
-@@ -26,7 +26,6 @@
- /**
-  * struct mtk_video_enc_buf - Private data related to each VB2 buffer.
-  * @m2m_buf:	M2M buffer
-- * @list:	list that buffer link to
-  * @param_change: Types of encode parameter change before encoding this
-  *				buffer
-  * @enc_params: Encode parameters changed before encode this buffer
+diff --git a/drivers/media/platform/verisilicon/hantro.h b/drivers/media/platform/verisilicon/hantro.h
+index 6f5eb975d0e3..811260dc3c77 100644
+--- a/drivers/media/platform/verisilicon/hantro.h
++++ b/drivers/media/platform/verisilicon/hantro.h
+@@ -237,7 +237,6 @@ struct hantro_dev {
+  * @codec_ops:		Set of operations related to codec mode.
+  * @postproc:		Post-processing context.
+  * @h264_dec:		H.264-decoding context.
+- * @jpeg_enc:		JPEG-encoding context.
+  * @mpeg2_dec:		MPEG-2-decoding context.
+  * @vp8_dec:		VP8-decoding context.
+  * @hevc_dec:		HEVC-decoding context.
 
 -- 
 2.43.0.429.g432eaa2c6b-goog
