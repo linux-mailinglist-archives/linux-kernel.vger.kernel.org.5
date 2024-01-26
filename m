@@ -1,253 +1,149 @@
-Return-Path: <linux-kernel+bounces-40044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 572B183D97B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:37:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FC2583D954
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:30:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09DECB2853C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:26:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15A6E1C24FDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:30:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FF5514288;
-	Fri, 26 Jan 2024 11:26:50 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D7F213FE4
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 11:26:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AE351429E;
+	Fri, 26 Jan 2024 11:30:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b="Iv99MF2k"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 353D81118C
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 11:29:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706268409; cv=none; b=CQHLZik480/hgP5IKz+KLk5WoVZ0sLAbAbq3CEaPSuLu/6tMw5ribdmz/EACxozFbtDtGJb5b/dRt8t69tk+/VXzrIued4KFn7w7QgSO+AZothcf6JGgC21Hr9HOVpQgKi+FlYu1bZ6/rZu2E1Oa9GGCi9Fjn6a0bJYp6HBjrz8=
+	t=1706268600; cv=none; b=nzx8uTX/hayNfd6HvJmdGynSkzmvfSdHCLgR/deBoe3M8R6DZ3WfXqkc8VNFkMWbry591TRhTcP98PNjh6aGoCyU24aq07yfAtkZ20hPhD8tyOuL7SBiELtGvZJARdV8RSmz0ynmZ9R0TPJOOIz7WBq7/KZRfVf80KlkmICzf4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706268409; c=relaxed/simple;
-	bh=gu0PhGkylvtrDWf8V2mRv6VBhqsE4IZZB78F3hEY5lA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=a1M4taCTmEtXOvRHJIVUqKCH2dCKPHqckz24JdxNOR3U3SKADHH1nS2pMYfPYqNUKmAstadZObTlHfjhtrTUIlS0wm5/oWpccALfuI2NeSTiYPii4NlE9OHxdg5CxYs/DXkw1iMt/yCQCo+B7l2gB7gmTCWfFHZGuki0JqqjZBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 463E21FB;
-	Fri, 26 Jan 2024 03:27:24 -0800 (PST)
-Received: from [10.1.196.86] (unknown [10.1.196.86])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7BAFD3F762;
-	Fri, 26 Jan 2024 03:26:37 -0800 (PST)
-Message-ID: <b3124b28-5c94-44c4-8f9a-1bd9e46a4cab@arm.com>
-Date: Fri, 26 Jan 2024 11:26:36 +0000
+	s=arc-20240116; t=1706268600; c=relaxed/simple;
+	bh=kk8TW/ENv6T0jmFy9Fe2+TbD0NwhTcZRKCATFbVXU5Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=V2QuLkMjnpZKA3vD2AILKLGkqC5+1kByeMy5ZEJ8rc7g/BLxqkGL4HLz7303E5B0JB5QV/zoi+XRVQdqiaBf/f49Fy3bSlP5wmdVz3+dZ5zqdmNpAj6bmA3lkCPpNgC7kkDqWIhJc0Ur4sEV5zHCQJLJQ0KHbZ/l9hmBtBAwFQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com; spf=pass smtp.mailfrom=9elements.com; dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b=Iv99MF2k; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=9elements.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40eccccfce0so3939835e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 03:29:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1706268596; x=1706873396; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4MpsuS1RISyLieZhG+nOiB9EUsr5IB8MOc8CVenn3tg=;
+        b=Iv99MF2kSSEJGJY2SZq2G/qhZ0/3ytHYOkTRoy7bzw7AkwjNpKKDqfMGQNonCVsA2X
+         RqdrvIfrbei+JIgmhpGt8y+ctkgE6mOpx7iA3VDOrH8M5pph3NGH9woIVbC1bAculiBw
+         rX9Tlhs6NW4fnNmzXcLeGP1kA1/x2/0o83h3nHrhkLnh6W4Fpf9KTuxbkFb7dUQG8FpK
+         qBXrWHV4pM0kqK30Sq8SeFSAg3lG96cvpqysCXRIQt8htqlWcGPR55MR4GqyOUr6IQSq
+         Oa53djDYl4mCUwwNOL+b82DtaQh8gjTkx0OUiys+J+knfr/HpEOGAAsN8Hp6+A/Nciv/
+         BFIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706268596; x=1706873396;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4MpsuS1RISyLieZhG+nOiB9EUsr5IB8MOc8CVenn3tg=;
+        b=u55lHkoS8l9PsuormGCGHJndL+DSwhK4KYMy5wga7fi+jkxqh8si43QNJEFz3f30t8
+         wdNx/+Zo4vRWbvFnHVhddUfSHXc/XKV9OH1yPFP+e75qfNwN3NRuf7iQVqaiqMba/amO
+         3VkBY7JJGjxfrBhq3OCnD32eeQje2p8fMokm824WcPqf5QOflg6noP/AEH06qNT/cbT+
+         gnPV7ZdbxvPEDdJcnlAAx4OMTqK06guzkRquc30KbIjoLISEEAs/QoWmlzJnVkNQElTu
+         WJQpdghIaGGnp5lTkIQh6PY8DjKe78JhtusiIslqleyADmBC5A2WLp7RVjTbY3xW2J+/
+         bQOg==
+X-Gm-Message-State: AOJu0YxAm/ow5ZGESMhBGt0jX2lKCwQ0k1Qol5EBum+dnEC1fbN3baPX
+	eQvwXgAD4FWS8wsTKwqb+NxmkiE+96l3xCysQSG22nZM03ip55Hpjsmnl4UiPKc=
+X-Google-Smtp-Source: AGHT+IFZgFs4WF2KSb72kcILtaARumCAGosfYJuXqhmjqYlE1W8oA4FFNJfIo+it28R8yLf/Ude3eg==
+X-Received: by 2002:a05:600c:5247:b0:40e:44ad:4645 with SMTP id fc7-20020a05600c524700b0040e44ad4645mr810415wmb.3.1706268596440;
+        Fri, 26 Jan 2024 03:29:56 -0800 (PST)
+Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
+        by smtp.gmail.com with ESMTPSA id p13-20020a05600c468d00b0040eaebc4e8fsm5523313wmo.1.2024.01.26.03.29.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 03:29:56 -0800 (PST)
+From: Naresh Solanki <naresh.solanki@9elements.com>
+To: Jean Delvare <jdelvare@suse.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Naresh Solanki <naresh.solanki@9elements.com>
+Cc: mazziesaccount@gmail.com,
+	linux-hwmon@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: hwmon: tda38640: Add interrupt & regulator properties
+Date: Fri, 26 Jan 2024 16:59:44 +0530
+Message-ID: <20240126112945.1389573-1-naresh.solanki@9elements.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 18/30] drm/panfrost: Explicitly get and put drm-shmem
- pages
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: Dmitry Osipenko <dmitry.osipenko@collabora.com>,
- David Airlie <airlied@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>,
- Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
- <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Qiang Yu <yuq825@gmail.com>, Emma Anholt <emma@anholt.net>,
- Melissa Wen <mwen@igalia.com>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, kernel@collabora.com,
- virtualization@lists.linux-foundation.org
-References: <20240105184624.508603-1-dmitry.osipenko@collabora.com>
- <20240105184624.508603-19-dmitry.osipenko@collabora.com>
- <7144dd9b-62d1-4968-9b94-0313e2475f7e@arm.com>
- <20240126103924.0b911a4f@collabora.com>
-Content-Language: en-GB
-From: Steven Price <steven.price@arm.com>
-In-Reply-To: <20240126103924.0b911a4f@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 26/01/2024 09:39, Boris Brezillon wrote:
-> On Thu, 25 Jan 2024 16:47:24 +0000
-> Steven Price <steven.price@arm.com> wrote:
-> 
->> On 05/01/2024 18:46, Dmitry Osipenko wrote:
->>> To simplify the drm-shmem refcnt handling, we're moving away from
->>> the implicit get_pages() that is used by get_pages_sgt(). From now on
->>> drivers will have to pin pages while they use sgt. Panfrost's shrinker
->>> doesn't support swapping out BOs, hence pages are pinned and sgt is valid
->>> as long as pages' use-count > 0.
->>>
->>> In Panfrost, panfrost_gem_mapping, which is the object representing a
->>> GPU mapping of a BO, owns a pages ref. This guarantees that any BO being
->>> mapped GPU side has its pages retained till the mapping is destroyed.
->>>
->>> Since pages are no longer guaranteed to stay pinned for the BO lifetime,
->>> and MADVISE(DONT_NEED) flagging remains after the GEM handle has been
->>> destroyed, we need to add an extra 'is_purgeable' check in
->>> panfrost_gem_purge(), to make sure we're not trying to purge a BO that
->>> already had its pages released.
->>>
->>> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>  
->>
->> Reviewed-by: Steven Price <steven.price@arm.com>
->>
->> Although I don't like the condition in panfrost_gem_mapping_release()
->> for drm_gem_shmem_put_pages() and assigning NULL to bo->sgts - it feels
->> very fragile. See below.
->>
->>> ---
->>>  drivers/gpu/drm/panfrost/panfrost_gem.c       | 63 ++++++++++++++-----
->>>  .../gpu/drm/panfrost/panfrost_gem_shrinker.c  |  6 ++
->>>  2 files changed, 52 insertions(+), 17 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.c b/drivers/gpu/drm/panfrost/panfrost_gem.c
->>> index f268bd5c2884..7edfc12f7c1f 100644
->>> --- a/drivers/gpu/drm/panfrost/panfrost_gem.c
->>> +++ b/drivers/gpu/drm/panfrost/panfrost_gem.c
->>> @@ -35,20 +35,6 @@ static void panfrost_gem_free_object(struct drm_gem_object *obj)
->>>  	 */
->>>  	WARN_ON_ONCE(!list_empty(&bo->mappings.list));
->>>  
->>> -	if (bo->sgts) {
->>> -		int i;
->>> -		int n_sgt = bo->base.base.size / SZ_2M;
->>> -
->>> -		for (i = 0; i < n_sgt; i++) {
->>> -			if (bo->sgts[i].sgl) {
->>> -				dma_unmap_sgtable(pfdev->dev, &bo->sgts[i],
->>> -						  DMA_BIDIRECTIONAL, 0);
->>> -				sg_free_table(&bo->sgts[i]);
->>> -			}
->>> -		}
->>> -		kvfree(bo->sgts);
->>> -	}
->>> -
->>>  	drm_gem_shmem_free(&bo->base);
->>>  }
->>>  
->>> @@ -85,11 +71,40 @@ panfrost_gem_teardown_mapping(struct panfrost_gem_mapping *mapping)
->>>  
->>>  static void panfrost_gem_mapping_release(struct kref *kref)
->>>  {
->>> -	struct panfrost_gem_mapping *mapping;
->>> -
->>> -	mapping = container_of(kref, struct panfrost_gem_mapping, refcount);
->>> +	struct panfrost_gem_mapping *mapping =
->>> +		container_of(kref, struct panfrost_gem_mapping, refcount);
->>> +	struct panfrost_gem_object *bo = mapping->obj;
->>> +	struct panfrost_device *pfdev = bo->base.base.dev->dev_private;
->>>  
->>>  	panfrost_gem_teardown_mapping(mapping);
->>> +
->>> +	/* On heap BOs, release the sgts created in the fault handler path. */
->>> +	if (bo->sgts) {
->>> +		int i, n_sgt = bo->base.base.size / SZ_2M;
->>> +
->>> +		for (i = 0; i < n_sgt; i++) {
->>> +			if (bo->sgts[i].sgl) {
->>> +				dma_unmap_sgtable(pfdev->dev, &bo->sgts[i],
->>> +						  DMA_BIDIRECTIONAL, 0);
->>> +				sg_free_table(&bo->sgts[i]);
->>> +			}
->>> +		}
->>> +		kvfree(bo->sgts);
->>> +	}
->>> +
->>> +	/* Pages ref is owned by the panfrost_gem_mapping object. We must
->>> +	 * release our pages ref (if any), before releasing the object
->>> +	 * ref.
->>> +	 * Non-heap BOs acquired the pages at panfrost_gem_mapping creation
->>> +	 * time, and heap BOs may have acquired pages if the fault handler
->>> +	 * was called, in which case bo->sgts should be non-NULL.
->>> +	 */
->>> +	if (!bo->base.base.import_attach && (!bo->is_heap || bo->sgts) &&
->>> +	    bo->base.madv >= 0) {
->>> +		drm_gem_shmem_put_pages(&bo->base);
->>> +		bo->sgts = NULL;  
->>
->> The assignment of NULL here really ought to be unconditional - it isn't
->> a valid pointer because of the kvfree() above.
-> 
-> Fair enough. How about we drop the '|| bo->sgts' and add an
-> drm_gem_shmem_put_pages() to the above if (bo->sgts) block, where we'll
-> also assign bo->sgts to NULL?
+Add properties for interrupt & regulator.
+Also update example.
 
-Yes that would be good.
+TEST=Run below command & make sure there is no error.
+make DT_CHECKER_FLAGS=-m dt_binding_check
 
->>
->> I also feel that the big condition above suggests there's a need for a
->> better state machine to keep track of what's going on.
-> 
-> I'm planning to extend drm_gem_shmem to support the alloc-on-fault use
-> case that all Mali GPUs seem to rely on (lima, panfrost and soon
-> panthor would use those helpers). The idea is to:
-> 
-> - make the allocation non-blocking, so we can kill the blocking
->   allocation in the dma signalling path (basically what intel does)
-> - allow dynamic extension of the pages array using an xarray instead of
->   a plain array
-> 
-> Hopefully this makes the state tracking a lot easier, and we can also
-> get rid of the hack we have in panfrost/lima where we manipulate
-> drm_gem_shmem_object refcounts directly.
+Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+---
+ .../hwmon/pmbus/infineon,tda38640.yaml        | 20 +++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-That sounds great - it would definitely be good to get rid of the
-refcount hack, it confuses me everytime ;)
+diff --git a/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml b/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml
+index ded1c115764b..2df625a8b514 100644
+--- a/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml
++++ b/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml
+@@ -30,6 +30,15 @@ properties:
+       unconnected(has internal pull-down).
+     type: boolean
+ 
++  interrupts:
++    maxItems: 1
++
++  regulators:
++    $ref: /schemas/regulator/regulator.yaml#
++    type: object
++    description: |
++      list of regulators provided by this controller.
++
+ required:
+   - compatible
+   - reg
+@@ -38,6 +47,7 @@ additionalProperties: false
+ 
+ examples:
+   - |
++    #include <dt-bindings/interrupt-controller/irq.h>
+     i2c {
+         #address-cells = <1>;
+         #size-cells = <0>;
+@@ -45,5 +55,15 @@ examples:
+         tda38640@40 {
+             compatible = "infineon,tda38640";
+             reg = <0x40>;
++
++            //interrupt-parent = <&smb_pex_cpu0_event>;
++            interrupts = <10 IRQ_TYPE_LEVEL_LOW>;
++            regulators {
++                pvnn_main_cpu0: vout0 {
++                    regulator-compatible = "vout0";
++                    regulator-name = "pvnn_main_cpu0";
++                    regulator-enable-ramp-delay = <200>;
++                };
++            };
+         };
+     };
 
-Thanks,
-
-Steve
-
->>
->> But having said that I do think this series as a whole is an
->> improvement, it's nice to get the shrinker code generic. And sadly I
->> don't have an immediate idea for cleaning this up, hence my R-b.
->>
->> Steve
->>
->>> +	}
->>> +
->>>  	drm_gem_object_put(&mapping->obj->base.base);
->>>  	panfrost_mmu_ctx_put(mapping->mmu);
->>>  	kfree(mapping);
->>> @@ -125,6 +140,20 @@ int panfrost_gem_open(struct drm_gem_object *obj, struct drm_file *file_priv)
->>>  	if (!mapping)
->>>  		return -ENOMEM;
->>>  
->>> +	if (!bo->is_heap && !bo->base.base.import_attach) {
->>> +		/* Pages ref is owned by the panfrost_gem_mapping object.
->>> +		 * For non-heap BOs, we request pages at mapping creation
->>> +		 * time, such that the panfrost_mmu_map() call, further down in
->>> +		 * this function, is guaranteed to have pages_use_count > 0
->>> +		 * when drm_gem_shmem_get_pages_sgt() is called.
->>> +		 */
->>> +		ret = drm_gem_shmem_get_pages(&bo->base);
->>> +		if (ret) {
->>> +			kfree(mapping);
->>> +			return ret;
->>> +		}
->>> +	}
->>> +
->>>  	INIT_LIST_HEAD(&mapping->node);
->>>  	kref_init(&mapping->refcount);
->>>  	drm_gem_object_get(obj);
->>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c b/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
->>> index 02b60ea1433a..d4fb0854cf2f 100644
->>> --- a/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
->>> +++ b/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
->>> @@ -50,6 +50,12 @@ static bool panfrost_gem_purge(struct drm_gem_object *obj)
->>>  	if (!dma_resv_trylock(shmem->base.resv))
->>>  		goto unlock_mappings;
->>>  
->>> +	/* BO might have become unpurgeable if the last pages_use_count ref
->>> +	 * was dropped, but the BO hasn't been destroyed yet.
->>> +	 */
->>> +	if (!drm_gem_shmem_is_purgeable(shmem))
->>> +		goto unlock_mappings;
->>> +
->>>  	panfrost_gem_teardown_mappings_locked(bo);
->>>  	drm_gem_shmem_purge_locked(&bo->base);
->>>  	ret = true;  
->>
-> 
+base-commit: ecb1b8288dc7ccbdcb3b9df005fa1c0e0c0388a7
+-- 
+2.42.0
 
 
