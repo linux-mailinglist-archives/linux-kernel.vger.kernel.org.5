@@ -1,151 +1,150 @@
-Return-Path: <linux-kernel+bounces-40117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C45F83DA7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 95BE983DA81
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:05:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AED01F27C36
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:02:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35A7D1F27A38
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:05:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 789DA1B956;
-	Fri, 26 Jan 2024 13:02:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFFF01B809;
+	Fri, 26 Jan 2024 13:04:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RXnoB0RI"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=paragon-software.com header.i=@paragon-software.com header.b="j/67QaIG"
+Received: from relayaws-01.paragon-software.com (relayaws-01.paragon-software.com [35.157.23.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00B781B80E
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:02:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A96D1B599;
+	Fri, 26 Jan 2024 13:04:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.157.23.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706274158; cv=none; b=Kz7otqrKJya6HrAzrV9kw99LFCfVEJO2asSIfqNCZXR/+nLf5llANZqHUMeL2VxGmyDaNnzXmUW29UfP7yXXqBZB6CRx0YDMc68husXSD+498mtcNjMSpxwoioHKrAIfD2wdEYP6f7GVoU7WTgRDTyoF5nj+4959f4UD2uFyrAw=
+	t=1706274292; cv=none; b=psccPu/0FrfVhwgKcR+Ov6oXAiu5f9pINLdKJIiqqnOgDYbXVyv81OPNlo1YzBLKfx3/tK+n6pNEEiTRxK0CztS/eQtPGD4RETcXpHQm7pnKo/e7ahank34ywSjoJviA5mlDJq8LGKy5pk4hUYJciWcB00Z+ENy4yi4dBsyEw7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706274158; c=relaxed/simple;
-	bh=mBXiWmO43x4IedI7eW45Poke+eFkqHYazw7gPasItoA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fgmvf5LT0Np28SvWaf0wYxE/sCjr1mJmcfU8dnK4rVZJPuRF3AFFT/w+6kh64YxIKHz17tQEFOm0VLBRSN0RpFJIm4W8QQBHoz9C9XXmJviRD2k2R4DjT/VLLkl5Phrw4X3I87+/bRq9/UrlCmRnbVuH8P3ejueW8HuT4e09CHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=RXnoB0RI; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-337d5480a6aso400106f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 05:02:36 -0800 (PST)
+	s=arc-20240116; t=1706274292; c=relaxed/simple;
+	bh=gCq4g1b3O8Oeg4N8ujXRTfw/tL+4gbF4FTm8029MUrM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=kBhtQlsJnzDEZ8oQE0WjvOyBsw3cttjh1jMs1WJYOx3dBAgtt17vsggQq7gFwcNRow9HBPYpUIx5h1gEEA+jc0taagfA3FKjHJIuhEu8CPEA2gtKyGEerXAnlD84GRyZN1gHYvxqP57tRfD9y1Lx4ghrtfbzkFbTfoWZCpug6vE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=paragon-software.com; spf=pass smtp.mailfrom=paragon-software.com; dkim=pass (1024-bit key) header.d=paragon-software.com header.i=@paragon-software.com header.b=j/67QaIG; arc=none smtp.client-ip=35.157.23.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=paragon-software.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paragon-software.com
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+	by relayaws-01.paragon-software.com (Postfix) with ESMTPS id C7CAC1DA1;
+	Fri, 26 Jan 2024 12:50:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706274155; x=1706878955; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=a3+07jRFtwaufVPIk/XTD0i2kvGZ4Tbho2wTMEbnG0c=;
-        b=RXnoB0RIxwv/NQSIzOtszHrLgNebcQjJd5nF1JqvwwYVz0q2yhfZPY/L8RSal11skC
-         0ZLnJHAP1vWwaqCKFDknubpEnWq6HawZenu5H0jfUMAnitZEbDSKHejVlGIMnwtlJo24
-         qBwednnHhCsH4QOLccTxqHyzIJwDtfYbdKwlRaXgNx/AHt0mhGSm6d4RO7C3Odz4VQgY
-         13EiuJgpOBB9HUrqhoPlKm8hF7gwHv6YzMe83QYeFsyb88Jwik4v1o2giVllb/nsyK3q
-         54g3HtS5qPh+8gqqNHeJrI/0+ns8wzghbXPKWd0NzKJYod00DAWE8LWccLtSy3bhSSGJ
-         Ak8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706274155; x=1706878955;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a3+07jRFtwaufVPIk/XTD0i2kvGZ4Tbho2wTMEbnG0c=;
-        b=YW8l0FDfv+ojv7eskeOlW4ZGOGph/+8Le1jFleRH2OPijZbynGC8TNjoh6GaaVkXIR
-         7qVJHx5KICUoBihF/drffEnqnvLWajlgV1UeBVJ2v3p1+B7GR+nT2gWEa2zuBW4KNIzT
-         ZGy92iu6znAoSXa73IodEVO8IPeSdry2C/JvSsdSMMXMhpmQADWK1vmbzKOFOG5dREkr
-         /spgpJRet2c8NwYnV3YBJRMZ2dwFby1axk/iM6HIrBLU+doRaOnvwQu+MVe3IJOPpPLU
-         KUdtdmSdleNJv5xfcDpN/ep8iAlgJScPfCkJkI+O6vBwmkrjc7uGFPZWDFDg7Qj+R0ZL
-         DNPw==
-X-Gm-Message-State: AOJu0YzYG1yb3+MEPDlQTlaKopEaU7h9uYo6JTzar7srNiEdHDaobYpa
-	yixQabvgJLUpGONjqKnLwAr0K/9cDGmCZXtZABXNzPhU84anoRyOYaIaqqUa1iI=
-X-Google-Smtp-Source: AGHT+IFJEnTrtRkieL7052tDdsHf4QprHoC8IvOe6lXVFTMJ1+IvvGQj1R8OZsfDteVBTHZ4Kx1Eyw==
-X-Received: by 2002:a5d:694e:0:b0:33a:dec4:1d88 with SMTP id r14-20020a5d694e000000b0033adec41d88mr10537wrw.75.1706274155128;
-        Fri, 26 Jan 2024 05:02:35 -0800 (PST)
-Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
-        by smtp.gmail.com with ESMTPSA id j17-20020adfe511000000b00339214d70b5sm1231554wrm.85.2024.01.26.05.02.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 05:02:34 -0800 (PST)
-Date: Fri, 26 Jan 2024 13:02:32 +0000
-From: Daniel Thompson <daniel.thompson@linaro.org>
-To: Johan Hovold <johan@kernel.org>
-Cc: Bjorn Andersson <quic_bjorande@quicinc.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-	Jiri Kosina <jikos@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	linux-arm-msm@vger.kernel.org, linux-input@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Konrad Dybcio <konrad.dybcio@somainline.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: sc8280xp-x13s: Fix/enable
- touchscreen
-Message-ID: <20240126130232.GA5506@aspen.lan>
-References: <20240125-x13s-touchscreen-v1-0-ab8c882def9c@quicinc.com>
- <20240125-x13s-touchscreen-v1-2-ab8c882def9c@quicinc.com>
- <ZbNpdaSyFS9tYrkd@hovoldconsulting.com>
+	d=paragon-software.com; s=mail; t=1706273447;
+	bh=9EfuMGzeWNG4VV/qzBMKHVckt4mYsHngjUttdA846ZA=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=j/67QaIGKRoxhLEOdLCQfd7Q7ZvtuN+BJhpzpy7NVZFbr27ajjfS2OIviyErZWDEU
+	 G+99jEC7OP9wVCjSO9Q4SbjRXkDayos1TOgk4DZjwvHe8UrKQ5fKFkrD2NvOnG990Y
+	 cm/c0w8vIflwmAiosbQIhfTXfpkTYOFqRgg0NvqA=
+Received: from [192.168.211.144] (192.168.211.144) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Fri, 26 Jan 2024 15:57:36 +0300
+Message-ID: <97660d80-fbea-4eb8-83af-78f59a6302c7@paragon-software.com>
+Date: Fri, 26 Jan 2024 15:57:35 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbNpdaSyFS9tYrkd@hovoldconsulting.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [regressions] ntfs3: empty file on update without forced cache
+ drop
+Content-Language: en-US
+To: Linux regressions mailing list <regressions@lists.linux.dev>, Alexander
+ Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>
+CC: <ntfs3@lists.linux.dev>, Kari Argillander
+	<kari.argillander@stargateuniverse.net>, Linux-fsdevel
+	<linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, Anton
+ Altaparmakov <anton@tuxera.com>, Linus Torvalds
+	<torvalds@linux-foundation.org>
+References: <138ed123-0f84-4d7a-8a17-67fe2418cf29@leemhuis.info>
+ <24aa7a8b-40ed-449b-a722-df4abf65f114@leemhuis.info>
+ <d5f4c2d7-0a98-4ff8-9848-a34133199450@leemhuis.info>
+From: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+In-Reply-To: <d5f4c2d7-0a98-4ff8-9848-a34133199450@leemhuis.info>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 
-On Fri, Jan 26, 2024 at 09:12:37AM +0100, Johan Hovold wrote:
-> On Thu, Jan 25, 2024 at 07:55:14PM -0800, Bjorn Andersson wrote:
-> > The failing read-test in __i2c_hid_core_probe() determines that there's
-> > nothing connected at the documented address of the touchscreen.
-> >
-> > Introduce the 5ms after-power and 200ms after-reset delays found in the
-> > ACPI tables. Also wire up the reset-gpio, for good measure.
+On 21.01.2024 12:14, Thorsten Leemhuis wrote:
+> On 05.12.23 13:49, Linux regression tracking (Thorsten Leemhuis) wrote:
+>> [adding a bunch of people and two lists to the recipients, as Konstantin
+>> apparently hasn't sent any mail to any lists archived on lore for ~six
+>> weeks; maybe someone knows what's up or is willing to help out]
+> [CCing Linus now as well]
 >
-> As the supplies for the touchscreen are always on (and left on by the
-> bootloader) it would seem that it is really the addition of the reset
-> gpio which makes things work here. Unless the delay is needed for some
-> other reason.
+> JFYI for the VFS maintainers and everyone else who might care:
 >
-> (The power-on delay also looks a bit short compared to what is used for
-> other devices.)
+> Konstantin afaics still did not look into below regression. Neither did
+> anyone else afaics.
 >
-> Reset support was only recently added with commit 2be404486c05 ("HID:
-> i2c-hid-of: Add reset GPIO support to i2c-hid-of") so we should not
-> backport this one before first determining that.
+> But Konstantin is still around, as he recently showed up to post a patch
+> for review:
+> https://lore.kernel.org/all/667a5bc4-8cb5-47ce-a7f1-749479b25bec@paragon-software.com/
+>
+> I replied to it in the hope of catch his attention and make him look at
+> this regression, but that did not work out.
+>
+> So it seems we sadly are kinda stuck here. :-/
+>
+> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+>
+>> On 27.11.23 07:18, Thorsten Leemhuis wrote:
+>>> Hi, Thorsten here, the Linux kernel's regression tracker.
+>>>
+>>> Konstantin, I noticed a regression report in bugzilla.kernel.org.
+>>> Apparently it's cause by a change of yours.
+>>>
+>>> As many (most?) kernel developers don't keep an eye on bugzilla, I
+>>> decided to forward it by mail. Note, you have to use bugzilla to reach
+>>> the reporter, as I sadly[1] can not CCed them in mails like this.
+>>>
+>>> Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=218180 :
+>> Konstantin, are you still around? Would be great if you could look into
+>> this regression, as this sounds somewhat worrying.
+>>
+>>>> The problem I am facing is the following:
+>>>> 1. I mount an NTFS partition via NTFS3
+>>>> 2. I create a file
+>>>> 3. I write to the file
+>>>> 4. The file is empty
+>>>> 5. I remount the partition
+>>>> 6. The file has the changes I made before the remount
+>>>>
+>>>> I can avoid the remount by doing:
+>>>> sudo sysctl vm.drop_caches=3
+>>> See the ticket for more details. It according to the report happens
+>>> still happens with 6.7-rc2, but not with 6.1.y. The reporter bisected
+>>> the problem to ad26a9c84510af ("fs/ntfs3: Fixing wrong logic in
+>>> attr_set_size and ntfs_fallocate") [v6.2-rc1].
+>>>
+>>> Side note: while briefly checking lore for existing problems caused by
+>>> that change I noticed two syzbot reports about it that apparently nobody
+>>> looked into:
+>>>
+>>> https://lore.kernel.org/all/000000000000bdf37505f1a7fc09@google.com/
+>>> https://lore.kernel.org/all/00000000000062174006016bc386@google.com/
+>>> [...]
+> --
+> Everything you wanna know about Linux kernel regression tracking:
+> https://linux-regtracking.leemhuis.info/about/#tldr
+> If I did something stupid, please tell me, as explained on that page.
+>
+> #regzbot poke
+Hello Thorsten,
 
-This comment attracted my attention so I tried booting with each of the
-three lines individually.
+I apologize for the horrible delay in responding to the bug. I was able 
+to reproduce it in a scenario involving a compressed file. The patch 
+will be ready within the next few days (the response in Bugzilla will 
+also follow).
 
-
-On Thu, Jan 25, 2024 at 07:55:14PM -0800, Bjorn Andersson wrote:
-> +             reset-gpios = <&tlmm 99 GPIO_ACTIVE_LOW>;
-
-This is not enough, on it's own, to get the touch screen running.
-
-I guess that's not so much of a surprise since the rebind-the-driver
-from userspace trick wouldn't have been touching this reset.
-
-
-> +             post-power-on-delay-ms = <5>;
-
-This line alone is enough (in v6.7.1).
-
-
-> +             post-reset-deassert-delay-ms = <200>;
-
-This line alone is also enough!
-
-In short it looks like the delays make the difference and, even a short
-delay, can fix the problem.
-
-Of course, regardless of the line-by-line results I also ran with all
-the changes so, FWIW:
-Tested-by: Daniel Thompson <daniel.thompson@linaro.org>
-
-
-Daniel.
+Best regards,
+Konstantin
 
