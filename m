@@ -1,101 +1,79 @@
-Return-Path: <linux-kernel+bounces-39546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63A6B83D29A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 03:37:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E789783D29E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 03:38:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 977781C24635
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 02:37:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8AE22B26BEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 02:38:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6854BA4B;
-	Fri, 26 Jan 2024 02:36:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37D868F6D;
+	Fri, 26 Jan 2024 02:38:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uwuiCkj7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="OrN8QdyZ"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36690B677;
-	Fri, 26 Jan 2024 02:36:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29EA267C66;
+	Fri, 26 Jan 2024 02:38:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706236601; cv=none; b=AGIr4Gx9QYfZE2AeR9L2K7S2VBvHCi9hkeJsvQu1O4DuxlEPGZQ3PjIn3Nt8Iu6jEObyxMQm+w7pmS4KOJhzyxpmpx/JnECR9if2YzVoxME0SHnnHCnL+pbelXcsWyXRiIClTXR3+h9Qmk1UHs0X7s3iq/ksyVdHvySabzLcNog=
+	t=1706236694; cv=none; b=g97IhEiLfqZJCun+THJw0eESgAvrme9olMMOXug5beYiGf1Q3drypj+0Yg+GmLY1YuV83B2fuKKECEoyx8+2+UxGNi9X2EXWX46Djyn7SEGtWx50QcwO7PdsUFIyad8cVKCZAP9l64uMg3mWC3hNJJbXAlphox6cbeaJhze4J2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706236601; c=relaxed/simple;
-	bh=9JmEDAsvy+hNUeumaRRwP1gpp1KNTxdoEupeK85sMt0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=A034WGsKssXLfg7yScGMt80HtFOJMRVl/poRKsKbpjphkCTfzJmDFZ/hucSDY+OhPk52LPLBGxQJovMQSlt+JNLiNTolPDFTzWI0YRpStYnH30Rq2TYgQddtsOraCpyp0GfrRYpPxMogfLp0sq5gnRYMt83CNsDvV2cXozpJa9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uwuiCkj7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84EA7C433F1;
-	Fri, 26 Jan 2024 02:36:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706236600;
-	bh=9JmEDAsvy+hNUeumaRRwP1gpp1KNTxdoEupeK85sMt0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=uwuiCkj7aR4vC0Kr7RXMjB6HNaaJwRRhn/NNfpLuCvbrw5syLSnOkCuDG415qJcdc
-	 0ivua+kNgH6gO8vCdc2APei5TRmWdz/ik/vaXl9l/YdltJGfOg5VHi57juU+6hGfIJ
-	 EvaJ8FPJxpiFcUD6Yoyz+nzsjKjLsstxhI4tdqq/JspzqK9UUyXckidIwQlAJbyUPM
-	 5AjHyWbOS34hFERiaySogOLyugdmNcA1lsr3bpDF4ArYXwrUcpnKqZCGU9wwoowGqM
-	 saLs2OghXHNNuCfTlK/lTUC5bE3/KwoHvsIidjZP8eoZVhbCW7BABltQPcNU5FE/ro
-	 ak/fwFlvKVAhw==
-Date: Thu, 25 Jan 2024 18:36:39 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Stefan Wahren <wahrenst@gmx.net>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Lino Sanfilippo
- <LinoSanfilippo@gmx.de>, Florian Fainelli <f.fainelli@gmail.com>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 01/14 next] qca_spi: Improve SPI thread creation
-Message-ID: <20240125183639.585ec73f@kernel.org>
-In-Reply-To: <20240124223211.4687-2-wahrenst@gmx.net>
-References: <20240124223211.4687-1-wahrenst@gmx.net>
-	<20240124223211.4687-2-wahrenst@gmx.net>
+	s=arc-20240116; t=1706236694; c=relaxed/simple;
+	bh=nWa2dEMXl6ypPEqUGRQ2M3mnbCfR2mDPSDM2usegB3w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jrWqEBnXrv9TNLuCnFE7KRvm/Fm3L1W7Sesr7xW1aDUKoFs2GjuYV9KlbtqGVPxwPTB5+SA3cUP8iAuJz4mZCjCsWx67yFvEgmYayHJ6NVyHKtIVHzAupJV444lOUBz18601x792hKKCsQFzMdsG0bizeIuKL0Gs1m/nfsubYYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=OrN8QdyZ; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=Qd3nlym//LAlFHkady1BwwInKwCk8mDwSQ8io13WFIE=; b=OrN8QdyZszp6d1b56uObl4eelP
+	V9TYkudRghzXlSB2hJe1teeqmEyEONz51wj6fvf+Roy490GD/qwhhTWop1afWX4ulECwMyG2bB04I
+	7m8BaOdmGj9k2kRaFQskcfSI11CXRguxZUdUVbOz3U3WrwHjaCDB/df5JPXObcutKvVM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rTC6a-0068q8-4r; Fri, 26 Jan 2024 03:38:08 +0100
+Date: Fri, 26 Jan 2024 03:38:08 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Hariprasad Kelam <hkelam@marvell.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, pabeni@redhat.com,
+	kuba@kernel.org, edumazet@google.com, davem@davemloft.net,
+	sbhatta@marvell.com, gakula@marvell.com, sgoutham@marvell.com
+Subject: Re: [net-next PATCH] octeontx2-pf: Add support to read eeprom
+ information
+Message-ID: <1c39b3eb-0616-4214-bcfa-aaba1bd4e4a4@lunn.ch>
+References: <20240125112133.8483-1-hkelam@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240125112133.8483-1-hkelam@marvell.com>
 
-On Wed, 24 Jan 2024 23:31:58 +0100 Stefan Wahren wrote:
-> The qca_spi driver create/stop the SPI kernel thread in case
-> of netdev_open/close. This isn't optimal because there is no
-> need for such an expensive operation.
-> 
-> So improve this by moving create/stop of the SPI kernel into
-> the init/uninit ops. The open/close ops could just
-> 'park/unpark' the SPI kernel thread.
+On Thu, Jan 25, 2024 at 04:51:33PM +0530, Hariprasad Kelam wrote:
+> Add support to read/decode EEPROM module information using ethtool.
 
-What's the concern? I don't think that creating a thread is all
-expensive. And we shouldn't have a thread sitting around when
-the interface isn't use. I mean - if you ask me what's better
-a small chance that the creation will fail at open or having
-a parked and unused thread when device is down - I'd pick
-the former.. But I may well be missing the point.
+It looks like you have a very primitive firmware here, which can only
+return the first page of the SFPs EEPROM. What are your plans to make
+this fully featured? Ideally you should not be using this API, but the
+newer API which indicates what page you would like to read.
 
-> @@ -825,6 +813,7 @@ static int
->  qcaspi_netdev_init(struct net_device *dev)
->  {
->  	struct qcaspi *qca = netdev_priv(dev);
-> +	struct task_struct *thread;
-> 
->  	dev->mtu = QCAFRM_MAX_MTU;
->  	dev->type = ARPHRD_ETHER;
-> @@ -848,6 +837,15 @@ qcaspi_netdev_init(struct net_device *dev)
->  		return -ENOBUFS;
->  	}
-> 
-> +	thread = kthread_create(qcaspi_spi_thread, qca, "%s", dev->name);
-> +	if (IS_ERR(thread)) {
-> +		netdev_err(dev, "%s: unable to start kernel thread.\n",
-> +			   QCASPI_DRV_NAME);
-> +		return PTR_ERR(thread);
+> Signed-off-by: Christina Jacob <cjacob@marvell.com>
+> Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
+> Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
 
-I'm 90% sure this leaks resources on failure, too.
+These seem to be in the wrong order.
 
-Rest of the series LGTM!
+      Andrew
 
