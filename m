@@ -1,204 +1,131 @@
-Return-Path: <linux-kernel+bounces-40598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47ABE83E300
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:00:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D151883E304
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:01:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 633191C220A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:00:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 712831F25692
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:01:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3034222EE3;
-	Fri, 26 Jan 2024 20:00:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8B4A22F12;
+	Fri, 26 Jan 2024 20:00:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QIh7R0Tf";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZQ/NDlGc";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QIh7R0Tf";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZQ/NDlGc"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YMWxv2La"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42F2D20DF8;
-	Fri, 26 Jan 2024 20:00:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 363CF22F0E
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 20:00:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706299240; cv=none; b=YozVS6iJa5/Amc9dctkh6Ht1xMLvnmIwy8OKB7XP5lsOsbzYsHyphNH0nnDKFVLLRaJ10HAjaMv31NlBv1qjc5Y00PuC13mpAC3tebk20F+MnXF7BUrCFAwFZyDxeXZbqctehmPwuzwXQeYuruHFZ4c89dOixEG2mcu6Z9JMv/U=
+	t=1706299253; cv=none; b=HUqjSB+qm3bzuyfL/bBcNsSPr27GAsLrSiXCwNuvtY53YAPeFREFcYLsGUh1Pe+dnbdWGef1UjXgG79zdwDymxihoJExMQ6JPu5zqVd3SF4V06eTbNyuhFve5vxpG2fZ+mwhVQFIdDan18fyopDaJFgHybBQB1I3o5/Z7/hxZCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706299240; c=relaxed/simple;
-	bh=kB9X+SBMEeN04BK+MeiqN/yGTNHRKiLWCU2VcAZJlJg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ONuBtKaJ04mhLFq76Olf2h1BfxPxl9hZPgVnAt65yb/7av48CpA9VdtJtZ3zYxvvjbgOhT7aagVtRo99y+5ur7N2tyo43SlugEHpVi37vODaE7WKpT2irjRvvjkuKBUouGjUyUsfKysVIvjeex5NN/QBWaeEvqyMexvSTaaJLmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QIh7R0Tf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZQ/NDlGc; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QIh7R0Tf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZQ/NDlGc; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4C7DA21E8B;
-	Fri, 26 Jan 2024 20:00:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706299236;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VisgbDRTNbitbUavi1VIpjS76rdG9iAhmxqNH9f2SiU=;
-	b=QIh7R0TfAPbfmTIi89IThuQ928tJelvEbFROf+MZCHZTBwLue9vA4fI5w+GodArhfA9lIk
-	df3azMQnHUFWaFeMrjeEbUeW/zT/GfBbeY8hzJxhgUmfae1SipIaixYFyMYJlL4jUnsgGC
-	Ra137Lx2wJPW7/BzalQ8osooepoeHaQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706299236;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VisgbDRTNbitbUavi1VIpjS76rdG9iAhmxqNH9f2SiU=;
-	b=ZQ/NDlGckd6kFEJ7TdwRHMnFtJKTosgokYXSt7g7NTb/w+l2Rk7YEIgUANYiJ3CPCpmOOE
-	tXqIbcObl/idGoBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706299236;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VisgbDRTNbitbUavi1VIpjS76rdG9iAhmxqNH9f2SiU=;
-	b=QIh7R0TfAPbfmTIi89IThuQ928tJelvEbFROf+MZCHZTBwLue9vA4fI5w+GodArhfA9lIk
-	df3azMQnHUFWaFeMrjeEbUeW/zT/GfBbeY8hzJxhgUmfae1SipIaixYFyMYJlL4jUnsgGC
-	Ra137Lx2wJPW7/BzalQ8osooepoeHaQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706299236;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VisgbDRTNbitbUavi1VIpjS76rdG9iAhmxqNH9f2SiU=;
-	b=ZQ/NDlGckd6kFEJ7TdwRHMnFtJKTosgokYXSt7g7NTb/w+l2Rk7YEIgUANYiJ3CPCpmOOE
-	tXqIbcObl/idGoBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 181ED134C3;
-	Fri, 26 Jan 2024 20:00:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 0SkxBWQPtGU6UAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 26 Jan 2024 20:00:36 +0000
-Date: Fri, 26 Jan 2024 21:00:08 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] Btrfs fixes for 6.8-rc2
-Message-ID: <20240126200008.GT31555@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1705946889.git.dsterba@suse.com>
- <CAHk-=whNdMaN9ntZ47XRKP6DBes2E5w7fi-0U3H2+PS18p+Pzw@mail.gmail.com>
+	s=arc-20240116; t=1706299253; c=relaxed/simple;
+	bh=fcxQ3bc2/ycZVVRavVndN2TW1bmrjhqtW752nshgov4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ak9KwP4gxn2zdLBswcD6SZ1CeWtwLLyjhYD4Mo+lx3TMQFLJ7O1sGbUHmC9ad6S7BzLKn6pTXuobk6GKgiVpUs0An+0akq01CFEbtaPGw0vPy/FL/k7cCAOCQ1DiaM5zFTW7wl2xsv0U9Fm3AUGrcr/UurCZbS6r4Q05s2+xSPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YMWxv2La; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d72d240c69so20345ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 12:00:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706299250; x=1706904050; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MimXWUdcIvN0nH3+dB3+knWCETvDzwsFYg6Za1niF5A=;
+        b=YMWxv2LaOd1dcfqzupCcwMB+CtjBdtFEUGJpYmamncMy6fKsXW0Pu9UsOeA2A0nA7m
+         awROwFafV0KwQC4whgnD5xgIlVL6+WIlHXiq8Lg34EpAlTJUqRzYeubb9gEBR4GZzVVD
+         V7EkNkJoK2HfHltFPpNivyhioX4CbuUO8mNUOjLtrzKiBSsS/Cy2UZEpA1z4EA1iyNpU
+         X0giY/smB78dF2ZLkSBGGu7S35WA1DhtFf/9pZpswzRWDmzt6pmlkpd9X2vXu8E/1Uu7
+         BFStjW4ngBX2zwBWlpmFq9ciWL3KFpuov4e/cEuHpwdHruCSMmsInYIoGeTSzomm+0ZW
+         Y4Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706299250; x=1706904050;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MimXWUdcIvN0nH3+dB3+knWCETvDzwsFYg6Za1niF5A=;
+        b=SCJRVDUVSsC+wBde0n6aCIONzWkbSI+tzncHxmRaTA8tvDC9EJS/pMpV7Fzpgjkl50
+         O1YHen1Sgj8DnAKHDuwcIAqx+OykIvZQ1KgaQ+a7F2GZ1qYj+bzzYW7MMpqMEJ1yPoat
+         /E6kxGDNALaKvtUOvlV9jwkJ1Ciqn2pl3eeRJgPIUHbOmv/qyaO1kIs01haF/jeYS9Xv
+         WFnG0f0+H6x++z7rKhcLJLegfM6exZR4pcBvLOmCT82L67aiq3JhrdSsmmcafLoBWZ2S
+         HzwrZ1Hupw4JVA+pqJoa93BlBvpbT+YcOkcDQPVzupsJc1qW5mD3Cx3VpoaNyBQ58Kxr
+         5thg==
+X-Gm-Message-State: AOJu0YzoKqYeyHm3RkV03m/SHPAcNJ/AZ+HF7Yv6id2zYzBjldDeOBQm
+	u4RHvZ+U6b5bc3s0yl9e/QsylZMeYxSAilwjfEAqj59ZepQ4G3HNeCwdgHTpqNcXdXNS483pDA4
+	1OP614o8TqZWroBXlwrrDkPmYP25eDvVE1slA
+X-Google-Smtp-Source: AGHT+IFUiaxxx/fnNfe3njsMipgqF2fdYzG/YBwFDzOMI+2YRba8r80bUR3upqDy6QVJlcre5NJrJ1mYmBGhuhzNf/E=
+X-Received: by 2002:a17:903:1246:b0:1d8:a782:6cc2 with SMTP id
+ u6-20020a170903124600b001d8a7826cc2mr127996plh.13.1706299249979; Fri, 26 Jan
+ 2024 12:00:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whNdMaN9ntZ47XRKP6DBes2E5w7fi-0U3H2+PS18p+Pzw@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
+References: <20240125164256.4147-1-alexandru.elisei@arm.com> <20240125164256.4147-12-alexandru.elisei@arm.com>
+In-Reply-To: <20240125164256.4147-12-alexandru.elisei@arm.com>
+From: Peter Collingbourne <pcc@google.com>
+Date: Fri, 26 Jan 2024 12:00:36 -0800
+Message-ID: <CAMn1gO6hx7yaFHEYVbkpPocAxQmQc3JBgppcNSJw9SUfyvjwbQ@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 11/35] mm: Allow an arch to hook into folio
+ allocation when VMA is known
+To: Alexandru Elisei <alexandru.elisei@arm.com>
+Cc: catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev, 
+	maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com, 
+	yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org, 
+	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
+	mhiramat@kernel.org, rppt@kernel.org, hughd@google.com, steven.price@arm.com, 
+	anshuman.khandual@arm.com, vincenzo.frascino@arm.com, david@redhat.com, 
+	eugenis@google.com, kcc@google.com, hyesoo.yu@samsung.com, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-mm@kvack.org, 
+	linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 26, 2024 at 11:25:19AM -0800, Linus Torvalds wrote:
-> On Mon, 22 Jan 2024 at 10:34, David Sterba <dsterba@suse.com> wrote:
-> >
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.8-rc1-tag
-> 
-> I have no idea if this is related to the new fixes, but I have never
-> seen it before:
-> 
->   BTRFS critical (device dm-0): corrupted node, root=256
-> block=8550954455682405139 owner mismatch, have 11858205567642294356
-> expect [256, 18446744073709551360]
+On Thu, Jan 25, 2024 at 8:43=E2=80=AFAM Alexandru Elisei
+<alexandru.elisei@arm.com> wrote:
+>
+> arm64 uses VM_HIGH_ARCH_0 and VM_HIGH_ARCH_1 for enabling MTE for a VMA.
+> When VM_HIGH_ARCH_0, which arm64 renames to VM_MTE, is set for a VMA, and
+> the gfp flag __GFP_ZERO is present, the __GFP_ZEROTAGS gfp flag also gets
+> set in vma_alloc_zeroed_movable_folio().
+>
+> Expand this to be more generic by adding an arch hook that modifes the gf=
+p
+> flags for an allocation when the VMA is known.
+>
+> Note that __GFP_ZEROTAGS is ignored by the page allocator unless __GFP_ZE=
+RO
+> is also set; from that point of view, the current behaviour is unchanged,
+> even though the arm64 flag is set in more places.  When arm64 will have
+> support to reuse the tag storage for data allocation, the uses of the
+> __GFP_ZEROTAGS flag will be expanded to instruct the page allocator to tr=
+y
+> to reserve the corresponding tag storage for the pages being allocated.
+>
+> The flags returned by arch_calc_vma_gfp() are or'ed with the flags set by
+> the caller; this has been done to keep an architecture from modifying the
+> flags already set by the core memory management code; this is similar to
+> how do_mmap() -> calc_vm_flag_bits() -> arch_calc_vm_flag_bits() has been
+> implemented. This can be revisited in the future if there's a need to do
+> so.
+>
+> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
 
-Whick check: the numbers don't match constaints, blocks must be 4096
-aligned
+This patch also needs to update the non-CONFIG_NUMA definition of
+vma_alloc_folio in include/linux/gfp.h to call arch_calc_vma_gfp. See:
+https://r.android.com/2849146
 
-hex(8550954455682405139) = 0x76ab17c5c57e5313
-(would have to end with 3 zeros)
-
-and owner is sequentially increased such a high number is unlikely to be
-reached on nowadays systems.
-
->   BTRFS critical (device dm-0): corrupted node, root=256
-> block=8550954455682405139 owner mismatch, have 11858205567642294356
-> expect [256, 18446744073709551360]
->   BTRFS critical (device dm-0): corrupted node, root=256
-> block=8550954455682405139 owner mismatch, have 11858205567642294356
-> expect [256, 18446744073709551360]
->   SELinux: inode_doinit_use_xattr:  getxattr returned 117 for dev=dm-0
-> ino=5737268
->   SELinux: inode_doinit_use_xattr:  getxattr returned 117 for dev=dm-0
-> ino=5737267
-> 
-> and it caused an actual warning to be printed for my kernel tree from 'git':
-> 
->    error: failed to stat 'sound/pci/ice1712/se.c': Structure needs cleaning
-
-Size of sound/pci/ice1712/se.c is 19875, this does not look like it
-would be caused by the zstd bug as it was for inlined files where the
-limit is 2048 bytes.
-
-> (and yes, 117 is EUCLEAN, aka "Structure needs cleaning")
-> 
-> The problem seems to have self-corrected, because it didn't happen
-> when repeating the command, and that file that failed to stat looks
-> perfectly fine.
-> 
-> But it is clearly worrisome.
-> 
-> The "owner mismatch" check isn't new - it was added back in 5.19 in
-> commit 88c602ab4460 ("btrfs: tree-checker: check extent buffer owner
-> against owner rootid"). So something else must have changed to trigger
-> it.
-
-This looks like garbage data got read from disk, yet still passing the
-checksum test (otherwise that would lead to an EIO and would not get to
-the tree-checker).  Most likely cause is that damaged data were written
-to the disk before.
-
-The tree-checker also verifies data before they get written, the same
-bogus values of block/owner would trigger it so you'd see a warning.
-
-It's not possible to get the data damaged on the way from the device to
-the filesystem, that would not pass the checksum, so unlikely a
-driver/block layer bug.
-
-What remains that the data were correctly written in the past, read
-correctly passing checksum test but then somehow got damaged in the
-memory between the checksum check and tree-checker. The window is quite
-short:
-
-disk-io.c:btrfs_validate_extent_buffer()
-
-between csum_tree_block() (around line 397) and
-        btrfs_check_node() (around line 464)
+Peter
 
