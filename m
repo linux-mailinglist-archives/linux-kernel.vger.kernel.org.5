@@ -1,114 +1,140 @@
-Return-Path: <linux-kernel+bounces-39779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DA4C83D5FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:21:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E78D783D602
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:22:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45337282D09
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:21:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FB4C283196
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:21:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDE511CD1A;
-	Fri, 26 Jan 2024 08:39:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 171321CAA1;
+	Fri, 26 Jan 2024 08:40:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EjMDqSpr"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YnwjDeMZ"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CFA61C295
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:39:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD1011C2AD
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:40:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706258378; cv=none; b=JszIUzKvmE3B1WQ6t5IR20FdZcPqLiwj6wgs3JNebjZe1FROH/m40stP+VTUU4MGkXJMsmhh8CwZeyZOhBpnzv1mxh7Mu37ZZdsiS1t96FRdtHDGmLOkQy1MIIrCDXiBrAWYcSlMSA+4kvRxSE497/0wHqXln2Ho3UuQCMmvwCY=
+	t=1706258445; cv=none; b=QL5iKKuZ5DIsJYUCiNI5U4YKFziI0JCUPNDW06VIjnFdwfS5+F3kZrWgtRDBt4g6iiUopOwPm9b0OpFfmkbsI2haR+KfVlCsp2yNkq8jSqiK+p1O+j6vsQuDSg9n7hDFKSm+uUEQKrq1j82vh2gXguGB6EPz6N/dglJRY8lLLR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706258378; c=relaxed/simple;
-	bh=/ZExn/vuFRbWZ0XKt1iPU3BjOB9+pjTpfC4eFtC/r/0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HP7+3/0UfLOWbsqgc+ihvjsMpfWwhH1sSS8M55+4X0FduBg0D2QXmoViIjZT/agHc0u8kKH4mhXus2pP34qyi9No8YFSl3bw8znQbckMwXeEGV9CWy/IcelspM6xawqvkQOSZ/HurnI4tL95agbz2/KKuh6PtZvyEHnYCGEzj1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EjMDqSpr; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706258375;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HSrHQZvaP0ykbKDhrUoGu3IZMLvnpMMUqhqC7/0YNy4=;
-	b=EjMDqSprCCUPv/X2GQJ5qogV3vqMd958KyzjVAkVlAzpr2J02iLkIKgqq73YGX8Ol07E9p
-	vdsWromPVegJPrOm1jfVnRWUP75P852ttT8CoBPMk+GO6TplLDIu8Sd5ud+W3P4eT0eAUt
-	otqiCUzwizkgcgtj5jaG54Ut7uwBAsI=
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
- [209.85.167.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-683-om3G2RmaPemkZ3oWARd5Fg-1; Fri, 26 Jan 2024 03:39:32 -0500
-X-MC-Unique: om3G2RmaPemkZ3oWARd5Fg-1
-Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3bdef76ae17so177006b6e.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 00:39:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706258372; x=1706863172;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	s=arc-20240116; t=1706258445; c=relaxed/simple;
+	bh=HdOkxYHBGdOriH1GG4cA3n+x/WczKYLs05GJtHkGUu0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=kNYREuZtBWmJdknBQJzrSTeaOq1OLa1cBFhZOlrS1SYQyl/KHT1Hn+BxC+mjp0wi2FiQ+e4fKJ39o6dGii3Ytsmxs+LsyQEUVw4RJekKtY3jkl+S+F/Of3aMBrw7M2NAEo3MkTXwz4bxj4vdT8siaCqH0f3qmMWnmZHwiqTU8Ic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YnwjDeMZ; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-337d99f9cdfso197138f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 00:40:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706258442; x=1706863242; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HSrHQZvaP0ykbKDhrUoGu3IZMLvnpMMUqhqC7/0YNy4=;
-        b=sRb8OG/dMtPmz2MmWofLb/oORlzuR5UR3cZ7dkyI8IaqiwJEbEp9e+TiIqiC0lhsV/
-         78qTcb2cWdgph2n4luKIuRGJGd1iiaWHz4aDPoylcyc2E9Qqjjn7ei6HpPW+ecax4nG/
-         gVGSzjJT2cJf6fMddgf8bD3qvMBA8jQiXeQThCiQHSArlQG61mzYRgYgq+a+3mgy8c2W
-         DfQdwdU6mUn0MOgUj7z7+aSd3zsfvjioM9ae3r+CZ2UW1Yazjb29QYNlLJNDInGyTApl
-         Er8AOtEPSvTJv3ECBrbR9clneS6sHpDOtNDtodzz8Nb38LFt4303ibeOzeTS1i3fbmez
-         RvIg==
-X-Gm-Message-State: AOJu0Yw4jVYFYn8EZvkCI7c5tHNoaax6RG5QJADFJJ/Jt4Uz4rIuoRTs
-	KxxlJEaYaMc+cRrzrcBf3iBU3tAEiNK+8DIRvz+SNsLsIwJFY0swKepcvlqml5B4o00lqn/nzaJ
-	Sv2Vh8Otjw0ygh0NlJ59MVIfJ9jGfBMz71BqlpVTU5obNcGBdX+00G7A6gVcJQw==
-X-Received: by 2002:a05:6808:1411:b0:3bd:f2fe:6fe with SMTP id w17-20020a056808141100b003bdf2fe06femr273114oiv.52.1706258372217;
-        Fri, 26 Jan 2024 00:39:32 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF/LGvYtOivFaoHVOM/ZlUoxsC/pKi4lqh3yOx8zM4vi3aNRhuCKiggBTdsYv3Iy3sYxZ0dvQ==
-X-Received: by 2002:a05:6808:1411:b0:3bd:f2fe:6fe with SMTP id w17-20020a056808141100b003bdf2fe06femr273106oiv.52.1706258371884;
-        Fri, 26 Jan 2024 00:39:31 -0800 (PST)
-Received: from localhost.localdomain ([2a00:23c6:4a05:9f01:cede:7b45:1f9d:67f])
-        by smtp.gmail.com with ESMTPSA id cp10-20020a05622a420a00b0042a7e2b45cdsm250836qtb.1.2024.01.26.00.39.30
+        bh=EM7me6hr0DgfYBqYZ1m5/5Y61fSb6nrf7rD27pa9FgQ=;
+        b=YnwjDeMZv3BaKmVcvXYhajTfyPBqBOHwdefKPMdptCwayOJ0v4G2bg5DzjglXRHd0A
+         btCfEYpP+g9HhCMC9n0oS1aMhXuQZJaiJs5QMmJAegVoaHL+KqvifGgyCgJrnMxPjUyh
+         oFC5SnSyIYGEsxdaszRRTKivYG3flJ/gKnfrODIuRwBHbJ/VuSsW7epfAH7qpvKM7Hjb
+         hxW/WVj1zBCN1fPim8YQFYCHh5GahCW+wQLEHmHhLrh2tbMLBTSTF4XqgZH7QcV3t2ed
+         /f6PHul8tuZQd6W4C9S+ogwrOFYXXY7AZCpZMT8DcyMkx5kh5ymHcRZfgyKmjdLNN9gC
+         gafw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706258442; x=1706863242;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EM7me6hr0DgfYBqYZ1m5/5Y61fSb6nrf7rD27pa9FgQ=;
+        b=ZI5YR++ZfN5AbB65udhFlXRrLHgZPCjVKitsB5M8e7YGhqPDGQpiGs0fqR0A8TXcdo
+         WDIWXcjYzAgvDu0vfi1UIfegXtenxdnckWvKF2NehWDpeiRzyzu5vrU4rlZ+67Cs+cIV
+         8bRTZTrtkhe8rVrF+BUweeooxMnlvL3xTnJVv7riM2C9xL80HKks7/8X8zZKNx+Vp+fk
+         7fnJSusPIMjvgZHIHe/jAUR8weuqYFpUu1LSQ9HOfmBKZtSqDxW6k+6v6SXefZvdCOdH
+         hyNxCFM3xI5xrDktm3W7xNSvXIbziP7TdJX0vCmeb6B1KhBN6htKub14aVx4FuiK4aJN
+         wZ7w==
+X-Gm-Message-State: AOJu0Yycl0rY3jTnbuIw0JPfvQr73YRmRkw2uRJPU/7+ygTguwqBo9mm
+	dyri/Mh4uZAWdfvMbPr2u4SfdRZlo8xqae9RjLxTJMQDbUohi66sSGnecAp8mrQ=
+X-Google-Smtp-Source: AGHT+IGHPb2CxwM2qpL6dKONYAgUO/n/8kVqCQ5TFvAG633n4nCm8O00Evt6e+Evh/2zxBYBS61Bmw==
+X-Received: by 2002:adf:fa10:0:b0:339:2b28:32e2 with SMTP id m16-20020adffa10000000b003392b2832e2mr605254wrr.42.1706258441917;
+        Fri, 26 Jan 2024 00:40:41 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id j11-20020a5d618b000000b003393592ef8dsm753877wru.54.2024.01.26.00.40.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 00:39:31 -0800 (PST)
-Date: Fri, 26 Jan 2024 08:39:28 +0000
-From: Juri Lelli <juri.lelli@redhat.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: Re: [PATCH wq/for-6.9] tools/workqueue/wq_dump.py: Clean up code and
- drop duplicate information
-Message-ID: <ZbNvwJoj8zd2RmqC@localhost.localdomain>
-References: <ZbKKi2cnczB0MuV_@slm.duckdns.org>
+        Fri, 26 Jan 2024 00:40:41 -0800 (PST)
+Date: Fri, 26 Jan 2024 11:40:37 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Niklas Cassel <niklas.cassel@wdc.com>
+Cc: Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH v5 1/2] PCI: dwc: Fix a 64bit bug in
+ dw_pcie_ep_raise_msix_irq()
+Message-ID: <af59c7ad-ab93-40f7-ad4a-7ac0b14d37f5@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <ZbKKi2cnczB0MuV_@slm.duckdns.org>
+Content-Transfer-Encoding: 8bit
+X-Mailer: git-send-email haha only kidding
 
-Hi,
+The "msg_addr" variable is u64.  However, the "aligned_offset" is an
+unsigned int.  This means that when the code does:
 
-On 25/01/24 06:21, Tejun Heo wrote:
-> - Factor out wq_type_str()
-> 
-> - Improve formatting so that it adapts to actual field widths.
-> 
-> - Drop duplicate information from "Workqueue -> rescuer" section. If
->   anything, we should add more rescuer-specific info - e.g. the number of
->   work items rescued.
-> 
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> ---
-> I'm applying this to wq/for-6.9.
+        msg_addr &= ~aligned_offset;
 
-Thanks for the heads up! Looks good to me.
+it will unintentionally zero out the high 32 bits.  Use ALIGN_DOWN()
+to do the alignment instead.
 
-Tested-by: Juri Lelli <juri.lelli@redhat.com>
+Cc: stable@vger.kernel.org
+Fixes: 2217fffcd63f ("PCI: dwc: endpoint: Fix dw_pcie_ep_raise_msix_irq() alignment support")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+Reviewed-by: Niklas Cassel <cassel@kernel.org>
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+v5: Add the #include.
+v4: Add stable and r-b from Niklas
+v3: Use ALIGN_DOWN()
+v2: fix typo in commit message
 
-Best,
-Juri
+ drivers/pci/controller/dwc/pcie-designware-ep.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
+index 5befed2dc02b..d6b66597101e 100644
+--- a/drivers/pci/controller/dwc/pcie-designware-ep.c
++++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
+@@ -6,6 +6,7 @@
+  * Author: Kishon Vijay Abraham I <kishon@ti.com>
+  */
+ 
++#include <linux/align.h>
+ #include <linux/bitfield.h>
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
+@@ -551,7 +552,7 @@ int dw_pcie_ep_raise_msix_irq(struct dw_pcie_ep *ep, u8 func_no,
+ 	}
+ 
+ 	aligned_offset = msg_addr & (epc->mem->window.page_size - 1);
+-	msg_addr &= ~aligned_offset;
++	msg_addr = ALIGN_DOWN(msg_addr, epc->mem->window.page_size);
+ 	ret = dw_pcie_ep_map_addr(epc, func_no, 0, ep->msi_mem_phys, msg_addr,
+ 				  epc->mem->window.page_size);
+ 	if (ret)
+-- 
+2.43.0
 
 
