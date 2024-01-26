@@ -1,120 +1,137 @@
-Return-Path: <linux-kernel+bounces-40068-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B10A083D9B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:53:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD81C83D9B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:54:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 522AE1F2479D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:53:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 835F31F24844
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:54:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FB891B940;
-	Fri, 26 Jan 2024 11:53:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IvLqJK7R"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DECC19452;
+	Fri, 26 Jan 2024 11:54:01 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5D771B7FC;
-	Fri, 26 Jan 2024 11:53:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C5521B942;
+	Fri, 26 Jan 2024 11:53:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706270001; cv=none; b=VSEkK1B3fVnyUvLy2+5elnNu5D+YipH5H7Tdovg0uFYCdNW4qTG7GtYnWWtBQKCAOO2gh9uuOcqE2/XAJppvFem1Mjnz/gxhw5MJn/1Zyecu+C2Hym9Oie1IV02jt3Tix2YsGZOTOLsegGGl/zynUvZp0lUaiXYYmtUWI2V7vIg=
+	t=1706270041; cv=none; b=qiA+AjB95WKqqN5DbgKPJ0IOhmLCWfb+IkNqHUMMXPsJ00afitB18PaP11UwXLY3hFwcuOgZTlOGYF2R+XeXmWpr//5llLnUDC8Jjbg/+5b2gJldUhoflG685c6jGx1M9gM7hO/sDJvpCNLcqz22NGiqX+0BEVKhUj3S5c4i3ys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706270001; c=relaxed/simple;
-	bh=mYVNQgM6kMHDUeCkfyT25ST4WXu1tfC+Y8pHyYECgOA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=ne4Rra/FW7s7A3PyYs6kxIPosGVP7tpBK14+lV3kDAE4cv80cMykRhOxRC84XOefFqlF3EdjydYOuVNT7x6BEnZqYmNIBW7+wN9joGxkbist56fXYz4jCBC107DzG6XZ5o04uDS8hNwEE81adalSC6A3/MfSqY/h45gpCmPEdZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IvLqJK7R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0D9B1C433C7;
-	Fri, 26 Jan 2024 11:53:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706270000;
-	bh=mYVNQgM6kMHDUeCkfyT25ST4WXu1tfC+Y8pHyYECgOA=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=IvLqJK7RYbT7rcITRvd26yrHRTmlcglbqdImxlXPll0UJtEaPXB3/tXUh/VQ6H1zl
-	 y3r+4QsUTJGA/CtnlDj312sA5MoyZnPHvIYD8N+PaAquDkc7zAsXeeT8uq6OYjEi9j
-	 dUoJ5x2MN4Kh08kEhMufwCF1tA8vmh07sExgsDIEfc9OvWzhwOw9KhVZF8lKQTq9yt
-	 H2ftONqVu2yZVvfDHSUcaueaxU7mRrcWIuC3Z2RhkXO58666NWbZiiIeATe3VN6+33
-	 D5f/zYZOj8n1WXbIyM1iYwIYv5MS/JjaLJfED457ZuhSIyT1wYiU638BUld7IisOwk
-	 admXsp66CW3pg==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E33D6C47DDF;
-	Fri, 26 Jan 2024 11:53:19 +0000 (UTC)
-From: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel.org>
-Date: Fri, 26 Jan 2024 12:53:10 +0100
-Subject: [PATCH] MAINTAINERS: Update sysctl tree location
+	s=arc-20240116; t=1706270041; c=relaxed/simple;
+	bh=R4KIdldmuAPxvE+dKo2d3Bmt5lX4dAInQbxjdGrFa6E=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ZU6dfsN7Q8xFgaG/1YvxJ/vTK8LkXGq3ITZPKXYf9ONjFq5T4/6wfdWZmpx8CY4KNyoHpwN8vQAvMKb7IRGpXJo+gCi/gLBxhEBu4VFtCLKos3arqsMJFI6vCHA4iiHWrq+RAgobESFPmDnNH9/G9RnC3l+5bLueoDlZMjhJGQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TLx1D2kqXz4f3jqC;
+	Fri, 26 Jan 2024 19:53:52 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id C374E1A0232;
+	Fri, 26 Jan 2024 19:53:54 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+	by APP1 (Coremail) with SMTP id cCh0CgBHZQ42nbNllmgoCA--.1892S4;
+	Fri, 26 Jan 2024 19:53:53 +0800 (CST)
+From: Hou Tao <houtao@huaweicloud.com>
+To: x86@kernel.org,
+	bpf@vger.kernel.org
+Cc: Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	linux-kernel@vger.kernel.org,
+	xingwei lee <xrivendell7@gmail.com>,
+	Jann Horn <jannh@google.com>,
+	Sohil Mehta <sohil.mehta@intel.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	houtao1@huawei.com
+Subject: [PATCH bpf v2 0/3] Fix the read of vsyscall page through bpf
+Date: Fri, 26 Jan 2024 19:54:20 +0800
+Message-Id: <20240126115423.3943360-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240126-for-6-8-v1-1-9695cdd9f8ef@samsung.com>
-X-B4-Tracking: v=1; b=H4sIACWds2UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDQyMz3bT8Il0zXQtdC9PkVMPkZDMzA7MkJaDqgqLUtMwKsEnRsbW1ALV
- 8bghZAAAA
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org, 
- linux-fsdevel@vger.kernel.org, Joel Granados <j.granados@samsung.com>
-X-Mailer: b4 0.13-dev-86aa5
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1368;
- i=j.granados@samsung.com; h=from:subject:message-id;
- bh=HPzyLD05I4KtL5puu5ieEBvpSzlKvZSf692MeTRD/W8=;
- b=owEB7QES/pANAwAKAbqXzVK3lkFPAcsmYgBls50uspKcXsj8qrMDVqGyepCioSHe3rOrcOGfm
- 54ZYMwuEqyJAbMEAAEKAB0WIQSuRwlXJeYxJc7LJ5C6l81St5ZBTwUCZbOdLgAKCRC6l81St5ZB
- TwJaC/9FXc3g2NJntHWyQL3KlEAlSfdCC/EaHcjQAlqDr8E64qo5+KKNTkfTvqA8hhv6bcZxYbd
- ddwPPgQ9TMcbAF3QNFabMUOPO9jeFTHUCCBtYLLl8DPlddE8zG8rwi/mPRvZDYPSeDHSApz7c6u
- HapJQ7bvtI5u0r/3GbGERUx7v75w9BYuqmrybG/4PLjuq3HS/zHQpCq3FZiBLVWtDZHayPz2iyA
- N8n6QgtoomxtmXEaP9MnmzTVZxtqrSCu+18cNnCyxtjRRJewnEqYyZ+yDWBTcpoCd419g6atKAO
- kuk6b7vSuAHqakJYUYH7phreGRzQ7zxqVrC5b3vLAoAbrWkmeLV3hwOK4sK4NCyRKoGjezsNeU/
- zeUraXW23MJKbFxqqz1/E5cMQHgg4fEdSBfYfugMP/3u97vGitt0jLAgwW1a8HRH5mgsyjBl97R
- V7V6z0mA6qn4t/7k4RvH2NVm5I5n56sNFaOlYNzL0TFgA4ac4BQnrQsUZJjR1E9t6uMAw=
-X-Developer-Key: i=j.granados@samsung.com; a=openpgp;
- fpr=F1F8E46D30F0F6C4A45FF4465895FAAC338C6E77
-X-Endpoint-Received:
- by B4 Relay for j.granados@samsung.com/default with auth_id=70
-X-Original-From: Joel Granados <j.granados@samsung.com>
-Reply-To: <j.granados@samsung.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgBHZQ42nbNllmgoCA--.1892S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxJr4rKrWUGF13trWkAr43Wrg_yoW8tFWDpa
+	y8A343Kr4rKFy3Ar43W3srZayrAwn5tF47Wrn7Wr1rZ3y7XFyFvryIga4Yqr9xAF9xKryY
+	vr4ftFykG3Wjqa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+	c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+	026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
+	0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+	vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+	jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZ18PUUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-From: Joel Granados <j.granados@samsung.com>
+From: Hou Tao <houtao1@huawei.com>
 
-To more efficiently co-maintain the sysctl subsystem a shared repository
-has been created at https://git.kernel.org/pub/scm/linux/kernel/git/sysctl/sysctl.git
-and the sysctl-next branch that Luis Chamberlain (mcgrof@kernel.org) maintained at
-https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/log/?h=sysctl-next
-has moved to the shared sysctl-next branch located at
-https://git.kernel.org/pub/scm/linux/kernel/git/sysctl/sysctl.git/log/?h=sysctl-next.
-This commit changes the sysctl tree in MAINTAINERS to reflect this change.
+Hi,
 
-Signed-off-by: Joel Granados <j.granados@samsung.com>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+As reported by syzboot [1] and [2], when trying to read vsyscall page
+by using bpf_probe_read_kernel() or bpf_probe_read(), oops may happen.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 8d1052fa6a69..adf69ab891e0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17616,7 +17616,7 @@ M:	Joel Granados <j.granados@samsung.com>
- L:	linux-kernel@vger.kernel.org
- L:	linux-fsdevel@vger.kernel.org
- S:	Maintained
--T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git sysctl-next
-+T:	git git://git.kernel.org/pub/scm/linux/kernel/git/sysctl/sysctl.git sysctl-next
- F:	fs/proc/proc_sysctl.c
- F:	include/linux/sysctl.h
- F:	kernel/sysctl-test.c
+Thomas Gleixner had proposed a test patch [3], but it seems that no
+formal patch is posted after about one month [4], so I post it instead
+and add an Originally-by tag in patch #2.
 
----
-base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
-change-id: 20240126-for-6-8-85ce1cc6606b
+Patch #1 makes is_vsyscall_vaddr() being a common helper. Patch #2 fixes
+the problem by disallowing vsyscall page read for
+copy_from_kernel_nofault(). Patch #3 adds one test case to ensure the
+read of vsyscall page through bpf is rejected. Please see individual
+patches for more details.
 
-Best regards,
+Comments are always welcome.
+
+[1]: https://lore.kernel.org/bpf/CAG48ez06TZft=ATH1qh2c5mpS5BT8UakwNkzi6nvK5_djC-4Nw@mail.gmail.com/
+[2]: https://lore.kernel.org/bpf/CABOYnLynjBoFZOf3Z4BhaZkc5hx_kHfsjiW+UWLoB=w33LvScw@mail.gmail.com/
+[3]: https://lore.kernel.org/bpf/87r0jwquhv.ffs@tglx/
+[4]: https://lore.kernel.org/bpf/e24b125c-8ff4-9031-6c53-67ff2e01f316@huaweicloud.com/
+
+Change Log:
+v2:
+  * move is_vsyscall_vaddr to asm/vsyscall.h instead (Sohil)
+  * elaborate on the reason for disallowing of vsyscall page read in
+    copy_from_kernel_nofault_allowed() (Sohil)
+  * update the commit message of patch #2 to more clearly explain how
+    the oops occurs. (Sohil)
+  * update the commit message of patch #3 to explain the expected return
+    values of various bpf helpers (Yonghong)
+
+v1: https://lore.kernel.org/bpf/20240119073019.1528573-1-houtao@huaweicloud.com/
+
+Hou Tao (3):
+  x86/mm: Move is_vsyscall_vaddr() into asm/vsyscall.h
+  x86/mm: Disallow vsyscall page read for copy_from_kernel_nofault()
+  selftest/bpf: Test the read of vsyscall page under x86-64
+
+ arch/x86/include/asm/vsyscall.h               | 10 ++++
+ arch/x86/mm/fault.c                           |  9 ---
+ arch/x86/mm/maccess.c                         |  9 +++
+ .../selftests/bpf/prog_tests/read_vsyscall.c  | 57 +++++++++++++++++++
+ .../selftests/bpf/progs/read_vsyscall.c       | 45 +++++++++++++++
+ 5 files changed, 121 insertions(+), 9 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
+ create mode 100644 tools/testing/selftests/bpf/progs/read_vsyscall.c
+
 -- 
-Joel Granados <j.granados@samsung.com>
+2.29.2
 
 
