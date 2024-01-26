@@ -1,128 +1,163 @@
-Return-Path: <linux-kernel+bounces-39706-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BB4583D529
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:00:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0426183D52E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:01:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DC5D1C25D0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:00:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E31F1F21FD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:01:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36A0857317;
-	Fri, 26 Jan 2024 07:35:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFFDF58AA7;
+	Fri, 26 Jan 2024 07:39:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="TzqOmKfl"
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GGO/xmxd"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2394D134AD
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 07:35:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8967111700;
+	Fri, 26 Jan 2024 07:39:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706254521; cv=none; b=kKQ/AJHq5GxHlSorgardBfrJ2OtwFqtEThZQZn3U9Ct9owvFtq0v9sfDp66uyQGd2NcEB/Vf/1qse/28AtXgm34uZfp55ntE+Q1WLG0LHvHxShu4qMn3BD/7d0qf6tj4W0WaVgdu5tFUxgYacSfGaH/adSzXV8Z1taK3OCjD590=
+	t=1706254785; cv=none; b=ME4pKaoTw+vOj5fc0gVv3cj9mRotwBNW1ccUD2ad6jw7t2xim4W67GndabG49LIwJIHwgONN4oYyS/d5px2PpIgIt/F9YMp4Xto+quXfabn2jnCn2/dViHut6oamtqFKlb3VgqcAVS3JFHWn0Ga582uTsYEYQA+p/TbhxHv5TBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706254521; c=relaxed/simple;
-	bh=CN7eRsF2RUuCp59wm9aMwYGQrieE8Tt4W8JYrmNcByo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MFT0a9hETZqIlE5xNzVqVnoRKKJfTzOnZnYkqp/wJ5dmezyaJWpFXc3Yr86aVvCTAU7mFMpe5ddfvAo4F1pDbDGdBgOFD9roULAV4GtrUyBx46xqn3Up6BfJcV0JtsjRgT6tu8NsT3mNrmznm8zJRVuVJFZHIPgHhFc9H9BBecQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=TzqOmKfl; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6ddd1fc67d2so30053b3a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 23:35:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706254519; x=1706859319; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LLBtLu4wKX94/+P/QqcYo4A1h3dyVmhkosY/sUXTdjA=;
-        b=TzqOmKflUa7Sqo9Csqa0VrjO+jLyz54pxux/BouGU2vDno94pOCQ3cqDnW4P7m740q
-         0E92DCq45ZboYuak8HxOeWDCVHsD4Cl6F2VpO9HqeDShl3xyeI6CNLpXoUMknxq0mnmo
-         h1R2ZpcJXU/csw2hUlXhmc8WTVJa+YAUtIdkY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706254519; x=1706859319;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LLBtLu4wKX94/+P/QqcYo4A1h3dyVmhkosY/sUXTdjA=;
-        b=piLEiLgdfbUjj9af5TNDuAT7GCsB0G7M13NNc0WtwAwZdw62NT5j1kaQIt2M9xkK3j
-         qPrjgWnA5FaIQVbDSVjM4SYc+uSMBuEdSu1zyi42kVX8fe7uHNz1J0Qi1wSIpvbHXsOs
-         fXu/fthK89TCgJcTplrKOptZN6/Wx/wzdFpfJ3Bz2RADjCTTv6Jxch24bZuz8IWMhPAG
-         FrZ5gB4JJ1dMFc4YcFNU3vaGYJcm7kzhT2XTv06KJcy8lQirJX8CXsRifYgCojUB2Ozg
-         E23bj4cjn+tO9JnW7jEZqUGouE2f7ySLpWFAqLv2y8ADfSu/fqwCSipmVGigyvqFFuSC
-         0jTQ==
-X-Gm-Message-State: AOJu0Yx1W9rrFkPw7SgXvpsn7v8GnrUhn9PVyF0fJfFM73qLAxkS5YGY
-	IcNYrqetnlpakROaD49GW1Oz2kPQt+qr+3TMYs6FsVyb2a2wbcOwvObiZNW3OQ==
-X-Google-Smtp-Source: AGHT+IHCfZg7myP94HWqLShb7FnZKGeEWhG1lB4m6nfTYh97Z4qNJy4ySGIQ0mSBgidZ/Z3eT7G7RA==
-X-Received: by 2002:a05:6a20:7b19:b0:199:f708:207a with SMTP id s25-20020a056a207b1900b00199f708207amr591065pzh.116.1706254519486;
-        Thu, 25 Jan 2024 23:35:19 -0800 (PST)
-Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:2614:bbbd:8db2:1f54])
-        by smtp.gmail.com with ESMTPSA id l5-20020a170902eb0500b001d58ed4c591sm516983plb.105.2024.01.25.23.35.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 23:35:19 -0800 (PST)
-From: Chen-Yu Tsai <wenst@chromium.org>
-To: Andrzej Hajda <andrzej.hajda@intel.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Robert Foss <rfoss@kernel.org>,
-	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-	Jonas Karlman <jonas@kwiboo.se>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Allen Chen <allen.chen@ite.com.tw>
-Cc: Chen-Yu Tsai <wenst@chromium.org>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	dri-devel@lists.freedesktop.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: display: bridge: it6505: Add #sound-dai-cells
-Date: Fri, 26 Jan 2024 15:35:10 +0800
-Message-ID: <20240126073511.2708574-1-wenst@chromium.org>
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+	s=arc-20240116; t=1706254785; c=relaxed/simple;
+	bh=U9mNTNgZsSW+bVbmEnmLkw4a/p6CuTR5Z5KKpN05XeQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DQbFBCmBPoefhun4yYTvqsjFmOXldO1pclML3QbD/VbKhAyaNymne3CAyOZcj8w8YfbkdjtWnyho6CFs/GxIbhicLLk6pUxDNFVHe0MrchCcEVd1Bev/6rz3PJHudtYrj9eL1DtXKkAXNsgYQ5WZSiqJrrZnNtZbXvjaJOQYqx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GGO/xmxd; arc=none smtp.client-ip=134.134.136.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706254783; x=1737790783;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=U9mNTNgZsSW+bVbmEnmLkw4a/p6CuTR5Z5KKpN05XeQ=;
+  b=GGO/xmxdPb+7QhoqXI/U8mp+6Mc8vkv1wfaEpqlUxM2SGGjv+pTqt9nl
+   eyuNa4kuc6MhKDtZuU+2D9Gza8F3otPcLf/eT2nO3SLjuXog8jIkR/cBI
+   zqDLTS9RngUxP0Ab7TX2N5xHAB6fp737zFP1XO86FwGAK7PcQQYQmEh18
+   PN1n+hvLgY40Muzf5cSgG22DY/vg3bo1kBYVG5YVB2xK+ZpRHBqF4KVw5
+   WG+iGn6qli9JAnlEjjjDxXZlJPyzCiTKpNWF0iwvXXetYTWxrr6z4/ZTx
+   9YvRwkmNDr3+x1BXvkNCGTn3oLsmYjqpG5vUhAwpPNx+LYTAJazY0PXbS
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="406145211"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="406145211"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 23:39:42 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="2684770"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by orviesa004.jf.intel.com with ESMTP; 25 Jan 2024 23:39:41 -0800
+Date: Fri, 26 Jan 2024 15:36:20 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, David Matlack <dmatlack@google.com>
+Subject: Re: [PATCH 1/4] KVM: Always flush async #PF workqueue when vCPU is
+ being destroyed
+Message-ID: <ZbNg9BFT2o6NbgRX@yilunxu-OptiPlex-7050>
+References: <20240110011533.503302-1-seanjc@google.com>
+ <20240110011533.503302-2-seanjc@google.com>
+ <Zau/VQ0B5MCwoqZT@yilunxu-OptiPlex-7050>
+ <ZbFfVxp76qoBstul@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZbFfVxp76qoBstul@google.com>
 
-The ITE IT6505 display bridge can take one I2S input and transmit it
-over the DisplayPort link.
+On Wed, Jan 24, 2024 at 11:04:55AM -0800, Sean Christopherson wrote:
+> On Sat, Jan 20, 2024, Xu Yilun wrote:
+> > On Tue, Jan 09, 2024 at 05:15:30PM -0800, Sean Christopherson wrote:
+> > > Always flush the per-vCPU async #PF workqueue when a vCPU is clearing its
+> > > completion queue, e.g. when a VM and all its vCPUs is being destroyed.
+> > > KVM must ensure that none of its workqueue callbacks is running when the
+> > > last reference to the KVM _module_ is put.  Gifting a reference to the
+> > > associated VM prevents the workqueue callback from dereferencing freed
+> > > vCPU/VM memory, but does not prevent the KVM module from being unloaded
+> > > before the callback completes.
+> > > 
+> > > Drop the misguided VM refcount gifting, as calling kvm_put_kvm() from
+> > > async_pf_execute() if kvm_put_kvm() flushes the async #PF workqueue will
+> > > result in deadlock.  async_pf_execute() can't return until kvm_put_kvm()
+> > > finishes, and kvm_put_kvm() can't return until async_pf_execute() finishes:
+> > > 
+> > >  WARNING: CPU: 8 PID: 251 at virt/kvm/kvm_main.c:1435 kvm_put_kvm+0x2d/0x320 [kvm]
+> > >  Modules linked in: vhost_net vhost vhost_iotlb tap kvm_intel kvm irqbypass
+> > >  CPU: 8 PID: 251 Comm: kworker/8:1 Tainted: G        W          6.6.0-rc1-e7af8d17224a-x86/gmem-vm #119
+> > >  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+> > >  Workqueue: events async_pf_execute [kvm]
+> > >  RIP: 0010:kvm_put_kvm+0x2d/0x320 [kvm]
+> > >  Call Trace:
+> > >   <TASK>
+> > >   async_pf_execute+0x198/0x260 [kvm]
+> > >   process_one_work+0x145/0x2d0
+> > >   worker_thread+0x27e/0x3a0
+> > >   kthread+0xba/0xe0
+> > >   ret_from_fork+0x2d/0x50
+> > >   ret_from_fork_asm+0x11/0x20
+> > >   </TASK>
+> > >  ---[ end trace 0000000000000000 ]---
+> > >  INFO: task kworker/8:1:251 blocked for more than 120 seconds.
+> > >        Tainted: G        W          6.6.0-rc1-e7af8d17224a-x86/gmem-vm #119
+> > >  "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> > >  task:kworker/8:1     state:D stack:0     pid:251   ppid:2      flags:0x00004000
+> > >  Workqueue: events async_pf_execute [kvm]
+> > >  Call Trace:
+> > >   <TASK>
+> > >   __schedule+0x33f/0xa40
+> > >   schedule+0x53/0xc0
+> > >   schedule_timeout+0x12a/0x140
+> > >   __wait_for_common+0x8d/0x1d0
+> > >   __flush_work.isra.0+0x19f/0x2c0
+> > >   kvm_clear_async_pf_completion_queue+0x129/0x190 [kvm]
+> > >   kvm_arch_destroy_vm+0x78/0x1b0 [kvm]
+> > >   kvm_put_kvm+0x1c1/0x320 [kvm]
+> > >   async_pf_execute+0x198/0x260 [kvm]
+> > >   process_one_work+0x145/0x2d0
+> > >   worker_thread+0x27e/0x3a0
+> > >   kthread+0xba/0xe0
+> > >   ret_from_fork+0x2d/0x50
+> > >   ret_from_fork_asm+0x11/0x20
+> > >   </TASK>
+> > > 
+> > > If kvm_clear_async_pf_completion_queue() actually flushes the workqueue,
+> > > then there's no need to gift async_pf_execute() a reference because all
+> > > invocations of async_pf_execute() will be forced to complete before the
+> > > vCPU and its VM are destroyed/freed.  And that in turn fixes the module
+> > > unloading bug as __fput() won't do module_put() on the last vCPU reference
+> > > until the vCPU has been freed, e.g. if closing the vCPU file also puts the
+> > 
+> > I'm not sure why __fput() of vCPU fd should be mentioned here. I assume
+> > we just need to say that vCPUs are freed before module_put(KVM the module)
+> > in kvm_destroy_vm(), then the whole logic for module unloading fix is:
+> > 
+> >   1. All workqueue callbacks complete when kvm_clear_async_pf_completion_queue(vcpu)
+> >   2. kvm_clear_async_pf_completion_queue(vcpu) must be executed before vCPU free.
+> >   3. vCPUs must be freed before module_put(KVM the module).
+> > 
+> >   So all workqueue callbacks complete before module_put(KVM the module).
+> > 
+> > 
+> > __fput() of vCPU fd is not the only trigger of kvm_destroy_vm(), that
+> > makes me distracted from reason of the fix.
+> 
+> My goal was to call out that (a) the vCPU file descriptor is what ensures kvm.ko
+> is alive at this point and (b) that __fput() very deliberately ensures module_put()
+> is called after all module function callbacks/hooks complete, as there was quite
 
-Add #sound-dai-cells (= 0) to the binding for it.
+Ah, I understood. These are ensured by your previous fix which grants
+kvm_vcpu_fops the module owner. LGTM now.
 
-Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
----
-The driver side changes [1] are still being worked on, but given the
-hardware is very simple, it would be nice if we could land the binding
-first and be able to introduct device trees that have this.
-
-[1] https://lore.kernel.org/linux-arm-kernel/20230730180803.22570-4-jiaxin.yu@mediatek.com/
-
- .../devicetree/bindings/display/bridge/ite,it6505.yaml         | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/display/bridge/ite,it6505.yaml b/Documentation/devicetree/bindings/display/bridge/ite,it6505.yaml
-index 348b02f26041..7ec4decc9c21 100644
---- a/Documentation/devicetree/bindings/display/bridge/ite,it6505.yaml
-+++ b/Documentation/devicetree/bindings/display/bridge/ite,it6505.yaml
-@@ -52,6 +52,9 @@ properties:
-     maxItems: 1
-     description: extcon specifier for the Power Delivery
- 
-+  "#sound-dai-cells":
-+    const: 0
-+
-   ports:
-     $ref: /schemas/graph.yaml#/properties/ports
- 
--- 
-2.43.0.429.g432eaa2c6b-goog
-
+Thanks,
+Yilun
 
