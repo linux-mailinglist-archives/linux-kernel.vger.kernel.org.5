@@ -1,134 +1,77 @@
-Return-Path: <linux-kernel+bounces-40579-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 217DF83E2B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:37:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A418A83E2B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:37:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 532991C21E8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:37:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6F9C1C217E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:37:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE5B2225AD;
-	Fri, 26 Jan 2024 19:37:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vhGoTgrv"
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87CB9225CE;
+	Fri, 26 Jan 2024 19:37:13 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 582C1224E6
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 19:36:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03B092261D;
+	Fri, 26 Jan 2024 19:37:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706297820; cv=none; b=Gjmz/i3Jp7D23rr2hP6DX12fgIQYBv0mIC+IxKBqNJa7d9Ul04GK+9peOTzGlgJ4/Gv4Re5nbwgaS8cqTWgCZd1CD0WX5hIVfAB24CwQcx62gkKnkHNavCaYi/q75h4nMUtcEH+uqhd3NhN8nbvBRMxgpoeouoNuwAuSY6LoApk=
+	t=1706297833; cv=none; b=n9agr1CgyNxHE/wqj56U4oyCkS0flErfrHvc5rg4Sl+X3v9Noul/zCGpYgZX73k8aixI+dPFoiM/AboGq2Ds5tYC+C5CmV0V9SGY427UX3hUv0P1FXipf0izLP1MQS6Qb+ulbJza5AyO89WebEEsimh0JHN4ruOU4nTP5Rlw7V8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706297820; c=relaxed/simple;
-	bh=uxac+B2JSnMISJQXpWFxm1pKIyER1ZrasfJLcPmesmU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uya5p7hIIrlSB7hOTpES1jQ04qZIf+20d7loDX/VV+OWy28+jrz3oJOIgTyPlL0uBQ5zc+njyAgiamaos1nZOcvM1oyZupWl//xESbU73YydcyDb5Q/U5/6jAeXCf3dIqGPgTh7Y4gNP/UwijTRp2y7ezSAhKQUZKpOmv3ZUfS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vhGoTgrv; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d4859e88-d105-4de2-b19c-f59bf7bd5e88@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706297816;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KEVd0QafPgt3Yab5rVKzY8wr3GSCC3qWRHifh5DcWZ0=;
-	b=vhGoTgrvH/0NZsFkHqENAmU0SSZn3JpCHs8TfdckqNJrksIb122b3AEoLVwebtkbRxp1hT
-	g8U9j1TPUr/Te+IC6VLfrg7sq8jjg4IJz7MTFkjKIWSgyqPhk9Pz10Cz/j/rdNWMtGKwPK
-	e358/DPprgYwehYRy+see+F/9kfDzY0=
-Date: Fri, 26 Jan 2024 11:36:48 -0800
+	s=arc-20240116; t=1706297833; c=relaxed/simple;
+	bh=k4tH5U9WfiG0VOxuGa6XKILf0J3Xbi/bKH/R6EmWu8Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=sL+b+rO+aFe1mtNKbKj8G9wOiulrqzO4irBTVrEHa/+p6v4Ej+4bg0PbSAepiiNxin6mY5oRlgpFCSF83smaWsoIi5daYAEbTwsjxrDmYHRIFm1ThlU4Gg03RN1I2KFXB5Enm3A04mOhfJcF1vRbgdxZOtMmmZdznRQlsAkk4HE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D4C9C433F1;
+	Fri, 26 Jan 2024 19:37:11 +0000 (UTC)
+Date: Fri, 26 Jan 2024 14:37:14 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Christian Brauner <brauner@kernel.org>, Ajay Kaher
+ <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH] eventfs: Give files a default of PAGE_SIZE size
+Message-ID: <20240126143714.3eb81db4@gandalf.local.home>
+In-Reply-To: <CAHk-=wjTECUZLBgALpvm9zDN8TJCGxyc3VCEXXHMsFNAN+x5Fg@mail.gmail.com>
+References: <20240126131837.36dbecc8@gandalf.local.home>
+	<CAHk-=whA8562VjU3MVBPMLsJ4u=ixecRpn=0UnJPPAxsBr680Q@mail.gmail.com>
+	<20240126134141.65139b5e@gandalf.local.home>
+	<CAHk-=wjTECUZLBgALpvm9zDN8TJCGxyc3VCEXXHMsFNAN+x5Fg@mail.gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf v2 3/3] selftest/bpf: Test the read of vsyscall page
- under x86-64
-Content-Language: en-GB
-To: Hou Tao <houtao@huaweicloud.com>, x86@kernel.org, bpf@vger.kernel.org
-Cc: Dave Hansen <dave.hansen@linux.intel.com>,
- Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>,
- linux-kernel@vger.kernel.org, xingwei lee <xrivendell7@gmail.com>,
- Jann Horn <jannh@google.com>, Sohil Mehta <sohil.mehta@intel.com>,
- houtao1@huawei.com
-References: <20240126115423.3943360-1-houtao@huaweicloud.com>
- <20240126115423.3943360-4-houtao@huaweicloud.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20240126115423.3943360-4-houtao@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
+On Fri, 26 Jan 2024 11:06:33 -0800
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-On 1/26/24 3:54 AM, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
->
-> Under x86-64, when using bpf_probe_read_kernel{_str}() or
-> bpf_probe_read{_str}() to read vsyscall page, the read may trigger oops,
-> so add one test case to ensure that the problem is fixed. Beside those
-> four bpf helpers mentioned above, testing the read of vsyscall page by
-> using bpf_probe_read_user{_str} and bpf_copy_from_user{_task}() as well.
->
-> The test case passes the address of vsyscall page to these six helpers
-> and checks whether the returned values are expected:
->
-> 1) For bpf_probe_read_kernel{_str}()/bpf_probe_read{_str}(), the
->     expected return value is -ERANGE as shown below:
->
-> bpf_probe_read_kernel_common
->    copy_from_kernel_nofault
->      // false, return -ERANGE
->      copy_from_kernel_nofault_allowed
->
-> 2) For bpf_probe_read_user{_str}(), the expected return value is -EFAULT
->     as show below:
->
-> bpf_probe_read_user_common
->    copy_from_user_nofault
->      // false, return -EFAULT
->      __access_ok
->
-> 3) For bpf_copy_from_user(), the expected return value is -EFAULT:
->
-> // return -EFAULT
-> bpf_copy_from_user
->    copy_from_user
->      _copy_from_user
->        // return false
->        access_ok
->
-> 4) For bpf_copy_from_user_task(), the expected return value is -EFAULT:
->
-> // return -EFAULT
-> bpf_copy_from_user_task
->    access_process_vm
->      // return 0
->      vma_lookup()
->      // return 0
->      expand_stack()
->
-> The occurrence of oops depends on the availability of CPU SMAP [1]
-> feature and there are three possible configurations of vsyscall page in
-> boot cmd-line: vsyscall={xonly|none|emulate}, so there are totally six
-> possible combinations. Under all these combinations, the running of the
-> test case succeeds.
->
-> [1]: https://en.wikipedia.org/wiki/Supervisor_Mode_Access_Prevention
->
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> On Fri, 26 Jan 2024 at 10:41, Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > Fine, but I still plan on sending you the update to give all files unique
+> > inode numbers. If it screws up tar, it could possibly screw up something
+> > else.  
+> 
+> Well, that in many ways just regularizes the code, and the dynamic
+> inode numbers are actually prettier than the odd fixed date-based one
+> you picked. I assume it's your birthdate (although I don't know what
+> the directory ino number was).
 
-The first two patches look good to me but I think it would be better
-if x86 folks can ack on them. The selftest patch LGTM.
+Yeah, it was. I usually use that when I need a random number. I avoid using
+it for passwords though. The odd directory number was the date you pulled
+in eventfs ;-)
 
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
+-- Steve
 
 
