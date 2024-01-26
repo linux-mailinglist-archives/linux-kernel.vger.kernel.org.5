@@ -1,243 +1,143 @@
-Return-Path: <linux-kernel+bounces-39729-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C17CF83D57C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:07:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3040583D581
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:08:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E59271C25A1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:07:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF6AB1F2230A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:08:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB18E64AA0;
-	Fri, 26 Jan 2024 07:56:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C006364CF6;
+	Fri, 26 Jan 2024 07:58:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aDJ8guap"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="pqzcDBFK"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2046.outbound.protection.outlook.com [40.107.94.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3E8563508
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 07:56:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706255818; cv=none; b=OeGg0yR3C1ksk2y8mNXxFg9dLCG6vn8ldpkFPJK1SrnNxvU1l80x+a6RLXWlgDf/64PM4eiAiqMnwQpIPcV53kD/w9EwlMPwQKj0G/gQJnGPAndrex2rVW0lJ1wrqI3E/tSUa4EN/jsQSmgnck+7QtxOIzM0FenYghPOMRBu0JY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706255818; c=relaxed/simple;
-	bh=GmcENEElrbmu4+qu30DqEDmtjJ2hYqL4X3elhdiKmmQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pWIxqrLTM7Tfho8g/0NHGU5s4muCKg1OLcg60yuXGpVWeNmxsDCz9z4nM15GBzMtaDOYOvoMImAH2bfV9QaetachoCYucyERnBBkZARCUB4+7UptTafupr6ghKrxuyFVFljPnJf6Lm20nEr1+vnUF1sQb0t2JlLT59f3mh7YtCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aDJ8guap; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3392291b21bso132302f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 23:56:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706255815; x=1706860615; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uPleq8v+IkwCDBo36+ymb8DinsNdEMNv1kWJ7eUs/+E=;
-        b=aDJ8guapjFvAha7QE36KWWEQAy/rVQz277PN6O/tF1W3/k9BIet3u/yv8Ze7+zSRm1
-         5utQqVMS/KWo+neGiN9mekkBb++ojpLBqcVIJV2z7cPfkaRef/KWS6W4qp8ysa1bBxeW
-         pMbnkVco1/oOmj0ibXgjJJNcPzYt3QHdrKlnT+Ohuklq28NMTipCzDtnsnAZPqZvOJOK
-         zI6sNSXkQ7iW254K5M8IcsMxMVoyknMA3xS4TgYrcQhwFTwYoAo1QVrzJV2vHaJMj8Ug
-         WdmTuiON+v0cHvcCxQbH3dJfCjNd4r2D7SghyEha2EHcD9JHmiVNtQToTnF/CUm74cjT
-         Go1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706255815; x=1706860615;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uPleq8v+IkwCDBo36+ymb8DinsNdEMNv1kWJ7eUs/+E=;
-        b=ZYPo+P2kDwRMbO0gKojpGxW+tuDeb6QnpY5hJW/kA2tUk2yBRN/cOFZLsfrVGtg3vE
-         E1iLSGFBSNWQ7tr+QdQsf9JHSCP0TlxnmdXEU2F3vrz2RZW1vUutLIq2Zx2KKU8jnvZV
-         OIeLB2+3+cXSVOUugNNtE6psTiPJUj4h7zHUz7Rz+NtTgUosKgqm+1m+JpXD9dhUILmS
-         Egs30YQ91BoKDEvGHhZBpSc0y8JLBiS/QJ+tJ/5ouLPnnWHQh7KYmWVhjS3ZOmga8a3N
-         DFBFAxJB1RhBDVg5bKDpJRF16AcLH9Nk99IzUTVKIX1VpxvYMRsBqiYnyy9jrhVy5rqM
-         GWww==
-X-Gm-Message-State: AOJu0YwwIGQ8/61ZmMdca9fP2xE2KJVL5ZBsaFIhIuOvg/KFwYB2Yhr9
-	FglBzAhxkbF49cr+2dq7xGZNTV8lRGm9YhMHWJ0BckS6qFdHYfFKLZ3zgldCIhg=
-X-Google-Smtp-Source: AGHT+IF4ZRzpdk9B+kPkzSfTldHpKYPP1lO7tlsg8x+Bq/NbPYnjD64G1cVIyHa8s5kXAAjz+lbHLQ==
-X-Received: by 2002:a5d:4006:0:b0:337:aa99:82aa with SMTP id n6-20020a5d4006000000b00337aa9982aamr593223wrp.91.1706255815070;
-        Thu, 25 Jan 2024 23:56:55 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id ch15-20020a5d5d0f000000b0033905a60689sm682416wrb.45.2024.01.25.23.56.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 23:56:54 -0800 (PST)
-Message-ID: <36a664b1-666d-4fc4-90d9-35b42e56973d@linaro.org>
-Date: Fri, 26 Jan 2024 07:56:52 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE1E125CF;
+	Fri, 26 Jan 2024 07:58:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.46
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706255913; cv=fail; b=e/owwm4OLtQPXR6P+EBct07O3J8U9+4enCF1NjV+sraw2j3N2cv/x8U3AephQvBE379P7xWD01BbosbNqgWWWDWnc8bGeUe9F4uumXcRv4AghuNYk2i7jHVB9Xm1BjJ+KdFwLy/su1OIfnBSpbqzVDW2/Rv/nwkVPBoLj9JsSyo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706255913; c=relaxed/simple;
+	bh=iZJpxoABYIcc3Ov/ec4qonLeOnn3YlhhTTTR2FClyZM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TkZQFvPRbHRB0olC02Q90d/gblMyZtmaV8jG3Brl2gbNJvAVkvgVI6t/oIV9x8Dcot26JOeJQHCuTP4zT6ooLg4OkYJ/BF1TJFwOPAzEwGKqeUd52Hpu83bHzX+Em4tkK/mNK7CLbxsQ81ylYR+KLBCaRsk+qO4KcD0Jpq0vf1o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=pqzcDBFK; arc=fail smtp.client-ip=40.107.94.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cy5D9FCIkpU1a/pf51CHyeK8xYTVF6x8+VZKEvl/Tbob04Odj3lVht7nXBhn6P0Cm/d8N/GxSfz7S9i+Btfpn+i63qT6Il4vPx0KNk8pHekb6+a2UIXlutb6vrjOYTNz40RbyvNNEGCiBh/9T4LLvcFPemUlIYEPChkYsMsp8MHgMluWHBWgix360KY9yMNOEU/DEpSklFsWyqe9Rc0Xto+26ycICq3uIgIoDkzDnU1DCncKjtePXSswBDg7I3rMkCGUjQjWrhHMFHegGr8V2S3PvTTKkddAjDChLip5U1t8XtGHzJI/lEWKVLvmYYMXA2yY4TcjCcuwzLUTNsdnxQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bDcIHQG2+G2tlbGqUmQTPWZFbHJ1KvmTHROAwPXx1pY=;
+ b=a85o4v7aWOyUJzIUZCWssJY0FGpRzkuGQJhgSUANu3fyVb0rKdEbRb5ClddL+M7T7GOTw+S5zuqUAYcHZUsvuAOUludpErPKWN+MJfBX0vfm2bUIq2mEPUcjGhnnE6KvFKe1KGDjFiO/xEyZ3/BiNxXQfRG4WLabObV7n4v93AZPvXmEGgvKSrO34ZPqRV+Q8J0Xu1pmdCh2aAJakLuB6xYow6oI9L5F9IY+HWS6cdhUizBsZl1iMSOsJLo8BDmgFXuicM0+05DXWeQdh+A59HeIkIBdtki26WCkTFs4fm35UrAD9oPYFlWNm0831Uvk8q+6Et2K8pCYP5wFIARXUw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bDcIHQG2+G2tlbGqUmQTPWZFbHJ1KvmTHROAwPXx1pY=;
+ b=pqzcDBFK7NDbTY60mfkZ9a8PPgQBIHFzlUEQbY/WOx31gu8vYQwebvF502VQCSHreKUyeOswtjLtyg3XsSjD5TkJ5eirCeluWv44VjY/HiIZoc+FTTwgQlV0YFF2uG3+jF0eaSQS60cdTJ/1ZQgUpO1NeihNtMS3S9D7p+Cekwo=
+Received: from BY5PR17CA0005.namprd17.prod.outlook.com (2603:10b6:a03:1b8::18)
+ by DS0PR12MB9274.namprd12.prod.outlook.com (2603:10b6:8:1a9::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Fri, 26 Jan
+ 2024 07:58:30 +0000
+Received: from SJ1PEPF00001CE9.namprd03.prod.outlook.com
+ (2603:10b6:a03:1b8:cafe::6f) by BY5PR17CA0005.outlook.office365.com
+ (2603:10b6:a03:1b8::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.26 via Frontend
+ Transport; Fri, 26 Jan 2024 07:58:29 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SJ1PEPF00001CE9.mail.protection.outlook.com (10.167.242.25) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7202.16 via Frontend Transport; Fri, 26 Jan 2024 07:58:29 +0000
+Received: from titanite-d354host.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Fri, 26 Jan 2024 01:58:24 -0600
+From: Avadhut Naik <avadhut.naik@amd.com>
+To: <linux-trace-kernel@vger.kernel.org>, <linux-edac@vger.kernel.org>
+CC: <rostedt@goodmis.org>, <tony.luck@intel.com>, <bp@alien8.de>,
+	<x86@kernel.org>, <linux-kernel@vger.kernel.org>, <yazen.ghannam@amd.com>,
+	<avadnaik@amd.com>
+Subject: [PATCH v3 0/2] Update mce_record tracepoint
+Date: Fri, 26 Jan 2024 01:57:58 -0600
+Message-ID: <20240126075800.1174583-1-avadhut.naik@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 16/28] spi: s3c64xx: simplify s3c64xx_wait_for_pio()
-Content-Language: en-US
-To: Sam Protsenko <semen.protsenko@linaro.org>
-Cc: broonie@kernel.org, andi.shyti@kernel.org, arnd@arndb.de,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- alim.akhtar@samsung.com, linux-spi@vger.kernel.org,
- linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-arch@vger.kernel.org, andre.draszik@linaro.org,
- peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com
-References: <20240125145007.748295-1-tudor.ambarus@linaro.org>
- <20240125145007.748295-17-tudor.ambarus@linaro.org>
- <CAPLW+4mLWU-8H=qESe9csXm=e_ByvP=nc7MEJzknv+XAUjqUZg@mail.gmail.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <CAPLW+4mLWU-8H=qESe9csXm=e_ByvP=nc7MEJzknv+XAUjqUZg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CE9:EE_|DS0PR12MB9274:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3fe9f54c-c351-4c30-8b23-08dc1e4495b3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	pfRXF44HoTpA0q7gyy2j8mYBrQReEtQVaRw/ifDHlbJuzIKxHvwjickE02gGxnmdUQrnTTYMGJ2IAM1FzYlqsG3/yjFcE0QbBCOKvFXfSW3wMlbGM8cREu4zaTIPeVttY1MYfjzIwWBslVgKSE4iL+Obz3hl3PvhTs3S8pSFwjVClb5oHb4IicDJ3o4NIWGCpZzYzoVzQvncsvnRuB7iEUrc+116eLeR1j/sStXsugHGBj31UMs6PM/bmGtLB2qgIGjUnhDZf892Vvo632Bl0fgT3zSI1R2+qM0v5agwaByF5eMpgkIJGVbur6kWUfiqC4eWrodWq3TiMSNNy8eXySp1nnNN7crljJgwk6+080iiKtR+BbOtLl2LIHgPnkiLi0UlbyZdXhUd+D9f1YA1355hWWeuW/a9ySd6mm9qaSBp/2Vd5f6YVPMVfh8hlS7QP1ERGwVMxfFwPYIg2xyGN6qaeYWUNK1K9iG/Lgh2/xEVyFVv87TmYFXJob28H30sqNhKS1bfER5UhpZDbBlxjTj5TgGpvBQDVjLL72FZvhIUR1NUWTl91+BBjBc1s2xgDbZLOX9u+vPasR1AamTkvl5vVdhkMr1kNcabw0fsgZ1ojn1mtSTPJsgrjhC1XHSnj9/Gn40uJSLzaGRy1qW4QoWQNKfPaUO1GbHcnDQ5hp08k5hmAx8NPuL61ikYdf6rtwJCBz4V5/j4e16gI+ZeG8jcXczDh/U6t2WUGR/wSRXAVXp2/ce/j26eCDli2eaNUh97hJhlLW6xRhnrsb+TYg==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(346002)(136003)(376002)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(82310400011)(46966006)(36840700001)(40470700004)(41300700001)(336012)(40480700001)(40460700003)(26005)(1076003)(426003)(47076005)(478600001)(36860700001)(2616005)(36756003)(7696005)(6666004)(83380400001)(16526019)(81166007)(356005)(82740400003)(110136005)(86362001)(316002)(44832011)(70586007)(54906003)(4744005)(2906002)(5660300002)(4326008)(8936002)(8676002)(70206006)(15650500001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 07:58:29.6698
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3fe9f54c-c351-4c30-8b23-08dc1e4495b3
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ1PEPF00001CE9.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB9274
+
+This patchset updates the mce_record tracepoint so that the recently added
+fields of struct mce are exported through it to userspace.
+
+The first patch adds PPIN (Protected Processor Inventory Number) field to
+the tracepoint.
+
+The second patch adds the microcode field (Microcode Revision) to the
+tracepoint.
+
+Changes in v2:
+ - Export microcode field (Microcode Revision) through the tracepoiont in
+   addition to PPIN.
+
+Changes in v3:
+ - Change format specifier for microcode revision from %u to %x
+ - Fix tab alignments
+ - Add Reviewed-by: Sohil Mehta <sohil.mehta@intel.com>
+
+Avadhut Naik (2):
+  tracing: Include PPIN in mce_record tracepoint
+  tracing: Include Microcode Revision in mce_record tracepoint
+
+ include/trace/events/mce.h | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
 
+base-commit: 0d4f19418f067465b0a84a287d9a51e443a0bc3a
+-- 
+2.34.1
 
-On 1/25/24 20:43, Sam Protsenko wrote:
-> On Thu, Jan 25, 2024 at 8:50 AM Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
->>
->> s3c64xx_spi_transfer_one() makes sure that for PIO the xfer->len is
->> always smaller than the fifo size. Since we can't receive more that the
->> FIFO size, droop the loop handling, the code becomes less misleading.
-> 
-> Drop (spelling)?
-
-oh yeah, thanks.
-
-> 
-> For the patch: how exactly it was tested to make sure there is no regression?
-
-no regression testing for the entire patch set, I have just a gs101 on
-my hands.
-
-However, we shouldn't refrain ourselves on improving things when we
-think they're straight forward and they worth it. In this particular
-case, for PIO, s3c64xx_spi_transfer_one() does:
-	xfer->len = fifo_len - 1;
-then in s3c64xx_enable_datapath() we write xfer->len and then in
-s3c64xx_wait_for_pio() we code did the following:
-	loops = xfer->len / FIFO_DEPTH(sdd);
-loops is always zero, this is bogus and we shall remove it.
-
->>
->> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
->> ---
->>  drivers/spi/spi-s3c64xx.c | 75 +++++++++------------------------------
->>  1 file changed, 17 insertions(+), 58 deletions(-)
->>
->> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
->> index d2dd28ff00c6..00a0878aeb80 100644
->> --- a/drivers/spi/spi-s3c64xx.c
->> +++ b/drivers/spi/spi-s3c64xx.c
->> @@ -485,26 +485,6 @@ static int s3c64xx_enable_datapath(struct s3c64xx_spi_driver_data *sdd,
->>         return 0;
->>  }
->>
->> -static u32 s3c64xx_spi_wait_for_timeout(struct s3c64xx_spi_driver_data *sdd,
->> -                                       int timeout_ms)
->> -{
->> -       void __iomem *regs = sdd->regs;
->> -       unsigned long val = 1;
->> -       u32 status;
->> -       u32 max_fifo = FIFO_DEPTH(sdd);
->> -
->> -       if (timeout_ms)
->> -               val = msecs_to_loops(timeout_ms);
->> -
->> -       do {
->> -               status = readl(regs + S3C64XX_SPI_STATUS);
->> -       } while (FIELD_GET(S3C64XX_SPI_ST_RX_FIFO_LVL, status) < max_fifo &&
->> -                --val);
->> -
->> -       /* return the actual received data length */
->> -       return FIELD_GET(S3C64XX_SPI_ST_RX_FIFO_LVL, status);
->> -}
->> -
->>  static int s3c64xx_wait_for_dma(struct s3c64xx_spi_driver_data *sdd,
->>                                 struct spi_transfer *xfer)
->>  {
->> @@ -553,13 +533,11 @@ static int s3c64xx_wait_for_pio(struct s3c64xx_spi_driver_data *sdd,
->>                                 struct spi_transfer *xfer, bool use_irq)
->>  {
->>         void __iomem *regs = sdd->regs;
->> +       u8 *buf = xfer->rx_buf;
->> +       unsigned long time_us;
->>         unsigned long val;
->> -       u32 status;
->> -       int loops;
->> -       u32 cpy_len;
->> -       u8 *buf;
->> +       u32 status, len;
->>         int ms;
->> -       unsigned long time_us;
->>
->>         /* microsecs to xfer 'len' bytes @ 'cur_speed' */
->>         time_us = (xfer->len * 8 * 1000 * 1000) / sdd->cur_speed;
->> @@ -582,48 +560,29 @@ static int s3c64xx_wait_for_pio(struct s3c64xx_spi_driver_data *sdd,
->>                 status = readl(regs + S3C64XX_SPI_STATUS);
->>         } while (FIELD_GET(S3C64XX_SPI_ST_RX_FIFO_LVL, status) < xfer->len &&
->>                  --val);
->> -
->>         if (!val)
->>                 return -EIO;
->>
->>         /* If it was only Tx */
->> -       if (!xfer->rx_buf) {
->> +       if (!buf) {
->>                 sdd->state &= ~TXBUSY;
->>                 return 0;
->>         }
->>
->> -       /*
->> -        * If the receive length is bigger than the controller fifo
->> -        * size, calculate the loops and read the fifo as many times.
->> -        * loops = length / max fifo size (calculated by using the
->> -        * fifo mask).
->> -        * For any size less than the fifo size the below code is
->> -        * executed atleast once.
->> -        */
->> -       loops = xfer->len / FIFO_DEPTH(sdd);
->> -       buf = xfer->rx_buf;
->> -       do {
->> -               /* wait for data to be received in the fifo */
->> -               cpy_len = s3c64xx_spi_wait_for_timeout(sdd,
->> -                                                      (loops ? ms : 0));
->> -
->> -               switch (sdd->cur_bpw) {
->> -               case 32:
->> -                       ioread32_rep(regs + S3C64XX_SPI_RX_DATA,
->> -                                    buf, cpy_len / 4);
->> -                       break;
->> -               case 16:
->> -                       ioread16_rep(regs + S3C64XX_SPI_RX_DATA,
->> -                                    buf, cpy_len / 2);
->> -                       break;
->> -               default:
->> -                       ioread8_rep(regs + S3C64XX_SPI_RX_DATA,
->> -                                   buf, cpy_len);
->> -                       break;
->> -               }
->> +       len = FIELD_GET(S3C64XX_SPI_ST_RX_FIFO_LVL, status);
->> +
->> +       switch (sdd->cur_bpw) {
->> +       case 32:
->> +               ioread32_rep(regs + S3C64XX_SPI_RX_DATA, buf, len / 4);
->> +               break;
->> +       case 16:
->> +               ioread16_rep(regs + S3C64XX_SPI_RX_DATA, buf, len / 2);
->> +               break;
->> +       default:
->> +               ioread8_rep(regs + S3C64XX_SPI_RX_DATA, buf, len);
->> +               break;
->> +       }
->>
->> -               buf = buf + cpy_len;
->> -       } while (loops--);
->>         sdd->state &= ~RXBUSY;
->>
->>         return 0;
->> --
->> 2.43.0.429.g432eaa2c6b-goog
->>
 
