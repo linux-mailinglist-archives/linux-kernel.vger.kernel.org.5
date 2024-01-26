@@ -1,119 +1,150 @@
-Return-Path: <linux-kernel+bounces-40351-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF20F83DEE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:38:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 479B083DED5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:36:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92AC31F21AB4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:38:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C91591F20F1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:36:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF3B41DFD1;
-	Fri, 26 Jan 2024 16:38:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98E681DDC9;
+	Fri, 26 Jan 2024 16:36:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="XwDKVD2R"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QTlmYaPZ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0ECA1D559
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 16:38:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D63391DA22;
+	Fri, 26 Jan 2024 16:35:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706287097; cv=none; b=t0R3KDga+Tl5pZhCmulkTWIgeoi8eAw0EVz5Ohixcrxr4R4KGbe/DOkjjFOcYSozR1ZU0sdMnHkKfquoVh1WLzsNu24HWRWXyc+xgDpzXpzMtjZoFz0TxKA4ODUNflgNYg+LVRw8lCt97x7mpDZalgzfpgRXtJ2hYDtn1tOrZGM=
+	t=1706286960; cv=none; b=lTHtuJmTGpSUA3+yhtEKHbJ0PxPX7B9sDN9pJlr0XymKSCnMoQ4CskgsgQsj9uOJtOXWDwd3m80a3TYbI6IzKqss6K5p4y6oyTS8NfqP+bY4Ex5FNVaisUoyk+Jo55m46QRU+P5M9QEpFIOQhuspjhQFIh5dPKbKstBRQ7ZpC0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706287097; c=relaxed/simple;
-	bh=/FfErPD7fPuY6n+IL4H7hJhZx3N0+Izam7zb+o4a8ac=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TAtC27O3dA6X/iHsd5zSEF6y1kpC0M5eksHhTS8WEGpLTRtUa0imXcZwpt+urJmypQmGTlsIrMy3KxyECnGdZIZuh9PDV3cBJ18UfYOLAZ6vyNdVcwjFiOFt6Ped8+jSWEN7/ayI84jNqsua+m762kV7c9biApREhDGGRPVeUGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=XwDKVD2R; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50ea9daac4cso588764e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:38:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1706287093; x=1706891893; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yIxa+CX1/TJs1SziOesxW18rUtHS0l1URIjIkyBIsA8=;
-        b=XwDKVD2RLd1CZDfeeMEsBkWMS2jUFIsglljV6SKUUpnli4HJJuW2lf6H4R3ndVcBEF
-         /IGT4Mt6B/olhQvxoqkE9YPjbaRvWAnacgmBn6lgZZ31J7ytw9mzqp67ifkSCWw5NmYH
-         nzKxbeyCYLjesvcbGWnnP6aM92m1I2ylFLxh9vxCqwLUg4daJZsx8THaTnt6TTlDD89Q
-         ZQuAqzqRCcZUp4TPKH+nC6CP9zXb6x1VdAIvgsN2CtqTK4IbgFPxF9uK9S/razHH4FWT
-         FjsEspWwDMr+lMvDu329Vnit8qkf8tYWKIKCbs72DOFaio5V/+4QyMIEO1h5CKzBS0uU
-         1+PA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706287093; x=1706891893;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yIxa+CX1/TJs1SziOesxW18rUtHS0l1URIjIkyBIsA8=;
-        b=b49VrPD2lO6To3CzaBY71TWVrjpraBNmOeP8eckFtqvPbyfFoc9SLRbF5fnGh23ECX
-         fX6P2JamjETR7wvvNS0HIsGsff0YsbXc75/qr4hRHycb6zW7lPVBSmt9NcidMwhgsQGO
-         /Y+lXg07MqSVusil+hJnrv55rdYMPUwDG8eK5WhXZxQqC9icW3vfsdZ+o2vQiRK9L6St
-         i76ZLJQWmdBoZOqxb4jf2hpNzUvsd1lUOSp5nuSik2XQOAcgSnsobpArG1kxqS+ieEsS
-         rZ9GynlS+ev45vf2Dojg6R8C9rt9GFRApvVBV6bmhsET0MvU6gSBPdHQR7elfKiMjZKs
-         JtDQ==
-X-Gm-Message-State: AOJu0Yzy89zUDg3h9z0j/q0HxE+wq/iMjSVJodr/+wC8vaEk0nl2Jkpt
-	bKWE3h3aDCGxpXQ6N4PtnaBzbfD3i3YksLhRQTv4JOcwciDZc4sTbCQLo+hfn4U=
-X-Google-Smtp-Source: AGHT+IE8xcb1wWSISj/bWqhgPC2j6HpUh+TnOucjqd3fNKnHetPqYqz6sgdZkACsOKi6NIy3PvfbbA==
-X-Received: by 2002:ac2:5a51:0:b0:510:1777:9559 with SMTP id r17-20020ac25a51000000b0051017779559mr821159lfn.86.1706287092847;
-        Fri, 26 Jan 2024 08:38:12 -0800 (PST)
-Received: from ?IPV6:2a10:bac0:b000:7589:7285:c2ff:fedd:7e3a? ([2a10:bac0:b000:7589:7285:c2ff:fedd:7e3a])
-        by smtp.gmail.com with ESMTPSA id c9-20020ac25f69000000b005101772e298sm220688lfc.19.2024.01.26.08.36.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jan 2024 08:36:41 -0800 (PST)
-Message-ID: <4f717166-863e-4145-8b8b-37e09415e855@suse.com>
-Date: Fri, 26 Jan 2024 18:35:59 +0200
+	s=arc-20240116; t=1706286960; c=relaxed/simple;
+	bh=1CvEZcDRXJkLYSzovAlFWb7VTNYLLAWd7l3AIviMY/0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VFeEh/aFFjqB6Y/NYY5W2xitgPu7puixn11Nq80Mux9jp0vWinprmIwSFoO/jTxqAaWml94CZ6t8weiOJlscVOwbXWeVIhZYHNWNO0HW+DvgesoqVQ36KIM7nR+9gm/tTTbnKWoXKEXt1qChyX6VBpzixiSLTyq2GWvgPg0+gak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QTlmYaPZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59E45C433F1;
+	Fri, 26 Jan 2024 16:35:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706286958;
+	bh=1CvEZcDRXJkLYSzovAlFWb7VTNYLLAWd7l3AIviMY/0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QTlmYaPZfmk0WzHXYdceMMa/gKFOZmoiQQeszLWFCww0as7M20/nv+JeMMwgXU1t8
+	 0Ocpmgjbg3Hfxyq56UzmzAji+I5+BfkmssrLQmGXH91zqHF4Vl8aTaZV7uWl1jMLY8
+	 SAHKlwS7lXgTm1ZP8hwVePGQzGxCh4xIKMctxnHl23wtrP6IE9O5gl0aQ03urPZt1Z
+	 1mzHGgAUmksymZl3wRtQoZF5ZjDtC0C2a2dhDwZ4P1IYGdXmBk+qUzMKeo3sBRTTVR
+	 EZjs5yn5oMEpM+IpbSZR713pFDKjc6rw6WU0txTmbI9NxviioBtVBRYiG7IO4ZjqBc
+	 8f3fgxpGaswEw==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rTPBa-00000000808-1LoK;
+	Fri, 26 Jan 2024 17:36:11 +0100
+Date: Fri, 26 Jan 2024 17:36:10 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arm64: dts: qcom: sc8280xp: Introduce additional
+ tsens instances
+Message-ID: <ZbPfeq6ElA3vMf_O@hovoldconsulting.com>
+References: <20240126-sc8280xp-tsens2_3-v2-1-8504d18828de@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] Randomness on confidential computing platforms
-Content-Language: en-US
-To: =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
- "Reshetova, Elena" <elena.reshetova@intel.com>
-Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
- Theodore Ts'o <tytso@mit.edu>, "Jason A. Donenfeld" <Jason@zx2c4.com>,
- Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
- "Nakajima, Jun" <jun.nakajima@intel.com>,
- Tom Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish"
- <ashish.kalra@amd.com>, Sean Christopherson <seanjc@google.com>,
- "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240126134230.1166943-1-kirill.shutemov@linux.intel.com>
- <6afe76be-90a7-4cf7-8c6c-23e6a14f8116@suse.com>
- <DM8PR11MB5750C6641F0951928E95439BE7792@DM8PR11MB5750.namprd11.prod.outlook.com>
- <ZbPWht37uWZGhp4m@redhat.com>
-From: Nikolay Borisov <nik.borisov@suse.com>
-In-Reply-To: <ZbPWht37uWZGhp4m@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240126-sc8280xp-tsens2_3-v2-1-8504d18828de@quicinc.com>
 
+On Fri, Jan 26, 2024 at 07:12:45AM -0800, Bjorn Andersson wrote:
+> The SC8280XP contains two additional tsens instances, providing among
+> other things thermal measurements for the GPU.
+> 
+> Add these and a GPU thermal-zone.
+> 
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> ---
+> Changes in v2:
+> - Drop TM/SROT comments
+> - Remove polling delays, rely on interrupts
+> - Link to v1: https://lore.kernel.org/r/20240118-sc8280xp-tsens2_3-v1-1-e86bce14f6bf@quicinc.com
+> ---
+>  arch/arm64/boot/dts/qcom/sc8280xp.dtsi | 37 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 37 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+> index febf28356ff8..7bfbb1bd8f4a 100644
+> --- a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+> @@ -4033,6 +4033,28 @@ tsens1: thermal-sensor@c265000 {
+>  			#thermal-sensor-cells = <1>;
+>  		};
+>  
+> +		tsens2: thermal-sensor@c251000 {
+> +			compatible = "qcom,sc8280xp-tsens", "qcom,tsens-v2";
+> +			reg = <0 0x0c251000 0 0x1ff>,
+> +			      <0 0x0c224000 0 0x8>;
+> +			#qcom,sensors = <11>;
+> +			interrupts-extended = <&pdc 122 IRQ_TYPE_LEVEL_HIGH>,
+> +					      <&pdc 124 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-names = "uplow", "critical";
+> +			#thermal-sensor-cells = <1>;
+> +		};
+> +
+> +		tsens3: thermal-sensor@c252000 {
+> +			compatible = "qcom,sc8280xp-tsens", "qcom,tsens-v2";
+> +			reg = <0 0x0c252000 0 0x1ff>,
+> +			      <0 0x0c225000 0 0x8>;
+> +			#qcom,sensors = <5>;
+> +			interrupts-extended = <&pdc 123 IRQ_TYPE_LEVEL_HIGH>,
+> +					      <&pdc 125 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-names = "uplow", "critical";
+> +			#thermal-sensor-cells = <1>;
+> +		};
 
+These should go before tsens0 based on the unit address.
 
-On 26.01.24 г. 17:57 ч., Daniel P. Berrangé wrote:
-> If the CPU performance counters could report RDRAND exhaustion directly,
-> then the host admin could trust that information and monitor it, but the
-> host shouldn't rely on the (hostile) guest software to tell it about
+> +
+>  		aoss_qmp: power-management@c300000 {
+>  			compatible = "qcom,sc8280xp-aoss-qmp", "qcom,aoss-qmp";
+>  			reg = <0 0x0c300000 0 0x400>;
+> @@ -5212,6 +5234,21 @@ cpu-crit {
+>  			};
+>  		};
+>  
+> +		gpu-thermal {
+> +			polling-delay-passive = <0>;
+> +			polling-delay = <0>;
+> +
+> +			thermal-sensors = <&tsens2 2>;
+> +
+> +			trips {
+> +				cpu-crit {
+> +					temperature = <110000>;
+> +					hysteresis = <1000>;
+> +					type = "critical";
+> +				};
+> +			};
+> +		};
 
-I guess it really depends on the POV - from the POV of an encrypted 
-guest the VMM is hostile so we ideally don't like to divulge more 
-information than is absolutely necessary.
+Shall you submit a follow-on patch to set the polling delays to zero
+for the other thermal zones (cpu, cluster, mem) so that we don't poll
+for those?
 
-OTOH, from the POV of the VMM we could say that the guest could be 
-running anything and so a facility like that could cause some confusion 
-on the VMM site.
+Looks good to me otherwise: 
 
-I think it would be very hard to reconcile the 2 views.
+Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
 
-> exhaustion.
+Johan
 
