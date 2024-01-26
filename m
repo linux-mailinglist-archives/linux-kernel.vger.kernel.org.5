@@ -1,192 +1,107 @@
-Return-Path: <linux-kernel+bounces-40180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40182-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82B5383DBD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:28:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67D4883DBDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:28:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3937F28671C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:28:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B1491C23C23
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:28:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EE8D1D6A6;
-	Fri, 26 Jan 2024 14:26:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F09401C693;
+	Fri, 26 Jan 2024 14:28:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="uZHTa48E"
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="ufuC/7VD"
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DFE41D535;
-	Fri, 26 Jan 2024 14:26:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E43EE1C688
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:28:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706279196; cv=none; b=sGcgI9fvPMXeeFAvec/nE60gNYmOFMY0MltgaoPZqtmTLms4WjIP/ThzGlOs7EVcsFuL1qjZ2dsZc9ALrmotennO6uU3PAdNNkJNDxpKyyQ+EX+OyWZXQ4sV01agZlFCoJUYuAZBqM70vAuAzAJzq0drVe5vMtkjLH0Cafs2s/8=
+	t=1706279290; cv=none; b=bRqaZ3mDaQJaZsiacj9gVMZmhmALiIeGxUhdXQHP7WPBOUQaQhqgsDjtulEiV1j8r+R+eGnBR6I+wTH/2vCEN3ZF8lXW/9RhSb4XrKDO8AMmxnKqgnnqNnXRb69/MVmbW0LB3gmJG2jGhdpAhmAEEf60N1l7GLQ3tqUKp6sITI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706279196; c=relaxed/simple;
-	bh=G2PhmLGC98EiARj7Dtek1UJ7RlcAx2g1L2bzRMsqHgk=;
-	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:References; b=Y02nzsH1nFY6dF7r7uTpPedU7pDI9rczmwLLiDDKkOV7bEbwjs2/rLTXh7AyiCRq1iz9GgU2GEsVhLLzvBuLedKu0aMHM3flX+vIIkUdfC/8ipL5dXPy/ecvTXO8rtZ9bEr0FX/taOFpjECZHHBO/MfqsUsOhm/F0sGpXR7+rmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=uZHTa48E; arc=none smtp.client-ip=210.118.77.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240126142632euoutp023ed9cc1e9f041986eb2f8019a0510b32~t6_K_JJLJ0059100591euoutp02j;
-	Fri, 26 Jan 2024 14:26:32 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240126142632euoutp023ed9cc1e9f041986eb2f8019a0510b32~t6_K_JJLJ0059100591euoutp02j
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1706279192;
-	bh=G2PhmLGC98EiARj7Dtek1UJ7RlcAx2g1L2bzRMsqHgk=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=uZHTa48EQyVxbnhzXGg2se1NMizjrTELw0jspKXqNbkgG8sgYbOg40PqjU8DFXe3v
-	 cnJdZ4uRedf8LiAhzrWD4zJen6UZq2rZiWKjiLMnbu1Yr/2fxxlT5M63FrNoWHx78+
-	 9WEaTmJPr46Oye6Mg11tc8APXahQ0RNiDc9wR574=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20240126142632eucas1p1e0e24ee5769474568123e0654afdafd3~t6_KxPAli0191701917eucas1p16;
-	Fri, 26 Jan 2024 14:26:32 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-	eusmges2new.samsung.com (EUCPMTA) with SMTP id CF.CC.09814.811C3B56; Fri, 26
-	Jan 2024 14:26:32 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240126142632eucas1p2bb5ce29b7e1d3010cfbbbc5bfac87d5c~t6_KM54tE1797917979eucas1p2k;
-	Fri, 26 Jan 2024 14:26:32 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240126142632eusmtrp197cdadfdd4dc1da64f6b5924aa4e8cee~t6_KMMYch0459904599eusmtrp1S;
-	Fri, 26 Jan 2024 14:26:32 +0000 (GMT)
-X-AuditID: cbfec7f4-711ff70000002656-0c-65b3c1182350
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-	eusmgms2.samsung.com (EUCPMTA) with SMTP id 83.0B.10702.711C3B56; Fri, 26
-	Jan 2024 14:26:32 +0000 (GMT)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240126142631eusmtip23e649b5d8741ca8d101f43e689fd83d1~t6_J-p2Os2792127921eusmtip2l;
-	Fri, 26 Jan 2024 14:26:31 +0000 (GMT)
-Received: from localhost (106.210.248.232) by CAMSVWEXC02.scsc.local
-	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Fri, 26 Jan 2024 14:26:30 +0000
-Date: Fri, 26 Jan 2024 15:26:26 +0100
-From: Joel Granados <j.granados@samsung.com>
-To: Baolu Lu <baolu.lu@linux.intel.com>
-CC: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, Robin
-	Murphy <robin.murphy@arm.com>, Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian
-	<kevin.tian@intel.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>, Jacob Pan
-	<jacob.jun.pan@linux.intel.com>, Longfang Liu <liulongfang@huawei.com>, Yan
-	Zhao <yan.y.zhao@intel.com>, <iommu@lists.linux.dev>, <kvm@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH v10 01/16] iommu: Move iommu fault data to linux/iommu.h
-Message-ID: <20240126142626.4apu4wxmc3ypqmhz@localhost>
+	s=arc-20240116; t=1706279290; c=relaxed/simple;
+	bh=ptiHZ9JiNJrvYyw90aqyIDcKSMeMvz8HiF6qKLRFFeo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XklxwiwU4/GEkeIDIC4R2cSFpnoltTeN84EKtNKjMChgiiqlctiTCE7ek6cEKGAXZAXEe3FyqSUcdMRddBfHX3dz7qWcUkWG3Nk9nyQqxxq/PO6Se8sk97t+JzJTXPMZFhLMHpJOeGW3VA0nA8QdvPSzsZ04rlT1CW4Y63X5Z7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=ufuC/7VD; arc=none smtp.client-ip=209.85.160.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-429fc7a1eacso3205181cf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 06:28:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706279285; x=1706884085; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yQ09+VzJkKE1sXYVFB1gLtsc0+Fyosssz3eqam4UtCw=;
+        b=ufuC/7VDr7JTIdb7scRiuo7FQpZ2VppRo3Feh8Bv9w3l5T6TjrUed8wInTxMNtPqGJ
+         5rIwtvOlP11YTcnjElZgb7r/T7PlHYIt01/5rQGhDBNBsJIgUb4c0IAMYjywWPT+KWBz
+         +sPQiaezIzB2GOqDygHkWBthC5NDNxQdSFzYdg53OW7dkuqJv0xxj5zzs8LolmHziLeS
+         GLvE7FEv8VTeJC3D/QyKHktPyl1qlUJRKgxv9C/qmoGNWbdzGmQZGkfCwowKp0XBM8By
+         nCl7Jj31Y3xuy0H9Ob7obfrQ4u1SsuGyLX5VMibJwCXneC/WBFAivk4GBqjIT16VPsdY
+         RO3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706279285; x=1706884085;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yQ09+VzJkKE1sXYVFB1gLtsc0+Fyosssz3eqam4UtCw=;
+        b=GpsIuB07A92HRjg11AxKPAPKy6KkrQhoNHZf3Diifr/xQme2YEPtf/GdS/q11E8gS1
+         L5+z3UCS9LqmmLydO/KU6WVAWaHi2NWWoty5UC3KI/1IrcqxhZq5j4j92xDUzb62IPwj
+         WtBt/V2dXWHhKeqbz3yqGI7/4g+LTHp8Kpc9A0CF8sgdTcs+djsb86oUw6G2aSejWcyQ
+         4CZHtiotJ7AhrVJyz1/vTAW6NJQjQHozYdPte0rW+sSYrqjVYITR7HcKBf2W7bnadH9f
+         MyH7e79eujjp/rJJRD5rhm2X+v/Cz/6lXXtoexSaAIOPAlehGof6FSNRWIUptT2AS3Gf
+         yFJw==
+X-Gm-Message-State: AOJu0YyLgi1smzEeUK+CidPO8zGm/WkBUMfv9KyBnnjYhkTpjot8FACF
+	xkRezzSMrr6MOnIX45BLgZ7KE2EsjmMJynKXgkMBS5zzM9ojy2jP+XFEilmD+Nw=
+X-Google-Smtp-Source: AGHT+IGOoacJV/nAVA+Xd9yml5yt6vl2AMdy5wcj/Qx9AXefv3NvlySozCO2BWDBQ3YHL3N7SdEhAQ==
+X-Received: by 2002:a05:6214:1bcc:b0:686:acfd:9e07 with SMTP id m12-20020a0562141bcc00b00686acfd9e07mr1839640qvc.32.1706279285394;
+        Fri, 26 Jan 2024 06:28:05 -0800 (PST)
+Received: from localhost ([2620:10d:c091:400::5:271e])
+        by smtp.gmail.com with ESMTPSA id nf6-20020a0562143b8600b0067cd5c86936sm540440qvb.79.2024.01.26.06.28.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 06:28:05 -0800 (PST)
+Date: Fri, 26 Jan 2024 09:28:00 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: chengming.zhou@linux.dev
+Cc: yosryahmed@google.com, nphamcs@gmail.com, akpm@linux-foundation.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	Chengming Zhou <zhouchengming@bytedance.com>
+Subject: Re: [PATCH 1/2] mm/zswap: don't return LRU_SKIP if we have dropped
+ lru lock
+Message-ID: <20240126142800.GF1567330@cmpxchg.org>
+References: <20240126083015.3557006-1-chengming.zhou@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="kepxqkqwvuznsvic"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <95ff904c-4731-46e2-ad3b-313811a3c2f2@linux.intel.com>
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprCJsWRmVeSWpSXmKPExsWy7djPc7oSBzenGvSfU7LYPHErm8WvLxYW
-	Sw+uZ7FoWH2B1eLKvz2MFjNnnGC06Jy9gd1i6dut7BZzphZaXN41h81iU0Oyxd6nj9ksDn54
-	wmrRcsfU4u6Ve4wWc39eY3EQ8HhycB6Tx5p5axg9Wo68ZfVYvOclk8emVZ1sHneu7WHzmHcy
-	0OPF5pmMHr3N79g8Pm+S89j6+TZLAHcUl01Kak5mWWqRvl0CV8ajWawFK/krenZfYGtgnMrb
-	xcjBISFgIvHqn00XIxeHkMAKRomD3x6xQjhfGCV6Js9jgnA+M0qsbPvM0sXICdbxfeocqMRy
-	RokZR+6ywFX1PP4P1b+VUeLP7WdMIC0sAqoS588cBrPZBHQkzr+5wwxiiwioSzQ17mUDaWAW
-	6GWRaN78kBEkISzgI/Fu10pWEJtXwFxixfyVLBC2oMTJmU/AbGaBColpk9Ywg3zBLCAtsfwf
-	B0iYU8BZYvLVTWwQpypLXJ/5ggnCrpU4teUW2NkSAv84JXqmfGKESLhITHjxkR3CFpZ4dXwL
-	lC0jcXpyDwtEw2RGif3/PrBDOKsZJZY1foUaay3RcuUJVIejRNPHQ6yQcOWTuPFWEOJQPolJ
-	26YzQ4R5JTrahCCq1SRW33vDMoFReRaS12YheW0WwmsQYR2JBbs/sWEIa0ssW/iaGcK2lVi3
-	7j3LAkb2VYziqaXFuempxUZ5qeV6xYm5xaV56XrJ+bmbGIGJ9fS/4192MC5/9VHvECMTB+Mh
-	RhWg5kcbVl9glGLJy89LVRLhNTHdmCrEm5JYWZValB9fVJqTWnyIUZqDRUmcVzVFPlVIID2x
-	JDU7NbUgtQgmy8TBKdXA1DQr36Ylouhq4id347JnkkmLX0+8qnD9zLGpe5Z5TOR8UiGvyqq4
-	kbnYeM68ZU3JnfyzAx76PtKZeJv5a/atCLP3sq4lJYGvfrAZHJvgJv5reljZ83/Bzse23xDz
-	mVI1gyc1Z1ryAWkOKznr5NNVe87GvpY/EZJpEbbvKm+9ml7aioMlbUuSipSnt5x87X+3bsbN
-	pGNTO3UEXYVlbl56s66Xf0OIqav6Mbk5efud05Ikn1/+xaM+8yxryiFPNm1Df5mJQpNYt4ns
-	j/i64u6Tx9Pd4qwZb7wId1o8PXx/1dHb1RdKS8LTlbzT1vHraSyxY5cwPaC0MeptRKTr/Wd3
-	Yv64CjwuE1fxPfHU6JewEktxRqKhFnNRcSIAdH8KeicEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrIKsWRmVeSWpSXmKPExsVy+t/xe7oSBzenGsx9zWixeeJWNotfXyws
-	lh5cz2LRsPoCq8WVf3sYLWbOOMFo0Tl7A7vF0rdb2S3mTC20uLxrDpvFpoZki71PH7NZHPzw
-	hNWi5Y6pxd0r9xgt5v68xuIg4PHk4DwmjzXz1jB6tBx5y+qxeM9LJo9NqzrZPO5c28PmMe9k
-	oMeLzTMZPXqb37F5fN4k57H1822WAO4oPZui/NKSVIWM/OISW6VoQwsjPUNLCz0jE0s9Q2Pz
-	WCsjUyV9O5uU1JzMstQifbsEvYzNT9azFyznr1i5+Rl7A+Nk3i5GTg4JAROJ71PnMIHYQgJL
-	GSWudmRCxGUkNn65ygphC0v8udbF1sXIBVTzkVFi/ckPjBDOVkaJqWvPs4BUsQioSpw/cxhs
-	EpuAjsT5N3eYQWwRAXWJpsa9YN3MAr0sEg9m9oE1CAv4SLzbtRJsBa+AucSK+StZIKauYZJo
-	/T2ZBSIhKHFy5hMwm1mgTOLaqj9AqzmAbGmJ5f84QMKcAs4Sk69uYoM4VVni+swXTBB2rcTn
-	v88YJzAKz0IyaRaSSbMQJkGEtSRu/HvJhCGsLbFs4WtmCNtWYt269ywLGNlXMYqklhbnpucW
-	G+kVJ+YWl+al6yXn525iBKaXbcd+btnBuPLVR71DjEwcjIcYVYA6H21YfYFRiiUvPy9VSYTX
-	xHRjqhBvSmJlVWpRfnxRaU5q8SFGU2AwTmSWEk3OBya+vJJ4QzMDU0MTM0sDU0szYyVxXs+C
-	jkQhgfTEktTs1NSC1CKYPiYOTqkGJiWxLXOaCiwel96fuPFYaYF/o+Uulrg1cYJKHG4rRB93
-	vprGy2dQfubzeUXfufxRL0OE43Wv62TWKEz/tzVPqKPKiGnm2y33pmYu7RVJib/Gv/m43aO9
-	V6YcTtM/JBr1dvnOI8Fy5sv5ii0XxAe8+tUh9UMslM2s5z77c/Yn5gpMhkbZdrPP8/ZqrPv+
-	V+rw/u2sxxuVPT/1JLIfDf2384e7z6c1thYTa98nW19gXjSL+63mEmN25438aw2MPi04tWSF
-	+NyQr14Gqvunvg746/nz2VFpK60bR7V1Juev5zBsP5Gdx32seoEng4LelNwNK37+fx3AonNE
-	2PZifQBXiqVSnstH29SdYScmf6lhVWIpzkg01GIuKk4EAC0w9IjEAwAA
-X-CMS-MailID: 20240126142632eucas1p2bb5ce29b7e1d3010cfbbbc5bfac87d5c
-X-Msg-Generator: CA
-X-RootMTR: 20240125091737eucas1p2091d853e27e669b3b12cea8ee3bbe34e
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240125091737eucas1p2091d853e27e669b3b12cea8ee3bbe34e
-References: <20240122054308.23901-1-baolu.lu@linux.intel.com>
-	<20240122054308.23901-2-baolu.lu@linux.intel.com>
-	<CGME20240125091737eucas1p2091d853e27e669b3b12cea8ee3bbe34e@eucas1p2.samsung.com>
-	<20240125091734.chekvxgof2d5zpcg@localhost>
-	<95ff904c-4731-46e2-ad3b-313811a3c2f2@linux.intel.com>
+In-Reply-To: <20240126083015.3557006-1-chengming.zhou@linux.dev>
 
---kepxqkqwvuznsvic
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jan 26, 2024 at 08:30:14AM +0000, chengming.zhou@linux.dev wrote:
+> From: Chengming Zhou <zhouchengming@bytedance.com>
+> 
+> LRU_SKIP can only be returned if we don't ever dropped lru lock, or
+> we need to return LRU_RETRY to restart from the head of lru list.
 
-On Thu, Jan 25, 2024 at 07:21:53PM +0800, Baolu Lu wrote:
-> On 2024/1/25 17:17, Joel Granados wrote:
-> > On Mon, Jan 22, 2024 at 01:42:53PM +0800, Lu Baolu wrote:
-> >> The iommu fault data is currently defined in uapi/linux/iommu.h, but is
-> >> only used inside the iommu subsystem. Move it to linux/iommu.h, where =
-it
-> >> will be more accessible to kernel drivers.
-> >>
-> >> With this done, uapi/linux/iommu.h becomes empty and can be removed fr=
-om
-> >> the tree.
-> > The reason for removing this [1] is that it is only being used by
-> > internal code in the kernel. What happens with usespace code that have
-> > used these definitions? Should we deprecate instead of just removing?
->=20
-> The interfaces to deliver I/O page faults to user space have never been
-> implemented in the Linux kernel before. Therefore, from a uAPI point of
-> view, this definition is actually dead code.
-thx for the explanation.
-I was thinking it was something like that. Just wanted to make sure.
+Good catch. Can you mention the possible consequences in the log?
 
-Best
+"Otherwise, the iteration might continue from a cursor position that
+was freed while the locks were dropped."?
 
---=20
+> Actually we may need to introduce another LRU_STOP to really terminate
+> the ongoing shrinking scan process, when we encounter a warm page
+> already in the swap cache. The current list_lru implementation
+> doesn't have this function to early break from __list_lru_walk_one.
+> 
+> Fixes: b5ba474f3f51 ("zswap: shrink zswap pool based on memory pressure")
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 
-Joel Granados
-
---kepxqkqwvuznsvic
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmWzwRIACgkQupfNUreW
-QU8AIAv/U/z6MVZy+cyG1NCYzxkxy8xooBuWMOZCurDu0a7SdV6un/4KU9r5sFyb
-mdt3SKwOc86g9Zn0ZAGpxaXxAjCKCq67OqSp3sz3MPUeADEPGDYd0ousIF+W/ABq
-R/NB6SF5ZGLad7tYNcbZPLtugUAz7piU75kPYY68L0/Oj4HkZ/oiXdeFYPJA4O1N
-hm4Pv/4X73kq/EpWGcWGxDg7RVffwFFnaep5OFgB/39zNyZjfvT7VMMuacGAeZ0p
-kCeqjKu+TsyKl+qaQJBv3oLvtSuFw6fqkPEASxRYX6Of+YI+Bx6Tqnkw/alpaWyA
-tWR1U8pgunDIflngqdQN65gBhWSIJNRc4qHQP+fpG62Z2AxtzgZIJ3UMxsshA8F3
-JOgewm/BMVQZBOGA5RwdidhHsgNlzDy/YkSP7e02U7dHmrwxAeb5am3QuBmxLkLQ
-vgVM+k36EJGQmApfroICCsThRVsAkaeWWXUMimY11M71P0GzGiKs2ytL4t+rrWrR
-mEQ5YGOe
-=1qb4
------END PGP SIGNATURE-----
-
---kepxqkqwvuznsvic--
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
