@@ -1,72 +1,72 @@
-Return-Path: <linux-kernel+bounces-39999-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40000-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DDE583D8E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:02:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B4BB83D85A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:40:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4902CB424EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:36:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A08FA1C23FBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:40:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE97A11CBD;
-	Fri, 26 Jan 2024 10:35:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2212134AD;
+	Fri, 26 Jan 2024 10:40:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PRfcMd4K"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JN/9v/b6"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49101BE5D
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:35:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495E210A28
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:40:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706265355; cv=none; b=mvZgT/QQThv52zoRj1CTXyhymPujAWPVhsqNyKhYxgniBxyvqJgNhWrLkAHqT6FlML+vt9h/gZsYVdNrO+xwunbHKTKXkRLYuShIJyU6GHHBkX/gs2c0R5jZ3f+kiTQdEtRUpdHg5nvvIAqdxfgqUFLbWqIuB/KFFG7noF3mgmA=
+	t=1706265639; cv=none; b=iW+3VZdxvVPHKwrMGYEiVTP/ox2SCZiBpE+t+FH21ZAWau0go3+AYJYxleWv+/eS1VlkKTUJpQQMM4bmpjLD74+6j33/DZJ1aLkshXEUAHqFviVQkFSxbMHOsV5UITxrSZBnKkOO6WcPREh3pVnIbTErSgbZK5FsHb8XJSKo1nc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706265355; c=relaxed/simple;
-	bh=c5PLx//hR0rc3fXLwydhPyfJ2y+OPsskKXRzH8vNVDA=;
+	s=arc-20240116; t=1706265639; c=relaxed/simple;
+	bh=gl1zEWtHpPeGeDv2YH2Awyz9rES2JmI4GPlsLZI4GRE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AyR/RxVKYdpQLU0bofP6OQQIWBzAdLONgwDHIeeCktXiZLmlHHsuSQNKkaoS1qRWP4Zidm+rpkoBqP3rwGr9NS4Map0mls0F9lHElTNNxwq4aw7Asca6WsJ5HRQ9HXSzM3s35EuI6GOP3Zp38uXsK3AhiTsAcInnIZDzLM1hQuA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PRfcMd4K; arc=none smtp.client-ip=209.85.218.46
+	 In-Reply-To:Content-Type; b=cEoM5SkqTaE/m5/z2LraP19OSX0mvStYA0ENzKY/sa8oFTJRWTDFYJF08JuIgecKwmkOFS7q5wpV4A3o4es1PnSqjE0ElriFLulk7TgdhKp6zrHVg66hVGSlUPA+YHnDGkqEGQM55J1ETQVDLdhWpswT6DLa9bkwQSC0t4/tLqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JN/9v/b6; arc=none smtp.client-ip=209.85.208.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a26fa294e56so41149266b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 02:35:52 -0800 (PST)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-55a684acf92so508575a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 02:40:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706265351; x=1706870151; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706265635; x=1706870435; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=/HaTVOkuWZamrEstVUjDb/fVGlkobIgzzXF2k3PneD4=;
-        b=PRfcMd4KlTipcaKVcBKbSnr4kLkEc0lIkr+Ss4UWt4I8vvpPQC4wnvCxBf2FJ/Z4Sf
-         jsVLeurrHRbnKxyk3tbFPuqo/2YZlK8RHt0aAEnB8uk4SHziEm4Jb3iE2YVa57+T8sZp
-         Vdb9M+EudHT1ZqsQbvU83bJVbhbpRP5c11Jnbe1baVVBBiWW00ek70TZVign8VDdnjHq
-         2qjvkYceiT2B0ROIM0xhfAlvfYkUkyP1TwPKB/WSwc6qTq5ZzxKTUUHzSyPdFdPOpicW
-         EjrAXmNAJGL5ZMFqy8jUNwJxFw42mM6WsiTXhoG8z2eUnXtNDKgHrbVWF5wR3JDRhszm
-         OwYg==
+        bh=+rxdOPY25LMe3+An1qLrkEz9HXwYecZgDaBwRDQOLTk=;
+        b=JN/9v/b6bfhRv+ad8z2W0EecINVR7cuoqgaGxpLq90C/WQ996qMjvsrlDV2eGq0zVI
+         zYQuDa1P7oWCf5LEK2rZxAtCxxNhllTGe2+hqYA1yj11UXN+yxUwwmpxaTuDVZ71YGoT
+         4eEAfkQ0CxMlyKziAuq3nMBrIIgDWO2dMl/4ApRIIyHVqRyZI4zcQ1qv2q44FlVT7zp5
+         SYrO4C40QAS4U+KEkJ0tbeu8gMXIShlpA902AkAQ1baYvD0yeDxfREVOHcDP/ljcuPx4
+         ChrAHLYkYFtGKGOepuM52YIQONquspZXH962YqD/l0lV4q+yIcKbidaRm/dcbILNU98x
+         UxGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706265351; x=1706870151;
+        d=1e100.net; s=20230601; t=1706265635; x=1706870435;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/HaTVOkuWZamrEstVUjDb/fVGlkobIgzzXF2k3PneD4=;
-        b=B5lVcxyg84Ql9MDdmS5qnb/MXjmRs0jj41754kV/C+dpSRIg8/BE53QkUFbooHxYNy
-         Vrt40E3kXDBh2BZeKqbbK/8w92Uch4RmPOD0BAeXPLeY+/fAOkIZqDaffp4QyB3s66Zb
-         6B/FEwqDIQEtQOAiNYHstxJ6cmtt3yJ1d5IhNN2JNSvB+kcTn0OA1H9fkNutyzN5KQwj
-         iBP6GupJm7PSslsEC9WL3cW8rWHbEauwZyT43SnrkAtG2vbvt7nzj0+AIaBHdOvkoKd4
-         5mx/7eTp85egL6MqyrIwDkbnTB/i7BT4ub4bDIjsJtTNDiqcqND877E8z8tsMJpKB4gK
-         rzdg==
-X-Gm-Message-State: AOJu0Yza+lFDnq/e6SJqc3xilnSKsMuDVaIiDzAkG2kH+eK/csFlMxAH
-	WxYPhlIQkfMLigmhLB38dqBaCK+oYSQaopgEOR7niOA8p5di/QfvtUH+ivonIUo=
-X-Google-Smtp-Source: AGHT+IH9eukaLTLQ7eQe4tQiz9QkTFfQ1DpjzBG48BFRyY0IB9AnUhbMDZ+9rXCYhFjAuXOStFYdXA==
-X-Received: by 2002:a17:906:f2c8:b0:a30:d9c5:e5c with SMTP id gz8-20020a170906f2c800b00a30d9c50e5cmr595859ejb.55.1706265351383;
-        Fri, 26 Jan 2024 02:35:51 -0800 (PST)
+        bh=+rxdOPY25LMe3+An1qLrkEz9HXwYecZgDaBwRDQOLTk=;
+        b=eOL+OZ4J4dXUDRVnTnx6JAa7gKn36Zd/eibCvF8h2lDNqGYfVfMZQn/ACha8DEiyNi
+         kRLFi3qFhL+r1SASoo62buhJZhInXecDL+byo3qb/zVelLiH9MgbjOZsnQjuzjOYLD7e
+         BcTvlXWLM8R7zZoXa0CHLXeZtl3gq8VXsxezDWGT1QDbC9aqmqiLsWZznDA7ygwGvi1q
+         nrg8/LTAxPEPBeJtVDbES2//Z+6LUfudNwZxjlcdglpqivonRJnorkLqy4c2njp1GI6J
+         beVSZ/HveonnIryxKuCDsM23h8yIGsQmF/nlLrGWp24EA+T8XjF7L5LT9yQC0KMIqQtS
+         /yQA==
+X-Gm-Message-State: AOJu0YzUrm0bM7zrLr9d0gq+3UKR/d5B5/lzW2ShqwPgshrMENichSDJ
+	cKHJQGhR6FO2XU1DjL93j1NeODNqBRlXoPT+6U9VB+2aE07boverVO8CMfJeMoI=
+X-Google-Smtp-Source: AGHT+IHBN1TTtd9Ev4I2l2QrNfpfRANY5sgU8gNdV3XTN7GgSafm/gXyF9GHt26emVq30MO7rwBqzQ==
+X-Received: by 2002:a17:906:37d0:b0:a31:8008:cece with SMTP id o16-20020a17090637d000b00a318008cecemr416174ejc.6.1706265635415;
+        Fri, 26 Jan 2024 02:40:35 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id p7-20020a17090635c700b00a317b2b5adfsm475891ejb.160.2024.01.26.02.35.49
+        by smtp.gmail.com with ESMTPSA id un8-20020a170907cb8800b00a2fb9c0337esm476980ejc.112.2024.01.26.02.40.33
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jan 2024 02:35:50 -0800 (PST)
-Message-ID: <58ba835e-46d5-4331-bc3c-76ff4a5ae4eb@linaro.org>
-Date: Fri, 26 Jan 2024 11:35:48 +0100
+        Fri, 26 Jan 2024 02:40:34 -0800 (PST)
+Message-ID: <74b9f249-fcb4-4338-bf7b-8477de6c935c@linaro.org>
+Date: Fri, 26 Jan 2024 11:40:32 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,20 +74,22 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] arm64: dts: exynos: gs101: sysreg_peric1 needs a
- clock
+Subject: Re: [PATCH v2 1/2] dt-bindings: net: bluetooth: Add MediaTek MT7921S
+ SDIO Bluetooth
 Content-Language: en-US
-To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- alim.akhtar@samsung.com, peter.griffin@linaro.org
-Cc: kernel-team@android.com, tudor.ambarus@linaro.org,
- willmcvicker@google.com, daniel.lezcano@linaro.org, tglx@linutronix.de,
+To: Chen-Yu Tsai <wenst@chromium.org>, Marcel Holtmann <marcel@holtmann.org>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Sean Wang <sean.wang@mediatek.com>, linux-bluetooth@vger.kernel.org,
+ netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
  devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org
-References: <20240125140139.3616119-1-andre.draszik@linaro.org>
- <20240125140139.3616119-2-andre.draszik@linaro.org>
- <9a8bf6f17a0f8b4e31a6d59c1adb735823f579aa.camel@linaro.org>
+ linux-kernel@vger.kernel.org
+References: <20240126063500.2684087-1-wenst@chromium.org>
+ <20240126063500.2684087-2-wenst@chromium.org>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -133,49 +135,90 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <9a8bf6f17a0f8b4e31a6d59c1adb735823f579aa.camel@linaro.org>
+In-Reply-To: <20240126063500.2684087-2-wenst@chromium.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 25/01/2024 15:10, André Draszik wrote:
->> [PATCH v2] arm64: dts: exynos: gs101: sysreg_peric0 needs a clock
+On 26/01/2024 07:34, Chen-Yu Tsai wrote:
+> The MediaTek MT7921S is a WiFi/Bluetooth combo chip that works over
+> SDIO. While the Bluetooth function is fully discoverable, the chip
+> has a pin that can reset just the Bluetooth side, as opposed to the
+> full chip. This needs to be described in the device tree.
 > 
-> Sorry for copy/paste error in the subject :-(
+> Add a device tree binding for MT7921S Bluetooth over SDIO specifically
+> ot document the reset line.
+
+s/ot/to/
+
 > 
-> I've sent an update in https://lore.kernel.org/all/20240125140644.3617587-1-andre.draszik@linaro.org/
+> Cc: Sean Wang <sean.wang@mediatek.com>
+> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+> ---
+> Changes since v1:
+> - Reworded descriptions
+> - Moved binding maintainer section before description
+> - Added missing reference to bluetooth-controller.yaml
+> - Added missing GPIO header to example
+> 
+>  .../bluetooth/mediatek,mt7921s-bluetooth.yaml | 53 +++++++++++++++++++
+>  MAINTAINERS                                   |  1 +
+>  2 files changed, 54 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-bluetooth.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-bluetooth.yaml b/Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-bluetooth.yaml
+> new file mode 100644
+> index 000000000000..ff11c95c816c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-bluetooth.yaml
+> @@ -0,0 +1,53 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/bluetooth/mediatek,mt7921s-bluetooth.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MediaTek MT7921S Bluetooth
+> +
+> +maintainers:
+> +  - Sean Wang <sean.wang@mediatek.com>
+> +
+> +description:
+> +  MT7921S is an SDIO-attached dual-radio WiFi+Bluetooth Combo chip; each
+> +  function is its own SDIO function on a shared SDIO interface. The chip
+> +  has two dedicated reset lines, one for each function core.
+> +  This binding only covers the Bluetooth part of the chip.
+> +
+> +allOf:
+> +  - $ref: bluetooth-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - mediatek,mt7921s-bluetooth
 
-Which makes it impossible to apply (at least with usual workflow):
+Can it be also WiFi on separate bus? How many device nodes do you need
+for this device?
 
-Grabbing thread from
-lore.kernel.org/all/20240125140139.3616119-1-andre.draszik@linaro.org/t.mbox.gz
-Checking for newer revisions
-Grabbing search results from lore.kernel.org
-Analyzing 4 messages in the thread
-Will use the latest revision: v2
-You can pick other revisions using the -vN flag
-Checking attestation on all messages, may take a moment...
----
-  ✓ [PATCH v2] arm64: dts: exynos: gs101: sysreg_peric0 needs a clock
-    + Link:
-https://lore.kernel.org/r/20240125140644.3617587-1-andre.draszik@linaro.org
-    + Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-  ---
-  ✓ Signed: DKIM/linaro.org
----
-Total patches: 1
----
-Applying: arm64: dts: exynos: gs101: sysreg_peric0 needs a clock
----
-Patchwork: setting state on patchwork.kernel.org/linux-samsung-soc
- -> under-review : [v2] arm64: dts: exynos: gs101: sysreg_peric0 needs a
-clock
+Missing blank line.
 
-Please do not invent your own workflows of handling patches. Each
-submission must be:
-1. In separate thread, not linked to something else,
-2. Complete.
 
-I await for v3.
+> +  reg:
+> +    const: 2
+> +
+> +  reset-gpios:
+> +    maxItems: 1
+> +    description:
+> +      An active-low reset line for the Bluetooth core; on typical M.2
+> +      key E modules this is the W_DISABLE2# pin.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+
+Instead 'unevaluatedProperties: false'
+
 
 Best regards,
 Krzysztof
