@@ -1,134 +1,116 @@
-Return-Path: <linux-kernel+bounces-40674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 620F083E3EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:30:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A318383E3F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:31:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF4A5B21BC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:30:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D69F61C2252A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:31:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1B1A24A09;
-	Fri, 26 Jan 2024 21:30:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E665024A08;
+	Fri, 26 Jan 2024 21:31:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="Uph02T/k"
-Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Q7ydLpfR"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 434C4249F9
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 21:30:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BA12250E8
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 21:31:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706304637; cv=none; b=mSUfbvR1DR1+4l/ERgU8VifEG07aLD2t5ZDp+jHPwz0++gHdZ/aIPA4PodC3AuOxX7+B11eG/q/NxR/gd8uY3IUphXcvfnyDxgPRsDWqK6gbPlY7I9wHZufXu7/+St71vBVHgm7npkePZaBKdO5zFuO/u7nX5P/rYOsi3piipM8=
+	t=1706304682; cv=none; b=aQ5XuqP4UaLTulwv3EA1oW2uuKFv2mIsf+Af+Tqjd5sDfVYUnQuU2OK6YMnFG5gwmi7smJkYxpoGkYs0BSd1VT1JRUtw1VvHTYF3QxL4sFWZPOY8unuEDLuK7dtRfQRA0VgWsUfDGH5uLPQWeTf9zC6OHkxXItkxsI04tF2oEQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706304637; c=relaxed/simple;
-	bh=fnFSbqC73BjDiRJQDKm25AQEt8LU69o6DM+yCe6wRZQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jrp7sZET/XRNZyfZNop44iW81bNDpBvl9Iob1eujCFpXS6jKB+Le3ddQ65APJblUtL6cuiC/EzRrsSsO6V0KP+M7W4HmF7PyebW6mBwc0QBjT+rvEw9pMHEjDECBdvuZfwtpotCN6gj0oiZbWvd+y/F4OlkU4w4c0U/gyDItUr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=Uph02T/k; arc=none smtp.client-ip=35.89.44.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-5008a.ext.cloudfilter.net ([10.0.29.246])
-	by cmsmtp with ESMTPS
-	id TOrvrueHyCF6GTTmPr3mHg; Fri, 26 Jan 2024 21:30:29 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id TTmOrrnpCL3AmTTmOr8Y0p; Fri, 26 Jan 2024 21:30:29 +0000
-X-Authority-Analysis: v=2.4 cv=Sdrky9du c=1 sm=1 tr=0 ts=65b42475
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
- a=QyXUC8HyAAAA:8 a=Gc1-N3_vkRdohSFN-fAA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=gtdu07UB76ceLZHCruNCNqNVA0XFxMCp0HAaC2jM0KY=; b=Uph02T/kShK7aMSLjSTStLHeXR
-	R4KR68vHbu7KdyJ+qr9MKZ9UZWUaB39jPFkO4XzFZUIvKcMQNmG5zwUy6SrXT//vjZ3skiaoMwFpJ
-	ikRshOEPOALsroWwcuh3Z27p8V1rWpB455/CMP6u8lXPEBwryLy9LHey4h8mfU8P3IbuheahCTUMD
-	le08p352EdkOiFbdS8wdkl+ezhqZ8E1c46am1dScJQm4TQj5DqdAUL9cjNG0CpoO7KIB2c4qTZGvc
-	sy6QrLxIG00c7KvweUDexF3eb+FFrJLvJ8xnbLYyI8pJgRKus/Jw7IFSiepB/SXG0CQAeFGPH7DJP
-	WbXiuA4g==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:48192 helo=[192.168.15.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rTTmO-003Zp9-0G;
-	Fri, 26 Jan 2024 15:30:28 -0600
-Message-ID: <4907a7a3-8533-480a-bc3c-488573e18e66@embeddedor.com>
-Date: Fri, 26 Jan 2024 15:30:20 -0600
+	s=arc-20240116; t=1706304682; c=relaxed/simple;
+	bh=6mukGWAjPX2YjUL4JezyXFLuCN/rYL2RbG8PlJMIYCw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UKg1lZE0pR7x+9IzNBsWOYfnVC9aMYj6r3xgxkkpfEa5alPAOSasRM2M4LUgItIiBjcggPbWp8NN5k1xMeCIsT4oNnme1Hx+JpPluB/dCFfnrkjFGxMKn9tpSBdCRjANYXmcNKnnzYIc4alWBLIZH0T3XBvMAevMcedBglmlUxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Q7ydLpfR; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55a9008c185so1483818a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:31:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1706304678; x=1706909478; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=maDpcikpyh6FEh8N/tIM7o82tGen2/tmETzOibUg/is=;
+        b=Q7ydLpfRJBIPc1zDGpnWKX59E/L2MQWkHam27t3ye3pXQ8KhaHdVt0cKFF7tR4dRhW
+         8FJHYZqd8atnsWngv3bauKLiWGGaYBjyXN/6BBDtmjfKU0cxI5e9ZJu7aCAHhq8d6EVd
+         ERs1EzNLsVqS933T2uYBsrpwCzZJu/0QPBC+I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706304678; x=1706909478;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=maDpcikpyh6FEh8N/tIM7o82tGen2/tmETzOibUg/is=;
+        b=Gxi7vc900tx/VyMv7mjDX0L1X4cBLCb0Cw4FLLhzKeYjAsOJoosVU3oe0hPX8cM7nE
+         eE5P7a7cKwvpMwC/XqKQWlcWyhQIWev4sOI1mgicntGwcBHFmdE3khmjS39kK4S6ocCB
+         ZAi8SKf+wyMhbAFxwFHqC38h+V3yNOrFj/+5rc41jF/BxLb5rp2a3jdX6ldtLsODeM9O
+         2GewESqroHbv+G92yCWgM0+4POpbWqc6S2hI1dXnHSoP94ptqaqvFIFvIOeaCstxqRyH
+         F9ccbzcg3mHNdfth5cK74X0eZJk3d4dgMZHiGFSZN1TKhay380zwxCw3AfY1jd7fGDJx
+         Bw3w==
+X-Gm-Message-State: AOJu0YwPfsDiTxwsCyOKSxGF5bv+xctd5c/zedeCelyg9yEV9QP5ZytQ
+	n3kMc4kfQwmbHC//F87HzXE8LbbFAJMEI4/wQy/3UQUDLR3zCtS1Eiogx+gTNa5IfuAxmFK77c2
+	1do+6cw==
+X-Google-Smtp-Source: AGHT+IF33M0aFYM5KuRbsHEt+FSQrMJ1VWRhzJohWMNHuO7K16O3vToYWbZZ9EoY4HdqXSB93ectrA==
+X-Received: by 2002:a05:6402:1509:b0:55c:8533:c7d1 with SMTP id f9-20020a056402150900b0055c8533c7d1mr2612199edw.0.1706304678387;
+        Fri, 26 Jan 2024 13:31:18 -0800 (PST)
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
+        by smtp.gmail.com with ESMTPSA id r23-20020aa7da17000000b0055c104274e7sm979227eds.78.2024.01.26.13.31.17
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Jan 2024 13:31:17 -0800 (PST)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a313b51cf1fso150336566b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:31:17 -0800 (PST)
+X-Received: by 2002:a17:907:75cd:b0:a30:e9a6:68f6 with SMTP id
+ jl13-20020a17090775cd00b00a30e9a668f6mr2088169ejc.37.1706304677484; Fri, 26
+ Jan 2024 13:31:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] Enable -Wstringop-overflow globally
-To: Linus Torvalds <torvalds@linux-foundation.org>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <Za6JwRpknVIlfhPF@work>
- <CAHk-=wjG4jdE19-vWWhAX3ByfbNr4DJS-pwiN9oY38WkhMZ57g@mail.gmail.com>
-Content-Language: en-US
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <CAHk-=wjG4jdE19-vWWhAX3ByfbNr4DJS-pwiN9oY38WkhMZ57g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1rTTmO-003Zp9-0G
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.10]) [187.162.21.192]:48192
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 1
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfLtwuml11NBETn947nwXZao9LHA5B9a2kKz2Qit3YazpNaF2VCBqkjVdv5bozT+0STAtAfrVVu1CywrWadkpteLynsAXXD/nR0PRPpomP/dk4bGyJmMr
- 4MYCeIs4KDsW/pvJMAhBPEId5DiZFsLsiuUfNOTHxY5Y81QwEwj8aMc7ERR7D1IofPfk9PmzQKs5S9J295Ija7xDKFyhYH+VdDwRpu/cL7Vmciz4ZGbdidR4
+References: <20240126150209.367ff402@gandalf.local.home> <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
+ <20240126162626.31d90da9@gandalf.local.home>
+In-Reply-To: <20240126162626.31d90da9@gandalf.local.home>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 26 Jan 2024 13:31:01 -0800
+X-Gmail-Original-Message-ID: <CAHk-=witahEb8eXvRHGUGDQPj5u0uTBW+W=AwznWRf3=9GhzxQ@mail.gmail.com>
+Message-ID: <CAHk-=witahEb8eXvRHGUGDQPj5u0uTBW+W=AwznWRf3=9GhzxQ@mail.gmail.com>
+Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, 
+	Linux Trace Devel <linux-trace-devel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner <brauner@kernel.org>, 
+	Ajay Kaher <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
+On Fri, 26 Jan 2024 at 13:26, Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> So we keep the same inode number until something breaks with it, even
+> though, using unique ones is not that complicated?
 
+Using unique ones for directories was a trivial cleanup.
 
-On 1/26/24 15:22, Linus Torvalds wrote:
-> On Mon, 22 Jan 2024 at 07:29, Gustavo A. R. Silva <gustavoars@kernel.org> wrote:
->>
->> Enable -Wstringop-overflow globally
-> 
-> I suspect I'll have to revert this.
-> 
-> On arm64, I get a "writing 16 bytes into a region of size 0" in the Xe driver
-> 
->     drivers/gpu/drm/xe/xe_gt_pagefault.c:340
-> 
-> but I haven't looked into it much yet.
-> 
-> It's not some gcc-11 issue, though, this is with gcc version 13.2.1
-> 
-> It looks like the kernel test robot reported this too (for s390), at
-> 
->      https://lore.kernel.org/all/202401161031.hjGJHMiJ-lkp@intel.com/T/
-> 
-> and in that case it was gcc-13.2.0.
-> 
-> So I don't think the issue is about gcc-11 at all, but about other
-> random details.
+The file case is clearly different. I thought it would be the same
+trivial one-liner, but nope.
 
-Let me take a look.
+When you have to add 30 lines of code just to get unique inode numbers
+that nobody has shown any interest in, it's 30 lines too much.
 
---
-Gustavo
+And when it happens in a filesystem that has a history of copying code
+from the VFS layer and having nasty bugs, it's *definitely* too much.
+
+Simplify. If you can clean things up and we have a few release of
+not-horrendous-bugs every other day, I may change my mind.
+
+As it is, I feel like I have to waste my time checking all your
+patches, and I'm saying "it's not worth it".
+
+               Linus
 
