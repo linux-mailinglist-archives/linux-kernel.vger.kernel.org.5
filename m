@@ -1,106 +1,116 @@
-Return-Path: <linux-kernel+bounces-40464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D98EC83E0EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:53:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49C6C83E0F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:01:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 965D9282C5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:53:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8DF61F25B2B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:01:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57BFC208AF;
-	Fri, 26 Jan 2024 17:53:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF782208A7;
+	Fri, 26 Jan 2024 18:00:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c2E8Sr4x"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="fx2AmksZ"
+Received: from xry111.site (xry111.site [89.208.246.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91245AD53;
-	Fri, 26 Jan 2024 17:53:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 911F8200B8;
+	Fri, 26 Jan 2024 18:00:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706291598; cv=none; b=D7G+qjsx31KWLppPmq/RAJUJuo8SnnMYH9JzBJ/Uoq9s87CwJX7h8NoCcuDou3Ql6qMKqlhqjTC6H+6np0jmqU4hWcaxx0wm/YB1FMGXdD3O0dfq5v74T/dyogNVmrvrPzsgO6JmOLPdHXS2rZuqpm8qZLJRxG9cOp2e9LHHtQI=
+	t=1706292057; cv=none; b=QAcqKBezHoXRig75grzkmacYIHtKWZ2K4tyMOk1dKiK0KQmHr3rqJWX/9gQez2paQHuhom1E69ph97hmSIPtnaUKzu1nVaoh3r9dexMpGZRk1imtcgRfwJpUX41A/VtyPf72vrBTZUp46/cK8GmdvTIta59DkCbpEoWWSrhN3Go=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706291598; c=relaxed/simple;
-	bh=rybFb7jJvZjmLIxFKOxsfVGRM5tubzkm9Lxt0UHSsCc=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=Y3nec40/C9X4cPmrijlqf4mjZGC1m6A6m7SD1rga9tSOivANBqHaCv4clJvv8NWsVv90CW/0CMRu7BCt/FarHpFBStbSffcIl6OV6WV9hzintdAQNaHrpIj7XNLj6btFcto9ELW5JWK9OG/D4LHt82onEYSAWhUr+Ch3OQ6fnA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c2E8Sr4x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A43B0C433C7;
-	Fri, 26 Jan 2024 17:53:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706291598;
-	bh=rybFb7jJvZjmLIxFKOxsfVGRM5tubzkm9Lxt0UHSsCc=;
-	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-	b=c2E8Sr4xjNFOBy84ft5jRhhz4dDGDQza7qOywfJt/CVZWvGrNHdlsoxwTSotIfGYa
-	 MBMLVJODPloE59IKXN4681b65dzSzOUO8jGUYlqsiXDH6d5sA7O2Kp0VVcXJ5tccwO
-	 SvL8Puk/huFvEHG3LppdrBCDC1z5hOqS9MsiHTWZL+kDT6z0ZE5Qok9tvD3rs1bGr9
-	 xTIBg9BEbg7WpSCPwj2RdAmOHjFXR0feZaEqWLFoH9a5759baRNax9/vuELFJeX6Wy
-	 6fk1oH19sRkhsMmKL90V0PlYzOvAf2Xcfxl+Y3m4E02yXtVZSYpH8PAA1Ou6WpePaP
-	 96m5foIunw7cQ==
-Date: Fri, 26 Jan 2024 18:53:17 +0100 (CET)
-From: Jiri Kosina <jikos@kernel.org>
-To: Doug Anderson <dianders@chromium.org>
-cc: Johan Hovold <johan+linaro@kernel.org>, 
-    Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
-    linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
-    stable@vger.kernel.org
-Subject: Re: [PATCH] HID: i2c-hid-of: fix NULL-deref on failed power up
-In-Reply-To: <CAD=FV=UzGcneoL1d-DDXVugAeq2+YLCKrq8-5B7TfVAAKgF=SQ@mail.gmail.com>
-Message-ID: <nycvar.YFH.7.76.2401261852360.29548@cbobk.fhfr.pm>
-References: <20240126170901.893-1-johan+linaro@kernel.org> <CAD=FV=UzGcneoL1d-DDXVugAeq2+YLCKrq8-5B7TfVAAKgF=SQ@mail.gmail.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+	s=arc-20240116; t=1706292057; c=relaxed/simple;
+	bh=66yodsV9kY5hG2qOgHS8Pb9bSZO6F5IF9GXK6+EyybI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=l6Vm1Yz1KaXUUpZXpaagFPIOM30FjNw1Wq+jMTCumIdYwWwYvjBF5rgIQ2HiBK+NUuI/ewsjzIiHat2yEo80Hnvx+xospIj2nDeapYPUC6STl7oc9MYh+tnAlrKrJLOd2inB4Jvp1FHIvgeZj09+E/J9TmgBhGRTvDZV1tEPWwQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=fx2AmksZ; arc=none smtp.client-ip=89.208.246.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+	s=default; t=1706292053;
+	bh=66yodsV9kY5hG2qOgHS8Pb9bSZO6F5IF9GXK6+EyybI=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=fx2AmksZ45YocPyRDDniQVgwE/nLVkgdMormYw2A5hRgg6507JyJSV0veB8kasy3n
+	 27cS70Yx+MU+0VEaLKa7FVXDTbE4oGVDecGctsrZ9XA56yjz2A12SDfndsfqH5OMD3
+	 0sZ8MBJ0Lu3pS9wwuCJsC7BylpcfrqCf2EmpD3Eo=
+Received: from [IPv6:240e:358:1181:9d00:dc73:854d:832e:3] (unknown [IPv6:240e:358:1181:9d00:dc73:854d:832e:3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384))
+	(Client did not present a certificate)
+	(Authenticated sender: xry111@xry111.site)
+	by xry111.site (Postfix) with ESMTPSA id C9599669BB;
+	Fri, 26 Jan 2024 13:00:50 -0500 (EST)
+Message-ID: <75779311d0ee527c95bcb6170c4490520d0548fd.camel@xry111.site>
+Subject: Re: Strange EFAULT on mips64el returned by syscall when another
+ thread is forking
+From: Xi Ruoyao <xry111@xry111.site>
+To: Jiaxun Yang <jiaxun.yang@flygoat.com>, "linux-mips@vger.kernel.org"
+	 <linux-mips@vger.kernel.org>
+Cc: linux-kernel@vger.kernel.org, Thomas Bogendoerfer
+	 <tsbogend@alpha.franken.de>, libc-alpha@sourceware.org, 
+	regressions@lists.linux.dev
+Date: Sat, 27 Jan 2024 02:00:47 +0800
+In-Reply-To: <1e1ec730efc58f17ecf008a4600321e3d200ebda.camel@xry111.site>
+References: <75e9fd7b08562ad9b456a5bdaacb7cc220311cc9.camel@xry111.site>
+	 <4b715c9f-6a9e-4496-8810-670080cb715a@app.fastmail.com>
+	 <1e1ec730efc58f17ecf008a4600321e3d200ebda.camel@xry111.site>
+Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
+ keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 
-On Fri, 26 Jan 2024, Doug Anderson wrote:
+On Fri, 2024-01-26 at 20:58 +0800, Xi Ruoyao wrote:
+> On Fri, 2024-01-26 at 12:33 +0000, Jiaxun Yang wrote:
+> >=20
+> >=20
+> > =E5=9C=A82024=E5=B9=B41=E6=9C=8824=E6=97=A5=E4=B8=80=E6=9C=88 =E4=B8=8A=
+=E5=8D=8810:42=EF=BC=8CXi Ruoyao=E5=86=99=E9=81=93=EF=BC=9A
+> > > Hi,
+> > >=20
+> > > When I'm testing Glibc master branch for upcoming 2.39 release, I
+> > > noticed an alarming test failure on mips64el:
+> >=20
+> > So apparently it should be tracked as a regression.
+> >=20
+> > #regzbot ^introduced 4bce37a68ff884e821a02a731897a8119e0c37b7
+> >=20
+> > Should we revert it for now?
+>=20
+> I'd say "yes" if we cannot easily patch instruction_pointer() to handle
+> delay slot.=C2=A0 Anyway the reversion will be a MIPS-only change.
 
-> > A while back the I2C HID implementation was split in an ACPI and OF
-> > part, but the new OF driver never initialises the client pointer which
-> > is dereferenced on power-up failures.
-> >
-> > Fixes: b33752c30023 ("HID: i2c-hid: Reorganize so ACPI and OF are separate modules")
-> > Cc: stable@vger.kernel.org      # 5.12
-> > Cc: Douglas Anderson <dianders@chromium.org>
-> > Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-> > ---
-> >  drivers/hid/i2c-hid/i2c-hid-of.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/hid/i2c-hid/i2c-hid-of.c b/drivers/hid/i2c-hid/i2c-hid-of.c
-> > index c4e1fa0273c8..8be4d576da77 100644
-> > --- a/drivers/hid/i2c-hid/i2c-hid-of.c
-> > +++ b/drivers/hid/i2c-hid/i2c-hid-of.c
-> > @@ -87,6 +87,7 @@ static int i2c_hid_of_probe(struct i2c_client *client)
-> >         if (!ihid_of)
-> >                 return -ENOMEM;
-> >
-> > +       ihid_of->client = client;
-> 
-> Good catch and thanks for the fix. FWIW, I'd be OK w/
-> 
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Phew.  Just tried it and:
 
-I've now queued this as a fix for 6.8 ....
+arch/mips/mm/fault.c: In function =E2=80=98__do_page_fault=E2=80=99:
+arch/mips/mm/fault.c:111:26: error: passing argument 1 of =E2=80=98expand_s=
+tack=E2=80=99 from incompatible pointer type [-Werror=3Dincompatible-pointe=
+r-types]
+  111 |         if (expand_stack(vma, address))
+      |                          ^~~
+      |                          |
+      |                          struct vm_area_struct *
+In file included from ./include/linux/pid_namespace.h:7,
+                 from ./include/linux/ptrace.h:10,
+                 from arch/mips/mm/fault.c:16:
+/include/linux/mm.h:3431:56: note: expected =E2=80=98struct mm_struct *=E2=
+=80=99 but argument is of type =E2=80=98struct vm_area_struct *=E2=80=99
+ 3431 | struct vm_area_struct *expand_stack(struct mm_struct * mm, unsigned=
+ long addr);
+      |                                     ~~~~~~~~~~~~~~~~~~~^~
+cc1: some warnings being treated as errors
 
-> That being said, I'd be even happier if you simply removed the "client" 
-> from the structure and removed the error printout. 
-> regulator_bulk_enable() already prints error messages when a failure 
-> happens and thus the error printout is redundant and wastes space.
-
-.. and this can be done for 6.9.
-
-Thanks,
-
--- 
-Jiri Kosina
-SUSE Labs
-
+--=20
+Xi Ruoyao <xry111@xry111.site>
+School of Aerospace Science and Technology, Xidian University
 
