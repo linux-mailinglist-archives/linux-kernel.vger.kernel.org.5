@@ -1,187 +1,93 @@
-Return-Path: <linux-kernel+bounces-39984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD46083D81D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:29:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D96283D81E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:29:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E0551F32BBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:29:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A05561C2D736
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:29:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 429F918E00;
-	Fri, 26 Jan 2024 10:08:20 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22BD61BDEA;
+	Fri, 26 Jan 2024 10:11:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RfzQFS+a"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DA6814276;
-	Fri, 26 Jan 2024 10:08:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68E6A1BDDE
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:11:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706263699; cv=none; b=ogvpC+b/DXHfSbUHlDsp/e2i4yuRISM5SHpVRBC6rHduXfvDNv0UZBWjh9fvwksEZrzOv/9Tjk80XaWhdDKfYWQ/wtbAjRnhL1k4+lNQfsjRtCRNPvw/PmXAgmcPpxTCP6GNSbyICa5/m5s/1M3nADWE90U5fM27NwZnToteyI0=
+	t=1706263906; cv=none; b=NiBy6j6s0iNBwAKYLagU1wXVkk/+leLzzOfiGrsoIEubCzvpwV0s6rDjsJA7xGjlCAno7Rxr3nkL6L5zkUKu6EaGnUo+uh1M6NRouOOZJcVgZyqbQEWAdqO+0ql2l4MFZkNCmQEHtg5Q22Xl9T+Yvm+XHIIsIwfqp39r+Shh9NM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706263699; c=relaxed/simple;
-	bh=X4835XH9cy69dNBnX/jYfdyJwUuvrtSl0fq/UaRdAQA=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=Mtzkzi+9tm8wQCcnZpGidzXGwdvxEvr+Jxc2FA0GR/C6T9ltDELGdybpuQ5ZPOPKZodpXPbxznRVWLDGY0DvV6ZoZ0d7umh7VoGgVs0p+P4EWERy8emCR0H4C8C/glDDSzBcLjzdP97AbdX+tQGhir+mZuqZR1L3YlcKWMasNOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TLtdt1HCkzXgt9;
-	Fri, 26 Jan 2024 18:06:58 +0800 (CST)
-Received: from canpemm500005.china.huawei.com (unknown [7.192.104.229])
-	by mail.maildlp.com (Postfix) with ESMTPS id 71384180078;
-	Fri, 26 Jan 2024 18:08:13 +0800 (CST)
-Received: from [10.174.176.34] (10.174.176.34) by
- canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 26 Jan 2024 18:08:12 +0800
-Subject: Re: [PATCH 3/7] ext4: refactor out ext4_generic_attr_show()
-To: Baokun Li <libaokun1@huawei.com>, <linux-ext4@vger.kernel.org>
-CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<yangerkun@huawei.com>, <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
-References: <20240126085716.1363019-1-libaokun1@huawei.com>
- <20240126085716.1363019-4-libaokun1@huawei.com>
-From: Zhang Yi <yi.zhang@huawei.com>
-Message-ID: <dcfcfdce-9ad1-5eea-4037-cd624591284e@huawei.com>
-Date: Fri, 26 Jan 2024 18:08:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1706263906; c=relaxed/simple;
+	bh=TAv9DV4puJdZUA0crlN66HTjsLolk5sxqpiUuYqaIu4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=L1MF6dhjVxetGFOWhWapmAmh4M5HJQ7hqpoT9hSes41AHV7ObgrgsMPfh5p7t1hHfECkW54UDK7wB31JSBQZ1FH6GBD+YhlT9C0P0/RtgYHFQaAtm9utonjNIUjVY1qtSPRO91famDpJs6yjuNOoVO2JE0+SuxBZgLuXjH4E+KE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RfzQFS+a; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F29B4C43390;
+	Fri, 26 Jan 2024 10:11:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706263906;
+	bh=TAv9DV4puJdZUA0crlN66HTjsLolk5sxqpiUuYqaIu4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RfzQFS+aCWeMvQWduIhztJsz/I4OsTPumEhCp4OwMD8mcknHuLkU9GScJ5EeaIWy5
+	 mKfrPkkxDMiTrNwuLFqCfNqD8jBc0etrY0+z5HUV+uQrv2BdBztIZOtE4rzYHop6UW
+	 Thp7JWz17LjFBrfj+8gm2abVuVUCCA/9W5f5fT72n3nhy5sC95RYROg03SCLAs1h/T
+	 JUtVVl7VTjbwhvrwlUM/z4jywI7lXIVogoQnn+jJSr3RIdDnmu4vC0CAvJmwRuNuBh
+	 XM1yB58WhSDXFsLMtas7qsC1kwHh+TSTFAPI+u/1XKBXo3UK6otS5vVqjyAkq1X1if
+	 E+DlhV5x5qN4A==
+Date: Fri, 26 Jan 2024 11:11:39 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Ajay Kaher <ajay.kaher@broadcom.com>
+Subject: Re: [for-linus][PATCH 1/3] eventfs: Have the inodes all for files
+ and directories all be the same
+Message-ID: <20240126-wirksam-wenngleich-cd9573d8cb28@brauner>
+References: <CAMuHMdXD0weO4oku8g2du6fj-EzxGaF+0i=zrPScSXwphFAZgg@mail.gmail.com>
+ <20240122114743.7e46b7cb@gandalf.local.home>
+ <CAHk-=wiq5mr+wSb6pmtt7QqBhQo_xr7ip=yMwQ5ryWVwCyMhfg@mail.gmail.com>
+ <CAHk-=wjGxVVKvxVf=NDnMhB3=eQ_NMiEY3onG1wRAjJepig=aw@mail.gmail.com>
+ <CAHk-=wiLqJYT2GGSBhKuJS-Uq1DVq3S32oP0SwqQiATuBivxcg@mail.gmail.com>
+ <20240122144443.0f9cf5b9@gandalf.local.home>
+ <20240125-deportation-sogenannten-2d57a7ce8f81@brauner>
+ <20240125130731.3b0e2a42@gandalf.local.home>
+ <20240125130821.0a1cd3a7@gandalf.local.home>
+ <CAMuHMdU-+RmngWJwpHYPjVcaOe3NO37Cu8msLvqePdbyk8qmZA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240126085716.1363019-4-libaokun1@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500005.china.huawei.com (7.192.104.229)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdU-+RmngWJwpHYPjVcaOe3NO37Cu8msLvqePdbyk8qmZA@mail.gmail.com>
 
-On 2024/1/26 16:57, Baokun Li wrote:
-> Refactor out the function ext4_generic_attr_show() to handle the reading
-> of values of various common types, with no functional changes.
+On Fri, Jan 26, 2024 at 09:07:06AM +0100, Geert Uytterhoeven wrote:
+> Hi Steven.
 > 
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-
-Looks good to me.
-
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
-
-> ---
->  fs/ext4/sysfs.c | 74 +++++++++++++++++++++----------------------------
->  1 file changed, 32 insertions(+), 42 deletions(-)
+> On Thu, Jan 25, 2024 at 7:08 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> > On Thu, 25 Jan 2024 13:07:31 -0500
+> > Steven Rostedt <rostedt@goodmis.org> wrote:
+> > > Actually, inodes isn't the biggest issue of tar, as tar *is* a common
+> > > operation on tracefs.
+> >
+> > Correction. tar would be a common operation if it worked ;-)
 > 
-> diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-> index 834f9a0eb641..a5d657fa05cb 100644
-> --- a/fs/ext4/sysfs.c
-> +++ b/fs/ext4/sysfs.c
-> @@ -366,13 +366,42 @@ static ssize_t __print_tstamp(char *buf, __le32 lo, __u8 hi)
->  #define print_tstamp(buf, es, tstamp) \
->  	__print_tstamp(buf, (es)->tstamp, (es)->tstamp ## _hi)
->  
-> +static ssize_t ext4_generic_attr_show(struct ext4_attr *a,
-> +				      struct ext4_sb_info *sbi, char *buf)
-> +{
-> +	void *ptr = calc_ptr(a, sbi);
-> +
-> +	if (!ptr)
-> +		return 0;
-> +
-> +	switch (a->attr_id) {
-> +	case attr_inode_readahead:
-> +	case attr_pointer_ui:
-> +		if (a->attr_ptr == ptr_ext4_super_block_offset)
-> +			return sysfs_emit(buf, "%u\n", le32_to_cpup(ptr));
-> +		return sysfs_emit(buf, "%u\n", *((unsigned int *) ptr));
-> +	case attr_pointer_ul:
-> +		return sysfs_emit(buf, "%lu\n", *((unsigned long *) ptr));
-> +	case attr_pointer_u8:
-> +		return sysfs_emit(buf, "%u\n", *((unsigned char *) ptr));
-> +	case attr_pointer_u64:
-> +		if (a->attr_ptr == ptr_ext4_super_block_offset)
-> +			return sysfs_emit(buf, "%llu\n", le64_to_cpup(ptr));
-> +		return sysfs_emit(buf, "%llu\n", *((unsigned long long *) ptr));
-> +	case attr_pointer_string:
-> +		return sysfs_emit(buf, "%.*s\n", a->attr_size, (char *) ptr);
-> +	case attr_pointer_atomic:
-> +		return sysfs_emit(buf, "%d\n", atomic_read((atomic_t *) ptr));
-> +	}
-> +	return 0;
-> +}
-> +
->  static ssize_t ext4_attr_show(struct kobject *kobj,
->  			      struct attribute *attr, char *buf)
->  {
->  	struct ext4_sb_info *sbi = container_of(kobj, struct ext4_sb_info,
->  						s_kobj);
->  	struct ext4_attr *a = container_of(attr, struct ext4_attr, attr);
-> -	void *ptr = calc_ptr(a, sbi);
->  
->  	switch (a->attr_id) {
->  	case attr_delayed_allocation_blocks:
-> @@ -391,45 +420,6 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
->  		return sysfs_emit(buf, "%llu\n",
->  				(unsigned long long)
->  			percpu_counter_sum(&sbi->s_sra_exceeded_retry_limit));
-> -	case attr_inode_readahead:
-> -	case attr_pointer_ui:
-> -		if (!ptr)
-> -			return 0;
-> -		if (a->attr_ptr == ptr_ext4_super_block_offset)
-> -			return sysfs_emit(buf, "%u\n",
-> -					le32_to_cpup(ptr));
-> -		else
-> -			return sysfs_emit(buf, "%u\n",
-> -					*((unsigned int *) ptr));
-> -	case attr_pointer_ul:
-> -		if (!ptr)
-> -			return 0;
-> -		return sysfs_emit(buf, "%lu\n",
-> -				*((unsigned long *) ptr));
-> -	case attr_pointer_u8:
-> -		if (!ptr)
-> -			return 0;
-> -		return sysfs_emit(buf, "%u\n",
-> -				*((unsigned char *) ptr));
-> -	case attr_pointer_u64:
-> -		if (!ptr)
-> -			return 0;
-> -		if (a->attr_ptr == ptr_ext4_super_block_offset)
-> -			return sysfs_emit(buf, "%llu\n",
-> -					le64_to_cpup(ptr));
-> -		else
-> -			return sysfs_emit(buf, "%llu\n",
-> -					*((unsigned long long *) ptr));
-> -	case attr_pointer_string:
-> -		if (!ptr)
-> -			return 0;
-> -		return sysfs_emit(buf, "%.*s\n", a->attr_size,
-> -				(char *) ptr);
-> -	case attr_pointer_atomic:
-> -		if (!ptr)
-> -			return 0;
-> -		return sysfs_emit(buf, "%d\n",
-> -				atomic_read((atomic_t *) ptr));
->  	case attr_feature:
->  		return sysfs_emit(buf, "supported\n");
->  	case attr_first_error_time:
-> @@ -438,9 +428,9 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
->  		return print_tstamp(buf, sbi->s_es, s_last_error_time);
->  	case attr_journal_task:
->  		return journal_task_show(sbi, buf);
-> +	default:
-> +		return ext4_generic_attr_show(a, sbi, buf);
->  	}
-> -
-> -	return 0;
->  }
->  
->  static ssize_t ext4_generic_attr_store(struct ext4_attr *a,
-> 
+> What would be needed to fix that?  I regularly use tar on other virtual
+> file systems (e.g. /sys/firmware/devicetree/), which works fine.
+
+The size would be one thing. The other is that tar requires unique inode
+numbers for all files iirc (That's why we have this whole btrfs problem
+- let's not get into this here -  where inode numbers aren't unique and
+are duplicated per subvolume.).
 
