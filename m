@@ -1,81 +1,64 @@
-Return-Path: <linux-kernel+bounces-40639-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41F4283E384
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:59:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2ECA983E393
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:02:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BDE61C21DBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:59:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C23621F27059
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:02:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D53C2420C;
-	Fri, 26 Jan 2024 20:59:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 734DD2421A;
+	Fri, 26 Jan 2024 21:02:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e1IDWxdp"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="U3CR9W38"
+Received: from xry111.site (xry111.site [89.208.246.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD3AA24A09;
-	Fri, 26 Jan 2024 20:59:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9583D2374C;
+	Fri, 26 Jan 2024 21:02:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706302766; cv=none; b=WircJq/7Bi9EbEhW25crsiIwGVnjRV1uUySJTRXb0W3NXl96MA+adW75n//YWoUIBFd/4/r+MlJb4iq2nCLPtc5q0PGDMsod8ZgZA8/0huhXIOZCy1qZyXmwfcCLAwhdIPYEeBqKllE41vwrNVqFTnhe2JrePC4jls3zrU0wKmM=
+	t=1706302929; cv=none; b=XpKs77LKRxwlK+9RGtnfxjHp+m+/iBSfKl86ywM4Qw6qEaGDDP3JERmO1TKBAOHbsxh9J0aYHptcSwH7BFRKNoh7f4el1ti9IytmMUcNNdPohk9pRAB4ZO77F1LjzSTOhaV/AARsFZb+QsOAkLjFPewU3HSCKslvGHCHsGMJ5/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706302766; c=relaxed/simple;
-	bh=d5lnbFB1kRhdfOGtL24zlryF/VXTIqx8E+zK0Lfx4ts=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QSSLF/lW5QjFD58/vKsiHoBW9v6c55EpDMLjzxIiPLiw7+DVqB5ldtCYhQ6O2IZGMfpMHdMUEvm/Mwkwa9Je2pCIbmE+K22xuRD/jJNV3S79FnY3GlJaYM65kw9YjZfQHcXZDKfg/jlCWnHhAMRd4OMCCNwlkOkqeDLmv3JAxG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e1IDWxdp; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2cf4a845a76so9609651fa.3;
-        Fri, 26 Jan 2024 12:59:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706302762; x=1706907562; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HgUr7JNxvuTwGjQqxQ6rYpOlzqBbvDPhSHnCMKxoYXc=;
-        b=e1IDWxdp3LY1beDv4Ja//6Oj0zLWzFG6A6e5Pfa5dLEZdnTYu3epyuyYO/SOE1hjZg
-         CcBVOzZFJFvMHmk0HHS9spfLSC4cR4WeE8ic0AKwf+WV+UKkx1i/dT7y2Td2eakVC6H1
-         QDn4ViakVpmEdHu7QMrFhomMJBGO0lr1OS6ApDGKShH7nqympNH0gVnEuR5mt5V316EX
-         MbNBxuvApyUc7XN1qsPdTg0at5uSTNOQ3AH5zWvHJhUdopDT5xiSaBHNZjNh7sgUQG8U
-         Msvp+h2bEIJPzRn4U9C/RgbC7VUv4zG94CG/AKhmLiw/fnbIt5HomUjbOJ9eYEPwNZWD
-         wt3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706302762; x=1706907562;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HgUr7JNxvuTwGjQqxQ6rYpOlzqBbvDPhSHnCMKxoYXc=;
-        b=BG4kJb9Musp+obgoja5r5TnSYn/56XNs2+9nG/mnL/vKPlGCgZlWBIKOcJ5veiM/pl
-         L11vRryl398VjPGRmiYszvXERZwSxtZ2z7LCxK+Jobi1NeG6xFJOvegbG3716p4SHZBK
-         S0goFwQlRgVQcvL41z1DT4NYuGd+GWJpqvTkzhS8IoxSmMwIAHqLik5XPbDhkZ3y/RlH
-         18ZaJ/TM0mBwK6wisBPsvpw0HajUOrwOTiKWjpMS8pSxewfodd7z7bI4YMJT33lnHC1c
-         meqBuU/BOrwodFAapDTyjt+SDKkySW8mNO7eiYugMoRvs1R+Jv06GuCaVknDT/MyI8JR
-         ECbA==
-X-Gm-Message-State: AOJu0Yx7YE/N80atn/m0TJhaG1Nvj7YZqxdI1600j4r9TC4fufudMVO5
-	xr8brZOdIm5kDWmge3DkV/vfdy8t1VKShvlqK4hoSFm9kmM1EdJk
-X-Google-Smtp-Source: AGHT+IEZpV6MYS9liQqd1foY1cgs3BraQYTyZ1tQHkG/Lp8ebm3EwJzgjtDOYMCvSVAC09NOYo5W6g==
-X-Received: by 2002:a05:651c:2007:b0:2cc:e51c:4d0c with SMTP id s7-20020a05651c200700b002cce51c4d0cmr251569ljo.66.1706302762311;
-        Fri, 26 Jan 2024 12:59:22 -0800 (PST)
-Received: from localhost.localdomain (broadband-46-242-13-133.ip.moscow.rt.ru. [46.242.13.133])
-        by smtp.googlemail.com with ESMTPSA id d9-20020a2eb049000000b002cd187bb0f1sm259458ljl.49.2024.01.26.12.59.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 12:59:22 -0800 (PST)
-From: Konstantin Aladyshev <aladyshev22@gmail.com>
-To: 
-Cc: Konstantin Aladyshev <aladyshev22@gmail.com>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Jean Delvare <jdelvare@suse.com>,
-	Naresh Solanki <Naresh.Solanki@9elements.com>,
-	Patrick Rudolph <patrick.rudolph@9elements.com>,
-	linux-hwmon@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] hwmon: (pmbus/mp2975) Fix driver initialization for MP2975 device
-Date: Fri, 26 Jan 2024 23:57:14 +0300
-Message-Id: <20240126205714.2363-1-aladyshev22@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706302929; c=relaxed/simple;
+	bh=mn39oHpKfrn31dhBf6OIk09Xa6Qf/ZTs2k7yrfk5adA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=A60iBnePNS86HPL3VdGrKJ7MubGXYqvSgcV0z/H/Y0/W6HfgzCAi9hHkUDoPE+jW7FL/JfEmrHMMOHNTUB0KkcN+A9O5ec9sApAKdU+xcOg5G3x9dJzVvzvf2u6HZK5tIEwtfOqrqv+QPkV60/ytK1b6iV+gPwZsvJTRAyoRFNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=U3CR9W38; arc=none smtp.client-ip=89.208.246.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+	s=default; t=1706302923;
+	bh=mn39oHpKfrn31dhBf6OIk09Xa6Qf/ZTs2k7yrfk5adA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=U3CR9W38GcKEHTnb5MkhwcafV1zLklKgHN8srBonMiiLOgJBLd43aKdrY8oYvZ4nj
+	 5RSct1lbhRLPK69gRBaey0Zl9kJNiPMXfP2vJxkiEJfp7CDxyHVfE4WYGDwXtqY6CB
+	 70FVtUnT7uAopEpSWiOQm07xsbjC6ekCHIGhlNOo=
+Received: from stargazer.. (unknown [IPv6:240e:358:1181:9d00:dc73:854d:832e:3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+	(Client did not present a certificate)
+	(Authenticated sender: xry111@xry111.site)
+	by xry111.site (Postfix) with ESMTPSA id BFBFD66A22;
+	Fri, 26 Jan 2024 16:01:58 -0500 (EST)
+From: Xi Ruoyao <xry111@xry111.site>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	linux-mips@vger.kernel.org
+Cc: Ralf Baechle <ralf@linux-mips.org>,
+	"Maciej W. Rozycki" <macro@orcam.me.uk>,
+	YunQiang Su <wzssyqa@gmail.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	linux-kernel@vger.kernel.org,
+	Xi Ruoyao <xry111@xry111.site>,
+	stable@vger.linux.org
+Subject: [PATCH] mips: Call lose_fpu(0) before initializing fcr31 in mips_set_personality_nan
+Date: Sat, 27 Jan 2024 04:59:22 +0800
+Message-ID: <20240126205920.11487-3-xry111@xry111.site>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,76 +67,55 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The commit 1feb31e810b0 ("hwmon: (pmbus/mp2975) Simplify VOUT code")
-has introduced a bug that makes it impossible to initialize MP2975
-device:
-"""
-mp2975 5-0020: Failed to identify chip capabilities
-i2c i2c-5: new_device: Instantiated device mp2975 at 0x20
-i2c i2c-5: delete_device: Deleting device mp2975 at 0x20
-"""
-Since the 'read_byte_data' function was removed from the
-'pmbus_driver_info ' structure the driver no longer reports correctly
-that VOUT mode is direct. Therefore 'pmbus_identify_common' fails
-with error, making it impossible to initialize the device.
+If we still own the FPU after initializing fcr31, when we are preempted
+the dirty value in the FPU will be read out and stored into fcr31,
+clobbering our setting.  This can cause an improper floating-point
+environment after execve().  For example:
 
-Restore 'read_byte_data' function to fix the issue.
+    zsh% cat measure.c
+    #include <fenv.h>
+    int main() { return fetestexcept(FE_INEXACT); }
+    zsh% cc measure.c -o measure -lm
+    zsh% echo $((1.0/3)) # raising FE_INEXACT
+    0.33333333333333331
+    zsh% while ./measure; do ; done
+    (stopped in seconds)
 
-Tested:
-- before: it is not possible to initialize MP2975 device with the
-'mp2975' driver,
-- after: 'mp2975' correctly initializes MP2975 device and all sensor
-data is correct.
+Call lose_fpu(0) before setting fcr31 to prevent this.
 
-Fixes: 1feb31e810b0 ("hwmon: (pmbus/mp2975) Simplify VOUT code")
-
-Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com>
+Closes: https://lore.kernel.org/linux-mips/7a6aa1bbdbbe2e63ae96ff163fab0349f58f1b9e.camel@xry111.site/
+Fixes: 9b26616c8d9d ("MIPS: Respect the ISA level in FCSR handling")
+Cc: stable@vger.linux.org
+Signed-off-by: Xi Ruoyao <xry111@xry111.site>
 ---
-Changes in v3:
- - Drop accidentally added file from patch
+ arch/mips/kernel/elf.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Changes in v2:
- - Fix indentation issues
-
- drivers/hwmon/pmbus/mp2975.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/drivers/hwmon/pmbus/mp2975.c b/drivers/hwmon/pmbus/mp2975.c
-index b9bb469e2d8f..5bbfdacb61a7 100644
---- a/drivers/hwmon/pmbus/mp2975.c
-+++ b/drivers/hwmon/pmbus/mp2975.c
-@@ -126,6 +126,22 @@ static const struct regulator_desc __maybe_unused mp2975_reg_desc[] = {
+diff --git a/arch/mips/kernel/elf.c b/arch/mips/kernel/elf.c
+index 5582a4ca1e9e..7aa2c2360ff6 100644
+--- a/arch/mips/kernel/elf.c
++++ b/arch/mips/kernel/elf.c
+@@ -11,6 +11,7 @@
  
- #define to_mp2975_data(x)  container_of(x, struct mp2975_data, info)
+ #include <asm/cpu-features.h>
+ #include <asm/cpu-info.h>
++#include <asm/fpu.h>
  
-+static int mp2975_read_byte_data(struct i2c_client *client, int page, int reg)
-+{
-+	switch (reg) {
-+	case PMBUS_VOUT_MODE:
-+		/*
-+		 * Enforce VOUT direct format, since device allows to set the
-+		 * different formats for the different rails. Conversion from
-+		 * VID to direct provided by driver internally, in case it is
-+		 * necessary.
-+		 */
-+		return PB_VOUT_MODE_DIRECT;
-+	default:
-+		return -ENODATA;
-+	}
-+}
+ #ifdef CONFIG_MIPS_FP_SUPPORT
+ 
+@@ -309,6 +310,11 @@ void mips_set_personality_nan(struct arch_elf_state *state)
+ 	struct cpuinfo_mips *c = &boot_cpu_data;
+ 	struct task_struct *t = current;
+ 
++	/* Do this early so t->thread.fpu.fcr31 won't be clobbered in case
++	 * we are preempted before the lose_fpu(0) in start_thread.
++	 */
++	lose_fpu(0);
 +
- static int
- mp2975_read_word_helper(struct i2c_client *client, int page, int phase, u8 reg,
- 			u16 mask)
-@@ -869,6 +885,7 @@ static struct pmbus_driver_info mp2975_info = {
- 		PMBUS_HAVE_IIN | PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT |
- 		PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP | PMBUS_HAVE_POUT |
- 		PMBUS_HAVE_PIN | PMBUS_HAVE_STATUS_INPUT | PMBUS_PHASE_VIRTUAL,
-+	.read_byte_data = mp2975_read_byte_data,
- 	.read_word_data = mp2975_read_word_data,
- #if IS_ENABLED(CONFIG_SENSORS_MP2975_REGULATOR)
- 	.num_regulators = 1,
+ 	t->thread.fpu.fcr31 = c->fpu_csr31;
+ 	switch (state->nan_2008) {
+ 	case 0:
 -- 
-2.34.1
+2.43.0
 
 
