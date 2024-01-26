@@ -1,128 +1,125 @@
-Return-Path: <linux-kernel+bounces-40324-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40325-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2429583DE87
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:21:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F33BA83DE89
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:21:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BACE3B24049
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:21:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AEE42283EE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:21:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A0811B5B1;
-	Fri, 26 Jan 2024 16:21:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFDC81DA2E;
+	Fri, 26 Jan 2024 16:21:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="L+pJ0gQW"
-Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="E85DPW04"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AC361CF90
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 16:21:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.93.223.253
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3433A1869;
+	Fri, 26 Jan 2024 16:21:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706286069; cv=none; b=W75CxVDLKzF9u60cgTwB7uvajZ8WKJg77BaXebQeNTd/duFmGIpo4WZkiTX2n6nsbX+PHXcOfCMKVK+IpFTXeERadBRTCp9KBALojf754YoQe55SQ754oMNjco26DYWJfygXE4sdCrae+HXrcF5W0Hh/BLZx8sPUK6l6ivZh9ok=
+	t=1706286091; cv=none; b=ke/HyvOH5L5gUYHkulXmiq2WxqloO+4cU7eRKwpKbdxPmsN0KtLxpeF7SyzJV36E/pjhvpTr+RnDgbYPd1T6eewiPXjgcJicakXxpf5fzACuFLZ8W8b040H26xNSIXDQoq7DBoXaCajah0zYTwQ5tP9F3nd+3DHXots9bik+jw0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706286069; c=relaxed/simple;
-	bh=XbFTSyVW06Iaz2yZpMZPpFNnQ89qLLom1HMrMNtKv1M=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Wi4vdTZIRFe1D1HW6CzyBxoJZlrppznd6UMAwBGZ4YPVP+mWYuyoAdXVRarGIBWxpmzJJmM8QmBK5f4bPiDNzpg2AMQ2YhEbHfEfzlWv1HCxTI0FFuuzB+Tn66NiF9YJu9JpKjbj14qynNX2E9mnQdj+NqUDmZY+I3jRnQWAyhU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=L+pJ0gQW; arc=none smtp.client-ip=77.93.223.253
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id DBF8618C8FB;
-	Fri, 26 Jan 2024 17:21:00 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
-	t=1706286061; bh=XbFTSyVW06Iaz2yZpMZPpFNnQ89qLLom1HMrMNtKv1M=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=L+pJ0gQWzLC5yCJtUQqqH9mAvCH4/F462d1zWXlEM++WR33kntMzS6tLrRn2K8PIq
-	 FI7tFkAAnLFa5HKSI9TNRkivufjpN72EYx6pa5HxKYbtzFIqVRNog1C8Lk7NE4g8H2
-	 ODQe1OqjOQFWg4JldbY6TATkm8np0jzjvjJasCKW+VO+OD0IB+zs08h621FeOIIxvA
-	 dnZc2VcVNtK+qEA1jNGADY78yxUOS+LdBRYW+3p3Czqxgfo4sscfMZMjMFmKfU8jh3
-	 p1WboComAH7QjDtX6700UxTKqVU+cHmKW5j3fdwKC9W4f0z6s7VJjubxl22CXhuRpo
-	 +uaVEZ5TicAuQ==
-Date: Fri, 26 Jan 2024 17:20:59 +0100
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Will Deacon <will@kernel.org>
-Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
- iommu@lists.linux.dev, Christoph Hellwig <hch@lst.de>, Marek Szyprowski
- <m.szyprowski@samsung.com>, Robin Murphy <robin.murphy@arm.com>, Petr
- Tesarik <petr.tesarik1@huawei-partners.com>, Dexuan Cui
- <decui@microsoft.com>
-Subject: Re: [PATCH 0/2] Fix double allocation in swiotlb_alloc()
-Message-ID: <20240126172059.48ad7b9f@meshulam.tesarici.cz>
-In-Reply-To: <20240126151956.10014-1-will@kernel.org>
-References: <20240126151956.10014-1-will@kernel.org>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
+	s=arc-20240116; t=1706286091; c=relaxed/simple;
+	bh=qADy1ppHLODrkpaiBhX12RYbvSDcazYVsUJT8jx33Cg=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=NM05dWjxd4uVqEWFiWyHuauhRkEe9557oAWyQM/JFYw0RZgspEyQNp6nHCEh+MYVsrbZnHU3Y6zwkUH/B55d5701ITQ/WJ1zON7PPJhaPYZZha3OPGfVPJ5tujaZHrjY8kbFPp7bhKCF13zNTuvc5LqGnAoBEpt8RNvGGXbxSc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=E85DPW04; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706286090; x=1737822090;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=qADy1ppHLODrkpaiBhX12RYbvSDcazYVsUJT8jx33Cg=;
+  b=E85DPW04VnbFN3dcBqFdJuz4rTChKdl44hw9MK/poVgt15CZ6zffeQ5+
+   kz68KSAozXYrxOh4J4GSKOYk5Y3P8Kbwcyv6ALIreNk80PVqgvrBGPGi7
+   5c59d5f6hCljNtrYJ3t6kh1Kspt+86x1nEpY/c9ZbVdnZnQ+igbGsyhnH
+   kSkdVu/BEYFsRWTxKTpDqlP/QOR/UWNEfO2qwmtQo5ZPkFE8/9c1Zsr6c
+   I0A/Y0qBEREEVtxoLAWiv7eCulAncw8gaiBJD5mJZS7D43pZdW2buHZo1
+   Mg1v/iY5ey5TV5jPwldTOznABQK797WAt+YTXfKla9NcCb97hA/fJW1Dg
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="9884190"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="9884190"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 08:21:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="857438086"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="857438086"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 26 Jan 2024 08:21:25 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: "hpa@zytor.com" <hpa@zytor.com>, "linux-sgx@vger.kernel.org"
+ <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
+ <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
+ "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
+ <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
+ <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
+ <kai.huang@intel.com>
+Cc: "kristen@linux.intel.com" <kristen@linux.intel.com>,
+ "yangjie@microsoft.com" <yangjie@microsoft.com>, "Li, Zhiquan1"
+ <zhiquan1.li@intel.com>, "seanjc@google.com" <seanjc@google.com>,
+ "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>, "Zhang, Bo"
+ <zhanb@microsoft.com>, "anakrish@microsoft.com" <anakrish@microsoft.com>
+Subject: Re: [PATCH v7 09/15] x86/sgx: Charge mem_cgroup for per-cgroup
+ reclamation
+References: <20240122172048.11953-1-haitao.huang@linux.intel.com>
+ <20240122172048.11953-10-haitao.huang@linux.intel.com>
+ <195eff7f2814b918a570b8c2c9e21288ac9df4b7.camel@intel.com>
+Date: Fri, 26 Jan 2024 10:21:22 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2h5w1w0awjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <195eff7f2814b918a570b8c2c9e21288ac9df4b7.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-Hi Will,
+On Fri, 26 Jan 2024 08:37:25 -0600, Huang, Kai <kai.huang@intel.com> wrote:
 
-On Fri, 26 Jan 2024 15:19:54 +0000
-Will Deacon <will@kernel.org> wrote:
+>
+>>
+>> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> Reported-by: Mikko Ylinen <mikko.ylinen@linux.intel.com>
+>> ---
+>
+> Non-technical staff:
+>
+> I believe checkpatch requires you to have a "Closes" tag after  
+> "Reported-by"
+> otherwise it complains something like this:
+>
+>   WARNING: Reported-by: should be immediately followed by Closes: with a  
+> URL
+>   to the report
+>
+> Not sure how strict this rule is, but seems you forgot to run checkpatch  
+> so just
+> a reminder.
 
-> Hi folks,
-> 
-> These two patches fix a nasty double allocation problem in swiotlb_alloc()
-> and add a diagnostic to help catch any similar issues in future. This was
-> a royal pain to track down and I've had to make a bit of a leap at the
-> correct alignment semantics (i.e. iotlb_align_mask vs alloc_align_mask).
+Yeah I did remember run checkpatch this time and last time :-)
+Here is what I see from documentation[1]:"The tag should be followed by a  
+Closes: tag pointing to the report, unless the report is not available on  
+the web". So it seems to allow exceptions.
+Mikko mentioned this issue to me in private IM so this is not available on  
+web.
 
-Welcome to the club. I believe you had to re-discover what I described here:
+Thanks
+Haitao
 
-  https://lore.kernel.org/linux-iommu/20231108101347.77cab795@meshulam.tesarici.cz/
-
-The relevant part would be this:
-
-  To sum it up, there are two types of alignment:
-
-  1. specified by a device's min_align_mask; this says how many low
-     bits of a buffer's physical address must be preserved,
-
-  2. specified by allocation size and/or the alignment parameter;
-     this says how many low bits in the first IO TLB slot's physical
-     address must be zero.  
-
-Fix for that has been sitting on my TODO list for too long. :-(
-
-Petr T
-
-> Without these changes, we've been observing random vsock hangs when
-> communicating with virtual machines in Android.
-> 
-> Please have a look!
-> 
-> Cheers,
-> 
-> Will
-> 
-> Cc: iommu@lists.linux.dev
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-> Cc: Dexuan Cui <decui@microsoft.com>
-> 
-> --->8  
-> 
-> Will Deacon (2):
->   swiotlb: Fix allocation alignment requirement when searching slots
->   swiotlb: Enforce page alignment in swiotlb_alloc()
-> 
->  kernel/dma/swiotlb.c | 32 ++++++++++++++++++++++----------
->  1 file changed, 22 insertions(+), 10 deletions(-)
-> 
-
+https://docs.kernel.org/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes
 
