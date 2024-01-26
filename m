@@ -1,132 +1,232 @@
-Return-Path: <linux-kernel+bounces-40010-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D62DD83D8C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:58:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1074183D8CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:00:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 149E01C24FDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:58:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 900391F29C8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:00:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60D9D13AEE;
-	Fri, 26 Jan 2024 10:58:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B937814265;
+	Fri, 26 Jan 2024 11:00:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b="Qqb/A1Sp"
-Received: from mail.subdimension.ro (skycaves.subdimension.ro [172.104.132.142])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UfhbPwDC"
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89952EAE6;
-	Fri, 26 Jan 2024 10:58:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.104.132.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D046C13AEC
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 11:00:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706266729; cv=none; b=U06S47q4xAhizQhzf+Ry1JJUueZLGL7mvPMRafC2v4qKQaT6TdyIrVj84YTvmlytl4aClHmtzRw3dTO3o1YoKINAZfx87k8OgSyXZbktzn1x72GVDV4tuTte0wORtqFV2994eP8n/xlU5N6v6NG7PXPyc8wwkB0pnFPUJGEesFs=
+	t=1706266840; cv=none; b=XZMS/STnbfihDiHZKSSsdIyV+MZlNFLjRjPS9E7h0mbpkmYEvW19Cds8DxxZiOVwe46ytoER5dffk+BSD5GQ3azjrXs0obDEDeXadAqUD2GlpE0oM8bGK+GpwLh/vfCAb93nCqwW08OBmDA+9PxFRLb0d8URsdbop+ss/JASWI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706266729; c=relaxed/simple;
-	bh=3aiLAmH0RdcOP4o9+Z28MUU6iwYGmfnBmv49RlTdb8g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sA3e3C8gDO2kJ8cFoGp2ceKhN+NUP6EsNnS1yKgwbFOE2MqT41u/c4pUlCm29YiFmt3nNWEKcjPcz7pQLkKYtUrSkMEvKnodzrqPmYjNNRW8vEay8PQKGPwb6N/WzejvT1Oti1xeUNvf9BCm1meGEq6u8uaCFJV+WhONil1X9c4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=subdimension.ro; spf=pass smtp.mailfrom=subdimension.ro; dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b=Qqb/A1Sp; arc=none smtp.client-ip=172.104.132.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=subdimension.ro
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=subdimension.ro
-Received: from sunspire (unknown [188.24.80.170])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by mail.subdimension.ro (Postfix) with ESMTPSA id 0761C28B531;
-	Fri, 26 Jan 2024 10:58:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
-	s=skycaves; t=1706266725;
-	bh=3aiLAmH0RdcOP4o9+Z28MUU6iwYGmfnBmv49RlTdb8g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=Qqb/A1Sp80ZO8Bj8vxbUHbeuypI8nzGATy11DJ5pmorbutNHtwlDj7cCzLEemsF+6
-	 8x50Z9Z25MR6BCCoa8xxWue1yTEnmXGhC+Jlzxc/GY0ZUj+ZQ4R9rnphobBGjXBCnp
-	 +wxwbHbTZujc3WoWmG0df3SDcIR01BQfbZctXWng=
-Date: Fri, 26 Jan 2024 12:58:43 +0200
-From: Petre Rodan <petre.rodan@subdimension.ro>
-To: marius.cristea@microchip.com
-Cc: jic23@kernel.org, lars@metafoo.de, robh+dt@kernel.org,
-	jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] iio: adc: adding support for PAC193x
-Message-ID: <ZbOQY3cs5emASvzs@sunspire>
-References: <20240122084712.11507-1-marius.cristea@microchip.com>
- <20240122084712.11507-3-marius.cristea@microchip.com>
+	s=arc-20240116; t=1706266840; c=relaxed/simple;
+	bh=iwaEjyQISX8oRt+7rdSg7FwouBhL5OwhhJgvvuCvF/Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WKy/pihWPYLLrBdXTeqMQwqv1bAEdF0balTrl2RcaQrjQc3j92tJFU3QIaXMI8x4vYlB+DVKOIp6IMVAE7DHhZX5BtpYVdA4ItokTbTmPMGsCl2rtrAFNWhKfhmOBH04x9nZF3VsgDwD2EraUyD+p5TNZwFy+jSt2PdUKDyrXy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UfhbPwDC; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <8da0a157-6a09-4d82-ad36-7428fdb27f9b@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706266822;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ms/Iujyw2CJDI4xIWrn3lHPH9AmsLQ9BJPRb9vIIWTw=;
+	b=UfhbPwDCLTBEi7XVrl2nUrql9KByyo8mpcqL6+h35BLeHk6xdOffcL/IHjyUi4ebkdVfYC
+	4QeS81/itoTEbQ2DgHCElCV3SNOYgn+1p3aF3bzvQGc65ARhLZeL3p5/vEcj807UJ2z2ZZ
+	RwblP3Rn1nAx3Pk0KNjO289hASALJgs=
+Date: Fri, 26 Jan 2024 11:00:16 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="j6hFgdCDz3A6ajHc"
-Content-Disposition: inline
-In-Reply-To: <20240122084712.11507-3-marius.cristea@microchip.com>
+Subject: Re: [PATCH net-next] net: micrel: Fix set/get PHC time for lan8814
+Content-Language: en-US
+To: Horatiu Vultur <horatiu.vultur@microchip.com>, andrew@lunn.ch,
+ hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ richardcochran@gmail.com
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ UNGLinuxDriver@microchip.com,
+ Maxime Chevallier <maxime.chevallier@bootlin.com>,
+ Divya Koppera <divya.koppera@microchip.com>
+References: <20240126073042.1845153-1-horatiu.vultur@microchip.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <20240126073042.1845153-1-horatiu.vultur@microchip.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+
+On 26/01/2024 07:30, Horatiu Vultur wrote:
+> When setting or getting PHC time, the higher bits of the second time (>32
+> bits) they were ignored. Meaning that setting some time in the future like
+> year 2150, it was failing to set this.
+> 
+> The issue can be reproduced like this:
+> 
+>   # phc_ctl /dev/ptp1 set 10000000000
+>   phc_ctl[12.290]: set clock time to 10000000000.000000000 or Sat Nov 20 17:46:40 2286
+> 
+>   # phc_ctl /dev/ptp1 get
+>   phc_ctl[15.309]: clock time is 1410065411.018055420 or Sun Sep  7 04:50:11 2014
+> 
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> Reviewed-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+> Reviewed-by: Divya Koppera <divya.koppera@microchip.com>
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> 
+> ---
+> Based on discussion here [1], this patch from the series was changed
+> to target net-next instead of net.
+> 
+> [1] https://lore.kernel.org/netdev/20240119082103.edy647tbf2akokjy@DEN-DL-M31836.microchip.com/T/#m88b55103ee8c05599f2fa02c1588e195d95d6a49
+> ---
+>   drivers/net/phy/micrel.c | 61 +++++++++++++++++++---------------------
+>   1 file changed, 29 insertions(+), 32 deletions(-)
+> 
+> diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+> index dad720138baaf..40bea9293ddd7 100644
+> --- a/drivers/net/phy/micrel.c
+> +++ b/drivers/net/phy/micrel.c
+> @@ -154,11 +154,13 @@
+>   #define PTP_CMD_CTL_PTP_LTC_STEP_SEC_		BIT(5)
+>   #define PTP_CMD_CTL_PTP_LTC_STEP_NSEC_		BIT(6)
+>   
+> +#define PTP_CLOCK_SET_SEC_HI			0x0205
+>   #define PTP_CLOCK_SET_SEC_MID			0x0206
+>   #define PTP_CLOCK_SET_SEC_LO			0x0207
+>   #define PTP_CLOCK_SET_NS_HI			0x0208
+>   #define PTP_CLOCK_SET_NS_LO			0x0209
+>   
+> +#define PTP_CLOCK_READ_SEC_HI			0x0229
+>   #define PTP_CLOCK_READ_SEC_MID			0x022A
+>   #define PTP_CLOCK_READ_SEC_LO			0x022B
+>   #define PTP_CLOCK_READ_NS_HI			0x022C
+> @@ -2592,35 +2594,31 @@ static bool lan8814_rxtstamp(struct mii_timestamper *mii_ts, struct sk_buff *skb
+>   }
+>   
+>   static void lan8814_ptp_clock_set(struct phy_device *phydev,
+> -				  u32 seconds, u32 nano_seconds)
+> +				  time64_t sec, u32 nsec)
+>   {
+> -	u32 sec_low, sec_high, nsec_low, nsec_high;
+> -
+> -	sec_low = seconds & 0xffff;
+> -	sec_high = (seconds >> 16) & 0xffff;
+> -	nsec_low = nano_seconds & 0xffff;
+> -	nsec_high = (nano_seconds >> 16) & 0x3fff;
+> -
+> -	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_LO, sec_low);
+> -	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_MID, sec_high);
+> -	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_NS_LO, nsec_low);
+> -	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_NS_HI, nsec_high);
+> +	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_LO, lower_16_bits(sec));
+> +	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_MID, upper_16_bits(sec));
+> +	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_HI, upper_32_bits(sec));
+> +	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_NS_LO, lower_16_bits(nsec));
+> +	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_NS_HI, upper_16_bits(nsec));
+>   
+>   	lanphy_write_page_reg(phydev, 4, PTP_CMD_CTL, PTP_CMD_CTL_PTP_CLOCK_LOAD_);
+>   }
+>   
+>   static void lan8814_ptp_clock_get(struct phy_device *phydev,
+> -				  u32 *seconds, u32 *nano_seconds)
+> +				  time64_t *sec, u32 *nsec)
+>   {
+>   	lanphy_write_page_reg(phydev, 4, PTP_CMD_CTL, PTP_CMD_CTL_PTP_CLOCK_READ_);
+>   
+> -	*seconds = lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_MID);
+> -	*seconds = (*seconds << 16) |
+> -		   lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_LO);
+> +	*sec = lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_HI);
+> +	*sec <<= 16;
+> +	*sec |= lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_MID);
+
+lanphy_read_page_reg returns int, but only 16 bits have meanings here.
+Is it safe to assume that other 16 bits will be zeros always?
+There are some more spots of this template in the function.
+
+> +	*sec <<= 16;
+> +	*sec |= lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_LO);
+>   
 
 
---j6hFgdCDz3A6ajHc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> -	*nano_seconds = lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_NS_HI);
+> -	*nano_seconds = ((*nano_seconds & 0x3fff) << 16) |
+> -			lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_NS_LO);
+> +	*nsec = lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_NS_HI);
+> +	*nsec <<= 16;
+> +	*nsec |= lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_NS_LO);
+>   }
+>   
+>   static int lan8814_ptpci_gettime64(struct ptp_clock_info *ptpci,
+> @@ -2630,7 +2628,7 @@ static int lan8814_ptpci_gettime64(struct ptp_clock_info *ptpci,
+>   							  ptp_clock_info);
+>   	struct phy_device *phydev = shared->phydev;
+>   	u32 nano_seconds;
+> -	u32 seconds;
+> +	time64_t seconds;
+>   
+>   	mutex_lock(&shared->shared_lock);
+>   	lan8814_ptp_clock_get(phydev, &seconds, &nano_seconds);
+> @@ -2660,38 +2658,37 @@ static void lan8814_ptp_clock_step(struct phy_device *phydev,
+>   {
+>   	u32 nano_seconds_step;
+>   	u64 abs_time_step_ns;
+> -	u32 unsigned_seconds;
+> +	time64_t set_seconds;
+>   	u32 nano_seconds;
+>   	u32 remainder;
+>   	s32 seconds;
+>   
+>   	if (time_step_ns >  15000000000LL) {
+>   		/* convert to clock set */
+> -		lan8814_ptp_clock_get(phydev, &unsigned_seconds, &nano_seconds);
+> -		unsigned_seconds += div_u64_rem(time_step_ns, 1000000000LL,
+> -						&remainder);
+> +		lan8814_ptp_clock_get(phydev, &set_seconds, &nano_seconds);
+> +		set_seconds += div_u64_rem(time_step_ns, 1000000000LL,
+> +					   &remainder);
+>   		nano_seconds += remainder;
+>   		if (nano_seconds >= 1000000000) {
+> -			unsigned_seconds++;
+> +			set_seconds++;
+>   			nano_seconds -= 1000000000;
+>   		}
+> -		lan8814_ptp_clock_set(phydev, unsigned_seconds, nano_seconds);
+> +		lan8814_ptp_clock_set(phydev, set_seconds, nano_seconds);
+>   		return;
+>   	} else if (time_step_ns < -15000000000LL) {
+>   		/* convert to clock set */
+>   		time_step_ns = -time_step_ns;
+>   
+> -		lan8814_ptp_clock_get(phydev, &unsigned_seconds, &nano_seconds);
+> -		unsigned_seconds -= div_u64_rem(time_step_ns, 1000000000LL,
+> -						&remainder);
+> +		lan8814_ptp_clock_get(phydev, &set_seconds, &nano_seconds);
+> +		set_seconds -= div_u64_rem(time_step_ns, 1000000000LL,
+> +					   &remainder);
+>   		nano_seconds_step = remainder;
+>   		if (nano_seconds < nano_seconds_step) {
+> -			unsigned_seconds--;
+> +			set_seconds--;
+>   			nano_seconds += 1000000000;
+>   		}
+>   		nano_seconds -= nano_seconds_step;
+> -		lan8814_ptp_clock_set(phydev, unsigned_seconds,
+> -				      nano_seconds);
+> +		lan8814_ptp_clock_set(phydev, set_seconds, nano_seconds);
+>   		return;
+>   	}
+>   
 
-
-Hello Marius,
-
-a quick static scan reported the following
-
-On Mon, Jan 22, 2024 at 10:47:12AM +0200, marius.cristea@microchip.com wrot=
-e:
-> From: Marius Cristea <marius.cristea@microchip.com>
->=20
-> This is the iio driver for Microchip
-> PAC193X series of Power Monitor with Accumulator chip family.
-
-[..]
-> +	mutex_init(&info->lock);
-> +	ret =3D devm_add_action_or_reset(&client->dev, pac1934_mutex_destroy,
-> +				       &info->lock);
-> +
-> +	/*
-> +	 * do now any chip specific initialization (e.g. read/write
-> +	 * some registers), enable/disable certain channels, change the sampling
-> +	 * rate to the requested value
-> +	 */
-> +	ret =3D pac1934_chip_configure(info);
-> +	if (ret < 0)
-> +		return ret;
-
-the previous assignation of ret is never used, so either dead code or you m=
-ight
-have wanted to return early based on it's value.
-
-cheers,
-peter
-
---=20
-petre rodan
-
---j6hFgdCDz3A6ajHc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEE2Ap/wXYVGTXsPl+pzyaZmYROfzAFAmWzkGMACgkQzyaZmYRO
-fzA8lQ/7BqVyUd2MTfT1Q7WdU8tEr0IO04T/8q8O4rLv4qn/euVY8f8zodmd916M
-aszgIBKbFQSRQgDeKDgV/k1mdozZjY650e70htkS+xyPfw4IK6GCEBkjSDDH4TDS
-f0csnQFL/CIUmriUxAA5BsEvtK1MFfOmOb3A326/rtFfM+B0dmcRTlTYFvrCp3EO
-NhO1C7UMfMclLbb6nHWs8Q+xPnjzH70JejXqL6QwOGHWvHiI/iJkT55mYuvBUdiE
-12zjuD9L8uqUWPCPAd7mpyFuKI3ilb6fwVx1nABwn+wi/m+snu4425wUDpACqofb
-Vk+MTtro82m9LjuElDYcDhRITVgj5CiRWI2X78n4h1ZfIbICVMXkNxSynce+56+X
-d6UpAKlpjoZWyBflcoudN9gEDYzc20rcZnQ/qQ5GbfoVyeM9+cOB1ymlAGR5zhWc
-wSiTnlzNEiFd4TzwXOO2aDXzwI6VJGnsXPFyyNWujn2zwFJrCK2ihZsb73jVjON6
-KYjJEtq2ZQ2qzkzESdY2AQrsnXGJBokPIJc50wMo7vzPRbEe+kancgNG1xgCeLdo
-rceiUmqOYGFVprkXw10Kh7IWZhFpSyQcAxj0gHikeYrIZkRgQf62hXjmBNieWCz5
-ZqqB4jLxNSV2FEMOKp7Bc1ONhqV8HNhjqaXewY3xya1ngPOZvYU=
-=lZiH
------END PGP SIGNATURE-----
-
---j6hFgdCDz3A6ajHc--
 
