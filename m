@@ -1,93 +1,78 @@
-Return-Path: <linux-kernel+bounces-39489-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39490-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EC8783D1FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 02:20:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90BFB83D200
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 02:23:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADFB228B22F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 01:20:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 328631F25EC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 01:23:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 503605CBD;
-	Fri, 26 Jan 2024 01:20:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5910610F7;
+	Fri, 26 Jan 2024 01:22:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R3eOvBwz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QbX2GfKh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932EF4439;
-	Fri, 26 Jan 2024 01:20:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DBD710E9;
+	Fri, 26 Jan 2024 01:22:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706232027; cv=none; b=ZeVSssKzWb27Se2pEiV++pKcYXUWpfXHJ1OpT4gjEN387sYZoI5RMNf54FXQUom9fmbtMhi7uN5dk2ffTnPJmJP21vW5Y1pdY/owMo44FL4tT+s7XAjgo51UVJQ5RRkjxaYbAx6kT53JN8DueIwLos5XLlekEAuDDjMKDXefhXE=
+	t=1706232175; cv=none; b=oZ4ko+f8TSRk3fkHzZ9fiZ4Lqin18mOe6Ip0ASLfHsqTb6mtzGvex1vdsDm69v+WOtR8U+V4pvjja6YKggBiqtq2GVTsZXZ/vPz0dnfLR+OQyAxplCD6IRjS8nkmMn1la+XI5qpKA6TiHOWtvWqPoWsgoKc4k5CakR2BdzQp75E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706232027; c=relaxed/simple;
-	bh=o3SfrIDpOT4MwLEhl2c0vzaTkf9QuTqTt0SwP10ukbk=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=q6tl6MiWLxOet//y7TRE/TfP+AA6T5SrJ5SzjmZ0uipDP98hcRFWBziZsVyViLTCD9PfgFDpvi0BJdsYI66eEvGqoAp1Dk9ujg6ivf8dTzuR2MHW7QqP3dyBowghbwPGKrzT4xMGgU7CPwDYHyG7olnd4B8WMP7kR50FoDZR/O8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R3eOvBwz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 10C9BC43394;
-	Fri, 26 Jan 2024 01:20:27 +0000 (UTC)
+	s=arc-20240116; t=1706232175; c=relaxed/simple;
+	bh=Hk9/gpwL/FH2xmnit/2UJvfVqasuwOB//G3xIDeSRXY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=PVoQmIGTHsm3tJcBnrVgYPpQCXIRktMxIGRIsgxonkwP4gmhp9OjUQNEboJdLNSffxpFMs5Hg+yWFEgG9CUXtoxAfyQoP9HfzDjV2HiRplSdhWmZ79qBMxGsAqFLNpjqpX1fPFhm18PKjeJ+Lc22BmKke98yv7cysKUB2REOD8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QbX2GfKh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3997C433C7;
+	Fri, 26 Jan 2024 01:22:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706232027;
-	bh=o3SfrIDpOT4MwLEhl2c0vzaTkf9QuTqTt0SwP10ukbk=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=R3eOvBwzCqLhI41sB/Ul5tSI45FuKkB5qhAN95sswQW6K7IgDqaYaoYYJmR4KMyDf
-	 tcgU4UQQshKWNMcwKwTOB73QTX3Rqw2+b5R/tnKCBLGyMb79ORksuXWxe8OnWXofmw
-	 zRjiJhRxDrKhXtAjrl8N2CAdSeLf1gAUSP2d8f1RKZ6do1w5q7C2ZAjrHDbbw4ELT/
-	 Kb1Wahf2lcykDBY6u0WAfa3sVevgaIFIblOh0VkhW6lhMgM9fdvroLAXVSV7sy5AkG
-	 tbqF8cuMTCDjpXZfa/V8Ri8BDEItOWASEge3SZVPq3yK4zF6X6zlyVi1WJHnSrMvR/
-	 8dLH2X16L/+ew==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F13F8D8C962;
-	Fri, 26 Jan 2024 01:20:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1706232175;
+	bh=Hk9/gpwL/FH2xmnit/2UJvfVqasuwOB//G3xIDeSRXY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=QbX2GfKhc5hZC6h46CHXmhCNSbMB8gJ/J4nLe6qNyA1qja9Bx/1+7GMkkTu7Vrkqo
+	 2B1vx1tOGSpm3V8/KYFG+mBy621FwOkM5v5A6zENUMsqvkzEJLgMfZ/HNq664U8tkP
+	 Nr4prtIK2SqWcBWyaxLsUhZlvjwcVKkki/Q4vBkuCUsOgMMy4HqX5xPpxEECJly+aA
+	 D3N2ZmkRivt4zCmOGAHEVuKM27BJGqiVonKPbSuqcpcf3eztESC17H/FzAlpdGT4wL
+	 8qEN1M9Os2zV8uf7+5rAddkolgppNsYnFmpbp2TJIesGiMlXOl4MCg/9td0zCyC+UL
+	 ZL8+JdfmnpD4g==
+Date: Thu, 25 Jan 2024 17:22:53 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Esben Haabendal <esben@geanix.com>
+Cc: netdev@vger.kernel.org, Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Maxime
+ Coquelin <mcoquelin.stm32@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team
+ <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, NXP Linux Team
+ <linux-imx@nxp.com>, linux-arm-kernel@lists.infradead.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] net: stmmac: dwmac-imx: set TSO/TBS TX queues
+ default settings
+Message-ID: <20240125172253.3fe50cfc@kernel.org>
+In-Reply-To: <5606bb5f0b7566a20bb136b268dae89d22a48898.1706184304.git.esben@geanix.com>
+References: <cover.1706184304.git.esben@geanix.com>
+	<5606bb5f0b7566a20bb136b268dae89d22a48898.1706184304.git.esben@geanix.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] gve: Modify rx_buf_alloc_fail counter centrally and
- closer to failure
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170623202697.2360.15676490828216158973.git-patchwork-notify@kernel.org>
-Date: Fri, 26 Jan 2024 01:20:26 +0000
-References: <20240124205435.1021490-1-nktgrg@google.com>
-In-Reply-To: <20240124205435.1021490-1-nktgrg@google.com>
-To: nktgrg <nktgrg@google.com>
-Cc: netdev@vger.kernel.org, jeroendb@google.com, pkaligineedi@google.com,
- shailend@google.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, jfraker@google.com,
- linux-kernel@vger.kernel.org, stable@kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello:
+On Thu, 25 Jan 2024 13:34:34 +0100 Esben Haabendal wrote:
+> +        for (int i = 0; i < plat_dat->tx_queues_to_use; i++) {
+> +                /* Default TX Q0 to use TSO and rest TXQ for TBS */
+> +                if (i > 0)
+> +                        plat_dat->tx_queues_cfg[i].tbs_en = 1;
+> +        }
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Wed, 24 Jan 2024 20:54:35 +0000 you wrote:
-> From: Ankit Garg <nktgrg@google.com>
-> 
-> Previously, each caller of gve_rx_alloc_buffer had to increase counter
->  and as a result one caller was not tracking those failure. Increasing
->  counters at a common location now so callers don't have to duplicate
->  code or miss counter management.
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next] gve: Modify rx_buf_alloc_fail counter centrally and closer to failure
-    https://git.kernel.org/netdev/net-next/c/3df18416267b
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+checkpatch points out this code is indented with spaces.
+Please use tabs.
 
