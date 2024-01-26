@@ -1,160 +1,512 @@
-Return-Path: <linux-kernel+bounces-40448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A94D83E09C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:41:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2516383E0A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:42:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46DBE287D4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:41:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1420287AAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:42:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83337208D2;
-	Fri, 26 Jan 2024 17:40:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C7272031F;
+	Fri, 26 Jan 2024 17:42:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b="IfoXomhK"
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IqUygwxG"
+Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BBBA208AF
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 17:40:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DF5E1EB57
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 17:42:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706290849; cv=none; b=TScx5SlYcu+1dNopotoQUU/EZ5KhZQ1N9+HqoDP+ZRDHB42s6YqHqHzHkAKstFboWEGhEQDuxOCwfr4gx/0+/RwZhGVlIK3bb1Cv03Lb3N5iEV3GlWxph+zZuio2GSmhQPYQ5kOXYnp5rxyjJ6ce6aD7fouVO9EB/HHlYuODxKg=
+	t=1706290945; cv=none; b=qe2b0yAdLVd9QLoWQGKVXFRrvAKIg1nX1eBLXCMOiWAVsAHaoHImSwaYn+phy+RH2zFjp6WMv8tCj8zDKj8wKMaSVEzRLImS9RF+Awjw3i02Z6mywzgygfX10qiiTpnnts1MBqgDacnlT0sQ/OeK52MgnyLJwziFkRhqcGAXNb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706290849; c=relaxed/simple;
-	bh=LYAUFYI3PPskX/K+nNIULnwnwvRLyCKhmBoErZbeIEA=;
+	s=arc-20240116; t=1706290945; c=relaxed/simple;
+	bh=WvIwIYW8/5Br/3S2GSXNmtRD8y9rHmnPQ1GWm1TfEms=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YqtHVKhW30XqkRLMuqc9g0Q7D/ve84Sa5KdzdHBkqfu0xQQDsKMQCLFyqaq+gnBRrGTET2LCnt/flVxRvK+Fykf28p2AEzdCYeIz+2ZS/lXhyP4NFYCwJUfvyqZLDqVBENcrOuPP8HJa4gVQ/1cLFcLv7WLzioykhaKTkyUEMKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com; spf=pass smtp.mailfrom=9elements.com; dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b=IfoXomhK; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=9elements.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6daa89a6452so448813b3a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 09:40:48 -0800 (PST)
+	 To:Cc:Content-Type; b=EmK2PXuDfe+1roaSbELUZbo31J0VatimHavU3OJf1BlGmHou33/6puzoyPrirTonmhMeAd7E1GnMMploerYDQUr86IuS8m3hhy9MSfRgNgpX9u2NYh/vWZ0vf5J2QAqYMMWYrCv5F0k2a9vGRBd9q06ZnczOy4IlH82Ua/4x0iQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IqUygwxG; arc=none smtp.client-ip=209.85.221.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-4bd2e945a35so112508e0c.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 09:42:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1706290847; x=1706895647; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=nW/G1leX3fQbY5zUt2hlw0gvCqeqoiW1Fa0PytKdtZg=;
-        b=IfoXomhKI9nWITFaj3yLc3TfO1vrHGAyjGDpvtIj1witwUaQ3bsEkYxeA0FXYewT0z
-         7f5CssJaQAxKG8JsgukzTMQ5RuUQh8xo5pZ5z6I6IBtvs2o7BeTpIUQINvgNBWII7uod
-         PqXD4ZLX1TCE4HLYp+PLARaDOWRlbC4LvMX0hdKD4h87v2arLUz9mxAJuW3yCFDv+llb
-         MaUyz2pMRsOaeSJpI9pRGZo9C+hq5EAfepa+FnE86y8HODOCUZiePoOwP8xs1/BbOwGN
-         R1zAzW30H/k+wdGMLy68VyBtRAknO4M+fVY0XP/gbsz2BpFQ2O8PhVUqCO0q7cO/D9yh
-         0lvA==
+        d=gmail.com; s=20230601; t=1706290942; x=1706895742; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JmDH8DdX1bep/4Odx9K/cgDggkjrOU0cEa6n2Qnxw8o=;
+        b=IqUygwxGoIoMeD0L4FZ5P2I7f0Xwbx7zcklzloS7X/26Rl7mfqjsn3ZGsimE0vojSH
+         CcMRTZ1Zem+LA+Dw8k5ZUvYjUiJNuEwvbJiw7XpXOejfOkKohic1wytJC0HLJgRM3Iqf
+         088q9xhO56Kj+sH1oVPMVG47/p09ndQdzTrK3CxL/ldrZbYCtUkdVUpknBJfsztQsiPT
+         d6DiUKPW4jztwdXYxMbQK0rISAGqb0ZmOP3VvgG7VN4gUUHWt2GBid1HoK2qw/W1/trB
+         kCsbWi6Ug8BTJOSNd87jI2TA7umQaDFbJbKXPS/lV9L9oI8DGPp41JqHMR7RhBsbAqtR
+         3sTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706290847; x=1706895647;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nW/G1leX3fQbY5zUt2hlw0gvCqeqoiW1Fa0PytKdtZg=;
-        b=KdrgihNDbK9y4GTDZ8TNvcYtTiMu7x0EmaYUdnEUesu80j0DgNJVpvwYcqW687y4U8
-         zwT6KHVgjhhMWVgyZJMHa3v4FIvCT/48JsoKvOW/sYgpFOAN/vmAugNjbzXwJ5QtSr3t
-         zIjJahPBKrxxuC2L+Q914CnqMWquA21i4M+UWQ+AEMyzolczw0Gj5cKOfWmJYmicdPdh
-         wBGnZLmZSZJEMaRi6Wb23jLbBB5ic6+DzcAiKeYcPhQpTa6O+4YvqiV2YkHyEN6M/yso
-         5U5bz1D9M/pVTv6O7YMZlaR25E0KfWK4iE5/1mJilrpdZydLZMb6nFBb99K34Hlfa1uE
-         pLVw==
-X-Gm-Message-State: AOJu0YznllSSvCu54gDu1aBs2BeE/hzWXwJ7d7aw1fPLOTD/CQYm0Q8g
-	CjohuSpn+WqIMpR5mkL4Z3VaI4gag6TtIs+TAUCaI9PU9lNAGAfNfwyO4F7gGQncWM8tXfa4Nql
-	5XUVPSHCwvdBu4eSyfwVV+BudE+f2gk9ZVLi2eA==
-X-Google-Smtp-Source: AGHT+IEcSrQaMAvEaXVvHb7l4qcln7TODr9I1zAzX1B7RypHiTg+jJOTUgiHySRU59MmQB9TqZwYmHPyouHWF5zed9A=
-X-Received: by 2002:aa7:8886:0:b0:6db:de89:d0f1 with SMTP id
- z6-20020aa78886000000b006dbde89d0f1mr175972pfe.28.1706290847494; Fri, 26 Jan
- 2024 09:40:47 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706290942; x=1706895742;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JmDH8DdX1bep/4Odx9K/cgDggkjrOU0cEa6n2Qnxw8o=;
+        b=kx/51gFTb6V31DS5FtsW2ZYYb4V6LlBPwt2uTsZAXjdMV11Ke9SnCiVdRHqg9RmRp7
+         rHhRrIosraneOi7c1J+QdkMhjjXaFC4sQx82rMmx8Ozj4WgsYWElBWbICF3FIAC4Mk4e
+         36c+m2Lv2LNRw301nf9o3czVkapxv47svqptjT9LVHEX0KhUdgZ/wo7oINNcANlX5RMp
+         anjS7LbbeSLKUFUYnTCLQEC+OTCWMEhnYX9O028LEFtJ0i//yxSLbbY2h6eHMJ+HzFyl
+         eacrEqEu1/s5ofoeN2LuWKUL8mQIhaLmCpmiW71nBPzNou146M+Q1X2xRAgCv2X0n6fV
+         XyfQ==
+X-Gm-Message-State: AOJu0YzIy+mr3OcT6GeTNsvQyHNCLMKRplCimsgmHBI5BWUickySvBuM
+	M0LZxTWXdibWr2jCtecMyRDavkFNIwoue8JsJ/FJ+QpNOWmW4hwwNqWmT2yVdRL2ADgs/3aFjL2
+	TmDPuhAi9k/BCYFdhB/oF03EcEY8=
+X-Google-Smtp-Source: AGHT+IGb7vdvwXVg2mhOhFmq+Yb2iVBmdBsDqX/eBt0gN6dG24LIwPaBf/QYBLzPWxfsdZnIi5OvC3PbAGKWx0PmCts=
+X-Received: by 2002:a05:6122:919:b0:4bd:8cb8:8c5 with SMTP id
+ j25-20020a056122091900b004bd8cb808c5mr118653vka.28.1706290941765; Fri, 26 Jan
+ 2024 09:42:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126115509.1459425-1-naresh.solanki@9elements.com>
- <20240126-cinnamon-flatware-e042b5773f17@spud> <CABqG17hzZf2mme0v7hALhpd6-N3ZHqxdH-AhFg5eF9sbLSC2gw@mail.gmail.com>
- <20240126-scale-serrated-33686467d91b@spud>
-In-Reply-To: <20240126-scale-serrated-33686467d91b@spud>
-From: Naresh Solanki <naresh.solanki@9elements.com>
-Date: Fri, 26 Jan 2024 23:10:36 +0530
-Message-ID: <CABqG17jp6YRGyTmNitz-xDdyhWOPgfT_XpXxw-OJLnXQ777vAA@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: iio: afe: voltage-divider: Add io-channel-cells
-To: Conor Dooley <conor@kernel.org>
-Cc: Peter Rosin <peda@axentia.se>, Jonathan Cameron <jic23@kernel.org>, 
-	Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	mazziesaccount@gmail.com, linux-iio@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240125062044.63344-1-cuiyunhui@bytedance.com>
+In-Reply-To: <20240125062044.63344-1-cuiyunhui@bytedance.com>
+From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date: Fri, 26 Jan 2024 17:41:55 +0000
+Message-ID: <CA+V-a8s4No=U1S-KzLAmOLYa6vXd7repFP4HH1=SraLB2=qHRQ@mail.gmail.com>
+Subject: Re: [PATCH] RISC-V: add uniprocessor flush_tlb_range() support
+To: Yunhui Cui <cuiyunhui@bytedance.com>
+Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
+	alexghiti@rivosinc.com, samuel.holland@sifive.com, ajones@ventanamicro.com, 
+	mchitale@ventanamicro.com, dylan@andestech.com, 
+	sergey.matyukevich@syntacore.com, prabhakar.mahadev-lad.rj@bp.renesas.com, 
+	jszhang@kernel.org, apatel@ventanamicro.com, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Conor,
+On Thu, Jan 25, 2024 at 6:23=E2=80=AFAM Yunhui Cui <cuiyunhui@bytedance.com=
+> wrote:
+>
+> Add support for flush_tlb_range() to improve TLB performance for
+> UP systems. In order to avoid the mutual inclusion of tlbflush.h
+> and hugetlb.h, the UP part is also implemented in tlbflush.c.
+>
+> Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
+> ---
+>  arch/riscv/include/asm/tlbflush.h |  61 ++++++----
+>  arch/riscv/mm/Makefile            |   2 +-
+>  arch/riscv/mm/tlbflush.c          | 195 ++++++++++++++++++------------
+>  3 files changed, 156 insertions(+), 102 deletions(-)
+>
+Boot tested with defconfig + rz/five enabled, no issues seen on
+RZ/Five SMARC EVK.
 
+Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-On Fri, 26 Jan 2024 at 22:22, Conor Dooley <conor@kernel.org> wrote:
->
-> On Fri, Jan 26, 2024 at 09:55:20PM +0530, Naresh Solanki wrote:
-> > On Fri, 26 Jan 2024 at 21:47, Conor Dooley <conor@kernel.org> wrote:
-> > > On Fri, Jan 26, 2024 at 05:25:08PM +0530, Naresh Solanki wrote:
-> > > > Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
-> > > > ---
-> > > >  Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml | 3 +++
-> > > >  1 file changed, 3 insertions(+)
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml b/Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
-> > > > index dddf97b50549..b4b5489ad98e 100644
-> > > > --- a/Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
-> > > > +++ b/Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
-> > > > @@ -39,6 +39,9 @@ properties:
-> > > >      description: |
-> > > >        Channel node of a voltage io-channel.
-> > > >
-> > > > +  '#io-channel-cells':
-> > > > +    const: 1
-> > >
-> > > The example in this binding looks like the voltage-divider is intended
-> > > to be an "IIO consumer" but "#io-channels-cells" is an "IIO provider"
-> > > property.
-> > >
-> > > Are you sure this is correct?
-> > I'm not aware that #io-channels-cells is only for IIO provider.
->
-> #foo-cells properties are always for resource providers
->
-> > But I do get some kernel message as mention in commit messages
-> > if this is specified in DT.
->
-> Can you please share the DT in question? Or at least, the section that
-> describes the IIO provider and consumer?
-Below is link to complete DT:
-https://github.com/torvalds/linux/commit/522bf7f2d6b085f69d4538535bfc1eb965632f54
->
-> It should look like the example:
-I reference the below example previously but didn't help.
-If io-channel-cell isn't provided then there is print in kernel dmesg as:
-OF: /iio-hwmon: could not get #io-channel-cells for /voltage_divider1
+Cheers,
+Prabhakar
 
-Thanks,
-Naresh
+> diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/t=
+lbflush.h
+> index 928f096dca21..426f043fb450 100644
+> --- a/arch/riscv/include/asm/tlbflush.h
+> +++ b/arch/riscv/include/asm/tlbflush.h
+> @@ -10,12 +10,21 @@
+>  #include <linux/mm_types.h>
+>  #include <asm/smp.h>
+>  #include <asm/errata_list.h>
+> +#include <asm/tlbbatch.h>
 >
->     spi {
->         #address-cells = <1>;
->         #size-cells = <0>;
->         adc@0 {
->             compatible = "maxim,max1027";
->             reg = <0>;
->             #io-channel-cells = <1>;
->             interrupt-parent = <&gpio5>;
->             interrupts = <15 IRQ_TYPE_EDGE_RISING>;
->             spi-max-frequency = <1000000>;
->         };
->     };
+>  #define FLUSH_TLB_MAX_SIZE      ((unsigned long)-1)
+>  #define FLUSH_TLB_NO_ASID       ((unsigned long)-1)
 >
->     sysv {
->         compatible = "voltage-divider";
->         io-channels = <&maxadc 1>;
+>  #ifdef CONFIG_MMU
+>  extern unsigned long asid_mask;
+> +DECLARE_STATIC_KEY_FALSE(use_asid_allocator);
+> +
+> +struct flush_tlb_range_data {
+> +       unsigned long asid;
+> +       unsigned long start;
+> +       unsigned long size;
+> +       unsigned long stride;
+> +};
 >
->         /* Scale the system voltage by 22/222 to fit the ADC range. */
->         output-ohms = <22>;
->         full-ohms = <222>; /* 200 + 22 */
->     };
+>  static inline void local_flush_tlb_all(void)
+>  {
+> @@ -27,12 +36,40 @@ static inline void local_flush_tlb_page(unsigned long=
+ addr)
+>  {
+>         ALT_FLUSH_TLB_PAGE(__asm__ __volatile__ ("sfence.vma %0" : : "r" =
+(addr) : "memory"));
+>  }
+> +
+> +static inline void local_flush_tlb_all_asid(unsigned long asid)
+> +{
+> +       if (asid !=3D FLUSH_TLB_NO_ASID)
+> +               __asm__ __volatile__ ("sfence.vma x0, %0"
+> +                               :
+> +                               : "r" (asid)
+> +                               : "memory");
+> +       else
+> +               local_flush_tlb_all();
+> +}
+> +
+> +static inline void local_flush_tlb_page_asid(unsigned long addr,
+> +               unsigned long asid)
+> +{
+> +       if (asid !=3D FLUSH_TLB_NO_ASID)
+> +               __asm__ __volatile__ ("sfence.vma %0, %1"
+> +                               :
+> +                               : "r" (addr), "r" (asid)
+> +                               : "memory");
+> +       else
+> +               local_flush_tlb_page(addr);
+> +}
+> +
+> +static inline unsigned long get_mm_asid(struct mm_struct *mm)
+> +{
+> +       return static_branch_unlikely(&use_asid_allocator) ?
+> +                       atomic_long_read(&mm->context.id) & asid_mask : F=
+LUSH_TLB_NO_ASID;
+> +}
+>  #else /* CONFIG_MMU */
+>  #define local_flush_tlb_all()                  do { } while (0)
+>  #define local_flush_tlb_page(addr)             do { } while (0)
+>  #endif /* CONFIG_MMU */
 >
-> Thanks,
-> Conor.
+> -#if defined(CONFIG_SMP) && defined(CONFIG_MMU)
+>  void flush_tlb_all(void);
+>  void flush_tlb_mm(struct mm_struct *mm);
+>  void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
+> @@ -55,26 +92,4 @@ void arch_tlbbatch_add_pending(struct arch_tlbflush_un=
+map_batch *batch,
+>  void arch_flush_tlb_batched_pending(struct mm_struct *mm);
+>  void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch);
+>
+> -#else /* CONFIG_SMP && CONFIG_MMU */
+> -
+> -#define flush_tlb_all() local_flush_tlb_all()
+> -#define flush_tlb_page(vma, addr) local_flush_tlb_page(addr)
+> -
+> -static inline void flush_tlb_range(struct vm_area_struct *vma,
+> -               unsigned long start, unsigned long end)
+> -{
+> -       local_flush_tlb_all();
+> -}
+> -
+> -/* Flush a range of kernel pages */
+> -static inline void flush_tlb_kernel_range(unsigned long start,
+> -       unsigned long end)
+> -{
+> -       local_flush_tlb_all();
+> -}
+> -
+> -#define flush_tlb_mm(mm) flush_tlb_all()
+> -#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
+> -#endif /* !CONFIG_SMP || !CONFIG_MMU */
+> -
+>  #endif /* _ASM_RISCV_TLBFLUSH_H */
+> diff --git a/arch/riscv/mm/Makefile b/arch/riscv/mm/Makefile
+> index 2c869f8026a8..7c6c4c858a6b 100644
+> --- a/arch/riscv/mm/Makefile
+> +++ b/arch/riscv/mm/Makefile
+> @@ -19,7 +19,7 @@ obj-y +=3D context.o
+>  obj-y +=3D pmem.o
+>
+>  ifeq ($(CONFIG_MMU),y)
+> -obj-$(CONFIG_SMP) +=3D tlbflush.o
+> +obj-y +=3D tlbflush.o
+>  endif
+>  obj-$(CONFIG_HUGETLB_PAGE) +=3D hugetlbpage.o
+>  obj-$(CONFIG_PTDUMP_CORE) +=3D ptdump.o
+> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+> index 8d12b26f5ac3..4765603fa08a 100644
+> --- a/arch/riscv/mm/tlbflush.c
+> +++ b/arch/riscv/mm/tlbflush.c
+> @@ -6,28 +6,36 @@
+>  #include <linux/hugetlb.h>
+>  #include <asm/sbi.h>
+>  #include <asm/mmu_context.h>
+> +#include <asm/tlbflush.h>
+>
+> -static inline void local_flush_tlb_all_asid(unsigned long asid)
+> +static unsigned long get_stride_size(struct vm_area_struct *vma)
+>  {
+> -       if (asid !=3D FLUSH_TLB_NO_ASID)
+> -               __asm__ __volatile__ ("sfence.vma x0, %0"
+> -                               :
+> -                               : "r" (asid)
+> -                               : "memory");
+> -       else
+> -               local_flush_tlb_all();
+> -}
+> +       unsigned long stride_size;
+>
+> -static inline void local_flush_tlb_page_asid(unsigned long addr,
+> -               unsigned long asid)
+> -{
+> -       if (asid !=3D FLUSH_TLB_NO_ASID)
+> -               __asm__ __volatile__ ("sfence.vma %0, %1"
+> -                               :
+> -                               : "r" (addr), "r" (asid)
+> -                               : "memory");
+> -       else
+> -               local_flush_tlb_page(addr);
+> +       if (!is_vm_hugetlb_page(vma))
+> +               return PAGE_SIZE;
+> +
+> +       stride_size =3D huge_page_size(hstate_vma(vma));
+> +
+> +       /*
+> +        * As stated in the privileged specification, every PTE in a
+> +        * NAPOT region must be invalidated, so reset the stride in that
+> +        * case.
+> +        */
+> +       if (has_svnapot()) {
+> +               if (stride_size >=3D PGDIR_SIZE)
+> +                       stride_size =3D PGDIR_SIZE;
+> +               else if (stride_size >=3D P4D_SIZE)
+> +                       stride_size =3D P4D_SIZE;
+> +               else if (stride_size >=3D PUD_SIZE)
+> +                       stride_size =3D PUD_SIZE;
+> +               else if (stride_size >=3D PMD_SIZE)
+> +                       stride_size =3D PMD_SIZE;
+> +               else
+> +                       stride_size =3D PAGE_SIZE;
+> +       }
+> +
+> +       return stride_size;
+>  }
+>
+>  /*
+> @@ -66,31 +74,12 @@ static inline void local_flush_tlb_range_asid(unsigne=
+d long start,
+>                 local_flush_tlb_range_threshold_asid(start, size, stride,=
+ asid);
+>  }
+>
+> -void local_flush_tlb_kernel_range(unsigned long start, unsigned long end=
+)
+> -{
+> -       local_flush_tlb_range_asid(start, end, PAGE_SIZE, FLUSH_TLB_NO_AS=
+ID);
+> -}
+> -
+> +#ifdef CONFIG_SMP
+>  static void __ipi_flush_tlb_all(void *info)
+>  {
+>         local_flush_tlb_all();
+>  }
+>
+> -void flush_tlb_all(void)
+> -{
+> -       if (riscv_use_ipi_for_rfence())
+> -               on_each_cpu(__ipi_flush_tlb_all, NULL, 1);
+> -       else
+> -               sbi_remote_sfence_vma_asid(NULL, 0, FLUSH_TLB_MAX_SIZE, F=
+LUSH_TLB_NO_ASID);
+> -}
+> -
+> -struct flush_tlb_range_data {
+> -       unsigned long asid;
+> -       unsigned long start;
+> -       unsigned long size;
+> -       unsigned long stride;
+> -};
+> -
+>  static void __ipi_flush_tlb_range_asid(void *info)
+>  {
+>         struct flush_tlb_range_data *d =3D info;
+> @@ -138,10 +127,18 @@ static void __flush_tlb_range(struct cpumask *cmask=
+, unsigned long asid,
+>                 put_cpu();
+>  }
+>
+> -static inline unsigned long get_mm_asid(struct mm_struct *mm)
+> +void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
+>  {
+> -       return static_branch_unlikely(&use_asid_allocator) ?
+> -                       atomic_long_read(&mm->context.id) & asid_mask : F=
+LUSH_TLB_NO_ASID;
+> +       __flush_tlb_range(mm_cpumask(vma->vm_mm), get_mm_asid(vma->vm_mm)=
+,
+> +                         addr, PAGE_SIZE, PAGE_SIZE);
+> +}
+> +
+> +void flush_tlb_all(void)
+> +{
+> +       if (riscv_use_ipi_for_rfence())
+> +               on_each_cpu(__ipi_flush_tlb_all, NULL, 1);
+> +       else
+> +               sbi_remote_sfence_vma_asid(NULL, 0, FLUSH_TLB_MAX_SIZE, F=
+LUSH_TLB_NO_ASID);
+>  }
+>
+>  void flush_tlb_mm(struct mm_struct *mm)
+> @@ -158,41 +155,12 @@ void flush_tlb_mm_range(struct mm_struct *mm,
+>                           start, end - start, page_size);
+>  }
+>
+> -void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
+> -{
+> -       __flush_tlb_range(mm_cpumask(vma->vm_mm), get_mm_asid(vma->vm_mm)=
+,
+> -                         addr, PAGE_SIZE, PAGE_SIZE);
+> -}
+> -
+>  void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+>                      unsigned long end)
+>  {
+>         unsigned long stride_size;
+>
+> -       if (!is_vm_hugetlb_page(vma)) {
+> -               stride_size =3D PAGE_SIZE;
+> -       } else {
+> -               stride_size =3D huge_page_size(hstate_vma(vma));
+> -
+> -               /*
+> -                * As stated in the privileged specification, every PTE i=
+n a
+> -                * NAPOT region must be invalidated, so reset the stride =
+in that
+> -                * case.
+> -                */
+> -               if (has_svnapot()) {
+> -                       if (stride_size >=3D PGDIR_SIZE)
+> -                               stride_size =3D PGDIR_SIZE;
+> -                       else if (stride_size >=3D P4D_SIZE)
+> -                               stride_size =3D P4D_SIZE;
+> -                       else if (stride_size >=3D PUD_SIZE)
+> -                               stride_size =3D PUD_SIZE;
+> -                       else if (stride_size >=3D PMD_SIZE)
+> -                               stride_size =3D PMD_SIZE;
+> -                       else
+> -                               stride_size =3D PAGE_SIZE;
+> -               }
+> -       }
+> -
+> +       stride_size =3D get_stride_size(vma);
+>         __flush_tlb_range(mm_cpumask(vma->vm_mm), get_mm_asid(vma->vm_mm)=
+,
+>                           start, end - start, stride_size);
+>  }
+> @@ -203,6 +171,12 @@ void flush_tlb_kernel_range(unsigned long start, uns=
+igned long end)
+>                           start, end - start, PAGE_SIZE);
+>  }
+>
+> +void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch)
+> +{
+> +       __flush_tlb_range(&batch->cpumask, FLUSH_TLB_NO_ASID, 0,
+> +                         FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
+> +}
+> +
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start=
+,
+>                         unsigned long end)
+> @@ -212,6 +186,77 @@ void flush_pmd_tlb_range(struct vm_area_struct *vma,=
+ unsigned long start,
+>  }
+>  #endif
+>
+> +#else
+> +static void __flush_tlb_range_up(struct mm_struct *mm, unsigned long sta=
+rt,
+> +                                unsigned long size, unsigned long stride=
+)
+> +{
+> +       unsigned long asid =3D FLUSH_TLB_NO_ASID;
+> +
+> +       if (mm)
+> +               asid =3D get_mm_asid(mm);
+> +
+> +       local_flush_tlb_range_asid(start, size, stride, asid);
+> +}
+> +
+> +void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
+> +{
+> +       local_flush_tlb_page(addr);
+> +}
+> +
+> +void flush_tlb_all(void)
+> +{
+> +       local_flush_tlb_all();
+> +}
+> +
+> +void flush_tlb_mm(struct mm_struct *mm)
+> +{
+> +       __flush_tlb_range_up(mm, 0, FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
+> +}
+> +
+> +void flush_tlb_mm_range(struct mm_struct *mm,
+> +                       unsigned long start, unsigned long end,
+> +                       unsigned int page_size)
+> +{
+> +       __flush_tlb_range_up(mm, start, end - start, page_size);
+> +}
+> +
+> +void flush_tlb_range(struct vm_area_struct *vma,
+> +               unsigned long start, unsigned long end)
+> +{
+> +       unsigned long stride_size;
+> +
+> +       stride_size =3D get_stride_size(vma);
+> +       __flush_tlb_range_up(vma->vm_mm, start, end - start, stride_size)=
+;
+> +}
+> +
+> +/* Flush a range of kernel pages */
+> +void flush_tlb_kernel_range(unsigned long start,
+> +       unsigned long end)
+> +{
+> +       __flush_tlb_range_up(NULL, start, end - start, PAGE_SIZE);
+> +}
+> +
+> +void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch)
+> +{
+> +       __flush_tlb_range_up(NULL, 0, FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
+> +}
+> +
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start=
+,
+> +                       unsigned long end)
+> +{
+> +       __flush_tlb_range_up(vma->vm_mm, start, end - start, PMD_SIZE);
+> +}
+> +#endif
+> +
+> +#endif
+> +
+> +void local_flush_tlb_kernel_range(unsigned long start, unsigned long end=
+)
+> +{
+> +       local_flush_tlb_range_asid(start, end - start, PAGE_SIZE,
+> +                                  FLUSH_TLB_NO_ASID);
+> +}
+> +
+>  bool arch_tlbbatch_should_defer(struct mm_struct *mm)
+>  {
+>         return true;
+> @@ -228,9 +273,3 @@ void arch_flush_tlb_batched_pending(struct mm_struct =
+*mm)
+>  {
+>         flush_tlb_mm(mm);
+>  }
+> -
+> -void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch)
+> -{
+> -       __flush_tlb_range(&batch->cpumask, FLUSH_TLB_NO_ASID, 0,
+> -                         FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
+> -}
+> --
+> 2.20.1
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
