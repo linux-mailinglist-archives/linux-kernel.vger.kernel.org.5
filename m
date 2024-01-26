@@ -1,259 +1,298 @@
-Return-Path: <linux-kernel+bounces-39957-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 532FF83D7CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:20:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9E0F83D7D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:20:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 434AE292A7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:20:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADD471C2A857
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:20:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE02545C1A;
-	Fri, 26 Jan 2024 09:50:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCDEF16428;
+	Fri, 26 Jan 2024 09:53:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MEoO9Glb";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YuZ0vCY2";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="W9rBeTum";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SX4rZHVl"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=marvell.onmicrosoft.com header.i=@marvell.onmicrosoft.com header.b="q3Ac/WJk"
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7F5C12B74;
-	Fri, 26 Jan 2024 09:50:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706262649; cv=none; b=GzVVSpUJxS1hAq+jXNCRFskJhXTD/funUZQc0taJw3N9eSh2kUbWtyc3TvdtwzCgLzKG7qG4jJjPfrKWQ2YX0/QduqufYcQgiqI5SVQisQW1SwIN9YH46JcVu7ULY7dCo2Np2W5u9c+HiNkZrURmki70dkZYXIspPcyDp3oL5P4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706262649; c=relaxed/simple;
-	bh=Ia6yD19K6LEzCtieN+qCdaD3X0tlGXT6OuBrNKG+Me8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mz3EQ1vHY2DUj/PiEe4oTM3gHQInggVQ2bWVvifJaYhbqnYmlwYsrGM4ec+A32Bv3rYgmjzu1qP+w30RJ4HFqWlup+YrRdCuEEd0BsE68mOAMD/ZVydqlk8IvoXNbxYgs2b15SGXf6xG3ycj5R0Mte0vKaxn2OrJ/eeSBoODRAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MEoO9Glb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=YuZ0vCY2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=W9rBeTum; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=SX4rZHVl; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C9AF71FB7A;
-	Fri, 26 Jan 2024 09:50:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706262645; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Is/iDqG+bFU4E9wUAmu+LNf+g2iaZiR01G55UWoy7os=;
-	b=MEoO9GlbedZvXve6QHsK1QdoWZIQv4eRNChypkr/YXRrnx4HOQxqPvTlHcaKEPFRFC7qHR
-	s4oP5Msj1TGaT4e5dp5PlzAArIk6kZBlg4kibvo0/zsQgwnzaa1OYQu87pgB+qMB0RbY73
-	fBgb74SyYet6SbnYouZ9145T1giU2zE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706262645;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Is/iDqG+bFU4E9wUAmu+LNf+g2iaZiR01G55UWoy7os=;
-	b=YuZ0vCY2RUr47eeXxpscatHm+HaSj2sx6VCP3xTcqP3womfttreIVAZBkoqYd8wzK2+1Hx
-	QJerbUgzAYlXRZCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706262644; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Is/iDqG+bFU4E9wUAmu+LNf+g2iaZiR01G55UWoy7os=;
-	b=W9rBeTum0wpjO2D7yah0YPyiRATruBHH9CIgYimw/WyDwk+4vSqAk08aVsx7Ydh+YNdnRl
-	UoA/WOIunC18uxcHrWXZxjTVJqAOMTs8ZqW9Yv5ZjJoYUf7Tz+/kqfFzq/Jz3lwRXkTjZM
-	CSnkiMJkmxSv/Ts6WIe2IpTJl1yicOo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706262644;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Is/iDqG+bFU4E9wUAmu+LNf+g2iaZiR01G55UWoy7os=;
-	b=SX4rZHVlVlkurAoXw0N++Ro+65TznaDVpGBEoiQhsTHdGmWv+jsaGSg9rotzyZ8PIXzd6e
-	pWMQearG3LL9nKCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9FCAF134C3;
-	Fri, 26 Jan 2024 09:50:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ooKsJnSAs2WFFAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 26 Jan 2024 09:50:44 +0000
-Message-ID: <6d5bb852-8703-4abf-a52b-90816bccbd7f@suse.cz>
-Date: Fri, 26 Jan 2024 10:50:44 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2A7012B6C;
+	Fri, 26 Jan 2024 09:53:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.156.173
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706262787; cv=fail; b=bAbW91m1w1Z/ZSgVL2uH+9kv1Te2Su5y8dg7eAcu5f4TwlONbFX+KQN1SrzmiFQub/a/pdlh+8T3to/tkvqCE1wIX4Io/DwOa0jtbddqYt4zTrnK8w07YrmFKUsXpOUMMaiZVtYFoFO0Q9nKb1Zw+FRvbogJgYC/JTqzY0y/Ujk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706262787; c=relaxed/simple;
+	bh=M4JWn6QqojR9d6LBmq7+nopP/7xWPctJz8aeGI7IPQo=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=i+zfdczIxShK/rb609XJmcGO7Xir1/cLCzSq0d39744zt2yA0P8egBOuVs0Ae+REUm/+ZBy/EeN6oAdo3wZx068xhmlajXwJqrME3BqnD4A75MxqiJhtZ1CLL2kBjPNRkJhO1RORb4PSNnQ77qvoNNveqVXmjfkZQmW3fVZht8A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.onmicrosoft.com header.i=@marvell.onmicrosoft.com header.b=q3Ac/WJk; arc=fail smtp.client-ip=67.231.156.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40Q32Wkx024987;
+	Fri, 26 Jan 2024 01:52:45 -0800
+Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2041.outbound.protection.outlook.com [104.47.57.41])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3vv4g0gxk6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Jan 2024 01:52:45 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ArR4DoAKavdjQComXpMS2+tINHlYbCGh4xr0BU5/9EnzG5GDqNM6vR4WW/+dTHs6nhXl8lV8fKLAueNntf6L7erC1oYxq1UZ6LazPa6ry9FLKKyYdAiLs4T3E8DmAN/z4Gy6gl7LNulu4SusHu44mbtUIdawSSQkpr6361FVPbhSeIQxqPivoADdBh4GSEzv1mnr67mKMjntZUat/oPHv4mS/MmqF/vich1p/aeClplvkOxTB8vwXup/kEachQK0lObPfuHqmD24K2GTDZ3uoOWXLBW4fbaG0dBYCWbq0ahwVUQXxRLpugl3kHpODhp8MjYKuuzx364fMd5RZfOzdQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zPaqXEHsK/bdAjhTwflY8BwTX/mV0EPjBsCpvWreXm8=;
+ b=jd3+OqWjfdBYHNbunz8AdaYa7fmzt5SNzKpXlQx3lEcZbtXjW4YDjaaNLDfPz81YGpEuJ2aWUkObJL9o0a0P9owiHTvQObo9D7TCbPJAe/8PGzZ3PK3g9xdgnp8pHcynFDhL8zUAfhNkx6hts2NyTJY1FdMWxqvIExzvM4CLlKYDwl7D3aWp6fsRW+RaZEtfI/koXfAUiiZV+QWSSctwRt/KhD1E4qgrT6DIszY/YBWCh8WRfeTbGum3bn24ZPIApnJ5ydUDueLfQT7/ZMAaVxefwoTC+h+GTeUF3goe5nPa8u+BTBM676GXOH6vBEWzvrCtEg4N26z+aFuCM87JuQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zPaqXEHsK/bdAjhTwflY8BwTX/mV0EPjBsCpvWreXm8=;
+ b=q3Ac/WJkmu/ycQEQvl21M6pzJa4gNKa2yPHlN1w8x+vr7by39wIwafsXoLyi6+gtzkXBMO9XAEHTNhn/EqluOb3iUFKz2kIKTINjJgKE8TwYWa3UMhhVEnb4lZ+zQUCP+c5y3N739M7/uY6JWYSFR9GzO26DTd3i0h2OgMfYbMs=
+Received: from CH0PR18MB4339.namprd18.prod.outlook.com (2603:10b6:610:d2::17)
+ by LV8PR18MB6098.namprd18.prod.outlook.com (2603:10b6:408:224::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.14; Fri, 26 Jan
+ 2024 09:52:42 +0000
+Received: from CH0PR18MB4339.namprd18.prod.outlook.com
+ ([fe80::fa2f:8d29:5bea:70]) by CH0PR18MB4339.namprd18.prod.outlook.com
+ ([fe80::fa2f:8d29:5bea:70%4]) with mapi id 15.20.7228.022; Fri, 26 Jan 2024
+ 09:52:41 +0000
+From: Geethasowjanya Akula <gakula@marvell.com>
+To: Simon Horman <horms@kernel.org>
+CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net"
+	<davem@davemloft.net>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        Sunil Kovvuri Goutham
+	<sgoutham@marvell.com>,
+        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
+        Hariprasad Kelam <hkelam@marvell.com>
+Subject: RE: [EXT] Re: [net-next PATCH 1/3] octeontx2-af: Create BPIDs free
+ pool
+Thread-Topic: [EXT] Re: [net-next PATCH 1/3] octeontx2-af: Create BPIDs free
+ pool
+Thread-Index: AQHaTok8aUkkR9PDFEyZWfgUDbMGuLDqZ5gAgAF1l1A=
+Date: Fri, 26 Jan 2024 09:52:41 +0000
+Message-ID: 
+ <CH0PR18MB433913F678EED5D6A5F52DD4CD792@CH0PR18MB4339.namprd18.prod.outlook.com>
+References: <20240124055014.32694-1-gakula@marvell.com>
+ <20240124055014.32694-2-gakula@marvell.com>
+ <20240125113336.GF217708@kernel.org>
+In-Reply-To: <20240125113336.GF217708@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: 
+ =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcZ2FrdWxhXGFw?=
+ =?us-ascii?Q?cGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEy?=
+ =?us-ascii?Q?OWUzNWJcbXNnc1xtc2ctYTFlNGY2NDAtYmMzMC0xMWVlLWFmMWItMDQ3YmNi?=
+ =?us-ascii?Q?YzgxZjdkXGFtZS10ZXN0XGExZTRmNjQyLWJjMzAtMTFlZS1hZjFiLTA0N2Jj?=
+ =?us-ascii?Q?YmM4MWY3ZGJvZHkudHh0IiBzej0iNjg1NCIgdD0iMTMzNTA3MzYzNTY1ODUx?=
+ =?us-ascii?Q?NjI1IiBoPSJqc0s3OEhkSElKaW94eDFteHBBVWwwaFUxNkE9IiBpZD0iIiBi?=
+ =?us-ascii?Q?bD0iMCIgYm89IjEiIGNpPSJjQUFBQUVSSFUxUlNSVUZOQ2dVQUFBNEdBQURw?=
+ =?us-ascii?Q?MHoxa1BWRGFBUk00eHFmbU9TSzZFempHcCtZNUlyb0FBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFjQUFBQUo0RkFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?RUFBQUVCQUFBQXZEQk91Z0NBQVFBQUFBQUFBQUFBQUo0RkFBQUFBQUFBQ0FB?=
+ =?us-ascii?Q?QUFBQUFBQUFJQUFBQUFBQUFBQWdBQUFBQUFBQUFmZ1VBQUJZQUFBQVlBQUFB?=
+ =?us-ascii?Q?QUFBQUFHRUFaQUJrQUhJQVpRQnpBSE1BQUFBa0FBQUFBQUFBQUdNQWRRQnpB?=
+ =?us-ascii?Q?SFFBYndCdEFGOEFjQUJsQUhJQWN3QnZBRzRBQUFBdUFBQUFBQUFBQUdNQWRR?=
+ =?us-ascii?Q?QnpBSFFBYndCdEFGOEFjQUJvQUc4QWJnQmxBRzRBZFFCdEFHSUFaUUJ5QUFB?=
+ =?us-ascii?Q?QU1BQUFBQUFBQUFCakFIVUFjd0IwQUc4QWJRQmZBSE1BY3dCdUFGOEFaQUJo?=
+ =?us-ascii?Q?QUhNQWFBQmZBSFlBTUFBeUFBQUFNQUFBQUFBQUFBQmpBSFVBY3dCMEFHOEFi?=
+ =?us-ascii?Q?UUJmQUhNQWN3QnVBRjhBYXdCbEFIa0Fkd0J2QUhJQVpBQnpBQUFBUGdBQUFB?=
+ =?us-ascii?Q?QUFBQUJqQUhVQWN3QjBBRzhBYlFCZkFITUFjd0J1QUY4QWJnQnZBR1FBWlFC?=
+ =?us-ascii?Q?c0FHa0FiUUJwQUhRQVpRQnlBRjhBZGdBd0FESUFBQUF5QUFBQUFBQUFBR01B?=
+ =?us-ascii?Q?ZFFCekFIUUFid0J0QUY4QWN3QnpBRzRBWHdCekFIQUFZUUJqQUdVQVh3QjJB?=
+ =?us-ascii?Q?REFBTWdBQUFENEFBQUFBQUFBQVpBQnNBSEFBWHdCekFHc0FlUUJ3QUdVQVh3?=
+ =?us-ascii?Q?QmpBR2dBWVFCMEFGOEFiUUJsQUhNQWN3QmhBR2NBWlFCZkFIWUFNQUF5QUFB?=
+ =?us-ascii?Q?QU5nQUFBQUFBQUFCa0FHd0FjQUJmQUhNQWJBQmhBR01BYXdCZkFHTUFhQUJo?=
+ =?us-ascii?Q?QUhRQVh3QnRBR1VBY3dCekFHRUFad0JsQUFBQU9BQUFBQUFBQUFCa0FHd0Fj?=
+ =?us-ascii?Q?QUJmQUhRQVpRQmhBRzBBY3dCZkFHOEFiZ0JsQUdRQWNnQnBBSFlBWlFCZkFH?=
+ =?us-ascii?Q?WUFhUUJzQUdVQUFBQWtBQUFBQUFBQUFHVUFi?=
+x-dg-refone: 
+ =?us-ascii?Q?UUJoQUdrQWJBQmZBR0VBWkFCa0FISUFaUUJ6QUhNQUFBQllBQUFBQUFBQUFH?=
+ =?us-ascii?Q?MEFZUUJ5QUhZQVpRQnNBRjhBY0FCeUFHOEFhZ0JsQUdNQWRBQmZBRzRBWVFC?=
+ =?us-ascii?Q?dEFHVUFjd0JmQUdNQWJ3QnVBR1lBYVFCa0FHVUFiZ0IwQUdrQVlRQnNBRjhB?=
+ =?us-ascii?Q?WVFCc0FHOEFiZ0JsQUFBQVZBQUFBQUFBQUFCdEFHRUFjZ0IyQUdVQWJBQmZB?=
+ =?us-ascii?Q?SEFBY2dCdkFHb0FaUUJqQUhRQVh3QnVBR0VBYlFCbEFITUFYd0J5QUdVQWN3?=
+ =?us-ascii?Q?QjBBSElBYVFCakFIUUFaUUJrQUY4QVlRQnNBRzhBYmdCbEFBQUFXZ0FBQUFB?=
+ =?us-ascii?Q?QUFBQnRBR0VBY2dCMkFHVUFiQUJmQUhBQWNnQnZBR29BWlFCakFIUUFYd0J1?=
+ =?us-ascii?Q?QUdFQWJRQmxBSE1BWHdCeUFHVUFjd0IwQUhJQWFRQmpBSFFBWlFCa0FGOEFh?=
+ =?us-ascii?Q?QUJsQUhnQVl3QnZBR1FBWlFCekFBQUFJQUFBQUFBQUFBQnRBR0VBY2dCMkFH?=
+ =?us-ascii?Q?VUFiQUJzQUY4QVlRQnlBRzBBQUFBbUFBQUFBQUFBQUcwQVlRQnlBSFlBWlFC?=
+ =?us-ascii?Q?c0FHd0FYd0JuQUc4QWJ3Qm5BR3dBWlFBQUFGNEFBQUFBQUFBQWJRQmhBSElB?=
+ =?us-ascii?Q?ZGdCbEFHd0FiQUJmQUhBQWNnQnZBR29BWlFCakFIUUFYd0J1QUdFQWJRQmxB?=
+ =?us-ascii?Q?SE1BWHdCakFHOEFiZ0JtQUdrQVpBQmxBRzRBZEFCcEFHRUFiQUJmQUcwQVlR?=
+ =?us-ascii?Q?QnlBSFlBWlFCc0FHd0FBQUJzQUFBQUFBQUFBRzBBWVFCeUFIWUFaUUJzQUd3?=
+ =?us-ascii?Q?QVh3QndBSElBYndCcUFHVUFZd0IwQUY4QWJnQmhBRzBBWlFCekFGOEFZd0J2?=
+ =?us-ascii?Q?QUc0QVpnQnBBR1FBWlFCdUFIUUFhUUJoQUd3QVh3QnRBR0VBY2dCMkFHVUFi?=
+ =?us-ascii?Q?QUJzQUY4QWJ3QnlBRjhBWVFCeUFHMEFBQUJ5QUFBQUFBQUFBRzBBWVFCeUFI?=
+ =?us-ascii?Q?WUFaUUJzQUd3QVh3QndBSElBYndCcUFHVUFZd0IwQUY4QWJnQmhBRzBBWlFC?=
+ =?us-ascii?Q?ekFGOEFZd0J2QUc0QVpnQnBBR1FBWlFCdUFIUUFhUUJoQUd3QVh3QnRBR0VB?=
+ =?us-ascii?Q?Y2dCMkFHVUFiQUJzQUY4QWJ3QnlBRjhBWndCdkFHOEFad0JzQUdVQUFBQmFB?=
+ =?us-ascii?Q?QUFBQUFBQUFHMEFZUUJ5QUhZQVpRQnNBR3dBWHdCd0FISUFid0JxQUdVQVl3?=
+ =?us-ascii?Q?QjBBRjhBYmdCaEFHMEFaUUJ6QUY4QWNnQmxBSE1BZEFCeUFHa0FZd0IwQUdV?=
+ =?us-ascii?Q?QVpBQmZBRzBBWVFCeUFIWUFaUUJzQUd3QUFBQm9BQUFBQUFBQUFHMEFZUUJ5?=
+ =?us-ascii?Q?QUhZQVpRQnNBR3dBWHdCd0FISUFid0JxQUdVQVl3QjBBRjhBYmdCaEFHMEFa?=
+ =?us-ascii?Q?UUJ6QUY4QWNnQmxBSE1BZEFCeUFHa0FZd0IwQUdVQVpBQmZBRzBBWVFCeUFI?=
+ =?us-ascii?Q?WUFaUUJzQUd3QVh3QnZBSElBWHdCaEFISUFi?=
+x-dg-reftwo: 
+ UUFBQUNJQUFBQUFBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBSGNBYndCeUFHUUFBQUE9Ii8+PC9tZXRhPg==
+x-dg-rorf: true
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CH0PR18MB4339:EE_|LV8PR18MB6098:EE_
+x-ms-office365-filtering-correlation-id: 5ed41996-9ea0-4dbd-a71e-08dc1e5489d4
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ 4Cp5IgPYxJ+7cJwg/Ne5kGG3HcXadJ5aFjYXz3b8sfJxMGsTEVX9r1bWfHNJM/mRYyu54iW7ScHrU0+WvkIlbxwICL4+GXs8XWmzqAaJzNQO9khJTtxPalEHA6r2EXY0glmFlx7azBVNdfKdDCG8fhPeUxtt5lCm7cab5QyNx+F/RgFeyuYCTlXTSEaSZCx8l1D0yWxdPF8RZrdr4k7Iu5UHuEtuZ/4TapHSTXO+O1K/13ZEK+SconZejzp4wJd9lKdgMFWVMrDn6aaAtYEsPO3WiPqAttGQLSyM3GhMXPYJNOyBbOHfmguag4LNwQmIjLBz5l9ElIu8lSdE9BWg0iWZcg1a5lfwi22g9wvLrjQjs9O0KkHGJAhGiAdBaGFBg/Vw03V+qp0tVbBR1HK0X6x08UwCSThSSZDqv41TJefWZlTy+/YoivxIK9PsLLpUdrVV29gYEbX4bhJJuYh4d6IDGz6p6EVjsyKD0I0jF0wUe7djtA0GbBwyONmDWEeOpi83huJK1aL4Zw4l20+hZQdP5gsj+D8X3+QaTqs6qeUVRS7vNRu/F+EQszPVv1OBQV/43JRsJLQPkJNjPgiGUdW6Dj1BJ2tPV+OcW9sDoipwp5ptZ77u2MEZNR3Ye/AhyHAZHyzEWLmLg+vXCXlifj4gIW+2+AZOMjX+R5toT/s=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR18MB4339.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(366004)(346002)(136003)(396003)(230173577357003)(230922051799003)(230273577357003)(64100799003)(451199024)(186009)(1800799012)(33656002)(83380400001)(2906002)(5660300002)(52536014)(4326008)(8676002)(122000001)(38070700009)(41300700001)(478600001)(107886003)(38100700002)(66556008)(6916009)(66946007)(54906003)(64756008)(316002)(66476007)(53546011)(76116006)(66446008)(86362001)(9686003)(71200400001)(55016003)(6506007)(7696005)(8936002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?us-ascii?Q?UtF1N/t9B9DtSUrAzNhXoZXHnYtjn6gvdutGGy+RnPDGS/Xd0Ka6qBu9cOuQ?=
+ =?us-ascii?Q?Dtg4TSRzS+n2yBYMIX3HqMVzNHPqKUWBmcwVoMdH0e04mecwjx5lIguVpe+S?=
+ =?us-ascii?Q?+p+3rO6HrNCo2s/AxJqJ4r2AT/1nJUsZLoHotoo7GFWgy8h1I38tFVCg4DNi?=
+ =?us-ascii?Q?uk/EySxJD3L16mP7L7oKCrJOIaSyMz/EUcgPgoYu+VJz4NhSiPRu4+2/0KYm?=
+ =?us-ascii?Q?MwJ3LzindLu5FhaynY8sfbqLmp6i6TuqhyZ11mpbJW1mV1P5QFNhQVrWkfAI?=
+ =?us-ascii?Q?52o4sqF/A2fhioQtMfhpRTg/wtbu5o8KYn0SskItacgiPuTlxHRiKxwjddb1?=
+ =?us-ascii?Q?kUAU24sB/RgMwXZJsTSdZxjNGkUUf/88/Z5WRMH1hY8sHD9C+MjyKFqdCWWV?=
+ =?us-ascii?Q?NkVI7gwLG0jB6JnVof+M5FRSr6FiyG+/sFHDylbAhWUFL64A1CwkGWAuut2/?=
+ =?us-ascii?Q?u+sBa3DMAPNqNkQd6wqNLhuHPQ3yGmQFdeExYe7D48snIkcmGT69Pir2H95a?=
+ =?us-ascii?Q?Fi80kM/LxwkET12J+AtH9URwHGNGcBMBiAoh7WCVEdPlsO03hKco1uO7BUjf?=
+ =?us-ascii?Q?2kiPuAUbVGJUyY6MH/yDgEk0AXbslCibAGURiSVt/1Dz3zj9H4rei3gFUlNd?=
+ =?us-ascii?Q?8wDfKOk0rMbMICPfogmIxz3GX5gqqEHGhEhcfKqXcIYfF1gzwrH9VPbfWByp?=
+ =?us-ascii?Q?S96TJJ6bB2/RyySUl5XTVxhpGyjLyYTWBgiF9R99PwE4wPpMOJoOnqovp4kE?=
+ =?us-ascii?Q?4JYls8rODsNEHwEh9Llrg5jH+BWDdFLeHHFImC0ovCcDs/c7KRYr0M3qvvx2?=
+ =?us-ascii?Q?z+JLb+plwHB85cqjBOXsWU1kl9W4swgCcWBmXYlirgqZvrMLeU1zJE5RzVOi?=
+ =?us-ascii?Q?EbJ9XxRGU5ob0zpzLR7vkpM2+ulNIllVFazOewLc2D1CY9R/pzRCKEnpeYgm?=
+ =?us-ascii?Q?1iyNH8EAiWNkrG8TpclVWCdIIUZqt1xF6B3X9Vriw7yE2PLWVFjth3mfThWt?=
+ =?us-ascii?Q?4P13j7DvwvKdImA/xIbzLKiNIyGZjl0pivYiaOPmQnpjDgJ8kYQHUUeD/4QE?=
+ =?us-ascii?Q?gdjWyPKhYxNzppME0A6EQXuWydTk5VM+kl3xa+wGq501EU+H/8YMdQeDLPrp?=
+ =?us-ascii?Q?e9AX8wBSwerQ11Ka9EXWGjpBhnowzh4ShY3tybvJ/4tUdxd5K6JHpHCmMd4t?=
+ =?us-ascii?Q?ERez+l+QrzN76xFYd4MzGUwnURd0ycWo+dp5CKeMKx6AfVlQ4OXeEf+42wpz?=
+ =?us-ascii?Q?aUdGFvlwLA9VuUgguBEhEsTcoilgtXTa50EPV80fYbkv6KNPxxxaIJwbWofH?=
+ =?us-ascii?Q?16MS1A2t0bWRBhe2+ZjSrxQmC9x1oYvL+XSnbSBzkSyL+QgXBDlQHTzMKfVL?=
+ =?us-ascii?Q?wbcCwrvS5Nz+cZ+505k3E1IX0FRfDHTf8BsECo3tXIZrfkbofhKZWe8I2Tcw?=
+ =?us-ascii?Q?AoBk8J7iRb9KkvETvHIet+zzDJjUeC69WsJ+AhSmcXaznjL16Jb2beLwkNMW?=
+ =?us-ascii?Q?IVtyUjFxYLdFYdwrfXvaERH1AIaMkFpDXXW79mitlDExe5jraZMsXMYA/MjY?=
+ =?us-ascii?Q?9dQiXeZY4HT2bFMs3v2KIC2A7qYZglbgXYep/+c/LXopxDoLNZ5gS4EGFOm9?=
+ =?us-ascii?Q?xaZfciJnVQs2s2UoaOvRUso=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 1/4] fs/locks: Fix file lock cache accounting, again
-To: Linus Torvalds <torvalds@linux-foundation.org>,
- Shakeel Butt <shakeelb@google.com>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>,
- Josh Poimboeuf <jpoimboe@kernel.org>, Jeff Layton <jlayton@kernel.org>,
- Chuck Lever <chuck.lever@oracle.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
- Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
- Vasily Averin <vasily.averin@linux.dev>, Michal Koutny <mkoutny@suse.com>,
- Waiman Long <longman@redhat.com>, Muchun Song <muchun.song@linux.dev>,
- Jiri Kosina <jikos@kernel.org>, cgroups@vger.kernel.org, linux-mm@kvack.org,
- Howard McLauchlan <hmclauchlan@fb.com>, bpf <bpf@vger.kernel.org>,
- Jens Axboe <axboe@kernel.dk>
-References: <cover.1705507931.git.jpoimboe@kernel.org>
- <ac84a832feba5418e1b58d1c7f3fe6cc7bc1de58.1705507931.git.jpoimboe@kernel.org>
- <6667b799702e1815bd4e4f7744eddbc0bd042bb7.camel@kernel.org>
- <20240117193915.urwueineol7p4hg7@treble>
- <CAHk-=wg_CoTOfkREgaQQA6oJ5nM9ZKYrTn=E1r-JnvmQcgWpSg@mail.gmail.com>
- <CALvZod6LgX-FQOGgNBmoRACMBK4GB+K=a+DYrtExcuGFH=J5zQ@mail.gmail.com>
- <ZahSlnqw9yRo3d1v@P9FQF9L96D.corp.robot.car>
- <CALvZod4V3QTULTW5QxgqCbDpNtVO6fXzta33HR7GN=L2LUU26g@mail.gmail.com>
- <CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com>
-Content-Language: en-US
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=W9rBeTum;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=SX4rZHVl
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.50 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 MX_GOOD(-0.01)[];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 NEURAL_HAM_SHORT(-0.20)[-0.999];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[21];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -4.50
-X-Rspamd-Queue-Id: C9AF71FB7A
-X-Spam-Flag: NO
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR18MB4339.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5ed41996-9ea0-4dbd-a71e-08dc1e5489d4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jan 2024 09:52:41.8154
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: xytq7pX8R9rmyRMUCUT+dn7xy8LBpWqtEslO/Ti24cIO4SxH2ioc5ehqwsyCZlOyQ/tHeRxKOk0zGQJwCwFidQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR18MB6098
+X-Proofpoint-GUID: Gu-F0krOn4wRY9yI1SDggFrg1nh2kNTy
+X-Proofpoint-ORIG-GUID: Gu-F0krOn4wRY9yI1SDggFrg1nh2kNTy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-25_14,2024-01-25_01,2023-05-22_02
 
-On 1/22/24 06:10, Linus Torvalds wrote:
-> On Wed, 17 Jan 2024 at 14:56, Shakeel Butt <shakeelb@google.com> wrote:
->> >
->> > So I don't see how we can make it really cheap (say, less than 5% overhead)
->> > without caching pre-accounted objects.
->>
->> Maybe this is what we want. Now we are down to just SLUB, maybe such
->> caching of pre-accounted objects can be in SLUB layer and we can
->> decide to keep this caching per-kmem-cache opt-in or always on.
-> 
-> So it turns out that we have another case of SLAB_ACCOUNT being quite
-> a big expense, and it's actually the normal - but failed - open() or
-> execve() case.
-> 
-> See the thread at
-> 
->     https://lore.kernel.org/all/CAHk-=whw936qzDLBQdUz-He5WK_0fRSWwKAjtbVsMGfX70Nf_Q@mail.gmail.com/
-> 
-> and to see the effect in profiles, you can use this EXTREMELY stupid
-> test program:
-> 
->     #include <fcntl.h>
-> 
->     int main(int argc, char **argv)
->     {
->         for (int i = 0; i < 10000000; i++)
->                 open("nonexistent", O_RDONLY);
->     }
-
-This reminded me I can see should_failslab() in the profiles (1.43% plus the
-overhead in its caller) even if it does nothing at all, and it's completely
-unconditional since commit 4f6923fbb352 ("mm: make should_failslab always
-available for fault injection").
-
-We discussed it briefly when Jens tried to change it in [1] to depend on
-CONFIG_FAILSLAB again. But now I think it should be even possible to leave
-it always available, but behind a static key. BPF or whoever else uses these
-error injection hooks would have to track how many users of them are active
-and manage the static key accordingly. Then it could be always available,
-but have no overhead when there's no active user? Other similars hooks could
-benefit from such an approach too?
-
-[1]
-https://lore.kernel.org/all/e01e5e40-692a-519c-4cba-e3331f173c82@kernel.dk/#t
+Hi Simon,
 
 
-> where the point of course is that the "nonexistent" pathname doesn't
-> actually exist (so don't create a file called that for the test).
-> 
-> What happens is that open() allocates a 'struct file *' early from the
-> filp kmem_cache, which has SLAB_ACCOUNT set. So we'll do accounting
-> for it, failt the pathname open, and free it again, which uncharges
-> the accounting.
-> 
-> Now, in this case, I actually have a suggestion: could we please just
-> make SLAB_ACCOUNT be something that we do *after* the allocation, kind
-> of the same way the zeroing works?
-> 
-> IOW, I'd love to get rid of slab_pre_alloc_hook() entirely, and make
-> slab_post_alloc_hook() do all the "charge the memcg if required".
-> 
-> Obviously that means that now a failure to charge the memcg would have
-> to then de-allocate things, but that's an uncommon path and would be
-> marked unlikely and not be in the hot path at all.
-> 
-> Now, the reason I would prefer that is that the *second* step would be to
-> 
->  (a) expose a "kmem_cache_charge()" function that takes a
-> *non*-accounted slab allocation, and turns it into an accounted one
-> (and obviously this is why you want to do everything in the post-alloc
-> hook: just try to share this code)
-> 
->  (b) remote the SLAB_ACCOUNT from the filp_cachep, making all file
-> allocations start out unaccounted.
-> 
->  (c) when we have *actually* looked up the pathname and open the file
-> successfully, at *that* point we'd do a
-> 
->         error = kmem_cache_charge(filp_cachep, file);
-> 
->     in do_dentry_open() to turn the unaccounted file pointer into an
-> accounted one (and if that fails, we do the cleanup and free it, of
-> course, exactly like we do when file_get_write_access() fails)
-> 
-> which means that now the failure case doesn't unnecessarily charge the
-> allocation that never ends up being finalized.
-> 
-> NOTE! I think this would clean up mm/slub.c too, simply because it
-> would get rid of that memcg_slab_pre_alloc_hook() entirely, and get
-> rid of the need to carry the "struct obj_cgroup **objcgp" pointer
-> along until the post-alloc hook: everything would be done post-alloc.
-> 
-> The actual kmem_cache_free() code already deals with "this slab hasn't
-> been accounted" because it obviously has to deal with allocations that
-> were done without __GFP_ACCOUNT anyway. So there's no change needed on
-> the freeing path, it already has to handle this all gracefully.
-> 
-> I may be missing something, but it would seem to have very little
-> downside, and fix a case that actually is visible right now.
-> 
->               Linus
-
+> -----Original Message-----
+> From: Simon Horman <horms@kernel.org>
+> Sent: Thursday, January 25, 2024 5:04 PM
+> To: Geethasowjanya Akula <gakula@marvell.com>
+> Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org; kuba@kernel.org=
+;
+> davem@davemloft.net; pabeni@redhat.com; edumazet@google.com; Sunil
+> Kovvuri Goutham <sgoutham@marvell.com>; Subbaraya Sundeep Bhatta
+> <sbhatta@marvell.com>; Hariprasad Kelam <hkelam@marvell.com>
+> Subject: [EXT] Re: [net-next PATCH 1/3] octeontx2-af: Create BPIDs free p=
+ool
+>=20
+> External Email
+>=20
+> ----------------------------------------------------------------------
+> On Wed, Jan 24, 2024 at 11:20:12AM +0530, Geetha sowjanya wrote:
+> > Current code reserves 64 bpids for 64 LBK channels. But in most of the
+> > cases multiple LBK channels uses same bpid. This leads to inefficient
+> > use of bpids. Latest HW support configured multiple bpids per channel
+> > for other interface types (CGX). For better use of these bpids, this
+> > patch creates pool of free bpids from reserved LBK bpids. This free
+> > pool is used to allocate bpid on request for another interface like
+> > sso etc.
+> >
+> > This patch also reduces the number of bpids for cgx interfaces to 8
+> > and adds proper error code
+> >
+> > Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+>=20
+> Hi Geetha,
+>=20
+> I have some suggestions for possible follow-up below.
+> That notwithstanding patch looks good to me.
+>=20
+> Reviewed-by: Simon Horman <horms@kernel.org>
+>=20
+> > diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+> > b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+> > index 66203a90f052..e1eae16b09b3 100644
+> > --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+> > +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+> > @@ -499,14 +499,84 @@ static void nix_interface_deinit(struct rvu *rvu,
+> u16 pcifunc, u8 nixlf)
+> >  	rvu_cgx_disable_dmac_entries(rvu, pcifunc);  }
+> >
+> > +#define NIX_BPIDS_PER_LMAC	8
+> > +#define NIX_BPIDS_PER_CPT	1
+> > +static int nix_setup_bpids(struct rvu *rvu, struct nix_hw *hw, int
+> > +blkaddr) {
+> > +	struct nix_bp *bp =3D &hw->bp;
+> > +	int err, max_bpids;
+> > +	u64 cfg;
+> > +
+> > +	cfg =3D rvu_read64(rvu, blkaddr, NIX_AF_CONST1);
+> > +	max_bpids =3D (cfg >> 12) & 0xFFF;
+>=20
+> I don't think this needs to block progress of this patch, but rather I'm
+> providing this as a suggestion for a follow-up.
+>=20
+> I think it would be nice to define a mask, created using GENMASK, that na=
+mes
+> the register field (I don't know what it is).
+> And then uses FIELD_GET here.
+>=20
+> Likewise for the 0xFFF below, and possibly elsewhere in this patch.
+>=20
+> Further, in patch 2 I see the use of BIT(11) in the following patch.
+> And existing use of BIT(16) in this file.  I assume are register fields.
+> If so it would be nice to make #defines to name them too.
+>=20
+Thanks for the review. Will submit v2 with suggested changes.
+> > +
+> > +	/* Reserve the BPIds for CGX and SDP */
+> > +	bp->cgx_bpid_cnt =3D rvu->hw->cgx_links * NIX_BPIDS_PER_LMAC;
+> > +	bp->sdp_bpid_cnt =3D rvu->hw->sdp_links * (cfg & 0xFFF);
+> > +	bp->free_pool_base =3D bp->cgx_bpid_cnt + bp->sdp_bpid_cnt +
+> > +			     NIX_BPIDS_PER_CPT;
+> > +	bp->bpids.max =3D max_bpids - bp->free_pool_base;
+>=20
+> ...
 
