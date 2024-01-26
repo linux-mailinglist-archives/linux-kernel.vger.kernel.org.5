@@ -1,94 +1,152 @@
-Return-Path: <linux-kernel+bounces-40110-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F26FC83DA67
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:58:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1757683DA65
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:58:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 312D41C20E46
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:58:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7B0D2908EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:58:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE70D1B807;
-	Fri, 26 Jan 2024 12:58:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B4EF1B7EB;
+	Fri, 26 Jan 2024 12:58:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="D4WfYUJx"
-Received: from xry111.site (xry111.site [89.208.246.23])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MZWogIHd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37A5D1B5B2;
-	Fri, 26 Jan 2024 12:58:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 897F81B5BB
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 12:58:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706273912; cv=none; b=sUvWX+PHReL8/gUKZ1kAKxlnkf4y+EWCatS73SxmjF1UeDa7X+DA29USWR9KYon3KYIp1WPf3XeCet+xUBpvGiFhR5AF2ZOadzFfwR0qh4m+kfwrpcednxgGRRdRGn/vc3AnnYdy9d2yvIAXUbCiaM3yUy0AuO8g6Bn0g70+I8o=
+	t=1706273911; cv=none; b=EkvhS4BNTUe3mlXstZotHYO/wEBVYra2G5W0eJbpOF/0yIVZpsEaV/OPrvibEewDREc8G7c/YZq88kt7ePtWImQDDUU/HA2aQPCJLSMBRVfVc7jVgi+x+QzuqdNTgpcclJuuk0R9UQdi9zKSp92h0h6P7n+MFSdEiTjAhRga3Fs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706273912; c=relaxed/simple;
-	bh=eiX/XU3X7izRhpQ8i5uryQdr0UqEctOorWGygOsy5UI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=HEGcu9gMIVkmycLRZ60Zg+7XovAThmg/vT91L3eG8F9NohFLsNobxG77rmziOQ3xkU6DkND/QOM7+eVSPuktouV5ccV3JI+epdtx50AYik1bc6kfhSE+2LO/G2WtqEp3oS5OGeQLLUHtr+CILmXAm2l7+swcFE7G0nePcu6Mi/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=D4WfYUJx; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1706273902;
-	bh=eiX/XU3X7izRhpQ8i5uryQdr0UqEctOorWGygOsy5UI=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=D4WfYUJxkj8nZVD4yhBt2yM509Q7H7i3L4lt2HkzVsFXGjr7Ym6NyVpBpxWbUIzUc
-	 Lf9+rphGsCNs2TLwLbd4L9qrK9iYA/ywuvShsS1ljItoMjcaRslcj6h6v0SVE4i3AL
-	 Ne8o4mxQzY0WmlS1J9gC3nuoiVBONKUzUufqgg0I=
-Received: from [127.0.0.1] (unknown [IPv6:2001:470:683e::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id 7C67F6690B;
-	Fri, 26 Jan 2024 07:58:18 -0500 (EST)
-Message-ID: <1e1ec730efc58f17ecf008a4600321e3d200ebda.camel@xry111.site>
-Subject: Re: Strange EFAULT on mips64el returned by syscall when another
- thread is forking
-From: Xi Ruoyao <xry111@xry111.site>
-To: Jiaxun Yang <jiaxun.yang@flygoat.com>, "linux-mips@vger.kernel.org"
-	 <linux-mips@vger.kernel.org>
-Cc: linux-kernel@vger.kernel.org, Thomas Bogendoerfer
-	 <tsbogend@alpha.franken.de>, libc-alpha@sourceware.org, 
-	regressions@lists.linux.dev
-Date: Fri, 26 Jan 2024 20:58:16 +0800
-In-Reply-To: <4b715c9f-6a9e-4496-8810-670080cb715a@app.fastmail.com>
-References: <75e9fd7b08562ad9b456a5bdaacb7cc220311cc9.camel@xry111.site>
-	 <4b715c9f-6a9e-4496-8810-670080cb715a@app.fastmail.com>
-Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
- keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1706273911; c=relaxed/simple;
+	bh=ohUyVtWPvkgUykuwF7KLzyNhfQ8FsPPkW2hfwG05FrA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mFP7COlgBco3pl2E/lGr507s9Hj047+8wjfvQF1jW6qr7WguJfD6xZLeCFFlZLJ/joeT/SFBTMDSJV7i4FPKTsPN6eDpkYGbrv6l11K+Y3gfXyjeseWHjhGEpFJlqVaq0CrK7JezNNhHO573ghdyNFFri9qXt9sElaFZY+l1UAo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MZWogIHd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BA73C433C7;
+	Fri, 26 Jan 2024 12:58:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706273911;
+	bh=ohUyVtWPvkgUykuwF7KLzyNhfQ8FsPPkW2hfwG05FrA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=MZWogIHd7VNCJlmLvnXd5FTx3xPvSoVF7a/fuy2y3wz8NkuNdvvP7vph5FvRAGpPL
+	 K6kABLU2G15sxQX/LLaUT+kLrFfmdfz9MhTIAricesCVT/q/UaRevJD3vUEE0X+cHP
+	 pQW0VAvhbybpM7JLUcX7Pg1/eKkK75W5485EhdyzblgW0W0bRrb02elY1bl2BSVWJA
+	 pkEigcd0MYFQYUXIhs3oW+uk864m0Nj4gY4qWsxM7+RJIpu7QcFiKq5lZF+XXXkysq
+	 VZmUcsfwt/Bt377l+FXJm1k7p1CHZs2VvVHZ0y/16Q2N0X7M8wclFEVFYNysKgQheD
+	 AlcKqmWl8DgRA==
+Message-ID: <537604f3-cf30-45c2-8947-4c0adf9e37b1@kernel.org>
+Date: Fri, 26 Jan 2024 20:58:31 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] f2fs: use printk_ratelimited to avoid redundant logs
+To: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <20240124144506.15052-1-chao@kernel.org>
+ <ZbNwjbXyue2-HIr_@google.com>
+Content-Language: en-US
+From: Chao Yu <chao@kernel.org>
+Autocrypt: addr=chao@kernel.org; keydata=
+ xsFNBFYs6bUBEADJuxYGZRMvAEySns+DKVtVQRKDYcHlmj+s9is35mtlhrLyjm35FWJY099R
+ 6DL9bp8tAzLJOMBn9RuTsu7hbRDErCCTiyXWAsFsPkpt5jgTOy90OQVyTon1i/fDz4sgGOrL
+ 1tUfcx4m5i5EICpdSuXm0dLsC5lFB2KffLNw/ZfRuS+nNlzUm9lomLXxOgAsOpuEVps7RdYy
+ UEC81IYCAnweojFbbK8U6u4Xuu5DNlFqRFe/MBkpOwz4Nb+caCx4GICBjybG1qLl2vcGFNkh
+ eV2i8XEdUS8CJP2rnp0D8DM0+Js+QmAi/kNHP8jzr7CdG5tje1WIVGH6ec8g8oo7kIuFFadO
+ kwy6FSG1kRzkt4Ui2d0z3MF5SYgA1EWQfSqhCPzrTl4rJuZ72ZVirVxQi49Ei2BI+PQhraJ+
+ pVXd8SnIKpn8L2A/kFMCklYUaLT8kl6Bm+HhKP9xYMtDhgZatqOiyVV6HFewfb58HyUjxpza
+ 1C35+tplQ9klsejuJA4Fw9y4lhdiFk8y2MppskaqKg950oHiqbJcDMEOfdo3NY6/tXHFaeN1
+ etzLc1N3Y0pG8qS/mehcIXa3Qs2fcurIuLBa+mFiFWrdfgUkvicSYqOimsrE/Ezw9hYhAHq4
+ KoW4LQoKyLbrdOBJFW0bn5FWBI4Jir1kIFHNgg3POH8EZZDWbQARAQABzRlDaGFvIFl1IDxj
+ aGFvQGtlcm5lbC5vcmc+wsF3BBMBCgAhBQJWLOm1AhsDBQsJCAcDBRUKCQgLBRYCAwEAAh4B
+ AheAAAoJEKTPgB1/p52Gm2MP/0zawCU6QN7TZuJ8R1yfdhYr0cholc8ZuPoGim69udQ3otet
+ wkTNARnpuK5FG5la0BxFKPlazdgAU1pt+dTzCTS6a3/+0bXYQ5DwOeBPRWeFFklm5Frmk8sy
+ wSTxxEty0UBMjzElczkJflmCiDfQunBpWGy9szn/LZ6jjIVK/BiR7CgwXTdlvKcCEkUlI7MD
+ vTj/4tQ3y4Vdx+p7P53xlacTzZkP+b6D2VsjK+PsnsPpKwaiPzVFMUwjt1MYtOupK4bbDRB4
+ NIFSNu2HSA0cjsu8zUiiAvhd/6gajlZmV/GLJKQZp0MjHOvFS5Eb1DaRvoCf27L+BXBMH4Jq
+ 2XIyBMm+xqDJd7BRysnImal5NnQlKnDeO4PrpFq4JM0P33EgnSOrJuAb8vm5ORS9xgRlshXh
+ 2C0MeyQFxL6l+zolEFe2Nt2vrTFgjYLsm2vPL+oIPlE3j7ToRlmm7DcAqsa9oYMlVTTnPRL9
+ afNyrsocG0fvOYFCGvjfog/V56WFXvy9uH8mH5aNOg5xHB0//oG9vUyY0Rv/PrtW897ySEPh
+ 3jFP/EDI0kKjFW3P6CfYG/X1eaw6NDfgpzjkCf2/bYm/SZLV8dL2vuLBVV+hrT1yM1FcZotP
+ WwLEzdgdQffuQwJHovz72oH8HVHD2yvJf2hr6lH58VK4/zB/iVN4vzveOdzlzsFNBFYs6bUB
+ EADZTCTgMHkb6bz4bt6kkvj7+LbftBt5boKACy2mdrFFMocT5zM6YuJ7Ntjazk5z3F3IzfYu
+ 94a41kLY1H/G0Y112wggrxem6uAtUiekR9KnphsWI9lRI4a2VbbWUNRhCQA8ag7Xwe5cDIV5
+ qb7r7M+TaKaESRx/Y91bm0pL/MKfs/BMkYsr3wA1OX0JuEpV2YHDW8m2nFEGP6CxNma7vzw+
+ JRxNuyJcNi+VrLOXnLR6hZXjShrmU88XIU2yVXVbxtKWq8vlOSRuXkLh9NQOZn7mrR+Fb1EY
+ DY1ydoR/7FKzRNt6ejI8opHN5KKFUD913kuT90wySWM7Qx9icc1rmjuUDz3VO+rl2sdd0/1h
+ Q2VoXbPFxi6c9rLiDf8t7aHbYccst/7ouiHR/vXQty6vSUV9iEbzm+SDpHzdA8h3iPJs6rAb
+ 0NpGhy3XKY7HOSNIeHvIbDHTUZrewD2A6ARw1VYg1vhJbqUE4qKoUL1wLmxHrk+zHUEyLHUq
+ aDpDMZArdNKpT6Nh9ySUFzlWkHUsj7uUNxU3A6GTum2aU3Gh0CD1p8+FYlG1dGhO5boTIUsR
+ 6ho73ZNk1bwUj/wOcqWu+ZdnQa3zbfvMI9o/kFlOu8iTGlD8sNjJK+Y/fPK3znFqoqqKmSFZ
+ aiRALjAZH6ufspvYAJEJE9eZSX7Rtdyt30MMHQARAQABwsFfBBgBCgAJBQJWLOm1AhsMAAoJ
+ EKTPgB1/p52GPpoP/2LOn/5KSkGHGmdjzRoQHBTdm2YV1YwgADg52/mU68Wo6viStZqcVEnX
+ 3ALsWeETod3qeBCJ/TR2C6hnsqsALkXMFFJTX8aRi/E4WgBqNvNgAkWGsg5XKB3JUoJmQLqe
+ CGVCT1OSQA/gTEfB8tTZAGFwlw1D3W988CiGnnRb2EEqU4pEuBoQir0sixJzFWybf0jjEi7P
+ pODxw/NCyIf9GNRNYByUTVKnC7C51a3b1gNs10aTUmRfQuu+iM5yST5qMp4ls/yYl5ybr7N1
+ zSq9iuL13I35csBOn13U5NE67zEb/pCFspZ6ByU4zxChSOTdIJSm4/DEKlqQZhh3FnVHh2Ld
+ eG/Wbc1KVLZYX1NNbXTz7gBlVYe8aGpPNffsEsfNCGsFDGth0tC32zLT+5/r43awmxSJfx2P
+ 5aGkpdszvvyZ4hvcDfZ7U5CBItP/tWXYV0DDl8rCFmhZZw570vlx8AnTiC1v1FzrNfvtuxm3
+ 92Qh98hAj3cMFKtEVbLKJvrc2AO+mQlS7zl1qWblEhpZnXi05S1AoT0gDW2lwe54VfT3ySon
+ 8Klpbp5W4eEoY21tLwuNzgUMxmycfM4GaJWNCncKuMT4qGVQO9SPFs0vgUrdBUC5Pn5ZJ46X
+ mZA0DUz0S8BJtYGI0DUC/jAKhIgy1vAx39y7sAshwu2VILa71tXJ
+In-Reply-To: <ZbNwjbXyue2-HIr_@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, 2024-01-26 at 12:33 +0000, Jiaxun Yang wrote:
->=20
->=20
-> =E5=9C=A82024=E5=B9=B41=E6=9C=8824=E6=97=A5=E4=B8=80=E6=9C=88 =E4=B8=8A=
-=E5=8D=8810:42=EF=BC=8CXi Ruoyao=E5=86=99=E9=81=93=EF=BC=9A
-> > Hi,
-> >=20
-> > When I'm testing Glibc master branch for upcoming 2.39 release, I
-> > noticed an alarming test failure on mips64el:
->=20
-> So apparently it should be tracked as a regression.
->=20
-> #regzbot ^introduced 4bce37a68ff884e821a02a731897a8119e0c37b7
->=20
-> Should we revert it for now?
+On 2024/1/26 16:42, Jaegeuk Kim wrote:
+> On 01/24, Chao Yu wrote:
+>> Use printk_ratelimited() instead of f2fs_err() in f2fs_record_stop_reason(),
+>> and f2fs_record_errors() to avoid redundant logs.
+>>
+>> Signed-off-by: Chao Yu <chao@kernel.org>
+>> ---
+>>   fs/f2fs/super.c | 9 ++++++---
+>>   1 file changed, 6 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+>> index e2c066fbc0fa..7e437aea268e 100644
+>> --- a/fs/f2fs/super.c
+>> +++ b/fs/f2fs/super.c
+>> @@ -4091,7 +4091,9 @@ static void f2fs_record_stop_reason(struct f2fs_sb_info *sbi)
+>>   
+>>   	f2fs_up_write(&sbi->sb_lock);
+>>   	if (err)
+>> -		f2fs_err(sbi, "f2fs_commit_super fails to record err:%d", err);
+> 
+> Needing f2fs_err_ratelimited()?
 
-I'd say "yes" if we cannot easily patch instruction_pointer() to handle
-delay slot.  Anyway the reversion will be a MIPS-only change.
+Yes, more clean, let me update in v2.
 
---=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
+Thanks,
+
+> 
+>> +		printk_ratelimited(
+>> +			"%sF2FS-fs (%s): f2fs_commit_super fails to record stop_reason, err:%d\n",
+>> +			KERN_ERR, sbi->sb->s_id, err);
+>>   }
+>>   
+>>   void f2fs_save_errors(struct f2fs_sb_info *sbi, unsigned char flag)
+>> @@ -4134,8 +4136,9 @@ static void f2fs_record_errors(struct f2fs_sb_info *sbi, unsigned char error)
+>>   
+>>   	err = f2fs_commit_super(sbi, false);
+>>   	if (err)
+>> -		f2fs_err(sbi, "f2fs_commit_super fails to record errors:%u, err:%d",
+>> -								error, err);
+>> +		printk_ratelimited(
+>> +			"%sF2FS-fs (%s): f2fs_commit_super fails to record errors:%u, err:%d\n",
+>> +			KERN_ERR, sbi->sb->s_id, error, err);
+>>   out_unlock:
+>>   	f2fs_up_write(&sbi->sb_lock);
+>>   }
+>> -- 
+>> 2.40.1
 
