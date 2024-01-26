@@ -1,160 +1,134 @@
-Return-Path: <linux-kernel+bounces-40320-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE7F883DE6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:17:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF2D383DE6B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:17:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 850D91F2464B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:17:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D0181C22B2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:17:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B2951DA21;
-	Fri, 26 Jan 2024 16:17:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 029661D6BD;
+	Fri, 26 Jan 2024 16:16:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lMo5XXVV"
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qNAb6POM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7604C1D53E;
-	Fri, 26 Jan 2024 16:17:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 351E81CD3A;
+	Fri, 26 Jan 2024 16:16:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706285847; cv=none; b=TVXFVkAmSoAKley3bTdyEdcE41oEO7WKsIaHR/nYyNfzYwPJlNS1E5zEz3gcLoSQc2Zh34qMY9RNiM+2dRJWQVczNdE9WnzMDqPOB/cNESF++4zYiswAk0FrxPtICeOZFihgzNHeyHvSVRejvEIFfp/qttRZUtdcnV8SnGlYOYY=
+	t=1706285817; cv=none; b=KHADTA1udrZGlyvw21FwRopMgh3palwRGcrUgdbrBIzCxRTvOWVIU5BTO/t/vvTDujK73zHnltes2EIP0E/euLEl4ShJqIvmF4D4jW4/Q6mYNcAe4JBqCkJQ2vPD5GY8T80QmZEbl9IK+lK4B1WLZPwsF2gEfjhkLW7ps8pV6gQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706285847; c=relaxed/simple;
-	bh=DYWVrLkbvnVV9kxczQSiMqM4FDXcGI57c3LQ06PvT+g=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=CGT4o1xn0E9p3kFe2sVzdYVtdQ5pwmx14Mq5uhoHH6pKsCcPvc5YnYw4O5mp7tv7tiQuWZWVZg5g/nTmuQPYyHwbavWn9zoOhCs5yOvFi17RVh3klMjKbQ82bhBml8WXFk6v05E9uMctOQ/l5vP7Z1Z6wnBuKeD1SEp+YTdrdzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lMo5XXVV; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-29036dc3a63so319768a91.3;
-        Fri, 26 Jan 2024 08:17:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706285846; x=1706890646; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IH0Z6gqEjq9Etqgb5EuNK3/R5ZZnLBR/umD5N+ZaEUM=;
-        b=lMo5XXVVzcm6tZg3nXslkb+mw2cq051wDBQ+XRSuI8vy6kg0OzVtCpO5+IOuR5Fp1C
-         BdwQCR8bGl7NHeboRGoKBskMk+UzoQE9sEjNQZxKk1yxL7uit9HqmlD8k6efu6JqNRhA
-         rUcv5HGfmxH9dQZhWmRrW3WP05xrMZV2f3H/dLi7oL6oPq2Vq14HLDNzs1bvCzekSrNn
-         Kn0RTA3Sp50ARHW93GlFU8DLGFgZrDj8Ih0JWn9vHAem9Kn7A8Rsb25qmYMbK/c0VX7L
-         BXp92GGb9S693IBQ9nq9/ycRcWx2nSpBN7nd/Q4WMPMCEOz1hWNJB7Q533uAttFQ195D
-         rz7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706285846; x=1706890646;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IH0Z6gqEjq9Etqgb5EuNK3/R5ZZnLBR/umD5N+ZaEUM=;
-        b=GEj1u5Ajh2EICJp8HCYaHik2UlgPo+Y82D7QifGhsa/cXo+s0I7yD3xO6Pl6gS7E/p
-         IVx5dAeIJGTiwKsdlHEZsHEAsV4aSd1DNlicVlk7wkepg4GnYVld48709avM2hyxgbH/
-         tW7EHBvT4bznC/rqKvaw3D76Owu9UOSSYhAe441gr41P2F3QJdRA4aOUOeN0T14aDuJ0
-         9fhNU/+5p+s/JE/rFdjRxw7fe68c3sbVW9VZ2RYZf1xs6AbwCyesv8tuEtf8S16BZzSo
-         m03BAOFZxzGJ+SXHALMLaVDUVyZzprEpg8AvbAqMSNtSmvdfrmcg5IyQyXw+V3opOEIT
-         y1+Q==
-X-Gm-Message-State: AOJu0YyiyqvhOS31pzxeMnWGH/nKB1yj6io4gmT8uOnQ1nLtP5NM5kij
-	wAWh82B4eSuK6t9+mwLdfQni7SQC7pd3XLMV9qlSNG/MY0Ur2+8h
-X-Google-Smtp-Source: AGHT+IFg2reFZ61M4UuBoF52IdIYH7ZP+oGCvisAptiOGkJhoHxr/m/SK2qnztDSC2/etm5B9DcnGw==
-X-Received: by 2002:a17:90a:d14f:b0:28f:fe38:aa59 with SMTP id t15-20020a17090ad14f00b0028ffe38aa59mr123012pjw.24.1706285845631;
-        Fri, 26 Jan 2024 08:17:25 -0800 (PST)
-Received: from wuhaoyu-Nitro-AN515-57.lan ([125.41.201.75])
-        by smtp.gmail.com with ESMTPSA id px12-20020a17090b270c00b0028c8a2a9c73sm1346096pjb.25.2024.01.26.08.16.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 08:17:09 -0800 (PST)
-From: Haoyu Wu <haoyuwu254@gmail.com>
-To: seanjc@google.com
-Cc: pbonzini@redhat.com,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	hpa@zytor.com,
-	kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	zheyuma97@gmail.com,
-	Haoyu Wu <haoyuwu254@gmail.com>
-Subject: [PATCH] KVM: Fix LDR inconsistency warning caused by APIC_ID format error
-Date: Sat, 27 Jan 2024 00:16:33 +0800
-Message-Id: <20240126161633.62529-1-haoyuwu254@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706285817; c=relaxed/simple;
+	bh=gwEC0mZ3wmaz41ZWSaPrbffP1dL0wcfSE1Ji9/A1WeI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eb86kpOBg7Mvyuux/E7vHrLaoZDwoPXaZR0coGuJGdxVPZuGbXhT0aeVjFFoidAUxCfVIKbWMipUbYTaoOeE+Ke2lawafW1V/Dx/Kffcvtq6mo2eR8QQfSegRGK5SCj89LndRsfzf5Wys0dyWpYrXh/CpOhmAyWNUXMLplgnlYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qNAb6POM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D9F2C433C7;
+	Fri, 26 Jan 2024 16:16:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706285816;
+	bh=gwEC0mZ3wmaz41ZWSaPrbffP1dL0wcfSE1Ji9/A1WeI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qNAb6POMddLb+6+2TnRFDDdm3RH0RanBaH+pOWI/j1l8qfSMXQic2dNC15xmUvYqf
+	 lF6AXbKdR6psvdkwf7IghSgKttTN+lumUKNt+gpliIqF62c0bxRBjglioVQTguwrtm
+	 zKrW97vKNKe/++9q2eCtv3F4j2+DA5iOkNYHbiptKCw4O1lGivv2qIi6VXaiTl1cLk
+	 oKWiBUnAE+w9ZHLrGn5es4HvO9nezNERyWcAyiTQ0Fl8tOkNW5MtiSCA2/OKu4PPDy
+	 VtbB6JkE8+fr7Ed9uJFegzjayN0oF+VT7eWICpXySLzCYZq/toy26kVd+RjtKauQLm
+	 /YXisbX7mWTPg==
+Date: Fri, 26 Jan 2024 16:16:52 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Naresh Solanki <naresh.solanki@9elements.com>
+Cc: Peter Rosin <peda@axentia.se>, Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, mazziesaccount@gmail.com,
+	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: iio: afe: voltage-divider: Add
+ io-channel-cells
+Message-ID: <20240126-cinnamon-flatware-e042b5773f17@spud>
+References: <20240126115509.1459425-1-naresh.solanki@9elements.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="wvdRtw+17GEGpdoo"
+Content-Disposition: inline
+In-Reply-To: <20240126115509.1459425-1-naresh.solanki@9elements.com>
 
-Syzkaller detected a warning in the kvm_recalculate_logical_map()
-function. This function employs VCPU_ID as the current x2APIC_ID
-following the apic_x2apic_mode() check. However, the LDR value,
-as computed using the current x2APIC_ID,  fails to align with the LDR
-value that is actually set.
 
-Syzkaller scenario:
-1) Set up VCPU's
-2) Set the APIC_BASE to 0xd00
-3) Set the APIC status for a specific state
+--wvdRtw+17GEGpdoo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The issue arises within kvm_apic_state_fixup, a function responsible
-for adjusting and correcting the APIC state. Initially, it verifies
-whether the current vcpu operates in x2APIC mode by examining the
-vcpu's mode. Subsequently, the function evaluates
-vcpu->kvm->arch.x2apic_format to ascertain if the preceding kvm version
-supports x2APIC mode. In cases where kvm is compatible with x2APIC mode,
-the function compares APIC_ID and VCPU_ID for equality. If they are not
-equal, it processes APIC_ID according to the set value. The error
-manifests when vcpu->kvm->arch.x2apic_format is false; under these
-circumstances, kvm_apic_state_fixup converts APIC_ID to the xAPIC format
-and invokes kvm_apic_calc_x2apic_ldr to compute the LDR. This leads to by
-passing consistency checks between VCPU_ID and APIC_ID and results in
-calling incorrect functions for LDR calculation.
+Hey,
 
-Obviously, the crux of the issue hinges on the transition of the APIC
-state and the associated operations for transitioning APIC_ID. In the
-current kernel design, APIC_ID defaults to VCPU_ID in x2APIC mode, a
-specification not required in xAPIC mode. kvm_apic_state_fixup initiates
-by assessing the current status of both VCPU and KVM to identify their
-respective APIC modes. However, subsequent evaluations focus solely on
-the APIC mode of VCPU. To address this, a feasible minor modification
-involves advancing the comparison between APIC_ID and VCPU_ID,
-positioning it prior to the evaluation of vcpu→kvm→arch.x2apic_format.
+On Fri, Jan 26, 2024 at 05:25:08PM +0530, Naresh Solanki wrote:
+> Add #io-channel-cells expected by driver. i.e., below is the message
+> seen in kernel log:
+> OF: /iio-hwmon: could not get #io-channel-cells for /voltage_divider1
+>=20
 
-Signed-off-by: Haoyu Wu <haoyuwu254@gmail.com>
----
- arch/x86/kvm/lapic.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> TEST=3DRun below command & make sure there is no error:
+> make DT_CHECKER_FLAGS=3D-m dt_binding_check -j1
 
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index 3242f3da2..16c97d57d 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -2933,16 +2933,16 @@ static int kvm_apic_state_fixup(struct kvm_vcpu *vcpu,
- 		u32 *ldr = (u32 *)(s->regs + APIC_LDR);
- 		u64 icr;
- 
--		if (vcpu->kvm->arch.x2apic_format) {
--			if (*id != vcpu->vcpu_id)
--				return -EINVAL;
--		} else {
-+		if (*id != vcpu->vcpu_id)
-+			return -EINVAL;
-+		if (!vcpu->kvm->arch.x2apic_format) {
- 			if (set)
- 				*id >>= 24;
- 			else
- 				*id <<= 24;
- 		}
- 
-+
- 		/*
- 		 * In x2APIC mode, the LDR is fixed and based on the id.  And
- 		 * ICR is internally a single 64-bit register, but needs to be
--- 
-2.34.1
+This shouldn't be in the commit message.
 
+>=20
+> Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+> ---
+>  Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/iio/afe/voltage-divider.ya=
+ml b/Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
+> index dddf97b50549..b4b5489ad98e 100644
+> --- a/Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
+> +++ b/Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
+> @@ -39,6 +39,9 @@ properties:
+>      description: |
+>        Channel node of a voltage io-channel.
+> =20
+> +  '#io-channel-cells':
+> +    const: 1
+
+The example in this binding looks like the voltage-divider is intended
+to be an "IIO consumer" but "#io-channels-cells" is an "IIO provider"
+property.
+
+Are you sure this is correct?
+
+> +
+>    output-ohms:
+>      description:
+>        Resistance Rout over which the output voltage is measured. See ful=
+l-ohms.
+>=20
+> base-commit: ecb1b8288dc7ccbdcb3b9df005fa1c0e0c0388a7
+> --=20
+> 2.42.0
+>=20
+
+--wvdRtw+17GEGpdoo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbPa9AAKCRB4tDGHoIJi
+0h7+AP9saceOMyUzytSlRwVy5YzQaZ0LZvk31o2TRV06wkAmKAEAoI8Ut9mMne7U
+uJOtKAI2Ng+E6A+XyIl9WbuaYrcXqwE=
+=kzaD
+-----END PGP SIGNATURE-----
+
+--wvdRtw+17GEGpdoo--
 
