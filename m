@@ -1,79 +1,231 @@
-Return-Path: <linux-kernel+bounces-39547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E789783D29E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 03:38:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE4F383D2A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 03:38:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8AE22B26BEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 02:38:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F072B1C2633D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 02:38:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37D868F6D;
-	Fri, 26 Jan 2024 02:38:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="OrN8QdyZ"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2088DB657;
+	Fri, 26 Jan 2024 02:38:27 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29EA267C66;
-	Fri, 26 Jan 2024 02:38:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66EBF8F44;
+	Fri, 26 Jan 2024 02:38:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706236694; cv=none; b=g97IhEiLfqZJCun+THJw0eESgAvrme9olMMOXug5beYiGf1Q3drypj+0Yg+GmLY1YuV83B2fuKKECEoyx8+2+UxGNi9X2EXWX46Djyn7SEGtWx50QcwO7PdsUFIyad8cVKCZAP9l64uMg3mWC3hNJJbXAlphox6cbeaJhze4J2U=
+	t=1706236706; cv=none; b=AMmneK7G6SKBuXI11NIrsrYhTD/VfmveoJ41kG2a+1INjn82ljAtKRpJHBOqAeK0bmhQ+T4I2F/DZBYZWQdhlo7Meo1W/kMy3XwsJWsIJtAgHbTEqu5YdNYkZz3L3gIYzNS3irFOfukd/iHP/wl/bNlu1PEK9oUjx5YCRTKCn3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706236694; c=relaxed/simple;
-	bh=nWa2dEMXl6ypPEqUGRQ2M3mnbCfR2mDPSDM2usegB3w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jrWqEBnXrv9TNLuCnFE7KRvm/Fm3L1W7Sesr7xW1aDUKoFs2GjuYV9KlbtqGVPxwPTB5+SA3cUP8iAuJz4mZCjCsWx67yFvEgmYayHJ6NVyHKtIVHzAupJV444lOUBz18601x792hKKCsQFzMdsG0bizeIuKL0Gs1m/nfsubYYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=OrN8QdyZ; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=Qd3nlym//LAlFHkady1BwwInKwCk8mDwSQ8io13WFIE=; b=OrN8QdyZszp6d1b56uObl4eelP
-	V9TYkudRghzXlSB2hJe1teeqmEyEONz51wj6fvf+Roy490GD/qwhhTWop1afWX4ulECwMyG2bB04I
-	7m8BaOdmGj9k2kRaFQskcfSI11CXRguxZUdUVbOz3U3WrwHjaCDB/df5JPXObcutKvVM=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rTC6a-0068q8-4r; Fri, 26 Jan 2024 03:38:08 +0100
-Date: Fri, 26 Jan 2024 03:38:08 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Hariprasad Kelam <hkelam@marvell.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, pabeni@redhat.com,
-	kuba@kernel.org, edumazet@google.com, davem@davemloft.net,
-	sbhatta@marvell.com, gakula@marvell.com, sgoutham@marvell.com
-Subject: Re: [net-next PATCH] octeontx2-pf: Add support to read eeprom
- information
-Message-ID: <1c39b3eb-0616-4214-bcfa-aaba1bd4e4a4@lunn.ch>
-References: <20240125112133.8483-1-hkelam@marvell.com>
+	s=arc-20240116; t=1706236706; c=relaxed/simple;
+	bh=2ZViTyAtp+CTtBgXqyCI+DXuvTv6gWYIoVmUj6b7Acc=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=V2fvpYnAn7Qrb1WAgIo0TMwN6D7r/3FLm32I43ZHnGBjwVWPOESkyFCb1588ImnJNHRdy685T7Gh8/5UKnl1rKdYes9H33/H9p/xmpYTcb+cuwfBkuLAzlT8/vBdf8zR+sg3lEDnGVhbBSnKwVTOHZ0DzqSiIE123viBNJhFyW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TLhh16kpHz4f3kG0;
+	Fri, 26 Jan 2024 10:38:09 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id E34F21A0272;
+	Fri, 26 Jan 2024 10:38:13 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgDHlxATG7Nlj97_Bw--.64714S3;
+	Fri, 26 Jan 2024 10:38:13 +0800 (CST)
+Subject: Re: [PATCH v2 05/11] md: export helpers to stop sync_thread
+To: Yu Kuai <yukuai1@huaweicloud.com>, Xiao Ni <xni@redhat.com>
+Cc: agk@redhat.com, snitzer@kernel.org, mpatocka@redhat.com,
+ dm-devel@lists.linux.dev, song@kernel.org, jbrassow@f14.redhat.com,
+ neilb@suse.de, heinzm@redhat.com, shli@fb.com, akpm@osdl.org,
+ linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+ yi.zhang@huawei.com, yangerkun@huawei.com,
+ "yukuai3 >> yukuai (C)" <yukuai3@huawei.com>
+References: <20240124091421.1261579-1-yukuai3@huawei.com>
+ <20240124091421.1261579-6-yukuai3@huawei.com>
+ <CALTww2_hG2_YL1v-d0=uv2=bVzJ2wwpSJyQdBBGMCBx79bot-Q@mail.gmail.com>
+ <85eeb8e4-d526-aa20-c50d-7e755ca6c776@huaweicloud.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <118fabe2-f2ac-e80a-32f9-0eeee2be3574@huaweicloud.com>
+Date: Fri, 26 Jan 2024 10:38:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240125112133.8483-1-hkelam@marvell.com>
+In-Reply-To: <85eeb8e4-d526-aa20-c50d-7e755ca6c776@huaweicloud.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgDHlxATG7Nlj97_Bw--.64714S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3AF4fWF1furWxWw4kKrWrAFb_yoW7WFyxpr
+	4ktFZ8JrWYyrZ3Xr12ga4DZa4Yqw18ta4DtryfJFy8JrnrtrnFgr1Uur1q9rykAay8Jr1U
+	tw15WFsxZFy5Jr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+	67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+	3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
+	sGvfC2KfnxnUUI43ZEXa7VUbQVy7UUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On Thu, Jan 25, 2024 at 04:51:33PM +0530, Hariprasad Kelam wrote:
-> Add support to read/decode EEPROM module information using ethtool.
+Hi,
 
-It looks like you have a very primitive firmware here, which can only
-return the first page of the SFPs EEPROM. What are your plans to make
-this fully featured? Ideally you should not be using this API, but the
-newer API which indicates what page you would like to read.
+在 2024/01/25 15:57, Yu Kuai 写道:
+> Hi,
+> 
+> 在 2024/01/25 15:51, Xiao Ni 写道:
+>> On Wed, Jan 24, 2024 at 5:19 PM Yu Kuai <yukuai3@huawei.com> wrote:
+>>>
+>>> The new heleprs will be used in dm-raid in later patches to fix
+>>> regressions and prevent calling md_reap_sync_thread() directly.
+>>>
+>>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>>> ---
+>>>   drivers/md/md.c | 41 +++++++++++++++++++++++++++++++++++++----
+>>>   drivers/md/md.h |  3 +++
+>>>   2 files changed, 40 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/md/md.c b/drivers/md/md.c
+>>> index 6c5d0a372927..90cf31b53804 100644
+>>> --- a/drivers/md/md.c
+>>> +++ b/drivers/md/md.c
+>>> @@ -4915,30 +4915,63 @@ static void stop_sync_thread(struct mddev 
+>>> *mddev, bool locked, bool check_seq)
+>>>                  mddev_lock_nointr(mddev);
+>>>   }
+>>>
+>>> -static void idle_sync_thread(struct mddev *mddev)
+>>> +void md_idle_sync_thread(struct mddev *mddev)
+>>>   {
+>>> +       lockdep_assert_held(mddev->reconfig_mutex);
+>>> +
+>>
+>> Hi Kuai
+>>
+>> There is a building error. It should give a pointer to
+>> lockdep_assert_held. And same with the other two places in this patch.
+> 
+> Yes, I forgot that I disabled all the debug config in order to let tests
+> finish quickly.
 
-> Signed-off-by: Christina Jacob <cjacob@marvell.com>
-> Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-> Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
+I enabled these debuging conifg, and turns out this patch has some
+problem, see below.
+> 
+> Thanks for the notince, will fix this in v3.
+> 
+> Thanks,
+> Kuai
+> 
+>>
+>> Regards
+>> Xiao
+>>
+>>>          mutex_lock(&mddev->sync_mutex);
+>>>          clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+>>> +       stop_sync_thread(mddev, true, true);
+>>> +       mutex_unlock(&mddev->sync_mutex);
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(md_idle_sync_thread);
+>>> +
+>>> +void md_frozen_sync_thread(struct mddev *mddev)
+>>> +{
+>>> +       lockdep_assert_held(mddev->reconfig_mutex);
+>>> +
+>>> +       mutex_lock(&mddev->sync_mutex);
+>>> +       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+>>> +       stop_sync_thread(mddev, true, false);
 
-These seem to be in the wrong order.
+stop_sync_thread() may release 'reconfig_mutex' and grab it again, hence
+it's not right to grab 'sync_mutex' before 'reconfig_mutex'.
 
-      Andrew
+Since 'sync_mutex' is introduced to serialize sysfs api 'sync_action'
+writers, while is not involved for dm-raid. I'll remove 'sync_mutex' for
+the new helper in v3.
+
+Thanks,
+Kuai
+
+>>> +       mutex_unlock(&mddev->sync_mutex);
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(md_frozen_sync_thread);
+>>>
+>>> +void md_unfrozen_sync_thread(struct mddev *mddev)
+>>> +{
+>>> +       lockdep_assert_held(mddev->reconfig_mutex);
+>>> +
+>>> +       mutex_lock(&mddev->sync_mutex);
+>>> +       clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+>>> +       set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
+>>> +       md_wakeup_thread(mddev->thread);
+>>> +       sysfs_notify_dirent_safe(mddev->sysfs_action);
+>>> +       mutex_unlock(&mddev->sync_mutex);
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(md_unfrozen_sync_thread);
+>>> +
+>>> +static void idle_sync_thread(struct mddev *mddev)
+>>> +{
+>>>          if (mddev_lock(mddev)) {
+>>>                  mutex_unlock(&mddev->sync_mutex);
+>>>                  return;
+>>>          }
+>>>
+>>> +       mutex_lock(&mddev->sync_mutex);
+>>> +       clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+>>>          stop_sync_thread(mddev, false, true);
+>>>          mutex_unlock(&mddev->sync_mutex);
+>>>   }
+>>>
+>>>   static void frozen_sync_thread(struct mddev *mddev)
+>>>   {
+>>> -       mutex_lock(&mddev->sync_mutex);
+>>> -       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+>>> -
+>>>          if (mddev_lock(mddev)) {
+>>>                  mutex_unlock(&mddev->sync_mutex);
+>>>                  return;
+>>>          }
+>>>
+>>> +       mutex_lock(&mddev->sync_mutex);
+>>> +       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+>>>          stop_sync_thread(mddev, false, false);
+>>>          mutex_unlock(&mddev->sync_mutex);
+>>>   }
+>>> diff --git a/drivers/md/md.h b/drivers/md/md.h
+>>> index 8d881cc59799..437ab70ce79b 100644
+>>> --- a/drivers/md/md.h
+>>> +++ b/drivers/md/md.h
+>>> @@ -781,6 +781,9 @@ extern void md_rdev_clear(struct md_rdev *rdev);
+>>>   extern void md_handle_request(struct mddev *mddev, struct bio *bio);
+>>>   extern int mddev_suspend(struct mddev *mddev, bool interruptible);
+>>>   extern void mddev_resume(struct mddev *mddev);
+>>> +extern void md_idle_sync_thread(struct mddev *mddev);
+>>> +extern void md_frozen_sync_thread(struct mddev *mddev);
+>>> +extern void md_unfrozen_sync_thread(struct mddev *mddev);
+>>>
+>>>   extern void md_reload_sb(struct mddev *mddev, int raid_disk);
+>>>   extern void md_update_sb(struct mddev *mddev, int force);
+>>> -- 
+>>> 2.39.2
+>>>
+>>
+>> .
+>>
+> 
+> .
+> 
+
 
