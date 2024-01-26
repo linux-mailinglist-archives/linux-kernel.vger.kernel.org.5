@@ -1,78 +1,364 @@
-Return-Path: <linux-kernel+bounces-39490-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39491-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90BFB83D200
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 02:23:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B779A83D20A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 02:26:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 328631F25EC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 01:23:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F2CA28FDCC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 01:26:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5910610F7;
-	Fri, 26 Jan 2024 01:22:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7D4115B7;
+	Fri, 26 Jan 2024 01:25:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QbX2GfKh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vw6mzbkv"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DBD710E9;
-	Fri, 26 Jan 2024 01:22:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBF0D64C
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 01:25:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706232175; cv=none; b=oZ4ko+f8TSRk3fkHzZ9fiZ4Lqin18mOe6Ip0ASLfHsqTb6mtzGvex1vdsDm69v+WOtR8U+V4pvjja6YKggBiqtq2GVTsZXZ/vPz0dnfLR+OQyAxplCD6IRjS8nkmMn1la+XI5qpKA6TiHOWtvWqPoWsgoKc4k5CakR2BdzQp75E=
+	t=1706232353; cv=none; b=phNSk3O3hwJjadnIcdyZlU59Ms318KBQ1SuU84d2BB8VDuh/ejoc8EWQTqdOitHbVG6WYmR43mxVsROsmEC3uSmBAaJQIDa/crHofecNo1n6ad5n3NWDQT4e49yUYt2xw9V5UHGHI8OalCv1q17cwrkuUjDaxSyEthvpkyWSBUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706232175; c=relaxed/simple;
-	bh=Hk9/gpwL/FH2xmnit/2UJvfVqasuwOB//G3xIDeSRXY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PVoQmIGTHsm3tJcBnrVgYPpQCXIRktMxIGRIsgxonkwP4gmhp9OjUQNEboJdLNSffxpFMs5Hg+yWFEgG9CUXtoxAfyQoP9HfzDjV2HiRplSdhWmZ79qBMxGsAqFLNpjqpX1fPFhm18PKjeJ+Lc22BmKke98yv7cysKUB2REOD8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QbX2GfKh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3997C433C7;
-	Fri, 26 Jan 2024 01:22:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706232175;
-	bh=Hk9/gpwL/FH2xmnit/2UJvfVqasuwOB//G3xIDeSRXY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=QbX2GfKhc5hZC6h46CHXmhCNSbMB8gJ/J4nLe6qNyA1qja9Bx/1+7GMkkTu7Vrkqo
-	 2B1vx1tOGSpm3V8/KYFG+mBy621FwOkM5v5A6zENUMsqvkzEJLgMfZ/HNq664U8tkP
-	 Nr4prtIK2SqWcBWyaxLsUhZlvjwcVKkki/Q4vBkuCUsOgMMy4HqX5xPpxEECJly+aA
-	 D3N2ZmkRivt4zCmOGAHEVuKM27BJGqiVonKPbSuqcpcf3eztESC17H/FzAlpdGT4wL
-	 8qEN1M9Os2zV8uf7+5rAddkolgppNsYnFmpbp2TJIesGiMlXOl4MCg/9td0zCyC+UL
-	 ZL8+JdfmnpD4g==
-Date: Thu, 25 Jan 2024 17:22:53 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Esben Haabendal <esben@geanix.com>
-Cc: netdev@vger.kernel.org, Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Maxime
- Coquelin <mcoquelin.stm32@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team
- <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, NXP Linux Team
- <linux-imx@nxp.com>, linux-arm-kernel@lists.infradead.org,
- linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] net: stmmac: dwmac-imx: set TSO/TBS TX queues
- default settings
-Message-ID: <20240125172253.3fe50cfc@kernel.org>
-In-Reply-To: <5606bb5f0b7566a20bb136b268dae89d22a48898.1706184304.git.esben@geanix.com>
-References: <cover.1706184304.git.esben@geanix.com>
-	<5606bb5f0b7566a20bb136b268dae89d22a48898.1706184304.git.esben@geanix.com>
+	s=arc-20240116; t=1706232353; c=relaxed/simple;
+	bh=uOQRXLkepVViiBpubRVEm7Qts99jo6iGqZv5RJI8ERw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HyWVfvnkJdHVGOT0VHmK4Mr70aWBZoHb3SJN85kpyVPfOMlKEU2SJ2Ww1uhUdTntAqVbxBus3qae8yNSK6Jbv1uWkV8wHqqGM55fKMoBr/o7n2aJQq9lZh2tRtpVS4PO+YhswJfqDiRT6xrGOOr4IQi1SoVkxX+SUY/S4ZKywck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vw6mzbkv; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3392b045e0aso5083105f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 17:25:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706232350; x=1706837150; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v7sgtjDmnNmYT5wo9p5HigR77VUYiLKMX+832fMlFkk=;
+        b=vw6mzbkvZ4d7JfaQVJwvX1DnMSaE/xIXDBKpMQqM+SBZDMMJMkO64YxGvFd6U1I6IJ
+         ciiWzOHzQ3a2pESZPeuLjV3ME5K/MWzra7DW7TlJwfnxajxKqX9wDnhBdPNkLGuCIVYz
+         yq70XydkMpeJ5G9VA8FEEikuNEY3HQ+PGmvLSLmKiWzQ3uYkaKn7McabArT2FmCkabYN
+         udJMk5IB8hIHE9k6/YQneLcjRqWILmwX6eaEfo8KgN+C49hFbzhc69dzZD+LBY2aWls6
+         FNlnesg3U0xGvA51lXq5wpFqSw+CqXge3kHLmyd0vCUbA9g2J/J1XGrVaqe9Ns60yFqg
+         dsWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706232350; x=1706837150;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=v7sgtjDmnNmYT5wo9p5HigR77VUYiLKMX+832fMlFkk=;
+        b=Gvrqrf7jbArr2qQonJZRrrk6KMsCECF/BdCieE9MMdnw/BYnDoHieoqzBm75s92zXY
+         FimKgfJbnmtY8E4FhrQn5TZBus1DyzC++dI0AFXG1IPKE4aQ7ErEqEi8FSNPK9tGtzCK
+         GLLIiKVOCvrC0rWqOtFrpoLs2ZHG8tiE3/dDMwmL6wyCOAoaX/N6HPgwuG6b3wkw378+
+         8f1jv43sreCJVF/a/VfS4lBttYSsqz4V3lEilDnDxMKC5YYWGs03rQMPzSq7LGkcRP1D
+         MdminOcZ9zJkz006HJF20UgbVfxTLeeltmd310umitImiSn2j0Jb5nyntLPQL7NizXhN
+         sU0w==
+X-Gm-Message-State: AOJu0YwvLWNBZbZx6Uc1FHvovl34Nt2dS0n0DGmSE4xyUHCSMymGEiFm
+	JE+cevopU3gR24bNK49PYsYFLGYLUBHymhc2h0778OiaJf20tCBuOyhrybwfrHhmVYzdKICQmj6
+	Z8Llojxv80DhCQ7gp3ZQ1GyQUr1kvrQafPlQo
+X-Google-Smtp-Source: AGHT+IER/4v3zUypLyBKaJxlWHigPZgT5Qc7CB5E/NSTIAKyQ498U2hsglxxXV6b0MObkMfMt63Qm/Xbcm0c1PNOAtA=
+X-Received: by 2002:a05:6000:12:b0:337:c075:d2b4 with SMTP id
+ h18-20020a056000001200b00337c075d2b4mr372076wrx.62.1706232349633; Thu, 25 Jan
+ 2024 17:25:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240125001328.335127-1-surenb@google.com>
+In-Reply-To: <20240125001328.335127-1-surenb@google.com>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Thu, 25 Jan 2024 17:25:37 -0800
+Message-ID: <CAJuCfpEXnrzr4YdPPzz7Dbeo6a=es03EGbCyYuh1hP97=mijqw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] userfaultfd: handle zeropage moves by UFFDIO_MOVE
+To: akpm@linux-foundation.org
+Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org, 
+	aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com, 
+	david@redhat.com, ryan.roberts@arm.com, hughd@google.com, mhocko@suse.com, 
+	axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org, 
+	Liam.Howlett@oracle.com, jannh@google.com, zhangpeng362@huawei.com, 
+	bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com, 
+	jdduke@google.com, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 25 Jan 2024 13:34:34 +0100 Esben Haabendal wrote:
-> +        for (int i = 0; i < plat_dat->tx_queues_to_use; i++) {
-> +                /* Default TX Q0 to use TSO and rest TXQ for TBS */
-> +                if (i > 0)
-> +                        plat_dat->tx_queues_cfg[i].tbs_en = 1;
-> +        }
+On Wed, Jan 24, 2024 at 4:13=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
+om> wrote:
+>
+> Current implementation of UFFDIO_MOVE fails to move zeropages and returns
+> EBUSY when it encounters one. We can handle them by mapping a zeropage
+> at the destination and clearing the mapping at the source. This is done
+> both for ordinary and for huge zeropages.
 
-checkpatch points out this code is indented with spaces.
-Please use tabs.
+I made a stupid mistake when formatting this patch and it says [PATCH
+1/2] but it should be the only patch in the set. So, please do not
+look for [2/2]. Sorry about the confusion.
+Thanks,
+Suren.
+
+>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> ---
+> Applies cleanly over mm-unstable branch.
+>
+>  mm/huge_memory.c | 105 +++++++++++++++++++++++++++--------------------
+>  mm/userfaultfd.c |  42 +++++++++++++++----
+>  2 files changed, 96 insertions(+), 51 deletions(-)
+>
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index f40feb31b507..5dcc02c25e97 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2190,13 +2190,18 @@ int move_pages_huge_pmd(struct mm_struct *mm, pmd=
+_t *dst_pmd, pmd_t *src_pmd, pm
+>         }
+>
+>         src_page =3D pmd_page(src_pmdval);
+> -       if (unlikely(!PageAnonExclusive(src_page))) {
+> -               spin_unlock(src_ptl);
+> -               return -EBUSY;
+> -       }
+>
+> -       src_folio =3D page_folio(src_page);
+> -       folio_get(src_folio);
+> +       if (!is_huge_zero_pmd(src_pmdval)) {
+> +               if (unlikely(!PageAnonExclusive(src_page))) {
+> +                       spin_unlock(src_ptl);
+> +                       return -EBUSY;
+> +               }
+> +
+> +               src_folio =3D page_folio(src_page);
+> +               folio_get(src_folio);
+> +       } else
+> +               src_folio =3D NULL;
+> +
+>         spin_unlock(src_ptl);
+>
+>         flush_cache_range(src_vma, src_addr, src_addr + HPAGE_PMD_SIZE);
+> @@ -2204,19 +2209,22 @@ int move_pages_huge_pmd(struct mm_struct *mm, pmd=
+_t *dst_pmd, pmd_t *src_pmd, pm
+>                                 src_addr + HPAGE_PMD_SIZE);
+>         mmu_notifier_invalidate_range_start(&range);
+>
+> -       folio_lock(src_folio);
+> +       if (src_folio) {
+> +               folio_lock(src_folio);
+>
+> -       /*
+> -        * split_huge_page walks the anon_vma chain without the page
+> -        * lock. Serialize against it with the anon_vma lock, the page
+> -        * lock is not enough.
+> -        */
+> -       src_anon_vma =3D folio_get_anon_vma(src_folio);
+> -       if (!src_anon_vma) {
+> -               err =3D -EAGAIN;
+> -               goto unlock_folio;
+> -       }
+> -       anon_vma_lock_write(src_anon_vma);
+> +               /*
+> +                * split_huge_page walks the anon_vma chain without the p=
+age
+> +                * lock. Serialize against it with the anon_vma lock, the=
+ page
+> +                * lock is not enough.
+> +                */
+> +               src_anon_vma =3D folio_get_anon_vma(src_folio);
+> +               if (!src_anon_vma) {
+> +                       err =3D -EAGAIN;
+> +                       goto unlock_folio;
+> +               }
+> +               anon_vma_lock_write(src_anon_vma);
+> +       } else
+> +               src_anon_vma =3D NULL;
+>
+>         dst_ptl =3D pmd_lockptr(mm, dst_pmd);
+>         double_pt_lock(src_ptl, dst_ptl);
+> @@ -2225,45 +2233,54 @@ int move_pages_huge_pmd(struct mm_struct *mm, pmd=
+_t *dst_pmd, pmd_t *src_pmd, pm
+>                 err =3D -EAGAIN;
+>                 goto unlock_ptls;
+>         }
+> -       if (folio_maybe_dma_pinned(src_folio) ||
+> -           !PageAnonExclusive(&src_folio->page)) {
+> -               err =3D -EBUSY;
+> -               goto unlock_ptls;
+> -       }
+> +       if (src_folio) {
+> +               if (folio_maybe_dma_pinned(src_folio) ||
+> +                   !PageAnonExclusive(&src_folio->page)) {
+> +                       err =3D -EBUSY;
+> +                       goto unlock_ptls;
+> +               }
+>
+> -       if (WARN_ON_ONCE(!folio_test_head(src_folio)) ||
+> -           WARN_ON_ONCE(!folio_test_anon(src_folio))) {
+> -               err =3D -EBUSY;
+> -               goto unlock_ptls;
+> -       }
+> +               if (WARN_ON_ONCE(!folio_test_head(src_folio)) ||
+> +                   WARN_ON_ONCE(!folio_test_anon(src_folio))) {
+> +                       err =3D -EBUSY;
+> +                       goto unlock_ptls;
+> +               }
+>
+> -       folio_move_anon_rmap(src_folio, dst_vma);
+> -       WRITE_ONCE(src_folio->index, linear_page_index(dst_vma, dst_addr)=
+);
+> +               folio_move_anon_rmap(src_folio, dst_vma);
+> +               WRITE_ONCE(src_folio->index, linear_page_index(dst_vma, d=
+st_addr));
+>
+> -       src_pmdval =3D pmdp_huge_clear_flush(src_vma, src_addr, src_pmd);
+> -       /* Folio got pinned from under us. Put it back and fail the move.=
+ */
+> -       if (folio_maybe_dma_pinned(src_folio)) {
+> -               set_pmd_at(mm, src_addr, src_pmd, src_pmdval);
+> -               err =3D -EBUSY;
+> -               goto unlock_ptls;
+> -       }
+> +               src_pmdval =3D pmdp_huge_clear_flush(src_vma, src_addr, s=
+rc_pmd);
+> +               /* Folio got pinned from under us. Put it back and fail t=
+he move. */
+> +               if (folio_maybe_dma_pinned(src_folio)) {
+> +                       set_pmd_at(mm, src_addr, src_pmd, src_pmdval);
+> +                       err =3D -EBUSY;
+> +                       goto unlock_ptls;
+> +               }
+>
+> -       _dst_pmd =3D mk_huge_pmd(&src_folio->page, dst_vma->vm_page_prot)=
+;
+> -       /* Follow mremap() behavior and treat the entry dirty after the m=
+ove */
+> -       _dst_pmd =3D pmd_mkwrite(pmd_mkdirty(_dst_pmd), dst_vma);
+> +               _dst_pmd =3D mk_huge_pmd(&src_folio->page, dst_vma->vm_pa=
+ge_prot);
+> +               /* Follow mremap() behavior and treat the entry dirty aft=
+er the move */
+> +               _dst_pmd =3D pmd_mkwrite(pmd_mkdirty(_dst_pmd), dst_vma);
+> +       } else {
+> +               src_pmdval =3D pmdp_huge_clear_flush(src_vma, src_addr, s=
+rc_pmd);
+> +               _dst_pmd =3D mk_huge_pmd(src_page, dst_vma->vm_page_prot)=
+;
+> +       }
+>         set_pmd_at(mm, dst_addr, dst_pmd, _dst_pmd);
+>
+>         src_pgtable =3D pgtable_trans_huge_withdraw(mm, src_pmd);
+>         pgtable_trans_huge_deposit(mm, dst_pmd, src_pgtable);
+>  unlock_ptls:
+>         double_pt_unlock(src_ptl, dst_ptl);
+> -       anon_vma_unlock_write(src_anon_vma);
+> -       put_anon_vma(src_anon_vma);
+> +       if (src_anon_vma) {
+> +               anon_vma_unlock_write(src_anon_vma);
+> +               put_anon_vma(src_anon_vma);
+> +       }
+>  unlock_folio:
+>         /* unblock rmap walks */
+> -       folio_unlock(src_folio);
+> +       if (src_folio)
+> +               folio_unlock(src_folio);
+>         mmu_notifier_invalidate_range_end(&range);
+> -       folio_put(src_folio);
+> +       if (src_folio)
+> +               folio_put(src_folio);
+>         return err;
+>  }
+>  #endif /* CONFIG_USERFAULTFD */
+> diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+> index 3548b3e31a97..5fbf4da15c5c 100644
+> --- a/mm/userfaultfd.c
+> +++ b/mm/userfaultfd.c
+> @@ -959,6 +959,31 @@ static int move_swap_pte(struct mm_struct *mm,
+>         return 0;
+>  }
+>
+> +static int move_zeropage_pte(struct mm_struct *mm,
+> +                            struct vm_area_struct *dst_vma,
+> +                            struct vm_area_struct *src_vma,
+> +                            unsigned long dst_addr, unsigned long src_ad=
+dr,
+> +                            pte_t *dst_pte, pte_t *src_pte,
+> +                            pte_t orig_dst_pte, pte_t orig_src_pte,
+> +                            spinlock_t *dst_ptl, spinlock_t *src_ptl)
+> +{
+> +       pte_t zero_pte;
+> +
+> +       double_pt_lock(dst_ptl, src_ptl);
+> +       if (!pte_same(ptep_get(src_pte), orig_src_pte) ||
+> +           !pte_same(ptep_get(dst_pte), orig_dst_pte))
+> +               return -EAGAIN;
+> +
+> +       zero_pte =3D pte_mkspecial(pfn_pte(my_zero_pfn(dst_addr),
+> +                                        dst_vma->vm_page_prot));
+> +       ptep_clear_flush(src_vma, src_addr, src_pte);
+> +       set_pte_at(mm, dst_addr, dst_pte, zero_pte);
+> +       double_pt_unlock(dst_ptl, src_ptl);
+> +
+> +       return 0;
+> +}
+> +
+> +
+>  /*
+>   * The mmap_lock for reading is held by the caller. Just move the page
+>   * from src_pmd to dst_pmd if possible, and return true if succeeded
+> @@ -1041,6 +1066,14 @@ static int move_pages_pte(struct mm_struct *mm, pm=
+d_t *dst_pmd, pmd_t *src_pmd,
+>         }
+>
+>         if (pte_present(orig_src_pte)) {
+> +               if (is_zero_pfn(pte_pfn(orig_src_pte))) {
+> +                       err =3D move_zeropage_pte(mm, dst_vma, src_vma,
+> +                                              dst_addr, src_addr, dst_pt=
+e, src_pte,
+> +                                              orig_dst_pte, orig_src_pte=
+,
+> +                                              dst_ptl, src_ptl);
+> +                       goto out;
+> +               }
+> +
+>                 /*
+>                  * Pin and lock both source folio and anon_vma. Since we =
+are in
+>                  * RCU read section, we can't block, so on contention hav=
+e to
+> @@ -1404,19 +1437,14 @@ ssize_t move_pages(struct userfaultfd_ctx *ctx, s=
+truct mm_struct *mm,
+>                                 err =3D -ENOENT;
+>                                 break;
+>                         }
+> -                       /* Avoid moving zeropages for now */
+> -                       if (is_huge_zero_pmd(*src_pmd)) {
+> -                               spin_unlock(ptl);
+> -                               err =3D -EBUSY;
+> -                               break;
+> -                       }
+>
+>                         /* Check if we can move the pmd without splitting=
+ it. */
+>                         if (move_splits_huge_pmd(dst_addr, src_addr, src_=
+start + len) ||
+>                             !pmd_none(dst_pmdval)) {
+>                                 struct folio *folio =3D pfn_folio(pmd_pfn=
+(*src_pmd));
+>
+> -                               if (!folio || !PageAnonExclusive(&folio->=
+page)) {
+> +                               if (!folio || (!is_huge_zero_page(&folio-=
+>page) &&
+> +                                              !PageAnonExclusive(&folio-=
+>page))) {
+>                                         spin_unlock(ptl);
+>                                         err =3D -EBUSY;
+>                                         break;
+> --
+> 2.43.0.429.g432eaa2c6b-goog
+>
 
