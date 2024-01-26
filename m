@@ -1,213 +1,160 @@
-Return-Path: <linux-kernel+bounces-40318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F0D983DE64
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:13:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE7F883DE6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:17:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9BBA7B20C40
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:13:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 850D91F2464B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:17:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E07531D559;
-	Fri, 26 Jan 2024 16:13:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B2951DA21;
+	Fri, 26 Jan 2024 16:17:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="NiXb+5/D";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="E6wxnN77";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="NiXb+5/D";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="E6wxnN77"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lMo5XXVV"
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5902E1CF92;
-	Fri, 26 Jan 2024 16:13:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7604C1D53E;
+	Fri, 26 Jan 2024 16:17:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706285584; cv=none; b=rgOjvi2bTuhhfbNLInUCb3FSH3MX8Mit1wQtsN6TjXHYyMEJsY07tt/i39AkdLSJn/86AkzMHmy/1MnNbtfNvWtbHfgZL2l3gYs5YZ/jlq3FgO3Ps9sm1trTFE359UMVkpVnbyl5ab7dMK00shycDD05Wdngi6E2KubW7k4ie3o=
+	t=1706285847; cv=none; b=TVXFVkAmSoAKley3bTdyEdcE41oEO7WKsIaHR/nYyNfzYwPJlNS1E5zEz3gcLoSQc2Zh34qMY9RNiM+2dRJWQVczNdE9WnzMDqPOB/cNESF++4zYiswAk0FrxPtICeOZFihgzNHeyHvSVRejvEIFfp/qttRZUtdcnV8SnGlYOYY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706285584; c=relaxed/simple;
-	bh=D7Il6TcJrHrENwBzqDk4YJ8I9CxcEHlbklcOggMCQAk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=fdQLiufgUwPTIX2SlQLzfwiOUZ9N0IjikfpRaK/upCcWf/SpLGvPv7F9EESeapxvR1lLVTIBsbcveVgOz57JWS8oLAGXVkqzcbTpiT7moN0KFL1liNugpe+FpnrXMQq6OLYrASfv4nhSTooC7pO4hDnHpzWQPJ1WqIakRA5pB9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=NiXb+5/D; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=E6wxnN77; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=NiXb+5/D; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=E6wxnN77; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6BF7C1F749;
-	Fri, 26 Jan 2024 16:13:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1706285580; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zxeqAeeZ/c+Prn9baOvxevx3t4mfvUcXn7Z1NU+Rph8=;
-	b=NiXb+5/DaFYxM28qfN+Jtef3H3Hg2DLr8TnAo8Eo6e/gmUzGvAH7o2R7hm8Fsrgmq6TG44
-	VZF0SeX4hCAHZ4BCc+8FrLtqfjJ0r7lqqlz+8dpH3diL2dC28Mr9HVhRexQJSEq1BDcYL+
-	SST64yfHNpo3m71YKq1ELqZ14O7zc7Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1706285580;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zxeqAeeZ/c+Prn9baOvxevx3t4mfvUcXn7Z1NU+Rph8=;
-	b=E6wxnN77LN1HfYVG6vtMksGrJoA+3w7Xend2RxbA4l/3l9msxWRbq4KNeBGamq2QIwDR7R
-	yCBNn3k6DJldAACg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1706285580; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zxeqAeeZ/c+Prn9baOvxevx3t4mfvUcXn7Z1NU+Rph8=;
-	b=NiXb+5/DaFYxM28qfN+Jtef3H3Hg2DLr8TnAo8Eo6e/gmUzGvAH7o2R7hm8Fsrgmq6TG44
-	VZF0SeX4hCAHZ4BCc+8FrLtqfjJ0r7lqqlz+8dpH3diL2dC28Mr9HVhRexQJSEq1BDcYL+
-	SST64yfHNpo3m71YKq1ELqZ14O7zc7Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1706285580;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zxeqAeeZ/c+Prn9baOvxevx3t4mfvUcXn7Z1NU+Rph8=;
-	b=E6wxnN77LN1HfYVG6vtMksGrJoA+3w7Xend2RxbA4l/3l9msxWRbq4KNeBGamq2QIwDR7R
-	yCBNn3k6DJldAACg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 07F8E13A22;
-	Fri, 26 Jan 2024 16:12:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 4spGOgvas2UrEwAAD6G6ig
-	(envelope-from <lhenriques@suse.de>); Fri, 26 Jan 2024 16:12:59 +0000
-Received: from localhost (brahms.olymp [local])
-	by brahms.olymp (OpenSMTPD) with ESMTPA id 47f93bf8;
-	Fri, 26 Jan 2024 16:12:59 +0000 (UTC)
-From: Luis Henriques <lhenriques@suse.de>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: David Howells <dhowells@redhat.com>,  Jarkko Sakkinen
- <jarkko@kernel.org>,  keyrings@vger.kernel.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2] keys: update key quotas in key_put()
-In-Reply-To: <20240124221225.GD1088@sol.localdomain> (Eric Biggers's message
-	of "Wed, 24 Jan 2024 14:12:25 -0800")
-References: <2744563.1702303367@warthog.procyon.org.uk>
-	<20240115120300.27606-1-lhenriques@suse.de>
-	<20240124221225.GD1088@sol.localdomain>
-Date: Fri, 26 Jan 2024 16:12:59 +0000
-Message-ID: <87bk988450.fsf@suse.de>
+	s=arc-20240116; t=1706285847; c=relaxed/simple;
+	bh=DYWVrLkbvnVV9kxczQSiMqM4FDXcGI57c3LQ06PvT+g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=CGT4o1xn0E9p3kFe2sVzdYVtdQ5pwmx14Mq5uhoHH6pKsCcPvc5YnYw4O5mp7tv7tiQuWZWVZg5g/nTmuQPYyHwbavWn9zoOhCs5yOvFi17RVh3klMjKbQ82bhBml8WXFk6v05E9uMctOQ/l5vP7Z1Z6wnBuKeD1SEp+YTdrdzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lMo5XXVV; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-29036dc3a63so319768a91.3;
+        Fri, 26 Jan 2024 08:17:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706285846; x=1706890646; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IH0Z6gqEjq9Etqgb5EuNK3/R5ZZnLBR/umD5N+ZaEUM=;
+        b=lMo5XXVVzcm6tZg3nXslkb+mw2cq051wDBQ+XRSuI8vy6kg0OzVtCpO5+IOuR5Fp1C
+         BdwQCR8bGl7NHeboRGoKBskMk+UzoQE9sEjNQZxKk1yxL7uit9HqmlD8k6efu6JqNRhA
+         rUcv5HGfmxH9dQZhWmRrW3WP05xrMZV2f3H/dLi7oL6oPq2Vq14HLDNzs1bvCzekSrNn
+         Kn0RTA3Sp50ARHW93GlFU8DLGFgZrDj8Ih0JWn9vHAem9Kn7A8Rsb25qmYMbK/c0VX7L
+         BXp92GGb9S693IBQ9nq9/ycRcWx2nSpBN7nd/Q4WMPMCEOz1hWNJB7Q533uAttFQ195D
+         rz7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706285846; x=1706890646;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IH0Z6gqEjq9Etqgb5EuNK3/R5ZZnLBR/umD5N+ZaEUM=;
+        b=GEj1u5Ajh2EICJp8HCYaHik2UlgPo+Y82D7QifGhsa/cXo+s0I7yD3xO6Pl6gS7E/p
+         IVx5dAeIJGTiwKsdlHEZsHEAsV4aSd1DNlicVlk7wkepg4GnYVld48709avM2hyxgbH/
+         tW7EHBvT4bznC/rqKvaw3D76Owu9UOSSYhAe441gr41P2F3QJdRA4aOUOeN0T14aDuJ0
+         9fhNU/+5p+s/JE/rFdjRxw7fe68c3sbVW9VZ2RYZf1xs6AbwCyesv8tuEtf8S16BZzSo
+         m03BAOFZxzGJ+SXHALMLaVDUVyZzprEpg8AvbAqMSNtSmvdfrmcg5IyQyXw+V3opOEIT
+         y1+Q==
+X-Gm-Message-State: AOJu0YyiyqvhOS31pzxeMnWGH/nKB1yj6io4gmT8uOnQ1nLtP5NM5kij
+	wAWh82B4eSuK6t9+mwLdfQni7SQC7pd3XLMV9qlSNG/MY0Ur2+8h
+X-Google-Smtp-Source: AGHT+IFg2reFZ61M4UuBoF52IdIYH7ZP+oGCvisAptiOGkJhoHxr/m/SK2qnztDSC2/etm5B9DcnGw==
+X-Received: by 2002:a17:90a:d14f:b0:28f:fe38:aa59 with SMTP id t15-20020a17090ad14f00b0028ffe38aa59mr123012pjw.24.1706285845631;
+        Fri, 26 Jan 2024 08:17:25 -0800 (PST)
+Received: from wuhaoyu-Nitro-AN515-57.lan ([125.41.201.75])
+        by smtp.gmail.com with ESMTPSA id px12-20020a17090b270c00b0028c8a2a9c73sm1346096pjb.25.2024.01.26.08.16.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 08:17:09 -0800 (PST)
+From: Haoyu Wu <haoyuwu254@gmail.com>
+To: seanjc@google.com
+Cc: pbonzini@redhat.com,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	zheyuma97@gmail.com,
+	Haoyu Wu <haoyuwu254@gmail.com>
+Subject: [PATCH] KVM: Fix LDR inconsistency warning caused by APIC_ID format error
+Date: Sat, 27 Jan 2024 00:16:33 +0800
+Message-Id: <20240126161633.62529-1-haoyuwu254@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="NiXb+5/D";
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=E6wxnN77
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[4];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_LAST(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: -4.51
-X-Rspamd-Queue-Id: 6BF7C1F749
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Eric Biggers <ebiggers@kernel.org> writes:
+Syzkaller detected a warning in the kvm_recalculate_logical_map()
+function. This function employs VCPU_ID as the current x2APIC_ID
+following the apic_x2apic_mode() check. However, the LDR value,
+as computed using the current x2APIC_ID,  fails to align with the LDR
+value that is actually set.
 
-> On Mon, Jan 15, 2024 at 12:03:00PM +0000, Luis Henriques wrote:
->> Delaying key quotas update when key's refcount reaches 0 in key_put() has
->> been causing some issues in fscrypt testing.  This patches fixes this te=
-st
->> flakiness by dealing with the quotas immediately, but leaving all the ot=
-her
->> clean-ups to the key garbage collector.  Unfortunately, this means that =
-we
->> also need to switch to the irq-version of the spinlock that protects quo=
-ta.
->>=20
->> Signed-off-by: Luis Henriques <lhenriques@suse.de>
->> ---
->> Hi David!
->>=20
->> I have these changes in my local disk for a while; I wanted to send them
->> before EOY break but... yeah, it didn't happen.  Anyway, I'm still sendi=
-ng
->> it as an RFC as I'm probably missing something.
->>=20
->>  security/keys/gc.c     |  8 --------
->>  security/keys/key.c    | 32 ++++++++++++++++++++++----------
->>  security/keys/keyctl.c | 11 ++++++-----
->>  3 files changed, 28 insertions(+), 23 deletions(-)
->
-> This patch seems reasonable to me, though I'm still thinking about changi=
-ng
-> fs/crypto/ to manage its key quotas itself which would avoid the issue en=
-tirely.
->
-> Note that as I said before, fs/crypto/ does key_put() on a whole keyring =
-at
-> once, in order to release the quota of the keys in the keyring.  Do you p=
-lan to
-> also change fs/crypto/ to keyring_clear() the keyring before putting it?
-> Without that, I don't think the problem is solved, as the quota release w=
-ill
-> still happen asynchronously due to the keyring being cleared asynchronous=
-ly.
+Syzkaller scenario:
+1) Set up VCPU's
+2) Set the APIC_BASE to 0xd00
+3) Set the APIC status for a specific state
 
-Ah, good point.  In the meantime I had forgotten everything about this
-code and missed that.  So, I can send another patch to fs/crypto to add
-that extra call once (or if) this patch is accepted.
+The issue arises within kvm_apic_state_fixup, a function responsible
+for adjusting and correcting the APIC state. Initially, it verifies
+whether the current vcpu operates in x2APIC mode by examining the
+vcpu's mode. Subsequently, the function evaluates
+vcpu->kvm->arch.x2apic_format to ascertain if the preceding kvm version
+supports x2APIC mode. In cases where kvm is compatible with x2APIC mode,
+the function compares APIC_ID and VCPU_ID for equality. If they are not
+equal, it processes APIC_ID according to the set value. The error
+manifests when vcpu->kvm->arch.x2apic_format is false; under these
+circumstances, kvm_apic_state_fixup converts APIC_ID to the xAPIC format
+and invokes kvm_apic_calc_x2apic_ldr to compute the LDR. This leads to by
+passing consistency checks between VCPU_ID and APIC_ID and results in
+calling incorrect functions for LDR calculation.
 
-If I'm reading the code correctly, the only place where this extra call is
-required is on fscrypt_put_master_key():
+Obviously, the crux of the issue hinges on the transition of the APIC
+state and the associated operations for transitioning APIC_ID. In the
+current kernel design, APIC_ID defaults to VCPU_ID in x2APIC mode, a
+specification not required in xAPIC mode. kvm_apic_state_fixup initiates
+by assessing the current status of both VCPU and KVM to identify their
+respective APIC modes. However, subsequent evaluations focus solely on
+the APIC mode of VCPU. To address this, a feasible minor modification
+involves advancing the comparison between APIC_ID and VCPU_ID,
+positioning it prior to the evaluation of vcpu→kvm→arch.x2apic_format.
 
-diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
-index 0edf0b58daa7..4afd32f1aed9 100644
---- a/fs/crypto/keyring.c
-+++ b/fs/crypto/keyring.c
-@@ -74,6 +74,7 @@ void fscrypt_put_master_key(struct fscrypt_master_key *mk)
- 	 * that concurrent keyring lookups can no longer find it.
- 	 */
- 	WARN_ON_ONCE(refcount_read(&mk->mk_active_refs) !=3D 0);
-+	keyring_clear(mk->mk_users);
- 	key_put(mk->mk_users);
- 	mk->mk_users =3D NULL;
- 	call_rcu(&mk->mk_rcu_head, fscrypt_free_master_key);
+Signed-off-by: Haoyu Wu <haoyuwu254@gmail.com>
+---
+ arch/x86/kvm/lapic.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-On the other hand, if you're really working towards dropping this code
-entirely, maybe there's not point doing that.
-
-Cheers,
---=20
-Lu=C3=ADs
+diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+index 3242f3da2..16c97d57d 100644
+--- a/arch/x86/kvm/lapic.c
++++ b/arch/x86/kvm/lapic.c
+@@ -2933,16 +2933,16 @@ static int kvm_apic_state_fixup(struct kvm_vcpu *vcpu,
+ 		u32 *ldr = (u32 *)(s->regs + APIC_LDR);
+ 		u64 icr;
+ 
+-		if (vcpu->kvm->arch.x2apic_format) {
+-			if (*id != vcpu->vcpu_id)
+-				return -EINVAL;
+-		} else {
++		if (*id != vcpu->vcpu_id)
++			return -EINVAL;
++		if (!vcpu->kvm->arch.x2apic_format) {
+ 			if (set)
+ 				*id >>= 24;
+ 			else
+ 				*id <<= 24;
+ 		}
+ 
++
+ 		/*
+ 		 * In x2APIC mode, the LDR is fixed and based on the id.  And
+ 		 * ICR is internally a single 64-bit register, but needs to be
+-- 
+2.34.1
 
 
