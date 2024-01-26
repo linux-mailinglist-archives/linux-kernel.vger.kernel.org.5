@@ -1,127 +1,169 @@
-Return-Path: <linux-kernel+bounces-39767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F30F983D5E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:17:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A47CF83D5E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:18:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9ECA2854E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:17:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 128E91F281CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:18:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FCE17C0AA;
-	Fri, 26 Jan 2024 08:32:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B01C21C28A;
+	Fri, 26 Jan 2024 08:36:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ClG0zG9k"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="z+nrrGxV"
+Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCD4D1CFAE;
-	Fri, 26 Jan 2024 08:32:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BE2D14276;
+	Fri, 26 Jan 2024 08:36:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.30.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706257945; cv=none; b=shghj+TrjiJmFq15ruMASMJw+j9VgDj5rwH1Kc4JzCzI/N/DUFEFwkb3Gew96lWfGarPgczr8nmVLUlexqlZl6pW8TaQ2hBCG/8hY6XE5LavT23QKsznVEoWn944BBwmbJ0QEl/9ylTejmEz9LgbVkHkHolWAnkxYaDcIw7sICo=
+	t=1706258181; cv=none; b=MH67avjLsvkeJnczEEywvrnL1kHEUyydKAHPUfksyjOj2FNy34MbIL1eePCNGI3js9lfF9ZSGDm6o/KzrjqBQW/V5jI5GuDyWSmBcAUbKvydgjE/GuG0SW4dtY7E3cNL12NAI25CAL2Osj84QXj6vml+o5ZnT23c3P+EaTgQFN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706257945; c=relaxed/simple;
-	bh=wstLSSz3qMGDQxUYzW+IHsUCg9UT58andHSX7WC1dOA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=ISCCXF60ksxA7reHb2yalTH89RJ25gzCBObO0UJUbg0D9ioMvvWM26/PldkL0uknvQDqx5nQtn5eBAbPBjBog9mhYr368vRLBOI4AUCKrnfSgm+EXSIOZ7BsaW18Dd9XcpHxAZ1+tNVC59ptt2LNhGLEL2imiESkVJKUrZuLeq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ClG0zG9k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCC2BC433F1;
-	Fri, 26 Jan 2024 08:32:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706257945;
-	bh=wstLSSz3qMGDQxUYzW+IHsUCg9UT58andHSX7WC1dOA=;
-	h=Date:From:To:Cc:Subject:From;
-	b=ClG0zG9k5IMq0O5zUgX7DQVolc1NIz4ZcQ4BZwOfNsuOjQ0TRHPthT4u5pvvVM/LL
-	 35kt2P0Zwt/YyQT8ILDOA3jHWeL2/oenVPShooFxHoOG5XP0OESHRGRnQgoWS/VEyh
-	 YsBTnamXcWdV53UvCANE0ryGhcj+2lI1wWLgKTxn5JHby7pudKrN4c+l1evWyVjaSL
-	 2QTDpzVmdFORUulHfrTCWwYLQ5ovXxqfskd8BXf/ORMi6j049L0+uCewvKH33oxYHB
-	 jyUfTxDhEbBz/tBXhKCgm4Uduuxl/VhoIgWITu6ZfR8KsWsJW+C6TN4sKRGDCzBPcF
-	 JmOmUr2w+UPrQ==
-Date: Fri, 26 Jan 2024 09:32:20 +0100
-From: Helge Deller <deller@kernel.org>
-To: "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
-Subject: [PATCH v2] [net] ipv6: Ensure natural alignment of const ipv6
- loopback and router addresses
-Message-ID: <ZbNuFM1bFqoH-UoY@p100>
+	s=arc-20240116; t=1706258181; c=relaxed/simple;
+	bh=tkg39RAYsAhIELMHYR7dU6szqBbIFK6BgQpLq2STJIE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=LePb6/4pYtT0zakKAaXyyYaRwfIFQA3IRFODohOayGd9jgh6Kef45s3R8kpF2O1frVHDDqn4p32T+CIyZcBUnIn+TfVj4hpmSD/efAWpElEQjz9nTJFVY8vQrrlougheKB8Uy7Q7+GQSpqWM/lhxsppHpDVVGwYki4vhxAVe5N0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com; spf=pass smtp.mailfrom=geanix.com; dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b=z+nrrGxV; arc=none smtp.client-ip=188.40.30.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geanix.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
+	s=default2211; h=Content-Type:MIME-Version:Message-ID:Date:References:
+	In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=GfWOdJizn9qajP2fgFEpsk2c/JN4N7LIyYRvIOWoG84=; b=z+nrrGxVXrBFOfyxlMj3aHedI9
+	acH/1Fxur1lc7V7veDwL0sRWrLxY1i0lZKHq9i8gvklx0sVnfe+PONud9xMEUOghestnulhzCWIbC
+	At5DzfwRL72qRhozA2gRWzcMAUBcf2YRSP6PWH7S3hHc5Xat2NFuUuIswgEYf6ULyoq+XO6AxufTc
+	JkDoZGTrhBm0FW56xaDfoqm7ABHVqWOwpRjpj4Sx8ODLHvOZEfgOLMfMpJdzMlaxVWy35MMh6vesq
+	y4ngsAXlNb+wxroZRgEe8MBy1ZXN2LAwMyi3eOKKgrcQVRCvh07l53+TgQXTdsZjnjPnUSZbOelRw
+	hCrp8c1w==;
+Received: from sslproxy04.your-server.de ([78.46.152.42])
+	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <esben@geanix.com>)
+	id 1rTHfy-000AzR-Lb; Fri, 26 Jan 2024 09:35:02 +0100
+Received: from [87.49.42.9] (helo=localhost)
+	by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <esben@geanix.com>)
+	id 1rTHfx-000Ioh-Jv; Fri, 26 Jan 2024 09:35:01 +0100
+From: Esben Haabendal <esben@geanix.com>
+To: Rohan G Thomas <rohan.g.thomas@intel.com>
+Cc: "David S . Miller" <davem@davemloft.net>,  Alexandre Torgue
+ <alexandre.torgue@foss.st.com>,  Jose Abreu <joabreu@synopsys.com>,  Eric
+ Dumazet <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>,  Paolo
+ Abeni <pabeni@redhat.com>,  Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+  Rob Herring <robh+dt@kernel.org>,  Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley <conor+dt@kernel.org>,
+  Giuseppe Cavallaro <peppe.cavallaro@st.com>,  Serge Semin
+ <fancer.lancer@gmail.com>,  netdev@vger.kernel.org,
+  linux-stm32@st-md-mailman.stormreply.com,
+  linux-arm-kernel@lists.infradead.org,  devicetree@vger.kernel.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 2/2] net: stmmac: TBS support for platform driver
+In-Reply-To: <20230927130919.25683-3-rohan.g.thomas@intel.com> (Rohan G.
+	Thomas's message of "Wed, 27 Sep 2023 21:09:19 +0800")
+References: <20230927130919.25683-1-rohan.g.thomas@intel.com>
+	<20230927130919.25683-3-rohan.g.thomas@intel.com>
+Date: Fri, 26 Jan 2024 09:35:01 +0100
+Message-ID: <87v87g4hmy.fsf@geanix.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain
+X-Authenticated-Sender: esben@geanix.com
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27165/Thu Jan 25 10:51:15 2024)
 
-On a parisc64 kernel I sometimes notice this kernel warning:
-Kernel unaligned access to 0x40ff8814 at ndisc_send_skb+0xc0/0x4d8
+Rohan G Thomas <rohan.g.thomas@intel.com> writes:
 
-The address 0x40ff8814 points to the in6addr_linklocal_allrouters
-variable and the warning simply means that some ipv6 function tries to
-read a 64-bit word directly from the not-64-bit aligned
-in6addr_linklocal_allrouters variable.
+> Enable Time Based Scheduling(TBS) support for Tx queues through the
+> stmmac platform driver. For this a new per-queue tx-config property,
+> tbs-enabled is added to the devicetree.
+>
+> Commit 7eadf57290ec ("net: stmmac: pci: Enable TBS on GMAC5 IPK PCI
+> entry") enables similar support for the stmmac pci driver.
+>
+> Also add check whether TBS support is available for a Tx DMA channel
+> before enabling TBS support for that Tx DMA channel.
+>
+> Signed-off-by: Rohan G Thomas <rohan.g.thomas@intel.com>
+> ---
+>  .../net/ethernet/stmicro/stmmac/stmmac_main.c | 25 +++++++++++++++----
+>  .../ethernet/stmicro/stmmac/stmmac_platform.c |  4 +++
+>  2 files changed, 24 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> index 81b6f3ecdf92..7333f0640b3d 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> @@ -3773,12 +3773,18 @@ stmmac_setup_dma_desc(struct stmmac_priv *priv, unsigned int mtu)
+>  		dma_conf->dma_rx_size = DMA_DEFAULT_RX_SIZE;
+>  
+>  	/* Earlier check for TBS */
+> -	for (chan = 0; chan < priv->plat->tx_queues_to_use; chan++) {
+> -		struct stmmac_tx_queue *tx_q = &dma_conf->tx_queue[chan];
+> -		int tbs_en = priv->plat->tx_queues_cfg[chan].tbs_en;
+> +	if (priv->dma_cap.tbssel) {
+> +		/* TBS is available only for tbs_ch_num of Tx DMA channels,
+> +		 * starting from the highest Tx DMA channel.
+> +		 */
+> +		chan = priv->dma_cap.number_tx_channel - priv->dma_cap.tbs_ch_num;
+> +		for (; chan < priv->plat->tx_queues_to_use; chan++) {
+> +			struct stmmac_tx_queue *tx_q = &dma_conf->tx_queue[chan];
+> +			int tbs_en = priv->plat->tx_queues_cfg[chan].tbs_en;
+>  
+> -		/* Setup per-TXQ tbs flag before TX descriptor alloc */
+> -		tx_q->tbs |= tbs_en ? STMMAC_TBS_AVAIL : 0;
+> +			/* Setup per-TXQ tbs flag before TX descriptor alloc */
+> +			tx_q->tbs |= tbs_en ? STMMAC_TBS_AVAIL : 0;
+> +		}
+>  	}
+>  
+>  	ret = alloc_dma_desc_resources(priv, dma_conf);
+> @@ -7505,6 +7511,15 @@ int stmmac_dvr_probe(struct device *device,
+>  		}
+>  	}
+>  
+> +	/* If TBS feature is supported(i.e. tbssel is true), then at least 1 Tx
+> +	 * DMA channel supports TBS. So if tbs_ch_num is 0 and tbssel is true,
+> +	 * assume all Tx DMA channels support TBS. TBS_CH field, which gives
+> +	 * number of Tx DMA channels with TBS support is only available only for
+> +	 * DW xGMAC IP. For other DWMAC IPs all Tx DMA channels can support TBS.
 
-Unaligned accesses are non-critical as the architecture or exception
-handlers usually will fix it up at runtime. Nevertheless it may trigger
-a performance penality for some architectures. For details read the
-"unaligned-memory-access" kernel documentation.
+The Ethernet QOS controllers found in various i.MX socs does not support
+TBS on TX queue 0. I believe this patch would break the dwmac driver for
+these platforms.
 
-The patch below ensures that the ipv6 loopback and router addresses will
-always be naturally aligned. This prevents the unaligned accesses for
-all architectures.
+> +	 */
+> +	if (priv->dma_cap.tbssel && !priv->dma_cap.tbs_ch_num)
+> +		priv->dma_cap.tbs_ch_num = priv->dma_cap.number_tx_channel;
+> +
+>  	ndev->features |= ndev->hw_features | NETIF_F_HIGHDMA;
+>  	ndev->watchdog_timeo = msecs_to_jiffies(watchdog);
+>  #ifdef STMMAC_VLAN_TAG_USED
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+> index 843bd8804bfa..6c0191c84071 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+> @@ -279,6 +279,10 @@ static int stmmac_mtl_setup(struct platform_device *pdev,
+>  		plat->tx_queues_cfg[queue].coe_unsupported =
+>  			of_property_read_bool(q_node, "snps,coe-unsupported");
+>  
+> +		/* Select TBS for supported queues */
+> +		plat->tx_queues_cfg[queue].tbs_en =
+> +			of_property_read_bool(q_node, "snps,tbs-enabled");
+> +
+>  		queue++;
+>  	}
+>  	if (queue != plat->tx_queues_to_use) {
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-Fixes: 034dfc5df99eb ("ipv6: export in6addr_loopback to modules")
-Acked-by: Paolo Abeni <pabeni@redhat.com>
-
---
-v2:
-- Added A-b from Paolo
-- Rephrased parts of commit message
-- resent with [net] tag
-
----
-diff --git a/net/ipv6/addrconf_core.c b/net/ipv6/addrconf_core.c
-index 507a8353a6bd..813e009b4d0e 100644
---- a/net/ipv6/addrconf_core.c
-+++ b/net/ipv6/addrconf_core.c
-@@ -220,19 +220,26 @@ const struct ipv6_stub *ipv6_stub __read_mostly = &(struct ipv6_stub) {
- EXPORT_SYMBOL_GPL(ipv6_stub);
- 
- /* IPv6 Wildcard Address and Loopback Address defined by RFC2553 */
--const struct in6_addr in6addr_loopback = IN6ADDR_LOOPBACK_INIT;
-+const struct in6_addr in6addr_loopback __aligned(BITS_PER_LONG/8)
-+	= IN6ADDR_LOOPBACK_INIT;
- EXPORT_SYMBOL(in6addr_loopback);
--const struct in6_addr in6addr_any = IN6ADDR_ANY_INIT;
-+const struct in6_addr in6addr_any __aligned(BITS_PER_LONG/8)
-+	= IN6ADDR_ANY_INIT;
- EXPORT_SYMBOL(in6addr_any);
--const struct in6_addr in6addr_linklocal_allnodes = IN6ADDR_LINKLOCAL_ALLNODES_INIT;
-+const struct in6_addr in6addr_linklocal_allnodes __aligned(BITS_PER_LONG/8)
-+	= IN6ADDR_LINKLOCAL_ALLNODES_INIT;
- EXPORT_SYMBOL(in6addr_linklocal_allnodes);
--const struct in6_addr in6addr_linklocal_allrouters = IN6ADDR_LINKLOCAL_ALLROUTERS_INIT;
-+const struct in6_addr in6addr_linklocal_allrouters __aligned(BITS_PER_LONG/8)
-+	= IN6ADDR_LINKLOCAL_ALLROUTERS_INIT;
- EXPORT_SYMBOL(in6addr_linklocal_allrouters);
--const struct in6_addr in6addr_interfacelocal_allnodes = IN6ADDR_INTERFACELOCAL_ALLNODES_INIT;
-+const struct in6_addr in6addr_interfacelocal_allnodes __aligned(BITS_PER_LONG/8)
-+	= IN6ADDR_INTERFACELOCAL_ALLNODES_INIT;
- EXPORT_SYMBOL(in6addr_interfacelocal_allnodes);
--const struct in6_addr in6addr_interfacelocal_allrouters = IN6ADDR_INTERFACELOCAL_ALLROUTERS_INIT;
-+const struct in6_addr in6addr_interfacelocal_allrouters __aligned(BITS_PER_LONG/8)
-+	= IN6ADDR_INTERFACELOCAL_ALLROUTERS_INIT;
- EXPORT_SYMBOL(in6addr_interfacelocal_allrouters);
--const struct in6_addr in6addr_sitelocal_allrouters = IN6ADDR_SITELOCAL_ALLROUTERS_INIT;
-+const struct in6_addr in6addr_sitelocal_allrouters __aligned(BITS_PER_LONG/8)
-+	= IN6ADDR_SITELOCAL_ALLROUTERS_INIT;
- EXPORT_SYMBOL(in6addr_sitelocal_allrouters);
- 
- static void snmp6_free_dev(struct inet6_dev *idev)
-
+/Esben
 
