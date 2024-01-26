@@ -1,195 +1,179 @@
-Return-Path: <linux-kernel+bounces-40240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C28AF83DD07
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:05:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5272A83DD0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:05:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E883C1C21487
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:05:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9CC61F220BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:05:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 617A41CD3C;
-	Fri, 26 Jan 2024 15:04:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A3FB1CD3C;
+	Fri, 26 Jan 2024 15:05:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="AP0c6pbP"
-Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="FaE03Ch/"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BBFD7F;
-	Fri, 26 Jan 2024 15:04:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 550CB1B970;
+	Fri, 26 Jan 2024 15:05:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706281489; cv=none; b=UXwz+t47OWnwW+w0kZK5j8kbR8Y+aQMChvw08+AezTNoYktN0Uakg6Mewd2sn0/9jv/NbFTK52VqVsXFa4jrfzUcyP4rRHFVy4ehy4VCIT+KWKWVE4hW2vHju0bsJCmMLraVsD8fADUMrxnkNpm/z2fPXGY0J3uUXWepYV8EicU=
+	t=1706281528; cv=none; b=Qzf92lBbhU8ctDZmIHNMjZZE/kzZ4xWMLBTLy1mrIJwTyseUzRf7IZlzsgb83oDj3YQepQrGNwpkJLt3nvZqSLxfEPLWOAePDEbDVWs+GfrleWFjStGJh6kpahiUfCQ2TCT4ESY97hhdM6oUMfjPDlDJOUU5ul1yYX5cdWjWCd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706281489; c=relaxed/simple;
-	bh=+2ei/gy8yAIjRdSlj5GyuSIfvHi5rH2RqaMpvTFPKWI=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qo5TwcWQRI8/Q19JkuYKlm+QAyff7d4wv6FDg/JmOGW3F5T4VR808nGO22PMHimqitoDE/N37ccs/ODWRnq+jcYKiAV6L8YsWnReE7XasAdrXU8P/3/y5LpOzNjrwxpd7JRd4iRLl/RMtS4vzaE8mifCXVft4j6sbgRwBv4Sc7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=AP0c6pbP; arc=none smtp.client-ip=185.70.43.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1706281483; x=1706540683;
-	bh=Wz2N1AcZwU0Mn94jWR065975cs5bO2b19pmlV+UYRdw=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=AP0c6pbPVRMEfXf/3t1lpRi8IuxKSXky10bzvKc89aQUuXf81yWH/ZiIdqDEOTT+r
-	 WTfXuf8iGd0dXb+ZecCa3GwnDZzuT0Uggjuq2ak+5s4r8OjmGtccIqR+h+MduPrKlF
-	 TpUR6biatrUoYyPVEvWAZL/Be/uoaBc45fSHv/7s5zeVvaCiGmoTy04R7sZ8C0xNqE
-	 k+M4hH+Xu9vEyWEAL4sDg82BtDtxFdEWfXKUqcYrQQmzIxsYMarlcNyC4EYQ0xCH+w
-	 K27PSWXQnfDCSUQNULS9w46z007uYTVorJtgBR+te8ikZNmxCwTiQgVP2cJVkB1BnW
-	 tAhwtK2ZexP1g==
-Date: Fri, 26 Jan 2024 15:04:23 +0000
-To: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Dan Williams <dan.j.williams@intel.com>, Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 1/9] rust: file: add Rust abstraction for `struct file`
-Message-ID: <5dbbaba2-fd7f-4734-9f44-15d2a09b4216@proton.me>
-In-Reply-To: <20240118-alice-file-v3-1-9694b6f9580c@google.com>
-References: <20240118-alice-file-v3-0-9694b6f9580c@google.com> <20240118-alice-file-v3-1-9694b6f9580c@google.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1706281528; c=relaxed/simple;
+	bh=U+99tjIt56hBCPSlbSxS/+VqtJhV/6wL04M231JSrzI=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gOKTg0xi6xqlaxaaw51wNawJHsWlN5Cp6/GuS8K8Aina7Ibd9jEgkJdu2//UFbBQT10ffXgAX78BA6DEG+5QWjWUq2h+RV+8sBDLyHFK+WR3W0OUkiSWNsqy30MB0b9MmAcEynvkNaIJQ9U2xIWI97aBpyawHk7ZH9+nu7HthU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=FaE03Ch/; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40QDirPM006836;
+	Fri, 26 Jan 2024 15:05:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=jHB9hK1+IxDYTk3mHsGBs
+	lK9MjCNeNeTQmuomB3w7zM=; b=FaE03Ch/Jzfiv1T2d8ixQbSUtaq1l9MO5jj8n
+	yRFebQlkMJBdnxqtn6tchK1EdBTeT2ELjVlWC/Qdc6Jem7DazcTNPoKiA5GK1y+P
+	QqFTc8VJ3vZF+mHDkRnpgNWKBevBWtgw2ksSZx/yIxPIrC/vVTRut69wCoXhaM4d
+	2WU9VV5pc8NdWJXdnk4f/Lv6uyV21FVBosmjwYEQLt92vWF1NQDOVAZM1ujh7cSE
+	R9TCiCONAxMWHnPtXFga7TNVvHCpE3ZkeG7VIUGTKya2pBpwOvRuKvpZZHHJOD/X
+	j7d1WaQ+MKfqqlWqjlpAzLHJOtCbhCTGN2LahcOaZS01YapPw==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vv4cascjm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Jan 2024 15:05:14 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40QF5DHx029835
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Jan 2024 15:05:13 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 26 Jan 2024 07:05:12 -0800
+Date: Fri, 26 Jan 2024 07:05:11 -0800
+From: Bjorn Andersson <quic_bjorande@quicinc.com>
+To: Daniel Thompson <daniel.thompson@linaro.org>
+CC: Johan Hovold <johan@kernel.org>,
+        Dmitry Torokhov
+	<dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Johan Hovold
+	<johan+linaro@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-input@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: sc8280xp-x13s: Fix/enable
+ touchscreen
+Message-ID: <20240126150511.GO2936378@hu-bjorande-lv.qualcomm.com>
+References: <20240125-x13s-touchscreen-v1-0-ab8c882def9c@quicinc.com>
+ <20240125-x13s-touchscreen-v1-2-ab8c882def9c@quicinc.com>
+ <ZbNpdaSyFS9tYrkd@hovoldconsulting.com>
+ <20240126130232.GA5506@aspen.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240126130232.GA5506@aspen.lan>
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: zkWHTT7R8Yj7UAoh4kZBsPEbusf-OyKI
+X-Proofpoint-GUID: zkWHTT7R8Yj7UAoh4kZBsPEbusf-OyKI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-25_14,2024-01-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
+ bulkscore=0 impostorscore=0 priorityscore=1501 spamscore=0 suspectscore=0
+ mlxlogscore=999 phishscore=0 lowpriorityscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401190000 definitions=main-2401260110
 
-On 18.01.24 15:36, Alice Ryhl wrote:
-> +/// Wraps the kernel's `struct file`.
-> +///
-> +/// # Refcounting
-> +///
-> +/// Instances of this type are reference-counted. The reference count is=
- incremented by the
-> +/// `fget`/`get_file` functions and decremented by `fput`. The Rust type=
- `ARef<File>` represents a
-> +/// pointer that owns a reference count on the file.
-> +///
-> +/// Whenever a process opens a file descriptor (fd), it stores a pointer=
- to the file in its `struct
-> +/// files_struct`. This pointer owns a reference count to the file, ensu=
-ring the file isn't
-> +/// prematurely deleted while the file descriptor is open. In Rust termi=
-nology, the pointers in
-> +/// `struct files_struct` are `ARef<File>` pointers.
-> +///
-> +/// ## Light refcounts
-> +///
-> +/// Whenever a process has an fd to a file, it may use something called =
-a "light refcount" as a
-> +/// performance optimization. Light refcounts are acquired by calling `f=
-dget` and released with
-> +/// `fdput`. The idea behind light refcounts is that if the fd is not cl=
-osed between the calls to
-> +/// `fdget` and `fdput`, then the refcount cannot hit zero during that t=
-ime, as the `struct
-> +/// files_struct` holds a reference until the fd is closed. This means t=
-hat it's safe to access the
-> +/// file even if `fdget` does not increment the refcount.
-> +///
-> +/// The requirement that the fd is not closed during a light refcount ap=
-plies globally across all
-> +/// threads - not just on the thread using the light refcount. For this =
-reason, light refcounts are
-> +/// only used when the `struct files_struct` is not shared with other th=
-reads, since this ensures
-> +/// that other unrelated threads cannot suddenly start using the fd and =
-close it. Therefore,
-> +/// calling `fdget` on a shared `struct files_struct` creates a normal r=
-efcount instead of a light
-> +/// refcount.
-> +///
-> +/// Light reference counts must be released with `fdput` before the syst=
-em call returns to
-> +/// userspace. This means that if you wait until the current system call=
- returns to userspace, then
-> +/// all light refcounts that existed at the time have gone away.
-> +///
-> +/// ## Rust references
-> +///
-> +/// The reference type `&File` is similar to light refcounts:
-> +///
-> +/// * `&File` references don't own a reference count. They can only exis=
-t as long as the reference
-> +///   count stays positive, and can only be created when there is some m=
-echanism in place to ensure
-> +///   this.
-> +///
-> +/// * The Rust borrow-checker normally ensures this by enforcing that th=
-e `ARef<File>` from which
-> +///   a `&File` is created outlives the `&File`.
-> +///
-> +/// * Using the unsafe [`File::from_ptr`] means that it is up to the cal=
-ler to ensure that the
-> +///   `&File` only exists while the reference count is positive.
-> +///
-> +/// * You can think of `fdget` as using an fd to look up an `ARef<File>`=
- in the `struct
-> +///   files_struct` and create an `&File` from it. The "fd cannot be clo=
-sed" rule is like the Rust
-> +///   rule "the `ARef<File>` must outlive the `&File`".
-> +///
-> +/// # Invariants
-> +///
-> +/// * Instances of this type are refcounted using the `f_count` field.
-> +/// * If an fd with active light refcounts is closed, then it must be th=
-e case that the file
-> +///   refcount is positive until there are no more light refcounts creat=
-ed from the fd that got
+On Fri, Jan 26, 2024 at 01:02:32PM +0000, Daniel Thompson wrote:
+> On Fri, Jan 26, 2024 at 09:12:37AM +0100, Johan Hovold wrote:
+> > On Thu, Jan 25, 2024 at 07:55:14PM -0800, Bjorn Andersson wrote:
+> > > The failing read-test in __i2c_hid_core_probe() determines that there's
+> > > nothing connected at the documented address of the touchscreen.
+> > >
+> > > Introduce the 5ms after-power and 200ms after-reset delays found in the
+> > > ACPI tables. Also wire up the reset-gpio, for good measure.
+> >
+> > As the supplies for the touchscreen are always on (and left on by the
+> > bootloader) it would seem that it is really the addition of the reset
+> > gpio which makes things work here. Unless the delay is needed for some
+> > other reason.
+> >
+> > (The power-on delay also looks a bit short compared to what is used for
+> > other devices.)
+> >
+> > Reset support was only recently added with commit 2be404486c05 ("HID:
+> > i2c-hid-of: Add reset GPIO support to i2c-hid-of") so we should not
+> > backport this one before first determining that.
+> 
+> This comment attracted my attention so I tried booting with each of the
+> three lines individually.
+> 
+> 
+> On Thu, Jan 25, 2024 at 07:55:14PM -0800, Bjorn Andersson wrote:
+> > +             reset-gpios = <&tlmm 99 GPIO_ACTIVE_LOW>;
+> 
+> This is not enough, on it's own, to get the touch screen running.
+> 
 
-I think this wording can be easily misinterpreted: "until there
-are no more light refcounts created" could mean that you are allowed
-to drop the refcount to zero after the last light refcount has been
-created. But in reality you want all light refcounts to be released
-first.
-I would suggest "until all light refcounts of the fd have been dropped"
-or similar.
+No, because pinctrl already brings the chip out of reset without this.
 
-> +///   closed.
-> +/// * A light refcount must be dropped before returning to userspace.
-> +#[repr(transparent)]
-> +pub struct File(Opaque<bindings::file>);
-> +
-> +// SAFETY: By design, the only way to access a `File` is via an immutabl=
-e reference or an `ARef`.
-> +// This means that the only situation in which a `File` can be accessed =
-mutably is when the
-> +// refcount drops to zero and the destructor runs. It is safe for that t=
-o happen on any thread, so
-> +// it is ok for this type to be `Send`.
+> I guess that's not so much of a surprise since the rebind-the-driver
+> from userspace trick wouldn't have been touching this reset.
+> 
 
-Technically, `drop` is never called for `File`, since it is only used
-via `ARef<File>` which calls `dec_ref` instead. Also since it only contains
-an `Opaque`, dropping it is a noop.
-But what does `Send` mean for this type? Since it is used together with
-`ARef`, being `Send` means that `File::dec_ref` can be called from any
-thread. I think we are missing this as a safety requirement on
-`AlwaysRefCounted`, do you agree?
-I think the safety justification here could be (with the requirement added
-to `AlwaysRefCounted`):
+Right, it would just have been left deasserted from the first attempt.
 
-     SAFETY:
-     - `File::drop` can be called from any thread.
-     - `File::dec_ref` can be called from any thread.
+That said, the addition of the reset means that we're now asserting
+reset in such rebind attempts. And as such the
+post-reset-deassert-delay-ms is now needed between the explicit deassert
+from the driver and the i2c read.
 
---
-Cheers,
-Benno
+> 
+> > +             post-power-on-delay-ms = <5>;
+> 
+> This line alone is enough (in v6.7.1).
+> 
 
-> +unsafe impl Send for File {}
-> +
-> +// SAFETY: All methods defined on `File` that take `&self` are safe to c=
-all even if other threads
-> +// are concurrently accessing the same `struct file`, because those meth=
-ods either access immutable
-> +// properties or have proper synchronization to ensure that such accesse=
-s are safe.
-> +unsafe impl Sync for File {}
+So the delay taken through really_probe() until we reach that i2c read
+is almost the entire delay needed, on your specific device.
 
+> 
+> > +             post-reset-deassert-delay-ms = <200>;
+> 
+> This line alone is also enough!
+> 
+> In short it looks like the delays make the difference and, even a short
+> delay, can fix the problem.
+> 
+> Of course, regardless of the line-by-line results I also ran with all
+> the changes so, FWIW:
+> Tested-by: Daniel Thompson <daniel.thompson@linaro.org>
+> 
+
+Thanks,
+Bjorn
+
+> 
+> Daniel.
 
