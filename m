@@ -1,66 +1,82 @@
-Return-Path: <linux-kernel+bounces-40062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E30C283D991
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:46:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D931483D996
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:46:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76434296163
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:46:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82F7D1F2983C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:46:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2035F17BAF;
-	Fri, 26 Jan 2024 11:45:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34F0D18EB4;
+	Fri, 26 Jan 2024 11:46:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DOHHiy1E"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b="Bx4W899V"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 677E51B5AC;
-	Fri, 26 Jan 2024 11:45:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E13BA1947E
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 11:46:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706269549; cv=none; b=u0Urnz/0n3tFUHRqRbbXc6EWoj8qRmwY80809vB9+KQmODlv5i+WzI3Xpj3Z4jBwTqkutdN9UQ/4Hzh+RlUIVSYsnjdQwjb0WrXskPDHacOGDXO/4F/1KnTBm58ACfUhPrQdv3Y/L/sboS5ki4KjnWqBRkgaebvmspPIcXIsvF8=
+	t=1706269587; cv=none; b=AExVpt7w3CoZ6ovqJnJr8i6KoihuVLrwH4lzGiXnxmb+a3Mcsl0R6Kbf6mc20RDkwIYBpG1fhS/4vswUAeHFpH6MYQZk0Nbr+SllMC5rkJVLDLSMCBWERXB2fDhPPIXnav8pBb8yUoFhTZZu4b7Wia7IRofUiLpG9Y86br1ZB0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706269549; c=relaxed/simple;
-	bh=IGnu6V+EK7ZTYpTxE7bCrz1gKJQ+SJzi8haKHQ1r4dE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=r7C0eMWUgoqmEESmDy+E06Odkg/gEVC5PpJf1seoFCuVLlO3xtttgYyLttmTqZl73KcqSXMX8jH/7fxQvhc3e2yF9SawSDd7PO8d0ByrFvJw53i6vBqrK36KQH7d1db3fv9WXSei667js9uBVss/LADa5ymu1oQKaVyL/q+5sWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DOHHiy1E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A258FC433F1;
-	Fri, 26 Jan 2024 11:45:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706269548;
-	bh=IGnu6V+EK7ZTYpTxE7bCrz1gKJQ+SJzi8haKHQ1r4dE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DOHHiy1EzqUQyK/xafhAoVcmG/8Dj3yEVLHJdVM5+RXNgVfu98JNgVVKCFHyCqExk
-	 udervGxyrCnL5rfvvkzCQmH0QREqAwl+kMpGUOBpLGkHWDldVinLn6B3CU1yIRplvn
-	 s2GFd0kMEyMU2Gz0BQ/PdMw+1qPzEi1LVlYt0Xwp/Iu+4gsDNB2xqIqhXs6ueJ1Ch0
-	 KwnYatwxotjme/cUQ4V4A/58b/7KW0wfIYZJwBewrWxkypB3MdkE0QrVCpr4XDTvpl
-	 xe7sXxENS2ylKvuHsyiaeM7KrYr+aaZQV4/v3OGvBvHKVGbJew6Tkmq7bP3IgzKLKS
-	 C8YH0HuyZB66A==
-From: Roger Quadros <rogerq@kernel.org>
-To: nm@ti.com,
-	vigneshr@ti.com
-Cc: afd@ti.com,
-	a-bhatia1@ti.com,
-	kristo@kernel.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	srk@ti.com,
-	linux-arm-kernel@lists.infradead.org,
+	s=arc-20240116; t=1706269587; c=relaxed/simple;
+	bh=MYgTpznrzXaD6fYHjmBAqa58IYtxhCWEWhjaZObhnWo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fPQ7OxCPvCXQSi/h7Dl6G7Ts/J6lvzM1uYEyiw/PJq/F1rojBrtyg9a6tesQWSnkHdlwEPTbLRebh6+g+85LpOuqA4Fxrxfc7DH0bZDItUB3gGNkBgR21l4fNoi/IWCYaE5nni/HrCOJqdRyIZnU0s/davWKNU6irz5vxVr5rV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com; spf=pass smtp.mailfrom=9elements.com; dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b=Bx4W899V; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=9elements.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40ed2333c8fso4727465e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 03:46:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1706269584; x=1706874384; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gBNfFDWRGxc5HogyZttW4uFMPBW85vTV+PElgd3Td0k=;
+        b=Bx4W899V4SAirmb8TeBavpd/JgCUl/glxnURNppgpeWxp3vDokjm/9faPKYhrpu2qK
+         YWdtVuzBU/Bb0pfJ0b5VWHzdudghKLFCxPiNtDQLnAkDB0lIkrl92zUHUU92zt5XiFU4
+         fL6foluXvxtxmO0EZglIEeMdwabvh++Pz5Y4C+cu65FiByxjeYWNE/e8SmQLxBcDR46c
+         FzXrzIeUtKgj+sOlvPqtOGiSrJq7gQWMGLQYAVgoWcUatX1tZWlQ6HXbYISPYHQeqhi0
+         HYjjRbWpmlPX9J0IFU4UlLBe++seB92V8+6JWLbCjNJCZZ+pPWF2NZDGR3OHLiTg5jwX
+         NeEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706269584; x=1706874384;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gBNfFDWRGxc5HogyZttW4uFMPBW85vTV+PElgd3Td0k=;
+        b=HfPpegNwcvZxVevBRE2I4z/dI3Rr+SMm1r1+0uy9jTcce0Ygj4uhiKa8V9nTY5F22t
+         8K70ASE/6yZxpkXUVhfUrzjCo0KSUBw69416xBqa3DsBOYF0zda/M3c/JaON5TqsYU++
+         0MB0xaWnJZExrIpceF2OMDHUD37wle6LnX4RfbuiOOcgFdZIDSspO421iKibtX2RB9Su
+         0yaclU0e3G0i3o+eVKxL0BvlF3xL7xBDoYZjzSyzrXKy1P3S8EcYi5ugLLZclqTWO4kw
+         h8Me6WYDlw0b1Lz8k6ga3iOeLzxBsbes0cqfxAzQgz8tLn1CVuaHXXzJJtprX8go4JPo
+         gLtQ==
+X-Gm-Message-State: AOJu0Yz/2CCXKMguOpC9YkpPzIovIQCkBhvcLGXLf3l+6pQW7MC7iTu4
+	buLFBLheUDr5KqY/TzgE2i78fXKY7id+JNJVTAls7p0WRaPWiUH2cNeweQQnm4o=
+X-Google-Smtp-Source: AGHT+IEEVlW+BNWbMV85vZ6WYdTOqTzeRLV3AEtJ9tACnigk7GOkKqx+ZvsE8SGG0B3BCJLd8T+F8Q==
+X-Received: by 2002:a05:600c:3ba2:b0:40e:62d8:3321 with SMTP id n34-20020a05600c3ba200b0040e62d83321mr750444wms.34.1706269584076;
+        Fri, 26 Jan 2024 03:46:24 -0800 (PST)
+Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
+        by smtp.gmail.com with ESMTPSA id vh10-20020a170907d38a00b00a318be03519sm542518ejc.105.2024.01.26.03.46.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 03:46:23 -0800 (PST)
+From: Naresh Solanki <naresh.solanki@9elements.com>
+To: Lee Jones <lee@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Patrick Rudolph <patrick.rudolph@9elements.com>
+Cc: mazziesaccount@gmail.com,
+	Naresh Solanki <naresh.solanki@9elements.com>,
 	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kishon Vijay Abraham I <kishon@ti.com>,
-	Roger Quadros <rogerq@kernel.org>
-Subject: [PATCH 3/3] arm64: dts: ti: Add DT overlay for PCIe + USB3.0 SERDES personality card
-Date: Fri, 26 Jan 2024 13:45:30 +0200
-Message-Id: <20240126114530.40913-4-rogerq@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240126114530.40913-1-rogerq@kernel.org>
-References: <20240126114530.40913-1-rogerq@kernel.org>
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: mfd: Add regulator-compatible property
+Date: Fri, 26 Jan 2024 17:16:14 +0530
+Message-ID: <20240126114614.1424592-1-naresh.solanki@9elements.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,121 +85,57 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Kishon Vijay Abraham I <kishon@ti.com>
+Add regulator-compatible property.
+Also update example.
 
-Add overlay for PCIe (uses the second instance of PCIe in AM654x) and
-USB3.0 SERDES personality card
+TEST=Run below command & make sure there is no error
+make DT_CHECKER_FLAGS=-m dt_binding_check
 
-The PCI3/USB3 card is provided with the AM65x GP EVM configurtion [1]
-so apply the overlay to k3-am654-gp-evm.dtb
-
-[1] https://www.ti.com/lit/ug/spruim7/spruim7.pdf
-
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
+Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
 ---
- arch/arm64/boot/dts/ti/Makefile               |  5 +-
- .../arm64/boot/dts/ti/k3-am654-pcie-usb3.dtso | 67 +++++++++++++++++++
- 2 files changed, 71 insertions(+), 1 deletion(-)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am654-pcie-usb3.dtso
+ Documentation/devicetree/bindings/mfd/maxim,max5970.yaml | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index 3c008623b693..91fc14044ee3 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -45,7 +45,9 @@ dtb-$(CONFIG_ARCH_K3) += k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-am64-tqma64xxl-mbax4xxl-wlan.dtbo
+diff --git a/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml b/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml
+index 0da5cae3852e..75175098cbc2 100644
+--- a/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml
++++ b/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml
+@@ -74,6 +74,9 @@ properties:
+             description: |
+               The value of current sense resistor in microohms.
  
- # Boards with AM65x SoC
--k3-am654-gp-evm-dtbs := k3-am654-base-board.dtb k3-am654-base-board-rocktech-rk101-panel.dtbo
-+k3-am654-gp-evm-dtbs := k3-am654-base-board.dtb \
-+	k3-am654-base-board-rocktech-rk101-panel.dtbo \
-+	k3-am654-pcie-usb3.dtbo
- k3-am654-evm-dtbs := k3-am654-base-board.dtb k3-am654-icssg2.dtbo
- k3-am654-idk-dtbs := k3-am654-evm.dtb k3-am654-idk.dtbo k3-am654-pcie-usb2.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic.dtb
-@@ -59,6 +61,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am654-evm.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am654-idk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am654-base-board-rocktech-rk101-panel.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-am654-pcie-usb2.dtbo
-+dtb-$(CONFIG_ARCH_K3) += k3-am654-pcie-usb3.dtbo
++          regulator-compatible:
++            pattern: "^SW[0-1]$"
++
+         required:
+           - shunt-resistor-micro-ohms
  
- # Boards with J7200 SoC
- k3-j7200-evm-dtbs := k3-j7200-common-proc-board.dtb k3-j7200-evm-quad-port-eth-exp.dtbo
-diff --git a/arch/arm64/boot/dts/ti/k3-am654-pcie-usb3.dtso b/arch/arm64/boot/dts/ti/k3-am654-pcie-usb3.dtso
-new file mode 100644
-index 000000000000..c63b7241c005
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am654-pcie-usb3.dtso
-@@ -0,0 +1,67 @@
-+// SPDX-License-Identifier: GPL-2.0-only OR MIT
-+/**
-+ * DT overlay for SERDES personality card: 1lane PCIe + USB3.0 DRD on AM654 EVM
-+ *
-+ * Copyright (C) 2018-2024 Texas Instruments Incorporated - http://www.ti.com/
-+ */
-+
-+/dts-v1/;
-+/plugin/;
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/phy/phy.h>
-+#include <dt-bindings/phy/phy-am654-serdes.h>
-+
-+#include "k3-pinctrl.h"
-+
-+&serdes1 {
-+	status = "okay";
-+};
-+
-+&pcie1_rc {
-+	num-lanes = <1>;
-+	phys = <&serdes1 PHY_TYPE_PCIE 0>;
-+	phy-names = "pcie-phy0";
-+	reset-gpios = <&pca9555 5 GPIO_ACTIVE_HIGH>;
-+	status = "okay";
-+};
-+
-+&pcie1_ep {
-+	num-lanes = <1>;
-+	phys = <&serdes1 PHY_TYPE_PCIE 0>;
-+	phy-names = "pcie-phy0";
-+};
-+
-+&main_pmx0 {
-+	usb0_pins_default: usb0_pins_default {
-+		pinctrl-single,pins = <
-+			AM65X_IOPAD(0x02bc, PIN_OUTPUT, 0) /* (AD9) USB0_DRVVBUS */
-+		>;
-+	};
-+};
-+
-+&serdes0 {
-+	status = "okay";
-+	assigned-clocks = <&k3_clks 153 4>, <&serdes0 AM654_SERDES_CMU_REFCLK>;
-+	assigned-clock-parents = <&k3_clks 153 7>, <&k3_clks 153 4>;
-+};
-+
-+&dwc3_0 {
-+	status = "okay";
-+	assigned-clock-parents = <&k3_clks 151 4>,      /* set REF_CLK to 20MHz i.e. PER0_PLL/48 */
-+	<&k3_clks 151 8>;      /* set PIPE3_TXB_CLK to WIZ8B2M4VSB */
-+	phys = <&serdes0 PHY_TYPE_USB3 0>;
-+	phy-names = "usb3-phy";
-+};
-+
-+&usb0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&usb0_pins_default>;
-+	dr_mode = "host";
-+	maximum-speed = "super-speed";
-+	snps,dis-u1-entry-quirk;
-+	snps,dis-u2-entry-quirk;
-+};
-+
-+&usb0_phy {
-+	status = "okay";
-+};
+@@ -111,6 +114,8 @@ examples:
+ 
+             regulators {
+                 sw0_ref_0: sw0 {
++                    regulator-compatible = "SW0";
++                    regulator-name = "p5v";
+                     shunt-resistor-micro-ohms = <12000>;
+                 };
+             };
+@@ -145,9 +150,13 @@ examples:
+ 
+             regulators {
+                 sw0_ref_1: sw0 {
++                    regulator-compatible = "SW0";
++                    regulator-name = "p5v_aux";
+                     shunt-resistor-micro-ohms = <12000>;
+                 };
+                 sw1_ref_1: sw1 {
++                    regulator-compatible = "SW1";
++                    regulator-name = "p3v3_aux";
+                     shunt-resistor-micro-ohms = <10000>;
+                 };
+             };
+
+base-commit: ecb1b8288dc7ccbdcb3b9df005fa1c0e0c0388a7
 -- 
-2.34.1
+2.42.0
 
 
