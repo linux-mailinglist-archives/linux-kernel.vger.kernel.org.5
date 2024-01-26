@@ -1,116 +1,143 @@
-Return-Path: <linux-kernel+bounces-40465-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49C6C83E0F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:01:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E924283E0F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:01:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8DF61F25B2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:01:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A05D7282FD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:01:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF782208A7;
-	Fri, 26 Jan 2024 18:00:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E1F3208B0;
+	Fri, 26 Jan 2024 18:01:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="fx2AmksZ"
-Received: from xry111.site (xry111.site [89.208.246.23])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IXih+yPE"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 911F8200B8;
-	Fri, 26 Jan 2024 18:00:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02E1E208BA
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 18:01:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706292057; cv=none; b=QAcqKBezHoXRig75grzkmacYIHtKWZ2K4tyMOk1dKiK0KQmHr3rqJWX/9gQez2paQHuhom1E69ph97hmSIPtnaUKzu1nVaoh3r9dexMpGZRk1imtcgRfwJpUX41A/VtyPf72vrBTZUp46/cK8GmdvTIta59DkCbpEoWWSrhN3Go=
+	t=1706292083; cv=none; b=FuemvBVK7tX9C9jR8p57+Tr2HfxPsgy6i8VBZaYNfuh1bNMWUHJ6PkhJ1oKf3o+JhcvDiwOtTfnlDb+UMZB9C5Hzew860gMsWp5rabfLvLwzxxtKgi2nC1AVlVtrHrwqRxZyuQ4BpR0xOGPKuAv36c1GTjL0d/L5aV18orvtSnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706292057; c=relaxed/simple;
-	bh=66yodsV9kY5hG2qOgHS8Pb9bSZO6F5IF9GXK6+EyybI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=l6Vm1Yz1KaXUUpZXpaagFPIOM30FjNw1Wq+jMTCumIdYwWwYvjBF5rgIQ2HiBK+NUuI/ewsjzIiHat2yEo80Hnvx+xospIj2nDeapYPUC6STl7oc9MYh+tnAlrKrJLOd2inB4Jvp1FHIvgeZj09+E/J9TmgBhGRTvDZV1tEPWwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=fx2AmksZ; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1706292053;
-	bh=66yodsV9kY5hG2qOgHS8Pb9bSZO6F5IF9GXK6+EyybI=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=fx2AmksZ45YocPyRDDniQVgwE/nLVkgdMormYw2A5hRgg6507JyJSV0veB8kasy3n
-	 27cS70Yx+MU+0VEaLKa7FVXDTbE4oGVDecGctsrZ9XA56yjz2A12SDfndsfqH5OMD3
-	 0sZ8MBJ0Lu3pS9wwuCJsC7BylpcfrqCf2EmpD3Eo=
-Received: from [IPv6:240e:358:1181:9d00:dc73:854d:832e:3] (unknown [IPv6:240e:358:1181:9d00:dc73:854d:832e:3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384))
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id C9599669BB;
-	Fri, 26 Jan 2024 13:00:50 -0500 (EST)
-Message-ID: <75779311d0ee527c95bcb6170c4490520d0548fd.camel@xry111.site>
-Subject: Re: Strange EFAULT on mips64el returned by syscall when another
- thread is forking
-From: Xi Ruoyao <xry111@xry111.site>
-To: Jiaxun Yang <jiaxun.yang@flygoat.com>, "linux-mips@vger.kernel.org"
-	 <linux-mips@vger.kernel.org>
-Cc: linux-kernel@vger.kernel.org, Thomas Bogendoerfer
-	 <tsbogend@alpha.franken.de>, libc-alpha@sourceware.org, 
-	regressions@lists.linux.dev
-Date: Sat, 27 Jan 2024 02:00:47 +0800
-In-Reply-To: <1e1ec730efc58f17ecf008a4600321e3d200ebda.camel@xry111.site>
-References: <75e9fd7b08562ad9b456a5bdaacb7cc220311cc9.camel@xry111.site>
-	 <4b715c9f-6a9e-4496-8810-670080cb715a@app.fastmail.com>
-	 <1e1ec730efc58f17ecf008a4600321e3d200ebda.camel@xry111.site>
-Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
- keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1706292083; c=relaxed/simple;
+	bh=ILNAcCRYxFV2hBwDPjxHOp/jkyTMR71/MVIQgy9Ru1w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oFhvWei4qSGu9qw0Z9QZPaXTcaRhAGjAXdCeO6STKf/4NwtezmWQLs8rCpR/S9bWw+LIBbZ9LPJcFaG2Z/nyNa1c69GRCO3aFFe3kMLXV22Bj0I5GXQbD2HVm10LWx/DdchQLz0hKay05ofsDihBg8649+Kcq2slQeiE4YJVHYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IXih+yPE; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706292081;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=h1idEZmiqZ0PAWapQhsolthHnuhF6TvOu+W3q8ZLhUs=;
+	b=IXih+yPExA88Q8XQBhWU5uO8z6+Yb+ppVtuz39YfvPz29KZWA47/JMbMowV/LYTxl+Aof9
+	RXi34dlESDlCfxRn+hxkTHQ//5HW8bnWMLwMpUqnK9LgM4zQk1ff4TYtv9GvOZLpx08dY4
+	BcIGxWepZ4NxbDG1aNo+ib5YBJD/I8U=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-486-b9P8I73oM7COiVsz9sYaig-1; Fri, 26 Jan 2024 13:01:19 -0500
+X-MC-Unique: b9P8I73oM7COiVsz9sYaig-1
+Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-59a0b1bb6b1so611673eaf.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:01:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706292078; x=1706896878;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h1idEZmiqZ0PAWapQhsolthHnuhF6TvOu+W3q8ZLhUs=;
+        b=SmwojdsNaWugJFpb2NL9waSodYlOAHE7KzL/wiYbTIugE8axm85wfc0cUmfHnBvDbm
+         /GOksdNwp/Klft/q4tbswT7gC3O3hXpofS1QV938kvzSOlDbExqgkfZiz+8zZi74f2lE
+         YGQjQfD5toDIhOr72qJiFghZy6wATS2UzFCvbWM7l8gw3TN26a7S/2uZkmZ/T2h41eSK
+         WMkFr/Fw9WMBiuhGFcIwdtrNZu8cLNTEuIj32EnT+/DKLmav0nCJvx5ZRV6ejNrT96Pj
+         F/LfA8u4JhrMolG1H3SR5VvDyQhBO/nTrJ/z4pJvKJ1PKOJqqzEabbRBvR9ruzYVgSye
+         KJYA==
+X-Gm-Message-State: AOJu0YzWJhk9zGG9KkfCqI+5fCgCRT4VsWcK+MY7YxAUCIve4xKe3nCt
+	OMXMDUaaLlIQ3xRExqiWdrWEuNu+GLC+QEjxBra+QEnmvWTZA3C/e9FgOZcX+zf6Mm9cghueuHm
+	LZpweWl7QQK6JZcuZMwkI0hGXdWpud5ag/L4WuhN+JnCsnwZ4Tj4QtCVjQFyO4av+iVA5H37GMS
+	G0xFzmo5bfQVh10jEo2m70oxIjOItcO3ALtcKK
+X-Received: by 2002:a05:6359:321a:b0:175:b57e:7be1 with SMTP id rj26-20020a056359321a00b00175b57e7be1mr63141rwb.52.1706292078524;
+        Fri, 26 Jan 2024 10:01:18 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF/FiWt3RhBG2eZaUchUIE9MWYT+Vtp8D1XAoXVuiI7s21J/GldQs2rrbA47me4Q5yktW3RDvlHGE5BtjxRS6Q=
+X-Received: by 2002:a05:6359:321a:b0:175:b57e:7be1 with SMTP id
+ rj26-20020a056359321a00b00175b57e7be1mr63124rwb.52.1706292078152; Fri, 26 Jan
+ 2024 10:01:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20231115090735.2404866-1-chenhuacai@loongson.cn>
+In-Reply-To: <20231115090735.2404866-1-chenhuacai@loongson.cn>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Fri, 26 Jan 2024 19:01:06 +0100
+Message-ID: <CABgObfYbv_rHto8eEWLB3srmCPj6Le7wDfG5XtYpUH17HBTcCw@mail.gmail.com>
+Subject: Re: [PATCH] LoongArch: KVM: Fix build due to API changes
+To: Huacai Chen <chenhuacai@loongson.cn>
+Cc: Huacai Chen <chenhuacai@kernel.org>, Tianrui Zhao <zhaotianrui@loongson.cn>, 
+	Bibo Mao <maobibo@loongson.cn>, kvm@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, Xuerui Wang <kernel@xen0n.name>, 
+	Jiaxun Yang <jiaxun.yang@flygoat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2024-01-26 at 20:58 +0800, Xi Ruoyao wrote:
-> On Fri, 2024-01-26 at 12:33 +0000, Jiaxun Yang wrote:
-> >=20
-> >=20
-> > =E5=9C=A82024=E5=B9=B41=E6=9C=8824=E6=97=A5=E4=B8=80=E6=9C=88 =E4=B8=8A=
-=E5=8D=8810:42=EF=BC=8CXi Ruoyao=E5=86=99=E9=81=93=EF=BC=9A
-> > > Hi,
-> > >=20
-> > > When I'm testing Glibc master branch for upcoming 2.39 release, I
-> > > noticed an alarming test failure on mips64el:
-> >=20
-> > So apparently it should be tracked as a regression.
-> >=20
-> > #regzbot ^introduced 4bce37a68ff884e821a02a731897a8119e0c37b7
-> >=20
-> > Should we revert it for now?
->=20
-> I'd say "yes" if we cannot easily patch instruction_pointer() to handle
-> delay slot.=C2=A0 Anyway the reversion will be a MIPS-only change.
+On Wed, Nov 15, 2023 at 10:14=E2=80=AFAM Huacai Chen <chenhuacai@loongson.c=
+n> wrote:
+>
+> Commit 8569992d64b8f750e34b7858eac ("KVM: Use gfn instead of hva for
+> mmu_notifier_retry") replaces mmu_invalidate_retry_hva() usage with
+> mmu_invalidate_retry_gfn() for X86, LoongArch also need similar changes
+> to fix build.
+>
+> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 
-Phew.  Just tried it and:
+Applied, thanks.
 
-arch/mips/mm/fault.c: In function =E2=80=98__do_page_fault=E2=80=99:
-arch/mips/mm/fault.c:111:26: error: passing argument 1 of =E2=80=98expand_s=
-tack=E2=80=99 from incompatible pointer type [-Werror=3Dincompatible-pointe=
-r-types]
-  111 |         if (expand_stack(vma, address))
-      |                          ^~~
-      |                          |
-      |                          struct vm_area_struct *
-In file included from ./include/linux/pid_namespace.h:7,
-                 from ./include/linux/ptrace.h:10,
-                 from arch/mips/mm/fault.c:16:
-/include/linux/mm.h:3431:56: note: expected =E2=80=98struct mm_struct *=E2=
-=80=99 but argument is of type =E2=80=98struct vm_area_struct *=E2=80=99
- 3431 | struct vm_area_struct *expand_stack(struct mm_struct * mm, unsigned=
- long addr);
-      |                                     ~~~~~~~~~~~~~~~~~~~^~
-cc1: some warnings being treated as errors
+Paolo
 
---=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
+> ---
+>  arch/loongarch/kvm/mmu.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/loongarch/kvm/mmu.c b/arch/loongarch/kvm/mmu.c
+> index 80480df5f550..9463ebecd39b 100644
+> --- a/arch/loongarch/kvm/mmu.c
+> +++ b/arch/loongarch/kvm/mmu.c
+> @@ -627,7 +627,7 @@ static bool fault_supports_huge_mapping(struct kvm_me=
+mory_slot *memslot,
+>   *
+>   * There are several ways to safely use this helper:
+>   *
+> - * - Check mmu_invalidate_retry_hva() after grabbing the mapping level, =
+before
+> + * - Check mmu_invalidate_retry_gfn() after grabbing the mapping level, =
+before
+>   *   consuming it.  In this case, mmu_lock doesn't need to be held durin=
+g the
+>   *   lookup, but it does need to be held while checking the MMU notifier=
+.
+>   *
+> @@ -807,7 +807,7 @@ static int kvm_map_page(struct kvm_vcpu *vcpu, unsign=
+ed long gpa, bool write)
+>
+>         /* Check if an invalidation has taken place since we got pfn */
+>         spin_lock(&kvm->mmu_lock);
+> -       if (mmu_invalidate_retry_hva(kvm, mmu_seq, hva)) {
+> +       if (mmu_invalidate_retry_gfn(kvm, mmu_seq, gfn)) {
+>                 /*
+>                  * This can happen when mappings are changed asynchronous=
+ly, but
+>                  * also synchronously if a COW is triggered by
+> --
+> 2.39.3
+>
+
 
