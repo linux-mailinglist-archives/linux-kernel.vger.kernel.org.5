@@ -1,269 +1,138 @@
-Return-Path: <linux-kernel+bounces-40532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40527-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF58083E200
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:55:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3948F83E1EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:48:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20C6D1C21AF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:55:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E313B1F295C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:48:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63105224D0;
-	Fri, 26 Jan 2024 18:55:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEE4E2232E;
+	Fri, 26 Jan 2024 18:48:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="GZPP7lFv"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2061.outbound.protection.outlook.com [40.107.101.61])
+	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="lZ/8j10O"
+Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF3AD22309;
-	Fri, 26 Jan 2024 18:55:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.61
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706295320; cv=fail; b=Fntqfspl28ixjcRrJL75kOUOR86RoLlQOT0En4Z5Yi3pUUDMpdyM/4UFuuVX/KA9bIQUHkeNl6TU2R7FKP1TW+jm7Jwg/pmlHDRTaK+mB+VUrtfWPxRXQsyLqawMwGONTMKdqL+5cD5hbjqh1lkpL7MqPcwEiEKfLUf4iTUT8NU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706295320; c=relaxed/simple;
-	bh=y9vXwiPRhjDK5LIG1HjWnDXOXe2AuFCrRdsVX4inWOs=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=H40ousakgWsOxOV/wXVZhVSvXhNYjXOM+HEC+AXUghzkOoyg2xrkLNiXS3qsEN50ezmXsf6NZHN90c/zx3kTdakNGITizRvQOsA3We2HCCsrpeP7Wb6X2nRytG8ckUdikSPeyAPYj40gA1Cbj8bA3QIK52QTZiH/8VWe3EweDIw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=GZPP7lFv; arc=fail smtp.client-ip=40.107.101.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Gt+0+2AfmNBHuvzaS/lsgqIUa2Ozuwkiz0HeEN0YPyJ19ggW5p5Ids6aFlyJc7Gv9nt2alxRIYk/0EHiZmL+A6ukHq+cx0hFLF+9vawc0KGHJ6GPZAXqigCKpx0jJVOoP47hX9nGuv522B1u6WeyzPmFIymG56XfoDiBpVw7CpkOz4Lun0B6gMiz+ALCgrgpR1caXw2kCVxyV3hcZIGs9UD75IFXer9JbnAIRHYDMq15pw8HOimUS/sj0qrNoTIBsaMTF9iKplcMCwPjDNdtSqm+wIbstICoLdXQGPBFaoCdqnTUezVbkYMbwNjOafATiR3I4sNl6JRKC4AW8CL7Pg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=66Vx4GHD7Q38xoFwa1pZit4wSgj+IvKLEQn562SH+5g=;
- b=gUSMhu6Xdfs5L3PbHUHITNOQfFuDfYIJeu3DaMuJpo51KZEg4MqgGJhczs/UDXRNNhpVjEzH52C5DfzOmfyfhlL9qyXWm9fcF35siAa95ZMWkOJlYUNDSoPGk9HemweIgmDK6GyINxLrgJNLywtfylCrTxqYsUvgr386F4rBU44/51BhEi4jI8/ec/XtK8M14hpZM17InEr+dGd9b5xbvAg/o0/dZSDYE5CR486l078h2YIxUoQsFueMRBehPptmeswIeGvdgb73Kb965LD9WKTyh3nYoWW34FLkAE0SrPcIzSqEvawzTC9tSQVd0DkTTgzdPgl9JqXP13d6WAgdyQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=66Vx4GHD7Q38xoFwa1pZit4wSgj+IvKLEQn562SH+5g=;
- b=GZPP7lFvK2WqPniINP1gt0I43PeIy4EowItLM5K/7fkPJfftF8ojGIRiPRBFX02ssH4LXtDJmkOEUUKJ0AgRAi8cljjREybmd7kIQ9k7r8aofACtBHoZurUf4sX2ORVakKe6SQNLhLCaHhmhWFkjGdmNuQN1mAJCj90rdjPTo2g=
-Received: from BN9PR03CA0573.namprd03.prod.outlook.com (2603:10b6:408:10d::8)
- by DS0PR12MB7993.namprd12.prod.outlook.com (2603:10b6:8:14b::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Fri, 26 Jan
- 2024 18:55:15 +0000
-Received: from BN2PEPF0000449E.namprd02.prod.outlook.com
- (2603:10b6:408:10d:cafe::77) by BN9PR03CA0573.outlook.office365.com
- (2603:10b6:408:10d::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.27 via Frontend
- Transport; Fri, 26 Jan 2024 18:55:15 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN2PEPF0000449E.mail.protection.outlook.com (10.167.243.149) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7228.16 via Frontend Transport; Fri, 26 Jan 2024 18:55:15 +0000
-Received: from AUS-P9-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Fri, 26 Jan
- 2024 12:55:12 -0600
-From: Mario Limonciello <mario.limonciello@amd.com>
-To: <amd-gfx@lists.freedesktop.org>, Alex Deucher <alexander.deucher@amd.com>,
-	Harry Wentland <harry.wentland@amd.com>, "Rafael J . Wysocki"
-	<rafael@kernel.org>, Hans de Goede <hdegoede@redhat.com>
-CC: "open list:ACPI" <linux-acpi@vger.kernel.org>, open list
-	<linux-kernel@vger.kernel.org>, "open list:DRM DRIVERS"
-	<dri-devel@lists.freedesktop.org>, Melissa Wen <mwen@igalia.com>, "Mark
- Pearson" <mpearson-lenovo@squebb.ca>, Mario Limonciello
-	<mario.limonciello@amd.com>
-Subject: [PATCH 2/2] drm/amd: Fetch the EDID from _DDC if available for eDP
-Date: Fri, 26 Jan 2024 12:46:39 -0600
-Message-ID: <20240126184639.8187-3-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240126184639.8187-1-mario.limonciello@amd.com>
-References: <20240126184639.8187-1-mario.limonciello@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9A9C1DA24;
+	Fri, 26 Jan 2024 18:48:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.93.223.253
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706294906; cv=none; b=fmYxhuwdRdRiWLiWML6DjhtyRtIyMwfOsxCDBbcYFlkWtX04e9Xr/99OiZnlFmF+Z+Jm2jUUUuRNrMH3Uf2uu0ufaizFaiGqUVcEgrZPyqtlufMXyE5drLxkATi8W4FjI6f7svFlOJt5dWN5K6v9ONEDtcQHra4xwDAK9m0EIq4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706294906; c=relaxed/simple;
+	bh=wnUNn5yxHCVb9FiP1SFelXYi0ONajKNwQyCfVL9ATek=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=kKHEroCAzR7n6ngYgZ04dCuY8lidnsMfjcDAn9NasnAxPGijGm4Ewf+/1KMago92gWVKWymd5KgvKxLuoOAkqIlJEH25Qkzc7S+VgaRzjx/E2jAizGzFQH8UFAwFkZbwbe2SJmszoQn8dUejGUZcNdp0Ztm0akJDMse9O1pR1FM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=lZ/8j10O; arc=none smtp.client-ip=77.93.223.253
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tesarici.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by bee.tesarici.cz (Postfix) with ESMTPSA id C9B2518E2AB;
+	Fri, 26 Jan 2024 19:48:20 +0100 (CET)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
+	t=1706294901; bh=wnUNn5yxHCVb9FiP1SFelXYi0ONajKNwQyCfVL9ATek=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=lZ/8j10OdMsjKsw2hHbOfIszeiZ1QgSFl52Xs3dQ9zc4NbXZedtviL6xvim7FfU3r
+	 uGcj3Wy0wrkTTkFjiJz/6nhrd61KIRCZ9qe0u3UBpGNXLOw6ZSWn7FPUEJlHF784ew
+	 GFnbOO6Ehj96nx0wr/eFuCBhZ7mJCMRR4LGoyHmDTIWY6xeyTgcsNhp/uNNAq0/llB
+	 VuTlEWAxee4sKfVsd/BIjLME/iyablo2kerVOIZA26t7pBOs/PmIxCsIyAys2dafAj
+	 Le3PclwTvOgYFrvIzYU71mVYxnfxQmDFkjQgcHn1WgFzQIDhaa6QDSOs7q0uOPLIp/
+	 MM7BdyJ8g0XRw==
+Date: Fri, 26 Jan 2024 19:48:19 +0100
+From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+ <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Christoph Hellwig
+ <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>, Joerg Roedel
+ <joro@8bytes.org>, Will Deacon <will@kernel.org>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Magnus Karlsson <magnus.karlsson@intel.com>, Maciej Fijalkowski
+ <maciej.fijalkowski@intel.com>, Alexander Duyck <alexanderduyck@fb.com>,
+ bpf@vger.kernel.org, netdev@vger.kernel.org, iommu@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 2/7] dma: avoid expensive redundant calls for
+ sync operations
+Message-ID: <20240126194819.147cb4e2@meshulam.tesarici.cz>
+In-Reply-To: <0cf72c00-21d9-4f1a-be14-80336da5dff4@arm.com>
+References: <20240126135456.704351-1-aleksander.lobakin@intel.com>
+	<20240126135456.704351-3-aleksander.lobakin@intel.com>
+	<0f6f550c-3eee-46dc-8c42-baceaa237610@arm.com>
+	<7ff3cf5d-b3ff-4b52-9031-30a1cb71c0c9@intel.com>
+	<0cf72c00-21d9-4f1a-be14-80336da5dff4@arm.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN2PEPF0000449E:EE_|DS0PR12MB7993:EE_
-X-MS-Office365-Filtering-Correlation-Id: 35326c83-62f1-4d08-ee3e-08dc1ea05534
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	fxm+QCg9zNsDOdotC7Y5GMTySPho2jP5qKbIfiXVdlcAU2iChPy/ZpO/2IEtivhWKvkGuj/U9cUD4qpt/pn13Dvc3/2ZceOnYltjVzM8aVg2Oz61NimOA+c6T713wVQ3Dmb073VzV/HdSQoMtq4w/GYzZ2Uj8/R/5MKLsnY0MgM7e1cEtKZ1PNEYWSrMu2SMDvGm5Wl3fsKXcnbCJ3wnTM29cpEYqsY/a34x8Ru2DGM1r3sh+R8cKDgP9ozRwVv8aIf0xNF1L+uvZB7JGTVO7A8bTNSgnEvT2GAgw49QVJExH4AlEgMq25MesowYVPFa8+DHi6kGR7KGHL/6vXkJnlh6ahMfkNkKIYG2L57iCb/+czaAH5oY2MzDCo6gSTEPC0MYLdp3uX19aC8SjnOlFgC/54jT5YE4PSTdbrX6+9Z/Q+Lm+2lRuHdxi3IGi5bCfRfGi2Y/YlOC0P1mbwAKf5bLwUttHS9fcTiLZXIGLB8qV+2QqZZzZNrEpflXC7+OtyLrwkrM21ZIg0SaVPqcHzXEG0LYpIYfJ/OjdqQVDLe/rXpIQmfbscTSXGZ76CUPDwIQ//soRo4bYxLGPQRuHVxLww3EEV9r0VFCBV6K9H8E2M3fCyBMtCFLNdkin96qn1JjN+4xWjvehMGlbcu4iQ+ToIRPuTMj5alV6olRPd8SYP4s9NLjPPJL+ETbvOMLsEHLc+0z+VfcFFraJaZ4UP2sBuxYA7snEVEY7xqymUAWS2bEF6KF9m0AooXLPq1VPXAHLPNNB45vuzplXlei5w==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(346002)(39860400002)(396003)(376002)(230922051799003)(451199024)(1800799012)(82310400011)(64100799003)(186009)(36840700001)(40470700004)(46966006)(36860700001)(8676002)(4326008)(8936002)(47076005)(44832011)(7696005)(316002)(2616005)(1076003)(478600001)(41300700001)(336012)(426003)(40480700001)(2906002)(26005)(81166007)(16526019)(36756003)(86362001)(110136005)(356005)(6666004)(40460700003)(70206006)(83380400001)(82740400003)(54906003)(70586007)(5660300002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 18:55:15.2431
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 35326c83-62f1-4d08-ee3e-08dc1ea05534
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN2PEPF0000449E.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7993
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Some manufacturers have intentionally put an EDID that differs from
-the EDID on the internal panel on laptops.
+On Fri, 26 Jan 2024 17:21:24 +0000
+Robin Murphy <robin.murphy@arm.com> wrote:
 
-Attempt to fetch this EDID if it exists and prefer it over the EDID
-that is provided by the panel.
+> On 26/01/2024 4:45 pm, Alexander Lobakin wrote:
+> > From: Robin Murphy <robin.murphy@arm.com>
+> > Date: Fri, 26 Jan 2024 15:48:54 +0000
+> >   
+> >> On 26/01/2024 1:54 pm, Alexander Lobakin wrote:  
+> >>> From: Eric Dumazet <edumazet@google.com>
+> >>>
+> >>> Quite often, NIC devices do not need dma_sync operations on x86_64
+> >>> at least.
+> >>> Indeed, when dev_is_dma_coherent(dev) is true and
+> >>> dev_use_swiotlb(dev) is false, iommu_dma_sync_single_for_cpu()
+> >>> and friends do nothing.
+> >>>
+> >>> However, indirectly calling them when CONFIG_RETPOLINE=y consumes about
+> >>> 10% of cycles on a cpu receiving packets from softirq at ~100Gbit rate.
+> >>> Even if/when CONFIG_RETPOLINE is not set, there is a cost of about 3%.
+> >>>
+> >>> Add dev->skip_dma_sync boolean which is set during the device
+> >>> initialization depending on the setup: dev_is_dma_coherent() for direct
+> >>> DMA, !(sync_single_for_device || sync_single_for_cpu) or positive result
+> >>> from the new callback, dma_map_ops::can_skip_sync for non-NULL DMA ops.
+> >>> Then later, if/when swiotlb is used for the first time, the flag
+> >>> is turned off, from swiotlb_tbl_map_single().  
+> >>
+> >> I think you could probably just promote the dma_uses_io_tlb flag from
+> >> SWIOTLB_DYNAMIC to a general SWIOTLB thing to serve this purpose now.  
+> > 
+> > Nice catch!
+> >   
+> >>
+> >> Similarly I don't think a new op is necessary now that we have
+> >> dma_map_ops.flags. A simple static flag to indicate that sync may be> skipped under the same conditions as implied for dma-direct - i.e.
+> >> dev_is_dma_coherent(dev) && !dev->dma_use_io_tlb - seems like it ought
+> >> to suffice.  
+> > 
+> > In my initial implementation, I used a new dma_map_ops flag, but then I
+> > realized different DMA ops may require or not require syncing under
+> > different conditions, not only dev_is_dma_coherent().
+> > Or am I wrong and they would always be the same?  
+> 
+> I think it's safe to assume that, as with P2P support, this will only 
+> matter for dma-direct and iommu-dma for the foreseeable future, and 
+> those do currently share the same conditions as above. Thus we may as 
+> well keep things simple for now, and if anything ever does have cause to 
+> change, it can be the future's problem to keep this mechanism working as 
+> intended.
 
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu.h           |  2 ++
- drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c      | 30 +++++++++++++++++++
- .../gpu/drm/amd/amdgpu/amdgpu_connectors.c    |  5 ++++
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  8 ++++-
- .../amd/display/amdgpu_dm/amdgpu_dm_helpers.c |  7 +++--
- 5 files changed, 49 insertions(+), 3 deletions(-)
+Can we have a comment that states this assumption along with the flag?
+Because when it breaks, it will keep someone cursing for days why DMA
+sometimes fails on their device before they find out it's not synced.
+And then wondering why the code makes such silly assumptions...
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-index c5f3859fd682..99abe12567a4 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-@@ -1520,6 +1520,7 @@ int amdgpu_acpi_get_mem_info(struct amdgpu_device *adev, int xcc_id,
- 
- void amdgpu_acpi_get_backlight_caps(struct amdgpu_dm_backlight_caps *caps);
- bool amdgpu_acpi_should_gpu_reset(struct amdgpu_device *adev);
-+void *amdgpu_acpi_edid(struct amdgpu_device *adev, struct drm_connector *connector);
- void amdgpu_acpi_detect(void);
- void amdgpu_acpi_release(void);
- #else
-@@ -1537,6 +1538,7 @@ static inline int amdgpu_acpi_get_mem_info(struct amdgpu_device *adev,
- }
- static inline void amdgpu_acpi_fini(struct amdgpu_device *adev) { }
- static inline bool amdgpu_acpi_should_gpu_reset(struct amdgpu_device *adev) { return false; }
-+static inline void *amdgpu_acpi_edid(struct amdgpu_device *adev, struct drm_connector *connector) { return NULL; }
- static inline void amdgpu_acpi_detect(void) { }
- static inline void amdgpu_acpi_release(void) { }
- static inline bool amdgpu_acpi_is_power_shift_control_supported(void) { return false; }
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-index e550067e5c5d..c106335f1f22 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-@@ -1380,6 +1380,36 @@ bool amdgpu_acpi_should_gpu_reset(struct amdgpu_device *adev)
- #endif
- }
- 
-+/**
-+ * amdgpu_acpi_edid
-+ * @adev: amdgpu_device pointer
-+ * @connector: drm_connector pointer
-+ *
-+ * Returns the EDID used for the internal panel if present, NULL otherwise.
-+ */
-+void *
-+amdgpu_acpi_edid(struct amdgpu_device *adev, struct drm_connector *connector)
-+{
-+	struct drm_device *ddev = adev_to_drm(adev);
-+	struct acpi_device *acpidev = ACPI_COMPANION(ddev->dev);
-+	void *edid;
-+	int r;
-+
-+	if (!acpidev)
-+		return NULL;
-+
-+	if (connector->connector_type != DRM_MODE_CONNECTOR_eDP)
-+		return NULL;
-+
-+	r = acpi_video_get_edid(acpidev, ACPI_VIDEO_DISPLAY_LCD, -1, &edid);
-+	if (r < 0) {
-+		DRM_DEBUG_DRIVER("Failed to get EDID from ACPI: %d\n", r);
-+		return NULL;
-+	}
-+
-+	return kmemdup(edid, r, GFP_KERNEL);
-+}
-+
- /*
-  * amdgpu_acpi_detect - detect ACPI ATIF/ATCS methods
-  *
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
-index 9caba10315a8..c7e1563a46d3 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
-@@ -278,6 +278,11 @@ static void amdgpu_connector_get_edid(struct drm_connector *connector)
- 	struct amdgpu_device *adev = drm_to_adev(dev);
- 	struct amdgpu_connector *amdgpu_connector = to_amdgpu_connector(connector);
- 
-+	if (amdgpu_connector->edid)
-+		return;
-+
-+	/* if the BIOS specifies the EDID via _DDC, prefer this */
-+	amdgpu_connector->edid = amdgpu_acpi_edid(adev, connector);
- 	if (amdgpu_connector->edid)
- 		return;
- 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index cd98b3565178..1faa21f542bd 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -6562,17 +6562,23 @@ static void amdgpu_dm_connector_funcs_force(struct drm_connector *connector)
- {
- 	struct amdgpu_dm_connector *aconnector = to_amdgpu_dm_connector(connector);
- 	struct amdgpu_connector *amdgpu_connector = to_amdgpu_connector(connector);
-+	struct amdgpu_device *adev = drm_to_adev(connector->dev);
- 	struct dc_link *dc_link = aconnector->dc_link;
- 	struct dc_sink *dc_em_sink = aconnector->dc_em_sink;
- 	struct edid *edid;
- 
-+	/* prefer ACPI over panel for eDP */
-+	edid = amdgpu_acpi_edid(adev, connector);
-+
- 	/*
- 	 * Note: drm_get_edid gets edid in the following order:
- 	 * 1) override EDID if set via edid_override debugfs,
- 	 * 2) firmware EDID if set via edid_firmware module parameter
- 	 * 3) regular DDC read.
- 	 */
--	edid = drm_get_edid(connector, &amdgpu_connector->ddc_bus->aux.ddc);
-+	if (!edid)
-+		edid = drm_get_edid(connector, &amdgpu_connector->ddc_bus->aux.ddc);
-+
- 	if (!edid) {
- 		DRM_ERROR("No EDID found on connector: %s.\n", connector->name);
- 		return;
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-index e3915c4f8566..6bf2a8867e76 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-@@ -895,6 +895,7 @@ enum dc_edid_status dm_helpers_read_local_edid(
- {
- 	struct amdgpu_dm_connector *aconnector = link->priv;
- 	struct drm_connector *connector = &aconnector->base;
-+	struct amdgpu_device *adev = drm_to_adev(connector->dev);
- 	struct i2c_adapter *ddc;
- 	int retry = 3;
- 	enum dc_edid_status edid_status;
-@@ -909,8 +910,10 @@ enum dc_edid_status dm_helpers_read_local_edid(
- 	 * do check sum and retry to make sure read correct edid.
- 	 */
- 	do {
--
--		edid = drm_get_edid(&aconnector->base, ddc);
-+		/* prefer ACPI over panel for eDP */
-+		edid = amdgpu_acpi_edid(adev, connector);
-+		if (!edid)
-+			edid = drm_get_edid(&aconnector->base, ddc);
- 
- 		/* DP Compliance Test 4.2.2.6 */
- 		if (link->aux_mode && connector->edid_corrupt)
--- 
-2.34.1
-
+My two cents
+Petr T
 
