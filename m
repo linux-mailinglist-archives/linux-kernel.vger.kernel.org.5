@@ -1,103 +1,174 @@
-Return-Path: <linux-kernel+bounces-40615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40616-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D603583E338
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:17:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94C4F83E33B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:18:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44785289B33
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:17:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2257E1F26DA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:18:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A023322EFC;
-	Fri, 26 Jan 2024 20:17:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66B5F22EFA;
+	Fri, 26 Jan 2024 20:17:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Xb42bPK9"
-Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SLiKPXkj"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D16123743
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 20:17:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34550241F8
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 20:17:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706300260; cv=none; b=ocUDJAmFn1AnOuionGTXoLWstLjaCOCOu6u3O8fnMcprZLobp1RofeJuH18fX/LVHCOXiVRy6vqOZ1KzyHkjYOEQC2G4x1w31aHjTjkY/AbTKjHzE6cpO4eYFdDSkhymJmq/2hfYTrGCefZ0DtEm6+I3fV6wpdIhQEznFMu+NnA=
+	t=1706300278; cv=none; b=hgNnEXjuV5Qd5f88FpRSB6Bvxru9v/YqbXRTfhiocwqyhZVtfh74kLwQL0GDnGZ/3fv5WGWl7t2HKbHWO3Vmv3q6Xp5zP2F9Pu52yycqH6wuOy/Zy/+z6V1AN77nERf1tyPkcGKadHezLgr7YAdN3RC3NKw/puzHAk+9Hn04L8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706300260; c=relaxed/simple;
-	bh=HAQPps5wjqE0jv8rgN+WS1Gw3/xSMCClPFvhNPdQHGM=;
+	s=arc-20240116; t=1706300278; c=relaxed/simple;
+	bh=rpdW6PURYqzbeQ3X/TN6LDESW+qA+/o5fzR/Z99lIQo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Fy8dglaYAhHhofSndsIH9xhqa8kHz4N5zPHRgX3c8F5tXxcvnkWGKGSiELZx3Wz30zfTOOxfkh0wmwv7FvNifs2FIpBFN0O8I9MDo3pklLCI68ZQGen0q9yTGXqwSAcF9CcHRMDMtpBrGynOJCBc8b1xCLV9o6ge8vZo127MG3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Xb42bPK9; arc=none smtp.client-ip=209.85.219.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-68195c0c8d1so3923046d6.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 12:17:38 -0800 (PST)
+	 To:Cc:Content-Type; b=J8xHfxEww2Nv7V14SxgNfQCNTV+iOHb/L6a9J7Lw/qFBq166N1liKeUxJl3EWOs3nErvSOrlRgdL24WlNon5+Z2XT0PMljFUgmScKMlRMMnx2V8G1QzaH656n6nfc5jBkIBGDv8CVXu0iI9l6yJXB6mzh3gT4xlzXC0MBKFsE9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SLiKPXkj; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6daa89a6452so571746b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 12:17:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706300257; x=1706905057; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706300276; x=1706905076; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HAQPps5wjqE0jv8rgN+WS1Gw3/xSMCClPFvhNPdQHGM=;
-        b=Xb42bPK9vDS0/pnhLKk8rm/spr/1sx0zMw3SkAotGXPUBI2/b54OzKDFlBW0TQqkze
-         +X1g/DkMT3HvzuHRASpRRY6iDq4VmYuoPMQC6k4fnJIXUH+K4p4GaasBll8lkv+knqWP
-         9qsEgVR9dR7CZ7jb7Nsc0k2u9qpmUB3MiwThM=
+        bh=TY8f4fU4xwCCs2Pdc3Pqh77KDrWj9ON9heZB0LQFAlc=;
+        b=SLiKPXkjzwrGU69bESZr0W2LNgbdVZqIU1Q5hq0t9Gb4gtuAIXohvs9thHdwpGf2DP
+         YTK/P6Zw+dttvCGLzvQS7bKlgaey4sO/Y0QYhEinOvRbZBEwBKgFdCwd1xvia9Z5K+zd
+         I8IAnzqAIoFNt/ln10I+thjY0NnK9X0vR3e+DSGy+YreiE1LYQYLpvcVC9y3UKn2beSo
+         eXHuALnXb2gYupD0pNc0Kv6xgz2lrQ/e9qisAs6p9VOFGxzNWH1WX5kxyVhtn/SJkn6m
+         y8WMF31W4FL6o7u6/xkgql34seVt/erduU+rJpQWq6wWD9MQ6mAJN7YtKgrFAdJaAP48
+         Q6FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706300257; x=1706905057;
+        d=1e100.net; s=20230601; t=1706300276; x=1706905076;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HAQPps5wjqE0jv8rgN+WS1Gw3/xSMCClPFvhNPdQHGM=;
-        b=QEM+3DhpXCXJ5SQkaA0GILNyA78ob+HQUrtEJ7a/cZwoUrgQMtktIFxJ1dbGpSFhDU
-         wrAxSr+NYOCx24AzUI4t7ezuOmrfeEqWISXpdOYz4859RxjM5148/B3chaNKBBmMVaMo
-         kVBS9jXuO8eiFauxs2oOBNo42HrXkgMBBMfqnduths9ut3bMy0Qyq2SG6gEORRE5CXK9
-         vxx9QuYoPz3oB6Kw4TJRPhPbxoAyQWzzxMG5L5Nbd2ql6tZmF66gw0ve5myA3aDzZQRL
-         28EKXb7Ti1pEgrcZDlxdEodpa9GdoYP/p9LNAFMh5UN8fqxzQrdBPvCRRHovp33PAkYG
-         iMFA==
-X-Gm-Message-State: AOJu0YwtRE3/DcIwaBCtu42hb/qQklOZHSE9EMoqsw3OiwL5HBAno+hW
-	D3L3P3LNKbqN/rkh16Nj4Au0yVBLEB3xD9G186KRH17I5IplQ1KZoz+DACQWn2Oqt2FCuPw3xtr
-	0YrCMh1uxFxhuARMNiezweor/G/aANrgWsFxc
-X-Google-Smtp-Source: AGHT+IH3hmMaDuQ1sT/ZwqdihzxZDCKDIP3hCeyFxzrsixzIj08hxydz1qbiGNbIbBS40bI7tABYJovXTMftsaSBjJI=
-X-Received: by 2002:a05:6214:27e9:b0:685:606e:dc22 with SMTP id
- jt9-20020a05621427e900b00685606edc22mr459042qvb.45.1706300257561; Fri, 26 Jan
- 2024 12:17:37 -0800 (PST)
+        bh=TY8f4fU4xwCCs2Pdc3Pqh77KDrWj9ON9heZB0LQFAlc=;
+        b=r+EsGtpS3lps7sx2mFPzSRkkV9ddYrQI/ohBRn9mVKrgdtGtv2AACuq6DzFCiQzmcs
+         CcBOsBreVairH6Iag5Y8rm2gX2Un/CM0oBduM3zM1DPBqDbaCSxTFmtxK9HN8pADG8lC
+         sucbRYGX84fFaTebqsLHn9AAy3fqaeaQvsTk7HNX6nFjDrVE/O2gbWzmEDW2RDFlTmJA
+         /NuFJrijZZ8MVvGVcK4zXl5rhgAv7DwOPxUk0t/O4UEqxNpxx2HxS9mIKAN+eSOiIsWr
+         JVaEt67sm9HqH39kDepGPHWzVgdIZNZagJm45AbYyiKU6hGGr8fQ3dgTEqv5GzCCdnXG
+         373w==
+X-Gm-Message-State: AOJu0YzSnSPoC9GTD7N4S5u1OSziFXE4hKzxl2shYe6Ut938t7rdp4u6
+	vci96V0+I7G41HKtNsm7TmU0s1VTe2xQ2AkylfoQV3E/Iec4MCO1vuRYQWSwNge2WDCt51dIkjC
+	obiFEUEjTfG+geK3bdeCRI2yD0a5t/mSDzYcCXg==
+X-Google-Smtp-Source: AGHT+IEVno4GW1APRXy6CPjOmvt3Vs5lrryB091gy4k1flSkZKDEqIxcbmIAdUm7FOOUCra4B7CAVfveGkTLIY2p1hk=
+X-Received: by 2002:aa7:8699:0:b0:6da:84ae:c209 with SMTP id
+ d25-20020aa78699000000b006da84aec209mr353702pfo.45.1706300276388; Fri, 26 Jan
+ 2024 12:17:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126183930.1170845-1-abhishekpandit@chromium.org> <20240126103859.v3.1.Iacf5570a66b82b73ef03daa6557e2fc0db10266a@changeid>
-In-Reply-To: <20240126103859.v3.1.Iacf5570a66b82b73ef03daa6557e2fc0db10266a@changeid>
-From: Prashant Malani <pmalani@chromium.org>
-Date: Fri, 26 Jan 2024 12:17:26 -0800
-Message-ID: <CACeCKadp_qk-QHOd3Yr8W72w8WM3kFvQKOvALWcinfPh_55qfA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] usb: typec: ucsi: Limit read size on v1.2
-To: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>, linux-usb@vger.kernel.org, 
-	jthies@google.com, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
-	Fabrice Gasnier <fabrice.gasnier@foss.st.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hans de Goede <hdegoede@redhat.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Prashanth K <quic_prashk@quicinc.com>, 
-	Rajaram Regupathy <rajaram.regupathy@intel.com>, Saranya Gopal <saranya.gopal@intel.com>, 
-	linux-kernel@vger.kernel.org
+References: <20240126171546.1233172-1-tudor.ambarus@linaro.org> <20240126171546.1233172-7-tudor.ambarus@linaro.org>
+In-Reply-To: <20240126171546.1233172-7-tudor.ambarus@linaro.org>
+From: Sam Protsenko <semen.protsenko@linaro.org>
+Date: Fri, 26 Jan 2024 14:17:45 -0600
+Message-ID: <CAPLW+4n3U99cm0Bv5XhceXyEtp4pTh1TWjtB1ci+f2fO+i1_ag@mail.gmail.com>
+Subject: Re: [PATCH v3 06/17] spi: s3c64xx: remove unneeded (void *) casts in of_match_table
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: broonie@kernel.org, andi.shyti@kernel.org, krzysztof.kozlowski@linaro.org, 
+	alim.akhtar@samsung.com, jassi.brar@samsung.com, linux-spi@vger.kernel.org, 
+	linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, andre.draszik@linaro.org, 
+	peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Abhishek,
-
-On Fri, Jan 26, 2024 at 10:39=E2=80=AFAM Abhishek Pandit-Subedi
-<abhishekpandit@chromium.org> wrote:
+On Fri, Jan 26, 2024 at 11:15=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linar=
+o.org> wrote:
 >
-> Between UCSI 1.2 and UCSI 2.0, the size of the MESSAGE_IN region was
-> increased from 16 to 256. In order to avoid overflowing reads for older
-> systems, add a mechanism to use the read UCSI version to truncate read
-> sizes on UCSI v1.2.
+> of_device_id::data is an opaque pointer. No explicit cast is needed.
+> Remove unneeded (void *) casts in of_match_table. While here align the
+> compatible and data members.
 >
-> Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> ---
+>  drivers/spi/spi-s3c64xx.c | 45 +++++++++++++++++++++++----------------
+>  1 file changed, 27 insertions(+), 18 deletions(-)
+>
+> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
+> index ccb700312d64..9bf54c1044b3 100644
+> --- a/drivers/spi/spi-s3c64xx.c
+> +++ b/drivers/spi/spi-s3c64xx.c
+> @@ -1511,32 +1511,41 @@ static const struct platform_device_id s3c64xx_sp=
+i_driver_ids[] =3D {
+>  };
+>
+>  static const struct of_device_id s3c64xx_spi_dt_match[] =3D {
+> -       { .compatible =3D "samsung,s3c2443-spi",
+> -                       .data =3D (void *)&s3c2443_spi_port_config,
+> +       {
+> +               .compatible =3D "samsung,s3c2443-spi",
+> +               .data =3D &s3c2443_spi_port_config,
+>         },
+> -       { .compatible =3D "samsung,s3c6410-spi",
+> -                       .data =3D (void *)&s3c6410_spi_port_config,
+> +       {
 
-Please pick up review tags that you've received for previous versions
-(unless the patch
-has changed drastically).
+The braces style is not fixed. Yet that's a style patch, which on one
+hand fixes the issue (unnecessary void * cast), but OTOH brings
+another issue (non-canonical braces placement). Please see my comments
+for your previous submission.
 
-Reviewed-by: Prashant Malani <pmalani@chromium.org>
+> +               .compatible =3D "samsung,s3c6410-spi",
+> +               .data =3D &s3c6410_spi_port_config,
+>         },
+> -       { .compatible =3D "samsung,s5pv210-spi",
+> -                       .data =3D (void *)&s5pv210_spi_port_config,
+> +       {
+> +               .compatible =3D "samsung,s5pv210-spi",
+> +               .data =3D &s5pv210_spi_port_config,
+>         },
+> -       { .compatible =3D "samsung,exynos4210-spi",
+> -                       .data =3D (void *)&exynos4_spi_port_config,
+> +       {
+> +               .compatible =3D "samsung,exynos4210-spi",
+> +               .data =3D &exynos4_spi_port_config,
+>         },
+> -       { .compatible =3D "samsung,exynos7-spi",
+> -                       .data =3D (void *)&exynos7_spi_port_config,
+> +       {
+> +               .compatible =3D "samsung,exynos7-spi",
+> +               .data =3D &exynos7_spi_port_config,
+>         },
+> -       { .compatible =3D "samsung,exynos5433-spi",
+> -                       .data =3D (void *)&exynos5433_spi_port_config,
+> +       {
+> +               .compatible =3D "samsung,exynos5433-spi",
+> +               .data =3D &exynos5433_spi_port_config,
+>         },
+> -       { .compatible =3D "samsung,exynos850-spi",
+> -                       .data =3D (void *)&exynos850_spi_port_config,
+> +       {
+> +               .compatible =3D "samsung,exynos850-spi",
+> +               .data =3D &exynos850_spi_port_config,
+>         },
+> -       { .compatible =3D "samsung,exynosautov9-spi",
+> -                       .data =3D (void *)&exynosautov9_spi_port_config,
+> +       {
+> +               .compatible =3D "samsung,exynosautov9-spi",
+> +               .data =3D &exynosautov9_spi_port_config,
+>         },
+> -       { .compatible =3D "tesla,fsd-spi",
+> -                       .data =3D (void *)&fsd_spi_port_config,
+> +       {
+> +               .compatible =3D "tesla,fsd-spi",
+> +               .data =3D &fsd_spi_port_config,
+>         },
+>         { },
+>  };
+> --
+> 2.43.0.429.g432eaa2c6b-goog
+>
 
