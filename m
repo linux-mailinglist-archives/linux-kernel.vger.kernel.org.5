@@ -1,227 +1,135 @@
-Return-Path: <linux-kernel+bounces-39900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64C4583D72F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:03:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10C3383D81B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:29:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 668BB1C2B3FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:03:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D8FBB35D55
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:06:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ADE866B54;
-	Fri, 26 Jan 2024 09:12:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E6001BC5F;
+	Fri, 26 Jan 2024 09:21:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="CFE0E9XX"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Xuut1Wzs"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24CCC65BBB;
-	Fri, 26 Jan 2024 09:12:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B99C91BC34
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 09:21:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706260373; cv=none; b=kpRRRBQ87m5DPN80MHQG5yUUhz6c33z3w3KyQmAJkcZ3CqM61YpO1XOVDwqMC6mWwXSr5oili88wrD3DFRjQQfccqM8SFT9kHex/aYoHDFM995yIhE9GvgGhNvBM038T5prrbv9utpwsA2ozoZtwBfM5GKwkLJTHTixWmyJK9Lo=
+	t=1706260885; cv=none; b=cxjv02lbD5cqgPULHx/nLqEStXWstyxaAnhBGcHCAg7IsFYXYJA1Ot/zAS+6edhxgTV+rrsRulSuZIee5khLAl6rimHBfMvCRoXjtRKCIV9rBwRDz9SRndZxLPMhTCmj4EfQTFT0cQ/Ya4n5qvxyq7OMXsJq4GeY34aWbMvyYXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706260373; c=relaxed/simple;
-	bh=ZoRSJvoWqKga1SG2FFzE2w6OD+wWH46tFmixAACobBI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NymuNqwF7EIStNPPzfo6ysjo0T1xChGXF+nYUOmVutnwSMROdmOVyMwtMBQUIGpKEaZZQsBZ0XRcKcboqmjPMpVxkPNsPta6Tt1qfYCjRIqxq5A+3s8HWc8vCWgMB/aj/R+i4tglXTvWGI8MCMNrxFbiq9gCWWGojur7mf6usSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=CFE0E9XX; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706260370;
-	bh=ZoRSJvoWqKga1SG2FFzE2w6OD+wWH46tFmixAACobBI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=CFE0E9XXR9BWxs45HlGn7FRIOAj7TxaAi78vLgkJJbntjVkegYxIJ2ZIByVPlrRCM
-	 8UGtochIV68ovE5QoG+zzAS0OIzy5Kbj86EiqA3NgXQL8Bt9hjnLyPzg0o7Cin8+ot
-	 VNWTOx9qO16+aPEHIFL0TJ+vwHh2wqdSGeS9SbNWL+hGZbR1n1E5nHZyKl11AVd7zZ
-	 hadui7C8Gv4rcFkeidmOzxTqKO3asz/XZUm2zjYqpguY5Cr5UYMCcl8voFmLn9G6CE
-	 GEn/BBbP/HhwypxMtQPK+qtDEHfPos50OH1vm3tHZGt4VnqiQK0oqol4voiNP6yGQF
-	 ExZYWNJedohGQ==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7EB853782072;
-	Fri, 26 Jan 2024 09:12:49 +0000 (UTC)
-Message-ID: <dc6f77bd-6671-43eb-8658-626b2591415d@collabora.com>
-Date: Fri, 26 Jan 2024 10:12:48 +0100
+	s=arc-20240116; t=1706260885; c=relaxed/simple;
+	bh=6mV7VNYt7HwWXFfXqjQflzG59MR/XQAJ7cn2D6yJLfs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hhp3s3sGjHDLDXObWIf9V6q88cQW1WiY2DRjYdcfe00/AyxKVEuBtkCzlUK/+9dBh8cDBNvVIEHDDYhLAx1hbj4V1XwHQJX20NYhTVo0CmBS+oLWgDDERzi5ygzwqFGuRHRn/rgYH2zoESmBoX+YC4wnVZlGL05OyJ8JFAHVeuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Xuut1Wzs; arc=none smtp.client-ip=192.55.52.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706260883; x=1737796883;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=6mV7VNYt7HwWXFfXqjQflzG59MR/XQAJ7cn2D6yJLfs=;
+  b=Xuut1Wzs8V+OSZhANLhR1xRFeXyPNv069YvHd3sFyeoXS8GCv1xZxjfl
+   A/1UeKxroVoZpf4EX7p+wS5ICZz9EdnjKBGpX/Ubfk7xqdCd45jzxUhRL
+   hSLf+WWhZJg66j8emnE5eAysym4V7vvJlzhzzsPyzLBDJ1b5EPIw7qHRo
+   tijhnwfilCA1PhPhFzp6spKJaUXF1h2w46FYtid7C6odMRlRc/NJMm8dW
+   qgOc3noozfUMY5NQeCVQ0/9agkCpJwjnFHxAt221J9xD6VSv6s+8rYR4g
+   Wq0q+tCdVVDnPmIhuZ6rIMYD4qQBDNSF9TOaJ/GH4oAXstA/FUw1SqMBj
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="401279180"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="401279180"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 01:21:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="906261352"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="906261352"
+Received: from feng-clx.sh.intel.com ([10.239.159.50])
+  by fmsmga002.fm.intel.com with ESMTP; 26 Jan 2024 01:21:20 -0800
+From: Feng Tang <feng.tang@intel.com>
+To: John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Stephen Boyd <sboyd@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	paulmck@kernel.org,
+	Peter Zijlstra <peterz@infradead.org>,
+	Waiman Long <longman@redhat.com>
+Cc: Feng Tang <feng.tang@intel.com>,
+	Jin Wang <jin1.wang@intel.com>
+Subject: [PATCH] clocksource: Scale the max retry number of watchdog read according to CPU numbers
+Date: Fri, 26 Jan 2024 17:12:50 +0800
+Message-Id: <20240126091250.79985-1-feng.tang@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: net: bluetooth: Add MediaTek MT7921S
- SDIO Bluetooth
-Content-Language: en-US
-To: Chen-Yu Tsai <wenst@chromium.org>
-Cc: Marcel Holtmann <marcel@holtmann.org>,
- Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>, Sean Wang <sean.wang@mediatek.com>,
- linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
- linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240125095240.2308340-1-wenst@chromium.org>
- <20240125095240.2308340-2-wenst@chromium.org>
- <68249675-4081-48d9-abbb-1b2e49894fae@collabora.com>
- <CAGXv+5GG+Ko4nZKCvpQ2TnjeHDKWi5qS_SWAgLcrZ6fn_ySiug@mail.gmail.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <CAGXv+5GG+Ko4nZKCvpQ2TnjeHDKWi5qS_SWAgLcrZ6fn_ySiug@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Il 26/01/24 04:26, Chen-Yu Tsai ha scritto:
-> On Thu, Jan 25, 2024 at 7:39 PM AngeloGioacchino Del Regno
-> <angelogioacchino.delregno@collabora.com> wrote:
->>
->> Il 25/01/24 10:52, Chen-Yu Tsai ha scritto:
->>> The MediaTek MT7921S is a WiFi/Bluetooth combo chip that works over
->>> SDIO. While the Bluetooth function is fully discoverable, the chip
->>> has a pin that can reset just the Bluetooth side, as opposed to the
->>> full chip. This needs to be described in the device tree.
->>>
->>> Add a device tree binding for MT7921S Bluetooth over SDIO specifically
->>> ot document the reset line.
->>>
->>> Cc: Sean Wang <sean.wang@mediatek.com>
->>> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
->>> ---
->>>    .../bluetooth/mediatek,mt7921s-bluetooth.yaml | 49 +++++++++++++++++++
->>>    MAINTAINERS                                   |  1 +
->>>    2 files changed, 50 insertions(+)
->>>    create mode 100644 Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-bluetooth.yaml
->>>
->>> diff --git a/Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-bluetooth.yaml b/Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-bluetooth.yaml
->>> new file mode 100644
->>> index 000000000000..bbe240e7cc40
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-bluetooth.yaml
->>> @@ -0,0 +1,49 @@
->>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->>> +%YAML 1.2
->>> +---
->>> +$id: http://devicetree.org/schemas/net/bluetooth/mediatek,mt7921s-bluetooth.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: MediaTek MT7921S Bluetooth
->>> +
->>
->> title:
->>
->> maintainers:
->>
->> description:
->>
->> ... and then, you missed
->>
->> allOf:
->>     - $ref: bluetooth-controller.yaml#
-> 
-> (facepalm)
-> 
->> Everything else looks good.
->>
->> Cheers,
->> Angelo
->>
->>> +description:
->>
->> MT7921S is a (dual?) SDIO-attached dual-radio WiFi+Bluetooth combo chip;
->> this chip has two dedicated reset lines, one of which is used to reset
->> the Bluetooth core.
->> The WiFi part of this chip is described in ....where? :-)
-> 
-> The function itself is fully probable and the implementation doesn't make
-> use of the WiFi's reset line, so I don't see any reason to describe it?
-> I don't actually know what the reset line does in the chip hardware.
-> This patch is just described what is already used.
-> 
->>> +  This binding describes the Bluetooth side of the SDIO-attached MT7921S
->>> +  WiFi+Bluetooth combo chips. These chips are dual-radio chips supporting
->>> +  WiFi and Bluetooth. Bluetooth works over SDIO just like WiFi. Bluetooth
->>> +  has its own reset line, separate from WiFi, which can be used to reset
->>> +  the Bluetooth core.
->>> +
->>> +maintainers:
->>> +  - Sean Wang <sean.wang@mediatek.com>
->>> +
->>> +properties:
->>> +  compatible:
->>> +    enum:
->>> +      - mediatek,mt7921s-bluetooth
->>> +  reg:
->>> +    const: 2
->>> +
->>> +  reset-gpios:
->>> +    maxItems: 1
->>> +    description: A GPIO line connected to the Bluetooth subsystem reset line.
->>> +      Typically the W_DISABLE2# pin on M.2 E-key modules. If present this
->>> +      shall be flagged as active low.
->>
->> description:
->>     An active-low reset line connected for the Bluetooth core;
-> 
-> connected to?
+There was a bug on one 8-socket server that the TSC is wrongly marked as
+'unstable' and disabled during boot time. (reproduce rate is every 120
+rounds of reboot tests), with log:
 
-Eh yes, sorry - I edited that statement multiple times and that "for" stuck
-there for reasons :-)
+    clocksource: timekeeping watchdog on CPU227: wd-tsc-wd excessive read-back delay of 153560ns vs. limit of 125000ns,
+    wd-wd read-back delay only 11440ns, attempt 3, marking tsc unstable
+    tsc: Marking TSC unstable due to clocksource watchdog
+    TSC found unstable after boot, most likely due to broken BIOS. Use 'tsc=unstable'.
+    sched_clock: Marking unstable (119294969739, 159204297)<-(125446229205, -5992055152)
+    clocksource: Checking clocksource tsc synchronization from CPU 319 to CPUs 0,99,136,180,210,542,601,896.
+    clocksource: Switched to clocksource hpet
 
-> 
->>     on typical M.2 Key-E modules this is the W_DISABLE2# pin.
-> 
-> Otherwise this looks better. Thanks.
+The reason is for platform with lots of CPU, there are sporadic big or huge
+read latency of read watchog/clocksource during boot or when system is under
+stress work load, and the frequency and maximum value of the latency goes up
+with the increasing of CPU numbers. Current code already has logic to detect
+and filter such high latency case by reading 3 times of watchdog, and check
+the 2 deltas. Due to the randomness of the latency, there is a low possibility
+situation that the first delta (latency) is big, but the second delta is small
+and looks valid, which can escape from the check, and there is a
+'max_cswd_read_retries' for retrying that check covering this case, whose
+default value is only 2 and may be not enough for machines with huge number
+of CPUs.
 
-You're welcome!
+So scale and enlarge the max retry number according to CPU number to better
+filter those latency noise on large system, which has been verified fine in
+4 days and 670 rounds of reboot test on the 8-socket machine.
 
-Cheers!
+Tested-by: Jin Wang <jin1.wang@intel.com>
+Signed-off-by: Feng Tang <feng.tang@intel.com>
+---
+ kernel/time/clocksource.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-> 
-> 
-> ChenYu
-> 
->> Cheers,
->> Angelo
->>
->>> +
->>> +required:
->>> +  - compatible
->>> +  - reg
->>> +
->>> +additionalProperties: false
->>> +
->>> +examples:
->>> +  - |
->>> +    mmc {
->>> +        #address-cells = <1>;
->>> +        #size-cells = <0>;
->>> +
->>> +        bluetooth@2 {
->>> +            compatible = "mediatek,mt7921s-bluetooth";
->>> +            reg = <2>;
->>> +            reset-gpios = <&pio 8 GPIO_ACTIVE_LOW>;
->>> +        };
->>> +    };
->>> diff --git a/MAINTAINERS b/MAINTAINERS
->>> index b64a64ca7916..662957146852 100644
->>> --- a/MAINTAINERS
->>> +++ b/MAINTAINERS
->>> @@ -13657,6 +13657,7 @@ M:    Sean Wang <sean.wang@mediatek.com>
->>>    L:  linux-bluetooth@vger.kernel.org
->>>    L:  linux-mediatek@lists.infradead.org (moderated for non-subscribers)
->>>    S:  Maintained
->>> +F:   Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-bluetooth.yaml
->>>    F:  Documentation/devicetree/bindings/net/mediatek-bluetooth.txt
->>>    F:  drivers/bluetooth/btmtkuart.c
->>>
->>
-
+diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+index c108ed8a9804..f15283101906 100644
+--- a/kernel/time/clocksource.c
++++ b/kernel/time/clocksource.c
+@@ -226,6 +226,15 @@ static enum wd_read_status cs_watchdog_read(struct clocksource *cs, u64 *csnow,
+ 	u64 wd_end, wd_end2, wd_delta;
+ 	int64_t wd_delay, wd_seq_delay;
+ 
++	/*
++	 * If no user changes the default value, scale the retry threshold
++	 * according to CPU numbers. As per test, the more CPU a platform has,
++	 * the bigger read latency is found during boot time or under stress
++	 * work load. Increase the try nubmer to reduce false alarms.
++ 	 */
++	if (max_cswd_read_retries == 2)
++		max_cswd_read_retries = max(2, ilog2(num_online_cpus()));
++
+ 	for (nretries = 0; nretries <= max_cswd_read_retries; nretries++) {
+ 		local_irq_disable();
+ 		*wdnow = watchdog->read(watchdog);
+-- 
+2.34.1
 
 
