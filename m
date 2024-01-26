@@ -1,141 +1,141 @@
-Return-Path: <linux-kernel+bounces-40525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B6A983E1E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:46:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D6BD83E1FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:55:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05F88282703
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:46:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA888B22444
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:55:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 885C422325;
-	Fri, 26 Jan 2024 18:46:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46B3321A1C;
+	Fri, 26 Jan 2024 18:55:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="ryF+vtFH"
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="0zOymJ07"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2069.outbound.protection.outlook.com [40.107.220.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A5AE22314
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 18:46:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706294808; cv=none; b=mu8kHn0QguGTBkbXV4T+cQ5F1yXhPp58MyAGgW1puqat5BgtYV1qOzjhsfIuDEi302BDkQ6RNVZituuJoN2psfMs+CDVqjPr3kRlfTDQrIM3ewHYI/8PX8h/gswAAbAJ3NYhJ2OjhCB3YXywGDSLNYvEOdQRHcuWHCcSWIV5L7I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706294808; c=relaxed/simple;
-	bh=xILlNZZSLJqUybs65q52lmoSYlI8UiIMf72uaPBntzw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=SOqZq2PsY2FOa9v2NZP6kXTGVB87ZKk5I85ZflGvp0KjkgWee/3enlDO/dm/EBElJJFw7sUkUjMsLTZcgUD3f4LMUffPT+ioP/daG3O0RcBm/hpGJXqPPtByXK2pZ+OdCSTxXYFb+niEFPgHqEF8LgWTA+C25T+8lfSLoyRF+dE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=ryF+vtFH; arc=none smtp.client-ip=37.18.73.165
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 538C8100005;
-	Fri, 26 Jan 2024 21:46:39 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 538C8100005
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1706294799;
-	bh=o8Wk+nRV/WANv25MMKemwcRfh2eTYuNCBHJRR9H6Ffg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=ryF+vtFHBMhpfIExhPDXu//aR6hScmNHZM9jpYGU32nzOx8JFLjWELR0qBx4OqyYK
-	 ON88fyR+Yh6Q8hVa7Mk6rxoMTArln90fYmcSSeDlqc9jPvfPw08kQm4hvPxXI5yOsz
-	 FOSl2Snm4PdRDiY+LyAc8Y+ODi/SJkrorGYkNwtJE2HLbLPdqqdkZX8pcWsTsb6jfC
-	 5mrMHL3s49x2/rQuUYv5zUSCwMosKNY863gY86dmNBA8hIJ6FwAXW65oq3X2f9K/mq
-	 sZ/Mcq2YcBi2nBS8ocKZMalhmb/8tDkyKlBzMXggq66XQRGKXp9sfu8+M5FcrC8jVC
-	 EQLI/1G+2dnXQ==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Fri, 26 Jan 2024 21:46:39 +0300 (MSK)
-Received: from [172.28.137.2] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 26 Jan 2024 21:46:36 +0300
-Message-ID: <7a5c147b-e531-4aa3-8439-1b80d8ed7747@salutedevices.com>
-Date: Fri, 26 Jan 2024 21:46:33 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C15DD1F5FD;
+	Fri, 26 Jan 2024 18:55:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.69
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706295317; cv=fail; b=RFmbiUGSw2PiXXY+LyvsNdQt4Z95wT8ofQhhx1AJVyJiNoRIaiYZILNcpZteXVQ7IfGn4NlYz4HwZO/wX7JeTu1Ytv/IzNQSYho1d7/f8sFe1/glR0Z5pSPfq3fHtVe3VaPl0ZS4Ay08oMIEOswzzrNA6ykSAjsZbNzNHnwRjZM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706295317; c=relaxed/simple;
+	bh=TBMp3zE53XJkEOLUck57W/UE5rz9tVVTAm/tAuWl808=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=sacP9Ec1hrQgE+YWeoLi3qs31XPMt8WkcWW9nahExN7zlzLjyhXusdD9q22poIJnFeB2I3+x59VrGEPZctT6YE59ztJbnxtwf5NdexsOlDOPPWW5NfcddZrjCxuAo5CcFL8OJ8D4yiNoL14w6+FpP4Y1AChjPPjglkwTbKfF4ds=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=0zOymJ07; arc=fail smtp.client-ip=40.107.220.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DgplbPlIm16PD8ZS4xjLqmRKZxNbMhSloSvcSzQaSQg5kDb3si302fiW+kDcNxcqhFm96Qq8Npiy5yyAYyFeElZEYqpSjcaibmmN8R3fS1a+RhFxWlN3JXGOqwsTSeZI3W67qRLUf7GImIVJq4pu3yQdZLvQqSk047cqTZDb+vu6jlL//pJ7T2XZyc6J+tvVNpbPDRb+HfmDPpWnzvTA4ZQvyOkh1/ucMEsm/FSucrO3Ohe+Ps1u00uB5vETYB12x/9iCSgBKELDC8HUvYiTgUD7DG/8pSpu2pTJkxnet564uhlCJ9aeQvcF4/FuEM04zlFLhIZjUqKJpS2kyyjPsQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WhH1A1dmil5mLytT+IWXLtNxq6KaDNim7SXPzmG4ou4=;
+ b=Uj6SynM/5w7aQjAdtOvGJqWWb/nUiPeIZ29EneiYYcsi56Q+MGdp+/PSbuLvbskPKNM4dGs8rhDvUVA7JejK5+lrsnAseSV/pWZyK4EjhDD4E6tc+RHg+I891ex4Awm+ou7a5oC7fBuQ6dENQeHjGg/IQ6VZqdYNfwQic8Ozybk8Eaj4A78hccIk92r5o2Ajfgt/dSUWSoMX5LjA7hJSi6sdhn/UPZF2LhKX//FIaUTwuTPXwx4efyAlz7n5INND2ZU5ErGHZQ7JmR+7LrSSc2BAYbjwiHy9NXB+41DjADon08fjzK5Gjo4VNect8ECRt3Pz7ATix0nKsiSaVYnQjQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WhH1A1dmil5mLytT+IWXLtNxq6KaDNim7SXPzmG4ou4=;
+ b=0zOymJ07BIf72EnHwNCJCgXbmD7VLQ4Q7mu5IcTNrrrPxkzKRh9Xc28CMAEzoZZBn5RAcp8Fq1DKJMH5h6hIVtHyk0OZ8z/HcS02JSDqAJEzbxxxkStijPiYlgrco+mUqoqhqAztpfOiRz9A4LJLz+CNy6e8S/LwFLj4Zi6R5ys=
+Received: from BN9PR03CA0580.namprd03.prod.outlook.com (2603:10b6:408:10d::15)
+ by PH7PR12MB7354.namprd12.prod.outlook.com (2603:10b6:510:20d::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Fri, 26 Jan
+ 2024 18:55:11 +0000
+Received: from BN2PEPF0000449E.namprd02.prod.outlook.com
+ (2603:10b6:408:10d:cafe::6b) by BN9PR03CA0580.outlook.office365.com
+ (2603:10b6:408:10d::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.27 via Frontend
+ Transport; Fri, 26 Jan 2024 18:55:11 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BN2PEPF0000449E.mail.protection.outlook.com (10.167.243.149) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7228.16 via Frontend Transport; Fri, 26 Jan 2024 18:55:11 +0000
+Received: from AUS-P9-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Fri, 26 Jan
+ 2024 12:55:09 -0600
+From: Mario Limonciello <mario.limonciello@amd.com>
+To: <amd-gfx@lists.freedesktop.org>, Alex Deucher <alexander.deucher@amd.com>,
+	Harry Wentland <harry.wentland@amd.com>, "Rafael J . Wysocki"
+	<rafael@kernel.org>, Hans de Goede <hdegoede@redhat.com>
+CC: "open list:ACPI" <linux-acpi@vger.kernel.org>, open list
+	<linux-kernel@vger.kernel.org>, "open list:DRM DRIVERS"
+	<dri-devel@lists.freedesktop.org>, Melissa Wen <mwen@igalia.com>, "Mark
+ Pearson" <mpearson-lenovo@squebb.ca>, Mario Limonciello
+	<mario.limonciello@amd.com>
+Subject: [PATCH 0/2] Fetch EDID from ACPI _DDC method if available
+Date: Fri, 26 Jan 2024 12:46:37 -0600
+Message-ID: <20240126184639.8187-1-mario.limonciello@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] mtd: spinand: Add support for 5-byte IDs
-Content-Language: en-US
-To: Ezra Buehler <ezra@easyb.ch>, <linux-mtd@lists.infradead.org>
-CC: Chuanhong Guo <gch981213@gmail.com>, Dmitry Rokosov
-	<ddrokosov@sberdevices.ru>, Martin Kurbanov <mmkurbanov@sberdevices.ru>, Md
- Sadre Alam <quic_mdalam@quicinc.com>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Sridharan S
- N <quic_sridsn@quicinc.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-	<linux-kernel@vger.kernel.org>
-References: <20240125200108.24374-1-ezra@easyb.ch>
- <20240125200108.24374-2-ezra@easyb.ch>
-From: Martin Kurbanov <mmkurbanov@salutedevices.com>
-In-Reply-To: <20240125200108.24374-2-ezra@easyb.ch>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 182973 [Jan 26 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_from_domain_doesnt_match_to}, smtp.sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/01/26 14:25:00 #23442014
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN2PEPF0000449E:EE_|PH7PR12MB7354:EE_
+X-MS-Office365-Filtering-Correlation-Id: fe13484d-0315-40c5-5910-08dc1ea052d7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	hiwSv/cTDabmYdwOEdR5+SNNHVnJn3VaFqy+eXDI9EFgSBDZCX2iyUqBi9x2hKemoFeCzxS+XHfpJWrPAD9tF/uAbJBBpRDBWodJDpM0ujvSAhpzyUdtDHSUcgiDJ1hovYN1TxzpLU+N7X24VSHBreMxd4IMIdhrHw/PbZ5+4cSIeBiesW4Kr3jn4M1zSo0BNfunasUEx6dDs4lo3AdELXQqCq+lXPqgFuJTMQx0J5hpnX9wnJx2bYJZRaP/yEXdOHOVkj4HeadhwZC9xxgeaGdckQGKnyv5tZhfUP25YVG7wMBPQEA8w27tmFM0nBR0W4Pu5ypgfn5uzbgu26mDg3JuQW1IP7G87eNLYomcontG1r5zimeAa0Yo2DvFPttjkCF2H7yjw5EfzSMKY61JjL7p59F5RUcj3AwKdmXsvkmsHBPbts9AmKrD2P4MKrjdt7S6zhL7YxyxP3TPJ8j5MnHDEqLKrPRf2W1F2ehpcfE2DAIKthKdxpHB+4qlrvP7oR5sch26X0QM2WXUnkNOEnGXBnjDcLqO3sQnmx6wZxZ7HC/mgWxODhMDsKFz1jbxrPyb85b/txOfkfggwwEMPOTdd+i81QtzI++jJEZroQN2OWDfmP/YQLJRFcirnZ92xW2aiLFeYCc7YVId32zQ45XMTIGUGa/MYTZh83QX1i32kQIph7Xsq1JjchfjXYgvq7as+d6WCnA7Ns1ScwZeFDdkKcdaIMVuVsUdSUJ3+874Zy6KDTomEL6n9acHrPL6mw/bxY784mnMOwF0s7HjeQ==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(376002)(136003)(396003)(230922051799003)(1800799012)(451199024)(82310400011)(186009)(64100799003)(46966006)(40470700004)(36840700001)(41300700001)(83380400001)(36860700001)(8676002)(1076003)(336012)(26005)(426003)(16526019)(2616005)(82740400003)(81166007)(356005)(4744005)(5660300002)(4326008)(8936002)(47076005)(44832011)(316002)(2906002)(110136005)(7696005)(54906003)(478600001)(6666004)(70586007)(70206006)(36756003)(86362001)(40460700003)(40480700001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 18:55:11.2900
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: fe13484d-0315-40c5-5910-08dc1ea052d7
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BN2PEPF0000449E.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7354
 
+Some laptops ship an EDID in the BIOS encoded in the _DDC method that
+differs than the EDID directly on the laptop panel for $REASONS.
 
+This is the EDID that is used by the AMD Windows driver, and so sometimes
+different results are found in different operating systems.
 
-On 25.01.2024 23:01, Ezra Buehler wrote:
-> From: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
-> 
-> E.g. ESMT chips will return an identification code with a length of 5
-> bytes. In order to prevent ambiguity, flash chips would actually need to
-> return IDs that are up to 17 or more bytes long due to JEDEC's
-> continuation scheme. I understand that if a manufacturer ID is located
-> in bank N of JEDEC's database (there are currently 16 banks), N - 1
-> continuation codes (7Fh) need to be added to the identification code
-> (comprising of manufacturer ID and device ID). However, most flash chip
-> manufacturers don't seem to implement this (correctly).
-> 
-> Signed-off-by: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
+This series changes it so that when an eDP panel is found the BIOS
+is checked first for an EDID and that used as a preference if found.
 
-Tested for F50L1G41LB
+Mario Limonciello (2):
+  ACPI: video: Handle fetching EDID that is longer than 256 bytes
+  drm/amd: Fetch the EDID from _DDC if available for eDP
 
-Reviewed-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
-Tested-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
-
-> ---
->  include/linux/mtd/spinand.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-> index badb4c1ac079..5c19ead60499 100644
-> --- a/include/linux/mtd/spinand.h
-> +++ b/include/linux/mtd/spinand.h
-> @@ -169,7 +169,7 @@
->  struct spinand_op;
->  struct spinand_device;
->  
-> -#define SPINAND_MAX_ID_LEN	4
-> +#define SPINAND_MAX_ID_LEN	5
->  /*
->   * For erase, write and read operation, we got the following timings :
->   * tBERS (erase) 1ms to 4ms
+ drivers/acpi/acpi_video.c                     | 23 +++++++++-----
+ drivers/gpu/drm/amd/amdgpu/amdgpu.h           |  2 ++
+ drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c      | 30 +++++++++++++++++++
+ .../gpu/drm/amd/amdgpu/amdgpu_connectors.c    |  5 ++++
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  8 ++++-
+ .../amd/display/amdgpu_dm/amdgpu_dm_helpers.c |  7 +++--
+ 6 files changed, 65 insertions(+), 10 deletions(-)
 
 -- 
-Best Regards,
-Martin Kurbanov
+2.34.1
+
 
