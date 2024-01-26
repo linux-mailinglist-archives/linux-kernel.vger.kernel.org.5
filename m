@@ -1,116 +1,117 @@
-Return-Path: <linux-kernel+bounces-40676-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40677-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A318383E3F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:31:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8325583E3F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:31:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D69F61C2252A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:31:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5CAC1C2285A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:31:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E665024A08;
-	Fri, 26 Jan 2024 21:31:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52EE224B28;
+	Fri, 26 Jan 2024 21:31:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Q7ydLpfR"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZBDIhN2w"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BA12250E8
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 21:31:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19EFF250E8;
+	Fri, 26 Jan 2024 21:31:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706304682; cv=none; b=aQ5XuqP4UaLTulwv3EA1oW2uuKFv2mIsf+Af+Tqjd5sDfVYUnQuU2OK6YMnFG5gwmi7smJkYxpoGkYs0BSd1VT1JRUtw1VvHTYF3QxL4sFWZPOY8unuEDLuK7dtRfQRA0VgWsUfDGH5uLPQWeTf9zC6OHkxXItkxsI04tF2oEQo=
+	t=1706304703; cv=none; b=KkBVs9oBKdFjalbcElZXEC5uTWACmc7BAjU7bsS+is6oFINlpTG37Stj16mdcZUafDiUG6txLbZxWzOJJPzle+c7KHf4AhzwGSJsqWnOSckcnZFvIjFIgby1xfPqSPprdvFgEGGeTmLfGmM7Qk6jXJGC2slhDWzV0OR8PZQtnxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706304682; c=relaxed/simple;
-	bh=6mukGWAjPX2YjUL4JezyXFLuCN/rYL2RbG8PlJMIYCw=;
+	s=arc-20240116; t=1706304703; c=relaxed/simple;
+	bh=mDXTx8QMtKyNvkViX2Wj8fex4yMcm0KlVYHSHcciIfA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UKg1lZE0pR7x+9IzNBsWOYfnVC9aMYj6r3xgxkkpfEa5alPAOSasRM2M4LUgItIiBjcggPbWp8NN5k1xMeCIsT4oNnme1Hx+JpPluB/dCFfnrkjFGxMKn9tpSBdCRjANYXmcNKnnzYIc4alWBLIZH0T3XBvMAevMcedBglmlUxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Q7ydLpfR; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55a9008c185so1483818a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:31:20 -0800 (PST)
+	 To:Cc:Content-Type; b=iVCtS50f5X9+aZQbxJB9qLITjBlYcEpaQwTx4v8nJHmdnBzwuTQgpMiBobNeVUjumsxsV5OGpau4fmmgzr83uSsKd/tG8EtrZzQLoB97KpW6mNTJaxyVJBC8V7LwFGxnDI4S5hH88TRB7tFbSHJevDHhhXMh98jrW++KJUkLfag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZBDIhN2w; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3536102785so2393666b.1;
+        Fri, 26 Jan 2024 13:31:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1706304678; x=1706909478; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=maDpcikpyh6FEh8N/tIM7o82tGen2/tmETzOibUg/is=;
-        b=Q7ydLpfRJBIPc1zDGpnWKX59E/L2MQWkHam27t3ye3pXQ8KhaHdVt0cKFF7tR4dRhW
-         8FJHYZqd8atnsWngv3bauKLiWGGaYBjyXN/6BBDtmjfKU0cxI5e9ZJu7aCAHhq8d6EVd
-         ERs1EzNLsVqS933T2uYBsrpwCzZJu/0QPBC+I=
+        d=gmail.com; s=20230601; t=1706304700; x=1706909500; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mDXTx8QMtKyNvkViX2Wj8fex4yMcm0KlVYHSHcciIfA=;
+        b=ZBDIhN2wfcR39bmZ5v+SEUyfEwGbFS5exxMBz+ZZZLkl8gHPnDSkHUNKGzHvWMjnT4
+         2BDZDdpK4hTs/FlXCH6prZHhh7c/cPVZl7r0OvVJPD9J7domzwhlI+uxV+9jJF1rRy22
+         gmS52le3eNfOZ+VphjwhiMYgb1/1COxd025HqtodYEB5Y99uLW/IDqQ9nkCkzw1c34R1
+         9gGmXCjlhGwaXvvG99bAIFrmqXXS0uVuop8BLhfGjrFhaX7auZVa+Kl9iYLwML1HsTOx
+         B3yOxkqSgEjHmyB0+IgkMrp6XdmYtYI6nvPMXRt8Kzq1lR9HlnWubpDsdRr2CzK9AmER
+         I+Dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706304678; x=1706909478;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=maDpcikpyh6FEh8N/tIM7o82tGen2/tmETzOibUg/is=;
-        b=Gxi7vc900tx/VyMv7mjDX0L1X4cBLCb0Cw4FLLhzKeYjAsOJoosVU3oe0hPX8cM7nE
-         eE5P7a7cKwvpMwC/XqKQWlcWyhQIWev4sOI1mgicntGwcBHFmdE3khmjS39kK4S6ocCB
-         ZAi8SKf+wyMhbAFxwFHqC38h+V3yNOrFj/+5rc41jF/BxLb5rp2a3jdX6ldtLsODeM9O
-         2GewESqroHbv+G92yCWgM0+4POpbWqc6S2hI1dXnHSoP94ptqaqvFIFvIOeaCstxqRyH
-         F9ccbzcg3mHNdfth5cK74X0eZJk3d4dgMZHiGFSZN1TKhay380zwxCw3AfY1jd7fGDJx
-         Bw3w==
-X-Gm-Message-State: AOJu0YwPfsDiTxwsCyOKSxGF5bv+xctd5c/zedeCelyg9yEV9QP5ZytQ
-	n3kMc4kfQwmbHC//F87HzXE8LbbFAJMEI4/wQy/3UQUDLR3zCtS1Eiogx+gTNa5IfuAxmFK77c2
-	1do+6cw==
-X-Google-Smtp-Source: AGHT+IF33M0aFYM5KuRbsHEt+FSQrMJ1VWRhzJohWMNHuO7K16O3vToYWbZZ9EoY4HdqXSB93ectrA==
-X-Received: by 2002:a05:6402:1509:b0:55c:8533:c7d1 with SMTP id f9-20020a056402150900b0055c8533c7d1mr2612199edw.0.1706304678387;
-        Fri, 26 Jan 2024 13:31:18 -0800 (PST)
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
-        by smtp.gmail.com with ESMTPSA id r23-20020aa7da17000000b0055c104274e7sm979227eds.78.2024.01.26.13.31.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jan 2024 13:31:17 -0800 (PST)
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a313b51cf1fso150336566b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:31:17 -0800 (PST)
-X-Received: by 2002:a17:907:75cd:b0:a30:e9a6:68f6 with SMTP id
- jl13-20020a17090775cd00b00a30e9a668f6mr2088169ejc.37.1706304677484; Fri, 26
- Jan 2024 13:31:17 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706304700; x=1706909500;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mDXTx8QMtKyNvkViX2Wj8fex4yMcm0KlVYHSHcciIfA=;
+        b=g4vwJNJZlVbAPpg/6rQugtPGT8slD4Nk3gn9dem4JAR1Dat0fvmLnQZmerMxGGGk9+
+         0UykwpzFuavkKP+NRDemr6v8k3Y1LhliJScZ4UiVYHSDDzSwX10FLCOcRX5++eaULH4H
+         +7cEwc8xvHn0316C3b/3MzhJz0Mg9+3YRvsylkOYCXfBrjw//cA1nqGC+vH+vYY3CgBo
+         20/xlt2JXwVrRjYJAonwHsqpespwNHTB4IRCY03Dxg7bsD1odr/ILia0heePtJQ0gyhH
+         LDSxLo5voql8AxXxaZq0jGussvbaLg+ieOKUYzeEQcvOCDwV27COYTlETgI2YsCofEv/
+         prew==
+X-Gm-Message-State: AOJu0Yy8VJjj4DEyuPF18SJ9gjfbgHOss+fCGwNKXAVjTmd+is55BgHr
+	Y0YX8619i0NB0nnkbTjI5YH180rXic+IJewLGpdKD5A/5wTjQhO2dBA5WDQTgktSslxW2Ch0j+X
+	v887N1TtH3QZuUn+uEO+jXAWb/HQ=
+X-Google-Smtp-Source: AGHT+IFkBmkflnDzL19x18zHK/B4dtxxNwR7dmtumO843L79ltYLDN+VfdaWu2B7SEAMrvkcEJHGHI9PkQzSXKasw4w=
+X-Received: by 2002:a17:906:298d:b0:a28:32ff:8709 with SMTP id
+ x13-20020a170906298d00b00a2832ff8709mr165310eje.15.1706304700273; Fri, 26 Jan
+ 2024 13:31:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126150209.367ff402@gandalf.local.home> <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
- <20240126162626.31d90da9@gandalf.local.home>
-In-Reply-To: <20240126162626.31d90da9@gandalf.local.home>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 26 Jan 2024 13:31:01 -0800
-X-Gmail-Original-Message-ID: <CAHk-=witahEb8eXvRHGUGDQPj5u0uTBW+W=AwznWRf3=9GhzxQ@mail.gmail.com>
-Message-ID: <CAHk-=witahEb8eXvRHGUGDQPj5u0uTBW+W=AwznWRf3=9GhzxQ@mail.gmail.com>
-Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, 
-	Linux Trace Devel <linux-trace-devel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner <brauner@kernel.org>, 
-	Ajay Kaher <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20240102-j7200-pcie-s2r-v2-0-8e4f7d228ec2@bootlin.com> <20240102-j7200-pcie-s2r-v2-2-8e4f7d228ec2@bootlin.com>
+In-Reply-To: <20240102-j7200-pcie-s2r-v2-2-8e4f7d228ec2@bootlin.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Fri, 26 Jan 2024 23:31:03 +0200
+Message-ID: <CAHp75VcJA=gg8GLF_YK_tUbjdozaRoJd1gk+a8UCiFWGkk=5CQ@mail.gmail.com>
+Subject: Re: [PATCH v2 02/15] pinctrl: pinctrl-single: move suspend()/resume()
+ callbacks to noirq
+To: Thomas Richard <thomas.richard@bootlin.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
+	Andy Shevchenko <andy@kernel.org>, Tony Lindgren <tony@atomide.com>, 
+	Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>, 
+	Aaro Koskinen <aaro.koskinen@iki.fi>, Janusz Krzysztofik <jmkrzyszt@gmail.com>, 
+	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, Vinod Koul <vkoul@kernel.org>, 
+	Kishon Vijay Abraham I <kishon@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
+	Tom Joseph <tjoseph@cadence.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	linux-phy@lists.infradead.org, linux-pci@vger.kernel.org, 
+	gregory.clement@bootlin.com, theo.lebrun@bootlin.com, 
+	thomas.petazzoni@bootlin.com, u-kumar1@ti.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 26 Jan 2024 at 13:26, Steven Rostedt <rostedt@goodmis.org> wrote:
+On Fri, Jan 26, 2024 at 4:37=E2=80=AFPM Thomas Richard
+<thomas.richard@bootlin.com> wrote:
 >
-> So we keep the same inode number until something breaks with it, even
-> though, using unique ones is not that complicated?
+> The goal is to extend the active period of pinctrl.
+> Some devices may need active pinctrl after suspend() and/or before
+> resume().
+> So move suspend()/resume() to suspend_noirq()/resume_noirq() in order to
+> have active pinctrl until suspend_noirq() (included), and from
+> resume_noirq() (included).
+>
+> The deprecated API has been removed to use the new one (dev_pm_ops struct=
+).
 
-Using unique ones for directories was a trivial cleanup.
+LGTM, FWIW,
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-The file case is clearly different. I thought it would be the same
-trivial one-liner, but nope.
 
-When you have to add 30 lines of code just to get unique inode numbers
-that nobody has shown any interest in, it's 30 lines too much.
-
-And when it happens in a filesystem that has a history of copying code
-from the VFS layer and having nasty bugs, it's *definitely* too much.
-
-Simplify. If you can clean things up and we have a few release of
-not-horrendous-bugs every other day, I may change my mind.
-
-As it is, I feel like I have to waste my time checking all your
-patches, and I'm saying "it's not worth it".
-
-               Linus
+--=20
+With Best Regards,
+Andy Shevchenko
 
