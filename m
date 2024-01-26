@@ -1,155 +1,183 @@
-Return-Path: <linux-kernel+bounces-40073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39891-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C3B883D9C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:55:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EE9083D8FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:05:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E6C2B2BC9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:55:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F474B32B9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:58:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 695DB1803E;
-	Fri, 26 Jan 2024 11:54:42 +0000 (UTC)
-Received: from mail-m255222.qiye.163.com (mail-m255222.qiye.163.com [103.129.255.222])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5F91627EF;
+	Fri, 26 Jan 2024 09:08:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="y6BD1jbe"
+Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D47A317BC9;
-	Fri, 26 Jan 2024 11:54:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.129.255.222
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF5C8612D3;
+	Fri, 26 Jan 2024 09:08:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.30.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706270081; cv=none; b=cHbgyw+xMuNVH5j07eq7ZhZDdkCCqK8iINglfzorQrF0e+5gtfrMAqB6IN5+zr5syrsBbJnXFMXWsuwxeib59QhG6fIaGM2s6zlMaPVJVcmDtmjcvjpVQXbKzFfiOBM6lGK7J890/mDwMJYOpfG2rKquuRGU41n+xwkNuC+CR7g=
+	t=1706260136; cv=none; b=NIa/NgzXTbOxvctApzrxWPV9Dxsyduth/Jr14doH57PFZKo5DyLiluy1D9t+4vfHTsegH5Bc+0Gz0o+Nq+ijzf4goh02RbyZgbKF7lPmxR4wgl5vjIluurllZ0b7fX9Wvad03zPFJ7+kdk6EzqAAPfIOHLJnh0xBbEUBkE405js=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706270081; c=relaxed/simple;
-	bh=Bds8OgSb+ANDgZeXtZphHAaeceMSfeyWRHKOgIMh9TA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JY6CEmejn7h5F3q9PVKJUqRp3M/Ayn/r+7xoFznRiuuXQHZR2qQNPv3orqdqe0WOlymun1O3RKT6btr+CU9jToUoS4W9SGl0BTeY9TDss2VMpAZFTymm8rhLSgzPBVRyQKPdBC4hZyMVHPHyn19641Spk6mP6JZsTpqU7WXGYW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sangfor.com.cn; spf=pass smtp.mailfrom=sangfor.com.cn; arc=none smtp.client-ip=103.129.255.222
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sangfor.com.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sangfor.com.cn
-Received: from [172.23.69.7] (unknown [121.32.254.147])
-	by smtp.qiye.163.com (Hmail) with ESMTPA id 20CE74601A9;
-	Fri, 26 Jan 2024 10:25:02 +0800 (CST)
-Message-ID: <5bc6ed6d-31e9-4b44-aa91-5f9d0f3d92c8@sangfor.com.cn>
-Date: Fri, 26 Jan 2024 10:25:01 +0800
+	s=arc-20240116; t=1706260136; c=relaxed/simple;
+	bh=Y6ysjC80/3HxVZG5UJcj5X7tUQusPEe/JH3Lz24bfkk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=QXS1nDfN4VzNlr8YXHfnMxWrZxL0xQOnFA7LCpVPE0rO5X+F8mNBZTUVBUFyeanj8+RhMhdEkDA/fp5cizd13s9FPkN5Gt4OYSMkZi0UBxXuXef242eCevrk8TVdD6XH3Sn57XaMdTr5gefV4CQG5hVsOV9sRt0/Q3i7DRLfTMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com; spf=pass smtp.mailfrom=geanix.com; dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b=y6BD1jbe; arc=none smtp.client-ip=188.40.30.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geanix.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
+	s=default2211; h=Content-Type:MIME-Version:Message-ID:Date:References:
+	In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=oxqeIC7ttI03nT3m0P4jBVoLhILJzKjA4P3WHMGd76k=; b=y6BD1jbex9IqxWEA69pQNSDqVH
+	D0wyfPojU3G20lcfmkgh3caXY+0zFvYLv8Y5ekKvYk9Ppu/iicTshnhlNd6NBaeici2ZeXDVcxXCU
+	k+TP8tVNpunouS3ayFL2Cw09SDIPo2PKzfFcbVOxEEEsEo/zrDk3orOmQ0Nx21nmSsgRDWNwwhBwN
+	60ITWFGCgRmafdPAtkvowwFvFy8M5vFjS5Gs0i0L+NZnlSBJvKlszD7L4VwZDvxifQ4L+ZbW2+b+E
+	DOGfioj//Pvxrra8sLl9Z0B+7VRS25gox0tt9/4M/Ni8+duLziTaxVw4O93SbzVoB/VL+S2iJXOmE
+	O46vT+NQ==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <esben@geanix.com>)
+	id 1rTHx4-000DSM-8S; Fri, 26 Jan 2024 09:52:42 +0100
+Received: from [87.49.42.9] (helo=localhost)
+	by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <esben@geanix.com>)
+	id 1rTHx3-000LGD-7I; Fri, 26 Jan 2024 09:52:41 +0100
+From: Esben Haabendal <esben@geanix.com>
+To: rohan.g.thomas@intel.com
+Cc: robh@kernel.org,  alexandre.torgue@foss.st.com,  conor+dt@kernel.org,
+  davem@davemloft.net,  devicetree@vger.kernel.org,  edumazet@google.com,
+  fancer.lancer@gmail.com,  joabreu@synopsys.com,
+  krzysztof.kozlowski+dt@linaro.org,  kuba@kernel.org,
+  linux-arm-kernel@lists.infradead.org,  linux-kernel@vger.kernel.org,
+  linux-stm32@st-md-mailman.stormreply.com,  mcoquelin.stm32@gmail.com,
+  netdev@vger.kernel.org,  pabeni@redhat.com,  peppe.cavallaro@st.com
+Subject: Re: [PATCH net-next 1/2] dt-bindings: net: snps,dwmac: Time Based
+ Scheduling
+In-Reply-To: <20230929051758.21492-1-rohan.g.thomas@intel.com> (rohan g.
+	thomas's message of "Fri, 29 Sep 2023 13:17:58 +0800")
+References: <20230928180942.GA932326-robh@kernel.org>
+	<20230929051758.21492-1-rohan.g.thomas@intel.com>
+Date: Fri, 26 Jan 2024 09:52:40 +0100
+Message-ID: <87msss4gtj.fsf@geanix.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] RDMA/device: Fix a race between mad_client and cm_client
- init
-To: Ding Hui <dinghui@sangfor.com.cn>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc: leon@kernel.org, wenglianfa@huawei.com, gustavoars@kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- Shifeng Li <lishifeng1992@126.com>
-References: <20240102034335.34842-1-lishifeng@sangfor.com.cn>
- <20240103184804.GB50608@ziepe.ca>
- <80cac9fd-7fed-403e-8889-78e2fc7a49b0@sangfor.com.cn>
- <20240104123728.GC50608@ziepe.ca>
- <e029db0a-c515-e61c-d34e-f7f054d51e88@sangfor.com.cn>
- <20240115134707.GZ50608@ziepe.ca>
- <354e2bf7-a8b4-629d-3d2d-35951a52e8bd@sangfor.com.cn>
-From: Shifeng Li <lishifeng@sangfor.com.cn>
-In-Reply-To: <354e2bf7-a8b4-629d-3d2d-35951a52e8bd@sangfor.com.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlDTRlCVhkeGR1DHhpMGUlDGVUTARMWGhIXJBQOD1
-	lXWRgSC1lBWUpJSlVISVVJTk9VSk9MWVdZFhoPEhUdFFlBWU9LSFVKTU9JTE5VSktLVUpCS0tZBg
-	++
-X-HM-Tid: 0a8d4395bb0903aekunm20ce74601a9
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PD46MSo5FDMPMg8*URccCS80
-	KUwaCytVSlVKTEtNSUhOQktISE5DVTMWGhIXVRcSCBMSHR4VHDsIGhUcHRQJVRgUFlUYFUVZV1kS
-	C1lBWUpJSlVISVVJTk9VSk9MWVdZCAFZQUNMTE03Bg++
+Content-Type: text/plain
+X-Authenticated-Sender: esben@geanix.com
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27165/Thu Jan 25 10:51:15 2024)
 
-On 2024/1/16 10:12, Ding Hui wrote:
-> On 2024/1/15 21:47, Jason Gunthorpe wrote:
->> On Sat, Jan 06, 2024 at 10:12:17AM +0800, Ding Hui wrote:
->>> On 2024/1/4 20:37, Jason Gunthorpe wrote:
->>>> On Thu, Jan 04, 2024 at 02:48:14PM +0800, Shifeng Li wrote:
->>>>
->>>>> The root cause is that mad_client and cm_client may init concurrently
->>>>> when devices_rwsem write semaphore is downgraded in enable_device_and_get() like:
->>>>
->>>> That can't be true, the module loader infrastructue ensures those two
->>>> things are sequential.
->>>>
->>>
->>> Please consider the sequence again and notice that:
->>>
->>> 1. We agree that dependencies ensure mad_client be registered before cm_client.
->>> 2. But the mad_client.add() is not invoked in ib_register_client(), since
->>>     there is no DEVICE_REGISTERED device at that time.
->>>     Instead, it will be delayed until the device driver init (e.g. mlx5_core)
->>>     in enable_device_and_get().
->>> 3. The ib_cm and mlx5_core can be loaded concurrently, after setting DEVICE_REGISTERED
->>>     and downgrade_write(&devices_rwsem) in enable_device_and_get(), there is a chance
->>>     that cm_client.add() can be invoked before mad_client.add().
->>>
->>>
->>>          T1(ib_core init)      |      T2(device driver init)        |        T3(ib_cm init)
->>> ---------------------------------------------------------------------------------------------------
->>> ib_register_client mad_client
->>>    assign_client_id
->>>      add clients CLIENT_REGISTERED
->>>      (with clients_rwsem write)
->>>    down_read(&devices_rwsem);
->>>    xa_for_each_marked (&devices, DEVICE_REGISTERED)
->>>      nop # no devices
->>>    up_read(&devices_rwsem);
->>>
->>>                                ib_register_device
->>>                                  enable_device_and_get
->>>                                    down_write(&devices_rwsem);
->>>                                    set DEVICE_REGISTERED
->>>                                    downgrade_write(&devices_rwsem);
->>>                                                                      ib_register_client cm_client
->>>                                                                        assign_client_id
->>>                                                                          add clients CLIENT_REGISTERED
->>>                                                                          (with clients_rwsem write)
->>>                                                                        down_read(&devices_rwsem);
->>>                                                                        xa_for_each_marked (&devices, DEVICE_REGISTERED)
->>>                                                                          add_client_context
->>>                                                                            down_write(&device->client_data_rwsem);
->>>                                                                            get CLIENT_DATA_REGISTERED
->>>                                                                            downgrade_write(&device->client_data_rwsem);
->>>                                                                            cm_client.add
->>>                                                                              cm_add_one
->>>                                                                                ib_register_mad_agent
->>>                                                                                  ib_get_mad_port
->>>                                                                                    __ib_get_mad_port return NULL!
->>>                                                                            set CLIENT_DATA_REGISTERED
->>>                                                                            up_read(&device->client_data_rwsem);
->>>                                                                        up_read(&devices_rwsem);
->>>                                  down_read(&clients_rwsem);
->>>                                  xa_for_each_marked (&clients, CLIENT_REGISTERED)
->>>                                    add_client_context [mad]
->>>                                      mad_client.add
->>>                                    add_client_context [cm]
->>>                                      nop # already CLIENT_DATA_REGISTERED
->>>                                  up_read(&clients_rwsem);
->>>                                  up_read(&devices_rwsem);
+rohan.g.thomas@intel.com writes:
+
+> From: Rohan G Thomas <rohan.g.thomas@intel.com>
+>
+> On Wed, Sep 27, 2023 at 09:09:18PM +0800, Rohan G Thomas wrote:
+>>> Add new property tbs-enabled to enable Time Based Scheduling(TBS)
 >>
->> Take the draft I sent previously and use down_write(&devices_rwsem) in
->> ib_register_client()
+>>That's not the property you added.
 >>
-> 
-> I believe this modification is effective, rather than expanding the clients_rwsem range,
-> the key point is down_write(&devices_rwsem), which prevents ib_register_client() from
-> being executed in the gap of ib_register_device().
-> 
-> However, this may cause a little confusion, as ib_register_client() does not modify
-> anything related to devices, but it is protected by a write lock.
-> 
+>>> support per Tx queues. TBS feature can be enabled later using ETF
+>>> qdisc but for only those queues that have TBS support enabled.
+>>
+>>This property defines capable or enabled? 
+>
+> This property is to enable TBS support for any Tx queue. Why this
+> added is because I think TBS need not be enabled for all capable
+> Tx queues(Tx DMA channels) because of the following hw limitations.
+> 1. As per DWMAC QoS and DWXGMAC databooks, TBS cannot coexist with
+> TSO. So TBS cannot be enabled for a Tx queue which is for TSO. 
+> 2. Also as per DWXGMAC databook, "Do not enable time-based scheduling
+> (or enhanced descriptors) for the channel for which TSO or transmit
+> timestamp or one-step timestamping control correction feature is
+> enabled".
+> 3. As per DWXGMAC databook, "Use separate channel (without TBS
+> enabled) for time critical traffic. Mixing such traffic with TBS
+> enabled traffic can cause delays in transmitting time critical
+> traffic."
+> More explanation below...
+>
+>>
+>>Seems like OS configuration and policy.
+>
+> Tx queues need to be configured for TBS during hw setup itself as
+> special enhanced descriptors are used by the hw for TBS support
+> enabled queues. Switching between enhanced and normal descriptors on
+> run is not feasible. So this flag is for enabling "Enhanced
+> Descriptors for Time Based Scheduling". This I think is a hw specific
+> requirement.
 
-Hi Jason，
+Support for enhanced descriptors is definitely hardware specific.
+Enabling the use of enhanced descriptors is a configuration choice.
 
-Do you have any differing opinions about above?
+The tricky part here is that the whole devicetree bindings story for the
+stmmac driver is filled with such configuration choices. As such, it is
+only natural to add the property you are suggesting here. I completely
+agree. But you can also argue that it is "wrong", because it does not
+just describe the hardware, but also a configuration choice.
 
+>>Doesn't eh DWMAC have capability registers for supported features? Or
+>>did they forget per queue capabilities?
+>
+> Yes, capability registers are available. For DWMAC5 IP, if TBSSEL bit
+> is set, then TBS is supported by all Tx queues.
 
+Not true. Some NXP imx8 and imx9 chips support Synopsys MAC 5.10a IP,
+and does not support TBS for queue 0. And they have TBSSEL bit set, but
+no TBS_CH support.
+
+> For DWXGMAC IP, if TBSSEL bit is set, then TBS is supported by TBS_CH
+> number of Tx queues starting from the highest Tx queue. But because of
+> the hw limitations mentioned above, TBS cannot be enabled for all
+> capable queues.
+>
+>>
+>>> 
+>>> Commit 7eadf57290ec ("net: stmmac: pci: Enable TBS on GMAC5 IPK PCI
+>>> entry") enables similar support from the stmmac pci driver.
+>>
+>>Why does unconditionally enabling TBS work there, but not here?
+>
+> There, Tx queue 0 is not enabled for TBS as it is used for TSO.
+>
+>>
+>>> 
+>>> Signed-off-by: Rohan G Thomas <rohan.g.thomas@intel.com>
+>>> ---
+>>>  Documentation/devicetree/bindings/net/snps,dwmac.yaml | 8 ++++++++
+>>>  1 file changed, 8 insertions(+)
+>>> 
+>> diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/>devicetree/bindings/net/snps,dwmac.yaml
+>>> index 5c2769dc689a..db1eb0997602 100644
+>>> --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+>>> +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+>>> @@ -399,6 +399,14 @@ properties:
+>>>              type: boolean
+>>>              description: TX checksum offload is unsupported by the TX queue.
+>>>  
+>>> +          snps,tbs-enabled:
+>>> +            type: boolean
+>>> +            description:
+>>> +              Enable Time Based Scheduling(TBS) support for the TX queue. TSO and
+>>> +              TBS cannot be supported by a queue at the same time. If TSO support
+>>> +              is enabled, then default TX queue 0 for TSO and in that case don't
+>>> +              enable TX queue 0 for TBS.
+>>> +
+>>>          allOf:
+>>>            - if:
+>>>                required:
+>>> -- 
+>>> 2.26.2
+>>> 
 
