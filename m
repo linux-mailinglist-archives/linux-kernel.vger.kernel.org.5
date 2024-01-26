@@ -1,81 +1,54 @@
-Return-Path: <linux-kernel+bounces-40802-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40803-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC7FF83E638
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 00:07:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA25083E63F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 00:08:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 781D3286C2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:07:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07EE71C20CC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:08:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4352455E57;
-	Fri, 26 Jan 2024 23:07:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 606F756775;
+	Fri, 26 Jan 2024 23:08:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="K2wz7WX2"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OXelBLKM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A911156756;
-	Fri, 26 Jan 2024 23:07:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9767D55E57
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 23:08:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706310464; cv=none; b=LWJZEbvSZF1eGZ6pGPrzTXM5WtB1ynEwoM8DYUA3g6hjn2cEVtXAFwQZjxjziNU/D6ReN/x99yNlG92Ff81vgPsuaDisQiyfV1F67EJj/dZknqiRmBQ2pNeZ7Zsb+MGh3UW3QgVBhAUhbvOPM/PvFhnEEyR4U9y3F1NlrJTPr1o=
+	t=1706310496; cv=none; b=tG/pJzn9eQjc8Fh3vS7UgGHNYskTyGDOBe4qzSpIZT8qkDP18gDIBpaDGKXJ6Q3pM3BFi1JKNkW5JAzk0/ILKl2pv036KAFm5+vevVH+qUJg2Iv/rjMdMDrEzf2sNq1A71sWhKQ7TryCS+rGXjhDW6eTrqG/0eEUT9TNvWeRnDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706310464; c=relaxed/simple;
-	bh=CCBlNiRHutaSOIy4eCuqmtmhS4a3fOQYcAmNjzl5BgY=;
+	s=arc-20240116; t=1706310496; c=relaxed/simple;
+	bh=gtDQI+hKL0TQ2S0fIwbLd2/StC1wd1X9UG/XGhPc+u0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hl9Rg7v6YINaPvTTaLHVkvJU9PDokWj12wbjALT25ZBhO9ZJbYY+j73DIUFTEPgWeladA4x+mhXZIFM0w8xtjGNHTVzVRyIdJSUcXaePsRRXcOYKnXe8XFrSdN2A4bx5RBzokS4j07CGfmA1yrlVbou14ebj46+BwOiZRHQPMtM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=K2wz7WX2; arc=none smtp.client-ip=192.55.52.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706310462; x=1737846462;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=CCBlNiRHutaSOIy4eCuqmtmhS4a3fOQYcAmNjzl5BgY=;
-  b=K2wz7WX2a69IRzJFOaANDD2mv0IPNXiEyg2n+uDOeK3mtCMV53dkW3yy
-   D63VgC5WlCxkHIsvz7rq/GLGru9ZSomi2RJExK8oAT3ERZUYGw34zGxYp
-   UPpKS6KGxbLDBkYJzNZWbOJfpLdDpDcNlXAtO31eGr7GQJWb//d1MunCB
-   qlt7G6aPNUYn71DT9udD2Ya5uLGZ3YbbHQYkK+Wd9f2xbw29dIvpxKqaR
-   NrbMYB/GE+kWmrWypA644mGAiQfXlM9vp1ms5RcSp5UwoV8cFqJ8OrPoP
-   9b9dPm2h7quHt70BNkNtTHvYM8PQ75DVC27CUl96W6JHdKU7+qzWXAOg0
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="399760656"
-X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
-   d="scan'208";a="399760656"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 15:07:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="930501808"
-X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
-   d="scan'208";a="930501808"
-Received: from lkp-server01.sh.intel.com (HELO 370188f8dc87) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 26 Jan 2024 15:07:36 -0800
-Received: from kbuild by 370188f8dc87 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rTVIM-0001R4-1N;
-	Fri, 26 Jan 2024 23:07:34 +0000
-Date: Sat, 27 Jan 2024 07:07:23 +0800
-From: kernel test robot <lkp@intel.com>
-To: Peter Griffin <peter.griffin@linaro.org>, arnd@arndb.de,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	linux@roeck-us.net, wim@linux-watchdog.org, conor+dt@kernel.org,
-	alim.akhtar@samsung.com, jaewon02.kim@samsung.com,
-	chanho61.park@samsung.com, semen.protsenko@linaro.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	kernel-team@android.com, peter.griffin@linaro.org,
-	tudor.ambarus@linaro.org, andre.draszik@linaro.org,
-	saravanak@google.com, willmcvicker@google.com, linux-fsd@tesla.com,
-	linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH 2/9] soc: samsung: exynos-pmu: Add
- exynos_pmu_update/read/write APIs and SoC quirks
-Message-ID: <202401270633.VorEna6q-lkp@intel.com>
-References: <20240122225710.1952066-3-peter.griffin@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=IRD3iAthW34cl56YMpt050S7mshbOss4tNgCJzG3Fe8xqKVyc5OIgejXXplnpf65+emOhf7kJn5XvaiQfwMM2xwIWP2S6UZUoExMPasKzNY12aXHhaHG7BHorhP0TXetz+CTa8gb99OTFkN8iYypu2j8DYdE2tiIMUx2tpoI+Vc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OXelBLKM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DE71C433F1;
+	Fri, 26 Jan 2024 23:08:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706310496;
+	bh=gtDQI+hKL0TQ2S0fIwbLd2/StC1wd1X9UG/XGhPc+u0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OXelBLKMoeU91iMzptcxcM+mQaJSEpgO+jrwD6fwJBA2GkYx+erSHvnEqaEecJ7ys
+	 L9UR+moDECJyZTNAQStBJ1gqSu5Jo3jJb361fwbSboiVHV/p0YUsN9tkSs+y6gLuMd
+	 RM4TB7dkNB+Sq2ezTxik+577gPYickgUpAX0Pl2B1ezh1CV1XENFR1r4dA2nhp9qJ/
+	 0haeFt1yoLgoBcVaL0dkDQoPqPRIihKVZA//P8H+bBkf0INz8Fq1lEqopVaqZRfjpy
+	 Hz6QN8dXokICkd7xEjTGsy5qLKgFWycDOoof+b/7THMJ43wRjTyrsiamf/DlywMiWR
+	 YFNnxDfWK+faA==
+Date: Fri, 26 Jan 2024 15:08:14 -0800
+From: Jaegeuk Kim <jaegeuk@kernel.org>
+To: Wenjie <qwjhust@gmail.com>
+Cc: chao@kernel.org, guoweichao@oppo.com,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org, hustqwj@hust.edu.cn
+Subject: Re: [PATCH v2] f2fs: fix max open zone constraints
+Message-ID: <ZbQ7XmFpAMSXslkU@google.com>
+References: <20240109035804.642-1-qwjhust@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,71 +57,133 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240122225710.1952066-3-peter.griffin@linaro.org>
+In-Reply-To: <20240109035804.642-1-qwjhust@gmail.com>
 
-Hi Peter,
+On 01/09, Wenjie wrote:
+> From: Wenjie Qi <qwjhust@gmail.com>
+> 
+> 1. If the max active zones of zoned devices are less than
+> the active logs of F2FS, the device may error due to
+> insufficient zone resources when multiple active logs are
+> being written at the same time.
+> 
+> 2. We can get the number of remaining available zone
+> resources by subtracting the number of active logs from
+> the number of max active zones of zoned devices.  We can
+> use these available zone resources to reduce the number
+> of pending bio when switching zones.
+> 
+> 3. The original code for determining zone end was
+> after "out":, which would have missed some fio's
+> where is_end_zone_blkaddr(sbi, fio->new_blkaddr)
+> was true. I've moved this code before "skip:" to
+> make sure it's done for each fio.
 
-kernel test robot noticed the following build errors:
+Could you please keep #3 as a separate patch?
 
-[auto build test ERROR on krzk/for-next]
-[also build test ERROR on robh/for-next soc/for-next linus/master v6.8-rc1 next-20240125]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Peter-Griffin/dt-bindings-watchdog-samsung-wdt-deprecate-samsung-syscon-phandle/20240123-070052
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git for-next
-patch link:    https://lore.kernel.org/r/20240122225710.1952066-3-peter.griffin%40linaro.org
-patch subject: [PATCH 2/9] soc: samsung: exynos-pmu: Add exynos_pmu_update/read/write APIs and SoC quirks
-config: x86_64-buildonly-randconfig-006-20240126 (https://download.01.org/0day-ci/archive/20240127/202401270633.VorEna6q-lkp@intel.com/config)
-compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240127/202401270633.VorEna6q-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401270633.VorEna6q-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from drivers/pinctrl/samsung/pinctrl-exynos.c:27:
->> include/linux/soc/samsung/exynos-pmu.h:38:1: error: expected identifier or '('
-      38 | {
-         | ^
-   include/linux/soc/samsung/exynos-pmu.h:44:1: error: expected identifier or '('
-      44 | {
-         | ^
->> include/linux/soc/samsung/exynos-pmu.h:50:9: error: incompatible pointer to integer conversion returning 'void *' from a function with result type 'int' [-Wint-conversion]
-      50 |         return ERR_PTR(-ENODEV);
-         |                ^~~~~~~~~~~~~~~~
-   include/linux/soc/samsung/exynos-pmu.h:55:9: error: incompatible pointer to integer conversion returning 'void *' from a function with result type 'int' [-Wint-conversion]
-      55 |         return ERR_PTR(-ENODEV);
-         |                ^~~~~~~~~~~~~~~~
-   4 errors generated.
-
-
-vim +38 include/linux/soc/samsung/exynos-pmu.h
-
-    35	
-    36	static inline int exynos_pmu_update_bits(unsigned int offset, unsigned int mask,
-    37						 unsigned int val);
-  > 38	{
-    39		return ERR_PTR(-ENODEV);
-    40	}
-    41	
-    42	static inline int exynos_pmu_update(unsigned int offset, unsigned int mask,
-    43					    unsigned int val);
-    44	{
-    45		return ERR_PTR(-ENODEV);
-    46	}
-    47	
-    48	static inline int exynos_pmu_write(unsigned int offset, unsigned int val)
-    49	{
-  > 50		return ERR_PTR(-ENODEV);
-    51	}
-    52	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> 
+> Signed-off-by: Wenjie Qi <qwjhust@gmail.com>
+> ---
+>  fs/f2fs/data.c  | 38 ++++++++++++++++++++++++++++----------
+>  fs/f2fs/f2fs.h  |  2 ++
+>  fs/f2fs/super.c |  9 +++++++++
+>  3 files changed, 39 insertions(+), 10 deletions(-)
+> 
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index dce8defdf4c7..6b11364e94b8 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -392,6 +392,19 @@ static void f2fs_zone_write_end_io(struct bio *bio)
+>  	complete(&io->zone_wait);
+>  	f2fs_write_end_io(bio);
+>  }
+> +
+> +static void f2fs_zone_write_end_io_nowait(struct bio *bio)
+> +{
+> +#ifdef CONFIG_F2FS_IOSTAT
+> +	struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
+> +	struct f2fs_sb_info *sbi = iostat_ctx->sbi;
+> +#else
+> +	struct f2fs_sb_info *sbi = (struct f2fs_sb_info *)bio->bi_private;
+> +#endif
+> +
+> +	atomic_inc(&sbi->available_active_zones);
+> +	f2fs_write_end_io(bio);
+> +}
+>  #endif
+>  
+>  struct block_device *f2fs_target_device(struct f2fs_sb_info *sbi,
+> @@ -1080,22 +1093,27 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+>  	io->last_block_in_bio = fio->new_blkaddr;
+>  
+>  	trace_f2fs_submit_page_write(fio->page, fio);
+> -skip:
+> -	if (fio->in_list)
+> -		goto next;
+> -out:
+>  #ifdef CONFIG_BLK_DEV_ZONED
+>  	if (f2fs_sb_has_blkzoned(sbi) && btype < META &&
+>  			is_end_zone_blkaddr(sbi, fio->new_blkaddr)) {
+> -		bio_get(io->bio);
+> -		reinit_completion(&io->zone_wait);
+> -		io->bi_private = io->bio->bi_private;
+> -		io->bio->bi_private = io;
+> -		io->bio->bi_end_io = f2fs_zone_write_end_io;
+> -		io->zone_pending_bio = io->bio;
+> +		if (!atomic_add_negative(-1, &sbi->available_active_zones)) {
+> +			io->bio->bi_end_io = f2fs_zone_write_end_io_nowait;
+> +		} else {
+> +			atomic_inc(&sbi->available_active_zones);
+> +			bio_get(io->bio);
+> +			reinit_completion(&io->zone_wait);
+> +			io->bi_private = io->bio->bi_private;
+> +			io->bio->bi_private = io;
+> +			io->bio->bi_end_io = f2fs_zone_write_end_io;
+> +			io->zone_pending_bio = io->bio;
+> +		}
+>  		__submit_merged_bio(io);
+>  	}
+>  #endif
+> +skip:
+> +	if (fio->in_list)
+> +		goto next;
+> +out:
+>  	if (is_sbi_flag_set(sbi, SBI_IS_SHUTDOWN) ||
+>  				!f2fs_is_checkpoint_ready(sbi))
+>  		__submit_merged_bio(io);
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 65294e3b0bef..1b1833e1d10e 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -1551,6 +1551,8 @@ struct f2fs_sb_info {
+>  
+>  #ifdef CONFIG_BLK_DEV_ZONED
+>  	unsigned int blocks_per_blkz;		/* F2FS blocks per zone */
+> +	unsigned int max_active_zones;		/* max zone resources of the zoned device */
+> +	atomic_t available_active_zones;		/* remaining zone resources */
+>  #endif
+>  
+>  	/* for node-related operations */
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index 206d03c82d96..c79919425d63 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -3932,6 +3932,15 @@ static int init_blkz_info(struct f2fs_sb_info *sbi, int devi)
+>  	if (!f2fs_sb_has_blkzoned(sbi))
+>  		return 0;
+>  
+> +	sbi->max_active_zones = bdev_max_active_zones(bdev);
+> +	if (sbi->max_active_zones && (sbi->max_active_zones < F2FS_OPTION(sbi).active_logs)) {
+> +		f2fs_err(sbi,
+> +			"zoned: max active zones %u is too small, need at least %u active zones",
+> +				 sbi->max_active_zones, F2FS_OPTION(sbi).active_logs);
+> +		return -EINVAL;
+> +	}
+> +	atomic_set(&sbi->available_active_zones, sbi->max_active_zones - F2FS_OPTION(sbi).active_logs);
+> +
+>  	zone_sectors = bdev_zone_sectors(bdev);
+>  	if (!is_power_of_2(zone_sectors)) {
+>  		f2fs_err(sbi, "F2FS does not support non power of 2 zone sizes\n");
+> -- 
+> 2.34.1
 
