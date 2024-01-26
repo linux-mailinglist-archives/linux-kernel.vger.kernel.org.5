@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-40809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAEA983E658
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 00:14:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72A0483E65A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 00:14:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62705285A07
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:14:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29C751F20F5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:14:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FE855A0FF;
-	Fri, 26 Jan 2024 23:13:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 383435A79C;
+	Fri, 26 Jan 2024 23:14:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RDCaLsaj"
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hGyWAaVv"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEB0358ABE;
-	Fri, 26 Jan 2024 23:13:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28E6E5A0FD;
+	Fri, 26 Jan 2024 23:13:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706310838; cv=none; b=Cn/LzlgjRFmV2IXJSz3Ts8EGGjpRZX/3AN6nXFNMBY+ZpkazDERa8JEFk9IMWabNmVQrlOgZrATtCoOcy6yiizot3Lmkz41qh5pyO4rFtQ1oMrOlCFCqwncB14JCAf/AZtJV5rN/skKNYDcjP+S/zC7aj17Pg+4XlI+42NGFBtc=
+	t=1706310840; cv=none; b=EEd/Rsvf2G62HOdeKWSp8oYbmQuB3uOr8OgXu41n/ua3xD/qRlvffUrQztwNpS6GDMFUUvtd9mQgsnZzzQNCg1xa0uQbrOqPxHW/41XaE3KDRfqejEb3AmpgbN3YNt5TA9yks532aAqALrtbEM7wuoeBvbc2c6EUQE9/TMU1rxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706310838; c=relaxed/simple;
-	bh=HMzX7rgJBLGzBn8O3HLnD9vak9OSsdwseRcSZQv13NM=;
+	s=arc-20240116; t=1706310840; c=relaxed/simple;
+	bh=mPmolvHAcBMTIShhgLdXXMOUD8GBeSY8wUZZNyXtmXI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZLP3dbus85rACkkQq+kfgD0xmv0akpWbp6L24GiBf2AJtasaeOXU6dDZNMM6RRKdIQWTtVHlGRQYyY4chkcNzuYxincZHyve0iUJFpzrsG8X/K0QT4El9mbRPRhmggMdpExtiNOLL29ZeZCZHFHwu2be1DoKtZLBW3uhiJCyLJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RDCaLsaj; arc=none smtp.client-ip=209.85.215.177
+	 MIME-Version; b=J9wcMqFKVJGC5sn4v06DuZirv0LFh0feHyZZxn9ZONRXcKa3ISnnXVqiyVZEK/6xZ2fF51N7/aP1HvNsLJBH4NgCwRN1PP8EYk4tj/FU9meEdklyjn/RMhv35T0YR/JfgtfAAARa+UFn14TEL5y/y4FA5NgLfxx4Um5UFYuxou4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hGyWAaVv; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5d3912c9a83so630895a12.3;
-        Fri, 26 Jan 2024 15:13:56 -0800 (PST)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d89518d3b1so5883815ad.0;
+        Fri, 26 Jan 2024 15:13:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706310836; x=1706915636; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706310838; x=1706915638; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rnkGomYm3D+fpLxdujWN99uxXSHNQWvM4sS9axkvWjE=;
-        b=RDCaLsajsW9vCLrFJ8RgXaWvYl0LCx7R6pzNOPuaQAj0E5h4L/vrcPId6/yoEviw4m
-         gs5nRuV11JzYXDJHM44LL5abRXn6BMxMOSSVW3XxsbEtaXE2zQytgWMT1vE6C+v+wBIL
-         cFlyRdQHePpBbXlhxU66NXvYUNzxYeqJSPdrwkZPxXti1ACnIYdk/sVK5voa2dgg0ap0
-         1yLe2dFlPPyEYHgp+sIEH7I558txuJYZQA4myzEY3vZNXPqajRENVbDbOnDvTtfWCsnJ
-         HnEfMw4bdS7BwNTzO5s5XgIRale3/UFQebnk01717i2o1chfLpnB6MNYj6u2jTASs/gQ
-         jxfg==
+        bh=aZZIgE9h2jQLSmHO3bzM7GbmlOxYLfQCD/fuB/DQM9s=;
+        b=hGyWAaVvZQNrrxP7Un4wFXI8kbYJUSEBvlY0oQg+18okqMTikxGrl2uVcgyhnljyz0
+         Ol+zVxwsqtirwthPvkoDrgMzv1sfotWsON3rqRLQUJl8FNgmzdDZe5rcC0SjIAhx7shp
+         2BbB6b5+D9E6wMAQIUhfPNTXt33kpx3dMV834Ofg3VUQ8biR0h7U/c30RJSB+gqqELVb
+         mx2hLR+VrH+s5MTnD+yFaThi9GK0gbdTx7pm43jknVPOTIRwu5yQ0hnnKLLJgUSgJHir
+         /owYo9DUpM2jM+k75Qht8vzlX60EUTsytRmlkIJtG1zkuAGjjxJePgKqFKUwxUTGIv0o
+         Fg2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706310836; x=1706915636;
+        d=1e100.net; s=20230601; t=1706310838; x=1706915638;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rnkGomYm3D+fpLxdujWN99uxXSHNQWvM4sS9axkvWjE=;
-        b=bcppaEA22PYMp/AdNjtFLRMgtghMya8OPh4o4Qz0P01E2MTmY6oSwhQvZLL4p6Tge6
-         xB+N3BW74zRCPazrjLi5NbeF4bAw8AA4bR2QphK+ZAyKmLDPlUPxCec/0YmxBFOazwZ7
-         ES+2OIDqejy2UJ1L2BPu8BCl6xWYlU65/ueyUQ0tS3ftPiHP3U0NTJmwE0zvSkPOILAt
-         xdqZSlKrorQPeUk6UOq0nj1kVjkGRLHC4pzza35s/Ehx3zb1l4HaflSH48c03b33GIfM
-         YDNhum3aomB4BGprWx1dpUI09dryGPlOxlyDSbxbNuh9dJa2i7Hpuks6K3fdgz5jTMsO
-         7ENg==
-X-Gm-Message-State: AOJu0Ywu35UnWLKA4tqIKQuQddmsSJewbDxV2Q0utz3vjIATz+++G0nC
-	7KG8qJSHOioDB2KpqOs2MKtnenN5IQZ/A8yI2bB33vb864Lcous4
-X-Google-Smtp-Source: AGHT+IGy196ANI1JFjuq2M6xxkwRLO7pCqCc6UtQqIJgJXNZnz3586RKVwWskgYdGbu/goJgtTeFvA==
-X-Received: by 2002:a05:6a20:a120:b0:19c:6dd4:9862 with SMTP id q32-20020a056a20a12000b0019c6dd49862mr649492pzk.5.1706310835938;
-        Fri, 26 Jan 2024 15:13:55 -0800 (PST)
+        bh=aZZIgE9h2jQLSmHO3bzM7GbmlOxYLfQCD/fuB/DQM9s=;
+        b=OAh1EvnhEbemyLxY/+OS93NslwVxZF4Un+31WpAGRw1ytEV0SApB0KjaScnNtziCeC
+         r22LTiA5KK3L7pqftU16z4sRJ6PYamYxxHTG8yApnXe1F47pFE/yPiOfXq3qETQiawOX
+         3Gum26AaCcA++PZsQjB9+FATpNUCQmpuKlH/0yrsDuq7kgQ/UgU6Jf5w8BETg/DOr2ds
+         XSOLabA4Xr1rBl+gd6F/1dbzDmtDOZ7ASCYzQf4fDJD1PzXRzz65AY/75GXz0D019LFW
+         5+vBAeWouG4S3VJt9lJtRd58ETf6eJBhSyqcZ4jQXktdlN1h5Urcyjanp2xHtg2SWysY
+         LDGA==
+X-Gm-Message-State: AOJu0YwBfgW6m5wHOvq6YnNbXSW3osr21C+5O/DQjJUnjzDNjIEJbK05
+	2ZWDVbxRTw6vQbNSrjy7En5+upG5Pm+xSMcUZGUSk/HMZ4BWXtF5
+X-Google-Smtp-Source: AGHT+IH3C1Qnf0/6+4NmaQmZ/uEZDQRfzVSUp/eHC9XhRuIpUhozHkj66BmMY4loCbOv+N4q1N37sw==
+X-Received: by 2002:a17:903:28e:b0:1d0:4802:3b6c with SMTP id j14-20020a170903028e00b001d048023b6cmr733262plr.4.1706310838445;
+        Fri, 26 Jan 2024 15:13:58 -0800 (PST)
 Received: from localhost ([2601:644:9380:8cd0::7fb4])
-        by smtp.gmail.com with ESMTPSA id gx20-20020a056a001e1400b006dde04c10dasm1607626pfb.217.2024.01.26.15.13.54
+        by smtp.gmail.com with ESMTPSA id l6-20020a170903244600b001d78813c8a5sm1423159pls.49.2024.01.26.15.13.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 15:13:55 -0800 (PST)
+        Fri, 26 Jan 2024 15:13:58 -0800 (PST)
 From: Matthew Wood <thepacketgeek@gmail.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -73,9 +73,9 @@ To: "David S. Miller" <davem@davemloft.net>,
 Cc: leitao@debian.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2 2/8] net: netconsole: move netconsole_target config_item to config_group
-Date: Fri, 26 Jan 2024 15:13:37 -0800
-Message-ID: <20240126231348.281600-3-thepacketgeek@gmail.com>
+Subject: [PATCH net-next v2 3/8] net: netconsole: move newline trimming to function
+Date: Fri, 26 Jan 2024 15:13:38 -0800
+Message-ID: <20240126231348.281600-4-thepacketgeek@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240126231348.281600-1-thepacketgeek@gmail.com>
 References: <20240126231348.281600-1-thepacketgeek@gmail.com>
@@ -87,222 +87,57 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In order to support a nested userdata config_group in later patches,
-use a config_group for netconsole_target instead of a
-config_item. It's a no-op functionality-wise, since
-config_group maintains all features of a config_item via the cg_item
-member.
+Move newline trimming logic from `dev_name_store()` to a new function
+(trim_newline()) for shared use in netconsole.c
 
 Signed-off-by: Matthew Wood <thepacketgeek@gmail.com>
 ---
- drivers/net/netconsole.c | 61 ++++++++++++++++++++++------------------
- 1 file changed, 33 insertions(+), 28 deletions(-)
+ drivers/net/netconsole.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/netconsole.c b/drivers/net/netconsole.c
-index 93fc3b509706..085350beca87 100644
+index 085350beca87..b280d06bf152 100644
 --- a/drivers/net/netconsole.c
 +++ b/drivers/net/netconsole.c
-@@ -79,7 +79,7 @@ static struct console netconsole_ext;
- /**
-  * struct netconsole_target - Represents a configured netconsole target.
-  * @list:	Links this target into the target_list.
-- * @item:	Links us into the configfs subsystem hierarchy.
-+ * @group:	Links us into the configfs subsystem hierarchy.
-  * @enabled:	On / off knob to enable / disable target.
-  *		Visible from userspace (read-write).
-  *		We maintain a strict 1:1 correspondence between this and
-@@ -102,7 +102,7 @@ static struct console netconsole_ext;
- struct netconsole_target {
- 	struct list_head	list;
- #ifdef	CONFIG_NETCONSOLE_DYNAMIC
--	struct config_item	item;
-+	struct config_group	group;
- #endif
- 	bool			enabled;
- 	bool			extended;
-@@ -134,14 +134,14 @@ static void __exit dynamic_netconsole_exit(void)
-  */
- static void netconsole_target_get(struct netconsole_target *nt)
- {
--	if (config_item_name(&nt->item))
--		config_item_get(&nt->item);
-+	if (config_item_name(&nt->group.cg_item))
-+		config_group_get(&nt->group);
+@@ -230,6 +230,16 @@ static struct netconsole_target *to_target(struct config_item *item)
+ 			    struct netconsole_target, group);
  }
- 
- static void netconsole_target_put(struct netconsole_target *nt)
- {
--	if (config_item_name(&nt->item))
--		config_item_put(&nt->item);
-+	if (config_item_name(&nt->group.cg_item))
-+		config_group_put(&nt->group);
- }
- 
- #else	/* !CONFIG_NETCONSOLE_DYNAMIC */
-@@ -221,9 +221,13 @@ static struct netconsole_target *alloc_and_init(void)
- 
- static struct netconsole_target *to_target(struct config_item *item)
- {
--	return item ?
--		container_of(item, struct netconsole_target, item) :
--		NULL;
-+	struct config_group *cfg_group;
+
++/* Get rid of possible trailing newline, returning the new length */
++static void trim_newline(char *s, size_t maxlen)
++{
++	size_t len;
 +
-+	cfg_group = to_config_group(item);
-+	if (!cfg_group)
-+		return NULL;
-+	return container_of(to_config_group(item),
-+			    struct netconsole_target, group);
- }
- 
++	len = strnlen(s, maxlen);
++	if (s[len - 1] == '\n')
++		s[len - 1] = '\0';
++}
++
  /*
-@@ -370,7 +374,7 @@ static ssize_t release_store(struct config_item *item, const char *buf,
- 	mutex_lock(&dynamic_netconsole_mutex);
- 	if (nt->enabled) {
- 		pr_err("target (%s) is enabled, disable to update parameters\n",
--		       config_item_name(&nt->item));
-+		       config_item_name(&nt->group.cg_item));
- 		err = -EINVAL;
- 		goto out_unlock;
- 	}
-@@ -398,7 +402,7 @@ static ssize_t extended_store(struct config_item *item, const char *buf,
- 	mutex_lock(&dynamic_netconsole_mutex);
- 	if (nt->enabled) {
- 		pr_err("target (%s) is enabled, disable to update parameters\n",
--		       config_item_name(&nt->item));
-+		       config_item_name(&nt->group.cg_item));
- 		err = -EINVAL;
- 		goto out_unlock;
- 	}
-@@ -425,7 +429,7 @@ static ssize_t dev_name_store(struct config_item *item, const char *buf,
- 	mutex_lock(&dynamic_netconsole_mutex);
- 	if (nt->enabled) {
- 		pr_err("target (%s) is enabled, disable to update parameters\n",
--		       config_item_name(&nt->item));
-+		       config_item_name(&nt->group.cg_item));
- 		mutex_unlock(&dynamic_netconsole_mutex);
- 		return -EINVAL;
- 	}
-@@ -450,7 +454,7 @@ static ssize_t local_port_store(struct config_item *item, const char *buf,
- 	mutex_lock(&dynamic_netconsole_mutex);
- 	if (nt->enabled) {
- 		pr_err("target (%s) is enabled, disable to update parameters\n",
--		       config_item_name(&nt->item));
-+		       config_item_name(&nt->group.cg_item));
- 		goto out_unlock;
- 	}
- 
-@@ -473,7 +477,7 @@ static ssize_t remote_port_store(struct config_item *item,
- 	mutex_lock(&dynamic_netconsole_mutex);
- 	if (nt->enabled) {
- 		pr_err("target (%s) is enabled, disable to update parameters\n",
--		       config_item_name(&nt->item));
-+		       config_item_name(&nt->group.cg_item));
- 		goto out_unlock;
- 	}
- 
-@@ -495,7 +499,7 @@ static ssize_t local_ip_store(struct config_item *item, const char *buf,
- 	mutex_lock(&dynamic_netconsole_mutex);
- 	if (nt->enabled) {
- 		pr_err("target (%s) is enabled, disable to update parameters\n",
--		       config_item_name(&nt->item));
-+		       config_item_name(&nt->group.cg_item));
- 		goto out_unlock;
- 	}
- 
-@@ -532,7 +536,7 @@ static ssize_t remote_ip_store(struct config_item *item, const char *buf,
- 	mutex_lock(&dynamic_netconsole_mutex);
- 	if (nt->enabled) {
- 		pr_err("target (%s) is enabled, disable to update parameters\n",
--		       config_item_name(&nt->item));
-+		       config_item_name(&nt->group.cg_item));
- 		goto out_unlock;
- 	}
- 
-@@ -570,7 +574,7 @@ static ssize_t remote_mac_store(struct config_item *item, const char *buf,
- 	mutex_lock(&dynamic_netconsole_mutex);
- 	if (nt->enabled) {
- 		pr_err("target (%s) is enabled, disable to update parameters\n",
--		       config_item_name(&nt->item));
-+		       config_item_name(&nt->group.cg_item));
- 		goto out_unlock;
- 	}
- 
-@@ -638,7 +642,7 @@ static struct netconsole_target *find_cmdline_target(const char *name)
- 
- 	spin_lock_irqsave(&target_list_lock, flags);
- 	list_for_each_entry(nt, &target_list, list) {
--		if (!strcmp(nt->item.ci_name, name)) {
-+		if (!strcmp(nt->group.cg_item.ci_name, name)) {
- 			ret = nt;
- 			break;
- 		}
-@@ -652,8 +656,8 @@ static struct netconsole_target *find_cmdline_target(const char *name)
-  * Group operations and type for netconsole_subsys.
+  * Attribute operations for netconsole_target.
   */
- 
--static struct config_item *make_netconsole_target(struct config_group *group,
--						  const char *name)
-+static struct config_group *make_netconsole_target(struct config_group *group,
-+						   const char *name)
+@@ -424,7 +434,6 @@ static ssize_t dev_name_store(struct config_item *item, const char *buf,
+ 		size_t count)
  {
- 	struct netconsole_target *nt;
- 	unsigned long flags;
-@@ -665,8 +669,9 @@ static struct config_item *make_netconsole_target(struct config_group *group,
- 	if (!strncmp(name, NETCONSOLE_PARAM_TARGET_PREFIX,
- 		     strlen(NETCONSOLE_PARAM_TARGET_PREFIX))) {
- 		nt = find_cmdline_target(name);
--		if (nt)
--			return &nt->item;
-+		if (nt) {
-+			return &nt->group;
-+		}
+ 	struct netconsole_target *nt = to_target(item);
+-	size_t len;
+
+ 	mutex_lock(&dynamic_netconsole_mutex);
+ 	if (nt->enabled) {
+@@ -435,11 +444,7 @@ static ssize_t dev_name_store(struct config_item *item, const char *buf,
  	}
- 
- 	nt = alloc_and_init();
-@@ -674,14 +679,14 @@ static struct config_item *make_netconsole_target(struct config_group *group,
- 		return ERR_PTR(-ENOMEM);
- 
- 	/* Initialize the config_item member */
--	config_item_init_type_name(&nt->item, name, &netconsole_target_type);
-+	config_group_init_type_name(&nt->group, name, &netconsole_target_type);
- 
- 	/* Adding, but it is disabled */
- 	spin_lock_irqsave(&target_list_lock, flags);
- 	list_add(&nt->list, &target_list);
- 	spin_unlock_irqrestore(&target_list_lock, flags);
- 
--	return &nt->item;
-+	return &nt->group;
- }
- 
- static void drop_netconsole_target(struct config_group *group,
-@@ -701,11 +706,11 @@ static void drop_netconsole_target(struct config_group *group,
- 	if (nt->enabled)
- 		netpoll_cleanup(&nt->np);
- 
--	config_item_put(&nt->item);
-+	config_item_put(&nt->group.cg_item);
- }
- 
- static struct configfs_group_operations netconsole_subsys_group_ops = {
--	.make_item	= make_netconsole_target,
-+	.make_group	= make_netconsole_target,
- 	.drop_item	= drop_netconsole_target,
- };
- 
-@@ -731,8 +736,8 @@ static void populate_configfs_item(struct netconsole_target *nt,
- 
- 	snprintf(target_name, sizeof(target_name), "%s%d",
- 		 NETCONSOLE_PARAM_TARGET_PREFIX, cmdline_count);
--	config_item_init_type_name(&nt->item, target_name,
--				   &netconsole_target_type);
-+	config_group_init_type_name(&nt->group, target_name,
-+				    &netconsole_target_type);
- }
- 
- #endif	/* CONFIG_NETCONSOLE_DYNAMIC */
--- 
+
+ 	strscpy(nt->np.dev_name, buf, IFNAMSIZ);
+-
+-	/* Get rid of possible trailing newline from echo(1) */
+-	len = strnlen(nt->np.dev_name, IFNAMSIZ);
+-	if (nt->np.dev_name[len - 1] == '\n')
+-		nt->np.dev_name[len - 1] = '\0';
++	trim_newline(nt->np.dev_name, IFNAMSIZ);
+
+ 	mutex_unlock(&dynamic_netconsole_mutex);
+ 	return strnlen(buf, count);
+--
 2.43.0
 
 
