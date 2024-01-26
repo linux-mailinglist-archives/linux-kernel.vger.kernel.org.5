@@ -1,134 +1,172 @@
-Return-Path: <linux-kernel+bounces-40624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40626-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF90C83E356
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:25:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE9CE83E35C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:26:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90DD01F268FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:25:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A7BAB25A3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:26:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 909F522F12;
-	Fri, 26 Jan 2024 20:25:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA0C12374A;
+	Fri, 26 Jan 2024 20:25:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="JAlkxanp"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="JPaYXbD3"
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0776208BE
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 20:25:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3B6E249EB
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 20:25:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706300727; cv=none; b=sRwlgY5ZJeWXwJ3i4ikQTaApAW+eSTZjXxG5tURid+Z+ke6G6aJ+UYu4Kc9M6PjmrL9oYDGxL/81DRHH5Gsq/+l3Pgd/uqy245V1RIhAyY7w/IWgJdUUi3wRTBC6p/EOpZyAs3cDaGO862HakYu7e/jRAA4cFyDuTuU4jSFGNdw=
+	t=1706300756; cv=none; b=rt3P+heER66wZtzEgJN147C95nrVNUTge8MRssHnvTEfIlTnVNb74w2mcOxKasqdb9bJSX7Sm1w49b9jUj541++C4/HKPs6Yco9tC5nvZltNqyVzwSQpfcs/Iv7aLZiuTpej66Sg+YkYfXlK+xfbeEAEQC8id6LSm6Bq3q6k0/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706300727; c=relaxed/simple;
-	bh=9+OPO3V3SP3LRuHvDOl2Rmxreo2UCuuZVrw9wtlT3Qg=;
+	s=arc-20240116; t=1706300756; c=relaxed/simple;
+	bh=Gyr1CXh6GRM0r1jg1fNGMC5h8eXbeh04xtGAcUqaV+o=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GhUXvZqIP4s5EM70BU16hhcYDNHVDXcT3w6dzsaVLzaCdsBEm8YIFRZBlk8ZVqBY22xUiF4sm/b+7RvLhZY0jBTI8GtC7w2s+M0OZpqRm9ZT5+PNv+p1hYPgAZSDYuYWSEdly1ujvnSrQvqSpHi97k+sKhzSoil6J2CI6LGdJiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=JAlkxanp; arc=none smtp.client-ip=209.85.208.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2cf1fd1cc5bso9024181fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 12:25:25 -0800 (PST)
+	 To:Cc:Content-Type; b=OCzc7+t7+oDlE0Ef383XQF+t1JqGbtpYLbjJqBbm6ERT78zkZ8EcPRwUjws2MKwegNY2zt3A8CN7ap4p2jCAF7IFiDXhUSlstkmHdapV6EdYI5IYf7yKJtCldv7unsAFvt35cIrOBAeDinMUKAyAd2JBbSy6IgjRQ6TQMjFis4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=JPaYXbD3; arc=none smtp.client-ip=209.85.219.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-6818a9fe380so4613686d6.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 12:25:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1706300723; x=1706905523; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ANDDmreLZfT1WX/HwjJ1bWT4NTPKcyNOAiea0NIAPr0=;
-        b=JAlkxanpoLQwav1GPCk1OY/JE/f2A0UcBuMd5FJMTGjZufCYqLY0kgTKrRextqe8Px
-         1lExEqpaL6Y1zKiS/teMgBHCkft+atkQX6mvQu0YVwOfkPEvl6H82IBIwNR2vq+Eyozz
-         79IDKYQSnFSYGAZDKcoJOPEG13nU1hxIbJrXE=
+        d=chromium.org; s=google; t=1706300753; x=1706905553; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BXJ3r7063rd8jWwrzpmzNpGbTjtYsTY5IZ/kY+74Um0=;
+        b=JPaYXbD3qsO7Sk2cBn5GFbJo7kzuMBqxQ9rk+0IoYQ+qgEX8jimXN+o+SCv1/xHYyD
+         u9wwqG6p+2W/AT4l9LyiztJmpk5UMgRJtYyn0I37Wbd2kLM0VrpN31SifKbaHdmJCNMr
+         9gyVFXA0LcxSd4fGVSKotDYh8Kq6uuzxZUeiI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706300723; x=1706905523;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ANDDmreLZfT1WX/HwjJ1bWT4NTPKcyNOAiea0NIAPr0=;
-        b=q9Tc7B+NJsojoFBzE1C+e2xnEuRU2lv3nMdiZ5aNvRwhVbAWLm/R4c3TL4aqfTNrXp
-         NnDnGhA1OdH54MkQR1LpoMixQKA7yLevTf3LY45gevYVuPSFTPY1cLJXnbH+8+HdLaZD
-         rFXze7plV9T7c58vuC/j9/00BNTBqesQoTBnJRiT27e3Or3SZeGsfaCpd/+OcBLdPHn5
-         utavCeejaaUwH8eynIglRJ750D+ya7CA+t8DiU97eV90Vs3Xp3IkHkaWZRReeBvSNjc5
-         nOxRu5n9eDjwnEsN9BJM/nxPZF13V19g0inSzlCuOedyDtrf+tI4mJ9Q9XHiFbN6YRMQ
-         E6yw==
-X-Gm-Message-State: AOJu0YzoDAJrvVQjLnoCAC2ACWFSgLRhLrAMfS5QdbrePLR+rxmXFxtz
-	qBcIL72LX6CiGvc8Q91BcNjytQHD3eOE6QTg078H5ZKe4jknxakrvz0LedtoT5SJMUb58djL2Se
-	96EWCKQ==
-X-Google-Smtp-Source: AGHT+IEkF6YCqFRZft+fFb50qCDD/sjbDF90Mu/stpW9swdSOwg1qlK5kwXGgo8J5TgehM7CziAp0A==
-X-Received: by 2002:a2e:a984:0:b0:2cf:1920:97 with SMTP id x4-20020a2ea984000000b002cf19200097mr582608ljq.12.1706300723271;
-        Fri, 26 Jan 2024 12:25:23 -0800 (PST)
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
-        by smtp.gmail.com with ESMTPSA id z14-20020a2e964e000000b002cd35d8b018sm251139ljh.113.2024.01.26.12.25.22
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jan 2024 12:25:22 -0800 (PST)
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2cf161b5eadso8126981fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 12:25:22 -0800 (PST)
-X-Received: by 2002:a05:651c:107b:b0:2cf:4170:d181 with SMTP id
- y27-20020a05651c107b00b002cf4170d181mr392047ljm.7.1706300722280; Fri, 26 Jan
- 2024 12:25:22 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706300753; x=1706905553;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BXJ3r7063rd8jWwrzpmzNpGbTjtYsTY5IZ/kY+74Um0=;
+        b=XdMlQc/5SGd4HM8t5W/bteYLh8vc1H87RmwrDpG88Fpqwpk3iccRoAbjMB+rAuA+UW
+         39QI+BwFditEm306kzbfJ0VgH2H2pe0sMBaMwFlJFErzZcXQYBnJ5p4LoE34zbWzFo2W
+         RtPypKTaQsbxnoPFTNZNiqzJ4rJLE3u2MpbBUf+Ufj89rr8+AaH9Ki9ZmDK6UR8h9DZ9
+         HDJ4eszlEFhDjsCEar8uFBZr8DzTyR14NOLoGbK10cRPekJUiOEvmwBf3hwp8I18zI39
+         fleK4u2nZ1LvSIsMbhMjunAOlUChEXSDurJUtNEWLWGbGWKTkCCcxRD1R7Y3YkeZxkNY
+         H2+w==
+X-Gm-Message-State: AOJu0YyXPp9rHHu+rl7MgfVOdsu7YUEPlFaH2Rri6ZPZBPxsLWU1f7dp
+	SJykmG/wzYCfFRN3GCWRO5QMZNsGFhcsncI+XWCJRbCljC7TCwaWzBH9t72hTRyRVjXiGALSJom
+	9nI7FD7deDCRu44fccXdDLbqApL2BGNu5On5i
+X-Google-Smtp-Source: AGHT+IFppUkWXAnANHG9WctbKX5UqqzMwcsvbga5+t3wv5vs4SabgC+VN64roLDZ9c1F8LOVbijElWcl37FyGTHybmk=
+X-Received: by 2002:a05:6214:2127:b0:686:ac1d:eefa with SMTP id
+ r7-20020a056214212700b00686ac1deefamr550461qvc.70.1706300752839; Fri, 26 Jan
+ 2024 12:25:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126150209.367ff402@gandalf.local.home>
-In-Reply-To: <20240126150209.367ff402@gandalf.local.home>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 26 Jan 2024 12:25:05 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
-Message-ID: <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
-Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, 
-	Linux Trace Devel <linux-trace-devel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner <brauner@kernel.org>, 
-	Ajay Kaher <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20240126183930.1170845-1-abhishekpandit@chromium.org> <20240126103859.v3.3.Idf7d373c3cbb54058403cb951d644f1f09973d15@changeid>
+In-Reply-To: <20240126103859.v3.3.Idf7d373c3cbb54058403cb951d644f1f09973d15@changeid>
+From: Prashant Malani <pmalani@chromium.org>
+Date: Fri, 26 Jan 2024 12:25:41 -0800
+Message-ID: <CACeCKaeVtU3ckmGU932d-pPn=eOnt6KjAavNY3rSOUgrJNriDg@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] usb: typec: ucsi: Get PD revision for partner
+To: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>, linux-usb@vger.kernel.org, 
+	jthies@google.com, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Bjorn Andersson <andersson@kernel.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Fabrice Gasnier <fabrice.gasnier@foss.st.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hans de Goede <hdegoede@redhat.com>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Rajaram Regupathy <rajaram.regupathy@intel.com>, 
+	Saranya Gopal <saranya.gopal@intel.com>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Steven,
- stop making things more complicated than they need to be.
+Hi Abhishek,
 
-And dammit, STOP COPYING VFS LAYER FUNCTIONS.
+On Fri, Jan 26, 2024 at 10:39=E2=80=AFAM Abhishek Pandit-Subedi
+<abhishekpandit@chromium.org> wrote:
+>
+> PD major revision for the port partner is described in
+> GET_CONNECTOR_CAPABILITY and is only valid on UCSI 2.0 and newer. Update
+> the pd_revision on the partner if the UCSI version is 2.0 or newer.
+>
+> Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> ---
+> $ cat /sys/class/typec/port2-partner/usb_power_delivery_revision
+> 3.0
+>
+> (no changes since v2)
+>
+> Changes in v2:
+>   - Formatting changes and update macro to use brackets.
+>   - Fix incorrect guard condition when checking connector capability.
+>
+>  drivers/usb/typec/ucsi/ucsi.c | 23 +++++++++++++++++++++++
+>  drivers/usb/typec/ucsi/ucsi.h |  3 +++
+>  2 files changed, 26 insertions(+)
+>
+> diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.=
+c
+> index a35056ee3e96..2b7983d2fdae 100644
+> --- a/drivers/usb/typec/ucsi/ucsi.c
+> +++ b/drivers/usb/typec/ucsi/ucsi.c
+> @@ -782,6 +782,7 @@ static int ucsi_register_partner(struct ucsi_connecto=
+r *con)
+>         }
+>
+>         desc.usb_pd =3D pwr_opmode =3D=3D UCSI_CONSTAT_PWR_OPMODE_PD;
+> +       desc.pd_revision =3D UCSI_CONCAP_FLAG_PARTNER_PD_MAJOR_REV_AS_BCD=
+(con->cap.flags);
+>
+>         partner =3D typec_register_partner(con->port, &desc);
+>         if (IS_ERR(partner)) {
+> @@ -856,6 +857,27 @@ static void ucsi_partner_change(struct ucsi_connecto=
+r *con)
+>                         con->num, u_role);
+>  }
+>
+> +static int ucsi_check_connector_capability(struct ucsi_connector *con)
+> +{
+> +       u64 command;
+> +       int ret;
+> +
+> +       if (!con->partner || !IS_MIN_VERSION_2_0(con->ucsi))
 
-It was a bad idea last time, it's a horribly bad idea this time too.
+I'll reiterate my comment from a previous version, since this series
+has been revv-ed a few
+times since and it may have gotten lost; no need to respond to it if
+you don't want to,
+since I believe we left it to the maintainer(s) to decide [1]:
 
-I'm not taking this kind of crap.
+This macro is unnecessary. Since the version is in BCD format and we
+already have the
+macros for versions, just a simple comparison is enough:
+         if (!con-partner || con->ucsi->version < UCSI_VERSION_2_0)
+                 return 0;
 
-The whole "get_next_ino()" should be "atomic64_add_return()". End of story.
+I'll add that Patch 1 of this series [2] is also using the same style
+for comparing version numbers.
 
-You arent' special. If the VFS functions don't work for you, you don't
-use them, but dammit, you also don't then steal them without
-understanding what they do, and why they were necessary.
+> +               return 0;
+> +
+> +       command =3D UCSI_GET_CONNECTOR_CAPABILITY | UCSI_CONNECTOR_NUMBER=
+(con->num);
+> +       ret =3D ucsi_send_command(con->ucsi, command, &con->cap, sizeof(c=
+on->cap));
+> +       if (ret < 0) {
+> +               dev_err(con->ucsi->dev, "GET_CONNECTOR_CAPABILITY failed =
+(%d)\n", ret);
 
-The reason get_next_ino() is critical is because it's used by things
-like pipes and sockets etc that get created at high rates, the the
-inode numbers most definitely do not get cached.
+nit: I know this is being done elsewhere in this file, but we should
+avoid putting error
+numbers in parentheses [3]. Perhaps something for a separate cleanup patch.
 
-You copied that function without understanding why it does what it
-does, and as a result your code IS GARBAGE.
-
-AGAIN.
-
-Honestly, kill this thing with fire. It was a bad idea. I'm putting my
-foot down, and you are *NOT* doing unique regular file inode numbers
-uintil somebody points to a real problem.
-
-Because this whole "I make up problems, and then I write overly
-complicated crap code to solve them" has to stop,.
-
-No more. This stops here.
-
-I don't want to see a single eventfs patch that doesn't have a real
-bug report associated with it. And the next time I see you copying VFS
-functions (or any other core functions) without udnerstanding what the
-f*ck they do, and why they do it, I'm going to put you in my
-spam-filter for a week.
-
-I'm done. I'm really *really* tired of having to look at eventfs garbage.
-
-              Linus
+[1] https://lore.kernel.org/linux-usb/CANFp7mXP=3DaN8bQi4akKKcoMZE8RaCBuFnw=
+Ta5hbp0MZvZe0hYQ@mail.gmail.com/
+[2] https://lore.kernel.org/linux-usb/20240126103859.v3.1.Iacf5570a66b82b73=
+ef03daa6557e2fc0db10266a@changeid/
+[3] https://www.kernel.org/doc/html/latest/process/coding-style.html#printi=
+ng-kernel-messages
 
