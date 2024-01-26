@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-40092-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3634C83DA21
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:27:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C315883DA1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:27:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6881E1C22FB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:27:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 315A22822DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:27:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5AA518E29;
-	Fri, 26 Jan 2024 12:27:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23D471B59B;
+	Fri, 26 Jan 2024 12:27:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="js/pC6R3"
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VQx6XClJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 105761803E;
-	Fri, 26 Jan 2024 12:27:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 683761B582
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 12:27:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706272057; cv=none; b=ADSHvOfaSjWEQsELqflbd9Obq1s8z6f5OtpMejVr4Y6wkM59TixGEEIX8VEqY7hu7Ad2JElnl79iHOY2swIokEO6mKxj6aNOkLbFlryZqSbC8gtza5Gu3p0rI0kT3bhRy7DuoklaIkRLK1jsNAdvJrLfKlLJGjE2gppPeV9152w=
+	t=1706272040; cv=none; b=APjeXCQacZ7J343Ivk6c/iYT65krzz8HLodsbJ5/CmVpS2mE8emhagmhNP7B6b7RF90Hh/rz2WRoNLN77+HlLRB3KI6/IRGEBURnXSCWj1IEUdWJPGZcao/ka/V5juD3Zx2le8dCqGNjPvEJYxM7GrUiv7+H/qC+3+EfLhL02Ag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706272057; c=relaxed/simple;
-	bh=KA05afh1+3sfbcKyDuyuFL2hqhLhvNewNqmQTsDO5T0=;
+	s=arc-20240116; t=1706272040; c=relaxed/simple;
+	bh=MS6t5nrb2+qmuyRPa+6i0fcFSOifJWg8C7bRDoDElgA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U9CfEF6nu0UH7Feuchs2BDfi92RJGDXW7A0MOvdidLTe3IMZY7ntiAt5uwOS+Av1S9P0jjF5Tv+ejRdX4+zz7aDutZIrob4wBNPb8pVVAB1Wbptrmszv4Vnn+3YjKvz1iDKu5JeZB8K29luqGRIlUX/Q+I/6zQkaCfHJRQjH2mc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=js/pC6R3; arc=none smtp.client-ip=217.194.8.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
-Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-	by mail11.truemail.it (Postfix) with ESMTPA id 0CF4823298;
-	Fri, 26 Jan 2024 13:27:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
-	s=default; t=1706272044;
-	bh=WEvYxyv4AaxaAKscG9gxq+rXAKFPX6EAGGEoH3y++zM=; h=From:To:Subject;
-	b=js/pC6R3Lh09GKBK4dceP/e9RsD2Sn/ctdz/R8jUego37LSKkS6YQaoau0XCNO7EG
-	 r62Xq+mG7vtm7t+EPGa5OTgn883EEUIa0aNJoO31RS3p42F56cPEACyMQiJVys6WcE
-	 UL1+y0gPaDJLApEKEfyh6H20lDJigb29bQqeeYYDkB+uel3QwlOgQZW0X1IC2J7A60
-	 lVA86dO2di3zhPkkKugDJjQNJ4wbKnuFPWnbE2+t22KzM+yxZPy1MvBXSVpLoP0Izn
-	 6b4ehYZNQBCLstWvoSNrTMBIwv041Cb4jt7VyWp/Nh3HwkdnZxLKEFi5+jBz91244b
-	 jQh5il7YEmyCg==
-Date: Fri, 26 Jan 2024 13:27:19 +0100
-From: Francesco Dolcini <francesco@dolcini.it>
-To: Martin Kaiser <martin@kaiser.cx>
-Cc: Shawn Guo <shawnguo@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>, Peng Fan <peng.fan@nxp.com>,
-	Andrew Lunn <andrew@lunn.ch>, linux-gpio@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/4] gpio: vf610: allow disabling the vf610 driver
-Message-ID: <20240126122719.GA13659@francesco-nb>
-References: <20240124205900.14791-1-martin@kaiser.cx>
- <20240124205900.14791-2-martin@kaiser.cx>
+	 Content-Type:Content-Disposition:In-Reply-To; b=T5SxX8qqlOmz/+bry2DGepgQlKKU6ls3UWsT8Hiy2+JLIoFPwkg0SCTqRBogaI8qokf1SC00AczF8sdHoBLf8bQbZrH7zqmFI3QXQlSjlvKZNxHkfdTzcvL9uI+JFrq9eiPKsa6ry8pQNjOqQs9ugGGanauhY4sMOLpQf+kxAts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VQx6XClJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEA31C433F1;
+	Fri, 26 Jan 2024 12:27:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706272039;
+	bh=MS6t5nrb2+qmuyRPa+6i0fcFSOifJWg8C7bRDoDElgA=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=VQx6XClJg+EHecouMGKVXlu66uSDNTd1qlM5qzftdFJRHCmYnO3gadEn1FE8LgPG3
+	 KBxTxHBJxuAIDbIJEhDXuwcHxBiVg8Ggw092V7g+/XBSLUOEfXXLnbcmX/trJLqPYB
+	 Dc66uyh1F5vKxE9IJQ0KKEV1+gnIWkUg58MbW5T3VGfPegZqnRaLwlFQtUZN7U3QOu
+	 3Tsx/LF2GwzTIIyscs/DrM/r5DmlymR+1ILPB5SkWZO98HEQrkTPLFZ4L7S7JVyirm
+	 Ok8z5VrhJYC/BLxXVLtfg8ztUzX6FFJiEpJm1kUQXgMdZdjtbmpAQu195wXFL/qnQM
+	 Ym3/LHh+kbFiA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 6DD87CE190E; Fri, 26 Jan 2024 04:27:19 -0800 (PST)
+Date: Fri, 26 Jan 2024 04:27:19 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Feng Tang <feng.tang@intel.com>
+Cc: John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>,
+	Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+	Peter Zijlstra <peterz@infradead.org>,
+	Waiman Long <longman@redhat.com>, Jin Wang <jin1.wang@intel.com>
+Subject: Re: [PATCH] clocksource: Scale the max retry number of watchdog read
+ according to CPU numbers
+Message-ID: <3b3d9499-dc7a-4ea0-9615-526940f5fcf2@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240126091250.79985-1-feng.tang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,49 +62,78 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240124205900.14791-2-martin@kaiser.cx>
+In-Reply-To: <20240126091250.79985-1-feng.tang@intel.com>
 
-On Wed, Jan 24, 2024 at 09:58:57PM +0100, Martin Kaiser wrote:
-> The vf610 gpio driver is enabled by default for all i.MX machines,
-> without any option to disable it in a board-specific config file.
+On Fri, Jan 26, 2024 at 05:12:50PM +0800, Feng Tang wrote:
+> There was a bug on one 8-socket server that the TSC is wrongly marked as
+> 'unstable' and disabled during boot time. (reproduce rate is every 120
+> rounds of reboot tests), with log:
 > 
-> Most i.MX chipsets have no hardware for this driver. Change the default
-> to enable GPIO_VF610 for SOC_VF610 and disable it otherwise.
+>     clocksource: timekeeping watchdog on CPU227: wd-tsc-wd excessive read-back delay of 153560ns vs. limit of 125000ns,
+>     wd-wd read-back delay only 11440ns, attempt 3, marking tsc unstable
+>     tsc: Marking TSC unstable due to clocksource watchdog
+>     TSC found unstable after boot, most likely due to broken BIOS. Use 'tsc=unstable'.
+>     sched_clock: Marking unstable (119294969739, 159204297)<-(125446229205, -5992055152)
+>     clocksource: Checking clocksource tsc synchronization from CPU 319 to CPUs 0,99,136,180,210,542,601,896.
+>     clocksource: Switched to clocksource hpet
 > 
-> Add a text description after the bool type, this makes the driver
-> selectable by make config etc.
+> The reason is for platform with lots of CPU, there are sporadic big or huge
+> read latency of read watchog/clocksource during boot or when system is under
+> stress work load, and the frequency and maximum value of the latency goes up
+> with the increasing of CPU numbers. Current code already has logic to detect
+> and filter such high latency case by reading 3 times of watchdog, and check
+> the 2 deltas. Due to the randomness of the latency, there is a low possibility
+> situation that the first delta (latency) is big, but the second delta is small
+> and looks valid, which can escape from the check, and there is a
+> 'max_cswd_read_retries' for retrying that check covering this case, whose
+> default value is only 2 and may be not enough for machines with huge number
+> of CPUs.
 > 
-> Fixes: 30a35c07d9e9 ("gpio: vf610: drop the SOC_VF610 dependency for GPIO_VF610")
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> So scale and enlarge the max retry number according to CPU number to better
+> filter those latency noise on large system, which has been verified fine in
+> 4 days and 670 rounds of reboot test on the 8-socket machine.
+> 
+> Tested-by: Jin Wang <jin1.wang@intel.com>
+> Signed-off-by: Feng Tang <feng.tang@intel.com>
 > ---
-> v4:
->  - add a new patch to enable COMPILE_TEST
+>  kernel/time/clocksource.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> v3:
->  - split the changes into three patches
-> 
-> v2:
->  - enable the vf610 gpio driver in the defconfig files for arm_v7
->    (i.MX7ULP) and arm64 (i.MX8QM, DXL, ULP and i.MX93)
-> 
->  drivers/gpio/Kconfig | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-> index 1301cec94f12..353af1a4d0ac 100644
-> --- a/drivers/gpio/Kconfig
-> +++ b/drivers/gpio/Kconfig
-> @@ -711,7 +711,8 @@ config GPIO_UNIPHIER
->  	  Say yes here to support UniPhier GPIOs.
+> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+> index c108ed8a9804..f15283101906 100644
+> --- a/kernel/time/clocksource.c
+> +++ b/kernel/time/clocksource.c
+> @@ -226,6 +226,15 @@ static enum wd_read_status cs_watchdog_read(struct clocksource *cs, u64 *csnow,
+>  	u64 wd_end, wd_end2, wd_delta;
+>  	int64_t wd_delay, wd_seq_delay;
 >  
->  config GPIO_VF610
-> -	def_bool y
-> +	bool "VF610 GPIO support"
-> +	default y if SOC_VF610
+> +	/*
+> +	 * If no user changes the default value, scale the retry threshold
+> +	 * according to CPU numbers. As per test, the more CPU a platform has,
+> +	 * the bigger read latency is found during boot time or under stress
+> +	 * work load. Increase the try nubmer to reduce false alarms.
+> + 	 */
+> +	if (max_cswd_read_retries == 2)
 
-any reason for having this default y for SOC_VF610, but not for the
-other SOC that uses the same variant (i.MX7ULP, ... ?).
+I like the self-adjusting behavior!
 
-Francesco
+But why not make max_cswd_read_retries be a long (instead of a ulong)
+defaulting to -1.  Then when someone sets it to a specific positive
+value, they get exactly that value, while leaving it -1 gets the default
+CPU-scaling behavior.  Zero and other negative values should get a
+warning in order to reserve the for possible future use.
 
+I also suggest doing the adjustment at boot time, for example, using
+an early_initcall().  That way the test code also sees the scaled value.
+
+							Thanx, Paul
+
+> +		max_cswd_read_retries = max(2, ilog2(num_online_cpus()));
+> +
+>  	for (nretries = 0; nretries <= max_cswd_read_retries; nretries++) {
+>  		local_irq_disable();
+>  		*wdnow = watchdog->read(watchdog);
+> -- 
+> 2.34.1
+> 
 
