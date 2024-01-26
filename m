@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-39645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8735B83D42F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 07:16:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B80583D42E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 07:14:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1074AB23A81
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 06:16:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CAF11B21FDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 06:14:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6CC3134A0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0748F12B8F;
 	Fri, 26 Jan 2024 06:07:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ne9mSEWs"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DU0CFc04"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D70911CBB
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9834411C88
 	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 06:07:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706249260; cv=none; b=AuwjIAl/tlVFF80meJPxGFlaAtudTDdA/Jky4QnmZUomB7PzutMY30GBA9FAIvQt6efcLMDy9A8AAf5wuz7ZBRvGXOHaVaXquq2BLZUEb3cnNS+dIwu8XRj7pWLszwqRgwkeMSq8X0anYgqucQ41y5V30N5KvJy4IJ368n9D79Q=
+	t=1706249259; cv=none; b=A1pAW2D24LdHbDKn02cZJ7z4kADz+Sxg05ofZzuFsomJk+YhQQl4TmsngOeKHGa6lZa3FOw2m+SCHH3Plt+Wl40BZWRJpv1r2Fckq0QCL6MFhH74Z/+EhuU54yAQVWdxsD8NtUQsv/sXcuxD+rdcV5se0OM8FVw3RmQBywLd4XY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706249260; c=relaxed/simple;
-	bh=F2cuHQcISif+W/CbWE/dwHGmIuoKu9dc05sxpSmmUB8=;
+	s=arc-20240116; t=1706249259; c=relaxed/simple;
+	bh=DAbJ/11kkWV3NfOW/ZZ47OvYR00ddrGOrBip2EkiS9w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KNaLXIn2AMVPDo4puLOY1FIN0qmNZ/ePuqH9aartb4n1CnySEyT2Jp10yCeeueun79zO8oA6lTV2KuSBf6m6Vd6exndx9a0stn4PNnyx9qpJu+ZgaHOqXHocZfK1JV3Ee7j9Y42PXhL+Ze1OC/f8RwtyCki+X4lHeTIuP+dVhRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ne9mSEWs; arc=none smtp.client-ip=192.55.52.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706249258; x=1737785258;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=F2cuHQcISif+W/CbWE/dwHGmIuoKu9dc05sxpSmmUB8=;
-  b=Ne9mSEWsqmBU25XBWC0Wblj+fm5S2Swgz9tNDMLYa8OpHsq4//u0Bqyk
-   Le8ey+kQRKaT2EnPDVJZGACipyt69VCSHVq0phI0+SDGchRyxVBQKRda+
-   BSL3TNlrx9IS4qgCYzMrNuUZMGXFo8zEFvyKW1Pb/cbRCldVqSZzluU6v
-   2eaTy/+AAH9tWud97NF+OjDDRgsaU+UWr1fc/w3yki8VCfjuwvwVpakM6
-   UBHt+td+Asmn3ekIN4YGYEkEQ6hDnMBfJcu4p5XAHm+uJLXv3TGnTcTmO
-   VvQCLx08ONoxQn/tM60ytr/Nlto51EGAbPeAcxVJhtL99uPuGJZoVkRSG
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="401245637"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="401245637"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 22:07:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="2519020"
-Received: from lkp-server01.sh.intel.com (HELO 370188f8dc87) ([10.239.97.150])
-  by orviesa003.jf.intel.com with ESMTP; 25 Jan 2024 22:07:34 -0800
-Received: from kbuild by 370188f8dc87 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rTFNE-0000kY-0B;
-	Fri, 26 Jan 2024 06:07:32 +0000
-Date: Fri, 26 Jan 2024 14:07:26 +0800
-From: kernel test robot <lkp@intel.com>
-To: Bitao Hu <yaoma@linux.alibaba.com>, dianders@chromium.org,
-	akpm@linux-foundation.org, pmladek@suse.com, tglx@linutronix.de,
-	maz@kernel.org, liusong@linux.alibaba.com
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Bitao Hu <yaoma@linux.alibaba.com>
-Subject: Re: [PATCH 3/3] watchdog/softlockup: add parameter to control the
- reporting of time-consuming hardirq
-Message-ID: <202401261322.fGeoPvI9-lkp@intel.com>
-References: <20240123121223.22318-4-yaoma@linux.alibaba.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qxXGADP/KvdlyTJDuRnBqxT2SaWbsifVHI8Xy60AcUDcO1iKChKkEGdL1PxmU3v/UKBbjP/zDseA5zcjK5zmcqZ3pLFMAx58KdVpI45Bf8vLR0okYMP2PxXIMIlA6Y3Nmg7N0ufe+exyWqcUwWfApbxzOkfZg3Qo6buC9KNASkc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DU0CFc04; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706249256;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z72p/1NCFMOucyopgj4TN6714b15v6kjfWKT6hd64FE=;
+	b=DU0CFc04VHmtu8ZLll/iRJhhcriw3TXzpgiHxUwNFZXgkEa/mfy5OAChi7EKfUUi+w95KP
+	ikpU+H8JLdMAelFyRmPNPXx41hFnFywhnkJkxSb1u8lmdVsBWJZfC7JSPl5JEaXu1pOC9t
+	lh7KL7c6hbYjIVfvjybBUjFre5sqaew=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-551-Dvx_BaF4N36KKDvV0yy-Nw-1; Fri, 26 Jan 2024 01:07:33 -0500
+X-MC-Unique: Dvx_BaF4N36KKDvV0yy-Nw-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 19D621013664;
+	Fri, 26 Jan 2024 06:07:32 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.117])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 925AD492BC6;
+	Fri, 26 Jan 2024 06:07:30 +0000 (UTC)
+Date: Fri, 26 Jan 2024 14:07:27 +0800
+From: Baoquan He <bhe@redhat.com>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: linux-kernel@vger.kernel.org, kexec@lists.infradead.org, x86@kernel.org,
+	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
+	loongarch@lists.linux.dev, akpm@linux-foundation.org,
+	ebiederm@xmission.com, hbathini@linux.ibm.com, piliu@redhat.com,
+	viro@zeniv.linux.org.uk
+Subject: Re: [PATCH linux-next v3 00/14] Split crash out from kexec and clean
+ up related config items
+Message-ID: <ZbNMHwVhWxMyvKH/@MiWiFi-R3L-srv>
+References: <20240124051254.67105-1-bhe@redhat.com>
+ <20240126045551.GA126645@dev-arch.thelio-3990X>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,63 +76,58 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240123121223.22318-4-yaoma@linux.alibaba.com>
+In-Reply-To: <20240126045551.GA126645@dev-arch.thelio-3990X>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-Hi Bitao,
+On 01/25/24 at 09:55pm, Nathan Chancellor wrote:
+..... 
+> I am seeing a few build failures in my test matrix on next-20240125 that
+> appear to be caused by this series although I have not bisected. Some
+> reproduction steps:
 
-kernel test robot noticed the following build warnings:
+Thanks for trying this, I have reproduced the linking failure on arm,
+will work out a way to fix it.
 
-[auto build test WARNING on tip/irq/core]
-[also build test WARNING on akpm-mm/mm-everything linus/master v6.8-rc1 next-20240125]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+It's weird, I remember I have built these and passed.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Bitao-Hu/watchdog-softlockup-low-overhead-detection-of-interrupt-storm/20240123-201509
-base:   tip/irq/core
-patch link:    https://lore.kernel.org/r/20240123121223.22318-4-yaoma%40linux.alibaba.com
-patch subject: [PATCH 3/3] watchdog/softlockup: add parameter to control the reporting of time-consuming hardirq
-config: i386-randconfig-012-20240126 (https://download.01.org/0day-ci/archive/20240126/202401261322.fGeoPvI9-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240126/202401261322.fGeoPvI9-lkp@intel.com/reproduce)
+> 
+> $ curl -LSso .config https://git.alpinelinux.org/aports/plain/community/linux-edge/config-edge.armv7
+> $ make -skj"$(nproc)" ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- olddefconfig all
+> ...
+> arm-linux-gnueabi-ld: arch/arm/kernel/machine_kexec.o: in function `arch_crash_save_vmcoreinfo':
+> machine_kexec.c:(.text+0x488): undefined reference to `vmcoreinfo_append_str'
+> ...
+> 
+> $ curl -LSso .config https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/linux-aarch64/config
+> $ make -skj"$(nproc)" ARCH=arm64 CROSS_COMPILE=aarch64-linux- olddefconfig all
+> ...
+> aarch64-linux-ld: kernel/kexec_file.o: in function `kexec_walk_memblock.constprop.0':
+> kexec_file.c:(.text+0x314): undefined reference to `crashk_res'
+> aarch64-linux-ld: kernel/kexec_file.o: relocation R_AARCH64_ADR_PREL_PG_HI21 against symbol `crashk_res' which may bind externally can not be used when making a shared object; recompile with -fPIC
+> kexec_file.c:(.text+0x314): dangerous relocation: unsupported relocation
+> aarch64-linux-ld: kexec_file.c:(.text+0x318): undefined reference to `crashk_res'
+> aarch64-linux-ld: drivers/of/kexec.o: in function `of_kexec_alloc_and_setup_fdt':
+> kexec.c:(.text+0x580): undefined reference to `crashk_res'
+> aarch64-linux-ld: drivers/of/kexec.o: relocation R_AARCH64_ADR_PREL_PG_HI21 against symbol `crashk_res' which may bind externally can not be used when making a shared object; recompile with -fPIC
+> kexec.c:(.text+0x580): dangerous relocation: unsupported relocation
+> aarch64-linux-ld: kexec.c:(.text+0x584): undefined reference to `crashk_res'
+> aarch64-linux-ld: kexec.c:(.text+0x590): undefined reference to `crashk_res'
+> aarch64-linux-ld: kexec.c:(.text+0x5b0): undefined reference to `crashk_low_res'
+> aarch64-linux-ld: drivers/of/kexec.o: relocation R_AARCH64_ADR_PREL_PG_HI21 against symbol `crashk_low_res' which may bind externally can not be used when making a shared object; recompile with -fPIC
+> kexec.c:(.text+0x5b0): dangerous relocation: unsupported relocation
+> aarch64-linux-ld: kexec.c:(.text+0x5b4): undefined reference to `crashk_low_res'
+> aarch64-linux-ld: kexec.c:(.text+0x5c0): undefined reference to `crashk_low_res'
+> ...
+> 
+> $ curl -LSso .config https://git.alpinelinux.org/aports/plain/community/linux-edge/config-edge.x86_64
+> $ make -skj"$(nproc)" ARCH=x86_64 CROSS_COMPILE=x86_64-linux- olddefconfig all
+> ...
+> x86_64-linux-ld: arch/x86/xen/mmu_pv.o: in function `paddr_vmcoreinfo_note':
+> mmu_pv.c:(.text+0x3af3): undefined reference to `vmcoreinfo_note'
+> ...
+> 
+> Cheers,
+> Nathan
+> 
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401261322.fGeoPvI9-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> kernel/watchdog.c:1088:5: warning: no previous prototype for 'proc_softlockup_irqtrace' [-Wmissing-prototypes]
-    1088 | int proc_softlockup_irqtrace(struct ctl_table *table, int write,
-         |     ^~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/proc_softlockup_irqtrace +1088 kernel/watchdog.c
-
-  1084	
-  1085	/*
-  1086	 * /proc/sys/kernel/softlockup_irqtrace
-  1087	 */
-> 1088	int proc_softlockup_irqtrace(struct ctl_table *table, int write,
-  1089				 void *buffer, size_t *lenp, loff_t *ppos)
-  1090	{
-  1091		int err, old;
-  1092	
-  1093		mutex_lock(&watchdog_mutex);
-  1094	
-  1095		old = READ_ONCE(softlockup_irqtrace);
-  1096		err = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
-  1097	
-  1098		if (!err && write && old != READ_ONCE(softlockup_irqtrace))
-  1099			proc_watchdog_update();
-  1100	
-  1101		mutex_unlock(&watchdog_mutex);
-  1102		return err;
-  1103	}
-  1104	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
