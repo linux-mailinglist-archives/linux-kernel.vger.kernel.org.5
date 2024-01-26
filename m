@@ -1,130 +1,195 @@
-Return-Path: <linux-kernel+bounces-40239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8AEF83DD01
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:03:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C28AF83DD07
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:05:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7458D288F82
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:03:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E883C1C21487
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:05:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 171A11CD34;
-	Fri, 26 Jan 2024 15:02:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 617A41CD3C;
+	Fri, 26 Jan 2024 15:04:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dubeyko-com.20230601.gappssmtp.com header.i=@dubeyko-com.20230601.gappssmtp.com header.b="CRZ/YJgz"
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="AP0c6pbP"
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 231CD1B970
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:02:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BBFD7F;
+	Fri, 26 Jan 2024 15:04:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706281372; cv=none; b=KfG+iZ6UnjzfqKARpEBPqgCdFKXDq59zDs0KbM1TK8kNtzK1BvAKehII7ZTcmXAySmod0hU25FVO1aczXwctfkVnv83/R3Lf8mJzbD9uKOzJJQ/XKoX/IwvNkcT5o+47AvvdR8iwr/2dNw4xpAchhy2H20R9dYbZvmL1EykZt70=
+	t=1706281489; cv=none; b=UXwz+t47OWnwW+w0kZK5j8kbR8Y+aQMChvw08+AezTNoYktN0Uakg6Mewd2sn0/9jv/NbFTK52VqVsXFa4jrfzUcyP4rRHFVy4ehy4VCIT+KWKWVE4hW2vHju0bsJCmMLraVsD8fADUMrxnkNpm/z2fPXGY0J3uUXWepYV8EicU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706281372; c=relaxed/simple;
-	bh=JsxP7toU+yaQhyM85mOfisB9eNURYXeJZZvgfcckwgo=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=u7c0rAT1UKG7CfP5RvunwvphlY1hSZZiXj/bBJsR3i6O/9Nx+I73DV7bTSsKaYFxrVizbM+x/x56PtKVCg5ia6UIvM9exs8d34zvXWFFTrvMAE6gYGTegMxpuNKgsEqKkPGDgvfugW66y59NjHMxZzj3VJxa/5gmwRzksNwpDyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubeyko.com; spf=pass smtp.mailfrom=dubeyko.com; dkim=pass (2048-bit key) header.d=dubeyko-com.20230601.gappssmtp.com header.i=@dubeyko-com.20230601.gappssmtp.com header.b=CRZ/YJgz; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubeyko.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dubeyko.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5101ae8ac40so582794e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 07:02:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dubeyko-com.20230601.gappssmtp.com; s=20230601; t=1706281367; x=1706886167; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JsxP7toU+yaQhyM85mOfisB9eNURYXeJZZvgfcckwgo=;
-        b=CRZ/YJgzYD5N5KWq15AxTWpEQ5RWgQVuC+8pw6Lmu17LHhvJuTQo6m6/Bt6cN2G4HH
-         cTn7xc2CAKgpNc5V25fhwxnBz73WsRD1nzDkTO4D/wkBtQ6cuTqrdmDWlmKqSB/PLFtq
-         WBqmC7Ex6wtlApJav4DkWpw9AJHhOzP5vPu9Vx9g+213U9N783A6M677B+3up8GKLcR7
-         yyGP6teEDyPddKv3HCM/om9pM48/OKFmw94kpWkKmu5cNzEGGRXEZoubixGSNPTS9TtX
-         Xpfolc963eYBi22isSrSQMYTAfVYvfIVmpzTtpw8WqNSmViBDSJ5egiZdhEQzuIoG6uz
-         s/oQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706281367; x=1706886167;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JsxP7toU+yaQhyM85mOfisB9eNURYXeJZZvgfcckwgo=;
-        b=s4M+uhxsEehkmUaO2d+jITndasUYT7HlifvaJmxYN2nqfh3ddJkT8AsEjEIeyf1hWn
-         ZzPqRUU9tgbtI2lSl8gNAqs0hURUOm7spCJZWjZuHvnx9efnu48TYD8SVR4Lfj2k7KMw
-         /S9j3mBkrPcfn75Q8RDX9LVI8mLt+AaaMMeJsxLXTzP9XFFgqdA9Wufov75ck0wHR7rn
-         2I0wYh0BuVY8VgpIXE0wjwYahwc70Ktgv6T3wqK7tMuH2AsWQkWOz6jMuEDHENhVWitx
-         crmNodnOp8uCvcvZvZqKhxEIjozk/FDmZUme2KMCdqIZSIGTxrz3G6fzTXlp6qe8/Zz0
-         VomA==
-X-Gm-Message-State: AOJu0YzgeaGmSZBqgphIz5aUFRolHTqVYegypoPCQn7tToWePHPP6xYk
-	59RK0MVU9DXY2OBnLiggEIloF4Q3LvhX+iYx78nwxAir9727aGescOqCVoKXAfU=
-X-Google-Smtp-Source: AGHT+IHF+mmyHTGOk00si2Y5/cuhZYWBxwC8inIRzI2KQ0mNT1wWw/ycoPdqIaDsdcQkRfWRT6iyHw==
-X-Received: by 2002:ac2:563a:0:b0:510:1721:4784 with SMTP id b26-20020ac2563a000000b0051017214784mr724538lff.72.1706281366950;
-        Fri, 26 Jan 2024 07:02:46 -0800 (PST)
-Received: from smtpclient.apple ([84.252.147.253])
-        by smtp.gmail.com with ESMTPSA id x23-20020a19e017000000b0050e758ee006sm204457lfg.205.2024.01.26.07.02.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 26 Jan 2024 07:02:45 -0800 (PST)
-Content-Type: text/plain;
-	charset=us-ascii
+	s=arc-20240116; t=1706281489; c=relaxed/simple;
+	bh=+2ei/gy8yAIjRdSlj5GyuSIfvHi5rH2RqaMpvTFPKWI=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qo5TwcWQRI8/Q19JkuYKlm+QAyff7d4wv6FDg/JmOGW3F5T4VR808nGO22PMHimqitoDE/N37ccs/ODWRnq+jcYKiAV6L8YsWnReE7XasAdrXU8P/3/y5LpOzNjrwxpd7JRd4iRLl/RMtS4vzaE8mifCXVft4j6sbgRwBv4Sc7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=AP0c6pbP; arc=none smtp.client-ip=185.70.43.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1706281483; x=1706540683;
+	bh=Wz2N1AcZwU0Mn94jWR065975cs5bO2b19pmlV+UYRdw=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=AP0c6pbPVRMEfXf/3t1lpRi8IuxKSXky10bzvKc89aQUuXf81yWH/ZiIdqDEOTT+r
+	 WTfXuf8iGd0dXb+ZecCa3GwnDZzuT0Uggjuq2ak+5s4r8OjmGtccIqR+h+MduPrKlF
+	 TpUR6biatrUoYyPVEvWAZL/Be/uoaBc45fSHv/7s5zeVvaCiGmoTy04R7sZ8C0xNqE
+	 k+M4hH+Xu9vEyWEAL4sDg82BtDtxFdEWfXKUqcYrQQmzIxsYMarlcNyC4EYQ0xCH+w
+	 K27PSWXQnfDCSUQNULS9w46z007uYTVorJtgBR+te8ikZNmxCwTiQgVP2cJVkB1BnW
+	 tAhwtK2ZexP1g==
+Date: Fri, 26 Jan 2024 15:04:23 +0000
+To: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Dan Williams <dan.j.williams@intel.com>, Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 1/9] rust: file: add Rust abstraction for `struct file`
+Message-ID: <5dbbaba2-fd7f-4734-9f44-15d2a09b4216@proton.me>
+In-Reply-To: <20240118-alice-file-v3-1-9694b6f9580c@google.com>
+References: <20240118-alice-file-v3-0-9694b6f9580c@google.com> <20240118-alice-file-v3-1-9694b6f9580c@google.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
-Subject: Re: [PATCH] hfs: fix a memleak in hfs_find_init
-From: Viacheslav Dubeyko <slava@dubeyko.com>
-In-Reply-To: <20240122172719.3843098-1-alexious@zju.edu.cn>
-Date: Fri, 26 Jan 2024 18:02:34 +0300
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
- linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <F36C0C80-DAF3-4D8F-8EA3-5209E8FB5BE3@dubeyko.com>
-References: <20240122172719.3843098-1-alexious@zju.edu.cn>
-To: Zhipeng Lu <alexious@zju.edu.cn>
-X-Mailer: Apple Mail (2.3774.400.31)
 
+On 18.01.24 15:36, Alice Ryhl wrote:
+> +/// Wraps the kernel's `struct file`.
+> +///
+> +/// # Refcounting
+> +///
+> +/// Instances of this type are reference-counted. The reference count is=
+ incremented by the
+> +/// `fget`/`get_file` functions and decremented by `fput`. The Rust type=
+ `ARef<File>` represents a
+> +/// pointer that owns a reference count on the file.
+> +///
+> +/// Whenever a process opens a file descriptor (fd), it stores a pointer=
+ to the file in its `struct
+> +/// files_struct`. This pointer owns a reference count to the file, ensu=
+ring the file isn't
+> +/// prematurely deleted while the file descriptor is open. In Rust termi=
+nology, the pointers in
+> +/// `struct files_struct` are `ARef<File>` pointers.
+> +///
+> +/// ## Light refcounts
+> +///
+> +/// Whenever a process has an fd to a file, it may use something called =
+a "light refcount" as a
+> +/// performance optimization. Light refcounts are acquired by calling `f=
+dget` and released with
+> +/// `fdput`. The idea behind light refcounts is that if the fd is not cl=
+osed between the calls to
+> +/// `fdget` and `fdput`, then the refcount cannot hit zero during that t=
+ime, as the `struct
+> +/// files_struct` holds a reference until the fd is closed. This means t=
+hat it's safe to access the
+> +/// file even if `fdget` does not increment the refcount.
+> +///
+> +/// The requirement that the fd is not closed during a light refcount ap=
+plies globally across all
+> +/// threads - not just on the thread using the light refcount. For this =
+reason, light refcounts are
+> +/// only used when the `struct files_struct` is not shared with other th=
+reads, since this ensures
+> +/// that other unrelated threads cannot suddenly start using the fd and =
+close it. Therefore,
+> +/// calling `fdget` on a shared `struct files_struct` creates a normal r=
+efcount instead of a light
+> +/// refcount.
+> +///
+> +/// Light reference counts must be released with `fdput` before the syst=
+em call returns to
+> +/// userspace. This means that if you wait until the current system call=
+ returns to userspace, then
+> +/// all light refcounts that existed at the time have gone away.
+> +///
+> +/// ## Rust references
+> +///
+> +/// The reference type `&File` is similar to light refcounts:
+> +///
+> +/// * `&File` references don't own a reference count. They can only exis=
+t as long as the reference
+> +///   count stays positive, and can only be created when there is some m=
+echanism in place to ensure
+> +///   this.
+> +///
+> +/// * The Rust borrow-checker normally ensures this by enforcing that th=
+e `ARef<File>` from which
+> +///   a `&File` is created outlives the `&File`.
+> +///
+> +/// * Using the unsafe [`File::from_ptr`] means that it is up to the cal=
+ler to ensure that the
+> +///   `&File` only exists while the reference count is positive.
+> +///
+> +/// * You can think of `fdget` as using an fd to look up an `ARef<File>`=
+ in the `struct
+> +///   files_struct` and create an `&File` from it. The "fd cannot be clo=
+sed" rule is like the Rust
+> +///   rule "the `ARef<File>` must outlive the `&File`".
+> +///
+> +/// # Invariants
+> +///
+> +/// * Instances of this type are refcounted using the `f_count` field.
+> +/// * If an fd with active light refcounts is closed, then it must be th=
+e case that the file
+> +///   refcount is positive until there are no more light refcounts creat=
+ed from the fd that got
 
+I think this wording can be easily misinterpreted: "until there
+are no more light refcounts created" could mean that you are allowed
+to drop the refcount to zero after the last light refcount has been
+created. But in reality you want all light refcounts to be released
+first.
+I would suggest "until all light refcounts of the fd have been dropped"
+or similar.
 
-> On 22 Jan 2024, at 20:27, Zhipeng Lu <alexious@zju.edu.cn> wrote:
->=20
-> When the switch statment goes to default and return an error, ptr =
-should
-> be freed since it is allocated in hfs_find_init.
->=20
+> +///   closed.
+> +/// * A light refcount must be dropped before returning to userspace.
+> +#[repr(transparent)]
+> +pub struct File(Opaque<bindings::file>);
+> +
+> +// SAFETY: By design, the only way to access a `File` is via an immutabl=
+e reference or an `ARef`.
+> +// This means that the only situation in which a `File` can be accessed =
+mutably is when the
+> +// refcount drops to zero and the destructor runs. It is safe for that t=
+o happen on any thread, so
+> +// it is ok for this type to be `Send`.
 
-Do you have any memory leaks report? Could you share it in the comments?
-Which use-case reproduces the issue? It will be easier to review the fix
-If you can share the path of reproduction.
+Technically, `drop` is never called for `File`, since it is only used
+via `ARef<File>` which calls `dec_ref` instead. Also since it only contains
+an `Opaque`, dropping it is a noop.
+But what does `Send` mean for this type? Since it is used together with
+`ARef`, being `Send` means that `File::dec_ref` can be called from any
+thread. I think we are missing this as a safety requirement on
+`AlwaysRefCounted`, do you agree?
+I think the safety justification here could be (with the requirement added
+to `AlwaysRefCounted`):
 
-Thanks,
-Slava.
+     SAFETY:
+     - `File::drop` can be called from any thread.
+     - `File::dec_ref` can be called from any thread.
 
-> Fixes: b3b2177a2d79 ("hfs: add lock nesting notation to =
-hfs_find_init")
-> Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
-> ---
-> fs/hfs/bfind.c | 1 +
-> 1 file changed, 1 insertion(+)
->=20
-> diff --git a/fs/hfs/bfind.c b/fs/hfs/bfind.c
-> index ef9498a6e88a..7aa3b9aba4d1 100644
-> --- a/fs/hfs/bfind.c
-> +++ b/fs/hfs/bfind.c
-> @@ -36,6 +36,7 @@ int hfs_find_init(struct hfs_btree *tree, struct =
-hfs_find_data *fd)
-> mutex_lock_nested(&tree->tree_lock, ATTR_BTREE_MUTEX);
-> break;
-> default:
-> + kfree(fd->search_key);
-> return -EINVAL;
-> }
-> return 0;
-> --=20
-> 2.34.1
->=20
+--
+Cheers,
+Benno
+
+> +unsafe impl Send for File {}
+> +
+> +// SAFETY: All methods defined on `File` that take `&self` are safe to c=
+all even if other threads
+> +// are concurrently accessing the same `struct file`, because those meth=
+ods either access immutable
+> +// properties or have proper synchronization to ensure that such accesse=
+s are safe.
+> +unsafe impl Sync for File {}
 
 
