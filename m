@@ -1,140 +1,123 @@
-Return-Path: <linux-kernel+bounces-40095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5996D83DA39
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:34:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0632283DA3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:36:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEE922891CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:34:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5AC6CB26AF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:34:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 864291947E;
-	Fri, 26 Jan 2024 12:34:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7D2E18EDE;
+	Fri, 26 Jan 2024 12:34:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ciNgwp8s"
-Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com [209.85.217.54])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="eiFrHeEP"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DEA214288
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 12:33:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C35DF1B802
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 12:34:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706272439; cv=none; b=kcUwpchxVq9+nd1kmD0SVvIypIsJZE1IGSDpd9tlqmjxpAG+w4W9zu9MD/DXNKBdR76zeiOIvz+InfF+bvYrMOwssMRkrarIuDoU3jOt/utVzVn6MeUvFQ9LOnTis3HRRKg0tJapbfv+BZiBaOYzBDR47PVc4lVDxWaz6RFXnrc=
+	t=1706272454; cv=none; b=ldPFFBPL4iDv6/5U8WiggKneDkVEQcm7N89ZkDXpHXbgJ5JrpyNS3xez6l6ZeiSlWPmbL5F/lQMctZ3BUo4QlcBz43C2IdD90H+TdwhPjkZ0Pu1BYS5ryNk4x97nD8ymgTRt62LlFp4JqKs756ZT6MYEjhgluWOgxPie/2oPzP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706272439; c=relaxed/simple;
-	bh=4m99W9RcPeeWbt8DFEWQI2sp/PfyobyGjckKTyyGec4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rJWwpdieUi6awf7vBSixIHBcTcm2HMN7veC0b1IMSx24yvmGdfMwA+T5byuIiAEbW+uK4WcR6W104optuOBa7jhMGcQkAonlabg3lt4bVtQqTfkYMMfPa+WgSHvFaD3sKMhG2pCL+gtMPH9t+Fr6JWrOYtHxDTk+T0rQvfwnFCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ciNgwp8s; arc=none smtp.client-ip=209.85.217.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vs1-f54.google.com with SMTP id ada2fe7eead31-4676a37e2c4so84653137.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 04:33:58 -0800 (PST)
+	s=arc-20240116; t=1706272454; c=relaxed/simple;
+	bh=3IjwAENZiSvBgm1+TCTIKPp17huEQPjULECpXRVLdSc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cgSyi6ePigfZ3JMHYOdxPZyuPsodEugNWHhlOpEkT7GNWs/+8gCH5kk3ruhGxOedTXdLbThkmRswNdMx2Nc3m0CqmZhezVlVvnOf2ev0R6+ZaYAwN9cE39PV8Fi8ZRXM44VPo+hhPobj9E28RyTi8zkhU7c9PqqKZSedKZVAqXs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=eiFrHeEP; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40eac352733so7495755e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 04:34:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706272437; x=1706877237; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9UqArqULVidH7ROM7QOynYR0nvQSPMOUC/XDGfU+9xg=;
-        b=ciNgwp8sroWZ8vcx6ilBXJVZMMl1A7d/fA6LoOetvf4Hnxzof7UigiSb0HwHdZP5lP
-         /mo29IlxvGuFpYTdcSDEVoWfGnfTIPYQcr1aEsaHq26F7J1YOEk6JBxwGLzkGLELtOVh
-         OfSh+013KV0az6vxbyOlOHWaqnB7Ga9E9533BuQQJdw2Yr3a5vbgLf3e7VEImPTU5GET
-         nZw8M10Cx+cFWiM4Soi+F1uj0wfWlk5/i/0PoavMfheSbBuNdorZoW8xbxBbweX+qp9w
-         cBMOUTgwTZxsOHwAShRzKafRX9w5YpqP1r/F/8UY0gUdY5U6f/AfGT9GzIY9fLKHztdP
-         HX+g==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1706272449; x=1706877249; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0soW0v5yVfsW4Bsvs0S98TR5cuZkvArabmQNCI3ohqs=;
+        b=eiFrHeEPeB4U5+ny/rkEvtJM4LBFbqLfOC5LuaxQfuNi5v2QKZGv0Xy4SWM/r9BnYw
+         gv94sH9edUypjJ+f9jW4+jas4cIq+Qx/Z18z+eh+HctXP139WjkJ0uLeFIabetQ9yMU6
+         HEDWHEE3afiV9+oqZGjXTHPOyGqcopnHewgSlTldjdvsBbJzlm1QJXp+xsm/lJRUwLbA
+         v+a/IfkOmSbI/zr816qFmu6dDn/9n6XKapBcbyIV8j2TQ+w0vv40FqgFQM7PTMsQKQmG
+         qlsMwHx8E1r4rL8HqB2DPB989vLx+ckRxJ2P3pTTg7LMVOjn62Ut6j0b843yCoORwVZ2
+         nihw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706272437; x=1706877237;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9UqArqULVidH7ROM7QOynYR0nvQSPMOUC/XDGfU+9xg=;
-        b=HNDS1CNA50W0vUcj6CB4sZivZB05LfkwszAFeadx3sIBEmYxXXXAB1rw69X+P5DmcX
-         bFv2bZrEyM7acx2PeVbc9KTZD5M3+9KzYFpS0lsM3pR0WzyosN4/RvZgVZrMuQ4WfikL
-         9xb57LQCKrvqalz3ez+HELPAfwEGdzwufA/G3n/QiEl9vUwrMKacWvJPHnMbOOtX0Hhn
-         OW9NY4gB4LlUF0Jr5beb4otKSl+pvJjP1Rfu4RMZP5nbijyDtOHMdcvh1XhJaWDOTWGJ
-         zcyHV/3yAvUe72gVirEipqLcphVBEfIY3ZislTlNN4FzAQTn2PknSuIVbYZX8OCNec6Y
-         psWw==
-X-Gm-Message-State: AOJu0YxNPn3Gt8p8MjRftqpoCtxQWoDNRCaUPGGzaVG51uz0++JNJDER
-	2pR/1uLVwvjlrLxlmKVnbN6LzN/EQMiZac0nHgRMwbF1ZrannrYBoX+2ARQY0sDgfC+/r17NKkZ
-	ZpiF+af2G3VsLDFsYrtNpH8IutWQlP/i5t9no
-X-Google-Smtp-Source: AGHT+IGd62n+2RxpM3PIhY6cym3GnlSNkz7sZpZK5qZcCreUyKwry0eMpuKUCEZGpL8I0eVhgGC860sdXzu9+PQOL0A=
-X-Received: by 2002:a05:6122:2a07:b0:4b6:e71d:362d with SMTP id
- fw7-20020a0561222a0700b004b6e71d362dmr862145vkb.18.1706272437051; Fri, 26 Jan
- 2024 04:33:57 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706272449; x=1706877249;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0soW0v5yVfsW4Bsvs0S98TR5cuZkvArabmQNCI3ohqs=;
+        b=s2aeVNckxidR4cPycZI0h8D0RZbPzyGJmU3lI49Q5S+c67ZgbfBAbQz6OchkZ22JKh
+         Iyig4l/kDhMavGiP9BoDoSmLoRpVv0pgN0hbwdEnEi1KvKoBteOihMorQNRokbpvMtJr
+         PVM8kJJLDgi8lDyszaMGIxSdjzpxjsildjqVWHLH5smUWDKI5RkbtSIV7y7bfn5HPLyb
+         01nomLEzf1w/kEPai+Y6wZ/Li4dTfgAmJqG740qecqnj9Y5Zlqy/g1SVsooa5fvXJoL7
+         lWFiNiywcHMr/nn2KyaXMAMiOFUpCVIBVm6+4k5psIIjla93Scz/BthjXpaDX2jZJjib
+         Gtaw==
+X-Gm-Message-State: AOJu0YzA86S+Aouu2PexztgAh1WTAHBgBcgl6fjgRJi0cGdYqsUy0AvR
+	Pg/BJNtuKTg6BXIrRJRG3vLAF+EWueEzUzeoFHgFJVYNAoeZX4gTlSNaueYOTbc=
+X-Google-Smtp-Source: AGHT+IGSi+euc5CvULgroSe+CYz/TOquvGv3zNUeHmiSkBBOJFVWHUdT7kDMryUMGp6vjyPeh2/Qxw==
+X-Received: by 2002:a05:600c:3d18:b0:40e:e66e:956c with SMTP id bh24-20020a05600c3d1800b0040ee66e956cmr243328wmb.159.1706272448465;
+        Fri, 26 Jan 2024 04:34:08 -0800 (PST)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:5168:e401:d707:9e79])
+        by smtp.gmail.com with ESMTPSA id t18-20020adfe112000000b0033ade19da41sm426985wrz.76.2024.01.26.04.34.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 04:34:08 -0800 (PST)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [GIT PULL] gpio: fixes for v6.8-rc2
+Date: Fri, 26 Jan 2024 13:34:05 +0100
+Message-Id: <20240126123405.35367-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124-alice-mm-v1-0-d1abcec83c44@google.com>
- <20240124-alice-mm-v1-3-d1abcec83c44@google.com> <ZbMA1yiM6Bqv9Sqg@boqun-archlinux>
-In-Reply-To: <ZbMA1yiM6Bqv9Sqg@boqun-archlinux>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Fri, 26 Jan 2024 13:33:46 +0100
-Message-ID: <CAH5fLgiNphSebaG82XkQHGFPFp1Mf1egyaiX6MFzsU2X3-Ni8w@mail.gmail.com>
-Subject: Re: [PATCH 3/3] rust: add abstraction for `struct page`
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Kees Cook <keescook@chromium.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Andrew Morton <akpm@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
-	Christian Brauner <brauner@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jan 26, 2024 at 1:47=E2=80=AFAM Boqun Feng <boqun.feng@gmail.com> w=
-rote:
->
-> On Wed, Jan 24, 2024 at 11:20:23AM +0000, Alice Ryhl wrote:
-> > +    /// Maps the page and reads from it into the given buffer.
-> > +    ///
-> > +    /// # Safety
-> > +    ///
-> > +    /// Callers must ensure that `dest` is valid for writing `len` byt=
-es.
-> > +    pub unsafe fn read(&self, dest: *mut u8, offset: usize, len: usize=
-) -> Result {
-> > +        self.with_pointer_into_page(offset, len, move |from_ptr| {
-> > +            // SAFETY: If `with_pointer_into_page` calls into this clo=
-sure, then
-> > +            // it has performed a bounds check and guarantees that `fr=
-om_ptr` is
-> > +            // valid for `len` bytes.
-> > +            unsafe { ptr::copy(from_ptr, dest, len) };
-> > +            Ok(())
-> > +        })
-> > +    }
-> > +
-> > +    /// Maps the page and writes into it from the given buffer.
-> > +    ///
-> > +    /// # Safety
-> > +    ///
-> > +    /// Callers must ensure that `src` is valid for reading `len` byte=
-s.
-> > +    pub unsafe fn write(&self, src: *const u8, offset: usize, len: usi=
-ze) -> Result {
->
-> Use a slice like type as `src` maybe? Then the function can be safe:
->
->         pub fn write<S: AsRef<[u8]>>(&self, src: S, offset: usize) -> Res=
-ult
->
-> Besides, since `Page` impl `Sync`, shouldn't this `write` and the
-> `fill_zero` be a `&mut self` function? Or make them both `unsafe`
-> because of potential race and add some safety requirement?
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Ideally, we don't want data races with these methods to be UB. They
-could be mapped into the address space of a userspace process.
+Linus,
 
-Alice
+Please pull the following GPIO driver fixes for the next RC.
+
+Thanks,
+Bartosz
+
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
+
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v6.8-rc2
+
+for you to fetch changes up to 84aef4ed59705585d629e81d633a83b7d416f5fb:
+
+  gpio: eic-sprd: Clear interrupt after set the interrupt type (2024-01-22 11:38:08 +0100)
+
+----------------------------------------------------------------
+gpio fixes for v6.8-rc2
+
+- add a quirk to GPIO ACPI handling to ignore touchpad wakeups
+  on GPD G1619-04
+- clear interrupt status bits (that may have been set before enabling
+  the interrupts) after setting the interrupt type in gpio-eic-sprd
+
+----------------------------------------------------------------
+Mario Limonciello (1):
+      gpiolib: acpi: Ignore touchpad wakeup on GPD G1619-04
+
+Wenhua Lin (1):
+      gpio: eic-sprd: Clear interrupt after set the interrupt type
+
+ drivers/gpio/gpio-eic-sprd.c | 32 ++++++++++++++++++++++++++++----
+ drivers/gpio/gpiolib-acpi.c  | 14 ++++++++++++++
+ 2 files changed, 42 insertions(+), 4 deletions(-)
 
