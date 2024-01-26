@@ -1,101 +1,110 @@
-Return-Path: <linux-kernel+bounces-40643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40645-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CAA783E391
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:01:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 845A683E395
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:02:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC076288921
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:01:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6E3E1C249E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:02:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 992C42421C;
-	Fri, 26 Jan 2024 21:01:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CFA12421A;
+	Fri, 26 Jan 2024 21:02:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NV5uPXbQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BlL8imhS"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4A3C250EB;
-	Fri, 26 Jan 2024 21:01:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B89B249EA
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 21:02:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706302905; cv=none; b=nLdBmqynZJzxSLkMqFCVIpkUapG38mMnJCVZ6Vki++s+54VFVKTpAfutG59m1/D2jFcYOtnP28GYDl+UhrgGSNotAs1sZA7WgLqT1VhJ7QiCXBfYxRPve4plNNj7LdGGVATGHP9BvvSaOGStpwsXjcOTr4v/ZtmS1XFON9dT6go=
+	t=1706302956; cv=none; b=tMlfp/stmklGhnjs4Hc0diwxe1a4zhJCeVn2MlKfzedcjl9S3k3Th8SNs53EVAn7i48vo97RJ0ahH4kH8ohibF0SF03dnxIYeMq1VAsdcbFlx4N7th8CbegnVotEAml7CfYhc1U+8cTfLplrtOfcqXGGPYrIVVgcHp8JnVSEqbQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706302905; c=relaxed/simple;
-	bh=RO+RzcVefXpbLKxJEas0gVSK2qzAcIkqMzHPX6hX3zQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CQPgxzxlMOAieKy99vUBowOBxV1LtqGnznBSAM+doHvD/zh5BYU51gxjyPu2OKRv0QHuRKm/N3jzye5s1cszjDJjjUn6Anu0v6h4zo/HmW+dqvskr5o0SWyjZNNFQL0iwhqgnY9pxdkiZJlTxiAsEeimzAc54lt3LIF9Xh8U/wI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NV5uPXbQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B0CDC433F1;
-	Fri, 26 Jan 2024 21:01:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706302905;
-	bh=RO+RzcVefXpbLKxJEas0gVSK2qzAcIkqMzHPX6hX3zQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NV5uPXbQFU0HYto3E0oiQJVegdBKQiXhJKx/T7pioy7VkaJwoiTNTDRNo+7NWOEGq
-	 E7TYdXVo7Oi/QMEzV43WHfXZ3/e7aF8Ih1C2zFAURSkN/fKkggHsTE54H8Tn7GeZpW
-	 JDwE9CW6uduTmzdkqZZp0G78FvzVQc2k6uLqn2ZBChuLpwR5Dmye8y46SJX73mExwW
-	 cG7lBWkQ8EcX5HaSpGjScz/1mdvvqKezrg6WD865iP8LVnpPPnhS7K9oIwAMdsVA72
-	 wBQqyzF0O11gZCMUeuxQIP6xcMcHWppqF5cA5yP8lm0X3LLzGWInktWZ6RtEiyJi+b
-	 QkY2M/cd/Ranw==
-Date: Fri, 26 Jan 2024 21:01:39 +0000
-From: Simon Horman <horms@kernel.org>
-To: Brett Creeley <bcreeley@amd.com>
-Cc: Ratheesh Kannoth <rkannoth@marvell.com>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"edumazet@google.com" <edumazet@google.com>,
-	"kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>,
-	Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
-	Geethasowjanya Akula <gakula@marvell.com>,
-	Hariprasad Kelam <hkelam@marvell.com>
-Subject: Re: [EXT] Re: [PATCH net] octeontx2-af: Initialize bitmap arrays.
-Message-ID: <20240126210139.GD401354@kernel.org>
-References: <20240123051245.3801246-1-rkannoth@marvell.com>
- <cf035125-d7fb-4423-8f64-a5be7505243d@amd.com>
- <MWHPR1801MB1918035FC2D71BD916DE716ED37A2@MWHPR1801MB1918.namprd18.prod.outlook.com>
- <05156615-8dcc-41ec-aa6a-aa41c515d25b@amd.com>
+	s=arc-20240116; t=1706302956; c=relaxed/simple;
+	bh=NhbVdYdf9iXK0nhJbVHWyWMtXRTj04J6yLcrgUAT+JA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Zk6QTbfxEWNlvuRvdLPSXobfemeq8au9wjXYrZ+6X7NjYxlJcGy6lMQnI9xW5D8SSbhIemdERuoDS4hQGE7tLnaTLHxXgM+rD5+Xlnma3RnbDO3zgnvv34A3G0EUUUgku0DVru5wvxhTwghOCSWzXLJGOEqdfwqZhnTkiXLj9+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BlL8imhS; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d5ce88b51cso41795ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:02:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706302955; x=1706907755; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NhbVdYdf9iXK0nhJbVHWyWMtXRTj04J6yLcrgUAT+JA=;
+        b=BlL8imhStvGLGGjFAbA3iU/YdGZ7TgalIHKFwL7nRIJONUyeocsxI1yilh2/Ie78J9
+         mqxxAF0UXl0cr4tRza1rPI746IWo2LcBruq+WfoAGlAA3Kf3vrn2jVTetVLQyy1DHA1f
+         9DUB3ZNp6DyvaQ0w1UlhPuk4Ro4JlnozpgDX7RZCaqp+0TscT/Q/yWVpIlDNN4Z9jcQC
+         EGPO0jOMR9ODPzBSLSnOggr01DhrEJ0wQAniSyhnA0C9Da58duHR0d4rhBr8YO947/76
+         VZTB/pEhusHa6oy9fgMOXECWfCf55y4+sRclAue6Db0D5OzXBu2kQkHCeECe4iW6ksVw
+         bc/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706302955; x=1706907755;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NhbVdYdf9iXK0nhJbVHWyWMtXRTj04J6yLcrgUAT+JA=;
+        b=mm8V6NrGQn1iroCCHzwffZ/sqfx0zHj+vzRfQq6puZjLc//aLLR6850L9sZ2K1YmkZ
+         XDN664E0OH0VbusE0XbhKlrTRW89fLo3sCtgjEc5QVYyp+1/k61NzyKt2p9K3WGNYQzq
+         bhD1FgBJ428Ew/OiFWHMYXiHnYaxu7Xgh7xjjm3YT2sChN6O9vWEKcpGuiw0kXIGuDTF
+         mHzrGHFVjVMzOkGfg5X/5JkZi/U/ruhgtkAr+FJUd4Eh5FAn/fAsYk0qWS1x846wpmUh
+         pbZEBOtrL2HKsGswoQEyP1SR/A8+pDpB7E9kE9Zq7gOmgTkZoq+LW9ymios5Ejiz93Nt
+         YU9Q==
+X-Gm-Message-State: AOJu0YwsNaBQPxFPV1dfqtIJJ8nDW/ZjXiF3mviOtzIDBg1rezq9nLeu
+	+/YUA5xBNn4Pi7kZ1cMFWLQhCQx/ssXqT+zCGnZmwlCjaqbfGjMdUa1sLqtnLb0ovvb6fjr17h6
+	+OYrh1G2yqny3OYWGuT3roUr5qajlBhiafubS
+X-Google-Smtp-Source: AGHT+IEHXifKfydOBlCtNuN8Oq2e9oDoysKPEPKuvtnmdtJeP83zNTX6sEG9mhcN/FZmToVFalnIx8RawAX1m1VVAv0=
+X-Received: by 2002:a17:902:d485:b0:1d7:3ad7:f23e with SMTP id
+ c5-20020a170902d48500b001d73ad7f23emr294723plg.4.1706302954390; Fri, 26 Jan
+ 2024 13:02:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <05156615-8dcc-41ec-aa6a-aa41c515d25b@amd.com>
+References: <20240126203353.1163059-1-tjmercier@google.com>
+In-Reply-To: <20240126203353.1163059-1-tjmercier@google.com>
+From: Shakeel Butt <shakeelb@google.com>
+Date: Fri, 26 Jan 2024 13:02:22 -0800
+Message-ID: <CALvZod5_vZJFc0i0nGuEj3xt=9p9Jny682LRyb5oQpHvVk_ewg@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcg: Don't periodically flush stats when memcg is disabled
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com, 
+	Minchan Kim <minchan@google.com>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 25, 2024 at 07:56:22AM -0800, Brett Creeley wrote:
-> 
-> 
-> On 1/24/2024 9:06 PM, Ratheesh Kannoth wrote:
-> > Caution: This message originated from an External Source. Use proper caution when opening attachments, clicking links, or responding.
-> > 
-> > 
-> > > From: Brett Creeley <bcreeley@amd.com>
-> > > Subject: [EXT] Re: [PATCH net] octeontx2-af: Initialize bitmap arrays.
-> > > Is there any reason to not use:
-> > > 
-> > > bitmap_zalloc() and bitmap_free()?
-> > Will follow simon's suggestion to keep patch diff minimal. As bitmap_zalloc() does not give any advantage over the other.
-> 
-> It does make some sense because in multiple places you are open coding
-> bitmap_zalloc()->bitmap_alloc() in multiple places.
-> 
-> For example:
-> 
->         mcam->bmap = kmalloc_array(BITS_TO_LONGS(mcam->bmap_entries),
-> +                                  sizeof(long), GFP_KERNEL | __GFP_ZERO);
-> 
-> This is exactly what bitmap_zalloc()->bitmap_alloc() are doing.
+On Fri, Jan 26, 2024 at 12:34=E2=80=AFPM T.J. Mercier <tjmercier@google.com=
+> wrote:
+>
+> The root memcg is onlined even when memcg is disabled. When it's onlined
+> a 2 second periodic stat flush is started, but no stat flushing is
+> required when memcg is disabled because there can be no child memcgs.
+> Most calls to flush memcg stats are avoided when memcg is disabled as a
+> result of the mem_cgroup_disabled check [1] added in [2], but the
 
-Yes, I agree and I should have suggested using
-bitmap_zalloc() and bitmap_free().
+Remove [1] reference and instead of [2] add the actual commit reference.
 
+> periodic flushing started in mem_cgroup_css_online is not. Skip it.
+>
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
+ee/mm/memcontrol.c?h=3Dv6.8-rc1#n753
+> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/co=
+mmit/?id=3D7d7ef0a4686abe43cd76a141b340a348f45ecdf2
+>
+> Fixes: aa48e47e3906 ("memcg: infrastructure to flush memcg stats")
+> Reported-by: Minchan Kim <minchan@google.com>
+> Signed-off-by: T.J. Mercier <tjmercier@google.com>
 
+Acked-by: Shakeel Butt <shakeelb@google.com>
 
