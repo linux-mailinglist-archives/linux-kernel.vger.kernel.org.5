@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-39943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98DDC83D7AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:16:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CEA483D7B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:17:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CC271F2FD26
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:16:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D62129198A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:17:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66FB76A35D;
-	Fri, 26 Jan 2024 09:39:20 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE3106D1C4;
+	Fri, 26 Jan 2024 09:39:24 +0000 (UTC)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0710A6A32C;
-	Fri, 26 Jan 2024 09:39:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B52C6BB3F;
+	Fri, 26 Jan 2024 09:39:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706261960; cv=none; b=GoiUGEb4GPGQCTyP5cr3lYxl36G8F7C60LqFYQQ1EhQoXDcihci/HalA8Sgh0Fwj+hOz0Vw30Yel4VSnmtbPJNWBBVX3ThqiAdirXcOkakTXc1QAgUgryAMnh5AV9P1VcHRJoE0CX/vMQCpYUn+/38ENHanw0zXaj7p+oJBjlZA=
+	t=1706261964; cv=none; b=WY/Awyl8g41wnsjGEjNGj2wbk+1KtdeF9uE8K4Lk2J7mTjfFNGXy6QYtNPl/HrKyfjX4yAY/j2C0vZQ+GNprL5DGpQI0DGPvdp+8eIfDYAqSu1HGORHaR1lQIL47lQ8rc9VnDjuI7tr3ESdlwGBmRKejZjbyLStdfaF6YNFGie0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706261960; c=relaxed/simple;
-	bh=+PBd62Uy6Enf/+GClkZ0QPTz6bpsbkxzJUJyHuJx3ko=;
+	s=arc-20240116; t=1706261964; c=relaxed/simple;
+	bh=hMPu5jhk9dmMRoZn4YMWKRNN1BOGHMTRanhtmEgePWM=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Kpen0EOlXD0pEMeXJyhnyuY4TwVhxuRX5ysx1axcmXF9mbtg/LJiWqR4SSPMEsVe2MDfMOUkE8zPLxy5MDdNdGzQ8QJnhYVFWuwHk0WUUyIWj201jWJqJeL7wCt7GFGZCXXPrP6Le+7KW09LNjNK4B33LdH946DX4R9nOYSMrHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+	 MIME-Version:Content-Type; b=V4n8/CyZaymCZD2UxvvM2nOMhnCOQdrl6ci5gwGumRjNYY0n4NwQb4QYq18ZUEuwwYGPn5KjTJ92KE86btlUh6HBSDYMB3OrPnr5Z2NrVGnR+qahqcElMzQwAM2A6Y9SH+ecvvCE75RIdHzXI7dFNs47CEi/TeQGkgBPdHvylV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TLt0Q3pDSzXgnW;
-	Fri, 26 Jan 2024 17:37:58 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4TLt0c4kdFz18M85;
+	Fri, 26 Jan 2024 17:38:08 +0800 (CST)
 Received: from dggpeml500001.china.huawei.com (unknown [7.185.36.227])
-	by mail.maildlp.com (Postfix) with ESMTPS id BD92818007D;
+	by mail.maildlp.com (Postfix) with ESMTPS id E1547140136;
 	Fri, 26 Jan 2024 17:39:13 +0800 (CST)
 Received: from huawei.com (10.69.192.56) by dggpeml500001.china.huawei.com
  (7.185.36.227) with Microsoft SMTP Server (version=TLS1_2,
@@ -42,9 +42,9 @@ From: Qi Tao <taoqi10@huawei.com>
 To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
 	<liulongfang@huawei.com>
 CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>
-Subject: [PATCH v2 2/4] crypto: hisilicon/sec2 - modify nested macro call
-Date: Fri, 26 Jan 2024 17:38:26 +0800
-Message-ID: <20240126093828.14131-3-taoqi10@huawei.com>
+Subject: [PATCH v2 3/4] crypto: hisilicon/sec2 - fix some cleanup issues
+Date: Fri, 26 Jan 2024 17:38:27 +0800
+Message-ID: <20240126093828.14131-4-taoqi10@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20240126093828.14131-1-taoqi10@huawei.com>
 References: <20240126093828.14131-1-taoqi10@huawei.com>
@@ -59,52 +59,40 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  dggpeml500001.china.huawei.com (7.185.36.227)
 
-Nested macros are integrated into a single macro,
-making the code simpler.
+This patch fixes following cleanup issues:
+ - The return value of the function is
+   inconsistent with the actual return type.
+ - After the pointer type is directly converted
+   to the `__le64` type, the program may crash
+   or produce unexpected results.
 
 Signed-off-by: Qi Tao <taoqi10@huawei.com>
 ---
- drivers/crypto/hisilicon/sec2/sec_crypto.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+ drivers/crypto/hisilicon/sec2/sec_crypto.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-index f028dcfd0ead..692ba3213cc6 100644
+index 692ba3213cc6..5d4facf62c86 100644
 --- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
 +++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-@@ -2145,8 +2145,8 @@ static int sec_skcipher_decrypt(struct skcipher_request *sk_req)
- 	return sec_skcipher_crypto(sk_req, false);
- }
+@@ -118,7 +118,7 @@ struct sec_aead {
+ };
  
--#define SEC_SKCIPHER_GEN_ALG(sec_cra_name, sec_set_key, sec_min_key_size, \
--	sec_max_key_size, ctx_init, ctx_exit, blk_size, iv_size)\
-+#define SEC_SKCIPHER_ALG(sec_cra_name, sec_set_key, \
-+	sec_min_key_size, sec_max_key_size, blk_size, iv_size)\
- {\
- 	.base = {\
- 		.cra_name = sec_cra_name,\
-@@ -2158,8 +2158,8 @@ static int sec_skcipher_decrypt(struct skcipher_request *sk_req)
- 		.cra_ctxsize = sizeof(struct sec_ctx),\
- 		.cra_module = THIS_MODULE,\
- 	},\
--	.init = ctx_init,\
--	.exit = ctx_exit,\
-+	.init = sec_skcipher_ctx_init,\
-+	.exit = sec_skcipher_ctx_exit,\
- 	.setkey = sec_set_key,\
- 	.decrypt = sec_skcipher_decrypt,\
- 	.encrypt = sec_skcipher_encrypt,\
-@@ -2168,11 +2168,6 @@ static int sec_skcipher_decrypt(struct skcipher_request *sk_req)
- 	.ivsize = iv_size,\
- }
+ /* Get an en/de-cipher queue cyclically to balance load over queues of TFM */
+-static inline int sec_alloc_queue_id(struct sec_ctx *ctx, struct sec_req *req)
++static inline u32 sec_alloc_queue_id(struct sec_ctx *ctx, struct sec_req *req)
+ {
+ 	if (req->c_req.encrypt)
+ 		return (u32)atomic_inc_return(&ctx->enc_qcyclic) %
+@@ -1371,7 +1371,7 @@ static int sec_skcipher_bd_fill_v3(struct sec_ctx *ctx, struct sec_req *req)
+ 	sec_sqe3->bd_param = cpu_to_le32(bd_param);
  
--#define SEC_SKCIPHER_ALG(name, key_func, min_key_size, \
--	max_key_size, blk_size, iv_size) \
--	SEC_SKCIPHER_GEN_ALG(name, key_func, min_key_size, max_key_size, \
--	sec_skcipher_ctx_init, sec_skcipher_ctx_exit, blk_size, iv_size)
--
- static struct sec_skcipher sec_skciphers[] = {
- 	{
- 		.alg_msk = BIT(0),
+ 	sec_sqe3->c_len_ivin |= cpu_to_le32(c_req->c_len);
+-	sec_sqe3->tag = cpu_to_le64(req);
++	sec_sqe3->tag = cpu_to_le64((unsigned long)req);
+ 
+ 	return 0;
+ }
 -- 
 2.33.0
 
