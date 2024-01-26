@@ -1,217 +1,191 @@
-Return-Path: <linux-kernel+bounces-39694-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39695-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6229983D4A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:22:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56C2083D50C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:57:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BDF49B21193
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 08:22:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0955D28609C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 08:57:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF8F61B297;
-	Fri, 26 Jan 2024 07:20:22 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD6E91B5A0;
+	Fri, 26 Jan 2024 07:21:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Xjb5OzC/"
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C60E31AAC4
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 07:20:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2BDB29CEB;
+	Fri, 26 Jan 2024 07:21:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706253622; cv=none; b=S8jfYabQdMJvl40Xq/Il8IrdmMtVkusKk1tJuTX+bkbhD6diPBzdB2+jnnhEbEb/dRGUBh56EX/ku0mea3iD40wNNU1/FIEv3LMKRM5mPs67/tBCIsN2WvE/FJqS6JpPAFS1yGFQwb7gqf/S0SXtmJQHN4YMhcQH2gRHIj/5QJg=
+	t=1706253688; cv=none; b=EsLhLSIrcaHYdwWarDXeZ3r7V/PEvt/XAWYVQLGTEAiVeIO4nNMNvgeiZUEFUyf4wAgFs/JZ3Yz3uvEo7UuaI+cKS/m18o6UXgrKR6jdKSLTXIsgwwKulujjkQ4YpzaWzvOU0r1IKAFUhg8GfSa/ofxzeP0EbphwkohG7ofR3x0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706253622; c=relaxed/simple;
-	bh=2MlIvEb5ti15ByVLn0Sx8MbSa5UY7PBvuWGN5H1F15g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EdbQ3vOgsh+Z6TZB1FikpuHTZLGh7rN8k8+o87NRVz5/dUsBLfleEta5YIFgB5tUEnTF5BG196CsrVUedTwnQAXrxrQkAllhITT1Elusm7M1KboLfVt9QDF4rjTCdbP7NEJABlBEiqXS40tfRblAuwuUtIAA/bmYzmFlQokZPro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rTGVU-0000h3-J6; Fri, 26 Jan 2024 08:20:08 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rTGVJ-002SaA-Ok; Fri, 26 Jan 2024 08:19:57 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rTGVJ-008SOJ-2A;
-	Fri, 26 Jan 2024 08:19:57 +0100
-Date: Fri, 26 Jan 2024 08:19:51 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Wenhua Lin <Wenhua.Lin@unisoc.com>
-Cc: Orson Zhai <orsonzhai@gmail.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, Chunyan Zhang <zhang.lyra@gmail.com>, linux-pwm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, wenhua lin <wenhua.lin1994@gmail.com>, 
-	Xiongpeng Wu <xiongpeng.wu@unisoc.com>, zhaochen su <zhaochen.su29@gmail.com>, 
-	Zhaochen Su <Zhaochen.Su@unisoc.com>, Xiaolong Wang <Xiaolong.Wang@unisoc.com>
-Subject: Re: [PATCH 1/6] pwm: sprd: Add support for UMS9620
-Message-ID: <bvnhi4qeczrmlmaog6drlztg4x6ubozjzu57sukpejme7xecqc@724g62vjgxrq>
-References: <20240122081754.17058-1-Wenhua.Lin@unisoc.com>
- <20240122081754.17058-2-Wenhua.Lin@unisoc.com>
+	s=arc-20240116; t=1706253688; c=relaxed/simple;
+	bh=COyy1DJiB/eIbsONRHi+Oz1etgAGUzR7mzSxa4AmNuQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HRiq6XxGl0CJsje+e+Q6FtCyceBg2H3QkZ8VEHlaClf/4dWo4jAQMOCAnWTO22dlq8YO8DvjcRIZOVPX1nbrKOY9aCTMtiQmWsf7xQgXgM2XyLimvITb+98uAZDoqBqCUGVG7T+1Vkuy1kkEfblulk32ZHEzaFhzUblaIE8HPb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Xjb5OzC/; arc=none smtp.client-ip=115.124.30.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1706253681; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=vBYVt2s6HvfR/oouT1QKkutgOgH1lvtbeCB5EqxVH0c=;
+	b=Xjb5OzC/IpQNxe/HkEiSnKNPhd4EULfe6LUBFsBWbkqyaR5lzeyVjBCAeuPG5Xe+nFTkA/7xawlKBjXkrCDlExvnJX1AoEbMqZZ+W/YTwOHgts6NayMP7NYPVTCWTaWTka/5XcWyEJT5TFFAkubMyA7O0YALNy+uQXXn3awgpYI=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0W.MyK51_1706253680;
+Received: from localhost(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W.MyK51_1706253680)
+          by smtp.aliyun-inc.com;
+          Fri, 26 Jan 2024 15:21:21 +0800
+From: Jingbo Xu <jefflexu@linux.alibaba.com>
+To: miklos@szeredi.hu,
+	linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	amir73il@gmail.com
+Subject: [PATCH v2] fuse: add support for explicit export disabling
+Date: Fri, 26 Jan 2024 15:21:20 +0800
+Message-Id: <20240126072120.71867-1-jefflexu@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="6hmfj7udr3e3yp5w"
-Content-Disposition: inline
-In-Reply-To: <20240122081754.17058-2-Wenhua.Lin@unisoc.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 
+open_by_handle_at(2) can fail with -ESTALE with a valid handle returned
+by a previous name_to_handle_at(2) for evicted fuse inodes, which is
+especially common when entry_valid_timeout is 0, e.g. when the fuse
+daemon is in "cache=none" mode.
 
---6hmfj7udr3e3yp5w
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The time sequence is like:
 
-On Mon, Jan 22, 2024 at 04:17:49PM +0800, Wenhua Lin wrote:
-> The PMW unit on the current Unisoc's SoCs has 4 channels but has different
-> address offsets. On UMS512, they are 0x0, 0x20, 0x40, 0x60 respectively,
-> while are 0x0, 0x4000, 0x8000, 0xC000 on UMS9620.
->=20
-> Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
-> ---
->  drivers/pwm/pwm-sprd.c | 28 ++++++++++++++++++++++++----
->  1 file changed, 24 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/pwm/pwm-sprd.c b/drivers/pwm/pwm-sprd.c
-> index 77939e161006..bc1e3ed13528 100644
-> --- a/drivers/pwm/pwm-sprd.c
-> +++ b/drivers/pwm/pwm-sprd.c
-> @@ -9,6 +9,7 @@
->  #include <linux/math64.h>
->  #include <linux/mod_devicetable.h>
->  #include <linux/module.h>
-> +#include <linux/of.h>
->  #include <linux/platform_device.h>
->  #include <linux/pwm.h>
-> =20
-> @@ -23,7 +24,6 @@
->  #define SPRD_PWM_ENABLE_BIT	BIT(0)
-> =20
->  #define SPRD_PWM_CHN_NUM	4
-> -#define SPRD_PWM_REGS_SHIFT	5
->  #define SPRD_PWM_CHN_CLKS_NUM	2
->  #define SPRD_PWM_CHN_OUTPUT_CLK	1
-> =20
-> @@ -32,14 +32,27 @@ struct sprd_pwm_chn {
->  	u32 clk_rate;
->  };
-> =20
-> +struct sprd_pwm_data {
-> +	int reg_shift;
-> +};
-> +
->  struct sprd_pwm_chip {
->  	void __iomem *base;
->  	struct device *dev;
->  	struct pwm_chip chip;
-> +	const struct sprd_pwm_data *pdata;
->  	int num_pwms;
->  	struct sprd_pwm_chn chn[SPRD_PWM_CHN_NUM];
->  };
-> =20
-> +static const struct sprd_pwm_data ums512_data =3D {
-> +	.reg_shift =3D 5,
-> +};
-> +
-> +static const struct sprd_pwm_data ums9620_data =3D {
-> +	.reg_shift =3D 14,
-> +};
-> +
->  static inline struct sprd_pwm_chip* sprd_pwm_from_chip(struct pwm_chip *=
-chip)
->  {
->  	return container_of(chip, struct sprd_pwm_chip, chip);
-> @@ -58,7 +71,7 @@ static const char * const sprd_pwm_clks[] =3D {
-> =20
->  static u32 sprd_pwm_read(struct sprd_pwm_chip *spc, u32 hwid, u32 reg)
->  {
-> -	u32 offset =3D reg + (hwid << SPRD_PWM_REGS_SHIFT);
-> +	u32 offset =3D reg + (hwid << spc->pdata->reg_shift);
-> =20
->  	return readl_relaxed(spc->base + offset);
->  }
-> @@ -66,7 +79,7 @@ static u32 sprd_pwm_read(struct sprd_pwm_chip *spc, u32=
- hwid, u32 reg)
->  static void sprd_pwm_write(struct sprd_pwm_chip *spc, u32 hwid,
->  			   u32 reg, u32 val)
->  {
-> -	u32 offset =3D reg + (hwid << SPRD_PWM_REGS_SHIFT);
-> +	u32 offset =3D reg + (hwid << spc->pdata->reg_shift);
-> =20
->  	writel_relaxed(val, spc->base + offset);
->  }
-> @@ -253,6 +266,7 @@ static int sprd_pwm_clk_init(struct sprd_pwm_chip *sp=
-c)
->  static int sprd_pwm_probe(struct platform_device *pdev)
->  {
->  	struct sprd_pwm_chip *spc;
-> +	const void *priv;
+	name_to_handle_at(2)	# succeed
+	evict fuse inode
+	open_by_handle_at(2)	# fail
 
-This can better be of type struct sprd_pwm_data *. Also pdata would be a
-better name.
+The root cause is that, with 0 entry_valid_timeout, the dput() called in
+name_to_handle_at(2) will trigger iput -> evict(), which will send
+FUSE_FORGET to the daemon.  The following open_by_handle_at(2) will send
+a new FUSE_LOOKUP request upon inode cache miss since the previous inode
+eviction.  Then the fuse daemon may fail the FUSE_LOOKUP request with
+-ENOENT as the cached metadata of the requested inode has already been
+cleaned up during the previous FUSE_FORGET.  The returned -ENOENT is
+treated as -ESTALE when open_by_handle_at(2) returns.
 
->  	int ret;
-> =20
->  	spc =3D devm_kzalloc(&pdev->dev, sizeof(*spc), GFP_KERNEL);
-> @@ -263,6 +277,11 @@ static int sprd_pwm_probe(struct platform_device *pd=
-ev)
->  	if (IS_ERR(spc->base))
->  		return PTR_ERR(spc->base);
-> =20
-> +	priv =3D of_device_get_match_data(&pdev->dev);
-> +	if (!priv)
-> +		return dev_err_probe(&pdev->dev, -EINVAL, "get regs shift failed!\n");
-> +	spc->pdata =3D priv;
-> +
->  	spc->dev =3D &pdev->dev;
-> =20
->  	ret =3D sprd_pwm_clk_init(spc);
-> @@ -281,7 +300,8 @@ static int sprd_pwm_probe(struct platform_device *pde=
-v)
->  }
-> =20
->  static const struct of_device_id sprd_pwm_of_match[] =3D {
-> -	{ .compatible =3D "sprd,ums512-pwm", },
-> +	{ .compatible =3D "sprd,ums512-pwm",	.data =3D (void *)&ums512_data},
-> +	{ .compatible =3D "sprd,ums9620-pwm",	.data =3D (void *)&ums9620_data},
+This confuses the application somehow, as open_by_handle_at(2) fails
+when the previous name_to_handle_at(2) succeeds.  The returned errno is
+also confusing as the requested file is not deleted and already there.
+It is reasonable to fail name_to_handle_at(2) early in this case, after
+which the application can fallback to open(2) to access files.
 
-Please use one line per assignment. Do you really need the cast to void
-*?
+Since this issue typically appears when entry_valid_timeout is 0 which
+is configured by the fuse daemon, the fuse daemon is the right person to
+explicitly disable the export when required.
 
-Best regards
-Uwe
+Also considering FUSE_EXPORT_SUPPORT actually indicates the support for
+lookups of "." and "..", and there are existing fuse daemons supporting
+export without FUSE_EXPORT_SUPPORT set, for compatibility, we add a new
+INIT flag for such purpose.
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+---
+v2:
+- rename to "fuse_export_fid_operations"
+- bump FUSE_KERNEL_MINOR_VERSION
 
---6hmfj7udr3e3yp5w
-Content-Type: application/pgp-signature; name="signature.asc"
+v1: https://lore.kernel.org/linux-fsdevel/20240124113042.44300-1-jefflexu@linux.alibaba.com/
+RFC: https://lore.kernel.org/all/20240123093701.94166-1-jefflexu@linux.alibaba.com/
+---
+ fs/fuse/inode.c           | 11 ++++++++++-
+ include/uapi/linux/fuse.h |  7 ++++++-
+ 2 files changed, 16 insertions(+), 2 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+index 2a6d44f91729..eee200308482 100644
+--- a/fs/fuse/inode.c
++++ b/fs/fuse/inode.c
+@@ -1110,6 +1110,11 @@ static struct dentry *fuse_get_parent(struct dentry *child)
+ 	return parent;
+ }
+ 
++/* only for fid encoding; no support for file handle */
++static const struct export_operations fuse_export_fid_operations = {
++	.encode_fh	= fuse_encode_fh,
++};
++
+ static const struct export_operations fuse_export_operations = {
+ 	.fh_to_dentry	= fuse_fh_to_dentry,
+ 	.fh_to_parent	= fuse_fh_to_parent,
+@@ -1284,6 +1289,8 @@ static void process_init_reply(struct fuse_mount *fm, struct fuse_args *args,
+ 				fc->create_supp_group = 1;
+ 			if (flags & FUSE_DIRECT_IO_ALLOW_MMAP)
+ 				fc->direct_io_allow_mmap = 1;
++			if (flags & FUSE_NO_EXPORT_SUPPORT)
++				fm->sb->s_export_op = &fuse_export_fid_operations;
+ 		} else {
+ 			ra_pages = fc->max_read / PAGE_SIZE;
+ 			fc->no_lock = 1;
+@@ -1330,7 +1337,8 @@ void fuse_send_init(struct fuse_mount *fm)
+ 		FUSE_NO_OPENDIR_SUPPORT | FUSE_EXPLICIT_INVAL_DATA |
+ 		FUSE_HANDLE_KILLPRIV_V2 | FUSE_SETXATTR_EXT | FUSE_INIT_EXT |
+ 		FUSE_SECURITY_CTX | FUSE_CREATE_SUPP_GROUP |
+-		FUSE_HAS_EXPIRE_ONLY | FUSE_DIRECT_IO_ALLOW_MMAP;
++		FUSE_HAS_EXPIRE_ONLY | FUSE_DIRECT_IO_ALLOW_MMAP |
++		FUSE_NO_EXPORT_SUPPORT;
+ #ifdef CONFIG_FUSE_DAX
+ 	if (fm->fc->dax)
+ 		flags |= FUSE_MAP_ALIGNMENT;
+@@ -1527,6 +1535,7 @@ static int fuse_fill_super_submount(struct super_block *sb,
+ 	sb->s_bdi = bdi_get(parent_sb->s_bdi);
+ 
+ 	sb->s_xattr = parent_sb->s_xattr;
++	sb->s_export_op = parent_sb->s_export_op;
+ 	sb->s_time_gran = parent_sb->s_time_gran;
+ 	sb->s_blocksize = parent_sb->s_blocksize;
+ 	sb->s_blocksize_bits = parent_sb->s_blocksize_bits;
+diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
+index e7418d15fe39..38d9f285a599 100644
+--- a/include/uapi/linux/fuse.h
++++ b/include/uapi/linux/fuse.h
+@@ -211,6 +211,9 @@
+  *  7.39
+  *  - add FUSE_DIRECT_IO_ALLOW_MMAP
+  *  - add FUSE_STATX and related structures
++ *
++ *  7.40
++ *  - add FUSE_NO_EXPORT_SUPPORT
+  */
+ 
+ #ifndef _LINUX_FUSE_H
+@@ -246,7 +249,7 @@
+ #define FUSE_KERNEL_VERSION 7
+ 
+ /** Minor version number of this interface */
+-#define FUSE_KERNEL_MINOR_VERSION 39
++#define FUSE_KERNEL_MINOR_VERSION 40
+ 
+ /** The node ID of the root inode */
+ #define FUSE_ROOT_ID 1
+@@ -410,6 +413,7 @@ struct fuse_file_lock {
+  *			symlink and mknod (single group that matches parent)
+  * FUSE_HAS_EXPIRE_ONLY: kernel supports expiry-only entry invalidation
+  * FUSE_DIRECT_IO_ALLOW_MMAP: allow shared mmap in FOPEN_DIRECT_IO mode.
++ * FUSE_NO_EXPORT_SUPPORT: explicitly disable export support
+  */
+ #define FUSE_ASYNC_READ		(1 << 0)
+ #define FUSE_POSIX_LOCKS	(1 << 1)
+@@ -449,6 +453,7 @@ struct fuse_file_lock {
+ #define FUSE_CREATE_SUPP_GROUP	(1ULL << 34)
+ #define FUSE_HAS_EXPIRE_ONLY	(1ULL << 35)
+ #define FUSE_DIRECT_IO_ALLOW_MMAP (1ULL << 36)
++#define FUSE_NO_EXPORT_SUPPORT	(1ULL << 37)
+ 
+ /* Obsolete alias for FUSE_DIRECT_IO_ALLOW_MMAP */
+ #define FUSE_DIRECT_IO_RELAX	FUSE_DIRECT_IO_ALLOW_MMAP
+-- 
+2.19.1.6.gb485710b
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWzXRYACgkQj4D7WH0S
-/k4JmwgAkLH4Y8EJskrxYs0xavniF70Hm1Dr48Cp50Of6D25lfLnkXou+9JXjJT1
-OaJLTED1r8yDO4rPT58QOeEF1L58RpMtrqjG7FJfA3cBf/NX4cEDT9i81zVL1je+
-c2sZj01cx8X1dkeuSZtkKNXcWRI/yQV1PH/r3XDzwxIwNxbpQEwt1PRpu0C1U2qm
-ONlTDLpZZSaEJV7HfH24WCnrco/jR6G8n4QImLzyvV8FAOGV6+GqYPvXu7fJ4Aop
-zxGGb0keN8BmuCDWP+NfnxrsRg7IReowVY2g1uQtTNAczmh/tqVmJv6RZmB/6kdR
-HjRy/yHKEM27bM6tQwnhc6gv/9ZgDw==
-=/S+R
------END PGP SIGNATURE-----
-
---6hmfj7udr3e3yp5w--
 
