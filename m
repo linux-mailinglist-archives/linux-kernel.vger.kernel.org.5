@@ -1,296 +1,194 @@
-Return-Path: <linux-kernel+bounces-40173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 989CA83DBA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:23:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED06C83DBBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:25:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 106421F23A40
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:23:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7EE6D1F24A63
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:25:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32FEB1C2A5;
-	Fri, 26 Jan 2024 14:23:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F9291CD2D;
+	Fri, 26 Jan 2024 14:24:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="dXeRsRFQ";
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="ZmdHQ54I"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="HqyE4prg";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="pGkLV9Sp"
+Received: from wnew4-smtp.messagingengine.com (wnew4-smtp.messagingengine.com [64.147.123.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F59F1B599;
-	Fri, 26 Jan 2024 14:23:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.153.233
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706278998; cv=fail; b=jCAkM+cbpNFzRWzE7pODU1TTNLPenX1eaibErX1rLx9aO++frc1sBIzSnCh5WEGIVJFOxiMX0WN1kgFkEOn0l+npRJuu7OAqjDejUaR5UtYSKx8Ro1L6FK6uvj6iTGTv4m8XINn5TbVsB7pqmvoRh6ELVizAXngpK4WqXmiT7MU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706278998; c=relaxed/simple;
-	bh=1/BnJRsX/1elYaMb7wTHT0zOi8CFwgptJT4WJz9pXwE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=XVhbMbxZ0oZ/5JpsOi+hdt5fRSEHtCPtU4Gos12j3JFMc6MbTmyHkoqYkHcgXDPZ9kg5ljCAQ6Hr0tcNtvvgEvufQsr5M/szoiUZ+ztRmkYqldXlZ+oXQBkVtt4cg7YFcKODiV9fmXU6RiUUsmVIZQCJIS7FUR1jqSaq6+id9h8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=dXeRsRFQ; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=ZmdHQ54I; arc=fail smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1706278996; x=1737814996;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=1/BnJRsX/1elYaMb7wTHT0zOi8CFwgptJT4WJz9pXwE=;
-  b=dXeRsRFQDsBZyLH5O/MT5JNko8wKY7g1eJj1wvtLA4I5lKqVfAuF7la0
-   Jarl3VEe0HRaN6cDBqhD3OOyUCd7eSFZ8NM3gq7MRxBZzJ4ZvGNJWF5we
-   +UiSq91aXIY89c/MYn3GymH+CBNU8Werk9wgEXTQqCT9/8m4N/bdNc1/Y
-   O052Qiu4REuT8ZQMuviy9Qenb214q2krMu0p08q9/VZEsLK4ka6OTGGMk
-   ToJ0FGH7oyB1ER8wDtlFqvhT94KMGbempsb5ToytG7uoJSZxVs386ObxP
-   NDT6c584k73rKWNedf+a6jfOCxXIN7PfZPFOfHU/ucBxrGHk8pHXTuZyp
-   g==;
-X-CSE-ConnectionGUID: 8sfnxV1mT+O2iKYZH7Y4HQ==
-X-CSE-MsgGUID: WqZ+8E3UTDiNGAw/Skq3JQ==
-X-IronPort-AV: E=Sophos;i="6.05,216,1701154800"; 
-   d="scan'208";a="16634588"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 26 Jan 2024 07:23:08 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 26 Jan 2024 07:22:48 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (10.10.215.250)
- by email.microchip.com (10.10.87.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 26 Jan 2024 07:22:48 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UbfkSNxu/zE9IF3AeHQpEkg14HZt79pfC9ESUox4+5LA6wDRNEcBQ5LmTbf958ngJOwe8OVLWep1RvXexJCxzeAoVgC95cL89cKjEYRaVHE0uEas8kqNUFPaq/zctkGXF6KcrVQeOsFh+HLvKQ/PZgdqkpB0HUojsIcJfpLWj5KS9odTdb9hQ/0UURdGOdQ/wBkaeN8CfQ0FTYczUL44Ze5zTlYwlicqpfUI+uiY8cI9oSXyqy580VTDZRXGE6tg0OyszcRlHGH4Ki+pp3KGBsa0UaaGR8c/N57vNqPPT2vBHRAZy4NVFOsbobJJW8bDPSDJtx3OIKtWWT41HBj66A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tOFV6tiSB9u+ZkCLFW9JBApssCZqvXAFKd7F9phRM7w=;
- b=gZRaRpFwFko0dHhr504N1xQ9PH4XRWSkJ4zpSKvWLJNCDNaBTajZTQZ+rxTRekqFq6NHGbMYTyhEoBQmOHdF3x/ogvfZRfhpx5iu5LdKuko75pE1m/8zMXjgiRCfEg8dw9CgpezcHvAOPoe6rDmgDDX2jV3oPSASf3+MMITcjm122GXSvFbG/lGxUS4YTyM82shiM56/5OP8Jl7A/gsmWB3ksQu80NPdiDmqvP3ovGgf0IvCYGXNEVxFxpN6gZj2Hrn/AlNxUzR58Lm5fKFV9BAyCy7XCrKvfIaQFnl+LeioCxbbpJL93S5BP2JYTQ1ZaoKpI7AxeAD1PP12h4344A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tOFV6tiSB9u+ZkCLFW9JBApssCZqvXAFKd7F9phRM7w=;
- b=ZmdHQ54IbmH3AXzx3LQ0YP/DMVnbLLJsgtIm6Dkvg9YavXymPM5a5/RIuwBo+fFYaXezx4JoG6DNccLe6e2KVF7r0xpH+jtxb/bIDS9sDP2a6CIbQxmnBASAY113X6wfSyDfIIoy6Ym6UrUtpLp15y32C9bzwBCbnxze0G5h9/grczCSrYagWgQfno6NuTBv023hzQ7L579Z6iAloRWIZr6FOaaYJHIZOU2rdtZeRr6yX0Xnp4pH2lrP7Lvx/9eoAFSaZLAkmj/iB236XRIRxGINtfw6zGW8kmI24TUDHBIN0SY94c8ll17NPtKIbjtHhorL2CpfkDI8j7FQTyee2A==
-Received: from PH7PR11MB6451.namprd11.prod.outlook.com (2603:10b6:510:1f4::16)
- by PH0PR11MB4949.namprd11.prod.outlook.com (2603:10b6:510:31::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.27; Fri, 26 Jan
- 2024 14:22:44 +0000
-Received: from PH7PR11MB6451.namprd11.prod.outlook.com
- ([fe80::80b9:80a3:e88a:57ee]) by PH7PR11MB6451.namprd11.prod.outlook.com
- ([fe80::80b9:80a3:e88a:57ee%3]) with mapi id 15.20.7228.028; Fri, 26 Jan 2024
- 14:22:42 +0000
-From: <Dharma.B@microchip.com>
-To: <Conor.Dooley@microchip.com>
-CC: <conor@kernel.org>, <sam@ravnborg.org>, <bbrezillon@kernel.org>,
-	<maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-	<tzimmermann@suse.de>, <airlied@gmail.com>, <daniel@ffwll.ch>,
-	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-	<conor+dt@kernel.org>, <Nicolas.Ferre@microchip.com>,
-	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
-	<dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<lee@kernel.org>, <thierry.reding@gmail.com>,
-	<u.kleine-koenig@pengutronix.de>, <linux-pwm@vger.kernel.org>,
-	<Linux4Microchip@microchip.com>
-Subject: Re: [PATCH v3 3/3] dt-bindings: mfd: atmel,hlcdc: Convert to DT
- schema format
-Thread-Topic: [PATCH v3 3/3] dt-bindings: mfd: atmel,hlcdc: Convert to DT
- schema format
-Thread-Index: AQHaSfB9G+vm5oXSwEmW6mjsJvC8kbDftWKAgADHFQCAAI7AgIAEKeOAgABefoCAAuIIAIAAvjkAgADtGQCAABv2gIAAKg+A
-Date: Fri, 26 Jan 2024 14:22:42 +0000
-Message-ID: <51da296d-a8a9-417a-8875-3b5e866a89a3@microchip.com>
-References: <20240118092612.117491-1-dharma.b@microchip.com>
- <20240118092612.117491-4-dharma.b@microchip.com>
- <20240118-recent-glorified-fd35d72e006e@spud>
- <c33868c8-dc42-4800-885c-5e5f24c2044e@microchip.com>
- <20240119-character-mardi-43571d7fe7d5@wendy>
- <da60f9f3-f955-4a87-a020-5710185953c0@microchip.com>
- <20240122-stark-duress-2f59294dcf27@spud>
- <4906b7e2-0ddb-4d3c-a48b-e16278f2d649@microchip.com>
- <20240124-lend-emerald-1028fe65cc39@spud>
- <c3c30bf2-e7c2-4861-bfdf-519a7afde476@microchip.com>
- <20240125-proved-passage-7fa128f828db@wendy>
-In-Reply-To: <20240125-proved-passage-7fa128f828db@wendy>
-Accept-Language: en-GB, en-US
-Content-Language: en-GB
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR11MB6451:EE_|PH0PR11MB4949:EE_
-x-ms-office365-filtering-correlation-id: 8649439e-13b7-4f75-fbc4-08dc1e7a4230
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: uabJoKcXS8FtbYzPFRQ4aplJlolork/Sl+lTLoK008VnR7ePsRrEASZgAMhkX/YZju0Db6b3e+Hai+01LB5xHDGUDmgW79SMPZxuJYi8pvigy60DJyO1MuXWPOrB7D2PWlz955fZJN9Yuiu6YDv9UEQ1d0YNfBsW48Ius5EAgUup5hosUoJkUDyh7qWpp1kGgU36gbWtcd0tbehIwT80uXlFcYwfKJ40VqMSX4zy8YYG99M0j5wf6d+9j9Z0aEVJpIgvBm8I5E5Wvs7wiotmj0MzcjPReJsBDGAoepFAv3PMD+7eM6bT4ZTWrY/Wj8jrKEc0ex5Ts4YXP9UhwEjosWHfYy9fnumR0eXmnF6D3c/EoUOdUefdBDkj7CJKWdW1euD6NzkksmByle5i1T0SfGZnEEm9UQD6MFqnWozo/jJggay/t73S9IabiTiZO3hherAoxyTsBPTS328YsrUnwuP8jm/Bw9voRDrBUBGvp5Jp2isSbwO3lAGSf1uVt7R8gJQME54u/KaFfC8PAk7mxofGYXM4eT7pRqMhIIEh0gLci0OcYm9ILA8qvUcVOIGlY+lB5HATaFVuubBfx5FADZv2/euOj3mHQE3oiE+9rkq9aoajM6fa5Xkv2pGM9Y8QNQZIVwTZSc6bH/qTpBMHXw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB6451.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(136003)(39860400002)(376002)(346002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(83380400001)(6512007)(2616005)(107886003)(38100700002)(122000001)(4326008)(5660300002)(8676002)(8936002)(7416002)(2906002)(478600001)(6862004)(966005)(6486002)(6506007)(41300700001)(71200400001)(53546011)(66446008)(66476007)(54906003)(64756008)(66556008)(76116006)(37006003)(316002)(6636002)(66946007)(91956017)(38070700009)(31696002)(86362001)(36756003)(31686004)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?sM2PE+T7q4pySDiHknZfd2jcw9zuHix/ZgHFHDX0xXG65GFLNBl3ItOyHE?=
- =?iso-8859-1?Q?ue9GqsjGo68Mjr7qSS3sFtu4XIJlTY7tzepN0dfxcoK3VF5nwqm0uDcgXW?=
- =?iso-8859-1?Q?54tMQUUEw1lPyLLXWv7khJv+4QCIws5AvOU3BZZNgxIWPH1f4EzpCTBOc0?=
- =?iso-8859-1?Q?D0tBbVgnWIzkNi4+vzhs6x5XVLV0kD2HsF0GIvpYdU2jhtHJryHexJbjD5?=
- =?iso-8859-1?Q?ryP+MHM3PuUITws2ojkzIr73Ah1FuxU1uVb57aI8OD2Ss1Pmf441JbF2EI?=
- =?iso-8859-1?Q?UuF3ZJIthEC4aAgZdME3k6Qo1uZ/63sg/Vw4OTGMvlhC/Y85rsFEAXhyBh?=
- =?iso-8859-1?Q?8MrivPwVFJpcfTACuAdbm4YxRhPxXOf9c/4mBNHO5jjtv1ISxxNQwY4NPF?=
- =?iso-8859-1?Q?a++FApWVpCpQcAybIJvtjmhRdkKctqbOLPxGfdWG7syNPRHf6z3/AKo54g?=
- =?iso-8859-1?Q?I/zaTbWsXe3LubVIySy00glpaxxON5kL/rJz9OlzAhZRLNNiAvxE3fYTGD?=
- =?iso-8859-1?Q?mBihEDI/fKc2Tbej/5TN7IUnfXBEseuZwOPMiWkBtPXbvD48FdrW87keab?=
- =?iso-8859-1?Q?cgkB3xiJYxSf7/T/7V4mJ5YbP7i94YZ1EMVMBbAyk2owv0Nmony7QrkG2Q?=
- =?iso-8859-1?Q?fPQ8Fz+4PmWC4JJnOITDjLbg5k8Sh10cAXaFDatrNoxLSc+pPfYoPH4fVd?=
- =?iso-8859-1?Q?vFQbV8r8pFb3ExfctWVEgCb0tur4hP4Ox0ocM9zVXTjLnKKjhcQZTDRD72?=
- =?iso-8859-1?Q?fefLK1L9EjAWqTDUYBEUdJVazOhbCC/AcBxnjhE1d7zZA4tYdCGri9DYij?=
- =?iso-8859-1?Q?cggJ5e8bIHoemHdrnBeWgGKp1OeLYVp+M6wvuWUtoSuXOFKCFxs3LSM8dX?=
- =?iso-8859-1?Q?+VhZfUrOOtflcFHJwB3bGGhFq93ZEN9ExFSHJxqin+giA6EI5wj20mNZk5?=
- =?iso-8859-1?Q?GQyqjtA78Gg2IZdbW/mH7/7ZFsCbWzeI4Qkg50rgAySn1tLWNTmbyYvW2i?=
- =?iso-8859-1?Q?CorPuZ6xbBnVz8/nzW5fRV1ls8XxL9Im09xDlxdCiGSFw7JX9hcLQ5iAe2?=
- =?iso-8859-1?Q?r7E4ly/IxyTVXemTLd/aKcuYYY1O8yh/9xwUF6AjoyPa0PdH1LSdrsx0iG?=
- =?iso-8859-1?Q?vTtrF/OU3YYCDRUBvqM2I7dvIC1TakiZivoo2x4vti+64Ymw5V+N+KAhq7?=
- =?iso-8859-1?Q?kEU/w2pYJOgtiBn1NXC+J4twnPSr0iK3RrAqIYGfaytEWQqtxLiCq9PEQ7?=
- =?iso-8859-1?Q?apyvSy4gB5OioW73XaeKDGbfqmHN8OuTXluSfzQ07aBIuZQnWCn3BKSfjP?=
- =?iso-8859-1?Q?OnRDdg5YEJq3V0MAGC9IPip56WUCC0RWWnJI4GvsoFb5ljVhncWrwfS8yR?=
- =?iso-8859-1?Q?sqf6UbASupIVyo5D2fDb+ANpwluM+ig7qr2g4kNv/tQjUjXY7ITeZKaV80?=
- =?iso-8859-1?Q?toz9RWSYtCILu6u4y3qNEYLMDjKCKKiyRL2/nAcwpoEDba6nrrOpLFr67t?=
- =?iso-8859-1?Q?JIkcIGvH7eErwIBP3EgpwRapdaWIoJ0nFFbzQ+IAtE4kTvSnLCPHg9daeA?=
- =?iso-8859-1?Q?Aj4WMrO8IKkl5Azl8EvSkISvkHSPq6bDDbcVqgndxjrMoBLP6/ODzXoHhT?=
- =?iso-8859-1?Q?OCMlu2tbNDJgUJMvwgMK9uoziDSQ6aYAcxvNvfTUUigRqusoe7oKRz+Y+M?=
- =?iso-8859-1?Q?bL4eK7WNmevp0QcNxf4pb4XwJDjOt4H0NIxqvuJl?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-ID: <05AAE253C650464985AA72B3E4957186@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294A81C695;
+	Fri, 26 Jan 2024 14:24:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706279055; cv=none; b=UVSLvv3x6jNEpQITdv/Y9GBoQX7c9FVE/TOjqb+iPY+41MF+AT0h8SlYMee9ltQHqACnwVoq1Q4TgCG56HevFVG3Qg1fZ7uqjErdKu5+tyyYnRALvRc3Wb1wj1V2aXgHu2Ka1V2mVqrQkgIWZJrDzgwGAvrmCkPA/kmqmNv3Dl4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706279055; c=relaxed/simple;
+	bh=hKIfs47ddSkIptRXRENQTpOASHv1OOHXf/8ceRFn0/k=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=TjjzkOhzEGawZ2GqHCits+UttT3I0o6R3iCDr0Hl686f6iUZyOEmRnCUJhMHHr2G0WqutrqaFJi2+IIPMk84nGvXv41XYneKuPiRcHrYTBVseUsFwHni9olUjx6euZZHrmloURm7FYgP8T5B4eLUfSoPkugkXwWFKk93H36A3Yg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=HqyE4prg; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=pGkLV9Sp; arc=none smtp.client-ip=64.147.123.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailnew.west.internal (Postfix) with ESMTP id 96C8F2B004D0;
+	Fri, 26 Jan 2024 09:24:09 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 26 Jan 2024 09:24:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1706279049;
+	 x=1706286249; bh=TF+Ka+GXK+ztTGKn5RdSG0DNk91ZmYKf5EL+gc74hng=; b=
+	HqyE4prgfd8Ba0Bmvq/8hIZN547wH19SUJZbqUpbMCd9JpXwBct8mBDqhraHb6+T
+	mbEoF+BMPvsLE5Z6tS5/47kjcZTno7n4oyeu5Nvyg2oRBQNuOMTMFsI70KjowdOa
+	WWkkaRlFFmgtM9fD8rzxvdoU53s1ecmYxb2NeqwEltV2IzbJUxJqbOCK0c5HTCfJ
+	OuoQDl5Z6Nte2EOdaf12WHv9aBi5cBdWmr4UuK9N6YyNUqzWsLCAmBnpytyaR8gd
+	CfJUI/PNAEQu2q0rdgXsnulMtUvqDMeMRA36m21aK+OsMhzO352cjVje325yedg3
+	oVbHxxlz+MLgoISc0YNFkQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706279049; x=
+	1706286249; bh=TF+Ka+GXK+ztTGKn5RdSG0DNk91ZmYKf5EL+gc74hng=; b=p
+	GkLV9SpgJfadZtrnSQJaU54TnuTjuQAOSG7J4wwGwen4oY9YDdsI2Q4vTsi7bkkI
+	qukYU5RWgE3Jl+MbDh5Kgt6V9dS0chTDsV8ow0UreRfs9EJLa5zRpXU/DNf+l8Jt
+	YwaH4yJy/cDQ+NTxm+LNLwqKT/CClboWq+iYWnzPRthNjvmMeSL+uks6YTKckt5A
+	eOyXg7QcQliOomfqnDF7BVa6NB9QfNto5Yvxg02IhQ6tgn3N8icCXsnRGnBV15dH
+	FnYE4/Iwef6aw+Vk0cgGiZ1JeW8EYwiANDxPywQN/tlrwJPo4sTKIDqZXa4rEHFA
+	e3SiE4Vmf2TmUwZs3MTkA==
+X-ME-Sender: <xms:iMCzZQNYer9f7VdPOXoyPKfCj2jFtSHFwUmb2nP_5Yohb-DdxY4JHA>
+    <xme:iMCzZW9H5HZ_r4Jx6Ozw0c9htRvipTfjcFPBGtvrVcc6c_lhcCFO6BgUhbNPqrvUg
+    1qqYnu0RGIY-GDYGS0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeljedgiedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
+    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:iMCzZXR8FMsOmcKyqhh09tq2UAow3bwCtteuyDRN_V4F3-ngFw2Zjg>
+    <xmx:iMCzZYuhXHdz5KCGUV9bj3HgMcnsXTn-IPyg-j8fV4a7h_6SEtmPOA>
+    <xmx:iMCzZYdu-71nQpJwF7TblWOq2VuZmgeBISgs0-h7I18TvXQEcVLtfQ>
+    <xmx:icCzZbyhv8qGURYbFFSDIlfrgqETSP8vTsrazydnRbntID8tzlG8773dWCk>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 60C02B6008D; Fri, 26 Jan 2024 09:24:08 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-119-ga8b98d1bd8-fm-20240108.001-ga8b98d1b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB6451.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8649439e-13b7-4f75-fbc4-08dc1e7a4230
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jan 2024 14:22:42.4853
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: eIpYgw6oObuibjwdzSEV5vNMHhK4mf0o/W1n+f6aafvGZ7zpOC533i0xUbSVapN0mY7LVs/mF6AXeGPBI4Q43A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4949
+Message-Id: <c11243e0-fcaf-4eda-92d3-c06a8f8cdb2d@app.fastmail.com>
+In-Reply-To: <70b8db3ec0f8730fdd23dae21edc1a93d274b048.camel@redhat.com>
+References: <20240123210553.GA326783@bhelgaas>
+ <70b8db3ec0f8730fdd23dae21edc1a93d274b048.camel@redhat.com>
+Date: Fri, 26 Jan 2024 15:23:47 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Philipp Stanner" <pstanner@redhat.com>,
+ "Bjorn Helgaas" <helgaas@kernel.org>
+Cc: "Bjorn Helgaas" <bhelgaas@google.com>,
+ "Johannes Berg" <johannes@sipsolutions.net>,
+ "Randy Dunlap" <rdunlap@infradead.org>, "Neil Brown" <neilb@suse.de>,
+ "John Sanpe" <sanpeqf@gmail.com>,
+ "Kent Overstreet" <kent.overstreet@gmail.com>,
+ "Niklas Schnelle" <schnelle@linux.ibm.com>,
+ "Dave Jiang" <dave.jiang@intel.com>,
+ "Uladzislau Koshchanka" <koshchanka@gmail.com>,
+ "Masami Hiramatsu" <mhiramat@kernel.org>,
+ "David Gow" <davidgow@google.com>, "Kees Cook" <keescook@chromium.org>,
+ "Rae Moar" <rmoar@google.com>,
+ "Geert Uytterhoeven" <geert@linux-m68k.org>,
+ "wuqiang.matt" <wuqiang.matt@bytedance.com>,
+ "Yury Norov" <yury.norov@gmail.com>, "Jason Baron" <jbaron@akamai.com>,
+ "Thomas Gleixner" <tglx@linutronix.de>, "Marco Elver" <elver@google.com>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Ben Dooks" <ben.dooks@codethink.co.uk>,
+ "Danilo Krummrich" <dakr@redhat.com>, linux-kernel@vger.kernel.org,
+ linux-pci@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>,
+ stable@vger.kernel.org, "Arnd Bergmann" <arnd@kernel.org>
+Subject: Re: [PATCH v5 RESEND 5/5] lib, pci: unify generic pci_iounmap()
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Conor,=0A=
-=0A=
-On 25/01/24 1:57 pm, Conor Dooley - M52691 wrote:=0A=
-> =0A=
->>> If the lvds pll is an input to the hlcdc, you need to add it here.=0A=
->>>   From your description earlier it does sound like it is an input to=0A=
->>> the hlcdc, but now you are claiming that it is not.=0A=
->>=0A=
->> The LVDS PLL serves as an input to both the LCDC and LVDSC=0A=
-> =0A=
-> Then it should be an input to both the LCDC and LVDSC in the devicetree.=
-=0A=
-=0A=
-For the LVDSC to operate, the presence of the LVDS PLL is crucial. However,=
- in the case of the LCDC, LVDS PLL is not essential for its operation unles=
-s LVDS interface is used and when it is used lvds driver will take care of =
-preparing and enabling the LVDS PLL.=0A=
-=0A=
-Consequently, it seems that there might not be any significant actions we c=
-an take within the LCD driver regarding the LVDS PLL.=0A=
-=0A=
-If there are no intentions to utilize it within the driver, is it necessary=
- to explicitly designate it as an input in the device tree?=0A=
-=0A=
-If yes, I will update the bindings with optional LVDS PLL clock.=0A=
-=0A=
-clock-names:=0A=
-  items:=0A=
-    - const: periph_clk=0A=
-    - const: sys_clk=0A=
-    - const: slow_clk=0A=
-    - const: lvds_pll  # Optional clock=0A=
-=0A=
-=0A=
-> =0A=
->> with the=0A=
->> LVDS_PLL multiplied by 7 for the Pixel clock to the LVDS PHY, and=0A=
-> =0A=
-> Are you sure? The diagram doesn't show a multiplier, the 7x comment=0A=
-> there seems to be showing relations?=0A=
-=0A=
-Sorry, =0A=
-LVDS PLL =3D (PCK * 7) goes to LVDSC PHY=0A=
-PCK =3D (LVDS PLL / 7) goes to LCDC=0A=
-=0A=
-> =0A=
->> LVDS_PLL divided by 7 for the Pixel clock to the LCDC.=0A=
-> =0A=
->> I am inclined to believe that appropriately configuring and enabling it=
-=0A=
->> in the LVDS driver would be the appropriate course of action.=0A=
-> =0A=
-> We're talking about bindings here, not drivers, but I would imagine that=
-=0A=
-> if two peripherals are using the same clock then both of them should be=
-=0A=
-> getting a reference to and enabling that clock so that the clock=0A=
-> framework can correctly track the users.=0A=
-> =0A=
->>> I don't know your hardware, so I have no idea which of the two is=0A=
->>> correct, but it sounds like the former. Without digging into how this=
-=0A=
->>> works my assumption about the hardware here looks like is that the lvds=
-=0A=
->>> controller is a clock provider,=0A=
->>=0A=
->> It's a PLL clock from PMC.=0A=
->>=0A=
->>> and that the lvds controller's clock is=0A=
->>> an optional input for the hlcdc.=0A=
->>=0A=
->> Again it's a PLL clock from PMC.=0A=
->>=0A=
->> Please refer Section 39.3=0A=
->> https://ww1.microchip.com/downloads/aemDocuments/documents/MPU32/Product=
-Documents/DataSheets/SAM9X7-Series-Data-Sheet-DS60001813.pdf=0A=
-> =0A=
-> It is not the same exact clock as you pointed out above though, so the=0A=
-> by 7 divider should be modelled.=0A=
-=0A=
-Modelled in mfd binding? If possible, could you please provide an example f=
-or better clarity? Thank you.=0A=
-=0A=
-> =0A=
->>> Can you please explain what provides the lvds pll clock and show an=0A=
->>> example of how you think the devictree would look with "the lvds pll in=
-=0A=
->>> the lvds dt node"?=0A=
->>=0A=
->> Sure, Please see the below example=0A=
->>=0A=
->> The typical lvds node will look like=0A=
->>=0A=
->>                   lvds_controller: lvds-controller@f8060000 {=0A=
->>                           compatible =3D "microchip,sam9x7-lvds";=0A=
->>                           reg =3D <0xf8060000 0x100>;=0A=
->>                           interrupts =3D <56 IRQ_TYPE_LEVEL_HIGH 0>;=0A=
->>                           clocks =3D <&pmc PMC_TYPE_PERIPHERAL 56>, <&pm=
-c=0A=
->> PMC_TYPE_CORE PMC_LVDSPLL>;=0A=
->>                           clock-names =3D "pclk", "lvds_pll_clk";=0A=
->>                           status =3D "disabled";=0A=
->>                   };=0A=
-> =0A=
-> In isolation, this looks fine.=0A=
-> =0A=
-> Cheers,=0A=
-> Conor.=0A=
--- =0A=
-With Best Regards,=0A=
-Dharma B.=0A=
-=0A=
+On Fri, Jan 26, 2024, at 14:59, Philipp Stanner wrote:
+> On Tue, 2024-01-23 at 15:05 -0600, Bjorn Helgaas wrote:
+>> On Thu, Jan 11, 2024 at 09:55:40AM +0100, Philipp Stanner wrote:
+>>=20
+>> The kernel-doc addition could possibly also move there since it isn't
+>> related to the unification.
+>
+> You mean the one from my devres-patch-series? Or documentation
+> specifically about pci_iounmap()?
+>
+>>=20
+>> > =C2=A0{
+>> > -#ifdef ARCH_HAS_GENERIC_IOPORT_MAP
+>> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0uintptr_t start =3D (uin=
+tptr_t) PCI_IOBASE;
+>> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0uintptr_t addr =3D (uint=
+ptr_t) p;
+>> > -
+>> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (addr >=3D start && a=
+ddr < start + IO_SPACE_LIMIT) {
+>> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0ioport_unmap(p);
+>> > +#ifdef CONFIG_HAS_IOPORT_MAP
+>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (iomem_is_ioport(addr=
+)) {
+>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0ioport_unmap(addr);
+>> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0return;
+>> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
+>> > =C2=A0#endif
+>> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0iounmap(p);
+>> > +
+>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0iounmap(addr);
+>> > =C2=A0}
+>>=20
+>> > + * If CONFIG_GENERIC_IOMAP is selected and the architecture does
+>> > NOT provide its
+>> > + * own version, ARCH_WANTS_GENERIC_IOMEM_IS_IOPORT makes sure that
+>> > the generic
+>> > + * version from asm-generic/io.h is NOT used and instead the
+>> > second "generic"
+>> > + * version from this file here is used.
+>> > + *
+>> > + * There are currently two generic versions because of a difficult
+>> > cleanup
+>> > + * process. Namely, the version in lib/iomap.c once was really
+>> > generic when IA64
+>> > + * still existed. Today, it's only really used by x86.
+>> > + *
+>> > + * TODO: Move this function to x86-specific code.
+>>=20
+>> Some of these TODOs look fairly simple.=C2=A0 Are they actually hard,=
+ or
+>> could they just be done now?
+>
+> If they were simple from my humble POV I would have implemented them.
+> The information about the x86-specficity is from Arnd Bergmann, the
+> header-maintainer.
+>
+> I myself am not that sure how much work it would be to move the entire
+> lib/iomap.c file to x86. At least some (possibley "dead") hooks to it
+> still exist, for example here:
+> arch/powerpc/platforms/Kconfig  # L.189
+
+This one definitely takes some work to untangle, it's selected
+by two powerpc platforms, but one doesn't actually need it any
+more, and the other one uses it only for non-PCI devices.
+
+I think the other architectures are easier to change and do
+fix real bugs, but it's probably best done one at a time.
+
+     Arnd
 
