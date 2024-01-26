@@ -1,81 +1,88 @@
-Return-Path: <linux-kernel+bounces-40717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40719-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F2C483E49E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:07:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E91983E4AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:08:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13FD41F22DD0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:07:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 680E1282BC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:08:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A051558AB5;
-	Fri, 26 Jan 2024 22:05:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 629882556B;
+	Fri, 26 Jan 2024 22:06:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="b6ZfJQPE"
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hjvpsiEe"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C590658204
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 22:05:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C38272555E
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 22:06:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706306740; cv=none; b=qc/SU6dKkEGm0bhn8ys4ottI4vrrWA6uGmJqwfha4uLqpMKS24z+egGDuUHX8xAzF7tMkSF1MER+8oq6dbCb1YqLu3c4RvsiQuqGVkCtH9nQ4zorcJoUNwtJl6z33O/plWVwEw3f8e5u3uQ2i1PMDMq7hKTkmVtLkwaS3CDG+Ts=
+	t=1706306775; cv=none; b=HhMPfprMCAk9uH6peOyhqhBT5ucrcC7kNkUdpv+yJuU1rxtkOqi1MCdzefyM6q+xahxcqYFMU0sVrTkIPKrdmq3gaCc3+26gg6hXwR93mBhyympj5p+b0YuENBCAlysV4WGT7t0sLSDGG7Cf6OZZvhIoYHxh6/yxcQB60+bBzbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706306740; c=relaxed/simple;
-	bh=NjzHxkwFiRux9mikDPOe6otV64eagfv0IasTUR7XscM=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YdNTbgv2jXmQF6Gomla0MukRraitAy2LcUI0+WCX3mZNMHNtwIH0EmbzgE3vdl0l/zfsg3KIlpMvEUWeGj/GGlDCYbVgOS+5SfnRoL4kDejnMHhRMQDR5SyCqLTPytaNNxskqv2kfVSGtqnScijQFMQBuZQ1hvcEmhTQj1dOEdQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net; spf=pass smtp.mailfrom=darkphysics.net; dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b=b6ZfJQPE; arc=none smtp.client-ip=209.85.167.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=darkphysics.net
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3bd562d17dcso611922b6e.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:05:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=darkphysics.net; s=google; t=1706306738; x=1706911538; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=G/VNi32mgg+yaX8sJi0wYiHkUmSSEvhk85dc77SV0vE=;
-        b=b6ZfJQPE2RD8XAdjlOQNLId8Q0ljeIvxHfLHFLNyrg0ngM11SgrP7Vsexn1Zg3Tq3w
-         FMb/oPNDDyNtrxsne0BljAt0ABBDVPgKbMWWaxJJmh6j5J5hqkN1GCxmyM3ocue89QCs
-         Ne00D+C6z+0nOKBRDBlJnOwl7OihBr0YMf7UvyOtzBXSM5A+T83TwhbyLiTopT02yri6
-         AzyyfO6j8EhrOyLEPzkbgwTsHroKJRuvl9T+YZhyr716MSncoxvr3Scfyni2EfccMG30
-         DT5O/pdbS+H8rtxXf8ZJ3OkE5axQAILIvIbqE0fLFsRaBmOCJoH9vzdBh7NpD3pCYVS6
-         RifA==
+	s=arc-20240116; t=1706306775; c=relaxed/simple;
+	bh=dCpJQu3vfIDAJ1Aq2AGyqLIgVqEbRZWCZQ8ESsL/WSA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type:Content-Disposition; b=bCGG4ghZlSBrmTgwqdXPz0b3TVz8CFrOQIqMFq1IKVKHGiRuYApzCvOcf4qn6JA7uW7QbbJ6rp3XOmHHAmv/O6Ik2qk4xXsc9avAr2rOleadtGlnxOKWdDU/rCNJMZNuoO4245DAlk+1hCJNiU51eAN6CX96vfC+bGYrLh3G4kg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hjvpsiEe; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706306772;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6GSjdcoXRL5trov+iE2hoQky/bCBVVYnxpaGKh3qlLE=;
+	b=hjvpsiEeJ88pr+vkYhg2awtsP2Uh7SFaIEVzOazpaqUqnFKLUR8r5L0vpTTF2+jkcJrqiQ
+	ofJkbsJr4UoC5VTUdoiFm49H29joBjH0F5BD28z+KTmZRmiYdWpPNXi3GD++go5BR9oWGg
+	BRSWk1TeD9TDacYI/51wYVOcF9pBFmw=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-294-Y0XBGdtZPje1rwYm68gYaw-1; Fri, 26 Jan 2024 17:06:10 -0500
+X-MC-Unique: Y0XBGdtZPje1rwYm68gYaw-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-783c781aa5dso137058585a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:06:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706306738; x=1706911538;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G/VNi32mgg+yaX8sJi0wYiHkUmSSEvhk85dc77SV0vE=;
-        b=bS42C2mG0xGJDoJGb/0KluYfbxUntysPzT+c1cEqTfJncKUvEXICqYZbD39g0VKY3M
-         M28lNHc8stPdpswdfSYqIAuwHVJh233h5Aa95/sIGcftzMpnk16QuRtT8qc6gngFO5K+
-         kso4k3dfAqwqWvaIMS47Ls4WczlDxwVC5Rj9ryKSuQDR29WTFtXHesFAM80VAcoPFZGx
-         8MEhyQBe8fQTKiQmCmZATnrXlk76v3Yw6Iky/i8+g3ADbjaEbMAmY/XMKZxSLbPKja4H
-         JrkzspmikCxF1G1YMTDNe3EHBqGTKel5gq5kymyI6jysaTGC5wsT/gYLniohKoe81ZFK
-         sp7w==
-X-Gm-Message-State: AOJu0Yz1Oi3MzMzkfRgHmwShXpQaYNVIyZ0AWwmKDQ3o78TQAuxZ6aJv
-	X4loxpBCqZGWvegX3cZCqx0qaYbGiEsuDc1I3pwmhX66mpqINH2LWSkvxpu4TfU=
-X-Google-Smtp-Source: AGHT+IEwJCrhx+MQIyoLzKnEzHD/N8+lNTGWSq5rKg0iFkAmLUSyqtlpDBnwIfkqhUOWwgdDnujh6A==
-X-Received: by 2002:a05:6808:b2e:b0:3bd:58c5:8ca2 with SMTP id t14-20020a0568080b2e00b003bd58c58ca2mr430747oij.41.1706306737870;
-        Fri, 26 Jan 2024 14:05:37 -0800 (PST)
-Received: from oatmeal.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
-        by smtp.gmail.com with ESMTPSA id r7-20020aa78447000000b006dd7b08b336sm1583869pfn.20.2024.01.26.14.05.37
+        d=1e100.net; s=20230601; t=1706306770; x=1706911570;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6GSjdcoXRL5trov+iE2hoQky/bCBVVYnxpaGKh3qlLE=;
+        b=N/H4Kuml3o+HyrZt2i0Yi1RoekA6UcBm8htsTI6SSY8K0GIaM5se/xh4SNmrNic+0D
+         85oLIiAxzxH6kzACx0I5V01QPPj5QUNHRYsCYfRKLzWyNl1KQfePta4GO/Uh32sQ0k36
+         m3u56PfulxGMCCRjt4NVI8sqt+NI1CSzSu9LLvEgiNYxmAWrbrIiUCfuN+9AFJtOW9lU
+         VGuh67hJxBugudETMoIdfOP/lYg98yTTFZAvjwQ0D6JgBT0J6RdQMnhj6XB6YFbpWf6F
+         SFI0QyQjjW/6pij+ZpBTg8yCqHgKza3emJtwnL6OTgFNK4bw9ajTOpkcNVlMwYboO+jy
+         Irww==
+X-Gm-Message-State: AOJu0Yz8X00UIlSYHG3g4JnRvPUWH6qP3X4X7G/iAYaTlirotCHcPImB
+	HxojrLMBKPRCWfQEJSnvyDyfsazPGLS0sOqABVnWKRd4IyBHeiMWf1jDsCAJCdZBA3P7F/k6CiC
+	saEJ5J+QLHYtk/OTj3xdcF9/sbyEvaKnYa2fs0F1/mhsb1HeUoCw6dwK47m0nBeTw53UEQg==
+X-Received: by 2002:a05:620a:21c9:b0:783:bfad:6b7c with SMTP id h9-20020a05620a21c900b00783bfad6b7cmr470415qka.81.1706306770112;
+        Fri, 26 Jan 2024 14:06:10 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG6Ua082hX1o6w3Alg70OFXopnpnd8uZm0FMet0DILAUPDHTbUOrSYeO1M+o4ytf88wID/Zcw==
+X-Received: by 2002:a05:620a:21c9:b0:783:bfad:6b7c with SMTP id h9-20020a05620a21c900b00783bfad6b7cmr470407qka.81.1706306769792;
+        Fri, 26 Jan 2024 14:06:09 -0800 (PST)
+Received: from LeoBras.redhat.com ([2804:1b3:a803:96a5:ba81:becc:80f3:6a79])
+        by smtp.gmail.com with ESMTPSA id b1-20020a05620a04e100b0078397efd1e3sm917750qkh.31.2024.01.26.14.06.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 14:05:37 -0800 (PST)
-From: "<Tree Davies" <tdavies@darkphysics.net>
-X-Google-Original-From: "<Tree Davies" <tdavies@gmail.com>
-Date: Fri, 26 Jan 2024 14:05:35 -0800
-To: Philipp Hortmann <philipp.g.hortmann@gmail.com>
-Cc: Tree Davies <tdavies@darkphysics.net>, gregkh@linuxfoundation.org,
-	anjan@momi.ca, linux-staging@lists.linux.dev,
+        Fri, 26 Jan 2024 14:06:09 -0800 (PST)
+From: Leonardo Bras <leobras@redhat.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: Leonardo Bras <leobras@redhat.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/18] Staging: rtl8192e: 18 Additional checkpatch fixes
- for rtllib_softmac.c
-Message-ID: <ZbQsr1OKNwlcTUSl@oatmeal.darkphysics>
-References: <20240124224452.968724-1-tdavies@darkphysics.net>
- <500c7df9-7347-4ec7-8952-5f221cc83ef8@gmail.com>
+Subject: Re: [PATCH v1 1/1] wq: Avoid using isolated cpus' timers on unbounded queue_delayed_work
+Date: Fri, 26 Jan 2024 19:05:35 -0300
+Message-ID: <ZbQsr1pNSoiMbDrO@LeoBras>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <ZbQozqY9qOa4Q8KR@slm.duckdns.org>
+References: <20240126010321.2550286-1-leobras@redhat.com> <ZbQozqY9qOa4Q8KR@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,27 +91,112 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <500c7df9-7347-4ec7-8952-5f221cc83ef8@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jan 26, 2024 at 07:23:35PM +0100, Philipp Hortmann wrote:
-> On 1/24/24 23:44, Tree Davies wrote:
-> > Another checkpatch fix series to be applied after the series titled:
-> > 'checkpatch fixes for rtllib_softmac.c' submitted by me, to the list,
-> > on 1/5/2024
-> > 
+On Fri, Jan 26, 2024 at 11:49:02AM -1000, Tejun Heo wrote:
+> Hello,
 > 
-> On Patch 2, 5, 6, 17
-> WARNING: Prefer a maximum 75 chars per line (possible unwrapped commit
-> description?)
+> On Thu, Jan 25, 2024 at 10:03:20PM -0300, Leonardo Bras wrote:
+> ...
+> > AS an optimization, if the current cpu is not isolated, use it's timer
+>   ^                                                           ^
+>   As                                                          its
 > 
-> On Patch 13
-> WARNING: 'unecessary' may be misspelled - perhaps 'unnecessary'?
+> > instead of looking for another candidate.
 > 
-> Is working fine on hardware.
+> The sentence reads weird tho. It's always the same timer. We're deciding
+> which CPU to queue the timer on.
 > 
-> Bye Philipp
 
-Ah, Thank you. Will send a v2.
-~Tree
+Hello,
+
+Thanks for pointing that out, I will improve it in the v2.
+
+
+
+> > @@ -1958,10 +1958,24 @@ static void __queue_delayed_work(int cpu, struct workqueue_struct *wq,
+> >  	dwork->cpu = cpu;
+> >  	timer->expires = jiffies + delay;
+> >  
+> > -	if (unlikely(cpu != WORK_CPU_UNBOUND))
+> > -		add_timer_on(timer, cpu);
+> > -	else
+> > -		add_timer(timer);
+> > +	if (likely(cpu == WORK_CPU_UNBOUND)) {
+> > +		if (!housekeeping_enabled(HK_TYPE_TIMER)) {
+> > +			/* Reuse the same timer */
+> 
+> This comment is confusing because it's always the same timer.
+
+Thanks, I will point out this being the last cpu used to handle the timer.
+
+> 
+> > +			add_timer(timer);
+> > +			return;
+> > +		}
+> > +
+> > +		/*
+> > +		 * If the work is cpu-unbound, and cpu isolation is in place,
+> > +		 * only use timers from housekeeping cpus.
+> > +		 * If the current cpu is a housekeeping cpu, use it instead.
+> > +		 */
+> > +		cpu = smp_processor_id();
+> > +		if (!housekeeping_test_cpu(cpu, HK_TYPE_TIMER))
+> > +			cpu = housekeeping_any_cpu(HK_TYPE_TIMER);
+> > +	}
+> > +
+> > +	add_timer_on(timer, cpu);
+> >  }
+> 
+> I find the control flow a bit difficult to follow. It's not the end of the
+> world to have two add_timer_on() calls. Would something like the following
+> be easier to read?
+> 
+> 	if (housekeeping_enabled(HK_TYPE_TIMER)) {
+> 		cpu = smp_processor_id();
+> 		if (!housekeeping_test_cpu(cpu, HK_TYPE_TIMER))
+> 			cpu = housekeeping_any_cpu(HK_TYPE_TIMER);
+> 		add_timer_on(timer, cpu);
+> 	} else {
+> 		if (likely(cpu == WORK_CPU_UNBOUND))
+> 			add_timer(timer, cpu);
+> 		else
+> 			add_timer_on(timer, cpu);
+> 	}
+> 
+> Thanks.
+
+I am not really against it, but for me it's kind of weird to have that many 
+calls to add_timer_on() if we can avoid it. 
+
+I would rather go with:
+
+###
+if (unlikely(cpu != WORK_CPU_UNBOUND)) {
+	add_timer_on(timer, cpu);
+	return;
+}
+
+if (!housekeeping_enabled(HK_TYPE_TIMER)) {
+	add_timer(timer);
+	return;
+}
+
+cpu = smp_processor_id();
+if (!housekeeping_test_cpu(cpu, HK_TYPE_TIMER))
+	cpu = housekeeping_any_cpu(HK_TYPE_TIMER);
+
+add_timer_on(timer, cpu);
+###
+
+What do you think?
+
+Thanks,
+Leo
+
+> 
+> -- 
+> tejun
+> 
 
 
