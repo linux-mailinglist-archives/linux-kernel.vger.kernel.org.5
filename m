@@ -1,72 +1,73 @@
-Return-Path: <linux-kernel+bounces-39992-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39998-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAA0683D90C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:09:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A2C983D92A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:18:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44CFBB2BD74
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:32:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F83AB3FDEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:34:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74D621DDFF;
-	Fri, 26 Jan 2024 10:17:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3E0018626;
+	Fri, 26 Jan 2024 10:31:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CjvMLQyW"
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="A4LynXlD"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11CC81DFD5
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:17:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AE9810A3F
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:31:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706264278; cv=none; b=Nwe8O7RDcTOtQ6dXctGmMXBW2Uix42hGIzgtZXPeXDV8+hpsN2a/iu0p6kFiDiY52lQ5tMMgEt5426J2s6TiOOymK5lAy+amGunol1nyAsICBfvvUk05wgLMXZ/NjHgVHRhmmNni3Wz10tVCjGvqEeMZqq4aWlPjhYOYP4Vm2rs=
+	t=1706265083; cv=none; b=WvmK8mXtRC/3ZZolN5FqutKmwJnlXIo7tPjDmR6Lu+qjPcTm1ZTZtiZq8QRHsWvnqvDFPy7Y0vBdPc5iDnGB0XtkAvPenEvLWdYTEJyz8D60f5JBupfxwVe/wlHg93M0jlWQM2aij5b1eSvrLIyqvUhagi5BRiUEfMMgqelNo04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706264278; c=relaxed/simple;
-	bh=4jJqGGPJbfMvtztx4S0uxq8dIdW6STXxCfC5ler3T84=;
+	s=arc-20240116; t=1706265083; c=relaxed/simple;
+	bh=mA9FzBR11+sFbyfvmeV378MlNoQCygN7NGjc2tj0RfU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nI5VngMfPzW9XyClu7p9AsX1c/FYRyEdfMTutPxoV1mANT0L3DGv3gUTNcEibpzrBgXeN3m/wUIpN9nsIdDay8nUcMCrOYbbebhwarCQ5F+OGgMXAA3XJFL6V/w/vfkhtmqyu6m0Pb5otpfdlgDOUiKvixsv6LAWTiMA/bvPtXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CjvMLQyW; arc=none smtp.client-ip=209.85.128.52
+	 In-Reply-To:Content-Type; b=mb1TNiX7yit2jhQjmm1UAdt5gdiG1gVMTIx8tQb/dOqLi/Quk6xUzRROpWh/KVFa9gSwobfM1nwJSUlYIokDhN7ufZiojsY+ZLAVCilieG3a9/iwuAtLekiIuPNu+Izo69EvOEEvekek/JYqWbniOwqRD9czeZFhLZUtsLDYNbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=A4LynXlD; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40e76109cdeso6805865e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 02:17:56 -0800 (PST)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40e76626170so2930265e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 02:31:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706264275; x=1706869075; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=T857b/etgaF/KAiYXMdbA60+kHAKMMPfudXqiCa57oM=;
-        b=CjvMLQyWlUAO2Gxye7lDRRYIuRnbHjPoAaRsZTOSTCNawTGmWPxzYPN0bhNNuLm7Ha
-         muxwUF3RKmMdVkp4j1t9j+Ucx1oyb7kmZ13NyAhJkSYFYlJKjld9ri87BGW0Yeqluxfl
-         kPY1zJoKkTicPCmDP3fl61p+CsIB/p2HAx9GEgRs5OHqgIL9wj9DNVVKoDkAG8U8R3ch
-         gFIWJ1awWywgSCsWd+5daagF1Ficgd43CBPwiiTXkbNqI6+mZRUEoe8P7msf3dAZXPuN
-         Iccwbz7pJt3CGGD9JtLpZTjLRp8Yqe8iNqYeSV++d3dsJlSaDEjaR8WYTZf7Q832foo+
-         167Q==
+        d=linaro.org; s=google; t=1706265077; x=1706869877; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=xY/olUuP45FR3IVgjtkQ5gkoq4C4DXL1vFc8k8OcvMQ=;
+        b=A4LynXlDt+TMBpwxeUxZYQ4jT3gpzznUAWJV8nthzuh7KHjzj8ZWxnVn/vH/StZw5D
+         knMqAduANcf8QmL82y8XfFCk1xUjcVslZ6JQfK5kg6LueFcthg8r0+MdLhGzDXdNVCu6
+         Slgouf4MHlxDi5FNVJa2N95TK6hb1qA9ZG1Fj422qyJ53Ui0QTtLHL5lIVr4kRSr13Jq
+         bvLWvrK2BhG8RkEt+GeygNeChPEh6/wHCr+FRV7wsdXE0bzwl+CrEHzg72T3DHRZKp33
+         2qVAo4PaT6Dt4OvWJUv5dwZqxUXBYE59Ra7MA4UMXeC2yLXolCQ3aY7Dnvew7PrruLDW
+         zDjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706264275; x=1706869075;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=T857b/etgaF/KAiYXMdbA60+kHAKMMPfudXqiCa57oM=;
-        b=s4tm7yj8k5CpZa+rWBTgiSu/I641yp1ZgobS2u+GJugjfjdVx3w2/nK28s4Gp4VgAw
-         gXpV2EneFj8HxvE32OlGgsynQyEsAEmBoRbo1+8tqcSm1rgyI/WRvwXsIBmXfQ1oZVjQ
-         kP0Anlbk5Onc4A3YWnbBEUuAV6povp9cuwk7dV7j7I8SZb04MF1qqBfucqZ/ZfLThSmB
-         LMUP2vvOoMrbAvBiaSq6jkEI6diR9UwwLA8kb8n06khZQJLJbdQ0AqXpC3wq8V7g4wrO
-         x15Q7eAqaYgDbZ5aqcHGUVr0ze8kvRTzBr5FZU3dOCOGhdtGTIkk1CwFjEqgHkhR+8HL
-         2Oxw==
-X-Gm-Message-State: AOJu0Yzl1bqrT0Oqn1UJxHl4CHq/Sj1EY40XsAoVu8UaleK2OZbbRZ0G
-	iEdQ4+ANGltuY69Yh2fD4DioqAtQdcZvbGQ0ULDnXyxrqI9u+DamIiDy4JxT5bA=
-X-Google-Smtp-Source: AGHT+IHMc9lvIQx2RfTG6pDytc3R4Xb7hjNn+yiZttzfjzr9gNaaKsK5u4EspsReh/NxdKJEoqQkWg==
-X-Received: by 2002:a05:600c:4fd3:b0:40e:c664:718c with SMTP id o19-20020a05600c4fd300b0040ec664718cmr735264wmq.103.1706264275290;
-        Fri, 26 Jan 2024 02:17:55 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706265077; x=1706869877;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xY/olUuP45FR3IVgjtkQ5gkoq4C4DXL1vFc8k8OcvMQ=;
+        b=mNKpY5RGhRrZqR5ozBh3bs3jBjVliP37DqQyaLvLWDdoLJu5kUa1/v/nfS+MwZIWQv
+         mT1xKzggWiaN36/xq2zKIIDgS/cnQUC8DNUZXuPSJzKY0hOHoSoHSriqgnSIANu9YydK
+         KbP7/Y971olqXt7WwCgTc1wzXCyhGuSVVl2gKR+s56K1KGnCj1PeO1IWy2XQN8B1cjrk
+         WyGRyGkKS53SdcD3RyCZqhBesXDl1oieG3hjE9Ujye8tbrMrSg4itOz0FtCvE4Rb+FMz
+         pyPgFl3iB5+d+OShCi5YKHRHp35ag2Fw/gTLcMhuyfKuFcAi2msCm6cuBWUTsd5HicBe
+         Lz/A==
+X-Gm-Message-State: AOJu0YzPEFiSxRJk8uUDywvWEDhKiQsM6rWW81A87Kso32dWCuwnamhj
+	DuvExJce7jvEEnyAetCVLC2DP9RfaE12xeFZdop2q0gmgVdHc7L5msIY9qVR/9I=
+X-Google-Smtp-Source: AGHT+IFSxBmY4AK7fnqnR0wnoQI9b3JjKwSD1W5GPKy3gNmbzOadwxPrwj/Tnn23Os68r8aFtPZWUg==
+X-Received: by 2002:a05:600c:1f82:b0:40e:d4bc:edaf with SMTP id je2-20020a05600c1f8200b0040ed4bcedafmr754513wmb.16.1706265077632;
+        Fri, 26 Jan 2024 02:31:17 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id sn24-20020a170906629800b00a3040040011sm462787ejc.45.2024.01.26.02.17.53
+        by smtp.gmail.com with ESMTPSA id cx12-20020a170907168c00b00a317ca8b422sm480445ejd.92.2024.01.26.02.31.16
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jan 2024 02:17:54 -0800 (PST)
-Message-ID: <5db1075c-a7af-4938-90e4-5e2b61598aee@linaro.org>
-Date: Fri, 26 Jan 2024 11:17:52 +0100
+        Fri, 26 Jan 2024 02:31:17 -0800 (PST)
+Message-ID: <6f5172d1-b741-4bae-8e30-c3a3d99197e7@linaro.org>
+Date: Fri, 26 Jan 2024 11:31:15 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,22 +75,18 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/3] dt-bindings: timer: nxp,sysctr-timer: support
- i.MX95
+Subject: Re: [PATCH] arm/arm64: samsung: Enable W=1 on dtbs by default
+To: Conor Dooley <conor@kernel.org>
+Cc: Rob Herring <robh@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>,
+ Conor Dooley <conor+dt@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20231116211739.3228239-1-robh@kernel.org>
+ <ee10e67b-6a2f-4ab5-91ef-e42d2f03a424@linaro.org>
+ <CAL_JsqJ67tZOmhTHQ7KqEbFuDjK8sKHR1FFtAFAaGjZ4uYi9Uw@mail.gmail.com>
+ <986db909-144b-465a-8c46-273042a4fe5e@linaro.org>
+ <20240125-unsaved-promoter-c0bc72bb4691@spud>
 Content-Language: en-US
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Bai Ping <ping.bai@nxp.com>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- Marco Felsch <m.felsch@pengutronix.de>
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, Peng Fan <peng.fan@nxp.com>
-References: <20240126-imx-sysctr-v3-0-33fe801d5f31@nxp.com>
- <20240126-imx-sysctr-v3-1-33fe801d5f31@nxp.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -135,20 +132,30 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240126-imx-sysctr-v3-1-33fe801d5f31@nxp.com>
+In-Reply-To: <20240125-unsaved-promoter-c0bc72bb4691@spud>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 26/01/2024 08:09, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On 25/01/2024 18:51, Conor Dooley wrote:
+>>>>
+>>>> 64-bit has still few warnings:
+>>>> https://krzk.eu/#/builders/29/builds/3710/steps/26/logs/warnings__6_
+>>>
+>>> I may move that graph check to W=2. There's some cases where port@1 is
+>>> optional and it doesn't really make sense to fix these.
+>>>
+>>> Also, Conor wants to do this for all of riscv, but this solution is
+>>> per directory. So I need to rework it to use a different variable that
+>>> can be per directory or global.
+>>
+>> Just to clarify, because I still have this patch in my inbox: I assume
+>> you are going to send a v2 of this, so I drop it.
 > 
-> Add i.MX95 System counter module compatible string, the SCMI
-> firmware blocks access to control register, so should not
-> add "nxp,sysctr-timer" as fallback.
-> 
+> We got
+> https://lore.kernel.org/linux-devicetree/20231122-dtc-warnings-v2-0-bd4087325392@kernel.org/
+> out of this instead of a v2, did we not?
 
-
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Indeed, I forgot.
 
 Best regards,
 Krzysztof
