@@ -1,171 +1,188 @@
-Return-Path: <linux-kernel+bounces-40835-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40836-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4776F83E6BE
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 00:22:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEBFD83E6BF
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 00:23:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CDE41C22BF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:22:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EBDA1F2A1FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:23:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B02995EE67;
-	Fri, 26 Jan 2024 23:16:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7703758204;
+	Fri, 26 Jan 2024 23:17:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="l6pzT6fi"
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fSQZbxo/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE9D8627E4
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 23:16:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B19221EF1D
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 23:17:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706310986; cv=none; b=Z5jPxEc3SCAu0NSJhAMXuizxvs1n345dcpdA4T4ndINCnpGwGPuT4N8ns0E/jAIiN8oEDbyUU/OEfpNQ39wuXS8AzRAw0gyXgCqHGqMWjaPsbf6a2G8RiatcgxOTssSuuJEA3k30DX97WlfmVFo9fOoRXCRnwpFKAtFvSe/gqe4=
+	t=1706311038; cv=none; b=SusvH3qqu6nK+Fp5FUTwzAVr/CfyGGYDFUAupZJ3YbYfJlE4RPjpYol0bRiKgkz0x/Z4Y2qcWkfTnU191VX4w286SK/SY8FTS2ylLj7eGUHCGMNFe32HWL8kuyBQere66fQ5pkSzbQn9Ni6RvglaJ1sUT2ciJOquELF824+bV2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706310986; c=relaxed/simple;
-	bh=3a/r7kXdAIFtktUyOV8TMLOQckxM8aU1T8MlUOBhuxg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=hlYF886X2ccwQTN5DnwqsCMZvmvWlJwRW6Scr0VY7Qx8PJPpM/VMmt/o19J2x3+A2yBuTIL8JqXtlHpgcPptD3Pod7nppgYspndJdK9YvnpY9G4UB5QRd1zG2SHutOE5iVKGXL9vva2oX9OEmS57m/9GWU3ei25/Wkrxif+AD0U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=l6pzT6fi; arc=none smtp.client-ip=209.85.222.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-783d4b3ad96so78746785a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:16:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706310983; x=1706915783; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mtltgslBdQHae+oLD1399tQsPexikCLm+b/oIxSwL94=;
-        b=l6pzT6fiQre9odpIZATrtgsshg4nH0dv4jI7iWbvVve7/y8ej97RVaZAbruMZD0pSu
-         B1WrPPkVG8OazVZ5fOMdinRIfskfwkL+35PAKDYHJHka/PQkwiggwB2lp7erSeiw49zn
-         Ugr+lr9r2rK/FoUdl8b2zxcprozmtlRXpE930=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706310983; x=1706915783;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mtltgslBdQHae+oLD1399tQsPexikCLm+b/oIxSwL94=;
-        b=BCjmbLDQgDrmULb9gm7uZTGMkDrOTXHGInif6YFM9X01uNQhpP08fj3dU+gFQ/gsTu
-         R7O8m2qy26IdVp6uJjL6ED6B88AW8lCRniEY8e3KoinntnPany3ujxDRF8hp/m1kJext
-         xGUKHCMvm3T7OMi422xhg3bQfSrgZbFkL4R21favxRVzk6t+vSIDTmSCJ5oRPXiuMsyj
-         di7VcCg/SY6dM9TBy4aCwc3ghlFxN2yTeCYv4sW9P2IysfUmiIguCL8wHjQtq0gzJIuI
-         q4/o9vFe7kdNj/jmxJtx9fSvq3jKPwDKy298nP4VRx9bP/FAo8Cpbsd0l86/0OkaGzZM
-         sc0w==
-X-Gm-Message-State: AOJu0Yy0xtSISz1j4ZqMPzx1Te9WRjGy8RJLRAR7UA3sKXVgxRbUI4Ow
-	QLtYdbVI5PP/c5hSg+jxKj7Ro79OEk65JdqdeODQECrPQSuchlkq6/4szn9C7A==
-X-Google-Smtp-Source: AGHT+IFr6+3pqj0JMsLxQ2GW7atIeRCtD6HJIvow5am3DYJqsXSoZPigBa/gFlr3DGsp4f3R3YcSBQ==
-X-Received: by 2002:a05:620a:618e:b0:783:4cbd:9ed7 with SMTP id or14-20020a05620a618e00b007834cbd9ed7mr711408qkn.38.1706310983521;
-        Fri, 26 Jan 2024 15:16:23 -0800 (PST)
-Received: from denia.c.googlers.com (240.157.150.34.bc.googleusercontent.com. [34.150.157.240])
-        by smtp.gmail.com with ESMTPSA id m4-20020a05620a290400b00783de3ddf5esm507358qkp.70.2024.01.26.15.16.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 15:16:23 -0800 (PST)
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Fri, 26 Jan 2024 23:16:16 +0000
-Subject: [PATCH 17/17] linux: v4l2-vp9.h: Fix kerneldoc
+	s=arc-20240116; t=1706311038; c=relaxed/simple;
+	bh=B2vG1UI0l03TA0AWgSx2zlP14++axiH1rOWXKCM+7Dk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BIQU3dXYePENohkiw8TbCUD61CiKyHDrbhsidzqy6la5KwmbQOnd5wzAted574kCvfg2hCXGUfuZWJlAQ1wtiaaGhSPDBRKyDRS9H2LEM9xbkcvuTT3VANRgqCx4m+P8WWekP0W8LLPbbBX8zJEYNUFn/tFN9QcZxkq09XglSB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fSQZbxo/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23171C43390
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 23:17:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706311038;
+	bh=B2vG1UI0l03TA0AWgSx2zlP14++axiH1rOWXKCM+7Dk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=fSQZbxo/d2KbI8bBxuqv2ryLtLeJ8pF1rcvm9E7IjkhQYEm+9aOPHxPWSEMZPF46M
+	 0zyIfs/Qle8c6CP9+B+00MGvhn4q3Ad0Axf2wURkqVHP9I9EnIT/Ne7e95Ogp/VK9A
+	 F3Y5rp97EMahvgIruqP+GQR2DD1ZXOuDS0oDFwCRjFVN4uKK1dycNX26w/Xv1DcFWG
+	 J54PqvhzgTvtmKhMFBU5ckvlFq2V8/kpSYLcRLbPl1NB4bmlR4w/yNsXbnaT3hkZ8w
+	 9oD3Y4LwfacfWrp2KQMpW0tzGBmL/oDMjTztcMSFSi4Tt8vd0ttifixH8y4emf+owP
+	 yi3qnZIGrGBRA==
+Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-362cfc3b858so268315ab.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:17:18 -0800 (PST)
+X-Gm-Message-State: AOJu0YzxsXuGMQyf+7WsXbUmecv2TNkGFtDYf66YPANxnonEofwZzVYd
+	m5cJnpSEo4G0Lg/T81deOikvVsLdGo6AKY2I4cxSwL4rfE7FnogEJlrPex9JOAE4cmYKYxuZEuP
+	vwVfqRM8y9BWsi8skqXGSCRA2sRIycbmHYKQ7
+X-Google-Smtp-Source: AGHT+IG08OQ4U5HYbY79Lo4OxzWbXa/w0tvFzb4wDDflJcOxhg1jpMa6kuct8IdHffcT/tY01ol4CiUEE/Fw8U6EvBs=
+X-Received: by 2002:a05:6e02:509:b0:35f:e8a1:2b16 with SMTP id
+ d9-20020a056e02050900b0035fe8a12b16mr536371ils.17.1706311037507; Fri, 26 Jan
+ 2024 15:17:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240126-gix-mtk-warnings-v1-17-eed7865fce18@chromium.org>
-References: <20240126-gix-mtk-warnings-v1-0-eed7865fce18@chromium.org>
-In-Reply-To: <20240126-gix-mtk-warnings-v1-0-eed7865fce18@chromium.org>
-To: Tiffany Lin <tiffany.lin@mediatek.com>, 
- Andrew-CT Chen <andrew-ct.chen@mediatek.com>, 
- Yunfei Dong <yunfei.dong@mediatek.com>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>, 
- Matthias Brugger <matthias.bgg@gmail.com>, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- Sakari Ailus <sakari.ailus@linux.intel.com>, 
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
- Hans Verkuil <hverkuil-cisco@xs4all.nl>, Hans Verkuil <hverkuil@xs4all.nl>, 
- Kieran Bingham <kieran.bingham@ideasonboard.com>, 
- Bin Liu <bin.liu@mediatek.com>, 
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, 
- Philipp Zabel <p.zabel@pengutronix.de>, 
- Stanimir Varbanov <stanimir.k.varbanov@gmail.com>, 
- Vikash Garodia <quic_vgarodia@quicinc.com>, 
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
- Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Sylwester Nawrocki <s.nawrocki@samsung.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
- Alim Akhtar <alim.akhtar@samsung.com>, 
- Marek Szyprowski <m.szyprowski@samsung.com>, 
- Andrzej Hajda <andrzej.hajda@intel.com>, Bingbu Cao <bingbu.cao@intel.com>, 
- Tianshu Qiu <tian.shu.qiu@intel.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Neil Armstrong <neil.armstrong@linaro.org>, 
- Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>, 
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
- linux-rockchip@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
- linux-samsung-soc@vger.kernel.org, linux-staging@lists.linux.dev, 
- linux-amlogic@lists.infradead.org, Ricardo Ribalda <ribalda@chromium.org>
-X-Mailer: b4 0.12.3
+References: <20231025144546.577640-1-ryan.roberts@arm.com> <20240118111036.72641-1-21cnbao@gmail.com>
+ <20240118111036.72641-3-21cnbao@gmail.com>
+In-Reply-To: <20240118111036.72641-3-21cnbao@gmail.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Fri, 26 Jan 2024 15:17:06 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuOPXyAxmmh9QO1SdU=8GWtMhPjaWgGtQ8gvnNyfbSZbig@mail.gmail.com>
+Message-ID: <CAF8kJuOPXyAxmmh9QO1SdU=8GWtMhPjaWgGtQ8gvnNyfbSZbig@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/6] mm: swap: introduce swap_nr_free() for batched swap_free()
+To: Barry Song <21cnbao@gmail.com>
+Cc: ryan.roberts@arm.com, akpm@linux-foundation.org, david@redhat.com, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, mhocko@suse.com, 
+	shy828301@gmail.com, wangkefeng.wang@huawei.com, willy@infradead.org, 
+	xiang@kernel.org, ying.huang@intel.com, yuzhao@google.com, surenb@google.com, 
+	steven.price@arm.com, Chuanhua Han <hanchuanhua@oppo.com>, 
+	Barry Song <v-songbaohua@oppo.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Kerneldoc cannot understand arrays defined like
-v4l2_frame_symbol_counts.
+On Thu, Jan 18, 2024 at 3:11=E2=80=AFAM Barry Song <21cnbao@gmail.com> wrot=
+e:
+>
+> From: Chuanhua Han <hanchuanhua@oppo.com>
+>
+> While swapping in a large folio, we need to free swaps related to the who=
+le
+> folio. To avoid frequently acquiring and releasing swap locks, it is bett=
+er
+> to introduce an API for batched free.
+>
+> Signed-off-by: Chuanhua Han <hanchuanhua@oppo.com>
+> Co-developed-by: Barry Song <v-songbaohua@oppo.com>
+> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> ---
+>  include/linux/swap.h |  6 ++++++
+>  mm/swapfile.c        | 29 +++++++++++++++++++++++++++++
+>  2 files changed, 35 insertions(+)
+>
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index 4db00ddad261..31a4ee2dcd1c 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -478,6 +478,7 @@ extern void swap_shmem_alloc(swp_entry_t);
+>  extern int swap_duplicate(swp_entry_t);
+>  extern int swapcache_prepare(swp_entry_t);
+>  extern void swap_free(swp_entry_t);
+> +extern void swap_nr_free(swp_entry_t entry, int nr_pages);
+>  extern void swapcache_free_entries(swp_entry_t *entries, int n);
+>  extern int free_swap_and_cache(swp_entry_t);
+>  int swap_type_of(dev_t device, sector_t offset);
+> @@ -553,6 +554,11 @@ static inline void swap_free(swp_entry_t swp)
+>  {
+>  }
+>
+> +void swap_nr_free(swp_entry_t entry, int nr_pages)
+> +{
+> +
+> +}
+> +
+>  static inline void put_swap_folio(struct folio *folio, swp_entry_t swp)
+>  {
+>  }
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 556ff7347d5f..6321bda96b77 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -1335,6 +1335,35 @@ void swap_free(swp_entry_t entry)
+>                 __swap_entry_free(p, entry);
+>  }
+>
+> +void swap_nr_free(swp_entry_t entry, int nr_pages)
+> +{
+> +       int i;
+> +       struct swap_cluster_info *ci;
+> +       struct swap_info_struct *p;
+> +       unsigned type =3D swp_type(entry);
+> +       unsigned long offset =3D swp_offset(entry);
+> +       DECLARE_BITMAP(usage, SWAPFILE_CLUSTER) =3D { 0 };
+> +
+> +       VM_BUG_ON(offset % SWAPFILE_CLUSTER + nr_pages > SWAPFILE_CLUSTER=
+);
 
-Adding an asterisk to the name does do the trick.
+BUG_ON here seems a bit too developer originated. Maybe warn once and
+roll back to free one by one?
 
-Disable the kerneldoc notation for now, it is already ignored:
-https://docs.kernel.org/search.html?q=v4l2_vp9_frame_symbol_counts
+How big is your typical SWAPFILE_CUSTER and nr_pages typically in arm?
 
-include/media/v4l2-vp9.h:144: warning: Excess struct member 'partition' description in 'v4l2_vp9_frame_symbol_counts'
-include/media/v4l2-vp9.h:144: warning: Excess struct member 'skip' description in 'v4l2_vp9_frame_symbol_counts'
-include/media/v4l2-vp9.h:144: warning: Excess struct member 'intra_inter' description in 'v4l2_vp9_frame_symbol_counts'
-include/media/v4l2-vp9.h:144: warning: Excess struct member 'tx32p' description in 'v4l2_vp9_frame_symbol_counts'
-include/media/v4l2-vp9.h:144: warning: Excess struct member 'tx16p' description in 'v4l2_vp9_frame_symbol_counts'
-include/media/v4l2-vp9.h:144: warning: Excess struct member 'tx8p' description in 'v4l2_vp9_frame_symbol_counts'
-include/media/v4l2-vp9.h:144: warning: Excess struct member 'y_mode' description in 'v4l2_vp9_frame_symbol_counts'
-include/media/v4l2-vp9.h:144: warning: Excess struct member 'uv_mode' description in 'v4l2_vp9_frame_symbol_counts'
-include/media/v4l2-vp9.h:144: warning: Excess struct member 'comp' description in 'v4l2_vp9_frame_symbol_counts'
-include/media/v4l2-vp9.h:144: warning: Excess struct member 'comp_ref' description in 'v4l2_vp9_frame_symbol_counts'
-include/media/v4l2-vp9.h:144: warning: Excess struct member 'single_ref' description in 'v4l2_vp9_frame_symbol_counts'
-include/media/v4l2-vp9.h:144: warning: Excess struct member 'mv_mode' description in 'v4l2_vp9_frame_symbol_counts'
-include/media/v4l2-vp9.h:144: warning: Excess struct member 'filter' description in 'v4l2_vp9_frame_symbol_counts'
-include/media/v4l2-vp9.h:144: warning: Excess struct member 'mv_joint' description in 'v4l2_vp9_frame_symbol_counts'
-include/media/v4l2-vp9.h:144: warning: Excess struct member 'sign' description in 'v4l2_vp9_frame_symbol_counts'
-include/media/v4l2-vp9.h:144: warning: Excess struct member 'classes' description in 'v4l2_vp9_frame_symbol_counts'
-include/media/v4l2-vp9.h:144: warning: Excess struct member 'class0' description in 'v4l2_vp9_frame_symbol_counts'
-include/media/v4l2-vp9.h:144: warning: Excess struct member 'bits' description in 'v4l2_vp9_frame_symbol_counts'
-include/media/v4l2-vp9.h:144: warning: Excess struct member 'class0_fp' description in 'v4l2_vp9_frame_symbol_counts'
-include/media/v4l2-vp9.h:144: warning: Excess struct member 'fp' description in 'v4l2_vp9_frame_symbol_counts'
-include/media/v4l2-vp9.h:144: warning: Excess struct member 'class0_hp' description in 'v4l2_vp9_frame_symbol_counts'
-include/media/v4l2-vp9.h:144: warning: Excess struct member 'hp' description in 'v4l2_vp9_frame_symbol_counts'
+I ask this question because nr_ppages > 64, that is a totally
+different game, we can completely  bypass the swap cache slots.
 
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
- include/media/v4l2-vp9.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+> +
+> +       if (nr_pages =3D=3D 1) {
+> +               swap_free(entry);
+> +               return;
+> +       }
+> +
+> +       p =3D _swap_info_get(entry);
+> +
+> +       ci =3D lock_cluster(p, offset);
+> +       for (i =3D 0; i < nr_pages; i++) {
+> +               if (__swap_entry_free_locked(p, offset + i, 1))
+> +                       __bitmap_set(usage, i, 1);
+> +       }
+> +       unlock_cluster(ci);
+> +
+> +       for_each_clear_bit(i, usage, nr_pages)
+> +               free_swap_slot(swp_entry(type, offset + i));
 
-diff --git a/include/media/v4l2-vp9.h b/include/media/v4l2-vp9.h
-index 05478ad6d4ab..f0d80273bd61 100644
---- a/include/media/v4l2-vp9.h
-+++ b/include/media/v4l2-vp9.h
-@@ -83,7 +83,11 @@ struct v4l2_vp9_frame_context {
- 	struct v4l2_vp9_frame_mv_context mv;
- };
- 
--/**
-+/*
-+ * NOTE: This is not a kerneldoc, because the (*name) notation confuses the
-+ *	 parser.
-+ */
-+/*
-  * struct v4l2_vp9_frame_symbol_counts - pointers to arrays of symbol counts
-  *
-  * @partition: partition counts.
+Notice that free_swap_slot() internal has per CPU cache batching as
+well. Every free_swap_slot will get some per_cpu swap slot cache and
+cache->lock. There is double batching here.
+If the typical batch size here is bigger than 64 entries, we can go
+directly to batching swap_entry_free and avoid the free_swap_slot()
+batching altogether. Unlike free_swap_slot_entries(), here swap slots
+are all from one swap device, there is no need to sort and group the
+swap slot by swap devices.
 
--- 
-2.43.0.429.g432eaa2c6b-goog
+Chris
 
+
+Chris
+
+> +}
+> +
+>  /*
+>   * Called after dropping swapcache to decrease refcnt to swap entries.
+>   */
+> --
+> 2.34.1
+>
+>
 
