@@ -1,172 +1,187 @@
-Return-Path: <linux-kernel+bounces-39983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC09983D81A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:28:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD46083D81D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:29:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62FBB29407B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:28:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E0551F32BBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:29:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 734F31B81E;
-	Fri, 26 Jan 2024 10:07:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pgENvXO9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 429F918E00;
+	Fri, 26 Jan 2024 10:08:20 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93A951B7E4;
-	Fri, 26 Jan 2024 10:07:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DA6814276;
+	Fri, 26 Jan 2024 10:08:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706263666; cv=none; b=mN07cD1UTsAbXluCkb3OcEroAzNKhN8qqk3SG3MjdYWANI6vx3YAg5V53FXC7PTDTgWJTpV8aEDsRgpHfAB4LCQ84jSsGe1KwTijyFANkh9emIo/08PGXjAxajiiLNvUZBv5s8cap2ZcoWl4eNJxuaKH1wKtwtEKEW+FVHvPFyA=
+	t=1706263699; cv=none; b=ogvpC+b/DXHfSbUHlDsp/e2i4yuRISM5SHpVRBC6rHduXfvDNv0UZBWjh9fvwksEZrzOv/9Tjk80XaWhdDKfYWQ/wtbAjRnhL1k4+lNQfsjRtCRNPvw/PmXAgmcPpxTCP6GNSbyICa5/m5s/1M3nADWE90U5fM27NwZnToteyI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706263666; c=relaxed/simple;
-	bh=cyYc4oQhxrcpBf/N4DGlh5NOYSWJmxszPTa3U/wWji8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OqFcmhOqCtkCzjlJgxL7B3WMy1+R/p0wklsI4P9BIhnF3RP3B79o8rGFArJ/RVQGRkXyV92W3d4Z5k0mW/DKigcboYgjf++C3TVb88SZvFYgIGw8fGAPu2sjRz6/NTlo7M9C3CjffFv6vEcD/JcZUK4C/xaCHJgn+S2vWanUXKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pgENvXO9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43945C433C7;
-	Fri, 26 Jan 2024 10:07:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706263666;
-	bh=cyYc4oQhxrcpBf/N4DGlh5NOYSWJmxszPTa3U/wWji8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pgENvXO9hI7spLW3wf1MzB2Q6oM4DtwvHG6wIOFrdFl4kpUuX6k6zL0H8taBiBYQL
-	 Jn3WN12lVFujvNdirTFsDuBoDDc9KrdUhKiH5ZVm2I5jEvgmTjqUE+r0wFNPyzoKG4
-	 +zGiY258mpFxvAJ2YneWv5SF70ZksYPUKftNdiRL12cjyZNvf9GYGDmxKCQ81A/zMv
-	 h74k2ZxqXVICdueT2n8sDC4t6+z1c2VEjvdnoCif6mlshsG8dYB+yOI+uIh3Cba9vk
-	 14afPTHMAOgQp0YOYmjxnsf6nir+LQSBnNBV7CYJk2bAJCJh++4WfUK9POqEHkZtaJ
-	 uCheOlKVICS6w==
-Date: Fri, 26 Jan 2024 11:07:36 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Joe Damato <jdamato@fastly.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, chuck.lever@oracle.com, 
-	jlayton@kernel.org, linux-api@vger.kernel.org, edumazet@google.com, 
-	davem@davemloft.net, alexander.duyck@gmail.com, sridhar.samudrala@intel.com, 
-	kuba@kernel.org, willemdebruijn.kernel@gmail.com, weiwan@google.com, 
-	Jonathan Corbet <corbet@lwn.net>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Jan Kara <jack@suse.cz>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nathan Lynch <nathanl@linux.ibm.com>, Steve French <stfrench@microsoft.com>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Jiri Slaby <jirislaby@kernel.org>, 
-	Julien Panis <jpanis@baylibre.com>, Arnd Bergmann <arnd@arndb.de>, 
-	Andrew Waterman <waterman@eecs.berkeley.edu>, Thomas Huth <thuth@redhat.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, 
-	"open list:FILESYSTEMS (VFS and infrastructure)" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH net-next v3 3/3] eventpoll: Add epoll ioctl for
- epoll_params
-Message-ID: <20240126-kribbeln-sonnabend-35dcb3d1fc48@brauner>
-References: <20240125225704.12781-1-jdamato@fastly.com>
- <20240125225704.12781-4-jdamato@fastly.com>
- <2024012551-anyone-demeaning-867b@gregkh>
- <20240126001128.GC1987@fastly.com>
- <2024012525-outdoors-district-2660@gregkh>
- <20240126023630.GA1235@fastly.com>
+	s=arc-20240116; t=1706263699; c=relaxed/simple;
+	bh=X4835XH9cy69dNBnX/jYfdyJwUuvrtSl0fq/UaRdAQA=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=Mtzkzi+9tm8wQCcnZpGidzXGwdvxEvr+Jxc2FA0GR/C6T9ltDELGdybpuQ5ZPOPKZodpXPbxznRVWLDGY0DvV6ZoZ0d7umh7VoGgVs0p+P4EWERy8emCR0H4C8C/glDDSzBcLjzdP97AbdX+tQGhir+mZuqZR1L3YlcKWMasNOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TLtdt1HCkzXgt9;
+	Fri, 26 Jan 2024 18:06:58 +0800 (CST)
+Received: from canpemm500005.china.huawei.com (unknown [7.192.104.229])
+	by mail.maildlp.com (Postfix) with ESMTPS id 71384180078;
+	Fri, 26 Jan 2024 18:08:13 +0800 (CST)
+Received: from [10.174.176.34] (10.174.176.34) by
+ canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 26 Jan 2024 18:08:12 +0800
+Subject: Re: [PATCH 3/7] ext4: refactor out ext4_generic_attr_show()
+To: Baokun Li <libaokun1@huawei.com>, <linux-ext4@vger.kernel.org>
+CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<yangerkun@huawei.com>, <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
+References: <20240126085716.1363019-1-libaokun1@huawei.com>
+ <20240126085716.1363019-4-libaokun1@huawei.com>
+From: Zhang Yi <yi.zhang@huawei.com>
+Message-ID: <dcfcfdce-9ad1-5eea-4037-cd624591284e@huawei.com>
+Date: Fri, 26 Jan 2024 18:08:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240126023630.GA1235@fastly.com>
+In-Reply-To: <20240126085716.1363019-4-libaokun1@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500005.china.huawei.com (7.192.104.229)
 
-On Thu, Jan 25, 2024 at 06:36:30PM -0800, Joe Damato wrote:
-> On Thu, Jan 25, 2024 at 04:23:58PM -0800, Greg Kroah-Hartman wrote:
-> > On Thu, Jan 25, 2024 at 04:11:28PM -0800, Joe Damato wrote:
-> > > On Thu, Jan 25, 2024 at 03:21:46PM -0800, Greg Kroah-Hartman wrote:
-> > > > On Thu, Jan 25, 2024 at 10:56:59PM +0000, Joe Damato wrote:
-> > > > > +struct epoll_params {
-> > > > > +	u64 busy_poll_usecs;
-> > > > > +	u16 busy_poll_budget;
-> > > > > +
-> > > > > +	/* for future fields */
-> > > > > +	u8 data[118];
-> > > > > +} EPOLL_PACKED;
-> > > > 
-> > > > variables that cross the user/kernel boundry need to be __u64, __u16,
-> > > > and __u8 here.
-> > > 
-> > > I'll make that change for the next version, thank you.
-> > > 
-> > > > And why 118?
-> > > 
-> > > I chose this arbitrarily. I figured that a 128 byte struct would support 16
-> > > u64s in the event that other fields needed to be added in the future. 118
-> > > is what was left after the existing fields. There's almost certainly a
-> > > better way to do this - or perhaps it is unnecessary as per your other
-> > > message.
-> > > 
-> > > I am not sure if leaving extra space in the struct is a recommended
-> > > practice for ioctls or not - I thought I noticed some code that did and
-> > > some that didn't in the kernel so I err'd on the side of leaving the space
-> > > and probably did it in the worst way possible.
-> > 
-> > It's not really a good idea unless you know exactly what you are going
-> > to do with it.  Why not just have a new ioctl if you need new
-> > information in the future?  That's simpler, right?
+On 2024/1/26 16:57, Baokun Li wrote:
+> Refactor out the function ext4_generic_attr_show() to handle the reading
+> of values of various common types, with no functional changes.
 > 
-> Sure, that makes sense to me. I'll remove it in the v4 alongside the other
-> changes you've requested.
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-Fwiw, we do support extensible ioctls since they encode the size. Take a
-look at kernel/seccomp.c. It's a clean extensible interface built on top
-of the copy_struct_from_user() pattern we added for system calls
-(openat(), clone3() etc.):
+Looks good to me.
 
-static long seccomp_notify_ioctl(struct file *file, unsigned int cmd,
-                                 unsigned long arg)
-{
-        struct seccomp_filter *filter = file->private_data;
-        void __user *buf = (void __user *)arg;
+Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
 
-        /* Fixed-size ioctls */
-        switch (cmd) {
-        case SECCOMP_IOCTL_NOTIF_RECV:
-                return seccomp_notify_recv(filter, buf);
-        case SECCOMP_IOCTL_NOTIF_SEND:
-                return seccomp_notify_send(filter, buf);
-        case SECCOMP_IOCTL_NOTIF_ID_VALID_WRONG_DIR:
-        case SECCOMP_IOCTL_NOTIF_ID_VALID:
-                return seccomp_notify_id_valid(filter, buf);
-        case SECCOMP_IOCTL_NOTIF_SET_FLAGS:
-                return seccomp_notify_set_flags(filter, arg);
-        }
-
-        /* Extensible Argument ioctls */
-#define EA_IOCTL(cmd)   ((cmd) & ~(IOC_INOUT | IOCSIZE_MASK))
-        switch (EA_IOCTL(cmd)) {
-        case EA_IOCTL(SECCOMP_IOCTL_NOTIF_ADDFD):
-                return seccomp_notify_addfd(filter, buf, _IOC_SIZE(cmd));
-        default:
-                return -EINVAL;
-        }
-}
-
-static long seccomp_notify_addfd(struct seccomp_filter *filter,
-                                 struct seccomp_notif_addfd __user *uaddfd,
-                                 unsigned int size)
-{
-        struct seccomp_notif_addfd addfd;
-        struct seccomp_knotif *knotif;
-        struct seccomp_kaddfd kaddfd;
-        int ret;
-
-        BUILD_BUG_ON(sizeof(addfd) < SECCOMP_NOTIFY_ADDFD_SIZE_VER0);
-        BUILD_BUG_ON(sizeof(addfd) != SECCOMP_NOTIFY_ADDFD_SIZE_LATEST);
-
-        if (size < SECCOMP_NOTIFY_ADDFD_SIZE_VER0 || size >= PAGE_SIZE)
-                return -EINVAL;
-
-        ret = copy_struct_from_user(&addfd, sizeof(addfd), uaddfd, size);
-        if (ret)
-                return ret;
-
-
-
-
+> ---
+>  fs/ext4/sysfs.c | 74 +++++++++++++++++++++----------------------------
+>  1 file changed, 32 insertions(+), 42 deletions(-)
+> 
+> diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
+> index 834f9a0eb641..a5d657fa05cb 100644
+> --- a/fs/ext4/sysfs.c
+> +++ b/fs/ext4/sysfs.c
+> @@ -366,13 +366,42 @@ static ssize_t __print_tstamp(char *buf, __le32 lo, __u8 hi)
+>  #define print_tstamp(buf, es, tstamp) \
+>  	__print_tstamp(buf, (es)->tstamp, (es)->tstamp ## _hi)
+>  
+> +static ssize_t ext4_generic_attr_show(struct ext4_attr *a,
+> +				      struct ext4_sb_info *sbi, char *buf)
+> +{
+> +	void *ptr = calc_ptr(a, sbi);
+> +
+> +	if (!ptr)
+> +		return 0;
+> +
+> +	switch (a->attr_id) {
+> +	case attr_inode_readahead:
+> +	case attr_pointer_ui:
+> +		if (a->attr_ptr == ptr_ext4_super_block_offset)
+> +			return sysfs_emit(buf, "%u\n", le32_to_cpup(ptr));
+> +		return sysfs_emit(buf, "%u\n", *((unsigned int *) ptr));
+> +	case attr_pointer_ul:
+> +		return sysfs_emit(buf, "%lu\n", *((unsigned long *) ptr));
+> +	case attr_pointer_u8:
+> +		return sysfs_emit(buf, "%u\n", *((unsigned char *) ptr));
+> +	case attr_pointer_u64:
+> +		if (a->attr_ptr == ptr_ext4_super_block_offset)
+> +			return sysfs_emit(buf, "%llu\n", le64_to_cpup(ptr));
+> +		return sysfs_emit(buf, "%llu\n", *((unsigned long long *) ptr));
+> +	case attr_pointer_string:
+> +		return sysfs_emit(buf, "%.*s\n", a->attr_size, (char *) ptr);
+> +	case attr_pointer_atomic:
+> +		return sysfs_emit(buf, "%d\n", atomic_read((atomic_t *) ptr));
+> +	}
+> +	return 0;
+> +}
+> +
+>  static ssize_t ext4_attr_show(struct kobject *kobj,
+>  			      struct attribute *attr, char *buf)
+>  {
+>  	struct ext4_sb_info *sbi = container_of(kobj, struct ext4_sb_info,
+>  						s_kobj);
+>  	struct ext4_attr *a = container_of(attr, struct ext4_attr, attr);
+> -	void *ptr = calc_ptr(a, sbi);
+>  
+>  	switch (a->attr_id) {
+>  	case attr_delayed_allocation_blocks:
+> @@ -391,45 +420,6 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
+>  		return sysfs_emit(buf, "%llu\n",
+>  				(unsigned long long)
+>  			percpu_counter_sum(&sbi->s_sra_exceeded_retry_limit));
+> -	case attr_inode_readahead:
+> -	case attr_pointer_ui:
+> -		if (!ptr)
+> -			return 0;
+> -		if (a->attr_ptr == ptr_ext4_super_block_offset)
+> -			return sysfs_emit(buf, "%u\n",
+> -					le32_to_cpup(ptr));
+> -		else
+> -			return sysfs_emit(buf, "%u\n",
+> -					*((unsigned int *) ptr));
+> -	case attr_pointer_ul:
+> -		if (!ptr)
+> -			return 0;
+> -		return sysfs_emit(buf, "%lu\n",
+> -				*((unsigned long *) ptr));
+> -	case attr_pointer_u8:
+> -		if (!ptr)
+> -			return 0;
+> -		return sysfs_emit(buf, "%u\n",
+> -				*((unsigned char *) ptr));
+> -	case attr_pointer_u64:
+> -		if (!ptr)
+> -			return 0;
+> -		if (a->attr_ptr == ptr_ext4_super_block_offset)
+> -			return sysfs_emit(buf, "%llu\n",
+> -					le64_to_cpup(ptr));
+> -		else
+> -			return sysfs_emit(buf, "%llu\n",
+> -					*((unsigned long long *) ptr));
+> -	case attr_pointer_string:
+> -		if (!ptr)
+> -			return 0;
+> -		return sysfs_emit(buf, "%.*s\n", a->attr_size,
+> -				(char *) ptr);
+> -	case attr_pointer_atomic:
+> -		if (!ptr)
+> -			return 0;
+> -		return sysfs_emit(buf, "%d\n",
+> -				atomic_read((atomic_t *) ptr));
+>  	case attr_feature:
+>  		return sysfs_emit(buf, "supported\n");
+>  	case attr_first_error_time:
+> @@ -438,9 +428,9 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
+>  		return print_tstamp(buf, sbi->s_es, s_last_error_time);
+>  	case attr_journal_task:
+>  		return journal_task_show(sbi, buf);
+> +	default:
+> +		return ext4_generic_attr_show(a, sbi, buf);
+>  	}
+> -
+> -	return 0;
+>  }
+>  
+>  static ssize_t ext4_generic_attr_store(struct ext4_attr *a,
+> 
 
