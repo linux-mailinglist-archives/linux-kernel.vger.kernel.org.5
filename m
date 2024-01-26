@@ -1,183 +1,131 @@
-Return-Path: <linux-kernel+bounces-40628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A081C83E361
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:30:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8B9883E370
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:36:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5736B2873EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:30:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 272371C227F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:36:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FCB02377E;
-	Fri, 26 Jan 2024 20:30:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EF9B2420B;
+	Fri, 26 Jan 2024 20:36:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="v+N2oFYi"
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC2923750
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 20:30:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=mecka.net header.i=@mecka.net header.b="cC5EMOIy"
+Received: from mecka.net (mecka.net [159.69.159.214])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AA5422EF4;
+	Fri, 26 Jan 2024 20:36:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.159.214
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706301012; cv=none; b=CrAIljSZ2v91aGwRnscza1bcyQLYQ/iX2S9f3U1qp7hv7Z7OrPOu2dQica+Sl3PvZaHNaV4tdok+W30SWsiLHeMDFuS7Uc0xPVfClOFumxEpgAFqD5E6XOaIAZXUPQhOldgoLf8rTvxhSvocYxTUnZaUOvM3T8TkGMsdqGLCEKQ=
+	t=1706301392; cv=none; b=HC5GGeKW93B4wtsTzMMLsyV7OUrCcr+1iu0wwS+BRwcceljfOGKIWZppqIcAFlrAjU6hGmw7B3NdaaFQj8d2JqGv4tHQVO3I+TJpfqTb3Mmy96uVlYV4iG3REvhRWLGn5pVwNyqP2L8oPZiu0Mev3ytdAa1jvjaxox3dT9XHsIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706301012; c=relaxed/simple;
-	bh=AZL2DiPws0S6+MBaKLJGGRKAIx0Xr+661L82JlgRYPs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=u7ursbGAzYxJhSpVbwxzjcA0jE35LA4/w8EicpawOYFlWeah0nsgukmq3l8Gy1yKhR9LmSGN7gR4q+e2BAALdop0SfTIdnPI+4clW9cDdmH1Pbkx6FaM2bOjkFoKhC796phHb/0jEXyPYFuvl4Zc4ZQWReAoHqw1bRpGhwraVQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=v+N2oFYi; arc=none smtp.client-ip=209.85.219.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dbed0710c74so796994276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 12:30:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706301010; x=1706905810; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=kZTd/qK4fjgGkjgEEZAEvtUcKpHSu6w+GQ9nB6HrsPo=;
-        b=v+N2oFYi5I5DFNj/ijZx0suvviAhzj2S3+K+88E97pCNWWmYCEyB2G9LS9rw5xruhs
-         YoU7u4lEFqgzTD+V1lg/6wPic/UoMfQbouNlNWfjKbaO2sttkefcuMF0WZd1mFiBW3Rh
-         x0NQVbzOtlh5jIJ+4McKUXwyxYwnfE06L4Rc6mld7TYY/mnirFPgewMadXzPONE37qpB
-         vQ/zGDAkj7NXguVvK9QZrVf93GR+uvHLF+eE0xW0WH3IfvAKGssboYYSomy0AGircQzc
-         PuUXB6Hjkbezu3ajlbKwk6QeZpoIMAKBTzNydun0IWywbBg2R44x0mdAzatoW6x8FsFU
-         Cmdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706301010; x=1706905810;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kZTd/qK4fjgGkjgEEZAEvtUcKpHSu6w+GQ9nB6HrsPo=;
-        b=qJiHiIKovognDCUk/N9OrJ2+wZ90vx4FrWvC3w3AmAtqM3SORq0UR7ccvY00BcSV8F
-         Wq3gUZ5rK7eXuNyMo8itL096NdUCEKQ1hkdRmpLzM/Mx4FYXOvdMNzagyXXKwb2eGajj
-         3DGcM6e0Mxn/VqRi1bRSMDoBRTsW4X94l4Mj+JZ3zCRWf/U5PYZqVk98bOA1f+D8Dwca
-         HXQKVGArvO0OYFLfXna+BkTR/f9G28ShSOznvIpyIhDTtU4VTwl7bVs25XI2LX+tkdTc
-         AKubUNSviPuD5dKTOtshwdIVWlH/b/Pj/ekyYfp+NYVt1HAkDAsbODdkGKWOwP0lK8Ba
-         9sdg==
-X-Gm-Message-State: AOJu0YyeYezwYZwjZ5kmsxfwvl/erajWhnpB0So1IhyWYiAJrRw8cjAm
-	NInYYI3qLxxBPMPZYFvc4mckK0H4nTBwBgMBfID8DSArf6uHQmEu7KnS2107YJIoC0igW9jqmfF
-	LzPAw5BC8A1W1Y9NKkAWjkYFgWmAhNZwKHBStkg==
-X-Google-Smtp-Source: AGHT+IFRFALlNQJrY0JCp8H/TgJzhu2cMZX+uZJkl0AdOae8gvAP2suk/MGyKDXEOw7FfiRM8ExjaxYpUup11X6q9Ug=
-X-Received: by 2002:a25:9948:0:b0:dc1:f71f:a1e8 with SMTP id
- n8-20020a259948000000b00dc1f71fa1e8mr473812ybo.128.1706301009942; Fri, 26 Jan
- 2024 12:30:09 -0800 (PST)
+	s=arc-20240116; t=1706301392; c=relaxed/simple;
+	bh=bS0tHXldnDP7fP1hTCX/Dobr7gSKMxZIXrqw5AcghSc=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fDqV2YXgYDVe7BuvVuzTKwqmwhCVZrZSnPcf903307HLtIvUKVcRwNPlx6Jmd05vvoasP+KUfbYdaZ61seoclFdi1KoskG69eHQZgkI+iZMjD9aVyReeZ3bZ0KF8WlLAjleVvRcjqwFAQlPpnNOignyK+a8umNROoDGQySlRSeY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mecka.net; spf=pass smtp.mailfrom=mecka.net; dkim=fail (0-bit key) header.d=mecka.net header.i=@mecka.net header.b=cC5EMOIy reason="key not found in DNS"; arc=none smtp.client-ip=159.69.159.214
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mecka.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mecka.net
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mecka.net; s=2016.11;
+	t=1706301020; bh=bS0tHXldnDP7fP1hTCX/Dobr7gSKMxZIXrqw5AcghSc=;
+	h=Date:From:To:Subject:References:In-Reply-To:From;
+	b=cC5EMOIy3hGOaPaCp40VoGhD5wRmepADo9Sbans8FHbyxXIaD3Q5dVXYhZfj9eJl/
+	 AIoAKjkp9uMqM78/RAeaUZsBJVFREknowDoPzrSCT7/1UB/WmIsOD/QXgxt8cWmWw2
+	 Eji+gCm8xZ9MGRSItCu24/ELJUT1shgjLwMGC257hAEA88z2h/NK+DwykNNaPhw+YB
+	 f/U5TY4llR8Q0kNJoTVmZ2x8aFzQJ6McVmc8R+BRyy3ppEKx4ESSQ1GZyg0zoTwh9l
+	 ZOkeJ8i02kjKcxbBUs/WZMFjA1wADIp/3dmurR5t37ZzVmzeM9aa5ggKUsvSY6Sesf
+	 fJnapb/MbfYGw==
+Received: from mecka.net (unknown [185.147.11.134])
+	by mecka.net (Postfix) with ESMTPSA id B135B3B4E7E;
+	Fri, 26 Jan 2024 21:30:19 +0100 (CET)
+Date: Fri, 26 Jan 2024 21:30:18 +0100
+From: Manuel Traut <manut@mecka.net>
+To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Jessica Zhang <quic_jesszhan@quicinc.com>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>, Sandy Huang <hjc@rock-chips.com>,
+	Mark Yao <markyao0591@gmail.com>,
+	Diederik de Haas <didi.debian@cknow.org>,
+	Segfault <awarnecke002@hotmail.com>,
+	Arnaud Ferraris <aferraris@debian.org>,
+	Danct12 <danct12@riseup.net>, dri-devel@lists.freedesktop.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v3 4/4] arm64: dts: rockchip: Add devicetree for Pine64
+ PineTab2
+Message-ID: <ZbQWWp3nmorbEVFl@mecka.net>
+References: <20240102-pinetab2-v3-0-cb1aa69f8c30@mecka.net>
+ <20240102-pinetab2-v3-4-cb1aa69f8c30@mecka.net>
+ <vj3elmkt6czisvwqouv2hhvut2va5jw6bbj5kjyxawvrnrdfwm@tlpo3dp3qcyb>
+ <ZZgqF5hLO8UThPep@mecka.net>
+ <elumjkchw5m6rcb73l4ouemjgk7nsgkeu576ybbkc5nbvcpiyi@txkepy7wqops>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1706296015.git.quic_uchalich@quicinc.com> <12bfdd23772c49530b8b0993cc82bc89b3eb4ada.1706296015.git.quic_uchalich@quicinc.com>
-In-Reply-To: <12bfdd23772c49530b8b0993cc82bc89b3eb4ada.1706296015.git.quic_uchalich@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 26 Jan 2024 22:29:59 +0200
-Message-ID: <CAA8EJppapW5nOFphBWove1ni8nbkA=xHON9D13NYeYHhyqL1Fg@mail.gmail.com>
-Subject: Re: [PATCH 5/5] soc: qcom: llcc: Add regmap for Broadcast_AND region
-To: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kernel@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <elumjkchw5m6rcb73l4ouemjgk7nsgkeu576ybbkc5nbvcpiyi@txkepy7wqops>
 
-On Fri, 26 Jan 2024 at 21:48, Unnathi Chalicheemala
-<quic_uchalich@quicinc.com> wrote:
->
-> To support CSR programming, a broadcast interface is used to program
-> all channels in a single command. Until SM8450 there was only one
-> broadcast region (Broadcast_OR) used to broadcast write and check
-> for status bit 0. From SM8450 onwards another broadcast region
-> (Broadcast_AND) has been added which checks for status bit 1.
->
-> Update llcc_drv_data structure with new regmap for Broadcast_AND
-> region and initialize regmap for Broadcast_AND region when HW block
-> version is greater than 4.1 for backwards compatibility.
->
-> Switch from broadcast_OR to broadcast_AND region for checking
-> status bit 1 as Broadcast_OR region checks only for bit 0.
+Hello Ondřej,
 
-This breaks backwards compatibility with the existing DT files, doesn't it?
+On Fri, Jan 05, 2024 at 05:48:46PM +0100, Ondřej Jirman wrote:
+> On Fri, Jan 05, 2024 at 05:11:03PM +0100, Manuel Traut wrote:
+> > On Wed, Jan 03, 2024 at 10:42:54AM +0100, Ondřej Jirman wrote:
+> > > Hello Manuel,
+> > > 
+> > > a few more things I noticed:
+> > > 
+> > > On Tue, Jan 02, 2024 at 05:15:47PM +0100, Manuel Traut wrote:
+> > > > From: Alexander Warnecke <awarnecke002@hotmail.com>
+> > > > 
+> > > > +	leds {
+> > > > +		compatible = "gpio-leds";
+> > > > +
+> > > > +		pinctrl-names = "default";
+> > > > +		pinctrl-0 = <&flash_led_en_h>;
+> > > > +
+> > > > +		led-0 {
+> > > > +			gpios = <&gpio4 RK_PA5 GPIO_ACTIVE_HIGH>;
+> > > > +			color = <LED_COLOR_ID_WHITE>;
+> > > > +			function = LED_FUNCTION_FLASH;
+> > > > +		};
+> > > 
+> > > This LED is supplied by VCC5V_MIDU, so maybe this should be a regulator-led
+> > > supplied by gpio (FLASH_LED_EN_H) controlled regulator-fixed named f_led which
+> > > is in turn supplied by VCC5V_MIDU.
+> > > 
+> > > https://megous.com/dl/tmp/9bf0d85d78946b5e.png
+> > 
+> > regulator-leds are controlled by turning on or off the regulator. However
+> > VCC5V_MIDU is also used by other devices (USB, HDMI, ..) so I guess this is
+> > not what we want. I would keep it as is.
+> 
+> It's used by the LED. gpio-leds will not ensure it's on when you enable the LED.
+> 
+> In practice this may only come up if someone tries to save power by unloading
+> dwc3 USB driver, when using PT2 outside of the keyboard case. Otherwise
+> VCC5V_MIDU will be enabled by DWC3 driver's use of PHY API.
+> 
+> In any case, I'm not saying you should use VCC5V_MIDU directly in regulator-led,
+> but as a vin-supply to a new regulator-fixed node (which would be describing
+> this "fixed voltage regulator" https://megous.com/dl/tmp/cc65ec81ab9af163.png ).
 
-> While at it, also check return value after reading Broadcast_OR
-> region in llcc_update_act_ctrl().
+Sorry for the late response, I was busy with other things in the last weeks.
 
-Separate patch, Fixes tag.
-
->
-> Signed-off-by: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
-> ---
->  drivers/soc/qcom/llcc-qcom.c       | 12 +++++++++++-
->  include/linux/soc/qcom/llcc-qcom.h |  4 +++-
->  2 files changed, 14 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
-> index 4ca88eaebf06..5a2dac2d4772 100644
-> --- a/drivers/soc/qcom/llcc-qcom.c
-> +++ b/drivers/soc/qcom/llcc-qcom.c
-> @@ -849,7 +849,7 @@ static int llcc_update_act_ctrl(u32 sid,
->                 return ret;
->
->         if (drv_data->version >= LLCC_VERSION_4_1_0_0) {
-> -               ret = regmap_read_poll_timeout(drv_data->bcast_regmap, status_reg,
-> +               ret = regmap_read_poll_timeout(drv_data->bcast_and_regmap, status_reg,
->                                       slice_status, (slice_status & ACT_COMPLETE),
->                                       0, LLCC_STATUS_READ_DELAY);
->                 if (ret)
-> @@ -859,6 +859,8 @@ static int llcc_update_act_ctrl(u32 sid,
->         ret = regmap_read_poll_timeout(drv_data->bcast_regmap, status_reg,
->                                       slice_status, !(slice_status & status),
->                                       0, LLCC_STATUS_READ_DELAY);
-> +       if (ret)
-> +               return ret;
->
->         if (drv_data->version >= LLCC_VERSION_4_1_0_0)
->                 ret = regmap_write(drv_data->bcast_regmap, act_clear_reg,
-> @@ -1282,6 +1284,14 @@ static int qcom_llcc_probe(struct platform_device *pdev)
->
->         drv_data->version = version;
->
-> +       if (drv_data->version >= LLCC_VERSION_4_1_0_0) {
-> +               drv_data->bcast_and_regmap = qcom_llcc_init_mmio(pdev, i + 1, "llcc_broadcast_and_base");
-> +               if (IS_ERR(drv_data->bcast_and_regmap)) {
-> +                       ret = PTR_ERR(drv_data->bcast_and_regmap);
-> +                       goto err;
-> +               }
-> +       }
-> +
->         llcc_cfg = cfg->sct_data;
->         sz = cfg->size;
->
-> diff --git a/include/linux/soc/qcom/llcc-qcom.h b/include/linux/soc/qcom/llcc-qcom.h
-> index 1a886666bbb6..9e9f528b1370 100644
-> --- a/include/linux/soc/qcom/llcc-qcom.h
-> +++ b/include/linux/soc/qcom/llcc-qcom.h
-> @@ -115,7 +115,8 @@ struct llcc_edac_reg_offset {
->  /**
->   * struct llcc_drv_data - Data associated with the llcc driver
->   * @regmaps: regmaps associated with the llcc device
-> - * @bcast_regmap: regmap associated with llcc broadcast offset
-> + * @bcast_regmap: regmap associated with llcc broadcast OR offset
-> + * @bcast_and_regmap: regmap associated with llcc broadcast AND offset
->   * @cfg: pointer to the data structure for slice configuration
->   * @edac_reg_offset: Offset of the LLCC EDAC registers
->   * @lock: mutex associated with each slice
-> @@ -129,6 +130,7 @@ struct llcc_edac_reg_offset {
->  struct llcc_drv_data {
->         struct regmap **regmaps;
->         struct regmap *bcast_regmap;
-> +       struct regmap *bcast_and_regmap;
->         const struct llcc_slice_config *cfg;
->         const struct llcc_edac_reg_offset *edac_reg_offset;
->         struct mutex lock;
-> --
-> 2.25.1
->
->
-
-
--- 
-With best wishes
-Dmitry
+I changed it to be a regulator led and will post a v4 soon.
 
