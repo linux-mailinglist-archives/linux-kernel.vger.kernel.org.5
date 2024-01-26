@@ -1,125 +1,210 @@
-Return-Path: <linux-kernel+bounces-40325-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F33BA83DE89
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:21:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FA2783DE8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:22:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AEE42283EE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:21:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7F7428249A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:22:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFDC81DA2E;
-	Fri, 26 Jan 2024 16:21:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A740D1DFDE;
+	Fri, 26 Jan 2024 16:21:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="E85DPW04"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="amtlISvr"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3433A1869;
-	Fri, 26 Jan 2024 16:21:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 321D41DDC9
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 16:21:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706286091; cv=none; b=ke/HyvOH5L5gUYHkulXmiq2WxqloO+4cU7eRKwpKbdxPmsN0KtLxpeF7SyzJV36E/pjhvpTr+RnDgbYPd1T6eewiPXjgcJicakXxpf5fzACuFLZ8W8b040H26xNSIXDQoq7DBoXaCajah0zYTwQ5tP9F3nd+3DHXots9bik+jw0=
+	t=1706286117; cv=none; b=Xbs+g94A1CeusD11sKcy/r4QQEMiUFx9SQ6imnm8wu0F1c+texp4K0BT138wzYuvIbqNXp1CeQ+HG/1RIM/L6sSG39DQZY0qh4a1jn9E1xMal1gJe0hviEBBnjLEJml8utgtSiQfzbbRZzC/m9T8F9McxwTSCKm1w5IVxQT7KbE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706286091; c=relaxed/simple;
-	bh=qADy1ppHLODrkpaiBhX12RYbvSDcazYVsUJT8jx33Cg=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=NM05dWjxd4uVqEWFiWyHuauhRkEe9557oAWyQM/JFYw0RZgspEyQNp6nHCEh+MYVsrbZnHU3Y6zwkUH/B55d5701ITQ/WJ1zON7PPJhaPYZZha3OPGfVPJ5tujaZHrjY8kbFPp7bhKCF13zNTuvc5LqGnAoBEpt8RNvGGXbxSc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=E85DPW04; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706286090; x=1737822090;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=qADy1ppHLODrkpaiBhX12RYbvSDcazYVsUJT8jx33Cg=;
-  b=E85DPW04VnbFN3dcBqFdJuz4rTChKdl44hw9MK/poVgt15CZ6zffeQ5+
-   kz68KSAozXYrxOh4J4GSKOYk5Y3P8Kbwcyv6ALIreNk80PVqgvrBGPGi7
-   5c59d5f6hCljNtrYJ3t6kh1Kspt+86x1nEpY/c9ZbVdnZnQ+igbGsyhnH
-   kSkdVu/BEYFsRWTxKTpDqlP/QOR/UWNEfO2qwmtQo5ZPkFE8/9c1Zsr6c
-   I0A/Y0qBEREEVtxoLAWiv7eCulAncw8gaiBJD5mJZS7D43pZdW2buHZo1
-   Mg1v/iY5ey5TV5jPwldTOznABQK797WAt+YTXfKla9NcCb97hA/fJW1Dg
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="9884190"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="9884190"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 08:21:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="857438086"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="857438086"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 26 Jan 2024 08:21:25 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: "hpa@zytor.com" <hpa@zytor.com>, "linux-sgx@vger.kernel.org"
- <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
- <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
- <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
- <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
- <kai.huang@intel.com>
-Cc: "kristen@linux.intel.com" <kristen@linux.intel.com>,
- "yangjie@microsoft.com" <yangjie@microsoft.com>, "Li, Zhiquan1"
- <zhiquan1.li@intel.com>, "seanjc@google.com" <seanjc@google.com>,
- "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>, "Zhang, Bo"
- <zhanb@microsoft.com>, "anakrish@microsoft.com" <anakrish@microsoft.com>
-Subject: Re: [PATCH v7 09/15] x86/sgx: Charge mem_cgroup for per-cgroup
- reclamation
-References: <20240122172048.11953-1-haitao.huang@linux.intel.com>
- <20240122172048.11953-10-haitao.huang@linux.intel.com>
- <195eff7f2814b918a570b8c2c9e21288ac9df4b7.camel@intel.com>
-Date: Fri, 26 Jan 2024 10:21:22 -0600
+	s=arc-20240116; t=1706286117; c=relaxed/simple;
+	bh=U4RlufN+2/ttlS2ZzVyaGaxSUuXUT23VnoozMGXxZKw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=bRaZtrVwZcPHVQPH6exoDvBflVD5QNfly8Sc+omIawlogSiMkXHLyzDJvXDeAMSS/bAIrr8O0a23b7xxSBT1uFY77wGakTSuMBoq3eoE128vkucLF1hEMWIurkK6Xkz6MKKaMv72m5R2c50V+tJnktmx88bvRHTcBZ70YB2gtk8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=amtlISvr; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706286115;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/DKHWYNIQ8pDBSd77D6euq+SK1mGoY9FE9L6w6bXw+I=;
+	b=amtlISvrcFuUjLhl/7F81L9EvSAhT26qP6VsQHoNlANap/e3h29k5sCJbe4NVR+ND0hEFp
+	3n/7p9tmlU3xM36f8q2JO8TcHX+DJe8G+McZt1UD2u3spBJJsq91bwVXcLDFjYBBtg4IeN
+	ykccxs9KLmf0gPsAJ966szLp28CBUo8=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-563-mWGw8AEbMzK8Kbq4kJxH9A-1; Fri, 26 Jan 2024 11:21:52 -0500
+X-MC-Unique: mWGw8AEbMzK8Kbq4kJxH9A-1
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-42987be5d14so6696431cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:21:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706286112; x=1706890912;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/DKHWYNIQ8pDBSd77D6euq+SK1mGoY9FE9L6w6bXw+I=;
+        b=tZ1iwOgK7jN0Z9zxXWtmxR89oL0LmQAUm1oMIRp15qty9RtMbt1FslBKh3lMOCMU8T
+         FqjpCc0PLLUGzcHJIOymF5+M6SOG2mA1iScmPQkDZdTRrEZtjPXKTJuRIVzacqEoyUNf
+         ln2RYz/AX0kmdsNimgy+WjT+HNbDYwOpX78ZhSIj6ZxSxBMyaR4va/yS8lo0uA0MlOzF
+         LpF1P/aI7vKr+jsE+jWdQGPjwHffn9DGvDdODFnpDVZiLYhaCrH/KV0I6Vs/hKqdPEsP
+         t8yEAIG3rOTg8fDsdLRbMN47FyQ0ipvftiuQOpBHCFYByzd/At8zpDepslGA/BPHbiYt
+         V5nA==
+X-Gm-Message-State: AOJu0YwribQ9XM8xUs09Zhxb63f6YStTOUGOOJcqYLPS5vFRIlNRZXoS
+	oTsz99H5oUlEdaPESdS9DkdkW1guvBG+P0IS6EyxwQ2M9pXDhy23zwc2vNbXTqJUOibqa1h6Bo7
+	9C74C+PmcZKUTgOBidJpsmZ4yucnYMuboT8E70UteQdr3cAVq0+WO2qZQZLLVyA==
+X-Received: by 2002:a05:622a:14c9:b0:42a:8571:a2cb with SMTP id u9-20020a05622a14c900b0042a8571a2cbmr86554qtx.84.1706286111976;
+        Fri, 26 Jan 2024 08:21:51 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFivbhhWcR3ymCn6eXUjLbh0aQaVUngXs/Pq/CRsCJDMlAq7L5AHlbxId9Ivo6Fqj4oVb+1tg==
+X-Received: by 2002:a05:622a:14c9:b0:42a:8571:a2cb with SMTP id u9-20020a05622a14c900b0042a8571a2cbmr86543qtx.84.1706286111691;
+        Fri, 26 Jan 2024 08:21:51 -0800 (PST)
+Received: from fedora (g2.ign.cz. [91.219.240.8])
+        by smtp.gmail.com with ESMTPSA id hj1-20020a05622a620100b00429aba4a360sm637903qtb.81.2024.01.26.08.21.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 08:21:51 -0800 (PST)
+From: Vitaly Kuznetsov <vkuznets@redhat.com>
+To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini
+ <pbonzini@redhat.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, David Matlack
+ <dmatlack@google.com>, Xu Yilun <yilun.xu@linux.intel.com>, Sean
+ Christopherson <seanjc@google.com>
+Subject: Re: [PATCH 3/4] KVM: Get reference to VM's address space in the
+ async #PF worker
+In-Reply-To: <20240110011533.503302-4-seanjc@google.com>
+References: <20240110011533.503302-1-seanjc@google.com>
+ <20240110011533.503302-4-seanjc@google.com>
+Date: Fri, 26 Jan 2024 17:21:48 +0100
+Message-ID: <87sf2k83qb.fsf@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2h5w1w0awjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <195eff7f2814b918a570b8c2c9e21288ac9df4b7.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Type: text/plain
 
-On Fri, 26 Jan 2024 08:37:25 -0600, Huang, Kai <kai.huang@intel.com> wrote:
+Sean Christopherson <seanjc@google.com> writes:
+
+> Get a reference to the target VM's address space in async_pf_execute()
+> instead of gifting a reference from kvm_setup_async_pf().  Keeping the
+> address space alive just to service an async #PF is counter-productive,
+> i.e. if the process is exiting and all vCPUs are dead, then NOT doing
+> get_user_pages_remote() and freeing the address space asap is
+> desirable.
+
+It took me a while to realize why all vCPU fds are managed by the same
+mm which did KVM_CREATE_VM as (AFAIU) fds can be passed around. Turns
+out, we explicitly forbid this in kvm_vcpu_ioctl():
+
+        if (vcpu->kvm->mm != current->mm || vcpu->kvm->vm_dead)
+                return -EIO;
+
+so this indeed means that grabbing current->mm in kvm_setup_async_pf()
+can be avoided. I'm not sure whether it's just me or a "all vCPUs are
+quired to be managed by the same mm" comment somewhere would be helpful.
 
 >
->>
->> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
->> Reported-by: Mikko Ylinen <mikko.ylinen@linux.intel.com>
->> ---
+> Handling the mm reference entirely within async_pf_execute() also
+> simplifies the async #PF flows as a whole, e.g. it's not immediately
+> obvious when the worker task vs. the vCPU task is responsible for putting
+> the gifted mm reference.
 >
-> Non-technical staff:
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  include/linux/kvm_host.h |  1 -
+>  virt/kvm/async_pf.c      | 32 ++++++++++++++++++--------------
+>  2 files changed, 18 insertions(+), 15 deletions(-)
 >
-> I believe checkpatch requires you to have a "Closes" tag after  
-> "Reported-by"
-> otherwise it complains something like this:
->
->   WARNING: Reported-by: should be immediately followed by Closes: with a  
-> URL
->   to the report
->
-> Not sure how strict this rule is, but seems you forgot to run checkpatch  
-> so just
-> a reminder.
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 7e7fd25b09b3..bbfefd7e612f 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -238,7 +238,6 @@ struct kvm_async_pf {
+>  	struct list_head link;
+>  	struct list_head queue;
+>  	struct kvm_vcpu *vcpu;
+> -	struct mm_struct *mm;
+>  	gpa_t cr2_or_gpa;
+>  	unsigned long addr;
+>  	struct kvm_arch_async_pf arch;
+> diff --git a/virt/kvm/async_pf.c b/virt/kvm/async_pf.c
+> index d5dc50318aa6..c3f4f351a2ae 100644
+> --- a/virt/kvm/async_pf.c
+> +++ b/virt/kvm/async_pf.c
+> @@ -46,8 +46,8 @@ static void async_pf_execute(struct work_struct *work)
+>  {
+>  	struct kvm_async_pf *apf =
+>  		container_of(work, struct kvm_async_pf, work);
+> -	struct mm_struct *mm = apf->mm;
+>  	struct kvm_vcpu *vcpu = apf->vcpu;
+> +	struct mm_struct *mm = vcpu->kvm->mm;
+>  	unsigned long addr = apf->addr;
+>  	gpa_t cr2_or_gpa = apf->cr2_or_gpa;
+>  	int locked = 1;
+> @@ -56,16 +56,24 @@ static void async_pf_execute(struct work_struct *work)
+>  	might_sleep();
+>  
+>  	/*
+> -	 * This work is run asynchronously to the task which owns
+> -	 * mm and might be done in another context, so we must
+> -	 * access remotely.
+> +	 * Attempt to pin the VM's host address space, and simply skip gup() if
+> +	 * acquiring a pin fail, i.e. if the process is exiting.  Note, KVM
+> +	 * holds a reference to its associated mm_struct until the very end of
+> +	 * kvm_destroy_vm(), i.e. the struct itself won't be freed before this
+> +	 * work item is fully processed.
+>  	 */
+> -	mmap_read_lock(mm);
+> -	get_user_pages_remote(mm, addr, 1, FOLL_WRITE, NULL, &locked);
+> -	if (locked)
+> -		mmap_read_unlock(mm);
+> -	mmput(mm);
+> +	if (mmget_not_zero(mm)) {
+> +		mmap_read_lock(mm);
+> +		get_user_pages_remote(mm, addr, 1, FOLL_WRITE, NULL, &locked);
+> +		if (locked)
+> +			mmap_read_unlock(mm);
+> +		mmput(mm);
+> +	}
+>  
+> +	/*
+> +	 * Notify and kick the vCPU even if faulting in the page failed, e.g.
+> +	 * so that the vCPU can retry the fault synchronously.
+> +	 */
+>  	if (IS_ENABLED(CONFIG_KVM_ASYNC_PF_SYNC))
+>  		kvm_arch_async_page_present(vcpu, apf);
+>  
+> @@ -129,10 +137,8 @@ void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
+>  #ifdef CONFIG_KVM_ASYNC_PF_SYNC
+>  		flush_work(&work->work);
+>  #else
+> -		if (cancel_work_sync(&work->work)) {
+> -			mmput(work->mm);
+> +		if (cancel_work_sync(&work->work))
+>  			kmem_cache_free(async_pf_cache, work);
+> -		}
+>  #endif
+>  		spin_lock(&vcpu->async_pf.lock);
+>  	}
+> @@ -211,8 +217,6 @@ bool kvm_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+>  	work->cr2_or_gpa = cr2_or_gpa;
+>  	work->addr = hva;
+>  	work->arch = *arch;
+> -	work->mm = current->mm;
+> -	mmget(work->mm);
+>  
+>  	INIT_WORK(&work->work, async_pf_execute);
 
-Yeah I did remember run checkpatch this time and last time :-)
-Here is what I see from documentation[1]:"The tag should be followed by a  
-Closes: tag pointing to the report, unless the report is not available on  
-the web". So it seems to allow exceptions.
-Mikko mentioned this issue to me in private IM so this is not available on  
-web.
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-Thanks
-Haitao
+-- 
+Vitaly
 
-https://docs.kernel.org/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes
 
