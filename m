@@ -1,182 +1,94 @@
-Return-Path: <linux-kernel+bounces-40333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AD5883DEA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:26:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D00383DEA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:25:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D88D71F25199
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:26:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6F81B24179
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:25:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EF601DDC9;
-	Fri, 26 Jan 2024 16:25:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C0031DA30;
+	Fri, 26 Jan 2024 16:25:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=timschumi@gmx.de header.b="NcZxPcD9"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qRuSvS9x"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B2371E87E;
-	Fri, 26 Jan 2024 16:25:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 629F11D6BE;
+	Fri, 26 Jan 2024 16:25:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706286342; cv=none; b=LTRMlcMZK/4PCsUZug+D/lLmFcfqL0t+GLrEb+L621oedWJR1bN7EJfDfzXtLfWD4X7x2IZnl+HlmU1RuWiCUW17Y39pnuUfmLrHSbu0/iAaBXXlrSDLW2Idgstz/W7/AMYs5OrmFr35j0P1u82hBizsLgrvEWcUuwksLM+8o/8=
+	t=1706286334; cv=none; b=OUJ2FvgUKOXKetThMK4zRtYeEntbIPNJUBwwg8FEAhYWhFw0TCKeq25jCEk1hxg+FkLk/y7/E2AFdrIrzMG8MrYR57V2/RDmSytjyx8Dek6dkWFKpFr3T1y+vraU6QiVXxm8Q5XT4mEWxnr7X0G9TiMMB1YrquF/aHxjPh5I7vI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706286342; c=relaxed/simple;
-	bh=6z0ByeYL+pkh95bC+3RgBUcMtnqLYolkJqdVY7JSZco=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=X4hEwgwYfcmicWue9ZDNJlB6qU/pjbCqB7+YjFPFQFu68s6nkSrm/0xuLhEH+p6l64xLdtZKARBWeo8BDO3CnYxxfXAuTTORpTrG/KOU2+eKU2XTieptnw4M3+rgrPzrjAlW897aFpBvqZaNbJ/MWVRw21gcF7ouxQRi9OQabPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=timschumi@gmx.de header.b=NcZxPcD9; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1706286328; x=1706891128; i=timschumi@gmx.de;
-	bh=6z0ByeYL+pkh95bC+3RgBUcMtnqLYolkJqdVY7JSZco=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=NcZxPcD9lq45zJ7UxyHXRUGo3lEWgZuTCtILpfysjpanLsW8jCNfcN92N8Z9EkM4
-	 UsiIBqmLZ48gCx7AoOekCLm7HEi324GNc56qdQbnFLOPgPCjMzzU9l5Dg9TrcrZ5D
-	 xm/5FOitxD0XibtQpSeIzGZbTcS0R16q47kaHvtcBq0bh2ErLLTOBw0wXWxWUt0RP
-	 tquFo2bz5sWVKLRhE2lOIi5PDoxZeeodQYKKhb32QDBiB6klpHa3FZHfT+OeBMMzQ
-	 Q87dMo1biDPcTPq9aS2QcFRCs1u1a5qKS5OGdJZQMTiojg7GfC2Wavl6jSf+RZ8Ui
-	 B0AGAiiSeo0umJCnGQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from localhost.localdomain ([93.218.111.23]) by mail.gmx.net
- (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1Mv31c-1rBb3H3LdI-00r3ow; Fri, 26 Jan 2024 17:25:27 +0100
-From: Tim Schumacher <timschumi@gmx.de>
-To: linux-efi@vger.kernel.org
-Cc: Tim Schumacher <timschumi@gmx.de>,
-	jk@ozlabs.org,
-	ardb@kernel.org,
-	mjg59@srcf.ucam.org,
-	pjones@redhat.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] efivarfs: Request at most 512 bytes for variable names
-Date: Fri, 26 Jan 2024 17:25:23 +0100
-Message-ID: <20240126162524.52051-1-timschumi@gmx.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240123202743.1591165-1-timschumi@gmx.de>
-References: <20240123202743.1591165-1-timschumi@gmx.de>
+	s=arc-20240116; t=1706286334; c=relaxed/simple;
+	bh=DfiRLIgoHi+38BtPH3e3fTQLMA+gmNR/PlVDe0aSLE4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KTI0AH1ZP3dqVGFczwixgKwgdvNIj+BsEEeZstqxXCHv2zskG6byjrYlHa16ZeOtfR6izvZAGDSe4dNSxWjLAxfRGciBgVYFXS9e1tEqFLV/hhI13GOvEZrwnIL4VkRbWiY/Ql4z13wKy2OS6ozen09/4d71BMOljAU89UNZEi0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qRuSvS9x; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA9C7C43399;
+	Fri, 26 Jan 2024 16:25:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706286333;
+	bh=DfiRLIgoHi+38BtPH3e3fTQLMA+gmNR/PlVDe0aSLE4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qRuSvS9x/ormIZak+Jk7Smge4qyqYrGWGsPT0Ssq3xD6YwTLemD861CFKeMhfaelk
+	 +H10YzOrhQvtRuLzeW2TcV1LEwRSHqZGhd9TQa1tY7UJBsZ4upPSPCjQ/N1nnLRxcD
+	 YN+U8pdtHDroTkuz7dwXN4YPQcHDTcWoKzuX95U2wcuQUmO9otv7s7TYlw3LjW9OgO
+	 jlNjoXkb+dBZHGJ0uMwlYqIpFJSm3MneJbQ1mYpHWXQ1psJNpm/x0Q3rqNGV23qNHo
+	 Jj1Oss9R5C/VC/KfaQbXYqneahf5tQ9ahmcxBnT2bPS+taGXdqqsL4EenHmuGpxjFx
+	 oNwAb33+MyIjg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id 23DFE40441; Fri, 26 Jan 2024 13:25:31 -0300 (-03)
+Date: Fri, 26 Jan 2024 13:25:31 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: James Clark <james.clark@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>, linux-perf-users@vger.kernel.org,
+	irogers@google.com, kan.liang@linux.intel.com, mark.rutland@arm.com,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Changbin Du <changbin.du@huawei.com>,
+	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] perf evlist: Fix evlist__new_default() for > 1 core
+ PMU
+Message-ID: <ZbPc-1sqFgb7dJlF@kernel.org>
+References: <20240123102728.239147-1-james.clark@arm.com>
+ <20240123103918.241423-1-james.clark@arm.com>
+ <CAM9d7ciSY25Jf-MG24NWJu3aKJWXT2GN43qrV5WCuohLNZn1iw@mail.gmail.com>
+ <ea054381-6ba2-d2f6-8de4-978a78a2ed8b@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:+aDdGtIfgG90q+Bt2+L0eHwS9QyS6tkSZK4Yxy7mc21bnBmtWSM
- wcCJzAzhxzpqY+C7vM7wlX+nIoeX51bx9k8VBagLN9xKUpRgPXL7mAmkEkepML9U4Xa+p1S
- lPDoNMziSXxccQ1RaG376qWx0n0KVGC37FqKPoV+hCk6Ytf02Dn00y6iy4AS5Ij0ugrlH1x
- Oxg52Ch4j+2wu+h4TkJ7A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:exu9ofekbfU=;NkVT69E2thuvsZqDmqQowaaz6co
- fZIJYQgv36qfAakhvYI10R8Gd6L/uw4eMvp3mWfupiq3eZDdg9myJ4efttIRAAF9Vg8eat808
- 2ptObyHqFQzP2GsYYNK71kGL+ppg5EeaY8VxRTtjEOpQdG1ADWmQPrExdWrn6wqaTA/1BNbdw
- dGL5miY3GLZp0ankMP6Af8no0IEUEDiNK0NxfD156GoOOnH6BUrRvi3UmZJL+KXcJCdGeLHtN
- G3hZRXnCvdid1jUUbdLupagJTHkWtSOyb4ynQ4hq2X0lshUjV5VHRZv1XeLzvS0gec2O27ZP4
- u1hG5JqLVGQ9ZZDr7Ojuq5pldDZ8i/yTG1FiFMqxDC5/vqPWEnRmCXwYaebR+7Uuy0wbj/OJb
- RhWSAA+qJtHog26hICgmZLxVX1G3Ws/Z+0+qWue/6SjUYGFfW0nF6S/MFdKonP9EI+S72fJkk
- VS6lQXV/QJBRYDBqn/CT91aHbkVdFlidPH7/x1xShq6sQ0SrtwEw3QyOLeLp66xDesvFtCHLs
- QRlWm4z57mEPDLt/ukf/oILC+lSVndhvIQLgh68WYutaAe+H7Gf584bX9SfnfBVFIfh7+X3ON
- 6UT4xg3SmVg8ChO/1SY1fyt9LACN8aN0wT90GSH07u4FgacM1R1NXEaiRaehrxyemp2sBTwyR
- pRrxa882owIbq12iJykwD9UbcJL2Swr5/PyLpmDzv58cQYI/APiNDIMoI+Ecj4UJlV1jFfi3O
- 3kBfhadWL/sY/WuJfyMec4Zoj1qgpfpHrSv+TCyO1OAdt4Z6D9B2uxkcAg38MaahZCtzyO3OF
- 3pENs4iDt8RqmbfeNJG92heOUVmKnapxQXK26/SH5kFT1UHAQ8GEMBw6frSJfVVlE+wzpn8Tk
- 97sED7aBcuTdeRTc/v6C3uFp0ePKao6WuNSBV3B6vDiYjvR9vdrFgnxsZ+HBsKtg/pnw1Q3Bl
- bsONC42BlNNJps2f6RyLXL1h9TQ=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ea054381-6ba2-d2f6-8de4-978a78a2ed8b@arm.com>
+X-Url: http://acmel.wordpress.com
 
-This sidesteps a quirk in a few old (2011-ish) UEFI implementations,
-where a call to `GetNextVariableName` with a buffer size larger than 512
-bytes will always return `EFI_INVALID_PARAMETER`.
+Em Wed, Jan 24, 2024 at 09:03:57AM +0000, James Clark escreveu:
+> On 24/01/2024 00:46, Namhyung Kim wrote:
+> > On Tue, Jan 23, 2024 at 2:39 AM James Clark <james.clark@arm.com> wrote:
+> >> +++ b/tools/perf/util/evlist.c
+> >> @@ -106,6 +106,13 @@ struct evlist *evlist__new_default(void)
+> >>                 evlist = NULL;
+> >>         }
 
-Cc: stable@vger.kernel.org # 6.1+
-Signed-off-by: Tim Schumacher <timschumi@gmx.de>
-=2D--
-Made a patch with just the size change (and a comment / error message
-for good measure) as requested. I just hope that I don't have to come
-back in a month to find out that there is a machine that only accepts up
-to (e.g.) 256 bytes.
+> >> +       if (evlist->core.nr_entries > 1) {
 
-One thing that I just recently noticed is that properly processing
-variables above 512 bytes in size is currently meaningless anyways,
-since the VFS layer only allows file name sizes of up to 255 bytes,
-and 512 bytes of UCS2 will end up being at least 256 bytes of
-UTF-8.
+> > I think you need a NULL check for evlist here.
+ 
+> Oops yes. Or just return on the error above.
 
-If path creation errors are decoupled from the iteration process then
-one could at least skip those entries, but the efivarfs implementation
-seems to be in no shape to handle that currently.
-=2D--
-Changes since v1 ("efivarfs: Iterate variables with increasing name buffer=
- sizes"):
+Was there a v4? I'm assuming this is for perf-tools, i.e. for v6.8-rc,
+right?
 
-- Redid the logic to start with the current limit of 1024 and continuously
-  halve it until we get a successful result.
-- Added a warning line in case we find anything that is bigger than the li=
-mit.
-- Removed an outdated (or never accurate?) comment about a specification-i=
-mposed
-  length limit.
-
-Changes since v2 ("efivarfs: Halve name buffer size until first successful=
- response"):
-
-- Removed all the complicated logic, only keeping the new limit, the
-  comment change, and the error message in case a big variable is found.
-=2D--
- fs/efivarfs/vars.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
-
-diff --git a/fs/efivarfs/vars.c b/fs/efivarfs/vars.c
-index 9e4f47808bd5..3f6385f2a4e5 100644
-=2D-- a/fs/efivarfs/vars.c
-+++ b/fs/efivarfs/vars.c
-@@ -372,7 +372,7 @@ static void dup_variable_bug(efi_char16_t *str16, efi_=
-guid_t *vendor_guid,
- int efivar_init(int (*func)(efi_char16_t *, efi_guid_t, unsigned long, vo=
-id *),
- 		void *data, bool duplicates, struct list_head *head)
- {
--	unsigned long variable_name_size =3D 1024;
-+	unsigned long variable_name_size =3D 512;
- 	efi_char16_t *variable_name;
- 	efi_status_t status;
- 	efi_guid_t vendor_guid;
-@@ -389,12 +389,13 @@ int efivar_init(int (*func)(efi_char16_t *, efi_guid=
-_t, unsigned long, void *),
- 		goto free;
-
- 	/*
--	 * Per EFI spec, the maximum storage allocated for both
--	 * the variable name and variable data is 1024 bytes.
-+	 * A small set of old UEFI implementations reject sizes
-+	 * above a certain threshold, the lowest seen in the wild
-+	 * is 512.
- 	 */
-
- 	do {
--		variable_name_size =3D 1024;
-+		variable_name_size =3D 512;
-
- 		status =3D efivar_get_next_variable(&variable_name_size,
- 						  variable_name,
-@@ -431,6 +432,11 @@ int efivar_init(int (*func)(efi_char16_t *, efi_guid_=
-t, unsigned long, void *),
- 			break;
- 		case EFI_NOT_FOUND:
- 			break;
-+		case EFI_BUFFER_TOO_SMALL:
-+			printk(KERN_WARNING "efivars: Assumed maximum name size to be 512, got=
- name of size %lu\n",
-+			       variable_name_size);
-+			status =3D EFI_NOT_FOUND;
-+			break;
- 		default:
- 			printk(KERN_WARNING "efivars: get_next_variable: status=3D%lx\n",
- 				status);
-=2D-
-2.43.0
-
+- Arnaldo
 
