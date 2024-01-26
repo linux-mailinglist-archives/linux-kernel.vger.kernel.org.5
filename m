@@ -1,110 +1,95 @@
-Return-Path: <linux-kernel+bounces-40725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FFB683E4CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:11:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 91C0B83E4D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:12:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 636951C21279
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:11:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4FB01C2324B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:12:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22D2025564;
-	Fri, 26 Jan 2024 22:09:13 +0000 (UTC)
-Received: from relay.hostedemail.com (smtprelay0012.hostedemail.com [216.40.44.12])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F336745955;
+	Fri, 26 Jan 2024 22:10:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iYHsRXGg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A39A250E2;
-	Fri, 26 Jan 2024 22:09:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2414C24B22;
+	Fri, 26 Jan 2024 22:10:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706306952; cv=none; b=tNLCVy5m9RUaqKIZG4PY8TL+8b8KEU2xwtjDScusfGu3osEAQm/bCtN/+TUmxgHK+6JqPMjjyMEaSEhjQeVUW3LH2RIADON+g7QtYlrQ8+QjwVskiCITO2uo9GD5eaF2W3RRU4lbXsCjClUVPdcrwjHYBQilYL3wxaZAd9vQ86w=
+	t=1706307025; cv=none; b=bEvJa5DM7kodxuOMcuMMfthMgtxEdvaXdBbHEtHa0C4W/U58ngBfFgGhtyi5piQmfvCqtFR32hwF0y1Z72pnxtPiBD/sy+X7K9oc5EiCc/6nMwxE4S0/DmHASuTwO5AFN8HBFJVFlHW4uydcbJxA6pAo+gz4DoRMKkMcAQWYpgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706306952; c=relaxed/simple;
-	bh=CtzTaYkdi2xs3uvaVT8RVg0S77WwmwuAqxtycAss0+4=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=FAuKAxWmeHCegt8Tm/Dt53iKXbH11c48WdYHswHFf4ST/fUQbMNBbTKji5igtlVGkL3BZt3TwrN4258f9kT7lYmHSt8MjH1pPXNp52mmANCuosJfI0UxCmQ4sxmKB+6kwddbc68vqTevpHdKiWhrS+EimKRcepeqfeVEvEetqJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf16.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay09.hostedemail.com (Postfix) with ESMTP id 07DF080ECE;
-	Fri, 26 Jan 2024 22:09:01 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf16.hostedemail.com (Postfix) with ESMTPA id 0E2082000D;
-	Fri, 26 Jan 2024 22:08:58 +0000 (UTC)
-Date: Fri, 26 Jan 2024 17:08:57 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-CC: LKML <linux-kernel@vger.kernel.org>,
- Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Christian Brauner <brauner@kernel.org>, Ajay Kaher <ajay.kaher@broadcom.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
-User-Agent: K-9 Mail for Android
-In-Reply-To: <CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
-References: <20240126150209.367ff402@gandalf.local.home> <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com> <20240126162626.31d90da9@gandalf.local.home> <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com> <CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
-Message-ID: <0C9AF227-60F1-4D9B-9099-1A86502359BA@goodmis.org>
+	s=arc-20240116; t=1706307025; c=relaxed/simple;
+	bh=vXuMp87s4mUMjGR7JS9qQioqQWRujjmW8WiM3f1UTIc=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=m/V0JWZD8fE4uxuUFC7ybswBTmFB3Jr43OhcAXC8CJZwJP7mtR8l7cRYTOOMLwRuqu5KA7VG4WOWZ2vYbJXw1aljPjbqt5MPpPI/7nZ3Zcb/6g5hlYggROXMyrWLz7AkuVnQNyI61uIVF6VMDcCejslcXzsfoQzdnFwjln08cFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iYHsRXGg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C2C3AC433C7;
+	Fri, 26 Jan 2024 22:10:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706307024;
+	bh=vXuMp87s4mUMjGR7JS9qQioqQWRujjmW8WiM3f1UTIc=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=iYHsRXGgQh5ZvI2+TILjldF1LIikWHILRt85ozEl1c8al1F5Ce71oFrW+PkB19UbC
+	 aqIcARXm/rO0Gk/X6pg4Qwm1o5oOpfqGXnKzst64tutNkopuRzOIVFLY9U4NMEk8BE
+	 OdUGxj7WbqW3UTbbhtqta3g7pG3EkfYGtdQ/9Qs41+I9JSah4XZXIZsfe9p9VyIW7f
+	 fPesQBp7wfYPNT46JinHao15BggDbdkUy/wCxRaW4BmpQjOKq3AtT6m35s1NXq/wx0
+	 M3Yv/eMiE8qqfhKSYsN4k0UtgoArEFQ5NbGy4QzRWuXme+DC3MwuzVtn43lXwkjf41
+	 UxGbATp1d23yA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A9DE1D8C966;
+	Fri, 26 Jan 2024 22:10:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 0E2082000D
-X-Rspamd-Server: rspamout08
-X-Stat-Signature: t1hwm8ebwiqcmhpjwt1gda5gazipj7e6
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX18G8o5mt59Y6mr4cWUlR88Fv+EAXiFrcgE=
-X-HE-Tag: 1706306938-501392
-X-HE-Meta: U2FsdGVkX1+yskEDYPvVQ4g3ZQhGys1dTkR4hq7/xYKHMIk+a3H5TVdzTbqEDVUy82Kw2Hgn1sDiQcIr4Xekxca5ZKNqbcwHaiRaMkJrH2npVIMGJ0UhRjkZqlHcphfyYQB/wh7CPdsSDpgSgb0SjHNedmUZI+Z2RkvLkpf4Ib063dkbgah4REWw2JnlWSzk1u2AMILAJl22ExM7bJ5hWB7MELUlKn5wyselZhAIBVlZqT4DWiCb+XEKmEOPpx2aEg404WMra9w1Er6KwPjZjPgsFJFMYZT4y7wD/pGZkUxeHPokQ0iBVubKmBDqH7xdqXfGZ6pMzYj0wwMCpBGn+qEM0nadn1ZyYw6J/okdtLnRp497w0DhPVxql35DWgjEoStdEFav1/kCp6O1vat0QA==
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net/smc: fix incorrect SMC-D link group matching logic
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170630702469.26145.8407281649456707093.git-patchwork-notify@kernel.org>
+Date: Fri, 26 Jan 2024 22:10:24 +0000
+References: <20240125123916.77928-1-guwen@linux.alibaba.com>
+In-Reply-To: <20240125123916.77928-1-guwen@linux.alibaba.com>
+To: Wen Gu <guwen@linux.alibaba.com>
+Cc: wintera@linux.ibm.com, mjrosato@linux.ibm.com, wenjia@linux.ibm.com,
+ jaka@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, alibuda@linux.alibaba.com,
+ tonylu@linux.alibaba.com, linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+
+Hello:
+
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Thu, 25 Jan 2024 20:39:16 +0800 you wrote:
+> The logic to determine if SMC-D link group matches is incorrect. The
+> correct logic should be that it only returns true when the GID is the
+> same, and the SMC-D device is the same and the extended GID is the same
+> (in the case of virtual ISM).
+> 
+> It can be fixed by adding brackets around the conditional (or ternary)
+> operator expression. But for better readability and maintainability, it
+> has been changed to an if-else statement.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net] net/smc: fix incorrect SMC-D link group matching logic
+    https://git.kernel.org/netdev/net/c/c3dfcdb65ec1
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-
-On January 26, 2024 4:49:13 PM EST, Linus Torvalds <torvalds@linux-foundat=
-ion=2Eorg> wrote:
->On Fri, 26 Jan 2024 at 13:36, Linus Torvalds
-><torvalds@linux-foundation=2Eorg> wrote:
->>
->> If you have more than 4 billion inodes, something is really really wron=
-g=2E
->
->Btw, once again, the vfs layer function you took this from *does* have
->some reason to worry=2E Somebody might be doing 'pipe()' in a loop=2E
->
->Also, if your worry is "what if somebody mounts that thing a million
->times", the solution to *that* would have been to make it a per-sb
->counter, which I think would be cleaner anyway=2E
->
-
-I'm more worried about a loop of:
-
-cd /sys/kernel/tracing/instances
-while:; do mkdir foo ; rmdir foo: done
-
-Which is what my tests do=2E And I have run that for over a weekend=2E
-
-
->But my real issue is that I think you would be *much* better off just
->deleting code, instead of adding new code=2E
->
->For example, what purpose does 'e->dentry' and 'ei->d_childen[]' have?
->Isn't that entirely a left-over from the bad old days?
->
-
-I'm not at my computer, but when I tried deleting that, it caused issues w=
-ith the lookup code=2E
-
--- Steve=20
-
->So please try to look at things to *fix* and simplify, not at things
->to mess around with and make more complicated=2E
->
->              Linus
 
