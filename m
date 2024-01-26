@@ -1,165 +1,200 @@
-Return-Path: <linux-kernel+bounces-40001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D7D783D92E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:19:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 130B683D94F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:28:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5DF3B42B8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:43:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4AC00B2E548
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:48:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91DE712B6F;
-	Fri, 26 Jan 2024 10:43:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E49113FF5;
+	Fri, 26 Jan 2024 10:47:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="HQgP8YHN"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uFWV5/6c";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4nrJbFly";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oCRuZGtD";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="neMnI5wB"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1A522904;
-	Fri, 26 Jan 2024 10:43:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79AF013AC9;
+	Fri, 26 Jan 2024 10:47:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706265784; cv=none; b=OtCIvqoQBe9KnN0Fs3n2gaS+EQOGhFJCIoAFFwv+WyU+/3vl0md6BiX5M/CXhwJF9xcdz/PdSY4anu61xaCXpHtIpJMR+EfaQZrKKCP8fmi2mhBDT01VFpXaWtrgNo1WxRK0CDrcFklH8aHG2/wB02NlTtbKHQboBExciUngFMw=
+	t=1706266059; cv=none; b=EbR05zPehTSUHJul/26rSq1awCVGVmk9Ut0PfnjX8/kbQzwzLnpFG/i/usVotiq0JjDCnbzwJZ2EtkuP0idRfRIABZ4EaFu1R4LFg6sMSkpKtgHBV+ujanxax9obsHCQIfydhSPLfsj9OH/5KVXPI4k7yMk6/bRSOleDqWx3Feg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706265784; c=relaxed/simple;
-	bh=YsN7lX/2kWLdzWYdeaCjEqzhqohbfutniFYIhZ9G9dY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GtO8a+zSt7GirpNXAVrYrJLzuQmlsJjgRYd6nd26cmxbkrftJgHRWBC2byotZuxvQc/ME/5hvYZ5EHsWElM8uaFWdzv8mACy6nsU7vQ/xvUESTErC6woBjs3OhbN3bNjfHkC430r2wShDgXF5zyheW/NpXR+w+JA/cNiNjFOw4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=HQgP8YHN; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40QA2Eih002662;
-	Fri, 26 Jan 2024 10:42:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=2IMEERAUR7WgGpN5eMUxTy1J+tHxs7yz/GZ4foVta4s=;
- b=HQgP8YHN79Z/Xd0sxe8xQr/TmQICezlxF2sBTzg/p/TKOGogvlVIIoYvzcnbVPP1FLgL
- cgOIGh0BviOvSeh2kzYPSza4U8R1WtCPcGoxngZ41yjVyavCtJuLb26e88cHVfhS6aAw
- suZuwz/MdDHZBTJP11EyqL/74TDMEH8a/t4w1LgDzq16aEHefJ4pUFz8T0wlBf2oxi+c
- fC2Uc29B4CEirjN9xrhY+pdaQuz3lmqzL5IYwoT6uHJG2BqEBexfg9/GeHg8mfK42mZG
- tK4DhfieXlEIrCCJFFf+77IbMLL3oHxa4Tz/suB8qkhqpqLndHvDPXFKMs83XvIifD6j HQ== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vvamjgvak-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Jan 2024 10:42:44 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40QAavab026508;
-	Fri, 26 Jan 2024 10:42:43 GMT
-Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vrrgtthf0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Jan 2024 10:42:43 +0000
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
-	by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40QAgfga44434050
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 26 Jan 2024 10:42:42 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A12C15805E;
-	Fri, 26 Jan 2024 10:42:41 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 948D65805D;
-	Fri, 26 Jan 2024 10:42:38 +0000 (GMT)
-Received: from [9.67.128.71] (unknown [9.67.128.71])
-	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 26 Jan 2024 10:42:38 +0000 (GMT)
-Message-ID: <46ca196c-b7d3-4f3c-9ef0-5d66fb24c9e6@linux.ibm.com>
-Date: Fri, 26 Jan 2024 18:42:36 +0800
+	s=arc-20240116; t=1706266059; c=relaxed/simple;
+	bh=kw330Rj+dvXFrcyOh21QF428FI3QNljIFnkqOGrlr70=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=b/m6552Yhz7AgZbci6KXNpFxoa78XHKBJrDb0VT+hCaYVlkGylfZ3Dn8iWDJWFBsABDDpTWIJFi1bcO/7XHLpI7jsy3wLCZ2pkschDB4V5Rl9m4SkfWr7snq2dVyj4Ae1iUP9Qp2sl92+MDc/2EC20kXMOtBAcFlalKj0oYNUa0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=uFWV5/6c; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4nrJbFly; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oCRuZGtD; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=neMnI5wB; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 719F721FDE;
+	Fri, 26 Jan 2024 10:47:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706266049; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dfDYD1hkMdAR4BGYjFkj7xOSPN6n4QHzvjQQXC87In8=;
+	b=uFWV5/6c1EHGaUvzBag7+ZrIXQIiggCVI2OolOmkzhvhsKhHpuC8eOCy/0GD1Scy6wZiTx
+	ciDKNFJOeCcQudtyS0ASxoIhiOIfZUrHYcgyZ/I7l2/EkGXSJms0CTaGIe/1P5/9LLf7mm
+	JQk2IeeNtVKINRc7CutKAnonn9kB0vw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706266049;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dfDYD1hkMdAR4BGYjFkj7xOSPN6n4QHzvjQQXC87In8=;
+	b=4nrJbFlyFc+tJTX0x97F2K5qP2hAJmeItCpQm/f4Vr+GeD/keeAnPKeddWhJ8xmpuhOfUe
+	6l9z5dZV7gbF3DDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706266048; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dfDYD1hkMdAR4BGYjFkj7xOSPN6n4QHzvjQQXC87In8=;
+	b=oCRuZGtDEaDojXKk77W9K6978xYhXrjBJWvilZKTV+D+mt42MLESnbDy6524QGR3rrwCJF
+	fzmDqEWIPw4O+d5/Xf3RcI3t8dAG/jQAs4zHgkzZ+3Z9hdDHg1V98phCl8aYqHA7L4PEVD
+	by1gdxoerrrY0rSD9JwVHg3smsUvpQE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706266048;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dfDYD1hkMdAR4BGYjFkj7xOSPN6n4QHzvjQQXC87In8=;
+	b=neMnI5wBWr2bdJwNDjgxzyXSCEH8TQu/eSWTUjVZjYV7nJGDPiYlLpiH9Ruo+EPNO/P2ej
+	CFUDoNVRiYLjnbDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 58C1513A22;
+	Fri, 26 Jan 2024 10:47:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id YQKiFcCNs2V9JwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 26 Jan 2024 10:47:28 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 2F462A0805; Fri, 26 Jan 2024 11:47:27 +0100 (CET)
+Date: Fri, 26 Jan 2024 11:47:27 +0100
+From: Jan Kara <jack@suse.cz>
+To: Kees Cook <keescook@chromium.org>
+Cc: Kevin Locke <kevin@kevinlocke.name>, Jann Horn <jannh@google.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+	Matthew Bobrowski <mbobrowski@mbobrowski.org>, amir73il@gmail.com,
+	Steve Grubb <sgrubb@redhat.com>
+Subject: Re: [PATCH] exec: Remove __FMODE_EXEC from uselib()
+Message-ID: <20240126104727.rzksht5mjkanvo5n@quack3>
+References: <20240124220619.work.227-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] crypto:vmx: Move ppc vmx diirectory to
- arch/powerpc/crypto.
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: linux-crypto@vger.kernel.org, leitao@debian.org, nayna@linux.ibm.com,
-        appro@cryptogams.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au,
-        ltcgcw@linux.vnet.ibm.com, dtsen@us.ibm.com
-References: <20240102205856.370103-1-dtsen@linux.ibm.com>
- <ZbN0LufXZ6YZmn3E@gondor.apana.org.au>
-Content-Language: en-US
-From: Danny Tsen <dtsen@linux.ibm.com>
-In-Reply-To: <ZbN0LufXZ6YZmn3E@gondor.apana.org.au>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: DPUyM4vhsiTM7ytNws9YY-5eg4mmlmv2
-X-Proofpoint-ORIG-GUID: DPUyM4vhsiTM7ytNws9YY-5eg4mmlmv2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-25_14,2024-01-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- impostorscore=0 phishscore=0 suspectscore=0 spamscore=0 bulkscore=0
- clxscore=1011 priorityscore=1501 lowpriorityscore=0 mlxscore=0
- mlxlogscore=692 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401260078
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240124220619.work.227-kees@kernel.org>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-2.60 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[15];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,linux-foundation.org:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[kevinlocke.name,google.com,linux-foundation.org,xmission.com,zeniv.linux.org.uk,kernel.org,suse.cz,kvack.org,vger.kernel.org,mbobrowski.org,gmail.com,redhat.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -2.60
 
-Thanks Herbert.
+On Wed 24-01-24 14:06:23, Kees Cook wrote:
+> Path-based LSMs will bypass uselib() "open" checks since commit
+> 4759ff71f23e ("exec: Check __FMODE_EXEC instead of in_execve for LSMs"),
+> so don't set __FMODE_EXEC during uselib(). The LSM "open" and eventual
+> "mmap" hooks will be restored. (uselib() never set current->in_execve.)
+> 
+> Other things that checked __FMODE_EXEC:
+> 
+> - fs/fcntl.c is just doing a bitfield sanity check.
+> 
+> - nfs_open_permission_mask() is only checking for the
+>   "unreadable exec" case, which is not an issue for uselib(),
+>   which sets MAY_READ, unlike execve().
+> 
+> - fsnotify would no longer see uselib() as FS_OPEN_EXEC_PERM, but
+>   rather as FS_OPEN_PERM, but this is likely a bug fix, as uselib() isn't
+>   an exec: it's more like mmap(), which fsnotify doesn't intercept.
 
--Danny
+OK, I went back to the original discussion with Steve Grubb and Matthew
+Bobrowski who asked for FS_OPEN_EXEC_PERM and AFAICT this change in
+uselib() should be fine wrt usescases we discussed. That doesn't mean there
+cannot be some userspace which will get broken by this (in which case we'd
+have to revert or find some other solution) but I'm willing to try. I'm
+also CCing Steve & Matthew for input but from my side feel free to add:
 
-On 1/26/24 4:58 PM, Herbert Xu wrote:
-> On Tue, Jan 02, 2024 at 03:58:56PM -0500, Danny Tsen wrote:
->> Relocate all crypto files in vmx driver to arch/powerpc/crypto directory
->> and remove vmx directory.
->>
->> drivers/crypto/vmx/aes.c rename to arch/powerpc/crypto/aes.c
->> drivers/crypto/vmx/aes_cbc.c rename to arch/powerpc/crypto/aes_cbc.c
->> drivers/crypto/vmx/aes_ctr.c rename to arch/powerpc/crypto/aes_ctr.c
->> drivers/crypto/vmx/aes_xts.c rename to arch/powerpc/crypto/aes_xts.c
->> drivers/crypto/vmx/aesp8-ppc.h rename to arch/powerpc/crypto/aesp8-ppc.h
->> drivers/crypto/vmx/aesp8-ppc.pl rename to arch/powerpc/crypto/aesp8-ppc.pl
->> drivers/crypto/vmx/ghash.c rename to arch/powerpc/crypto/ghash.c
->> drivers/crypto/vmx/ghashp8-ppc.pl rename to arch/powerpc/crypto/ghashp8-ppc.pl
->> drivers/crypto/vmx/vmx.c rename to arch/powerpc/crypto/vmx.c
->>
->> deleted files:
->> drivers/crypto/vmx/Makefile
->> drivers/crypto/vmx/Kconfig
->> drivers/crypto/vmx/ppc-xlate.pl
->>
->> This patch has been tested has passed the selftest.  The patch is also tested with
->> CONFIG_CRYPTO_MANAGER_EXTRA_TESTS enabled.
->>
->> Signed-off-by: Danny Tsen <dtsen@linux.ibm.com>
->> ---
->>   arch/powerpc/crypto/Kconfig                   |  20 ++
->>   arch/powerpc/crypto/Makefile                  |  20 +-
->>   .../crypto/vmx => arch/powerpc/crypto}/aes.c  |   0
->>   .../vmx => arch/powerpc/crypto}/aes_cbc.c     |   0
->>   .../vmx => arch/powerpc/crypto}/aes_ctr.c     |   0
->>   .../vmx => arch/powerpc/crypto}/aes_xts.c     |   0
->>   .../vmx => arch/powerpc/crypto}/aesp8-ppc.h   |   0
->>   .../vmx => arch/powerpc/crypto}/aesp8-ppc.pl  |   0
->>   .../vmx => arch/powerpc/crypto}/ghash.c       |   0
->>   .../powerpc/crypto}/ghashp8-ppc.pl            |   0
->>   .../crypto/vmx => arch/powerpc/crypto}/vmx.c  |   0
->>   drivers/crypto/Kconfig                        |  14 +-
->>   drivers/crypto/Makefile                       |   2 +-
->>   drivers/crypto/vmx/.gitignore                 |   3 -
->>   drivers/crypto/vmx/Kconfig                    |  14 --
->>   drivers/crypto/vmx/Makefile                   |  23 --
->>   drivers/crypto/vmx/ppc-xlate.pl               | 231 ------------------
->>   17 files changed, 46 insertions(+), 281 deletions(-)
->>   rename {drivers/crypto/vmx => arch/powerpc/crypto}/aes.c (100%)
->>   rename {drivers/crypto/vmx => arch/powerpc/crypto}/aes_cbc.c (100%)
->>   rename {drivers/crypto/vmx => arch/powerpc/crypto}/aes_ctr.c (100%)
->>   rename {drivers/crypto/vmx => arch/powerpc/crypto}/aes_xts.c (100%)
->>   rename {drivers/crypto/vmx => arch/powerpc/crypto}/aesp8-ppc.h (100%)
->>   rename {drivers/crypto/vmx => arch/powerpc/crypto}/aesp8-ppc.pl (100%)
->>   rename {drivers/crypto/vmx => arch/powerpc/crypto}/ghash.c (100%)
->>   rename {drivers/crypto/vmx => arch/powerpc/crypto}/ghashp8-ppc.pl (100%)
->>   rename {drivers/crypto/vmx => arch/powerpc/crypto}/vmx.c (100%)
->>   delete mode 100644 drivers/crypto/vmx/.gitignore
->>   delete mode 100644 drivers/crypto/vmx/Kconfig
->>   delete mode 100644 drivers/crypto/vmx/Makefile
->>   delete mode 100644 drivers/crypto/vmx/ppc-xlate.pl
-> Patch applied.  Thanks.
+Acked-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> 
+> Reported-by: Jann Horn <jannh@google.com>
+> Closes: https://lore.kernel.org/lkml/CAG48ez017tTwxXbxdZ4joVDv5i8FLWEjk=K_z1Vf=pf0v1=cTg@mail.gmail.com/
+> Fixes: 4759ff71f23e ("exec: Check __FMODE_EXEC instead of in_execve for LSMs")
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: Kevin Locke <kevin@kevinlocke.name>
+> Cc: Eric Biederman <ebiederm@xmission.com>
+> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> Cc: Christian Brauner <brauner@kernel.org>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: linux-mm@kvack.org
+> Cc: linux-fsdevel@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  fs/exec.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/exec.c b/fs/exec.c
+> index d179abb78a1c..af4fbb61cd53 100644
+> --- a/fs/exec.c
+> +++ b/fs/exec.c
+> @@ -128,7 +128,7 @@ SYSCALL_DEFINE1(uselib, const char __user *, library)
+>  	struct filename *tmp = getname(library);
+>  	int error = PTR_ERR(tmp);
+>  	static const struct open_flags uselib_flags = {
+> -		.open_flag = O_LARGEFILE | O_RDONLY | __FMODE_EXEC,
+> +		.open_flag = O_LARGEFILE | O_RDONLY,
+>  		.acc_mode = MAY_READ | MAY_EXEC,
+>  		.intent = LOOKUP_OPEN,
+>  		.lookup_flags = LOOKUP_FOLLOW,
+> -- 
+> 2.34.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
