@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-40731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5804C83E4E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:14:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FDD883E4E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:14:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7D5CFB2615E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:14:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06A8D284A7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:14:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 888C838388;
-	Fri, 26 Jan 2024 22:13:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 595724596A;
+	Fri, 26 Jan 2024 22:13:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="kywbhpak"
+	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="sJYSvv4D"
 Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2099.outbound.protection.outlook.com [40.107.220.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FA162563B
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 22:13:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8E5625633
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 22:13:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.99
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706307188; cv=fail; b=HewFovkA91zoA0I2KuZQw+uGLLny0JKc6LhV8/bn5yF45AQbPL8uomtAEwchCH9sXSdGARI9x9IXWb6C/8ghW/pyWr9/Ey8TYat+ZYzS4jRMMO6Mv0TJlAXj794TuQ2XavvrwlzTx8JyZW6249tgW8PPm9J7PKPHIJ4GbF6CBlc=
+	t=1706307190; cv=fail; b=gEZCWdkEyEUioWOQAmuLTzJqzo6Sg3G6JWOrWZM0FzsFTe7vAlRFAwDAQkjnPL+UgNY0riR49ehGrPhHUMV9HfzdmOZ9CSDVb+peTDzq8KZz3byBPalNPvBaL+GWYdo8HgHgV1tBW70jl41lGAUL3USof1mNy3xwMqHBmxZkApc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706307188; c=relaxed/simple;
-	bh=xWzz1XShLCdIT6E941d4OnFMXmT41Qvqy3ILpw5Ng6E=;
+	s=arc-20240116; t=1706307190; c=relaxed/simple;
+	bh=YVy10MWIkjrQRbmHYyMOUQFtkZKn9gX8sWhoofxP+OM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=CLAxYLb5vhRdhlNYF857Fkz8PStQnb6/01BuHqO9g7OXhtV8YmMjWaAsEFDS8MLztiNWj642d0zrQTty0/I+uastHFGqjjWMWATbK6SgwdoKUDp5txpQSZ9rJCxpk4Hp9fN2lJiK9j4baQeEL2HzuoyTFdwG9UDD369Xz9vN0Dg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=kywbhpak; arc=fail smtp.client-ip=40.107.220.99
+	 Content-Type:MIME-Version; b=Y2cBrQRvphp56dw2FCX0V9xuGkHiXEnqRMGtwQybHnMZgdwGHnBw4BaD9s7DDScP1578/5fJ7YFP8TuKT1H+mQIpE6MG/PmzsY8a+a4l49Gu+iTxxYAMqO+6lHD285/CYXyni1lqx3P2aiTtJFTVLjrR6UDKg9dYFAIsH3wRQ2Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=sJYSvv4D; arc=fail smtp.client-ip=40.107.220.99
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DIO3PtgSwwXWCVrgcK7s5IYh0QWhQNNEmEEWAqsqgzqPI4t3bHA5hjj6ETVDhOYj45QqH/h/VSIWiXDrcAHjXuODSfu7h/H9tKMkNbUvgjMRL7a62y7aW7jyLoHpTeVZv4ikPzusZ4t8K0OIRfd2C+3lS3c2iUPvKAYHORdfZH4E2buuEv6B7f1ikiCbF1MFMKa2xJhK849MqRULBaDWBh029jBdn/GbUzGvswMO3EFZ4yseeSP1WPb5HUF+3qoAcA3pW5wCtaK32Pc6ZZWom/vZqhvpeC1nofjSESKTZemykGGQi5ID2NeuCYSQ8zodJDXprBvOosVW8DYcCA1r4A==
+ b=BplPtzhaknf5JhcZFDM76E31x6elMzdDN6jwqtFiYIUjd2B8kvuMp/62ZoWKfSCp5oX8dCEko/wTvfujHd9tlrxFeXv2+ULpVIVaHidpVcidvaiDZebtLeEHcvkR+V8tCV1VpZe7o4NjzjguxB+VPtoL8vnQ9qcC2XxFDWJz/bHjmVQiYq7sjPaEFfb3vFG2jFIdBE6Cy4md2Pym0EdbkoZYyQxf+EaBw9kKYIzDFg5RqhQ6FJX5rux8/vtRFAWoW/iRmY9fyb0sWQuE1sBh+i/6/+gN1TlYJztcvU9WbZdaOBKmYa7WTxV6+ceNSYcRiRoYhE8lIbF9IoMfn0OqNg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8SyuaePltjpI1YeJZX+fVap44lXG1cZP+l26fxKRQn0=;
- b=KpE8u631j2wDgCJpKVpRT6C7hI4Bnd7ImArAfLE7djRE77xPyk+HY7XjsoDbd0al90Aqz8vyEO85H/hiHt6KrSe2On//048JJhRrd2/rhI5WNAkDpxXVssOcLlqAQxgfCqZ9zUEa/sRekqJPtm/v8f6LEDELD5PUP1Ch7ddwPINzyq1kd/DKY1WOtmUER2PGS7vu1uK6vz32sAz+zBYYHV8wictZunYeq/q7FHAjg7Gg6jBMdJXU9q5cEj2lcdH5FmHuzE14caIeLSuuTtnRzpJL4xuRxLHa6tnFqe6+j3Htv6OQB48VHHaHX2+CWhVN9B+BE1SHQfBkPL2ZPn3CLw==
+ bh=A43sP7k8Oio1GOvgjHg6OcMOUBSEQgGOnOM5a+i2sow=;
+ b=bA1X/4OQSuAprcEuYSg4mtHmbYmtOMwv3QcEV1H+zqhy8P4PU2GjkjO+UZiMessErZcngvkjYs5WdoFwNsafkJt4LgVfItijMRNk6LXop4N0rRkuZXS4wN11dntlkIw/ApxXp5A+slYgAMydsq5hD75M5jnMHGm2m0zvidy/ne18hqX7kG43j0OVUOZtvj0iMQmAd2ElINflDtoplJJP31u6znxzuAT1BF3GQ4bEn7xgTtraaGZJkbhp1gjaiut8nCGAV+E5pO1y85HX7nZR65e4VX2AipdlEV1QgRx+qWQbMhwGFO/4cHn1VXRsLiMeaWG4TpJZrOIWp6gUXJSWdw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
  header.from=os.amperecomputing.com; dkim=pass
@@ -44,18 +44,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=os.amperecomputing.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8SyuaePltjpI1YeJZX+fVap44lXG1cZP+l26fxKRQn0=;
- b=kywbhpak0oaB3IOsP1il2stRtO1ehJpdelNZ6vwIHijHX7mrE22xSq7rggbZn0W7LNliNSymu5a70pRG+loRzclStBIprQWOLDE2EBPXb283U90hLY0rVZVnsySDvIY9s5U4Z5vhegkfVFvZ8U4GeSZAx2sXj3sGAHvHanFud/Q=
+ bh=A43sP7k8Oio1GOvgjHg6OcMOUBSEQgGOnOM5a+i2sow=;
+ b=sJYSvv4DUtVppexc2dn2g9PEazrvjvId2nF+KQyz7XFohWV5Y1xw22qZ54filMh5JXrpXGAbENryw5TKTiakTyubvMity0Rfm7YY0fOuNA28dWyoQEAq2sSfmB/6gE9G4Ralg1axpmJpL0jq8OJPl5+sBVeKjbiGFhrFowOj3gQ=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
 Received: from PH0PR01MB8166.prod.exchangelabs.com (2603:10b6:510:293::17) by
  PH0PR01MB7491.prod.exchangelabs.com (2603:10b6:510:f2::21) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7228.24; Fri, 26 Jan 2024 22:13:04 +0000
+ 15.20.7228.24; Fri, 26 Jan 2024 22:13:06 +0000
 Received: from PH0PR01MB8166.prod.exchangelabs.com
  ([fe80::67b9:4671:4fdb:2dbf]) by PH0PR01MB8166.prod.exchangelabs.com
  ([fe80::67b9:4671:4fdb:2dbf%5]) with mapi id 15.20.7228.023; Fri, 26 Jan 2024
- 22:13:04 +0000
+ 22:13:06 +0000
 From: Ilkka Koskinen <ilkka@os.amperecomputing.com>
 To: Robin Murphy <robin.murphy@arm.com>,
 	Will Deacon <will@kernel.org>,
@@ -63,9 +63,9 @@ To: Robin Murphy <robin.murphy@arm.com>,
 Cc: Ilkka Koskinen <ilkka@os.amperecomputing.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] perf/arm-cmn: Add support for model specific parameters
-Date: Fri, 26 Jan 2024 14:12:14 -0800
-Message-Id: <20240126221215.1537377-3-ilkka@os.amperecomputing.com>
+Subject: [PATCH 3/3] perf/arm-cmn: Enable support for tertiary match group
+Date: Fri, 26 Jan 2024 14:12:15 -0800
+Message-Id: <20240126221215.1537377-4-ilkka@os.amperecomputing.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240126221215.1537377-1-ilkka@os.amperecomputing.com>
 References: <20240126221215.1537377-1-ilkka@os.amperecomputing.com>
@@ -82,144 +82,130 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: PH0PR01MB8166:EE_|PH0PR01MB7491:EE_
-X-MS-Office365-Filtering-Correlation-Id: c3e8295d-2dee-4007-8b7c-08dc1ebbf7f5
+X-MS-Office365-Filtering-Correlation-Id: f8a660bd-d315-4bd8-8535-08dc1ebbf909
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	GQu1H+QLKjaePYiLXy/JiLMngyQSg3j8V/2kBheXWBgrFFie1bB/TNWDXWuhTFHcQyb6lUdwqwWeVcXbu6vCQCqEOV2ZDCpMAWVOYMvOPkfbTpg67HFX5jeRmSmq+8rh3GLSNOLniJMluhqCfu4Nx5C09uQyfUbnzzGn+8aggiSnTb5yS6/7xUONSQW595/9gBG/yu0MMEY8dKoVab/Qdx4+FfUljUj6BaB80mbwMHV2/l8Uud7hmrAdEZTxRs55BRPy3IAKbif1JV/um6DidoAto17pp8wbHN0Qw61X7+0rvNk/o7TO65S+CrjKFEUSx5Elb2DCpAuy4u/bcwQJ2+0a0Zo4u2BenGpiRNElEJKmQcDbGis9JPXMnPyH92itWxVIbfAs0g29mMW4+37bg0CWJ6xgFNfICaKMTU77Eq7WdW4CUJ7GxkPcLAvWLpTsLimfE0eL2XMtLevmWECrBzjP+D7gwBBowaqilfTaaLpa1ewd2ZIDpcUjR0n4J4rwdhY2ps2ci065F1YbZeKbCP+4RNA6cc9aMj9glHk/FNlb6UST8elu242MpmSzBc7MfKb13kZYMunhSfwKwa36eOkeQuySKeos3EDk7xhu746w8It5cTApxUApLZFvrHyW
+	fajeldIIdIIIbSYQOdtbozQK1s97E83CMS47XcPIs3ooNHo4LbJm/cFhQaga3dnbxNr7S9P5FpqfkzVXuKt7ZclYN/vQkbCmHc0FR4PSqI8UumgnApYg9Dls37X5P6EmWToJFIO+TH0E+uVKRtFY4jJxwetMpDWWFrXHWKlSHQzqATnT73ScSNQ1Xy3wOdx5tngn+LSVhZ7onJCbkpzXyBVr7H6Izor7D0d/9LcLmTq0DaP1vQ0+nv1uphW6lmNT1RUspetMJGtRSSEJa2BsgvTk5aVmKGTv/kNM1PRElzhWEhEEn5OomWS29pPnKHVjCnQijtJKArDJH5Sicrl+p7fZ7uFMTFtP7+OgXtI01fEEBQHS64HG25KoRSony/5smbzpmWOqOwrPQcl8aCH4KwweA+Q+oV5f6aQeJsAvhX8h88Eofoio1zMga9ixxvRDhil7Z2nOJXF9voRcCWv7sUCEFegVX+qMfMfYeUSq/ftYui1QPw+FHg3zlhQO5ddVam2/z18r8uw4MVFZ5Y+xkS366NCFJXoikEILlViBd8J5aVDFbRw3Z9UH6bPdkDavn69EsbNKHXlViwCwMEYYgbe+vPVpcl0MqhtdaXxw/Yexe62fBKX65eF24EwQce6R
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB8166.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39850400004)(136003)(366004)(396003)(346002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(5660300002)(66476007)(8936002)(2906002)(66946007)(8676002)(316002)(4326008)(66556008)(86362001)(110136005)(41300700001)(478600001)(6486002)(1076003)(83380400001)(6512007)(52116002)(38100700002)(38350700005)(6666004)(2616005)(6506007)(26005);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?73KY32I00eutJRMNLFgCyJfD7DrzICzOnkKsXnkMzklt5RNY8o9ke5WFuC+4?=
- =?us-ascii?Q?jWsxVq07rtcxWNW6fXfD+Tu6JQZ7wkGaYGbo2yVxtx997sTrw2QAUi599451?=
- =?us-ascii?Q?2tMCSgg7rm1vhNFOCPzXSjvHQa0djKiUrkYj2k+tFUd4Tt68LPujIO2OaGSo?=
- =?us-ascii?Q?fOYjQDWLE89oOC+lwHPX8rSxdh84goO1woRvV+lAOsbzfGCwDd8rtBqlW/JM?=
- =?us-ascii?Q?sKnXwtPVjNkypgf6GqaoDSQ1w8UskJpyitVqq2Hq8/Cfdx4o9HdD3EmHqzbH?=
- =?us-ascii?Q?j0bS6yU1y65gF7KpDGO4jkNophI9ZUqk0EewV3SsxKiZrNxkvYvOLsp5UV5y?=
- =?us-ascii?Q?FTWAAVlpzye5KZD9ourCRwHctIL4ujHe9t+qn5N9tTrG5p/BdMpOlKzzTjaG?=
- =?us-ascii?Q?axqBb2CtRdGk8b9kqyQgv45PVNbYGCywsrEdHQdHcReM+aOnCHoGsiAUbyki?=
- =?us-ascii?Q?d7GIlBGE2uioEVy9LFzIOZGwk1/Ny84gxKJsS9QkY80JCNnEr6+2GY5hO2G9?=
- =?us-ascii?Q?mOEy0GgK5eS853sDwXRLMoOz226FDQZDEnd/eJufaN2P3U34XSkWH+vsmIa1?=
- =?us-ascii?Q?3Racf8gc+zJMcU8WcsfyS43WFTWT/3qoZ1REvjcv7aSySja26lo9aec8dS3/?=
- =?us-ascii?Q?tprM3KrH2OEbsn46hAMH+VcTp0ysCJeW8WPgcgPBR9+qaoU506tdl2t99Auj?=
- =?us-ascii?Q?H6VcYrJDSVi+C3k5o+Y+MoiAMEajI14BHn8odRNcKIj+1IFg96jAVtdIi7B3?=
- =?us-ascii?Q?DdGNp4elwcXo5Dug7ERtS6XAyTlM6f4t+IcJVhIjP4IizyKwU0sJOIdoBOlg?=
- =?us-ascii?Q?43Pq3O93RUyflKx0N3ReDwuHobPc8T4lwUgfU1daowtHyfq8eB8F7pLFCRk/?=
- =?us-ascii?Q?qzZXKPD7tXQpnZ5JOV/XKHZ2A3K82rBZmmbwqZyKlzp0OrCwxTKtdIWOGnqk?=
- =?us-ascii?Q?4Ji1XKC7ODcgA6tN51wiX+CN2aJIAy5Qy24X+bqd8AxJYM8QMXNzhQo8JdgZ?=
- =?us-ascii?Q?ExdOFKdHwF39VzyvdXk/xvrCAUEE2A4DZJdsLV7yVOQGs3PZU4EpiexBD7L7?=
- =?us-ascii?Q?tpinPlMH7L/llJZdOkDZke3a6Exb/84Z9lXYLUaSV8Rr/SsNFG+t7YkoO51l?=
- =?us-ascii?Q?mjZ1eqNgQFaus/T0E+S8+zn3tvA2/iyMw+04tCroF1N1O87IYjZ35pEFZ5aW?=
- =?us-ascii?Q?PhmQwzyOkM0X8tzaW9LAxExhpUaDBk3MybzJ9fv6I1tAlXt1Y2X2hEL2gNe2?=
- =?us-ascii?Q?mdUUF3ahibibTN8XSstvS8BkjFludz4x8SSyub5u2X1pcz1P/McPjqFEb5gO?=
- =?us-ascii?Q?zM3oy9TPlrlCqz5BP1HxJDfTuQjmv3qZEhsncIAifIPb2ZEwogVKfKt9Det7?=
- =?us-ascii?Q?xjO+IOK4fzZmBsStGzyAity7EJZYiMbvAJ0XDxA+Ly31U75kB1CruMWjN7OQ?=
- =?us-ascii?Q?duxJqOE1hoONfbsVIxbeSThfSzJcqThOKcXJgAs6rN5jP0W7EjgjNj09kjJf?=
- =?us-ascii?Q?X1ZINMwFk/ZPRCT5hs2KDUPbN7b2tPlBuHo5f1/eQCuw+p6S0JLxX0NcyNi8?=
- =?us-ascii?Q?k/Th9p7/18Quf8EbtqybFaOQssQPCiR8XnRtv/oKr81SwI7ujfGXnGroXv/3?=
- =?us-ascii?Q?yvCA1RIovXznLQ9ijaTSEJ4=3D?=
+	=?us-ascii?Q?bCfCoVSMkcH04ceRQs9xWqE4OyF85WLT8kjqAoxv7BQLSF+vQWHnQMECRdpC?=
+ =?us-ascii?Q?89/NWe+ywqRwtuEIhzsJrbtZTjX+2jNYg3VeWXE2fBClBiLAE89rDyiOD0ra?=
+ =?us-ascii?Q?xnhqscrLdguAf4stvHue4wDDLyglQ9s6G+4+Q/Pdwv89s6KUAN4pUkaisSJ8?=
+ =?us-ascii?Q?XFarX0wRsIqQRSDpV5cZFax5VWbmB7JYzhAbV47iAAI9y4urXUUOc9Vd/0yF?=
+ =?us-ascii?Q?Bx0V2SCcdJJIKbTo4nqeXaDtRFIvihPlBF+Ha5NHTD3aa4p8JWzWonV+3qHd?=
+ =?us-ascii?Q?yy/M6fOadHWg8QQX6jt4/G0le3HNurLfJKK7P668PUQXS4S77Y7F7m/GpP8L?=
+ =?us-ascii?Q?h2gRE0ihZnOCEdU64T/rsvwY0Qml8aZjgs9MZgKgqSN1CJCBoGQpkYWAYW6a?=
+ =?us-ascii?Q?F/bJB56Rry39yJtAqDcVscRTOGopyAY4se/G+F2IymtuztM/JJ3/IrN6TFmK?=
+ =?us-ascii?Q?QKn92OkNw4BsXoCbBLpx/T+aA2dOcJlFjm/5Nh0CmhspzVtL9LeBUcYOi5gk?=
+ =?us-ascii?Q?+bcqucd2QqsWI+GEU4Yf/5z89J6i/LVk+/hhFjF9sa6gHElf2/u8P6nK7b94?=
+ =?us-ascii?Q?VkTOfcvb0RwGlYqCHHEm2TRYaxZjE1K165IQ5d8B7V890ub+dW1aVPXVZzeg?=
+ =?us-ascii?Q?xPXtVCsppmwhYDPBKwxzoNvT2tulUrtJ1bM4rY/ebdits7CQwLW/T+YOZ9Z2?=
+ =?us-ascii?Q?pAGahtcGMOLaoxFpG3EoJiERkDOEicY/U7hUB6YFaIdE/ilh4AB1B5OXsUdq?=
+ =?us-ascii?Q?YmLZkObBsUQv1oGOS6U4p7Y9f78WCKD1g98VdOfukZGMzBgieEFLu7LUApr8?=
+ =?us-ascii?Q?c0kSDVJk9eB35mm3/KBnOomI13ziA71ZLkh7j36UBTTrZYJCMtqZqQQ+T9o0?=
+ =?us-ascii?Q?cj0Mqy7sxG4Wib/AoxHQg9dyw/4Ac0ysmb659pp7ALngnXr6zakEJbuLU/0U?=
+ =?us-ascii?Q?Lv70cUMBpBxKx09jnulq8Sy4sEPvARfgEI8qbicM+x5g6CUh8xDHZnhqqY/g?=
+ =?us-ascii?Q?3gt+t1XxMecuL9mWvFao2BWPHKz3F2sF5hJ1Yd7UUJWdYse2ygvxn6eWjO4O?=
+ =?us-ascii?Q?qx9hTKCcZmBzuT+fiD4gnoPzFB+HqoxfQ2Kj0z07DndIRs/FpsuC0RDn1QoH?=
+ =?us-ascii?Q?38nseHUOFv3KDepTSSIC/n2nsViWCAr4LQpUGTsxWBBqztWYWjXi4eYh04QM?=
+ =?us-ascii?Q?JbT8Dt+hZ9j4oDYOyAX0KdnQr7ssM2Z9W4dVpm0KMy+u6kBJvka0P0d0OnEK?=
+ =?us-ascii?Q?6oakwfw6csvz4Mgos+z79ZuuqWlfTUyiapJ0mPqo+Gi8iU6PJ4q8on3ECL8G?=
+ =?us-ascii?Q?xvTvIBAACHYmvdSWNiRAkHooVQ17ER07bMOHWfMfhOXUxkpE8KcIozQ2Rqk7?=
+ =?us-ascii?Q?hKFzRI3Emqlh2omf7OhHUXNWyAobhn1VMDZtYbqG1qsuh9PFZ42XSSN9W/nb?=
+ =?us-ascii?Q?xsqROU8e0n/odACdD+2EPArYNjwievr6ikSovbT14XI/Tssr9KS6xeMafHqA?=
+ =?us-ascii?Q?k5Pka4DCeiMDFGW44HeOussnzEtnw6wkiVoaoHYOaJYBB/cPdHBLHBHw1C3q?=
+ =?us-ascii?Q?7ePROVSPLZDee0G3Ni6dpZAH+QUjt/9791PYC3S2tvAHZpgEV3WGHW/rssQr?=
+ =?us-ascii?Q?OOud3p2uCdJozUbdUi7pxEI=3D?=
 X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c3e8295d-2dee-4007-8b7c-08dc1ebbf7f5
+X-MS-Exchange-CrossTenant-Network-Message-Id: f8a660bd-d315-4bd8-8535-08dc1ebbf909
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB8166.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 22:13:04.8755
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 22:13:06.7191
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hmNH0vP+KJ2mU4oGUtuiUAGVIu8EUwAsiH8v+jDhJZtCIObQgrRhuoN+83gx1b45+CUTwEeOJxS0/QFa2pcUFH6cN1MyGOQT/9QRLb824d0iIsUxZ9q4iPVno4YRoy6+
+X-MS-Exchange-CrossTenant-UserPrincipalName: ECCi1Gd7AtAI+F7GBMo9cENDudvC4gxwW9BMNGNYi8fsMPlXlWwWtsOAJyykEZ9Zg+z+tDeCZ5GF9JSoUmX1aZgpmdFyOJhZl7jwV/iC7qO0hmanYaIUEQ035V1Zd47i
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB7491
 
-Newer models have slightly different parameter fields or may introduce
-completely new ones. Thus, prepare for it by making also the parameters
-model specific.
+Add support for tertiary match group.
 
 Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
 ---
- drivers/perf/arm-cmn.c | 45 +++++++++++++++++++++++++++++-------------
- 1 file changed, 31 insertions(+), 14 deletions(-)
+ drivers/perf/arm-cmn.c | 23 +++++++++++++++++++----
+ 1 file changed, 19 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
-index 93eb47ea7e25..dc6370396ad0 100644
+index dc6370396ad0..ce9fbdcf6144 100644
 --- a/drivers/perf/arm-cmn.c
 +++ b/drivers/perf/arm-cmn.c
-@@ -628,6 +628,7 @@ struct arm_cmn_event_attr {
+@@ -91,10 +91,13 @@
+ #define CMN600_WPn_CONFIG_WP_COMBINE	BIT(6)
+ #define CMN600_WPn_CONFIG_WP_EXCLUSIVE	BIT(5)
+ #define CMN_DTM_WPn_CONFIG_WP_GRP	GENMASK_ULL(5, 4)
++#define CMN600_WPn_CONFIG_WP_GRP	BIT(4)
+ #define CMN_DTM_WPn_CONFIG_WP_CHN_SEL	GENMASK_ULL(3, 1)
+ #define CMN_DTM_WPn_CONFIG_WP_DEV_SEL	BIT(0)
+ #define CMN_DTM_WPn_VAL(n)		(CMN_DTM_WPn(n) + 0x08)
+ #define CMN_DTM_WPn_MASK(n)		(CMN_DTM_WPn(n) + 0x10)
++#define CMN_DTM_WP_CHN_SEL_REQ_VC	0
++#define CMN_DTM_WP_GRP_TERTIARY		0x2
  
- struct arm_cmn_format_attr {
- 	struct device_attribute attr;
-+	enum cmn_model model;
- 	u64 field;
- 	int config;
- };
-@@ -1265,29 +1266,44 @@ static ssize_t arm_cmn_format_show(struct device *dev,
- 	return sysfs_emit(buf, "config%d:%d-%d\n", fmt->config, lo, hi);
- }
+ #define CMN_DTM_PMU_CONFIG		0x210
+ #define CMN__PMEVCNT0_INPUT_SEL		GENMASK_ULL(37, 32)
+@@ -175,8 +178,8 @@
+ #define CMN_CONFIG_WP_DEV_SEL		GENMASK_ULL(50, 48)
+ #define CMN_CONFIG_WP_CHN_SEL		GENMASK_ULL(55, 51)
+ /* Note that we don't yet support the tertiary match group on newer IPs */
+-#define CMN_CONFIG_WP_GRP		BIT_ULL(56)
+-#define CMN_CONFIG_WP_EXCLUSIVE		BIT_ULL(57)
++#define CMN_CONFIG_WP_GRP		GENMASK_ULL(57, 56)
++#define CMN_CONFIG_WP_EXCLUSIVE		BIT_ULL(58)
+ #define CMN_CONFIG1_WP_VAL		GENMASK_ULL(63, 0)
+ #define CMN_CONFIG2_WP_MASK		GENMASK_ULL(63, 0)
  
--#define _CMN_FORMAT_ATTR(_name, _cfg, _fld)				\
-+static umode_t arm_cmn_format_attr_is_visible(struct kobject *kobj,
-+					      struct attribute *attr,
-+					      int unused)
-+{
-+	struct device *dev = kobj_to_dev(kobj);
-+	struct arm_cmn *cmn = to_cmn(dev_get_drvdata(dev));
-+	struct arm_cmn_format_attr *fmt = container_of(attr, typeof(*fmt), attr.attr);
+@@ -1298,7 +1301,9 @@ static struct attribute *arm_cmn_format_attrs[] = {
+ 
+ 	CMN_FORMAT_ATTR(CMN_ANY, wp_dev_sel, CMN_CONFIG_WP_DEV_SEL),
+ 	CMN_FORMAT_ATTR(CMN_ANY, wp_chn_sel, CMN_CONFIG_WP_CHN_SEL),
+-	CMN_FORMAT_ATTR(CMN_ANY, wp_grp, CMN_CONFIG_WP_GRP),
++	CMN_FORMAT_ATTR(CMN600, wp_grp, CMN600_WPn_CONFIG_WP_GRP),
++	CMN_FORMAT_ATTR(NOT_CMN600, wp_grp, CMN_CONFIG_WP_GRP),
 +
-+	if (!(fmt->model & arm_cmn_model(cmn)))
-+		return 0;
+ 	CMN_FORMAT_ATTR(CMN_ANY, wp_exclusive, CMN_CONFIG_WP_EXCLUSIVE),
+ 	CMN_FORMAT_ATTR(CMN_ANY, wp_combine, CMN_CONFIG_WP_COMBINE),
+ 
+@@ -1398,8 +1403,11 @@ static u32 arm_cmn_wp_config(struct perf_event *event)
+ 
+ 	config = FIELD_PREP(CMN_DTM_WPn_CONFIG_WP_DEV_SEL, dev) |
+ 		 FIELD_PREP(CMN_DTM_WPn_CONFIG_WP_CHN_SEL, chn) |
+-		 FIELD_PREP(CMN_DTM_WPn_CONFIG_WP_GRP, grp) |
+ 		 FIELD_PREP(CMN_DTM_WPn_CONFIG_WP_DEV_SEL2, dev >> 1);
 +
-+	return attr->mode;
-+}
++	if (grp)
++		config |= is_cmn600 ? CMN600_WPn_CONFIG_WP_GRP :
++				      FIELD_PREP(CMN_DTM_WPn_CONFIG_WP_GRP, grp);
+ 	if (exc)
+ 		config |= is_cmn600 ? CMN600_WPn_CONFIG_WP_EXCLUSIVE :
+ 				      CMN_DTM_WPn_CONFIG_WP_EXCLUSIVE;
+@@ -1764,6 +1772,13 @@ static int arm_cmn_event_init(struct perf_event *event)
+ 		/* ...and we need a "real" direction */
+ 		if (eventid != CMN_WP_UP && eventid != CMN_WP_DOWN)
+ 			return -EINVAL;
 +
-+#define _CMN_FORMAT_ATTR(_model, _name, _cfg, _fld)			\
- 	(&((struct arm_cmn_format_attr[]) {{				\
- 		.attr = __ATTR(_name, 0444, arm_cmn_format_show, NULL),	\
-+		.model = _model,					\
- 		.config = _cfg,						\
- 		.field = _fld,						\
- 	}})[0].attr.attr)
--#define CMN_FORMAT_ATTR(_name, _fld)	_CMN_FORMAT_ATTR(_name, 0, _fld)
-+#define CMN_FORMAT_ATTR(_model, _name, _fld)	_CMN_FORMAT_ATTR(_model, _name, 0, _fld)
- 
- static struct attribute *arm_cmn_format_attrs[] = {
--	CMN_FORMAT_ATTR(type, CMN_CONFIG_TYPE),
--	CMN_FORMAT_ATTR(eventid, CMN_CONFIG_EVENTID),
--	CMN_FORMAT_ATTR(occupid, CMN_CONFIG_OCCUPID),
--	CMN_FORMAT_ATTR(bynodeid, CMN_CONFIG_BYNODEID),
--	CMN_FORMAT_ATTR(nodeid, CMN_CONFIG_NODEID),
-+	CMN_FORMAT_ATTR(CMN_ANY, type, CMN_CONFIG_TYPE),
-+	CMN_FORMAT_ATTR(CMN_ANY, eventid, CMN_CONFIG_EVENTID),
-+	CMN_FORMAT_ATTR(CMN_ANY, occupid, CMN_CONFIG_OCCUPID),
-+	CMN_FORMAT_ATTR(CMN_ANY, bynodeid, CMN_CONFIG_BYNODEID),
-+	CMN_FORMAT_ATTR(CMN_ANY, nodeid, CMN_CONFIG_NODEID),
- 
--	CMN_FORMAT_ATTR(wp_dev_sel, CMN_CONFIG_WP_DEV_SEL),
--	CMN_FORMAT_ATTR(wp_chn_sel, CMN_CONFIG_WP_CHN_SEL),
--	CMN_FORMAT_ATTR(wp_grp, CMN_CONFIG_WP_GRP),
--	CMN_FORMAT_ATTR(wp_exclusive, CMN_CONFIG_WP_EXCLUSIVE),
--	CMN_FORMAT_ATTR(wp_combine, CMN_CONFIG_WP_COMBINE),
-+	CMN_FORMAT_ATTR(CMN_ANY, wp_dev_sel, CMN_CONFIG_WP_DEV_SEL),
-+	CMN_FORMAT_ATTR(CMN_ANY, wp_chn_sel, CMN_CONFIG_WP_CHN_SEL),
-+	CMN_FORMAT_ATTR(CMN_ANY, wp_grp, CMN_CONFIG_WP_GRP),
-+	CMN_FORMAT_ATTR(CMN_ANY, wp_exclusive, CMN_CONFIG_WP_EXCLUSIVE),
-+	CMN_FORMAT_ATTR(CMN_ANY, wp_combine, CMN_CONFIG_WP_COMBINE),
- 
--	_CMN_FORMAT_ATTR(wp_val, 1, CMN_CONFIG1_WP_VAL),
--	_CMN_FORMAT_ATTR(wp_mask, 2, CMN_CONFIG2_WP_MASK),
-+	_CMN_FORMAT_ATTR(CMN_ANY, wp_val, 1, CMN_CONFIG1_WP_VAL),
-+	_CMN_FORMAT_ATTR(CMN_ANY, wp_mask, 2, CMN_CONFIG2_WP_MASK),
- 
- 	NULL
- };
-@@ -1295,6 +1311,7 @@ static struct attribute *arm_cmn_format_attrs[] = {
- static const struct attribute_group arm_cmn_format_attrs_group = {
- 	.name = "format",
- 	.attrs = arm_cmn_format_attrs,
-+	.is_visible = arm_cmn_format_attr_is_visible,
- };
- 
- static ssize_t arm_cmn_cpumask_show(struct device *dev,
++		if (cmn->part != PART_CMN600)
++			if (CMN_EVENT_WP_GRP(event) > CMN_DTM_WP_GRP_TERTIARY ||
++			    (CMN_EVENT_WP_GRP(event) == CMN_DTM_WP_GRP_TERTIARY &&
++			     CMN_EVENT_WP_CHN_SEL(event) != CMN_DTM_WP_CHN_SEL_REQ_VC))
++				return -EINVAL;
++
+ 		/* ...but the DTM may depend on which port we're watching */
+ 		if (cmn->multi_dtm)
+ 			hw->dtm_offset = CMN_EVENT_WP_DEV_SEL(event) / 2;
 -- 
 2.40.1
 
