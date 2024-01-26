@@ -1,148 +1,139 @@
-Return-Path: <linux-kernel+bounces-39448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A2DD83D14B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 01:06:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BADE83D147
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 01:06:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4CA2B282F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 00:06:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 662A9B27445
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 00:06:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB5B61C05;
-	Fri, 26 Jan 2024 00:06:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8461E8BE3;
+	Fri, 26 Jan 2024 00:04:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sEiRY5xT"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YedCk2CE"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 348741385
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 00:06:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C1026FB9
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 00:04:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706227571; cv=none; b=bFdQypt3YB/wDxis7wANKqZn0662HGPzXYRcXWFM2k798qojXUNyIH0RpkXLXjzuwgpp6viRs5/3ujJydBlctpOuOrloPz4SA9bUFXGb/7gGvufcVxxldb5MKQhwG6GIsb8r88f960F5m1X+LEJ9Ft6QQ2SpYHqOkhjMcrMNJE0=
+	t=1706227486; cv=none; b=MqslI8RQPI5uY8hUbm4QIO9Hg6ktt1YUHughF8ef0Id2iArJ0CJw9HOc0NNE73mX8r4TUzUiw5tneF2dW6vnr/MM7tSNAu5bNlx57cgXWJRtiMNtC/meZUYhDHjaS6oQN1gvf/6vo3ixUJR10czMIy4rAglHJ6Q+mmTTC/X9t0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706227571; c=relaxed/simple;
-	bh=CTaBfPMAh5RInl2XuFIpRflJuilb7lxx/hmHalIIO+Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hhfL35Ypu99ibdqQyxkuTvPVseKRhjhkV99s0PttJItlBYL9NXCfOHGpx73MT7JK/8G40wiyQR8OVYQYFebfLnbTfULBagbrw6TOpp5aX/IjWdG2duYOEUvG5lMm2KGHOYoFcut6SwTBfF3HmTPBsRArBum3w8cX1YksmEr2k0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sEiRY5xT; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55a6833c21eso5729037a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 16:06:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706227567; x=1706832367; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CTaBfPMAh5RInl2XuFIpRflJuilb7lxx/hmHalIIO+Q=;
-        b=sEiRY5xT5vt8rL93jNiE1Fl0soUwELLdvj1kYYI1XwHRPyXa7oplPYLBX4e9lVz+ch
-         /cVt7E4rDGR0gwI57Ml7ndS9t7DjY/TRfPv9IjMSltpYiq7D71ZrXEgaG/jCogYeQjku
-         m14ORQCcfd0VASstrbKT/ncYpS6XbcS23jQY/Ei9tVmPPnteRwscqx2YmG/u3uSnwQyl
-         /m/BLSqwYdlurb+khe/x1/svvuOQra5XcZye2O0iyf1wx/d8SqSKE2qv7STrWPCOVGO9
-         lBBZdge3ah3s2s752ICTbyKr/+7IfqHbeAOXsPVPDgfmPLRK+9n7bIhL/g2O+5l7NxaF
-         WdYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706227567; x=1706832367;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CTaBfPMAh5RInl2XuFIpRflJuilb7lxx/hmHalIIO+Q=;
-        b=vRyt5KUNwDTilqV5X0Fxrf02WyQ21YeazUt1EDeo560PBkzplznSWa9sP/7Y/pDYZT
-         nQzlhligwQ8AyFUdC0illH1l1u8gsfSA9JJhGneQWsea9JgJTww04pjchluEs73k2Bmv
-         FfDWuPAb9J2kX+27ht7TI1X/Gw+wtp0mrevgHr7JJXwBL3dlkvltEiAxOxE5m9CstQYa
-         IxO/W4wKFBMLzYGpoxV+4L2fDg+gdZD4I+gGIBWIQeiCu57b/BkoRkJLfDJ+4Usvi3O+
-         VCc0f0Xkjh1/hS6lkc70Q5G8JPPXxk2tzl4sHc/tcEVdnrZPhp3TLQSlfevlBoh6cRKp
-         hENg==
-X-Gm-Message-State: AOJu0YwWsAndquJKmYY7XxUE6NMqJzF8L1oNpqk+RM38K6D/Wp5vqeFl
-	t+ElTykMFytybaps7PsAVxlXsHtyhPApq+vc4am/tluVsxqAHBbRfPlqDVb6Z+JB9xWgcYLUN6F
-	dbPrE1Bf6OLJeSNL6ecYIP+l+lTiwKfN16sD8
-X-Google-Smtp-Source: AGHT+IEqiV//nfkl3hULWrkNSJjo2+J0TL1+ln3XDwZNwNn1bP2F95OOCQ/HSLyXacNqGl88q12Tj1CuNNsviW125uM=
-X-Received: by 2002:a17:906:f1d0:b0:a2f:e46c:f124 with SMTP id
- gx16-20020a170906f1d000b00a2fe46cf124mr188939ejb.54.1706227567062; Thu, 25
- Jan 2024 16:06:07 -0800 (PST)
+	s=arc-20240116; t=1706227486; c=relaxed/simple;
+	bh=dYusNM9jhJDBfpnY/3YlKg1imfsMgzwcEiV1q0lYqF4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QvG9ebGTuySwCAoOLsO3b1CsLJTL789t/78PPEWU+S20QteX9kCNUYeQISRf12euo1w+gzZimow2aN0/u2SvHR7H0B5D8ySUXV+1L4y6+OYMN4OCJZKEpiFUJkwyqbild/ux+EH898bdmgvqlnL801HI1F8dgzkraMjTRMjKIEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YedCk2CE; arc=none smtp.client-ip=134.134.136.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706227485; x=1737763485;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=dYusNM9jhJDBfpnY/3YlKg1imfsMgzwcEiV1q0lYqF4=;
+  b=YedCk2CENwn5f/b7Lx7wWbcNSFXxonbDqZwDFJlod/wceI4pM0QgJBgn
+   SowtAwz786oCDZEAJ1G92JX3s7YsH4+R0C0duK30+cffqsJNmJxs5pE9J
+   SkGFe3SiPfgGNyo5UUW4VpbI1kNaObgsmijux6rH+ksWKPbDNyiqi31qT
+   16oiUU6ArhrJ19f3nGh005l+bHakrXf2YJBOdcT0p5y+Sx66ICWt8zDty
+   2thr+5oNjDvo41U1HyGrDjhk7iqQxtW+EU1WaLEENdrKgOl3GJUOOOlVO
+   vlYcCqO2MYHP+vzJm81TnHNkBNanXfUgNe6WXdoHoAXXbw2HJXElSRnda
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="392771491"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="392771491"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 16:04:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="2598604"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by orviesa004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 16:04:45 -0800
+Date: Thu, 25 Jan 2024 16:06:09 -0800
+From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To: kuiliang Shi <seakeel@gmail.com>
+Cc: Shrikanth Hegde <sshegde@linux.ibm.com>, alexs@kernel.org,
+	Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] sched/fair: narrow the sched_use_asym_prio checking
+ scenario
+Message-ID: <20240126000609.GC17237@ranerica-svr.sc.intel.com>
+References: <20240117085715.2614671-1-alexs@kernel.org>
+ <20240117085715.2614671-5-alexs@kernel.org>
+ <dd4e5498-3e21-4ac1-b65a-fd132c2a7206@linux.ibm.com>
+ <e5b4eb14-c8e4-4888-b555-4b959cda8efe@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240120024007.2850671-1-yosryahmed@google.com>
- <20240120024007.2850671-3-yosryahmed@google.com> <20240122201906.GA1567330@cmpxchg.org>
- <CAJD7tkaATS48HVuBfbOmPM3EvRUoPFr66WhF64UC4FkyVH5exg@mail.gmail.com>
- <20240123153851.GA1745986@cmpxchg.org> <CAJD7tkasHsRnT_75-TXsEe58V9_OW6m3g6CF7Kmsvz8CKRG_EA@mail.gmail.com>
- <20240123201234.GC1745986@cmpxchg.org> <CAJD7tkZC6w2EaE=j2NEVWn1s7Lo2A7YZh8LiZ+w72jQzFFWLUQ@mail.gmail.com>
- <f3fa799f-1815-4cfe-abc8-3ba929fcd1ba@bytedance.com> <CAJD7tka6UuEuuP=df-1V3vwsi0T0QhLORTRDs6qDvA81iY6SGA@mail.gmail.com>
- <f7379622-4081-4424-9353-289257cf8555@bytedance.com>
-In-Reply-To: <f7379622-4081-4424-9353-289257cf8555@bytedance.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Thu, 25 Jan 2024 16:05:28 -0800
-Message-ID: <CAJD7tkaMexNwGHq4G4FjNoWs9_wapY-kttm66Bb9xHF=OReYKg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm: zswap: remove unnecessary tree cleanups in zswap_swapoff()
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Nhat Pham <nphamcs@gmail.com>, Chris Li <chrisl@kernel.org>, Huang Ying <ying.huang@intel.com>, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e5b4eb14-c8e4-4888-b555-4b959cda8efe@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 
-On Thu, Jan 25, 2024 at 4:03=E2=80=AFPM Chengming Zhou
-<zhouchengming@bytedance.com> wrote:
->
-> On 2024/1/25 15:53, Yosry Ahmed wrote:
-> >> Hello,
+On Thu, Jan 25, 2024 at 05:35:32PM +0800, kuiliang Shi wrote:
+> 
+> 
+> On 1/23/24 4:47 PM, Shrikanth Hegde wrote:
+> > 
+> > 
+> > On 1/17/24 2:27 PM, alexs@kernel.org wrote:
+> >> From: Alex Shi <alexs@kernel.org>
 > >>
-> >> I also thought about this problem for some time, maybe something like =
-below
-> >> can be changed to fix it? It's likely I missed something, just some th=
-oughts.
+> >> Current function doesn't match it's comments, in fact, core_idle
+> >> checking is only meaningful with non-SMT.
+> >> So make the function right.
 > >>
-> >> IMHO, the problem is caused by the different way in which we use zswap=
- entry
-> >> in the writeback, that should be much like zswap_load().
+> >> Signed-off-by: Alex Shi <alexs@kernel.org>
+> >> To: Valentin Schneider <vschneid@redhat.com>
+> >> To: Vincent Guittot <vincent.guittot@linaro.org>
+> >> To: Peter Zijlstra <peterz@infradead.org>
+> >> To: Ingo Molnar <mingo@redhat.com>
+> >> ---
+> >>  kernel/sched/fair.c | 4 ++--
+> >>  1 file changed, 2 insertions(+), 2 deletions(-)
 > >>
-> >> The zswap_load() comes in with the folio locked in swap cache, so it h=
-as
-> >> stable zswap tree to search and lock... But in writeback case, we don'=
-t,
-> >> shrink_memcg_cb() comes in with only a zswap entry with lru list lock =
-held,
-> >> then release lru lock to get tree lock, which maybe freed already.
-> >>
-> >> So we should change here, we read swpentry from entry with lru list lo=
-ck held,
-> >> then release lru lock, to try to lock corresponding folio in swap cach=
-e,
-> >> if we success, the following things is much the same like zswap_load()=
-.
-> >> We can get tree lock, to recheck the invalidate race, if no race happe=
-ned,
-> >> we can make sure the entry is still right and get refcount of it, then
-> >> release the tree lock.
-> >
-> > Hmm I think you may be onto something here. Moving the swap cache
-> > allocation ahead before referencing the tree should give us the same
-> > guarantees as zswap_load() indeed. We can also consolidate the
-> > invalidate race checks (right now we have one in shrink_memcg_cb() and
-> > another one inside zswap_writeback_entry()).
-> >
-> > We will have to be careful about the error handling path to make sure
-> > we delete the folio from the swap cache only after we know the tree
-> > won't be referenced anymore. Anyway, I think this can work.
-> >
-> > On a separate note, I think there is a bug in zswap_writeback_entry()
-> > when we delete a folio from the swap cache. I think we are missing a
-> > folio_unlock() there.
-> >
->
-> Hi, want to know if you are preparing the fix patch, I would just wait to
-> review if you are. Or I can work on it if you are busy with other thing.
+> >> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> >> index 96163ab69ae0..0a321f639c79 100644
+> >> --- a/kernel/sched/fair.c
+> >> +++ b/kernel/sched/fair.c
+> >> @@ -9741,8 +9741,8 @@ group_type group_classify(unsigned int imbalance_pct,
+> >>   */
+> >>  static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
+> >>  {
+> >> -	return (!sched_smt_active()) ||
+> >> -		(sd->flags & SD_SHARE_CPUCAPACITY) || is_core_idle(cpu);
+> >> +	return	(sd->flags & SD_SHARE_CPUCAPACITY) ||
+> >> +		(!sched_smt_active() && is_core_idle(cpu));
+> >>  }
+> > 
+> > This seems wrong. This would always return false for higher than SMT domains 
+> > if smt is active. 
+> > 
+> 
+> yes, thanks for point out.
+> 
+> > Was this meant to be sched_smt_active() && is_core_idle(cpu)? 
+> 
+> In theory, yes, it should like this. But I have no ASYM device to test. :(
 
-If you're talking about implementing your solution, I was assuming you
-were going to send a patch out (and hoping others would chime in in
-case I missed something).
+This would not work with !SMT and asym_packing.
 
-I can take a stab at implementing it if you prefer that, just let me know.
+I can test your patches on asym_packing + SMT systems if you post a new
+version.
+
 
