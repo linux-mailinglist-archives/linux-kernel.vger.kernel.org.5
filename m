@@ -1,122 +1,120 @@
-Return-Path: <linux-kernel+bounces-40279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA1F283DD81
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:29:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D89C83DD9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:37:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 229981C21200
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:29:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C41081F2391D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:37:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BC2D1CF9A;
-	Fri, 26 Jan 2024 15:29:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0B6C1CFAC;
+	Fri, 26 Jan 2024 15:36:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="AkwGDV6p"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=raptorengineering.com header.i=@raptorengineering.com header.b="RJyHoW22"
+Received: from raptorengineering.com (mail.raptorengineering.com [23.155.224.40])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3406D1C68A
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:29:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B87381D540
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:36:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=23.155.224.40
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706282945; cv=none; b=Go1PmVGkBJOxYzfmydHvfazfxzKXiK7tKDvOcn9pVZxk4CXqXE3cYIQjGnCfT//M+A0Ft/9qdpvN3YH+AJaf7YPHZiM76P2K2uFZ5qnWOSuly3vNcjzKXcZu7G9TRWpPSdJfZQqTQGt8wZeQTh5LRJeDdNJkD2/Fet0HMvKRKuQ=
+	t=1706283408; cv=none; b=FghSJsVAOR0v7O+CgXJmLohrR16513+EBXEn8Cnt4fFAZV7fPHP6/Ju+x83CAyb4und5Jv9piTCgJDc7t4o7Dn3B2eWyeVLL3oMsrjn1I+gCuknbnr6C+foqGxuS/Fr5sgUv4+N+WhgNr6oQ3AhlEsH4DX2RxgcC7j7dYK9EdOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706282945; c=relaxed/simple;
-	bh=IDmnKs4KXoXn6lftKlwke8vXRewjXDmMhjWvV+QJ43s=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iZOyh/ubmQQEHibK/FZjks0XGpjI/6Uo3ZSUhxM0fTLqJjpEOPHDpI8H+TYAEr04UMJDYJNQPMi/OP/+TTMc/0tfDrqI3Lg8DTgL5RksimCUP1/MVkf2Y8/x2X/3ZMMy4QkmoCxpETzFPpaPPwMae9D73pFXY9EECy935vJEuwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=AkwGDV6p; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6d9b37f4804so1288148b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 07:29:03 -0800 (PST)
+	s=arc-20240116; t=1706283408; c=relaxed/simple;
+	bh=a0C7dY4YzMHGcQ7i8kF3thKZT23LiPNWR3wj3Bxv2vM=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=Ap4aV5OnQwa4AXUcqwPbhBHEZxJhOTMLRRpg48UCBm627+pxnJ/UnJtr04wB5aFWZsgxA6zHYA/KkVd9848To+qYbNNytbjwTg2EX99zRCw9m1jCsxTw8geus0hmJcRIiEugkILmhOean+YM1na+DY4To6AcAElQODNiX3/6QgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raptorengineering.com; spf=pass smtp.mailfrom=raptorengineering.com; dkim=pass (1024-bit key) header.d=raptorengineering.com header.i=@raptorengineering.com header.b=RJyHoW22; arc=none smtp.client-ip=23.155.224.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raptorengineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=raptorengineering.com
+Received: from localhost (localhost [127.0.0.1])
+	by mail.rptsys.com (Postfix) with ESMTP id 1E346828564A;
+	Fri, 26 Jan 2024 09:29:57 -0600 (CST)
+Received: from mail.rptsys.com ([127.0.0.1])
+	by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id Z4Bl9NmigOym; Fri, 26 Jan 2024 09:29:56 -0600 (CST)
+Received: from localhost (localhost [127.0.0.1])
+	by mail.rptsys.com (Postfix) with ESMTP id 29B658285898;
+	Fri, 26 Jan 2024 09:29:56 -0600 (CST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.rptsys.com 29B658285898
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706282943; x=1706887743; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KDpycj0twAw6yoH+p28gix4mRkksTB474idsqfyTR5s=;
-        b=AkwGDV6pCk1LRoKnWrfbYT0iKc34uG2d66T19JFCa55N9TVRuNf1Ty3lrhPY/jfAm2
-         ZaWYpzzJ3+AKEYQ2CLVAGoffiTogA4EXH68Yd/+Ut0NTh4TWSiiGKlRL3VyX6/jPzS0C
-         Xsr9ERns2ucePSn1vIDOIUP1nEHRRDd769kSI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706282943; x=1706887743;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KDpycj0twAw6yoH+p28gix4mRkksTB474idsqfyTR5s=;
-        b=TZS6ARlRUR/L/BST+xFLyNDFaXJIcnFiph36PIVda8VT+wSIKsvAdi1IX/ph3bMozZ
-         hX2KJw4R1xguzQCkxt3gdXs9Ela7/Gu3yo5CVgd6LT4dcSwwDao5sGz0yIC61hJdBRMc
-         TezDgfviz4uAGRAkJ3qRdAcEPs84Knbqcgfo2j4x0YmL7bbXPAVJlUvXAEwOjfVfn6bK
-         ywwYGEwQOnt3fJBR0yrKSB2vGOioTbCNE1Mrw9FlCxqJT1rDA5ZLyK1glKrbJSus8gLP
-         e+W06qf9VkE2ol78mLChnBcmUa/2uGQZda+GCF1IkPKGZno2XO+JxmsXogT4cOOOfhD8
-         bmNQ==
-X-Gm-Message-State: AOJu0YzdgkIGsFO2XnpXewyDgbBzQY7u+0T8xdmyDEA2NBeqREno6FId
-	7SA4L814v/sdpOgs0j0pPxheoeFN/zonhjnHakHm8Syn5oUj+BeqjEVLA+oeBg==
-X-Google-Smtp-Source: AGHT+IG9pu4dsuIMBVO6D7n+zRLG5fIhHfaJd6I9yFebEFRnTlFuxUM1X0By2myfJg9j4+BgP2aNAg==
-X-Received: by 2002:a05:6a00:c92:b0:6dd:c0a5:3f2e with SMTP id a18-20020a056a000c9200b006ddc0a53f2emr1456979pfv.25.1706282943253;
-        Fri, 26 Jan 2024 07:29:03 -0800 (PST)
-Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:8218:45d8:d8fe:f7f2])
-        by smtp.gmail.com with ESMTPSA id a22-20020a62d416000000b006d9be279432sm1267169pfh.2.2024.01.26.07.29.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 07:29:02 -0800 (PST)
-From: Douglas Anderson <dianders@chromium.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: Douglas Anderson <dianders@chromium.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] lkdtm/bugs: In lkdtm_HUNG_TASK() use BUG(), not BUG_ON(1)
-Date: Fri, 26 Jan 2024 07:28:53 -0800
-Message-ID: <20240126072852.1.Ib065e528a8620474a72f15baa2feead1f3d89865@changeid>
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+	d=raptorengineering.com; s=B8E824E6-0BE2-11E6-931D-288C65937AAD;
+	t=1706282996; bh=fTWP5W9iG5QwHlage5ElLeYnTs1G1oJw4CN9sU4XTVk=;
+	h=Date:From:To:Message-ID:MIME-Version;
+	b=RJyHoW22j6T7Bj4DC8orxCYKkaCSZusi8O1gZHUpIGJIhxHflzHPU559T+rrrzzUS
+	 JhXngyRdJ45kGSDwzbdsjuGyowgEjj2vMy2z0r0tsQn/ayuqOMpp1dDgAz4X890yt5
+	 tnL/UykXiv2oGwwc3JAbs0x1c1JFxSSnSl7Q63CE=
+X-Virus-Scanned: amavisd-new at rptsys.com
+Received: from mail.rptsys.com ([127.0.0.1])
+	by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id iyprsa7HK8WJ; Fri, 26 Jan 2024 09:29:55 -0600 (CST)
+Received: from vali.starlink.edu (localhost [127.0.0.1])
+	by mail.rptsys.com (Postfix) with ESMTP id D610E828564A;
+	Fri, 26 Jan 2024 09:29:55 -0600 (CST)
+Date: Fri, 26 Jan 2024 09:29:55 -0600 (CST)
+From: Timothy Pearson <tpearson@raptorengineering.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Shivaprasad G Bhat <sbhat@linux.ibm.com>, iommu@lists.linux.dev, 
+	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	Michael Ellerman <mpe@ellerman.id.au>, npiggin <npiggin@gmail.com>, 
+	christophe leroy <christophe.leroy@csgroup.eu>, 
+	aneesh kumar <aneesh.kumar@kernel.org>, 
+	naveen n rao <naveen.n.rao@linux.ibm.com>, jroedel@suse.de, 
+	Timothy Pearson <tpearson@raptorengineering.com>, aik@amd.com, 
+	bgray@linux.ibm.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	gbatra@linux.vnet.ibm.com, vaibhav@linux.ibm.com
+Message-ID: <392247278.10124607.1706282995795.JavaMail.zimbra@raptorengineeringinc.com>
+In-Reply-To: <20240126151701.GZ50608@ziepe.ca>
+References: <170618450592.3805.8216395093813382208.stgit@ltcd48-lp2.aus.stglab.ibm.com> <170618451433.3805.9015493852395837391.stgit@ltcd48-lp2.aus.stglab.ibm.com> <20240125155017.GW50608@ziepe.ca> <b825dd04-3d32-4fbd-91e3-523ddf96fc7a@linux.ibm.com> <20240126151701.GZ50608@ziepe.ca>
+Subject: Re: [PATCH 1/2] powerpc: iommu: Bring back table group
+ release_ownership() call
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: Zimbra 8.5.0_GA_3042 (ZimbraWebClient - GC112 (Linux)/8.5.0_GA_3042)
+Thread-Topic: powerpc: iommu: Bring back table group release_ownership() call
+Thread-Index: BFoIxDhAfBmdu+WWYcEeQbWvy98cLw==
 
-In commit edb6538da3df ("lkdtm/bugs: Adjust lkdtm_HUNG_TASK() to avoid
-tail call optimization") we marked lkdtm_HUNG_TASK() as
-__noreturn. The compiler gets unhappy if it thinks a __noreturn
-function might return, so there's a BUG_ON(1) at the end. Any human
-can see that the function won't return and the compiler can figure
-that out too. Except when it can't.
 
-The MIPS architecture defines HAVE_ARCH_BUG_ON and defines its own
-version of BUG_ON(). The MIPS version of BUG_ON() is not a macro but
-is instead an inline function. Apparently this prevents the compiler
-from realizing that the condition to BUG_ON() is constant and that the
-function will never return.
 
-Let's change the BUG_ON(1) to just BUG(), which it should have been to
-begin with. The only reason I used BUG_ON(1) to begin with was because
-I was used to using WARN_ON(1) when writing test code and WARN() and
-BUG() are oddly inconsistent in this manner. :-/
+----- Original Message -----
+> From: "Jason Gunthorpe" <jgg@ziepe.ca>
+> To: "Shivaprasad G Bhat" <sbhat@linux.ibm.com>
+> Cc: iommu@lists.linux.dev, "linuxppc-dev" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel"
+> <linux-kernel@vger.kernel.org>, "Michael Ellerman" <mpe@ellerman.id.au>, "npiggin" <npiggin@gmail.com>, "christophe
+> leroy" <christophe.leroy@csgroup.eu>, "aneesh kumar" <aneesh.kumar@kernel.org>, "naveen n rao"
+> <naveen.n.rao@linux.ibm.com>, jroedel@suse.de, "Timothy Pearson" <tpearson@raptorengineering.com>, aik@amd.com,
+> bgray@linux.ibm.com, "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, gbatra@linux.vnet.ibm.com,
+> vaibhav@linux.ibm.com
+> Sent: Friday, January 26, 2024 9:17:01 AM
+> Subject: Re: [PATCH 1/2] powerpc: iommu: Bring back table group release_ownership() call
 
-Fixes: edb6538da3df ("lkdtm/bugs: Adjust lkdtm_HUNG_TASK() to avoid tail call optimization")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+> On Fri, Jan 26, 2024 at 08:43:12PM +0530, Shivaprasad G Bhat wrote:
+>> > Also, is there any chance someone can work on actually fixing this to
+>> > be a proper iommu driver? I think that will become important for power
+>> > to use the common dma_iommu code in the next year...
+>> We are looking into it.
+> 
+> Okay, let me know, I can possibly help make parts of this happen
+> 
+> power is the last still-current architecture to be outside the modern
+> IOMMU and DMA API design and I'm going to start proposing things that
+> will not be efficient on power because of this.
 
- drivers/misc/lkdtm/bugs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I can get development resources on this fairly rapidly, including testing.  We should figure out the best way forward and how to deal with the VFIO side of things, even if that's a rewrite at the end of the day the machine-specific codebase isn't *that* large for our two target flavors (64-bit PowerNV and 64-bit pSeries).
 
-diff --git a/drivers/misc/lkdtm/bugs.c b/drivers/misc/lkdtm/bugs.c
-index d1222d3eda2f..b92767d6bdd2 100644
---- a/drivers/misc/lkdtm/bugs.c
-+++ b/drivers/misc/lkdtm/bugs.c
-@@ -298,7 +298,7 @@ static void __noreturn lkdtm_HUNG_TASK(void)
- {
- 	set_current_state(TASK_UNINTERRUPTIBLE);
- 	schedule();
--	BUG_ON(1);
-+	BUG();
- }
- 
- static volatile unsigned int huge = INT_MAX - 2;
--- 
-2.43.0.429.g432eaa2c6b-goog
-
+> I think a basic iommu driver using the dma API would not be so hard.
+> 
+> I don't know what to do about the SPAPR VFIO mess though. :(
+> 
+> Jason
 
