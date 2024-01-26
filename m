@@ -1,245 +1,318 @@
-Return-Path: <linux-kernel+bounces-39529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2BC783D25E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 03:09:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D106983D25D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 03:09:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 520D41F244E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 02:09:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37E1A290BDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 02:09:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA181522D;
-	Fri, 26 Jan 2024 02:09:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BFE3522E;
+	Fri, 26 Jan 2024 02:09:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SpAOtV/x"
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QFyqzXlq"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A9044683
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 02:09:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B587310FF;
+	Fri, 26 Jan 2024 02:08:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706234968; cv=none; b=kwxt8EGKHrNRZjEY+mFtKOk0unfnFeXIGkZvhUlnock9sPQpmrkMsfKjSKW7bZjcc1abO8P1ibdBIiOnH1U3i1Posnddm31nIesdJSbb2k3mbIMAeFzRs4DMnrddTawx6sciERdMsjpVV9Z9up7tawka9avmSjBzvgmfRusiLoY=
+	t=1706234941; cv=none; b=KQAG7iPzeKK2zFh66AtXeXFlZ8btjxB/wkEBlsoRj7/d2PiAKvsEPcmY5HGENj8twP31hZMLVOGldCSLCn54mbXSObC1qhVDLfZiSkxgh3C1AL4AutzX+QcAvYdHU3p4zR8MTsr6123ZqRkw9aokpMNGTLdVdNXwQAhvGBAvDCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706234968; c=relaxed/simple;
-	bh=gKSsN1jIW1mdBnpWSvKhtasAeERdX0dQlnV/an3+1fA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ktwkV+GP4fz+VSM8lIKTdvvLFgc0ibtPCmP1NVS4vCSg5BoXmisVojrnedADZYOeIQpzmQmKyHVeNwz0GIGP4KRGd0PiD2y66XPT3cjWXqTmZQSQkJAVPV2UIryspm1uzkRQtukbvGMgbr+bXFCawW5ygf4AXbyjvjEx4BIS++c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SpAOtV/x; arc=none smtp.client-ip=209.85.160.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-42a7765511bso57081cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 18:09:25 -0800 (PST)
+	s=arc-20240116; t=1706234941; c=relaxed/simple;
+	bh=2quk6pAK35xPyF+//fszvVnj+Kvkjm4JH5d5PC4eOWI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=YN+tLXSWMqd6Putx+RvEiO8iRGvlyf+iBCjMJI2NGqyrdxWhQsTYvBxfO691cfjLLw1fbfWK4a0Kek3kuowBJU/TwWWfPEQSYATAbVsDYunLVKJPooH5XzbTwjml8fWtRldehHSPvR+IDCavJmNIrwVcbZcxFoX5afNmpJ0oN1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QFyqzXlq; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6dd72c4eb4aso202096b3a.2;
+        Thu, 25 Jan 2024 18:08:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706234965; x=1706839765; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1706234939; x=1706839739; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/5amz6Dx9uklFZzeQD+cVMfgm94Iu/oKxh8ZpkE1jLY=;
-        b=SpAOtV/xOdNxD62v4vVWdHT0agAiNJ3uviHtBniaPldIvpCNdJzK7HJUfYL56UDGnQ
-         WBolz3K0MXv65cnWbQVbN/8fmdQnFm2KZJRlEP3YOkNOE0wRpo5JSxH5dskFAULAjB9i
-         HZE7ICaj90L8dyHdKtTtKk/pRT6k5BSiDFnxK85mDILtT5FB3zAiidiXS4YC7wY8Wo8p
-         6VhkInjWWSZm6nlb3Wi1d0l9Sb6OBY4i5N7YIVqU3SE6G/OKN8K4jGQVLoC3Drh8pDOk
-         BbnoSRdyVPILk9QFu3bvQcZqbCVODUnklV3O1Iv60AxCLUJ5HOhtEcCKTtQ/wi31u5dF
-         l9EQ==
+        bh=Br6VJLagRb3AfSDX41gJAp6j1fOegiaHY5+r3X1kYKU=;
+        b=QFyqzXlq8Jp3AeDiiMlzeM2Wx/2XbfAgJxe/i/XlXLWj52J+92VpqswSke8sW/wPPx
+         2CcnfGldF9DHl2d/pUBXnVDjZRpOX/pR3YEs4g8DgCeunSem7k7wIbKbQazfJANdJL9f
+         imRYe9+zX2dg4TpGP0FvrXgw1wCXaGitIgle6yByqod2WAj+TDmGy44+bFXWTm/yfCMC
+         nZvi/APXep0veWgoqF/fwakOmOF29h2OZg0x9Ph1u8ov6NEpr/DMIgW3blBMO3uDX9uH
+         u2wvxgavQSHlaU8nM4Ps7A+Rlvn5yp9G6o6Fppv2f2CR+HKP4tKHHNTuMexrB/SgQ5Ty
+         SwLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706234965; x=1706839765;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1706234939; x=1706839739;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/5amz6Dx9uklFZzeQD+cVMfgm94Iu/oKxh8ZpkE1jLY=;
-        b=MnZIZWISJ9iYyJ5tZ+DYZi7ghpMwWBc0p22RZZ699XshPArbdIxhbkORsUz6Vk/rqL
-         1sV43+KSvYKdpCe5ahb+onB2i/3T+JUZubjKBnFE3TZkD+rBLbSCXIdu/tkj8V2EY+Ce
-         5XILaAloICEUNEUNxL/DvGWGOo+aYtjw7gu4mJHjCuX1yi53xPadVL5oELiQJpWpJZV9
-         PcJhL9t4O5xeU64EUwn/0aa+xBNbJDgvSyiXgde63tKcFXO1s7WBrCzbgdsXrrEH0SXr
-         5xcIOtS7LaxfgR6X8JRtWgUar0MyIXbBOtJGISm1m0JtbtvWspuhs1SvzN+KhlR0fQ+v
-         32Yw==
-X-Gm-Message-State: AOJu0YyAE7ZAsb5AH65iIIFTz50Vb3B/kdkJrxE/n46dg3onGcAX0pKJ
-	9yqpR84F+xjyb14XUXkZtAJXil4hs1V+nmKW83nXOmdi01sco7txOF5X+76jhDBba64+oUVYLq3
-	GQuwEIelWvqP2CuHjaxzd36+Ep8lkCSIhGbzRTIZZy9Zvp8CI4+TXw8o=
-X-Google-Smtp-Source: AGHT+IHCJHF25X2TEl/aPytP4xDfa74efG9D09U3G7tYM1h+/qwluhQ9njKJ7jvXENSBw9FeP3k9Uly/jb09iOo9nTw=
-X-Received: by 2002:a05:622a:1dc9:b0:42a:31d1:e4d5 with SMTP id
- bn9-20020a05622a1dc900b0042a31d1e4d5mr79311qtb.7.1706234964614; Thu, 25 Jan
- 2024 18:09:24 -0800 (PST)
+        bh=Br6VJLagRb3AfSDX41gJAp6j1fOegiaHY5+r3X1kYKU=;
+        b=WW/vjtHEQtotBIVEfrOcbFbvn50aIOQnfKqRdoy3QF0LeievC46tRwXsN4wGDkSFCa
+         YlQqBhn7jfCKHoWn3EYOZ1VuCyXfG/wCSCFCftQyuF4lJ9+tU3cQZm93zdcz0qiMnMD4
+         uoJxktrBV7gInPkfjxm7XZzmwhntMmQvM+sGG9FHnPAzCOALeBAOHo6FEPOPrxHJWHFU
+         2PqNjlhywvPUaWFhp+GSMfJNaFss3U7bgf3G4HWaa0gd32d9kbUTkDZ8fmIaQw8dgZVK
+         gsQGcEyKc29w/6B1dk+QhijSBES8NfzoOthPqAAE4i84Ffb84svgACMJuq1M2PTclp+X
+         SGWg==
+X-Gm-Message-State: AOJu0YzvMEwIlAeijOAqjVXUMc04Y/Fw2LcYgU8ohJsY6tD6U8dPT5Gh
+	d6TVEq2iIRxLrj6l1HPgX6/yo39VWdl4Kx0Ijsw6713NZUTPyFYN
+X-Google-Smtp-Source: AGHT+IFpXDfDdLfol3GnedT7BVcJU3Lg5lPS/W1n8oFL0fn5cIeJRsE+SQKAsKBssVzbjlUXZm9qHA==
+X-Received: by 2002:a05:6a20:6a03:b0:19a:404b:86c3 with SMTP id p3-20020a056a206a0300b0019a404b86c3mr631310pzk.70.1706234938867;
+        Thu, 25 Jan 2024 18:08:58 -0800 (PST)
+Received: from localhost ([129.146.253.192])
+        by smtp.gmail.com with ESMTPSA id m13-20020a17090ade0d00b0028ddfb484bfsm2251209pjv.49.2024.01.25.18.08.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 18:08:58 -0800 (PST)
+Date: Fri, 26 Jan 2024 10:08:47 +0800
+From: Furong Xu <0x1207@gmail.com>
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Alexandre Torgue
+ <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Joao Pinto <jpinto@synopsys.com>, Simon Horman <horms@kernel.org>,
+ netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ xfr@outlook.com, rock.xu@nio.com
+Subject: Re: [PATCH net] net: stmmac: xgmac: fix safety error descriptions
+Message-ID: <20240126100847.0000370e@gmail.com>
+In-Reply-To: <4coefc2fqtc2eoereds3rf7vudci5l7ahme2wydocjepk2wrwy@ncgwl3j3koyu>
+References: <20240123085037.939471-1-0x1207@gmail.com>
+	<ii3muj3nmhuo6s5hm3g7wuiubtyzr632klrcesubtuaoyifogb@ohmunpxvdtsv>
+	<20240125103454.0000312a@gmail.com>
+	<4coefc2fqtc2eoereds3rf7vudci5l7ahme2wydocjepk2wrwy@ncgwl3j3koyu>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124084636.1415652-1-xu.yang_2@nxp.com> <CAGETcx9h8gA8EenyR0B0OPa23uw_8dk-Kft8c8+F3StfpyMtaw@mail.gmail.com>
- <DU2PR04MB8822047A07680596415A61358C7A2@DU2PR04MB8822.eurprd04.prod.outlook.com>
-In-Reply-To: <DU2PR04MB8822047A07680596415A61358C7A2@DU2PR04MB8822.eurprd04.prod.outlook.com>
-From: Saravana Kannan <saravanak@google.com>
-Date: Thu, 25 Jan 2024 18:08:47 -0800
-Message-ID: <CAGETcx8HeseChCoOzOkUNf_LyXbVqgyisuHy_9U=PcP74NwV4A@mail.gmail.com>
-Subject: Re: [EXT] Re: [PATCH] driver core: improve cycle detection on fwnode graph
-To: Xu Yang <xu.yang_2@nxp.com>
-Cc: "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "rafael@kernel.org" <rafael@kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 24, 2024 at 8:21=E2=80=AFPM Xu Yang <xu.yang_2@nxp.com> wrote:
->
-> Hi Saravana,
->
-> >
-> > On Wed, Jan 24, 2024 at 12:40=E2=80=AFAM Xu Yang <xu.yang_2@nxp.com> wr=
-ote:
-> > >
-> > > Currently, cycle detection on fwnode graph is still defective.
-> > > Such as fwnode link A.EP->B is not marked as cycle in below case:
-> > >
-> > >                  +-----+
-> > >                  |     |
-> > >  +-----+         |  +--|
-> > >  |     |<-----------|EP|
-> > >  |--+  |         |  +--|
-> > >  |EP|----------->|     |
-> > >  |--+  |         |  B  |
-> > >  |     |         +-----+
-> > >  |  A  |            ^
-> > >  +-----+   +-----+  |
-> > >     |      |     |  |
-> > >     +----->|  C  |--+
-> > >            |     |
-> > >            +-----+
-> > >
-> > > 1. Node C is populated as device C. But nodes A and B are still not
-> > >    populated. When do cycle detection with device C, no cycle is foun=
-d.
-> > > 2. Node B is populated as device B. When do cycle detection with devi=
-ce
-> > >    B, it found a link cycle B.EP->A->C->B. Then, fwnode link B.EP->A,
-> > >    A->C and C->B are marked as cycle. The fwnode link C->B is convert=
-ed
-> > >    to device link too.
-> > > 3. Node A is populated as device A. When do cycle detection with devi=
-ce
-> > >    A, it find A->C is marked as cycle and convert it to device link. =
-It
-> > >    also find B.EP->A is marked as cycle but will not convert it to de=
-vice
-> > >    link since node B.EP is not a device.
-> >
-> > Your example doesn't sound correct (I'l explain further down) and it
-> > is vague. Need a couple of clarifications first.
-> >
-> > 1. What is the ---> representing? Is it references in DT or fwnode
-> > links? Which end of the arrow is the consumer? The tail or the pointy
-> > end? I typically use the format consumer --> supplier.
->
-> Sorry, I represent "-->" as "supplier --> consumer" and it's a fwnode lin=
-k.
->
-> >
-> > 2. You say "link" sometimes but it's not clear if you mean fwnode
-> > links or device links. So please be explicit about it.
->
-> It=E2=80=99s fwnode link by default.
->
-> >
-> > 3. Your statement "Such as fwnode link A.EP->B is not marked as cycle"
-> > doesn't sound correct. When remote-endpoint properties are parsed, the
-> > fwnode is created from the device node with compatible property to the
-> > destination. So A.EP ----> B can't exist if I assume the consumer -->
-> > supplier format.
->
-> The fwnode is not created from the device node with compatible property
-> since below commit. The endpoint node is the supplier. No, you can see my
-> case later.
->
-> 4a032827daa8 (of: property: Simplify of_link_to_phandle(), 2023-02-06)
+On Thu, 25 Jan 2024 16:48:23 +0300
+Serge Semin <fancer.lancer@gmail.com> wrote:
 
-I think my confusion was because you use ----> in the opposite way to
-what I have used for all my fw_devlink and cycle detection patches.
+> On Thu, Jan 25, 2024 at 10:34:54AM +0800, Furong Xu wrote:
+> > On Wed, 24 Jan 2024 17:25:27 +0300
+> > Serge Semin <fancer.lancer@gmail.com> wrote:
+> >   
+> > > On Tue, Jan 23, 2024 at 04:50:37PM +0800, Furong Xu wrote:  
+> > > > Commit 56e58d6c8a56 ("net: stmmac: Implement Safety Features in
+> > > > XGMAC core") prints safety error descriptions when safety error assert,
+> > > > but missed some special errors, and mixed correctable errors and
+> > > > uncorrectable errors together.
+> > > > This patch complete the error code list and print the type of errors.    
+> > > 
+> > > The XGMAC ECC Safety code has likely been just copied from the DW GMAC
+> > > v5 (DW QoS Eth) part. So this change is partly relevant to that code too. I
+> > > can't confirm that the special errors support is relevant to the DW
+> > > QoS Eth too (it likely is though), so what about splitting this patch
+> > > up into two:
+> > > 1. Elaborate the errors description for DW GMAC v5 and DW XGMAC.
+> > > 2. Add new ECC safety errors support.
+> > > ?
+> > > 
+> > > On the other hand if we were sure that both DW QoS Eth and XGMAC
+> > > safety features implementation match the ideal solution would be to
+> > > refactor out the common code into a dedicated module.
+> > > 
+> > > -Serge(y)
+> > >   
+> >   
+> 
+> > Checked XGMAC Version 3.20a and DW QoS Eth Version 5.20a, the safety error
+> > code definitions are not identical at all, they do have some differences,
+> > about more than 20 bits of status register are different.
+> > I think we should just leave them in individual implementations.  
+> 
+> For some reason you answered to the last part of my comment and
+> completely ignored the first part which was the main point of my
+> message.
+> 
+> Regarding the Safety Feature support implemented in QoS Eth and XGMAC
+> STMMAC modules. You were wrong in using the statement "at all". Except
+> the optional events enable/disable procedure introduced in the commit
+> 5ac712dcdfef ("net: stmmac: enable platform specific safety
+> features"), there aren't many differences: at least the errors
+> handling and report are identical, MTL and DMA error flags match, even
+> MTL and DMA ECC/Safety IRQ flags match. The only difference is in the
+> MTL/MAC DPP (Data Parity Protection) part which can be easily factored
+> out based on the device ID should we attempt to refactor the safety
+> feature code. See the attached html-diff for more details of what
+> match and what is different.
+> 
+> Anyway I am not insisting on the refactoring. That was just a
+> proposal, a more preferred alternative to simultaneously patching two
+> parts of the drivers looking very much alike. Such refactoring would
+> improve the code maintainability. The main point of my comment was to
+> extend your patch for DW QoS Eth safety feature implementation too
+> since some of the changes you introduced were useful for it too, and
+> in splitting the patch up since your patch added new flags support
+> which was unrelated change.  Thus your patch would turned into the
+> two-patches patchset like this:
+> [Patch 1] would provide an elaborated errors description for both DW
+> QOS Eth (GMAC v5.x) and DW XGMAC.
+> [Patch 2] would introduce the new ECC safety errors support.
+> 
+> See my further comments about the respective changes.
+> 
+> >   
+> > > > 
+> > > > Fixes: 56e58d6c8a56 ("net: stmmac: Implement Safety Features in XGMAC core")
+> > > > Signed-off-by: Furong Xu <0x1207@gmail.com>
+> > > > ---
+> > > >  .../ethernet/stmicro/stmmac/dwxgmac2_core.c   | 36 +++++++++----------
+> > > >  1 file changed, 18 insertions(+), 18 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+> > > > index eb48211d9b0e..ad812484059e 100644
+> > > > --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+> > > > +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+> > > > @@ -748,29 +748,29 @@ static void dwxgmac3_handle_mac_err(struct net_device *ndev,
+> > > >  }
+> > > >  
+> > > >  static const struct dwxgmac3_error_desc dwxgmac3_mtl_errors[32]= {  
+> 
+> > > > -	{ true, "TXCES", "MTL TX Memory Error" },
+> > > > +	{ true, "TXCES", "MTL TX Memory Correctable Error" },  
+> 
+> Applicable for both IP-cores
+> [Patch 1] +QoS, +XGMAC
+> please apply this change to dwmac5.c too.
+> 
+> > > >  	{ true, "TXAMS", "MTL TX Memory Address Mismatch Error" },  
+> 
+> > > > -	{ true, "TXUES", "MTL TX Memory Error" },
+> > > > +	{ true, "TXUES", "MTL TX Memory Uncorrectable Error" },  
+> 
+> [Patch 1] +QoS, +XGMAC
+> ditto
+> 
+> > > >  	{ false, "UNKNOWN", "Unknown Error" }, /* 3 */  
+> 
+> > > > -	{ true, "RXCES", "MTL RX Memory Error" },
+> > > > +	{ true, "RXCES", "MTL RX Memory Correctable Error" },  
+> 
+> [Patch 1] +QoS, +XGMAC
+> ditto
+> 
+> > > >  	{ true, "RXAMS", "MTL RX Memory Address Mismatch Error" },  
+> 
+> > > > -	{ true, "RXUES", "MTL RX Memory Error" },
+> > > > +	{ true, "RXUES", "MTL RX Memory Uncorrectable Error" },  
+> 
+> [Patch 1] +QoS, +XGMAC
+> ditto
+> 
+> > > >  	{ false, "UNKNOWN", "Unknown Error" }, /* 7 */  
+> 
+> > > > -	{ true, "ECES", "MTL EST Memory Error" },
+> > > > +	{ true, "ECES", "MTL EST Memory Correctable Error" },  
+> 
+> [Patch 1] +QoS, +XGMAC
+> ditto
+> 
+> > > >  	{ true, "EAMS", "MTL EST Memory Address Mismatch Error" },  
+> 
+> > > > -	{ true, "EUES", "MTL EST Memory Error" },
+> > > > +	{ true, "EUES", "MTL EST Memory Uncorrectable Error" },  
+> 
+> [Patch 1] +QoS, +XGMAC
+> ditto
+> 
+> > > >  	{ false, "UNKNOWN", "Unknown Error" }, /* 11 */  
+> 
+> > > > -	{ true, "RPCES", "MTL RX Parser Memory Error" },
+> > > > +	{ true, "RPCES", "MTL RX Parser Memory Correctable Error" },  
+> 
+> [Patch 1] +QoS, +XGMAC
+> ditto
+> 
+> > > >  	{ true, "RPAMS", "MTL RX Parser Memory Address Mismatch Error" },  
+> 
+> > > > -	{ true, "RPUES", "MTL RX Parser Memory Error" },
+> > > > +	{ true, "RPUES", "MTL RX Parser Memory Uncorrectable Error" },  
+> 
+> [Patch 1] +QoS, +XGMAC
+> ditto
+> 
+> > > >  	{ false, "UNKNOWN", "Unknown Error" }, /* 15 */  
+> 
+> > > > -	{ false, "UNKNOWN", "Unknown Error" }, /* 16 */
+> > > > -	{ false, "UNKNOWN", "Unknown Error" }, /* 17 */
+> > > > -	{ false, "UNKNOWN", "Unknown Error" }, /* 18 */
+> > > > +	{ true, "SCES", "MTL SGF GCL Memory Correctable Error" },
+> > > > +	{ true, "SAMS", "MTL SGF GCL Memory Address Mismatch Error" },
+> > > > +	{ true, "SUES", "MTL SGF GCL Memory Uncorrectable Error" },
+> > > >  	{ false, "UNKNOWN", "Unknown Error" }, /* 19 */
+> > > > -	{ false, "UNKNOWN", "Unknown Error" }, /* 20 */
+> > > > -	{ false, "UNKNOWN", "Unknown Error" }, /* 21 */
+> > > > -	{ false, "UNKNOWN", "Unknown Error" }, /* 22 */
+> > > > +	{ true, "RXFCES", "MTL RXF Memory Correctable Error" },
+> > > > +	{ true, "RXFAMS", "MTL RXF Memory Address Mismatch Error" },
+> > > > +	{ true, "RXFUES", "MTL RXF Memory Uncorrectable Error" },  
+> 
+> This introduces the new flags support. Please move this change into a
+> separate patch (Patch 2):
+> [Patch 2] +XGMAC only.
+> 
+> My DW QoS Eth v5.10a databook doesn't have these flags defined. If
+> your 5.20a HW-manual have them described then please add them for DW
+> QoS Eth too.
+> 
+> > > >  	{ false, "UNKNOWN", "Unknown Error" }, /* 23 */
+> > > >  	{ false, "UNKNOWN", "Unknown Error" }, /* 24 */
+> > > >  	{ false, "UNKNOWN", "Unknown Error" }, /* 25 */
+> > > > @@ -796,13 +796,13 @@ static void dwxgmac3_handle_mtl_err(struct net_device *ndev,
+> > > >  }
+> > > >  
+> > > >  static const struct dwxgmac3_error_desc dwxgmac3_dma_errors[32]= {  
+> 
+> > > > -	{ true, "TCES", "DMA TSO Memory Error" },
+> > > > +	{ true, "TCES", "DMA TSO Memory Correctable Error" },  
+> 
+> Applicable for both IP-cores
+> [Patch 1] +QoS, +XGMAC
+> please apply this change to dwmac5.c too.
+> 
+> > > >  	{ true, "TAMS", "DMA TSO Memory Address Mismatch Error" },  
+> 
+> > > > -	{ true, "TUES", "DMA TSO Memory Error" },
+> > > > +	{ true, "TUES", "DMA TSO Memory Uncorrectable Error" },  
+> 
+> [Patch 1] +QoS, +XGMAC
+> ditto
+> 
+> > > >  	{ false, "UNKNOWN", "Unknown Error" }, /* 3 */  
+> 
+> > > > -	{ true, "DCES", "DMA DCACHE Memory Error" },
+> > > > +	{ true, "DCES", "DMA DCACHE Memory Correctable Error" },
+> > > >  	{ true, "DAMS", "DMA DCACHE Address Mismatch Error" },
+> > > > -	{ true, "DUES", "DMA DCACHE Memory Error" },
+> > > > +	{ true, "DUES", "DMA DCACHE Memory Uncorrectable Error" },  
+> 
+> AFAICS applicable for XGMAC only
+> [Patch 1] +XGMAC only.
+> Once again, My DW QoS Eth v5.10a databook doesn't have these flags
+> defined. So if your DW QoS Eth 5.20a HW-manual do have them described
+> please add them for DW QoS Eth with the elaborated description in the
+> framework of the Patch 2.
+> 
+> -Serge(y)
+> 
+> > > >  	{ false, "UNKNOWN", "Unknown Error" }, /* 7 */
+> > > >  	{ false, "UNKNOWN", "Unknown Error" }, /* 8 */
+> > > >  	{ false, "UNKNOWN", "Unknown Error" }, /* 9 */
+> > > > -- 
+> > > > 2.34.1
+> > > > 
+> > > >     
+> >   
 
-The part I was referring to is related to how driver/of/property.c has
-node_not_dev set to true for pasrse_remote_endpoint.
-
-> >
-> > 4. Has this actually caused an issue? If so, what is it? And give me
-> > an example in an upstream DT.
->
-> Yes, there are two cycles (B.EP->A->C->B and B.EP->A/A.EP->B) in above
-> example. But only one cycle (B.EP->A->C->B) is recognized.
->
-> My real case as below:
-
-I think you still missed some details because usb3_phy0 seems
-irrelevant here. Can you just point me to the dts (not dtsi) file for
-this platform in the kernel tree?
-Also, can you change all the pr_debug and dev_dbg in
-drivers/base/core.c to their info equivalent and boot up the system
-and give me the logs? That'll be a lot easier for me to understand
-your case.
-
-> ---
-> tcpc@50 {
->     compatible =3D "nxp,ptn5110";
->     ...
->
->     port {
->         typec_dr_sw: endpoint {
->             remote-endpoint =3D <&usb3_drd_sw>;
->         };
->     };
-> };
->
-> usb@38100000 {
->     compatible =3D "snps,dwc3";
->     phys =3D <&usb3_phy0>, <&usb3_phy0>;
->     ...
->
->     port {
->         usb3_drd_sw: endpoint {
->             remote-endpoint =3D <&typec_dr_sw>;
->         };
->     };
-> };
->
-> usb3_phy0: usb-phy@381f0040 {
->     compatible =3D "fsl,imx8mp-usb-phy";
->
->     ...
-> };
->
-> And fwnode links are created as below:
-> ---
-> [    0.059553] /soc@0/bus@30800000/i2c@30a30000/tcpc@50 Linked as a fwnod=
-e consumer to /soc@0/usb@32f10100/usb@38100000/port/endpoint
-> [    0.066365] /soc@0/usb-phy@381f0040 Linked as a fwnode consumer to /so=
-c@0/bus@30800000/i2c@30a30000/tcpc@50
-> [    0.066624] /soc@0/usb@32f10100/usb@38100000 Linked as a fwnode consum=
-er to /soc@0/usb-phy@381f0040
-> [    0.066702] /soc@0/usb@32f10100/usb@38100000 Linked as a fwnode consum=
-er to /soc@0/bus@30800000/i2c@30a30000/tcpc@50/port/endpoint
->
-
-So let's say I see your logs and what you say is true, but you still
-aren't telling me what's the problem you have because of this
-incorrect cycle detection. What's breaking? Is something not allowed
-to probe? If so, which one? What's supposed to be the right order of
-probes?
-
-> >
-> > Btw, I definitely don't anticipate ACKing this patch because the cycle
-> > detection code shouldn't be having property specific logic. It's not
-> > even DT specific in this place. If there is an issue and it needs
-> > fixing, it should be where the fwnode links are created. But then
-> > again I'm not sure what the actual symptom we are trying to solve is.
->
-> Sorry for the inconvenience. I saw that you push some patches about fwnod=
-e
-> link and device link handling, so I think you may understand this issue
-> well and give some suggestions.
-
-No worries at all. Thanks for reporting the issue and thanks for
-trying to fix it.
-
--Saravana
+Hi Serge:
+Thanks for your detailed explanation, new refactoring will be sent to net-next.
 
