@@ -1,109 +1,114 @@
-Return-Path: <linux-kernel+bounces-40678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C04783E3FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:32:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1C6583E3FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:32:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CCC1B20D6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:32:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3794C1F2450A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:32:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3F3025547;
-	Fri, 26 Jan 2024 21:31:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53E7424A1F;
+	Fri, 26 Jan 2024 21:32:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EmYpnFG4"
-Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="FGYM24Fn"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFD57250EB
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 21:31:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6510286A6;
+	Fri, 26 Jan 2024 21:32:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706304718; cv=none; b=Iy1v1sRYXU2KadINzM2tT3P6tp8MnHFJYHkx3ig6B1dBfeY1yR8QZvr/aTDZDjrA+LHIMCs4xWEQ8Vyrd0bqgGGHx7j18A9GxQot7EGreBTV/3sBkDHjHitxfaPkTYazIJj3xUx70KbwkmrivhcGgwjBx/YMNKzgBG9tZS2luNw=
+	t=1706304732; cv=none; b=BukZpZvgGcU8HFeECOw2qey5MtOq3oS0PJ5gDR3E1ssC0bkxAQE8UZvmso1MwfDxKaqj4CqcqIm3OEXpvUhFEYOmfYUo58fFZyuAb5uZ9SCa2ciHqex6QH9kTisybVNGINVIvW5kS/d18YdELE/aWn0f98pBemkz7xcXP2+po7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706304718; c=relaxed/simple;
-	bh=pnPJv3C/8oI2mDLaLYSzM3++yh258fHVwIni0iXI++c=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=dcotBLasGsuaa8/ap9M6C73bIISfXTlb+yk4TsyXihrBuV9v1SrrtxTgtWfALho1ziTm6wO22nB9p4P7uiV7MIoYlXrLmWu9FMdeBqlljVIZ2cQydj/tTJEbzwgZdeJJxK9rd7xMce0up+DVMLtRaGMeC/pY3/49UZG8xlCmJpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EmYpnFG4; arc=none smtp.client-ip=209.85.210.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6de0aabeea8so440271b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:31:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706304716; x=1706909516; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xJJmc9xeQcykeus6gCa38Rf/FAKcShuAjnIZq0Hgxno=;
-        b=EmYpnFG4Jrv+ozXW22/u1UaQHxP5Gus+V1C0Z7g383Jf0kcG7R4YPkpN++KTo5fNia
-         AZ8+Bk8FNUhPa6C+VBIRa+hVeqvrf13YxOSFXk/D+iIHZz18/E0nB6jIsWXZbW6Ueeqz
-         XJnsFJd2M26McrEC2s3AHM4Gyf26cHsaV3o0ECkmOSjoiG1+I7ftKVYG0+HGaE3OxKLh
-         kou+iFDAqicJVPmlFbvxEFcarr448sbc+fXW8fh77GoJH9znIlJnwEtAcIUw4Nj0GwLc
-         jOUC5eS5+JC7UpXp+yafmm8qlDViLlx3t+9jAb4Cc2E0SANzNQMW0X2mmfgiK48erVcK
-         r4mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706304716; x=1706909516;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xJJmc9xeQcykeus6gCa38Rf/FAKcShuAjnIZq0Hgxno=;
-        b=kgDYFoflbpGezPaUijn4kH9/FMV+TgGpFVd3gVzYJP1/nrutBx7D424TivQJRnwWzJ
-         Olhi2+TjmYeXLTdZb/07ocLkO8WEG1iz2r+6lL5dnTItAvnMpX3UbQg6gqI+0YndvNHm
-         imKBnDoXgJyDAYYqtXX0fKUmLNif7/1hNWNXzBNeKSPYgRqiDUamJri2hdFz8+ggo6YH
-         LSrUHq6mT4kkis3I/S49ea5ZA5SKfHU2G0tISfTRbmp5of1YnxS3DqVWhqB21v/7RGu3
-         +Gr6yUdhm1+8Traq996cTGL5ONlG0Z0iqIbWGkmX503DQ4ZpwnJisuZqKgVNeK8fg16I
-         k8iA==
-X-Gm-Message-State: AOJu0YyMMHfFmSj9WmfI+1MjTKnsxkKpYmmIfoOE64NP5/M5kczcLLe0
-	YWWEcXMhwco4abk9ltntNr12Qa+S2FhIwxP8qNhgSv0yoUi3tNv9AC3+VozOri6M9vflzG/sL/F
-	AlA==
-X-Google-Smtp-Source: AGHT+IHlUrVIaAxo07HXP8NgbIsOQ66wMvc8QqlRpVXum/0dlz10VAW3ioqj5+4vJmt6NA0WEqOzKCcyRUg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:9095:b0:6dd:e157:fe76 with SMTP id
- jo21-20020a056a00909500b006dde157fe76mr45718pfb.1.1706304716074; Fri, 26 Jan
- 2024 13:31:56 -0800 (PST)
-Date: Fri, 26 Jan 2024 13:31:54 -0800
-In-Reply-To: <20240123-delay-verw-v6-6-a8206baca7d3@linux.intel.com>
+	s=arc-20240116; t=1706304732; c=relaxed/simple;
+	bh=jsc/69WSzTKZ/G5310wlLrX/CRAN2B+7XXtyP6eyFKE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cD6twj19Pj4yXIPuVLaMRvaG74r3K7WJRLstGHQnpkJFDtXxTfDtREF/ewq+dooyp1UzPktjshrYMzZljal8fOt53oLErQISe+0kNQ34jdgHyoIRjFbOoucnBlAMCggPsn3TEPsMg7ZpdsVaiDr0UF8dmaPWc4zIBE4sdusQmuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=FGYM24Fn; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=wP2xVl8JLp8XOMebTnhcra6qLaj2U02CkDsznEmwziE=; b=FGYM24Fn+Iz/x4NlIX2hTy5y5U
+	H0auvnkk5HhfbmBVyRp0C+FfOq4dPgI3F5Os6p1JDSkEKZrwwSLQkEVQXY1WVKNQ8krGfhCMj9sH3
+	4eFvZ0/ZWQdg5jN0WKLY5t+OKTIFjMccd5933cX34wXREJP4KlaQx52Z3V9O+o4+Zygcvrl2AR1ct
+	w4ZVz+F0dqIfJr3agbnE3KOp2Wm5Xq59t+zGVbOqkEDG9NqcW7dbLSamFoppg5LohKRfi2WqYlFmu
+	tlYDHsGuZGfead2WwW/Op4vijp23jPraeuT6Hp6WE70EeIJB1cbeGCzSp1oWy8ViUw83uOSURLb2V
+	Z95d7Dtg==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rTTnx-00000005TLG-3VbV;
+	Fri, 26 Jan 2024 21:32:05 +0000
+Date: Fri, 26 Jan 2024 13:32:05 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Matthew Wilcox <willy@infradead.org>,
+	Eric Biggers <ebiggers@google.com>
+Cc: Pankaj Raghav <p.raghav@samsung.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+	Yangtao Li <frank.li@vivo.com>, chao@kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org, fengnanchang@gmail.com,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	vishal.moola@gmail.com,
+	Javier =?iso-8859-1?Q?Gonz=E1lez?= <javier.gonz@samsung.com>,
+	Adam Manzanares <a.manzanares@samsung.com>
+Subject: Re: [PATCH] f2fs: Support enhanced hot/cold data separation for f2fs
+Message-ID: <ZbQk1WqGgwgoMbg3@bombadil.infradead.org>
+References: <Y4ZaBd1r45waieQs@casper.infradead.org>
+ <20221130124804.79845-1-frank.li@vivo.com>
+ <Y4d0UReDb+EmUJOz@casper.infradead.org>
+ <Y5D8wYGpp/95ShTV@bombadil.infradead.org>
+ <ZbLI63UHBErD6_L2@casper.infradead.org>
+ <ZbLKl25vxw0eTzGE@bombadil.infradead.org>
+ <ZbQdkiwEs8o4h807@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240123-delay-verw-v6-0-a8206baca7d3@linux.intel.com> <20240123-delay-verw-v6-6-a8206baca7d3@linux.intel.com>
-Message-ID: <ZbQkyr8c12jOqWQ-@google.com>
-Subject: Re: [PATCH  v6 6/6] KVM: VMX: Move VERW closer to VMentry for MDS mitigation
-From: Sean Christopherson <seanjc@google.com>
-To: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Andy Lutomirski <luto@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
-	Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com, ak@linux.intel.com, 
-	tim.c.chen@linux.intel.com, Andrew Cooper <andrew.cooper3@citrix.com>, 
-	Nikolay Borisov <nik.borisov@suse.com>, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, kvm@vger.kernel.org, 
-	Alyssa Milburn <alyssa.milburn@linux.intel.com>, 
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>, antonio.gomez.iglesias@linux.intel.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZbQdkiwEs8o4h807@casper.infradead.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-On Tue, Jan 23, 2024, Pawan Gupta wrote:
-> During VMentry VERW is executed to mitigate MDS. After VERW, any memory
-> access like register push onto stack may put host data in MDS affected
-> CPU buffers. A guest can then use MDS to sample host data.
+On Fri, Jan 26, 2024 at 09:01:06PM +0000, Matthew Wilcox wrote:
+> On Thu, Jan 25, 2024 at 12:54:47PM -0800, Luis Chamberlain wrote:
+> > On Thu, Jan 25, 2024 at 08:47:39PM +0000, Matthew Wilcox wrote:
+> > > On Wed, Dec 07, 2022 at 12:51:13PM -0800, Luis Chamberlain wrote:
+> > > > Me and Pankaj are very interested in helping on this front. And so we'll
+> > > > start to organize and talk every week about this to see what is missing.
+> > > > First order of business however will be testing so we'll have to
+> > > > establish a public baseline to ensure we don't regress. For this we intend
+> > > > on using kdevops so that'll be done first.
+> > > > 
+> > > > If folks have patches they want to test in consideration for folio /
+> > > > iomap enhancements feel free to Cc us :)
+> > > > 
+> > > > After we establish a baseline we can move forward with taking on tasks
+> > > > which will help with this conversion.
+> > > 
+> > > So ... it's been a year.  How is this project coming along?  There
+> > > weren't a lot of commits to f2fs in 2023 that were folio related.
+> > 
+> > The review at LSFMM revealed iomap based filesystems were the priority
+> > and so that has been the priority. Once we tackle that and get XFS
+> > support we can revisit which next fs to help out with. Testing has been
+> > a *huge* part of our endeavor, and naturally getting XFS patches up to
+> > what is required has just taken a bit more time. But you can expect
+> > patches for that within a month or so.
 > 
-> Although likelihood of secrets surviving in registers at current VERW
-> callsite is less, but it can't be ruled out. Harden the MDS mitigation
-> by moving the VERW mitigation late in VMentry path.
-> 
-> Note that VERW for MMIO Stale Data mitigation is unchanged because of
-> the complexity of per-guest conditional VERW which is not easy to handle
-> that late in asm with no GPRs available. If the CPU is also affected by
-> MDS, VERW is unconditionally executed late in asm regardless of guest
-> having MMIO access.
-> 
-> Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-> ---
+> Is anyone working on the iomap conversion for f2fs?
 
-Acked-by: Sean Christopherson <seanjc@google.com>
+It already has been done for direct IO by Eric as per commit a1e09b03e6f5
+("f2fs: use iomap for direct I/O"), not clear to me if anyone is working
+on buffered-io. Then f2fs_commit_super() seems to be the last buffer-head
+user, and its not clear what the replacement could be yet.
+
+Jaegeuk, Eric, have you guys considered this?
+
+  Luis
 
