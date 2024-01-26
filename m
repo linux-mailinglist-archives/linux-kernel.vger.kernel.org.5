@@ -1,203 +1,182 @@
-Return-Path: <linux-kernel+bounces-39933-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12D9483D792
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:14:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2276483D7A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:15:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09E6128C635
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:13:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8520C1F2EDF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:15:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 423C3241F8;
-	Fri, 26 Jan 2024 09:38:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 504E867E62;
+	Fri, 26 Jan 2024 09:38:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="L+gtxQ0t"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sw2bTj3D"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB802241E3
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 09:38:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC2C8288B6
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 09:38:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706261918; cv=none; b=TLE5EgMEJ4ux6n/Yes6SfVttybAFWhqbkYmgZYxirmMI5Ke4jvayrTW/MX8RsWuJ+PL9pTizVEUaslU963Tr4p5AEP+VutAClOEBj8a8bVE2Vko0m8T21FiMv7cFC3FKfpxubpZRPaTpgAgx+lLPvWjmsywzJeEmlp6S0m6263c=
+	t=1706261934; cv=none; b=ube55ltNNAxMQgJaHNj+f3WejKpDgUE85KZCjByK5BTHVVg3TSmYRhW4H+WnO1Rz59oOofeqFvnB5CdU+ZH7QK5dYBYa8QuETQoSWUs0yBZSa82HLCeOqojUBr8kPDqACl2gzzF6AWgWyd0IeqgHjUoPV4MXT+752GcIa52F74w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706261918; c=relaxed/simple;
-	bh=3vfpV1Ilbnjr4WtTJysV6pyuIb/B9dwNZp/iIqvuAdI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dpjYhFEq95O7iXhViB2TnRzBoPGyfIJsZd6iXg181vTaPqRp24vr0Qa7grf0cuZ7V10BSsK8ymR67nFfOr5T3llkoNW2mP15owWvX1hG4KbkhlzBOy3gZiE75U6r5gc7w1iMmkmtEKrc4GYoOu07A4L0qx62oV8DPys3YkaXbMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=L+gtxQ0t; arc=none smtp.client-ip=209.85.128.51
+	s=arc-20240116; t=1706261934; c=relaxed/simple;
+	bh=rrBWWu9lsMu+XZeAyedhVGX0wAsXHms0OO4T1GwK6TY=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=OfFLvTWS43FSBowYDiLypxEqBt0JxAgrauUIYIseIfzeMHMiTHrsmgql8utJLj6bGHDTby53NJgupQ5c+XWGS+hfWikDdMJH65TgG12aV2OYg5lM66tX4xtLH3A3K1A6RegU9oKjIcROAZuXgjFlpMnNZYoe7mSY37GaWMQVPSA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sw2bTj3D; arc=none smtp.client-ip=209.85.167.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40ee0ac37f8so2464445e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 01:38:36 -0800 (PST)
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50edf4f478eso222722e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 01:38:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706261915; x=1706866715; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZYRnOn7CihmGzjyxvq8SD+5GxdZZRHfMU/gDjslPAbs=;
-        b=L+gtxQ0tcjviU2dkQJQ/gqWr92FRZX9cBVC3kD2O/I+b+drCisOEJJUxmDg3oUkS6A
-         kiQY/kwZqsD/zFLdB+Bgzzg+U2667eg6F4zuFw11MBJZ9+eBa+rY5GdWE+Xw6w4onTjE
-         mIdndhLxTDw1TsaEurkA/Ujaq1/Vf9uoQP6DD/oQIVbljWnDzBg9P3NHAK4hngyZSQv/
-         9QXdJ6aRE6gwYzgUwbSAhHmThhlfFYEPiLud8yv77LQsPVGt3fMpvasnqkxYC3TEpSF+
-         XSIO3mxu7wN7M3G2d4M6dOE0vXQtYqU8+qrFGvU4ml9AAdOju6v75WFrIpV+NeM4qwbI
-         KShA==
+        d=linaro.org; s=google; t=1706261930; x=1706866730; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5r7wJHZbLazp8p7Dgx2ExxqmG0OykopR+QnJ6skCYGE=;
+        b=sw2bTj3DpkwMuH/2djaqNWWnlN3FBjj48+GFNIE4EBZJk774G5kf8QYuAcWMa4eFHQ
+         zUPLQMwKAlNXyH6ib37p2UFpJFXh2YgFAVOK/XPWOkCCUPI4GQX+9mqjOvAfxz2P5sAu
+         ptNImbTuB4l5H5HudnZJZORDeqDf440/sY+6pWomuem+a7lKsN/Hvq1OZ3DIJZyTX0nW
+         Uy5fIDyg/WjwrDVNgz6+2fQRDDlyXZdHxm6JTYYLhiDbKKcsaDe1LWKfAx/+cFpJq+cN
+         57JyhpXFfHyfDYDXz7mQp3/VDRbmvr9C5y1WysUfjbc7J3ZKUZF+hjfEUBP1eagrcIY4
+         WPog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706261915; x=1706866715;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZYRnOn7CihmGzjyxvq8SD+5GxdZZRHfMU/gDjslPAbs=;
-        b=tyPBiCgk10lIfviG2uFYw9T5qvJWdFuJXEkuufidCQi7r13KQRRODCLdOqCLGq0/ar
-         C2tueHD9+Vj+U9nuCgdxqhHEFcYRlk7OME5+UCa6WwkKCPbj0qiyqWLi3uUsNre0zQuC
-         w0UO5jCVmJoJp8QiTEQCjvY5HtzqKIxL80Ca1V/zF2l2YNF16SGh7p5YoOpItMB6tZ3I
-         JkldGIcpLrBAf5qzUy3vx/MotDgZMtzIuLcUFIM3gBTnywWUJg9DyIQNWr+VOadSGgcs
-         ngPNobGyTF3Zqrz6FyLIhaC/zfAZZWpN6p9tJNXnNEmzarjr9HC9QKAVeygpegASTl6o
-         vrTw==
-X-Gm-Message-State: AOJu0Yw1cr+ZqM1LWOmswhNjLVst+Aclz1+fJbMoGhxoeswTVNkQ6KEt
-	bZgQylgtqZsbnfMdZBAeTHF14JcipRMB1BL15P88m7crWVVUW6F9sYdpdKtZwwg=
-X-Google-Smtp-Source: AGHT+IGG3M5B7BHCEytwY3wjC0SQUnh5hp5coTVJgXcDVwonETfO/Ng75w6TEa2i1Nxsf7fXK9vcgA==
-X-Received: by 2002:a05:600c:214d:b0:40e:94f9:229e with SMTP id v13-20020a05600c214d00b0040e94f9229emr698007wml.68.1706261915027;
-        Fri, 26 Jan 2024 01:38:35 -0800 (PST)
-Received: from linaro.org ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id ci11-20020a170906c34b00b00a2f181266f6sm430269ejb.148.2024.01.26.01.38.33
+        d=1e100.net; s=20230601; t=1706261930; x=1706866730;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5r7wJHZbLazp8p7Dgx2ExxqmG0OykopR+QnJ6skCYGE=;
+        b=M4Pas/7PfCNXhqDC9hrq54BbTIE6ADQ73kQbIMv+oYLfqiy3at8HvVOqWW6FOleTNL
+         XwSsWvR9ROj8nsMVFeulLl8X5xZbxjOpMvnBM11BKExZ41v62vqEtkoNbameLHoBfEjo
+         zigCS5euNo2epjYXDvWhFGU+5g98GuFfUzZcFQ9wdS1vfOGrlZYzarYjplKA39rkwrQq
+         zZUq5XKgYznThf/OfeoMXNW9pG4f74UGPgmqTrTITz589Ajv4zrLy5MbitCxJ3drmPIH
+         8gmvZar/VlzFR9EPuhfJiqsBvlLqzK3OLOJkmqqe4touoTOo8KLYI2Hs74LxwVn6v7MO
+         PMlA==
+X-Gm-Message-State: AOJu0YxIbr9Xcd5qFvYMdSvkaQjT5GGhpf2yqTHv1QGPoNTh41VTi2Ft
+	diU3p1BGtP7jxGL6l49VvbHwHltQ5VfpyRdmtYYN5rAcZ3vEdaoFGOsh2xaBypQ=
+X-Google-Smtp-Source: AGHT+IHb6CJa/Q4aO1m0JvdUV/6n6YWG2CSL5IJ1o8/q49lyCtwtkiwuAqistmrZYsD484wnkdYCgA==
+X-Received: by 2002:a05:6512:23a8:b0:50f:9ca:187e with SMTP id c40-20020a05651223a800b0050f09ca187emr948306lfv.100.1706261930795;
+        Fri, 26 Jan 2024 01:38:50 -0800 (PST)
+Received: from [127.0.1.1] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id se27-20020a170906ce5b00b00a349318ea10sm426768ejb.199.2024.01.26.01.38.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 01:38:34 -0800 (PST)
-Date: Fri, 26 Jan 2024 11:38:33 +0200
-From: Abel Vesa <abel.vesa@linaro.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Sibi Sankar <quic_sibis@quicinc.com>,
-	Rajendra Nayak <quic_rjendra@quicinc.com>,
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 06/11] arm64: dts: qcom: x1e80100: Add USB nodes
-Message-ID: <ZbN9me5d6TXOHlt6@linaro.org>
-References: <20240123-x1e80100-dts-missing-nodes-v4-0-072dc2f5c153@linaro.org>
- <20240123-x1e80100-dts-missing-nodes-v4-6-072dc2f5c153@linaro.org>
- <9af6d68f-ccc0-4d2b-ab59-77864a628bb4@linaro.org>
+        Fri, 26 Jan 2024 01:38:50 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Date: Fri, 26 Jan 2024 10:38:34 +0100
+Subject: [PATCH v2 5/7] arm64: dts: qcom: sm8550: describe all PCI MSI
+ interrupts
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9af6d68f-ccc0-4d2b-ab59-77864a628bb4@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240126-b4-dt-bindings-pci-qcom-split-dts-v2-5-0bb067f73adb@linaro.org>
+References: <20240126-b4-dt-bindings-pci-qcom-split-dts-v2-0-0bb067f73adb@linaro.org>
+In-Reply-To: <20240126-b4-dt-bindings-pci-qcom-split-dts-v2-0-0bb067f73adb@linaro.org>
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+ Neil Armstrong <neil.armstrong@linaro.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2462;
+ i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
+ bh=rrBWWu9lsMu+XZeAyedhVGX0wAsXHms0OO4T1GwK6TY=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBls32eMOSk5moxl3H4SbJ6pTh+Ghq/pLcqiju3H
+ tIuxs1FYzuJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZbN9ngAKCRDBN2bmhouD
+ 10+0D/4tAddyg/NidqT1n0IcgUkkT0Tkfx6fR4s61ScaI/g6r92svlVU+Y4ESRNU4by0rOZNziy
+ Kb71EvVei6iOdrQCOBdOfAwarollQrlRsH0XEJVagEGuE5DrMbuFahErhFdFA+K/I/P1ojqoQBM
+ yoJIhNXJ6gjN0RKfRZ/PjekCwZo7rVB89r61BtglxRvNCHbqKDbkSZ1iAkENJQjHFPZ+SGqrHrI
+ z+6t3Q+eOLnRD2u8HGFB2eH86CeaW8B/WzyK1gYQ2qhydWGfjZqGcEBXFP5w0q5qQ2OHKCJMP9Z
+ 58w0tt5CE/9KkqyRTLzFWqnOSslTcFLKzIHXeaqW8+i8lmj/nU8/zwKh8szYk+r1DymzZYtLdyA
+ Iv2XSPSO0v9/2K1fm4vA+3pNldSgD8K3rfTfx6DWJCb3RXLeT9lWwocR5abobJB0kpPzQjX7mMd
+ 3S7jrlFvuijWgIhejXQWpY9eVazi9oKIGEtIxOt7hRfSwxExLrHlJ2YA+4kqyLGB1iyH8FmydtG
+ t13khC9riltg/Y2YCv7xPdeSJU96VrfCehho41lyCxPQP+gCLSyQV00sbBYQL5DZSXAc5YYcxn7
+ 8SDRePp17boDvOfRWnsrBmjh5t022W+hC6Dswu15YKT3T+rts5QFGD6y/6bRKkXVVTMsksjfBNC
+ 2R6Sfa90+spK2BA==
+X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
+ fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
-On 24-01-23 19:17:10, Konrad Dybcio wrote:
-> 
-> 
-> On 1/23/24 12:01, Abel Vesa wrote:
-> > Add nodes for all USB controllers and their PHYs for X1E80100 platform.
-> > 
-> > Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
-> > Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
-> > Co-developed-by: Rajendra Nayak <quic_rjendra@quicinc.com>
-> > Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
-> > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> > ---
-> >   arch/arm64/boot/dts/qcom/x1e80100.dtsi | 435 ++++++++++++++++++++++++++++++++-
-> >   1 file changed, 432 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/arch/arm64/boot/dts/qcom/x1e80100.dtsi b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-> > index 2b6c55a486b2..593ead89706c 100644
-> > --- a/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-> > @@ -5,11 +5,13 @@
-> >   #include <dt-bindings/clock/qcom,rpmh.h>
-> >   #include <dt-bindings/clock/qcom,x1e80100-gcc.h>
-> > +#include <dt-bindings/clock/qcom,x1e80100-tcsr.h>
-> >   #include <dt-bindings/dma/qcom-gpi.h>
-> >   #include <dt-bindings/interconnect/qcom,icc.h>
-> >   #include <dt-bindings/interconnect/qcom,x1e80100-rpmh.h>
-> >   #include <dt-bindings/interrupt-controller/arm-gic.h>
-> >   #include <dt-bindings/mailbox/qcom-ipcc.h>
-> > +#include <dt-bindings/phy/phy-qcom-qmp.h>
-> >   #include <dt-bindings/power/qcom,rpmhpd.h>
-> >   #include <dt-bindings/power/qcom-rpmpd.h>
-> >   #include <dt-bindings/soc/qcom,rpmh-rsc.h>
-> > @@ -734,9 +736,9 @@ gcc: clock-controller@100000 {
-> >   				 <0>,
-> >   				 <0>,
-> >   				 <0>,
-> > -				 <0>,
-> > -				 <0>,
-> > -				 <0>;
-> > +				 <&usb_1_ss0_qmpphy QMP_USB43DP_USB3_PIPE_CLK>,
-> > +				 <&usb_1_ss1_qmpphy QMP_USB43DP_USB3_PIPE_CLK>,
-> > +				 <&usb_1_ss2_qmpphy QMP_USB43DP_USB3_PIPE_CLK>;
-> >   			power-domains = <&rpmhpd RPMHPD_CX>;
-> >   			#clock-cells = <1>;
-> > @@ -2492,6 +2494,126 @@ &config_noc SLAVE_QUP_0 QCOM_ICC_TAG_ALWAYS>,
-> >   			};
-> >   		};
-> > +		usb_1_ss0_hsphy: phy@fd3000 {
-> > +			compatible = "qcom,x1e80100-snps-eusb2-phy",
-> > +				     "qcom,sm8550-snps-eusb2-phy";
-> > +			reg = <0 0x00fd3000 0 0x154>;
-> > +			#phy-cells = <0>;
-> > +
-> > +			clocks = <&tcsr TCSR_USB2_1_CLKREF_EN>;
-> > +			clock-names = "ref";
-> 
-> You use this exact same clock for all HS PHYs. Are you sure?
+Each group of MSI interrupts is mapped to the separate host interrupt.
+Describe each of interrupts in the device tree for PCIe hosts.  Only
+boot tested on hardware.
 
-The USB2 HS PHY should use TCSR_USB2_2_CLKREF_EN, while all of the USB1
-SS[1-3] HS PHYs seems they share the TCSR_USB2_1_CLKREF_EN.
+Tested-by: Neil Armstrong <neil.armstrong@linaro.org> # on SM8550-HDK
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/sm8550.dtsi | 38 ++++++++++++++++++++++++++++++------
+ 1 file changed, 32 insertions(+), 6 deletions(-)
 
-> 
-> > +
-> > +			resets = <&gcc GCC_QUSB2PHY_PRIM_BCR>;
-> > +
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		usb_1_ss0_qmpphy: phy@fd5000 {
-> > +			compatible = "qcom,x1e80100-qmp-usb3-dp-phy";
-> > +			reg = <0 0x00fd5000 0 0x4000>;
-> > +
-> > +			clocks = <&gcc GCC_USB3_PRIM_PHY_AUX_CLK>,
-> > +				 <&rpmhcc RPMH_CXO_CLK>,
-> > +				 <&gcc GCC_USB3_PRIM_PHY_COM_AUX_CLK>,
-> > +				 <&gcc GCC_USB3_PRIM_PHY_PIPE_CLK>;
-> > +			clock-names = "aux",
-> > +				      "ref",
-> > +				      "com_aux",
-> > +				      "usb3_pipe";
-> > +
-> > +			power-domains = <&gcc GCC_USB_0_PHY_GDSC>;
-> 
-> This is likely RPMHPD_MX(A/C)
+diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+index ee1ba5a8c8fc..28cae43eec80 100644
+--- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+@@ -1713,9 +1713,22 @@ pcie0: pcie@1c00000 {
+ 			linux,pci-domain = <0>;
+ 			num-lanes = <2>;
+ 
+-			interrupts = <GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH>;
+-			interrupt-names = "msi";
+-
++			interrupts = <GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 144 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 145 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 146 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 147 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 148 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "msi0",
++					  "msi1",
++					  "msi2",
++					  "msi3",
++					  "msi4",
++					  "msi5",
++					  "msi6",
++					  "msi7";
+ 			#interrupt-cells = <1>;
+ 			interrupt-map-mask = <0 0 0 0x7>;
+ 			interrupt-map = <0 0 0 1 &intc 0 0 0 149 IRQ_TYPE_LEVEL_HIGH>, /* int_a */
+@@ -1804,9 +1817,22 @@ pcie1: pcie@1c08000 {
+ 			linux,pci-domain = <1>;
+ 			num-lanes = <2>;
+ 
+-			interrupts = <GIC_SPI 307 IRQ_TYPE_LEVEL_HIGH>;
+-			interrupt-names = "msi";
+-
++			interrupts = <GIC_SPI 307 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 308 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 309 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 312 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 313 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 314 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 374 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 375 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "msi0",
++					  "msi1",
++					  "msi2",
++					  "msi3",
++					  "msi4",
++					  "msi5",
++					  "msi6",
++					  "msi7";
+ 			#interrupt-cells = <1>;
+ 			interrupt-map-mask = <0 0 0 0x7>;
+ 			interrupt-map = <0 0 0 1 &intc 0 0 0 434 IRQ_TYPE_LEVEL_HIGH>, /* int_a */
 
-Nope, this platform has dedicated GDSCs for each of the USB1 SS[1-3] QMP
-PHYs.
+-- 
+2.34.1
 
-> 
-> [...]
-> 
-> > +			usb_1_ss2_dwc3: usb@a000000 {
-> > +				compatible = "snps,dwc3";
-> > +				reg = <0 0x0a000000 0 0xcd00>;
-> > +				interrupts = <GIC_SPI 353 IRQ_TYPE_LEVEL_HIGH>;
-> > +				iommus = <&apps_smmu 0x14a0 0x0>;
-> > +				snps,dis_u2_susphy_quirk;
-> > +				snps,dis_enblslpm_quirk;
-> > +				snps,usb3_lpm_capable;
-> > +				phys = <&usb_1_ss2_hsphy>,
-> > +				       <&usb_1_ss2_qmpphy QMP_USB43DP_USB3_PHY>;
-> > +				phy-names = "usb2-phy",
-> > +				            "usb3-phy";
-> 
-> Should this be marked dma-coherent?
-
-Will add.
-
-> 
-> Konrad
 
