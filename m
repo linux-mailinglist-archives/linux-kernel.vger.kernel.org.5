@@ -1,175 +1,199 @@
-Return-Path: <linux-kernel+bounces-40138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CF8A83DB18
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:40:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C02483DAEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:33:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 778811C21E18
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:40:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22E16286DA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:33:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB1541B968;
-	Fri, 26 Jan 2024 13:39:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBA371B967;
+	Fri, 26 Jan 2024 13:33:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="SgJJOgf+"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2058.outbound.protection.outlook.com [40.107.244.58])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eOYTEzaG"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBD941BF4E;
-	Fri, 26 Jan 2024 13:39:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.58
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706276369; cv=fail; b=HjkbYLXZBMI7d+r6ohUuDOiDVbrXNIK53NUh2bim6MH3IOhnWHxD+OBrqHlF01WNvQJdWYmeUj1mZnE4En1ubW7sKj6e+7A8U84XuMWQ/yC1cQ1/XUhZhqF/OlfJDUF2GV4xs2Irgutai+Nu1vLtYUbxp4U3kpPXkbyFV/IMWag=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706276369; c=relaxed/simple;
-	bh=pKpbKCPrqY0CBIWmu68/dGpC1htehyiHbLn5M3shDFk=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J2A960Pbfuc7PZX2ffHj8JKo9LPJzAE63Slch5eq/u15uHRowoynP8npJtBsXFXmmdo6lG/o0UkvwaR95yszfW/qIf9QhVSDbO92k1Sd/mFGPHgLW4e06lxsmIP1bskwN6SCOefocgGk8AWtd3ZjdQ5rfqmhmO2nr6eefGTZV+8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=SgJJOgf+; arc=fail smtp.client-ip=40.107.244.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gn7ZVLZS58vayPogvEKeCYrUemCNbQMUJ1ej6pKi9V4y8FexNOQrbwV8DeP8IEmKCLaKZhw316MtDLWcewTyA8EtrlLfxYosoZdh26y2krB8AtfFODTpe8rlrJPZUXEZUxKzzXLYr/Vyp5DIeIlRa7U5L+7+Eq+aGMtplGFDCl3aTccLoDMHfreH93K3JwftPlcpKQ8ZtchEGik0jVoq8HtFUv8nRPH3pqsYJ+ukLR4oSi053oTA1gz/5/SfZwgapkf48B4gztaItt5nTIzYqe0LTS/LLPb/h5HyMG0UxAlwDgbKvHpGUG4AaCdwXHaJ3bAPTowe+BI0ZmE/v8+i4Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=puosVlpQpS52Ge3Gq6Zq3LUdc2fSyxH6zIuXs7Ico5w=;
- b=eIRRMjX88sThLGicQ0QWakBVASxbjLOQ0UNIhT5E78qlTGk+vRNqJVAI2QAUxHuMqjdUkcNt2XLcRDC03fttiNQdligMrs9jPWnNhy2IyQNHCDVRM3cE71g+4wQNKBvY3rpFcISYzHJWKB3hKniEFFbuyu9BtqEE52dfsQWZiizOynIWnS3M94fyrf0GmBY/MxH7VHqKcpe2m1xIBr7TM/4SW5cwY0wP/a5GQCeUkHv+tin1vTgOgoSASf/ULDl4hF9XHpSIlh9P+jXxOyJRocad7I1JWLMZ+ByLrGBQJbOn/v+0+2PxXQhQBFbOP+NnUeYvz3IXs8LrQbkM3upLkw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=alien8.de smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=puosVlpQpS52Ge3Gq6Zq3LUdc2fSyxH6zIuXs7Ico5w=;
- b=SgJJOgf+fXpXpDZuIyhFN6Nnin7jOKvPhFs9/SFwF8jtycNgVTf6rzvK3kRZl6f1xwBCGfdxnkn4BzdHEUXyMsPMiMOmcsuD2upl7ieW8spHJeuGw5OOjDSreEJ1T7KzUSSB1UED4CHWFKNz3mwMxuCEuLM5KP47FoaSbwdvk9M=
-Received: from BN0PR02CA0027.namprd02.prod.outlook.com (2603:10b6:408:e4::32)
- by LV2PR12MB5893.namprd12.prod.outlook.com (2603:10b6:408:175::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Fri, 26 Jan
- 2024 13:39:23 +0000
-Received: from BN1PEPF0000468B.namprd05.prod.outlook.com
- (2603:10b6:408:e4:cafe::d3) by BN0PR02CA0027.outlook.office365.com
- (2603:10b6:408:e4::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.28 via Frontend
- Transport; Fri, 26 Jan 2024 13:39:23 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN1PEPF0000468B.mail.protection.outlook.com (10.167.243.136) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7228.16 via Frontend Transport; Fri, 26 Jan 2024 13:39:23 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Fri, 26 Jan
- 2024 07:39:23 -0600
-Date: Fri, 26 Jan 2024 07:30:36 -0600
-From: Michael Roth <michael.roth@amd.com>
-To: Borislav Petkov <bp@alien8.de>
-CC: <x86@kernel.org>, <kvm@vger.kernel.org>, <linux-coco@lists.linux.dev>,
-	<linux-mm@kvack.org>, <linux-crypto@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
-	<jroedel@suse.de>, <thomas.lendacky@amd.com>, <hpa@zytor.com>,
-	<ardb@kernel.org>, <pbonzini@redhat.com>, <seanjc@google.com>,
-	<vkuznets@redhat.com>, <jmattson@google.com>, <luto@kernel.org>,
-	<dave.hansen@linux.intel.com>, <slp@redhat.com>, <pgonda@google.com>,
-	<peterz@infradead.org>, <srinivas.pandruvada@linux.intel.com>,
-	<rientjes@google.com>, <tobin@ibm.com>, <vbabka@suse.cz>,
-	<kirill@shutemov.name>, <ak@linux.intel.com>, <tony.luck@intel.com>,
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
-	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
-	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>, Brijesh Singh
-	<brijesh.singh@amd.com>, Alexey Kardashevskiy <aik@amd.com>, Dionna Glaze
-	<dionnaglaze@google.com>
-Subject: Re: [PATCH v1 26/26] crypto: ccp: Add the SNP_SET_CONFIG command
-Message-ID: <20240126133036.q2o7of7yqeroqupj@amd.com>
-References: <20231230161954.569267-1-michael.roth@amd.com>
- <20231230161954.569267-27-michael.roth@amd.com>
- <20240121124102.GPZa0Q3oBHLG0fH_yn@fat_crate.local>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3E301B943
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:33:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706275988; cv=none; b=p5F5yl0OnuTJ/FKfSH3bFg8vwiFSN1HGvsaqXD/vpYUzDOqL6J5RFP18uo0ho6pi9/VLJ/QsBeWaC2ffgCAfONQW7iNJDhADwIKECZofDurbvkhSFDcwSMQeiLUwDQZSQHwFQEiiQ4kxmh7DU+n2+65pFLe0/xAuIm19SvfEvHw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706275988; c=relaxed/simple;
+	bh=t75+ApVE4O2pChN2R4h66dZ7fB5ab5Ao7eh8CU5ennw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=opdOF/ElDr8IoMnzJ4PsS2azG49XsgAUTXAMBK1sG0p2bKSFqG42OKOWEQh2bHmpbYn3ZuHaaXxSoP//Vf8PeX8ppEXH16xn0MnyC32589XqFPS69SAkOey2WVed2hD6Z0RCF+WFTIp6yh2YV06y7vNjPrSZTzkPobxQUIqkDr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eOYTEzaG; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706275983;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U3CYoF7To3W2OvR7Q0XItMhTSU3L3ntABi2tsSEqr9s=;
+	b=eOYTEzaGeqDyJTQ0LBWUYDAPoRYW8Ph+FqihlfnJdWpXwZIduNMfWEnFEJRyM+rYeWPq5X
+	4INJp2RtrBgjIICjqQ3DP9vz/IBCOnyg7IcYq9GIDev0nZnQxiWOGSJopaDdDrMY7dF5XZ
+	8sGi1/O6ksStmKMIS1OF0n7/ddU12ag=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-493-vGJDucMVM6-Whru6fw2yTg-1; Fri, 26 Jan 2024 08:33:02 -0500
+X-MC-Unique: vGJDucMVM6-Whru6fw2yTg-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a2c4e9cb449so11407866b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 05:33:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706275981; x=1706880781;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=U3CYoF7To3W2OvR7Q0XItMhTSU3L3ntABi2tsSEqr9s=;
+        b=huDIFlaqRTMDIGloK+iXJHXeLHo9BEThN4+S7uQ9Vdah6QNhEMW8j1wo/Z/JyuERQ0
+         QSf6M88mk8VHCC654svtKo46O5F9x+SkUJ2CbQDnOLrPlRA/64MvavtCZVbHEXLhPq8g
+         DXJD9NB3/RAmwG+FS1C47qvWCVXLh1maDgNCaG/UKlXlCmKsHlzTecQK55NwqcQebp+l
+         +VKuZt5zQI39+nZT1yZtJuNg0cXDR3RvVn3q+pwzi3Pb3ELeGl5cw+x1gE4cxfS/Pe4/
+         eKAW/sL6jGhy3ccrxj1Mwu01q0RL+DCFZjj53VjLWUdgcI4C8zd5HYdbXS8FhLay1k7x
+         O2pQ==
+X-Gm-Message-State: AOJu0Yzkf1RXiPSqPvJdLyWpsXx20iYkkPI7Ywb8gUCt8R5TVDf8/xMM
+	UYc7bkS1/AUBWtiXTlmp90R2gfMTEzGRb07pB/WhoFwE6YAZxn00Fnfo457PmjLLZt6DLAd9V1v
+	oRKz1TAz+DMZYMmZMjc4Nc5veMZIT/8BK84pEPfTkxLIEXjbr3CCGm7Lw2P0PJg==
+X-Received: by 2002:a17:906:1949:b0:a33:604d:2a42 with SMTP id b9-20020a170906194900b00a33604d2a42mr527115eje.25.1706275981154;
+        Fri, 26 Jan 2024 05:33:01 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHhKBLsSu7OcWJcv0AZ4I04EUiwRYyjkq++HEtrw6QvawvzQb9UNe2gW7BIw4ofNgZSMFoQWQ==
+X-Received: by 2002:a17:906:1949:b0:a33:604d:2a42 with SMTP id b9-20020a170906194900b00a33604d2a42mr527109eje.25.1706275980797;
+        Fri, 26 Jan 2024 05:33:00 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id un3-20020a170907cb8300b00a3516240ab3sm118189ejc.215.2024.01.26.05.33.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Jan 2024 05:33:00 -0800 (PST)
+Message-ID: <5f70a174-7f18-43c0-b3a3-b72544a2631b@redhat.com>
+Date: Fri, 26 Jan 2024 14:32:59 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240121124102.GPZa0Q3oBHLG0fH_yn@fat_crate.local>
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN1PEPF0000468B:EE_|LV2PR12MB5893:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4a644811-8888-445d-b87b-08dc1e74351f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	NMZElG1faHv2CBAVc/uAOPK1iJBPR1isDJ35dmkzoduXpiGRz+leNH5Ar+mmKSrXvvE89Niy1adpZnz87CPuS2hoP+NV/3c5FbqYmC9eEtI46/D31nBPUZbMeXv2WIyDx82C71uIzN2HMpeIuHcPREr+rTUHHMPdvE/rpIsNjtaOPZvfr/WaKnYQUS3kuKJvDja6QBdgMlGa1ze9M0seYqeQ6wlBa/U8kfLHM9HhhCgerf1Ws96D2I/DrrqLsSBtSoZdb7xT5K8cVuyvl0aXTHmGvsDZdAicINtUMDTsl0XqcjHnlfI2Tqq3wq/rZHUQS0vGTaaEFD2S3peztiaXqmgDt29t7XZpZAxTSIZ4ZNix+WbiB9xgZtwQ3OYGIi6XlZaxJnZIfckM/0AHeVU0YXFk9nWsQ43PXqfwtbhaLwy45tnDlH73FrMMzJg4Wkp7PkJz2aZoUaoPGyw0yIzKkDq+Jt74WcezZDfzs9yxd0VAst0UJxLgLIp69vP+lk2MCHKwTTIjnWXzScGB+wzlaiTf8fAzQj2hoOHmH3JRqU/iMdd0Ed9y6TD/B3kDq9QEMoEKT4hm2dTFjlSYpJ5uoHxX1DpX8Pf4D5FQ3VtU4ttR7DMFUJ+A5cezpwnzwdwK7ZMBujfWKg36pehMKGQDXQEzmLbPZ2wS0uec14odqLLy29kSfG3nJJXshSDpDxdgLym9EmLk4YQkjzkOeyKEGDayrVFXj7cHiO1RenK7SIfOMEhsf4b8vXxoTQKNUNYrvl7Atf719G+HwUc4e9wOJA==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(396003)(39860400002)(376002)(346002)(230922051799003)(451199024)(186009)(64100799003)(82310400011)(1800799012)(40470700004)(46966006)(36840700001)(1076003)(40480700001)(40460700003)(44832011)(2616005)(82740400003)(47076005)(16526019)(6666004)(36860700001)(336012)(966005)(26005)(426003)(478600001)(8676002)(8936002)(81166007)(4326008)(316002)(70206006)(6916009)(54906003)(70586007)(356005)(5660300002)(86362001)(41300700001)(7416002)(7406005)(36756003)(2906002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 13:39:23.5297
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a644811-8888-445d-b87b-08dc1e74351f
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN1PEPF0000468B.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5893
+User-Agent: Mozilla Thunderbird
+Subject: Re: PS/2 keyboard of laptop Dell XPS 13 9360 goes missing after S3
+To: Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: linux-input@vger.kernel.org, linux-pm@vger.kernel.org,
+ Dell.Client.Kernel@dell.com, regressions@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+References: <0aa4a61f-c939-46fe-a572-08022e8931c7@molgen.mpg.de>
+ <f27b491c-2f1c-4e68-804c-24eeaa8d10de@redhat.com>
+ <0b30c88a-6f0c-447f-a08e-29a2a0256c1b@molgen.mpg.de>
+ <dde1bdfe-7877-41bd-b233-03bcdba0e2de@redhat.com>
+ <f07333d2-ebb0-4531-a396-8fb3d1daa2c3@molgen.mpg.de>
+Content-Language: en-US, nl
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <f07333d2-ebb0-4531-a396-8fb3d1daa2c3@molgen.mpg.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Sun, Jan 21, 2024 at 01:41:02PM +0100, Borislav Petkov wrote:
-> On Sat, Dec 30, 2023 at 10:19:54AM -0600, Michael Roth wrote:
-> > +The SNP_SET_CONFIG is used to set the system-wide configuration such as
-> > +reported TCB version in the attestation report. The command is similar to
-> > +SNP_CONFIG command defined in the SEV-SNP spec. The current values of the
-> > +firmware parameters affected by this command can be queried via
-> > +SNP_PLATFORM_STATUS.
-> 
-> diff --git a/Documentation/virt/coco/sev-guest.rst b/Documentation/virt/coco/sev-guest.rst
-> index 4f696aacc866..14c9de997b7d 100644
-> --- a/Documentation/virt/coco/sev-guest.rst
-> +++ b/Documentation/virt/coco/sev-guest.rst
-> @@ -169,10 +169,10 @@ that of the currently installed firmware.
->  :Parameters (in): struct sev_user_data_snp_config
->  :Returns (out): 0 on success, -negative on error
->  
-> -The SNP_SET_CONFIG is used to set the system-wide configuration such as
-> -reported TCB version in the attestation report. The command is similar to
-> -SNP_CONFIG command defined in the SEV-SNP spec. The current values of the
-> -firmware parameters affected by this command can be queried via
-> +SNP_SET_CONFIG is used to set the system-wide configuration such as
-> +reported TCB version in the attestation report. The command is similar
-> +to SNP_CONFIG command defined in the SEV-SNP spec. The current values of
-> +the firmware parameters affected by this command can be queried via
->  SNP_PLATFORM_STATUS.
->  
->  3. SEV-SNP CPUID Enforcement
-> 
-> ---
-> 
-> Ok, you're all reviewed. Please send a new revision with *all* feedback
-> addressed so that I can queue it.
+Hi Paul,
 
-Thanks! Unless otherwise noted, I *think* I got everything this time. :)
+On 1/26/24 08:03, Paul Menzel wrote:
+> Dear Hans,
+> 
+> 
+> Thank you for your reply, and sorry for the delay on my side. I needed to set up an environment to easily build the Linux kernel.
 
--Mike
+No problem thank you for testing this.
 
+> Am 22.01.24 um 14:43 schrieb Hans de Goede:
 > 
-> Thx.
+>> On 1/21/24 15:26, Paul Menzel wrote:
 > 
-> -- 
-> Regards/Gruss,
->     Boris.
+> […]
 > 
-> https://people.kernel.org/tglx/notes-about-netiquette
+>>> Am 20.01.24 um 21:26 schrieb Hans de Goede:
+>>>
+>>>> On 1/18/24 13:57, Paul Menzel wrote:
+>>>>> #regzbot introduced v6.6.11..v6.7
+>>>
+>>>>> There seems to be a regression in Linux 6.7 on the Dell XPS 13 9360 (Intel i7-7500U).
+>>>>>
+>>>>>       [    0.000000] DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022
+>>>>>
+>>>>> The PS/2 keyboard goes missing after S3 resume¹. The problem does not happen with Linux 6.6.11.
+>>>>
+>>>> Thank you for reporting this.
+>>>>
+>>>> Can you try adding "i8042.dumbkbd=1" to your kernel commandline?
+>>>>
+>>>> This should at least lead to the device not disappearing from
+>>>>
+>>>> "sudo libinput list-devices"
+>>>>
+>>>> The next question is if the keyboard will still actually
+>>>> work after suspend/resume with "i8042.dumbkbd=1". If it
+>>>> stays in the list, but no longer works then there is
+>>>> a problem with the i8042 controller; or interrupt
+>>>> delivery to the i8042 controller.
+>>>>
+>>>> If "i8042.dumbkbd=1" somehow fully fixes things, then I guess
+>>>> my atkbd driver fix for other laptop keyboards is somehow
+>>>> causing issues for yours.
+>>>
+>>> Just a quick feedback, that booting with `i8042.dumbkbd=1` seems to fix the issue.
+>>>
+>>>> If "i8042.dumbkbd=1" fully fixes things, can you try building
+>>>> your own 6.7.0 kernel with commit 936e4d49ecbc:
+>>>>
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=936e4d49ecbc8c404790504386e1422b599dec39
+>>>>
+>>>> reverted?
+>>>
+>>> I am going to try that as soon as possible.
+>>
+>> Assuming this was not some one time glitch with 6.7.0,
+>> I have prepared a patch hopefully fixing this (1) as well
+>> as a follow up fix to address another potential issue which
+>> I have noticed.
 > 
+> Unfortunately, it wasn’t just a glitch.
+> 
+>> Can you please give a 6.7.0 (2) kernel with the 2 attached
+>> patches added a try ?
+>>
+>> I know building kernels can be a bit of work / takes time,
+>> sorry. If you are short on time I would prefer testing these 2
+>> patches and see if they fix things over trying a plain revert.
+> 
+> Applying both patches on v6.7.1
+> 
+>     $ git log --oneline -3
+>     053fa44c0de1 (HEAD -> v6.7.1) Input: atkbd - Do not skip atkbd_deactivate() when skipping ATKBD_CMD_GETID
+>     0e0fa0113c7a Input: atkbd - Skip ATKBD_CMD_SETLEDS when skipping ATKBD_CMD_GETID
+>     a91fdae50a6d (tag: v6.7.1, stable/linux-6.7.y, origin/linux-6.7.y) Linux 6.7.1
+> 
+> I am unable to reproduce the problem in eight ACPI S3 suspend/resume cycles. The DMAR errors [3] are also gone:
+
+Thanks.
+
+So thinking more about this I think the DMAR errors are actually the real cause of the issue here, specifically if we replace: f0 with 00 (I guess DMAR uses the high bits for its own purposes) in
+
+`[INTR-REMAP] Request device [f0:1f.0] fault index 0x0`
+
+then the device ID is 00:1f.0 which is the ISA bridge and [INTR-REMAP] errors are known to disable interrupts. The PS/2 controller (which sits behind the ISA bridge) interrupt getting disabled would explain the suspend/resume keyboard issue better then the atkbd.c changes I have been focusing on.
+
+So then the question becomes why does the 6.7.1 kernel not show the DMAR errors. I don't see anything between 6.7.0 and 6.7.1 which explains this. But maybe your local build is using a different configuration which explains this.
+
+Can you try your local 6.7.1 build without my 2 patches? The quickest way to do that would be to run: "git reset --hard HEAD~2" and then re-run the make commandos, this will re-use your previous build so it should be pretty quick.
+
+If things still work after that then the problem is not with the atkbd code.
+
+Regards,
+
+Hans
+
+
+
+
 
