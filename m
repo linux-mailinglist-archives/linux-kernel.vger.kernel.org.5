@@ -1,203 +1,158 @@
-Return-Path: <linux-kernel+bounces-40196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3717E83DC16
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:36:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0188883DC29
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:38:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69C4B1C20A8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:36:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A41FF281F0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:37:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E855E1CA91;
-	Fri, 26 Jan 2024 14:36:31 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB0F81CA8D;
-	Fri, 26 Jan 2024 14:36:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E16D51C69D;
+	Fri, 26 Jan 2024 14:37:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="jYJ+UGbM"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D54D01CD07;
+	Fri, 26 Jan 2024 14:37:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706279791; cv=none; b=k0HXItufyKCIytnlYDMQWoe0syQsMZ5vJZFIkHrOnhMMhQz4NWKHicAkxgDJabihZEtZgj9JDMPycJZZ4nZoYf8qAG0vd3/3wLwb5MFu8airB7yKT9C8ow1nygpsi2iKi99CYkjEa/4y4bPtyz0S4J8FHyj9BwyOr59P6wW2E4Q=
+	t=1706279863; cv=none; b=Ozq8UEVlYUZFZabQ+tSn1Q62C6lFNo3zGeVzlR2fLm1ZJFZkt+enfPmIzvd8On4GrRvXnYgN9nEAB8SbhCwZP3hb7MuUzysBDNtvyS/0upVH4W1yHVU0EnQ+Q/thq02gMU7MV0uBuFAOsCP4vnhftA6H9MzxFCIFRhu8/S7N7pU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706279791; c=relaxed/simple;
-	bh=fCnJQJroZAwwsS6L657G3W7qNfWzolJI1ZIvcLI9x44=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HRDid4+Z1CcComGw9QW++fifrD217EhqQ/BVmcB8/XLa9pKFuGgsLl840utJXasOU20AWIEbi4SBH+ZHKreyFUN4gl52d1sh292ZlxP63mZsyeUb6t+nO44T9uoJM87i8x+PhZUk9Dm+KQu3JVPvDvE5pZ0Jachi8FzYo722PFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4205D1FB;
-	Fri, 26 Jan 2024 06:37:12 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.47.163])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 644823F73F;
-	Fri, 26 Jan 2024 06:36:25 -0800 (PST)
-Date: Fri, 26 Jan 2024 14:36:16 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Marc Zyngier <maz@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Hector Martin <marcan@marcan.st>,
-	Ian Rogers <irogers@google.com>, acme@redhat.com,
-	james.clark@arm.com, john.g.garry@oracle.com, leo.yan@linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-perf-users@vger.kernel.org, mike.leach@linaro.org,
-	namhyung@kernel.org, suzuki.poulose@arm.com, tmricht@linux.ibm.com,
-	will@kernel.org
-Subject: Re: [PATCH] perf print-events: make is_event_supported() more robust
-Message-ID: <ZbPDYG2Bd2H7C_Es@FVFF77S0Q05N>
-References: <20240116170348.463479-1-mark.rutland@arm.com>
- <8734uwxrca.wl-maz@kernel.org>
- <ZafEFU7kwf6W0_Qx@FVFF77S0Q05N.cambridge.arm.com>
+	s=arc-20240116; t=1706279863; c=relaxed/simple;
+	bh=xgBJPPCeFx6F8RvuJZb3CDZIbr5zJcVGTJYWir/0iIY=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=PtZHDb8awaOPUmsyum+NuRw91odl5U5e7zn9DTT2rciTigcoqt7pPYt5z3YCr3v5L1ngVdCc+6ZeoQjAV6DWLqWOvz5DZR8UenBFVZXsMaNElMCe1ycIJqHge4PVKbkwp0vgmVKgiHDGH5SgLDZQiKM9A/YyA0wMEIdk3ZgKsPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=jYJ+UGbM; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3A5F94000C;
+	Fri, 26 Jan 2024 14:37:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706279851;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=62/qYpK4+YlKzbTb8Bu4FQMVmVipXLL21WAgCC0RYzA=;
+	b=jYJ+UGbML212yaitjT4mp/B0Uhj+CdJw4jD57IsqiYRIgwE1hfwmCP4ECofgfoBbqQnNM1
+	e5uVAXyA5/zPYjCo9OvZwSdnBssk0iN6GMJX+eWzY2rE2ctgKmhw9xAwV5f+86HVqVGSnY
+	NoIlCcSt5qwkRpmaPKkO78NxWwWIP8nRtDmqwyGY/y5YhHSNYsmLZPyqOuo841+KBD4ys/
+	3h94YI4MafeM0g6YI+/sN6zd2r5qGVHN48dh1XVQ2ebTqiP7bvyrtsyiXGFiE798lcgEDM
+	vNhrh6WJx/tIpjPMgqDkRa7oXoJUA1g3LymgdRex25VzqieDKKrJy4xV8WqVJw==
+From: Thomas Richard <thomas.richard@bootlin.com>
+Subject: [PATCH v2 00/15] Add suspend to ram support for PCIe on J7200
+Date: Fri, 26 Jan 2024 15:36:42 +0100
+Message-Id: <20240102-j7200-pcie-s2r-v2-0-8e4f7d228ec2@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZafEFU7kwf6W0_Qx@FVFF77S0Q05N.cambridge.arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAHrDs2UC/3WNTQ6CMBBGr0K6dsy00iCuvIdh0ZZRxmhLOoRoC
+ He3sHf5vp+8RQllJlGXalGZZhZOsYA5VCoMLj4IuC+sDJoaNRp4NgYRxsAEYjJQ8Nq1TUsn26h
+ y8k4IfHYxDNvt7WSivBVjpjt/dtOtKzywTCl/d/Gst/SvY9aAcK7J2t7ZMsGrT2l6cTyG9Fbdu
+ q4/Q9ZwwccAAAA=
+To: Linus Walleij <linus.walleij@linaro.org>, 
+ Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, 
+ Tony Lindgren <tony@atomide.com>, 
+ Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>, 
+ Aaro Koskinen <aaro.koskinen@iki.fi>, 
+ Janusz Krzysztofik <jmkrzyszt@gmail.com>, 
+ Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, 
+ Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, 
+ Philipp Zabel <p.zabel@pengutronix.de>, Tom Joseph <tjoseph@cadence.com>, 
+ Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+ =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, 
+ linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org, 
+ linux-pci@vger.kernel.org, gregory.clement@bootlin.com, 
+ theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com, 
+ Thomas Richard <thomas.richard@bootlin.com>
+X-Mailer: b4 0.12.0
+X-GND-Sasl: thomas.richard@bootlin.com
 
-On Wed, Jan 17, 2024 at 12:12:05PM +0000, Mark Rutland wrote:
-> On Wed, Jan 17, 2024 at 09:05:25AM +0000, Marc Zyngier wrote:
-> > However, I'm seeing some slightly odd behaviours:
+This add suspend to ram support for the PCIe (RC mode) on J7200 platform.
 
-I believe that this is a separate issue; info dump below.
-> > $ sudo ./perf stat -e cycles:k ~/hackbench 100 process 1000
-> > Running with 100*40 (== 4000) tasks.
-> > Time: 3.313
-> > 
-> >  Performance counter stats for '/home/maz/hackbench 100 process 1000':
-> > 
-> >    <not supported>      apple_firestorm_pmu/cycles:k/                                         
-> >    <not supported>      apple_icestorm_pmu/cycles:k/                                          
-> > 
-> >        3.467568841 seconds time elapsed
-> > 
-> >       13.080111000 seconds user
-> >       53.162099000 seconds sys
-> > 
-> > I would have expected it to count, but it didn't. For that to work, I
-> > have to add the 'H' modifier:
+In RC mode, the reset pin for endpoints is managed by a gpio expander on a
+i2c bus. This pin shall be managed in suspend_noirq() and resume_noirq().
+The suspend/resume has been moved to suspend_noirq()/resume_noirq() for
+pca953x (expander) and pinctrl-single.
 
-I gave that a spin with the aforementioned hacked-up PMUv3 driver, and I see
-the same:
+To do i2c accesses during suspend_noirq/resume_noirq, we need to force the
+wakeup of the i2c controller (which is autosuspended) during suspend
+callback. 
+It's the only way to wakeup the controller if it's autosuspended, as
+runtime pm is disabled in suspend_noirq and resume_noirq.
 
-| # ./perf-after stat -e cycles true
-| 
-|  Performance counter stats for 'true':
-| 
-|      <not counted>      armv8_pmuv3_0/cycles/                                                   (0.00%)
-|            1375271      armv8_pmuv3_1/cycles/                                                 
-| 
-|        0.001153070 seconds time elapsed
-| 
-|        0.001204000 seconds user
-|        0.000000000 seconds sys
-| 
-| 
-| # ./perf-after stat -e cycles:k true
-| 
-|  Performance counter stats for 'true':
-| 
-|    <not supported>      armv8_pmuv3_0/cycles:k/                                               
-|    <not supported>      armv8_pmuv3_1/cycles:k/                                               
-| 
-|        0.000983130 seconds time elapsed
-| 
-|        0.001037000 seconds user
-|        0.000000000 seconds sys
-| 
-| 
-| # ./perf-after stat -e cycles:kH true
-| 
-|  Performance counter stats for 'true':
-| 
-|      <not counted>      armv8_pmuv3_0/cycles:kH/                                                (0.00%)
-|             932067      armv8_pmuv3_1/cycles:kH/                                              
-| 
-|        0.001090100 seconds time elapsed
-| 
-|        0.001125000 seconds user
-|        0.000000000 seconds sys
+The main change in this v2 is the add of mux_chip_resume() function in the
+mux core.
+This function restores the state of mux-chip using cached state. It's used
+by mmio driver in the resume_noirq() callback.
 
-.. though interestingly 'cycles:u' works:
+Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
+---
+Changes in v2:
+- all: fix commits messages.
+- all: use DEFINE_NOIRQ_DEV_PM_OPS and pm_sleep_ptr macros.
+- all: remove useless #ifdef CONFIG_PM.
+- pinctrl-single: drop dead code
+- mux: add mux_chip_resume() function in mux core.
+- mmio: resume sequence is now a call to mux_chip_resume().
+- phy-cadence-torrent: fix typo in resume sequence (reset_control_assert()
+  instead of reset_control_put()).
+- phy-cadence-torrent: use PHY instead of phy.
+- pci-j721e: do not shadow cdns_pcie_host_setup return code in resume
+  sequence.
+- pci-j721e: drop dead code.
+- Link to v1: https://lore.kernel.org/r/20240102-j7200-pcie-s2r-v1-0-84e55da52400@bootlin.com
 
-| # ./perf-after stat -e cycles:u true
-| 
-|  Performance counter stats for 'true':
-| 
-|             369753      armv8_pmuv3_0/cycles:u/                                               
-|      <not counted>      armv8_pmuv3_1/cycles:u/                                                 (0.00%)
-| 
-|        0.001171980 seconds time elapsed
-| 
-|        0.001245000 seconds user
-|        0.000000000 seconds sys
+---
+Thomas Richard (11):
+      gpio: pca953x: move suspend()/resume() to suspend_noirq()/resume_noirq()
+      pinctrl: pinctrl-single: move suspend()/resume() callbacks to noirq
+      i2c: omap: wakeup the controller during suspend() callback
+      mux: add mux_chip_resume() function
+      phy: ti: phy-j721e-wiz: make wiz_clock_init callable multiple times
+      phy: ti: phy-j721e-wiz: add resume support
+      phy: cadence-torrent: extract calls to clk_get from cdns_torrent_clk
+      phy: cadence-torrent: register resets even if the phy is already configured
+      phy: cadence-torrent: add already_configured to struct cdns_torrent_phy
+      phy: cadence-torrent: remove noop_ops phy operations
+      phy: cadence-torrent: add suspend and resume support
 
-Looking at the output with '-vvv' the perf tool implicitly sets exclude_guest
-for 'cycles', 'cycles:u', and 'cycles:kH', but does not set exclude_guest for
-'cycles:k'.
+Théo Lebrun (4):
+      mux: mmio: add resume support
+      PCI: cadence: add resume support to cdns_pcie_host_setup()
+      PCI: j721e: add reset GPIO to struct j721e_pcie
+      PCI: j721e: add suspend and resume support
 
-It looks like that's consistent with the behaviour of opening separate events
-prior to this patch:
+ drivers/gpio/gpio-pca953x.c                        |   7 +-
+ drivers/i2c/busses/i2c-omap.c                      |  14 +++
+ drivers/mux/core.c                                 |  27 +++++
+ drivers/mux/mmio.c                                 |  12 ++
+ drivers/pci/controller/cadence/pci-j721e.c         |  93 ++++++++++++++--
+ drivers/pci/controller/cadence/pcie-cadence-host.c |  49 +++++----
+ drivers/pci/controller/cadence/pcie-cadence-plat.c |   2 +-
+ drivers/pci/controller/cadence/pcie-cadence.h      |   4 +-
+ drivers/phy/cadence/phy-cadence-torrent.c          | 122 +++++++++++++++------
+ drivers/phy/ti/phy-j721e-wiz.c                     |  95 ++++++++++++----
+ drivers/pinctrl/pinctrl-single.c                   |  28 ++---
+ include/linux/mux/driver.h                         |   1 +
+ 12 files changed, 343 insertions(+), 111 deletions(-)
+---
+base-commit: 00ff0f9ce40db8e64fe16c424a965fd7ab769c42
+change-id: 20240102-j7200-pcie-s2r-ecb1a979e357
 
-| # ./perf-before stat -e armv8_pmuv3_0/cycles/ -e armv8_pmuv3_1/cycles/ true
-| 
-|  Performance counter stats for 'true':
-| 
-|            1407624      armv8_pmuv3_0/cycles/                                                 
-|      <not counted>      armv8_pmuv3_1/cycles/                                                   (0.00%)
-| 
-|        0.001179205 seconds time elapsed
-| 
-|        0.001217000 seconds user
-|        0.000000000 seconds sys
-| 
-| 
-| # ./perf-before stat -e armv8_pmuv3_0/cycles/u -e armv8_pmuv3_1/cycles/u true
-| 
-|  Performance counter stats for 'true':
-| 
-|             329212      armv8_pmuv3_0/cycles/u                                                
-|      <not counted>      armv8_pmuv3_1/cycles/u                                                  (0.00%)
-| 
-|        0.001050550 seconds time elapsed
-| 
-|        0.001081000 seconds user
-|        0.000000000 seconds sys
-| 
-| 
-| # ./perf-before stat -e armv8_pmuv3_0/cycles/k -e armv8_pmuv3_1/cycles/k true
-| 
-|  Performance counter stats for 'true':
-| 
-|    <not supported>      armv8_pmuv3_0/cycles/k                                                
-|    <not supported>      armv8_pmuv3_1/cycles/k                                                
-| 
-|        0.000944285 seconds time elapsed
-| 
-|        0.000985000 seconds user
-|        0.000000000 seconds sys
-| 
-| 
-| # ./perf-before stat -e armv8_pmuv3_0/cycles/kH -e armv8_pmuv3_1/cycles/kH true
-| 
-|  Performance counter stats for 'true':
-| 
-|            1016160      armv8_pmuv3_0/cycles/kH                                               
-|      <not counted>      armv8_pmuv3_1/cycles/kH                                                 (0.00%)
-| 
-|        0.001179220 seconds time elapsed
-| 
-|        0.001239000 seconds user
-|        0.000000000 seconds sys
+Best regards,
+-- 
+Thomas Richard <thomas.richard@bootlin.com>
 
-.. and per '-vvv', exclude_guest is set in the same cases.
-
-I agree it's a bit weird that the tool sets exclude_guest for unfilted and ':u'
-events, but not ':k' events, but it looks like that's separate from the way
-events get expanded.
-
-Thanks,
-Mark.
 
