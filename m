@@ -1,136 +1,145 @@
-Return-Path: <linux-kernel+bounces-40315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40316-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2627783DE55
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:08:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2D5F83DE5D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:10:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D42FA283145
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:08:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8246D1F254D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:10:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1C561D551;
-	Fri, 26 Jan 2024 16:08:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D6D61D559;
+	Fri, 26 Jan 2024 16:10:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="X+/cIXgn";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="mqUX9KzR"
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tb6NbSgI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 334631B59A
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 16:08:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D624E1CD1F;
+	Fri, 26 Jan 2024 16:10:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706285316; cv=none; b=hM8qubOBJOGRfT2pOLtj91olyBa3WA/+DCAcmt1ylaTh4AwGSZJVbUk+aLXZujPFDKCnK/00nql3IVtfT/VBE20Gs+GbqWs0PTJMS2XIkXJEfEi6nyyC8dji8Ftf3/MOLZ7kxQARPfbbKoqDo0y3UXod4bwvyenRNmOpeJNBAwI=
+	t=1706285428; cv=none; b=qGtGaK3/RwH1EYdVkfMMfYYwNcbHX1nuc+kcZ7Gw3991jr/pb55M465MM33NCSkT2vc7+G3N6zvswOPgKWn9NjZoDUN9JhDm+AmG62X1goibGQgFIjHuWbLz8ui/DOy8fog4faiH807LN0vONNyBKYBVT7451EX5O4ozN9ssCNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706285316; c=relaxed/simple;
-	bh=IYqERZZmOKQVDKffDj+3eu2xT6akiZ7ytkQIXTHVt+c=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=Qpt2frOaR5Bi9gxj0N9j1DY4rNye2uoJP5XO+S7Jcljrp3BITkldnhS0xa/p3iOKUEqVD80uQJR8fEYSjdfMCRaZiyxYE6ATVGCejoFzp7Ojb6m5ri9/HCs+3UcuiDMdtQ05r3kqcE5dCb4v6dLep5857i0mfh23gNK1gsp+SD0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=X+/cIXgn; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=mqUX9KzR; arc=none smtp.client-ip=64.147.123.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id E57473200A42;
-	Fri, 26 Jan 2024 11:08:32 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Fri, 26 Jan 2024 11:08:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1706285312; x=1706371712; bh=AXOZTxw+Nz
-	ZSkV7+zyn81UYzxXoud75nSWLiczx6gQs=; b=X+/cIXgnf/La6/t3F11ife/yAI
-	CWQkl/TvwmnI6xcDiQYosQ0/91u5+yNcAp+XliNCTHRjJB+M9tgIyaF8QgrQpg/1
-	ebT8a4VjqTPjwVNec3PnW9I2OuFOqZ1g9dH6u3o/02aljX7SmdzoZnSmLxeCqOCW
-	c78VRhWTJiT70XOFZQiK8A9dlRF1jBXZRSDC98NGJsMxgaMn/pPp1QgLPygp8Gi1
-	Sp//XPbZ9Fk/acOpxsMrWPFzF024xn6x9n+yt5Szq5fJ370/EOl0T48nviFti/MC
-	N4LzIeQhU7UEP75J2UfBhI3BEyQ9Fdb55gMmZep0uTpIuVM5hMhO7AvlGr+A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1706285312; x=1706371712; bh=AXOZTxw+NzZSkV7+zyn81UYzxXou
-	d75nSWLiczx6gQs=; b=mqUX9KzRjAjbwfhFVDXRbPz7VKUGFu8pBsl01uXcKhwi
-	62Da+CiAq0khtMGHO9k0XhpSiZlE6MnUY1G1UNxs/hJScBS4tK2cuGWWVFz19ZMt
-	r4EYynZOEeJ60Cebf001gzrRNewvlegwTVCuVxDizhAK9hTTWlazH/L3oWlh7hCA
-	KqbQz9st4AeRG/X7DSlz3kxSmeI8UTs981v3KXyt9UqxgPntAszx5tF7ollxSnSp
-	+ba0PPfO5Mwikiz+pT7XHRWXfjMW7I6WUp3zuKjzY5ZIoocIV/gu2/zjcgFyWC+c
-	LZQcB96LEbr2QauTnCGtxQ5nO8ae52jLaGxisXKW1w==
-X-ME-Sender: <xms:ANmzZaARLl4GOy44giEWlaVC7Gh2iDxlZNRj-y7lfLKD6ESxA1t49g>
-    <xme:ANmzZUhd6cSjOflih6caX6L0Rc0qy1kD_cFqKxpFTB2p0npa8OKqWsM5VUtkU5WN5
-    VWrDTNXZ54y5KkVcjA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeljedgkedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:ANmzZdm_6-Znb5iX5YpSKJnL_sN-Mc0A31fbd9KHbMLbqz0QwOcA7A>
-    <xmx:ANmzZYwRrW-kNQLFQ8kD1rancdfZUSZPowwOuppRTAGGJII2-DLkpQ>
-    <xmx:ANmzZfQEyNs4jX1AKEdxERoRplexHj_C87te8qTAdS827qirhSNClg>
-    <xmx:ANmzZWJCyHsn8Dzcjk-TLmFsQUCwAkf2qj6hJ7aA4QzuClZTPXzSNQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 11D8CB6008D; Fri, 26 Jan 2024 11:08:32 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-119-ga8b98d1bd8-fm-20240108.001-ga8b98d1b
+	s=arc-20240116; t=1706285428; c=relaxed/simple;
+	bh=dCh3Q7IJrxBpqeaYZ3wZ62jWq+kUi+XKjTJ8+Wu15U4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EgbzEvzAXaZ7sbQw+fGUNdQkocZzwV0rKHi2I1VZK27eb/9KTzRG7SR5IMHD1YwI9oh9G408mJjjB3QzCt49sEcAfE86yYjmmwqdBoY8BAjrvk7i3u50MUgkKc9fp3z6iOcLx7/Xil03MZ0iLDHtVB8NN9PyWbo8Z8dj8itSnJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tb6NbSgI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD07AC43390;
+	Fri, 26 Jan 2024 16:10:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706285427;
+	bh=dCh3Q7IJrxBpqeaYZ3wZ62jWq+kUi+XKjTJ8+Wu15U4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Tb6NbSgIH5Jh9xM0TXplcprBK9xu5xjIlahezLx9JjLaeV3D++84RBlfi1tb0r+B6
+	 ktXLrOiruZrF5P4D+icn+bveWbxq5S9iaVGmCWyDqHYgdYlor6C12TOGUJXC2fwIup
+	 JiJdoKB8O18h/S6XqG30/QvhL/xLfKuqHzAzq9xoIu9cq4OZnFIl67icBw+brpRL9j
+	 EKs4VLlE39mii6pG12TJ1NjeyCv9vje0I64wtexLpUrozbiZ07z+sDcY8DNuFx0e9H
+	 RKPT/DXqqc9f2IHsymkR/kWJq1L9uriLoVILEXVBRw162F/Sm86OMkHbhe+ruZwnFq
+	 kDB+ARKOuczmg==
+Date: Fri, 26 Jan 2024 09:10:25 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: akpm@linux-foundation.org, masahiroy@kernel.org, nicolas@fjasle.eu,
+	linux-kbuild@vger.kernel.org, llvm@lists.linux.dev,
+	patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+	catalin.marinas@arm.com, will@kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 05/11] arm64: Kconfig: Clean up tautological LLVM version
+ checks
+Message-ID: <20240126161025.GA3265550@dev-arch.thelio-3990X>
+References: <20240125-bump-min-llvm-ver-to-13-0-1-v1-0-f5ff9bda41c5@kernel.org>
+ <20240125-bump-min-llvm-ver-to-13-0-1-v1-5-f5ff9bda41c5@kernel.org>
+ <ZbOsvhDB-6LMVACP@FVFF77S0Q05N>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <e70be9ff-5bf8-45ab-bd31-66d4a75acce5@app.fastmail.com>
-In-Reply-To: 
- <20240126072852.1.Ib065e528a8620474a72f15baa2feead1f3d89865@changeid>
-References: 
- <20240126072852.1.Ib065e528a8620474a72f15baa2feead1f3d89865@changeid>
-Date: Fri, 26 Jan 2024 17:08:11 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Doug Anderson" <dianders@chromium.org>,
- "Kees Cook" <keescook@chromium.org>
-Cc: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] lkdtm/bugs: In lkdtm_HUNG_TASK() use BUG(), not BUG_ON(1)
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZbOsvhDB-6LMVACP@FVFF77S0Q05N>
 
-On Fri, Jan 26, 2024, at 16:28, Douglas Anderson wrote:
-> In commit edb6538da3df ("lkdtm/bugs: Adjust lkdtm_HUNG_TASK() to avoid
-> tail call optimization") we marked lkdtm_HUNG_TASK() as
-> __noreturn. The compiler gets unhappy if it thinks a __noreturn
-> function might return, so there's a BUG_ON(1) at the end. Any human
-> can see that the function won't return and the compiler can figure
-> that out too. Except when it can't.
->
-> The MIPS architecture defines HAVE_ARCH_BUG_ON and defines its own
-> version of BUG_ON(). The MIPS version of BUG_ON() is not a macro but
-> is instead an inline function. Apparently this prevents the compiler
-> from realizing that the condition to BUG_ON() is constant and that the
-> function will never return.
->
-> Let's change the BUG_ON(1) to just BUG(), which it should have been to
-> begin with. The only reason I used BUG_ON(1) to begin with was because
-> I was used to using WARN_ON(1) when writing test code and WARN() and
-> BUG() are oddly inconsistent in this manner. :-/
->
-> Fixes: edb6538da3df ("lkdtm/bugs: Adjust lkdtm_HUNG_TASK() to avoid 
-> tail call optimization")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
+On Fri, Jan 26, 2024 at 12:59:55PM +0000, Mark Rutland wrote:
+> On Thu, Jan 25, 2024 at 03:55:11PM -0700, Nathan Chancellor wrote:
+> > Now that the minimum supported version of LLVM for building the kernel
+> > has been bumped to 13.0.1, several conditions become tautologies, as
+> > they will always be true because the build will fail during the
+> > configuration stage for older LLVM versions. Drop them, as they are
+> > unnecessary.
+> > 
+> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> > ---
+> > Cc: catalin.marinas@arm.com
+> > Cc: will@kernel.org
+> > Cc: mark.rutland@arm.com
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > ---
+> >  arch/arm64/Kconfig | 5 +----
+> >  1 file changed, 1 insertion(+), 4 deletions(-)
+> > 
+> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > index 5a8acca4dbf4..cb34e7d780c0 100644
+> > --- a/arch/arm64/Kconfig
+> > +++ b/arch/arm64/Kconfig
+> > @@ -383,7 +383,7 @@ config BUILTIN_RETURN_ADDRESS_STRIPS_PAC
+> >  	bool
+> >  	# Clang's __builtin_return_adddress() strips the PAC since 12.0.0
+> >  	# https://github.com/llvm/llvm-project/commit/2a96f47c5ffca84cd774ad402cacd137f4bf45e2
+> > -	default y if CC_IS_CLANG && (CLANG_VERSION >= 120000)
+> > +	default y if CC_IS_CLANG
+> >  	# GCC's __builtin_return_address() strips the PAC since 11.1.0,
+> >  	# and this was backported to 10.2.0, 9.4.0, 8.5.0, but not earlier
+> >  	# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=94891
+> > @@ -1387,7 +1387,6 @@ choice
+> >  
+> >  config CPU_BIG_ENDIAN
+> >  	bool "Build big-endian kernel"
+> > -	depends on !LD_IS_LLD || LLD_VERSION >= 130000
+> >  	# https://github.com/llvm/llvm-project/commit/1379b150991f70a5782e9a143c2ba5308da1161c
+> 
+> We can delete the URL here, since that was just to describe why this depended
+> upon LLVM 13+; it's weird for it to sit here on its own.
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+I think this is the URL for the fix for the problem brought up by
+commit 146a15b87335 ("arm64: Restrict CPU_BIG_ENDIAN to GNU as or LLVM
+IAS 15.x or newer"), so I think it should stay? It does not look like I
+ever added a link or context for the LLD line, I definitely should have.
 
->  	schedule();
-> -	BUG_ON(1);
-> +	BUG();
->  }
+> The URL above for __builtin_return_address() can stay or go; it may as well
+> stay since we have the comment aboout LLvm 12+ above it.
 
-Yes, this is a common problem that I've fixed in other
-places before.
+That's the conclusion I came to as well.
 
-     Arnd
+Thanks a lot for taking a look!
+
+Cheers,
+Nathan
+
+> With that:
+> 
+> Acked-by: Mark Rutland <mark.rutland@arm.com>
+> 
+> Mark.
+> 
+> >  	depends on AS_IS_GNU || AS_VERSION >= 150000
+> >  	help
+> > @@ -2018,8 +2017,6 @@ config ARM64_BTI_KERNEL
+> >  	depends on !CC_IS_GCC || GCC_VERSION >= 100100
+> >  	# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=106671
+> >  	depends on !CC_IS_GCC
+> > -	# https://github.com/llvm/llvm-project/commit/a88c722e687e6780dcd6a58718350dc76fcc4cc9
+> > -	depends on !CC_IS_CLANG || CLANG_VERSION >= 120000
+> >  	depends on (!FUNCTION_GRAPH_TRACER || DYNAMIC_FTRACE_WITH_ARGS)
+> >  	help
+> >  	  Build the kernel with Branch Target Identification annotations
+> > 
+> > -- 
+> > 2.43.0
+> > 
+> 
 
