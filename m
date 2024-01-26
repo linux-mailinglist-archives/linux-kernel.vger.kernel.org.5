@@ -1,126 +1,237 @@
-Return-Path: <linux-kernel+bounces-39703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F86C83D521
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:59:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D98B83D520
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:59:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D1FEF1C24F51
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 08:59:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88AE6B21176
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 08:59:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FB3B5102C;
-	Fri, 26 Jan 2024 07:31:02 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 994C851000;
+	Fri, 26 Jan 2024 07:31:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="XIoCNx+y"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B61A50A97
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 07:30:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B9E150A8D;
+	Fri, 26 Jan 2024 07:30:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706254262; cv=none; b=qFu9VBATtl4BZYm6DyzkI0QFRpU0S2jEIk09lxlJePsp6wlRd9+5DvXo1PCMG1kIgDfdnAFekl3EOmTCnehcbq/T7bnBACkeJKLdJG7+acaG1xb2yaj2NaM72ZV1lxvx4RyK0jTUsjcQOYMTNC7ZUAGWbkm5ROsARqccygvv60Q=
+	t=1706254259; cv=none; b=EwcsJ8h3eMcY7wRws56QR9F2oCk77BbI4o4PtGjRHsjEvdqdIAYo1lakMq9cDCGd1/CFlq0oLNOv3pE1vPankKKOcJHDvVlb7hUTD12Mom3IkXUKCcurqZvErdJXLEaUkzep3N/hcBHoOkaYbrOdBn1H7tRhdtrtF4Csvmty8hk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706254262; c=relaxed/simple;
-	bh=AdHSgCHXz4t9LFcMc7HD0XQaTLFaT8m5meLQIXeDfIM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K68DKp7hcXsRJAxp/fTBCy9F6Z49TGsNHNQVcsMX7s+AXew9A4rMzlauUM9MgNkSzCRlvjEkbkmHObbE8AfbV55Bf4MrklV78zvSnVjQahKb0HLzMwPr3bL1fFOurX8jNGuFqfRit1Wqz1eW/5qiDfc9SLHkbplpEnSyT94UbF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rTGfo-0000uf-Uv; Fri, 26 Jan 2024 08:30:48 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rTGfi-002SbC-QR; Fri, 26 Jan 2024 08:30:42 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rTGfi-008SgD-2J;
-	Fri, 26 Jan 2024 08:30:42 +0100
-Date: Fri, 26 Jan 2024 08:30:39 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Wenhua Lin <Wenhua.Lin@unisoc.com>
-Cc: Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Orson Zhai <orsonzhai@gmail.com>, Baolin Wang <baolin.wang@linux.alibaba.com>, 
-	Chunyan Zhang <zhang.lyra@gmail.com>, linux-pwm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, wenhua lin <wenhua.lin1994@gmail.com>, 
-	Xiongpeng Wu <xiongpeng.wu@unisoc.com>, zhaochen su <zhaochen.su29@gmail.com>, 
-	Zhaochen Su <Zhaochen.Su@unisoc.com>, Xiaolong Wang <Xiaolong.Wang@unisoc.com>
-Subject: Re: [PATCH V2 3/6] pwm: sprd: Optimize the calculation method of duty
-Message-ID: <mdrr6ko2zqsf2osdkecjac6ollnuvlv4irkkiyn4ihkq5fioxx@nm6677kkih4h>
-References: <20240125025533.10315-1-Wenhua.Lin@unisoc.com>
- <20240125025533.10315-4-Wenhua.Lin@unisoc.com>
+	s=arc-20240116; t=1706254259; c=relaxed/simple;
+	bh=T6L7SWVY4qBbbIEtg0mEMeQ7qLVvRAyp9VHlIZ2Cjzo=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=JphvEhACGg2CIxIYo4GMEKFltysDmCTfXAazL69zoQdNaRx/N5pGO+7Ek8BK9LEqIX35QixhLhaRaEPBInk9je6YbD2mvutN0yFqLuIKhECsKKswxu1zcMWL4OsOwfBaGTA3JG7J7OAM8R/Ck73sg/almno4CrqAbvwzp5jRQxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=XIoCNx+y; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1706254258; x=1737790258;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=T6L7SWVY4qBbbIEtg0mEMeQ7qLVvRAyp9VHlIZ2Cjzo=;
+  b=XIoCNx+yUR09cLDpyZKz8tlzuU8y/lu96bwC8rQDuAU+9u2dcjz1Xg65
+   SdEhjQmWs7GrZAe7EMuUj/YcjQNf1BW0xefstHkMoIbq/mCsWkeW4Bm3N
+   6phIKcxMUXBZ8LjbGYlR8JdYEsDE7CBnKNA9njoo7wx/jmTCOQjHTlnQH
+   +BerkDFXEymwrHWEFt4ee2PodKz+5umEh0joEvNKQPZ/T2ZsTxdYhBsjE
+   E2BwKeWvIPG8aeO1CZKj0zqZimldLembuEqzr2+1ckLFUqPi1Mj9LX+qY
+   zthByPpo1kIdxnkBfc+CDS/XcSQBIRob+v8TeK1qnZJClzNwTA0D2uuHn
+   A==;
+X-CSE-ConnectionGUID: zvdhg0uCSMy8breF/KPcKw==
+X-CSE-MsgGUID: PWXQXDrIS5WuMCB4NGmdZw==
+X-IronPort-AV: E=Sophos;i="6.05,216,1701154800"; 
+   d="scan'208";a="246060281"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 26 Jan 2024 00:30:56 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 26 Jan 2024 00:30:49 -0700
+Received: from DEN-DL-M31836.microsemi.net (10.10.85.11) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Fri, 26 Jan 2024 00:30:46 -0700
+From: Horatiu Vultur <horatiu.vultur@microchip.com>
+To: <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <richardcochran@gmail.com>
+CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<UNGLinuxDriver@microchip.com>, Horatiu Vultur
+	<horatiu.vultur@microchip.com>, Maxime Chevallier
+	<maxime.chevallier@bootlin.com>, Divya Koppera <divya.koppera@microchip.com>
+Subject: [PATCH net-next] net: micrel: Fix set/get PHC time for lan8814
+Date: Fri, 26 Jan 2024 08:30:42 +0100
+Message-ID: <20240126073042.1845153-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="nbxfrdzexmsdijcq"
-Content-Disposition: inline
-In-Reply-To: <20240125025533.10315-4-Wenhua.Lin@unisoc.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
+When setting or getting PHC time, the higher bits of the second time (>32
+bits) they were ignored. Meaning that setting some time in the future like
+year 2150, it was failing to set this.
 
---nbxfrdzexmsdijcq
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The issue can be reproduced like this:
 
-Hello,
+ # phc_ctl /dev/ptp1 set 10000000000
+ phc_ctl[12.290]: set clock time to 10000000000.000000000 or Sat Nov 20 17:46:40 2286
 
-On Thu, Jan 25, 2024 at 10:55:30AM +0800, Wenhua Lin wrote:
-> diff --git a/drivers/pwm/pwm-sprd.c b/drivers/pwm/pwm-sprd.c
-> index cc54aa77c7e6..8de3f9e154ce 100644
-> --- a/drivers/pwm/pwm-sprd.c
-> +++ b/drivers/pwm/pwm-sprd.c
-> @@ -156,7 +156,8 @@ static int sprd_pwm_config(struct sprd_pwm_chip *spc,=
- struct pwm_device *pwm,
->  	 * given settings (MOD and input clock).
->  	 */
->  	mod =3D spc->mod[pwm->hwpwm];
-> -	duty =3D duty_ns * mod / period_ns;
-> +	tmp =3D (u64)duty_ns * mod;
-> +	duty =3D DIV_ROUND_CLOSEST_ULL(tmp, period_ns);
+ # phc_ctl /dev/ptp1 get
+ phc_ctl[15.309]: clock time is 1410065411.018055420 or Sun Sep  7 04:50:11 2014
 
-Please stick to rounding down in .apply() (and so sprd_pwm_config()).
-Given that duty_ns is an u64 in .apply(), you're loosing precision
-anyhow. Look at how the microchip-core driver uses mul_u64_u64_div_u64()
-for how to do that properly.
+Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+Reviewed-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Reviewed-by: Divya Koppera <divya.koppera@microchip.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-You tested your patch with CONFIG_PWM_DEBUG enabled, right?
+---
+Based on discussion here [1], this patch from the series was changed
+to target net-next instead of net.
 
-Best regards
-Uwe
+[1] https://lore.kernel.org/netdev/20240119082103.edy647tbf2akokjy@DEN-DL-M31836.microchip.com/T/#m88b55103ee8c05599f2fa02c1588e195d95d6a49
+---
+ drivers/net/phy/micrel.c | 61 +++++++++++++++++++---------------------
+ 1 file changed, 29 insertions(+), 32 deletions(-)
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+index dad720138baaf..40bea9293ddd7 100644
+--- a/drivers/net/phy/micrel.c
++++ b/drivers/net/phy/micrel.c
+@@ -154,11 +154,13 @@
+ #define PTP_CMD_CTL_PTP_LTC_STEP_SEC_		BIT(5)
+ #define PTP_CMD_CTL_PTP_LTC_STEP_NSEC_		BIT(6)
+ 
++#define PTP_CLOCK_SET_SEC_HI			0x0205
+ #define PTP_CLOCK_SET_SEC_MID			0x0206
+ #define PTP_CLOCK_SET_SEC_LO			0x0207
+ #define PTP_CLOCK_SET_NS_HI			0x0208
+ #define PTP_CLOCK_SET_NS_LO			0x0209
+ 
++#define PTP_CLOCK_READ_SEC_HI			0x0229
+ #define PTP_CLOCK_READ_SEC_MID			0x022A
+ #define PTP_CLOCK_READ_SEC_LO			0x022B
+ #define PTP_CLOCK_READ_NS_HI			0x022C
+@@ -2592,35 +2594,31 @@ static bool lan8814_rxtstamp(struct mii_timestamper *mii_ts, struct sk_buff *skb
+ }
+ 
+ static void lan8814_ptp_clock_set(struct phy_device *phydev,
+-				  u32 seconds, u32 nano_seconds)
++				  time64_t sec, u32 nsec)
+ {
+-	u32 sec_low, sec_high, nsec_low, nsec_high;
+-
+-	sec_low = seconds & 0xffff;
+-	sec_high = (seconds >> 16) & 0xffff;
+-	nsec_low = nano_seconds & 0xffff;
+-	nsec_high = (nano_seconds >> 16) & 0x3fff;
+-
+-	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_LO, sec_low);
+-	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_MID, sec_high);
+-	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_NS_LO, nsec_low);
+-	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_NS_HI, nsec_high);
++	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_LO, lower_16_bits(sec));
++	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_MID, upper_16_bits(sec));
++	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_HI, upper_32_bits(sec));
++	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_NS_LO, lower_16_bits(nsec));
++	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_NS_HI, upper_16_bits(nsec));
+ 
+ 	lanphy_write_page_reg(phydev, 4, PTP_CMD_CTL, PTP_CMD_CTL_PTP_CLOCK_LOAD_);
+ }
+ 
+ static void lan8814_ptp_clock_get(struct phy_device *phydev,
+-				  u32 *seconds, u32 *nano_seconds)
++				  time64_t *sec, u32 *nsec)
+ {
+ 	lanphy_write_page_reg(phydev, 4, PTP_CMD_CTL, PTP_CMD_CTL_PTP_CLOCK_READ_);
+ 
+-	*seconds = lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_MID);
+-	*seconds = (*seconds << 16) |
+-		   lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_LO);
++	*sec = lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_HI);
++	*sec <<= 16;
++	*sec |= lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_MID);
++	*sec <<= 16;
++	*sec |= lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_LO);
+ 
+-	*nano_seconds = lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_NS_HI);
+-	*nano_seconds = ((*nano_seconds & 0x3fff) << 16) |
+-			lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_NS_LO);
++	*nsec = lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_NS_HI);
++	*nsec <<= 16;
++	*nsec |= lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_NS_LO);
+ }
+ 
+ static int lan8814_ptpci_gettime64(struct ptp_clock_info *ptpci,
+@@ -2630,7 +2628,7 @@ static int lan8814_ptpci_gettime64(struct ptp_clock_info *ptpci,
+ 							  ptp_clock_info);
+ 	struct phy_device *phydev = shared->phydev;
+ 	u32 nano_seconds;
+-	u32 seconds;
++	time64_t seconds;
+ 
+ 	mutex_lock(&shared->shared_lock);
+ 	lan8814_ptp_clock_get(phydev, &seconds, &nano_seconds);
+@@ -2660,38 +2658,37 @@ static void lan8814_ptp_clock_step(struct phy_device *phydev,
+ {
+ 	u32 nano_seconds_step;
+ 	u64 abs_time_step_ns;
+-	u32 unsigned_seconds;
++	time64_t set_seconds;
+ 	u32 nano_seconds;
+ 	u32 remainder;
+ 	s32 seconds;
+ 
+ 	if (time_step_ns >  15000000000LL) {
+ 		/* convert to clock set */
+-		lan8814_ptp_clock_get(phydev, &unsigned_seconds, &nano_seconds);
+-		unsigned_seconds += div_u64_rem(time_step_ns, 1000000000LL,
+-						&remainder);
++		lan8814_ptp_clock_get(phydev, &set_seconds, &nano_seconds);
++		set_seconds += div_u64_rem(time_step_ns, 1000000000LL,
++					   &remainder);
+ 		nano_seconds += remainder;
+ 		if (nano_seconds >= 1000000000) {
+-			unsigned_seconds++;
++			set_seconds++;
+ 			nano_seconds -= 1000000000;
+ 		}
+-		lan8814_ptp_clock_set(phydev, unsigned_seconds, nano_seconds);
++		lan8814_ptp_clock_set(phydev, set_seconds, nano_seconds);
+ 		return;
+ 	} else if (time_step_ns < -15000000000LL) {
+ 		/* convert to clock set */
+ 		time_step_ns = -time_step_ns;
+ 
+-		lan8814_ptp_clock_get(phydev, &unsigned_seconds, &nano_seconds);
+-		unsigned_seconds -= div_u64_rem(time_step_ns, 1000000000LL,
+-						&remainder);
++		lan8814_ptp_clock_get(phydev, &set_seconds, &nano_seconds);
++		set_seconds -= div_u64_rem(time_step_ns, 1000000000LL,
++					   &remainder);
+ 		nano_seconds_step = remainder;
+ 		if (nano_seconds < nano_seconds_step) {
+-			unsigned_seconds--;
++			set_seconds--;
+ 			nano_seconds += 1000000000;
+ 		}
+ 		nano_seconds -= nano_seconds_step;
+-		lan8814_ptp_clock_set(phydev, unsigned_seconds,
+-				      nano_seconds);
++		lan8814_ptp_clock_set(phydev, set_seconds, nano_seconds);
+ 		return;
+ 	}
+ 
+-- 
+2.34.1
 
---nbxfrdzexmsdijcq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWzX54ACgkQj4D7WH0S
-/k4qqQf8CaMZ4GC23NL6d3gan0EFqQgyw5XxVJwmfjLIEtA+dS0X9v7addb+u/zB
-4tvbIX1ODa40SNWJsg/rF2NbYrEhyzHOYuj5ByjCZWuQnYFaefEfqcU9OoBTtiL9
-3RNRKYwkWO/h1+oWV+7B7ZRBY5y5r+dPhGCE7Xda8RbgELeBtZ6cKERyjsAR1tDw
-yIBTwPp71RNxnPiAbPR/OqNRFuafy5LVXV3yuk+1yqj7O8midCQAwDPZGi0ZZwf1
-7BMtWQZH7pDaml9UfjainioEZKLH4RvbZvRf2PobuqJlE6I3jfR4flsHmp3fvZsB
-gMK6THLg/QmGriqtkEgsKcldcB8PBA==
-=wH2f
------END PGP SIGNATURE-----
-
---nbxfrdzexmsdijcq--
 
