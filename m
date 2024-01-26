@@ -1,86 +1,95 @@
-Return-Path: <linux-kernel+bounces-39892-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39893-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DF5E83D732
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:03:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93F0E83D740
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:06:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 272CA29C1AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:59:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDC8929391E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:00:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F870629F4;
-	Fri, 26 Jan 2024 09:09:30 +0000 (UTC)
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C76A864AA9;
+	Fri, 26 Jan 2024 09:10:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="iUr1imQ9"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75495612D3;
-	Fri, 26 Jan 2024 09:09:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9320E634ED;
+	Fri, 26 Jan 2024 09:10:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706260170; cv=none; b=gKBPSULut4QoE1dnZd8vF5SRCE3KKOP90m+Nuyf32nHmysiFK09fH8YJkOv0tVf/ibuVwtybE8Qy5VdsklMsXv0fYxiW8Jg/LQzdyrHJIvUU8xBAhRcSQSafKudrKZZ32J/46MydwvxZvzdEQrYnb06oZrkQjC/M0daL6vRUIyg=
+	t=1706260215; cv=none; b=FsOLAjBdjr53zh/0c8t28BxyqUkHqS0g5LsKsFWf/QUNdcsWHeZpx6BhGqa9MZqqMHLfZLqQPDBX6tUrK5WnybwEFb7LvrZvItitOiHmSfzoPPXvG6tEobBBFA6TtrVFzX36nCgkoVrLlLg4tOTQQDUjbVKTovoJzFF+h8QhnZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706260170; c=relaxed/simple;
-	bh=F1hz7KCSVbFLfrCBmACnmf9Nqw8PEapG5/S7HX7OJtE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AVg29gsCmuRopBi5RCbQGQ/sbGZ5Tl8+4yz1eQFO0gLs/SkEJu43ymCMMTUM43VcCvEznOaVg4faHUpGnjE0vch5O9MDLHZvZIXU2BNWLKi9XZviHTkPiF//mvFJxX8zBfPwpBDRU2yvd+FBXJjH6xO6wEng4PpjYFUMpSpd8m4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rTID0-006Ez2-Vh; Fri, 26 Jan 2024 17:09:12 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 26 Jan 2024 17:09:23 +0800
-Date: Fri, 26 Jan 2024 17:09:23 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: David Wronek <davidwronek@gmail.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Avri Altman <avri.altman@wdc.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	cros-qcom-dts-watchers@chromium.org, linux-arm-msm@vger.kernel.org,
-	linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-phy@lists.infradead.org,
-	~postmarketos/upstreaming@lists.sr.ht,
-	Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v4 1/8] dt-bindings: crypto: ice: Document SC7180 inline
- crypto engine
-Message-ID: <ZbN2wwvM8D4yldjS@gondor.apana.org.au>
-References: <20240121-sm7125-upstream-v4-0-f7d1212c8ebb@gmail.com>
- <20240121-sm7125-upstream-v4-1-f7d1212c8ebb@gmail.com>
+	s=arc-20240116; t=1706260215; c=relaxed/simple;
+	bh=azLgXU4B5hvZ3lRSpkqmX1dSsInT4VOSlsC6BUhZkaw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FZIVEp0/qG80dz+3Ts7X+VCZUL9nn2jroB3WzFtx512x55hiy4LmhRhaiJ4lVHmwTrCsl8rk0qtOC+tS8ZgUz/at/XptKzdzPBbROxIgoxzaPxWKjXKUg7EfAV/3Q1x2nBUXLCnLvoH9N4Qa0XMkgi9XyMbmgnOS9mckc6bfEOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=iUr1imQ9; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706260211;
+	bh=azLgXU4B5hvZ3lRSpkqmX1dSsInT4VOSlsC6BUhZkaw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=iUr1imQ9vVCgJdhGgthjtbxIGCi8O3zxDr4mW488Ieq3qJZL8gtRQTb/lF2TiDz6z
+	 yGN3/eLl7GccqUcnUop5pPG8zLeLf3R8DwczDjBvhrAqIyyTq1WHs7/ByOWZ00v/1v
+	 E5Z4x/Hy61hIXSlG3NBVe2Q4ohWL7rGL8PfbtF4IgyBlc+UpzHbjxdgfHe+CGNkm4t
+	 sVBBUTIPshedtsJlTDedyALB+ZNM8MRq39Bi0XrR00jvqwJKp5g9qHirZAOsJaLMae
+	 IywGRIZujw88biavP2Q6+fhTnAy5bc1CfbB5a+Jvv6IxR0aqEkah/XWv90VZy2ffS/
+	 mVd3jgNEq3wOQ==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2B4E03782072;
+	Fri, 26 Jan 2024 09:10:11 +0000 (UTC)
+Message-ID: <735f1b96-0470-440a-a72a-090c6f98b619@collabora.com>
+Date: Fri, 26 Jan 2024 10:10:10 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240121-sm7125-upstream-v4-1-f7d1212c8ebb@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 7/9] arm64: dts: mediatek: Introduce MT8186 Steelix
+Content-Language: en-US
+To: Chen-Yu Tsai <wenst@chromium.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Eugen Hristev <eugen.hristev@collabora.com>, devicetree@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Conor Dooley <conor.dooley@microchip.com>
+References: <20240126083802.2728610-1-wenst@chromium.org>
+ <20240126083802.2728610-8-wenst@chromium.org>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240126083802.2728610-8-wenst@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sun, Jan 21, 2024 at 05:57:41PM +0100, David Wronek wrote:
-> Document the compatible used for the inline crypto engine found on
-> SC7180.
+Il 26/01/24 09:37, Chen-Yu Tsai ha scritto:
+> The MT8186 Steelix, also known as the Lenovo 300e Yoga Chromebook Gen 4,
+> is a convertible device based on a common design of the same name. The
+> device comes in different variants. Of them, whether a world facing
+> camera is integrated is the only differentiating factor between the
+> two device trees added. The different SKU IDs describe this alone.
 > 
-> Acked-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: David Wronek <davidwronek@gmail.com>
-> ---
->  Documentation/devicetree/bindings/crypto/qcom,inline-crypto-engine.yaml | 1 +
->  1 file changed, 1 insertion(+)
+> The other device difference is the trackpad component used. This is
+> simply handled by having both possible components described in the
+> device tree, and letting the implementation figure out which one is
+> actually available. The system bootloader / firmware does not
+> differentiate this in that they share the same SKU IDs.
+> 
+> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-Patch applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
+
 
