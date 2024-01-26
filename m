@@ -1,109 +1,113 @@
-Return-Path: <linux-kernel+bounces-40223-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40224-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E27F183DCB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:46:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A735683DCB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:47:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EF7428300B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:46:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD245B2500E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:47:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 713591CA90;
-	Fri, 26 Jan 2024 14:46:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D7F51C68F;
+	Fri, 26 Jan 2024 14:46:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UJ/CrNAP"
-Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Yp/CFcUx"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6505B1C68F;
-	Fri, 26 Jan 2024 14:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E5C8134A6
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:46:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706280381; cv=none; b=TrRmmSAOD25mdlB4f2zrHMzXGAvMTMFiJVBY2gLmZaOTQypM7Sduwe6rjrGKVV3cs/1Kv4RtYkG/z/1cPePEX/BtITe2INOyOv1oz/gOppxfIU+W34YGX/esRmEIEuPWHQrhLBmbqj1uDDZ0QsLEX+9pqkA9dcFgmD8mlytlhRw=
+	t=1706280417; cv=none; b=SynqwxbWbhHWtmL2xPAVqU18FpMfyhwL/ErVRAhOpHvz7k2yRPknLeJ2tZR7lOVzqurNu4m32hnl1rY9UKrnf6asDHeJAYd7maMSsyWJoxM1ZG0Jcal/2pqkXCPIG/r7yNwsvPWwjEvHx95xR4yxAjL1werhPjrCxZDyCC7UMdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706280381; c=relaxed/simple;
-	bh=oaR+Rs+o1ovCFQgcjvwFQtMJjDy9R3/Hi0ALcXjhD+E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MEWFIsJj6SxMWxZiGC5GXoZSMoy2+Y6lUwNS03d+9ycfpb9XyBjNnINzV7uPIAjOmw8lL3QvGrzL9ZKrCsMX87qLQTrg2xHSo/Io2A3opWHy4jTx86tgNRm3BbPxtF5WOz7w+7yYEvJLVmmbVWj3bBOUEAoQJ8IrUlcgqOCQyo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UJ/CrNAP; arc=none smtp.client-ip=209.85.160.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-20536d5c5c7so287339fac.2;
-        Fri, 26 Jan 2024 06:46:20 -0800 (PST)
+	s=arc-20240116; t=1706280417; c=relaxed/simple;
+	bh=W/FdB88dbo4Ofig9JphpMVHHe94m8b1+hdrjMoRC/H4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MssVj79Uk3SF6qVnI6R8NzCTzrQwb9G2jw6C1VkXc4H6K+GSGix5KcnjvkmdW3SZOnU9bpCR3ugsPpmeHz/ql/b3ajlPaAW1YmdprCgx5tWac6vgAdPyDlNw7c37b1jRvIhFriNHnHgSbSYIRsRztZEjeBG0/iDxCbrkAZA1Lpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Yp/CFcUx; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33ade380b9fso595568f8f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 06:46:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706280379; x=1706885179; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=onb58WbK7XX3zmn2vav9TfD/9KJKtooABn9lOzetSkA=;
-        b=UJ/CrNAPySnj10klWyYzcD4jebFkC0SXyvvoQqfqc7Y9JcfgV/hJj+DJuUNBrxDwgO
-         cViH1DO0/aKKfu7FfaXVsxGQiI2Rs+BkO7J8b5csrxo7twcI/wXp/QWd564H8nOMmL57
-         kF6zLtDhAX6qfdFe4tnLVZCnPXM8K8HhO8WOMy0lKyv9gzZkryU42u8IUdw7RKRznsyM
-         n+rgV7usxs8yhSMY3RTaKir9zuBJCNr5/ieP1D7uXuWhw4dZ3KnUOKcQOP33pR8I0q3Q
-         yFYhAYOpPBoeM1Xlfn5RXH9jz//G4wf9A1n5INLwFevg2785MwJ7P2Kmf4F9Fj/krTOG
-         Kc8Q==
+        d=suse.com; s=google; t=1706280413; x=1706885213; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GwKl7KA16kSrc3QBUn+TdenGDtEm5u8vFzJscSXHTTY=;
+        b=Yp/CFcUxkz0yT1b9rPh1vhuouStDf6hceu4d9tuBIml6lRs8uGr35B1ZQHfZwdjFBX
+         AeZbLH3enQaGc2JrB7ZKLQrp0zNCXWWhNsxsTHRkVfcyCdl0W9RFwtzjFPUId7YvL0X3
+         tEQ2P2Bjn8nYIhV4gRCBhaft1WOEPLCdbqNR1M8SpgMJC7fxrC9k0PbcniFZVBEdp0Gx
+         YFzzFX98qRPOutT36yyHIQeEhVS1EAYnMlRNEsw6VABEOtpLpCZuf0wWzKvd4oIQZ+DH
+         5iOfV+iUBYdFsEYMJOxFOB94V/flwNTQSK6nK6Qw+5hnxA8+SNkbU/VVDdOmDQKPKx+I
+         YUKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706280379; x=1706885179;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=onb58WbK7XX3zmn2vav9TfD/9KJKtooABn9lOzetSkA=;
-        b=VMRkwYhkgNZldtR6ouK7acknNSE5MKl34GxdtATyR4pqgNSIAr9GoWQDQzhUpzQ36g
-         suT1BM9FhLZQqdPhNhb2xCoX8OquiYFcvet+gHxsq/2wmfJAdYR4jdobz9tkYrbaFaef
-         utbufZ/a5fSugAqGXqwLs7FweURxD22+ziEZ4tx7RlSIdrnINp7Ii59/91ze/4Y1BQdP
-         yBkBCH0J9VA8KGv9f351kzKqiVP88JI5Qj5qRYfFeli7pNyARfmHQdpJhHM+ZJt/zb1l
-         s63BuZGl9nsJ6LFTDoiZnzkNQu+A4TZM7N36wcW7JN1ZYoQWVnqX6KPfsg0slA9DTBjB
-         +2Lg==
-X-Gm-Message-State: AOJu0Yzqfc3az61Owj7Nts9SSj8m1mUQxx57KnnQIYPPIdsp5rX4YjEP
-	MmF6ZQfkCqF3jaqWmGuSmEqm6f9SiBIA7xnZMPgKyLlqhvEKjnGnUGoC3JsAj0VCOt+4jnJJxFx
-	Bqf1f1FSoh+dKXpK0C31k6mLXMmk=
-X-Google-Smtp-Source: AGHT+IHbFDM80qEM+b9WtcEXhSnneDa5QtW5uT7RRJDrIz0L/IFbADa3zja96a5BV5BviU//qtNfm7VHRJ+ajwGSNf4=
-X-Received: by 2002:a05:6870:f78f:b0:214:8451:7da2 with SMTP id
- fs15-20020a056870f78f00b0021484517da2mr1019956oab.2.1706280379414; Fri, 26
- Jan 2024 06:46:19 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706280413; x=1706885213;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GwKl7KA16kSrc3QBUn+TdenGDtEm5u8vFzJscSXHTTY=;
+        b=UzFSPG2h82S+/Iz5gSKAtFBEQxngnVRSo/mVvGc31x33pxrbJJrhcejnujvCvyJazH
+         6N9eMYgIDchrqrXT45Z7adktWnBLckK5VesoWL3glPOsd99P05fTEQZ7qeWpm3rzaXSQ
+         MCWjKOu5l6GVlhRHSqADUP0uaj3YjXX3vEsayvlJ6nzTMiNLOtyT823AM4bgD6ankE/H
+         CT6lMaiLOylvcm9eYNF3TaW36A0yzezK4KVMmfpbHY9MEH0SNubzIkZa6bb23p1mjQ1v
+         diSkgq20/LvPWjoPd83tx2xw9ZuNH2sM0KZYEK904PsqtI/JiLHH1oln/JAXnmKzwcxu
+         G72w==
+X-Gm-Message-State: AOJu0YwrwVy6ALJ1Ic+HEV+KpEjCrtncskOuF301E4x5ah7obHXfmfOp
+	GkhgMbioSXP2MRkauz6naQaZOmI/c+H0vbA48vMFTGk8ORud/kntDsPYTOVJ+Qc=
+X-Google-Smtp-Source: AGHT+IG3veE69nenUkhE2SVXbzrVU0L/Do3gd+wEYCsuXJnu1R0yOSVv6LwLj/j5xNSNy2+GDv7Ukg==
+X-Received: by 2002:adf:e3c6:0:b0:339:611b:bcb4 with SMTP id k6-20020adfe3c6000000b00339611bbcb4mr568107wrm.117.1706280412721;
+        Fri, 26 Jan 2024 06:46:52 -0800 (PST)
+Received: from ?IPV6:2a10:bac0:b000:7589:7285:c2ff:fedd:7e3a? ([2a10:bac0:b000:7589:7285:c2ff:fedd:7e3a])
+        by smtp.gmail.com with ESMTPSA id n11-20020a056000170b00b00337d6db207dsm1437927wrc.30.2024.01.26.06.46.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Jan 2024 06:46:52 -0800 (PST)
+Message-ID: <6afe76be-90a7-4cf7-8c6c-23e6a14f8116@suse.com>
+Date: Fri, 26 Jan 2024 16:46:50 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125235723.39507-1-vinicius.gomes@intel.com> <20240125235723.39507-2-vinicius.gomes@intel.com>
-In-Reply-To: <20240125235723.39507-2-vinicius.gomes@intel.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 26 Jan 2024 16:46:08 +0200
-Message-ID: <CAOQ4uxgjgQbYy+cHKYM5ZqJm7hKT6oGTty6fvh1_zEX3krptJQ@mail.gmail.com>
-Subject: Re: [RFC v2 1/4] cleanup: Fix discarded const warning when defining guards
-To: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Cc: brauner@kernel.org, hu1.chen@intel.com, miklos@szeredi.hu, 
-	malini.bhandaru@intel.com, tim.c.chen@intel.com, mikko.ylinen@intel.com, 
-	lizhen.you@intel.com, linux-unionfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC] Randomness on confidential computing platforms
+Content-Language: en-US
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+ Theodore Ts'o <tytso@mit.edu>, "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+ Elena Reshetova <elena.reshetova@intel.com>,
+ Jun Nakajima <jun.nakajima@intel.com>, Tom Lendacky
+ <thomas.lendacky@amd.com>, "Kalra, Ashish" <ashish.kalra@amd.com>,
+ Sean Christopherson <seanjc@google.com>, linux-coco@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+References: <20240126134230.1166943-1-kirill.shutemov@linux.intel.com>
+From: Nikolay Borisov <nik.borisov@suse.com>
+In-Reply-To: <20240126134230.1166943-1-kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jan 26, 2024 at 1:57=E2=80=AFAM Vinicius Costa Gomes
-<vinicius.gomes@intel.com> wrote:
->
-> When defining guards for const types the void* return implicitly
-> discards the const modifier. Be explicit about it.
->
-> Compiler warning (gcc 13.2.1):
->
-> ./include/linux/cleanup.h:154:18: warning: return discards =E2=80=98const=
-=E2=80=99 qualifier from pointer target type [-Wdiscarded-qualifiers]
->   154 |         { return *_T; }
->       |                  ^~~
-> ./include/linux/cred.h:193:1: note: in expansion of macro =E2=80=98DEFINE=
-_GUARD=E2=80=99
->   193 | DEFINE_GUARD(cred, const struct cred *, _T =3D override_creds_lig=
-ht(_T),
->       | ^~~~~~~~~~~~
->
 
-I did not look closely, but can't you use DEFINE_LOCK_GUARD_1()?
 
-Thanks,
-Amir.
+On 26.01.24 г. 15:42 ч., Kirill A. Shutemov wrote:
+> 4. Exit to the host/VMM with an error indication after a Confidential
+>     Computing Guest failed to obtain random input from RDRAND/RDSEED
+>     instructions after reasonable number of retries. This option allows
+>     host/VMM to take some correction action for cases when the load on
+>     RDRAND/RDSEED instructions has been put by another actor, i.e. the
+>     other guest VM. The exit to host/VMM in such cases can be made
+>     transparent for the Confidential Computing Guest in the TDX case with
+>     the assistance of the TDX module component.
+
+But is this really a viable solution in the face of malicious VMM? It 
+assumes that if the VMM is signaled that randomness has been exhausted 
+it will try to rectify it, what if such a signal can instead be 
+repurposed for malicious purposes? Could it perhaps be used as some sort 
+of a side channel attack ?
 
