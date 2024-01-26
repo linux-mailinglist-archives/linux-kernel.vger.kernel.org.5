@@ -1,103 +1,183 @@
-Return-Path: <linux-kernel+bounces-40627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40628-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F415B83E35E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:28:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A081C83E361
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:30:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF23F286501
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:28:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5736B2873EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:30:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 005A12374B;
-	Fri, 26 Jan 2024 20:28:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FCB02377E;
+	Fri, 26 Jan 2024 20:30:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="08ShMefS"
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="v+N2oFYi"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A20722EFC
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 20:28:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC2923750
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 20:30:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706300915; cv=none; b=qc1twbTagZIdD/EA/umNKStALOuGdIH1RJlTRGM+h30uyvEIb7rvZrMZicZf3aDHdN7nO0e53SjPSGV/bF+sf980R3m4RTXxj1RfSndwyJIHaPkFUUPy/Re037bdIivOKqoXTBgTCxswbdmipXd1ATRuVjxdbiHQKnn3FGVMUxk=
+	t=1706301012; cv=none; b=CrAIljSZ2v91aGwRnscza1bcyQLYQ/iX2S9f3U1qp7hv7Z7OrPOu2dQica+Sl3PvZaHNaV4tdok+W30SWsiLHeMDFuS7Uc0xPVfClOFumxEpgAFqD5E6XOaIAZXUPQhOldgoLf8rTvxhSvocYxTUnZaUOvM3T8TkGMsdqGLCEKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706300915; c=relaxed/simple;
-	bh=MX1cl8lmGmpn8sljYyeenca6Mtxd43PcXSi1NGAVEWI=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Rm5ddDh3UhW53fuSJg5cm0sThcXCVE5Y1KHJbAMqMrCTvsG9TXfN/1LClX0quAKA+CrZMXPC5GJu2apTL8WYHcqvBfglUqUr3aKzzRcGpi+TLimogr2XUPdDjd1AowwfEHUfnERK7FiX1ZktuEqLCdA0Hn1n2bPr6BlgyeYIxAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=08ShMefS; arc=none smtp.client-ip=209.85.215.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5cf962e1fcbso756209a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 12:28:33 -0800 (PST)
+	s=arc-20240116; t=1706301012; c=relaxed/simple;
+	bh=AZL2DiPws0S6+MBaKLJGGRKAIx0Xr+661L82JlgRYPs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=u7ursbGAzYxJhSpVbwxzjcA0jE35LA4/w8EicpawOYFlWeah0nsgukmq3l8Gy1yKhR9LmSGN7gR4q+e2BAALdop0SfTIdnPI+4clW9cDdmH1Pbkx6FaM2bOjkFoKhC796phHb/0jEXyPYFuvl4Zc4ZQWReAoHqw1bRpGhwraVQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=v+N2oFYi; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dbed0710c74so796994276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 12:30:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706300913; x=1706905713; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KbQ+Dwhg/HevKgCb1ijIHEGKfQzi7W5glVtqWEkhfqI=;
-        b=08ShMefSLdxC/ARJQwgiMa+S+0aZex2v0Z2VBtJz2u4xIzNCYJq5KQVEP8ybwehpBp
-         PEtCK0rn57jC9b6zuvKx2wQCdIHRwoVGZv/Gd4eJhNOS0xAGpXVq8fM3bSyJtF8UOQfD
-         JJT8CpRGuS6PhcZBh73ZAjWzbRZTJfn1Z+S9ipqXXkF8Vq5IbwSyWQFlLA0Cj9WuwtTv
-         wz48QUZg86HgL1Har/y5CLwl5KSq3VzoJwjEC/HSWfGGluNhJPOIKi8hiOZ2ovCfTFxr
-         tBZcO2pBnU/cmJxk5g0DgLDLXLcDAIOfTKtMLvv6zeTXopA/j3Q3P5YKFp2+kX0kON92
-         HzRw==
+        d=linaro.org; s=google; t=1706301010; x=1706905810; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kZTd/qK4fjgGkjgEEZAEvtUcKpHSu6w+GQ9nB6HrsPo=;
+        b=v+N2oFYi5I5DFNj/ijZx0suvviAhzj2S3+K+88E97pCNWWmYCEyB2G9LS9rw5xruhs
+         YoU7u4lEFqgzTD+V1lg/6wPic/UoMfQbouNlNWfjKbaO2sttkefcuMF0WZd1mFiBW3Rh
+         x0NQVbzOtlh5jIJ+4McKUXwyxYwnfE06L4Rc6mld7TYY/mnirFPgewMadXzPONE37qpB
+         vQ/zGDAkj7NXguVvK9QZrVf93GR+uvHLF+eE0xW0WH3IfvAKGssboYYSomy0AGircQzc
+         PuUXB6Hjkbezu3ajlbKwk6QeZpoIMAKBTzNydun0IWywbBg2R44x0mdAzatoW6x8FsFU
+         Cmdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706300913; x=1706905713;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KbQ+Dwhg/HevKgCb1ijIHEGKfQzi7W5glVtqWEkhfqI=;
-        b=eJKu5HVbCMLX+N3aFGC1e/iC/jnfLbEC4qSwGDR2tC2ixpMVxZ5JZO7qAxLrf8rI+7
-         M2r3jiBRA6PqQjLz7TpjuJ51Zkemv0rWQvP41ZHdsVQTCU7BA+BEyHBcaLZGVc26nW+D
-         7KNawD6mvxkQyhnbpay8HqyCtj0ZSyldEJG4HPhN7bPjYhzzikfkvJUvrNFBCM23fWRF
-         +LgTiRhT/fXi4UElUzj2IIW0mZw5BLBuvtZVhampIDYxBDDonHMPic0O7+NCbKgFPPpn
-         L/vDDDUNwSLvl2C/UwC8lR7qyHcL6KfoCW1XXWdelaBiSM4hnILfBsPz/cS1idhdbiIP
-         EXaA==
-X-Gm-Message-State: AOJu0YzQc6syw24oi3tWHwPHeWOyvnQE6+oW3RQjVpyUHHi7ZxljQ8ih
-	0dGqKdCKB8XXqAJtwKelSdgLwhqozI+w4k0p9wio7HOkotuST+kI0Ish/t0Fa4UubBmLC7oG6cq
-	5AQ==
-X-Google-Smtp-Source: AGHT+IFuxqVUto7K9qlkno1FvOpuribEDZLPtNAujSDb8v9/ilztKOioPYJlW0aBaN6d/Nq82pMdRpk7AJQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a65:64c4:0:b0:5ce:474:352b with SMTP id
- t4-20020a6564c4000000b005ce0474352bmr1894pgv.5.1706300913464; Fri, 26 Jan
- 2024 12:28:33 -0800 (PST)
-Date: Fri, 26 Jan 2024 12:28:31 -0800
-In-Reply-To: <20240125015420.1960090-5-maobibo@loongson.cn>
+        d=1e100.net; s=20230601; t=1706301010; x=1706905810;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kZTd/qK4fjgGkjgEEZAEvtUcKpHSu6w+GQ9nB6HrsPo=;
+        b=qJiHiIKovognDCUk/N9OrJ2+wZ90vx4FrWvC3w3AmAtqM3SORq0UR7ccvY00BcSV8F
+         Wq3gUZ5rK7eXuNyMo8itL096NdUCEKQ1hkdRmpLzM/Mx4FYXOvdMNzagyXXKwb2eGajj
+         3DGcM6e0Mxn/VqRi1bRSMDoBRTsW4X94l4Mj+JZ3zCRWf/U5PYZqVk98bOA1f+D8Dwca
+         HXQKVGArvO0OYFLfXna+BkTR/f9G28ShSOznvIpyIhDTtU4VTwl7bVs25XI2LX+tkdTc
+         AKubUNSviPuD5dKTOtshwdIVWlH/b/Pj/ekyYfp+NYVt1HAkDAsbODdkGKWOwP0lK8Ba
+         9sdg==
+X-Gm-Message-State: AOJu0YyeYezwYZwjZ5kmsxfwvl/erajWhnpB0So1IhyWYiAJrRw8cjAm
+	NInYYI3qLxxBPMPZYFvc4mckK0H4nTBwBgMBfID8DSArf6uHQmEu7KnS2107YJIoC0igW9jqmfF
+	LzPAw5BC8A1W1Y9NKkAWjkYFgWmAhNZwKHBStkg==
+X-Google-Smtp-Source: AGHT+IFRFALlNQJrY0JCp8H/TgJzhu2cMZX+uZJkl0AdOae8gvAP2suk/MGyKDXEOw7FfiRM8ExjaxYpUup11X6q9Ug=
+X-Received: by 2002:a25:9948:0:b0:dc1:f71f:a1e8 with SMTP id
+ n8-20020a259948000000b00dc1f71fa1e8mr473812ybo.128.1706301009942; Fri, 26 Jan
+ 2024 12:30:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240125015420.1960090-1-maobibo@loongson.cn> <20240125015420.1960090-5-maobibo@loongson.cn>
-Message-ID: <ZbQV75Q-N_cJLhj6@google.com>
-Subject: Re: [PATCH v6 4/4] KVM: selftests: Add test cases for LoongArch
-From: Sean Christopherson <seanjc@google.com>
-To: Bibo Mao <maobibo@loongson.cn>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>, 
-	Tianrui Zhao <zhaotianrui@loongson.cn>, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+References: <cover.1706296015.git.quic_uchalich@quicinc.com> <12bfdd23772c49530b8b0993cc82bc89b3eb4ada.1706296015.git.quic_uchalich@quicinc.com>
+In-Reply-To: <12bfdd23772c49530b8b0993cc82bc89b3eb4ada.1706296015.git.quic_uchalich@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 26 Jan 2024 22:29:59 +0200
+Message-ID: <CAA8EJppapW5nOFphBWove1ni8nbkA=xHON9D13NYeYHhyqL1Fg@mail.gmail.com>
+Subject: Re: [PATCH 5/5] soc: qcom: llcc: Add regmap for Broadcast_AND region
+To: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kernel@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Jan 25, 2024, Bibo Mao wrote:
-> diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
-> index 075b80dbe237..7b09e59296be 100644
-> --- a/tools/testing/selftests/kvm/set_memory_region_test.c
-> +++ b/tools/testing/selftests/kvm/set_memory_region_test.c
-> @@ -333,7 +333,7 @@ static void test_invalid_memory_region_flags(void)
->  	struct kvm_vm *vm;
->  	int r, i;
->  
-> -#if defined __aarch64__ || defined __x86_64__
-> +#if defined __aarch64__ || defined __x86_64__ || __loongarch__
+On Fri, 26 Jan 2024 at 21:48, Unnathi Chalicheemala
+<quic_uchalich@quicinc.com> wrote:
+>
+> To support CSR programming, a broadcast interface is used to program
+> all channels in a single command. Until SM8450 there was only one
+> broadcast region (Broadcast_OR) used to broadcast write and check
+> for status bit 0. From SM8450 onwards another broadcast region
+> (Broadcast_AND) has been added which checks for status bit 1.
+>
+> Update llcc_drv_data structure with new regmap for Broadcast_AND
+> region and initialize regmap for Broadcast_AND region when HW block
+> version is greater than 4.1 for backwards compatibility.
+>
+> Switch from broadcast_OR to broadcast_AND region for checking
+> status bit 1 as Broadcast_OR region checks only for bit 0.
 
-I assume that last one wants to be "defined __loongarch__"
+This breaks backwards compatibility with the existing DT files, doesn't it?
 
->  	supported_flags |= KVM_MEM_READONLY;
->  #endif
->  
-> -- 
-> 2.39.3
-> 
+> While at it, also check return value after reading Broadcast_OR
+> region in llcc_update_act_ctrl().
+
+Separate patch, Fixes tag.
+
+>
+> Signed-off-by: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
+> ---
+>  drivers/soc/qcom/llcc-qcom.c       | 12 +++++++++++-
+>  include/linux/soc/qcom/llcc-qcom.h |  4 +++-
+>  2 files changed, 14 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
+> index 4ca88eaebf06..5a2dac2d4772 100644
+> --- a/drivers/soc/qcom/llcc-qcom.c
+> +++ b/drivers/soc/qcom/llcc-qcom.c
+> @@ -849,7 +849,7 @@ static int llcc_update_act_ctrl(u32 sid,
+>                 return ret;
+>
+>         if (drv_data->version >= LLCC_VERSION_4_1_0_0) {
+> -               ret = regmap_read_poll_timeout(drv_data->bcast_regmap, status_reg,
+> +               ret = regmap_read_poll_timeout(drv_data->bcast_and_regmap, status_reg,
+>                                       slice_status, (slice_status & ACT_COMPLETE),
+>                                       0, LLCC_STATUS_READ_DELAY);
+>                 if (ret)
+> @@ -859,6 +859,8 @@ static int llcc_update_act_ctrl(u32 sid,
+>         ret = regmap_read_poll_timeout(drv_data->bcast_regmap, status_reg,
+>                                       slice_status, !(slice_status & status),
+>                                       0, LLCC_STATUS_READ_DELAY);
+> +       if (ret)
+> +               return ret;
+>
+>         if (drv_data->version >= LLCC_VERSION_4_1_0_0)
+>                 ret = regmap_write(drv_data->bcast_regmap, act_clear_reg,
+> @@ -1282,6 +1284,14 @@ static int qcom_llcc_probe(struct platform_device *pdev)
+>
+>         drv_data->version = version;
+>
+> +       if (drv_data->version >= LLCC_VERSION_4_1_0_0) {
+> +               drv_data->bcast_and_regmap = qcom_llcc_init_mmio(pdev, i + 1, "llcc_broadcast_and_base");
+> +               if (IS_ERR(drv_data->bcast_and_regmap)) {
+> +                       ret = PTR_ERR(drv_data->bcast_and_regmap);
+> +                       goto err;
+> +               }
+> +       }
+> +
+>         llcc_cfg = cfg->sct_data;
+>         sz = cfg->size;
+>
+> diff --git a/include/linux/soc/qcom/llcc-qcom.h b/include/linux/soc/qcom/llcc-qcom.h
+> index 1a886666bbb6..9e9f528b1370 100644
+> --- a/include/linux/soc/qcom/llcc-qcom.h
+> +++ b/include/linux/soc/qcom/llcc-qcom.h
+> @@ -115,7 +115,8 @@ struct llcc_edac_reg_offset {
+>  /**
+>   * struct llcc_drv_data - Data associated with the llcc driver
+>   * @regmaps: regmaps associated with the llcc device
+> - * @bcast_regmap: regmap associated with llcc broadcast offset
+> + * @bcast_regmap: regmap associated with llcc broadcast OR offset
+> + * @bcast_and_regmap: regmap associated with llcc broadcast AND offset
+>   * @cfg: pointer to the data structure for slice configuration
+>   * @edac_reg_offset: Offset of the LLCC EDAC registers
+>   * @lock: mutex associated with each slice
+> @@ -129,6 +130,7 @@ struct llcc_edac_reg_offset {
+>  struct llcc_drv_data {
+>         struct regmap **regmaps;
+>         struct regmap *bcast_regmap;
+> +       struct regmap *bcast_and_regmap;
+>         const struct llcc_slice_config *cfg;
+>         const struct llcc_edac_reg_offset *edac_reg_offset;
+>         struct mutex lock;
+> --
+> 2.25.1
+>
+>
+
+
+-- 
+With best wishes
+Dmitry
 
