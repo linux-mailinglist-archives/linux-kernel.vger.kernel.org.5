@@ -1,352 +1,166 @@
-Return-Path: <linux-kernel+bounces-40002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40003-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5372483D867
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:47:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAC8583D884
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:55:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77B2A1C2407B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:47:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F6F4B43248
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:47:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5423D12B6C;
-	Fri, 26 Jan 2024 10:47:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30F6112B74;
+	Fri, 26 Jan 2024 10:47:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eKxIuTeT"
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="TVYwDy3F"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B624AEAE6
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:47:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 189E71FA0
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:47:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706266025; cv=none; b=a26XVsMxzCQBbA2bqgJ+JZ+vFTs1hCi42EECImf8PYMisdTZGREgxCjOtUnbofaZJEI7CzTEXuvcy5VaXU05IU5iqcjdypR1u/PWgNwU+fLTSRuZfnh2+dm7Rq66ptlQD6fwwi2WfxpxmbEB0O4Rzce2RweaSCWhCAXxvbwMXhY=
+	t=1706266050; cv=none; b=V/B/FNAg/uP0noTZmXgQlLV1WwFUYR3MyBSByoyBMsR1whLZBbndfKldoILXgIsE0yHEX85u7lXw1ynzCXz9gpKOzKAf89z3+iIKj/bv26VeCdMw4qMmk3+vixYbjng9IEk09m0mUjLlB5hk7TESrDmA7pxfbTJzv7KAeZsppqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706266025; c=relaxed/simple;
-	bh=Cb3XqK8POlflsYIzU5yBi8ek77CFZVcafBdK9uWCZVs=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aSpwcBHQOuT2F0yfXdDgPR/xGDQGpWmEQHoGh1xIwWFgfsFh/nU0DCOOXKVJrO2J/dzWg2kEQ2E/aAJqRd7GyZsJx/C57zdygAJVl0gyUbi04OZtCnBCMl8nmRSEuXPoKTji1X0ERqBUewWRR1l8fdCShfnyjLgfHDSxH0oj8c4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eKxIuTeT; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5d62aab8fecso174585a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 02:47:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706266023; x=1706870823; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AL97eD80gurjjNVc6oW4Pblm2mRxomOq21Xh0DzRmSk=;
-        b=eKxIuTeTq/VZvZHy+Lm7trE8PF4mt3Z7jmsIvxg0KYbdRlRgcIwWXezXdFZnHyJmxM
-         gTK7Z5QAqQwPms9ychyaFikP/AQWhqYBn7XdgzH+t6BaipF96+s3i4Fj6h5oQNoOcxiQ
-         uL6ZNDBsJZ+M0wJGUWl4bZXqqJ3rX2KS0Llvs56VPdhSbJs+f3ZKiUVON+9ubC3zFmLI
-         Rxd472io56hQj+mz67vEdmfoTzrv1dLiEJZdWnyBc93dvz/QzM96/j+X3dIlfeLcKYUB
-         c7a28LOWFiaGvccAyfG5XSQDQVoLLd6ehWzNGJGemWbMwI+JmsUcD4J0QpWIljMLZHXn
-         6cFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706266023; x=1706870823;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AL97eD80gurjjNVc6oW4Pblm2mRxomOq21Xh0DzRmSk=;
-        b=fDMybXiha2wIr1DVlHWJW6mol8CZ5r7TotJ+kigJ8cKM8evtW8sF3cAAV/VGg04N9f
-         1w/4Ch7RmTVvX2crAiPKm3GVCHPSkG+TMDaMb3jvw1JKGUMqbjAzbAgHUrnno921q+0T
-         SnfZUwsORrOl/dtOb4Vz6XzefFhHOk3T+hk/SyEJTfJTIns9BySZgO8XRXvfxedMOaZR
-         WF4HiNWx3vmooDEHCQtGuZxRLbXSNUlyxcwcfIKjqH+d6IJ5vd2dSJ4RqPSK5ipjBrMW
-         Xd+bY6KRelq5BTkDgcLVlUOhnv4sl5b0LPeqc7JCdXVzeERtuL6GiLVa3NClj/ao3cEV
-         ywjw==
-X-Gm-Message-State: AOJu0YzxaZmT+UrnkmpuLz2GV6Nfrim4pTwQgpYmCp8JYdANgoK1wwaF
-	ogQgj35pIdyOD05KPukUgB7Sx1KHivYg21KhdFnWJsoqRVRb88PFVGvvMimO8+A=
-X-Google-Smtp-Source: AGHT+IHcJjd6S/2CcyZUm2vxxXohvAUyo9oe0QqSXjiMvq2eVIOUM3yofq7b3ZF2V2rYd8ph2yvlAw==
-X-Received: by 2002:a17:902:e748:b0:1d8:a108:4ebd with SMTP id p8-20020a170902e74800b001d8a1084ebdmr894705plf.105.1706266022616;
-        Fri, 26 Jan 2024 02:47:02 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXk6+W+6O/fuEeQTfMdrOyxiWpLwzQS8ad5agzzL5oFB8c9Ynp0wQCXt/cixKbl+qj+3KyQw+6SrhBaD/dDIB7lW9UJIwh1bQcHTGxIsq4iPl03R2yF6KyiDzETluTttS/sJ5/GJ8whKjCZxoZ2MBdM/ZCpDsc=
-Received: from localhost ([156.236.96.164])
-        by smtp.gmail.com with ESMTPSA id ky6-20020a170902f98600b001d721386cc2sm747879plb.84.2024.01.26.02.47.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 02:47:02 -0800 (PST)
-Date: Fri, 26 Jan 2024 18:46:56 +0800
-From: Yue Hu <zbestahu@gmail.com>
-To: Gao Xiang <hsiangkao@linux.alibaba.com>
-Cc: linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>, Yue
- Hu <huyue2@coolpad.com>, Chunhai Guo <guochunhai@vivo.com>
-Subject: Re: [PATCH v3] erofs: relaxed temporary buffers allocation on
- readahead
-Message-ID: <20240126184656.0000561c.zbestahu@gmail.com>
-In-Reply-To: <20240126053616.3707834-1-hsiangkao@linux.alibaba.com>
-References: <TY2PR06MB3342D2245C5E515028C33FD4BE792@TY2PR06MB3342.apcprd06.prod.outlook.com>
-	<20240126053616.3707834-1-hsiangkao@linux.alibaba.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-w64-mingw32)
+	s=arc-20240116; t=1706266050; c=relaxed/simple;
+	bh=7iGPgXhQzjAMgbbLMGBzDKjvZs6QBwPWWlL95HNkfuo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=dysQ4mBg3gFCTpLnCHvXkJC9zsIKcL0OAeQf1NYoGMNpQ2fMEbMwKg3U/ZNKO5S0jSkVhLinL3EVGrvNwvkCzIM8p4+zmPW2x9kySPS6zLj+kMXtwJxvDY+h7IgkW4NxTxFpCUlX9uNdDamAQTdwExFGyYwhHKBblZenjRZTpY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=TVYwDy3F; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40Q4OuBC002099;
+	Fri, 26 Jan 2024 10:47:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Dr1b+LNasWBfDiz6qm0FOfD2D0DAEk8L38V0AafYadw=; b=TV
+	YwDy3FFHML3PaoRSDH6ATY6Zx8W/OiAu5hJwCGX0BCFHm/9m9AZ9PDCK8Vsj7pL7
+	PM7DvyMPnHcxbPpMu6VzFMzPlrryjTihMaeIvTSbI3USy4C/Wp9XAFkBY4ONDAJh
+	idzkegrFBuQA6qJowDwwUTSa9p6uuc2vE8Tg6gLGpFMolMRX1IZ7MPqJiNW0HOjJ
+	yuYYHDZTDc5GaGeK3W5OZtQ5VSmD6csC8kjTyBPBPxb1izB32D948hf3kf4idNl+
+	SRrExxssctfKIA6tRJF334X9i1LQpQUHC1e6C0Fmvx1lSuLmyxJhDQqdpypQCBuw
+	JOX2wc5OvqNxyCSgOqfg==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vv1q596vt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Jan 2024 10:47:13 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40QAlCJW031039
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Jan 2024 10:47:12 GMT
+Received: from [10.216.18.218] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 26 Jan
+ 2024 02:47:08 -0800
+Message-ID: <5adb12eb-8403-5860-28eb-5f6ab12f3c04@quicinc.com>
+Date: Fri, 26 Jan 2024 16:17:04 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V3 3/3] mm: page_alloc: drain pcp lists before oom kill
+Content-Language: en-US
+To: Zach O'Keefe <zokeefe@google.com>
+CC: Michal Hocko <mhocko@suse.com>, <akpm@linux-foundation.org>,
+        <mgorman@techsingularity.net>, <david@redhat.com>, <vbabka@suse.cz>,
+        <hannes@cmpxchg.org>, <quic_pkondeti@quicinc.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        David Rientjes <rientjes@google.com>
+References: <cover.1699104759.git.quic_charante@quicinc.com>
+ <a8e16f7eb295e1843f8edaa1ae1c68325c54c896.1699104759.git.quic_charante@quicinc.com>
+ <ZUy1dNvbvHc6gquo@tiehlicka>
+ <5c7f25f9-f86b-8e15-8603-e212b9911cac@quicinc.com>
+ <ZVNQdQKQAMjgOK9y@tiehlicka>
+ <342a8854-eef5-f68a-15e5-275de70e3f01@quicinc.com>
+ <CAAa6QmRnfTOCD0uaxVbbiDRWtwzC9y+gZDFOjYF2YWDTrXyMNQ@mail.gmail.com>
+From: Charan Teja Kalla <quic_charante@quicinc.com>
+In-Reply-To: <CAAa6QmRnfTOCD0uaxVbbiDRWtwzC9y+gZDFOjYF2YWDTrXyMNQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: juFkEb3_tBv4RmYroSjb6W-T0ad2YZ34
+X-Proofpoint-GUID: juFkEb3_tBv4RmYroSjb6W-T0ad2YZ34
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-25_14,2024-01-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
+ mlxscore=0 lowpriorityscore=0 adultscore=0 priorityscore=1501 phishscore=0
+ mlxlogscore=668 impostorscore=0 bulkscore=0 spamscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401190000
+ definitions=main-2401260078
 
-On Fri, 26 Jan 2024 13:36:16 +0800
-Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
+Hi Michal/Zach,
 
-> From: Chunhai Guo <guochunhai@vivo.com>
+On 1/25/2024 10:06 PM, Zach O'Keefe wrote:
+> Thanks for the patch, Charan, and thanks to Yosry for pointing me towards it.
 > 
-> Even with inplace decompression, sometimes very few temporary buffers
-> are still needed for a single decompression shot (e.g. 16 pages for 64k
-> sliding window or 4 pages for 16k sliding window).  In low-memory
-> scenarios, it would be better to try to allocate with GFP_NOWAIT on
-> readahead first. That can help reduce the time spent on page allocation
-> under durative memory pressure.
+> I took a look at data from our fleet, and there are many cases on
+> high-cpu-count machines where we find multi-GiB worth of data sitting
+> on pcpu free lists at the time of system oom-kill, when free memory
+> for the relevant zones are below min watermarks. I.e. clear cases
+> where this patch could have prevented OOM.
 > 
-> Here are detailed performance numbers under multi-app launch benchmark
-> workload [1] on ARM64 Android devices (8-core CPU and 8GB of memory)
-> running a 5.15 LTS kernel with EROFS of 4k pclusters:
+> This kind of issue scales with the number of cpus, so presumably this
+> patch will only become increasingly valuable to both datacenters and
+> desktops alike going forward. Can we revamp it as a standalone patch?
 > 
-> +----------------+---------+---------+---------+
-> |      LZ4       | vanilla | patched |  diff   |
-> |----------------+---------+---------+---------|
-> |  Average (ms)  |  3364   |  2684   | -20.21% | [64k sliding window]
-> |----------------+---------+---------+---------|
-> |  Average (ms)  |  2079   |  1610   | -22.56% | [16k sliding window]
-> +----------------+---------+---------+---------+
-> 
-> The total size of system images for 4k pcluster is almost unchanged:
-> (64k sliding window)  9,117,044 KB
-> (16k sliding window)  9,113,096 KB
-> 
-> Therefore, in addition to switch the sliding window from 64k to 16k,
-> after applying this patch, it can eventually save 52.14% (3364 -> 1610)
-> on average with no memory reservation.  That is particularly useful for
-> embedded devices with limited resources.
-> 
-> [1] https://lore.kernel.org/r/20240109074143.4138783-1-guochunhai@vivo.com
-> 
-> Suggested-by: Gao Xiang <xiang@kernel.org>
-> Signed-off-by: Chunhai Guo <guochunhai@vivo.com>
-> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> ---
-> v2: https://lore.kernel.org/r/20240120145551.1941483-1-guochunhai@vivo.com
-> change since v2:
->  - update commit message according to test results.
-> 
-> I plan to apply this version.
-> 
->  fs/erofs/compress.h             |  5 ++---
->  fs/erofs/decompressor.c         |  5 +++--
->  fs/erofs/decompressor_deflate.c | 19 +++++++++++++------
->  fs/erofs/decompressor_lzma.c    | 17 ++++++++++++-----
->  fs/erofs/zdata.c                | 16 ++++++++++++----
->  5 files changed, 42 insertions(+), 20 deletions(-)
-> 
-> diff --git a/fs/erofs/compress.h b/fs/erofs/compress.h
-> index 279933e007d2..7cc5841577b2 100644
-> --- a/fs/erofs/compress.h
-> +++ b/fs/erofs/compress.h
-> @@ -11,13 +11,12 @@
->  struct z_erofs_decompress_req {
->  	struct super_block *sb;
->  	struct page **in, **out;
-> -
->  	unsigned short pageofs_in, pageofs_out;
->  	unsigned int inputsize, outputsize;
->  
-> -	/* indicate the algorithm will be used for decompression */
-> -	unsigned int alg;
-> +	unsigned int alg;       /* the algorithm for decompression */
->  	bool inplace_io, partial_decoding, fillgaps;
-> +	gfp_t gfp;      /* allocation flags for extra temporary buffers */
->  };
->  
->  struct z_erofs_decompressor {
-> diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
-> index 072ef6a66823..d4cee95af14c 100644
-> --- a/fs/erofs/decompressor.c
-> +++ b/fs/erofs/decompressor.c
-> @@ -111,8 +111,9 @@ static int z_erofs_lz4_prepare_dstpages(struct z_erofs_lz4_decompress_ctx *ctx,
->  			victim = availables[--top];
->  			get_page(victim);
->  		} else {
-> -			victim = erofs_allocpage(pagepool,
-> -						 GFP_KERNEL | __GFP_NOFAIL);
-> +			victim = erofs_allocpage(pagepool, rq->gfp);
-> +			if (!victim)
-> +				return -ENOMEM;
->  			set_page_private(victim, Z_EROFS_SHORTLIVED_PAGE);
->  		}
->  		rq->out[i] = victim;
-> diff --git a/fs/erofs/decompressor_deflate.c b/fs/erofs/decompressor_deflate.c
-> index 4a64a9c91dd3..b98872058abe 100644
-> --- a/fs/erofs/decompressor_deflate.c
-> +++ b/fs/erofs/decompressor_deflate.c
-> @@ -95,7 +95,7 @@ int z_erofs_load_deflate_config(struct super_block *sb,
->  }
->  
->  int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
-> -			       struct page **pagepool)
-> +			       struct page **pgpl)
->  {
->  	const unsigned int nrpages_out =
->  		PAGE_ALIGN(rq->pageofs_out + rq->outputsize) >> PAGE_SHIFT;
-> @@ -158,8 +158,12 @@ int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
->  			strm->z.avail_out = min_t(u32, outsz, PAGE_SIZE - pofs);
->  			outsz -= strm->z.avail_out;
->  			if (!rq->out[no]) {
-> -				rq->out[no] = erofs_allocpage(pagepool,
-> -						GFP_KERNEL | __GFP_NOFAIL);
-> +				rq->out[no] = erofs_allocpage(pgpl, rq->gfp);
-> +				if (!rq->out[no]) {
-> +					kout = NULL;
-> +					err = -ENOMEM;
-> +					break;
-> +				}
->  				set_page_private(rq->out[no],
->  						 Z_EROFS_SHORTLIVED_PAGE);
->  			}
-> @@ -211,8 +215,11 @@ int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
->  
->  			DBG_BUGON(erofs_page_is_managed(EROFS_SB(sb),
->  							rq->in[j]));
-> -			tmppage = erofs_allocpage(pagepool,
-> -						  GFP_KERNEL | __GFP_NOFAIL);
-> +			tmppage = erofs_allocpage(pgpl, rq->gfp);
-> +			if (!tmppage) {
-> +				err = -ENOMEM;
-> +				goto failed;
-> +			}
->  			set_page_private(tmppage, Z_EROFS_SHORTLIVED_PAGE);
->  			copy_highpage(tmppage, rq->in[j]);
->  			rq->in[j] = tmppage;
-> @@ -230,7 +237,7 @@ int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
->  			break;
->  		}
->  	}
-> -
-> +failed:
->  	if (zlib_inflateEnd(&strm->z) != Z_OK && !err)
->  		err = -EIO;
->  	if (kout)
-> diff --git a/fs/erofs/decompressor_lzma.c b/fs/erofs/decompressor_lzma.c
-> index 2dd14f99c1dc..6ca357d83cfa 100644
-> --- a/fs/erofs/decompressor_lzma.c
-> +++ b/fs/erofs/decompressor_lzma.c
-> @@ -148,7 +148,7 @@ int z_erofs_load_lzma_config(struct super_block *sb,
->  }
->  
->  int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
-> -			    struct page **pagepool)
-> +			    struct page **pgpl)
->  {
->  	const unsigned int nrpages_out =
->  		PAGE_ALIGN(rq->pageofs_out + rq->outputsize) >> PAGE_SHIFT;
-> @@ -215,8 +215,11 @@ int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
->  						   PAGE_SIZE - pageofs);
->  			outlen -= strm->buf.out_size;
->  			if (!rq->out[no] && rq->fillgaps) {	/* deduped */
-> -				rq->out[no] = erofs_allocpage(pagepool,
-> -						GFP_KERNEL | __GFP_NOFAIL);
-> +				rq->out[no] = erofs_allocpage(pgpl, rq->gfp);
-> +				if (!rq->out[no]) {
-> +					err = -ENOMEM;
-> +					break;
-> +				}
->  				set_page_private(rq->out[no],
->  						 Z_EROFS_SHORTLIVED_PAGE);
->  			}
-> @@ -258,8 +261,11 @@ int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
->  
->  			DBG_BUGON(erofs_page_is_managed(EROFS_SB(rq->sb),
->  							rq->in[j]));
-> -			tmppage = erofs_allocpage(pagepool,
-> -						  GFP_KERNEL | __GFP_NOFAIL);
-> +			tmppage = erofs_allocpage(pgpl, rq->gfp);
-> +			if (!tmppage) {
-> +				err = -ENOMEM;
-> +				goto failed;
-> +			}
->  			set_page_private(tmppage, Z_EROFS_SHORTLIVED_PAGE);
->  			copy_highpage(tmppage, rq->in[j]);
->  			rq->in[j] = tmppage;
-> @@ -277,6 +283,7 @@ int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
->  			break;
->  		}
->  	}
-> +failed:
->  	if (no < nrpages_out && strm->buf.out)
->  		kunmap(rq->out[no]);
->  	if (ni < nrpages_in)
-> diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
-> index c1c77166b30f..1d0fdc145fd6 100644
-> --- a/fs/erofs/zdata.c
-> +++ b/fs/erofs/zdata.c
-> @@ -82,6 +82,9 @@ struct z_erofs_pcluster {
->  	/* L: indicate several pageofs_outs or not */
->  	bool multibases;
->  
-> +	/* L: whether extra buffer allocations are best-effort */
-> +	bool besteffort;
-> +
->  	/* A: compressed bvecs (can be cached or inplaced pages) */
->  	struct z_erofs_bvec compressed_bvecs[];
->  };
-> @@ -960,7 +963,7 @@ static int z_erofs_read_fragment(struct super_block *sb, struct page *page,
->  }
->  
->  static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
-> -				struct page *page)
-> +				struct page *page, bool ra)
->  {
->  	struct inode *const inode = fe->inode;
->  	struct erofs_map_blocks *const map = &fe->map;
-> @@ -1010,6 +1013,7 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
->  		err = z_erofs_pcluster_begin(fe);
->  		if (err)
->  			goto out;
-> +		fe->pcl->besteffort |= !ra;
->  	}
->  
->  	/*
-> @@ -1276,7 +1280,11 @@ static int z_erofs_decompress_pcluster(struct z_erofs_decompress_backend *be,
->  					.inplace_io = overlapped,
->  					.partial_decoding = pcl->partial,
->  					.fillgaps = pcl->multibases,
-> +					.gfp = pcl->besteffort ?
-> +						GFP_KERNEL | __GFP_NOFAIL :
-> +						GFP_NOWAIT | __GFP_NORETRY
->  				 }, be->pagepool);
-> +	pcl->besteffort = false;
 
-reposition it following `pcl->multibases = false`?
+Glad to see a real world use case for this. We too have observed OOM for
+ every now and then with relatively significant PCP cache, but in all
+such cases OOM is imminent.
 
->  
->  	/* must handle all compressed pages before actual file pages */
->  	if (z_erofs_is_inline_pcluster(pcl)) {
-> @@ -1787,7 +1795,7 @@ static void z_erofs_pcluster_readmore(struct z_erofs_decompress_frontend *f,
->  			if (PageUptodate(page))
->  				unlock_page(page);
->  			else
-> -				(void)z_erofs_do_read_page(f, page);
-> +				(void)z_erofs_do_read_page(f, page, !!rac);
->  			put_page(page);
->  		}
->  
-> @@ -1808,7 +1816,7 @@ static int z_erofs_read_folio(struct file *file, struct folio *folio)
->  	f.headoffset = (erofs_off_t)folio->index << PAGE_SHIFT;
->  
->  	z_erofs_pcluster_readmore(&f, NULL, true);
-> -	err = z_erofs_do_read_page(&f, &folio->page);
-> +	err = z_erofs_do_read_page(&f, &folio->page, false);
->  	z_erofs_pcluster_readmore(&f, NULL, false);
->  	z_erofs_pcluster_end(&f);
->  
-> @@ -1849,7 +1857,7 @@ static void z_erofs_readahead(struct readahead_control *rac)
->  		folio = head;
->  		head = folio_get_private(folio);
->  
-> -		err = z_erofs_do_read_page(&f, &folio->page);
-> +		err = z_erofs_do_read_page(&f, &folio->page, true);
->  		if (err && err != -EINTR)
->  			erofs_err(inode->i_sb, "readahead error at folio %lu @ nid %llu",
->  				  folio->index, EROFS_I(inode)->nid);
+AFAICS, Your use case description to be seen like a premature OOM
+scenario despite lot of free memory sitting on the pcp lists, where this
+patch should've helped.
 
+@Michal: This usecase seems to be a practical scenario that you were
+asking below.
+Other concern of racing freeing of memory ending up in pcp lists first
+-- will that be such a big issue? This patch enables, drain the current
+pcp lists now that can avoid the oom altogether. If this racing free is
+a major concern, should that be taken as a separate discussion?
+
+Will revamp this as a separate patch if no more concerns here.
+
+> Thanks,
+> Zach
+> 
+> 
+> On Tue, Nov 14, 2023 at 8:37 AM Charan Teja Kalla
+> <quic_charante@quicinc.com> wrote:
+>>
+>> Thanks Michal!!
+>>
+>> On 11/14/2023 4:18 PM, Michal Hocko wrote:
+>>>> At least in my particular stress test case it just delayed the OOM as i
+>>>> can see that at the time of OOM kill, there are no free pcp pages. My
+>>>> understanding of the OOM is that it should be the last resort and only
+>>>> after doing the enough reclaim retries. CMIW here.
+>>> Yes it is a last resort but it is a heuristic as well. So the real
+>>> questoin is whether this makes any practical difference outside of
+>>> artificial workloads. I do not see anything particularly worrying to
+>>> drain the pcp cache but it should be noted that this won't be 100%
+>>> either as racing freeing of memory will end up on pcp lists first.
+>>
+>> Okay, I don't have any practical scenario where this helped me in
+>> avoiding the OOM.  Will comeback If I ever encounter this issue in
+>> practical scenario.
+>>
+>> Also If you have any comments on [PATCH V2 2/3] mm: page_alloc: correct
+>> high atomic reserve calculations will help me.
+>>
+>> Thanks.
+>>
 
