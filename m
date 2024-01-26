@@ -1,382 +1,239 @@
-Return-Path: <linux-kernel+bounces-39683-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC26D83D4F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:54:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF26583D502
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:55:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2182D1F29A79
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 08:54:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6241B2451B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 08:55:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7C9518C38;
-	Fri, 26 Jan 2024 07:02:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="s0M/+0Dl"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6727D2421E;
+	Fri, 26 Jan 2024 07:05:58 +0000 (UTC)
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6C491427A
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 07:02:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7F071AACD;
+	Fri, 26 Jan 2024 07:05:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706252537; cv=none; b=mEcucGRDQOCwOJ4/n3KyajnRiQ8Zmygs8tAzRdQ/MqdVhK+TsEamQ51RBeMNChzbA5MoK00QmtS5yPf7Dr+n1XQ8F9qjD8A3OA3LV1EgNSYxW5K7WWmuToeYX41sC/gLAJlacFLsjldcIyrRvYVl9Lmus7T9fNZrby1tZnPCeL4=
+	t=1706252757; cv=none; b=ShZAY6bjoQm3NWiChmnx9UvJy+5vesfMllDi3z3Z5vmL54L4u7p3P+XiLyDrlTm31709r0/7HQh/uDv+TVRz/Ucjjcyc5psXectZJ0FP5G82gW9dZpK+QzGinMciaYlQY6wELfeG6OoaXWRLeFMSRquk+EIJ01KEFls6k0WVEmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706252537; c=relaxed/simple;
-	bh=6A1Ec0hcAcDSXfpWqEsvksMUBmqx5jHm+qFzmWrsDGI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J5Sm75VdPby1L4gInJ9mgT+zYWQCkskv5xnKK3B2qxvGz0hZjW38dn+KlzE4V4Gui0EhRxFsSdtajFSIVqu9/zEvgxSPcHz8Mz2yrQPeE3wRKQ0+Ytz9OFkV79tgVuenMzpcb/n99Anj51j5eiVV0wz80/WbQRpsKGCKPp7emTY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=s0M/+0Dl; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=l7Dw4ZucWoH6p0xVnUgKiMRWXXupBNncYxdOpylDCZI=; b=s0M/+0DlriPPYBQpc38JXKm9wr
-	rMgc6NpuZlUrG0dKXVdJVzaEQYGrPhhkeqgmMD/AwzXz16ztX3Rb6lfdLa1WT5kMwKQ6YniAI6M4n
-	zcAEIQqgixXKQ5b1N8XcSdtheJLBmkKtA0xB22fZOmdpgFrWfvf+gbXEHvkyYG6SpELLGhbLQQYL9
-	7mePUqodlvRAC5gl6nvqE7NoMFknmo1TPvhjkbM99by3MdDJ8cUw0C1c+0+9B6nYdVKsqz1fVib2i
-	H8pAGti4wQpHc+x9Mtm3JxRbTqS2xU8jfOGZmecnEFsRGkCWbjlTzcCMual/Twq/5I5phF12BOnYW
-	/ZnxKp4g==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rTGE1-0000000Cpxb-0eiX;
-	Fri, 26 Jan 2024 07:02:05 +0000
-Date: Fri, 26 Jan 2024 07:02:05 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH 2/2] mtd: Remove support for Carillo Ranch driver
-Message-ID: <ZbNY7Vd2l8wjIhcp@casper.infradead.org>
-References: <20231208224703.1603264-1-willy@infradead.org>
- <20231208224703.1603264-2-willy@infradead.org>
+	s=arc-20240116; t=1706252757; c=relaxed/simple;
+	bh=pcsil5fXr8+VHV+eVDviFFwwRsocY/oapa4amn5QRYY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qZu6X8WPyr2XN2+KdKYJ8q9ApfUrDiSrFYOQGLlEEAop6xnkRSV7UFu6eM0+RD8nh6oErqmPWqY+atAGTVti3w7aqDm4ocoteeCm2eUXYyjaS8aOVDooofzW1zWTPUamskRNk2LyDC2d3+j52JDBESsRjOCvlcI4+xdx1SMIUCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from [192.168.0.224] (ip5f5aec07.dynamic.kabel-deutschland.de [95.90.236.7])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 0DFC161E5FE03;
+	Fri, 26 Jan 2024 08:03:18 +0100 (CET)
+Message-ID: <f07333d2-ebb0-4531-a396-8fb3d1daa2c3@molgen.mpg.de>
+Date: Fri, 26 Jan 2024 08:03:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231208224703.1603264-2-willy@infradead.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: PS/2 keyboard of laptop Dell XPS 13 9360 goes missing after S3
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: linux-input@vger.kernel.org, linux-pm@vger.kernel.org,
+ Dell.Client.Kernel@dell.com, regressions@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+References: <0aa4a61f-c939-46fe-a572-08022e8931c7@molgen.mpg.de>
+ <f27b491c-2f1c-4e68-804c-24eeaa8d10de@redhat.com>
+ <0b30c88a-6f0c-447f-a08e-29a2a0256c1b@molgen.mpg.de>
+ <dde1bdfe-7877-41bd-b233-03bcdba0e2de@redhat.com>
+Content-Language: en-US
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <dde1bdfe-7877-41bd-b233-03bcdba0e2de@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Ping
+Dear Hans,
 
-On Fri, Dec 08, 2023 at 10:47:03PM +0000, Matthew Wilcox (Oracle) wrote:
-> As far as anybody can tell, this product never shipped.  If it did,
-> it shipped in 2007 and nobody has access to one any more.  Remove the
-> mtd NOR driver.
+
+Thank you for your reply, and sorry for the delay on my side. I needed 
+to set up an environment to easily build the Linux kernel.
+
+
+Am 22.01.24 um 14:43 schrieb Hans de Goede:
+
+> On 1/21/24 15:26, Paul Menzel wrote:
+
+[…]
+
+>> Am 20.01.24 um 21:26 schrieb Hans de Goede:
+>>
+>>> On 1/18/24 13:57, Paul Menzel wrote:
+>>>> #regzbot introduced v6.6.11..v6.7
+>>
+>>>> There seems to be a regression in Linux 6.7 on the Dell XPS 13 9360 (Intel i7-7500U).
+>>>>
+>>>>       [    0.000000] DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022
+>>>>
+>>>> The PS/2 keyboard goes missing after S3 resume¹. The problem does not happen with Linux 6.6.11.
+>>>
+>>> Thank you for reporting this.
+>>>
+>>> Can you try adding "i8042.dumbkbd=1" to your kernel commandline?
+>>>
+>>> This should at least lead to the device not disappearing from
+>>>
+>>> "sudo libinput list-devices"
+>>>
+>>> The next question is if the keyboard will still actually
+>>> work after suspend/resume with "i8042.dumbkbd=1". If it
+>>> stays in the list, but no longer works then there is
+>>> a problem with the i8042 controller; or interrupt
+>>> delivery to the i8042 controller.
+>>>
+>>> If "i8042.dumbkbd=1" somehow fully fixes things, then I guess
+>>> my atkbd driver fix for other laptop keyboards is somehow
+>>> causing issues for yours.
+>>
+>> Just a quick feedback, that booting with `i8042.dumbkbd=1` seems to fix the issue.
+>>
+>>> If "i8042.dumbkbd=1" fully fixes things, can you try building
+>>> your own 6.7.0 kernel with commit 936e4d49ecbc:
+>>>
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=936e4d49ecbc8c404790504386e1422b599dec39
+>>>
+>>> reverted?
+>>
+>> I am going to try that as soon as possible.
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  drivers/mtd/maps/Kconfig        |   7 -
->  drivers/mtd/maps/Makefile       |   1 -
->  drivers/mtd/maps/intel_vr_nor.c | 265 --------------------------------
->  3 files changed, 273 deletions(-)
->  delete mode 100644 drivers/mtd/maps/intel_vr_nor.c
+> Assuming this was not some one time glitch with 6.7.0,
+> I have prepared a patch hopefully fixing this (1) as well
+> as a follow up fix to address another potential issue which
+> I have noticed.
+
+Unfortunately, it wasn’t just a glitch.
+
+> Can you please give a 6.7.0 (2) kernel with the 2 attached
+> patches added a try ?
 > 
-> diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-> index e098ae937ce8..8a8b19874e23 100644
-> --- a/drivers/mtd/maps/Kconfig
-> +++ b/drivers/mtd/maps/Kconfig
-> @@ -341,13 +341,6 @@ config MTD_UCLINUX
->  	help
->  	  Map driver to support image based filesystems for uClinux.
->  
-> -config MTD_INTEL_VR_NOR
-> -	tristate "NOR flash on Intel Vermilion Range Expansion Bus CS0"
-> -	depends on PCI
-> -	help
-> -	  Map driver for a NOR flash bank located on the Expansion Bus of the
-> -	  Intel Vermilion Range chipset.
-> -
->  config MTD_PLATRAM
->  	tristate "Map driver for platform device RAM (mtd-ram)"
->  	select MTD_RAM
-> diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-> index 094cfb244086..a9083c888e3b 100644
-> --- a/drivers/mtd/maps/Makefile
-> +++ b/drivers/mtd/maps/Makefile
-> @@ -40,6 +40,5 @@ obj-$(CONFIG_MTD_UCLINUX)	+= uclinux.o
->  obj-$(CONFIG_MTD_NETtel)	+= nettel.o
->  obj-$(CONFIG_MTD_SCB2_FLASH)	+= scb2_flash.o
->  obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
-> -obj-$(CONFIG_MTD_INTEL_VR_NOR)	+= intel_vr_nor.o
->  obj-$(CONFIG_MTD_VMU)		+= vmu-flash.o
->  obj-$(CONFIG_MTD_LANTIQ)	+= lantiq-flash.o
-> diff --git a/drivers/mtd/maps/intel_vr_nor.c b/drivers/mtd/maps/intel_vr_nor.c
-> deleted file mode 100644
-> index d67b845b0e89..000000000000
-> --- a/drivers/mtd/maps/intel_vr_nor.c
-> +++ /dev/null
-> @@ -1,265 +0,0 @@
-> -/*
-> - * drivers/mtd/maps/intel_vr_nor.c
-> - *
-> - * An MTD map driver for a NOR flash bank on the Expansion Bus of the Intel
-> - * Vermilion Range chipset.
-> - *
-> - * The Vermilion Range Expansion Bus supports four chip selects, each of which
-> - * has 64MiB of address space.  The 2nd BAR of the Expansion Bus PCI Device
-> - * is a 256MiB memory region containing the address spaces for all four of the
-> - * chip selects, with start addresses hardcoded on 64MiB boundaries.
-> - *
-> - * This map driver only supports NOR flash on chip select 0.  The buswidth
-> - * (either 8 bits or 16 bits) is determined by reading the Expansion Bus Timing
-> - * and Control Register for Chip Select 0 (EXP_TIMING_CS0).  This driver does
-> - * not modify the value in the EXP_TIMING_CS0 register except to enable writing
-> - * and disable boot acceleration.  The timing parameters in the register are
-> - * assumed to have been properly initialized by the BIOS.  The reset default
-> - * timing parameters are maximally conservative (slow), so access to the flash
-> - * will be slower than it should be if the BIOS has not initialized the timing
-> - * parameters.
-> - *
-> - * Author: Andy Lowe <alowe@mvista.com>
-> - *
-> - * 2006 (c) MontaVista Software, Inc. This file is licensed under
-> - * the terms of the GNU General Public License version 2. This program
-> - * is licensed "as is" without any warranty of any kind, whether express
-> - * or implied.
-> - */
-> -
-> -#include <linux/module.h>
-> -#include <linux/kernel.h>
-> -#include <linux/slab.h>
-> -#include <linux/pci.h>
-> -#include <linux/mtd/mtd.h>
-> -#include <linux/mtd/map.h>
-> -#include <linux/mtd/partitions.h>
-> -#include <linux/mtd/cfi.h>
-> -#include <linux/mtd/flashchip.h>
-> -
-> -#define DRV_NAME "vr_nor"
-> -
-> -struct vr_nor_mtd {
-> -	void __iomem *csr_base;
-> -	struct map_info map;
-> -	struct mtd_info *info;
-> -	struct pci_dev *dev;
-> -};
-> -
-> -/* Expansion Bus Configuration and Status Registers are in BAR 0 */
-> -#define EXP_CSR_MBAR 0
-> -/* Expansion Bus Memory Window is BAR 1 */
-> -#define EXP_WIN_MBAR 1
-> -/* Maximum address space for Chip Select 0 is 64MiB */
-> -#define CS0_SIZE 0x04000000
-> -/* Chip Select 0 is at offset 0 in the Memory Window */
-> -#define CS0_START 0x0
-> -/* Chip Select 0 Timing Register is at offset 0 in CSR */
-> -#define EXP_TIMING_CS0 0x00
-> -#define TIMING_CS_EN		(1 << 31)	/* Chip Select Enable */
-> -#define TIMING_BOOT_ACCEL_DIS	(1 <<  8)	/* Boot Acceleration Disable */
-> -#define TIMING_WR_EN		(1 <<  1)	/* Write Enable */
-> -#define TIMING_BYTE_EN		(1 <<  0)	/* 8-bit vs 16-bit bus */
-> -#define TIMING_MASK		0x3FFF0000
-> -
-> -static void vr_nor_destroy_partitions(struct vr_nor_mtd *p)
-> -{
-> -	mtd_device_unregister(p->info);
-> -}
-> -
-> -static int vr_nor_init_partitions(struct vr_nor_mtd *p)
-> -{
-> -	/* register the flash bank */
-> -	/* partition the flash bank */
-> -	return mtd_device_register(p->info, NULL, 0);
-> -}
-> -
-> -static void vr_nor_destroy_mtd_setup(struct vr_nor_mtd *p)
-> -{
-> -	map_destroy(p->info);
-> -}
-> -
-> -static int vr_nor_mtd_setup(struct vr_nor_mtd *p)
-> -{
-> -	static const char * const probe_types[] =
-> -	    { "cfi_probe", "jedec_probe", NULL };
-> -	const char * const *type;
-> -
-> -	for (type = probe_types; !p->info && *type; type++)
-> -		p->info = do_map_probe(*type, &p->map);
-> -	if (!p->info)
-> -		return -ENODEV;
-> -
-> -	p->info->dev.parent = &p->dev->dev;
-> -
-> -	return 0;
-> -}
-> -
-> -static void vr_nor_destroy_maps(struct vr_nor_mtd *p)
-> -{
-> -	unsigned int exp_timing_cs0;
-> -
-> -	/* write-protect the flash bank */
-> -	exp_timing_cs0 = readl(p->csr_base + EXP_TIMING_CS0);
-> -	exp_timing_cs0 &= ~TIMING_WR_EN;
-> -	writel(exp_timing_cs0, p->csr_base + EXP_TIMING_CS0);
-> -
-> -	/* unmap the flash window */
-> -	iounmap(p->map.virt);
-> -
-> -	/* unmap the csr window */
-> -	iounmap(p->csr_base);
-> -}
-> -
-> -/*
-> - * Initialize the map_info structure and map the flash.
-> - * Returns 0 on success, nonzero otherwise.
-> - */
-> -static int vr_nor_init_maps(struct vr_nor_mtd *p)
-> -{
-> -	unsigned long csr_phys, csr_len;
-> -	unsigned long win_phys, win_len;
-> -	unsigned int exp_timing_cs0;
-> -	int err;
-> -
-> -	csr_phys = pci_resource_start(p->dev, EXP_CSR_MBAR);
-> -	csr_len = pci_resource_len(p->dev, EXP_CSR_MBAR);
-> -	win_phys = pci_resource_start(p->dev, EXP_WIN_MBAR);
-> -	win_len = pci_resource_len(p->dev, EXP_WIN_MBAR);
-> -
-> -	if (!csr_phys || !csr_len || !win_phys || !win_len)
-> -		return -ENODEV;
-> -
-> -	if (win_len < (CS0_START + CS0_SIZE))
-> -		return -ENXIO;
-> -
-> -	p->csr_base = ioremap(csr_phys, csr_len);
-> -	if (!p->csr_base)
-> -		return -ENOMEM;
-> -
-> -	exp_timing_cs0 = readl(p->csr_base + EXP_TIMING_CS0);
-> -	if (!(exp_timing_cs0 & TIMING_CS_EN)) {
-> -		dev_warn(&p->dev->dev, "Expansion Bus Chip Select 0 "
-> -		       "is disabled.\n");
-> -		err = -ENODEV;
-> -		goto release;
-> -	}
-> -	if ((exp_timing_cs0 & TIMING_MASK) == TIMING_MASK) {
-> -		dev_warn(&p->dev->dev, "Expansion Bus Chip Select 0 "
-> -		       "is configured for maximally slow access times.\n");
-> -	}
-> -	p->map.name = DRV_NAME;
-> -	p->map.bankwidth = (exp_timing_cs0 & TIMING_BYTE_EN) ? 1 : 2;
-> -	p->map.phys = win_phys + CS0_START;
-> -	p->map.size = CS0_SIZE;
-> -	p->map.virt = ioremap(p->map.phys, p->map.size);
-> -	if (!p->map.virt) {
-> -		err = -ENOMEM;
-> -		goto release;
-> -	}
-> -	simple_map_init(&p->map);
-> -
-> -	/* Enable writes to flash bank */
-> -	exp_timing_cs0 |= TIMING_BOOT_ACCEL_DIS | TIMING_WR_EN;
-> -	writel(exp_timing_cs0, p->csr_base + EXP_TIMING_CS0);
-> -
-> -	return 0;
-> -
-> -      release:
-> -	iounmap(p->csr_base);
-> -	return err;
-> -}
-> -
-> -static const struct pci_device_id vr_nor_pci_ids[] = {
-> -	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x500D)},
-> -	{0,}
-> -};
-> -
-> -static void vr_nor_pci_remove(struct pci_dev *dev)
-> -{
-> -	struct vr_nor_mtd *p = pci_get_drvdata(dev);
-> -
-> -	vr_nor_destroy_partitions(p);
-> -	vr_nor_destroy_mtd_setup(p);
-> -	vr_nor_destroy_maps(p);
-> -	kfree(p);
-> -	pci_release_regions(dev);
-> -	pci_disable_device(dev);
-> -}
-> -
-> -static int vr_nor_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
-> -{
-> -	struct vr_nor_mtd *p = NULL;
-> -	unsigned int exp_timing_cs0;
-> -	int err;
-> -
-> -	err = pci_enable_device(dev);
-> -	if (err)
-> -		goto out;
-> -
-> -	err = pci_request_regions(dev, DRV_NAME);
-> -	if (err)
-> -		goto disable_dev;
-> -
-> -	p = kzalloc(sizeof(*p), GFP_KERNEL);
-> -	err = -ENOMEM;
-> -	if (!p)
-> -		goto release;
-> -
-> -	p->dev = dev;
-> -
-> -	err = vr_nor_init_maps(p);
-> -	if (err)
-> -		goto release;
-> -
-> -	err = vr_nor_mtd_setup(p);
-> -	if (err)
-> -		goto destroy_maps;
-> -
-> -	err = vr_nor_init_partitions(p);
-> -	if (err)
-> -		goto destroy_mtd_setup;
-> -
-> -	pci_set_drvdata(dev, p);
-> -
-> -	return 0;
-> -
-> -      destroy_mtd_setup:
-> -	map_destroy(p->info);
-> -
-> -      destroy_maps:
-> -	/* write-protect the flash bank */
-> -	exp_timing_cs0 = readl(p->csr_base + EXP_TIMING_CS0);
-> -	exp_timing_cs0 &= ~TIMING_WR_EN;
-> -	writel(exp_timing_cs0, p->csr_base + EXP_TIMING_CS0);
-> -
-> -	/* unmap the flash window */
-> -	iounmap(p->map.virt);
-> -
-> -	/* unmap the csr window */
-> -	iounmap(p->csr_base);
-> -
-> -      release:
-> -	kfree(p);
-> -	pci_release_regions(dev);
-> -
-> -      disable_dev:
-> -	pci_disable_device(dev);
-> -
-> -      out:
-> -	return err;
-> -}
-> -
-> -static struct pci_driver vr_nor_pci_driver = {
-> -	.name = DRV_NAME,
-> -	.probe = vr_nor_pci_probe,
-> -	.remove = vr_nor_pci_remove,
-> -	.id_table = vr_nor_pci_ids,
-> -};
-> -
-> -module_pci_driver(vr_nor_pci_driver);
-> -
-> -MODULE_AUTHOR("Andy Lowe");
-> -MODULE_DESCRIPTION("MTD map driver for NOR flash on Intel Vermilion Range");
-> -MODULE_LICENSE("GPL");
-> -MODULE_DEVICE_TABLE(pci, vr_nor_pci_ids);
-> -- 
-> 2.42.0
+> I know building kernels can be a bit of work / takes time,
+> sorry. If you are short on time I would prefer testing these 2
+> patches and see if they fix things over trying a plain revert.
+
+Applying both patches on v6.7.1
+
+     $ git log --oneline -3
+     053fa44c0de1 (HEAD -> v6.7.1) Input: atkbd - Do not skip 
+atkbd_deactivate() when skipping ATKBD_CMD_GETID
+     0e0fa0113c7a Input: atkbd - Skip ATKBD_CMD_SETLEDS when skipping 
+ATKBD_CMD_GETID
+     a91fdae50a6d (tag: v6.7.1, stable/linux-6.7.y, origin/linux-6.7.y) 
+Linux 6.7.1
+
+I am unable to reproduce the problem in eight ACPI S3 suspend/resume 
+cycles. The DMAR errors [3] are also gone:
+
+     $ sudo dmesg --level alert,crit,err,warn
+     [    0.065292] MDS CPU bug present and SMT on, data leak possible. 
+See https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/mds.html 
+for more details.
+     [    0.065292] MMIO Stale Data CPU bug present and SMT on, data 
+leak possible. See 
+https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/processor_mmio_stale_data.html 
+for more details.
+     [    0.092064] ENERGY_PERF_BIAS: Set to 'normal', was 'performance'
+     [    0.294522] hpet_acpi_add: no address or irqs in _CRS
+     [    0.345003] i8042: Warning: Keylock active
+     [    1.063807] usb: port power management may be unreliable
+     [    1.178339] device-mapper: core: CONFIG_IMA_DISABLE_HTABLE is 
+disabled. Duplicate IMA measurements will not be recorded in the IMA log.
+     [   37.712916] wmi_bus wmi_bus-PNP0C14:01: WQBC data block query 
+control method not found
+     [   67.307070] warning: `atop' uses wireless extensions which will 
+stop working for Wi-Fi 7 hardware; use nl80211
+     [  141.861803] ACPI Error: AE_BAD_PARAMETER, Returned by Handler 
+for [EmbeddedControl] (20230628/evregion-300)
+     [  141.861808] ACPI Error: Aborting method \_SB.PCI0.LPCB.ECDV.ECR1 
+due to previous error (AE_BAD_PARAMETER) (20230628/psparse-529)
+     [  141.861814] ACPI Error: Aborting method \_SB.PCI0.LPCB.ECDV.ECR2 
+due to previous error (AE_BAD_PARAMETER) (20230628/psparse-529)
+     [  141.861818] ACPI Error: Aborting method \ECRW due to previous 
+error (AE_BAD_PARAMETER) (20230628/psparse-529)
+     [  141.861821] ACPI Error: Aborting method \ECG1 due to previous 
+error (AE_BAD_PARAMETER) (20230628/psparse-529)
+     [  141.861824] ACPI Error: Aborting method \NEVT due to previous 
+error (AE_BAD_PARAMETER) (20230628/psparse-529)
+     [  141.861827] ACPI Error: Aborting method \_SB.PCI0.LPCB.ECDV._Q66 
+due to previous error (AE_BAD_PARAMETER) (20230628/psparse-529)
+
+Please tell me, if I can do anything else.
+
+
+Kind regards,
+
+Paul
+
+
+> 1) Assuming it is caused by this commit in the first place,
+> which seems likely
 > 
+> 2) 6.8-rc1 has a follow up patch which is squashed into the
+> first patch here, so these patches will only apply cleanly
+> to 6.7.0 .
+
+[3]: 
+https://lore.kernel.org/all/9a24c335-8ec5-48c9-9bdd-b0dac5ecbca8@molgen.mpg.de/
+
+>>>>       [    1.435071] i8042: PNP: PS/2 Controller [PNP0303:PS2K,PNP0f13:PS2M] at 0x60,0x64 irq 1,12
+>>>>       [    1.435409] i8042: Warning: Keylock active
+>>>>       [    1.437624] serio: i8042 KBD port at 0x60,0x64 irq 1
+>>>>       [    1.437631] serio: i8042 AUX port at 0x60,0x64 irq 12
+>>>>       […]
+>>>>       [    1.439743] input: AT Translated Set 2 keyboard as /devices/platform/i8042/serio0/input/input0
+>>>>
+>>>>       $ sudo libinput list-devices
+>>>>       […]
+>>>>       Device:           AT Translated Set 2 keyboard
+>>>>       Kernel:           /dev/input/event0
+>>>>       Group:            15
+>>>>       Seat:             seat0, default
+>>>>       Capabilities:     keyboard
+>>>>       Tap-to-click:     n/a
+>>>>       Tap-and-drag:     n/a
+>>>>       Tap drag lock:    n/a
+>>>>       Left-handed:      n/a
+>>>>       Nat.scrolling:    n/a
+>>>>       Middle emulation: n/a
+>>>>       Calibration:      n/a
+>>>>       Scroll methods:   none
+>>>>       Click methods:    none
+>>>>       Disable-w-typing: n/a
+>>>>       Disable-w-trackpointing: n/a
+>>>>       Accel profiles:   n/a
+>>>>       Rotation:         0.0
+>>>>
+>>>> `libinput list-devices` does not list the device after resuming
+>>>> from S3. Some of the function keys, like brightness and airplane
+>>>> mode keys, still work, as the events are probably transmitted over
+>>>> the embedded controller or some other mechanism. An external USB
+>>>> keyboard also still works.
+>>>>
+>>>> I haven’t had time to further analyze this, but wanted to report
+>>>> it. No idea
+>>>>
+>>>>
+>>>> Kind regards,
+>>>>
+>>>> Paul
+>>>>
+>>>>
+>>>> ¹ s2idle is not working correctly on the device, in the sense, that
+>>>> energy usage is very high in that state, and the full battery is at
+>>>> 20 % after leaving it for eight hours.
 
