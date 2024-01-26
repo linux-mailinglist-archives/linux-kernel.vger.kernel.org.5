@@ -1,126 +1,176 @@
-Return-Path: <linux-kernel+bounces-40526-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D308083E1E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:48:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10E7683E1EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:49:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FA60284D02
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:48:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9281C1F295D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:49:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FF4F21A0C;
-	Fri, 26 Jan 2024 18:48:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="YYItJv40"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DED47224C6;
+	Fri, 26 Jan 2024 18:49:15 +0000 (UTC)
+Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A1E820321;
-	Fri, 26 Jan 2024 18:48:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 794D421371;
+	Fri, 26 Jan 2024 18:49:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.28.154.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706294905; cv=none; b=ZB2hd/TjMu0he9C56uM+VtDms9qi/qfs+BZV6wTnw1e7//4sYYww6xGm3/g5gN3IRkDlXu3TfSRNx4RrJ0FqbVZDC4TUjqAKfOhMVQCQkGZtEDTznH0ivgYrUrHCpA9mXpThm2QWBcKkd7dBO7iI6oUpa4I2F6SqN9B8krffJfQ=
+	t=1706294955; cv=none; b=CMgiMGZ4iiTLH2nqnNnz5ehqnSl5seZzskBmGa1s/DRXxF6/UIcU4EvA/rEuwFnazfijQF7LQR6s5yHaeQW1JU3WD3/luSmnMXE/9cdE6ol7Jwnh84T5XQpkRr7JzWDtQh/kccSqaYtVOmzBQIG8zSHu2Ss3CJxZrLkfhbEXgHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706294905; c=relaxed/simple;
-	bh=BnryrUApwZ0nI32BdUhHkFXOuwB01+MG4M5KXNOSAgY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ns7kWpHe9gkiuJa5oczYm42iLAyc1q/3+3HHl22+e793iHZAjPMIkwM9p2u39AmYGTHd2fp2Srqt9KNMB617Eq1ybNraoV7uSgGODG3hox/5L8vRoznVAKlX0qm8zjv7rXq6yz3lap9HXSIiNkwrMvn99lPF10vqPgKrn8p4IT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=YYItJv40; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2071C43390;
-	Fri, 26 Jan 2024 18:48:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1706294905;
-	bh=BnryrUApwZ0nI32BdUhHkFXOuwB01+MG4M5KXNOSAgY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YYItJv40S++SCggpNYzSwWtrsVjncULPKgKTanfkHkHX3jl4t5RgFldXfzHqyc8Q6
-	 UghPect/Av0dDoAIyggJPC7I5q4wnqAWH4bEiS8IPmeF7N6DiA8fomhzJW6Iq5U7km
-	 UG3xBjdpUjh9YzBJggB9LP6fZFSoXg9lp9Z8leGA=
-Date: Fri, 26 Jan 2024 10:48:24 -0800
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-	allen.lkml@gmail.com
-Subject: Re: [PATCH 5.10 000/286] 5.10.209-rc1 review
-Message-ID: <2024012646-glove-cabana-6e64@gregkh>
-References: <20240122235732.009174833@linuxfoundation.org>
- <6b563537-b62f-428e-96d1-2a228da99077@roeck-us.net>
- <2024012636-clubbed-radial-1997@gregkh>
- <2f342268-8517-4c06-8785-96a588d20c63@roeck-us.net>
+	s=arc-20240116; t=1706294955; c=relaxed/simple;
+	bh=pStHePFSIKYPMYDhCKX9LHB74JCGqh+BFv00THOanSE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qGKNNrNR4C9NUOW0FQmhCvVz32C/JMRI3ngKZZDxfYG5N/IpPrnBUAxQwGm75nenOAvKUZBdbNUdf/c7hGRBwpta5/3avrM26u0nOc9bSb/Wv2OHjUvQ/cKzWAABP9koBCPGzM//6ZaBJpIyHsNJBroGYk4c8Z5zwS3cfB7bGYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maciej.szmigiero.name; spf=pass smtp.mailfrom=maciej.szmigiero.name; arc=none smtp.client-ip=37.28.154.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maciej.szmigiero.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=maciej.szmigiero.name
+Received: from MUA
+	by vps-vb.mhejs.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.94.2)
+	(envelope-from <mail@maciej.szmigiero.name>)
+	id 1rTRG6-0007EI-DT; Fri, 26 Jan 2024 19:48:58 +0100
+Message-ID: <592977b7-e4c9-43af-aa33-1ce3b6fa1275@maciej.szmigiero.name>
+Date: Fri, 26 Jan 2024 19:48:52 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2f342268-8517-4c06-8785-96a588d20c63@roeck-us.net>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] KVM: x86: Give a hint when Win2016 might fail to boot due
+ to XSAVES erratum
+Content-Language: en-US, pl-PL
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>,
+ Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <b83ab45c5e239e5d148b0ae7750133a67ac9575c.1706127425.git.maciej.szmigiero@oracle.com>
+ <CABgObfZ1YzigovNEiYF7pbmRxv-SUzEFqnpaQZ4GT_hDssm65g@mail.gmail.com>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Autocrypt: addr=mail@maciej.szmigiero.name; keydata=
+ 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
+Disposition-Notification-To: "Maciej S. Szmigiero"
+ <mail@maciej.szmigiero.name>
+In-Reply-To: <CABgObfZ1YzigovNEiYF7pbmRxv-SUzEFqnpaQZ4GT_hDssm65g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jan 26, 2024 at 10:17:23AM -0800, Guenter Roeck wrote:
-> On 1/26/24 09:51, Greg Kroah-Hartman wrote:
-> > On Fri, Jan 26, 2024 at 08:46:42AM -0800, Guenter Roeck wrote:
-> > > On 1/22/24 15:55, Greg Kroah-Hartman wrote:
-> > > > This is the start of the stable review cycle for the 5.10.209 release.
-> > > > There are 286 patches in this series, all will be posted as a response
-> > > > to this one.  If anyone has any issues with these being applied, please
-> > > > let me know.
-> > > > 
-> > > > Responses should be made by Wed, 24 Jan 2024 23:56:49 +0000.
-> > > > Anything received after that time might be too late.
-> > > > 
-> > > [ ... ]
-> > > 
-> > > > zhenwei pi <pizhenwei@bytedance.com>
-> > > >       virtio-crypto: implement RSA algorithm
-> > > > 
-> > > 
-> > > Curious: Why was this (and its subsequent fixes) backported to v5.10.y ?
-> > > It is quite beyond a bug fix. Also, unless I am really missing something,
-> > > the series (or at least this patch) was not applied to v5.15.y, so we now
-> > > have functionality in v5.10.y which is not in v5.15.y.
-> > 
-> > See the commit text, it was a dependency of a later fix and documented
-> > as such.
-> > 
-> > Having it in 5.10 and not 5.15 is a bit odd, I agree, so patches are
-> > gladly accepted :)
-> > 
+On 26.01.2024 19:36, Paolo Bonzini wrote:
+> On Wed, Jan 24, 2024 at 9:18 PM Maciej S. Szmigiero
+> <mail@maciej.szmigiero.name> wrote:
+>> +static void kvm_hv_xsaves_xsavec_maybe_warn_unlocked(struct kvm_vcpu *vcpu)
 > 
-> We reverted the entire series from the merge because it results in a build
-> failure for us.
+> Calling this function "unlocked" is confusing (others would say
+> "locked" is confusing instead). The double-underscore convention is
+> more common.
 > 
-> In file included from /home/groeck/src/linux-chromeos/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c:10:
-> In file included from /home/groeck/src/linux-chromeos/include/linux/mpi.h:21:
-> In file included from /home/groeck/src/linux-chromeos/include/linux/scatterlist.h:5:
-> In file included from /home/groeck/src/linux-chromeos/include/linux/string.h:293:
-> /home/groeck/src/linux-chromeos/include/linux/fortify-string.h:512:4: error: call to __read_overflow2_field declared with 'warning' attribute: detected read beyond size of field (2nd parameter); maybe use struct_group()? [-Werror,-Wattribute-warning]
->                         __read_overflow2_field(q_size_field, size);
+>> +{
+>> +       struct kvm *kvm = vcpu->kvm;
+>> +       struct kvm_hv *hv = to_kvm_hv(kvm);
+>> +
+>> +       if (hv->xsaves_xsavec_warned)
+>> +               return;
+>> +
+>> +       if (!vcpu->arch.hyperv_enabled)
+>> +               return;
 > 
-> I also see that upstream (starting with 6.1) when trying to build it with clang,
-> so I guess it is one of those bug-for-bug compatibility things. I really have
-> no idea what causes it, or why we don't see the problem when building
-> chromeos-6.1 or chromeos-6.6, but (so far) only with chromeos-5.10 after
-> merging 5.10.209 into it. Making things worse, the problem isn't _always_
-> seen. Sometimes I can compile the file in 6.1.y without error, sometimes not.
-> I have no idea what triggers the problem. Of course, on top of all that,
-> the error message is completely useless.
+> I think these two should be in kvm_hv_xsaves_xsavec_maybe_warn(),
+> though the former needs to be checked again under the lock.
 > 
-> Either case, we don't use that code in chromeos-5.10, so reverting the
-> entire series from the merge was the easiest way to proceed. But we really
-> don't have an incentive to apply the series to v5.15.y because we don't
-> need/use it there, and we might end up having to revert it from there
-> as well if it is applied.
+>> +       if ((hv->hv_guest_os_id & KVM_HV_WIN2016_GUEST_ID_MASK) !=
+>> +           KVM_HV_WIN2016_GUEST_ID)
+>> +               return;
+> 
+> At this point there is no need to return. You can set
+> xsaves_xsavec_warned and save the checks in the future.
+>
+>> +       /* UP configurations aren't affected */
+>> +       if (atomic_read(&kvm->online_vcpus) < 2)
+>> +               return;
+>> +
+>> +       if (boot_cpu_has(X86_FEATURE_XSAVES) ||
+>> +           !guest_cpuid_has(vcpu, X86_FEATURE_XSAVEC))
+>> +               return;
+> 
+> boot_cpu_has can also be done first to cull the whole check.
+> 
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index 27e23714e960..db0a2c40d749 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -1782,6 +1782,10 @@ static int set_efer
+>>         if ((efer ^ old_efer) & KVM_MMU_EFER_ROLE_BITS)
+>>                 kvm_mmu_reset_context(vcpu);
+>>
+>> +       if (guest_cpuid_is_amd_or_hygon(vcpu) &&
+>> +           efer & EFER_SVME)
+>> +               kvm_hv_xsaves_xsavec_maybe_warn(vcpu);
+>> +
+>>         return 0;
+>> }
+> 
+> Checking guest_cpuid_is_amd_or_hygon() is relatively expensive, it
+> should be done after "efer & EFER_SVME" but really the bug can happen
+> just as well on Intel as far as I understand? It's just less likely
+> due to the AMD erratum.
 
-If this is causing build issues, I'll drop this, I was worried about it
-during review but no one had any reports then, but now it looks like it
-should be reworked.  I'll go revert them, thanks.
+Yes, I've checked this guest on an Intel host and it also fails to
+boot in !XSAVES && XSAVEC configuration.
 
-greg k-h
+Only on Intel it's purely a theoretical problem as AFAIK there's
+no corresponding Intel errata that disables just XSAVES.
+
+> 
+> I'll send a v2.
+> 
+> Paolo
+> 
+
+Thanks,
+Maciej
+
 
