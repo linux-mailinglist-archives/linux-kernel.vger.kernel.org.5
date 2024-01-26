@@ -1,166 +1,125 @@
-Return-Path: <linux-kernel+bounces-40003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40005-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAC8583D884
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:55:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C1B883D86C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:48:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F6F4B43248
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:47:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 423851F28078
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:48:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30F6112B74;
-	Fri, 26 Jan 2024 10:47:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 608E412E57;
+	Fri, 26 Jan 2024 10:48:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="TVYwDy3F"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PiZ6+Ys1"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 189E71FA0
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:47:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3F7314291
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:48:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706266050; cv=none; b=V/B/FNAg/uP0noTZmXgQlLV1WwFUYR3MyBSByoyBMsR1whLZBbndfKldoILXgIsE0yHEX85u7lXw1ynzCXz9gpKOzKAf89z3+iIKj/bv26VeCdMw4qMmk3+vixYbjng9IEk09m0mUjLlB5hk7TESrDmA7pxfbTJzv7KAeZsppqM=
+	t=1706266087; cv=none; b=lNijqEGAx+8vHeFJqYfB21t7H8e/CsLpx5s/qZW/HSz6uW3884BjK73V/NGxOzXwMHCrcEaYQyr6I/r//J29t8hGXPABI227jbzpP8mlXScsQEs5D2/oioiFJ7bdcIRFUjUCmOKarPQ4+KNgiZaNgF7Wubb0nAiY5LcfsbFzAZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706266050; c=relaxed/simple;
-	bh=7iGPgXhQzjAMgbbLMGBzDKjvZs6QBwPWWlL95HNkfuo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=dysQ4mBg3gFCTpLnCHvXkJC9zsIKcL0OAeQf1NYoGMNpQ2fMEbMwKg3U/ZNKO5S0jSkVhLinL3EVGrvNwvkCzIM8p4+zmPW2x9kySPS6zLj+kMXtwJxvDY+h7IgkW4NxTxFpCUlX9uNdDamAQTdwExFGyYwhHKBblZenjRZTpY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=TVYwDy3F; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40Q4OuBC002099;
-	Fri, 26 Jan 2024 10:47:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=Dr1b+LNasWBfDiz6qm0FOfD2D0DAEk8L38V0AafYadw=; b=TV
-	YwDy3FFHML3PaoRSDH6ATY6Zx8W/OiAu5hJwCGX0BCFHm/9m9AZ9PDCK8Vsj7pL7
-	PM7DvyMPnHcxbPpMu6VzFMzPlrryjTihMaeIvTSbI3USy4C/Wp9XAFkBY4ONDAJh
-	idzkegrFBuQA6qJowDwwUTSa9p6uuc2vE8Tg6gLGpFMolMRX1IZ7MPqJiNW0HOjJ
-	yuYYHDZTDc5GaGeK3W5OZtQ5VSmD6csC8kjTyBPBPxb1izB32D948hf3kf4idNl+
-	SRrExxssctfKIA6tRJF334X9i1LQpQUHC1e6C0Fmvx1lSuLmyxJhDQqdpypQCBuw
-	JOX2wc5OvqNxyCSgOqfg==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vv1q596vt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Jan 2024 10:47:13 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40QAlCJW031039
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Jan 2024 10:47:12 GMT
-Received: from [10.216.18.218] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 26 Jan
- 2024 02:47:08 -0800
-Message-ID: <5adb12eb-8403-5860-28eb-5f6ab12f3c04@quicinc.com>
-Date: Fri, 26 Jan 2024 16:17:04 +0530
+	s=arc-20240116; t=1706266087; c=relaxed/simple;
+	bh=F+pxElelT/F/ERGpZqfOivyCijtrVTdyJBdwUJrqVDw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u8UKMi9+e1izD6PSA6YSRZ0onSAlzRAJ+2EH8YjdE34OVzlnNLA+zvHzoyJ51VKwIa7QKwaT7h7oeCgC+/fEZFxScLSYrQ+9KTF+sWAfTni/ItOXJq1Z1+NmhB+HJoTJ1i8nXEBUvG5szbBnYk0M1ci3iA7hT15oFmMyKqVl7zY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PiZ6+Ys1; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2cf4696b90fso2058471fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 02:48:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706266084; x=1706870884; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1X1nwXaAEWXsseubIX+TSRe3UaNLCziOc5RFQoQ9Pew=;
+        b=PiZ6+Ys1nnwmzFn4f1WeiWtN01pcI0FqpU67SrjRUUu0kdfWt99s8Bns/2B4uBhalq
+         PsWHISYS9RTEiLYbKxB6yt/4KYoExvqEZ7lonqZ8l7O1Rrz9M68uPJb0iIowGIIhBVML
+         IlJ9mTah1LyUWFLvX4am3sWGYE8XvcOgBbkmdGUCa0Cdh+5GlTOXbRKKDuybpHPXRrQp
+         QYOpYKXwWejtxRvCvEDspv/zZIZi5baD6xLJfu1GD+AaI40SW18CZAxjk1nxaFSqCajj
+         NTD4gTbfZaMmOFDusBKo3XkCrIOgpfekLVz0xci5vpGmuLjtwnjPz2UXL2aBBMRD5ed2
+         n+iQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706266084; x=1706870884;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1X1nwXaAEWXsseubIX+TSRe3UaNLCziOc5RFQoQ9Pew=;
+        b=EDu1wTXI1ZikoB25VZtB6DRkbKVgpy2fES4NFzTor79c6e6h5pBLLomSpxJmICeH1h
+         yHLOG2w4zgeDydeuQ1yzJ4JtXxYHAKXWrBFgQ3kT/x0P/KX3L1YpjvxY6Cc70FRWa/J4
+         UjWjN5Cp+JlPNSLNRafoydbeBTV4kLwk7682E3YEzKffOe82H5H/aL5l8MMa+f7nH7MX
+         2Rh4M5ksQgBWg6WNujcBmpEUpGrf8f8U4MuYgM+8dGrcR5Uf5v8BCYLHdt0qsM0/Xujh
+         Rpz7XgzNUQPAQRFwUUyE6iqZEODQLvzd+UcHGBp8n+hwpfyzdaaY0qeJyc5x9bbCink+
+         em+g==
+X-Gm-Message-State: AOJu0Yw+v2RqETVDPJQclQJsBFKu1cG9ny51Bt+UoHWAFXIsr+zWPcct
+	VSe7X5fBMqMu/2wsPPlX2OX3BxczQkntcswCc7orcz5vMwqFfvyam9GAX2C5Ub4=
+X-Google-Smtp-Source: AGHT+IGlysUiHFJtYU0FFGl6v1uvnDBJw5LWlHx0oehAIWieTFn6PlUFiJP1fNMeUjrUI5E/5vGCig==
+X-Received: by 2002:a2e:2c05:0:b0:2cf:1aa1:beaf with SMTP id s5-20020a2e2c05000000b002cf1aa1beafmr694882ljs.42.1706266083789;
+        Fri, 26 Jan 2024 02:48:03 -0800 (PST)
+Received: from [172.30.205.155] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id k26-20020a2e889a000000b002cdfa5aeac9sm127023lji.15.2024.01.26.02.48.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Jan 2024 02:48:03 -0800 (PST)
+Message-ID: <e1322a9e-86b5-4444-a40f-85e46d8b542f@linaro.org>
+Date: Fri, 26 Jan 2024 11:48:03 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH V3 3/3] mm: page_alloc: drain pcp lists before oom kill
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: qcom: sc8280xp: Introduce additional tsens
+ instances
+To: Johan Hovold <johan@kernel.org>,
+ Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240118-sc8280xp-tsens2_3-v1-1-e86bce14f6bf@quicinc.com>
+ <ce77861a-b362-4ecc-8e92-7fb846c7e508@linaro.org>
+ <ZbOCrET0YPujMpom@hovoldconsulting.com>
 Content-Language: en-US
-To: Zach O'Keefe <zokeefe@google.com>
-CC: Michal Hocko <mhocko@suse.com>, <akpm@linux-foundation.org>,
-        <mgorman@techsingularity.net>, <david@redhat.com>, <vbabka@suse.cz>,
-        <hannes@cmpxchg.org>, <quic_pkondeti@quicinc.com>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        David Rientjes <rientjes@google.com>
-References: <cover.1699104759.git.quic_charante@quicinc.com>
- <a8e16f7eb295e1843f8edaa1ae1c68325c54c896.1699104759.git.quic_charante@quicinc.com>
- <ZUy1dNvbvHc6gquo@tiehlicka>
- <5c7f25f9-f86b-8e15-8603-e212b9911cac@quicinc.com>
- <ZVNQdQKQAMjgOK9y@tiehlicka>
- <342a8854-eef5-f68a-15e5-275de70e3f01@quicinc.com>
- <CAAa6QmRnfTOCD0uaxVbbiDRWtwzC9y+gZDFOjYF2YWDTrXyMNQ@mail.gmail.com>
-From: Charan Teja Kalla <quic_charante@quicinc.com>
-In-Reply-To: <CAAa6QmRnfTOCD0uaxVbbiDRWtwzC9y+gZDFOjYF2YWDTrXyMNQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: juFkEb3_tBv4RmYroSjb6W-T0ad2YZ34
-X-Proofpoint-GUID: juFkEb3_tBv4RmYroSjb6W-T0ad2YZ34
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-25_14,2024-01-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
- mlxscore=0 lowpriorityscore=0 adultscore=0 priorityscore=1501 phishscore=0
- mlxlogscore=668 impostorscore=0 bulkscore=0 spamscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401190000
- definitions=main-2401260078
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <ZbOCrET0YPujMpom@hovoldconsulting.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Michal/Zach,
 
-On 1/25/2024 10:06 PM, Zach O'Keefe wrote:
-> Thanks for the patch, Charan, and thanks to Yosry for pointing me towards it.
+
+On 1/26/24 11:00, Johan Hovold wrote:
+> On Fri, Jan 19, 2024 at 12:31:06AM +0100, Konrad Dybcio wrote:
+>> On 1/19/24 00:00, Bjorn Andersson wrote:
 > 
-> I took a look at data from our fleet, and there are many cases on
-> high-cpu-count machines where we find multi-GiB worth of data sitting
-> on pcpu free lists at the time of system oom-kill, when free memory
-> for the relevant zones are below min watermarks. I.e. clear cases
-> where this patch could have prevented OOM.
+>>> +		gpu-thermal {
+>>> +			polling-delay-passive = <250>;
+>>> +			polling-delay = <1000>;
+>>
+>> Hm, did tsens only gain support of non-polled reporting with 8450?
+>>
+>> If not, we should definitely update all the relevant SoCs.
 > 
-> This kind of issue scales with the number of cpus, so presumably this
-> patch will only become increasingly valuable to both datacenters and
-> desktops alike going forward. Can we revamp it as a standalone patch?
+> Did you determine whether the interrupts work as expected?
+
+Yes, they seem to!
+
 > 
+> We don't want to be polling here unless we have to (i.e. polling-delay
+> should be 0 as per the binding).
 
-Glad to see a real world use case for this. We too have observed OOM for
- every now and then with relatively significant PCP cache, but in all
-such cases OOM is imminent.
+Even better:
 
-AFAICS, Your use case description to be seen like a premature OOM
-scenario despite lot of free memory sitting on the pcp lists, where this
-patch should've helped.
+https://lore.kernel.org/lkml/20240125-topic-thermal-v1-0-3c9d4dced138@linaro.org/
 
-@Michal: This usecase seems to be a practical scenario that you were
-asking below.
-Other concern of racing freeing of memory ending up in pcp lists first
--- will that be such a big issue? This patch enables, drain the current
-pcp lists now that can avoid the oom altogether. If this racing free is
-a major concern, should that be taken as a separate discussion?
+Believe me, I'm not omitting you from Cc on purpose.. I usually
+realize I forgot right after pressing enter on "do you really
+wanna send"..
 
-Will revamp this as a separate patch if no more concerns here.
-
-> Thanks,
-> Zach
-> 
-> 
-> On Tue, Nov 14, 2023 at 8:37 AM Charan Teja Kalla
-> <quic_charante@quicinc.com> wrote:
->>
->> Thanks Michal!!
->>
->> On 11/14/2023 4:18 PM, Michal Hocko wrote:
->>>> At least in my particular stress test case it just delayed the OOM as i
->>>> can see that at the time of OOM kill, there are no free pcp pages. My
->>>> understanding of the OOM is that it should be the last resort and only
->>>> after doing the enough reclaim retries. CMIW here.
->>> Yes it is a last resort but it is a heuristic as well. So the real
->>> questoin is whether this makes any practical difference outside of
->>> artificial workloads. I do not see anything particularly worrying to
->>> drain the pcp cache but it should be noted that this won't be 100%
->>> either as racing freeing of memory will end up on pcp lists first.
->>
->> Okay, I don't have any practical scenario where this helped me in
->> avoiding the OOM.  Will comeback If I ever encounter this issue in
->> practical scenario.
->>
->> Also If you have any comments on [PATCH V2 2/3] mm: page_alloc: correct
->> high atomic reserve calculations will help me.
->>
->> Thanks.
->>
+Konrad
 
