@@ -1,219 +1,173 @@
-Return-Path: <linux-kernel+bounces-40186-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CE7D83DBEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:33:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E4B683DBFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:35:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32B7B1C21B5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:33:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 821891C223D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:35:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA8791B81B;
-	Fri, 26 Jan 2024 14:33:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 812D91B81B;
+	Fri, 26 Jan 2024 14:34:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YhFaRahL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fqGNxspG"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 159511CA8D;
-	Fri, 26 Jan 2024 14:33:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BEB514A8F
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:34:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706279603; cv=none; b=gvYZLITpUfGo6EAt3UzyMZLmZoAMnWmnSnCKj+lEesVzqVzjZ7VklEG0kSDPrG9j6tpn9BkBTFNyY7VOBDglLBV6av3pzO5ZaFoGQ/lVlvfG9IqL3RE3Fbc6R/UI93wpV9m7Jd3+XlI3GmJYt2fAFg7lsAzq06tFHfHl50/8Cyg=
+	t=1706279691; cv=none; b=rmCrAP/EokGqjoywgqG48LJJc7anjwVUA0v5jgSh1OGVc3yDpl2vbILfdJpHP/cIHPIe3ksnWTLaf7heUkfDYNaA5egwK0MHL0TbmI0Y877PuNvirdVjsquZLp6j/ze8rVZiLGKzr6UgdGjrP0uK+r6fML3/Boyc7rhXtyt7PWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706279603; c=relaxed/simple;
-	bh=toHPWrukG5ZJdg4r3h3ugd+zNwZSP1onspiF6e+jS4Y=;
+	s=arc-20240116; t=1706279691; c=relaxed/simple;
+	bh=O6w5GtbETgqNvB2B4amLXS691CrcakgId1zH5rYgGV0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Il8cvhOkfHF2CNbVSzurF/vzdZj9ECRUJOlOVSLh2nk/Q9kLv0kkt59EtmzIU7B9HEjN8Yt0tMtRTGoWBQfAHOxEzdNF0v6raZ7Y+agQ77NZxIZVGMug3l9Vxf9EWJaH2uL7I9ZNB2RnaNoJt5Q4QWhuZEDMdKILFvpEe7j18/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YhFaRahL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 194BBC433F1;
-	Fri, 26 Jan 2024 14:33:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706279602;
-	bh=toHPWrukG5ZJdg4r3h3ugd+zNwZSP1onspiF6e+jS4Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YhFaRahL9Dr/6ZCzpQy0FfOc9+vbwzEbVoH9SDzoA+gHW8uI0BQ0bYXQuDH6G+0N1
-	 fPc+9HJv+rXimvjgGTzaIZsW91g3xYA9pHihjIi6FcKQZ0iMDxxDgvzxZLLosriFE4
-	 S6KCaEhR5Pje3ZlyEBsA/xoboa2KYY19h7bIztvSnux+0E+aM9vJ1oxE5GoBbWt8ch
-	 hq+056fZsfZKzBzm2X8vhf/1HdYacxIwBivjPKB5FaM5ApOO5GmBEXRPtkdE/3gfBi
-	 H80FH4MxmUF9sdDcRJztINay9si+hPerUcnWdb5PEl7q0QXi4WJIH4pckVc0WVubJt
-	 zxy7ZkODckUAw==
-Date: Fri, 26 Jan 2024 14:33:14 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Shenghao Ding <shenghao-ding@ti.com>
-Cc: conor+dt@kernel.org, krzysztof.kozlowski@linaro.org, robh+dt@kernel.org,
-	andriy.shevchenko@linux.intel.com, kevin-lu@ti.com,
-	baojun.xu@ti.com, devicetree@vger.kernel.org, v-po@ti.com,
-	lgirdwood@gmail.com, perex@perex.cz,
-	pierre-louis.bossart@linux.intel.com, 13916275206@139.com,
-	mohit.chawla@ti.com, linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
-	soyer@irl.hu, jkhuang3@ti.com, tiwai@suse.de, pdjuandi@ti.com,
-	j-mcpherson@ti.com, navada@ti.com
-Subject: Re: [PATCH v2 1/4] ASoc: PCM6240: Create PCM6240 Family driver code
-Message-ID: <6c1d04be-c558-4aa4-96a3-ac21ae36bfae@sirena.org.uk>
-References: <20240126035855.1785-1-shenghao-ding@ti.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=std0qW2Xr7mwWfgRaElldvXOmZ8GnPiWIB339RVAt9XG+XKSeJkqEzvp5afGrFQqTp2Q7YRHjz/tC/whTBs2WUIoQfSCojuVfhPp/yachuEVBEPKdxyq+hAfWR1roSKVsIjmVtLA00mGQEdOJAN07hzfbUd3iesDkS6+pNRehaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fqGNxspG; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706279689;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jFn6EmRIbEx/AjhXTO5Xmd6giDPhExwD2qGwPUgkau4=;
+	b=fqGNxspGs9ryLxndqdSVdZXj8xZ1XzsuEhiF/bYnIS+iDa8VTFVviKrpJJCtkTccuXzOAG
+	NGfR/CeA77ZrzjI6oIzLDGF+Xl3L4jVnDLzQNudXehvMehje8+q/VFf3F2r+Bo23mNNqqg
+	uQVAsWVboAGtcVDyzNLDtp3JwOnBBJs=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-653-c-Dmt-ZFP1yuGrm51Z23CQ-1; Fri, 26 Jan 2024 09:34:43 -0500
+X-MC-Unique: c-Dmt-ZFP1yuGrm51Z23CQ-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 53F7A85A58F;
+	Fri, 26 Jan 2024 14:34:43 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.164])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 78EB8492BFA;
+	Fri, 26 Jan 2024 14:34:41 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Fri, 26 Jan 2024 15:33:29 +0100 (CET)
+Date: Fri, 26 Jan 2024 15:33:27 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Tycho Andersen <tycho@tycho.pizza>, linux-kernel@vger.kernel.org,
+	linux-api@vger.kernel.org, Tycho Andersen <tandersen@netflix.com>,
+	"Eric W. Biederman" <ebiederm@xmission.com>
+Subject: Re: [PATCH v3 1/3] pidfd: allow pidfd_open() on non-thread-group
+ leaders
+Message-ID: <20240126143326.GC7386@redhat.com>
+References: <20240123153452.170866-1-tycho@tycho.pizza>
+ <20240123153452.170866-2-tycho@tycho.pizza>
+ <20240123195608.GB9978@redhat.com>
+ <ZbArN3EYRfhrNs3o@tycho.pizza>
+ <20240125140830.GA5513@redhat.com>
+ <20240125-tricksen-baugrube-3f78c487a23a@brauner>
+ <20240125175113.GC5513@redhat.com>
+ <20240126-lokal-aktualisieren-fef41d9bce9f@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="zICUD1iSPynTqKb5"
-Content-Disposition: inline
-In-Reply-To: <20240126035855.1785-1-shenghao-ding@ti.com>
-X-Cookie: Excellent day to have a rotten day.
-
-
---zICUD1iSPynTqKb5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20240126-lokal-aktualisieren-fef41d9bce9f@brauner>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-On Fri, Jan 26, 2024 at 11:58:51AM +0800, Shenghao Ding wrote:
+On 01/26, Christian Brauner wrote:
+>
+> No, it doesn't. I'm trying to understand what you are suggesting though.
+> Are you saying !task || tas->exit_state is enough
 
-This looks mostly good - I've got a few comments that are mainly
-stylistic or otherwise very minor, there's one issue with validation of
-profile IDs that does look like it's important to fix though.
+If PIDFD_THREAD then I think it is enough. Otherwise we still need
+!task || (exit_state && thread_group_empty)
 
-> +static int pcmdev_dev_read(struct pcmdevice_priv *pcm_dev,
-> +	unsigned int dev_no, unsigned int reg, unsigned int *val)
-> +{
-> +	int ret = -EINVAL;
-> +
-> +	if (dev_no < pcm_dev->ndev) {
+> and we shouldn't use
+> the helper that was added in commit 38fd525a4c61 ("exit: Factor
+> thread_group_exited out of pidfd_poll"). If so what does that buy us
+> open-coding the check instead of using that helper? Is there an actual
+> bug here?
 
-You could write all these functions a bit more simply if you rewrote
-these error checks to return immediately on error, that way there's less
-indentation and fewer paths later on.
+The patch adds the new xxx_exited(task, excl) helper which checks
 
-	if (dev_no >= pcm_dev->ndev)
-		return -EINVAL;
+	!task || (exit_state && (excl || thread_group_empty))
 
-and so on.  For the ones dealing with locking it can help to have a
-single exit path but functions like this don't deal directly with the
-locks.
+yes, the naming is not good.
 
-> +
-> +		ret = regmap_read(map, reg, val);
-> +		if (ret < 0)
-> +			dev_err(pcm_dev->dev, "%s, E=%d\n", __func__, ret);
-> +	} else
-> +		dev_err(pcm_dev->dev, "%s, no such channel(%d)\n", __func__,
-> +			dev_no);
-> +
+> > Well, I didn't say this is a problem. I simply do not know how/why people
+> > use pidfd_poll().
+>
+> Sorry, I just have a hard time understanding what you wanted then. :)
+>
+> "I guess it is too late to change this behavior." made it sound like a)
+> there's a problem and b) that you would prefer to change behavior. Thus,
+> it seems that wait(WNOHANG) hanging when a traced leader of an empty
+> thread-group has exited is a problem in your eyes.
 
-The kernel coding style is that if one side of an if/else has { } both
-should.
+Again, I mostly tried to argue with do_notify_pidfd() called by realese_task().
 
-> +static int pcmdevice_set_profile_id(
-> +	struct snd_kcontrol *kcontrol,
-> +	struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_component *codec
-> +		= snd_soc_kcontrol_component(kcontrol);
-> +	struct pcmdevice_priv *pcm_dev =
-> +		snd_soc_component_get_drvdata(codec);
-> +	int ret = 0;
-> +
-> +	if (pcm_dev->cur_conf != ucontrol->value.integer.value[0]) {
-> +		pcm_dev->cur_conf = ucontrol->value.integer.value[0];
-> +		ret = 1;
-> +	}
-> +
-> +	return ret;
-> +}
+I think that with PIDFD_THREAD set pidfd_poll() should succeed right
+after the exiting thread becomes a zombie (passes exit_notify), whether
+it is a leader or not.
 
-This will accept any configuration number, shouldn't there be some
-validation here?  The put functions doing regmap_update_bits() have
-some limiting of values in the regmap_update_bits() but this just stores
-the value directly.
+Let me quote part of my reply to Tycho's patch
 
-> +static int pcmdevice_get_volsw(struct snd_kcontrol *kcontrol,
-> +	struct snd_ctl_elem_value *ucontrol)
-> +{
+	> +	/*
+	> +	 * If we're not the leader, notify any waiters on our pidfds. Note that
+	> +	 * we don't want to notify the leader until /everyone/ in the thread
+	> +	 * group is dead, viz. the condition below.
+	> +	 *
+	> +	 * We have to do this here, since __exit_signal() will
+	> +	 * __unhash_processes(), and break do_notify_pidfd()'s lookup.
+	> +	 */
+	> +	if (!thread_group_leader(p))
+	> +		do_notify_pidfd(p);
 
-> +	mutex_lock(&pcm_dev->codec_lock);
-> +	rc = pcmdev_dev_read(pcm_dev, dev_no, reg, &val);
-> +	if (rc) {
-> +		dev_err(pcm_dev->dev, "%s:read, ERROR, E=%d\n",
-> +			__func__, rc);
-> +		goto out;
-> +	}
+	This doesn't look consistent.
 
-It would be kind of nice if the device switching could be hidden inside
-a custom regmap and we didn't have all this code duplication but I'm not
-thinking of a way of doing that which doesn't just create complications
-so probably this is fine.
+	If the task is a group leader do_notify_pidfd() is called by exit_notify()
+	when it becomes a zombie (if no other threads), before it is reaped by its
+	parent (unless autoreap).
 
-> +	val = (val >> shift) & mask;
-> +	val = (val > max) ? max : val;
-> +	val = mc->invert ? max - val : val;
-> +	ucontrol->value.integer.value[0] = val;
+	If it is a sub-thread, it is called by release_task() above. Note that a
+	sub-thread can become a zombie too if it is traced.
 
-There's the FIELD_GET() macro (and FIELD_SET() for writing values) - the
-core predates them and hence doesn't use them, we might want to update
-some time.
+Not to mention that this is racy.
 
-> +static int pcmdevice_codec_probe(struct snd_soc_component *codec)
-> +{
+I would not mind if we simply move do_notify_pidfd() from exit_notify() to
+release_task() and do it regardless of thread_group_leader(). And in some
+sense this looks more logical to me.
 
-> +	ret = request_firmware_nowait(THIS_MODULE, FW_ACTION_UEVENT,
-> +		pcm_dev->regbin_name, pcm_dev->dev, GFP_KERNEL, pcm_dev,
-> +		pcmdev_regbin_ready);
-> +	if (ret) {
-> +		dev_err(pcm_dev->dev, "load %s error = %d\n",
-> +			pcm_dev->regbin_name, ret);
-> +		goto out;
-> +	}
+But as I said:
 
-It might be better to request the firmware in the I2C probe rather than
-in the ASoC level probe, that way there's more time for the firmware to
-be loaded before we actually need it.  That does mean you can't register
-the controls immediately though so it may be more trouble than it's
-worth.
+	- I do not know how/why people actually use poll(pidfd)
 
-Similarly for the reset, if we reset as early as possible that seems
-better.
+	- it is too late to change the current behaviour
 
-> +static int pcmdevice_startup(struct snd_pcm_substream *substream,
-> +	struct snd_soc_dai *dai)
-> +{
-> +	struct snd_soc_component *codec = dai->component;
-> +	struct pcmdevice_priv *pcm_priv = snd_soc_component_get_drvdata(codec);
-> +	int ret = 0;
-> +
-> +	if (pcm_priv->fw_state != PCMDEVICE_FW_LOAD_OK) {
-> +		dev_err(pcm_priv->dev, "DSP bin file not loaded\n");
-> +		ret = -EINVAL;
-> +	}
+Sorry for confusion.
 
-Perhaps -EBUSY instead?  What the user is doing is valid.
+> I'm not sure whether you remember that but when we originally did the
+> pidfd work you and I discussed thread support and already decided back
+> then that having a flag like PIDFD_THREAD would likely be the way to go.
 
-> +static const struct regmap_config pcmdevice_i2c_regmap = {
-> +	.reg_bits = 8,
-> +	.val_bits = 8,
-> +	.cache_type = REGCACHE_RBTREE,
+All I can recall is that, yes, we had some discussions about pidfd in
+the past ;)
 
-Use _MAPLE for new devices, it's a more modern design with tradeoffs
-that work better for most current systems.
+> The PIDFD_THREAD flag would be would be interesting because we could
+> make pidfd_send_signal() support this flag
 
---zICUD1iSPynTqKb5
-Content-Type: application/pgp-signature; name="signature.asc"
+Agreed,
 
------BEGIN PGP SIGNATURE-----
+Oleg.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWzwqoACgkQJNaLcl1U
-h9BCzwf+L41HbR0BgZxeKdyUNHfjw//dNQQiokt5X33hzy2MfX0cEw4MOf8k9xyv
-x7kjEUSTwhyF6hxi1Ov9iApcnot6U5L1aoxrAS19xBs3zCqO5dEDtDQz8B6jHXF3
-hR6dT0dwXyKQxOx57BhEPbF16MY0ZpJuE3Od6i4s54zt/rqJw2hUH9xoZNA7BgRH
-8w2OMYMbbY+FL9QyLrDBxMJCgxDDnblMbeBp4yIS35A20M7d2MnxgedAmCmDWZth
-Zkhut1zLOwqZydXjkXrJQAB3izplMzHYS1lxmBOqdAjC+cwTrVIxr0O8GwmYc8bI
-P4rWI9yDw6TygfQlYVCQd3jyHNiuSA==
-=OLs3
------END PGP SIGNATURE-----
-
---zICUD1iSPynTqKb5--
 
