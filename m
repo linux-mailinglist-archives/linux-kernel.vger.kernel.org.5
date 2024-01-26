@@ -1,127 +1,100 @@
-Return-Path: <linux-kernel+bounces-40562-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40563-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7563583E278
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B9A4A83E27C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:28:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7F961C217EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:26:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C95B41C22DDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:28:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A8D0224E7;
-	Fri, 26 Jan 2024 19:26:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58897225AF;
+	Fri, 26 Jan 2024 19:27:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="h5SjkSvb"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="xXcRyGxD"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FAC0224DA;
-	Fri, 26 Jan 2024 19:26:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88722224F9;
+	Fri, 26 Jan 2024 19:27:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706297182; cv=none; b=MSLegGBFg8KuofeB4H1n9kdegAncrBoIabsV/9D+I71F3qAahI4vsB2J02w09nWYUs7diMvTVYaoeplTRBxoOgzzlQJvPjcd7evYhED9x+zWN8pOaDUZ8VhVqNBj50KxMOF+NdMaI6e6VyQlB87HRMol/9M22v99v8fIpa7JqO0=
+	t=1706297273; cv=none; b=B0vpQXYIR/HQg3s7sza+v/doVS4E0HN84ga3XuiZoezXW+WOby/bVYvpCuKFtPSyCo0GS74fIMKIEV5M60Oz/eV0TWog9JTeNbL7P8gQ5rOk4sa4etlvWkbroMya+AkCnjlI+5SnNXw+ELNSljxllnqhKjGjg3xBTWurPdJjmGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706297182; c=relaxed/simple;
-	bh=T2Dsd8FsdX7PC+vZVdIMwKBV3nNVwsFSL3SmRekSYOk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iS3gLAUjTiFLv6LBqNdYNmnfoDKvlIAW1mNryupt6cPd0gmATYACw79fENMEZroS0jzTmwNF3tSU+BGCTnZz948jWeL2p4Mw7jiR+vAInrY9M9AOLpArz3eEjmc5DDbwQCEqVbNvevCY/6Oxnu4idhb7hBgiU3QsCfNTr70ohhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=h5SjkSvb; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=HaAu8QaTfuj/1bKwP39c5NDE0gj5e/ufSqth9B+stzU=; b=h5SjkSvbAZ8Nl4MpgfmkPoV4mj
-	DmLxDEQt1ChnBYPk5yokNEItG291CMfJ9OvlnL8LPg/TKHM9b7kFPwIXS4n7+yjSwQwtUycfSv3Qm
-	EuOnR8TNpHdkfjAUKSTH8vfjS014Pt0SaDQuf8JOQjvDMQ18Nj95okj4dkFaYjAvVeb7VbVK6bk1p
-	863YD96Xmg1mEvHYiPqv1vApb/8KvO2Xka42Ktl8FbgbirFR1Er/4lUp9qH8fyGp6oMCwtNuVscWR
-	DHgLp8D+cBmehdUUtqkw1qbeaueiv99Bxn3j/YE1CjftKVKoTLfVjBTuXrnigunVwArYeBbhHkwv+
-	vpeoH7GQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rTRqD-0000000EcFc-1O9T;
-	Fri, 26 Jan 2024 19:26:17 +0000
-Date: Fri, 26 Jan 2024 19:26:17 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: kernel test robot <oliver.sang@intel.com>,
-	Daniel Gomez <da.gomez@samsung.com>, oe-lkp@lists.linux.dev,
-	lkp@intel.com, linux-kernel@vger.kernel.org,
-	"gost.dev@samsung.com" <gost.dev@samsung.com>,
-	Pankaj Raghav <p.raghav@samsung.com>
-Subject: Re: [PATCH 1/2] test_xarray: add tests for advanced multi-index use
-Message-ID: <ZbQHWf0Hh04OwoZx@casper.infradead.org>
-References: <20231104005747.1389762-2-da.gomez@samsung.com>
- <202311152254.610174ff-oliver.sang@intel.com>
- <ZVfS8fiudvHADtoR@bombadil.infradead.org>
- <ZVfT3bs9+F0jqIAw@casper.infradead.org>
- <ZVfUnhzv4UDigZKa@bombadil.infradead.org>
- <ZbQEA6WIh0HrFTbP@bombadil.infradead.org>
+	s=arc-20240116; t=1706297273; c=relaxed/simple;
+	bh=NW9/Y1sMfKulS8DYavETlMP6KBNa2HphYFT4fmqYhiQ=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=tjoqJySl7IQ8+g4R7bULuLG2OLlKg+5v8lKPVYWrirVEuEsY2K2g1XZUUjXnquPmtwq7RSOuo43Rjzq2hAlVW/4yrngZ6jvrWUVO/VY+CbHSdrzIChmp84RyFNVILJmPjuGL/0WjfyjEcw7NtUWgGlQ0RZLXexEM6w+CfVn7zN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=xXcRyGxD; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706297269;
+	bh=NW9/Y1sMfKulS8DYavETlMP6KBNa2HphYFT4fmqYhiQ=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=xXcRyGxDv0Xqsfg6pHpA2QSKTxLhBF71dFtSwBxKkRD8WdBl+q42Mf+z8zNhPnrkX
+	 xdkwzX62vOt84LBzrWfOeuzAhL7S9sseI8UAQgkpEK4KLkBrSgD944tYNZ4RkWuh/c
+	 Y7VDLOVx+50q7qhGZ5jmgnKrO0/L5htnhq+3umjBlAZ70LYGpEebSnXGhQqsVRa23B
+	 FmjXach9aOc1ngY4CPsVGyHYZ5Gczki6wZaTL48GzWbbSJBEXCB5fUGE5pzTWuci1p
+	 L1EDNz+kWeoFwe5z3ft24OjFNxWe9+guyNdJuA7Rk/QJsKySv+Xnt9rljpcL7XWq5S
+	 2UD7pnP/iZjHw==
+Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: cristicc)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E22ED3780022;
+	Fri, 26 Jan 2024 19:27:47 +0000 (UTC)
+Message-ID: <920e764c-4fa3-4298-bb49-d31416fc3dd6@collabora.com>
+Date: Fri, 26 Jan 2024 21:27:47 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbQEA6WIh0HrFTbP@bombadil.infradead.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/2] StarFive DWMAC support for JH7100
+Content-Language: en-US
+From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+To: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Emil Renner Berthing <kernel@esmil.dk>,
+ Samin Guo <samin.guo@starfivetech.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Jose Abreu <joabreu@synopsys.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Giuseppe Cavallaro <peppe.cavallaro@st.com>, Andrew Lunn <andrew@lunn.ch>,
+ Jacob Keller <jacob.e.keller@intel.com>
+Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, kernel@collabora.com
+References: <20240126191319.1209821-1-cristian.ciocaltea@collabora.com>
+In-Reply-To: <20240126191319.1209821-1-cristian.ciocaltea@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jan 26, 2024 at 11:12:03AM -0800, Luis Chamberlain wrote:
-> On Fri, Nov 17, 2023 at 01:01:18PM -0800, Luis Chamberlain wrote:
-> > On Fri, Nov 17, 2023 at 08:58:05PM +0000, Matthew Wilcox wrote:
-> > > On Fri, Nov 17, 2023 at 12:54:09PM -0800, Luis Chamberlain wrote:
-> > > > +/*
-> > > > + * Can be used in contexts which busy loop on large number of entries but can
-> > > > + * sleep and timing is if no importance to test correctness.
-> > > > + */
-> > > > +#define XA_BUG_ON_RELAX(xa, x) do {				\
-> > > > +	if ((tests_run % 1000) == 0)				\
-> > > > +		schedule();					\
-> > > > +	XA_BUG_ON(xa, x);					\
-> > > > +} while (0)
-> > > 
-> > > That is awful.  Please don't do that.  You're mixing two completely
-> > > unrelated thing into the same macro, which makes no sense.  Not only
-> > > that, it's a macro which refers to something in the containing
-> > > environment that isn't a paramter to the macro.
-> > 
-> > I figured you'd puke. Would you prefer I just open code the check on the loop
-> > though? I'm sure another alternative is we *not care* about these
-> > overloaded systems running the test. What would you prefer?
+Please ignore this and use the RESEND version [1], as the binding patch 
+was not correctly updated with the latest tags.
+
+Sorry for the noise,
+Cristian
+
+[1] https://lore.kernel.org/lkml/20240126192128.1210579-1-cristian.ciocaltea@collabora.com/
+
+On 1/26/24 21:13, Cristian Ciocaltea wrote:
+> This is just a subset of the initial patch series [1] adding networking
+> support for StarFive JH7100 SoC.
 > 
-> OK without any particular preferences outlined this is what I have,
-> splitting the two contexts and making the busy loop fix clearer.
+> [1]: https://lore.kernel.org/lkml/20231218214451.2345691-1-cristian.ciocaltea@collabora.com/
 > 
-> +#define XA_BUSY_LOOP_RELAX(xa, x) do {                         \
-> +       if ((i % 1000) == 0)                                    \
-> +               schedule();                                     \
-> +} while (0)
-> +
-> +/*
-> + * Can be used in contexts which busy loop on large number of entries but can
-> + * sleep and timing is if no importance to test correctness.
-> + */
-> +#define XA_BUG_ON_RELAX(i, xa, x) do {                         \
-> +       XA_BUSY_LOOP_RELAX(i);                                  \
-> +       XA_BUG_ON(xa, x);                                       \
-> +} while (0)
-
-No.  XA_BUG_ON_RELAX is not OK.  Really.
-
-We have a perfectly good system for "relaxing":
-
-        xas_for_each_marked(&xas, page, end, PAGECACHE_TAG_DIRTY) {
-                xas_set_mark(&xas, PAGECACHE_TAG_TOWRITE);
-                if (++tagged % XA_CHECK_SCHED)
-                        continue;
-
-                xas_pause(&xas);
-                xas_unlock_irq(&xas);
-                cond_resched();
-                xas_lock_irq(&xas);
-        }
-
+> Changes in v4:
+>  - Rebased series onto next-20240125
+>  - Added R-b tag from Rob in PATCH 1
+>  - v3:
+>    https://lore.kernel.org/lkml/20231222101001.2541758-1-cristian.ciocaltea@collabora.com/
 
