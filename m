@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-40900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40909-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F19FC83E7B5
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 01:02:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C871883E7C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 01:06:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 789081F29E5B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 00:02:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDF251C286B9
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 00:06:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A87C7664D8;
-	Fri, 26 Jan 2024 23:56:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 407DD6DCE2;
+	Fri, 26 Jan 2024 23:56:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="j+PlOEBw"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="YeV+7YJ8"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A627C60DE1;
-	Fri, 26 Jan 2024 23:56:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 144C0679FD;
+	Fri, 26 Jan 2024 23:56:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706313367; cv=none; b=lvnIOEIVw7kwLUgtUMx+L/XzZwbBvyfYY5oZZmkrDwWIDrF2bSHLXwWcluHgRq1QkxsVi73oEW1gSP/LwwviCrWF62lBsDLCSxQlhwXSbOUmJ7AGN0lrecDGbGb1T78P7/C+qWuYRiWU9SboyQph7N8hSeIFHeYUzZukljcxKqA=
+	t=1706313374; cv=none; b=JqHmyhfUldnTXJT9ltfiR0maAKMoJyKf0kpBkBdq38TTVcVdRLCgo1xGbeIbNgENBLvmQAGfL/6BM/T1Xpzpg5pAeYHTSB6Df9dsOeRWfcjziVVA0EWMn2S4JWU85ycO7eUsYwpQvUgxrvOggJK+2kCWV4YVqpuyhMKsxBeC/6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706313367; c=relaxed/simple;
-	bh=bhYP0B3JMmlAreSL8lioILNkF6Sx082GDkD2VmQ/990=;
+	s=arc-20240116; t=1706313374; c=relaxed/simple;
+	bh=yJXUlQL/ARISjkzK6hWcgvNkadHMiwxGCuBeeftmnbQ=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ITgYMP9B4Mm+ysE/+u6dVgIhGB4lgnBTd5/70v/Fq+1OxiRwDULHwKNxNbSLTss4ObSZ12tsoJZM/9484oW1b64cH1Ux01Y4rvnlkkaHSCDTKUfa2zFHkAhaERkxiPZg/1/5gBb968z+MAfwtFh23/03IXwOoji7zUIqqH1bFcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=j+PlOEBw; arc=none smtp.client-ip=205.220.168.131
+	 MIME-Version:Content-Type; b=SnwnkVK5MZzHdjCr+Z5QeH9cykG73cLrxaVM/fQ60AgiriRFRKESYdnq4atmQGCeokBWNq6qEuPalxK1FiN8QJqfAag64lZtCF5nAXJQvD2hiUtPCQ8W1tVdOCeL+W4kD3DVhK3KgEAmJfF3YAq/H5c4wjTCeHyUJGv6+mRiohI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=YeV+7YJ8; arc=none smtp.client-ip=205.220.180.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40QNeIEN029503;
-	Fri, 26 Jan 2024 23:55:10 GMT
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40QNaTjh020399;
+	Fri, 26 Jan 2024 23:55:11 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=FPFZD1Rm/nqqowAfp/Hl
-	IZdajqjXw49ivI2WyXs86D4=; b=j+PlOEBwERMJ1ddJ0ONx2CHGkNUIz6eCB0L8
-	tIieFujtQ6yEDDkGHhOw6ffBfuQbH/q1TzelqZAYazMx0zQh9uRqkRiZPNfrYzLe
-	Q6RB7bwFNIgAy7ius0fYHbr0+7P0sbferLjP0r3jCA44qCO8q/XaWSU2jYbclDqr
-	qLkDRquAFlL1ZJ4dcNWNVxLbZpo0j4Rgq4TOEX7raSRU1oQYcosE1Gv039fgOTvS
-	up3fSBg0pX16Fi9RRgkzBKVsXTuvYmsypWkrY8bQLSE9zQNyfmcayqwpgf0ibxJp
-	shPodKOv3vXyGD9U39LmCSxJHSN61SoOh0NWgdmJwv79IFjEXQ==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vv8e89uxc-1
+	:mime-version:content-type; s=qcppdkim1; bh=Rbfri0w8rs8j6hzJO9zw
+	SwBaauq10llgtGmh4EGN4Iw=; b=YeV+7YJ8kD35EMtHgwAtiZc8T+CPXgMFIAYQ
+	bhxWyLFAGvdKLYOr5gN5breKWYgDCM2C2hfqd54afS7CsQbwzKhA6BOw9thu/jM4
+	hKpw6SCMiMeQ1sz8mzAglfszGN2pWdZ1btjb19HY7epiH139vt4OecLhZGtABUm+
+	OlcpfDuFgUZp1+6E99b1wA70sE2F6yeP+IZG4RTf3r9eYZDt0G/7z/pi8xTTr/V2
+	h73w5yRhep79bqOxYAMytTSsPWpbOPG6B7GSU3ThKOvXI+SOnXMaBLdwXn/iUiUv
+	7jRsMrVlsDQ717LLS74eMv6c2t0JQKaKsBta3t5PboyOwsEAkQ==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vv6c8j5x5-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Jan 2024 23:55:09 +0000 (GMT)
+	Fri, 26 Jan 2024 23:55:11 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40QNt9hY010158
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40QNtAhO009370
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Jan 2024 23:55:09 GMT
+	Fri, 26 Jan 2024 23:55:10 GMT
 Received: from hu-obabatun-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -69,9 +69,9 @@ To: <catalin.marinas@arm.com>, <will@kernel.org>, <robh+dt@kernel.org>,
 CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
         <kernel@quicinc.com>, Oreoluwa Babatunde <quic_obabatun@quicinc.com>
-Subject: [PATCH 13/46] riscv: reserved_mem: Implement the new processing order for reserved memory
-Date: Fri, 26 Jan 2024 15:53:52 -0800
-Message-ID: <20240126235425.12233-14-quic_obabatun@quicinc.com>
+Subject: [PATCH 14/46] sh: reserved_mem: Implement the new processing order for reserved memory
+Date: Fri, 26 Jan 2024 15:53:53 -0800
+Message-ID: <20240126235425.12233-15-quic_obabatun@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240126235425.12233-1-quic_obabatun@quicinc.com>
 References: <20240126235425.12233-1-quic_obabatun@quicinc.com>
@@ -86,16 +86,16 @@ X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
  nalasex01b.na.qualcomm.com (10.47.209.197)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: IcZIFt1JpWJOoMQpQEm8vk-E1DJcZvSO
-X-Proofpoint-ORIG-GUID: IcZIFt1JpWJOoMQpQEm8vk-E1DJcZvSO
+X-Proofpoint-GUID: xWIxx8I7sp_MTzBvsRofwlpzt5Nk-qWs
+X-Proofpoint-ORIG-GUID: xWIxx8I7sp_MTzBvsRofwlpzt5Nk-qWs
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-01-25_14,2024-01-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
- spamscore=0 malwarescore=0 priorityscore=1501 mlxlogscore=731
- impostorscore=0 lowpriorityscore=0 suspectscore=0 bulkscore=0
- clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2401260176
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=470
+ priorityscore=1501 bulkscore=0 mlxscore=0 adultscore=0 lowpriorityscore=0
+ malwarescore=0 clxscore=1015 spamscore=0 suspectscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401190000
+ definitions=main-2401260176
 
 Call early_fdt_scan_reserved_mem() in place of
 early_init_fdt_scan_reserved_mem() to carry out the first stage of the
@@ -113,52 +113,37 @@ of the statically-placed reserved memory nodes in the reserved_mem
 array as well as call the region specific initialization function on all
 the stored reserved memory regions.
 
-The call to fdt_init_reserved_mem() is placed after paging_init()
-in preparation for the dynamic allocation of the reserved_mem array
-using memblock. This is because memblock allocated memory is not
-writable until after the page tables have been setup on the riscv
-architecture.
+The call to fdt_init_reserved_mem() is placed right after
+early_fdt_scan_reserved_mem() because memblock allocated memory should
+already be writable at this point.
 
 Signed-off-by: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
 ---
- arch/riscv/kernel/setup.c | 3 +++
- arch/riscv/mm/init.c      | 2 +-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ arch/sh/boards/of-generic.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-index 4f73c0ae44b2..ea4fbc8e0ea1 100644
---- a/arch/riscv/kernel/setup.c
-+++ b/arch/riscv/kernel/setup.c
-@@ -16,6 +16,7 @@
- #include <linux/sched.h>
- #include <linux/console.h>
+diff --git a/arch/sh/boards/of-generic.c b/arch/sh/boards/of-generic.c
+index f7f3e618e85b..7bec409f077c 100644
+--- a/arch/sh/boards/of-generic.c
++++ b/arch/sh/boards/of-generic.c
+@@ -8,6 +8,7 @@
+ #include <linux/of.h>
+ #include <linux/of_clk.h>
  #include <linux/of_fdt.h>
 +#include <linux/of_reserved_mem.h>
- #include <linux/sched/task.h>
- #include <linux/smp.h>
- #include <linux/efi.h>
-@@ -261,6 +262,8 @@ void __init setup_arch(char **cmdline_p)
- 	efi_init();
- 	paging_init();
- 
-+	fdt_init_reserved_mem();
-+
- 	/* Parse the ACPI tables for possible boot-time configuration */
- 	acpi_boot_table_init();
- 
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 32cad6a65ccd..32b168d6672b 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -264,7 +264,7 @@ static void __init setup_bootmem(void)
- 	 * in the device tree, otherwise the allocation could end up in a
- 	 * reserved region.
- 	 */
+ #include <linux/clocksource.h>
+ #include <linux/irqchip.h>
+ #include <asm/machvec.h>
+@@ -110,7 +111,8 @@ static int noopi(void)
+ static void __init sh_of_mem_reserve(void)
+ {
+ 	early_init_fdt_reserve_self();
 -	early_init_fdt_scan_reserved_mem();
 +	early_fdt_scan_reserved_mem();
++	fdt_init_reserved_mem();
+ }
  
- 	/*
- 	 * If DTB is built in, no need to reserve its memblock.
+ static void __init sh_of_setup(char **cmdline_p)
 -- 
 2.17.1
 
