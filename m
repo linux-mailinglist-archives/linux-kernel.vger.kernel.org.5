@@ -1,149 +1,265 @@
-Return-Path: <linux-kernel+bounces-40718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13C7683E4A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:08:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10B0D83E4B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:09:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E9651F22CD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:08:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35AA41C234BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:09:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D1715A783;
-	Fri, 26 Jan 2024 22:05:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A79347A6D;
+	Fri, 26 Jan 2024 22:07:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Wun/mJBa"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FTHZZY7n"
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 234D659B73;
-	Fri, 26 Jan 2024 22:05:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83F5833CC5
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 22:07:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706306749; cv=none; b=hUj3hIxfSxCOKQPblTKIIiWaTyh7E7tBgpSeAKUk0G4FoZzkF1UQrelNUoNNVucI6MkY/YiE0dYVnP4SewnwfzmUwGEA0XOFeYJNKTAHrsoPLNuTH3CeGicsP4HaQhsGm0RweI/FHLT7lyad5UR2jgkLl0JB06PKqI9DHuJmTHo=
+	t=1706306826; cv=none; b=e8s14+uLX8RlNWamsS69ejcZJnVps096+/1dOGy8+pef998j0lr7rqoXuNCJ+vEnTLi2V4l3dVOxF2l1avYuEp2h0Zc5GptCXaxx95YzO9YVvUk3nAQIdjuTrRS8S/QZm3RKrdrvFGRDFx7fjMVeIHLb31usvvyd+EpgvqF5mrk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706306749; c=relaxed/simple;
-	bh=quovCUEiBJzRcC6tpz1IJ7bTQOD+HpTMRkt5AyBCYDU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VleeToeVxByvQeEBrAFwwdeRNWCszbhyeMHr+nooQOhTNwZgjmivJIkA1Sbx5C3ytL7RRQ+xF7/C4V5q8Ut7ddX5smpUysjKi+YmtpHySj+wBwlvG0jTYmxzfkM3SLlyTUjcx/SqzbHx1TXAlg+kqOPZoVrxQemgJn4piRF00eg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Wun/mJBa; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1706306743; x=1706911543; i=quwenruo.btrfs@gmx.com;
-	bh=quovCUEiBJzRcC6tpz1IJ7bTQOD+HpTMRkt5AyBCYDU=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=Wun/mJBaip6NFrp5muOf6Z3rJTfgH00zXoLhhDynRnACkx4JPWDXyb8uUYsMU3m7
-	 Z6LL5zYt6Ra7p2Hx1TKygWa2V9bJ1d71nhAMH5VffqcJywTvihWeQ4LAIKlW/SANK
-	 /10bkttgWAuYKm0ZmgR96PpAh757h/VeQnlFOiyDqYvS064ORAZxHmtRrV4UDw6EL
-	 Q3wXDnsdNBHoIt0KzjbgG0pSbugekVBGIrAOdNbzJZdgYPh6kPmAYRi/b3lJ558BA
-	 PiQ9eV2CTRE6wIN42ASQN4NZGMNxIhVqwmTmWyGujHlRSP2cG+FnXU5JPievqauHz
-	 a9VxRLfkyyMeYvOpcQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([61.245.157.120]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MbzuB-1qwLIv3cT9-00dWG5; Fri, 26
- Jan 2024 23:05:43 +0100
-Message-ID: <cbd72a58-6d6b-4e78-8028-63e92ad9502c@gmx.com>
-Date: Sat, 27 Jan 2024 08:35:39 +1030
+	s=arc-20240116; t=1706306826; c=relaxed/simple;
+	bh=XB4fRjTtTylKsY7YTWjFycmOakQ+8VZzbUngR9Y7Qlw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=b2Q+w4uRLrYQBPxbqQWD+7DpdG6d8vX1irwBpdT3IDRDLnT6Oqc52v3YdyruSHdVt1okkov6YKRosE7M2oTA8M2+ao1W7irnGKX3W4LApamFV6K9pTzIg7ta4EmXr4Fz3AjnbIRcbpllk3mDxcr5GxNs8tZqz4q6NraryJ+0bOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FTHZZY7n; arc=none smtp.client-ip=95.215.58.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706306822;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=0uDCQI2J2OdCX4BmaIuAGyUG1leeUjTKY0gYVjTj18U=;
+	b=FTHZZY7nMvcAvxX6xS1FLXGkx0hsfKKwXyDXmPmqGDw7kVxMvOHTtXUUdrlLbydUYjkuhm
+	Uil/VEkNUoYYyJkVZfAGojNEY5KD0/t+NYanXQde+kvUBrUdmc3/QPQiSLCi6Vc2xFe2E8
+	y+wyuRqqhiOi81sWmkl7FYrCiJZK1dc=
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-bcache@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Daniel Hill <daniel@gluo.nz>,
+	"Darrick J . Wong" <djwong@kernel.org>
+Subject: [PATCH 1/5] mean and variance: Promote to lib/math
+Date: Fri, 26 Jan 2024 17:06:51 -0500
+Message-ID: <20240126220655.395093-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] Btrfs fixes for 6.8-rc2
-Content-Language: en-US
-To: Linus Torvalds <torvalds@linux-foundation.org>, Qu Wenruo <wqu@suse.com>
-Cc: dsterba@suse.cz, David Sterba <dsterba@suse.com>,
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1705946889.git.dsterba@suse.com>
- <CAHk-=whNdMaN9ntZ47XRKP6DBes2E5w7fi-0U3H2+PS18p+Pzw@mail.gmail.com>
- <20240126200008.GT31555@twin.jikos.cz>
- <8b2c6d1f-2e14-43a0-b48a-512a3d4a811d@suse.com>
- <CAHk-=wjhtqo_FEqZkPuOVUNZzsGhjftdcN9aQpA3f3WD0qS1pA@mail.gmail.com>
- <7c4bc81e-51b4-4b93-8cae-f16663b1c820@suse.com>
- <CAHk-=wj1h8GhhEuqmiCMZW7iBu3k7hn3mJSO9kTm7P31BCZExA@mail.gmail.com>
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <CAHk-=wj1h8GhhEuqmiCMZW7iBu3k7hn3mJSO9kTm7P31BCZExA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:QPU7Y2ELcU5BU3RNadFFUpS77GELHdeUSviHfF3gCeLc+U8cHx5
- 2UAVC+dovE3CsmoNOCiCUjGRFi2PR9JLGhaHt/CrHuzdbYSVRWAbniu57A4qYWmR8bjW+A3
- gaf9UHxbFuNGY1AefNh3pHxb0yPfj4KJLPIZdYUDvJ8NOC0uvjZ90mWAYRa4b27yCG6lddZ
- JKXqXdECOx+FqqrZToZCQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:AwyVdHZMhf4=;VOAhamGl0dDKzNkWnG+WDmnE3AN
- 0dA4NJTNGpPGxs4sAvBxsR5uBoRTkNgmquoFIC6jf6c/kcpczIuioL8jyNhK1mG4+KGmaBcm0
- AqttJUKLQKm/8Kk8zPJs/ulfPuUvLWuY4x0VnB+PFrEfsdpWmmgqkjMxwM+KxLOKtQosaFYFY
- 7wOtXw9r71C5JaIr8m1DQBg9RrA+YiPMbHS2d+wJNY1vge2H4egajpiuwyvZu0EodA88yMZy7
- jU5qOIyK/06HdA+7+Vy7ccLh/4xvPD1xk/UwOqlVYo0ueTMXm1hID+OSq37NYYaLVSqA0YXVQ
- DXQ3hSXTRlLJYxYSnFZHjEzhEEmzmTmSa2dtFjQ6RUsMLss4mE/9jftdGyJBN6Gike6s03XdA
- B9jgASrnVlj/cdC0L0YXbDNc9zPYUiXGnddH/QIiEaemBK4KdL3sMxp2+K3/Dq8SRbev23JWR
- iE2MFKp65l0j/BcrBW7qwMfS2Vd+Ng3rAoKH5JzMDeIbuRNWwbjJ7Pu0z0uufT7t7Q7tCccCX
- DNlr1JoT9tyqL4xw/CvKb7Ric3nATWp2dZU7AHwuBGOO7uBwgUNabHMNHzkJm3K0lTDqel9NW
- Rve+T5wv7v5wa9dOyjp+k63hHKO9q5p6ugAHD1ENml0cUGbwviG/CJePJQOaImicXmvhOkIvk
- uLQzF7+Udb4GNQtPbJHp1jxizE3bBWtK6dSeaIW1IUVf23XeA49cDFxd3wBkqgZNGm4xoy6MU
- smt+LKUD+t//4mOEQYMrX/9EhgoSE0KZvBAWdY1yYlX9+PDWo5LZbS7HnYmdhacu8XPVfWQI5
- kYvWHDyxDd/OxO6LSMscT9V6GOzULzkrJ+wa5vIv+i/GZLR9LWGTEHsIzA7fXihlMRAe/tQ77
- ICN+AS1sgLEJLO4xsjEGdR12YfLkKSNn9ncEL6mMBIXq2K1cM5TXx9tWRpBDsHZpVtKWeRlmS
- J9fQteMqi9cOYk+NCQqgq/4Ct1c=
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
+Small statistics library, for taking in a series of value and computing
+mean, weighted mean, standard deviation and weighted deviation.
 
+The main use case is for statistics on latency measurements.
 
-On 2024/1/27 08:32, Linus Torvalds wrote:
-> On Fri, 26 Jan 2024 at 13:56, Qu Wenruo <wqu@suse.com> wrote:
->>
->> On 2024/1/27 08:21, Linus Torvalds wrote:
->>>
->>> Allocation lifetime problems?
->>
->> Could be, thus it may be better to output the flags of the first page
->> for tree-checker.
->
-> Note that the fact that it magically went away certainly implies that
-> it never "really" existed, and that something was using a pointer or
-> similar.
->
-> IOW, this is not some IO that got scribbled over, or a cache that got
-> corrupted. If it had been real corruption, I would have expected that
-> it would have stayed around in memory.
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Daniel Hill <daniel@gluo.nz>
+Cc: Darrick J. Wong <djwong@kernel.org>
+---
+ MAINTAINERS                                        |  9 +++++++++
+ fs/bcachefs/Kconfig                                | 10 +---------
+ fs/bcachefs/Makefile                               |  3 ---
+ fs/bcachefs/util.c                                 |  2 +-
+ fs/bcachefs/util.h                                 |  3 +--
+ {fs/bcachefs => include/linux}/mean_and_variance.h |  0
+ lib/Kconfig.debug                                  |  9 +++++++++
+ lib/math/Kconfig                                   |  3 +++
+ lib/math/Makefile                                  |  2 ++
+ {fs/bcachefs => lib/math}/mean_and_variance.c      |  3 +--
+ {fs/bcachefs => lib/math}/mean_and_variance_test.c |  3 +--
+ 11 files changed, 28 insertions(+), 19 deletions(-)
+ rename {fs/bcachefs => include/linux}/mean_and_variance.h (100%)
+ rename {fs/bcachefs => lib/math}/mean_and_variance.c (99%)
+ rename {fs/bcachefs => lib/math}/mean_and_variance_test.c (99%)
 
-Yep, thus it makes sense to show the page status of an eb.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 8d1052fa6a69..de635cfd354d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -13379,6 +13379,15 @@ S:	Maintained
+ F:	drivers/net/mdio/mdio-regmap.c
+ F:	include/linux/mdio/mdio-regmap.h
+ 
++MEAN AND VARIANCE LIBRARY
++M:	Daniel B. Hill <daniel@gluo.nz>
++M:	Kent Overstreet <kent.overstreet@linux.dev>
++S:	Maintained
++T:	git https://github.com/YellowOnion/linux/
++F:	include/linux/mean_and_variance.h
++F:	lib/math/mean_and_variance.c
++F:	lib/math/mean_and_variance_test.c
++
+ MEASUREMENT COMPUTING CIO-DAC IIO DRIVER
+ M:	William Breathitt Gray <william.gray@linaro.org>
+ L:	linux-iio@vger.kernel.org
+diff --git a/fs/bcachefs/Kconfig b/fs/bcachefs/Kconfig
+index 5cdfef3b551a..72d1179262b3 100644
+--- a/fs/bcachefs/Kconfig
++++ b/fs/bcachefs/Kconfig
+@@ -24,6 +24,7 @@ config BCACHEFS_FS
+ 	select XXHASH
+ 	select SRCU
+ 	select SYMBOLIC_ERRNAME
++	select MEAN_AND_VARIANCE
+ 	help
+ 	The bcachefs filesystem - a modern, copy on write filesystem, with
+ 	support for multiple devices, compression, checksumming, etc.
+@@ -86,12 +87,3 @@ config BCACHEFS_SIX_OPTIMISTIC_SPIN
+ 	Instead of immediately sleeping when attempting to take a six lock that
+ 	is held by another thread, spin for a short while, as long as the
+ 	thread owning the lock is running.
+-
+-config MEAN_AND_VARIANCE_UNIT_TEST
+-	tristate "mean_and_variance unit tests" if !KUNIT_ALL_TESTS
+-	depends on KUNIT
+-	depends on BCACHEFS_FS
+-	default KUNIT_ALL_TESTS
+-	help
+-	  This option enables the kunit tests for mean_and_variance module.
+-	  If unsure, say N.
+diff --git a/fs/bcachefs/Makefile b/fs/bcachefs/Makefile
+index 1a05cecda7cc..b11ba74b8ad4 100644
+--- a/fs/bcachefs/Makefile
++++ b/fs/bcachefs/Makefile
+@@ -57,7 +57,6 @@ bcachefs-y		:=	\
+ 	keylist.o		\
+ 	logged_ops.o		\
+ 	lru.o			\
+-	mean_and_variance.o	\
+ 	migrate.o		\
+ 	move.o			\
+ 	movinggc.o		\
+@@ -88,5 +87,3 @@ bcachefs-y		:=	\
+ 	util.o			\
+ 	varint.o		\
+ 	xattr.o
+-
+-obj-$(CONFIG_MEAN_AND_VARIANCE_UNIT_TEST)   += mean_and_variance_test.o
+diff --git a/fs/bcachefs/util.c b/fs/bcachefs/util.c
+index 56b815fd9fc6..d7ea95abb9df 100644
+--- a/fs/bcachefs/util.c
++++ b/fs/bcachefs/util.c
+@@ -22,9 +22,9 @@
+ #include <linux/string.h>
+ #include <linux/types.h>
+ #include <linux/sched/clock.h>
++#include <linux/mean_and_variance.h>
+ 
+ #include "eytzinger.h"
+-#include "mean_and_variance.h"
+ #include "util.h"
+ 
+ static const char si_units[] = "?kMGTPEZY";
+diff --git a/fs/bcachefs/util.h b/fs/bcachefs/util.h
+index b414736d59a5..0059481995ef 100644
+--- a/fs/bcachefs/util.h
++++ b/fs/bcachefs/util.h
+@@ -17,8 +17,7 @@
+ #include <linux/slab.h>
+ #include <linux/vmalloc.h>
+ #include <linux/workqueue.h>
+-
+-#include "mean_and_variance.h"
++#include <linux/mean_and_variance.h>
+ 
+ #include "darray.h"
+ 
+diff --git a/fs/bcachefs/mean_and_variance.h b/include/linux/mean_and_variance.h
+similarity index 100%
+rename from fs/bcachefs/mean_and_variance.h
+rename to include/linux/mean_and_variance.h
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 975a07f9f1cc..817ddfe132cd 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2191,6 +2191,15 @@ config CPUMASK_KUNIT_TEST
+ 
+ 	  If unsure, say N.
+ 
++config MEAN_AND_VARIANCE_UNIT_TEST
++	tristate "mean_and_variance unit tests" if !KUNIT_ALL_TESTS
++	depends on KUNIT
++	select MEAN_AND_VARIANCE
++	default KUNIT_ALL_TESTS
++	help
++	  This option enables the kunit tests for mean_and_variance module.
++	  If unsure, say N.
++
+ config TEST_LIST_SORT
+ 	tristate "Linked list sorting test" if !KUNIT_ALL_TESTS
+ 	depends on KUNIT
+diff --git a/lib/math/Kconfig b/lib/math/Kconfig
+index 0634b428d0cb..7530ae9a3584 100644
+--- a/lib/math/Kconfig
++++ b/lib/math/Kconfig
+@@ -15,3 +15,6 @@ config PRIME_NUMBERS
+ 
+ config RATIONAL
+ 	tristate
++
++config MEAN_AND_VARIANCE
++	tristate
+diff --git a/lib/math/Makefile b/lib/math/Makefile
+index 91fcdb0c9efe..8cdfa13a67ce 100644
+--- a/lib/math/Makefile
++++ b/lib/math/Makefile
+@@ -4,6 +4,8 @@ obj-y += div64.o gcd.o lcm.o int_log.o int_pow.o int_sqrt.o reciprocal_div.o
+ obj-$(CONFIG_CORDIC)		+= cordic.o
+ obj-$(CONFIG_PRIME_NUMBERS)	+= prime_numbers.o
+ obj-$(CONFIG_RATIONAL)		+= rational.o
++obj-$(CONFIG_MEAN_AND_VARIANCE) += mean_and_variance.o
+ 
+ obj-$(CONFIG_TEST_DIV64)	+= test_div64.o
+ obj-$(CONFIG_RATIONAL_KUNIT_TEST) += rational-test.o
++obj-$(CONFIG_MEAN_AND_VARIANCE_UNIT_TEST)   += mean_and_variance_test.o
+diff --git a/fs/bcachefs/mean_and_variance.c b/lib/math/mean_and_variance.c
+similarity index 99%
+rename from fs/bcachefs/mean_and_variance.c
+rename to lib/math/mean_and_variance.c
+index bf0ef668fd38..ba90293204ba 100644
+--- a/fs/bcachefs/mean_and_variance.c
++++ b/lib/math/mean_and_variance.c
+@@ -40,10 +40,9 @@
+ #include <linux/limits.h>
+ #include <linux/math.h>
+ #include <linux/math64.h>
++#include <linux/mean_and_variance.h>
+ #include <linux/module.h>
+ 
+-#include "mean_and_variance.h"
+-
+ u128_u u128_div(u128_u n, u64 d)
+ {
+ 	u128_u r;
+diff --git a/fs/bcachefs/mean_and_variance_test.c b/lib/math/mean_and_variance_test.c
+similarity index 99%
+rename from fs/bcachefs/mean_and_variance_test.c
+rename to lib/math/mean_and_variance_test.c
+index 019583c3ca0e..f45591a169d8 100644
+--- a/fs/bcachefs/mean_and_variance_test.c
++++ b/lib/math/mean_and_variance_test.c
+@@ -1,7 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <kunit/test.h>
+-
+-#include "mean_and_variance.h"
++#include <linux/mean_and_variance.h>
+ 
+ #define MAX_SQR (SQRT_U64_MAX*SQRT_U64_MAX)
+ 
+-- 
+2.43.0
 
-It could be some race that the eb pages are not properly hold, thus its
-content changed unexpectedly.
-
-Thanks,
-Qu
-
->
->                   Linus
->
 
