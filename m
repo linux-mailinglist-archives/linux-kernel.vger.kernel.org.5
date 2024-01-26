@@ -1,221 +1,590 @@
-Return-Path: <linux-kernel+bounces-40171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86E2A83DB9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:21:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5799B83DB9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:22:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7224A1C2129C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:21:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CA1E284127
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:22:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52CFC1C693;
-	Fri, 26 Jan 2024 14:21:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D897F1C29E;
+	Fri, 26 Jan 2024 14:22:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WlyBM9Uw"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ZmUNtgqb"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2072.outbound.protection.outlook.com [40.107.223.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46CB11C287
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:21:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 140A71B599
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:22:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.72
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706278898; cv=fail; b=UfR0IXdW/0OEeUzfl9eZSP/BQO3hQS/xqVjafVLwaXePdss0e/8mjS2nZ2h3qO6rSo0i6njJznkNdJr3J3cTjWzN2tnLmXOSrZky1NZ/MDfum9dp4ACz5RuDCnb2BUGSO3TqooiaFR0MFNV3DJz3n0SUPTPlYd9eVQXETciuq30=
+	t=1706278930; cv=fail; b=Ugejt67L1lNtkxe5LS7SeguOd9SiZU+6eJkgZthrvzjlh3QzOKfxuimrbYEnNIWD64VOWuEE0phxHY11SfHcXuNPf0+Gxz+NpBHcPjACQY5UDF/2iXelLPynW548xeoHxP3UPa7WV9WOimwgiGmqoUe8d9RSMqXHyhnb7xsoR8c=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706278898; c=relaxed/simple;
-	bh=Wyyg59AUjNrInBL7i4KyKiX0Gthw29pZn5bdcxMsi7g=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=LMzvQdlhrV6itBBM00fdcQHRnC0/kz4C6dsMc9kgvXX5p/hiD4g/uA5K51EIV5bXBEHQx+MJjdAs8vrrKxQSOXjj2LJ00dSXi/O8Jq/YhcYbQd23+1nl+Bp5kLminNovyOvw4MiUH7t5bm8xSB9EXZii2iEN6vcL2Uc12TH+fBw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WlyBM9Uw; arc=fail smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706278896; x=1737814896;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=Wyyg59AUjNrInBL7i4KyKiX0Gthw29pZn5bdcxMsi7g=;
-  b=WlyBM9Uw6NTpVX1SmU7BgUal4930QWsP69T48GHHtOrAh97eGyuaUaC7
-   jdSwchjq+U+zkP80u4PGOMGOtp02rbfBpYbI2p67jsQnJhbdBLjKxRpE1
-   CeBieTEUcIzIICBOz/q4nR86xQAKDB4sIPbOcVOnpLO+37gy3ZMUmHOXK
-   NRxSGKE1RqC+EaijpRCuwsrMjV9jNaIcn01sXJ+4ae7agXTavevGQOKuZ
-   GMplGhAtH+axGHdvkYn3gwhK2GD5BuJtumgNiuc4L0XFqn6QXCgkohGIP
-   ecp1o6j6r/JxF/VxQUL5+7crfB4v7i7EsQjOI/JbIDeh3sSEPeph/HxI5
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="15836804"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="15836804"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 06:21:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="787114813"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="787114813"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Jan 2024 06:21:34 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 26 Jan 2024 06:21:33 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 26 Jan 2024 06:21:33 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 26 Jan 2024 06:21:33 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 26 Jan 2024 06:21:33 -0800
+	s=arc-20240116; t=1706278930; c=relaxed/simple;
+	bh=3ySJRPLm7Qoo+3nmKo+lAak4scAf0HCKHrDYVYJgojE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=TNB2yNcJEtOrNwAzbaFr17J0unikHyCvix+CC5zz+Okkz5kqcU+Tr27oHNSeuIfzAjacKmw/CmH5G7tJLvN5P+CWHNLBM5oHKgpJhdoFsPhhJIsx6wh8NgcjOmrunTEOdjFsn74VJGlwv40ZLDd+pOiJ7KSofC2XUJcrR07xfpA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ZmUNtgqb; arc=fail smtp.client-ip=40.107.223.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TX6UH5Chz0V7lLcQCPT6SCorZwgQyxp1KJS/5GEyawifwURK66mygJUz16ZUTc2VnwUM47txcAFPI6rmNwfQil+BNgqvt5goQUTrhgJc/uWF0ZnZbOSd4fkObLDUf7tNrh4lSoj0pCjGbwEfLFFVWL7LupvDHq3hsqFDCldNnmwNWNq27ATSG+j+dAUr5fQ4QdMEEB0tOzMtYBuXnm6UTAohzvj49D98rXYkuUsGmP32ylRupy4W8z/WaV88IegWIRJobgGqUTfqMEU1bU7JX2k/33n58Qqemc/TR8W68eWvu5YFImlfnSh90PoFksrVcrMD0mI+39guAkvA7JMvgQ==
+ b=a3we9VLLJGbU3XYqW3xOzSqA2ZFrs401+Pab7qc8m4eYgd36S6z+5mORQWryq2XvJxhvWVQvuHB+JLXxFLJiIYKcq0gTmroKDAY1SIygBaRNwRrPEG7sBvjcvs4tPm016gBibx7/sKbtBQ0qEaaKPSRZHFZP7fpabebynMKOUu+z9OXr8Q3be7unW7M/zLoQ+DPNb3Uy/Fg9JzMjTbuoULip9UwD02U4W/RmoUfhtmx2U77UmagPAKyLhLnvmxLgY+T4m2KBNo2R6uB/r1GLlyj0BVCRZxci06/0YG5f5GPZN5+U8ahjfyv1Be6MerVC726NZz+4i4v9ONJa/qZnmg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Wyyg59AUjNrInBL7i4KyKiX0Gthw29pZn5bdcxMsi7g=;
- b=Y2w80h2ECduHvzxUftoYAH2yYX9dCvwPxSKcOuF0TaAWZt1awYNtFmqTrsc50zZPYXfQFE4Exmov1KKizJ0MdwOXpxHJjItP/1qZQJWVs3aYwLbXPX3UY3iCjZeLbla2GzHXpNP1WGObIWDmnwfrAtAwdoI6lrW393AQ9uQSoyYe0ZJszhkCuivBic8AoGL/NW0sZSoTLgAj79PLUJfURMd1WeIPWe9t41AOfNERw6K+6jYNk/qPsr1049cpFmluI39LEPS3d5f7caPUylmlnExAMuQw4UnNdAmJZ2AHAqXA3upqXV+hAQgWYdlwkRsfUXoVclVKTELMfwGMlhQQrA==
+ bh=Y0moajHl7xz+U1jGgVwYV+OLr3SnbQ0UXIOtrH8KS1U=;
+ b=g4QPybMAydY4R6JxSDZ5Pt043ynPU5D5z6zRHIAWAg3ExoDScmMsLFc2VlpRuADPQqnKofxzFxIwZxfdQW/x6QsAVbiE4D80EIN5UJ8pirYabTwSLET4yvtfvlSaUE+sGf/qGhi/PEwKwWmTZbdSLnlX24YXpRAq5d/XwprU6GnN5wBuOJ4aatY+M1L+hofcnTLC5waqGWsBMXSIP4Muy0So/w+Vp8xwx61t8BLYsjXEfz8O7xdga/rLq/Kotgr1czizAXst0I1npAOsSUmVBYEDEmvSBzQj2wSpFK5O+o+wEYM0QehEnFQrn3r2jEfsyyLuk2hjnwjvoqm9OPP4Ow==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by IA0PR11MB7936.namprd11.prod.outlook.com (2603:10b6:208:3dd::20) with
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y0moajHl7xz+U1jGgVwYV+OLr3SnbQ0UXIOtrH8KS1U=;
+ b=ZmUNtgqbzIpFiwz0Tu+hc9w06JWFSweLydfII9lNUsFwrE1aYsTmHTw8L8sPInmY8D5mB8jX9DFp79k/gQgBoV3gchg4PQcMVuu52l0NqMS2a5+ga57WDaWpknEe2rhcDVgPST893aOCpcQLh8SblMJLQSfZDwMNiMeTOk+ohRWkFeHzLeVjdt9pfxWbIuVkKK65Z+0sraUsRdE/dnNBpNUbEKNQoH9OKQVwNdVxfgMb1Qd/SsHnIr98GW3SoErvb9y5spKaOCct21geo8l+BC4BJSvmpV9m3iUD2L0sRm4E0Be6qqiz2SbyR+fxJrTh69PazrY4Su8I4gTUw7UG/A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
+ BN9PR12MB5338.namprd12.prod.outlook.com (2603:10b6:408:103::23) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.27; Fri, 26 Jan
- 2024 14:21:30 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::124d:fbd5:113b:16ec]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::124d:fbd5:113b:16ec%4]) with mapi id 15.20.7228.023; Fri, 26 Jan 2024
- 14:21:30 +0000
-From: "Huang, Kai" <kai.huang@intel.com>
-To: "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-	"tglx@linutronix.de" <tglx@linutronix.de>, "mingo@redhat.com"
-	<mingo@redhat.com>, "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de"
-	<bp@alien8.de>, "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
-CC: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>, "Reshetova, Elena"
-	<elena.reshetova@intel.com>, "Nakajima, Jun" <jun.nakajima@intel.com>,
-	"rafael@kernel.org" <rafael@kernel.org>, "peterz@infradead.org"
-	<peterz@infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "sathyanarayanan.kuppuswamy@linux.intel.com"
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, "Hunter, Adrian"
-	<adrian.hunter@intel.com>, "thomas.lendacky@amd.com"
-	<thomas.lendacky@amd.com>, "ashish.kalra@amd.com" <ashish.kalra@amd.com>,
-	"kexec@lists.infradead.org" <kexec@lists.infradead.org>, "seanjc@google.com"
-	<seanjc@google.com>, "bhe@redhat.com" <bhe@redhat.com>,
-	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>
-Subject: Re: [PATCHv6 16/16] x86/acpi: Add support for CPU offlining for ACPI
- MADT wakeup method
-Thread-Topic: [PATCHv6 16/16] x86/acpi: Add support for CPU offlining for ACPI
- MADT wakeup method
-Thread-Index: AQHaTsTQgPMKbbXaMkadtTZSS8tncbDsKFuA
-Date: Fri, 26 Jan 2024 14:21:30 +0000
-Message-ID: <075348cdf2b4d3361db5c7d420f09a1c8935328e.camel@intel.com>
-References: <20240124125557.493675-1-kirill.shutemov@linux.intel.com>
-	 <20240124125557.493675-17-kirill.shutemov@linux.intel.com>
-In-Reply-To: <20240124125557.493675-17-kirill.shutemov@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.50.3 (3.50.3-1.fc39) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|IA0PR11MB7936:EE_
-x-ms-office365-filtering-correlation-id: aa701ade-8b82-4419-48a3-08dc1e7a1775
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Va5f0fYrXVr6Z7Dpgc2IaMM4c3AUEoz3lMc+TFKz203ZsHMFIYT/aTsZJ3l6JHKSvlGwCa+5rmy4fFA1Cz4XgUAVJEHBvo3+5qxHzj/JP4PayXek4AVu2yKJKI9/vBzjSpYYyl4FNLJqqjFTCrVZkBUaDD6tFldIvNXat9KpTl+kdeWnGQJbPIrk9tPgLeduC+KEIH2moRIOFUW+ue1tLQr3lDad98UBDX3a4p4lLPk9sgIna+eMxfBbP/3eWEglKR2FLKuG2MfEjx8XLc9saDGEXRuRABMej934OugYVAhGFSaaCWfvh7gZznyEVXF4HHoJpgUYkOuLQfRGmgcOHXJU2a0nQWwlCGM3YWA4omHjlv/Misc+W/t4xRM9ObX+qIyrHTEBM5yqJG4Enc+tUWQVNxpon40TKXNBP3sbRAsOGdPSlnjtDrfeKI3LY/Al+CaA2kpV0a3Tovci4IfeSLwdIVh68oY+Pwl9d01fvSJxfT0zbpTAz1OzYjQ1sEM6QHByIN1z087gGlU3ITQ3QiKuVPzf9B3vIBAMAGQ+gw9hBXFz3vRRNjSxvqiuPznf0O+ZjMeeUDnbpb1U3eCOPyBftIlCkRexNNp1/5RJ+5E=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(346002)(136003)(376002)(39860400002)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(38070700009)(91956017)(54906003)(66946007)(66446008)(66476007)(66556008)(316002)(76116006)(64756008)(110136005)(83380400001)(7416002)(5660300002)(2906002)(122000001)(6512007)(8676002)(8936002)(4326008)(2616005)(6506007)(41300700001)(71200400001)(38100700002)(478600001)(966005)(6486002)(26005)(86362001)(36756003)(82960400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZlNCcS9HYjZFRDV1STJsV0xxUkJHWnRwTmNZYXBtL3p5MHBiSG1IRGZNbHZz?=
- =?utf-8?B?bU9GWXVReGRrODFDWVgyemcrK29vbW1CTCtaTjY1YUdiNHZRV3Z4OTUydHhj?=
- =?utf-8?B?REdVVEFXbnByNHUzakxTVjhvMk9Odm1OM1J1a21UZVVaOUd0RTdVRkxWUGJn?=
- =?utf-8?B?cnRSSmd0ZXg4dmh1SUZDQ3Z6SWN2TXp3bW9vUk9GcFNudlF6Tm5TWk12UHBM?=
- =?utf-8?B?NWVaNGcrOW5FS3gwWFFuR2tqSnl6RVZwUEh3bWIvTnU3YnNneGpkSUhmRjU0?=
- =?utf-8?B?cU51OC83eUgyUFNmMnVWRFgwZmY1anQrSTVDZVpxU1k0Y0FDY3hPa096TjRP?=
- =?utf-8?B?V0d4dks5MnA5VWJZcGdpUGwzb2Q5U3VCT2ZPOHo1S3Vjd3BVSlVLREJKY2tj?=
- =?utf-8?B?clZaSHhLeEZGR2Zob21kSW1ZQm85V044T3dPZWpjeDRJRk83RnhjM3ZnK3U4?=
- =?utf-8?B?MHRqcFE0WjVDOHVwM0F2QTRjUXdEQnVPcFVoTzFTN3B6NzB1bFk5ZmtWWVBL?=
- =?utf-8?B?ZldkY3hTaUFsTGd0YVFLWng0Tk1HMDN6Mkh6UnI0aHZMMFpiSm9ESU9MZ1Rs?=
- =?utf-8?B?R1kwY3hJMlFiMmovbmdqamljRnlXNlBKZkxVNEs5WnliMmhyUzgvQmpMaGJp?=
- =?utf-8?B?cUZERTJsa1hOZGFndFNhZjdzQ0lseVJLYW9kcmFBa0ZBeGw4NTMvODYyaGpC?=
- =?utf-8?B?b1lmOE5RVzFpZ3V3RVVWMm1WcEZwWXBoamRKSDlySExPSnRsUDFiNzRiVjZJ?=
- =?utf-8?B?WVFTa2V1SyttdW9qUTVLY2NiL1V5d09MT2txYnYvaW1JL2NvNWpkL2VXZWk0?=
- =?utf-8?B?cXhKakFFcXE1bG5SY0ZkR3JickxLQXJYenFXTVptdUFGbE9wblV4dG1hd1hp?=
- =?utf-8?B?L3l2aCtYczJWbUxpU1FqMjJGcnJ2VXRnazFMYk0wUVM1aWZRcTNjaTFCV0Iv?=
- =?utf-8?B?YmpQbEdhY0NZcVFEOEFjR2QxcVMyNitIdkJPKzFDZmFQYko5Q08vRUw2SW8r?=
- =?utf-8?B?cjZPeEMyN0JtNDhIUldGeHZTeFpZbmx1L24xelVDRWc0R05wVUlxZkFFbVNR?=
- =?utf-8?B?c01iTnVBdVkyU1BDS2hHbmtTdXNRNlZET1JEbTRRMTlqOXRWaytLRzh3M3VK?=
- =?utf-8?B?eE5tcGNhcDdzbTZPN1o0WVNaczNLMVpQajRqSnhRZWRoYldlMEFzRXNNMld0?=
- =?utf-8?B?dFpiem5Wa2hvbkRKS0k3WWxzbEhpUllMV2Q5TkJlTS8rQ3EvbHNaR2t4Zm53?=
- =?utf-8?B?ai9PaUVRNlpweSt0R3VydkI0Z2JNajdPTEZqWmpabWowQkZuODV6ODhkWnN2?=
- =?utf-8?B?WUgvb2dGMmwxUVU1Zmx2eDFTbnY5dkpmTHdJUE5Uc09UVlpFN1crSVBWblhM?=
- =?utf-8?B?bzkxMXgrNFlkRlZoeTdqcGdJQ2dWRUZTeEc0MjhXV1FGVzAvTHNqZlN0bWs3?=
- =?utf-8?B?OUlmM0MzbGJTTXU4M3ZxdHc3bGxncU1SaGtIaEN2UFIvRzZaeGlNNSsxZGJN?=
- =?utf-8?B?MzhEMFVqeEo1NjZwSmNhMEdpaU0vZ0Job0llSDJ1ZU0yMHp5ODFYYVFFbS9C?=
- =?utf-8?B?NDhERU1qaS93SHFFTDJPeFVNL2lnRW5NYm9qbUE2dGFnWVp4NVZNbGxyc2Ru?=
- =?utf-8?B?MDkxeUNwRGdaaGxLcnJYNEttRHgrQk0yci9wT0NGQkdrVG0rc21OVUhWVGxv?=
- =?utf-8?B?NkVYMlM5NmNjTHV2SWEvNU1FZno4dXZZOGp4TUFleCtWRTVibEMyTzBud00x?=
- =?utf-8?B?amp2YW5yWStiWVZibFVNZElHWU1tbTIrUkV0aUI3dmtqY2JXRjBla3RWc3Zp?=
- =?utf-8?B?Q2pDNCtEOE9sVmpqdmhBU25kMTY1a3JrenBJblUxOHBoZFozZ3VrRUI4V1Aw?=
- =?utf-8?B?VDRFcXJBdHh0WFhsSHRPQlBtL2pYdnlCcEpyZFJiS2xNeXN0dmNBcm9kNDBm?=
- =?utf-8?B?MGF5S2RYeGlOazgrblY2VlBBOHMwelhFQ0xKTEM2MG5XYjJyYzdJaXlKRFMz?=
- =?utf-8?B?NklhYzVudzJ2dGJOU3ZTZEkwemhGaXc0NDgvT0UzRmNzcS9ETnk3QmZkZ3lO?=
- =?utf-8?B?Q2wvQzJoNGpaVU16dUQ2VkIvZTArV3hBRGNPMnM3S25LRXV3a0FGc1V3d2E3?=
- =?utf-8?B?NjVweURXcXMxNnpzMXBpZU02UXdFdDQvNUxSa29FbmpIcSticmp0SVA0aHhw?=
- =?utf-8?B?MlE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <0AA25C5A16DA2245AF995D0D4950251D@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Fri, 26 Jan
+ 2024 14:22:04 +0000
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::63ac:1dc1:e486:121f]) by DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::63ac:1dc1:e486:121f%4]) with mapi id 15.20.7228.026; Fri, 26 Jan 2024
+ 14:22:04 +0000
+From: Zi Yan <ziy@nvidia.com>
+To: Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ "\"Huang, Ying\"" <ying.huang@intel.com>,
+ Ryan Roberts <ryan.roberts@arm.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "\"Matthew Wilcox (Oracle)\"" <willy@infradead.org>,
+ David Hildenbrand <david@redhat.com>,
+ "\"Yin, Fengwei\"" <fengwei.yin@intel.com>, Yu Zhao <yuzhao@google.com>,
+ Vlastimil Babka <vbabka@suse.cz>,
+ "\"Kirill A . Shutemov\"" <kirill.shutemov@linux.intel.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, Kemeng Shi <shikemeng@huaweicloud.com>,
+ Mel Gorman <mgorman@techsingularity.net>,
+ Rohan Puri <rohan.puri15@gmail.com>, Mcgrof Chamberlain <mcgrof@kernel.org>,
+ Adam Manzanares <a.manzanares@samsung.com>,
+ "\"Vishal Moola (Oracle)\"" <vishal.moola@gmail.com>
+Subject: Re: [PATCH v2 0/3] Enable >0 order folio memory compaction
+Date: Fri, 26 Jan 2024 09:22:01 -0500
+X-Mailer: MailMate (1.14r6018)
+Message-ID: <D47A9ED8-E537-4D2E-82FD-8E6A77ED5024@nvidia.com>
+In-Reply-To: <f7d7eb0a-2bb3-4ae0-9874-7b667f8a004c@linux.alibaba.com>
+References: <20240123034636.1095672-1-zi.yan@sent.com>
+ <f7d7eb0a-2bb3-4ae0-9874-7b667f8a004c@linux.alibaba.com>
+Content-Type: multipart/signed;
+ boundary="=_MailMate_47FAB1F6-C989-4B85-903B-DFE8CAC71A9F_=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+X-ClientProxiedBy: BL1PR13CA0175.namprd13.prod.outlook.com
+ (2603:10b6:208:2bd::30) To DS7PR12MB5744.namprd12.prod.outlook.com
+ (2603:10b6:8:73::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|BN9PR12MB5338:EE_
+X-MS-Office365-Filtering-Correlation-Id: a6b42c85-6bcc-4031-efa0-08dc1e7a2b33
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	z0tt13YQYKUXFLny56khRTaELa6LX65uhRLJMmpYwOK/hFSYB+4l7tC1Ekqdh+nW212C4dOBqKEj5m3hzf+c9EUxox3PnQzQzKDdWnC6GnTi4/R2RM7w2JOBS9DWJBd3+G1nPOynrSi+37+srbn4te8Ti3hH95JRA3cMQysTZM25ivzukEWMZRB3LVfBiuZaVXoOSG8lUbgV/lLyTqArV9XEUOkTGpMi8Lg9uVnawa/6m5t36rw8wBxBOqENJJ1pW5ZnYIjUcpZFNWJe5/91TzqvJWZUHB4hvwJGLeiyWz9DlbzkejVOGEJdoo28WbAbFIgHPmI07ULqEXh74GQ6I3s4qGATDD+BIN8RrCxAZpUk7JfuwWBBbZ23G3QtYHkaeWLnXrqIbDfakNJs0zfo06RnQ9eQT7sWwC2dSvoM+OC6/g4xJGmjOVeWmAQRIAnovUzOMhJrFS3Ol5qFNfCJPuzxwaY1CYEhpextToD83x3vIos2L2ytP0k0jRPk2FJrVrwo7c+u6zJsBHgltuvjYbhTS2vh60DxNlRk9aqTP4i1dPUpw3R6jBfS+zPSL+6/FPAFI5RkwRBsmshruUcsDpQPjVqfOgZwMOMtQO5860RS+g6b/UnFxqm/Ny5qhmR3VapU9FehS+3oRK4oL+7G+wboiWx0r1dlEBiEu3rUfoQ=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(39860400002)(346002)(376002)(136003)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(83380400001)(2616005)(33964004)(53546011)(966005)(6506007)(6486002)(6666004)(26005)(6512007)(478600001)(66556008)(66946007)(6916009)(66476007)(316002)(54906003)(86362001)(38100700002)(8676002)(5660300002)(2906002)(30864003)(4326008)(36756003)(41300700001)(8936002)(235185007)(33656002)(7416002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?eTdlTHFVRVU3R2FJdzhpdXI5eFNRUEMxbUZXWXJiQkMzcUtqYWVGSlN0Rk13?=
+ =?utf-8?B?eTlPbVJPaFR2WEk2d3RHcFhNQS9TcjQ3TDRQQUlKR0o5MXJrVlVkQ3p5WEY5?=
+ =?utf-8?B?UlBOVzc5ZmxnNmhzaXdXWDcweVQyR3hZbXQ1cXlCaEFKWWJ4S3hwU0NJalph?=
+ =?utf-8?B?RlVwN3JyMFVzak5GdWxaRnZZM3BUNHJFK29MUEExZlNlaFdlMjdpZUwxZkRr?=
+ =?utf-8?B?ZWZFUmVneEZTeXgxbmluYVlHUjAyQVNBZGFRSnhTUW5yY0JnKzRsTlpEb0ZG?=
+ =?utf-8?B?d3kvTVVQeHJHZUhMNkFqSUpOLzlQZkxabVRSTTNQMXpVY0ZNZ0FWaVAwM2Fx?=
+ =?utf-8?B?Q0l4aldSa2dWOGxyMHZxVHNTS2kwNGYzT2lhOWZBOVQxNjV3UDBEeDVYTzBv?=
+ =?utf-8?B?RjJ6Q1MxbE1VY0QyMG82TnZmY3VwenY2Q2ZXQ1FEZUd6Y3dYakZaOTVEZFc4?=
+ =?utf-8?B?bHRnZEl4YnUwU01ocVdmRGxjSVNMYTdnSk91Zkh1TFJsQmhRa1pnL1dFTmlN?=
+ =?utf-8?B?R2ZldFVjWkx6SHBpa2RLS25NVnp1OGxPV3F0dmhGSjZIcHF3K1ZNUmhiYlZT?=
+ =?utf-8?B?aHg5VG4ybVBLTjFCbFJXL040TXVOVHc5VjZBdlpKV3dOWlZSR0hjKytRTE5R?=
+ =?utf-8?B?N25pVW52emp4MEtrcFJOdTZ6WWVUdy9UUE1nd3JWb2k4SGplV0EyN1JCTnph?=
+ =?utf-8?B?SlI5NHlwbm5KZktJNEZ6U1NMWGVvOTg5UHk0bW5lR041ZTU3b3ZjSkdiRVJs?=
+ =?utf-8?B?bVE5dXdWV2xjSzNGRzNmVE9yNkprZ2NveWhmUGtYYTVxRWZBZzh3MnVVV2l0?=
+ =?utf-8?B?Q3RHSHJQZFA3UW1rMzRLdWN2ek9ndDh3S0Vkd3plZE9KWWQ0U2VUY0syV0hv?=
+ =?utf-8?B?a3RWNW8yampGNTZOWVNKVy90UEYyZ3k4a1IwNitjVmxRcjN3QlYzb0lPTGRo?=
+ =?utf-8?B?SGhJNXN3VHhEUFppekc5YnBwaGF3T0hRQlBiVGJFQWRpbllPUWZmWUJ0cTNO?=
+ =?utf-8?B?Uk5BZjQrdGZRdG8rb0pKS3ZndlpwZlEwaTFsa2FpNTI0K1NRdGlpV3JiUWdR?=
+ =?utf-8?B?aVZMbmlyZ3g5UFNmOVptQk96azg1ZlpJdlhzaG9PM1lqNHl4Y3ZyY2pVQzBS?=
+ =?utf-8?B?WHBGcDkzS1ZHWFh0b21kM1BmdVE2U3VLQ0poYjlpSFEyeDlGYmdjclNrMDFy?=
+ =?utf-8?B?WHdGNmFGbVJjRm5wbDl6NW5XR0tUdFpiR1BidGJkNzI2Vm91bS9DNVFreDNN?=
+ =?utf-8?B?MElzR2k2QTdvK3NmRy9RWlViQUFIR21sOEd6anA0OTl2blV6YkxoVE9NS25S?=
+ =?utf-8?B?QmM1eWg3eHpWVkpoc0FFR0RIeVNiWE03Ukl1VkFPMkNXOS95N1lGTVFqd0xs?=
+ =?utf-8?B?dVBiT1AwNzRPZnl4OHlramJGMDFGVFUwU1hnWGtDUHl4N053RHNHcTV2cTRq?=
+ =?utf-8?B?V25rbnVRN0VtSndMaTFBbnZ6Q1paSnRBZWZoV1M3aStVMWZFaUE1QzZaQTNC?=
+ =?utf-8?B?ei9ZQzIxZGVvRE1tL3YzMWVlcGVqc3NZd3doRmtOSktQWDZ6LytCYVFIRUIr?=
+ =?utf-8?B?Y3luZ3lYbW1raVRuSG9FOVVuckhpa1JkMVpTU3U2YnU5RVVoSlg1RjA3Q24v?=
+ =?utf-8?B?ei81eU11R3VLeUJxMXcrd3NpYXFiUGFhb04zNHVxV1hUV2dkdjg3QmRxZW1H?=
+ =?utf-8?B?U29rZmlvQVl2STV5N0RlaXJFUXZvOVpuQWZ2Z0lJZmk4eXJsdmdKTlVQUVA4?=
+ =?utf-8?B?ZWM5eE1GWG54T1Fnci9SaGNUVFFGWFovNm1WZHpCeHBCS0ZIajcwNWV5VDVE?=
+ =?utf-8?B?Wi8vcDA5THZqY0FBeUJ2czJCdDUwaHN0aGF5U1VMMU10ZTJrbzc3emZuRU5J?=
+ =?utf-8?B?RDJtK2I5SkhPSUc2MWNEelZRVktpYUNQM2l1TnhVY0RUZDBweG5zRzlIWHJm?=
+ =?utf-8?B?aElxWW91UFRwWkk5VTI4Z01TNnl6OWdqekl5UUJLcTlhT1hydHR3cTBjbjBC?=
+ =?utf-8?B?SXkxL3RyUjIvQjNHSG1WakRrZXZncU5JRGlLclMvTFo0MEVIUVc2SE1KQWVP?=
+ =?utf-8?B?UTNWN1ZueFNuQWpuYWFBc2dFdWY3SVBIcXBiU2M2VG82UFVVM2lCUlpMLzRF?=
+ =?utf-8?Q?B+WLX5Ag4eETKpOXlh9EgwkLM?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a6b42c85-6bcc-4031-efa0-08dc1e7a2b33
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aa701ade-8b82-4419-48a3-08dc1e7a1775
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jan 2024 14:21:30.7836
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 14:22:04.0862
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wNCKktwvwDX+WguiiteesYpq+ouWey0Pu8mXwRYjcWnx3yiF8UNSk+ORNI7iMHoIrvzJZYnsLhmS91ArF8TmVA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR11MB7936
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dw2vQO2nLnyrEaRYXNVF9meNUsJ2K+pUN1mugJRbOGGDQJIzR5P1LRFfWxTqZa1F
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5338
 
-T24gV2VkLCAyMDI0LTAxLTI0IGF0IDE0OjU1ICswMjAwLCBLaXJpbGwgQS4gU2h1dGVtb3Ygd3Jv
-dGU6DQo+IE1BRFQgTXVsdGlwcm9jZXNzb3IgV2FrZXVwIHN0cnVjdHVyZSB2ZXJzaW9uIDEgYnJp
-bmdzIHN1cHBvcnQgb2YgQ1BVDQo+IG9mZmxpbmluZzogQklPUyBwcm92aWRlcyBhIHJlc2V0IHZl
-Y3RvciB3aGVyZSB0aGUgQ1BVIGhhcyB0byBqdW1wIHRvDQo+IGZvciBvZmZsaW5pbmcgaXRzZWxm
-LiBUaGUgbmV3IFRFU1QgbWFpbGJveCBjb21tYW5kIGNhbiBiZSB1c2VkIHRvIHRlc3QNCj4gd2hl
-dGhlciB0aGUgQ1BVIG9mZmxpbmVkIGl0c2VsZiB3aGljaCBtZWFucyB0aGUgQklPUyBoYXMgY29u
-dHJvbCBvdmVyDQo+IHRoZSBDUFUgYW5kIGNhbiBvbmxpbmUgaXQgYWdhaW4gdmlhIHRoZSBBQ1BJ
-IE1BRFQgd2FrZXVwIG1ldGhvZC4NCj4gDQo+IEFkZCBDUFUgb2ZmbGluZyBzdXBwb3J0IGZvciB0
-aGUgQUNQSSBNQURUIHdha2V1cCBtZXRob2QgYnkgaW1wbGVtZW50aW5nDQo+IGN1c3RvbSBjcHVf
-ZGllKCksIHBsYXlfZGVhZCgpIGFuZCBzdG9wX3RoaXNfY3B1KCkgU01QIG9wZXJhdGlvbnMuDQo+
-IA0KPiBDUFUgb2ZmbGluaW5nIG1ha2VzIGlzIHBvc3NpYmxlIHRvIGhhbmQgb3ZlciBzZWNvbmRh
-cnkgQ1BVcyBvdmVyIGtleGVjLA0KPiBub3QgbGltaXRpbmcgdGhlIHNlY29uZCBrZXJuZWwgdG8g
-YSBzaW5nbGUgQ1BVLg0KPiANCj4gVGhlIGNoYW5nZSBjb25mb3JtcyB0byB0aGUgYXBwcm92ZWQg
-QUNQSSBzcGVjIGNoYW5nZSBwcm9wb3NhbC4gU2VlIHRoZQ0KPiBMaW5rLg0KPiANCj4gU2lnbmVk
-LW9mZi1ieTogS2lyaWxsIEEuIFNodXRlbW92IDxraXJpbGwuc2h1dGVtb3ZAbGludXguaW50ZWwu
-Y29tPg0KPiBMaW5rOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvMTMzNTYyNTEudUxaV0du
-S21oZUBrcmVhY2hlcg0KDQpGV0lXOg0KDQpBY2tlZC1ieTogS2FpIEh1YW5nIDxrYWkuaHVhbmdA
-aW50ZWwuY29tPg0KDQpbLi4uXQ0KDQo+ICsNCj4gK3N0YXRpYyBpbnQgX19pbml0IGFjcGlfbXBf
-c2V0dXBfcmVzZXQodTY0IHJlc2V0X3ZlY3RvcikNCj4gK3sNCj4gKwlwZ2RfdCAqcGdkOw0KPiAr
-CXN0cnVjdCB4ODZfbWFwcGluZ19pbmZvIGluZm8gPSB7DQo+ICsJCS5hbGxvY19wZ3RfcGFnZSA9
-IGFsbG9jX3BndF9wYWdlLA0KPiArCQkuZnJlZV9wZ3RfcGFnZQk9IGZyZWVfcGd0X3BhZ2UsDQo+
-ICsJCS5wYWdlX2ZsYWcgICAgICA9IF9fUEFHRV9LRVJORUxfTEFSR0VfRVhFQywNCj4gKwkJLmtl
-cm5wZ19mbGFnICAgID0gX0tFUk5QR19UQUJMRV9OT0VOQywNCj4gKwl9Ow0KDQpOaXQ6IFJldmVy
-c2UgQ2hyaXN0bWFzLXRyZWUgc3R5bGUNCg0KWy4uLl0NCg0KPiAgDQo+IC0jZGVmaW5lIEFDUElf
-TVBfV0FLRV9DT01NQU5EX1dBS0VVUCAgICAxDQo+ICsjZGVmaW5lIEFDUElfTVBfV0FLRV9DT01N
-QU5EX1dBS0VVUAkxDQoNCk5pdDogSXMgdGhpcyBjaGFuZ2UgaW50ZW5kZWQ/DQoNCj4gKyNkZWZp
-bmUgQUNQSV9NUF9XQUtFX0NPTU1BTkRfVEVTVAkyDQo+IA0KDQo=
+--=_MailMate_47FAB1F6-C989-4B85-903B-DFE8CAC71A9F_=
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+On 26 Jan 2024, at 4:03, Baolin Wang wrote:
+
+> On 1/23/2024 11:46 AM, Zi Yan wrote:
+>> From: Zi Yan <ziy@nvidia.com>
+>>
+>> Hi all,
+>>
+>> This patchset enables >0 order folio memory compaction, which is one o=
+f
+>> the prerequisitions for large folio support[1]. It is on top of
+>> mm-everything-2024-01-18-22-21.
+>>
+>> I am aware of that split free pages is necessary for folio
+>> migration in compaction, since if >0 order free pages are never split
+>> and no order-0 free page is scanned, compaction will end prematurely d=
+ue
+>> to migration returns -ENOMEM. Free page split becomes a must instead o=
+f
+>> an optimization.
+>>
+>> Some applications from vm-scalability show different performance trend=
+s
+>> on default LRU and CONFIG_LRU_GEN from patch 1 (split folio during com=
+paction),
+>> to patch 2 (folio migration during compaction), to patch 3 (folio
+>> migration during compaction with free page split). I am looking into i=
+t.
+>>
+>> lkp ncompare results (with >5% delta) for default LRU and CONFIG_LRU_G=
+EN are
+>> shown at the bottom (on a 8-CPU (Intel Xeon E5-2650 v4 @ 2.20GHz) 16G =
+VM).
+>
+> Overall, I haven't found any obvious issues, thanks for your work. Howe=
+ver I got some percentage regression when running thpcompact on my machin=
+e(16 cores and 120G memory) without enabling mTHP:
+>                                  k6.8-rc1               k6.8-rc1-patche=
+d
+> Percentage huge-1        86.19 (   0.00%)       51.17 ( -40.63%)
+> Percentage huge-3        93.64 (   0.00%)       42.48 ( -54.64%)
+> Percentage huge-5        94.93 (   0.00%)       31.06 ( -67.28%)
+> Percentage huge-7        95.40 (   0.00%)       19.09 ( -79.99%)
+> Percentage huge-12       93.51 (   0.00%)       32.06 ( -65.71%)
+> Percentage huge-18       83.02 (   0.00%)       54.58 ( -34.26%)
+> Percentage huge-24       83.17 (   0.00%)       49.61 ( -40.35%)
+> Percentage huge-30       96.69 (   0.00%)       59.82 ( -38.13%)
+> Percentage huge-32       95.52 (   0.00%)       59.20 ( -38.03%)
+>
+> Ops Compaction stalls                 229710.00      554846.00
+> Ops Compaction success                144177.00        9351.00
+> Ops Compaction failures                85533.00      545495.00
+> Ops Compaction efficiency                 62.76           1.69
+> Ops Page migrate success            60333689.00    11687573.00
+> Ops Page migrate failure               25818.00      459621.00
+> Ops Compaction pages isolated      127723211.00   224420997.00
+> Ops Compaction migrate scanned     142498744.00   173345194.00
+> Ops Compaction free scanned       1159752360.00   624633726.00
+> Ops Compact scan efficiency               12.29          27.75
+> Ops Compaction cost                    66050.96       17615.55
+>
+> I did not have time to analyze this issue, just providing you some test=
+ information. And I will measure the compaction efficiency of mTHP if I f=
+ind some time.
+
+Thanks a lot. These are useful numbers. I can see that the number of
+migration failures doubled and only ~1/5 of successes. I will use
+thpcompact to look into the issues.
+
+
+>
+>>  From V1 [2]:
+>> 1. Used folio_test_large() instead of folio_order() > 0. (per Matthew
+>> Wilcox)
+>>
+>> 2. Fixed code rebase error. (per Baolin Wang)
+>>
+>> 3. Used list_split_init() instead of list_split(). (per Ryan Boberts)
+>>
+>> 4. Added free_pages_prepare_fpi_none() to avoid duplicate free page co=
+de
+>> in compaction_free().
+>>
+>> 5. Dropped source page order sorting patch.
+>>
+>>  From RFC [1]:
+>> 1. Enabled >0 order folio compaction in the first patch by splitting a=
+ll
+>> to-be-migrated folios. (per Huang, Ying)
+>>
+>> 2. Stopped isolating compound pages with order greater than cc->order
+>> to avoid wasting effort, since cc->order gives a hint that no free pag=
+es
+>> with order greater than it exist, thus migrating the compound pages wi=
+ll fail.
+>> (per Baolin Wang)
+>>
+>> 3. Retained the folio check within lru lock. (per Baolin Wang)
+>>
+>> 4. Made isolate_freepages_block() generate order-sorted multi lists.
+>> (per Johannes Weiner)
+>>
+>> Overview
+>> =3D=3D=3D
+>>
+>> To support >0 order folio compaction, the patchset changes how free pa=
+ges used
+>> for migration are kept during compaction. Free pages used to be split =
+into
+>> order-0 pages that are post allocation processed (i.e., PageBuddy flag=
+ cleared,
+>> page order stored in page->private is zeroed, and page reference is se=
+t to 1).
+>> Now all free pages are kept in a MAX_ORDER+1 array of page lists based=
+
+>> on their order without post allocation process. When migrate_pages() a=
+sks for
+>> a new page, one of the free pages, based on the requested page order, =
+is
+>> then processed and given out.
+>>
+>>
+>> Feel free to give comments and ask questions.
+>>
+>> Thanks.
+>>
+>> [1] https://lore.kernel.org/linux-mm/20230912162815.440749-1-zi.yan@se=
+nt.com/
+>> [2] https://lore.kernel.org/linux-mm/20231113170157.280181-1-zi.yan@se=
+nt.com/
+>>
+>> vm-scalability results on CONFIG_LRU_GEN
+>> =3D=3D=3D
+>>
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>>    gcc-13/defconfig/debian/300s/qemu-vm/small-allocs/vm-scalability
+>>
+>> commit:
+>>    6.7.0-rc4+
+>>    6.7.0-rc4-split-folio-in-compaction+
+>>    6.7.0-rc4-folio-migration-in-compaction+
+>>    6.7.0-rc4-folio-migration-free-page-split+
+>>
+>>        6.7.0-rc4+ 6.7.0-rc4-split-folio-in-co 6.7.0-rc4-folio-migratio=
+n-i 6.7.0-rc4-folio-migration-f
+>> ---------------- --------------------------- -------------------------=
+-- ---------------------------
+>>           %stddev     %change         %stddev     %change         %std=
+dev     %change         %stddev
+>>               \          |                \          |                =
+\          |                \
+>>     2024326           +35.5%    2743772 =C2=B1 41%    +364.0%    93921=
+98 =C2=B1 35%     +31.0%    2651634        vm-scalability.throughput
+>>
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>>    gcc-13/defconfig/debian/300s/qemu-vm/small-allocs-mt/vm-scalability=
+
+>>
+>> commit:
+>>    6.7.0-rc4+
+>>    6.7.0-rc4-split-folio-in-compaction+
+>>    6.7.0-rc4-folio-migration-in-compaction+
+>>    6.7.0-rc4-folio-migration-free-page-split+
+>>
+>>        6.7.0-rc4+ 6.7.0-rc4-split-folio-in-co 6.7.0-rc4-folio-migratio=
+n-i 6.7.0-rc4-folio-migration-f
+>> ---------------- --------------------------- -------------------------=
+-- ---------------------------
+>>           %stddev     %change         %stddev     %change         %std=
+dev     %change         %stddev
+>>               \          |                \          |                =
+\          |                \
+>>     1450189            +0.9%    1463418           +30.4%    1891610 =C2=
+=B1 22%      +0.3%    1454100        vm-scalability.throughput
+>>
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>>    gcc-13/defconfig/debian/300s/qemu-vm/mmap-xread-seq-mt/vm-scalabili=
+ty
+>>
+>> commit:
+>>    6.7.0-rc4+
+>>    6.7.0-rc4-split-folio-in-compaction+
+>>    6.7.0-rc4-folio-migration-in-compaction+
+>>    6.7.0-rc4-folio-migration-free-page-split+
+>>
+>>        6.7.0-rc4+ 6.7.0-rc4-split-folio-in-co 6.7.0-rc4-folio-migratio=
+n-i 6.7.0-rc4-folio-migration-f
+>> ---------------- --------------------------- -------------------------=
+-- ---------------------------
+>>           %stddev     %change         %stddev     %change         %std=
+dev     %change         %stddev
+>>               \          |                \          |                =
+\          |                \
+>>    14428848 =C2=B1 27%     -51.7%    6963308 =C2=B1 73%     +13.5%   1=
+6372621           +11.2%   16046511        vm-scalability.throughput
+>>
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>>    gcc-13/defconfig/debian/300s/qemu-vm/mmap-pread-seq/vm-scalability
+>>
+>> commit:
+>>    6.7.0-rc4+
+>>    6.7.0-rc4-split-folio-in-compaction+
+>>    6.7.0-rc4-folio-migration-in-compaction+
+>>    6.7.0-rc4-folio-migration-free-page-split+
+>>
+>>        6.7.0-rc4+ 6.7.0-rc4-split-folio-in-co 6.7.0-rc4-folio-migratio=
+n-i 6.7.0-rc4-folio-migration-f
+>> ---------------- --------------------------- -------------------------=
+-- ---------------------------
+>>           %stddev     %change         %stddev     %change         %std=
+dev     %change         %stddev
+>>               \          |                \          |                =
+\          |                \
+>>    13569502 =C2=B1 24%     -45.9%    7340064 =C2=B1 59%     +12.3%   1=
+5240531           +10.4%   14983705        vm-scalability.throughput
+>>
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>>    gcc-13/defconfig/debian/300s/qemu-vm/mmap-pread-seq-mt/vm-scalabili=
+ty
+>>
+>> commit:
+>>    6.7.0-rc4+
+>>    6.7.0-rc4-split-folio-in-compaction+
+>>    6.7.0-rc4-folio-migration-in-compaction+
+>>    6.7.0-rc4-folio-migration-free-page-split+
+>>
+>>        6.7.0-rc4+ 6.7.0-rc4-split-folio-in-co 6.7.0-rc4-folio-migratio=
+n-i 6.7.0-rc4-folio-migration-f
+>> ---------------- --------------------------- -------------------------=
+-- ---------------------------
+>>           %stddev     %change         %stddev     %change         %std=
+dev     %change         %stddev
+>>               \          |                \          |                =
+\          |                \
+>>    13305823 =C2=B1 24%     -45.1%    7299664 =C2=B1 56%     +12.5%   1=
+4974725           +10.4%   14695963        vm-scalability.throughput
+>>
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>>    gcc-13/defconfig/debian/300s/qemu-vm/lru-file-readtwice/vm-scalabil=
+ity
+>>
+>> commit:
+>>    6.7.0-rc4+
+>>    6.7.0-rc4-split-folio-in-compaction+
+>>    6.7.0-rc4-folio-migration-in-compaction+
+>>    6.7.0-rc4-folio-migration-free-page-split+
+>>
+>>        6.7.0-rc4+ 6.7.0-rc4-split-folio-in-co 6.7.0-rc4-folio-migratio=
+n-i 6.7.0-rc4-folio-migration-f
+>> ---------------- --------------------------- -------------------------=
+-- ---------------------------
+>>           %stddev     %change         %stddev     %change         %std=
+dev     %change         %stddev
+>>               \          |                \          |                =
+\          |                \
+>>    13244376 =C2=B1 28%     +54.2%   20425838 =C2=B1 23%      -4.4%   1=
+2660113 =C2=B1  3%      -9.0%   12045809 =C2=B1  3%  vm-scalability.throu=
+ghput
+>>
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>>    gcc-13/defconfig/debian/300s/qemu-vm/lru-file-mmap-read/vm-scalabil=
+ity
+>>
+>> commit:
+>>    6.7.0-rc4+
+>>    6.7.0-rc4-split-folio-in-compaction+
+>>    6.7.0-rc4-folio-migration-in-compaction+
+>>    6.7.0-rc4-folio-migration-free-page-split+
+>>
+>>        6.7.0-rc4+ 6.7.0-rc4-split-folio-in-co 6.7.0-rc4-folio-migratio=
+n-i 6.7.0-rc4-folio-migration-f
+>> ---------------- --------------------------- -------------------------=
+-- ---------------------------
+>>           %stddev     %change         %stddev     %change         %std=
+dev     %change         %stddev
+>>               \          |                \          |                =
+\          |                \
+>>     7021425 =C2=B1 11%     -20.9%    5556751 =C2=B1 19%     +14.8%    =
+8057811 =C2=B1  3%      +9.4%    7678613 =C2=B1  4%  vm-scalability.throu=
+ghput
+>>
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> compiler/kconfig/rootfs/runtime/size/tbox_group/test/testcase:
+>>    gcc-13/defconfig/debian/300s/256G/qemu-vm/msync/vm-scalability
+>>
+>> commit:
+>>    6.7.0-rc4+
+>>    6.7.0-rc4-split-folio-in-compaction+
+>>    6.7.0-rc4-folio-migration-in-compaction+
+>>    6.7.0-rc4-folio-migration-free-page-split+
+>>
+>>        6.7.0-rc4+ 6.7.0-rc4-split-folio-in-co 6.7.0-rc4-folio-migratio=
+n-i 6.7.0-rc4-folio-migration-f
+>> ---------------- --------------------------- -------------------------=
+-- ---------------------------
+>>           %stddev     %change         %stddev     %change         %std=
+dev     %change         %stddev
+>>               \          |                \          |                =
+\          |                \
+>>     1208994 =C2=B1137%    +263.5%    4394683 =C2=B1 49%     -49.4%    =
+ 611204 =C2=B1  6%     -48.1%     627937 =C2=B1 13%  vm-scalability.throu=
+ghput
+>>
+>>
+>>
+>> vm-scalability results on default LRU (with -no-mglru suffix)
+>> =3D=3D=3D
+>>
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>>    gcc-13/defconfig/debian/300s/qemu-vm/lru-file-readtwice/vm-scalabil=
+ity
+>>
+>> commit:
+>>    6.7.0-rc4-no-mglru+
+>>    6.7.0-rc4-split-folio-in-compaction-no-mglru+
+>>    6.7.0-rc4-folio-migration-in-compaction-no-mglru+
+>>    6.7.0-rc4-folio-migration-free-page-split-no-mglru+
+>>
+>> 6.7.0-rc4-no-mgl 6.7.0-rc4-split-folio-in-co 6.7.0-rc4-folio-migration=
+-i 6.7.0-rc4-folio-migration-f
+>> ---------------- --------------------------- -------------------------=
+-- ---------------------------
+>>           %stddev     %change         %stddev     %change         %std=
+dev     %change         %stddev
+>>               \          |                \          |                =
+\          |                \
+>>     8412072 =C2=B1  3%     +32.1%   11114537 =C2=B1 41%      +3.5%    =
+8703491 =C2=B1  3%      +1.5%    8536343 =C2=B1  3%  vm-scalability.throu=
+ghput
+>>
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>>    gcc-13/defconfig/debian/300s/qemu-vm/lru-file-mmap-read/vm-scalabil=
+ity
+>>
+>> commit:
+>>    6.7.0-rc4-no-mglru+
+>>    6.7.0-rc4-split-folio-in-compaction-no-mglru+
+>>    6.7.0-rc4-folio-migration-in-compaction-no-mglru+
+>>    6.7.0-rc4-folio-migration-free-page-split-no-mglru+
+>>
+>> 6.7.0-rc4-no-mgl 6.7.0-rc4-split-folio-in-co 6.7.0-rc4-folio-migration=
+-i 6.7.0-rc4-folio-migration-f
+>> ---------------- --------------------------- -------------------------=
+-- ---------------------------
+>>           %stddev     %change         %stddev     %change         %std=
+dev     %change         %stddev
+>>               \          |                \          |                =
+\          |                \
+>>     7095358           +10.8%    7863635 =C2=B1 16%      +5.5%    74841=
+10            +1.5%    7200666 =C2=B1  4%  vm-scalability.throughput
+>>
+>>
+>> Zi Yan (3):
+>>    mm/compaction: enable compacting >0 order folios.
+>>    mm/compaction: add support for >0 order folio memory compaction.
+>>    mm/compaction: optimize >0 order folio compaction with free page
+>>      split.
+>>
+>>   mm/compaction.c | 218 ++++++++++++++++++++++++++++++++++------------=
+--
+>>   mm/internal.h   |   9 +-
+>>   mm/page_alloc.c |   6 ++
+>>   3 files changed, 169 insertions(+), 64 deletions(-)
+>>
+
+
+--
+Best Regards,
+Yan, Zi
+
+--=_MailMate_47FAB1F6-C989-4B85-903B-DFE8CAC71A9F_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename=signature.asc
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmWzwAkPHHppeUBudmlk
+aWEuY29tAAoJEOJ/noEUByhU230P/1PKWVU59o1oqC/ID7sRPvzWPV3fjx9hnD4v
+93OO+l++5/4mLnPkNzqz1z+T3bgCZUCx40fMmEG/t1rEV8EWr5TUjeW/dro2ZnmR
+MdNwMJRJ7zWecaJILQ1omKsKLYyb0PqctD2KIzpKkdL1YEdM+d81Gi71Ec6pHNsc
+7dD4uKU/vW54HwkqH3r2PMfr4lsSoeaEkPmsvHzkMd3E30p1jgfKlqKaN39sW9tE
+/1tFZsv0C1CkqSasN2Ns2TKOzkD0AVkB3+49mfcZvtxuZffOnvV9curDDc2anz1C
+ibKVtRoFjpLkkJKMbeCsUOS2JpxzoyfqBcj0P+IDStQD7H2+HuN1/2QIBXbQ9mz/
+3nIwQNwG2z+aXkKpnx2FgR/klT67rOCcCNUUQA4UiIk228cWRNtgol+0GP0HmX31
+Ek9EUBVPe/OW3Thkg8uLx2uV0zMZfqFmfz8/2v4NufZl+cDOOfU4HVnk9JugaRiT
+MOe3Cpkb2jBfxXLCFCrcvSw52ATYSh1owCD1twR184+oSQ7TJEKEZmyV2qnHTrG4
+6C1qH6tzahG96mo1Cq+8YR2Yd25HySnGZJvDXjKgOCN6ywGoIDshz9ygA4PPKpzf
+SJWFGy6KgskdKkXnimF8ml+PGBhFWJsjt5kY6DuTBeXPb82pnuwRWxFc0Dtu9oJZ
+8Au5olKp
+=cTN6
+-----END PGP SIGNATURE-----
+
+--=_MailMate_47FAB1F6-C989-4B85-903B-DFE8CAC71A9F_=--
 
