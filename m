@@ -1,152 +1,111 @@
-Return-Path: <linux-kernel+bounces-39790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62E4783D61F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:24:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3926283D620
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:24:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3FC5AB2271E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:24:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5C5BB23A6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:24:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E63C31D69D;
-	Fri, 26 Jan 2024 08:49:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A661C1DA4F;
+	Fri, 26 Jan 2024 08:49:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QjOvfehB"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=pobox.com header.i=@pobox.com header.b="uXq8Q537"
+Received: from pb-smtp21.pobox.com (pb-smtp21.pobox.com [173.228.157.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9503A12CDBA
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:49:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8969C1D52B
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:49:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.228.157.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706258968; cv=none; b=hGRUgnHEawok15I9Tu8FzDbklv0a4K/mLfUVlcJcfkrKj25YaBPcJsubHSX/71g31HCsoGEnOPOMpzbXh6ENeMSNKAQnKc/yJ5GZF3CLGZehtkYT0UzJZsl4B4b6+/vTaWjktpcRJUQjerbh6pDpIv08wpivGC1gaqVU0dVVTRY=
+	t=1706258989; cv=none; b=esuhfqlbnnA4mqmO/K5adAqN9ylILD5YuBmZBNt2Ir70PS4orL5TGtmPpOOJ/bcnnbXi5OrIypWId1YKiSxShoL+dop1txHiJOYAw4J/AtW2xVi84nSW56jQQRPM43EmS7nfVigeJP77JK3+3XGYHFNnrUvRA0JfAvjm2GYumdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706258968; c=relaxed/simple;
-	bh=t/ysEWbT7DsgI1OKWJZlsnVlTSlU/XcsSNTRoDVp2uI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZepTHATWQ6unJelJNFNW+uIRRFLUUAdDxGbabtxl6zefQBtcEYuH4io2yqvcahUHTtjTjgKbR8HzCNqgDbTbhYqUwV51nof7vmIKhjiMOh/zISb2c9Hl8rT8xYqxqDKUnxVkTufggPKJ7n7KnKcxLknwAzm1sm73mak2Pnmx8T8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QjOvfehB; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-339289fead2so135212f8f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 00:49:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706258965; x=1706863765; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SxXvp45WIZMJk6naBF28BXtWC3N8nQIyBhkXmU92Lmo=;
-        b=QjOvfehBwf3WuBI044r7UjrgnPxxU39vStixilzothah09+vwDEy9YXFQ6+edgLDiG
-         ZOv2bsgCReYBPgbk/DHLkAGUZuTuOOvTofof8IiVAMd3etlGcY2twJzUv26qONkUp6C0
-         AhzhyygS5v/2LCdC7mqhry3z4rmHopRr8NzPxx5DgPxpiML2uu6ASugxyU9aEm6U5DzY
-         jtbzmEt791PMCbWPEvsS3lovtIejCjNjtiV0Y87F37jul6VkAW+/+9Qw8c3wJIxIAwhh
-         kySUgW40NjmUsEiUvw/wyzUVOqpBuf+5krxiL9du/KcZ6mcvS43YXWzRcvPs0FWK03EN
-         7hyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706258965; x=1706863765;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SxXvp45WIZMJk6naBF28BXtWC3N8nQIyBhkXmU92Lmo=;
-        b=gfvK7TtxGpdUXmp0e35PdV17qpbR/RhXyFziXdiL8RA39tc4LC6hlhmI63gNdy90F3
-         hdD/ocUIGsg+uyGYLxnDZHeZeGgNbD9Ma8//zU113yEzQI+i8WvvhLl7tT0Ko9nIQ48d
-         tixFbTJYz6uYBbYmBN0F6HCuUNVZh2UErzirM6KY5nJgyQhys9zDIne4/d7kSmEPRQAD
-         4xWdEOfUr5Z+ddev5MG5BiJmezzZa6RpGGBNDgMFi/qReFk8tM0U9xex07GhTe9ggkYR
-         5RQEKbSGCeXVOYgcL/EHDnLqyN8GNAl7NnTfnenVaOrl6rpHFb9PkWahJInX6F9zgw3x
-         7Nfw==
-X-Gm-Message-State: AOJu0YzTlguFoc5ZGRbulIr7di4u0uJXFoPQ3VZjexsk0tVI9vu/ElsM
-	X3xgCr5v3sLL82kw/vc74O1I/GmPwReUBCXKglS7DiJibIiETbKNQA4Xmjme77g=
-X-Google-Smtp-Source: AGHT+IGrlYodbtoFOzQTpnpmPPg9xGCmxcz+GDpPReJccTb8HS+VxG5L6fwYLtI5QMAZCz4OUzPawQ==
-X-Received: by 2002:a05:600c:19c8:b0:40e:b95b:e482 with SMTP id u8-20020a05600c19c800b0040eb95be482mr598802wmq.115.1706258964791;
-        Fri, 26 Jan 2024 00:49:24 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id r12-20020a05600c35cc00b0040ecd258f29sm5158250wmq.0.2024.01.26.00.49.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jan 2024 00:49:24 -0800 (PST)
-Message-ID: <ee4107c3-1141-45ab-874c-03474d8ec18d@linaro.org>
-Date: Fri, 26 Jan 2024 08:49:22 +0000
+	s=arc-20240116; t=1706258989; c=relaxed/simple;
+	bh=brYXUQsH/TMsNFWCycIBH0uKvwRbXqVAUVOr5hAHiuM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Agn/7fBbcKQAtgIq2cpaQyoE/LOjHMTMxx3ooY4U24O3OSkeKmJcQIHtEji3OdnBzcER9cl9P6zZ2pnL0+EloDNsCDkfmxp7H3EOqtoiz+BaMqz2Jg7+OXcJfqeJVAY/EPhTjXwMXILjxC4oKpaZAQ/gcbSqIeNdz9lONLetAJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=pobox.com; spf=pass smtp.mailfrom=pobox.com; dkim=pass (1024-bit key) header.d=pobox.com header.i=@pobox.com header.b=uXq8Q537; arc=none smtp.client-ip=173.228.157.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=pobox.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pobox.com
+Received: from pb-smtp21.pobox.com (unknown [127.0.0.1])
+	by pb-smtp21.pobox.com (Postfix) with ESMTP id DAC40293E3;
+	Fri, 26 Jan 2024 03:49:41 -0500 (EST)
+	(envelope-from adamg@pobox.com)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=date:from
+	:to:cc:subject:message-id:references:mime-version:content-type
+	:in-reply-to; s=sasl; bh=brYXUQsH/TMsNFWCycIBH0uKvwRbXqVAUVOr5hA
+	HiuM=; b=uXq8Q537s3lv47lVM8jeymVzCHUyFpZO8r0tz7VvTIMy5+RcGp3yRvl
+	A1oqftK7NhXIoJfTctWAMXDuXmKn9YYy1CrLcNNr67IwoB2qkSz19X98RFYPUmIX
+	n6cF9nkwn1i+6ZtuHIlQgQq0ye/JBrxwwdgjxi1+xZP7IHou+aF0=
+Received: from pb-smtp21.sea.icgroup.com (unknown [127.0.0.1])
+	by pb-smtp21.pobox.com (Postfix) with ESMTP id D3799293E2;
+	Fri, 26 Jan 2024 03:49:41 -0500 (EST)
+	(envelope-from adamg@pobox.com)
+Received: from pogo.deviceside.com (unknown [71.19.144.253])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by pb-smtp21.pobox.com (Postfix) with ESMTPSA id A92C5293E1;
+	Fri, 26 Jan 2024 03:49:38 -0500 (EST)
+	(envelope-from adamg@pobox.com)
+Received: from iguana.24-8.net (99-122-168-208.lightspeed.irvnca.sbcglobal.net [99.122.168.208])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: iguana@pogo.deviceside.com)
+	by pogo.deviceside.com (Postfix) with ESMTPSA id 2571EC09AD;
+	Fri, 26 Jan 2024 00:49:37 -0800 (PST)
+Date: Fri, 26 Jan 2024 00:49:35 -0800
+From: Adam Goldman <adamg@pobox.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] firewire: core: mask previous entry's type bits when
+ looking for leaf
+Message-ID: <ZbNyHg3TTWpjiieI@iguana.24-8.net>
+References: <ZbJQ0JdbGixJouvn@iguana.24-8.net>
+ <20240126011705.GA22564@workstation.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 09/28] spi: s3c64xx: use bitfield access macros
-Content-Language: en-US
-To: Sam Protsenko <semen.protsenko@linaro.org>,
- Mark Brown <broonie@kernel.org>
-Cc: broonie@kernel.org, andi.shyti@kernel.org, arnd@arndb.de,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- alim.akhtar@samsung.com, linux-spi@vger.kernel.org,
- linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-arch@vger.kernel.org, andre.draszik@linaro.org,
- peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com
-References: <20240125145007.748295-1-tudor.ambarus@linaro.org>
- <20240125145007.748295-10-tudor.ambarus@linaro.org>
- <CAPLW+4mDM2aJdPwPRKt9yLtwx5zEHwBr6OSyYbGgZU7w9OiYkg@mail.gmail.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <CAPLW+4mDM2aJdPwPRKt9yLtwx5zEHwBr6OSyYbGgZU7w9OiYkg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240126011705.GA22564@workstation.local>
+X-Pobox-Relay-ID:
+ D6B655E4-BC27-11EE-8FCE-A19503B9AAD1-07713566!pb-smtp21.pobox.com
 
-
-
-On 1/25/24 19:50, Sam Protsenko wrote:
-> On Thu, Jan 25, 2024 at 8:50 AM Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
->>
->> Use the bitfield access macros in order to clean and to make the driver
->> easier to read.
->>
->> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
->> ---
->>  drivers/spi/spi-s3c64xx.c | 196 +++++++++++++++++++-------------------
->>  1 file changed, 99 insertions(+), 97 deletions(-)
->>
->> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
->> index 1e44b24f6401..d046810da51f 100644
->> --- a/drivers/spi/spi-s3c64xx.c
->> +++ b/drivers/spi/spi-s3c64xx.c
->> @@ -4,6 +4,7 @@
-
-cut
-
->> +#define S3C64XX_SPI_PSR_MASK                   GENMASK(15, 0)
+On Fri, Jan 26, 2024 at 10:17:05AM +0900, Takashi Sakamoto wrote:
+> Would I request you to update the API documentation of fw_csr_string()
+> as well and send the renewed patch as take 2?
 > 
-> But it was 0xff (7:0) originally, and here you extend it up to 15:0.
-
-this is a bug from my side, I'll fix it, thanks!
-
-cut
-
->>         default:
->> -               val |= S3C64XX_SPI_MODE_BUS_TSZ_BYTE;
->> -               val |= S3C64XX_SPI_MODE_CH_TSZ_BYTE;
->> +               val |= FIELD_PREP(S3C64XX_SPI_MODE_BUS_TSZ_MASK,
->> +                                 S3C64XX_SPI_MODE_BUS_TSZ_BYTE) |
->> +                      FIELD_PREP(S3C64XX_SPI_MODE_CH_TSZ_MASK,
->> +                                 S3C64XX_SPI_MODE_CH_TSZ_BYTE);
 > 
-> I don't know. Maybe it's me, but using this FIELD_PREP() macro seems
-> to only making the code harder to read. At least in cases like this. I
-> would vote against its usage, to keep the code compact and easy to
-> read.
+> I have a mixed feeling about the change, but I'll finally accept it since
+> we face the exception against documentation.
+> 
+> As you know, in Annex A of document for configuration ROM of AV/C
+> device[1], we can see the legacy layout of configuration ROM (page 22).
+> In the layout, the descriptor leaf entry for vendor name locates after
+> the immediate value entry for vendor ID, then the directory entry for
+> vendor directory locates. However, in the case of Sony DVMC-DA1, the
+> descriptor leaf entry locates after the directory entry. It is an
+> exception.
 
-I saw Andi complained about this too, maybe Mark can chime in.
+Hi Takashi,
 
-To me this is not a matter of taste, it's how it should be done. In this
-particular case you have more lines when using FIELD_PREP because the
-mask starts from bit 0. If the mask ever changes for new IPs then you'd
-have to hack the code, whereas if using FIELD_PREP you just have to
-update the mask field, something like:
+Thank you for your review and feedback.
 
-	FIELD_PREP(drv_prv_data->whatever_reg.field_mask,
-		   S3C64XX_SPI_MODE_CH_TSZ_BYTE);
+After checking the 1394TA Configuration ROM document again, I agree that 
+the leaf entry for vendor name should be after an immediate value entry 
+according to this standard. The DVMC-DA1 does not conform. We should 
+consider its configuration ROM format to be another variation of the 
+legacy format. This variation is not mentioned in Annex A.
 
-Thus it makes the code generic and more friendly for new IP additions.
-And I have to admit I like it better too. I know from the start that
-we're dealing with register fields and not some internal driver mask.
+I will update the API documentation of fw_csr_string() and send a 
+revised patch.
+
+-- Adam
 
