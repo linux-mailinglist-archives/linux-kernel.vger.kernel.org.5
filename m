@@ -1,215 +1,353 @@
-Return-Path: <linux-kernel+bounces-40228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05BD383DCD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:56:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9A1A83DCDD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:57:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68B69B22D78
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:56:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 619E52814DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:57:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8A131CA91;
-	Fri, 26 Jan 2024 14:56:17 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED6A1CA89;
-	Fri, 26 Jan 2024 14:56:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A1B41CA9A;
+	Fri, 26 Jan 2024 14:57:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="egPEmdpm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E8C51CA89
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:56:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706280977; cv=none; b=aDUKlH5z+/fjzk9heYhEpwzPCUayqpxCo2k54hCkXmkC676A3jW8kzrgOIaMjghy98kskdyPZ8UzZUYuyZzuCRfgB77+b8VUoGmO+9Bri8gaNjpEdIEEad4tM8kaSwT6DqC7ZNpdkiCvHgY1ZAcQQTHCpLMnQkFsr7+M/kSt8jk=
+	t=1706281019; cv=none; b=SV0InHxEO0021ccwC30Jl9bWuaeVAkSfDO3VFPSn6whsuk6754Ce5KKYc9g/ws2B86BoYcO1OpE1nf4waJeKK7D26J8MoX2dJ4SIq7Q8TlhJc8hxzQZwmlKI/6QPT4TYy2bCBtvrVhyQ7ecOUBMH/1vgpzO6A3vsAxljTvrJIQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706280977; c=relaxed/simple;
-	bh=vYOYe9xwh/oqWX6EQ0FiRaB5BnNfTUiw8M7X2jBOBkw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bBq/czi0HOkXejMGnEJhlP7T3IAxxjJMZBlmRB6qpw4ULh8nI7BZ6Bo+CmmMMPx9pU/fJHgXJVplmVItI8Znlmgs5WPB8gqb3xJOmbtp04SpRMUpU1dCkTrYWgDX2wcZvVwpA+P3UG+l0+WITD0c3cwj5lWvKcPATOZWqoWvTJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7A8041FB;
-	Fri, 26 Jan 2024 06:56:58 -0800 (PST)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 21F1E3F73F;
-	Fri, 26 Jan 2024 06:56:12 -0800 (PST)
-From: Mark Rutland <mark.rutland@arm.com>
+	s=arc-20240116; t=1706281019; c=relaxed/simple;
+	bh=HM/4wZmW5lT5j//nMdp1UG/9xtHNmD6BXoRS+b2+x4M=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=XnQwWIchlz93WlMgIWfwk0PBa6IPW+16IqQKntZmYWfhbFDQL1tgTH/j0ORyuX1RfaryPCzgtFON5qE75Ui0SKfu56IaiSS2B7S9OPwzJhGHqUlIOjOD7zEoFQJp/dpqPJyjlYGOjkZFW0hJZQFbF+UqLoYsiUXWiVaxzo9l6bw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=egPEmdpm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84C1DC43330;
+	Fri, 26 Jan 2024 14:56:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706281018;
+	bh=HM/4wZmW5lT5j//nMdp1UG/9xtHNmD6BXoRS+b2+x4M=;
+	h=Date:From:To:Cc:Subject:From;
+	b=egPEmdpmYXM6nal0nwfDHoA3CEjfC+Z4OsV+UrfxnyY4Qokn3q2XFeK27P641HKUS
+	 w/WjKgo/8GLWNB/5Uwmi2hrhthrJ5wOjce/zGQ/lvKJZmVuxDNhHCp/93MbTw3DBhE
+	 OS3wwRE+BUKiFT6fVee5TPTCbHrcRORaJQ/H0kI+BqdmN2T5g8kukRuWF0bXC895wI
+	 y/IRNkEJTXMGbJC3d/+Yg+3AUAC1uiJaKedejcD0ZME4oHT3XHzayHRxUBAGXb3cuQ
+	 R4LwZzRRAOA6PfjHLLCjcy5T78wqQ6LjWFWN4hvPSJgKcr+1dsxTO3mvSdE2CIXHhA
+	 BBxB8A3ZMpcbQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id 0684540441; Fri, 26 Jan 2024 11:56:55 -0300 (-03)
+Date: Fri, 26 Jan 2024 11:56:55 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
 To: linux-kernel@vger.kernel.org
-Cc: acme@redhat.com,
-	irogers@google.com,
-	james.clark@arm.com,
-	john.g.garry@oracle.com,
-	leo.yan@linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-perf-users@vger.kernel.org,
-	marcan@marcan.st,
-	mark.rutland@arm.com,
-	maz@kernel.org,
-	mike.leach@linaro.org,
-	namhyung@kernel.org,
-	suzuki.poulose@arm.com,
-	tmricht@linux.ibm.com,
-	will@kernel.org
-Subject: [PATCH v2] perf print-events: make is_event_supported() more robust
-Date: Fri, 26 Jan 2024 14:56:05 +0000
-Message-Id: <20240126145605.1005472-1-mark.rutland@arm.com>
-X-Mailer: git-send-email 2.30.2
+Cc: Adrian Hunter <adrian.hunter@intel.com>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Ian Rogers <irogers@google.com>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Rob Clark <robdclark@chromium.org>, Simon Ser <contact@emersion.fr>,
+	Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+	Zack Rusin <zack.rusin@broadcom.com>,
+	topickDRM_IOCTL_MODE_CLOSEFB@ghostprotocols.net
+Subject: [PATCH 1/1 fyi] tools headers UAPI: Update tools's copy of drm.h
+ headers
+Message-ID: <ZbPIN9Dcc5AM0uxo@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Currently the perf tool doesn't detect support for extended event types
-on Apple M1/M2 systems, and will not auto-expand plain PERF_EVENT_TYPE
-hardware events into per-PMU events. This is due to the detection of
-extended event types not handling mandatory filters required by the
-M1/M2 PMU driver.
+tldr; Just FYI, I'm carrying this on the perf tools tree.
 
-PMU drivers and the core perf_events code can require that
-perf_event_attr::exclude_* filters are configured in a specific way and
-may reject certain configurations of filters, for example:
+- Arnaldo
 
-(a) Many PMUs lack support for any event filtering, and require all
-    perf_event_attr::exclude_* bits to be clear. This includes Alpha's
-    CPU PMU, and ARM CPU PMUs prior to the introduction of PMUv2 in
-    ARMv7,
+Full explanation:
 
-(b) When /proc/sys/kernel/perf_event_paranoid >= 2, the perf core
-    requires that perf_event_attr::exclude_kernel is set.
+There used to be no copies, with tools/ code using kernel headers
+directly. From time to time tools/perf/ broke due to legitimate kernel
+hacking. At some point Linus complained about such direct usage. Then we
+adopted the current model.
 
-(c) The Apple M1/M2 PMU requires that perf_event_attr::exclude_guest is
-    set as the hardware PMU does not count while a guest is running (but
-    might be extended in future to do so).
+The way these headers are used in perf are not restricted to just
+including them to compile something.
 
-In is_event_supported(), we try to account for cases (a) and (b), first
-attempting to open an event without any filters, and if this fails,
-retrying with perf_event_attr::exclude_kernel set. We do not account for
-case (c), or any other filters that drivers could theoretically require
-to be set.
+There are sometimes used in scripts that convert defines into string
+tables, etc, so some change may break one of these scripts, or new MSRs
+may use some different #define pattern, etc.
 
-Thus is_event_supported() will fail to detect support for any events
-targeting an Apple M1/M2 PMU, even where events would be supported with
-perf_event_attr:::exclude_guest set.
+E.g.:
 
-Since commit:
+  $ ls -1 tools/perf/trace/beauty/*.sh | head -5
+  tools/perf/trace/beauty/arch_errno_names.sh
+  tools/perf/trace/beauty/drm_ioctl.sh
+  tools/perf/trace/beauty/fadvise.sh
+  tools/perf/trace/beauty/fsconfig.sh
+  tools/perf/trace/beauty/fsmount.sh
+  $
+  $ tools/perf/trace/beauty/fadvise.sh
+  static const char *fadvise_advices[] = {
+  	[0] = "NORMAL",
+  	[1] = "RANDOM",
+  	[2] = "SEQUENTIAL",
+  	[3] = "WILLNEED",
+  	[4] = "DONTNEED",
+  	[5] = "NOREUSE",
+  };
+  $
 
-  82fe2e45cdb00de4 ("perf pmus: Check if we can encode the PMU number in perf_event_attr.type")
+The tools/perf/check-headers.sh script, part of the tools/ build
+process, points out changes in the original files.
 
-.. we use is_event_supported() to detect support for extended types,
-with the PMU ID encoded into the perf_event_attr::type. As above, on an
-Apple M1/M2 system this will always fail to detect that the event is
-supported, and consequently we fail to detect support for extended types
-even when these are supported, as they have been since commit:
+So its important not to touch the copies in tools/ when doing changes in
+the original kernel headers, that will be done later, when
+check-headers.sh inform about the change to the perf tools hackers.
 
-  5c816728651ae425 ("arm_pmu: Add PERF_PMU_CAP_EXTENDED_HW_TYPE capability")
-
-Due to this, the perf tool will not automatically expand plain
-PERF_TYPE_HARDWARE events into per-PMU events, even when all the
-necessary kernel support is present.
-
-This patch updates is_event_supported() to additionally try opening
-events with perf_event_attr::exclude_guest set, allowing support for
-events to be detected on Apple M1/M2 systems. I believe that this is
-sufficient for all contemporary CPU PMU drivers, though in future it may
-be necessary to check for other combinations of filter bits.
-
-I've deliberately changed the check to not expect a specific error code
-for missing filters, as today ;the kernel may return a number of
-different error codes for missing filters (e.g. -EACCESS, -EINVAL, or
--EOPNOTSUPP) depending on why and where the filter configuration is
-rejected, and retrying for any error is more robust.
-
-Note that this does not remove the need for commit:
-
-  a24d9d9dc096fc0d ("perf parse-events: Make legacy events lower priority than sysfs/JSON")
-
-.. which is still necessary so that named-pmu/event/ events work on
-kernels without extended type support, even if the event name happens to
-be the same as a PERF_EVENT_TYPE_HARDWARE event (e.g. as is the case for
-the M1/M2 PMU's 'cycles' and 'instructions' events).
-
-Fixes: 82fe2e45cdb00de4 ("perf pmus: Check if we can encode the PMU number in perf_event_attr.type")
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Tested-by: Ian Rogers <irogers@google.com>
-Tested-by: James Clark <james.clark@arm.com>
-Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Hector Martin <marcan@marcan.st>
-Cc: Ian Rogers <irogers@google.com>
-Cc: James Clark <james.clark@arm.com>
-Cc: John Garry <john.g.garry@oracle.com>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: Thomas Richter <tmricht@linux.ibm.com>
-Cc: Will Deacon <will@kernel.org>
 ---
- tools/perf/util/print-events.c | 27 +++++++++++++++++++--------
- 1 file changed, 19 insertions(+), 8 deletions(-)
 
-Since v1 [1]:
-* Fix typos in commit message
-* Accumulate tags
+Picking the changes from:
 
-[1] https://lore.kernel.org/lkml/20240116170348.463479-1-mark.rutland@arm.com/
+  8570c27932e132d2 ("drm/syncobj: Add deadline support for syncobj waits")
+  9724ed6c1b1212d1 ("drm: Introduce DRM_CLIENT_CAP_CURSOR_PLANE_HOTSPOT")
+  e4d983acffff270c ("drm: introduce DRM_CAP_ATOMIC_ASYNC_PAGE_FLIP")
+  d208d875667e2a29 ("drm: introduce CLOSEFB IOCTL")
+  afa5cf3175a22b71 ("drm/i915/uapi: fix typos/spellos and punctuation")
 
-Mark.
+Addressing these perf build warnings:
 
-diff --git a/tools/perf/util/print-events.c b/tools/perf/util/print-events.c
-index b0fc48be623f3..4f67e8f00a4d6 100644
---- a/tools/perf/util/print-events.c
-+++ b/tools/perf/util/print-events.c
-@@ -232,7 +232,6 @@ void print_sdt_events(const struct print_callbacks *print_cb, void *print_state)
- bool is_event_supported(u8 type, u64 config)
- {
- 	bool ret = true;
--	int open_return;
- 	struct evsel *evsel;
- 	struct perf_event_attr attr = {
- 		.type = type,
-@@ -246,20 +245,32 @@ bool is_event_supported(u8 type, u64 config)
+  Warning: Kernel ABI header differences:
+
+Now 'perf trace' and other code that might use the
+tools/perf/trace/beauty autogenerated tables will be able to translate
+this new ioctl command into a string:
+
+  $ tools/perf/trace/beauty/drm_ioctl.sh > before
+  $ cp include/uapi/drm/drm.h tools/include/uapi/drm/drm.h
+  $ tools/perf/trace/beauty/drm_ioctl.sh > after
+  $ diff -u before after
+  --- before	2024-01-26 10:54:23.486381862 -0300
+  +++ after	2024-01-26 10:54:35.767902442 -0300
+  @@ -109,6 +109,7 @@
+   	[0xCD] = "SYNCOBJ_TIMELINE_SIGNAL",
+   	[0xCE] = "MODE_GETFB2",
+   	[0xCF] = "SYNCOBJ_EVENTFD",
+  +	[0xD0] = "MODE_CLOSEFB",
+   	[DRM_COMMAND_BASE + 0x00] = "I915_INIT",
+   	[DRM_COMMAND_BASE + 0x01] = "I915_FLUSH",
+   	[DRM_COMMAND_BASE + 0x02] = "I915_FLIP",
+  $
+
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Javier Martinez Canillas <javierm@redhat.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Rob Clark <robdclark@chromium.org>
+Cc: Simon Ser <contact@emersion.fr>
+Cc: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Cc: Zack Rusin <zack.rusin@broadcom.com>
+Link: https://lore.kernel.org/lkml/
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/include/uapi/drm/drm.h      | 72 ++++++++++++++++++++++++++++++-
+ tools/include/uapi/drm/i915_drm.h | 12 +++---
+ 2 files changed, 77 insertions(+), 7 deletions(-)
+
+diff --git a/tools/include/uapi/drm/drm.h b/tools/include/uapi/drm/drm.h
+index de723566c5ae8238..16122819edfeff87 100644
+--- a/tools/include/uapi/drm/drm.h
++++ b/tools/include/uapi/drm/drm.h
+@@ -713,7 +713,8 @@ struct drm_gem_open {
+ /**
+  * DRM_CAP_ASYNC_PAGE_FLIP
+  *
+- * If set to 1, the driver supports &DRM_MODE_PAGE_FLIP_ASYNC.
++ * If set to 1, the driver supports &DRM_MODE_PAGE_FLIP_ASYNC for legacy
++ * page-flips.
+  */
+ #define DRM_CAP_ASYNC_PAGE_FLIP		0x7
+ /**
+@@ -773,6 +774,13 @@ struct drm_gem_open {
+  * :ref:`drm_sync_objects`.
+  */
+ #define DRM_CAP_SYNCOBJ_TIMELINE	0x14
++/**
++ * DRM_CAP_ATOMIC_ASYNC_PAGE_FLIP
++ *
++ * If set to 1, the driver supports &DRM_MODE_PAGE_FLIP_ASYNC for atomic
++ * commits.
++ */
++#define DRM_CAP_ATOMIC_ASYNC_PAGE_FLIP	0x15
  
- 	evsel = evsel__new(&attr);
- 	if (evsel) {
--		open_return = evsel__open(evsel, NULL, tmap);
--		ret = open_return >= 0;
-+		ret = evsel__open(evsel, NULL, tmap) >= 0;
+ /* DRM_IOCTL_GET_CAP ioctl argument type */
+ struct drm_get_cap {
+@@ -842,6 +850,31 @@ struct drm_get_cap {
+  */
+ #define DRM_CLIENT_CAP_WRITEBACK_CONNECTORS	5
  
--		if (open_return == -EACCES) {
-+		if (!ret) {
- 			/*
--			 * This happens if the paranoid value
-+			 * The event may fail to open if the paranoid value
- 			 * /proc/sys/kernel/perf_event_paranoid is set to 2
--			 * Re-run with exclude_kernel set; we don't do that
--			 * by default as some ARM machines do not support it.
--			 *
-+			 * Re-run with exclude_kernel set; we don't do that by
-+			 * default as some ARM machines do not support it.
- 			 */
- 			evsel->core.attr.exclude_kernel = 1;
- 			ret = evsel__open(evsel, NULL, tmap) >= 0;
- 		}
++/**
++ * DRM_CLIENT_CAP_CURSOR_PLANE_HOTSPOT
++ *
++ * Drivers for para-virtualized hardware (e.g. vmwgfx, qxl, virtio and
++ * virtualbox) have additional restrictions for cursor planes (thus
++ * making cursor planes on those drivers not truly universal,) e.g.
++ * they need cursor planes to act like one would expect from a mouse
++ * cursor and have correctly set hotspot properties.
++ * If this client cap is not set the DRM core will hide cursor plane on
++ * those virtualized drivers because not setting it implies that the
++ * client is not capable of dealing with those extra restictions.
++ * Clients which do set cursor hotspot and treat the cursor plane
++ * like a mouse cursor should set this property.
++ * The client must enable &DRM_CLIENT_CAP_ATOMIC first.
++ *
++ * Setting this property on drivers which do not special case
++ * cursor planes (i.e. non-virtualized drivers) will return
++ * EOPNOTSUPP, which can be used by userspace to gauge
++ * requirements of the hardware/drivers they're running on.
++ *
++ * This capability is always supported for atomic-capable virtualized
++ * drivers starting from kernel version 6.6.
++ */
++#define DRM_CLIENT_CAP_CURSOR_PLANE_HOTSPOT	6
 +
-+		if (!ret) {
-+			/*
-+			 * The event may fail to open if the PMU requires
-+			 * exclude_guest to be set (e.g. as the Apple M1 PMU
-+			 * requires).
-+			 * Re-run with exclude_guest set; we don't do that by
-+			 * default as it's equally legitimate for another PMU
-+			 * driver to require that exclude_guest is clear.
-+			 */
-+			evsel->core.attr.exclude_guest = 1;
-+			ret = evsel__open(evsel, NULL, tmap) >= 0;
-+		}
-+
- 		evsel__delete(evsel);
- 	}
+ /* DRM_IOCTL_SET_CLIENT_CAP ioctl argument type */
+ struct drm_set_client_cap {
+ 	__u64 capability;
+@@ -893,6 +926,7 @@ struct drm_syncobj_transfer {
+ #define DRM_SYNCOBJ_WAIT_FLAGS_WAIT_ALL (1 << 0)
+ #define DRM_SYNCOBJ_WAIT_FLAGS_WAIT_FOR_SUBMIT (1 << 1)
+ #define DRM_SYNCOBJ_WAIT_FLAGS_WAIT_AVAILABLE (1 << 2) /* wait for time point to become available */
++#define DRM_SYNCOBJ_WAIT_FLAGS_WAIT_DEADLINE (1 << 3) /* set fence deadline to deadline_nsec */
+ struct drm_syncobj_wait {
+ 	__u64 handles;
+ 	/* absolute timeout */
+@@ -901,6 +935,14 @@ struct drm_syncobj_wait {
+ 	__u32 flags;
+ 	__u32 first_signaled; /* only valid when not waiting all */
+ 	__u32 pad;
++	/**
++	 * @deadline_nsec - fence deadline hint
++	 *
++	 * Deadline hint, in absolute CLOCK_MONOTONIC, to set on backing
++	 * fence(s) if the DRM_SYNCOBJ_WAIT_FLAGS_WAIT_DEADLINE flag is
++	 * set.
++	 */
++	__u64 deadline_nsec;
+ };
  
+ struct drm_syncobj_timeline_wait {
+@@ -913,6 +955,14 @@ struct drm_syncobj_timeline_wait {
+ 	__u32 flags;
+ 	__u32 first_signaled; /* only valid when not waiting all */
+ 	__u32 pad;
++	/**
++	 * @deadline_nsec - fence deadline hint
++	 *
++	 * Deadline hint, in absolute CLOCK_MONOTONIC, to set on backing
++	 * fence(s) if the DRM_SYNCOBJ_WAIT_FLAGS_WAIT_DEADLINE flag is
++	 * set.
++	 */
++	__u64 deadline_nsec;
+ };
+ 
+ /**
+@@ -1218,6 +1268,26 @@ extern "C" {
+ 
+ #define DRM_IOCTL_SYNCOBJ_EVENTFD	DRM_IOWR(0xCF, struct drm_syncobj_eventfd)
+ 
++/**
++ * DRM_IOCTL_MODE_CLOSEFB - Close a framebuffer.
++ *
++ * This closes a framebuffer previously added via ADDFB/ADDFB2. The IOCTL
++ * argument is a framebuffer object ID.
++ *
++ * This IOCTL is similar to &DRM_IOCTL_MODE_RMFB, except it doesn't disable
++ * planes and CRTCs. As long as the framebuffer is used by a plane, it's kept
++ * alive. When the plane no longer uses the framebuffer (because the
++ * framebuffer is replaced with another one, or the plane is disabled), the
++ * framebuffer is cleaned up.
++ *
++ * This is useful to implement flicker-free transitions between two processes.
++ *
++ * Depending on the threat model, user-space may want to ensure that the
++ * framebuffer doesn't expose any sensitive user information: closed
++ * framebuffers attached to a plane can be read back by the next DRM master.
++ */
++#define DRM_IOCTL_MODE_CLOSEFB		DRM_IOWR(0xD0, struct drm_mode_closefb)
++
+ /*
+  * Device specific ioctls should only be in their respective headers
+  * The device specific ioctl range is from 0x40 to 0x9f.
+diff --git a/tools/include/uapi/drm/i915_drm.h b/tools/include/uapi/drm/i915_drm.h
+index 218edb0a96f8c043..fd4f9574d177a269 100644
+--- a/tools/include/uapi/drm/i915_drm.h
++++ b/tools/include/uapi/drm/i915_drm.h
+@@ -693,7 +693,7 @@ typedef struct drm_i915_irq_wait {
+ #define I915_PARAM_HAS_EXEC_FENCE	 44
+ 
+ /* Query whether DRM_I915_GEM_EXECBUFFER2 supports the ability to capture
+- * user specified bufffers for post-mortem debugging of GPU hangs. See
++ * user-specified buffers for post-mortem debugging of GPU hangs. See
+  * EXEC_OBJECT_CAPTURE.
+  */
+ #define I915_PARAM_HAS_EXEC_CAPTURE	 45
+@@ -1606,7 +1606,7 @@ struct drm_i915_gem_busy {
+ 	 * is accurate.
+ 	 *
+ 	 * The returned dword is split into two fields to indicate both
+-	 * the engine classess on which the object is being read, and the
++	 * the engine classes on which the object is being read, and the
+ 	 * engine class on which it is currently being written (if any).
+ 	 *
+ 	 * The low word (bits 0:15) indicate if the object is being written
+@@ -1815,7 +1815,7 @@ struct drm_i915_gem_madvise {
+ 	__u32 handle;
+ 
+ 	/* Advice: either the buffer will be needed again in the near future,
+-	 *         or wont be and could be discarded under memory pressure.
++	 *         or won't be and could be discarded under memory pressure.
+ 	 */
+ 	__u32 madv;
+ 
+@@ -3246,7 +3246,7 @@ struct drm_i915_query_topology_info {
+  * 	// enough to hold our array of engines. The kernel will fill out the
+  * 	// item.length for us, which is the number of bytes we need.
+  * 	//
+- * 	// Alternatively a large buffer can be allocated straight away enabling
++ *	// Alternatively a large buffer can be allocated straightaway enabling
+  * 	// querying in one pass, in which case item.length should contain the
+  * 	// length of the provided buffer.
+  * 	err = ioctl(fd, DRM_IOCTL_I915_QUERY, &query);
+@@ -3256,7 +3256,7 @@ struct drm_i915_query_topology_info {
+  * 	// Now that we allocated the required number of bytes, we call the ioctl
+  * 	// again, this time with the data_ptr pointing to our newly allocated
+  * 	// blob, which the kernel can then populate with info on all engines.
+- * 	item.data_ptr = (uintptr_t)&info,
++ *	item.data_ptr = (uintptr_t)&info;
+  *
+  * 	err = ioctl(fd, DRM_IOCTL_I915_QUERY, &query);
+  * 	if (err) ...
+@@ -3286,7 +3286,7 @@ struct drm_i915_query_topology_info {
+ /**
+  * struct drm_i915_engine_info
+  *
+- * Describes one engine and it's capabilities as known to the driver.
++ * Describes one engine and its capabilities as known to the driver.
+  */
+ struct drm_i915_engine_info {
+ 	/** @engine: Engine class and instance. */
 -- 
-2.30.2
+2.43.0
 
 
