@@ -1,100 +1,97 @@
-Return-Path: <linux-kernel+bounces-39726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A44DE83D568
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:06:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3024283D575
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:07:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 440F21F26CA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:06:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C41971F26231
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:07:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 686536169A;
-	Fri, 26 Jan 2024 07:55:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="f7tQ/Z9t"
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4305163135;
+	Fri, 26 Jan 2024 07:56:19 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B06BC125DB;
-	Fri, 26 Jan 2024 07:55:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70F5ED310;
+	Fri, 26 Jan 2024 07:56:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706255707; cv=none; b=iy4IH1EPpBVFodZxMQ39Gmf9HI5dXjQGHueAh/QIQuxdntzEtL6XF0fvX7EDMkuVdToiiB4ZKTq3Qx1AA6tfiNAgeQR5XG2Agio64DObg/p2dZ/cawT8ptLzq1EFmNhJKyE/Ww8FivIUwRjlnzPYAf2cmUorGeo9xB09/u2hp2M=
+	t=1706255778; cv=none; b=pR+OAQisXCZAYI8CBP55HtH3NDJZHpPn9gclVOKj+Q4IQFFfKGMO/BJ0OTQ+yNSpXmF+x3mEnPKSU5Y/0IZp+UOrAFQvlZLGTDf01m/YlTLTKefZBSGwR7dM3X4P7BCd0CgjRpwMUAIdcljz+SC14nQR4GemvWp2JAyB4Y3ieJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706255707; c=relaxed/simple;
-	bh=PLcDYGc3A3KbkeSJVUSvsPSMylDJVowTLRFbic23reM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=M3085clUgDLVWZRmu+GrdZqG0KrdLvSHqRglFRKzQQA/Rf6Llq26jmFGL6PXh/qAZl4NLZQ+JoQ6zG+YweFoTe3poGPaz90H95qVs+oZda4l0EYJWgCLqw2QRcskA2y8ptiYeoeEXFxbooqPH53lvwDPFIBQoVjINxckXPeE5fc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=f7tQ/Z9t; arc=none smtp.client-ip=115.124.30.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1706255695; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=MNOY8Q5NDwaHI6XaoJ0LQ9C0/crVlCsDYm9O0vJ51+M=;
-	b=f7tQ/Z9t9WKGeoWCxIPSBXoRZNDIwd6ZCDolGCz3ixx4fPdm6o+iBQ7QBfkNn2VPNYd4eyXWIhw1gJmo+eGkc2jWLAb6jMsx7ZVk9RRNV0SDZh1ELhtMvzw4Z5W201q/HSh6NygWV6W4uhiRP9njtSc2ECSCyHM0YoxmWv465Pc=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W.MzF4n_1706255688;
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0W.MzF4n_1706255688)
-          by smtp.aliyun-inc.com;
-          Fri, 26 Jan 2024 15:54:54 +0800
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To: djogorchock@gmail.com
-Cc: jikos@kernel.org,
-	benjamin.tissoires@redhat.com,
-	linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-	Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH] HID: nintendo: Remove some unused functions
-Date: Fri, 26 Jan 2024 15:54:45 +0800
-Message-Id: <20240126075445.15495-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+	s=arc-20240116; t=1706255778; c=relaxed/simple;
+	bh=x40KTGVdO4caFI9vAMxA+4UUWiZpktSPCnUOvDhAMK8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=hdd9UplVzp0KZj+uMhG+O6WX7mNt/+bSCRjH8fiV0mPfMQPSN3r2rTSPO3tcT8skQX/aVaeZDrV8Ewl2BqY6XHsyHoj1vjrD990ezGbsVzKPyhpGO2vo5nY45lArARo9nmdbhlkj3cGEMA6avg0L512Y8eRUU+VYMR5FhoiPg4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 1fc204bb3df547b99960ebe6b27bc77e-20240126
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:49738768-b6d3-4cf5-9efa-c39c590ff1bf,IP:20,
+	URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:6
+X-CID-INFO: VERSION:1.1.35,REQID:49738768-b6d3-4cf5-9efa-c39c590ff1bf,IP:20,UR
+	L:0,TC:0,Content:-5,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:6
+X-CID-META: VersionHash:5d391d7,CLOUDID:dc7baf8e-e2c0-40b0-a8fe-7c7e47299109,B
+	ulkID:240126155607M9ZGF07O,BulkQuantity:0,Recheck:0,SF:38|24|17|19|43|74|6
+	6|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil
+	,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 1fc204bb3df547b99960ebe6b27bc77e-20240126
+X-User: mengfanhui@kylinos.cn
+Received: from localhost.localdomain [(39.156.73.13)] by mailgw
+	(envelope-from <mengfanhui@kylinos.cn>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256 128/128)
+	with ESMTP id 832743153; Fri, 26 Jan 2024 15:56:05 +0800
+From: mengfanhui <mengfanhui@kylinos.cn>
+To: tsbogend@alpha.franken.de,
+	geert+renesas@glider.be,
+	mengfanhui@kylinos.cn
+Cc: linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] config/mips: support zswap function
+Date: Fri, 26 Jan 2024 15:55:47 +0800
+Message-Id: <20240126075547.1521556-1-mengfanhui@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-These functions are defined in the hid-nintendo.c file, but not called
-elsewhere, so delete these unused functions.
+Solution /sys/module/zswap/parameters/enabled attribute node
+does not exist issue，handle zpool zbud initialization failed,
+open CONFIG_ZSWAP CONFIG_ZPOOL CONFIG_ZBUD configuration,manual
+zswap function by /sys/module/zswap/parameters/enabled file
 
-drivers/hid/hid-nintendo.c:757:20: warning: unused function 'joycon_type_has_left_controls'.
-drivers/hid/hid-nintendo.c:763:20: warning: unused function 'joycon_type_has_right_controls'.
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8060
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: mengfanhui <mengfanhui@kylinos.cn>
 ---
- drivers/hid/hid-nintendo.c | 12 ------------
- 1 file changed, 12 deletions(-)
+ arch/mips/configs/generic_defconfig | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/hid/hid-nintendo.c b/drivers/hid/hid-nintendo.c
-index 7ce6be0a8dee..ab5953fc2436 100644
---- a/drivers/hid/hid-nintendo.c
-+++ b/drivers/hid/hid-nintendo.c
-@@ -754,18 +754,6 @@ static inline bool joycon_type_is_right_nescon(struct joycon_ctlr *ctlr)
- 	return ctlr->ctlr_type == JOYCON_CTLR_TYPE_NESR;
- }
- 
--static inline bool joycon_type_has_left_controls(struct joycon_ctlr *ctlr)
--{
--	return joycon_type_is_left_joycon(ctlr) ||
--	       joycon_type_is_procon(ctlr);
--}
--
--static inline bool joycon_type_has_right_controls(struct joycon_ctlr *ctlr)
--{
--	return joycon_type_is_right_joycon(ctlr) ||
--	       joycon_type_is_procon(ctlr);
--}
--
- static inline bool joycon_type_is_any_joycon(struct joycon_ctlr *ctlr)
- {
- 	return joycon_type_is_left_joycon(ctlr) ||
+diff --git a/arch/mips/configs/generic_defconfig b/arch/mips/configs/generic_defconfig
+index 071e2205c7ed..14884df392f4 100644
+--- a/arch/mips/configs/generic_defconfig
++++ b/arch/mips/configs/generic_defconfig
+@@ -13,6 +13,9 @@ CONFIG_CGROUP_DEVICE=y
+ CONFIG_CGROUP_CPUACCT=y
+ CONFIG_NAMESPACES=y
+ CONFIG_USER_NS=y
++CONFIG_ZSWAP=y
++CONFIG_ZPOOL=y
++CONFIG_ZBUD=y
+ CONFIG_SCHED_AUTOGROUP=y
+ CONFIG_BLK_DEV_INITRD=y
+ CONFIG_BPF_SYSCALL=y
 -- 
-2.20.1.7.g153144c
+2.25.1
 
 
