@@ -1,100 +1,157 @@
-Return-Path: <linux-kernel+bounces-39572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89F8983D2FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 04:41:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D614D83D365
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 05:15:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B4C041C233FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 03:41:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E71CB24812
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 04:15:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38461B660;
-	Fri, 26 Jan 2024 03:41:14 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BB49BE4E;
+	Fri, 26 Jan 2024 04:14:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="sWifEGm6"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2066.outbound.protection.outlook.com [40.107.93.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7568E9479
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 03:41:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706240473; cv=none; b=ocIifLpMo38mSkNGjDTHIhg1gA7S3IIu/9hjjp4BVWygTAB8R4HRyhYH4x1qvyCvj5pnyNg3uQ6kccpclaSkCXKo1fxip45x/GHllkjuhJvypLJbp9hN5I4XtN6qzMpgKqjge4iRW0TDcdqrqmzIG7XUXN7YcEGpwpUnkuLvtao=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706240473; c=relaxed/simple;
-	bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=b1k8ChIQSVq8a3qTtsjwi3DQ0uEgVEtKYpb8eCqhxnXQ7QCEBdzEtIhl3KHghvPvcdTJKDz3ePz67HmfgsUgn4xLuuSjRK9rN/tf1Asz+Z8Sa9ntEriQZbOL+gDGhKung5q/i6VJYcUoXdxxl35EZcDuRZgiSkK0MPx5T714Now=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3618e013ec7so83426495ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 19:41:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706240471; x=1706845271;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
-        b=HSxYlFcjLxa5dxPRY3kwo3LywVCVlTjkQ3jjcZA/AtjGrBY9w/JKNZ6XjftbqS1l42
-         ezNbh4Sx2oOgELe13aQZ5TvnuARMuG4EfKCKvuMqYZ4TRgtEPF5SJV1F78tYmZggd4O0
-         633nN3iUOA5x3EhYgpMBtzcfUMCpp3z2FttvVE3PLY3ACr4Cm8TzpUNXzn7omSX/FFo/
-         Do9VZYp6faLDHFsKk8aAs4o9TrWxMejE6zcUJKQS7QG09lcenFR03xLFwR0mlb2tZg46
-         CTeVmSkBo2tV91a/BI9zE+Tj66tDzhAlfGqC+upOv/6GxLKNY/BMfwJNUPktsOCDFrH9
-         1Yhg==
-X-Gm-Message-State: AOJu0YzeOLiKJ5sQYVfkdfuGLJYpOIE+y6sISz1/BP0RvYgiU4wr4Xlf
-	YIU84XbSvfKLo8FDRN0AQ5HUlNw7145RGnVQG6BRVc4UXRzzrQoj673CcAm3AdHdwXnnEnL4gwO
-	DghIIT4V99XXZOwnNWsLmkCEYgje4Y1N/g1bDPS1m3W5IJwTZc6p2Y+c=
-X-Google-Smtp-Source: AGHT+IFz0qxmvUVhvPOqgIrXUDDVpxna4jQPfuOBVEfPvyygebPqZl5fDHsA4+R5BZ5kDHAvmukq1PwEVID+8OKOegIa7MVTh2wE
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 336B5C2FD;
+	Fri, 26 Jan 2024 04:14:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.66
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706242491; cv=fail; b=gaL0XgYgdQlA9xfP6ZGY0F+i9vLHZHE46QcpOZ5/qLudZFV3hM0Nt6qo8i0EcuM3C9QIPzAmdrP7CxeOTG1ASdnR7Ukg8qwiiASseE+wlb+yR4yTpp5Hf68bnLxO/zJcYgzuZO9+K/Liz9LjZvwBQHBXBOGOFMQuWysLVUXcAWQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706242491; c=relaxed/simple;
+	bh=5RytehwruOiKS3cu53xxOQHqYtSyhPvXqy/2seZhXV4=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HZjL5zzFttDY/DdF1B5flyc8sccxIye7/y/cDGE/N5SVXqaPPzvPWhEOk3TNuFqC/psJbVFxU6iPfl3D7eCI2tr6lUWcZ7nrIg1b9/OZSvrBO+OM9TmrmasfP1RqivUUhdputAMrhmCp6+nLR4MpXHZqjBzJ0Z0eYWYqA/4eNX4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=sWifEGm6; arc=fail smtp.client-ip=40.107.93.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RZoTGzaeH2DUQle4e1T15iL0gjhgPgSSNyFtKoX2gU1a2PjSMPWellzBoY6Co91vRYmV27mYHVqf2KVrzvhxKBdUKsRJ0y0adyHETk0zjUCuMtPSHhQZfTsIaZBPdYawbONPtXmFGfmt9awcb3tTU4xNP2Oy9A3lPVBgM+Yx/5pKBJcjs/JkRXhTYSXtzFCqVCsgSL41ViVINYvPhvOkLSzn5AjB5KxdbK5qeAnWZ3X33asMA05sHc2NFUeK8/5vvpM0wUtwzUTKwb31cVZbmzLHH9/CkKn/rrU2JGZ/S2CVfSmuaZT/O4eIIZTM6QXdTHwKsaXbFNHLaXfsZw8WjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KuTLI/e4rw8UMbyjzDaRsBOuInrsZy4AaAHurzAMwYc=;
+ b=Jm0OBTh3FpHxrpFXU9/V9eE2ZvCTQRpaS5lJOqYq1auMS1msZF/TXTNP5tu/WmUuicofebbDjW/gSVolDmq3hwYpF+n327WIHNISbVMFcXt7LelxM4N6S7VhThpuDbB1Vg2N4Hgo1z/KVi/GS52Oe4XTsKvlSivPQotphn7YOp3LTyREuWaSQtJfx8jjyXQbTT7ZHmEO2em1NhFV1pmadkG4XrHczdx1HjpjsdfFsggmn7lxB6DZbVPTIPQ5yZkIrfcDODTe4uWezLgMebkhx7mcVxtJVcD3DkQZWzfbimGk2X/coot+P3uoe43NfZPwMo/NBO7Up8h4VezKOGRb4w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=alien8.de smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KuTLI/e4rw8UMbyjzDaRsBOuInrsZy4AaAHurzAMwYc=;
+ b=sWifEGm6CmbrjuvtsIT4rI3rUARgvntc55exjKXtSg7xbrJEBsmP70X40TzvF9OGOP3WMSC6oEpGXg8YHyqs3IQ4vK6Gx0mf4CKy9GtnsMSJtZgN1C0deX6FrZ+OkPtxcIQ/fUalaD9YseGzLi/dRzzyxqo6VEGzUSJsh9cUEw4=
+Received: from BY3PR10CA0008.namprd10.prod.outlook.com (2603:10b6:a03:255::13)
+ by SN7PR12MB6672.namprd12.prod.outlook.com (2603:10b6:806:26c::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.26; Fri, 26 Jan
+ 2024 04:14:46 +0000
+Received: from SJ1PEPF00001CE3.namprd05.prod.outlook.com
+ (2603:10b6:a03:255:cafe::9a) by BY3PR10CA0008.outlook.office365.com
+ (2603:10b6:a03:255::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.27 via Frontend
+ Transport; Fri, 26 Jan 2024 04:14:46 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SJ1PEPF00001CE3.mail.protection.outlook.com (10.167.242.11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7202.16 via Frontend Transport; Fri, 26 Jan 2024 04:14:46 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 25 Jan
+ 2024 22:14:42 -0600
+Date: Thu, 25 Jan 2024 21:44:26 -0600
+From: Michael Roth <michael.roth@amd.com>
+To: Borislav Petkov <bp@alien8.de>
+CC: <x86@kernel.org>, <kvm@vger.kernel.org>, <linux-coco@lists.linux.dev>,
+	<linux-mm@kvack.org>, <linux-crypto@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
+	<jroedel@suse.de>, <thomas.lendacky@amd.com>, <hpa@zytor.com>,
+	<ardb@kernel.org>, <pbonzini@redhat.com>, <seanjc@google.com>,
+	<vkuznets@redhat.com>, <jmattson@google.com>, <luto@kernel.org>,
+	<dave.hansen@linux.intel.com>, <slp@redhat.com>, <pgonda@google.com>,
+	<peterz@infradead.org>, <srinivas.pandruvada@linux.intel.com>,
+	<rientjes@google.com>, <tobin@ibm.com>, <vbabka@suse.cz>,
+	<kirill@shutemov.name>, <ak@linux.intel.com>, <tony.luck@intel.com>,
+	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
+	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
+	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>, <zhi.a.wang@intel.com>,
+	Brijesh Singh <brijesh.singh@amd.com>, Marc Orr <marcorr@google.com>
+Subject: Re: [PATCH v1 22/26] KVM: SEV: Make AVIC backing, VMSA and VMCB
+ memory allocation SNP safe
+Message-ID: <20240126034426.f2v6p7sjmaaopwig@amd.com>
+References: <20231230161954.569267-1-michael.roth@amd.com>
+ <20231230161954.569267-23-michael.roth@amd.com>
+ <20240121115121.GMZa0FOViBESjYbBz7@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:144b:b0:35f:a338:44ae with SMTP id
- p11-20020a056e02144b00b0035fa33844aemr106434ilo.3.1706240471688; Thu, 25 Jan
- 2024 19:41:11 -0800 (PST)
-Date: Thu, 25 Jan 2024 19:41:11 -0800
-In-Reply-To: <000000000000dfd6a105f71001d7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000376be5060fd11135@google.com>
-Subject: Re: [syzbot] kernel BUG in ext4_write_inline_data
-From: syzbot <syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, eadavis@qq.com, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	nogikh@google.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240121115121.GMZa0FOViBESjYbBz7@fat_crate.local>
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CE3:EE_|SN7PR12MB6672:EE_
+X-MS-Office365-Filtering-Correlation-Id: bcef9d13-4e26-47ec-4bb9-08dc1e255496
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	zkhqXp9OOlKdenbyecaDpwVqz2w6LzER5rt9/VtD0ulPp5jjf71eJzFM/DDjp2QdNY+RJvh86rhs10oL1upwtafkBOH71fDujFDbfLAF1UbkeZVaH7sUtx8VErvzgom+WOJC4ta0qfj78yAlBkTV/pUyap5eiVh2UGqHyQuAy+vR8Fzmtm4WZ4Q80ysCNEt6HQE9LO3kQrF6YAYv5rnLyFBMzJ7LJF/RH2qYY/MNLb3zguQ7AgO2RUOCSOnqZPBg0lpUJtE/C2THJiaLswOF2yRXEjasYD8eRUq+HcEHWbu7MsdamJjR/lWAu35gOA72tMYN+vvMe8nq1OFTHu7MdCHZau1wR5Rq02HuBr7w7RfykGVypiZUOK4W7Zyt2LHwkxnAa6f5CwARVtS7rR+jugQpuDTWAgrBk/pHyiZv8cBwqCtg/htFetPosmJTltThqWY7Fn5pli7wOeGO1hKUD5nesrKWa8VIGccNOvNBPTRdrRg9L3+58O1p0vFxbJYcND2q6eYrpj6QCvqQdGS6KxviCHgB2V9jAavJ4etX5wLrQ1MlDXicSd3qUz0DuapIeJzp+XWGttsTQGqFrzTiJLLZXvy4mLDbZ6p+zv4aqOUv1VzksqnC04laxKs0u2W8OfLBt3aQ3yYSRenp2coX3TQMF83oJpccYiBZDTAUv9X12QGXSKswAgv/iy8eM7ZKpEdpeYXDVhZFoZzbXh3qflz3adxUCG6tDRjk/RHPe6crqC9J4vB+cY8MdqgAHFwH
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(376002)(396003)(136003)(230922051799003)(82310400011)(1800799012)(451199024)(186009)(64100799003)(40470700004)(46966006)(36840700001)(40480700001)(40460700003)(966005)(82740400003)(47076005)(478600001)(44832011)(1076003)(6666004)(86362001)(356005)(336012)(36756003)(426003)(2616005)(81166007)(83380400001)(4744005)(54906003)(70206006)(316002)(6916009)(4326008)(8936002)(8676002)(70586007)(36860700001)(7406005)(7416002)(5660300002)(26005)(16526019)(2906002)(41300700001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 04:14:46.0276
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: bcef9d13-4e26-47ec-4bb9-08dc1e255496
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ1PEPF00001CE3.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6672
 
-This bug is marked as fixed by commit:
-ext4: fix race condition between buffer write and page_mkwrite
+On Sun, Jan 21, 2024 at 12:51:21PM +0100, Borislav Petkov wrote:
+> On Sat, Dec 30, 2023 at 10:19:50AM -0600, Michael Roth wrote:
+> >  arch/x86/include/asm/kvm-x86-ops.h |  1 +
+> >  arch/x86/include/asm/kvm_host.h    |  1 +
+> >  arch/x86/kvm/lapic.c               |  5 ++++-
+> >  arch/x86/kvm/svm/nested.c          |  2 +-
+> >  arch/x86/kvm/svm/sev.c             | 32 ++++++++++++++++++++++++++++++
+> >  arch/x86/kvm/svm/svm.c             | 17 +++++++++++++---
+> >  arch/x86/kvm/svm/svm.h             |  1 +
+> >  7 files changed, 54 insertions(+), 5 deletions(-)
+> 
+> This one belongs in the second part, the KVM set.
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+If we enable the RMP table (the following patch) without this patch in
+place, it can still cause crashes for legacy guests.
 
-#syz fix: exact-commit-title
+I'd moved it earlier into this part of the series based on Paolo's concerns
+about that, so my hope was that he'd be willing to give it an Acked-by if
+needed so it can go through your tree.
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
+-Mike
 
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=f4582777a19ec422b517
-
----
-[1] I expect the commit to be present in:
-
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
-
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
-
-The full list of 9 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
 
