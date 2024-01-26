@@ -1,360 +1,187 @@
-Return-Path: <linux-kernel+bounces-40140-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1222183DB1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:40:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68D8083DB0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:38:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CA5B1F2592D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:40:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1432B21427
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:38:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 727861BF22;
-	Fri, 26 Jan 2024 13:40:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA8B61B94D;
+	Fri, 26 Jan 2024 13:38:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Vkp8ebJL"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2048.outbound.protection.outlook.com [40.107.243.48])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="r0Waz5Pv"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2071.outbound.protection.outlook.com [40.107.244.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 994291BDC6;
-	Fri, 26 Jan 2024 13:40:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD9F11B81A;
+	Fri, 26 Jan 2024 13:38:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.71
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706276410; cv=fail; b=NkacR5Qpe0zYGpzbM9Hh/r2B7u4PzLrttQZGFx/ltfN4HNBUNqMG07idQElbqnslFhjckUDrPx1yy/gHJ6kuE7kS94kIxB4NrECL4yxhQcQA7FlN7RouDKI7GmbY5mpUUtDP8LDV3/kRaJoWXU+OCcGaOoWrx9qCfJ6pvwgt0mw=
+	t=1706276307; cv=fail; b=juclDkACCIKFQ0xAisZw5ApjmtxsW50DI4JHyfGJjCcSbQIayW64w5o64HhjH5H/h8ZfUmJRoa9RGAmDdxUk9uFoxaVSmi22MuOXGtTueash30L2SHZrzTdU1RdGB8ZD5FBO/AmIkBIt+PzX2MVkkNd0glb+/GLG0uK9bv7h1Aw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706276410; c=relaxed/simple;
-	bh=AwXi+mlub++Iu26+Id1stlbXhEq0G7wKbevcN0XhWAk=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uajWXGQFZeUppWCC9ytzyR2xrMCULXu2cjhr8co4EZZNdzy1r0PZNy4VM5Isy1qM2fklg72UNNae2qY0T8SY1gRLZueIIBWwLMOZ7gE3Cxje/GLXgCvBNf+ugvCv9egyzQDLs6fNh/F4arI7ajL9LtVvD6qDpLuiTZnEFz7rhMs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Vkp8ebJL; arc=fail smtp.client-ip=40.107.243.48
+	s=arc-20240116; t=1706276307; c=relaxed/simple;
+	bh=nK+ir5gcrsS7nvQqXtNwH9wfAa6YaKZMwxSbs6J7VVc=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=eEWcaOTLS0D7gijalc3YPzQt20rzEG9FA4UgXzvv4+0ikKbpDbpd6dn3+NBvATK+V9IupAhQ+dGZmaDvYGp5Ocne5yWdeJuy3jDsZt29209rvgxak8APXvsITvGij1a8GoS0KbGGCOhLDwVu5D4U1Rlkj5WCxfDrOlLdUBgTs1M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=r0Waz5Pv; arc=fail smtp.client-ip=40.107.244.71
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q0YErVlVrelsdPhGmFkw8QsI689HC00vA20BElzNsTkHqa3jjKOhYb/VMbB2nkYZeW7ZRwE8V9FH+D9wc73HyPEnT0AXc2YHzzEeoy4d6U69rYls1/64/SWoibg8jQkQke1BdW5gvlkducNzexk3L+lq9Lyrf5g/rI36YNuKKbm+HQ/30wtkxmnjb3aMmCEmAlwFLe6Ldp3DeLvH8XWpJjXwVCMlF0n5NKEGBdSOsWoqay1khoWIXvom9T47OUTajgOr3sJePmNvfvESTuWMNpRNKZlikh2NEhdxcWyTEG2UyVo0/IXUPWIPX/CbRD32lTXSC4NgaR/uvBYATCxIYw==
+ b=A3zYjlZZHWsBx/vN2uNYlU5enUTVJkeBi6j6R6pAxKEVpXkOLLQCroYwwM8fZKJQEYr2y3QBAraYRn5q/XsIjbGy6s3ZxberRYdNcm/Why8jeXb2VuXMWXZ3zCR/IAsbE4GJnnSW1Iun2ayXWSuAaTTl8oW0FxpQHfkOLqXnTuVYo2CliSAIbGBSFLb9yvdBEPC4tELZwTLCLg3uIFCA4NEFIlu77mLImXH7EB7BKhjmITzgv+uUAWIGsO7y8VX2EpMqabWYeZfzpzVTqVyYO7F8ICouDuUoCJYu+pzcUiGZvwKYUO0gdi1H/085ZUDh1CC/eOr18s3Qrw1xrhJ3cw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LlcHzIQWz/0eKoy4EoCOMQ5SAXWAI7gq3pqhJQBubZc=;
- b=L2LOiV5TM85b9XLcoJs/XpX1FngOjtT/AkM+9RqED2LB0xcSMWyxb3QriWIy8bqmXDsfDuCpggxCjx1m4kb17YDgU8gJcnizdp/ZwamdRmO3AjEXKQQy4UDXC6fGzlojOEacnjH3ejc61BTkdsW1WSosayUqhPfBwtcBdkq2+Vct2U/YE+L9reLms8EHyu65IaWqEvFxwB3dQZ1RY7fp8QMxP72n/8ET3baPFMFarNDC+Z0M/kBQaq/JC3aDk4Wtr00Xp2gezBbLjoo0Wvoc5oxSr8FixQhbtr/6+yLYLEWUER5LIuaXcb1BgBU0kcqIrO8QBqHTaxU3Vrpr/WJEvA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=alien8.de smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
+ bh=h+GUTtaKucFCq6vqq9rA+mKlwenh9lc75e2oNsZLSY4=;
+ b=TH5Q00EYDiLg6P3TZEn0YklhiX7+h8YoZUqYZIj9Z1IRXuiqYf0n47xh6OCKFt7l5GN2VvJ8JpVoRRU8TT3JBSG57pbWjAufxggMGgTpDlwFaBrbKpzKQgotmxAz6bhwmAO7Pvsg+a5G1Eab0GWd18cmiSyuEMVc7wqiiFfQ9V2lma1rL3o86CehJ5hAaI9Uj4yvnRbFtAyz1HPxSFbMsOOf/m2DzhxwnjXZATGzNsNtKP7YGHboUHRKO7IbweE9Bbf9uALUb9vk/38V30vP3ZoVjk6OWAglP2S/tuC4AYp87fU2QGJ10SDFRm3J+9Dak37DWaRbGZ9WOYbt3mfWAA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LlcHzIQWz/0eKoy4EoCOMQ5SAXWAI7gq3pqhJQBubZc=;
- b=Vkp8ebJLdRMUTSTx/Rfad8qO+yv1dPNZzbGQBTWPERM8/uTSY4oB11rMJfpS4FS1Fl4tn2pCGSXpksEMRC1AQZ3FvHScSgjEdTd1Z/9c8BSWOHdBLtydJb0Rl+/6wRCTbPFgSvbb1mf/acyAz2EzjCkPvAOKGZ/VtoN/mwtfe1E=
-Received: from BN9PR03CA0282.namprd03.prod.outlook.com (2603:10b6:408:f5::17)
- by IA1PR12MB8496.namprd12.prod.outlook.com (2603:10b6:208:446::10) with
+ bh=h+GUTtaKucFCq6vqq9rA+mKlwenh9lc75e2oNsZLSY4=;
+ b=r0Waz5PvdANJYyDzy5TDig3v+irOABT7ScZmJzIrXNIChTMTNwuifE8vUl2NxnMPmT5vBJuwRVCZRo7xZzG33mLtbCCMt0JWLhaTQiGD+5hs8XpogC4BYKtZANpZbD2losUZek+ZisupLKyaXJykUXYoaXm+b3UGZItB6xQTVWQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by SA1PR12MB8162.namprd12.prod.outlook.com (2603:10b6:806:33a::18) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.27; Fri, 26 Jan
- 2024 13:40:04 +0000
-Received: from BN1PEPF0000468A.namprd05.prod.outlook.com
- (2603:10b6:408:f5:cafe::c) by BN9PR03CA0282.outlook.office365.com
- (2603:10b6:408:f5::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.27 via Frontend
- Transport; Fri, 26 Jan 2024 13:40:04 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN1PEPF0000468A.mail.protection.outlook.com (10.167.243.135) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7228.16 via Frontend Transport; Fri, 26 Jan 2024 13:40:04 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Fri, 26 Jan
- 2024 07:40:03 -0600
-Date: Fri, 26 Jan 2024 07:38:10 -0600
-From: Michael Roth <michael.roth@amd.com>
-To: Borislav Petkov <bp@alien8.de>
-CC: <x86@kernel.org>, <kvm@vger.kernel.org>, <linux-coco@lists.linux.dev>,
-	<linux-mm@kvack.org>, <linux-crypto@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
-	<jroedel@suse.de>, <thomas.lendacky@amd.com>, <hpa@zytor.com>,
-	<ardb@kernel.org>, <pbonzini@redhat.com>, <seanjc@google.com>,
-	<vkuznets@redhat.com>, <jmattson@google.com>, <luto@kernel.org>,
-	<dave.hansen@linux.intel.com>, <slp@redhat.com>, <pgonda@google.com>,
-	<peterz@infradead.org>, <srinivas.pandruvada@linux.intel.com>,
-	<rientjes@google.com>, <tobin@ibm.com>, <vbabka@suse.cz>,
-	<kirill@shutemov.name>, <ak@linux.intel.com>, <tony.luck@intel.com>,
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
-	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
-	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>
-Subject: Re: [PATCH v1 21/26] crypto: ccp: Add panic notifier for SEV/SNP
- firmware shutdown on kdump
-Message-ID: <20240126133810.whjr3wxinwyxzfgt@amd.com>
-References: <20231230161954.569267-1-michael.roth@amd.com>
- <20231230161954.569267-22-michael.roth@amd.com>
- <20240121114900.GLZa0ErBHIqvook5zK@fat_crate.local>
+ 2024 13:38:22 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::e1fb:4123:48b1:653]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::e1fb:4123:48b1:653%4]) with mapi id 15.20.7228.026; Fri, 26 Jan 2024
+ 13:38:22 +0000
+Message-ID: <f5fe17fc-2d5a-4f78-9315-9fd05f58142e@amd.com>
+Date: Fri, 26 Jan 2024 14:38:16 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] drm/ttm: Make sure the mapped tt pages are decrypted
+ when needed
+Content-Language: en-US
+To: Zack Rusin <zack.rusin@broadcom.com>, dri-devel@lists.freedesktop.org
+Cc: =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+ Huang Rui <ray.huang@amd.com>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+References: <2b5648aa-f83d-d8f7-b0fd-39c859f32f33@linux.intel.com>
+ <20240105135105.1921947-1-zack.rusin@broadcom.com>
+ <CABQX2QMg4L3oQe4pU4saBgopXw7CKyGrQa_LKE0xtSwyEKacnw@mail.gmail.com>
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <CABQX2QMg4L3oQe4pU4saBgopXw7CKyGrQa_LKE0xtSwyEKacnw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR4P281CA0137.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:b8::17) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240121114900.GLZa0ErBHIqvook5zK@fat_crate.local>
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN1PEPF0000468A:EE_|IA1PR12MB8496:EE_
-X-MS-Office365-Filtering-Correlation-Id: 78aed9d4-f3cf-45bf-f12e-08dc1e744d47
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|SA1PR12MB8162:EE_
+X-MS-Office365-Filtering-Correlation-Id: eb365a75-4acd-421b-87fa-08dc1e74108d
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	CVkXabAfi3or5k0wQLNHvMlyWPAlkDQLOkIDwpq1Xl9assWEqA37soOcka1kZMEJoGygWar3VWCGGWLpQzM6oMhZndrdLnAMdVXsPKHFZxOkNT/PcIaE+f4Zm60Ie9EyfkyGUNjoUbuQDBpeERHQGjx/lB926v2FEyY4EJfABqiFT2CB0fixPeurXZlbfMAMlwuuq+dZyt9eWs5yUzRfCbJ9kyY1q0RxuKgj6DXrpOYyizOi6eHae/M6uCNdRDM6xURBpyr8tblKmtcYTCUv5YQpYR3C21pyTlrIrt5IPXqePKZaFvMjUTVWxkM+ZUFINHRSH0ghmTGN/UEIiza9yM7k9X7VNIOEBlsgzgjcXJqlxzhQZqgrm1QPZXjLMAR13KNocEIgnoy3WzUaLRUg6bLKgkvm8hcidmJGQ+WghgCKGj6jmSukATbVFIU/6xjjpN1y0g+Bw8mfryyhHxp311TGyngMPBA5G+5cNPDuAUdBTVJQ4eXhwaqmHkGnKpU0WcD60B6Z6CYVpMT7Hu0XWyb/lLIkHm3U5HcYXvpLDd2hXUjFVVo0ljLNnDUycldn832gw/aEnOc1VmwHGoQqyfZ/LSSdn/tMCwIG5sRqttn5d5u1A3N3D8CBZA2TBWH0WoWlck6erCWmIfdbu85sDpSoiRdSLEsenDrZBjRFaws7lIfvcSYfeW7pA1P95xF1VSk3ALPrc4K9Q4pAndYrNvU8fClE3Ax81HI74khJId/lG6itZNVX2YrqHoUU1GD9cRp1YugrYx4owC4mGhwQqp0kHvc25HW2sc+s7DsNaifw17pKHpKE9lC525CgceLz
+	6CLbZwRuCd6hEYb7Dx6EoykDm8jRnbjrjJ//JlNQWLDmFlh1EyxYWLYhgD2Htioxe2iBFk5B87TYsRlP1rj69ro0B45vcPBymjMLB+pUJu0NXun6AgndktlSPJBsgkvNlB6SgaKOnfutC+SXNozz4qkofgaY5L8M8O7mnWO0JgSKSqJCZ19ByMFt5KvFKGJ0cWf/cCE2lyMWU0fvGk5dm/XdWIDZRYEGF1iznhXN6exBft99QPmgcqj2kSlJJuZwpj+0B5+LOTxOrRW0+ATe+vCKFULtStthxY3HIhD+NrS53Ic08A40dYLvbNC4Z5DO0z96fyi/uH8ie77vml/oRstlNWGELgwbANCJzBxOu9dwwr5gT9IqbSJjqW20zKxTBswI0VzpuMgUKJivZtVGVXP+R0hS/9fIYUsRyAT/glxdVrQgYWTumido7XoqM+xqzHY5cXhwqOriO+I/G2LIM8lpq4/y+Nc+/WUETZaI4NMg/1a4yjWUtqG7Xz5wA7snzqgO1WJ+RN1twsS5Xd77KdatNvJCWGxnrkgMAVJspkhczn9OIH6Z+D9o82oJG/JUY1lJtKzUTgrtb0EnIOO6zT+ton3qG8ruzhlmAlZrSbUteBgBglSl/rOnD71ZvxoX28zBz7ywke7xkzAKK3RCNA==
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(396003)(136003)(346002)(230922051799003)(230173577357003)(230273577357003)(64100799003)(186009)(1800799012)(82310400011)(451199024)(46966006)(40470700004)(36840700001)(966005)(82740400003)(7406005)(356005)(2906002)(7416002)(36860700001)(81166007)(5660300002)(44832011)(41300700001)(36756003)(426003)(336012)(26005)(16526019)(478600001)(1076003)(2616005)(6666004)(83380400001)(8676002)(4326008)(47076005)(8936002)(6916009)(54906003)(316002)(70206006)(70586007)(86362001)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(346002)(39860400002)(376002)(396003)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(36756003)(38100700002)(31686004)(83380400001)(6506007)(2616005)(26005)(53546011)(6666004)(41300700001)(6512007)(2906002)(478600001)(5660300002)(31696002)(316002)(66556008)(66476007)(54906003)(66946007)(66899024)(86362001)(6486002)(8936002)(8676002)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?QTN0R01yd2w5VzZ4SXFMekNrU0JRcUt5V25LV3VjOFRlaUpBckNPK1JYWHdU?=
+ =?utf-8?B?N2pOQWtIZlpKWFVlTWMzY0pGMjZGZG9kcktGRlJhazBYL0xmVjgrTUNubGhT?=
+ =?utf-8?B?V0xIQSthUFNacFY2NkdFYklTVHVMMmc1VVRXNUpiZ2QrOVg2T005MzRKeEVI?=
+ =?utf-8?B?bUpGcDIwaVcvaXhySVpSQ1dEbkRKWTI5OThXaERVVkFsaEY0bTRGajgxVHZT?=
+ =?utf-8?B?bTk2VVFOQ2lYaDh4RTZ1cjJvZVNvam1zWDBheGlMbUE5d3phVTlHbzdmd3RW?=
+ =?utf-8?B?dWlpZ01xYlBtR3I3bWsxZ1l0M2hlT1UwcS9KalFqOWE4Uk5MNUZmZno2VDQy?=
+ =?utf-8?B?Ykp0YWtoVit5TjdwVE1KcXhxNjZXNVlLUm1HbTYzcHBmblJRYVVYRXVoNmNQ?=
+ =?utf-8?B?a0JvUm95VDBENVcyVW04RmRaMzhZams0RzI0akthVms5dU02N0lVWXMxU1Jm?=
+ =?utf-8?B?WEdpQkZRTHJMMDdmL0JmZUpyd21yamYwR1NFUWJFY0xkNnk1SU1LdFRlWHpG?=
+ =?utf-8?B?eFl3cGRRRlpMVU9IRER2WnJGTWZkM0ZGZjJpUWlJcWh3SkxYTTZXUlNiZjdN?=
+ =?utf-8?B?dkcwazRJNXVyNVJUaGZTSVhRRUFNVjJRM2FkdW4yYzczOElCcEx0UCt0eHlF?=
+ =?utf-8?B?MkFEVWVFQy9yZzRmRFFiTVdBQ3JPVnNVSEZScklOZEtGc3pVUk4zbXZyb3dm?=
+ =?utf-8?B?Vis1VlpBVDZ3RlJTWXQyajdZVWVMUURncG1VbXdMc1VyaXBCc0VwOUh3YmVV?=
+ =?utf-8?B?MG5TaVZ5K1FCOXpteU5RektoSklueE40OXdtdTNLTGF6VHRvMTdTUTNDTWRK?=
+ =?utf-8?B?VVQ5U2NNazJnS2QrWlVjYXhHRUh2R2NMODM0N0FMOFRGUFAyZDZPZ0tVRjMx?=
+ =?utf-8?B?Y1JxNDZPTjNTaXpLODZaMEVyUnpoemlnamFSVVJna0V5WHoxY2RoUC9oSGh4?=
+ =?utf-8?B?VUhYN3ZnbktxaTNvdy9zdy8xaWkzaUJaVzI2eGZDZk1zMGNNb2w5cCs4NXkx?=
+ =?utf-8?B?L2JXY20yMjFDUVhNQVJqVUVDWHZYektNdHZZenI1ZElPTkYrU1Z0TlY0S1VX?=
+ =?utf-8?B?aWE0QlFVbW1GUkZ0SWhrY3R2Sk1XYWhubnM2Rkc0b2U4TVhnN2xrUFUvbjA1?=
+ =?utf-8?B?Y3c5OUl4YW1HZ2xOclVjSGprcVlIL2p1aWJKRDFTTUhBTHg4SWpLcWx0YUM3?=
+ =?utf-8?B?WW1nTk9qQnRnL05DVmQ2am1OYktHdDZSYlJQYjl4MjFkeE40TjcrNHZabjFV?=
+ =?utf-8?B?WUtxNGJWcERnZ1FwVmQ3R25QbHZIZXBlZWl6WkRZR1V2SEdqaVB2cUttRDFF?=
+ =?utf-8?B?MS9aMFp5R2liWEo2OHc1Ylkvc3duMWs0WG1rUG9Ld0dZM0MyaXl6bGwzWlQr?=
+ =?utf-8?B?Z0J0QllMN2VnVFZudDBTanh2YTNUMDBpakNHSGxaZjRCamZEVW9mcUk0ekJU?=
+ =?utf-8?B?TkVkZUUyNmxlSm5JRUtvTkRvT0lYMHdwN2Rsak8yVDZkcHdUZDNpQlJneWND?=
+ =?utf-8?B?cUZLUkhhcXRlSHJsZHU3M0lodll5b1BrZmdiQjNWVGxiYndHV0kzVGQ4bVNi?=
+ =?utf-8?B?Um1pQTVlRHlCN0xwN0w3MkhJUThoU25VOVR3ektneTFtR1RHVit5dmU3NXdF?=
+ =?utf-8?B?ZmQxdXd3Z0FwUXhTY1pkZnVLQWVOQzUrVjRRZ3MrVm04TmpzV040ekwwVzlD?=
+ =?utf-8?B?cWZielRtZ0hUbWQ3UUhBcmo1Lys5bDhUWllxQURwRng4cXJVTm5qSW41dGh3?=
+ =?utf-8?B?OCtZVjFZY2tOcEFCYnVXUng5WG9ka3F4eGNHaFVFVTFwK04zSFNqdzViSlJZ?=
+ =?utf-8?B?T1F6UEJXWXlHKzBRc1FuSDZ4dXhIdFN5dDRORWd0RnlNclA5OStnYVpCN1g3?=
+ =?utf-8?B?bHlxZmJreXZiNHNKZndqS0tuMkJhcDg4YWsrdzNHWjBFUXFwSlBnMlZ3SnM1?=
+ =?utf-8?B?VVc1b2t3dXZ4WGZhdGxiYnIyUStaUkk4ZTRiaXptRW84eHFoazFGZC9UdWV1?=
+ =?utf-8?B?QU1ud0k0M29XSVYyeUNYcTNMdTE0NThUdlg4ZTAxblJLUjNGcmJNd2Z4dmV1?=
+ =?utf-8?B?TGlvRzNwSzRFbU9vWHljeXFWcFBPZTFHaTZ1R1VTa3czZmFucFZFN1Q4dkp1?=
+ =?utf-8?Q?1mjIxuCPg/nrra6eNjV+Bds6o?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 13:40:04.0742
+X-MS-Exchange-CrossTenant-Network-Message-Id: eb365a75-4acd-421b-87fa-08dc1e74108d
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 13:38:22.3924
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 78aed9d4-f3cf-45bf-f12e-08dc1e744d47
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN1PEPF0000468A.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8496
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: //A68E9ohceVO8wyDRFzmzTI9zhCXdJfWMEPaAn4w5AjLDhUJAD51/LDfiKHIHSJ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8162
 
-On Sun, Jan 21, 2024 at 12:49:00PM +0100, Borislav Petkov wrote:
-> On Sat, Dec 30, 2023 at 10:19:49AM -0600, Michael Roth wrote:
-> > From: Ashish Kalra <ashish.kalra@amd.com>
-> > 
-> > Add a kdump safe version of sev_firmware_shutdown() registered as a
-> > crash_kexec_post_notifier, which is invoked during panic/crash to do
-> > SEV/SNP shutdown. This is required for transitioning all IOMMU pages
-> > to reclaim/hypervisor state, otherwise re-init of IOMMU pages during
-> > crashdump kernel boot fails and panics the crashdump kernel. This
-> > panic notifier runs in atomic context, hence it ensures not to
-> > acquire any locks/mutexes and polls for PSP command completion
-> > instead of depending on PSP command completion interrupt.
-> > 
-> > Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> > [mdr: remove use of "we" in comments]
-> > Signed-off-by: Michael Roth <michael.roth@amd.com>
-> 
-> Cleanups ontop, see if the below works too. Especially:
-> 
-> * I've zapped the WBINVD before the TMR pages are freed because
-> __sev_snp_shutdown_locked() will WBINVD anyway.
+Am 26.01.24 um 06:10 schrieb Zack Rusin:
+> On Fri, Jan 5, 2024 at 8:51 AM Zack Rusin <zack.rusin@broadcom.com> wrote:
+>> Some drivers require the mapped tt pages to be decrypted. In an ideal
+>> world this would have been handled by the dma layer, but the TTM page
+>> fault handling would have to be rewritten to able to do that.
+>>
+>> A side-effect of the TTM page fault handling is using a dma allocation
+>> per order (via ttm_pool_alloc_page) which makes it impossible to just
+>> trivially use dma_mmap_attrs. As a result ttm has to be very careful
+>> about trying to make its pgprot for the mapped tt pages match what
+>> the dma layer thinks it is. At the ttm layer it's possible to
+>> deduce the requirement to have tt pages decrypted by checking
+>> whether coherent dma allocations have been requested and the system
+>> is running with confidential computing technologies.
+>>
+>> This approach isn't ideal but keeping TTM matching DMAs expectations
+>> for the page properties is in general fragile, unfortunately proper
+>> fix would require a rewrite of TTM's page fault handling.
+>>
+>> Fixes vmwgfx with SEV enabled.
+>>
+>> v2: Explicitly include cc_platform.h
+>> v3: Use CC_ATTR_GUEST_MEM_ENCRYPT instead of CC_ATTR_MEM_ENCRYPT to
+>> limit the scope to guests and log when memory decryption is enabled.
+> Hi, Christian.
+>
+> Gentle ping on that one. This is probably the cleanest we can get this
+> code. Can we land this or is there anything else you'd like to see?
 
-As Ashish mentioned the wbinvd_on_all_cpus() is still needed for general
-TMR handling even outside of panic/SNP, but I think you're right about
-the panic==true where the handling is SNP-specific and so the wbinvd()
-that gets called later during SNP shutdown will take care of it, so I've
-adjusted things accordingly.
+Sorry for the delay.
 
-> 
-> * The mutex_is_locked() check in snp_shutdown_on_panic() is silly
-> because the panic notifier runs on one CPU anyway.
+I'm not too familiar with the technical background, so I can't 100% 
+judge if this is correct or not.
 
-Based on discussion with Ashish I've updated the comments in v2
-regarding this to make it a little clearer why it might still be a good
-idea to keep that in to avoid weird unexpected behavior if we try to
-issue PSP commands while another one was already in-flight by another
-task before the panic.
+But if it works for you I think we should give it a try, feel free to 
+add my Acked-by and push upstream through whatever branch you like.
 
-But I squashed in all the other changes here as-is.
+Regards,
+Christian.
 
--Mike
+>
+> z
 
-> 
-> Thx.
-> 
-> ---
-> 
-> diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
-> index 435ba9bc4510..27323203e593 100644
-> --- a/arch/x86/include/asm/sev.h
-> +++ b/arch/x86/include/asm/sev.h
-> @@ -227,6 +227,7 @@ int snp_issue_guest_request(u64 exit_code, struct snp_req_data *input, struct sn
->  void snp_accept_memory(phys_addr_t start, phys_addr_t end);
->  u64 snp_get_unsupported_features(u64 status);
->  u64 sev_get_status(void);
-> +void kdump_sev_callback(void);
->  #else
->  static inline void sev_es_ist_enter(struct pt_regs *regs) { }
->  static inline void sev_es_ist_exit(void) { }
-> @@ -255,6 +256,7 @@ static inline int snp_issue_guest_request(u64 exit_code, struct snp_req_data *in
->  static inline void snp_accept_memory(phys_addr_t start, phys_addr_t end) { }
->  static inline u64 snp_get_unsupported_features(u64 status) { return 0; }
->  static inline u64 sev_get_status(void) { return 0; }
-> +static inline void kdump_sev_callback(void) {  }
->  #endif
->  
->  #ifdef CONFIG_KVM_AMD_SEV
-> diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
-> index 23ede774d31b..64ae3a1e5c30 100644
-> --- a/arch/x86/kernel/crash.c
-> +++ b/arch/x86/kernel/crash.c
-> @@ -40,6 +40,7 @@
->  #include <asm/intel_pt.h>
->  #include <asm/crash.h>
->  #include <asm/cmdline.h>
-> +#include <asm/sev.h>
->  
->  /* Used while preparing memory map entries for second kernel */
->  struct crash_memmap_data {
-> @@ -59,12 +60,7 @@ static void kdump_nmi_callback(int cpu, struct pt_regs *regs)
->  	 */
->  	cpu_emergency_stop_pt();
->  
-> -	/*
-> -	 * for SNP do wbinvd() on remote CPUs to
-> -	 * safely do SNP_SHUTDOWN on the local CPU.
-> -	 */
-> -	if (cpu_feature_enabled(X86_FEATURE_SEV_SNP))
-> -		wbinvd();
-> +	kdump_sev_callback();
->  
->  	disable_local_APIC();
->  }
-> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-> index c67285824e82..dbb2cc6b5666 100644
-> --- a/arch/x86/kernel/sev.c
-> +++ b/arch/x86/kernel/sev.c
-> @@ -2262,3 +2262,13 @@ static int __init snp_init_platform_device(void)
->  	return 0;
->  }
->  device_initcall(snp_init_platform_device);
-> +
-> +void kdump_sev_callback(void)
-> +{
-> +	/*
-> +	 * Do wbinvd() on remote CPUs when SNP is enabled in order to
-> +	 * safely do SNP_SHUTDOWN on the the local CPU.
-> +	 */
-> +	if (cpu_feature_enabled(X86_FEATURE_SEV_SNP))
-> +		wbinvd();
-> +}
-> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-> index 598878e760bc..c342e5e54e45 100644
-> --- a/drivers/crypto/ccp/sev-dev.c
-> +++ b/drivers/crypto/ccp/sev-dev.c
-> @@ -161,7 +161,6 @@ static int sev_wait_cmd_ioc(struct sev_device *sev,
->  
->  			udelay(10);
->  		}
-> -
->  		return -ETIMEDOUT;
->  	}
->  
-> @@ -1654,7 +1653,7 @@ static int sev_update_firmware(struct device *dev)
->  	return ret;
->  }
->  
-> -static int __sev_snp_shutdown_locked(int *error, bool in_panic)
-> +static int __sev_snp_shutdown_locked(int *error, bool panic)
->  {
->  	struct sev_device *sev = psp_master->sev_data;
->  	struct sev_data_snp_shutdown_ex data;
-> @@ -1673,7 +1672,7 @@ static int __sev_snp_shutdown_locked(int *error, bool in_panic)
->  	 * In that case, a wbinvd() is done on remote CPUs via the NMI
->  	 * callback, so only a local wbinvd() is needed here.
->  	 */
-> -	if (!in_panic)
-> +	if (!panic)
->  		wbinvd_on_all_cpus();
->  	else
->  		wbinvd();
-> @@ -2199,26 +2198,13 @@ int sev_dev_init(struct psp_device *psp)
->  	return ret;
->  }
->  
-> -static void __sev_firmware_shutdown(struct sev_device *sev, bool in_panic)
-> +static void __sev_firmware_shutdown(struct sev_device *sev, bool panic)
->  {
->  	int error;
->  
->  	__sev_platform_shutdown_locked(NULL);
->  
->  	if (sev_es_tmr) {
-> -		/*
-> -		 * The TMR area was encrypted, flush it from the cache
-> -		 *
-> -		 * If invoked during panic handling, local interrupts are
-> -		 * disabled and all CPUs are stopped, so wbinvd_on_all_cpus()
-> -		 * can't be used. In that case, wbinvd() is done on remote CPUs
-> -		 * via the NMI callback, so a local wbinvd() is sufficient here.
-> -		 */
-> -		if (!in_panic)
-> -			wbinvd_on_all_cpus();
-> -		else
-> -			wbinvd();
-> -
->  		__snp_free_firmware_pages(virt_to_page(sev_es_tmr),
->  					  get_order(sev_es_tmr_size),
->  					  true);
-> @@ -2237,7 +2223,7 @@ static void __sev_firmware_shutdown(struct sev_device *sev, bool in_panic)
->  		snp_range_list = NULL;
->  	}
->  
-> -	__sev_snp_shutdown_locked(&error, in_panic);
-> +	__sev_snp_shutdown_locked(&error, panic);
->  }
->  
->  static void sev_firmware_shutdown(struct sev_device *sev)
-> @@ -2262,26 +2248,18 @@ void sev_dev_destroy(struct psp_device *psp)
->  	psp_clear_sev_irq_handler(psp);
->  }
->  
-> -static int sev_snp_shutdown_on_panic(struct notifier_block *nb,
-> -				     unsigned long reason, void *arg)
-> +static int snp_shutdown_on_panic(struct notifier_block *nb,
-> +				 unsigned long reason, void *arg)
->  {
->  	struct sev_device *sev = psp_master->sev_data;
->  
-> -	/*
-> -	 * Panic callbacks are executed with all other CPUs stopped,
-> -	 * so don't wait for sev_cmd_mutex to be released since it
-> -	 * would block here forever.
-> -	 */
-> -	if (mutex_is_locked(&sev_cmd_mutex))
-> -		return NOTIFY_DONE;
-> -
->  	__sev_firmware_shutdown(sev, true);
->  
->  	return NOTIFY_DONE;
->  }
->  
-> -static struct notifier_block sev_snp_panic_notifier = {
-> -	.notifier_call = sev_snp_shutdown_on_panic,
-> +static struct notifier_block snp_panic_notifier = {
-> +	.notifier_call = snp_shutdown_on_panic,
->  };
->  
->  int sev_issue_cmd_external_user(struct file *filep, unsigned int cmd,
-> @@ -2322,7 +2300,7 @@ void sev_pci_init(void)
->  		"-SNP" : "", sev->api_major, sev->api_minor, sev->build);
->  
->  	atomic_notifier_chain_register(&panic_notifier_list,
-> -				       &sev_snp_panic_notifier);
-> +				       &snp_panic_notifier);
->  	return;
->  
->  err:
-> @@ -2339,5 +2317,5 @@ void sev_pci_exit(void)
->  	sev_firmware_shutdown(sev);
->  
->  	atomic_notifier_chain_unregister(&panic_notifier_list,
-> -					 &sev_snp_panic_notifier);
-> +					 &snp_panic_notifier);
->  }
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
-> 
 
