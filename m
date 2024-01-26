@@ -1,122 +1,167 @@
-Return-Path: <linux-kernel+bounces-39647-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21A6683D443
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 07:29:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8722A83D452
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 07:44:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53FD81C22D9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 06:29:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E64B9B20A58
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 06:44:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36C4F1429A;
-	Fri, 26 Jan 2024 06:12:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E8FD1803E;
+	Fri, 26 Jan 2024 06:14:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="miEr/8f2"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="GSJAzkR5"
+Received: from esa12.hc1455-7.c3s2.iphmx.com (esa12.hc1455-7.c3s2.iphmx.com [139.138.37.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C3AEC13C
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 06:11:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF57A17BBB
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 06:14:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.138.37.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706249521; cv=none; b=dU5Jj7NCjTNN180Mxc6ACdyHxNOWuKszsqHH0V2LbFHq0KWOoZTSxlidcuvG+2JTVgmfhxu7NhU/1ZYwBxX+W7GmTqiz6OL+YayNTJi06TR/9LDMoR0ZJTAxGJfU9G6fQsD/iwA6Cn9xoM09+BK77NjtvK2LYFSYsoWJnLcEPQU=
+	t=1706249690; cv=none; b=Qsp5UeQ0TdVsCXMpqbZEeYoPtxzailvHXHDfnUsJ2IJmxdKGf0GsP2EeVwV8SK3Wsjhp/eAGack1oooXl2gW01aFJhRNBAPPxu1Veas+8Tk7nYvall/uAaHCWpRUE52HN5LIGa5OPlgXL2+rPZeqRfo94yReZ7A2HxTtt4mLovA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706249521; c=relaxed/simple;
-	bh=7UZnrODZ/MY++iMvwo41MGHM2nNlZwIfqePHWJK1BZc=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=iWELx6FzDgEQss8CxpmR/c5eFE79G0lPtMv1nlek8TZgTqVpWvr6Vx6QHNgwHKtc1qb5me4Nl1cVJFBuzJjDGDO6tt/kLKGHlbt73DOa65HqSQJy/J2OFhVyEfk9xbDIVbY42LDmFRhbIHxS9S9uHd9KssD4IBlW8QoVufaOA9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--vamshigajjela.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=miEr/8f2; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--vamshigajjela.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6029c85922dso1002017b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 22:11:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706249519; x=1706854319; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ZKVNWMZBR2eYWT59dTj/uyfqypo9Ohb4eJLIAFi1GR8=;
-        b=miEr/8f2cGy2fP/QWzj89Uh134Z2dWFVsvKQiqF8v5RKrmIyuRac1YvJq3AcaTNYOn
-         HCfA2lVlA/+QgiWoCh3KPg6apTHWdyLWFi4IPl/EIK+V6EmnPZXLQzq2HfAAFzbM8NNM
-         2rwhj4CJFyfLvsSx3xykmyfnnLG/ooUmIP3SVvRffRz9Ilhv5y4lSN5KNhkfDYQKwe0/
-         7CsgbLjLg7EWT4aAEm7u6ns3ydqOzmwdDs6Wuq270drNos/McjitV2pEyjlVJpScUU+K
-         ulOHOnbQ4c4xaqip8YpfPg90ZdmxjEQx23o7TJzpZezvJ3uOjLzKSlz4At3A7mb6ly8T
-         rvig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706249519; x=1706854319;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZKVNWMZBR2eYWT59dTj/uyfqypo9Ohb4eJLIAFi1GR8=;
-        b=CRoOmosi+nTS7N8v/7TKSb81jWwdOxTraVf6vUiX1BQ//NN74H2nrSsIEDIx2XFUhw
-         RnL01/c1S8UL3rF7+sHN2WsxqGGO3RwOrEdKJMDhQqxCN3hIgeSWuh7Q5q6y89DQh3dx
-         EwEMYeTIw95vxeoENhRZ22onYEjN7pQY1q7nAmnu45RGfaeBBT0GNf+xkts79SJwgwB4
-         61oDt2JggCMuR80Mw6B1Vo+48YbwEbECB7zoPNk6BCsWBkghVY8+g4DrCjGJDjsw75B2
-         rQjKA87zhsrBx6sMM7C2hRbS4jwK3qrCHAbcCOzegFJPHlAjTHRYFrnVmuNV1un10efV
-         +gow==
-X-Gm-Message-State: AOJu0YwenQq38ko6x3sDaEnmEvZE+rTNNufX8mPk9T/ndQsq/qVfBFkJ
-	aK+7jpcMyrhxjbqIhEq42iTt/2ysgemzlWbZxs/MafYEG5WdJcCNSlQk3NWZmUBOFeNmXwxRgab
-	/rMOmUuVFGvVGYNkGrmpmsEEjjjwj4w==
-X-Google-Smtp-Source: AGHT+IH82jPh3xY3v78gOnMPT1V1lhKcVdBHqduQKdsqG7nWYVumN5IGbWTSDlztvr4d3XTi9EEIsJDhzaJCZH2V6MGF
-X-Received: from vamshig51.c.googlers.com ([fda3:e722:ac3:cc00:3:22c1:c0a8:70c])
- (user=vamshigajjela job=sendgmr) by 2002:a05:690c:fc2:b0:5ff:9315:7579 with
- SMTP id dg2-20020a05690c0fc200b005ff93157579mr478886ywb.6.1706249519070; Thu,
- 25 Jan 2024 22:11:59 -0800 (PST)
-Date: Fri, 26 Jan 2024 11:41:53 +0530
+	s=arc-20240116; t=1706249690; c=relaxed/simple;
+	bh=OdV3/VXkvGAeWdnhK/tcT92mxKx/qVq5LJz/V81cuTo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LinfXuHlntebpQ4cKMkHVfHeOQqcVCLsHm+mNs9Bd+tsBpZNN8hlrsvD3g7RPn5/skHt9ZlbroKcB5baVIZZZE5loczUtfNXn9dtB7NEMg37S7us7qHqKznXfwdf+ctteCQbLDnm0IpOjlSyi8wiudZQQWJT5GiENNwiL2OnofY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=GSJAzkR5; arc=none smtp.client-ip=139.138.37.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fujitsu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+  t=1706249688; x=1737785688;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=OdV3/VXkvGAeWdnhK/tcT92mxKx/qVq5LJz/V81cuTo=;
+  b=GSJAzkR5tyG4ZJgTnxOuf6oRq51E54ZWizo8GguqiShSCeuyTXxXymSG
+   TILpdMEWbIyFIisip2/Yy3fijXpJT75RgEcJMxL+m1HXnmtFrvP7UGmvf
+   KXlr0kHAE+m0D3NN7EaejnlDnU3rqstbN7MXqHFgRpJZsCB5jEkYS4Wb6
+   lk43DNApuasGLkTFuTZtHXPzuLsclfBf6PXntCezmj5hDFJ2AMb5Nb2ZE
+   b7qCiED/npK5MJUORaf+f2XboqiGLOQcUY4C/ckLPB0TZGepHFAd+/93H
+   ffPV2mRIEj+EMxfDUwXL9FsETh9optZVUq3Swv99t4JG38BaLaw+AgjG2
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="126657158"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701097200"; 
+   d="scan'208";a="126657158"
+Received: from unknown (HELO oym-r4.gw.nic.fujitsu.com) ([210.162.30.92])
+  by esa12.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 15:13:36 +0900
+Received: from oym-m3.gw.nic.fujitsu.com (oym-nat-oym-m3.gw.nic.fujitsu.com [192.168.87.60])
+	by oym-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id A27AED9D92
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:13:32 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com [192.51.206.21])
+	by oym-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id C8839E9E5A
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:13:31 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+	by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 6549A200A7EC8
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:13:31 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.226.45])
+	by edo.cn.fujitsu.com (Postfix) with ESMTP id C55FB1A006A;
+	Fri, 26 Jan 2024 14:13:29 +0800 (CST)
+From: Li Zhijian <lizhijian@fujitsu.com>
+To: linux-kernel@vger.kernel.org
+Cc: Li Zhijian <lizhijian@fujitsu.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH v2 1/4] arch/x86/events/amd: Convert snprintf/sprintf to sysfs_emit
+Date: Fri, 26 Jan 2024 14:13:16 +0800
+Message-Id: <20240126061319.245901-1-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Message-ID: <20240126061153.2883199-1-vamshigajjela@google.com>
-Subject: [PATCH v1 RESEND] spmi: hisi-spmi-controller: Fix kernel panic on rmmod
-From: Vamshi Gajjela <vamshigajjela@google.com>
-To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>, Stephen Boyd <sboyd@kernel.org>, 
-	Johan Hovold <johan+linaro@kernel.org>
-Cc: Caleb Connolly <caleb.connolly@linaro.org>, linux-kernel@vger.kernel.org, 
-	manugautam@google.com, Vamshi Gajjela <vamshigajjela@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28142.005
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28142.005
+X-TMASE-Result: 10--12.987700-10.000000
+X-TMASE-MatchedRID: st9CF01730Y4ibokZ3+Q0CoiRKlBVkYIBXngI6jFvpfvd49YGReckE1N
+	J2MN+nPkgxCMf8A0YpRzqfit7JyUVv+tuWXZk8lIEVuC0eNRYvLSvRkgO4EJeqyitsTk3SfXhQ6
+	YZNvnIb+UFDd5x8j8T+ZtbVQsdt0oRY1tl9vG/AZO5y1KmK5bJRSLgSFq3TnjoxCLfriDzzj3MM
+	lWBma+yBbjDpwV9/AzvCUtJ1WOqj2R9GF2J2xqMxRFJJyf5BJe3QfwsVk0UbtuRXh7bFKB7nPFQ
+	wHIksyOc5m9VFq5Q0uFqLb56tjR38LpsAIizCmH66XHIc5w+gc=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 
-Ensure consistency in spmi_controller pointers between
-spmi_controller_remove/put and driver spmi_del_controller functions.
-The former requires a pointer to struct spmi_controller, while the
-latter passes a pointer of struct spmi_controller_dev, leading to a
-"Null pointer exception".
+Per filesystems/sysfs.rst, show() should only use sysfs_emit()
+or sysfs_emit_at() when formatting the value to be returned to user space.
 
-'nr' member of struct spmi_controller, which serves as an identifier
-for the controller/bus. This value is assigned a dynamic ID in
-spmi_controller_alloc, and overriding it from the driver results in an
-ida_free error "ida_free called for id=xx which is not allocated".
+coccinelle complains that there are still a couple of functions that use
+snprintf(). Convert them to sysfs_emit().
 
-Signed-off-by: Vamshi Gajjela <vamshigajjela@google.com>
+> ./arch/x86/events/amd/core.c:1282:8-16: WARNING: please use sysfs_emit
+
+This patch is generated by
+$ make coccicheck MODE=patch COCCI=scripts/coccinelle/api/device_attr_show.cocci M=arch/x86/events/amd | sed -n '6,$p' | patch -p1
+
+No functional change intended
+
+CC: Peter Zijlstra <peterz@infradead.org>
+CC: Ingo Molnar <mingo@redhat.com>
+CC: Arnaldo Carvalho de Melo <acme@kernel.org>
+CC: Mark Rutland <mark.rutland@arm.com>
+CC: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+CC: Jiri Olsa <jolsa@kernel.org>
+CC: Namhyung Kim <namhyung@kernel.org>
+CC: Ian Rogers <irogers@google.com>
+CC: Adrian Hunter <adrian.hunter@intel.com>
+CC: Thomas Gleixner <tglx@linutronix.de>
+CC: Borislav Petkov <bp@alien8.de>
+CC: Dave Hansen <dave.hansen@linux.intel.com>
+CC: x86@kernel.org
+CC: "H. Peter Anvin" <hpa@zytor.com>
+Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
 ---
- drivers/spmi/hisi-spmi-controller.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+V2: extract patch from the patch set[1] so that maintainer can accept it separately.
+[1] https://lore.kernel.org/lkml/20240116041129.3937800-1-lizhijian@fujitsu.com/
+---
+ arch/x86/events/amd/core.c  | 2 +-
+ arch/x86/events/amd/iommu.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/spmi/hisi-spmi-controller.c b/drivers/spmi/hisi-spmi-controller.c
-index 9cbd473487cb..af51ffe24072 100644
---- a/drivers/spmi/hisi-spmi-controller.c
-+++ b/drivers/spmi/hisi-spmi-controller.c
-@@ -303,7 +303,6 @@ static int spmi_controller_probe(struct platform_device *pdev)
- 
- 	spin_lock_init(&spmi_controller->lock);
- 
--	ctrl->nr = spmi_controller->channel;
- 	ctrl->dev.parent = pdev->dev.parent;
- 	ctrl->dev.of_node = of_node_get(pdev->dev.of_node);
- 
-@@ -326,7 +325,8 @@ static int spmi_controller_probe(struct platform_device *pdev)
- 
- static void spmi_del_controller(struct platform_device *pdev)
+diff --git a/arch/x86/events/amd/core.c b/arch/x86/events/amd/core.c
+index 81f6d8275b6b..0d520592010c 100644
+--- a/arch/x86/events/amd/core.c
++++ b/arch/x86/events/amd/core.c
+@@ -1279,7 +1279,7 @@ static ssize_t branches_show(struct device *cdev,
+ 			      struct device_attribute *attr,
+ 			      char *buf)
  {
--	struct spmi_controller *ctrl = platform_get_drvdata(pdev);
-+	struct spmi_controller_dev *spmi_controller = platform_get_drvdata(pdev);
-+	struct spmi_controller *ctrl = spmi_controller->controller;
+-	return snprintf(buf, PAGE_SIZE, "%d\n", x86_pmu.lbr_nr);
++	return sysfs_emit(buf, "%d\n", x86_pmu.lbr_nr);
+ }
  
- 	spmi_controller_remove(ctrl);
- 	spmi_controller_put(ctrl);
+ static DEVICE_ATTR_RO(branches);
+diff --git a/arch/x86/events/amd/iommu.c b/arch/x86/events/amd/iommu.c
+index b15f7b950d2e..1126bda96d8f 100644
+--- a/arch/x86/events/amd/iommu.c
++++ b/arch/x86/events/amd/iommu.c
+@@ -89,7 +89,7 @@ static ssize_t _iommu_event_show(struct device *dev,
+ {
+ 	struct amd_iommu_event_desc *event =
+ 		container_of(attr, struct amd_iommu_event_desc, attr);
+-	return sprintf(buf, "%s\n", event->event);
++	return sysfs_emit(buf, "%s\n", event->event);
+ }
+ 
+ #define AMD_IOMMU_EVENT_DESC(_name, _event)			\
 -- 
-2.43.0.472.g3155946c3a-goog
+2.29.2
 
 
