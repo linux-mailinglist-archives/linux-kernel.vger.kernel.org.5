@@ -1,113 +1,253 @@
-Return-Path: <linux-kernel+bounces-40043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33A5783D948
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:23:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 572B183D97B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:37:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFF74292C30
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:23:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09DECB2853C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:26:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C29C14299;
-	Fri, 26 Jan 2024 11:22:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uX9CbdA2"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7AC41B946
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 11:22:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FF5514288;
+	Fri, 26 Jan 2024 11:26:50 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D7F213FE4
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 11:26:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706268158; cv=none; b=N1nMawKxPAtvMU0D+sw34b31Yia/pWyaaB7j+WANPFJ2ztKTJHL9ETzx68tsKFUROUQatjrc5Cdq6+G8NyapCFKhGIphw98vAKpx7lR79pz7BZWONPKvtbkUlvleP4s3XQMa2Ds+Wfvdmh6EUYp/RTqb4BpmTmM8Mf6oQXpCY+w=
+	t=1706268409; cv=none; b=CQHLZik480/hgP5IKz+KLk5WoVZ0sLAbAbq3CEaPSuLu/6tMw5ribdmz/EACxozFbtDtGJb5b/dRt8t69tk+/VXzrIued4KFn7w7QgSO+AZothcf6JGgC21Hr9HOVpQgKi+FlYu1bZ6/rZu2E1Oa9GGCi9Fjn6a0bJYp6HBjrz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706268158; c=relaxed/simple;
-	bh=mACbSjLNn43qQIDNya9zDgNcOnXMiY4Me7YFeN+xW90=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=D65z56vuOzU8/HVkw1bqbykDlRoFkeASKgAsC7ib15wkuxF2Yt5NbsH+wty76+J4jhnYhp4o4vNyLiwMDrDiYJru7mELtzSDup1kpGCcUNtR2Dvjx8Ds242Fs5rJhR8oh4wG6Ghoj7Na+XjU2N7+dY4iv1A9kXRZECBQTrwjVYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uX9CbdA2; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2cf4696b90fso2370451fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 03:22:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706268155; x=1706872955; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xS+dLyse9Mmq2wfzYg8MWhXB6r8382gdva6ZXhQz530=;
-        b=uX9CbdA2f154mzB9e9wWeSQGAr+C/EYKhIg7qMk4d6BFTcC1GOWguths8zg+WY3Hc0
-         QAN9QA952fa8OThthu1tr7w6NfktlA3tJPRQgqw7xjZqqUflX1mnruHD083ADA3Gn6+Z
-         O7wqzUOw/Mhy5nlxw/XDeqjQJ1SvmHXQUsypGmWrUHKFfhG9Nm3sUcPpapt6XOv8C8AG
-         OMdbSHMO72169SlxrCuiIJnzV8wXEEy6BZW2zf8gbTTSnfk6oiVJke0po3U8JG2dLB79
-         Rc22tSGhUsPf5kYAGrrvIykQBBFwqNhNDsbIksdecdCa/Ez8E9QmcahLddI5XAVvngtl
-         /XCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706268155; x=1706872955;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xS+dLyse9Mmq2wfzYg8MWhXB6r8382gdva6ZXhQz530=;
-        b=NBKZvRJRBzk47CxSWvvn6suA5EJ/MwZ0kvQzXGfKletM95P1ldSY8MTIa8pqQa9kBB
-         6Bd+1dsU9dpnII0PqWDdZg3LZe7igk/Emm4tMWWSfuDLp8eaaAbqwb7M44CffHAEeIZ7
-         YyC48/MB81JdmJ60kFnk1k2wlAKUlRhDWZ53qXRh9ZJH7QJqPCvhNN6v7x7EWFBRVo/f
-         08aPoIH+jotWQ0iwmOy1G/JmK8tn174kMzYHZtR0LzYtKFkaOcxBD6QB+PD919uEYkaw
-         sRcExezNe3Kjdcf68k5A5qvzBGYUfJn3dzlAzAeD9AqH4A2PyZ6sHIYCaVKVBgZtorwg
-         D0ew==
-X-Gm-Message-State: AOJu0Yzk/BdQVro62QMJwjfSoX1XsEY8KjYaXO7d2C+kOR39NtFXBtXa
-	6UY0kflt+cTQEClChX2fAP2bsFfuBmQY/QANf66/Ia6o/d6oDIkqRh4/9ubxPu8=
-X-Google-Smtp-Source: AGHT+IELkAMgyLeASnVJbzwF/GxPRN+LTezHRJs3Yv64SVBtFnuO5FEPoJYjpDpoE3SWJYzzKI2Wng==
-X-Received: by 2002:a2e:b5b8:0:b0:2ce:d23:ec9a with SMTP id f24-20020a2eb5b8000000b002ce0d23ec9amr655114ljn.104.1706268154619;
-        Fri, 26 Jan 2024 03:22:34 -0800 (PST)
-Received: from [127.0.1.1] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id h1-20020a0564020e0100b0055d312732dbsm469202edh.5.2024.01.26.03.22.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 03:22:33 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>, 
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, 
- Gregory Clement <gregory.clement@bootlin.com>, 
- =?utf-8?q?=EF=BF=BDipraga?= <alsi@bang-olufsen.dk>, 
- =?utf-8?q?Alvin_=C5=A0ipraga?= <alvin@pqrs.dk>
-Cc: Rob Herring <robh@kernel.org>, linux-clk@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20231004063712.3348978-3-alvin@pqrs.dk>
-References: <20231004063712.3348978-1-alvin@pqrs.dk>
- <20231004063712.3348978-3-alvin@pqrs.dk>
-Subject: Re: (subset) [PATCH v2 2/4] ARM: dts: dove-cubox: fix si5351 node
- names
-Message-Id: <170626815309.51665.6755169978488848085.b4-ty@linaro.org>
-Date: Fri, 26 Jan 2024 12:22:33 +0100
+	s=arc-20240116; t=1706268409; c=relaxed/simple;
+	bh=gu0PhGkylvtrDWf8V2mRv6VBhqsE4IZZB78F3hEY5lA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=a1M4taCTmEtXOvRHJIVUqKCH2dCKPHqckz24JdxNOR3U3SKADHH1nS2pMYfPYqNUKmAstadZObTlHfjhtrTUIlS0wm5/oWpccALfuI2NeSTiYPii4NlE9OHxdg5CxYs/DXkw1iMt/yCQCo+B7l2gB7gmTCWfFHZGuki0JqqjZBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 463E21FB;
+	Fri, 26 Jan 2024 03:27:24 -0800 (PST)
+Received: from [10.1.196.86] (unknown [10.1.196.86])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7BAFD3F762;
+	Fri, 26 Jan 2024 03:26:37 -0800 (PST)
+Message-ID: <b3124b28-5c94-44c4-8f9a-1bd9e46a4cab@arm.com>
+Date: Fri, 26 Jan 2024 11:26:36 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.4
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 18/30] drm/panfrost: Explicitly get and put drm-shmem
+ pages
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Cc: Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+ David Airlie <airlied@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>,
+ Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
+ <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Qiang Yu <yuq825@gmail.com>, Emma Anholt <emma@anholt.net>,
+ Melissa Wen <mwen@igalia.com>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, kernel@collabora.com,
+ virtualization@lists.linux-foundation.org
+References: <20240105184624.508603-1-dmitry.osipenko@collabora.com>
+ <20240105184624.508603-19-dmitry.osipenko@collabora.com>
+ <7144dd9b-62d1-4968-9b94-0313e2475f7e@arm.com>
+ <20240126103924.0b911a4f@collabora.com>
+Content-Language: en-GB
+From: Steven Price <steven.price@arm.com>
+In-Reply-To: <20240126103924.0b911a4f@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-
-On Wed, 04 Oct 2023 08:35:28 +0200, Alvin Šipraga wrote:
-> Correct the device tree to conform with the bindings. The node name and
-> index should be separated with an @.
+On 26/01/2024 09:39, Boris Brezillon wrote:
+> On Thu, 25 Jan 2024 16:47:24 +0000
+> Steven Price <steven.price@arm.com> wrote:
 > 
+>> On 05/01/2024 18:46, Dmitry Osipenko wrote:
+>>> To simplify the drm-shmem refcnt handling, we're moving away from
+>>> the implicit get_pages() that is used by get_pages_sgt(). From now on
+>>> drivers will have to pin pages while they use sgt. Panfrost's shrinker
+>>> doesn't support swapping out BOs, hence pages are pinned and sgt is valid
+>>> as long as pages' use-count > 0.
+>>>
+>>> In Panfrost, panfrost_gem_mapping, which is the object representing a
+>>> GPU mapping of a BO, owns a pages ref. This guarantees that any BO being
+>>> mapped GPU side has its pages retained till the mapping is destroyed.
+>>>
+>>> Since pages are no longer guaranteed to stay pinned for the BO lifetime,
+>>> and MADVISE(DONT_NEED) flagging remains after the GEM handle has been
+>>> destroyed, we need to add an extra 'is_purgeable' check in
+>>> panfrost_gem_purge(), to make sure we're not trying to purge a BO that
+>>> already had its pages released.
+>>>
+>>> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>  
+>>
+>> Reviewed-by: Steven Price <steven.price@arm.com>
+>>
+>> Although I don't like the condition in panfrost_gem_mapping_release()
+>> for drm_gem_shmem_put_pages() and assigning NULL to bo->sgts - it feels
+>> very fragile. See below.
+>>
+>>> ---
+>>>  drivers/gpu/drm/panfrost/panfrost_gem.c       | 63 ++++++++++++++-----
+>>>  .../gpu/drm/panfrost/panfrost_gem_shrinker.c  |  6 ++
+>>>  2 files changed, 52 insertions(+), 17 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.c b/drivers/gpu/drm/panfrost/panfrost_gem.c
+>>> index f268bd5c2884..7edfc12f7c1f 100644
+>>> --- a/drivers/gpu/drm/panfrost/panfrost_gem.c
+>>> +++ b/drivers/gpu/drm/panfrost/panfrost_gem.c
+>>> @@ -35,20 +35,6 @@ static void panfrost_gem_free_object(struct drm_gem_object *obj)
+>>>  	 */
+>>>  	WARN_ON_ONCE(!list_empty(&bo->mappings.list));
+>>>  
+>>> -	if (bo->sgts) {
+>>> -		int i;
+>>> -		int n_sgt = bo->base.base.size / SZ_2M;
+>>> -
+>>> -		for (i = 0; i < n_sgt; i++) {
+>>> -			if (bo->sgts[i].sgl) {
+>>> -				dma_unmap_sgtable(pfdev->dev, &bo->sgts[i],
+>>> -						  DMA_BIDIRECTIONAL, 0);
+>>> -				sg_free_table(&bo->sgts[i]);
+>>> -			}
+>>> -		}
+>>> -		kvfree(bo->sgts);
+>>> -	}
+>>> -
+>>>  	drm_gem_shmem_free(&bo->base);
+>>>  }
+>>>  
+>>> @@ -85,11 +71,40 @@ panfrost_gem_teardown_mapping(struct panfrost_gem_mapping *mapping)
+>>>  
+>>>  static void panfrost_gem_mapping_release(struct kref *kref)
+>>>  {
+>>> -	struct panfrost_gem_mapping *mapping;
+>>> -
+>>> -	mapping = container_of(kref, struct panfrost_gem_mapping, refcount);
+>>> +	struct panfrost_gem_mapping *mapping =
+>>> +		container_of(kref, struct panfrost_gem_mapping, refcount);
+>>> +	struct panfrost_gem_object *bo = mapping->obj;
+>>> +	struct panfrost_device *pfdev = bo->base.base.dev->dev_private;
+>>>  
+>>>  	panfrost_gem_teardown_mapping(mapping);
+>>> +
+>>> +	/* On heap BOs, release the sgts created in the fault handler path. */
+>>> +	if (bo->sgts) {
+>>> +		int i, n_sgt = bo->base.base.size / SZ_2M;
+>>> +
+>>> +		for (i = 0; i < n_sgt; i++) {
+>>> +			if (bo->sgts[i].sgl) {
+>>> +				dma_unmap_sgtable(pfdev->dev, &bo->sgts[i],
+>>> +						  DMA_BIDIRECTIONAL, 0);
+>>> +				sg_free_table(&bo->sgts[i]);
+>>> +			}
+>>> +		}
+>>> +		kvfree(bo->sgts);
+>>> +	}
+>>> +
+>>> +	/* Pages ref is owned by the panfrost_gem_mapping object. We must
+>>> +	 * release our pages ref (if any), before releasing the object
+>>> +	 * ref.
+>>> +	 * Non-heap BOs acquired the pages at panfrost_gem_mapping creation
+>>> +	 * time, and heap BOs may have acquired pages if the fault handler
+>>> +	 * was called, in which case bo->sgts should be non-NULL.
+>>> +	 */
+>>> +	if (!bo->base.base.import_attach && (!bo->is_heap || bo->sgts) &&
+>>> +	    bo->base.madv >= 0) {
+>>> +		drm_gem_shmem_put_pages(&bo->base);
+>>> +		bo->sgts = NULL;  
+>>
+>> The assignment of NULL here really ought to be unconditional - it isn't
+>> a valid pointer because of the kvfree() above.
 > 
+> Fair enough. How about we drop the '|| bo->sgts' and add an
+> drm_gem_shmem_put_pages() to the above if (bo->sgts) block, where we'll
+> also assign bo->sgts to NULL?
 
-Applied, thanks!
+Yes that would be good.
 
-[2/4] ARM: dts: dove-cubox: fix si5351 node names
-      https://git.kernel.org/krzk/linux-dt/c/2df26223650027602d017368f4e8dc1eff90404e
+>>
+>> I also feel that the big condition above suggests there's a need for a
+>> better state machine to keep track of what's going on.
+> 
+> I'm planning to extend drm_gem_shmem to support the alloc-on-fault use
+> case that all Mali GPUs seem to rely on (lima, panfrost and soon
+> panthor would use those helpers). The idea is to:
+> 
+> - make the allocation non-blocking, so we can kill the blocking
+>   allocation in the dma signalling path (basically what intel does)
+> - allow dynamic extension of the pages array using an xarray instead of
+>   a plain array
+> 
+> Hopefully this makes the state tracking a lot easier, and we can also
+> get rid of the hack we have in panfrost/lima where we manipulate
+> drm_gem_shmem_object refcounts directly.
 
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+That sounds great - it would definitely be good to get rid of the
+refcount hack, it confuses me everytime ;)
+
+Thanks,
+
+Steve
+
+>>
+>> But having said that I do think this series as a whole is an
+>> improvement, it's nice to get the shrinker code generic. And sadly I
+>> don't have an immediate idea for cleaning this up, hence my R-b.
+>>
+>> Steve
+>>
+>>> +	}
+>>> +
+>>>  	drm_gem_object_put(&mapping->obj->base.base);
+>>>  	panfrost_mmu_ctx_put(mapping->mmu);
+>>>  	kfree(mapping);
+>>> @@ -125,6 +140,20 @@ int panfrost_gem_open(struct drm_gem_object *obj, struct drm_file *file_priv)
+>>>  	if (!mapping)
+>>>  		return -ENOMEM;
+>>>  
+>>> +	if (!bo->is_heap && !bo->base.base.import_attach) {
+>>> +		/* Pages ref is owned by the panfrost_gem_mapping object.
+>>> +		 * For non-heap BOs, we request pages at mapping creation
+>>> +		 * time, such that the panfrost_mmu_map() call, further down in
+>>> +		 * this function, is guaranteed to have pages_use_count > 0
+>>> +		 * when drm_gem_shmem_get_pages_sgt() is called.
+>>> +		 */
+>>> +		ret = drm_gem_shmem_get_pages(&bo->base);
+>>> +		if (ret) {
+>>> +			kfree(mapping);
+>>> +			return ret;
+>>> +		}
+>>> +	}
+>>> +
+>>>  	INIT_LIST_HEAD(&mapping->node);
+>>>  	kref_init(&mapping->refcount);
+>>>  	drm_gem_object_get(obj);
+>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c b/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
+>>> index 02b60ea1433a..d4fb0854cf2f 100644
+>>> --- a/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
+>>> +++ b/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
+>>> @@ -50,6 +50,12 @@ static bool panfrost_gem_purge(struct drm_gem_object *obj)
+>>>  	if (!dma_resv_trylock(shmem->base.resv))
+>>>  		goto unlock_mappings;
+>>>  
+>>> +	/* BO might have become unpurgeable if the last pages_use_count ref
+>>> +	 * was dropped, but the BO hasn't been destroyed yet.
+>>> +	 */
+>>> +	if (!drm_gem_shmem_is_purgeable(shmem))
+>>> +		goto unlock_mappings;
+>>> +
+>>>  	panfrost_gem_teardown_mappings_locked(bo);
+>>>  	drm_gem_shmem_purge_locked(&bo->base);
+>>>  	ret = true;  
+>>
+> 
 
 
