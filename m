@@ -1,362 +1,245 @@
-Return-Path: <linux-kernel+bounces-40426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D09C83DFE9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:22:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B98483DFF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:25:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31AD81C21D26
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:22:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA9B71F25BA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:25:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 709111EB4F;
-	Fri, 26 Jan 2024 17:22:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1617F20322;
+	Fri, 26 Jan 2024 17:24:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nLA67ZYn"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="xHJ7ahUH"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E04A1EB41;
-	Fri, 26 Jan 2024 17:22:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D44B1EB5B;
+	Fri, 26 Jan 2024 17:24:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706289751; cv=none; b=OmI+yyukRIZ/RjKktGCfpEL5G4qcPxe6VArgaRgBtQ5p33rfybpVTDvZ2HUeuXUaiSW+rj3TvLW3uh7c6xqGqKJ1SlrFsIYKWbjoRIu0Is3BPbsraTQYGlKPlXsm6pPLIoyqAxPdfLmIWlhIDPF7h9cx3gViKbsrMf/2KRHCH0Y=
+	t=1706289894; cv=none; b=QbLfSMPv7fpTIYz74FOtSolSs9UCpUsM7H1DR5U6/IGrSN9dA7I+gaod9fRXBAx2/eP+IcnLjHnoCLqus73Zs6EU4FV5VCRPDM2P8XOV5QKGcKDBFa37BmrDsFiiMDwuxeuKzkKSeLFEpa/iQ2954NBVDDwose+IhnIHOow+yio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706289751; c=relaxed/simple;
-	bh=faMjkaHk7os/E2kEVOp/ZNX+EUZRZ1j9yZusNn3y15I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KdlzdNPSek1Yvvof/P1RFBZCC92kV/weIzRB2PT1Cxs6fHuJ9p6z0gaXqYgYnROWjM5gYZDbtx7AeWP+KNtER6Kr+B7ytyoS7GbSBQPlUdCnpiTa1kIbtkVx/vAdTCfGP0JhapeXqh8zcIhAqSbtXnQcC7LHiBbNQYtpIpUt+h0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nLA67ZYn; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a27733ae1dfso38730666b.3;
-        Fri, 26 Jan 2024 09:22:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706289747; x=1706894547; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=frHohxChucR+396ZZyvCVKe3rd87cMANH2LHlTV9uT0=;
-        b=nLA67ZYnjSHHKr+QIFNsvOqKwNFbP9hamzg/k617hWKUUwvK8FpETCYc0yYgP4LeOr
-         MA1OMxHgifcxaE1bLQTwZT9benspt8sMfAREaSWyeEbiOaKNR3PxPEjP4QTh+cynlkkh
-         ZvGNRI7kybaA71ld98tOsTKYEM8r6riQK2y5dLerKustUyCWD3xoZOuqURZkp8A8bzm0
-         4226Nk33HIazX8JleqrSW35guL3/Y+zhhizei8M3iwqV6YGDegp7KWxePeNpWDxF+xSx
-         PACjdHKlianwqcmuiodkM0myNxMAh+tMYcvy4nE+XEurQ+xvrXWyJheP9CbgaxQPte4b
-         Uo1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706289747; x=1706894547;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=frHohxChucR+396ZZyvCVKe3rd87cMANH2LHlTV9uT0=;
-        b=fhGxjPdFphRCW24sCTiilzpx8yb/EoXDR07ld4doUda2QxtTaBv8qNvWaw20wFHQal
-         MKsXcg0lynsni1dgdN69oZap+Pc6jtuA3rjDAUN/bPneFCHhtiyDfokVf1//hWsfzvAY
-         S4P8ZLXuM7cbPZA5bGi1KW5IFX8MAEYqt+MS36oCuyjYMa/Cw1p33Wwt3ZChH0Yw4UrD
-         IZliQaob8i8rPkheO9hbDeCOW1of3YH23RbZaOXrZOH9j6LF4vvIV0S82Dw7OhbDYqmh
-         kYtlSoPZQsed/V4nTgdT0O8G2K2I+EZw/CpY3ARv3GnQfCDKa41IIA1tN/wrDoe4a2XL
-         MN+Q==
-X-Gm-Message-State: AOJu0Yw9YEG1wKNa1uG7GzpYaCB0emtXBbgYzQN2rnIomoqXrx5O3lv9
-	31yU1uFwKffHNYAaJpoNbe5Krdnm6W+Lp/hVJsgkBPnbRbgZDzjb5Wfyq6hrCHw8MOHZjxP5QM0
-	5FvFCVCbD5VbSsQIyRA8H2f4tL/U=
-X-Google-Smtp-Source: AGHT+IEv+VzPTgkhlM0Iyu9mf/bHiSiJ5tBWQ5F4heJdFo1RrwTSJwMPOP7fFmT7DWgwCzAtgYHxTGLHWB376hQqNSk=
-X-Received: by 2002:a17:906:bc5b:b0:a31:6811:bf99 with SMTP id
- s27-20020a170906bc5b00b00a316811bf99mr570470ejv.56.1706289747305; Fri, 26 Jan
- 2024 09:22:27 -0800 (PST)
+	s=arc-20240116; t=1706289894; c=relaxed/simple;
+	bh=tkFTH7a/xgXJKQyv4P14qB/qI6mVI6UGVUyV1v0KQz8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=adZ6fepHCyREH5owzOcDLQZVN4ranwcUH9Xr6E6U9mrYcZTAzkagDeksoQ8NafxNooVx6skk3qN7JZH/3UZr4ysPTydwmt/qbdGlR6kMq2GWuovSS07LM7hSRR9jDaGxnu73kg1uVFgZ+d7dFMTLqYTdX3d4Y4ChzIRjdxuSWVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=xHJ7ahUH; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40QHOa9Y014930;
+	Fri, 26 Jan 2024 11:24:36 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706289876;
+	bh=8iWkQOhPfAcRIse+3USGqVWLH26NmLTX6brrBHnE9EA=;
+	h=Date:Subject:To:References:From:In-Reply-To;
+	b=xHJ7ahUHqbB1E3bx6+PZ4gJBB+4ueIxEqM3ZaJ8hBBx00SoX4BesPdB4VqHcvg4ai
+	 H6J5N8FSiG06MCJfncBkozP6Eolb/9RQ645Cnb6Ao2CWTTdZ3OiaNCpd1/zN4Lpz+f
+	 9DtC2l4oVat7zVrKOCEeb5fcCLMeazVpWbTxJwfw=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40QHOa9h083675
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 26 Jan 2024 11:24:36 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 26
+ Jan 2024 11:24:36 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 26 Jan 2024 11:24:36 -0600
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40QHOZ75065085;
+	Fri, 26 Jan 2024 11:24:36 -0600
+Message-ID: <9105137a-058d-4314-83de-3424f82a838e@ti.com>
+Date: Fri, 26 Jan 2024 11:24:35 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125235723.39507-1-vinicius.gomes@intel.com> <20240125235723.39507-4-vinicius.gomes@intel.com>
-In-Reply-To: <20240125235723.39507-4-vinicius.gomes@intel.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 26 Jan 2024 19:22:14 +0200
-Message-ID: <CAOQ4uxh15X9pMY7Ck=iigaaKX11_77x5sZE9jxakTG9VpkuG6g@mail.gmail.com>
-Subject: Re: [RFC v2 3/4] overlayfs: Optimize credentials usage
-To: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Cc: brauner@kernel.org, hu1.chen@intel.com, miklos@szeredi.hu, 
-	malini.bhandaru@intel.com, tim.c.chen@intel.com, mikko.ylinen@intel.com, 
-	lizhen.you@intel.com, linux-unionfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Linaro-mm-sig] [PATCH 2/3] udmabuf: Sync buffer mappings for
+ attached devices
+Content-Language: en-US
+To: Gerd Hoffmann <kraxel@redhat.com>, Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Paul Cercueil
+	<paul@crapouillou.net>,
+        <dri-devel@lists.freedesktop.org>, <linux-media@vger.kernel.org>,
+        <linaro-mm-sig@lists.linaro.org>, <linux-kernel@vger.kernel.org>
+References: <20240123221227.868341-1-afd@ti.com>
+ <20240123221227.868341-2-afd@ti.com> <ZbLE6FYXFVzTLh28@phenom.ffwll.local>
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <ZbLE6FYXFVzTLh28@phenom.ffwll.local>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Fri, Jan 26, 2024 at 1:57=E2=80=AFAM Vinicius Costa Gomes
-<vinicius.gomes@intel.com> wrote:
->
-> File operations in overlayfs also check against the credentials of the
-> mounter task, stored in the superblock, this credentials will outlive
-> most of the operations. For these cases, use the recently introduced
-> guard statements to guarantee that override/revert_creds() are paired.
->
-> Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-> ---
->  fs/overlayfs/copy_up.c |  4 +--
->  fs/overlayfs/dir.c     | 22 +++++++------
->  fs/overlayfs/file.c    | 70 ++++++++++++++++++++++--------------------
->  fs/overlayfs/inode.c   | 60 +++++++++++++++++++-----------------
->  fs/overlayfs/namei.c   | 21 ++++++-------
->  fs/overlayfs/readdir.c | 18 +++++------
->  fs/overlayfs/util.c    | 23 +++++++-------
->  fs/overlayfs/xattrs.c  | 34 ++++++++++----------
->  8 files changed, 130 insertions(+), 122 deletions(-)
->
-> diff --git a/fs/overlayfs/copy_up.c b/fs/overlayfs/copy_up.c
-> index b8e25ca51016..55d1f2b60775 100644
-> --- a/fs/overlayfs/copy_up.c
-> +++ b/fs/overlayfs/copy_up.c
-> @@ -1202,7 +1202,8 @@ static int ovl_copy_up_flags(struct dentry *dentry,=
- int flags)
->         if (err)
->                 return err;
->
-> -       old_cred =3D ovl_override_creds(dentry->d_sb);
-> +       old_cred =3D ovl_creds(dentry->d_sb);
-> +       guard(cred)(old_cred);
->         while (!err) {
->                 struct dentry *next;
->                 struct dentry *parent =3D NULL;
-> @@ -1227,7 +1228,6 @@ static int ovl_copy_up_flags(struct dentry *dentry,=
- int flags)
->                 dput(parent);
->                 dput(next);
->         }
-> -       revert_creds(old_cred);
->
->         return err;
->  }
-> diff --git a/fs/overlayfs/dir.c b/fs/overlayfs/dir.c
-> index 0f8b4a719237..5aa43a3a7b3e 100644
-> --- a/fs/overlayfs/dir.c
-> +++ b/fs/overlayfs/dir.c
-> @@ -687,9 +687,9 @@ static int ovl_set_link_redirect(struct dentry *dentr=
-y)
->         const struct cred *old_cred;
->         int err;
->
-> -       old_cred =3D ovl_override_creds(dentry->d_sb);
-> +       old_cred =3D ovl_creds(dentry->d_sb);
-> +       guard(cred)(old_cred);
->         err =3D ovl_set_redirect(dentry, false);
-> -       revert_creds(old_cred);
->
->         return err;
->  }
-> @@ -894,12 +894,13 @@ static int ovl_do_remove(struct dentry *dentry, boo=
-l is_dir)
->         if (err)
->                 goto out;
->
-> -       old_cred =3D ovl_override_creds(dentry->d_sb);
-> -       if (!lower_positive)
-> -               err =3D ovl_remove_upper(dentry, is_dir, &list);
-> -       else
-> -               err =3D ovl_remove_and_whiteout(dentry, &list);
-> -       revert_creds(old_cred);
-> +       old_cred =3D ovl_creds(dentry->d_sb);
-> +       scoped_guard(cred, old_cred) {
-> +               if (!lower_positive)
-> +                       err =3D ovl_remove_upper(dentry, is_dir, &list);
-> +               else
-> +                       err =3D ovl_remove_and_whiteout(dentry, &list);
-> +       }
->         if (!err) {
->                 if (is_dir)
->                         clear_nlink(dentry->d_inode);
-> @@ -1146,7 +1147,8 @@ static int ovl_rename(struct mnt_idmap *idmap, stru=
-ct inode *olddir,
->                         goto out;
->         }
->
-> -       old_cred =3D ovl_override_creds(old->d_sb);
-> +       old_cred =3D ovl_creds(old->d_sb);
-> +       old_cred =3D override_creds_light(old_cred);
->
->         if (!list_empty(&list)) {
->                 opaquedir =3D ovl_clear_empty(new, &list);
-> @@ -1279,7 +1281,7 @@ static int ovl_rename(struct mnt_idmap *idmap, stru=
-ct inode *olddir,
->  out_unlock:
->         unlock_rename(new_upperdir, old_upperdir);
->  out_revert_creds:
-> -       revert_creds(old_cred);
-> +       revert_creds_light(old_cred);
->         if (update_nlink)
->                 ovl_nlink_end(new);
->         else
+On 1/25/24 2:30 PM, Daniel Vetter wrote:
+> On Tue, Jan 23, 2024 at 04:12:26PM -0600, Andrew Davis wrote:
+>> Currently this driver creates a SGT table using the CPU as the
+>> target device, then performs the dma_sync operations against
+>> that SGT. This is backwards to how DMA-BUFs are supposed to behave.
+>> This may have worked for the case where these buffers were given
+>> only back to the same CPU that produced them as in the QEMU case.
+>> And only then because the original author had the dma_sync
+>> operations also backwards, syncing for the "device" on begin_cpu.
+>> This was noticed and "fixed" in this patch[0].
+>>
+>> That then meant we were sync'ing from the CPU to the CPU using
+>> a pseudo-device "miscdevice". Which then caused another issue
+>> due to the miscdevice not having a proper DMA mask (and why should
+>> it, the CPU is not a DMA device). The fix for that was an even
+>> more egregious hack[1] that declares the CPU is coherent with
+>> itself and can access its own memory space..
+>>
+>> Unwind all this and perform the correct action by doing the dma_sync
+>> operations for each device currently attached to the backing buffer.
+>>
+>> [0] commit 1ffe09590121 ("udmabuf: fix dma-buf cpu access")
+>> [1] commit 9e9fa6a9198b ("udmabuf: Set the DMA mask for the udmabuf device (v2)")
+>>
+>> Signed-off-by: Andrew Davis <afd@ti.com>
+> 
+> So yeah the above hacks are terrible, but I don't think this is better.
+> What you're doing now is that you're potentially doing the flushing
+> multiple times, so if you have a lot of importers with life mappings this
+> is a performance regression.
 
-Most of my comments on this patch are identical to the ones I have made on
-backing file, so rather complete that review before moving on to this bigge=
-r
-patch.
+I'd take lower performing but correct than fast and broken. :)
 
-I even wonder if we need a specialized macro for overlayfs
-guard(ovl_creds, ofs); or if
-guard(cred, ovl_override_creds(dentry->d_sb));
-is good enough.
+Syncing for CPU/device is about making sure the CPU/device can see
+the data produced by the other. Some devices might be dma-coherent
+and syncing for them would be a NOP, but we cant know that here
+in this driver. Let's say we have two attached devices, one that
+is cache coherent and one that isn't. If we only sync for first
+attached device then that is converted to a NOP and we never flush
+like the second device needed.
 
-One thing that stands out in functions like ovl_rename() is that,
-understandably, you tried to preserve logic, but in fact, the scope of
-override_creds/revert_creds() in some of the overlayfs functions ir rather
-arbitrary.
+Same is true for devices behind IOMMU or with an L3 cache when
+syncing in the other direction for CPU. So we have to sync for all
+attached devices to ensure we get even the lowest common denominator
+device sync'd. It is up to the DMA-API layer to decide which syncs
+need to actually do something. If all attached devices are coherent
+then all syncs will be NOPs and we have no performance penalty.
 
-The simplest solution for functions like the above is to use guard(cred, ..
-and extend the scope till the end of the function.
-This needs more careful review, but the end result will be much cleaner.
+> 
+> It's probably time to bite the bullet and teach the dma-api about flushing
+> for multiple devices. Or some way we can figure out which is the one
+> device we need to pick which gives us the right amount of flushing.
+> 
 
-> diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
-> index 05536964d37f..482bf78555e2 100644
-> --- a/fs/overlayfs/file.c
-> +++ b/fs/overlayfs/file.c
-> @@ -42,7 +42,8 @@ static struct file *ovl_open_realfile(const struct file=
- *file,
->         if (flags & O_APPEND)
->                 acc_mode |=3D MAY_APPEND;
->
-> -       old_cred =3D ovl_override_creds(inode->i_sb);
-> +       old_cred =3D ovl_creds(inode->i_sb);
-> +       guard(cred)(old_cred);
->         real_idmap =3D mnt_idmap(realpath->mnt);
->         err =3D inode_permission(real_idmap, realinode, MAY_OPEN | acc_mo=
-de);
->         if (err) {
-> @@ -54,7 +55,6 @@ static struct file *ovl_open_realfile(const struct file=
- *file,
->                 realfile =3D backing_file_open(&file->f_path, flags, real=
-path,
->                                              current_cred());
->         }
-> -       revert_creds(old_cred);
->
->         pr_debug("open(%p[%pD2/%c], 0%o) -> (%p, 0%o)\n",
->                  file, file, ovl_whatisit(inode, realinode), file->f_flag=
-s,
-> @@ -214,9 +214,9 @@ static loff_t ovl_llseek(struct file *file, loff_t of=
-fset, int whence)
->         ovl_inode_lock(inode);
->         real.file->f_pos =3D file->f_pos;
->
-> -       old_cred =3D ovl_override_creds(inode->i_sb);
-> -       ret =3D vfs_llseek(real.file, offset, whence);
-> -       revert_creds(old_cred);
-> +       old_cred =3D ovl_creds(inode->i_sb);
-> +       scoped_guard(cred, old_cred)
-> +               ret =3D vfs_llseek(real.file, offset, whence);
->
->         file->f_pos =3D real.file->f_pos;
->         ovl_inode_unlock(inode);
-> @@ -388,7 +388,6 @@ static ssize_t ovl_splice_write(struct pipe_inode_inf=
-o *pipe, struct file *out,
->  static int ovl_fsync(struct file *file, loff_t start, loff_t end, int da=
-tasync)
->  {
->         struct fd real;
-> -       const struct cred *old_cred;
->         int ret;
->
->         ret =3D ovl_sync_status(OVL_FS(file_inode(file)->i_sb));
-> @@ -401,9 +400,11 @@ static int ovl_fsync(struct file *file, loff_t start=
-, loff_t end, int datasync)
->
->         /* Don't sync lower file for fear of receiving EROFS error */
->         if (file_inode(real.file) =3D=3D ovl_inode_upper(file_inode(file)=
-)) {
-> -               old_cred =3D ovl_override_creds(file_inode(file)->i_sb);
-> +               const struct cred *old_cred;
-> +
-> +               old_cred =3D ovl_creds(file_inode(file)->i_sb);
-> +               guard(cred)(old_cred);
->                 ret =3D vfs_fsync_range(real.file, start, end, datasync);
-> -               revert_creds(old_cred);
->         }
->
->         fdput(real);
-> @@ -441,9 +442,9 @@ static long ovl_fallocate(struct file *file, int mode=
-, loff_t offset, loff_t len
->         if (ret)
->                 goto out_unlock;
->
-> -       old_cred =3D ovl_override_creds(file_inode(file)->i_sb);
-> -       ret =3D vfs_fallocate(real.file, mode, offset, len);
-> -       revert_creds(old_cred);
-> +       old_cred =3D ovl_creds(file_inode(file)->i_sb);
-> +       scoped_guard(cred, old_cred)
-> +               ret =3D vfs_fallocate(real.file, mode, offset, len);
->
->         /* Update size */
->         ovl_file_modified(file);
-> @@ -466,9 +467,9 @@ static int ovl_fadvise(struct file *file, loff_t offs=
-et, loff_t len, int advice)
->         if (ret)
->                 return ret;
->
-> -       old_cred =3D ovl_override_creds(file_inode(file)->i_sb);
-> -       ret =3D vfs_fadvise(real.file, offset, len, advice);
-> -       revert_creds(old_cred);
-> +       old_cred =3D ovl_creds(file_inode(file)->i_sb);
-> +       scoped_guard(cred, old_cred)
-> +               ret =3D vfs_fadvise(real.file, offset, len, advice);
->
->         fdput(real);
->
-> @@ -509,25 +510,25 @@ static loff_t ovl_copyfile(struct file *file_in, lo=
-ff_t pos_in,
->                 goto out_unlock;
->         }
->
-> -       old_cred =3D ovl_override_creds(file_inode(file_out)->i_sb);
-> -       switch (op) {
-> -       case OVL_COPY:
-> -               ret =3D vfs_copy_file_range(real_in.file, pos_in,
-> -                                         real_out.file, pos_out, len, fl=
-ags);
-> -               break;
-> +       old_cred =3D ovl_creds(file_inode(file_out)->i_sb);
-> +       scoped_guard(cred, old_cred)
-> +               switch (op) {
-> +               case OVL_COPY:
-> +                       ret =3D vfs_copy_file_range(real_in.file, pos_in,
-> +                                                 real_out.file, pos_out,=
- len, flags);
-> +                       break;
->
-> -       case OVL_CLONE:
-> -               ret =3D vfs_clone_file_range(real_in.file, pos_in,
-> -                                          real_out.file, pos_out, len, f=
-lags);
-> -               break;
-> +               case OVL_CLONE:
-> +                       ret =3D vfs_clone_file_range(real_in.file, pos_in=
-,
-> +                                                  real_out.file, pos_out=
-, len, flags);
-> +                       break;
->
-> -       case OVL_DEDUPE:
-> -               ret =3D vfs_dedupe_file_range_one(real_in.file, pos_in,
-> -                                               real_out.file, pos_out, l=
-en,
-> -                                               flags);
-> -               break;
-> -       }
-> -       revert_creds(old_cred);
-> +               case OVL_DEDUPE:
-> +                       ret =3D vfs_dedupe_file_range_one(real_in.file, p=
-os_in,
-> +                                                       real_out.file, po=
-s_out, len,
-> +                                                       flags);
-> +                       break;
-> +               }
->
->         /* Update size */
->         ovl_file_modified(file_out);
+Seems like a constraint solving micro-optimization. The DMA-API layer
+would have to track which buffers have already been flushed from CPU
+cache and also track that nothing has been written into those caches
+since that point, only then could it skip the flush. But that is already
+the point of the dirty bit in the caches themselves, cleaning already
+clean cache lines is essentially free in hardware. And so is invalidating
+lines, it is just flipping a bit.
 
-This is another case where extending the scope to the end of the function
-is the simpler/cleaner solution.
+Andrew
 
-Thanks,
-Amir.
+> Cheers, Sima
+> 
+>> ---
+>>   drivers/dma-buf/udmabuf.c | 41 +++++++++++++++------------------------
+>>   1 file changed, 16 insertions(+), 25 deletions(-)
+>>
+>> diff --git a/drivers/dma-buf/udmabuf.c b/drivers/dma-buf/udmabuf.c
+>> index 3a23f0a7d112a..ab6764322523c 100644
+>> --- a/drivers/dma-buf/udmabuf.c
+>> +++ b/drivers/dma-buf/udmabuf.c
+>> @@ -26,8 +26,6 @@ MODULE_PARM_DESC(size_limit_mb, "Max size of a dmabuf, in megabytes. Default is
+>>   struct udmabuf {
+>>   	pgoff_t pagecount;
+>>   	struct page **pages;
+>> -	struct sg_table *sg;
+>> -	struct miscdevice *device;
+>>   	struct list_head attachments;
+>>   	struct mutex lock;
+>>   };
+>> @@ -169,12 +167,8 @@ static void unmap_udmabuf(struct dma_buf_attachment *at,
+>>   static void release_udmabuf(struct dma_buf *buf)
+>>   {
+>>   	struct udmabuf *ubuf = buf->priv;
+>> -	struct device *dev = ubuf->device->this_device;
+>>   	pgoff_t pg;
+>>   
+>> -	if (ubuf->sg)
+>> -		put_sg_table(dev, ubuf->sg, DMA_BIDIRECTIONAL);
+>> -
+>>   	for (pg = 0; pg < ubuf->pagecount; pg++)
+>>   		put_page(ubuf->pages[pg]);
+>>   	kfree(ubuf->pages);
+>> @@ -185,33 +179,31 @@ static int begin_cpu_udmabuf(struct dma_buf *buf,
+>>   			     enum dma_data_direction direction)
+>>   {
+>>   	struct udmabuf *ubuf = buf->priv;
+>> -	struct device *dev = ubuf->device->this_device;
+>> -	int ret = 0;
+>> -
+>> -	if (!ubuf->sg) {
+>> -		ubuf->sg = get_sg_table(dev, buf, direction);
+>> -		if (IS_ERR(ubuf->sg)) {
+>> -			ret = PTR_ERR(ubuf->sg);
+>> -			ubuf->sg = NULL;
+>> -		}
+>> -	} else {
+>> -		dma_sync_sg_for_cpu(dev, ubuf->sg->sgl, ubuf->sg->nents,
+>> -				    direction);
+>> -	}
+>> +	struct udmabuf_attachment *a;
+>>   
+>> -	return ret;
+>> +	mutex_lock(&ubuf->lock);
+>> +
+>> +	list_for_each_entry(a, &ubuf->attachments, list)
+>> +		dma_sync_sgtable_for_cpu(a->dev, a->table, direction);
+>> +
+>> +	mutex_unlock(&ubuf->lock);
+>> +
+>> +	return 0;
+>>   }
+>>   
+>>   static int end_cpu_udmabuf(struct dma_buf *buf,
+>>   			   enum dma_data_direction direction)
+>>   {
+>>   	struct udmabuf *ubuf = buf->priv;
+>> -	struct device *dev = ubuf->device->this_device;
+>> +	struct udmabuf_attachment *a;
+>>   
+>> -	if (!ubuf->sg)
+>> -		return -EINVAL;
+>> +	mutex_lock(&ubuf->lock);
+>> +
+>> +	list_for_each_entry(a, &ubuf->attachments, list)
+>> +		dma_sync_sgtable_for_device(a->dev, a->table, direction);
+>> +
+>> +	mutex_unlock(&ubuf->lock);
+>>   
+>> -	dma_sync_sg_for_device(dev, ubuf->sg->sgl, ubuf->sg->nents, direction);
+>>   	return 0;
+>>   }
+>>   
+>> @@ -307,7 +299,6 @@ static long udmabuf_create(struct miscdevice *device,
+>>   	exp_info.priv = ubuf;
+>>   	exp_info.flags = O_RDWR;
+>>   
+>> -	ubuf->device = device;
+>>   	buf = dma_buf_export(&exp_info);
+>>   	if (IS_ERR(buf)) {
+>>   		ret = PTR_ERR(buf);
+>> -- 
+>> 2.39.2
+>>
+>> _______________________________________________
+>> Linaro-mm-sig mailing list -- linaro-mm-sig@lists.linaro.org
+>> To unsubscribe send an email to linaro-mm-sig-leave@lists.linaro.org
+> 
 
