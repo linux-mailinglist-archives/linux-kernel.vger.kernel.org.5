@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-40763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40764-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18DAB83E577
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:32:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C22683E578
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:32:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9405B1F24DF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:32:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60A6E1C236F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:32:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D11450A74;
-	Fri, 26 Jan 2024 22:31:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0DC051029;
+	Fri, 26 Jan 2024 22:31:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="e3/+SJVg"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="cIjw5Q79"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F28013B1A9
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 22:31:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BF0147A6D
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 22:31:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706308302; cv=none; b=fYROMWk4xpB1PhrhLHxZv5R0U8HVSYlNo6cZ179JEBM+b6oR9VVBHHlv1z9horgkE8SfMGIkmrYFFu8m7W9dzdWwaKh6rHHepYQfCAAwbeV+gpEYMlBXdSWxk6AhgZEm9dj69iqfLIF8vKyscIl6h35l5G5RpWIbISEaIL+SIQ8=
+	t=1706308304; cv=none; b=CzopPaMFB6HCubxcH76oWX3ECePJKR4KMO7YuWQ+xU6+nIPn5GSsQw/HtnOofcKwJP3JwHGuq9abXaIzMRvk2B1rPUu5RmE97tZaaggaPR26wqP+ZW9FZn3q2Gjc00EF9jKzRlEo1/yM1d/riHV6SpU9Ho/26lGlhbciSJ8GugA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706308302; c=relaxed/simple;
-	bh=F30tm/e3g8v+2w4H9XqzdHYCd4VIxN5NuiWrZe5HNFs=;
+	s=arc-20240116; t=1706308304; c=relaxed/simple;
+	bh=tXrWRipgv+IfWoWJanojL9H7ir4dtpcd7cY4Radj6PA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hT+hZV/lmKJO8DSR2ov5b2ynFIyqLefm5w3Jf0IqS1eHdqenNbe4pIgGNzGRtvkJYaZzF8IZheyetqwVv/qdSQ+wqbcUJk+6S98+wGuis66pA4w5qkUcpQZWPyGFm+mzA6O3Ellv7jTefklDf5x/3PDUtimcoikydGXnxjz+FrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net; spf=pass smtp.mailfrom=darkphysics.net; dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b=e3/+SJVg; arc=none smtp.client-ip=209.85.214.175
+	 MIME-Version; b=d6wK4PbCwJ1CAmA07Wus0zJVugHjDz6jzxk2XiWrlCb+ykRD4+jImn1XIKUk9xgls4t2L9NCPE8mFiKKsqFqJp4d6HSxcXVv4+53MisJHxWVOjPvRRLzYtP1kGYGxuL0SzXi4BrdJSareZmbl1RtUVywNlkG2VDShABOzxCqnNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net; spf=pass smtp.mailfrom=darkphysics.net; dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b=cIjw5Q79; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=darkphysics.net
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d7393de183so6278175ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:31:40 -0800 (PST)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d7393de183so6278325ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:31:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=darkphysics.net; s=google; t=1706308300; x=1706913100; darn=vger.kernel.org;
+        d=darkphysics.net; s=google; t=1706308301; x=1706913101; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cmD7njZV+9GeCGUWgd9hXwhxj2qbFui5fbBAr2B6Sn0=;
-        b=e3/+SJVgILOsN6bjSgVWjInC2ENon17d0aASRNHE5XP2P8/jHdKU65VkjfFzoVwEFg
-         h/88hut/8miV0MYcfBFQlSmRq3nFY5r0eeuUK5JipZirh2xn8Krzl8SfmQeYyip7FhFY
-         aQoJc4ZA6m7++fuSDa7rwMPACTkHdpETynJRphUQD+oJoFWEw8tCARkJ2YFl1AdUvn8a
-         gBePwWZjYEHquKqwwxHd5EfTScoHKPDDyIdFYj2Pcd1HC49IPSaQxBKObkU1ocp0/Nhr
-         d0gpAnWM1QIKmlp54AZwAfxSonjmfQY0gfH1svfMlRWOTN5yGE9Mevh+1XPIme4hk8lv
-         o2Bg==
+        bh=ow3EKOni9BuhdA4VJdVm97xtU3J/2d5f0LEQZ2AWapA=;
+        b=cIjw5Q79pY1v/TAkV7Snkn9Zm7Xnxsb0fgFevoIeG6sMH1s6ae8F3BbD4Z1tz/GhZl
+         CpekrX2/ZIuZt8LDj2yZOERB9WtjojpRJxCsfzvxANgubKYhWDR5t7ZPG3iDAPXbp8Zj
+         poO05hq+d/eLndgG5tog6hVLyhsxPGshHL6gnte16r4BNf/zLSV3uZdspyvnqE+k84Ju
+         GG/C5AB9ksj7fnpYHvtNWuZSLgld9Qtje8lM/0t5soOpR2lwlCknb4krUR27Laq6zzx8
+         30DFc7sA6m0DEUGHPM0yipAZX7jpO8OcrLYF0gzJ6jLFNKW13CLfkBiunPXsJn8AHS6u
+         gjdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706308300; x=1706913100;
+        d=1e100.net; s=20230601; t=1706308301; x=1706913101;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cmD7njZV+9GeCGUWgd9hXwhxj2qbFui5fbBAr2B6Sn0=;
-        b=vP7N/aanTiKbtjBZ3cAJvAPO2Q6EXRzeRafYed4OdlTEP5jyg9qszWDamd7kAB8LgU
-         82U741XXB6qV/6EJrp9BO0xU6NTAJH4AUCyV+3RRuII1oH8HApOT6NI2Af98P3YGumn1
-         bSiVQXyxXsFpQ/qyUb/6PbCaMBOn+AAqow/yKhp9eDLBEsMFKFEqv7u66tyhB+IpQSiY
-         S2zBbSO/fv+mVasWafXozTMEHzS0WJyusn2FvjIqD3X49Trp0JvlA5sB/kWANTGxkoH/
-         R+KQXeoAYFlHTEqQtq0Eti8Wz6pLKZE1EdgEBWHyoOcYObNjPuDbdgjYwjXO0YX8OJ6c
-         b81g==
-X-Gm-Message-State: AOJu0YzPHN7HdVk3IgBIj4SHg+I6yuc5JSh1Fvws8xaPb1ADM/p7HCY/
-	rZMrLD2Sy3T86h8aF3I2WUynMv1tYWdilcek4cTkhbHLxNTe75bHu7h8kxjYHQI=
-X-Google-Smtp-Source: AGHT+IGTnNV9dHo4NBiNkbq1PjrzoehYksQ+F5SIYChl3o0QydO1XSBR/FR8v8az3FEiAO2Pu3FloA==
-X-Received: by 2002:a17:902:7485:b0:1d7:4cda:bea1 with SMTP id h5-20020a170902748500b001d74cdabea1mr459256pll.73.1706308300375;
-        Fri, 26 Jan 2024 14:31:40 -0800 (PST)
+        bh=ow3EKOni9BuhdA4VJdVm97xtU3J/2d5f0LEQZ2AWapA=;
+        b=iPHPVj1P2VLbJLx8SRBcfs3xiZfFFPiKtsh6V4Mq2Eyl91aNYTeAIFRzdPDJc9xD5/
+         DhlF2L4mWFJWB9ole88j55WEZsYYiFpZKQk5pQAWecR3kCz9AhpjhpHzSaE39MeJME8a
+         QvSBCuYICI+sDzsf1S2Eni33V1PQfaEVE+OCM5Ky5x/DuT6G4Z7R7ZcSiTd56+R/fN9t
+         6EN2JQDiZLLesvVnV3YUpoHVy5a9MVRCf6+gcqdYLFDa4hgCh8nAiiF0cNwfeapP+5+M
+         fix13azNroYzCt6USdZ2ebyV341xb8XrXKRgDi9aa8O/ME/+uKZL6p81x+BIjHp5R/oP
+         pwEA==
+X-Gm-Message-State: AOJu0Yx+kr9FNFv1hzZCdrvJn5tFtwIAhq8czjh0GbMe+2A5cSh1Aq/T
+	TPNkynorspaxKfc6LrySsdbDl+mtchmwz76SYMqVC+rM+BWsu8/Xj4z6XFBoQPs=
+X-Google-Smtp-Source: AGHT+IF8Geg3WrBuXLpGL3e46X96eIMZzU5UnGifA9iKt1tGbnTmIvuFwoX1ahktVabUNHfQoje8kg==
+X-Received: by 2002:a17:903:32ca:b0:1d8:8623:bc54 with SMTP id i10-20020a17090332ca00b001d88623bc54mr545273plr.74.1706308301511;
+        Fri, 26 Jan 2024 14:31:41 -0800 (PST)
 Received: from oatmeal.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
-        by smtp.gmail.com with ESMTPSA id n1-20020a170902d0c100b001d8a8f431b7sm737909pln.300.2024.01.26.14.31.39
+        by smtp.gmail.com with ESMTPSA id n1-20020a170902d0c100b001d8a8f431b7sm737909pln.300.2024.01.26.14.31.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 14:31:39 -0800 (PST)
+        Fri, 26 Jan 2024 14:31:40 -0800 (PST)
 From: Tree Davies <tdavies@darkphysics.net>
 To: gregkh@linuxfoundation.org,
 	philipp.g.hortmann@gmail.com,
@@ -72,9 +72,9 @@ To: gregkh@linuxfoundation.org,
 Cc: linux-staging@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	Tree Davies <tdavies@darkphysics.net>
-Subject: [PATCH v2 04/18] Staging: rtl8192e: Rename variable LPSDelayCnt
-Date: Fri, 26 Jan 2024 14:30:52 -0800
-Message-Id: <20240126223106.986093-5-tdavies@darkphysics.net>
+Subject: [PATCH v2 05/18] Staging: rtl8192e: Rename function pointer SetHwRegHandler()
+Date: Fri, 26 Jan 2024 14:30:53 -0800
+Message-Id: <20240126223106.986093-6-tdavies@darkphysics.net>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240126223106.986093-1-tdavies@darkphysics.net>
 References: <20240126223106.986093-1-tdavies@darkphysics.net>
@@ -86,80 +86,167 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Rename variable LPSDelayCnt to lps_delay_cnt to fix checkpatch
-warning Avoid CamelCase.
+Rename function pointer SetHwRegHandler to set_hw_reg_handler to fix 
+checkpatch warning Avoid CamelCase.
 
 Signed-off-by: Tree Davies <tdavies@darkphysics.net>
 ---
-v2: No changes.
- drivers/staging/rtl8192e/rtl8192e/rtl_core.c | 2 +-
- drivers/staging/rtl8192e/rtllib.h            | 2 +-
- drivers/staging/rtl8192e/rtllib_softmac.c    | 4 ++--
- drivers/staging/rtl8192e/rtllib_tx.c         | 4 ++--
- 4 files changed, 6 insertions(+), 6 deletions(-)
+v2: Update commit message.
+ drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c |  4 ++--
+ drivers/staging/rtl8192e/rtl8192e/rtl_core.c   | 12 ++++++------
+ drivers/staging/rtl8192e/rtl8192e/rtl_dm.c     |  6 +++---
+ drivers/staging/rtl8192e/rtllib.h              |  2 +-
+ drivers/staging/rtl8192e/rtllib_softmac.c      |  6 +++---
+ 5 files changed, 15 insertions(+), 15 deletions(-)
 
+diff --git a/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c b/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
+index 9b9d95ba06df..4cd3d7b7c31c 100644
+--- a/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
++++ b/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
+@@ -164,7 +164,7 @@ void rtl92e_set_reg(struct net_device *dev, u8 variable, u8 *val)
+ 				    eACI);
+ 			break;
+ 		}
+-		priv->rtllib->SetHwRegHandler(dev, HW_VAR_ACM_CTRL,
++		priv->rtllib->set_hw_reg_handler(dev, HW_VAR_ACM_CTRL,
+ 					      &pAcParam);
+ 		break;
+ 	}
+@@ -1698,7 +1698,7 @@ void rtl92e_stop_adapter(struct net_device *dev, bool reset)
+ 	u32	ulRegRead;
+ 
+ 	op_mode = RT_OP_MODE_NO_LINK;
+-	priv->rtllib->SetHwRegHandler(dev, HW_VAR_MEDIA_STATUS, &op_mode);
++	priv->rtllib->set_hw_reg_handler(dev, HW_VAR_MEDIA_STATUS, &op_mode);
+ 
+ 	if (!priv->rtllib->bSupportRemoteWakeUp) {
+ 		u1bTmp = 0x0;
 diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-index 76aacd27e157..f986dbb215e4 100644
+index f986dbb215e4..79e66b726b28 100644
 --- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
 +++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-@@ -705,7 +705,7 @@ static void _rtl92e_init_priv_variable(struct net_device *dev)
- 	priv->hw_rf_off_action = 0;
- 	priv->set_rf_pwr_state_in_progress = false;
- 	priv->rtllib->pwr_save_ctrl.bLeisurePs = true;
--	priv->rtllib->LPSDelayCnt = 0;
-+	priv->rtllib->lps_delay_cnt = 0;
- 	priv->rtllib->sta_sleep = LPS_IS_WAKE;
- 	priv->rtllib->rf_power_state = rf_on;
- 
-diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-index 94f370b40378..0a366874a827 100644
---- a/drivers/staging/rtl8192e/rtllib.h
-+++ b/drivers/staging/rtl8192e/rtllib.h
-@@ -1375,7 +1375,7 @@ struct rtllib_device {
- 	/* for PS mode */
- 	unsigned long last_rx_ps_time;
- 	bool			awake_pkt_sent;
--	u8			LPSDelayCnt;
-+	u8			lps_delay_cnt;
- 
- 	/* used if IEEE_SOFTMAC_SINGLE_QUEUE is set */
- 	struct sk_buff *mgmt_queue_ring[MGMT_QUEUE_NUM];
-diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-index 8a60bf3b7079..b5cd030f28c8 100644
---- a/drivers/staging/rtl8192e/rtllib_softmac.c
-+++ b/drivers/staging/rtl8192e/rtllib_softmac.c
-@@ -1351,8 +1351,8 @@ static short rtllib_sta_ps_sleep(struct rtllib_device *ieee, u64 *time)
- 	u8 dtim;
- 	struct rt_pwr_save_ctrl *psc = &ieee->pwr_save_ctrl;
- 
--	if (ieee->LPSDelayCnt) {
--		ieee->LPSDelayCnt--;
-+	if (ieee->lps_delay_cnt) {
-+		ieee->lps_delay_cnt--;
- 		return 0;
- 	}
- 
-diff --git a/drivers/staging/rtl8192e/rtllib_tx.c b/drivers/staging/rtl8192e/rtllib_tx.c
-index b82f3415085b..e61eb6e87ab4 100644
---- a/drivers/staging/rtl8192e/rtllib_tx.c
-+++ b/drivers/staging/rtl8192e/rtllib_tx.c
-@@ -595,14 +595,14 @@ static int rtllib_xmit_inter(struct sk_buff *skb, struct net_device *dev)
- 				   ((((u8 *)udp)[1] == 67) &&
- 				   (((u8 *)udp)[3] == 68))) {
- 					bdhcp = true;
--					ieee->LPSDelayCnt = 200;
-+					ieee->lps_delay_cnt = 200;
- 				}
- 			}
- 		} else if (ether_type == ETH_P_ARP) {
- 			netdev_info(ieee->dev,
- 				    "=================>DHCP Protocol start tx ARP pkt!!\n");
- 			bdhcp = true;
--			ieee->LPSDelayCnt =
-+			ieee->lps_delay_cnt =
- 				 ieee->current_network.tim.tim_count;
+@@ -236,14 +236,14 @@ static void _rtl92e_update_cap(struct net_device *dev, u16 cap)
+ 		if (priv->dot11_current_preamble_mode != PREAMBLE_SHORT) {
+ 			ShortPreamble = true;
+ 			priv->dot11_current_preamble_mode = PREAMBLE_SHORT;
+-			priv->rtllib->SetHwRegHandler(dev, HW_VAR_ACK_PREAMBLE,
++			priv->rtllib->set_hw_reg_handler(dev, HW_VAR_ACK_PREAMBLE,
+ 					(unsigned char *)&ShortPreamble);
+ 		}
+ 	} else {
+ 		if (priv->dot11_current_preamble_mode != PREAMBLE_LONG) {
+ 			ShortPreamble = false;
+ 			priv->dot11_current_preamble_mode = PREAMBLE_LONG;
+-			priv->rtllib->SetHwRegHandler(dev, HW_VAR_ACK_PREAMBLE,
++			priv->rtllib->set_hw_reg_handler(dev, HW_VAR_ACK_PREAMBLE,
+ 					      (unsigned char *)&ShortPreamble);
  		}
  	}
+@@ -256,13 +256,13 @@ static void _rtl92e_update_cap(struct net_device *dev, u16 cap)
+ 		   (!priv->rtllib->ht_info->current_rt2rt_long_slot_time)) {
+ 			if (cur_slot_time != SHORT_SLOT_TIME) {
+ 				slot_time_val = SHORT_SLOT_TIME;
+-				priv->rtllib->SetHwRegHandler(dev,
++				priv->rtllib->set_hw_reg_handler(dev,
+ 					 HW_VAR_SLOT_TIME, &slot_time_val);
+ 			}
+ 		} else {
+ 			if (cur_slot_time != NON_SHORT_SLOT_TIME) {
+ 				slot_time_val = NON_SHORT_SLOT_TIME;
+-				priv->rtllib->SetHwRegHandler(dev,
++				priv->rtllib->set_hw_reg_handler(dev,
+ 					 HW_VAR_SLOT_TIME, &slot_time_val);
+ 			}
+ 		}
+@@ -301,7 +301,7 @@ static void _rtl92e_qos_activate(void *data)
+ 		goto success;
+ 
+ 	for (i = 0; i <  QOS_QUEUE_NUM; i++)
+-		priv->rtllib->SetHwRegHandler(dev, HW_VAR_AC_PARAM, (u8 *)(&i));
++		priv->rtllib->set_hw_reg_handler(dev, HW_VAR_AC_PARAM, (u8 *)(&i));
+ 
+ success:
+ 	mutex_unlock(&priv->mutex);
+@@ -660,7 +660,7 @@ static void _rtl92e_init_priv_handler(struct net_device *dev)
+ 	priv->rtllib->GetHalfNmodeSupportByAPsHandler =
+ 						rtl92e_is_halfn_supported_by_ap;
+ 
+-	priv->rtllib->SetHwRegHandler = rtl92e_set_reg;
++	priv->rtllib->set_hw_reg_handler = rtl92e_set_reg;
+ 	priv->rtllib->AllowAllDestAddrHandler = rtl92e_set_monitor_mode;
+ 	priv->rtllib->init_gain_handler = rtl92e_init_gain;
+ 	priv->rtllib->rtllib_ips_leave_wq = rtl92e_rtllib_ips_leave_wq;
+diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
+index 92143c50c149..57e1a361a7c9 100644
+--- a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
++++ b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
+@@ -1185,7 +1185,7 @@ static void _rtl92e_dm_check_edca_turbo(struct net_device *dev)
+ 		if (priv->bcurrent_turbo_EDCA) {
+ 			u8 tmp = AC0_BE;
+ 
+-			priv->rtllib->SetHwRegHandler(dev, HW_VAR_AC_PARAM,
++			priv->rtllib->set_hw_reg_handler(dev, HW_VAR_AC_PARAM,
+ 						      (u8 *)(&tmp));
+ 			priv->bcurrent_turbo_EDCA = false;
+ 		}
+@@ -1636,7 +1636,7 @@ static void _rtl92e_dm_start_hw_fsync(struct net_device *dev)
+ 	struct r8192_priv *priv = rtllib_priv(dev);
+ 
+ 	rtl92e_writel(dev, rOFDM0_RxDetector2, 0x465c12cf);
+-	priv->rtllib->SetHwRegHandler(dev, HW_VAR_RF_TIMING,
++	priv->rtllib->set_hw_reg_handler(dev, HW_VAR_RF_TIMING,
+ 				      (u8 *)(&rf_timing));
+ 	rtl92e_writeb(dev, 0xc3b, 0x41);
+ }
+@@ -1647,7 +1647,7 @@ static void _rtl92e_dm_end_hw_fsync(struct net_device *dev)
+ 	struct r8192_priv *priv = rtllib_priv(dev);
+ 
+ 	rtl92e_writel(dev, rOFDM0_RxDetector2, 0x465c52cd);
+-	priv->rtllib->SetHwRegHandler(dev, HW_VAR_RF_TIMING, (u8 *)
++	priv->rtllib->set_hw_reg_handler(dev, HW_VAR_RF_TIMING, (u8 *)
+ 				     (&rf_timing));
+ 	rtl92e_writeb(dev, 0xc3b, 0x49);
+ }
+diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
+index 0a366874a827..cd45a9c46a94 100644
+--- a/drivers/staging/rtl8192e/rtllib.h
++++ b/drivers/staging/rtl8192e/rtllib.h
+@@ -1491,7 +1491,7 @@ struct rtllib_device {
+ 	void (*init_gain_handler)(struct net_device *dev, u8 Operation);
+ 	void (*ScanOperationBackupHandler)(struct net_device *dev,
+ 					   u8 Operation);
+-	void (*SetHwRegHandler)(struct net_device *dev, u8 variable, u8 *val);
++	void (*set_hw_reg_handler)(struct net_device *dev, u8 variable, u8 *val);
+ 
+ 	void (*AllowAllDestAddrHandler)(struct net_device *dev,
+ 					bool bAllowAllDA, bool WriteIntoReg);
+diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
+index b5cd030f28c8..b5fe471f765b 100644
+--- a/drivers/staging/rtl8192e/rtllib_softmac.c
++++ b/drivers/staging/rtl8192e/rtllib_softmac.c
+@@ -2256,11 +2256,11 @@ static void rtllib_mlme_disassociate_request(struct rtllib_device *rtllib,
+ 			rtllib->current_network.bssid[i] = 0x22;
+ 		op_mode = RT_OP_MODE_NO_LINK;
+ 		rtllib->op_mode = RT_OP_MODE_NO_LINK;
+-		rtllib->SetHwRegHandler(rtllib->dev, HW_VAR_MEDIA_STATUS,
++		rtllib->set_hw_reg_handler(rtllib->dev, HW_VAR_MEDIA_STATUS,
+ 					(u8 *)(&op_mode));
+ 		rtllib_disassociate(rtllib);
+ 
+-		rtllib->SetHwRegHandler(rtllib->dev, HW_VAR_BSSID,
++		rtllib->set_hw_reg_handler(rtllib->dev, HW_VAR_BSSID,
+ 					rtllib->current_network.bssid);
+ 	}
+ }
+@@ -2270,7 +2270,7 @@ static void rtllib_mgnt_disconnect_ap(struct rtllib_device *rtllib, u8 asRsn)
+ 	bool filter_out_nonassociated_bssid = false;
+ 
+ 	filter_out_nonassociated_bssid = false;
+-	rtllib->SetHwRegHandler(rtllib->dev, HW_VAR_CECHK_BSSID,
++	rtllib->set_hw_reg_handler(rtllib->dev, HW_VAR_CECHK_BSSID,
+ 				(u8 *)(&filter_out_nonassociated_bssid));
+ 	rtllib_mlme_disassociate_request(rtllib, rtllib->current_network.bssid,
+ 				       asRsn);
 -- 
 2.39.2
 
