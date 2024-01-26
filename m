@@ -1,79 +1,53 @@
-Return-Path: <linux-kernel+bounces-39766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D496883D5DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:17:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F30F983D5E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:17:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 890CA1F212D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:17:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9ECA2854E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:17:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 329C0134AF;
-	Fri, 26 Jan 2024 08:32:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FCE17C0AA;
+	Fri, 26 Jan 2024 08:32:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="sIqksMLT"
-Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ClG0zG9k"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFA501CFAE;
-	Fri, 26 Jan 2024 08:32:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCD4D1CFAE;
+	Fri, 26 Jan 2024 08:32:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706257940; cv=none; b=pQhfLOGzzqxxWjB6QZ6xMXLD3vEK3ms/kC+scbp+fITYPxiP7HstRM3XtTfMsLgK06m8c8uSBq64jreHKMHtkc2ien9uUpVzsDxuAsE6DgCcbEBDqJf+i+eS+4vBe1xp0aXVRMaANnmFTIIO6acGBnua0anY3YvSppuVyQk+djg=
+	t=1706257945; cv=none; b=shghj+TrjiJmFq15ruMASMJw+j9VgDj5rwH1Kc4JzCzI/N/DUFEFwkb3Gew96lWfGarPgczr8nmVLUlexqlZl6pW8TaQ2hBCG/8hY6XE5LavT23QKsznVEoWn944BBwmbJ0QEl/9ylTejmEz9LgbVkHkHolWAnkxYaDcIw7sICo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706257940; c=relaxed/simple;
-	bh=jlmG1wzP0u2ArENwmDLoBVgwPoZ/B4FgKHD1TWOBq7E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r8Kv1YzsrirkXdov0iUQhIvY/JuskEdtsff6zWPzqjAbrp1KIH6IYHd5dWsMLG6FF7uSMJQWSZTFvE7kGLEMzeO5ZXZCLVGnV6bO4VJ/UtYhAeauHdyxHQ+yy8YNle/eRjshFE8twtxipzAnxbc0SuAOdxBwHcWmaq3YvZ2UvN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=sIqksMLT; arc=none smtp.client-ip=74.50.62.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
-Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
-	by mail5.25mail.st (Postfix) with ESMTPSA id 185BD6042F;
-	Fri, 26 Jan 2024 08:31:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
-	s=25mailst; t=1706257937;
-	bh=jlmG1wzP0u2ArENwmDLoBVgwPoZ/B4FgKHD1TWOBq7E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sIqksMLTCXWb8YUFNG8ewkvN10ILCXI1aOGTilVIg35IPVz+WJkoCE8estBQG+FAi
-	 Ki7xAhTnIBvmU7OT5pDVYwupm0MNdBVikCkHmOMS9zEnkFYc+p+Rv439YyW0wezQ1m
-	 AQm1UrgeSR3ciAJ3BUe5fRPWvd1aD73HTbeyQcR6/w7KFSGosKYgBRYmLPOjEu2v0g
-	 mVdpTvoPRdfSwfRtXaknFwhfG7tSnHQ2Nw7J0GGffMSE7mDHmuKgl3dLTRVj+R2bCQ
-	 FPbBMatNFsfpZfk6sdEu7p4PAQn8v0x91DqeXdCxoUqSYY1vMnecRDXgdstAf4F0rd
-	 G/IDhnoyGsmvg==
-Date: Fri, 26 Jan 2024 10:31:17 +0200
-From: Tony Lindgren <tony@atomide.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Andrew Davis <afd@ti.com>, Frank Binns <frank.binns@imgtec.com>,
-	Matt Coster <matt.coster@imgtec.com>,
-	"H . Nikolaus Schaller" <hns@goldelico.com>,
-	Adam Ford <aford173@gmail.com>,
-	Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	=?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
-	Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-	Tero Kristo <kristo@kernel.org>,
-	Paul Cercueil <paul@crapouillou.net>,
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-sunxi@lists.linux.dev, linux-omap@vger.kernel.org,
-	linux-mips@vger.kernel.org
-Subject: Re: [PATCH 02/11] dt-bindings: gpu: Add PowerVR Series5 SGX GPUs
-Message-ID: <20240126083117.GU5185@atomide.com>
-References: <20240109171950.31010-1-afd@ti.com>
- <20240109171950.31010-3-afd@ti.com>
- <e2fce141-4966-4e70-9a5c-865a2737174c@linaro.org>
- <20240110083857.GB5185@atomide.com>
- <20240119174815.GA633343-robh@kernel.org>
+	s=arc-20240116; t=1706257945; c=relaxed/simple;
+	bh=wstLSSz3qMGDQxUYzW+IHsUCg9UT58andHSX7WC1dOA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ISCCXF60ksxA7reHb2yalTH89RJ25gzCBObO0UJUbg0D9ioMvvWM26/PldkL0uknvQDqx5nQtn5eBAbPBjBog9mhYr368vRLBOI4AUCKrnfSgm+EXSIOZ7BsaW18Dd9XcpHxAZ1+tNVC59ptt2LNhGLEL2imiESkVJKUrZuLeq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ClG0zG9k; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCC2BC433F1;
+	Fri, 26 Jan 2024 08:32:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706257945;
+	bh=wstLSSz3qMGDQxUYzW+IHsUCg9UT58andHSX7WC1dOA=;
+	h=Date:From:To:Cc:Subject:From;
+	b=ClG0zG9k5IMq0O5zUgX7DQVolc1NIz4ZcQ4BZwOfNsuOjQ0TRHPthT4u5pvvVM/LL
+	 35kt2P0Zwt/YyQT8ILDOA3jHWeL2/oenVPShooFxHoOG5XP0OESHRGRnQgoWS/VEyh
+	 YsBTnamXcWdV53UvCANE0ryGhcj+2lI1wWLgKTxn5JHby7pudKrN4c+l1evWyVjaSL
+	 2QTDpzVmdFORUulHfrTCWwYLQ5ovXxqfskd8BXf/ORMi6j049L0+uCewvKH33oxYHB
+	 jyUfTxDhEbBz/tBXhKCgm4Uduuxl/VhoIgWITu6ZfR8KsWsJW+C6TN4sKRGDCzBPcF
+	 JmOmUr2w+UPrQ==
+Date: Fri, 26 Jan 2024 09:32:20 +0100
+From: Helge Deller <deller@kernel.org>
+To: "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
+Subject: [PATCH v2] [net] ipv6: Ensure natural alignment of const ipv6
+ loopback and router addresses
+Message-ID: <ZbNuFM1bFqoH-UoY@p100>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,24 +56,72 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240119174815.GA633343-robh@kernel.org>
 
-* Rob Herring <robh@kernel.org> [240119 17:48]:
-> On Wed, Jan 10, 2024 at 10:38:57AM +0200, Tony Lindgren wrote:
-> > So for merging these, as many of the changes touch the omap variants, I
-> > could set up an immutable branch with all the changes after -rc1. Or I can
-> > ack the patches too if somebody has better ideas.
-> 
-> Just take all but patches 10 and 11. I don't think it matters if the 
-> binding is there for them as long as it is all there in next. No one is 
-> paying that close attention to the warnings I think.
+On a parisc64 kernel I sometimes notice this kernel warning:
+Kernel unaligned access to 0x40ff8814 at ndisc_send_skb+0xc0/0x4d8
 
-OK I've now applied these except patches 10 and 11 into a sgx-for-v6.9
-branch [0].
+The address 0x40ff8814 points to the in6addr_linklocal_allrouters
+variable and the warning simply means that some ipv6 function tries to
+read a 64-bit word directly from the not-64-bit aligned
+in6addr_linklocal_allrouters variable.
 
-Regards,
+Unaligned accesses are non-critical as the architecture or exception
+handlers usually will fix it up at runtime. Nevertheless it may trigger
+a performance penality for some architectures. For details read the
+"unaligned-memory-access" kernel documentation.
 
-Tony
+The patch below ensures that the ipv6 loopback and router addresses will
+always be naturally aligned. This prevents the unaligned accesses for
+all architectures.
 
-[0] https://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap.git/log/?h=sgx-for-v6.9
+Signed-off-by: Helge Deller <deller@gmx.de>
+Fixes: 034dfc5df99eb ("ipv6: export in6addr_loopback to modules")
+Acked-by: Paolo Abeni <pabeni@redhat.com>
+
+--
+v2:
+- Added A-b from Paolo
+- Rephrased parts of commit message
+- resent with [net] tag
+
+---
+diff --git a/net/ipv6/addrconf_core.c b/net/ipv6/addrconf_core.c
+index 507a8353a6bd..813e009b4d0e 100644
+--- a/net/ipv6/addrconf_core.c
++++ b/net/ipv6/addrconf_core.c
+@@ -220,19 +220,26 @@ const struct ipv6_stub *ipv6_stub __read_mostly = &(struct ipv6_stub) {
+ EXPORT_SYMBOL_GPL(ipv6_stub);
+ 
+ /* IPv6 Wildcard Address and Loopback Address defined by RFC2553 */
+-const struct in6_addr in6addr_loopback = IN6ADDR_LOOPBACK_INIT;
++const struct in6_addr in6addr_loopback __aligned(BITS_PER_LONG/8)
++	= IN6ADDR_LOOPBACK_INIT;
+ EXPORT_SYMBOL(in6addr_loopback);
+-const struct in6_addr in6addr_any = IN6ADDR_ANY_INIT;
++const struct in6_addr in6addr_any __aligned(BITS_PER_LONG/8)
++	= IN6ADDR_ANY_INIT;
+ EXPORT_SYMBOL(in6addr_any);
+-const struct in6_addr in6addr_linklocal_allnodes = IN6ADDR_LINKLOCAL_ALLNODES_INIT;
++const struct in6_addr in6addr_linklocal_allnodes __aligned(BITS_PER_LONG/8)
++	= IN6ADDR_LINKLOCAL_ALLNODES_INIT;
+ EXPORT_SYMBOL(in6addr_linklocal_allnodes);
+-const struct in6_addr in6addr_linklocal_allrouters = IN6ADDR_LINKLOCAL_ALLROUTERS_INIT;
++const struct in6_addr in6addr_linklocal_allrouters __aligned(BITS_PER_LONG/8)
++	= IN6ADDR_LINKLOCAL_ALLROUTERS_INIT;
+ EXPORT_SYMBOL(in6addr_linklocal_allrouters);
+-const struct in6_addr in6addr_interfacelocal_allnodes = IN6ADDR_INTERFACELOCAL_ALLNODES_INIT;
++const struct in6_addr in6addr_interfacelocal_allnodes __aligned(BITS_PER_LONG/8)
++	= IN6ADDR_INTERFACELOCAL_ALLNODES_INIT;
+ EXPORT_SYMBOL(in6addr_interfacelocal_allnodes);
+-const struct in6_addr in6addr_interfacelocal_allrouters = IN6ADDR_INTERFACELOCAL_ALLROUTERS_INIT;
++const struct in6_addr in6addr_interfacelocal_allrouters __aligned(BITS_PER_LONG/8)
++	= IN6ADDR_INTERFACELOCAL_ALLROUTERS_INIT;
+ EXPORT_SYMBOL(in6addr_interfacelocal_allrouters);
+-const struct in6_addr in6addr_sitelocal_allrouters = IN6ADDR_SITELOCAL_ALLROUTERS_INIT;
++const struct in6_addr in6addr_sitelocal_allrouters __aligned(BITS_PER_LONG/8)
++	= IN6ADDR_SITELOCAL_ALLROUTERS_INIT;
+ EXPORT_SYMBOL(in6addr_sitelocal_allrouters);
+ 
+ static void snmp6_free_dev(struct inet6_dev *idev)
+
 
