@@ -1,90 +1,121 @@
-Return-Path: <linux-kernel+bounces-40671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FB6A83E3E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:27:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 209B283E3E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:28:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 866F91C20FFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:27:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 223DD1C20FFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:28:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A25924A0D;
-	Fri, 26 Jan 2024 21:27:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B271A24A0A;
+	Fri, 26 Jan 2024 21:28:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MXv0mHLg"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BA95250E2;
-	Fri, 26 Jan 2024 21:27:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04BE9249F7
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 21:28:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706304447; cv=none; b=EZJIsK2ssxE5an0ufuCuEj2N1tBGMuK+7i15+3N3LVV6l3/soAABcA/oVLHv1apxGwDjGGeOBGlMycugvOLqGuJi1pOrDXgddWwUhvyDqHRTn+JllOUEdY+Vtq92gkuU8OoFhoq9F6qpJjO7hcnMT4LuEkZ8ItpR8R4L62ycCBY=
+	t=1706304516; cv=none; b=Kl7Q0aRUyZ/1BEdTXnMjs4htE5RvQWSshqcpUSrgIb3xQu3YJHOA28PSQlhALSsXWRssp/vqIBqTy7Dv56QLDOH4MKBfsc6vvVRRC9SKNabkiH38bQbdSPKVAHFepWZaY+ADyFEN4nvTPM/xi+L9m4SIDprlIFDhfiy/Ng1xe48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706304447; c=relaxed/simple;
-	bh=0Ibpzu52pa7xZyWfPXdiBU7biXDc1fNDD9XSBAy9kds=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=L0j8c/tPAdQvXWFgt5vJJbucRTotxyjt3giIfdI6DfFhGsDlFQE1ScnBN9Tfk8agsQcuJvz8PxqgTKq9tzlaTYrMh1KOogcO/ZIfVBnEJVte9HHG+HO8LAB7ehGpEXUDWd5PFrzjhtfBmDuvw7ji8sUWkK3ZrsUsGxSPGswzFDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9A4BC433F1;
-	Fri, 26 Jan 2024 21:27:25 +0000 (UTC)
-Date: Fri, 26 Jan 2024 16:27:28 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Christian Brauner <brauner@kernel.org>, Ajay Kaher
- <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>, Linus Torvalds
- <torvalds@linux-foundation.org>
-Subject: Re: [RESEND] [PATCH] eventfs: Have inodes have unique inode numbers
-Message-ID: <20240126162728.786e56dd@gandalf.local.home>
-In-Reply-To: <e3548c86-7422-432c-8b72-8de99fa9772f@efficios.com>
-References: <20240126151251.74cb9285@gandalf.local.home>
-	<e3548c86-7422-432c-8b72-8de99fa9772f@efficios.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706304516; c=relaxed/simple;
+	bh=YPfJESNx63f8gXc8lRLZ4SNiww8xBncvURRDWEv5tbo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UpnHsytD0sWvtg8VhOv0WJZnlicxjkt2UPIuUKcU0CdF1XB9k1F0YkXLEKThiZjznbzhJrP1dc0Hva3IjD1DSplYBxz+02r7LCM/xAornhU5r5zNTGh72AIzkratHPMAfA8n43jyivt5aty+WibFW9kca+fbkX0JUCsdI6Zt6jo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MXv0mHLg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FA68C43330
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 21:28:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706304515;
+	bh=YPfJESNx63f8gXc8lRLZ4SNiww8xBncvURRDWEv5tbo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=MXv0mHLgFzPXzyJ+cXnF0NEHqEVMZis5J3xCyKd/vUQ+sNHMTeOvo5/UiRtp2prgn
+	 3W/Ekzx29ky6ERqEG0FCD5c6Ax2AAJbBymQJM+C2XVk0rB5/CW42DI8ekyEPrBRgTJ
+	 Yqww8uOrdI/9wrwSyWcdaYFXqfOdoVOyWi5kA7B2gIpzbcjEiukdn/CrhmcXkxn0Bw
+	 5xB52zJNgfDqQyfu23v4p6ZkQ9QhiLlxF5utjPu5p4kRaffbFWCjmyECdEyz0Iosfj
+	 ECliNn6S60owiB5Y3Dt7zuQUzi8wKpJ+RVoa08wc4iNDVH2z0tQOTXHHNP4ZS4f+TQ
+	 QNW4TQCmxSN7w==
+Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7bc32b04d16so37183639f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:28:35 -0800 (PST)
+X-Gm-Message-State: AOJu0YwNCz3CE1pEH/r2DKmj9xJ1wBjwJMpfs6SR6rafAA/tvlYi65lp
+	TGTXpMpBfz1pIzcAngLKrelfKfgco9MQBAMEYCmZTQCaFwmG0OWxOzwMnRUYTy0gO0HvSie3BBE
+	IwUhe7BboyJnVgW9+itEOFIlMjrU960k+kWS/
+X-Google-Smtp-Source: AGHT+IGNlb8VMURjwURcB5NRJcTClkW/oSCzBM4dOU+vxLvtNdJmhdWtiahxnT4JY+ITOetdOigrlYtfxWOip3LQdxU=
+X-Received: by 2002:a92:d388:0:b0:361:98e2:90b1 with SMTP id
+ o8-20020a92d388000000b0036198e290b1mr437960ilo.20.1706304514841; Fri, 26 Jan
+ 2024 13:28:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240126211927.1171338-1-tjmercier@google.com>
+In-Reply-To: <20240126211927.1171338-1-tjmercier@google.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Fri, 26 Jan 2024 13:28:23 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuPLS_1m0=4vmV8fyrQ5N6yCt-2eufBkBSF=nECsb3pU2Q@mail.gmail.com>
+Message-ID: <CAF8kJuPLS_1m0=4vmV8fyrQ5N6yCt-2eufBkBSF=nECsb3pU2Q@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: memcg: Don't periodically flush stats when memcg
+ is disabled
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com, 
+	Minchan Kim <minchan@google.com>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 26 Jan 2024 15:24:17 -0500
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+Hi T.J.
 
-> On 2024-01-26 15:12, Steven Rostedt wrote:
-> [...]
-> > diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
-> > index e1b172c0e091..2187be6d7b23 100644
-> > --- a/fs/tracefs/inode.c
-> > +++ b/fs/tracefs/inode.c
-> > @@ -223,13 +223,41 @@ static const struct inode_operations tracefs_file_inode_operations = {
-> >   	.setattr	= tracefs_setattr,
-> >   };
-> >   
-> > +/* Copied from get_next_ino() but adds allocation for multiple inodes */
-> > +#define LAST_INO_BATCH 1024
-> > +#define LAST_INO_MASK (~(LAST_INO_BATCH - 1))
-> > +static DEFINE_PER_CPU(unsigned int, last_ino);
-> > +
-> > +unsigned int tracefs_get_next_ino(int files)
-> > +{
-> > +	unsigned int *p = &get_cpu_var(last_ino);
-> > +	unsigned int res = *p;
-> > +
-> > +#ifdef CONFIG_SMP
-> > +	/* Check if adding files+1 overflows */  
-> 
-> How does it handle a @files input where:
-> 
-> * (files+1 > LAST_INO_BATCH) ?
-> 
-> * (files+1 == LAST_INO_BATCH) ?
+Acked-by: Chris Li <chrisl@kernel.org>
 
-Well, this is moot anyway, as Linus hates it.
+Chris
 
--- Steve
+
+On Fri, Jan 26, 2024 at 1:19=E2=80=AFPM T.J. Mercier <tjmercier@google.com>=
+ wrote:
+>
+> The root memcg is onlined even when memcg is disabled. When it's onlined
+> a 2 second periodic stat flush is started, but no stat flushing is
+> required when memcg is disabled because there can be no child memcgs.
+> Most calls to flush memcg stats are avoided when memcg is disabled as a
+> result of the mem_cgroup_disabled check added in 7d7ef0a4686a
+> ("mm: memcg: restore subtree stats flushing"), but the periodic flushing
+> started in mem_cgroup_css_online is not. Skip it.
+>
+> Fixes: aa48e47e3906 ("memcg: infrastructure to flush memcg stats")
+> Reported-by: Minchan Kim <minchan@google.com>
+> Signed-off-by: T.J. Mercier <tjmercier@google.com>
+> Acked-by: Shakeel Butt <shakeelb@google.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> ---
+>  mm/memcontrol.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index e4c8735e7c85..bad8f9dfc9ab 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5586,7 +5586,7 @@ static int mem_cgroup_css_online(struct cgroup_subs=
+ys_state *css)
+>         if (alloc_shrinker_info(memcg))
+>                 goto offline_kmem;
+>
+> -       if (unlikely(mem_cgroup_is_root(memcg)))
+> +       if (unlikely(mem_cgroup_is_root(memcg)) && !mem_cgroup_disabled()=
+)
+>                 queue_delayed_work(system_unbound_wq, &stats_flush_dwork,
+>                                    FLUSH_TIME);
+>         lru_gen_online_memcg(memcg);
+> --
+> 2.43.0.429.g432eaa2c6b-goog
+>
+>
 
