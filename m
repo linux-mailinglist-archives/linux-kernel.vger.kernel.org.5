@@ -1,129 +1,183 @@
-Return-Path: <linux-kernel+bounces-40646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D12983E397
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:04:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C68A83E39A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:05:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEEA01C249FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:04:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D6181C22BD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:05:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D67402421A;
-	Fri, 26 Jan 2024 21:04:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10BAB24219;
+	Fri, 26 Jan 2024 21:05:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="bt+bM6L/"
-Received: from xry111.site (xry111.site [89.208.246.23])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KJnBLjFi"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DE051CA9C;
-	Fri, 26 Jan 2024 21:04:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AAA017BCC;
+	Fri, 26 Jan 2024 21:05:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706303043; cv=none; b=I1VFCZrPv9U76CmjNlzHBxjtGsddbJKNWb1JLrP4sdU2RkhFce7U1rgwOcXqnhrlR5mI625ZE1P+A4Ad+wrpmYCWr31gvie8Tqd1N0hLkoOKod7eg1ifYLnz4eXXdZu+wZmNs553QRUo8TJgfhqlvfe01kABFVCcYPeyP8zrw90=
+	t=1706303112; cv=none; b=QF+J1XWU7CZUKFhdvpkm1jePbp5ypDQ05Y9qtX3khIEVY635S5c5j1iXVIT87New7amFcvHGaamaZEHYJPDA78iw8TB1pb5wDUbtP7o2YM3nVSlu1vkOZyAY1J+Ld+RPXgiNykuiwhjyUVuOYAw4EY79uSUOqakx79P32SUfzFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706303043; c=relaxed/simple;
-	bh=nqQ4IdgixdgGfdDx0ML46uM91lk8P3kyQ6NMybJB6Eo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Y8X0DiUiUtLF7oOBCfSDuC2Su12u2y3hbqx5GA7Dbz5H7jzR1Fs7oJ5qao6g4UISkQgzky2BgdMHoSPp3HRKuU/ttfD0kDloEQANAPyaC4ecmnYz3GaFIkxzRf7dD3IS1pJMJcqa+56I9EBV8i79ocwPZrXjmFq6bCU4MmnKJXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=bt+bM6L/; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1706303040;
-	bh=nqQ4IdgixdgGfdDx0ML46uM91lk8P3kyQ6NMybJB6Eo=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=bt+bM6L/UaBZ/6t8E65kWFt6YqeyIWi5ZTxXNw2C2snwYQyaI5366AOjXz95kY9Kc
-	 qL/UO/U3yXIkJXpk65ft4OkQMTQ6y0Aviy40bwFKapN7h8bJ0aUGqpEze5UqHHrasu
-	 SK986//UkMWcdLfNPLkgcGwvcAPc8S8+KecdsvaI=
-Received: from [IPv6:240e:358:1181:9d00:dc73:854d:832e:3] (unknown [IPv6:240e:358:1181:9d00:dc73:854d:832e:3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id 0610E66A26;
-	Fri, 26 Jan 2024 16:03:55 -0500 (EST)
-Message-ID: <17369fe8574440ef8550cbe1bdfb08e515416fe5.camel@xry111.site>
-Subject: Re: [PATCH] mips: Call lose_fpu(0) before initializing fcr31 in
- mips_set_personality_nan
-From: Xi Ruoyao <xry111@xry111.site>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Jiaxun Yang
-	 <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org
-Cc: Ralf Baechle <ralf@linux-mips.org>, "Maciej W. Rozycki"
- <macro@orcam.me.uk>,  YunQiang Su <wzssyqa@gmail.com>, Huacai Chen
- <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
- linux-kernel@vger.kernel.org
-Date: Sat, 27 Jan 2024 05:03:50 +0800
-In-Reply-To: <20240126205920.11487-3-xry111@xry111.site>
-References: <20240126205920.11487-3-xry111@xry111.site>
-Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
- keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1706303112; c=relaxed/simple;
+	bh=D6TN0ph7simZRtQn/9n/ECn1Cli8KS1dvnZhjYqIRsk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qjKtHBIS9CB4o1TsWuJ/YVTPcmYtXFWW8W99QKC5DDT3/bnjc4u6xrIkwncy9JOUqltt7u59MvtotAGW0OuQbDr2bHBaT7ZJnIAT2dCXo+29Npp9yhIjk2RCX6AZDDgvX7xhEN92l38IMNSxA6Rg8U0D7DaVonj1iv0Bbfb4xgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KJnBLjFi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EEDAC433F1;
+	Fri, 26 Jan 2024 21:05:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706303111;
+	bh=D6TN0ph7simZRtQn/9n/ECn1Cli8KS1dvnZhjYqIRsk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KJnBLjFiv0ZZ9w1YfnJNh/w9sPS+Om2XiWO0XI5w5WUQoCExWuDBBvU4IEwYFnceI
+	 zxReKXCNUErdfsc5UCnl0WuESEfbbY/p4KysyTEZRHa3FS7Kwnzx1Ww9d9Vzol03tf
+	 MrMNFFbE2xbio6KHM4rkSiJbKcBffaLHKbbHMlxNXhqWky1ZOXH9eaY269MvEdjKjK
+	 l++ni2vQu09irNzor2Ib+vZ9lEMfKUa6g0wcYqFdg/obsw3Su7aDjHFPabdXuI4wlv
+	 0DXAzSqOcq5QP81T4P95kge+dteXdWcU8MiSZope6JBCYZj9SJ9VjaDrMyiKca83Vj
+	 hR32nPoYswLBQ==
+Date: Fri, 26 Jan 2024 14:05:09 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
+Cc: linux-tip-commits@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	maz@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [tip: irq/core] genirq/irq_sim: Shrink code by using cleanup
+ helpers
+Message-ID: <20240126210509.GA1212219@dev-arch.thelio-3990X>
+References: <20240122124243.44002-5-brgl@bgdev.pl>
+ <170627361652.398.12825437185563577604.tip-bot2@tip-bot2>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <170627361652.398.12825437185563577604.tip-bot2@tip-bot2>
 
-Please ignore this for wrong address of stable@.  Will send v2.
-
-On Sat, 2024-01-27 at 04:59 +0800, Xi Ruoyao wrote:
-> If we still own the FPU after initializing fcr31, when we are preempted
-> the dirty value in the FPU will be read out and stored into fcr31,
-> clobbering our setting.=C2=A0 This can cause an improper floating-point
-> environment after execve().=C2=A0 For example:
->=20
-> =C2=A0=C2=A0=C2=A0 zsh% cat measure.c
-> =C2=A0=C2=A0=C2=A0 #include <fenv.h>
-> =C2=A0=C2=A0=C2=A0 int main() { return fetestexcept(FE_INEXACT); }
-> =C2=A0=C2=A0=C2=A0 zsh% cc measure.c -o measure -lm
-> =C2=A0=C2=A0=C2=A0 zsh% echo $((1.0/3)) # raising FE_INEXACT
-> =C2=A0=C2=A0=C2=A0 0.33333333333333331
-> =C2=A0=C2=A0=C2=A0 zsh% while ./measure; do ; done
-> =C2=A0=C2=A0=C2=A0 (stopped in seconds)
->=20
-> Call lose_fpu(0) before setting fcr31 to prevent this.
->=20
-> Closes: https://lore.kernel.org/linux-mips/7a6aa1bbdbbe2e63ae96ff163fab03=
-49f58f1b9e.camel@xry111.site/
-> Fixes: 9b26616c8d9d ("MIPS: Respect the ISA level in FCSR handling")
-> Cc: stable@vger.linux.org
-> Signed-off-by: Xi Ruoyao <xry111@xry111.site>
+On Fri, Jan 26, 2024 at 12:53:36PM -0000, tip-bot2 for Bartosz Golaszewski wrote:
+> The following commit has been merged into the irq/core branch of tip:
+> 
+> Commit-ID:     590610d72a790458431cbbebc71ee24521533b5e
+> Gitweb:        https://git.kernel.org/tip/590610d72a790458431cbbebc71ee24521533b5e
+> Author:        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> AuthorDate:    Mon, 22 Jan 2024 13:42:43 +01:00
+> Committer:     Thomas Gleixner <tglx@linutronix.de>
+> CommitterDate: Fri, 26 Jan 2024 13:44:48 +01:00
+> 
+> genirq/irq_sim: Shrink code by using cleanup helpers
+> 
+> Use the new __free() mechanism to remove all gotos and simplify the error
+> paths.
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Link: https://lore.kernel.org/r/20240122124243.44002-5-brgl@bgdev.pl
+> 
 > ---
-> =C2=A0arch/mips/kernel/elf.c | 6 ++++++
-> =C2=A01 file changed, 6 insertions(+)
->=20
-> diff --git a/arch/mips/kernel/elf.c b/arch/mips/kernel/elf.c
-> index 5582a4ca1e9e..7aa2c2360ff6 100644
-> --- a/arch/mips/kernel/elf.c
-> +++ b/arch/mips/kernel/elf.c
-> @@ -11,6 +11,7 @@
-> =C2=A0
-> =C2=A0#include <asm/cpu-features.h>
-> =C2=A0#include <asm/cpu-info.h>
-> +#include <asm/fpu.h>
-> =C2=A0
-> =C2=A0#ifdef CONFIG_MIPS_FP_SUPPORT
-> =C2=A0
-> @@ -309,6 +310,11 @@ void mips_set_personality_nan(struct arch_elf_state =
-*state)
-> =C2=A0	struct cpuinfo_mips *c =3D &boot_cpu_data;
-> =C2=A0	struct task_struct *t =3D current;
-> =C2=A0
-> +	/* Do this early so t->thread.fpu.fcr31 won't be clobbered in case
-> +	 * we are preempted before the lose_fpu(0) in start_thread.
-> +	 */
-> +	lose_fpu(0);
-> +
-> =C2=A0	t->thread.fpu.fcr31 =3D c->fpu_csr31;
-> =C2=A0	switch (state->nan_2008) {
-> =C2=A0	case 0:
+>  kernel/irq/irq_sim.c | 25 ++++++++++---------------
+>  1 file changed, 10 insertions(+), 15 deletions(-)
+> 
+> diff --git a/kernel/irq/irq_sim.c b/kernel/irq/irq_sim.c
+> index b0d50b4..fe8fd30 100644
+> --- a/kernel/irq/irq_sim.c
+> +++ b/kernel/irq/irq_sim.c
+> @@ -4,6 +4,7 @@
+>   * Copyright (C) 2020 Bartosz Golaszewski <bgolaszewski@baylibre.com>
+>   */
+>  
+> +#include <linux/cleanup.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/irq.h>
+>  #include <linux/irq_sim.h>
+> @@ -163,33 +164,27 @@ static const struct irq_domain_ops irq_sim_domain_ops = {
+>  struct irq_domain *irq_domain_create_sim(struct fwnode_handle *fwnode,
+>  					 unsigned int num_irqs)
+>  {
+> -	struct irq_sim_work_ctx *work_ctx;
+> +	struct irq_sim_work_ctx *work_ctx __free(kfree) = kmalloc(sizeof(*work_ctx), GFP_KERNEL);
+> +	unsigned long *pending;
+>  
+> -	work_ctx = kmalloc(sizeof(*work_ctx), GFP_KERNEL);
+>  	if (!work_ctx)
+> -		goto err_out;
+> +		return ERR_PTR(-ENOMEM);
+>  
+> -	work_ctx->pending = bitmap_zalloc(num_irqs, GFP_KERNEL);
+> -	if (!work_ctx->pending)
+> -		goto err_free_work_ctx;
+> +	pending = __free(bitmap) = bitmap_zalloc(num_irqs, GFP_KERNEL);
 
---=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
+Apologies if this has already been reported elsewhere. This does not
+match what was sent and it causes the build to break with both GCC:
+
+  In file included from include/linux/compiler_types.h:89,
+                   from <command-line>:
+  kernel/irq/irq_sim.c: In function 'irq_domain_create_sim':
+  include/linux/compiler_attributes.h:76:41: error: expected expression before '__attribute__'
+     76 | #define __cleanup(func)                 __attribute__((__cleanup__(func)))
+        |                                         ^~~~~~~~~~~~~
+  include/linux/cleanup.h:64:25: note: in expansion of macro '__cleanup'
+     64 | #define __free(_name)   __cleanup(__free_##_name)
+        |                         ^~~~~~~~~
+  kernel/irq/irq_sim.c:173:19: note: in expansion of macro '__free'
+    173 |         pending = __free(bitmap) = bitmap_zalloc(num_irqs, GFP_KERNEL);
+        |                   ^~~~~~
+
+and Clang:
+
+  kernel/irq/irq_sim.c:173:12: error: expected expression
+    173 |         pending = __free(bitmap) = bitmap_zalloc(num_irqs, GFP_KERNEL);
+        |                   ^
+  include/linux/cleanup.h:64:23: note: expanded from macro '__free'
+     64 | #define __free(_name)   __cleanup(__free_##_name)
+        |                         ^
+  include/linux/compiler-clang.h:15:25: note: expanded from macro '__cleanup'
+     15 | #define __cleanup(func) __maybe_unused __attribute__((__cleanup__(func)))
+        |                         ^
+  include/linux/compiler_attributes.h:344:41: note: expanded from macro '__maybe_unused'
+    344 | #define __maybe_unused                  __attribute__((__unused__))
+        |                                         ^
+  1 error generated.
+
+This was initially noticed by our CI:
+
+https://github.com/ClangBuiltLinux/continuous-integration2/actions/runs/7671789235/job/20915505965
+https://storage.tuxsuite.com/public/clangbuiltlinux/continuous-integration2/builds/2bVGKZUmat8fRr582Nh8hNA6FXD/build.log
+
+Cheers,
+Nathan
+
+> +	if (!pending)
+> +		return ERR_PTR(-ENOMEM);
+>  
+>  	work_ctx->domain = irq_domain_create_linear(fwnode, num_irqs,
+>  						    &irq_sim_domain_ops,
+>  						    work_ctx);
+>  	if (!work_ctx->domain)
+> -		goto err_free_bitmap;
+> +		return ERR_PTR(-ENOMEM);
+>  
+>  	work_ctx->irq_count = num_irqs;
+>  	work_ctx->work = IRQ_WORK_INIT_HARD(irq_sim_handle_irq);
+> +	work_ctx->pending = no_free_ptr(pending);
+>  
+> -	return work_ctx->domain;
+> -
+> -err_free_bitmap:
+> -	bitmap_free(work_ctx->pending);
+> -err_free_work_ctx:
+> -	kfree(work_ctx);
+> -err_out:
+> -	return ERR_PTR(-ENOMEM);
+> +	return no_free_ptr(work_ctx)->domain;
+>  }
+>  EXPORT_SYMBOL_GPL(irq_domain_create_sim);
+>  
 
