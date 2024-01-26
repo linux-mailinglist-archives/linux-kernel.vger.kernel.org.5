@@ -1,90 +1,118 @@
-Return-Path: <linux-kernel+bounces-40384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7264B83DF53
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:56:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 520F183DF55
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:57:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DC9228C500
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:56:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF39D1F28EE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:57:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26D031EB57;
-	Fri, 26 Jan 2024 16:56:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA7931DFC6;
+	Fri, 26 Jan 2024 16:57:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I6wfEVg+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="v0yMszEb"
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EB271EB24;
-	Fri, 26 Jan 2024 16:56:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B20E51D545
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 16:57:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706288181; cv=none; b=io79OOcaTMH4Vs9I1QJR/LWBRrjrS2UPfYZ24MlN7HFscPwzT6MHH997eoxGQowgNs0eBtFYadbU4i73CTlVhmvjr2kxq5O7++k9ZmO9AviQIpoSKp5no2g6OMXe+Jkb0UP92NElPh2NWXG1u0Ftnf7OoOoTSMdYypwbLUgCm3k=
+	t=1706288268; cv=none; b=t248LLPorn0I/4Qs3phubGZCdUo5p31ixYQhH+ouDkAiClOnMopwY5hEdT1m3UmPtp5eKwQoW5kjrBEjgsYBCKwhRog+mXzXyyxMJ2IgNR43Lv9p6zVmAgrw06DZrVOBOydQb4F9nE2FHcZYGuVVmjg06824XNFn8VUzUpZSalU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706288181; c=relaxed/simple;
-	bh=QgW0oHQLcFslidWlTpKmmp0JRnttwiUG2ggzqqllD4M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OdqqXqy7MKnx3eBMrRlY7RTrCn959UAcrpMtTKuTUhl83AGzWeEOBd7P/kZzRNvAQgbO4c6YOw/g1cgE00ggc3OHY53awhW457KT8KuybKS5gl+rV6P7mdsTJ1vCpHLVpVVq9Zz48EGb23VdmdHtbJ7pwGBL0UesuFHwfZ5Sk3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I6wfEVg+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9E6BC433F1;
-	Fri, 26 Jan 2024 16:56:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706288180;
-	bh=QgW0oHQLcFslidWlTpKmmp0JRnttwiUG2ggzqqllD4M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=I6wfEVg+RqhZMarNGzZv9BzRGK154CIxhnolYwjm28YnrnsT72tH73EgWj+ZgfX8i
-	 oMF3k2mS1Nn7gQtWpQUSd5W5cq/nsASpEHrUF+OBzuDX/L0mG5sPKku0vxJ/0OPPQh
-	 NI6B2LLa8lK/YOVKX8Ff3EEyuFQHd6m8XQyvKr65NMmsl9wbdFWff2wDYmpiqtcOXH
-	 1eh8hBEd2QA0UMvMNDW700zAlXeMQGI/Z9ZJDW80MGFo46SPWwraacFonR5oogOqJm
-	 wME/SoEgkzBYqCEudcCXBFWrJkVJMC3AurFumhJaaOSKjAopR1GbCBBXz6q6kQr0Qd
-	 OerFZ2t/XGYTg==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rTPVJ-0000000009d-1j4s;
-	Fri, 26 Jan 2024 17:56:33 +0100
-Date: Fri, 26 Jan 2024 17:56:33 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Bjorn Andersson <quic_bjorande@quicinc.com>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-	Jiri Kosina <jikos@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	linux-arm-msm@vger.kernel.org, linux-input@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Konrad Dybcio <konrad.dybcio@somainline.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Daniel Thompson <daniel.thompson@linaro.org>
-Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: sc8280xp-x13s: Fix/enable
- touchscreen
-Message-ID: <ZbPkQVrsrYgUpudo@hovoldconsulting.com>
-References: <20240126-x13s-touchscreen-v2-0-5374ccc9e10d@quicinc.com>
- <20240126-x13s-touchscreen-v2-2-5374ccc9e10d@quicinc.com>
+	s=arc-20240116; t=1706288268; c=relaxed/simple;
+	bh=EvCafv1sut8qM6qKIK1YMxvl8RZrjtMxUcDY4rmzS2g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OqxeR0+BZNbAZoG4Zc9ibNGVYn51exQ0MYfZpG9pSeFwGgEMtvirbduA3p826tMK1x16ZZhn6FmJP5kAggSHQ6TTaBQivwPI+AnZ88ZrgqSJaut784OZWFtCDr4PHVtotscgH/I3dD4utebn7iFx2aHJbeI81aW5q65WlzFHNNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=v0yMszEb; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-602cf45bfe9so5697677b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:57:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706288265; x=1706893065; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W8wQho2kzTpQJAHRtDOw4DoWvclzdYhTLnZmTHKhh5A=;
+        b=v0yMszEbJCHLJWo3nmkZ1zNDPvRKTPxKSyvT7TmUADU+AoAV+WFHx6M7RePN6wSi2C
+         E+Jotprv4T+YxcYtMCbcbQDAVetgApjWzW0Pv1hkYHcaLB7QWTvIdPcvKznGI8RHh2VK
+         sATXpx8tHKY7TvTiAOO79jLMynanjZY6wJdLxBrMIQZKcJoC/E8IfOA+gdrPIijwKDJ0
+         i8H0q4Perd822+tlSPYS9s6HpIFDq9AtRGjysomhlM8N7Dlx8qekZUOwvyLASHdkfskr
+         nggaIGGH3yX0n8y4/JA9FM0bCkuNhRRCwJ68yk+7EWi6t0Piux/fztfKLOM/rPlxC0Ym
+         VklQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706288265; x=1706893065;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=W8wQho2kzTpQJAHRtDOw4DoWvclzdYhTLnZmTHKhh5A=;
+        b=qEKdDoLVovGouOYvFwr9heWKnXBO+AAAFkh9R4cNLf/8LD3Dr0fso9jHWKleL1Q2MS
+         HUvolvOYWBbtzPwBmisqj+TJftS5Ly97KVVnoVRwJpAPzm/UGKYXgIuC1x4Y3KxRWSLa
+         Auv2QOps9m9Ix/181rUMiAU90tlnceRojZkV0ICSM0Y4KBIdOr40epl3gTBSdOhogeVI
+         l5QiQnEs9e/+i5pJbMYj7MfpMyI+22O2TrMEBsUTQtFH0ybnzpqXBQSMxoLSQrul0qyS
+         eSAsJK3jVExyTRxBHGQQmBgXkrp2YOoZjYuQn9V5h38nimfIz3rUqxpkbtfW+WBRu5Ub
+         4aVQ==
+X-Gm-Message-State: AOJu0Yzuv2AZbH/KIr79pOM3G7DgdrEF6A6s43Yd5oRgJMaC6xxQ/ZWg
+	SA/ORe1YRZDvzLOHoEVivf0YO8JRXb2bMRzGSuQSE+wZQQNWF/pXR9pO4xnBm+OL3T5/kryX0HI
+	k23epb+zYdFJTamJK8e5lkF011arTUlXveGMq
+X-Google-Smtp-Source: AGHT+IFBQn83Na5+mL0dqae0d/D6DCw5UhICy2RXG0Bh6kX+ltPjDdP9mgjcyhsfiQPdKSR3E1zClmHAvp3oOHgc0mk=
+X-Received: by 2002:a05:6902:1003:b0:dc6:48fc:65e4 with SMTP id
+ w3-20020a056902100300b00dc648fc65e4mr125320ybt.40.1706288265435; Fri, 26 Jan
+ 2024 08:57:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240126-x13s-touchscreen-v2-2-5374ccc9e10d@quicinc.com>
+References: <20240124173134.1165747-1-glider@google.com> <20240125173448.e866d84cda146145cbc67c93@linux-foundation.org>
+In-Reply-To: <20240125173448.e866d84cda146145cbc67c93@linux-foundation.org>
+From: Alexander Potapenko <glider@google.com>
+Date: Fri, 26 Jan 2024 17:57:04 +0100
+Message-ID: <CAG_fn=VBPy9vYTUvdW5Bp9MHF3F2kAhqBKeEg6GHXk0_MG-fiw@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: kmsan: remove runtime checks from kmsan_unpoison_memory()
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	kasan-dev@googlegroups.com, Marco Elver <elver@google.com>, 
+	Dmitry Vyukov <dvyukov@google.com>, Ilya Leoshkevich <iii@linux.ibm.com>, 
+	Nicholas Miehlbradt <nicholas@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 26, 2024 at 08:41:39AM -0800, Bjorn Andersson wrote:
-> The failing read-test in __i2c_hid_core_probe() determines that there's
-> nothing connected at the documented address of the touchscreen.
-> 
-> Introduce the 5ms after-power and 200ms after-reset delays found in the
-> ACPI tables. Also wire up the reset-gpio, for good measure.
+On Fri, Jan 26, 2024 at 2:34=E2=80=AFAM Andrew Morton <akpm@linux-foundatio=
+n.org> wrote:
+>
+> On Wed, 24 Jan 2024 18:31:34 +0100 Alexander Potapenko <glider@google.com=
+> wrote:
+>
+> > Similarly to what's been done in commit ff444efbbb9be ("kmsan: allow
+>
+> I make that 85716a80c16d.
+>
+> > using __msan_instrument_asm_store() inside runtime"), it should be safe
+> > to call kmsan_unpoison_memory() from within the runtime, as it does not
+> > allocate memory or take locks. Remove the redundant runtime checks.
+> >
+> > This should fix false positives seen with CONFIG_DEBUG_LIST=3Dy when
+> > the non-instrumented lib/stackdepot.c failed to unpoison the memory
+> > chunks later checked by the instrumented lib/list_debug.c
+> >
+> > Also replace the implementation of kmsan_unpoison_entry_regs() with
+> > a call to kmsan_unpoison_memory().
+> >
+>
+> "false positives" sound unpleasant.  Should this fix be backported into
+> earlier kernels?  And can we identify a suitable Fixes: target?
+>
 
-Please amend the commit message so that it reflects the discussion we
-just had (e.g. wiring up the reset-gpio is not just for good measure).
+Surprisingly, I haven't seen these false reports before, but the bug
+has been there since KMSAN's early downstream days (at the time we
+might have needed to have those checks).
+So it should probably be:
 
-Johan
+Fixes: f80be4571b19b9 ("kmsan: add KMSAN runtime core")
 
