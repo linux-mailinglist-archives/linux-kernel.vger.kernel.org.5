@@ -1,98 +1,90 @@
-Return-Path: <linux-kernel+bounces-40120-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40121-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E87883DA8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:12:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E51A83DA8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:12:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F6881C21804
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:12:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B65B21F2432E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:12:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 467331B809;
-	Fri, 26 Jan 2024 13:11:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KZOs3q7Q"
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCD621B80B;
+	Fri, 26 Jan 2024 13:12:06 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55AEFD272;
-	Fri, 26 Jan 2024 13:11:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 029C51B7F0
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:12:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706274712; cv=none; b=bFXtM/UPYxv1UzKszy10uo5XZTRL3HDvz+oNvFQRKjHRz5sqj/Bc+8ObZoaFcRqoSKMWSRkhLBfcgBlk1GdBjO7j00SyaPXKtBJg2YyTf7X5YVciNFKn+YltRSPiij7+DJ//d0BRo4DPHa3PU9+lcvHAkLXz1DE/wp8d9k8MHSI=
+	t=1706274726; cv=none; b=ad1DZ/Rawp4tYv2tlQQZ1SjSFOPuv3l+OmCnRD8nAXyOrd0uFPlqZ0V9q8ArkspIa2j1hPEn8S/IOYb6Xyudd3MxQ/Q4Bs8mp1ToNX2akI1ZBO6ooxlQ3SLui+wfEVPCENeQgCWSC3XwP3k2Moa3eSXIIq+AYGoj9+ZamzReysY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706274712; c=relaxed/simple;
-	bh=51m1LJOwmAVT8P7jtqAIAy8q2qI34X4aXAJCobfZW1s=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=oVRdL/5yJwaESH3/oex0AqLhxmzhKOVHem9Ylr+rAoY9vTOT6/gPWTLmka3ALyGqPtoSZ6g9by0rXR0qJIr/xXDCUh+DuskxPrMowi6GgLPIDh3x2IgtFqpiQNZv1IAyNX5ExyjQPP6fMQbrTWot/S0YsH/gWJLqF8z087pvijY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KZOs3q7Q; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-53fa455cd94so193741a12.2;
-        Fri, 26 Jan 2024 05:11:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706274710; x=1706879510; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=51m1LJOwmAVT8P7jtqAIAy8q2qI34X4aXAJCobfZW1s=;
-        b=KZOs3q7QmvVN0JQqm2Y1y215NBXghjM4XvzKOBzHY94s+AENobITsum3pIJG4Z7UuK
-         zcJ9+J77wld879Pg6bjn67kZaR1AnC2oQQE7JA1Uu7R5+QVC721Prs4UDHUk8Mk8g1gh
-         KYlUzp2w/yHXpYwuN7b4YCfJhW6A5hEi4Gogg5x9dnBbuGijkLpPdtWiUJQuQZmPxu2E
-         2a/vaJakpmyWpH19gEbNwtKsrHkhGBFGBF3Rj+q3pdIQfadTijqKxWuGNpaKrwJAMUMt
-         jFrQhcMYXgC7DKlKoVZlRF0p6GASvm6cHLLEcENileVJbYQKurgsE2GVMPELmgPClllv
-         M0oQ==
+	s=arc-20240116; t=1706274726; c=relaxed/simple;
+	bh=NEzJ7pNKUuAaHWHT3ELgKK4hFQyY6cM6yjnMJL7fkNE=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=AsMaBB2NpJv57raAmY6LLmIhphA8gtK+LPui9EZkrCAqb6WTif4lAN1ruO7v8G92X0MZramMY31dj1Ye2Wa2cXyNNRbHYI1nmp4NiMquySP0h9soTaYxwItPxPzbp/HfHAFaNnC8fXJmgC4lhnwvn0fEa8YaWUcaxudaWwnuOXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-361a7ea0c21so1500455ab.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 05:12:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706274710; x=1706879510;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=51m1LJOwmAVT8P7jtqAIAy8q2qI34X4aXAJCobfZW1s=;
-        b=QWSBidNOKmAFwAhhCMfZBs/dE0XOa3obWZpy1/KhfZD6mqNxvDrhQPQ+HRlwwi1cQu
-         EG68v2amzmLOEzhsOeACSs8RttdSLAu6cIYJ0ULSJ41a3oyTt2juiZvt7i+UIH4hI4sq
-         iVwliI29lh1YvKH/F0udJM9L5Dm3q5w52jK5Z68m3zMwN1gCyzZwChT4YroNicaMmdIR
-         zjYkEOscHlaoWfJFce4NLEDvGID9z1V6B9vflCacLFfutWBEVY9wa1udUchH2fLDYnjX
-         sNILiBoIZbq1OtUokwCEmEafaWeM+U3bjd0XincHEQND5sDDj1Tj+ri3IOHiXkHiDHZf
-         Z66A==
-X-Gm-Message-State: AOJu0YxMEwmUV2QwhsJPJGSxyzstrAoeQNPVX8V4w/0XfcVbFMUmqy2E
-	FOfW+CYhM9UV+JXTtV7BbBQDBQYU3BgYqDda5NSu4kqNfMQ2Hpq9wiYkEu7dg6OPKbJdEGe9AL2
-	p5mmuISU/+SLoA33iCNkEqauRCas=
-X-Google-Smtp-Source: AGHT+IGC0ej4MM6Phy0BizOFADpCvoogJdF/46LfI+ywJbSzCpgUsY23k/61/MlQ3VJLf4m7+/v067gbPFDrsM/x+UU=
-X-Received: by 2002:a17:90a:7449:b0:293:951f:5a1a with SMTP id
- o9-20020a17090a744900b00293951f5a1amr1486307pjk.38.1706274710435; Fri, 26 Jan
- 2024 05:11:50 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706274724; x=1706879524;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=O0x/ov2Zs03p8CkOaE9SqfLyn/5v8ep9jX8D61t7VpY=;
+        b=JMggpMtuTqZzTLrc9bgKudh3Js7Wvoe/SeNYpfXb550au8bxJj5nxyXWWiM2pW2lGz
+         uccxwkLg2wQBIGQ5Ccs7zjB/Nbfb6JZNc673RCI9V9ID8a+mjDEC2DJI1DC6NOQDgwJb
+         zl+nuSSg9kMml/Ch/4+17M5cL6aNqToHZD3DBJAHwNYDpXx72HPVv4SpB9OrhsKL6Vn6
+         X8i9/ZysXETh408r0gOtK9i9EL9s7pEp0Zt8KOTe/7OFkNl2/7mjBpK+PPGHVwYDKTda
+         iywRG/GI/D/fcLVuTb+6MSS4Hhq0tNCEj61lYnNaaL/ixxmvrUIycJxLKT/ZoeA8I97G
+         4V2A==
+X-Gm-Message-State: AOJu0YxBkKyRxjsqvqA5QHdO0nQE9Vgf8l8XFnlXltZvSywp/PfF2q2H
+	jmNo3ywEs9fn+Y1buLfD7ehTAe5qA6gSHQ8UZfYOLVXSBKNehCBSA9qL7mI4n+T4NwLS4SpB4vZ
+	Ejcpl3dCQ6gcYVGiKcH5F/qIM75Vvv5d97/KFOS/kT/EJ9WVPa9FdnV8=
+X-Google-Smtp-Source: AGHT+IHo7HCHW50KV8UXER7bHFe4guV2lkXOibpd+2Fe3a7VsPlzPa0SV3RLXftlVl7IBeDDB+jx/eCvFnMS3FQErE5eKkkrwzBd
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: xingwei lee <xrivendell7@gmail.com>
-Date: Fri, 26 Jan 2024 21:11:39 +0800
-Message-ID: <CABOYnLx_8_TpFHS-nkrvF5dG_Ev6tgMi1dj_+4sSydM1wmD1XA@mail.gmail.com>
-Subject: Re: [syzbot] [crypto?] KMSAN: uninit-value in af_alg_free_sg (2)
-To: syzbot+3266db0c26d1fbbe3abb@syzkaller.appspotmail.com
-Cc: davem@davemloft.net, herbert@gondor.apana.org.au, 
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
+X-Received: by 2002:a05:6e02:1be5:b0:361:9a4c:8bf5 with SMTP id
+ y5-20020a056e021be500b003619a4c8bf5mr173164ilv.6.1706274724126; Fri, 26 Jan
+ 2024 05:12:04 -0800 (PST)
+Date: Fri, 26 Jan 2024 05:12:04 -0800
+In-Reply-To: <000000000000f8389205e9f9ec5f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d227b6060fd90a48@google.com>
+Subject: Re: [syzbot] [udf?] KASAN: use-after-free Read in crc_itu_t
+From: syzbot <syzbot+d8fc21bfa138a5ae916d@syzkaller.appspotmail.com>
+To: axboe@kernel.dk, brauner@kernel.org, jack@suse.com, jack@suse.cz, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-Hello.
-This bug is the same bug that is mentioned in
-https://lore.kernel.org/all/20231211135949.689204-1-syoshida@redhat.com/.
-And I also reproduced it with repro.c in
-https://lore.kernel.org/all/CABOYnLxaHBEaSRaEU+kDsHF8a=9AokO1ZUEVtpeT9ddL8giw3A@mail.gmail.com/
-also see in https://gist.github.com/xrivendell7/b10745f297bd2d12a2e48155920996d2
-and also a simple root cause analysis.
+syzbot suspects this issue was fixed by commit:
 
-The incorrect logic of unlock_free label can really cause security issue like
-KASAN: double-free in af_alg_free_sg
-KASAN: slab-use-after-free in af_alg_free_sg
-KASAN: slab-use-after-free Read in hash_sock_destruct
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-and it needs a quick fix.
+    fs: Block writes to mounted block devices
 
-I hope it helps.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1204f1efe80000
+start commit:   a4d7d7011219 Merge tag 'spi-fix-v6.4-rc5' of git://git.ker..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7474de833c217bf4
+dashboard link: https://syzkaller.appspot.com/bug?extid=d8fc21bfa138a5ae916d
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1442e70b280000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16db80dd280000
 
-Best regards.
-xingwei Lee
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fs: Block writes to mounted block devices
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
