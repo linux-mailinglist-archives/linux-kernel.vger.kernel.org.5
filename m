@@ -1,377 +1,153 @@
-Return-Path: <linux-kernel+bounces-40419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D312183DFD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:20:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09B4E83DFD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:20:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8914B281C33
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:20:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B54932829F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:20:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78DC224A1F;
-	Fri, 26 Jan 2024 17:16:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B744320322;
+	Fri, 26 Jan 2024 17:18:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RkBp0x9w"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wAEnCmob"
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23BBE24215
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 17:16:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B9ED1DDF4
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 17:18:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706289374; cv=none; b=cVFEfgNxxhlfkK3kgpSl0PRwJUlZKE7I4RO2zsWUSFX00tLX/yA41fEX7hAAY/6IDw1ny1lhVhaOdZtbtW+BVm4cWKJ4ssIWHvTfd8OscMWu/4W7MIpp+y7DEj+hi1RxT04e+tSoHltMtI2cNLR+Ueh/THl0MrOfSPUe94oLf94=
+	t=1706289521; cv=none; b=Fjd9+TD9EKIgrOlUkqkQTG8Nh/mVBOVzBzLaipj88OkCijMBa8zOKBzVA56wKITxawsZ8WjLMPvt0yRm6UF916KJ8WkcDaDDjQmwQJSSzudpTjm5DL0Vaxl2p16nKr97qpap5gYwqQKph8GM/Rfpkup1Q3kEL8xsFu0DSK1kVqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706289374; c=relaxed/simple;
-	bh=u43UIwJQQPRd8BMB6oRBKWy41Vqtce0E/hu8vqcFXqI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mFWmW5oHbam/69xclinKcEAUruXNvINaALrHSQ5qaPs7zyr9Ps73nmiotHgCJf94OYV2c5VfOvpxbBLrNo5zw0RjrJk1AdvIHWwuU7/MxI0J4Txg0yzEW51j0qfpcW0tpTi0D7rPxynW+zCoeUtcmD1J/sCsS/w5qF1L3vzx2iU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=RkBp0x9w; arc=none smtp.client-ip=209.85.128.44
+	s=arc-20240116; t=1706289521; c=relaxed/simple;
+	bh=uksqWwHp40lBMgTvtcAqAgVU0xz7/hA8zQTrE9LBb6U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kvTEaDMbSNm080xgIXp+26Po/byplqFEb62ZZkkFsu7Vfka+yYI+iE1eEuBTEKOkhbdae9vE2COvhwXDzeSWvUBCYFkSP4Ucsh6atUO1l8UDzl2MXJRAlRQ/C+ehIIwVCCxon4Do7BtDgY0OpxnmhDc0V8guXqh6XP9Y8CrvY8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wAEnCmob; arc=none smtp.client-ip=209.85.219.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40ee705e9bfso7330205e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 09:16:10 -0800 (PST)
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dc226bad48cso528053276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 09:18:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706289369; x=1706894169; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=J4eHVujQrbVd61QBJFM5PhcAZf81EZ3ospR7GnzZm9Y=;
-        b=RkBp0x9wVviuoEdARkeZxjcm8s2eJv59bpm4rv7tbqwtDFJsQEK0cxHtSmATEdcU+G
-         Q7L3PSR8MqoFIp6apYEG/iwCcMal45nJ+9rS88cDam/44ALNcit6LPolCZuDoSech/6H
-         7P6rHB0M56WxpsgYJj9I1X+NRM55v5bOPrDyi0Y1HTo0MJDh/jzgvYfchgmzVcJk8zHc
-         es/7H+sTrtmw6QsWLl4vaOdEUmtrxOLKuKU1TJ64IZu+evsx2l3iniynTtOmr6K6o9ou
-         2gx5V6NK1kTUBlDeL4kgUe8Np9ty76qs25D+QNOU6LFLn3LOGujxCZDxD9qKnAkwLMgk
-         BLsQ==
+        d=linaro.org; s=google; t=1706289517; x=1706894317; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=oMXftuUEwR8k3wsTwAoi8oEqR+zracFM6FSyl83rIXo=;
+        b=wAEnCmobgLm4WoVxDmAgrpHh9VonWIANbdjH8ZEtE1B7EQ54qvTjzlAhRhPMj6/LMP
+         jsOnBfGOHmUERFB8IUri4k6sUjKjn0b6lhb+zP/gzT0m+laDxWtGYUvdO/oU/6T26AaV
+         UR5/DP9BCDrkDibO2QgiQKGp8ggxI/K2ckvv987vgpar8CJK1FKRfNnoRNl27I+/gwqj
+         xIxnpE7hPFYrvS2O+G+se81lUWbJM6tY+fkOqEpID9+wJh48QBdy6+PpqwQ75FQl8FjJ
+         N6Ar80pEre8TOc1K6W1OP1fZ9oHzTLadQP5MQb+VN7rMEipxVf0fDUesZRYcg5kQ+a/+
+         SR+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706289369; x=1706894169;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=J4eHVujQrbVd61QBJFM5PhcAZf81EZ3ospR7GnzZm9Y=;
-        b=nZVS/adttJYdwBgV/zTeZHkLy/ppdLmaDInj46K/oPcfB2jEjqwTd3SrkZsP995DLU
-         uTi7FZ9jxL0aqqygVcGlmWAb4G6pU07SfLpTY0lAX9SLeeQ8/JeGHZ3E6ogsIX2FwHsf
-         oUm/pSOub5ysBxWDqfcrL/nToJ6l4Nbw2/Mdwsqc2uNoyubENRPoHBzKZA/IWfqhqjtq
-         p96wp/1hWuKSp3bNWzjGr+mHxn2ToTr7kBocWTInTlWSGhsTUi2wU00TWzFDNv8/CzKw
-         vzL26bAva9MpR5nfcgZgPV5gurmcDhar4lzeHyL5XhMCcfrgZK0MGgVz/0YOh3mXESVo
-         mo/A==
-X-Gm-Message-State: AOJu0YwVboc40bC8WNLbZPpWrU9DlUQyFv/D7gPTlF7UWotbg5xmcMpR
-	mfhDtj8JjlXCzWzgUvYnOJlVTKpQxyUgnQev2Z22A54tpI9+H0abc6td75+YP8w=
-X-Google-Smtp-Source: AGHT+IGgmi+uKf/WzzdNGcx4Ui9dyO/h8yxsArsC5YJk2EuQYEgheINIrJVpVI8edVXHS/kCEj6IxQ==
-X-Received: by 2002:a05:600c:190b:b0:40e:3b1c:d3a2 with SMTP id j11-20020a05600c190b00b0040e3b1cd3a2mr80118wmq.126.1706289369258;
-        Fri, 26 Jan 2024 09:16:09 -0800 (PST)
-Received: from ta2.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id k10-20020a05600c1c8a00b0040e451fd602sm6287286wms.33.2024.01.26.09.16.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 09:16:08 -0800 (PST)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: broonie@kernel.org,
-	andi.shyti@kernel.org,
-	semen.protsenko@linaro.org
-Cc: krzysztof.kozlowski@linaro.org,
-	alim.akhtar@samsung.com,
-	jassi.brar@samsung.com,
-	linux-spi@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	andre.draszik@linaro.org,
-	peter.griffin@linaro.org,
-	kernel-team@android.com,
-	willmcvicker@google.com,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v3 17/17] spi: s3c64xx: use bitfield access macros
-Date: Fri, 26 Jan 2024 17:15:45 +0000
-Message-ID: <20240126171546.1233172-18-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-In-Reply-To: <20240126171546.1233172-1-tudor.ambarus@linaro.org>
-References: <20240126171546.1233172-1-tudor.ambarus@linaro.org>
+        d=1e100.net; s=20230601; t=1706289517; x=1706894317;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oMXftuUEwR8k3wsTwAoi8oEqR+zracFM6FSyl83rIXo=;
+        b=kgbpSKU42hwzH7wsO9FFBaP/UEdjkrcufdFsqt6FIUX9X1G5Mg/LhNAMVP0EegdHDF
+         kvbGD/qTQ7cdpJQs/Yj3GjIHNwCb9q4xdSed4SVRD+Y5radCLeng0HAk4NcwBy/sRBZ3
+         U64E9dwM89krRb9Vm997xrh7/b5vQPwYopWfA7X4lFIDvg4Uea9lL5RlmTtGyMsE5o3j
+         LJY803mZUptZO4b+gTWmpAfTUXtQDAuOYl5GWbrkyRU1HP8Uyw8rsbpYZ4OB4Jk0AYU0
+         DXfZcDgfflVrXhOyctIu3VZG5pbPr25TE2YBuWupeiJCWzfVl2meSGrIpmiPEJDT2S+J
+         4+pA==
+X-Gm-Message-State: AOJu0YwG+BFsNHQGlNu2/9p77DDmMaelif4iU4Dk2DMq0/Usgg72jXXk
+	5B6uXYz3+FkmGsfs/2if+DPY4UPAfFMyflgxfF0AgFc6N8fYkpik7BEWPGxMdp7evdU2XC869Q+
+	F9oal3T1zuZJ+ZVS+jj29CXyIwSxHCS+TziQUdw==
+X-Google-Smtp-Source: AGHT+IEAnlZn0o2ZmMFbEsv/yJHo5VHfIkXUWs60su9mjl4yma7GKw5ryBFdJHFs3IPbaBsWmFAx/KaCXzvEWbjrj3w=
+X-Received: by 2002:a05:6902:514:b0:dbf:487b:1fe7 with SMTP id
+ x20-20020a056902051400b00dbf487b1fe7mr174699ybs.17.1706289517052; Fri, 26 Jan
+ 2024 09:18:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240120191904.15408-1-quic_kriskura@quicinc.com>
+ <20240120191904.15408-2-quic_kriskura@quicinc.com> <wqdqkzvni4roqulgsiqxzubxcblzxnoydcwvv2av2pobjjx5o6@b7kwl6lq7hij>
+ <a4606673-64e9-4e16-8d9e-307fb37d8763@quicinc.com>
+In-Reply-To: <a4606673-64e9-4e16-8d9e-307fb37d8763@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 26 Jan 2024 19:18:25 +0200
+Message-ID: <CAA8EJpoL=cWPJLaFZL-Sg2zW+as1ESPuQhQdzfJTGonXse9sPA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] arm64: dts: qcom: Fix hs_phy_irq for QUSB2 targets
+To: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Johan Hovold <johan+linaro@kernel.org>, cros-qcom-dts-watchers@chromium.org, 
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	devicetree@vger.kernel.org, quic_ppratap@quicinc.com, quic_jackp@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 
-Use the bitfield access macros in order to clean and to make the driver
-easier to read. Introduce S3C64XX_SPI_MAX_TRAILCNT_MASK to replace value
-and offset equivalents (S3C64XX_SPI_MAX_TRAILCNT,
-S3C64XX_SPI_TRAILCNT_OFF). While touching the register definitions, align
-their values to the same offset.
+On Fri, 26 Jan 2024 at 16:14, Krishna Kurapati PSSNV
+<quic_kriskura@quicinc.com> wrote:
+>
+>
+>
+> On 1/25/2024 3:16 AM, Bjorn Andersson wrote:
+> > On Sun, Jan 21, 2024 at 12:49:01AM +0530, Krishna Kurapati wrote:
+> >> On several QUSB2 Targets, the hs_phy_irq mentioned is actually
+> >> qusb2_phy interrupt specific to QUSB2 PHY's. Rename hs_phy_irq
+> >> to qusb2_phy for such targets.
+> >>
+> >> In actuality, the hs_phy_irq is also present in these targets, but
+> >> kept in for debug purposes in hw test environments. This is not
+> >> triggered by default and its functionality is mutually exclusive
+> >> to that of qusb2_phy interrupt.
+> >>
+> >> Add missing hs_phy_irq's, pwr_event irq's for QUSB2 PHY targets.
+> >> Add missing ss_phy_irq on some targets which allows for remote
+> >> wakeup to work on a Super Speed link.
+> >>
+> >> Also modify order of interrupts in accordance to bindings update.
+> >> Since driver looks up for interrupts by name and not by index, it
+> >> is safe to modify order of these interrupts in the DT.
+> >>
+> >> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+> >> ---
+> >>   arch/arm64/boot/dts/qcom/ipq6018.dtsi | 13 +++++++++++++
+> >>   arch/arm64/boot/dts/qcom/ipq8074.dtsi | 14 ++++++++++++++
+> >>   arch/arm64/boot/dts/qcom/msm8953.dtsi |  7 +++++--
+> >>   arch/arm64/boot/dts/qcom/msm8996.dtsi |  8 ++++++--
+> >>   arch/arm64/boot/dts/qcom/msm8998.dtsi |  7 +++++--
+> >>   arch/arm64/boot/dts/qcom/sdm630.dtsi  | 17 +++++++++++++----
+> >>   arch/arm64/boot/dts/qcom/sm6115.dtsi  |  9 +++++++--
+> >>   arch/arm64/boot/dts/qcom/sm6125.dtsi  |  9 +++++++--
+> >>   8 files changed, 70 insertions(+), 14 deletions(-)
+> >>
+> >> diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+> >> index 5e1277fea725..ea70b57d1871 100644
+> >> --- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+> >> +++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+> >> @@ -418,6 +418,12 @@ usb2: usb@70f8800 {
+> >>                                        <&gcc GCC_USB1_MOCK_UTMI_CLK>;
+> >>                      assigned-clock-rates = <133330000>,
+> >>                                             <24000000>;
+> >> +
+> >> +                    interrupts-extended = <GIC_SPI 128 IRQ_TYPE_LEVEL_HIGH>,
+> >
+> > interrupts-extended takes a reference to a interrupt-controller as well,
+> > so this doesn't build.
+> >
+> > Did you mean "interrupts" here instead? Please update these and build
+> > test...
+> >
+>
+> Hi Bjorn,
+>
+>   Thanks for the catch. I was using DTC version 1.4.0.
+> When I moved to 1.5.0, I did see these warnings. Fixed them up and sent v3.
 
-No functional change intended, the bit operations shall be equivalent.
+Why do you use any special DTC version? Just use whatever comes with
+the kernel. There is no need to use anything that is out-of-tree.
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
- drivers/spi/spi-s3c64xx.c | 193 ++++++++++++++++++++------------------
- 1 file changed, 101 insertions(+), 92 deletions(-)
-
-diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-index 43b888c8812e..7f052d6cd2ba 100644
---- a/drivers/spi/spi-s3c64xx.c
-+++ b/drivers/spi/spi-s3c64xx.c
-@@ -4,6 +4,7 @@
- //      Jaswinder Singh <jassi.brar@samsung.com>
- 
- #include <linux/bits.h>
-+#include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/dma-mapping.h>
-@@ -18,91 +19,96 @@
- #include <linux/pm_runtime.h>
- #include <linux/spi/spi.h>
- 
--#define MAX_SPI_PORTS		12
--#define S3C64XX_SPI_QUIRK_CS_AUTO	(1 << 1)
--#define AUTOSUSPEND_TIMEOUT	2000
-+#define MAX_SPI_PORTS				12
-+#define S3C64XX_SPI_QUIRK_CS_AUTO		BIT(1)
-+#define AUTOSUSPEND_TIMEOUT			2000
- 
- /* Registers and bit-fields */
- 
--#define S3C64XX_SPI_CH_CFG		0x00
--#define S3C64XX_SPI_CLK_CFG		0x04
--#define S3C64XX_SPI_MODE_CFG		0x08
--#define S3C64XX_SPI_CS_REG		0x0C
--#define S3C64XX_SPI_INT_EN		0x10
--#define S3C64XX_SPI_STATUS		0x14
--#define S3C64XX_SPI_TX_DATA		0x18
--#define S3C64XX_SPI_RX_DATA		0x1C
--#define S3C64XX_SPI_PACKET_CNT		0x20
--#define S3C64XX_SPI_PENDING_CLR		0x24
--#define S3C64XX_SPI_SWAP_CFG		0x28
--#define S3C64XX_SPI_FB_CLK		0x2C
--
--#define S3C64XX_SPI_CH_HS_EN		(1<<6)	/* High Speed Enable */
--#define S3C64XX_SPI_CH_SW_RST		(1<<5)
--#define S3C64XX_SPI_CH_SLAVE		(1<<4)
--#define S3C64XX_SPI_CPOL_L		(1<<3)
--#define S3C64XX_SPI_CPHA_B		(1<<2)
--#define S3C64XX_SPI_CH_RXCH_ON		(1<<1)
--#define S3C64XX_SPI_CH_TXCH_ON		(1<<0)
--
--#define S3C64XX_SPI_CLKSEL_SRCMSK	(3<<9)
--#define S3C64XX_SPI_CLKSEL_SRCSHFT	9
--#define S3C64XX_SPI_ENCLK_ENABLE	(1<<8)
--#define S3C64XX_SPI_PSR_MASK		0xff
--
--#define S3C64XX_SPI_MODE_CH_TSZ_BYTE		(0<<29)
--#define S3C64XX_SPI_MODE_CH_TSZ_HALFWORD	(1<<29)
--#define S3C64XX_SPI_MODE_CH_TSZ_WORD		(2<<29)
--#define S3C64XX_SPI_MODE_CH_TSZ_MASK		(3<<29)
--#define S3C64XX_SPI_MODE_BUS_TSZ_BYTE		(0<<17)
--#define S3C64XX_SPI_MODE_BUS_TSZ_HALFWORD	(1<<17)
--#define S3C64XX_SPI_MODE_BUS_TSZ_WORD		(2<<17)
--#define S3C64XX_SPI_MODE_BUS_TSZ_MASK		(3<<17)
-+#define S3C64XX_SPI_CH_CFG			0x00
-+#define S3C64XX_SPI_CLK_CFG			0x04
-+#define S3C64XX_SPI_MODE_CFG			0x08
-+#define S3C64XX_SPI_CS_REG			0x0C
-+#define S3C64XX_SPI_INT_EN			0x10
-+#define S3C64XX_SPI_STATUS			0x14
-+#define S3C64XX_SPI_TX_DATA			0x18
-+#define S3C64XX_SPI_RX_DATA			0x1C
-+#define S3C64XX_SPI_PACKET_CNT			0x20
-+#define S3C64XX_SPI_PENDING_CLR			0x24
-+#define S3C64XX_SPI_SWAP_CFG			0x28
-+#define S3C64XX_SPI_FB_CLK			0x2C
-+
-+#define S3C64XX_SPI_CH_HS_EN			BIT(6)	/* High Speed Enable */
-+#define S3C64XX_SPI_CH_SW_RST			BIT(5)
-+#define S3C64XX_SPI_CH_SLAVE			BIT(4)
-+#define S3C64XX_SPI_CPOL_L			BIT(3)
-+#define S3C64XX_SPI_CPHA_B			BIT(2)
-+#define S3C64XX_SPI_CH_RXCH_ON			BIT(1)
-+#define S3C64XX_SPI_CH_TXCH_ON			BIT(0)
-+
-+#define S3C64XX_SPI_CLKSEL_SRCMSK		GENMASK(10, 9)
-+#define S3C64XX_SPI_ENCLK_ENABLE		BIT(8)
-+#define S3C64XX_SPI_PSR_MASK			GENMASK(7, 0)
-+
-+#define S3C64XX_SPI_MODE_CH_TSZ_MASK		GENMASK(30, 29)
-+#define S3C64XX_SPI_MODE_CH_TSZ_BYTE		0
-+#define S3C64XX_SPI_MODE_CH_TSZ_HALFWORD	1
-+#define S3C64XX_SPI_MODE_CH_TSZ_WORD		2
-+#define S3C64XX_SPI_MAX_TRAILCNT_MASK		GENMASK(28, 19)
-+#define S3C64XX_SPI_MODE_BUS_TSZ_MASK		GENMASK(18, 17)
-+#define S3C64XX_SPI_MODE_BUS_TSZ_BYTE		0
-+#define S3C64XX_SPI_MODE_BUS_TSZ_HALFWORD	1
-+#define S3C64XX_SPI_MODE_BUS_TSZ_WORD		2
- #define S3C64XX_SPI_MODE_RX_RDY_LVL		GENMASK(16, 11)
--#define S3C64XX_SPI_MODE_RX_RDY_LVL_SHIFT	11
--#define S3C64XX_SPI_MODE_SELF_LOOPBACK		(1<<3)
--#define S3C64XX_SPI_MODE_RXDMA_ON		(1<<2)
--#define S3C64XX_SPI_MODE_TXDMA_ON		(1<<1)
--#define S3C64XX_SPI_MODE_4BURST			(1<<0)
--
--#define S3C64XX_SPI_CS_NSC_CNT_2		(2<<4)
--#define S3C64XX_SPI_CS_AUTO			(1<<1)
--#define S3C64XX_SPI_CS_SIG_INACT		(1<<0)
--
--#define S3C64XX_SPI_INT_TRAILING_EN		(1<<6)
--#define S3C64XX_SPI_INT_RX_OVERRUN_EN		(1<<5)
--#define S3C64XX_SPI_INT_RX_UNDERRUN_EN		(1<<4)
--#define S3C64XX_SPI_INT_TX_OVERRUN_EN		(1<<3)
--#define S3C64XX_SPI_INT_TX_UNDERRUN_EN		(1<<2)
--#define S3C64XX_SPI_INT_RX_FIFORDY_EN		(1<<1)
--#define S3C64XX_SPI_INT_TX_FIFORDY_EN		(1<<0)
--
--#define S3C64XX_SPI_ST_RX_OVERRUN_ERR		(1<<5)
--#define S3C64XX_SPI_ST_RX_UNDERRUN_ERR		(1<<4)
--#define S3C64XX_SPI_ST_TX_OVERRUN_ERR		(1<<3)
--#define S3C64XX_SPI_ST_TX_UNDERRUN_ERR		(1<<2)
--#define S3C64XX_SPI_ST_RX_FIFORDY		(1<<1)
--#define S3C64XX_SPI_ST_TX_FIFORDY		(1<<0)
--
--#define S3C64XX_SPI_PACKET_CNT_EN		(1<<16)
-+#define S3C64XX_SPI_MODE_SELF_LOOPBACK		BIT(3)
-+#define S3C64XX_SPI_MODE_RXDMA_ON		BIT(2)
-+#define S3C64XX_SPI_MODE_TXDMA_ON		BIT(1)
-+#define S3C64XX_SPI_MODE_4BURST			BIT(0)
-+
-+/*
-+ * S3C64XX_SPI_CS_NSC_CNT_2 is a value into the NCS_TIME_COUNT field. In newer
-+ * datasheets this field is defined as GENMASK(9, 4). We don't know if this mask
-+ * applies to all the versions of the IP, thus we can't yet define
-+ * S3C64XX_SPI_CS_NSC_CNT_2 as a value and the register field as a mask.
-+ */
-+#define S3C64XX_SPI_CS_NSC_CNT_2		(2 << 4)
-+#define S3C64XX_SPI_CS_AUTO			BIT(1)
-+#define S3C64XX_SPI_CS_SIG_INACT		BIT(0)
-+
-+#define S3C64XX_SPI_INT_TRAILING_EN		BIT(6)
-+#define S3C64XX_SPI_INT_RX_OVERRUN_EN		BIT(5)
-+#define S3C64XX_SPI_INT_RX_UNDERRUN_EN		BIT(4)
-+#define S3C64XX_SPI_INT_TX_OVERRUN_EN		BIT(3)
-+#define S3C64XX_SPI_INT_TX_UNDERRUN_EN		BIT(2)
-+#define S3C64XX_SPI_INT_RX_FIFORDY_EN		BIT(1)
-+#define S3C64XX_SPI_INT_TX_FIFORDY_EN		BIT(0)
-+
-+#define S3C64XX_SPI_ST_RX_OVERRUN_ERR		BIT(5)
-+#define S3C64XX_SPI_ST_RX_UNDERRUN_ERR		BIT(4)
-+#define S3C64XX_SPI_ST_TX_OVERRUN_ERR		BIT(3)
-+#define S3C64XX_SPI_ST_TX_UNDERRUN_ERR		BIT(2)
-+#define S3C64XX_SPI_ST_RX_FIFORDY		BIT(1)
-+#define S3C64XX_SPI_ST_TX_FIFORDY		BIT(0)
-+
-+#define S3C64XX_SPI_PACKET_CNT_EN		BIT(16)
- #define S3C64XX_SPI_PACKET_CNT_MASK		GENMASK(15, 0)
- 
--#define S3C64XX_SPI_PND_TX_UNDERRUN_CLR		(1<<4)
--#define S3C64XX_SPI_PND_TX_OVERRUN_CLR		(1<<3)
--#define S3C64XX_SPI_PND_RX_UNDERRUN_CLR		(1<<2)
--#define S3C64XX_SPI_PND_RX_OVERRUN_CLR		(1<<1)
--#define S3C64XX_SPI_PND_TRAILING_CLR		(1<<0)
-+#define S3C64XX_SPI_PND_TX_UNDERRUN_CLR		BIT(4)
-+#define S3C64XX_SPI_PND_TX_OVERRUN_CLR		BIT(3)
-+#define S3C64XX_SPI_PND_RX_UNDERRUN_CLR		BIT(2)
-+#define S3C64XX_SPI_PND_RX_OVERRUN_CLR		BIT(1)
-+#define S3C64XX_SPI_PND_TRAILING_CLR		BIT(0)
- 
--#define S3C64XX_SPI_SWAP_RX_HALF_WORD		(1<<7)
--#define S3C64XX_SPI_SWAP_RX_BYTE		(1<<6)
--#define S3C64XX_SPI_SWAP_RX_BIT			(1<<5)
--#define S3C64XX_SPI_SWAP_RX_EN			(1<<4)
--#define S3C64XX_SPI_SWAP_TX_HALF_WORD		(1<<3)
--#define S3C64XX_SPI_SWAP_TX_BYTE		(1<<2)
--#define S3C64XX_SPI_SWAP_TX_BIT			(1<<1)
--#define S3C64XX_SPI_SWAP_TX_EN			(1<<0)
-+#define S3C64XX_SPI_SWAP_RX_HALF_WORD		BIT(7)
-+#define S3C64XX_SPI_SWAP_RX_BYTE		BIT(6)
-+#define S3C64XX_SPI_SWAP_RX_BIT			BIT(5)
-+#define S3C64XX_SPI_SWAP_RX_EN			BIT(4)
-+#define S3C64XX_SPI_SWAP_TX_HALF_WORD		BIT(3)
-+#define S3C64XX_SPI_SWAP_TX_BYTE		BIT(2)
-+#define S3C64XX_SPI_SWAP_TX_BIT			BIT(1)
-+#define S3C64XX_SPI_SWAP_TX_EN			BIT(0)
- 
--#define S3C64XX_SPI_FBCLK_MSK			(3<<0)
-+#define S3C64XX_SPI_FBCLK_MASK			GENMASK(1, 0)
- 
- #define FIFO_LVL_MASK(i) ((i)->port_conf->fifo_lvl_mask[i->port_id])
- #define S3C64XX_SPI_ST_TX_DONE(v, i) (((v) & \
-@@ -112,16 +118,13 @@
- 					FIFO_LVL_MASK(i))
- #define FIFO_DEPTH(i) ((FIFO_LVL_MASK(i) >> 1) + 1)
- 
--#define S3C64XX_SPI_MAX_TRAILCNT	0x3ff
--#define S3C64XX_SPI_TRAILCNT_OFF	19
--
- #define S3C64XX_SPI_POLLING_SIZE	32
- 
- #define msecs_to_loops(t) (loops_per_jiffy / 1000 * HZ * t)
- #define is_polling(x)	(x->cntrlr_info->polling)
- 
--#define RXBUSY    (1<<2)
--#define TXBUSY    (1<<3)
-+#define RXBUSY    BIT(2)
-+#define TXBUSY    BIT(3)
- 
- struct s3c64xx_spi_dma_data {
- 	struct dma_chan *ch;
-@@ -664,16 +667,22 @@ static int s3c64xx_spi_config(struct s3c64xx_spi_driver_data *sdd)
- 
- 	switch (sdd->cur_bpw) {
- 	case 32:
--		val |= S3C64XX_SPI_MODE_BUS_TSZ_WORD;
--		val |= S3C64XX_SPI_MODE_CH_TSZ_WORD;
-+		val |= FIELD_PREP(S3C64XX_SPI_MODE_BUS_TSZ_MASK,
-+				  S3C64XX_SPI_MODE_BUS_TSZ_WORD) |
-+		       FIELD_PREP(S3C64XX_SPI_MODE_CH_TSZ_MASK,
-+				  S3C64XX_SPI_MODE_CH_TSZ_WORD);
- 		break;
- 	case 16:
--		val |= S3C64XX_SPI_MODE_BUS_TSZ_HALFWORD;
--		val |= S3C64XX_SPI_MODE_CH_TSZ_HALFWORD;
-+		val |= FIELD_PREP(S3C64XX_SPI_MODE_BUS_TSZ_MASK,
-+				  S3C64XX_SPI_MODE_BUS_TSZ_HALFWORD) |
-+		       FIELD_PREP(S3C64XX_SPI_MODE_CH_TSZ_MASK,
-+				  S3C64XX_SPI_MODE_CH_TSZ_HALFWORD);
- 		break;
- 	default:
--		val |= S3C64XX_SPI_MODE_BUS_TSZ_BYTE;
--		val |= S3C64XX_SPI_MODE_CH_TSZ_BYTE;
-+		val |= FIELD_PREP(S3C64XX_SPI_MODE_BUS_TSZ_MASK,
-+				  S3C64XX_SPI_MODE_BUS_TSZ_BYTE) |
-+		       FIELD_PREP(S3C64XX_SPI_MODE_CH_TSZ_MASK,
-+				  S3C64XX_SPI_MODE_CH_TSZ_BYTE);
- 		break;
- 	}
- 
-@@ -799,7 +808,7 @@ static int s3c64xx_spi_transfer_one(struct spi_controller *host,
- 
- 			val = readl(sdd->regs + S3C64XX_SPI_MODE_CFG);
- 			val &= ~S3C64XX_SPI_MODE_RX_RDY_LVL;
--			val |= (rdy_lv << S3C64XX_SPI_MODE_RX_RDY_LVL_SHIFT);
-+			val |= FIELD_PREP(S3C64XX_SPI_MODE_RX_RDY_LVL, rdy_lv);
- 			writel(val, sdd->regs + S3C64XX_SPI_MODE_CFG);
- 
- 			/* Enable FIFO_RDY_EN IRQ */
-@@ -1072,8 +1081,8 @@ static void s3c64xx_spi_hwinit(struct s3c64xx_spi_driver_data *sdd)
- 	writel(0, regs + S3C64XX_SPI_INT_EN);
- 
- 	if (!sdd->port_conf->clk_from_cmu)
--		writel(sci->src_clk_nr << S3C64XX_SPI_CLKSEL_SRCSHFT,
--				regs + S3C64XX_SPI_CLK_CFG);
-+		writel(FIELD_PREP(S3C64XX_SPI_CLKSEL_SRCMSK, sci->src_clk_nr),
-+		       regs + S3C64XX_SPI_CLK_CFG);
- 	writel(0, regs + S3C64XX_SPI_MODE_CFG);
- 	writel(0, regs + S3C64XX_SPI_PACKET_CNT);
- 
-@@ -1089,7 +1098,7 @@ static void s3c64xx_spi_hwinit(struct s3c64xx_spi_driver_data *sdd)
- 
- 	val = readl(regs + S3C64XX_SPI_MODE_CFG);
- 	val &= ~S3C64XX_SPI_MODE_4BURST;
--	val |= (S3C64XX_SPI_MAX_TRAILCNT << S3C64XX_SPI_TRAILCNT_OFF);
-+	val |= S3C64XX_SPI_MAX_TRAILCNT_MASK;
- 	writel(val, regs + S3C64XX_SPI_MODE_CFG);
- 
- 	s3c64xx_flush_fifo(sdd);
 -- 
-2.43.0.429.g432eaa2c6b-goog
-
+With best wishes
+Dmitry
 
