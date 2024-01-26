@@ -1,64 +1,84 @@
-Return-Path: <linux-kernel+bounces-40072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2095A83D9C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:56:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03EA983D9BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:55:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA607B2CD80
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:55:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3CE7299EA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:55:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48D091B812;
-	Fri, 26 Jan 2024 11:54:04 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D81F61AACB;
+	Fri, 26 Jan 2024 11:55:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b="bEHO79tw"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 698EB18E29;
-	Fri, 26 Jan 2024 11:54:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FAD61AAAE
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 11:55:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706270043; cv=none; b=tN7ApugfrATqZSYXAcfUSu1khDQfz7gd1pdAwxZtDRvvKDr1x5onBiO4eiEvqXBLNjs6vUrLLa7r1ln/sRbf/1+QFvHf3Lj1pKzHuHc2z8X7B3dGxBKpEce6rdCYSJpAfHkNsgk7iQqbS+UxpTtbEpuufcKP/j7Ss5pPn9FJ9YQ=
+	t=1706270121; cv=none; b=r//oKAd9ARNlmf0d1T7bUhaCo0QijT0r5v/hgG7MjQVPiHA4SnD6HIjUIvt6C/xxQ+cgDrgJNlordfaiaWg0Op9+uP9MHZ8bvqBdj+BfbZ32b7uQ8FrmVGIxvesMocARANTgXQ7TmRWYrIUNiXAJsGeKKpE2uljNJIb8xQp918k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706270043; c=relaxed/simple;
-	bh=+mv8iw36yquBwDHN1YjbbaoxbrYUeC0YRNOVzv7XZCc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Atw/N+DlSaKHCsWA2M4m6bBQJ0SHJcKxU+s4lq5GRRuREOV8fjk0t15WUs/8fNFFr+ZCGJFdBPTebQrg+q+W3jhpjJufXOHXZ2e+VgqM+TcbAotmC6l30zNaVEryjR7FS2jPs7Vh0gl8wkrhbtVG4kwd/pNiPVIr7tY+KKpxOXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TLx1H03NWz4f3jqg;
-	Fri, 26 Jan 2024 19:53:55 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 678F81A0272;
-	Fri, 26 Jan 2024 19:53:57 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgBHZQ42nbNllmgoCA--.1892S7;
-	Fri, 26 Jan 2024 19:53:56 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: x86@kernel.org,
-	bpf@vger.kernel.org
-Cc: Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	linux-kernel@vger.kernel.org,
-	xingwei lee <xrivendell7@gmail.com>,
-	Jann Horn <jannh@google.com>,
-	Sohil Mehta <sohil.mehta@intel.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	houtao1@huawei.com
-Subject: [PATCH bpf v2 3/3] selftest/bpf: Test the read of vsyscall page under x86-64
-Date: Fri, 26 Jan 2024 19:54:23 +0800
-Message-Id: <20240126115423.3943360-4-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20240126115423.3943360-1-houtao@huaweicloud.com>
-References: <20240126115423.3943360-1-houtao@huaweicloud.com>
+	s=arc-20240116; t=1706270121; c=relaxed/simple;
+	bh=KvDW3oimirzaLZ+3LyQ7tjVmuNkF2WsoEwGt2Ec9I+U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NMKqlAPT93k0K2oQNA6hR8uQNH1mpxHMR9h0KGGEMQn1I8m/r+qsWnGwgW+MTT22TGs9lzFx0E82+yFJrGrHhvQwT6z1PrzGSp+aZjrZE4+wYKlem8Lb+UlO+CRO4MO2v5DCukxBWI1OPFGNvQMpNA88eq330LfNX9btFGfaXHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com; spf=pass smtp.mailfrom=9elements.com; dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b=bEHO79tw; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=9elements.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40ed252edd7so10731955e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 03:55:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1706270118; x=1706874918; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5YD1avWXiDmKVPhJNDv4Z+Ew3Vz4aGu7X+vQARwJOeU=;
+        b=bEHO79tw3TzVQ2l67Em3pJ1i2WQahpxukP6KAly1UgAx260fqefLl3M98Da/7ioDNF
+         XWKoB1dzLEVQX8XhRR5Y1ynSUPBqF0+v0ONgwFhf5e1mrEQfFRRSkcjiKxCyacQ0DsS5
+         PrYP5/pnX2ElLzFAruz0byazQKEU29EEM9PlNDPGTkf+g1zhUlrfiOtR0jVeDZLDyyOW
+         eHLNSNikLwUS2qLA9SflP7LcPdoDTqB4gL4jvLB2CAUwC6yyzZUP8rYR3jNNSmebcC1j
+         ZOlCGl9OO+199o2VGsLo0F/6X1ktu5HxJpeME+CPpZJsXIhFAiYzu62Coln5Az+pxbQi
+         uSzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706270118; x=1706874918;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5YD1avWXiDmKVPhJNDv4Z+Ew3Vz4aGu7X+vQARwJOeU=;
+        b=PuSL56VHhQlg0eeSKJEtaEY7nNVIRoPGDp5sZdgFeuCq9Ldlomzv4qAQpo3YpEKj1L
+         mWlEuX1pRm7RcHUJdHmKSvp5zBGP8fmu6CEon3qeoCKEz4oPoNO5Rjy0MkOq7eL5PTCR
+         fQG7TzmQI4Ru7lSkY1+hJ8fjk2nVujsN7KSGOfVZxHwEYp9aQPCckNhJl6i6YQw9P5Ox
+         BBGszYHnKiytSpXk4/go9LlwWUm/BKJHG1Rtew+RmIkL9t7BfR0YpsgGbVS1wb5UTOfU
+         I0IbG36heS2I8g8pXs+CCq7CUOKcqjD0LE6UtjxpNLVbxKfkFXbMz6EGPChidkXIAFc2
+         SRiA==
+X-Gm-Message-State: AOJu0Yzd6s5z+1Meo0e/f/i2wrpbmEGYHLLENZCl4JwCfgJnjCgB0UyX
+	UrCke5QjawL6H8o+vcujhHZwCbo/HTgqvsW3YcG+WWXLCirBcW5njSo3x7puZaM=
+X-Google-Smtp-Source: AGHT+IECraYXk/gis2PyyZjpxoZQsQq+NsKnyjHm2H37sX1KMoJpc1j7bNxvr2bN1NJQpzQfiVhaCA==
+X-Received: by 2002:a05:600c:3548:b0:40e:d5c7:8355 with SMTP id i8-20020a05600c354800b0040ed5c78355mr466668wmq.131.1706270117801;
+        Fri, 26 Jan 2024 03:55:17 -0800 (PST)
+Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
+        by smtp.gmail.com with ESMTPSA id f11-20020a05600c154b00b0040ed434ef66sm3387424wmg.25.2024.01.26.03.55.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 03:55:17 -0800 (PST)
+From: Naresh Solanki <naresh.solanki@9elements.com>
+To: Peter Rosin <peda@axentia.se>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: mazziesaccount@gmail.com,
+	Naresh Solanki <naresh.solanki@9elements.com>,
+	linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: iio: afe: voltage-divider: Add io-channel-cells
+Date: Fri, 26 Jan 2024 17:25:08 +0530
+Message-ID: <20240126115509.1459425-1-naresh.solanki@9elements.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,202 +86,36 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBHZQ42nbNllmgoCA--.1892S7
-X-Coremail-Antispam: 1UD129KBjvJXoW3GryrAw18JFWxuF1xWF13CFg_yoW7ZF4Up3
-	Z5Aa4akr4fJ342yr4xWws8uFWrZr1kXF45Arn7X3W3ur47Zr95tryIga4qqF15GrsIgrW5
-	Xa97Ka95Kr4UJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
-	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1c4S7UUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-From: Hou Tao <houtao1@huawei.com>
+Add #io-channel-cells expected by driver. i.e., below is the message
+seen in kernel log:
+OF: /iio-hwmon: could not get #io-channel-cells for /voltage_divider1
 
-Under x86-64, when using bpf_probe_read_kernel{_str}() or
-bpf_probe_read{_str}() to read vsyscall page, the read may trigger oops,
-so add one test case to ensure that the problem is fixed. Beside those
-four bpf helpers mentioned above, testing the read of vsyscall page by
-using bpf_probe_read_user{_str} and bpf_copy_from_user{_task}() as well.
+TEST=Run below command & make sure there is no error:
+make DT_CHECKER_FLAGS=-m dt_binding_check -j1
 
-The test case passes the address of vsyscall page to these six helpers
-and checks whether the returned values are expected:
-
-1) For bpf_probe_read_kernel{_str}()/bpf_probe_read{_str}(), the
-   expected return value is -ERANGE as shown below:
-
-bpf_probe_read_kernel_common
-  copy_from_kernel_nofault
-    // false, return -ERANGE
-    copy_from_kernel_nofault_allowed
-
-2) For bpf_probe_read_user{_str}(), the expected return value is -EFAULT
-   as show below:
-
-bpf_probe_read_user_common
-  copy_from_user_nofault
-    // false, return -EFAULT
-    __access_ok
-
-3) For bpf_copy_from_user(), the expected return value is -EFAULT:
-
-// return -EFAULT
-bpf_copy_from_user
-  copy_from_user
-    _copy_from_user
-      // return false
-      access_ok
-
-4) For bpf_copy_from_user_task(), the expected return value is -EFAULT:
-
-// return -EFAULT
-bpf_copy_from_user_task
-  access_process_vm
-    // return 0
-    vma_lookup()
-    // return 0
-    expand_stack()
-
-The occurrence of oops depends on the availability of CPU SMAP [1]
-feature and there are three possible configurations of vsyscall page in
-boot cmd-line: vsyscall={xonly|none|emulate}, so there are totally six
-possible combinations. Under all these combinations, the running of the
-test case succeeds.
-
-[1]: https://en.wikipedia.org/wiki/Supervisor_Mode_Access_Prevention
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
+Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
 ---
- .../selftests/bpf/prog_tests/read_vsyscall.c  | 57 +++++++++++++++++++
- .../selftests/bpf/progs/read_vsyscall.c       | 45 +++++++++++++++
- 2 files changed, 102 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
- create mode 100644 tools/testing/selftests/bpf/progs/read_vsyscall.c
+ Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c b/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-new file mode 100644
-index 0000000000000..3405923fe4e65
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-@@ -0,0 +1,57 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2024. Huawei Technologies Co., Ltd */
-+#include "test_progs.h"
-+#include "read_vsyscall.skel.h"
+diff --git a/Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml b/Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
+index dddf97b50549..b4b5489ad98e 100644
+--- a/Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
++++ b/Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
+@@ -39,6 +39,9 @@ properties:
+     description: |
+       Channel node of a voltage io-channel.
+ 
++  '#io-channel-cells':
++    const: 1
 +
-+#if defined(__x86_64__)
-+/* For VSYSCALL_ADDR */
-+#include <asm/vsyscall.h>
-+#else
-+/* To prevent build failure on non-x86 arch */
-+#define VSYSCALL_ADDR 0UL
-+#endif
-+
-+struct read_ret_desc {
-+	const char *name;
-+	int ret;
-+} all_read[] = {
-+	{ .name = "probe_read_kernel", .ret = -ERANGE },
-+	{ .name = "probe_read_kernel_str", .ret = -ERANGE },
-+	{ .name = "probe_read", .ret = -ERANGE },
-+	{ .name = "probe_read_str", .ret = -ERANGE },
-+	{ .name = "probe_read_user", .ret = -EFAULT },
-+	{ .name = "probe_read_user_str", .ret = -EFAULT },
-+	{ .name = "copy_from_user", .ret = -EFAULT },
-+	{ .name = "copy_from_user_task", .ret = -EFAULT },
-+};
-+
-+void test_read_vsyscall(void)
-+{
-+	struct read_vsyscall *skel;
-+	unsigned int i;
-+	int err;
-+
-+#if !defined(__x86_64__)
-+	test__skip();
-+	return;
-+#endif
-+	skel = read_vsyscall__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "read_vsyscall open_load"))
-+		return;
-+
-+	skel->bss->target_pid = getpid();
-+	err = read_vsyscall__attach(skel);
-+	if (!ASSERT_EQ(err, 0, "read_vsyscall attach"))
-+		goto out;
-+
-+	/* userspace may don't have vsyscall page due to LEGACY_VSYSCALL_NONE,
-+	 * but it doesn't affect the returned error codes.
-+	 */
-+	skel->bss->user_ptr = (void *)VSYSCALL_ADDR;
-+	usleep(1);
-+
-+	for (i = 0; i < ARRAY_SIZE(all_read); i++)
-+		ASSERT_EQ(skel->bss->read_ret[i], all_read[i].ret, all_read[i].name);
-+out:
-+	read_vsyscall__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/read_vsyscall.c b/tools/testing/selftests/bpf/progs/read_vsyscall.c
-new file mode 100644
-index 0000000000000..986f96687ae15
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/read_vsyscall.c
-@@ -0,0 +1,45 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2024. Huawei Technologies Co., Ltd */
-+#include <linux/types.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#include "bpf_misc.h"
-+
-+int target_pid = 0;
-+void *user_ptr = 0;
-+int read_ret[8];
-+
-+char _license[] SEC("license") = "GPL";
-+
-+SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-+int do_probe_read(void *ctx)
-+{
-+	char buf[8];
-+
-+	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
-+		return 0;
-+
-+	read_ret[0] = bpf_probe_read_kernel(buf, sizeof(buf), user_ptr);
-+	read_ret[1] = bpf_probe_read_kernel_str(buf, sizeof(buf), user_ptr);
-+	read_ret[2] = bpf_probe_read(buf, sizeof(buf), user_ptr);
-+	read_ret[3] = bpf_probe_read_str(buf, sizeof(buf), user_ptr);
-+	read_ret[4] = bpf_probe_read_user(buf, sizeof(buf), user_ptr);
-+	read_ret[5] = bpf_probe_read_user_str(buf, sizeof(buf), user_ptr);
-+
-+	return 0;
-+}
-+
-+SEC("fentry.s/" SYS_PREFIX "sys_nanosleep")
-+int do_copy_from_user(void *ctx)
-+{
-+	char buf[8];
-+
-+	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
-+		return 0;
-+
-+	read_ret[6] = bpf_copy_from_user(buf, sizeof(buf), user_ptr);
-+	read_ret[7] = bpf_copy_from_user_task(buf, sizeof(buf), user_ptr,
-+					      bpf_get_current_task_btf(), 0);
-+
-+	return 0;
-+}
+   output-ohms:
+     description:
+       Resistance Rout over which the output voltage is measured. See full-ohms.
+
+base-commit: ecb1b8288dc7ccbdcb3b9df005fa1c0e0c0388a7
 -- 
-2.29.2
+2.42.0
 
 
