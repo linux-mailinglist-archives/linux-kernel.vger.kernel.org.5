@@ -1,120 +1,208 @@
-Return-Path: <linux-kernel+bounces-40286-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D89C83DD9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:37:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 811B683DD86
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:31:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C41081F2391D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:37:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6CBD1C20E19
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:31:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0B6C1CFAC;
-	Fri, 26 Jan 2024 15:36:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A68661CF9C;
+	Fri, 26 Jan 2024 15:31:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=raptorengineering.com header.i=@raptorengineering.com header.b="RJyHoW22"
-Received: from raptorengineering.com (mail.raptorengineering.com [23.155.224.40])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="TpaCTmCa"
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B87381D540
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:36:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=23.155.224.40
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B7001CF8D
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:31:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706283408; cv=none; b=FghSJsVAOR0v7O+CgXJmLohrR16513+EBXEn8Cnt4fFAZV7fPHP6/Ju+x83CAyb4und5Jv9piTCgJDc7t4o7Dn3B2eWyeVLL3oMsrjn1I+gCuknbnr6C+foqGxuS/Fr5sgUv4+N+WhgNr6oQ3AhlEsH4DX2RxgcC7j7dYK9EdOk=
+	t=1706283097; cv=none; b=XTX4x1Vna6aAFTLJjDOzr42ct/rryErJ+3emlZ5N9rv1QLB1j50pFcXf49K7tYcBd6NN5ugQViPO9hUfUCzCIGgU0eBO1U0x+QwRPqhLvYnGM0t3wO0vWobbRDA6nNnd/BYMNx/rLcBrHIOBm5G4TKgmDwkgAYFyGRuUt9M6Kc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706283408; c=relaxed/simple;
-	bh=a0C7dY4YzMHGcQ7i8kF3thKZT23LiPNWR3wj3Bxv2vM=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=Ap4aV5OnQwa4AXUcqwPbhBHEZxJhOTMLRRpg48UCBm627+pxnJ/UnJtr04wB5aFWZsgxA6zHYA/KkVd9848To+qYbNNytbjwTg2EX99zRCw9m1jCsxTw8geus0hmJcRIiEugkILmhOean+YM1na+DY4To6AcAElQODNiX3/6QgU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raptorengineering.com; spf=pass smtp.mailfrom=raptorengineering.com; dkim=pass (1024-bit key) header.d=raptorengineering.com header.i=@raptorengineering.com header.b=RJyHoW22; arc=none smtp.client-ip=23.155.224.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raptorengineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=raptorengineering.com
-Received: from localhost (localhost [127.0.0.1])
-	by mail.rptsys.com (Postfix) with ESMTP id 1E346828564A;
-	Fri, 26 Jan 2024 09:29:57 -0600 (CST)
-Received: from mail.rptsys.com ([127.0.0.1])
-	by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id Z4Bl9NmigOym; Fri, 26 Jan 2024 09:29:56 -0600 (CST)
-Received: from localhost (localhost [127.0.0.1])
-	by mail.rptsys.com (Postfix) with ESMTP id 29B658285898;
-	Fri, 26 Jan 2024 09:29:56 -0600 (CST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.rptsys.com 29B658285898
+	s=arc-20240116; t=1706283097; c=relaxed/simple;
+	bh=QGeiumQXZjpUAJEqfwMDTAKedmLTwPe9t13tKiWWoJk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tSo6SXqjte70mv5RzjeprwWJ8IMKkcT2e1zqQrR1gMR2dF69SKOD04ph5HWC9IAl72gUZMmc+/N+hmeNmTHARbXIYItkegfyZJy5asts3sG5Ur/0JjIEnIxMdg0lsIB4q2GQuIFpPGIgtdRa4MlSiVEHyqNfRVnvJt7tsHTrrDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=TpaCTmCa; arc=none smtp.client-ip=209.85.160.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-42a7aa96669so3852201cf.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 07:31:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=raptorengineering.com; s=B8E824E6-0BE2-11E6-931D-288C65937AAD;
-	t=1706282996; bh=fTWP5W9iG5QwHlage5ElLeYnTs1G1oJw4CN9sU4XTVk=;
-	h=Date:From:To:Message-ID:MIME-Version;
-	b=RJyHoW22j6T7Bj4DC8orxCYKkaCSZusi8O1gZHUpIGJIhxHflzHPU559T+rrrzzUS
-	 JhXngyRdJ45kGSDwzbdsjuGyowgEjj2vMy2z0r0tsQn/ayuqOMpp1dDgAz4X890yt5
-	 tnL/UykXiv2oGwwc3JAbs0x1c1JFxSSnSl7Q63CE=
-X-Virus-Scanned: amavisd-new at rptsys.com
-Received: from mail.rptsys.com ([127.0.0.1])
-	by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id iyprsa7HK8WJ; Fri, 26 Jan 2024 09:29:55 -0600 (CST)
-Received: from vali.starlink.edu (localhost [127.0.0.1])
-	by mail.rptsys.com (Postfix) with ESMTP id D610E828564A;
-	Fri, 26 Jan 2024 09:29:55 -0600 (CST)
-Date: Fri, 26 Jan 2024 09:29:55 -0600 (CST)
-From: Timothy Pearson <tpearson@raptorengineering.com>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Shivaprasad G Bhat <sbhat@linux.ibm.com>, iommu@lists.linux.dev, 
-	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	Michael Ellerman <mpe@ellerman.id.au>, npiggin <npiggin@gmail.com>, 
-	christophe leroy <christophe.leroy@csgroup.eu>, 
-	aneesh kumar <aneesh.kumar@kernel.org>, 
-	naveen n rao <naveen.n.rao@linux.ibm.com>, jroedel@suse.de, 
-	Timothy Pearson <tpearson@raptorengineering.com>, aik@amd.com, 
-	bgray@linux.ibm.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	gbatra@linux.vnet.ibm.com, vaibhav@linux.ibm.com
-Message-ID: <392247278.10124607.1706282995795.JavaMail.zimbra@raptorengineeringinc.com>
-In-Reply-To: <20240126151701.GZ50608@ziepe.ca>
-References: <170618450592.3805.8216395093813382208.stgit@ltcd48-lp2.aus.stglab.ibm.com> <170618451433.3805.9015493852395837391.stgit@ltcd48-lp2.aus.stglab.ibm.com> <20240125155017.GW50608@ziepe.ca> <b825dd04-3d32-4fbd-91e3-523ddf96fc7a@linux.ibm.com> <20240126151701.GZ50608@ziepe.ca>
-Subject: Re: [PATCH 1/2] powerpc: iommu: Bring back table group
- release_ownership() call
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706283093; x=1706887893; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=i8xFaWQCHWurka6SrH6X4+S0f4rWeYvomsMFMS1hldQ=;
+        b=TpaCTmCaqPLqLyV7A9b6SoXME6sAdQHYaqDvqovLADNW/l3su8sBFNnJ6VVYL7Za2p
+         2tUvktMmPI5gRwCJjlav2DyqRLOaMo1mMdAPpCz8CxMxwMCrJ+RhrBpjEeqhQp2Zckfz
+         zmqFP3F9iHU0UW7FX0xDu9z6olUFNvhSVapSB7KKmP6TKZSfRegC+Cy0o03OCGUKugoT
+         Dg1PV9mNIu/AhwyLUY6I26epFov2Nu/iiEepV07aevXduC2v0c+6Ms84kQqe+/4HYOGF
+         7JLT3Q0gi2oVyZ0Y0KbXfb9gGtMVq+fNe+JC70sArdy0uFP98hGZ/BaWjCTnU8JwTJqM
+         rI9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706283093; x=1706887893;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i8xFaWQCHWurka6SrH6X4+S0f4rWeYvomsMFMS1hldQ=;
+        b=ujy9urV3rtNKK2Uof+oBfrCPUzeXgJqJ0adW+6Zj3kDXX40PiQsM8zHAVbBjrqVL0k
+         oLTB+qVSqysVp7K4orUvK/PtN0d6aonrV+MhPz4UYKeVmEn6treMpXfKt3U8QA8jFM4A
+         KWe/LSMiSCUFCW1unu+xIHBJAltUlV1GHCCNOgQR5tuQtVnaOmP5FdEUp3jdW3i0Qoz0
+         Ag9u60DjPgbp0puTMinxdrwRSxe9oJeqIr453jXdd52setoN7s6SNdlyu/igjvYaC3pJ
+         uv7LKvBgjniaXi1Gf38ekviuHJLrynnu+vA4P06OMW7IXfh9m+wKoxtMx1KrBS0ijnwl
+         xSwg==
+X-Gm-Message-State: AOJu0Yzh+CmGHLGkGqM9Cl2Q4FAKsAPiWWuLC7IG1/91jNwPY/jSnjN4
+	rDjJ73GZY3IsYPduWAsmjOgFhafSql/e6G9d9RtIlKWy1O+FLKzYcdrqAqbwBcA=
+X-Google-Smtp-Source: AGHT+IE5Fh/DjIILtcBC05Tkvn3HXStuS1QvOx0c0621W5YJW7xHdA8k9CRqvRWkxySjah4k3K84mA==
+X-Received: by 2002:a05:622a:1a20:b0:42a:53f4:3198 with SMTP id f32-20020a05622a1a2000b0042a53f43198mr2756qtb.99.1706283093090;
+        Fri, 26 Jan 2024 07:31:33 -0800 (PST)
+Received: from localhost ([2620:10d:c091:400::5:271e])
+        by smtp.gmail.com with ESMTPSA id bq11-20020a05622a1c0b00b0042a4402bd75sm612257qtb.27.2024.01.26.07.31.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 07:31:32 -0800 (PST)
+Date: Fri, 26 Jan 2024 10:31:26 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: chengming.zhou@linux.dev
+Cc: yosryahmed@google.com, nphamcs@gmail.com, akpm@linux-foundation.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	Chengming Zhou <zhouchengming@bytedance.com>
+Subject: Re: [PATCH 2/2] mm/zswap: fix race between lru writeback and swapoff
+Message-ID: <20240126153126.GG1567330@cmpxchg.org>
+References: <20240126083015.3557006-1-chengming.zhou@linux.dev>
+ <20240126083015.3557006-2-chengming.zhou@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: Zimbra 8.5.0_GA_3042 (ZimbraWebClient - GC112 (Linux)/8.5.0_GA_3042)
-Thread-Topic: powerpc: iommu: Bring back table group release_ownership() call
-Thread-Index: BFoIxDhAfBmdu+WWYcEeQbWvy98cLw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240126083015.3557006-2-chengming.zhou@linux.dev>
 
-
-
------ Original Message -----
-> From: "Jason Gunthorpe" <jgg@ziepe.ca>
-> To: "Shivaprasad G Bhat" <sbhat@linux.ibm.com>
-> Cc: iommu@lists.linux.dev, "linuxppc-dev" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel"
-> <linux-kernel@vger.kernel.org>, "Michael Ellerman" <mpe@ellerman.id.au>, "npiggin" <npiggin@gmail.com>, "christophe
-> leroy" <christophe.leroy@csgroup.eu>, "aneesh kumar" <aneesh.kumar@kernel.org>, "naveen n rao"
-> <naveen.n.rao@linux.ibm.com>, jroedel@suse.de, "Timothy Pearson" <tpearson@raptorengineering.com>, aik@amd.com,
-> bgray@linux.ibm.com, "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, gbatra@linux.vnet.ibm.com,
-> vaibhav@linux.ibm.com
-> Sent: Friday, January 26, 2024 9:17:01 AM
-> Subject: Re: [PATCH 1/2] powerpc: iommu: Bring back table group release_ownership() call
-
-> On Fri, Jan 26, 2024 at 08:43:12PM +0530, Shivaprasad G Bhat wrote:
->> > Also, is there any chance someone can work on actually fixing this to
->> > be a proper iommu driver? I think that will become important for power
->> > to use the common dma_iommu code in the next year...
->> We are looking into it.
+On Fri, Jan 26, 2024 at 08:30:15AM +0000, chengming.zhou@linux.dev wrote:
+> From: Chengming Zhou <zhouchengming@bytedance.com>
 > 
-> Okay, let me know, I can possibly help make parts of this happen
+> LRU writeback has race problem with swapoff, as spotted by Yosry[1]:
 > 
-> power is the last still-current architecture to be outside the modern
-> IOMMU and DMA API design and I'm going to start proposing things that
-> will not be efficient on power because of this.
+> CPU1			CPU2
+> shrink_memcg_cb		swap_off
+>   list_lru_isolate	  zswap_invalidate
+> 			  zswap_swapoff
+> 			    kfree(tree)
+>   // UAF
+>   spin_lock(&tree->lock)
+> 
+> The problem is that the entry in lru list can't protect the tree from
+> being swapoff and freed, and the entry also can be invalidated and freed
+> concurrently after we unlock the lru lock.
+> 
+> We can fix it by moving the swap cache allocation ahead before
+> referencing the tree, then check invalidate race with tree lock,
+> only after that we can safely deref the entry. Note we couldn't
+> deref entry or tree anymore after we unlock the folio, since we
+> depend on this to hold on swapoff.
 
-I can get development resources on this fairly rapidly, including testing.  We should figure out the best way forward and how to deal with the VFIO side of things, even if that's a rewrite at the end of the day the machine-specific codebase isn't *that* large for our two target flavors (64-bit PowerNV and 64-bit pSeries).
+This is a great simplification on top of being a bug fix.
 
-> I think a basic iommu driver using the dma API would not be so hard.
+> So this patch moves all tree and entry usage to zswap_writeback_entry(),
+> we only use the copied swpentry on the stack to allocate swap cache
+> and return with folio locked, after which we can reference the tree.
+> Then check invalidate race with tree lock, the following things is
+> much the same like zswap_load().
 > 
-> I don't know what to do about the SPAPR VFIO mess though. :(
-> 
-> Jason
+> Since we can't deref the entry after zswap_writeback_entry(), we
+> can't use zswap_lru_putback() anymore, instead we rotate the entry
+> in the LRU list so concurrent reclaimers have little chance to see it.
+> Or it will be deleted from LRU list if writeback success.
+>
+> Another confusing part to me is the update of memcg nr_zswap_protected
+> in zswap_lru_putback(). I'm not sure why it's needed here since
+> if we raced with swapin, memcg nr_zswap_protected has already been
+> updated in zswap_folio_swapin(). So not include this part for now.
+
+Good observation.
+
+Technically, it could also fail on -ENOMEM, but in practice these size
+allocations don't fail, especially since the shrinker runs in
+PF_MEMALLOC context. The shrink_worker might be affected, since it
+doesn't But the common case is -EEXIST, which indeed double counts.
+
+To make it "correct", you'd have to grab an objcg reference with the
+LRU lock, and also re-order the objcg put on entry freeing after the
+LRU del. This is probably not worth doing. But it could use a comment.
+
+I was going to ask if you could reorder objcg uncharging after LRU
+deletion to make it more robust for future changes in that direction.
+However, staring at this, I notice this is a second UAF bug:
+
+	if (entry->objcg) {
+		obj_cgroup_uncharge_zswap(entry->objcg, entry->length);
+		obj_cgroup_put(entry->objcg);
+	}
+	if (!entry->length)
+		atomic_dec(&zswap_same_filled_pages);
+	else {
+		zswap_lru_del(&entry->pool->list_lru, entry);
+
+zswap_lru_del() uses entry->objcg to determine the list_lru memcg, but
+the put may have killed it. I'll send a separate patch on top.
+
+> @@ -860,40 +839,34 @@ static enum lru_status shrink_memcg_cb(struct list_head *item, struct list_lru_o
+>  {
+>  	struct zswap_entry *entry = container_of(item, struct zswap_entry, lru);
+>  	bool *encountered_page_in_swapcache = (bool *)arg;
+> -	struct zswap_tree *tree;
+> -	pgoff_t swpoffset;
+> +	swp_entry_t swpentry;
+>  	enum lru_status ret = LRU_REMOVED_RETRY;
+>  	int writeback_result;
+>  
+> +	/*
+> +	 * First rotate to the tail of lru list before unlocking lru lock,
+> +	 * so the concurrent reclaimers have little chance to see it.
+> +	 * It will be deleted from the lru list if writeback success.
+> +	 */
+> +	list_move_tail(item, &l->list);
+
+We don't hold a reference to the object, so there could also be an
+invalidation waiting on the LRU lock, which will free the entry even
+when writeback fails.
+
+It would also be good to expand on the motivation, because it's not
+clear WHY you'd want to hide it from other reclaimers.
+
+Lastly, maybe mention the story around temporary failures? Most
+shrinkers have a lock inversion pattern (object lock -> LRU lock for
+linking versus LRU lock -> object trylock during reclaim) that can
+fail and require the same object be tried again before advancing.
+
+How about this?
+
+	/*
+	 * Rotate the entry to the tail before unlocking the LRU,
+	 * so that in case of an invalidation race concurrent
+	 * reclaimers don't waste their time on it.
+	 *
+	 * If writeback succeeds, or failure is due to the entry
+	 * being invalidated by the swap subsystem, the invalidation
+	 * will unlink and free it.
+	 *
+	 * Temporary failures, where the same entry should be tried
+	 * again immediately, almost never happen for this shrinker.
+	 * We don't do any trylocking; -ENOMEM comes closest,
+	 * but that's extremely rare and doesn't happen spuriously
+	 * either. Don't bother distinguishing this case.
+	 *
+	 * But since they do exist in theory, the entry cannot just
+	 * be unlinked, or we could leak it. Hence, rotate.
+	 */
+
+Otherwise, looks great to me.
+
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
