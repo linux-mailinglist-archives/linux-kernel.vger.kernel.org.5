@@ -1,198 +1,123 @@
-Return-Path: <linux-kernel+bounces-40282-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40284-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E22083DD8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:33:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 062AA83DD98
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:35:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96E6D1F22C32
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:33:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 376361C20DE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:35:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C08A21D52B;
-	Fri, 26 Jan 2024 15:33:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0377C1CFBF;
+	Fri, 26 Jan 2024 15:35:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M9d1S/ow"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="e1N5s1Dc"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C856D1CFBC;
-	Fri, 26 Jan 2024 15:33:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D58301CF94;
+	Fri, 26 Jan 2024 15:35:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706283195; cv=none; b=HYlmclryTXzUEeFr2dQkkBF2pxuYBf/O507B3oOVLgqS3yeJdcTaxarpohwzAVmJqEoY2G4L5eyxO9DiIb0qWgPL2uutB3iLCeEsgyhVptb0cpEjuX4Vs3cl6vyVTDSNBXI4C82HKuUsbjZfBqWbTsMNpwMc/SG/5BqtGLF3sE4=
+	t=1706283342; cv=none; b=FHfuZAflJqgguHhf1L9ckFdIkEZ0f7iyafLVLrJvbWxhfdUhcmyzr4sRICYjfzDCvM3+q2VhNcmwnAHB1BJcmCv3S5XabDbWVLnBAR9QWRlrdnpoa13cf36gj8GyYSLgXJCh0kaGtKyFneP+nqbzdFHua6HmcP+zVWocuzKO9DE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706283195; c=relaxed/simple;
-	bh=mAzKWZzPkM6ug0onv0vRe/nRxVt4tmp8a5kHaDgKrWc=;
+	s=arc-20240116; t=1706283342; c=relaxed/simple;
+	bh=Q1gySN7TT9h0jHMhyfEM8IvkE1u4CiHb4/JNQ9iYKDg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gwp1HaeckqiWk/p+KwPxT0ZJEUn6/+w/t/TD4P8fL+/MypJH/qrrc2/7deCdGNNYLZ6djgqA8x9mLpTHEw0BWYd/tBT0EywrZcClTbymOGlihbqOTxQ9YoOBeQoPPM+HhAR/C8LbdtUMj6j6d1iqRjRXZ3dnbv9Cl/d69lLfR8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M9d1S/ow; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6E19C433C7;
-	Fri, 26 Jan 2024 15:33:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706283195;
-	bh=mAzKWZzPkM6ug0onv0vRe/nRxVt4tmp8a5kHaDgKrWc=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=gDqLZVDlL95K2j1kQ7QZXS6HPks5C5Ar7mgpS7M2rqtB3jcgdOB+vKqeAtQW/ryomY/VPp2R7AcK6x4VPseucOzHgF7E0oAEswLbV0YPwM4KBfp43uZnJ0+GnWlNXh29s9I93p+uT/nDHZMLD+rivGslGysG4lv3D9dGY+wU5ag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=e1N5s1Dc; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 01BE740E016C;
+	Fri, 26 Jan 2024 15:35:37 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id GaR2USFls6AC; Fri, 26 Jan 2024 15:35:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706283334; bh=P7Oe6KlLPTo7Wpl5+l3vTi17r9sFPMt5tYVi1N17yxE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=M9d1S/owaLykjwZWoE/JjcSyfLO7y4RC6T8y6akAgrduNm62lUq45zOIYoRkDGeGQ
-	 bdV4MyfhzQ3kZ2yklUTH4mBzQkaA7EDoW7q65hvlDrJwnfW3wL7Oh/mvn3nWO8m2+5
-	 RUSeikg8Npwu33rkmN3Hu9DeqalWWeet9m+tN4rQPIdyfHXaGd2QwyKz2JNdi4/Ia6
-	 Y3vgbXw724n07b6UrC9832j8q8EOkse6XYAuGUXS7CtCoIfdNj9QrdBbnUexpMBbsD
-	 yjqmhSlc8gkmG99WflAqiOHbM51tbxHxPcEPGPsK3TeQ5aOGrgsQizpvqiMUvHOzcO
-	 XLAUrWVhHl+bg==
-Date: Fri, 26 Jan 2024 15:33:08 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Dharma.B@microchip.com
-Cc: Conor.Dooley@microchip.com, sam@ravnborg.org, bbrezillon@kernel.org,
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, Nicolas.Ferre@microchip.com,
-	alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	lee@kernel.org, thierry.reding@gmail.com,
-	u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
-	Linux4Microchip@microchip.com
-Subject: Re: [PATCH v3 3/3] dt-bindings: mfd: atmel,hlcdc: Convert to DT
- schema format
-Message-ID: <20240126-uncommon-stout-dd3243e6b43f@spud>
-References: <20240118-recent-glorified-fd35d72e006e@spud>
- <c33868c8-dc42-4800-885c-5e5f24c2044e@microchip.com>
- <20240119-character-mardi-43571d7fe7d5@wendy>
- <da60f9f3-f955-4a87-a020-5710185953c0@microchip.com>
- <20240122-stark-duress-2f59294dcf27@spud>
- <4906b7e2-0ddb-4d3c-a48b-e16278f2d649@microchip.com>
- <20240124-lend-emerald-1028fe65cc39@spud>
- <c3c30bf2-e7c2-4861-bfdf-519a7afde476@microchip.com>
- <20240125-proved-passage-7fa128f828db@wendy>
- <51da296d-a8a9-417a-8875-3b5e866a89a3@microchip.com>
+	b=e1N5s1DcEV7OiU5ueEYz3Jxa4whCu+ho0B6R1fOpyyV+Iv+KlFHIhB9EW9cLnU0Ln
+	 zva+78aCi2XO9l9jtkUIqqWPS+3xzfiB8Yvlr3S34dn3sIn4gSxL3uyVLrY7J9lDCs
+	 NOG1rnlnfuOSQNqMZgr4kbkKNL8i+V9Bo8F3tNfhufb9DnPpUjs+TT5+evf2sGLyjS
+	 i8nfDJflpmurujqBU7N92Bc7SpVkczSbBq9xp1xljfk46HlzCivDoZQpeyErkUFZiE
+	 94QEUkF118r3VnQlWKugUtvQu7tNF+JUI91yJChdl8ltXa8AR3u6lVp4D/zzuxqgEi
+	 MNVoV5Fb1TTudu8Gb/AAX0dl0RW1TPy+Y6xQ1sGbX8O/OvRnWmDheR5aCWKuHfip5g
+	 R+LHCSSifjGrgrmVZVypkn+7PxMJFrf3rVJIxOH791SzmggCT9Vt5pj3F2/ZrYTMlb
+	 P8WnVnvXwlSt7mvO17dEIZcNtBgKPsf7RG4R062ogzhkZSdu1XAzI+bfRRqJNsRerp
+	 cwJKPQZxDWk8SWv+UyMnNO4W5xDrPnuElc8jmGgdFNcZlucu4hVIMuZDyGJTDvjbMO
+	 qHa3FNM0namjZivxU/Rj3ymRYCZLeq0P2GGQxYYMsq6f8QFN5HAxtQ1+LASrFWoH55
+	 hfiAarXcIepWsdBBMxjYqSU4=
+Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2982F40E0196;
+	Fri, 26 Jan 2024 15:34:58 +0000 (UTC)
+Date: Fri, 26 Jan 2024 16:34:51 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Michael Roth <michael.roth@amd.com>
+Cc: x86@kernel.org, kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+	linux-mm@kvack.org, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+	ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+	peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+	rientjes@google.com, tobin@ibm.com, vbabka@suse.cz,
+	kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
+	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+	pankaj.gupta@amd.com, liam.merwick@oracle.com
+Subject: Re: [PATCH v2 11/25] x86/sev: Adjust directmap to avoid inadvertant
+ RMP faults
+Message-ID: <20240126153451.GDZbPRG3KxaQik-0aY@fat_crate.local>
+References: <20240126041126.1927228-1-michael.roth@amd.com>
+ <20240126041126.1927228-12-michael.roth@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="N7HfhWSgZScgqIKp"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <51da296d-a8a9-417a-8875-3b5e866a89a3@microchip.com>
+In-Reply-To: <20240126041126.1927228-12-michael.roth@amd.com>
 
+On Thu, Jan 25, 2024 at 10:11:11PM -0600, Michael Roth wrote:
+> +static int adjust_direct_map(u64 pfn, int rmp_level)
+> +{
+> +	unsigned long vaddr = (unsigned long)pfn_to_kaddr(pfn);
+> +	unsigned int level;
+> +	int npages, ret;
+> +	pte_t *pte;
 
---N7HfhWSgZScgqIKp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Again, something I asked the last time but no reply:
 
-On Fri, Jan 26, 2024 at 02:22:42PM +0000, Dharma.B@microchip.com wrote:
-> On 25/01/24 1:57 pm, Conor Dooley - M52691 wrote:
-> >=20
-> >>> If the lvds pll is an input to the hlcdc, you need to add it here.
-> >>>   From your description earlier it does sound like it is an input to
-> >>> the hlcdc, but now you are claiming that it is not.
-> >>
-> >> The LVDS PLL serves as an input to both the LCDC and LVDSC
-> >=20
-> > Then it should be an input to both the LCDC and LVDSC in the devicetree.
->=20
-> For the LVDSC to operate, the presence of the LVDS PLL is crucial. Howeve=
-r, in the case of the LCDC, LVDS PLL is not essential for its operation unl=
-ess LVDS interface is used and when it is used lvds driver will take care o=
-f preparing and enabling the LVDS PLL.
+Looking at Documentation/arch/x86/x86_64/mm.rst, the direct map starts
+at page_offset_base so this here should at least check
 
-Please fix your line wrapping, not sure what's going on here, but these
-lines are super long.
+	if (vaddr < __PAGE_OFFSET)
+		return 0;
 
-> Consequently, it seems that there might not be any significant actions we=
- can take within the LCD driver regarding the LVDS PLL.
+I'm not sure about the upper end. Right now, the adjusting should not
+happen only for the direct map but also for the whole kernel address
+space range because we don't want to cause any mismatch between page
+mappings anywhere.
 
-You should be getting a reference to the clock and calling enable on it
-etc, even if the LVDSC is also doing so. That will allow the clock
-framework to correctly track users.
+Which means, this function should be called adjust_kernel_map() or so...
 
-> If there are no intentions to utilize it within the driver, is it necessa=
-ry to explicitly designate it as an input in the device tree?
+Hmmm.
 
-The binding describes the hardware, so yes it should be there. What the
-driver implementation does with the clock is not relevant. That said, I
-think the driver should actually be using it, as I wrote above.
+-- 
+Regards/Gruss,
+    Boris.
 
->=20
-> If yes, I will update the bindings with optional LVDS PLL clock.
->=20
-> clock-names:
->   items:
->     - const: periph_clk
->     - const: sys_clk
->     - const: slow_clk
->     - const: lvds_pll  # Optional clock
-
-This looks correct, but the comment is not needed. Setting minItems: 3
-does this for you.
-
-> >> with the
-> >> LVDS_PLL multiplied by 7 for the Pixel clock to the LVDS PHY, and
-> >=20
-> > Are you sure? The diagram doesn't show a multiplier, the 7x comment
-> > there seems to be showing relations?
->=20
-> Sorry,=20
-> LVDS PLL =3D (PCK * 7) goes to LVDSC PHY
-> PCK =3D (LVDS PLL / 7) goes to LCDC
-
-I'll take your word for it :)
-
-> >> LVDS_PLL divided by 7 for the Pixel clock to the LCDC.
-> >=20
-> >> I am inclined to believe that appropriately configuring and enabling it
-> >> in the LVDS driver would be the appropriate course of action.
-> >=20
-> > We're talking about bindings here, not drivers, but I would imagine that
-> > if two peripherals are using the same clock then both of them should be
-> > getting a reference to and enabling that clock so that the clock
-> > framework can correctly track the users.
-> >=20
-> >>> I don't know your hardware, so I have no idea which of the two is
-> >>> correct, but it sounds like the former. Without digging into how this
-> >>> works my assumption about the hardware here looks like is that the lv=
-ds
-> >>> controller is a clock provider,
-> >>
-> >> It's a PLL clock from PMC.
-> >>
-> >>> and that the lvds controller's clock is
-> >>> an optional input for the hlcdc.
-> >>
-> >> Again it's a PLL clock from PMC.
-> >>
-> >> Please refer Section 39.3
-> >> https://ww1.microchip.com/downloads/aemDocuments/documents/MPU32/Produ=
-ctDocuments/DataSheets/SAM9X7-Series-Data-Sheet-DS60001813.pdf
-> >=20
-> > It is not the same exact clock as you pointed out above though, so the
-> > by 7 divider should be modelled.
->=20
-> Modelled in mfd binding? If possible, could you please provide an example=
- for better clarity? Thank you.
-
-Whatever node corresponds to the register range controlling this PLL
-should be a "clock-controller" (like any other clock provider does).
-Your PMC should have this property. I don't know if the correct location
-is the mfd node or somewhere else, you'll have to check your docs.
-
-Thanks,
-Conor.
-
---N7HfhWSgZScgqIKp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbPQtAAKCRB4tDGHoIJi
-0hAfAP9oD7w7XXefbTe7aCamQ784UR9nGzozBzN9AoLVCrxKGAD+JD5kiMlu70l/
-6YBAmgN41j1kRbKlAUFnrV4Y2INzNgU=
-=MfAt
------END PGP SIGNATURE-----
-
---N7HfhWSgZScgqIKp--
+https://people.kernel.org/tglx/notes-about-netiquette
 
