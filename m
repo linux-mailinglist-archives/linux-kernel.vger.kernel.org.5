@@ -1,113 +1,224 @@
-Return-Path: <linux-kernel+bounces-40100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B70183DA50
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:52:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53B2B83DA55
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:53:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C999B2913F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:52:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13024292991
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:53:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C632E1B5B1;
-	Fri, 26 Jan 2024 12:52:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 122801B5A2;
+	Fri, 26 Jan 2024 12:53:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X3dPaX1k"
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GYHi+SUJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A95E51AACB;
-	Fri, 26 Jan 2024 12:52:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CAB0175AE
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 12:53:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706273546; cv=none; b=E22ewFTHnqiv2p76w8CB5CC/dB0VQjxRxUalJj1YZQw9VXTxcNV/eezL4HwCNYOnBSKg2lIZhiO3t0+BWqT4Mk7fIHAJan8CGDkkwV6eI3etMry3H50HcNMdUe6EUJqbyvfr0FMNlKBdS6fYoEL3FBvrvAFYiGqkK5pxSGXz3uY=
+	t=1706273597; cv=none; b=ehawT7u7+NamQ8qEiPiBRYCHFykh96avAGlQA8IcWDEpFjJud/ZraoJokgklh0fMvolYmbTpwUWgkf9kwOtZ1I1LdDWG9jJMlQB83gMOZGDyb0eEh1JDt4ykO2WSKCcCCmR+oGdIbftvOWz2DOxchrhv1SHOJ/6PD7VzgbmCkz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706273546; c=relaxed/simple;
-	bh=5GztzeRJ7QonXydbXi0LYB9tRSovYETdbDIFz1v4Qmw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ECQBWKVFVisRP7HfE/iCddW0ljlVkFbUSSeiZFmIflBd3FfaCcwMRT6ON/3N1XCuiaZrplKHYQhkIJGVwSZWgtpp6x9KiwgD09VEHpenniR/zua60xAQ/lOJmw0QZKwK8ILQr1hVsjTuhdpoO1vs4c8keqNXP7o3hGXDJTE5yYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X3dPaX1k; arc=none smtp.client-ip=209.85.219.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dc223463ee4so512969276.2;
-        Fri, 26 Jan 2024 04:52:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706273543; x=1706878343; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5GztzeRJ7QonXydbXi0LYB9tRSovYETdbDIFz1v4Qmw=;
-        b=X3dPaX1kU5zaWUFcAcAOVCIcookzalkK12TyPx6VDWOTpVGUPB/gE/2lrcSEDL7xpF
-         7grJ+gosUiJi8mM22t/bKossMnUVoWUF+LeB/KT7RWFD4yfPjUVb473EinXw8p18G63e
-         h2nOYcHDBf/ny5gbw+TUHW8wInox5pze0AwAdV3P2sysQBTEJ0LPAq372INPRxbX8pwF
-         V+Bk6LfktsNcLEXQh8fn11pHUz2RYcrpLGLKgp/O/DQuqZzuHuY/2zvgGvfAPIDCPlSE
-         VtpjcrOp5YrGd17T0h00b60k1jFFplfIKWbMTom4rClPHu2C631nfF4Qxr0vGEtAGL/E
-         3Fiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706273543; x=1706878343;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5GztzeRJ7QonXydbXi0LYB9tRSovYETdbDIFz1v4Qmw=;
-        b=BeD21kViSbaEtS+qLEhKEdgwKs6fGVbOPCahGKBtO5cCl/Z8tERR0UWsYYnR/OzSEf
-         Kbf/TfBRShTNMHTV6C9K1M1/LiRFsdVgOGEz8B1tAeWNhLgfOS+5VEYxwSctJAXqM29i
-         ND8976FHFbMSI4IQwLld9p4QdpBcZEWX36g0fDSp1ur/waPC6rfBhRN1XpHPp87rH2y2
-         G/Is1jyAdk2TOpNZYOM7/GgtGC51KN69bL54DFXrrxUi2kocGaug/j/16MR0OUy1/cXd
-         n5nVQoYbgErqwXSRsTzOvs3pQPTNV2sOOJFs7u0SUjOSxLs9ntzUy5GbTH8nEn+KGTSr
-         Jv/g==
-X-Gm-Message-State: AOJu0Yx6A6XIsJmdaWXrThazTILHsSbxyVOTWdCH/nhs2uuDVmrxlBuu
-	t7pawZ1cz8/1CnpA2wjTd3G9FW4U9nMNSD7Qrix+nxJIAb+aTpo34KWgq/Ge4d2SDZ0tzitqwmR
-	XYfS5sQMOoLYSE/0gwkPc650Outjn0VCpc1GDaSedlZk=
-X-Google-Smtp-Source: AGHT+IHDUz3d4JvNDFrSYoB+OTb7JyrHZFIFiZZTWGcIVjetZDWCyRBa0ecedY7Ar33Ir88A6iXAXmaWFCnMv/QwZK0=
-X-Received: by 2002:a5b:f09:0:b0:dc6:3610:c344 with SMTP id
- x9-20020a5b0f09000000b00dc63610c344mr899970ybr.13.1706273543622; Fri, 26 Jan
- 2024 04:52:23 -0800 (PST)
+	s=arc-20240116; t=1706273597; c=relaxed/simple;
+	bh=HHQ9uNXBo4a0b5iPNJL1gSJx/JBEMjonGTMJo4OoIdY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CUZFbmHwphxNzqcO8CgXudzTzXvfEPFaDryRJfrhSOezrPNYjcjYdr3zImRyWlFONlU5iLrxrjxlkJnEFa3qB0t7o7JZnLG7hRnS+lXseFX/lkO9gCXGeY69W65YCbbW6rcPCRcM3s5QWFI3qk9aoCv/2wdDGYMAA6kZvNdA5LU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GYHi+SUJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B2E5C433C7;
+	Fri, 26 Jan 2024 12:53:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706273596;
+	bh=HHQ9uNXBo4a0b5iPNJL1gSJx/JBEMjonGTMJo4OoIdY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GYHi+SUJFCreUFBbFFHU+jtCipPNSnLLRMTme+fNJy0alPj99zoQrYIzRYK+zYd5V
+	 oMGggiLO4MnQkLz+mOY6WFAH9F2CQi9IVKRN6qcpDU92Z3tKE/7a0tl8ovM82sptk7
+	 Ttce1sA6ept2UVitpZdEsQcBnzML9WI4tT/uUPyuliZkcvDylljF0GlEe7YBhSYcj+
+	 xDp/WfeKSMyWVxopDKQpXZGQmb5PFO6eqYBlUerszn5Jh3fvD+ao84NPp24wwQdFpQ
+	 HaEZ4GuEbSmPN5RETJjEotqg73gYjAFVYxvu8CW/FxkMZUjrtxSWxuHQOLHieAltoT
+	 2lCvNKtDvWtCQ==
+Date: Fri, 26 Jan 2024 13:53:13 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Eric Dumazet <edumazet@google.com>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+	Arjan van de Ven <arjan@infradead.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Rik van Riel <riel@surriel.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Sebastian Siewior <bigeasy@linutronix.de>,
+	Giovanni Gherdovich <ggherdovich@suse.cz>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>
+Subject: Re: [PATCH v10 18/20] timers: Implement the hierarchical pull model
+Message-ID: <ZbOrOV8kWUd59h9q@lothringen>
+References: <20240115143743.27827-1-anna-maria@linutronix.de>
+ <20240115143743.27827-19-anna-maria@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240118120347.61817-1-ioworker0@gmail.com> <CAK1f24=TfJvsDCEesaTa8rGP7ay62p6UiJem=XWnpFa9yfSA3A@mail.gmail.com>
- <CAK1f24nS8MEA3wcS4za-uSp7ZBxvd+xqMRf8-u=m5uCvTs8yJQ@mail.gmail.com> <CAK1f24kOYDOw26ov5TVpAyNP13hCjm=cDo4rooOTPDuv8L6Pnw@mail.gmail.com>
-In-Reply-To: <CAK1f24kOYDOw26ov5TVpAyNP13hCjm=cDo4rooOTPDuv8L6Pnw@mail.gmail.com>
-From: Lance Yang <ioworker0@gmail.com>
-Date: Fri, 26 Jan 2024 20:52:12 +0800
-Message-ID: <CAK1f24n0152CmPghBLQ7225=rwEuP6mMdBybWZz7heTLzemBqw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] mm/madvise: add MADV_F_COLLAPSE_LIGHT to process_madvise()
-To: akpm@linux-foundation.org, Michal Hocko <mhocko@suse.com>, 
-	"Zach O'Keefe" <zokeefe@google.com>, Yang Shi <shy828301@gmail.com>, 
-	David Hildenbrand <david@redhat.com>
-Cc: songmuchun@bytedance.com, peterx@redhat.com, mknyszek@google.com, 
-	minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	linux-api@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240115143743.27827-19-anna-maria@linutronix.de>
 
-On Fri, Jan 26, 2024 at 6:15=E2=80=AFPM Lance Yang <ioworker0@gmail.com> wr=
-ote:
-[...]
-> > If the kernel supports a more relaxed (opportunistic)
-> > MADV_COLLAPSE, we will modify the THP settings as follows:
-> >
-> > echo madvise >/sys/kernel/mm/transparent_hugepage/enabled
-> > echo madvise >/sys/kernel/mm/transparent_hugepage/defrag
->
-> The correct THP settings should be:
-> echo always >/sys/kernel/mm/transparent_hugepage/enabled
-> echo madvise >/sys/kernel/mm/transparent_hugepage/defrag
->
+On Mon, Jan 15, 2024 at 03:37:41PM +0100, Anna-Maria Behnsen wrote:
+> + * Protection of the tmigr group state information:
+> + * ------------------------------------------------
+> + *
+> + * The state information with the list of active children and migrator needs to
+> + * be protected by a sequence counter. It prevents a race when updates in child
+> + * groups are propagated in changed order. The state update is performed
+> + * lockless and group wise. The following scenario describes what happens
+> + * without updating the sequence counter:
+> + *
+> + * Therefore, let's take three groups and four CPUs (CPU2 and CPU3 as well
+> + * as GRP0:1 will not change during the scenario):
+> + *
+> + *    LVL 1            [GRP1:0]
+> + *                     migrator = GRP0:1
+> + *                     active   = GRP0:0, GRP0:1
+> + *                   /                \
+> + *    LVL 0  [GRP0:0]                  [GRP0:1]
+> + *           migrator = CPU0           migrator = CPU2
+> + *           active   = CPU0           active   = CPU2
+> + *              /         \                /         \
+> + *    CPUs     0           1              2           3
+> + *             active      idle           active      idle
+> + *
+> + *
+> + * 1. CPU0 goes idle. As the update is performed group wise, in the first step
+> + *    only GRP0:0 is updated. The update of GRP1:0 is pending as CPU0 has to
+> + *    walk the hierarchy.
+> + *
+> + *    LVL 1            [GRP1:0]
+> + *                     migrator = GRP0:1
+> + *                     active   = GRP0:0, GRP0:1
+> + *                   /                \
+> + *    LVL 0  [GRP0:0]                  [GRP0:1]
+> + *       --> migrator = TMIGR_NONE     migrator = CPU2
+> + *       --> active   =                active   = CPU2
+> + *              /         \                /         \
+> + *    CPUs     0           1              2           3
+> + *         --> idle        idle           active      idle
+> + *
+> + * 2. While CPU0 goes idle and continues to update the state, CPU1 comes out of
+> + *    idle. CPU1 updates GRP0:0. The update for GRP1:0 is pending as CPU1 also
+> + *    has to the hierarchy. Both CPUs (CPU0 and CPU1) now walk the hierarchy to
+> + *    perform the needed update from their point of view. The currently visible
+> + *    state looks the following:
+> + *
+> + *    LVL 1            [GRP1:0]
+> + *                     migrator = GRP0:1
+> + *                     active   = GRP0:0, GRP0:1
+> + *                   /                \
+> + *    LVL 0  [GRP0:0]                  [GRP0:1]
+> + *       --> migrator = CPU1           migrator = CPU2
+> + *       --> active   = CPU1           active   = CPU2
+> + *              /         \                /         \
+> + *    CPUs     0           1              2           3
+> + *             idle    --> active         active      idle
+> + *
+> + * 3. Here is the race condition: CPU1 managed to propagate its changes (from
+> + *    step 2) through the hierarchy to GRP1:0 before CPU0 (step 1) did. The
+> + *    active members of GRP1:0 remain unchanged after the update since it is
+> + *    still valid from CPU1 current point of view:
+> + *
+> + *    LVL 1            [GRP1:0]
+> + *                 --> migrator = GRP0:1
+> + *                 --> active   = GRP0:0, GRP0:1
+> + *                   /                \
+> + *    LVL 0  [GRP0:0]                  [GRP0:1]
+> + *           migrator = CPU1           migrator = CPU2
+> + *           active   = CPU1           active   = CPU2
+> + *              /         \                /         \
+> + *    CPUs     0           1              2           3
+> + *             idle        active         active      idle
 
-Apologize for the confusion in my previous email.
+So let's take this scenario and suppose we are at this stage. CPU 1
+has propagated the state up to [GRP1:0] and CPU 0 is going to do it
+but hasn't yet.
 
-The third type of requirements prefers not to use huge pages at all.
-The correct THP settings should be:
-echo madvise >/sys/kernel/mm/transparent_hugepage/enabled
-echo defer+madvise >/sys/kernel/mm/transparent_hugepage/defrag
+> +static bool tmigr_inactive_up(struct tmigr_group *group,
+> +			      struct tmigr_group *child,
+> +			      void *ptr)
+> +{
+> +	union tmigr_state curstate, newstate, childstate;
+> +	struct tmigr_walk *data = ptr;
+> +	bool walk_done;
+> +	u8 childmask;
+> +
+> +	childmask = data->childmask;
+> +	curstate.state = atomic_read(&group->migr_state);
 
-> >
-> > Then, we will use process_madvise(MADV_COLLAPSE, xx_relaxed_flag)
-> > to address the requirements of the second type.
-[...]
+And now suppose CPU 0 arrives here and sees the group->migr_state change
+performed by CPU 1. So it's all good, right? The below atomic_cmpxchg()
+will success on the first take.
+
+> +	childstate.state = 0;
+> +
+> +	do {
+> +		if (child)
+> +			childstate.state = atomic_read(&child->migr_state);
+
+But then how do you guarantee that CPU 0 will load here the version of
+child->migr_state modified by CPU 1? What prevents from loading the stale value?
+The one that was modified by CPU 0 instead? Nothing because the two above reads
+are unordered. As a result, CPU 0 may ignore the fact that CPU 1 is up and
+wrongly report GRP0:0 as active up to GRP1:0.
+
+One way to solve this is to change the above atomic_read(&group->migr_state)
+into atomic_read_acquire(&group->migr_state). It's cheap and pairs with the
+order enforced by the upwards successful cmpxchg calls.
+
+> +
+> +		newstate = curstate;
+> +		walk_done = true;
+> +
+> +		/* Reset active bit when the child is no longer active */
+> +		if (!childstate.active)
+> +			newstate.active &= ~childmask;
+> +
+> +		if (newstate.migrator == childmask) {
+> +			/*
+> +			 * Find a new migrator for the group, because the child
+> +			 * group is idle!
+> +			 */
+> +			if (!childstate.active) {
+> +				unsigned long new_migr_bit, active = newstate.active;
+> +
+> +				new_migr_bit = find_first_bit(&active, BIT_CNT);
+> +
+> +				if (new_migr_bit != BIT_CNT) {
+> +					newstate.migrator = BIT(new_migr_bit);
+> +				} else {
+> +					newstate.migrator = TMIGR_NONE;
+> +
+> +					/* Changes need to be propagated */
+> +					walk_done = false;
+> +				}
+> +			}
+> +		}
+> +
+> +		newstate.seq++;
+> +
+> +		WARN_ON_ONCE((newstate.migrator != TMIGR_NONE) && !(newstate.active));
+> +
+> +	} while (!atomic_try_cmpxchg(&group->migr_state, &curstate.state, newstate.state));
+
+Similarly, I seem to remember that a failing cmpxchg() doesn't imply a full
+memory barrier. If it's the case, you may need to reload &group->migr_state
+using an acquire barrier. But lemme check that...
+
+Thanks.
 
