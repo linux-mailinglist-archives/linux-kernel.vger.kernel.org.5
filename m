@@ -1,170 +1,205 @@
-Return-Path: <linux-kernel+bounces-40382-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40383-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DAF083DF49
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:55:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DD8083DF4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:56:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9E3FB24D67
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:55:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3539828BC09
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:56:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81AC11DDF5;
-	Fri, 26 Jan 2024 16:55:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CFEF1EB57;
+	Fri, 26 Jan 2024 16:56:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="3t8L/i/F"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Oa/vmMZT"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 135341DDFF
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 16:55:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B60D01DFEB
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 16:56:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706288144; cv=none; b=uNtK8YRE55hcKJhVvhrajrOsARDW7HK6pvWtdFG+Wpn1CioWTvq45kVooi9U7RazajhiZnf1jfUzxF8rkTLFwP2znE4rTO8o7XY5175Q6efJc4uUA6IZFVOOWXnpDRUjU0Hc5j5ClrnMpGY2J9/YBPs/xWJfTd+bJOqXOteAZS0=
+	t=1706288162; cv=none; b=Oh+I/P51EH5zWlCG3TX8pX8NiMaLTHC1H+TokBirdv0z5t+VSAv2fTbysr4XFibRZix0uJnUSrN7+tlZBhTPb7pLj7/w+CZloT5y68LVw2ldsGDis4SNMqF8bA8i2v937wSxRKNdWJWGX+Ygr+4c2Y4ZHROJyA2WRxZ1WW3SeH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706288144; c=relaxed/simple;
-	bh=zxwhVOLE3gzPx1lLnJ7kUSvc4kjwJMjq+fDCZLpDEU8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hkDRoDh4A4jC5aeNc9XJ+XddtUaDFCsYozPj5YJzXjRHo+oVGSE+AvfKfmAxN8q3rBRUe4bsoSNVFPGfm6BnuEHE1zU0ArYuk9FLQEKhWF3mXeUsFr84XCLDzdWOgf9+J5TYcbMqz8obBYvA/1HG7CTDL0LJnZywx7nJ1NWvLSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3t8L/i/F; arc=none smtp.client-ip=209.85.208.46
+	s=arc-20240116; t=1706288162; c=relaxed/simple;
+	bh=BHaM5+kfieorDZaZIR04yxElayRPoejdSS1Hl9A5ue4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=FuN0YV55ZKvoR9wmGTdGSTFwLunQWubwGxX0nXT8x1IBOLLw1mCGihNhEH3DoVNXE/W7NHNzT5yKSi1Pm1mxVl4V67MG7c32lT3LTXc9Azp/TwrHJ1TGygZdE6pgFGeNj6NZ3VE2+t8o50BghCCs8vjnZ5No9EV9EMou6ETLr4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Oa/vmMZT; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55d418c5ca1so5722a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:55:42 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5ffc7ce3343so8049277b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:56:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706288141; x=1706892941; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zxwhVOLE3gzPx1lLnJ7kUSvc4kjwJMjq+fDCZLpDEU8=;
-        b=3t8L/i/FClb6wRhwu/aNP7ggDrKYbnMxosDGhZuOO5hT5bLzs2q5jJ1PPq9uuqrkRP
-         OCOEU2TQH4jFz7vsVVdkBkNBiOHUfvBhwb15kovW5QVbpN33fsINUPsbHpKy0Vcv8d3t
-         fB2XACn9z5X0MV3Jm2En7uAwe4fSuwMtrDn7odBK2g8nAvilsH16VuD/9JacU5CQxwQi
-         pwa4G4aYS4ptgk+83zRZRLxBq7lgPoQgSzWgeGv8rmeU/m4kkPMOhxMUrNDx6aR9j9f8
-         IRvLxsg0SSi2/9z56J4udjims4IF6DjoXhSWi9aSzGUqJ0obMSA8uBnskOVu961mxd5t
-         OnUw==
+        d=google.com; s=20230601; t=1706288160; x=1706892960; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6+singdRz7n9EZ1BAZjnJO5oBT2nIvUykwVKfWaIwAg=;
+        b=Oa/vmMZTqK2y3RijFusirEoEnoiEwR2Xdaia/j0NorESrc2PHoFW/SltfGUrQN9UUY
+         PhR2EwMn9QvUapd99KwQaMeHLjLfXf1U8XiBCYmsriuwh1I9DiE6BGbPHCAwi9B63aUM
+         E3Cf8ohrnPLITwGAusj4+akY/hH9SDsjAFBWsmavz/d7HJVds0moE26R2r6ACudjawf0
+         QyBMOoTjvOzke2BaQPHrH3XEnaWp1N8SpE5t7j0GSDoV2wbLr6xotzHxmiIvj15he2rk
+         21qf5KGXmhp8AoPBofEehlkTJl6HDQwHEPQhq/hGJL2wr5h7OfZ8Z0cxlSWNkIX5gz+P
+         gIHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706288141; x=1706892941;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zxwhVOLE3gzPx1lLnJ7kUSvc4kjwJMjq+fDCZLpDEU8=;
-        b=ZIL3qeqRgPieDe08cQd64HcqHTIoCurDkUpLtqo+vfwedM5SBoqZBwQ4bNebpzW9Xb
-         +ttddQQ1YHq/n6Ds8capyUeLR3hzpz7i7gJ9AhWB6EMTy0wRmap+CiZ4lsIkNXT4G7UU
-         X5av4Vndmhpim12kyX0Zg5dXjDnZpt7xtzTsWmsUi5xSQpuroINjILytJr0DRC8VlmCG
-         XNyTLJRb7BzrCnFjKV9SRfzyKt0Rv95jN2gqcIsFn+KpC4t70EQWccLZl3BxLUZDqfez
-         fn5Ubqom6a1yWyaJ6EjNPluEtho2mH7n6BW16iMM+rs4nM5koC6iClcHRopAe66pfiLW
-         Yu3w==
-X-Gm-Message-State: AOJu0YzqrQV3vB6FWxPdnnl0uzjL/RZJIy/DHAFJYzGvIjQxd/gK63VI
-	n011N7pAjSpD1GLzk9/fXYwxn840OLOG5I0adPCRJXJNc1xw22bYWLJlJdN2S5U0hIOBPPqftoP
-	wnSv06xH/9a+MRKCDywCLB+xZbDrHAv2Ahn7/
-X-Google-Smtp-Source: AGHT+IEBXRn/yWC2G3iLvBVpTnf7frUux03kuFyEOJZMUmvVIkI7QkDfzNcoibbTn583SotrwZpKTXcErZZGb809pYo=
-X-Received: by 2002:a05:6402:22cb:b0:55d:20f2:6d64 with SMTP id
- dm11-20020a05640222cb00b0055d20f26d64mr192253edb.6.1706288141014; Fri, 26 Jan
- 2024 08:55:41 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706288160; x=1706892960;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6+singdRz7n9EZ1BAZjnJO5oBT2nIvUykwVKfWaIwAg=;
+        b=cAXkRybTaTDTnnZQ9dpiq3+axvgNESUs58ajl+TBrNaHm0G8NE61SqIfjCvCXHLP6I
+         5M/fvUXNi7D2MDscIvhinqWojJ4U5Mpkt2DjInfF0oS3ZIi/f0L/YJzyvkL7RcI3wjKt
+         snWguquWrfEQ8tis8fRqao+YsPZjojAMOeYZ1FEn1vvtX3d8LJJcQnL+sSIN5vSv/An0
+         Evhrqld0PSf3Uh1rx0EhGRYFCCxq7s/kpmA4G/YmwJ5Rd7+i1tYrpJ3DO7VZp5Cgcn+n
+         HRZFNAwY1O+s96E8U+pF2LlhMuAJa3S+qiuG9kd6nKAKEGc/1mIlL6L6wBhUlTpuqUTj
+         468w==
+X-Gm-Message-State: AOJu0Yxx8yM/csycw9cFDRz23yMPJTVghYabFXCoj4FsPrjzfL8BvTtD
+	rRm8FluGsZjcRucTNMG34p5jR79S/wyEpJCVC5waFWYOFByU81jVhCAe1of5SCtrLQVfJxhf/id
+	0VQ==
+X-Google-Smtp-Source: AGHT+IGvnOxygM0B4M/PTW5WzXnKuJI5Wy/wEwSD7ujk2LTYygTAj90uu4Y8MEVsEOlBeJ3hcefGV1VZf6Q=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:690c:10c:b0:5f9:abfe:243c with SMTP id
+ bd12-20020a05690c010c00b005f9abfe243cmr13112ywb.3.1706288159824; Fri, 26 Jan
+ 2024 08:55:59 -0800 (PST)
+Date: Fri, 26 Jan 2024 08:55:58 -0800
+In-Reply-To: <20240126161633.62529-1-haoyuwu254@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240114223532.290550-1-sameo@rivosinc.com> <20240114223532.290550-4-sameo@rivosinc.com>
- <1bbf8d3e-aa94-48c7-a1e4-76f9eefc4af7@linux.intel.com> <65a72c305291f_3b8e29484@dwillia2-xfh.jf.intel.com.notmuch>
- <5539c533-37b2-4b12-a5c5-056881cf8e3c@linux.intel.com> <Za1G9I+tYuIL9ser@vermeer>
- <CF3D8DE1-AD47-4A77-B8BD-8A12A6F7E9DB@google.com> <MW4PR11MB5872F46A2089C8C2D8EF7A008C752@MW4PR11MB5872.namprd11.prod.outlook.com>
- <65aecbbce09dd_107423294b7@dwillia2-xfh.jf.intel.com.notmuch>
- <c3b99264-233b-4997-9e20-c4c2693b8cdc@intel.com> <65aeecea827f0_37ad2948@dwillia2-xfh.jf.intel.com.notmuch>
- <14dffda2-f413-4304-9932-3ac8ddfb30e4@intel.com> <85109de4-5832-4e14-8416-6443ac417c9d@linux.intel.com>
-In-Reply-To: <85109de4-5832-4e14-8416-6443ac417c9d@linux.intel.com>
-From: Dionna Amalie Glaze <dionnaglaze@google.com>
-Date: Fri, 26 Jan 2024 08:55:26 -0800
-Message-ID: <CAAH4kHbhiyruEHiVx6cj_CangiD5L40+aRJBjgFJ65r9VHxpbA@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 3/4] tsm: Allow for mapping RTMRs to TCG TPM PCRs
-To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc: "Xing, Cedric" <cedric.xing@intel.com>, Dan Williams <dan.j.williams@intel.com>, 
-	"Yao, Jiewen" <jiewen.yao@intel.com>, Qinkun Bao <qinkun@google.com>, 
-	Samuel Ortiz <sameo@rivosinc.com>, "Lu, Ken" <ken.lu@intel.com>, 
-	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+References: <20240126161633.62529-1-haoyuwu254@gmail.com>
+Message-ID: <ZbPkHvuJv0EdJhVN@google.com>
+Subject: Re: [PATCH] KVM: Fix LDR inconsistency warning caused by APIC_ID
+ format error
+From: Sean Christopherson <seanjc@google.com>
+To: Haoyu Wu <haoyuwu254@gmail.com>
+Cc: pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, zheyuma97@gmail.com
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 23, 2024 at 12:59=E2=80=AFPM Kuppuswamy Sathyanarayanan
-<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
->
->
-> On 1/23/24 10:48 AM, Xing, Cedric wrote:
-> > On 1/22/2024 2:32 PM, Dan Williams wrote:
-> >> Xing, Cedric wrote:
-> >> [..]
-> >>>> So, yes, the mapping should be allowed to specified by the low-level
-> >>>> driver, but at the same time every vendor should not reinvent their =
-own
-> >>>> enumeration method when we have EFI for that.
-> >>>
-> >>> Given PCR->RTMR mapping is static, I just wonder why it needs to be k=
-ept
-> >>> in kernel. Given that PCRs can never be 1:1 mapped to RTMRs, and that
-> >>> TDX quotes are never TPM quotes, applications used to extend PCRs wou=
-ld
-> >>> have to be changed/recompiled. Then wouldn't it suffice to define the
-> >>> mappings as macros in an architecture specific header file?
-> >>
-> >> I think something is wrong if applications are exposed to the PCR->RTM=
-R
-> >> mapping thrash. I would hope / expect that detail is hidden behind a T=
-PM
-> >> proxy layer sitting in front of this mapping on behalf of TPM-client
-> >> applications.
-> >
-> > Hi Dan,
-> >
-> > My apology for the confusion! I think we are talking about 2 different =
-scenarios - (1) this patch alone; and (2) this patch + vTPM.
-> >
-> > Scenario 1: This patch provides RTMR access only. My assumption is, the=
-re are existing application (and/or kernel modules) that extend to PCRs tod=
-ay and would like to work in TDs where only RTMRs are available. Changes ar=
-e of course necessary in those applications as TPMs/PCRs are no longer avai=
-lable, but from security perspective they would like to keep the same activ=
-ity log and just change to use RTMRs (in lieu of PCRs) as the secure storag=
-e. Hence a PCR->RTMR mapping is necessary and must be agreed upon by all th=
-ose applications and relying parties. IIUC, this is the intention of having=
- PCR->RTMR mapping config maintained by the kernel, as proposed by Sam O. o=
-riginally.
-> >
-> > Scenario 2: A vTPM is implemented on top of this patch, in which case t=
-he existing applications don't have to change as they can continue extendin=
-g to the same PCRs, which will then be emulated by the underlying vTPM impl=
-ementation. PCR->RTMR mapping in this scenario is obviously internal to the=
- vTPM and I agree with you completely that it should be hidden inside the v=
-TPM.
-> >
-> > My comment in my previous email was regarding Scenario 1. I hope the cl=
-arification above helps.
->
->
-> IMO, we should adapt an approach with as minimal user changes as possible=
- So I think we should try to avoid scenario 1 if possible.
->
+On Sat, Jan 27, 2024, Haoyu Wu wrote:
+> Syzkaller detected a warning in the kvm_recalculate_logical_map()
+> function. This function employs VCPU_ID as the current x2APIC_ID
+> following the apic_x2apic_mode() check. However, the LDR value,
+> as computed using the current x2APIC_ID,  fails to align with the LDR
+> value that is actually set.
+>=20
+> Syzkaller scenario:
+> 1) Set up VCPU's
+> 2) Set the APIC_BASE to 0xd00
+> 3) Set the APIC status for a specific state
+>=20
+> The issue arises within kvm_apic_state_fixup, a function responsible
+> for adjusting and correcting the APIC state. Initially, it verifies
+> whether the current vcpu operates in x2APIC mode by examining the
+> vcpu's mode. Subsequently, the function evaluates
+> vcpu->kvm->arch.x2apic_format to ascertain if the preceding kvm version
+> supports x2APIC mode. In cases where kvm is compatible with x2APIC mode,
+> the function compares APIC_ID and VCPU_ID for equality. If they are not
+> equal, it processes APIC_ID according to the set value. The error
+> manifests when vcpu->kvm->arch.x2apic_format is false; under these
+> circumstances, kvm_apic_state_fixup converts APIC_ID to the xAPIC format
+> and invokes kvm_apic_calc_x2apic_ldr to compute the LDR. This leads to by
+> passing consistency checks between VCPU_ID and APIC_ID and results in
+> calling incorrect functions for LDR calculation.
 
-I would note that the MapPcrToMrIndex mapping is an entrypoint of the
-EFI_CC_MEASUREMENT_PROTOCOL boot service of UEFI v2.10. Similarly, the
-event log should be collected before called ExitBootServices and made
-available at /sys/kernel/security/coco/binary_bios_measurements.
+Please just provide the syzkaller reproducer.
 
+> Obviously, the crux of the issue hinges on the transition of the APIC
+> state and the associated operations for transitioning APIC_ID. In the
+> current kernel design, APIC_ID defaults to VCPU_ID in x2APIC mode, a
+> specification not required in xAPIC mode. kvm_apic_state_fixup initiates
+> by assessing the current status of both VCPU and KVM to identify their
+> respective APIC modes. However, subsequent evaluations focus solely on
+> the APIC mode of VCPU. To address this, a feasible minor modification
+> involves advancing the comparison between APIC_ID and VCPU_ID,
+> positioning it prior to the evaluation of vcpu=E2=86=92kvm=E2=86=92arch.x=
+2apic_format.
 >
-> >
-> > -Cedric
-> >
-> --
-> Sathyanarayanan Kuppuswamy
-> Linux Kernel Developer
->
->
+> Signed-off-by: Haoyu Wu <haoyuwu254@gmail.com>
+> ---
+>  arch/x86/kvm/lapic.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+> index 3242f3da2..16c97d57d 100644
+> --- a/arch/x86/kvm/lapic.c
+> +++ b/arch/x86/kvm/lapic.c
+> @@ -2933,16 +2933,16 @@ static int kvm_apic_state_fixup(struct kvm_vcpu *=
+vcpu,
+>  		u32 *ldr =3D (u32 *)(s->regs + APIC_LDR);
+>  		u64 icr;
+> =20
+> -		if (vcpu->kvm->arch.x2apic_format) {
+> -			if (*id !=3D vcpu->vcpu_id)
+> -				return -EINVAL;
+> -		} else {
+> +		if (*id !=3D vcpu->vcpu_id)
+> +			return -EINVAL;
 
+This will break userspace.  As shown below, if userspace is using the legac=
+y
+format, the incoming ID will be vcpu_id << 24.
 
---=20
--Dionna Glaze, PhD (she/her)
+This is a known issue[*], and apparently I had/have a patch?  I'll try to d=
+redge
+that up.  I suspect what I intended to was this, but I haven't yet found a =
+branch
+or stash, or anything else that captured what I intended to do.  *sigh*
+
+diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+index 3242f3da2457..d25e31c04fbd 100644
+--- a/arch/x86/kvm/lapic.c
++++ b/arch/x86/kvm/lapic.c
+@@ -2933,16 +2933,16 @@ static int kvm_apic_state_fixup(struct kvm_vcpu *vc=
+pu,
+                u32 *ldr =3D (u32 *)(s->regs + APIC_LDR);
+                u64 icr;
+=20
+-               if (vcpu->kvm->arch.x2apic_format) {
+-                       if (*id !=3D vcpu->vcpu_id)
+-                               return -EINVAL;
+-               } else {
++               if (!vcpu->kvm->arch.x2apic_format) {
+                        if (set)
+                                *id >>=3D 24;
+                        else
+                                *id <<=3D 24;
+                }
+=20
++               if (*id !=3D vcpu->vcpu_id)
++                       return -EINVAL;
++
+                /*
+                 * In x2APIC mode, the LDR is fixed and based on the id.  A=
+nd
+                 * ICR is internally a single 64-bit register, but needs to=
+ be
+
+[*] https://lore.kernel.org/all/ZHk3TGyB2Vze4+Ou@google.com
+
+> +		if (!vcpu->kvm->arch.x2apic_format) {
+>  			if (set)
+>  				*id >>=3D 24;
+>  			else
+>  				*id <<=3D 24;
+>  		}
+> =20
+> +
+
+Spurious whitespace.
+
+>  		/*
+>  		 * In x2APIC mode, the LDR is fixed and based on the id.  And
+>  		 * ICR is internally a single 64-bit register, but needs to be
+> --=20
+> 2.34.1
+>=20
 
