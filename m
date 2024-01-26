@@ -1,145 +1,132 @@
-Return-Path: <linux-kernel+bounces-40009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3206B83D8BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:57:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D62DD83D8C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:58:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99F8D1F28849
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:57:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 149E01C24FDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:58:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE7818C1B;
-	Fri, 26 Jan 2024 10:57:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60D9D13AEE;
+	Fri, 26 Jan 2024 10:58:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="G8tAny3F";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="G8tAny3F"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b="Qqb/A1Sp"
+Received: from mail.subdimension.ro (skycaves.subdimension.ro [172.104.132.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48E6412B84
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:57:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89952EAE6;
+	Fri, 26 Jan 2024 10:58:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.104.132.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706266639; cv=none; b=cQm4ZZgFnkRpxGLvP3tCjTxkvSNkM4u5y3mHFB6kEOz6VMmAyrWptf+O0DQm1syw0vT6ChJHRjagUyZu4lNdPhSj/SATgQAJkKodHYsQ9yn7aUVqc4cKP7hEIBOdD1Kjj3xgoiZDQFZoGrU1hhBwpHNagzCGc1ozOOtJhIKFWSA=
+	t=1706266729; cv=none; b=U06S47q4xAhizQhzf+Ry1JJUueZLGL7mvPMRafC2v4qKQaT6TdyIrVj84YTvmlytl4aClHmtzRw3dTO3o1YoKINAZfx87k8OgSyXZbktzn1x72GVDV4tuTte0wORtqFV2994eP8n/xlU5N6v6NG7PXPyc8wwkB0pnFPUJGEesFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706266639; c=relaxed/simple;
-	bh=NsW7tmFOoZQtL0c0IKwhjYT+xrlehqti7MvzXSJf1wk=;
+	s=arc-20240116; t=1706266729; c=relaxed/simple;
+	bh=3aiLAmH0RdcOP4o9+Z28MUU6iwYGmfnBmv49RlTdb8g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FwI/ukygJSdC/6pHo5Cj2Rew/xoQz9x5hD1JQsiobSMqtVnCMEhK0z/CmWLkj4e+UkKVxJR3SAKPw/JtarAGnzY6Oz92CdbpJaxvSuop/pqVdyTJ5Cn4+lEurMDliU0VjYBx8GmjmyaS8a1Q3niTVo1+kSrv225j+16ejc3sJkM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=G8tAny3F; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=G8tAny3F; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	 Content-Type:Content-Disposition:In-Reply-To; b=sA3e3C8gDO2kJ8cFoGp2ceKhN+NUP6EsNnS1yKgwbFOE2MqT41u/c4pUlCm29YiFmt3nNWEKcjPcz7pQLkKYtUrSkMEvKnodzrqPmYjNNRW8vEay8PQKGPwb6N/WzejvT1Oti1xeUNvf9BCm1meGEq6u8uaCFJV+WhONil1X9c4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=subdimension.ro; spf=pass smtp.mailfrom=subdimension.ro; dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b=Qqb/A1Sp; arc=none smtp.client-ip=172.104.132.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=subdimension.ro
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=subdimension.ro
+Received: from sunspire (unknown [188.24.80.170])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7AF0C1FD9E;
-	Fri, 26 Jan 2024 10:57:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706266635; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QJkySAAGmHdAQNOm7UkH9kJ80ptWT6pGsZVtoPtZ6kw=;
-	b=G8tAny3FgdJv1kzbj03ZHA1YNTXB9ES1Ve2yiSEpPnzpjtMMPvvxuB06VYIL4bwlcEyk3G
-	7InyOukpfF/LAHbjY5MPbAT09kbk+5YzofzgeJ8EGFWqZUb3E52N/U6G4Xx0zoCX0b7Z7d
-	+8VpW19RrIewxJEZg2WaAyZqu64Qm0w=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706266635; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QJkySAAGmHdAQNOm7UkH9kJ80ptWT6pGsZVtoPtZ6kw=;
-	b=G8tAny3FgdJv1kzbj03ZHA1YNTXB9ES1Ve2yiSEpPnzpjtMMPvvxuB06VYIL4bwlcEyk3G
-	7InyOukpfF/LAHbjY5MPbAT09kbk+5YzofzgeJ8EGFWqZUb3E52N/U6G4Xx0zoCX0b7Z7d
-	+8VpW19RrIewxJEZg2WaAyZqu64Qm0w=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 72C9813A22;
-	Fri, 26 Jan 2024 10:57:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id GpwEHAuQs2XVKgAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Fri, 26 Jan 2024 10:57:15 +0000
-Date: Fri, 26 Jan 2024 11:57:15 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Zach O'Keefe <zokeefe@google.com>
-Cc: Charan Teja Kalla <quic_charante@quicinc.com>,
-	akpm@linux-foundation.org, mgorman@techsingularity.net,
-	david@redhat.com, vbabka@suse.cz, hannes@cmpxchg.org,
-	quic_pkondeti@quicinc.com, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Yosry Ahmed <yosryahmed@google.com>,
-	David Rientjes <rientjes@google.com>
-Subject: Re: [PATCH V3 3/3] mm: page_alloc: drain pcp lists before oom kill
-Message-ID: <ZbOQC0mYNsX0voKM@tiehlicka>
-References: <cover.1699104759.git.quic_charante@quicinc.com>
- <a8e16f7eb295e1843f8edaa1ae1c68325c54c896.1699104759.git.quic_charante@quicinc.com>
- <ZUy1dNvbvHc6gquo@tiehlicka>
- <5c7f25f9-f86b-8e15-8603-e212b9911cac@quicinc.com>
- <ZVNQdQKQAMjgOK9y@tiehlicka>
- <342a8854-eef5-f68a-15e5-275de70e3f01@quicinc.com>
- <CAAa6QmRnfTOCD0uaxVbbiDRWtwzC9y+gZDFOjYF2YWDTrXyMNQ@mail.gmail.com>
- <5adb12eb-8403-5860-28eb-5f6ab12f3c04@quicinc.com>
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.subdimension.ro (Postfix) with ESMTPSA id 0761C28B531;
+	Fri, 26 Jan 2024 10:58:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
+	s=skycaves; t=1706266725;
+	bh=3aiLAmH0RdcOP4o9+Z28MUU6iwYGmfnBmv49RlTdb8g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=Qqb/A1Sp80ZO8Bj8vxbUHbeuypI8nzGATy11DJ5pmorbutNHtwlDj7cCzLEemsF+6
+	 8x50Z9Z25MR6BCCoa8xxWue1yTEnmXGhC+Jlzxc/GY0ZUj+ZQ4R9rnphobBGjXBCnp
+	 +wxwbHbTZujc3WoWmG0df3SDcIR01BQfbZctXWng=
+Date: Fri, 26 Jan 2024 12:58:43 +0200
+From: Petre Rodan <petre.rodan@subdimension.ro>
+To: marius.cristea@microchip.com
+Cc: jic23@kernel.org, lars@metafoo.de, robh+dt@kernel.org,
+	jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] iio: adc: adding support for PAC193x
+Message-ID: <ZbOQY3cs5emASvzs@sunspire>
+References: <20240122084712.11507-1-marius.cristea@microchip.com>
+ <20240122084712.11507-3-marius.cristea@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="j6hFgdCDz3A6ajHc"
+Content-Disposition: inline
+In-Reply-To: <20240122084712.11507-3-marius.cristea@microchip.com>
+
+
+--j6hFgdCDz3A6ajHc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5adb12eb-8403-5860-28eb-5f6ab12f3c04@quicinc.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [0.17 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[13];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.23)[72.63%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: 0.17
+Content-Transfer-Encoding: quoted-printable
 
-On Fri 26-01-24 16:17:04, Charan Teja Kalla wrote:
-> Hi Michal/Zach,
-> 
-> On 1/25/2024 10:06 PM, Zach O'Keefe wrote:
-> > Thanks for the patch, Charan, and thanks to Yosry for pointing me towards it.
-> > 
-> > I took a look at data from our fleet, and there are many cases on
-> > high-cpu-count machines where we find multi-GiB worth of data sitting
-> > on pcpu free lists at the time of system oom-kill, when free memory
-> > for the relevant zones are below min watermarks. I.e. clear cases
-> > where this patch could have prevented OOM.
-> > 
-> > This kind of issue scales with the number of cpus, so presumably this
-> > patch will only become increasingly valuable to both datacenters and
-> > desktops alike going forward. Can we revamp it as a standalone patch?
 
-Do you have any example OOM reports? There were recent changes to scale
-the pcp pages and it would be good to know whether they work reasonably
-well even under memory pressure.
+Hello Marius,
 
-I am not objecting to the patch discussed here but it would be really
-good to understand the underlying problem and the scale of it.
+a quick static scan reported the following
 
-Thanks!
--- 
-Michal Hocko
-SUSE Labs
+On Mon, Jan 22, 2024 at 10:47:12AM +0200, marius.cristea@microchip.com wrot=
+e:
+> From: Marius Cristea <marius.cristea@microchip.com>
+>=20
+> This is the iio driver for Microchip
+> PAC193X series of Power Monitor with Accumulator chip family.
+
+[..]
+> +	mutex_init(&info->lock);
+> +	ret =3D devm_add_action_or_reset(&client->dev, pac1934_mutex_destroy,
+> +				       &info->lock);
+> +
+> +	/*
+> +	 * do now any chip specific initialization (e.g. read/write
+> +	 * some registers), enable/disable certain channels, change the sampling
+> +	 * rate to the requested value
+> +	 */
+> +	ret =3D pac1934_chip_configure(info);
+> +	if (ret < 0)
+> +		return ret;
+
+the previous assignation of ret is never used, so either dead code or you m=
+ight
+have wanted to return early based on it's value.
+
+cheers,
+peter
+
+--=20
+petre rodan
+
+--j6hFgdCDz3A6ajHc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEE2Ap/wXYVGTXsPl+pzyaZmYROfzAFAmWzkGMACgkQzyaZmYRO
+fzA8lQ/7BqVyUd2MTfT1Q7WdU8tEr0IO04T/8q8O4rLv4qn/euVY8f8zodmd916M
+aszgIBKbFQSRQgDeKDgV/k1mdozZjY650e70htkS+xyPfw4IK6GCEBkjSDDH4TDS
+f0csnQFL/CIUmriUxAA5BsEvtK1MFfOmOb3A326/rtFfM+B0dmcRTlTYFvrCp3EO
+NhO1C7UMfMclLbb6nHWs8Q+xPnjzH70JejXqL6QwOGHWvHiI/iJkT55mYuvBUdiE
+12zjuD9L8uqUWPCPAd7mpyFuKI3ilb6fwVx1nABwn+wi/m+snu4425wUDpACqofb
+Vk+MTtro82m9LjuElDYcDhRITVgj5CiRWI2X78n4h1ZfIbICVMXkNxSynce+56+X
+d6UpAKlpjoZWyBflcoudN9gEDYzc20rcZnQ/qQ5GbfoVyeM9+cOB1ymlAGR5zhWc
+wSiTnlzNEiFd4TzwXOO2aDXzwI6VJGnsXPFyyNWujn2zwFJrCK2ihZsb73jVjON6
+KYjJEtq2ZQ2qzkzESdY2AQrsnXGJBokPIJc50wMo7vzPRbEe+kancgNG1xgCeLdo
+rceiUmqOYGFVprkXw10Kh7IWZhFpSyQcAxj0gHikeYrIZkRgQf62hXjmBNieWCz5
+ZqqB4jLxNSV2FEMOKp7Bc1ONhqV8HNhjqaXewY3xya1ngPOZvYU=
+=lZiH
+-----END PGP SIGNATURE-----
+
+--j6hFgdCDz3A6ajHc--
 
