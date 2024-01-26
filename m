@@ -1,124 +1,109 @@
-Return-Path: <linux-kernel+bounces-40648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F5EE83E39D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:06:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6950783E3A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:07:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61DD21C22E8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:06:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8820B2251F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:07:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10C962421F;
-	Fri, 26 Jan 2024 21:06:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC3FE249F0;
+	Fri, 26 Jan 2024 21:06:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="S/zVRU6E"
-Received: from xry111.site (xry111.site [89.208.246.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="2aqdI02e"
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04D7B22EF9;
-	Fri, 26 Jan 2024 21:06:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE2C6249E7
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 21:06:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706303180; cv=none; b=HqCGFdCf0CrGzfTLYyyhr22IQlqwGsENUXLZtei6Ig6xQ2SeYQABZ2V1DDzeGCJpfRw50jRiin5fKwcAcrS0reECcZOMMtB40k4siF0MBnh5OLAGqcBfb1aBIFM3VMikgqC+FwbJGVgzu8z4oTF21LwTW4vBD6Y+OLN419MxNEQ=
+	t=1706303206; cv=none; b=vDlRkyU+ITyNtqM5jsTyrVxfUOkWAoZo0hgFCvCJ30Z5ru21u3mU8ulB1HljQ8zS89O3sQ2DZhl6e8hKmq0KH9ldiob38E8cscgU5ZgGnKtU41IMglntasTmrNBKBmSCJRyEXU2iYmqZS51bYuegukaK1eZtpd8DXwpTz2hiemg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706303180; c=relaxed/simple;
-	bh=AV1ZofWLKqVz1PfTeAIMra2ot1/I4iebX4fFRvtm+Uw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=D4FWsLTam7eiOQO5mnfUKqZedITOmy8838uvg7YCWyGUk9Z3ELDTAt6s16n0kLPn3kry6ROHB0yrblwkZYHm5Aj3SddwoZyCOL4iAn4vM6IHHwYM6nDKEK6oWeTr8EGHtua64h4w6F9v5soepWCROFyXJsgEztvBag0fcAhF8tw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=S/zVRU6E; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1706303177;
-	bh=AV1ZofWLKqVz1PfTeAIMra2ot1/I4iebX4fFRvtm+Uw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=S/zVRU6E9Q+G3QqJe79cHk0eD7ZSmd0XFyrUlcwTqi3+4Nn4KctzPxOJXVu2Ngdtk
-	 sxmANB7LCY3lE8puILgATdGJ9t2ZlQM2o5uV8JpPqAg2XUvm/DlFjYYQhYtsoLgvsO
-	 P1Hcspk9qHqUxtAXVx6itlHof7JHxaCKKlB85aJo=
-Received: from stargazer.. (unknown [IPv6:240e:358:1181:9d00:dc73:854d:832e:3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id 35E7F66A29;
-	Fri, 26 Jan 2024 16:06:10 -0500 (EST)
-From: Xi Ruoyao <xry111@xry111.site>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	linux-mips@vger.kernel.org
-Cc: Ralf Baechle <ralf@linux-mips.org>,
-	"Maciej W. Rozycki" <macro@orcam.me.uk>,
-	YunQiang Su <wzssyqa@gmail.com>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	linux-kernel@vger.kernel.org,
-	Xi Ruoyao <xry111@xry111.site>,
-	stable@vger.kernel.org
-Subject: [PATCH v2] mips: Call lose_fpu(0) before initializing fcr31 in mips_set_personality_nan
-Date: Sat, 27 Jan 2024 05:05:57 +0800
-Message-ID: <20240126210557.12442-1-xry111@xry111.site>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706303206; c=relaxed/simple;
+	bh=DGuwcy7+t/oybW2DmRtk136XOg5k5hZpx3k/FLEeh1M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g28Y0ewSCQZQYh85KdFcGcpkSYl/ABLqQ8AOVYT1wf7j5PAV+ZZni5L61TG+5XcuOV6BrMnGvTp32CAvymeYnn+P5crzIRRMDsosUC+f/9nXJlXlSzlu8Wfg2UO1ABdgzGVxyJCkqkqanxJTASrDdQgqEVciBm2jzqhUzYRFBik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=2aqdI02e; arc=none smtp.client-ip=209.85.210.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6e114e247a2so169210a34.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:06:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706303203; x=1706908003; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rXLiZ/QkDFCOQ1THZJEDxzG3f4B+MGCbqeorNkMEFUA=;
+        b=2aqdI02eCc3PAWaJMav8f9c/rFa8OVjTFDJqbPS/mqzDox6ndcHxA8J/LEXaO7bO1q
+         aB1bSWDT9WTUmHhyfNXbCt9U9kIOqijHgj5ErOkhCOybPFTFyB4rPeM0LspqlqzfheUC
+         A7jMv+l4orynVg9o8DE0MVg90DnS7NLlqNWst7zuiTzEDT3WtjLaJyE8NhKzeiDX7gYO
+         Q/0GNkqj+y6LIfiCbd+sSIq9dRKLxjoMIgRixRGN+djGH+2b7ZQXnOmLjRSs8pfXlKB+
+         9MEyM3xxaExOAf4EuUXqzr1g4TLGOKPEFJXArKLcgV2U9t6N9Qq5NgmyWYT5V8HA6FGp
+         ZVSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706303203; x=1706908003;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rXLiZ/QkDFCOQ1THZJEDxzG3f4B+MGCbqeorNkMEFUA=;
+        b=tAqaJWln5AZ5GOk8tgJGC3U+BRoNtDHlKD9S0KaqKvl93SYr2JeezsQiZ9HqU2IkcL
+         gn0we6b5/Jsc6ROixqGj4pCUgW9pvyEsHz9QraNsVLb3V4daksskjGDDIZnEoPUZhxxG
+         BdMKqH8P9uBA913RFbAvz0wQeMhz3FFJX1F7YMUbsZY8RpX2TRqhRLTC2cFibjU9ZG8z
+         e3iD05GUBMXqTZzmf/1q8DJbGi12OmVbZIRla/dBT9aj6D7EAWkir9Y+il7EvEv86HTz
+         aZLBakqbdqc0aXoDVNt9im59a7ohnv9i59iJ2lle8xMh0fVYqIX7XFBtF5BtWxoFXxtm
+         uoyQ==
+X-Gm-Message-State: AOJu0YwvdFt1ZBkXGTwx8LGB+dmrqCkfPYMwZn5qM3+SqJOYDLu+nnSp
+	SLbSZzo966oiL0ZzKluTyUnNrpEw2JxYjgSFFOG8rOWpD0XAYsve7Kb5Tu0CILE=
+X-Google-Smtp-Source: AGHT+IHR9d2RnaSnbK4TL5g+c7dwHZhhLVRgyKzjJnJpZcgI2qk0Hq9pBoMywVZyfybv5A2Pj+RdbA==
+X-Received: by 2002:a9d:4d92:0:b0:6dc:776:2eb7 with SMTP id u18-20020a9d4d92000000b006dc07762eb7mr282095otk.60.1706303203640;
+        Fri, 26 Jan 2024 13:06:43 -0800 (PST)
+Received: from localhost ([2620:10d:c091:400::5:271e])
+        by smtp.gmail.com with ESMTPSA id nc6-20020a0562142dc600b00685ad9090basm830074qvb.97.2024.01.26.13.06.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 13:06:43 -0800 (PST)
+Date: Fri, 26 Jan 2024 16:06:42 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com,
+	Minchan Kim <minchan@google.com>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memcg: Don't periodically flush stats when memcg is
+ disabled
+Message-ID: <20240126210642.GK1567330@cmpxchg.org>
+References: <20240126203353.1163059-1-tjmercier@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240126203353.1163059-1-tjmercier@google.com>
 
-If we still own the FPU after initializing fcr31, when we are preempted
-the dirty value in the FPU will be read out and stored into fcr31,
-clobbering our setting.  This can cause an improper floating-point
-environment after execve().  For example:
+On Fri, Jan 26, 2024 at 08:33:52PM +0000, T.J. Mercier wrote:
+> The root memcg is onlined even when memcg is disabled. When it's onlined
+> a 2 second periodic stat flush is started, but no stat flushing is
+> required when memcg is disabled because there can be no child memcgs.
+> Most calls to flush memcg stats are avoided when memcg is disabled as a
+> result of the mem_cgroup_disabled check [1] added in [2], but the
+> periodic flushing started in mem_cgroup_css_online is not. Skip it.
+> 
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/mm/memcontrol.c?h=v6.8-rc1#n753
+> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7d7ef0a4686abe43cd76a141b340a348f45ecdf2
+> 
+> Fixes: aa48e47e3906 ("memcg: infrastructure to flush memcg stats")
+> Reported-by: Minchan Kim <minchan@google.com>
+> Signed-off-by: T.J. Mercier <tjmercier@google.com>
 
-    zsh% cat measure.c
-    #include <fenv.h>
-    int main() { return fetestexcept(FE_INEXACT); }
-    zsh% cc measure.c -o measure -lm
-    zsh% echo $((1.0/3)) # raising FE_INEXACT
-    0.33333333333333331
-    zsh% while ./measure; do ; done
-    (stopped in seconds)
+With what Shakeel pointed out resolved:
 
-Call lose_fpu(0) before setting fcr31 to prevent this.
-
-Closes: https://lore.kernel.org/linux-mips/7a6aa1bbdbbe2e63ae96ff163fab0349f58f1b9e.camel@xry111.site/
-Fixes: 9b26616c8d9d ("MIPS: Respect the ISA level in FCSR handling")
-Cc: stable@vger.kernel.org
-Signed-off-by: Xi Ruoyao <xry111@xry111.site>
----
-
-v1 -> v2: Fix stable list address in Cc line.
-
- arch/mips/kernel/elf.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/arch/mips/kernel/elf.c b/arch/mips/kernel/elf.c
-index 5582a4ca1e9e..7aa2c2360ff6 100644
---- a/arch/mips/kernel/elf.c
-+++ b/arch/mips/kernel/elf.c
-@@ -11,6 +11,7 @@
- 
- #include <asm/cpu-features.h>
- #include <asm/cpu-info.h>
-+#include <asm/fpu.h>
- 
- #ifdef CONFIG_MIPS_FP_SUPPORT
- 
-@@ -309,6 +310,11 @@ void mips_set_personality_nan(struct arch_elf_state *state)
- 	struct cpuinfo_mips *c = &boot_cpu_data;
- 	struct task_struct *t = current;
- 
-+	/* Do this early so t->thread.fpu.fcr31 won't be clobbered in case
-+	 * we are preempted before the lose_fpu(0) in start_thread.
-+	 */
-+	lose_fpu(0);
-+
- 	t->thread.fpu.fcr31 = c->fpu_csr31;
- 	switch (state->nan_2008) {
- 	case 0:
--- 
-2.43.0
-
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
