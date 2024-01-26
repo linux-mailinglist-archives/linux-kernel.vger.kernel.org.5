@@ -1,167 +1,113 @@
-Return-Path: <linux-kernel+bounces-39923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 327F983D774
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:10:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91E2183D771
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:10:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52954284100
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:10:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC5411C2E807
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:10:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 614932033E;
-	Fri, 26 Jan 2024 09:29:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XWFkG3ek"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD2CC1EB3C;
+	Fri, 26 Jan 2024 09:29:06 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E32A22031E;
-	Fri, 26 Jan 2024 09:29:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB50220306;
+	Fri, 26 Jan 2024 09:29:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706261353; cv=none; b=Rs5+V07Rprg2W36TCbTSyfA0M5PDb6fA0AKXRZzVflnY9dCd2RfZpiweeR2rvGvOWvHb1ODawJEfYpd9SLaFMtgYglykep7krpsQKu7Ag8sOruKdfWs+Epvs1ZyilyTA8yTR2GKb0fwn9ty3tOJ9hp++hAOqxqwhNsI946QE3Dk=
+	t=1706261346; cv=none; b=MF/ZtRRL2wnyXXOkKAAmATqWLLgZXxprb3yhsyoOsppprGRDCjD306bIQZBx6HOHh29aDrxaCXUg1cQL3MOHd+Cf5PHttMhQuZd8AV7I0+ss4+xmOl8dCVYy92fO6mjKFxeYjrodF1HWJjvllatBznd/GnP9Hr6Zv/73+DNjB6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706261353; c=relaxed/simple;
-	bh=2GO7Kp3vfdLO1W9xw3SynsKsljBCFhfa3Vk61NJbQzc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dPdMSVqCNDnT0EN3QSh89ogivuPI+4YPIqtRZchNBVFiNCK35mjRPVmjdWsQiLhJ5wKFrNRlxy+CE/VuHiq4Jj4c6LMr51FrBnSkveV3x/cQM43MD6H3WMLyD3cze8E2iU9P8/i31jlTOUqiFBZPmfSdUp78CRelt9L2cBogIlw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XWFkG3ek; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-51022133a84so190639e87.3;
-        Fri, 26 Jan 2024 01:29:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706261350; x=1706866150; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fkuT80Nd2CrCGFE0QyltfIZ25KKAHv/Lip39TXBqmQk=;
-        b=XWFkG3ekEDNRQ3kgf4dC49CVElIIKXplBwpWID4rklUU9Ry8ZR+YnRuo2Vbi0i6Obg
-         APdHBI6fatoki1xRNPCjGbEb1Fdpxxx3I5/LivwJh4No3GMXN/FVS+THlj/Wt/G7d/bp
-         VW3H+D5vTmNWRHX76xllKbU4zK55hAP2NMnfgeRgNS9bXn21lcCu/qsieLYwjuq/H5vc
-         bA69ElcxLsBYrEjWKoL0e8ThYj8xLeJNuZbMrX1qwQpR2YSgQ7uv82Ad3CUSedzHdb0I
-         mwyp/QblcNs67zJ/NCTj4ObsLzP3sqDFnzLgWG6exuxuSHxZ4Sxk5vCMu699rykSj8ex
-         y+lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706261350; x=1706866150;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fkuT80Nd2CrCGFE0QyltfIZ25KKAHv/Lip39TXBqmQk=;
-        b=SUqz6JOnPHhohJMIe+RxmdQFi7N35cfyq7fmEO05C+19bhSH5gOHL8FioMHYtvcVID
-         6MVSGDDEEVBYdlWcbgndCExOhO99iwysRiYcc9ybePhsUul3oZefb7/JrOMn2FPBJj7h
-         5qdhztWeqwgTisxZYiNs23FAG6rqQ5JHkW0/5U8xsqJKsvZZjwF8ngndkpNWoOoNaoaQ
-         oK333R3rE4X5xl1CJlhLzT0d6ISMfDh77ZvorJRSoXjNDb2gHujy1oQhxZbOeIebS+ew
-         K8CJ1x502euu0LE7MF6hEtz0TuSwJ2o57eY6ibhTICtOHZLIakZ1uI+KtfoaeHcocYId
-         Vzyw==
-X-Gm-Message-State: AOJu0Yxx/JUvDXt9I5/eDwjR9UsYqERDlhGxFxFKwL2i7y0iHMoXVE8P
-	yhM8lWWpsQKkZ8Xyw95WjKWpv6ynU2rsy7c/jFWsiOj1Q3NSu6Ygqlc5x2KRVlVMVpKDQj8Oyfz
-	laxvAyhbPkoj7HRqy58o+C/BSHMQ=
-X-Google-Smtp-Source: AGHT+IHV6gJ2ig0SHMuOTHGQ+PLhYhpTaXEWeuYlswOgs1YTMiZiy85Ixu1kYbFdpgt0BVJ8+WbJ4vEwQODjQvUsc68=
-X-Received: by 2002:a05:6512:31d1:b0:50e:aa04:b2eb with SMTP id
- j17-20020a05651231d100b0050eaa04b2ebmr1762991lfe.42.1706261349518; Fri, 26
- Jan 2024 01:29:09 -0800 (PST)
+	s=arc-20240116; t=1706261346; c=relaxed/simple;
+	bh=Hnzj1dbxPNTRvPfTPH6nZ90w/0sCk1rEYGZl/TqkXj4=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=G9uGo3z5f6BfPa4p1yShthABdF+JbXkTRc9uX3yazutRPobp7RiUhx8FkZlnDPDnxH4ZQRPpxfo9Od+Hhc+9QSbk1uW2OX9H/+5KuEUXVlm/NstmWydBVC5YmAJyanK0knD4L67UXBM/3gZT4lCFQ3hMLJxEiRyBl4eW3xiYCYU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4TLsn16fWfzNlfX;
+	Fri, 26 Jan 2024 17:28:05 +0800 (CST)
+Received: from canpemm500005.china.huawei.com (unknown [7.192.104.229])
+	by mail.maildlp.com (Postfix) with ESMTPS id D48F218006D;
+	Fri, 26 Jan 2024 17:29:00 +0800 (CST)
+Received: from [10.174.176.34] (10.174.176.34) by
+ canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 26 Jan 2024 17:29:00 +0800
+Subject: Re: [PATCH 1/7] ext4: avoid overflow when setting values via sysfs
+To: Baokun Li <libaokun1@huawei.com>, <linux-ext4@vger.kernel.org>
+CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<yangerkun@huawei.com>, <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
+References: <20240126085716.1363019-1-libaokun1@huawei.com>
+ <20240126085716.1363019-2-libaokun1@huawei.com>
+From: Zhang Yi <yi.zhang@huawei.com>
+Message-ID: <b1c09c5b-ec26-e59f-8e13-15b77227ca9a@huawei.com>
+Date: Fri, 26 Jan 2024 17:28:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125071901.3223188-1-zhaoyang.huang@unisoc.com>
- <CAGWkznGpW=bUxET8yZGu4dNTBfsj7n79yXsTD23fE5-SWkdjfA@mail.gmail.com> <ZbNziLeet7TbDKEl@casper.infradead.org>
-In-Reply-To: <ZbNziLeet7TbDKEl@casper.infradead.org>
-From: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date: Fri, 26 Jan 2024 17:28:58 +0800
-Message-ID: <CAGWkznGG1xLcPMsWbbXqO5iUWqC2UmyWwcJaFd4WBQ-aFE=-jA@mail.gmail.com>
-Subject: Re: [PATCHv3 1/1] block: introduce content activity based ioprio
-To: Matthew Wilcox <willy@infradead.org>
-Cc: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org, 
-	Andrew Morton <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>, Yu Zhao <yuzhao@google.com>, 
-	Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <niklas.cassel@wdc.com>, 
-	"Martin K . Petersen" <martin.petersen@oracle.com>, Hannes Reinecke <hare@suse.de>, 
-	Linus Walleij <linus.walleij@linaro.org>, linux-mm@kvack.org, linux-block@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, steve.kang@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240126085716.1363019-2-libaokun1@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500005.china.huawei.com (7.192.104.229)
 
-On Fri, Jan 26, 2024 at 4:55=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
-> wrote:
->
-> On Fri, Jan 26, 2024 at 03:59:48PM +0800, Zhaoyang Huang wrote:
-> > loop more mm and fs guys for more comments
->
-> I agree with everything Damien said.  But also ...
-ok, I will find a way to solve this problem.
->
-> > > +bool BIO_ADD_FOLIO(struct bio *bio, struct folio *folio, size_t len,
-> > > +               size_t off)
->
-> You don't add any users of these functions.  It's hard to assess whether
-> this is the right API when there are no example users.
-Actually, the code has been tested on ext4 and f2fs by patchv2 on a
-v6.6 6GB android system where I get the test result posted on the
-commit message. These APIs is to keep block layer clean and wrap
-things up for fs.
->
-> > > +       activity +=3D (bio->bi_vcnt + 1 <=3D IOPRIO_NR_ACTIVITY &&
-> > > +                       PageWorkingset(&folio->page)) ? 1 : 0;
->
-> folio_test_workingset().
->
-> > > +       return bio_add_page(bio, &folio->page, len, off) > 0;
->
-> bio_add_folio().
->
-> > > +int BIO_ADD_PAGE(struct bio *bio, struct page *page,
-> > > +               unsigned int len, unsigned int offset)
-> > > +{
-> > > +       int class, level, hint, activity;
-> > > +
-> > > +       if (bio_add_page(bio, page, len, offset) > 0) {
-> > > +               class =3D IOPRIO_PRIO_CLASS(bio->bi_ioprio);
-> > > +               level =3D IOPRIO_PRIO_LEVEL(bio->bi_ioprio);
-> > > +               hint =3D IOPRIO_PRIO_HINT(bio->bi_ioprio);
-> > > +               activity =3D IOPRIO_PRIO_ACTIVITY(bio->bi_ioprio);
-> > > +               activity +=3D (bio->bi_vcnt <=3D IOPRIO_NR_ACTIVITY &=
-& PageWorkingset(page)) ? 1 : 0;
-> > > +               bio->bi_ioprio =3D IOPRIO_PRIO_VALUE_ACTIVITY(class, =
-level, hint, activity);
-> > > +       }
->
-> why are BIO_ADD_PAGE and BIO_ADD_FOLIO so very different from each
-> other?
-These two API just repeat the same thing that bio_add_page and
-bio_add_folio do.
->
-> > >  static __always_inline __u16 ioprio_value(int prioclass, int priolev=
-el,
-> > > -                                         int priohint)
-> > > +               int priohint)
->
-> why did you change this whitespace?
->
-> > >  {
-> > >         if (IOPRIO_BAD_VALUE(prioclass, IOPRIO_NR_CLASSES) ||
-> > > -           IOPRIO_BAD_VALUE(priolevel, IOPRIO_NR_LEVELS) ||
-> > > -           IOPRIO_BAD_VALUE(priohint, IOPRIO_NR_HINTS))
-> > > +                       IOPRIO_BAD_VALUE(priolevel, IOPRIO_NR_LEVELS)=
- ||
-> > > +                       IOPRIO_BAD_VALUE(priohint, IOPRIO_NR_HINTS))
->
-> ditto
-These white spaces are trimmed by vim, I will change them back in next vers=
-ion.
->
-> > >                 return IOPRIO_CLASS_INVALID << IOPRIO_CLASS_SHIFT;
-> > >
-> > >         return (prioclass << IOPRIO_CLASS_SHIFT) |
-> > >                 (priohint << IOPRIO_HINT_SHIFT) | priolevel;
-> > >  }
-> > > -
->
-> more gratuitous whitespace change
->
+On 2024/1/26 16:57, Baokun Li wrote:
+> When setting values of type unsigned int through sysfs, we use kstrtoul()
+> to parse it and then truncate part of it as the final set value, when the
+> set value is greater than UINT_MAX, the set value will not match what we
+> see because of the truncation. As follows:
+> 
+>   $ echo 4294967296 > /sys/fs/ext4/sda/mb_max_linear_groups
+>   $ cat /sys/fs/ext4/sda/mb_max_linear_groups
+>     0
+> 
+> So when the value set is outside the variable type range, -EINVAL is
+> returned to avoid the inconsistency described above. In addition, a
+> judgment is added to avoid setting s_resv_clusters less than 0.
+> 
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+
+Thanks for the patch. Looks good to me.
+
+Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+
+> ---
+>  fs/ext4/sysfs.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
+> index 6d332dff79dd..3671a8aaf4af 100644
+> --- a/fs/ext4/sysfs.c
+> +++ b/fs/ext4/sysfs.c
+> @@ -104,7 +104,7 @@ static ssize_t reserved_clusters_store(struct ext4_sb_info *sbi,
+>  	int ret;
+>  
+>  	ret = kstrtoull(skip_spaces(buf), 0, &val);
+> -	if (ret || val >= clusters)
+> +	if (ret || val >= clusters || (s64)val < 0)
+>  		return -EINVAL;
+>  
+>  	atomic64_set(&sbi->s_resv_clusters, val);
+> @@ -463,6 +463,8 @@ static ssize_t ext4_attr_store(struct kobject *kobj,
+>  		ret = kstrtoul(skip_spaces(buf), 0, &t);
+>  		if (ret)
+>  			return ret;
+> +		if (t != (unsigned int)t)
+> +			return -EINVAL;
+>  		if (a->attr_ptr == ptr_ext4_super_block_offset)
+>  			*((__le32 *) ptr) = cpu_to_le32(t);
+>  		else
+> 
 
