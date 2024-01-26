@@ -1,187 +1,76 @@
-Return-Path: <linux-kernel+bounces-40135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68D8083DB0E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:38:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 355A083DB11
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:39:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1432B21427
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:38:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFD991F2583F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:39:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA8B61B94D;
-	Fri, 26 Jan 2024 13:38:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC3E71B96E;
+	Fri, 26 Jan 2024 13:39:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="r0Waz5Pv"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2071.outbound.protection.outlook.com [40.107.244.71])
+	dkim=pass (2048-bit key) header.d=toke.dk header.i=@toke.dk header.b="kXkR3aVC"
+Received: from mail.toke.dk (mail.toke.dk [45.145.95.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD9F11B81A;
-	Fri, 26 Jan 2024 13:38:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.71
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706276307; cv=fail; b=juclDkACCIKFQ0xAisZw5ApjmtxsW50DI4JHyfGJjCcSbQIayW64w5o64HhjH5H/h8ZfUmJRoa9RGAmDdxUk9uFoxaVSmi22MuOXGtTueash30L2SHZrzTdU1RdGB8ZD5FBO/AmIkBIt+PzX2MVkkNd0glb+/GLG0uK9bv7h1Aw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706276307; c=relaxed/simple;
-	bh=nK+ir5gcrsS7nvQqXtNwH9wfAa6YaKZMwxSbs6J7VVc=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=eEWcaOTLS0D7gijalc3YPzQt20rzEG9FA4UgXzvv4+0ikKbpDbpd6dn3+NBvATK+V9IupAhQ+dGZmaDvYGp5Ocne5yWdeJuy3jDsZt29209rvgxak8APXvsITvGij1a8GoS0KbGGCOhLDwVu5D4U1Rlkj5WCxfDrOlLdUBgTs1M=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=r0Waz5Pv; arc=fail smtp.client-ip=40.107.244.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A3zYjlZZHWsBx/vN2uNYlU5enUTVJkeBi6j6R6pAxKEVpXkOLLQCroYwwM8fZKJQEYr2y3QBAraYRn5q/XsIjbGy6s3ZxberRYdNcm/Why8jeXb2VuXMWXZ3zCR/IAsbE4GJnnSW1Iun2ayXWSuAaTTl8oW0FxpQHfkOLqXnTuVYo2CliSAIbGBSFLb9yvdBEPC4tELZwTLCLg3uIFCA4NEFIlu77mLImXH7EB7BKhjmITzgv+uUAWIGsO7y8VX2EpMqabWYeZfzpzVTqVyYO7F8ICouDuUoCJYu+pzcUiGZvwKYUO0gdi1H/085ZUDh1CC/eOr18s3Qrw1xrhJ3cw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=h+GUTtaKucFCq6vqq9rA+mKlwenh9lc75e2oNsZLSY4=;
- b=TH5Q00EYDiLg6P3TZEn0YklhiX7+h8YoZUqYZIj9Z1IRXuiqYf0n47xh6OCKFt7l5GN2VvJ8JpVoRRU8TT3JBSG57pbWjAufxggMGgTpDlwFaBrbKpzKQgotmxAz6bhwmAO7Pvsg+a5G1Eab0GWd18cmiSyuEMVc7wqiiFfQ9V2lma1rL3o86CehJ5hAaI9Uj4yvnRbFtAyz1HPxSFbMsOOf/m2DzhxwnjXZATGzNsNtKP7YGHboUHRKO7IbweE9Bbf9uALUb9vk/38V30vP3ZoVjk6OWAglP2S/tuC4AYp87fU2QGJ10SDFRm3J+9Dak37DWaRbGZ9WOYbt3mfWAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h+GUTtaKucFCq6vqq9rA+mKlwenh9lc75e2oNsZLSY4=;
- b=r0Waz5PvdANJYyDzy5TDig3v+irOABT7ScZmJzIrXNIChTMTNwuifE8vUl2NxnMPmT5vBJuwRVCZRo7xZzG33mLtbCCMt0JWLhaTQiGD+5hs8XpogC4BYKtZANpZbD2losUZek+ZisupLKyaXJykUXYoaXm+b3UGZItB6xQTVWQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by SA1PR12MB8162.namprd12.prod.outlook.com (2603:10b6:806:33a::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.27; Fri, 26 Jan
- 2024 13:38:22 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::e1fb:4123:48b1:653]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::e1fb:4123:48b1:653%4]) with mapi id 15.20.7228.026; Fri, 26 Jan 2024
- 13:38:22 +0000
-Message-ID: <f5fe17fc-2d5a-4f78-9315-9fd05f58142e@amd.com>
-Date: Fri, 26 Jan 2024 14:38:16 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] drm/ttm: Make sure the mapped tt pages are decrypted
- when needed
-Content-Language: en-US
-To: Zack Rusin <zack.rusin@broadcom.com>, dri-devel@lists.freedesktop.org
-Cc: =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
- Huang Rui <ray.huang@amd.com>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-References: <2b5648aa-f83d-d8f7-b0fd-39c859f32f33@linux.intel.com>
- <20240105135105.1921947-1-zack.rusin@broadcom.com>
- <CABQX2QMg4L3oQe4pU4saBgopXw7CKyGrQa_LKE0xtSwyEKacnw@mail.gmail.com>
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <CABQX2QMg4L3oQe4pU4saBgopXw7CKyGrQa_LKE0xtSwyEKacnw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR4P281CA0137.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:b8::17) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6575417721;
+	Fri, 26 Jan 2024 13:39:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.95.4
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706276347; cv=none; b=ji2tu3rELedoufqbNaKYSTcD0sCJxZyMp+C4Vd1NQxhzsvKSGOiHjfatoBjap1V3erTNfULxx9PhnvZdDy8so3djUe8YdMb7sfu+5JkAa4lNOamnV+Ep8i7OUmGPwHCVzK6Pl69yzh9X/hPCHnrm3YlvGRFWtNGCCMsR213pQ8g=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706276347; c=relaxed/simple;
+	bh=yCaDjzdWcbhK07CAVmR/ivtafOSKm96VmZfb+JZOqNw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=gizpW7SA64eU/4yST0oWhDxeE8xHjE1mIjY9QQs6Z7JQa/gJfxUgGuuJhdxki3yuRCpyMB1Ygtl8xZX5clvNqHH+5yqxOPuCXb/SisXgeqOuVv/l8bBnU4M8huVZnaNXTbgRYgpHf+8dBJfcIwKkgD4ntUv6frmlhgayPtN84ZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=toke.dk; spf=pass smtp.mailfrom=toke.dk; dkim=pass (2048-bit key) header.d=toke.dk header.i=@toke.dk header.b=kXkR3aVC; arc=none smtp.client-ip=45.145.95.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=toke.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=toke.dk
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=toke.dk; s=20161023;
+	t=1706276331; bh=yCaDjzdWcbhK07CAVmR/ivtafOSKm96VmZfb+JZOqNw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=kXkR3aVCYPHqL3cwfLaY4XComOmonvUBof4FaAZCDeVC14mTzh6KpiVGomGZV86g7
+	 ERAs4ZbqJofzUjzL1RFRYT9X45hNNtrWDZ2mQv5AWn5PpOhKBg7OTWtld3PV7wL3UV
+	 w0A/MW5WzmlIl3akjyV63o+ofWpjDItq7DLZig4hxQIISXJM+xW5lVpa6x+Y92/WlR
+	 VIg9jsEHuiJ4iuKo/2YEdGlna7Hdxy/Ej3SRyIOdRjL5BzWxalVBNujBqYS+khJpHU
+	 qM/whkSm+aSTE5ftNFHyEppO1pug4GjRZXjEjDHtXrI56HBoKfbx0xaDBvsGfse5Uu
+	 l2IYilT7zigWg==
+To: Colin Ian King <colin.i.king@gmail.com>, Kalle Valo <kvalo@kernel.org>,
+ linux-wireless@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] wifi: ath9k:  remove redundant assignment to
+ variable ret
+In-Reply-To: <20240116155452.2315351-1-colin.i.king@gmail.com>
+References: <20240116155452.2315351-1-colin.i.king@gmail.com>
+Date: Fri, 26 Jan 2024 14:38:51 +0100
+X-Clacks-Overhead: GNU Terry Pratchett
+Message-ID: <877cjw2p04.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|SA1PR12MB8162:EE_
-X-MS-Office365-Filtering-Correlation-Id: eb365a75-4acd-421b-87fa-08dc1e74108d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	6CLbZwRuCd6hEYb7Dx6EoykDm8jRnbjrjJ//JlNQWLDmFlh1EyxYWLYhgD2Htioxe2iBFk5B87TYsRlP1rj69ro0B45vcPBymjMLB+pUJu0NXun6AgndktlSPJBsgkvNlB6SgaKOnfutC+SXNozz4qkofgaY5L8M8O7mnWO0JgSKSqJCZ19ByMFt5KvFKGJ0cWf/cCE2lyMWU0fvGk5dm/XdWIDZRYEGF1iznhXN6exBft99QPmgcqj2kSlJJuZwpj+0B5+LOTxOrRW0+ATe+vCKFULtStthxY3HIhD+NrS53Ic08A40dYLvbNC4Z5DO0z96fyi/uH8ie77vml/oRstlNWGELgwbANCJzBxOu9dwwr5gT9IqbSJjqW20zKxTBswI0VzpuMgUKJivZtVGVXP+R0hS/9fIYUsRyAT/glxdVrQgYWTumido7XoqM+xqzHY5cXhwqOriO+I/G2LIM8lpq4/y+Nc+/WUETZaI4NMg/1a4yjWUtqG7Xz5wA7snzqgO1WJ+RN1twsS5Xd77KdatNvJCWGxnrkgMAVJspkhczn9OIH6Z+D9o82oJG/JUY1lJtKzUTgrtb0EnIOO6zT+ton3qG8ruzhlmAlZrSbUteBgBglSl/rOnD71ZvxoX28zBz7ywke7xkzAKK3RCNA==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(346002)(39860400002)(376002)(396003)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(36756003)(38100700002)(31686004)(83380400001)(6506007)(2616005)(26005)(53546011)(6666004)(41300700001)(6512007)(2906002)(478600001)(5660300002)(31696002)(316002)(66556008)(66476007)(54906003)(66946007)(66899024)(86362001)(6486002)(8936002)(8676002)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?QTN0R01yd2w5VzZ4SXFMekNrU0JRcUt5V25LV3VjOFRlaUpBckNPK1JYWHdU?=
- =?utf-8?B?N2pOQWtIZlpKWFVlTWMzY0pGMjZGZG9kcktGRlJhazBYL0xmVjgrTUNubGhT?=
- =?utf-8?B?V0xIQSthUFNacFY2NkdFYklTVHVMMmc1VVRXNUpiZ2QrOVg2T005MzRKeEVI?=
- =?utf-8?B?bUpGcDIwaVcvaXhySVpSQ1dEbkRKWTI5OThXaERVVkFsaEY0bTRGajgxVHZT?=
- =?utf-8?B?bTk2VVFOQ2lYaDh4RTZ1cjJvZVNvam1zWDBheGlMbUE5d3phVTlHbzdmd3RW?=
- =?utf-8?B?dWlpZ01xYlBtR3I3bWsxZ1l0M2hlT1UwcS9KalFqOWE4Uk5MNUZmZno2VDQy?=
- =?utf-8?B?Ykp0YWtoVit5TjdwVE1KcXhxNjZXNVlLUm1HbTYzcHBmblJRYVVYRXVoNmNQ?=
- =?utf-8?B?a0JvUm95VDBENVcyVW04RmRaMzhZams0RzI0akthVms5dU02N0lVWXMxU1Jm?=
- =?utf-8?B?WEdpQkZRTHJMMDdmL0JmZUpyd21yamYwR1NFUWJFY0xkNnk1SU1LdFRlWHpG?=
- =?utf-8?B?eFl3cGRRRlpMVU9IRER2WnJGTWZkM0ZGZjJpUWlJcWh3SkxYTTZXUlNiZjdN?=
- =?utf-8?B?dkcwazRJNXVyNVJUaGZTSVhRRUFNVjJRM2FkdW4yYzczOElCcEx0UCt0eHlF?=
- =?utf-8?B?MkFEVWVFQy9yZzRmRFFiTVdBQ3JPVnNVSEZScklOZEtGc3pVUk4zbXZyb3dm?=
- =?utf-8?B?Vis1VlpBVDZ3RlJTWXQyajdZVWVMUURncG1VbXdMc1VyaXBCc0VwOUh3YmVV?=
- =?utf-8?B?MG5TaVZ5K1FCOXpteU5RektoSklueE40OXdtdTNLTGF6VHRvMTdTUTNDTWRK?=
- =?utf-8?B?VVQ5U2NNazJnS2QrWlVjYXhHRUh2R2NMODM0N0FMOFRGUFAyZDZPZ0tVRjMx?=
- =?utf-8?B?Y1JxNDZPTjNTaXpLODZaMEVyUnpoemlnamFSVVJna0V5WHoxY2RoUC9oSGh4?=
- =?utf-8?B?VUhYN3ZnbktxaTNvdy9zdy8xaWkzaUJaVzI2eGZDZk1zMGNNb2w5cCs4NXkx?=
- =?utf-8?B?L2JXY20yMjFDUVhNQVJqVUVDWHZYektNdHZZenI1ZElPTkYrU1Z0TlY0S1VX?=
- =?utf-8?B?aWE0QlFVbW1GUkZ0SWhrY3R2Sk1XYWhubnM2Rkc0b2U4TVhnN2xrUFUvbjA1?=
- =?utf-8?B?Y3c5OUl4YW1HZ2xOclVjSGprcVlIL2p1aWJKRDFTTUhBTHg4SWpLcWx0YUM3?=
- =?utf-8?B?WW1nTk9qQnRnL05DVmQ2am1OYktHdDZSYlJQYjl4MjFkeE40TjcrNHZabjFV?=
- =?utf-8?B?WUtxNGJWcERnZ1FwVmQ3R25QbHZIZXBlZWl6WkRZR1V2SEdqaVB2cUttRDFF?=
- =?utf-8?B?MS9aMFp5R2liWEo2OHc1Ylkvc3duMWs0WG1rUG9Ld0dZM0MyaXl6bGwzWlQr?=
- =?utf-8?B?Z0J0QllMN2VnVFZudDBTanh2YTNUMDBpakNHSGxaZjRCamZEVW9mcUk0ekJU?=
- =?utf-8?B?TkVkZUUyNmxlSm5JRUtvTkRvT0lYMHdwN2Rsak8yVDZkcHdUZDNpQlJneWND?=
- =?utf-8?B?cUZLUkhhcXRlSHJsZHU3M0lodll5b1BrZmdiQjNWVGxiYndHV0kzVGQ4bVNi?=
- =?utf-8?B?Um1pQTVlRHlCN0xwN0w3MkhJUThoU25VOVR3ektneTFtR1RHVit5dmU3NXdF?=
- =?utf-8?B?ZmQxdXd3Z0FwUXhTY1pkZnVLQWVOQzUrVjRRZ3MrVm04TmpzV040ekwwVzlD?=
- =?utf-8?B?cWZielRtZ0hUbWQ3UUhBcmo1Lys5bDhUWllxQURwRng4cXJVTm5qSW41dGh3?=
- =?utf-8?B?OCtZVjFZY2tOcEFCYnVXUng5WG9ka3F4eGNHaFVFVTFwK04zSFNqdzViSlJZ?=
- =?utf-8?B?T1F6UEJXWXlHKzBRc1FuSDZ4dXhIdFN5dDRORWd0RnlNclA5OStnYVpCN1g3?=
- =?utf-8?B?bHlxZmJreXZiNHNKZndqS0tuMkJhcDg4YWsrdzNHWjBFUXFwSlBnMlZ3SnM1?=
- =?utf-8?B?VVc1b2t3dXZ4WGZhdGxiYnIyUStaUkk4ZTRiaXptRW84eHFoazFGZC9UdWV1?=
- =?utf-8?B?QU1ud0k0M29XSVYyeUNYcTNMdTE0NThUdlg4ZTAxblJLUjNGcmJNd2Z4dmV1?=
- =?utf-8?B?TGlvRzNwSzRFbU9vWHljeXFWcFBPZTFHaTZ1R1VTa3czZmFucFZFN1Q4dkp1?=
- =?utf-8?Q?1mjIxuCPg/nrra6eNjV+Bds6o?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eb365a75-4acd-421b-87fa-08dc1e74108d
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 13:38:22.3924
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: //A68E9ohceVO8wyDRFzmzTI9zhCXdJfWMEPaAn4w5AjLDhUJAD51/LDfiKHIHSJ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8162
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Am 26.01.24 um 06:10 schrieb Zack Rusin:
-> On Fri, Jan 5, 2024 at 8:51 AM Zack Rusin <zack.rusin@broadcom.com> wrote:
->> Some drivers require the mapped tt pages to be decrypted. In an ideal
->> world this would have been handled by the dma layer, but the TTM page
->> fault handling would have to be rewritten to able to do that.
->>
->> A side-effect of the TTM page fault handling is using a dma allocation
->> per order (via ttm_pool_alloc_page) which makes it impossible to just
->> trivially use dma_mmap_attrs. As a result ttm has to be very careful
->> about trying to make its pgprot for the mapped tt pages match what
->> the dma layer thinks it is. At the ttm layer it's possible to
->> deduce the requirement to have tt pages decrypted by checking
->> whether coherent dma allocations have been requested and the system
->> is running with confidential computing technologies.
->>
->> This approach isn't ideal but keeping TTM matching DMAs expectations
->> for the page properties is in general fragile, unfortunately proper
->> fix would require a rewrite of TTM's page fault handling.
->>
->> Fixes vmwgfx with SEV enabled.
->>
->> v2: Explicitly include cc_platform.h
->> v3: Use CC_ATTR_GUEST_MEM_ENCRYPT instead of CC_ATTR_MEM_ENCRYPT to
->> limit the scope to guests and log when memory decryption is enabled.
-> Hi, Christian.
+Colin Ian King <colin.i.king@gmail.com> writes:
+
+> The variable ret is being assigned a value but it isn't being
+> read afterwards. The assignment is redundant and so ret can be
+> removed.
 >
-> Gentle ping on that one. This is probably the cleanest we can get this
-> code. Can we land this or is there anything else you'd like to see?
-
-Sorry for the delay.
-
-I'm not too familiar with the technical background, so I can't 100% 
-judge if this is correct or not.
-
-But if it works for you I think we should give it a try, feel free to 
-add my Acked-by and push upstream through whatever branch you like.
-
-Regards,
-Christian.
-
+> Cleans up clang scan build warning:
+> warning: Although the value stored to 'ret' is used in the
+> enclosing expression, the value is never actually read from
+> 'ret' [deadcode.DeadStores]
 >
-> z
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@toke.dk>
 
