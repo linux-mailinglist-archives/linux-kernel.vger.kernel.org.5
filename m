@@ -1,163 +1,105 @@
-Return-Path: <linux-kernel+bounces-39708-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39707-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0426183D52E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:01:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ED6283D52A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:00:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E31F1F21FD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:01:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28FB2284C79
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:00:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFFDF58AA7;
-	Fri, 26 Jan 2024 07:39:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83E10134AD;
+	Fri, 26 Jan 2024 07:39:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GGO/xmxd"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="zLo4dWgC"
+Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8967111700;
-	Fri, 26 Jan 2024 07:39:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF67C11700;
+	Fri, 26 Jan 2024 07:38:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.30.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706254785; cv=none; b=ME4pKaoTw+vOj5fc0gVv3cj9mRotwBNW1ccUD2ad6jw7t2xim4W67GndabG49LIwJIHwgONN4oYyS/d5px2PpIgIt/F9YMp4Xto+quXfabn2jnCn2/dViHut6oamtqFKlb3VgqcAVS3JFHWn0Ga582uTsYEYQA+p/TbhxHv5TBU=
+	t=1706254775; cv=none; b=N1SCIEMGlq4JhFSzOc0l2MAxSNQbFnJlvze4QOv08YHEXa23XUzeIGLrTALXKIGQ9UZySWJj7pzOFIDkpk/SdW0k6qLPfu1qoLKDtOY2qXr92NXsrtJZYT7Lm3wIXZAeduvn+5UU8JX0H/OI2RWINEiHfdcP+JHvSHRrkkL1Rvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706254785; c=relaxed/simple;
-	bh=U9mNTNgZsSW+bVbmEnmLkw4a/p6CuTR5Z5KKpN05XeQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DQbFBCmBPoefhun4yYTvqsjFmOXldO1pclML3QbD/VbKhAyaNymne3CAyOZcj8w8YfbkdjtWnyho6CFs/GxIbhicLLk6pUxDNFVHe0MrchCcEVd1Bev/6rz3PJHudtYrj9eL1DtXKkAXNsgYQ5WZSiqJrrZnNtZbXvjaJOQYqx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GGO/xmxd; arc=none smtp.client-ip=134.134.136.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706254783; x=1737790783;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=U9mNTNgZsSW+bVbmEnmLkw4a/p6CuTR5Z5KKpN05XeQ=;
-  b=GGO/xmxdPb+7QhoqXI/U8mp+6Mc8vkv1wfaEpqlUxM2SGGjv+pTqt9nl
-   eyuNa4kuc6MhKDtZuU+2D9Gza8F3otPcLf/eT2nO3SLjuXog8jIkR/cBI
-   zqDLTS9RngUxP0Ab7TX2N5xHAB6fp737zFP1XO86FwGAK7PcQQYQmEh18
-   PN1n+hvLgY40Muzf5cSgG22DY/vg3bo1kBYVG5YVB2xK+ZpRHBqF4KVw5
-   WG+iGn6qli9JAnlEjjjDxXZlJPyzCiTKpNWF0iwvXXetYTWxrr6z4/ZTx
-   9YvRwkmNDr3+x1BXvkNCGTn3oLsmYjqpG5vUhAwpPNx+LYTAJazY0PXbS
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="406145211"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="406145211"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 23:39:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="2684770"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orviesa004.jf.intel.com with ESMTP; 25 Jan 2024 23:39:41 -0800
-Date: Fri, 26 Jan 2024 15:36:20 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, David Matlack <dmatlack@google.com>
-Subject: Re: [PATCH 1/4] KVM: Always flush async #PF workqueue when vCPU is
- being destroyed
-Message-ID: <ZbNg9BFT2o6NbgRX@yilunxu-OptiPlex-7050>
-References: <20240110011533.503302-1-seanjc@google.com>
- <20240110011533.503302-2-seanjc@google.com>
- <Zau/VQ0B5MCwoqZT@yilunxu-OptiPlex-7050>
- <ZbFfVxp76qoBstul@google.com>
+	s=arc-20240116; t=1706254775; c=relaxed/simple;
+	bh=y0iGSnvyjhTRSIeQajhDHn3zQJ55cRwhkmfcVDXPfZY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=krh4zRxKCzmKDt3/6jB+5IU4pEdcVn+qjC65cQFZGgJ+XDEise4cIr83rQH1Jr8wwv5PazyZ1EbyOtZzRHY1qjr8NgDGR9YyDvv68ErOQLTPT3GDLRRShvh6E+s7cwR8+bJZOGzIWUpaStp2vRgKZgfofpYusewuyxv7bxRs2Bw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com; spf=pass smtp.mailfrom=geanix.com; dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b=zLo4dWgC; arc=none smtp.client-ip=188.40.30.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geanix.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
+	s=default2211; h=Content-Type:MIME-Version:Message-ID:Date:References:
+	In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=twh0SmkJpVHTiPqxYhT2V5fgzxZvyCL2qrzAwbznik0=; b=zLo4dWgCzNQPAt2B9C1CXkQPpA
+	mmToX2NNjs2i2gs5AgHScZVeGZHase5YhlcA1itUVn5DdGbw/G84Grw3j+XSmJZrVqtY1dV5enM8G
+	YURjru8FDnib+K+N1YKmUzLZzvxJvk0+xWNl4ldOvoqItTT+y31EuPOlmb0ghbD1j0xZ2Pg9yomkV
+	Lu/VclOy2I4ang4w97q6C2MGbZYLVMu3po7Svq5ATRKuYapa1ZFE/WEQ3yYZydZwEQvIB7k8i69JZ
+	3YHvMeStvdajqJkPPBmJ2vAtR9jWVSbIyWpqJGlexaoojm9ZDznXYwKxo8gM5Zv6avjCHn1tMY8mZ
+	pn3TgfUg==;
+Received: from sslproxy04.your-server.de ([78.46.152.42])
+	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <esben@geanix.com>)
+	id 1rTGmv-0001xk-TZ; Fri, 26 Jan 2024 08:38:09 +0100
+Received: from [87.49.42.9] (helo=localhost)
+	by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <esben@geanix.com>)
+	id 1rTGmu-000L87-Uk; Fri, 26 Jan 2024 08:38:09 +0100
+From: Esben Haabendal <esben@geanix.com>
+To: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: linux-i2c@vger.kernel.org,  Gregor Herburger
+ <gregor.herburger@ew.tq-group.com>,  Pengutronix Kernel Team
+ <kernel@pengutronix.de>,  Andi Shyti <andi.shyti@kernel.org>,  Shawn Guo
+ <shawnguo@kernel.org>,  Sascha Hauer <s.hauer@pengutronix.de>,  Fabio
+ Estevam <festevam@gmail.com>,  NXP Linux Team <linux-imx@nxp.com>,
+  linux-kernel@vger.kernel.org,  Jinjie Ruan <ruanjinjie@huawei.com>,
+  Alexander Stein <alexander.stein@ew.tq-group.com>,
+  linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] i2c: imx: move to generic GPIO recovery
+In-Reply-To: <20240126060719.GD381737@pengutronix.de> (Oleksij Rempel's
+	message of "Fri, 26 Jan 2024 07:07:19 +0100")
+References: <01abf8ccc0af74b4fb0124977ed6bdfb9d7107b6.1706190706.git.esben@geanix.com>
+	<20240126060719.GD381737@pengutronix.de>
+Date: Fri, 26 Jan 2024 08:38:08 +0100
+Message-ID: <875xzgh7dr.fsf@geanix.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbFfVxp76qoBstul@google.com>
+Content-Type: text/plain
+X-Authenticated-Sender: esben@geanix.com
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27165/Thu Jan 25 10:51:15 2024)
 
-On Wed, Jan 24, 2024 at 11:04:55AM -0800, Sean Christopherson wrote:
-> On Sat, Jan 20, 2024, Xu Yilun wrote:
-> > On Tue, Jan 09, 2024 at 05:15:30PM -0800, Sean Christopherson wrote:
-> > > Always flush the per-vCPU async #PF workqueue when a vCPU is clearing its
-> > > completion queue, e.g. when a VM and all its vCPUs is being destroyed.
-> > > KVM must ensure that none of its workqueue callbacks is running when the
-> > > last reference to the KVM _module_ is put.  Gifting a reference to the
-> > > associated VM prevents the workqueue callback from dereferencing freed
-> > > vCPU/VM memory, but does not prevent the KVM module from being unloaded
-> > > before the callback completes.
-> > > 
-> > > Drop the misguided VM refcount gifting, as calling kvm_put_kvm() from
-> > > async_pf_execute() if kvm_put_kvm() flushes the async #PF workqueue will
-> > > result in deadlock.  async_pf_execute() can't return until kvm_put_kvm()
-> > > finishes, and kvm_put_kvm() can't return until async_pf_execute() finishes:
-> > > 
-> > >  WARNING: CPU: 8 PID: 251 at virt/kvm/kvm_main.c:1435 kvm_put_kvm+0x2d/0x320 [kvm]
-> > >  Modules linked in: vhost_net vhost vhost_iotlb tap kvm_intel kvm irqbypass
-> > >  CPU: 8 PID: 251 Comm: kworker/8:1 Tainted: G        W          6.6.0-rc1-e7af8d17224a-x86/gmem-vm #119
-> > >  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-> > >  Workqueue: events async_pf_execute [kvm]
-> > >  RIP: 0010:kvm_put_kvm+0x2d/0x320 [kvm]
-> > >  Call Trace:
-> > >   <TASK>
-> > >   async_pf_execute+0x198/0x260 [kvm]
-> > >   process_one_work+0x145/0x2d0
-> > >   worker_thread+0x27e/0x3a0
-> > >   kthread+0xba/0xe0
-> > >   ret_from_fork+0x2d/0x50
-> > >   ret_from_fork_asm+0x11/0x20
-> > >   </TASK>
-> > >  ---[ end trace 0000000000000000 ]---
-> > >  INFO: task kworker/8:1:251 blocked for more than 120 seconds.
-> > >        Tainted: G        W          6.6.0-rc1-e7af8d17224a-x86/gmem-vm #119
-> > >  "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > >  task:kworker/8:1     state:D stack:0     pid:251   ppid:2      flags:0x00004000
-> > >  Workqueue: events async_pf_execute [kvm]
-> > >  Call Trace:
-> > >   <TASK>
-> > >   __schedule+0x33f/0xa40
-> > >   schedule+0x53/0xc0
-> > >   schedule_timeout+0x12a/0x140
-> > >   __wait_for_common+0x8d/0x1d0
-> > >   __flush_work.isra.0+0x19f/0x2c0
-> > >   kvm_clear_async_pf_completion_queue+0x129/0x190 [kvm]
-> > >   kvm_arch_destroy_vm+0x78/0x1b0 [kvm]
-> > >   kvm_put_kvm+0x1c1/0x320 [kvm]
-> > >   async_pf_execute+0x198/0x260 [kvm]
-> > >   process_one_work+0x145/0x2d0
-> > >   worker_thread+0x27e/0x3a0
-> > >   kthread+0xba/0xe0
-> > >   ret_from_fork+0x2d/0x50
-> > >   ret_from_fork_asm+0x11/0x20
-> > >   </TASK>
-> > > 
-> > > If kvm_clear_async_pf_completion_queue() actually flushes the workqueue,
-> > > then there's no need to gift async_pf_execute() a reference because all
-> > > invocations of async_pf_execute() will be forced to complete before the
-> > > vCPU and its VM are destroyed/freed.  And that in turn fixes the module
-> > > unloading bug as __fput() won't do module_put() on the last vCPU reference
-> > > until the vCPU has been freed, e.g. if closing the vCPU file also puts the
-> > 
-> > I'm not sure why __fput() of vCPU fd should be mentioned here. I assume
-> > we just need to say that vCPUs are freed before module_put(KVM the module)
-> > in kvm_destroy_vm(), then the whole logic for module unloading fix is:
-> > 
-> >   1. All workqueue callbacks complete when kvm_clear_async_pf_completion_queue(vcpu)
-> >   2. kvm_clear_async_pf_completion_queue(vcpu) must be executed before vCPU free.
-> >   3. vCPUs must be freed before module_put(KVM the module).
-> > 
-> >   So all workqueue callbacks complete before module_put(KVM the module).
-> > 
-> > 
-> > __fput() of vCPU fd is not the only trigger of kvm_destroy_vm(), that
-> > makes me distracted from reason of the fix.
-> 
-> My goal was to call out that (a) the vCPU file descriptor is what ensures kvm.ko
-> is alive at this point and (b) that __fput() very deliberately ensures module_put()
-> is called after all module function callbacks/hooks complete, as there was quite
+Oleksij Rempel <o.rempel@pengutronix.de> writes:
 
-Ah, I understood. These are ensured by your previous fix which grants
-kvm_vcpu_fops the module owner. LGTM now.
+> ....
+>> +	struct i2c_bus_recovery_info *bri = &i2c_imx->rinfo;
+>>  
+>> -	dev_dbg(&pdev->dev, "using scl%s for recovery\n",
+>> -		rinfo->sda_gpiod ? ",sda" : "");
+>> +	bri->pinctrl = devm_pinctrl_get(&pdev->dev);
+>> +	if (IS_ERR(bri->pinctrl))
+>> +		return PTR_ERR(bri->pinctrl);
+>
+> According to the commit message - "pinctrl becomes optional", but this
+> code stops probe if pinctrl will fail for one or another reason. I do
+> not see any place returning NULL on fail. Do I'm missing something?
 
-Thanks,
-Yilun
+The caller, i2c_imx_probe(), does only check for -EPROBE_DEFER, and
+simply ignores any other error codes.
+
+I assume it is on purpose, so any problems with initializing i2c
+recovery does not cause complete failure of the i2c controller, which
+seems sane to me.
+
+/Esben
 
