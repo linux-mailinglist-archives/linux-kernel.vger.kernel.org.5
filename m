@@ -1,178 +1,205 @@
-Return-Path: <linux-kernel+bounces-40046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A5F083D956
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:30:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7E3983D966
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:33:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00DC929112B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:30:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A8671F237AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:33:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9B84175AE;
-	Fri, 26 Jan 2024 11:30:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BF6B1429B;
+	Fri, 26 Jan 2024 11:33:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="dFea5G2+"
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="ZFovAG6d"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11olkn2010.outbound.protection.outlook.com [40.92.20.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 339A214288;
-	Fri, 26 Jan 2024 11:30:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706268636; cv=none; b=qFj0vN9bSKGCV3VLOnDbV4UT6UeV3O1qSf4nTw7vPI3s/Pf+Id0TKui3HCWS4bgnth1BSY8Oh+UbR9QdHOWhpbLT+T+RF370Aavpl1BobXP60UZs+/h/hU6OV+oE1ti1CJP6KvPg+ZFNB6ciBSGv0aHf05vSZhaWd5XJ/BEGBog=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706268636; c=relaxed/simple;
-	bh=NSTX9kNK93b04j7cYjXZO1vuc2cJ/wQwmvrZ1xq6/rQ=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Jhvf8QyZe+XES6h3WXwl/+yZpI7Fu+sHAa59G9Zg/X9mmlCPMXdaFuSwDlpOlJYMjnLMbK1s8SxpfYBSDEr1a11R5YWG8WtXc341oyPvszVh3D3vnhADIOIEeF9ANvnuW25yH+N4ceifwhHUGfvhBmw+4/LKnJUajp2Iz99RqyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=dFea5G2+; arc=none smtp.client-ip=67.231.149.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40Q5FRg0020176;
-	Fri, 26 Jan 2024 05:30:21 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=6zBAuVE0NVRV/x0erau5kI86zT8TPKbw+9p+CXbtpmM=; b=
-	dFea5G2+8opk0ZBF3oWEDmbb9FZ8ra3JX/UussQdd9wXFAY7FxkGNgX00It2l9lL
-	s7s4hCo4AQLMrZ+OJvRfK3pJnTevDsY4QqY8og4T4UwObPjp+I5CCn8xbeLMJSH1
-	fg8pQz2ui4OlPNXr9RaI7JfHWZKGKPznUG7SwE/ADacgfVqQlkdMYITBxRpUAqRi
-	h4ylfM/OUp1pP8YeL/kpjERX5Q8EWzSgfOI9OBo3tgjE57KY6gspeRcgcUyCf7wz
-	pGJAuztNsbcGZ+Du4Z5Bq0bx6CY8gVOLTI1D2FEjU9P/WrSu6ZZeSpsBhrSG96mD
-	HWm2jeWlFs4Cil+RwnETsg==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3vtmfhksnq-3
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Jan 2024 05:30:21 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 26 Jan
- 2024 11:30:18 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40 via Frontend Transport; Fri, 26 Jan 2024 11:30:18 +0000
-Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (LONNG2L6RQ3.ad.cirrus.com [198.90.238.116])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id EF156820247;
-	Fri, 26 Jan 2024 11:30:17 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        "Stefan
- Binding" <sbinding@opensource.cirrus.com>
-Subject: [PATCH v1 4/4] ALSA: hda/realtek: Add quirks for various HP ENVY models
-Date: Fri, 26 Jan 2024 11:30:07 +0000
-Message-ID: <20240126113007.4084-5-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240126113007.4084-1-sbinding@opensource.cirrus.com>
-References: <20240126113007.4084-1-sbinding@opensource.cirrus.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D3D214280
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 11:32:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.20.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706268779; cv=fail; b=CeLWYuydiKUPFTrFI2j/wJZKVaCmzZOtGEnZivaQ36/qZdOKiMQEQ0+xJKDo/i0uUq6i8NonFtaGBVTBsPQpAZrew8Bnz1+efKr62UKDLJvYyxHM9w4LIahvNanIUCA9Rk86Mr4cYq2LZ0QRuF4GvtPfBglm8QwZWTGvnPenCtY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706268779; c=relaxed/simple;
+	bh=/yQsYmhpzglEGrVtdzUlw98YZZrGRlEaZctJbbtSmmM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=H+9UilswslVOZ1E03Yau4e9/ybHKEDx7rJskYY+1IwXL2R3IXU60j7mazklp8E/PKc7eTP6UI4xawRrhHxa3L5Dmnm7C7q3Xyj9OOGreHUiLIk8YOxRm07EzwiZicOf4qUkfs9rozXVJzmGNFMI1xYFPftwCe36fh27gRo81o1o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=ZFovAG6d; arc=fail smtp.client-ip=40.92.20.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UF4uggHvSVuwTlDMgoNT9gMnMkjOzMgaZnD8xh0oL/ZS5ynFqFHHZw1Efs7l+Bct8yxzSigfjrl8rTy7tLh6BAEkkKX2dmfQZdCTwoklNLsJeSeDT/FJuiU1msLiSpXi7hUS8IXEguvd0uf6CxiSca31HcIthyPlS89sH2DO0m+rCzDTobR/iRQwEiBQ4ITFqHdFpzb5741/sacCKBid0+wMbq8mg4x6HDAwsPz8ggPNeOHKZaU3siMg3hJ/hFmpBxH3RxOhvzuFNSEBOc6Ulv5Lru0u+B8EbhwBz1H8TXv0ETDU7RspxzipDv+Jbs2eC2rgySFf8sTJAgMPVZaaIg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iRPCH1TxfsnOzhetMeOTcGu/rbVLdrtb3UU3sZY4aIE=;
+ b=YUOUHq2AZQWmatAsKH6exKvlbzZSM9NCUfy2BDgwFlzFFthCyDthCPOWzoriY2SjCa/Gfxjf/jmIY/S+PMhpl1sT6EpjifqGpxUtaNMXTRWEEt8uN4TYCax/9i+AOhRVmn2BsFZ+9uW92R8orCkchYon9aWk2vAH+gFBObkrFN0hzGAgebdCSaZwsaSkb2LF637r7O4gcSVoIiMLU1O8Buei65Ed/I/xeLne9c8isT3Sisw8eUpDHwbD4tIrls2N9Kg0f9gmQiV/TJP6ly2dc1EkmMlWgoe8a1rVopTt2rPkSPDx9qFqOZZ9TIcrCzOJdJCBmkvDQa/GuHOWmH+YaA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iRPCH1TxfsnOzhetMeOTcGu/rbVLdrtb3UU3sZY4aIE=;
+ b=ZFovAG6dlcMdM9OO19ZGUPk5msFSCuz4EodPkJZBF1vexLYMHz5j8VtA244zWC4LtCdsjXfEFCOGqZvmfeKa0y1jaZwlb1QZCMQx5rHNB791+GZsCz9NfSzmOIyOWKp+uYzzi31oLGud+GZx/HYYw1KwTNIoe0zDcp2VVhL61S9ypU/WGaNwBMxSa1jXVroRBDK7Sxa1OY7++uwhejWYpGLHuAGtL69tMHImLmYQ83jxhFcDUGrNh94IRMPIUy/hnM7IUQ+g8sxlQ0RmxDUduqEUxHwF2z8IZnOH81rTfNnspmfTfkoyTOx0N1b/fuBpiy+DbUCCca59eooiCrUHoQ==
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
+ by PH7PR20MB5120.namprd20.prod.outlook.com (2603:10b6:510:1b3::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Fri, 26 Jan
+ 2024 11:32:54 +0000
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::406a:664b:b8bc:1e6b]) by IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::406a:664b:b8bc:1e6b%2]) with mapi id 15.20.7228.027; Fri, 26 Jan 2024
+ 11:32:54 +0000
+From: Inochi Amaoto <inochiama@outlook.com>
+To: Inochi Amaoto <inochiama@outlook.com>
+Cc: Conor Dooley <conor.dooley@microchip.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Conor Dooley <conor@kernel.org>,
+	Chen Wang <unicorn_wang@outlook.com>,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Subject: Re: [PATCH] MAINTAINERS: Setup proper info for SOPHGO vendor support
+Date: Fri, 26 Jan 2024 19:32:40 +0800
+Message-ID:
+ <IA1PR20MB4953B353554E71776D4E89DDBB792@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240126-squabble-vitally-7dea14d09e18@wendy>
+References: <20240126-squabble-vitally-7dea14d09e18@wendy>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [LmgO9Vr2/YESrHs8W2YTKyxUvD4xCpkA3C+371ybbdop2NQC04TPW5zP7TuLY7Sk]
+X-ClientProxiedBy: TYBP286CA0027.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:404:10a::15) To IA1PR20MB4953.namprd20.prod.outlook.com
+ (2603:10b6:208:3af::19)
+X-Microsoft-Original-Message-ID:
+ <20240126113241.924381-1-inochiama@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 3cVufsskXaXarIvSIWMA79mf1V-7-qMw
-X-Proofpoint-GUID: 3cVufsskXaXarIvSIWMA79mf1V-7-qMw
-X-Proofpoint-Spam-Reason: safe
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|PH7PR20MB5120:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5c130155-1e86-43db-bb5d-08dc1e628988
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	NuBg7WabM65vMibBGTyKHOnUjCEvthxI0uCYxpQ7VLxVuEKJqOqbfq1iTpa6ypTWt6UbXGSLdZRRr4TaeMSY79RiKZKaNONR7KP6PMjdEMFbpKsXwUTklP/je+KRogumR+fuH8WKeGRyi/i4oZ83JzMGtqqrBvQJ0U9YWdH/TteJWkZ2QzjLgEzWWUs/Z1Bv5eyO1kn2XJZjDq8dJICrBL8PpG5y0pxNKBgi/BA/wfaEg/u/42GkFbr+JajJ2Ssdu7vbbzqsXsukV8uQJ0UE+Smkyc5o3WCDMPr80xXmusiAM0DVC2OsVGhHJDVmmiRjW3PHWgjGyuTxI7MszKAtbypCXZryvI7vwluzEADA70PKyIp28otss4kwPVkUwh1/LdTF59D/6ciPVz3CgW0ivpl9zWT4oea04eyjtDOMRr8hgpGnJy+g8Gc8Cpzk2Q4f0CUHJkcKNqpbj3ROTquYqCS6oSN73aIcrUOKopKIO9aiM2S7VBKonn6yMd7hKilHUtxJphJHJFqG1ztNLtixeRxcGWLPjDCQwN4a14pJXYr+Hhr/kh4YVz9NgVYo+tqrtkzS92Ytpehigl4qVjXZ2FVsvAyZcgJ2wARatZEbCeQ1eKeHCrQY+tFHOQ3kz/u+
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?oLBp6Pq+i1LYEPxNK36nZz6byddIOv3zC0Bdy0LjItHj1VdZCmn2WrnJ+H0n?=
+ =?us-ascii?Q?h/1rqUPZcGzkoCfrz62mSThIeCxoQa4+bPHrozBZpYEC/pqaS5J6lNvN0Tt2?=
+ =?us-ascii?Q?WQkpEEfERWWAGuvHZejdfggWTlMaY24jy2aTTnQXNRl/htUFJbDRI9fxDuzP?=
+ =?us-ascii?Q?dVBQUzYe46geYWmhM5Wi1CkD+qcpLpNhcPbAY4JToKkSPoPsMWpemq7Iokzf?=
+ =?us-ascii?Q?99lUCjnnqbUKmxjdo8a38lOccS4Pe2hH1ZbLy1ANQug2oGLhFhJhwYpWwbUP?=
+ =?us-ascii?Q?FRmft15ORt2o5fkRHG70Tbc2gQ7WFDQZHdK1zAX3olwgmIPgbx7gl1k5EZ+u?=
+ =?us-ascii?Q?wtLWZA/cgwhNeMhwGLSosg1I1qiRwnwqgIqdUn+31nXS1DSyIU/8pY4b4hBI?=
+ =?us-ascii?Q?RfgNtc/A4rwTn0ovIdSq7T2/H+c6zF7Gjt831ql0AZWUROwMYIzzP85yD1PJ?=
+ =?us-ascii?Q?hhSExN4aZ3U8RaUgC0kcWPITi+Aq2F8b7F48//p/QQHF8p24Is1gXQqmi/a7?=
+ =?us-ascii?Q?lPEgPwwUZy4nskW8Hy/p6Wd29UnFeteRuRYEoUAMurvJHYYrly90lSedcYpB?=
+ =?us-ascii?Q?3V44Y342V6aT3y7E2pl63jpaKI+A7iKUDv0t2pJGvQWSskeXlpX9dVFYwute?=
+ =?us-ascii?Q?WWjK9FtLR9Ax9vdgjHOyHHMFjswQ20Nv6RCtxt9XmtHaM0UKRcbSYJogN094?=
+ =?us-ascii?Q?cCAwhF1OlCeD/cPcslUrxqB2HmaPOOOwC50PYecojFhbkWFOMZQeVLgLiZzC?=
+ =?us-ascii?Q?vh4CADrc9dMhAIQo6T319QdVRLhZOjCeexR2KtQYQTdh9pwUOKUG3nZ2gQKw?=
+ =?us-ascii?Q?Y0KGjllRGvfaZGE7zVkspxGzW5I+VUmhtUv9BlaPCfpyt0TP8tcYNsajqUdT?=
+ =?us-ascii?Q?baSma8cxGC0OLAPuApnsscpiQaV9Bkd47eOTVCHKr/G+JwZIdrR324BIohJ4?=
+ =?us-ascii?Q?gDXLFQDSuOAYmVjVr4tvoeZs1iEfcgGIGnPzYKtYArR5ngIBvRwfEhWP4+aD?=
+ =?us-ascii?Q?MqTzBlEs9QVPwG8j/PmSSgGBL9Bl6Y0tieqwrWOBOmtnEPZL81bxD84+9jpA?=
+ =?us-ascii?Q?Aqet9bSfNUHwUw790XZMNjbV3pQxHTRpH86Ugzm0PwxV9Q4mkmwEyEsgL0Ds?=
+ =?us-ascii?Q?ZLBHhTkxO2yAgvIca3duZeTPtwF+emyhWe4cdedpod5lVyhi8IKbaGJwLKmx?=
+ =?us-ascii?Q?6ofSuuV8WV/dRBAVcY6UoZVNh0BK8ctdTaK5n6U3s5o5/22Rl9UOIkcvv4e1?=
+ =?us-ascii?Q?FQsDS7CuSl5ynJNEQ9kPJZvz6e0wXbs0cBttTUwJiw=3D=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5c130155-1e86-43db-bb5d-08dc1e628988
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 11:32:54.5004
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR20MB5120
 
-These models use 2 or 4  CS35L41 amps with HDA using I2C or SPI.
-Some models have _DSD support inside cs35l41_hda_property.c.
+From: Conor Dooley <conor.dooley@microchip.com>
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- sound/pci/hda/patch_realtek.c | 40 +++++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+>On Fri, Jan 26, 2024 at 02:04:50PM +0800, Inochi Amaoto wrote:
+>> Add git tree that maintaines sophgo vendor code.
+>> Also replace Chao Wei with myself, since he does not have enough time.
+>
+>Ideally Chao Wei can spare some time to ack the patch though?
+>
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 42ee37af24bc..d6659b5f663c 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9747,9 +9747,21 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x89c6, "Zbook Fury 17 G9", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x89ca, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
- 	SND_PCI_QUIRK(0x103c, 0x89d3, "HP EliteBook 645 G9 (MB 89D2)", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
-+	SND_PCI_QUIRK(0x103c, 0x89e7, "HP Elite x2 G9", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8a0f, "HP Pavilion 14-ec1xxx", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8a20, "HP Laptop 15s-fq5xxx", ALC236_FIXUP_HP_MUTE_LED_COEFBIT2),
- 	SND_PCI_QUIRK(0x103c, 0x8a25, "HP Victus 16-d1xxx (MB 8A25)", ALC245_FIXUP_HP_MUTE_LED_COEFBIT),
-+	SND_PCI_QUIRK(0x103c, 0x8a28, "HP Envy 13", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8a29, "HP Envy 15", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8a2a, "HP Envy 15", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8a2b, "HP Envy 15", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8a2c, "HP Envy 16", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8a2d, "HP Envy 16", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8a2e, "HP Envy 16", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8a2e, "HP Envy 17", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8a30, "HP Envy 17", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8a31, "HP Envy 15", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8a6e, "HP EDNA 360", ALC287_FIXUP_CS35L41_I2C_4),
- 	SND_PCI_QUIRK(0x103c, 0x8a78, "HP Dev One", ALC285_FIXUP_HP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x103c, 0x8aa0, "HP ProBook 440 G9 (MB 8A9E)", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8aa3, "HP ProBook 450 G9 (MB 8AA1)", ALC236_FIXUP_HP_GPIO_LED),
-@@ -9758,7 +9770,9 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x8abb, "HP ZBook Firefly 14 G9", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8ad1, "HP EliteBook 840 14 inch G9 Notebook PC", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8ad2, "HP EliteBook 860 16 inch G9 Notebook PC", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8ad8, "HP 800 G9", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8b2f, "HP 255 15.6 inch G10 Notebook PC", ALC236_FIXUP_HP_MUTE_LED_COEFBIT2),
-+	SND_PCI_QUIRK(0x103c, 0x8b3a, "HP Envy 15", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x103c, 0x8b42, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8b43, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8b44, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-@@ -9784,11 +9798,33 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x8b92, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8b96, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
- 	SND_PCI_QUIRK(0x103c, 0x8b97, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
-+	SND_PCI_QUIRK(0x103c, 0x8bdd, "HP Envy 17", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8bde, "HP Envy 17", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8bdf, "HP Envy 15", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8be0, "HP Envy 15", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8be1, "HP Envy 15", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8be2, "HP Envy 15", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8be3, "HP Envy 15", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8be5, "HP Envy 16", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8be6, "HP Envy 16", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8be7, "HP Envy 17", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8be8, "HP Envy 17", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8be9, "HP Envy 15", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x103c, 0x8bf0, "HP", ALC236_FIXUP_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8c15, "HP Spectre 14", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8c16, "HP Spectre 16", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8c17, "HP Spectre 16", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x103c, 0x8c46, "HP EliteBook 830 G11", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8c47, "HP EliteBook 840 G11", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8c48, "HP EliteBook 860 G11", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8c49, "HP Elite x360 830 2-in-1 G11", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8c4f, "HP Envy 15", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8c50, "HP Envy 17", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8c51, "HP Envy 17", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8c66, "HP Envy 16", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8c67, "HP Envy 17", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8c68, "HP Envy 17", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8c6a, "HP Envy 16", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x103c, 0x8c70, "HP EliteBook 835 G11", ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8c71, "HP EliteBook 845 G11", ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8c72, "HP EliteBook 865 G11", ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED),
-@@ -9798,7 +9834,11 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x8ca2, "HP ZBook Power", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8ca4, "HP ZBook Fury", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8ca7, "HP ZBook Fury", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8cdd, "HP Spectre", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8cde, "HP Spectre", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x103c, 0x8cf5, "HP ZBook Studio 16", ALC245_FIXUP_CS35L41_SPI_4_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8d01, "HP EliteBook G12", ALC287_FIXUP_CS35L41_I2C_4),
-+	SND_PCI_QUIRK(0x103c, 0x8d08, "HP EliteBook 1045 G12", ALC287_FIXUP_CS35L41_I2C_4),
- 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
- 	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
--- 
-2.34.1
+I have asked them about acking. But sadly, he seems to have no time.
+And he agreed to remove himself from the maintainer file.
 
+>>
+>> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+>> ---
+>>  MAINTAINERS | 9 +++++----
+>>  1 file changed, 5 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 39219b144c23..0dbf2882afbf 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -20446,12 +20446,13 @@ F:	drivers/char/sonypi.c
+>>  F:	drivers/platform/x86/sony-laptop.c
+>>  F:	include/linux/sony-laptop.h
+>>
+>> -SOPHGO DEVICETREES
+>> -M:	Chao Wei <chao.wei@sophgo.com>
+>> +SOPHGO DEVICETREES and DRIVERS
+>>  M:	Chen Wang <unicorn_wang@outlook.com>
+>> +M:	Inochi Amaoto <inochiama@outlook.com>
+>> +T:	git https://github.com/sophgo/linux.git
+>>  S:	Maintained
+>> -F:	arch/riscv/boot/dts/sophgo/
+>> -F:	Documentation/devicetree/bindings/riscv/sophgo.yaml
+>> +N:	sophgo
+>> +K:	[^@]sophgo
+>
+>There's a single instance of this "[^@] business in the whole file,
+>is it really needed?
+>
+>Also, you can fold in
+>
+
+It looks like I have made a mistake. "[^@]" is not necessary. I will
+remove this.
+
+>diff --git a/MAINTAINERS b/MAINTAINERS
+>index bf107c5343d3..cc8e240ba3e2 100644
+>--- a/MAINTAINERS
+>+++ b/MAINTAINERS
+>@@ -18859,6 +18859,7 @@ F:	Documentation/devicetree/bindings/riscv/
+> F:	arch/riscv/boot/dts/
+> X:	arch/riscv/boot/dts/allwinner/
+> X:	arch/riscv/boot/dts/renesas/
+>+X:	arch/riscv/boot/dts/sophgo/
+>
+> RISC-V PMU DRIVERS
+> M:	Atish Patra <atishp@atishpatra.org>
+>
+>
+>if you want. I get CC'ed on everything under the sun anyway from the DT
+>MAINTAINERS entry, so this at least might reduce some confusion about
+>who is applying what.
+>
+>Cheers,
+>Conor.
+>
+>
+
+Thanks for reminder, it is better to reduce confusion.
+I will take care of this.
+
+Regards,
+Inochi.
 
