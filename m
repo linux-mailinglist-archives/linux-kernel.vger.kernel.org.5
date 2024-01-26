@@ -1,224 +1,132 @@
-Return-Path: <linux-kernel+bounces-40077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C37A83D9CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:56:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD6C483D9CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:57:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30D071C21D21
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:56:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A5CC281563
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:57:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5B3018E1F;
-	Fri, 26 Jan 2024 11:56:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D7E018E06;
+	Fri, 26 Jan 2024 11:57:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="E4i8Of7c"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LFjWPSH5"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D3B91B963
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 11:56:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E05B17BB9;
+	Fri, 26 Jan 2024 11:57:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706270185; cv=none; b=fjlmZKLO7uk7PwXY2cQ67chdukbpbWRoDWEpeI7xPPoCOweizLgcNwwgiDOJc+cOyfdqKNaahNVpdYK/yzlHfrx3IkWfTe/qICaKBChNn+HGugDt3hqZmQontJlkOwmlFVdvqIjClzvvUxVpjZiTIiM20ui9XmH/5pxyGNZfmzA=
+	t=1706270243; cv=none; b=vGjzKz/qwMN4XSf0Kj7RCKhqlc4utenEFXfkJSxhz06GePMn5eJ8940SK/doSNN0t/ripolvI6A4L+bBnPAcA4EDthW+UXKDd8kGuv3G64kW8YiiVs+aZM6v0i6SErWIYM0MNIqEh63JapOF/ajH3fBjfD1AQCsjUEs0L6hv478=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706270185; c=relaxed/simple;
-	bh=RmGbAEvyMyBmZPV9rMtVayM5gvBAINtVmRS710SV+sM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mLYA8dkvfLG9h8RQpyN/amjnqEYs7F3F9s4KWCSmsCtOlL4VycuWGL0Y5qVlSCIlYJ/esCN26mNY5NREbHGPdc6ol6fXIhQIwps3ZgWML4c10zprTKu/vpE5s3/5W/0tLsUa0Ylkg/TDndoTfv87bg4Pxkbljv4uh2nAghh0WI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=E4i8Of7c; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40ee6ff0c7dso2612555e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 03:56:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706270182; x=1706874982; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DO5Cw99+U4E+0Nt0Wph/a1bGBWtbN/z5sxXuqQozhd8=;
-        b=E4i8Of7cpOA7zx9jqf89I9uAa1fdpjBU/e5zqku8N7CEnUWrepwJJsthyWVkXFWNLB
-         1lccH3QzM4z3onDLTQMWKhbDDvtVb8iEfrVnkic2eC1jWc9fsMXdSRy7zLoxMluiYg+0
-         mxEHN9Rx3W9jGOJYqf0l+nlOi3/UKoxHs5rNpQ+0tzfJ+Xi2MWCmeZoWCH+giIun3+u4
-         xZex1Zp1HysV8HsCmmxW2ypDHUEKpH+7tnFXwdisQlbLPgQWjpNxcIIYm44fKkwIKBBL
-         7Rdol7PBjJWsLfwrJLuSQH37jbOQVi9e5au48st2e1XIKWS3fM6eq+c7zFDTpx8dpDJp
-         Wj5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706270182; x=1706874982;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DO5Cw99+U4E+0Nt0Wph/a1bGBWtbN/z5sxXuqQozhd8=;
-        b=BN/MPTPeQrKTt+C9C4MHgYCFX6VqwZcbPcJsfFPH0R1lIDv/CJgIfxrrOWOj2Kiry4
-         I0RDVswqP9oMriXiWXtodkc0u/KcYaPZjpl854wsgRkz7P7fUkjIDHY3j1uulUvdl9mX
-         hB90jiweSPMAOsyVaUFaBeoo8J/YgO4lNUtay+LdNfDjgyITIZH/+418MCJPuDOhHT7Z
-         CSW7ldT8rm2IXmBXwYlA6c7aj/NEzIW48aOrKkBElkkAc2+oC88shL7GXA7qQsAoQU85
-         IALa+icvz5FtOWWtiyH42umicGH8SGzWKiyN/ozh8njSuE+/H82YvTGk9xjxapFRehDE
-         xUcg==
-X-Gm-Message-State: AOJu0YwpBMjBHBlEPJTBv92YLVigbmtYTxMTqbs/cZG7+C+HnSmRmimy
-	4D9FH0vcmxrkvRjQFtLP1sWVNoYxG89Zxm1KcCQlFjH8vc76dkKFU5353vBq2pk=
-X-Google-Smtp-Source: AGHT+IHmdKLzey2QUAfoaZyCALkG/ipXSmR5+Ufuq+v1N1QQdVg3ypQp3xdsFV2v37UQKEtWI2DvjA==
-X-Received: by 2002:a05:600c:5191:b0:40e:8799:7348 with SMTP id fa17-20020a05600c519100b0040e87997348mr596666wmb.68.1706270182598;
-        Fri, 26 Jan 2024 03:56:22 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id vo1-20020a170907a80100b00a2c11a438a8sm556451ejc.25.2024.01.26.03.56.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jan 2024 03:56:21 -0800 (PST)
-Message-ID: <3e8dfaf3-85a4-42bf-829c-4835f3de2d35@linaro.org>
-Date: Fri, 26 Jan 2024 12:56:19 +0100
+	s=arc-20240116; t=1706270243; c=relaxed/simple;
+	bh=tN3dkWpIc3gME9QQTNhlZjc9wz+9nnvN5lcfplh8yV8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=n2nfP1Wvzi/2cPq/oebfFL5ynlKdxs9VMBJlIVqiCb//f57B/GwPQsoqnL6vhZkvC7fhZH9D74n3OC0vA+kUofTxkAgMToBcjyWhSQ7DJu52NmCx7JJzad9jWQ704MbyxERa6Rv9VOWh9ORA/yfP0SmpLWnoHgn6Ud6vpuDt7bs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LFjWPSH5; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706270239; x=1737806239;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=tN3dkWpIc3gME9QQTNhlZjc9wz+9nnvN5lcfplh8yV8=;
+  b=LFjWPSH5EnLAJLph/YxhjeTKHLuLsQUt9amaxImTlLxylyUco1/2awkZ
+   OpgoKAiQBeBO67eOpJnXWEqC+24SLqnFEdMT21ijPm14wNiLIltStEgvu
+   auBKz3SkBTtHvH+ljjMbWBqRPue5zbe5cYSFcTKr8lM3nN5j6pnvYRpiy
+   xLZPcdm4dho6IkbzR580Yih1hlFJsycFWkbien29CVFHQiCaqsohSA3Ry
+   540rFnJELVpPs+w/LuGSMQUo65P6BPN+Zisy63ST3e4yN3s9fizFHfLhH
+   AZgHoI3QswtPLDlejnKzW+Jw/fN2kRXrF0uVo9ip6LLEcK7u9pv/MbKHS
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="9131838"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="9131838"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 03:57:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="930348517"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="930348517"
+Received: from lkp-server01.sh.intel.com (HELO 370188f8dc87) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 26 Jan 2024 03:57:16 -0800
+Received: from kbuild by 370188f8dc87 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rTKpe-0000zs-0c;
+	Fri, 26 Jan 2024 11:57:14 +0000
+Date: Fri, 26 Jan 2024 19:56:37 +0800
+From: kernel test robot <lkp@intel.com>
+To: Andrew Davis <afd@ti.com>, Sebastian Reichel <sre@kernel.org>,
+	Support Opensource <support.opensource@diasemi.com>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Andrew Davis <afd@ti.com>
+Subject: Re: [PATCH 08/21] power: supply: max77693: Use
+ devm_power_supply_register() helper
+Message-ID: <202401261917.tA05PFDO-lkp@intel.com>
+References: <20240123163653.384385-9-afd@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 08/17] clk: eyeq5: add platform driver
-Content-Language: en-US
-To: =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
- Gregory CLEMENT <gregory.clement@bootlin.com>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Linus Walleij <linus.walleij@linaro.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>, Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
- linux-mips@vger.kernel.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>, linux-gpio@vger.kernel.org
-References: <20240123-mbly-clk-v3-0-392b010b8281@bootlin.com>
- <20240123-mbly-clk-v3-8-392b010b8281@bootlin.com>
- <127fd51b-cd64-4e00-99d6-7be9b79f2dcc@linaro.org>
- <CYN33YJ10HYS.2YDXB158LFZPL@bootlin.com>
- <001993b9-ea0c-49c3-a4e5-4cea10c54082@linaro.org>
- <CYNRLZ2XTOGY.3ANWB33IDCN2W@bootlin.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CYNRLZ2XTOGY.3ANWB33IDCN2W@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240123163653.384385-9-afd@ti.com>
 
-On 25/01/2024 12:53, Théo Lebrun wrote:
-> Hi,
-> 
-> On Thu Jan 25, 2024 at 8:46 AM CET, Krzysztof Kozlowski wrote:
->> On 24/01/2024 17:41, Théo Lebrun wrote:
->>> Hello,
->>>
->>> On Wed Jan 24, 2024 at 8:05 AM CET, Krzysztof Kozlowski wrote:
->>>> On 23/01/2024 19:46, Théo Lebrun wrote:
->>>>> Add the Mobileye EyeQ5 clock controller driver. It might grow to add
->>>>> support for other platforms from Mobileye.
->>>>>
->>>>> It handles 10 read-only PLLs derived from the main crystal on board. It
->>>>> exposes a table-based divider clock used for OSPI. Other platform
->>>>> clocks are not configurable and therefore kept as fixed-factor
->>>>> devicetree nodes.
->>>>>
->>>>> Two PLLs are required early on and are therefore registered at
->>>>> of_clk_init(). Those are pll-cpu for the GIC timer and pll-per for the
->>>>> UARTs.
->>>>>
->>>>
->>>>
->>>>> +#define OLB_PCSR1_RESET				BIT(0)
->>>>> +#define OLB_PCSR1_SSGC_DIV			GENMASK(4, 1)
->>>>> +/* Spread amplitude (% = 0.1 * SPREAD[4:0]) */
->>>>> +#define OLB_PCSR1_SPREAD			GENMASK(9, 5)
->>>>> +#define OLB_PCSR1_DIS_SSCG			BIT(10)
->>>>> +/* Down-spread or center-spread */
->>>>> +#define OLB_PCSR1_DOWN_SPREAD			BIT(11)
->>>>> +#define OLB_PCSR1_FRAC_IN			GENMASK(31, 12)
->>>>> +
->>>>> +static struct clk_hw_onecell_data *eq5c_clk_data;
->>>>> +static struct regmap *eq5c_olb;
->>>>
->>>> Drop these two. No file-scope regmaps for drivers. Use private container
->>>> structures.
->>>
->>> I wouldn't know how to handle the two steps then. Two clocks and the clk
->>> provider are registered at of_clk_init() using CLK_OF_DECLARE_DRIVER().
->>
->> Right, if some clocks have to be early, CLK_OF_DECLARE_DRIVER needs
->> static ones. But your commit subject says it is a platform driver and
->> all other pieces of this code is rather incompatible with this approach.
-> 
-> That is my bad on the commit subject. What do you refer to by "all other
-> pieces of this code is rather incompatible with this approach"?
+Hi Andrew,
 
-That you depend on syscon.
+kernel test robot noticed the following build warnings:
 
-If it was regular MMIO block in SoC space, then no problem.
-If you depend on anything else providing you regmap, then any initcall
-ordering is fragile and error-prone. Avoid.
+[auto build test WARNING on sre-power-supply/for-next]
+[also build test WARNING on linus/master v6.8-rc1 next-20240125]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Andrew-Davis/power-supply-da9030-Use-devm_power_supply_register-helper/20240124-004253
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-supply.git for-next
+patch link:    https://lore.kernel.org/r/20240123163653.384385-9-afd%40ti.com
+patch subject: [PATCH 08/21] power: supply: max77693: Use devm_power_supply_register() helper
+config: i386-buildonly-randconfig-006-20240126 (https://download.01.org/0day-ci/archive/20240126/202401261917.tA05PFDO-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240126/202401261917.tA05PFDO-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401261917.tA05PFDO-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/power/supply/max77693_charger.c:733:27: warning: unused variable 'chg' [-Wunused-variable]
+     733 |         struct max77693_charger *chg = platform_get_drvdata(pdev);
+         |                                  ^~~
+   1 warning generated.
 
 
-> 
-> I've tried to minimise the use of static variables. Therefore as soon as
-> the probe is started, we switch to the usual way of using a private
-> struct that contains our info.
-> 
->>
->> Do not use CLK_OF_DECLARE_DRIVER for cases where you have dependencies
->> because it forces you to manually order initcalls, which is exactly what
->> we do not want.
-> 
-> What should I be using? I got confirmation from Stephen that this
-> mixture of CLK_OF_DECLARE_DRIVER() + platform driver is what I should
-> be using as review in my V1.
-> 
-> https://lore.kernel.org/lkml/fa32e6fae168e10d42051b89197855e9.sboyd@kernel.org/
+vim +/chg +733 drivers/power/supply/max77693_charger.c
 
-I see. In such case I believe it is error on relying on syscon.
+87c2d9067893cd drivers/power/max77693_charger.c        Krzysztof Kozlowski 2015-01-20  730  
+1d138270d2963b drivers/power/supply/max77693_charger.c Uwe Kleine-K�nig    2023-09-18  731  static void max77693_charger_remove(struct platform_device *pdev)
+87c2d9067893cd drivers/power/max77693_charger.c        Krzysztof Kozlowski 2015-01-20  732  {
+87c2d9067893cd drivers/power/max77693_charger.c        Krzysztof Kozlowski 2015-01-20 @733  	struct max77693_charger *chg = platform_get_drvdata(pdev);
+87c2d9067893cd drivers/power/max77693_charger.c        Krzysztof Kozlowski 2015-01-20  734  
+87c2d9067893cd drivers/power/max77693_charger.c        Krzysztof Kozlowski 2015-01-20  735  	device_remove_file(&pdev->dev, &dev_attr_top_off_timer);
+87c2d9067893cd drivers/power/max77693_charger.c        Krzysztof Kozlowski 2015-01-20  736  	device_remove_file(&pdev->dev, &dev_attr_top_off_threshold_current);
+87c2d9067893cd drivers/power/max77693_charger.c        Krzysztof Kozlowski 2015-01-20  737  	device_remove_file(&pdev->dev, &dev_attr_fast_charge_timer);
+87c2d9067893cd drivers/power/max77693_charger.c        Krzysztof Kozlowski 2015-01-20  738  }
+87c2d9067893cd drivers/power/max77693_charger.c        Krzysztof Kozlowski 2015-01-20  739  
 
-Best regards,
-Krzysztof
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
