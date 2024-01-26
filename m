@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-39601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39628-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 582B283D37C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 05:37:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1584C83D3CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 05:52:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74CDB1C2331C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 04:37:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BB5F1C234D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 04:52:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4640BBE4E;
-	Fri, 26 Jan 2024 04:37:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03966BE4E;
+	Fri, 26 Jan 2024 04:52:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WD5/8M2b"
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y9/OqgHn"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 237B363AC;
-	Fri, 26 Jan 2024 04:37:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FE74AD24;
+	Fri, 26 Jan 2024 04:52:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706243845; cv=none; b=JXW1g3h52NS1c1VY2M4KrpEkHnoHx4EwI6+c6uoRb5PO68tf1ucOl1pKtjAF4Xh33jP0hrOn7lhBO2n+BaOKjVavl8jpgIfbmWhUf951mfHsyka0nJ78oU+emRAeXSHdQRF9Mlq8pV1wRo7sKUv6GHwmuZwKYNI2h/1c9kplMx0=
+	t=1706244751; cv=none; b=c197iWDdVOEvIGtZrlV5ysPNb52zt6/+Y7gu9uqEY4O1rKnFv6iF8wnhfZW85WoR146Zac7o0u6qd0AZYema13OgwjxUqBdTVlljmi2lkSAhurtnY3929u63Rr3DJ87Z6LKVwSu6UCgMkkfLWokfk/X6lGW4vIjm+hAcvf/5LQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706243845; c=relaxed/simple;
-	bh=/lo8whTbEvElJO+zsjDSggAOiShJDKs1oiKaeZlvuXE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=L1pejmrS1jZeuULtjzCO/6Zy/+pjXiHuwinTOE1DM8uCIhsvm9HkEkSPj+Yx8kPlXDBPknzyLdTCKnSLnR/2TO2sqr42TDokoDFWWkNl+XXcixOXpLsCOx2G7o+TSCmk9mei22fVTxOgmYtZLVvcd81dtOWjtMCFSZjqC7pezhc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WD5/8M2b; arc=none smtp.client-ip=209.85.222.176
+	s=arc-20240116; t=1706244751; c=relaxed/simple;
+	bh=zQfHiebOqdsQzLFwfqvLq/yJZG0N1M3/P32WI+xIGG0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=udeCWQKMnKlJ2g24aB910zT1/tEytQbBL9/bk6uDw1ScSxml+qciPxiBaWZoFFtm8FrujfNhDpmDlrhLqnl6BFd+a6J9l6ylr7gTs45Avh6rS+Zvjiv+1jubaCVaFH4b4JIXY+uapFiD1WUtLORA/xPYHNwyLyV8JrB774AOoXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y9/OqgHn; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-783cd284528so21148885a.2;
-        Thu, 25 Jan 2024 20:37:22 -0800 (PST)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d76671e5a4so35715285ad.0;
+        Thu, 25 Jan 2024 20:52:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706243842; x=1706848642; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706244749; x=1706849549; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9mYLeAukR0u3gm3qWYHyVWVtKS5fKPO237dC7PgFytU=;
-        b=WD5/8M2b3jVgXAPEpSTqGHHwmpHUqjlzdf9VpLwsn9LSRHpgJyrTdJCpNDc59Ui2uY
-         668Xqs12JL80osMq09A3O++b6ONdisQTEQ5sxmmZjuRBaNjDQn8zIVciQvHC/edgORtU
-         bJ6FsbzH7N3+lQnUVeanda76f9NUZCa98tkMI1Nt2MUySTXGDtq5YXn+n+FlkjccxQ1x
-         2uV99KBMe7ZZMvZ11ZeoQ8BL3eFI3f4R32a5562nLjBXvAvqq4zOKGL7+akoRRTHVM+2
-         n1sWcfI9lwVVpCa5wjDCQZFdH9Rl1fvs3L9pMl4sF2wTBDpIeom5TlUgAVvLq5HwfF5z
-         36PA==
+        bh=P26+gqwDuoF2xBBQQLZk1oY/V9GgXjV+6KzSOls+agk=;
+        b=Y9/OqgHn2LUsdgfHn5QI+wrE0uqgtc7L+KkBmIPo/jDgdb8uInAlDWoO8FlvRxzKKT
+         9aN3tmPBGQO6/kmRRIb4lfZ0ZQFU5TET6e87zDIs+6z7FkjDK9m+ODcsHGPJckzSr5xg
+         mRzCemz2JE38Bl9zkuyLOi7jHfn1UXAHn+mRpsEQqSPErBoVyjbsF3vwpMSvLWe/XE0U
+         YVrt8Go8WngBlQcWNjCIUBwp2EOIWDhCidHP/li+7sUdEXNlNE+jJOe9Gi0DNAoPtLTd
+         71FuNK2xHAMYU3oID2G8Sb8R2dtWDYZgcCqh7REEMd5D8eE45jGfSEzsCqXMtiIAehH4
+         yxMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706243842; x=1706848642;
+        d=1e100.net; s=20230601; t=1706244749; x=1706849549;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=9mYLeAukR0u3gm3qWYHyVWVtKS5fKPO237dC7PgFytU=;
-        b=ewzsnsrpNa2GKQDpcLgWHrQjLF2518jmWoNo0tj1UWkHbuy2iVCnUOm2hilVXCswna
-         2GRCIukrA/fuVrpL471FUpoeVwvTPpC/evvGh6xb+nW9ApSRyo9XtVbKqeZLfH1iKKAv
-         Dh6KDDt60UYfpBDfjYAUvHz8n0ON9uejlkoTdH9qu28NKxPcxbrqWXmNE+7hbMc71lBO
-         CpRBwrKzfXx3JpqXz10fxs68cc+N3qeTWjgepxBE51PZbdv5WqSwa8esmYi/vMN2iOlF
-         uhFFTNOaIXYmwmKhKbI5CKm92eGRw19+EGzT6ofhHVzHN+1eAUzX9foqed8qzeoiCoL+
-         k2QQ==
-X-Gm-Message-State: AOJu0Yz0TcIoVW52n7meapg8PmPwYooqKYEvEX9W0m1qGBJ9jaEDpGAg
-	DuC3F1k3E/LSBJSmUipULFl+6c8HK4RXT7RsVhzKiNqEKBl1PqdZ
-X-Google-Smtp-Source: AGHT+IE3WXiGBL87J9d913qF3DcXiT+DX/rqtePPHu6phSTwXrgRIGzujnddTuj2/dC4WoVVANi/Qw==
-X-Received: by 2002:a05:620a:16c5:b0:783:cdca:3bf5 with SMTP id a5-20020a05620a16c500b00783cdca3bf5mr465987qkn.98.1706243841897;
-        Thu, 25 Jan 2024 20:37:21 -0800 (PST)
-Received: from ocxma-dut.. ([153.126.233.62])
-        by smtp.gmail.com with ESMTPSA id pt4-20020a17090b3d0400b002943336a1easm99663pjb.12.2024.01.25.20.37.18
+        bh=P26+gqwDuoF2xBBQQLZk1oY/V9GgXjV+6KzSOls+agk=;
+        b=Qoc64o7dZwMF1oQefAPr6bCX6GkPa7E5NvKFG++ONebnP9x65Y5qE2r7yee/YPc23Y
+         GM5YdmRAJH0CPsL8kvTjjHXMHjHcSPyd8cQiYIcxHCpcn6eDD2PkoSrd7MpQSV1iNN+n
+         Vn0wzf4IjwxSdk6dwHIEONAa6L4uCyh+KtzTEtLHBvLqmE9UfQxh/zDK9ZtzxVBb2ucp
+         B7zRNvJ845JLixXToMTqRvSK5aazw3o3/EEUfQqI6prbsmJqsx43BXYRWCwC9LrPiqx3
+         Vpg5oPq99ilc+hrq0/Ov8jZ6COh5vRLs70TgNMHN5fRBbLRnwAirOmWwddE8g9bp+i9+
+         PSIg==
+X-Gm-Message-State: AOJu0YyKZuq4tNWR7sSEtJiJr4MsAeuBDAGV1z08K3cdTrQBpn5L1HXV
+	ZfFRkR7p/vb9mg/nnU8lvMaL2PD72aQmNGWvos8FV2iAEEjTMNav
+X-Google-Smtp-Source: AGHT+IE9jwdXNArL6NHF5udFDsw+h2e7CQ9gVUoLcoq+TSLGeYsdGuNhweDxzbMioqJFf5cjv/V0ag==
+X-Received: by 2002:a17:903:40d0:b0:1d7:79c5:8f5a with SMTP id t16-20020a17090340d000b001d779c58f5amr986229pld.134.1706244749125;
+        Thu, 25 Jan 2024 20:52:29 -0800 (PST)
+Received: from ocxma-dut.. ([153.126.233.61])
+        by smtp.gmail.com with ESMTPSA id v10-20020a170902d08a00b001d72f145ebdsm307219plv.35.2024.01.25.20.52.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 20:37:21 -0800 (PST)
+        Thu, 25 Jan 2024 20:52:28 -0800 (PST)
 From: Takeru Hayasaka <hayatake396@gmail.com>
 To: Jesse Brandeburg <jesse.brandeburg@intel.com>,
 	Tony Nguyen <anthony.l.nguyen@intel.com>,
@@ -80,8 +80,8 @@ Cc: intel-wired-lan@lists.osuosl.org,
 	laforge@gnumonks.org,
 	Takeru Hayasaka <hayatake396@gmail.com>
 Subject: [PATCH net-next v3] ethtool: ice: Support for RSS settings to GTP from ethtool
-Date: Fri, 26 Jan 2024 04:37:12 +0000
-Message-Id: <20240126043712.860424-1-hayatake396@gmail.com>
+Date: Fri, 26 Jan 2024 04:52:20 +0000
+Message-Id: <20240126045220.861125-1-hayatake396@gmail.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -100,12 +100,12 @@ In addition to gtpu(4|6), we now support gtpc(4|6),gtpc(4|6)t,gtpu(4|6)e,
 gtpu(4|6)u, and gtpu(4|6)d.
 
 gtpc(4|6): Used for GTP-C in IPv4 and IPv6, where the GTP header format
-does not include a TEID (Tunnel Endpoint Identifier).
+does not include a TEID.
 gtpc(4|6)t: Used for GTP-C in IPv4 and IPv6, with a GTP header format
 that includes a TEID.
 gtpu(4|6): Used for GTP-U in both IPv4 and IPv6 scenarios.
 gtpu(4|6)e: Used for GTP-U with extended headers in both IPv4 and IPv6.
-gtpu(4|6)u: Used when the PSC (Packet Service Charge) in
+gtpu(4|6)u: Used when the PSC (PDU session container) in
 the GTP-U extended header includes Uplink, applicable to both IPv4 and IPv6.
 gtpu(4|6)d: Used when the PSC in the GTP-U extended header includes
 Downlink, for both IPv4 and IPv6.
