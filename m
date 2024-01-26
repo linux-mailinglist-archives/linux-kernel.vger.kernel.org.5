@@ -1,159 +1,160 @@
-Return-Path: <linux-kernel+bounces-40168-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5C4B83DB83
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:11:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7917183DB91
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:14:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 243461C230F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:11:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6EF128400D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:14:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 372001C69D;
-	Fri, 26 Jan 2024 14:11:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 718121C2A5;
+	Fri, 26 Jan 2024 14:14:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="sw1IYy2s";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+PTk/i5y";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="sw1IYy2s";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+PTk/i5y"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="X6jWZwJf"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBBAA1C68A;
-	Fri, 26 Jan 2024 14:11:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4DA11C287;
+	Fri, 26 Jan 2024 14:14:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706278269; cv=none; b=XtMgJJMcdc1dAsRZRi7D2tnU2EYwL8rxe8rLSTNVm4zJhYxtol+bMC2KnBHONtUzVKXosDioMbG8RA4vLaqtebA46ngkFf+aml+/0OzneYamppcGgSihzQNe9hk9FvgcTllCMWPK+aGOkKu9WKIrtpXTbYoiiqGocypkwyBP5Cg=
+	t=1706278476; cv=none; b=jMccUmijEAACM3sHVoEbHJhrEBO93f54PaXwqlvvIDqJWhfy4beTyFUx5N50ftmZeOIEoEt1SigQoHICru6CGujXMqtrB4Y76+siqEgOZEvXadcRhPN/Xfj3ouQfEFSDnF7RpeUzsyxAw0aoOwqmL74Y2IyK2NSxyQQzUcu1yqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706278269; c=relaxed/simple;
-	bh=qGBAAeWbUe+Aj38Gk6sQP9MwEOJVNnsKQt0ttT1weRw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aHG2HLHyVH2LN4aWQXSZW17jYSJXzRjV8DqrMOQ5R9pUejH7Xs7ToZVkDMCcuH7g9Fm9sAxNaPmVnIgU8Kh3xVez69FaXtsJH8oq/xqjjIHgpioRszG2SMcjZ+oIptCQ+mk6sdlQMuLGd9fe19u42NtiQjKdS9NBHGC2WN6kcps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=sw1IYy2s; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+PTk/i5y; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=sw1IYy2s; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+PTk/i5y; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B9F8F21E6D;
-	Fri, 26 Jan 2024 14:11:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706278262; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QPcOSR/E3TI//PCWMaoAPwAv977b5GCgRXOjxXLXLX4=;
-	b=sw1IYy2s1KN05rKcWIfXJr/v/ppcZx4ZOOzkpjzry0IGx+QaTlQP8egQiMyOEa+GgPqPL8
-	MbPPWlv6B/GcIRVCJ5EJ6sb6vHOTKsy97M+99XJsgR/zGsK1jU/vQ5TIxUtiLjCvQ2SIjR
-	BRr9DPkzXYMwUmYpkv9NOe2apEte60U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706278262;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QPcOSR/E3TI//PCWMaoAPwAv977b5GCgRXOjxXLXLX4=;
-	b=+PTk/i5y5JVn1jX3eoWb06VAjdbzrI+fyeSOILElvwyGQZ4D05SgkKdXS45DdotZvielO8
-	KMij6NwZ8bW2M4AQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706278262; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QPcOSR/E3TI//PCWMaoAPwAv977b5GCgRXOjxXLXLX4=;
-	b=sw1IYy2s1KN05rKcWIfXJr/v/ppcZx4ZOOzkpjzry0IGx+QaTlQP8egQiMyOEa+GgPqPL8
-	MbPPWlv6B/GcIRVCJ5EJ6sb6vHOTKsy97M+99XJsgR/zGsK1jU/vQ5TIxUtiLjCvQ2SIjR
-	BRr9DPkzXYMwUmYpkv9NOe2apEte60U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706278262;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QPcOSR/E3TI//PCWMaoAPwAv977b5GCgRXOjxXLXLX4=;
-	b=+PTk/i5y5JVn1jX3eoWb06VAjdbzrI+fyeSOILElvwyGQZ4D05SgkKdXS45DdotZvielO8
-	KMij6NwZ8bW2M4AQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 99B9A13A22;
-	Fri, 26 Jan 2024 14:11:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id xRR/JXa9s2VbawAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 26 Jan 2024 14:11:02 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 1DF22A0805; Fri, 26 Jan 2024 15:11:00 +0100 (CET)
-Date: Fri, 26 Jan 2024 15:11:00 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+d8fc21bfa138a5ae916d@syzkaller.appspotmail.com>
-Cc: axboe@kernel.dk, brauner@kernel.org, jack@suse.com, jack@suse.cz,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [udf?] KASAN: use-after-free Read in crc_itu_t
-Message-ID: <20240126141100.s6hphczfikjbbrm5@quack3>
-References: <000000000000f8389205e9f9ec5f@google.com>
- <000000000000d227b6060fd90a48@google.com>
+	s=arc-20240116; t=1706278476; c=relaxed/simple;
+	bh=ftLuAd9U3YPVeEzec70Y/JSfQC6jcmT5YJPmcGrNDAE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=PdhEFnRYqa8PVYokJEoB5hAyZ33cq0YhqDJjP9zKlKg/toFKYf5qoUumQx+2geeDySeSojbl/h0ZzolA7rXUez1t4DdQtAB381dw80NFJu+lWxYgSR3MqjP/1PmEUysexEzTFParc9k2VJKkuxLwZyr25XI/v4eSFEzT8cRoazA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=X6jWZwJf; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40QCQ7rC005300;
+	Fri, 26 Jan 2024 14:14:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=+SpPdyF3w8Fw1tNKmk5zm/UXCiCDAnEu7aqBtZrqwjQ=; b=X6
+	jWZwJfqWJPYU5LXTLKDWkbD+7zYLaFPX1QRZo5/CLcwK3CRrlN6650Q/XVQ1GZIT
+	rJKow7yXKXeFpImvwVqa+WGTCuXO/v//TwQsP9mWIXNyzfyA5EiSBa7fi63rZSff
+	hjBandhIkhAS3GSqEcEYRNIsqckzmLvmn99PnAXclcyKi251cXpOE6xFxwzNwCXt
+	ROJxMfjSameupDRSdQL8tHbFVGzn0OPfx74gOJDTKwFWZakN4wShkmjzXVZ1ZwzY
+	592H4qbSoDvQY44XPPohaFkQrmKKg7EvzZmdEt400LpgslAaBiWaf243yEH1AM6F
+	TCHAKVOm1g89Tji5YSig==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vv4f9h8yc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Jan 2024 14:14:24 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40QEENYu021168
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Jan 2024 14:14:23 GMT
+Received: from [10.216.50.194] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 26 Jan
+ 2024 06:14:19 -0800
+Message-ID: <a4606673-64e9-4e16-8d9e-307fb37d8763@quicinc.com>
+Date: Fri, 26 Jan 2024 19:44:16 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000d227b6060fd90a48@google.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [0.67 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-2.23)[96.38%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=7474de833c217bf4];
-	 TAGGED_RCPT(0.00)[d8fc21bfa138a5ae916d];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: 0.67
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/4] arm64: dts: qcom: Fix hs_phy_irq for QUSB2 targets
+To: Bjorn Andersson <andersson@kernel.org>
+CC: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring
+	<robh+dt@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        <cros-qcom-dts-watchers@chromium.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>
+References: <20240120191904.15408-1-quic_kriskura@quicinc.com>
+ <20240120191904.15408-2-quic_kriskura@quicinc.com>
+ <wqdqkzvni4roqulgsiqxzubxcblzxnoydcwvv2av2pobjjx5o6@b7kwl6lq7hij>
+Content-Language: en-US
+From: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <wqdqkzvni4roqulgsiqxzubxcblzxnoydcwvv2av2pobjjx5o6@b7kwl6lq7hij>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 6bLippXMlQBWho7Sf-qbyUXJAPAqgD9h
+X-Proofpoint-GUID: 6bLippXMlQBWho7Sf-qbyUXJAPAqgD9h
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-25_14,2024-01-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
+ priorityscore=1501 impostorscore=0 mlxscore=0 suspectscore=0
+ mlxlogscore=999 spamscore=0 bulkscore=0 lowpriorityscore=0 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401190000 definitions=main-2401260104
 
-On Fri 26-01-24 05:12:04, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
-> 
->     fs: Block writes to mounted block devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1204f1efe80000
-> start commit:   a4d7d7011219 Merge tag 'spi-fix-v6.4-rc5' of git://git.ker..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=7474de833c217bf4
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d8fc21bfa138a5ae916d
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1442e70b280000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16db80dd280000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
- 
-Looks good:
 
-#syz fix: fs: Block writes to mounted block devices
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+On 1/25/2024 3:16 AM, Bjorn Andersson wrote:
+> On Sun, Jan 21, 2024 at 12:49:01AM +0530, Krishna Kurapati wrote:
+>> On several QUSB2 Targets, the hs_phy_irq mentioned is actually
+>> qusb2_phy interrupt specific to QUSB2 PHY's. Rename hs_phy_irq
+>> to qusb2_phy for such targets.
+>>
+>> In actuality, the hs_phy_irq is also present in these targets, but
+>> kept in for debug purposes in hw test environments. This is not
+>> triggered by default and its functionality is mutually exclusive
+>> to that of qusb2_phy interrupt.
+>>
+>> Add missing hs_phy_irq's, pwr_event irq's for QUSB2 PHY targets.
+>> Add missing ss_phy_irq on some targets which allows for remote
+>> wakeup to work on a Super Speed link.
+>>
+>> Also modify order of interrupts in accordance to bindings update.
+>> Since driver looks up for interrupts by name and not by index, it
+>> is safe to modify order of these interrupts in the DT.
+>>
+>> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+>> ---
+>>   arch/arm64/boot/dts/qcom/ipq6018.dtsi | 13 +++++++++++++
+>>   arch/arm64/boot/dts/qcom/ipq8074.dtsi | 14 ++++++++++++++
+>>   arch/arm64/boot/dts/qcom/msm8953.dtsi |  7 +++++--
+>>   arch/arm64/boot/dts/qcom/msm8996.dtsi |  8 ++++++--
+>>   arch/arm64/boot/dts/qcom/msm8998.dtsi |  7 +++++--
+>>   arch/arm64/boot/dts/qcom/sdm630.dtsi  | 17 +++++++++++++----
+>>   arch/arm64/boot/dts/qcom/sm6115.dtsi  |  9 +++++++--
+>>   arch/arm64/boot/dts/qcom/sm6125.dtsi  |  9 +++++++--
+>>   8 files changed, 70 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+>> index 5e1277fea725..ea70b57d1871 100644
+>> --- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+>> @@ -418,6 +418,12 @@ usb2: usb@70f8800 {
+>>   					  <&gcc GCC_USB1_MOCK_UTMI_CLK>;
+>>   			assigned-clock-rates = <133330000>,
+>>   					       <24000000>;
+>> +
+>> +			interrupts-extended = <GIC_SPI 128 IRQ_TYPE_LEVEL_HIGH>,
+> 
+> interrupts-extended takes a reference to a interrupt-controller as well,
+> so this doesn't build.
+> 
+> Did you mean "interrupts" here instead? Please update these and build
+> test...
+> 
+
+Hi Bjorn,
+
+  Thanks for the catch. I was using DTC version 1.4.0.
+When I moved to 1.5.0, I did see these warnings. Fixed them up and sent v3.
+
+Thanks,
+Krishna,
 
