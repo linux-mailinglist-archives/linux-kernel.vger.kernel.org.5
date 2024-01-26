@@ -1,165 +1,191 @@
-Return-Path: <linux-kernel+bounces-40668-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40669-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AC3A83E3DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:23:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C79B83E3DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:25:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B65E92874F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:23:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41AD51C21CF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:25:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D2A624A07;
-	Fri, 26 Jan 2024 21:23:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19C6C24B29;
+	Fri, 26 Jan 2024 21:25:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tzsgxdhU"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="0MsTTGuc"
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 976411DFF9
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 21:23:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BDB724B20
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 21:25:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706304227; cv=none; b=PqjkLzwHzyXCoWT/MxWKjxCiDJLLjnDCWIUFFJb0fNG/Rabu4amY5n4frBtvf4jAVUxYO/+rzFyvnxNV1n6STIDNyEOjWOa9pLSOk2qNeWP9o8UEjP+z7cFfAI9a2qmyB8adZnNAd4hHe1wjq3LGVgz161DbIdW/kZWGNCejubI=
+	t=1706304304; cv=none; b=fO7N/irBec4qrnzkq2TuZlN2u0EgENNDVuzUOb415BqVKcAngk8Q5I+VhcCWKGkf7co/SIFAG6DeLyeKfkvDtRUYhFE7WSTMU4C+/M1qODmWKyQ8Yh4ezL3WPhmkXQoJ+p23gU8PjuWQ0T4EnAz9KpPVjYy4NmhrmHwL2Cx1pG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706304227; c=relaxed/simple;
-	bh=mngwzQ1tW4ra+TgOhuZhs7sUcDu+H/klAorbuEgjoBM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FMWpey7qRJYdfXTmixQ63sJYDdTBQrg3Vxqild4uWiY952RESFaOx8eWJnFY9nhbE3HAStb9WrZeWBOka/lWL6+ruaVi6qYikuYCqEy/Xj/Mi8a2Ag4aLxQCLUrvuZhHgHSCGZP8hUHFlzUjayxLhvUbCEatfyhkOAyGxjHScEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tzsgxdhU; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2cf2adac1ccso8911461fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:23:45 -0800 (PST)
+	s=arc-20240116; t=1706304304; c=relaxed/simple;
+	bh=fAW9q4EkDHFfnVmOK3V3FffGHBBYnTq0r3oDKreuGGA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Mr4cZNd6GRcyT/0iaBMaymTuaWY4STKJKtKXg0Hm19hW5k2/6WC1PWKhyvf91fl7oaTJYEpC0nxEK1l+EvgJoK2gMWcma9KbEkuGVnFFKeJBdaNbZ4fJe8ihugQppRCb+Cmlr6cM9FKYxR3+Y5jDZ4igM0eqdkMoyqt/oH6plvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=0MsTTGuc; arc=none smtp.client-ip=209.85.210.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6e0cc84fe4dso674855a34.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:25:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706304223; x=1706909023; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nb6lh03t2Y/P5wpyJLZs3j8XPaxvw2LYek8NlAlQ38A=;
-        b=tzsgxdhUhDxcUjZimCLtlJodtzfOf09iSvVwif/+29kyNMvY0GVI51cgioc+K69riV
-         cOgCUzcUIGK9IAmIqCofsynzXkSmsh6zgmyUT0L+SoGdAtL6zLfEebpWtSXXUPeLeJz8
-         wnDjRs1AlBXd5qBSPQk+rQvU1ajlLFDuYlUsd2R+UAGV5AVdY5JeBDc96HvZoV/Wis+8
-         EcsY2QPJugr1MmvOT72rXQ9KScrc8Q3j3+52onQW2DXLFRMhlmG+NB+LPj1LXBzFCRBQ
-         5/8091tJgSKpkY089We9R8W6adjd5wcfk8gVE7rSXNccnz0xEDhduoEQFCENPl/iZBoQ
-         4w+g==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1706304300; x=1706909100; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zvanse6LjWSfCjsaBajNTZhxwBoWqH9+J1P89qwYxic=;
+        b=0MsTTGucs2o00mXlglut6CAjnmfrqnTyoJlJ5+FEDR3n1lHOPzmfc8O2sanaz0wPJ4
+         txihaUGVjvcxkiFQiYmR7tRaKy1giP9OplPPMPs5uGiS+5JAhnMIuc1B2L2czP2s07+B
+         vi5uVAUHnkouPSE9sQKI/WpSfaKMsNqVGA7b2qqGrOGBOr9/TrGFK5EGJahcoHptTFAJ
+         4aZWjsvjP/evHT4VjUdL0yc8aACtReeyxD470fH+PZvjbCNG1p/7NX7Z1MZhaQQGHoQY
+         iNu6niNm2nUc8s06cExMf3Ph/A8C4t4dIpvg6jOmBNmkf+tdwQ9rnc7c9OkXWbjdof1e
+         2aEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706304223; x=1706909023;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nb6lh03t2Y/P5wpyJLZs3j8XPaxvw2LYek8NlAlQ38A=;
-        b=AzWtnhAzCAmNh5omajcKLd544d51+3lTmSOOI341SydV4eoI1TJN8v8YbZmyKUVD2f
-         t+HgwSgRiLoObrGQinmY1VvG3gs8G4AWCsf9Y9CtuQEydNLNFq41EkNwZr+xSEtTgK2d
-         bzi92zSa47AXaI/Duuh2k/otb4aT7zwmPKHYC5Lj9x33J2YTEgxvPhSaFn9auaNENrtG
-         sHmBazsqJ502iRG8Bv0QQtKFftag3/nnhD2ARq2GY3qX3QQKiV7UGClzgksJbZcmfBGr
-         8x0YTNfx5od/PAh1mSawyJZ6ZBltlOwB6s5CQMX3/4KLI1JODwLyCiRAcZ602M5JrFLy
-         SXxw==
-X-Gm-Message-State: AOJu0YzrKjY3IAaSC9138dNLAVrb/NX5PuFAc7KEEBzyl1ljaLdmKmEL
-	1fg7y1l/Na82ADOY2oRS0xjQXqqU5fSDOkremo1bn7/hab69toW1yGjrl0pLsOI=
-X-Google-Smtp-Source: AGHT+IHgPyi0JRFd4/vgCp62QKGLsOfwgqtNUV8jYGIesmhciNt34fa6WdWZ+P+cC+dVYi3kqi9uhw==
-X-Received: by 2002:a2e:5c84:0:b0:2cd:3663:979d with SMTP id q126-20020a2e5c84000000b002cd3663979dmr284037ljb.0.1706304223477;
-        Fri, 26 Jan 2024 13:23:43 -0800 (PST)
-Received: from [192.168.231.132] (178235179146.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.146])
-        by smtp.gmail.com with ESMTPSA id ba30-20020a0564021ade00b0055d07073cc6sm999494edb.80.2024.01.26.13.23.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jan 2024 13:23:43 -0800 (PST)
-Message-ID: <f28604d2-20a8-4662-9412-f09c6bf4a67b@linaro.org>
-Date: Fri, 26 Jan 2024 22:23:41 +0100
+        d=1e100.net; s=20230601; t=1706304300; x=1706909100;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zvanse6LjWSfCjsaBajNTZhxwBoWqH9+J1P89qwYxic=;
+        b=ZyhYevrcB2f/aogiePs1Ohl25bFBvwBMJX9VCnJqZXru8ORdkDiLuVgo44yA26eDNT
+         SGd4CYwgx73om5QWFjqndWb0wyuQ/wf8TlJJ+idiM96x8i0vUbvohGuo8uHHBNmqLMn0
+         ikk78RaquZirWYzFoU98Zn8k5bMR4oyEKeyDiCg5kdX7Yx40qJds52F1H9jx/tsEdYWB
+         CR7s19z5pvNHurQhJ0XKVsm+JSPIGv+cSdBoIemN7PvMxCzwKBkhWEznNAYdrCRWww/H
+         hXM0yWusq4u4qI27Ovz2HuMtIN+gSRc1OqBCIDFexWqrMlMOUtSuQGWUcLKxZA+pArST
+         ymGA==
+X-Gm-Message-State: AOJu0YzQ9BE5ih8mCl5FmHmm/0R+qqAdqY/BAna5YEUZbXgqH+gDocZ+
+	gJ5suKRoovFXQJ4eZEZLIU7plFYtDGN5st3iYx9ZFBx1E+uV2io7DlyAiYHq53StyjNAJzo6ggB
+	O
+X-Google-Smtp-Source: AGHT+IFLj7/DgBt1M2xRzu6g2VPEDSkWoraWV0/G8hOLyAaKFXIPk8opbTM8V38gETJOihr+oD1NAQ==
+X-Received: by 2002:a05:6870:1f12:b0:218:4bea:dcf2 with SMTP id pd18-20020a0568701f1200b002184beadcf2mr312517oab.55.1706304300405;
+        Fri, 26 Jan 2024 13:25:00 -0800 (PST)
+Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
+        by smtp.gmail.com with ESMTPSA id hf22-20020a0568707a1600b0021451bfd968sm538575oab.50.2024.01.26.13.24.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 13:24:59 -0800 (PST)
+From: David Lechner <dlechner@baylibre.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: David Lechner <dlechner@baylibre.com>,
+	linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] spi: move split xfers for CS_WORD emulation
+Date: Fri, 26 Jan 2024 15:23:57 -0600
+Message-ID: <20240126212358.3916280-2-dlechner@baylibre.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] arm64: dts: qcom: sc8280xp: Introduce additional tsens
- instances
-Content-Language: en-US
-To: Johan Hovold <johan@kernel.org>,
- Bjorn Andersson <quic_bjorande@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240126-sc8280xp-tsens2_3-v2-1-8504d18828de@quicinc.com>
- <ZbPfeq6ElA3vMf_O@hovoldconsulting.com>
- <20240126165113.GS2936378@hu-bjorande-lv.qualcomm.com>
- <ZbPlRsx3czAHRBew@hovoldconsulting.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <ZbPlRsx3czAHRBew@hovoldconsulting.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 26.01.2024 18:00, Johan Hovold wrote:
-> On Fri, Jan 26, 2024 at 08:51:13AM -0800, Bjorn Andersson wrote:
->> On Fri, Jan 26, 2024 at 05:36:10PM +0100, Johan Hovold wrote:
-> 
->>> Shall you submit a follow-on patch to set the polling delays to zero
->>> for the other thermal zones (cpu, cluster, mem) so that we don't poll
->>> for those?
->>
->> I optimistically interpreted Konrad's response as a promise by him to do
->> so ;)
->>
->> I do like his patch which remove the poll-properties for non-polling
->> mode. Would be nice to not first change the values to 0 and then remove
->> the properties...
+This moves splitting transfers for CS_WORD software emulation to the
+same place where we split transfers for controller-specific reasons.
 
-That was my intention as well..
+This fixes a few subtle bugs.
 
-> 
-> No, that should not be an issue as it allows us to get rid of the
-> polling without waiting for a binding update which may or may not
-> materialise in 6.9-rc1.
+The calculation for maxsize was wrong for bit sizes between 17 and 24.
+This is fixed by making use of spi_split_transfers_maxwords() which
+already has the correct calculation.
 
-If you really insist, I may do that, but if the thermal guys act on it
-quickly and we negotiate an immutable branch, we can simply but atop it,
-saving the submitter timeof(patchset), the reviewers timeof(verify), the
-build bots timeof(builds) and the applier timeof(pick-build-push)..
+Also, since this indirectly calls spi_res_alloc(), to avoid leaking
+resources, spi_finalize_current_message() would need to be called
+on all error paths in __spi_validate() and callers of __spi_validate()
+would need to do the same. This is fixed by moving the call to
+__spi_pump_transfer_message() where it is already splitting transfers
+for other reasons and correctly releases resources in the subsequent
+error paths.
 
-> 
-> But whoever updates those properties need to do some proper testing to
-> make sure that those interrupts really work.
+Fixes: cbaa62e0094a ("spi: add software implementation for SPI_CS_WORD")
+Signed-off-by: David Lechner <dlechner@baylibre.com>
+---
+ drivers/spi/spi.c | 63 +++++++++++++++++++++++------------------------
+ 1 file changed, 31 insertions(+), 32 deletions(-)
 
-They seem to, check /proc/interrupts before and after adding an e.g. 45degC
-trip point on one of the CPU thermal zones, they fire aplenty.
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 53c25a351dab..a8b8474abc74 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -1747,13 +1747,37 @@ static int __spi_pump_transfer_message(struct spi_controller *ctlr,
+ 
+ 	trace_spi_message_start(msg);
+ 
+-	ret = spi_split_transfers_maxsize(ctlr, msg,
+-					  spi_max_transfer_size(msg->spi),
+-					  GFP_KERNEL | GFP_DMA);
+-	if (ret) {
+-		msg->status = ret;
+-		spi_finalize_current_message(ctlr);
+-		return ret;
++	/*
++	 * If an SPI controller does not support toggling the CS line on each
++	 * transfer (indicated by the SPI_CS_WORD flag) or we are using a GPIO
++	 * for the CS line, we can emulate the CS-per-word hardware function by
++	 * splitting transfers into one-word transfers and ensuring that
++	 * cs_change is set for each transfer.
++	 */
++	if ((msg->spi->mode & SPI_CS_WORD) && (!(ctlr->mode_bits & SPI_CS_WORD) ||
++					       spi_is_csgpiod(msg->spi))) {
++		ret = spi_split_transfers_maxwords(ctlr, msg, 1, GFP_KERNEL);
++		if (ret) {
++			msg->status = ret;
++			spi_finalize_current_message(ctlr);
++			return ret;
++		}
++
++		list_for_each_entry(xfer, &msg->transfers, transfer_list) {
++			/* Don't change cs_change on the last entry in the list */
++			if (list_is_last(&xfer->transfer_list, &msg->transfers))
++				break;
++			xfer->cs_change = 1;
++		}
++	} else {
++		ret = spi_split_transfers_maxsize(ctlr, msg,
++						  spi_max_transfer_size(msg->spi),
++						  GFP_KERNEL | GFP_DMA);
++		if (ret) {
++			msg->status = ret;
++			spi_finalize_current_message(ctlr);
++			return ret;
++		}
+ 	}
+ 
+ 	if (ctlr->prepare_message) {
+@@ -4065,31 +4089,6 @@ static int __spi_validate(struct spi_device *spi, struct spi_message *message)
+ 
+ 	message->spi = spi;
+ 
+-	/*
+-	 * If an SPI controller does not support toggling the CS line on each
+-	 * transfer (indicated by the SPI_CS_WORD flag) or we are using a GPIO
+-	 * for the CS line, we can emulate the CS-per-word hardware function by
+-	 * splitting transfers into one-word transfers and ensuring that
+-	 * cs_change is set for each transfer.
+-	 */
+-	if ((spi->mode & SPI_CS_WORD) && (!(ctlr->mode_bits & SPI_CS_WORD) ||
+-					  spi_is_csgpiod(spi))) {
+-		size_t maxsize = BITS_TO_BYTES(spi->bits_per_word);
+-		int ret;
+-
+-		ret = spi_split_transfers_maxsize(ctlr, message, maxsize,
+-						  GFP_KERNEL);
+-		if (ret)
+-			return ret;
+-
+-		list_for_each_entry(xfer, &message->transfers, transfer_list) {
+-			/* Don't change cs_change on the last entry in the list */
+-			if (list_is_last(&xfer->transfer_list, &message->transfers))
+-				break;
+-			xfer->cs_change = 1;
+-		}
+-	}
+-
+ 	/*
+ 	 * Half-duplex links include original MicroWire, and ones with
+ 	 * only one data pin like SPI_3WIRE (switches direction) or where
+-- 
+2.43.0
 
-Konrad
 
