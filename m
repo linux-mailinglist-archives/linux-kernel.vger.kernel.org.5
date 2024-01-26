@@ -1,108 +1,93 @@
-Return-Path: <linux-kernel+bounces-39488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C10683D1F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 02:20:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EC8783D1FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 02:20:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E6241C24327
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 01:20:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADFB228B22F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 01:20:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D605C15BF;
-	Fri, 26 Jan 2024 01:19:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 503605CBD;
+	Fri, 26 Jan 2024 01:20:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DCsJZkL6"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R3eOvBwz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB6ED816
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 01:19:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932EF4439;
+	Fri, 26 Jan 2024 01:20:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706231999; cv=none; b=n8JscooI9lJSq/MrNvCBSe2S1J9ApW8lB36y5P19tVMvQU8QDTt2//np0zJGZmRlLI6yFma/sK5yCwfAkr0OybC5/A25x1m9wP0lutQP+OSGiih6e22wF2s0qmco2z0aVqjtYbXZLnNlYBjm9nmk+EWqP67rNcp2svkLyf1MMNM=
+	t=1706232027; cv=none; b=ZeVSssKzWb27Se2pEiV++pKcYXUWpfXHJ1OpT4gjEN387sYZoI5RMNf54FXQUom9fmbtMhi7uN5dk2ffTnPJmJP21vW5Y1pdY/owMo44FL4tT+s7XAjgo51UVJQ5RRkjxaYbAx6kT53JN8DueIwLos5XLlekEAuDDjMKDXefhXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706231999; c=relaxed/simple;
-	bh=O+ISzNiDeEkah3Hw3HoidwKq5p/UbFijfXglLbQfZBo=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=V/wCwi1aBvqRORKc4fuUnvOJfDLNV4BwZ6zQaFzihxp2TdDv4dwangEY4A/ELeL/qbSbPd2MjSlqSwSAH7p2JswMpniRTlSQZkOUWpAe3rEpuWfZ6LCM92kxMXJeTMpR1MRpgSsojo8Np+J6WUIRwOGme6igaoVBayRlPNuk4rM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DCsJZkL6; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5f53b4554b6so109873507b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 17:19:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706231997; x=1706836797; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pHG1ZSD8JrDcka5NqVhNUxwoRtm1E+uIuqNOvvYJ6SE=;
-        b=DCsJZkL6fr0saIXsihcPapgknJE0lKn04IC7lcLMMZlJVPFGT3ATnpSfY3dq4W//jl
-         3RoQDDg59GppQ/gpSmoAKAyLT1FXmY9hAP5FHHGdXU+VAvH/K5xGgeO2WdQC0LuZb544
-         XSRmMeUnQXbG2eZcFHG3Rj+RIkIxZngpbQ2DVl0pYOv09ew7gp4G7JcqxzffkkSEQthu
-         0AvTKmPJNkNq/WoMqSMXkZtFu5t/T9KTK2qx94olY2M3quGtag13jPIt1P+D/5K6dQNY
-         4jtiJzyCzNvit9znOBGiNiSS4KTo/BUhixsL2BnzTnykPkTkZ8QwWM2VxS//R+uZ1kTv
-         rWCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706231997; x=1706836797;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pHG1ZSD8JrDcka5NqVhNUxwoRtm1E+uIuqNOvvYJ6SE=;
-        b=Zgo3O0YXnVrqr19BD8+knSKObyh54eWIp8BkhbTS+BooRNm8TOdaADVECSKa0zys2d
-         0kOWem6/PeBypXS8d8l3BnTXv1D7oQ+lUU713OqkwRJ8aXQpcxCm5mVk5FJAsUdtqISp
-         laBwoyLYly+S6VJvgMjIDRhZH36XISY9l8+xoYJZbqz/o9UfJC+rtrt8p6SxG86snTmV
-         f6YQhgpZ+OzhMyHcT3Sm7gAvHp/d+5ykB1ksG/QY2SpOA4rLg/9GMiNFk1hCEr9RstoM
-         JBLPrfkVWz6C827Uta5da9Hs7zRhB1jDiI9uVwT5OrU/A9Bml/aFV40kkoOJPZNdGIut
-         wbmw==
-X-Gm-Message-State: AOJu0YxL3cZ0yuxBoVdZzUGYn9jEDn8/ucBc9b/4Mj6Ro9jULv00osfp
-	5WGXMY4YfncXkBIbNekVtv2zn8BWgeksPAvH5oJIlNy6ExQlecsMRrKrES03bQPIjzUAmgZiTuv
-	D2Q==
-X-Google-Smtp-Source: AGHT+IHLXKe8GGe5tsEa+OhFYDBbxSYWI6FcMBfKCtGBbLWVOaSELCB0u0zyOphLvMaVq7WfVLhu2EXTeNQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:2309:b0:dc2:3a02:4fc8 with SMTP id
- do9-20020a056902230900b00dc23a024fc8mr87710ybb.6.1706231996798; Thu, 25 Jan
- 2024 17:19:56 -0800 (PST)
-Date: Thu, 25 Jan 2024 17:19:55 -0800
-In-Reply-To: <2b4d020c-08ba-46ac-b004-cd9cb7256bd9@xen.org>
+	s=arc-20240116; t=1706232027; c=relaxed/simple;
+	bh=o3SfrIDpOT4MwLEhl2c0vzaTkf9QuTqTt0SwP10ukbk=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=q6tl6MiWLxOet//y7TRE/TfP+AA6T5SrJ5SzjmZ0uipDP98hcRFWBziZsVyViLTCD9PfgFDpvi0BJdsYI66eEvGqoAp1Dk9ujg6ivf8dTzuR2MHW7QqP3dyBowghbwPGKrzT4xMGgU7CPwDYHyG7olnd4B8WMP7kR50FoDZR/O8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R3eOvBwz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 10C9BC43394;
+	Fri, 26 Jan 2024 01:20:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706232027;
+	bh=o3SfrIDpOT4MwLEhl2c0vzaTkf9QuTqTt0SwP10ukbk=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=R3eOvBwzCqLhI41sB/Ul5tSI45FuKkB5qhAN95sswQW6K7IgDqaYaoYYJmR4KMyDf
+	 tcgU4UQQshKWNMcwKwTOB73QTX3Rqw2+b5R/tnKCBLGyMb79ORksuXWxe8OnWXofmw
+	 zRjiJhRxDrKhXtAjrl8N2CAdSeLf1gAUSP2d8f1RKZ6do1w5q7C2ZAjrHDbbw4ELT/
+	 Kb1Wahf2lcykDBY6u0WAfa3sVevgaIFIblOh0VkhW6lhMgM9fdvroLAXVSV7sy5AkG
+	 tbqF8cuMTCDjpXZfa/V8Ri8BDEItOWASEge3SZVPq3yK4zF6X6zlyVi1WJHnSrMvR/
+	 8dLH2X16L/+ew==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F13F8D8C962;
+	Fri, 26 Jan 2024 01:20:26 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240115125707.1183-1-paul@xen.org> <2b4d020c-08ba-46ac-b004-cd9cb7256bd9@xen.org>
-Message-ID: <ZbMIu84Zi2_PF9o4@google.com>
-Subject: Re: [PATCH v12 00/20] KVM: xen: update shared_info and vcpu_info handling
-From: Sean Christopherson <seanjc@google.com>
-To: paul@xen.org
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, David Woodhouse <dwmw2@infradead.org>, Shuah Khan <shuah@kernel.org>, 
-	kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] gve: Modify rx_buf_alloc_fail counter centrally and
+ closer to failure
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170623202697.2360.15676490828216158973.git-patchwork-notify@kernel.org>
+Date: Fri, 26 Jan 2024 01:20:26 +0000
+References: <20240124205435.1021490-1-nktgrg@google.com>
+In-Reply-To: <20240124205435.1021490-1-nktgrg@google.com>
+To: nktgrg <nktgrg@google.com>
+Cc: netdev@vger.kernel.org, jeroendb@google.com, pkaligineedi@google.com,
+ shailend@google.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, jfraker@google.com,
+ linux-kernel@vger.kernel.org, stable@kernel.org
 
-On Thu, Jan 25, 2024, Paul Durrant wrote:
-> On 15/01/2024 12:56, Paul Durrant wrote:
-> > From: Paul Durrant <pdurrant@amazon.com>
-> > 
-> > This series has one small fix to what was in v11 [1]:
-> > 
-> > * KVM: xen: re-initialize shared_info if guest (32/64-bit) mode is set
-> > 
-> > The v11 patch failed to set the return code of the ioctl if the mode
-> > was not actually changed, leading to a spurious failure.
-> > 
-> > This version of the series also contains a new bug-fix to the pfncache
-> > code from David Woodhouse.
-> > 
-> > [1] https://lore.kernel.org/kvm/20231219161109.1318-1-paul@xen.org/
-> > 
+Hello:
+
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Wed, 24 Jan 2024 20:54:35 +0000 you wrote:
+> From: Ankit Garg <nktgrg@google.com>
 > 
-> Ping?
+> Previously, each caller of gve_rx_alloc_buffer had to increase counter
+>  and as a result one caller was not tracking those failure. Increasing
+>  counters at a common location now so callers don't have to duplicate
+>  code or miss counter management.
+> 
+> [...]
 
-Sorry, I have done basically zero upstream reviews over the last few weeks, for
-a variety of reasons.  Unless yet another thing pops up, I expect to dive into
-upstream reviews tomorrow and spend a good long while there.
+Here is the summary with links:
+  - [net-next] gve: Modify rx_buf_alloc_fail counter centrally and closer to failure
+    https://git.kernel.org/netdev/net-next/c/3df18416267b
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
