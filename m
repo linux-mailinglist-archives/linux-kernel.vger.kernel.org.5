@@ -1,180 +1,152 @@
-Return-Path: <linux-kernel+bounces-40165-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40166-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F46583DB74
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:09:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0A3083DB78
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:09:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA66F1F227DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:09:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FB601F22E5D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:09:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B5151C29E;
-	Fri, 26 Jan 2024 14:08:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA1721C2A5;
+	Fri, 26 Jan 2024 14:09:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aYsKVrvJ"
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Om0oRCQL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8494E1B968
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:08:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB98F1B968;
+	Fri, 26 Jan 2024 14:09:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706278131; cv=none; b=LeP/gn9rO1TOHIPjx6fC8op6Bqd/x2dQnD6HsyPtb7xVsRGMHR6+AuuvNwBWZE3yRkkKdnrl5H6OTinKfkzEDI6gPe156/kwQ++Y+I4nZzZ4ynnnNBYQRCsnBh1N+KPmoc/q01SfR/CAHJI9Jr5swCj4Dts4eerN4+ZUQyuIolE=
+	t=1706278184; cv=none; b=JEIcJ1QzvUj7UZoLmmv3C4g4YEZdmYzeioDDZo/4q+UTvzbGNG/d84wiBIFSIDo7wRLdJ82qtGloszZWM4i/J9J8tguIIBwFc6SzsiY/sEhx6VvCB1L3ku7PpxWhOtVl2YvwF3uxSkxQ4CsY4owUapbPB44O6/EAP+k2KipcFNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706278131; c=relaxed/simple;
-	bh=bZ2MhTaq0zNiZra1mLRQ063RnIF35SU3cR/v9TDg4Fs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=f/OUDslV78V9S5lce/ZMeYxebsjoVvjC2n3KXED2WrkvwuI0lxl6XiS6E/Gwri8cvEF7fzzHlMo2hCgfiL2DEiHpq8Zh2VLfpYw8F6GSUYu5i+Yr+NBMaIMmkthFe2AFQJZBjnFyWw/XV8JZ3fnsz8mte0AhPGPb2yVx3RoX24o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aYsKVrvJ; arc=none smtp.client-ip=209.85.215.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5cf2d73a183so1374610a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 06:08:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706278129; x=1706882929; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=bZ2MhTaq0zNiZra1mLRQ063RnIF35SU3cR/v9TDg4Fs=;
-        b=aYsKVrvJizSmmMmg/ZNMIOnVxmQPqopPM+blTfDRtKaxYIZJ7GZqFkK/3WZpzMxk0C
-         U6a3yb8Tdk5Myb9N8nUIvLAnspSZpDWRvWF3Jekh+3EuQeCwZPty2kTi5BwzoeHu+zWu
-         xssZGOuCNnq/iIxGN+BOOUomoeuvwybwErinMwfwiPjBIStX8h3nc6cuuOaZKMjXMjvd
-         j5jZVL56gsIK6bX1WyoenPhL6JvYEoxp7nwK1nnk5deiHlH5rz67JOxSSbHkwoI5+YiG
-         movNKx7s2oUp06+Q5bp7PnAtttG2oan8sRkG6ujJaq+qA9diUfi6bYAYsrwJpMj+ECSn
-         5ZUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706278129; x=1706882929;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bZ2MhTaq0zNiZra1mLRQ063RnIF35SU3cR/v9TDg4Fs=;
-        b=boKpxy6MVlklJSChyuGF8cbRSnVBnXlDH8FJ86KcJJV67whQEA40QcTo2ugHcqs9fL
-         q+FVxiqpU7kXCLnhueJ6YHvhLnuLpBMelBo9Tirci6DZa8ZScqe8+4REpcDd8pAGmbsj
-         DxFGOFujbjh60fvXtw4LFLTgRoxnaTPEmGt01bJeTEfiUfdUabZ+6lJLhfdxIuTqM5gn
-         AxH+TJl1CK/3jl1LFPXIoBYiEVznDOJJ4iranwkXclFCAAlvEoEXwkayMXy0YRo6n+TC
-         PTFC3udZcucK9/HnosybfRSnJRP4qEfVQqEUhqHdGMalnufnAdEGoNHa4khlUw0YK05E
-         phfw==
-X-Gm-Message-State: AOJu0Yx9MYLDxlI4FLaobBj5er2SxYcMsz2rIATze1U3OG+HM4CGa/Xe
-	YTEw105om+1Ns6zNeYuD+lHQH0E13OZ47KZ5JGAz5DXnlpREJBY1J5efu1EaE2unAz+Mbnrd4Wi
-	pNdESF4Lg8S+i6cHUnks7/iUB0gg6QvAFSEovCw==
-X-Google-Smtp-Source: AGHT+IE6zOB2uKDBALWoKFYSD7eVFd5vGOXlSXwrlbwjg5bHeNrFTYSRyAl8hJXB8foxAFnjGOIRbhZIUyaQuHaRSjI=
-X-Received: by 2002:a17:90a:bb13:b0:28d:b263:870 with SMTP id
- u19-20020a17090abb1300b0028db2630870mr1336375pjr.31.1706278128670; Fri, 26
- Jan 2024 06:08:48 -0800 (PST)
+	s=arc-20240116; t=1706278184; c=relaxed/simple;
+	bh=xjvX9s++LnaIDJF1MIrJOTUIqtJkbD9k/galL79P1/Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LRDnQS+ZdwA7/ryDK3rogtHg9yJsiZbjoqluZ32FuVT5xWoPPP0dEqK0M+LVKk+yU+tG5micA91OQqxhL07iHw9zKUuD8TeA2KczVe5bf2Vco2QA27hkYBYh3WJiT8K/L1Bvcy2Lf9u9ogZ691o1bqQX3iNIspczYN3z/w/qHGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Om0oRCQL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7925CC433F1;
+	Fri, 26 Jan 2024 14:09:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1706278183;
+	bh=xjvX9s++LnaIDJF1MIrJOTUIqtJkbD9k/galL79P1/Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Om0oRCQLE33QaRKTiCyE98xgjfypLUnmyl9oOTDHkGom3awMfABwalVJierUdet6n
+	 61aTf6G9NUb+fy39AwAoB6dhvGs5Z17zhtkm4ayf2o/PFGDFvegIzFEZZ/kzTnDCXB
+	 11ByiXsVKspS1PIohSy4Ew8gI8s+KwEM0I0P4fYM=
+Date: Fri, 26 Jan 2024 06:09:43 -0800
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc: Lee Jones <lee@kernel.org>,
+	Martin Kurbanov <mmkurbanov@salutedevices.com>,
+	Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+	Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
+	linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
+	kernel@salutedevices.com
+Subject: Re: [PATCH v1 1/2] leds: aw200xx: support for hw pattern controllers
+Message-ID: <2024012643-safeness-stipulate-153f@gregkh>
+References: <20231207125938.175119-1-mmkurbanov@salutedevices.com>
+ <20231207125938.175119-2-mmkurbanov@salutedevices.com>
+ <20231221161011.GO10102@google.com>
+ <85c89859-ae03-4692-9c09-5779e4c40eae@salutedevices.com>
+ <20240125130049.GF74950@google.com>
+ <20240126122310.hrs37vybo2wnxto3@CAB-WSD-L081021>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240105222014.1025040-1-qyousef@layalina.io> <20240105222014.1025040-2-qyousef@layalina.io>
- <CAKfTPtBYcVWxYOhWZjzcQUB1ebUBA-B30hvToqGBq6JnfRUZNg@mail.gmail.com>
- <20240124222959.ikwnbxkcjaxuiqp2@airbuntu> <CAKfTPtDxqcrf0kaBQG_zpFx-DEZTMKfyxBu_bzCuZ_UZhJwOnA@mail.gmail.com>
- <20240126014602.wdcro3ajffpna4fp@airbuntu>
-In-Reply-To: <20240126014602.wdcro3ajffpna4fp@airbuntu>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Fri, 26 Jan 2024 15:08:37 +0100
-Message-ID: <CAKfTPtDqABnPDmt0COqyRpYSuj_WWwLrqL+Tbfa8J8b5u5eQtQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] sched/fair: Check a task has a fitting cpu when
- updating misfit
-To: Qais Yousef <qyousef@layalina.io>
-Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, linux-kernel@vger.kernel.org, 
-	Pierre Gondois <Pierre.Gondois@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240126122310.hrs37vybo2wnxto3@CAB-WSD-L081021>
 
-On Fri, 26 Jan 2024 at 02:46, Qais Yousef <qyousef@layalina.io> wrote:
->
-> On 01/25/24 18:40, Vincent Guittot wrote:
-> > On Wed, 24 Jan 2024 at 23:30, Qais Yousef <qyousef@layalina.io> wrote:
-> > >
-> > > On 01/23/24 09:26, Vincent Guittot wrote:
-> > > > On Fri, 5 Jan 2024 at 23:20, Qais Yousef <qyousef@layalina.io> wrote:
-> > > > >
-> > > > > From: Qais Yousef <qais.yousef@arm.com>
-> > > > >
-> > > > > If a misfit task is affined to a subset of the possible cpus, we need to
-> > > > > verify that one of these cpus can fit it. Otherwise the load balancer
-> > > > > code will continuously trigger needlessly leading the balance_interval
-> > > > > to increase in return and eventually end up with a situation where real
-> > > > > imbalances take a long time to address because of this impossible
-> > > > > imbalance situation.
-> > > >
-> > > > If your problem is about increasing balance_interval, it would be
-> > > > better to not increase the interval is such case.
-> > > > I mean that we are able to detect misfit_task conditions for the
-> > > > periodic load balance so we should be able to not increase the
-> > > > interval in such cases.
-> > > >
-> > > > If I'm not wrong, your problem only happens when the system is
-> > > > overutilized and we have disable EAS
-> > >
-> > > Yes and no. There are two concerns here:
-> > >
-> > > 1.
-> > >
-> > > So this patch is a generalized form of 0ae78eec8aa6 ("sched/eas: Don't update
-> > > misfit status if the task is pinned") which is when I originally noticed the
-> > > problem and this patch was written along side it.
-> > >
-> > > We have unlinked misfit from overutilized since then.
-> > >
-> > > And to be honest I am not sure if flattening of topology matters too since
-> > > I first noticed this, which was on Juno which doesn't have flat topology.
-> > >
-> > > FWIW I can still reproduce this, but I have a different setup now. On M1 mac
-> > > mini if I spawn a busy task affined to littles then expand the mask for
-> > > a single big core; I see big delays (>500ms) without the patch. But with the
-> > > patch it moves in few ms. The delay without the patch is too large and I can't
-> > > explain it. So the worry here is that generally misfit migration not happening
-> > > fast enough due to this fake misfit cases.
-> >
-> > I tried a similar scenario on RB5 but I don't see any difference with
-> > your patch. And that could be me not testing it correctly...
-> >
-> > I set the affinity of always running task to cpu[0-3] for a few
-> > seconds then extend it to [0-3,7] and the time to migrate is almost
-> > the same.
->
-> That matches what I do.
->
-> I write a trace_marker when I change affinity to help see when it should move.
+On Fri, Jan 26, 2024 at 03:23:10PM +0300, Dmitry Rokosov wrote:
+> Hello Lee,
+> 
+> On Thu, Jan 25, 2024 at 01:00:49PM +0000, Lee Jones wrote:
+> > Looping in Jacek (LEDS) and Greg (SYFS) for some knowledgable input.
+> > 
+> > On Fri, 12 Jan 2024, Martin Kurbanov wrote:
+> > > On 21.12.2023 19:10, Lee Jones wrote:
+> > > > On Thu, 07 Dec 2023, Martin Kurbanov wrote:
+> > > > 
+> > > >> This led-controller supports 3 pattern controllers for auto breathing or
+> > > >> group dimming control. Each pattern controller can work in auto
+> > > >> breathing or manual control mode. All breathing parameters including
+> > > >> rising/falling slope, on/off time, repeat times, min/max brightness
+> > > >> and so on are configurable.
+> > > >>
+> > > >> Signed-off-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
+> > > >> ---
+> > > >>  .../testing/sysfs-class-led-driver-aw200xx    | 108 +++
+> > > >>  Documentation/leds/leds-aw200xx.rst           | 274 ++++++++
+> > > >>  drivers/leds/leds-aw200xx.c                   | 649 ++++++++++++++++++
+> > > >>  3 files changed, 1031 insertions(+)
+> > > >>  create mode 100644 Documentation/leds/leds-aw200xx.rst
+> > > > 
+> > > > This interface is bananas.  Exposing an entire register interface to
+> > > > sysfs does not sit will with me at all.  When we add support to a sysfs
+> > > > class, we usually require it to be generic and work across all devices.
+> > > > Adding device specific interfaces is generally decried and to be
+> > > > avoided.  Don't forget, once we commit something to sysfs, it becomes
+> > > > ABI and we have to support it forever.
+> > > > 
+> > > > A far better approach would be to add support for this in userspace
+> > > > instead  You can use the standard I2C character device API to achieve
+> > > > the same result.  That way we don't have the same level of commitment
+> > > > and is generally a much more flexible/future-proof.
+> > > > 
+> > > 
+> > > I used sysfs similarly to other LED drivers (for example, leds-lm3533).
+> > > Additionally, the controller has interrupts about the completion of the pattern,
+> > > which is best to handle in the kernel. In the case of implementation in user
+> > > mode, there may be synchronization problems, as the controller has several
+> > > memory pages that can be switched by writing the page number to register 0xF0.
+> > 
+> > leds-lm3533 is a 12 year old legacy exception AND has less than half of
+> > the sysfs exports proposed here.  What makes aw200xx so different it
+> > needs to an incomparable interface to any other that we currently
+> > support?
+> 
+> >From my point of view, direct I2C raw requests from userspace are not a
+> good solution as well due to synchronization problems, as Martin
+> mentioned in the previous message.
 
-same for me
+Sorry, I missed this, what is the synchronization problem?  This is an
+led, shouldn't have any real specific performance issues.
 
->
-> >
-> > I'm using tip/sched/core + [0]
-> >
-> > [0] https://lore.kernel.org/all/20240108134843.429769-1-vincent.guittot@linaro.org/
->
-> I tried on pinebook pro which has a rk3399 and I can't reproduce there too.
->
-> On the M1 I get two sched domains, MC and DIE. But on the pine64 it has only
-> MC. Could this be the difference as lb has sched domains dependencies?
->
-> It seems we flatten topologies but not sched domains. I see all cpus shown as
-> core_siblings. The DT for apple silicon sets clusters in the cpu-map - which
-> seems the flatten topology stuff detect LLC correctly but still keeps the
-> sched-domains not flattened. Is this a bug? I thought we will end up with one
-> sched domain still.
->
-> TBH I had a bit of confirmation bias that this is a problem based on the fix
-> (0ae78eec8aa6) that we had in the past. So on verification I looked at
-> balance_interval and this reproducer which is a not the same as the original
-> one and it might be exposing another problem and I didn't think twice about it.
+> We have honestly been attempting to integrate this functionality into
+> the official LED pattern interface, but it cannot be achieved due to the
+> absence of this interface's functionality:
+> 1) Page-based access
+> 2) Interrupts
 
-I checked the behavior more deeply and I confirm that I don't see
-improvement for the use case described above. I would say that it's
-even worse as I can see some runs where the task stays on little
-whereas a big core has been added in the affinity. Having in mind that
-my system is pretty idle which means that there is almost no other
-reason to trigger an ilb than the misfit task, the change in
-check_misfit_status() is probably the reason for never kicking an ilb
-for such case
+I don't understand this, sorry.
 
->
-> The patch did help though. So maybe there are more than one problem. The delays
-> are longer than I expected as I tried to highlight. I'll continue to probe.
+> HW patterns are very useful mechanism to draw animation faster without
+> any interactions with CPU, so I think we need to find the best architect
+> approach for its integration.
+
+The CPU is totally involved here, that should be identical.
+
+> What is an alternative way to access such a hardware pattern interface?
+> Debugfs? Or perhaps we should consider extending the LED pattern
+> interface?
+
+Or again, userspace.
+
+debugfs is for debugging.
+
+thanks,
+
+greg k-h
 
