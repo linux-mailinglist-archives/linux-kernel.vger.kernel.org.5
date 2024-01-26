@@ -1,80 +1,86 @@
-Return-Path: <linux-kernel+bounces-40304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59BDF83DE16
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:57:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3EFA83DE22
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:58:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40D9AB23AAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:57:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D95871C221CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:58:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D32B1D546;
-	Fri, 26 Jan 2024 15:56:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 519341D556;
+	Fri, 26 Jan 2024 15:58:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="2NxgSaHf"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2087.outbound.protection.outlook.com [40.107.237.87])
+	dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b="XG7svLqJ"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2075.outbound.protection.outlook.com [40.107.244.75])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87BC61D524;
-	Fri, 26 Jan 2024 15:56:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC90A1D524;
+	Fri, 26 Jan 2024 15:58:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.75
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706284617; cv=fail; b=skr+dmoYYQDu7HnRSOIntjyHPEKsPQePMh1YghAWUzwdMOxuH1b7NPHSNbFCESyAAfx7+4+RcFpMSII1hbLPlNn74j6vvaspPOnk0+thf8Z5ACjCkLA7RX7u1yJCbYncSShdyAySqnDh8m/2OO7ZAvpsTyiCTUkQ18pGXUAmAFA=
+	t=1706284686; cv=fail; b=ZmHKG9IjbZCn4ClllhYb4hEXnxdw4dpovPaW2+9YG1eFProG8x5dnFfzARH0Fyc2zQERm9UZi6LKXtcTNj1Rw62aXMu2EtNRxQWjZ2Z7nmGJH6P01eCvpJQPtoRlh2yUoZjY11KRDVqoCH9AWoZ0mqYXsJSG9Pr4p7XqBM/JZUM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706284617; c=relaxed/simple;
-	bh=qfKhSiIxzYhx8M+0OMjUajvKdbWE/p3hqr7mqzD5F9A=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=FDA2tQAIEbohTkBbS+1pYwxqnD0b7A9CcUyMOj08MhvQzWycqv1r7nOPVskGiiWIAherWJkb/l1bcEWFJHg9fEIw8o+FeHzALd/tBTQrkiq9yAWFwNXUJCIHDt2tr/z3Mx4iwneex02WTSh5hLSJ+5WbyW8MBnyx3HKjzxIG8h0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=2NxgSaHf; arc=fail smtp.client-ip=40.107.237.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+	s=arc-20240116; t=1706284686; c=relaxed/simple;
+	bh=lYcOliWRmbP/1ltfOlNR5RIqg8of5cYX81dLNWtLlDE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Nh/pIM3S2wUn2Bl8mSuibOTW5kw+EJrHkbEHKOGpD358Bv9cZYf+qAmZEYUWtaJEYZU3cH38fPNgYrCTaaqygRjIiSv2YOD6glLcZoT8veg5pYmQyuZaYmKz1swQmLYG7a5t+lpxxhdHXE3wnRG1FJSTdWv6BS+gw7KellCbwR0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com; spf=pass smtp.mailfrom=memverge.com; dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b=XG7svLqJ; arc=fail smtp.client-ip=40.107.244.75
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=memverge.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fymfrcrLSX8HTop7+CDnX2QoTC9pTPNWyuPppWNpBM0YT3sJz98aqAjOJKFL9XqEgsPL78qKmY/gQfDbr9JTdUhINWDcLw8cMYenihkHcMDo6ZSW8I+qzAvjUfC4ZlMEIDrrBaM7RRFHJPnaeKyU23lzLoyLFTytkukPgnYNLUGkgDwMiSmsX2M7LNHtb7RpJ/2dyZNr3mS/9KGzfR824gRjc8uU0FcUQHTHt1ZZAR+BuCLR+sXQkyVbVNjxQvZ2LB6u2Y8tuVv9L8VbDvn4aJU+Xo66X/GNtGFrBcMJeeIIW3q9sCvlnclol6Usxbc3OmgcA4FWV7N8M3Ulp/4C6g==
+ b=LHLxqprvVE02iUMSoN1G9ZqPgsLX5pcepiZfeVsXJA62Fjq2Cf4wVgajZHFycm3lijmMScvPdQ4hwJUE+CwLkb1NGX3B9zZ1D2ExAHMxqpQvQfDjjB7i3dutAVYJy6c7MoeZUr7VBywCmexsHUqv94+CLnwjodganp432h2tV9E/vXciRkNXmmavAy/LYNDLCmV2sLKfWQNHcvlze+kSxnSIau4Sfxm9ZMxHr9GSF3PeDmY/2WSz8EE/cZDiHdf3NynO7DFhZfbNqjhX3uraE3Xe/uTt6pEXCXallrYSVVY0pdyxnKje7Tdk5GcSFHsuGn8x+69qqNrHnTwvy09JqA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9q4Dt8Sv+gQ01lLoC4vrfBk9g8H2GfrFMhI9GvD0z+8=;
- b=APdi7JAc8AlmHPBWnJnGZUJ038VEPRppfwwylAN0sk/iE1mm3lLooc9nz7vWbhzPSEsJE4a/0uGSefA+rpvSrPgC6HgimODsyACO7d94JWGhTiSexjU2J1x7IWv8JPHKkiX4xnZ34MBv/WnodgfNuoo/3ueOGYbx0e76jV+QTse1sEZsGd4Ya4WJpRL6U1hYE/jKAsJQDuP9olW5jcdMgX7K/tqmjS4ykJPijCs4hQzLhpO0fPe3oONAfuu0HV2Co+9hH2/pfAwNq+l1fFCCwgMILcurmpOVJT+OfMRNpwevenBBlYGmWHrI6MX/OFJYmW/ZTwAEk81T0PB0ck8dcA==
+ bh=pb130topw67USQiscNpzmFuEhJSAJxamPy+hXIECiUE=;
+ b=HWaz9dnEQFT8/j91FQTcgWn+5ol9eJ+KnBNwrp/6Qms27O3vhGOi2gaFIX7pw9/v6plrRmiLT8+UpcPCCKJqhFeUigqPJtXn7xSfUIUTzy16whGoPLYnmF8qDt2WmjJlEPFiYM9Ywng8z7nukCt/zlF2zoIpzA2sfn4/WUXIZV0A0qq88zIe7n+4GcNNfscTBvarhQxrG1Gv2rfU0d/9Sjxe9YldEeOGDA+nXFeWSaM8pHrVoRFLpZVmjH2K3qR7ZOjgZK2R7KVD3QIlLV/wgBJyaKhke8VVL3TfPv8saeuNOxhRTdjCLAF0BabN2iARacbuBidWDcf4KW23Rcbycg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
+ dkim=pass header.d=memverge.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9q4Dt8Sv+gQ01lLoC4vrfBk9g8H2GfrFMhI9GvD0z+8=;
- b=2NxgSaHf+KjERwuAa/FpV8bHX/kKZBjm69a0o9sgMhcrLWoaxHdjYTXtGWWrSvIdIHPM+sN3gh51Uft9VzCHq/lZQTWROofWkH65QecDxikp1MUQykBlHz9k910PH4BdlAum686aHxJC6q2UA8wJ4eUl8SuyLclfA0/aySIkdi8=
+ bh=pb130topw67USQiscNpzmFuEhJSAJxamPy+hXIECiUE=;
+ b=XG7svLqJ6gqCWA4/lyixVL3feOeUaP7w/ihv9NP6W/HMGaO9L1dLg2cexDjJlUxD+vhsh7DsQHhw3Hk3VYhtvbZN8KVb8fRsBDZLZoO6jtSU+c1LCaRA0dQOC8YI+XV+30Nnlg9qrn0oYTgcF2rIg7xB7kZOmp3CvXr56SVW9qs=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by PH0PR12MB8127.namprd12.prod.outlook.com (2603:10b6:510:292::6) with
+ header.d=none;dmarc=none action=none header.from=memverge.com;
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
+ by BY5PR17MB3970.namprd17.prod.outlook.com (2603:10b6:a03:21d::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.31; Fri, 26 Jan
- 2024 15:56:51 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::c30:614f:1cbd:3c64]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::c30:614f:1cbd:3c64%4]) with mapi id 15.20.7228.027; Fri, 26 Jan 2024
- 15:56:51 +0000
-Message-ID: <233100b4-e765-48e4-a1c0-88d01c621bd0@amd.com>
-Date: Fri, 26 Jan 2024 09:56:47 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/7] cpufreq: amd-pstate: implement cpb_boost sysfs entry
- for boost control
-Content-Language: en-US
-To: Perry Yuan <perry.yuan@amd.com>, rafael.j.wysocki@intel.com,
- viresh.kumar@linaro.org, Ray.Huang@amd.com, gautham.shenoy@amd.com,
- Borislav.Petkov@amd.com
-Cc: Alexander.Deucher@amd.com, Xinmei.Huang@amd.com, Xiaojian.Du@amd.com,
- Li.Meng@amd.com, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1706255676.git.perry.yuan@amd.com>
- <f94bfc67e95fca54a153e24d828ef27e26ee5c47.1706255676.git.perry.yuan@amd.com>
-From: Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <f94bfc67e95fca54a153e24d828ef27e26ee5c47.1706255676.git.perry.yuan@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PH7PR13CA0012.namprd13.prod.outlook.com
- (2603:10b6:510:174::18) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.27; Fri, 26 Jan
+ 2024 15:57:59 +0000
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::7a04:dc86:2799:2f15]) by SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::7a04:dc86:2799:2f15%5]) with mapi id 15.20.7228.023; Fri, 26 Jan 2024
+ 15:57:59 +0000
+Date: Fri, 26 Jan 2024 10:57:51 -0500
+From: Gregory Price <gregory.price@memverge.com>
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
+	corbet@lwn.net, akpm@linux-foundation.org, honggyu.kim@sk.com,
+	rakie.kim@sk.com, hyeongtak.ji@sk.com, mhocko@kernel.org,
+	vtavarespetr@micron.com, jgroves@micron.com,
+	ravis.opensrc@micron.com, sthanneeru@micron.com,
+	emirakhur@micron.com, Hasan.Maruf@amd.com, seungjun.ha@samsung.com,
+	hannes@cmpxchg.org, dan.j.williams@intel.com,
+	Srinivasulu Thanneeru <sthanneeru.opensrc@micron.com>
+Subject: Re: [PATCH v3 3/4] mm/mempolicy: introduce MPOL_WEIGHTED_INTERLEAVE
+ for weighted interleaving
+Message-ID: <ZbPWf9HbUNA1MELh@memverge.com>
+References: <20240125184345.47074-1-gregory.price@memverge.com>
+ <20240125184345.47074-4-gregory.price@memverge.com>
+ <87y1cclgcm.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87y1cclgcm.fsf@yhuang6-desk2.ccr.corp.intel.com>
+X-ClientProxiedBy: SJ0PR03CA0196.namprd03.prod.outlook.com
+ (2603:10b6:a03:2ef::21) To SJ0PR17MB5512.namprd17.prod.outlook.com
+ (2603:10b6:a03:394::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,218 +88,152 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|PH0PR12MB8127:EE_
-X-MS-Office365-Filtering-Correlation-Id: 05828a7e-0eb4-4acf-8505-08dc1e876920
+X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|BY5PR17MB3970:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4e7161fa-f726-433c-28db-08dc1e8791d7
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	d4NCVd9YYCyi+0Fk0LSpWeKIhjuBjcv5ephexMBUmC06A13SKjQO5UWC4EfYCPZslMtqms8UZF7JYs9IzD7mDa/JSfIT62xk9YFj9oryIEGkNQjFrLZnQuDPTIo1LrWI4wAARqB4Kd851lAlItJ3C7TmQqQGGPb2ooT+FmEGoQyjDieogUhAgV8+BGPrntUcuEuAFs0vwZSYFK/tsORJnywZBi0Yxv+mSQJ7LGfKzcXWIM/n/wtItdfFNIHFDQgIp83yBjBvOPctHxL53V8DMVN4xIXE+D3ftA5GFgz7IA1ELzAUFzX/q1LFKtGibEnPaisYmgzq8SxO8IWltKf6ZKvnlwwhTFGP0s02ZY9uOuDl5vUfNzWVQqf0qOCOsR25O5nmluYQgT7NOTrlKF7ZhGoAIQQcHZPtHU76Iwu0S1q0WKQT+H4qdrFMVQVASk17fPb7jt5vPsWW0H12Y5kmTCu76+R1pfZbKlHYhVR8lCYXA/2n0sI4FsC/KWY14nsMrsCG5RjinZAF9VVvqhtKwcCh4+btIpL0ZiO7nz0f5CxBWnxpHxsmH8gRX0VykREOMqJRhHE+MhH9m7KCbN6zy112BkKEAoHIg4ue+dVL1o1hRVDl4mHBvGt3urxeG/H3q9B+sGnLh/9ADbrSZ8/GtnwLoQhqxrA5VGuJ/kLT6XU=
+	yFnOD0sZD5ARSnVqreV3OnHDWE3YkWeHs4AVsTt52rhhLHDwvkfNaHZ5ok+Af8fQJrkz8h+3cqDTDLm8ueVDK5NjBFUQZrkc9p92AG1lTNGF5iVZr9gtAFG+wNreuiGGernUKUe1eFZswA3JrYTmW9YxalY2Dj1RgTV/xJYocrXGTRCOe8JDR9h/vuUh0uyZ5Dc1PGYoJcOlbUrFhlDrGZwWMMUrj/19YxDv8L1Lb+ghYEf7MTNRQXmF3XFx0j0Vja8sqXLB1vOOIEy9O48C1/Z66fyveftaoqroBujMaOUDcER4vY3B9SkdxMWjKViev5ZF9+5Z4WWY84FNVCsh17TM/9/Nttl1NTAR6zaSiIxLVuGKqwyaHarzh24HXgrRzT+VZTH0LB/VK8jAKK6KdVP9o2wkutM6e4Qfw0YiBxlPkdlwE2ZcZC9Ywuw/36sRLW86uSvnlQhKKoRhP8QtyKA4XJ2W5O0qmnvwTq4acMQ0SllltroAnZz0zj+LlLnhNrZDUPZTQksykJe+Fuzm/wTiCZsP2YuwTamHZResMYTQhK4+Rk8UMKL/I8yIYuPcqIhAqZ+2ndFmeZFC/S4NufQQI9b6bkAVDcmE5sHx8Xs=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(346002)(376002)(366004)(39860400002)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(36756003)(26005)(53546011)(6512007)(966005)(6636002)(316002)(4326008)(2906002)(6486002)(5660300002)(66556008)(8936002)(478600001)(41300700001)(44832011)(66476007)(31696002)(83380400001)(86362001)(8676002)(66946007)(6666004)(38100700002)(2616005)(6506007)(31686004)(43740500002)(45980500001)(309714004);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(376002)(136003)(396003)(39830400003)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(83380400001)(36756003)(2616005)(86362001)(4326008)(8936002)(8676002)(44832011)(5660300002)(38100700002)(26005)(316002)(66476007)(54906003)(66556008)(6916009)(66946007)(7416002)(966005)(41300700001)(6506007)(6666004)(6486002)(478600001)(2906002)(6512007)(16393002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?THI4S0pmS2ludDV0ZksyMUpzSmpSZ3dOeWtiOHd2am0rZ3NURThZNVFybjhV?=
- =?utf-8?B?S0czYlRiT2Q3OEpJem81cDZ3b2ZKbEU4NXVOa0E1YXZPVjlOU09NQitFdzlY?=
- =?utf-8?B?T2ZmQ2kwamhEdlU3aUF0eWpVWGFxTmJhUWF1ODNUZUcyemVKWStHZ3gwc24y?=
- =?utf-8?B?YVc4K1BJM0YwVlhNQ2xQNytxUGRidG1ZZnhLbFVWU3RJeDhjWjF6c2xKNkFG?=
- =?utf-8?B?bVQwajhwMSszdm1YZDZyeThYRGp0KytBazB5VXNQOEgyU3FuRSs2bzgxQTd3?=
- =?utf-8?B?SFZjMWdMRDVMQ2thRzRXK01yYzhKOVE1c2VLTEliQjhDVFEwZFFJd3NBcUUr?=
- =?utf-8?B?bWcxWUs0d2h1TndtbHljM08yUXh3NHZYZzhGbVhBSUdmZlR1T0EyaDIyblo2?=
- =?utf-8?B?enhPV214YWo0L1RsdFVyVDg1cC9CVEtaNjNETWl0VWVsUmxtcENKSkZMNm1S?=
- =?utf-8?B?VVJvQUR1Vjd5R2xjY2tnSlhvcVY1Q3hpa01HaCtrOXZOMHdmdjBtMlUrOGZC?=
- =?utf-8?B?UWRTV1REMDhoN3loK3BxUzBUOEwxQWJHSVkzZzg2aVN1K3ZRdGQvTU9Mdmhw?=
- =?utf-8?B?eFRtc2h1MGFsYmx5a1J6K28rS1JVSER3N3kzS0c3WkxWY0s5eWgzemdCSUJE?=
- =?utf-8?B?eVJyeFdJT2RncXFJWko4VkZmL1FlWUp0VmpraXZEWXBUeTZPL3lEM3RYSVJv?=
- =?utf-8?B?emhqVDNKM0RjZUtMdGRzNlFEcnF6NTl1MjdnVkFOdWJOREpTSmJ1Z2kwcVhh?=
- =?utf-8?B?U1pHcnhkL3JQZTRaanZOMlJ4QXV5U1BFbi9jZXNheUEwdDVxbXp4U1B1NERR?=
- =?utf-8?B?VGJkWHU3ejBUSER0ZEhDOFJKZFRWY1l4QThDb2NZZTJGVjY0UXFjM2wybkxx?=
- =?utf-8?B?a2RiU01wZEVEU1MyWWRKcDRXRU4xSU91Y1FpN1R0bURBdTVIei9NYTZvYkhW?=
- =?utf-8?B?ZURLVVJCUWppY2NvSEYzU051clpTc09kM1F2MmZUeVg1eGlWSy91T1YwK3BG?=
- =?utf-8?B?K2dQcmplK1B0cU8vdnV5Z20yaVN1OUUwSnQzRVo1c1dTRW1VcFl4azJPNFF6?=
- =?utf-8?B?eTRnSXdFV3daVFJoa3FheUF3OW1qQk1tQW9lOTN5MThqZzh4L2ZRY0dPQUJU?=
- =?utf-8?B?OUFxcFFIdDBXaUxoWnRSQmN2US9tV2poOHA4aTBGOWRYY1dKMk5pNXdYTGxC?=
- =?utf-8?B?Z08rV3JPemF0NFBYbktBcjlzUGlWcFJUZjVBcGtyWW04dGwxbFBKOTkvRVlJ?=
- =?utf-8?B?K3B0ellGNkVmTDY0aUtLZDFQUUUzckRzQ3lTVlNndmY0YktIS0lKMzdsaDBD?=
- =?utf-8?B?YzBpVS9ZWVR1ZEpkZjR1cjV1eTRLN2FzZ000TTBxUEMyV0xVczhFM05CMVZE?=
- =?utf-8?B?L0lqNThkVHljSUU1QkVRTUwreDJ3bHBUL0t6eFlrOENCalAzcHhpQ0RiYmFO?=
- =?utf-8?B?bVdTd1VpSGJIdjliMnRkRlJhaTY2WURnWXZUWHBPQUpTaWJHZmt5Q09rOERL?=
- =?utf-8?B?VmU1SlR1VmRpdW4yZXR5ektmQUdRWGdCWk1LL3FHdUtGUHp4cnhWNkt6Q0FF?=
- =?utf-8?B?My9KVDB5RnFmQnEyMFpjcXoyZ09DbTdNOTN3MVZzMGVKcWRUdllPejJiVWdx?=
- =?utf-8?B?Y3h6d0VhOTV0TkdjRkxsazc0VTZjNXJ0QldUOFVCY1k4R2VNQk5kVjdPUWhj?=
- =?utf-8?B?SmQ5aDNXanBPcXZHanpITGE0Q1NFUkZxVW4xZUFzckN6RjBvK3lNV3hBVmtl?=
- =?utf-8?B?OHVFV1BXdWNZTWNwVlkzNDdHT0JvUVJBWHkyMnNaNTBDeXRjQUVmMW9RTlRn?=
- =?utf-8?B?YzFSRUdZSWZNd0tJbzVGNjExS25GT1JTMTZNTzhqOTRpMXI0bEUyTVVQT2JN?=
- =?utf-8?B?TWRiSWxTcGRYUWxsc1MrTUxBMStCQUZlNEx2U0k2TnVaejhZQnUxb2F6Qis1?=
- =?utf-8?B?aGZ3OVVmUDllZitVc1ZKNzdpN1pDVkdNQk1BNkFncDM5RjFxb1F4cEh3c3FT?=
- =?utf-8?B?ZmlWNDg1OVQ4a29hSUFPQTh5Zjk1OXpuTitCUDVwb2JjQkV0c0Y5R0dQTEUx?=
- =?utf-8?B?ZEZva2V6ZFQ5U25oUTFRQ2REOC8rRGFRQlpqaS9wMWZNMnZKTXZSZ0NmU3Z0?=
- =?utf-8?Q?q9e5fFHFyF5XMvQEqAnGtFDDK?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 05828a7e-0eb4-4acf-8505-08dc1e876920
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+	=?us-ascii?Q?YrH88WMf52Ju+zKKucgLzly9lNONU4Ol3zjv1fJLnoZ5PuA/i1EquPrjwi+p?=
+ =?us-ascii?Q?iD7ieJvRcO7aSUl4NETyI9R9dwB6AGqRoRZFL9+p653bVIwTYOu79TU5WTmb?=
+ =?us-ascii?Q?tU7Qh52t3E6aYa1dolyD8JdtH+OZiAwe7cC3LvbOUMU3Iysbd7AwZqcp8gup?=
+ =?us-ascii?Q?mCOWwcajDH6NUXAEuNbM7PCoKskIax3c7ZlwqBkHtk/XbcTdGHe47Rjz2TGG?=
+ =?us-ascii?Q?7hClHtbiilFq5JZ0/E/KkR+qGMhqqgvBFeGIMF9py35uyTRyj+VHQ2ch3O/R?=
+ =?us-ascii?Q?LeP4mR0ztBHRVbpzEymX/Eh2f7G/C4zxRivTtRM1zdKMo4u/seJy/ZBBDord?=
+ =?us-ascii?Q?5k8y7wKph9AP6d4AVNT2gqbj90ktLiT/Nf7VctgZ66NX1S1GqENJyF1mALOS?=
+ =?us-ascii?Q?CWNe/Uw0s3N6EID1B93cFdtppA/C53pQevv+gIqOCNbXpLX9CJNuJfnTe3a1?=
+ =?us-ascii?Q?2H8bp5IRnh4xc9e1CnsdAecPrfEVyfJopZu36q9kPE++UZZmesqTGIFtDMou?=
+ =?us-ascii?Q?xjW+B9+mIpVCONDWKCjW9wwVDs64XOoLYG6T7sCqsWf9+5mZyT06vo7PWVOL?=
+ =?us-ascii?Q?vYCDNSByBKABYkVhz8+81zNSUTDb9rhdHmoX0oDqFUOCzYP7rt6oXjfN1GWN?=
+ =?us-ascii?Q?wDl7zwn1nfuauF0JE3cOXFn8SYy0sE+rSENcN6U7HcXTyHRvSIALjF862kFz?=
+ =?us-ascii?Q?qzwzIY2D9qRTr+Cu9AkvT0ddNwBOTtBh3GfZqe1TZQ63oHpx4+ocSDUpZ681?=
+ =?us-ascii?Q?n2M5+rsUZ05jJrqfPzK1iEnctLK0OPAqcFOGWB3HR/jPaI5XVRlBjTzngwDU?=
+ =?us-ascii?Q?ehnn7m4ypvRHcqVa5FspRcQ5RGXbVomp6Tf6OJ3PrsE7Ujtf3XB9bh+qii1J?=
+ =?us-ascii?Q?OO7OtMLYsCtUhK92niiAqr5+7L5tW5P+iSMMX6l3G3T7yFK7diZiEhR4MhRL?=
+ =?us-ascii?Q?4FK0ItQ5YO/H4LyECjZZIvTSW/O+nRZEXskAuy0D2niDI4A8EW5KrkbWnQqB?=
+ =?us-ascii?Q?7HxxBlEJce4j9xdJqo+1BQewkVjGBl1EBhRB0nvNs03sy3b4FyFfw/whRE7A?=
+ =?us-ascii?Q?0bq11UqrT6+JIzjNyyOSQgOgZYK0rehvmZJIbQ5X94S3IFiw5TbcIlsjVmlF?=
+ =?us-ascii?Q?2Z+/C7qA4f8MvswSxRGZdTfg0xAXwMK6JjI+U1Yy7N3V0os+X9Rtl6hwNu88?=
+ =?us-ascii?Q?sR/NYv17TcdoC/Z05c7btaGr71Wnsi1D+Snhyf8mIyB9TLebDDIknZ2QupyA?=
+ =?us-ascii?Q?YEOV449fweAPShMkBxx+0wSvYlBgfdctkwJWIBAdDSOUOS3K3DVuyNwJgVvC?=
+ =?us-ascii?Q?Y5hXvbMAt8eZadEqHHMUB+8MbsaAdZd6Ra82uPNQQais7C5KX/LLosuVAua1?=
+ =?us-ascii?Q?ettMWKMJmmkP12ZSCbjgAmmf3PnfP7hv9WpCsUgP8DMolhrcXPk0V3o/9fKX?=
+ =?us-ascii?Q?s6zLpf+/g/RUs5WYG+3O8orpB8n855yZwIokcN1dXFMBoHTlzS7LtZwBoiu2?=
+ =?us-ascii?Q?YHO+T6yW+TGtdCepforgr22/OaOZn8PTJ6vsJK7Q7wvdjgJ2FG5/Ebyfh3rs?=
+ =?us-ascii?Q?3qkM2y2Qk0DJF4xtaiYben45TN7RQdLMDV1fnCW0xr/aoDqxXuVzfkxMZ5mj?=
+ =?us-ascii?Q?qA=3D=3D?=
+X-OriginatorOrg: memverge.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4e7161fa-f726-433c-28db-08dc1e8791d7
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 15:56:51.4434
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 15:57:59.7590
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HYmx7igqOwLxbq0UxViygqwwNcfwi90w1Rg4k8ZRJQX9agaHAD0plfQcp+zmvUpnhB3aTamxxrLA3QyyfhV/mQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8127
+X-MS-Exchange-CrossTenant-UserPrincipalName: DiiCuQHjpP1DUAoDCQw20CD2iYp+gRc4MVkMi9aHSDpsua+ITfw4kKE1J+0eYHL0D7YW/pjm/3RFlFcP+tf0ujaGRVK2Imyq8nrijqRR9vU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR17MB3970
 
-On 1/26/2024 02:08, Perry Yuan wrote:
-> From: Perry Yuan <Perry.Yuan@amd.com>
+On Fri, Jan 26, 2024 at 03:10:49PM +0800, Huang, Ying wrote:
+> Gregory Price <gourry.memverge@gmail.com> writes:
 > 
-> With this new sysfs entry `cpb_boost`created, user can change CPU boost
-> state dynamically under `active` and `passive` modes.
+> > +		} else if (pol == current->mempolicy &&
+> > +				(pol->mode == MPOL_WEIGHTED_INTERLEAVE)) {
+> > +			if (pol->cur_il_weight)
+> > +				*policy = current->il_prev;
+> > +			else
+> > +				*policy = next_node_in(current->il_prev,
+> > +						       pol->nodes);
+> 
+> It appears that my previous comments about this is ignored.
+> 
+> https://lore.kernel.org/linux-mm/875xzkv3x2.fsf@yhuang6-desk2.ccr.corp.intel.com/
+> 
+> Please correct me if I am wrong.
+>
 
-What about guided mode?
+The fix is in the following patch.  I'd originally planned to squash the
+atomic patch into this one, but decided against it because it probably
+warranted isolated scrutiny.
 
-> And the highest perf and frequency will also be updated as the boost
-> state changing.
-> 
-> 0: check current boost state
-> cat /sys/devices/system/cpu/amd_pstate/cpb_boost
-> 
-> 1: disable CPU boost
-> sudo bash -c "echo 0 > /sys/devices/system/cpu/amd_pstate/cpb_boost"
-> 
-> 2: enable CPU boost
-> sudo bash -c "echo 1 > /sys/devices/system/cpu/amd_pstate/cpb_boost"
-> 
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217931
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217618
-> 
-> Signed-off-by: Perry Yuan <Perry.Yuan@amd.com>
-> ---
->   drivers/cpufreq/amd-pstate.c | 97 ++++++++++++++++++++++++++++++++++++
->   1 file changed, 97 insertions(+)
-> 
-> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
-> index 0dc9124140d4..b37bea7440b9 100644
-> --- a/drivers/cpufreq/amd-pstate.c
-> +++ b/drivers/cpufreq/amd-pstate.c
-> @@ -1036,6 +1036,101 @@ static ssize_t status_store(struct device *a, struct device_attribute *b,
->   	return ret < 0 ? ret : count;
->   }
->   
-> +static int amd_cpu_boost_update(struct amd_cpudata *cpudata, u32 on)
-> +{
-> +	struct cpufreq_policy *policy = cpufreq_cpu_acquire(cpudata->cpu);
-> +	struct cppc_perf_ctrls perf_ctrls;
-> +	u32 highest_perf, nominal_perf;
-> +	int ret;
-> +
-> +	if (!policy)
-> +		return -ENODATA;
-> +
-> +	highest_perf = READ_ONCE(cpudata->highest_perf);
-> +	nominal_perf = READ_ONCE(cpudata->nominal_perf);
-> +
-> +	if (boot_cpu_has(X86_FEATURE_CPPC)) {
-> +		u64 value = READ_ONCE(cpudata->cppc_req_cached);
-> +
-> +		value &= ~GENMASK_ULL(7, 0);
+@@ -973,8 +974,10 @@ static long do_get_mempolicy(int *policy, nodemask_t *nmask,
+                        *policy = next_node_in(current->il_prev, pol->nodes);
+                } else if (pol == current->mempolicy &&
+                                (pol->mode == MPOL_WEIGHTED_INTERLEAVE)) {
+-                       if (pol->cur_il_weight)
+-                               *policy = current->il_prev;
++                       int cweight = atomic_read(&pol->cur_il_weight);
++
++                       if (cweight & 0xFF)
++                               *policy = cweight >> 8;
 
-I think it's better to use the macro AMD_CPPC_MAX_PERF in this case.
-The less magic masks in the code, the easier it is to follow.
+in this we return the node the weight applies to, otherwise we return
+whatever is after il_prev.
 
-> +		value |= on ? highest_perf : nominal_perf;
-> +		WRITE_ONCE(cpudata->cppc_req_cached, value);
-> +
-> +		wrmsrl_on_cpu(cpudata->cpu, MSR_AMD_CPPC_REQ, value);
-> +
-> +	} else {
-> +		perf_ctrls.max_perf = on ? highest_perf : nominal_perf;
-> +		ret = cppc_set_epp_perf(cpudata->cpu, &perf_ctrls, 1);
-> +		if (ret) {
-> +			pr_debug("failed to set energy perf value (%d)\n", ret);
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	if (on)
-> +		policy->cpuinfo.max_freq = cpudata->max_freq;
-> +	else
-> +		policy->cpuinfo.max_freq = cpudata->nominal_freq;
-> +
-> +	policy->max = policy->cpuinfo.max_freq;
-> +
-> +	if (cppc_state == AMD_PSTATE_PASSIVE) {
-> +		ret = freq_qos_update_request(&cpudata->req[1],
-> +				      policy->cpuinfo.max_freq);
-> +	}
-> +
-> +	cpufreq_cpu_release(policy);
-> +
-> +	return ret;
-> +}
-> +
-> +static ssize_t cpb_boost_show(struct device *dev,
-> +			   struct device_attribute *attr, char *buf)
-> +{
-> +	return sysfs_emit(buf, "%u\n", global.cpb_boost);
-> +}
-> +
-> +static ssize_t cpb_boost_store(struct device *dev, struct device_attribute *b,
-> +			    const char *buf, size_t count)
-> +{
-> +	bool new_state;
-> +	ssize_t ret;
-> +	int cpu;
-> +
-> +	mutex_lock(&amd_pstate_driver_lock);
-> +	if (!global.cpb_supported) {
-> +		pr_err("Boost mode is not supported by this processor or SBIOS\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = kstrtobool(buf, &new_state);
-> +	if (ret)
-> +		return -EINVAL;
-> +
-> +	global.cpb_boost = !!new_state;
-> +
-> +	for_each_possible_cpu(cpu) {
-> +
-> +		struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
-> +		struct amd_cpudata *cpudata = policy->driver_data;
-> +
-> +		if (!cpudata) {
-> +			pr_err("cpudata is NULL\n");
-> +			ret = -ENODATA;
-> +			cpufreq_cpu_put(policy);
-> +			goto err_exit;
-> +		}
-> +
-> +		amd_cpu_boost_update(cpudata, global.cpb_boost);
-> +		refresh_frequency_limits(policy);
-> +		cpufreq_cpu_put(policy);
-> +	}
-> +
-> +err_exit:
-> +	mutex_unlock(&amd_pstate_driver_lock);
-> +	return ret < 0 ? ret : count;
-> +}
-> +
->   cpufreq_freq_attr_ro(amd_pstate_max_freq);
->   cpufreq_freq_attr_ro(amd_pstate_lowest_nonlinear_freq);
->   
-> @@ -1043,6 +1138,7 @@ cpufreq_freq_attr_ro(amd_pstate_highest_perf);
->   cpufreq_freq_attr_rw(energy_performance_preference);
->   cpufreq_freq_attr_ro(energy_performance_available_preferences);
->   static DEVICE_ATTR_RW(status);
-> +static DEVICE_ATTR_RW(cpb_boost);
->   
->   static struct freq_attr *amd_pstate_attr[] = {
->   	&amd_pstate_max_freq,
-> @@ -1062,6 +1158,7 @@ static struct freq_attr *amd_pstate_epp_attr[] = {
->   
->   static struct attribute *pstate_global_attributes[] = {
->   	&dev_attr_status.attr,
-> +	&dev_attr_cpb_boost.attr,
->   	NULL
->   };
->   
+I can pull this fix ahead.
 
+> > +	/* if now at 0, move to next node and set up that node's weight */
+> > +	if (unlikely(!policy->cur_il_weight)) {
+> > +		me->il_prev = node;
+> > +		next = next_node_in(node, policy->nodes);
+> > +		rcu_read_lock();
+> > +		table = rcu_dereference(iw_table);
+> > +		/* detect system-default values */
+> > +		weight = table ? table[next] : 1;
+> > +		policy->cur_il_weight = weight ? weight : 1;
+> > +		rcu_read_unlock();
+> > +	}
+> 
+> It appears that the code could be more concise if we allow
+> policy->cur_il_weight == 0.  Duplicated code are in
+> alloc_pages_bulk_array_weighted_interleave() too.  Anyway, can we define
+> some function to reduce duplicated code.
+> 
+
+This is kind of complicated by the next patch, which places the node and
+the weight into the same field to resolve the stale weight issue.
+
+In that patch (cur_il_weight = 0) means "cur_il_weight invalid",
+because the weight part can only be 0 when:
+
+a) an error occuring during bulk allocation
+b) a rebind event
+
+I'll take some time to think about whether we can do away with
+task->il_prev (as your next patch notes mentioned).
+
+
+> > +		/* Otherwise we adjust nr_pages down, and continue from there */
+> > +		rem_pages -= pol->cur_il_weight;
+> > +		pol->cur_il_weight = 0;
+> 
+> This break the rule to keep pol->cur_il_weight != 0 except after initial
+> setup.  Is it OK?
+> 
+
+The only way cur_il_weight can leave this function 0 at this point is if
+an error occurs (specifically the failure to kmalloc immediately next).
+
+If we don't clear cur_il_weight here, then we have a stale weight, and
+the next allocation pass will over-allocate on the current node.
+
+This semantic also changes a bit in the next patch, but is basically the
+same.  If il_weight is 0, then either an error occurred or a rebind
+event occured.
+
+> > +				/* resume from this node w/ remaining weight */
+> > +				resume_node = prev_node;
+> > +				resume_weight = weight - (node_pages % weight);
+> 
+> resume_weight = weight - delta; ?
+>
+
+ack
+
+~Gregory
 
