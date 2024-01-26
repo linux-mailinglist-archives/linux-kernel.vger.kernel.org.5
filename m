@@ -1,115 +1,208 @@
-Return-Path: <linux-kernel+bounces-40247-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA3D783DD27
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:12:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ABFD83DD12
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:10:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91A9D1F237D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:12:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41E182880C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:10:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FF751CF9C;
-	Fri, 26 Jan 2024 15:12:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCFF11CD34;
+	Fri, 26 Jan 2024 15:10:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="akmA595R"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="dSDx1zsx"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D5161D54A
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:12:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61EA41B7F2
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:10:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706281940; cv=none; b=vC8JYx4KbVEyBNNd8E+kJG55IBkNcsIEVRIoQOlc770fiue4MTVQ+0KQhjEDayuYmc+Vnwm0s77qE5bUaM1pvTOB9ZzMg4jw/CJDLLdNtLFdVKGwxM45Xowblx9L3J/3XO4aHKP9gcASDAudJ/MAuAzPRHkZjdo1iAlHFmvmuxk=
+	t=1706281803; cv=none; b=IzUkgM0aC5LT0dbtzIpAjrth0s3kRXRKbvkj3QpUrPWMK99AkZPHZ99TnVHrdj/svyW7Zw/IphAmvhUd7AADn6n0m9bILfYD4wyGdmtbNZxYWrPof7PmcCq5TCKMhZ7dcNdCDWOoJWJzCyihzV/D9jdZc+fcB46yNRBfEru4u9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706281940; c=relaxed/simple;
-	bh=4RE9EljdMUOvnOvsl8qSrh585fszJ7BPNfle+haelpc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qT7TZx/crBOAcpMcabtoJN/KKKY+2chY0/qzCvaxTuaeXNuVby1gRVFQZf+odW2rHggs5wQF9ppFwMGXchZD4461OAvNs0n6R3Rk1o11RGUpvoQ2l9BtbexxtBGEmBJV0bjt2fRTzhesKXMil9IjKUZEjONyt3jP1vNmvqE0RMM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=akmA595R; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=4RE9
-	EljdMUOvnOvsl8qSrh585fszJ7BPNfle+haelpc=; b=akmA595RRupGZ7bwoG9i
-	5FPVeNPTjcyIfIxcBszYKnEAdPne6lyuMmDADPF5MPci74u83wT1iNJAkUXp+Lnq
-	2caLgNZSsdqLW6VG4149zgkZkPZ6M/3ZLxl/fP0RutpuXiJeSZJukFnQYjJCytJ+
-	CYCCZAruYH+GhXVJf+Rciv9LFJwr5IAUA4XouLJBXHNL+T652y7xG7ZKOaXInJPR
-	ajG3HTy8FeNA9sU1hJlUeSRDnYxXlhBLs53mpkC1L5xcdQrAivdqpAzNl+AuSxLR
-	ntv4Ee0A/kbeS2YODgHsVfj65vabzoDTXiQq0OFMdcfzgQ6Vz2aUErF6vKCUbf1J
-	oA==
-Received: (qmail 1549173 invoked from network); 26 Jan 2024 16:05:32 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 26 Jan 2024 16:05:32 +0100
-X-UD-Smtp-Session: l3s3148p1@KtWeoNoPUsxehhrU
-Date: Fri, 26 Jan 2024 16:05:32 +0100
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-renesas-soc@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v3 2/2] arm64: dts: renesas: ulcb-kf: add node for
- GNSS
-Message-ID: <ZbPKPGB7DIHhZ3GJ@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-renesas-soc@vger.kernel.org,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-References: <20240117131807.24997-1-wsa+renesas@sang-engineering.com>
- <20240117131807.24997-3-wsa+renesas@sang-engineering.com>
- <CAMuHMdX7Z8w0JykKuboP__ZE4x+LeKSQAGdyrUezERxysPUCKA@mail.gmail.com>
+	s=arc-20240116; t=1706281803; c=relaxed/simple;
+	bh=eVJOccb+zS20vYhXESd5lUpidtZyc+x1M67JNbou9XA=;
+	h=Subject:From:To:Cc:Date:Message-ID:Content-Type:MIME-Version; b=g+WDyoeC61VFnA0VneAfkTzixZ9cZzjQbBX2+uMQVBOWrHtqgtCVREg4tz80Bd/QNFbuFGpreq3FtYwzxnu30aVjKhQoqapabVBy73X06VH4WTjAmopdj7L9NcH5PC/AiUFbJr8mhfe3fhLe4eZ9an8fCO68tP5PxWxi0V7j3M8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=dSDx1zsx; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40QEWUt0016460;
+	Fri, 26 Jan 2024 15:09:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=pp1; bh=EMfDROFbgJEi008tLRtRfT5S/vVzIQIrctpoV9Kn3Kk=;
+ b=dSDx1zsxQ7vx+0ifKCtclKF1SH3AuEsQzf0vjxAhom2XNuLpwk/SVB0C4lwCV+USmygd
+ twrkr745XknJkghyH0974ZZpMZ1A+EPU7l+DorkdVAU2z3Ahei88CYFyeBWzVnUIuuXB
+ TLHc0kQPGvoJbd9W9BVbFgLRgtubddA2Pg6QINrPUpyq1KIhTWwlNOuQo45YKl4BYORR
+ GV60paUIHtCOW2pb6cx5c6PAG3BrpWSm7dCxMjaXCF4/mK6pYBiKq1PfVg+T4HbVleQO
+ dTHobHKLofwZKH1JKk9WkuIsK9NMe78OkK3Wg8lpBnX7HDhsguKh7DFjYrg6TnnoPu/O zg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vvek90wjm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Jan 2024 15:09:26 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40QF7XKX006293;
+	Fri, 26 Jan 2024 15:09:26 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vvek90wja-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Jan 2024 15:09:26 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40QD78IV028239;
+	Fri, 26 Jan 2024 15:09:25 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vru732xwe-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Jan 2024 15:09:25 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40QF9MJK27460100
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 26 Jan 2024 15:09:22 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 348192004B;
+	Fri, 26 Jan 2024 15:09:22 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A624320049;
+	Fri, 26 Jan 2024 15:09:19 +0000 (GMT)
+Received: from ltcd48-lp2.aus.stglab.ibm.com (unknown [9.3.101.175])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 26 Jan 2024 15:09:19 +0000 (GMT)
+Subject: [PATCH v2] powerpc: iommu: Bring back table group release_ownership()
+ call
+From: Shivaprasad G Bhat <sbhat@linux.ibm.com>
+To: iommu@lists.linux.dev, linuxppc-dev@lists.ozlabs.org
+Cc: linux-kernel@vger.kernel.org, mpe@ellerman.id.au, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org,
+        naveen.n.rao@linux.ibm.com, jgg@ziepe.ca, jroedel@suse.de,
+        tpearson@raptorengineering.com, aik@amd.com, bgray@linux.ibm.com,
+        gregkh@linuxfoundation.org, sbhat@linux.ibm.com,
+        gbatra@linux.vnet.ibm.com, vaibhav@linux.ibm.com
+Date: Fri, 26 Jan 2024 09:09:18 -0600
+Message-ID: 
+ <170628173462.3742.18330000394415935845.stgit@ltcd48-lp2.aus.stglab.ibm.com>
+User-Agent: StGit/1.5
+Content-Type: text/plain; charset="utf-8"
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: YFJalwNzOQy4a9hjiadrOA2gTSIYVP95
+X-Proofpoint-ORIG-GUID: W4cEKw2h2TRDXchVH7azbDxp1mZ68xEa
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="rRSFQ5n7OdqjkQvG"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdX7Z8w0JykKuboP__ZE4x+LeKSQAGdyrUezERxysPUCKA@mail.gmail.com>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-25_14,2024-01-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
+ clxscore=1015 lowpriorityscore=0 malwarescore=0 phishscore=0 adultscore=0
+ priorityscore=1501 mlxlogscore=999 mlxscore=0 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401260111
+
+The commit 2ad56efa80db ("powerpc/iommu: Setup a default domain and
+remove set_platform_dma_ops") refactored the code removing the
+set_platform_dma_ops(). It missed out the table group
+release_ownership() call which would have got called otherwise
+during the guest shutdown via vfio_group_detach_container(). On
+PPC64, this particular call actually sets up the 32-bit TCE table,
+and enables the 64-bit DMA bypass etc. Now after guest shutdown,
+the subsequent host driver (e.g megaraid-sas) probe post unbind
+from vfio-pci fails like,
+
+megaraid_sas 0031:01:00.0: Warning: IOMMU dma not supported: mask 0x7fffffffffffffff, table unavailable
+megaraid_sas 0031:01:00.0: Warning: IOMMU dma not supported: mask 0xffffffff, table unavailable
+megaraid_sas 0031:01:00.0: Failed to set DMA mask
+megaraid_sas 0031:01:00.0: Failed from megasas_init_fw 6539
+
+The patch brings back the call to table_group release_ownership()
+call when switching back to PLATFORM domain from BLOCKED, while
+also separates the domain_ops for both.
+
+Fixes: 2ad56efa80db ("powerpc/iommu: Setup a default domain and remove set_platform_dma_ops")
+Signed-off-by: Shivaprasad G Bhat <sbhat@linux.ibm.com>
+---
+Changelog:
+v1: https://lore.kernel.org/linux-iommu/170618451433.3805.9015493852395837391.stgit@ltcd48-lp2.aus.stglab.ibm.com/
+ - Split the common attach_dev call to platform and blocked attach_dev
+   calls as suggested.
+
+ arch/powerpc/kernel/iommu.c |   37 ++++++++++++++++++++++++++++---------
+ 1 file changed, 28 insertions(+), 9 deletions(-)
+
+diff --git a/arch/powerpc/kernel/iommu.c b/arch/powerpc/kernel/iommu.c
+index ebe259bdd462..d71eac3b2887 100644
+--- a/arch/powerpc/kernel/iommu.c
++++ b/arch/powerpc/kernel/iommu.c
+@@ -1287,20 +1287,20 @@ spapr_tce_platform_iommu_attach_dev(struct iommu_domain *platform_domain,
+ 	struct iommu_domain *domain = iommu_get_domain_for_dev(dev);
+ 	struct iommu_group *grp = iommu_group_get(dev);
+ 	struct iommu_table_group *table_group;
+-	int ret = -EINVAL;
+
+ 	/* At first attach the ownership is already set */
+ 	if (!domain)
+ 		return 0;
+
+-	if (!grp)
+-		return -ENODEV;
+-
+ 	table_group = iommu_group_get_iommudata(grp);
+-	ret = table_group->ops->take_ownership(table_group);
++	/*
++	 * The domain being set to PLATFORM from earlier
++	 * BLOCKED. The table_group ownership has to be released.
++	 */
++	table_group->ops->release_ownership(table_group);
+ 	iommu_group_put(grp);
+
+-	return ret;
++	return 0;
+ }
+
+ static const struct iommu_domain_ops spapr_tce_platform_domain_ops = {
+@@ -1312,13 +1312,32 @@ static struct iommu_domain spapr_tce_platform_domain = {
+ 	.ops = &spapr_tce_platform_domain_ops,
+ };
+
+-static struct iommu_domain spapr_tce_blocked_domain = {
+-	.type = IOMMU_DOMAIN_BLOCKED,
++static int
++spapr_tce_blocked_iommu_attach_dev(struct iommu_domain *platform_domain,
++				     struct device *dev)
++{
++	struct iommu_group *grp = iommu_group_get(dev);
++	struct iommu_table_group *table_group;
++	int ret = -EINVAL;
++
+ 	/*
+ 	 * FIXME: SPAPR mixes blocked and platform behaviors, the blocked domain
+ 	 * also sets the dma_api ops
+ 	 */
+-	.ops = &spapr_tce_platform_domain_ops,
++	table_group = iommu_group_get_iommudata(grp);
++	ret = table_group->ops->take_ownership(table_group);
++	iommu_group_put(grp);
++
++	return ret;
++}
++
++static const struct iommu_domain_ops spapr_tce_blocked_domain_ops = {
++	.attach_dev = spapr_tce_blocked_iommu_attach_dev,
++};
++
++static struct iommu_domain spapr_tce_blocked_domain = {
++	.type = IOMMU_DOMAIN_BLOCKED,
++	.ops = &spapr_tce_blocked_domain_ops,
+ };
+
+ static bool spapr_tce_iommu_capable(struct device *dev, enum iommu_cap cap)
 
 
---rRSFQ5n7OdqjkQvG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-
-> Can it be used over I2C too? Is there some strapping to select the
-> interface used? I couldn't find that in the documentation.
-
-It looks to me they both work at the same time. I was able to write and
-read via I2C (thus not very meaningful data) while serial port was doing
-the real work. I am not aware of a full GNSS implementation supporting
-the I2C interface, so I considered it good at that point.
-
-
---rRSFQ5n7OdqjkQvG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmWzyjgACgkQFA3kzBSg
-KbaRiQ//bxRG4uuUlTt8MoZCNahMBC79+M3/Ki+7+wA/uAHJkTp0HU205zSwDi8Q
-Knl7i63CbabFPED93WeqrkDm7QVW4f0iaQ7fSe0MhkLD8sHRhhr3N3KkTjEwwmJj
-r05N6Ygt6nw/d0ncZnQbpTx5aM5a6GY2h/xN6P+6SnozAylqAiNCht09P4OnFvLu
-QGybJJPafwe3KbXGK2hhNsS7fTs7Kg1dijPVhY444xcgKbRHWzdGnbu+0PfZOPCP
-A8UtgKRn+HdbDfAkH/e7naVC1MMA7PyFM7TEmi8dAz/u65c20ZlkpO/k0dWcMqKW
-94Z/dR3RZfmYBLxp7N7g9DBR/l919g+wnHU24h+1PYxmCia1YHgVyABbANXsulyW
-Mw1DM5Hm+S9J2Kn5PaOIPuyDFn/GBlqGZour/dZv1OMk9P1n9/9L8V9u/MDTXV8i
-YIQlxl5+AfyYpZqvhrOWDllBoxLTrLQX32d2hABBW7XE3pQuBm8z+RJBcfAi9WAI
-DOe31HalytJvGvhfR8je+yPDPQQ/oAe/VnhhFjnD5GVEYuQfyglN2yv+EBe23khP
-H6jlcUu73X+FVWS0CsSBkQNAHEcuTTuf/Hinge4lK4KPk4CZL1qQNNJ+nGNR7F4p
-8IDpVrtd6N/V7w49GC77/0RseWUxQiTHlBLfjFSozw1IPrcXNFc=
-=tXXw
------END PGP SIGNATURE-----
-
---rRSFQ5n7OdqjkQvG--
 
