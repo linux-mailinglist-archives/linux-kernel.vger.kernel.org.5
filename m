@@ -1,98 +1,113 @@
-Return-Path: <linux-kernel+bounces-40042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2749583D96B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:35:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33A5783D948
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:23:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45E60B31BD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:23:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFF74292C30
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:23:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E5531B27D;
-	Fri, 26 Jan 2024 11:22:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C29C14299;
+	Fri, 26 Jan 2024 11:22:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ZUFf2fTv"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uX9CbdA2"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2758C17584;
-	Fri, 26 Jan 2024 11:21:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7AC41B946
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 11:22:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706268119; cv=none; b=kOglBssRjRm+dZ+sQCm0n9d6U+Oet8ldLvXVNdqWU15c4MU9xylNFbg89a8S8++35AyEF/0GXIQ+cWOeaM1bP7kGgdix4e7wcXNohGQ6Zdy8y23R6sj0aLlYVWyMwRvnJAc/Ww+//MxCVFjG59JEY/uGl+POuVKhLAMdNqdygJA=
+	t=1706268158; cv=none; b=N1nMawKxPAtvMU0D+sw34b31Yia/pWyaaB7j+WANPFJ2ztKTJHL9ETzx68tsKFUROUQatjrc5Cdq6+G8NyapCFKhGIphw98vAKpx7lR79pz7BZWONPKvtbkUlvleP4s3XQMa2Ds+Wfvdmh6EUYp/RTqb4BpmTmM8Mf6oQXpCY+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706268119; c=relaxed/simple;
-	bh=SdPwnBhu1IkYureVGrukhHdBHBYpSyD2MNsFTx/enBs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=s1rbQmUHrvNOFgbp0DowPXlc1Ck/JY2lAJ9d+6bCYFLMQDgnquFK5SgnXTR3Lggmm7QKGrrotzCuslm6qr90bQu6ReCDZClQwF+ZnWTv7Al8F29un/NT6djNk8TkWr9VKiMHzTyImOX0B0KvzCcdsAlXoI3imQzx0YKsyygqD6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ZUFf2fTv; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706268116;
-	bh=SdPwnBhu1IkYureVGrukhHdBHBYpSyD2MNsFTx/enBs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZUFf2fTvDwyoQbO83osgVJswDX3pNohS7IxjYhRo/2uiyOZRntovC0WXTY55Pzfpi
-	 gs0/owgCroaAYhKnKcNn5itw6ixC42fMcpVZjoQjW1UjMnooMwbUSDjfyhAPTRR6XV
-	 1X7AcXDgvtSa7oOWabNAaP9iYX3/kKta0tOAfiwIWhjIezzXAM1Dp4zIzEWDKdcP/K
-	 hBa5tzDSuzlvnck/9sxDVc0oMdemntRgdHqHBYPSLI+qowsyRY22ApV/zDvifxlb5o
-	 yTKlOlYggHSq48HoBkIgDFYKMmK83mqiL+8hg0PGs3RDtlyZ63vJLSQkfp8T7joJUQ
-	 NEj4d83AhZ1rA==
-Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D2F0E3782072;
-	Fri, 26 Jan 2024 11:21:53 +0000 (UTC)
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	kernel@collabora.com,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 7/7] selftests/mm: config: add missing configs
-Date: Fri, 26 Jan 2024 16:21:26 +0500
-Message-ID: <20240126112129.1480265-7-usama.anjum@collabora.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240126112129.1480265-1-usama.anjum@collabora.com>
-References: <20240126112129.1480265-1-usama.anjum@collabora.com>
+	s=arc-20240116; t=1706268158; c=relaxed/simple;
+	bh=mACbSjLNn43qQIDNya9zDgNcOnXMiY4Me7YFeN+xW90=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=D65z56vuOzU8/HVkw1bqbykDlRoFkeASKgAsC7ib15wkuxF2Yt5NbsH+wty76+J4jhnYhp4o4vNyLiwMDrDiYJru7mELtzSDup1kpGCcUNtR2Dvjx8Ds242Fs5rJhR8oh4wG6Ghoj7Na+XjU2N7+dY4iv1A9kXRZECBQTrwjVYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uX9CbdA2; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2cf4696b90fso2370451fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 03:22:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706268155; x=1706872955; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xS+dLyse9Mmq2wfzYg8MWhXB6r8382gdva6ZXhQz530=;
+        b=uX9CbdA2f154mzB9e9wWeSQGAr+C/EYKhIg7qMk4d6BFTcC1GOWguths8zg+WY3Hc0
+         QAN9QA952fa8OThthu1tr7w6NfktlA3tJPRQgqw7xjZqqUflX1mnruHD083ADA3Gn6+Z
+         O7wqzUOw/Mhy5nlxw/XDeqjQJ1SvmHXQUsypGmWrUHKFfhG9Nm3sUcPpapt6XOv8C8AG
+         OMdbSHMO72169SlxrCuiIJnzV8wXEEy6BZW2zf8gbTTSnfk6oiVJke0po3U8JG2dLB79
+         Rc22tSGhUsPf5kYAGrrvIykQBBFwqNhNDsbIksdecdCa/Ez8E9QmcahLddI5XAVvngtl
+         /XCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706268155; x=1706872955;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xS+dLyse9Mmq2wfzYg8MWhXB6r8382gdva6ZXhQz530=;
+        b=NBKZvRJRBzk47CxSWvvn6suA5EJ/MwZ0kvQzXGfKletM95P1ldSY8MTIa8pqQa9kBB
+         6Bd+1dsU9dpnII0PqWDdZg3LZe7igk/Emm4tMWWSfuDLp8eaaAbqwb7M44CffHAEeIZ7
+         YyC48/MB81JdmJ60kFnk1k2wlAKUlRhDWZ53qXRh9ZJH7QJqPCvhNN6v7x7EWFBRVo/f
+         08aPoIH+jotWQ0iwmOy1G/JmK8tn174kMzYHZtR0LzYtKFkaOcxBD6QB+PD919uEYkaw
+         sRcExezNe3Kjdcf68k5A5qvzBGYUfJn3dzlAzAeD9AqH4A2PyZ6sHIYCaVKVBgZtorwg
+         D0ew==
+X-Gm-Message-State: AOJu0Yzk/BdQVro62QMJwjfSoX1XsEY8KjYaXO7d2C+kOR39NtFXBtXa
+	6UY0kflt+cTQEClChX2fAP2bsFfuBmQY/QANf66/Ia6o/d6oDIkqRh4/9ubxPu8=
+X-Google-Smtp-Source: AGHT+IELkAMgyLeASnVJbzwF/GxPRN+LTezHRJs3Yv64SVBtFnuO5FEPoJYjpDpoE3SWJYzzKI2Wng==
+X-Received: by 2002:a2e:b5b8:0:b0:2ce:d23:ec9a with SMTP id f24-20020a2eb5b8000000b002ce0d23ec9amr655114ljn.104.1706268154619;
+        Fri, 26 Jan 2024 03:22:34 -0800 (PST)
+Received: from [127.0.1.1] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id h1-20020a0564020e0100b0055d312732dbsm469202edh.5.2024.01.26.03.22.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 03:22:33 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>, 
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, 
+ Gregory Clement <gregory.clement@bootlin.com>, 
+ =?utf-8?q?=EF=BF=BDipraga?= <alsi@bang-olufsen.dk>, 
+ =?utf-8?q?Alvin_=C5=A0ipraga?= <alvin@pqrs.dk>
+Cc: Rob Herring <robh@kernel.org>, linux-clk@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20231004063712.3348978-3-alvin@pqrs.dk>
+References: <20231004063712.3348978-1-alvin@pqrs.dk>
+ <20231004063712.3348978-3-alvin@pqrs.dk>
+Subject: Re: (subset) [PATCH v2 2/4] ARM: dts: dove-cubox: fix si5351 node
+ names
+Message-Id: <170626815309.51665.6755169978488848085.b4-ty@linaro.org>
+Date: Fri, 26 Jan 2024 12:22:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.4
 
-Add configurations which are needed for
-- hugetlb-read-hwpoison
-- ksm_functional_test and ksm_test
 
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
-Changes since v3:
-- Rebased on top of next-20240125
----
- tools/testing/selftests/mm/config | 3 +++
- 1 file changed, 3 insertions(+)
+On Wed, 04 Oct 2023 08:35:28 +0200, Alvin Šipraga wrote:
+> Correct the device tree to conform with the bindings. The node name and
+> index should be separated with an @.
+> 
+> 
 
-diff --git a/tools/testing/selftests/mm/config b/tools/testing/selftests/mm/config
-index 4309916f629e3..d16a72036eb7f 100644
---- a/tools/testing/selftests/mm/config
-+++ b/tools/testing/selftests/mm/config
-@@ -7,3 +7,6 @@ CONFIG_TEST_HMM=m
- CONFIG_GUP_TEST=y
- CONFIG_TRANSPARENT_HUGEPAGE=y
- CONFIG_MEM_SOFT_DIRTY=y
-+CONFIG_MEMORY_FAILURE=y
-+CONFIG_HWPOISON_INJECT=y
-+CONFIG_KSM=y
+Applied, thanks!
+
+[2/4] ARM: dts: dove-cubox: fix si5351 node names
+      https://git.kernel.org/krzk/linux-dt/c/2df26223650027602d017368f4e8dc1eff90404e
+
+Best regards,
 -- 
-2.42.0
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 
