@@ -1,263 +1,153 @@
-Return-Path: <linux-kernel+bounces-39449-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39450-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B84A83D150
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 01:07:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF27C83D151
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 01:10:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EBEE1C24E7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 00:07:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0916E1C23E56
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 00:10:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8629315BF;
-	Fri, 26 Jan 2024 00:07:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C89464C;
+	Fri, 26 Jan 2024 00:10:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="t0aNJZ9U"
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="iUQvfhAF"
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32B4117E
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 00:07:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93F5817E
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 00:10:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706227648; cv=none; b=d/ugAKuV34NMQWJ8v0IbPrj4ZovK1H3EifsL3riWGqoOekSTUMrkzGtyrnxdOT4I9Wmq+abEzgN/hJWxn+9U56DS+O5ZJh85ney87vI4I0qsLi8ytSULHM5EwmWOKaK5wjpnCbYvdYHOdXaMD42MM2nChyNy72jnT3YnW3E2fuQ=
+	t=1706227821; cv=none; b=GcQWGytaN5uFEBxh3NgC9hUi8gb8vGkhIbYUoMMFKl+f4yH6VsltBYisF+yp/RhJzmyERUwWCtiQvdJUa1fmkHxAqEfkjmOSkVXuPrOeQap4zzm2o6u03OqUFHr4QOlz373Fl9Rch0FRUvXLU83H9aWWPbE6sELCRMXWnHKq+cE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706227648; c=relaxed/simple;
-	bh=vq9nbJGBePtK3eacfuxeNYC4E2qxjWblECq4PVvE8mA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cvAGu9HZlKWO83jiJLtnvRCkPQzXa/k9xvGux0OUzj0EhI7JfV7+7t99DLf8oWQ7GPW6z63QUcB4CdNqfpSi2wDykVbn9Vqr8pTFw8rG3JqdPlDQdLSNIIjFAaf7IH1VvFVcLOStLgPWy2fh485Q9XyRoU3bm9q0ZFxdTxfuEJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=t0aNJZ9U; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5ce6b5e3c4eso3929138a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 16:07:26 -0800 (PST)
+	s=arc-20240116; t=1706227821; c=relaxed/simple;
+	bh=58dYJ9luYw8N3kkNe4kgLMlt08I5YWQ8h7PBYaeblM0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Wv2ub1ZX8BndyTzlQPMCAqSlpew/PFXei7ZX3B/sbr52TzLwc0cgDltQ3iLKJx+s/lARaQGZo3L4A/DN3u3xnv6umCHiumfEw97DjOqzcBdgizauRPkN6ddaC3Uh5VqLXPTOU18ClKPeeQBIAeafNWi+9aOtlCaCwPO9VMLiIz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=iUQvfhAF; arc=none smtp.client-ip=209.85.161.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-595aa5b1fe0so4452590eaf.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 16:10:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1706227645; x=1706832445; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a12bNs0iU2iFfUOFFry4nsUZa1RJ0J+PUSAWEsMV7ho=;
-        b=t0aNJZ9UZA8LlDyDxPxvW0PVPRrVfL2Zcg6m8HI0WK+3sLXYZrMHdE9lZg5/mVNhyr
-         0EbpjmNyWCo3uf5rYdsQ6MfpZS9BVH/ox47Agjx2rr3CNz/QcZRaOaOx3MvlrTghTEmH
-         rpF4FbQrqDQHEcOJ1yEOhmvZTYS8EMzhHpspA=
+        d=bytedance.com; s=google; t=1706227818; x=1706832618; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mepq/n4r76tjXgMd8bs61Q70KlbyLsCs5QleHM4o5pw=;
+        b=iUQvfhAFTxHdp7nQRFXb2G+STpLn8YII6vLoWp3hZJBTRVlg8IKazbJCcdnznqHw0z
+         DIrfwuyh+o4Ifx23vNYXwm4UORgI/+uwB+IaD6drK5Lk/Hs6JAcfOtORYnNUL1MNcI/c
+         vZemvzWUp3+5AoJByrZCvKDS0WAOSersCWHgyAZo3YVg83C80TTbKjjmEibfSViw3AH5
+         qSfxhD8gWRT2Bk3UfZcB7x223ZkR/+czktb3m37N7ajzRPm25UPGcdqgV+XOlX4BwiYi
+         foajBWEkrK9ARVfcbBuCAYe2DFvLtXBYXae38IQG9cz2eWJHpFJL+oIdSzmmDvt2daTW
+         r7jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706227645; x=1706832445;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a12bNs0iU2iFfUOFFry4nsUZa1RJ0J+PUSAWEsMV7ho=;
-        b=sd4BZdwRyCrVdj458yf62Z7p5Tcam9XN9EpoNr+B5lEyYop0GVdTiLnxhBKw51Vbzh
-         oTPLbSe9HXNKoupCQB6JRJ1tEjQMW4G414ZpUBH1rKGU5DFXm1elcse74FhHZVYo6+TQ
-         V39PY5w1JSujlY6qADuK2B73726tYSeOjramcbMgAXC9ZunOEdxeSIf/Si7MW+NPVPP6
-         2oI7wvOyTRCY4A+upCtpjEXqsyk99W6VPFCpnmdh3KhZm13FKN70xLyAHIKIeuDhXdXF
-         vUPMULR99roZgXSI+MwG2pqOuuJyL/ijROSoliBgpbVqYoTgiixUwQBG2fI/Hld47zko
-         TB4A==
-X-Gm-Message-State: AOJu0Yyd20mfmz+MUUHzfADP+jRyjbLx6zw37QP4mzQppODpHVJ1ebS0
-	RwDT0TcGbDq/zfZmD5c6FY0s/vxmVxzS5QpxovBXRjcTOLRA3ob1h0bJPo7WzDQ=
-X-Google-Smtp-Source: AGHT+IEQ7HAH1hxT9CkF89yW0eFlBtH4KC1ypA+keYgd+I+P7OPhNkK0nRSZyExwwZXa+s8eh8neuQ==
-X-Received: by 2002:a05:6a20:47de:b0:19c:6877:9943 with SMTP id ey30-20020a056a2047de00b0019c68779943mr405451pzb.41.1706227645567;
-        Thu, 25 Jan 2024 16:07:25 -0800 (PST)
-Received: from fastly.com (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
-        by smtp.gmail.com with ESMTPSA id a11-20020a170902eccb00b001c407fac227sm64439plh.41.2024.01.25.16.07.23
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 25 Jan 2024 16:07:25 -0800 (PST)
-Date: Thu, 25 Jan 2024 16:07:21 -0800
-From: Joe Damato <jdamato@fastly.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	chuck.lever@oracle.com, jlayton@kernel.org,
-	linux-api@vger.kernel.org, brauner@kernel.org, edumazet@google.com,
-	davem@davemloft.net, alexander.duyck@gmail.com,
-	sridhar.samudrala@intel.com, kuba@kernel.org,
-	willemdebruijn.kernel@gmail.com, weiwan@google.com,
-	Jonathan Corbet <corbet@lwn.net>,
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nathan Lynch <nathanl@linux.ibm.com>,
-	Steve French <stfrench@microsoft.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Julien Panis <jpanis@baylibre.com>, Arnd Bergmann <arnd@arndb.de>,
-	Andrew Waterman <waterman@eecs.berkeley.edu>,
-	Thomas Huth <thuth@redhat.com>, Palmer Dabbelt <palmer@dabbelt.com>,
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-	"open list:FILESYSTEMS (VFS and infrastructure)" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH net-next v3 3/3] eventpoll: Add epoll ioctl for
- epoll_params
-Message-ID: <20240126000721.GB1987@fastly.com>
-References: <20240125225704.12781-1-jdamato@fastly.com>
- <20240125225704.12781-4-jdamato@fastly.com>
- <2024012558-coasting-unlatch-9315@gregkh>
+        d=1e100.net; s=20230601; t=1706227818; x=1706832618;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mepq/n4r76tjXgMd8bs61Q70KlbyLsCs5QleHM4o5pw=;
+        b=m73iJfQYc1sHnmUygQbfMY2ZY23iwNw4BWBGZEazWHuGjAEA6pWOTQQhOGprtU6Qfn
+         UyAedhj3i7OW5iXWNtOVU1+cj7OSnX3Wg5RiKsk9hzudycU2hHU+/PYPnJ+s+5ds9/4I
+         sogNHZEhsE3LTt/7qpzWjJBFDx6OduO+lSG+lEBLR27j/9nW91GsZssCDkP6t3Eu/T+q
+         4jK7ki3NWEbKg86sRmJGpGOONoOBOUNdXBTCw/rdRrc3Qe2fKPltQ8D/oKHx+X6xAmgf
+         BmHVeIzr0NriRrfqUuf3qKEDhIsOLsJNxuJUxAAjYsk0kaguSoLDa9Q8CK6Ob4Ene4Rb
+         QU3g==
+X-Gm-Message-State: AOJu0YzVqRn71vhc4gF0sMJH9utvS5Zjo2MzMW6b2/1TXKYQdtJB/2VF
+	JQHmRl1uBOZMn7KSqEAMuBij8FRMmqfYk2em7J5kk588pcku6KhmdfqHdXR9cKs=
+X-Google-Smtp-Source: AGHT+IEx73KHQAhkebWlIVIn3JcUudSFf9fDP998OFKdpnla84QeM2u2dcu55JYb8yCnAvAsuooCBg==
+X-Received: by 2002:a05:6358:ee88:b0:175:4d29:ac23 with SMTP id il8-20020a056358ee8800b001754d29ac23mr701341rwb.26.1706227818446;
+        Thu, 25 Jan 2024 16:10:18 -0800 (PST)
+Received: from [10.254.148.65] ([139.177.225.246])
+        by smtp.gmail.com with ESMTPSA id b7-20020aa78ec7000000b006dde305b92csm93398pfr.118.2024.01.25.16.10.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jan 2024 16:10:18 -0800 (PST)
+Message-ID: <081a9c21-a1d1-4ca2-a58f-e6748ccb429c@bytedance.com>
+Date: Fri, 26 Jan 2024 08:10:13 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024012558-coasting-unlatch-9315@gregkh>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] mm: zswap: remove unnecessary tree cleanups in
+ zswap_swapoff()
+Content-Language: en-US
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>,
+ Chris Li <chrisl@kernel.org>, Huang Ying <ying.huang@intel.com>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240120024007.2850671-1-yosryahmed@google.com>
+ <20240120024007.2850671-3-yosryahmed@google.com>
+ <20240122201906.GA1567330@cmpxchg.org>
+ <CAJD7tkaATS48HVuBfbOmPM3EvRUoPFr66WhF64UC4FkyVH5exg@mail.gmail.com>
+ <20240123153851.GA1745986@cmpxchg.org>
+ <CAJD7tkasHsRnT_75-TXsEe58V9_OW6m3g6CF7Kmsvz8CKRG_EA@mail.gmail.com>
+ <20240123201234.GC1745986@cmpxchg.org>
+ <CAJD7tkZC6w2EaE=j2NEVWn1s7Lo2A7YZh8LiZ+w72jQzFFWLUQ@mail.gmail.com>
+ <f3fa799f-1815-4cfe-abc8-3ba929fcd1ba@bytedance.com>
+ <CAJD7tka6UuEuuP=df-1V3vwsi0T0QhLORTRDs6qDvA81iY6SGA@mail.gmail.com>
+ <f7379622-4081-4424-9353-289257cf8555@bytedance.com>
+ <CAJD7tkaMexNwGHq4G4FjNoWs9_wapY-kttm66Bb9xHF=OReYKg@mail.gmail.com>
+From: Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <CAJD7tkaMexNwGHq4G4FjNoWs9_wapY-kttm66Bb9xHF=OReYKg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 25, 2024 at 03:22:34PM -0800, Greg Kroah-Hartman wrote:
-> On Thu, Jan 25, 2024 at 10:56:59PM +0000, Joe Damato wrote:
-> > Add an ioctl for getting and setting epoll_params. User programs can use
-> > this ioctl to get and set the busy poll usec time or packet budget
-> > params for a specific epoll context.
-> > 
-> > Signed-off-by: Joe Damato <jdamato@fastly.com>
-> > ---
-> >  .../userspace-api/ioctl/ioctl-number.rst      |  1 +
-> >  fs/eventpoll.c                                | 64 +++++++++++++++++++
-> >  include/uapi/linux/eventpoll.h                | 12 ++++
-> >  3 files changed, 77 insertions(+)
-> > 
-> > diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> > index 457e16f06e04..b33918232f78 100644
-> > --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
-> > +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> > @@ -309,6 +309,7 @@ Code  Seq#    Include File                                           Comments
-> >  0x89  0B-DF  linux/sockios.h
-> >  0x89  E0-EF  linux/sockios.h                                         SIOCPROTOPRIVATE range
-> >  0x89  F0-FF  linux/sockios.h                                         SIOCDEVPRIVATE range
-> > +0x8A  00-1F  linux/eventpoll.h
-> >  0x8B  all    linux/wireless.h
-> >  0x8C  00-3F                                                          WiNRADiO driver
-> >                                                                       <http://www.winradio.com.au/>
-> > diff --git a/fs/eventpoll.c b/fs/eventpoll.c
-> > index 40bd97477b91..73ae886efb8a 100644
-> > --- a/fs/eventpoll.c
-> > +++ b/fs/eventpoll.c
-> > @@ -6,6 +6,8 @@
-> >   *  Davide Libenzi <davidel@xmailserver.org>
-> >   */
-> >  
-> > +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> > +
-> >  #include <linux/init.h>
-> >  #include <linux/kernel.h>
-> >  #include <linux/sched/signal.h>
-> > @@ -37,6 +39,7 @@
-> >  #include <linux/seq_file.h>
-> >  #include <linux/compat.h>
-> >  #include <linux/rculist.h>
-> > +#include <linux/capability.h>
-> >  #include <net/busy_poll.h>
-> >  
-> >  /*
-> > @@ -495,6 +498,39 @@ static inline void ep_set_busy_poll_napi_id(struct epitem *epi)
-> >  	ep->napi_id = napi_id;
-> >  }
-> >  
-> > +static long ep_eventpoll_bp_ioctl(struct file *file, unsigned int cmd,
-> > +				  unsigned long arg)
-> > +{
-> > +	struct eventpoll *ep;
-> > +	struct epoll_params epoll_params;
-> > +	void __user *uarg = (void __user *) arg;
-> > +
-> > +	ep = file->private_data;
-> > +
-> > +	switch (cmd) {
-> > +	case EPIOCSPARAMS:
-> > +		if (copy_from_user(&epoll_params, uarg, sizeof(epoll_params)))
-> > +			return -EFAULT;
-> > +
-> > +		if (epoll_params.busy_poll_budget > NAPI_POLL_WEIGHT &&
-> > +		    !capable(CAP_NET_ADMIN))
-> > +			return -EPERM;
-> > +
-> > +		ep->busy_poll_usecs = epoll_params.busy_poll_usecs;
-> > +		ep->busy_poll_budget = epoll_params.busy_poll_budget;
-> > +		return 0;
-> > +	case EPIOCGPARAMS:
-> > +		memset(&epoll_params, 0, sizeof(epoll_params));
-> > +		epoll_params.busy_poll_usecs = ep->busy_poll_usecs;
-> > +		epoll_params.busy_poll_budget = ep->busy_poll_budget;
-> > +		if (copy_to_user(uarg, &epoll_params, sizeof(epoll_params)))
-> > +			return -EFAULT;
-> > +		return 0;
-> > +	default:
-> > +		return -ENOIOCTLCMD;
-> > +	}
-> > +}
-> > +
-> >  #else
-> >  
-> >  static inline bool ep_busy_loop(struct eventpoll *ep, int nonblock)
-> > @@ -510,6 +546,12 @@ static inline bool ep_busy_loop_on(struct eventpoll *ep)
-> >  {
-> >  	return false;
-> >  }
-> > +
-> > +static long ep_eventpoll_bp_ioctl(struct file *file, unsigned int cmd,
-> > +				  unsigned long arg)
-> > +{
-> > +	return -EOPNOTSUPP;
-> > +}
-> >  #endif /* CONFIG_NET_RX_BUSY_POLL */
-> >  
-> >  /*
-> > @@ -869,6 +911,26 @@ static void ep_clear_and_put(struct eventpoll *ep)
-> >  		ep_free(ep);
-> >  }
-> >  
-> > +static long ep_eventpoll_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-> > +{
-> > +	int ret;
-> > +
-> > +	if (!is_file_epoll(file))
-> > +		return -EINVAL;
-> > +
-> > +	switch (cmd) {
-> > +	case EPIOCSPARAMS:
-> > +	case EPIOCGPARAMS:
-> > +		ret = ep_eventpoll_bp_ioctl(file, cmd, arg);
-> > +		break;
-> > +	default:
-> > +		ret = -EINVAL;
-> > +		break;
-> > +	}
-> > +
-> > +	return ret;
-> > +}
-> > +
-> >  static int ep_eventpoll_release(struct inode *inode, struct file *file)
-> >  {
-> >  	struct eventpoll *ep = file->private_data;
-> > @@ -975,6 +1037,8 @@ static const struct file_operations eventpoll_fops = {
-> >  	.release	= ep_eventpoll_release,
-> >  	.poll		= ep_eventpoll_poll,
-> >  	.llseek		= noop_llseek,
-> > +	.unlocked_ioctl	= ep_eventpoll_ioctl,
-> > +	.compat_ioctl   = compat_ptr_ioctl,
-> >  };
-> >  
-> >  /*
-> > diff --git a/include/uapi/linux/eventpoll.h b/include/uapi/linux/eventpoll.h
-> > index cfbcc4cc49ac..8eb0fdbce995 100644
-> > --- a/include/uapi/linux/eventpoll.h
-> > +++ b/include/uapi/linux/eventpoll.h
-> > @@ -85,4 +85,16 @@ struct epoll_event {
-> >  	__u64 data;
-> >  } EPOLL_PACKED;
-> >  
-> > +struct epoll_params {
-> > +	u64 busy_poll_usecs;
-> > +	u16 busy_poll_budget;
-> > +
-> > +	/* for future fields */
-> > +	u8 data[118];
+On 2024/1/26 08:05, Yosry Ahmed wrote:
+> On Thu, Jan 25, 2024 at 4:03 PM Chengming Zhou
+> <zhouchengming@bytedance.com> wrote:
+>>
+>> On 2024/1/25 15:53, Yosry Ahmed wrote:
+>>>> Hello,
+>>>>
+>>>> I also thought about this problem for some time, maybe something like below
+>>>> can be changed to fix it? It's likely I missed something, just some thoughts.
+>>>>
+>>>> IMHO, the problem is caused by the different way in which we use zswap entry
+>>>> in the writeback, that should be much like zswap_load().
+>>>>
+>>>> The zswap_load() comes in with the folio locked in swap cache, so it has
+>>>> stable zswap tree to search and lock... But in writeback case, we don't,
+>>>> shrink_memcg_cb() comes in with only a zswap entry with lru list lock held,
+>>>> then release lru lock to get tree lock, which maybe freed already.
+>>>>
+>>>> So we should change here, we read swpentry from entry with lru list lock held,
+>>>> then release lru lock, to try to lock corresponding folio in swap cache,
+>>>> if we success, the following things is much the same like zswap_load().
+>>>> We can get tree lock, to recheck the invalidate race, if no race happened,
+>>>> we can make sure the entry is still right and get refcount of it, then
+>>>> release the tree lock.
+>>>
+>>> Hmm I think you may be onto something here. Moving the swap cache
+>>> allocation ahead before referencing the tree should give us the same
+>>> guarantees as zswap_load() indeed. We can also consolidate the
+>>> invalidate race checks (right now we have one in shrink_memcg_cb() and
+>>> another one inside zswap_writeback_entry()).
+>>>
+>>> We will have to be careful about the error handling path to make sure
+>>> we delete the folio from the swap cache only after we know the tree
+>>> won't be referenced anymore. Anyway, I think this can work.
+>>>
+>>> On a separate note, I think there is a bug in zswap_writeback_entry()
+>>> when we delete a folio from the swap cache. I think we are missing a
+>>> folio_unlock() there.
+>>>
+>>
+>> Hi, want to know if you are preparing the fix patch, I would just wait to
+>> review if you are. Or I can work on it if you are busy with other thing.
 > 
-> You forgot to validate that "data" is set to 0, which means that this
-> would be useless.  Why have this at all?
+> If you're talking about implementing your solution, I was assuming you
+> were going to send a patch out (and hoping others would chime in in
+> case I missed something).
 
-I included this because I (probably incorrectly) thought that there should
-be some extra space in the struct for future additions if needed.
+Ok, I will prepare a patch to send out for further discussion.
 
-I am not sure if that is a recommended practice for this sort of thing or
-not, but if it is I can add some validation.
-
-Thanks for your time and effort in reviewing my code.
+> 
+> I can take a stab at implementing it if you prefer that, just let me know.
 
