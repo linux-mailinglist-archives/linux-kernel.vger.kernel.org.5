@@ -1,186 +1,139 @@
-Return-Path: <linux-kernel+bounces-40733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D75A083E4EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:15:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45D1983E4F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:15:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D2451F22C66
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:15:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75DB01C21216
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:15:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 204FC2563B;
-	Fri, 26 Jan 2024 22:14:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C110B41E4E;
+	Fri, 26 Jan 2024 22:14:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n2v+5Osv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="cfkipyRs"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 462BD25573;
-	Fri, 26 Jan 2024 22:14:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CE9F41C8A;
+	Fri, 26 Jan 2024 22:14:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706307248; cv=none; b=V3O94hGRATRh+OBxv5w4zHQsPvWdth7PZ1pn7FCMMr5vIU6rVwP9CrC8GznupHihglhBpdhQLpDwYu++KEM3lhPqHs7qinx1911p3NlmuKClPubCE6WSqN8h8Y43vlhx72tbJ8Z9TtNqP+XRllD5VJj6OMBGift9cBhZQEvAi3A=
+	t=1706307263; cv=none; b=NSORupO/Gdr+jpP2lyENO5mpVFV9DZo++gyouCyz3ajHwpUP4yzZ8F/O9xv9BYodJmFGYn65MVEQZ8Xm79qU7yrSdCFYdYPbYOMF9hEN2sjSMFqQBUZzBQXJnHFqlGt5c1HiQhvbZqu89kt/WDCRxDU4s3nX5WOMbO5J7GwhTQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706307248; c=relaxed/simple;
-	bh=0b8lK1c7dQnFioNfIBpSdxAWV5NjN5Icq9TAOnp0CbI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MIXlDyiDxDX+18V4VCYxNwCWKQwNeYzHXAU9poLkTOdAdbUxZT7N1MJ/nUdDYXusDi68OEovfgnaermTlcSIHmgkWKj34GoiFPJQOzZ3gG/egbIN5kaLf76gLK1bczWKsawk8mTvIfDu9NQN/9gR+gTrt7x9O0dGBYsq6UHdcg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n2v+5Osv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1224C433F1;
-	Fri, 26 Jan 2024 22:14:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706307248;
-	bh=0b8lK1c7dQnFioNfIBpSdxAWV5NjN5Icq9TAOnp0CbI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=n2v+5OsvdqgT3i4Kqm59IquUkMr2RwumpWqwYaQeU3u8MDlGdElaRznNLlJ2bM5BC
-	 DWAcMB7xbDv+X+8wlwPbVBiOOnonowk+oOOnuFwD9EYKkKKP9lmfzUIRrCNJevipRp
-	 Gm5CKc8LUeJcKlI55319rgTbhgXqGnwve0ZvDxHtZ8cGdFqOCZLP4VxqKWwi4CpynU
-	 SS4IZR7Vjlg9xw/A6cj0wl5iyCSNt4sFCXIwcuawXvm3YidLdeWyTvPciy3RNQOr9/
-	 bTBo6y1JpCEKAxGWxy2/hk8K+bZBqSJ4oennqOjIJLBCXwT0RvtBwrQjqrtES9Ze+W
-	 SzvoicC3tf6Pw==
-Date: Fri, 26 Jan 2024 22:14:03 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Naresh Solanki <naresh.solanki@9elements.com>
-Cc: Peter Rosin <peda@axentia.se>, Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, mazziesaccount@gmail.com,
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: iio: afe: voltage-divider: Add
- io-channel-cells
-Message-ID: <20240126-blaspheme-calculate-a4134dc1ed68@spud>
-References: <20240126115509.1459425-1-naresh.solanki@9elements.com>
- <20240126-cinnamon-flatware-e042b5773f17@spud>
- <CABqG17hzZf2mme0v7hALhpd6-N3ZHqxdH-AhFg5eF9sbLSC2gw@mail.gmail.com>
- <20240126-scale-serrated-33686467d91b@spud>
- <CABqG17jp6YRGyTmNitz-xDdyhWOPgfT_XpXxw-OJLnXQ777vAA@mail.gmail.com>
+	s=arc-20240116; t=1706307263; c=relaxed/simple;
+	bh=Jdm33v2+FbE+eDx5lDB90ydl/s2iNfckbja6xWCLNck=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QGhXEt/u2qGL0o9TNlwT0PY5is6+3V9Zy4xBbIBqnkEY43Gv8KDIe9qEdeQTW7tOsX8PPQInA5pGK5zAkiintIZLP5faRkpQl0pD1c9sTGRBMRFciguHvB3uG/wC7BlNekAeOOOHYUABs5IwMvHX3ZEBOHt5IQgSPNgG6u/ca0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=cfkipyRs; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1706307254;
+	bh=Jdm33v2+FbE+eDx5lDB90ydl/s2iNfckbja6xWCLNck=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=cfkipyRsu2VHMJxlmbm3pCANQ19TSTz6YQmuyCbVeZ1qFT0OiAuXMZMHv/kCXDYV5
+	 Sqt5ASfUbdf9yStQP2jZ6RFX4HNh8fxfb3HAtOr5jq8vRQ8Ca1I6RvCUGN66g4Af3h
+	 QjCMbYjnwdMK2ZXud8gbIW9J0KEgQDOY8RRPVoaHnpvbHgtbcO1ZVHZn62GCgWS2+0
+	 pQNtpi1wU40f69L+cF/vpnPcRkB/SFSIX/wT6OrP2sIPHDVE/nWEgJ7OCsFERACT32
+	 Tlt9hTxL9LDX/6neQw8PeWympIe3TUM7STM9rFv+t0es/J9Ii2HxUmCzU5DJVg4hSq
+	 5Phhi3/pPJEog==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TMBn22rgWzVQ4;
+	Fri, 26 Jan 2024 17:14:14 -0500 (EST)
+Message-ID: <8547159a-0b28-4d75-af02-47fc450785fa@efficios.com>
+Date: Fri, 26 Jan 2024 17:14:12 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="51HTn85XAt3vYgRW"
-Content-Disposition: inline
-In-Reply-To: <CABqG17jp6YRGyTmNitz-xDdyhWOPgfT_XpXxw-OJLnXQ777vAA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
+Content-Language: en-US
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+ Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Christian Brauner <brauner@kernel.org>, Ajay Kaher
+ <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20240126150209.367ff402@gandalf.local.home>
+ <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
+ <20240126162626.31d90da9@gandalf.local.home>
+ <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
+ <CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 2024-01-26 16:49, Linus Torvalds wrote:
+> On Fri, 26 Jan 2024 at 13:36, Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+[...]
+> So please try to look at things to *fix* and simplify, not at things
+> to mess around with and make more complicated.
 
---51HTn85XAt3vYgRW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Linus,
 
-On Fri, Jan 26, 2024 at 11:10:36PM +0530, Naresh Solanki wrote:
-> Hi Conor,
->=20
->=20
-> On Fri, 26 Jan 2024 at 22:22, Conor Dooley <conor@kernel.org> wrote:
-> >
-> > On Fri, Jan 26, 2024 at 09:55:20PM +0530, Naresh Solanki wrote:
-> > > On Fri, 26 Jan 2024 at 21:47, Conor Dooley <conor@kernel.org> wrote:
-> > > > On Fri, Jan 26, 2024 at 05:25:08PM +0530, Naresh Solanki wrote:
-> > > > > Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
-> > > > > ---
-> > > > >  Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml |=
- 3 +++
-> > > > >  1 file changed, 3 insertions(+)
-> > > > >
-> > > > > diff --git a/Documentation/devicetree/bindings/iio/afe/voltage-di=
-vider.yaml b/Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
-> > > > > index dddf97b50549..b4b5489ad98e 100644
-> > > > > --- a/Documentation/devicetree/bindings/iio/afe/voltage-divider.y=
-aml
-> > > > > +++ b/Documentation/devicetree/bindings/iio/afe/voltage-divider.y=
-aml
-> > > > > @@ -39,6 +39,9 @@ properties:
-> > > > >      description: |
-> > > > >        Channel node of a voltage io-channel.
-> > > > >
-> > > > > +  '#io-channel-cells':
-> > > > > +    const: 1
-> > > >
-> > > > The example in this binding looks like the voltage-divider is inten=
-ded
-> > > > to be an "IIO consumer" but "#io-channels-cells" is an "IIO provide=
-r"
-> > > > property.
-> > > >
-> > > > Are you sure this is correct?
-> > > I'm not aware that #io-channels-cells is only for IIO provider.
-> >
-> > #foo-cells properties are always for resource providers
-> >
-> > > But I do get some kernel message as mention in commit messages
-> > > if this is specified in DT.
-> >
-> > Can you please share the DT in question? Or at least, the section that
-> > describes the IIO provider and consumer?
-> Below is link to complete DT:
-> https://github.com/torvalds/linux/commit/522bf7f2d6b085f69d4538535bfc1eb9=
-65632f54
+I'm all aboard with making things as simple as possible and
+making sure no complexity is added for the sake of micro-optimization
+of slow-paths.
 
-If you're gonna link something that is in a vendor tree, you should link
-the actual vendor tree and not something that "does not belong to any
-branch on this repository, and may belong to a fork outside of the
-repository"!
+I do however have a concern with the approach of using the same
+inode number for various files on the same filesystem: AFAIU it
+breaks userspace ABI expectations. See inode(7) for instance:
 
-I did look at what you have there and I think your dts is wrong.
+        Inode number
+               stat.st_ino; statx.stx_ino
 
-The iio-hwmon binding says:
-| description: >
-|   Bindings for hardware monitoring devices connected to ADC controllers
-|   supporting the Industrial I/O bindings.
-|=20
-|   io-channels:
-|     minItems: 1
-|     maxItems: 51 # Should be enough
-|     description: >
-|       List of phandles to ADC channels to read the monitoring values
+               Each  file in a filesystem has a unique inode number.  Inode numbers
+               are guaranteed to be unique only within a filesystem (i.e., the same
+               inode  numbers  may  be  used by different filesystems, which is the
+               reason that hard links may not cross filesystem  boundaries).   This
+               field contains the file's inode number.
 
-And then you have:
-|	iio-hwmon {
-|		compatible =3D "iio-hwmon";
-|		// Voltage sensors top to down
-|		io-channels =3D <&p12v_vd 0>, <&p5v_aux_vd 0>, <&p5v_bmc_aux_vd 0>, <&p3=
-v3_aux_vd 0>,
-|			<&p3v3_bmc_aux_vd 0>, <&p1v8_bmc_aux_vd 0>, <&adc1 4>, <&adc0 2>, <&adc=
-1 0>,
-|			<&p2V5_aux_vd 0>, <&p3v3_rtc_vd 0>;
-|	};
-|
-|	p12v_vd: voltage_divider1 {
-|		compatible =3D "voltage-divider";
-|		io-channels =3D <&adc1 3>;
-|		#io-channel-cells =3D <1>;
-|
-|		/* Scale the system voltage by 1127/127 to fit the ADC range.
-|		 * Use small nominator to prevent integer overflow.
-|		 */
-|		output-ohms =3D <15>;
-|		full-ohms =3D <133>;
-|	};
+So user-space expecting inode numbers to be unique within a filesystem
+is not "legacy" in any way. Userspace is allowed to expect this from the
+ABI.
 
-A voltage divider is _not_ an ADC channel, so I don't know why you are
-treating it as one in the iio-hwmon entry. Can you explain this please?
+I think that a safe approach to prevent ABI regressions, and just to prevent
+adding more ABI-corner cases that userspace will have to work-around, would
+be to issue unique numbers to files within eventfs, but in the
+simplest/obviously correct implementation possible. It is, after all, a slow
+path.
+
+The issue with the atomic_add_return without any kinds of checks is the
+scenarios of a userspace loop that would create/delete directories endlessly,
+thus causing inode re-use. This approach is simple, but it's unfortunately
+not obviously correct. Because eventfs allows userspace to do mkdir/rmdir,
+this is unfortunately possible. It would be OK if only the kernel had control
+over directory creation/removal, but it's not the case here.
+
+I would suggest this straightforward solution to this:
+
+a) define a EVENTFS_MAX_INODES (e.g. 4096 * 8),
+
+b) keep track of inode allocation in a bitmap (within a single page),
+
+c) disallow allocating more than "EVENTFS_MAX_INODES" in eventfs.
+
+This way even the mkdir/rmdir loop will work fine, but it will prevent
+keeping too many inodes alive at any given time. The cost is a single
+page (4K) per eventfs instance.
 
 Thanks,
-Conor.
 
---51HTn85XAt3vYgRW
-Content-Type: application/pgp-signature; name="signature.asc"
+Mathieu
 
------BEGIN PGP SIGNATURE-----
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbQuqwAKCRB4tDGHoIJi
-0qjuAP9odQPk4Rld47KxMAhyjjvAY+H2UQ4tgEBdtSu82pnmHgD/YOowmNyiakzs
-BOEey09K7vzMOq+xY/EArtk2sMjdVQ8=
-=279c
------END PGP SIGNATURE-----
-
---51HTn85XAt3vYgRW--
 
