@@ -1,226 +1,352 @@
-Return-Path: <linux-kernel+bounces-40000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B4BB83D85A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:40:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5372483D867
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:47:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A08FA1C23FBE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:40:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77B2A1C2407B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:47:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2212134AD;
-	Fri, 26 Jan 2024 10:40:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5423D12B6C;
+	Fri, 26 Jan 2024 10:47:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JN/9v/b6"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eKxIuTeT"
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495E210A28
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:40:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B624AEAE6
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:47:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706265639; cv=none; b=iW+3VZdxvVPHKwrMGYEiVTP/ox2SCZiBpE+t+FH21ZAWau0go3+AYJYxleWv+/eS1VlkKTUJpQQMM4bmpjLD74+6j33/DZJ1aLkshXEUAHqFviVQkFSxbMHOsV5UITxrSZBnKkOO6WcPREh3pVnIbTErSgbZK5FsHb8XJSKo1nc=
+	t=1706266025; cv=none; b=a26XVsMxzCQBbA2bqgJ+JZ+vFTs1hCi42EECImf8PYMisdTZGREgxCjOtUnbofaZJEI7CzTEXuvcy5VaXU05IU5iqcjdypR1u/PWgNwU+fLTSRuZfnh2+dm7Rq66ptlQD6fwwi2WfxpxmbEB0O4Rzce2RweaSCWhCAXxvbwMXhY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706265639; c=relaxed/simple;
-	bh=gl1zEWtHpPeGeDv2YH2Awyz9rES2JmI4GPlsLZI4GRE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cEoM5SkqTaE/m5/z2LraP19OSX0mvStYA0ENzKY/sa8oFTJRWTDFYJF08JuIgecKwmkOFS7q5wpV4A3o4es1PnSqjE0ElriFLulk7TgdhKp6zrHVg66hVGSlUPA+YHnDGkqEGQM55J1ETQVDLdhWpswT6DLa9bkwQSC0t4/tLqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JN/9v/b6; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-55a684acf92so508575a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 02:40:36 -0800 (PST)
+	s=arc-20240116; t=1706266025; c=relaxed/simple;
+	bh=Cb3XqK8POlflsYIzU5yBi8ek77CFZVcafBdK9uWCZVs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=aSpwcBHQOuT2F0yfXdDgPR/xGDQGpWmEQHoGh1xIwWFgfsFh/nU0DCOOXKVJrO2J/dzWg2kEQ2E/aAJqRd7GyZsJx/C57zdygAJVl0gyUbi04OZtCnBCMl8nmRSEuXPoKTji1X0ERqBUewWRR1l8fdCShfnyjLgfHDSxH0oj8c4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eKxIuTeT; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5d62aab8fecso174585a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 02:47:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706265635; x=1706870435; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+rxdOPY25LMe3+An1qLrkEz9HXwYecZgDaBwRDQOLTk=;
-        b=JN/9v/b6bfhRv+ad8z2W0EecINVR7cuoqgaGxpLq90C/WQ996qMjvsrlDV2eGq0zVI
-         zYQuDa1P7oWCf5LEK2rZxAtCxxNhllTGe2+hqYA1yj11UXN+yxUwwmpxaTuDVZ71YGoT
-         4eEAfkQ0CxMlyKziAuq3nMBrIIgDWO2dMl/4ApRIIyHVqRyZI4zcQ1qv2q44FlVT7zp5
-         SYrO4C40QAS4U+KEkJ0tbeu8gMXIShlpA902AkAQ1baYvD0yeDxfREVOHcDP/ljcuPx4
-         ChrAHLYkYFtGKGOepuM52YIQONquspZXH962YqD/l0lV4q+yIcKbidaRm/dcbILNU98x
-         UxGg==
+        d=gmail.com; s=20230601; t=1706266023; x=1706870823; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AL97eD80gurjjNVc6oW4Pblm2mRxomOq21Xh0DzRmSk=;
+        b=eKxIuTeTq/VZvZHy+Lm7trE8PF4mt3Z7jmsIvxg0KYbdRlRgcIwWXezXdFZnHyJmxM
+         gTK7Z5QAqQwPms9ychyaFikP/AQWhqYBn7XdgzH+t6BaipF96+s3i4Fj6h5oQNoOcxiQ
+         uL6ZNDBsJZ+M0wJGUWl4bZXqqJ3rX2KS0Llvs56VPdhSbJs+f3ZKiUVON+9ubC3zFmLI
+         Rxd472io56hQj+mz67vEdmfoTzrv1dLiEJZdWnyBc93dvz/QzM96/j+X3dIlfeLcKYUB
+         c7a28LOWFiaGvccAyfG5XSQDQVoLLd6ehWzNGJGemWbMwI+JmsUcD4J0QpWIljMLZHXn
+         6cFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706265635; x=1706870435;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+rxdOPY25LMe3+An1qLrkEz9HXwYecZgDaBwRDQOLTk=;
-        b=eOL+OZ4J4dXUDRVnTnx6JAa7gKn36Zd/eibCvF8h2lDNqGYfVfMZQn/ACha8DEiyNi
-         kRLFi3qFhL+r1SASoo62buhJZhInXecDL+byo3qb/zVelLiH9MgbjOZsnQjuzjOYLD7e
-         BcTvlXWLM8R7zZoXa0CHLXeZtl3gq8VXsxezDWGT1QDbC9aqmqiLsWZznDA7ygwGvi1q
-         nrg8/LTAxPEPBeJtVDbES2//Z+6LUfudNwZxjlcdglpqivonRJnorkLqy4c2njp1GI6J
-         beVSZ/HveonnIryxKuCDsM23h8yIGsQmF/nlLrGWp24EA+T8XjF7L5LT9yQC0KMIqQtS
-         /yQA==
-X-Gm-Message-State: AOJu0YzUrm0bM7zrLr9d0gq+3UKR/d5B5/lzW2ShqwPgshrMENichSDJ
-	cKHJQGhR6FO2XU1DjL93j1NeODNqBRlXoPT+6U9VB+2aE07boverVO8CMfJeMoI=
-X-Google-Smtp-Source: AGHT+IHBN1TTtd9Ev4I2l2QrNfpfRANY5sgU8gNdV3XTN7GgSafm/gXyF9GHt26emVq30MO7rwBqzQ==
-X-Received: by 2002:a17:906:37d0:b0:a31:8008:cece with SMTP id o16-20020a17090637d000b00a318008cecemr416174ejc.6.1706265635415;
-        Fri, 26 Jan 2024 02:40:35 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id un8-20020a170907cb8800b00a2fb9c0337esm476980ejc.112.2024.01.26.02.40.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jan 2024 02:40:34 -0800 (PST)
-Message-ID: <74b9f249-fcb4-4338-bf7b-8477de6c935c@linaro.org>
-Date: Fri, 26 Jan 2024 11:40:32 +0100
+        d=1e100.net; s=20230601; t=1706266023; x=1706870823;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AL97eD80gurjjNVc6oW4Pblm2mRxomOq21Xh0DzRmSk=;
+        b=fDMybXiha2wIr1DVlHWJW6mol8CZ5r7TotJ+kigJ8cKM8evtW8sF3cAAV/VGg04N9f
+         1w/4Ch7RmTVvX2crAiPKm3GVCHPSkG+TMDaMb3jvw1JKGUMqbjAzbAgHUrnno921q+0T
+         SnfZUwsORrOl/dtOb4Vz6XzefFhHOk3T+hk/SyEJTfJTIns9BySZgO8XRXvfxedMOaZR
+         WF4HiNWx3vmooDEHCQtGuZxRLbXSNUlyxcwcfIKjqH+d6IJ5vd2dSJ4RqPSK5ipjBrMW
+         Xd+bY6KRelq5BTkDgcLVlUOhnv4sl5b0LPeqc7JCdXVzeERtuL6GiLVa3NClj/ao3cEV
+         ywjw==
+X-Gm-Message-State: AOJu0YzxaZmT+UrnkmpuLz2GV6Nfrim4pTwQgpYmCp8JYdANgoK1wwaF
+	ogQgj35pIdyOD05KPukUgB7Sx1KHivYg21KhdFnWJsoqRVRb88PFVGvvMimO8+A=
+X-Google-Smtp-Source: AGHT+IHcJjd6S/2CcyZUm2vxxXohvAUyo9oe0QqSXjiMvq2eVIOUM3yofq7b3ZF2V2rYd8ph2yvlAw==
+X-Received: by 2002:a17:902:e748:b0:1d8:a108:4ebd with SMTP id p8-20020a170902e74800b001d8a1084ebdmr894705plf.105.1706266022616;
+        Fri, 26 Jan 2024 02:47:02 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXk6+W+6O/fuEeQTfMdrOyxiWpLwzQS8ad5agzzL5oFB8c9Ynp0wQCXt/cixKbl+qj+3KyQw+6SrhBaD/dDIB7lW9UJIwh1bQcHTGxIsq4iPl03R2yF6KyiDzETluTttS/sJ5/GJ8whKjCZxoZ2MBdM/ZCpDsc=
+Received: from localhost ([156.236.96.164])
+        by smtp.gmail.com with ESMTPSA id ky6-20020a170902f98600b001d721386cc2sm747879plb.84.2024.01.26.02.47.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 02:47:02 -0800 (PST)
+Date: Fri, 26 Jan 2024 18:46:56 +0800
+From: Yue Hu <zbestahu@gmail.com>
+To: Gao Xiang <hsiangkao@linux.alibaba.com>
+Cc: linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>, Yue
+ Hu <huyue2@coolpad.com>, Chunhai Guo <guochunhai@vivo.com>
+Subject: Re: [PATCH v3] erofs: relaxed temporary buffers allocation on
+ readahead
+Message-ID: <20240126184656.0000561c.zbestahu@gmail.com>
+In-Reply-To: <20240126053616.3707834-1-hsiangkao@linux.alibaba.com>
+References: <TY2PR06MB3342D2245C5E515028C33FD4BE792@TY2PR06MB3342.apcprd06.prod.outlook.com>
+	<20240126053616.3707834-1-hsiangkao@linux.alibaba.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: net: bluetooth: Add MediaTek MT7921S
- SDIO Bluetooth
-Content-Language: en-US
-To: Chen-Yu Tsai <wenst@chromium.org>, Marcel Holtmann <marcel@holtmann.org>,
- Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Sean Wang <sean.wang@mediatek.com>, linux-bluetooth@vger.kernel.org,
- netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240126063500.2684087-1-wenst@chromium.org>
- <20240126063500.2684087-2-wenst@chromium.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240126063500.2684087-2-wenst@chromium.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On 26/01/2024 07:34, Chen-Yu Tsai wrote:
-> The MediaTek MT7921S is a WiFi/Bluetooth combo chip that works over
-> SDIO. While the Bluetooth function is fully discoverable, the chip
-> has a pin that can reset just the Bluetooth side, as opposed to the
-> full chip. This needs to be described in the device tree.
-> 
-> Add a device tree binding for MT7921S Bluetooth over SDIO specifically
-> ot document the reset line.
+On Fri, 26 Jan 2024 13:36:16 +0800
+Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
 
-s/ot/to/
-
+> From: Chunhai Guo <guochunhai@vivo.com>
 > 
-> Cc: Sean Wang <sean.wang@mediatek.com>
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+> Even with inplace decompression, sometimes very few temporary buffers
+> are still needed for a single decompression shot (e.g. 16 pages for 64k
+> sliding window or 4 pages for 16k sliding window).  In low-memory
+> scenarios, it would be better to try to allocate with GFP_NOWAIT on
+> readahead first. That can help reduce the time spent on page allocation
+> under durative memory pressure.
+> 
+> Here are detailed performance numbers under multi-app launch benchmark
+> workload [1] on ARM64 Android devices (8-core CPU and 8GB of memory)
+> running a 5.15 LTS kernel with EROFS of 4k pclusters:
+> 
+> +----------------+---------+---------+---------+
+> |      LZ4       | vanilla | patched |  diff   |
+> |----------------+---------+---------+---------|
+> |  Average (ms)  |  3364   |  2684   | -20.21% | [64k sliding window]
+> |----------------+---------+---------+---------|
+> |  Average (ms)  |  2079   |  1610   | -22.56% | [16k sliding window]
+> +----------------+---------+---------+---------+
+> 
+> The total size of system images for 4k pcluster is almost unchanged:
+> (64k sliding window)  9,117,044 KB
+> (16k sliding window)  9,113,096 KB
+> 
+> Therefore, in addition to switch the sliding window from 64k to 16k,
+> after applying this patch, it can eventually save 52.14% (3364 -> 1610)
+> on average with no memory reservation.  That is particularly useful for
+> embedded devices with limited resources.
+> 
+> [1] https://lore.kernel.org/r/20240109074143.4138783-1-guochunhai@vivo.com
+> 
+> Suggested-by: Gao Xiang <xiang@kernel.org>
+> Signed-off-by: Chunhai Guo <guochunhai@vivo.com>
+> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 > ---
-> Changes since v1:
-> - Reworded descriptions
-> - Moved binding maintainer section before description
-> - Added missing reference to bluetooth-controller.yaml
-> - Added missing GPIO header to example
+> v2: https://lore.kernel.org/r/20240120145551.1941483-1-guochunhai@vivo.com
+> change since v2:
+>  - update commit message according to test results.
 > 
->  .../bluetooth/mediatek,mt7921s-bluetooth.yaml | 53 +++++++++++++++++++
->  MAINTAINERS                                   |  1 +
->  2 files changed, 54 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-bluetooth.yaml
+> I plan to apply this version.
 > 
-> diff --git a/Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-bluetooth.yaml b/Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-bluetooth.yaml
-> new file mode 100644
-> index 000000000000..ff11c95c816c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-bluetooth.yaml
-> @@ -0,0 +1,53 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/bluetooth/mediatek,mt7921s-bluetooth.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>  fs/erofs/compress.h             |  5 ++---
+>  fs/erofs/decompressor.c         |  5 +++--
+>  fs/erofs/decompressor_deflate.c | 19 +++++++++++++------
+>  fs/erofs/decompressor_lzma.c    | 17 ++++++++++++-----
+>  fs/erofs/zdata.c                | 16 ++++++++++++----
+>  5 files changed, 42 insertions(+), 20 deletions(-)
+> 
+> diff --git a/fs/erofs/compress.h b/fs/erofs/compress.h
+> index 279933e007d2..7cc5841577b2 100644
+> --- a/fs/erofs/compress.h
+> +++ b/fs/erofs/compress.h
+> @@ -11,13 +11,12 @@
+>  struct z_erofs_decompress_req {
+>  	struct super_block *sb;
+>  	struct page **in, **out;
+> -
+>  	unsigned short pageofs_in, pageofs_out;
+>  	unsigned int inputsize, outputsize;
+>  
+> -	/* indicate the algorithm will be used for decompression */
+> -	unsigned int alg;
+> +	unsigned int alg;       /* the algorithm for decompression */
+>  	bool inplace_io, partial_decoding, fillgaps;
+> +	gfp_t gfp;      /* allocation flags for extra temporary buffers */
+>  };
+>  
+>  struct z_erofs_decompressor {
+> diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
+> index 072ef6a66823..d4cee95af14c 100644
+> --- a/fs/erofs/decompressor.c
+> +++ b/fs/erofs/decompressor.c
+> @@ -111,8 +111,9 @@ static int z_erofs_lz4_prepare_dstpages(struct z_erofs_lz4_decompress_ctx *ctx,
+>  			victim = availables[--top];
+>  			get_page(victim);
+>  		} else {
+> -			victim = erofs_allocpage(pagepool,
+> -						 GFP_KERNEL | __GFP_NOFAIL);
+> +			victim = erofs_allocpage(pagepool, rq->gfp);
+> +			if (!victim)
+> +				return -ENOMEM;
+>  			set_page_private(victim, Z_EROFS_SHORTLIVED_PAGE);
+>  		}
+>  		rq->out[i] = victim;
+> diff --git a/fs/erofs/decompressor_deflate.c b/fs/erofs/decompressor_deflate.c
+> index 4a64a9c91dd3..b98872058abe 100644
+> --- a/fs/erofs/decompressor_deflate.c
+> +++ b/fs/erofs/decompressor_deflate.c
+> @@ -95,7 +95,7 @@ int z_erofs_load_deflate_config(struct super_block *sb,
+>  }
+>  
+>  int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
+> -			       struct page **pagepool)
+> +			       struct page **pgpl)
+>  {
+>  	const unsigned int nrpages_out =
+>  		PAGE_ALIGN(rq->pageofs_out + rq->outputsize) >> PAGE_SHIFT;
+> @@ -158,8 +158,12 @@ int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
+>  			strm->z.avail_out = min_t(u32, outsz, PAGE_SIZE - pofs);
+>  			outsz -= strm->z.avail_out;
+>  			if (!rq->out[no]) {
+> -				rq->out[no] = erofs_allocpage(pagepool,
+> -						GFP_KERNEL | __GFP_NOFAIL);
+> +				rq->out[no] = erofs_allocpage(pgpl, rq->gfp);
+> +				if (!rq->out[no]) {
+> +					kout = NULL;
+> +					err = -ENOMEM;
+> +					break;
+> +				}
+>  				set_page_private(rq->out[no],
+>  						 Z_EROFS_SHORTLIVED_PAGE);
+>  			}
+> @@ -211,8 +215,11 @@ int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
+>  
+>  			DBG_BUGON(erofs_page_is_managed(EROFS_SB(sb),
+>  							rq->in[j]));
+> -			tmppage = erofs_allocpage(pagepool,
+> -						  GFP_KERNEL | __GFP_NOFAIL);
+> +			tmppage = erofs_allocpage(pgpl, rq->gfp);
+> +			if (!tmppage) {
+> +				err = -ENOMEM;
+> +				goto failed;
+> +			}
+>  			set_page_private(tmppage, Z_EROFS_SHORTLIVED_PAGE);
+>  			copy_highpage(tmppage, rq->in[j]);
+>  			rq->in[j] = tmppage;
+> @@ -230,7 +237,7 @@ int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
+>  			break;
+>  		}
+>  	}
+> -
+> +failed:
+>  	if (zlib_inflateEnd(&strm->z) != Z_OK && !err)
+>  		err = -EIO;
+>  	if (kout)
+> diff --git a/fs/erofs/decompressor_lzma.c b/fs/erofs/decompressor_lzma.c
+> index 2dd14f99c1dc..6ca357d83cfa 100644
+> --- a/fs/erofs/decompressor_lzma.c
+> +++ b/fs/erofs/decompressor_lzma.c
+> @@ -148,7 +148,7 @@ int z_erofs_load_lzma_config(struct super_block *sb,
+>  }
+>  
+>  int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
+> -			    struct page **pagepool)
+> +			    struct page **pgpl)
+>  {
+>  	const unsigned int nrpages_out =
+>  		PAGE_ALIGN(rq->pageofs_out + rq->outputsize) >> PAGE_SHIFT;
+> @@ -215,8 +215,11 @@ int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
+>  						   PAGE_SIZE - pageofs);
+>  			outlen -= strm->buf.out_size;
+>  			if (!rq->out[no] && rq->fillgaps) {	/* deduped */
+> -				rq->out[no] = erofs_allocpage(pagepool,
+> -						GFP_KERNEL | __GFP_NOFAIL);
+> +				rq->out[no] = erofs_allocpage(pgpl, rq->gfp);
+> +				if (!rq->out[no]) {
+> +					err = -ENOMEM;
+> +					break;
+> +				}
+>  				set_page_private(rq->out[no],
+>  						 Z_EROFS_SHORTLIVED_PAGE);
+>  			}
+> @@ -258,8 +261,11 @@ int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
+>  
+>  			DBG_BUGON(erofs_page_is_managed(EROFS_SB(rq->sb),
+>  							rq->in[j]));
+> -			tmppage = erofs_allocpage(pagepool,
+> -						  GFP_KERNEL | __GFP_NOFAIL);
+> +			tmppage = erofs_allocpage(pgpl, rq->gfp);
+> +			if (!tmppage) {
+> +				err = -ENOMEM;
+> +				goto failed;
+> +			}
+>  			set_page_private(tmppage, Z_EROFS_SHORTLIVED_PAGE);
+>  			copy_highpage(tmppage, rq->in[j]);
+>  			rq->in[j] = tmppage;
+> @@ -277,6 +283,7 @@ int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
+>  			break;
+>  		}
+>  	}
+> +failed:
+>  	if (no < nrpages_out && strm->buf.out)
+>  		kunmap(rq->out[no]);
+>  	if (ni < nrpages_in)
+> diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+> index c1c77166b30f..1d0fdc145fd6 100644
+> --- a/fs/erofs/zdata.c
+> +++ b/fs/erofs/zdata.c
+> @@ -82,6 +82,9 @@ struct z_erofs_pcluster {
+>  	/* L: indicate several pageofs_outs or not */
+>  	bool multibases;
+>  
+> +	/* L: whether extra buffer allocations are best-effort */
+> +	bool besteffort;
 > +
-> +title: MediaTek MT7921S Bluetooth
-> +
-> +maintainers:
-> +  - Sean Wang <sean.wang@mediatek.com>
-> +
-> +description:
-> +  MT7921S is an SDIO-attached dual-radio WiFi+Bluetooth Combo chip; each
-> +  function is its own SDIO function on a shared SDIO interface. The chip
-> +  has two dedicated reset lines, one for each function core.
-> +  This binding only covers the Bluetooth part of the chip.
-> +
-> +allOf:
-> +  - $ref: bluetooth-controller.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - mediatek,mt7921s-bluetooth
+>  	/* A: compressed bvecs (can be cached or inplaced pages) */
+>  	struct z_erofs_bvec compressed_bvecs[];
+>  };
+> @@ -960,7 +963,7 @@ static int z_erofs_read_fragment(struct super_block *sb, struct page *page,
+>  }
+>  
+>  static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+> -				struct page *page)
+> +				struct page *page, bool ra)
+>  {
+>  	struct inode *const inode = fe->inode;
+>  	struct erofs_map_blocks *const map = &fe->map;
+> @@ -1010,6 +1013,7 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+>  		err = z_erofs_pcluster_begin(fe);
+>  		if (err)
+>  			goto out;
+> +		fe->pcl->besteffort |= !ra;
+>  	}
+>  
+>  	/*
+> @@ -1276,7 +1280,11 @@ static int z_erofs_decompress_pcluster(struct z_erofs_decompress_backend *be,
+>  					.inplace_io = overlapped,
+>  					.partial_decoding = pcl->partial,
+>  					.fillgaps = pcl->multibases,
+> +					.gfp = pcl->besteffort ?
+> +						GFP_KERNEL | __GFP_NOFAIL :
+> +						GFP_NOWAIT | __GFP_NORETRY
+>  				 }, be->pagepool);
+> +	pcl->besteffort = false;
 
-Can it be also WiFi on separate bus? How many device nodes do you need
-for this device?
+reposition it following `pcl->multibases = false`?
 
-Missing blank line.
-
-
-> +  reg:
-> +    const: 2
-> +
-> +  reset-gpios:
-> +    maxItems: 1
-> +    description:
-> +      An active-low reset line for the Bluetooth core; on typical M.2
-> +      key E modules this is the W_DISABLE2# pin.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-
-Instead 'unevaluatedProperties: false'
-
-
-Best regards,
-Krzysztof
+>  
+>  	/* must handle all compressed pages before actual file pages */
+>  	if (z_erofs_is_inline_pcluster(pcl)) {
+> @@ -1787,7 +1795,7 @@ static void z_erofs_pcluster_readmore(struct z_erofs_decompress_frontend *f,
+>  			if (PageUptodate(page))
+>  				unlock_page(page);
+>  			else
+> -				(void)z_erofs_do_read_page(f, page);
+> +				(void)z_erofs_do_read_page(f, page, !!rac);
+>  			put_page(page);
+>  		}
+>  
+> @@ -1808,7 +1816,7 @@ static int z_erofs_read_folio(struct file *file, struct folio *folio)
+>  	f.headoffset = (erofs_off_t)folio->index << PAGE_SHIFT;
+>  
+>  	z_erofs_pcluster_readmore(&f, NULL, true);
+> -	err = z_erofs_do_read_page(&f, &folio->page);
+> +	err = z_erofs_do_read_page(&f, &folio->page, false);
+>  	z_erofs_pcluster_readmore(&f, NULL, false);
+>  	z_erofs_pcluster_end(&f);
+>  
+> @@ -1849,7 +1857,7 @@ static void z_erofs_readahead(struct readahead_control *rac)
+>  		folio = head;
+>  		head = folio_get_private(folio);
+>  
+> -		err = z_erofs_do_read_page(&f, &folio->page);
+> +		err = z_erofs_do_read_page(&f, &folio->page, true);
+>  		if (err && err != -EINTR)
+>  			erofs_err(inode->i_sb, "readahead error at folio %lu @ nid %llu",
+>  				  folio->index, EROFS_I(inode)->nid);
 
 
