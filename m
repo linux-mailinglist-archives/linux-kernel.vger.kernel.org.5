@@ -1,54 +1,85 @@
-Return-Path: <linux-kernel+bounces-39462-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39463-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F4D783D188
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 01:35:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9CF383D18D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 01:37:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E7DF1C23116
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 00:35:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C0DBB25252
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 00:37:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12B34EDE;
-	Fri, 26 Jan 2024 00:35:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A6A0399;
+	Fri, 26 Jan 2024 00:37:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rZGCtXP2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="xEVw8MHC"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39EB8197;
-	Fri, 26 Jan 2024 00:35:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6049B4404
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 00:37:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706229319; cv=none; b=Jaj+X73ZiqMv5aOmvzqkxaJ+gM3K0E+ceQ7Y1kfUTHAxnpp42YCOzyIiHPlp4LeLKH7/aIP3T5Fg2/eVsJpP9yjMkk6gLfMOuugSjF/80ON3rL3iMhX9ftiCYiAdehxITUzc40/QJQk2e6uDpt6RBDiGYvSo6L0BJjPvwtsiAfg=
+	t=1706229440; cv=none; b=jq00nmfSwRWnDrYzJOCAj0yBLuVCDU7mxNbgQWcY5qjd7OM2J5W2jNxEa+u14qf8stEgYISpa6o7XMy6zM75s/kWBxTuFxc7TeWGbQD8IFcy2VbJQaI+AzYLLVvU+YEhOoAD1LpnuMJaJlpoj4giJNexYpVehfsp/wCF/Ivg7Ss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706229319; c=relaxed/simple;
-	bh=m986K6zFIlrT+3xx6AdVYmVw1p6r7qdl+tS4SPDV+JU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=MI1CxMNBrlYte7bHajUzalIu2FpxxdaG6TbUSMvAUOTlZXIiC/DuEDLe1KfiNRDZy1V4S+zAsbhLAiuSU8VcFzfIU3iRlCIJgffUKQgERo3QSVqt+qArGz4t2dBHCoacCkootjni1bJ7zuOQsvbFL3PTeG5aQ5ylfFy9g8XqRNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rZGCtXP2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F37EFC433C7;
-	Fri, 26 Jan 2024 00:35:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706229318;
-	bh=m986K6zFIlrT+3xx6AdVYmVw1p6r7qdl+tS4SPDV+JU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=rZGCtXP25jujiWfIT6A0DUPA418VQFoekhEs7OAHyAQhR7ckr4N8L9mfTuBexZKzP
-	 HW6eF7ZDxd59YFWh9VUPFW1JIuHox+x9TE0hE4Uqp6IBQwL0cTTsArKqQc5mj9Bp1t
-	 OSF7faXSn9a7mJr79/J++7mhrn0/EGW9kSYdLiHux6oqnV0pD8A6vyD9JSJT5LQ3Sl
-	 MfGfcSSwfTKQHjsLI60FC1nYpSh+GmPK6hZ6Pd2UL2SBp7Il6POOR1tftxQnMoaUEf
-	 Ib8YQ0L67MCm4liiAkMx+UeYmffw0vn9h+KvUy/avCg6jgLghK9QYnSF7YNYZas/Oz
-	 KPhZV9Cg/P4xA==
-Date: Thu, 25 Jan 2024 18:35:14 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	"Rafael J . Wysocki" <rjw@rjwysocki.net>, linux-pci@vger.kernel.org,
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] x86/pci: Stop requiring ECAM to be declared in E820,
- ACPI or EFI
-Message-ID: <20240126003514.GA407167@bhelgaas>
+	s=arc-20240116; t=1706229440; c=relaxed/simple;
+	bh=eQjLrBx1jAy1axsMoCop2jRljLStEzLN5lXFvbtz/XM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IqdQwALEU0DA1CsDtwTwxhOBFAJ63tBkp7uqfCBMQoBx0XDi8mYU/CBkxHTCY8NJ7V3B5tK8Z+RHw3U4ORBQLjDGC2/9UZ9ocH/ta237agKiODIFlbEtfNLEQxEg6ZTvXKWFgGoODK5RNlMCI2Cz+gBUHth3w4tgXh5Zp0TwCTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=xEVw8MHC; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40e7e2e04f0so80421865e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 16:37:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1706229436; x=1706834236; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RB+yYtHCz4/Tsgg+cD2eed0axoHrTFJTTQUoz2vzg5U=;
+        b=xEVw8MHCWXpuLhMz4/UuNixSK/5BZAXdGp3EnIYT+RkB2nkHn0FOQv7FM11rDJX+La
+         FYfCUDCBnsqyQa2UKCA7xtSA5TwzcrSNNwNxUGiUElucvcUbD5X1dJbQ0E+7w+Xh1sJh
+         iPfQLZA18uzbL3agvmwq3ScDXKcTz2dcw6wwZRpFEM2vfyOjcfnztJxluUoKJbv7WN3F
+         I/0m8LrpqHAWGASsfNGpFP7x218qyxOyCdNT6VeCxsorUdbAsu/ORXifJ0eH6PINRX82
+         AYbE/Qe6w8aZgZ3oMhujM2SQ083rq58LwEpk4IwIPlT7AzZMeqjZwYdXUznvhjBEKUcq
+         Zy8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706229436; x=1706834236;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RB+yYtHCz4/Tsgg+cD2eed0axoHrTFJTTQUoz2vzg5U=;
+        b=ZaxSX9Us9cNgg6nu/donaaw0fSY8xmHxK3I6GY6oW6CJdpe34fhlAOupyUikUQ8b6H
+         Hlwo7Hs0KH3AdMXM+XLylU+MqKyUUiPDsnplGSzVM/zcXaTZO04zpaEW6ZsoiKdl8Vi+
+         ST6HWk5TF7L0GB0jGGZyh/ALDE2/aaPRX+gvrssKAz1frwG3p1IY07PgBojBFbWPXHrf
+         cXGHVY+oljeU3Mhr8YBBB3EwW2lm/uPMFZCcBOdygXfY5hy8hHLoAFL8snxYyOMsOqXk
+         3YuE5uOIYzYWS2K5n2AYP1CRXmPp7pJwbSWvuy5TlR0MKYGzBWptBO0mfAbYEzprWUtr
+         qNjA==
+X-Gm-Message-State: AOJu0YxGFDJasIg0iMoJlfiK8xGjeiMd3TKUBjy4bWpblA5ZZ+wIO2/a
+	tCm3wVxms5g5iVjoMdXVipG/ILrfNlhhFsa7lIiyPnGqjEXhipD1Cno4lfrwg5Y=
+X-Google-Smtp-Source: AGHT+IGmaisWSa6ZtSO7sBx7DuRg1h6mVPwAQ2GLQgThex/wnRydIOx+RNZSFocCe8tjJMYhH6RQwg==
+X-Received: by 2002:a05:600c:4743:b0:40e:4119:cb4a with SMTP id w3-20020a05600c474300b0040e4119cb4amr327481wmo.15.1706229436175;
+        Thu, 25 Jan 2024 16:37:16 -0800 (PST)
+Received: from airbuntu ([213.122.231.14])
+        by smtp.gmail.com with ESMTPSA id g8-20020a05600c310800b0040e703ad630sm4145718wmo.22.2024.01.25.16.37.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 16:37:15 -0800 (PST)
+Date: Fri, 26 Jan 2024 00:37:14 +0000
+From: Qais Yousef <qyousef@layalina.io>
+To: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Ingo Molnar <mingo@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+	Pierre Gondois <Pierre.Gondois@arm.com>
+Subject: Re: [PATCH v4 1/2] sched/fair: Check a task has a fitting cpu when
+ updating misfit
+Message-ID: <20240126003714.tru4tz2pzjg5jnvf@airbuntu>
+References: <20240105222014.1025040-1-qyousef@layalina.io>
+ <20240105222014.1025040-2-qyousef@layalina.io>
+ <213f94df-cc36-4281-805d-9f56cbfef796@arm.com>
+ <CAKfTPtCfYcD_zPr7PqgL5hRYny=n3KW8hr6GY8q7zkoyRN7gQg@mail.gmail.com>
+ <20240124224616.wcrexeb2evkugbak@airbuntu>
+ <CAKfTPtDnxsOS0je9DgMc5ZCLPXA6QRLz14t6o_ht7rvxbAbc9A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,150 +88,28 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7caefe4b-bf05-49a3-bfb8-75e7fd73343b@amd.com>
+In-Reply-To: <CAKfTPtDnxsOS0je9DgMc5ZCLPXA6QRLz14t6o_ht7rvxbAbc9A@mail.gmail.com>
 
-On Wed, Jan 17, 2024 at 11:53:50AM -0600, Mario Limonciello wrote:
-> On 12/15/2023 16:03, Mario Limonciello wrote:
-> > commit 7752d5cfe3d1 ("x86: validate against acpi motherboard resources")
-> > introduced checks for ensuring that MCFG table also has memory region
-> > reservations to ensure no conflicts were introduced from a buggy BIOS.
-> > 
-> > This has proceeded over time to add other types of reservation checks
-> > for ACPI PNP resources and EFI MMIO memory type.  The PCI firmware spec
-> > does say that these checks are only required when the operating system
-> > doesn't comprehend the firmware region:
-> > 
-> > ```
-> > If the operating system does not natively comprehend reserving the MMCFG
-> > region, the MMCFG region must be reserved by firmware. The address range
-> > reported in the MCFG table or by _CBA method (see Section 4.1.3) must be
-> > reserved by declaring a motherboard resource. For most systems, the
-> > motherboard resource would appear at the root of the ACPI namespace
-> > (under \_SB) in a node with a _HID of EISAID (PNP0C02), and the resources
-> > in this case should not be claimed in the root PCI bus’s _CRS. The
-> > resources can optionally be returned in Int15 E820h or EFIGetMemoryMap
-> > as reserved memory but must always be reported through ACPI as a
-> > motherboard resource.
-> > ```
-> > 
-> > Running this check causes problems with accessing extended PCI
-> > configuration space on OEM laptops that don't specify the region in PNP
-> > resources or in the EFI memory map. That later manifests as problems with
-> > dGPU and accessing resizable BAR. Similar problems don't exist in Windows
-> > 11 with exact same laptop/firmware stack.
-> > 
-> > Due to the stability of the Windows ecosystem that x86 machines participate
-> > it is unlikely that using the region specified in the MCFG table as
-> > a reservation will cause a problem. The possible worst circumstance could
-> > be that a buggy BIOS causes a larger hole in the memory map that is
-> > unusable for devices than intended.
-> > 
-> > Change the default behavior to keep the region specified in MCFG even if
-> > it's not specified in another source. This is expected to improve
-> > machines that otherwise couldn't access PCI extended configuration space.
-> > 
-> > In case this change causes problems, add a kernel command line parameter
-> > that can restore the previous behavior.
-> > 
-> > Link: https://members.pcisig.com/wg/PCI-SIG/document/15350
-> >        PCI Firmware Specification 3.3
-> >        Section 4.1.2 MCFG Table Description Note 2
-> > Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> > ---
+On 01/25/24 18:44, Vincent Guittot wrote:
+> On Wed, 24 Jan 2024 at 23:46, Qais Yousef <qyousef@layalina.io> wrote:
+> >
+> > On 01/23/24 09:32, Vincent Guittot wrote:
+> >
+> > > > > @@ -9583,9 +9630,7 @@ check_cpu_capacity(struct rq *rq, struct sched_domain *sd)
+> > > > >   */
+> > > > >  static inline int check_misfit_status(struct rq *rq, struct sched_domain *sd)
+> > > > >  {
+> > > > > -     return rq->misfit_task_load &&
+> > > > > -             (arch_scale_cpu_capacity(rq->cpu) < rq->rd->max_cpu_capacity ||
+> > > > > -              check_cpu_capacity(rq, sd));
+> > > > > +     return rq->misfit_task_load && check_cpu_capacity(rq, sd);
 > 
-> Bjorn,
-> 
-> Any thoughts on this version since our last conversation on V1?
+> Coming back to this:
+> With your change above, misfit can't kick an idle load balance and
+> must wait for the cpu capacity being noticeably reduced by something
+> else
 
-Just to let you know that I'm not ignoring this, and I'm trying to
-formulate a useful response.  mmconfig-shared.c has grown into an
-extremely complicated mess and is a continual source of problems, so
-I'd really like to untangle it a tiny bit if we can.
-
-One thing is that per spec, ACPI motherboard resources are the ONLY
-way to reserve ECAM space.  I'd like to reclaim a little clarity about
-that and separate out the E820 and EFI stuff as secondary hacks.  But
-there's an insane amount of history that got us here.
-
-The problem we have to avoid is assigning a BAR that overlaps ECAM.
-We assign BARs for lots of reasons.  dGPU and resizable BARs are
-examples but there are others, like hotplug and SR-IOV.  The fact that
-Windows works is a red herring because it allocates BARs differently.
-
-It's also little bit of a burr under my saddle to add things for a
-problem on unspecified machines, where I don't even know whether the
-machines are already in the field or the firmware could still be
-fixed.
-
-And of course, if there's any way to solve this safely without adding
-yet another kernel parameter, that would be vastly preferable.
-
-Sorry, nothing actionable here but wanted to let you know that it's
-keeping me awake at night ;)
-
-Bjorn
-
-> > v1->v2:
-> >   * Rebase on pci/next
-> >   * Add an escape hatch
-> >   * Reword commit message
-> > ---
-> >   .../admin-guide/kernel-parameters.txt         |  6 ++++++
-> >   arch/x86/pci/mmconfig-shared.c                | 19 +++++++++++++++----
-> >   2 files changed, 21 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> > index 65731b060e3f..eacd0c0521c2 100644
-> > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > @@ -1473,6 +1473,12 @@
-> >   			(in particular on some ATI chipsets).
-> >   			The kernel tries to set a reasonable default.
-> > +	enforce_ecam_resv [X86]
-> > +			Enforce requiring an ECAM reservation specified in
-> > +			BIOS for PCI devices.
-> > +			This parameter is only valid if CONFIG_PCI_MMCONFIG
-> > +			is enabled.
-> > +
-> >   	enforcing=	[SELINUX] Set initial enforcing status.
-> >   			Format: {"0" | "1"}
-> >   			See security/selinux/Kconfig help text.
-> > diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
-> > index 0cc9520666ef..aee117c6bbf9 100644
-> > --- a/arch/x86/pci/mmconfig-shared.c
-> > +++ b/arch/x86/pci/mmconfig-shared.c
-> > @@ -34,6 +34,15 @@ static DEFINE_MUTEX(pci_mmcfg_lock);
-> >   LIST_HEAD(pci_mmcfg_list);
-> > +static bool enforce_ecam_resv __read_mostly;
-> > +static int __init parse_ecam_options(char *str)
-> > +{
-> > +	enforce_ecam_resv = true;
-> > +
-> > +	return 1;
-> > +}
-> > +__setup("enforce_ecam_resv", parse_ecam_options);
-> > +
-> >   static void __init pci_mmconfig_remove(struct pci_mmcfg_region *cfg)
-> >   {
-> >   	if (cfg->res.parent)
-> > @@ -569,10 +578,12 @@ static void __init pci_mmcfg_reject_broken(int early)
-> >   	list_for_each_entry(cfg, &pci_mmcfg_list, list) {
-> >   		if (!pci_mmcfg_reserved(NULL, cfg, early)) {
-> > -			pr_info("not using ECAM (%pR not reserved)\n",
-> > -				&cfg->res);
-> > -			free_all_mmcfg();
-> > -			return;
-> > +			pr_info("ECAM %pR not reserved, %s\n", &cfg->res,
-> > +				enforce_ecam_resv ? "ignoring" : "using anyway");
-> > +			if (enforce_ecam_resv) {
-> > +				free_all_mmcfg();
-> > +				return;
-> > +			}
-> >   		}
-> >   	}
-> >   }
-> > 
-> > base-commit: 67e04d921cb6902e8c2abdbf748279d43f25213e
-> 
+Good catch, yes. It's a subtle change. We need to keep this and better add
+a comment that we move immediately for all CPUs except the biggest one where we
+need to check_cpu_capacity().
 
