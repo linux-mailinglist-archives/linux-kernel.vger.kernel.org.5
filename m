@@ -1,141 +1,111 @@
-Return-Path: <linux-kernel+bounces-40354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFB1283DEEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:39:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 959FC83DEEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:39:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4506CB21A36
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:39:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8A121C237BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:39:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2FC91EB25;
-	Fri, 26 Jan 2024 16:39:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEFC61DFF8;
+	Fri, 26 Jan 2024 16:39:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="z/HaRRbu"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NuOarXt1"
 Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 460631EA8A
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 16:39:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2A071DFE1
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 16:39:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706287172; cv=none; b=txTZxPVgJZLpjDwk4Vb10YMJWda9RvPdLa9PHNuPWsGob/sKB/AEDP+ZYuo4VE9fqecUlAfEyW8TmU1rvoAgTFcDVe8DruO8aZ68cvQskxz7aEdc7mV+gGkRRM5S9BHlwSCoppAbipDWs9d2MtaIappN9xxL/UVBbQoxT3gvY6E=
+	t=1706287164; cv=none; b=QfvNobf3aXMUZYgU7if4LY4XMVHQRDe0UOx6yJVJYzWr6md+CdBlXr9KtkXLy8ovbWXk4PeXz3iZ+/OrVtB1mkzVVkvcwCsOnFNSnhD9WRhmnsle6IpXv09VQRc5u9JPGFyPc+HOxoErzUAgS+puOxdZkdVIppMCXqaT///b8x0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706287172; c=relaxed/simple;
-	bh=EFByUhMn6o7EKK+3IwvtG+AnT/BrGHBsR+easKAMjCg=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=amY3XHlxqpqmEWAgF3BTljfHdd3m9B4S2PQ1iiFclz34mvlixEHWEr44rSVMxKyGdmLNvFJr52kAVdtHOGmM4pwBfedsmRWGlzPbNC3WVGcEbI9ZAYdEI7ltSLGPaYksMNtXd+Qn2O68RICIkV/ZseK4+x3TuzR19sIqg6alVVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=z/HaRRbu; arc=none smtp.client-ip=209.85.128.201
+	s=arc-20240116; t=1706287164; c=relaxed/simple;
+	bh=y9OvmThwjw+K3nfMBDe1SkN9D4kRML05OGlUopManuQ=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=ulobnu/cbv2OVtTjU5tCHHD0xwlPMZSmUU3kEyaGFbV8a5kQhDJAd4Vc+q18gx7Q1POxtsJHJ9Qa/vGLHrAZ8tCqwELJZa4t/vbRWm3l/KhX4d1kzqLv0m447bw0Gdh0zbIw9UfF9UHCbtFpb4hpz75TH+UdHlwAhaC3ys3wJVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NuOarXt1; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5ffee6e316bso18306087b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:39:30 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-602d22a54caso6702157b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:39:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706287169; x=1706891969; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=xlBgugPCo2xMSajYDfdTWi2w+CeDhsQ4ciWdtvT0oGo=;
-        b=z/HaRRbuOSuWhhEq8DUTAuoMTtEsbV/qxaYuTUMdv2U4dkLcNoGSUOZBFRQkALmegD
-         lcX69E1OBzFEjC7Lz7OiUMh10bHNrnWaOE/VkEVg9jKEIB73HUVBqC7MLSPnP24/30bD
-         YqlolR753MdEr892HsERHYPSXkvcayF8Nwbb8pY+rTxDxtpf3W9SHo0UiSd3nP/nWLzF
-         wWSMbusqotYBNHEDDue3GB2x/7xAQMNKZl+0cRYm+elCCtS0ItYSO0h2RIZexxaemKQu
-         /VMiaQBxnCd6a2oUZD/47psKPoX2KBCVLIu+EkGyoKjt6j+nHSNGE46sut/lndv2HCMI
-         E0GA==
+        d=google.com; s=20230601; t=1706287161; x=1706891961; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2ZpNenkMM62G0MLKLgK9Oo0SvrSlKfpzY/Gj9FXzciw=;
+        b=NuOarXt1qCmZYwnOBUaQZOME0Dbqw5BZyG/4NHElLgV0/IGmROUVu7xP84pqX48Lzl
+         XQCQ4UB6PKLeb2Y5WFjJPWwD+a43tsQdQPc9OJ9oFeCHmgr9vW2VRcwfqMJCwHs0odg2
+         WmqR5o+2C9x8HBkHnD2agwlNiavrCQ5vdHSdmnEz9IwVBSNJXnlHqssztx8v+CFv0uh+
+         2TMjF/Tx+3BQnX4WvcghlOedVKnxDDJ7RHPJT/BSh/nQRC125Q10g1ZJp7bDJStXeLj1
+         i0pAa7mf2l2Me0JZmEhRBOJPo3h2LaM1Xg3Q/5Pe37O1RIsLJFNR+QZNNxpQ/rIeDoA7
+         c4FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706287169; x=1706891969;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xlBgugPCo2xMSajYDfdTWi2w+CeDhsQ4ciWdtvT0oGo=;
-        b=tkMExTTZFsH0ueo7kYzIKvVxIRSxvd97j1ljmGBVIzIVJLRQ8FQAi+S1ZopEA+gj2P
-         VGCQuVtLXrUxE+gNTe9s54fUzPH/+PiLnG+6936BK4ftHYnNfWTVGbRBwXK1HGC7l70s
-         3yS0KHyr/RYaL5K+LvTiJeUU5e0XRS0lTqYB8btDsvw3FnsnmqrjbQFkd+dbP6o0HQyA
-         JsqbD6g1Aiq4Z7wx3qBnkF3L4HxuYDt/qcp/gH+9gd3/69CLVFPBFWfUD5Z9rMTuvo/j
-         8PqPaULc+IOyz2rwCfhsrJRlFFMQCiZV3c29NZ+WMzVY92on8czAWjXzXFIPBiwvD/yS
-         nepA==
-X-Gm-Message-State: AOJu0Ywaoe3LpLJl7QbPG5B3KWPeChi8RbwR8CQxH8WA15T5hs2Rlc0r
-	Hu/RVk8g8pPFB7aZOArhO7jeHcVpzUxmQyCUap4sPakVFhCDlQO/U7EPx3kTJSgVwfN0dpg2Tpc
-	AbiBoAjBhUQyAkDArjwi0vOEtGDpmMAJbDsu8XYiRd2JjwJJBQE6PvtCiVx8ibiSmkITXCo9AKl
-	kr8QuCLMBnHawJiSNvL89+geYKfYCIlQ==
-X-Google-Smtp-Source: AGHT+IH5gDzUjaDEgGQGaNfKWeWPecLFu23Ifvo2PvUI9C53HDvPYQrmFJ1vfP4bVla6CYQYpEq5gbKz
-X-Received: from palermo.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:118a])
- (user=ardb job=sendgmr) by 2002:a81:794d:0:b0:5ff:8269:26 with SMTP id
- u74-20020a81794d000000b005ff82690026mr9234ywc.10.1706287169275; Fri, 26 Jan
- 2024 08:39:29 -0800 (PST)
-Date: Fri, 26 Jan 2024 17:39:19 +0100
+        d=1e100.net; s=20230601; t=1706287161; x=1706891961;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2ZpNenkMM62G0MLKLgK9Oo0SvrSlKfpzY/Gj9FXzciw=;
+        b=OtxhRiCKKoj+YbkIdqyhUEMKCsH8wA0bvsO4LyqnJH1MGEvH3J1DLaDNONS/HgVcc+
+         L0prgT1+bqObmaz2y80Y2CgMLzHYwwYQJBUnvLNOp45o3S9cktE3lN6uZDLTX+GcYWTt
+         67/brMN0xXbeH2IixyNAcvocr/H53oYfdRYqTQSKM/J3ouG5xaX4rjcJJphAeX33jPVC
+         X7rzbyFQ1DYNMaN6oIKwRElDnV1IFiSdauw989TIngHHcWR8FZv9wqz1bmQ+G3Eobh/u
+         RPxsNw9+KG/LErTe5Xo+QEfCMwU2V2ObfBRPq0pcdBtNlphRIpBIiGPvEATOGtq7UDhA
+         2ZRw==
+X-Gm-Message-State: AOJu0YzhNwOs/sFUEP1HTFxvECuWFLbUdW6+aj5u2eOK9q2mYeh8Mpdq
+	11Nbib2TAkrVt8td0qY/McbuvYiLvwsNkKwPj+M/8gOyVvP66WVjUpBn/LchWRH84g/efClFJ93
+	kfw==
+X-Google-Smtp-Source: AGHT+IEt7KBEKXH2oAkDokQwrod7W0W187JMIOZ3zmqTpHmMwlN026yzXyWb2j7q385wSlIt7moUe9rr8Tk=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:4cd3:0:b0:5ff:9698:729c with SMTP id
+ z202-20020a814cd3000000b005ff9698729cmr6889ywa.3.1706287161724; Fri, 26 Jan
+ 2024 08:39:21 -0800 (PST)
+Date: Fri, 26 Jan 2024 08:39:20 -0800
+In-Reply-To: <87sf2k83qb.fsf@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2049; i=ardb@kernel.org;
- h=from:subject; bh=WUJPBTvb1mHWIXBiHT1P0Ob/I8UvCbEpFlwskhtt8WU=;
- b=owGbwMvMwCFmkMcZplerG8N4Wi2JIXXzA/MGZR6dfy8uCy1aFy6e2FouXMhTerVceoPs51Otb
- x+nfIvpKGVhEONgkBVTZBGY/ffdztMTpWqdZ8nCzGFlAhnCwMUpABO594Phn+W+76uuXlgXblcp
- 1uQ8x7zC+fnDzOTdrWUePpPmbypj2cfIcOTL5oVHD8j5OKRul1tRzbdBVPFrjmoEQ86bXasFC75 vYgYA
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Message-ID: <20240126163918.2908990-2-ardb+git@google.com>
-Subject: [PATCH] x86/sme: Fix memory encryption if enabled by default and not overridden
-From: Ard Biesheuvel <ardb+git@google.com>
-To: linux-kernel@vger.kernel.org
-Cc: x86@kernel.org, Ard Biesheuvel <ardb@kernel.org>, Borislav Petkov <bp@alien8.de>, 
-	Tom Lendacky <thomas.lendacky@amd.com>, Nikita Zhandarovich <n.zhandarovich@fintech.ru>, 
-	Kevin Loughlin <kevinloughlin@google.com>
-Content-Type: text/plain; charset="UTF-8"
+References: <20240110011533.503302-1-seanjc@google.com> <20240110011533.503302-4-seanjc@google.com>
+ <87sf2k83qb.fsf@redhat.com>
+Message-ID: <ZbPgOLVk4armOGDi@google.com>
+Subject: Re: [PATCH 3/4] KVM: Get reference to VM's address space in the async
+ #PF worker
+From: Sean Christopherson <seanjc@google.com>
+To: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	David Matlack <dmatlack@google.com>, Xu Yilun <yilun.xu@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
 
-From: Ard Biesheuvel <ardb@kernel.org>
+On Fri, Jan 26, 2024, Vitaly Kuznetsov wrote:
+> Sean Christopherson <seanjc@google.com> writes:
+> 
+> > Get a reference to the target VM's address space in async_pf_execute()
+> > instead of gifting a reference from kvm_setup_async_pf().  Keeping the
+> > address space alive just to service an async #PF is counter-productive,
+> > i.e. if the process is exiting and all vCPUs are dead, then NOT doing
+> > get_user_pages_remote() and freeing the address space asap is
+> > desirable.
+> 
+> It took me a while to realize why all vCPU fds are managed by the same
+> mm which did KVM_CREATE_VM as (AFAIU) fds can be passed around. Turns
+> out, we explicitly forbid this in kvm_vcpu_ioctl():
+> 
+>         if (vcpu->kvm->mm != current->mm || vcpu->kvm->vm_dead)
+>                 return -EIO;
+> 
+> so this indeed means that grabbing current->mm in kvm_setup_async_pf()
+> can be avoided. I'm not sure whether it's just me or a "all vCPUs are
+> quired to be managed by the same mm" comment somewhere would be helpful.
 
-Commit cbebd68f59f0 ("x86/mm: Fix use of uninitialized buffer in
-sme_enable()") 'fixed' an issue in sme_enable() detected by static
-analysis, and broke the common case in the process.
-
-cmdline_find_option() will return < 0 on an error, or when the command
-line argument does not appear at all. In this particular case, the
-latter is not an error condition, and so the early exit is wrong.
-
-Instead, without mem_encrypt= on the command line, the compile time
-default should be honoured, which could be to enable memory encryption,
-and this is currently broken.
-
-Fix it by setting sme_me_mask to a preliminary value based on the
-compile time default, and only omitting the command line argument test
-when cmdline_find_option() returns an error.
-
-Cc: Borislav Petkov (AMD) <bp@alien8.de>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-Cc: Kevin Loughlin <kevinloughlin@google.com>
-Fixes: cbebd68f59f0 ("x86/mm: Fix use of uninitialized buffer in sme_enable()")
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- arch/x86/mm/mem_encrypt_identity.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
-index d73aeb16417f..30df4f1725f4 100644
---- a/arch/x86/mm/mem_encrypt_identity.c
-+++ b/arch/x86/mm/mem_encrypt_identity.c
-@@ -600,15 +600,14 @@ void __init sme_enable(struct boot_params *bp)
- 	cmdline_ptr = (const char *)((u64)bp->hdr.cmd_line_ptr |
- 				     ((u64)bp->ext_cmd_line_ptr << 32));
- 
-+	sme_me_mask = active_by_default ? me_mask : 0;
- 	if (cmdline_find_option(cmdline_ptr, cmdline_arg, buffer, sizeof(buffer)) < 0)
--		return;
-+		goto out;
- 
- 	if (!strncmp(buffer, cmdline_on, sizeof(buffer)))
- 		sme_me_mask = me_mask;
- 	else if (!strncmp(buffer, cmdline_off, sizeof(buffer)))
- 		sme_me_mask = 0;
--	else
--		sme_me_mask = active_by_default ? me_mask : 0;
- out:
- 	if (sme_me_mask) {
- 		physical_mask &= ~sme_me_mask;
--- 
-2.43.0.429.g432eaa2c6b-goog
-
+It's definitely not just you.  Documentation/virt/kvm/* could use thorough
+documentation of what all in KVM relies on vCPUs, and all meaningful ioctls(),
+to be executed in the same mm_struct (address space).  Because that requirement
+is pervasive throughout KVM.  E.g. sharing KVM page tables across vCPUs is safe
+iff all vCPUs are in the same address space, otherwise the hva=>pfn translations
+through the memslot would diverge, mmu_notifiers would be all kinds of broken, etc.
 
