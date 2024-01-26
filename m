@@ -1,298 +1,257 @@
-Return-Path: <linux-kernel+bounces-40301-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40302-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 307A383DDF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:49:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A74A983DE0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:53:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2026AB21E24
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:49:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1960A1F241D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:53:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9746B1D6A6;
-	Fri, 26 Jan 2024 15:49:02 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFD661CFBF;
-	Fri, 26 Jan 2024 15:48:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706284141; cv=none; b=o2V6gjh3DJcWF/ICx2zaQD0W8CHCHTPEVuX6+JlpoR4V3jOAXE2uyQwRiP7auEXX+e/+furxR7fb9W3I4kYVYalcP9no5TyjqQgjd+ZSLk/Dmfj7+TzHxxSn98AVgY1OJH1uIkl07wKFcMuFT5Fu5hMJgc5hIWk3T8XOKUHkyks=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706284141; c=relaxed/simple;
-	bh=DCS4rQ+kulPVQ/3V51ushJzhNjwdNlj6BNIzixfez8A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TpkxIg9qRbYiyAwyZmzeswNkETahHat5uNKKjy1VciBAyPYsX4YbaQpncKd3YkCH1vtVrQf7UEWqaOF8gm3tObbLEyhe0r4cwDUf4b5gR342CHMpgsxOXLVYaE5UMz7Z809ZHEdfI8nL0k/b5YGDQDIG/2E1ge4cQiLn+YkRXFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7DDBA1FB;
-	Fri, 26 Jan 2024 07:49:42 -0800 (PST)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0636A3F762;
-	Fri, 26 Jan 2024 07:48:55 -0800 (PST)
-Message-ID: <0f6f550c-3eee-46dc-8c42-baceaa237610@arm.com>
-Date: Fri, 26 Jan 2024 15:48:54 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 202001D540;
+	Fri, 26 Jan 2024 15:53:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="hYCuYK+R"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2082.outbound.protection.outlook.com [40.107.220.82])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 874791CF99;
+	Fri, 26 Jan 2024 15:52:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.82
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706284381; cv=fail; b=WMd2F+rFck2fQ9D3sIa2YHzZfxwq+OHyOFVHd3Inz/xdjg1uKsgRxZ2+IAkq/6Le1AKssguQWA+hiVN8mDAphm2RIXOJk5js4EnAuivTVpcc70YifDVtdf5Dg9tOOMbvjrkhlpEDjYznozNyom+7v5b0WGuVNLIHORQREycsMNE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706284381; c=relaxed/simple;
+	bh=PorPZ/9RIEZeFmc8JAwc349Hu2936Hc4unyZnYOWRFQ=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=S8DJorbUw8R0nZgsVFUnN3O65vCMWjNQucI/F2pdeilhEqHqb1eby81Q6k9dqeacaaKYwDMNkLG7dYLL6loPl42T1wage0l6IJaTNi39Hp8xCBajjhRCgptu9p1JKmG82vzTRhr+fLFPR16FaAMcdRSV5lAVDAIldYousNO6+lw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=hYCuYK+R; arc=fail smtp.client-ip=40.107.220.82
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FjedgdvWsN5t1H4/kU0LT55c1pJxx3nL2yEZSWoM0ALWVl5ZMXpe9G4PYryz1oDoVjHJ4z3JmT6s37pMTQUY5vfVvmPIdkOCKABb7+PiywwvtNjvsts4EYrLKKxpg5BKOKEHhUI9SmQ4FolhJR9zN0SzBZrJJB6loZaENkMjXyni8VKwjwLwN4EgmPEjnm/JKbmKZzsoJk1FhjSfEOzpzhvukwfmyxTuHQWME9YVC1B5ph97GKjeT5jfF7TFK7uV7VsNv3g51v9i+FWMquEFwKT/kLnzz83JQC9+/vZF4rCyX3uZBVsv81MH7SxpqUUhwtwjiCiZk9eHkphGmV4i+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TWVtQF8DJEjrj8mW3qPHuYkHMSSLnEoE1cR046Hd67o=;
+ b=PDC0gwiAheFYVtLoDE6UY/A5HG+a1NdwTg2hN9uzjrzbGTVN8stKDpZdtgt07akpJl/kIzIPdKAcQwOhf4dXutj1CniEgx7dLU6Xw9zT7QNpSll00E2mIcDcE/Exx2XfyhLNz97Xjdx1sErUYF5Jmq2Hh/1V6GVoUbFnBjCY8b4Rujkanf9e4rSseeGh7RLvQNjMZV0mzwlxijrEqkwmHiXeww0HCmv2CD8BejcAMpAOu83Ba+I/DAa69xmfY/6Pzq1i9oxfvaRzP4UpNoDvrJILrDUXRBBRaIPiPMMzT3iMNd4mUBudWhSUZQ13thGbtOSRsfzYqN9qIajr+33JwA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TWVtQF8DJEjrj8mW3qPHuYkHMSSLnEoE1cR046Hd67o=;
+ b=hYCuYK+RjtT54pT84kRxiNmV6T2kknvF4TyfwxOmL6nDCwiagmfDwkiAhbsvRgLYhgzpCpjBYIEnLqU/ezSltAqAbjbQlAOmf9Out4ug3p3Fcz0BWNtvxsNEOp9zMEB+wdnX/HwM/44hneEnCSaviIsf8iv5dpLcXKbLBKRTgJQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by SJ2PR12MB7866.namprd12.prod.outlook.com (2603:10b6:a03:4cc::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.27; Fri, 26 Jan
+ 2024 15:52:55 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::c30:614f:1cbd:3c64]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::c30:614f:1cbd:3c64%4]) with mapi id 15.20.7228.027; Fri, 26 Jan 2024
+ 15:52:55 +0000
+Message-ID: <580bc2a0-8621-4147-a7dd-0cc0bd54f9fa@amd.com>
+Date: Fri, 26 Jan 2024 09:52:51 -0600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6/7] cpufreq:amd-pstate: add suspend and resume callback
+ for passive mode
+Content-Language: en-US
+To: Perry Yuan <perry.yuan@amd.com>, rafael.j.wysocki@intel.com,
+ viresh.kumar@linaro.org, Ray.Huang@amd.com, gautham.shenoy@amd.com,
+ Borislav.Petkov@amd.com
+Cc: Alexander.Deucher@amd.com, Xinmei.Huang@amd.com, Xiaojian.Du@amd.com,
+ Li.Meng@amd.com, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1706255676.git.perry.yuan@amd.com>
+ <fa430f6288744c760145f4acab952c2bd0f947ad.1706255676.git.perry.yuan@amd.com>
+From: Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <fa430f6288744c760145f4acab952c2bd0f947ad.1706255676.git.perry.yuan@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BY5PR17CA0052.namprd17.prod.outlook.com
+ (2603:10b6:a03:167::29) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 2/7] dma: avoid expensive redundant calls for
- sync operations
-Content-Language: en-GB
-To: Alexander Lobakin <aleksander.lobakin@intel.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: Christoph Hellwig <hch@lst.de>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Alexander Duyck <alexanderduyck@fb.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240126135456.704351-1-aleksander.lobakin@intel.com>
- <20240126135456.704351-3-aleksander.lobakin@intel.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20240126135456.704351-3-aleksander.lobakin@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|SJ2PR12MB7866:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6994be3b-46de-4440-a7d1-08dc1e86dc4e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	NMcf1yXxjmSUE9lcTHNa/u3WgK3KUh/5l/TAmizPUAI6vZInPEideZB+hwnqFm/GaDMMkETZwd2aknNviova6rxi/2cayAEUqTTjX0pwfvEc7suLm+QjJvcLOqyb23x+jariVPBwcQsymEgAXYqSxG2TsARQXSVq2xBoV/D3hzf9hdttlN2GgGg9H4qDkI5G261Emg4IG1ngD7gjWvAMwVGVDxzaEvKLM17+79FHskTg4Cl8LW86aYKVYXyWLqO40WqMttN/zEyLGxHHxPt/W/Jnirnlx4ppZlopwBB3gUxugluyU4QlimGYQX22cKPg39oyth+O5UF2wnFer1ZQOGjan8nb/8Z6w8M+EQ+cADgVaQV0OUJaEA/+JxR2eCW4N0jHbNWD2aJZ5vKFeyUmef8yQ2eYSPDpz9RBaOwCOXxVPfnf89/uPdszrDuEcUTbVrzsyqVopqSom3V28Su0ZWoPiVCJdSJHfUb0H/meonUMA6B/k1MHSWo/VGdFDoBMnChQ71VvoUeV0ilceEM9dtY/fJ5UHQk4aqNnKMy8kegWbMtpInEZWTvol6YRPEXFLZct326C3TQW5SRa75C/A+ruVNB7xQimGfcm5vyaoh3iyrseXaMdjRQrRctocD4GOVtUYrTj2UxQXw5w66LRbQ==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(396003)(366004)(376002)(136003)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(31696002)(66476007)(38100700002)(66556008)(36756003)(66946007)(15650500001)(316002)(6636002)(86362001)(44832011)(53546011)(6506007)(83380400001)(2906002)(31686004)(5660300002)(8936002)(8676002)(4326008)(478600001)(6486002)(6666004)(26005)(41300700001)(2616005)(6512007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?d3k1VGZHaEpNUGxYQzM3d01XdStPTldGSG1VTHZSVzZhVkdkczk1Mmc4ci84?=
+ =?utf-8?B?UUMyaEFpMG05THpVamluM3F3dmVGU2hIKzBBWW5Ea1U4NExaUkRVaDl1Zmp4?=
+ =?utf-8?B?U25jazhaTnFqWGdKa0NGNHNPWU1QN0NPaWh2eWhzVXZjZDlTL1EwN3dUZTBD?=
+ =?utf-8?B?dEpDd09HSENsaWRoemg0cTgrWHFLbTVSako0RlRla1hNVGt4WmcrZ3Q2TURP?=
+ =?utf-8?B?SjZqeUhZU3M5VGUva1Q3NWlBZGdGbzE3L3dvVG0vR2ZlYXNVMlBWb0p5NEdT?=
+ =?utf-8?B?cG1KczRIZ2lVVkNMaTZ1SFdzeVA1V01GeHIyNERZcnpyTW13UkFiK2NnUW0r?=
+ =?utf-8?B?b0RLZ2VPSklrdSs4MWk1R3AwQVdVOFB3MmROd0NSemhmUmliVEwxKzhZU1Br?=
+ =?utf-8?B?ZnFDZmZ1TFlvbFg3M0JIYXhKalIzdE56REVmbm9DTjhCUWE5YitLV1lkYUI5?=
+ =?utf-8?B?eG5FTTdvbENJbWZ2c0NGOEk2ZkZZY0RyZUJ5dUNjOURraWlLYUQvbmVtbkdC?=
+ =?utf-8?B?V3lNZDlTRitGYXNQR2VUeldrMlQxZ0tKekptTkNEYm5HeEJiQ1FMb2RsUHFT?=
+ =?utf-8?B?R05MbWdaYWxKN2lDMGNtNkgxSjdaVnAwRHROb0tDb0xTOVJ3QW1FQ3E5cmRM?=
+ =?utf-8?B?by9QZkRlc0dOcVI2S0FzV294dXlMd1kzaFlkUVhUemhvQ3FqQ1JpU3lITkNO?=
+ =?utf-8?B?VjNVREVBVnhCZlJ2b2VSU0I4Q1MxRzZHZWgwR1NSYldTVVh0TjBqdVlPTXUx?=
+ =?utf-8?B?TGZMODBXbDNRWGIxZy9jdnR2NnlEbm5YMVRuWStJbDBOaVhCQXZPTEhpT3hq?=
+ =?utf-8?B?SU5Gc1dCQU45Qzh0QXZ0dXAzbnN1RHJlZTloRHplS2M5VzI3RmRRYzR0MTdw?=
+ =?utf-8?B?OS95NHRzeGJZTnhoM1UydjFSZDBGc21MSmh4VGNHNEw1emIzZzFwQW1hOXBm?=
+ =?utf-8?B?c1FTRU9kb2VQUk9jVzkwMFBkeGhYM21nUCtYYkFTcUZDK0RmbUQ1NW4wdzQ2?=
+ =?utf-8?B?RE1KcTVUcWJxTHlENUo5WE5CZVkzTURHY1RRaThvenBXeDBvcERvRU9tZG03?=
+ =?utf-8?B?aVRjc3ViMXp0TEJVVy9WQUFkTFNGU1N6OWxTWXIrMnhhaUZZNmFlWGtscnIr?=
+ =?utf-8?B?Q0tUNGJGU3QxcXByQ3l5c0pTQlRnZ3BDMEJpMkJtdStCaUVTejhqbkxNM2Zk?=
+ =?utf-8?B?MU56aHdSZVpIZmpEbUhwcCtVWWwzN1p2d0tmV28vRERMRkFsVjZBblZqSW5C?=
+ =?utf-8?B?Qjc4OG10dlFodE0rblNBbzhaSFNrenBCTmdySHBaRGEwcjlPakFYV0g5NENp?=
+ =?utf-8?B?MjFGUTJ6bmNjai9ZRlVDcElXZ3oyODRmaXNBRUVBcVlmeXBKTERlbzVyRmlB?=
+ =?utf-8?B?aDZIbDV4Znhpd05sU1VjRWp4STFqUTkrVGpRKzhEeFR3N1F4TElvVis3cHRw?=
+ =?utf-8?B?YkN0TFlkQnh6RTJaTVV5enFpTFpINURTcmZLZGU1SXZKUk5ZcFEzZHk4SU41?=
+ =?utf-8?B?RGZHeDBvRUExeWUya2FsVHlQU29uK2NXY1RLQVNnYml1bjB4ckV0Y0dER0JN?=
+ =?utf-8?B?TVRhZzlyQWxHaTdJQSsvWE1KeG5TZ1cwajY0dkZNRnB5QzhrcU1XRStEY0po?=
+ =?utf-8?B?SjZOdWdyV1NXZFYrb01jeTVwNCtzZ2h1MmxjVXo1LzdBVFZhVGhCVEFWbnlH?=
+ =?utf-8?B?SEliTnNFd3NkbUhDTExzVzJqTUROclcxYjJiSDZpb0JhZVJkeGljZEo5RVc3?=
+ =?utf-8?B?OWwzSnN1WmhndXc0U3UxRnZMSVNyMHhaR1FZeTdKOVRoWVZYRWF3OW55dy9a?=
+ =?utf-8?B?aTNOSEdFc1A2U3NMNFFBRUxXZWhDU0VNd0RyWC9aR2ovbkxvb3QrVzc4NmhL?=
+ =?utf-8?B?Q2Q2YXA1ZUJYZUdUOHdSNTV6ei9GS281T2ZFNGdoNjRyRU1SaVhpb3BDUnU4?=
+ =?utf-8?B?MUdCNm8yVVNTU2dlRUpGdC9uM0cyQkdjZGZnTk1ISEoyay9KU3dPV0FyRDcv?=
+ =?utf-8?B?cUNZc3ZNWDNicWd5V0ZpU3Zma3orSndQVWlEZU5TTTZoZE9vTlVnSWJkQkVH?=
+ =?utf-8?B?dHpVc2pWY1c5TFJ5NlpZdTBCQWlEdzZNaTcvSnlFekJtQkQ4S21tZGlOVTln?=
+ =?utf-8?Q?CA+t+T9kviLykBpehcwaMhRTU?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6994be3b-46de-4440-a7d1-08dc1e86dc4e
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 15:52:55.2037
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iDXcyV+Du6K4SgXFuvv4ejmtQJdU2yI/dnfNPo/yH0lpZ9xPuRMu2crdhJLgxPHSkhgAAWdpzW2GIc2/YaIRBg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7866
 
-On 26/01/2024 1:54 pm, Alexander Lobakin wrote:
-> From: Eric Dumazet <edumazet@google.com>
+On 1/26/2024 02:08, Perry Yuan wrote:
+> From: Perry Yuan <Perry.Yuan@amd.com>
 > 
-> Quite often, NIC devices do not need dma_sync operations on x86_64
-> at least.
-> Indeed, when dev_is_dma_coherent(dev) is true and
-> dev_use_swiotlb(dev) is false, iommu_dma_sync_single_for_cpu()
-> and friends do nothing.
+> Add suspend and resume support for `passive` mode driver which can save
+> the previous CPU Pstate values and restore them while resuming, on some
+> old platforms, the highest perf needs to be restored from driver side,
+> otherwise the highest frequency could be changed during suspend.
+
+So this sounds like a BIOS bug, right?  Do you know how far back this 
+problem exists?  Should it be a quirked behavior to only run on the 
+broken platforms so we don't need to run the callback on modern ones 
+without it?
+
 > 
-> However, indirectly calling them when CONFIG_RETPOLINE=y consumes about
-> 10% of cycles on a cpu receiving packets from softirq at ~100Gbit rate.
-> Even if/when CONFIG_RETPOLINE is not set, there is a cost of about 3%.
-> 
-> Add dev->skip_dma_sync boolean which is set during the device
-> initialization depending on the setup: dev_is_dma_coherent() for direct
-> DMA, !(sync_single_for_device || sync_single_for_cpu) or positive result
-> from the new callback, dma_map_ops::can_skip_sync for non-NULL DMA ops.
-> Then later, if/when swiotlb is used for the first time, the flag
-> is turned off, from swiotlb_tbl_map_single().
-
-I think you could probably just promote the dma_uses_io_tlb flag from 
-SWIOTLB_DYNAMIC to a general SWIOTLB thing to serve this purpose now.
-
-Similarly I don't think a new op is necessary now that we have 
-dma_map_ops.flags. A simple static flag to indicate that sync may be 
-skipped under the same conditions as implied for dma-direct - i.e. 
-dev_is_dma_coherent(dev) && !dev->dma_use_io_tlb - seems like it ought 
-to suffice.
-
-Thanks,
-Robin.
-
-> On iavf, the UDP trafficgen with XDP_DROP in skb mode test shows
-> +3-5% increase for direct DMA.
-> 
-> Signed-off-by: Eric Dumazet <edumazet@google.com>
-> Co-developed-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+> Signed-off-by: Perry Yuan <Perry.Yuan@amd.com>
 > ---
->   include/linux/device.h      |  5 +++++
->   include/linux/dma-map-ops.h | 17 +++++++++++++++++
->   include/linux/dma-mapping.h | 12 ++++++++++--
->   drivers/base/dd.c           |  2 ++
->   kernel/dma/mapping.c        | 34 +++++++++++++++++++++++++++++++---
->   kernel/dma/swiotlb.c        | 14 ++++++++++++++
->   6 files changed, 79 insertions(+), 5 deletions(-)
+>   drivers/cpufreq/amd-pstate.c | 48 ++++++++++++++++++++++++++++++++----
+>   1 file changed, 43 insertions(+), 5 deletions(-)
 > 
-> diff --git a/include/linux/device.h b/include/linux/device.h
-> index 97c4b046c09d..f23e6a32bea0 100644
-> --- a/include/linux/device.h
-> +++ b/include/linux/device.h
-> @@ -686,6 +686,8 @@ struct device_physical_location {
->    *		other devices probe successfully.
->    * @dma_coherent: this particular device is dma coherent, even if the
->    *		architecture supports non-coherent devices.
-> + * @dma_skip_sync: DMA sync operations can be skipped for coherent non-SWIOTLB
-> + *		buffers.
->    * @dma_ops_bypass: If set to %true then the dma_ops are bypassed for the
->    *		streaming DMA operations (->map_* / ->unmap_* / ->sync_*),
->    *		and optionall (if the coherent mask is large enough) also
-> @@ -800,6 +802,9 @@ struct device {
->       defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL)
->   	bool			dma_coherent:1;
->   #endif
-> +#ifdef CONFIG_DMA_NEED_SYNC
-> +	bool			dma_skip_sync:1;
-> +#endif
->   #ifdef CONFIG_DMA_OPS_BYPASS
->   	bool			dma_ops_bypass : 1;
->   #endif
-> diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
-> index 4abc60f04209..937c295e9da8 100644
-> --- a/include/linux/dma-map-ops.h
-> +++ b/include/linux/dma-map-ops.h
-> @@ -78,6 +78,7 @@ struct dma_map_ops {
->   			int nents, enum dma_data_direction dir);
->   	void (*cache_sync)(struct device *dev, void *vaddr, size_t size,
->   			enum dma_data_direction direction);
-> +	bool (*can_skip_sync)(struct device *dev);
->   	int (*dma_supported)(struct device *dev, u64 mask);
->   	u64 (*get_required_mask)(struct device *dev);
->   	size_t (*max_mapping_size)(struct device *dev);
-> @@ -111,6 +112,22 @@ static inline void set_dma_ops(struct device *dev,
->   }
->   #endif /* CONFIG_DMA_OPS */
+> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
+> index 5cbbc2999d9a..bba7640d46e0 100644
+> --- a/drivers/cpufreq/amd-pstate.c
+> +++ b/drivers/cpufreq/amd-pstate.c
+> @@ -785,23 +785,61 @@ static int amd_pstate_cpu_exit(struct cpufreq_policy *policy)
 >   
-> +#ifdef CONFIG_DMA_NEED_SYNC
-> +
-> +static inline void dma_set_skip_sync(struct device *dev, bool skip)
-> +{
-> +	dev->dma_skip_sync = skip;
-> +}
-> +
-> +void dma_setup_skip_sync(struct device *dev);
-> +
-> +#else /* !CONFIG_DMA_NEED_SYNC */
-> +
-> +#define dma_set_skip_sync(dev, skip)		do { } while (0)
-> +#define dma_setup_skip_sync(dev)		do { } while (0)
-> +
-> +#endif /* !CONFIG_DMA_NEED_SYNC */
-> +
->   #ifdef CONFIG_DMA_CMA
->   extern struct cma *dma_contiguous_default_area;
->   
-> diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-> index 9dd7e1578bf6..bc9f67e0c139 100644
-> --- a/include/linux/dma-mapping.h
-> +++ b/include/linux/dma-mapping.h
-> @@ -365,9 +365,17 @@ __dma_sync_single_range_for_device(struct device *dev, dma_addr_t addr,
->   
->   #ifdef CONFIG_DMA_NEED_SYNC
->   
-> -#define dma_skip_sync(dev)			false
-> +static inline bool dma_skip_sync(const struct device *dev)
-> +{
-> +	return dev->dma_skip_sync;
-> +}
-> +
-> +bool __dma_need_sync(struct device *dev, dma_addr_t dma_addr);
->   
-> -bool dma_need_sync(struct device *dev, dma_addr_t dma_addr);
-> +static inline bool dma_need_sync(struct device *dev, dma_addr_t dma_addr)
-> +{
-> +	return dma_skip_sync(dev) ? false : __dma_need_sync(dev, dma_addr);
-> +}
->   
->   #else /* !CONFIG_DMA_NEED_SYNC */
->   
-> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> index 85152537dbf1..67ad3e1d51f6 100644
-> --- a/drivers/base/dd.c
-> +++ b/drivers/base/dd.c
-> @@ -642,6 +642,8 @@ static int really_probe(struct device *dev, struct device_driver *drv)
->   			goto pinctrl_bind_failed;
->   	}
->   
-> +	dma_setup_skip_sync(dev);
-> +
->   	ret = driver_sysfs_add(dev);
->   	if (ret) {
->   		pr_err("%s: driver_sysfs_add(%s) failed\n",
-> diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
-> index a30f37f9d4db..8fa464b3954e 100644
-> --- a/kernel/dma/mapping.c
-> +++ b/kernel/dma/mapping.c
-> @@ -842,15 +842,43 @@ size_t dma_opt_mapping_size(struct device *dev)
->   EXPORT_SYMBOL_GPL(dma_opt_mapping_size);
->   
->   #ifdef CONFIG_DMA_NEED_SYNC
-> -bool dma_need_sync(struct device *dev, dma_addr_t dma_addr)
-> +bool __dma_need_sync(struct device *dev, dma_addr_t dma_addr)
+>   static int amd_pstate_cpu_resume(struct cpufreq_policy *policy)
 >   {
->   	const struct dma_map_ops *ops = get_dma_ops(dev);
+> +	struct cppc_perf_ctrls perf_ctrls;
+> +	struct amd_cpudata *cpudata = policy->driver_data;
+> +	u64 value, max_perf;
+>   	int ret;
 >   
->   	if (dma_map_direct(dev, ops))
-> +		/*
-> +		 * dma_skip_sync could've been set to false on first SWIOTLB
-> +		 * buffer mapping, but @dma_addr is not necessary an SWIOTLB
-> +		 * buffer. In this case, fall back to more granular check.
-> +		 */
->   		return dma_direct_need_sync(dev, dma_addr);
-> -	return ops->sync_single_for_cpu || ops->sync_single_for_device;
+> -	ret = amd_pstate_enable(true);
+> -	if (ret)
+> -		pr_err("failed to enable amd-pstate during resume, return %d\n", ret);
+> +	if (cpudata->suspended) {
+> +		mutex_lock(&amd_pstate_driver_lock);
+>   
+> -	return ret;
+> +		ret = amd_pstate_enable(true);
+> +		if (ret) {
+> +			pr_err("failed to enable amd-pstate during resume, return %d\n", ret);
+> +			mutex_unlock(&amd_pstate_driver_lock);
+> +			return ret;
+> +		}
+
+This /looks/ like an unintended logic change to me.  Previously 
+amd_pstate_enable(true) would be called in all modes, but now it will 
+only be called in passive mode.
+
+Is that right?
+
 > +
-> +	return true;
-> +}
-> +EXPORT_SYMBOL_GPL(__dma_need_sync);
+> +		value = READ_ONCE(cpudata->cppc_req_cached);
+> +		max_perf = READ_ONCE(cpudata->highest_perf);
 > +
-> +void dma_setup_skip_sync(struct device *dev)
-> +{
-> +	const struct dma_map_ops *ops = get_dma_ops(dev);
-> +	bool skip;
+> +		if (boot_cpu_has(X86_FEATURE_CPPC)) {
+> +			wrmsrl_on_cpu(cpudata->cpu, MSR_AMD_CPPC_REQ, value);
+> +		} else {
+> +			perf_ctrls.max_perf = max_perf;
+> +			cppc_set_perf(cpudata->cpu, &perf_ctrls);
+> +		}
 > +
-> +	if (dma_map_direct(dev, ops))
-> +		/*
-> +		 * dma_skip_sync will be set to false on first SWIOTLB buffer
-> +		 * mapping, if any. During the device initialization, it's
-> +		 * enough to check only for DMA coherence.
-> +		 */
-> +		skip = dev_is_dma_coherent(dev);
-> +	else if (!ops->sync_single_for_device && !ops->sync_single_for_cpu)
-> +		skip = true;
-> +	else if (ops->can_skip_sync)
-> +		skip = ops->can_skip_sync(dev);
-> +	else
-> +		skip = false;
+> +		cpudata->suspended = false;
+> +		mutex_unlock(&amd_pstate_driver_lock);
+> +	}
 > +
-> +	dma_set_skip_sync(dev, skip);
+
+> +	return 0;
 >   }
-> -EXPORT_SYMBOL_GPL(dma_need_sync);
->   #endif /* CONFIG_DMA_NEED_SYNC */
 >   
->   unsigned long dma_get_merge_boundary(struct device *dev)
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index b079a9a8e087..b62ea0a4f106 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -1286,6 +1286,16 @@ static unsigned long mem_used(struct io_tlb_mem *mem)
+>   static int amd_pstate_cpu_suspend(struct cpufreq_policy *policy)
+>   {
+> +	struct amd_cpudata *cpudata = policy->driver_data;
+>   	int ret;
 >   
->   #endif /* CONFIG_DEBUG_FS */
->   
-> +static inline void swiotlb_disable_dma_skip_sync(struct device *dev)
-> +{
-> +	/*
-> +	 * If dma_skip_sync was set, reset it to false on first SWIOTLB buffer
-> +	 * mapping/allocation to always sync SWIOTLB buffers.
+> +	/* avoid suspending when EPP is not enabled */
+The logic seems right, but shouldn't the comment be:
+
+/* only run suspend callbacks for passive mode */
+
+Because this stuff won't run in guided mode or disable mode either
+
+> +	if (cppc_state != AMD_PSTATE_PASSIVE)
+> +		return 0;
+> +
+> +	mutex_lock(&amd_pstate_driver_lock);
+> +
+> +	/* set this flag to avoid calling core offline function
+> +	 * when system is suspending, use this flag to skip offline function
+> +	 * called
 > +	 */
-> +	if (unlikely(dma_skip_sync(dev)))
-> +		dma_set_skip_sync(dev, false);
-> +}
+> +	cpudata->suspended = true;
 > +
->   phys_addr_t swiotlb_tbl_map_single(struct device *dev, phys_addr_t orig_addr,
->   		size_t mapping_size, size_t alloc_size,
->   		unsigned int alloc_align_mask, enum dma_data_direction dir,
-> @@ -1323,6 +1333,8 @@ phys_addr_t swiotlb_tbl_map_single(struct device *dev, phys_addr_t orig_addr,
->   		return (phys_addr_t)DMA_MAPPING_ERROR;
->   	}
+>   	ret = amd_pstate_enable(false);
+>   	if (ret)
+>   		pr_err("failed to disable amd-pstate during suspend, return %d\n", ret);
 >   
-> +	swiotlb_disable_dma_skip_sync(dev);
+> +	mutex_unlock(&amd_pstate_driver_lock);
 > +
->   	/*
->   	 * Save away the mapping from the original address to the DMA address.
->   	 * This is needed when we sync the memory.  Then we sync the buffer if
-> @@ -1640,6 +1652,8 @@ struct page *swiotlb_alloc(struct device *dev, size_t size)
->   	if (index == -1)
->   		return NULL;
+>   	return ret;
+>   }
 >   
-> +	swiotlb_disable_dma_skip_sync(dev);
-> +
->   	tlb_addr = slot_addr(pool->start, index);
+> @@ -1460,7 +1498,7 @@ static int amd_pstate_epp_suspend(struct cpufreq_policy *policy)
+>   	if (cppc_state != AMD_PSTATE_ACTIVE)
+>   		return 0;
 >   
->   	return pfn_to_page(PFN_DOWN(tlb_addr));
+> -	/* set this flag to avoid setting core offline*/
+> +	/* set this flag to avoid setting core offline */
+>   	cpudata->suspended = true;
+>   
+>   	/* disable CPPC in lowlevel firmware */
+
 
