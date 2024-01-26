@@ -1,162 +1,195 @@
-Return-Path: <linux-kernel+bounces-40219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C25283DCAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:45:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6A1C83DCA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:44:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B57EE2825C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:45:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB4D51C21CC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:44:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2D431C693;
-	Fri, 26 Jan 2024 14:44:50 +0000 (UTC)
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 497331C6BE;
+	Fri, 26 Jan 2024 14:44:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sjDAQtvm"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E0391CD33;
-	Fri, 26 Jan 2024 14:44:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 905911C2AE
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:44:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706280290; cv=none; b=nj8CkXRJbTGwHF6ZNwPjLf78Nz55+Ir8JDGjk6CA2wu+S2kzHFH+tQvhLMgbc7MGgWC5ZJW2BXYcNVpQ66jkEq9aMydWZd+cz+JBN+lQts6CmukdgvAZURvPA4P5f22AN3GPGDZlsBwa8oyyAwFdb9LL/G8gE3gKQ1zTQSZnxAk=
+	t=1706280283; cv=none; b=ON0j+IboTtebKw66GBQBkzfDJtzGn7iMbIf233JANr1DLZtfWNQoGDxvJfCAfkxf/y7DJYa/o7RNNilgi7wv3bDV3ivitNKXwAiefVuXhmbJXf1Nz7kMnYFuQ/s+nMF3iL+pgSS9X06IHKJYDJUPbeZK8ddq8St8rslP1R+LScw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706280290; c=relaxed/simple;
-	bh=HL+laULSRdMNS9F+oXN/bayng5Ap6VNpmdPowc6QUtg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mbxrCQlOipB0p4UDDsmGHeBluu/Ai3ONMi4fv25cryjwdVWzHOQ81wFDzQf7rdLItVTrRhVrEdyP128BuknkkR90iTlZmCZ4EU8vHHjFbLRK1h9WzJlnlEt4SE9LLJ2dMdYWma0SDlb2hL7IOgsM5Bn81v9Fxy34jC5MgrWGKZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-db3a09e96daso387274276.3;
-        Fri, 26 Jan 2024 06:44:47 -0800 (PST)
+	s=arc-20240116; t=1706280283; c=relaxed/simple;
+	bh=S/etbdxpdJbEcvSqL3E9/1O3DiFS9pqHuIWHhwxiDJI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eHMjiABpFGS+g21/MwyH5VvigUBdTT510QphQOhh7lxTsqKu4BY8n6keMTNYCVJUpOWPya22QTCTyPe3aBZ0ZFcEuh7KCb4lAuUD16TGz1IsR1X7J1Aeh4h2vXA5d+5VZPv6KrCQDFlXmFJxnfxi2F7Lz304WGKt5/7l5MTUfp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sjDAQtvm; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-33926ccbc80so346676f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 06:44:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706280280; x=1706885080; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i5B+fHMvjnJUN3quASTzUIwtKvGYeHenqNIe0ucdsRE=;
+        b=sjDAQtvmxvznRV37dI/wMPUPtubbdaFZphZHfQlsgQ1lClAyR4VgxstdnVdoli1Ejv
+         rOpWTt3vYQcE6bfxBFP+0hCq3qvWlEq4zMls1GEz9/yqghL/Pg/xEKYU9Yxy8P+wrGLj
+         67/Jgx3hebNy803u4AbK2t0BjByOozdrxSbd13nLCW8dMvnOVtQCK1Nu/nWQ7KZDzC89
+         /KxCniXX6kIEnzlEyJeqsZtOVR9SIFZGtOh6GJx0MVkK3DF0aWJoenK/Z1eLEV1/d5VJ
+         J6wHUHu46JPgLidY8GwfpklC37H2vvW0giRebfTc98qT8CvbndOoq8ttoNMVJBrk57zP
+         k16g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706280287; x=1706885087;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1706280280; x=1706885080;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JNYqBEu+dCYuyt6Xnn2uU8Pn9mgOAidGZMsoGkc2AdQ=;
-        b=N/zZCENd2MGB65x/Jbh8Zc9vA6aNOBStCjaLPggpmtN5Ghs5o0o22GaYZNwrKqarYF
-         NtRYxxAu6GP69a4nde1YVTzVeqIOwahQXFjYYcKDUH5SurwFY9maepkTCss3iDlfLa39
-         FkN3MJ8jW6L/xLuwh6yMABPJjCgpcMTZ/ubYDx6DcPj42zgcwc25kBC9q45s559zoZzI
-         oC1aDTtaxBkLZmQwAYNhRVm7k8npd0h74Wu1C0vuJCA3U4TO24v9REDpFSuR/4UXUsia
-         gzFXramPQVFDdw1mXdyZc5jpY+gm6rUIS1bmg3siWkyaOvPxTO7rtvHfhz+PS9go4nr9
-         HVWA==
-X-Gm-Message-State: AOJu0Yyork4e/XGxxmDDUGMkRFYl/Y0M706EvB+4mX0/T31blOrOGaj7
-	HrFj6CJnOl2FjLwHwmEga8JZlqre7fNdaD30VfytvV5F35bT2Td6uyVu5kQ78GU=
-X-Google-Smtp-Source: AGHT+IHQKjsbsoL34juyhZu2b4CyppRSj+oxIYW5RAH6O5gKhkPrbcDmGB4jfl2AD4Q+heEL12aTCw==
-X-Received: by 2002:a25:2d23:0:b0:dbe:35b0:1708 with SMTP id t35-20020a252d23000000b00dbe35b01708mr1265241ybt.121.1706280286881;
-        Fri, 26 Jan 2024 06:44:46 -0800 (PST)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id h1-20020a25e201000000b00dc63e73aaa0sm407470ybe.56.2024.01.26.06.44.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jan 2024 06:44:41 -0800 (PST)
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc21d7a7042so404197276.2;
-        Fri, 26 Jan 2024 06:44:41 -0800 (PST)
-X-Received: by 2002:a25:beca:0:b0:dc6:52da:3faa with SMTP id
- k10-20020a25beca000000b00dc652da3faamr254704ybm.43.1706280280507; Fri, 26 Jan
- 2024 06:44:40 -0800 (PST)
+        bh=i5B+fHMvjnJUN3quASTzUIwtKvGYeHenqNIe0ucdsRE=;
+        b=HUlutKpCo1YZcm89omzlh+pGL3q/ZOBroIg8yRWMp5qFq8bnI3CgENBUG5qbOmyDzb
+         qdYCEZ/COYhnRK5wf5ij+JXcQjHWlljxhgeCIOXu086W15i3/O6YA9PPOk4+u3y/BztH
+         mcpFx3Gqp3XizZLlb6Of1moxbIy23wWisYhoUTT35pp4rfg7hJnyxPVUSyrcbx6ydvzp
+         IulxWDeLoPRD4yW/a4jh0FDVoxkstt9zzoeoxaZp8iG2El+dCex6wS8f+GGj2tpUeEmV
+         69CeZIKrlQY7OyfQQzFrfZ4nAejhaQHvOXcnvKtHNvNl1DuTzV8bFxrM3FNjEagyy/HI
+         zoHw==
+X-Gm-Message-State: AOJu0YzC6gh1YoDhH7fIQB8YojSOTVMmml4de8tXdwVL4SB4WkXOXcCH
+	UOEt8LgCojowacMGwtAozU+PJ+YX9wPnGAWHDX/TTbm0lMLMEvjDvhc2E9+AXQ==
+X-Google-Smtp-Source: AGHT+IERvL8VWBU0pIT6Hmg6/b0+n3elHgZZdlfzUMyAnnic5sMEMijkPnCj31BtoZQBu1KA6TJrWA==
+X-Received: by 2002:adf:f10e:0:b0:337:9d3b:c180 with SMTP id r14-20020adff10e000000b003379d3bc180mr1855231wro.4.1706280279513;
+        Fri, 26 Jan 2024 06:44:39 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:9c:201:3837:e733:e624:7fe2])
+        by smtp.gmail.com with ESMTPSA id f15-20020a056000036f00b00337d84efaf7sm1415718wrf.74.2024.01.26.06.44.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 06:44:38 -0800 (PST)
+Date: Fri, 26 Jan 2024 15:44:33 +0100
+From: Marco Elver <elver@google.com>
+To: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Alexander Potapenko <glider@google.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Vincenzo Frascino <vincenzo.frascino@arm.com>,
+	linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+	linux-mm@kvack.org
+Subject: Re: [PATCH 2/2] kasan: revert eviction of stack traces in generic
+ mode
+Message-ID: <ZbPFUXNeENyuwync@elver.google.com>
+References: <20240125094815.2041933-1-elver@google.com>
+ <20240125094815.2041933-2-elver@google.com>
+ <CA+fCnZc6L3t3AdQS1rjFCT0s6RpT+q4Z4GmctOveeaDJW0tBow@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240110155948.90964-1-marpagan@redhat.com>
-In-Reply-To: <20240110155948.90964-1-marpagan@redhat.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 26 Jan 2024 15:44:28 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXTA9WK8vJYUYma33KZK7199MX+dghzHXTE4JKygTsbPg@mail.gmail.com>
-Message-ID: <CAMuHMdXTA9WK8vJYUYma33KZK7199MX+dghzHXTE4JKygTsbPg@mail.gmail.com>
-Subject: Re: [PATCH v4] kunit: run test suites only after module
- initialization completes
-To: Marco Pagani <marpagan@redhat.com>
-Cc: Brendan Higgins <brendan.higgins@linux.dev>, David Gow <davidgow@google.com>, 
-	Jinjie Ruan <ruanjinjie@huawei.com>, Rae Moar <rmoar@google.com>, 
-	Shuah Khan <skhan@linuxfoundation.org>, Richard Fitzgerald <rf@opensource.cirrus.com>, 
-	Javier Martinez Canillas <javierm@redhat.com>, linux-kselftest@vger.kernel.org, 
-	kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+fCnZc6L3t3AdQS1rjFCT0s6RpT+q4Z4GmctOveeaDJW0tBow@mail.gmail.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
-Hi Marco,
+On Thu, Jan 25, 2024 at 11:36PM +0100, Andrey Konovalov wrote:
+[...]
+> 
+> Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
+> 
+> But I'm wondering if we should also stop resetting metadata when the
+> object is fully freed (from quarantine or bypassing quarantine).
+> 
+> With stack_depot_put, I had to put the stack handles on free, as
+> otherwise we would leak the stack depot references. And I also chose
+> to memset meta at that point, as its gets invalid anyway. But without
+> stack_depot_put, this is not required.
+> 
+> Before the stack depot-related changes, the code was inconsistent in
+> this regard AFAICS: for quarantine, free meta was marked as invalid
+> via KASAN_SLAB_FREE but alloc meta was kept; for no quarantine, both
+> alloc and free meta were kept.
+> 
+> So perhaps we can just keep both metas on full free. I.e. drop both
+> kasan_release_object_meta calls. This will go back to the old behavior
+> + keeping free meta for the quarantine case (I think there's no harm
+> in that). This will give better reporting for uaf-before-realloc bugs.
+> 
+> WDYT?
 
-On Wed, Jan 10, 2024 at 5:01=E2=80=AFPM Marco Pagani <marpagan@redhat.com> =
-wrote:
-> Commit 2810c1e99867 ("kunit: Fix wild-memory-access bug in
-> kunit_free_suite_set()") fixed a wild-memory-access bug that could have
-> happened during the loading phase of test suites built and executed as
-> loadable modules. However, it also introduced a problematic side effect
-> that causes test suites modules to crash when they attempt to register
-> fake devices.
->
-> When a module is loaded, it traverses the MODULE_STATE_UNFORMED and
-> MODULE_STATE_COMING states before reaching the normal operating state
-> MODULE_STATE_LIVE. Finally, when the module is removed, it moves to
-> MODULE_STATE_GOING before being released. However, if the loading
-> function load_module() fails between complete_formation() and
-> do_init_module(), the module goes directly from MODULE_STATE_COMING to
-> MODULE_STATE_GOING without passing through MODULE_STATE_LIVE.
->
-> This behavior was causing kunit_module_exit() to be called without
-> having first executed kunit_module_init(). Since kunit_module_exit() is
-> responsible for freeing the memory allocated by kunit_module_init()
-> through kunit_filter_suites(), this behavior was resulting in a
-> wild-memory-access bug.
->
-> Commit 2810c1e99867 ("kunit: Fix wild-memory-access bug in
-> kunit_free_suite_set()") fixed this issue by running the tests when the
-> module is still in MODULE_STATE_COMING. However, modules in that state
-> are not fully initialized, lacking sysfs kobjects. Therefore, if a test
-> module attempts to register a fake device, it will inevitably crash.
->
-> This patch proposes a different approach to fix the original
-> wild-memory-access bug while restoring the normal module execution flow
-> by making kunit_module_exit() able to detect if kunit_module_init() has
-> previously initialized the tests suite set. In this way, test modules
-> can once again register fake devices without crashing.
->
-> This behavior is achieved by checking whether mod->kunit_suites is a
-> virtual or direct mapping address. If it is a virtual address, then
-> kunit_module_init() has allocated the suite_set in kunit_filter_suites()
-> using kmalloc_array(). On the contrary, if mod->kunit_suites is still
-> pointing to the original address that was set when looking up the
-> kunit_test_suites section of the module, then the loading phase has
-> failed and there's no memory to be freed.
->
-> v4:
-> - rebased on 6.8
-> - noted that kunit_filter_suites() must return a virtual address
-> v3:
-> - add a comment to clarify why the start address is checked
-> v2:
-> - add include <linux/mm.h>
->
-> Fixes: 2810c1e99867 ("kunit: Fix wild-memory-access bug in kunit_free_sui=
-te_set()")
-> Reviewed-by: David Gow <davidgow@google.com>
-> Tested-by: Rae Moar <rmoar@google.com>
-> Tested-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
-> Signed-off-by: Marco Pagani <marpagan@redhat.com>
+Yes, that makes sense.
 
-Thank you, this fixes the crashes I was seeing when running
-platform_device_test, and which I bisected to the commit in the
-Fixes tag.
+You mean this on top?
 
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+index ad32803e34e9..0577db1d2c62 100644
+--- a/mm/kasan/common.c
++++ b/mm/kasan/common.c
+@@ -264,12 +264,6 @@ bool __kasan_slab_free(struct kmem_cache *cache, void *object,
+ 	if (kasan_quarantine_put(cache, object))
+ 		return true;
+ 
+-	/*
+-	 * If the object is not put into quarantine, it will likely be quickly
+-	 * reallocated. Thus, release its metadata now.
+-	 */
+-	kasan_release_object_meta(cache, object);
+-
+ 	/* Let slab put the object onto the freelist. */
+ 	return false;
+ }
+diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+index 8bfb52b28c22..fc9cf1860efb 100644
+--- a/mm/kasan/generic.c
++++ b/mm/kasan/generic.c
+@@ -510,20 +510,6 @@ static void release_free_meta(const void *object, struct kasan_free_meta *meta)
+ 	*(u8 *)kasan_mem_to_shadow(object) = KASAN_SLAB_FREE;
+ }
+ 
+-void kasan_release_object_meta(struct kmem_cache *cache, const void *object)
+-{
+-	struct kasan_alloc_meta *alloc_meta;
+-	struct kasan_free_meta *free_meta;
+-
+-	alloc_meta = kasan_get_alloc_meta(cache, object);
+-	if (alloc_meta)
+-		release_alloc_meta(alloc_meta);
+-
+-	free_meta = kasan_get_free_meta(cache, object);
+-	if (free_meta)
+-		release_free_meta(object, free_meta);
+-}
+-
+ size_t kasan_metadata_size(struct kmem_cache *cache, bool in_object)
+ {
+ 	struct kasan_cache *info = &cache->kasan_info;
+diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+index 216ae0ef1e4b..fb2b9ac0659a 100644
+--- a/mm/kasan/kasan.h
++++ b/mm/kasan/kasan.h
+@@ -390,10 +390,8 @@ struct kasan_alloc_meta *kasan_get_alloc_meta(struct kmem_cache *cache,
+ struct kasan_free_meta *kasan_get_free_meta(struct kmem_cache *cache,
+ 						const void *object);
+ void kasan_init_object_meta(struct kmem_cache *cache, const void *object);
+-void kasan_release_object_meta(struct kmem_cache *cache, const void *object);
+ #else
+ static inline void kasan_init_object_meta(struct kmem_cache *cache, const void *object) { }
+-static inline void kasan_release_object_meta(struct kmem_cache *cache, const void *object) { }
+ #endif
+ 
+ depot_stack_handle_t kasan_save_stack(gfp_t flags, depot_flags_t depot_flags);
+diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
+index 3ba02efb952a..a758c2e10703 100644
+--- a/mm/kasan/quarantine.c
++++ b/mm/kasan/quarantine.c
+@@ -145,8 +145,6 @@ static void qlink_free(struct qlist_node *qlink, struct kmem_cache *cache)
+ 	void *object = qlink_to_object(qlink, cache);
+ 	struct kasan_free_meta *free_meta = kasan_get_free_meta(cache, object);
+ 
+-	kasan_release_object_meta(cache, object);
+-
+ 	/*
+ 	 * If init_on_free is enabled and KASAN's free metadata is stored in
+ 	 * the object, zero the metadata. Otherwise, the object's memory will
 
