@@ -1,165 +1,177 @@
-Return-Path: <linux-kernel+bounces-39748-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DEF983D5AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:13:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCCBF83D591
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:10:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C62271F2452D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:13:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78978288529
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:10:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B04776A347;
-	Fri, 26 Jan 2024 08:09:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB40D125AB;
+	Fri, 26 Jan 2024 08:06:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="E1Xxd/8d"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Bk+TCGZZ"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2044EBE62;
-	Fri, 26 Jan 2024 08:09:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C759664B0
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:06:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706256583; cv=none; b=EFYdNIPSx13qHMFu9I+rOBBddsk4q6CyIS8kv7871BFO4EyNmA8WIN3cvmdNCD2sQh2XJ77vlUw5J9f9DKzvkSqaNpSz4pGsPKpGpjitV9UNPMQJC0nf9vmp/nHEvUSP7sGGESJM9jcwQq5gtLTqayv+007E/XzgFrP+BAZAwNs=
+	t=1706256410; cv=none; b=FuFi52Z1VMuQk/Z8K2S9GrkXLNxn8T6t+lcRnVcR0uxijMR+GA2KLFwRoJTwsudAJPd5fZZnfzc8K1zoviPG+yCcyyIFTRHJ3e37NmS+0xJkKZ77g1V8fyN69oqUiYTmiV0LLJSkIfrciZCUbItyk04cG7WClUZZ81fGvMwU7PM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706256583; c=relaxed/simple;
-	bh=0szE48INaKewwpjGWxapSAC8Tr8Em99nueDTOh87npY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VmiBNeQlnb+qmNzSWyVDtCw6ycrHwZ7iByZG7dsl+ezjI3EH33HxjuPBsBOw2n4xWhxXIIKvccwvymINmP/+ebFrievVA9Sszd6cfNyuCObxkKfaBLaLd4gUkzqAYd7QFr0xWpmZmtd49+pZfp88YC9jJ+1qhNB5vASny4k/MvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=E1Xxd/8d; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706256581; x=1737792581;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0szE48INaKewwpjGWxapSAC8Tr8Em99nueDTOh87npY=;
-  b=E1Xxd/8dtEcR2mNI9sPst2xe/Ce2fWa9xiHrYb7UcutKAGL8jPtwehZN
-   gaciwQ2JGuuiAFL82MWeZe/ZwezESUsfIwUVT8oFjFgTNZiOFfQVdvelA
-   GBe3T+zPLjhO8Utsih95srwVabOurNtNpI94aVNhFfb1QuPMIBLeMGJmR
-   IWPaDFSaWOLqXv8VJclSJy3kqLBIu1sTeSIg41pHTrdUdGEjGzom/XvoU
-   g9Fb1bhXBNTYrCcQGVuMWAEa3I/Kq/NuZ/XKwU7JDHbhcvHXBOjfu4Seb
-   xemxPCgBuj3Wl7zsprEO8fl/5q07ULiNAJyTK4dIRr76kdFpRvp4kW7LN
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="9095971"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="9095971"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 00:09:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="960143071"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="960143071"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orsmga005.jf.intel.com with ESMTP; 26 Jan 2024 00:09:37 -0800
-Date: Fri, 26 Jan 2024 16:06:17 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, David Matlack <dmatlack@google.com>
-Subject: Re: [PATCH 3/4] KVM: Get reference to VM's address space in the
- async #PF worker
-Message-ID: <ZbNn+Z8TzOcgJZJg@yilunxu-OptiPlex-7050>
-References: <20240110011533.503302-1-seanjc@google.com>
- <20240110011533.503302-4-seanjc@google.com>
- <Zavj4U2LYeOsnXOh@yilunxu-OptiPlex-7050>
- <ZbFcXB5ctGOMEr22@google.com>
+	s=arc-20240116; t=1706256410; c=relaxed/simple;
+	bh=f5YIcX20Bh0LYJB3yql1WUvlZJIPSskbM4xvKEI0BGA=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=pCHr/1wSvR3P6zbLcmwG6qErXyOnU1sZRVBqh48DWhFtBCiSvGfQv9zJzdWK9SKtxu2bxxjOdgB5DmZGn4tp72hkXTPkb9mCQStOUGQ15bnJ4S4MqOQduJWzJJfiGEuDOxOcT5VC9WJiYNkldrQlJLOUOkUsjnxyZRknFSYZb9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Bk+TCGZZ; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-602d22a54caso449407b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 00:06:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706256407; x=1706861207; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Q+MkK7elkwozxtf29PmL54XsONOmn3SLZnF2nfqAuzw=;
+        b=Bk+TCGZZcIKiUI6L21LTRdWZ3Y8J0MSUHlKP0394Z/Zm32xvdKtoeOdALe+NaM8/rw
+         LENwrS8WOq/fkYwbQPODKRcZW+YHrVp5AClattn4Lz6nlc6TJroxDx22TMwu6saTGuE0
+         LE4FQR8vuM/ojC8etjnMxwnk4oYyWyTd6kyg5hAhaXw9Pat2MFFHiidZcYKFe+X0CbOC
+         6sVfryMv9fUhiR6l13fpWGedN6WrEOxG/iV1Mm25LJGXv1Ukv44N0PaSXnD7a84EX5C2
+         4lm4/G6gwoc/GBTabmyd3SEHw9nS5Fumo/2KLLwKOrAcj7bq2Odkr8Y2Qlf5MG2a1YF/
+         SqAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706256407; x=1706861207;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Q+MkK7elkwozxtf29PmL54XsONOmn3SLZnF2nfqAuzw=;
+        b=PoYz7m7sRuu00Qz7conO7YenN+G+naDtpQpROYXK88QAnnL8xgY2s+utbGjXKmdlJC
+         WRfFthN84Dyl955DaRDNFFdgtc9RZKGtZUudYy9vDDJL5I+pKwP0iLXax68XxFYTrzb3
+         14L4M/v2RNOk5m6+JRyO1ckE7lETDRL/HdhuE5IJY0mBH8L+/VVs/D2tP5BunPN7UgzW
+         Ivd9I+Fbs4UVSzoLGA6lfJkqrqGDJUTG4mVfgC/wsKtqn0MK+gmyo4uHSrIwm2NTmONk
+         lqmnFxd9y+BoQtOvMkjZaXZvYshpsgXrLObO9rQ54hubAHH+U1E0LIxWyUoIefq9uOL9
+         31Ww==
+X-Gm-Message-State: AOJu0YzTkh66ODFyQORedsODTDJB86xebgGF6M9pKcl8i1yyV5yy3Nxw
+	paHajU0pjFa1L/zC/5TSgU6fawyFWyb0qNm3dH10ue5F9C+2bYuzeAtB8Owa6phI4HyC8eZugaX
+	CLtRjA6keE6STpwISXQ==
+X-Google-Smtp-Source: AGHT+IGU5QcjnbH97KOXGogNkkBb9OokhEIyAYw9IuZL/21fWEaWMGFuIPPbGaaXup7UnihTrxa26iMXfIYaPd+W
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a81:99cc:0:b0:5e7:12cc:a60f with SMTP
+ id q195-20020a8199cc000000b005e712cca60fmr380957ywg.6.1706256407325; Fri, 26
+ Jan 2024 00:06:47 -0800 (PST)
+Date: Fri, 26 Jan 2024 08:06:43 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbFcXB5ctGOMEr22@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Message-ID: <20240126080644.1714297-1-yosryahmed@google.com>
+Subject: [PATCH 1/2] x86/mm: delete unused cpu argument to leave_mm()
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Ingo Molnar <mingo@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Jan 24, 2024 at 10:52:12AM -0800, Sean Christopherson wrote:
-> On Sat, Jan 20, 2024, Xu Yilun wrote:
-> > On Tue, Jan 09, 2024 at 05:15:32PM -0800, Sean Christopherson wrote:
-> > > Get a reference to the target VM's address space in async_pf_execute()
-> > > instead of gifting a reference from kvm_setup_async_pf().  Keeping the
-> > > address space alive just to service an async #PF is counter-productive,
-> > > i.e. if the process is exiting and all vCPUs are dead, then NOT doing
-> > > get_user_pages_remote() and freeing the address space asap is desirable.
-> > > 
-> > > Handling the mm reference entirely within async_pf_execute() also
-> > > simplifies the async #PF flows as a whole, e.g. it's not immediately
-> > > obvious when the worker task vs. the vCPU task is responsible for putting
-> > > the gifted mm reference.
-> > > 
-> > > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > > ---
-> > >  include/linux/kvm_host.h |  1 -
-> > >  virt/kvm/async_pf.c      | 32 ++++++++++++++++++--------------
-> > >  2 files changed, 18 insertions(+), 15 deletions(-)
-> > > 
-> > > diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> > > index 7e7fd25b09b3..bbfefd7e612f 100644
-> > > --- a/include/linux/kvm_host.h
-> > > +++ b/include/linux/kvm_host.h
-> > > @@ -238,7 +238,6 @@ struct kvm_async_pf {
-> > >  	struct list_head link;
-> > >  	struct list_head queue;
-> > >  	struct kvm_vcpu *vcpu;
-> > > -	struct mm_struct *mm;
-> > >  	gpa_t cr2_or_gpa;
-> > >  	unsigned long addr;
-> > >  	struct kvm_arch_async_pf arch;
-> > > diff --git a/virt/kvm/async_pf.c b/virt/kvm/async_pf.c
-> > > index d5dc50318aa6..c3f4f351a2ae 100644
-> > > --- a/virt/kvm/async_pf.c
-> > > +++ b/virt/kvm/async_pf.c
-> > > @@ -46,8 +46,8 @@ static void async_pf_execute(struct work_struct *work)
-> > >  {
-> > >  	struct kvm_async_pf *apf =
-> > >  		container_of(work, struct kvm_async_pf, work);
-> > > -	struct mm_struct *mm = apf->mm;
-> > >  	struct kvm_vcpu *vcpu = apf->vcpu;
-> > > +	struct mm_struct *mm = vcpu->kvm->mm;
-> > >  	unsigned long addr = apf->addr;
-> > >  	gpa_t cr2_or_gpa = apf->cr2_or_gpa;
-> > >  	int locked = 1;
-> > > @@ -56,16 +56,24 @@ static void async_pf_execute(struct work_struct *work)
-> > >  	might_sleep();
-> > >  
-> > >  	/*
-> > > -	 * This work is run asynchronously to the task which owns
-> > > -	 * mm and might be done in another context, so we must
-> > > -	 * access remotely.
-> > > +	 * Attempt to pin the VM's host address space, and simply skip gup() if
-> > > +	 * acquiring a pin fail, i.e. if the process is exiting.  Note, KVM
-> > > +	 * holds a reference to its associated mm_struct until the very end of
-> > > +	 * kvm_destroy_vm(), i.e. the struct itself won't be freed before this
-> > > +	 * work item is fully processed.
-> > >  	 */
-> > > -	mmap_read_lock(mm);
-> > > -	get_user_pages_remote(mm, addr, 1, FOLL_WRITE, NULL, &locked);
-> > > -	if (locked)
-> > > -		mmap_read_unlock(mm);
-> > > -	mmput(mm);
-> > > +	if (mmget_not_zero(mm)) {
-> > > +		mmap_read_lock(mm);
-> > > +		get_user_pages_remote(mm, addr, 1, FOLL_WRITE, NULL, &locked);
-> > > +		if (locked)
-> > > +			mmap_read_unlock(mm);
-> > > +		mmput(mm);
-> > > +	}
-> > >  
-> > > +	/*
-> > > +	 * Notify and kick the vCPU even if faulting in the page failed, e.g.
-> > 
-> > How about when the process is exiting? Could we just skip the following?
-> 
-> Maybe?  I'm not opposed to trimming this down even more, but I doubt it will make
-> much of a difference.  The vCPU can't be running so async_pf.lock shouldn't be
-> contended, no IPIs will be issued for kicks, etc.  So for this patch at least,
-> I want to take the most conservative approach while still cleaning up the mm_struct
-> usage.
+The argument is unused since commit 3d28ebceaffa ("x86/mm: Rework lazy
+TLB to track the actual loaded mm"), delete it.
 
-It's good to me.
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+---
+ arch/x86/include/asm/mmu.h    | 2 +-
+ arch/x86/kernel/alternative.c | 2 +-
+ arch/x86/mm/tlb.c             | 2 +-
+ arch/x86/xen/mmu_pv.c         | 2 +-
+ drivers/cpuidle/cpuidle.c     | 2 +-
+ include/linux/mmu_context.h   | 2 +-
+ 6 files changed, 6 insertions(+), 6 deletions(-)
 
-Reviewed-by: Xu Yilun <yilun.xu@intel.com>
+diff --git a/arch/x86/include/asm/mmu.h b/arch/x86/include/asm/mmu.h
+index 0da5c227f490c..ce4677b8b7356 100644
+--- a/arch/x86/include/asm/mmu.h
++++ b/arch/x86/include/asm/mmu.h
+@@ -75,7 +75,7 @@ typedef struct {
+ 		.lock = __MUTEX_INITIALIZER(mm.context.lock),		\
+ 	}
+ 
+-void leave_mm(int cpu);
++void leave_mm(void);
+ #define leave_mm leave_mm
+ 
+ #endif /* _ASM_X86_MMU_H */
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index cc130b57542ac..66bd265c7a587 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -1805,7 +1805,7 @@ static inline temp_mm_state_t use_temporary_mm(struct mm_struct *mm)
+ 	 * restoring the previous mm.
+ 	 */
+ 	if (this_cpu_read(cpu_tlbstate_shared.is_lazy))
+-		leave_mm(smp_processor_id());
++		leave_mm();
+ 
+ 	temp_state.mm = this_cpu_read(cpu_tlbstate.loaded_mm);
+ 	switch_mm_irqs_off(NULL, mm, current);
+diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
+index 5768d386efab6..80b0caa82a91b 100644
+--- a/arch/x86/mm/tlb.c
++++ b/arch/x86/mm/tlb.c
+@@ -299,7 +299,7 @@ static void load_new_mm_cr3(pgd_t *pgdir, u16 new_asid, unsigned long lam,
+ 	write_cr3(new_mm_cr3);
+ }
+ 
+-void leave_mm(int cpu)
++void leave_mm(void)
+ {
+ 	struct mm_struct *loaded_mm = this_cpu_read(cpu_tlbstate.loaded_mm);
+ 
+diff --git a/arch/x86/xen/mmu_pv.c b/arch/x86/xen/mmu_pv.c
+index 72af496a160c8..218773cfb009f 100644
+--- a/arch/x86/xen/mmu_pv.c
++++ b/arch/x86/xen/mmu_pv.c
+@@ -913,7 +913,7 @@ static void drop_mm_ref_this_cpu(void *info)
+ 	struct mm_struct *mm = info;
+ 
+ 	if (this_cpu_read(cpu_tlbstate.loaded_mm) == mm)
+-		leave_mm(smp_processor_id());
++		leave_mm();
+ 
+ 	/*
+ 	 * If this cpu still has a stale cr3 reference, then make sure
+diff --git a/drivers/cpuidle/cpuidle.c b/drivers/cpuidle/cpuidle.c
+index 737a026ef58a3..02e40fd7d948c 100644
+--- a/drivers/cpuidle/cpuidle.c
++++ b/drivers/cpuidle/cpuidle.c
+@@ -237,7 +237,7 @@ noinstr int cpuidle_enter_state(struct cpuidle_device *dev,
+ 	}
+ 
+ 	if (target_state->flags & CPUIDLE_FLAG_TLB_FLUSHED)
+-		leave_mm(dev->cpu);
++		leave_mm();
+ 
+ 	/* Take note of the planned idle state. */
+ 	sched_idle_set_state(target_state);
+diff --git a/include/linux/mmu_context.h b/include/linux/mmu_context.h
+index f2b7a3f040999..bbaec80c78c50 100644
+--- a/include/linux/mmu_context.h
++++ b/include/linux/mmu_context.h
+@@ -11,7 +11,7 @@
+ #endif
+ 
+ #ifndef leave_mm
+-static inline void leave_mm(int cpu) { }
++static inline void leave_mm(void) { }
+ #endif
+ 
+ /*
+-- 
+2.43.0.429.g432eaa2c6b-goog
+
 
