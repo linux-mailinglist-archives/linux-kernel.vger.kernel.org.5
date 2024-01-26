@@ -1,232 +1,329 @@
-Return-Path: <linux-kernel+bounces-40014-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40015-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1074183D8CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:00:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 595DE83D8CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:01:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 900391F29C8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:00:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D95A1C28E4F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:01:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B937814265;
-	Fri, 26 Jan 2024 11:00:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7922D17BAF;
+	Fri, 26 Jan 2024 11:01:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UfhbPwDC"
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cduZuv0M"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D046C13AEC
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 11:00:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA87134C4
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 11:01:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706266840; cv=none; b=XZMS/STnbfihDiHZKSSsdIyV+MZlNFLjRjPS9E7h0mbpkmYEvW19Cds8DxxZiOVwe46ytoER5dffk+BSD5GQ3azjrXs0obDEDeXadAqUD2GlpE0oM8bGK+GpwLh/vfCAb93nCqwW08OBmDA+9PxFRLb0d8URsdbop+ss/JASWI4=
+	t=1706266863; cv=none; b=BG/lV+ijdZbb4VFS/RfxnzOA6iu0bDu6yZQ6fQKYpw1OSBSIQeYJ9hehJ4smgxDVjPSCmf93EhoyM1CpJMqodcogJ6cmQg3RhCC9WQZBZLFA2OEO0AaPN12g5hKFtWfouof/s38IH4cZv9u07KgwLyDiYqguGS1TYQQPCslrpcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706266840; c=relaxed/simple;
-	bh=iwaEjyQISX8oRt+7rdSg7FwouBhL5OwhhJgvvuCvF/Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WKy/pihWPYLLrBdXTeqMQwqv1bAEdF0balTrl2RcaQrjQc3j92tJFU3QIaXMI8x4vYlB+DVKOIp6IMVAE7DHhZX5BtpYVdA4ItokTbTmPMGsCl2rtrAFNWhKfhmOBH04x9nZF3VsgDwD2EraUyD+p5TNZwFy+jSt2PdUKDyrXy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UfhbPwDC; arc=none smtp.client-ip=91.218.175.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <8da0a157-6a09-4d82-ad36-7428fdb27f9b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706266822;
+	s=arc-20240116; t=1706266863; c=relaxed/simple;
+	bh=2Kk/JhDn9ums2Gl2pmtY8M5lBtSFaCH5fDViOXSC1mo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QzZCg5CqheeRnlfWmJ4+wmAK5S+TNGr5M0NxdTE5mx4hb+NyUXA9NU7jyMIjvHt4SvcmHvblsyjqcE2IkaVpwlwIhOrHLdrJ9Q3SKf6W56m4EaW8AeZ/gwLOF7MUnM5BL9HC6NXzfOHosYY4F9HYvkIoznwskH3ylnc8TKqPXzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cduZuv0M; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706266859;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ms/Iujyw2CJDI4xIWrn3lHPH9AmsLQ9BJPRb9vIIWTw=;
-	b=UfhbPwDCLTBEi7XVrl2nUrql9KByyo8mpcqL6+h35BLeHk6xdOffcL/IHjyUi4ebkdVfYC
-	4QeS81/itoTEbQ2DgHCElCV3SNOYgn+1p3aF3bzvQGc65ARhLZeL3p5/vEcj807UJ2z2ZZ
-	RwblP3Rn1nAx3Pk0KNjO289hASALJgs=
-Date: Fri, 26 Jan 2024 11:00:16 +0000
+	bh=vz4PWAkydzxt+A7z4COEEylDr902GbpCA3qhDTN+Qeg=;
+	b=cduZuv0M4Psp1UTRkyPuFLufaaHbpUVp6kClk7L0pz/gGYWXDFEvBwYXTMqDgx4XYJrzL6
+	oJtcRsSZrWX4C+U0RoKsUkpEId1sUnt70DbaNSAhLb7LaGKmTTtMVwQLyPnGTd9J4iarfL
+	Y68eDSPDieorlPcNYSQjsIpOXZVERto=
+Received: from mail-vs1-f69.google.com (mail-vs1-f69.google.com
+ [209.85.217.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-155-lPGN--FXP4mdgBFNffp5Pw-1; Fri, 26 Jan 2024 06:00:57 -0500
+X-MC-Unique: lPGN--FXP4mdgBFNffp5Pw-1
+Received: by mail-vs1-f69.google.com with SMTP id ada2fe7eead31-466ec6d33bcso50135137.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 03:00:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706266857; x=1706871657;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vz4PWAkydzxt+A7z4COEEylDr902GbpCA3qhDTN+Qeg=;
+        b=tGIDSR37UdQ2ZOfy4q/doopnRhA5eNQgPY06N+pPpVhod4Fx+OMyN/mQCIsO6T7rs+
+         CWX6km8lhiwzdBcYss3SBCjmjofCy0Z78fQFPTMIocXO40IE2p/sd8l9oAfTco/xVTYO
+         toteFFXYlHcKWqTSmJKD+5GYVTbd0DQ5+r+3NRLpEZslu8rfoQbfU5Vwk8KAQm1muyLf
+         LTMZ6i8AMMUXbfAYwoUYu/U6v3XIEJ3YH10KB8kmU/bUlOvVgKq9p5WjSCJkLip4OMye
+         x0kWQJhGZwDV1h80ii3pvg9RQgsmTW7RweeKAVKTmR8AbGTLI4AUZr+GFrj1p2C4db9t
+         4KQw==
+X-Gm-Message-State: AOJu0Yxvi6cjmavlJ5vlGOWjAV+uXzAAKvfcp9Jb8LkcKn6DIWMyL+oy
+	RnomiC45PIpl/VYdBvbCz8a0FFC7MibqtBlcHHKmUUdY78H+cPy7a7Z6C2ktToznb6tsSWBqSXc
+	1OVFYFGPx+umVRzytDFaSm3yEbc8D3V3+0v2a0Rtys/yl48L2OUz8nkXano24z4wm7U5eKoYEuo
+	RfdtKKvIuVzZDG0L/fF8R+8VJNrxDiJY9rWY8W
+X-Received: by 2002:a67:f7d3:0:b0:46b:2177:3dd5 with SMTP id a19-20020a67f7d3000000b0046b21773dd5mr813800vsp.59.1706266857208;
+        Fri, 26 Jan 2024 03:00:57 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGpXTYAbdzLiIsrnQlBUga5yJGtTPifrKZ94nSeg3N8tWU7X+J3z3U88iJcUhzqazoErnhnGdfkCOzGN9AK1kM=
+X-Received: by 2002:a67:f7d3:0:b0:46b:2177:3dd5 with SMTP id
+ a19-20020a67f7d3000000b0046b21773dd5mr813761vsp.59.1706266856821; Fri, 26 Jan
+ 2024 03:00:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next] net: micrel: Fix set/get PHC time for lan8814
-Content-Language: en-US
-To: Horatiu Vultur <horatiu.vultur@microchip.com>, andrew@lunn.ch,
- hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- richardcochran@gmail.com
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- UNGLinuxDriver@microchip.com,
- Maxime Chevallier <maxime.chevallier@bootlin.com>,
- Divya Koppera <divya.koppera@microchip.com>
-References: <20240126073042.1845153-1-horatiu.vultur@microchip.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <20240126073042.1845153-1-horatiu.vultur@microchip.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240126041126.1927228-1-michael.roth@amd.com> <20240126041126.1927228-22-michael.roth@amd.com>
+In-Reply-To: <20240126041126.1927228-22-michael.roth@amd.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Fri, 26 Jan 2024 12:00:43 +0100
+Message-ID: <CABgObfaqjBBt74ZX6LtP=sQgYsu4FRTuKsDZ1ZaFkA5vK1ddCQ@mail.gmail.com>
+Subject: Re: [PATCH v2 21/25] KVM: SEV: Make AVIC backing, VMSA and VMCB
+ memory allocation SNP safe
+To: Michael Roth <michael.roth@amd.com>
+Cc: x86@kernel.org, kvm@vger.kernel.org, linux-coco@lists.linux.dev, 
+	linux-mm@kvack.org, linux-crypto@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, 
+	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, 
+	seanjc@google.com, vkuznets@redhat.com, jmattson@google.com, luto@kernel.org, 
+	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com, 
+	peterz@infradead.org, srinivas.pandruvada@linux.intel.com, 
+	rientjes@google.com, tobin@ibm.com, bp@alien8.de, vbabka@suse.cz, 
+	kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com, 
+	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com, 
+	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
+	pankaj.gupta@amd.com, liam.merwick@oracle.com, 
+	Brijesh Singh <brijesh.singh@amd.com>, Marc Orr <marcorr@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 26/01/2024 07:30, Horatiu Vultur wrote:
-> When setting or getting PHC time, the higher bits of the second time (>32
-> bits) they were ignored. Meaning that setting some time in the future like
-> year 2150, it was failing to set this.
-> 
-> The issue can be reproduced like this:
-> 
->   # phc_ctl /dev/ptp1 set 10000000000
->   phc_ctl[12.290]: set clock time to 10000000000.000000000 or Sat Nov 20 17:46:40 2286
-> 
->   # phc_ctl /dev/ptp1 get
->   phc_ctl[15.309]: clock time is 1410065411.018055420 or Sun Sep  7 04:50:11 2014
-> 
-> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> Reviewed-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
-> Reviewed-by: Divya Koppera <divya.koppera@microchip.com>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> 
+On Fri, Jan 26, 2024 at 5:45=E2=80=AFAM Michael Roth <michael.roth@amd.com>=
+ wrote:
+>
+> From: Brijesh Singh <brijesh.singh@amd.com>
+>
+> Implement a workaround for an SNP erratum where the CPU will incorrectly
+> signal an RMP violation #PF if a hugepage (2MB or 1GB) collides with the
+> RMP entry of a VMCB, VMSA or AVIC backing page.
+>
+> When SEV-SNP is globally enabled, the CPU marks the VMCB, VMSA, and AVIC
+> backing pages as "in-use" via a reserved bit in the corresponding RMP
+> entry after a successful VMRUN. This is done for _all_ VMs, not just
+> SNP-Active VMs.
+>
+> If the hypervisor accesses an in-use page through a writable
+> translation, the CPU will throw an RMP violation #PF. On early SNP
+> hardware, if an in-use page is 2MB-aligned and software accesses any
+> part of the associated 2MB region with a hugepage, the CPU will
+> incorrectly treat the entire 2MB region as in-use and signal a an RMP
+> violation #PF.
+>
+> To avoid this, the recommendation is to not use a 2MB-aligned page for
+> the VMCB, VMSA or AVIC pages. Add a generic allocator that will ensure
+> that the page returned is not 2MB-aligned and is safe to be used when
+> SEV-SNP is enabled. Also implement similar handling for the VMCB/VMSA
+> pages of nested guests.
+>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> Co-developed-by: Marc Orr <marcorr@google.com>
+> Signed-off-by: Marc Orr <marcorr@google.com>
+> Reported-by: Alper Gun <alpergun@google.com> # for nested VMSA case
+> Co-developed-by: Ashish Kalra <ashish.kalra@amd.com>
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> [mdr: squash in nested guest handling from Ashish, commit msg fixups]
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
+
+Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+
+
 > ---
-> Based on discussion here [1], this patch from the series was changed
-> to target net-next instead of net.
-> 
-> [1] https://lore.kernel.org/netdev/20240119082103.edy647tbf2akokjy@DEN-DL-M31836.microchip.com/T/#m88b55103ee8c05599f2fa02c1588e195d95d6a49
-> ---
->   drivers/net/phy/micrel.c | 61 +++++++++++++++++++---------------------
->   1 file changed, 29 insertions(+), 32 deletions(-)
-> 
-> diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-> index dad720138baaf..40bea9293ddd7 100644
-> --- a/drivers/net/phy/micrel.c
-> +++ b/drivers/net/phy/micrel.c
-> @@ -154,11 +154,13 @@
->   #define PTP_CMD_CTL_PTP_LTC_STEP_SEC_		BIT(5)
->   #define PTP_CMD_CTL_PTP_LTC_STEP_NSEC_		BIT(6)
->   
-> +#define PTP_CLOCK_SET_SEC_HI			0x0205
->   #define PTP_CLOCK_SET_SEC_MID			0x0206
->   #define PTP_CLOCK_SET_SEC_LO			0x0207
->   #define PTP_CLOCK_SET_NS_HI			0x0208
->   #define PTP_CLOCK_SET_NS_LO			0x0209
->   
-> +#define PTP_CLOCK_READ_SEC_HI			0x0229
->   #define PTP_CLOCK_READ_SEC_MID			0x022A
->   #define PTP_CLOCK_READ_SEC_LO			0x022B
->   #define PTP_CLOCK_READ_NS_HI			0x022C
-> @@ -2592,35 +2594,31 @@ static bool lan8814_rxtstamp(struct mii_timestamper *mii_ts, struct sk_buff *skb
->   }
->   
->   static void lan8814_ptp_clock_set(struct phy_device *phydev,
-> -				  u32 seconds, u32 nano_seconds)
-> +				  time64_t sec, u32 nsec)
->   {
-> -	u32 sec_low, sec_high, nsec_low, nsec_high;
-> -
-> -	sec_low = seconds & 0xffff;
-> -	sec_high = (seconds >> 16) & 0xffff;
-> -	nsec_low = nano_seconds & 0xffff;
-> -	nsec_high = (nano_seconds >> 16) & 0x3fff;
-> -
-> -	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_LO, sec_low);
-> -	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_MID, sec_high);
-> -	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_NS_LO, nsec_low);
-> -	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_NS_HI, nsec_high);
-> +	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_LO, lower_16_bits(sec));
-> +	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_MID, upper_16_bits(sec));
-> +	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_HI, upper_32_bits(sec));
-> +	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_NS_LO, lower_16_bits(nsec));
-> +	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_NS_HI, upper_16_bits(nsec));
->   
->   	lanphy_write_page_reg(phydev, 4, PTP_CMD_CTL, PTP_CMD_CTL_PTP_CLOCK_LOAD_);
->   }
->   
->   static void lan8814_ptp_clock_get(struct phy_device *phydev,
-> -				  u32 *seconds, u32 *nano_seconds)
-> +				  time64_t *sec, u32 *nsec)
->   {
->   	lanphy_write_page_reg(phydev, 4, PTP_CMD_CTL, PTP_CMD_CTL_PTP_CLOCK_READ_);
->   
-> -	*seconds = lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_MID);
-> -	*seconds = (*seconds << 16) |
-> -		   lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_LO);
-> +	*sec = lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_HI);
-> +	*sec <<= 16;
-> +	*sec |= lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_MID);
-
-lanphy_read_page_reg returns int, but only 16 bits have meanings here.
-Is it safe to assume that other 16 bits will be zeros always?
-There are some more spots of this template in the function.
-
-> +	*sec <<= 16;
-> +	*sec |= lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_LO);
->   
-
-
-> -	*nano_seconds = lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_NS_HI);
-> -	*nano_seconds = ((*nano_seconds & 0x3fff) << 16) |
-> -			lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_NS_LO);
-> +	*nsec = lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_NS_HI);
-> +	*nsec <<= 16;
-> +	*nsec |= lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_NS_LO);
->   }
->   
->   static int lan8814_ptpci_gettime64(struct ptp_clock_info *ptpci,
-> @@ -2630,7 +2628,7 @@ static int lan8814_ptpci_gettime64(struct ptp_clock_info *ptpci,
->   							  ptp_clock_info);
->   	struct phy_device *phydev = shared->phydev;
->   	u32 nano_seconds;
-> -	u32 seconds;
-> +	time64_t seconds;
->   
->   	mutex_lock(&shared->shared_lock);
->   	lan8814_ptp_clock_get(phydev, &seconds, &nano_seconds);
-> @@ -2660,38 +2658,37 @@ static void lan8814_ptp_clock_step(struct phy_device *phydev,
->   {
->   	u32 nano_seconds_step;
->   	u64 abs_time_step_ns;
-> -	u32 unsigned_seconds;
-> +	time64_t set_seconds;
->   	u32 nano_seconds;
->   	u32 remainder;
->   	s32 seconds;
->   
->   	if (time_step_ns >  15000000000LL) {
->   		/* convert to clock set */
-> -		lan8814_ptp_clock_get(phydev, &unsigned_seconds, &nano_seconds);
-> -		unsigned_seconds += div_u64_rem(time_step_ns, 1000000000LL,
-> -						&remainder);
-> +		lan8814_ptp_clock_get(phydev, &set_seconds, &nano_seconds);
-> +		set_seconds += div_u64_rem(time_step_ns, 1000000000LL,
-> +					   &remainder);
->   		nano_seconds += remainder;
->   		if (nano_seconds >= 1000000000) {
-> -			unsigned_seconds++;
-> +			set_seconds++;
->   			nano_seconds -= 1000000000;
->   		}
-> -		lan8814_ptp_clock_set(phydev, unsigned_seconds, nano_seconds);
-> +		lan8814_ptp_clock_set(phydev, set_seconds, nano_seconds);
->   		return;
->   	} else if (time_step_ns < -15000000000LL) {
->   		/* convert to clock set */
->   		time_step_ns = -time_step_ns;
->   
-> -		lan8814_ptp_clock_get(phydev, &unsigned_seconds, &nano_seconds);
-> -		unsigned_seconds -= div_u64_rem(time_step_ns, 1000000000LL,
-> -						&remainder);
-> +		lan8814_ptp_clock_get(phydev, &set_seconds, &nano_seconds);
-> +		set_seconds -= div_u64_rem(time_step_ns, 1000000000LL,
-> +					   &remainder);
->   		nano_seconds_step = remainder;
->   		if (nano_seconds < nano_seconds_step) {
-> -			unsigned_seconds--;
-> +			set_seconds--;
->   			nano_seconds += 1000000000;
->   		}
->   		nano_seconds -= nano_seconds_step;
-> -		lan8814_ptp_clock_set(phydev, unsigned_seconds,
-> -				      nano_seconds);
-> +		lan8814_ptp_clock_set(phydev, set_seconds, nano_seconds);
->   		return;
->   	}
->   
+>  arch/x86/include/asm/kvm-x86-ops.h |  1 +
+>  arch/x86/include/asm/kvm_host.h    |  1 +
+>  arch/x86/kvm/lapic.c               |  5 ++++-
+>  arch/x86/kvm/svm/nested.c          |  2 +-
+>  arch/x86/kvm/svm/sev.c             | 32 ++++++++++++++++++++++++++++++
+>  arch/x86/kvm/svm/svm.c             | 17 +++++++++++++---
+>  arch/x86/kvm/svm/svm.h             |  1 +
+>  7 files changed, 54 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kv=
+m-x86-ops.h
+> index 378ed944b849..ab24ce207988 100644
+> --- a/arch/x86/include/asm/kvm-x86-ops.h
+> +++ b/arch/x86/include/asm/kvm-x86-ops.h
+> @@ -138,6 +138,7 @@ KVM_X86_OP(complete_emulated_msr)
+>  KVM_X86_OP(vcpu_deliver_sipi_vector)
+>  KVM_X86_OP_OPTIONAL_RET0(vcpu_get_apicv_inhibit_reasons);
+>  KVM_X86_OP_OPTIONAL(get_untagged_addr)
+> +KVM_X86_OP_OPTIONAL(alloc_apic_backing_page)
+>
+>  #undef KVM_X86_OP
+>  #undef KVM_X86_OP_OPTIONAL
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_h=
+ost.h
+> index b5b2d0fde579..5c12af29fd9b 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1794,6 +1794,7 @@ struct kvm_x86_ops {
+>         unsigned long (*vcpu_get_apicv_inhibit_reasons)(struct kvm_vcpu *=
+vcpu);
+>
+>         gva_t (*get_untagged_addr)(struct kvm_vcpu *vcpu, gva_t gva, unsi=
+gned int flags);
+> +       void *(*alloc_apic_backing_page)(struct kvm_vcpu *vcpu);
+>  };
+>
+>  struct kvm_x86_nested_ops {
+> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+> index 3242f3da2457..1edf93ee3395 100644
+> --- a/arch/x86/kvm/lapic.c
+> +++ b/arch/x86/kvm/lapic.c
+> @@ -2815,7 +2815,10 @@ int kvm_create_lapic(struct kvm_vcpu *vcpu, int ti=
+mer_advance_ns)
+>
+>         vcpu->arch.apic =3D apic;
+>
+> -       apic->regs =3D (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
+> +       if (kvm_x86_ops.alloc_apic_backing_page)
+> +               apic->regs =3D static_call(kvm_x86_alloc_apic_backing_pag=
+e)(vcpu);
+> +       else
+> +               apic->regs =3D (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT=
+);
+>         if (!apic->regs) {
+>                 printk(KERN_ERR "malloc apic regs error for vcpu %x\n",
+>                        vcpu->vcpu_id);
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index dee62362a360..55b9a6d96bcf 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -1181,7 +1181,7 @@ int svm_allocate_nested(struct vcpu_svm *svm)
+>         if (svm->nested.initialized)
+>                 return 0;
+>
+> -       vmcb02_page =3D alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
+> +       vmcb02_page =3D snp_safe_alloc_page(&svm->vcpu);
+>         if (!vmcb02_page)
+>                 return -ENOMEM;
+>         svm->nested.vmcb02.ptr =3D page_address(vmcb02_page);
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 564091f386f7..f99435b6648f 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -3163,3 +3163,35 @@ void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu =
+*vcpu, u8 vector)
+>
+>         ghcb_set_sw_exit_info_2(svm->sev_es.ghcb, 1);
+>  }
+> +
+> +struct page *snp_safe_alloc_page(struct kvm_vcpu *vcpu)
+> +{
+> +       unsigned long pfn;
+> +       struct page *p;
+> +
+> +       if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+> +               return alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
+> +
+> +       /*
+> +        * Allocate an SNP-safe page to workaround the SNP erratum where
+> +        * the CPU will incorrectly signal an RMP violation #PF if a
+> +        * hugepage (2MB or 1GB) collides with the RMP entry of a
+> +        * 2MB-aligned VMCB, VMSA, or AVIC backing page.
+> +        *
+> +        * Allocate one extra page, choose a page which is not
+> +        * 2MB-aligned, and free the other.
+> +        */
+> +       p =3D alloc_pages(GFP_KERNEL_ACCOUNT | __GFP_ZERO, 1);
+> +       if (!p)
+> +               return NULL;
+> +
+> +       split_page(p, 1);
+> +
+> +       pfn =3D page_to_pfn(p);
+> +       if (IS_ALIGNED(pfn, PTRS_PER_PMD))
+> +               __free_page(p++);
+> +       else
+> +               __free_page(p + 1);
+> +
+> +       return p;
+> +}
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 61f2bdc9f4f8..272d5ed37ce7 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -703,7 +703,7 @@ static int svm_cpu_init(int cpu)
+>         int ret =3D -ENOMEM;
+>
+>         memset(sd, 0, sizeof(struct svm_cpu_data));
+> -       sd->save_area =3D alloc_page(GFP_KERNEL | __GFP_ZERO);
+> +       sd->save_area =3D snp_safe_alloc_page(NULL);
+>         if (!sd->save_area)
+>                 return ret;
+>
+> @@ -1421,7 +1421,7 @@ static int svm_vcpu_create(struct kvm_vcpu *vcpu)
+>         svm =3D to_svm(vcpu);
+>
+>         err =3D -ENOMEM;
+> -       vmcb01_page =3D alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
+> +       vmcb01_page =3D snp_safe_alloc_page(vcpu);
+>         if (!vmcb01_page)
+>                 goto out;
+>
+> @@ -1430,7 +1430,7 @@ static int svm_vcpu_create(struct kvm_vcpu *vcpu)
+>                  * SEV-ES guests require a separate VMSA page used to con=
+tain
+>                  * the encrypted register state of the guest.
+>                  */
+> -               vmsa_page =3D alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO)=
+;
+> +               vmsa_page =3D snp_safe_alloc_page(vcpu);
+>                 if (!vmsa_page)
+>                         goto error_free_vmcb_page;
+>
+> @@ -4900,6 +4900,16 @@ static int svm_vm_init(struct kvm *kvm)
+>         return 0;
+>  }
+>
+> +static void *svm_alloc_apic_backing_page(struct kvm_vcpu *vcpu)
+> +{
+> +       struct page *page =3D snp_safe_alloc_page(vcpu);
+> +
+> +       if (!page)
+> +               return NULL;
+> +
+> +       return page_address(page);
+> +}
+> +
+>  static struct kvm_x86_ops svm_x86_ops __initdata =3D {
+>         .name =3D KBUILD_MODNAME,
+>
+> @@ -5031,6 +5041,7 @@ static struct kvm_x86_ops svm_x86_ops __initdata =
+=3D {
+>
+>         .vcpu_deliver_sipi_vector =3D svm_vcpu_deliver_sipi_vector,
+>         .vcpu_get_apicv_inhibit_reasons =3D avic_vcpu_get_apicv_inhibit_r=
+easons,
+> +       .alloc_apic_backing_page =3D svm_alloc_apic_backing_page,
+>  };
+>
+>  /*
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index 8ef95139cd24..7f1fbd874c45 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -694,6 +694,7 @@ void sev_es_vcpu_reset(struct vcpu_svm *svm);
+>  void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector);
+>  void sev_es_prepare_switch_to_guest(struct sev_es_save_area *hostsa);
+>  void sev_es_unmap_ghcb(struct vcpu_svm *svm);
+> +struct page *snp_safe_alloc_page(struct kvm_vcpu *vcpu);
+>
+>  /* vmenter.S */
+>
+> --
+> 2.25.1
+>
 
 
