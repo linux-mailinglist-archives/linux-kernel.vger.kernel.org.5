@@ -1,107 +1,219 @@
-Return-Path: <linux-kernel+bounces-40185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60DD983DBEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:33:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CE7D83DBEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:33:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 940B91C21200
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:33:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32B7B1C21B5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:33:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67A7B1BF53;
-	Fri, 26 Jan 2024 14:32:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA8791B81B;
+	Fri, 26 Jan 2024 14:33:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Qn/RCAV5"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YhFaRahL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D52D125D8
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:32:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 159511CA8D;
+	Fri, 26 Jan 2024 14:33:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706279574; cv=none; b=AsUw4hG5PLDJB1dJVg/uHotpUajbtFkVde+ozd6/LHD96XnyhyeIfjT4UYO4YKfGEoP7VNEvGZGo4z9w9VbEzm0tn5+h+M67wljE8HwHKoe+wumTtJCsfQ/pSCGZJRwhQXuSl4SIHMrf9+vAiETxMyRPJN8it37S0Cz4BtF6Vbo=
+	t=1706279603; cv=none; b=gvYZLITpUfGo6EAt3UzyMZLmZoAMnWmnSnCKj+lEesVzqVzjZ7VklEG0kSDPrG9j6tpn9BkBTFNyY7VOBDglLBV6av3pzO5ZaFoGQ/lVlvfG9IqL3RE3Fbc6R/UI93wpV9m7Jd3+XlI3GmJYt2fAFg7lsAzq06tFHfHl50/8Cyg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706279574; c=relaxed/simple;
-	bh=g8+ANYE463SBRgI+9zMHW+pfoPGPasNupDSu1330TsU=;
-	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=GFzxjbdUmcE303vZpfSQkrmPSO/1zpEslCuEz0fJzMl7Jp9PBm7kp5K2Q72i7P8c0VLHBaq9e4bO1WWOy/M4mxz5Oojyp7gVErdYxEPVGuekDRIhO8kyasJPONBmwOHZqdfCJDvmKcJU7CkupCMw6PD1QIMVeErUgnIqsjiAFgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Qn/RCAV5; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a34c5ca2537so42104866b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 06:32:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706279571; x=1706884371; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dqfQfh+cyfy3Q2jy9tkqaZW8vxRTyiGCDQ1xVIZ6Y9U=;
-        b=Qn/RCAV59QWXXw9KI+pGJF1miQ7YAZr12Sr7QCt8lPubMcw3y93IcsGhgjceOiEMGS
-         CO9O7aROJY62r1YhnOT3BgE6MHNtYPZ1OBN/IK7xmV+MBInFpKACfvouQ6D2dtpqaGRg
-         pYljUrJ9a9yVKHrq5WU6xfZxh7KZM9hLjwc7W3+S8R3H1GFT3v0aX/flPP4b52ivKuRw
-         NwNRom2oC4JrqdKQHuNkLWeZCMc9RYOPbroI1tfgrxOJvImF/SgA0n/FqGxQz3+fv0ZX
-         LSKkOG3JHw3Ysu9l22YYSXrTHfDae5/rf3Cj6RXOgqrh5fowrVRDG4X5/+9dV2fd11bI
-         jYww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706279571; x=1706884371;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dqfQfh+cyfy3Q2jy9tkqaZW8vxRTyiGCDQ1xVIZ6Y9U=;
-        b=Y5F1UN/PJqmvwOg91Srqd0Q9hAtC16tZQ7nb0acyMTll7Kl7y3kap9h53rJCF/jo1b
-         Rgbrw1/5FehIiX9K12YRKoyi75MPR8fwDZaMNtTFROEkWTPkWpKxXwPve52N7maZ3cGL
-         jMPEnsf3TMqpR4+VgTT6HQfwk3d62gnTEto9wujOZ2JGZeY1zu0CgaqPAPijIHZ5VBUw
-         VV0It0BVFQBPZEM2ILmxRkje4p87xSq1AlINHA2y63/+AJAlpdct6aAhN7yMjqORWx74
-         lGLHHK7vE/DmY4lGHEi/a/jQNj24c/p52ntOCp3ZlB7qp6ZDP+1TNX8YlG7gr3Nc2d+S
-         S9gg==
-X-Gm-Message-State: AOJu0YzDZE2K3d941uL9uzXCBhf+kUI99x7S37JJvJJUA/6RQ2CsJc4/
-	D9Saq4uE7g82eldf6rDUlrwvLugtgxNOmtLuqE4ti4cUY7bQOCqeo5xyoa++J3SdFKekEELF+pz
-	G
-X-Google-Smtp-Source: AGHT+IHYRZBkoyHgAvvQGObPJv+Ad8wVNl6ZG2gsZwVIlNBH4eKZ7OTytr7Eu29tfbHF7pWqqJee4g==
-X-Received: by 2002:a17:906:3454:b0:a31:408:8552 with SMTP id d20-20020a170906345400b00a3104088552mr864404ejb.27.1706279571273;
-        Fri, 26 Jan 2024 06:32:51 -0800 (PST)
-Received: from [127.0.1.1] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id s12-20020a17090699cc00b00a2cd74b743csm695318ejn.3.2024.01.26.06.32.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 06:32:50 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Patrice Chotard <patrice.chotard@foss.st.com>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, linux-arm-kernel@lists.infradead.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20231127093438.20512-1-krzysztof.kozlowski@linaro.org>
-References: <20231127093438.20512-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v2] ARM: dts: sti: minor whitespace cleanup around '='
-Message-Id: <170627956918.89562.256744792890892390.b4-ty@linaro.org>
-Date: Fri, 26 Jan 2024 15:32:49 +0100
+	s=arc-20240116; t=1706279603; c=relaxed/simple;
+	bh=toHPWrukG5ZJdg4r3h3ugd+zNwZSP1onspiF6e+jS4Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Il8cvhOkfHF2CNbVSzurF/vzdZj9ECRUJOlOVSLh2nk/Q9kLv0kkt59EtmzIU7B9HEjN8Yt0tMtRTGoWBQfAHOxEzdNF0v6raZ7Y+agQ77NZxIZVGMug3l9Vxf9EWJaH2uL7I9ZNB2RnaNoJt5Q4QWhuZEDMdKILFvpEe7j18/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YhFaRahL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 194BBC433F1;
+	Fri, 26 Jan 2024 14:33:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706279602;
+	bh=toHPWrukG5ZJdg4r3h3ugd+zNwZSP1onspiF6e+jS4Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YhFaRahL9Dr/6ZCzpQy0FfOc9+vbwzEbVoH9SDzoA+gHW8uI0BQ0bYXQuDH6G+0N1
+	 fPc+9HJv+rXimvjgGTzaIZsW91g3xYA9pHihjIi6FcKQZ0iMDxxDgvzxZLLosriFE4
+	 S6KCaEhR5Pje3ZlyEBsA/xoboa2KYY19h7bIztvSnux+0E+aM9vJ1oxE5GoBbWt8ch
+	 hq+056fZsfZKzBzm2X8vhf/1HdYacxIwBivjPKB5FaM5ApOO5GmBEXRPtkdE/3gfBi
+	 H80FH4MxmUF9sdDcRJztINay9si+hPerUcnWdb5PEl7q0QXi4WJIH4pckVc0WVubJt
+	 zxy7ZkODckUAw==
+Date: Fri, 26 Jan 2024 14:33:14 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Shenghao Ding <shenghao-ding@ti.com>
+Cc: conor+dt@kernel.org, krzysztof.kozlowski@linaro.org, robh+dt@kernel.org,
+	andriy.shevchenko@linux.intel.com, kevin-lu@ti.com,
+	baojun.xu@ti.com, devicetree@vger.kernel.org, v-po@ti.com,
+	lgirdwood@gmail.com, perex@perex.cz,
+	pierre-louis.bossart@linux.intel.com, 13916275206@139.com,
+	mohit.chawla@ti.com, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
+	soyer@irl.hu, jkhuang3@ti.com, tiwai@suse.de, pdjuandi@ti.com,
+	j-mcpherson@ti.com, navada@ti.com
+Subject: Re: [PATCH v2 1/4] ASoc: PCM6240: Create PCM6240 Family driver code
+Message-ID: <6c1d04be-c558-4aa4-96a3-ac21ae36bfae@sirena.org.uk>
+References: <20240126035855.1785-1-shenghao-ding@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.4
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="zICUD1iSPynTqKb5"
+Content-Disposition: inline
+In-Reply-To: <20240126035855.1785-1-shenghao-ding@ti.com>
+X-Cookie: Excellent day to have a rotten day.
 
 
-On Mon, 27 Nov 2023 10:34:38 +0100, Krzysztof Kozlowski wrote:
-> The DTS code coding style expects exactly one space before and after '='
-> sign.
-> 
-> 
+--zICUD1iSPynTqKb5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Applied, thanks!
+On Fri, Jan 26, 2024 at 11:58:51AM +0800, Shenghao Ding wrote:
 
-[1/1] ARM: dts: sti: minor whitespace cleanup around '='
-      https://git.kernel.org/krzk/linux-dt/c/8c82b4eef2972200f6171aaa260d7bba2ad29889
+This looks mostly good - I've got a few comments that are mainly
+stylistic or otherwise very minor, there's one issue with validation of
+profile IDs that does look like it's important to fix though.
 
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> +static int pcmdev_dev_read(struct pcmdevice_priv *pcm_dev,
+> +	unsigned int dev_no, unsigned int reg, unsigned int *val)
+> +{
+> +	int ret = -EINVAL;
+> +
+> +	if (dev_no < pcm_dev->ndev) {
 
+You could write all these functions a bit more simply if you rewrote
+these error checks to return immediately on error, that way there's less
+indentation and fewer paths later on.
+
+	if (dev_no >= pcm_dev->ndev)
+		return -EINVAL;
+
+and so on.  For the ones dealing with locking it can help to have a
+single exit path but functions like this don't deal directly with the
+locks.
+
+> +
+> +		ret = regmap_read(map, reg, val);
+> +		if (ret < 0)
+> +			dev_err(pcm_dev->dev, "%s, E=%d\n", __func__, ret);
+> +	} else
+> +		dev_err(pcm_dev->dev, "%s, no such channel(%d)\n", __func__,
+> +			dev_no);
+> +
+
+The kernel coding style is that if one side of an if/else has { } both
+should.
+
+> +static int pcmdevice_set_profile_id(
+> +	struct snd_kcontrol *kcontrol,
+> +	struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_component *codec
+> +		= snd_soc_kcontrol_component(kcontrol);
+> +	struct pcmdevice_priv *pcm_dev =
+> +		snd_soc_component_get_drvdata(codec);
+> +	int ret = 0;
+> +
+> +	if (pcm_dev->cur_conf != ucontrol->value.integer.value[0]) {
+> +		pcm_dev->cur_conf = ucontrol->value.integer.value[0];
+> +		ret = 1;
+> +	}
+> +
+> +	return ret;
+> +}
+
+This will accept any configuration number, shouldn't there be some
+validation here?  The put functions doing regmap_update_bits() have
+some limiting of values in the regmap_update_bits() but this just stores
+the value directly.
+
+> +static int pcmdevice_get_volsw(struct snd_kcontrol *kcontrol,
+> +	struct snd_ctl_elem_value *ucontrol)
+> +{
+
+> +	mutex_lock(&pcm_dev->codec_lock);
+> +	rc = pcmdev_dev_read(pcm_dev, dev_no, reg, &val);
+> +	if (rc) {
+> +		dev_err(pcm_dev->dev, "%s:read, ERROR, E=%d\n",
+> +			__func__, rc);
+> +		goto out;
+> +	}
+
+It would be kind of nice if the device switching could be hidden inside
+a custom regmap and we didn't have all this code duplication but I'm not
+thinking of a way of doing that which doesn't just create complications
+so probably this is fine.
+
+> +	val = (val >> shift) & mask;
+> +	val = (val > max) ? max : val;
+> +	val = mc->invert ? max - val : val;
+> +	ucontrol->value.integer.value[0] = val;
+
+There's the FIELD_GET() macro (and FIELD_SET() for writing values) - the
+core predates them and hence doesn't use them, we might want to update
+some time.
+
+> +static int pcmdevice_codec_probe(struct snd_soc_component *codec)
+> +{
+
+> +	ret = request_firmware_nowait(THIS_MODULE, FW_ACTION_UEVENT,
+> +		pcm_dev->regbin_name, pcm_dev->dev, GFP_KERNEL, pcm_dev,
+> +		pcmdev_regbin_ready);
+> +	if (ret) {
+> +		dev_err(pcm_dev->dev, "load %s error = %d\n",
+> +			pcm_dev->regbin_name, ret);
+> +		goto out;
+> +	}
+
+It might be better to request the firmware in the I2C probe rather than
+in the ASoC level probe, that way there's more time for the firmware to
+be loaded before we actually need it.  That does mean you can't register
+the controls immediately though so it may be more trouble than it's
+worth.
+
+Similarly for the reset, if we reset as early as possible that seems
+better.
+
+> +static int pcmdevice_startup(struct snd_pcm_substream *substream,
+> +	struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_component *codec = dai->component;
+> +	struct pcmdevice_priv *pcm_priv = snd_soc_component_get_drvdata(codec);
+> +	int ret = 0;
+> +
+> +	if (pcm_priv->fw_state != PCMDEVICE_FW_LOAD_OK) {
+> +		dev_err(pcm_priv->dev, "DSP bin file not loaded\n");
+> +		ret = -EINVAL;
+> +	}
+
+Perhaps -EBUSY instead?  What the user is doing is valid.
+
+> +static const struct regmap_config pcmdevice_i2c_regmap = {
+> +	.reg_bits = 8,
+> +	.val_bits = 8,
+> +	.cache_type = REGCACHE_RBTREE,
+
+Use _MAPLE for new devices, it's a more modern design with tradeoffs
+that work better for most current systems.
+
+--zICUD1iSPynTqKb5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWzwqoACgkQJNaLcl1U
+h9BCzwf+L41HbR0BgZxeKdyUNHfjw//dNQQiokt5X33hzy2MfX0cEw4MOf8k9xyv
+x7kjEUSTwhyF6hxi1Ov9iApcnot6U5L1aoxrAS19xBs3zCqO5dEDtDQz8B6jHXF3
+hR6dT0dwXyKQxOx57BhEPbF16MY0ZpJuE3Od6i4s54zt/rqJw2hUH9xoZNA7BgRH
+8w2OMYMbbY+FL9QyLrDBxMJCgxDDnblMbeBp4yIS35A20M7d2MnxgedAmCmDWZth
+Zkhut1zLOwqZydXjkXrJQAB3izplMzHYS1lxmBOqdAjC+cwTrVIxr0O8GwmYc8bI
+P4rWI9yDw6TygfQlYVCQd3jyHNiuSA==
+=OLs3
+-----END PGP SIGNATURE-----
+
+--zICUD1iSPynTqKb5--
 
