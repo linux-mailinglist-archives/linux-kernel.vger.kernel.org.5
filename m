@@ -1,96 +1,155 @@
-Return-Path: <linux-kernel+bounces-40025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C985A83D8F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:03:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C3B883D9C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:55:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E9C61F24048
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:03:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E6C2B2BC9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:55:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 859EC1BF30;
-	Fri, 26 Jan 2024 11:01:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="dEstBjlc"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 695DB1803E;
+	Fri, 26 Jan 2024 11:54:42 +0000 (UTC)
+Received: from mail-m255222.qiye.163.com (mail-m255222.qiye.163.com [103.129.255.222])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 396DE1A29C;
-	Fri, 26 Jan 2024 11:01:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D47A317BC9;
+	Fri, 26 Jan 2024 11:54:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.129.255.222
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706266914; cv=none; b=PHFgcMUeDNFUrwR0f27/SEOI4UVnMWXUoVAhUqpjOLS15B0KJsswY1WHfYI4/YpLB352/k9yp5uRDx4HBUAapDA9r7J5TRNPFtevYTO4MyiWPqXtnf+WRVjsq/EegfZAHj13T/Mge40vzq4K8uAZPsZ9jMFeyib1zCMFCnqNoqU=
+	t=1706270081; cv=none; b=cHbgyw+xMuNVH5j07eq7ZhZDdkCCqK8iINglfzorQrF0e+5gtfrMAqB6IN5+zr5syrsBbJnXFMXWsuwxeib59QhG6fIaGM2s6zlMaPVJVcmDtmjcvjpVQXbKzFfiOBM6lGK7J890/mDwMJYOpfG2rKquuRGU41n+xwkNuC+CR7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706266914; c=relaxed/simple;
-	bh=pOBMf2guesXNH6vUwvSx6EUngxizNRYUxTMvSY6wvpo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DdpjXAH4pffCdbwxKGS2BjuYYH9m7QyLsN2zdt6ZwXFaYOlcjGaFvYt0R6+QjyjDuN8beY6ErUzOkFZm9HVO997o3g+SdIKFx8EKGc8FCZa+D/MgHMh/hFo62TZm1rNThBKzmEGmRk/ekYtsGdDH4L+V5z6tVSSZY9e7pOQiiSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=dEstBjlc; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706266911;
-	bh=pOBMf2guesXNH6vUwvSx6EUngxizNRYUxTMvSY6wvpo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dEstBjlcD3+4mFr9UIIOSCZBxaQSHrRK0bLFmQc87Bo2bORBINesLDySwXan+1Y1E
-	 AVyAjeVjHxoQCcOy10S6fQmOBTABMKYIHmOvHU6XzE/8YkAhei46KypJ+oqRjg42o0
-	 mtUyH8IfM5Ztc5KbARJePofWZVRtjxWrWn67GOBKfNpSpr4W/vBQTjw8Khup7nFMoO
-	 otE0el+oMHpViQFTqx7zsl3/LlwmBlB8GEZCiPXm+NW1HKGJo7lFCQBFvA6dGsCkvs
-	 XRr1En/msHXymHqCZdsJWRai17zXhneKlwT+nRV5uPHJQj2KowTQEdoXK5EgNxgFhp
-	 2SSEUXhQYpT9Q==
-Received: from benjamin-XPS-13-9310.. (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: benjamin.gaignard)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4DA463782072;
-	Fri, 26 Jan 2024 11:01:51 +0000 (UTC)
-From: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-To: hverkuil@xs4all.nl,
-	mchehab@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-media@vger.kernel.org,
-	kernel@collabora.com,
-	Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v18 9/9] media: verisilicon: Support deleting buffers on capture queue
-Date: Fri, 26 Jan 2024 12:01:41 +0100
-Message-Id: <20240126110141.135896-10-benjamin.gaignard@collabora.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240126110141.135896-1-benjamin.gaignard@collabora.com>
-References: <20240126110141.135896-1-benjamin.gaignard@collabora.com>
+	s=arc-20240116; t=1706270081; c=relaxed/simple;
+	bh=Bds8OgSb+ANDgZeXtZphHAaeceMSfeyWRHKOgIMh9TA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JY6CEmejn7h5F3q9PVKJUqRp3M/Ayn/r+7xoFznRiuuXQHZR2qQNPv3orqdqe0WOlymun1O3RKT6btr+CU9jToUoS4W9SGl0BTeY9TDss2VMpAZFTymm8rhLSgzPBVRyQKPdBC4hZyMVHPHyn19641Spk6mP6JZsTpqU7WXGYW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sangfor.com.cn; spf=pass smtp.mailfrom=sangfor.com.cn; arc=none smtp.client-ip=103.129.255.222
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sangfor.com.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sangfor.com.cn
+Received: from [172.23.69.7] (unknown [121.32.254.147])
+	by smtp.qiye.163.com (Hmail) with ESMTPA id 20CE74601A9;
+	Fri, 26 Jan 2024 10:25:02 +0800 (CST)
+Message-ID: <5bc6ed6d-31e9-4b44-aa91-5f9d0f3d92c8@sangfor.com.cn>
+Date: Fri, 26 Jan 2024 10:25:01 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] RDMA/device: Fix a race between mad_client and cm_client
+ init
+To: Ding Hui <dinghui@sangfor.com.cn>, Jason Gunthorpe <jgg@ziepe.ca>
+Cc: leon@kernel.org, wenglianfa@huawei.com, gustavoars@kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Shifeng Li <lishifeng1992@126.com>
+References: <20240102034335.34842-1-lishifeng@sangfor.com.cn>
+ <20240103184804.GB50608@ziepe.ca>
+ <80cac9fd-7fed-403e-8889-78e2fc7a49b0@sangfor.com.cn>
+ <20240104123728.GC50608@ziepe.ca>
+ <e029db0a-c515-e61c-d34e-f7f054d51e88@sangfor.com.cn>
+ <20240115134707.GZ50608@ziepe.ca>
+ <354e2bf7-a8b4-629d-3d2d-35951a52e8bd@sangfor.com.cn>
+From: Shifeng Li <lishifeng@sangfor.com.cn>
+In-Reply-To: <354e2bf7-a8b4-629d-3d2d-35951a52e8bd@sangfor.com.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlDTRlCVhkeGR1DHhpMGUlDGVUTARMWGhIXJBQOD1
+	lXWRgSC1lBWUpJSlVISVVJTk9VSk9MWVdZFhoPEhUdFFlBWU9LSFVKTU9JTE5VSktLVUpCS0tZBg
+	++
+X-HM-Tid: 0a8d4395bb0903aekunm20ce74601a9
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PD46MSo5FDMPMg8*URccCS80
+	KUwaCytVSlVKTEtNSUhOQktISE5DVTMWGhIXVRcSCBMSHR4VHDsIGhUcHRQJVRgUFlUYFUVZV1kS
+	C1lBWUpJSlVISVVJTk9VSk9MWVdZCAFZQUNMTE03Bg++
 
-Allow to delete buffers on capture queue because it the one which
-own the decoded buffers. After a dynamic resolution change lot of
-them could remain allocated but won't be used anymore so deleting
-them save memory.
+On 2024/1/16 10:12, Ding Hui wrote:
+> On 2024/1/15 21:47, Jason Gunthorpe wrote:
+>> On Sat, Jan 06, 2024 at 10:12:17AM +0800, Ding Hui wrote:
+>>> On 2024/1/4 20:37, Jason Gunthorpe wrote:
+>>>> On Thu, Jan 04, 2024 at 02:48:14PM +0800, Shifeng Li wrote:
+>>>>
+>>>>> The root cause is that mad_client and cm_client may init concurrently
+>>>>> when devices_rwsem write semaphore is downgraded in enable_device_and_get() like:
+>>>>
+>>>> That can't be true, the module loader infrastructue ensures those two
+>>>> things are sequential.
+>>>>
+>>>
+>>> Please consider the sequence again and notice that:
+>>>
+>>> 1. We agree that dependencies ensure mad_client be registered before cm_client.
+>>> 2. But the mad_client.add() is not invoked in ib_register_client(), since
+>>>     there is no DEVICE_REGISTERED device at that time.
+>>>     Instead, it will be delayed until the device driver init (e.g. mlx5_core)
+>>>     in enable_device_and_get().
+>>> 3. The ib_cm and mlx5_core can be loaded concurrently, after setting DEVICE_REGISTERED
+>>>     and downgrade_write(&devices_rwsem) in enable_device_and_get(), there is a chance
+>>>     that cm_client.add() can be invoked before mad_client.add().
+>>>
+>>>
+>>>          T1(ib_core init)      |      T2(device driver init)        |        T3(ib_cm init)
+>>> ---------------------------------------------------------------------------------------------------
+>>> ib_register_client mad_client
+>>>    assign_client_id
+>>>      add clients CLIENT_REGISTERED
+>>>      (with clients_rwsem write)
+>>>    down_read(&devices_rwsem);
+>>>    xa_for_each_marked (&devices, DEVICE_REGISTERED)
+>>>      nop # no devices
+>>>    up_read(&devices_rwsem);
+>>>
+>>>                                ib_register_device
+>>>                                  enable_device_and_get
+>>>                                    down_write(&devices_rwsem);
+>>>                                    set DEVICE_REGISTERED
+>>>                                    downgrade_write(&devices_rwsem);
+>>>                                                                      ib_register_client cm_client
+>>>                                                                        assign_client_id
+>>>                                                                          add clients CLIENT_REGISTERED
+>>>                                                                          (with clients_rwsem write)
+>>>                                                                        down_read(&devices_rwsem);
+>>>                                                                        xa_for_each_marked (&devices, DEVICE_REGISTERED)
+>>>                                                                          add_client_context
+>>>                                                                            down_write(&device->client_data_rwsem);
+>>>                                                                            get CLIENT_DATA_REGISTERED
+>>>                                                                            downgrade_write(&device->client_data_rwsem);
+>>>                                                                            cm_client.add
+>>>                                                                              cm_add_one
+>>>                                                                                ib_register_mad_agent
+>>>                                                                                  ib_get_mad_port
+>>>                                                                                    __ib_get_mad_port return NULL!
+>>>                                                                            set CLIENT_DATA_REGISTERED
+>>>                                                                            up_read(&device->client_data_rwsem);
+>>>                                                                        up_read(&devices_rwsem);
+>>>                                  down_read(&clients_rwsem);
+>>>                                  xa_for_each_marked (&clients, CLIENT_REGISTERED)
+>>>                                    add_client_context [mad]
+>>>                                      mad_client.add
+>>>                                    add_client_context [cm]
+>>>                                      nop # already CLIENT_DATA_REGISTERED
+>>>                                  up_read(&clients_rwsem);
+>>>                                  up_read(&devices_rwsem);
+>>
+>> Take the draft I sent previously and use down_write(&devices_rwsem) in
+>> ib_register_client()
+>>
+> 
+> I believe this modification is effective, rather than expanding the clients_rwsem range,
+> the key point is down_write(&devices_rwsem), which prevents ib_register_client() from
+> being executed in the gap of ib_register_device().
+> 
+> However, this may cause a little confusion, as ib_register_client() does not modify
+> anything related to devices, but it is protected by a write lock.
+> 
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
----
- drivers/media/platform/verisilicon/hantro_v4l2.c | 1 +
- 1 file changed, 1 insertion(+)
+Hi Jason，
 
-diff --git a/drivers/media/platform/verisilicon/hantro_v4l2.c b/drivers/media/platform/verisilicon/hantro_v4l2.c
-index 941fa23c211a..34eab90e8a42 100644
---- a/drivers/media/platform/verisilicon/hantro_v4l2.c
-+++ b/drivers/media/platform/verisilicon/hantro_v4l2.c
-@@ -756,6 +756,7 @@ const struct v4l2_ioctl_ops hantro_ioctl_ops = {
- 	.vidioc_dqbuf = v4l2_m2m_ioctl_dqbuf,
- 	.vidioc_prepare_buf = v4l2_m2m_ioctl_prepare_buf,
- 	.vidioc_create_bufs = v4l2_m2m_ioctl_create_bufs,
-+	.vidioc_delete_bufs = v4l2_m2m_ioctl_delete_bufs,
- 	.vidioc_expbuf = v4l2_m2m_ioctl_expbuf,
- 
- 	.vidioc_subscribe_event = v4l2_ctrl_subscribe_event,
--- 
-2.40.1
+Do you have any differing opinions about above?
+
 
 
