@@ -1,72 +1,72 @@
-Return-Path: <linux-kernel+bounces-40066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C07D183D9A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:51:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A2BE83D9A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:53:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 750CA298200
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:51:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D92CC1F244A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:53:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C951718038;
-	Fri, 26 Jan 2024 11:51:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C11111805E;
+	Fri, 26 Jan 2024 11:52:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="G3y0vTya"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rYMo0j0M"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17C3817582
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 11:51:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BE4B17582
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 11:52:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706269891; cv=none; b=d33bBdzPPVrserD4sdF3Kj3//yAfBKdngIyepryvS0RId/rrhUGtek8c4W9HLGrzCKnLSFoAreyZNUf9nqezmkOBgPETswvhiMEz2h+bRpd8arP9wniv0Rc8dHswFNcXDZK1Zw3z4UKmRp5q0sCLafLBzz37SyXcvOIkzV4AUe4=
+	t=1706269972; cv=none; b=Six32WWe2YxuYrunDuPa3NgWjZRfk/XU7y93VAPiYClR4CjsijfsdHsvdP4wbyFR/SdQuFpGRpTviZEyYRGJEZrnclUXoR8x2FHQFmcqU4QEnQ2U1BQ1WG2uX4Bde74NBEt0Qh5eiOv4Q8rliZudCseqSAAB/vdm9Mxo9x7TzCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706269891; c=relaxed/simple;
-	bh=OtD6qtzg55sWzM5Z8Rb+7F4VnGdyNRhHaoa+dKRUkVg=;
+	s=arc-20240116; t=1706269972; c=relaxed/simple;
+	bh=t2anX52nRA3jUYm8HdDgvlcO49DEUM2Owhj9NMAv8ZI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LBAcHzMxck2e6DOa3eFkx0bAONBaP/n2bgwde3bM0W/r9H7XHvykQFDVZcKSE9Efw+PXd6HayUN5HawTn6ZVICTp6DcheiAqPGC0/MJX3Kmb5eTb6LpRM0q2rFMUmtpxzJoRkprtmBUA0/omC37BE1vRmw5Ih4IfPIKzJLNEL7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=G3y0vTya; arc=none smtp.client-ip=209.85.208.50
+	 In-Reply-To:Content-Type; b=ASutBWRVkKkMrnrM9QaWTFMWW1jeQZ0dSZk9BnmS4QS4y1eMYmVqMfxWj0t7pw/k4zpp3ZCC4B0New8XasI/rSan9+a04LoVMMpgI9dBKUFeEIiYq8KP+KVdvqZTPer4puSwlYDz0QMKqD7/TQKEHb5T9kgtJcDEnCVHpLR0Ncs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rYMo0j0M; arc=none smtp.client-ip=209.85.218.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-55a45a453eeso836070a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 03:51:28 -0800 (PST)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a28fb463a28so27798966b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 03:52:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706269887; x=1706874687; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706269969; x=1706874769; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=RO2vy9Gohf4fesVKOSGHEr8L+y5rrbvowDx96zw2txI=;
-        b=G3y0vTyad9eY74vZMWtz7BihfGIZe1YJg6QI5Ey9eaCnpG5KeHUtX5FJnZEMUqSioA
-         dAKRz0T4K4fsPVlq2Ng/hCJHEup/kpkkZ/uthCTs9VfeZxEVE7x2Y5neMA/A98N/EtVM
-         nKY6x+QvjBh2bYjDVCJGcmvBhs2LEueSlIPqbUdJWk140rxcrcQE+QHL/bXHZFAiWZRp
-         SiXIkmGh9dlCnwL6f5sksgcpOMyCHFmilZyntyYjG0yj7ZfSOR09WLSAGCQ2CFNZY1aP
-         ieIXWfxzWfxzU6UdTDUsVjLu4qBMfHQ2VNW418Y8NYP82kIPNI0yePkRHTMEgl+7oVYA
-         myXg==
+        bh=geAXU/jqhg6hPjco70kwTQYqqgsPO9C/X8TcVRQJY1k=;
+        b=rYMo0j0M8ewDsmob5fJSNCAJy1cxSnLZd7PwyKq7o4Dej2KXwqj9gRl0LhWuQ2rEqn
+         auPOhkNryo5JxQBCi6IBf1hYjI/OplYYG3uPCKo/+XWCMBiptBHbDA8Xdzf3aGZrHIdg
+         br7I3Arydh1Lh4qg65xKRTXBt/3CRUh6Buf/yePvv/1K06w4E2TNTFfpOwogyJ3KlPQg
+         j2mcsjTsQqZMJt+6HVC6uhQ2NvPbIOKxc9GLG9ZSZMMBy952/DYX5Jtz5WJ1EB94s3N2
+         lw9QVr5/zCnid4lHfDKMtsRhxgXb8/SaXQ7hQWxC0kZzu7t17jOqOXA2stFudn5GG1W1
+         xYng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706269887; x=1706874687;
+        d=1e100.net; s=20230601; t=1706269969; x=1706874769;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RO2vy9Gohf4fesVKOSGHEr8L+y5rrbvowDx96zw2txI=;
-        b=w3KQsZaJxAJTbK7AmVZLeIwAQ4I51EHH6I8ZpwJPy7mQMnLtiUnun0lzNtdPviKf1D
-         Ip/lEtNvrHL5ZN7AJSFpRAkQOmht0maa3HKSm5zz0DdvZjejkWTeJbF4e5C66CiYTKjC
-         nUB5tBM/NGQp7PAc3g+Q/DlytTC++bVDkU1RTTBuMfVCk7cyDNd6uLNWmZXxbeTdFdfT
-         fw4dyXd6DDx/wuCKHIIeaAQ/Fv1aZcNA7USxcax0/UIU6GBL7dYlMwqkASgWYNnqP3zr
-         t952bkMyUTEd/nr2bzPEFuY/f7J2Ik+TZPMsvdKmC2CdaZhCE5D8ZX6ELGvHunNf16t5
-         5+ww==
-X-Gm-Message-State: AOJu0YxzGWQvHC3o601xfCD8wffRY2GP+38eGaXR7YfIWv7eRjC78cIO
-	aoB2I9ij2mkGbvYWwaMu6gMIoF/6Ru+GnbuuyRQ7gVi8OJKeOTeZzwUgELexJHQ=
-X-Google-Smtp-Source: AGHT+IF9IhXflvx/W5B3Po+MJ3rAwfJ8wZiq7vbmid2/bAXymV9jEMmCULgsLH6q+PDyMhOrjEbSIg==
-X-Received: by 2002:a17:906:5a87:b0:a31:7af3:f46f with SMTP id l7-20020a1709065a8700b00a317af3f46fmr1085152ejq.77.1706269887267;
-        Fri, 26 Jan 2024 03:51:27 -0800 (PST)
+        bh=geAXU/jqhg6hPjco70kwTQYqqgsPO9C/X8TcVRQJY1k=;
+        b=mBiuX4i3nbLyvsycKpWQl4a+E45Z2g9ZrOenw6j6jWPM2Ifg4jPEYYgM3vSXO6Kh95
+         hztEdrXo6LUelLP8b/jDLaXpr3dmvKhma6MNh+sgiHgchGaBpWQlIACsrk15jXu19Q9p
+         OQyRODUW8DOW9vjh6oC7CUi1tlQlUlIhO+yF31np/muG7ip3FhvHjMwOgFHlNNybcUel
+         oModWOIgnFKQOYgz8Kw3ev9T+00jVE4NbTDs9XYbTcrmGTACOtMYKU5XhcKbbuQ4beB2
+         Tp1aFdum6XHJu17EEn3vn6e/kSQN/IwX07bPpa4FjbsgaoVSecbzyNG6TVn+8hEoTRjL
+         Gcxg==
+X-Gm-Message-State: AOJu0YyyclU36r25QfNI0k/v3pwleiBVlLsV5e6g9Cw4xTBLHqSC5NJZ
+	Ad8NFUowRmzXRRtNB3clLbN2AqcUhTRa3wZI5/g0rbZqH09PqEqok5kfEWB0IdU=
+X-Google-Smtp-Source: AGHT+IH/G9FQT5gSG17T6ROEKidotJcR7Nu5nwcOa9PKUTRqcH8CWholcbHuepnjrsJJOhU4YdIzCA==
+X-Received: by 2002:a17:906:1110:b0:a31:82e7:d5ac with SMTP id h16-20020a170906111000b00a3182e7d5acmr679876eja.0.1706269969454;
+        Fri, 26 Jan 2024 03:52:49 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id vh5-20020a170907d38500b00a3517d26918sm840ejc.107.2024.01.26.03.51.24
+        by smtp.gmail.com with ESMTPSA id vh5-20020a170907d38500b00a3517d26918sm840ejc.107.2024.01.26.03.52.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jan 2024 03:51:26 -0800 (PST)
-Message-ID: <48edb603-3d45-45ed-be25-31fd8a5b69f1@linaro.org>
-Date: Fri, 26 Jan 2024 12:51:23 +0100
+        Fri, 26 Jan 2024 03:52:48 -0800 (PST)
+Message-ID: <8054e01d-0a1e-45b6-b62a-25303e8f4593@linaro.org>
+Date: Fri, 26 Jan 2024 12:52:47 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,8 +94,10 @@ Cc: Gregory CLEMENT <gregory.clement@bootlin.com>,
 References: <20240123-mbly-clk-v3-0-392b010b8281@bootlin.com>
  <20240123-mbly-clk-v3-4-392b010b8281@bootlin.com>
  <20240124151405.GA930997-robh@kernel.org>
- <dd7e723d-3c4c-4edf-afc2-51db9a074efa@linaro.org>
- <CYNQHXOZ73YR.3QODFI2X08KC6@bootlin.com>
+ <CYN43TSPPPZ5.1VUA1CH95D8KJ@bootlin.com>
+ <CYN4D0Z6600X.20W9VWX4BGNXX@bootlin.com>
+ <CAL_JsqKHPdmafDvKCHZTNNzRAzq2Y34b2dqUXQD6WpE7z2k-jA@mail.gmail.com>
+ <CYNRCGYA1PJ2.FYENLB4SRJWH@bootlin.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -141,57 +143,112 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CYNQHXOZ73YR.3QODFI2X08KC6@bootlin.com>
+In-Reply-To: <CYNRCGYA1PJ2.FYENLB4SRJWH@bootlin.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 25/01/2024 12:01, Théo Lebrun wrote:
+On 25/01/2024 12:40, Théo Lebrun wrote:
 > Hello,
 > 
-> On Thu Jan 25, 2024 at 8:51 AM CET, Krzysztof Kozlowski wrote:
->> On 24/01/2024 16:14, Rob Herring wrote:
->>>> +
->>>> +      pinctrl-b {
->>>> +        compatible = "mobileye,eyeq5-b-pinctrl";
->>>> +        #pinctrl-cells = <1>;
->>>> +      };
->>>> +    };
->>>
->>> This can all be simplified to:
->>>
->>> system-controller@e00000 {
->>>     compatible = "mobileye,eyeq5-olb", "syscon";
->>>     reg = <0xe00000 0x400>;
->>>     #reset-cells = <2>;
->>>     #clock-cells = <1>;
->>>     clocks = <&xtal>;
->>>     clock-names = "ref";
->>>
->>>     pins { ... };
->>> };
->>>
->>> There is no need for sub nodes unless you have reusable blocks or each 
->>> block has its own resources in DT.
->>
->> Yes, however I believe there should be resources here: each subnode
->> should get its address space. This is a bit tied to implementation,
->> which currently assumes "everyone can fiddle with everything" in this block.
->>
->> Theo, can you draw memory map?
+> On Wed Jan 24, 2024 at 8:22 PM CET, Rob Herring wrote:
+>> On Wed, Jan 24, 2024 at 11:40 AM Théo Lebrun <theo.lebrun@bootlin.com> wrote:
+>>> On Wed Jan 24, 2024 at 6:28 PM CET, Théo Lebrun wrote:
+>>>> On Wed Jan 24, 2024 at 4:14 PM CET, Rob Herring wrote:
+>>>>> On Tue, Jan 23, 2024 at 07:46:49PM +0100, Théo Lebrun wrote:
 > 
-> It would be a mess. I've counted things up. The first 147 registers are
-> used in this 0x400 block. There are 31 individual blocks, with 7
-> registers unused (holes to align next block).
+> [...]
+> 
+>>>>>> +      };
+>>>>>> +
+>>>>>> +      pinctrl-b {
+>>>>>> +        compatible = "mobileye,eyeq5-b-pinctrl";
+>>>>>> +        #pinctrl-cells = <1>;
+>>>>>> +      };
+>>>>>> +    };
+>>>>>
+>>>>> This can all be simplified to:
+>>>>>
+>>>>> system-controller@e00000 {
+>>>>>     compatible = "mobileye,eyeq5-olb", "syscon";
+>>>>>     reg = <0xe00000 0x400>;
+>>>>>     #reset-cells = <2>;
+>>>>>     #clock-cells = <1>;
+>>>>>     clocks = <&xtal>;
+>>>>>     clock-names = "ref";
+>>>>>
+>>>>>     pins { ... };
+>>>>> };
+>>>>>
+>>>>> There is no need for sub nodes unless you have reusable blocks or each
+>>>>> block has its own resources in DT.
+>>>>
+>>>> That is right, and it does simplify the devicetree as you have shown.
+>>>> However, the split nodes gives the following advantages:
+>>>>
+>>>>  - Devicetree-wise, it allows for one alias per function.
+>>>>    `clocks = <&clocks EQ5C_PLL_CPU>` is surely more intuitive
+>>>>    than `clocks = <&olb EQ5C_PLL_CPU>;`. Same for reset.
+>>
+>> clocks: resets: pinctrl: system-controller@e00000 {
+>>
+>>>>
+>>>>  - It means an MFD driver must be implemented, adding between 100 to 200
+>>>>    lines of boilerplate code to the kernel.
+>>
+>> From a binding perspective, not my problem... That's Linux details
+>> defining the binding. What about u-boot, BSD, future versions of Linux
+>> with different structure?
+>>
+>> I don't think an MFD is required here. A driver should be able to be
+>> both clock and reset provider. That's pretty common. pinctrl less so.
+> 
+> @Rob & @Krzysztof: following Krzysztof's question about the memory map
+> and adding ressources to the system-controller, I was wondering if the
+> following approach would be more suitable:
 
-Holes are not really a problem.
+More or less (missing ranges, unit addresses, lower-case hex etc).
 
 > 
-> Functions are reset, clocks, LBIST, MBIST, DDR control, GPIO,
-> accelerator control, CPU entrypoint, PDTrace, IRQs, chip info & ID
-> stuff, control registers for PCIe / eMMC / Eth / SGMII / DMA / etc.
+> 	olb: system-controller@e00000 {
+> 		compatible = "mobileye,eyeq5-olb", "syscon", "simple-mfd";
+> 		reg = <0 0xe00000 0x0 0x400>;
+> 		#address-cells = <1>;
+> 		#size-cells = <1>;
+> 
+> 		clocks: clock-controller {
+> 			compatible = "mobileye,eyeq5-clk";
+> 			reg = <0x02c 0x7C>;
+> 			#clock-cells = <1>;
+> 			clocks = <&xtal>;
+> 			clock-names = "ref";
+> 		};
+> 
+> 		reset: reset-controller {
+> 			compatible = "mobileye,eyeq5-reset";
+> 			reg = <0x004 0x08>, <0x120 0x04>, <0x200 0x34>;
+> 			reg-names = "d0", "d2", "d1";
+> 			#reset-cells = <2>;
+> 		};
+> 
+> 		pinctrl0: pinctrl-a {
+> 			compatible = "mobileye,eyeq5-a-pinctrl";
+> 			reg = <0x0B0 0x30>;
+> 		};
+> 
+> 		pinctrl1: pinctrl-b {
+> 			compatible = "mobileye,eyeq5-b-pinctrl";
+> 			reg = <0x0B0 0x30>;
 
-So they are within separate blocks or not?
+Duplicate reg?
 
+> 		};
+> 	};
+> 
+> It highlights that they are in fact separate controllers and not one
+> device. The common thing between them is that they were
+> custom-implemented by Mobileye and therefore all registers were put in
+> a single block.
+> 
 
 
 Best regards,
