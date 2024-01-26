@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-40822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CA4483E685
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 00:18:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F66F83E68B
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 00:19:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CB7E1F21E9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:18:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FAC81F220ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:19:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B2AC5C608;
-	Fri, 26 Jan 2024 23:16:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1995605AA;
+	Fri, 26 Jan 2024 23:16:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="PzOVBiA5"
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="fiGiKXw8"
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 694AD5B1FE
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 23:16:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C62B5B5D4
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 23:16:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706310972; cv=none; b=rHYK0ftHnZ0JiJELqE4sPKtGyOGYPJpY5dcY3rQI7oNS7qikbBZ1nwn4Eam3KSgc980vZo2PkG2O0y1481uRgEeJEPgh0Y6KXIVTLktZBRtD35NPP1vVm5wd82DngAW6qfLGLAr3cSz/PRfiJ09g4vN6Of0eeQxqZMuFRLPgDbY=
+	t=1706310973; cv=none; b=Tp1drmRwl66IqMxONQZE3tmYMFYH1HmLkMw+fGpAZk3uNZHUinnlgVadHilGuT2KxCq5qlpGYvRWby/iYVclE7wRQ5A35rVIheXpBzcT+v9VPY7a5pdXw58EtWhfM3QPpYrs6WwFSx1Q8Rezahded//Vihd/Li9te4P2OZecdj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706310972; c=relaxed/simple;
-	bh=EP0SiOYhVfFPOJvzK23HYaQLWx/3epVW9BeNm+8xVNY=;
+	s=arc-20240116; t=1706310973; c=relaxed/simple;
+	bh=hr4nOBWgTYWfAz3nDinorGAmbEpHqgT37FFxq902g4c=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=tihDwhj1VjJHr+zqjsrY0ig8r28eFEGy3FMY6pr2dxGWub6X+wOOGB32Gwu0HRKkyaFNsyNWfcfwR5xcoSlZB+GOGOCy+AJNjMSBzLTAzhkAS19aRiQPrtFfOKiSJKzuOaf5fy6Tbun93DA/HUqw6CSvORu8btWzbklCnelYwRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=PzOVBiA5; arc=none smtp.client-ip=209.85.222.175
+	 In-Reply-To:To:Cc; b=UNeGJCHHk7gambuVPLId0ZtADUlkIAi8YWwVjkD7I5trslJgQd+oXsIbKtagDjBrMtYzX848+VhDI+k/hkczNAanmQObp1TyyeKLCpH6RM3Mtna9+JVZNeraoPD+EC3bvlBpe+huhpm05Gkmw23tRAlR4uPq8AAS+1/g/vUamkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=fiGiKXw8; arc=none smtp.client-ip=209.85.222.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-78104f6f692so76951985a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:16:10 -0800 (PST)
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-781753f52afso64699985a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:16:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706310969; x=1706915769; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1706310970; x=1706915770; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=K8jNV9DHXsOFSE/nzIDQ0aFfd3NfLzQF84gBDTm9ggE=;
-        b=PzOVBiA5d0ucwiOX/m3P3yrqDLdlDLueuF2aSHjbVTyi05Zx9SRNqa1njfGGfkF4ZP
-         RonMbFPdhQ9NlF3LAdwZaBEsPT6TlgoYVSfpET0Y3YGfLKTvbBWX5VYAahfcRChLSgov
-         PvDCx5NGYjtBfeYzsVco6q2MB6ktViByV4twQ=
+        bh=wJ0m3P4movTLz/Nvfo+j871i2YxzmvzYNu3X7u/7SQ8=;
+        b=fiGiKXw85GcJfODCS3rqqFmxeJHozVJjTD+dUpX/6E4whOb6N1Opi/fF9c4Kpxevn3
+         ERoIOY/PBDzDrcbrc1YuoX4b5rRK/c+R9XAo1ZzpuR6Cdkdw4jA+bFay/PC+oLkwnUXO
+         08P99AYN3EJsW5wEdHbCec3U5ad7qd2XTRzS8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706310969; x=1706915769;
+        d=1e100.net; s=20230601; t=1706310970; x=1706915770;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=K8jNV9DHXsOFSE/nzIDQ0aFfd3NfLzQF84gBDTm9ggE=;
-        b=f6hgso4UUZqDXOyIVVJtYTMN+9bvq0SIFdOsVDaaOw/mk2ZMq98dBMb/XRVU+sP4an
-         Ca2hZkbfm77ZBPYUFIZN111YIsrwIstxnd8uQJglhwl5pEk69+FDdBIv2BT564riGwn/
-         qpxbg1OZhr+haJ21D79+9PeFOkxUiU+H8qR7I/WcO9zDNsZPkQAGKmM1bmorrOZOovkA
-         wM0dF/BwsJLLCfehx8OIgCc9i9fOz2/s5nX1Usc9x8DuYZzWrpveZrc01wN426Z/WSrJ
-         ZdktyRN7nLEyL/ueNbrkdNCVKYOr5YtDOYk3Dvg1nyiNiDOwf8R/nJFiB8cxENnMMlqF
-         /PkA==
-X-Gm-Message-State: AOJu0YxeWA8sjkjuH/a1wQXzK0eW7ylakwAG/KgKQBExJ6eho8NPsFPJ
-	qFBhbP78vOEVyUDmQSzxp0xTWLnA4B4z1HNAoS2Fwksi6xlhmWmht4VdVgdKQw==
-X-Google-Smtp-Source: AGHT+IHzyRuPGLIU9IzlEEdTKBGXo6/9Uou4vY0QASKHiYYbaa5Xmk9tSWpjCG3cIXB1RJj/V/BCqQ==
-X-Received: by 2002:a05:620a:28c8:b0:783:8d63:f3b2 with SMTP id l8-20020a05620a28c800b007838d63f3b2mr1010002qkp.54.1706310969221;
-        Fri, 26 Jan 2024 15:16:09 -0800 (PST)
+        bh=wJ0m3P4movTLz/Nvfo+j871i2YxzmvzYNu3X7u/7SQ8=;
+        b=mEE0MHicR0B5g4HOkNMqyL9aXQcuFbB81hZ/2ycctdKRRdMBNqkpZFqMZJVGpQ8m9w
+         tQZHCNPh77NA3NZHqwv2GmeYJGP0MlY3dAYXb0n1ewdCD3WZqH2ImgWkX7NvyPVkCDsD
+         2gH128LIe6X14wRdEtkPLPhI8bIju7Uy2VUwyyOr4DlcjWSkgUO568Qs19FOJ+x/7ROF
+         6S9C6JEPqcflouaDb6+aEC0zS99vnHJPx2sXCYwyHA8NX6TKA97Mpu5WRwLIyLRQBGt1
+         LdHOQjEYEmbOaUUSFZuxHjex24C+sf4Jp89ZPLOP4TsH/BFQnovcW+VmxQkM9kAPd2SH
+         sMAA==
+X-Gm-Message-State: AOJu0YzkYwk6Tym4bzmbxfwMtgVOrVbL7OXrZE0phKfOvTVhk3sdrVtp
+	Vsf6xzBWyHcw5pXc1XcKRqDl6AW+7szB5Tma/lY03pCSEH9jiDunySjq2YoTeg==
+X-Google-Smtp-Source: AGHT+IHAmNfItdlyJWsZ1GtS50XKPZcd4sgiZnzEdRhsQ66Nd+BshXmAy/d7aAGqJVN+Us+VU1C3UA==
+X-Received: by 2002:a05:620a:148c:b0:783:89f2:d9f5 with SMTP id w12-20020a05620a148c00b0078389f2d9f5mr495965qkj.104.1706310970554;
+        Fri, 26 Jan 2024 15:16:10 -0800 (PST)
 Received: from denia.c.googlers.com (240.157.150.34.bc.googleusercontent.com. [34.150.157.240])
-        by smtp.gmail.com with ESMTPSA id m4-20020a05620a290400b00783de3ddf5esm507358qkp.70.2024.01.26.15.16.08
+        by smtp.gmail.com with ESMTPSA id m4-20020a05620a290400b00783de3ddf5esm507358qkp.70.2024.01.26.15.16.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 15:16:08 -0800 (PST)
+        Fri, 26 Jan 2024 15:16:09 -0800 (PST)
 From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Fri, 26 Jan 2024 23:16:03 +0000
-Subject: [PATCH 04/17] media: cec.h: Fix kerneldoc
+Date: Fri, 26 Jan 2024 23:16:04 +0000
+Subject: [PATCH 05/17] media: pci: dt315.h: Fix kerneldoc
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,7 +73,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240126-gix-mtk-warnings-v1-4-eed7865fce18@chromium.org>
+Message-Id: <20240126-gix-mtk-warnings-v1-5-eed7865fce18@chromium.org>
 References: <20240126-gix-mtk-warnings-v1-0-eed7865fce18@chromium.org>
 In-Reply-To: <20240126-gix-mtk-warnings-v1-0-eed7865fce18@chromium.org>
 To: Tiffany Lin <tiffany.lin@mediatek.com>, 
@@ -111,26 +111,25 @@ Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-amlogic@lists.infradead.org, Ricardo Ribalda <ribalda@chromium.org>
 X-Mailer: b4 0.12.3
 
-The fields are gone, remove their documentation.
+The field is gone, remove it.
 
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- include/media/cec.h | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/media/pci/dt3155/dt3155.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/include/media/cec.h b/include/media/cec.h
-index d77982685116..10c9cf6058b7 100644
---- a/include/media/cec.h
-+++ b/include/media/cec.h
-@@ -224,8 +224,6 @@ struct cec_adap_ops {
-  * @notifier:		CEC notifier
-  * @pin:		CEC pin status struct
-  * @cec_dir:		debugfs cec directory
-- * @status_file:	debugfs cec status file
-- * @error_inj_file:	debugfs cec error injection file
-  * @sequence:		transmit sequence counter
-  * @input_phys:		remote control input_phys name
-  *
+diff --git a/drivers/media/pci/dt3155/dt3155.h b/drivers/media/pci/dt3155/dt3155.h
+index c9ce79cb5566..ce1835d9691e 100644
+--- a/drivers/media/pci/dt3155/dt3155.h
++++ b/drivers/media/pci/dt3155/dt3155.h
+@@ -162,7 +162,6 @@
+  * @height:		frame height
+  * @input:		current input
+  * @sequence:		frame counter
+- * @stats:		statistics structure
+  * @regs:		local copy of mmio base register
+  * @csr2:		local copy of csr2 register
+  * @config:		local copy of config register
 
 -- 
 2.43.0.429.g432eaa2c6b-goog
