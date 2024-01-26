@@ -1,159 +1,183 @@
-Return-Path: <linux-kernel+bounces-39929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34D0E83D788
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:13:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A372383D787
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:13:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DFBB29A521
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:12:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11B901F2CCC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:13:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9218C224F9;
-	Fri, 26 Jan 2024 09:36:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gOuwyWAt"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93FF82136C;
+	Fri, 26 Jan 2024 09:37:00 +0000 (UTC)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B90A224DB;
-	Fri, 26 Jan 2024 09:36:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 392E410A0F
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 09:36:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706261812; cv=none; b=QXWE2/M8ysOvVcN4H5ylIm+atnoFRfzZh0e9nOY207cj1ZebNv8olV1R6COOpuyCRTRCui+7/GzVZ7BgMa2CT5bDNzn22+GCrA4ZwEA0zppm12DgtFgG+PVFRlbferSNzEf+QDJr7/cgmluXIqfXIrNNzSJK/KUjeePKrFBwCBw=
+	t=1706261820; cv=none; b=ECcYDVougReX2m6MmKNjhU7qeafw+y8ywGZWHJgnxnI8r/QTM0UyJH7aQ4KcudfQZ3Jk2LR3CjngVlTxkeL2YtcLdxTrngsc+NO9AxvQyeluYWncUWhcbEHDF4Ucdd+tHPRSl7LvJ+P+eyZAxlNKcDsKcjl8OBdVg0kPHyWzRFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706261812; c=relaxed/simple;
-	bh=Nqs9TinaaXHwHA6044b8Z8mw+/GdCqpp7NnA+gCBoRM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LkXrXMFPXD8OUYpefDROU9fZAL3LjJJAsIq9+eG8kac48mzladCJlwBw5DsDFUKoZrig5217WQ7GQZPeTqsy4EKjrh8eGPXD1ZfN2HHGuEEnHGLJYcFLIyOaZ4LNHwcts1TzBwyhKWGoJpUIZTxYwuZcRzhxROYUmNYD2/qPyww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=gOuwyWAt; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=Fscjw5+02nWcqj9YGEOz7mXAdbzE5tCE48cyS+dnnGE=; b=gOuwyWAtOHJYZZB8kDVsEgfvNa
-	tzk+b/d/l2FYsERlAfsujmb8rKjohGn4n+Bjerm1Nu7gIas8kU4qd1vl82CdJSFqXa7a7TwZvpl2E
-	OJHMXMGJ1HLGeFpsSeuP+rp+sjh7BCtodOy1dwYLVP8zU6Ulx8F3lb+AslA+ZfZ3vkVmeiJ5m8xDo
-	leXDzaEjSp7e1eJfAjjruhDlU8oyRIKOV/IYs65et9NcfRBY7K79zrMREaTPQlZu1sVc7ZtQHWONm
-	1GV/jWHI8v3hXvaje41swjLKtQeaESAwcfX5HYtX0rrFvpERUrGeI4fzSiqEEBY1By36pBnx56t6t
-	x9B7Ww9Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rTIdY-0000000DBIw-3Qwx;
-	Fri, 26 Jan 2024 09:36:36 +0000
-Date: Fri, 26 Jan 2024 09:36:36 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	linux-fsdevel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jens Axboe <axboe@kernel.dk>, Yu Zhao <yuzhao@google.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Niklas Cassel <niklas.cassel@wdc.com>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
-	Hannes Reinecke <hare@suse.de>,
-	Linus Walleij <linus.walleij@linaro.org>, linux-mm@kvack.org,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	steve.kang@unisoc.com
-Subject: Re: [PATCHv3 1/1] block: introduce content activity based ioprio
-Message-ID: <ZbN9JDE50Th-dT3Y@casper.infradead.org>
-References: <20240125071901.3223188-1-zhaoyang.huang@unisoc.com>
- <CAGWkznGpW=bUxET8yZGu4dNTBfsj7n79yXsTD23fE5-SWkdjfA@mail.gmail.com>
- <ZbNziLeet7TbDKEl@casper.infradead.org>
- <CAGWkznGG1xLcPMsWbbXqO5iUWqC2UmyWwcJaFd4WBQ-aFE=-jA@mail.gmail.com>
+	s=arc-20240116; t=1706261820; c=relaxed/simple;
+	bh=fogrqpb4wPx3QsVi0ooKV6pF4KkSXiEsTUhE8ba15ks=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hyGlZrrZtjI3vP1mSYXtlUg6iaMfjNg/rF76MU/MAk3OXk4Qo1usW4eMUoYSqBW213Rf8UsZx+/3DsEdHB9+o+fGPyyOZvejzo/Xb30hbUaR64shj8GwDShki9oG8CQYBh9FcaV21lwUl9DHDu4DG/AMPUsLau84tqOvDHYJfS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2cf1b770833so6501561fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 01:36:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706261816; x=1706866616;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XGLeS98hA2fBZzgTNbeCyAi11v+/7WOKbg0CpbQOuXc=;
+        b=cX9LaqYS5mZUvLEW3nUfPnjRWvVu0SGPGtcYXAf0OivSplEDi3FQ791IeBUyfasY8c
+         +ojpDhKxtsfjVIMrfIUjBklSpwudS/EwMIu6auTbh31VZFAWwUvAJPWwba+gerChYBt0
+         2yIGB3pYRuiCqNaDratVBn46VaM0p1wj4Fd0+5fw5e4oIiigOWq0rmHuHw1v0YdZyDfR
+         j/LCSKgNqH1NKdoOpc5PVr7y3CvnAzhMT1vRBbNAgetHtdR8vQzgGLTHc5bTFthsLjA1
+         gXvSjgPYh61o3ZpPATVVC6y4q32C7OBETGwRrgm26GrBH7FyuLI8NJoMZLuIMNuwbMvf
+         /tYg==
+X-Gm-Message-State: AOJu0Yyg85QtOx79sO/9V07PwCFuFEU8vClnx0bILIsMQUT6k9Yp8C3o
+	n+R/+/m3kALR1dh8eP57Biv+hoLWs51mIN1DldafED402IUeNWTk
+X-Google-Smtp-Source: AGHT+IFeeZY5dYUyGRCCjaAx/k+3kGFWFkxW2HDq9HUe32iVA/kkbb4wjPwcGETQvCeY1HhWx471QQ==
+X-Received: by 2002:a2e:a36b:0:b0:2cf:429f:7fbb with SMTP id i11-20020a2ea36b000000b002cf429f7fbbmr538120ljn.72.1706261815777;
+        Fri, 26 Jan 2024 01:36:55 -0800 (PST)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id o23-20020aa7dd57000000b0055c8a30152bsm405245edw.83.2024.01.26.01.36.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Jan 2024 01:36:55 -0800 (PST)
+Message-ID: <2afa54e6-90db-4ae0-a21c-78e5051aa83c@kernel.org>
+Date: Fri, 26 Jan 2024 10:36:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGWkznGG1xLcPMsWbbXqO5iUWqC2UmyWwcJaFd4WBQ-aFE=-jA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm: huge_memory: don't force huge page alignment on 32
+ bit
+Content-Language: en-US
+To: akpm@linux-foundation.org
+Cc: surenb@google.com, riel@surriel.com, willy@infradead.org, cl@linux.com,
+ yang@os.amperecomputing.com, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, "Bernhard M. Wiedemann" <bwiedemann@suse.de>,
+ Michal Hocko <mhocko@suse.com>, Yang Shi <shy828301@gmail.com>
+References: <20240118133504.2910955-1-shy828301@gmail.com>
+ <ZbIhoj2PzD5jIdSn@tiehlicka>
+From: Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <ZbIhoj2PzD5jIdSn@tiehlicka>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jan 26, 2024 at 05:28:58PM +0800, Zhaoyang Huang wrote:
-> On Fri, Jan 26, 2024 at 4:55 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Fri, Jan 26, 2024 at 03:59:48PM +0800, Zhaoyang Huang wrote:
-> > > loop more mm and fs guys for more comments
-> >
-> > I agree with everything Damien said.  But also ...
-> ok, I will find a way to solve this problem.
-> >
-> > > > +bool BIO_ADD_FOLIO(struct bio *bio, struct folio *folio, size_t len,
-> > > > +               size_t off)
-> >
-> > You don't add any users of these functions.  It's hard to assess whether
-> > this is the right API when there are no example users.
-> Actually, the code has been tested on ext4 and f2fs by patchv2 on a
-> v6.6 6GB android system where I get the test result posted on the
-> commit message. These APIs is to keep block layer clean and wrap
-> things up for fs.
+On 25. 01. 24, 9:53, Michal Hocko wrote:
+> On Thu 18-01-24 05:35:04, Yang Shi wrote:
+>> From: Yang Shi <yang@os.amperecomputing.com>
+>>
+>> The commit efa7df3e3bb5 ("mm: align larger anonymous mappings on THP
+>> boundaries") caused two issues [1] [2] reported on 32 bit system or compat
+>> userspace.
+>>
+>> It doesn't make too much sense to force huge page alignment on 32 bit
+>> system due to the constrained virtual address space.
+>>
+>> [1] https://lore.kernel.org/linux-mm/CAHbLzkqa1SCBA10yjWTtA2mKCsoK5+M1BthSDL8ROvUq2XxZMw@mail.gmail.com/T/#mf211643a0427f8d6495b5b53f8132f453d60ab95
+>> [2] https://lore.kernel.org/linux-mm/CAHbLzkqa1SCBA10yjWTtA2mKCsoK5+M1BthSDL8ROvUq2XxZMw@mail.gmail.com/T/#me93dff2ccbd9902c3e395e1c022fb454e48ecb1d
+>>
+>> Fixes: efa7df3e3bb5 ("mm: align larger anonymous mappings on THP boundaries")
+>> Reported-by: Jiri Slaby <jirislaby@kernel.org>
+>> Reported-by: Suren Baghdasaryan <surenb@google.com>
+>> Tested-by: Jiri Slaby <jirislaby@kernel.org>
+>> Tested-by: Suren Baghdasaryan <surenb@google.com>
+>> Cc: Rik van Riel <riel@surriel.com>
+>> Cc: Matthew Wilcox <willy@infradead.org>
+>> Cc: Christopher Lameter <cl@linux.com>
+>> Signed-off-by: Yang Shi <yang@os.amperecomputing.com>
+> 
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> 
+> Thanks!
+> 
+>> ---
+>>   mm/huge_memory.c | 9 +++++++++
+>>   1 file changed, 9 insertions(+)
+>>
+>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>> index 94ef5c02b459..e9fbaccbe0c0 100644
+>> --- a/mm/huge_memory.c
+>> +++ b/mm/huge_memory.c
+>> @@ -37,6 +37,7 @@
+>>   #include <linux/page_owner.h>
+>>   #include <linux/sched/sysctl.h>
+>>   #include <linux/memory-tiers.h>
+>> +#include <linux/compat.h>
+>>   
+>>   #include <asm/tlb.h>
+>>   #include <asm/pgalloc.h>
+>> @@ -811,6 +812,14 @@ static unsigned long __thp_get_unmapped_area(struct file *filp,
+>>   	loff_t off_align = round_up(off, size);
+>>   	unsigned long len_pad, ret;
+>>   
+>> +	/*
+>> +	 * It doesn't make too much sense to froce huge page alignment on
+>> +	 * 32 bit system or compat userspace due to the contrained virtual
+>> +	 * address space and address entropy.
+>> +	 */
 
-well, where's patch v2?  i don't see it in my inbox.  i'm not going
-to go hunting around the email lists for it.  this is not good enough.
+FWIW,
+Bernhard noticed that "froce" and "contrained", could you fix that 
+before applying the patch?
 
-> > why are BIO_ADD_PAGE and BIO_ADD_FOLIO so very different from each
-> > other?
-> These two API just repeat the same thing that bio_add_page and
-> bio_add_folio do.
-
-what?
-
-here's the patch you sent.  these two functions do wildly different
-things:
-
-+bool BIO_ADD_FOLIO(struct bio *bio, struct folio *folio, size_t len,
-+		size_t off)
-+{
-+	int class, level, hint, activity;
-+
-+	if (len > UINT_MAX || off > UINT_MAX)
-+		return false;
-+
-+	class = IOPRIO_PRIO_CLASS(bio->bi_ioprio);
-+	level = IOPRIO_PRIO_LEVEL(bio->bi_ioprio);
-+	hint = IOPRIO_PRIO_HINT(bio->bi_ioprio);
-+	activity = IOPRIO_PRIO_ACTIVITY(bio->bi_ioprio);
-+
-+	activity += (bio->bi_vcnt + 1 <= IOPRIO_NR_ACTIVITY &&
-+			PageWorkingset(&folio->page)) ? 1 : 0;
-+	if (activity >= bio->bi_vcnt / 2)
-+		class = IOPRIO_CLASS_RT;
-+	else if (activity >= bio->bi_vcnt / 4)
-+		class = max(IOPRIO_PRIO_CLASS(get_current_ioprio()), IOPRIO_CLASS_BE);
-+
-+	bio->bi_ioprio = IOPRIO_PRIO_VALUE_ACTIVITY(class, level, hint, activity);
-+
-+	return bio_add_page(bio, &folio->page, len, off) > 0;
-+}
-+
-+int BIO_ADD_PAGE(struct bio *bio, struct page *page,
-+		unsigned int len, unsigned int offset)
-+{
-+	int class, level, hint, activity;
-+
-+	if (bio_add_page(bio, page, len, offset) > 0) {
-+		class = IOPRIO_PRIO_CLASS(bio->bi_ioprio);
-+		level = IOPRIO_PRIO_LEVEL(bio->bi_ioprio);
-+		hint = IOPRIO_PRIO_HINT(bio->bi_ioprio);
-+		activity = IOPRIO_PRIO_ACTIVITY(bio->bi_ioprio);
-+		activity += (bio->bi_vcnt <= IOPRIO_NR_ACTIVITY && PageWorkingset(page)) ? 1 : 0;
-+		bio->bi_ioprio = IOPRIO_PRIO_VALUE_ACTIVITY(class, level, hint, activity);
-+	}
-+
-+	return len;
-+}
-
-did you change one and forget to change the other?
-
-> These white spaces are trimmed by vim, I will change them back in next version.
-
-vim doesn't do that by default.
+thanks,
+-- 
+js
+suse labs
 
 
