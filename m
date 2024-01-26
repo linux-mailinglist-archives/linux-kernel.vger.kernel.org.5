@@ -1,119 +1,137 @@
-Return-Path: <linux-kernel+bounces-39749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C694883D5B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:13:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA1E383D5B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:13:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2EC0AB260C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:13:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDA551C26148
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:13:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66E576BB2B;
-	Fri, 26 Jan 2024 08:10:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BD686BB45;
+	Fri, 26 Jan 2024 08:11:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e+dUfNQK"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="VHVMvPeZ";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="DerVIPga"
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4463A63A;
-	Fri, 26 Jan 2024 08:10:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 909171401E
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:11:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706256635; cv=none; b=UjfjldnexlZGyU7j55jPx3WGpDGC8bucxcf439gVPeOSo6XCg2AztVaWX0PDkQ/RwgD1fIvxqh9+3wJNrmAXOKs9fUj68b90XAyZhzwtfA0qqgP+pkjzB2GHyVQ6i2vm2HX9WN/F7aqjTRFUYGL7843pezuet22XstZ3a/Y2qQ4=
+	t=1706256670; cv=none; b=FfAb7ZPNmdGIwbiTwowrPLw3zUp7HFe1qfEZQbk35shr0pcw085HtuaEr7QtgwsvZlf4FQc4uechLOhMimK8khqezZ2zVcazgT6z84jdRWxcCc59XsdBf8Xsf8y1In2a2yM3wLZVJEAP6RtwjPf+F5Mz/QRFArNPMJlnHqKO6qI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706256635; c=relaxed/simple;
-	bh=2k8JQREzbKJEsbJpI95q160VXYyJ08a0uiksUeW2oZ8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nzsqL1gREWwNUp68yw/Va31OR0sryg7nvtCkkP5qR+exGESeDnnMZHFKqwDpywEV/Pvr3fB7q8z7/aEg6eI/GBXohrjSFSfrWXWagzPYgwH4nkH2bVIVMsWfCWMqK/QHeHKOi+pY7Ni078hu39mn3ROtI1HW+fLLnk+25erT2ZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e+dUfNQK; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6dddc5e34e2so79648b3a.0;
-        Fri, 26 Jan 2024 00:10:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706256633; x=1706861433; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nELBdfPl4AQ5uJ/P9USF4aInhb1zNUypDMneqWNj1G0=;
-        b=e+dUfNQKmE+FbzArhJefZoCJ03K8/ttSqGD1YFtNz9h/uGAL0ElFeUpxoHiz0SDd4X
-         SLKFUFnnC5reoeaidzswroZGATt9f6WukMoFoAHETqEDcIWAL1fTwZhEzO9fvA/qW85C
-         lwsLN13BI138QdATMtmeNLTWsM1RelWdDRfZMJyYVz9pchTOX21dFB98Q0RgveQsOHlT
-         yBiz8RPwuy4NoO0Hh1BozBEhLdF2NigU0cqsEOVbr0qMbsh4mthE5uzoGUxjo/gMUdJg
-         ZeFXl2h8SnOoFLL7rXY2RpJq1UPHsbbBkPkXn7ICGW4cKNpR228wsynCkFJUGUuIb77V
-         zLBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706256633; x=1706861433;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nELBdfPl4AQ5uJ/P9USF4aInhb1zNUypDMneqWNj1G0=;
-        b=rcHsAmZcXT30qWxbnEkdu4Hfx2IA6k4TqVLslVSbCsa/m6EWwviYX6d8BL7vWypZHx
-         3H1OSSaPAU61WbeGHN9PULk/DgpE3Y96laaTw8bdImBKtQGrOEpGjLY4rBow4W5dP1gI
-         AzcbZfDNnEepZ0QswuqseEZFs8O7pxUqpeYyYYRcEZ2KzoVIDTb1rzjsfmHxTqHhUIR0
-         bo6bDv65PXKejCWDNC91HC2xVL/T8Xg4tIUkuQ0/1DaTT3gTR2cm7uz+4gZtwGlN5Hh9
-         0I7EbY2V6bEdhXR5bG7k+HIVX24Ilu24B5TIiI+Jx6s7qQxdNridc2NCz0muFCL0fuct
-         w5+g==
-X-Gm-Message-State: AOJu0Yxx0KF4gwrKsl2f16PQ22l2MSqWZqi+fFz7O6H2TwBYPwDnJgMz
-	IUZYaGLjQQN4jPgWbR+azNoPT/f07ev8OudvHswX7jQOMS6epAYN
-X-Google-Smtp-Source: AGHT+IHGE4d3r5oPSndwRCufRq2TEcmfDoEFq+Uu0uhZPgljgZJDpVKhMZNkV1x5Mf0sWyGONMJnxQ==
-X-Received: by 2002:a05:6a00:c92:b0:6dd:c0a5:3f2e with SMTP id a18-20020a056a000c9200b006ddc0a53f2emr783610pfv.25.1706256633452;
-        Fri, 26 Jan 2024 00:10:33 -0800 (PST)
-Received: from localhost.localdomain ([51.79.240.130])
-        by smtp.gmail.com with ESMTPSA id f14-20020a056a00228e00b006dde27853afsm626942pfe.113.2024.01.26.00.10.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 00:10:33 -0800 (PST)
-From: Chhayly Leang <clw.leang@gmail.com>
-To: Stefan Binding <sbinding@opensource.cirrus.com>,
-	Takashi Iwai <tiwai@suse.com>,
-	patches@opensource.cirrus.com
-Cc: James Schulman <james.schulman@cirrus.com>,
-	David Rhodes <david.rhodes@cirrus.com>,
-	Richard Fitzgerald <rf@opensource.cirrus.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Chhayly Leang <clw.leang@gmail.com>
-Subject: [PATCH] ALSA: hda: cs35l41: Support ASUS Zenbook UM3402YAR
-Date: Fri, 26 Jan 2024 15:09:12 +0700
-Message-ID: <20240126080912.87422-1-clw.leang@gmail.com>
-X-Mailer: git-send-email 2.42.0
+	s=arc-20240116; t=1706256670; c=relaxed/simple;
+	bh=FCKAlcDbdu/WUlXZP4jFOVFb4lOdexmFIi8g/nSe5Qw=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:
+	 Subject:Content-Type; b=n8phn90VcEItubeLgJmBp7fR0O5cWpq/YWLc+V63i30gr0XmJvEIYGnBlrYCC5DVYg24B6ii/QagGtsaMn3rTArTKnwn+XEPvyqa5EXc5+Zc2M9ET/1eOKumP+NPw8UjY6TKpsXL8AwdYYkcygXh4Lfkls9GgjNlW2aIdInhSY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=VHVMvPeZ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=DerVIPga; arc=none smtp.client-ip=64.147.123.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ljones.dev
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.west.internal (Postfix) with ESMTP id 84D3F3200A44;
+	Fri, 26 Jan 2024 03:11:04 -0500 (EST)
+Received: from imap41 ([10.202.2.91])
+  by compute2.internal (MEProxy); Fri, 26 Jan 2024 03:11:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1706256664; x=1706343064; bh=ZSH7ixKFqF
+	IHWwtAx0naj/Z7GfbEswo8MhtgRHt9sw0=; b=VHVMvPeZev34ZUSV3soDdU5lEF
+	oP392jvFwe00okOo3xJwC9st2yJQm65o4+2aZfpmFL+XKfKcMTm9vxOHFWXe7uOh
+	P6xw6jxXNHGHD0cAOwHYRy3KHDSCkIibFSzMHFQ1hxgE8XUqWRDVeJ+1W+XM+2fL
+	olKV/m7syLrnANDE0RZ4CYb0zeIOxTkBbt3BYAFFQBb9LpTD9cf2yeXEsHek0ICc
+	6i0lYaHeNY93i6vOS3rq0Jrg/Fzzt1zPg+xyliPsV58yeNpZT9vS0tEcrO5NczwA
+	DPzAEZNbCwLONNRwCc6qg1MZ7j1fs190LQbpVFEWRXa91SK9tha01sXcKZAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706256664; x=1706343064; bh=ZSH7ixKFqFIHWwtAx0naj/Z7GfbE
+	swo8MhtgRHt9sw0=; b=DerVIPgaKX1w6yVjmksU9ueVMig8rETzVko1yhlH8eUP
+	c7uyVU+J3aQIuiFRLjsWVnh4UfpIk4K/QMD376aQcPpErhTL2yaCqsT7AVFCoUCg
+	pQPiPZk+0mCpC7xRYwF0h7uisgHR4HTOTkgbJn2s95OBM0NW7wsgvBxNBcKAwYeu
+	HXnn21gu1Fne/BwA7fSfg/afuyQFpeEWLFM0nYpV2l+MFtUi+3CgmUIW1uwcx03F
+	EG/XZxYvaBU1imnjhFPiqOSRdS9hGqqJ8dY1pp1zsfwEH+7Xgnw2zhjgqiH+1uxq
+	MTld+Gclw11W1oci3APWxv4t7iLGMtca1LryRTxm2Q==
+X-ME-Sender: <xms:F2mzZYfREBZ6W34ZnNROZfpc8Qlx1If-jX7iva6XIu8UnYN0Je27NA>
+    <xme:F2mzZaOc0gPcrsRG7JBXA6HW_RFfhYWVHG_FL-i4eHRjqyivoGB_uYAYLehu1gbKG
+    gI6v5cgbSVVd1ArvPA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeliedguddugecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfnfhu
+    khgvucflohhnvghsfdcuoehluhhkvgeslhhjohhnvghsrdguvghvqeenucggtffrrghtth
+    gvrhhnpedugedvhfelheejhfekvdeuudekfeefledtueegvddtteffheevjedukeejleev
+    tdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehluh
+    hkvgeslhhjohhnvghsrdguvghv
+X-ME-Proxy: <xmx:F2mzZZh7C5GlvqKGXQgWCmpPlThiF9BIMUGewkH9y2B0SlnxmSXh0g>
+    <xmx:F2mzZd-b8RcgGD1Wd5897EGQLXD13Rp1XCyhfzSZuAJgDLwAXWuxsw>
+    <xmx:F2mzZUt8wZPK3zFFqU2R6223RifSwhKsW1urb_ajF4KYuP110H61NA>
+    <xmx:GGmzZd6gwp3d9pOxiwGQ9myk69XAhL9aa9H0TEzSY1M5T3FEHsng3A>
+Feedback-ID: i5ec1447f:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id BE0752340080; Fri, 26 Jan 2024 03:11:03 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-119-ga8b98d1bd8-fm-20240108.001-ga8b98d1b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <9db5a3c1-40b1-43fb-9c31-53c28d2b63c6@app.fastmail.com>
+In-Reply-To: <da062d7e-c06c-40f8-b2ad-9dd5e82ff596@redhat.com>
+References: <20240115211829.48251-1-luke@ljones.dev>
+ <da062d7e-c06c-40f8-b2ad-9dd5e82ff596@redhat.com>
+Date: Fri, 26 Jan 2024 21:10:41 +1300
+From: "Luke Jones" <luke@ljones.dev>
+To: "Hans de Goede" <hdegoede@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: add Luke Jones as maintainer for asus notebooks
+Content-Type: text/plain
 
-Adds sound support for ASUS Zenbook UM3402YAR with missing DSD
 
-Signed-off-by: Chhayly Leang <clw.leang@gmail.com>
----
- sound/pci/hda/cs35l41_hda_property.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
-index 35277ce890a..2af083183d8 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -76,6 +76,7 @@ static const struct cs35l41_config cs35l41_config_table[] = {
- 	{ "10431533", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
- 	{ "10431573", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
- 	{ "10431663", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 1000, 4500, 24 },
-+	{ "10431683", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
- 	{ "104316D3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
- 	{ "104316F3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
- 	{ "104317F3", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
-@@ -410,6 +411,7 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
- 	{ "CSC3551", "10431533", generic_dsd_config },
- 	{ "CSC3551", "10431573", generic_dsd_config },
- 	{ "CSC3551", "10431663", generic_dsd_config },
-+	{ "CSC3551", "10431683", generic_dsd_config },
- 	{ "CSC3551", "104316D3", generic_dsd_config },
- 	{ "CSC3551", "104316F3", generic_dsd_config },
- 	{ "CSC3551", "104317F3", generic_dsd_config },
--- 
-2.42.0
+On Tue, 16 Jan 2024, at 11:45 PM, Hans de Goede wrote:
+> Hi,
+> 
+> On 1/15/24 22:18, Luke D. Jones wrote:
+> > Add myself as maintainer for "ASUS NOTEBOOKS AND EEEPC ACPI/WMI EXTRAS
+> > DRIVERS" as suggested by Hans de Goede based on my history of
+> > contributions.
+> > 
+> > Signed-off-by: Luke D. Jones <luke@ljones.dev>
+> > ---
+> >  MAINTAINERS | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index f5c2450fa4ec..e7843beaa589 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -3147,6 +3147,7 @@ F: drivers/hwmon/asus-ec-sensors.c
+> >  
+> >  ASUS NOTEBOOKS AND EEEPC ACPI/WMI EXTRAS DRIVERS
+> >  M: Corentin Chary <corentin.chary@gmail.com>
+> > +M: Luke D. Jones <luke@lones.dev>
+> 
+> heh there is a typo there that should be @ljones.dev ,
+> I have fixed this up now in my review-hans branch.
 
+Thanks for spotting that. The laptop I have been testing has issues with key presses sometimes.
+
+> Regards,
+> 
+> Hans
+> 
+> 
+> >  L: acpi4asus-user@lists.sourceforge.net
+> >  L: platform-driver-x86@vger.kernel.org
+> >  S: Maintained
+> 
+> 
 
