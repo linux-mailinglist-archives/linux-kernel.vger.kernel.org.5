@@ -1,205 +1,159 @@
-Return-Path: <linux-kernel+bounces-40263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40264-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AFB783DD59
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:22:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F38083DD5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:24:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2CB8B221E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:22:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF87B282082
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 15:24:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 536E71CF9C;
-	Fri, 26 Jan 2024 15:22:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E5DC1CF92;
+	Fri, 26 Jan 2024 15:24:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TJrIz5eH"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vLkxbsx0"
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFBF31CF8C
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:22:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B9A215AD0
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 15:23:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706282534; cv=none; b=qFEkPetqBlAi+nEUX9YOL4ikqnl7Uen/JoiQf/LHiyYnmTmVwsYcAQgzk9gzLCrkBs8GRplRyOrk+2EsBEv3rHr84Kn7e9Rpx7t94017Qu0aNue0xUmYSRKNcxfuY57YwvUs+wJgWalnn3nV5/NOhwvzBCHvj4dMBRyJvy3E6SY=
+	t=1706282639; cv=none; b=QgUzoY7Uyr5oy3qASBvd2joOp5axIco9AMyYrqs6Rir07OhmAq7cOFZN9c3tGlzRCwEpqHmh2yLwEedlOs7C1ExrXuV2uSx+gGkYTqLzaAs6eYO4D3L/1LwypxgAhNdGxOsc2Uce1qU+hnbs3+5WnUONvXpooh7IvGGphIlwKV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706282534; c=relaxed/simple;
-	bh=t2n7KNUGUzU77BEBqmOYRjm+oIuzJQkeDhTNCAq4zx8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=O2bEjvRcTtqacHt5UO+C50ZJo1266EDmbanzgbHNoYadu8CFGiafXzU5VOfFDy7QBgRejZRjFEQ5CXMQ55/0fEUlul0z0oLPTxxWzKXZuxCktaqBvZ12bHIeOj5IkvMM2L6RwLr5SANUZ3C3BenjvLFGw6a4jnfI5v4NnfIT7VI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TJrIz5eH; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706282531;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=IkTbDdKErsrbqQMEDhGqK5ts3+kvxqXuzsHApeWI9Ig=;
-	b=TJrIz5eH8b+4S+nHm5AFqEO3AMvlyEllvsEuedDz8zXHJE0u79bO5ntAYpJfHpFwzugfxk
-	HlZ44Wdg0GRgaAuqccKd07ENCjXT1qyOtlh4xGqjF2H+zFmMzWMwi9bwSii7XlX2kMHvUi
-	OJpIs/oFhfHbVmvDzRdTn7keudj28rs=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-551-GWKs3CcOOo2QEATqxHWtQg-1; Fri,
- 26 Jan 2024 10:22:08 -0500
-X-MC-Unique: GWKs3CcOOo2QEATqxHWtQg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7D0743C025D9;
-	Fri, 26 Jan 2024 15:22:07 +0000 (UTC)
-Received: from metal.redhat.com (unknown [10.45.224.66])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 6571EC15E61;
-	Fri, 26 Jan 2024 15:22:04 +0000 (UTC)
-From: Daniel Vacek <neelx@redhat.com>
-To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Brendan Cunningham <bcunningham@cornelisnetworks.com>,
-	Patrick Kelsey <pat.kelsey@cornelisnetworks.com>
-Cc: Daniel Vacek <neelx@redhat.com>,
-	stable@vger.kernel.org,
-	Mats Kronberg <kronberg@nsc.liu.se>,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] IB/hfi1: Fix sdma.h tx->num_descs off-by-one error (take two)
-Date: Fri, 26 Jan 2024 16:21:23 +0100
-Message-ID: <20240126152125.869509-1-neelx@redhat.com>
+	s=arc-20240116; t=1706282639; c=relaxed/simple;
+	bh=ydPZ3tu4FlaDxMtV6SOM9OK/z2p8/IzKH4YoVsZ330U=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=OqcPEx7sbhuQLuObHFynUOLypbnE8UkvhKdakMXQHyQPm5tRxonrI8qunEWrAGJXKmtkLxsYnoRSesru7RUKGYfGp7j129xsYGH/DW4dPhvl+wnJokJyuywE7wewhYLLJaSRxisiib7NhfVgIAV2Jpvqb2DPdCRtu5V3YWtayKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vLkxbsx0; arc=none smtp.client-ip=209.85.210.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6ddc261570cso582870b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 07:23:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706282638; x=1706887438; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uy3R1AKMbIaUlXE1Nr9/RuFwNoQzqIu4pzJFsA3j5jw=;
+        b=vLkxbsx03MC06Bfz8RTh7dCKiQYtJHKMutnW9AOzNBJYV/IoHT05IdRN8Wsa2PlAzh
+         vAPdKvsdBaWDs30FzNm+wgtzAcxE/OfmpBeKIIA3ENWm/eVvo29YlGf294kN9/ORIvDV
+         RMn7if9iR9uWNUEDc1anluTF6Xjp8Vgsx0SFlAoro+7SR4PoG3NpizTrYecLtYRdNRfy
+         oELeEOSTPC1X+vBZKHTbNoyntUPCruS7udz1lrl/dk0h5h/fFSO2I0hYI+qdHcELPv2o
+         13tWTFs27z48HDGJ6+9m5PNwU9QlXCvpg8RBYoqQ6UIfNRc9HQyJiotqCCb0vzoU49Js
+         tXmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706282638; x=1706887438;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=uy3R1AKMbIaUlXE1Nr9/RuFwNoQzqIu4pzJFsA3j5jw=;
+        b=QD/sQ3RD44Pw39eEkyi7ZTIvvY6k1eVCdYEU+obCZuZptPAHoLxhSVhTSeR0TKnyqq
+         u1Dye2mSjkZOKKznoVrjpttAe2FUaRp0pf6ADGGthk+JzmVJDkWeQjEsV9Hw0RKf1dkn
+         Tlo/ngWYtVL/TUWhrJKhwJl8CGGQ9MyJdEcgSo7u+rsHmli4ZtEyi4qmqycAGaTIkwdG
+         z5X6as52/6jpAhtsaypPRBCaws4QEfpQn0GP5/hFCgRY4xZzx8Q9Yt+/ZRny2zpIOMfI
+         t8mtAD/FSkMkIBLd31RdX01WnJEzEQD5nb0PFciotl3LMUcSVhueZAt5aB+a/E06a5yL
+         d1tA==
+X-Gm-Message-State: AOJu0Yw7h0rVa9piHv2L8mvDcFtysTZ4cFhaQiB4JOl8mUq31PLsKLtw
+	Cc0r3iLmTPfX3YPP0dxfrjvWjNRlngHH1PQAXDwp1CnIkSY2RqtenbMUG/GZwwlfDuFX0o3X/JW
+	zHA==
+X-Google-Smtp-Source: AGHT+IHQfxRoZeNwOqFJdXs7U9dhuzak/9AcePRZQYH58f/39D52wykb9ESAoZ9pjQpLXy9fdKdTaNW+gCM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:1d1d:b0:6de:622:2ebf with SMTP id
+ a29-20020a056a001d1d00b006de06222ebfmr81316pfx.3.1706282637856; Fri, 26 Jan
+ 2024 07:23:57 -0800 (PST)
+Date: Fri, 26 Jan 2024 07:23:55 -0800
+In-Reply-To: <20240126134230.1166943-1-kirill.shutemov@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+Mime-Version: 1.0
+References: <20240126134230.1166943-1-kirill.shutemov@linux.intel.com>
+Message-ID: <ZbPOi0760srv0rE0@google.com>
+Subject: Re: [RFC] Randomness on confidential computing platforms
+From: Sean Christopherson <seanjc@google.com>
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, 
+	"Theodore Ts'o" <tytso@mit.edu>, "Jason A. Donenfeld" <Jason@zx2c4.com>, 
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, 
+	Elena Reshetova <elena.reshetova@intel.com>, Jun Nakajima <jun.nakajima@intel.com>, 
+	Tom Lendacky <thomas.lendacky@amd.com>, Ashish Kalra <ashish.kalra@amd.com>, 
+	linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Unfortunately the commit `fd8958efe877` introduced another error
-causing the `descs` array to overflow. This reults in further crashes
-easily reproducible by `sendmsg` system call.
+On Fri, Jan 26, 2024, Kirill A. Shutemov wrote:
+> Problem Statement
+>=20
+> Currently Linux RNG uses the random inputs obtained from x86
+> RDRAND/RDSEED instructions (if present) during early initialization
+> stage (by mixing the obtained input into the random pool via
+> _mix_pool_bytes()), as well as for seeding/reseeding ChaCha-based CRNG.
+> When the calls to both RDRAND/RDSEED fail (including RDRAND internal
+> retries), the timing-based fallbacks are used in the latter case, and
+> during the early boot case this source of entropy input is simply
+> skipped. Overall Linux RNG has many other sources of entropy that it
+> uses (also depending on what HW is used), but the dominating one is
+> interrupts.
+>=20
+> In a Confidential Computing Guest threat model, given the absence of any
+> special trusted HW for the secure entropy input, RDRAND/RDSEED
+> instructions is the only entropy source that is unobservable outside of
+> Confidential Computing Guest TCB. However, with enough pressure on these
+> instructions from multiple cores (see Intel SDM, Volume 1, Section
+> 7.3.17, =E2=80=9CRandom Number Generator Instructions=E2=80=9D), they can=
+ be made to
+> fail on purpose and force the Confidential Computing Guest Linux RNG to
+> use only Host/VMM controlled entropy sources.
+>=20
+> Solution options
+>=20
+> There are several possible solutions to this problem and the intention
+> of this RFC is to initiate a joined discussion. Here are some options
+> that has been considered:
+>=20
+> 1. Do nothing and accept the risk.
+> 2. Force endless looping on RDRAND/RDSEED instructions when run in a
+>    Confidential Computing Guest (this patch). This option turns the
+>    attack against the quality of cryptographic randomness provided by
+>    Confidential Computing Guest=E2=80=99s Linux RNG into a DoS attack aga=
+inst
+>    the Confidential Computing Guest itself (DoS attack is out of scope
+>    for the Confidential Computing threat model).
+> 3. Panic after enough re-tries of RDRAND/RDSEED instructions fail.
+>    Another DoS variant against the Guest.
+> 4. Exit to the host/VMM with an error indication after a Confidential
+>    Computing Guest failed to obtain random input from RDRAND/RDSEED
+>    instructions after reasonable number of retries. This option allows
+>    host/VMM to take some correction action for cases when the load on
+>    RDRAND/RDSEED instructions has been put by another actor, i.e. the
+>    other guest VM. The exit to host/VMM in such cases can be made
+>    transparent for the Confidential Computing Guest in the TDX case with
+>    the assistance of the TDX module component.
 
-[ 1080.836473] general protection fault, probably for non-canonical address 0x400300015528b00a: 0000 [#1] PREEMPT SMP PTI
-[ 1080.869326] RIP: 0010:hfi1_ipoib_build_ib_tx_headers.constprop.0+0xe1/0x2b0 [hfi1]
---
-[ 1080.974535] Call Trace:
-[ 1080.976990]  <TASK>
-[ 1081.021929]  hfi1_ipoib_send_dma_common+0x7a/0x2e0 [hfi1]
-[ 1081.027364]  hfi1_ipoib_send_dma_list+0x62/0x270 [hfi1]
-[ 1081.032633]  hfi1_ipoib_send+0x112/0x300 [hfi1]
-[ 1081.042001]  ipoib_start_xmit+0x2a9/0x2d0 [ib_ipoib]
-[ 1081.046978]  dev_hard_start_xmit+0xc4/0x210
---
-[ 1081.148347]  __sys_sendmsg+0x59/0xa0
+Hell no.  Develop better hardware if you want to guarantee forward progress=
+.
+Don't push more complexity into the host stack for something that in all li=
+kelihood
+will never happen outside of buggy software or hardware.
 
-crash> ipoib_txreq 0xffff9cfeba229f00
-struct ipoib_txreq {
-  txreq = {
-    list = {
-      next = 0xffff9cfeba229f00,
-      prev = 0xffff9cfeba229f00
-    },
-    descp = 0xffff9cfeba229f40,
-    coalesce_buf = 0x0,
-    wait = 0xffff9cfea4e69a48,
-    complete = 0xffffffffc0fe0760 <hfi1_ipoib_sdma_complete>,
-    packet_len = 0x46d,
-    tlen = 0x0,
-    num_desc = 0x0,
-    desc_limit = 0x6,
-    next_descq_idx = 0x45c,
-    coalesce_idx = 0x0,
-    flags = 0x0,
-    descs = {{
-        qw = {0x8024000120dffb00, 0x4}  # SDMA_DESC0_FIRST_DESC_FLAG (bit 63)
-      }, {
-        qw = {  0x3800014231b108, 0x4}
-      }, {
-        qw = { 0x310000e4ee0fcf0, 0x8}
-      }, {
-        qw = {  0x3000012e9f8000, 0x8}
-      }, {
-        qw = {  0x59000dfb9d0000, 0x8}
-      }, {
-        qw = {  0x78000e02e40000, 0x8}
-      }}
-  },
-  sdma_hdr =  0x400300015528b000,  <<< invalid pointer in the tx request structure
-  sdma_status = 0x0,                   SDMA_DESC0_LAST_DESC_FLAG (bit 62)
-  complete = 0x0,
-  priv = 0x0,
-  txq = 0xffff9cfea4e69880,
-  skb = 0xffff9d099809f400
-}
+> 5. Anything other better option?
 
-With this patch the crashes are no longer reproducible and the machine is stable.
+Give the admin the option to choose between "I don't care, carry-on with le=
+ss
+randomness" and "I'm paranoid, panic, panic, panic!".  In other words, let =
+the
+admin choose between #1 and #3 at boot time.  You could probably even let t=
+he
+admin control the number of retries, though that's probably a bit excessive=
+.
 
-Note, the header file changes are just an unrelated clean-up while I was looking
-around trying to find the bug.
-
-Fixes: fd8958efe877 ("IB/hfi1: Fix sdma.h tx->num_descs off-by-one errors")
-Cc: stable@vger.kernel.org
-Reported-by: Mats Kronberg <kronberg@nsc.liu.se>
-Tested-by: Mats Kronberg <kronberg@nsc.liu.se>
-Signed-off-by: Daniel Vacek <neelx@redhat.com>
----
- drivers/infiniband/hw/hfi1/sdma.c |  2 +-
- drivers/infiniband/hw/hfi1/sdma.h | 17 +++++++----------
- 2 files changed, 8 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hfi1/sdma.c b/drivers/infiniband/hw/hfi1/sdma.c
-index 6e5ac2023328a..b67d23b1f2862 100644
---- a/drivers/infiniband/hw/hfi1/sdma.c
-+++ b/drivers/infiniband/hw/hfi1/sdma.c
-@@ -3158,7 +3158,7 @@ int _pad_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx)
- {
- 	int rval = 0;
- 
--	if ((unlikely(tx->num_desc + 1 == tx->desc_limit))) {
-+	if ((unlikely(tx->num_desc == tx->desc_limit))) {
- 		rval = _extend_sdma_tx_descs(dd, tx);
- 		if (rval) {
- 			__sdma_txclean(dd, tx);
-diff --git a/drivers/infiniband/hw/hfi1/sdma.h b/drivers/infiniband/hw/hfi1/sdma.h
-index d77246b48434f..362815a8da267 100644
---- a/drivers/infiniband/hw/hfi1/sdma.h
-+++ b/drivers/infiniband/hw/hfi1/sdma.h
-@@ -639,13 +639,13 @@ static inline void sdma_txclean(struct hfi1_devdata *dd, struct sdma_txreq *tx)
- static inline void _sdma_close_tx(struct hfi1_devdata *dd,
- 				  struct sdma_txreq *tx)
- {
--	u16 last_desc = tx->num_desc - 1;
-+	struct sdma_desc *desc = &tx->descp[tx->num_desc - 1];
- 
--	tx->descp[last_desc].qw[0] |= SDMA_DESC0_LAST_DESC_FLAG;
--	tx->descp[last_desc].qw[1] |= dd->default_desc1;
-+	desc->qw[0] |= SDMA_DESC0_LAST_DESC_FLAG;
-+	desc->qw[1] |= dd->default_desc1;
- 	if (tx->flags & SDMA_TXREQ_F_URGENT)
--		tx->descp[last_desc].qw[1] |= (SDMA_DESC1_HEAD_TO_HOST_FLAG |
--					       SDMA_DESC1_INT_REQ_FLAG);
-+		desc->qw[1] |= (SDMA_DESC1_HEAD_TO_HOST_FLAG |
-+				SDMA_DESC1_INT_REQ_FLAG);
- }
- 
- static inline int _sdma_txadd_daddr(
-@@ -670,13 +670,10 @@ static inline int _sdma_txadd_daddr(
- 	tx->tlen -= len;
- 	/* special cases for last */
- 	if (!tx->tlen) {
--		if (tx->packet_len & (sizeof(u32) - 1)) {
-+		if (tx->packet_len & (sizeof(u32) - 1))
- 			rval = _pad_sdma_tx_descs(dd, tx);
--			if (rval)
--				return rval;
--		} else {
-+		else
- 			_sdma_close_tx(dd, tx);
--		}
- 	}
- 	return rval;
- }
--- 
-2.43.0
-
+And don't tie it to CoCo VMs, e.g. if someone is relying on randomness for =
+a bare
+metal workload, they might prefer to panic if hardware is acting funky.
 
