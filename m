@@ -1,150 +1,322 @@
-Return-Path: <linux-kernel+bounces-39637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66D4483D3EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 06:26:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87D5983D3F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 06:36:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EDD4BB25962
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 05:26:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A75771C22D22
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 05:36:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A932C128;
-	Fri, 26 Jan 2024 05:26:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A4A3BE4E;
+	Fri, 26 Jan 2024 05:36:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GHU5YN8v"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="bqopl3ah"
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B031010A19
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 05:26:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2ACCBA33
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 05:36:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706246801; cv=none; b=muOFhMDUvREwOaOcxvBgyKPQ2t9gN3b8l4Mdt7eqSoYwrSOWz7KJCNE9nOz8Hl+LcW5emKcpS9vkHvJzuaerUkgOO08djyj1BiwU2ULIvybSr/As0ABFyn2o0fjhzPSMYVPev1VHTuU9JaCiUqSlTbe6g8ngdvrsOoit8t9NE6w=
+	t=1706247389; cv=none; b=nN+m+i6t1UcGRhuoHXZj+Xnm5dk8TiVT4W/rYVfM8WP0voqdJw1hwHWPETwJjoH+N5ENbcfVd7fFASOhzYVEJkpFbQ3Xh9vLw5rw9JNNQsRrcAQyclRC3vnq/IIyB7GIIFQKxSaMBPrpKCR57sdkQXIw/cIxvDsq8NLS+qPb2aQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706246801; c=relaxed/simple;
-	bh=0srVlTuuRr5HXWXZIGZUv/anH3kUhIIgqfalf3rkwDE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VitMzqflmILjYJTbR0k0BTzXHpfXwq96AlNOcMuRQnU8V/4ZgPDjAML+BKvteQCpzxwtTMft1y9dx3F3sQPoTuF8laWizLCbhdZ9teAhAavFBtNmCjZGC5oe/0Lizwau4WF4ChiK5LfU+VpprnNZCeIrdBABzmvYADZ776JfOfc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GHU5YN8v; arc=none smtp.client-ip=192.55.52.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706246799; x=1737782799;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0srVlTuuRr5HXWXZIGZUv/anH3kUhIIgqfalf3rkwDE=;
-  b=GHU5YN8vazhO+6d25717gqwsSfJ2h1fJOy5ld1amfvjyiPNpNVT2OwFg
-   C5w04xAs2TDr4s6NQB+cTEcaafLkvPKO4FDCFuh51VJe7vCXtvYY7WM4e
-   6MJ8OGVa40zRhVu02l1DlIkw+YANR+yBoWyoqXac30726E4YHFUYlee9X
-   FUiC8qoeSyM2dnuigChuvXrahqL12vlR8K22irTS5QRcVZFujmCFYm1Rk
-   gkLNTOwhNCyeSHsquBctKGCFkmkqJXJbuKJj5uDpxb6fpBuSSRSK7qXH1
-   mBACRY/urCHR+O7l43WrP0mTzExsKobiftV4F1AbBq+7Cij6Isc6sthCd
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="399556914"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="399556914"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 21:26:36 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="960113139"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="960113139"
-Received: from lkp-server01.sh.intel.com (HELO 370188f8dc87) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 25 Jan 2024 21:26:33 -0800
-Received: from kbuild by 370188f8dc87 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rTEjX-0000iq-0P;
-	Fri, 26 Jan 2024 05:26:31 +0000
-Date: Fri, 26 Jan 2024 13:25:43 +0800
-From: kernel test robot <lkp@intel.com>
-To: Bitao Hu <yaoma@linux.alibaba.com>, dianders@chromium.org,
-	akpm@linux-foundation.org, pmladek@suse.com, tglx@linutronix.de,
-	maz@kernel.org, liusong@linux.alibaba.com
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Bitao Hu <yaoma@linux.alibaba.com>
-Subject: Re: [PATCH 1/3] watchdog/softlockup: low-overhead detection of
- interrupt storm
-Message-ID: <202401261310.Ixxefn7o-lkp@intel.com>
-References: <20240123121223.22318-2-yaoma@linux.alibaba.com>
+	s=arc-20240116; t=1706247389; c=relaxed/simple;
+	bh=hn5LUYrPwooQxSCTZT4qXdNvz0cEpKO4X5sJ/K1r3tA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=QBZEhOJwOSmzdaHgAa9VanSW5m14StF5Y5+rj41POgAdWZ24CSICfXkepKR33vJMufFT34NkH0OYRsuOqAUix7/Xxq4lUtVAnKpRK9fqabr2BD9fbznMRRWi9M49XS9VwWExyccRpTgTL6jLRFLuO+qwsya7n3sBg5LTpL3LUsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=bqopl3ah; arc=none smtp.client-ip=115.124.30.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1706247383; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=h9jiGswXdStGzbdydZiMP7pJ+yL5hOmyEbJy5RVFHxs=;
+	b=bqopl3ahydl1RFlvnwjI7yH64GvfUblMLiOh6sSFw47eFfetEqq3JsQrIxSJFcW17zQ6V4xPJZBG7K0OOPqDzRw0c7EsPNYtcT9mYZqtTr2tdAYfmJT4YnOBQJ6iotLHxeJ+HVyL0y2d89q/WHubV79zm5/cPuRge2FwVi+gKJk=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W.MYc8x_1706247378;
+Received: from e69b19392.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W.MYc8x_1706247378)
+          by smtp.aliyun-inc.com;
+          Fri, 26 Jan 2024 13:36:23 +0800
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
+To: linux-erofs@lists.ozlabs.org
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Chao Yu <chao@kernel.org>,
+	Yue Hu <huyue2@coolpad.com>,
+	Chunhai Guo <guochunhai@vivo.com>,
+	Gao Xiang <xiang@kernel.org>,
+	Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: [PATCH v3] erofs: relaxed temporary buffers allocation on readahead
+Date: Fri, 26 Jan 2024 13:36:16 +0800
+Message-Id: <20240126053616.3707834-1-hsiangkao@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
+In-Reply-To: <TY2PR06MB3342D2245C5E515028C33FD4BE792@TY2PR06MB3342.apcprd06.prod.outlook.com>
+References: <TY2PR06MB3342D2245C5E515028C33FD4BE792@TY2PR06MB3342.apcprd06.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240123121223.22318-2-yaoma@linux.alibaba.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Bitao,
+From: Chunhai Guo <guochunhai@vivo.com>
 
-kernel test robot noticed the following build errors:
+Even with inplace decompression, sometimes very few temporary buffers
+are still needed for a single decompression shot (e.g. 16 pages for 64k
+sliding window or 4 pages for 16k sliding window).  In low-memory
+scenarios, it would be better to try to allocate with GFP_NOWAIT on
+readahead first. That can help reduce the time spent on page allocation
+under durative memory pressure.
 
-[auto build test ERROR on tip/irq/core]
-[also build test ERROR on linus/master v6.8-rc1 next-20240125]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Here are detailed performance numbers under multi-app launch benchmark
+workload [1] on ARM64 Android devices (8-core CPU and 8GB of memory)
+running a 5.15 LTS kernel with EROFS of 4k pclusters:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Bitao-Hu/watchdog-softlockup-low-overhead-detection-of-interrupt-storm/20240123-201509
-base:   tip/irq/core
-patch link:    https://lore.kernel.org/r/20240123121223.22318-2-yaoma%40linux.alibaba.com
-patch subject: [PATCH 1/3] watchdog/softlockup: low-overhead detection of interrupt storm
-config: i386-randconfig-013-20240126 (https://download.01.org/0day-ci/archive/20240126/202401261310.Ixxefn7o-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240126/202401261310.Ixxefn7o-lkp@intel.com/reproduce)
++----------------+---------+---------+---------+
+|      LZ4       | vanilla | patched |  diff   |
+|----------------+---------+---------+---------|
+|  Average (ms)  |  3364   |  2684   | -20.21% | [64k sliding window]
+|----------------+---------+---------+---------|
+|  Average (ms)  |  2079   |  1610   | -22.56% | [16k sliding window]
++----------------+---------+---------+---------+
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401261310.Ixxefn7o-lkp@intel.com/
+The total size of system images for 4k pcluster is almost unchanged:
+(64k sliding window)  9,117,044 KB
+(16k sliding window)  9,113,096 KB
 
-All errors (new ones prefixed by >>):
+Therefore, in addition to switch the sliding window from 64k to 16k,
+after applying this patch, it can eventually save 52.14% (3364 -> 1610)
+on average with no memory reservation.  That is particularly useful for
+embedded devices with limited resources.
 
-   ld: kernel/watchdog.o: in function `print_cpustat':
->> kernel/watchdog.c:453: undefined reference to `__udivdi3'
->> ld: kernel/watchdog.c:457: undefined reference to `__udivdi3'
+[1] https://lore.kernel.org/r/20240109074143.4138783-1-guochunhai@vivo.com
 
+Suggested-by: Gao Xiang <xiang@kernel.org>
+Signed-off-by: Chunhai Guo <guochunhai@vivo.com>
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+---
+v2: https://lore.kernel.org/r/20240120145551.1941483-1-guochunhai@vivo.com
+change since v2:
+ - update commit message according to test results.
 
-vim +453 kernel/watchdog.c
+I plan to apply this version.
 
-   446	
-   447	static void print_cpustat(void)
-   448	{
-   449		int i, j, k;
-   450		u64 a[5][NR_STATS], b[5][NR_STATS];
-   451		u64 (*diff)[NR_STATS] = this_cpu_ptr(cpustat_diff);
-   452		int tail = this_cpu_read(cpustat_tail);
- > 453		u32 period_us = sample_period / 1000;
-   454	
-   455		for (i = 0; i < 5; i++) {
-   456			for (j = 0; j < NR_STATS; j++) {
- > 457				a[i][j] = 100 * (diff[i][j] / 1000);
-   458				b[i][j] = 10 * do_div(a[i][j], period_us);
-   459				do_div(b[i][j], period_us);
-   460			}
-   461		}
-   462		printk(KERN_CRIT "CPU#%d Utilization every %us during lockup:\n",
-   463			smp_processor_id(), period_us/1000000);
-   464		for (k = 0, i = tail; k < 5; k++, i = (i + 1) % 5) {
-   465			printk(KERN_CRIT "\t#%d: %llu.%llu%% system,\t%llu.%llu%% softirq,\t"
-   466				"%llu.%llu%% hardirq,\t%llu.%llu%% idle\n", k+1,
-   467				a[i][CPUTIME_SYSTEM], b[i][CPUTIME_SYSTEM],
-   468				a[i][CPUTIME_SOFTIRQ], b[i][CPUTIME_SOFTIRQ],
-   469				a[i][CPUTIME_IRQ], b[i][CPUTIME_IRQ],
-   470				a[i][CPUTIME_IDLE], b[i][CPUTIME_IDLE]);
-   471		}
-   472	}
-   473	#else
-   474	static inline void update_cpustat(void) { }
-   475	static inline void print_cpustat(void) { }
-   476	#endif
-   477	
+ fs/erofs/compress.h             |  5 ++---
+ fs/erofs/decompressor.c         |  5 +++--
+ fs/erofs/decompressor_deflate.c | 19 +++++++++++++------
+ fs/erofs/decompressor_lzma.c    | 17 ++++++++++++-----
+ fs/erofs/zdata.c                | 16 ++++++++++++----
+ 5 files changed, 42 insertions(+), 20 deletions(-)
 
+diff --git a/fs/erofs/compress.h b/fs/erofs/compress.h
+index 279933e007d2..7cc5841577b2 100644
+--- a/fs/erofs/compress.h
++++ b/fs/erofs/compress.h
+@@ -11,13 +11,12 @@
+ struct z_erofs_decompress_req {
+ 	struct super_block *sb;
+ 	struct page **in, **out;
+-
+ 	unsigned short pageofs_in, pageofs_out;
+ 	unsigned int inputsize, outputsize;
+ 
+-	/* indicate the algorithm will be used for decompression */
+-	unsigned int alg;
++	unsigned int alg;       /* the algorithm for decompression */
+ 	bool inplace_io, partial_decoding, fillgaps;
++	gfp_t gfp;      /* allocation flags for extra temporary buffers */
+ };
+ 
+ struct z_erofs_decompressor {
+diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
+index 072ef6a66823..d4cee95af14c 100644
+--- a/fs/erofs/decompressor.c
++++ b/fs/erofs/decompressor.c
+@@ -111,8 +111,9 @@ static int z_erofs_lz4_prepare_dstpages(struct z_erofs_lz4_decompress_ctx *ctx,
+ 			victim = availables[--top];
+ 			get_page(victim);
+ 		} else {
+-			victim = erofs_allocpage(pagepool,
+-						 GFP_KERNEL | __GFP_NOFAIL);
++			victim = erofs_allocpage(pagepool, rq->gfp);
++			if (!victim)
++				return -ENOMEM;
+ 			set_page_private(victim, Z_EROFS_SHORTLIVED_PAGE);
+ 		}
+ 		rq->out[i] = victim;
+diff --git a/fs/erofs/decompressor_deflate.c b/fs/erofs/decompressor_deflate.c
+index 4a64a9c91dd3..b98872058abe 100644
+--- a/fs/erofs/decompressor_deflate.c
++++ b/fs/erofs/decompressor_deflate.c
+@@ -95,7 +95,7 @@ int z_erofs_load_deflate_config(struct super_block *sb,
+ }
+ 
+ int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
+-			       struct page **pagepool)
++			       struct page **pgpl)
+ {
+ 	const unsigned int nrpages_out =
+ 		PAGE_ALIGN(rq->pageofs_out + rq->outputsize) >> PAGE_SHIFT;
+@@ -158,8 +158,12 @@ int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
+ 			strm->z.avail_out = min_t(u32, outsz, PAGE_SIZE - pofs);
+ 			outsz -= strm->z.avail_out;
+ 			if (!rq->out[no]) {
+-				rq->out[no] = erofs_allocpage(pagepool,
+-						GFP_KERNEL | __GFP_NOFAIL);
++				rq->out[no] = erofs_allocpage(pgpl, rq->gfp);
++				if (!rq->out[no]) {
++					kout = NULL;
++					err = -ENOMEM;
++					break;
++				}
+ 				set_page_private(rq->out[no],
+ 						 Z_EROFS_SHORTLIVED_PAGE);
+ 			}
+@@ -211,8 +215,11 @@ int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
+ 
+ 			DBG_BUGON(erofs_page_is_managed(EROFS_SB(sb),
+ 							rq->in[j]));
+-			tmppage = erofs_allocpage(pagepool,
+-						  GFP_KERNEL | __GFP_NOFAIL);
++			tmppage = erofs_allocpage(pgpl, rq->gfp);
++			if (!tmppage) {
++				err = -ENOMEM;
++				goto failed;
++			}
+ 			set_page_private(tmppage, Z_EROFS_SHORTLIVED_PAGE);
+ 			copy_highpage(tmppage, rq->in[j]);
+ 			rq->in[j] = tmppage;
+@@ -230,7 +237,7 @@ int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
+ 			break;
+ 		}
+ 	}
+-
++failed:
+ 	if (zlib_inflateEnd(&strm->z) != Z_OK && !err)
+ 		err = -EIO;
+ 	if (kout)
+diff --git a/fs/erofs/decompressor_lzma.c b/fs/erofs/decompressor_lzma.c
+index 2dd14f99c1dc..6ca357d83cfa 100644
+--- a/fs/erofs/decompressor_lzma.c
++++ b/fs/erofs/decompressor_lzma.c
+@@ -148,7 +148,7 @@ int z_erofs_load_lzma_config(struct super_block *sb,
+ }
+ 
+ int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
+-			    struct page **pagepool)
++			    struct page **pgpl)
+ {
+ 	const unsigned int nrpages_out =
+ 		PAGE_ALIGN(rq->pageofs_out + rq->outputsize) >> PAGE_SHIFT;
+@@ -215,8 +215,11 @@ int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
+ 						   PAGE_SIZE - pageofs);
+ 			outlen -= strm->buf.out_size;
+ 			if (!rq->out[no] && rq->fillgaps) {	/* deduped */
+-				rq->out[no] = erofs_allocpage(pagepool,
+-						GFP_KERNEL | __GFP_NOFAIL);
++				rq->out[no] = erofs_allocpage(pgpl, rq->gfp);
++				if (!rq->out[no]) {
++					err = -ENOMEM;
++					break;
++				}
+ 				set_page_private(rq->out[no],
+ 						 Z_EROFS_SHORTLIVED_PAGE);
+ 			}
+@@ -258,8 +261,11 @@ int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
+ 
+ 			DBG_BUGON(erofs_page_is_managed(EROFS_SB(rq->sb),
+ 							rq->in[j]));
+-			tmppage = erofs_allocpage(pagepool,
+-						  GFP_KERNEL | __GFP_NOFAIL);
++			tmppage = erofs_allocpage(pgpl, rq->gfp);
++			if (!tmppage) {
++				err = -ENOMEM;
++				goto failed;
++			}
+ 			set_page_private(tmppage, Z_EROFS_SHORTLIVED_PAGE);
+ 			copy_highpage(tmppage, rq->in[j]);
+ 			rq->in[j] = tmppage;
+@@ -277,6 +283,7 @@ int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
+ 			break;
+ 		}
+ 	}
++failed:
+ 	if (no < nrpages_out && strm->buf.out)
+ 		kunmap(rq->out[no]);
+ 	if (ni < nrpages_in)
+diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+index c1c77166b30f..1d0fdc145fd6 100644
+--- a/fs/erofs/zdata.c
++++ b/fs/erofs/zdata.c
+@@ -82,6 +82,9 @@ struct z_erofs_pcluster {
+ 	/* L: indicate several pageofs_outs or not */
+ 	bool multibases;
+ 
++	/* L: whether extra buffer allocations are best-effort */
++	bool besteffort;
++
+ 	/* A: compressed bvecs (can be cached or inplaced pages) */
+ 	struct z_erofs_bvec compressed_bvecs[];
+ };
+@@ -960,7 +963,7 @@ static int z_erofs_read_fragment(struct super_block *sb, struct page *page,
+ }
+ 
+ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+-				struct page *page)
++				struct page *page, bool ra)
+ {
+ 	struct inode *const inode = fe->inode;
+ 	struct erofs_map_blocks *const map = &fe->map;
+@@ -1010,6 +1013,7 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+ 		err = z_erofs_pcluster_begin(fe);
+ 		if (err)
+ 			goto out;
++		fe->pcl->besteffort |= !ra;
+ 	}
+ 
+ 	/*
+@@ -1276,7 +1280,11 @@ static int z_erofs_decompress_pcluster(struct z_erofs_decompress_backend *be,
+ 					.inplace_io = overlapped,
+ 					.partial_decoding = pcl->partial,
+ 					.fillgaps = pcl->multibases,
++					.gfp = pcl->besteffort ?
++						GFP_KERNEL | __GFP_NOFAIL :
++						GFP_NOWAIT | __GFP_NORETRY
+ 				 }, be->pagepool);
++	pcl->besteffort = false;
+ 
+ 	/* must handle all compressed pages before actual file pages */
+ 	if (z_erofs_is_inline_pcluster(pcl)) {
+@@ -1787,7 +1795,7 @@ static void z_erofs_pcluster_readmore(struct z_erofs_decompress_frontend *f,
+ 			if (PageUptodate(page))
+ 				unlock_page(page);
+ 			else
+-				(void)z_erofs_do_read_page(f, page);
++				(void)z_erofs_do_read_page(f, page, !!rac);
+ 			put_page(page);
+ 		}
+ 
+@@ -1808,7 +1816,7 @@ static int z_erofs_read_folio(struct file *file, struct folio *folio)
+ 	f.headoffset = (erofs_off_t)folio->index << PAGE_SHIFT;
+ 
+ 	z_erofs_pcluster_readmore(&f, NULL, true);
+-	err = z_erofs_do_read_page(&f, &folio->page);
++	err = z_erofs_do_read_page(&f, &folio->page, false);
+ 	z_erofs_pcluster_readmore(&f, NULL, false);
+ 	z_erofs_pcluster_end(&f);
+ 
+@@ -1849,7 +1857,7 @@ static void z_erofs_readahead(struct readahead_control *rac)
+ 		folio = head;
+ 		head = folio_get_private(folio);
+ 
+-		err = z_erofs_do_read_page(&f, &folio->page);
++		err = z_erofs_do_read_page(&f, &folio->page, true);
+ 		if (err && err != -EINTR)
+ 			erofs_err(inode->i_sb, "readahead error at folio %lu @ nid %llu",
+ 				  folio->index, EROFS_I(inode)->nid);
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.3
+
 
