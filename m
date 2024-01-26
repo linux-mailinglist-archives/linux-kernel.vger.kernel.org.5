@@ -1,217 +1,157 @@
-Return-Path: <linux-kernel+bounces-40707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8D0583E465
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:58:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDD2383E46A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:01:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19E461C22829
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:58:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AA1D2845D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:00:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B498B250F0;
-	Fri, 26 Jan 2024 21:58:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30FCF250F1;
+	Fri, 26 Jan 2024 22:00:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HnZWwvIf"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="snbozogO"
+Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80C2124B31
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 21:58:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9461720DCD
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 22:00:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706306327; cv=none; b=GEAI9rqyF91FRXaip+Kp638MOL32/KqwesqU+PxtRUe57aOg9rkkxxwjNuzuTG0/G/zEqStx16mW7Kfrg2iVTRTJQhuRP8kBF6gGkR4h1Bb05crQs5xUw7nu9OodWnp/A30RgxGpH8gQUQ8ZynGoAQxz+tKKu/bR4P/exoOZeIw=
+	t=1706306452; cv=none; b=Y8fGLDAnAHK6UuEMCsYCrZDm/7aY6HDsGbK2sZnrjL41lhxzVCDHtA1aGk2KBUo59rWQGAjFBjrMJ8QEy6JWdYytX3twS75wMA1mUPFsNuC0ckxAtP1WmGQkosPUPvKLddVS5J1VikZPwbcfh5vJMvnRIKsd2lRvqRGryCjHXbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706306327; c=relaxed/simple;
-	bh=D45Up2bdBfDyI7OgcSPW8IyQu74BTfqA+rIamsUdIsw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=mBYWRYX0U/rbZ8HtlvwTjEBcHxy/y5qcLzum4E+DKsVAMP04S17xeBSgk7NuUPWSx7Sfp2wI2+aAHfFAFoIIdZhxXu9JEGhf/FRTmU2Ck145QMxJVOqL62kDGfYG/1OtFRv4dyJmpbiuWk5Zh+FaihNszB9bm76ZA1HHyff40DU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HnZWwvIf; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d7232dcb3eso6448155ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:58:45 -0800 (PST)
+	s=arc-20240116; t=1706306452; c=relaxed/simple;
+	bh=8iVWfiw5eGV7Bx9wkZhDmrGmQZhW2iSHwJ8sKYhM5rQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aSBxVdFLlPXuBVkAATwhoqhYtYbvtf8vO/A2iXriaj/pzJl9S32kuNHujUTwthDPP9Goiz+0vTjIBY4Z9X5rN6KgLfN2R8ezGTb6Cka1r7brrTuFbizbu1pRfSUM+kfFajbngnWxvXR+cFdQn6a1q4kkXg/x2+/wX1Kc8nEl9G0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=snbozogO; arc=none smtp.client-ip=209.85.160.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-214ff80f2eeso551946fac.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:00:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706306325; x=1706911125; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=TWFD8GN2cVl4vpBfTmCVEM0ZmFoZqktV+61fEzV3wTw=;
-        b=HnZWwvIf3AHGBe/bVjNpWYif4NOzxbvAIU74ZfJkfdQDXvbhjmDp+FPdEah+AmrRMs
-         QT4WMAWT6Xcsp/RsaCieypnSfDagDoeXQVk3Qnv0v4EE4SoK9kEDLmPN5r+MdamP55zH
-         msiWXeQGaUky1kjv/+YpgWTQhCbCiQD+OS2hXqL7HfnD0nCe4uRVN7nfUs2Fh4WRJSad
-         3XJgi7aJcZ39PL5ORf7S7xWEB5Wh30czeTFSrwz51CTi+9zFIHoWJC+4Vdm7IMnlvH7V
-         oC5+9EyGIlUkzMrEL78E3UeS6L7CcZdaly0L0aFdXj1lHupsQG+yTQkybTLUwpE4sA10
-         PQ7A==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1706306448; x=1706911248; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=e6vULbTr1BYFyRU2Eitly8jsoFUEcFQOPUSNj1txhFw=;
+        b=snbozogOjAdRWxy7wfrcjz+3EizXX9fVz8RMpFcZgydcSDjpL2+btBbGkJw3Grkt8h
+         MxrrpkxECYS3Is5KT9mFxFVq/btpNk8apdXfFq8ILt0F1gQUpIDgogw8FQQzsV5uC0cW
+         w1y2cy44DVGO2KAnK17tFT5tdNfDGhSpDmcyGf61WVQBMyq+kQzVXjqM3WnfY69aF2ac
+         AZx7i1N+lwK9dhSmSrUDcZ5LkgX8c+NAbjFcVhNb8f6y8s4uWQaWwoxOnonOLGXs9Q3a
+         Q6DSmzThw9GjcEJD/+UtoELsJ1kgTTTGZo1XOcojUsRELpcEG1BVPwoEIh/SgMmdPZKP
+         e6tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706306325; x=1706911125;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1706306448; x=1706911248;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=TWFD8GN2cVl4vpBfTmCVEM0ZmFoZqktV+61fEzV3wTw=;
-        b=HkBYUyui9p4FHSmYGQYW39iw330rvB0qJPzWim7h94UJn7SiqQeP7537fk3KgwJ449
-         ZQcVQFJfDtXk/uZXjmsHfkuxbzOF/ipB43lhI/p22oMuf8k18eD7RQCwEMy7U2yeEN80
-         +S0Ij35nZp8TwjNIsPcJFE8TXklvbO0bZMYkMJJl6oZVqxqIgtFvfIoRpAbHy9tx70dH
-         XsjJL1DHH10NrM0EBhlCp7y4vk4L+MBK8Q2y8fsFUsjgd7WEoTE+KnGnRLINhgQEjicl
-         nViNUI36QZbxKnsRZRoPcsNq1IUmi23Nt5AwWp+h/3cx2+JMMH8+qcD1iN9qXN1ZdCek
-         ScAA==
-X-Gm-Message-State: AOJu0Yy8/uE5ifCV4oLdCICgjYIgv28uTtmh7JEFQI5eNv9BJHISOPJm
-	X4EODNL9hYgUMxjIR9iM9UZYEQosHGQd1YLQUPOcHJ9fed9y7CUPjnPvFF7Y
-X-Google-Smtp-Source: AGHT+IHP9cd5TIFAOU3gcvoQsz/ywakikA29dHOhFvI+6g0y8TcHrpoLhO6RIX2q0dFBv0cZyGCAeA==
-X-Received: by 2002:a17:902:b08d:b0:1d7:8e11:152c with SMTP id p13-20020a170902b08d00b001d78e11152cmr411980plr.3.1706306324723;
-        Fri, 26 Jan 2024 13:58:44 -0800 (PST)
-Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
-        by smtp.gmail.com with ESMTPSA id ko3-20020a17090307c300b001d77c28ae9dsm1403355plb.17.2024.01.26.13.58.44
+        bh=e6vULbTr1BYFyRU2Eitly8jsoFUEcFQOPUSNj1txhFw=;
+        b=bMwfrJxaVvhAQHnRGdET+4PxE1n+qThZlhZ+QvbQAeYCXO9XzaJqgUV2/I4VVqlcfl
+         5J7kEX/f4LbGDlg+HiABqTmlHpXz5S9ljmSHrZgo/XoLRpDXxqjOr8WScLYw5OpgdH9F
+         meI8DhIzVXNEN8uUU8t/U6eZTi7G9v7jR439AbUwTPS45pe8q/Hk5F4Yodw41JSJsBBp
+         iunLXXzd320iL7Fe/vhqyZyhoE+0Y+cPHlE+9tYPRFeAUui5n7nbhXOOL7zJi2UkaPub
+         WD1TALLXH2fl/jS2qn1EEW6tEP8CIrMDACPekHi4fjGJ7giGrWldZD1JBjxqe+2/J0/h
+         AzeA==
+X-Gm-Message-State: AOJu0YzfMCqwRZnU8c5HpXMw5OgM/HOtvgzGVxWWHVZ9HIFgEH9+IaMV
+	A2oimg9pwvuiXvgzed9CC8FZ6oDqKnPc8+M3smQtoD1e/pX1ZXdzEaLtYZmf1Lc=
+X-Google-Smtp-Source: AGHT+IGcq+1ADS2rAnXRcLEEACRnfZ/hVeWGGAnVVnNZFAY+ZYLNpH+TT4tDmT/PykMiZckVin9ZBg==
+X-Received: by 2002:a05:6870:d152:b0:214:816f:8b5a with SMTP id f18-20020a056870d15200b00214816f8b5amr379651oac.12.1706306448699;
+        Fri, 26 Jan 2024 14:00:48 -0800 (PST)
+Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
+        by smtp.gmail.com with ESMTPSA id p26-20020a9d695a000000b006dc87c016e4sm426399oto.60.2024.01.26.14.00.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 13:58:44 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Fri, 26 Jan 2024 11:58:43 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH wq/for-6.9] workqueue: Break up enum definitions and give
- names to the types
-Message-ID: <ZbQrE6xwqiSUlTRn@slm.duckdns.org>
+        Fri, 26 Jan 2024 14:00:48 -0800 (PST)
+From: David Lechner <dlechner@baylibre.com>
+To: Mark Brown <broonie@kernel.org>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>,
+	Scott Branden <sbranden@broadcom.com>
+Cc: David Lechner <dlechner@baylibre.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	linux-spi@vger.kernel.org,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] spi: bcm2835: implement ctlr->max_transfer_size
+Date: Fri, 26 Jan 2024 16:00:23 -0600
+Message-ID: <20240126220024.3926403-2-dlechner@baylibre.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-From e563d0a7cdc1890ff36bb177b5c8c2854d881e4d Mon Sep 17 00:00:00 2001
-From: Tejun Heo <tj@kernel.org>
-Date: Fri, 26 Jan 2024 11:55:50 -1000
+The core SPI code will handle splitting transfers if needed as long
+as ctlr->max_transfer_size is implemented. It does this in
+__spi_pump_transfer_message() immediately before calling
+ctlr->prepare_message. So effectively, this change does not
+alter the behavior of the driver.
 
-workqueue is collecting different sorts of enums into a single unnamed enum
-type which can increase confusion around enum width. Also, unnamed enums
-can't be accessed from BPF. Let's break up enum definitions according to
-their purposes and give them type names.
+Also, several peripheral drivers make use of spi_max_transfer_size(),
+so this should improve compatibility with those drivers.
 
-Signed-off-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: David Lechner <dlechner@baylibre.com>
 ---
-Applied to wq/for-6.9.
+ drivers/spi/spi-bcm2835.c | 27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
 
- include/linux/workqueue.h | 41 +++++++++++++++++++++++----------------
- kernel/workqueue.c        |  6 +++++-
- 2 files changed, 29 insertions(+), 18 deletions(-)
-
-diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
-index 2cc0a9606175..78047d0d9882 100644
---- a/include/linux/workqueue.h
-+++ b/include/linux/workqueue.h
-@@ -22,7 +22,7 @@
-  */
- #define work_data_bits(work) ((unsigned long *)(&(work)->data))
- 
--enum {
-+enum work_bits {
- 	WORK_STRUCT_PENDING_BIT	= 0,	/* work item is pending execution */
- 	WORK_STRUCT_INACTIVE_BIT= 1,	/* work item is inactive */
- 	WORK_STRUCT_PWQ_BIT	= 2,	/* data points to pwq */
-@@ -36,21 +36,6 @@ enum {
- 
- 	WORK_STRUCT_COLOR_BITS	= 4,
- 
--	WORK_STRUCT_PENDING	= 1 << WORK_STRUCT_PENDING_BIT,
--	WORK_STRUCT_INACTIVE	= 1 << WORK_STRUCT_INACTIVE_BIT,
--	WORK_STRUCT_PWQ		= 1 << WORK_STRUCT_PWQ_BIT,
--	WORK_STRUCT_LINKED	= 1 << WORK_STRUCT_LINKED_BIT,
--#ifdef CONFIG_DEBUG_OBJECTS_WORK
--	WORK_STRUCT_STATIC	= 1 << WORK_STRUCT_STATIC_BIT,
--#else
--	WORK_STRUCT_STATIC	= 0,
--#endif
+diff --git a/drivers/spi/spi-bcm2835.c b/drivers/spi/spi-bcm2835.c
+index e709887eb2a9..e1b9b1235787 100644
+--- a/drivers/spi/spi-bcm2835.c
++++ b/drivers/spi/spi-bcm2835.c
+@@ -1117,19 +1117,6 @@ static int bcm2835_spi_prepare_message(struct spi_controller *ctlr,
+ 	struct spi_device *spi = msg->spi;
+ 	struct bcm2835_spi *bs = spi_controller_get_devdata(ctlr);
+ 	struct bcm2835_spidev *target = spi_get_ctldata(spi);
+-	int ret;
 -
--	WORK_NR_COLORS		= (1 << WORK_STRUCT_COLOR_BITS),
--
--	/* not bound to any CPU, prefer the local CPU */
--	WORK_CPU_UNBOUND	= NR_CPUS,
--
+-	if (ctlr->can_dma) {
+-		/*
+-		 * DMA transfers are limited to 16 bit (0 to 65535 bytes) by
+-		 * the SPI HW due to DLEN. Split up transfers (32-bit FIFO
+-		 * aligned) if the limit is exceeded.
+-		 */
+-		ret = spi_split_transfers_maxsize(ctlr, msg, 65532,
+-						  GFP_KERNEL | GFP_DMA);
+-		if (ret)
+-			return ret;
+-	}
+ 
  	/*
- 	 * Reserve 8 bits off of pwq pointer w/ debugobjects turned off.
- 	 * This makes pwqs aligned to 256 bytes and allows 16 workqueue
-@@ -74,6 +59,26 @@ enum {
- 	WORK_OFFQ_LEFT		= BITS_PER_LONG - WORK_OFFQ_POOL_SHIFT,
- 	WORK_OFFQ_POOL_BITS	= WORK_OFFQ_LEFT <= 31 ? WORK_OFFQ_LEFT : 31,
+ 	 * Set up clock polarity before spi_transfer_one_message() asserts
+@@ -1219,6 +1206,19 @@ static int bcm2835_spi_setup_dma(struct spi_controller *ctlr,
+ 	return 0;
+ }
  
-+};
++static size_t bcm2835_spi_max_transfer_size(struct spi_device *spi)
++{
++	/*
++	 * DMA transfers are limited to 16 bit (0 to 65535 bytes) by
++	 * the SPI HW due to DLEN. Split up transfers (32-bit FIFO
++	 * aligned) if the limit is exceeded.
++	 */
++	if (spi->controller->can_dma)
++		return 65532;
 +
-+enum work_flags {
-+	WORK_STRUCT_PENDING	= 1 << WORK_STRUCT_PENDING_BIT,
-+	WORK_STRUCT_INACTIVE	= 1 << WORK_STRUCT_INACTIVE_BIT,
-+	WORK_STRUCT_PWQ		= 1 << WORK_STRUCT_PWQ_BIT,
-+	WORK_STRUCT_LINKED	= 1 << WORK_STRUCT_LINKED_BIT,
-+#ifdef CONFIG_DEBUG_OBJECTS_WORK
-+	WORK_STRUCT_STATIC	= 1 << WORK_STRUCT_STATIC_BIT,
-+#else
-+	WORK_STRUCT_STATIC	= 0,
-+#endif
-+};
++	return SIZE_MAX;
++}
 +
-+enum wq_misc_consts {
-+	WORK_NR_COLORS		= (1 << WORK_STRUCT_COLOR_BITS),
-+
-+	/* not bound to any CPU, prefer the local CPU */
-+	WORK_CPU_UNBOUND	= NR_CPUS,
-+
- 	/* bit mask for work_busy() return values */
- 	WORK_BUSY_PENDING	= 1 << 0,
- 	WORK_BUSY_RUNNING	= 1 << 1,
-@@ -347,7 +352,7 @@ static inline unsigned int work_static(struct work_struct *work) { return 0; }
-  * Workqueue flags and constants.  For details, please refer to
-  * Documentation/core-api/workqueue.rst.
-  */
--enum {
-+enum wq_flags {
- 	WQ_UNBOUND		= 1 << 1, /* not bound to any cpu */
- 	WQ_FREEZABLE		= 1 << 2, /* freeze during suspend */
- 	WQ_MEM_RECLAIM		= 1 << 3, /* may be used for memory reclaim */
-@@ -387,7 +392,9 @@ enum {
- 	__WQ_ORDERED		= 1 << 17, /* internal: workqueue is ordered */
- 	__WQ_LEGACY		= 1 << 18, /* internal: create*_workqueue() */
- 	__WQ_ORDERED_EXPLICIT	= 1 << 19, /* internal: alloc_ordered_workqueue() */
-+};
- 
-+enum wq_consts {
- 	WQ_MAX_ACTIVE		= 512,	  /* I like 512, better ideas? */
- 	WQ_UNBOUND_MAX_ACTIVE	= WQ_MAX_ACTIVE,
- 	WQ_DFL_ACTIVE		= WQ_MAX_ACTIVE / 2,
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index b6b690a17f7c..45d0a784ba4f 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -56,7 +56,7 @@
- 
- #include "workqueue_internal.h"
- 
--enum {
-+enum worker_pool_flags {
- 	/*
- 	 * worker_pool flags
- 	 *
-@@ -75,7 +75,9 @@ enum {
- 	 */
- 	POOL_MANAGER_ACTIVE	= 1 << 0,	/* being managed */
- 	POOL_DISASSOCIATED	= 1 << 2,	/* cpu can't serve workers */
-+};
- 
-+enum worker_flags {
- 	/* worker flags */
- 	WORKER_DIE		= 1 << 1,	/* die die die */
- 	WORKER_IDLE		= 1 << 2,	/* is idle */
-@@ -86,7 +88,9 @@ enum {
- 
- 	WORKER_NOT_RUNNING	= WORKER_PREP | WORKER_CPU_INTENSIVE |
- 				  WORKER_UNBOUND | WORKER_REBOUND,
-+};
- 
-+enum wq_internal_consts {
- 	NR_STD_WORKER_POOLS	= 2,		/* # standard pools per cpu */
- 
- 	UNBOUND_POOL_HASH_ORDER	= 6,		/* hashed by pool->attrs */
+ static int bcm2835_spi_setup(struct spi_device *spi)
+ {
+ 	struct spi_controller *ctlr = spi->controller;
+@@ -1348,6 +1348,7 @@ static int bcm2835_spi_probe(struct platform_device *pdev)
+ 	ctlr->mode_bits = BCM2835_SPI_MODE_BITS;
+ 	ctlr->bits_per_word_mask = SPI_BPW_MASK(8);
+ 	ctlr->num_chipselect = 3;
++	ctlr->max_transfer_size = bcm2835_spi_max_transfer_size;
+ 	ctlr->setup = bcm2835_spi_setup;
+ 	ctlr->cleanup = bcm2835_spi_cleanup;
+ 	ctlr->transfer_one = bcm2835_spi_transfer_one;
 -- 
 2.43.0
 
