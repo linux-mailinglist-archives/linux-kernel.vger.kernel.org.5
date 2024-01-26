@@ -1,112 +1,95 @@
-Return-Path: <linux-kernel+bounces-40757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D98F83E56B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:29:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9B8483E571
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:30:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A10A91C22FE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:29:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F5A31F24873
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:30:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9760325576;
-	Fri, 26 Jan 2024 22:29:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39D7733CF7;
+	Fri, 26 Jan 2024 22:30:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="HMMmvQiZ"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SKclpH/q"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57789250F9
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 22:29:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D50925631;
+	Fri, 26 Jan 2024 22:30:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706308162; cv=none; b=bwl+SZWT9kYH4wIA0jtRLBNsOkUueIgizAt4lCdtxaWZQ6QP0uBzcegGEwx8EV6JT3BiRf5XmFQ++JNcs33KniGawdMWgxNz7qS2vJKeaLPXu5+JWSigVEMqWd6hPGxZQmPtsc2qugS6qkUEHEnh5bFtKen1zyEkRe7DVuitmO4=
+	t=1706308226; cv=none; b=dC5l4iMTFaiNelaUSU7biglATQIgUHuOTt/b0w+/LLD+ZjEcb8t2HOVr/1VlKD73fP3F6jjCFl6FniFKJgvfhpbjp81kfZ02xK5iLyQEe+MWLoR1d5SGuIJJ6i/tEZmrn2x/IKJm5QeiJzzW1kVdBJt3cvSdn2meZfNfTHa2M2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706308162; c=relaxed/simple;
-	bh=bnGLdwzstqH5AfSoLZdw6+SstBNNV6/ADu5DzEq61y8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Uu+ABuonPHe6/pozpix8pOArX27Z3phMFJfA0oUTSrEo10EbtmYySglEStVhVVynPjrR2yInihJ028CMar2GWdtgtxI1N53UuwShlGXFPskVKZY9r+wkskjFK4AQwD/31vo6t2gCkoa3VDM4B2Io6Js1ApdB1ECjRA0ruwZWpvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=HMMmvQiZ; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-337d05b8942so1114951f8f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:29:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1706308159; x=1706912959; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=tRiurWLUnvaCNMuWmJHCRa1/X+mumAqXgtZJfgR1jGc=;
-        b=HMMmvQiZpcgtqcBgmKLGP1OTAtqXFA5fFA1zn82JXWqVQdz05IFfEqaQtgeeSAdoCG
-         B80fFH/6MXRB1fcioh3BmndcuHCC+zV22aIWr0b1o8zPyt2MTVBf0CvRtlOhvffp7QOF
-         BPmGL2/okUnkrEyYQ0B7JKZ7I17BgPp78XZJk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706308159; x=1706912959;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tRiurWLUnvaCNMuWmJHCRa1/X+mumAqXgtZJfgR1jGc=;
-        b=V7FIMsA3jzlPtsNS/O9vgU6Q2I2J+LVXLLFvhUHQoOS2dG2++2ctKpD802e35V3I4s
-         C4RqUHAonz/vMP+NcRpDs7wZs9Qv1rTTzOnUedo1pFJEDBcdWe37ffJuS3CNUYOcPna9
-         DTTmZ5uyZTP3CiI7Faxe/rfeMYQwNm5+gTJlXmLY9erg5jBx6rQvQ4lUAEuW7+S4Plmz
-         O0nSz0Pw0z9gYyAaTqM4pr0JYeRUT83L51+Yy2r+vr+5n03pgrUUNStdwLp+fgTqH3C0
-         OhibOweTvddigB2LNYSz1cHbW8YgPGhBLxkJ8YHKrwhUX1spEaZeuPbpCh/4iwvQxINM
-         +N+g==
-X-Gm-Message-State: AOJu0YyItrcUcUgwEWxrIt4vWsy67sffX39aOw/dBjTQqKSN5pepKaYv
-	C2tWNYKcEq7sZFqlQ7dMEDmzHn6RxmRnvEg3J+Y3ocilhVqad2csOXJxW14sh5aCsQaROTkNut3
-	Ati/WOw==
-X-Google-Smtp-Source: AGHT+IHq7+/XIN26s8Pm/9Nf6JV5duC1iaq6GLVgybaPMxUfY/aJmCPhd1gV4qnlYhkYav4rG8f5AQ==
-X-Received: by 2002:a5d:6852:0:b0:33a:debe:1a19 with SMTP id o18-20020a5d6852000000b0033adebe1a19mr203540wrw.123.1706308159283;
-        Fri, 26 Jan 2024 14:29:19 -0800 (PST)
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com. [209.85.128.53])
-        by smtp.gmail.com with ESMTPSA id tl9-20020a170907c30900b00a318b8650bbsm1073896ejc.9.2024.01.26.14.29.18
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jan 2024 14:29:18 -0800 (PST)
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40e913e3f03so13980225e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:29:18 -0800 (PST)
-X-Received: by 2002:a7b:c5cc:0:b0:40e:c5fd:8ad2 with SMTP id
- n12-20020a7bc5cc000000b0040ec5fd8ad2mr348816wmk.44.1706308158118; Fri, 26 Jan
- 2024 14:29:18 -0800 (PST)
+	s=arc-20240116; t=1706308226; c=relaxed/simple;
+	bh=jNbmp8YEA445pIRhuvsH6MW9zescGh1Hj65YFJ4341Y=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=XwehSrXLBxu7qAE9WmDw+3ARM0UJyJqqNujnnODKKGBlYoE0yxyuBDcBbDrsVZpsjBuGTOL8QZIMXM2jklb2GFcflROMIYTprwwyhak7Nj/0KYEgrf6DEDtqtl2u5Ex4FQrMu4ffuIqT9XQjD6Pf0A5ABV5BLfoef/4eql+TT8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SKclpH/q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8C66EC43390;
+	Fri, 26 Jan 2024 22:30:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706308225;
+	bh=jNbmp8YEA445pIRhuvsH6MW9zescGh1Hj65YFJ4341Y=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=SKclpH/q1/lseqlASPMIga1pozrXpQY7lZqwR5ajR0HSvNOqjr4BDqXi05rIaMv1V
+	 lNAPBPqnA9DWqmEMCZmBQk1yP2Cblw2Yql3x1pa8PPbndVQjb7UmBHotv7tyn9itDw
+	 JkWbfsGvPAFILnU6/uF8lQbhr8paecIDdA28UZcfUSoLUhcKf3BCzBKeAorA+8kT5M
+	 1DdJ/NS5wFt5OF0LdIWZTQdAhBjX88k7Fz6IgrU3UL+y6z8AVQ2iB4wX1GosfKF00P
+	 SC5bDS5AnWGQ+suegGSWaBl5kBq2DKUpxX8XZLUTEkWGaLuEANcUbC2xlGYcAQ/vEB
+	 htDowzZsU/R/g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 71881D8C962;
+	Fri, 26 Jan 2024 22:30:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126150209.367ff402@gandalf.local.home> <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
- <20240126162626.31d90da9@gandalf.local.home> <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
- <CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com> <8547159a-0b28-4d75-af02-47fc450785fa@efficios.com>
-In-Reply-To: <8547159a-0b28-4d75-af02-47fc450785fa@efficios.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 26 Jan 2024 14:29:01 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whAG6TM6PgH0YnsRe6U=RzL+JMvCi=_f0Bhw+q_7SSZuw@mail.gmail.com>
-Message-ID: <CAHk-=whAG6TM6PgH0YnsRe6U=RzL+JMvCi=_f0Bhw+q_7SSZuw@mail.gmail.com>
-Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Linux Trace Devel <linux-trace-devel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Christian Brauner <brauner@kernel.org>, Ajay Kaher <ajay.kaher@broadcom.com>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: dsa: mt7530: fix 10M/100M speed on MT7988 switch
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170630822546.5179.9954095426642384849.git-patchwork-notify@kernel.org>
+Date: Fri, 26 Jan 2024 22:30:25 +0000
+References: <a5b04dfa8256d8302f402545a51ac4c626fdba25.1706071272.git.daniel@makrotopia.org>
+In-Reply-To: <a5b04dfa8256d8302f402545a51ac4c626fdba25.1706071272.git.daniel@makrotopia.org>
+To: Daniel Golle <daniel@makrotopia.org>
+Cc: arinc.unal@arinc9.com, dqfext@gmail.com, sean.wang@mediatek.com,
+ andrew@lunn.ch, f.fainelli@gmail.com, olteanv@gmail.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ john@phrozen.org
 
-On Fri, 26 Jan 2024 at 14:14, Mathieu Desnoyers
-<mathieu.desnoyers@efficios.com> wrote:
->
-> I do however have a concern with the approach of using the same
-> inode number for various files on the same filesystem: AFAIU it
-> breaks userspace ABI expectations.
+Hello:
 
-Virtual filesystems have always done that in various ways.
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-Look at the whole discussion about the size of the file. Then look at /proc.
+On Wed, 24 Jan 2024 05:17:25 +0000 you wrote:
+> Setup PMCR port register for actual speed and duplex on internally
+> connected PHYs of the MT7988 built-in switch. This fixes links with
+> speeds other than 1000M.
+> 
+> Fixes: ("110c18bfed414 net: dsa: mt7530: introduce driver for MT7988 built-in switch")
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> 
+> [...]
 
-And honestly, eventfs needs to be simplified. It's a mess. It's less
-of a mess than it used to be, but people should *NOT* think that it's
-a real filesystem.
+Here is the summary with links:
+  - [net] net: dsa: mt7530: fix 10M/100M speed on MT7988 switch
+    https://git.kernel.org/netdev/net/c/dfa988b4c7c3
 
-Don't use some POSIX standard as an expectation for things like /proc,
-/sys or tracefs.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-              Linus
+
 
