@@ -1,72 +1,62 @@
-Return-Path: <linux-kernel+bounces-39521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91E4B83D249
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 02:58:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8F1B83D24A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 02:59:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F140AB244F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 01:58:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87B121F2381D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 01:59:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51C957491;
-	Fri, 26 Jan 2024 01:57:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SyIJ7w3k"
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5A091C0F;
+	Fri, 26 Jan 2024 01:58:57 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 051716FBD
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 01:57:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC274138C
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 01:58:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706234268; cv=none; b=rX9sxIQPqfq+JZQl/wJWQ49fJvsCln4xGeq7zhOOz0FVG8xACYkAReaJ17mFGj9Aim/PqrYfYlszqcyT2Xj3zCAv80VI4zt30SRZZ8kQgL0B5mJv9Camc1ISuNORHJh799v9JIDpYjMQYq8sW/ZOpZyU4SaGf+LaiNjw57/xQrA=
+	t=1706234337; cv=none; b=uIkdu9bfWySyNh9YTlpEKndux/KpJSn18IPEOwlvKnRFYDJQm2DXuMWYCq3hjvWaNrn0R0gaMFLUk2tOAWJ6HRoHXD47s06scODdQ0+XFB4ntloKIN9nyZ/JIkFwtBJa4RyItMSm8DC2ZiQtPjRPWeql3eAQtLGYdGf4PeAk2Kk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706234268; c=relaxed/simple;
-	bh=QwOfFi7uxXP0mjFXSuRVhlJKwrlGM6kOX5RaZUiwRtE=;
+	s=arc-20240116; t=1706234337; c=relaxed/simple;
+	bh=n1gtEQdQifat+Vsutw4MIzXWs1cIPeQNrX5aH9LeDFg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dtXUnzA/eHRlnvwoUXAr9jLFjywZ3LCAlC5v4U0x2VT81fK9kGYrJxMfN7OofCHHOE7fEQawkS5sKwozSE2AYaUPiivGvxFo0GbVNTOF0sF3N5O9hSSaCjcfzUYadYzi6IJa+BPR9a68VHb1OFkhMbJrJ3spI/zgUt7nxWDQhOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SyIJ7w3k; arc=none smtp.client-ip=209.85.161.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-598bcccca79so4137863eaf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 17:57:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706234266; x=1706839066; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sH7NYQKA7zHFiyblZ4Yztw4GpXH2Wfw1vTl8EvlpNxw=;
-        b=SyIJ7w3k+oaLjx/i9Osxs79xBtQCsXuBZIOFSTcwAXRxhlgRR7HLZPANLpL7xOnUcn
-         xeeRgNgY0A7xxG2v5d9Ld/o6jzQWva6yJ3rXqDh5H5oVwHF7BTcFwrRhfgdkvlm5MgLk
-         44bSeXbM/KpLswk+a7VEzNabLtfisWk3Rqd5a6lE8pedSZgodUaZcfaF/rBc/Jy4NDKL
-         0/caT8zP3kiKVO0c6lQgLOxwhFyR9dwTHaOgTuK2p6TDwqzOd8LTocWaEKIh935N9j/V
-         xXTn1YE+VcHL8/9b3en+f1Km2aSrYla8wYr9esn5fgwqpP8X3i5ogv6yPxg4BKB4lvs3
-         G3GQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706234266; x=1706839066;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sH7NYQKA7zHFiyblZ4Yztw4GpXH2Wfw1vTl8EvlpNxw=;
-        b=rp2QGGCUZTGl0ONrvHX80sv9FpMVSH7mkTGi2e12KA5OJ16FRM1A+xFT2nY9vs9zl8
-         oj7oJ1YqmW1aLI0oPHKaQfQQu34TClrRvUvekDp34EekRXC+//pgrAb+tcCpVNMv0Fj9
-         wPpCR6MHPR7MqYZjAmqR6+clUB94b0q0gjhd290uMDs/HYkzqtaYbhDkQ2ugM2HfVldi
-         MdHCJzWUU+1Y2D/2LI6pl+SNsB8MTBsoGou1mMbpV6M4gshe+MiHFGhAJPFj/SkIxwja
-         HmpDbRis7mUIpmKmYnfePqmbhTH5A/bU0tKW4BpTEYKev5hPRwhSnTIR3WyVaL302Pxr
-         ZXXA==
-X-Gm-Message-State: AOJu0YxwYNpN5ck9sF/+R/UPLGLGUqEXOgd6K234xRcGq8KdYoo7tL0F
-	u4H7b9wgRhUstswxKBA852t9H39G5mVzSJ8wK7dzI/YSpM+K9ReN
-X-Google-Smtp-Source: AGHT+IF58Or1XqyK99pEF/M4VdUrr9hjun9TuOZa0V1LVFDN6Fp6d4n2TAO6xoFPtfDpgUz5Rv2uuQ==
-X-Received: by 2002:a05:6358:15c5:b0:176:82e9:fd3b with SMTP id t5-20020a05635815c500b0017682e9fd3bmr753788rwh.57.1706234265685;
-        Thu, 25 Jan 2024 17:57:45 -0800 (PST)
-Received: from [192.168.255.10] ([43.132.141.27])
-        by smtp.gmail.com with ESMTPSA id b7-20020aa78ec7000000b006dde305b92csm176632pfr.118.2024.01.25.17.57.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 17:57:45 -0800 (PST)
-Message-ID: <63c456be-f7a5-4dbd-8398-fccf619bb538@gmail.com>
-Date: Fri, 26 Jan 2024 09:57:40 +0800
+	 In-Reply-To:Content-Type; b=FMy6Sc8PctWWX8aDCNgo1YqjXDfg9Kj8hPWOCrd/NOrBSuka8gfj/CwE/ttzhzac9HUHyMUDQEApcRZuimXaRPltOo3q85udhnR0D78PWZeYMC/LJzLEeknxRcSRvrcfucZw1oJ6M0YnZlcFtkElSvNjcp3RuPiVX/YLXqpbdgI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 29d0227cf7674799979a27c4c69f84df-20240126
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:0dbccd0c-3038-4c0e-8405-6260a5b46f78,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:-5
+X-CID-INFO: VERSION:1.1.35,REQID:0dbccd0c-3038-4c0e-8405-6260a5b46f78,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:5d391d7,CLOUDID:3be429fe-c16b-4159-a099-3b9d0558e447,B
+	ulkID:240125184215QKR6JD97,BulkQuantity:5,Recheck:0,SF:19|44|64|66|38|24|1
+	7|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,
+	COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 29d0227cf7674799979a27c4c69f84df-20240126
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 956405128; Fri, 26 Jan 2024 09:58:48 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id E873DE000EB9;
+	Fri, 26 Jan 2024 09:58:47 +0800 (CST)
+X-ns-mid: postfix-65B311D7-876639436
+Received: from [172.20.15.234] (unknown [172.20.15.234])
+	by mail.kylinos.cn (NSMail) with ESMTPA id 78E3DE000EB9;
+	Fri, 26 Jan 2024 09:58:38 +0800 (CST)
+Message-ID: <13890cb8-c454-49d6-af55-c274fa2ef025@kylinos.cn>
+Date: Fri, 26 Jan 2024 09:58:37 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,139 +64,90 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] sched/fair: add a func _sched_asym
+Subject: Re: [PATCH] powerpc/cell: Code cleanup for spufs_mfc_flush
 Content-Language: en-US
-To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>, alexs@kernel.org
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
- <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
- linux-kernel@vger.kernel.org
-References: <20240117085715.2614671-1-alexs@kernel.org>
- <20240117085715.2614671-4-alexs@kernel.org>
- <20240125215622.GA17237@ranerica-svr.sc.intel.com>
-From: kuiliang Shi <seakeel@gmail.com>
-In-Reply-To: <20240125215622.GA17237@ranerica-svr.sc.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To: Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "jk@ozlabs.org" <jk@ozlabs.org>, "arnd@arndb.de" <arnd@arndb.de>,
+ "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+ "npiggin@gmail.com" <npiggin@gmail.com>,
+ "aneesh.kumar@kernel.org" <aneesh.kumar@kernel.org>,
+ "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>
+Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240125100854.540964-1-chentao@kylinos.cn>
+ <c34968b8-f6bf-4ee1-8767-ef463637d866@csgroup.eu>
+From: Kunwu Chan <chentao@kylinos.cn>
+In-Reply-To: <c34968b8-f6bf-4ee1-8767-ef463637d866@csgroup.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On 1/26/24 5:56 AM, Ricardo Neri wrote:
-> On Wed, Jan 17, 2024 at 04:57:14PM +0800, alexs@kernel.org wrote:
->> From: Alex Shi <alexs@kernel.org>
+On 2024/1/25 18:41, Christophe Leroy wrote:
+>=20
+>=20
+> Le 25/01/2024 =C3=A0 11:08, Kunwu Chan a =C3=A9crit=C2=A0:
+>> This part was commented from commit a33a7d7309d7
+>> ("[PATCH] spufs: implement mfc access for PPE-side DMA")
+>> in about 18 years before.
 >>
->> Use this func in sched_asym and other path to simply code.
->> No function change.
+>> If there are no plans to enable this part code in the future,
+>> we can remove this dead code.
 >>
->> Signed-off-by: Alex Shi <alexs@kernel.org>
->> To: Valentin Schneider <vschneid@redhat.com>
->> To: Vincent Guittot <vincent.guittot@linaro.org>
->> To: Peter Zijlstra <peterz@infradead.org>
->> To: Ingo Molnar <mingo@redhat.com>
+>> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
 >> ---
->>  kernel/sched/fair.c | 27 +++++++++++++--------------
->>  1 file changed, 13 insertions(+), 14 deletions(-)
+>>    arch/powerpc/platforms/cell/spufs/file.c | 12 ------------
+>>    1 file changed, 12 deletions(-)
 >>
->> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->> index ebd659af2d78..96163ab69ae0 100644
->> --- a/kernel/sched/fair.c
->> +++ b/kernel/sched/fair.c
->> @@ -9745,6 +9745,14 @@ static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
->>  		(sd->flags & SD_SHARE_CPUCAPACITY) || is_core_idle(cpu);
->>  }
->>  
->> +static inline bool _sched_asym(struct sched_domain *sd,
->> +			int dst_cpu, int repl_cpu)
-> 
-> What does repl_cpu mean? Maybe renaming to src_cpu?
+>> diff --git a/arch/powerpc/platforms/cell/spufs/file.c b/arch/powerpc/p=
+latforms/cell/spufs/file.c
+>> index 02a8158c469d..d5e1af483601 100644
+>> --- a/arch/powerpc/platforms/cell/spufs/file.c
+>> +++ b/arch/powerpc/platforms/cell/spufs/file.c
+>> @@ -1705,19 +1705,7 @@ static int spufs_mfc_flush(struct file *file, f=
+l_owner_t id)
+>>    	ret =3D spu_acquire(ctx);
+>>    	if (ret)
+>>    		goto out;
+>> -#if 0
+>> -/* this currently hangs */
+>> -	ret =3D spufs_wait(ctx->mfc_wq,
+>> -			 ctx->ops->set_mfc_query(ctx, ctx->tagwait, 2));
+>> -	if (ret)
+>> -		goto out;
+>> -	ret =3D spufs_wait(ctx->mfc_wq,
+>> -			 ctx->ops->read_mfc_tagstatus(ctx) =3D=3D ctx->tagwait);
+>> -	if (ret)
+>> -		goto out;
+>> -#else
+>>    	ret =3D 0;
+>=20
+Thanks for your reply.
+> If you arrived here, it means ret is already 0, otherwise you would hav=
+e
+> jumped to label out:, so you can also remove that ret =3D 0 setting.
+>=20
+I'm patronizing the removal of useless code, it's my bad.
+> And while you are at it, there is no point in a goto to just a return,
+> just return instead of the goto, and then you can return 0 directly,
+> something like:
+>=20
+> 	ret =3D spu_acquire(ctx);
+> 	if (ret)
+> 		return ret;
+>=20
+> 	spu_release(ctx);
+>=20
+> 	return 0;
+>=20
+>=20
+> That would be a better cleanup.
+Thanks for your suggestions,i'll update in v2 and add a 'Suggested-by:'.
+>=20
+>> -#endif
+>>    	spu_release(ctx);
+>>    out:
+>>    	return ret;
+--=20
+Thanks,
+   Kunwu
 
-Uh, src_cpu is better than a 'replacing' cpu. Thanks!
-
-> 
->> +{
->> +	/* Ensure that the whole local core is idle, if applicable. */
->> +	return sched_use_asym_prio(sd, dst_cpu) &&
->> +			sched_asym_prefer(dst_cpu, repl_cpu);
-> 
-> The comment no longer applies to the whole expression. Perhaps rewording is
-> in order. First we check for the whole idle core if applicable (i.e., when
-> not balancing among SMT siblings). Then we check priorities.
-
-Right will fix this by v2.
-> 
-> Also, indentation should be aligned with `return`, IMO.
-> 
->> +}
->> +
->>  /**
->>   * sched_asym - Check if the destination CPU can do asym_packing load balance
->>   * @env:	The load balancing environment
->> @@ -9768,20 +9776,13 @@ static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
->>  static inline bool
->>  sched_asym(struct lb_env *env, struct sg_lb_stats *sgs, struct sched_group *group)
->>  {
->> -	/* Ensure that the whole local core is idle, if applicable. */
->> -	if (!sched_use_asym_prio(env->sd, env->dst_cpu))
->> -		return false;
->> -
->>  	/*
->>  	 * CPU priorities does not make sense for SMT cores with more than one
->>  	 * busy sibling.
-> 
-> While here, it might be good to fix a syntax error above: s/does/do/.
-> 
-
-Yes, thanks
-
->>  	 */
->> -	if (group->flags & SD_SHARE_CPUCAPACITY) {
->> -		if (sgs->group_weight - sgs->idle_cpus != 1)
->> -			return false;
->> -	}
->> -
->> -	return sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu);
->> +	return !(group->flags & SD_SHARE_CPUCAPACITY &&
->> +			sgs->group_weight - sgs->idle_cpus != 1) &&
->> +		_sched_asym(env->sd, env->dst_cpu, group->asym_prefer_cpu);
-> 
-> Perhaps we can come up with a better name than _sched_asym(). After this
-> patch the difference between sched_asym() and _sched_asym() is that the
-> former considers the stats of the source group. Maybe sched_asym() can be
-> renamed as sched_group_asym(); it is only used in update_sg_lb_stats().
-> Your _sched_asym() can become sched_asym().
-
-Thanks for good suggestion! will send v2 according your suggestion. 
-
-Alex
-> 
->>  }
->>  
->>  /* One group has more than one SMT CPU while the other group does not */
->> @@ -11036,8 +11037,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
->>  		 * SMT cores with more than one busy sibling.
->>  		 */
->>  		if ((env->sd->flags & SD_ASYM_PACKING) &&
->> -		    sched_use_asym_prio(env->sd, i) &&
->> -		    sched_asym_prefer(i, env->dst_cpu) &&
->> +		    _sched_asym(env->sd, i, env->dst_cpu) &&
->>  		    nr_running == 1)
->>  			continue;
->>  
->> @@ -11907,8 +11907,7 @@ static void nohz_balancer_kick(struct rq *rq)
->>  		 * preferred CPU must be idle.
->>  		 */
->>  		for_each_cpu_and(i, sched_domain_span(sd), nohz.idle_cpus_mask) {
->> -			if (sched_use_asym_prio(sd, i) &&
->> -			    sched_asym_prefer(i, cpu)) {
->> +			if (_sched_asym(sd, i, cpu)) {
->>  				flags = NOHZ_STATS_KICK | NOHZ_BALANCE_KICK;
->>  				goto unlock;
->>  			}
->> -- 
->> 2.43.0
->>
 
