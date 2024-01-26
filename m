@@ -1,123 +1,180 @@
-Return-Path: <linux-kernel+bounces-39787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9CB083D613
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:23:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21E9683D618
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:23:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44F9DB278B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:23:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9D931F2837E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:23:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A09FA1CA91;
-	Fri, 26 Jan 2024 08:44:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69A761D52A;
+	Fri, 26 Jan 2024 08:48:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DJrwKq0Y"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iSzqCaaZ"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3C6014276;
-	Fri, 26 Jan 2024 08:44:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E220514271
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:48:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706258691; cv=none; b=eNYyBp6csFBDU2OSGyXT6UjBMXIBqbMfpLREvOTCYX8Lh7BJ0xGJh1yjxCAA59sWiSegOUa6de2R85pyRnCUTyHAtgJzOXsmA6fbijy/0VJOlwqT0zGRD7u4YXEc8KwpqcN/vb/bg67Mv6DynKkyRMjp7OcsjAt7L4FwL8Pv9fs=
+	t=1706258907; cv=none; b=FM6c5bdlBePlqW2EfZ16JgDY7p2L47D7Xcz37DXa8ZHVYF5WrwitKsheTfAGJgu76u2PpzcOEZM7Ewhb394PKHiaL9LWLmigfqN0jqOMihg6+FAZLizagPEEAts8653Btur23wF/RvaFJSLTIORQAyujEFtPZxJ8J8SV5l3v0Uk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706258691; c=relaxed/simple;
-	bh=gaO5xq4+iqo/CpWSTXlZvHIwYFC0rTJKMRPwhqMBRbo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dPRevf5e/WOCCNTPlvdDY5B3BhR8QCfgUYzORMWuRdxswXxxqQEQvI8nlEIXA8cNeiDh6mt5nM0yAGM0GTpKcdIdXtvGW34w4JJzpbCqeBuEn3Zo1GWHg3nO1jLhDZMvnMdIbRGx5nRRQ1enx+5LwCOkvdyAd6lEI2UZ/0Y7Aco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DJrwKq0Y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD862C433B1;
-	Fri, 26 Jan 2024 08:44:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706258690;
-	bh=gaO5xq4+iqo/CpWSTXlZvHIwYFC0rTJKMRPwhqMBRbo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=DJrwKq0YiCYXRsEOAkgnCozSU3DFfNvol2WhYcL+1l7yRpdzxU97/wyN6dC3VvYZi
-	 AVQrz3RS5yS9M7Hi26EsL4tQTmix5gNZ5L0ydLrSsRJfcNqq9PHgR+uVj5mHn1WoZI
-	 w6eKuPT/PK1ycyJoVYkSgq6yOWbT1hVxSy2lEw4XNllrCqh0ZZWQg0Lc1VLQ/IoXf7
-	 OzdDPBQ+w7d3Qu7cq8kqO78yyb64RHjG1yNfiB0cAkxIrPoxGYUrOFuyKV5i8wbpaw
-	 KysOQx0Yb2GKXV3kpzSNrUgl5Gm78WWcQfaMo6z2arb6GFDNu0TQ1ZGHESve7lNNZ9
-	 tcWnTV9YcfvRQ==
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5102188d2aeso94365e87.2;
-        Fri, 26 Jan 2024 00:44:50 -0800 (PST)
-X-Gm-Message-State: AOJu0Ywei91T/6fI16Pu0chJJNH6KVZZ3KJweRdUVX9ZiugojvnHu8S5
-	Y9YZjFy8HhEwz2Hs1aPpC6yaSklYIGc6/WyVT/pVnwb9isnDYsURS+t+guuGb3NY5TncblghSwA
-	ORtnplGK9iIFYjylgK/Oy2JeUvlA=
-X-Google-Smtp-Source: AGHT+IFjNDG5Tm3UEEPA7ACJkYs/KdrtCbDYforcV54CpZLqF2gkX9FCsY5ZA2v/40T7zrcJxSycn+IRI/2GHFp2hns=
-X-Received: by 2002:a05:6512:2246:b0:50e:7410:d5b0 with SMTP id
- i6-20020a056512224600b0050e7410d5b0mr669457lfu.28.1706258688908; Fri, 26 Jan
- 2024 00:44:48 -0800 (PST)
+	s=arc-20240116; t=1706258907; c=relaxed/simple;
+	bh=VS5Ni5maj31JArPqZY1vs9pBolpnXuzegBBwM4lLN28=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eU5y6xvTv6TXbiEXsVKfGJ9lQcITR4G62ZRFUusoBghgEn8GOPf5gL98gaAAO28ST73of5+H4P0R6KE7ANozi8TkDNu2T64dkfv3fElBktdDV6pywyWWk6wjz7NIRrA0qvloYPntGTicmV+YylDa5rX+k7HTgY8I5En8dFegYS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iSzqCaaZ; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33ad3ee50e4so180585f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 00:48:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706258904; x=1706863704; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=n6wRtkPjuUrJjlFMUMqH+6j6lsvanycmt3XDtafzhRg=;
+        b=iSzqCaaZk3Q+Gt2sOZ+gzwPF0rgLRUAFmVzIM/V5gBZQ/E/KUzK4aLJ0GwK13qscX0
+         Z49BGBeHmY1iO4cTHpPD7w7H+y3buhgKVl5YKw2GTvlMRwYEiBbqp9Ja1+YE6VOhDSoX
+         zqT/9Dfg+oVDj2pjUy1n7ByP0mUUf+oW5iMLakEc3KdbIb4rIv5s/serg67LfsAVJw9C
+         CblcjhKAQQv/u/ST1oNLfyjMpk/k9B98M+7Y9RzsZ7vBDDGJpWjlreN1QKhagWcaYCNg
+         Q/rxXvZym2MsUg1s4KP3m9anKpDL39VnKmZWpYkc7IO8m1TJLUU+cr3yTUBVO0DYXEnD
+         nXKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706258904; x=1706863704;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n6wRtkPjuUrJjlFMUMqH+6j6lsvanycmt3XDtafzhRg=;
+        b=ALqPHIbRXOs6ArOnfBIy6CKj/ICad378US8xzPdpTXpiSeEeOrxOLMb2geMFtWvqfD
+         gpthZbDwEw29E+mBlTmP8xKjlr6pP1nFWVW0NtSR3wAImz2SpwSEHelNsJNbYJ7rLKZq
+         +kp6bO4t25zd3UhonaSCB5HWrd7AI7DAJt8HJm6J57ToLjHv9Yqbrr95HIZHQCBaFIwu
+         spxfkXQAnEQFZfoTYi674iJ5ONyVLFYtKlertd0rn/+/nerVT2DGOCQs/e62mZEj0XhS
+         xotVItjJQQoBux5dymXEgQQDZtRwjhDV4imHYkc6mkx2jJTA0cJmtx8Wn6aFqoMuHLmT
+         JwHQ==
+X-Gm-Message-State: AOJu0YxjgeLNpQRVOEUt5EK4z19DoeMogcAKuVWgDI8F+o6ua99LmJy/
+	RWi/pCwisu9Ko6xd6XrIRPJc3DbhjTlSARaZqFdyzj9BicVURpJls/+XVzYGyEo=
+X-Google-Smtp-Source: AGHT+IEwQsLrUSRj8yMQZRrM3TJrxtGnaUPwFw8asQJYI5gX43nSMwhRCTMymhgu1XArH0UM/lj1QA==
+X-Received: by 2002:adf:e581:0:b0:337:bc89:c11a with SMTP id l1-20020adfe581000000b00337bc89c11amr398266wrm.239.1706258904145;
+        Fri, 26 Jan 2024 00:48:24 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id gx3-20020a170906f1c300b00a19b7362dcfsm382645ejb.139.2024.01.26.00.48.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Jan 2024 00:48:23 -0800 (PST)
+Message-ID: <ddaae46e-e081-4bff-9a36-44499584cb08@linaro.org>
+Date: Fri, 26 Jan 2024 09:48:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125-bump-min-llvm-ver-to-13-0-1-v1-0-f5ff9bda41c5@kernel.org>
- <20240125-bump-min-llvm-ver-to-13-0-1-v1-4-f5ff9bda41c5@kernel.org>
-In-Reply-To: <20240125-bump-min-llvm-ver-to-13-0-1-v1-4-f5ff9bda41c5@kernel.org>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Fri, 26 Jan 2024 09:44:37 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXFzi=ijUBU0i3gq4Q9rcCvMw-a1wLc1u7fXRRN8QbN9hw@mail.gmail.com>
-Message-ID: <CAMj1kXFzi=ijUBU0i3gq4Q9rcCvMw-a1wLc1u7fXRRN8QbN9hw@mail.gmail.com>
-Subject: Re: [PATCH 04/11] ARM: Remove Thumb2 __builtin_thread_pointer
- workaround for Clang
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: akpm@linux-foundation.org, masahiroy@kernel.org, nicolas@fjasle.eu, 
-	linux-kbuild@vger.kernel.org, llvm@lists.linux.dev, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, linux@armlinux.org.uk, 
-	linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/6] dt-bindings: PCI: qcom,pcie-sm8450: move SM8450 to
+ dedicated schema
+To: Rob Herring <robh@kernel.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+ Manivannan Sadhasivam <mani@kernel.org>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84sk?=
+ =?UTF-8?Q?i?= <kw@linux.com>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ devicetree@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ linux-pci@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+References: <20240125-dt-bindings-pci-qcom-split-v2-0-6b58efd91a7a@linaro.org>
+ <20240125-dt-bindings-pci-qcom-split-v2-2-6b58efd91a7a@linaro.org>
+ <170623813219.6729.5150130088127136653.robh@kernel.org>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <170623813219.6729.5150130088127136653.robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, 25 Jan 2024 at 23:56, Nathan Chancellor <nathan@kernel.org> wrote:
->
-> Now that the minimum supported version of LLVM for building the kernel
-> has been bumped to 13.0.1, the conditional expression added to
-> get_current() by commit c1e42efacb9b ("ARM: 9151/1: Thumb2: avoid
-> __builtin_thread_pointer() on Clang") is always true, as the build will
-> fail during the configuration stage for older LLVM versions. Remove it,
-> effectively reverting the aforementioned change.
->
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+On 26/01/2024 04:02, Rob Herring wrote:
+> 
+> On Thu, 25 Jan 2024 14:03:25 +0100, Krzysztof Kozlowski wrote:
+>> Move SM8450 PCIe devices from qcom,pcie.yaml binding to a dedicated file
+>> to make reviewing easier.
+>>
+>> This creates equivalent schema file, except:
+>>  - Missing required compatible which is actually redundant.
+>>  - Expecting eight MSI interrupts, instead of only one, which was
+>>    incomplete hardware description.
+>>
+>> Acked-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>> ---
+>>  .../devicetree/bindings/pci/qcom,pcie-sm8450.yaml  | 175 +++++++++++++++++++++
+>>  .../devicetree/bindings/pci/qcom,pcie.yaml         |  67 --------
+>>  2 files changed, 175 insertions(+), 67 deletions(-)
+>>
+> 
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/pci/qcom,pcie-sm8450.example.dtb: pcie@1c00000: Unevaluated properties are not allowed ('#address-cells', '#interrupt-cells', '#size-cells', 'bus-range', 'device_type', 'interrupt-map', 'interrupt-map-mask', 'iommu-map', 'linux,pci-domain', 'max-link-speed', 'msi-map', 'msi-map-mask', 'num-lanes', 'perst-gpios', 'phy-names', 'phys', 'power-domains', 'ranges', 'wake-gpios' were unexpected)
+> 	from schema $id: http://devicetree.org/schemas/pci/qcom,pcie-sm8450.yaml#
 
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+I thought that's error coming from dtschema about msi-map, but in fact I
+removed a bit too much in this binding when dropping if:then:.
 
-> ---
-> Cc: linux@armlinux.org.uk
-> Cc: ardb@kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> ---
->  arch/arm/include/asm/current.h | 8 +-------
->  1 file changed, 1 insertion(+), 7 deletions(-)
->
-> diff --git a/arch/arm/include/asm/current.h b/arch/arm/include/asm/current.h
-> index 1e1178bf176d..5225cb1c803b 100644
-> --- a/arch/arm/include/asm/current.h
-> +++ b/arch/arm/include/asm/current.h
-> @@ -18,18 +18,12 @@ static __always_inline __attribute_const__ struct task_struct *get_current(void)
->  {
->         struct task_struct *cur;
->
-> -#if __has_builtin(__builtin_thread_pointer) && \
-> -    defined(CONFIG_CURRENT_POINTER_IN_TPIDRURO) && \
-> -    !(defined(CONFIG_THUMB2_KERNEL) && \
-> -      defined(CONFIG_CC_IS_CLANG) && CONFIG_CLANG_VERSION < 130001)
-> +#if __has_builtin(__builtin_thread_pointer) && defined(CONFIG_CURRENT_POINTER_IN_TPIDRURO)
->         /*
->          * Use the __builtin helper when available - this results in better
->          * code, especially when using GCC in combination with the per-task
->          * stack protector, as the compiler will recognize that it needs to
->          * load the TLS register only once in every function.
-> -        *
-> -        * Clang < 13.0.1 gets this wrong for Thumb2 builds:
-> -        * https://github.com/ClangBuiltLinux/linux/issues/1485
->          */
->         cur = __builtin_thread_pointer();
->  #elif defined(CONFIG_CURRENT_POINTER_IN_TPIDRURO) || defined(CONFIG_SMP)
->
-> --
-> 2.43.0
->
+I'll fix in v3.
+
+Best regards,
+Krzysztof
+
 
