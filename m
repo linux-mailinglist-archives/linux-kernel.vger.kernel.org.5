@@ -1,160 +1,101 @@
-Return-Path: <linux-kernel+bounces-39482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1F5483D1E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 02:09:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FEE283D1E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 02:10:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E56E81C23299
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 01:09:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41FC6B249C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 01:10:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE341EDE;
-	Fri, 26 Jan 2024 01:09:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 853D7EBE;
+	Fri, 26 Jan 2024 01:09:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="UJoqfeqe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nV8roOhE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 143D8387;
-	Fri, 26 Jan 2024 01:09:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CABAB387
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 01:09:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706231346; cv=none; b=dZHa8B3Ge4h9AzJ7dqjGKxrFdji7IOnrO60vTVGcmOm1pNFGY1WapKkoWMdGDnNlRHMUmu8sEYMBU0IhpOU68QSWqmyxYEYF4WX/VWz6GWSxc4hZBYYlTktb3UrBvYkhJGk8xNbZAz/F9wRvfA7uJIG9Yj8EHI0Y21eD3AlijnQ=
+	t=1706231395; cv=none; b=fH+zRVcuDv6J6HRrJHwufIm47aTTF/eSAYmUx4mpA6lxfhPQh7NVNH77hYY8dhfHqorWf6O+v/PjnT5/wfeO0j4zShYYd5o3CmdV1HtEkQ4UkLNimm6DvPKKKHXnBh50Fk5+VxhmruABZqAEp5OfTr/EiYWAEzKJ3w4rNzXbpbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706231346; c=relaxed/simple;
-	bh=ZcNBosLvwzHAld72+LuB55jLJ9C0jyjKAALEGkHTKFM=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=nKLdDST573B76tIl7a8+ep2MsbO5kPNt7U+/jQ9PHzOHHkC3kWC1MjQvDvthvtcSSxIPpouw1IWhG+6FIQSgGTUDNPfu5uUqwZOqLeKqYzWnPRAsU4+CIYBwz01wH86bOqPDqJg1wCbxV01xbb7TZLBCLQk9MQ5mxuAZv/br2dY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=UJoqfeqe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45CBBC433F1;
-	Fri, 26 Jan 2024 01:09:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1706231345;
-	bh=ZcNBosLvwzHAld72+LuB55jLJ9C0jyjKAALEGkHTKFM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=UJoqfeqeIy/4MNN+brvu8oK2me7WSipoIos2XaP5hv0zYuiIKPWyMK5YLGSiOgMlp
-	 Olif5eyyzRLcw+B5NLyI8Ly0QNOV+oAfNYp9QEdHn1NnYpdwKsWNQdfiSVqWmpuSFT
-	 gtSew4R/pju2PGTBvhAj4vpekWnNDxxuq9ptwmWU=
-Date: Thu, 25 Jan 2024 17:08:58 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc: casey@schaufler-ca.com, paul@paul-moore.com, jmorris@namei.org,
- serge@hallyn.com, linux-kernel@vger.kernel.org,
- linux-security-module@vger.kernel.org, Roberto Sassu
- <roberto.sassu@huawei.com>, Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH v3 5/5] ramfs: Initialize security of in-memory inodes
-Message-Id: <20240125170858.1ce723a57c7fd2b9bfb5d28d@linux-foundation.org>
-In-Reply-To: <20231116090125.187209-6-roberto.sassu@huaweicloud.com>
-References: <20231116090125.187209-1-roberto.sassu@huaweicloud.com>
-	<20231116090125.187209-6-roberto.sassu@huaweicloud.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706231395; c=relaxed/simple;
+	bh=+9liw3MIg51z1w1+FLNp7TW4WBhCye0p1bQDb5wxCAc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lQ3xiAovJe8s/YA8pqm8ji5Op7OB5pUQo2oRR/Qz7zFX7D29pzUsSPvUXrdI5tlhTqLiAOlAq4Z4zLNIbxvGLGY+tzCZY0pWo3n+mBMQLw2abzN1PJj3yv73r7RPiJfQeXE81FXCyGTURfTC0G0tz4+0HPgwYFxkMn1L0ZD93/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nV8roOhE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61011C43399
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 01:09:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706231395;
+	bh=+9liw3MIg51z1w1+FLNp7TW4WBhCye0p1bQDb5wxCAc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=nV8roOhEKCzd0klA0IZP9b6yC8z0UOgjK1pql6YB7FfazfpFKMzc+ZEjD3UQA9YxN
+	 wvXAGypAVDyL/NPt9gnkhtW5OFTB323fmBOXep+mU/wo0ZHonXyivYrGJcvFFuTqV7
+	 asGB7elZGV9f+v1WXmlnpJ57JWSX5WMN5a+vSlwStQFtFHsrwt8KCd2FWWr13SRgbj
+	 +7jQd6pWuGFqkx/WAQ9uJS9veNfxvM+XvmWBwlMbROJekzxbomxb4jNO2QlN6k176r
+	 FJZQKBmr3LVrikdVF9j2YsyGXy0rFTl3QyL138Q9xMBWNladqC5YJwniwRs73wxaiP
+	 pcNLKEJrO7bIw==
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d746ce7d13so25035ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 17:09:55 -0800 (PST)
+X-Gm-Message-State: AOJu0YyNVww6/2hDrYRjVRg+Xl3MhRJGCVb0J3tTGjjibyEv3uhrhjne
+	BEIXQbBj3L5xQ/cOoCUjvXnuA9EGSRyk1BV11zE1bbaCrKqxZwgFEkpoM6g9EQs3OWdnutpdT9P
+	DizbbLky2lUH+2Kl1OjiPxmG3wZRvijaSHB9X
+X-Google-Smtp-Source: AGHT+IFPjHIoFHpS6lUwKN2Ik89SZ4wdLjZNpBhW99q6IwgqhzpQ9EhayIgGH+gohje52GYr1BlFthvuU1QxnMZhlTk=
+X-Received: by 2002:a17:903:1108:b0:1d4:d5bb:5d7c with SMTP id
+ n8-20020a170903110800b001d4d5bb5d7cmr695292plh.110.1706231394824; Thu, 25 Jan
+ 2024 17:09:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20240120024007.2850671-1-yosryahmed@google.com>
+ <20240120024007.2850671-3-yosryahmed@google.com> <20240122201906.GA1567330@cmpxchg.org>
+ <CAJD7tkaATS48HVuBfbOmPM3EvRUoPFr66WhF64UC4FkyVH5exg@mail.gmail.com>
+ <20240123153851.GA1745986@cmpxchg.org> <CAJD7tkasHsRnT_75-TXsEe58V9_OW6m3g6CF7Kmsvz8CKRG_EA@mail.gmail.com>
+ <20240123201234.GC1745986@cmpxchg.org> <CAJD7tkZC6w2EaE=j2NEVWn1s7Lo2A7YZh8LiZ+w72jQzFFWLUQ@mail.gmail.com>
+ <CAJD7tkaVdJ9B_UDQs+o1nLdbs62CeKgbCyEXbMdezaBgOruEWw@mail.gmail.com>
+ <CAF8kJuNkwGNw=Nnu1MVOewKiqT0ahj5DkKV_Z4VDqSpu+v=vmw@mail.gmail.com>
+ <CAJD7tkZViJot2+vFr_yAyRsRf7jTRPsb8wchqkf4R1tSsvLG+A@mail.gmail.com>
+ <CAF8kJuPHrf_-xr8mz5r_TWOWw-Zv+1izFNU=1yKV9EAdC=bGDg@mail.gmail.com>
+ <CAJD7tkaG5epZkp4N4wOmbAp-mKV60rR63kppSfKtZPsu2vTDdg@mail.gmail.com>
+ <CAF8kJuOFbRYZiFmtrAAqh7KBxWNaYtK10e7Ych4VxDKOocRKEQ@mail.gmail.com> <CAJD7tkYFX98TZGiiBwXRtiJM_zEphzLq-vNXNyrzun8gTRLuGw@mail.gmail.com>
+In-Reply-To: <CAJD7tkYFX98TZGiiBwXRtiJM_zEphzLq-vNXNyrzun8gTRLuGw@mail.gmail.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Thu, 25 Jan 2024 17:09:43 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuN25avTEgNTXdoz7N9eRuNTCdtGLA_kCuKB=_TRYT48cA@mail.gmail.com>
+Message-ID: <CAF8kJuN25avTEgNTXdoz7N9eRuNTCdtGLA_kCuKB=_TRYT48cA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm: zswap: remove unnecessary tree cleanups in zswap_swapoff()
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Nhat Pham <nphamcs@gmail.com>, Chengming Zhou <zhouchengming@bytedance.com>, 
+	Huang Ying <ying.huang@intel.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 16 Nov 2023 10:01:25 +0100 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
+Hi Yosry,
 
-> From: Roberto Sassu <roberto.sassu@huawei.com>
-> 
-> Add a call security_inode_init_security() after ramfs_get_inode(), to let
-> LSMs initialize the inode security field. Skip ramfs_fill_super(), as the
-> initialization is done through the sb_set_mnt_opts hook.
-> 
-> Calling security_inode_init_security() call inside ramfs_get_inode() is
-> not possible since, for CONFIG_SHMEM=n, tmpfs also calls the former after
-> the latter.
-> 
-> Pass NULL as initxattrs() callback to security_inode_init_security(), since
-> the purpose of the call is only to initialize the in-memory inodes.
-> 
+On Thu, Jan 25, 2024 at 2:34=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
+>
+> > > problem is that after the entry is isolated from the zswap LRU, we
+> > > need to grab the tree lock to make sure it's still there and get a
+> > > ref, and just trying to lock the tree may be a UAF if we race with
+> > > swapoff.
+> >
+> > I feel it is very wrong to have the tree freed while having
+> > outstanding entry allocationed from the tree pending.
+> > I would want to avoid that situation if possible.
+>
+> This should be the case with Chengming's solution.
 
-fwiw,
+Thanks for confirming. Looking forward to Chenming's patch.
 
-Acked-by: Andrew Morton <akpm@linux-foundation.org>
-
-Please include this in the relevant security tree.
-
-> diff --git a/fs/ramfs/inode.c b/fs/ramfs/inode.c
-> index 4ac05a9e25bc..8006faaaf0ec 100644
-> --- a/fs/ramfs/inode.c
-> +++ b/fs/ramfs/inode.c
-> @@ -102,11 +102,20 @@ ramfs_mknod(struct mnt_idmap *idmap, struct inode *dir,
->  	int error = -ENOSPC;
->  
->  	if (inode) {
-> +		error = security_inode_init_security(inode, dir,
-> +						     &dentry->d_name, NULL,
-> +						     NULL);
-> +		if (error) {
-> +			iput(inode);
-> +			goto out;
-> +		}
-> +
->  		d_instantiate(dentry, inode);
->  		dget(dentry);	/* Extra count - pin the dentry in core */
->  		error = 0;
->  		inode_set_mtime_to_ts(dir, inode_set_ctime_current(dir));
->  	}
-> +out:
->  	return error;
->  }
->  
-> @@ -134,6 +143,15 @@ static int ramfs_symlink(struct mnt_idmap *idmap, struct inode *dir,
->  	inode = ramfs_get_inode(dir->i_sb, dir, S_IFLNK|S_IRWXUGO, 0);
->  	if (inode) {
->  		int l = strlen(symname)+1;
-> +
-> +		error = security_inode_init_security(inode, dir,
-> +						     &dentry->d_name, NULL,
-> +						     NULL);
-> +		if (error) {
-> +			iput(inode);
-> +			goto out;
-> +		}
-> +
->  		error = page_symlink(inode, symname, l);
->  		if (!error) {
->  			d_instantiate(dentry, inode);
-> @@ -143,6 +161,7 @@ static int ramfs_symlink(struct mnt_idmap *idmap, struct inode *dir,
->  		} else
->  			iput(inode);
->  	}
-> +out:
->  	return error;
->  }
->  
-> @@ -150,12 +169,23 @@ static int ramfs_tmpfile(struct mnt_idmap *idmap,
->  			 struct inode *dir, struct file *file, umode_t mode)
->  {
->  	struct inode *inode;
-> +	int error;
->  
->  	inode = ramfs_get_inode(dir->i_sb, dir, mode, 0);
->  	if (!inode)
->  		return -ENOSPC;
-> +
-> +	error = security_inode_init_security(inode, dir,
-> +					     &file_dentry(file)->d_name, NULL,
-> +					     NULL);
-> +	if (error) {
-> +		iput(inode);
-> +		goto out;
-> +	}
-> +
->  	d_tmpfile(file, inode);
-> -	return finish_open_simple(file, 0);
-> +out:
-> +	return finish_open_simple(file, error);
->  }
->  
->  static const struct inode_operations ramfs_dir_inode_operations = {
-> -- 
-> 2.34.1
+Chris
 
