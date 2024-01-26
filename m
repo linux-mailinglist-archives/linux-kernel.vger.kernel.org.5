@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-40814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0508783E664
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 00:16:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 218FE83E666
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 00:16:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5299289D94
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:16:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E4191C21DEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:16:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65BB15D8EC;
-	Fri, 26 Jan 2024 23:14:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C97A55FEED;
+	Fri, 26 Jan 2024 23:14:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P5tZxgUi"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lyL9QUuj"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4571D5BAE5;
-	Fri, 26 Jan 2024 23:14:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A47915EE62;
+	Fri, 26 Jan 2024 23:14:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706310849; cv=none; b=WJa7yp6/Xt2fl3gCIih8QijgeUE/Rmi0JJsXAe10PWyOQKXZFAAgcRGIqJR34ncUXS3vDTgz1vZk8VwBH9Zooth3xZeHjaWcRFE/jSH5KRt7o0he4C4WZwPuijw/AnwjKrSweTBpGypfvO4n7si0pJ2KsVMWsUKVOB7E9wWWZok=
+	t=1706310852; cv=none; b=h+WIWPkyKNIh8F4Sl0nleBlIHLmxhlZkQ/0B0y5UZm4lV64a2WN0zAdS3V9X294AYxCzh+VLn81dTtgK8Nt7PNuN8XACo3XtaEHheyWvivc1vOH7JsOpTvKiaRk2lNMEMqmeMgBtPOPMFAiJvZr7BfvQj7aEMKO+QIeW6QKNtpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706310849; c=relaxed/simple;
-	bh=aKiWzgmFK3XS1BsGpO2cXonb0cWCM59n3esPDJ++t1o=;
+	s=arc-20240116; t=1706310852; c=relaxed/simple;
+	bh=gcaCmv31jC9+dLD+970bShIol4o9Uq98lPUTwZv23Io=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AIFnnaF44X4ARCLGbHVLlfFrBc5h9fnMg5DxKXs9OjQxolzAOqh1lSNF2muKrQ6DRhGZqHGkII+OKfWB1Yz1/qY/UbSDjdeTZmaXP1PluKD5G/YGd2JR+HlL/sB2/iIL559Rga7fTBQeiG5PRlMbpyKKRIsvdWGhu6ZbFU4K0Ek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P5tZxgUi; arc=none smtp.client-ip=209.85.210.169
+	 MIME-Version; b=QCVEcRdao61FouO2YflVBkvhs7Qv+Pk1s0zVO9yG37C53iTkBoohgLG6COT+dgKRED9QkFJa9/gVSJ64Uabp0puyg7SpMydQF8AnTWsp7pk0HpICDRC+RvES5PonIJCq0jU8xIrKpAPEEx80Klm8RPfgGnlzy0f8fHvTXkUdVP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lyL9QUuj; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6db0fdd2b8fso552024b3a.2;
-        Fri, 26 Jan 2024 15:14:08 -0800 (PST)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d711d7a940so8358445ad.1;
+        Fri, 26 Jan 2024 15:14:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706310847; x=1706915647; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706310850; x=1706915650; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=je2dXIpj4nMvLmLfnHTiHfBkXHkQg5LdUrpAF1wy3tM=;
-        b=P5tZxgUid81mNNLCbZ/QlNMPUoQ4itwQzaOKdrTe7ytzhsGJoh2w3L/eMDn+D/N3T7
-         2KBdZHqcLHtX0HL4DHQ+H931hYyxXUeTYkzN1ba69kImBDIDBxe4VdX23toDYqH3ncdt
-         fShm6u1YhmgtA9z89mM3QxiC28PTeHJWWyaZ1PDV8o9W0Y/ChIjqOYW8A/gigjnWvjdQ
-         8REiq4yHF+C7B2lwbqwrSoqmGcXiHtQXjhhuTA/nsU/LzChJBYUxsrMi4MLo0D+0BLmN
-         n1/qazU9fTbCFjg3F6AQavRvOz9PaXH7dg/IlDokqmVF6zeP/VWITGur7X4feIjfROY/
-         4ZPg==
+        bh=HGFbx+2eRIKYYfw924Gczlw/lLoyAbfAHs5r+gBC2OQ=;
+        b=lyL9QUujNxrLi9UaunMf2pKmy8U+0UUvFUa5ln/NBtl7X+3CGsdlmFn0itJdggZZZY
+         cGAGL8ptlySTZhABfHwtQ3DsaQeR2o+109KivhV/PMhpO6dRztNWjACB/RDNHLrQ/gqI
+         ruA0PNX6aSN7uZTREClqwBYwh0e2VxQp/ZF23JVJ8J1QO5k2mE+3Yc+XjHRPEavSn7zA
+         /Jubir2MHSP0RvmHiIUvbuHxFFzR7IJYNpwPH6kvJDZJ160nHej69Gb+zLSqpO7B/cr6
+         o49w18gU0v7eQnXTjqo+opPncKHLyPqxiHggyoS+QRznfKiFb+GaNcXIOHDM0K7Yu6gF
+         42pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706310847; x=1706915647;
+        d=1e100.net; s=20230601; t=1706310850; x=1706915650;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=je2dXIpj4nMvLmLfnHTiHfBkXHkQg5LdUrpAF1wy3tM=;
-        b=NGx9RIia+XztDKEoC3fx13Qm4B56zfuZSvGEnabHmSP5siOKzypQbuUT3pnrR/EpWn
-         7hdSR+HKXSh/TLFv/ZQL5XAdvk2Wpqo5hL6DU038V85H0UShlPDK7I4iP3IVuWlMvUTl
-         Rur0bKnQSfJTfnQspSaxvwPKeAbF5PCFiNbAII47ay0yfek1euYlUqM8612/TDoU9Wel
-         nrcrmK9C9ZqOXdkRCWZmUp5S8zFVxXLHg1rFEydKFBvjPP1kG8V5tPbNWRIu+3/EYsZ7
-         ZU/ashLdmYEw5LMZMjjF6ua0mIfiqW8T+v77jUuSjlTggGmM0DMCalv4uS87L2/3sOT+
-         ZgGQ==
-X-Gm-Message-State: AOJu0YzTBHRBaLMFifBW7jj8aJRt7y2vT+qCW1vZ294gM6Q/vZwsjBar
-	ngZaJ656XASpz0RJdHcC8+FL0XKy6e2ed1SO5tAeKKliiJH6tzRI
-X-Google-Smtp-Source: AGHT+IHVjDaF9+Isu1Qz4FPT8T2ObxNSuUgI2SQ8aEAdELBOpl+pvpVAbgBQ/4zev5FpivRpEIYaFQ==
-X-Received: by 2002:a17:902:c70c:b0:1d7:38fc:1272 with SMTP id p12-20020a170902c70c00b001d738fc1272mr587369plp.75.1706310847695;
-        Fri, 26 Jan 2024 15:14:07 -0800 (PST)
+        bh=HGFbx+2eRIKYYfw924Gczlw/lLoyAbfAHs5r+gBC2OQ=;
+        b=fdt1OclPrUsNBP6VTBVOSqC86YA9wmq/Mk2YUVt+cCJmUxX1PDKzabhziIYlDABZBo
+         eYg3FZducMNrmBfOdvOg6Dpcyx+tDjmlEt5Q8qyxIDwHSmBlb4jteKiUCLF3tmpn3X0u
+         4oHYzV98lnVBk5LxuvYVfo2k+OblqTmlRODtK65ykCWodmsLVTLSkMXkJHUaRTbn9ZMX
+         LK2f8zi6NkhYv8i5UdAus8d/E+U0GHXsaQJaSJd6vl1MNQ1oSoLGGICESVtqVX0n9xct
+         0+jD3YolJupN9N5+XozP6cdvqjKVJ0D7B4Bd5CmjuIVAvSMQ8g1oJNglexmKXZOhF/2D
+         veSQ==
+X-Gm-Message-State: AOJu0YxF7PR/oxS5itdtt4xg3CvBmsPQnBTp4MJ0PWaEC+SOTGbioecz
+	IURv3MWbyDy1YploNmhRr9l7Wsr5BVp9EJAm3RAchotnMwC0dI5k
+X-Google-Smtp-Source: AGHT+IHACOHBeY51L8GurENnKLLidBUSoUP5U9AqnYdftk3BjgeefzhnxUc1/P25zKyWklE3TkkBaA==
+X-Received: by 2002:a17:902:ce83:b0:1d6:f87f:7627 with SMTP id f3-20020a170902ce8300b001d6f87f7627mr672487plg.130.1706310850069;
+        Fri, 26 Jan 2024 15:14:10 -0800 (PST)
 Received: from localhost ([2601:644:9380:8cd0::7fb4])
-        by smtp.gmail.com with ESMTPSA id o2-20020a170902e00200b001d748fac506sm1446405plo.82.2024.01.26.15.14.07
+        by smtp.gmail.com with ESMTPSA id md8-20020a17090b23c800b002933c85eb64sm1659421pjb.53.2024.01.26.15.14.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 15:14:07 -0800 (PST)
+        Fri, 26 Jan 2024 15:14:09 -0800 (PST)
 From: Matthew Wood <thepacketgeek@gmail.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -73,9 +73,9 @@ To: "David S. Miller" <davem@davemloft.net>,
 Cc: leitao@debian.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2 7/8] net: netconsole: append userdata to netconsole messages
-Date: Fri, 26 Jan 2024 15:13:42 -0800
-Message-ID: <20240126231348.281600-8-thepacketgeek@gmail.com>
+Subject: [PATCH net-next v2 8/8] net: netconsole: append userdata to fragmented netconsole messages
+Date: Fri, 26 Jan 2024 15:13:43 -0800
+Message-ID: <20240126231348.281600-9-thepacketgeek@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240126231348.281600-1-thepacketgeek@gmail.com>
 References: <20240126231348.281600-1-thepacketgeek@gmail.com>
@@ -87,62 +87,84 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Append userdata to outgoing unfragmented (<1000 bytes) netconsole messages.
-When sending messages the userdata string is already formatted and stored
-in netconsole_target->userdata_complete.
-
-Always write the outgoing message to buf, so userdata can be appended in
-a standard fashion. This is a change from only using buf when the
-release needs to be prepended to the message.
+Regardless of whether the original message body or formatted userdata
+exceeds the MAX_PRINT_CHUNK, append userdata to the netconsole message
+starting with the first chunk that has available space after writing the
+body.
 
 Co-developed-by: Breno Leitao <leitao@debian.org>
 Signed-off-by: Breno Leitao <leitao@debian.org>
 Signed-off-by: Matthew Wood <thepacketgeek@gmail.com>
 ---
- drivers/net/netconsole.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+ drivers/net/netconsole.c | 50 +++++++++++++++++++++++++++++-----------
+ 1 file changed, 37 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/net/netconsole.c b/drivers/net/netconsole.c
-index 73feba0b3c93..de668a0794b1 100644
+index de668a0794b1..b33ceb110434 100644
 --- a/drivers/net/netconsole.c
 +++ b/drivers/net/netconsole.c
-@@ -1035,19 +1035,34 @@ static void send_ext_msg_udp(struct netconsole_target *nt, const char *msg,
- 	const char *msg_ready = msg;
- 	const char *release;
- 	int release_len = 0;
-+	int userdata_len = 0;
-+	char *userdata = NULL;
-+
-+#ifdef CONFIG_NETCONSOLE_DYNAMIC
-+	userdata = nt->userdata_complete;
-+	userdata_len = nt->userdata_length;
-+#endif
+@@ -1086,24 +1086,48 @@ static void send_ext_msg_udp(struct netconsole_target *nt, const char *msg,
+ 	memcpy(buf + release_len, header, header_len);
+ 	header_len += release_len;
  
- 	if (nt->release) {
- 		release = init_utsname()->release;
- 		release_len = strlen(release) + 1;
- 	}
+-	while (offset < body_len) {
++	while (offset < body_len + userdata_len) {
+ 		int this_header = header_len;
+-		int this_chunk;
++		int this_offset = 0;
++		int this_chunk = 0;
  
--	if (msg_len + release_len <= MAX_PRINT_CHUNK) {
-+	if (msg_len + release_len + userdata_len <= MAX_PRINT_CHUNK) {
- 		/* No fragmentation needed */
- 		if (nt->release) {
- 			scnprintf(buf, MAX_PRINT_CHUNK, "%s,%s", release, msg);
- 			msg_len += release_len;
--			msg_ready = buf;
-+		} else {
-+			memcpy(buf, msg, msg_len);
- 		}
+ 		this_header += scnprintf(buf + this_header,
+ 					 sizeof(buf) - this_header,
+-					 ",ncfrag=%d/%d;", offset, body_len);
+-
+-		this_chunk = min(body_len - offset,
+-				 MAX_PRINT_CHUNK - this_header);
+-		if (WARN_ON_ONCE(this_chunk <= 0))
+-			return;
+-
+-		memcpy(buf + this_header, body + offset, this_chunk);
+-
+-		netpoll_send_udp(&nt->np, buf, this_header + this_chunk);
++					 ",ncfrag=%d/%d;", offset,
++					 body_len + userdata_len);
 +
-+		if (userdata)
-+			msg_len += scnprintf(&buf[msg_len],
-+					     MAX_PRINT_CHUNK - msg_len,
-+					     "%s", userdata);
++		/* Not all body data has been written yet */
++		if (offset < body_len) {
++			this_chunk = min(body_len - offset,
++					 MAX_PRINT_CHUNK - this_header);
++			if (WARN_ON_ONCE(this_chunk <= 0))
++				return;
++			memcpy(buf + this_header, body + offset, this_chunk);
++			this_offset += this_chunk;
++		}
++		/* Body is fully written and there is pending userdata to write,
++		 * append userdata in this chunk
++		 */
++		if (offset + this_offset >= body_len &&
++		    offset + this_offset < userdata_len + body_len) {
++			int sent_userdata = (offset + this_offset) - body_len;
++			int preceding_bytes = this_chunk + this_header;
 +
-+		msg_ready = buf;
- 		netpoll_send_udp(&nt->np, msg_ready, msg_len);
- 		return;
++			if (WARN_ON_ONCE(sent_userdata < 0))
++				return;
++
++			this_chunk = min(userdata_len - sent_userdata,
++					 MAX_PRINT_CHUNK - preceding_bytes);
++			if (WARN_ON_ONCE(this_chunk <= 0))
++				return;
++			memcpy(buf + this_header + this_offset,
++			       userdata + sent_userdata,
++			       this_chunk);
++			this_offset += this_chunk;
++		}
+ 
+-		offset += this_chunk;
++		netpoll_send_udp(&nt->np, buf, this_header + this_offset);
++		offset += this_offset;
  	}
+ }
+ 
 -- 
 2.43.0
 
