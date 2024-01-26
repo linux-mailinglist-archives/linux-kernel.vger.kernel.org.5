@@ -1,154 +1,213 @@
-Return-Path: <linux-kernel+bounces-40317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FE1983DE61
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:13:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F0D983DE64
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:13:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45623281F2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:13:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9BBA7B20C40
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:13:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B16C1D6BE;
-	Fri, 26 Jan 2024 16:12:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E07531D559;
+	Fri, 26 Jan 2024 16:13:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BeIACOUa"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="NiXb+5/D";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="E6wxnN77";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="NiXb+5/D";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="E6wxnN77"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21D711D54C
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 16:12:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5902E1CF92;
+	Fri, 26 Jan 2024 16:13:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706285572; cv=none; b=bvGgjR0ME1fsL8hwqJJInesyjrGxqEsbt8Uj6eVJZwz/pW4gZMmUSliMDlrOyYoTCMvy4lgUivH2eidTpaBYh13nDld7poy+fQ/LUL0e0m5aiOnZF71LzBwWVw/Jpn6krIfkCsM1Cv/1xWWnNVFZaIyQwMziLaEJyidQJViQdtE=
+	t=1706285584; cv=none; b=rgOjvi2bTuhhfbNLInUCb3FSH3MX8Mit1wQtsN6TjXHYyMEJsY07tt/i39AkdLSJn/86AkzMHmy/1MnNbtfNvWtbHfgZL2l3gYs5YZ/jlq3FgO3Ps9sm1trTFE359UMVkpVnbyl5ab7dMK00shycDD05Wdngi6E2KubW7k4ie3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706285572; c=relaxed/simple;
-	bh=NGUuwyDUt/V8BbgO0Ikz6ekMH3s9pITV7aBg2GJNeyw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IsTApoDbQmShuXnVxFJzgsCofp8UXENrMYcbHxVRo3sqGHt3f/nuAoQkeyJ6ukvrSIj8gFGgYO1FCbil51pNcEswYjytz9kwJOVWDuO2NGo7yc/hRE4Dg4IA+caDxPyxJN6ydD8moPRtquuNxoMXsivBiXgbqkwKfoY/taMdhoQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BeIACOUa; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55a90b2b554so670760a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:12:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706285569; x=1706890369; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lcg3AUd2cqMzWvqXgXxGKA4Vgsv4bHXjz07Z4n2FDK4=;
-        b=BeIACOUaUbltTIQ5Oespza4D2lupH9bhKbTv9eu/2wYoz3ef5Xu/rlOXNsxKaRZOMv
-         r8UlPU8PlPZav4yXbYJA3d7jv4bSQ/Y8r8Vr9ds7yDGG5CiKPNEWLmo8mmX82ZEsIfcG
-         LB80cWn8KkLgwNl/mUI/Ea0RaIZVG98/HCrkMmjMhvCZIxF0J1yiaJUwqA9tua9QUcuO
-         I825pEW+xlDHsUZdl7W0ebBiy78k8pN8PQBZ+voOyHZLRm3W1mPxaG5omgP8rc/vX+b0
-         xV/3jyLSlc9R0nrVsrDoIhh6lHDVRkWAwCXDu62ijRff1Ff7KKI2wayjDlK//vTHVCoO
-         S5Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706285569; x=1706890369;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Lcg3AUd2cqMzWvqXgXxGKA4Vgsv4bHXjz07Z4n2FDK4=;
-        b=ACDlxp2GbUWvrr/gT5OJFsKXCuP0y80hwS6/PJyCituxd2HQd9u3ogoo6uppLq+fji
-         Hli38YKwGGpTIZ5JDBlW+wFV1Ab4XZXEmNQYTvNK5YUTMXLq7Wb31wg9wd7yu9kiC7Zf
-         ch+RDsx2WAWqIc62nOxGQPgC2titcR+Sy7/bigeKY8DK7ThNn+CiwFFdil8GLL7ZIkul
-         wbAJLDYTO3yFl/+FwVgxKEx/oQDNWW2i/SAOFFuGfUrAuVDU2kMiqgjtT9P1pe31gbl4
-         G7mLFrSGRjP3Zctse5haHUYGrU9Mrb7EImJMKBthpv6NDCgGlLHFP1IsuuJjPbiytGhi
-         Ou2A==
-X-Gm-Message-State: AOJu0YwtriH7eELQKlXQusJMtzbhHJPZbbe9ma42U2EW5PI61OsawYPB
-	ZKBc0ynAOkPH8o+IDbtra1KvtXHVPdDMNBiMXoH5A5swEmiCpGFubL7HVYlC5QBUH0+Ag7dSkNe
-	R5x50XCdWWBqHItxRQRylYMoDF+CPAJACkEti/w==
-X-Google-Smtp-Source: AGHT+IFne1/xTwjOzXN0LiDrNgwHDmNg5oG+ktcyzY3HamyfJjBqdydrqWcvun6DTJpyaQxuZu8/43tMMiwe93Fpzl8=
-X-Received: by 2002:a17:906:6d4e:b0:a34:977e:aa7d with SMTP id
- a14-20020a1709066d4e00b00a34977eaa7dmr1633817ejt.70.1706285568955; Fri, 26
- Jan 2024 08:12:48 -0800 (PST)
+	s=arc-20240116; t=1706285584; c=relaxed/simple;
+	bh=D7Il6TcJrHrENwBzqDk4YJ8I9CxcEHlbklcOggMCQAk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=fdQLiufgUwPTIX2SlQLzfwiOUZ9N0IjikfpRaK/upCcWf/SpLGvPv7F9EESeapxvR1lLVTIBsbcveVgOz57JWS8oLAGXVkqzcbTpiT7moN0KFL1liNugpe+FpnrXMQq6OLYrASfv4nhSTooC7pO4hDnHpzWQPJ1WqIakRA5pB9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=NiXb+5/D; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=E6wxnN77; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=NiXb+5/D; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=E6wxnN77; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6BF7C1F749;
+	Fri, 26 Jan 2024 16:13:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706285580; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zxeqAeeZ/c+Prn9baOvxevx3t4mfvUcXn7Z1NU+Rph8=;
+	b=NiXb+5/DaFYxM28qfN+Jtef3H3Hg2DLr8TnAo8Eo6e/gmUzGvAH7o2R7hm8Fsrgmq6TG44
+	VZF0SeX4hCAHZ4BCc+8FrLtqfjJ0r7lqqlz+8dpH3diL2dC28Mr9HVhRexQJSEq1BDcYL+
+	SST64yfHNpo3m71YKq1ELqZ14O7zc7Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706285580;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zxeqAeeZ/c+Prn9baOvxevx3t4mfvUcXn7Z1NU+Rph8=;
+	b=E6wxnN77LN1HfYVG6vtMksGrJoA+3w7Xend2RxbA4l/3l9msxWRbq4KNeBGamq2QIwDR7R
+	yCBNn3k6DJldAACg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706285580; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zxeqAeeZ/c+Prn9baOvxevx3t4mfvUcXn7Z1NU+Rph8=;
+	b=NiXb+5/DaFYxM28qfN+Jtef3H3Hg2DLr8TnAo8Eo6e/gmUzGvAH7o2R7hm8Fsrgmq6TG44
+	VZF0SeX4hCAHZ4BCc+8FrLtqfjJ0r7lqqlz+8dpH3diL2dC28Mr9HVhRexQJSEq1BDcYL+
+	SST64yfHNpo3m71YKq1ELqZ14O7zc7Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706285580;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zxeqAeeZ/c+Prn9baOvxevx3t4mfvUcXn7Z1NU+Rph8=;
+	b=E6wxnN77LN1HfYVG6vtMksGrJoA+3w7Xend2RxbA4l/3l9msxWRbq4KNeBGamq2QIwDR7R
+	yCBNn3k6DJldAACg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 07F8E13A22;
+	Fri, 26 Jan 2024 16:12:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 4spGOgvas2UrEwAAD6G6ig
+	(envelope-from <lhenriques@suse.de>); Fri, 26 Jan 2024 16:12:59 +0000
+Received: from localhost (brahms.olymp [local])
+	by brahms.olymp (OpenSMTPD) with ESMTPA id 47f93bf8;
+	Fri, 26 Jan 2024 16:12:59 +0000 (UTC)
+From: Luis Henriques <lhenriques@suse.de>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: David Howells <dhowells@redhat.com>,  Jarkko Sakkinen
+ <jarkko@kernel.org>,  keyrings@vger.kernel.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2] keys: update key quotas in key_put()
+In-Reply-To: <20240124221225.GD1088@sol.localdomain> (Eric Biggers's message
+	of "Wed, 24 Jan 2024 14:12:25 -0800")
+References: <2744563.1702303367@warthog.procyon.org.uk>
+	<20240115120300.27606-1-lhenriques@suse.de>
+	<20240124221225.GD1088@sol.localdomain>
+Date: Fri, 26 Jan 2024 16:12:59 +0000
+Message-ID: <87bk988450.fsf@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240105160103.183092-1-ulf.hansson@linaro.org>
-In-Reply-To: <20240105160103.183092-1-ulf.hansson@linaro.org>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Fri, 26 Jan 2024 17:12:12 +0100
-Message-ID: <CAPDyKFoGozKrNrAc0vpnNVuKvnorAuN_fg37DU4j0rq=egJ6Hg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/5] PM: domains: Add helpers for multi PM domains to
- avoid open-coding
-To: "Rafael J . Wysocki" <rafael@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Sudeep Holla <sudeep.holla@arm.com>, Kevin Hilman <khilman@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, linux-pm@vger.kernel.org, 
-	Viresh Kumar <viresh.kumar@linaro.org>, Bjorn Andersson <andersson@kernel.org>, 
-	Nikunj Kela <nkela@quicinc.com>, Prasad Sodagudi <psodagud@quicinc.com>, 
-	Stephan Gerhold <stephan@gerhold.net>, Ben Horgan <Ben.Horgan@arm.com>, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-remoteproc@vger.kernel.org, 
-	linux-media@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="NiXb+5/D";
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=E6wxnN77
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.51 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCPT_COUNT_FIVE(0.00)[5];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[4];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_LAST(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: -4.51
+X-Rspamd-Queue-Id: 6BF7C1F749
+X-Spam-Flag: NO
 
-On Fri, 5 Jan 2024 at 17:01, Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> Updates in v2:
->         - Ccing Daniel Baluta and Iuliana Prodan the NXP remoteproc patches to
->         requests help with testing.
->         - Fixed NULL pointer bug in patch1, pointed out by Nikunj.
->         - Added some tested/reviewed-by tags.
->
->
-> Attaching/detaching of a device to multiple PM domains has started to become a
-> common operation for many drivers, typically during ->probe() and ->remove().
-> In most cases, this has lead to lots of boilerplate code in the drivers.
->
-> This series adds a pair of helper functions to manage the attach/detach of a
-> device to its multiple PM domains. Moreover, a couple of drivers have been
-> converted to use the new helpers as a proof of concept.
->
-> Note 1)
-> The changes in the drivers have only been compile tested, while the helpers
-> have been tested along with a couple of local dummy drivers that I have hacked
-> up to model both genpd providers and genpd consumers.
->
-> Note 2)
-> I was struggling to make up mind if we should have a separate helper to attach
-> all available power-domains described in DT, rather than providing "NULL" to the
-> dev_pm_domain_attach_list(). I decided not to, but please let me know if you
-> prefer the other option.
->
-> Note 3)
-> For OPP integration, as a follow up I am striving to make the
-> dev_pm_opp_attach_genpd() redundant. Instead I think we should move towards
-> using dev_pm_opp_set_config()->_opp_set_required_devs(), which would allow us to
-> use the helpers that $subject series is adding.
->
-> Kind regards
-> Ulf Hansson
+Eric Biggers <ebiggers@kernel.org> writes:
 
-Rafael, Greg, do have any objections to this series or would you be
-okay that I queue this up via my pmdomain tree?
+> On Mon, Jan 15, 2024 at 12:03:00PM +0000, Luis Henriques wrote:
+>> Delaying key quotas update when key's refcount reaches 0 in key_put() has
+>> been causing some issues in fscrypt testing.  This patches fixes this te=
+st
+>> flakiness by dealing with the quotas immediately, but leaving all the ot=
+her
+>> clean-ups to the key garbage collector.  Unfortunately, this means that =
+we
+>> also need to switch to the irq-version of the spinlock that protects quo=
+ta.
+>>=20
+>> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+>> ---
+>> Hi David!
+>>=20
+>> I have these changes in my local disk for a while; I wanted to send them
+>> before EOY break but... yeah, it didn't happen.  Anyway, I'm still sendi=
+ng
+>> it as an RFC as I'm probably missing something.
+>>=20
+>>  security/keys/gc.c     |  8 --------
+>>  security/keys/key.c    | 32 ++++++++++++++++++++++----------
+>>  security/keys/keyctl.c | 11 ++++++-----
+>>  3 files changed, 28 insertions(+), 23 deletions(-)
+>
+> This patch seems reasonable to me, though I'm still thinking about changi=
+ng
+> fs/crypto/ to manage its key quotas itself which would avoid the issue en=
+tirely.
+>
+> Note that as I said before, fs/crypto/ does key_put() on a whole keyring =
+at
+> once, in order to release the quota of the keys in the keyring.  Do you p=
+lan to
+> also change fs/crypto/ to keyring_clear() the keyring before putting it?
+> Without that, I don't think the problem is solved, as the quota release w=
+ill
+> still happen asynchronously due to the keyring being cleared asynchronous=
+ly.
 
-Kind regards
-Uffe
+Ah, good point.  In the meantime I had forgotten everything about this
+code and missed that.  So, I can send another patch to fs/crypto to add
+that extra call once (or if) this patch is accepted.
 
->
->
-> Ulf Hansson (5):
->   PM: domains: Add helper functions to attach/detach multiple PM domains
->   remoteproc: imx_dsp_rproc: Convert to
->     dev_pm_domain_attach|detach_list()
->   remoteproc: imx_rproc: Convert to dev_pm_domain_attach|detach_list()
->   remoteproc: qcom_q6v5_adsp: Convert to
->     dev_pm_domain_attach|detach_list()
->   media: venus: Convert to dev_pm_domain_attach|detach_list() for vcodec
->
->  drivers/base/power/common.c                   | 134 +++++++++++++++
->  drivers/media/platform/qcom/venus/core.c      |  12 +-
->  drivers/media/platform/qcom/venus/core.h      |   7 +-
->  .../media/platform/qcom/venus/pm_helpers.c    |  48 ++----
->  drivers/remoteproc/imx_dsp_rproc.c            |  82 +--------
->  drivers/remoteproc/imx_rproc.c                |  73 +-------
->  drivers/remoteproc/qcom_q6v5_adsp.c           | 160 ++++++++----------
->  include/linux/pm_domain.h                     |  38 +++++
->  8 files changed, 289 insertions(+), 265 deletions(-)
->
-> --
-> 2.34.1
+If I'm reading the code correctly, the only place where this extra call is
+required is on fscrypt_put_master_key():
+
+diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
+index 0edf0b58daa7..4afd32f1aed9 100644
+--- a/fs/crypto/keyring.c
++++ b/fs/crypto/keyring.c
+@@ -74,6 +74,7 @@ void fscrypt_put_master_key(struct fscrypt_master_key *mk)
+ 	 * that concurrent keyring lookups can no longer find it.
+ 	 */
+ 	WARN_ON_ONCE(refcount_read(&mk->mk_active_refs) !=3D 0);
++	keyring_clear(mk->mk_users);
+ 	key_put(mk->mk_users);
+ 	mk->mk_users =3D NULL;
+ 	call_rcu(&mk->mk_rcu_head, fscrypt_free_master_key);
+
+On the other hand, if you're really working towards dropping this code
+entirely, maybe there's not point doing that.
+
+Cheers,
+--=20
+Lu=C3=ADs
+
 
