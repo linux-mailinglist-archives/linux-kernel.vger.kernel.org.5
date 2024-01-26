@@ -1,186 +1,339 @@
-Return-Path: <linux-kernel+bounces-39877-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39878-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A936383D6E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:54:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5141E83D7C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:19:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE9821C2E907
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:54:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7CAC6B30BF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:54:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E6625BACA;
-	Fri, 26 Jan 2024 09:04:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="On48FVs5"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9FFE10A19;
+	Fri, 26 Jan 2024 09:04:32 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90ADF5B5D7
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 09:03:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 018C523D6
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 09:04:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706259839; cv=none; b=tGlASj5ue3JKfcKMQKzbMTZy05sCOkZ4R/hy3+0+Wf2tPe4ikLLPGHemDqtakehPSiCBvxVKke59YyrwJwIxaELz5ZVSvZAcqokw8K9a0217UIZTq9MZAU7nFOt4rtn4i2oR507wQCrmavrdY7v1BlgFw7rGJjnV6tttfb0pqVc=
+	t=1706259871; cv=none; b=BASMAHK1QXRpQGjDFPkanIIbAeed1gg05aSoTp13UVuc/g/ggYGKO4ryPdoCbyoofDLI6SLYjs6xPMSQf5abDVbwj4SWx2Ab28sl0R7rt19oax073KDgJyLJMqwARG7Kl4tbTnKq3xMbFcz5lMn9W1ah0h+kp01ibJVq9wzJ2lk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706259839; c=relaxed/simple;
-	bh=3LnmvNetm1QwgznC98yi3XYnV0Q3PjpkLrlwj9rwZx0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dEvmczwDiuftmNe8eyvzuThCbgUvZV+oFtoMJZyJbL/EPghnfzoL1sUWj0jTKOhirmLdZ0Oop2FbETKN9T6Rf/YwJeuPMtX9AQ5YFnOjEgs85MA6z3NzdUg/131k3ej/+zSTn6Zvpsq7uiwT8666VBkilpz2QutjbAKcwFqgfcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=On48FVs5; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-55817a12ad8so113606a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 01:03:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706259836; x=1706864636; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YUogZIWl0s+Zj3EdGUH/qSBYhbrIOgv7SRqOagEMmc0=;
-        b=On48FVs5XRH/ae92wJAFObx2xk4Di6SRILyzg/g0ECkNZ1A90i9o/ToOIMJKaohimV
-         7SEynPNk52pKccd7PSAp5oAVNKAEeajWy25zpR7Z92r2wI9tDuJCnZY/quFPq5nLWoVN
-         ddNsmygynsi0CksMJbe7UvANuj8VKQ1y4mll/Nn9oQ/OyRXQHB5iu1etddfAsSDhdUOq
-         zZLAI+UpTAaOF2IqfHz/5VxIc7MYrWBK7YB+WbOrZnC48fiKj5EnbFkVQK96WUY7hLt0
-         KB4ddue1btX9AHtk+lx7sFbhcq8S0X97z3Ku4fDr9eSAjHlI64W1y1vICS+qGdrXbGIQ
-         Jbmw==
+	s=arc-20240116; t=1706259871; c=relaxed/simple;
+	bh=XDbimdUWFoooHxeoQEOCAuv79fePvOawtiDbDUeLnHQ=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=bJDvuKYaV2Ys3dcr15dj5okxAJZRQ/RlbNfwUicpQL+yqL5azLSxr9nWJuzOKKQW8HP6xYNyRt9EtcbDHw2q1X+NIKW9TkwQwm+M2fK2RoVc1UKh+ysn+KeQHYbV46DOba3hGlGpEZSGLE+8D0CYXzYTzAlyYm9RDM8yEuaVhfY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36276d56919so300905ab.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 01:04:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706259836; x=1706864636;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YUogZIWl0s+Zj3EdGUH/qSBYhbrIOgv7SRqOagEMmc0=;
-        b=sXVoWzaB7nQh6UR7V2HuWIma97yskzwSf/JASPavszlJ3I1h4FZ2KsS9F+bevDoY0L
-         whXew6XJ41BLvvjrO11eTK0i7WLmlrTDvyuU8IJeQX1/dt3JeM66+e8jK+YrrRrC09aW
-         L2FCKs5Kl+2kBZfQabSs2ZOSJvgOzm7wShCBCWLvyUwYdLrauzrvNoDAIpBpYugK09Xd
-         IF56Puj/TrM8lSbexdNJKpihgFAMoSQE4X5jr+LvSPNJUN+dDe9UxidjnbJB6vY0mmTh
-         tBZ1ygCUFV2enxGxv1er/ypmkOPp6mjBA3ISnA1/Q0LDXPAiyRih/cGgX9JiWLXOHkSH
-         fZvw==
-X-Gm-Message-State: AOJu0YyHcEUdbMLFdfiqk6KqTW9TFACNHUuFpSkQILzdaO9I81LLUo7J
-	3xOA0lOJl3gtTviGfITricvGgKQ3Vk3oL4+c0U1kyiiRMZ5yQl3+O9hOLPTxw1Q=
-X-Google-Smtp-Source: AGHT+IHtocSuP9Gwsy3Jh+BKdTz2C5aBNFPV+8qkTgvdxysckcW2hYHiGcQrWucsjtJm/URpE3uoMA==
-X-Received: by 2002:aa7:c510:0:b0:55a:ea3:c12a with SMTP id o16-20020aa7c510000000b0055a0ea3c12amr546874edq.20.1706259835789;
-        Fri, 26 Jan 2024 01:03:55 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id z34-20020a509e25000000b00559dd0a5146sm390490ede.44.2024.01.26.01.03.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jan 2024 01:03:55 -0800 (PST)
-Message-ID: <58d24ddc-4e8f-4932-ac37-c9a699d36425@linaro.org>
-Date: Fri, 26 Jan 2024 10:03:51 +0100
+        d=1e100.net; s=20230601; t=1706259869; x=1706864669;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kdaeC6AnK6g8TWUBcbDr3zSd62fGGI/FAcYK8ZGwfCw=;
+        b=b0upmF7VBl5UkUwHQhyyBMyftiOx1nqBs+SsvB+mQudTK7AYiTa5YGxFQyNgzCdRRY
+         16akw1MkLhDpyBuBK/vbrp3cv9kyKjnqopMwPfp+v4wwEWwpr6XEMLbOjWwTzJtzAvEI
+         0OUQbrBZvFjhfpQWQFhbCm3Ej7DPR+XEEEohi7gkzNhD7+Oy1aqQiml+AEZwvTvE2p6M
+         SI8GNnJz5QzKT53k1q9iYTNDs2ktpjoQQa9cuXuq3tY3hAWKT0b3dHRyYLXDvlS9a0LJ
+         kXwDWN0UW2JbFalSBve43gIzRyWoFPfLOrzF88hdmjA6pbyNwVMkzlNf0dMD6AniavsI
+         ZAog==
+X-Gm-Message-State: AOJu0Yzl1oYJywcQZUstFtAGefsBLJq6DnlvZ9S8TVeGhzSSDRgnpjDg
+	WNMU0sPwz33mvCf/Me9Edhf/KaUP5HYjLbOCf2mnY6a/g/Cy4fDtyxZKZJa9bElvSJ/31JnSrrb
+	EE81+98i93BRPb4Xh3vEEbmzwkqDqXUaQ8wNAxV2Szzm81OQ97XOxM3Y=
+X-Google-Smtp-Source: AGHT+IEUBfR6AIqHQeu5mGTnVlYf/wpDjjI1WwySDWfuujP8LyTW5ajqGteW5vnq4uqI5p0hAsPxJ05AS/s9bqalDTw8YQxWHXoY
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/8] dt-bindings: power: reset: add bindings for NVMEM
- hardware storing PSCR Data
-Content-Language: en-US
-To: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: Sebastian Reichel <sre@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, kernel@pengutronix.de,
- linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>,
- Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org,
- devicetree@vger.kernel.org, =?UTF-8?Q?S=C3=B8ren_Andersen?= <san@skov.dk>
-References: <20240124122204.730370-1-o.rempel@pengutronix.de>
- <20240124122204.730370-5-o.rempel@pengutronix.de>
- <4e14b7c7-7f0a-437b-aa84-20fdc30a2361@linaro.org>
- <20240125171146.GC381737@pengutronix.de>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240125171146.GC381737@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:19cb:b0:361:ae32:f13 with SMTP id
+ r11-20020a056e0219cb00b00361ae320f13mr151514ill.6.1706259869040; Fri, 26 Jan
+ 2024 01:04:29 -0800 (PST)
+Date: Fri, 26 Jan 2024 01:04:29 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000063895c060fd59596@google.com>
+Subject: [syzbot] [mm?] possible deadlock in __unmap_hugepage_range
+From: syzbot <syzbot+a1deb5533794ff31868e@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, leitao@debian.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, muchun.song@linux.dev, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 25/01/2024 18:11, Oleksij Rempel wrote:
-> On Thu, Jan 25, 2024 at 11:57:18AM +0100, Krzysztof Kozlowski wrote:
->> On 24/01/2024 13:22, Oleksij Rempel wrote:
->>> Add device tree bindings that describe hardware implementations of
->>> Non-Volatile Memory (NVMEM) used for storing Power State Change Reasons
->>> (PSCR).
->>> +  that stores Power State Change Reasons (PSCR).
->>> +
->>> +allOf:
->>> +  - $ref: pscrr.yaml#
->>> +
->>> +properties:
->>> +  compatible:
->>> +    const: pscrr-nvmem
->>> +
->>
->> So that's a driver :/. Maybe Rob will like it, but it's a no from me.
->> Please come up with something really suiting DEVICES, not DRIVERS.
-> 
-> If I understand your distinction between 'DEVICES' and 'DRIVERS'
-> correctly, 'DEVICES' in the device tree context are meant to represent
-> physical hardware components, while 'DRIVERS' refer to software
+Hello,
 
-Yes.
+syzbot found the following issue on:
 
-> abstractions of these components. However, there are numerous device
-> tree instances, like software-based implementations for SPI, I2C, or
-> GPIO, which could also be interpreted as 'DRIVERS' in the context of
+HEAD commit:    8bf1262c53f5 Add linux-next specific files for 20240124
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1218a7abe80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ff4b59a824278780
+dashboard link: https://syzkaller.appspot.com/bug?extid=a1deb5533794ff31868e
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=151a9cf7e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=164b70cfe80000
 
-True. Yet they are still for physical interfaces. There is no DTS having
-some virtual I2C for a board which does not have I2C.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/7696d711072d/disk-8bf1262c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/92cd47c28072/vmlinux-8bf1262c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/add5c7493418/bzImage-8bf1262c.xz
 
-> your email. Similarly, the binding for PSCRR represents functionality not
-> fully implemented in hardware but supported by the hardware component of
-> NVMEM, akin to how ramoops or other functionalities are represented.
+The issue was bisected to:
 
-You don't need a binding for your case. Instantiate it whatever you wish
-- modprobe for example - and configure through approved kernel
-interfaces - sysfs for example.
+commit 947b031634e7af3d265275c26ec17e2f96fdb5a1
+Author: Breno Leitao <leitao@debian.org>
+Date:   Wed Jan 17 17:10:57 2024 +0000
 
-Best regards,
-Krzysztof
+    mm/hugetlb: restore the reservation if needed
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=139660a0180000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=105660a0180000
+console output: https://syzkaller.appspot.com/x/log.txt?x=179660a0180000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a1deb5533794ff31868e@syzkaller.appspotmail.com
+Fixes: 947b031634e7 ("mm/hugetlb: restore the reservation if needed")
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.8.0-rc1-next-20240124-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor338/5065 is trying to acquire lock:
+ffffffff8d925b00 (fs_reclaim){+.+.}-{0:0}, at: might_alloc include/linux/sched/mm.h:303 [inline]
+ffffffff8d925b00 (fs_reclaim){+.+.}-{0:0}, at: slab_pre_alloc_hook mm/slub.c:3762 [inline]
+ffffffff8d925b00 (fs_reclaim){+.+.}-{0:0}, at: slab_alloc_node mm/slub.c:3843 [inline]
+ffffffff8d925b00 (fs_reclaim){+.+.}-{0:0}, at: kmalloc_trace+0x51/0x330 mm/slub.c:4008
+
+but task is already holding lock:
+ffff888024054e28 (ptlock_ptr(ptdesc)){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
+ffff888024054e28 (ptlock_ptr(ptdesc)){+.+.}-{2:2}, at: huge_pte_lock include/linux/hugetlb.h:1232 [inline]
+ffff888024054e28 (ptlock_ptr(ptdesc)){+.+.}-{2:2}, at: __unmap_hugepage_range+0x4e5/0x1bf0 mm/hugetlb.c:5611
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (ptlock_ptr(ptdesc)){+.+.}-{2:2}:
+       __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+       _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+       spin_lock include/linux/spinlock.h:351 [inline]
+       pmd_lock include/linux/mm.h:3036 [inline]
+       __split_huge_pmd+0x21f/0x3090 mm/huge_memory.c:2625
+       split_huge_pmd_address mm/huge_memory.c:2658 [inline]
+       split_huge_pmd_if_needed mm/huge_memory.c:2670 [inline]
+       split_huge_pmd_if_needed mm/huge_memory.c:2661 [inline]
+       vma_adjust_trans_huge+0x2da/0x560 mm/huge_memory.c:2682
+       __split_vma+0xcb9/0x1190 mm/mmap.c:2363
+       split_vma mm/mmap.c:2399 [inline]
+       vma_modify+0x261/0x460 mm/mmap.c:2434
+       vma_modify_flags include/linux/mm.h:3283 [inline]
+       mprotect_fixup+0x228/0xc90 mm/mprotect.c:635
+       do_mprotect_pkey+0x8a4/0xdc0 mm/mprotect.c:809
+       __do_sys_mprotect mm/mprotect.c:830 [inline]
+       __se_sys_mprotect mm/mprotect.c:827 [inline]
+       __x64_sys_mprotect+0x78/0xc0 mm/mprotect.c:827
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+-> #1 (&mapping->i_mmap_rwsem){++++}-{3:3}:
+       down_write+0x3a/0x50 kernel/locking/rwsem.c:1579
+       i_mmap_lock_write include/linux/fs.h:512 [inline]
+       dma_resv_lockdep+0x292/0x620 drivers/dma-buf/dma-resv.c:787
+       do_one_initcall+0x128/0x690 init/main.c:1236
+       do_initcall_level init/main.c:1298 [inline]
+       do_initcalls init/main.c:1314 [inline]
+       do_basic_setup init/main.c:1333 [inline]
+       kernel_init_freeable+0x698/0xc30 init/main.c:1551
+       kernel_init+0x1c/0x2a0 init/main.c:1441
+       ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:242
+
+-> #0 (fs_reclaim){+.+.}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain kernel/locking/lockdep.c:3869 [inline]
+       __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
+       lock_acquire kernel/locking/lockdep.c:5754 [inline]
+       lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
+       __fs_reclaim_acquire mm/page_alloc.c:3728 [inline]
+       fs_reclaim_acquire+0x102/0x150 mm/page_alloc.c:3742
+       might_alloc include/linux/sched/mm.h:303 [inline]
+       slab_pre_alloc_hook mm/slub.c:3762 [inline]
+       slab_alloc_node mm/slub.c:3843 [inline]
+       kmalloc_trace+0x51/0x330 mm/slub.c:4008
+       kmalloc include/linux/slab.h:590 [inline]
+       allocate_file_region_entries+0x1a3/0x620 mm/hugetlb.c:666
+       region_chg+0x85/0x140 mm/hugetlb.c:786
+       __vma_reservation_common+0x443/0x740 mm/hugetlb.c:2832
+       vma_needs_reservation mm/hugetlb.c:2899 [inline]
+       __unmap_hugepage_range+0xfdb/0x1bf0 mm/hugetlb.c:5681
+       unmap_single_vma+0x24b/0x2b0 mm/memory.c:1813
+       unmap_vmas+0x22f/0x490 mm/memory.c:1861
+       exit_mmap+0x1c1/0xbe0 mm/mmap.c:3258
+       __mmput+0x12a/0x4d0 kernel/fork.c:1343
+       mmput+0x62/0x70 kernel/fork.c:1365
+       exit_mm kernel/exit.c:569 [inline]
+       do_exit+0x999/0x2ac0 kernel/exit.c:858
+       do_group_exit+0xd3/0x2a0 kernel/exit.c:1020
+       __do_sys_exit_group kernel/exit.c:1031 [inline]
+       __se_sys_exit_group kernel/exit.c:1029 [inline]
+       __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1029
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+other info that might help us debug this:
+
+Chain exists of:
+  fs_reclaim --> &mapping->i_mmap_rwsem --> ptlock_ptr(ptdesc)
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(ptlock_ptr(ptdesc));
+                               lock(&mapping->i_mmap_rwsem);
+                               lock(ptlock_ptr(ptdesc));
+  lock(fs_reclaim);
+
+ *** DEADLOCK ***
+
+4 locks held by syz-executor338/5065:
+ #0: ffff88806c3b27a0 (&mm->mmap_lock){++++}-{3:3}, at: mmap_read_lock include/linux/mmap_lock.h:168 [inline]
+ #0: ffff88806c3b27a0 (&mm->mmap_lock){++++}-{3:3}, at: exit_mmap+0x107/0xbe0 mm/mmap.c:3242
+ #1: ffff88806c0e20e8 (&resv_map->rw_sema){++++}-{3:3}, at: hugetlb_vma_lock_write mm/hugetlb.c:300 [inline]
+ #1: ffff88806c0e20e8 (&resv_map->rw_sema){++++}-{3:3}, at: hugetlb_vma_lock_write+0x105/0x140 mm/hugetlb.c:291
+ #2: ffff88802507c3c8 (&hugetlbfs_i_mmap_rwsem_key){+.+.}-{3:3}, at: i_mmap_lock_write include/linux/fs.h:512 [inline]
+ #2: ffff88802507c3c8 (&hugetlbfs_i_mmap_rwsem_key){+.+.}-{3:3}, at: __hugetlb_zap_begin+0x242/0x2b0 mm/hugetlb.c:5726
+ #3: ffff888024054e28 (ptlock_ptr(ptdesc)){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
+ #3: ffff888024054e28 (ptlock_ptr(ptdesc)){+.+.}-{2:2}, at: huge_pte_lock include/linux/hugetlb.h:1232 [inline]
+ #3: ffff888024054e28 (ptlock_ptr(ptdesc)){+.+.}-{2:2}, at: __unmap_hugepage_range+0x4e5/0x1bf0 mm/hugetlb.c:5611
+
+stack backtrace:
+CPU: 0 PID: 5065 Comm: syz-executor338 Not tainted 6.8.0-rc1-next-20240124-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ check_noncircular+0x31a/0x400 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain kernel/locking/lockdep.c:3869 [inline]
+ __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
+ lock_acquire kernel/locking/lockdep.c:5754 [inline]
+ lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
+ __fs_reclaim_acquire mm/page_alloc.c:3728 [inline]
+ fs_reclaim_acquire+0x102/0x150 mm/page_alloc.c:3742
+ might_alloc include/linux/sched/mm.h:303 [inline]
+ slab_pre_alloc_hook mm/slub.c:3762 [inline]
+ slab_alloc_node mm/slub.c:3843 [inline]
+ kmalloc_trace+0x51/0x330 mm/slub.c:4008
+ kmalloc include/linux/slab.h:590 [inline]
+ allocate_file_region_entries+0x1a3/0x620 mm/hugetlb.c:666
+ region_chg+0x85/0x140 mm/hugetlb.c:786
+ __vma_reservation_common+0x443/0x740 mm/hugetlb.c:2832
+ vma_needs_reservation mm/hugetlb.c:2899 [inline]
+ __unmap_hugepage_range+0xfdb/0x1bf0 mm/hugetlb.c:5681
+ unmap_single_vma+0x24b/0x2b0 mm/memory.c:1813
+ unmap_vmas+0x22f/0x490 mm/memory.c:1861
+ exit_mmap+0x1c1/0xbe0 mm/mmap.c:3258
+ __mmput+0x12a/0x4d0 kernel/fork.c:1343
+ mmput+0x62/0x70 kernel/fork.c:1365
+ exit_mm kernel/exit.c:569 [inline]
+ do_exit+0x999/0x2ac0 kernel/exit.c:858
+ do_group_exit+0xd3/0x2a0 kernel/exit.c:1020
+ __do_sys_exit_group kernel/exit.c:1031 [inline]
+ __se_sys_exit_group kernel/exit.c:1029 [inline]
+ __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1029
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f39d1ba2c79
+Code: Unable to access opcode bytes at 0x7f39d1ba2c4f.
+RSP: 002b:00007ffcc6ad06f8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f39d1ba2c79
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
+RBP: 00007f39d1c1d270 R08: ffffffffffffffb8 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 00007f39d1c1d270
+R13: 0000000000000000 R14: 00007f39d1c1dcc0 R15: 00007f39d1b74a60
+ </TASK>
+BUG: sleeping function called from invalid context at include/linux/sched/mm.h:306
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 5065, name: syz-executor338
+preempt_count: 1, expected: 0
+RCU nest depth: 0, expected: 0
+INFO: lockdep is turned off.
+Preemption disabled at:
+[<0000000000000000>] 0x0
+CPU: 0 PID: 5065 Comm: syz-executor338 Not tainted 6.8.0-rc1-next-20240124-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
+ __might_resched+0x3c0/0x5e0 kernel/sched/core.c:10178
+ might_alloc include/linux/sched/mm.h:306 [inline]
+ might_alloc include/linux/sched/mm.h:301 [inline]
+ slab_pre_alloc_hook mm/slub.c:3762 [inline]
+ slab_alloc_node mm/slub.c:3843 [inline]
+ kmalloc_trace+0x2a3/0x330 mm/slub.c:4008
+ kmalloc include/linux/slab.h:590 [inline]
+ allocate_file_region_entries+0x1a3/0x620 mm/hugetlb.c:666
+ region_chg+0x85/0x140 mm/hugetlb.c:786
+ __vma_reservation_common+0x443/0x740 mm/hugetlb.c:2832
+ vma_needs_reservation mm/hugetlb.c:2899 [inline]
+ __unmap_hugepage_range+0xfdb/0x1bf0 mm/hugetlb.c:5681
+ unmap_single_vma+0x24b/0x2b0 mm/memory.c:1813
+ unmap_vmas+0x22f/0x490 mm/memory.c:1861
+ exit_mmap+0x1c1/0xbe0 mm/mmap.c:3258
+ __mmput+0x12a/0x4d0 kernel/fork.c:1343
+ mmput+0x62/0x70 kernel/fork.c:1365
+ exit_mm kernel/exit.c:569 [inline]
+ do_exit+0x999/0x2ac0 kernel/exit.c:858
+ do_group_exit+0xd3/0x2a0 kernel/exit.c:1020
+ __do_sys_exit_group kernel/exit.c:1031 [inline]
+ __se_sys_exit_group kernel/exit.c:1029 [inline]
+ __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1029
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f39d1ba2c79
+Code: Unable to access opcode bytes at 0x7f39d1ba2c4f.
+RSP: 002b:00007ffcc6ad06f8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f39d1ba2c79
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
+RBP: 00007f39d1c1d270 R08: ffffffffffffffb8 R09: 0000000000000000
+R10: 0000000000000003 R11: 0
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
