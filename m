@@ -1,54 +1,68 @@
-Return-Path: <linux-kernel+bounces-39808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 560E383D651
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:29:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 671AD83D656
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:30:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87F0E1C26FC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:29:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2505F28B7E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:30:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C9E52377C;
-	Fri, 26 Jan 2024 08:55:42 +0000 (UTC)
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19A6212F581;
+	Fri, 26 Jan 2024 08:55:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="I50x5DUB"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 639592263C;
-	Fri, 26 Jan 2024 08:55:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD9C7249F8;
+	Fri, 26 Jan 2024 08:55:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706259341; cv=none; b=HWYW6Z+5ozEzh2gOcXlDWjxjVjU7K93XCGfPylDsui5Pd9O6TYBbos8r1JAAwXQB9ptRC/oXM6IV5q0GGP1vWcQ6FVjpvRc+cHIXmV8y5R6p4UDX+3lhXO39DSxKdScbGnzGjfuxz8rsL9u2ZHgyCwx6J/0LGoYeRruMdR5UnZ0=
+	t=1706259351; cv=none; b=aCXOpSNhJJrzV48o/TtUKvUZsp+WSR7VW5bEnE1SkPSYmyJNI68cqCeJOvrJky2dP8JVGSJO3vF/crWeA2RUyQI7PFlz8yhoINIiqSiq4U0g+Jr0xLUAXV4VOCxxuActCdtLB0H1xqWf5KKhNjfIgtAVinrLltuGzRQYoyRkxl4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706259341; c=relaxed/simple;
-	bh=YWuyFj1LWoUEo8gZuJhqmKZRCyglpZ4AVYuFv8OugUI=;
+	s=arc-20240116; t=1706259351; c=relaxed/simple;
+	bh=VZxsGAjSNiP+osBUIVz0o4fYISM24dYHuupYK5rxxXA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NTvnk74zF0yT3Q59xjW7DIv45RrDqFiJNLfuX1E7THS7JV8c/fa6eJNFIniGlEmBYfF0zlq0uva+uUbW1gQAE2vTvh1n14KdcmJRbN4mSGAvMc/eFWssyi2k6qPAFxJN61lDnIFeqrpyHNKK0EsrcQfc+9c5OYWMAdhXswwPc5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rTHzV-006ETz-47; Fri, 26 Jan 2024 16:55:14 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 26 Jan 2024 16:55:25 +0800
-Date: Fri, 26 Jan 2024 16:55:25 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: kernel test robot <lkp@intel.com>, virtualization@lists.linux.dev,
-	linux-crypto@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Gonglei <arei.gonglei@huawei.com>, Jason Wang <jasowang@redhat.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, llvm@lists.linux.dev,
-	oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
-Subject: Re: [PATCH v2] crypto: virtio - Less function calls in
- __virtio_crypto_akcipher_do_req() after error detection
-Message-ID: <ZbNzfR5wzrKarP4h@gondor.apana.org.au>
-References: <2413f22f-f0c3-45e0-9f6b-a551bdf0f54c@web.de>
- <202312260852.0ge5O8IL-lkp@intel.com>
- <7bf9a4fa-1675-45a6-88dd-82549ae2c6e0@web.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WaOEFWz2HPBCTxrCsC5GPEPxwOrFc4TiJHJfe0WONMO/81tfc/Zs+2EVcOWup+vPEvoS1fBakQwsCmldmUE6loO7+/dBuU3rXRJZrPglNqgc3wrYxoJ1mhvrcSGqQf+/lPwxj4ITPnBCC+Gle0zV7WzP7MNIurNVITZe3qjfDmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=I50x5DUB; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=w+WMrLX5s3l3LT1bHKgCUnIIP0Rpbnm0jHmPYs4Fo3Q=; b=I50x5DUB0iXrrBxqdgS8P0PHwi
+	s74eVAhOimTyTvGGWDNpVo2N9YkJBqwBDCz5RIAWU9pPr2hAs6DJHwQqu4jnTOIpYcyeen5qbI4WJ
+	jbKOmxbKoaLGS4iXcdf1Y3/asNY3wfc3FLgOk8YBxQsdabvJMKo+6qnBG3NaM/yN2nE8wHKPD7FNR
+	nuiOzGP0mYvr/Jn+Czdn7WyS9RqzX2IPY2B5ONEhHAT/vFBf6mdfqF96R1j+erGYbaWcUioDyA4eA
+	v/RKELBLqemXTmbhLPK5Zt4Zgrhr56p2X5WWmtjv9iBH7z2aLk/ZPX4mm8mFXvpvk509gr5K4tXdN
+	9kfhfLTA==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rTHzs-0000000D5AA-0t0T;
+	Fri, 26 Jan 2024 08:55:36 +0000
+Date: Fri, 26 Jan 2024 08:55:36 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Zhaoyang Huang <huangzhaoyang@gmail.com>
+Cc: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jens Axboe <axboe@kernel.dk>, Yu Zhao <yuzhao@google.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Niklas Cassel <niklas.cassel@wdc.com>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
+	Hannes Reinecke <hare@suse.de>,
+	Linus Walleij <linus.walleij@linaro.org>, linux-mm@kvack.org,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	steve.kang@unisoc.com
+Subject: Re: [PATCHv3 1/1] block: introduce content activity based ioprio
+Message-ID: <ZbNziLeet7TbDKEl@casper.infradead.org>
+References: <20240125071901.3223188-1-zhaoyang.huang@unisoc.com>
+ <CAGWkznGpW=bUxET8yZGu4dNTBfsj7n79yXsTD23fE5-SWkdjfA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,34 +71,67 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7bf9a4fa-1675-45a6-88dd-82549ae2c6e0@web.de>
+In-Reply-To: <CAGWkznGpW=bUxET8yZGu4dNTBfsj7n79yXsTD23fE5-SWkdjfA@mail.gmail.com>
 
-On Tue, Dec 26, 2023 at 11:12:23AM +0100, Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Tue, 26 Dec 2023 11:00:20 +0100
-> 
-> The kfree() function was called in up to two cases by the
-> __virtio_crypto_akcipher_do_req() function during error handling
-> even if the passed variable contained a null pointer.
-> This issue was detected by using the Coccinelle software.
-> 
-> * Adjust jump targets.
-> 
-> * Delete two initialisations which became unnecessary
->   with this refactoring.
-> 
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-> ---
-> 
-> v2:
-> A typo was fixed for the delimiter of a label.
-> 
->  drivers/crypto/virtio/virtio_crypto_akcipher_algs.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+On Fri, Jan 26, 2024 at 03:59:48PM +0800, Zhaoyang Huang wrote:
+> loop more mm and fs guys for more comments
 
-Patch applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+I agree with everything Damien said.  But also ...
+
+> > +bool BIO_ADD_FOLIO(struct bio *bio, struct folio *folio, size_t len,
+> > +               size_t off)
+
+You don't add any users of these functions.  It's hard to assess whether
+this is the right API when there are no example users.
+
+> > +       activity += (bio->bi_vcnt + 1 <= IOPRIO_NR_ACTIVITY &&
+> > +                       PageWorkingset(&folio->page)) ? 1 : 0;
+
+folio_test_workingset().
+
+> > +       return bio_add_page(bio, &folio->page, len, off) > 0;
+
+bio_add_folio().
+
+> > +int BIO_ADD_PAGE(struct bio *bio, struct page *page,
+> > +               unsigned int len, unsigned int offset)
+> > +{
+> > +       int class, level, hint, activity;
+> > +
+> > +       if (bio_add_page(bio, page, len, offset) > 0) {
+> > +               class = IOPRIO_PRIO_CLASS(bio->bi_ioprio);
+> > +               level = IOPRIO_PRIO_LEVEL(bio->bi_ioprio);
+> > +               hint = IOPRIO_PRIO_HINT(bio->bi_ioprio);
+> > +               activity = IOPRIO_PRIO_ACTIVITY(bio->bi_ioprio);
+> > +               activity += (bio->bi_vcnt <= IOPRIO_NR_ACTIVITY && PageWorkingset(page)) ? 1 : 0;
+> > +               bio->bi_ioprio = IOPRIO_PRIO_VALUE_ACTIVITY(class, level, hint, activity);
+> > +       }
+
+why are BIO_ADD_PAGE and BIO_ADD_FOLIO so very different from each
+other?
+
+> >  static __always_inline __u16 ioprio_value(int prioclass, int priolevel,
+> > -                                         int priohint)
+> > +               int priohint)
+
+why did you change this whitespace?
+
+> >  {
+> >         if (IOPRIO_BAD_VALUE(prioclass, IOPRIO_NR_CLASSES) ||
+> > -           IOPRIO_BAD_VALUE(priolevel, IOPRIO_NR_LEVELS) ||
+> > -           IOPRIO_BAD_VALUE(priohint, IOPRIO_NR_HINTS))
+> > +                       IOPRIO_BAD_VALUE(priolevel, IOPRIO_NR_LEVELS) ||
+> > +                       IOPRIO_BAD_VALUE(priohint, IOPRIO_NR_HINTS))
+
+ditto
+
+> >                 return IOPRIO_CLASS_INVALID << IOPRIO_CLASS_SHIFT;
+> >
+> >         return (prioclass << IOPRIO_CLASS_SHIFT) |
+> >                 (priohint << IOPRIO_HINT_SHIFT) | priolevel;
+> >  }
+> > -
+
+more gratuitous whitespace change
+
 
