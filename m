@@ -1,49 +1,77 @@
-Return-Path: <linux-kernel+bounces-40554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AF9183E25C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:20:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 709ED83E262
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:21:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58628283389
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:20:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82B3D1C21E28
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:21:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BD95224E3;
-	Fri, 26 Jan 2024 19:20:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E20A4224EF;
+	Fri, 26 Jan 2024 19:21:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KuhGNL8R"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="JSDjQkFE"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C4AB224C2;
-	Fri, 26 Jan 2024 19:20:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C766224CC;
+	Fri, 26 Jan 2024 19:21:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706296826; cv=none; b=I89KEs56z9BWfRqiARZJUIBgxa5WZG+KwIPPIciWbNJyLiy/86v49oy+rmmyUQCpR31G7vR+6gAffsdEeNBR9hOgJxFEvbr4G5HL2bulARuWvEuN9RI4zDBKM68FtXxBiOyL0i3hveYemKBUvCFOGS/8Q7Rjbxa2VlzIuLrUcvY=
+	t=1706296906; cv=none; b=VmegwvEA/fyNQbmJqZsz3CZ7GijCbVLXKo/0bSZA0FS4Z8/+jbvRFKEmiNW6sX5DotxgMlmK9scan4yXPXM/VUvfY9pUMKMwnHdD+m+RiOTN29kOsvtiSwlgSEtQ794S94pzJfCsgTbZxY7PQwzg47dYpOV/7d0QSyxkACbpK7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706296826; c=relaxed/simple;
-	bh=wBHTKfWSi+/4I4h65nrACTgHp4mc8/p/Rp6g+T7YDuM=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=HPUix5jlFGzrsG4eF/uPPqnaltyionDNeVTZQ+u8R8JR1vVOsrzip660+kqKrBJ5ZR45qby09e00qG2cRJSmOmL5Gkw1YOzpdpmBB4LcHYmiMYse2UendnHH+A1zMSibrLU8NRdj6BOD96iv2gqMEAwBLqbyXxMIM8T40ZNVP3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KuhGNL8R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id DB42FC43394;
-	Fri, 26 Jan 2024 19:20:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706296825;
-	bh=wBHTKfWSi+/4I4h65nrACTgHp4mc8/p/Rp6g+T7YDuM=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=KuhGNL8R5cT+uN5LclMRH1WGu2VBMAxz/gKePdy25BoDkwd3n/YgelMpydWA3KHjg
-	 b2ftehftmXVNjIU1dkURBW1qhs7J6/sRzrW2z8DiLrBACr+5cE0yQG+X4iOpV3tUfH
-	 LKKFjx37izTWywoEgsvkqW/QrfEfQ4VxesPg0ZC/CnIzSlMbMoZvy8V3LpxrhG1D0+
-	 ONK1Utkk9TezonXO459b6/A9NQkvKzfIMI5rSpjPUPB1tVfQmevWBpzB4bhlIFe+59
-	 VAibQjFnLUudOCXlRXHWVrJEdNuYdZsWZQMgoykFOJP9h46OlLRKbVZSjdA2Pltw1E
-	 4EF/7+0/5GH+g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C38DDD8C962;
-	Fri, 26 Jan 2024 19:20:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1706296906; c=relaxed/simple;
+	bh=7mhZb9ygDhp+lMS6hHQyI5VsLJG0EHa6YD7w0sZalvQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WJ1Qw0JFjOWHkWlLR5jPPdz49XWM0sjhGZoDYqkc4RlLLRsGA1V8fL2ucWNOzhocF/fD94dJCWxp5U427/IfJlqJoskHbFOwg1Mvmz5XnQVkX/i0VlT6eiMK/PrY+812D00tz1uBiJVZg6GUOUrOMJg+H0F6F1oWVsB4bWpzER4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=JSDjQkFE; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706296902;
+	bh=7mhZb9ygDhp+lMS6hHQyI5VsLJG0EHa6YD7w0sZalvQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=JSDjQkFEorkj0X7MovCc69VTRxUVTLipp8ZQ5q3/F9LdC4wnu9pTKnOOyxVvaMfiJ
+	 afIb6JAeT9JejAjy0wYdKPc2eAJQAAIOe7OImaa0oWxdFXPaKadl+2i+xzs8kXGnuF
+	 j0eeChNMiKHCZcQ0slCgaCqaMw4weHpCT6198egLV01r/PvwArCenBXakgyYbOEtJj
+	 Ii5O+8ZH+H79d1DKp7lityrXR1PWy6DcGnnGEeIBCHA1xCl2DAExuca3K8sQKFgeRQ
+	 T2NzcFas/csoJ9LqOmKbNb7bJNMlvp1TVZyf/xel61spqiX83sBaBmSfRNj5abDkmg
+	 HVgm03/CdX1vQ==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: cristicc)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id EC9363780022;
+	Fri, 26 Jan 2024 19:21:41 +0000 (UTC)
+From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Emil Renner Berthing <kernel@esmil.dk>,
+	Samin Guo <samin.guo@starfivetech.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Jacob Keller <jacob.e.keller@intel.com>
+Cc: netdev@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	kernel@collabora.com
+Subject: [RESEND PATCH v4 0/2] StarFive DWMAC support for JH7100
+Date: Fri, 26 Jan 2024 21:21:24 +0200
+Message-ID: <20240126192128.1210579-1-cristian.ciocaltea@collabora.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,44 +79,40 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: Add missing line break in
- test_verifier
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170629682579.29810.16491106487245161634.git-patchwork-notify@kernel.org>
-Date: Fri, 26 Jan 2024 19:20:25 +0000
-References: <20240126015736.655-1-yangtiezhu@loongson.cn>
-In-Reply-To: <20240126015736.655-1-yangtiezhu@loongson.cn>
-To: Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Hello:
+This is just a subset of the initial patch series [1] adding networking
+support for StarFive JH7100 SoC.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+[1]: https://lore.kernel.org/lkml/20231218214451.2345691-1-cristian.ciocaltea@collabora.com/
 
-On Fri, 26 Jan 2024 09:57:36 +0800 you wrote:
-> There are no break lines in the test log for test_verifier #106 ~ #111
-> if jit is disabled, add the missing line break at the end of printf()
-> to fix it.
-> 
-> Without this patch:
-> 
->   [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
->   [root@linux bpf]# ./test_verifier 106
->   #106/p inline simple bpf_loop call SKIP (requires BPF JIT)Summary: 0 PASSED, 1 SKIPPED, 0 FAILED
-> 
-> [...]
+Changes in v4:
+ - Rebased series onto next-20240125
+ - Added R-b tag from Rob in PATCH 1
+ - v3:
+   https://lore.kernel.org/lkml/20231222101001.2541758-1-cristian.ciocaltea@collabora.com/
 
-Here is the summary with links:
-  - [bpf-next] selftests/bpf: Add missing line break in test_verifier
-    https://git.kernel.org/bpf/bpf-next/c/fa7178b0f12e
+Changes in v3:
+ - Optimized jh7110 resets & reset-names properties (Rob)
+ - Added R-b tag from Jacob in PATCH 1
+ - v2:
+   https://lore.kernel.org/lkml/20231220002824.2462655-1-cristian.ciocaltea@collabora.com/
 
-You are awesome, thank you!
+Changes in v2:
+ - Add the missing binding patch (Conor)
+ - v1:
+   https://lore.kernel.org/lkml/20231219231040.2459358-1-cristian.ciocaltea@collabora.com/
+
+Cristian Ciocaltea (2):
+  dt-bindings: net: starfive,jh7110-dwmac: Add JH7100 SoC compatible
+  net: stmmac: dwmac-starfive: Add support for JH7100 SoC
+
+ .../devicetree/bindings/net/snps,dwmac.yaml   | 11 +--
+ .../bindings/net/starfive,jh7110-dwmac.yaml   | 72 +++++++++++++------
+ drivers/net/ethernet/stmicro/stmmac/Kconfig   |  6 +-
+ .../ethernet/stmicro/stmmac/dwmac-starfive.c  | 32 +++++++--
+ 4 files changed, 88 insertions(+), 33 deletions(-)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.43.0
 
 
