@@ -1,155 +1,266 @@
-Return-Path: <linux-kernel+bounces-40130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 925EB83DAAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:23:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93A4A83DAFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:35:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A502284072
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:23:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AB3A1C222A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:35:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 906491B810;
-	Fri, 26 Jan 2024 13:23:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 104C81B599;
+	Fri, 26 Jan 2024 13:34:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="C8ZTPazI"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="N9o5eV6m";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="flbvpouR";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="N9o5eV6m";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="flbvpouR"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2124F1B94C
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:23:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BAC71B940
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:34:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706275408; cv=none; b=ljhHxrP3YjEJ4A0E8AgfxaiSrRLQTKH+atwNick2MYGAo5SjBxyUFEgMUkYIUJr34D086zfD8YHDzNebfb/smbxzT/+JBiqvEPp9XdOcmUMhckwioR29Hv96ertihst8MKfh3z8eebnYcgFf5GFpsKn3sYr3kPt1fzXTgA84bWU=
+	t=1706276093; cv=none; b=BUUk9l69MenIyQkARVWU4riE82S2Dy9yBfKz7HH+70QkcW4A7vLoJ5tA8TH+HsQBMcSi10VuPWgvO+0h9TzEoR0cvCaA+YuFD1HWVmlJuFdLcT5Sy+DHLrVtAEFGtmxP97G95ocCx4zuLKgKQdn+de8vRjxyajDmDheYsz6FTmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706275408; c=relaxed/simple;
-	bh=NCkgi3Lu7xhU8nqbTvNd28N8kTKlSqMNqcMIRfygWe8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=blwr/DWNeIVdSV/Rvg4nRZHcQpgb6K4NJ1oIhU2WLIHZytxJ5R1YLiTfiGEIV2pH4wOrk8XDJaoif4aRjFopxfeO5NbclpZIsupT1rKM5EunkFCNfdZWqYjbnZFIm1OVm6NmS1BmiJJqNXSUBsfOv+8FYzS/IX+cJ3sHWCvPdYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=C8ZTPazI; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-55a45a453eeso956435a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 05:23:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706275404; x=1706880204; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kMQBhAtvvOAlzphEmI2KG7vwSoMVNl5CzjnUVL4mMpI=;
-        b=C8ZTPazIJiQ9NXq4hxjLJhaVcJHUZFSn6CTJXR9AyLXBxb8uX7unLklaXApS9UlqU/
-         j/LrG+PST9IMnWPctZ+Lr693IdF6eyDpaE1b0ngWejGlUE6vF1m6PazFDx/8VyOW3DO6
-         lnXqzoRbN3rGs779E+BnkdIqrJko6sxyq0v27GgMa3s046jfKQWT8xvy4nZRJlmKrSRa
-         ttqHTemaLIo3Amv0agMc5wlbDzbnSrPHtLrw6zT43BWE1oje8U7SeJAh4iM4q4iIPuLV
-         j4b7d697mQET315X6TmyubYE72T7Sc4/fjmAwc1EwutRqYbhVmEWU0kySCRBe26Hjt5p
-         OKTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706275404; x=1706880204;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kMQBhAtvvOAlzphEmI2KG7vwSoMVNl5CzjnUVL4mMpI=;
-        b=RXtrDEykwKOg57GLeAkoAt+v6CI/5kGLNbeL2TQLv5me3gJAH6psJqDPUk5/TKAmcK
-         oZpDl6sPiWZ2hoB+RTyMac2PylNs4a/9h+huE8Lt8LS+hloqFekf1pwPT3cfd9MQ690y
-         V74dfon4TFYVUDfp//ERoYc1u6qtokFkkYL/5/rNDRsbbw+fU0T/HoaRw9qz+71RhNbS
-         znxZ5YpaOOBVL3hCSaY2DZ47VB9+Rpn9s4E4DiSSa4j7nFIgQhiO1LKy5nmbS30R+Z0o
-         5Yk5LCTkFrEBr5ALqsT+QVuICEiNeJ9M34rOzqo0tec3qoWOpD/v6oipB7WVoZq7yzHd
-         RGkg==
-X-Gm-Message-State: AOJu0Yxnor993EKyQbla9YLT4C6/SOIPZQPRW6BgFVa62Swj7iiSuVXE
-	vdv1zCN5acVPUdYkB2pI+Mokbrt7htQa0SIpPE7/u9FpDxA9ss5zusRJUlNpMlk=
-X-Google-Smtp-Source: AGHT+IGgMO4zBcVJKyvAfln65PYOqONOkBciXrsWrsL0CniguBWnPYtzmFPr5nl3tN8lEHe1ezOQaA==
-X-Received: by 2002:a17:906:7847:b0:a31:3745:33fb with SMTP id p7-20020a170906784700b00a31374533fbmr1736919ejm.51.1706275404164;
-        Fri, 26 Jan 2024 05:23:24 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id cf12-20020a170906b2cc00b00a2c467ec72bsm626074ejb.60.2024.01.26.05.23.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jan 2024 05:23:23 -0800 (PST)
-Message-ID: <518642ba-56e1-4648-a253-2a841a787ee0@linaro.org>
-Date: Fri, 26 Jan 2024 14:23:22 +0100
+	s=arc-20240116; t=1706276093; c=relaxed/simple;
+	bh=SXW7lbZNDt9+OBY/kl/kDaQemXbieJQFK+PfERW5Oio=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lRW3UE1sUMH+P6fphGGY2nRrDo9NVykW5pgHxe5HPxgnEhKbUNYq2bwffTHp5g53kkj5pd2MLl3ra5uZgzaVtGCxFBuuuW/wPv/nlKG+aPnok8RY3a7CNsietpWsbdQMbrf8kM9aVdFSrKfYhjrN8t55uJTWluO1asN917n2CXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=N9o5eV6m; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=flbvpouR; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=N9o5eV6m; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=flbvpouR; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 087EC1FB86;
+	Fri, 26 Jan 2024 13:28:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706275721; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=lOk2BIcfzAusKFaGCivdX0uaXpJqguldERnjAnE9s14=;
+	b=N9o5eV6mcPjcpsshbfL1XNF14fshtlf/pxqlKGOC5c08/IwvDLHzoCyvPaR0PCh9IXfvvj
+	knGnhc1UDDfcLC3YyYKOLjaLmJQS4zUaO/e3FbhKJiuUU8BjECbuXtsvtH7j0IVLdqtbOq
+	Rv+AH0N+MZ8MLRoxWrmms4Zc1rI4qN4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706275721;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=lOk2BIcfzAusKFaGCivdX0uaXpJqguldERnjAnE9s14=;
+	b=flbvpouR5kNVeW/lqTw+/eeiz2fopMFr1G9Gvj2cQCGgH50wMis8u29Ft7pCjtvt0pNuTd
+	IeHGpj0tIsug+WDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706275721; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=lOk2BIcfzAusKFaGCivdX0uaXpJqguldERnjAnE9s14=;
+	b=N9o5eV6mcPjcpsshbfL1XNF14fshtlf/pxqlKGOC5c08/IwvDLHzoCyvPaR0PCh9IXfvvj
+	knGnhc1UDDfcLC3YyYKOLjaLmJQS4zUaO/e3FbhKJiuUU8BjECbuXtsvtH7j0IVLdqtbOq
+	Rv+AH0N+MZ8MLRoxWrmms4Zc1rI4qN4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706275721;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=lOk2BIcfzAusKFaGCivdX0uaXpJqguldERnjAnE9s14=;
+	b=flbvpouR5kNVeW/lqTw+/eeiz2fopMFr1G9Gvj2cQCGgH50wMis8u29Ft7pCjtvt0pNuTd
+	IeHGpj0tIsug+WDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EB1EA134C3;
+	Fri, 26 Jan 2024 13:28:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Ei/5N4izs2W9XQAAD6G6ig
+	(envelope-from <dwagner@suse.de>); Fri, 26 Jan 2024 13:28:40 +0000
+From: Daniel Wagner <dwagner@suse.de>
+To: James Smart <james.smart@broadcom.com>
+Cc: Keith Busch <kbusch@kernel.org>,
+	Christoph Hellwig <hch@lst.de>,
+	Hannes Reinecke <hare@suse.de>,
+	linux-nvme@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH v4] nvme-fc: do not wait in vain when unloading module
+Date: Fri, 26 Jan 2024 14:28:28 +0100
+Message-ID: <20240126132828.15315-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] ASoC: codecs: tx-macro: correct TX SMIC MUXn
- widgets on SM8350+
-Content-Language: en-US
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Banajit Goswami <bgoswami@quicinc.com>, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20240125153110.410295-1-krzysztof.kozlowski@linaro.org>
- <4d377c8e-8cef-4da3-9b25-fc91a7dc3d49@linaro.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <4d377c8e-8cef-4da3-9b25-fc91a7dc3d49@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [1.90 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Level: *
+X-Spam-Score: 1.90
+X-Spam-Flag: NO
 
-On 26/01/2024 14:21, Srinivas Kandagatla wrote:
-> 
-> 
-> On 25/01/2024 15:31, Krzysztof Kozlowski wrote:
->> Hi,
->>
->> Changelog in individual patches.
->>
->> v1:
->> https://lore.kernel.org/all/20230717140138.201745-1-krzysztof.kozlowski@linaro.org/
->>
-> 
-> Unfortunately this is breaking mic on X13s.
+The module exit path has race between deleting all controllers and
+freeing 'left over IDs'. To prevent double free a synchronization
+between nvme_delete_ctrl and ida_destroy has been added by the initial
+commit.
 
-Did you update also your mixer? I was asking last time about this as well...
+There is some logic around trying to prevent from hanging forever in
+wait_for_completion, though it does not handling all cases. E.g.
+blktests is able to reproduce the situation where the module unload
+hangs forever.
 
-Best regards,
-Krzysztof
+If we completely rely on the cleanup code executed from the
+nvme_delete_ctrl path, all IDs will be freed eventually. This makes
+calling ida_destroy unnecessary. We only have to ensure that all
+nvme_delete_ctrl code has been executed before we leave
+nvme_fc_exit_module. This is done by flushing the nvme_delete_wq
+workqueue.
+
+While at it, remove the unused nvme_fc_wq workqueue too.
+
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+---
+
+I've splitted this patch out of the 'enable nvmet-fc for blktests' series.
+The series needs a bit more thinking and this patch seems ready to me.
+
+https://lore.kernel.org/linux-nvme/20231218153105.12717-1-dwagner@suse.de/
+
+changes:
+v4:
+ - replace sync logic with a simple workqueue flush
+
+
+ drivers/nvme/host/fc.c | 47 ++++++------------------------------------
+ 1 file changed, 6 insertions(+), 41 deletions(-)
+
+diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
+index e2308119f8f0..7006f4caac2f 100644
+--- a/drivers/nvme/host/fc.c
++++ b/drivers/nvme/host/fc.c
+@@ -221,11 +221,6 @@ static LIST_HEAD(nvme_fc_lport_list);
+ static DEFINE_IDA(nvme_fc_local_port_cnt);
+ static DEFINE_IDA(nvme_fc_ctrl_cnt);
+ 
+-static struct workqueue_struct *nvme_fc_wq;
+-
+-static bool nvme_fc_waiting_to_unload;
+-static DECLARE_COMPLETION(nvme_fc_unload_proceed);
+-
+ /*
+  * These items are short-term. They will eventually be moved into
+  * a generic FC class. See comments in module init.
+@@ -255,8 +250,6 @@ nvme_fc_free_lport(struct kref *ref)
+ 	/* remove from transport list */
+ 	spin_lock_irqsave(&nvme_fc_lock, flags);
+ 	list_del(&lport->port_list);
+-	if (nvme_fc_waiting_to_unload && list_empty(&nvme_fc_lport_list))
+-		complete(&nvme_fc_unload_proceed);
+ 	spin_unlock_irqrestore(&nvme_fc_lock, flags);
+ 
+ 	ida_free(&nvme_fc_local_port_cnt, lport->localport.port_num);
+@@ -3894,10 +3887,6 @@ static int __init nvme_fc_init_module(void)
+ {
+ 	int ret;
+ 
+-	nvme_fc_wq = alloc_workqueue("nvme_fc_wq", WQ_MEM_RECLAIM, 0);
+-	if (!nvme_fc_wq)
+-		return -ENOMEM;
+-
+ 	/*
+ 	 * NOTE:
+ 	 * It is expected that in the future the kernel will combine
+@@ -3915,7 +3904,7 @@ static int __init nvme_fc_init_module(void)
+ 	ret = class_register(&fc_class);
+ 	if (ret) {
+ 		pr_err("couldn't register class fc\n");
+-		goto out_destroy_wq;
++		return ret;
+ 	}
+ 
+ 	/*
+@@ -3939,8 +3928,6 @@ static int __init nvme_fc_init_module(void)
+ 	device_destroy(&fc_class, MKDEV(0, 0));
+ out_destroy_class:
+ 	class_unregister(&fc_class);
+-out_destroy_wq:
+-	destroy_workqueue(nvme_fc_wq);
+ 
+ 	return ret;
+ }
+@@ -3960,45 +3947,23 @@ nvme_fc_delete_controllers(struct nvme_fc_rport *rport)
+ 	spin_unlock(&rport->lock);
+ }
+ 
+-static void
+-nvme_fc_cleanup_for_unload(void)
++static void __exit nvme_fc_exit_module(void)
+ {
+ 	struct nvme_fc_lport *lport;
+ 	struct nvme_fc_rport *rport;
+-
+-	list_for_each_entry(lport, &nvme_fc_lport_list, port_list) {
+-		list_for_each_entry(rport, &lport->endp_list, endp_list) {
+-			nvme_fc_delete_controllers(rport);
+-		}
+-	}
+-}
+-
+-static void __exit nvme_fc_exit_module(void)
+-{
+ 	unsigned long flags;
+-	bool need_cleanup = false;
+ 
+ 	spin_lock_irqsave(&nvme_fc_lock, flags);
+-	nvme_fc_waiting_to_unload = true;
+-	if (!list_empty(&nvme_fc_lport_list)) {
+-		need_cleanup = true;
+-		nvme_fc_cleanup_for_unload();
+-	}
++	list_for_each_entry(lport, &nvme_fc_lport_list, port_list)
++		list_for_each_entry(rport, &lport->endp_list, endp_list)
++			nvme_fc_delete_controllers(rport);
+ 	spin_unlock_irqrestore(&nvme_fc_lock, flags);
+-	if (need_cleanup) {
+-		pr_info("%s: waiting for ctlr deletes\n", __func__);
+-		wait_for_completion(&nvme_fc_unload_proceed);
+-		pr_info("%s: ctrl deletes complete\n", __func__);
+-	}
++	flush_workqueue(nvme_delete_wq);
+ 
+ 	nvmf_unregister_transport(&nvme_fc_transport);
+ 
+-	ida_destroy(&nvme_fc_local_port_cnt);
+-	ida_destroy(&nvme_fc_ctrl_cnt);
+-
+ 	device_destroy(&fc_class, MKDEV(0, 0));
+ 	class_unregister(&fc_class);
+-	destroy_workqueue(nvme_fc_wq);
+ }
+ 
+ module_init(nvme_fc_init_module);
+-- 
+2.43.0
 
 
