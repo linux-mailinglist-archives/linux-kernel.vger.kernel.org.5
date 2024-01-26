@@ -1,239 +1,286 @@
-Return-Path: <linux-kernel+bounces-39688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF26583D502
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:55:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8720F83D506
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:56:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6241B2451B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 08:55:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11E791F211F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 08:56:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6727D2421E;
-	Fri, 26 Jan 2024 07:05:58 +0000 (UTC)
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4072525574;
+	Fri, 26 Jan 2024 07:12:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="r7Ki8r/v"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7F071AACD;
-	Fri, 26 Jan 2024 07:05:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3D562511E;
+	Fri, 26 Jan 2024 07:12:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706252757; cv=none; b=ShZAY6bjoQm3NWiChmnx9UvJy+5vesfMllDi3z3Z5vmL54L4u7p3P+XiLyDrlTm31709r0/7HQh/uDv+TVRz/Ucjjcyc5psXectZJ0FP5G82gW9dZpK+QzGinMciaYlQY6wELfeG6OoaXWRLeFMSRquk+EIJ01KEFls6k0WVEmk=
+	t=1706253147; cv=none; b=G3tMatfKvmOn/EMhGXXojEkZboGldX+gfiXjo5rJnREpajQN+gXv8qIiuBzpMdUoIxDAz1RFNuqXWKxzTvfg20goF3pCEWr0iYhx2DmnS/rqB66MnqK4Na6VH9r7gOVxwEuCQLYebjdgWOg/E08t0GzFzYU71+ANDjDIssSyvV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706252757; c=relaxed/simple;
-	bh=pcsil5fXr8+VHV+eVDviFFwwRsocY/oapa4amn5QRYY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qZu6X8WPyr2XN2+KdKYJ8q9ApfUrDiSrFYOQGLlEEAop6xnkRSV7UFu6eM0+RD8nh6oErqmPWqY+atAGTVti3w7aqDm4ocoteeCm2eUXYyjaS8aOVDooofzW1zWTPUamskRNk2LyDC2d3+j52JDBESsRjOCvlcI4+xdx1SMIUCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
-Received: from [192.168.0.224] (ip5f5aec07.dynamic.kabel-deutschland.de [95.90.236.7])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 0DFC161E5FE03;
-	Fri, 26 Jan 2024 08:03:18 +0100 (CET)
-Message-ID: <f07333d2-ebb0-4531-a396-8fb3d1daa2c3@molgen.mpg.de>
-Date: Fri, 26 Jan 2024 08:03:17 +0100
+	s=arc-20240116; t=1706253147; c=relaxed/simple;
+	bh=DecTU/CPqldmkZPTl/pP28a7SisONJrJ6hc7jiBLGfA=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=AabcDuCBwvUToqL+622uIuiIzdNN77Ba2qLbV+wItXW+az4lV0uu342yJoali6nhQuMGBYpNlRtfDd+QTnGs/5ynix+uKbQuzlmeCIOtlFYOOj1favTQtm4hzs3VfaRg6PyUBMC1iGpnhYRu8+8zdCzpZP/SUBqz8IZfnCuVS4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=r7Ki8r/v; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: PS/2 keyboard of laptop Dell XPS 13 9360 goes missing after S3
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: linux-input@vger.kernel.org, linux-pm@vger.kernel.org,
- Dell.Client.Kernel@dell.com, regressions@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <0aa4a61f-c939-46fe-a572-08022e8931c7@molgen.mpg.de>
- <f27b491c-2f1c-4e68-804c-24eeaa8d10de@redhat.com>
- <0b30c88a-6f0c-447f-a08e-29a2a0256c1b@molgen.mpg.de>
- <dde1bdfe-7877-41bd-b233-03bcdba0e2de@redhat.com>
-Content-Language: en-US
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <dde1bdfe-7877-41bd-b233-03bcdba0e2de@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1706252699;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bjCHdJ0a2lNlVO12egQaAeCkKHH1kCrzRFTDescXGXk=;
+	b=r7Ki8r/v8mApvwBcSjH+f7oN6Ek6MNlPHhCruhod24mqvf95HZ2rXFdSi8tUfXOBJFevlb
+	PnqjVs6KKrhBpCmOA3xVKamzxKvj4HxeSSLPKShZ7CmZoDqxxWqrf8fYYUxeLvxR2h9Utr
+	ziW+zDLAaRs4lZCg43lZlLtMOAfpIGXSSdfYu4mJQFD1BvBJQas5HNDynN6ocXZBO0oHtx
+	vjbnf3s1iKxptjN4Q4hT+y4v7VRjfu39GKe4T3Dr+IjZ7xc8TmkDmC+DSRgQnEdt82UIdI
+	JTK+/pDlcDSzcm5c7+JwVe23N7kZ9ljL8blm55Zvv2Po0aGeC990VaGDggV9iA==
+Date: Fri, 26 Jan 2024 08:04:59 +0100
+From: Dragan Simic <dsimic@manjaro.org>
+To: Alexey Charkov <alchark@gmail.com>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Viresh Kumar <viresh.kumar@linaro.org>
+Subject: Re: [PATCH 4/4] arm64: dts: rockchip: Add OPP data for CPU cores on
+ RK3588
+In-Reply-To: <CABjd4YxSTLZjrnSCn0fh81US682-uhZ16-cgydzz97shhCpq4w@mail.gmail.com>
+References: <20240125-rk-dts-additions-v1-0-5879275db36f@gmail.com>
+ <20240125-rk-dts-additions-v1-4-5879275db36f@gmail.com>
+ <731aac66-f698-4a1e-b9ee-46a7f24ecae5@linaro.org>
+ <ccc004cfae513195351ce0a79e12f6af@manjaro.org>
+ <CABjd4YxSTLZjrnSCn0fh81US682-uhZ16-cgydzz97shhCpq4w@mail.gmail.com>
+Message-ID: <1f0608831cfb95c80edf16cd751eee76@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-Dear Hans,
+Hello Alexey,
 
-
-Thank you for your reply, and sorry for the delay on my side. I needed 
-to set up an environment to easily build the Linux kernel.
-
-
-Am 22.01.24 um 14:43 schrieb Hans de Goede:
-
-> On 1/21/24 15:26, Paul Menzel wrote:
-
-[…]
-
->> Am 20.01.24 um 21:26 schrieb Hans de Goede:
->>
->>> On 1/18/24 13:57, Paul Menzel wrote:
->>>> #regzbot introduced v6.6.11..v6.7
->>
->>>> There seems to be a regression in Linux 6.7 on the Dell XPS 13 9360 (Intel i7-7500U).
->>>>
->>>>       [    0.000000] DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022
->>>>
->>>> The PS/2 keyboard goes missing after S3 resume¹. The problem does not happen with Linux 6.6.11.
->>>
->>> Thank you for reporting this.
->>>
->>> Can you try adding "i8042.dumbkbd=1" to your kernel commandline?
->>>
->>> This should at least lead to the device not disappearing from
->>>
->>> "sudo libinput list-devices"
->>>
->>> The next question is if the keyboard will still actually
->>> work after suspend/resume with "i8042.dumbkbd=1". If it
->>> stays in the list, but no longer works then there is
->>> a problem with the i8042 controller; or interrupt
->>> delivery to the i8042 controller.
->>>
->>> If "i8042.dumbkbd=1" somehow fully fixes things, then I guess
->>> my atkbd driver fix for other laptop keyboards is somehow
->>> causing issues for yours.
->>
->> Just a quick feedback, that booting with `i8042.dumbkbd=1` seems to fix the issue.
->>
->>> If "i8042.dumbkbd=1" fully fixes things, can you try building
->>> your own 6.7.0 kernel with commit 936e4d49ecbc:
->>>
->>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=936e4d49ecbc8c404790504386e1422b599dec39
->>>
->>> reverted?
->>
->> I am going to try that as soon as possible.
+On 2024-01-26 07:44, Alexey Charkov wrote:
+> On Fri, Jan 26, 2024 at 10:32 AM Dragan Simic <dsimic@manjaro.org> 
+> wrote:
+>> On 2024-01-25 10:30, Daniel Lezcano wrote:
+>> > On 24/01/2024 21:30, Alexey Charkov wrote:
+>> >> By default the CPUs on RK3588 start up in a conservative performance
+>> >> mode. Add frequency and voltage mappings to the device tree to enable
+>> >> dynamic scaling via cpufreq
+>> >>
+>> >> Signed-off-by: Alexey Charkov <alchark@gmail.com>
+>> >> ---
+>> >>   arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 209
+>> >> ++++++++++++++++++++++++++++++
+>> >>   1 file changed, 209 insertions(+)
+>> >>
+>> >> diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+>> >> b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+>> >> index 131b9eb21398..e605be531a0f 100644
+>> >> --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+>> >> +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+>> >> @@ -97,6 +97,7 @@ cpu_l0: cpu@0 {
+>> >>                      clocks = <&scmi_clk SCMI_CLK_CPUL>;
+>> >>                      assigned-clocks = <&scmi_clk SCMI_CLK_CPUL>;
+>> >>                      assigned-clock-rates = <816000000>;
+>> >> +                    operating-points-v2 = <&cluster0_opp_table>;
+>> >>                      cpu-idle-states = <&CPU_SLEEP>;
+>> >>                      i-cache-size = <32768>;
+>> >>                      i-cache-line-size = <64>;
+>> >> @@ -116,6 +117,7 @@ cpu_l1: cpu@100 {
+>> >>                      enable-method = "psci";
+>> >>                      capacity-dmips-mhz = <530>;
+>> >>                      clocks = <&scmi_clk SCMI_CLK_CPUL>;
+>> >> +                    operating-points-v2 = <&cluster0_opp_table>;
+>> >>                      cpu-idle-states = <&CPU_SLEEP>;
+>> >>                      i-cache-size = <32768>;
+>> >>                      i-cache-line-size = <64>;
+>> >> @@ -135,6 +137,7 @@ cpu_l2: cpu@200 {
+>> >>                      enable-method = "psci";
+>> >>                      capacity-dmips-mhz = <530>;
+>> >>                      clocks = <&scmi_clk SCMI_CLK_CPUL>;
+>> >> +                    operating-points-v2 = <&cluster0_opp_table>;
+>> >>                      cpu-idle-states = <&CPU_SLEEP>;
+>> >>                      i-cache-size = <32768>;
+>> >>                      i-cache-line-size = <64>;
+>> >> @@ -154,6 +157,7 @@ cpu_l3: cpu@300 {
+>> >>                      enable-method = "psci";
+>> >>                      capacity-dmips-mhz = <530>;
+>> >>                      clocks = <&scmi_clk SCMI_CLK_CPUL>;
+>> >> +                    operating-points-v2 = <&cluster0_opp_table>;
+>> >>                      cpu-idle-states = <&CPU_SLEEP>;
+>> >>                      i-cache-size = <32768>;
+>> >>                      i-cache-line-size = <64>;
+>> >> @@ -175,6 +179,7 @@ cpu_b0: cpu@400 {
+>> >>                      clocks = <&scmi_clk SCMI_CLK_CPUB01>;
+>> >>                      assigned-clocks = <&scmi_clk SCMI_CLK_CPUB01>;
+>> >>                      assigned-clock-rates = <816000000>;
+>> >> +                    operating-points-v2 = <&cluster1_opp_table>;
+>> >>                      cpu-idle-states = <&CPU_SLEEP>;
+>> >>                      i-cache-size = <65536>;
+>> >>                      i-cache-line-size = <64>;
+>> >> @@ -194,6 +199,7 @@ cpu_b1: cpu@500 {
+>> >>                      enable-method = "psci";
+>> >>                      capacity-dmips-mhz = <1024>;
+>> >>                      clocks = <&scmi_clk SCMI_CLK_CPUB01>;
+>> >> +                    operating-points-v2 = <&cluster1_opp_table>;
+>> >>                      cpu-idle-states = <&CPU_SLEEP>;
+>> >>                      i-cache-size = <65536>;
+>> >>                      i-cache-line-size = <64>;
+>> >> @@ -215,6 +221,7 @@ cpu_b2: cpu@600 {
+>> >>                      clocks = <&scmi_clk SCMI_CLK_CPUB23>;
+>> >>                      assigned-clocks = <&scmi_clk SCMI_CLK_CPUB23>;
+>> >>                      assigned-clock-rates = <816000000>;
+>> >> +                    operating-points-v2 = <&cluster2_opp_table>;
+>> >>                      cpu-idle-states = <&CPU_SLEEP>;
+>> >>                      i-cache-size = <65536>;
+>> >>                      i-cache-line-size = <64>;
+>> >> @@ -234,6 +241,7 @@ cpu_b3: cpu@700 {
+>> >>                      enable-method = "psci";
+>> >>                      capacity-dmips-mhz = <1024>;
+>> >>                      clocks = <&scmi_clk SCMI_CLK_CPUB23>;
+>> >> +                    operating-points-v2 = <&cluster2_opp_table>;
+>> >>                      cpu-idle-states = <&CPU_SLEEP>;
+>> >>                      i-cache-size = <65536>;
+>> >>                      i-cache-line-size = <64>;
+>> >> @@ -348,6 +356,207 @@ l3_cache: l3-cache {
+>> >>              };
+>> >>      };
+>> >>   +  cluster0_opp_table: opp-table-cluster0 {
+>> >> +            compatible = "operating-points-v2";
+>> >> +            opp-shared;
+>> >> +
+>> >> +            opp-408000000 {
+>> >> +                    opp-hz = /bits/ 64 <408000000>;
+>> >> +                    opp-microvolt = <675000 675000 950000>;
+>> >> +                    clock-latency-ns = <40000>;
+>> >> +            };
+>> >> +            opp-600000000 {
+>> >> +                    opp-hz = /bits/ 64 <600000000>;
+>> >> +                    opp-microvolt = <675000 675000 950000>;
+>> >> +                    clock-latency-ns = <40000>;
+>> >> +            };
+>> >> +            opp-816000000 {
+>> >> +                    opp-hz = /bits/ 64 <816000000>;
+>> >> +                    opp-microvolt = <675000 675000 950000>;
+>> >> +                    clock-latency-ns = <40000>;
+>> >> +            };
+>> >> +            opp-1008000000 {
+>> >> +                    opp-hz = /bits/ 64 <1008000000>;
+>> >> +                    opp-microvolt = <675000 675000 950000>;
+>> >> +                    clock-latency-ns = <40000>;
+>> >> +            };
+>> >
+>> > It is not useful to introduce OPP with the same voltage. There is no
+>> > gain in terms of energy efficiency as the compute capacity is linearly
+>> > tied with power consumption (P=CxFxV²) in this case.
+>> >
+>> > For example, opp-408 consumes 2 bogoWatts and opp-816 consumes 4
+>> > bogoWatts (because of the same voltage).
+>> >
+>> > For a workload, opp-408 takes 10 sec and opp-816 takes 5 sec because
+>> > it is twice faster.
+>> >
+>> > The energy consumption is:
+>> >
+>> > opp-408 = 10 x 2 = 20 BogoJoules
+>> > opp-816 = 5 x 4 = 20 BogoJoules
+>> 
+>> I'd respectfully disagree that including multiple OPPs with the same
+>> voltage
+>> but different frequencies isn't useful.  Please allow me to explain.
+>> 
+>> See, the total amount of consumed energy is, in general, the same for
+>> such
+>> OPPs and the same CPU task(s), if we ignore the static leakage current
+>> and
+>> such stuff, which isn't important here.  Though, the emphasis here is 
+>> on
+>> "total", i.e. without taking into account the actual amount of time
+>> required
+>> for the exemplified CPU task(s) to complete.  If the total amount of
+>> time
+>> is quite short, we aren't going to heat up the package and the board
+>> enough
+>> to hit the CPU thermal throttling;  this approach is also sometimes
+>> referred
+>> to as "race to idle", which is actually quite effective for
+>> battery-powered
+>> mobile devices that tend to load their CPU cores in bursts, while
+>> remaining
+>> kind of inactive for the remaining time.
+>> 
+>> However, if the CPU task(s) last long enough to actually saturate the
+>> thermal
+>> capacities of the package and the board or the device, we're getting
+>> into the
+>> CPU throttling territory, in which running the CPU cores slower, but
+>> still as
+>> fast as possible, may actually be beneficial for the overall CPU
+>> performance.
+>> By running the CPU cores slower, we're lowering the power and
+>> "spreading" the
+>> total energy consumption over time, i.e. we're making some time to 
+>> allow
+>> the
+>> generated heat to dissipate into the surroundings.  As we know, having
+>> more
+>> energy consumed by the SoC means more heat generated by the SoC, but 
+>> the
+>> resulting temperature of the SoC depends on how fast the energy is
+>> consumed,
+>> which equals to how fast the CPUs run;  of course, all that is valid
+>> under
+>> the reasonable assumption that the entire cooling setup, including the
+>> board
+>> surroundings, remains unchanged all the time.
 > 
-> Assuming this was not some one time glitch with 6.7.0,
-> I have prepared a patch hopefully fixing this (1) as well
-> as a follow up fix to address another potential issue which
-> I have noticed.
+> On the other hand, convective heat dissipation is approximately
+> proportional to the temperature differential, therefore heating up the
+> core to a higher temperature over a shorter period of time would let
+> it dissipate the same joule amount faster. Given that total joules
 
-Unfortunately, it wasn’t just a glitch.
+Let me point out that the emphasis is again on "shorter period". :)
+Yes, when the CPU load is bursty, having multiple same-voltage OPPs
+almost surely won't help us at all, as I already noted.  However,
+the things will surely change when the CPU cores are loaded for
+longer amounts of time and, as a result, the defined thermal trips
+are reached, because the cooling system gets saturated.
 
-> Can you please give a 6.7.0 (2) kernel with the 2 attached
-> patches added a try ?
+> generated for a particular load are approximately the same for
+> different frequencies as long as voltage remains the same (as Daniel
+> pointed out), higher frequency seems to lead to better heat transfer
+> to the environment for the same load. And also the task completes
+> sooner, which is probably always good, ceteris paribus.
 > 
-> I know building kernels can be a bit of work / takes time,
-> sorry. If you are short on time I would prefer testing these 2
-> patches and see if they fix things over trying a plain revert.
+> Not sure how that all changes when throttling enters the game though :)
 
-Applying both patches on v6.7.1
+As I already noted above, the things are quite different when the CPU
+load isn't bursty.  Once the cooling setup is saturated, the heat no
+longer gets transferred effectively to the surroundings, while the CPU
+cores keep producing the heat, which cannot continue indefinitely.  As
+a result, the CPU cores need to run slower and "spread" the total amount
+of joules over time, but they still should run as fast as possible.
+Another option is to introduce active cooling, which also comes with
+its own set of limits, but the initial assumption is that the cooling
+setup remains unchanged.
 
-     $ git log --oneline -3
-     053fa44c0de1 (HEAD -> v6.7.1) Input: atkbd - Do not skip 
-atkbd_deactivate() when skipping ATKBD_CMD_GETID
-     0e0fa0113c7a Input: atkbd - Skip ATKBD_CMD_SETLEDS when skipping 
-ATKBD_CMD_GETID
-     a91fdae50a6d (tag: v6.7.1, stable/linux-6.7.y, origin/linux-6.7.y) 
-Linux 6.7.1
-
-I am unable to reproduce the problem in eight ACPI S3 suspend/resume 
-cycles. The DMAR errors [3] are also gone:
-
-     $ sudo dmesg --level alert,crit,err,warn
-     [    0.065292] MDS CPU bug present and SMT on, data leak possible. 
-See https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/mds.html 
-for more details.
-     [    0.065292] MMIO Stale Data CPU bug present and SMT on, data 
-leak possible. See 
-https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/processor_mmio_stale_data.html 
-for more details.
-     [    0.092064] ENERGY_PERF_BIAS: Set to 'normal', was 'performance'
-     [    0.294522] hpet_acpi_add: no address or irqs in _CRS
-     [    0.345003] i8042: Warning: Keylock active
-     [    1.063807] usb: port power management may be unreliable
-     [    1.178339] device-mapper: core: CONFIG_IMA_DISABLE_HTABLE is 
-disabled. Duplicate IMA measurements will not be recorded in the IMA log.
-     [   37.712916] wmi_bus wmi_bus-PNP0C14:01: WQBC data block query 
-control method not found
-     [   67.307070] warning: `atop' uses wireless extensions which will 
-stop working for Wi-Fi 7 hardware; use nl80211
-     [  141.861803] ACPI Error: AE_BAD_PARAMETER, Returned by Handler 
-for [EmbeddedControl] (20230628/evregion-300)
-     [  141.861808] ACPI Error: Aborting method \_SB.PCI0.LPCB.ECDV.ECR1 
-due to previous error (AE_BAD_PARAMETER) (20230628/psparse-529)
-     [  141.861814] ACPI Error: Aborting method \_SB.PCI0.LPCB.ECDV.ECR2 
-due to previous error (AE_BAD_PARAMETER) (20230628/psparse-529)
-     [  141.861818] ACPI Error: Aborting method \ECRW due to previous 
-error (AE_BAD_PARAMETER) (20230628/psparse-529)
-     [  141.861821] ACPI Error: Aborting method \ECG1 due to previous 
-error (AE_BAD_PARAMETER) (20230628/psparse-529)
-     [  141.861824] ACPI Error: Aborting method \NEVT due to previous 
-error (AE_BAD_PARAMETER) (20230628/psparse-529)
-     [  141.861827] ACPI Error: Aborting method \_SB.PCI0.LPCB.ECDV._Q66 
-due to previous error (AE_BAD_PARAMETER) (20230628/psparse-529)
-
-Please tell me, if I can do anything else.
-
-
-Kind regards,
-
-Paul
-
-
-> 1) Assuming it is caused by this commit in the first place,
-> which seems likely
-> 
-> 2) 6.8-rc1 has a follow up patch which is squashed into the
-> first patch here, so these patches will only apply cleanly
-> to 6.7.0 .
-
-[3]: 
-https://lore.kernel.org/all/9a24c335-8ec5-48c9-9bdd-b0dac5ecbca8@molgen.mpg.de/
-
->>>>       [    1.435071] i8042: PNP: PS/2 Controller [PNP0303:PS2K,PNP0f13:PS2M] at 0x60,0x64 irq 1,12
->>>>       [    1.435409] i8042: Warning: Keylock active
->>>>       [    1.437624] serio: i8042 KBD port at 0x60,0x64 irq 1
->>>>       [    1.437631] serio: i8042 AUX port at 0x60,0x64 irq 12
->>>>       […]
->>>>       [    1.439743] input: AT Translated Set 2 keyboard as /devices/platform/i8042/serio0/input/input0
->>>>
->>>>       $ sudo libinput list-devices
->>>>       […]
->>>>       Device:           AT Translated Set 2 keyboard
->>>>       Kernel:           /dev/input/event0
->>>>       Group:            15
->>>>       Seat:             seat0, default
->>>>       Capabilities:     keyboard
->>>>       Tap-to-click:     n/a
->>>>       Tap-and-drag:     n/a
->>>>       Tap drag lock:    n/a
->>>>       Left-handed:      n/a
->>>>       Nat.scrolling:    n/a
->>>>       Middle emulation: n/a
->>>>       Calibration:      n/a
->>>>       Scroll methods:   none
->>>>       Click methods:    none
->>>>       Disable-w-typing: n/a
->>>>       Disable-w-trackpointing: n/a
->>>>       Accel profiles:   n/a
->>>>       Rotation:         0.0
->>>>
->>>> `libinput list-devices` does not list the device after resuming
->>>> from S3. Some of the function keys, like brightness and airplane
->>>> mode keys, still work, as the events are probably transmitted over
->>>> the embedded controller or some other mechanism. An external USB
->>>> keyboard also still works.
->>>>
->>>> I haven’t had time to further analyze this, but wanted to report
->>>> it. No idea
->>>>
->>>>
->>>> Kind regards,
->>>>
->>>> Paul
->>>>
->>>>
->>>> ¹ s2idle is not working correctly on the device, in the sense, that
->>>> energy usage is very high in that state, and the full battery is at
->>>> 20 % after leaving it for eight hours.
+In the end, if all that weren't the case, we wouldn't need CPU thermal
+throttling at all, or not as much. :)
 
