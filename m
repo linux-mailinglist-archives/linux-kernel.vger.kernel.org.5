@@ -1,144 +1,271 @@
-Return-Path: <linux-kernel+bounces-40339-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40340-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A2B983DEBE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:30:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91D0E83DEC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:31:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFE1828BC90
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:30:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5C2EB2465C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:31:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 143691C29C;
-	Fri, 26 Jan 2024 16:30:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BCEC1BDE0;
+	Fri, 26 Jan 2024 16:30:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FfBZq2dD"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b="KFoEJSn2"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F52E6AB8
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 16:30:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CCE31DDF5
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 16:30:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706286641; cv=none; b=qW978YaISBepMi3A2jTJND51eZ7sZ6X83kj4ZjNesAbmfQU2DSnV1yBQi5CszlPRNQJd6Yo92XtysmrzaVY1hDDsbh75EmPj+Nw7rfpzTUbxDagO0mve5QZzn7CKXwMaKa0M5v24GlMnloyqegjcvVtDABN3ZDdKDU3ZvkDxqv8=
+	t=1706286648; cv=none; b=VXfpAe7EquTF/7w8ejJxkdLxF8g3PEjoNV2xqVqfTwDQihj/bpT6M2UhgTKitiSqra1CYXgN15hqK3WBRaRgZbha0mZunxJA2vuoB4MNKolfMlJ4wtaEr/AeD3dxQaL3Bw5fJQ/sYAZivKVOlFWvAsrzg6WSSQeTAmedtOcoQag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706286641; c=relaxed/simple;
-	bh=IMZwz/sIak+ni3fCNG9vvy04t1J1gARfaSt2wuyb8BU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=pkubuMclfv4fwCqEhhU4DSpYe62BJ/jbC8oRzP5KgqtCyyvdu/mgwezUDdWH4E2q4MtmYgD/DGic4MjyK5XOtHGYdP1i2tz9Ol5Y0vs7lHTft/M39TYglg3t3+G+nXNbfYcfxhMs3QHSlLv7Zjk2xC5GTAXrKPxmiaZRIJY5I6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FfBZq2dD; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706286636;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8gY4l6x5sIVmCVLmLQTixMhgQJ/BHDFv5tgeYWPd82o=;
-	b=FfBZq2dDe5MlHSAg7t1X/TjIMsbRSKIuX/BQriBtOeZI+nLfwLQp+znpsZQPlLGJohzfrV
-	sIJXCgsji/9vsTCg7lZQTmSStB5Izmv6JfZHL/3mPikGoRdBYjOHi3LCPLy5GTmOKFS1UL
-	gVCQzXk6PYDMu8vVDvd0ON8yJs0QnAk=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-328-FuDr_iDfNeefbGaNXFS13g-1; Fri, 26 Jan 2024 11:30:30 -0500
-X-MC-Unique: FuDr_iDfNeefbGaNXFS13g-1
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-6887759ff05so10075806d6.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:30:30 -0800 (PST)
+	s=arc-20240116; t=1706286648; c=relaxed/simple;
+	bh=e4P27LVIoLu447WxGDoBfB8TV0IwjkIO9iwplgiRTRA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=sTLokGLJULepUVgxAAwpe8znfIjCfPYAiRMDDsEy/aQbTTcEYkpTAagrerg96/ZTg23/B8kTOKFw9UTLXrqb1G31oGgGqnNkTUFbdrC2UCTjnry/wMSyuBrcT/tk/tBpYPksTXBYw0dOZc35xt1FLxOFDcm8fupAlI2dtjEoMxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=smile.fr; spf=pass smtp.mailfrom=smile.fr; dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b=KFoEJSn2; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=smile.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=smile.fr
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40e60e137aaso13430985e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:30:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=smile-fr.20230601.gappssmtp.com; s=20230601; t=1706286643; x=1706891443; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YUy3Rwm9maFk8GP2x854tHf75dVLpNSbOLWxYX7ax5o=;
+        b=KFoEJSn2+NEXu+7uSAEIRaq3hq+MzWy0GZH54qlj+8NgLP03R9c7dJhtpHRx1VPWie
+         0qLcu+iaYrYc0ShiTf98eWcwiwuENAw8HBSKWaGpSJH3Qi1r1r91dUHl5obJJ/H0wk+I
+         UgMI31BifIvGcX0qS2HzcuaHK+m4J2GvT1TOQ3WYcOACA+UKD2dDNVMJHZvHweHgCuZW
+         yi2HuVF74dg3eJ6AenNcBklLYWa26y0XVI0GJFPaQLBerJA4H7R5WcAuVt7+yf9KW0oT
+         5zO9P3DtDByr2OsknZK426cpNz/OilgWiLHw7MNYzO50f1ritlJ7WWWbBTUL1KxC4eQB
+         orjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706286628; x=1706891428;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8gY4l6x5sIVmCVLmLQTixMhgQJ/BHDFv5tgeYWPd82o=;
-        b=BehKhfzLzc1KLKt6/zb0DeusLUagF4oLWUIDYIOLnrsdlu9jAoETVyutlR+Ufx/IUo
-         /1YDVnq+vUbGq26n422268cvVJ0jY47hA615/ja/vytHEn8RSwgDAfJGgfL/EB4n3Txf
-         8CVpUQFl2aXEn8kmjBrQSKc8ifzO5UUu+zMdIZxUcG+dxVSxS3OWDw/+L7tLmYmzQzoZ
-         /APRt/iNUfuva3KYpWYmTr1myvC8sBtsVhWMnDTgKftGT+2SUG3eNsr43MRh33lVS/jx
-         1TWoQDumpYSnO2H0F8REID87HWTXBzl79lKgf4qewWEKJ257oJEGl2MkMan2biTq6TFx
-         DANA==
-X-Gm-Message-State: AOJu0YzuNYP2HBlQneGJSuKoiiLjkAoLPV60qoOto5azGRk6spEjas8B
-	aeEjAo7OJdjGhFlH6NF7HctNSE27ONGkfIU0t9dCyTlwp6LPrFV0q42WcW6t7/AWrXhTGH7FBhM
-	BwtCYNZAwZosX3m8PkD54tf40u/lVhfui58FI9MHdA0BR7bKI7sLEd860sP+UCQ==
-X-Received: by 2002:a0c:e382:0:b0:686:abd8:7758 with SMTP id a2-20020a0ce382000000b00686abd87758mr1897438qvl.54.1706286628360;
-        Fri, 26 Jan 2024 08:30:28 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEkhyUOu8XVHFCRVUlx+Ps+2zcJ2CYKCZJ63CVwXORpu9jpEVTmo8zVKyAWMSU3QRu+q5ypsg==
-X-Received: by 2002:a0c:e382:0:b0:686:abd8:7758 with SMTP id a2-20020a0ce382000000b00686abd87758mr1897421qvl.54.1706286628109;
-        Fri, 26 Jan 2024 08:30:28 -0800 (PST)
-Received: from fedora (g2.ign.cz. [91.219.240.8])
-        by smtp.gmail.com with ESMTPSA id dn11-20020a056214094b00b0068179afede6sm621527qvb.100.2024.01.26.08.30.26
+        d=1e100.net; s=20230601; t=1706286643; x=1706891443;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YUy3Rwm9maFk8GP2x854tHf75dVLpNSbOLWxYX7ax5o=;
+        b=L5o9qd/UCpSTCTUAvZzD4V2TyxTkXRKM/zCedDxlGPSivLN7gsJ+nzi2oz0Gyl1sB8
+         fBEdXJuWAiCQmL+2YU9zKGTtExaCxqGShoFIBDlPkzXfwzWkVhcw48sL2ERevVvZDsx5
+         QW43ToHxfOSiyUeL90HdbAjAbnbI2yHoMde0MQx/ddOXSZBV8tWu68YUnRk64tjrPlri
+         mWVl1sPYShwCi/eLskiCfTBuPn4zdGyu/c3JEapIVxFtNolLxsfwWjO2mhB8ji8BSPVm
+         tAB5tKZ8HDQsXUCe9UpOJCGENiqFZ+sdWA2LcbG/qXhJAjcyIRqhAOqLT46FmeAaaLAQ
+         r/AA==
+X-Gm-Message-State: AOJu0Yzz/M6esqYHzCPInf9TKWtbTRE1QQ9uR4LkfxhAXhVGg4MRxORw
+	2CXUjkmTE8TTDUd7G/qMaVjkpuUqkHSzEpaBcbyf+ZKjvy/X8+p2Vp+xuzDXA/w=
+X-Google-Smtp-Source: AGHT+IHKrnM6QdGCuLACvBQlPCI1fRERqYVbqvlykdiDAUVmDp7BbX1i59uxODRv8YnFlIpKfqkT3g==
+X-Received: by 2002:a05:600c:a385:b0:40e:e793:8f9 with SMTP id hn5-20020a05600ca38500b0040ee79308f9mr30020wmb.134.1706286643360;
+        Fri, 26 Jan 2024 08:30:43 -0800 (PST)
+Received: from P-ASN-ECS-830T8C3.numericable.fr ([89.159.1.53])
+        by smtp.gmail.com with ESMTPSA id p14-20020a05600c358e00b0040ea875a527sm2337557wmq.26.2024.01.26.08.30.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 08:30:27 -0800 (PST)
-From: Vitaly Kuznetsov <vkuznets@redhat.com>
-To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini
- <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, David Matlack
- <dmatlack@google.com>, Xu Yilun <yilun.xu@linux.intel.com>, Sean
- Christopherson <seanjc@google.com>
-Subject: Re: [PATCH 4/4] KVM: Nullify async #PF worker's "apf" pointer as
- soon as it might be freed
-In-Reply-To: <20240110011533.503302-5-seanjc@google.com>
-References: <20240110011533.503302-1-seanjc@google.com>
- <20240110011533.503302-5-seanjc@google.com>
-Date: Fri, 26 Jan 2024 17:30:24 +0100
-Message-ID: <87o7d883bz.fsf@redhat.com>
+        Fri, 26 Jan 2024 08:30:43 -0800 (PST)
+From: Yoann Congal <yoann.congal@smile.fr>
+To: x86@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org
+Cc: linux-kbuild@vger.kernel.org,
+	Yoann Congal <yoann.congal@smile.fr>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Darren Hart <dvhart@infradead.org>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	=?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>,
+	Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH] treewide: Change CONFIG_BASE_SMALL to bool type
+Date: Fri, 26 Jan 2024 17:30:32 +0100
+Message-Id: <20240126163032.1613731-1-yoann.congal@smile.fr>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Sean Christopherson <seanjc@google.com> writes:
+CONFIG_BASE_SMALL is currently a type int but is only used as a boolean:
+CONFIG_BASE_SMALL == 0 vs CONFIG_BASE_SMALL != 0.
 
-> Nullify the async #PF worker's local "apf" pointer immediately after the
-> point where the structure can be freed by the vCPU.  The existing comment
-> is helpful, but easy to overlook as there is no associated code.
->
-> Update the comment to clarify that it can be freed by as soon as the lock
-> is dropped, as "after this point" isn't strictly accurate, nor does it
-> help understand what prevents the structure from being freed earlier.
->
+So change it to the more logical bool type.
 
-"No functional change intended." must be made a requirement, especially
-for those who made it their trademark)
+Furthermore, recent kconfig changes (see Fixes: tags) revealed that using
+  config SOMETHING
+     default "some value" if X
+does not work as expected if X is not of type bool.
 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  virt/kvm/async_pf.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
->
-> diff --git a/virt/kvm/async_pf.c b/virt/kvm/async_pf.c
-> index c3f4f351a2ae..1088c6628de9 100644
-> --- a/virt/kvm/async_pf.c
-> +++ b/virt/kvm/async_pf.c
-> @@ -83,13 +83,14 @@ static void async_pf_execute(struct work_struct *work)
->  	apf->vcpu = NULL;
->  	spin_unlock(&vcpu->async_pf.lock);
->  
-> -	if (!IS_ENABLED(CONFIG_KVM_ASYNC_PF_SYNC) && first)
-> -		kvm_arch_async_page_present_queued(vcpu);
-> -
->  	/*
-> -	 * apf may be freed by kvm_check_async_pf_completion() after
-> -	 * this point
-> +	 * The apf struct may freed by kvm_check_async_pf_completion() as soon
+CONFIG_BASE_SMALL is used that way in init/Kconfig:
+  config LOG_CPU_MAX_BUF_SHIFT
+  	default 12 if !BASE_SMALL
+  	default 0 if BASE_SMALL
 
-Nit: "may be freed"/"may get freed" maybe?
+Signed-off-by: Yoann Congal <yoann.congal@smile.fr>
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Closes: https://lore.kernel.org/all/CAMuHMdWm6u1wX7efZQf=2XUAHascps76YQac6rdnQGhc8nop_Q@mail.gmail.com/
+Fixes: 6262afa10ef7 ("kconfig: default to zero if int/hex symbol lacks default property")
+Fixes: 4e244c10eab3 ("kconfig: remove unneeded symbol_empty variable")
 
-> +	 * as the lock is dropped.  Nullify it to prevent improper usage.
->  	 */
-> +	apf = NULL;
-> +
-> +	if (!IS_ENABLED(CONFIG_KVM_ASYNC_PF_SYNC) && first)
-> +		kvm_arch_async_page_present_queued(vcpu);
->  
->  	trace_kvm_async_pf_completed(addr, cr2_or_gpa);
+---
+CC: Thomas Gleixner <tglx@linutronix.de>
+CC: Ingo Molnar <mingo@redhat.com>
+CC: Borislav Petkov <bp@alien8.de>
+CC: Dave Hansen <dave.hansen@linux.intel.com>
+CC: "H. Peter Anvin" <hpa@zytor.com>
+CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC: Jiri Slaby <jirislaby@kernel.org>
+CC: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+CC: Matthew Wilcox <willy@infradead.org>
+CC: Peter Zijlstra <peterz@infradead.org>
+CC: Darren Hart <dvhart@infradead.org>
+CC: Davidlohr Bueso <dave@stgolabs.net>
+CC: "André Almeida" <andrealmeid@igalia.com>
+CC: Masahiro Yamada <masahiroy@kernel.org>
+CC: x86@kernel.org
+CC: linux-kernel@vger.kernel.org
+CC: linux-serial@vger.kernel.org
+CC: linux-fsdevel@vger.kernel.org
+CC: linux-kbuild@vger.kernel.org
+---
+ arch/x86/include/asm/mpspec.h | 2 +-
+ drivers/tty/vt/vc_screen.c    | 2 +-
+ include/linux/threads.h       | 4 ++--
+ include/linux/udp.h           | 2 +-
+ include/linux/xarray.h        | 2 +-
+ init/Kconfig                  | 6 +++---
+ kernel/futex/core.c           | 2 +-
+ kernel/user.c                 | 2 +-
+ 8 files changed, 11 insertions(+), 11 deletions(-)
 
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-
+diff --git a/arch/x86/include/asm/mpspec.h b/arch/x86/include/asm/mpspec.h
+index 4b0f98a8d338d..ebe4b6121b698 100644
+--- a/arch/x86/include/asm/mpspec.h
++++ b/arch/x86/include/asm/mpspec.h
+@@ -15,7 +15,7 @@ extern int pic_mode;
+  * Summit or generic (i.e. installer) kernels need lots of bus entries.
+  * Maximum 256 PCI busses, plus 1 ISA bus in each of 4 cabinets.
+  */
+-#if CONFIG_BASE_SMALL == 0
++#ifndef CONFIG_BASE_SMALL
+ # define MAX_MP_BUSSES		260
+ #else
+ # define MAX_MP_BUSSES		32
+diff --git a/drivers/tty/vt/vc_screen.c b/drivers/tty/vt/vc_screen.c
+index 67e2cb7c96eec..da33c6c4691c0 100644
+--- a/drivers/tty/vt/vc_screen.c
++++ b/drivers/tty/vt/vc_screen.c
+@@ -51,7 +51,7 @@
+ #include <asm/unaligned.h>
+ 
+ #define HEADER_SIZE	4u
+-#define CON_BUF_SIZE (CONFIG_BASE_SMALL ? 256 : PAGE_SIZE)
++#define CON_BUF_SIZE (IS_ENABLED(CONFIG_BASE_SMALL) ? 256 : PAGE_SIZE)
+ 
+ /*
+  * Our minor space:
+diff --git a/include/linux/threads.h b/include/linux/threads.h
+index c34173e6c5f18..1674a471b0b4c 100644
+--- a/include/linux/threads.h
++++ b/include/linux/threads.h
+@@ -25,13 +25,13 @@
+ /*
+  * This controls the default maximum pid allocated to a process
+  */
+-#define PID_MAX_DEFAULT (CONFIG_BASE_SMALL ? 0x1000 : 0x8000)
++#define PID_MAX_DEFAULT (IS_ENABLED(CONFIG_BASE_SMALL) ? 0x1000 : 0x8000)
+ 
+ /*
+  * A maximum of 4 million PIDs should be enough for a while.
+  * [NOTE: PID/TIDs are limited to 2^30 ~= 1 billion, see FUTEX_TID_MASK.]
+  */
+-#define PID_MAX_LIMIT (CONFIG_BASE_SMALL ? PAGE_SIZE * 8 : \
++#define PID_MAX_LIMIT (IS_ENABLED(CONFIG_BASE_SMALL) ? PAGE_SIZE * 8 : \
+ 	(sizeof(long) > 4 ? 4 * 1024 * 1024 : PID_MAX_DEFAULT))
+ 
+ /*
+diff --git a/include/linux/udp.h b/include/linux/udp.h
+index d04188714dca1..b456417fb4515 100644
+--- a/include/linux/udp.h
++++ b/include/linux/udp.h
+@@ -24,7 +24,7 @@ static inline struct udphdr *udp_hdr(const struct sk_buff *skb)
+ }
+ 
+ #define UDP_HTABLE_SIZE_MIN_PERNET	128
+-#define UDP_HTABLE_SIZE_MIN		(CONFIG_BASE_SMALL ? 128 : 256)
++#define UDP_HTABLE_SIZE_MIN		(IS_ENABLED(CONFIG_BASE_SMALL) ? 128 : 256)
+ #define UDP_HTABLE_SIZE_MAX		65536
+ 
+ static inline u32 udp_hashfn(const struct net *net, u32 num, u32 mask)
+diff --git a/include/linux/xarray.h b/include/linux/xarray.h
+index cb571dfcf4b16..3f81ee5f9fb9c 100644
+--- a/include/linux/xarray.h
++++ b/include/linux/xarray.h
+@@ -1141,7 +1141,7 @@ static inline void xa_release(struct xarray *xa, unsigned long index)
+  * doubled the number of slots per node, we'd get only 3 nodes per 4kB page.
+  */
+ #ifndef XA_CHUNK_SHIFT
+-#define XA_CHUNK_SHIFT		(CONFIG_BASE_SMALL ? 4 : 6)
++#define XA_CHUNK_SHIFT		(IS_ENABLED(CONFIG_BASE_SMALL) ? 4 : 6)
+ #endif
+ #define XA_CHUNK_SIZE		(1UL << XA_CHUNK_SHIFT)
+ #define XA_CHUNK_MASK		(XA_CHUNK_SIZE - 1)
+diff --git a/init/Kconfig b/init/Kconfig
+index 8d4e836e1b6b1..766a7ac8c5ea4 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1941,9 +1941,9 @@ config RT_MUTEXES
+ 	default y if PREEMPT_RT
+ 
+ config BASE_SMALL
+-	int
+-	default 0 if BASE_FULL
+-	default 1 if !BASE_FULL
++	bool
++	default n if BASE_FULL
++	default y if !BASE_FULL
+ 
+ config MODULE_SIG_FORMAT
+ 	def_bool n
+diff --git a/kernel/futex/core.c b/kernel/futex/core.c
+index e0e853412c158..5f7aa4fc2f9ee 100644
+--- a/kernel/futex/core.c
++++ b/kernel/futex/core.c
+@@ -1141,7 +1141,7 @@ static int __init futex_init(void)
+ 	unsigned int futex_shift;
+ 	unsigned long i;
+ 
+-#if CONFIG_BASE_SMALL
++#ifdef CONFIG_BASE_SMALL
+ 	futex_hashsize = 16;
+ #else
+ 	futex_hashsize = roundup_pow_of_two(256 * num_possible_cpus());
+diff --git a/kernel/user.c b/kernel/user.c
+index 03cedc366dc9e..aa1162deafe49 100644
+--- a/kernel/user.c
++++ b/kernel/user.c
+@@ -88,7 +88,7 @@ EXPORT_SYMBOL_GPL(init_user_ns);
+  * when changing user ID's (ie setuid() and friends).
+  */
+ 
+-#define UIDHASH_BITS	(CONFIG_BASE_SMALL ? 3 : 7)
++#define UIDHASH_BITS	(IS_ENABLED(CONFIG_BASE_SMALL) ? 3 : 7)
+ #define UIDHASH_SZ	(1 << UIDHASH_BITS)
+ #define UIDHASH_MASK		(UIDHASH_SZ - 1)
+ #define __uidhashfn(uid)	(((uid >> UIDHASH_BITS) + uid) & UIDHASH_MASK)
 -- 
-Vitaly
+2.39.2
 
 
