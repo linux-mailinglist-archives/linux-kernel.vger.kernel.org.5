@@ -1,177 +1,127 @@
-Return-Path: <linux-kernel+bounces-40560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40562-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D90283E274
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:25:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7563583E278
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:26:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE71FB233A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:25:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7F961C217EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:26:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56E43224E7;
-	Fri, 26 Jan 2024 19:25:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A8D0224E7;
+	Fri, 26 Jan 2024 19:26:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XvC9WHxK"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="h5SjkSvb"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E49A51DDEA
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 19:25:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FAC0224DA;
+	Fri, 26 Jan 2024 19:26:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706297127; cv=none; b=pCFNqbOmQlXc+Mrj0nt5qBuOTjiqK80r6MG0IfOU6NWuFsvYBCTtK5o1eqfs8stFgjTdNYOWtJPT3qegMxai4OrMK/XbGAAEbxMGerv8YwmJzouyFBZOQBA11jAAtVWQwrw337rDOuK1V7WNxk+ENNgMEH41fc1MEeBvdmO1gwY=
+	t=1706297182; cv=none; b=MSLegGBFg8KuofeB4H1n9kdegAncrBoIabsV/9D+I71F3qAahI4vsB2J02w09nWYUs7diMvTVYaoeplTRBxoOgzzlQJvPjcd7evYhED9x+zWN8pOaDUZ8VhVqNBj50KxMOF+NdMaI6e6VyQlB87HRMol/9M22v99v8fIpa7JqO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706297127; c=relaxed/simple;
-	bh=8RvrO6y0/Of68/2+jUaQkLUjJNzaixet1pA07PR0cp0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LH3jbGk0Cu4cJ+OCD5sIxIVKGR1+4qfOhHTbqN3pAvl04X8Aqgpo33Mxob30DMyJsDYcaDArDaCXMHWBZihtEFR6+flldQ6FcEWPY/hdZZgT6XVqr1u0rgz9AGO06zdNS85WsuHXguX4enGxHWqrFdeJPgyntUNCNgn0e1KwbeY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XvC9WHxK; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706297124;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9BwPJ3hvI/qWKIxSwUd8kfeZg8oeRu3IC468fyX+vyo=;
-	b=XvC9WHxKfcA1ADUv0Exmeb2aDFfy7ibHnJXzFaq75y7coADffGxz+zniN0RjcvJ1QfusQT
-	GdB/6AFyIUN2UpeMOeE8Fs+eMzgoC/Idu65RmyMvY4kCIgMYaPBiaM/t2925RgKnovKutj
-	JYvO+/UGvH0ljEPKIxPG6nVDzjMcBfY=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-658-Jb7mHXp_PNmCuszwaODNrA-1; Fri, 26 Jan 2024 14:25:23 -0500
-X-MC-Unique: Jb7mHXp_PNmCuszwaODNrA-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a30f9374db7so239002666b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 11:25:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706297122; x=1706901922;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9BwPJ3hvI/qWKIxSwUd8kfeZg8oeRu3IC468fyX+vyo=;
-        b=c4Ulc7/tTltUgklEIxESKAWN7zYtaXDsOTO2bBm1C5J0gKJHTv2jLiOjBxySNVx3fm
-         SYg29ab+cS2V9iXDHo54wJY3knAWqiYsDhKYSlfMiZMLA82f809j8UgrYaxZucezMD11
-         nvwN1maGyc45f5UDsiyCzPRwL45XftuTKmKTOm8jey489zhGSp/S26685hgnU7OIJMWQ
-         wEllRKkmbEwJhylAuRRIMCQJClKmQMmXG4rD0cXABmCr2sgE+O8ewOQNaCWC9BJ9C2pG
-         m+9FeqZmUg+EvgZiVJu3/MlKk2Y0XVpp1ilnoaDJfauQB6rjlH5Wy6TG0SGK54cyYs4P
-         PXkA==
-X-Gm-Message-State: AOJu0YwbnlcQoPYDFNNmbI+fTq9FqrU8IKfAiX6MglBn4Ov49KFGMLb5
-	LHyRvcw+MyGASAzomOepGMebj7/j+Z2kLju7Bzgh5KkTPgY4qeNJmrP+xl46a7l9UYs0EUIPt1O
-	Ac1Z4tJkFLQcEpuDH/p/n7omDOOQxw4G0NX/STF7LXWwDZ3WNVACRX2E9PB87pg==
-X-Received: by 2002:a17:907:d40f:b0:a32:6050:46eb with SMTP id vi15-20020a170907d40f00b00a32605046ebmr2342014ejc.23.1706297122305;
-        Fri, 26 Jan 2024 11:25:22 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGH7koZ3GtAHLsUDuZmgVG/7afQQStoYjkOG4elT+L0C6gW2E+7RHwF8ftfXVXnrcCaZieTBQ==
-X-Received: by 2002:a17:907:d40f:b0:a32:6050:46eb with SMTP id vi15-20020a170907d40f00b00a32605046ebmr2342001ejc.23.1706297122033;
-        Fri, 26 Jan 2024 11:25:22 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id jt6-20020a170906dfc600b00a2d1b0c7b80sm931908ejc.57.2024.01.26.11.25.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jan 2024 11:25:21 -0800 (PST)
-Message-ID: <d2600cc6-332f-4a6b-9eb4-b84fa4aa033f@redhat.com>
-Date: Fri, 26 Jan 2024 20:25:20 +0100
+	s=arc-20240116; t=1706297182; c=relaxed/simple;
+	bh=T2Dsd8FsdX7PC+vZVdIMwKBV3nNVwsFSL3SmRekSYOk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iS3gLAUjTiFLv6LBqNdYNmnfoDKvlIAW1mNryupt6cPd0gmATYACw79fENMEZroS0jzTmwNF3tSU+BGCTnZz948jWeL2p4Mw7jiR+vAInrY9M9AOLpArz3eEjmc5DDbwQCEqVbNvevCY/6Oxnu4idhb7hBgiU3QsCfNTr70ohhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=h5SjkSvb; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=HaAu8QaTfuj/1bKwP39c5NDE0gj5e/ufSqth9B+stzU=; b=h5SjkSvbAZ8Nl4MpgfmkPoV4mj
+	DmLxDEQt1ChnBYPk5yokNEItG291CMfJ9OvlnL8LPg/TKHM9b7kFPwIXS4n7+yjSwQwtUycfSv3Qm
+	EuOnR8TNpHdkfjAUKSTH8vfjS014Pt0SaDQuf8JOQjvDMQ18Nj95okj4dkFaYjAvVeb7VbVK6bk1p
+	863YD96Xmg1mEvHYiPqv1vApb/8KvO2Xka42Ktl8FbgbirFR1Er/4lUp9qH8fyGp6oMCwtNuVscWR
+	DHgLp8D+cBmehdUUtqkw1qbeaueiv99Bxn3j/YE1CjftKVKoTLfVjBTuXrnigunVwArYeBbhHkwv+
+	vpeoH7GQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rTRqD-0000000EcFc-1O9T;
+	Fri, 26 Jan 2024 19:26:17 +0000
+Date: Fri, 26 Jan 2024 19:26:17 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: kernel test robot <oliver.sang@intel.com>,
+	Daniel Gomez <da.gomez@samsung.com>, oe-lkp@lists.linux.dev,
+	lkp@intel.com, linux-kernel@vger.kernel.org,
+	"gost.dev@samsung.com" <gost.dev@samsung.com>,
+	Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH 1/2] test_xarray: add tests for advanced multi-index use
+Message-ID: <ZbQHWf0Hh04OwoZx@casper.infradead.org>
+References: <20231104005747.1389762-2-da.gomez@samsung.com>
+ <202311152254.610174ff-oliver.sang@intel.com>
+ <ZVfS8fiudvHADtoR@bombadil.infradead.org>
+ <ZVfT3bs9+F0jqIAw@casper.infradead.org>
+ <ZVfUnhzv4UDigZKa@bombadil.infradead.org>
+ <ZbQEA6WIh0HrFTbP@bombadil.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drivers/platform/x86/touchscreen_dmi.c: Add touch config
-Content-Language: en-US, nl
-To: Phoenix Chen <asbeltogf@gmail.com>
-Cc: ilpo.jarvinen@linux.intel.com, linux-input@vger.kernel.org,
- platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240126095308.5042-1-asbeltogf@gmail.com>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20240126095308.5042-1-asbeltogf@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZbQEA6WIh0HrFTbP@bombadil.infradead.org>
 
-Hi,
-
-On 1/26/24 10:53, Phoenix Chen wrote:
-> Added touch screen info for TECLAST X16 Plus tablet.
+On Fri, Jan 26, 2024 at 11:12:03AM -0800, Luis Chamberlain wrote:
+> On Fri, Nov 17, 2023 at 01:01:18PM -0800, Luis Chamberlain wrote:
+> > On Fri, Nov 17, 2023 at 08:58:05PM +0000, Matthew Wilcox wrote:
+> > > On Fri, Nov 17, 2023 at 12:54:09PM -0800, Luis Chamberlain wrote:
+> > > > +/*
+> > > > + * Can be used in contexts which busy loop on large number of entries but can
+> > > > + * sleep and timing is if no importance to test correctness.
+> > > > + */
+> > > > +#define XA_BUG_ON_RELAX(xa, x) do {				\
+> > > > +	if ((tests_run % 1000) == 0)				\
+> > > > +		schedule();					\
+> > > > +	XA_BUG_ON(xa, x);					\
+> > > > +} while (0)
+> > > 
+> > > That is awful.  Please don't do that.  You're mixing two completely
+> > > unrelated thing into the same macro, which makes no sense.  Not only
+> > > that, it's a macro which refers to something in the containing
+> > > environment that isn't a paramter to the macro.
+> > 
+> > I figured you'd puke. Would you prefer I just open code the check on the loop
+> > though? I'm sure another alternative is we *not care* about these
+> > overloaded systems running the test. What would you prefer?
 > 
-> Signed-off-by: Phoenix Chen <asbeltogf@gmail.com>
-
-Thank you for your patch/series, I've applied this patch
-(series) to my review-hans branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-
-And thank you for also adding the embedded_fw data so that is
-will work out of the box for end users.
-
-I will include this patch in my next fixes pull-req to Linus
-for the current kernel development cycle.
-
-Regards,
-
-Hans
-
-
-
-
-
-> ---
->  drivers/platform/x86/touchscreen_dmi.c | 35 ++++++++++++++++++++++++++
->  1 file changed, 35 insertions(+)
+> OK without any particular preferences outlined this is what I have,
+> splitting the two contexts and making the busy loop fix clearer.
 > 
-> diff --git a/drivers/platform/x86/touchscreen_dmi.c b/drivers/platform/x86/touchscreen_dmi.c
-> index 0c6733772698..7aee5e9ff2b8 100644
-> --- a/drivers/platform/x86/touchscreen_dmi.c
-> +++ b/drivers/platform/x86/touchscreen_dmi.c
-> @@ -944,6 +944,32 @@ static const struct ts_dmi_data teclast_tbook11_data = {
->  	.properties	= teclast_tbook11_props,
->  };
->  
-> +static const struct property_entry teclast_x16_plus_props[] = {
-> +	PROPERTY_ENTRY_U32("touchscreen-min-x", 8),
-> +	PROPERTY_ENTRY_U32("touchscreen-min-y", 14),
-> +	PROPERTY_ENTRY_U32("touchscreen-size-x", 1916),
-> +	PROPERTY_ENTRY_U32("touchscreen-size-y", 1264),
-> +	PROPERTY_ENTRY_BOOL("touchscreen-inverted-y"),
-> +	PROPERTY_ENTRY_STRING("firmware-name", "gsl3692-teclast-x16-plus.fw"),
-> +	PROPERTY_ENTRY_U32("silead,max-fingers", 10),
-> +	PROPERTY_ENTRY_BOOL("silead,home-button"),
-> +	{ }
-> +};
+> +#define XA_BUSY_LOOP_RELAX(xa, x) do {                         \
+> +       if ((i % 1000) == 0)                                    \
+> +               schedule();                                     \
+> +} while (0)
 > +
-> +static const struct ts_dmi_data teclast_x16_plus_data = {
-> +	.embedded_fw = {
-> +		.name	= "silead/gsl3692-teclast-x16-plus.fw",
-> +		.prefix = { 0xf0, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00 },
-> +		.length	= 43560,
-> +		.sha256	= { 0x9d, 0xb0, 0x3d, 0xf1, 0x00, 0x3c, 0xb5, 0x25,
-> +			    0x62, 0x8a, 0xa0, 0x93, 0x4b, 0xe0, 0x4e, 0x75,
-> +			    0xd1, 0x27, 0xb1, 0x65, 0x3c, 0xba, 0xa5, 0x0f,
-> +			    0xcd, 0xb4, 0xbe, 0x00, 0xbb, 0xf6, 0x43, 0x29 },
-> +	},
-> +	.acpi_name	= "MSSL1680:00",
-> +	.properties	= teclast_x16_plus_props,
-> +};
-> +
->  static const struct property_entry teclast_x3_plus_props[] = {
->  	PROPERTY_ENTRY_U32("touchscreen-size-x", 1980),
->  	PROPERTY_ENTRY_U32("touchscreen-size-y", 1500),
-> @@ -1612,6 +1638,15 @@ const struct dmi_system_id touchscreen_dmi_table[] = {
->  			DMI_MATCH(DMI_PRODUCT_SKU, "E5A6_A1"),
->  		},
->  	},
-> +	{
-> +		/* Teclast X16 Plus */
-> +		.driver_data = (void *)&teclast_x16_plus_data,
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "TECLAST"),
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "Default string"),
-> +			DMI_MATCH(DMI_PRODUCT_SKU, "D3A5_A1"),
-> +		},
-> +	},
->  	{
->  		/* Teclast X3 Plus */
->  		.driver_data = (void *)&teclast_x3_plus_data,
+> +/*
+> + * Can be used in contexts which busy loop on large number of entries but can
+> + * sleep and timing is if no importance to test correctness.
+> + */
+> +#define XA_BUG_ON_RELAX(i, xa, x) do {                         \
+> +       XA_BUSY_LOOP_RELAX(i);                                  \
+> +       XA_BUG_ON(xa, x);                                       \
+> +} while (0)
+
+No.  XA_BUG_ON_RELAX is not OK.  Really.
+
+We have a perfectly good system for "relaxing":
+
+        xas_for_each_marked(&xas, page, end, PAGECACHE_TAG_DIRTY) {
+                xas_set_mark(&xas, PAGECACHE_TAG_TOWRITE);
+                if (++tagged % XA_CHECK_SCHED)
+                        continue;
+
+                xas_pause(&xas);
+                xas_unlock_irq(&xas);
+                cond_resched();
+                xas_lock_irq(&xas);
+        }
 
 
