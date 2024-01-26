@@ -1,130 +1,117 @@
-Return-Path: <linux-kernel+bounces-40472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C624C83E10D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:09:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3979583E117
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:12:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56B622867F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:09:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B09BA1F25B02
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:12:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84C0F20B30;
-	Fri, 26 Jan 2024 18:09:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2F73208D7;
+	Fri, 26 Jan 2024 18:11:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QhsCRM7j"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HfkL3rMT"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 190A320B22
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 18:09:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A127D208B4
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 18:11:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706292580; cv=none; b=CoCsx1lpeb6z0nv94RwLEmwxcL+7dL9xkIGJkCsSk2girNBdMWNWbpJWpUPesvzb65W+jMldW6+cJbRpUCyTQpOTxmk24plKJcqYfjkSiKdRVr+HBMDsZk4VQihqGIr30ORsQdVqXR8MjgQjZboyPx1VBdIsxP6wA0kNEvyxSxE=
+	t=1706292717; cv=none; b=pLuZOWP8bjyzGgpQOwKyXpANQTwMI3pw9Br74MCz5CC6K7u8aMCYRLBdOF2D2QsTOFmTFwomNlr2pSthYBtw6AENSH1kiVpEyzdurB9PvULSw+jFO8VnnkvuprmfMNtnlR7OZ1fY2KAzpkVJhpXiEi1EgcEt/wG/RzBQAx9NpU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706292580; c=relaxed/simple;
-	bh=PG4/aZR5ehNoaIXSCVLkh7AD4cNnfxBqq7Vn9VNuNN8=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=q6idbL6+AaI+NawV/1j5im4wDEd2Ffn3dJBP7NX03n0+1B4+OOfvWSq6+hSQhbOlPpptnpRaIRyJWeKAdNxF2gai+ZrTLcgZBWE0ZEcXGWNHG+Mc89mh1aetekYj1kxbygr4+fCEsqcXJAvBXkp5uRc2i2Kjx7i3wrz4oUWt6Xo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QhsCRM7j; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1706292717; c=relaxed/simple;
+	bh=LAhg6tS6NsgOJEDjzQ1H66nZrrX2VZPrvnT+rMBSFm4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kDoCbI4zWuzBYy9/AsFh88YE/yEwLzNMboXdCMa/ERysjVy3vDuod6TNrT3CwveIHsR52fYYzlbQyp5EtssKkp+K1zxSEeBknMQIKz302prEz6aYGNAY+W4KgZxyrx5V/iZ3nCTOkUcHDOCg4JzwCYB555VG6tdKVEMgYg9TvdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HfkL3rMT; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706292577;
+	s=mimecast20190719; t=1706292714;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=wO/GDAatG6A2816f5tEylmQBmDB7G8kJQQtaCJdUFO4=;
-	b=QhsCRM7jSr0l9dDhkjrH6TCKRx6JnedUgQrzqSsDCP76ya/cwPin4oJyEhqkP14yeBR+2p
-	okZyXvUkqOLlbdiWTVDXk1R0HCyivAbh6CWeMK8HngQIUxEljOw9o62NpLEWVzA1cHs3IE
-	izkLc+hVABhZgKHbpf2bO1IFukwab3c=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=PG6onSOxW5WTwWOpHXFWverwBGhD/J43wL8mjF4h6m0=;
+	b=HfkL3rMTkaJDYQyIO4CRgJeQrNs5spl//8L0pVeJNlx260DOM987OQMQieQ3D8RlY53387
+	b1trKEtGz1bOMz/Uq3AK7SgpTXFFUpxsUWqd6J/xEQy5pPjREt3ynf9Or9mVS6RZv4BDhH
+	K8/X3JwMe73hKA8qZI2ptTn5kaAfBr0=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-536-hFFMn07mPBuMNb_mMsj6uA-1; Fri, 26 Jan 2024 13:09:34 -0500
-X-MC-Unique: hFFMn07mPBuMNb_mMsj6uA-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2EA0A1013661;
-	Fri, 26 Jan 2024 18:09:33 +0000 (UTC)
-Received: from file1-rdu.file-001.prod.rdu2.dc.redhat.com (unknown [10.11.5.21])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 003CA492BFA;
-	Fri, 26 Jan 2024 18:09:31 +0000 (UTC)
-Received: by file1-rdu.file-001.prod.rdu2.dc.redhat.com (Postfix, from userid 12668)
-	id DFEC030BFEFE; Fri, 26 Jan 2024 18:09:31 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-	by file1-rdu.file-001.prod.rdu2.dc.redhat.com (Postfix) with ESMTP id DB7CD3FB50;
-	Fri, 26 Jan 2024 19:09:31 +0100 (CET)
-Date: Fri, 26 Jan 2024 19:09:31 +0100 (CET)
-From: Mikulas Patocka <mpatocka@redhat.com>
-To: Hannes Reinecke <hare@suse.de>
-cc: Damien Le Moal <dlemoal@kernel.org>, 
-    Linus Torvalds <torvalds@linux-foundation.org>, Tejun Heo <tj@kernel.org>, 
-    Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, 
-    dm-devel@lists.linux.dev, Mike Snitzer <msnitzer@redhat.com>, 
-    Ignat Korchagin <ignat@cloudflare.com>, 
-    Damien Le Moal <damien.lemoal@wdc.com>, Hou Tao <houtao1@huawei.com>, 
-    Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>
-Subject: Re: [PATCH] softirq: fix memory corruption when freeing
- tasklet_struct
-In-Reply-To: <d390d7ee-f142-44d3-822a-87949e14608b@suse.de>
-Message-ID: <d01a8554-10dd-1968-c9b0-f9ff16e6ac4@redhat.com>
-References: <82b964f0-c2c8-a2c6-5b1f-f3145dc2c8e5@redhat.com> <CAHk-=wjDW53w4-YcSmgKC5RruiRLHmJ1sXeYdp_ZgVoBw=5byA@mail.gmail.com> <586ca4dd-f191-9ada-1bc3-e5672f17f7c@redhat.com> <5e2b5f23-94f0-4bf0-80a6-48380c7dc730@kernel.org>
- <d390d7ee-f142-44d3-822a-87949e14608b@suse.de>
+ us-mta-696-fYrvtt-mP0iKQr8FfxZPbg-1; Fri, 26 Jan 2024 13:11:53 -0500
+X-MC-Unique: fYrvtt-mP0iKQr8FfxZPbg-1
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3bb9f35fbfcso1068409b6e.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:11:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706292712; x=1706897512;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PG6onSOxW5WTwWOpHXFWverwBGhD/J43wL8mjF4h6m0=;
+        b=Hce1B7bbsmIZJt3QT1eR+hhS1Zu5aa3xMT9/CtBHmjC0LcTdyJesyws0QyLe4myDyD
+         LoTanyachBjyDrO1cDgCwI3KxflWv3r7eUFGQXh2ohUfOY2iynOmU1m9HBk19fWbtDW0
+         uoRBYTUqnADK700DJnWyfr3x7sxYYGdGNRtcATsE14cEVwbop+AkI5Hm9jiGhRDxqqYG
+         4E45vqNsDdlI4g68xakaDqhsokOeHMNHwsZEl2rT2vmXhHvKOX0o2vH1+zOjOkfhGQ/4
+         B/Wtp6SEyzo3/j0+NYQAyEcqqv8SRWKrlvIuOPJ6LiYpsXo612htGeDbYYVni6tnjCo1
+         3xSA==
+X-Gm-Message-State: AOJu0YzuIImEwKcOyA2HAyoN25kgZxNrOwrQBl7na/YoUzBndTyKTzq/
+	s0lDzNazX8TjFK78cCzvqe2dLuPCYzFDadWsr6/UIshx15DSHXxKuIqwbYj8nWtqCwsFeN4oWFw
+	940vnOa1vgVeZv4IzGtKltqVL+ql6FiflEfFen5TyMEL/Qspe7ee4muXUDI0yWrxSHHceD7CkW3
+	EdLm78cFTkK2xVwksHPR60bSDhA0Xo0kKyPGLJ
+X-Received: by 2002:a05:6808:19a7:b0:3bd:e0ba:9851 with SMTP id bj39-20020a05680819a700b003bde0ba9851mr156993oib.30.1706292712250;
+        Fri, 26 Jan 2024 10:11:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEiFLff6j36/Ab1tXXQQCeW0IAo9c/e1vP7Jgv/bnq5PaDz3DPz7Pm9UGCYE8CoFZAlZ/5HDTeo2SYY7usvdCA=
+X-Received: by 2002:a05:6808:19a7:b0:3bd:e0ba:9851 with SMTP id
+ bj39-20020a05680819a700b003bde0ba9851mr156988oib.30.1706292712070; Fri, 26
+ Jan 2024 10:11:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+References: <ZbFMXtGmtIMavZKW@google.com> <20240124190158.230-1-moehanabichan@outlook.com>
+ <ZbGkZlFmi1war6vq@google.com>
+In-Reply-To: <ZbGkZlFmi1war6vq@google.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Fri, 26 Jan 2024 19:11:40 +0100
+Message-ID: <CABgObfZe3JWv=zsVoRwgERNzVYLUet8LpRhj_sbh4Mg=zbwsNA@mail.gmail.com>
+Subject: Re: Re: Re: [PATCH] KVM: x86: Check irqchip mode before create PIT
+To: Sean Christopherson <seanjc@google.com>
+Cc: Brilliant Hanabi <moehanabichan@gmail.com>, bp@alien8.de, dave.hansen@linux.intel.com, 
+	hpa@zytor.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	mingo@redhat.com, tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Jan 25, 2024 at 12:59=E2=80=AFAM Sean Christopherson <seanjc@google=
+com> wrote:
+> On Thu, Jan 25, 2024, Brilliant Hanabi wrote:
+> > Thanks for your review. In my opinion, it is better to avoid potential =
+bugs
+> > which is difficult to detect, as long as you can return errors to let
+> > developers know about them in advance, although the kernel is not to bl=
+ame
+> > for this bug.
+>
+> Oh, I completely agree that explict errors are far better.  My only conce=
+rn is
+> that there's a teeny tiny chance that rejecting an ioctl() that used to w=
+ork
+> could break userspace.
+>
+> Go ahead and send v2.  I'll get Paolo's thoughts on whether or not this i=
+s likely
+> to break userspace and we can go from there.
 
+I share the same worry but I agree it's quite unlikely.  Let's just do
+it, and if someone complains we'll revert it.
 
-On Fri, 26 Jan 2024, Hannes Reinecke wrote:
-
-> Oh, it's this time of the year again?
-> (This topic regularly comes up ...)
-> 
-> The reason is not that it will disable dm-multipath (Mike Snitzer put in
-> bio-based multipathing as an additional code path); the reason is that
-> dm-multipath performance will suffer when you remove request-based DM.
-
-Is there some benchmark that says how much will it suffer?
-
-> DM-multipath schedules based on request (if you use the request-based
-> interface) or bios (if you use the bio-based interface).
-> Any merge decision is typically done by the block layer when combining bios
-> into requests; and you can only merge bios if the bvecs are adjacent.
-> So if you use bio-based multipathing you will spread sequential bios
-> across all paths, leaving the block layer unable to merge requests.
-
-The same problem exists in raid1 and there's a function read_balance that 
-solves it. If the starting sector of a new bio matches the ending sector 
-of a previous bio, then submit it for the same device.
-
-> For request based multipathing the requests are already fully-formed,
-> and scheduling across paths does not change them.
-> Things are slightly better with multi-page bvecs nowadays, but the
-> overall picture still stands.
-> 
-> Another thing is timeouts; bios don't do timeouts, so a bio can run
-> for an arbitrary time with no chance of interrupting it.
-> Requests do have a timeout, and will be aborted from the driver when
-> the timeout is hit.
-> Seeing that 99% of all I/O issues I've seen _are_ timeouts it becomes
-> a crucial feature if you want dm-multipath to control failover time.
-
-You can set timeout of the underlying physical devices.
-
-> Cheers,
-> 
-> Hannes
-
-Mikulas
+Paolo
 
 
