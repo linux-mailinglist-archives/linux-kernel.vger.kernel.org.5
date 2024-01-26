@@ -1,124 +1,117 @@
-Return-Path: <linux-kernel+bounces-39845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 082E383D6AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:42:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5B5483D6C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:46:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AD9B1F2DCE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:42:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 249211C2BE08
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:46:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C970441C77;
-	Fri, 26 Jan 2024 08:57:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=phytec.de header.i=@phytec.de header.b="PrKilppn"
-Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 285EE14F55D;
+	Fri, 26 Jan 2024 08:58:41 +0000 (UTC)
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9495D41C72
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 08:57:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.26.50.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BB4314F522;
+	Fri, 26 Jan 2024 08:58:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706259468; cv=none; b=bRFiHxu5VnbKsTZ8pPAL5y33fQh0c/gMtcB5fpbs+btEbTWUXPZNsRk9ieYYDyaQ5KG11pbe6rtgqam6lQcFVkGqhBOBOiSiYsCwuLxEDYYj88I7XSFbAEj0yzlUNG4qUq+YlfaegqU1OQmDWwpo7B8WuhfwnrGvr+Ka6CkIbSY=
+	t=1706259520; cv=none; b=SslTdIbquBOz6miXEnKCyeAtPg3v3MUxlWBXkRByPCsOcZY89DyhR7dDRIkzqe1iiUldPuytOlI5NdatuaSNeSdxefWU4h9rXHQ5FoDmdtmwpoXYly0aCoipy17MvYRwOUND+Jn0zXss/U06CkyZQt5DojQ89yh8cr0uwtEhEkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706259468; c=relaxed/simple;
-	bh=wBQ4xfAfXtn1FLfmimQlpQJ+HcmxcQEmSqcJyqP6Px0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=P9wgTmxZP7ToWPVm7L2HCJTiKfbwL6bFl+m5isBrEsneHNwBc8s9Bvz4HJ+5M0M3uia9855UbydrnWddhv9MWCGkD5NXEVYMSaGXa+g9G+3KNaACdqAe4W5Y55N5lb3KF3xRWXjNT96iPaetQUkoubNrU9zuSCb0rHkcZcDEspw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de; spf=pass smtp.mailfrom=phytec.de; dkim=pass (1024-bit key) header.d=phytec.de header.i=@phytec.de header.b=PrKilppn; arc=none smtp.client-ip=91.26.50.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=phytec.de
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
-	q=dns/txt; i=@phytec.de; t=1706259457; x=1708851457;
-	h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=wBQ4xfAfXtn1FLfmimQlpQJ+HcmxcQEmSqcJyqP6Px0=;
-	b=PrKilppnBmch0CAVl61IH3pQu9sJHL61j8hreTot/ZKHNO1zTo5HjVxbTw4defKf
-	54FsbVmAz4a9b7/z8LExmMEWPgHOiHKYYhDWQu1Im/xXJosatrsSwMexIMx026o5
-	l2WWdgGpCxM7m/ho4wq9ygWBiE84hvsRt7FoQ0bhdA8=;
-X-AuditID: ac14000a-fbefe7000000290d-bd-65b37401dcb5
-Received: from berlix.phytec.de (Unknown_Domain [172.25.0.12])
-	(using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(Client did not present a certificate)
-	by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 27.F9.10509.10473B56; Fri, 26 Jan 2024 09:57:37 +0100 (CET)
-Received: from lws-moog.phytec.de (172.25.0.11) by Berlix.phytec.de
- (172.25.0.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.6; Fri, 26 Jan
- 2024 09:57:36 +0100
-From: Yannic Moog <y.moog@phytec.de>
-Date: Fri, 26 Jan 2024 09:57:26 +0100
-Subject: [PATCH RFC for upstream 4/4] arm64: defconfig: enable i.MX8MP ldb
- bridge
+	s=arc-20240116; t=1706259520; c=relaxed/simple;
+	bh=wot1yPJV87tUkM8CsZ2oaB+0f3xAXpRMa/ZMlXNaja8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=efu3cpjveEOX4Xq9sY8vsqidY2lCRpiD2wZat98+cjp9ackNbpY80XIhy61N1jqy7q/zd1N8I1Np2OidEgs2hSNhrrC3FxmitGy2XnaxeuaSeacdKa46QcOUtzKUMPD/qdoJPzC/XEMkbhpZx1pB+nY0kSUnmyMmXaLsqZ3xNLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+	id 1rTI2L-006EZR-QN; Fri, 26 Jan 2024 16:58:10 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 26 Jan 2024 16:58:22 +0800
+Date: Fri, 26 Jan 2024 16:58:22 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Danny Tsen <dtsen@linux.ibm.com>
+Cc: linux-crypto@vger.kernel.org, leitao@debian.org, nayna@linux.ibm.com,
+	appro@cryptogams.org, linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au,
+	ltcgcw@linux.vnet.ibm.com, dtsen@us.ibm.com
+Subject: Re: [PATCH] crypto:vmx: Move ppc vmx diirectory to
+ arch/powerpc/crypto.
+Message-ID: <ZbN0LufXZ6YZmn3E@gondor.apana.org.au>
+References: <20240102205856.370103-1-dtsen@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240126-wip-y-moog-phytec-de-upstream-pollux-lvds-v1-4-8ec5b48eec05@phytec.de>
-References: <20240126-wip-y-moog-phytec-de-upstream-pollux-lvds-v1-0-8ec5b48eec05@phytec.de>
-In-Reply-To: <20240126-wip-y-moog-phytec-de-upstream-pollux-lvds-v1-0-8ec5b48eec05@phytec.de>
-To: Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang
-	<quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, David Airlie
-	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Maarten Lankhorst
-	<maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor+dt@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, Shawn Guo
-	<shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix
- Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, NXP
- Linux Team <linux-imx@nxp.com>, Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>
-CC: Primoz Fiser <primoz.fiser@norik.com>, <dri-devel@lists.freedesktop.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <upstream@lists.phytec.de>, Yannic
- Moog <y.moog@phytec.de>
-X-Mailer: b4 0.12.3
-X-ClientProxiedBy: Berlix.phytec.de (172.25.0.12) To Berlix.phytec.de
- (172.25.0.12)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SbSyVYRjH3c+bx6nTnh7KTQsZ6c1LTXZ/qFattduXVOpDlumMezkjzo6j
-	JVtFp+QQqaWRnRASGo6XwxnZRDmzWPNSeclMNS/FzNuI5Oms5dvv+l//67r+Hy6eFr8xjrwy
-	SkPUUYpIV07GlDlYbfQEmirik6LdgNo+5lNoqigVoLLGDgqt1mbQ6FlLB4u656Y4NNwTgEoe
-	1zMobXSYRoaRXhbpll7SqMuUw6G86RoG3U0uYtFUfR9AbbphFiU+fEKjO40t1mjFaGBQ8WIN
-	QKPV9mjRpGdQ9Y8MFqVMeiDtwMGjDrhMXwZw43wug+uzB62xoSSZwwO9DRzWm8/goZR3FK4q
-	uInTU7QsXpirYHHlZB2F01d8cEbDDVyQ2cPhqvZ4PGNwOi0EyQ6FkUjlVaL2PnJJFq41VdKq
-	FvbazCO3W2Cc0QEbHgq+8LNueY1lvCg8p2CS+a21pRgGsKlpDEguTnCDI6NfWB3geUZwh7++
-	H5dkWyEQ9mjNfxfJhc3QnPWVkSy0sBuWm7wlmRacofFnDi3JcuEiHHsdK6G4hrqREAlthGCY
-	cNtTumkn6Dg4YXjPWSZnAcw3ultS2sKk/D5KYlHYDkc771tbdGeY2TFBW/g8rJk1Ug+AmL0u
-	T/b/PNnr8uQCugSIV5ShEUStjPBShcdpSKhXGDEA6RXsrGR1IC0HNwOKB80A8rSrndz3YCUR
-	5WGKuOtEHR2ijo0kMc1gG8+42stL7wUSUbis0JAIQlRE/a9L8TaOt0Dq/HJFQnGwb+0+F6c8
-	uwt9LzY0xE76rAR4+C/VGNnfy8auVV3UicHozMKnxcd6HQLV43WtnfGiauZNoZC4I0Hf6K/a
-	2bopWraQpY0U2bP1+vyEglOm/iFmKOlV967+UqRXsgufiNmP4uwrptvLz6Xt/eAXtIVsPXnD
-	5fAcfcCViQlX7N9Dq2MUfwBl3OZO+AIAAA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240102205856.370103-1-dtsen@linux.ibm.com>
 
-Enable the i.MX8MP LDB driver used for display support of the i.MX8MP
-LVDS interface.
+On Tue, Jan 02, 2024 at 03:58:56PM -0500, Danny Tsen wrote:
+> Relocate all crypto files in vmx driver to arch/powerpc/crypto directory
+> and remove vmx directory.
+> 
+> drivers/crypto/vmx/aes.c rename to arch/powerpc/crypto/aes.c
+> drivers/crypto/vmx/aes_cbc.c rename to arch/powerpc/crypto/aes_cbc.c
+> drivers/crypto/vmx/aes_ctr.c rename to arch/powerpc/crypto/aes_ctr.c
+> drivers/crypto/vmx/aes_xts.c rename to arch/powerpc/crypto/aes_xts.c
+> drivers/crypto/vmx/aesp8-ppc.h rename to arch/powerpc/crypto/aesp8-ppc.h
+> drivers/crypto/vmx/aesp8-ppc.pl rename to arch/powerpc/crypto/aesp8-ppc.pl
+> drivers/crypto/vmx/ghash.c rename to arch/powerpc/crypto/ghash.c
+> drivers/crypto/vmx/ghashp8-ppc.pl rename to arch/powerpc/crypto/ghashp8-ppc.pl
+> drivers/crypto/vmx/vmx.c rename to arch/powerpc/crypto/vmx.c
+> 
+> deleted files:
+> drivers/crypto/vmx/Makefile
+> drivers/crypto/vmx/Kconfig
+> drivers/crypto/vmx/ppc-xlate.pl
+> 
+> This patch has been tested has passed the selftest.  The patch is also tested with
+> CONFIG_CRYPTO_MANAGER_EXTRA_TESTS enabled.
+> 
+> Signed-off-by: Danny Tsen <dtsen@linux.ibm.com>
+> ---
+>  arch/powerpc/crypto/Kconfig                   |  20 ++
+>  arch/powerpc/crypto/Makefile                  |  20 +-
+>  .../crypto/vmx => arch/powerpc/crypto}/aes.c  |   0
+>  .../vmx => arch/powerpc/crypto}/aes_cbc.c     |   0
+>  .../vmx => arch/powerpc/crypto}/aes_ctr.c     |   0
+>  .../vmx => arch/powerpc/crypto}/aes_xts.c     |   0
+>  .../vmx => arch/powerpc/crypto}/aesp8-ppc.h   |   0
+>  .../vmx => arch/powerpc/crypto}/aesp8-ppc.pl  |   0
+>  .../vmx => arch/powerpc/crypto}/ghash.c       |   0
+>  .../powerpc/crypto}/ghashp8-ppc.pl            |   0
+>  .../crypto/vmx => arch/powerpc/crypto}/vmx.c  |   0
+>  drivers/crypto/Kconfig                        |  14 +-
+>  drivers/crypto/Makefile                       |   2 +-
+>  drivers/crypto/vmx/.gitignore                 |   3 -
+>  drivers/crypto/vmx/Kconfig                    |  14 --
+>  drivers/crypto/vmx/Makefile                   |  23 --
+>  drivers/crypto/vmx/ppc-xlate.pl               | 231 ------------------
+>  17 files changed, 46 insertions(+), 281 deletions(-)
+>  rename {drivers/crypto/vmx => arch/powerpc/crypto}/aes.c (100%)
+>  rename {drivers/crypto/vmx => arch/powerpc/crypto}/aes_cbc.c (100%)
+>  rename {drivers/crypto/vmx => arch/powerpc/crypto}/aes_ctr.c (100%)
+>  rename {drivers/crypto/vmx => arch/powerpc/crypto}/aes_xts.c (100%)
+>  rename {drivers/crypto/vmx => arch/powerpc/crypto}/aesp8-ppc.h (100%)
+>  rename {drivers/crypto/vmx => arch/powerpc/crypto}/aesp8-ppc.pl (100%)
+>  rename {drivers/crypto/vmx => arch/powerpc/crypto}/ghash.c (100%)
+>  rename {drivers/crypto/vmx => arch/powerpc/crypto}/ghashp8-ppc.pl (100%)
+>  rename {drivers/crypto/vmx => arch/powerpc/crypto}/vmx.c (100%)
+>  delete mode 100644 drivers/crypto/vmx/.gitignore
+>  delete mode 100644 drivers/crypto/vmx/Kconfig
+>  delete mode 100644 drivers/crypto/vmx/Makefile
+>  delete mode 100644 drivers/crypto/vmx/ppc-xlate.pl
 
-Signed-off-by: Yannic Moog <y.moog@phytec.de>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index b60aa1f89343..acd71548cf29 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -850,6 +850,7 @@ CONFIG_DRM_PANEL_RAYDIUM_RM67191=m
- CONFIG_DRM_PANEL_SITRONIX_ST7703=m
- CONFIG_DRM_PANEL_TRULY_NT35597_WQXGA=m
- CONFIG_DRM_PANEL_VISIONOX_VTDR6130=m
-+CONFIG_DRM_FSL_LDB=m
- CONFIG_DRM_LONTIUM_LT8912B=m
- CONFIG_DRM_LONTIUM_LT9611=m
- CONFIG_DRM_LONTIUM_LT9611UXC=m
-
+Patch applied.  Thanks.
 -- 
-2.34.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
