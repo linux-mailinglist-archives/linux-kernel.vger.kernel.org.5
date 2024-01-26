@@ -1,83 +1,126 @@
-Return-Path: <linux-kernel+bounces-39674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 041BD83D4E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:51:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0727583D4EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:52:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F2F6287911
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 08:51:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 357921C24BDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 08:52:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26F4F208C5;
-	Fri, 26 Jan 2024 06:53:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C61A720B3B;
+	Fri, 26 Jan 2024 06:54:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="eGjdKbwF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gC6Q9Voz"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12B5B18E29
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 06:53:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B466520B3D
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 06:54:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706252021; cv=none; b=t1Hw3PNfzNP6K4aRHMs9ePb3bHmINjuiE2LXEjeVUA68FtmAWJPnGmN/z0TcLskfd9JqeFIr5566qs2Pgp+Sz2KwegRvSU+WgoT/PQ0JH3qyvYSKwrf/Ttjzzq5m29tyDiqB71W+xzj6mF7Xr8uX64+ycDPOEMdO45KXrLY+xQo=
+	t=1706252082; cv=none; b=L23d/pue06UNk18Ok9MQply1hlCPTcD7tCfiqWCU68Yw/a4KDYG+1jbQvt2cFlTn9vg6Ee5UL329txTeGyCalG52wyq6ofLq3JpOjjYgXeBX/HZ2qumK0BrBp4CLchMKDSSHeuEa5X+Xc1OeCIm1HoE8Mi/zQ71QapBCwRRqts8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706252021; c=relaxed/simple;
-	bh=5Yl9F+CzoZAtWpDOn5PuDO6yaUyXOId5gbApjRdJtCg=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=QQ0b5mRb5IUKxSIiBq+nlXiYp+KPDGgLKpJF4BBLlqcOtSWi32vfbH9PKCKJ9Wn+9HEeBz5VBOyalDMOiJkKpzAGhkXoCn5SYTZDZBeOwvJzlymWM9VAx/CsrpNzjFxq6F+wYvYBVr30D6iUs9RIdvxtF1Sb4K5Y2Wg3y4gjk9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=eGjdKbwF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8ACD2C433F1;
-	Fri, 26 Jan 2024 06:53:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1706252020;
-	bh=5Yl9F+CzoZAtWpDOn5PuDO6yaUyXOId5gbApjRdJtCg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=eGjdKbwFc9UxRkSyUUzwJbhtW8McrA527Ae/OLxda04DU7du3mvcIO2ZW+Xm7oOIM
-	 8dlvGytlqESnRE+vm5e4nUA918xJjIt0zcKBrYpjmhzP7gV5+yZgOuWGAbBW3BDq5/
-	 nvZf1i1uzI4LLde0Mu4t7fkFM/Jw8AD5Tjv/Yxd4=
-Date: Thu, 25 Jan 2024 22:53:36 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: Jiexun Wang <wangjiexun@tinylab.org>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org
-Subject: Re: [PATCH] mm/madvise: don't forget to leave lazy MMU mode in
- madvise_cold_or_pageout_pte_range()
-Message-Id: <20240125225336.6a444c01d9d9812a23a6890b@linux-foundation.org>
-In-Reply-To: <20240126032608.355899-1-senozhatsky@chromium.org>
-References: <20230921174101.8e6271422a857af5414ce0a0@linux-foundation.org>
-	<20240126032608.355899-1-senozhatsky@chromium.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706252082; c=relaxed/simple;
+	bh=uoG58qsUIuPrJgiWfC5zhkPTEKjA9Xh2r2kKMwvbji8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WtKTu3A47L3DIc7JxMNa9Cz/7fLSGut/mVqa+5jnYD64Qpv2bdhsspk2pKGJj2UGZTK8ScWQ77eFKTZ3iCISreglyHn+TJX9vtp+DET8bbd0H9Z/lvGhNw9b/nrjGkhjC9ZV/b9HbUVX307wJwTf6Lv3GIwD925peCQo+mKAYqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gC6Q9Voz; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706252079;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ixVxFEqIR9qHljjoQEl4g5MmPcyEPhBU2r2mCNibjNE=;
+	b=gC6Q9VozXpQnegqM6IIoqkrysv89ishxXZnuBzeJ8e5tZZACBb+iO5WkiN0EZtWwi6aIUI
+	qOu+/L4ozcdWutimfkB329GnRWdXJr4FMj62lUKU6S459IdCq1/yGYJS5j5zYo1Ki09GhY
+	6UFeQSVJq1iv6I+8q/+/ze1TZj+Ge9I=
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
+ [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-624-MfyQ4f7dMOu5aN1W_1VUaQ-1; Fri, 26 Jan 2024 01:54:38 -0500
+X-MC-Unique: MfyQ4f7dMOu5aN1W_1VUaQ-1
+Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-6ddda3da46dso226924b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 22:54:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706252077; x=1706856877;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ixVxFEqIR9qHljjoQEl4g5MmPcyEPhBU2r2mCNibjNE=;
+        b=hs0cbUSoHa71GuUM3/uHkJqXg1YQb2fXIiIosVTjdJz7FgJNv/60+sU6oYIJXS+TuX
+         lCzamJVwftztVlLG+xViGfmlN8I6S8b1tp+KpwYRpYXbMtsGXDhYmPR6MQrV4uC5/YZE
+         8cmKV7nt7ouoOE6pVbs5IjVIC/3d+8s35DzIs8vPOC3yDWEssYWZc7TRxByMPFiDQkQe
+         PE0K0ou3H7j4/HqnOCSRuV3n8jApHWswCbL1gNvfpytW09GGZ5HlOLg4iMdXHXPjLKrG
+         W61NiJBhvvs2ARiUxFZmVV5k0mklZBxFOYGttKPHZaCaYyk2OXv3zvajkB7SzEqPL8QS
+         LKxA==
+X-Gm-Message-State: AOJu0YzmjSH9to3KXGUbeZU/gNSMcjSDNLo7dv5hlpLJYE2rvxDEmaQG
+	fO6yDh7hlp0gjGgtzKV0YrrHIDohFqDeChqBFFIpGf/VpURf+oKdGIk5wAct7vQZM8NuFGOKKJt
+	xImultzAxva/KfRdrXNcjU5MWUeOzMj/cRKGQtQ9HWE0ShFQJW9Rc9/5ZprXC2zsagww4nieg4y
+	c5n1aBzU4Cvc3uDcX4vEhJALs9lAt9BWOxACA7
+X-Received: by 2002:a05:6a00:3d4b:b0:6db:af73:bd9a with SMTP id lp11-20020a056a003d4b00b006dbaf73bd9amr779063pfb.30.1706252076905;
+        Thu, 25 Jan 2024 22:54:36 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEkvjyZRZHVXgRsEU8lr2R5Dm/blrCJkBEkj8VqTTJXI87y6srCsSTHexV363ricMY1HODnu3VUd1JhtQ3tYbM=
+X-Received: by 2002:a05:6a00:3d4b:b0:6db:af73:bd9a with SMTP id
+ lp11-20020a056a003d4b00b006dbaf73bd9amr779048pfb.30.1706252076625; Thu, 25
+ Jan 2024 22:54:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20240124091421.1261579-1-yukuai3@huawei.com> <20240124091421.1261579-6-yukuai3@huawei.com>
+ <CALTww291wiYYMWuqUdDf1t7cKkHFs9gGQSRw+iPhUCsNv-Y6yg@mail.gmail.com> <CAPhsuW4kauNB8jAsXYjRohCBMDvY15y0CzzWYqzGvNsqAJ59jQ@mail.gmail.com>
+In-Reply-To: <CAPhsuW4kauNB8jAsXYjRohCBMDvY15y0CzzWYqzGvNsqAJ59jQ@mail.gmail.com>
+From: Xiao Ni <xni@redhat.com>
+Date: Fri, 26 Jan 2024 14:54:25 +0800
+Message-ID: <CALTww2_f_orkTXPDtA4AJsbX-UmwhAb-AF_tujH4Gw3cX3ObWg@mail.gmail.com>
+Subject: Re: [PATCH v2 05/11] md: export helpers to stop sync_thread
+To: Song Liu <song@kernel.org>
+Cc: Yu Kuai <yukuai3@huawei.com>, agk@redhat.com, snitzer@kernel.org, 
+	mpatocka@redhat.com, dm-devel@lists.linux.dev, jbrassow@f14.redhat.com, 
+	neilb@suse.de, heinzm@redhat.com, shli@fb.com, akpm@osdl.org, 
+	linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org, 
+	yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 26 Jan 2024 12:25:48 +0900 Sergey Senozhatsky <senozhatsky@chromium.org> wrote:
+On Fri, Jan 26, 2024 at 8:14=E2=80=AFAM Song Liu <song@kernel.org> wrote:
+>
+> Hi Xiao,
+>
+> On Thu, Jan 25, 2024 at 5:33=E2=80=AFAM Xiao Ni <xni@redhat.com> wrote:
+> >
+> > Hi all
+> >
+> > I build the kernel 6.7.0-rc8 with this patch set. The lvm2 regression
+> > test result:
+>
+> I believe the patchset is built on top of upstream (6.8-rc1). There are
+> quite some md and dm changes between 6.7-rc8 and 6.8-rc1. Could
+> you please rerun the test on top of 6.8-rc1? Once we identify the right
+> set of fixes, we will see which ones to back port to older kernels.
+>
+> Thanks,
+> Song
 
-> We need to leave lazy MMU mode before unlocking.
+Hi all
 
-What might be the userspace-visible effects of this?
+I tried to run tests on 6.8-rc1, the failure number increases to 72.
 
-> Fixes: b2f557a21bc8 ("mm/madvise: add cond_resched() in madvise_cold_or_pageout_pte_range()"
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+And I ran the tests on 6.6, there are only 4 failed cases
+###       failed: [ndev-vanilla] shell/lvconvert-cache-abort.sh
+###       failed: [ndev-vanilla] shell/lvresize-fs-crypt.sh
+###       failed: [ndev-vanilla] shell/pvck-dump.sh
+###       failed: [ndev-vanilla] shell/select-report.sh
 
-I'll add a cc:stable.
-
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -451,6 +451,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->  		if (++batch_count == SWAP_CLUSTER_MAX) {
->  			batch_count = 0;
->  			if (need_resched()) {
-> +				arch_leave_lazy_mmu_mode();
->  				pte_unmap_unlock(start_pte, ptl);
->  				cond_resched();
->  				goto restart;
+Best Regards
+Xiao
 
 
