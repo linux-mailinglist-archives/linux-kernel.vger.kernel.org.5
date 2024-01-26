@@ -1,130 +1,106 @@
-Return-Path: <linux-kernel+bounces-40488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 459C683E18F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:30:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B305083E190
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 19:30:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3A02B24F87
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:30:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5ED81C20C0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 18:30:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 718801EF1E;
-	Fri, 26 Jan 2024 18:30:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97C2E21A02;
+	Fri, 26 Jan 2024 18:30:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="WlvmUiCR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="f+8TKxjx"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 999D81EEEB;
-	Fri, 26 Jan 2024 18:30:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87DD821370
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 18:30:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706293808; cv=none; b=Lv/6fkfrB6w4C+TpFba3iV26VCKvJSpvHt/sn64dDtxvcOQss5g3+l3ifcVGf+tP12vMz4Zy05jVJ1DZhJXX8XUsiklBpmMAXWHhhjAVrbdygGc9xzt6JxB4uYZlqIPPUd4OOGKiAyALHIKinM4ZynqgqRjJ3Gg1Ocumz1sL7Zo=
+	t=1706293816; cv=none; b=WR5wx6rRHPZp70aP2lGD7JGaoIOpU8I4PrunWdJU2bUFKHg7gb4BsXjTcitV5IVcIlPOadM2swZar6J6iYezmCdEsUCM+gHBCZB5NMcYlaI7giwjJ21ucWmDpoEcR5tNnsZtq7XU2m4LRjiQqpPBQBdBofb91gXfnA42WhCOe+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706293808; c=relaxed/simple;
-	bh=r1iPO4/p+KdP7aPbKTayCFQZhZLES9QOQB3w1XgWTXw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WngqTGemjKwVQHw+KovQo5PgC6lAi9PC5cHXE8Qc5iYtC5X06KgH7eLM+ts9gAdyRLrvufX7NRTNbSSFWZmQqrFJ96NUp5ky7CfEqyfhBnaBuFGTXs7kHtUL+tjifu1YVuISKb+N/HXGdzA9DrEESCcylFPk1hz5P14jtGphnx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=WlvmUiCR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B7F4C43390;
-	Fri, 26 Jan 2024 18:30:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1706293808;
-	bh=r1iPO4/p+KdP7aPbKTayCFQZhZLES9QOQB3w1XgWTXw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WlvmUiCRvLDQ2vd/wm+2tWCovlZu3J+4cFGiL23t0nJUYLOkJYwIzoy98o6X5hHH0
-	 ZOwzZeFIcwm9E4vpA3n663/CykU4pJn+2Ke3TpGkpbLm8cCcGe7rJeguPJ4XP5z279
-	 A0+gdwXU7EsOgDP8rueGyEhcusDL7z/YjIL+5Ing=
-Date: Fri, 26 Jan 2024 10:30:07 -0800
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Cc: Abhishek Pandit-Subedi <abhishekpandit@google.com>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	linux-usb@vger.kernel.org, jthies@google.com, pmalani@chromium.org,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Rajaram Regupathy <rajaram.regupathy@intel.com>,
-	Saranya Gopal <saranya.gopal@intel.com>,
+	s=arc-20240116; t=1706293816; c=relaxed/simple;
+	bh=Um9Q+idAQFyVGXxZnVllLp3VYvAW/IRbdpgmYA1ELa8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=s+f9ijV0srYqD0XkAjxjZ5FdxEAWGWcKnmB1wUEnHjFKKUifJI+jw4aI6+WVg9LtGdXbs9ibNWrxSapS8BZw0ZrbaWHnN6TYoSGDgjEqv+YQrqKqdnxPVr1FRryNkVEYNrBVPfgc0P8kAhZ9M1ms/So638CUfDApytvganU8J9A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=f+8TKxjx; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d71c844811so4875915ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:30:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706293815; x=1706898615; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w83qDmL8zuueuZtZRKkzHbmhJ/FdjFVL385VMEG2h+c=;
+        b=f+8TKxjxoqAeD2M9NOKsTMOsOhwQ7PWbI1Y0z+eVvFUkXzNIGlpaPU0wBtU/D8iWie
+         LYS3PRWUj/3HPuSVPmPePVYvgdvfHRQjyhJGFFGhe6tE2FCBhyTxzkXFOooSIOclWUhV
+         3HUrdsQPf0hFKZmfUBnv1BtswFdIGm9YDmOys=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706293815; x=1706898615;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=w83qDmL8zuueuZtZRKkzHbmhJ/FdjFVL385VMEG2h+c=;
+        b=Hj+DeW8cNWozZOZ/9pEkLDpKaz+rl0+D2HpbbTNiVe0ZjQZ30t/b9qq2z0Ix3LSbzK
+         UY79oR+atNRPd/5Z6XZOwfpmZD8gueTFgqqzrR0ZNXhTWjm7vj2BYkk9L2bT6LCaldfl
+         zA1UTL9E4kZEDyrIV9zYj9XRe9I0jQiJHBeO1X4sXuNUAWFV9bchUnQMjPg27ZlHZZvW
+         NBYvjsLldXlZkx07ug83tCO4Cssx3JV+g8Vrrqh8OVSCCT2LI88bWC3ly4M6Yrx3h67L
+         pzKk5opfNYkS2iYCBILDc54gqqw/VA75a/QOhp5Ea/lAT7zSPFd53iW6qtNhdXDusUzR
+         fYkg==
+X-Gm-Message-State: AOJu0Yzi2f955QyZRExAmMsU3wEOa1dSFMb4vrrEl9kLcfXbJv5L8/r2
+	+Rbk2ED942RQV31Z8SLakMv509UW5+2opFpf3vlwAqyb3jEtggcGyos7d62+bg==
+X-Google-Smtp-Source: AGHT+IGB4yDHqGeAdw+c4vvfPkk4mg1puukugu3tppHOgR9r29nfa83xEsQWHnsDcbn1WzeWunYpOA==
+X-Received: by 2002:a17:902:eb15:b0:1d4:20ed:ec46 with SMTP id l21-20020a170902eb1500b001d420edec46mr197947plb.104.1706293814836;
+        Fri, 26 Jan 2024 10:30:14 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id y5-20020a170902ed4500b001d7633c36efsm1233825plb.208.2024.01.26.10.30.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 10:30:14 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: Douglas Anderson <dianders@chromium.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] usb: typec: ucsi: Update connector cap and status
-Message-ID: <2024012612-giggling-diabetes-3a74@gregkh>
-References: <20240125004456.575891-1-abhishekpandit@google.com>
- <20240124164443.v2.2.I3d909e3c9a200621e3034686f068a3307945fd87@changeid>
- <2024012512-haphazard-mobster-f566@gregkh>
- <CANFp7mWzA5df9iFpCWFRpXuOP06yDmBehYDYNACjrW2fPvp_Ow@mail.gmail.com>
- <2024012555-nuclear-chummy-6079@gregkh>
- <CANFp7mVPahm+6MjD_+MWMNUz=RViNh777h=Q2dW0UVVDK6dA0A@mail.gmail.com>
+Subject: Re: [PATCH] lkdtm/bugs: In lkdtm_HUNG_TASK() use BUG(), not BUG_ON(1)
+Date: Fri, 26 Jan 2024 10:30:09 -0800
+Message-Id: <170629380800.1588815.1983620062611427413.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240126072852.1.Ib065e528a8620474a72f15baa2feead1f3d89865@changeid>
+References: <20240126072852.1.Ib065e528a8620474a72f15baa2feead1f3d89865@changeid>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANFp7mVPahm+6MjD_+MWMNUz=RViNh777h=Q2dW0UVVDK6dA0A@mail.gmail.com>
 
-On Fri, Jan 26, 2024 at 10:08:16AM -0800, Abhishek Pandit-Subedi wrote:
-> On Thu, Jan 25, 2024 at 5:50 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Thu, Jan 25, 2024 at 04:21:47PM -0800, Abhishek Pandit-Subedi wrote:
-> > > On Thu, Jan 25, 2024 at 3:03 PM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Wed, Jan 24, 2024 at 04:44:53PM -0800, Abhishek Pandit-Subedi wrote:
-> > > > > diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucsi.h
-> > > > > index bec920fa6b8a..94b373378f63 100644
-> > > > > --- a/drivers/usb/typec/ucsi/ucsi.h
-> > > > > +++ b/drivers/usb/typec/ucsi/ucsi.h
-> > > > > @@ -3,6 +3,7 @@
-> > > > >  #ifndef __DRIVER_USB_TYPEC_UCSI_H
-> > > > >  #define __DRIVER_USB_TYPEC_UCSI_H
-> > > > >
-> > > > > +#include <asm-generic/unaligned.h>
-> > > >
-> > > > Do you really need to include a asm/ include file?  This feels very
-> > > > wrong.
-> > >
-> > > I didn't see any header in include/linux that already had these
-> > > unaligned access functions so I opted to include
-> > > asm-generic/unaligned.h. Is there a reason not to use an asm/ include
-> > > file?
-> >
-> > Yes, you should never need to include a asm/ file, unless you are
-> > arch-specific code.
-> >
-> > But the big issue is that you don't really need this, right?
+On Fri, 26 Jan 2024 07:28:53 -0800, Douglas Anderson wrote:
+> In commit edb6538da3df ("lkdtm/bugs: Adjust lkdtm_HUNG_TASK() to avoid
+> tail call optimization") we marked lkdtm_HUNG_TASK() as
+> __noreturn. The compiler gets unhappy if it thinks a __noreturn
+> function might return, so there's a BUG_ON(1) at the end. Any human
+> can see that the function won't return and the compiler can figure
+> that out too. Except when it can't.
 > 
-> The UCSI struct definitions have lots of unaligned bit ranges (and I
-> will be refactoring <linux/bitfield.h> to support this but that's
-> coming later). As an example, the GET_CONNECTOR_STATUS data structure
-> has unaligned fields from bit 88-145.
-> Rather than define my own macro, it was suggested I use the
-> get_unaligned_le32 functions (see
-> https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/5195032/3..4/drivers/usb/typec/ucsi/ucsi.h#b183).
-> 
-> I did a quick ripgrep on the drivers folder -- it looks like the "You
-> should never need to include a asm/ file unless you are arch specific"
-> isn't being followed for this file:
->   $ (cd drivers && rg -g '*.h' "unaligned\.h" -l) | wc -l
->   22
-> 
-> The unaligned access functions (get_unaligned_le16,
-> get_unaligned_le32, etc) are really useful and widely used. Maybe they
-> SHOULD be exposed from a <linux/unaligned.h> since they are so useful?
-> I can send a follow-on patch that creates <linux/unaligned.h> (that
-> simply just includes <asm/unaligned.h>) and moves all includes of
-> <asm/unaligned.h> outside of "arch" to the linux header instead (this
-> will also create a checkpatch warning now as you are expecting).
+> [...]
 
-This is being worked on, see:
-	https://lore.kernel.org/r/20231212024920.GG1674809@ZenIV
+Applied to for-next/hardening, thanks!
 
-thanks,
+[1/1] lkdtm/bugs: In lkdtm_HUNG_TASK() use BUG(), not BUG_ON(1)
+      https://git.kernel.org/kees/c/34b82a2fb747
 
-greg k-h
+Take care,
+
+-- 
+Kees Cook
+
 
