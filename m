@@ -1,79 +1,128 @@
-Return-Path: <linux-kernel+bounces-40338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFE3083DEBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:30:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6227B83DE94
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:23:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BBF71C23AA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:30:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 182841F25698
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:23:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81D611DDF1;
-	Fri, 26 Jan 2024 16:30:12 +0000 (UTC)
-Received: from shin.romanrm.net (shin.romanrm.net [146.185.199.61])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1D821DA40;
+	Fri, 26 Jan 2024 16:23:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fEkTsWGm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC53D1D69B;
-	Fri, 26 Jan 2024 16:30:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=146.185.199.61
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35A231CD3F;
+	Fri, 26 Jan 2024 16:23:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706286612; cv=none; b=YcieeiZOtyp4Ygyx5qEDXaQxxvHgAm8C0XBj1EyZhptAnzCfKVg/e/w+7u6hAKtnngGWQW7Rzj3bE3B2t9iY3u88tL+daaUnpnCfnxaYvYoJTOPfZuFvJpkIwEqPpPB4ScbbzXuWlv0+obMSnxa4CG/kw9YD9aaVlwCE+LSqCE8=
+	t=1706286199; cv=none; b=fkpxCt6ZMbMfdTfQBW6ORKApV4y9LnkLq+p2JQ0xV7Z8RWaSg0Q/Hrt76rcge7Gh4RzSlp1SavikUVH3j7vPXyPwETml8Fnjf8PsBa6e62ZUgxyjr7Eus3L3qpk8ia/CyfEJxDvKMRt0i+9EK274nbzfUtW3VBYHefzDxMunJuk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706286612; c=relaxed/simple;
-	bh=juwBFU+dDgaSzOGfV33Nf3WE1fOrDnyv59tl7BpARXk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jepdFjIo0swIv1i74QHaeI/N8K7Ti2mIXVaZDcOXuynI5DoPET6ueVJwxisxiTxrmoBz27y91A0zaCjqY6YuYZZvCqqMVqOg6pCTmrH8YWufsb4LMocAwuvcexdsgy6CNofasNFYGWfqhrIbkEei2MGvwwB60qI/oiMS4RMXXg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=romanrm.net; spf=pass smtp.mailfrom=romanrm.net; arc=none smtp.client-ip=146.185.199.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=romanrm.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=romanrm.net
-Received: from nvm (unknown [IPv6:fd39::4a:3cff:fe57:d6b5])
-	by shin.romanrm.net (Postfix) with SMTP id 92F0040BAA;
-	Fri, 26 Jan 2024 16:21:55 +0000 (UTC)
-Date: Fri, 26 Jan 2024 21:21:50 +0500
-From: Roman Mamedov <rm@romanrm.net>
-To: Carlos Carvalho <carlos@fisica.ufpr.br>
-Cc: Dan Moulding <dan@danm.net>, junxiao.bi@oracle.com,
- gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- linux-raid@vger.kernel.org, regressions@lists.linux.dev, song@kernel.org,
- stable@vger.kernel.org, yukuai1@huaweicloud.com
-Subject: Re: [REGRESSION] 6.7.1: md: raid5 hang and unresponsive system;
- successfully bisected
-Message-ID: <20240126212150.4b56ae05@nvm>
-In-Reply-To: <ZbMnZnvyIyoWeIro@fisica.ufpr.br>
-References: <2ef7d741-3df8-402a-967f-53ec77c73e2c@oracle.com>
-	<20240125203130.28187-1-dan@danm.net>
-	<ZbMnZnvyIyoWeIro@fisica.ufpr.br>
-X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706286199; c=relaxed/simple;
+	bh=2JCXgq32qIglC6mO72WRbjPvok3iIvPLQe2ZqDXoq+4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ACJ4xEDku3bvSGTSw2JZKg6ICFGNRqGXbXlqj0sw14WqDgvT6lr7qE8kUzM4oZA96by1+Nn55tgOhpoUky2FEso6GWIB71FT/CZB/A70Mg2NKinkTCN0NAJvEOLABOLXlzls/oKTBM86zzCFh9R1CPz4UhI8Chu+1Ik/8edcD/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fEkTsWGm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A10D0C433F1;
+	Fri, 26 Jan 2024 16:23:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706286198;
+	bh=2JCXgq32qIglC6mO72WRbjPvok3iIvPLQe2ZqDXoq+4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fEkTsWGm+pTv3JpEFsZcSKKxEWVnImncAwsQyoI3Ld7l8SqlSPkkztT/6mu8pqEam
+	 vpLLbGXpWSpvxubuMPdi5uAwFg5PAsQpDJ2RYnDpXQb18Lkdozxrjscnx2eqEOnHm8
+	 N3YGwkvhkqmRoM4YyAG0hwlgvuEX6Cw1xuO9WWStHUSB+R76n524qZSpZ52mqSDMbt
+	 qAmd1GVQf7jgU3LVhcwQgru0P+PSyZS1HKGCkz9QcV41zFIh+g6izksdFp3d+SIS53
+	 oB319QBS/gebFb4F/ER1A13hzFoCVoHbdFA3lczGeOkC/6HOiU0ADFoxFjTG9zgJ8u
+	 8cbQygMkAxiWg==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rTOzK-000000007rm-46Kw;
+	Fri, 26 Jan 2024 17:23:31 +0100
+Date: Fri, 26 Jan 2024 17:23:30 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc: Daniel Thompson <daniel.thompson@linaro.org>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+	Jiri Kosina <jikos@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	linux-arm-msm@vger.kernel.org, linux-input@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Konrad Dybcio <konrad.dybcio@somainline.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: sc8280xp-x13s: Fix/enable
+ touchscreen
+Message-ID: <ZbPcgqr9gBByqV7Q@hovoldconsulting.com>
+References: <20240125-x13s-touchscreen-v1-0-ab8c882def9c@quicinc.com>
+ <20240125-x13s-touchscreen-v1-2-ab8c882def9c@quicinc.com>
+ <ZbNpdaSyFS9tYrkd@hovoldconsulting.com>
+ <20240126130232.GA5506@aspen.lan>
+ <ZbPCJv7HW8OQzPMT@hovoldconsulting.com>
+ <20240126145346.GN2936378@hu-bjorande-lv.qualcomm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240126145346.GN2936378@hu-bjorande-lv.qualcomm.com>
 
-On Fri, 26 Jan 2024 00:30:46 -0300
-Carlos Carvalho <carlos@fisica.ufpr.br> wrote:
+On Fri, Jan 26, 2024 at 06:53:46AM -0800, Bjorn Andersson wrote:
+> On Fri, Jan 26, 2024 at 03:31:02PM +0100, Johan Hovold wrote:
+> > On Fri, Jan 26, 2024 at 01:02:32PM +0000, Daniel Thompson wrote:
 
-> Dan Moulding (dan@danm.net) wrote on Thu, Jan 25, 2024 at 05:31:30PM -03:
-> > I then created an ext4 file system on the "data" volume, mounted it, and used
-> > "dd" to copy 1MiB blocks from /dev/urandom to a file on the "data" file
-> > system, and just let it run. Eventually "dd" hangs and top shows that
-> > md0_raid5 is using 100% CPU.
+> > > In short it looks like the delays make the difference and, even a short
+> > > delay, can fix the problem.
+> > 
+> > Right, but since the suppliers are left enabled by the bootloader (and
+> > never disabled by the kernel), that only begs the question of why this
+> > makes a difference.
 > 
-> It's known that ext4 has these symptoms with parity raid. To make sure it's a
-> raid problem you should try another filesystem or remount it with stripe=0.
+> You're right, the supply is kept on by other things, so this isn't the
+> problem.
+> 
+> > Without the delay, the other HID devices are probing (successfully)
+> > slightly before, but essentially in parallel with the touchscreen while
+> > using the same resources. Is that causing trouble somehow?
+> 
+> The difference to those other HID devices is GPIO 99 - the reset pin,
+> which is configured pull down input from boot - i.e. the chip is held in
+> reset.
+> 
+> When the HID device is being probed, pinctrl applies &ts0_default starts
+> driving it high, bringing the device out of reset. But insufficient time
+> is given for the chip to come up so the I2C read fails.
 
-If Ext4 wouldn't work properly on parity RAID, then it is a bug that should be
-tracked down and fixed, not worked around by using a different FS. I am in
-disbelief you are seriously suggesting that, and to be honest really doubt
-there is any such high-profile "known" issue that stays unfixed and is just
-commonly worked around.
+Ah, that's it.
 
--- 
-With respect,
-Roman
+You should drop that 'output-high' from the pin config as part of this
+patch to avoid toggling the reset line twice at boot.
+
+Looks like we have the same problem on the CRD as well. There the
+touchscreen still works, possibly because it has been enabled by the
+boot firmware or simply because that touchscreen can handle a shorter
+delay.
+
+Where exactly did you find those delay values in the ACPI tables? I
+couldn't seem to find anything in the decompiled DSDT.
+
+> If you later try to probe again, 200ms has elapsed since the reset was
+> deasserted (driven high).
+
+Right.
+
+Johan
 
