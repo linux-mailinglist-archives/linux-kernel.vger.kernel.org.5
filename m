@@ -1,113 +1,180 @@
-Return-Path: <linux-kernel+bounces-39979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6112783D807
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:26:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DC58A83D80E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:27:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14F702835E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:26:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92ABE29500D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:27:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29955604B6;
-	Fri, 26 Jan 2024 10:01:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EBD81758E;
+	Fri, 26 Jan 2024 10:05:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="b4fW+oHU"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ef9/3oji"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36FB612B92;
-	Fri, 26 Jan 2024 10:01:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35E2D17575
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:05:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706263274; cv=none; b=Yz3BAfFAWMQTGZRkZX4ojv58JLSCTxAYMkaubqH7ZSCMFyFdNtjt/XVhykmW8tmaMQ6Kme+ZfXWhmv5GTMQH8UZhoszHlwZR/wA/eeWi/Xchmu7/XsdGR1bhmWLc9HPCF0/vGr8ziaL+joxzXDlkmDXz0Ni07+gtL3cLQvKbOPk=
+	t=1706263524; cv=none; b=EBjc7v4FQil4ApIc3BH02bTfZgwOd547/mg0G1laTgywd87GF7DuIDl2WCmUhix3zcnx0loH+ye1AvsIN0sYrdtI0YpcJae1PmRCRy1UFHc5HDi2rraGG0zR1z6ouzUjjBRGsMmlxcedw+QMbJYwvbPm6NAKNVkU8D2wHETmwbA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706263274; c=relaxed/simple;
-	bh=eECiJReyNwvw/rXT1QSmi5UWyyWO8uENzGjBer4GzuQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t/NADbQyihaN4vwaW+EDLHJWeenyqj6RspwX0zFxDtQv6v8fJg1wvt355qqizA5OXonE81abrcYwbmdV8KEY1tpNJGDGX22qslZzt23G7cVgu8oMxNeJyB+xw/9HdI+m+YSXOfhFm/aLSkiQO3miXiMn2lUVf8UkK57bUqEj/QM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=b4fW+oHU; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 39B3B40E01BB;
-	Fri, 26 Jan 2024 10:01:08 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id eTt1M-NrNSY1; Fri, 26 Jan 2024 10:01:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706263265; bh=Hj9EgFz52qo2AnW945Th7wBHJu1vxTENf6ob5caQoc4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=b4fW+oHUAd+zOJPLNRrv3SaUoakkduIucAMrU5NKfUCvweQt9A9yZRB/4zioVY/6o
-	 MeYg+dD4Eu4uhK+ua1URvNgaJe/p5JjBL25wq4vlysTjlca1meCB9E/9TX0/yxMY2t
-	 N5G2Tld+W4QaBVFU9WGlnOIh+T2uQMFud6XfLt1zfIhiOV+Vy4Y2VSvTSdWYi8BHxz
-	 pTNhqXo/FqbNgDMb8titja9gvv2ATHyK9+JMVKJQxkabGGM5sUU4O0S9T/FOil21tU
-	 557BG/MO4BJV7jSDdhJSed5HKN38eEQGrNlxWC07+tkhO1lovbzUK44jVH7JYLhJYE
-	 jIuujPfK+mQSlb+X+WQ+vGbiXX0/ho4drWuFHYqg7P2V2Hg0K+VpiT+ancq3P6qtpq
-	 6ErAzZhPBLb/E1DBJvhgKw5FtOkgGlBCC9yqeXOYe64rTZ8A4tJX0W12S714BgMNpG
-	 HncIG5snKwRBywYZv/c+eKHY+V93k4n4wVGyWer9WokT5s+tqBXByWEA5gUdeffngA
-	 O+M1ov3sRxMnookvuYR0pTZCJ10eZlpe1bGSqcHY2Ee1WNC7FG5fHQ/GqlXPiKhkJh
-	 BqNL8Vchi5NDQFL6+LpB946AZflDkLAQZnfRGhrLuIoCKoxE5Uu9ZIESWanCcNGAaV
-	 7PXkI1+/fdJHg9Albkyre3Ao=
-Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E897740E01AE;
-	Fri, 26 Jan 2024 10:00:56 +0000 (UTC)
-Date: Fri, 26 Jan 2024 11:00:50 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "H. Peter Anvin (Intel)" <hpa@zytor.com>
-Cc: linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Megha Dey <megha.dey@intel.com>, Xin Li <xin3.li@intel.com>,
-	Shan Kang <shan.kang@intel.com>, x86@kernel.org
-Subject: Re: [tip: x86/fred] x86/fred: FRED entry/exit and dispatch code
-Message-ID: <20240126100050.GAZbOC0g3Rlr6otZcT@fat_crate.local>
-References: <20231209214214.2932-1-xin3.li@intel.com>
- <170620688145.398.5328359433342649832.tip-bot2@tip-bot2>
+	s=arc-20240116; t=1706263524; c=relaxed/simple;
+	bh=fl3YeLbuz5mlJiHETON3omawEKtmByjZuVupy44duG8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=H5gcrSFexIzY9TwLi1Nu+7VIHjt/WmpkbvnFDVT5JSglRi+g6IgXlMspNVp1OeDgMbcTuMdJFtMbY6RE3K2JTwQD1vLkcqirzVjyTjDI97fuSZXM5UW08lq2S5ysWCDndZiElXGwYAAgErm+TxubA8AD3/QxIpyLl/hlFzA2mnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ef9/3oji; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mgamail.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706263523; x=1737799523;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=fl3YeLbuz5mlJiHETON3omawEKtmByjZuVupy44duG8=;
+  b=Ef9/3ojieLEumbuME1Wbb7FCgYn8U6NNOgcG7+CYGVFPhMbkN7acoXSg
+   nNLfcJ/cSJLWTQg9U+c/z9b28W3WAOHEntcLb/wJq04FoYsRPJRSOCU/g
+   4w2BDNXLFg53QXvg6I2A9MWcH/VjPAMIOR5GAXhzqk+QblMQKtkVx+Roi
+   PcG/dBnFrvUN7//whdKlfnoXl7Mfqv6EDezV9MJjPFe2YXLrx7D5kqv8Y
+   5sUNsUqqsVBA9h3QFICTjwA8GABQ+i3m7DkwYstRv/AOYiwZPsS0aJob6
+   7ZylUWRIn3OegFwOXkC437ppiSrIkiKICVwgWp2I1SUSbwyquAY9yWNgK
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="2271376"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="2271376"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 02:05:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="1118227922"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="1118227922"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga005.fm.intel.com with ESMTP; 26 Jan 2024 02:05:19 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id 4301D431; Fri, 26 Jan 2024 12:01:07 +0200 (EET)
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>
+Cc: x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	linux-kernel@vger.kernel.org,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Andi Kleen <ak@linux.intel.com>,
+	Kai Huang <kai.huang@intel.com>,
+	Sean Christopherson <seanjc@google.com>
+Subject: [PATCHv4] x86/trampoline: Bypass compat mode in trampoline_start64() if not needed
+Date: Fri, 26 Jan 2024 12:01:01 +0200
+Message-ID: <20240126100101.689090-1-kirill.shutemov@linux.intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <170620688145.398.5328359433342649832.tip-bot2@tip-bot2>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 25, 2024 at 06:21:21PM -0000, tip-bot2 for H. Peter Anvin (Intel) wrote:
-> +SYM_CODE_START_NOALIGN(asm_fred_entrypoint_user)
-> +	FRED_ENTER
-> +	call	fred_entry_from_user
-> +	FRED_EXIT
-> +	ERETU
-> +SYM_CODE_END(asm_fred_entrypoint_user)
-> +
-> +.fill asm_fred_entrypoint_kernel - ., 1, 0xcc
+The trampoline_start64() vector is used when a secondary CPU starts in
+64-bit mode. The current implementation directly enters compatibility
+mode. It is necessary to disable paging and re-enable it in the correct
+paging mode: either 4- or 5-level, depending on the configuration.
 
-me compiler no likey:
+The X86S[1] ISA does not support compatibility mode in ring 0, and
+paging cannot be disabled.
 
-/tmp/entry_64_fred-de6f10.s:896:7: error: expected assembly-time absolute expression
-fill asm_fred_entrypoint_kernel - ., 1, 0xcc
-      ^
-make[4]: *** [scripts/Makefile.build:361: arch/x86/entry/entry_64_fred.o] Error 1
-make[4]: *** Waiting for unfinished jobs....
-make[3]: *** [scripts/Makefile.build:481: arch/x86/entry] Error 2
-make[3]: *** Waiting for unfinished jobs....
+The trampoline_start64() function is reworked to only enter compatibility
+mode if it is necessary to change the paging mode. If the CPU is already
+in the desired paging mode, it will proceed in long mode.
 
-config is x86_64 allmodconfig, compiler is
+This change will allow a secondary CPU to boot on an X86S machine as
+long as the CPU is already in the correct paging mode.
 
-$ clang --version
-Ubuntu clang version 14.0.0-1ubuntu1.1
+In the future, there will be a mechanism to switch between paging modes
+without disabling paging.
 
+[1] https://www.intel.com/content/www/us/en/developer/articles/technical/envisioning-future-simplified-architecture.html
+
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Reviewed-by: Kai Huang <kai.huang@intel.com>
+Cc: Sean Christopherson <seanjc@google.com>
+
+---
+ v4:
+  - Establish CS on jumping to tr_start (Andi);
+ v3:
+  - tr_cr4 is 32-bit, use 32-bit XOR to access it (Sean).
+  - Use 32-bit TEST instead of AND to check if LA57 different between
+    CR4 and tr_cr4 (Sean).
+ v2:
+  - Fix build with GCC;
+---
+ arch/x86/realmode/rm/trampoline_64.S | 33 +++++++++++++++++++++++++++-
+ 1 file changed, 32 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/realmode/rm/trampoline_64.S b/arch/x86/realmode/rm/trampoline_64.S
+index c9f76fae902e..14d9c7daf90f 100644
+--- a/arch/x86/realmode/rm/trampoline_64.S
++++ b/arch/x86/realmode/rm/trampoline_64.S
+@@ -37,13 +37,15 @@
+ 	.text
+ 	.code16
+ 
+-.macro LOCK_AND_LOAD_REALMODE_ESP lock_pa=0
++.macro LOCK_AND_LOAD_REALMODE_ESP lock_pa=0 lock_rip=0
+ 	/*
+ 	 * Make sure only one CPU fiddles with the realmode stack
+ 	 */
+ .Llock_rm\@:
+ 	.if \lock_pa
+         lock btsl       $0, pa_tr_lock
++	.elseif \lock_rip
++        lock btsl       $0, tr_lock(%rip)
+ 	.else
+         lock btsl       $0, tr_lock
+ 	.endif
+@@ -220,6 +222,35 @@ SYM_CODE_START(trampoline_start64)
+ 	lidt	tr_idt(%rip)
+ 	lgdt	tr_gdt64(%rip)
+ 
++	/* Check if paging mode has to be changed */
++	movq	%cr4, %rax
++	xorl	tr_cr4(%rip), %eax
++	testl	$X86_CR4_LA57, %eax
++	jnz	.L_switch_paging
++
++	/* Paging mode is correct proceed in 64-bit mode */
++
++	LOCK_AND_LOAD_REALMODE_ESP lock_rip=1
++
++	movw	$__KERNEL_DS, %dx
++	movl	%edx, %ss
++	addl	$pa_real_mode_base, %esp
++	movl	%edx, %ds
++	movl	%edx, %es
++	movl	%edx, %fs
++	movl	%edx, %gs
++
++	movl	$pa_trampoline_pgd, %eax
++	movq	%rax, %cr3
++
++	pushq	$__KERNEL_CS
++	pushq	tr_start(%rip)
++	lretq
++.L_switch_paging:
++	/*
++	 * To switch between 4- and 5-level paging modes, it is necessary
++	 * to disable paging. This must be done in the compatibility mode.
++	 */
+ 	ljmpl	*tr_compat(%rip)
+ SYM_CODE_END(trampoline_start64)
+ 
 -- 
-Regards/Gruss,
-    Boris.
+2.43.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
