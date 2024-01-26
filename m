@@ -1,178 +1,174 @@
-Return-Path: <linux-kernel+bounces-40635-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40636-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7F3383E374
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:40:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3014A83E376
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:45:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E49251C23358
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:40:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55B191C231EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 20:45:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFD86241F4;
-	Fri, 26 Jan 2024 20:40:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5597F241F4;
+	Fri, 26 Jan 2024 20:45:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bO6mjgAD"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IP+c/NY8"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FB2122630
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 20:40:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E877123745;
+	Fri, 26 Jan 2024 20:45:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706301649; cv=none; b=rG7KHiVhE5Eyul0eVfjeDonZkNzDtJKSb4IOwmOd3X9ukogi8ECNUq3tf5B21WRCgvtJcawxxA5iFeNkA0OrjzFEd4NocEJoRvw7e1yTKJtX4BDFS7NQMhOmoRzPT5npvXfXJw6aKl8vckyo5Fdp6l4m+0zj3B0SQgjcXJi2pw0=
+	t=1706301937; cv=none; b=EQmkyDACl6RZE9cPthYBW4e4hcIZ5OkgySKYfzSzl9U5HNI9vaQgYNNOSkZeZzmzH6H4cJnlZra0PQmLfXriPk2Hb0N+/+HfYrmlR+BbRXWcEotL12AIZ8DoNJVFTyWxX0sF/2CwvyM99rxvj+ZynTbSHKuQkrbQb0Q72y5yK1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706301649; c=relaxed/simple;
-	bh=6OXb8yisA+wOMTyjl6MEUJlWvpsc7TPctZSOTFP70u4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=TvlZ9ppMeLV2QIYOQA7wd1T8S42BsfePq6vqYutBYBnCkrXjnz7eA/rTzMTPeGzdrGUbTsL+kXD9cmoxe4+BOQznTuebV4RGjn7OzysjRbWMp6vJveGGD0PxOlsYutj0KMjQvuOBMSaz/SHJZZgablRu9xXpF1sRnjVCJwO1BIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bO6mjgAD; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d76f1e3e85so27925ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 12:40:48 -0800 (PST)
+	s=arc-20240116; t=1706301937; c=relaxed/simple;
+	bh=N9k5UYEYVAF2qA6E0s7m+kIECxQo6FwY1dpU7AHZ4rA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=alqxF3q95wTNE+Lld6zVt/cTyGApCzyrptgQ9Vj/cnNT447PTArLZ4kKT3cGVunKqXqvPSEaxRX4NXFyxZfVZVctGa8TV6eXvD1CbUaQ0z0FgpD4LcfXlWZGgh8xUoZtnKlCEfPEKsg6Dsuh4+Pa5/OwFN+RTzxOpkHvDvYWnbA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IP+c/NY8; arc=none smtp.client-ip=209.85.167.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-510133ed214so1381355e87.1;
+        Fri, 26 Jan 2024 12:45:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706301647; x=1706906447; darn=vger.kernel.org;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=H6OTEPwP1MRtepPp6KWjNIn59HVlFqvRSia0WO706Bo=;
-        b=bO6mjgADMAH4BNKD29Ion9jDYJiOSfG5Q6mgMs6J9iES/fGB+UT6rTE8XwcEUH+i9F
-         Mg6GVXVYlOlGI3ZZxO+X5jChGhZCktZcrtT/V39Zjt2CV28wrAUBef54O8fn/aZNkhWN
-         XkYdg1qqLWo7vRgZpRlRJftmkhhVMlwPcpu5IFUKiXuvlUianHq4q/vBcWuxY6TUrvDI
-         lJAenC9BimUdY6Y2riLnE5HpdGw7VYQ+SsDB/UCHY7SmC9NXeegm/gLifAP4KybUAyJt
-         2W90ez2A9WqdD2JHDqEDsZ4u66fliPO+I1yC1ssHZ5DGZuDSOGV21Yl9/dZVnT3/tuZe
-         MAyw==
+        d=gmail.com; s=20230601; t=1706301934; x=1706906734; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DALTEEob3NFEf1MHZ96hGZRJHPJY2iufaNCe8cnrSKI=;
+        b=IP+c/NY8wOIWo+CdeQETaSrVSC2g1m1gbeSiNW6rv/5wVTMenbqmLhJqlwOA9gg9oU
+         euaWb3ZeO2jECh/bIDJlgLUAXLQn3XxaayWNInkRo7hZvfeNYLEpzaMkFcQkE/N88/55
+         pKsPlHbrosIpWY7J2up1DQHCCWaZU5/117RQfwrcXmVM6aVGMcg29yyFHqurn6JngoYp
+         9CzlWCZGWTnO4f3xaoZiXq3Iy/615nF11+EluALUZ+tR+iN0cpDj9qLWi/ctmKkOEEyJ
+         A5ms0xDc/RkWgWviav+CY8BBwHeCVBDN8DmnDpHwNwb/lwhZfHOUG5Ende766k07aVy4
+         DkpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706301647; x=1706906447;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H6OTEPwP1MRtepPp6KWjNIn59HVlFqvRSia0WO706Bo=;
-        b=d9/8f95FFFHaYvD09bDfBUHaw7hXsY0+YOYH7psVfWwLladNqeylAeApOFkFt/Th9I
-         uU7Iq6rhENAS/v1hZJKEJRgVxpH9RWi+fnU7ujw9meqicqo56HCTLteStOs5lW6zMTZn
-         tVdGY/m2TR5kVPXTIF197RWXhwZsfuhGxkDpaNyt++RWIvkxgkB4euag2u66MPeKhUEw
-         kUvduUyMXgJJHZnU8FV9tyqx+I4+AHnmy7qsEnKeVnH3lhDarVV0wVOIomnS9g6IRpug
-         Q73MorzG1opda2XqmheheAWlDR8XJ2yADm93ZmYGdn9jJvLigFoh1QVFXQ+OSd72EO6O
-         5C0Q==
-X-Gm-Message-State: AOJu0Yz617MQNwJ/C3Ss909/CX7PqCzwf4Nrkc6Hu/w7nL/AqmYhjr7J
-	mSVknDA5j8sx3p1HjwA4Ol9g5E0PvgflwHwN0bmbtamh4kyWJOGo3LrBQnRv0qg/Cjo2HmXj9C+
-	8aQ==
-X-Google-Smtp-Source: AGHT+IFS/S63C5F55yuuzBV3E/UsVCD1WdQTTaGa1I8BNB5qUUMQTHp6p2ZyCqDBmKt+Tnn/Ht/vog==
-X-Received: by 2002:a17:903:1ca:b0:1d5:a08c:46a2 with SMTP id e10-20020a17090301ca00b001d5a08c46a2mr298319plh.2.1706301647182;
-        Fri, 26 Jan 2024 12:40:47 -0800 (PST)
-Received: from bsegall-glaptop.localhost (c-73-202-176-14.hsd1.ca.comcast.net. [73.202.176.14])
-        by smtp.gmail.com with ESMTPSA id y12-20020aa7854c000000b006ddcf5d5b0bsm1508884pfn.153.2024.01.26.12.40.45
+        d=1e100.net; s=20230601; t=1706301934; x=1706906734;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DALTEEob3NFEf1MHZ96hGZRJHPJY2iufaNCe8cnrSKI=;
+        b=tcS9oBePeXO3uBis///9+RmlCvZu3FXoB3nDHImRQZCu9h8tqRuGjPOven9DdZCAdo
+         O/duaV5Q1emZ8UwStu2GAJLQ7x2dq/yK1bCyhauJpB1GWEXcB+BdZeLmOWPTYWcb3pC5
+         44GyMQOisoC38xePdPhXQDxzMv5busK4U+rE2td8dH1Sx5e3eKXaX4Z4oGyXuT9/CTD/
+         rOqi+Yth8gVEDRvEWHkveI4YFhacTUJ+Ijkdk/JwbG0cnltyCON+nLdUQsW0QWdIdDQ1
+         F/LE3X8XVskwzhOSpYVGKjnbBDTnK9V7Kf+stb+LIB/YrQaWE+Jzi0AAHGQHMZ8MGb2c
+         emQQ==
+X-Gm-Message-State: AOJu0Yz3WrT8DU59DDLUJSov12CcDbIL/1v0p01yvCuMyWjZo4xDIrqm
+	CxNESjPP9zmgFluC37yzERFh64GXR+ZTnqoT8bu8OLNuOFm53ygS4nkeF7LlxtS1RQ==
+X-Google-Smtp-Source: AGHT+IEwSmCZ+VQmNNzz8EADju9iF85eTjukB4lNLNudL4Tp7pZ0qwkpgEwfX09Fqq60DF+BQ6QDKg==
+X-Received: by 2002:a19:ee03:0:b0:510:bba:5d1c with SMTP id g3-20020a19ee03000000b005100bba5d1cmr158724lfb.58.1706301933508;
+        Fri, 26 Jan 2024 12:45:33 -0800 (PST)
+Received: from localhost.localdomain (broadband-46-242-13-133.ip.moscow.rt.ru. [46.242.13.133])
+        by smtp.googlemail.com with ESMTPSA id d15-20020ac25ecf000000b005100e087c3asm275320lfq.300.2024.01.26.12.45.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 12:40:46 -0800 (PST)
-From: Benjamin Segall <bsegall@google.com>
-To: Hillf Danton <hdanton@sina.com>
-Cc: Peter Zijlstra <peterz@infradead.org>,  Ingo Molnar <mingo@redhat.com>,
-  Will Deacon <will@kernel.org>,  Waiman Long <longman@redhat.com>,  Boqun
- Feng <boqun.feng@gmail.com>,  linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] locking/percpu-rwsem: do not do lock handoff in
- percpu_up_write
-In-Reply-To: <20240126122230.838-1-hdanton@sina.com> (Hillf Danton's message
-	of "Fri, 26 Jan 2024 20:22:30 +0800")
-References: <xm26zfwx7z5p.fsf@google.com>
-	<20240123150541.1508-1-hdanton@sina.com>
-	<20240125110456.783-1-hdanton@sina.com>
-	<20240126122230.838-1-hdanton@sina.com>
-Date: Fri, 26 Jan 2024 12:40:43 -0800
-Message-ID: <xm26sf2j3k1g.fsf@google.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Fri, 26 Jan 2024 12:45:33 -0800 (PST)
+From: Konstantin Aladyshev <aladyshev22@gmail.com>
+To: 
+Cc: Konstantin Aladyshev <aladyshev22@gmail.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Jean Delvare <jdelvare@suse.com>,
+	Naresh Solanki <Naresh.Solanki@9elements.com>,
+	Patrick Rudolph <patrick.rudolph@9elements.com>,
+	linux-kernel@vger.kernel.org,
+	linux-hwmon@vger.kernel.org
+Subject: [PATCH v2] hwmon: (pmbus/mp2975) Fix driver initialization for MP2975 device
+Date: Fri, 26 Jan 2024 23:45:22 +0300
+Message-Id: <20240126204523.2211-1-aladyshev22@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-Hillf Danton <hdanton@sina.com> writes:
+The commit 1feb31e810b0 ("hwmon: (pmbus/mp2975) Simplify VOUT code")
+has introduced a bug that makes it impossible to initialize MP2975
+device:
+"""
+mp2975 5-0020: Failed to identify chip capabilities
+i2c i2c-5: new_device: Instantiated device mp2975 at 0x20
+i2c i2c-5: delete_device: Deleting device mp2975 at 0x20
+"""
+Since the 'read_byte_data' function was removed from the
+'pmbus_driver_info ' structure the driver no longer reports correctly
+that VOUT mode is direct. Therefore 'pmbus_identify_common' fails
+with error, making it impossible to initialize the device.
 
-> On Thu, 25 Jan 2024 13:08:02 -0800 Benjamin Segall <bsegall@google.com>
->> Hillf Danton <hdanton@sina.com> writes:
->> > On Wed, 24 Jan 2024 14:10:43 -0800 Benjamin Segall <bsegall@google.com>
->> >> Hillf Danton <hdanton@sina.com> writes:
->> >> > On Mon, 22 Jan 2024 14:59:14 -0800 Benjamin Segall <bsegall@google.com>
->> >> >> So the actual problem we saw was that one job had severe slowdowns
->> >> >> during startup with certain other jobs on the machine, and the slowdowns
->> >> >> turned out to be some cgroup moves it did during startup. The antagonist
->> >> >> jobs were spawning huge numbers of threads and some other internal bugs
->> >> >> were exacerbating their contention. The lock handoff meant that a batch
->> >> >> of antagonist threads would receive the read lock of
->> >> >> cgroup_threadgroup_rwsem and at least some of those threads would take a
->> >> >> long time to be scheduled.
->> >> >
->> >> > If you want to avoid starved lock waiter, take a look at RWSEM_FLAG_HANDOFF
->> >> > in rwsem_down_read_slowpath().
->> >> 
->> >> rwsem's HANDOFF flag is the exact opposite of what this patch is doing.
->> >
->> > You and I are not on the same page.
->> >
->> >> Percpu-rwsem's current code has perfect handoff for read->write, and a very
->> >> short window for write->read (or write->write) to be beaten by a new writer.
->> >
->> > Given no chance left for spin on owner who is legal to take a ten-minute nap,
->> > the right thing known to do on behalf of starved waiters is to add the HANDOFF
->> > mechanism without any heuristic like you proposed for instance, in order to
->> > force lock acquirers to go the slow path.
->> >
->> > Only for thoughts.
->> 
->> This is not the type of slowdown that is the problem my patch is trying
->> to address. (And due to the way percpu-rwsem works sem->ww is nearly
->> entirely redundant with sem->block - the first waiting writer is instead
->> waiting on rcuwait and holds sem->block while doing so)
->> 
->> The problem that my patch addresses is:
->> 
->> Writer is done: percpu_up_write
->>   atomic_set_release(&sem->block, 0);  // #1
->>   wake a batch of readers:
->>     percpu_rwsem_wake_function -> __percpu_rwsem_trylock(reader) // #2
->>   wake a single writer
->>     percpu_rwsem_wake_function -> __percpu_rwsem_trylock(writer) // #3
->> new writer wakes up (holding sem->block from #3)
->>   sees the readers holding the lock from #2, now sleeps on rcuwait
->> time passes // #4
->> readers finally get to run, run quickly and release the lock
->> now the writer gets to run
->> 
->> Currently the only source of unfairness/optimistic locking is the window
->> between #1 and #2, which occur in quick succession, on the same thread,
->> and with no SPIN_ON_OWNER to make this window more likely than it
->> otherwise would be.
->
-> The sem->ww introduced closes the window between #1 and #2 by define
-> as it is derived from rwsem's HANDOFF.
+Restore 'read_byte_data' function to fix the issue.
 
-Yes.
+Tested:
+- before: it is not possible to initialize MP2975 device with the
+'mp2975' driver,
+- after: 'mp2975' correctly initializes MP2975 device and all sensor
+data is correct.
 
->> 
->> My patch makes the entire #4 available to writers (or new readers), so
->> that the woken writer will instead get to run immediately. This is
->
-> Victims rise in case the woken readers at #2 have been waiting more
-> than a minute while the woken writer less than 20ms.
->
->> obviously much less fair, but provides much better throughput (ideally
->> it might have some sort of delay, so that in more normal circumstances
->> readers don't have to win the wakeup race by luck and being woken
->> slightly sooner, but I don't have that).
->> 
->> This is also only useful because of the assumption that readers will
->> almost always not actually block (among other required assumptions) - if
->
-> Like heuristic, any assumption makes the locking game more complex than
-> thought without real win.
->
+Fixes: 1feb31e810b0 ("hwmon: (pmbus/mp2975) Simplify VOUT code")
 
-I'm fine with "no, fairness is more important than these performance
-numbers or mitigating already-sorta-broken situations", but it's not
-clear to me you've even understood the patch, because you keep only
-talking about completely different forms of starvation, and suggesting
-changes that would if anything make the situation worse.
+Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com>
+---
+Changes in v2:
+ - Fix indentation issues
+
+ drivers/hwmon/pmbus/mp2975.c     | 17 +++++++++++++++++
+ drivers/hwmon/pmbus/mp2975.c.rej | 10 ++++++++++
+ 2 files changed, 27 insertions(+)
+ create mode 100644 drivers/hwmon/pmbus/mp2975.c.rej
+
+diff --git a/drivers/hwmon/pmbus/mp2975.c b/drivers/hwmon/pmbus/mp2975.c
+index b9bb469e2d8f..5bbfdacb61a7 100644
+--- a/drivers/hwmon/pmbus/mp2975.c
++++ b/drivers/hwmon/pmbus/mp2975.c
+@@ -126,6 +126,22 @@ static const struct regulator_desc __maybe_unused mp2975_reg_desc[] = {
+ 
+ #define to_mp2975_data(x)  container_of(x, struct mp2975_data, info)
+ 
++static int mp2975_read_byte_data(struct i2c_client *client, int page, int reg)
++{
++	switch (reg) {
++	case PMBUS_VOUT_MODE:
++		/*
++		 * Enforce VOUT direct format, since device allows to set the
++		 * different formats for the different rails. Conversion from
++		 * VID to direct provided by driver internally, in case it is
++		 * necessary.
++		 */
++		return PB_VOUT_MODE_DIRECT;
++	default:
++		return -ENODATA;
++	}
++}
++
+ static int
+ mp2975_read_word_helper(struct i2c_client *client, int page, int phase, u8 reg,
+ 			u16 mask)
+@@ -869,6 +885,7 @@ static struct pmbus_driver_info mp2975_info = {
+ 		PMBUS_HAVE_IIN | PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT |
+ 		PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP | PMBUS_HAVE_POUT |
+ 		PMBUS_HAVE_PIN | PMBUS_HAVE_STATUS_INPUT | PMBUS_PHASE_VIRTUAL,
++	.read_byte_data = mp2975_read_byte_data,
+ 	.read_word_data = mp2975_read_word_data,
+ #if IS_ENABLED(CONFIG_SENSORS_MP2975_REGULATOR)
+ 	.num_regulators = 1,
+diff --git a/drivers/hwmon/pmbus/mp2975.c.rej b/drivers/hwmon/pmbus/mp2975.c.rej
+new file mode 100644
+index 000000000000..8e6a54e4dbf4
+--- /dev/null
++++ b/drivers/hwmon/pmbus/mp2975.c.rej
+@@ -0,0 +1,10 @@
++--- drivers/hwmon/pmbus/mp2975.c
+++++ drivers/hwmon/pmbus/mp2975.c
++@@ -885,6 +901,7 @@ static struct pmbus_driver_info mp2975_info = {
++                PMBUS_HAVE_IIN | PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT |
++                PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP | PMBUS_HAVE_POUT |
++                PMBUS_HAVE_PIN | PMBUS_HAVE_STATUS_INPUT | PMBUS_PHASE_VIRTUAL,
+++       .read_byte_data = mp2975_read_byte_data,
++        .read_word_data = mp2975_read_word_data,
++ #if IS_ENABLED(CONFIG_SENSORS_MP2975_REGULATOR)
++        .num_regulators = 1,
+-- 
+2.34.1
+
 
