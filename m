@@ -1,194 +1,111 @@
-Return-Path: <linux-kernel+bounces-40054-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AA0A83D97C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:39:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D080083D97A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 12:37:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3DED6B2BE57
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:37:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D1551F24382
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:37:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5224417736;
-	Fri, 26 Jan 2024 11:37:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 903D7175B4;
+	Fri, 26 Jan 2024 11:37:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="h+yzIRVe"
-Received: from IND01-MAX-obe.outbound.protection.outlook.com (mail-maxind01olkn2059.outbound.protection.outlook.com [40.92.102.59])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="r2DOHFRO"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 357CD17582
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 11:37:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.102.59
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706269045; cv=fail; b=rqYF8BQ+rz2V7wlsKi26l81MzxICDb+auruaxjXTD9kNv5m03wwoyGtDZfGcIXsMs9UZRx+QshBfSHkHCjrTrpnAd7Pb/6rNjsPosyEuKv6EV/L192TSzgc6TeyJX3cp54sTP9W951SjeKYgIEnmDppRL93WqSTDE0EASe1GbrM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706269045; c=relaxed/simple;
-	bh=3fLqaE0MDvxknzmc8UJlElt1by7gXnL/YoYmHBscIbY=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=bz33CN/EwvNhnKiaR4TNQOGDe0LgKsSJOJ5XHxQ3TV8S5PqX/oIWdVT93mc32ZwkZUCmD34I8L1cGEbGKty5aSo63BDM022AOJjKD4xN1d1s54AMuuOp6DEnkDJHcshglSL7IBDmZYUzk0Cwx9ZpAjgpit+35KZuZtNtdczakfU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=h+yzIRVe; arc=fail smtp.client-ip=40.92.102.59
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EJzJVxEfLkOBIKzw93JawXnQ3W00ep3LJwHIl/RwH0xN0kUUvyoTxfDLifzR2m/M1nkmxuvkQUdwSUaY27oe/CD1DojPJvrqVbRuSuHfiFkLaOvVTOFBBgAsAy1oS3pG9gkSvdVtt6bAo33Aj1aNOGC+hwR3XfgTPUo+3+CwjGNcCOQWAMm+Hb+tqu7keMmI8Hd1MKUknNsX/1E5dDgxCv6tmqBn9xyyMbtY1JXY4cNTiTRYxT/bC98VQM7krUT2jNE6XVFBDhQnVnW/MImN40IRpjRxSMZGKX7FNDWTlJqaQQMHSpkigFBFDzuBkgSz7+cN5xgMXsZXS9eL8S7usA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hOHZjkMeetyDk0N3TahToDyxB0gmy71VwOspoc3vz6s=;
- b=kL7X7W8uMtu1HJw2d/w6xNzdvLRdiSMO29mScbp5O/TsRNljUNRfR8/Yq2i7yVaoXYUBuhCyrQ7vZ0gw4IhaGvzNkz2wWlYx2WACrpT7BU9Mvto+2tQhbw7nD5Vp0/9CVg2pzM+GXKhqopZCOdgCcxkK9+UYN7LldTh2i/sQuPiXNjaejfYvNqRlm0Tg63+cjOxHifjNwY64Wz/8geLJx9d1jVTlPwjjtx8Dj0goYyZHBdK1ND8n0yA7e9OicCvInTyqyjYlW5g+qOjDMxvl7zQyjN95sO7dDNt16lTWIUHoLcIe8ypCd7VnII1xZ8+fLv3/yMj7YNsy2UO5x34bWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hOHZjkMeetyDk0N3TahToDyxB0gmy71VwOspoc3vz6s=;
- b=h+yzIRVe46WOR7HwV8Q1HBrs1jHs84mIsD4mZuHmo3Eenq6umf/7fI5EMhYHaelchF+O/mc8PzPKRBCmIGtndoytq3XCOrQ5iwu6K8Kq2zwpXcfs7jHEcOPxwAv8ViugwdG3eZcmSbBKem6e8FpyJtVskOcTxawQVnYlZDeJioiT7JGvDxVEj0rE1+WLvw0G9Buan6WDpJ3woFzMIWrciz0Sm9SkVrhFnN2BPbVR/kNO8gR8PJD2P6MX3s66Lyv9u254RDozn9afuhLBZPcK5/+0DiVZzXHC+6lYaD0b0Y4ZLrbCfTSutsy6S9128TMQo3pVG5RxfBar/oJS4dPkcQ==
-Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:138::5)
- by PN0P287MB0632.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:160::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.27; Fri, 26 Jan
- 2024 11:37:18 +0000
-Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- ([fe80::a2d5:82f2:b6d4:f2cd]) by MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- ([fe80::a2d5:82f2:b6d4:f2cd%2]) with mapi id 15.20.7228.022; Fri, 26 Jan 2024
- 11:37:18 +0000
-Message-ID:
- <MA0P287MB282205C98343FC2FAC20BB28FE792@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
-Date: Fri, 26 Jan 2024 19:37:13 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] MAINTAINERS: Setup proper info for SOPHGO vendor support
-To: Conor Dooley <conor.dooley@microchip.com>,
- Inochi Amaoto <inochiama@outlook.com>, Chao Wei <chao.wei@sophgo.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Conor Dooley <conor@kernel.org>, linux-kernel@vger.kernel.org,
- linux-riscv@lists.infradead.org
-References: <IA1PR20MB49534A5DE79A6CEE57301737BB792@IA1PR20MB4953.namprd20.prod.outlook.com>
- <20240126-squabble-vitally-7dea14d09e18@wendy>
-From: Chen Wang <unicorn_wang@outlook.com>
-In-Reply-To: <20240126-squabble-vitally-7dea14d09e18@wendy>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TMN: [MsHtGamqqtwx4vb+1olWOxZs+gwyQ4D7]
-X-ClientProxiedBy: SI2PR01CA0038.apcprd01.prod.exchangelabs.com
- (2603:1096:4:193::20) To MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a01:138::5)
-X-Microsoft-Original-Message-ID:
- <7b3507bc-629b-4ff0-8766-ca25256803ae@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 432DA17584
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 11:37:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706269059; cv=none; b=nvDQj/r97uV+BcPPl+cxOHwFUBX2Ux/E/tbD5hwCDviW8QnUz/b6wwDRqwZ7JWLBaCvtw2FQlkE8FARHJXTUsJ/ahE/xSBN3oFtzELKwaZwy3EJlUsbX5BQFRe8jpHoCSHecHh6+cUxJ+Vfq/HIKBYeE4NbSv8nGCDNGuHx/qm8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706269059; c=relaxed/simple;
+	bh=aVtryNgCeI9llkL9nErhikWbqjYRuoSjAg5NeEwQLjM=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=YK6Nc1gL08lqadKOfDXQoZpuqb0O4GumpesAcN+uvkYac16AV0qK+Whwfr6Jj20+aRR3QsZnNVusKpnRmjob3gh1aPRUcKTKC0GrP+01cqNDSp38GQccIVGDKri3ZRyjbY4egZVO+pKsSs7anKWB5UoOiMFLqrzYxkTZvsUYFVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=r2DOHFRO; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so86292666b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 03:37:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706269056; x=1706873856; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VyfE4aHWGmupocj2MXVZCjO5uTyD3plTwI5NbWoJyRI=;
+        b=r2DOHFROPuJAfDfRysrYaNgHgE/xqLmLhoXwDcUHaQDRnp1ZZ/JSDKP/1tArAH0Bi+
+         zNXQNvAnRxq+vB/n7i0wTthgNWinkFBDA5YSXeslXlX0oDeeQJGOYE8tQhqNHxnVLcWu
+         QRWigzosloeIy/0BnEH5SuNhH4QHyoW70TQ0bFJI4Jr8f6ihD5IRLxfb7OnVWCnsAsxN
+         cX+ubE23Ou5TH0ZRKEZbaXVh3HA1Wacz2SWTYS7tzCjQYCTd35WM6zxEGyKn9SIVrRvc
+         gKMfgMAEwSn/3jsBSkRLiTxu9wKOlEDQrr6CO/EPJaxCr0jVgjI5RX3MAdfDERNqMJI8
+         KE5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706269056; x=1706873856;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VyfE4aHWGmupocj2MXVZCjO5uTyD3plTwI5NbWoJyRI=;
+        b=aTNohbAfCf+E8rOnPj7vogCBpmG0an1ctymaRULOg12w+jOAVND4skxSenC7egmKxa
+         3uxvIFRJ8gVPuJZF3QxhZY6JovsC+be3b8ueYvXHe2mf1/slp5W4sxI8nmzZq7y137K8
+         YGOVHiQiwShb/2U8ooVVFHgDkLri8rQlJRxXtlJ3xcXPM+lI2TkBMYw+Hu421RxpqoYY
+         m6d5AL2E4b079rKHSc5eaJmQAF2s0MJz2nsOHMOQAa9U19RSmsHReNCtCKzhU4JJCtfM
+         FXlwc88ig7SxZrrsmQp9EufKGnjMXXoohLkz7oWHcPh/tB+Sz7zhNO5xVz8+m4j2Y65S
+         OwGg==
+X-Gm-Message-State: AOJu0YycKPuvjMs18Bo4Hi6rN89RnAo09DJd1k3j9+NqfQQzUcvBQtKB
+	woOWmLGfOT9kzqx8R1++RyiH+z8MZwzWGYaQHR1M7NyaiCo1M/B7JeaBwilk5um4X1Nfxtj6Bm5
+	6
+X-Google-Smtp-Source: AGHT+IE5JL0AWt0MwbO/5tTi7/PLqwNL3x9FZCwpvME4CHdNTEo/fI4XwYPgYtF7z78zX/MliMr66Q==
+X-Received: by 2002:a17:906:c45:b0:a31:6a55:7d71 with SMTP id t5-20020a1709060c4500b00a316a557d71mr1378211ejf.71.1706269056409;
+        Fri, 26 Jan 2024 03:37:36 -0800 (PST)
+Received: from [127.0.1.1] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id cw6-20020a170907160600b00a2d5e914392sm534735ejd.110.2024.01.26.03.37.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 03:37:36 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: linux-arm-kernel@lists.infradead.org, 
+ David Lechner <david@lechnology.com>
+Cc: Sekhar Nori <nsekhar@ti.com>, Rob Herring <robh+dt@kernel.org>, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Bartosz Golaszewski <brgl@bgdev.pl>
+In-Reply-To: <20211017195105.3498643-1-david@lechnology.com>
+References: <20211017195105.3498643-1-david@lechnology.com>
+Subject: Re: [RESEND PATCH] ARM: dts: da850: add MMD SDIO interrupts
+Message-Id: <170626905516.53425.15339364766871978744.b4-ty@linaro.org>
+Date: Fri, 26 Jan 2024 12:37:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MA0P287MB2822:EE_|PN0P287MB0632:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3f860891-8972-4e63-8f4f-08dc1e632617
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	AOIM+3o5RXjr+b+9D8y89Z5GLWk00QrEkmmCeLrDHHDbhLd8KPHkzCim3RhlQNeKDu4qkhQhuC9HOQMaWogjoic9rMLWtb1cjkPpO18RuRW8DpE9QYdwhAM4hcmvTi/DXhsUCpiI1AEqGnKxOy1NaIFklliJ29uWu47eRGoTALA0x4q8EDfnVgz/pBH0EiV+xKftoISFjnZfSh3zQGzu037Y51urzUU5wek2/I9YryPFnSnMzCx6wIzk+MtaAh2JobWm8YaCLtHfgY0BtD5DqZivYnUn0XMAsq1Pp7wKRvCoVMmDnTTp7GPhBsGptk5N7Km/iQmOMRHuHf2VCOtV0t9HSArKRQ4yTd9ixRX1nzUbzNei//Qq9Mh+a8Ck8fG3y/nr3HLNkeU7YjZBN1r/M4Q4fYITiEDAFevfSuRdNEd5yHcecEaVKJY9s/HONjFzQRxwwDeZiR/lr84lpeZJkNb4ZabGeTVOagY92UkeFrvF6JSUrbySy8TetzTPsX3wJrgJLgYxD73T5KQTS70B/MhL9wcy/SUSaluXAs/ZMos52SOQfQ2ntR+BrPEuaHfOS+EedQ0LtlMi2ON+G2O9tU44ycyHDQK2Hki6YezVjMo=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?ajM3aG9La1VNWnJrL2ZNNEVGMkUyNHBjMW1YYmxURUNCRjZTcGpRczV5Wml5?=
- =?utf-8?B?L2ZZVEpCY3JJVUU2V01KVWUrVGVnUHBkRXVLVW9jVTBNdENHUmw5dkpYUW1k?=
- =?utf-8?B?TDZXUk1HWlBsWXIyeGNBcktKS2JuSERtZnVaa0JXazU4blRiVklHdFBzOHVF?=
- =?utf-8?B?dVVNNlc3SFN3NjZrMGlvOHZKbTZZVHpMZkFIS2xoQU9DTHU1K1ZhaG9aa3Vw?=
- =?utf-8?B?NGRRRHE4akg1clZKZUwwSlVKUG9vTzRaZWVWQUxaWEdOYlI4eTNEaDBEYXRL?=
- =?utf-8?B?Nm1kTWRPTnNQeU12dzhhV2NQMFBldkJianhjamJPSG44WVJBUzh6MmxXa1JH?=
- =?utf-8?B?QTdReVFnanU5NEdQSE9TUkZramtPOVNSd0liYVI2NlNBVExtVUtjN0swbEFC?=
- =?utf-8?B?U0hib0tqVy9vL1R6SENrSmVGRXJrVFc5ZkZ3UmMrMjQ2NVZBWFprTW1SQUs2?=
- =?utf-8?B?b0psc0U1NDYvWTNJWkdsUVN0UHl3NUFvMW9yeitqRGFIa0hUQkdQb1ExWmV6?=
- =?utf-8?B?MmR1K3ZaUzl3STIyMk1jbEFwVktXWnFTM05aTDZzN3hmQmV3ZGhvcm5IRWM1?=
- =?utf-8?B?YjNCZVR4ZTF0UENzbDQzNG85alRPNFZHQVlBaWVzY0gvWkNmSk1SYndPME5K?=
- =?utf-8?B?bFdvQU8xUzM2RHk2OHhpNlpqMTBzU3JKU2h2UjB2aTA3S3NpRktQeERRaTZi?=
- =?utf-8?B?dS90V29TVGM1VmNrUTd1cHJuSmljc1A4RlJLcmUwbWpSUVl0VU1rcnBxcWxK?=
- =?utf-8?B?b2FDOU5ubFlSZEhyOUs0WCs2Q1NFcWMvWUd6UDBQYnlTZXNyQythbXRQaWoz?=
- =?utf-8?B?MG1VY3QrajVaeVVxY1ZJK0wzSnljWkNUM1ZJNkJCcjYzN3VaeVUrQVlzYmo1?=
- =?utf-8?B?OUFzUFJvSmI3UDlHRExQRFJMb2dqTnQ2b1Q3UnRQYTBxQzQ5akp6Qy9ia00r?=
- =?utf-8?B?QnlPbDNIUFRHNjFtV3VSVDRZWWZlcjZRSUNqZmpTWkFiR3ZqakN3K0tjeGNz?=
- =?utf-8?B?LzBKR3B1UEcxTUNIcnlySk1pSk1lSUNSNkI5eW41ZVBGQi8rd0V6TVR3M1pa?=
- =?utf-8?B?MnlwWVRkT0tXb0J4b1V4TjNjRGFiQmpxUWNmbWYvekdFSSswcmVxME1kK09H?=
- =?utf-8?B?b2VxSWwva0lSMmhoZVRrVDVvbER6Qlo1TmlIdk1ucjhhMDNHVEM1cGNMU3BJ?=
- =?utf-8?B?QnRMUkZvamZOZnZMNXU0RVdWYnM5NjhxZEZZUHpud2d2Y1JpdE1BczlSam90?=
- =?utf-8?B?aWtGcXlXRnoxY2d5YWRFMmlLZ1pHN1V5UzY5SHVVOUowckdJbEk4OU1lZkZh?=
- =?utf-8?B?TGdWNG8yMlNwL2Q4V2k2QmZUVTNxR3cxQVBRWUhSRWZINDBzbmFHMVJJZXVk?=
- =?utf-8?B?ZS9LdWduQ1VEMzA2b0FzTEdkQ3JBdVN4cG1lSEVXRjJNOUhSUTBLMmRGaWlr?=
- =?utf-8?B?bHNTWjV0TzhEQXZ6YUdjMndqcW42U2hHMVJCTXVxVkxzbCtWUUNWdWVUSGVN?=
- =?utf-8?B?N28xZURFOGRwenpjMm1XV3FLNU8vUjhvNkZCaEJLcFhnZUNzdzlTZjVkK0M0?=
- =?utf-8?B?MmdjWlkwWHlDZnZLOXVsNzVSK0lqdTE3K0xSZGRYSEY3U1dmYzZWaG9CblZM?=
- =?utf-8?Q?pt9so6k7VtKQrrs7x0ceg7pIXXWKKTYp8D5B1hHj1y1M=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f860891-8972-4e63-8f4f-08dc1e632617
-X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 11:37:17.1607
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN0P287MB0632
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.4
 
 
-On 2024/1/26 19:03, Conor Dooley wrote:
-> On Fri, Jan 26, 2024 at 02:04:50PM +0800, Inochi Amaoto wrote:
->> Add git tree that maintaines sophgo vendor code.
->> Also replace Chao Wei with myself, since he does not have enough time.
-> Ideally Chao Wei can spare some time to ack the patch though?
+On Sun, 17 Oct 2021 14:51:05 -0500, David Lechner wrote:
+> This adds the MMC SDIO interrupts to the MMC nodes in the device tree
+> for TI DA850/AM18XX/OMAP-L138.
+> 
+> The missing interrupts were causing the following error message to be
+> printed:
+> 
+>     davinci_mmc 1c40000.mmc: IRQ index 1 not found
+> 
+> [...]
 
-Adding Chao wei.
+Applied, thanks!
 
+[1/1] ARM: dts: da850: add MMD SDIO interrupts
+      https://git.kernel.org/krzk/linux-dt/c/8af75ce86f7d55124e41b499aa43f50748138bec
 
->> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
->> ---
->>   MAINTAINERS | 9 +++++----
->>   1 file changed, 5 insertions(+), 4 deletions(-)
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 39219b144c23..0dbf2882afbf 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -20446,12 +20446,13 @@ F:	drivers/char/sonypi.c
->>   F:	drivers/platform/x86/sony-laptop.c
->>   F:	include/linux/sony-laptop.h
->>
->> -SOPHGO DEVICETREES
->> -M:	Chao Wei <chao.wei@sophgo.com>
->> +SOPHGO DEVICETREES and DRIVERS
->>   M:	Chen Wang <unicorn_wang@outlook.com>
->> +M:	Inochi Amaoto <inochiama@outlook.com>
->> +T:	git https://github.com/sophgo/linux.git
->>   S:	Maintained
->> -F:	arch/riscv/boot/dts/sophgo/
->> -F:	Documentation/devicetree/bindings/riscv/sophgo.yaml
->> +N:	sophgo
->> +K:	[^@]sophgo
-> There's a single instance of this "[^@] business in the whole file,
-> is it really needed?
->
-> Also, you can fold in
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index bf107c5343d3..cc8e240ba3e2 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -18859,6 +18859,7 @@ F:	Documentation/devicetree/bindings/riscv/
->   F:	arch/riscv/boot/dts/
->   X:	arch/riscv/boot/dts/allwinner/
->   X:	arch/riscv/boot/dts/renesas/
-> +X:	arch/riscv/boot/dts/sophgo/
->   
->   RISC-V PMU DRIVERS
->   M:	Atish Patra <atishp@atishpatra.org>
->
->
-> if you want. I get CC'ed on everything under the sun anyway from the DT
-> MAINTAINERS entry, so this at least might reduce some confusion about
-> who is applying what.
->
-> Cheers,
-> Conor.
->
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
 
