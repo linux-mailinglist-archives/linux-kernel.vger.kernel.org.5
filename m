@@ -1,129 +1,178 @@
-Return-Path: <linux-kernel+bounces-40157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 874D083DB57
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:58:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7066883DB62
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:59:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F81C293ADA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:58:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 950031C2347F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:59:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E54651BDC5;
-	Fri, 26 Jan 2024 13:56:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0140C1B973;
+	Fri, 26 Jan 2024 13:59:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SNL+ytVt"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="oUxtrhiv"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2989B1B95F;
-	Fri, 26 Jan 2024 13:56:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF9781BF2C;
+	Fri, 26 Jan 2024 13:59:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706277409; cv=none; b=s2r5+rIK3e/StK7JprXnnae1QN2AwOuVkBRxz8QV0hvn1rWzZXKfZlYshq7qkxKtJd4/1carzkxLWJKSm4ieGwNssKa3s8SjCbTtYAS3RMjRcleYpd064zk9qI/01rtzCZjJqkkxz8Jltbrb5ploVK2sxx0pE+0Uvhaw63Qi9Kk=
+	t=1706277557; cv=none; b=XrblSXv0BKLXjPXkdlVxOvaKl0TZY+f2lnQ9k2qzc092jIH7+lPqkaHk7JPzPBAC21LfkM95ufbJHKjWX4BihP6Csp8qOOAmHb7v+xYpi+2QmnORWFyOdKG52oTKpdsgYzBbmRbJ/2178KxEkf/aGdmGgnFwISxkXQceHJMFkWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706277409; c=relaxed/simple;
-	bh=ik6BNC+e5RWBtEXfJ9qP+GL8xg3EKqy2nXgQher7oXs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aqm8JYafeg7hccpVPMnemtVkP/ldpq0H/n1cUV/15FRtEMPbmblLIYqIIfwSLLJkfyxkaBaDoGr2DUIpZkvtfrMiYaXEVQxm4REmlvPLmbSQdSDiKNmczBsCtMw1kFWGTERO5UG2vr4vQ8eNsf92bq6Qrbmrl/fBR3aym+aNWa0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SNL+ytVt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DFACC41612;
-	Fri, 26 Jan 2024 13:56:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706277408;
-	bh=ik6BNC+e5RWBtEXfJ9qP+GL8xg3EKqy2nXgQher7oXs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=SNL+ytVt+oDZujw02ndRHm1xjNuXyOMGfqC0opM91w8tpVEtXQ5iIRiyhFi0fghZi
-	 nU5mhNbgQHSUMuaJN09sy/o/lsijjdHQKNjL+kf9NhJwsW55Di2rjMI6438iZMb+L3
-	 E+SQwEj+d5Jk99Bl+0Y9svxiBuLvHPNurvXfpzNGOdKkWICMD1KCXNKI1y1v3/kNVX
-	 uqekqI/xLRxmu7ZEcfThvQnuGRS1BLYmowL3VVaj+Gahl84h193BzvXlx4Mg94U+Ey
-	 OXsw8MgqSEwhAPqjpcYFpfDKbTZV4akr0riaxGsMwvussQL9QPe0uy8G1+JcO8seY7
-	 p98LlOVx+lKrg==
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-2143a96d185so86328fac.3;
-        Fri, 26 Jan 2024 05:56:48 -0800 (PST)
-X-Gm-Message-State: AOJu0YxkBP6ko/wegaXpxJ+3NkhCVg+H4L1xsOfDPtanwMABJOyMXNlG
-	XMem7WruwMz5fET5wtdvrgJ7qVaneK02EdchichHMADRdFOa6PQ/8qM2VgujLsFvraOX1t+y/xy
-	53CtZ3Uvk6MymrXG6+ZMebm6PVrM=
-X-Google-Smtp-Source: AGHT+IHD0FucQz5YB/Dnf29+PHG3Jo+GUOEakGbUWXKlFgjDV6mhWsxzLhrobNCcAI0gYzb/gmeXPQvc8dCHsskEveA=
-X-Received: by 2002:a05:6870:c6a7:b0:214:273b:cd43 with SMTP id
- cv39-20020a056870c6a700b00214273bcd43mr1007557oab.74.1706277407979; Fri, 26
- Jan 2024 05:56:47 -0800 (PST)
+	s=arc-20240116; t=1706277557; c=relaxed/simple;
+	bh=pyF83y5tVfnL83cZxX2TVpeE+02/AnbnZJxbFrSpVlg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=VQP+1Sq70SyFpzR8BgbGlFF+9UNlpVD9u2kk63LsRJXF5j7WrKe5weVTc/7co6tuFrBZKQLoOOBpPVT4Tx8MaVqrI00isK67P5KwAby+GPOzVSFy6yfbJ0/P9DkHTMlHJaO6G6285QPOrt5dvRwK6qu8dCAUjvfgiJXg3lC44zU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=oUxtrhiv; arc=none smtp.client-ip=185.132.182.106
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40QAM0hg008172;
+	Fri, 26 Jan 2024 14:59:03 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=DlWza8//9CYZZEeRqSDaLqxbATgDAXvWp1xCzj+RZZU=; b=oU
+	xtrhivReW8tupdJ7UOkEzvmrzBPQFQe71EqRyka0OiB7Yz5BsEh8uokt99zDBqPX
+	BDM6qM9OyKMNfz6ShTLBDpKIddOp8j5HDLkPk1izK7RSK9zAAHwiDgaXnSI17qvN
+	4L505JAg6PYayJQjKmMh6LyW9S/9aqwXUxSwZuf+NS1IXFKM4VRAJcydiz7qFhEl
+	wes1JCvYiWvNzRgcvBlyxHLnVlqBhNKoFzwyaI0pLKK2GX+cN/gPxHF560KoEnMg
+	HfXfMfz//03zjBfeL5rocmw31SISD3vzGOajQJsLKVPKKrs7DJtTvSYt9NyVvFSW
+	DW8DTUEdXL4PW2C1Ikvg==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3vtun2bxj2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Jan 2024 14:59:02 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EEFAC10004F;
+	Fri, 26 Jan 2024 14:59:01 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D627E2ABBF5;
+	Fri, 26 Jan 2024 14:59:01 +0100 (CET)
+Received: from [10.252.25.40] (10.252.25.40) by SHFDAG1NODE2.st.com
+ (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 26 Jan
+ 2024 14:59:01 +0100
+Message-ID: <6e45d577-ab03-457e-ada6-1b75735d42ed@foss.st.com>
+Date: Fri, 26 Jan 2024 14:59:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231215160637.842748-1-masahiroy@kernel.org> <20240122141203.CWe3n5rG@linutronix.de>
-In-Reply-To: <20240122141203.CWe3n5rG@linutronix.de>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Fri, 26 Jan 2024 22:56:11 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASSi78o-Tg24P2uDy1KhUKP8FBrzcn1JhvWrgpoR_mgpA@mail.gmail.com>
-Message-ID: <CAK7LNASSi78o-Tg24P2uDy1KhUKP8FBrzcn1JhvWrgpoR_mgpA@mail.gmail.com>
-Subject: Re: [PATCH v2] kbuild: resolve symlinks for O= properly
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: linux-kbuild@vger.kernel.org, Nicolas Schier <n.schier@avm.de>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Nicolas Schier <nicolas@fjasle.eu>, linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/4] dt-bindings: remoteproc: Add compatibility for TEE
+ support
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Jens
+ Wiklander <jens.wiklander@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>
+CC: <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <op-tee@lists.trustedfirmware.org>, <devicetree@vger.kernel.org>
+References: <20240118100433.3984196-1-arnaud.pouliquen@foss.st.com>
+ <20240118100433.3984196-3-arnaud.pouliquen@foss.st.com>
+ <75429209-8f30-4880-8f92-ecb3cf90ae33@linaro.org>
+From: Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Organization: STMicroelectronics
+In-Reply-To: <75429209-8f30-4880-8f92-ecb3cf90ae33@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-25_14,2024-01-25_01,2023-05-22_02
 
-On Mon, Jan 22, 2024 at 11:12=E2=80=AFPM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
->
-> On 2023-12-16 01:06:37 [+0900], Masahiro Yamada wrote:
-> =E2=80=A6
-> > Using the physical directory structure for the O=3D option seems more
-> > reasonable.
-> >
-> > The comment says "expand a shell special character '~'", but it has
-> > already been expanded to the home directory in the command line.
->
-> It might have been expanded, it might have not been expanded. Having a
-> shell script:
-> | #!/bin/sh
-> |
-> | exec make O=3D~/scratch/mk-check defconfig
->
-> with bin/sh =3D dash results in:
->
-> | make[1]: Entering directory '/home/bigeasy/linux/~/scratch/mk-check'
->
-> while bin/sh =3D bash expands the ~ properly before for O=3D. Would it be
-> too much to ask, to expand the ~?
+Hello Krzysztof,
 
+On 1/26/24 12:03, Krzysztof Kozlowski wrote:
+> On 18/01/2024 11:04, Arnaud Pouliquen wrote:
+>> The "st,stm32mp1-m4-tee" compatible is utilized in a system configuration
+>> where the Cortex-M4 firmware is loaded by the Trusted execution Environment
+>> (TEE).
+>> For instance, this compatible is used in both the Linux and OP-TEE
+>> device-tree:
+>> - In OP-TEE, a node is defined in the device tree with the
+>>   st,stm32mp1-m4-tee to support signed remoteproc firmware.
+>>   Based on DT properties, OP-TEE authenticates, loads, starts, and stops
+>>   the firmware.
+>> - On Linux, when the compatibility is set, the Cortex-M resets should not
+>>   be declared in the device tree.
+>>
+>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+>> ---
+>> V1 to V2 updates
+>> - update "st,stm32mp1-m4" compatible description to generalize
+>> - remove the 'reset-names' requirement in one conditional branch, as the
+>>   property is already part of the condition test.
+>> ---
+>>  .../bindings/remoteproc/st,stm32-rproc.yaml   | 52 +++++++++++++++----
+>>  1 file changed, 43 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
+>> index 370af61d8f28..6af821b15736 100644
+>> --- a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
+>> +++ b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
+>> @@ -16,7 +16,12 @@ maintainers:
+>>  
+>>  properties:
+>>    compatible:
+>> -    const: st,stm32mp1-m4
+>> +    enum:
+>> +      - st,stm32mp1-m4
+>> +      - st,stm32mp1-m4-tee
+> 
+> The patch looks good to me, but I wonder about this choice of two
+> compatibles.
+> 
+> Basically this is the same hardware with the same interface, but two
+> compatibles to differentiate a bit different firmware setup. We have
+> already such cases for Qualcomm [1] [2] and new ones will be coming. [3]
+> 
+> I wonder whether this should be rather the same compatible with
+> additional property, e.g. "st,tee-control" or "remote-control".
 
+Yes the point is valid, I asked myself the question.
 
-Not only O=3D.
+I proposed a compatibility solution for one main reason. On the STM32MP15, if
+the firmware is loaded by Linux, no driver is probed in OP-TEE. But if the
+firmware is authenticated and loaded by OP-TEE, a Op-TEE driver is probed to
+manage memory access rights.
 
+The drawback of a property is that we would need to probe the OP-TEE driver for
+the STM32MP1 platform even if it is not used, just to check this property.
 
-If the shell does not expand the '~' character,
-there are more variables that do not work as expected.
+Thanks,
+Arnaud
 
-For example,
-
-
-$ make CROSS_COMPILE=3D~/path/to/compiler/dir
-
-$ make M=3D~/path/to/external/module/dir'
-
-
-
-It is strange to require only O=3D to expand the '~' character.
-
-
-So, Kbuild should be agnostic about '~'. This is consistent.
-
-
-
-
->
-> Sebastian
->
-
-
---=20
-Best Regards
-Masahiro Yamada
+> 
+> [1]
+> https://elixir.bootlin.com/linux/v6.7.1/source/Documentation/devicetree/bindings/dma/qcom,bam-dma.yaml#L54
+> 
+> [2]
+> https://elixir.bootlin.com/linux/v6.7.1/source/Documentation/devicetree/bindings/net/qcom,ipa.yaml#L129
+> (that's a bit different)
+> 
+> [3] https://lore.kernel.org/linux-devicetree/20240124103623.GJ4906@thinkpad/
+> 
+> @Rob,
+> Any general guidance for this and Qualcomm?
+> 
+> Best regards,
+> Krzysztof
+> 
 
