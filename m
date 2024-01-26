@@ -1,97 +1,89 @@
-Return-Path: <linux-kernel+bounces-40123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62C5F83DA99
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:16:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94BF883DA9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:17:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95A121C21CC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:16:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C802B25A65
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:17:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 114DF1B7F9;
-	Fri, 26 Jan 2024 13:16:17 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABD711B810;
+	Fri, 26 Jan 2024 13:17:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="NN5fv+lT"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C2701B801
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:16:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C9C41B7ED;
+	Fri, 26 Jan 2024 13:17:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706274976; cv=none; b=ow9KnxqpEgAPPp37NHv/sdfupl8tLELWW7ZohQ/+gMd2JRUpmo1SYfvklhuJPscrTlPXamMGxJKVI9ur8IbtFEY44PyN2ivSqWN31jbXWz6l9/RuOHfhANELBrrK+bnHJWB9LCM+prKGXl5dxdnlpVLXj++CKXwQZupDHSknhIk=
+	t=1706275060; cv=none; b=SQJKKbPVu1k1ASq5838wVwNHf68osZm1nCXTrAc04PAntCSDwvzejzqMKN9PMOKLH/vOMWO0sKlwvj+qqQpTHwz5QxY+fYImWKQX9jVAL/qNmI5xgzG+NJjA7+RnNOgrwZNz6HSDqTRBgAHeeHeF9e+A69khglgWO59xy1n3qnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706274976; c=relaxed/simple;
-	bh=6WEf8P0PdldtUGk1fUeRoFVpMCxznnbJzYhHiJCgxc8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=O/57gmcsozt6FV+6wdWWzyx0lvBMG+PT01X0gzxJ0ICyf25o6vCvnPDIydM3NAcg0dXib4I2TQWo9DIU9ZkoofoakUYXOb0VrYvpu7UjKDF5jNrXkpGHmEF7EXcNipqShkkRmus1nn2ynyV5NSdqZi9WqNF4lTkd3OBG5N4tQH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5AC1C433F1;
-	Fri, 26 Jan 2024 13:16:14 +0000 (UTC)
-Date: Fri, 26 Jan 2024 08:16:16 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Christian Brauner <brauner@kernel.org>, Linus Torvalds
- <torvalds@linux-foundation.org>, Kees Cook <keescook@chromium.org>,
- linux-kernel@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, Mark
- Rutland <mark.rutland@arm.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Andrew Morton
- <akpm@linux-foundation.org>, Al Viro <viro@zeniv.linux.org.uk>, Ajay Kaher
- <ajay.kaher@broadcom.com>
-Subject: Re: [for-linus][PATCH 1/3] eventfs: Have the inodes all for files
- and directories all be the same
-Message-ID: <20240126081616.28c02f10@gandalf.local.home>
-In-Reply-To: <CAMuHMdU-+RmngWJwpHYPjVcaOe3NO37Cu8msLvqePdbyk8qmZA@mail.gmail.com>
-References: <20240117143548.595884070@goodmis.org>
-	<20240117143810.531966508@goodmis.org>
-	<CAMuHMdXKiorg-jiuKoZpfZyDJ3Ynrfb8=X+c7x0Eewxn-YRdCA@mail.gmail.com>
-	<20240122100630.6a400dd3@gandalf.local.home>
-	<CAMuHMdXD0weO4oku8g2du6fj-EzxGaF+0i=zrPScSXwphFAZgg@mail.gmail.com>
-	<20240122114743.7e46b7cb@gandalf.local.home>
-	<CAHk-=wiq5mr+wSb6pmtt7QqBhQo_xr7ip=yMwQ5ryWVwCyMhfg@mail.gmail.com>
-	<CAHk-=wjGxVVKvxVf=NDnMhB3=eQ_NMiEY3onG1wRAjJepig=aw@mail.gmail.com>
-	<CAHk-=wiLqJYT2GGSBhKuJS-Uq1DVq3S32oP0SwqQiATuBivxcg@mail.gmail.com>
-	<20240122144443.0f9cf5b9@gandalf.local.home>
-	<20240125-deportation-sogenannten-2d57a7ce8f81@brauner>
-	<20240125130731.3b0e2a42@gandalf.local.home>
-	<20240125130821.0a1cd3a7@gandalf.local.home>
-	<CAMuHMdU-+RmngWJwpHYPjVcaOe3NO37Cu8msLvqePdbyk8qmZA@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706275060; c=relaxed/simple;
+	bh=NlQuNlflVT/LmukzQGVyl9V41C+YgjahNb0jnYT9yrg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sa1rQ9QEEkUcdphbrFbf3hKfYyT0pmHIrrbrTq0OND/KGc6o8QiqbwCjLHF1pZ4JMLqjkjPxRHtuay/rlxX438WAIIY7zfLaqY9LZHrLzuUl3Vjv219MAQ6R3ci7me4d+5A/TcXIjsOT9hTeRPrkbu+bH4f6U/ZsBNJMdT+r5KM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=NN5fv+lT; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+	In-Reply-To:References; bh=dBeM8KjZ3a0EMDvqT9tXv1BytxLZNqA83/cMmPhrQCw=; b=NN
+	5fv+lTjbEXcXQKrRSLN0bAVAH8MBxuR5SeUM4YqvIt+kW/Zq7KPBPjZAtpXM3yZJBEsCTLMKdfPPe
+	iPJYz+3SpYQ4mtWEGbTrnZn54Dg4Q82F0U1Uey7bC3B5LCN+nMVsVfb4a/EOVP+qcxof4KKJ9U+/7
+	6Swl7FGffzQhbbg=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rTM5L-006Anh-QP; Fri, 26 Jan 2024 14:17:31 +0100
+Date: Fri, 26 Jan 2024 14:17:31 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Michal =?utf-8?B?Vm9rw6HEjQ==?= <michal.vokac@ysoft.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Christian Marangi <ansuelsmth@gmail.com>,
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+	Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+	Christian Lamparter <chunkeey@gmail.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, petr.benes@ysoft.com
+Subject: Re: [PATCH net v3] net: dsa: qca8k: fix illegal usage of GPIO
+Message-ID: <22d3d3fd-223b-4b33-9911-1dc4d6809075@lunn.ch>
+References: <1706266175-3408-1-git-send-email-michal.vokac@ysoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1706266175-3408-1-git-send-email-michal.vokac@ysoft.com>
 
-On Fri, 26 Jan 2024 09:07:06 +0100
-Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+On Fri, Jan 26, 2024 at 11:49:35AM +0100, Michal Vokáč wrote:
+> When working with GPIO, its direction must be set either when the GPIO is
+> requested by gpiod_get*() or later on by one of the gpiod_direction_*()
+> functions. Neither of this is done here which results in undefined
+> behavior on some systems.
+> 
+> As the reset GPIO is used right after it is requested here, it makes sense
+> to configure it as GPIOD_OUT_HIGH right away. With that, the following
+> gpiod_set_value_cansleep(1) becomes redundant and can be safely
+> removed.
+> 
+> Fixes: a653f2f538f9 ("net: dsa: qca8k: introduce reset via gpio feature")
+> Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
 
-> Hi Steven.
->=20
-> On Thu, Jan 25, 2024 at 7:08=E2=80=AFPM Steven Rostedt <rostedt@goodmis.o=
-rg> wrote:
-> > On Thu, 25 Jan 2024 13:07:31 -0500
-> > Steven Rostedt <rostedt@goodmis.org> wrote: =20
-> > > Actually, inodes isn't the biggest issue of tar, as tar *is* a common
-> > > operation on tracefs. =20
-> >
-> > Correction. tar would be a common operation if it worked ;-) =20
->=20
-> What would be needed to fix that?  I regularly use tar on other virtual
-> file systems (e.g. /sys/firmware/devicetree/), which works fine.
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-Looks like all /sys files have one page in size. I could change the default
-file size to one page and it might work (if the inodes had different
-numbers), as I don't see any format file greater than 4k.
-
-This would fix the events for tar, but it couldn't do the same for tracing.
-As some files don't actually have a size.
-
--- Steve
-
-
-
+    Andrew
 
