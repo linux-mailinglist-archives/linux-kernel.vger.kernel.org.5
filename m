@@ -1,105 +1,99 @@
-Return-Path: <linux-kernel+bounces-39898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA9F883D738
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:04:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECF7683D72A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:02:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3A5729AB8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:02:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BB2C1F2A030
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:02:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECFBA65BDA;
-	Fri, 26 Jan 2024 09:11:28 +0000 (UTC)
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9E17664C6;
+	Fri, 26 Jan 2024 09:11:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=secunet.com header.i=@secunet.com header.b="lIcsnqVZ"
+Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEECC65BCC;
-	Fri, 26 Jan 2024 09:11:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0478F62A07;
+	Fri, 26 Jan 2024 09:11:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.96.220.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706260288; cv=none; b=YTA60IGbC8gssiUHM8Ftm2qeM/nXrz6gLak0pJhZYxLzWYatFJvNCLWT/ksSrukb3tvz2XuOGRecoTI+bYqGdvauzQMfUaLmtxhQt9lTKlneioNTIz2cQ4PFxo3JQ235wmxikDo2t6ML/5hOKmABdwbiNxLR43UnSOjjKLwS5W4=
+	t=1706260303; cv=none; b=eLPZQF5O8HhNzJnlyFzztvSfUOU2Wu1/Yk+lF1IkHVsFByO5dNYDoVj8cDr5/5Otenfekocsw0I84alkGQMTirun+5ysjzWQqGTi8fJoYFyqb8Sagdqd7pcpuFiQq97mYe1hF/nXTcF53L/iNk2NCiU+b035gKWyXYvTsOYfAFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706260288; c=relaxed/simple;
-	bh=2x4cSzioymkD/L+R0j5Pu+P0Q4GeUXl1uInp6KPmnJI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cKgemd6jRfIjm33s86lMngPe7v9iTph0cfTFRoRlOcmLPbRJ3CUCaQS5x/vZKj0cKHsKu2spaLVThKv/EqCiAWyXr1OuocaLZu4WPHDHR3KmKoMqKnjY6tnIHCyCf1xHVK/+gC/JPg6gGMWuhiNSlKcrUzH89HNv49CAipwFcAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40ee0ace64fso2028905e9.1;
-        Fri, 26 Jan 2024 01:11:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706260285; x=1706865085;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dLYPRg+9DjNrUyzQEzc73suRoE2UEDKX6vuwl1jCCnY=;
-        b=N3Ab/VhELNR8SRYNZ1l4c4QEtvP4xtf8XLC+IwqUkUtG5slTidLe7/O3LnL9g+/cHZ
-         jpT+GOV3gY7+zVlU1HOWRHMeih6gF4Z1aqAkyGW54FYcpFQA8pf647x7cfYIvW2XTA9s
-         k2wKqPq+OGfCoy5n1vwFKQw2Tm+8TIPQeTnX3ecmbrpMS+aTmPpLDCINf5YLQnmzhmw6
-         WvSOrj73KubzAB9qg6AT68WuB9vOKwBEALyNpk9NwywvlcjvpXRguItNiIBkcWjNVMod
-         pwU+P3MIBcn5LhbI9eCYo6rK6sPgEBR9PFE2K4PI5SQzQywJNepfhAyjiZfSorvocCw5
-         Tyjw==
-X-Gm-Message-State: AOJu0YwQLy1UlGx5QpR+Smjz0MAPVUX+Swu1Qqi8Rk5o3MyPYzIxtwKQ
-	RnymCunSs+lk6E67SRJ1HckH/XkGwROA0DhqdvBdCVeszd4M8puL
-X-Google-Smtp-Source: AGHT+IEORubeMvZPghYE7WmqSGMZNquD+aOYMD1F6Dg5FfIKiRQcZ4tA1AtiyJZLTEbj3cb9nDXHVw==
-X-Received: by 2002:a05:600c:4514:b0:40e:549b:340e with SMTP id t20-20020a05600c451400b0040e549b340emr596056wmo.110.1706260284818;
-        Fri, 26 Jan 2024 01:11:24 -0800 (PST)
-Received: from gmail.com (fwdproxy-cln-007.fbsv.net. [2a03:2880:31ff:7::face:b00c])
-        by smtp.gmail.com with ESMTPSA id js18-20020a17090797d200b00a331d6c0c70sm405427ejc.71.2024.01.26.01.11.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 01:11:24 -0800 (PST)
-Date: Fri, 26 Jan 2024 01:11:22 -0800
-From: Breno Leitao <leitao@debian.org>
-To: Joe Damato <jdamato@fastly.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	dhowells@redhat.com, alexander@mihalicyn.com,
-	wuyun.abel@bytedance.com, kuniyu@amazon.com, pabeni@redhat.com,
-	kuba@kernel.org, edumazet@google.com, davem@davemloft.net
-Subject: Re: [PATCH net-next] net: print error if SO_BUSY_POLL_BUDGET is large
-Message-ID: <ZbN3Oh6+i34mGRLp@gmail.com>
-References: <20240125191840.6740-1-jdamato@fastly.com>
+	s=arc-20240116; t=1706260303; c=relaxed/simple;
+	bh=HQvA7txAM0VbjWGr4LJphGRjOmXxRxHM+67/LKlzezU=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EgOF25uYsoNfMmlhMh2a1cWs+XbiMqcYOoURu2UW+B0pmTMadyMHOJ/KgufyD1jhouVJ2Y/2Yc9oCE0WXNgNBZTSlf2KvquKJg1wWUYR14ovd4x6XiLxaS4Ifp4FqFO87DxEdoB/hSzfFSEtj5WFybWp2zmgO7yn/+He0LqNnqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=secunet.com; spf=pass smtp.mailfrom=secunet.com; dkim=pass (2048-bit key) header.d=secunet.com header.i=@secunet.com header.b=lIcsnqVZ; arc=none smtp.client-ip=62.96.220.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=secunet.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=secunet.com
+Received: from localhost (localhost [127.0.0.1])
+	by a.mx.secunet.com (Postfix) with ESMTP id 4D2AA20842;
+	Fri, 26 Jan 2024 10:11:39 +0100 (CET)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+	by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id CndKI7aQloY4; Fri, 26 Jan 2024 10:11:38 +0100 (CET)
+Received: from mailout2.secunet.com (mailout2.secunet.com [62.96.220.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by a.mx.secunet.com (Postfix) with ESMTPS id E66BE207D5;
+	Fri, 26 Jan 2024 10:11:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com E66BE207D5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=secunet.com;
+	s=202301; t=1706260297;
+	bh=5zl+RvElPeyXc8dtCAn1Ij7w5kurFf0vU0RzJY2hrgU=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To:From;
+	b=lIcsnqVZMLCHUu2wiQl7KF3cC+kRpjkze2orphN2eMPN1VstOVPHOCA/lI+qVIMCr
+	 +qichnp9QpCbPtnlfZ7WouykS/C025RqrNWfTUKYLvGaQhchb0OPV/b4+Wb5b1O5PO
+	 XpqQVmDUJEowEij6i/8rm01kL5WguFPViKn/6ZFCMq3U5PpepQFa7ulzGXEF3mn2cX
+	 fe/pNmIANdVFT8LqpWagz1vbSn1kjjBF6W4A6k83BqBpPBtd/fvwI/HABHZZgHjZPO
+	 qSein44YaUmQXo7aS5V5QMywKlrWQH84FdqxUJvvQUc5yaskaSnHSH8vmoIHpuPq21
+	 1GHiyG3vEKCPA==
+Received: from cas-essen-02.secunet.de (unknown [10.53.40.202])
+	by mailout2.secunet.com (Postfix) with ESMTP id DD878800050;
+	Fri, 26 Jan 2024 10:11:37 +0100 (CET)
+Received: from mbx-essen-02.secunet.de (10.53.40.198) by
+ cas-essen-02.secunet.de (10.53.40.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 26 Jan 2024 10:11:37 +0100
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-02.secunet.de
+ (10.53.40.198) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 26 Jan
+ 2024 10:11:37 +0100
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+	id 100123182D6D; Fri, 26 Jan 2024 10:11:37 +0100 (CET)
+Date: Fri, 26 Jan 2024 10:11:36 +0100
+From: Steffen Klassert <steffen.klassert@secunet.com>
+To: Kunwu Chan <chentao@kylinos.cn>
+CC: <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+	<dsahern@kernel.org>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH ipsec-next] xfrm6_tunnel: Use KMEM_CACHE instead of
+ kmem_cache_create
+Message-ID: <ZbN3SOlsVN0dbL/m@gauss3.secunet.de>
+References: <20240124063150.466037-1-chentao@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20240125191840.6740-1-jdamato@fastly.com>
+In-Reply-To: <20240124063150.466037-1-chentao@kylinos.cn>
+X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
+ mbx-essen-02.secunet.de (10.53.40.198)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 
-Hi Joe,
+On Wed, Jan 24, 2024 at 02:31:50PM +0800, Kunwu Chan wrote:
+> Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+> to simplify the creation of SLAB caches.
+> 
+> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
 
-On Thu, Jan 25, 2024 at 07:18:40PM +0000, Joe Damato wrote:
-> When drivers call netif_napi_add_weight with a weight that is larger
-> than NAPI_POLL_WEIGHT, the networking code allows the larger weight, but
-> prints an error.
-> 
-> Replicate this check for SO_BUSY_POLL_BUDGET; check if the user
-> specified amount exceeds NAPI_POLL_WEIGHT, allow it anyway, but print an
-> error.
-> 
-> Signed-off-by: Joe Damato <jdamato@fastly.com>
-> ---
->  net/core/sock.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index 158dbdebce6a..ed243bd0dd77 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -1153,6 +1153,9 @@ int sk_setsockopt(struct sock *sk, int level, int optname,
->  			return -EPERM;
->  		if (val < 0 || val > U16_MAX)
->  			return -EINVAL;
-> +		if (val > NAPI_POLL_WEIGHT)
-> +			pr_err("SO_BUSY_POLL_BUDGET %u exceeds suggested maximum %u\n", val,
-> +			       NAPI_POLL_WEIGHT);
-
-'val' is a signed value variable. I suspect it will never be negative given
-the line above (val < 0 || val > U16_MAX), but, I am wondering if you
-should still print it as signed integer (%d) to keep it consistent.
+Applied, thanks a lot!
 
