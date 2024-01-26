@@ -1,83 +1,82 @@
-Return-Path: <linux-kernel+bounces-40650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6950783E3A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:07:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B0A983E3A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:07:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8820B2251F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:07:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E2121C23EB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 21:07:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC3FE249F0;
-	Fri, 26 Jan 2024 21:06:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6F262421E;
+	Fri, 26 Jan 2024 21:07:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="2aqdI02e"
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KFS+eycP"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE2C6249E7
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 21:06:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77D66249EA;
+	Fri, 26 Jan 2024 21:07:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706303206; cv=none; b=vDlRkyU+ITyNtqM5jsTyrVxfUOkWAoZo0hgFCvCJ30Z5ru21u3mU8ulB1HljQ8zS89O3sQ2DZhl6e8hKmq0KH9ldiob38E8cscgU5ZgGnKtU41IMglntasTmrNBKBmSCJRyEXU2iYmqZS51bYuegukaK1eZtpd8DXwpTz2hiemg=
+	t=1706303228; cv=none; b=WIQyj4VFuRGQgOIwKxc1fiTRUG4jYi4CitIMRxAFrkoDwurYud7/e+FLo5Tax3wNpsjOIpnIM94jd09tn/iMF/ov9K/MgEUcP+i0LE70muzXO045cem8rh5Cx5/Eg3A4cU8dknMUD0KLxoJpBvE4+YDCpxNni5VI64nl0iNgdLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706303206; c=relaxed/simple;
-	bh=DGuwcy7+t/oybW2DmRtk136XOg5k5hZpx3k/FLEeh1M=;
+	s=arc-20240116; t=1706303228; c=relaxed/simple;
+	bh=dbw4vvArXGU39B7YbeEZOM5qPS2AP0rPNYsZM5P8/DI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g28Y0ewSCQZQYh85KdFcGcpkSYl/ABLqQ8AOVYT1wf7j5PAV+ZZni5L61TG+5XcuOV6BrMnGvTp32CAvymeYnn+P5crzIRRMDsosUC+f/9nXJlXlSzlu8Wfg2UO1ABdgzGVxyJCkqkqanxJTASrDdQgqEVciBm2jzqhUzYRFBik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=2aqdI02e; arc=none smtp.client-ip=209.85.210.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6e114e247a2so169210a34.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:06:44 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=unGSAoMe7GSqv416lVk4vzkVzw6XiLyIGcM9qod208tbsT615JOsoQExiRZJh28/LBvTzzn8JRWP8tvZ1/w5vZ35nryWLTt9YaybLCBUGsCGRHiLTwXfUBFC2eNJ3yFfKTDHnffxPi/SdUjJAWWZZNkeb+UFcJoiNUprGMF/kGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KFS+eycP; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d71207524dso4840695ad.1;
+        Fri, 26 Jan 2024 13:07:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706303203; x=1706908003; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706303226; x=1706908026; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rXLiZ/QkDFCOQ1THZJEDxzG3f4B+MGCbqeorNkMEFUA=;
-        b=2aqdI02eCc3PAWaJMav8f9c/rFa8OVjTFDJqbPS/mqzDox6ndcHxA8J/LEXaO7bO1q
-         aB1bSWDT9WTUmHhyfNXbCt9U9kIOqijHgj5ErOkhCOybPFTFyB4rPeM0LspqlqzfheUC
-         A7jMv+l4orynVg9o8DE0MVg90DnS7NLlqNWst7zuiTzEDT3WtjLaJyE8NhKzeiDX7gYO
-         Q/0GNkqj+y6LIfiCbd+sSIq9dRKLxjoMIgRixRGN+djGH+2b7ZQXnOmLjRSs8pfXlKB+
-         9MEyM3xxaExOAf4EuUXqzr1g4TLGOKPEFJXArKLcgV2U9t6N9Qq5NgmyWYT5V8HA6FGp
-         ZVSw==
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XTdpuD2crIU6eganfNTvdxMFibWZIegvqQ+jXo5sH/4=;
+        b=KFS+eycPG/07JKMFZ/QWq5YXaeDFe2vIbYUlvQlA9zBqwkUatgYmZR+l+xYa2JeZk9
+         Ia05RN4LBeeGDy9dTPPq2uWsQkaSPKhHSYeceFm2Tjks2kjVfdfpWrSFL1kP4aX0Et3C
+         yNijDkyIjjFa/owL8Zl1o7xomwa6OhiZ4XUg4SLswUrsf4qzGmkf8DciTT2VQY6JEjUf
+         tmktmUQKZIaPovLVP/tFAyQ15GZKZo3mRXgoFkmslvR9oZsnTDqiJF7j8Jz/ysX3bO8L
+         S53aNXp6lgnlPIeGo/73gAzlfV0OofxooSpR9kcL25iGt5iIltsBHdNfcrFtk2hjaLhe
+         9GVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706303203; x=1706908003;
+        d=1e100.net; s=20230601; t=1706303226; x=1706908026;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rXLiZ/QkDFCOQ1THZJEDxzG3f4B+MGCbqeorNkMEFUA=;
-        b=tAqaJWln5AZ5GOk8tgJGC3U+BRoNtDHlKD9S0KaqKvl93SYr2JeezsQiZ9HqU2IkcL
-         gn0we6b5/Jsc6ROixqGj4pCUgW9pvyEsHz9QraNsVLb3V4daksskjGDDIZnEoPUZhxxG
-         BdMKqH8P9uBA913RFbAvz0wQeMhz3FFJX1F7YMUbsZY8RpX2TRqhRLTC2cFibjU9ZG8z
-         e3iD05GUBMXqTZzmf/1q8DJbGi12OmVbZIRla/dBT9aj6D7EAWkir9Y+il7EvEv86HTz
-         aZLBakqbdqc0aXoDVNt9im59a7ohnv9i59iJ2lle8xMh0fVYqIX7XFBtF5BtWxoFXxtm
-         uoyQ==
-X-Gm-Message-State: AOJu0YwvdFt1ZBkXGTwx8LGB+dmrqCkfPYMwZn5qM3+SqJOYDLu+nnSp
-	SLbSZzo966oiL0ZzKluTyUnNrpEw2JxYjgSFFOG8rOWpD0XAYsve7Kb5Tu0CILE=
-X-Google-Smtp-Source: AGHT+IHR9d2RnaSnbK4TL5g+c7dwHZhhLVRgyKzjJnJpZcgI2qk0Hq9pBoMywVZyfybv5A2Pj+RdbA==
-X-Received: by 2002:a9d:4d92:0:b0:6dc:776:2eb7 with SMTP id u18-20020a9d4d92000000b006dc07762eb7mr282095otk.60.1706303203640;
-        Fri, 26 Jan 2024 13:06:43 -0800 (PST)
-Received: from localhost ([2620:10d:c091:400::5:271e])
-        by smtp.gmail.com with ESMTPSA id nc6-20020a0562142dc600b00685ad9090basm830074qvb.97.2024.01.26.13.06.43
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XTdpuD2crIU6eganfNTvdxMFibWZIegvqQ+jXo5sH/4=;
+        b=DcIryBjxFW4MHRYKngowHKNEFtZuUqgaoG1ojpZJ9QrrDYlcVhJoSjpvQhSrxGVaJf
+         3R7Q5U+te+6M/B5BNseQhgiCdDqpZhHKLz8VcTwRkNbe/l51/HUIztwJ14ffTDL7x+RA
+         a3Ujwm/xwqpc8domWhHw3YsVcwV6qzlINdX9TS35IZzRyHPN6u2O/EWaFE1xH4p8VG3T
+         ibY+rxa8KMzit/vxtfSozfNT2VLsT02b3z4/fj+py5aSG6JNuddnlSieB9Wt8PB0BgcV
+         w5sz0pJedeXa/gs8uAJcjntHiVX51XW47Q5J76Q0ASwZYgbAVWQfhyeD6NkpsjuEf72G
+         37ZA==
+X-Gm-Message-State: AOJu0Yx6wJPM/SqrbimTIzPL9YJSwLY24g45Qg0fEbxsm5GyHtaObC1l
+	xuO5iuTJ1ZIKlCN5TWx2JhMHl/LstbWNRF46FIgfDrKB2uzzo6rCrcl6Vv1r
+X-Google-Smtp-Source: AGHT+IG8ow72mXXmqMAXAwHP4w7ura8bLjcOOCnNVo8Pz/dog4rC5YNHv3LEiJuJ4q/JIGr6R6KrRw==
+X-Received: by 2002:a17:902:6a84:b0:1d6:ea06:9432 with SMTP id n4-20020a1709026a8400b001d6ea069432mr563627plk.87.1706303225639;
+        Fri, 26 Jan 2024 13:07:05 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id s20-20020a056a00195400b006dbe42b8f75sm1510780pfk.220.2024.01.26.13.07.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jan 2024 13:06:43 -0800 (PST)
-Date: Fri, 26 Jan 2024 16:06:42 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: "T.J. Mercier" <tjmercier@google.com>
-Cc: Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com,
-	Minchan Kim <minchan@google.com>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: memcg: Don't periodically flush stats when memcg is
- disabled
-Message-ID: <20240126210642.GK1567330@cmpxchg.org>
-References: <20240126203353.1163059-1-tjmercier@google.com>
+        Fri, 26 Jan 2024 13:07:05 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Fri, 26 Jan 2024 13:07:03 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: Konstantin Aladyshev <aladyshev22@gmail.com>
+Cc: Jean Delvare <jdelvare@suse.com>,
+	Naresh Solanki <Naresh.Solanki@9elements.com>,
+	Patrick Rudolph <patrick.rudolph@9elements.com>,
+	linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] hwmon: (pmbus/mp2975) Fix driver initialization for
+ MP2975 device
+Message-ID: <f54a1599-13d5-4fcb-8f76-16f78d0f86a8@roeck-us.net>
+References: <20240126205714.2363-1-aladyshev22@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,24 +85,36 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240126203353.1163059-1-tjmercier@google.com>
+In-Reply-To: <20240126205714.2363-1-aladyshev22@gmail.com>
 
-On Fri, Jan 26, 2024 at 08:33:52PM +0000, T.J. Mercier wrote:
-> The root memcg is onlined even when memcg is disabled. When it's onlined
-> a 2 second periodic stat flush is started, but no stat flushing is
-> required when memcg is disabled because there can be no child memcgs.
-> Most calls to flush memcg stats are avoided when memcg is disabled as a
-> result of the mem_cgroup_disabled check [1] added in [2], but the
-> periodic flushing started in mem_cgroup_css_online is not. Skip it.
+On Fri, Jan 26, 2024 at 11:57:14PM +0300, Konstantin Aladyshev wrote:
+> The commit 1feb31e810b0 ("hwmon: (pmbus/mp2975) Simplify VOUT code")
+> has introduced a bug that makes it impossible to initialize MP2975
+> device:
+> """
+> mp2975 5-0020: Failed to identify chip capabilities
+> i2c i2c-5: new_device: Instantiated device mp2975 at 0x20
+> i2c i2c-5: delete_device: Deleting device mp2975 at 0x20
+> """
+> Since the 'read_byte_data' function was removed from the
+> 'pmbus_driver_info ' structure the driver no longer reports correctly
+> that VOUT mode is direct. Therefore 'pmbus_identify_common' fails
+> with error, making it impossible to initialize the device.
 > 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/mm/memcontrol.c?h=v6.8-rc1#n753
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7d7ef0a4686abe43cd76a141b340a348f45ecdf2
+> Restore 'read_byte_data' function to fix the issue.
 > 
-> Fixes: aa48e47e3906 ("memcg: infrastructure to flush memcg stats")
-> Reported-by: Minchan Kim <minchan@google.com>
-> Signed-off-by: T.J. Mercier <tjmercier@google.com>
+> Tested:
+> - before: it is not possible to initialize MP2975 device with the
+> 'mp2975' driver,
+> - after: 'mp2975' correctly initializes MP2975 device and all sensor
+> data is correct.
+> 
+> Fixes: 1feb31e810b0 ("hwmon: (pmbus/mp2975) Simplify VOUT code")
+> 
+> Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com>
 
-With what Shakeel pointed out resolved:
+Applied.
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Thanks,
+Guenter
 
