@@ -1,144 +1,90 @@
-Return-Path: <linux-kernel+bounces-40131-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8EE683DAC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:30:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E952083DAD0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 14:30:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D1591F249C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:30:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A567A285809
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 13:30:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 244341B81E;
-	Fri, 26 Jan 2024 13:30:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA3FA1B94D;
+	Fri, 26 Jan 2024 13:30:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IaZc+ud7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="mDkR5jfR"
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 603B91B959;
-	Fri, 26 Jan 2024 13:30:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B3531B80A
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 13:30:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706275816; cv=none; b=io6ZMDVE6vMclXxJ47h7HOfjk1HRv8T2um9cV1u4tv/QZ5E5lux/PErfBDgqXd4HtZMLChyKfoFuQJ2efYXTY2WjtVce8uJlgTainZBF3LNH54ahgHxv0jy0yjEPaJTvl4lTPgWZC5aVVtVsIINxLTRmLmczcqwTXfk+IlXZywk=
+	t=1706275836; cv=none; b=seVitpddFVkT6nlr2FDhakvYYePf9ialKyPEgK0BlVgS3h1FL6x9rJnbGoInUkFUaeIFe1Esiwxb+kOzqjGNyJjLYSSsyYaSU8LtUlLue/LHwUhKt86yfXFQTtRz0G25wa6BTc0vXVM1gxMEFFLOukD8ZMMRFIl02rgwCIKDvsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706275816; c=relaxed/simple;
-	bh=Nue8KygHkKeII+jOSXsS8scQGO5eZ5Pxo/5p3G7mjZc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=M4oU59s1I/Pe07wZ2774UA0iCLwt9DOAZZz4II/ApfrY/lqVpmL9pVvUKWqYlzqOrEFn8hNvdKM0U3idWpud0cox9murJB85k7kRetN9W8ooJVorBJzialZYkTnnMMMpZl+gTDNt3L/gRnLnqZ0akeYfrVY3MbRE5nWgc5KMVTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IaZc+ud7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2630C43142;
-	Fri, 26 Jan 2024 13:30:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706275815;
-	bh=Nue8KygHkKeII+jOSXsS8scQGO5eZ5Pxo/5p3G7mjZc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=IaZc+ud7tFfYGt9iESCGtTbgHjNvW0STOVJzOw2Wfcmdo3Viaipm6Yz8VCwWKOUuN
-	 HNWBP9OHnlweqoct2SEK8VDPm6U3xs8Wpj2/LFHrldxPAL61/GTMpWuWf4b0t4zEQL
-	 Yx2iqVT+tzZ3fFfMsLlkshffQJCbqKfgRVORQMZpLTucSWcckgJ5ej14uJNT3Ci7+2
-	 2QS1DheAIeVXRbJGUsCfXpuRAW+NVN5hs6g5switdlvDt3JTeHR7YzkMj6p6WWkQcU
-	 jlulZYAgNrH1fpO0FwpYY+hwdh4ebeGuWYZN4i04zmKly/plLvl9eOMUqI6KQkVA/k
-	 hZF6AUXg0sggQ==
-From: Masahiro Yamada <masahiroy@kernel.org>
-To: linux-kbuild@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Yoann Congal <yoann.congal@smile.fr>,
-	Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH] kconfig: initialize sym->curr.tri to no for all symbol types again
-Date: Fri, 26 Jan 2024 22:30:10 +0900
-Message-Id: <20240126133010.78999-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1706275836; c=relaxed/simple;
+	bh=Cf1srHkbVmdczQQSvVcYaIQj++mOd6FYYHilb6oPBMQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ePYKkqaL0TP7+FIbBKzG3+zo/GQNyajh8jdHYc6yEGevrILBmZGUXyEgcYKH6hWrHdBier8VmG8McqdS2mUYRaiPHtfM3C49kZMhNDUgoRRrLX1kdei8Mxt31pd44gdpAS6+FFJdGHdFb6Qpfc4h17cJUrxfiGOs+om/qF7LlXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=mDkR5jfR; arc=none smtp.client-ip=115.124.30.97
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1706275828; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=KcBBGTYzSlZxLROYC6wPY4xQ8FciqyL6apQ3SBO84Ro=;
+	b=mDkR5jfRFGlwKm6ZtptSpJjU5++aSJHRiD6yw4lJ1hh08IgbbiVp2ZYLMDwIgVP7SinX7CAlUv0i+wpHRqSoSMI+oFM9a52dNhLURIn7VkerP2LAICUt9zwJyS1qekKgeM/5+69xRZgWv+LzQMUzZgOOggc4a9HIs4zyI92aFLg=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0W.Nsj5c_1706275826;
+Received: from 30.27.78.222(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W.Nsj5c_1706275826)
+          by smtp.aliyun-inc.com;
+          Fri, 26 Jan 2024 21:30:27 +0800
+Message-ID: <5b5387e8-3251-4750-844e-5c34b36eee87@linux.alibaba.com>
+Date: Fri, 26 Jan 2024 21:30:25 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] erofs: relaxed temporary buffers allocation on
+ readahead
+To: Yue Hu <zbestahu@gmail.com>
+Cc: linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
+ Yue Hu <huyue2@coolpad.com>, Chunhai Guo <guochunhai@vivo.com>
+References: <TY2PR06MB3342D2245C5E515028C33FD4BE792@TY2PR06MB3342.apcprd06.prod.outlook.com>
+ <20240126053616.3707834-1-hsiangkao@linux.alibaba.com>
+ <20240126184656.0000561c.zbestahu@gmail.com>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <20240126184656.0000561c.zbestahu@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-In C programming, a non-zero value is interpreted as true, and a zero
-value as false.
+Hi Yue,
 
-Kconfig has never worked like that; only 'bool' and 'tristate' symbols
-are properly handled in conditionals. The other types ('int', 'hex',
-'string') are always interpreted as false if used in boolean contexts.
+On 2024/1/26 18:46, Yue Hu wrote:
+> On Fri, 26 Jan 2024 13:36:16 +0800
+> Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
+> 
 
-Until commit 4e244c10eab3 ("kconfig: remove unneeded symbol_empty
-variable") accidentally changed the behavior, the default of
-CONFIG_LOG_CPU_MAX_BUF_SHIFT was unconditionally 12, because the 'int'
-symbol 'BASE_SMALL' was evaluated as false, hence 'if !BASE_SMALL' was
-always true.
+..
 
-You can confirm it as follows:
+>>   	/*
+>> @@ -1276,7 +1280,11 @@ static int z_erofs_decompress_pcluster(struct z_erofs_decompress_backend *be,
+>>   					.inplace_io = overlapped,
+>>   					.partial_decoding = pcl->partial,
+>>   					.fillgaps = pcl->multibases,
+>> +					.gfp = pcl->besteffort ?
+>> +						GFP_KERNEL | __GFP_NOFAIL :
+>> +						GFP_NOWAIT | __GFP_NORETRY
+>>   				 }, be->pagepool);
+>> +	pcl->besteffort = false;
+> 
+> reposition it following `pcl->multibases = false`?
 
-  $ git checkout 4e244c10eab3^
+Good idea! Let me update this.
 
-  $ make -s ARCH=x86_64 defconfig
-  $ grep -e LOG_CPU_MAX_BUF_SHIFT -e BASE_SMALL -e BASE_FULL .config
-  CONFIG_LOG_CPU_MAX_BUF_SHIFT=12
-  CONFIG_BASE_FULL=y
-  CONFIG_BASE_SMALL=0
-
-  $ make -s ARCH=arm keystone_defconfig
-  $ grep -e LOG_CPU_MAX_BUF_SHIFT -e BASE_SMALL -e BASE_FULL .config
-  CONFIG_LOG_CPU_MAX_BUF_SHIFT=12
-  # CONFIG_BASE_FULL is not set
-  CONFIG_BASE_SMALL=1
-
-CONFIG_LOG_CPU_MAX_BUF_SHIFT defaults to 12 irrespective of the value
-of CONFIG_BASE_SMALL.
-
-Since commit 4e244c10eab3, this is an undefined behavior because
-sym_calc_value() stopped setting the sym->curr.tri field for 'int',
-'hex', and 'string' symbols.
-
-Commit 23b2899f7f19 ("printk: allow increasing the ring buffer depending
-on the number of CPUs") presumably intended the following:
-
-  config LOG_CPU_MAX_BUF_SHIFT
-          int "CPU kernel log buffer size contribution (13 => 8 KB, 17 => 128KB)"
-            [snip]
-          default 12 if BASE_SMALL == 0
-          default 0
-
-But, the correct fixes would potentially impact multiple defconfigs,
-hence they should be reviewed in each dedicated subsystem.
-
-Restore the original behavior for now.
-
-Fixes: 4e244c10eab3 ("kconfig: remove unneeded symbol_empty variable")
-Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Closes: https://lore.kernel.org/all/CAMuHMdWm6u1wX7efZQf=2XUAHascps76YQac6rdnQGhc8nop_Q@mail.gmail.com/
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- scripts/kconfig/symbol.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/scripts/kconfig/symbol.c b/scripts/kconfig/symbol.c
-index f615e2c1e85d..1290c6d2f8c2 100644
---- a/scripts/kconfig/symbol.c
-+++ b/scripts/kconfig/symbol.c
-@@ -346,6 +346,8 @@ void sym_calc_value(struct symbol *sym)
- 
- 	oldval = sym->curr;
- 
-+	newval.tri = no;
-+
- 	switch (sym->type) {
- 	case S_INT:
- 		newval.val = "0";
-@@ -358,7 +360,7 @@ void sym_calc_value(struct symbol *sym)
- 		break;
- 	case S_BOOLEAN:
- 	case S_TRISTATE:
--		newval = symbol_no.curr;
-+		newval.val = "n";
- 		break;
- 	default:
- 		sym->curr.val = sym->name;
--- 
-2.40.1
-
+Thanks,
+Gao Xiang
 
