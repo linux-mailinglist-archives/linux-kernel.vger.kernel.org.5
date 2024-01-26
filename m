@@ -1,162 +1,128 @@
-Return-Path: <linux-kernel+bounces-40323-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40324-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E09EB83DE81
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:20:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2429583DE87
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 17:21:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D48C28738F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:20:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BACE3B24049
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 16:21:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F94E1DA24;
-	Fri, 26 Jan 2024 16:20:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A0811B5B1;
+	Fri, 26 Jan 2024 16:21:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kzCEpfep"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="L+pJ0gQW"
+Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A13061CD3F;
-	Fri, 26 Jan 2024 16:20:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AC361CF90
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 16:21:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.93.223.253
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706286022; cv=none; b=eTiIh4wrGkpX2rUpRk5uHpX5zzel72spq5TuyokKhXReNjZ0usl7bun+G+muna4Nvvge2j1FbgSHSsaQHR9o6cqroTsNJxw0x7N9RDnQH1eKV730YCiJfTXA/KWWgH88Nom7KWMpB/xEHryvigIraQ0a/polVTpUYqSWtw8wzWQ=
+	t=1706286069; cv=none; b=W75CxVDLKzF9u60cgTwB7uvajZ8WKJg77BaXebQeNTd/duFmGIpo4WZkiTX2n6nsbX+PHXcOfCMKVK+IpFTXeERadBRTCp9KBALojf754YoQe55SQ754oMNjco26DYWJfygXE4sdCrae+HXrcF5W0Hh/BLZx8sPUK6l6ivZh9ok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706286022; c=relaxed/simple;
-	bh=Bg4FEqSmu/zlJ81s2vYzsOyYu9m8XO/urPWpfBFydT0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iUEZH7Cd7GWaAI5LDshobv62bDEdAdLC8bPvbkDIgiyHoj2pz08VgHsxWe8GVGgsjN9AsgRd/O2czdgRth3pbrwtZ/LGsc6fYtzYshVIh1pHPAm300Y98Vy3jib1KN0KyAoGUZmFpYiQDYNfy++YCpvXcRE9Yovwew9S4x9INo8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kzCEpfep; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41235C433F1;
-	Fri, 26 Jan 2024 16:20:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706286022;
-	bh=Bg4FEqSmu/zlJ81s2vYzsOyYu9m8XO/urPWpfBFydT0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kzCEpfep/SR6iB7ACMgLPn0tku02mUlmxJyoz56wZ0Y+xhSjGKHZkFKpCqh72K3wB
-	 g4UOsmdt9Hkscql0kYrcSM9e3YLr8xWCivpLCT+5ILfS7fsJwAkluJSCceLFlnCfO1
-	 cBpCODNhi0d9I0CjqHc2IaubUIA7qiZjs4nr/ZQfHahrO3LeKcaIjT+uzR81jYzjw3
-	 K2gpat3abPj2AH8x41kr5yha2+xzMgQuXfRShyAQ0CrNBEU86ub8X3yLtmm2ab1vau
-	 ME8ZUYuryfj1Zm3Y6cFhPa7XsjSNA/VUE8Bm54ErHvmYOz7315gb5xKx3Hrmj1F3m+
-	 QIybEEtcKCRWQ==
-Date: Fri, 26 Jan 2024 16:20:18 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Naresh Solanki <naresh.solanki@9elements.com>
-Cc: Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Patrick Rudolph <patrick.rudolph@9elements.com>,
-	mazziesaccount@gmail.com, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: mfd: Add regulator-compatible property
-Message-ID: <20240126-deflate-ashy-158a91efb25a@spud>
-References: <20240126114614.1424592-1-naresh.solanki@9elements.com>
+	s=arc-20240116; t=1706286069; c=relaxed/simple;
+	bh=XbFTSyVW06Iaz2yZpMZPpFNnQ89qLLom1HMrMNtKv1M=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Wi4vdTZIRFe1D1HW6CzyBxoJZlrppznd6UMAwBGZ4YPVP+mWYuyoAdXVRarGIBWxpmzJJmM8QmBK5f4bPiDNzpg2AMQ2YhEbHfEfzlWv1HCxTI0FFuuzB+Tn66NiF9YJu9JpKjbj14qynNX2E9mnQdj+NqUDmZY+I3jRnQWAyhU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=L+pJ0gQW; arc=none smtp.client-ip=77.93.223.253
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tesarici.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by bee.tesarici.cz (Postfix) with ESMTPSA id DBF8618C8FB;
+	Fri, 26 Jan 2024 17:21:00 +0100 (CET)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
+	t=1706286061; bh=XbFTSyVW06Iaz2yZpMZPpFNnQ89qLLom1HMrMNtKv1M=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=L+pJ0gQWzLC5yCJtUQqqH9mAvCH4/F462d1zWXlEM++WR33kntMzS6tLrRn2K8PIq
+	 FI7tFkAAnLFa5HKSI9TNRkivufjpN72EYx6pa5HxKYbtzFIqVRNog1C8Lk7NE4g8H2
+	 ODQe1OqjOQFWg4JldbY6TATkm8np0jzjvjJasCKW+VO+OD0IB+zs08h621FeOIIxvA
+	 dnZc2VcVNtK+qEA1jNGADY78yxUOS+LdBRYW+3p3Czqxgfo4sscfMZMjMFmKfU8jh3
+	 p1WboComAH7QjDtX6700UxTKqVU+cHmKW5j3fdwKC9W4f0z6s7VJjubxl22CXhuRpo
+	 +uaVEZ5TicAuQ==
+Date: Fri, 26 Jan 2024 17:20:59 +0100
+From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To: Will Deacon <will@kernel.org>
+Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
+ iommu@lists.linux.dev, Christoph Hellwig <hch@lst.de>, Marek Szyprowski
+ <m.szyprowski@samsung.com>, Robin Murphy <robin.murphy@arm.com>, Petr
+ Tesarik <petr.tesarik1@huawei-partners.com>, Dexuan Cui
+ <decui@microsoft.com>
+Subject: Re: [PATCH 0/2] Fix double allocation in swiotlb_alloc()
+Message-ID: <20240126172059.48ad7b9f@meshulam.tesarici.cz>
+In-Reply-To: <20240126151956.10014-1-will@kernel.org>
+References: <20240126151956.10014-1-will@kernel.org>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="lQRYenakLFWQ8EtE"
-Content-Disposition: inline
-In-Reply-To: <20240126114614.1424592-1-naresh.solanki@9elements.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
+Hi Will,
 
---lQRYenakLFWQ8EtE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, 26 Jan 2024 15:19:54 +0000
+Will Deacon <will@kernel.org> wrote:
 
-On Fri, Jan 26, 2024 at 05:16:14PM +0530, Naresh Solanki wrote:
-> Add regulator-compatible property.
+> Hi folks,
+> 
+> These two patches fix a nasty double allocation problem in swiotlb_alloc()
+> and add a diagnostic to help catch any similar issues in future. This was
+> a royal pain to track down and I've had to make a bit of a leap at the
+> correct alignment semantics (i.e. iotlb_align_mask vs alloc_align_mask).
 
-Why? I can see that this is what you did, but there's no justification
-for it.
+Welcome to the club. I believe you had to re-discover what I described here:
 
-grepping for this property, the first thing I see is:
-rg "regulator-compatible"
-drivers/regulator/of_regulator.c
-389: * based on either the deprecated property regulator-compatible if pres=
-ent,
-428:					"regulator-compatible", NULL);
-486:		name =3D of_get_property(child, "regulator-compatible", NULL);
+  https://lore.kernel.org/linux-iommu/20231108101347.77cab795@meshulam.tesarici.cz/
 
+The relevant part would be this:
 
-The property is deprecated, so you'll need twice as good a justification
-for adding it!
+  To sum it up, there are two types of alignment:
 
-> Also update example.
->=20
-> TEST=3DRun below command & make sure there is no error
-> make DT_CHECKER_FLAGS=3D-m dt_binding_check
+  1. specified by a device's min_align_mask; this says how many low
+     bits of a buffer's physical address must be preserved,
 
-Same comment here as my other mail.
+  2. specified by allocation size and/or the alignment parameter;
+     this says how many low bits in the first IO TLB slot's physical
+     address must be zero.  
 
-Thanks,
-Conor.
+Fix for that has been sitting on my TODO list for too long. :-(
 
->=20
-> Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
-> ---
->  Documentation/devicetree/bindings/mfd/maxim,max5970.yaml | 9 +++++++++
->  1 file changed, 9 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml b/D=
-ocumentation/devicetree/bindings/mfd/maxim,max5970.yaml
-> index 0da5cae3852e..75175098cbc2 100644
-> --- a/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml
-> +++ b/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml
-> @@ -74,6 +74,9 @@ properties:
->              description: |
->                The value of current sense resistor in microohms.
-> =20
-> +          regulator-compatible:
-> +            pattern: "^SW[0-1]$"
-> +
->          required:
->            - shunt-resistor-micro-ohms
-> =20
-> @@ -111,6 +114,8 @@ examples:
-> =20
->              regulators {
->                  sw0_ref_0: sw0 {
-> +                    regulator-compatible =3D "SW0";
-> +                    regulator-name =3D "p5v";
->                      shunt-resistor-micro-ohms =3D <12000>;
->                  };
->              };
-> @@ -145,9 +150,13 @@ examples:
-> =20
->              regulators {
->                  sw0_ref_1: sw0 {
-> +                    regulator-compatible =3D "SW0";
-> +                    regulator-name =3D "p5v_aux";
->                      shunt-resistor-micro-ohms =3D <12000>;
->                  };
->                  sw1_ref_1: sw1 {
-> +                    regulator-compatible =3D "SW1";
-> +                    regulator-name =3D "p3v3_aux";
->                      shunt-resistor-micro-ohms =3D <10000>;
->                  };
->              };
->=20
-> base-commit: ecb1b8288dc7ccbdcb3b9df005fa1c0e0c0388a7
-> --=20
-> 2.42.0
->=20
+Petr T
 
---lQRYenakLFWQ8EtE
-Content-Type: application/pgp-signature; name="signature.asc"
+> Without these changes, we've been observing random vsock hangs when
+> communicating with virtual machines in Android.
+> 
+> Please have a look!
+> 
+> Cheers,
+> 
+> Will
+> 
+> Cc: iommu@lists.linux.dev
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Cc: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+> Cc: Dexuan Cui <decui@microsoft.com>
+> 
+> --->8  
+> 
+> Will Deacon (2):
+>   swiotlb: Fix allocation alignment requirement when searching slots
+>   swiotlb: Enforce page alignment in swiotlb_alloc()
+> 
+>  kernel/dma/swiotlb.c | 32 ++++++++++++++++++++++----------
+>  1 file changed, 22 insertions(+), 10 deletions(-)
+> 
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbPbwQAKCRB4tDGHoIJi
-0mphAP9mNAqgCfGnG2oZT03eR5lo8zVtxGVA3e31U4pT35l3oAEAmSR0t82lnGuR
-Ko9mPTkVro5PyNGNvBvn9QwRTqP8qAc=
-=FJF6
------END PGP SIGNATURE-----
-
---lQRYenakLFWQ8EtE--
 
