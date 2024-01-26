@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-40770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E737883E57E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:33:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6464783E57F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 23:34:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 179AD1C238B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:33:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20890286C49
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 22:34:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F08FA58AB5;
-	Fri, 26 Jan 2024 22:31:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 218E05A78A;
+	Fri, 26 Jan 2024 22:31:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="SChfYy17"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="YGPSj85O"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B95FF5576F
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 22:31:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC4CB56B70
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 22:31:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706308308; cv=none; b=BJrqIE40dZnwzj1SQzqcAWYYrwspaaLT2HNVTc7VIirTfg9b8eWGMcleQJ6/y2wCMEsMjvEWVpLElYFyEKDDOhjtJ61qNZ0tslbXtXvC4BOhtg+THpOPvamhangJ5L3puhn2kAv9MWfxmthPTr+2R74KnCMQB3NLuRNPBVK+spU=
+	t=1706308309; cv=none; b=S6l6ctjCDiFISkXsicOhs2GbLHcU+1Xb5GQ4TvJbIKF5qVZ2FeaVOxeVot+fUmkIesIhePMsotQBJzjTI6nvn4o6rKsbIV6jy5TuK5wEnRQDsT+2nogiYlmimJv0Hc7DpFS5B9aOp5XunGCnPParGWFkzMcwOhVGAXvK5mHVk00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706308308; c=relaxed/simple;
-	bh=uGu0MY687mPL6FpCpdkunrktIKNKvA2DEumpUUqsAt4=;
+	s=arc-20240116; t=1706308309; c=relaxed/simple;
+	bh=d221A9DTsel1sj0jdwOENIOIP1uW0+yzlQJlionfmy8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NWSfbOx5bh8998IE26Se4REI6w9M6rvpLT0f75FWLf0B+7CTH77lRmYj8sOtnsdC2UIsCib6KEQq5nA1o2/R58OoME/SzGchdA/MJO+A4Wh1PjF9iVWt2+vYG2f0u0gxve8+7IZsuZCdxcvNDyd3dO3qHKHrxut9bbITvfbfYk0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net; spf=pass smtp.mailfrom=darkphysics.net; dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b=SChfYy17; arc=none smtp.client-ip=209.85.214.181
+	 MIME-Version; b=Lv3Gx2F8QIsvdajyWF8mpWmYvH5YAaKiJbK8umMo6neHeTh7RhX5UMtuarbN40SzGJjlrYFoLnxE6fRqMpcx8mpmIGo1FxRjjzJPKIWEITMOTWRac1w5wz9MYHTke4H2zhVM8TeFoVY+tvuDCEL+XtDHY/6DF+26fTuK8/mb+8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net; spf=pass smtp.mailfrom=darkphysics.net; dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b=YGPSj85O; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=darkphysics.net
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d71c844811so6438275ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:31:46 -0800 (PST)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d720c7fc04so6854215ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 14:31:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=darkphysics.net; s=google; t=1706308306; x=1706913106; darn=vger.kernel.org;
+        d=darkphysics.net; s=google; t=1706308307; x=1706913107; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5fiiHp/wjzY731Er1W9bbmepeXORaTQMQZdYafThTAc=;
-        b=SChfYy17k2UrFusK+9eTRhX6gOi8mtOJudqTreTmzLnQhVl8jKcKFKPEGVj3BLNt4i
-         m8tKyvQXqMMXuJgmWLQoPzMOzcYdVmURtLgEGOwB8+8CmOvI8gdn6A6h5HKz5qmBSiAg
-         atcDwpGKBm3fawVIut9wxq9BtZmEwO3UcLnhVOe0zf+dinivBBlBMfOgrNlWpRMuLkpd
-         N/zwR06CLj0Y98KRDLTGbz1XIjCqkGgEqpYUpztnTLcI3xXrvnM7n11lmuEXACiuq/jY
-         WMyGjbjLcrBo2G+tzPB8nqJk9dMFhX+jRFijIUV5QIfAHbNWm/KTnTMozUdj3rYd6VHL
-         F7xg==
+        bh=Awp+sOMd2zTDY3BhxjyMABNSYZC/s1kfFh3Ae2mRiGM=;
+        b=YGPSj85OwE6rtwwjsqJ0J1PEocXA0SYSz3UEMvPYqQWVVrkNtX0fyjtfC6clE+9QmM
+         hxOEpENJV7MgB9sn/+1MSaNuQqGwMhmJFi4VTLp0feTYJAWPQS92uC6n684R2B2ubm91
+         BX3RT6qsqWFUN3/xg9kYB7NiqXAVOC9y7Jke9Ht+Zw5/1hs9tTNEqmKHsJvND1tMjv9O
+         NCfGl6EhDS5VNllB6s8JICDyJ80dxhdX3YxDObeu4xtWh4rj8ZYGd9VabSoJx/KlK8vH
+         tvdyAcxlD8VKmBMqaDXgUJtdo1Ij7DN5jVbBeUoerFQaZZGzTiuF41sEUYoXfzQKLxjf
+         7V3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706308306; x=1706913106;
+        d=1e100.net; s=20230601; t=1706308307; x=1706913107;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5fiiHp/wjzY731Er1W9bbmepeXORaTQMQZdYafThTAc=;
-        b=V/SuwvHT2EyCKg764I81jERYrfFtbs95aprx87RbifI6q5Rk358BnckbkRi5oNppLv
-         9ceYj6+iEEt62bUW6irowCm/xPote4M6mT9CwdYQqYhZANtslg4JxZlz0K107dq5hZ2+
-         3TUHxqUsNmIG+dEyDSySY4ACAnjtufItpreEXoJqC+xfs796EwefwrCiL+MpLqR4ikVH
-         fLnvZL7O6nICT7r3mPDK48CV9Bdi0VzySWQv26CqnAc85RaM65pdrxMWhUMIr82axepk
-         jF0d5fvUbDEBddpoouopErv+ZGefksaeeVabHw5EnWi3mLQ5UjGCpwKeWu/Dm60fKAhv
-         COcw==
-X-Gm-Message-State: AOJu0YxXJSk99OQD31lrI57edQxKQJT0TpFP7XIaWqa2Ke9WO71+61AT
-	jaugdR6PqxRSMx4N7PvAUUXeeVBfKASfJkbcW+EnQblXy6qn0ct7CMWLSD9X7MM=
-X-Google-Smtp-Source: AGHT+IFUjv/9MEDcJiw11ddzJUuUL5TjW+5fivqENBdwZhc682giM6qE5BG+rfA7CYmJvpE9n37vLg==
-X-Received: by 2002:a17:902:d4cb:b0:1d7:6f5b:e674 with SMTP id o11-20020a170902d4cb00b001d76f5be674mr654018plg.23.1706308306358;
-        Fri, 26 Jan 2024 14:31:46 -0800 (PST)
+        bh=Awp+sOMd2zTDY3BhxjyMABNSYZC/s1kfFh3Ae2mRiGM=;
+        b=T+xPzYsOvpXpgyv9wAYEntqj6TY+EqkwVFqRMBIvO3aQfan9xeJqKxhMu8LiWHwd6i
+         BO8p07Ym2UaNF44+pofh1YaZwZF4AaXOY7rs5MbwHO9juVY0fo3g1dtJArTfrdjCaK3S
+         gj5oMg9YkwNen2kX1ZYLBBPCVb2FmYFrn3OYwRfGXkuzxMOdXZXvjgBZQSluluL58mLF
+         YT4VspfTGMEuYZZVBMQWXFzycNukK2s8KC26h04GYE60kDkpYrPbiBsmJRAmHzMk1BXF
+         n+hIVVrYZpAT6+3ev/vtHQbhXvn47U7PbhSED13AAydQO4gMbN5EW2iZhjPP71Ur9tNg
+         cEhA==
+X-Gm-Message-State: AOJu0YylcqRSjvSAayZxdEPturAsxogyOu5DMn0o8wzim2984+bVuEd6
+	vPDVxIlAb7rQBWBi1+uhHvCWCqeJPISklzgdGJ+YvlqXNbgz1KfNn4fsWpRFy98=
+X-Google-Smtp-Source: AGHT+IHza2+Xz+W74yxBCYOqYs7ax1jHiGRhJAxELgNshUZ1N7dFgyadhuxJiaLjFulhdHjLnPwImg==
+X-Received: by 2002:a17:902:c382:b0:1d7:126:5691 with SMTP id g2-20020a170902c38200b001d701265691mr436608plg.73.1706308307108;
+        Fri, 26 Jan 2024 14:31:47 -0800 (PST)
 Received: from oatmeal.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
-        by smtp.gmail.com with ESMTPSA id n1-20020a170902d0c100b001d8a8f431b7sm737909pln.300.2024.01.26.14.31.45
+        by smtp.gmail.com with ESMTPSA id n1-20020a170902d0c100b001d8a8f431b7sm737909pln.300.2024.01.26.14.31.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 26 Jan 2024 14:31:46 -0800 (PST)
 From: Tree Davies <tdavies@darkphysics.net>
@@ -72,9 +72,9 @@ To: gregkh@linuxfoundation.org,
 Cc: linux-staging@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	Tree Davies <tdavies@darkphysics.net>
-Subject: [PATCH v2 11/18] Staging: rtl8192e: Fix paren alignment for rtllib_disable_net_monitor_mode()
-Date: Fri, 26 Jan 2024 14:30:59 -0800
-Message-Id: <20240126223106.986093-12-tdavies@darkphysics.net>
+Subject: [PATCH v2 12/18] Staging: rtl8192e: Fixup if statement broken across multiple lines.
+Date: Fri, 26 Jan 2024 14:31:00 -0800
+Message-Id: <20240126223106.986093-13-tdavies@darkphysics.net>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240126223106.986093-1-tdavies@darkphysics.net>
 References: <20240126223106.986093-1-tdavies@darkphysics.net>
@@ -86,28 +86,32 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Join 2 lines to fix Warning: Alignment should match open parenthesis
+Join broken lines across if statement to fix checkpatch warning:
+Lines should not end with a '('
 
 Signed-off-by: Tree Davies <tdavies@darkphysics.net>
 ---
-v2: No Changes.
- drivers/staging/rtl8192e/rtllib_softmac.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+v2: No changes.
+ drivers/staging/rtl8192e/rtllib_softmac.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-index 60598b41fb9f..538689fb5580 100644
+index 538689fb5580..ab41632def7a 100644
 --- a/drivers/staging/rtl8192e/rtllib_softmac.c
 +++ b/drivers/staging/rtl8192e/rtllib_softmac.c
-@@ -361,8 +361,7 @@ void rtllib_enable_net_monitor_mode(struct net_device *dev,
- /* Disables network monitor mode. Only packets destinated to
-  * us will be received.
-  */
--void rtllib_disable_net_monitor_mode(struct net_device *dev,
--		bool init_state)
-+void rtllib_disable_net_monitor_mode(struct net_device *dev, bool init_state)
- {
- 	struct rtllib_device *ieee = netdev_priv_rsl(dev);
- 
+@@ -1736,10 +1736,8 @@ rtllib_rx_deauth(struct rtllib_device *ieee, struct sk_buff *skb)
+ 		ieee->link_detect_info.busy_traffic = false;
+ 		rtllib_disassociate(ieee);
+ 		remove_peer_ts(ieee, header->addr2);
+-		if (!(ieee->rtllib_ap_sec_type(ieee) &
+-		    (SEC_ALG_CCMP | SEC_ALG_TKIP)))
+-			schedule_delayed_work(
+-				       &ieee->associate_procedure_wq, 5);
++		if (!(ieee->rtllib_ap_sec_type(ieee) & (SEC_ALG_CCMP | SEC_ALG_TKIP)))
++			schedule_delayed_work(&ieee->associate_procedure_wq, 5);
+ 	}
+ 	return 0;
+ }
 -- 
 2.39.2
 
