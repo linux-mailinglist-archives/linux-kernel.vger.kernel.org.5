@@ -1,125 +1,122 @@
-Return-Path: <linux-kernel+bounces-39993-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39995-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E416983D83D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:32:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C27CF83D8C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 11:59:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21C551C20F23
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:32:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DBEBDB3F619
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:33:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3C241EA80;
-	Fri, 26 Jan 2024 10:18:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7616712B74;
+	Fri, 26 Jan 2024 10:20:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ionVzzYU"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="U+eRMMBX"
+Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95B331DFFB
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:18:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 546D610A30
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 10:20:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706264315; cv=none; b=jIxY1/Xd46k0Z4tjm+e5RoegJx6L9WMhTXcum+IzdTl1DbkRrq7D309WB3cJaSyRQ8UglpEgQYN/povRE7edEGkdP3h7Q3zWxqC6AqDLL5oOp0vwpEFlou+IAF0jycGxB7s87O5YeyAiq74FS8B/GHRb4D9rRtKWDYfktDKbXpI=
+	t=1706264442; cv=none; b=LJwUfrf61SVhKWDOgVVxcyjWaDLbV4VAq0wL8/LmDvVOeG9UsK4ZNsaywXMNV77vMsi66yxSt5ouWu5YhGsyz6iS3qiCeQqlu79kej4FDWPgnwwdqSl+Aevqp3xCs4S5FxXo4GE0x3gQSVhWV6R+hE9I/1By+CeeujMKmoaWvYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706264315; c=relaxed/simple;
-	bh=hqYTK0EsC3o/io3T1zeWVHK+9pLIv8eop9reCP1H12I=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ExWa2ZpeU98QR8YYyM6fqMTDDfJxmGwSuIbjQZQj/JBdpLoFXm2rg/Olck1kRFgp9paqlDnImKexccveAf1sp/BjsBgtYR9RmsEsZL6zVfZvAAM8ZyBt3xIFQVygpEJus791JnIKUjmCkX44PYyGy5lS8FW4zHYr1PHS24uzGds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ionVzzYU; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706264310;
-	bh=hqYTK0EsC3o/io3T1zeWVHK+9pLIv8eop9reCP1H12I=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ionVzzYUVohq/prvhL2Jplfp6RkWMX6N92pnga5WmXEKfX3WWE3wisdops+KV3ifp
-	 Uy5+PNmkF5un43C8farXeu6d+mw/XXMFTa98cPOyEm3NUm+NQKX+R0usEfm+yjMQH7
-	 khbw3xEeIDeVPaZKmrCynwWqSZpQ8Oc02kg3PrHM1X2oQ8dpeIENT27v27zWpVX2i/
-	 WQroAxJl0yGuCyjeLxf+oFMJh6VulBj4FrURTI1vV2T8AWII+/P76KkX9I5zEaC6P4
-	 zYwV4SGEyo23NTgEBHBcWqv359YkS3edA2waZUh4Gg+h+o2W0wxJH43MTurEDDpU2u
-	 SOvR1OO9/OPJw==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bbrezillon)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 420D63782072;
-	Fri, 26 Jan 2024 10:18:29 +0000 (UTC)
-Date: Fri, 26 Jan 2024 11:18:27 +0100
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Daniel Vetter <daniel@ffwll.ch>
-Cc: Dmitry Osipenko <dmitry.osipenko@collabora.com>, David Airlie
- <airlied@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>, Gurchetan Singh
- <gurchetansingh@chromium.org>, Chia-I Wu <olvaffe@gmail.com>, Maarten
- Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, Christian
- =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>, Qiang Yu
- <yuq825@gmail.com>, Steven Price <steven.price@arm.com>, Emma Anholt
- <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v19 09/30] drm/shmem-helper: Add and use lockless
- drm_gem_shmem_get_pages()
-Message-ID: <20240126111827.70f8726c@collabora.com>
-In-Reply-To: <ZbKZNCbZoV4ovWTH@phenom.ffwll.local>
-References: <20240105184624.508603-1-dmitry.osipenko@collabora.com>
- <20240105184624.508603-10-dmitry.osipenko@collabora.com>
- <ZbKZNCbZoV4ovWTH@phenom.ffwll.local>
-Organization: Collabora
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1706264442; c=relaxed/simple;
+	bh=rBGeSyPNqjhuzAEmekJshtonzu2haLkY5wb3EOsf3xE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qZkkCP3ZKL9jhL6r2BQ3vbkmLmnwPjK+36/wRyVkFOgMWTfORRt4/nIgTyIzwilFmiVbRUczUutzUIE1xF8hrX/wo3O5j+JuOIHK5rBiLgDJDT2nNYW2yWr2SkMMkALE4Ocf62DUXZjIO22BylKx81Mv/miPLM/NlT9bASbSaaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=U+eRMMBX; arc=none smtp.client-ip=209.85.160.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-2144ce7ff41so104722fac.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 02:20:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706264439; x=1706869239; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dLfeKzwR+Z8RiGM+i4K1CjO8rfuzmqOpJM35c/+oae0=;
+        b=U+eRMMBX3ao4Wh15pTZjscrNgBMdWMJ/7EZHopnFr4Lehasvb6qyhOls1apU3HMoKF
+         JWeLCsykXGb1h4nye6C5y0qDm3FKOExEuxKdq1WHNbVqRddjBe9CcHwY0D0Dif48l7Kr
+         Nbyx4vTVGL4VkrpqOqItUki6vDOVcA2BfsHAzrukXPLKLr98lu3n3nGH+hOIxdRL6+FX
+         GtjQ7B9fVx40ACCfX1ZF/d8RIbouyF9cdpYUN6IhxpXZiHOR3bKT3/zm6HRWA8K5ZoGf
+         QpeawGQ6LRvEvQ9u6zTayMuf2B4wDUvP+yPOdbsiuYVbwALe2M3S9rXt+5MkmkSylisj
+         2fpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706264439; x=1706869239;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dLfeKzwR+Z8RiGM+i4K1CjO8rfuzmqOpJM35c/+oae0=;
+        b=V2fZkf0LQvhn5bgk2qdrs9LJTScNSactP+j4KEXvU92raNNGJnCvdYZRhZTQT70JOj
+         U3lcR488mfXL5sLDcjyrtPaEMw1+U/duU7xob2J5H6fvT7ZP4QRiHeDhz5P6n9fFf3ke
+         M4uiM0j/BfCPRqTcwdAjzkrRdSV8u4XX06Yw7raUv1K5rRroftRwWIWgHDK3E4dsYLVa
+         QPgkThxCXV+ORZpK6kO1ShmPVp2fKx86l102T8fjTNnaMzxFiELUKjFCv9R5iE+7qgBX
+         +sM5gVhoyQWyalrKstrX07I1lTlYGmObskP+/8oo06gGpG18aqzrf26Qx0aztCl1CVhQ
+         lNPA==
+X-Gm-Message-State: AOJu0YxcxbNFtfFGLisxaMoKgwGF8zPS0axuwRN56zHRWhEThJlJDoDj
+	SXTIoNSBdmn1yZjm0+ziFEh4BpPzhZwhmB/DqZAnQyBNo+de7sgnEwr0kfwgZXG4PSFq2duEZsk
+	1V+pNRpo3EFY8JDP7czRBghCBMR/dcmiN1W1c
+X-Google-Smtp-Source: AGHT+IHvbfvU3z3obD92Fj0vi9wydfzuO6UhJiuwiqh10HZe5oaVqolyaLk9ub0kUBcctwQE1vUI0HtDYfsMFMjTRD4=
+X-Received: by 2002:a05:6870:b6aa:b0:210:9bc2:a9cc with SMTP id
+ cy42-20020a056870b6aa00b002109bc2a9ccmr934687oab.83.1706264439163; Fri, 26
+ Jan 2024 02:20:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <000000000000fd588e060de27ef4@google.com> <tencent_613652973C377A4AEC7507777B66C63C8309@qq.com>
+In-Reply-To: <tencent_613652973C377A4AEC7507777B66C63C8309@qq.com>
+From: Alexander Potapenko <glider@google.com>
+Date: Fri, 26 Jan 2024 11:19:58 +0100
+Message-ID: <CAG_fn=WpdcrDjxSzPxhRzEGp3jFtp==1DkfkovoF39kUgkjB6w@mail.gmail.com>
+Subject: Re: [syzbot] [virtualization?] KMSAN: uninit-value in virtqueue_add (4)
+To: Edward Adam Davis <eadavis@qq.com>
+Cc: syzbot+d7521c1e3841ed075a42@syzkaller.appspotmail.com, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 25 Jan 2024 18:24:04 +0100
-Daniel Vetter <daniel@ffwll.ch> wrote:
+On Fri, Jan 26, 2024 at 2:36=E2=80=AFAM 'Edward Adam Davis' via syzkaller-b=
+ugs
+<syzkaller-bugs@googlegroups.com> wrote:
+>
+> please test uninit-value in virtqueue_add (4)
 
-> On Fri, Jan 05, 2024 at 09:46:03PM +0300, Dmitry Osipenko wrote:
-> > Add lockless drm_gem_shmem_get_pages() helper that skips taking reservation
-> > lock if pages_use_count is non-zero, leveraging from atomicity of the
-> > refcount_t. Make drm_gem_shmem_mmap() to utilize the new helper.
-> > 
-> > Acked-by: Maxime Ripard <mripard@kernel.org>
-> > Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-> > Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-> > Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-> > ---
-> >  drivers/gpu/drm/drm_gem_shmem_helper.c | 19 +++++++++++++++----
-> >  1 file changed, 15 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> > index cacf0f8c42e2..1c032513abf1 100644
-> > --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-> > +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> > @@ -226,6 +226,20 @@ void drm_gem_shmem_put_pages_locked(struct drm_gem_shmem_object *shmem)
-> >  }
-> >  EXPORT_SYMBOL_GPL(drm_gem_shmem_put_pages_locked);
-> >  
-> > +static int drm_gem_shmem_get_pages(struct drm_gem_shmem_object *shmem)
-> > +{
-> > +	int ret;  
-> 
-> Just random drive-by comment: a might_lock annotation here might be good,
-> or people could hit some really interesting bugs that are rather hard to
-> reproduce ...
+Hi Edward,
 
-Actually, being able to acquire a ref in a dma-signalling path on an
-object we know for sure already has refcount >= 1 (because we previously
-acquired a ref in a path where dma_resv_lock() was allowed), was the
-primary reason I suggested moving to this atomic-refcount approach.
+KMSAN is currently broken at trunk, see
+https://lore.kernel.org/linux-mm/20240115184430.2710652-1-glider@google.com=
+/
+Therefore syzbot is unable to test patches before a couple of changes
+reach upstream.
 
-In the meantime, drm_gpuvm has evolved in a way that allows me to not
-take the ref in the dma-signalling path (the gpuvm_bo object now holds
-the ref, and it's acquired/released outside the dma-signalling path).
+I checked your patch, and it is still triggering the same bug, which
+is expected, because there are whole uninitialized pages, and the
+patch below only initializes two instances of struct scatterlist that
+are unlikely to be cloned to fill those pages.
+There must be some non-instrumented code that fills those pages with
+data, e.g. a DMA write, an assembly routine or some VM-to-kernel
+interaction that KMSAN fails to handle.
 
-Not saying we shouldn't add this might_lock(), but others might have
-good reasons to have this function called in a path where locking
-is not allowed.
+>
+> #syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.=
+git fbafc3e621c3
+>
+> diff --git a/drivers/scsi/virtio_scsi.c b/drivers/scsi/virtio_scsi.c
+> index 9d1bdcdc1331..4ca6627a7459 100644
+> --- a/drivers/scsi/virtio_scsi.c
+> +++ b/drivers/scsi/virtio_scsi.c
+> @@ -427,7 +427,7 @@ static int __virtscsi_add_cmd(struct virtqueue *vq,
+>                             size_t req_size, size_t resp_size)
+>  {
+>         struct scsi_cmnd *sc =3D cmd->sc;
+> -       struct scatterlist *sgs[6], req, resp;
+> +       struct scatterlist *sgs[6], req =3D {}, resp =3D {};
+>         struct sg_table *out, *in;
+>         unsigned out_num =3D 0, in_num =3D 0;
 
