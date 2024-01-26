@@ -1,247 +1,216 @@
-Return-Path: <linux-kernel+bounces-39709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 807D783D530
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:01:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8684083D547
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 10:03:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F00CAB247E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:01:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 102E41F28817
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 09:03:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4239D59B73;
-	Fri, 26 Jan 2024 07:39:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20EC25F544;
+	Fri, 26 Jan 2024 07:42:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RqQ2AlIB"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YniWX0MJ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA16759178;
-	Fri, 26 Jan 2024 07:39:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E0265D75B;
+	Fri, 26 Jan 2024 07:42:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706254791; cv=none; b=YhegbTBQAdT3uylY2/bq+rzXOK3ACAmhl7FjrMBnqI2rROeqFKb8/Ia9sqf1bYB9T+U3tt5LQNOYZrNyVnL/cyfUCCYLmR3fhLinwMGj/spFNC8et98fUv4VPfMthmFKbfKRmUj7RpOld6qbR5e5Sy4H6LjzMl91PEiPi07xbWg=
+	t=1706254952; cv=none; b=RTJ+p+9GAzSnVCltgbVyFFgjoTa4UV1vvHenjGlDDEOBFMCZmiLZcaVRU9/n0+i/CQPyNeuBwbioWmOrFZ0Por9JGwXDJQxLmtyrXXGtddXUOmsasDxXoPzObhagx1tVdHfWiOyWVKlfGakXyzl40mjOba0RQENEVKhrxHYrNrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706254791; c=relaxed/simple;
-	bh=/5nfxaGJlWyx/ZQwtNE2vSIVj6OswyRL9cg0CrI3JNA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RXFo3DzTtcQeT9URk8tESXd82Q1+NMUV0NfYA4tcp7fvoOU4o0XTmVFtRnm2bhKkL7sSjj+hJumecRs+vlxJ3jcoqR9q+E6if2C857IpZVrQVFCe5rBGT62+JUTGbK0MtAJYgfyFu3m3RgxlUFS9zCdCHB+yCgb90zMlDqZko38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RqQ2AlIB; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d70a98c189so451025ad.1;
-        Thu, 25 Jan 2024 23:39:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706254789; x=1706859589; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=sIHoB0tO6UnT+9FCYFnrGjYBTfQtZYcWxPgffZVZp6I=;
-        b=RqQ2AlIBmTlEUKIs2ot5Gzyc+2tuOSzNngNAowUL8ZSY8YjFMn716lWlianjMQae0Q
-         GxAfMBgfDplDw6Otn62MBvXbglRhDbN8yQKAEaaND6mTXuud0ex2J3JwioFMMAD5f1bJ
-         vBpgNdo4eIvsmExgWIbmzPeP7ELoY1tI7uoQF8pnM3gaz2PmxN5VMeCunn9tJfDGGBob
-         jr7yt4/LBAhSfJNpJQGf+zOFpWNgKt3oxTEihDRaclRztLcdBgSAc6IkfLyyXepjvK8n
-         OF0ZVk7HFuN3xJ2Opb7KniqChBqf4P83ZohNdC2dPbRsr+XweYm1NpUDZM8mVJeZnG2z
-         jt8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706254789; x=1706859589;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sIHoB0tO6UnT+9FCYFnrGjYBTfQtZYcWxPgffZVZp6I=;
-        b=cMKEy8C6OccHVcXUf7Yt+bUTuSkoQNxcvzDjr9l8ogDq1SaCveZofLNtdQ45DJwMsI
-         AFnI6OhFyxk2vv5KuvhAdafGdWXxBUDtkETF/v5lXcbD35ITGFmmgyscwW9Wa32WuvhJ
-         qKOx8EJKMac2TXMtWh5PuD2bIYxX+o1MZVFfkACsTeWOhT4BKBl49ZB/EBghR/E5pDCg
-         QFkoKXrOguRTRJHWU10LTwOrC1D3d/JfWduSkiLc/B/9dIgSsV3Y6j2WJ3+DLfr7E+cN
-         zv/fSGgzK9U3IG4tEXg79LjCVziIuh6Jl9EadS1np7AVSocNj8XJrx8HfmljuRYy+smF
-         hROQ==
-X-Gm-Message-State: AOJu0YxOCd2764EFbKIzfrulXdI1Qr9UtVDlecokpG4dkzlhyYVSUK6E
-	dH8c5jtxB71gLyOtGnhkkHWUbJp3tbyuRbiNGq5dWwYrGZY9dWa7
-X-Google-Smtp-Source: AGHT+IHjlEqKGmmtT+3QzRgVac/hlL+gl23FhxzHcH0blJDYziwkYlCGKfkVtNCBJe2PhOWcClN/lw==
-X-Received: by 2002:a05:6a20:1594:b0:19c:7690:12ec with SMTP id h20-20020a056a20159400b0019c769012ecmr885727pzj.5.1706254789065;
-        Thu, 25 Jan 2024 23:39:49 -0800 (PST)
-Received: from localhost.localdomain ([129.146.253.192])
-        by smtp.googlemail.com with ESMTPSA id sw12-20020a17090b2c8c00b0029105d49b2dsm605619pjb.20.2024.01.25.23.39.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 23:39:48 -0800 (PST)
-From: Furong Xu <0x1207@gmail.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Joao Pinto <jpinto@synopsys.com>,
-	Simon Horman <horms@kernel.org>
-Cc: netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	xfr@outlook.com,
-	rock.xu@nio.com,
-	Furong Xu <0x1207@gmail.com>
-Subject: [PATCH net v2] net: stmmac: xgmac: fix handling of DPP safety error for DMA channels
-Date: Fri, 26 Jan 2024 15:39:28 +0800
-Message-Id: <20240126073928.1070729-1-0x1207@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706254952; c=relaxed/simple;
+	bh=hB+/FDgOotOkMi7XZ4G7xO3oHXwb0zbrKyD4k6wFPFI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=dTbxxbsISoxm4H2Irvd7FUyXML0aaah9Em0niO6bi6BgFVk2bBttHzYGr+vUeIXNEGSJWVONacyDE4iAOFAuJFQYEAafjSeIX8r4IZwK0kMzmxyZlRiHF06PZbLIg9BwjkSL5F/P264Tk2yGJI+D4O1a3WIijL9DxJWBcT15dwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YniWX0MJ; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706254950; x=1737790950;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=hB+/FDgOotOkMi7XZ4G7xO3oHXwb0zbrKyD4k6wFPFI=;
+  b=YniWX0MJzfL6rPSqfBzYn5DGGI+WgQnCOskZrSKhX69BfG0Xg5KmuLK+
+   v6crtK8k/9N1u7geJa1cJav/JTp4m0K0jpQU5q39Z6+lFiU6J2WL5pg+u
+   O94Gn56jtcaE20OJZ+pUS9yAUZR76LGy7IEpBdpudZrCBfQM2bKv7RxZM
+   Yi1LpJJ/DOfRjXtbX/6l8LGy88wWiNfWnbiKKEwFoMwiNDp6YvXjoeKk+
+   lBELNnn3y3C/LjM80bUu4ISLdP3WcaDS6NwHapvzlzRLOWMa1jmgkKsBp
+   d6VB+XIsanGypc8q+EBZ4L5WTgOCqhe9KMPDJDlxC8b6xDORgUU4IbdUK
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="2247860"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="2247860"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 23:42:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="2523694"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 23:42:24 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Gregory Price <gourry.memverge@gmail.com>
+Cc: linux-mm@kvack.org,  linux-kernel@vger.kernel.org,
+  linux-doc@vger.kernel.org,  linux-fsdevel@vger.kernel.org,
+  linux-api@vger.kernel.org,  corbet@lwn.net,  akpm@linux-foundation.org,
+  gregory.price@memverge.com,  honggyu.kim@sk.com,  rakie.kim@sk.com,
+  hyeongtak.ji@sk.com,  mhocko@kernel.org,  vtavarespetr@micron.com,
+  jgroves@micron.com,  ravis.opensrc@micron.com,  sthanneeru@micron.com,
+  emirakhur@micron.com,  Hasan.Maruf@amd.com,  seungjun.ha@samsung.com,
+  hannes@cmpxchg.org,  dan.j.williams@intel.com
+Subject: Re: [PATCH v3 4/4] mm/mempolicy: change cur_il_weight to atomic and
+ carry the node with it
+In-Reply-To: <20240125184345.47074-5-gregory.price@memverge.com> (Gregory
+	Price's message of "Thu, 25 Jan 2024 13:43:45 -0500")
+References: <20240125184345.47074-1-gregory.price@memverge.com>
+	<20240125184345.47074-5-gregory.price@memverge.com>
+Date: Fri, 26 Jan 2024 15:40:27 +0800
+Message-ID: <87sf2klez8.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ascii
 
-Commit 56e58d6c8a56 ("net: stmmac: Implement Safety Features in
-XGMAC core") checks and reports safety errors, but leaves the
-Data Path Parity Errors for each channel in DMA unhandled at all, lead to
-a storm of interrupt.
-Fix it by checking and clearing the DMA_DPP_Interrupt_Status register.
+Gregory Price <gourry.memverge@gmail.com> writes:
 
-Fixes: 56e58d6c8a56 ("net: stmmac: Implement Safety Features in XGMAC core")
-Signed-off-by: Furong Xu <0x1207@gmail.com>
----
-Changes in v2:
-  - explicit enable Data Path Parity Protection
-  - add new counters to stmmac_safety_stats
-  - add detailed log
----
- drivers/net/ethernet/stmicro/stmmac/common.h  |  1 +
- .../net/ethernet/stmicro/stmmac/dwxgmac2.h    |  3 +
- .../ethernet/stmicro/stmmac/dwxgmac2_core.c   | 58 ++++++++++++++++++-
- 3 files changed, 61 insertions(+), 1 deletion(-)
+> In the prior patch, we carry only the current weight for a weighted
+> interleave round with us across calls through the allocator path.
+>
+> node = next_node_in(current->il_prev, pol->nodemask)
+> pol->cur_il_weight <--- this weight applies to the above node
+>
+> This separation of data can cause a race condition.
+>
+> If a cgroup-initiated task migration or mems_allowed change occurs
+> from outside the context of the task, this can cause the weight to
+> become stale, meaning we may end using that weight to allocate
+> memory on the wrong node.
+>
+> Example:
+>   1) task A sets (cur_il_weight = 8) and (current->il_prev) to
+>      node0. node1 is the next set bit in pol->nodemask
+>   2) rebind event occurs, removing node1 from the nodemask.
+>      node2 is now the next set bit in pol->nodemask
+>      cur_il_weight is now stale.
+>   3) allocation occurs, next_node_in(il_prev, nodes) returns
+>      node2. cur_il_weight is now applied to the wrong node.
+>
+> The upper level allocator logic must still enforce mems_allowed,
+> so this isn't dangerous, but it is innaccurate.
+>
+> Just clearing the weight is insufficient, as it creates two more
+> race conditions.  The root of the issue is the separation of weight
+> and node data between nodemask and cur_il_weight.
+>
+> To solve this, update cur_il_weight to be an atomic_t, and place the
+> node that the weight applies to in the upper bits of the field:
+>
+> atomic_t cur_il_weight
+> 	node bits 32:8
+> 	weight bits 7:0
+>
+> Now retrieving or clearing the active interleave node and weight
+> is a single atomic operation, and we are not dependent on the
+> potentially changing state of (pol->nodemask) to determine what
+> node the weight applies to.
+>
+> Two special observations:
+> - if the weight is non-zero, cur_il_weight must *always* have a
+>   valid node number, e.g. it cannot be NUMA_NO_NODE (-1).
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
-index 721c1f8e892f..b4f60ab078d6 100644
---- a/drivers/net/ethernet/stmicro/stmmac/common.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/common.h
-@@ -216,6 +216,7 @@ struct stmmac_safety_stats {
- 	unsigned long mac_errors[32];
- 	unsigned long mtl_errors[32];
- 	unsigned long dma_errors[32];
-+	unsigned long dma_dpp_errors[32];
- };
- 
- /* Number of fields in Safety Stats */
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-index 207ff1799f2c..5c67a3f89f08 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-@@ -303,6 +303,8 @@
- #define XGMAC_RXCEIE			BIT(4)
- #define XGMAC_TXCEIE			BIT(0)
- #define XGMAC_MTL_ECC_INT_STATUS	0x000010cc
-+#define XGMAC_MTL_DPP_CONTROL		0x000010e0
-+#define XGMAC_DDPP_DISABLE		BIT(0)
- #define XGMAC_MTL_TXQ_OPMODE(x)		(0x00001100 + (0x80 * (x)))
- #define XGMAC_TQS			GENMASK(25, 16)
- #define XGMAC_TQS_SHIFT			16
-@@ -385,6 +387,7 @@
- #define XGMAC_DCEIE			BIT(1)
- #define XGMAC_TCEIE			BIT(0)
- #define XGMAC_DMA_ECC_INT_STATUS	0x0000306c
-+#define XGMAC_DMA_DPP_INT_STATUS	0x00003074
- #define XGMAC_DMA_CH_CONTROL(x)		(0x00003100 + (0x80 * (x)))
- #define XGMAC_SPH			BIT(24)
- #define XGMAC_PBLx8			BIT(16)
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-index eb48211d9b0e..bcd7daba53af 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-@@ -830,6 +830,43 @@ static const struct dwxgmac3_error_desc dwxgmac3_dma_errors[32]= {
- 	{ false, "UNKNOWN", "Unknown Error" }, /* 31 */
- };
- 
-+static const char * const dpp_rx_err = "Read Rx Descriptor Parity checker Error";
-+static const char * const dpp_tx_err = "Read Tx Descriptor Parity checker Error";
-+static const struct dwxgmac3_error_desc dwxgmac3_dma_dpp_errors[32] = {
-+	{ true, "TDPES0", dpp_tx_err },
-+	{ true, "TDPES1", dpp_tx_err },
-+	{ true, "TDPES2", dpp_tx_err },
-+	{ true, "TDPES3", dpp_tx_err },
-+	{ true, "TDPES4", dpp_tx_err },
-+	{ true, "TDPES5", dpp_tx_err },
-+	{ true, "TDPES6", dpp_tx_err },
-+	{ true, "TDPES7", dpp_tx_err },
-+	{ true, "TDPES8", dpp_tx_err },
-+	{ true, "TDPES9", dpp_tx_err },
-+	{ true, "TDPES10", dpp_tx_err },
-+	{ true, "TDPES11", dpp_tx_err },
-+	{ true, "TDPES12", dpp_tx_err },
-+	{ true, "TDPES13", dpp_tx_err },
-+	{ true, "TDPES14", dpp_tx_err },
-+	{ true, "TDPES15", dpp_tx_err },
-+	{ true, "RDPES0", dpp_rx_err },
-+	{ true, "RDPES1", dpp_rx_err },
-+	{ true, "RDPES2", dpp_rx_err },
-+	{ true, "RDPES3", dpp_rx_err },
-+	{ true, "RDPES4", dpp_rx_err },
-+	{ true, "RDPES5", dpp_rx_err },
-+	{ true, "RDPES6", dpp_rx_err },
-+	{ true, "RDPES7", dpp_rx_err },
-+	{ true, "RDPES8", dpp_rx_err },
-+	{ true, "RDPES9", dpp_rx_err },
-+	{ true, "RDPES10", dpp_rx_err },
-+	{ true, "RDPES11", dpp_rx_err },
-+	{ true, "RDPES12", dpp_rx_err },
-+	{ true, "RDPES13", dpp_rx_err },
-+	{ true, "RDPES14", dpp_rx_err },
-+	{ true, "RDPES15", dpp_rx_err },
-+};
-+
- static void dwxgmac3_handle_dma_err(struct net_device *ndev,
- 				    void __iomem *ioaddr, bool correctable,
- 				    struct stmmac_safety_stats *stats)
-@@ -841,6 +878,13 @@ static void dwxgmac3_handle_dma_err(struct net_device *ndev,
- 
- 	dwxgmac3_log_error(ndev, value, correctable, "DMA",
- 			   dwxgmac3_dma_errors, STAT_OFF(dma_errors), stats);
-+
-+	value = readl(ioaddr + XGMAC_DMA_DPP_INT_STATUS);
-+	writel(value, ioaddr + XGMAC_DMA_DPP_INT_STATUS);
-+
-+	dwxgmac3_log_error(ndev, value, false, "DMA_DPP",
-+			   dwxgmac3_dma_dpp_errors,
-+			   STAT_OFF(dma_dpp_errors), stats);
- }
- 
- static int
-@@ -881,6 +925,12 @@ dwxgmac3_safety_feat_config(void __iomem *ioaddr, unsigned int asp,
- 	value |= XGMAC_TMOUTEN; /* FSM Timeout Feature */
- 	writel(value, ioaddr + XGMAC_MAC_FSM_CONTROL);
- 
-+	/* 5. Enable Data Path Parity Protection */
-+	value = readl(ioaddr + XGMAC_MTL_DPP_CONTROL);
-+	/* already enabled by default, explicit enable it again */
-+	value &= ~XGMAC_DDPP_DISABLE;
-+	writel(value, ioaddr + XGMAC_MTL_DPP_CONTROL);
-+
- 	return 0;
- }
- 
-@@ -914,7 +964,12 @@ static int dwxgmac3_safety_feat_irq_status(struct net_device *ndev,
- 		ret |= !corr;
- 	}
- 
--	err = dma & (XGMAC_DEUIS | XGMAC_DECIS);
-+	/* DMA_DPP_Interrupt_Status is indicated by MCSIS bit in
-+	 * DMA_Safety_Interrupt_Status, so we handle DMA Data Path
-+	 * Parity Errors here
-+	 */
-+	err = (dma & (XGMAC_DEUIS | XGMAC_DECIS)) ||
-+	      (dma & XGMAC_MCSIS);
- 	corr = dma & XGMAC_DECIS;
- 	if (err) {
- 		dwxgmac3_handle_dma_err(ndev, ioaddr, corr, stats);
-@@ -930,6 +985,7 @@ static const struct dwxgmac3_error {
- 	{ dwxgmac3_mac_errors },
- 	{ dwxgmac3_mtl_errors },
- 	{ dwxgmac3_dma_errors },
-+	{ dwxgmac3_dma_dpp_errors },
- };
- 
- static int dwxgmac3_safety_feat_dump(struct stmmac_safety_stats *stats,
--- 
-2.34.1
+IIUC, we don't need that, "MAX_NUMNODES-1" is used instead.
 
+>   This is because we steal the top byte for the weight.
+>
+> - MAX_NUMNODES is presently limited to 1024 or less on every
+>   architecture. This would permanently limit MAX_NUMNODES to
+>   an absolute maximum of (1 << 24) to avoid overflows.
+>
+> Per some reading and discussion, it appears that max nodes is
+> limited to 1024 so that zone type still fits in page flags, so
+> this method seemed preferable compared to the alternatives of
+> trying to make all or part of mempolicy RCU protected (which
+> may not be possible, since it is often referenced during code
+> chunks which call operations that may sleep).
+>
+> Signed-off-by: Gregory Price <gregory.price@memverge.com>
+> ---
+>  include/linux/mempolicy.h |  2 +-
+>  mm/mempolicy.c            | 93 +++++++++++++++++++++++++--------------
+>  2 files changed, 61 insertions(+), 34 deletions(-)
+>
+> diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
+> index c644d7bbd396..8108fc6e96ca 100644
+> --- a/include/linux/mempolicy.h
+> +++ b/include/linux/mempolicy.h
+> @@ -56,7 +56,7 @@ struct mempolicy {
+>  	} w;
+>  
+>  	/* Weighted interleave settings */
+> -	u8 cur_il_weight;
+> +	atomic_t cur_il_weight;
+
+If we use this field for node and weight, why not change the field name?
+For example, cur_wil_node_weight.
+
+>  };
+>  
+>  /*
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index 5a517511658e..41b5fef0a6f5 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -321,7 +321,7 @@ static struct mempolicy *mpol_new(unsigned short mode, unsigned short flags,
+>  	policy->mode = mode;
+>  	policy->flags = flags;
+>  	policy->home_node = NUMA_NO_NODE;
+> -	policy->cur_il_weight = 0;
+> +	atomic_set(&policy->cur_il_weight, 0);
+>  
+>  	return policy;
+>  }
+> @@ -356,6 +356,7 @@ static void mpol_rebind_nodemask(struct mempolicy *pol, const nodemask_t *nodes)
+>  		tmp = *nodes;
+>  
+>  	pol->nodes = tmp;
+> +	atomic_set(&pol->cur_il_weight, 0);
+>  }
+>  
+>  static void mpol_rebind_preferred(struct mempolicy *pol,
+> @@ -973,8 +974,10 @@ static long do_get_mempolicy(int *policy, nodemask_t *nmask,
+>  			*policy = next_node_in(current->il_prev, pol->nodes);
+>  		} else if (pol == current->mempolicy &&
+>  				(pol->mode == MPOL_WEIGHTED_INTERLEAVE)) {
+> -			if (pol->cur_il_weight)
+> -				*policy = current->il_prev;
+> +			int cweight = atomic_read(&pol->cur_il_weight);
+> +
+> +			if (cweight & 0xFF)
+> +				*policy = cweight >> 8;
+
+Please define some helper functions or macros instead of operate on bits
+directly.
+
+>  			else
+>  				*policy = next_node_in(current->il_prev,
+>  						       pol->nodes);
+
+If we record current node in pol->cur_il_weight, why do we still need
+curren->il_prev.  Can we only use pol->cur_il_weight?  And if so, we can
+even make current->il_prev a union.
+
+--
+Best Regards,
+Huang, Ying
+
+[snip]
 
