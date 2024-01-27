@@ -1,235 +1,142 @@
-Return-Path: <linux-kernel+bounces-41051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41052-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A0C883EACF
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 05:02:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DB9B83EAD1
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 05:03:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F6B01C22E5D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 04:02:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2CA41F25257
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 04:03:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6854C125AD;
-	Sat, 27 Jan 2024 04:02:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD443125B0;
+	Sat, 27 Jan 2024 04:03:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="gwqWSIyv"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2069.outbound.protection.outlook.com [40.107.223.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nFu4WjlZ"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDF928BED;
-	Sat, 27 Jan 2024 04:02:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.69
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706328134; cv=fail; b=CbRR75p1G4wm0pxx0CZTlDBAci50szG2HllDHBt37W08n/sfcAsiJeWIrueYUuZqS3LYB781eXZvX4CJSQv5dWkeRXTUrvZrg2832EnIEAp3LWw/LEq30Q8MqqDFmccc8DuD+GghwlEitNV4RTawbllidDWKYVCv7+Evhm5nKtc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706328134; c=relaxed/simple;
-	bh=Yuut5jTUJ120LcpLq07kIGMe6pcOgIfsO4WkZudDRs4=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=lymwH1ahyRL/GeSbGXacQ+r7S9B8ArggzLNOqMRD/KWoSmeUsTLtznTdSNfnuvPX9hzXBYwQYoQFy+5x45k9Nd9PZwMU3GFDnDNhHq4QZHaSQSHlNbwQ/Qz1bYgVrOcXRlp3bZ0PxaXRFC8AveZCt4YA8PUbiYlY0oc7GfcXF6I=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=gwqWSIyv; arc=fail smtp.client-ip=40.107.223.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YQhqULnb89W1GcvreBWGy8X95/15YuhL8oL9/KklDAm5zRrHJV9FOfi4KdV561Zi3GyXo1z0VRrgus3qC+r6od0SsEplt9Gk+aMZVICm2sBO1CHq8QiuBx2H1oqvaOBHloJBnTy4JiKBncWYsRXiuY4IquBmUMG7igoCnBeKWWWq9dHuG7layCLvpilTnO5PzSzQPvsD/+w3ZVFz0L2HmUwFAVYlnVPIaUkldbotZJG1p2qqR+7sxIg31MTSVZER6PlaqLVStKrVMRmpsV1Ff8zwK0cHA1EZ1lbhpjLLctET8csU2eH5IcgnX3y01RcYGpmW8EMaR11djUhlDhFRrw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cLSf3xfbI1BF2M4vsqde3Zlx9x7Q9flRX6UBnZIWO7w=;
- b=Xhhs7HZEyfJj8rkqAZfXfXsRJnnLX9Gugf6IGotj/9CGgmkprqaJlIN2A305T23xuMAs1ru9jNcMJaPnAlcC2HGSkXm1rBEzitTEt/sioKmys/9/dS6YzsGWpr8PjfxJI1SwSU4bLKFws9FeBBDDaMu1mmoKl7arH3XSCoVoxfBt+K557FzRM3sgj4xeBgW8oLPqKRAVstJqXqXPXA8ZOT2k02YQst4nF7w4W6Zj1YFyzIZf8F/uRvh6YPaotWYvfDt+D1rsSApEwZjdr2Uc9dQSiECQ2ulTCeRNcN6DeZRvmtv7UpNFLCKFURtojbbIUpsVwt1FVYzgqhL9wedsQQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cLSf3xfbI1BF2M4vsqde3Zlx9x7Q9flRX6UBnZIWO7w=;
- b=gwqWSIyvpFEH2IAGSaUgvOGshTzVj6ZJnyfv7jI+GMoP7swxHhpqnEcv4dLLX2rKx+5RfBiN+yYWaj4RjHXUdtNeCUISKHqNalN2V0vv39IXW8fNo4qEUXd0GQRn/3cpHL0eo1oftn9WckkLhUZqJKOZW7NjfA1EsgsjmFZdBv0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS7PR12MB6309.namprd12.prod.outlook.com (2603:10b6:8:96::19) by
- PH7PR12MB5712.namprd12.prod.outlook.com (2603:10b6:510:1e3::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.27; Sat, 27 Jan
- 2024 04:02:07 +0000
-Received: from DS7PR12MB6309.namprd12.prod.outlook.com
- ([fe80::9c66:393e:556b:7420]) by DS7PR12MB6309.namprd12.prod.outlook.com
- ([fe80::9c66:393e:556b:7420%4]) with mapi id 15.20.7228.022; Sat, 27 Jan 2024
- 04:02:07 +0000
-Message-ID: <ee19d79d-6cc3-441d-85ee-834445356f88@amd.com>
-Date: Sat, 27 Jan 2024 09:31:58 +0530
-User-Agent: Mozilla Thunderbird
-Reply-To: nikunj@amd.com
-Subject: Re: [PATCH v7 03/16] virt: sev-guest: Add SNP guest request structure
-Content-Language: en-US
-To: Borislav Petkov <bp@alien8.de>
-Cc: linux-kernel@vger.kernel.org, thomas.lendacky@amd.com, x86@kernel.org,
- kvm@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
- dave.hansen@linux.intel.com, dionnaglaze@google.com, pgonda@google.com,
- seanjc@google.com, pbonzini@redhat.com
-References: <20231220151358.2147066-1-nikunj@amd.com>
- <20231220151358.2147066-4-nikunj@amd.com>
- <20240125115952.GXZbJNOGfxfuiC5WRT@fat_crate.local>
-From: "Nikunj A. Dadhania" <nikunj@amd.com>
-In-Reply-To: <20240125115952.GXZbJNOGfxfuiC5WRT@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN2PR01CA0035.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:22::10) To DS7PR12MB6309.namprd12.prod.outlook.com
- (2603:10b6:8:96::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 653DBBE48
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 04:03:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706328229; cv=none; b=WoV9E+eEMDVwpNooTP4JTLrNpNpPQEGSs3/l69NnYr7AFM+OkaHx45kHsTCSkL0Ang/Ms1cK2J6ThPzHPKsnGLP3mQFxYxPu+KWWS6PXDYOC7Btsaz5Qf8R5co7mgp5lCoBji6qyyyu92p2E70SSYsO4o38vlz/07IkSCtFCTXk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706328229; c=relaxed/simple;
+	bh=ibPIG32KDz5lkYlFOZqgY9Su1g2LgI59+9TH7QrBfEg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FRP6xBl6R3EMH/O2JDGdCqoERy+HOZn/aaGHnK0/OeRskaVCOxAHxy398PCOjKbBE46EC5Vw2izKpfT5x0vrOgNcbCRQCZ9VQWqGUTETBks34Pf0xyjANJxhb9gI3sKx/orcJGihDaPgZv9LqAp7L2SoNia5NYCxigJ3OhA2ZFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nFu4WjlZ; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51028fadfe2so1068158e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 20:03:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706328225; x=1706933025; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AhVLIlzeBK5qY5g8wi502EuRXY3kZQUh5Yr30GtXoR4=;
+        b=nFu4WjlZDPrhvPHRTRXGoWCZvXPAXEFAJ5KR1mKS7EdyGevpV/OYvS9P7A5sqQUU3Y
+         EHjPb710IGSUsqbjZeU+UBPpioe/TQYEJBCbNj5aLC1bCtghJCwLY+EGpsMd0ndTMAUS
+         15mi6Ob0p9usZTq8RQVKHukrMFRWSrwNPZhdMsNgB8DjdNHIn/jnnBzY5lpHs9yVsWdV
+         9Ul+DcwrdZzWlKQ+/a14Ek6LNIH/+M7MksowT7UMXFEdCF+FGZ+zELetcHVS6TOTY2mb
+         TZ6sqhCea/ViLAx7Ha19GGpEvl2/k6ut4DzuMZ9MVUaQNkC6aTXIhntrSGbHAzBax8L6
+         7Tcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706328225; x=1706933025;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AhVLIlzeBK5qY5g8wi502EuRXY3kZQUh5Yr30GtXoR4=;
+        b=PKGjCWgh2AjFl8Npb1IZTsi4vPq7w9LAgAwe2/Yd36DBRL+fWZNB4tYmVoVUJcYWm3
+         kiHoM33X7jkQLQsbIezAhdHGEUAZ1zWwTFttnA9erJTxdyHXIFQiDGMs1DU1v6dPCALq
+         kepLAh4dsXY/GpK6/kUB+2kONfRvJJWvsTlCo+8WaHVih4DiKi3XTlc6tBE+Wig3/wQ4
+         4gcvox9got2oyFAxnqRlK7YNGeuRZEZ/mMhf7naErO9Vy2nCdiPio5z4xcmFgEuDoVNY
+         xT33edlzt3Jt37gTk5kMNt++Wpz74vuo7JrTObA0ul0LnDEP/vApprLntfjVLNMYvvwu
+         rrrA==
+X-Gm-Message-State: AOJu0Yzc6LkeBuiCvwJ6D8ecvPXQAN3Kye1vW89uSV5SLBU1Bu33z48A
+	vQc9lULHj4HThs/hTr71kigAQQ29oiX04nYK10GnYuTyYOe4hCXn8wbZydUb+Cw=
+X-Google-Smtp-Source: AGHT+IGqPf0Y4JlE0TDyayzJ4+4DkjB7KETghuDJrX0IvXWt4UWKxRjXEnwgnh8i1uo8NmohOi+woQ==
+X-Received: by 2002:ac2:4c13:0:b0:50e:b65b:4944 with SMTP id t19-20020ac24c13000000b0050eb65b4944mr513639lfq.21.1706328225421;
+        Fri, 26 Jan 2024 20:03:45 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id f19-20020a17090624d300b00a2f15b8cb76sm1298403ejb.184.2024.01.26.20.03.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Jan 2024 20:03:43 -0800 (PST)
+Message-ID: <6ccf359a-faeb-485b-8047-fa61bb1a3fc8@linaro.org>
+Date: Sat, 27 Jan 2024 04:03:41 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB6309:EE_|PH7PR12MB5712:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9f9de9cd-fd15-4ae3-9c02-08dc1eecba70
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	jPrDVM0ElsTb2jWq7cdzoMqMqAtZuYW06QkRhdHZXE6pCF6aifu3obwpL6gpiu3ASE2PTtVu7yAlaxTyKelh+PhgAXT4OzYuyPLgUtV12Tz50JcSntyifXPx5nrjaO36jSni8Ri7WkCqPU7JZqgnYIqaKjT4niPjJTTVD/Lajpd/7c32nJz8kASJo6KAoaaWDt2lBJP74QxN8EoMRWJmIlLnXiKxvz+x6qfubjtKJ19YTD5MpfSrb+hTvpEUO23t3HrvGZUIhAOgLhQQEWN7tmFCSb/LXyqDwEcWd+HCXQfqTBsXTRhDIjaCQ1KkiMktUs4/p2vrMCTU76OJcELEGUUENPbY3N+jyCcdpzA4T5s3alyhOCOlVb//DVdLAuMobbn89vVtbUwdhhEmoFE/ytXhnIYwy9BtPOYd0rB4FrqHsy7R22i/Lz3nWe2VSSKQGPJs1ACdgEB6dUVa4MPIjQZBWHQg3WxfugRJTvUkkNi9z1sT7Wg2N6xaFjxtMPbzz9fh9yLoRj6GRxz8UE+TSQ3kCpWLAf1aIfuh4VKEBBj1Jmsya/7PFEY0PvaRCCWEGoaACjY1k7Wlw3NwXDMGlTZTXXN/kMfxkst23IssLFLNZbchYuF9KbD21WXMySvSFrp3+/Icg7fzRo6vnjC5Iw==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6309.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(346002)(136003)(396003)(376002)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(66946007)(478600001)(6916009)(6486002)(66556008)(31696002)(316002)(66476007)(38100700002)(26005)(6666004)(6506007)(2616005)(8676002)(4326008)(6512007)(8936002)(5660300002)(53546011)(83380400001)(7416002)(2906002)(36756003)(3450700001)(31686004)(41300700001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?cndZWGs0UWdBVisxZmNPbCtEei9KWVd1WXFoZ3A3M3hrRXN1Rm43ektNOTEv?=
- =?utf-8?B?N0hvVGxJRjlKdGdTSHRWWDhOOTRCODl2eTEwbUsxeWhrSE91c3hXbnYramZ6?=
- =?utf-8?B?RStvUVNrdjdvamRBNnpOM0FqVDlnU2lMWmFMbjM0em40QXQrek1hVmpFL1kr?=
- =?utf-8?B?YU5rbmYxWFJkdEhaM2lpbGVWblFRR25ONEtJaVVPOWVWa0cyQXlKcWxsU2ZK?=
- =?utf-8?B?ZE9MUWN3QXZ5T1RxazFWN3VHWXBMOHRtcGd6aksrUUJxc1VpZ0JoZ0tuRmo3?=
- =?utf-8?B?SHVNNVJZdWVta0dRTnRGSGczNFdCNWJWUUxtSXZPcVRYNDFhNDBvVHlmV2lz?=
- =?utf-8?B?NEVNQ0hYZ0QxTFpwblBkbmRSN24vS1N1TmY0Qk55R2NxWmJmSGRWV3JqeTJy?=
- =?utf-8?B?VjBzejZSL1JIem5UakFmY0QwNEpDb3lBeGduQmVsVkdWM2xmYTUvSkROTGdn?=
- =?utf-8?B?Tnh4Ti9KbmtGMFk2MHoydGVyVCtoSnB2dHVudklnN0dzbjNCNEFvRWYrTUxK?=
- =?utf-8?B?c0k3ZnJ1TmZ6czVITzEwMndVNm1ZTHlSci9Oakkzdm5vQUJTYnBXZjBpaElt?=
- =?utf-8?B?bEZ3QmpFUXBySC9KQTRtTTlpRU5PODFBL1FKYVlEZHRERDFrOHhmbm9Wb1BI?=
- =?utf-8?B?cVArQ3BvSVF2SXZQV05kVEZQbXltd3BHdUwwME5QQTk2bmtRbTFYbEdWZGtT?=
- =?utf-8?B?cWl3cDE4NFhISHlLN1FHTGFDZFRVS1VDbGd4N0tRaGZQUzF5YXdZTU5tbHRJ?=
- =?utf-8?B?c1RqeVM1eVk2bm5KbFRCclB6WE1XZWlQQklGQTIycHZYMzVlcnp5dHUvRlBP?=
- =?utf-8?B?Wk9sVlRVT05PS09GaTlkZWpwQkVSMlQzbWRTcElSdHhHbWxhMERrR01CYXJM?=
- =?utf-8?B?cHZKa3NYNGlDc25XMEhmdjVGUGsyVVpRR2JDVEpsWkdPemxaUElPUFZDdnhn?=
- =?utf-8?B?TW4vSG1IaVRneDIrcWtORi9nMjBjSE5TNzF5UFY4ZFdhRjY5SnRaVm5tMm1B?=
- =?utf-8?B?UHc2NTVzZGZmTy9hMmlFb2FlM2NiQkhLbDZTN2I1emZ3VmF2aW5qOTVqYWNR?=
- =?utf-8?B?ZGRjNzJ6ZVNEYWt3ZjB6VTQydmV5RGplYit5bUVQOUdlUDlTOWlhbjJyMHRU?=
- =?utf-8?B?T2Nxa1pKSGpXbmxabW9aRm1jZDQ0Sy9GMWl5WVgwTGxpK1JBd3NwVGZORmkz?=
- =?utf-8?B?MFFOSFRVNkMvUmdBM0kwTXcybVpCTnVXTmRhd0dyRERSU09mbmRVTkFPREdP?=
- =?utf-8?B?QnRQaEZub2pWazk5QjlVY201NUVzZGJlUW5xY0ZkWWt2RGtuaDN1Sy9ad0px?=
- =?utf-8?B?SW9md2VyeEFQWVNNV0lCcGpjcDgremVqdGZHNWZyZWJIQSt5azJRRllHZDB4?=
- =?utf-8?B?bGkvejZ2M0VYUVFTcWFzbVJacXU0SFlKZXB3dm5kOTRXdmRCM3FXQjRhVmV3?=
- =?utf-8?B?SmNlRXdhemxYTGcrNkFIT2hXMDg0V1hMMGJBRmZMcldERWM5VnhTVGxHRUgv?=
- =?utf-8?B?MEpWc2VyOW92YnZhWmxPNlZvMDMrbU1ERFFROEozTkRlZVdFdW9NRVBiejFr?=
- =?utf-8?B?VlhVYk5HSithckZGVmNnR2ZCYnRzZkYrY3RhTXJrbHRvejdZbXdKbTYvL0ZJ?=
- =?utf-8?B?czN4bnpwbEtHaVhZbk95blZpaEpyczJWZTB4Vnp5K0hLTHpuaXM0aDVZd1ZO?=
- =?utf-8?B?WEhUeGQ0cVBuY0J6K25vOFVWYU83VWV2OXN2blY5VXZhOUFvOFU0bmZRdFVx?=
- =?utf-8?B?d2l6bktBcmc0QWwwbjNOQ1UrVk96MUJNMEFWRnFLM1Z5dzJocG14bEM0ZXhO?=
- =?utf-8?B?NWpKWi94Z21SeU8wUVUwWGYrVGdvZ1dhdllBS1RvVmx0bE80NnpjcWFnQUNL?=
- =?utf-8?B?OW1KNko3WjBhQXdNdFBNdDNINVZaVzBhbTNxUWhqcmQyMDF2NWhZSmp5Y3hj?=
- =?utf-8?B?dU9CUnR1Y2RpS3Q2OE5uT1h5TkNhQnNjT1FXbU5VN3BXSGtPeVQvV2pMVXBU?=
- =?utf-8?B?aEExVW1uclZxbmVlMkwzVjdITS9zUmtYcDZVK3pWSzhlV2doajlZZFZ4ZFF1?=
- =?utf-8?B?WGU4a2h3RkQ5bzM4QmhwaDVwd3lCSDhPZmUzN2w5ckpzNEMzckFOVGlHZkdG?=
- =?utf-8?Q?pkFMsjXswCQUeqwhLj1975vsc?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f9de9cd-fd15-4ae3-9c02-08dc1eecba70
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6309.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2024 04:02:07.2371
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BERnJ6C0oxEHg4ZKVmPb+YMjJ3PvKk/wzMY5LN0aLbsmcEeoVruYUfMjjoVYvH87LiPRTwrxtwHD5BEI88CJNg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5712
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/5] arm64: dts: exynos: gs101: use correct clocks for
+ usi_uart
+Content-Language: en-US
+To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
+ peter.griffin@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
+ willmcvicker@google.com, semen.protsenko@linaro.org,
+ alim.akhtar@samsung.com, s.nawrocki@samsung.com, tomasz.figa@gmail.com,
+ cw00.choi@samsung.com, mturquette@baylibre.com, sboyd@kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org
+References: <20240127003607.501086-1-andre.draszik@linaro.org>
+ <20240127003607.501086-5-andre.draszik@linaro.org>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20240127003607.501086-5-andre.draszik@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 1/25/2024 5:29 PM, Borislav Petkov wrote:
-> On Wed, Dec 20, 2023 at 08:43:45PM +0530, Nikunj A Dadhania wrote:
->> -int snp_issue_guest_request(u64 exit_code, struct snp_req_data *input, struct snp_guest_request_ioctl *rio)
->> +int snp_issue_guest_request(struct snp_guest_req *req, struct snp_req_data *input,
->> +			    struct snp_guest_request_ioctl *rio)
->>  {
->>  	struct ghcb_state state;
->>  	struct es_em_ctxt ctxt;
->>  	unsigned long flags;
->>  	struct ghcb *ghcb;
->> +	u64 exit_code;
-> 
-> Silly local vars. Just use req->exit_code everywhere instead.
 
-Sure, will change.
 
+On 1/27/24 00:35, André Draszik wrote:
+> Wrong pclk clocks have been used in this usi8 instance here. For USI
+> and UART, we need the ipclk and pclk, where pclk is the bus clock.
+> Without it, nothing can work.
+> It is unclear what exactly is using USI0_UART_CLK, but it is not
+> required for the IP to be operational at this stage, while pclk is.
+> This also brings the DT in line with the clock names expected by the
+> usi and uart drivers.
 > 
->>  	int ret;
->>  
->>  	rio->exitinfo2 = SEV_RET_NO_FW_CALL;
->> +	if (!req)
->> +		return -EINVAL;
+> Update the DTSI accordingly.
 > 
-> Such tests are done under the variable which is assigned, not randomly.
+> Fixes: d97b6c902a40 ("arm64: dts: exynos: gs101: update USI UART to use peric0 clocks")
+> Signed-off-by: André Draszik <andre.draszik@linaro.org>
+> ---
+>  arch/arm64/boot/dts/exynos/google/gs101.dtsi | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> Also, what's the point in testing req? Will that ever be NULL? What are
-> you actually protecting against here?
+> diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+> index e5b665be2d62..f93e937d2726 100644
+> --- a/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+> +++ b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+> @@ -410,7 +410,7 @@ usi_uart: usi@10a000c0 {
+>  			ranges;
+>  			#address-cells = <1>;
+>  			#size-cells = <1>;
+> -			clocks = <&cmu_peric0 CLK_GOUT_PERIC0_CLK_PERIC0_USI0_UART_CLK>,
+> +			clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP1_PCLK_0>,
 
-Right, and in the later code, this is checked at snp_send_guest_request() API. So this is redundant.
+As I said in the previous email, I don't think this is correct. This is
+just a heads up for Krzysztof to not pick these 2 patches yet. We'll
+come back on this matter on Monday.
 
->> diff --git a/drivers/virt/coco/sev-guest/sev-guest.c b/drivers/virt/coco/sev-guest/sev-guest.c
->> index 469e10d9bf35..5cafbd1c42cb 100644
->> --- a/drivers/virt/coco/sev-guest/sev-guest.c
->> +++ b/drivers/virt/coco/sev-guest/sev-guest.c
->> @@ -27,8 +27,7 @@
->>  
->>  #include <asm/svm.h>
->>  #include <asm/sev.h>
->> -
->> -#include "sev-guest.h"
->> +#include <asm/sev-guest.h>
->>  
->>  #define DEVICE_NAME	"sev-guest"
->>  
->> @@ -169,7 +168,7 @@ static struct aesgcm_ctx *snp_init_crypto(u8 *key, size_t keylen)
->>  	return ctx;
->>  }
->>  
->> -static int verify_and_dec_payload(struct snp_guest_dev *snp_dev, void *payload, u32 sz)
->> +static int verify_and_dec_payload(struct snp_guest_dev *snp_dev, struct snp_guest_req *guest_req)
-> 
-> So we call the request everywhere "req". But you've called it
-> "guest_req" here because...
-
-Yes, I was thinking about it and came up with this.
-
-> 
->>  {
->>  	struct snp_guest_msg *resp = &snp_dev->secret_response;
->>  	struct snp_guest_msg *req = &snp_dev->secret_request;
-> 
-> ... there already is a "req" variable which is not a guest request thing
-> but a guest message. So why don't you call it "req_msg" instead and the
-> "resp" "resp_msg" so that it is clear what is what?
-> 
-
-This naming is much better, thanks.
-
-> And then you can call the actual request var "req" and then the code
-> becomes more readable...
-> 
-> ...
-> 
->>  static int get_report(struct snp_guest_dev *snp_dev, struct snp_guest_request_ioctl *arg)
->>  {
->>  	struct snp_report_req *req = &snp_dev->req.report;
->> +	struct snp_guest_req guest_req = {0};
-> 
-> You have the same issue here.
-> 
-> If we aim at calling the local vars in every function the same, the code
-> becomes automatically much more readable.
-> 
-> And so on...
-
-Will change accordingly,
-
-Regards
-Nikunj
-
+>  				 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP1_IPCLK_0>;
+>  			clock-names = "pclk", "ipclk";
+>  			samsung,sysreg = <&sysreg_peric0 0x1020>;
+> @@ -422,7 +422,7 @@ serial_0: serial@10a00000 {
+>  				reg = <0x10a00000 0xc0>;
+>  				interrupts = <GIC_SPI 634
+>  					      IRQ_TYPE_LEVEL_HIGH 0>;
+> -				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_CLK_PERIC0_USI0_UART_CLK>,
+> +				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP1_PCLK_0>,
+>  					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP1_IPCLK_0>;
+>  				clock-names = "uart", "clk_uart_baud0";
+>  				samsung,uart-fifosize = <256>;
 
