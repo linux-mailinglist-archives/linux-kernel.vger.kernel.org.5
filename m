@@ -1,73 +1,85 @@
-Return-Path: <linux-kernel+bounces-41404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41405-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E855E83F037
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 22:35:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5336783F043
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 22:46:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31D10B22CEF
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 21:35:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EE0F2838F7
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 21:46:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62AB71B285;
-	Sat, 27 Jan 2024 21:35:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 249AB1B80E;
+	Sat, 27 Jan 2024 21:46:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="Pm1Cz2uc"
-Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BJFqJgRC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07E21AAA5
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 21:35:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48DBB1B271;
+	Sat, 27 Jan 2024 21:46:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706391333; cv=none; b=o1j44PM64OduP7fqmWDRjzB6Gt/jqg9fNO+jpHuDQajiJlGzCnyXy/0G/FgWQDOLYYRF92V+8cep8S9t0UyvRuHaAMiastCe292pXaRwohKcCAXlawrEugmqAJac8b33doV5f2CAjsBkeYIBTLp7q7PY3ePXeMbaaaLy3f3zDaI=
+	t=1706391985; cv=none; b=mUDL8IovCSOrtwAPMIqkEomt3VxLfk5XWyk4nbminuBHJrvjHdpnW0oB1Ppoa8CbGbhHZJX4BOek5m86t6cKhyRPM3WUrKE50a1n5D33CUM0BzrW1D+H92hfvjBrgjZS27TSR5YQ2q7aDNZSgDkJwgBQu0rruEO0vRPOXmeA+PA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706391333; c=relaxed/simple;
-	bh=XjB14sOEcNCjSPSGzjsVDfkM3EVNBsHsxxs1Zo++7WQ=;
-	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=mHCnjCZIWayoMzBiBPqdZf0aL6Upvh8RcvLS5J/Ql39gk2Io1ipnXhMQ3pfYZpBiE5Jh0cqM/iLkBsNsIuqOTZ+w06IIRt4thg3a4PHPmPH7vVpAJGvar8JCbSn8cr2TYnr4NaxpdPo5GRZpXdEKoVFI9MHnN8IY2AmF/qotFaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=Pm1Cz2uc; arc=none smtp.client-ip=185.70.40.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1706391328; x=1706650528;
-	bh=XjB14sOEcNCjSPSGzjsVDfkM3EVNBsHsxxs1Zo++7WQ=;
-	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=Pm1Cz2uc1Irqqa4Cker3zmeykpfVQuifl8xy4t6U7zGR2y0xekfG+hoH88A6YFGp1
-	 c2um+AowgVouh3DM5EsszQ3krku+Uv/2iwNfGK5kO6piUUHHAv2WUVDIfW00R3a/G7
-	 QRWVjUO1ZCK2GvMo043xwp2oYnA09r70boCOOdrAXwOW+k0Trk2R1vG+c8CwxUNqny
-	 9VFrgXLpJSDZ6BQ2+BiUAxyRS4xf3aM8y/2Id33Zs2lZJb51T+sPyNYBWIUn4FiLz3
-	 xwiN8lOS5TCJc+4Tj+qVnpry5Q3N+o//wdp+F65tkaaaJ76mqrkpz5gp04G0OJxQmh
-	 aJ0UiQMTwTvTA==
-Date: Sat, 27 Jan 2024 21:35:15 +0000
-To: linux-serial@vger.kernel.org, jirislaby@kernel.org
-From: Emil Kronborg <emil.kronborg@protonmail.com>
-Cc: linux-kernel@vger.kernel.org
-Subject: mxs-auart broken in v6.2 and onwards
-Message-ID: <miwgbnvy3hjpnricubg76ytpn7xoceehwahupy25bubbduu23s@om2lptpa26xw>
-Feedback-ID: 20949900:user:proton
+	s=arc-20240116; t=1706391985; c=relaxed/simple;
+	bh=SErjFBICAWxRTxTFw2so2di/v5LFUPRZOMxTT+5uyqY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DfuituOAVA5W3+7rDJ2xfo/2Q0l5QcSAA1xlK3CsVkC8Lw5yMy3oVLc34IERoJMrvhvOvkLH3ESoPHGxEXPGiyqe4cJkiDwgrgJ4Acotb5BhIu7U8G7N9QOfuT7fG3Qg4d10Yb2RH0VLQYXPWOmysmI/+4sVR7XHSZzJVW/lJMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BJFqJgRC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A7AFC433C7;
+	Sat, 27 Jan 2024 21:46:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706391984;
+	bh=SErjFBICAWxRTxTFw2so2di/v5LFUPRZOMxTT+5uyqY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BJFqJgRCiVMNZX+V2TC3V0uQ1Q9GGncokLQikLTlsvHbP0c2jzCg/ddXZkWnKWPgT
+	 IOIRBPj+Q27jll86wkFQEPd1TlRJge92vUiAgl7pBSYHv/+Wj4HPz5giLUC1xTmpv2
+	 S9503BZ29w1y0lBgShOk9pJJ8HdceEEgoUu880ddhkgihwDMg7Mghl9G2pv3s2Fcwx
+	 80xY1DDANGPeMGi2OD60DnkG0CGu5sip2JVMW46HYJXEKw6d6SuZMF11yvqVI4/lGV
+	 Fau6lNL4FcYxEX72Z59QewSz1lV6swlpJVO998IiQhpvy+UMJ15Ub1sP/Yaasq83ao
+	 XXz8oextlma7g==
+Date: Sat, 27 Jan 2024 22:46:19 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Thomas Richard <thomas.richard@bootlin.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, 
+	Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, 
+	Tony Lindgren <tony@atomide.com>, Haojian Zhuang <haojian.zhuang@linaro.org>, 
+	Vignesh R <vigneshr@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, 
+	Janusz Krzysztofik <jmkrzyszt@gmail.com>, Peter Rosin <peda@axentia.se>, Vinod Koul <vkoul@kernel.org>, 
+	Kishon Vijay Abraham I <kishon@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
+	Tom Joseph <tjoseph@cadence.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>, Rob Herring <robh@kernel.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	linux-phy@lists.infradead.org, linux-pci@vger.kernel.org, gregory.clement@bootlin.com, 
+	theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com
+Subject: Re: [PATCH v2 01/15] gpio: pca953x: move suspend()/resume() to
+ suspend_noirq()/resume_noirq()
+Message-ID: <jwal3js3xjnbx46syf2jldsdx7fp4yv63fvsbnwo5npbbxapdu@n2flwlvsaetg>
+References: <20240102-j7200-pcie-s2r-v2-0-8e4f7d228ec2@bootlin.com>
+ <20240102-j7200-pcie-s2r-v2-1-8e4f7d228ec2@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240102-j7200-pcie-s2r-v2-1-8e4f7d228ec2@bootlin.com>
 
-Hi,
+Hi Thomas,
 
-After updating Linux on an i.MX28 board, serial communication over AUART
-broke. When I TX from the board and measure on the TX pin, it seems like
-the HW fifo is not emptied before the transmission is stopped. I
-bisected the bad commit to be 2d141e683e9a ("tty: serial: use
-uart_port_tx() helper"). Since it concerns multiple drivers, simply
-reverting it is not feasible. One solution would be to effectively
-revert the commit for just mxs-auart.c, but maybe you have a better
-idea? Any pointers is appreciated.
+On Fri, Jan 26, 2024 at 03:36:43PM +0100, Thomas Richard wrote:
+> Some IOs can be needed during suspend_noirq()/resume_noirq().
+> So move suspend()/resume() to noirq.
+> 
+> Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
 
-Regards,
-Emil
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
 
+Thanks,
+Andi
 
