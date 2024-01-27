@@ -1,325 +1,176 @@
-Return-Path: <linux-kernel+bounces-41251-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41252-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CF3783EE01
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:39:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54CBF83EE04
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:43:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA4AF2830BB
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:39:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9403283FD5
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:43:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 314C42940B;
-	Sat, 27 Jan 2024 15:39:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD3D628E02;
+	Sat, 27 Jan 2024 15:43:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E1qFzL5u"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="0YOu/NEm"
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2054.outbound.protection.outlook.com [40.107.102.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 245F328DAB;
-	Sat, 27 Jan 2024 15:39:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706369947; cv=none; b=l7Q5UQdkHieWO4IJzABhlH9IR7f58Ah+eY2ERLFdSTYCaEMrmz60DISai5AJndjfDRphco3k4E0Zws1Bc9jDtiZGo5CvzUy/BbCEELxXnQD8dI+vFepclOMH5hboJU6Rs3IJdkKbGK3HH8HG5WYt+/OIIOHwwV1SOm+WdfcziRE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706369947; c=relaxed/simple;
-	bh=lb9Uaffl5vXy1p3Zzot+RjOxBbBWyqOBeptq65PZiNA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ACLHfkhyTIRJRVBBlCBq5mMORl20vLqMeg3JKfLV0MSKNVGiaaIZdgwMAqTv3SzbYJBrEtSUmYqHL/54cobHA5L4XY2SrXaJ90LIcpAY2bv9OxsEWiCY+0PRbBZpArKvKHWRUafXNpLPlsDa9bpuPuB40Nn4z+MeZVndyRrnmQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E1qFzL5u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35C60C433C7;
-	Sat, 27 Jan 2024 15:39:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706369946;
-	bh=lb9Uaffl5vXy1p3Zzot+RjOxBbBWyqOBeptq65PZiNA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=E1qFzL5utrew6nOuVychcFUAQGBdldyVcGQWW+eD75whSHhJFL8YucUYSB4SOEmjs
-	 Fa+wgP5OgCVF9SRmmzOwsR60qAnVQNNkPzXuilXRWuBsQVM7oIjrHV2/WI/KwGSbD6
-	 fSiLPHU5lAx4uF1EZSKtsnXX8gNZTHLHg6wzfFkPQ5UW3rutxH1PzgbPnOumryGd67
-	 ZPsThJLsnQZxp/SJxa+LBnQBjR0NEoILeq4bJEnWeN02qTBx7QUimijzVfHaAhrgb8
-	 /kc/09hsjyV0eFeRLHD8eSE1YMv2vOhVjebkeKgpJzLgorMPFc/FXDqpnGylLS75i6
-	 KH0LFpIyFxTDg==
-Date: Sat, 27 Jan 2024 15:38:53 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Ramona Gradinariu <ramona.gradinariu@analog.com>
-Cc: <corbet@lwn.net>, <linux-doc@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <nuno.sa@analog.com>,
- <linux-iio@vger.kernel.org>
-Subject: Re: [PATCH v2 1/1] docs: iio: add documentation for adis16475
- driver
-Message-ID: <20240127153853.02d4f0d2@jic23-huawei>
-In-Reply-To: <20240123150029.465443-2-ramona.gradinariu@analog.com>
-References: <20240123150029.465443-1-ramona.gradinariu@analog.com>
-	<20240123150029.465443-2-ramona.gradinariu@analog.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.40; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BA7828DC0
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 15:43:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.54
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706370191; cv=fail; b=rkmAvUmVYUYWo041poDx2V87AefEVMAJWdvi4J6Eg6Hxd2KiuiKh1xgUZXHATQIZbk2DH9TxnhWVC3/c5GH/E1It2X8rVmx9uGqHkXrSzcKblRlWgOU1qw1nF4RjmkVnwjj3jvuamaPPK+b3v4HZ9hZGA+end8pO8ph3g4J1JJ8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706370191; c=relaxed/simple;
+	bh=z+L6UM2uNLc3ymDcNLdgmSqDrOGxckDAQ0P2QBuTrEs=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=SoTCq036Mgi1th6HHRAzyhxW/U232yb9oKpQxOgNplaD06zeKiVjgz7UtIOhKJX76WQ/39oqoVEl7X0zywkebl5RSg+aHFjAjQkzF4WVLzo7QDIcSvekPMwq9iLmdDrD9nySGmkv1ccYAkaaGaheNRiYwSpfjGqvKTMOpDLraCQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=0YOu/NEm; arc=fail smtp.client-ip=40.107.102.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Pbfax7P/j7fYvnfLSLfe8vvdW0MrAYuZ7/2OReMXPt9qycKO+95LoyPQvESYRJtwEbF1v4u0Z2lOrpTBsO4FSyM2m5gUYbLFD7f6S4FO+SZit/KzX8FhSGIw60C1cFPbp3EpaJuhtKgKpUIRhE/U0JZztB3DAvK1NVtY1JNKK0ScpBdRtlR0m35+xhNLGKkUmn8jabTWCtH5kdqa6waXnEC8bK3omtroaU4B/fwGNShSNPsMwMW78kljgaLsU3Jv4vsdpNNhOKrgn0LE1n0LkunA1L18dd2bB93gQGH/j/EcTgCk2roTuT2h0lPF7H2n0+FlnKNewDDDruZvYpm7NA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=s0zcwWnAKRNY+t+hGY9Czn07b5DmaFybNx3THyCPopY=;
+ b=TSiuOg7spFYrhilJzBskstwVdrVvJ8Lrarh84+6ikZItm6DzmCWv/1nvwskoRJgm+sLzxcp5DZkPtkqRFTajR+vCKRjBPnpkBydOiqfO4sgt3OurKqate7DVqRQLHTcpiw6tboFYkcX9z9Ipg+RdH7vm+KEgBBvkHZSBNeRpCyctDUTbq9OAxrWJzaCtwleu0Tjl8jZPfFnnXDNMPTQ9te5k0jjwxPO8D9OGeBKzXKtuf0pppPzko+3+fErkKCgdg1PjzfJCfzgoF0r8TbR2cM7X3C7KHRSBQA2Ydjs+7/onZLk7YE4Waf6cd08nkzEAz3MA8Zy1Khd1xKNVfB1rFg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s0zcwWnAKRNY+t+hGY9Czn07b5DmaFybNx3THyCPopY=;
+ b=0YOu/NEmQUxbj3og2PzijVIna0hRJ2diGfX+llvZiSNAp65RooERwp2aSAUGtRM41K1BSnh+aOfmLOLEx9VJ+CFRCWfE4KIhdhiTupZPZ0bEMjcgZ4PpvIIWxyRGlpoJoU3H+IkZsX27Apvghzj+wiEGCnGiY9n4zkZT/fglD2o=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
+ by PH0PR12MB7094.namprd12.prod.outlook.com (2603:10b6:510:21d::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.29; Sat, 27 Jan
+ 2024 15:43:04 +0000
+Received: from BL1PR12MB5732.namprd12.prod.outlook.com
+ ([fe80::200:c1d0:b9aa:e16c]) by BL1PR12MB5732.namprd12.prod.outlook.com
+ ([fe80::200:c1d0:b9aa:e16c%4]) with mapi id 15.20.7228.029; Sat, 27 Jan 2024
+ 15:43:04 +0000
+Message-ID: <b50a822d-e9f3-58b2-7797-be5de0ee4626@amd.com>
+Date: Sat, 27 Jan 2024 09:43:01 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 08/11] x86/sev: Provide guest VMPL level to userspace
+Content-Language: en-US
+To: Dionna Amalie Glaze <dionnaglaze@google.com>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Dan Williams <dan.j.williams@intel.com>, Michael Roth
+ <michael.roth@amd.com>, Ashish Kalra <ashish.kalra@amd.com>
+References: <cover.1706307364.git.thomas.lendacky@amd.com>
+ <61316ac5a8217f0397da87c78c2db08580ad75a5.1706307364.git.thomas.lendacky@amd.com>
+ <CAAH4kHZjqq5OTyTqhCGxeCSrgw==_FyLqqLOaWK3JxQytF=k7A@mail.gmail.com>
+From: Tom Lendacky <thomas.lendacky@amd.com>
+In-Reply-To: <CAAH4kHZjqq5OTyTqhCGxeCSrgw==_FyLqqLOaWK3JxQytF=k7A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SA9PR13CA0019.namprd13.prod.outlook.com
+ (2603:10b6:806:21::24) To BL1PR12MB5732.namprd12.prod.outlook.com
+ (2603:10b6:208:387::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5732:EE_|PH0PR12MB7094:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4189d0fe-06fc-42da-cfd6-08dc1f4ea6d7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	95kBiLU5Vuw4I5do/Qh7BWhBmre7U8auOQp7lYZ8ZGuQJP2mIHSbiccxdtTsTqc9Qax+deqrM8p5+qrM26kqgWnok4JdlWuIE4PcmKNC8wyA40JHpj6jnchwqu0v9NNH+A3h+R1ygjJsi27IVZZ4GCUPTUCS6JwZtn7Xh9Zm+brby2EbJuc67Ta3njRuBKohy+ABIn/bD+HyH9USQ9tdMkm16iTBVYsz6YTbO/OQcy7Z8fgTF+K3Fk5vfP0VPAXRUPVRqaPvo6gEK4XZ+YLf6ciMawHoYS5jdcDOsCuwxsPGDQYNYcPUzHqUEFP2zPw1Si9iAw0G/Mf8rh4e2nZnPE/stdBKv48dhh5yp2slQHdlXU+O9ydhZ00p11hq7DFPezT9Yc1YYA6Oo3cpx+la8kxcnVitynnKZcLr/SYRL5SY0haE7AnCC9+zW/1jO0k8+LEqBBM2gpvaTROY6lbVG1Z4ZD903FG/NbGD2zdoa9eHUR4VeyU+MQleZYzza15cDVb1wtYXRhym4SDNjJnirwap1nMZn+7Ts9AN40gJSMfvrfmOnKO/hApQMSuym1J9jfv8i6iCrKRGZaS+M+0HakyWwytNZAUZTJHsGRyhb7W97ZsAS+ZsnTOF0gsZSOx2rFiLFr6Flun3MLFpMNL0CA==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(39860400002)(376002)(136003)(366004)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(83380400001)(6512007)(26005)(2616005)(38100700002)(8676002)(5660300002)(4326008)(8936002)(7416002)(2906002)(478600001)(6486002)(6506007)(53546011)(6666004)(66946007)(54906003)(66476007)(66556008)(6916009)(316002)(41300700001)(31696002)(86362001)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?TWc5c040cjZtenBlaE8rbjQ1QUl3SnlieTVJanYzWWJ3bDBYNVlhRWVKKzlt?=
+ =?utf-8?B?dzM5MXVyRm4vcW9OTXJwTlloZUROM01FeU9wUkUvZEliSVFqaXY0QlN0aUlD?=
+ =?utf-8?B?Tlp4STJJbEdBRGdEeFlPZ2JUK2dWV1B5bVhqcmNYVVlXTE1OQUo5Nm5JemtM?=
+ =?utf-8?B?ZmVLdCtDdHFtbnpZaG1abktmdXN5ZGIxZkdSczc4MEVBMTRvemVncENaU1cw?=
+ =?utf-8?B?M1RJeWR6YWV2ZHdKZDZPWDJtYk54dUFjMittSi9kZUZFQ2s1L3R1UlVUSk82?=
+ =?utf-8?B?Vnh5eVRvVGN5ODdoMWsrOUExcURUYmJYaWhRV2pyYUNMUS93MTc5SWd1N3U2?=
+ =?utf-8?B?UXlEQUNhQ240MUtkeTFUQ2VnWmhEUVZtejl4dUhoWXVaZGdOcExmUFZLMW1P?=
+ =?utf-8?B?WEFLRCs0Z0FWczBGL3g0WEF1QTZ1TDYzR0FzWHBZS2VjNnI2Y1JuaGxOWURP?=
+ =?utf-8?B?ekFzSE55andFZi81Wm9BbExYdlRiQkVLMUJLdFZUY3NRclk2bFZVbVpCanFI?=
+ =?utf-8?B?MGNnQjgxTzFGSlN6OEU3MHQ2ZVZzTVFkOTdxMnNyRWFlakJrQXhQWHN5K0kw?=
+ =?utf-8?B?bkhTNmxualV2ZXhzTE9kaGpvVHNnbSt1M25FQlZ6SkRrYmd0dE9wdERkWnpQ?=
+ =?utf-8?B?d2UweFFYWnI3ZDJWQVVGYllXTDhVaUNWcjBUTm1jT3V0OWh1T3VqOWJTcTN0?=
+ =?utf-8?B?T05ydUVUK0d0azF1ZVNvV3J4bkwzcllTM28wZ3F5ZTBIemlPVHFzOVlGeDdz?=
+ =?utf-8?B?T25hZFZVYy9ONDFjdTdIUUVueG5uWUNQazhWc2U1TmNsM250UXZ4dU1YeTc3?=
+ =?utf-8?B?RGpNNlNKWWtuYko5ZFp5TFowTVZWTmtBeG0vVjdncXZ4NlVrTTBMY3BoUVRJ?=
+ =?utf-8?B?QXlCVHFvcmdjallHRUN0dVdtcVhBL0MwL3dDRUc4VGNpY0FuZjYzWGhXZjM5?=
+ =?utf-8?B?SllwWURwTGdzcUl6WlJPUEZ5ZUJPS3U2NUJ2aisrZ0tOR1NwRmcrdlk3VURh?=
+ =?utf-8?B?bENaamZZVGF4TnNmZkxpNEJ2VjlzR3B2S2txQkR4MEVjU1hBK2J1empRam9I?=
+ =?utf-8?B?dysvazFXSEt0SDhxVHpNWDVMeGpVUVNldDBVUzN5RDA0cTl0SUwwWXZHdWJC?=
+ =?utf-8?B?eGFrM0xMSDZ3UkFvZDdZcjJmU1AxbHJYS3RsdWxGOW9XUlNlMC9DZVhURUpK?=
+ =?utf-8?B?bWJMRUZKM0lOcWVxb0ZmYW9oK2ZiRkU4dFNqNVA3L0QzbVFucU9Tc3ZUWW83?=
+ =?utf-8?B?NHFaek05SXFIK04wV1dNRmNuSXVqZ3o5V042ditreHVjNW0xVWwyM2hleXd4?=
+ =?utf-8?B?MlZzRUhiaVBoNlhRZDFFWGV6blJKMy84NTZldzJIZ0hJNDNORnZ3QjIyZDZN?=
+ =?utf-8?B?bTB3cDFWK1FrZzNsR3lSWjZRSktVVkhEN3VxdFZqeURkWkpKZURlSlhyck1U?=
+ =?utf-8?B?b3F2YmhhWm1NK3BjdWV5ZElzdlA1cXZSb0plSlRGRzBwcTF0VDFGN21lY25W?=
+ =?utf-8?B?MVptZU9YWHhIazZSSGE5andWMnNQM1NQNVVDNSt1d0FIS2kzVGRPSkoxRWlq?=
+ =?utf-8?B?UEFmWkc3ZTFCNis0d0dja3c4MUp6OW12OXQ0dVBEdDR2QWZFSC9uMlp3L21m?=
+ =?utf-8?B?UkNzQzBORWQyektNaUt4d3pNa3dnN21ZNS82dE1XbE9rbWJpelhpN1RjMFR0?=
+ =?utf-8?B?d1Vvc1RGRHcyenhMOWRQSUZYd1VvWTluUTBWZ0ZsL2Zwa0YrSElobjhwclJ0?=
+ =?utf-8?B?OTNYVmNnY3g1MU1wY2prUlZITEpxWTU0LzQ4aVZ6ZEhpTjNKUzI3Z1J6TklF?=
+ =?utf-8?B?UzErM01oZEtNSkNHakJ0dUcvODgyR0EvWDdFa3MyNExmek8zSWRJNU5aZDlB?=
+ =?utf-8?B?T3VKby9zbkxaZVQrRTlYQ0QwODhZaVhjdDg3anVvQ2VZUXJ2c1pDRTBMQ3p6?=
+ =?utf-8?B?WkI2SGtFMzR3NkV1ZTdCc1FoRG1pY0JMV0FUK2YyUXgrSFZyRTRsRVlnN3d4?=
+ =?utf-8?B?bmg3bFZZUmxzanJzMjUybjIwQWFqdHBBejZKMUZPTTZ2R2Rmelo1MTJLOFBE?=
+ =?utf-8?B?WER6UDRnY0VURkQ2UFVRR1c4bm9BeS9TSFhnTDlDNnQ2QUo2RlZXbS9tUURT?=
+ =?utf-8?Q?mCSqHEEJqHKpJ16Qj3iYoXU0U?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4189d0fe-06fc-42da-cfd6-08dc1f4ea6d7
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5732.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2024 15:43:04.8211
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0zZ4AyHKaZ0Y6aTV5eijlzxW3RL5xYAxhQ2psi9ivy07+X2NzWUN6VKrkPkulJ03GzqNStd/gvlbi68Bpd7Y6w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7094
 
-On Tue, 23 Jan 2024 17:00:29 +0200
-Ramona Gradinariu <ramona.gradinariu@analog.com> wrote:
+On 1/26/24 19:06, Dionna Amalie Glaze wrote:
+> On Fri, Jan 26, 2024 at 2:19 PM Tom Lendacky <thomas.lendacky@amd.com> wrote:
+>>
+>> Requesting an attestation report from userspace involves providing the
+>> VMPL level for the report. Currently any value from 0-3 is valid because
+>> Linux enforces running at VMPL0.
+>>
+>> When an SVSM is present, though, Linux will not be running at VMPL0 and
+>> only VMPL values starting at the VMPL level Linux is running at to 3 are
+>> valid. In order to allow userspace to determine the minimum VMPL value
+>> that can be supplied to an attestation report, create a sysfs entry that
+>> can be used to retrieve the current VMPL level of Linux.
+> 
+> Is this not the intended meaning of privlevel_floor in
+> /sys/kernel/config/tsm/report/$report0/privlevel_floor?
 
-> Add documentation for adis16475 driver which describes
-> the driver device files and shows how the user may use the
-> ABI for various scenarios (configuration, measurement, etc.).
+Hmmm... possibly. But that would make someone using the ioctl() (which is 
+still available) have to use the config-tsm support to get the value. If 
+the overall consensus is not to have a sysfs entry, I'll remove it, but it 
+could be useful beyond just attestation.
 
-hi Ramona,
-
-I'm not against more documentation in the tree, but I'd like
-a little info in this patch description for why you feel this
-particular driver needs it?  Fine to argue they all do if that's
-the reasoning!
-
-To be useful I think we need some more detail on the raw data
-from the chardev readout and that perhaps belongs in some generic
-docs (fine to use this driver as an example).
+Your comment does make me realize that I did miss changing privlevel_floor 
+for the TSM support. I need to set privlevel_floor to the current VMPL level.
 
 Thanks,
+Tom
 
-Jonathan
-
->=20
-> Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
-> ---
-> changes in v2:
->  - added adis16475 documentation file to iio index.rst file
->  Documentation/iio/adis16475.rst | 327 ++++++++++++++++++++++++++++++++
->  Documentation/iio/index.rst     |   2 +
->  2 files changed, 329 insertions(+)
->  create mode 100644 Documentation/iio/adis16475.rst
->=20
-> diff --git a/Documentation/iio/adis16475.rst b/Documentation/iio/adis1647=
-5.rst
-> new file mode 100644
-> index 000000000000..9af054f4af79
-> --- /dev/null
-> +++ b/Documentation/iio/adis16475.rst
-> @@ -0,0 +1,327 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +ADIS16475 driver
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +This driver supports Analog Device's IMUs on SPI bus.
-> +
-> +1. Supported devices
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +* `ADIS16465 <https://www.analog.com/ADIS16465>`_
-> +* `ADIS16467 <https://www.analog.com/ADIS16467>`_
-> +* `ADIS16470 <https://www.analog.com/ADIS16470>`_
-> +* `ADIS16475 <https://www.analog.com/ADIS16475>`_
-> +* `ADIS16477 <https://www.analog.com/ADIS16477>`_
-> +* `ADIS16500 <https://www.analog.com/ADIS16500>`_
-> +* `ADIS16505 <https://www.analog.com/ADIS16505>`_
-> +* `ADIS16507 <https://www.analog.com/ADIS16507>`_
-> +
-> +Each supported device is a precision, miniature microelectromechanical s=
-ystem
-> +(MEMS) inertial measurement unit (IMU) that includes a triaxial gyroscop=
-e and a
-> +triaxial accelerometer. Each inertial sensor in the IMU device combines =
-with
-> +signal conditioning that optimizes dynamic performance. The factory cali=
-bration
-> +characterizes each sensor for sensitivity, bias, alignment, linear accel=
-eration
-> +(gyroscope bias), and point of percussion (accelerometer location). As a=
- result,
-> +each sensor has dynamic compensation formulas that provide accurate sens=
-or
-> +measurements over a broad set of conditions.
-> +
-> +2. Device attributes
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +Accelerometer, gyroscope measures are always provided. Furthermore, the =
-driver
-> +offers the capability to retrieve the delta angle and the delta velocity
-> +measurements computed by the device.
-> +
-> +The delta angle measurements represent a calculation of angular displace=
-ment
-> +between each sample update, while  the delta velocity measurements repre=
-sent a
-> +calculation of linear velocity change between each sample update.
-> +
-> +Finally, temperature data are provided which show a coarse measurement of
-> +the temperature inside of the IMU device. This data is most useful for
-> +monitoring relative changes in the thermal environment.
-> +
-> +The signal chain of each inertial sensor (accelerometers and
-
-Wrapping is inconsistent. Please tidy that up so that for all the normal te=
-xt you
-wrap at same line length - this paragraph seems 10 chars shorter than the p=
-revious
-one.
-
-> +gyroscopes) includes the application of unique correction
-> +formulas, which are derived from extensive characterization
-> +of bias, sensitivity, alignment, response to linear acceleration
-> +(gyroscopes), and point of percussion (accelerometer location)
-> +over a temperature range of =E2=88=9240=C2=B0C to +85=C2=B0C, for each A=
-DIS device.
-> +These correction formulas are not accessible, but users do have
-> +the opportunity to adjust the bias for each sensor individually
-> +through the calibbias attribute.
-> +
-> ++-------------------------------------------+---------------------------=
--------------------------------+
-> +| 3-Axis Accelerometer related device files | Description               =
-                               |
-> ++-------------------------------------------+---------------------------=
--------------------------------+
-> +| in_accel_scale                            | Scale for the acceleromete=
-r channels.                    |
-
-Probably good to add a sentence explaining where these files are - I'm gues=
-sing they are just the ones in the
-iio\:deviceX directory and not the sub-directories below that.
-
-> ++-------------------------------------------+---------------------------=
--------------------------------+
-> +| in_accel_x_calibbias                      | Calibration offset for the=
- X-axis accelerometer channel. |
-> ++-------------------------------------------+---------------------------=
--------------------------------+
-> +| accel_calibbias_x                         | x-axis acceleration offset=
- correction                    |
-> ++-------------------------------------------+---------------------------=
--------------------------------+
-> +| in_accel_x_raw                            | Raw X-axis accelerometer c=
-hannel value.                  |
-> ++-------------------------------------------+---------------------------=
--------------------------------+
-> +| accel_calibbias_y                         | y-axis acceleration offset=
- correction                    |
-
-no in_ prefix?
-
-> ++-------------------------------------------+---------------------------=
--------------------------------+
-> +| in_accel_y_raw                            | Raw Y-axis accelerometer c=
-hannel value.                  |
-> ++-------------------------------------------+---------------------------=
--------------------------------+
-> +| in_accel_z_calibbias                      | Calibration offset for the=
- Z-axis accelerometer channel. |
-> ++-------------------------------------------+---------------------------=
--------------------------------+
-> +| in_accel_z_raw                            | Raw Z-axis accelerometer c=
-hannel value.                  |
-> ++-------------------------------------------+---------------------------=
--------------------------------+
-> +| in_deltavelocity_scale                    | Scale for delta velocity c=
-hannels.                       |
-> ++-------------------------------------------+---------------------------=
--------------------------------+
-> +| in_deltavelocity_x_raw                    | Raw X-axis delta velocity =
-channel value.                 |
-> ++-------------------------------------------+---------------------------=
--------------------------------+
-> +| in_deltavelocity_y_raw                    | Raw Y-axis delta velocity =
-channel value.                 |
-> ++-------------------------------------------+---------------------------=
--------------------------------+
-> +| in_deltavelocity_z_raw                    | Raw Z-axis delta velocity =
-channel value.                 |
-> ++-------------------------------------------+---------------------------=
--------------------------------+
-> +
-> ++---------------------------------------+-------------------------------=
------------------------+
-> +| 3-Axis Gyroscope related device files | Description                   =
-                       |
-> ++---------------------------------------+-------------------------------=
------------------------+
-> +| in_anglvel_scale                      | Scale for the gyroscope channe=
-ls.                    |
-> ++---------------------------------------+-------------------------------=
------------------------+
-> +| in_anglvel_x_calibbias                | Calibration offset for the X-a=
-xis gyroscope channel. |
-> ++---------------------------------------+-------------------------------=
------------------------+
-> +| anglvel_calibbias_x                   | x-axis gyroscope offset correc=
-tion                   |
-
-A before, I think there is a in_ prefix on all these.
-
-> ++---------------------------------------+-------------------------------=
------------------------+
-> +| in_anglvel_x_raw                      | Raw X-axis gyroscope channel v=
-alue.                  |
-> ++---------------------------------------+-------------------------------=
------------------------+
-..
-
-
-> +Usage examples
-> +--------------
-> +
-> +Set trigger if not available:
-
-What do you mean by not available?
-
-
-> +Obtain buffered data:
-> +
-> +.. code-block:: bash
-> +
-> +        root:/sys/bus/iio/devices/iio:device0> hexdump /dev/iio\:device0
-> +        ...
-> +        0044760 3901 0000 ffff f9fe ffff 29ee 0100 f79b
-> +        0044770 3901 0000 ffff 98fe ffff 1aef 0100 439a
-> +        0044780 3901 0000 ffff b4fe ffff 32ef 0100 c199
-> +        0044790 3901 0000 ffff bdfe ffff 20ef 0100 5f9a
-> +        00447a0 3901 0000 ffff 37ff ffff 1eef 0100 389b
-> +        00447b0 3901 0000 ffff 7dff ffff 96ee 0100 5a9c
-> +        ...
-I'd use hexdump -C to list them byte wise - otherwise endian effects make
-this rather incomprehensible.
-
-Also if you want to list the raw data, good to explain what the various par=
-ts are
-and how that is derived from the info in scan_elements.
-That might be best done in a separate document though that is then referred=
- to from
-here. I don't think we have such a userspace document, having long relied on
-people figuring it out from the example tools or using google to find talks=
- various
-folk have given (or the ADI wiki which might have stuff on this?)
-
-
-> diff --git a/Documentation/iio/index.rst b/Documentation/iio/index.rst
-> index 1b7292c58cd0..0087c0dafe59 100644
-> --- a/Documentation/iio/index.rst
-> +++ b/Documentation/iio/index.rst
-> @@ -12,3 +12,5 @@ Industrial I/O
->     ep93xx_adc
->=20
->     bno055
-> +
-> +   adis16475
-
-Hmm. It's already in a random order but let's not make it worse to fix that=
- up.
-Put this before the bno055.
-
-If you want to add some more formatting to this, say to add some section ti=
-tles and
-that would be great as a separate patch.
-
-> --
-> 2.34.1
->=20
-
+> 
 
