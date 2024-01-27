@@ -1,208 +1,122 @@
-Return-Path: <linux-kernel+bounces-41231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C68DA83EDB5
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:53:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3849F83EDB9
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:56:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6114928442B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 14:53:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5D83283508
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 14:56:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7077728DB3;
-	Sat, 27 Jan 2024 14:53:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5347028DC1;
+	Sat, 27 Jan 2024 14:55:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="p/0ZOj6c"
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="IdZGCCjL"
+Received: from mout.web.de (mout.web.de [212.227.15.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1F0D25779
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 14:53:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 851C31E4BC;
+	Sat, 27 Jan 2024 14:55:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706367225; cv=none; b=CIrLiMJ15jKirWKisCirmXh2P6faul2GFJQzPsdsIzi/YRVP4nbNYYF0x7eufb5vKUgnaZSi6cNaN2Au/MoOTCN3xCZL2RHB1JdvutfYudKoebh2cbwhIDosJhoqCpsICHVQlbZ3VT4OyNHRmFfU23VYGWF3EI6R2s2Q0KP5XRE=
+	t=1706367351; cv=none; b=YyYP/2prn4OPr1a7KcwRzh1dO4GmkU38Otbqz0UeGZRXP8bd5yDs5TzKXApAmk+vkXrbp4FnRU8kWycgzjtexhzDQI8mEWooGNmfsP8NO6NxVUL/lg0CBKZ499AerL+INYnMKzS4F8kaZXPB6zWroJzWl1uAE4gCVV4hTNuCqlE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706367225; c=relaxed/simple;
-	bh=8OnnEkB+dOkZO7tqPPJOZLI09GPeHhIA0biKrjuXtpg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iv57LXFzO07T3Q73pF3VOHV9r5GiYqkHBTb+R7qwjP2lpjgW1lfP3hC6mseojU95C222x7zshhZwWm9LBJogXQGlvB2FF/Eiwz2gMLbruWewicxucuEvzq4vsmzXGL+emVIhV6+hnQsJVi/BBrSDHjqIeCcApE0g/xqLvJNxjLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=p/0ZOj6c; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e4be8962-845a-4f50-b1b5-8c44800758e8@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706367220;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6yUsk0RLN7Y1NXhRh/1sdnkOngC6GXf4J/3HF7OaPD0=;
-	b=p/0ZOj6c/5m8euun3FNWgCzdyFGII6Mmrx2INrB5KlU78Yw0ue91Rgef7N6ZOwCEFJzCih
-	gmZqGPFQiQwGuZiBLseX32GCW/JcTVx3OBRshK/1PoWfhCwwDrE2v3lll1QbzzCMfaDcRb
-	fsqneWYXBx0kuJ/Ow9lJtZKQKgl9dEw=
-Date: Sat, 27 Jan 2024 22:53:09 +0800
+	s=arc-20240116; t=1706367351; c=relaxed/simple;
+	bh=5oTGBMsVoy/AmE5qx0ytIoyZm6Kw/DezMl4EgLexEVs=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=K8lIguF/1240DDtx5DIzfB/lEXqJs13mgHKGuJ2QuEn9Vp4bVF2T0uIki7HKHQ/TkkRTS3hJhU+iJ0RRDpjMCjIe51vv5Y0Tmy/4uJ9s6xMlNSvJv4IOpNhPtiBKcjl9bE5GgTOAx6ECsgENqhNzhQne+yNEV++auQ9LKkROZRU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=IdZGCCjL; arc=none smtp.client-ip=212.227.15.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1706367326; x=1706972126; i=markus.elfring@web.de;
+	bh=5oTGBMsVoy/AmE5qx0ytIoyZm6Kw/DezMl4EgLexEVs=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=IdZGCCjLmfazUcmtSLsqsWkQ43R2iVHyoPtZl3X0VUGbT9oOHL9/9qpsbHFvB588
+	 3OKutBw9QWhLrndD0ItJ9yy63pzyPQaEvAPBNUxD92zEOTVZn8fwBYBsOd3aHQ5gE
+	 rScWys2ILPC73S2TxWGQGymRD3NW52YhXvATOvtwjmtr00SqV/A7F7G6bvjgtfrbn
+	 Nw2CZohrwvIYqtEg5uPKj+6kCTlAg9UZxABiHxIh9s/ijwVp1C7lXuD1mCOIvGcOq
+	 EbAHyW0IKxkw3uEANTV6IvxSMCjdNJyDaE8zYUhXXHZgZnmTlmly+KuoR+FmJ229Z
+	 /Ljtvv01tD4vOih0zQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.81.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MsaS7-1rEojd1hPP-00u4CP; Sat, 27
+ Jan 2024 15:55:26 +0100
+Message-ID: <d94376b6-12e8-45bb-a9be-4887bb316d35@web.de>
+Date: Sat, 27 Jan 2024 15:55:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/2] mm/zswap: fix race between lru writeback and swapoff
-Content-Language: en-US
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: yosryahmed@google.com, nphamcs@gmail.com, akpm@linux-foundation.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- Chengming Zhou <zhouchengming@bytedance.com>
-References: <20240126083015.3557006-1-chengming.zhou@linux.dev>
- <20240126083015.3557006-2-chengming.zhou@linux.dev>
- <20240126153126.GG1567330@cmpxchg.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <20240126153126.GG1567330@cmpxchg.org>
+User-Agent: Mozilla Thunderbird
+To: linux-fpga@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Luwei Kang <luwei.kang@intel.com>, Moritz Fischer <mdf@kernel.org>,
+ Tom Rix <trix@redhat.com>, Wu Hao <hao.wu@intel.com>,
+ Xu Yilun <yilun.xu@intel.com>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>, Kunwu Chan <chentao@kylinos.cn>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] fpga: dfl: fme: Return directly after a failed
+ devm_kasprintf() call in fme_perf_pmu_register()
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:6vcd10ZQQqZU6BgRQxdXosyK07D6p+07N3r8mPyYUd2TY5RTWH6
+ Et773/a2KpVp/IC+I774nwVlQ1yPUO3/KFv6ueurCMi48EkAUR+eTmuPn2GEkGHod/rKqWD
+ ch7o79nE3RVJutNmad++NdSOwSVk+lk2QmlFY9FZhUE3dZGPqrMqRtPqde2V5So8rChZs4j
+ uUXDr4TjhC4xmGpDfLF+Q==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:LAWx3IAIWPo=;JLeqcNkLoARB1EISitBbSSocVOb
+ AT+M8c+Rd7wyNZJLbjMnnCIoDPNDCeMRXVze2CuZ6JmZ/zPyVe9opsOYk//1NgOWT/oigx6OL
+ G9xVGNlsJ3IuenoEzVshoblk+3MM9uLcVhh946eYn/vFf2Ga/4+8g49QASSWhxe/jiqFjzbZu
+ P4NoVcggljqoZvMwDQOSfxuGP++ef0PifZBRQIvqVUdNIARFiaZ22BmdqvnG30MWmK/ub9vZi
+ Hb1lqVD+5jRvCWq27viTnYeZUMoc0Xrpgj5844oMUHfec8BhJvvgY6o19kbFOXGMlQk7+Wdin
+ QQoR0mMmWuUvXrAwS9xuuLz5kFFXnLxQWboL9bVZiUUAyw4xBmBUedew9s80ihz9pkIxKSM34
+ hur+WNTrsp1W2mtZwwmOip1SyqDaB4jOf5WvXGFraAVLprwnXB6AndFlhRzUNUEKEuqC7mu6R
+ KohZNBOLFqR5rVAEtedHbtveoLdULNNlMmESrUhRK6HXDNkQEM0gJQFKmiZgwslLPwSjejcJ6
+ smZTj/2fOpSZOSPwbnQ1q094y5D6H7t4YdT61Rrqq1YiLhSemM2f0DNYJpYOIG30bMXfIpXFm
+ JjLviA6rjk47/5eBlF1ZCzv6UncLcvJivZeeAMjqX/8y6y2ET3kPWsVKPRYn3dxHce0spqQGm
+ yl4+8fCY3H1XNiNJu1ot81JcXz2YczVOf3MDENKXWkXAdxwdbMSPqJS35czyxZaHnULrSOqji
+ MPfMcWEBqExH0bFlMPixXbdzaDaDnTRuGMv4TQhDhy4UoIGRSxrSB1P+Mnmo/vt69Fs+LhWBS
+ NWvK4G/QKPe7KhZF7feMsIG8odTMafNiOWUjAiRaTvF1jCZ+LO86K36I5odhDRcd+94LVwnsR
+ idnkah2Uh4Rcsq1p6l/0dzJHvPhVQ69q9eFtWDaoEy8SqaWrQDNJLQziJPRU8V4N8RBdOp5PJ
+ GfiThzazYbdcYi0mUoFYG9BlBlg=
 
-On 2024/1/26 23:31, Johannes Weiner wrote:
-> On Fri, Jan 26, 2024 at 08:30:15AM +0000, chengming.zhou@linux.dev wrote:
->> From: Chengming Zhou <zhouchengming@bytedance.com>
->>
->> LRU writeback has race problem with swapoff, as spotted by Yosry[1]:
->>
->> CPU1			CPU2
->> shrink_memcg_cb		swap_off
->>   list_lru_isolate	  zswap_invalidate
->> 			  zswap_swapoff
->> 			    kfree(tree)
->>   // UAF
->>   spin_lock(&tree->lock)
->>
->> The problem is that the entry in lru list can't protect the tree from
->> being swapoff and freed, and the entry also can be invalidated and freed
->> concurrently after we unlock the lru lock.
->>
->> We can fix it by moving the swap cache allocation ahead before
->> referencing the tree, then check invalidate race with tree lock,
->> only after that we can safely deref the entry. Note we couldn't
->> deref entry or tree anymore after we unlock the folio, since we
->> depend on this to hold on swapoff.
-> 
-> This is a great simplification on top of being a bug fix.
-> 
->> So this patch moves all tree and entry usage to zswap_writeback_entry(),
->> we only use the copied swpentry on the stack to allocate swap cache
->> and return with folio locked, after which we can reference the tree.
->> Then check invalidate race with tree lock, the following things is
->> much the same like zswap_load().
->>
->> Since we can't deref the entry after zswap_writeback_entry(), we
->> can't use zswap_lru_putback() anymore, instead we rotate the entry
->> in the LRU list so concurrent reclaimers have little chance to see it.
->> Or it will be deleted from LRU list if writeback success.
->>
->> Another confusing part to me is the update of memcg nr_zswap_protected
->> in zswap_lru_putback(). I'm not sure why it's needed here since
->> if we raced with swapin, memcg nr_zswap_protected has already been
->> updated in zswap_folio_swapin(). So not include this part for now.
-> 
-> Good observation.
-> 
-> Technically, it could also fail on -ENOMEM, but in practice these size
-> allocations don't fail, especially since the shrinker runs in
-> PF_MEMALLOC context. The shrink_worker might be affected, since it
-> doesn't But the common case is -EEXIST, which indeed double counts.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Sat, 27 Jan 2024 15:43:42 +0100
 
-Ah right, the rotation of the more unlikely case that allocation fail
-indeed need to update the memcg nr_zswap_protected, only the case of
--EEXIST has double counts problem.
+The result from a call of the function =E2=80=9Cdevm_kasprintf=E2=80=9D wa=
+s passed to
+a subsequent function call without checking for a null pointer before
+(according to a memory allocation failure).
+This issue was detected by using the Coccinelle software.
 
-> 
-> To make it "correct", you'd have to grab an objcg reference with the
-> LRU lock, and also re-order the objcg put on entry freeing after the
-> LRU del. This is probably not worth doing. But it could use a comment.
+Thus return directly after a failed devm_kasprintf() call.
 
-Agree, will add your comments below.
+Fixes: 724142f8c42a7 ("fpga: dfl: fme: add performance reporting support")
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ drivers/fpga/dfl-fme-perf.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> 
-> I was going to ask if you could reorder objcg uncharging after LRU
-> deletion to make it more robust for future changes in that direction.
-> However, staring at this, I notice this is a second UAF bug:
-> 
-> 	if (entry->objcg) {
-> 		obj_cgroup_uncharge_zswap(entry->objcg, entry->length);
-> 		obj_cgroup_put(entry->objcg);
-> 	}
-> 	if (!entry->length)
-> 		atomic_dec(&zswap_same_filled_pages);
-> 	else {
-> 		zswap_lru_del(&entry->pool->list_lru, entry);
-> 
-> zswap_lru_del() uses entry->objcg to determine the list_lru memcg, but
-> the put may have killed it. I'll send a separate patch on top.
+diff --git a/drivers/fpga/dfl-fme-perf.c b/drivers/fpga/dfl-fme-perf.c
+index 7422d2bc6f37..db56d52411ef 100644
+=2D-- a/drivers/fpga/dfl-fme-perf.c
++++ b/drivers/fpga/dfl-fme-perf.c
+@@ -925,6 +925,8 @@ static int fme_perf_pmu_register(struct platform_devic=
+e *pdev,
+ 				PERF_PMU_CAP_NO_EXCLUDE;
 
-Good observation.
+ 	name =3D devm_kasprintf(priv->dev, GFP_KERNEL, "dfl_fme%d", pdev->id);
++	if (!name)
++		return -ENOMEM;
 
-> 
->> @@ -860,40 +839,34 @@ static enum lru_status shrink_memcg_cb(struct list_head *item, struct list_lru_o
->>  {
->>  	struct zswap_entry *entry = container_of(item, struct zswap_entry, lru);
->>  	bool *encountered_page_in_swapcache = (bool *)arg;
->> -	struct zswap_tree *tree;
->> -	pgoff_t swpoffset;
->> +	swp_entry_t swpentry;
->>  	enum lru_status ret = LRU_REMOVED_RETRY;
->>  	int writeback_result;
->>  
->> +	/*
->> +	 * First rotate to the tail of lru list before unlocking lru lock,
->> +	 * so the concurrent reclaimers have little chance to see it.
->> +	 * It will be deleted from the lru list if writeback success.
->> +	 */
->> +	list_move_tail(item, &l->list);
-> 
-> We don't hold a reference to the object, so there could also be an
-> invalidation waiting on the LRU lock, which will free the entry even
-> when writeback fails.
-> 
-> It would also be good to expand on the motivation, because it's not
-> clear WHY you'd want to hide it from other reclaimers.
+ 	ret =3D perf_pmu_register(pmu, name, -1);
+ 	if (ret)
+=2D-
+2.43.0
 
-Right, my comments are not clear enough.
-
-> 
-> Lastly, maybe mention the story around temporary failures? Most
-> shrinkers have a lock inversion pattern (object lock -> LRU lock for
-> linking versus LRU lock -> object trylock during reclaim) that can
-> fail and require the same object be tried again before advancing.
-
-Your comments are great, will add in the next version.
-
-Thanks.
-
-> 
-> How about this?
-> 
-> 	/*
-> 	 * Rotate the entry to the tail before unlocking the LRU,
-> 	 * so that in case of an invalidation race concurrent
-> 	 * reclaimers don't waste their time on it.
-> 	 *
-> 	 * If writeback succeeds, or failure is due to the entry
-> 	 * being invalidated by the swap subsystem, the invalidation
-> 	 * will unlink and free it.
-> 	 *
-> 	 * Temporary failures, where the same entry should be tried
-> 	 * again immediately, almost never happen for this shrinker.
-> 	 * We don't do any trylocking; -ENOMEM comes closest,
-> 	 * but that's extremely rare and doesn't happen spuriously
-> 	 * either. Don't bother distinguishing this case.
-> 	 *
-> 	 * But since they do exist in theory, the entry cannot just
-> 	 * be unlinked, or we could leak it. Hence, rotate.
-> 	 */
-> 
-> Otherwise, looks great to me.
-> 
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
