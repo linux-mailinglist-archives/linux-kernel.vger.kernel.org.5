@@ -1,98 +1,96 @@
-Return-Path: <linux-kernel+bounces-41136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CC3083EC5D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 10:43:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CC5983EC9E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 11:09:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C00421C21139
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 09:43:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50EFB1F236CE
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 10:09:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C5CD1EB23;
-	Sat, 27 Jan 2024 09:43:16 +0000 (UTC)
-Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.10])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C52041EB2F;
+	Sat, 27 Jan 2024 10:08:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dVGounnX"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5224313AF8;
-	Sat, 27 Jan 2024 09:43:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.18.0.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38DDA7F
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 10:08:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706348596; cv=none; b=u16ZQzSaeIKwCBWcqrYv0IXUVadt8+uN+g9Cn0CGlEctmUAJIuNJuahc0PXj8IXaO8fciA4U7MEXL3X18fQC6koqe6WQzntHnekYKd7JGD+Vt9OYasM8wcIvUdXoHBfdf6MiIqd/W3lr7Jb1Ra57NpYmQJMhl+l8xtVPMh3rgx0=
+	t=1706350135; cv=none; b=MIIoENzUHfIP7sOaO8OUxYMkMURYUcq90WehcaECk8IzudLKaidxx1kaupiKpYTdSwVSfOAJ+QdBURRBlcqQyHKpWSM9YbsHTp4ltTBiu7dvUeia1xBwtJV/w2Yk8+dFmo6Eoxvon5inyj69/L60lyv2Uu0z4URNchDSDHb1VC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706348596; c=relaxed/simple;
-	bh=0YlTECjXbMzxOJ9SvYsij9ghpBp0aA2YujbgFnfdvw8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=NtKRSfMXlrvgZvSfo+5ZhOQi1hIU5tZ4/YmOMyVzyDGuXGTkmUqzuPVgA/u8mM1r3NHZm38QMgC5L6YXDiJnzhAYcW5ouw3LDsyFAC5YgtSq9YabLczzRUxgVaizLaqueRa1qrAC7lCRbGrktnx/zAOX8nE2+vrXcUbUOvQaNcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=nefkom.net; arc=none smtp.client-ip=212.18.0.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nefkom.net
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-	by mail-out.m-online.net (Postfix) with ESMTP id 4TMTwn1jqyz1syBm;
-	Sat, 27 Jan 2024 10:36:57 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.68])
-	by mail.m-online.net (Postfix) with ESMTP id 4TMTwm61CLz1qqlW;
-	Sat, 27 Jan 2024 10:36:56 +0100 (CET)
-X-Virus-Scanned: amavis at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
- by localhost (dynscan1.mail.m-online.net [192.168.6.68]) (amavis, port 10024)
- with ESMTP id NOGV83LWqDOm; Sat, 27 Jan 2024 10:36:55 +0100 (CET)
-X-Auth-Info: LasxOhhX5uau7EcsWEa3k+xXe1y6nnjwUIZEYRn4b8JwSFE2+vRy5vt8DQL1Wdwx
-Received: from tiger.home (aftr-62-216-202-105.dynamic.mnet-online.de [62.216.202.105])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by mail.mnet-online.de (Postfix) with ESMTPSA;
-	Sat, 27 Jan 2024 10:36:55 +0100 (CET)
-Received: by tiger.home (Postfix, from userid 1000)
-	id 31180252088; Sat, 27 Jan 2024 10:36:55 +0100 (CET)
-From: Andreas Schwab <schwab@linux-m68k.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Matthew Wilcox <willy@infradead.org>,  Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>,  Steven Rostedt <rostedt@goodmis.org>,
-  LKML <linux-kernel@vger.kernel.org>,  Linux Trace Devel
- <linux-trace-devel@vger.kernel.org>,  Masami Hiramatsu
- <mhiramat@kernel.org>,  Christian Brauner <brauner@kernel.org>,  Ajay
- Kaher <ajay.kaher@broadcom.com>,  Geert Uytterhoeven
- <geert@linux-m68k.org>,  linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
-In-Reply-To: <CAHk-=whqu_21AnXM9_ohxONvmotGqE=98YS2pLZq+qcY8z85SQ@mail.gmail.com>
-	(Linus Torvalds's message of "Fri, 26 Jan 2024 15:17:14 -0800")
-References: <20240126150209.367ff402@gandalf.local.home>
-	<CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
-	<20240126162626.31d90da9@gandalf.local.home>
-	<CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
-	<CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
-	<8547159a-0b28-4d75-af02-47fc450785fa@efficios.com>
-	<ZbQzXfqA5vK5JXZS@casper.infradead.org>
-	<CAHk-=wiF0ATuuxJhwgm707izS=5q4xBUSh+06U2VwFEJj0FNRw@mail.gmail.com>
-	<ZbQ6gkZ78kvbcF8A@casper.infradead.org>
-	<CAHk-=wgSy9ozqC4YfySobH5vZNt9nEyAp2kGL3dW--=4OUmmfw@mail.gmail.com>
-	<CAHk-=whqu_21AnXM9_ohxONvmotGqE=98YS2pLZq+qcY8z85SQ@mail.gmail.com>
-X-Yow: Here I am in the POSTERIOR OLFACTORY LOBULE but I don't see CARL SAGAN
- anywhere!!
-Date: Sat, 27 Jan 2024 10:36:55 +0100
-Message-ID: <878r4b2k3s.fsf@linux-m68k.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1706350135; c=relaxed/simple;
+	bh=1VxgF4ABxRMuz9+GUjkRK1OHy17du72n2fD1tWMTxtc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ULFmg47TORfm3XIAvELL2xE7ec5WTGBKWA7LdJM44TLDr1Lzq4e50D8JdnqMxpvtgYHyShP3EqFz1rSMOkbtswyMG+tPC2KMGaB2AkxCxMg3H4pZa0Fsg6BEMG65+QOhvBPWJrjLsPGG/LL8BhEbaXr3KYit8BDr7hbplsw9ugQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dVGounnX; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706350133; x=1737886133;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=1VxgF4ABxRMuz9+GUjkRK1OHy17du72n2fD1tWMTxtc=;
+  b=dVGounnXXb2yoafnYMsTg/e6jfPc30wTZw1d3mW6qRZFRiqaJK5UBkM7
+   4oe7ykukuO5i4/AKk4Rf19SRi8WeTAvDOBIcDONtCwHA1po6eVtHutpNf
+   XSS52c2FXLhRmPf0e3euWl2GMAgQnuiWP6aKSmeSezEiiYA3YGvijJoDM
+   du3Mt2ovJPp50whhsgwv4Og4WXvporR6HveM2ZwLcwJROry2xul6NGfnw
+   SbACAnqiaHvKrEsXDbM2w8wz1WmiN4mIFKMgrv5A0ACxayfzfrfRodh+f
+   Eu7CbCEcgadGQf3KY8D5U6CbzGApJDlt6zfr4xfWFOeL7m8JN8nE/Xnxp
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="16190964"
+X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
+   d="scan'208";a="16190964"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2024 02:08:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="736923486"
+X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
+   d="scan'208";a="736923486"
+Received: from unknown (HELO fred..) ([172.25.112.68])
+  by orsmga003.jf.intel.com with ESMTP; 27 Jan 2024 02:08:51 -0800
+From: Xin Li <xin3.li@intel.com>
+To: linux-kernel@vger.kernel.org
+Cc: tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	luto@kernel.org,
+	ravi.v.shankar@intel.com,
+	andrew.cooper3@citrix.com
+Subject: [PATCH 0/2] x86/fred: Fix two build issues
+Date: Sat, 27 Jan 2024 01:37:26 -0800
+Message-ID: <20240127093728.1323-1-xin3.li@intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Jan 26 2024, Linus Torvalds wrote:
+Boris reported two build issues immediately after the FRED native patches
+landed in the tip x86/fred branch, fix them.
 
-> Note the "might". I don't know why glibc would have special-cased
-> st_ino of 0, but I suspect it's some internal oddity in the readdir()
-> implementation.
+Xin Li (2):
+  x86/fred: Fix build with clang
+  x86/fred: Fix build with CONFIG_IA32_EMULATION=n
 
-It was traditionally used for deleted entries in a directory.
+ arch/x86/entry/entry_64_fred.S | 3 +--
+ arch/x86/entry/entry_fred.c    | 2 ++
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
+
+base-commit: a9f26154bf5478fc155309fc69128415f3a1be08
+prerequisite-patch-id: 4dc72e7440d5412bf200dbccb9a41128ed30baec
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+2.43.0
+
 
