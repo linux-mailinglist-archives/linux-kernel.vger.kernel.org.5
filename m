@@ -1,131 +1,98 @@
-Return-Path: <linux-kernel+bounces-41466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D651983F24C
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 00:46:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 532BE83F253
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 00:53:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91EB81F231AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 23:46:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18E8C285F04
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 23:53:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E66723745;
-	Sat, 27 Jan 2024 23:46:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B941823765;
+	Sat, 27 Jan 2024 23:53:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3Ov+yiQW"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Qmb+iyM7"
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14D192033C
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 23:46:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E0F323754
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 23:53:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706399205; cv=none; b=cy68mhag2raT3HM4YCO1VS60SkSmcTm2H9bS2N7TworrJp7ZAAUWZQfD8bmn83OVYyJijh3zUGhU8TneVBRqT3rFILQVaOWpxhy0RkvlikCkQdw06pkAELb/P/bz1Mk1b/paX+HLxOl4FQh0j/8mU2mjYUzHITKeqrC9movCAus=
+	t=1706399593; cv=none; b=FQHYGLD0Itz90tz5Gau8tMy8vcw9Z0T1+PMFBnGLsVPR5BgYCelmiUabxVf3p4YSwGp00uZvSTyxgT8Wa9F6hyhzyzMYKaMtQUbqNe7GIsCencgI8MK8vlHLUyouDJOXlaVz9WabPH9XxbVQjlS8IpQ6nXrk5+g7Cq9L1kxx2yw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706399205; c=relaxed/simple;
-	bh=P9bo665rDuTuKgck3NtYPkXUGHEK21LpXvICqeEA9QE=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=csZivSUB9rtanflMxBOTB92VFZUX+awmAh625DXKdgCFyIOCMu9YxFW/JykXf2HXybDD9G16VU1q5KNl5rTfhADiW4478IEJbQztEIwxbLnp3DCkeO2C+Gt1no1JJbfzcvScuzVwQT9ZsWCEPTmQSKpWSbkuNjd5Hh5+b25hlL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--neelnatu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3Ov+yiQW; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--neelnatu.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc26605c3aaso2651798276.0
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 15:46:43 -0800 (PST)
+	s=arc-20240116; t=1706399593; c=relaxed/simple;
+	bh=y29bBOr0W8GWvuErd7/PqliVtdGt3XvPDU1lv0OLRhw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PeRxXTDwd+sa3iQ8FayCjJo7WkgEL18/AXVWwnVCB2skrX2vbnNeWXQVo8cyHr71A6n+Q/IF/DHxEXBimQpU4u1n9RCc5Kj+4qKd3nX/3v+iZP7dzmNyP6X1dJu+4w/uluKbTjA/G4NFAoVX67E+20e+j0lZja+Qbwo1nJHx8S8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Qmb+iyM7; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5f69383e653so21343717b3.1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 15:53:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706399203; x=1707004003; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=CyDN4+TiT46Ds8Ohg+X9G0B6d1j9fxP1UwZKU33b3Qc=;
-        b=3Ov+yiQWz22AnoiSnpnSUcu8Vqk7ejee/4CuOcY74ayBgpLjwp8zuBUgzMS554YPHR
-         fPsqouKA8noDM4nLsNpuD9WaFK6efvK8rnwfvcFxCJEw1IurvkndlM1Dg5fejJelflle
-         9soJHwzKfio+aXFxsv+791rudwqjL7cz8Cm4k83Cdo6Yuj0AWu8No18i5dXkR3vMTgWF
-         w7/GP/piZvl1kab6/966osIAdTAmRqIzC/+GL2c5Vf9en8LIrzh/2LzEIR4pv7njBPHu
-         I8lsLMW7UVkDO952aIYRuljv1sJcwPNG7Y4wHvmmFLNq/u1Avfp+ko3FCKXntxs7OcKI
-         MrlQ==
+        d=linaro.org; s=google; t=1706399589; x=1707004389; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y29bBOr0W8GWvuErd7/PqliVtdGt3XvPDU1lv0OLRhw=;
+        b=Qmb+iyM7okGb+fAqxVZWBuOSY6MxLeusIa7/+JSZ4mUBQbHQA1sI2XP4QcFeeX9g6W
+         oA5K5WMV0wnq2T2e3ISg6gj/Ra5PGejJPBls4YoJlWSHgaJBN2N+0iaBjdCJlzKsEqyR
+         DRS3oDtj4gpm9EohxZdAYc9CN+YqrBxcqcdqpH/4uIfBb3wKuo75i9uZQRPRqa8t7rXR
+         Nb8EuQrluOiTdRWJUJ2urI91G0FpXUZGc//4rUGg6Wsc4bKCSyxH/89SWrJmAn0Y5/P1
+         WVNSzrx8GZOjnUqPBNRQn06cEqlESWjvWBDJhuxNJLg81plp9PblJbvSrXjsxMRlkBg2
+         WpsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706399203; x=1707004003;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CyDN4+TiT46Ds8Ohg+X9G0B6d1j9fxP1UwZKU33b3Qc=;
-        b=cC0c9wLMvsEsRA1kDu4Rg/vDgclPaYUK6fklQvyGdeZyU3Wpzq1PgpKjF9+LyO21hi
-         n3U+mwJ8Gc4E89+fbUroe6TzuW1qCZwkgcVqrp0kPy+xYMatEmCnhUGz+L3GjHP4K5Fj
-         WhN6AgYOL3nxm8+oDUnxSUQACP/x3yLLm2WDG/pLaf4Dy23FmDlZBHmt6d9gzDRI1zT3
-         b+sFCjJkN+CxN/GDv1woDbL4oYoR7myYwvjfhED5RjbHRALwwe0SOzP4BWwdsCuKni9e
-         Lw0FO/lmDSYg0Coi+/ZPnY42GiMRUTatI7qdGSdPN73LIDqhmRbcf6CvSE4MkeoIp+rv
-         A7nw==
-X-Gm-Message-State: AOJu0Yz/ao4ZVNE1o352GeD6pixnRJsXhyBFifFI81feGDWZI4MyIDuH
-	PMUswabuhg42jY4LnHwHf5RETj8TLHwnWRmmojSmoub6xXEMmZL6tgfaLkOp+X76C7aJj6VeYv8
-	kIWJn5EOLNQ==
-X-Google-Smtp-Source: AGHT+IEKkL4EMXHgh2RpZmfXmjVGCo7PoFbgzv69iMBgoK6/rpUgGJE5z20/1SaJyqVS/IvgcuZmrMBDsov7jw==
-X-Received: from neelnatu.svl.corp.google.com ([2620:15c:2a3:200:9829:f4d9:886a:c45f])
- (user=neelnatu job=sendgmr) by 2002:a05:6902:250b:b0:dc2:65db:786c with SMTP
- id dt11-20020a056902250b00b00dc265db786cmr214540ybb.5.1706399203103; Sat, 27
- Jan 2024 15:46:43 -0800 (PST)
-Date: Sat, 27 Jan 2024 15:46:36 -0800
+        d=1e100.net; s=20230601; t=1706399589; x=1707004389;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=y29bBOr0W8GWvuErd7/PqliVtdGt3XvPDU1lv0OLRhw=;
+        b=M9vvaAUDyBk8hXpTODUVh3udiwJDNJRhomA5JM4LkM8+OtEEOLEJkllDX/aQP/Du8d
+         NbqKsULbGZ4nQ9rxDn3Rm+HAhpSFMShhcKN9eOmcnc0I3wQVfwMkjPfa4YhkNk4Gue03
+         VKP7h5yfvKrbx64UlUKMKXMTZRaPhCa85WPeLO1pOxnR+CvCMeWjfuVCMmO0a9TopWlf
+         IuPwq9tcbWFp1Bvzu8HDSmVtNyU79+q5xdmgThyvey3JM9PqcbJXWYTL5SVdEEBSfeig
+         g+FWSqSJ/2MZwb4uQ/Yo8XlkSnzsIEFfcM58740VhiPj4HW2qgu/SyaCNta0TS8aVVoJ
+         rqRg==
+X-Gm-Message-State: AOJu0YwNUtevW1ivWIFhvA+DqnA/sKMlnM4UBj59IViybi5hx+aSt6oH
+	bYD7TJu/tiEwzJilAFm+F59edLjYAXu604lEI+HccT/d7g8scctfieqwgLvYY9Te/mNuzY6THZo
+	Q9FJzC31fZApX9HSuwrPv5Nz18Z3T9Bdq8BNxTw==
+X-Google-Smtp-Source: AGHT+IEhBRR1+Lt+t5PwX5bLtetfxOwsLRlWvg5X+Vn3cAbutbVfqPerwvTLBdzuw4fwNlv3dgffGIvAL7Z3lkau6gE=
+X-Received: by 2002:a81:b187:0:b0:5ff:4b02:73b9 with SMTP id
+ p129-20020a81b187000000b005ff4b0273b9mr2196680ywh.21.1706399589451; Sat, 27
+ Jan 2024 15:53:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Message-ID: <20240127234636.609265-1-neelnatu@google.com>
-Subject: [PATCH] kernfs: fix false-positive WARN(nr_mmapped) in kernfs_drain_open_files
-From: Neel Natu <neelnatu@google.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Tejun Heo <tj@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Neel Natu <neelnatu@google.com>
+MIME-Version: 1.0
+References: <20240117124234.3137050-1-jean.thomas@wifirst.fr>
+In-Reply-To: <20240117124234.3137050-1-jean.thomas@wifirst.fr>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Sun, 28 Jan 2024 00:52:58 +0100
+Message-ID: <CACRpkdYFwS=KCmR5UDhz_G_DQ4B21f3JjJLTLCfr+D0Yn1iA=w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] pinctrl: mediatek: mt7981: add additional uart group
+To: Jean Thomas <jean.thomas@wifirst.fr>
+Cc: sean.wang@kernel.org, matthias.bgg@gmail.com, 
+	angelogioacchino.delregno@collabora.com, linux-mediatek@lists.infradead.org, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Prior to this change 'on->nr_mmapped' tracked the total number of
-mmaps across all of its associated open files via kernfs_fop_mmap().
-Thus if the file descriptor associated with a kernfs_open_file was
-mmapped 10 times then we would have: 'of->mmapped = true' and
-'of_on(of)->nr_mmapped = 10'.
+On Wed, Jan 17, 2024 at 1:43=E2=80=AFPM Jean Thomas <jean.thomas@wifirst.fr=
+> wrote:
 
-The problem is that closing or draining a 'of->mmapped' file would
-only decrement one from the 'of_on(of)->nr_mmapped' counter.
+> Add uart1_3 (pins 26, 27) group to the pinctrl driver for the
+> MediaTek MT7981 SoC.
+>
+> Signed-off-by: Jean Thomas <jean.thomas@wifirst.fr>
 
-For e.g. we have this from kernfs_unlink_open_file():
-        if (of->mmapped)
-                on->nr_mmapped--;
+Patch applied.
 
-The WARN_ON_ONCE(on->nr_mmapped) in kernfs_drain_open_files() is
-easy to reproduce by:
-1. opening a (mmap-able) kernfs file.
-2. mmap-ing that file more than once (mapping just once masks the issue).
-3. trigger a drain of that kernfs file.
-
-Modulo out-of-tree patches I was able to trigger this reliably by
-identifying pci device nodes in sysfs that have resource regions
-that are mmap-able and that don't have any driver attached to them
-(steps 1 and 2). For step 3 we can "echo 1 > remove" to trigger a
-kernfs_drain.
-
-Signed-off-by: Neel Natu <neelnatu@google.com>
----
- fs/kernfs/file.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
-index ffa4565c275a..e9df2f87072c 100644
---- a/fs/kernfs/file.c
-+++ b/fs/kernfs/file.c
-@@ -483,9 +483,11 @@ static int kernfs_fop_mmap(struct file *file, struct vm_area_struct *vma)
- 		goto out_put;
- 
- 	rc = 0;
--	of->mmapped = true;
--	of_on(of)->nr_mmapped++;
--	of->vm_ops = vma->vm_ops;
-+	if (!of->mmapped) {
-+		of->mmapped = true;
-+		of_on(of)->nr_mmapped++;
-+		of->vm_ops = vma->vm_ops;
-+	}
- 	vma->vm_ops = &kernfs_vm_ops;
- out_put:
- 	kernfs_put_active(of->kn);
--- 
-2.43.0.429.g432eaa2c6b-goog
-
+Yours,
+Linus Walleij
 
