@@ -1,141 +1,179 @@
-Return-Path: <linux-kernel+bounces-41184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 344E783ED0B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 13:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BC74C83ED25
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 14:04:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DECFA2850A3
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 12:19:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71B1728529B
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 13:04:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78F39208D1;
-	Sat, 27 Jan 2024 12:19:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6AE52560F;
+	Sat, 27 Jan 2024 13:04:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="afLj884O"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="HMaB8xqJ"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07E721E493;
-	Sat, 27 Jan 2024 12:19:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F4789470;
+	Sat, 27 Jan 2024 13:04:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706357982; cv=none; b=s33WdXzzAQdalmvLKbLJYhSIza5jlxQ0UsZymPy331/SznruGMFrj3jmm3fcnFfiUF78ounrVzD2w4OFIp6SqUp/1+HYVFyGAi5HQeGfah2bRy+1K+04gquLa2Xnp6OOnpx/K21St5W1C7qy/IF+yuOx7cBlWaG1iwyZg0mRHVY=
+	t=1706360669; cv=none; b=OHzOpGkdKpt3V4ExIJqDUvmnZbEoiiNLdtF5nOuzWJuXkfMkb7jTkPP2z+6dn+FmtvZ5wpCAxic+P0TjUhE12xHg1aP3qRc/akL1aS1pddV0iDJj5haRC93XdPhLy7izmyiSvw3o9tvY/8OBcTQN/2TdVpBofQKxuNvTBfNnZXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706357982; c=relaxed/simple;
-	bh=QxnHtD5P3AwtVXPxKcw+KIPISw6GhG7GubZ3UIXvWkU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WCbOsc1yR1+h57PcbMnWOWewK4ePeOTcIp4zaVF9qppo82mhsdwIp5BScyyy/qSiTCXmlKEDcFOBpIDqrg43c/deEwPPUAHU95Hvu8rSizIyiXfv88wcw4XGkQkN9jV2gQn/FW7hH9ZReb6YL/GDSfMlj/Bue8UH8GfRRuLt/Jc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=afLj884O; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id BB42B40E01A9;
-	Sat, 27 Jan 2024 12:19:37 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id bVxSQzP6HkWQ; Sat, 27 Jan 2024 12:19:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706357975; bh=5nyRNUaZUTU6WCk60U74aF9FI/0suhGdH8eOJI11zVQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=afLj884OcK8C4cHqVjUxxCJX9IzRyS8T72b/KLDsxEVTMfe+JilhHsFbJG65XcTvH
-	 6gnoiRyHBaLUdoGa+WjpiVW58yUE004X3VxjciudcSd2aOBhXswMTrTChu3+nYj4Lp
-	 kcUdFwnbsdKcrrF8pZwpsv2LnUxbFlOnYJsIibjrnxoGabU0o3S9Vx6aQWUhT+cz4I
-	 TCKoaR5HNZ5GJ4NoyTXYqA6y7FN9u6PfJzjYaMbw/7cud1ss5Qf/9zWayE+TM5/dA6
-	 ai7BzHNAfloM6/VPImWZtcObMiUlmzx+iXioXE5Pq2lH6eNuCAtD42mMMCxtr/m+Ok
-	 ExBl2RbUt6ddErxUiQkmChBrYr0bbHhJwq1LyzVzbOOKZU5nTZ+TexyNXKeO4pJcEC
-	 qjbhG9xi9X3QcY4J0Xo9SD7KzbXhs/+6wiy/e2wxD/62t0gkitoxk/iIV1UDatMJay
-	 KAKxaysqZGlc1E/Zb9xN9fmz0/EZLpjWEZRnCwD03K9lRM3MdteCIEuPvCIzj4XrUL
-	 e3lYqzLf0i9gB1ctt2aziSRewrgFfdlcKqlfoufXSHzqtL5nHCq9Mdwhw2eXCrDquL
-	 48H5nPbazsVLnrgUZRZusOG/mLNIKWTHAqitr0/0uJx6cO5JA5Z6068up9PuWtgBvh
-	 qB4uryi7jzqH4PIj3toO93LU=
-Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3B8D140E016C;
-	Sat, 27 Jan 2024 12:19:26 +0000 (UTC)
-Date: Sat, 27 Jan 2024 13:19:21 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Luck, Tony" <tony.luck@intel.com>
-Cc: Avadhut Naik <avadhut.naik@amd.com>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	"linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-	"rostedt@goodmis.org" <rostedt@goodmis.org>,
-	"x86@kernel.org" <x86@kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
-	"avadnaik@amd.com" <avadnaik@amd.com>
-Subject: Re: [PATCH v2 0/2] Update mce_record tracepoint
-Message-ID: <20240127121921.GCZbT0yXiYGvw7aefr@fat_crate.local>
-References: <20240125185821.GDZbKvTW93APAiY1LP@fat_crate.local>
- <SJ1PR11MB6083DAA7A6EDBBDAF5987A80FC7A2@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <20240126102721.GCZbOJCTqTVmvgOEuM@fat_crate.local>
- <SJ1PR11MB60839509241AA98A59B78D15FC792@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <20240126185649.GFZbQAccZphdW_0CkH@fat_crate.local>
- <SJ1PR11MB6083E6BF178B9D394BD58DDBFC792@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <20240126194522.GGZbQL0gTwpniYGDHw@fat_crate.local>
- <SJ1PR11MB6083E1000D4B267CF4271135FC792@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <20240126211133.GHZbQgBfqX4Qkdbmu_@fat_crate.local>
- <SJ1PR11MB6083B9CEE1398878664D90F7FC792@SJ1PR11MB6083.namprd11.prod.outlook.com>
+	s=arc-20240116; t=1706360669; c=relaxed/simple;
+	bh=ezGjLX/KGCvKrdFlYhkTSrLIz9F/ChMEXBwpfDh019g=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=H3jNEHXT1z/xCmGkGtH5s1xeaR/IVLkWiKWSI9Dl8MSDrO+OIpzaPuME7H7W8LbuFPGB0N7LLk+DypvqKG5hn2PnJmn9mu9uwsTjVE9/ho1mgg2mWv9FzRzQ4nW1C5ATkWSA82r0YiHOpafca3OMdqfKjYiRIkI7kZesaq+5g4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=HMaB8xqJ; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40RCxpbl001346;
+	Sat, 27 Jan 2024 13:04:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=6oebARhWnbWU
+	R8eKVVvlJcocYHJTcYCqahQxWhiBad0=; b=HMaB8xqJ9VBO09LxitQsHPjqo4eU
+	nHql5VcTIerEBoOYBhoEy5mfoDQ5DnM5+htqCHATo4CvqHduCjbjjR/yAEGrrbcX
+	WbWjbbbU2G0JahoXEi07W84d619FI5TWonzTuc4MM3yYYgPwjGtGc31cY3uaR6n1
+	U0WFs3x9EWXGCk8nIWyJ/j+c9UzI/tgXH4KLjynl7YIS2B7sKNj5fjQ7of9UrYW/
+	cCXBUGxAvqDT1N5FgQbeAHF8NNHN1iTu86NBtVHfWFPTtHF8Fl48DqGRUA+SpKvi
+	MUwlak0zHdSPnECgXS9HR+LL49GqmB5Rg/A6RyD+6UFzKb5Flp6kjBCRVQ==
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vvq6sgrrm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 27 Jan 2024 13:04:07 +0000 (GMT)
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 40RD44xr032026;
+	Sat, 27 Jan 2024 13:04:04 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3vvtwkh1yy-1;
+	Sat, 27 Jan 2024 13:04:04 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40RD43ad032020;
+	Sat, 27 Jan 2024 13:04:03 GMT
+Received: from hu-maiyas-hyd.qualcomm.com (hu-snehshah-hyd.qualcomm.com [10.147.246.35])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 40RD43rP032019;
+	Sat, 27 Jan 2024 13:04:03 +0000
+Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2319345)
+	id A7D185013A4; Sat, 27 Jan 2024 18:34:02 +0530 (+0530)
+From: Sneh Shah <quic_snehshah@quicinc.com>
+To: Vinod Koul <vkoul@kernel.org>, Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Sneh Shah <quic_snehshah@quicinc.com>, kernel@quicinc.com,
+        Andrew Halaney <ahalaney@redhat.com>
+Subject: [PATCH net-next] net: stmmac: dwmac-qcom-ethqos: Add support for pm ops
+Date: Sat, 27 Jan 2024 18:33:27 +0530
+Message-Id: <20240127130327.22443-1-quic_snehshah@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: hfW17_9FU6EIZ5OE24pmXqy0sXMCugSJ
+X-Proofpoint-ORIG-GUID: hfW17_9FU6EIZ5OE24pmXqy0sXMCugSJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-25_14,2024-01-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ phishscore=0 adultscore=0 clxscore=1015 malwarescore=0 priorityscore=1501
+ suspectscore=0 mlxscore=0 lowpriorityscore=0 mlxlogscore=999
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401190000 definitions=main-2401270097
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <SJ1PR11MB6083B9CEE1398878664D90F7FC792@SJ1PR11MB6083.namprd11.prod.outlook.com>
 
-On Fri, Jan 26, 2024 at 10:01:29PM +0000, Luck, Tony wrote:
-> PPIN: Nice to have. People that send stuff to me are terrible about
-> providing surrounding details. The record already includes
-> CPUID(1).EAX ... so I can at least skip the step of asking them which
-> CPU family/model/stepping they were using). But PPIN can be recovered
-> (so long as the submitter kept good records about which system
-> generated the record).
+Add qcom ethqos specific runtime and system sleep pm ops.
+As part of system sleep qcom ethqos needs to disable all clocks.
+This ops will be extended further with qcom specific features.
 
-Yes.
+Signed-off-by: Sneh Shah <quic_snehshah@quicinc.com>
+---
+ .../stmicro/stmmac/dwmac-qcom-ethqos.c        | 51 ++++++++++++++++++-
+ 1 file changed, 50 insertions(+), 1 deletion(-)
 
-> MICROCODE: Must have. Microcode version can be changed at run time.
-> Going back to the system to check later may not give the correct
-> answer to what was active at the time of the error. Especially for an
-> error reported while a microcode update is waling across the CPUs
-> poking the MSR on each in turn.
-
-Easy:
-
-- You've got an MCE? Was it during scheduled microcode updates?
-- Yes.
-- Come back to me when it happens again, *outside* of the microcode
-  update schedule.
-
-Anyway, I still don't buy that. Maybe I'm wrong and maybe I need to talk
-to data center operators more but this sounds like microcode update
-failing is such a common thing to happen so that we *absolutely* *must*
-capture the microcode revision when an MCE happens.
-
-Maybe we should make microcode updates more resilient and add a retry
-mechanism which doesn't back off as easily.
-
-Or maybe people should script around it and keep retrying, dunno.
-
-In my world, microcode update just works in the vast majority of the
-cases and if it doesn't, then those cases need a specific look.
-
-And if I am debugging an issue and I want to see the microcode revision,
-I look at /proc/cpuinfo.
-
-Thx.
-
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+index 31631e3f89d0..cba601ee9e01 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+@@ -720,6 +720,55 @@ static void ethqos_ptp_clk_freq_config(struct stmmac_priv *priv)
+ 	netdev_dbg(priv->dev, "PTP rate %d\n", plat_dat->clk_ptp_rate);
+ }
+ 
++static int qcom_ethqos_runtime_suspend(struct device *dev)
++{
++	struct net_device *ndev = dev_get_drvdata(dev);
++	struct stmmac_priv *priv = netdev_priv(ndev);
++
++	return stmmac_bus_clks_config(priv, false);
++}
++
++static int qcom_ethqos_runtime_resume(struct device *dev)
++{
++	struct net_device *ndev = dev_get_drvdata(dev);
++	struct stmmac_priv *priv = netdev_priv(ndev);
++
++	return stmmac_bus_clks_config(priv, true);
++}
++
++static int qcom_ethqos_suspend(struct device *dev)
++{
++	struct net_device *ndev = dev_get_drvdata(dev);
++	struct stmmac_priv *priv = netdev_priv(ndev);
++	int ret;
++
++	if (!ndev || !netif_running(ndev))
++		return -EINVAL;
++
++	ret = stmmac_suspend(dev);
++
++	return stmmac_bus_clks_config(priv, false);
++}
++
++static int qcom_ethqos_resume(struct device *dev)
++{
++	struct net_device *ndev = dev_get_drvdata(dev);
++	struct stmmac_priv *priv = netdev_priv(ndev);
++	int ret;
++
++	if (!ndev || !netif_running(ndev))
++		return -EINVAL;
++
++	stmmac_bus_clks_config(priv, true);
++
++	return stmmac_resume(dev);
++}
++
++const struct dev_pm_ops qcom_ethqos_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(qcom_ethqos_suspend, qcom_ethqos_resume)
++	SET_RUNTIME_PM_OPS(qcom_ethqos_runtime_suspend, qcom_ethqos_runtime_resume, NULL)
++};
++
+ static int qcom_ethqos_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+@@ -838,7 +887,7 @@ static struct platform_driver qcom_ethqos_driver = {
+ 	.probe  = qcom_ethqos_probe,
+ 	.driver = {
+ 		.name           = "qcom-ethqos",
+-		.pm		= &stmmac_pltfr_pm_ops,
++		.pm		= &qcom_ethqos_pm_ops,
+ 		.of_match_table = qcom_ethqos_match,
+ 	},
+ };
 -- 
-Regards/Gruss,
-    Boris.
+2.17.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
