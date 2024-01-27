@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-41280-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B43A83EE5F
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 17:20:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91A0183EE61
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 17:20:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CEEDCB23449
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:20:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46F5F284521
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:20:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6183C2C848;
-	Sat, 27 Jan 2024 16:18:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E22D2CCB3;
+	Sat, 27 Jan 2024 16:19:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="Hh57igou"
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="kk/ygyyV"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E43A22E835
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 16:18:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAF9B31758
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 16:18:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706372335; cv=none; b=JJUSsQqn4DqGUEY0bi81aPaBSXI9oSgS7CvqlxjBoozCdrR7lUzw6qsVUEbsYxbv/fYXdmMekcZ+RitSpnvOzNZ/ePTbCYctlBYpxxF7SfHs2k8wy1sMkXuOy6YSgE7nOnVNQwTnOJvszJ97o17tCWL8X7KNIkoSz4sgw/leHkM=
+	t=1706372341; cv=none; b=IWodubF+0ggnXuHKeoIjY6HoOOg2L0FvwE/APLYuLiZoHB4AiBZlsVZ3YO27QaF96LEcJCvzrtryi8aKD9MDuleOqvW/M67pd2k4/hnrqCC3HTSocZYU6HS8qn7tmWyr52OeuMfiqUsb2MHfRK6kBzk5hG2m8C7BDNUeOdbfWQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706372335; c=relaxed/simple;
-	bh=mCQMrYXk5bnwwomgWMOM+JO+WRoGMQ5DgCCrKZUuqcc=;
+	s=arc-20240116; t=1706372341; c=relaxed/simple;
+	bh=zf894zspmVhg+WMJ1y4vte5ionk4Q0cXbTXYteoPD6g=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JeOk/o0MJFl+VU6XA+9sGl+zMtf4SSSBUPj7H33gpMYFGGnxiRN0/SXfYW/X7GkavW/TbslVxGuUxlXCh0+35wHH1QLVHtjXNugYyktatOgA+Sy16n+W+UGPul7S1mPZE1RU2q1WgcePu4pzCIoyuzSqkBUQarmiLYr5Cla0GLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=Hh57igou; arc=none smtp.client-ip=209.85.216.48
+	 MIME-Version; b=UUdw4vgKrkueoph3xqVS9U3mVXlhnwdrMz85W+WR8zfVL6JkT9CK3MR7n556Ywm9EKMZUNLguNSpU6T1961vJeHXXePD2IA7rM0K0TAevji/EcmnqdQW655rI9Wc4oQF0et90SE7A54Z7IJFfkQCq5vEAjCKHCkcs6LCSVWK+z8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=kk/ygyyV; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2945ce598bfso728480a91.0
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 08:18:53 -0800 (PST)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d71c844811so7237365ad.3
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 08:18:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1706372333; x=1706977133; darn=vger.kernel.org;
+        d=ventanamicro.com; s=google; t=1706372339; x=1706977139; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+Ekp7NR9JGHvKX5tDHRTOvHiQ7p6oqRI0Ent2tTntvI=;
-        b=Hh57igoumQ0C80pEdQwF2J/hYNjjhdbx9oDyObiSXcWoRWhTDzk2cKkRe2jmPvP4nW
-         3QZ/4kSGI4o/cHK6pjMwhrSPkOGQXIQe2xpBkEH6XE3B+SQhYNyvJqVYjTKXRjAtuQJa
-         2rL/7/AorguYRh9ZrvgO7xKS6sdqKcZbch+IdvZo7Petve+EYhuZ2887JA+bDTDkDUAM
-         XPxmZusQWgkjNqgxFaSRD34NWqU3F3hbo/UXwX8lCmcGFx+FinP7SkGqhv6osJs5Fe8X
-         gUS4Cudyo/V9dX9EZ2QEMrIXwaLyoy58lXQTwts3KZnRxnR0WM7Krf+JCrB7UlHdzlTo
-         AfLg==
+        bh=gS7tKJF9YkEmWkNlSPZ/rvbRwowleOoX+c6J0HN4mAw=;
+        b=kk/ygyyVluU4mKk+1BJ3Qz3yZOU3w5Q6ruXm1BijWz7Na+5WJlJEBiOVHb4WtCWZae
+         9k5DKWj7f3rqipqTvlpGElTE3RRKUP7s0W3eJ+N1AGpoFiV3QfgEWfBkpwpJ0FLYDFPu
+         HWdCtM/JrA7+U8qyh0439iOG1UbU8ECJqBEA4XUqIdddw1Uw12Hvq3Drkk5hIC2QKBrb
+         +vlrbrupRWSUAk0ZX2W1kqMVHb0weifqTpyAh9BaJ3LoNVeTV8DlEntlxdG6EHrc5qDb
+         mNymPd5zxANX+9PPjSHirEUs3LqT3PkCrRLVrgNcmF5H3VAvQLnrK4EWhNdizx7hUt2O
+         hpkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706372333; x=1706977133;
+        d=1e100.net; s=20230601; t=1706372339; x=1706977139;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+Ekp7NR9JGHvKX5tDHRTOvHiQ7p6oqRI0Ent2tTntvI=;
-        b=Myte6mSgxK4mjqMar3wTHI4DoGOQoboX1Lb6xc661ljI9q1h8cW5VP2f1jLA/XwIlI
-         5nhuPEBwJJwvEieR1l9QEB4xka0t7aSAa8ImTkf0Bupjc3C6YerKXrkZpUwt6T4YvqTc
-         rK33Br5p82M+/j1DCZ3TcmYxcJB/PjeBHHCeA+Sbz1erIvpv2YC0OXMv15T4a/Ez2SzK
-         FcRfrQ4B/HiilcBRkAoYk4zD5ZntP0pgesWJfNJ4BPcAmU1G47bhYwnk3tARbnuxUjT0
-         Pgc2JVAKWwWaZ0dRv4I4lU/R5ERsz1UcAYwWTdFbTJOcPOfDu8LWLKi29cAXRtsenmOH
-         8H0g==
-X-Gm-Message-State: AOJu0YzTjZb01cYec9+B8DFbO3QewjvYIHFojDFH8VrlGYjllEkjaEwd
-	ZaPYleG+gxDjcbh+JD8SmSoaUleONI72YVf0PimlK5KcBoNpVPfIHUQ6Ywz9DWA=
-X-Google-Smtp-Source: AGHT+IG8bjgnQErzq4BE0Rgjwv3fngKcK42zpZJYDnCSRnuoHpUHefIS7rhIK2NUJYxnqucbED1hzw==
-X-Received: by 2002:a17:90a:c585:b0:28e:829e:3f99 with SMTP id l5-20020a17090ac58500b0028e829e3f99mr812895pjt.69.1706372333301;
-        Sat, 27 Jan 2024 08:18:53 -0800 (PST)
+        bh=gS7tKJF9YkEmWkNlSPZ/rvbRwowleOoX+c6J0HN4mAw=;
+        b=U/+S5Au2iaFJwuVfgTVw5PMV9U0b5E5K8Kg1z3tcirICq0q2SO4sgZFvD/TLn9HZuh
+         C1hpT4EAigtkVXbxGzzJHKRKswIB4sIix5ivrTTvSer4Ay6y5+veIPVeKWxFLawkqe5J
+         WdV8KCi855Oi4vHIJMFqT5clB0EozFrYUAFEpGFAmRASvSHHHk/YbgxVOHCuvqb8yQl6
+         1OhJbj7yiXx4RNEparZi86mc2DQCesSdLMmp5UpDkFtVJPfybdxQI8Scf4FP0UnOjOg9
+         DCoZFcYj4nV1toZYTWEPBXmgC9czBCxsdwFAmyyP9z1VLH/LU7fW3mAcrzH1dyAwDP9C
+         ABEA==
+X-Gm-Message-State: AOJu0Yx/+Dw3OWu8++XGxtP13sv+fDotquGFQRDRwwFLDi7eBIs8DqZF
+	+qEbD5yIV1IqVf7Ki5j5JEc+qSJJhhLp42qdOSyk3+Td8VPynCv11cXrR742znk=
+X-Google-Smtp-Source: AGHT+IEBUp0hCCn7L8sX9sb+HHegemANWFUoOpOylQh+vsDyWc2YB/ckMjuHMjoiGdG/0Mue/ndfbg==
+X-Received: by 2002:a17:902:cec6:b0:1d8:ae30:edbc with SMTP id d6-20020a170902cec600b001d8ae30edbcmr1005729plg.12.1706372339173;
+        Sat, 27 Jan 2024 08:18:59 -0800 (PST)
 Received: from anup-ubuntu-vm.localdomain ([171.76.86.17])
-        by smtp.gmail.com with ESMTPSA id d11-20020a17090ac24b00b00290f8c708d0sm5091620pjx.57.2024.01.27.08.18.46
+        by smtp.gmail.com with ESMTPSA id d11-20020a17090ac24b00b00290f8c708d0sm5091620pjx.57.2024.01.27.08.18.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Jan 2024 08:18:52 -0800 (PST)
+        Sat, 27 Jan 2024 08:18:58 -0800 (PST)
 From: Anup Patel <apatel@ventanamicro.com>
 To: Palmer Dabbelt <palmer@dabbelt.com>,
 	Paul Walmsley <paul.walmsley@sifive.com>,
@@ -84,16 +84,10 @@ Cc: Marc Zyngier <maz@kernel.org>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	devicetree@vger.kernel.org,
-	Anup Patel <apatel@ventanamicro.com>,
-	Vinod Koul <vkoul@kernel.org>,
-	Sinan Kaya <okaya@kernel.org>,
-	Andy Gross <agross@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v12 06/25] irqchip: Convert all platform MSI users to the new API
-Date: Sat, 27 Jan 2024 21:47:34 +0530
-Message-Id: <20240127161753.114685-7-apatel@ventanamicro.com>
+	Anup Patel <apatel@ventanamicro.com>
+Subject: [PATCH v12 07/25] genirq/msi: Provide optional translation op
+Date: Sat, 27 Jan 2024 21:47:35 +0530
+Message-Id: <20240127161753.114685-8-apatel@ventanamicro.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240127161753.114685-1-apatel@ventanamicro.com>
 References: <20240127161753.114685-1-apatel@ventanamicro.com>
@@ -107,198 +101,93 @@ Content-Transfer-Encoding: 8bit
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Switch all the users of the platform MSI domain over to invoke the new
-interfaces which branch to the original platform MSI functions when the
-irqdomain associated to the caller device does not yet provide MSI parent
-functionality.
+irq_create_fwspec_mapping() requires translation of the firmware spec to a
+hardware interrupt number and the trigger type information.
 
-No functional change.
+Wired interrupts which are connected to a wire to MSI bridge, like MBIGEN
+are allocated that way. So far MBIGEN provides a regular irqdomain which
+then hooks backwards into the MSI infrastructure. That's an unholy mess and
+will be replaced with per device MSI domains which are regular MSI domains.
+
+Interrupts on MSI domains are not supported by irq_create_fwspec_mapping(),
+but for making the wire to MSI bridges sane it makes sense to provide a
+special allocation/free interface in the MSI infrastructure. That avoids
+the backdoors into the core MSI allocation code and just shares all the
+regular MSI infrastructure.
+
+Provide an optional translation callback in msi_domain_ops which can be
+utilized by these wire to MSI bridges. No other MSI domain should provide a
+translation callback. The default translation callback of the MSI
+irqdomains will warn when it is invoked on a non-prepared MSI domain.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: Sinan Kaya <okaya@kernel.org>
-Cc: Andy Gross <agross@kernel.org>
-Cc: Bjorn Andersson <andersson@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- drivers/dma/mv_xor_v2.c                     | 8 ++++----
- drivers/dma/qcom/hidma.c                    | 6 +++---
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 5 +++--
- drivers/mailbox/bcm-flexrm-mailbox.c        | 8 ++++----
- drivers/perf/arm_smmuv3_pmu.c               | 4 ++--
- drivers/ufs/host/ufs-qcom.c                 | 8 ++++----
- 6 files changed, 20 insertions(+), 19 deletions(-)
+ include/linux/msi.h |  5 +++++
+ kernel/irq/msi.c    | 15 +++++++++++++++
+ 2 files changed, 20 insertions(+)
 
-diff --git a/drivers/dma/mv_xor_v2.c b/drivers/dma/mv_xor_v2.c
-index 1ebfbe88e733..732663ad6d71 100644
---- a/drivers/dma/mv_xor_v2.c
-+++ b/drivers/dma/mv_xor_v2.c
-@@ -747,8 +747,8 @@ static int mv_xor_v2_probe(struct platform_device *pdev)
- 	if (IS_ERR(xor_dev->clk))
- 		return PTR_ERR(xor_dev->clk);
+diff --git a/include/linux/msi.h b/include/linux/msi.h
+index 9bec9ca19800..fd184309a429 100644
+--- a/include/linux/msi.h
++++ b/include/linux/msi.h
+@@ -412,6 +412,7 @@ bool arch_restore_msi_irqs(struct pci_dev *dev);
+ struct irq_domain;
+ struct irq_domain_ops;
+ struct irq_chip;
++struct irq_fwspec;
+ struct device_node;
+ struct fwnode_handle;
+ struct msi_domain_info;
+@@ -431,6 +432,8 @@ struct msi_domain_info;
+  *			function.
+  * @msi_post_free:	Optional function which is invoked after freeing
+  *			all interrupts.
++ * @msi_translate:	Optional translate callback to support the odd wire to
++ *			MSI bridges, e.g. MBIGEN
+  *
+  * @get_hwirq, @msi_init and @msi_free are callbacks used by the underlying
+  * irqdomain.
+@@ -468,6 +471,8 @@ struct msi_domain_ops {
+ 					    struct device *dev);
+ 	void		(*msi_post_free)(struct irq_domain *domain,
+ 					 struct device *dev);
++	int		(*msi_translate)(struct irq_domain *domain, struct irq_fwspec *fwspec,
++					 irq_hw_number_t *hwirq, unsigned int *type);
+ };
  
--	ret = platform_msi_domain_alloc_irqs(&pdev->dev, 1,
--					     mv_xor_v2_set_msi_msg);
-+	ret = platform_device_ims_init_and_alloc_irqs(&pdev->dev, 1,
-+						      mv_xor_v2_set_msi_msg);
- 	if (ret)
- 		return ret;
- 
-@@ -851,7 +851,7 @@ static int mv_xor_v2_probe(struct platform_device *pdev)
- 			  xor_dev->desc_size * MV_XOR_V2_DESC_NUM,
- 			  xor_dev->hw_desq_virt, xor_dev->hw_desq);
- free_msi_irqs:
--	platform_msi_domain_free_irqs(&pdev->dev);
-+	platform_device_ims_free_irqs_all(&pdev->dev);
- 	return ret;
+ /**
+diff --git a/kernel/irq/msi.c b/kernel/irq/msi.c
+index 79b4a58ba9c3..c0e73788e878 100644
+--- a/kernel/irq/msi.c
++++ b/kernel/irq/msi.c
+@@ -726,11 +726,26 @@ static void msi_domain_free(struct irq_domain *domain, unsigned int virq,
+ 	irq_domain_free_irqs_top(domain, virq, nr_irqs);
  }
  
-@@ -867,7 +867,7 @@ static void mv_xor_v2_remove(struct platform_device *pdev)
- 
- 	devm_free_irq(&pdev->dev, xor_dev->irq, xor_dev);
- 
--	platform_msi_domain_free_irqs(&pdev->dev);
-+	platform_device_ims_free_irqs_all(&pdev->dev);
- 
- 	tasklet_kill(&xor_dev->irq_tasklet);
- }
-diff --git a/drivers/dma/qcom/hidma.c b/drivers/dma/qcom/hidma.c
-index d63b93dc7047..4065d6eab49e 100644
---- a/drivers/dma/qcom/hidma.c
-+++ b/drivers/dma/qcom/hidma.c
-@@ -696,7 +696,7 @@ static void hidma_free_msis(struct hidma_dev *dmadev)
- 			devm_free_irq(dev, virq, &dmadev->lldev);
- 	}
- 
--	platform_msi_domain_free_irqs(dev);
-+	platform_device_ims_free_irqs_all(dev);
- #endif
- }
- 
-@@ -706,8 +706,8 @@ static int hidma_request_msi(struct hidma_dev *dmadev,
- #ifdef CONFIG_GENERIC_MSI_IRQ
- 	int rc, i, virq;
- 
--	rc = platform_msi_domain_alloc_irqs(&pdev->dev, HIDMA_MSI_INTS,
--					    hidma_write_msi_msg);
-+	rc = platform_device_ims_init_and_alloc_irqs(&pdev->dev, HIDMA_MSI_INTS,
-+						     hidma_write_msi_msg);
- 	if (rc)
- 		return rc;
- 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index 0ffb1cf17e0b..84a765b1f64e 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -3125,7 +3125,8 @@ static int arm_smmu_update_gbpa(struct arm_smmu_device *smmu, u32 set, u32 clr)
- static void arm_smmu_free_msis(void *data)
- {
- 	struct device *dev = data;
--	platform_msi_domain_free_irqs(dev);
++static int msi_domain_translate(struct irq_domain *domain, struct irq_fwspec *fwspec,
++				irq_hw_number_t *hwirq, unsigned int *type)
++{
++	struct msi_domain_info *info = domain->host_data;
 +
-+	platform_device_ims_free_irqs_all(dev);
- }
++	/*
++	 * This will catch allocations through the regular irqdomain path except
++	 * for MSI domains which really support this, e.g. MBIGEN.
++	 */
++	if (!info->ops->msi_translate)
++		return -ENOTSUPP;
++	return info->ops->msi_translate(domain, fwspec, hwirq, type);
++}
++
+ static const struct irq_domain_ops msi_domain_ops = {
+ 	.alloc		= msi_domain_alloc,
+ 	.free		= msi_domain_free,
+ 	.activate	= msi_domain_activate,
+ 	.deactivate	= msi_domain_deactivate,
++	.translate	= msi_domain_translate,
+ };
  
- static void arm_smmu_write_msi_msg(struct msi_desc *desc, struct msi_msg *msg)
-@@ -3166,7 +3167,7 @@ static void arm_smmu_setup_msis(struct arm_smmu_device *smmu)
- 	}
- 
- 	/* Allocate MSIs for evtq, gerror and priq. Ignore cmdq */
--	ret = platform_msi_domain_alloc_irqs(dev, nvec, arm_smmu_write_msi_msg);
-+	ret = platform_device_ims_init_and_alloc_irqs(dev, nvec, arm_smmu_write_msi_msg);
- 	if (ret) {
- 		dev_warn(dev, "failed to allocate MSIs - falling back to wired irqs\n");
- 		return;
-diff --git a/drivers/mailbox/bcm-flexrm-mailbox.c b/drivers/mailbox/bcm-flexrm-mailbox.c
-index e3e28a4f7d01..333ca6c519cb 100644
---- a/drivers/mailbox/bcm-flexrm-mailbox.c
-+++ b/drivers/mailbox/bcm-flexrm-mailbox.c
-@@ -1587,8 +1587,8 @@ static int flexrm_mbox_probe(struct platform_device *pdev)
- 	}
- 
- 	/* Allocate platform MSIs for each ring */
--	ret = platform_msi_domain_alloc_irqs(dev, mbox->num_rings,
--						flexrm_mbox_msi_write);
-+	ret = platform_device_ims_init_and_alloc_irqs(dev, mbox->num_rings,
-+						      flexrm_mbox_msi_write);
- 	if (ret)
- 		goto fail_destroy_cmpl_pool;
- 
-@@ -1641,7 +1641,7 @@ static int flexrm_mbox_probe(struct platform_device *pdev)
- 
- fail_free_debugfs_root:
- 	debugfs_remove_recursive(mbox->root);
--	platform_msi_domain_free_irqs(dev);
-+	platform_device_ims_free_irqs_all(dev);
- fail_destroy_cmpl_pool:
- 	dma_pool_destroy(mbox->cmpl_pool);
- fail_destroy_bd_pool:
-@@ -1657,7 +1657,7 @@ static void flexrm_mbox_remove(struct platform_device *pdev)
- 
- 	debugfs_remove_recursive(mbox->root);
- 
--	platform_msi_domain_free_irqs(dev);
-+	platform_device_ims_free_irqs_all(dev);
- 
- 	dma_pool_destroy(mbox->cmpl_pool);
- 	dma_pool_destroy(mbox->bd_pool);
-diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
-index 6303b82566f9..32b604e8bdf3 100644
---- a/drivers/perf/arm_smmuv3_pmu.c
-+++ b/drivers/perf/arm_smmuv3_pmu.c
-@@ -716,7 +716,7 @@ static void smmu_pmu_free_msis(void *data)
- {
- 	struct device *dev = data;
- 
--	platform_msi_domain_free_irqs(dev);
-+	platform_device_ims_free_irqs_all(dev);
- }
- 
- static void smmu_pmu_write_msi_msg(struct msi_desc *desc, struct msi_msg *msg)
-@@ -746,7 +746,7 @@ static void smmu_pmu_setup_msi(struct smmu_pmu *pmu)
- 	if (!(readl(pmu->reg_base + SMMU_PMCG_CFGR) & SMMU_PMCG_CFGR_MSI))
- 		return;
- 
--	ret = platform_msi_domain_alloc_irqs(dev, 1, smmu_pmu_write_msi_msg);
-+	ret = platform_device_ims_init_and_alloc_irqs(dev, 1, smmu_pmu_write_msi_msg);
- 	if (ret) {
- 		dev_warn(dev, "failed to allocate MSIs\n");
- 		return;
-diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-index 39eef470f8fa..f4c4becdef0b 100644
---- a/drivers/ufs/host/ufs-qcom.c
-+++ b/drivers/ufs/host/ufs-qcom.c
-@@ -1712,8 +1712,8 @@ static int ufs_qcom_config_esi(struct ufs_hba *hba)
- 	 * 2. Poll queues do not need ESI.
- 	 */
- 	nr_irqs = hba->nr_hw_queues - hba->nr_queues[HCTX_TYPE_POLL];
--	ret = platform_msi_domain_alloc_irqs(hba->dev, nr_irqs,
--					     ufs_qcom_write_msi_msg);
-+	ret = platform_device_ims_init_and_alloc_irqs(hba->dev, nr_irqs,
-+						      ufs_qcom_write_msi_msg);
- 	if (ret) {
- 		dev_err(hba->dev, "Failed to request Platform MSI %d\n", ret);
- 		return ret;
-@@ -1742,7 +1742,7 @@ static int ufs_qcom_config_esi(struct ufs_hba *hba)
- 			devm_free_irq(hba->dev, desc->irq, hba);
- 		}
- 		msi_unlock_descs(hba->dev);
--		platform_msi_domain_free_irqs(hba->dev);
-+		platform_device_ims_free_irqs_all(hba->dev);
- 	} else {
- 		if (host->hw_ver.major == 6 && host->hw_ver.minor == 0 &&
- 		    host->hw_ver.step == 0)
-@@ -1818,7 +1818,7 @@ static void ufs_qcom_remove(struct platform_device *pdev)
- 
- 	pm_runtime_get_sync(&(pdev)->dev);
- 	ufshcd_remove(hba);
--	platform_msi_domain_free_irqs(hba->dev);
-+	platform_device_ims_free_irqs_all(hba->dev);
- }
- 
- static const struct of_device_id ufs_qcom_of_match[] __maybe_unused = {
+ static irq_hw_number_t msi_domain_ops_get_hwirq(struct msi_domain_info *info,
 -- 
 2.34.1
 
