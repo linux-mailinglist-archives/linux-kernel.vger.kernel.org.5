@@ -1,231 +1,178 @@
-Return-Path: <linux-kernel+bounces-41169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B5C183ECD3
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 12:14:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6AE083ECD6
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 12:16:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 696D11C21B70
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 11:14:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D3461F21D09
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 11:16:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECC14200CC;
-	Sat, 27 Jan 2024 11:13:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=pobox.com header.i=@pobox.com header.b="QCp/yRnB"
-Received: from pb-smtp20.pobox.com (pb-smtp20.pobox.com [173.228.157.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A776520B0C;
+	Sat, 27 Jan 2024 11:16:25 +0000 (UTC)
+Received: from mail.enpas.org (zhong.enpas.org [46.38.239.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A3FF200AE
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 11:13:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.228.157.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D44E520305;
+	Sat, 27 Jan 2024 11:16:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.38.239.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706354034; cv=none; b=E2FfjcjSZ96JjxNQgxX67DoKx0LBUdsHUgwxUNDbegqybAbyXpt8sptphzl2KZ/O98Gsnd8nGb+Fupx1yN6B3Oc8AnUlrisEfQZQjp3lN9UCIorJmGYV/8Tu38CM/X5gmyFo2MZkWsMy+5DswdSbN+qarPcvirPYA5IqROqxISY=
+	t=1706354185; cv=none; b=qP1i0MHib2m5kPB5oFYsNN94DuWJRvDpAThGKIYEfkzGZHCtKde2DfKPN2nzIeRTQZ8BVRz59xGjBAbYIO6ISNSjLa5rLFCgJFqfgdMXIiFPAEjEXIFXzszXnfM+j2Jqlnh0NsRT/SiGopCuRfqOl7RtIkhpIPbw4FKdjGqff6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706354034; c=relaxed/simple;
-	bh=9kyiI9H7qRjBxoFZ0xNHu3XWQXm7Ns+lYZ/lWQuJGSE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AIYr4g+NAv3ihmM2QTXXwOJiy6Z9oYKHFo/aoWeT7jfBtTRxhuNUWyNU1tVGDxX5WuhN9GmWuOv16TRqQZEmxhwqmrTgVdL7mIF1/o+2vJjlzxx1DtQXW3PhSWr/Yaarc9CqqN+WgMT/X4WeMxyRG6/7E6Ys7AD03ItzYI5MYF0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=pobox.com; spf=pass smtp.mailfrom=pobox.com; dkim=pass (1024-bit key) header.d=pobox.com header.i=@pobox.com header.b=QCp/yRnB; arc=none smtp.client-ip=173.228.157.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=pobox.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pobox.com
-Received: from pb-smtp20.pobox.com (unknown [127.0.0.1])
-	by pb-smtp20.pobox.com (Postfix) with ESMTP id DE74F39D72;
-	Sat, 27 Jan 2024 06:13:51 -0500 (EST)
-	(envelope-from adamg@pobox.com)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=date:from
-	:to:cc:subject:message-id:references:mime-version:content-type
-	:in-reply-to; s=sasl; bh=9kyiI9H7qRjBxoFZ0xNHu3XWQXm7Ns+lYZ/lWQu
-	JGSE=; b=QCp/yRnBejPpctSrHLpXnjkiGKYGZPEY7s+KZmpLCkqMND+w/Fc3M68
-	CkzAvgS1r7Ug0ekws6LiKK6yjkAs2m10rCGWdpkrPNShqd/pe+Pu/QMQL3DbmTqo
-	GzNcGpeKyZqpqXcyEn1LOEnPGJu9QMCP+FKyrZy6OrTssVSiolr0=
-Received: from pb-smtp20.sea.icgroup.com (unknown [127.0.0.1])
-	by pb-smtp20.pobox.com (Postfix) with ESMTP id D724E39D71;
-	Sat, 27 Jan 2024 06:13:51 -0500 (EST)
-	(envelope-from adamg@pobox.com)
-Received: from pogo.deviceside.com (unknown [71.19.144.253])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by pb-smtp20.pobox.com (Postfix) with ESMTPSA id AFEF339D70;
-	Sat, 27 Jan 2024 06:13:48 -0500 (EST)
-	(envelope-from adamg@pobox.com)
-Received: from iguana.24-8.net (99-122-168-208.lightspeed.irvnca.sbcglobal.net [99.122.168.208])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: iguana@pogo.deviceside.com)
-	by pogo.deviceside.com (Postfix) with ESMTPSA id 22255C08DB;
-	Sat, 27 Jan 2024 03:13:47 -0800 (PST)
-Date: Sat, 27 Jan 2024 03:13:45 -0800
-From: Adam Goldman <adamg@pobox.com>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] firewire: core: send bus reset promptly on gap count
- error
-Message-ID: <ZbTlaCCbpxQoqo0i@iguana.24-8.net>
-References: <Za90vAQlDhbLpY67@iguana.24-8.net>
- <20240127083730.GA159729@workstation.local>
+	s=arc-20240116; t=1706354185; c=relaxed/simple;
+	bh=DVhH52aCcGgD5ZDUeD+yoQaqfWfEL7GSjbITGNZd2AQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CKnT+PCCRmYT+Ytbj8f7pQ2CVNLBe9mwwfeehmEwWLPSZehJlw5qy+mqMMiIHkEWwqLXhfuE35TnPLRDsSgh7QgMp+tZ08TB3Mlk1yhtXvMoiwBMN2tRVpsw8L9e47g5VKTv1OA3qOChFluWSCjn20fj69paS3c+rNZgIamVeb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enpas.org; spf=pass smtp.mailfrom=enpas.org; arc=none smtp.client-ip=46.38.239.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enpas.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=enpas.org
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	by mail.enpas.org (Postfix) with ESMTPSA id A402F1015FD;
+	Sat, 27 Jan 2024 11:16:17 +0000 (UTC)
+Message-ID: <e107b202-5843-41a7-b61e-68dd92128176@enpas.org>
+Date: Sat, 27 Jan 2024 20:16:14 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240127083730.GA159729@workstation.local>
-X-Pobox-Relay-ID:
- 24F1B694-BD05-11EE-A21C-F515D2CDFF5E-07713566!pb-smtp20.pobox.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 7/7] HID: playstation: DS4: Add VID/PID for SZ-MYPOWER
+ controllers
+Content-Language: en-US
+To: Roderick Colenbrander <thunderbird2k@gmail.com>
+Cc: Roderick Colenbrander <roderick.colenbrander@sony.com>,
+ Jiri Kosina <jikos@kernel.org>,
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+ linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240115144538.12018-1-max@enpas.org>
+ <20240115144538.12018-8-max@enpas.org>
+ <CAEc3jaBU3M0Zce2pdFvdBSG50a7Ky=GY4gLO3dkYdDrkYtiO0Q@mail.gmail.com>
+From: Max Staudt <max@enpas.org>
+Autocrypt: addr=max@enpas.org; keydata=
+ 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
+ PsRBqTJGs7jw5gOWMMchFaemEnEJtg==
+In-Reply-To: <CAEc3jaBU3M0Zce2pdFvdBSG50a7Ky=GY4gLO3dkYdDrkYtiO0Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi,
+On 1/25/24 10:03, Roderick Colenbrander wrote:
+> I'm not familiar with this device, but if it indeed works. Then I'm
+> okay with it.
 
-On Sat, Jan 27, 2024 at 05:37:30PM +0900, Takashi Sakamoto wrote:
-> On Tue, Jan 23, 2024 at 12:11:40AM -0800, Adam Goldman wrote:
-> > If we are bus manager and the bus has inconsistent gap counts, send a 
-> > bus reset immediately instead of trying to read the root node's config 
-> > ROM first. Otherwise, we could spend a lot of time trying to read the 
-> > config ROM but never succeeding.
-> > 
-> > This eliminates a 50+ second delay before the FireWire bus is usable 
-> > after a newly connected device is powered on in certain circumstances.
-> 
-> At first, would I request you to explain about the certain
-> circumstances in the patch comment? It is really helpful to understand
-> the change itself.
-
-The delay occurs if a gap count inconsistency occurs, we are not the 
-root node, and we become bus manager. One scenario that causes this is 
-with a TI XIO2213B OHCI, the first time a Sony DSR-25 is powered on 
-after being connected to the FireWire cable.
-
-> > Link: https://sourceforge.net/p/linux1394/mailman/message/58727806/
-
-This link has a longer description and kernel logs.
+Thanks!
 
 
-> > --- linux-source-6.1.orig/drivers/firewire/core-card.c	2023-09-23 02:11:13.000000000 -0700
-> > +++ linux-source-6.1/drivers/firewire/core-card.c	2024-01-22 04:23:06.000000000 -0800
-> > @@ -435,6 +435,16 @@
-> >  		 * config rom.  In either case, pick another root.
-> >  		 */
-> >  		new_root_id = local_id;
-> > +	} else if (card->gap_count == 0) {
-> > +		/* 
-> > +		 * If self IDs have inconsistent gap counts, do a
-> > +		 * bus reset ASAP. The config rom read might never
-> > +		 * complete, so don't wait for it. However, still
-> > +		 * send a PHY configuration packet prior to the bus
-> > +		 * reset, as permitted by IEEE 1394-2008 8.4.5.2.
-> > +		 */
-> > +		new_root_id = local_id;
-> > +		card->bm_retries = 0;
-> >  	} else if (!root_device_is_running) {
-> >  		/*
-> > 		 * If we haven't probed this device yet, bail out now
-> 
-> Next, after the condition branches, we can see below lines:
-> 
-> ```
-> 	/*
-> 	 * Finally, figure out if we should do a reset or not.  If we have
-> 	 * done less than 5 resets with the same physical topology and we
-> 	 * have either a new root or a new gap count setting, let's do it.
-> 	 */
-> 
-> 	if (card->bm_retries++ < 5 &&
-> 	    (card->gap_count != gap_count || new_root_id != root_id))
-> 		do_reset = true;
-> ```
-> 
-> When the value of "card->gap_count" is zero, it would hit the condition of
-> "card->gap_count != gap_count". I think the transmission of phy config
-> packet and scheduling of short bus reset would be done, regardless of the
-> change. Would I ask the main intention to the additional branch?
+I've just tried this patch on real hardware again, and there's a tradeoff here - it improves the situation for one 7545:0104 controller, and worsens it for another.
 
-Without the additional branch, the !root_device_is_running branch will 
-be taken (because the root node's config ROM hasn't been read yet), and 
-bm_work will go to sleep. Eventually we will give up trying to read the 
-config ROM, the root_device==NULL branch will be taken, and the bus 
-reset will be done. The additional branch eliminates waiting for the 
-config ROM read when gap_count is zero.
+Up to you, and if you don't want to think about it, then let's shelve this patch :)
 
-Here is the full sequence of events:
 
-1. Bus reset occurs due to newly active device.
 
-2. Self identification process completes. We are not root node. Gap 
-counts are inconsistent.
+Details follow, if you're curious.
 
-3. build_tree() notices the gap count error and sets gap_count to 0:
 
-> 		/*
-> 		 * If PHYs report different gap counts, set an invalid count
-> 		 * which will force a gap count reconfiguration and a reset.
-> 		 */
-> 		if (SELF_ID_GAP_COUNT(q) != gap_count)
-> 			gap_count = 0;
+I have two controllers with VID/PID 7545:0104, and they're both very quirky multi-emulation devices. One is shaped like a PS4 controller, the other like a hybrid between a PS4 and a Switch controller. Since these controllers exhibit all of the USB related quirks in this series, I've kept them as reproducers. Other controllers that passed through my hands only had a subset of the quirks.
 
-4. bm_work() starts and makes us bus manager:
+Up until now, both controllers worked with hid-sony as PS3 controllers. With this patch, the PS4 controller gains LED support and fine-grained control of the weak rumble motor. The "Switch (?) controller" on the other hand errors out, becomes 0079:181c, and loses the Home key and the accelerometer. This is a user facing change, and the question is how much we really care about these controllers.
 
-> 		rcode = fw_run_transaction(card, TCODE_LOCK_COMPARE_SWAP,
-> 				irm_id, generation, SCODE_100,
-> 				CSR_REGISTER_BASE + CSR_BUS_MANAGER_ID,
-> 				transaction_data, 8);
 
-5. read_config_rom() starts reading the root node's config ROM.
 
-6. bm_work() wants to know if the root node is cycle master capable. If 
-the root node is cycle master capable, we will leave it as the root 
-node. Otherwise, we will make ourself the root node. To determine if the 
-root node is cycle master capable, we must wait until its config ROM has 
-been read:
+More details, if you're still reading:
 
-> 	} else if (!root_device_is_running) {
-> 		/*
-> 		 * If we haven't probed this device yet, bail out now
-> 		 * and let's try again once that's done.
-> 		 */
-> 		spin_unlock_irq(&card->lock);
-> 		goto out;
 
-7a. Without the patch: read_config_rom() reads the first few quadlets 
-from the config ROM. Due to the gap count inconsistency, eventually one 
-of the reads times out. When read_config_rom() fails, fw_device_init() 
-calls it again until MAX_RETRIES is reached. This takes 50+ seconds.
+Both are "multi-purpose" controllers, appearing as PS4/PS3/Switch/other controllers in sequence. They advertise themselves as one USB device, and if there is no driver sending whatever init sequence they expect, they disconnect and try emulating a different controller.
 
-8a. bm_work() sees that we have given up trying to read the config ROM. 
-It makes us the root node and does a bus reset:
+The PS4 controller has rumble and an RGB LED, and this patch series improves its functionality. It cannot emulate a Switch controller.
 
-> 	if (root_device == NULL) {
-> 		/*
-> 		 * Either link_on is false, or we failed to read the
-> 		 * config rom.  In either case, pick another root.
-> 		 */
-> 		new_root_id = local_id;
-> ...
-> 	if (card->bm_retries++ < 5 &&
-> 	    (card->gap_count != gap_count || new_root_id != root_id))
-> 		do_reset = true;
+The Switch (?) controller has no rumble and four multicolour player LEDs, but it adds Switch compatibility including accelerometer and gyro.
 
-7b. With the patch: Because of the gap count inconsistency, bm_work() 
-does not wait for the config ROM to be read. It makes us the root node 
-and does a bus reset immediately:
 
-> 	} else if (card->gap_count == 0) {
-> 		/*
-> 		 * If self IDs have inconsistent gap counts, do a
-> 		 * bus reset ASAP. The config rom read might never
-> 		 * complete, so don't wait for it. However, still
-> 		 * send a PHY configuration packet prior to the
-> 		 * bus reset, as permitted by 1394-2008 8.4.5.2.
-> 		 */
-> 		new_root_id = local_id;
-> 		card->bm_retries = 0;
-> ...
-> 	if (card->bm_retries++ < 5 &&
-> 	    (card->gap_count != gap_count || new_root_id != root_id))
-> 		do_reset = true;
+For the PS4 mode, which is the first that they try, and which would unify most functions, they use 7545:0104 instead of cloning a DS4 VID/PID. So I took a guess and found that it works fine with hid-playstation if I add the VID/PID and the init quirks in patches 2/3/4. Well, to be precise, I've only made the DS4 shaped one work in PS4 mode, the Switch controller isn't happy and errors out, see below.
 
--- Adam
+
+On the PS4 controller, this makes the RGB LED work, rumble works, but the gyro and touchpad don't send HID updates. The touchpad can click though, so maybe the controller I have has a hardware defect.
+
+The Switch (?) controller is where things get weird. It disconnects, even though it is initialised by hid-playstation, and transitions into a generic controller with VID/PID 0079:181c. This mode is *not* on the list of emulations it usually tries. It's as if the "unfinished" PS4 initialisation transitions it into a hidden fifth emulation mode. In this mode, the home key does not send any HID event, and there are no accelerometer updates that hid-sony would receive in PS3 mode.
+
+
+So, with this patch, the PS4 controller works better on Linux, while the Switch controller works worse. Both were seen as PS3 controllers up until now. I see no way to discern them at driver probe time.
+
+Any preference on what to do...?
+
+
+
+Max
+
 
