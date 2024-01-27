@@ -1,175 +1,109 @@
-Return-Path: <linux-kernel+bounces-41301-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41302-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1580383EE8E
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 17:26:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AFC883EE90
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 17:26:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5B64284B2A
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:26:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C2B4FB243C5
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:26:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B62560DCC;
-	Sat, 27 Jan 2024 16:20:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4BD531A82;
+	Sat, 27 Jan 2024 16:21:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jF3MusBl"
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="af6rIh+k"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4589060DC9;
-	Sat, 27 Jan 2024 16:20:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B256760DC9;
+	Sat, 27 Jan 2024 16:21:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706372456; cv=none; b=PY+KhNjxBkJyXQwJaEiHMoOE6HoxG+DZUGYnS0Y2ZNzWVGfhablMNLHAKsdvlp84bXpuLoO0566ZWxkD/brWyJFCO2jNGHz+lOubJiwzWAd5+0y9OBRbuADo0CwmyBfMgoc/KYN/C2aZCs5JeCbytX/dMfQN9FHgosaDV9MWBa8=
+	t=1706372463; cv=none; b=V7HG9cD5SUtFI/IppCnZih95SPVbfYtVsE0mQrj1a+jdSty427cTw6WsWDLaB18L3fNCDo5RZSDrOXwcCLRInEM2xFQiwPYsI93ov7OcG2zTwqyvi2CenLcVyQDubhFxeskb5Nrusht6HPZo3xX3aDpHGnHmjT8t34T5g+xgxQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706372456; c=relaxed/simple;
-	bh=vuJqFnZtTpTssMFoMa9G7Fw9QNg4vClPrMPI4Vl+fQo=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=fafJxih7yCJwLVqGxaNM4DGQWx80i4IBNBWBGI3YjxUljNFdb+Ajn6UyfUoFh/pYQW1qvWtk7VOLERAZEMIPMI0hSdH9i2zcPtaDbobR1FO4g2PEH1ZIceyyRpz1WphrNYGgkwaHCckgfUX40bAIML/9vFBOUCYoTXvzTWotA0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jF3MusBl; arc=none smtp.client-ip=209.85.219.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1706372463; c=relaxed/simple;
+	bh=iFbT8NHMRxra73mtvqFlKRnzUGWo0ySIB+769BYYeu0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cWzUf+jOswhhu0mcnU8MfaIUiSG0P294H0EsXix5pZm4D2yco7yLXOLlilGuzKOIVXqladsBR1INvVKaMfaMUr1IGvwcw0FETDoI41J/wau79jQnf2hs1ahuIaEccFkyySgOKpH6hDxuBRM1e9iBti7ldS10s5yUfndaqOXe/28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=af6rIh+k; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-68c37bf73aaso9925036d6.2;
-        Sat, 27 Jan 2024 08:20:52 -0800 (PST)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d8a66a2976so13376315ad.2;
+        Sat, 27 Jan 2024 08:21:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706372452; x=1706977252; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=khozqR2J5qyGoQPqSuwAokWTqr1QO39YPwi2HTUl2g4=;
-        b=jF3MusBlQFXatW7qXIZGK2UaaN+1M9baONpaP/BIfrGdix5COoJp+mc1fQNsL24Qjw
-         xV+ASIUQhjc27doTnXRWVUUDo4UTFylG1IvsrJO87Q5dHCG+n8AGEfLocqIv2cy52a3J
-         s+7KIxvm54f+DLC5SlDlbOOf0qtfQyGqG+bFxFjpMSFO59AVQamlcSxC5v/XesvaS8m1
-         qA2uPtTbqdRtSE5Ks3IByQb1GLaKmd/lHk/e+S0DIiGj3VDirSN3oMv1bz9mOZTIOY7T
-         x5f++Yx5wtyqyyC0QpTHvTDnbBZpJsX3VKqkVbfyu3kpyHXXiVyN7c3saEkOT0i75cXN
-         /Xlw==
+        d=gmail.com; s=20230601; t=1706372461; x=1706977261; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=icnXN0V8tv2OBqSXsA4+SZWf8bHAQn0oQ3LlvvUMVcU=;
+        b=af6rIh+kpCthSe8kFrYYUdKlAEw4MPG+C9msyM9PcIgCf9G+uEw/MmM0fTco5yYBfH
+         Lq10XeV/fYQq0vtg8l4/VgwxxISrgdR/eEVBibmqCAcr/hFhoke3MKzoyEzVTH5ZWfmh
+         axfB6hhc2rp7WiRBN6qRN9E6rhpVjCUqgGhoFtCC2F1OGhBLI3jRJGfyilbNjcFqfntp
+         GgB/eyf5jWZFwSZcUBhPTMEA0Dg8WRVN1kELq/gdnn2m0CYKaaF3c5m1PQJ9sAwyHWPA
+         HKlr2Er53TlnYzQF755YQz3pgTBjHSrp8oDFipsBqeGyDDq2nPUJN8k4JUUNecpTvtTX
+         m1Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706372452; x=1706977252;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=khozqR2J5qyGoQPqSuwAokWTqr1QO39YPwi2HTUl2g4=;
-        b=JoNYKuC6NP42vw6qW6PekBOYr5OEQbp4p+HS0HreG7Db5PElSjZROKze6RSFhL5q6W
-         TfvNNzGD7nRKjG6D20runw8xszcZSZrspayeOzp3oaGUO7qL6HYOD5PU+H5375hItqQs
-         TPd14NmdavbSl0xbYv2z4pbfUUBina1hbeSraKuiMEzfuG7P5VYmLrth1xtm4nsHQdUp
-         HjxVz2z3YnwpDCbKFq/Y16aW/x1zYIuK5lJEsL/3+6HMbmF/Sf0cPbDoKpLpVdYaJn3d
-         kddguNUGcdQWG+XKp7Dep/kd9SxjIzBJFqvKsv4Pq1NSRIxsRB52QmD/iB+j1+8kRpSk
-         P5eg==
-X-Gm-Message-State: AOJu0YxRSBZsHQPEy47QB6CyuzKn62Pd1gU3QdKYJ+vplNj4V0XFbe8B
-	QvAxxjAtoEfyFVUbLRpxBAid54PtCbXKRLnJ0axAVBajaxPl/cPz
-X-Google-Smtp-Source: AGHT+IEtYpnrWB7Pm3yuX4jPsKtMVMAT7CxIrt/thqrPJmnt6o0+3z1I+ItZujRzlRejHx8eF/YXDg==
-X-Received: by 2002:a05:6214:d4b:b0:67f:c133:3922 with SMTP id 11-20020a0562140d4b00b0067fc1333922mr2597732qvr.129.1706372452055;
-        Sat, 27 Jan 2024 08:20:52 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU3+LBrHc5Zp2e/HJFvVOcowk2itTDRWVCeBu9FGgIoLhx1ERum609+VtwSXCmHZuqS5yjQCmPIOTKaPjOQe/dQTVYgq22FobAr2B/krJF/ABfPP6m7x4EnV1WSKu3Favw3R/CbLgjf5/KoV1SK7vMijxAF6bl7l3CjFbqXYhiVyfr3NdcT1IalWJrnDIDvwQXAH+8vMcCn58UmXIbIdpGi+QIRmYUiAKDZeK8dweFrlaJHhu4odqc7bkwALp38FVz8uctVXmeUDwB2/lw9r84h8fC5wfZhacmiPwbaeYB3uK3FMUsy8WMyqwZXvQ662JodMK+Ckz8Vlrh7uJX+WpaEhUDH4HWu9luhqqgzcCnUIez7adveWXYigeEOT6Zs2Evn+zFaqWUOPBcTgbt4mcOuWRmZGrpy3P4iXeTwtZWOD0UK0KTMIWxIPwu4cEAA2yoetHwyrCqg1YG4B4J6RX3Q7rnAuGmWy0F4Gy6JaivBNAUqAkkiQZgBXJpME8ViDxeKurO8zLRLDOGIuFJPQ88yzzDp/OTK3y5gqH5eSq8NpgoEKKTj1WZFsCugbWRMRWNXvOegG169A2OY8YlYSBY4PUT5sbUgfxPMVKXw9UCzIkqmEqs1SBrOvjAuDw1VaUfY1RD1QerhxTAoKJLFboH6DAaoR5tB7H6C1ZgOQC0MGvtl5XP66jVYbk3z4nIo7ssbaJuvZFei+ixltrx+QSNWmB6p9dDBN4po1+Vyn1pRQo8ZgWv/HC+BAFi/v8Gywoc8ablY6S2+UpeRQTwJHYvapimI5O/v3A//4++ejuPmhlC+hAFzmidM7s5mCcyBZchB8mGo1SGwUnUTcXnlopGASubLZKb11JA4GUSgJYN7obbCcauHOF5YwR9g7BW1x1AfpwyR0pDLQzI6wG4HgQG9mxfQlJ0QswjplomeljUhaHVAE0x1mVra5t3f
-Received: from localhost (131.65.194.35.bc.googleusercontent.com. [35.194.65.131])
-        by smtp.gmail.com with ESMTPSA id ly9-20020a0562145c0900b0068509353fb6sm991500qvb.133.2024.01.27.08.20.51
+        d=1e100.net; s=20230601; t=1706372461; x=1706977261;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=icnXN0V8tv2OBqSXsA4+SZWf8bHAQn0oQ3LlvvUMVcU=;
+        b=R7rORtq/fxCfx7uojFbjk3vt7DzA6rDd0zNrzPrWbe0GnDFC2aATd/L+PNCAd45zdA
+         rY7Uz4kLnauKnmSqG3ZU2E3f6b6TtyHfrsSzz80xvucRQG7Ktvo9AhhWvr/OhL6zFgfG
+         1/MnDWqalFhogUzLqEu3oW0iLEd9L4SsTq2JKlfyNy0u2yk6x8B18ub8Fwl1eEpLAofA
+         YrQCz21f2Qqvf30ItuterQGcn4sClcjSTiL5XXWvw38JiNydZESrZJWd9nmlUacinxA3
+         EH9GDKXWCJnVcTyFl77csTcxO7l/+f7glGsHzW5dx21ZOKM37yGeCEZcAHPZedhwAfZN
+         Vssw==
+X-Gm-Message-State: AOJu0Yw4OmRg4tl57cuCnu25zWQ/bS1qNb2MU7zq+tydLPE2mxjci9Sn
+	MIF/Rwt+4AeeDi1+CRy9kjF/mIwWUtd+/G9QUwvyd/flEEpN/Ek2
+X-Google-Smtp-Source: AGHT+IEzpH2s+FyYQuJQvz8JnKB4KGeivzR2vLXk5na6VyCf61mfIusC1vv98wNn2kkP2u7K1nLGsg==
+X-Received: by 2002:a17:902:ea01:b0:1d8:c8e8:11e1 with SMTP id s1-20020a170902ea0100b001d8c8e811e1mr288397plg.111.1706372461097;
+        Sat, 27 Jan 2024 08:21:01 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j4-20020a170902c3c400b001d717e64f0esm2632893plj.87.2024.01.27.08.21.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Jan 2024 08:20:51 -0800 (PST)
-Date: Sat, 27 Jan 2024 11:20:51 -0500
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Joe Damato <jdamato@fastly.com>, 
- linux-kernel@vger.kernel.org, 
- netdev@vger.kernel.org
-Cc: chuck.lever@oracle.com, 
- jlayton@kernel.org, 
- linux-api@vger.kernel.org, 
- brauner@kernel.org, 
- edumazet@google.com, 
- davem@davemloft.net, 
- alexander.duyck@gmail.com, 
- sridhar.samudrala@intel.com, 
- kuba@kernel.org, 
- willemdebruijn.kernel@gmail.com, 
- weiwan@google.com, 
- Joe Damato <jdamato@fastly.com>, 
- Alexander Viro <viro@zeniv.linux.org.uk>, 
- Andrew Waterman <waterman@eecs.berkeley.edu>, 
- Arnd Bergmann <arnd@arndb.de>, 
- Dominik Brodowski <linux@dominikbrodowski.net>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Jan Kara <jack@suse.cz>, 
- Jiri Slaby <jirislaby@kernel.org>, 
- Jonathan Corbet <corbet@lwn.net>, 
- Julien Panis <jpanis@baylibre.com>, 
- linux-doc@vger.kernel.org (open list:DOCUMENTATION), 
- "(open list:FILESYSTEMS \\(VFS and infrastructure\\))" <linux-fsdevel@vger.kernel.org>, 
- Michael Ellerman <mpe@ellerman.id.au>, 
- Nathan Lynch <nathanl@linux.ibm.com> (open list:FILESYSTEMS \(VFS and infrastructure\)), 
- Palmer Dabbelt <palmer@dabbelt.com>, 
- Steve French <stfrench@microsoft.com>, 
- Thomas Huth <thuth@redhat.com>, 
- Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <65b52d6381de7_3a9e0b2943d@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20240125225704.12781-1-jdamato@fastly.com>
-References: <20240125225704.12781-1-jdamato@fastly.com>
-Subject: Re: [PATCH net-next v3 0/3] Per epoll context busy poll support
+        Sat, 27 Jan 2024 08:21:00 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Sat, 27 Jan 2024 08:20:59 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: Lukasz Majczak <lma@chromium.org>
+Cc: Gwendal Grignou <gwendal@chromium.org>,
+	Tzung-Bi Shih <tzungbi@kernel.org>,
+	Radoslaw Biernacki <biernacki@google.com>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
+	Lee Jones <lee@kernel.org>, Benson Leung <bleung@chromium.org>,
+	Guenter Roeck <groeck@chromium.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+	chrome-platform@lists.linux.dev
+Subject: Re: [PATCH v4 2/3] watchdog: Add ChromeOS EC-based watchdog driver
+Message-ID: <1a9330f5-a469-4a46-8dc7-a15b274ff99d@roeck-us.net>
+References: <20240126095721.782782-1-lma@chromium.org>
+ <20240126095721.782782-3-lma@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240126095721.782782-3-lma@chromium.org>
 
-Joe Damato wrote:
-> Greetings:
+On Fri, Jan 26, 2024 at 09:57:20AM +0000, Lukasz Majczak wrote:
+> Embedded Controller (EC) present on Chromebook devices
+> can be used as a watchdog.
+> Implement a driver to support it.
 > 
-> Welcome to v3. Cover letter updated from v2 to explain why ioctl and
-> adjusted my cc_cmd to try to get the correct people in addition to folks
-> who were added in v1 & v2. Labeled as net-next because it seems networking
-> related to me even though it is fs code.
-> 
-> TL;DR This builds on commit bf3b9f6372c4 ("epoll: Add busy poll support to
-> epoll with socket fds.") by allowing user applications to enable
-> epoll-based busy polling and set a busy poll packet budget on a per epoll
-> context basis.
-> 
-> This makes epoll-based busy polling much more usable for user
-> applications than the current system-wide sysctl and hardcoded budget.
-> 
-> To allow for this, two ioctls have been added for epoll contexts for
-> getting and setting a new struct, struct epoll_params.
-> 
-> ioctl was chosen vs a new syscall after reviewing a suggestion by Willem
-> de Bruijn [1]. I am open to using a new syscall instead of an ioctl, but it
-> seemed that: 
->   - Busy poll affects all existing epoll_wait and epoll_pwait variants in
->     the same way, so new verions of many syscalls might be needed. It
+> Signed-off-by: Lukasz Majczak <lma@chromium.org>
 
-There is no need to support a new feature on legacy calls. Applications have
-to be upgraded to the new ioctl, so they can also be upgraded to the latest
-epoll_wait variant.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-epoll_pwait extends epoll_wait with a sigmask.
-epoll_pwait2 extends extends epoll_pwait with nsec resolution timespec.
-Since they are supersets, nothing is lots by limiting to the most recent API.
+Note that this should have been patch 2/2 (since the last patch
+of the series has beel applied and is no longer part of the series).
 
-In the discussion of epoll_pwait2 the addition of a forward looking flags
-argument was discussed, but eventually dropped. Based on the argument that
-adding a syscall is not a big task and does not warrant preemptive code.
-This decision did receive a suitably snarky comment from Jonathan Corbet [1].
-
-It is definitely more boilerplate, but essentially it is as feasible to add an
-epoll_pwait3 that takes an optional busy poll argument. In which case, I also
-believe that it makes more sense to configure the behavior of the syscall
-directly, than through another syscall and state stored in the kernel.
-
-I don't think that the usec fine grain busy poll argument is all that useful.
-Documentation always suggests setting it to 50us or 100us, based on limited
-data. Main point is to set it to exceed the round-trip delay of whatever the
-process is trying to wait on. Overestimating is not costly, as the call
-returns as soon as the condition is met. An epoll_pwait3 flag EPOLL_BUSY_POLL
-with default 100us might be sufficient.
-
-[1] https://lwn.net/Articles/837816/
-
-
->     seems much simpler for users to use the correct
->     epoll_wait/epoll_pwait for their app and add a call to ioctl to enable
->     or disable busy poll as needed. This also probably means less work to
->     get an existing epoll app using busy poll.
-
+Thanks,
+Guenter
 
