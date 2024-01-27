@@ -1,197 +1,96 @@
-Return-Path: <linux-kernel+bounces-41391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6FB783EFF8
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 21:27:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F05783EFFB
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 21:28:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 613CC1F22D10
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 20:27:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F37C81F22577
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 20:28:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E27D92E657;
-	Sat, 27 Jan 2024 20:27:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5566E2E645;
+	Sat, 27 Jan 2024 20:28:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="oJDeP+0V"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=iwanders.net header.i=@iwanders.net header.b="cPiUlOQC"
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6AF12C19C;
-	Sat, 27 Jan 2024 20:27:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D21352E419
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 20:28:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706387250; cv=none; b=nxL2jEtx2CaLYJQDhtURvWI5Abutcgjtt1YuojMnexS3EmkfF6SONXuS+JkNvAH+rqOnIrpi+N14ar7meqPMH6JssRLckpflQganMvT9lgUcbDCxGozadmQvzTfgXXiLjz9ctZ49Q5037fgBby/nzAoa+XjDweVh+i189UK/Zzs=
+	t=1706387315; cv=none; b=fKPb0a9C3UAoYnKZqZ7Xnbd2qYpOwvT3OmQl06x//rBJ9LeMWxnk6zRSoQS8dr5cebfpqckdZcZ/h7WuBMStsrpd9LG8GHFdEIdpuucOf5aKgrGs4nEh4MFCPVDVrISlWFO9040hGCh5ruD1L8HLin+P48u1ylfOS6Bi9vSLNoI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706387250; c=relaxed/simple;
-	bh=V8mSSm3//X6n2PCn+rVSWmInHVXe52iY5cZ+sxkRsJw=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=C787/ukrOONZO7bLhKY2KI3yU7URguuyjvwDGnkhaCwZsxMA+GCQkOaq2ItUks4kbJ1L1o1NA3bZEk2Yoz8kaMJDvRnn40xxDYC39fo93OerHuOoEuMjC1C/ALPIkD19/YzTb6N2urd5fmrnZxV4V+R9w8SF6ISaTkEajbW5CHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=oJDeP+0V; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1706387315; c=relaxed/simple;
+	bh=LUBeGALBzMiCBd9c1SReM0q1tcU5b9jqGILvsbgJMIY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=SWJ4VIu0XRacarVkyF9VyV2qjfhy0ZueFnX4PU/Zyqt5jP8Ft/q1IUwcnltHIqDZA9yrA140ZkWj7YYT1zVeFgfWTK2lqkeRis143vp0RZ4OffEXshRIlWiEtqgG7HkRxaGzVTz3359d/WGtU07K1l6Suc6CKdTp/stRl1Yb9rI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iwanders.net; spf=pass smtp.mailfrom=iwanders.net; dkim=pass (1024-bit key) header.d=iwanders.net header.i=@iwanders.net header.b=cPiUlOQC; arc=none smtp.client-ip=209.85.222.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iwanders.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iwanders.net
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-783f0995029so46838785a.1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 12:28:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=iwanders.net; s=google; t=1706387312; x=1706992112; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=LUBeGALBzMiCBd9c1SReM0q1tcU5b9jqGILvsbgJMIY=;
+        b=cPiUlOQCphIO0s9NPenE2RFlAlyb8S/K+R4BYa5wtGhyJBvb2gRqVjjR8CnNDunySp
+         Xbh8vGeIFcowaaGMk7FGDYGfMGysPL9EXx+tCaH8yBW7Utj96SM82gxSduB5Z3B8CUc5
+         cjcvlVDGKD1h85A82xGLxgStlA5Srwy6Bs08E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706387312; x=1706992112;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LUBeGALBzMiCBd9c1SReM0q1tcU5b9jqGILvsbgJMIY=;
+        b=hlqMFyMYYOTx6nQ39o+5fYW04T30qQWT03g2HVZG95sa2Jv8r9NzEge2vhSa2/Rkkl
+         NubwJsQEHJOGDhrVv1h1w9qgFM8p7wSgogxQ9smrG/x/bxdq6evjQE+WH48ru9gXXooG
+         MZ20aq7Ras/7wQqOW0uVLIlMpQNSUSkkhAUCJI70nYWk4x6UmlfLDdOCWzouvdcSSIhx
+         qf/STunoWydQTbSJzhjaLLjkmvKqLCXx2FZzUw4xHIZb2pg5DDok6JWci0LMMvyO9/jy
+         ktmFbWJZbwQopM1JtsgwCpdSFwsPTBBJkKgeE4dEYDMK/FK6C1jO3fPdnb36wYT9NFeV
+         tlsw==
+X-Gm-Message-State: AOJu0YzqypuaARxeYebUOprAikb0xvMC7oB2BR4eD9jePFBoTGn0iLE6
+	j4hO5eVss1R0tCAcbaZzyHCbKBqQ/jTRIkJkAldf92fY8Y839Yeg2girFBHWh7E=
+X-Google-Smtp-Source: AGHT+IG6s/fHhjP8Qd7QpYh+6hTN6Y01lcMsE9p4qdH9PvkO5SB3bp0d/yDNa1i7yrGjeQoZV0xYSQ==
+X-Received: by 2002:a05:620a:22c6:b0:783:949f:cbe2 with SMTP id o6-20020a05620a22c600b00783949fcbe2mr2208737qki.150.1706387312664;
+        Sat, 27 Jan 2024 12:28:32 -0800 (PST)
+Received: from eagle.lan (24-246-30-234.cable.teksavvy.com. [24.246.30.234])
+        by smtp.gmail.com with ESMTPSA id b7-20020a05620a270700b00783e18e45desm868815qkp.104.2024.01.27.12.28.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Jan 2024 12:28:32 -0800 (PST)
+From: Ivor Wanders <ivor@iwanders.net>
+To: w_armin@gmx.de
+Cc: corbet@lwn.net,
+	hdegoede@redhat.com,
+	ivor@iwanders.net,
+	jdelvare@suse.com,
+	linux-doc@vger.kernel.org,
+	linux-hwmon@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux@roeck-us.net,
+	luzmaximilian@gmail.com,
+	markgross@kernel.org,
+	platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] hwmon: add fan speed monitoring driver for Surface devices
+Date: Sat, 27 Jan 2024 15:28:28 -0500
+Message-Id: <20240127202828.11140-1-ivor@iwanders.net>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <34960bb8-fb85-4cca-8b84-d99596d046e4@gmx.de>
+References: <34960bb8-fb85-4cca-8b84-d99596d046e4@gmx.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1706387245;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6PJkgdYtRWh3Hfjewf0AGZ17Ug0EyMY0uQp/L8hg8yw=;
-	b=oJDeP+0VIRu2SqO9xRdnQLFQh0JsKxCaNBrSkuKEMvgzCsuNQNmUuOMopqU6500Aq83DG0
-	z1mOi+yEw3zKZYEU7SLj/hBMpmopscEZ4N3xtKNr38uBl1k5QEhjJnuKfjV0pV2vgv2ytv
-	5gdluaqnZ0ULtKEWgrVGxrRsCgIGbPoTx5g1iIQNa+sYfhc+vlv3BVHIOyr0s1da8SSugG
-	ZUdTpxJLqFQaY6HXlT/Z2z1Tdkw6blhIK4HDiyPfNcqgt6hnS1ft0WvPEHiAI7IIfedlpE
-	X2LZcWv5oO6peYyAE9xF16YKkC6Y0fLsSs3V/5BcmF4TVkwBb0wDXK18Zhy7Lw==
-Date: Sat, 27 Jan 2024 21:27:24 +0100
-From: Dragan Simic <dsimic@manjaro.org>
-To: Alexey Charkov <alchark@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Heiko Stuebner <heiko@sntech.de>, Daniel Lezcano
- <daniel.lezcano@linaro.org>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] arm64: dts: rockchip: enable temperature driven fan
- control on Rock 5B
-In-Reply-To: <df062818d21f3318c033859d0e95efc7@manjaro.org>
-References: <20240125-rk-dts-additions-v1-0-5879275db36f@gmail.com>
- <20240125-rk-dts-additions-v1-3-5879275db36f@gmail.com>
- <df062818d21f3318c033859d0e95efc7@manjaro.org>
-Message-ID: <b5b1900a6e309890f449ec91594b8d6c@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-Hello Alexey,
+Hello Armin, thank you for your second review.
 
-On 2024-01-26 00:13, Dragan Simic wrote:
-> On 2024-01-24 21:30, Alexey Charkov wrote:
->> This enables thermal monitoring on Radxa Rock 5B and links the PWM
->> fan as an active cooling device managed automatically by the thermal
->> subsystem, with a target SoC temperature of 55C
->> 
->> Signed-off-by: Alexey Charkov <alchark@gmail.com>
->> ---
->>  arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts | 25 
->> ++++++++++++++++++++++++-
->>  1 file changed, 24 insertions(+), 1 deletion(-)
->> 
->> diff --git a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
->> b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
->> index 9b7bf6cec8bd..c4c94e0b6163 100644
->> --- a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
->> +++ b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
->> @@ -52,7 +52,7 @@ led_rgb_b {
->> 
->>  	fan: pwm-fan {
->>  		compatible = "pwm-fan";
->> -		cooling-levels = <0 95 145 195 255>;
->> +		cooling-levels = <0 120 150 180 210 240 255>;
->>  		fan-supply = <&vcc5v0_sys>;
->>  		pwms = <&pwm1 0 50000 0>;
->>  		#cooling-cells = <2>;
->> @@ -180,6 +180,25 @@ &cpu_l3 {
->>  	cpu-supply = <&vdd_cpu_lit_s0>;
->>  };
->> 
->> +&package_thermal {
->> +	polling-delay = <1000>;
->> +
->> +	trips {
->> +		package_fan: package-fan {
->> +			temperature = <55000>;
->> +			hysteresis = <2000>;
->> +			type = "active";
->> +		};
->> +	};
->> +
->> +	cooling-maps {
->> +		map-fan {
->> +			trip = <&package_fan>;
->> +			cooling-device = <&fan THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
->> +		};
->> +	};
->> +};
-> 
-> It should be better to have two new trips and two new cooling maps
-> defined, instead of having just one trip/map pair, like this:
-> 
-> &package_thermal {
-> 	polling-delay = <1000>;
-> 
-> 	trips {
-> 		package_warm: package-warm {
-> 			temperature = <55000>;
-> 			hysteresis = <2000>;
-> 			type = "active";
-> 		};
-> 
-> 		package_hot: package-hot {
-> 			temperature = <65000>;
-> 			hysteresis = <2000>;
-> 			type = "active";
-> 		};
-> 	};
-> 
-> 	cooling-maps {
-> 		mapX {
-> 			trip = <&package_warm>;
-> 			cooling-device = <&fan THERMAL_NO_LIMIT 1>;
-> 		};
-> 
-> 		mapY {
-> 			trip = <&package_hot>;
-> 			cooling-device = <&fan 2 THERMAL_NO_LIMIT>;
-> 		};
-> 	};
-> };
-> 
-> The idea behind this approach is to keep the fan spinning at the lowest
-> available speed until the package temperature reaches the second trip's
-> temperature level, at which point the fan starts ramping up.  An 
-> approach
-> like this is already employed by the Pine64 RockPro64 SBC.
-> 
-> This way, we'll be doing our best to keep the fan noise down;  of 
-> course,
-> it will depend on the particular heatsink and fan combo how long the 
-> fan
-> can be kept at the lowest speed, but we should aim at supporting as 
-> many
-> different cooling setups as possible, and as well as possible, out of 
-> the
-> box and with no additional tweaking required.
-> 
-> Please notice "mapX" and "mapY" as the names of the additional cooling 
-> maps,
-> where X and Y are simply the next lowest available indices, which is 
-> pretty
-> much the usual way to name the additional cooling maps.
+> maybe you can just return 0 here.
+Good idea, that's indeed the only option for ret, so that makes it clearer.
 
-Just checking, have you seen this?  Quite a few messages were exchanged
-on the same day, so just wanted to make sure you didn't miss this one.
+> Maybe use PTR_ERR_OR_ZERO() here?
+Definitely, thanks for suggesting this; cleans it up nicely.
 
->>  &i2c0 {
->>  	pinctrl-names = "default";
->>  	pinctrl-0 = <&i2c0m2_xfer>;
->> @@ -738,6 +757,10 @@ regulator-state-mem {
->>  	};
->>  };
->> 
->> +&tsadc {
->> +	status = "okay";
->> +};
->> +
->>  &uart2 {
->>  	pinctrl-0 = <&uart2m0_xfer>;
->>  	status = "okay";
+~Ivor
 
