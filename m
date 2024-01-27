@@ -1,109 +1,104 @@
-Return-Path: <linux-kernel+bounces-41319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DD1883EEC0
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 17:41:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5810E83EEC2
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 17:45:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 703491C2139A
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:41:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DBF5284C0C
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:45:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 749702562A;
-	Sat, 27 Jan 2024 16:41:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA7A42C6A4;
+	Sat, 27 Jan 2024 16:45:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JDKgMhgU"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PVwuKA6Q"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E3413FF0
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 16:40:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A864929431
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 16:45:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706373660; cv=none; b=UeNDw5+slcGpnNloPik/UPIqAr/jKicje9mgakyMxC1tCN9eHPUGcbLeli2EFg5Yr6rAteGLdPW+/t2CUKBMgFj4E5Vcjy2u5KKdwJJ4zd6ZoQduWW3KY1gePs0TrrdMDsfQNtCpKjgLVU/Z5eWwGhFgxrDsVmXyD26P4qNTgsY=
+	t=1706373903; cv=none; b=fVkz0Hx0lY03wSK3HO8ItCAUKQomhCy4/Dh8kp071cf63rZruhZyEFpWPAzHdnIqiT0or0hS4Bt62y3DNuRjA6/VI1Hz8opo92Pvcs2tAO9wG7mdGeBrg6y8tRzI4I/a5zOUkAeonWHn6fsynoeHcz6XpAWy77uBxd27ZIPADmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706373660; c=relaxed/simple;
-	bh=7RvZT44YBgdiwiKgWuRjay2EtoYYF+GO+FuLqTpQR7c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jMvFZoJhtjb0FrGqpRb05B545WbDV3H86fcToNQg7o0pF6M4ZIAt2fi5j2rRy2C5F0uZl0Kc5uAXQVr5sNy5fHpeQNr6O/cd70f6k9ePN1S2qtJD7fgo03scuUz5Fe4mFzX6hp13GPQbuDpT1TyPjM9uyzFufQcQVwaxDRA4Q5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JDKgMhgU; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc223463ee4so1706129276.2
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 08:40:59 -0800 (PST)
+	s=arc-20240116; t=1706373903; c=relaxed/simple;
+	bh=vlJSya6kj6cZK+MaTAsZGZUCQE+8ZFDxHmkcOPqrWSk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CHnngZJnXzaqw6jyeX/qM31PPRFnaEl/DlHAZ2BuU6TA9kfhkbv8ER2Ezlw7eiS5QaQ1d8pppnuWn132JmYv2YxX7dThtPGHpgJoE2MqA8Yh8RToeyCKj6mxgXF7Pk+QUAH10JWCFddOE5sJ7EhbLTf2MWK62E/13hzzCWyo0Rs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PVwuKA6Q; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a30e898db99so43001966b.0
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 08:45:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706373658; x=1706978458; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PT1Exo5HZPUej7pl3Sf7KYOhUnetXTHlbzzBJvg05vo=;
-        b=JDKgMhgUGu56d4U3qs0ZdD+WNV4L6cU5Kdhg8nCynGL5vhtdf34Tf5QKv9jIDU/a3k
-         /5teiCWp1SUoCSrKrDQfREeLebWIg02oF6BTqoCycIStNz6egAzQsVTqW5RwNhYRbmVn
-         10LoUxuYXdtWuqxLCaWycctgGnsP30j3meqB27InL9eY1iWTMbT39JSyAEhhrDGfDxSP
-         I+x3yYoIPVBh7syUX7hybC4eaMGM9KaZ40daaQIx63L8j2J7slGlzdN4Ky88Qx68ge1o
-         sH78rbpxScGn7QCQLnEEAxGmLC0ARP8kQEF5+zIoQkTuYixmC6sqFr/bncQwsg/rV0X2
-         3xHQ==
+        d=gmail.com; s=20230601; t=1706373900; x=1706978700; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Y+rNic9k0UXeI7BVMKejsL/vLfG93AW2nOVjIf/o5qc=;
+        b=PVwuKA6QWXYiqKqhKUX2lMGDOmm14+nVXgkRJSCJ7S/6iIK2vEokLtQKzSw0qx/lpy
+         Pfl1oP0Ri07w2xCwMUxpeY3U4FwMCx3XcCzEwJyDYxJVcvTDvR9qZlzZqOyoVc2Irph9
+         W1grl35pv/hFR7HwBFBRzk7BGA6LIodCF06OIaPpgvVgKjZf5GHTENawbmuRaTTqB2Mj
+         ZzYbvWuxIQXguy/n3PGA4QTvOsNvFGs5XX2ULIpz6jn0FR/6uYyvpfLe+x72F21Q0Fep
+         OK5DZ/XO89wTOWojIS12y3shwbU5qGesFkjEsOX99B1JqtfingK75xRFNd9Y9wZlYAlz
+         IMqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706373658; x=1706978458;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PT1Exo5HZPUej7pl3Sf7KYOhUnetXTHlbzzBJvg05vo=;
-        b=VI9uwZjHV/lDBjXclRjc6xLHWV328unY6GTxKCVKlBoSNACSWYrJ5wohKup8TRultZ
-         ZoHoY1JyUlb8KmEbPchnS3XUrsAkmq26z7swMzy5612ceZyQuu2hZZUq4AzyDR4GG+B3
-         w+pf5rDplMPBB3Lf+KfTCQJSWtDQj89TpBlFPFK9/vsLEnkehD5ot6b0ni2nFlcCwUr4
-         AGdJ3H8/1ya0LSaX+6WDfUjlEZyWvhdHduyJW8UrxBAKN3Harn0OglKON3k5i1Z9ZbKp
-         FFZo85G1zQbcikKo5C1sK8V9KXUdqKLeBTWw41h1/9dKeIUuxbFjr4F+d+6/X3PhYAu8
-         TqRw==
-X-Gm-Message-State: AOJu0Yxkxwy/K1CFr6CoX4HJw19qHE5xmMxZb7u0r/qF6r43vgG59qba
-	BD3QYynjFB8hgeS0UQ2+TyQUCXnAyQCSAYfpaE1azgeKL6NJ/asQRqD5FM9+VhHGnm7JxHbYbmj
-	nY4LMGA7Cc1b9TM0CITZt1Fvi0xCLwmyY2AfN4D+ZvhXgDe+D
-X-Google-Smtp-Source: AGHT+IGxWylb3x6PvuiGls+63CDlOR2to8X1Yhb884+I2Osgi3EG4M3tSnJurIDqx6qxvZppFEGLmso+Wb2uaWlxFsw=
-X-Received: by 2002:a81:a00e:0:b0:602:d04c:4402 with SMTP id
- x14-20020a81a00e000000b00602d04c4402mr1878416ywg.81.1706373658282; Sat, 27
- Jan 2024 08:40:58 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706373900; x=1706978700;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y+rNic9k0UXeI7BVMKejsL/vLfG93AW2nOVjIf/o5qc=;
+        b=YzI8pA9ELps8gx5bTeHmiktPl8jj/XW3uXNm2AgLNBOpf0t3pjzbircX/gluuhrw34
+         3GoZb7RDAQU2koe+PA2UBBpy4EMTGbTsgGdcnInyqWK8bPi2TfVQVimgYZFc4KT2vqVO
+         Qz5mAhJ5W/Zo7sM9Rb4Mh7jZUjlkQtBM97K7t+JAXC8YFmYUV9zjsx6M6M3TCQ/9R5mb
+         88rALPv4mX7ufDzxCCDA7JcONz7kKajeFt8xmDxWCW8kANYoEBwxKpg4jfkqFtFVMOxI
+         P5dklObmU880vw3yNBWjUAcFI9nBsnU6FAnBrL1ArZbIZMpyNGgVnLEbwc+RwLDNR5f0
+         OUlQ==
+X-Gm-Message-State: AOJu0YygxCIh4cwv/jrfgt9WrDN3rSLdiNjg7I1vCjdT4SRi3mWJfSGy
+	dCEWsIyZrFcmuAWziCa1qd1j6O/0Itka25LkDJ5M9FUrYl/3rsuW
+X-Google-Smtp-Source: AGHT+IGHf6eI5YrKJnU2uVmBzVLFMNBBY2NZxJ2qqKnNsAmfStOnKjPWLc4TEZeEa3+J5NIhBiWFIA==
+X-Received: by 2002:aa7:db56:0:b0:557:e527:f799 with SMTP id n22-20020aa7db56000000b00557e527f799mr1582572edt.4.1706373899626;
+        Sat, 27 Jan 2024 08:44:59 -0800 (PST)
+Received: from [192.168.0.103] (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
+        by smtp.gmail.com with ESMTPSA id fg14-20020a056402548e00b00558a1937dddsm1750567edb.63.2024.01.27.08.44.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 27 Jan 2024 08:44:59 -0800 (PST)
+Message-ID: <6f13d58a-f072-49dc-a9bc-f742550fc9f7@gmail.com>
+Date: Sat, 27 Jan 2024 17:44:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240127152821.65744-1-dario.binacchi@amarulasolutions.com> <170637290174.2797231.1548285445759438647.robh@kernel.org>
-In-Reply-To: <170637290174.2797231.1548285445759438647.robh@kernel.org>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Sat, 27 Jan 2024 17:40:47 +0100
-Message-ID: <CACRpkdZRvGv4gKxuYpt+fczWCegsQWjP3yfrW=RgOLBFJxtjqw@mail.gmail.com>
-Subject: Re: [drm-drm-misc:drm-misc-next] dt-bindings: nt35510: document
- 'port' property
-To: Rob Herring <robh@kernel.org>
-Cc: Dario Binacchi <dario.binacchi@amarulasolutions.com>, David Airlie <airlied@gmail.com>, 
-	Rob Herring <robh+dt@kernel.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Daniel Vetter <daniel@ffwll.ch>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	dri-devel@lists.freedesktop.org, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-kernel@vger.kernel.org, 
-	Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org, 
-	Jessica Zhang <quic_jesszhan@quicinc.com>, Conor Dooley <conor+dt@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Sam Ravnborg <sam@ravnborg.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 00/18] Staging: rtl8192e: 18 Additional checkpatch
+ fixes for rtllib_softmac.c
+Content-Language: en-US
+To: Tree Davies <tdavies@darkphysics.net>, gregkh@linuxfoundation.org,
+ anjan@momi.ca
+Cc: linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240126223106.986093-1-tdavies@darkphysics.net>
+From: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+In-Reply-To: <20240126223106.986093-1-tdavies@darkphysics.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sat, Jan 27, 2024 at 5:28=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
-:
+On 1/26/24 23:30, Tree Davies wrote:
+> Version 2
+> 
+> Another checkpatch fix series to be applied after the series titled:
+> 'checkpatch fixes for rtllib_softmac.c' submitted by me, to the list,
+> on 1/5/2024
+> 
+> Thank you in advance to all reviewers
+> regards,
+> Tree
 
-> dtschema/dtc warnings/errors:
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/d=
-isplay/panel/novatek,nt35510.example.dtb: panel@0: compatible:0: 'hydis,hva=
-40wv1' was expected
->         from schema $id: http://devicetree.org/schemas/display/panel/nova=
-tek,nt35510.yaml#
 
-This is because the checker is applying the patch on something that is not
-drm-misc-next.
+Is working fine on hardware.
 
-I think the patch is fine.
-
-Yours,
-Linus Walleij
+Bye Philipp
 
