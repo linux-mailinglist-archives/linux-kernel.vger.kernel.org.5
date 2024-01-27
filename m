@@ -1,161 +1,105 @@
-Return-Path: <linux-kernel+bounces-41073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E0D383EB4B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 06:31:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C0BD83EB26
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 06:04:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D81F28509B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 05:31:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6412D28631B
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 05:04:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3313B14294;
-	Sat, 27 Jan 2024 05:31:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=illinois.edu header.i=@illinois.edu header.b="A4xfiP5M"
-Received: from mx0b-00007101.pphosted.com (mx0b-00007101.pphosted.com [148.163.139.28])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5DD313AE2;
+	Sat, 27 Jan 2024 05:04:22 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48AF213FF6;
-	Sat, 27 Jan 2024 05:31:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.139.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C0C33D5
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 05:04:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706333491; cv=none; b=YyNN2MAO7Ai3LHu5aB4oZUZOpMUlSuSEoItIhOmjMXzdwdh6nlGt5misGV7iiryQvyVUR1SnqiltuWmnpl+kna/oq7DdNyxiZyu9pv8DFHsRD20ubT4LKZYKlyJqq5PsRTapSLVbf/x9km9rDOrzaNcLMfwewUC4zqL8LkG5Eic=
+	t=1706331862; cv=none; b=tRKxOp3Qy/KyZOBk/6uow8GTAlDQn78GwSq2S44Y9odzQ6277DAbxlDrMqXIaq7Tf6yOoyP/FvBh6TvTpe894lU5G8JHFKxxMhjHqOS7r1PsX1Qjyt1RK9aM6QE6iR3qp6+DS25RnHxIsM6HxhT2yU6CEtaMW2l/AwFYSgsmJMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706333491; c=relaxed/simple;
-	bh=stu1F0JfOCHjg7AgZJrbtdkqx432uMQgP9mHUw9Mn38=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dhgS4V1nFYH61gT/bynmVJC09R/RaaqabLI3dlH8if0/YE1In9mdFY0Pk0zS4uOrf6mwZRP4QM5dlxSwLV4MEkCmJP65nO+Ls+kUagxq5flqbQeChhKci3N+Zw5Teaegr5lfF4at65NU/XELLGa5ymsxFxV7B9nqlZGlpZfL8Sk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=illinois.edu; spf=pass smtp.mailfrom=illinois.edu; dkim=pass (2048-bit key) header.d=illinois.edu header.i=@illinois.edu header.b=A4xfiP5M; arc=none smtp.client-ip=148.163.139.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=illinois.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=illinois.edu
-Received: from pps.filterd (m0166258.ppops.net [127.0.0.1])
-	by mx0b-00007101.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40R4S5C0030863;
-	Sat, 27 Jan 2024 04:41:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=illinois.edu; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=campusrelays;
- bh=zanHTTHL7xpzc2N9psUavdOTb7nP0R5LEXpPiANsROQ=;
- b=A4xfiP5ML8jgQBTuSyngHnwxZe0/tV4ghsLfdXdT5z7Z/jnOdJAcnMaY3lBhhGSvpzL2
- ybtx+ji+mmBn6AB/puGsdtmCgbEiiMqaXcBI7HiEIqX8W/CVzwfZUFBXcLSInN+Qb+1G
- +y/wApMchHajjh2PViU+PEWA9oM8onfVhlDDN0S0ocwIOYkTKam/l8nlWwvJ1IkjsN/k
- 2EANpWjpWIxSm2tb2cH44vvT1kuhA208aurMv09wZr4oQD+Fq2g+09+0w2zR4cxpuYdL
- qF/UtCUaNtl7sczqKi3iM/oTK9Nc6QWsEUfdcxVr3dJn+DaDQv4ePqjZb064ivM8o3sH SA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0b-00007101.pphosted.com (PPS) with ESMTPS id 3vvr6sgk2s-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 27 Jan 2024 04:41:44 +0000
-Received: from m0166258.ppops.net (m0166258.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40R4fZWB019561;
-	Sat, 27 Jan 2024 04:41:44 GMT
-Received: from localhost.localdomain (oasis.cs.illinois.edu [130.126.137.13])
-	by mx0b-00007101.pphosted.com (PPS) with ESMTP id 3vvr6sgk26-3;
-	Sat, 27 Jan 2024 04:41:44 +0000
-From: Jinghao Jia <jinghao7@illinois.edu>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc: linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jinghao Jia <jinghao7@illinois.edu>
-Subject: [RFC PATCH 2/2] x86/kprobes: boost more instructions from grp2/3/4/5
-Date: Fri, 26 Jan 2024 22:41:24 -0600
-Message-ID: <20240127044124.57594-3-jinghao7@illinois.edu>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240127044124.57594-1-jinghao7@illinois.edu>
-References: <20240127044124.57594-1-jinghao7@illinois.edu>
+	s=arc-20240116; t=1706331862; c=relaxed/simple;
+	bh=J2unJM+3mMjNZeHB7lKLolhX8D8xRXo3BGhcnnVVfHA=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=D44ylbyML8v6YXoLoWUm+e2F5ai27un3re+lv7bAvWZidEYpZBuzOA2L2xfqX6Qs4KVhQ7OCIULMf8m6zy8w7Mp/glygIGHDHf7vSM1OpMYme/atGHPzYlhkGW+yaa+oA6kvPQLswUFI4NktpS3h7oN17geHQc9eGT1NhCoahK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TMMrK55wkzvVNC;
+	Sat, 27 Jan 2024 13:02:41 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (unknown [7.193.23.202])
+	by mail.maildlp.com (Postfix) with ESMTPS id DECCE140153;
+	Sat, 27 Jan 2024 13:04:16 +0800 (CST)
+Received: from [10.174.179.79] (10.174.179.79) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sat, 27 Jan 2024 13:04:15 +0800
+Subject: Re: [PATCH v3 0/3] A Solution to Re-enable hugetlb vmemmap optimize
+To: Catalin Marinas <catalin.marinas@arm.com>
+CC: <will@kernel.org>, <mike.kravetz@oracle.com>, <muchun.song@linux.dev>,
+	<akpm@linux-foundation.org>, <anshuman.khandual@arm.com>,
+	<willy@infradead.org>, <wangkefeng.wang@huawei.com>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<linux-mm@kvack.org>
+References: <20240113094436.2506396-1-sunnanyong@huawei.com>
+ <ZbKjHHeEdFYY1xR5@arm.com>
+From: Nanyong Sun <sunnanyong@huawei.com>
+Message-ID: <d1671959-74a4-8ea5-81f0-539df8d9c0f0@huawei.com>
+Date: Sat, 27 Jan 2024 13:04:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <ZbKjHHeEdFYY1xR5@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: to-4KoCvOCZefqxN8lWquI0J_-KXG8Ug
-X-Proofpoint-ORIG-GUID: F63QRDlgMhTLTfrSvjsA8EYkXX_AWl5d
-X-Spam-Details: rule=cautious_plus_nq_notspam policy=cautious_plus_nq score=0
- impostorscore=0 spamscore=0 malwarescore=0 priorityscore=1501
- clxscore=1015 mlxlogscore=773 phishscore=0 suspectscore=0
- lowpriorityscore=0 mlxscore=0 bulkscore=0 adultscore=0 classifier=spam
- adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2401270033
-X-Spam-Score: 0
-X-Spam-OrigSender: jinghao7@illinois.edu
-X-Spam-Bar: 
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
 
-With the instruction decoder, we are now able to decode and recognize
-instructions with opcode extensions. There are more instructions in
-these groups that can be boosted:
 
-Group 2: ROL, ROR, RCL, RCR, SHL/SAL, SHR, SAR
-Group 3: TEST, NOT, NEG, MUL, IMUL, DIV, IDIV
-Group 4: INC, DEC (byte operation)
-Group 5: INC, DEC (word/doubleword/quadword operation)
+On 2024/1/26 2:06, Catalin Marinas wrote:
+> On Sat, Jan 13, 2024 at 05:44:33PM +0800, Nanyong Sun wrote:
+>> HVO was previously disabled on arm64 [1] due to the lack of necessary
+>> BBM(break-before-make) logic when changing page tables.
+>> This set of patches fix this by adding necessary BBM sequence when
+>> changing page table, and supporting vmemmap page fault handling to
+>> fixup kernel address translation fault if vmemmap is concurrently accessed.
+> I'm not keen on this approach. I'm not even sure it's safe. In the
+> second patch, you take the init_mm.page_table_lock on the fault path but
+> are we sure this is unlocked when the fault was taken?
+I think this situation is impossible. In the implementation of the 
+second patch, when the page table is being corrupted
+(the time window when a page fault may occur), vmemmap_update_pte() 
+already holds the init_mm.page_table_lock,
+and unlock it until page table update is done.Another thread could not 
+hold the init_mm.page_table_lock and
+also trigger a page fault at the same time.
+If I have missed any points in my thinking, please correct me. Thank you.
+> Basically you can
+> get a fault anywhere something accesses a struct page.
+>
+> How often is this code path called? I wonder whether a stop_machine()
+> approach would be simpler.
+As long as allocating or releasing hugetlb is called.  We cannot limit 
+users to only allocate or release hugetlb
+when booting or not running any workload on all other cpus, so if use 
+stop_machine(), it will be triggered
+8 times every 2M and 4096 times every 1G, which is probably too expensive.
+I saw that on the X86, in order to improve performance, optimizations 
+such as batch tlb flushing have been done,
+means that some users are concerned about the performance of hugetlb 
+allocation:
+https://lwn.net/ml/linux-kernel/20230905214412.89152-1-mike.kravetz@oracle.com/ 
 
-These instructions are not boosted previously because there are reserved
-opcodes within the groups, e.g., group 2 with ModR/M.nnn == 110 is
-unmapped. As a result, kprobes attached to them requires two int3 traps
-as being non-boostable also prevents jump-optimization.
-
-Some simple tests on QEMU show that after boosting and jump-optimization
-a single kprobe on these instructions with an empty pre-handler runs 10x
-faster (~1000 cycles vs. ~100 cycles).
-
-Since these instructions are mostly ALU operations and do not touch
-special registers like RIP, let's boost them so that we get the
-performance benefit.
-
-Signed-off-by: Jinghao Jia <jinghao7@illinois.edu>
----
- arch/x86/kernel/kprobes/core.c | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index 792b38d22126..f847bd9cc91b 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -169,22 +169,31 @@ int can_boost(struct insn *insn, void *addr)
- 	case 0x62:		/* bound */
- 	case 0x70 ... 0x7f:	/* Conditional jumps */
- 	case 0x9a:		/* Call far */
--	case 0xc0 ... 0xc1:	/* Grp2 */
- 	case 0xcc ... 0xce:	/* software exceptions */
--	case 0xd0 ... 0xd3:	/* Grp2 */
- 	case 0xd6:		/* (UD) */
- 	case 0xd8 ... 0xdf:	/* ESC */
- 	case 0xe0 ... 0xe3:	/* LOOP*, JCXZ */
- 	case 0xe8 ... 0xe9:	/* near Call, JMP */
- 	case 0xeb:		/* Short JMP */
- 	case 0xf0 ... 0xf4:	/* LOCK/REP, HLT */
--	case 0xf6 ... 0xf7:	/* Grp3 */
--	case 0xfe:		/* Grp4 */
- 		/* ... are not boostable */
- 		return 0;
-+	case 0xc0 ... 0xc1:	/* Grp2 */
-+	case 0xd0 ... 0xd3:	/* Grp2 */
-+		/* ModR/M nnn == 110 is reserved */
-+		return X86_MODRM_REG(insn->modrm.bytes[0]) != 6;
-+	case 0xf6 ... 0xf7:	/* Grp3 */
-+		/* ModR/M nnn == 001 is reserved */
-+		return X86_MODRM_REG(insn->modrm.bytes[0]) != 1;
-+	case 0xfe:		/* Grp4 */
-+		/* Only inc and dec are boostable */
-+		return X86_MODRM_REG(insn->modrm.bytes[0]) == 0 ||
-+		       X86_MODRM_REG(insn->modrm.bytes[0]) == 1;
- 	case 0xff:		/* Grp5 */
--		/* Only indirect jmp is boostable */
--		return X86_MODRM_REG(insn->modrm.bytes[0]) == 4;
-+		/* Only inc, dec, and indirect jmp are boostable */
-+		return X86_MODRM_REG(insn->modrm.bytes[0]) == 0 ||
-+		       X86_MODRM_REG(insn->modrm.bytes[0]) == 1 ||
-+		       X86_MODRM_REG(insn->modrm.bytes[0]) == 4;
- 	default:
- 		return 1;
- 	}
--- 
-2.43.0
-
+> Andrew, I'd suggest we drop these patches from the mm tree for the time
+> being. They haven't received much review from the arm64 folk. Thanks.
+>
 
