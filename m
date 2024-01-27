@@ -1,65 +1,60 @@
-Return-Path: <linux-kernel+bounces-41083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33C8583EB8F
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 08:05:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7376E83EB94
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 08:07:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90DD3283FBE
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 07:05:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 969691C2169D
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 07:07:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B871E1D6A6;
-	Sat, 27 Jan 2024 07:05:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7371C1D698;
+	Sat, 27 Jan 2024 07:07:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZMIGHA/j"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OUWMxGFM"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3E18134BC;
-	Sat, 27 Jan 2024 07:05:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B69791D524;
+	Sat, 27 Jan 2024 07:07:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706339109; cv=none; b=c9i3twCoDVrwxAOowSw3TWfYcODXVFx9V6637h39urlJWT+xmdlTcqNTdWT0EOu5aoPIq1ZxYSbLCYK+suR2afDVee+nolInVq6gm7HlIBydhmpFGAbB7psWLc4AfsXX1GldNbMjsRESBqHX1kw+EspaUaKFHEklsG+s5c4V4cc=
+	t=1706339239; cv=none; b=PZT+TPdPVFhJHXz6VVTZessR2xb6V6DakyOee9uq7xiqT7/YSIpmDhsK1pXDL2UrZYaNihdA/qTZKWj2N01wf20rR7/XlHMWK9KpHTIJSKhfn+1tqht4x8qD45PL9EtOYGMezN36SfhhqCW2ZH/f7wTa8mpGaBfs4WtXiOQoHcU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706339109; c=relaxed/simple;
-	bh=ForPykU7IwFx2c1CLmNnFixuMgi+ep01OHJkD8/dsQY=;
+	s=arc-20240116; t=1706339239; c=relaxed/simple;
+	bh=cowBM1wENyFzXVov+SQtnhDqzYj/i8BhLeInL+6Gn8s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jFvW0vq4Hh5Ub0xbuYLCH2BW6tILql+lt+VwWRRkHi0uslW1zgfOna3QyiAkfg1UWShhM01OsG1RMS6FCC3Ghdn27hqsJNJ+yPmEnruUbarI+oY2IqekGrXj5Hf3Y6BkGJMcxCVDQxT+LV8xOB+guNAv0Y4GK4hr8W4x7eu6yfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZMIGHA/j; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14C19C433C7;
-	Sat, 27 Jan 2024 07:05:08 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=hwFp72+Y8jrrWmJ7aOoNffrmc4e/EDlO0zoleab/3f7wRT44hG4XvXXSiSvJd4b1LB2fCPOgeiQeDlRPWp6QIfjFyO6lyXs0sYq0IUkOpMKsFtpbwoM5rj25d2bclukQ/x6pzLYYeQti++j/fUFas02O9lemR/UkGad681K/8Pk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OUWMxGFM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C78CC433F1;
+	Sat, 27 Jan 2024 07:07:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706339108;
-	bh=ForPykU7IwFx2c1CLmNnFixuMgi+ep01OHJkD8/dsQY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZMIGHA/jRSUgkbd3OAZWX3lax3BmYcyT1+dqFBKGmWyJ3k79Zl7yA74B8UwxNbDC3
-	 VoQvGbhhzKfhyPh5i+IqL0LUFCFVSiHIGlK+9MvFcps05gPX9KnhhpqX+jadG9Sgz0
-	 +Hjbwv7JhuqRmsFgIYxdWvkb4QNAkrKQa6F3nRj8nAm8WABWS/yS41Vho3Y0VBWAmf
-	 r0L1J6LnOsN2lhW0PTYfi/X3T5cWc+M1utSPGC03PJAa9FNL6wl59gxWWPrq6j4kQD
-	 5zlB91Qwa/RRdv7WqEX5damNjqiaznV9ii9d/wbBFtHBhXXQSENVdWtDS+7CKmWo2O
-	 9Qk3l5TBid1aw==
-Date: Fri, 26 Jan 2024 23:05:06 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Matthew Wilcox <willy@infradead.org>,
-	Pankaj Raghav <p.raghav@samsung.com>,
-	Yangtao Li <frank.li@vivo.com>, linux-kernel@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net, vishal.moola@gmail.com,
-	linux-mm@kvack.org, Adam Manzanares <a.manzanares@samsung.com>,
-	Javier =?iso-8859-1?Q?Gonz=E1lez?= <javier.gonz@samsung.com>,
-	linux-fsdevel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: Re: [PATCH] f2fs: Support enhanced hot/cold data separation for f2fs
-Message-ID: <20240127070506.GC11935@sol.localdomain>
-References: <Y4ZaBd1r45waieQs@casper.infradead.org>
- <20221130124804.79845-1-frank.li@vivo.com>
- <Y4d0UReDb+EmUJOz@casper.infradead.org>
- <Y5D8wYGpp/95ShTV@bombadil.infradead.org>
- <ZbLI63UHBErD6_L2@casper.infradead.org>
- <ZbLKl25vxw0eTzGE@bombadil.infradead.org>
- <ZbQdkiwEs8o4h807@casper.infradead.org>
- <ZbQk1WqGgwgoMbg3@bombadil.infradead.org>
+	s=k20201202; t=1706339239;
+	bh=cowBM1wENyFzXVov+SQtnhDqzYj/i8BhLeInL+6Gn8s=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=OUWMxGFM+DD4G4kelhTUbMh1SlPs/EhWz5qNrMt+vsyM4FckdL5p7j1XACWih0FWl
+	 ZYbI0uNwRakxDwW4hR3Vh3L/ZETHfiO++EOGM6pFPlxU/DO4tjvkllwSrQdcKfsP0z
+	 orsy4Hc7Qpwpy2uwY2ZtNAqpqCmgZhFzWf1u5zNF9rwI9Y/j1FN8wuTTR5vngIHz9J
+	 wdiIfXBkgrIupwb2dXTzLoXPaFFrjnqYI51guo1fjpVWgtuoTR8KBgHuxRm/JNQMZ/
+	 q4OtiPD+wFGQoOKgnVYIqB0KXuLtO8wzZzRxjABZ5n0L85iolqKFMIGYxN9FTxO63r
+	 LtIF9PfNjyz6A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id C627DCE190D; Fri, 26 Jan 2024 23:07:18 -0800 (PST)
+Date: Fri, 26 Jan 2024 23:07:18 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc: RCU <rcu@vger.kernel.org>, Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v4 0/4] Reduce synchronize_rcu() latency(v4)
+Message-ID: <620b475d-eef8-4396-9d3a-d3dcf1d70f9a@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240104162510.72773-1-urezki@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,55 +63,55 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZbQk1WqGgwgoMbg3@bombadil.infradead.org>
+In-Reply-To: <20240104162510.72773-1-urezki@gmail.com>
 
-On Fri, Jan 26, 2024 at 01:32:05PM -0800, Luis Chamberlain wrote:
-> On Fri, Jan 26, 2024 at 09:01:06PM +0000, Matthew Wilcox wrote:
-> > On Thu, Jan 25, 2024 at 12:54:47PM -0800, Luis Chamberlain wrote:
-> > > On Thu, Jan 25, 2024 at 08:47:39PM +0000, Matthew Wilcox wrote:
-> > > > On Wed, Dec 07, 2022 at 12:51:13PM -0800, Luis Chamberlain wrote:
-> > > > > Me and Pankaj are very interested in helping on this front. And so we'll
-> > > > > start to organize and talk every week about this to see what is missing.
-> > > > > First order of business however will be testing so we'll have to
-> > > > > establish a public baseline to ensure we don't regress. For this we intend
-> > > > > on using kdevops so that'll be done first.
-> > > > > 
-> > > > > If folks have patches they want to test in consideration for folio /
-> > > > > iomap enhancements feel free to Cc us :)
-> > > > > 
-> > > > > After we establish a baseline we can move forward with taking on tasks
-> > > > > which will help with this conversion.
-> > > > 
-> > > > So ... it's been a year.  How is this project coming along?  There
-> > > > weren't a lot of commits to f2fs in 2023 that were folio related.
-> > > 
-> > > The review at LSFMM revealed iomap based filesystems were the priority
-> > > and so that has been the priority. Once we tackle that and get XFS
-> > > support we can revisit which next fs to help out with. Testing has been
-> > > a *huge* part of our endeavor, and naturally getting XFS patches up to
-> > > what is required has just taken a bit more time. But you can expect
-> > > patches for that within a month or so.
-> > 
-> > Is anyone working on the iomap conversion for f2fs?
+On Thu, Jan 04, 2024 at 05:25:06PM +0100, Uladzislau Rezki (Sony) wrote:
+> This is a v4 that tends to improve synchronize_rcu() call. To be more
+> specific it is about reducing a waiting time(especially worst cases)
+> of caller that blocks until a grace period is elapsed. 
 > 
-> It already has been done for direct IO by Eric as per commit a1e09b03e6f5
-> ("f2fs: use iomap for direct I/O"), not clear to me if anyone is working
-> on buffered-io. Then f2fs_commit_super() seems to be the last buffer-head
-> user, and its not clear what the replacement could be yet.
-> 
-> Jaegeuk, Eric, have you guys considered this?
-> 
+> In general, this series separates synchronize_rcu() callers from other
+> callbacks. We keep a dedicated an independent queue, thus the processing
+> of it starts as soon as grace period is over, so there is no need to wait
+> until other callbacks are processed one by one. Please note, a number of
+> callbacks can be 10K, 20K, 60K and so on. That is why this series maintain
+> a separate track for this call that blocks a context.
 
-Sure, I've *considered* that, along with other requested filesystem
-modernization projects such as converting f2fs to use the new mount API and
-finishing ext4's conversion to iomap.  But, I haven't had time to work on these
-projects, nor to get very involved in f2fs beyond what's needed to maintain the
-fscrypt and fsverity support.  I'm not anywhere close to a full-time filesystem
-developer.  I did implement the f2fs iomap direct I/O support two years ago
-because it made the fscrypt direct I/O support easier.  Note that these types of
-changes are fairly disruptive, and there were bugs that resulted from my
-patches, despite my best efforts.  It's necessary for someone to get deeply
-involved in these types of changes and follow them all the way through.
+And before I forget (again), a possible follow-on to this work is to
+reduce cond_synchronize_rcu() and cond_synchronize_rcu_full() latency.
+Right now, these wait for a full additional grace period (and maybe
+more) when the required grace period has not elapsed.  In contrast,
+this work might enable waiting only for the needed portion of a grace
+period to elapse.
 
-- Eric
+							Thanx, Paul
+
+> v3 -> v4:
+>  - Squash patches;
+>  - Add more description;
+>  - Fix comments based on v3 feedback.
+> 
+> v3: https://lore.kernel.org/lkml/cd45b0b5-f86b-43fb-a5f3-47d340cd4f9f@paulmck-laptop/T/
+> v2: https://lore.kernel.org/all/20231030131254.488186-1-urezki@gmail.com/T/
+> v1: https://lore.kernel.org/lkml/20231025140915.590390-1-urezki@gmail.com/T/
+> 
+> Neeraj Upadhyay (1):
+>   rcu: Improve handling of synchronize_rcu() users
+> 
+> Uladzislau Rezki (Sony) (3):
+>   rcu: Reduce synchronize_rcu() latency
+>   rcu: Add a trace event for synchronize_rcu_normal()
+>   rcu: Support direct wake-up of synchronize_rcu() users
+> 
+>  .../admin-guide/kernel-parameters.txt         |  14 +
+>  include/trace/events/rcu.h                    |  27 ++
+>  kernel/rcu/Kconfig.debug                      |  12 +
+>  kernel/rcu/tree.c                             | 361 +++++++++++++++++-
+>  kernel/rcu/tree.h                             |  19 +
+>  kernel/rcu/tree_exp.h                         |   2 +-
+>  6 files changed, 433 insertions(+), 2 deletions(-)
+> 
+> -- 
+> 2.39.2
+> 
 
