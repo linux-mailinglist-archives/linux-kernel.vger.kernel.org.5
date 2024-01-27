@@ -1,79 +1,80 @@
-Return-Path: <linux-kernel+bounces-41398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBDEE83F025
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 22:11:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1D0783F028
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 22:16:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A0021C225AE
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 21:11:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E0692858F5
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 21:16:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A90E1AAA9;
-	Sat, 27 Jan 2024 21:11:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9EE61AAA5;
+	Sat, 27 Jan 2024 21:16:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cYlsdlfm"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GkmGmag3"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10DD41A279
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 21:11:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 715CC33EA;
+	Sat, 27 Jan 2024 21:16:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706389895; cv=none; b=jlZBenaZUkGi4epcv4DT0LZapBmw8wq4jubshYBXQ8MY1Lg1Y3dmpMjmPbemp9sVHPrPdxDEjFBYWpjuIUJaqss1R+bkEPNTsQYme7PWq6+Ur6bjZZ5MlBegPNgzB0k4l55A2Y7hoZlKCTbu1VSpTKzW5oiRBRUNy1QCYMGhDCg=
+	t=1706390185; cv=none; b=EZgWJlY1n5FQ7qK9UWsP87gObdHeBQ5FWUIVXBiQrd9HiCQW41IZAeBpK4+LBcLgzq9tb+CUG7FAlbgRhSF8/5Zdt2HhvkLc1WTPhvIXKIRBCna5nL6I5zo41LAte8axIn3gUcO4oi0pptA0RcE9HNfM85nCaMvLY2Whoi5T+LA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706389895; c=relaxed/simple;
-	bh=e9ssbtj5/gqXRUdezTmszQ5A3hRAEynVyD59GYaJgEc=;
+	s=arc-20240116; t=1706390185; c=relaxed/simple;
+	bh=QqcUiUPT4/u28ziKSScYFC/4i3pLqr1y+9bN4jv/94Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zsw/MkaQIlcNH2LHuP0TfUzSDvzjNNPY7TN+/f/rmkYlIiKO5CHqS5W+CRyFeJ+Q94V4vTTNcFNfAkSGNqhiuV23AI6Bkx2k48wkLs7+bfOk22E3CWKKHizC12pAOH4YtRvINIKco7jZaaYWbIJQlY8vsrTXpUVsKdSC2vSNeH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cYlsdlfm; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706389892;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RxDG8FbkrxGkzjJwUDG8WjeC4k+DKoBsMZSfq3CWFgY=;
-	b=cYlsdlfmt8SdilZ+k7oI83iko2z2s2MBO4qaK9cwmV+ZBhYnUqXqAtGxxobnWBd1o9AuSZ
-	8rRPoB8XZEWALhreMaLkmVRTmauEQmCLy4F9HLaZkrUOquq0RcBbn8nPQqfGfTOsbTMnoF
-	EnUmirxoAcLFye6rT663mPTmVAyDM7U=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-13-GEniBBKxMF2e41sgRC3b0w-1; Sat, 27 Jan 2024 16:11:29 -0500
-X-MC-Unique: GEniBBKxMF2e41sgRC3b0w-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 150571013768;
-	Sat, 27 Jan 2024 21:11:29 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.37])
-	by smtp.corp.redhat.com (Postfix) with SMTP id A1C5E1121306;
-	Sat, 27 Jan 2024 21:11:27 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Sat, 27 Jan 2024 22:10:14 +0100 (CET)
-Date: Sat, 27 Jan 2024 22:10:12 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Tycho Andersen <tycho@tycho.pizza>
-Cc: Christian Brauner <brauner@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-api@vger.kernel.org, Tycho Andersen <tandersen@netflix.com>,
-	"Eric W. Biederman" <ebiederm@xmission.com>
-Subject: Re: [PATCH v3 1/3] pidfd: allow pidfd_open() on non-thread-group
- leaders
-Message-ID: <20240127210634.GE13787@redhat.com>
-References: <20240123195608.GB9978@redhat.com>
- <ZbArN3EYRfhrNs3o@tycho.pizza>
- <20240125140830.GA5513@redhat.com>
- <ZbQpPknTTCyiyxrP@tycho.pizza>
- <20240127105410.GA13787@redhat.com>
- <ZbUngjQMg+YUBAME@tycho.pizza>
- <20240127163117.GB13787@redhat.com>
- <ZbU7d0dpTY08JgIl@tycho.pizza>
- <20240127193127.GC13787@redhat.com>
- <ZbVrRgIvudX242ZU@tycho.pizza>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WG8euztYW0lBk5MCpAIPYfVwdD99J8HOIf1G21sY+a5/0ARYgwStssT7iD8Bl1vImecbLlWVX3OMu4EakLWpgnjmRHP6/R5Rt2a1uKzTJquGDJ7/ApBPg8hDJlsKwLUtTh3Sb7oNdRZqzrMOvTD/VzIZoZX+QLpEMwpOeBgzVec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GkmGmag3; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33ae3154cf8so654474f8f.3;
+        Sat, 27 Jan 2024 13:16:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706390181; x=1706994981; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fbv20FbQFRHjUkR6ITqiykdWs3tGKoYK+0Frik3admU=;
+        b=GkmGmag3Jh/5kxOCFi6Kp1EIkG+X/MIRmrJ0v7+TZFfOGDNCFEYmwJrAnrLAIuMkUP
+         Sx7nzMi3XDV5vRZ6g3z6xARZWr5/R304NZFgxEsJpWDcQPelKpgZ4hNv5sK5XAwr1OED
+         e4eAn0w529ifiYZFHxcCtYDr2wuzACdAcQkNz7LrUto1oeXZesO3f9RC3PTuOSUoiNpo
+         LvubBbCqIJALYmlsyvo+tGY8z3bgihCs8hhrTLXAd1GqVK9105Fb0G+T9cXy5YpHJn4Y
+         PAbXi9mC5FLpI00dLCIc5S7va2yg/XciNeJrzNi/fJn/nybB0LGNxodrpYfsZrLjkNuB
+         /dyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706390181; x=1706994981;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Fbv20FbQFRHjUkR6ITqiykdWs3tGKoYK+0Frik3admU=;
+        b=YblaIqY1nAK/Vt3z901xPIneJ5PhEf61QfCMYnO/3HqCPYlIqaofgqgifVb3KKSEXr
+         SwpGYpMY7tHaxHHfuiRy0wM7kxpAn+6Z35sge6JdIUADJ222iPD4RV66XQEY3ncdnVD9
+         uVqnu2nwKZthMfd/MCO7nzUhOA4bjzWfiUsBzGNmVi33nFRtBzh9IwWI60AZ2aly03J8
+         MsUZrytA3j5yU9xcvUeIb1Ic4E8czX3noUkV9Nd3R+R358jZcJlhPZjiMmf3MqwGWTEX
+         z2rYcW6g0gCoYRPZwiYhtaLNy2/tKBO1JYus+GviZISR5oPqEXyWn+qHlhQ1s3a3mtmZ
+         qIKA==
+X-Gm-Message-State: AOJu0Yw643ONaSnJ5uYX3cRyyGfctGDq9dZqGndacNmaYwrhtaFWJwqZ
+	27Y1TVGmPSHu0Ie4E09YeTRhsNEXT+R/h1HOiKOWZzAmi6qNQuzU
+X-Google-Smtp-Source: AGHT+IHa/qn4F5qMBn/NJ6uHeE8EiCBCp9i8ZUBkWP08+mCtzaiTuR/WoV/n+57p2FH5YWq5CKdfUw==
+X-Received: by 2002:adf:ea0b:0:b0:33a:e6dc:2e98 with SMTP id q11-20020adfea0b000000b0033ae6dc2e98mr776932wrm.5.1706390181476;
+        Sat, 27 Jan 2024 13:16:21 -0800 (PST)
+Received: from debian ([93.184.186.109])
+        by smtp.gmail.com with ESMTPSA id bi19-20020a05600c3d9300b0040ee51f1025sm4529497wmb.43.2024.01.27.13.16.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Jan 2024 13:16:20 -0800 (PST)
+Date: Sat, 27 Jan 2024 22:16:18 +0100
+From: Dimitri Fedrau <dima.fedrau@gmail.com>
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: Nuno Sa <nuno.sa@analog.com>,
+	Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+	Li peiyu <579lpy@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>,
+	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iio: humidity: hdc3020: fix temperature offset
+Message-ID: <20240127211618.GA4012761@debian>
+References: <20240126135226.3977904-1-dima.fedrau@gmail.com>
+ <20240127144055.2e46c77d@jic23-huawei>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,35 +83,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZbVrRgIvudX242ZU@tycho.pizza>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+In-Reply-To: <20240127144055.2e46c77d@jic23-huawei>
 
-On 01/27, Tycho Andersen wrote:
+Am Sat, Jan 27, 2024 at 02:40:55PM +0000 schrieb Jonathan Cameron:
+> On Fri, 26 Jan 2024 14:52:26 +0100
+> Dimitri Fedrau <dima.fedrau@gmail.com> wrote:
+> 
+> > The temperature offset should be negative according to the datasheet.
+> > Adding a minus to the existing offset results in correct temperature
+> > calculations.
+> > 
+> > Fixes: <c9180b8e39be> ("iio: humidity: Add driver for ti HDC302x humidity sensors")
+> 
+> <> are not part of the fixes tag syntax.  I guess you saw the
+> one case of that which was in my tree earlier in the week and
+> I've now fixed up?
 >
-> On Sat, Jan 27, 2024 at 08:31:27PM +0100, Oleg Nesterov wrote:
-> >
-> > On the second thought I am starting to understand your concern...
-> >
-> > Indeed, in this case -EBADF is technically correct but it can confuse
-> > the user which doesn't or can't know that this task/thread is exiting,
-> > because EBADF looks as if the "int fd" argument was wrong.
-> >
-> > Sorry I missed your point before.
+Yes, picked up the only commit with <>. It is fixed now.
+> I've fixed it up here as well.
+> 
+Thanks.
+
+> Applied to the fixes-togreg branch of iio.git.
+> 
+> Jonathan
 >
-> No worries. I realized it's not so hard to fix with your new
-> xxx_exited() helper from the PIDFD_THREAD patch, so maybe worth
-> cleaning up after all?
-
-OK, lets discuss this later.
-
-I'll (hopefully) send v2 on top of
-
-	pidfd: cleanup the usage of __pidfd_prepare's flags
-	pidfd: don't do_notify_pidfd() if !thread_group_empty()
-
-on Monday, will be busy tomorrow (family duties ;)
-
-Oleg.
-
+Dimitri
 
