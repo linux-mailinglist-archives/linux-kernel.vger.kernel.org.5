@@ -1,69 +1,61 @@
-Return-Path: <linux-kernel+bounces-41352-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B5CE83EF6F
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 19:17:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 571DB83EF71
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 19:17:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48993285422
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 18:16:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED2801F23A4A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 18:17:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F2232D629;
-	Sat, 27 Jan 2024 18:16:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CB802D634;
+	Sat, 27 Jan 2024 18:17:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G+qECXtT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iNZG0xgF"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81914200D4;
-	Sat, 27 Jan 2024 18:16:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 793442D60B;
+	Sat, 27 Jan 2024 18:17:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706379411; cv=none; b=VbhGFXWSnlt8kKLiLuV9/Ve5JjVEN8Jty8qaeCuHiXBGv3moKYKRls2TIrhVPvr53VI+zTZcyPn8rSHzoTFDy6CNPI3e/KFpbz8XfyZB1W1hCojCOmuohyJtYbrYPTUzVvMDGdqdMQ+G5y/DlLT+nEKPujSZXte2fOPHQ12QlMQ=
+	t=1706379437; cv=none; b=kbRgsnd4t3Zs/7o3eDnFIDiSzaad1q5W6ZY+aLmCvfTNA0oPHJCvMuQ4dg44wLHf/D9/ucSRem9r5zVEn29Au2g71g4iPpvux7h7WQm3ceaRcZ4VgsOpVrUYVh3mD2wFK8bPg1vcp83Du8aash9sizJ/yvjcYvsdTofQq/1Y2Ko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706379411; c=relaxed/simple;
-	bh=+1qi4MjbtS4pEJymhwXKOEn8nfKHKnTrO6/g0+h1qy8=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kQFJbUSWvDMQQeFvlOWSFwG8MYD1rv/dAGiSDnBjMS+LldUAP2wfAFZU9g665cC9faw5wK8dT4ArSn9BSuv9TTCVEqyR20R0c11jU1VYePtIS98Qvxtr3PZMVyc4u7zbcL4VFvRZNHYnl9URaDvqRmsnM7M2PnrfmsnR83lKNzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G+qECXtT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 798F6C433C7;
-	Sat, 27 Jan 2024 18:16:50 +0000 (UTC)
+	s=arc-20240116; t=1706379437; c=relaxed/simple;
+	bh=Utq9tio4RWPPxgl5I4Nc03H22psTj6k7Wv36MjSGEEs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rDKUBIELs8174eQJf+ls/gS1drGbRYrB75Kx0DbDjth1mZLMNVEkztfsYHMYsEfYKBu2KaIE8AkhOTDxOEs/1JKmJpWeBshTTF9SFyAcLVhRJbwx2N1cGEHqVvd29CcCERTvT3YmWvJy79QhVhnzHlSVfl1s40tOIw9x2jPntqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iNZG0xgF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EBF8C433C7;
+	Sat, 27 Jan 2024 18:17:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706379411;
-	bh=+1qi4MjbtS4pEJymhwXKOEn8nfKHKnTrO6/g0+h1qy8=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=G+qECXtTL97hIGQi+49kC6uCKcMn9ZR9Y9PZG+NNcr2FueGnAVatJ1xRkVuIKoOnt
-	 5cfSXUAtiVNXboAjeqW8HA5B+ro/3ouXabxEfQJSm/J5ZRZfgwv2wh6JzPySuPwZlj
-	 exLoFTQizCOxOd3LYK3qdfEonsOPTikvySGBtX7EKzpnl+Xu/hGHJZo+GLDU7G8uAk
-	 XH/OwPOuKq2I0GBlRrIUieTm3NgeTUDiOZJ+7z+iaCM0N7o5vEkTeJhiIbmyDBobhI
-	 cmhs+ERtdFjX9S8fLUo6J5j8iRxPA+ZUxqev+h0qQeQbgjiwfLfr53QW+DpI51VudL
-	 bzAFahrdgff8g==
+	s=k20201202; t=1706379437;
+	bh=Utq9tio4RWPPxgl5I4Nc03H22psTj6k7Wv36MjSGEEs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=iNZG0xgFq1Fh4aH3gi51Ppp15guU5PVmcT9XbUhIUIUoW/9ltcsOZeKEAZ1Jvmau+
+	 UuPn8XDtX3yWqxJsM82FDOavdt+4WXn6R+X9ZF1I+kBe9OHC4L8EcVVhQoZxNww+RP
+	 D7yHBCVbVrY162iyLCQ3MIrjihpQeFza40HxBtd5kCzpzdNzSZ1iRCgFm0BEifO8R+
+	 ngCykJT1NIxKLLl33wjmwnJCAzdKfynyutVMiqvcIq16ET/E/ts+02yWBlLgTz3Jyz
+	 K8LXDk8dbL3K7ArguapjRMlVhMx+6MXVoWy8o5Lf1ZClYiXnUXc7M/qehC3kAznJ2F
+	 BcWO28MmFbsSA==
 From: Namhyung Kim <namhyung@kernel.org>
-To: Kan Liang <kan.liang@linux.intel.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Weilin Wang <weilin.wang@intel.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	linux-perf-users@vger.kernel.org,
+To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>,
-	James Clark <james.clark@arm.com>,
+	Namhyung Kim <namhyung@kernel.org>
+Cc: Adrian Hunter <adrian.hunter@intel.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org,
 	Peter Zijlstra <peterz@infradead.org>,
-	Samantha Alt <samantha.alt@intel.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Caleb Biggers <caleb.biggers@intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	Edward Baker <edward.baker@intel.com>,
-	Perry Taylor <perry.taylor@intel.com>
-Subject: Re: [PATCH v1] perf pmu: Treat the msr pmu as software
-Date: Sat, 27 Jan 2024 10:16:47 -0800
-Message-ID: <170637928210.816351.6189596994646336873.b4-ty@kernel.org>
+	Ingo Molnar <mingo@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH RESEND] perf tools: Add -H short option for --hierarchy
+Date: Sat, 27 Jan 2024 10:17:14 -0800
+Message-ID: <170637928211.816351.10097608257207338601.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-In-Reply-To: <20240124234200.1510417-1-irogers@google.com>
-References: <20240124234200.1510417-1-irogers@google.com>
+In-Reply-To: <20240125055124.1579617-1-namhyung@kernel.org>
+References: <20240125055124.1579617-1-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,16 +65,13 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On Wed, 24 Jan 2024 15:42:00 -0800, Ian Rogers wrote:
-> The msr PMU is a software one, meaning msr events may be grouped
-> with events in a hardware context. As the msr PMU isn't marked as a
-> software PMU by perf_pmu__is_software, groups with the msr PMU in
-> are broken and the msr events placed in a different group. This
-> may lead to multiplexing errors where a hardware event isn't
-> counted while the msr event, such as tsc, is. Fix all of this by
-> marking the msr PMU as software, which agrees with the driver.
+On Wed, 24 Jan 2024 21:51:24 -0800, Namhyung Kim wrote:
+> I found the hierarchy mode useful, but it's easy to make a typo when
+> using it.  Let's add a short option for that.
 > 
-> [...]
+> Also update the documentation. :)
+> 
+> 
 
 Applied to perf-tools-next, thanks!
 
