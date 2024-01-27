@@ -1,123 +1,135 @@
-Return-Path: <linux-kernel+bounces-41342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F6FA83EF16
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 18:25:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2070883EF18
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 18:28:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2F351C21BB0
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 17:25:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16A26B226F3
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 17:28:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93DE22D04C;
-	Sat, 27 Jan 2024 17:24:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b="K9mpjh1w"
-Received: from ahti.lucaweiss.eu (ahti.lucaweiss.eu [128.199.32.197])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A992D044;
+	Sat, 27 Jan 2024 17:28:38 +0000 (UTC)
+Received: from alerce.blitiri.com.ar (alerce.blitiri.com.ar [49.12.208.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AB522E629;
-	Sat, 27 Jan 2024 17:24:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=128.199.32.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93BDF2CCBA
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 17:28:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=49.12.208.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706376297; cv=none; b=l+r5Ue493NmytYiu8Rh3cA+/W5p7FG2Z83m2tDAyvIiGRsqavv9QquMkQyUNuaIhSBv77ISzcM2E0xg9smFrsQT7KhA3by99DBhWnaAJ4eYysZ/JlaNv4ZQOMnbFX1/691Aps/kG43IWbA8cDTcRR1qV+wFDKHvzuttoZpzcUBA=
+	t=1706376517; cv=none; b=X4ExMNuAGYKkbPF5KwYMtjN940/Z3ISTlR4+Gv5+cv8OWw0pejmCOMSbFs+KdooVyBkBizoHHndgW39/pRLW8pY8gTqbMsvrxlvbuMeAeueUNtF7kcuPdznKM4Q396gs/WsHBbicQJnTIgQ9NkO6zBMZUIZFOuLde5YnM1eFIeQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706376297; c=relaxed/simple;
-	bh=um2zQi0rBzC8vtFhb5/Jr5Ju8k+jgRVIJhHFh1WG0GQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=g4oxQLhWOX1beG1Il4PqsUqSLs33HjC01tCtnCyvzMTLvOs/jP9C8drOOnWmnn88djDarKuktzswzqj5w4wVPvgZdy9u0dyClbM47hFvmPp/XRat0+s7QJP50PHySHpvTyfQnfwUL4KZSzWZVvsHIJ5gw/qAAKEMIjespW/LuA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz; spf=pass smtp.mailfrom=z3ntu.xyz; dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b=K9mpjh1w; arc=none smtp.client-ip=128.199.32.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=z3ntu.xyz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=s1;
-	t=1706376288; bh=um2zQi0rBzC8vtFhb5/Jr5Ju8k+jgRVIJhHFh1WG0GQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=K9mpjh1w99h/qZJXyhsZ0vx7eSlMDE5z+MlrrtjViAdsFilQbubnRXXZs7ILkS+O+
-	 HZYrfKY21rt9or3WbeMF78RgtUYmofwTbRC9UFNIpe1BR7slgcfujz52TIGKdFFBCN
-	 tTlXdkxr5ojIaE5/MqPC9ODVhxrvqpJ8/QAIrPJI=
-From: Luca Weiss <luca@z3ntu.xyz>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
- Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Vladimir Lypak <vladimir.lypak@gmail.com>,
- Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 1/2] arm64: dts: qcom: msm8953: Add GPU IOMMU
-Date: Sat, 27 Jan 2024 18:24:46 +0100
-Message-ID: <6009977.lOV4Wx5bFT@z3ntu.xyz>
-In-Reply-To: <a75d8b2f-a55a-4087-b039-60769678a480@linaro.org>
-References:
- <20240125-msm8953-gpu-v1-0-f6493a5951f3@z3ntu.xyz>
- <d576e655-5d00-44ff-9405-0fceaa2d3935@linaro.org>
- <a75d8b2f-a55a-4087-b039-60769678a480@linaro.org>
+	s=arc-20240116; t=1706376517; c=relaxed/simple;
+	bh=FitbO8MCaHW5HJwzn2tUgZRT1fw26fTzyBZBRZ5CpK0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MxRWI1SupTpYcFOz3TdLjSFAUsx/2ta7fWd6D2n8lfDpreLYUSufaiNY/oB9zgNy+F0bZOBGj1Koo5VYbm1jaOsk5StlMxeWWqsDugKbY70U/0Qg2ivxjLav0yEBSzXe9gDUOkGhUz2zW+11rcbdR/EZBHcr+qI7wg3QKAUIQF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sdfg.com.ar; spf=pass smtp.mailfrom=sdfg.com.ar; arc=none smtp.client-ip=49.12.208.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sdfg.com.ar
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sdfg.com.ar
+Received: from [IPV6:2a02:8109:aa26:4b00:1a1e:9a1e:44f7:a3cd]
+	by sdfg.com.ar (chasquid) with ESMTPSA
+	tls TLS_AES_128_GCM_SHA256
+	(over submission+TLS, TLS-1.3, envelope from "rodrigo@sdfg.com.ar")
+	; Sat, 27 Jan 2024 17:28:26 +0000
+Message-ID: <9538a8fe-b92f-42a5-99d1-25969cf51647@sdfg.com.ar>
+Date: Sat, 27 Jan 2024 18:28:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/1] tools/nolibc/string: export strlen()
+Content-Language: en-US
+To: Willy Tarreau <w@1wt.eu>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?=
+ <linux@weissschuh.net>
+Cc: linux-kernel@vger.kernel.org
+References: <20240126142411.22972-1-rodrigo@sdfg.com.ar>
+ <9abed5e3-cd61-474e-bb16-13243709f5c5@t-8ch.de>
+ <20240127162400.GA14079@1wt.eu>
+From: Rodrigo Campos <rodrigo@sdfg.com.ar>
+In-Reply-To: <20240127162400.GA14079@1wt.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Freitag, 26. J=E4nner 2024 00:49:55 CET Konrad Dybcio wrote:
-> On 1/25/24 23:24, Dmitry Baryshkov wrote:
-> > On 25/01/2024 23:56, Luca Weiss wrote:
-> >> From: Vladimir Lypak <vladimir.lypak@gmail.com>
-> >>=20
-> >> Add the IOMMU used for the GPU on MSM8953.
-> >>=20
-> >> Signed-off-by: Vladimir Lypak <vladimir.lypak@gmail.com>
-> >> ---
-> >>   arch/arm64/boot/dts/qcom/msm8953.dtsi | 31
-> >> +++++++++++++++++++++++++++++++ 1 file changed, 31 insertions(+)
-> >>=20
-> >> diff --git a/arch/arm64/boot/dts/qcom/msm8953.dtsi
-> >> b/arch/arm64/boot/dts/qcom/msm8953.dtsi index dcb5c98b793c..91d083871a=
-b0
-> >> 100644
-> >> --- a/arch/arm64/boot/dts/qcom/msm8953.dtsi
-> >> +++ b/arch/arm64/boot/dts/qcom/msm8953.dtsi
-> >> @@ -1046,6 +1046,37 @@ mdss_dsi1_phy: phy@1a96400 {
-> >>               };
-> >>           };
-> >> +        gpu_iommu: iommu@1c48000 {
-> >=20
-> > Nit: most of the platforms use the adreno_smmu label. But maybe the
-> > msm-iommu vs arm-smmu makes difference here.
-> Not really :)
->=20
-> Please keep the labels unified
+On 1/27/24 17:24, Willy Tarreau wrote:
+> On Sat, Jan 27, 2024 at 03:53:32PM +0100, Thomas Weißschuh wrote:
+>> On 2024-01-26 15:24:10+0100, Rodrigo Campos wrote:
+>>> Please note that this code is not using strlen() and strlcat() doesn't seems to use it either.
+>>
+>> I think the comment in strlen() explains it:
+>>
+>>      Note that gcc12 recognizes an strlen() pattern and replaces it with a
+>>      jump to strlen().
+>>
+>> strlcat() indeed contains this pattern.
+>>
+>> I was able to fix the issue by replacing the open-coded strlen() in
+>> strlcat() with a call to the function and that also fixed the issue.
+>>
+>> It seems nicer to me as a fix, on the other hand the change to a weak
+>> definition will also catch other instances of the issue.
+>> Maybe we do both.
+> 
+> Yes, once we have the proof that the compiler may produce such a call, it
+> can also happen in whatever user code so we need to export the function,
+> there's no other solution.
 
-Ack, renaming to adreno_smmu
+Makes sense, thanks!
 
->=20
-> > Nevertheless:
-> >=20
-> > Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> >=20
-> >> +            compatible =3D "qcom,msm8953-iommu", "qcom,msm-iommu-v2";
-> >> +            ranges =3D <0 0x01c48000 0x8000>;
-> >> +
-> >> +            clocks =3D <&gcc GCC_OXILI_AHB_CLK>,
-> >> +                 <&gcc GCC_BIMC_GFX_CLK>;
->=20
-> And align these
+> 
+>>> First I noted that removing the attribute unused in strlen(), the compilation worked fine. And then
+>>> I noticied that other functions had the attribute weak, a custom section and export the function.
+>>>
+>>> In particular, what happens here seems to be the same as in commit "tools/nolibc/string: export memset() and
+>>> memmove()" (8d304a374023), as removing the -Os or adding the -ffreestanding seem to fix the issue.
+>>> So, I did the same as that commit, for strlen().
+>>>
+>>> However, I'm not 100% confident on how to check that this is done by the compiler to later replace
+>>> it and provide a builtin. I'm not sure how that was verified for commit 8d304a374023, but if you let
+>>> me know, I can verify it too.
+>>>
+>>> What do you think?
+>>
+>> Personally I don't know how it was verified, we'll have to wait for
+>> Willy on that.
+> 
+> Oh it's very simple, just build a small code that doesn't contain any
+> such explicit nor implicit call and check that it doesn't contain the
+> function.
+> 
+> E.g >
+>    $ printf "int main(void) { }\n" | gcc -nostdlib -static -Isysroot/x86/include -include nolibc.h -Os -Wl,--gc-sections -xc -
+>    $ nm --size a.out
 
-They are?
+Oh, cool. I can confirm that gcc does indeed add the strlen call
+(note I had to remove the "--size" param to nm, as the symbol is 
+undefined and not shown otherwise)
 
-Also any comment about the issues listed in the cover letter?
+I wonder if there is an easy way to check for which functions gcc/clang 
+do this...
 
-Regards
-Luca
+>>> As a side note, it seems strlcat()/strlcpy() fail to set the terminating null byte on some cases,
+> 
+> Indeed I've just checked and you're right, that defeats their purpose!
 
->=20
-> Konrad
+Cool.
+
+>>> Let me know if you think it is worth adding some _simple_ patches (I don't think it is worth fixing
+>>> all the cases, the code is to fix all of the cases is probably not nice and not worth it).
+>>
+>> Souns reasonable to me to fix the return values.
+>> And get some tests for it.
+> 
+> Seconded!
+
+Thanks, I'll see how to improve that too :)
 
 
 
-
+Best,
+Rodrigo
 
