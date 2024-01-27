@@ -1,88 +1,107 @@
-Return-Path: <linux-kernel+bounces-41356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 535DA83EF7F
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 19:37:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CB65583EF8D
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 19:46:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3DF41F22197
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 18:37:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49A901F22DAD
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 18:46:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CE072D78A;
-	Sat, 27 Jan 2024 18:37:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 410C82E40E;
+	Sat, 27 Jan 2024 18:46:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h75dH4ps"
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="G5ToPuYY"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 782EA2C19C
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 18:37:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 627D61E539;
+	Sat, 27 Jan 2024 18:46:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706380668; cv=none; b=XdUCdzrRNN9LLSXJ0CJJvCM6+I7ixVyD+IAJG60dH83nr1s3yKvV8X1760/I00rkgG51pEvc4OXlvP/qnhrvjPIVxSfn2R37vItdzUjBQ6/DV8B1c7bhMR+b97UJoqs3Cg/v1APyuB0xPZbedgyjwzi4M14Fg/vdBxk8PBkvKNE=
+	t=1706381189; cv=none; b=fYeoEyoCT24F3CNzdKL1OhdD4I5pe6bWovytrb6T6DspwA2iRuta6bq3QadvZAOi4VfOWEeMEcbao2vae07SxlLyOZ1kOjrmR827vVjzg+88NpFcgNJI1z1vc/fBiLmILPSt3+aIxOupvpn15yLO69BgsB40XGQJrXXaCM+VSQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706380668; c=relaxed/simple;
-	bh=krEJZx1PRiMPsxGIkLE+iVCbHEiMZbFzD0vj/F8QdDI=;
+	s=arc-20240116; t=1706381189; c=relaxed/simple;
+	bh=EYPyaz87RkOJljahQF8funE2XdsGXXg6gukJ+v+90GA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rkT9HzsQiiKp6AVbxfE95AzoENsE2lAs0jS9r4OB6oDaCsTCCoP5RziPf0wx2X/5JoDWWxhfyY92WXQwEeB49LKzIk9piT4/HBOIFxo4CecdSB58bMylS80M5n77t10AY549ufoFpI4s8MKbuHSUJhene/MetCSOquZ9WeYvuA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h75dH4ps; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2906dffd8ddso1158069a91.3
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 10:37:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706380667; x=1706985467; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=m1crEbCppZkKwKJJtbycIbn79YP14fen8Jd+JDUcNys=;
-        b=h75dH4psKq+vTpD3Vy/L/XhNrDihPR+9WLARAHbcQ0BYNF3/iDD9Ml+d4vZ28A7pmY
-         PMaphIVOh3wQUp93Ch7XbQb5d2T/7KRCsJQJWKwnVEUJ5xXnyquVun8UYwZm3ZvwkA4k
-         lWre5IB1cHMual/CfZOha9gjBrwdXN/ikkyFty8vjBzAdjf2969T5pu4S4QatVmv26ji
-         4jDleqikPNoCG0VIPCr1g32qRVGs07L51Lb2XfBs0y2gb04GPCCYyn9QuHNMD8Rixre8
-         YxxerKu74XGr1w30xX5f1lhGH+qsVjF5g6/srV+GHDnZAHfu87XsBUZM8WtWiPyulbhL
-         O1dQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706380667; x=1706985467;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m1crEbCppZkKwKJJtbycIbn79YP14fen8Jd+JDUcNys=;
-        b=beEoaVD2RWYxyiHyxMiGi2byFl+A4W7DbBPb6YIHf1/6qwFuLzuUC9oI6dBG+lYEWU
-         whcMB5k/WPVPnrhwBTCo3sYGHn/Yd2rulDusCTXBIV2ZGxLh5I2YsgB7dDnovUQ+Evl5
-         389dntpdI3Pm6L5jjFnkndf7FjXrny9ZeBZnNiXQhpvpKOJ+bDZeC8zPTaBqWxHR3Yx0
-         OM7m5BOxShS2pt8Ho55SJvGJ84GkeejumR/ghEu5D8cSg8VdHT0o/NFmMZdXkTQBOS24
-         HRhZX6HbY4D3cmsfdYqHCsjY96Rtc1hr68dW+rkFDFrk6Vf5isxDZf3y4DbFdo1gBc1q
-         AyaA==
-X-Gm-Message-State: AOJu0YzIMqA1IfmICmmX3Ag+GOdPM1Ud5a8qtietIUqrEbI8bGWopg+3
-	i4zU2XYwN1HRwu0s+znwbxag1GDFTfsICIwIJlQ7soliybbwPPVH
-X-Google-Smtp-Source: AGHT+IHkYSB4UO/A2kwpHwTPnB8NbcIAvjg1UAgStyqaD32HWmRau8epA5EhIXHmJ/Xdu0dR3zF/LA==
-X-Received: by 2002:a17:90a:bd90:b0:293:b540:5a8 with SMTP id z16-20020a17090abd9000b00293b54005a8mr1353480pjr.8.1706380666534;
-        Sat, 27 Jan 2024 10:37:46 -0800 (PST)
-Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
-        by smtp.gmail.com with ESMTPSA id y5-20020a17090a8b0500b002904cba0ffbsm5176982pjn.32.2024.01.27.10.37.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Jan 2024 10:37:46 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Sat, 27 Jan 2024 08:37:45 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Mikulas Patocka <mpatocka@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	dm-devel@lists.linux.dev, Mike Snitzer <msnitzer@redhat.com>,
-	Ignat Korchagin <ignat@cloudflare.com>,
-	Damien Le Moal <damien.lemoal@wdc.com>,
-	Bob Liu <bob.liu@oracle.com>, Hou Tao <houtao1@huawei.com>,
-	Nathan Huckleberry <nhuck@google.com>,
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@elte.hu>
-Subject: Re: [PATCH] softirq: fix memory corruption when freeing
- tasklet_struct
-Message-ID: <ZbVNeVkGItt1KTan@slm.duckdns.org>
-References: <82b964f0-c2c8-a2c6-5b1f-f3145dc2c8e5@redhat.com>
- <CAHk-=wjDW53w4-YcSmgKC5RruiRLHmJ1sXeYdp_ZgVoBw=5byA@mail.gmail.com>
- <ZbRDnSyiSE93puQL@slm.duckdns.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=K6w2M1LxCpbjeYr4jWEAtQ/edM4MsQWR5++57xh8TOPIIXsahHkYx+Gw5ylgoCQRrwWE6/xIDVtI0N5CyO/0NFF8/fGDv3I/aOL9oDF1S7AUuPqjwDTtKHjRPLVfkVuLQk+MAp7w7fpV3db32xzl8L/5OjX9szsPNrmmL8sMhS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=G5ToPuYY; arc=none smtp.client-ip=134.134.136.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706381187; x=1737917187;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=EYPyaz87RkOJljahQF8funE2XdsGXXg6gukJ+v+90GA=;
+  b=G5ToPuYYxcVxXz6dt/DHtNh8u+OppP0v6ZkV3L3wSubDGUyozIWTbadN
+   4tW8MXFsBGS+hY7vjk5BFSuVleIiy88nlOi0QuTCemdsU4y2Jrw3q2Kpd
+   4txMhKh+gP44vIu4ciUCoF/lGjFpIXfpwyfFUpbcrq0uj0+qXYwIfNzdE
+   QuTr7aRMQ2dIB6soWSuAzgUF/ohTyGPqQFalsXlxlj5z6M9+AFQLGYagk
+   4wwmLBisVqomIoaEqDjQFS9a4LgMuYy1aaYfpD2hLWpvn1FJ1zHq5LAei
+   L38h+eiyXbd0Zt724yKGyXtpbWTcmtX0reCy1orQ45sDJkM04WH3trMAf
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10966"; a="466977459"
+X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
+   d="scan'208";a="466977459"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2024 10:46:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10966"; a="910649621"
+X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
+   d="scan'208";a="910649621"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2024 10:46:16 -0800
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+	by kekkonen.fi.intel.com (Postfix) with SMTP id 4755F11FB1F;
+	Sat, 27 Jan 2024 20:40:25 +0200 (EET)
+Date: Sat, 27 Jan 2024 18:40:25 +0000
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Ricardo Ribalda <ribalda@chromium.org>,
+	Tiffany Lin <tiffany.lin@mediatek.com>,
+	Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+	Yunfei Dong <yunfei.dong@mediatek.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Kieran Bingham <kieran.bingham@ideasonboard.com>,
+	Bin Liu <bin.liu@mediatek.com>,
+	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+	Vikash Garodia <quic_vgarodia@quicinc.com>,
+	Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Andrzej Hajda <andrzej.hajda@intel.com>,
+	Bingbu Cao <bingbu.cao@intel.com>,
+	Tianshu Qiu <tian.shu.qiu@intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Kevin Hilman <khilman@baylibre.com>,
+	Jerome Brunet <jbrunet@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	linux-rockchip@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-samsung-soc@vger.kernel.org, linux-staging@lists.linux.dev,
+	linux-amlogic@lists.infradead.org
+Subject: Re: [PATCH 03/17] media: media-entity.h: Fix kerneldoc
+Message-ID: <ZbVOGaw-8qU2QNle@kekkonen.localdomain>
+References: <20240126-gix-mtk-warnings-v1-0-eed7865fce18@chromium.org>
+ <20240126-gix-mtk-warnings-v1-3-eed7865fce18@chromium.org>
+ <e6b72dff-911e-4923-9996-b3b7db36fb8e@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,40 +110,99 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZbRDnSyiSE93puQL@slm.duckdns.org>
+In-Reply-To: <e6b72dff-911e-4923-9996-b3b7db36fb8e@infradead.org>
 
-On Fri, Jan 26, 2024 at 01:43:25PM -1000, Tejun Heo wrote:
-> Hello,
-> 
-> The following is a draft patch which implements atomic workqueues and
-> convert dm-crypt to use it instead of tasklet. It's an early draft and very
-> lightly tested but seems to work more or less. It's on top of wq/for6.9 + a
-> pending patchset. The following git branch can be used for testing.
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git wq-atomic-draft
-> 
-> I'll go over it to make sure all the pieces work. While it adds some
-> complications, it doesn't seem too bad and conversion from tasklet should be
-> straightforward too.
-> 
-> - It hooks into tasklet[_hi] for now but if we get to update all of tasklet
->   users, we can just repurpose the tasklet softirq slots directly.
-> 
-> - I thought about allowing busy-waits for flushes and cancels but it didn't
->   seem necessary. Keeping them blocking has the benefit of avoiding possible
->   nasty deadlocks. We can revisit if there's need.
-> 
-> - Compared to tasklet, each work item goes through a bit more management
->   code because I wanted to keep the code as unified as possible to regular
->   threaded workqueues. That said, it's not a huge amount and my bet is that
->   the difference is unlikely to be noticeable.
+Hi Randy,
 
-Should have known when it worked too well on the first try but I missed a
-part in init and this was just running them on per-cpu workqueues. Will post
-an actually working version later.
+On Fri, Jan 26, 2024 at 05:51:06PM -0800, Randy Dunlap wrote:
+> 
+> 
+> On 1/26/24 15:16, Ricardo Ribalda wrote:
+> > The fields seems to be documented twice.
+> > 
+> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > ---
+> >  include/media/media-entity.h | 4 ----
+> >  1 file changed, 4 deletions(-)
+> > 
+> > diff --git a/include/media/media-entity.h b/include/media/media-entity.h
+> > index 2b6cd343ee9e..c79176ed6299 100644
+> > --- a/include/media/media-entity.h
+> > +++ b/include/media/media-entity.h
+> > @@ -337,10 +337,6 @@ enum media_entity_type {
+> >   * @info.dev:	Contains device major and minor info.
+> >   * @info.dev.major: device node major, if the device is a devnode.
+> >   * @info.dev.minor: device node minor, if the device is a devnode.
+> > - * @major:	Devnode major number (zero if not applicable). Kept just
+> > - *		for backward compatibility.
+> > - * @minor:	Devnode minor number (zero if not applicable). Kept just
+> > - *		for backward compatibility.
+> >   *
+> >   * .. note::
+> >   *
+> > 
+> 
+> I'd say that this is correct based on
+> https://patchwork.kernel.org/project/linux-media/patch/20231223050707.14091-1-rdunlap@infradead.org/
+> 
+> 
+> Hans, can you please explain this message from you, on 2024-Jan-22, that
+> I cannot find in the media patchwork:
 
-Thanks.
+It's in linuxtv.org Patchwork here
+<URL:https://patchwork.linuxtv.org/project/linux-media/patch/20231223050707.14091-1-rdunlap@infradead.org/>
+and also in the media stage tree (as indicated by the state) but not yet in
+master AFAIU.
+
+> 
+> 
+> Subject: [git:media_stage/master] media: media-entity.h: fix Excess kernel-doc description warnings
+> 
+> 
+> 
+> This is an automatic generated email to let you know that the following patch were queued:
+> 
+> Subject: media: media-entity.h: fix Excess kernel-doc description warnings
+> Author:  Randy Dunlap <rdunlap@infradead.org>
+> Date:    Fri Dec 22 21:07:07 2023 -0800
+> 
+> Remove the @major: and @minor: lines to prevent the kernel-doc warnings:
+> 
+> include/media/media-entity.h:376: warning: Excess struct member 'major' description in 'media_entity'
+> include/media/media-entity.h:376: warning: Excess struct member 'minor' description in 'media_entity'
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> 
+>  include/media/media-entity.h | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> ---
+> 
+> diff --git a/include/media/media-entity.h b/include/media/media-entity.h
+> index 2b6cd343ee9e..c79176ed6299 100644
+> --- a/include/media/media-entity.h
+> +++ b/include/media/media-entity.h
+> @@ -337,10 +337,6 @@ enum media_entity_type {
+>   * @info.dev:	Contains device major and minor info.
+>   * @info.dev.major: device node major, if the device is a devnode.
+>   * @info.dev.minor: device node minor, if the device is a devnode.
+> - * @major:	Devnode major number (zero if not applicable). Kept just
+> - *		for backward compatibility.
+> - * @minor:	Devnode minor number (zero if not applicable). Kept just
+> - *		for backward compatibility.
+>   *
+>   * .. note::
+>   *
+> 
+> 
+> 
+> Thanks.
 
 -- 
-tejun
+Regards,
+
+Sakari Ailus
 
