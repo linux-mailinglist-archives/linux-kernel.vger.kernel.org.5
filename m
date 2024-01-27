@@ -1,185 +1,168 @@
-Return-Path: <linux-kernel+bounces-41115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C61883EC0E
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 09:35:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7F2883EC0F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 09:37:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0F45B22B67
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 08:35:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 887F22860A9
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 08:37:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A43AE1E888;
-	Sat, 27 Jan 2024 08:34:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C24321DFC5;
+	Sat, 27 Jan 2024 08:37:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="l33AMTZv"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="hMyWf+g/";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="xZashbmN"
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80D74B66C
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 08:34:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D9AA1D52B
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 08:37:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.27
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706344497; cv=none; b=HiYjE38Sa6vpzQWwucV7RzN2J18bVZuljywRVMoWWBt0h+US99W82Eno6a7dRUIZMqyUZfLyu1E19E8X8dKVWS+2h9L2zxme96aVlgd+Y+F/w3xeCRB5JlJueNadrhbU5wxbXgh8HslmZsx7sAWkbYFafBHQ7kbUEvpqUe3M2gY=
+	t=1706344659; cv=none; b=OQNkAoPIyrAKsWrZ5TD58Qz8AUfQI9DHhP4w0xTh7jDfYHnxrraMy0xGkqUewAncmng2OOTNS9z5yWD3juJKqvdV7LHNHln3twN686OVNvFkMU0iNqsYGoPdzlCCIlNQTbXY+RQXppmRKtLQklVr4mZJRk54Pcas3Ivv21N9DHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706344497; c=relaxed/simple;
-	bh=YhYYFMhnowTbbuX5rz69qv/M8AQK9VQhBzVq0JwlygA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UPEMzHmIe38tcoHQyXxiobPPvWpRERSBSi+IywarNspYhNutSgaLZOk9oSRpC91Y+GITx3SQ7pKg38PkHmt13Dq2IAXqt1nphGV/w+5DkGjj/wGKbRY/TKlLcn0bU0IsgV0OfkEN20hIhxVl/nf+fHHE9HHTWeKq0yS6afAsqAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=l33AMTZv; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e43e55b87so23545e9.0
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 00:34:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706344494; x=1706949294; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ax1AbFa1G9ibq+UxnRv4ud0AHrSaEuEaK3VswH1DhqM=;
-        b=l33AMTZv2N37ygBQXSZ0qJdKqsLZxu/YsggFiLlNByvBRHCJEcSjT4wnfwY1RW/KZr
-         NsNYOCViPQdXGLnbuxRt3V/oOLhYZwv6J5CISy25XEhSawkRs1cqraOQnQM2KOQPsASq
-         7re9dCeSa8ynnYIoL1d3wQiSwTr+VJzmbyNG2FGJjVbh8/KqNIJvbPQ1SeZikc16DDLg
-         N33kfG4loFDmRuZIGiVj8MmBmPpviZBl1xal8nP1tokZRnnTXhjPc8oJGECZGZSkz1/L
-         2Cv2Veo86tix41kCALRRKPKJ9xSqS0Dvyq5yALDuRF7OH3R1u56oDe/9ITT6d47QlJWl
-         dd+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706344494; x=1706949294;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ax1AbFa1G9ibq+UxnRv4ud0AHrSaEuEaK3VswH1DhqM=;
-        b=c3SQUm0dq7Uv5Qj8cQKj1zKTIAGfiP3ExMQ4CXLsgdzPiJSWUgO9BkfgEnwMfrqAuQ
-         ZJEbwBj+o/SWlrk4s6/ESZN77o/DZt3/n0TVnTl/Zyj5J8xmJ3yfdWhSYZIR0Vt3rMOe
-         R1wy2oDiHsMDQ7gRZkCpckRS3W2AYvXTiucJfijO5Ot9P+H8MOe840Fz0pchTywa7Ivr
-         6PteLO3b7DnTGGB0RVIAOsXiD+iPf0hZtYXs9zi+giMYbJ+rCqwjfBqxxLlhAx8fFGS+
-         IFSjOsFf3q5038ycXBEJzsMajDjZiWIBY/aw+DfPCvIn+xThb4agSe9jiu1i4zd747nm
-         l/aA==
-X-Gm-Message-State: AOJu0YxRtNllAbfE1UJy/+xfYnmEB+o4j1sjzocYo6bCo4r4EQLWC1XS
-	Y+Rm1yMn1m/APF2/M2RRX33ueIepX9FmiiUZm9+9/owJkvcw75Hp1DeFYSLhMcYXz/uA9se1DjF
-	e87GxtFFtecFS2on8E3B7BndYa3jBlhNrMzkV
-X-Google-Smtp-Source: AGHT+IE75zSW/Rhs1QgAL7VROnqq4Lv+uAOUij8+AACC5vqdr+QQg/pDOeSbn28a5PQjrCE6O05IB0aWWvEn/ZkIdGs=
-X-Received: by 2002:a05:600c:510f:b0:40d:87df:92ca with SMTP id
- o15-20020a05600c510f00b0040d87df92camr275914wms.3.1706344493527; Sat, 27 Jan
- 2024 00:34:53 -0800 (PST)
+	s=arc-20240116; t=1706344659; c=relaxed/simple;
+	bh=ViIHgp/KdfRtbTI3DQt3LG//KAcvh08EM2nQtFTD2pM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UrwOomHLCAuewFTW6Q7m+cBxjVET1Wd3WCtZXJ7cqdXBThI3hBaNMb84neChYkzYnvGz5zhKfIvgPbKUBZ68DeYvSN+JHFtPg4oYpcUrJTZyWW169nd/WoteWuBLx5IfC4B13TMZWx+l/gZMi5CzZ/6H8YD34sHHtARn1AjSLYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=hMyWf+g/; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=xZashbmN; arc=none smtp.client-ip=66.111.4.27
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailout.nyi.internal (Postfix) with ESMTP id 39FDA5C0194;
+	Sat, 27 Jan 2024 03:37:35 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Sat, 27 Jan 2024 03:37:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm3; t=1706344655; x=
+	1706431055; bh=HBAy1ON+KFlap7KUmYNJGUyFHczf6v5pNQNbPjUNgjk=; b=h
+	MyWf+g/kYDvjIerXQDV9US18+04iZiUbBXdLEvqlPMehKVTbFmJgNnorffrj5SLK
+	N2a2FzYyV9w0Zrsd/We2Mv9jc0xePW+vN5cp6SN3EIoL480KOxTV+AuOkcRxyAP9
+	S5xRJ95veMV/7ytWPZ8EiOk7ruHZIsSNr3uAq+PsYsVj6a5dCFJxzn3V1hg+0A2z
+	KNPfpnkuIk1NSK+MQTvzo5liyKSxAocC0aNC6TvYgfH5W5LXT3vJVPbLXA5BmFvd
+	2Jsgv2/8boXKAWpHTR92L2L1ieDlDYA23FvRC3ZZhqzoKOi2xhrj4GSF1+fFMOkx
+	8DAyCFZ/GnOe9ZsOTsY6Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706344655; x=1706431055; bh=HBAy1ON+KFlap7KUmYNJGUyFHczf
+	6v5pNQNbPjUNgjk=; b=xZashbmN/chZ+5ZAenlnOZjZ/VU4LTNcYK6IcjuSHXrG
+	YMtN7NU2YRp7mfaMqgh+bN+veSm3PHtTa3x5S3StsRr05FLfLAFHnRT8yy/TUdkB
+	lJlrCO94cjekZjIW+ClkyUArGNCAbiClMSdcNgXAA8zPGxEIm4CXZJInnaoD4rV5
+	VLXcuTNaNyg4j8LQ+d+Agy7MNk5+KfggBRDH79/K/J+HncYI0iK6K8+nLGp/hJWQ
+	2LyJzs8fu7cuEeoIBTNC05OOoKUlN4p/TYnfjab4KrDlxmF+ZaVJpQztjRrCmZ8U
+	VFRSs0HsPMt1aM2JZRmu02vVd5CjXYR+WRM6U8wSgg==
+X-ME-Sender: <xms:z8C0ZYeKm5sjPkvs_KO5mzGnUN5i58iVLb1nAAIakYjt9u2uKXcwUw>
+    <xme:z8C0ZaNhGQ449_6ucmp8JKywBCuNEJl3ghXqPSVnoLsJuU2kgsVoknLN0rrIII6gu
+    Baet95d2rPhUFXLR1I>
+X-ME-Received: <xmr:z8C0ZZhcKyLdDE0Q8WN1DRLUpY1HsE_ZUkVq2Q_Ly4NabU4ARFG-6mowPoHH2fQHoBWC2eoixQ7SLX0uHUBSGHHpPF8kqQB-dbE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdelkedguddvtdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enogfuuhhsphgvtghtffhomhgrihhnucdlgeelmdenucfjughrpeffhffvvefukfhfgggt
+    uggjsehttdertddttddvnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoe
+    hoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhn
+    peejhffhgeeutefhfeeugfeggeduhfekffduhffhheekhfdtveefhfejjefftdfgjeenuc
+    ffohhmrghinhepshhouhhrtggvfhhorhhgvgdrnhgvthenucevlhhushhtvghrufhiiigv
+    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmoh
+    gttghhihdrjhhp
+X-ME-Proxy: <xmx:z8C0Zd9oqvIR2eXy32OXys8xw64gxyMN6OSxH3Z_URL7DAE_AQ682g>
+    <xmx:z8C0ZUvFnrjtaflZPDQ-PGojTSi7zVFi5k-5qOxRMDGv50PqAgfaGA>
+    <xmx:z8C0ZUH_5azjfRmhJQQU-pjj3zvPnxaRGCx0FnpGPh3Xo-53NibtcA>
+    <xmx:z8C0ZRURrOPybB79uzo8CgIykCEL9Z62P-gTvBsSCUr8TWB6Z11f9Q>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 27 Jan 2024 03:37:33 -0500 (EST)
+Date: Sat, 27 Jan 2024 17:37:30 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Adam Goldman <adamg@pobox.com>
+Cc: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] firewire: core: send bus reset promptly on gap count
+ error
+Message-ID: <20240127083730.GA159729@workstation.local>
+Mail-Followup-To: Adam Goldman <adamg@pobox.com>,
+	linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <Za90vAQlDhbLpY67@iguana.24-8.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126075127.2825068-1-alexious@zju.edu.cn> <CANn89iKvoZLHGbptM-9Q_m826Ae4PF9UTjuj6UMFsthZmEUjiw@mail.gmail.com>
-In-Reply-To: <CANn89iKvoZLHGbptM-9Q_m826Ae4PF9UTjuj6UMFsthZmEUjiw@mail.gmail.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Sat, 27 Jan 2024 09:34:42 +0100
-Message-ID: <CANn89i+3Maf90HUzaGzFQgw9UQDoZLP-Ob+KrE9Ns6jND=6D9w@mail.gmail.com>
-Subject: Re: [PATCH] net: ipv4: fix a memleak in ip_setup_cork
-To: Zhipeng Lu <alexious@zju.edu.cn>
-Cc: "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Za90vAQlDhbLpY67@iguana.24-8.net>
 
-On Fri, Jan 26, 2024 at 11:13=E2=80=AFAM Eric Dumazet <edumazet@google.com>=
- wrote:
->
-> On Fri, Jan 26, 2024 at 8:51=E2=80=AFAM Zhipeng Lu <alexious@zju.edu.cn> =
-wrote:
-> >
-> > When inetdev_valid_mtu fails, cork->opt should be freed if it is
-> > allocated in ip_setup_cork. Otherwise there could be a memleak.
-> >
-> > Fixes: 501a90c94510 ("inet: protect against too small mtu values.")
-> > Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
-> > ---
-> >  net/ipv4/ip_output.c | 9 ++++++++-
-> >  1 file changed, 8 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-> > index b06f678b03a1..3215ea07d398 100644
-> > --- a/net/ipv4/ip_output.c
-> > +++ b/net/ipv4/ip_output.c
-> > @@ -1282,6 +1282,7 @@ static int ip_setup_cork(struct sock *sk, struct =
-inet_cork *cork,
-> >  {
-> >         struct ip_options_rcu *opt;
-> >         struct rtable *rt;
-> > +       int free_opt =3D 0;
-> >
-> >         rt =3D *rtp;
-> >         if (unlikely(!rt))
-> > @@ -1297,6 +1298,7 @@ static int ip_setup_cork(struct sock *sk, struct =
-inet_cork *cork,
-> >                                             sk->sk_allocation);
-> >                         if (unlikely(!cork->opt))
-> >                                 return -ENOBUFS;
-> > +                       free_opt =3D 1;
-> >                 }
-> >                 memcpy(cork->opt, &opt->opt, sizeof(struct ip_options) =
-+ opt->opt.optlen);
-> >                 cork->flags |=3D IPCORK_OPT;
-> > @@ -1306,8 +1308,13 @@ static int ip_setup_cork(struct sock *sk, struct=
- inet_cork *cork,
-> >         cork->fragsize =3D ip_sk_use_pmtu(sk) ?
-> >                          dst_mtu(&rt->dst) : READ_ONCE(rt->dst.dev->mtu=
-);
-> >
-> > -       if (!inetdev_valid_mtu(cork->fragsize))
-> > +       if (!inetdev_valid_mtu(cork->fragsize)) {
-> > +               if (opt && free_opt) {
-> > +                       kfree(cork->opt);
-> > +                       cork->opt =3D NULL;
-> > +               }
-> >                 return -ENETUNREACH;
-> > +       }
-> >
-> >         cork->gso_size =3D ipc->gso_size;
-> >
-> > --
-> > 2.34.1
-> >
->
-> What about something simpler like :
->
-> diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-> index b06f678b03a19b806fd14764a4caad60caf02919..41537d18eecfd6e1163aacc35=
-e047c22468e04e6
-> 100644
-> --- a/net/ipv4/ip_output.c
-> +++ b/net/ipv4/ip_output.c
-> @@ -1287,6 +1287,12 @@ static int ip_setup_cork(struct sock *sk,
-> struct inet_cork *cork,
->         if (unlikely(!rt))
->                 return -EFAULT;
->
-> +       cork->fragsize =3D ip_sk_use_pmtu(sk) ?
-> +                        dst_mtu(&rt->dst) : READ_ONCE(rt->dst.dev->mtu);
-> +
-> +       if (!inetdev_valid_mtu(cork->fragsize))
-> +               return -ENETUNREACH;
-> +
->         /*
->          * setup for corking.
->          */
-> @@ -1303,12 +1309,6 @@ static int ip_setup_cork(struct sock *sk,
-> struct inet_cork *cork,
->                 cork->addr =3D ipc->addr;
->         }
->
-> -       cork->fragsize =3D ip_sk_use_pmtu(sk) ?
-> -                        dst_mtu(&rt->dst) : READ_ONCE(rt->dst.dev->mtu);
-> -
-> -       if (!inetdev_valid_mtu(cork->fragsize))
-> -               return -ENETUNREACH;
-> -
->         cork->gso_size =3D ipc->gso_size;
->
->         cork->dst =3D &rt->dst;
+Hi,
 
-Hi Zhipeng Lu
+Thanks for the patch. I would like to check some points about the
+change.
 
-Could you send a V2 off your patch ? I will then add a Reviewed-by:
-tag, thanks !
+On Tue, Jan 23, 2024 at 12:11:40AM -0800, Adam Goldman wrote:
+> If we are bus manager and the bus has inconsistent gap counts, send a 
+> bus reset immediately instead of trying to read the root node's config 
+> ROM first. Otherwise, we could spend a lot of time trying to read the 
+> config ROM but never succeeding.
+> 
+> This eliminates a 50+ second delay before the FireWire bus is usable 
+> after a newly connected device is powered on in certain circumstances.
+
+At first, would I request you to explain about the certain
+circumstances in the patch comment? It is really helpful to understand
+the change itself.
+
+> Signed-off-by: Adam Goldman <adamg@pobox.com>
+> Link: https://sourceforge.net/p/linux1394/mailman/message/58727806/
+> ---
+> 
+> --- linux-source-6.1.orig/drivers/firewire/core-card.c	2023-09-23 02:11:13.000000000 -0700
+> +++ linux-source-6.1/drivers/firewire/core-card.c	2024-01-22 04:23:06.000000000 -0800
+> @@ -435,6 +435,16 @@
+>  		 * config rom.  In either case, pick another root.
+>  		 */
+>  		new_root_id = local_id;
+> +	} else if (card->gap_count == 0) {
+> +		/* 
+> +		 * If self IDs have inconsistent gap counts, do a
+> +		 * bus reset ASAP. The config rom read might never
+> +		 * complete, so don't wait for it. However, still
+> +		 * send a PHY configuration packet prior to the bus
+> +		 * reset, as permitted by IEEE 1394-2008 8.4.5.2.
+> +		 */
+> +		new_root_id = local_id;
+> +		card->bm_retries = 0;
+>  	} else if (!root_device_is_running) {
+>  		/*
+> 		 * If we haven't probed this device yet, bail out now
+
+Next, after the condition branches, we can see below lines:
+
+```
+	/*
+	 * Finally, figure out if we should do a reset or not.  If we have
+	 * done less than 5 resets with the same physical topology and we
+	 * have either a new root or a new gap count setting, let's do it.
+	 */
+
+	if (card->bm_retries++ < 5 &&
+	    (card->gap_count != gap_count || new_root_id != root_id))
+		do_reset = true;
+```
+
+When the value of "card->gap_count" is zero, it would hit the condition of
+"card->gap_count != gap_count". I think the transmission of phy config
+packet and scheduling of short bus reset would be done, regardless of the
+change. Would I ask the main intention to the additional branch?
+
+
+Thanks
+
+Takashi Sakamoto
 
