@@ -1,152 +1,101 @@
-Return-Path: <linux-kernel+bounces-41439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0389C83F164
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 00:01:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 16A0E83F174
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 00:02:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A99FC287EEC
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 23:01:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6671287481
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 23:02:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0758F200AD;
-	Sat, 27 Jan 2024 23:01:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8F74200B2;
+	Sat, 27 Jan 2024 23:02:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f3D7F0cN"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LL5J5/am"
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BBAC1F93F;
-	Sat, 27 Jan 2024 23:01:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B17191F93F
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 23:02:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706396494; cv=none; b=P7Jb4VOMNVRT5Lc/a+bjsMj63WIg+8TlA2nr7ysWDyeDRqCv5nVEaVhbTUVtmPhnNdkJyRrdPFj3RsY10BHPvs/lPF+uzhjhT3anN7qlsqWDIrp4auJiG8YXqZLXZjG43a9O0/2wpBFjfjdQ9avuCYK3Bi9Jh7m9qpvPqsLGCEI=
+	t=1706396569; cv=none; b=AomusCTUpgXCx5VRVyjEghLO3O8xjFW1eGQUvK6uJMlYbO3MFjpvGY+NoT/JfSksR+UXEBdt36p23q/vrF582DLhnNj1eDRPi8sS+TcJ+QLw2swR3gs0XlruMIvGTb28L5Sd6bE+2CBN6ou2XHYMf6XI8z5W9mZENvNQlc6GgHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706396494; c=relaxed/simple;
-	bh=HQMTgPB4Bhpi6XTnDbAxXcr86RjC0yJcJ4MlTGyCRJA=;
+	s=arc-20240116; t=1706396569; c=relaxed/simple;
+	bh=OI/DYxsJSWBx+d25tKtsRfVL4GAUVdxqmdpn8lShZf4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=vByzMnmkPalTqv3JQOB2QamBYo+tGWtP+tV1532BILz5KpK2mWY70BXav3dWS5aRSEmNd2bbG0eoAG4fz8b75CIwz4m3PbWAyOP5ado0kNbylgTyVPV1K5SVbdPiMqyOYWO+DFWaOtxnTXbFXXPCGU1OJ+vn+o3LMzNrQ3lDE/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f3D7F0cN; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-51028acdcf0so1739089e87.0;
-        Sat, 27 Jan 2024 15:01:32 -0800 (PST)
+	 To:Cc:Content-Type; b=At71nFkgbWpfeemW/sCHge7nBERpmW337ELut3uXq0iy92lUtH2dBJlrm+AHQiSqUx+q2CkpkFYo+8p+vrWaZ//TsnwrCvb0UmWsxjjQc72x8RBa1O1q1yzE6fT1DvrNeN3/+cQEuc1K83NwbhalqWLfQgfVlNsIJzj4cHxiQcY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LL5J5/am; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5ff7a8b5e61so15049687b3.2
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 15:02:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706396490; x=1707001290; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706396565; x=1707001365; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=N3PtoOCmflXE8JrM44LwtaHSMNzcJ3eR+Esxbam8yVg=;
-        b=f3D7F0cN6227EU//2JzlSDOIKY/ezUigjsNgebcu4VF4MlPXvEsoxqmHSCwDaoXy7F
-         8pUUUnU1//oHObBsvHBcS4aHwoFYvqEU7KDLvDcsXiRLrmOzKN2bFmCaiuzY4JwOi7d8
-         17a9M9l8cPonHek/25o9d+wNfaWVT+O5z/bSJ0/NaNbGp2uQpjNM8r9oDAjwy64FKsuI
-         k0LJGGumZ4SfcWtxiq+SeoIM8AZ+9fpIp4h/OoSQ5j4pyDtfeqyhz8YFofMl3Vev8XjP
-         o0P7G2riYXWfI4Yqr+H9v/DjJUJkLYbi1dSxJ2TQ67Q7W+OG8THEjZX+Y2oC3Dr2oGqq
-         dSSQ==
+        bh=OI/DYxsJSWBx+d25tKtsRfVL4GAUVdxqmdpn8lShZf4=;
+        b=LL5J5/amWFJyixSoJ4X2157faCEDESiXfEqGXLzuJt4ntBLdTnR8KGnquBI5J+zLHf
+         RWghWMasiJqaD7N3H11e8rTymFRe0B154vMispUPO3t9fMyCtf17XZKph10kFok4QVRu
+         cVc6qLoMJaYrflGi73rh9yDKdyrqBnIg2c025wURB5TpupoCXv/6ckkfS0SQ2GJOIL1v
+         8oe9zCXmLy6Cx66UKAjaPEmvu/AjfXWJhmNySjrU0yizVfxwgyaZJebW7ELoZbc6Yct+
+         fuBhxDTqCmYO4U2kMS7gsWJjX6FIUTd8T9uMkSV/i0mBiA8+8LY9V7GUsB3l5My+L9Nt
+         R0AA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706396490; x=1707001290;
+        d=1e100.net; s=20230601; t=1706396565; x=1707001365;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=N3PtoOCmflXE8JrM44LwtaHSMNzcJ3eR+Esxbam8yVg=;
-        b=JQsJ7j7f4YBED6KyzbbW2FFyy6QC5sA06EStPkl+fNtaDSB3nNnIXLf/7Kx534k1GL
-         qKY+dR9OmZ5uZOsfCD01ideMmKK/Jkz5LkCeslcjbjRQ49gVGEMDQRd2lbxcTMB+neXN
-         m7O1rAJbE9fjZhkylecTOTqNPX8SpYGECyYiZ4y84Q7o2egqQutXi+9D7UxTgYC4+aNt
-         c3VQTaP5B9I16pkc8Dol/1VGo10OcTZ4qSw+00iS3EyrHrkClAJsM4mfcCRQUNHD+ljb
-         3L3IWTIi1I2J2+wFiCWv7NtKvl9ZF6/HwzNqxWI7QUQZ2jroVjjwKrGLMzikETy0Jp/w
-         wmcw==
-X-Gm-Message-State: AOJu0YwTZ+kj+xrOVkNeQJoEfGos5QSnlriVRI0eiYAMgjg6ezF8lAc6
-	J4tbnxfzFhO0XnNR4Q75/inelmchLIStgYPRAi19elw0JlTQKD2IZYetcKArjkMnbjE2IYAv2Zg
-	eoN0EiLAK+RVZRUGdJyQWGL5o/5c=
-X-Google-Smtp-Source: AGHT+IE+iOPuu6oBq6RfhXdXaSlN1kLy8vx7/5kCGbP8mMThNsfKdD+U3LBhdWItjkggF7qNNwFD84CJsW07upVjH9M=
-X-Received: by 2002:a05:6512:20d2:b0:50e:7aaf:ec53 with SMTP id
- u18-20020a05651220d200b0050e7aafec53mr1226739lfr.12.1706396490033; Sat, 27
- Jan 2024 15:01:30 -0800 (PST)
+        bh=OI/DYxsJSWBx+d25tKtsRfVL4GAUVdxqmdpn8lShZf4=;
+        b=ob+Aysup+Mxws1QpQ21NlHM9G0yQUZxmf7tx/BalID2AlVJ1lSeETJYooHfVhLsrPa
+         BZ8Imn63BvRyrgYpUtmroLOhYbiPqrDM8q5dYgr7cEV0yWcFABH3EYiDNvJFVCWe1kBq
+         gOjl+7yZCAiG+Q+W35OgerPyt8lWh3HHjlv7iBgb6+KmJLxxU1R7+cCb10a3rQGcUHR8
+         XxzB4R20/HidqPEW8Xp+U4QiULGBE46SllPWQNjuuwgyN/E3kIhuLpiptEMYlsTgEuaT
+         AvxkxG9Bmh7Ww8c1HEzV2osiOJUEPQj9w1hcXBUw2Jv3CGqwekpfR3dnZuLU0WTnQdYs
+         hoZA==
+X-Gm-Message-State: AOJu0YxYlt5bYMfnxrLZpA+iuNmILD6V7n+wcxDESncdjcKfEaqLEOY9
+	fyC8C84dLsqdob5hvIY0Av3QE0gsEYE2cQ5nVpbPSbVaPDXncP/oGtCPLlgh6+5/FF2QWu/hhE1
+	gszG/DjR6GJW5n/DolVwyiOjpjfd9+T5zj5qvZA==
+X-Google-Smtp-Source: AGHT+IGyjw9LIiDDoT2S5tGsoR6J36rkT7VTljb52lUEVS87VMLK8vJpNqzNYIdeGvFGjm5XifyDw3lPWoEfckgnn6c=
+X-Received: by 2002:a81:a709:0:b0:5ff:6173:e98e with SMTP id
+ e9-20020a81a709000000b005ff6173e98emr1920073ywh.63.1706396565671; Sat, 27 Jan
+ 2024 15:02:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126193143.245122-1-kovalev@altlinux.org> <2024012613-woozy-exhume-7b9d@gregkh>
- <472d92aa-1b49-43c9-a91f-80dfc8f25ad3@oracle.com>
-In-Reply-To: <472d92aa-1b49-43c9-a91f-80dfc8f25ad3@oracle.com>
-From: Steve French <smfrench@gmail.com>
-Date: Sat, 27 Jan 2024 17:01:18 -0600
-Message-ID: <CAH2r5mv2ipr4KJfMDXwHgq9L+kGdnRd1C2svcM=PCoDjA7uALA@mail.gmail.com>
-Subject: Re: [PATCH 0/2] smb: client: fix "df: Resource temporarily
- unavailable" on 5.10 stable kernel
-To: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-Cc: kovalev@altlinux.org, Greg KH <greg@kroah.com>, stable@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
-	keescook@chromium.org, sfrench@samba.org, corbet@lwn.net, 
-	natechancellor@gmail.com, ndesaulniers@google.com, 
-	"pc@manguebit.com" <pc@manguebit.com>, "Mohamed Abuelfotoh, Hazem" <abuehaze@amazon.com>, 
-	Shyam Prasad N <nspmangalore@gmail.com>, Vegard Nossum <vegard.nossum@oracle.com>, 
-	Darren Kenny <darren.kenny@oracle.com>
+References: <20240103132852.298964-1-emil.renner.berthing@canonical.com> <20240103132852.298964-3-emil.renner.berthing@canonical.com>
+In-Reply-To: <20240103132852.298964-3-emil.renner.berthing@canonical.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Sun, 28 Jan 2024 00:02:34 +0100
+Message-ID: <CACRpkdZhzC_4ZFV6cpA5=tHfzyv+NjFBoFC3=jenS2x0-0DZmg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/8] pinctrl: Add driver for the T-Head TH1520 SoC
+To: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Drew Fustini <dfustini@baylibre.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jan 27, 2024 at 12:43=E2=80=AFAM Harshit Mogalapalli
-<harshit.m.mogalapalli@oracle.com> wrote:
->
-> Hi,
->
-> Adding more people to CC.(who have looked at this issue)
->
-> On 27/01/24 6:19 am, Greg KH wrote:
-> > On Fri, Jan 26, 2024 at 10:31:41PM +0300, kovalev@altlinux.org wrote:
-> >> After mounting a remote cifs resource, it becomes unavailable:
-> >> df: /mnt/sambashare: Resource temporarily unavailable
-> >>
-> >> It was tested on the following Linux kernels:
-> >> Linux altlinux 5.10.208-std-def-alt1
-> >> Linux fedora 5.10.208-200.el8.x86_64
-> >>
-> >> The error appeared starting from kernel 5.10.206 after adding
-> >> the commit [1] "smb: client: fix OOB in SMB2_query_info_init()",
-> >> in which the buffer length increases by 1 as a result of changes:
-> >> ...
-> >> -      iov[0].iov_len =3D total_len - 1 + input_len;
-> >> +      iov[0].iov_len =3D len;
-> >> ...
-> >>
->
-> We can reproduce this on 5.15.148(latest 5.15.y) and Mohamed reported
-> this on 6.1.y, so we need backports there as well.
->
-> https://lore.kernel.org/all/09738f0f-53a2-43f1-a09d-a2bef48e1344@oracle.c=
-om/
->
->
-> [root@vm1 xfstests-dev]# ./check -g quick -s smb3
-> TEST_DEV=3D//<SERVER_IP>/TEST is mounted but not a type cifs filesystem
-> [root@vm1 xfstests-dev]# df
-> df: /mnt/test: Resource temporarily unavailable
->
->
-> This two patch series doesn't cleanly apply to 5.15.y.
->
-> Also I am unsure, which is the better approach to go with
->
-> Approach 1 - suggested by Paulo:
-> https://lore.kernel.org/all/446860c571d0699ed664175262a9e84b@manguebit.co=
-m/
->
-> Approach 2 - this series
-> Pulling in [PATCH 2/2] smb3: Replace smb2pdu 1-element arrays with
-> flex-arrays like this series did.
->
-> I think approach 1 is better as the changes are minimal, but please
-> correct me if that seems wrong.
+On Wed, Jan 3, 2024 at 2:29=E2=80=AFPM Emil Renner Berthing
+<emil.renner.berthing@canonical.com> wrote:
 
-Yes - Paulo's fix looks simple
+> Add pinctrl driver for the T-Head TH1520 RISC-V SoC.
+>
+> Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 
+This driver looks mostly fine but I am waiting for the bindings
+to be hashed out.
 
---=20
-Thanks,
-
-Steve
+Yours,
+Linus Walleij
 
