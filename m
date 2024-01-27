@@ -1,374 +1,111 @@
-Return-Path: <linux-kernel+bounces-40938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A82783E87F
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 01:34:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B219B83E886
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 01:37:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B8731F25816
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 00:34:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D3EFB21D2A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 00:37:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46A92A55;
-	Sat, 27 Jan 2024 00:34:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ED4823D8;
+	Sat, 27 Jan 2024 00:37:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y+nuApS6"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VRplKrZJ"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6A0839E;
-	Sat, 27 Jan 2024 00:34:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B11C39E
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 00:37:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706315662; cv=none; b=qOd1eOU/w5MjlfEzVQ+4OAstiC43ueGfB/lfDvWdWuPEcDD2aITX0QpGLsBcbQvIuPFkN2TWTmgzPCXY/J2QCCzhjQLLyIRXwPWt70lB6uW2g2/Pq5h0LGY1FwvdcEHf5oZrszaFlrtms47U6NrlcCJH2FkOV3YvnyIlLAr7lsI=
+	t=1706315828; cv=none; b=HMZqtQGD3xqiidQR9JbQCobwlm2HNbjureCTL2AhvR2TZ62542IVGSiUoexPfU+d4a53MuGF1U1Uk0Rf4NPFfl0g5N6jbzvrAwLdIRlDkugkVtoNAlnM6dB9HRZacMoYPMjOqb8/pnTQuUwZ95cATe8pgEOJbhb/N0mqnkvhAls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706315662; c=relaxed/simple;
-	bh=4XPEyzaSBvNLI1Qg82UwrUlD/qPJSCHU+bNF6HfO6qg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=JzihnCypBI6Cm3RYIr7gGOUQOcP21f0PZsAf/ttMRR9DDsWW1FMJI8MSzZI5bzWUrUPKzb3DXIGQxxaljqcOTacLKC9t2Ivryzh1v6MjUW+rMdj95ouUhc5GF45g4aAY+ySuMpS4T+fPT0LBSpEZ1crD3NTMe5x5/IrQMjLVmeM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y+nuApS6; arc=none smtp.client-ip=192.55.52.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706315660; x=1737851660;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=4XPEyzaSBvNLI1Qg82UwrUlD/qPJSCHU+bNF6HfO6qg=;
-  b=Y+nuApS6vla2kq86aXsBEv+o47ImfhyrlRe6P+C9dSkxTr0YDLTWNLpL
-   5J/HTgpbrW9qmuJxN2M7RQ1YYeclvDj9cGAJ+ak4TnB1FrNNYyZlU6Lsh
-   4280+g0CNL4lMO9u6TseFMbR3v+5cZrgFpUxd+qYhbbY8SF9asASyQRcm
-   TRDzPFXQCjdmz0ThPK4Vq8v0E0tgzbOZmtY++LLc8dDNPQL7vszuR2fNm
-   8asfG1pYaL7zlNULsGHl1SfXaqg1+MbdOuThSOMLpTamH2/4uguh6fP9i
-   D/WWqZV5bl57yOtUhjHj/A6NeSqUOk/UxM4olrqqh7aHjFyS7LNhJ8S23
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="401483846"
-X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
-   d="scan'208";a="401483846"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 16:34:19 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="906471871"
-X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
-   d="scan'208";a="906471871"
-Received: from vcostago-desk1.jf.intel.com (HELO vcostago-desk1) ([10.54.70.67])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 16:34:18 -0800
-From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: brauner@kernel.org, hu1.chen@intel.com, miklos@szeredi.hu,
- malini.bhandaru@intel.com, tim.c.chen@intel.com, mikko.ylinen@intel.com,
- lizhen.you@intel.com, linux-unionfs@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [RFC v2 3/4] overlayfs: Optimize credentials usage
-In-Reply-To: <CAOQ4uxh15X9pMY7Ck=iigaaKX11_77x5sZE9jxakTG9VpkuG6g@mail.gmail.com>
-References: <20240125235723.39507-1-vinicius.gomes@intel.com>
- <20240125235723.39507-4-vinicius.gomes@intel.com>
- <CAOQ4uxh15X9pMY7Ck=iigaaKX11_77x5sZE9jxakTG9VpkuG6g@mail.gmail.com>
-Date: Fri, 26 Jan 2024 16:34:17 -0800
-Message-ID: <87il3f4nsm.fsf@intel.com>
+	s=arc-20240116; t=1706315828; c=relaxed/simple;
+	bh=7mFQ2Sp6CaIqeHrP9eaRjtzUktjvoRpJ+ySFpau5l0U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Z9VLCo6yiWJeGGcN8U/iGkshetprwl0oSmgQNzjAyAMpJDfvqL2VWuyI1TcHVdQcaXBe9RVJdsAtQ/pfGoT4CpxH7wyaxi92uOPDFT/VJcaQSgBO1gKNs7LY1/W9n6Zw/l+P8v80JiwkB25/YZ6Ydky21Hpe4AbNrTDGFGQ3A/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VRplKrZJ; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a353f5407f1so2836366b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 16:37:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706315825; x=1706920625; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OEuX2u9xZxa9H/kOkuaGTOBQEZ702dhTtekxS4cUQE8=;
+        b=VRplKrZJq0cM0MCL0HIS4UWF86Mblj5yWm6ffubLbM8PM5IZNAg54zpJjENdHr1MRK
+         +D0aPKQop+aFzSq1aDbV1lRnCPIlffDawSS6mPwBM3oe+rJrsFSR4thZcfcjgsjTpajU
+         VDZU14NxrOxSKMWT/3qzP12SHyZRs/lt6Ye64EPD5kTnYj/4kjRqEbuR+mr32sWJpkdG
+         YhdJJyJnP7VyyP6mZj3ocAudSEzJcM3yWzZHsGGl9Wn1KUM/uamsFBO1GRRUDv41RASk
+         IQBwdiKDuUpqZDZqLEN3dnMHzLZw9ZC58kxvLcaXtyjxCp+PWjlUPiSdJOyffyoavmow
+         yDsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706315825; x=1706920625;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OEuX2u9xZxa9H/kOkuaGTOBQEZ702dhTtekxS4cUQE8=;
+        b=NgsEG6wd37tMCGh8vF9CNPvsoWsvHOUGQKdyypXsvMr58xRJf/ddENR8fKMhcZH+BG
+         zN5KjteokG1Xa/0e/d48C93mu3XSyecbZcPc944sTppREY/0wFuK4VG2UoBQRi/egCyV
+         J0NdchL4Oc12IVU2am7ZJKM2NKcXL1suAyNxVUsuLlAtbbfDSz98+KB1Od0eSJs2hIHX
+         0ORiD1+lcNrNvmcGr36Yz9SU+P2tRq+hg9za6mkADQ/hLOZKZdGKLKjVeLnBFsOLC6Bh
+         r10jUTCXI1QC/Pwt9SOU6mENEFgG4O0Q5okULIvyjUHm6XoV1mPPcju/T9s5c29XB0R5
+         KP2g==
+X-Gm-Message-State: AOJu0YwQ6LuD5zZR4wOaZaIZVqmDHISQDCHDcW/0V+ibw4zWKZV2iMw9
+	UY8OifHiLqDDi1IEnRVVWsE7ZsuWd4mtwBxV2zmb+P6E3hpdHzd4bFHwcTmjcRU=
+X-Google-Smtp-Source: AGHT+IHjfGheZyV2ZBT3VN27rpnKEmCPMQFKGEPt8gQ33V8m4RIxz59dLoYVueBDi2EAIs/NbD3HjA==
+X-Received: by 2002:a17:906:c343:b0:a2e:70b4:28b0 with SMTP id ci3-20020a170906c34300b00a2e70b428b0mr358260ejb.3.1706315824712;
+        Fri, 26 Jan 2024 16:37:04 -0800 (PST)
+Received: from puffmais.c.googlers.com.com (229.112.91.34.bc.googleusercontent.com. [34.91.112.229])
+        by smtp.gmail.com with ESMTPSA id vi1-20020a170907d40100b00a2f48a43c3esm1152235ejc.7.2024.01.26.16.37.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 16:37:04 -0800 (PST)
+From: =?UTF-8?q?Andr=C3=A9=20Draszik?= <andre.draszik@linaro.org>
+To: peter.griffin@linaro.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@android.com,
+	tudor.ambarus@linaro.org,
+	willmcvicker@google.com,
+	semen.protsenko@linaro.org,
+	alim.akhtar@samsung.com,
+	s.nawrocki@samsung.com,
+	tomasz.figa@gmail.com,
+	cw00.choi@samsung.com,
+	mturquette@baylibre.com,
+	sboyd@kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: gs101 oriole: peripheral block 0 (peric0) fixes    
+Date: Sat, 27 Jan 2024 00:35:49 +0000
+Message-ID: <20240127003607.501086-1-andre.draszik@linaro.org>
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Amir Goldstein <amir73il@gmail.com> writes:
+Hi,
 
-> On Fri, Jan 26, 2024 at 1:57=E2=80=AFAM Vinicius Costa Gomes
-> <vinicius.gomes@intel.com> wrote:
->>
->> File operations in overlayfs also check against the credentials of the
->> mounter task, stored in the superblock, this credentials will outlive
->> most of the operations. For these cases, use the recently introduced
->> guard statements to guarantee that override/revert_creds() are paired.
->>
->> Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
->> ---
->>  fs/overlayfs/copy_up.c |  4 +--
->>  fs/overlayfs/dir.c     | 22 +++++++------
->>  fs/overlayfs/file.c    | 70 ++++++++++++++++++++++--------------------
->>  fs/overlayfs/inode.c   | 60 +++++++++++++++++++-----------------
->>  fs/overlayfs/namei.c   | 21 ++++++-------
->>  fs/overlayfs/readdir.c | 18 +++++------
->>  fs/overlayfs/util.c    | 23 +++++++-------
->>  fs/overlayfs/xattrs.c  | 34 ++++++++++----------
->>  8 files changed, 130 insertions(+), 122 deletions(-)
->>
->> diff --git a/fs/overlayfs/copy_up.c b/fs/overlayfs/copy_up.c
->> index b8e25ca51016..55d1f2b60775 100644
->> --- a/fs/overlayfs/copy_up.c
->> +++ b/fs/overlayfs/copy_up.c
->> @@ -1202,7 +1202,8 @@ static int ovl_copy_up_flags(struct dentry *dentry=
-, int flags)
->>         if (err)
->>                 return err;
->>
->> -       old_cred =3D ovl_override_creds(dentry->d_sb);
->> +       old_cred =3D ovl_creds(dentry->d_sb);
->> +       guard(cred)(old_cred);
->>         while (!err) {
->>                 struct dentry *next;
->>                 struct dentry *parent =3D NULL;
->> @@ -1227,7 +1228,6 @@ static int ovl_copy_up_flags(struct dentry *dentry=
-, int flags)
->>                 dput(parent);
->>                 dput(next);
->>         }
->> -       revert_creds(old_cred);
->>
->>         return err;
->>  }
->> diff --git a/fs/overlayfs/dir.c b/fs/overlayfs/dir.c
->> index 0f8b4a719237..5aa43a3a7b3e 100644
->> --- a/fs/overlayfs/dir.c
->> +++ b/fs/overlayfs/dir.c
->> @@ -687,9 +687,9 @@ static int ovl_set_link_redirect(struct dentry *dent=
-ry)
->>         const struct cred *old_cred;
->>         int err;
->>
->> -       old_cred =3D ovl_override_creds(dentry->d_sb);
->> +       old_cred =3D ovl_creds(dentry->d_sb);
->> +       guard(cred)(old_cred);
->>         err =3D ovl_set_redirect(dentry, false);
->> -       revert_creds(old_cred);
->>
->>         return err;
->>  }
->> @@ -894,12 +894,13 @@ static int ovl_do_remove(struct dentry *dentry, bo=
-ol is_dir)
->>         if (err)
->>                 goto out;
->>
->> -       old_cred =3D ovl_override_creds(dentry->d_sb);
->> -       if (!lower_positive)
->> -               err =3D ovl_remove_upper(dentry, is_dir, &list);
->> -       else
->> -               err =3D ovl_remove_and_whiteout(dentry, &list);
->> -       revert_creds(old_cred);
->> +       old_cred =3D ovl_creds(dentry->d_sb);
->> +       scoped_guard(cred, old_cred) {
->> +               if (!lower_positive)
->> +                       err =3D ovl_remove_upper(dentry, is_dir, &list);
->> +               else
->> +                       err =3D ovl_remove_and_whiteout(dentry, &list);
->> +       }
->>         if (!err) {
->>                 if (is_dir)
->>                         clear_nlink(dentry->d_inode);
->> @@ -1146,7 +1147,8 @@ static int ovl_rename(struct mnt_idmap *idmap, str=
-uct inode *olddir,
->>                         goto out;
->>         }
->>
->> -       old_cred =3D ovl_override_creds(old->d_sb);
->> +       old_cred =3D ovl_creds(old->d_sb);
->> +       old_cred =3D override_creds_light(old_cred);
->>
->>         if (!list_empty(&list)) {
->>                 opaquedir =3D ovl_clear_empty(new, &list);
->> @@ -1279,7 +1281,7 @@ static int ovl_rename(struct mnt_idmap *idmap, str=
-uct inode *olddir,
->>  out_unlock:
->>         unlock_rename(new_upperdir, old_upperdir);
->>  out_revert_creds:
->> -       revert_creds(old_cred);
->> +       revert_creds_light(old_cred);
->>         if (update_nlink)
->>                 ovl_nlink_end(new);
->>         else
->
-> Most of my comments on this patch are identical to the ones I have made on
-> backing file, so rather complete that review before moving on to this big=
-ger
-> patch.
->
-> I even wonder if we need a specialized macro for overlayfs
-> guard(ovl_creds, ofs); or if
-> guard(cred, ovl_override_creds(dentry->d_sb));
-> is good enough.
->
+While working on peric1, I've noticed a few issues in the peric0 area
+and these patches are the result. They should all be pretty
+self-explanatory.
 
-I think that if the DEFINE_LOCK_GUARD_1() idea works, that might be
-unecessary. Let's see.
+Cheers,
+Andre'
 
-> One thing that stands out in functions like ovl_rename() is that,
-> understandably, you tried to preserve logic, but in fact, the scope of
-> override_creds/revert_creds() in some of the overlayfs functions ir rather
-> arbitrary.
->
+ arch/arm64/boot/dts/exynos/google/gs101.dtsi | 9 +++++----
+ drivers/clk/samsung/clk-gs101.c              | 8 +++-----
+ 2 files changed, 8 insertions(+), 9 deletions(-)
 
-That's very good to learn.=20
-
-> The simplest solution for functions like the above is to use guard(cred, =
-.
-> and extend the scope till the end of the function.
-> This needs more careful review, but the end result will be much cleaner.
->
-
-Yeah, increasing the indentation level of whole blocks cause the whole
-patch to be much harder to review.
-
-Using more guard() statements will certainly help.
-
->> diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
->> index 05536964d37f..482bf78555e2 100644
->> --- a/fs/overlayfs/file.c
->> +++ b/fs/overlayfs/file.c
->> @@ -42,7 +42,8 @@ static struct file *ovl_open_realfile(const struct fil=
-e *file,
->>         if (flags & O_APPEND)
->>                 acc_mode |=3D MAY_APPEND;
->>
->> -       old_cred =3D ovl_override_creds(inode->i_sb);
->> +       old_cred =3D ovl_creds(inode->i_sb);
->> +       guard(cred)(old_cred);
->>         real_idmap =3D mnt_idmap(realpath->mnt);
->>         err =3D inode_permission(real_idmap, realinode, MAY_OPEN | acc_m=
-ode);
->>         if (err) {
->> @@ -54,7 +55,6 @@ static struct file *ovl_open_realfile(const struct fil=
-e *file,
->>                 realfile =3D backing_file_open(&file->f_path, flags, rea=
-lpath,
->>                                              current_cred());
->>         }
->> -       revert_creds(old_cred);
->>
->>         pr_debug("open(%p[%pD2/%c], 0%o) -> (%p, 0%o)\n",
->>                  file, file, ovl_whatisit(inode, realinode), file->f_fla=
-gs,
->> @@ -214,9 +214,9 @@ static loff_t ovl_llseek(struct file *file, loff_t o=
-ffset, int whence)
->>         ovl_inode_lock(inode);
->>         real.file->f_pos =3D file->f_pos;
->>
->> -       old_cred =3D ovl_override_creds(inode->i_sb);
->> -       ret =3D vfs_llseek(real.file, offset, whence);
->> -       revert_creds(old_cred);
->> +       old_cred =3D ovl_creds(inode->i_sb);
->> +       scoped_guard(cred, old_cred)
->> +               ret =3D vfs_llseek(real.file, offset, whence);
->>
->>         file->f_pos =3D real.file->f_pos;
->>         ovl_inode_unlock(inode);
->> @@ -388,7 +388,6 @@ static ssize_t ovl_splice_write(struct pipe_inode_in=
-fo *pipe, struct file *out,
->>  static int ovl_fsync(struct file *file, loff_t start, loff_t end, int d=
-atasync)
->>  {
->>         struct fd real;
->> -       const struct cred *old_cred;
->>         int ret;
->>
->>         ret =3D ovl_sync_status(OVL_FS(file_inode(file)->i_sb));
->> @@ -401,9 +400,11 @@ static int ovl_fsync(struct file *file, loff_t star=
-t, loff_t end, int datasync)
->>
->>         /* Don't sync lower file for fear of receiving EROFS error */
->>         if (file_inode(real.file) =3D=3D ovl_inode_upper(file_inode(file=
-))) {
->> -               old_cred =3D ovl_override_creds(file_inode(file)->i_sb);
->> +               const struct cred *old_cred;
->> +
->> +               old_cred =3D ovl_creds(file_inode(file)->i_sb);
->> +               guard(cred)(old_cred);
->>                 ret =3D vfs_fsync_range(real.file, start, end, datasync);
->> -               revert_creds(old_cred);
->>         }
->>
->>         fdput(real);
->> @@ -441,9 +442,9 @@ static long ovl_fallocate(struct file *file, int mod=
-e, loff_t offset, loff_t len
->>         if (ret)
->>                 goto out_unlock;
->>
->> -       old_cred =3D ovl_override_creds(file_inode(file)->i_sb);
->> -       ret =3D vfs_fallocate(real.file, mode, offset, len);
->> -       revert_creds(old_cred);
->> +       old_cred =3D ovl_creds(file_inode(file)->i_sb);
->> +       scoped_guard(cred, old_cred)
->> +               ret =3D vfs_fallocate(real.file, mode, offset, len);
->>
->>         /* Update size */
->>         ovl_file_modified(file);
->> @@ -466,9 +467,9 @@ static int ovl_fadvise(struct file *file, loff_t off=
-set, loff_t len, int advice)
->>         if (ret)
->>                 return ret;
->>
->> -       old_cred =3D ovl_override_creds(file_inode(file)->i_sb);
->> -       ret =3D vfs_fadvise(real.file, offset, len, advice);
->> -       revert_creds(old_cred);
->> +       old_cred =3D ovl_creds(file_inode(file)->i_sb);
->> +       scoped_guard(cred, old_cred)
->> +               ret =3D vfs_fadvise(real.file, offset, len, advice);
->>
->>         fdput(real);
->>
->> @@ -509,25 +510,25 @@ static loff_t ovl_copyfile(struct file *file_in, l=
-off_t pos_in,
->>                 goto out_unlock;
->>         }
->>
->> -       old_cred =3D ovl_override_creds(file_inode(file_out)->i_sb);
->> -       switch (op) {
->> -       case OVL_COPY:
->> -               ret =3D vfs_copy_file_range(real_in.file, pos_in,
->> -                                         real_out.file, pos_out, len, f=
-lags);
->> -               break;
->> +       old_cred =3D ovl_creds(file_inode(file_out)->i_sb);
->> +       scoped_guard(cred, old_cred)
->> +               switch (op) {
->> +               case OVL_COPY:
->> +                       ret =3D vfs_copy_file_range(real_in.file, pos_in,
->> +                                                 real_out.file, pos_out=
-, len, flags);
->> +                       break;
->>
->> -       case OVL_CLONE:
->> -               ret =3D vfs_clone_file_range(real_in.file, pos_in,
->> -                                          real_out.file, pos_out, len, =
-flags);
->> -               break;
->> +               case OVL_CLONE:
->> +                       ret =3D vfs_clone_file_range(real_in.file, pos_i=
-n,
->> +                                                  real_out.file, pos_ou=
-t, len, flags);
->> +                       break;
->>
->> -       case OVL_DEDUPE:
->> -               ret =3D vfs_dedupe_file_range_one(real_in.file, pos_in,
->> -                                               real_out.file, pos_out, =
-len,
->> -                                               flags);
->> -               break;
->> -       }
->> -       revert_creds(old_cred);
->> +               case OVL_DEDUPE:
->> +                       ret =3D vfs_dedupe_file_range_one(real_in.file, =
-pos_in,
->> +                                                       real_out.file, p=
-os_out, len,
->> +                                                       flags);
->> +                       break;
->> +               }
->>
->>         /* Update size */
->>         ovl_file_modified(file_out);
->
-> This is another case where extending the scope to the end of the function
-> is the simpler/cleaner solution.
->
-> Thanks,
-> Amir.
-
---=20
-Vinicius
 
