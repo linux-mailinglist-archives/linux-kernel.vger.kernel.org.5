@@ -1,177 +1,125 @@
-Return-Path: <linux-kernel+bounces-41205-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF96983ED63
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 14:41:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 756D783ED65
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 14:47:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E4031F22E4B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 13:41:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A81F11C21E93
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 13:47:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A662D25639;
-	Sat, 27 Jan 2024 13:41:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D7A12576A;
+	Sat, 27 Jan 2024 13:46:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DgYYQTU0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G4lLGmLt"
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E66551E51D;
-	Sat, 27 Jan 2024 13:41:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75C0F945A;
+	Sat, 27 Jan 2024 13:46:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706362911; cv=none; b=Hx60CBMJ03bh80jjjPgs3Azl7w7MPHigJvWnSJ1SZ42tdYY2hYRokRg2jm9oHeQfH4XFwv5zNykfeW7RjCzeLNNiYW3wZiUnldeziOzrXJZK3eDjzwyH1AqPzCEwreJKicaiuDyOehcauKgI49PW2qSpwLEAZcyt8oxcA9Hw704=
+	t=1706363212; cv=none; b=K9U+a+LD3TrAPxeWsrB2+/cIeSd3jZJH2hKsfC37aaTuXUlJyK3UUfZxe/xDgPLfkn1gIdw2+Tq62oCYbIWsY/sigc9tz2uHZVNAo5kFYnZK8R9qwUjFpsPW+NJAZCnv8S8VnUSUfNewqM58osgsMA/Zi0QnKK3kplgIlpmXZpE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706362911; c=relaxed/simple;
-	bh=hosPsHG0ZyfR8sKG0hSNgK2DCihwOOAQrKZoFmzPQUc=;
+	s=arc-20240116; t=1706363212; c=relaxed/simple;
+	bh=j7l3zAsK78DoVXLg6iPo3Iy7at8rxO0NoQr3L4U6WXQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Eg8uU/orT4o8EYhsN+dYqTQe29wyv9n/Pud7flQGveQuTc7morVG08DODBqr17/79W40XFEySBlrl/s4T+Ge5icbSp0dG8VRWTelrVsht7wryRKqy8nVFSHyvx5nGDNTq51Cn85iiI5aTOJiVJDOwX9OjpUTD0UGqt45PUXZ7jc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DgYYQTU0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 621A1C433F1;
-	Sat, 27 Jan 2024 13:41:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706362910;
-	bh=hosPsHG0ZyfR8sKG0hSNgK2DCihwOOAQrKZoFmzPQUc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=DgYYQTU0Q3ngEJGlfrBXOXCFHFtvdeK7RLdORupoijhaDQERHTWp1j+KYsPCpHQcO
-	 pj6cSuHdtW55VVZD57WqW73TdqcLKeS6kih2WuRErRhFIUMoj9muauQgzT1INqDTgy
-	 KYwJQu9w8EHS9RtgZwuxT3bbrhOwyHV/Jbw3LMOP28BLxDOpZxC/0aLzyOa04/HydS
-	 Ws6gBGevTJjGeO1OYVcrtvY8xNCrMJ7gtTbFyxpvK5FWSUq/rUYsaEx07/8SDRCuyL
-	 rXwlV9jW9TbybpvXttdGQ6Lj4ABARD2tSWGMiIC/zFv3vA5DgMjZk4zqGC5BugLIlR
-	 t7kHPp7jUgfmg==
-Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-595b3644acbso1225358eaf.1;
-        Sat, 27 Jan 2024 05:41:50 -0800 (PST)
-X-Gm-Message-State: AOJu0YzmUk8cLBx2eCekE/2EKTwpzm+e6gznvpLFW8DZ1gc171vNJKAU
-	jTZ/Pq7cFkT10h2baMSAQi/1MXEu1p6PcAeG67V+dC8Bx8m8s3g4GQmKj0NsVFdgkZjkmGqUuKu
-	zEHZlQZ1A5NntryDmYlcevv7X26w=
-X-Google-Smtp-Source: AGHT+IG3fUb8Ad4+sr7qrvoyt+C0ZtD2RWS3ld+lIM4h3epDbz8xcPsi5sdfx66Hm5aKT7X+rx/K9BDQfWP1ePI0OME=
-X-Received: by 2002:a05:6870:709e:b0:215:30c3:a2c1 with SMTP id
- v30-20020a056870709e00b0021530c3a2c1mr1046686oae.48.1706362909773; Sat, 27
- Jan 2024 05:41:49 -0800 (PST)
+	 To:Cc:Content-Type; b=QFd8YlBvFrdtbLPrAMmUrc35QngJsQcC4tNVbSpDz4dMEzxxz/i20XZg3fYX0mqGcgqCQKZZaQXWwRULIMJlhaXOf71co2N6Ca5j+AKSgTsJ/EG8cwx8Oz9pc9nL+sbMt65u/6AjQSjH3XruNeNd97sL++oKuJCBLgY2kkkUc+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G4lLGmLt; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-603c5d7997aso256467b3.1;
+        Sat, 27 Jan 2024 05:46:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706363210; x=1706968010; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j7l3zAsK78DoVXLg6iPo3Iy7at8rxO0NoQr3L4U6WXQ=;
+        b=G4lLGmLt+8tIUu3seRozH8eeI2hwU9AYmBHqs8YIPNuMx7oF47ee9XmlBPavPkVSMZ
+         tO3lR0i2IdMuUtLiMJwXVxOaBTr/9ro6DNB8FBafYpFc0oXyCqMC4GSijbDc20V/grx7
+         RZ7Nh+AZIcI9dlwDqqQUd9fIXjrL1fYlPEy1xfLd2QhgyVpO21s8vJjOKtKAmoV1S7rI
+         ntD52yxQd42e4eK1fyJQgf60Fw0F8TKBAOdqWbBprjOmeCUKmqTS8eD9VLBjFZSBryFg
+         6viE09cNQKeeXjklHAN6+8HSk77YatBOr1M0ORMsi2UpeoO7+Xr1G9nz8HwunYqJLH/b
+         1V/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706363210; x=1706968010;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j7l3zAsK78DoVXLg6iPo3Iy7at8rxO0NoQr3L4U6WXQ=;
+        b=TpDBfZpBR4Cv7ohKo6Y8MqmW+iZ8V6A4f7NiVFxjI2BPQMhNJFgnzAixxe9p6sBAvn
+         RL6RbVq10lm87h2e0ibzMEUQd2j4tjRy2uk69cfaEElkzusHWYGadqIuRYNNsaaT278q
+         Qgz7jqaL4BdNLNCuAuM8A0gFw+4ZfjycMIX7jeMivKhPQEK7WSeAoIdFaD8J6jlmHcD1
+         VHuzzNVnLryVptG4AYnPyKENfSO0dLnykXIK1cOZUzR6mP0XDHktPcn7lXaYKE5qp7rO
+         VzApM4a3X+qRtyWyH09WPk+v+P3mHuX4qkcuovYwLh2Ufz3ISIZrzCknJPA2SWzz+Ffn
+         nJIg==
+X-Gm-Message-State: AOJu0YwkIXcbS2PSKuqdxhT73UPFQvAjZSBSrWdR8yQGH0Mu5QvsARnG
+	IlyE6ax23M2By3uyV7CYq5sqXOxonFJfJsCUGCKuemVecoRTlMKUD5hQIeaNxFY+AISbsOh/RlO
+	Sq8FNJl8mu+AB7SOq04INOZ7wfP8=
+X-Google-Smtp-Source: AGHT+IFJhLQKZrKheOpp5g5ZHWB5tU803FXCdkL1IkQzwwg5UM6oxYDf7ckc24PT/Pj4gwSFC+muNtf44ryFkoh0xeA=
+X-Received: by 2002:a81:8411:0:b0:602:d19d:7853 with SMTP id
+ u17-20020a818411000000b00602d19d7853mr1231429ywf.38.1706363210302; Sat, 27
+ Jan 2024 05:46:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <d9ac2960-6644-4a87-b5e4-4bfb6e0364a8@aibsd.com>
- <CAK7LNATDD2gC53T5n7vCUH6O6mdAm801fTWyKi9fji+5Kb+0ng@mail.gmail.com> <20240122230255.GD141255@dev-fedora.aadp>
-In-Reply-To: <20240122230255.GD141255@dev-fedora.aadp>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Sat, 27 Jan 2024 22:41:13 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARa4YPu_+KW1_E4RKO95JqUxS+DM8X6fmjr4SmV-Sgk4Q@mail.gmail.com>
-Message-ID: <CAK7LNARa4YPu_+KW1_E4RKO95JqUxS+DM8X6fmjr4SmV-Sgk4Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] modpost: inform compilers that fatal() never returns
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Aiden Leong <aiden.leong@aibsd.com>, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, ndesaulniers@google.com, nicolas@fjasle.eu, 
-	clang-built-linux <llvm@lists.linux.dev>, 
-	=?UTF-8?B?Ru+/ve+/ve+/vW5nLXJ177+977+977+9IFPvv73vv73vv71uZw==?= <maskray@google.com>
+References: <CANiq72nnph7LS1fLRtHz8NJ91PWXPaUnm0EuoV3wrbvK398AnA@mail.gmail.com>
+ <20230608-spiritism-gonad-5f5aff4c3a24@wendy> <20240117-swiftly-parasail-618d62972d6e@spud>
+ <CANiq72mVKCOAuK4Qe+8AHmpkFwyJsVfx8AqB7ccGi3DYpSSWcw@mail.gmail.com>
+ <20240118-implode-delirium-eefdd86e170e@spud> <CANiq72nx1s_nyvPW86jL7eiOxROr18LfOJqNtw8L42CP+gkhRg@mail.gmail.com>
+ <20240125-bucked-payroll-47f82077b262@wendy> <CANiq72k7n0aZrifRRU08N8qLkNe+2EZwijZy5sM7M56n2xYHgQ@mail.gmail.com>
+ <20240125-lazy-thrower-744aacc6632a@wendy> <CANiq72kb+_utZrYHtoKZQtQazikmkjpVUHpTBcaANizduMF5QQ@mail.gmail.com>
+ <20240126-eccentric-jaywalker-3560e2151a92@spud>
+In-Reply-To: <20240126-eccentric-jaywalker-3560e2151a92@spud>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Sat, 27 Jan 2024 14:46:38 +0100
+Message-ID: <CANiq72nu2NXUWYanHZd5EXgX4P_v673EWn6SCRW60Es9naraQQ@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] RISC-V: enable rust
+To: Conor Dooley <conor@kernel.org>
+Cc: Conor Dooley <conor.dooley@microchip.com>, linux-riscv@lists.infradead.org, 
+	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>, 
+	rust-for-linux@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
+	Matthew Maurer <mmaurer@google.com>, Ramon de C Valle <rcvalle@google.com>, 
+	Sami Tolvanen <samitolvanen@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 23, 2024 at 8:02=E2=80=AFAM Nathan Chancellor <nathan@kernel.or=
-g> wrote:
+On Fri, Jan 26, 2024 at 11:01=E2=80=AFPM Conor Dooley <conor@kernel.org> wr=
+ote:
 >
-> On Mon, Jan 22, 2024 at 10:29:32PM +0900, Masahiro Yamada wrote:
-> > +CC: clang-built-linux list, Fangrui
-> >
-> > On Mon, Jan 22, 2024 at 1:04=E2=80=AFPM Aiden Leong <aiden.leong@aibsd.=
-com> wrote:
-> > >
-> > >
-> > >  > The function fatal() never returns because modpost_log() calls exi=
-t(1)
-> > >
-> > >  > when LOG_FATAL is passed.
-> > >  >
-> > >  > Inform compilers of this fact so that unreachable code flow can be
-> > >  > identified at compile time.
-> > >  >
-> > >  > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > >  > Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-> > >  > ---
-> > >  >
-> > >  > Changes in v2:
-> > >  >   - Use noreturn attribute together with alias
-> > >  >
-> > >  >  scripts/mod/modpost.c | 3 +++
-> > >  >  scripts/mod/modpost.h | 5 ++++-
-> > >  >  2 files changed, 7 insertions(+), 1 deletion(-)
-> > >  >
-> > >  > diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-> > >  > index ca0a90158f85..c13bc9095df3 100644
-> > >  > --- a/scripts/mod/modpost.c
-> > >  > +++ b/scripts/mod/modpost.c
-> > >  > @@ -90,6 +90,9 @@ void modpost_log(enum loglevel loglevel, const c=
-har
-> > > *fmt, ...)
-> > >  >          error_occurred =3D true;
-> > >  >  }
-> > >  >
-> > >  > +void __attribute__((alias("modpost_log")))
-> > >
-> > > Hi Masahiro,
-> > > I cross-compile kernel on Apple Silicon MacBook Pro
-> > > and every thing works well until this patch.
-> > >
-> > > My build command:
-> > > make ARCH=3Darm CROSS_COMPILE=3Darm-none-eabi- \
-> > > HOSTCFLAGS=3D"-I/opt/homebrew/opt/openssl/include" \
-> > > HOSTLDFLAGS=3D"-L/opt/homebrew/opt/openssl/lib"
-> > >
-> > > Error message:
-> > > scripts/mod/modpost.c:93:21: error: aliases are not supported on darw=
-in
-> >
-> >
-> > It is unfortunate.  Indeed, I see this message in:
-> >
-> > clang/include/clang/Basic/DiagnosticSemaKinds.td
-> >
-> >
-> > Is this limitation due to macOS executable (PEF),
-> > or is it Clang-specific?
->
-> Based on my admittedly brief research, this seems related to the Mach-O
-> format. That message was added by [1] in response to [2] but the message
-> mentioned weak aliases being supported. A further clarification was made
-> in [3] to state that all aliases are unsupported as a result of some
-> internal Apple bug it seems but I do see a couple of bug reports stating
-> that may not be true [4][5] (although that does not seem relevant for
-> this report).
->
-> [1]: https://github.com/llvm/llvm-project/commit/0017c5fa92ad3b10e15fd34f=
-3865e8e5b850a5ed
-> [2]: https://llvm.org/bz8720
-> [3]: https://github.com/llvm/llvm-project/commit/4e30b96834cea5682a8e9e02=
-4dda06319825000a
-> [4]: https://github.com/llvm/llvm-project/issues/11488
-> [5]: https://github.com/llvm/llvm-project/issues/71001
+> Is that even needed? We already have ARCH_SUPPORTS_CFI_CLANG and AFAIU
+> rust supports it if clang does, so a second option is superfluous?
 
+From a quick look, I don't see it enabled in any RISC-V built-in
+target in `rustc` yet.
 
+It may also still be the case that KCFI needs some tweaks for, say,
+RISC-V, before the flag actually works, i.e. we couldn't just test the
+flag in that case -- Ramon: how likely is it that RISC-V would work if
+KCFI works for aarch64 and x86_64?
 
-Thank you.
-As far as I understood, macOS seems to support weak aliases.
+> I'm reading back what I wrote, and I must have been trying to get out
+> the door or something because none of it really makes that much sense.
+> Of course an unknown option should be detectable at build time and not
+> be a silent breakage. Maybe I should have written the patch for this
+> before sending the mail rather than writing the mail based on what was
+> in my head.
 
-With [5] fixed, perhaps we could do the following:
+No worries, it happens. I probably added to the confusion when I
+replied with the "testing the unstable flag".
 
--void __attribute__((alias("modpost_log")))
-+void __attribute__((weak, alias("modpost_log")))
-
-
-But, we do not need to wait for it.
-We can do similar without aliases at all.
-
-fix submitted:
-https://lore.kernel.org/all/20240127132811.726504-1-masahiroy@kernel.org/T/=
-#u
-
-
-
-
---=20
-Best Regards
-Masahiro Yamada
+Cheers,
+Miguel
 
