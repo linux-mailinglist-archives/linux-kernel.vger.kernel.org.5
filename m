@@ -1,55 +1,52 @@
-Return-Path: <linux-kernel+bounces-41155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41156-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8613F83ECB6
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 11:32:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CB6B83ECBA
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 11:35:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F8DB284EB1
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 10:32:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6D3A1F236CD
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 10:35:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 264871EB3C;
-	Sat, 27 Jan 2024 10:32:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BBA4200D6;
+	Sat, 27 Jan 2024 10:35:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b="ebm1eu0k"
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="R8gHkGqw"
+Received: from mout.web.de (mout.web.de [212.227.15.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43048D51B
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 10:32:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0A6D11CBA;
+	Sat, 27 Jan 2024 10:35:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706351536; cv=none; b=HtOFMc9+gKX4T6Ky7XmyFPsfW8nWTvbIGQGxRfnG4x8UQF8ULqvp5eKeCDVI7C19GDzP1Uud1XjfdFOGc6ueX9BvC80cxOUtHoRwsHnD5zQImhwtdfby6o06UbG/NpY6AANN0c326E0Qck/to+TSSv2Zq9gRoEFpf2cOhmb6SN0=
+	t=1706351740; cv=none; b=htL31F0p0Mkm9jDUHTp+ifAZeLucSzxt2VrSHNIZtccPi446EQ+Hs72soobEjWZSuajeEyovm8wYZqd4FM3t85bkeP3K86u4QELBrXjEQ85SMuY2Nk9yuM2ftAghuiVdSfEvSzF1pHPp9Jb9OEq4g0X+G90b1emaoR/D6Itb5Vk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706351536; c=relaxed/simple;
-	bh=9QK0Q7SpJNR8tm+Av1rRqAzJ0TA+XkMfzTAYI3Snby0=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=BRq8a/NrZbBMZ9Bbl7qvH57cikyzznUWE3ClJrS62I53szBNIpZkZEvW9SiX4wn4In5CZxbcbZfG7Dz9UdK7hZW+JqZaWyt1coRbXPXcrZeU86BfybFh9yKA80bpnb14So4WX6h5Um7CSDkY44Ef9rOFCj4EAIe4LFTxPDxpwRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org; spf=pass smtp.mailfrom=cu-phil.org; dkim=pass (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b=ebm1eu0k; arc=none smtp.client-ip=194.63.252.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cu-phil.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cu-phil.org
-	; s=ds202401; h=Content-Transfer-Encoding:Content-Type:Subject:From:To:
-	MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=3b1+IhDrNtrODWDnuDZCtfjsEbG4QILA9A9p4AmKWRA=; b=ebm1eu0kqgiGGQjKuYMHP5/hZN
-	tfU7wKPGSggpMU64XgNOAiZFZ/gmNj3wddv9l8CsQv20T58dZlxP6W8fkeU5PkzxXl1RsP5VDR4UJ
-	65FL8OD2fJqy232I71Z5Yj301uZGk9AOwhVTCmXh3IXfoGbb6UuJ3EyoAuS1MxyKLqOD2ZSJb0Blg
-	3fLfAp+OicBI+85OR4AOEZsSkmNm+8iZLSpcP77vQezmkL5cHkNfRq3OmjyGL9ufKxalumB1Za5t6
-	omg3+wXyibY/Rpd7jCEMAv5tMI3jD9ARx0kH8je972npYKCEPyzXQtNkkE8CY/AaQPp09FOgf2Jw3
-	6awEpgjg==;
-Received: from [84.215.119.50] (port=63601 helo=[192.168.0.2])
-	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <Ywe_Caerlyn@cu-phil.org>)
-	id 1rTfyo-00EvjX-7k
-	for linux-kernel@vger.kernel.org;
-	Sat, 27 Jan 2024 11:32:06 +0100
-Message-ID: <3de1c088-115a-4290-aa5c-39fb441e5ef6@cu-phil.org>
-Date: Sat, 27 Jan 2024 11:32:05 +0100
+	s=arc-20240116; t=1706351740; c=relaxed/simple;
+	bh=bBw75j9IqFgnIbLcow/2PLqrMy0+1Vb6FnaPfM8nBGU=;
+	h=Message-ID:Date:MIME-Version:To:References:Subject:From:Cc:
+	 In-Reply-To:Content-Type; b=ZEF3ETJmoUlFg7+pS4F1cHq6h0EALDtRf7aZYsTxgRiEnN9FBKq4F36nAJNPDJiYU0+OXU0A+vc/NYT5p730Sxq9Qdtoxoc4E13A5FsBLxyG55BOXzpjk6vxs/G/uwSFsHIwz8hjUSNgh908FJ2HCcJGNXXYNmtmyzVRbAcSyaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=R8gHkGqw; arc=none smtp.client-ip=212.227.15.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1706351703; x=1706956503; i=markus.elfring@web.de;
+	bh=bBw75j9IqFgnIbLcow/2PLqrMy0+1Vb6FnaPfM8nBGU=;
+	h=X-UI-Sender-Class:Date:To:References:Subject:From:Cc:
+	 In-Reply-To;
+	b=R8gHkGqwm3Vw6BI9+PPK3bU00tIc5S/VlKUKmRx+VVchrkvx30esPB5/bcTj81z/
+	 NiVtb1w8C24Yvjn/3aHwCIZFKLxF0tstKi0I6WpW6rdWpJazIWAbXVyTmTM512dKY
+	 aluzYKK/HO5yxK4zYxrQOvr4fq5uSsfbm8hJaW6dlqhHhlc/OEMLqg3rNuzpgCw16
+	 VX/ExCsYxqGM204aGGhw7Q8nSBxDMuEOc0pdbaaOBReScXIQGmySyRcz2OSgq9aOI
+	 WTwUl0dglHzYh9fFS+iWY6ekrNAeuY86SWZTi5BhmZpw5JCrRQ939V5GnJLp2/xzB
+	 WlJ4LhV7zqhlohqn4Q==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.81.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MT7WN-1reMC81YnH-00Uaiv; Sat, 27
+ Jan 2024 11:35:03 +0100
+Message-ID: <72f6297c-99ea-4f92-b049-1a33fa864cf5@web.de>
+Date: Sat, 27 Jan 2024 11:34:59 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,18 +54,51 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: linux-kernel@vger.kernel.org
-From: Ywe Caerlyn <Ywe_Caerlyn@cu-phil.org>
-Subject: RS X (Fair Source, @Labour Party Digital Politics)
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To: Kunwu Chan <chentao@kylinos.cn>, coreteam@netfilter.org,
+ netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Florian Westphal <fw@strlen.de>,
+ Jakub Kicinski <kuba@kernel.org>, Jozsef Kadlecsik <kadlec@netfilter.org>,
+ Pablo Neira Ayuso <pablo@netfilter.org>, Paolo Abeni <pabeni@redhat.com>
+References: <20240123024631.396631-1-chentao@kylinos.cn>
+Subject: Re: [PATCH nf-next] netfilter: nf_conncount: Use KMEM_CACHE() instead
+ of kmem_cache_create()
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, Simon Horman <horms@kernel.org>
+In-Reply-To: <20240123024631.396631-1-chentao@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:9pUtgJwNPHO1FUc7Q6gwWDK324oGPWcIa8GDBsiT0bDwz8Q57ch
+ 48FajJ83+dQzUMagRk8tTnNdyGCXarlXje2J8EQXwCfqVTGUm5OyLfgx28Rm52yTuCwoYqR
+ kOLSqYFweLsEyi1dc/8vfrncn2FIMw9Y0/XCgDJGbcrzPdPcTI8k58dgWTsqHWcJTitX7hQ
+ /Q0e86go0eCnPeNBfO04A==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:fbPKtf/JPZY=;sgJWmdXtWZFvN7UxGJ2XVWET5uf
+ 0rjAClmMxvbIQhxLMWsgG9If2ddardVD1W5qH8kFq5elE+jt2ESUlAxd0/16LNJkahxamOpHM
+ rBFOayVIBCSE7penEwQopZZIZxWAqO8uRle454OGP8G5GfEGXDAmaWtld8NDWrVA394lwe4kJ
+ +goe2b3rOZ5g5HPEyt9n3bO1larbB1mAGQr1EZeZnV0tr6fArRU20tqvWy7mZ/puC9EI3YhE9
+ GsJBDSNiP2hi9OCJeNSjI78UBHYYhfloZ3ndVNT1W1x2F59X0HKHivp/HtNIBq24/5ElRUvx6
+ 7bXKNIiZY5Cjqnd2Kx9ylpFVV4OFCOyuE0Da2pLlevE+yawJgJfItmzCaAqECzOj92wGbetrE
+ BcmqanflwVvoM5IYqkZblx2POmitvm5bbngGqvF6UqrbaNzmVq4SAzoKduXnbmbVI103Weibn
+ NRLqyQXan0zsiDHR9Z26xeRUXsIoBqTDpZ1B0K2OblQwDjZkFVypsBvuiREQirP2qdL5muvjJ
+ sJWdPoyExdgorIqH2ZfOmdy4I7+dYMrwS9LqvdJoYlgW8esT6qZkcmqGITZaTNRZ5A2q+UQXv
+ MvhShA+G9zFEqsYMPvoCYnQVUZaAAjeDoEeMzu9j9+VBYLaBp0ucA+6+/7meIs1URUrRion69
+ CAiMwOtHjZjqKbIA0vsxR5atMQqbfcofJHLYNX+ZOsvtZy+RGZ7BOE/n23Ebn0R6mq5Ogl7rm
+ is6ITHQP2x4Tf1TUUJotyGCHWh3T9faJwTs0iwh6qhjOy5HL0PbVKluAd2DYWv+yGMK1ZyMZO
+ j2602NkPUGPIV0IUWqMGcAmTjoH1GVt2OJnCh1a28ZhBV6MA8Q0V4MpBDec/Gln3svwYROLeK
+ ApHoM467gZG/m8dR2DVChHp2F4ih4qWWIfw6GNGnLEUq/oxkkTz6LoKDg3JHahUTSLWqxbdL5
+ ZdSUSw==
 
-I also suggest supporting Fair Source, through @Labour Party Digital 
-Politics.
+> Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+> to simplify the creation of SLAB caches.
 
-The @ is similar to their symbol, and is commonly used in computers, and 
-is effective for world wide Fair Source politics.
+I suggest to replace the word =E2=80=9Cnew=E2=80=9D by a reference to the =
+commit 8eb8284b412906181357c2b0110d879d5af95e52
+("usercopy: Prepare for usercopy whitelisting").
 
--Peace!
-Ywe.
+See also related background information from 2017-06-10.
+
+Regards,
+Markus
 
