@@ -1,115 +1,125 @@
-Return-Path: <linux-kernel+bounces-40922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40924-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8C5583E81D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 01:16:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBD5383E82A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 01:20:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 494B51F23EC4
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 00:16:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75E21B21A82
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 00:20:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E28C239B;
-	Sat, 27 Jan 2024 00:16:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CD02199;
+	Sat, 27 Jan 2024 00:19:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jzSK9hU2"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ufpaebyR"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3A03199;
-	Sat, 27 Jan 2024 00:16:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA62C39B
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 00:19:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706314603; cv=none; b=DC47818iTAPz8hXUBwyQXI+TTNamHAT2reU89dRlfoV6zSn2PBGGVRynKx4lUS8hNOJFXhNoN9FeeFl2ZSZKkswZAfrjuzm2WGVgMVESs7a14ZNxCB+PdmwmXrqhXYcYFZ8H/c7mhgNc6duao8AAitBwxlV+8z0Gq6FnVA+ZtC4=
+	t=1706314784; cv=none; b=pARpzMREdgIDN4AM8JyHNzgw8LqB67i443/ShMh4tUs5Z0h3PYhE3HsCjHyRweB1CGJz5KqBVYt8rSEKgnN61vwXGlfZyHwL+TmJMAVFq7ZN+fvrZTFmTlOhPwMMc/kwXJvuZ0xfaTVqmmeHxHf6qcedQPW/xuVedCYF2LAN1MY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706314603; c=relaxed/simple;
-	bh=JE0M51hDt71bGoBDBFo9edm7n0oVInGu8hcf0iaynGo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=tTWW+m9atYJ3mFEoDiNGHsjeaalHhs5WbQMuK5PGMFEOauQQJg0VR7MVTOytne0qYUoWiZtuzhwJay/nXaiu5l/N7G9MiDfmfGqnF5r2VG4U7Co3NroxoX1qJufY90ii1IaFqLTNs7DNlkCyL1Ky6w4vqtuuu1b9LoLiWDGBtq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jzSK9hU2; arc=none smtp.client-ip=192.55.52.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706314600; x=1737850600;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=JE0M51hDt71bGoBDBFo9edm7n0oVInGu8hcf0iaynGo=;
-  b=jzSK9hU2w5sGRtOKK6FKut4s3aeH5lh0GhwJEslf2EubwV20bOTOlgbh
-   SXDh02TdOTkWN1s3dqHZrMkujFsZJtPuTGD7TIEZXnCs0PA1omrwJq0xD
-   d1BHqjLA/rHFAqILNNtZmzvQRLPJHaW/Gi5UxtqjAOFZxJ80QIj4BtfoI
-   dqXv0uEgSAWp2HvyBU6BNRXlpCTwftdmGR6UetQl7Ebwk/zseT1a4zcGS
-   hPad0N6+NQnXOMc3xiInVzPesHaC/HdSaZslYvmxLFvptbZZmN+qCgKUN
-   0EkO+AjpzD1nmOO4FyiyJ9hHGfmYieSnRV+kWi8UTsB1q9fcuyaC5tSxw
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="401480661"
-X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
-   d="scan'208";a="401480661"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 16:16:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="906468534"
-X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
-   d="scan'208";a="906468534"
-Received: from vcostago-desk1.jf.intel.com (HELO vcostago-desk1) ([10.54.70.67])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 16:16:37 -0800
-From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: brauner@kernel.org, hu1.chen@intel.com, miklos@szeredi.hu,
- malini.bhandaru@intel.com, tim.c.chen@intel.com, mikko.ylinen@intel.com,
- lizhen.you@intel.com, linux-unionfs@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [RFC v2 2/4] cred: Add a light version of override/revert_creds()
-In-Reply-To: <CAOQ4uxgZG487EMwDsxH-KkMeDExGPEFQP3zQVKk8BaKkWuZwDQ@mail.gmail.com>
-References: <20240125235723.39507-1-vinicius.gomes@intel.com>
- <20240125235723.39507-3-vinicius.gomes@intel.com>
- <CAOQ4uxgZG487EMwDsxH-KkMeDExGPEFQP3zQVKk8BaKkWuZwDQ@mail.gmail.com>
-Date: Fri, 26 Jan 2024 16:16:36 -0800
-Message-ID: <87sf2j4om3.fsf@intel.com>
+	s=arc-20240116; t=1706314784; c=relaxed/simple;
+	bh=x3DKShgBTOnrD8k+DrfvWaZBjQtkKSeAaHSrqpEEAOU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lGSkXCvEFPtdoBfLt8+QSqsjLeH4EW0ckHrFHJTvcVTIpvGoFdn3XUVfvpIz8BHYWDbpeR5ogJzK4VxD9UVUoK6pYdoqPd3D/ucGMtjMX4btGFWNY/PUzc2zGsEvMUDFn3K5RxWN/WCbvMlLdv7SXYOUskrNXYkuEazNugkbUHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ufpaebyR; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55a539d205aso1054939a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 16:19:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706314780; x=1706919580; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4NX+mrlfMcpXdEDiR+mehIQoYvG9eewn+lTUjYvS9+o=;
+        b=ufpaebyRXxHnBDoLinCWECkSwNsBVdpY7zoV2WeSwCUbFO9jEWyLPnVabyjooMR3PH
+         8A3mIBKnw7Wx9RkZUe63uyx56t/AVSE2k1hv/gGYeLRbNpnGdL+VTYmTvgXAGrud4IoH
+         QBrSX3G+mTk7iL8eleC7LVO5/hVOiCBzPKRCOX9vhHQEmq38pdlHDvN2ukJ6h63pjJ5i
+         m03IpulnBW1kHI9IGYmnWzU0P5b06Ocb+ZtyQEA1XQ3vRz4oReZLvQg7pTsb33nHjO+r
+         a9sojCATH0yNnC/na3oUHnGC8A/heCHhQrNoGT4haAiAUGul0JFxfxqIvO8WejLoqyQ2
+         CPPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706314780; x=1706919580;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4NX+mrlfMcpXdEDiR+mehIQoYvG9eewn+lTUjYvS9+o=;
+        b=c/0Vhvc88hDfpGiR8oCAlSkl92nLRJFlZCYeXtRn0KD5pXoOKmGTXS1ycQhFomq6YJ
+         6BIEclrEjoOME1aPjmrlXVWA9YET6i97hsE6F7DWv+DKEVvBxltgT/QDSmZRmzXuVjYM
+         6NFEdbNYHmKNKD6MNM+S2Zb6DX17aICADfvopQMpjeiplVDy2nE2bWjZkl5GQoADm7nG
+         C9W8tedQvG7W+ESMBXPWlExid+dqH1P0eDNb0QhHn2jUg1VUpWf+DaM3VolJmGtpRr1/
+         5W6Kncdek3pFCAvsqOnIt+c8nt4j43EwO+AmN5CtkkM5XBq/sJReoP/YpBYl9KnHneA2
+         wwNg==
+X-Gm-Message-State: AOJu0YwO+gqAQAT+F7EIsdjHeKl4JpDtTLNWDHsib6jnGczRSnFe5boh
+	6XA8VyFvEMx5+wf9uJs0lxb0039UIlfW2K6DobnBhEoBEllL98IMAn1cGa6MikQ=
+X-Google-Smtp-Source: AGHT+IEMjmzKAppDcHhedNZpL1Hc8FOnCZRGGgWeBOK37pKFPvJCHdt0r1ZPs3ZBW26CtJokNiEfgA==
+X-Received: by 2002:a17:906:faca:b0:a31:6be0:b9f with SMTP id lu10-20020a170906faca00b00a316be00b9fmr480472ejb.74.1706314779677;
+        Fri, 26 Jan 2024 16:19:39 -0800 (PST)
+Received: from puffmais.c.googlers.com.com (229.112.91.34.bc.googleusercontent.com. [34.91.112.229])
+        by smtp.gmail.com with ESMTPSA id x16-20020a170906135000b00a339d705a10sm1141359ejb.80.2024.01.26.16.19.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 16:19:39 -0800 (PST)
+From: =?UTF-8?q?Andr=C3=A9=20Draszik?= <andre.draszik@linaro.org>
+To: peter.griffin@linaro.org,
+	mturquette@baylibre.com,
+	sboyd@kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@android.com,
+	tudor.ambarus@linaro.org,
+	willmcvicker@google.com,
+	semen.protsenko@linaro.org,
+	alim.akhtar@samsung.com,
+	s.nawrocki@samsung.com,
+	tomasz.figa@gmail.com,
+	cw00.choi@samsung.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: gs101 oriole: peripheral block 1 (peric1) and i2c12 support
+Date: Sat, 27 Jan 2024 00:19:04 +0000
+Message-ID: <20240127001926.495769-1-andre.draszik@linaro.org>
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Amir Goldstein <amir73il@gmail.com> writes:
+Hi,
+   
+This patch series implements support for the 2nd connectivity
+peripheral block on gs101.
+This block contains an additional 6 USI, 1 I3C and 1 PWM
+interfaces/busses.
 
-> On Fri, Jan 26, 2024 at 1:57=E2=80=AFAM Vinicius Costa Gomes
-> <vinicius.gomes@intel.com> wrote:
->>
->> Add a light version of override/revert_creds(), this should only be
->> used when the credentials in question will outlive the critical
->> section and the critical section doesn't change the ->usage of the
->> credentials.
->>
->> To make their usage less error prone, introduce cleanup guards asto be
->> used like this:
->>
->>      guard(cred)(credentials_to_override_and_restore);
->>
->> or this:
->>
->>      scoped_guard(cred, credentials_to_override_and_restore) {
->>              /* with credentials overridden */
->>      }
->>
->> Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
->
-> You may add:
-> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
->
-> I would also add:
-> Suggested-by: Christian Brauner <brauner@kernel.org>
->
+i2cdetect shows all expected devices on the one i2c bus that this patch
+series enables.
+Everything that's in scope in this series works also without the
+clk_ignore_unused kernel command line argument.
 
-Forgot about that one.=20
-
+While working on this, I noticed the existing peric0 support for gs101
+has a couple issues. That explains why there are differences compared 
+to it and a separate patch series will be sent to fix up peric0
+support.
 
 Cheers,
---=20
-Vinicius
+Andre' 
+
+ .../bindings/clock/google,gs101-clock.yaml    |   9 +-
+ .../soc/samsung/samsung,exynos-sysreg.yaml    |   2 + 
+ .../boot/dts/exynos/google/gs101-oriole.dts   |   9 + 
+ arch/arm64/boot/dts/exynos/google/gs101.dtsi  |  42 ++
+ drivers/clk/samsung/clk-gs101.c               | 347 ++++++++++++++++-
+ include/dt-bindings/clock/google,gs101.h      |  48 +++
+
 
