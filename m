@@ -1,171 +1,143 @@
-Return-Path: <linux-kernel+bounces-41229-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41230-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4249483EDAE
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:49:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9759F83EDB4
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:52:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C59212844AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 14:49:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B70151C21A27
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 14:52:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1CE428DBC;
-	Sat, 27 Jan 2024 14:49:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UK2sryzt"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41C9E28DD5;
+	Sat, 27 Jan 2024 14:52:24 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10B482030B;
-	Sat, 27 Jan 2024 14:49:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DA71288A7
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 14:52:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706366976; cv=none; b=Xj6g9KGJ6G/2aclP8vCbwDIOsm/q62yNYY3ma7jaVzAqE4rDUEN42MBA19sXQ+9D8+3KTfL6fdk5ZB6KEV3G+FyC7fiF/q7X4HG/IRH36+bn1hmUTdc7C7S3wG4sPihF6qAFhGnjaqDZ/dpobq7kKlJlULfcpuM5ySRJX9nEnTs=
+	t=1706367143; cv=none; b=FGYB08sCjxMnvMKY98gyRZZ7D1K1uEfKqVU8F/0SCtBgFHemPw5vwdCTN4oNUAB8C7z7n9uLH9n/gPiChBl7ieJCKryi3S0eew7ADh5Nghmsx5LBkMde15ermX2fjsjjEjMqHwpz0Cj1YWWkxKqsL0WMIlb5yO6wM9uwswtM/No=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706366976; c=relaxed/simple;
-	bh=AuqsP3vAOKyVmdLsexssS1XtsE4VPIfUnFnDDujaPgI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=b+kClfYIVBGIZLLM1J0322RxDYfiemjjvxYgY5aN1n/c/AV5QEwE07pipCjLhNsiIpUxznuUwMAIP1aB0+VjCMoELJYFdbp9sXk7eCPUqeAxcRpU2f/yBhHsE3ZJsbiiCMAVJmBeIUkb82em534NW7egvzd+HBXOY3Z59rzY7vU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UK2sryzt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A0DCC433F1;
-	Sat, 27 Jan 2024 14:49:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706366975;
-	bh=AuqsP3vAOKyVmdLsexssS1XtsE4VPIfUnFnDDujaPgI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=UK2sryzt9slcXtfmGdfUs7U5HJ0qEARPzusZ+817F5QCVuf9nTHcKO2TqABOBqaOO
-	 9bmxM/POaiJAtBRJwuZAAS1GhlhFrZfHI9w/UX+tsWdjQLGfD9cX32VASudHlxCzmI
-	 I7JnUX1uVuZBrv1QDOoFaujglta6vqCdF7o/FgsLXhGy8VB51XzAf8EyncCtZW3ZsB
-	 dXgtLQ/fWFT39O8oahi76KVUpPLKbPqbuCeTnt+i33BpZGPItwh9+dI98nuIdEHvL5
-	 ySnZvWsLkJMF7IwlHJODQgZ9JgQI4NQ2ovdvAPTMBlvOcSRtees5OUftVT8PXxH5yN
-	 RTFfQCeeS7gWw==
-Date: Sat, 27 Jan 2024 14:49:20 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Conor Dooley <conor@kernel.org>
-Cc: Peter Rosin <peda@axentia.se>, Naresh Solanki
- <naresh.solanki@9elements.com>, Lars-Peter Clausen <lars@metafoo.de>, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- mazziesaccount@gmail.com, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: iio: afe: voltage-divider: Add
- io-channel-cells
-Message-ID: <20240127144920.455b6f0c@jic23-huawei>
-In-Reply-To: <20240127-hunting-wick-fc1eed1af6b1@spud>
-References: <20240126115509.1459425-1-naresh.solanki@9elements.com>
-	<20240126-cinnamon-flatware-e042b5773f17@spud>
-	<CABqG17hzZf2mme0v7hALhpd6-N3ZHqxdH-AhFg5eF9sbLSC2gw@mail.gmail.com>
-	<20240126-scale-serrated-33686467d91b@spud>
-	<CABqG17jp6YRGyTmNitz-xDdyhWOPgfT_XpXxw-OJLnXQ777vAA@mail.gmail.com>
-	<20240126-blaspheme-calculate-a4134dc1ed68@spud>
-	<536971eb-51f0-40e5-d025-7c4c1d683d49@axentia.se>
-	<20240127-hunting-wick-fc1eed1af6b1@spud>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.40; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706367143; c=relaxed/simple;
+	bh=Be/y4DGVPbfmx4K3rGTzJCiIH9BNVn8X6ivVn+mUvI0=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=SyXuY1k30R823C+Caa8YBjk1bplTO0umiFQ/djAaLGhhgrUij8QoXa6pFOgy/hmekI/I4wzCL/lFhf1JEkg9hRuG3e7l+pvX7f8UaF+sjANjBshY8uSRtooXbzMk/hGc1brCi8UlZQ96pnQoOLslwXUgsyjODis+m5UvEgTayEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-89-lY5SiMHAMkCe7VPZSgwSoQ-1; Sat, 27 Jan 2024 14:52:18 +0000
+X-MC-Unique: lY5SiMHAMkCe7VPZSgwSoQ-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 27 Jan
+ 2024 14:51:58 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sat, 27 Jan 2024 14:51:58 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Arnd Bergmann' <arnd@arndb.de>, Joe Damato <jdamato@fastly.com>, "Greg
+ Kroah-Hartman" <gregkh@linuxfoundation.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Netdev
+	<netdev@vger.kernel.org>, Chuck Lever <chuck.lever@oracle.com>, Jeff Layton
+	<jlayton@kernel.org>, "linux-api@vger.kernel.org"
+	<linux-api@vger.kernel.org>, Christian Brauner <brauner@kernel.org>, "Eric
+ Dumazet" <edumazet@google.com>, "David S . Miller" <davem@davemloft.net>,
+	"alexander.duyck@gmail.com" <alexander.duyck@gmail.com>, Sridhar Samudrala
+	<sridhar.samudrala@intel.com>, Jakub Kicinski <kuba@kernel.org>, "Willem de
+ Bruijn" <willemdebruijn.kernel@gmail.com>, "weiwan@google.com"
+	<weiwan@google.com>, Jonathan Corbet <corbet@lwn.net>, Alexander Viro
+	<viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, Michael Ellerman
+	<mpe@ellerman.id.au>, Nathan Lynch <nathanl@linux.ibm.com>, Steve French
+	<stfrench@microsoft.com>, Thomas Zimmermann <tzimmermann@suse.de>, Jiri Slaby
+	<jirislaby@kernel.org>, Julien Panis <jpanis@baylibre.com>, Andrew Waterman
+	<waterman@eecs.berkeley.edu>, Thomas Huth <thuth@redhat.com>, Palmer Dabbelt
+	<palmer@dabbelt.com>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+	"open list:FILESYSTEMS (VFS and infrastructure)"
+	<linux-fsdevel@vger.kernel.org>
+Subject: RE: [PATCH net-next v3 3/3] eventpoll: Add epoll ioctl for
+ epoll_params
+Thread-Topic: [PATCH net-next v3 3/3] eventpoll: Add epoll ioctl for
+ epoll_params
+Thread-Index: AQHaUCR+m5BGvEW2OU6rGFqZjiahCbDtv1nw
+Date: Sat, 27 Jan 2024 14:51:58 +0000
+Message-ID: <f99dd6cfe7744ed8b9cfe9489aa499de@AcuMS.aculab.com>
+References: <20240125225704.12781-1-jdamato@fastly.com>
+ <20240125225704.12781-4-jdamato@fastly.com>
+ <2024012551-anyone-demeaning-867b@gregkh> <20240126001128.GC1987@fastly.com>
+ <2024012525-outdoors-district-2660@gregkh> <20240126023630.GA1235@fastly.com>
+ <57b62135-2159-493d-a6bb-47d5be55154a@app.fastmail.com>
+In-Reply-To: <57b62135-2159-493d-a6bb-47d5be55154a@app.fastmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 27 Jan 2024 11:03:14 +0000
-Conor Dooley <conor@kernel.org> wrote:
+From: Arnd Bergmann
+> Sent: 26 January 2024 06:16
+>=20
+> On Fri, Jan 26, 2024, at 03:36, Joe Damato wrote:
+> > On Thu, Jan 25, 2024 at 04:23:58PM -0800, Greg Kroah-Hartman wrote:
+> >> On Thu, Jan 25, 2024 at 04:11:28PM -0800, Joe Damato wrote:
+> >> > On Thu, Jan 25, 2024 at 03:21:46PM -0800, Greg Kroah-Hartman wrote:
+> >> > > On Thu, Jan 25, 2024 at 10:56:59PM +0000, Joe Damato wrote:
+> >> > > > +struct epoll_params {
+> >> > > > +=09u64 busy_poll_usecs;
+> >> > > > +=09u16 busy_poll_budget;
+> >> > > > +
+> >> > > > +=09/* for future fields */
+> >> > > > +=09u8 data[118];
+> >> > > > +} EPOLL_PACKED;
+> >> > >
+> >
+> > Sure, that makes sense to me. I'll remove it in the v4 alongside the ot=
+her
+> > changes you've requested.
+> >
+> > Thanks for your time and patience reviewing my code. I greatly apprecia=
+te
+> > your helpful comments and feedback.
+>=20
+> Note that you should still pad the structure to its normal
+> alignment. On non-x86 targets this would currently mean a
+> multiple of 64 bits.
+>=20
+> I would suggest dropping the EPOLL_PACKED here entirely and
+> just using a fully aligned structure on all architectures, like
+>=20
+> struct epoll_params {
+>       __aligned_u64 busy_poll_usecs;
+>       __u16 busy_poll_budget;
+>       __u8 __pad[6];
+> };
+>=20
+> The explicit padding can help avoid leaking stack data when
+> a structure is copied back from kernel to userspace, so I would
+> just always use it in ioctl data structures.
 
-> On Sat, Jan 27, 2024 at 10:40:31AM +0100, Peter Rosin wrote:
-> > 
-> > 
-> > 2024-01-26 at 23:14, Conor Dooley wrote:  
-> > > On Fri, Jan 26, 2024 at 11:10:36PM +0530, Naresh Solanki wrote:  
-> >   
-> > > I did look at what you have there and I think your dts is wrong.
-> > > 
-> > > The iio-hwmon binding says:
-> > > | description: >
-> > > |   Bindings for hardware monitoring devices connected to ADC controllers
-> > > |   supporting the Industrial I/O bindings.
-> > > | 
-> > > |   io-channels:
-> > > |     minItems: 1
-> > > |     maxItems: 51 # Should be enough
-> > > |     description: >
-> > > |       List of phandles to ADC channels to read the monitoring values
-> > > 
-> > > And then you have:
-> > > |	iio-hwmon {
-> > > |		compatible = "iio-hwmon";
-> > > |		// Voltage sensors top to down
-> > > |		io-channels = <&p12v_vd 0>, <&p5v_aux_vd 0>, <&p5v_bmc_aux_vd 0>, <&p3v3_aux_vd 0>,
-> > > |			<&p3v3_bmc_aux_vd 0>, <&p1v8_bmc_aux_vd 0>, <&adc1 4>, <&adc0 2>, <&adc1 0>,
-> > > |			<&p2V5_aux_vd 0>, <&p3v3_rtc_vd 0>;
-> > > |	};
-> > > |
-> > > |	p12v_vd: voltage_divider1 {
-> > > |		compatible = "voltage-divider";
-> > > |		io-channels = <&adc1 3>;
-> > > |		#io-channel-cells = <1>;
-> > > |
-> > > |		/* Scale the system voltage by 1127/127 to fit the ADC range.
-> > > |		 * Use small nominator to prevent integer overflow.
-> > > |		 */
-> > > |		output-ohms = <15>;
-> > > |		full-ohms = <133>;
-> > > |	};
-> > > 
-> > > A voltage divider is _not_ an ADC channel, so I don't know why you are
-> > > treating it as one in the iio-hwmon entry. Can you explain this please?  
-> > 
-> > This is the exact intent of the voltage divider (and the other bindings
-> > handled by the iio-rescaler). The raw ADC reports the voltage at its input,
-> > which is fine, but if there is an analog frontend in front of the ADC
-> > such as a voltage divider the voltage at the ADC is not the interesting
-> > property. You are likely to want the "real" voltage before the voltage
-> > divider to better understand the value.
-> > 
-> > In this case it's much more interesting to see values such as 12.050V
-> > which is presumably close to the nominal voltage (12V? guessing from
-> > the node name) rather than some unscaled raw ADC voltage (in this
-> > example it would be ~1.359V, which tells you rather little w/o rescaling
-> > it first).  
-> 
-> Thanks for explaining it. Naresh, can you respin please with an
-> explanation of why the property belongs in the binding please?
+Or just use 32bit types for both fields.
+Both values need erroring before they get that large.
+32bit of usec is about 20 seconds.
 
-Agreed - the explanation of 'why' is needed.
-As discussed, in this case the end consumer is iio-hwmon
-(reflecting that the thing we are ultimately 'measuring' as a voltage
- of a wire that needs monitoring for hwmon usecases) and
-that is measured via a voltage divider (hence that's providing
-the measurement service) which in turn needs to consume the reading
-from and ADC and hence the middle device is here acting as a
-provider to iio-hwmon and a consumer of the ADC channel.
+=09David
 
-p.s. No one really likes the iio-hwmon binding because it is reflecting
-     a usecase rather than hardware, but meh, it's been around a long time
-     and we never figured out a better option.
-
-    Things are much cleaner for circuits like the voltage divider.
-
-> 
-> > It's all in the description of the binding...  
-> 
-> Obviously it was not sufficiently clear, it's not as if I didn't look at
-> it...
-
-Given this device fits in both categories, perhaps a tiny bit of
-additional documentation would help?
-
-  '#io-channels-cells':
-    description:
-      In addition to consuming the measurement services of an ADC,
-      the voltage divider can act as an provider of measurement
-      services to other devices.
-    const: 1
-
-> 
-> Cheers,
-> Conor.
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
 
 
