@@ -1,162 +1,144 @@
-Return-Path: <linux-kernel+bounces-41131-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2252983EC4B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 10:25:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0C7F83EC4D
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 10:31:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 552D91C21CA2
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 09:25:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BF83282F04
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 09:31:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 047AC1E88C;
-	Sat, 27 Jan 2024 09:25:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 414E91EA8A;
+	Sat, 27 Jan 2024 09:31:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dhL0FgxQ"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DC0814A93;
-	Sat, 27 Jan 2024 09:25:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=mecka.net header.i=@mecka.net header.b="E5zqKQbg"
+Received: from mecka.net (mecka.net [159.69.159.214])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E55561E88B;
+	Sat, 27 Jan 2024 09:31:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.159.214
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706347545; cv=none; b=rHeExlwULYPlnil3Lcc4KvxgrXdwy6v89Ymgty37kSUuLCLHrGLe2uFQStNAFWs91d4FrpvAOgE6W9Whk210tiDrbeY5iOGI5bProkoCepxdImv4xVBe1xfYfl19jL4A7/6LxcCxqD4r25M46sXVifIFGgJoBLMRkm6zzu3HxBA=
+	t=1706347875; cv=none; b=PCUJPfsZFoMOJ2SJu4ZNLH7JEZJywzoJrbD1jo5e2qruyTSNsKo7PmqQ4KD5eYrknFwCZ7oUwN9nrOOHYE66nCVAXMBEQQvcFf2whWz2bUffEmT1dgTqti2Rslv4jcyBgzUB0wcuIdAaSwF0YK97ifIEv4t6BTZ4uyyNFACu42Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706347545; c=relaxed/simple;
-	bh=qkrj99AfSCojvLylDCab2Zz4IsT3Ic2c+mpfByQQ1Wk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DFkOldENOJNIAKTuS8k5ZMrVukgo7njo48QDiLM5u7boDs7WfTtunZwH1hGTM/FSlnfzWZ4pvxakgvVA2ylGLoyA+MVGCIMLRizLzYHgHh7Bxm8XsyfXopvA7LT9vda1sHUZWx57n9mAqlitlXuqgrzVFIBKSw3OMeW+BBp40MM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dhL0FgxQ; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-5100fd7f71dso2231594e87.1;
-        Sat, 27 Jan 2024 01:25:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706347541; x=1706952341; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pMBCjyZtyEIPkJpg94JFyUe7lU10QyArXbvWyTawL3Q=;
-        b=dhL0FgxQt6fwLT6DvYjmCIwXHJCKDO55XzntxV/wUxiV+txJW/00e2ACjDip5fd/JD
-         CUIFrSRBcUlHadlKiqC17L5yVYIC+yN5Ftf55l18mwbtQE4Wev1JaAE+rWMiNQBVhw7b
-         TibtI1FvN2QjvhQ9HC467AlJ9BNscDGS47vOp0LFFiamdrN7BIBb8zk01F+tFaxiKauS
-         4HDp7pqvF/DZXFeMb70mxAruzaUo+WE4oUoYQeF61PlCs/emUQGD0Sy/aUEGG0S+yI6e
-         8zJh7CCRxEFCJArLmmNBmCsiPaKAnk6Qab2SdKiE+z3MevAk7GiW0+JQ0Ii5EkZKGbAx
-         CrbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706347541; x=1706952341;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pMBCjyZtyEIPkJpg94JFyUe7lU10QyArXbvWyTawL3Q=;
-        b=c05qhxHo52SgDKtRddxZ0e2giJ2nKSJ3v4rUkc8pEiKXiQJeyWQkSuGRd+lB5GjSr4
-         sd0xdM7SurY+MVBRX6du8ZWF2gkluiJ7qTusJnMKlEROf/irgpufX1lvAR27xThShWKS
-         zF3mI5m8m5atYXhl8IJTu2uX/JkQ6Hi060q3bPQMTG81Xyne8uBcm+25F7r2ajoThSj5
-         1t4lfophRWqi4jWRgDT6WyCEN9sOAQs3FCfjlF5Jkmwh/9o74X+Ci3+cVMIATWfMp1rr
-         PqDGjjWtPuzO56XRCJkw7Hbgfzw0bnpLdzp0/AkXc2LTijpkKv0ZgpuV5JsUfF+UrZnf
-         Rkdw==
-X-Gm-Message-State: AOJu0YxjGDtWhRItga/ncKynj8Ul7FSNhLpXl/FcpbYx25yQm0B7fhUU
-	jZhl+20Vjelk8ZbwwrF+KaCMRVRs8i2JVipdHOS5PsItoLyvdc8E
-X-Google-Smtp-Source: AGHT+IF/gsr5dLuI2DGBgMnvn6qgdFpkQVSQSa/c22i0rQQ50zqirQ/tMRoceABdihkdBjOhMmysdw==
-X-Received: by 2002:a05:6512:3e19:b0:510:8cd:231b with SMTP id i25-20020a0565123e1900b0051008cd231bmr859484lfv.21.1706347541216;
-        Sat, 27 Jan 2024 01:25:41 -0800 (PST)
-Received: from localhost.localdomain (broadband-46-242-13-133.ip.moscow.rt.ru. [46.242.13.133])
-        by smtp.googlemail.com with ESMTPSA id m12-20020a056512114c00b005101bd871e9sm444594lfg.154.2024.01.27.01.25.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Jan 2024 01:25:40 -0800 (PST)
-From: Konstantin Aladyshev <aladyshev22@gmail.com>
-To: 
-Cc: Konstantin Aladyshev <aladyshev22@gmail.com>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Jean Delvare <jdelvare@suse.com>,
-	Naresh Solanki <Naresh.Solanki@9elements.com>,
-	Patrick Rudolph <patrick.rudolph@9elements.com>,
-	linux-hwmon@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4] hwmon: (pmbus/mp2975) Fix driver initialization for MP2975 device
-Date: Sat, 27 Jan 2024 12:25:16 +0300
-Message-Id: <20240127092516.1641-1-aladyshev22@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706347875; c=relaxed/simple;
+	bh=ZKfXwd9FW0rWdUEIALu0OP8KvDADbdtz+p95WviJSc4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fyuioiQsHZA0v4N1ZvbbZdwcSCee5lHRm0Eh1djD5i9vQ99YIu81ymIhUtpEL2EgwxUxLxDm0/KOjV42DKZozZwgfJ+cK7p05AYWAQgH+f3Zi7RBDiFgbnbCn5eHEbZ1ftbtUndMjxaQ7KHHZCqaEKZMp2JV3G4mtbIkyWBXtOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mecka.net; spf=pass smtp.mailfrom=mecka.net; dkim=fail (0-bit key) header.d=mecka.net header.i=@mecka.net header.b=E5zqKQbg reason="key not found in DNS"; arc=none smtp.client-ip=159.69.159.214
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mecka.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mecka.net
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mecka.net; s=2016.11;
+	t=1706347870; bh=ZKfXwd9FW0rWdUEIALu0OP8KvDADbdtz+p95WviJSc4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=E5zqKQbgtz/Vq1FfeGeVWFW44FAQes1TM4fjycxZbs1PXj/kVBhPZtt8C/MCLa5XM
+	 dai1JImK0gvTG3CT70igLp2rBfb57qbRrPLdvZba717th93qWGahfDoSPH4YxzXy3o
+	 KFLVR2c/ArebjwwBnqxAOeAtAR7PvYD0LYY6uiOcH8I94rBblNT04Edw8a4onAr+Ui
+	 fYBHN55OgbOXxjVOCIvNjCAajRO1CrZrvjnBCMu+xHqEC4DExZ/uHvnMUiudhwP5m+
+	 S/9hkxTVl5vu66m9D3t65iwe/mRLoQov1gFs/bJPNdYvl2v6JKRQOKRP4DWuu9e4WG
+	 z4X7wSbggV/gw==
+Received: from mecka.net (unknown [185.147.11.134])
+	by mecka.net (Postfix) with ESMTPSA id A981E3BF3AE;
+	Sat, 27 Jan 2024 10:31:09 +0100 (CET)
+Date: Sat, 27 Jan 2024 10:31:08 +0100
+From: Manuel Traut <manut@mecka.net>
+To: Jonas Karlman <jonas@kwiboo.se>
+Cc: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Jessica Zhang <quic_jesszhan@quicinc.com>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>, Sandy Huang <hjc@rock-chips.com>,
+	Mark Yao <markyao0591@gmail.com>,
+	Diederik de Haas <didi.debian@cknow.org>,
+	Segfault <awarnecke002@hotmail.com>,
+	Arnaud Ferraris <aferraris@debian.org>,
+	Danct12 <danct12@riseup.net>, dri-devel@lists.freedesktop.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v3 4/4] arm64: dts: rockchip: Add devicetree for Pine64
+ PineTab2
+Message-ID: <ZbTNXL6s_wQugVC5@mecka.net>
+References: <20240102-pinetab2-v3-0-cb1aa69f8c30@mecka.net>
+ <20240102-pinetab2-v3-4-cb1aa69f8c30@mecka.net>
+ <775vjfucu2g2s6zzeutj7f7tapx3q2geccpxvv4ppcms4hxbq7@cbrdmlu2ryzp>
+ <903e9d0c-a00c-4214-9f0e-dd676b13b428@kwiboo.se>
+ <ZZVjzwgANJMdHnuo@mecka.net>
+ <6efe305c-4ab4-43c1-ab6d-64bdf1d81a2f@kwiboo.se>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <6efe305c-4ab4-43c1-ab6d-64bdf1d81a2f@kwiboo.se>
 
-The commit 1feb31e810b0 ("hwmon: (pmbus/mp2975) Simplify VOUT code")
-has introduced a bug that makes it impossible to initialize MP2975
-device:
-"""
-mp2975 5-0020: Failed to identify chip capabilities
-i2c i2c-5: new_device: Instantiated device mp2975 at 0x20
-i2c i2c-5: delete_device: Deleting device mp2975 at 0x20
-"""
-Since the 'read_byte_data' function was removed from the
-'pmbus_driver_info ' structure the driver no longer reports correctly
-that VOUT mode is direct. Therefore 'pmbus_identify_common' fails
-with error, making it impossible to initialize the device.
+Hi Jonas,
 
-Restore 'read_byte_data' function to fix the issue.
+On Wed, Jan 03, 2024 at 03:19:25PM +0100, Jonas Karlman wrote:
+> Hi Manuel,
+> 
+> On 2024-01-03 14:40, Manuel Traut wrote:
+> > Hi Jonas and Ondřej,
+> > 
+> >>>> +&sfc {
+> >>>> +	pinctrl-names = "default";
+> >>>> +	pinctrl-0 = <&fspi_dual_io_pins>;
+> >>>> +	status = "okay";
+> >>>> +	#address-cells = <1>;
+> >>>> +	#size-cells = <0>;
+> >>>> +
+> >>>> +	flash@0 {
+> >>>> +		compatible = "jedec,spi-nor";
+> >>>> +		reg = <0>;
+> >>>> +		spi-max-frequency = <24000000>;
+> >>>
+> >>> That's a bit on the low side. The flash chip should work for all commands up to
+> >>> 80MHz https://megous.com/dl/tmp/b428ad9b85ac4633.png and SGM3157YC6 switch
+> >>> for the FSPI-CLK should have high enough bandwidth, too.
+> >>
+> >> I agree that this is a little bit on the low side, it was a safe rate
+> >> that I used for U-Boot. U-Boot required an exact rate of the supported
+> >> sfc clk rates: 24, 50, 75, 100, 125 or 150 MHz.
+> >>
+> >> Please also note that the SPI NOR flash chip used in PineTab2 is not a
+> >> GigaDevice GD25LQ128E, it should be a SiliconKaiser SK25LP128, same as
+> >> found in the Pine64 PinePhone Pro.
+> > 
+> > The schematics for v2.0 reference a GD25LQ128EWIGR. I never checked the jedec
+> > id. How did you retrieve this information, or is it maybe a difference in v0.1
+> > and 2.0?
+> 
+> This was when working on mainline U-Boot for the PineTab2 (and other
+> rk356x devices). See [1] for a pending U-Boot patch that is waiting on a
+> proper mainline linux devicetree for the PT2.
+> 
+> The JEDEC ID is reported as 0x257018 on my v2.0 production unit, and
+> does not match the JEDEC ID for GD25LQ128E (0xc86018) referenced in
+> the schematics.
+> 
+> I found that the JEDEC ID 0x257018 was referenced in prior patches
+> related to the SK25LP128 SPI NOR flash chip used in Pine64 PinePhone Pro.
+> 
+> I have only ever tested the 24 MHz rate, but I am expecting that e.g.
+> 100 MHz also should work. Will not be able to test on my PT2 until at
+> earliest next week.
+> 
+> [1] https://github.com/Kwiboo/u-boot-rockchip/commit/66562d6eaf2c11a9f97fcdba379d3ceda8aa70ef
 
-Tested:
-- before: it is not possible to initialize MP2975 device with the
-'mp2975' driver,
-- after: 'mp2975' correctly initializes MP2975 device and all sensor
-data is correct.
+I found the time to verify that 100 MHz is also working.
+Will include this in v4
 
-Fixes: 1feb31e810b0 ("hwmon: (pmbus/mp2975) Simplify VOUT code")
-
-Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com>
----
-Changes in v4:
- - Correct comment inside the 'mp2975_read_byte_data' function as
-suggested by Patrick Rudolph
-
-Changes in v3:
- - Drop accidentally added file from patch
-
-Changes in v2:
- - Fix indentation issues
-
- drivers/hwmon/pmbus/mp2975.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-diff --git a/drivers/hwmon/pmbus/mp2975.c b/drivers/hwmon/pmbus/mp2975.c
-index b9bb469e2d8f..e5fa10b3b8bc 100644
---- a/drivers/hwmon/pmbus/mp2975.c
-+++ b/drivers/hwmon/pmbus/mp2975.c
-@@ -126,6 +126,21 @@ static const struct regulator_desc __maybe_unused mp2975_reg_desc[] = {
- 
- #define to_mp2975_data(x)  container_of(x, struct mp2975_data, info)
- 
-+static int mp2975_read_byte_data(struct i2c_client *client, int page, int reg)
-+{
-+	switch (reg) {
-+	case PMBUS_VOUT_MODE:
-+		/*
-+		 * Report direct format as configured by MFR_DC_LOOP_CTRL.
-+		 * Unlike on MP2971/MP2973 the reported VOUT_MODE isn't automatically
-+		 * internally updated, but always reads as PB_VOUT_MODE_VID.
-+		 */
-+		return PB_VOUT_MODE_DIRECT;
-+	default:
-+		return -ENODATA;
-+	}
-+}
-+
- static int
- mp2975_read_word_helper(struct i2c_client *client, int page, int phase, u8 reg,
- 			u16 mask)
-@@ -869,6 +884,7 @@ static struct pmbus_driver_info mp2975_info = {
- 		PMBUS_HAVE_IIN | PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT |
- 		PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP | PMBUS_HAVE_POUT |
- 		PMBUS_HAVE_PIN | PMBUS_HAVE_STATUS_INPUT | PMBUS_PHASE_VIRTUAL,
-+	.read_byte_data = mp2975_read_byte_data,
- 	.read_word_data = mp2975_read_word_data,
- #if IS_ENABLED(CONFIG_SENSORS_MP2975_REGULATOR)
- 	.num_regulators = 1,
--- 
-2.34.1
-
+Thanks for your help
+Manuel
 
