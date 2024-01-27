@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-40976-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40978-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7684C83E930
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 03:01:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2537E83E931
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 03:01:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F049A1F2648E
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 02:01:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA2D41F23C30
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 02:01:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF9301173A;
-	Sat, 27 Jan 2024 02:01:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1093611C80;
+	Sat, 27 Jan 2024 02:01:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IRrflCGA"
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="e4TNW933"
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7648947E
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 02:01:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96B4AB66B
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 02:01:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706320886; cv=none; b=ZlwIAv0s0IolExsI8vTEvigddFOfZjWFphJz50e40LEz9VQkC3Jh5I9fRTsevpXYfnaGUd+sFt64v5AqRirk7ahefv+5AgSr1jl/gdL9hRidPkx36Bw87viGzB3Jen6YYWRKNHTS087dmyWnhE7izpbtMAqaxkNYzUGh6/oj7Sc=
+	t=1706320886; cv=none; b=d3wcLpv2W3ixbCA0gwLhkUQcw6Clri+qBafqFetPC7lT0LYuCuHr4IqHQnmlfz1ujhemqiwVeCIYI7oMZ9yVSxwgfyl8dC0pW35jfUjVvSRCs0IF3i8MrDIK4UsMdaRFmCSrRpj5w/wyyPpQje2TRKrKcegw94RiNrzK1LWWmRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706320886; c=relaxed/simple;
-	bh=NB0BzrAcaq2ykZlOjZmEopevoBwZpfcanoIfs3aB2/c=;
+	bh=I17n2kJwfLP73JxpOT/4Z+XY1RSDVWFd3kwZEjsB2hg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=d2ukqSeCmFhwCoXmvoPyAni5Z8MdPIuvacXqfk1+pdP80DpvRath4qdf9qZjBYc6l3hN5LIXiV7Hl8DcS2ael2lCLbpfsFBif7L6wtc/4qSgGaUhm/oA04fQAWIi8toK+hL4gGa27dy7Ggv8GYyxJfMjDfedWKQBhCQxpSR+Ha8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IRrflCGA; arc=none smtp.client-ip=95.215.58.180
+	 MIME-Version; b=M+Cr9ORewhsSHXuENRgU3kjxLLRcqEPyWFBAB/ajI5ambAfUNafYkeuoFsHrj9L9k5LGUyxfWEBq4Uls/Y2bsv2HzWYnnV32S83xHYky+AlCvSGao3cXZtHkuL3lYUIwBLIzBJPXhVoaXt0r/pU74V2ckHujJeCBCT2c2m+cnno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=e4TNW933; arc=none smtp.client-ip=95.215.58.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706320880;
+	t=1706320882;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=v89WId/z8nf+HOLrRAkJwMVVVvufG9aM/NTrDQ9Z3LE=;
-	b=IRrflCGAwRzIR7s1CoAZdadZOYN2Va1YUr0Gvb4s4xwTzRC8NvfuSFq4qoakppnpgpy5Tx
-	sEvp4RfNIFm9zt2bC7Vb9WPyd9z2SsFYCQ1OHL5L6cXS7H4siqJsmlXFBAIyB1X2T0CyVJ
-	2R6qMpIha7uW1W5I0tISdrb6xWAOunY=
+	bh=dhcmLJc/KPpam9Xa9GT9+fmxCdezLGqepV5bOxUHdOE=;
+	b=e4TNW933G9qVxjcf4lFEpCbSzgbDfoyYa5dvenGHsJ1R4Ve4VK4GP6sJbrTurD0dHHvbJ3
+	/9Yexwkkli1xL4W2Gy9bLSBa9o+ftgDxjUS8PB2K4ORVChldBDvjSZtGznD6UEgMkAPXjP
+	NrCoucg4nB873RTeBqqvhqP5E4bLUdg=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org,
@@ -48,12 +48,11 @@ To: linux-kernel@vger.kernel.org,
 Cc: Kent Overstreet <kent.overstreet@linux.dev>,
 	peterz@infradead.org,
 	boqun.feng@gmail.com,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Jan Kara <jack@suse.cz>
-Subject: [PATCH 1/4] fs/pipe: Convert to lockdep_cmp_fn
-Date: Fri, 26 Jan 2024 21:01:05 -0500
-Message-ID: <20240127020111.487218-2-kent.overstreet@linux.dev>
+	linux-block@vger.kernel.org,
+	Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 2/4] pktcdvd: kill mutex_lock_nested() usage
+Date: Fri, 26 Jan 2024 21:01:06 -0500
+Message-ID: <20240127020111.487218-3-kent.overstreet@linux.dev>
 In-Reply-To: <20240127020111.487218-1-kent.overstreet@linux.dev>
 References: <20240127020111.487218-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -65,274 +64,124 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-*_lock_nested() is fundamentally broken; lockdep needs to check lock
-ordering, but we cannot device a total ordering on an unbounded number
-of elements with only a few subclasses.
+Unecessary, we're not actually taking nested locks of the same type.
 
-the replacement is to define lock ordering with a proper comparison
-function.
-
-fs/pipe.c was already doing everything correctly otherwise, nothing
-much changes here.
-
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Jan Kara <jack@suse.cz>
+Cc: linux-block@vger.kernel.org
+Cc: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/pipe.c | 81 +++++++++++++++++++++++++------------------------------
- 1 file changed, 36 insertions(+), 45 deletions(-)
+ drivers/block/pktcdvd.c  |  8 ++++----
+ fs/pipe.c                | 10 +---------
+ include/linux/lockdep.h  |  3 +++
+ kernel/locking/lockdep.c |  6 ++++++
+ 4 files changed, 14 insertions(+), 13 deletions(-)
 
+diff --git a/drivers/block/pktcdvd.c b/drivers/block/pktcdvd.c
+index d56d972aadb3..2eb68a624fda 100644
+--- a/drivers/block/pktcdvd.c
++++ b/drivers/block/pktcdvd.c
+@@ -332,7 +332,7 @@ static ssize_t device_map_show(const struct class *c, const struct class_attribu
+ {
+ 	int n = 0;
+ 	int idx;
+-	mutex_lock_nested(&ctl_mutex, SINGLE_DEPTH_NESTING);
++	mutex_lock(&ctl_mutex);
+ 	for (idx = 0; idx < MAX_WRITERS; idx++) {
+ 		struct pktcdvd_device *pd = pkt_devs[idx];
+ 		if (!pd)
+@@ -2639,7 +2639,7 @@ static int pkt_setup_dev(dev_t dev, dev_t* pkt_dev)
+ 	struct pktcdvd_device *pd;
+ 	struct gendisk *disk;
+ 
+-	mutex_lock_nested(&ctl_mutex, SINGLE_DEPTH_NESTING);
++	mutex_lock(&ctl_mutex);
+ 
+ 	for (idx = 0; idx < MAX_WRITERS; idx++)
+ 		if (!pkt_devs[idx])
+@@ -2729,7 +2729,7 @@ static int pkt_remove_dev(dev_t pkt_dev)
+ 	int idx;
+ 	int ret = 0;
+ 
+-	mutex_lock_nested(&ctl_mutex, SINGLE_DEPTH_NESTING);
++	mutex_lock(&ctl_mutex);
+ 
+ 	for (idx = 0; idx < MAX_WRITERS; idx++) {
+ 		pd = pkt_devs[idx];
+@@ -2780,7 +2780,7 @@ static void pkt_get_status(struct pkt_ctrl_command *ctrl_cmd)
+ {
+ 	struct pktcdvd_device *pd;
+ 
+-	mutex_lock_nested(&ctl_mutex, SINGLE_DEPTH_NESTING);
++	mutex_lock(&ctl_mutex);
+ 
+ 	pd = pkt_find_dev_from_minor(ctrl_cmd->dev_index);
+ 	if (pd) {
 diff --git a/fs/pipe.c b/fs/pipe.c
-index f1adbfe743d4..50c8a8596b52 100644
+index 50c8a8596b52..abe171566015 100644
 --- a/fs/pipe.c
 +++ b/fs/pipe.c
-@@ -76,18 +76,20 @@ static unsigned long pipe_user_pages_soft = PIPE_DEF_BUFFERS * INR_OPEN_CUR;
-  * -- Manfred Spraul <manfred@colorfullife.com> 2002-05-09
-  */
+@@ -78,14 +78,6 @@ static unsigned long pipe_user_pages_soft = PIPE_DEF_BUFFERS * INR_OPEN_CUR;
  
--static void pipe_lock_nested(struct pipe_inode_info *pipe, int subclass)
-+#define cmp_int(l, r)		((l > r) - (l < r))
-+
-+#ifdef CONFIG_PROVE_LOCKING
-+static int pipe_lock_cmp_fn(const struct lockdep_map *a,
-+			    const struct lockdep_map *b)
- {
--	if (pipe->files)
--		mutex_lock_nested(&pipe->mutex, subclass);
-+	return cmp_int((unsigned long) a, (unsigned long) b);
- }
-+#endif
+ #define cmp_int(l, r)		((l > r) - (l < r))
  
+-#ifdef CONFIG_PROVE_LOCKING
+-static int pipe_lock_cmp_fn(const struct lockdep_map *a,
+-			    const struct lockdep_map *b)
+-{
+-	return cmp_int((unsigned long) a, (unsigned long) b);
+-}
+-#endif
+-
  void pipe_lock(struct pipe_inode_info *pipe)
  {
--	/*
--	 * pipe_lock() nests non-pipe inode locks (for writing to a file)
--	 */
--	pipe_lock_nested(pipe, I_MUTEX_PARENT);
-+	if (pipe->files)
-+		mutex_lock(&pipe->mutex);
- }
- EXPORT_SYMBOL(pipe_lock);
- 
-@@ -98,28 +100,16 @@ void pipe_unlock(struct pipe_inode_info *pipe)
- }
- EXPORT_SYMBOL(pipe_unlock);
- 
--static inline void __pipe_lock(struct pipe_inode_info *pipe)
--{
--	mutex_lock_nested(&pipe->mutex, I_MUTEX_PARENT);
--}
--
--static inline void __pipe_unlock(struct pipe_inode_info *pipe)
--{
--	mutex_unlock(&pipe->mutex);
--}
--
- void pipe_double_lock(struct pipe_inode_info *pipe1,
- 		      struct pipe_inode_info *pipe2)
- {
- 	BUG_ON(pipe1 == pipe2);
- 
--	if (pipe1 < pipe2) {
--		pipe_lock_nested(pipe1, I_MUTEX_PARENT);
--		pipe_lock_nested(pipe2, I_MUTEX_CHILD);
--	} else {
--		pipe_lock_nested(pipe2, I_MUTEX_PARENT);
--		pipe_lock_nested(pipe1, I_MUTEX_CHILD);
--	}
-+	if (pipe1 > pipe2)
-+		swap(pipe1, pipe2);
-+
-+	pipe_lock(pipe1);
-+	pipe_lock(pipe2);
- }
- 
- static void anon_pipe_buf_release(struct pipe_inode_info *pipe,
-@@ -271,7 +261,7 @@ pipe_read(struct kiocb *iocb, struct iov_iter *to)
- 		return 0;
- 
- 	ret = 0;
--	__pipe_lock(pipe);
-+	mutex_lock(&pipe->mutex);
- 
- 	/*
- 	 * We only wake up writers if the pipe was full when we started
-@@ -368,7 +358,7 @@ pipe_read(struct kiocb *iocb, struct iov_iter *to)
- 			ret = -EAGAIN;
- 			break;
- 		}
--		__pipe_unlock(pipe);
-+		mutex_unlock(&pipe->mutex);
- 
- 		/*
- 		 * We only get here if we didn't actually read anything.
-@@ -400,13 +390,13 @@ pipe_read(struct kiocb *iocb, struct iov_iter *to)
- 		if (wait_event_interruptible_exclusive(pipe->rd_wait, pipe_readable(pipe)) < 0)
- 			return -ERESTARTSYS;
- 
--		__pipe_lock(pipe);
-+		mutex_lock(&pipe->mutex);
- 		was_full = pipe_full(pipe->head, pipe->tail, pipe->max_usage);
- 		wake_next_reader = true;
- 	}
- 	if (pipe_empty(pipe->head, pipe->tail))
- 		wake_next_reader = false;
--	__pipe_unlock(pipe);
-+	mutex_unlock(&pipe->mutex);
- 
- 	if (was_full)
- 		wake_up_interruptible_sync_poll(&pipe->wr_wait, EPOLLOUT | EPOLLWRNORM);
-@@ -462,7 +452,7 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
- 	if (unlikely(total_len == 0))
- 		return 0;
- 
--	__pipe_lock(pipe);
-+	mutex_lock(&pipe->mutex);
- 
- 	if (!pipe->readers) {
- 		send_sig(SIGPIPE, current, 0);
-@@ -582,19 +572,19 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
- 		 * after waiting we need to re-check whether the pipe
- 		 * become empty while we dropped the lock.
- 		 */
--		__pipe_unlock(pipe);
-+		mutex_unlock(&pipe->mutex);
- 		if (was_empty)
- 			wake_up_interruptible_sync_poll(&pipe->rd_wait, EPOLLIN | EPOLLRDNORM);
- 		kill_fasync(&pipe->fasync_readers, SIGIO, POLL_IN);
- 		wait_event_interruptible_exclusive(pipe->wr_wait, pipe_writable(pipe));
--		__pipe_lock(pipe);
-+		mutex_lock(&pipe->mutex);
- 		was_empty = pipe_empty(pipe->head, pipe->tail);
- 		wake_next_writer = true;
- 	}
- out:
- 	if (pipe_full(pipe->head, pipe->tail, pipe->max_usage))
- 		wake_next_writer = false;
--	__pipe_unlock(pipe);
-+	mutex_unlock(&pipe->mutex);
- 
- 	/*
- 	 * If we do do a wakeup event, we do a 'sync' wakeup, because we
-@@ -629,7 +619,7 @@ static long pipe_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 
- 	switch (cmd) {
- 	case FIONREAD:
--		__pipe_lock(pipe);
-+		mutex_lock(&pipe->mutex);
- 		count = 0;
- 		head = pipe->head;
- 		tail = pipe->tail;
-@@ -639,16 +629,16 @@ static long pipe_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 			count += pipe->bufs[tail & mask].len;
- 			tail++;
- 		}
--		__pipe_unlock(pipe);
-+		mutex_unlock(&pipe->mutex);
- 
- 		return put_user(count, (int __user *)arg);
- 
- #ifdef CONFIG_WATCH_QUEUE
- 	case IOC_WATCH_QUEUE_SET_SIZE: {
- 		int ret;
--		__pipe_lock(pipe);
-+		mutex_lock(&pipe->mutex);
- 		ret = watch_queue_set_size(pipe, arg);
--		__pipe_unlock(pipe);
-+		mutex_unlock(&pipe->mutex);
- 		return ret;
- 	}
- 
-@@ -734,7 +724,7 @@ pipe_release(struct inode *inode, struct file *file)
- {
- 	struct pipe_inode_info *pipe = file->private_data;
- 
--	__pipe_lock(pipe);
-+	mutex_lock(&pipe->mutex);
- 	if (file->f_mode & FMODE_READ)
- 		pipe->readers--;
- 	if (file->f_mode & FMODE_WRITE)
-@@ -747,7 +737,7 @@ pipe_release(struct inode *inode, struct file *file)
- 		kill_fasync(&pipe->fasync_readers, SIGIO, POLL_IN);
- 		kill_fasync(&pipe->fasync_writers, SIGIO, POLL_OUT);
- 	}
--	__pipe_unlock(pipe);
-+	mutex_unlock(&pipe->mutex);
- 
- 	put_pipe_info(inode, pipe);
- 	return 0;
-@@ -759,7 +749,7 @@ pipe_fasync(int fd, struct file *filp, int on)
- 	struct pipe_inode_info *pipe = filp->private_data;
- 	int retval = 0;
- 
--	__pipe_lock(pipe);
-+	mutex_lock(&pipe->mutex);
- 	if (filp->f_mode & FMODE_READ)
- 		retval = fasync_helper(fd, filp, on, &pipe->fasync_readers);
- 	if ((filp->f_mode & FMODE_WRITE) && retval >= 0) {
-@@ -768,7 +758,7 @@ pipe_fasync(int fd, struct file *filp, int on)
- 			/* this can happen only if on == T */
- 			fasync_helper(-1, filp, 0, &pipe->fasync_readers);
- 	}
--	__pipe_unlock(pipe);
-+	mutex_unlock(&pipe->mutex);
- 	return retval;
- }
- 
-@@ -834,6 +824,7 @@ struct pipe_inode_info *alloc_pipe_info(void)
+ 	if (pipe->files)
+@@ -824,7 +816,7 @@ struct pipe_inode_info *alloc_pipe_info(void)
  		pipe->nr_accounted = pipe_bufs;
  		pipe->user = user;
  		mutex_init(&pipe->mutex);
-+		lock_set_cmp_fn(&pipe->mutex, pipe_lock_cmp_fn, NULL);
+-		lock_set_cmp_fn(&pipe->mutex, pipe_lock_cmp_fn, NULL);
++		lock_set_cmp_fn_ptr_order(&pipe->mutex);
  		return pipe;
  	}
  
-@@ -1144,7 +1135,7 @@ static int fifo_open(struct inode *inode, struct file *filp)
- 	filp->private_data = pipe;
- 	/* OK, we have a pipe and it's pinned down */
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index 08b0d1d9d78b..e0b121f96c80 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -391,6 +391,7 @@ extern int lockdep_is_held(const void *);
+ #endif /* !LOCKDEP */
  
--	__pipe_lock(pipe);
-+	mutex_lock(&pipe->mutex);
+ #ifdef CONFIG_PROVE_LOCKING
++int lockdep_ptr_order_cmp_fn(const struct lockdep_map *, const struct lockdep_map *);
+ void lockdep_set_lock_cmp_fn(struct lockdep_map *, lock_cmp_fn, lock_print_fn);
  
- 	/* We can only do regular read/write on fifos */
- 	stream_open(inode, filp);
-@@ -1214,7 +1205,7 @@ static int fifo_open(struct inode *inode, struct file *filp)
- 	}
+ #define lock_set_cmp_fn(lock, ...)	lockdep_set_lock_cmp_fn(&(lock)->dep_map, __VA_ARGS__)
+@@ -398,6 +399,8 @@ void lockdep_set_lock_cmp_fn(struct lockdep_map *, lock_cmp_fn, lock_print_fn);
+ #define lock_set_cmp_fn(lock, ...)	do { } while (0)
+ #endif
  
- 	/* Ok! */
--	__pipe_unlock(pipe);
-+	mutex_unlock(&pipe->mutex);
- 	return 0;
++#define lock_set_cmp_fn_ptr_order(lock)	lock_set_cmp_fn(lock, lockdep_ptr_order_cmp_fn);
++
+ enum xhlock_context_t {
+ 	XHLOCK_HARD,
+ 	XHLOCK_SOFT,
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 151bd3de5936..5630be7f5cb2 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -4919,6 +4919,12 @@ struct lock_class_key __lockdep_no_validate__;
+ EXPORT_SYMBOL_GPL(__lockdep_no_validate__);
  
- err_rd:
-@@ -1230,7 +1221,7 @@ static int fifo_open(struct inode *inode, struct file *filp)
- 	goto err;
- 
- err:
--	__pipe_unlock(pipe);
-+	mutex_unlock(&pipe->mutex);
- 
- 	put_pipe_info(inode, pipe);
- 	return ret;
-@@ -1411,7 +1402,7 @@ long pipe_fcntl(struct file *file, unsigned int cmd, unsigned int arg)
- 	if (!pipe)
- 		return -EBADF;
- 
--	__pipe_lock(pipe);
-+	mutex_lock(&pipe->mutex);
- 
- 	switch (cmd) {
- 	case F_SETPIPE_SZ:
-@@ -1425,7 +1416,7 @@ long pipe_fcntl(struct file *file, unsigned int cmd, unsigned int arg)
- 		break;
- 	}
- 
--	__pipe_unlock(pipe);
-+	mutex_unlock(&pipe->mutex);
- 	return ret;
- }
- 
+ #ifdef CONFIG_PROVE_LOCKING
++int lockdep_ptr_order_cmp_fn(const struct lockdep_map *a,
++			     const struct lockdep_map *b)
++{
++	return cmp_int((unsigned long) a, (unsigned long) b);
++}
++
+ void lockdep_set_lock_cmp_fn(struct lockdep_map *lock, lock_cmp_fn cmp_fn,
+ 			     lock_print_fn print_fn)
+ {
 -- 
 2.43.0
 
