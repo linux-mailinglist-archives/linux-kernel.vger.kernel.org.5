@@ -1,135 +1,103 @@
-Return-Path: <linux-kernel+bounces-41233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A44DB83EDC9
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:08:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DD8783EDCC
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:11:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B6F9B22660
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:08:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F6CA282EB1
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:11:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC3AE28DC8;
-	Sat, 27 Jan 2024 15:08:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D44B128DD3;
+	Sat, 27 Jan 2024 15:10:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="Ij4u53kX"
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mn34+7DM"
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B91249EB
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 15:08:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E18111E867;
+	Sat, 27 Jan 2024 15:10:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706368101; cv=none; b=ERvE72nW8zDPhBCnZSIhrkd3YDPI6bZbgtbfPcacPraCFh7Zd/OXdezP98PFn+bFC8AmFwySoO/5spc6Fbz6y0dQ+vCwdnaEiXEi/JUcECDYm+1+8b7/H8CQsmH18gIfc1oCuWUZLzEi680NVEqM3ViRwdO1SP9pBaSf5cuecDw=
+	t=1706368252; cv=none; b=LIt9Lt++lYYqHpp7Lg3coceaCBAsdQaQXiM0P30NK7o4YZ80dy3pfTE8LAIHYJT2USX9tgYVyvIkQ/nRAs4bzVCEZEuwgfcEa+qMlv9ffeNP+g9qeNn3tKwlK5c4DDnKUSE9JD6PPjpQJ/nr27GgRLOnthQnUU2gvOj34FKuER8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706368101; c=relaxed/simple;
-	bh=lqA+NQQLLMZw5KhLr+kca1nqBHSMjxIlkYvhvzl1e3U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aJxvGcTg1N42E2DanT3SQ9oFrgT7SKFVBjPm9FhZcg50qbN/An7NV8bb9vJdcgU6CINp/xTuwQi8i7hRxZux8N9PvwvbcZQ0w4ed5oguS86JDoHDzeB0+aQiMUEwND2C2pohjdZ3Sg0NnAaOGtR5B0wLFJCOLPiwinZLr09CZd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=Ij4u53kX; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1706367673;
-	bh=lqA+NQQLLMZw5KhLr+kca1nqBHSMjxIlkYvhvzl1e3U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ij4u53kXty8NdbYb18xtg8xeFdO5EuZIyluZJn7/9hij3dKZEDlj+owK4FQdvwOtJ
-	 OJ+wkvp+Nn60imahkWZaO0dKdKa4yl7jrU2kF9kS19tcqs2O8L3vWuynapERfWY7c7
-	 1/jcn6Jo3TGp+pzB90pDUjeJLeoQtcW5JVC+Lofg=
-Date: Sat, 27 Jan 2024 15:53:32 +0100
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To: Rodrigo Campos <rodrigo@sdfg.com.ar>
-Cc: Willy Tarreau <w@1wt.eu>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/1] tools/nolibc/string: export strlen()
-Message-ID: <9abed5e3-cd61-474e-bb16-13243709f5c5@t-8ch.de>
-References: <20240126142411.22972-1-rodrigo@sdfg.com.ar>
+	s=arc-20240116; t=1706368252; c=relaxed/simple;
+	bh=xKSFQmVxtAOGPGJAPLF0MbzfXrKik1GUQcQRydHiA7A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=W03bpjii2DC3sRbGHT3zzb2XzYDlDvrS0kdcC2pV7qMMkICdcbYMHLBj/mDdNpQnFMKpy5GumgHfoPIAuhre3qoe7/4j/Y+G7HZ5l4/RIykzV5MBEFnApgbjmGxsHb3subHSZS5RT3mX9Fu3Vfsh75avrKaLhWKELXxnHaXymm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mn34+7DM; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-290b219a60cso871296a91.0;
+        Sat, 27 Jan 2024 07:10:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706368250; x=1706973050; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=exa8lnhZ2cdqFsVJ6CIdmdXQHog1PRg+qoh5FEBSti4=;
+        b=Mn34+7DMvVBEV3KTjJ/CBE9yZnwdeoJeAmtJKuoP1SumB1BH3E5bgdvAflAzjTgbLr
+         GWse6yLwW+gQU4RJB22CABRvxnywr6KrnzDy+Q0aLbQg79NXYZN1JQDI+y4QGDrFU4Ya
+         WDE/iudrvsx8Ox9iJ4f+2l7UCsCgPb1hIThzA5YIB1V0Yr/N3Y+6WJV3RqcFXvWAkEql
+         ItQZoxh4VO4oj84OJYtAtFLQEWQvi5Wbw0D8WbW5JUnnBCETS3NQdClVl7DCoQkyV+db
+         qfVQCQ6aYh7VuT0zCEJN1fGKefEivo2EZ+iIQaYSVWSfzQ0M/G1cQRxMf7guxT6K+ezu
+         9FQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706368250; x=1706973050;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=exa8lnhZ2cdqFsVJ6CIdmdXQHog1PRg+qoh5FEBSti4=;
+        b=iurLjuQ4tpqXPU7LNyOZ79QL5lCX+/8a4vyYIWWdhJzoUl8uUSnobKXJ7XSagloCF4
+         fbVsunmqs7btIlAQWUcomEdr+FoHymOdX4J0gOqYcNocT0633iVBhIog3kBRrruYTypy
+         eKefAzof4SynAANIg+qZTuvfE4EsruS3zdNQpso/bZGIoqJspw0O9ICQ5LDA4v39S6qI
+         m/OLPjd5EzhyjCStNTY9SAQHYgyC6UwEyAE0QYCLo4sXuakFp1yGDxwcRw0pYm6o2cSg
+         FIBs+nY7Vz0eCncpGBcp3kq8/uqtgSfWyiZ+MFbiezo6/ZJ8Sg8VFoksgIReIzMvhxdx
+         4Zrw==
+X-Gm-Message-State: AOJu0YxUYx3M/FDEi5sMcjM4ASe/miMC3FEMSs+5G9bGzzYwokz343XB
+	KjGVKc3WcfqU9qO/FrtVg5HYmJ/SFQ6E9SQyMBy0MXuDsVsno6Xr
+X-Google-Smtp-Source: AGHT+IGqg56oo3QQenahTbidUTI/Ew8TOP/y1ircg+yxKqqi7ET5EOIIK/EtPLpDEtku1kR4/YpFWA==
+X-Received: by 2002:a17:90a:de85:b0:28e:7baf:6fb5 with SMTP id n5-20020a17090ade8500b0028e7baf6fb5mr768817pjv.64.1706368250117;
+        Sat, 27 Jan 2024 07:10:50 -0800 (PST)
+Received: from [192.168.54.105] (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id x34-20020a17090a6c2500b0028c465b050asm3289818pjj.54.2024.01.27.07.10.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 27 Jan 2024 07:10:49 -0800 (PST)
+Message-ID: <a899a90b-39f0-43ef-8cb3-bd706d749fe4@gmail.com>
+Date: Sat, 27 Jan 2024 12:10:44 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240126142411.22972-1-rodrigo@sdfg.com.ar>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 02/12] rust: error: improve unsafe code in example
+To: Valentin Obst <kernel@valentinobst.de>,
+ Valentin Obst <fraunhofer@valentinobst.de>, Miguel Ojeda <ojeda@kernel.org>,
+ Alex Gaynor <alex.gaynor@gmail.com>,
+ Wedson Almeida Filho <wedsonaf@gmail.com>
+Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240123150112.124084-1-kernel@valentinobst.de>
+ <20240123150112.124084-3-kernel@valentinobst.de>
+Content-Language: en-US
+From: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+In-Reply-To: <20240123150112.124084-3-kernel@valentinobst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi!
-
-On 2024-01-26 15:24:10+0100, Rodrigo Campos wrote:
-> Hi, while using nolibc on debian testing, I found that compilation fails when using strlcat().
+On 1/23/24 12:00, Valentin Obst wrote:
+> The `from_err_ptr` function is safe. There is no need for the call to it
+> to be inside the unsafe block.
 > 
-> The compilation fails with:
+> Reword the SAFETY comment to provide a better justification of why the
+> FFI call is safe.
 > 
->             cc -fno-asynchronous-unwind-tables -fno-ident -s -Os -nostdlib -lgcc  -static -o test test.c
->             /usr/bin/ld: /tmp/cccIasKL.o: in function `main':
->             test.c:(.text.startup+0x1e): undefined reference to `strlen'
->             collect2: error: ld returned 1 exit status
-> 
-> This is using debian testing, with gcc 13.2.0.
-
-I can reproduce the issue with gcc 13.2.1 on Arch.
-
-> A small repro case that fails with this error on debian is:
-> 
-> 	int main(void) {
-> 		char dst[6] = "12";
-> 		char *src = "abc";
-> 		strlcat(dst, src, 6);
-> 	
-> 		printf("dst is: %s\n", dst);
-> 	
-> 		return 0;
-> 	}
-> 
-> Please note that this code is not using strlen() and strlcat() doesn't seems to use it either.
-
-I think the comment in strlen() explains it:
-
-    Note that gcc12 recognizes an strlen() pattern and replaces it with a
-    jump to strlen().
-
-strlcat() indeed contains this pattern.
-
-I was able to fix the issue by replacing the open-coded strlen() in
-strlcat() with a call to the function and that also fixed the issue.
-
-It seems nicer to me as a fix, on the other hand the change to a weak
-definition will also catch other instances of the issue.
-Maybe we do both.
-
-> First I noted that removing the attribute unused in strlen(), the compilation worked fine. And then
-> I noticied that other functions had the attribute weak, a custom section and export the function.
-> 
-> In particular, what happens here seems to be the same as in commit "tools/nolibc/string: export memset() and
-> memmove()" (8d304a374023), as removing the -Os or adding the -ffreestanding seem to fix the issue.
-> So, I did the same as that commit, for strlen().
-> 
-> However, I'm not 100% confident on how to check that this is done by the compiler to later replace
-> it and provide a builtin. I'm not sure how that was verified for commit 8d304a374023, but if you let
-> me know, I can verify it too.
-> 
-> What do you think?
-
-Personally I don't know how it was verified, we'll have to wait for
-Willy on that.
-
-> As a side note, it seems strlcat()/strlcpy() fail to set the terminating null byte on some cases,
-> and the return code is not always the same as when using libbsd. It seems to be only on "error"
-> cases, and not sure if it's worth fixing all/some of those cases.
-> 
-> Let me know if you think it is worth adding some _simple_ patches (I don't think it is worth fixing
-> all the cases, the code is to fix all of the cases is probably not nice and not worth it).
-
-Souns reasonable to me to fix the return values.
-And get some tests for it.
-
-> Best,
-> Rodrigo
-> 
+> Signed-off-by: Valentin Obst <kernel@valentinobst.de>
 > ---
-> 
-> 
-> Rodrigo Campos (1):
->   tools/nolibc/string: export strlen()
+> [...]
+
+Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
 
