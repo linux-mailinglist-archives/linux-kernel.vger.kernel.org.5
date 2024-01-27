@@ -1,122 +1,135 @@
-Return-Path: <linux-kernel+bounces-41232-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41233-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3849F83EDB9
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:56:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A44DB83EDC9
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:08:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5D83283508
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 14:56:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B6F9B22660
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:08:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5347028DC1;
-	Sat, 27 Jan 2024 14:55:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC3AE28DC8;
+	Sat, 27 Jan 2024 15:08:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="IdZGCCjL"
-Received: from mout.web.de (mout.web.de [212.227.15.14])
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="Ij4u53kX"
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 851C31E4BC;
-	Sat, 27 Jan 2024 14:55:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B91249EB
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 15:08:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706367351; cv=none; b=YyYP/2prn4OPr1a7KcwRzh1dO4GmkU38Otbqz0UeGZRXP8bd5yDs5TzKXApAmk+vkXrbp4FnRU8kWycgzjtexhzDQI8mEWooGNmfsP8NO6NxVUL/lg0CBKZ499AerL+INYnMKzS4F8kaZXPB6zWroJzWl1uAE4gCVV4hTNuCqlE=
+	t=1706368101; cv=none; b=ERvE72nW8zDPhBCnZSIhrkd3YDPI6bZbgtbfPcacPraCFh7Zd/OXdezP98PFn+bFC8AmFwySoO/5spc6Fbz6y0dQ+vCwdnaEiXEi/JUcECDYm+1+8b7/H8CQsmH18gIfc1oCuWUZLzEi680NVEqM3ViRwdO1SP9pBaSf5cuecDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706367351; c=relaxed/simple;
-	bh=5oTGBMsVoy/AmE5qx0ytIoyZm6Kw/DezMl4EgLexEVs=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=K8lIguF/1240DDtx5DIzfB/lEXqJs13mgHKGuJ2QuEn9Vp4bVF2T0uIki7HKHQ/TkkRTS3hJhU+iJ0RRDpjMCjIe51vv5Y0Tmy/4uJ9s6xMlNSvJv4IOpNhPtiBKcjl9bE5GgTOAx6ECsgENqhNzhQne+yNEV++auQ9LKkROZRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=IdZGCCjL; arc=none smtp.client-ip=212.227.15.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1706367326; x=1706972126; i=markus.elfring@web.de;
-	bh=5oTGBMsVoy/AmE5qx0ytIoyZm6Kw/DezMl4EgLexEVs=;
-	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
-	b=IdZGCCjLmfazUcmtSLsqsWkQ43R2iVHyoPtZl3X0VUGbT9oOHL9/9qpsbHFvB588
-	 3OKutBw9QWhLrndD0ItJ9yy63pzyPQaEvAPBNUxD92zEOTVZn8fwBYBsOd3aHQ5gE
-	 rScWys2ILPC73S2TxWGQGymRD3NW52YhXvATOvtwjmtr00SqV/A7F7G6bvjgtfrbn
-	 Nw2CZohrwvIYqtEg5uPKj+6kCTlAg9UZxABiHxIh9s/ijwVp1C7lXuD1mCOIvGcOq
-	 EbAHyW0IKxkw3uEANTV6IvxSMCjdNJyDaE8zYUhXXHZgZnmTlmly+KuoR+FmJ229Z
-	 /Ljtvv01tD4vOih0zQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.81.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MsaS7-1rEojd1hPP-00u4CP; Sat, 27
- Jan 2024 15:55:26 +0100
-Message-ID: <d94376b6-12e8-45bb-a9be-4887bb316d35@web.de>
-Date: Sat, 27 Jan 2024 15:55:19 +0100
+	s=arc-20240116; t=1706368101; c=relaxed/simple;
+	bh=lqA+NQQLLMZw5KhLr+kca1nqBHSMjxIlkYvhvzl1e3U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aJxvGcTg1N42E2DanT3SQ9oFrgT7SKFVBjPm9FhZcg50qbN/An7NV8bb9vJdcgU6CINp/xTuwQi8i7hRxZux8N9PvwvbcZQ0w4ed5oguS86JDoHDzeB0+aQiMUEwND2C2pohjdZ3Sg0NnAaOGtR5B0wLFJCOLPiwinZLr09CZd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=Ij4u53kX; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1706367673;
+	bh=lqA+NQQLLMZw5KhLr+kca1nqBHSMjxIlkYvhvzl1e3U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ij4u53kXty8NdbYb18xtg8xeFdO5EuZIyluZJn7/9hij3dKZEDlj+owK4FQdvwOtJ
+	 OJ+wkvp+Nn60imahkWZaO0dKdKa4yl7jrU2kF9kS19tcqs2O8L3vWuynapERfWY7c7
+	 1/jcn6Jo3TGp+pzB90pDUjeJLeoQtcW5JVC+Lofg=
+Date: Sat, 27 Jan 2024 15:53:32 +0100
+From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To: Rodrigo Campos <rodrigo@sdfg.com.ar>
+Cc: Willy Tarreau <w@1wt.eu>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/1] tools/nolibc/string: export strlen()
+Message-ID: <9abed5e3-cd61-474e-bb16-13243709f5c5@t-8ch.de>
+References: <20240126142411.22972-1-rodrigo@sdfg.com.ar>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-fpga@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Luwei Kang <luwei.kang@intel.com>, Moritz Fischer <mdf@kernel.org>,
- Tom Rix <trix@redhat.com>, Wu Hao <hao.wu@intel.com>,
- Xu Yilun <yilun.xu@intel.com>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>, Kunwu Chan <chentao@kylinos.cn>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] fpga: dfl: fme: Return directly after a failed
- devm_kasprintf() call in fme_perf_pmu_register()
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:6vcd10ZQQqZU6BgRQxdXosyK07D6p+07N3r8mPyYUd2TY5RTWH6
- Et773/a2KpVp/IC+I774nwVlQ1yPUO3/KFv6ueurCMi48EkAUR+eTmuPn2GEkGHod/rKqWD
- ch7o79nE3RVJutNmad++NdSOwSVk+lk2QmlFY9FZhUE3dZGPqrMqRtPqde2V5So8rChZs4j
- uUXDr4TjhC4xmGpDfLF+Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:LAWx3IAIWPo=;JLeqcNkLoARB1EISitBbSSocVOb
- AT+M8c+Rd7wyNZJLbjMnnCIoDPNDCeMRXVze2CuZ6JmZ/zPyVe9opsOYk//1NgOWT/oigx6OL
- G9xVGNlsJ3IuenoEzVshoblk+3MM9uLcVhh946eYn/vFf2Ga/4+8g49QASSWhxe/jiqFjzbZu
- P4NoVcggljqoZvMwDQOSfxuGP++ef0PifZBRQIvqVUdNIARFiaZ22BmdqvnG30MWmK/ub9vZi
- Hb1lqVD+5jRvCWq27viTnYeZUMoc0Xrpgj5844oMUHfec8BhJvvgY6o19kbFOXGMlQk7+Wdin
- QQoR0mMmWuUvXrAwS9xuuLz5kFFXnLxQWboL9bVZiUUAyw4xBmBUedew9s80ihz9pkIxKSM34
- hur+WNTrsp1W2mtZwwmOip1SyqDaB4jOf5WvXGFraAVLprwnXB6AndFlhRzUNUEKEuqC7mu6R
- KohZNBOLFqR5rVAEtedHbtveoLdULNNlMmESrUhRK6HXDNkQEM0gJQFKmiZgwslLPwSjejcJ6
- smZTj/2fOpSZOSPwbnQ1q094y5D6H7t4YdT61Rrqq1YiLhSemM2f0DNYJpYOIG30bMXfIpXFm
- JjLviA6rjk47/5eBlF1ZCzv6UncLcvJivZeeAMjqX/8y6y2ET3kPWsVKPRYn3dxHce0spqQGm
- yl4+8fCY3H1XNiNJu1ot81JcXz2YczVOf3MDENKXWkXAdxwdbMSPqJS35czyxZaHnULrSOqji
- MPfMcWEBqExH0bFlMPixXbdzaDaDnTRuGMv4TQhDhy4UoIGRSxrSB1P+Mnmo/vt69Fs+LhWBS
- NWvK4G/QKPe7KhZF7feMsIG8odTMafNiOWUjAiRaTvF1jCZ+LO86K36I5odhDRcd+94LVwnsR
- idnkah2Uh4Rcsq1p6l/0dzJHvPhVQ69q9eFtWDaoEy8SqaWrQDNJLQziJPRU8V4N8RBdOp5PJ
- GfiThzazYbdcYi0mUoFYG9BlBlg=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240126142411.22972-1-rodrigo@sdfg.com.ar>
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sat, 27 Jan 2024 15:43:42 +0100
+Hi!
 
-The result from a call of the function =E2=80=9Cdevm_kasprintf=E2=80=9D wa=
-s passed to
-a subsequent function call without checking for a null pointer before
-(according to a memory allocation failure).
-This issue was detected by using the Coccinelle software.
+On 2024-01-26 15:24:10+0100, Rodrigo Campos wrote:
+> Hi, while using nolibc on debian testing, I found that compilation fails when using strlcat().
+> 
+> The compilation fails with:
+> 
+>             cc -fno-asynchronous-unwind-tables -fno-ident -s -Os -nostdlib -lgcc  -static -o test test.c
+>             /usr/bin/ld: /tmp/cccIasKL.o: in function `main':
+>             test.c:(.text.startup+0x1e): undefined reference to `strlen'
+>             collect2: error: ld returned 1 exit status
+> 
+> This is using debian testing, with gcc 13.2.0.
 
-Thus return directly after a failed devm_kasprintf() call.
+I can reproduce the issue with gcc 13.2.1 on Arch.
 
-Fixes: 724142f8c42a7 ("fpga: dfl: fme: add performance reporting support")
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/fpga/dfl-fme-perf.c | 2 ++
- 1 file changed, 2 insertions(+)
+> A small repro case that fails with this error on debian is:
+> 
+> 	int main(void) {
+> 		char dst[6] = "12";
+> 		char *src = "abc";
+> 		strlcat(dst, src, 6);
+> 	
+> 		printf("dst is: %s\n", dst);
+> 	
+> 		return 0;
+> 	}
+> 
+> Please note that this code is not using strlen() and strlcat() doesn't seems to use it either.
 
-diff --git a/drivers/fpga/dfl-fme-perf.c b/drivers/fpga/dfl-fme-perf.c
-index 7422d2bc6f37..db56d52411ef 100644
-=2D-- a/drivers/fpga/dfl-fme-perf.c
-+++ b/drivers/fpga/dfl-fme-perf.c
-@@ -925,6 +925,8 @@ static int fme_perf_pmu_register(struct platform_devic=
-e *pdev,
- 				PERF_PMU_CAP_NO_EXCLUDE;
+I think the comment in strlen() explains it:
 
- 	name =3D devm_kasprintf(priv->dev, GFP_KERNEL, "dfl_fme%d", pdev->id);
-+	if (!name)
-+		return -ENOMEM;
+    Note that gcc12 recognizes an strlen() pattern and replaces it with a
+    jump to strlen().
 
- 	ret =3D perf_pmu_register(pmu, name, -1);
- 	if (ret)
-=2D-
-2.43.0
+strlcat() indeed contains this pattern.
 
+I was able to fix the issue by replacing the open-coded strlen() in
+strlcat() with a call to the function and that also fixed the issue.
+
+It seems nicer to me as a fix, on the other hand the change to a weak
+definition will also catch other instances of the issue.
+Maybe we do both.
+
+> First I noted that removing the attribute unused in strlen(), the compilation worked fine. And then
+> I noticied that other functions had the attribute weak, a custom section and export the function.
+> 
+> In particular, what happens here seems to be the same as in commit "tools/nolibc/string: export memset() and
+> memmove()" (8d304a374023), as removing the -Os or adding the -ffreestanding seem to fix the issue.
+> So, I did the same as that commit, for strlen().
+> 
+> However, I'm not 100% confident on how to check that this is done by the compiler to later replace
+> it and provide a builtin. I'm not sure how that was verified for commit 8d304a374023, but if you let
+> me know, I can verify it too.
+> 
+> What do you think?
+
+Personally I don't know how it was verified, we'll have to wait for
+Willy on that.
+
+> As a side note, it seems strlcat()/strlcpy() fail to set the terminating null byte on some cases,
+> and the return code is not always the same as when using libbsd. It seems to be only on "error"
+> cases, and not sure if it's worth fixing all/some of those cases.
+> 
+> Let me know if you think it is worth adding some _simple_ patches (I don't think it is worth fixing
+> all the cases, the code is to fix all of the cases is probably not nice and not worth it).
+
+Souns reasonable to me to fix the return values.
+And get some tests for it.
+
+> Best,
+> Rodrigo
+> 
+> ---
+> 
+> 
+> Rodrigo Campos (1):
+>   tools/nolibc/string: export strlen()
 
