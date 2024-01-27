@@ -1,162 +1,105 @@
-Return-Path: <linux-kernel+bounces-41174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB1F583ECE6
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 12:26:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A434E83ECE8
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 12:27:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A1BF1C21886
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 11:26:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8481E1C21810
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 11:27:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ACE6200C7;
-	Sat, 27 Jan 2024 11:26:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73AF7200DB;
+	Sat, 27 Jan 2024 11:27:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="lUedujCn";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="/Fif1aUK"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MGQ/xrYc"
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C60821E869;
-	Sat, 27 Jan 2024 11:26:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18A7A1F608
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 11:27:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706354776; cv=none; b=R/8+/oNglstSIYbWD1W47R61aNIFdUjQ1bPJG5EyJgHFlVPBE4HNnAvrLtUHMXOfL5UhgcyXIaas3oqH5JTTHbEC/544NcO4GC+Re373cNuJE0Gd+2BFxzhpDiKa82oyJOVcxGU3nIS5i82WA9ga+szlwJ1Qp8X0xZtF2v6So68=
+	t=1706354856; cv=none; b=R57uEpqL8INLj7635Rv/F0tyTXwahM/0Le3txdPini3Swz/kShxx6LwrXCvebiF8uu2roPZLNt1mDTZkxoLV5yv95ElruvjV9wOCv1A37D1iV4Hyic5jIcFDGzgK6HQSu9O6q3d5cxfbe23075FxEhcmZ7eclXq1jgWPdrfDZsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706354776; c=relaxed/simple;
-	bh=y77fw+oXQsa4/OSok+BNXAWMyCSdiussIoanHFVbKno=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=f2hBTugKduUlsHjwsaJvspaYh6vggTgkrOVJB2ZyeXtY/+YdJpjK1sx5TUTYfwzMAzrYdGwnl1QK0eQIzMchphI6TndojND2PRc9KTWRSQ/4IDLQYsT4HayHmgkTW3YlWdp/A31SSUuoFWWfDmMx4XNmu9Jy/KMRnD3yQBZCFUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=lUedujCn; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=/Fif1aUK; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Sat, 27 Jan 2024 11:26:06 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706354767;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iRSKkfMgDtfSt+TVqiW5vKMlAWylA5g1gZq4YeCkcJA=;
-	b=lUedujCnDV3Ah9EvLhvpDKi9bWPZ6MVKsYQZ7ypSOuPVaKlz5SZkgtU9wh8NVc32vX2zSB
-	jtlRa1qVt3KOCFn5f4PF9F8jDfCNr6Ol4MA64nTmA3kM0Syb/GTZuNqxAvc0ofD8xt3AMW
-	XVxHBjh82lv6x0fyIeM/kCKKeVVsSLBE/0R3zva4xUwx3RMNt8EOpyZX4ZBRwZye0OmshW
-	+mF3nRVvsYzWwRujTR3uDfUbnTZbWrgy7iwTFo1y5BFyWc8RQClbKE4wSjh20v+m2y1qdx
-	zWR4885n8ZCzpkxjG/4hKdNOHvPYivnJs+V0jfxTcdPycMed3pQEXg2V0oMsOQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706354767;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iRSKkfMgDtfSt+TVqiW5vKMlAWylA5g1gZq4YeCkcJA=;
-	b=/Fif1aUK0iiU39F31vBwyAfh36pEuJanCOh+wbXXBe1xDFR7HzBR3ANyUniWsJWaYjX6JQ
-	ej6H6XuuLOuo8wCA==
-From: "tip-bot2 for Ard Biesheuvel" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sev] x86/sme: Fix memory encryption setting if enabled by
- default and not overridden
-Cc: Ard Biesheuvel <ardb@kernel.org>, "Borislav Petkov (AMD)" <bp@alien8.de>,
- Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240126163918.2908990-2-ardb+git@google.com>
-References: <20240126163918.2908990-2-ardb+git@google.com>
+	s=arc-20240116; t=1706354856; c=relaxed/simple;
+	bh=vK0eqnJKg4J1aQCQzH+8/Z6rONOs/EvbsxZRDKrlQEk=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=LmmKsh7yV3yFCTeI2nlypEFaVIv6b360lK17K8XNcyPAZEAyC2kjNKrd1TfPmlEpceEDSsyhVj69u9ilCHh16D8SvUN5PF7ymwnFQ+jXbge5+uY1viRPK+mvfMxLJ8TQI9H2idaCF8EyZXA1DxPykHJgYs2LJPGCeYfjLatZCAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MGQ/xrYc; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40eacb4bfa0so18633915e9.1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 03:27:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706354853; x=1706959653; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2dpM1CkfDH0XB95t4O5VTpTHwxkxhmeZblwS/gZTA+A=;
+        b=MGQ/xrYcc0tccIy6OBkCfe6pchSPtKKeZZxMDkMHwwWNr7/sr5hnfh0Cd9vdCBDQBo
+         VJYsmbieXKK6MVt9RC7CGOTTLVAk7N8r3cAEKE5JwR0UScfwU9st7lLAAG76nKIYvfld
+         Mb2IdtZypIA17kJe+xld05HSWq0Cgo2eeDzOwbB7QaFmaVAcQgXbtZrFPdM1VxIkGuLH
+         12LVWGIRrEXWBDUU/RSPCXRTROektcGrYvMQbgOd9DiLQgf3ZbOZpSi/QL/ySXuHxo47
+         OCXqr85xhB6TIjFA63/oFaxxHVQ0VzZLwkgy71VeD1MDYqM6G9gxCMyETjBecQOgIsOT
+         Wrag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706354853; x=1706959653;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2dpM1CkfDH0XB95t4O5VTpTHwxkxhmeZblwS/gZTA+A=;
+        b=PBxSb2pZOW9iecSHCPw0e3PlgSwIx/V0xtTlbAGKjrjxmUkm1AEIDepQ+pxvFrBX38
+         NffaZciOQVxHdTB7qqTMbQA+S3olWsNycyJPRBtLoG20VhM/RniuIIqS8ZWRhbxNoTOt
+         5Q14xTKQtHsitY2hN1YOLPCkpHFHyQGH0BKoInWtSeCsFDjVan09TaawdWIDqRP6HpIF
+         POLO2wy6+uIF73PZVsyAQ67rrQLok2sXVoPjFkgQEZUlIjyOu7sjT7UF+NuU5tRB6Uut
+         8ZFHQdFWlq8c71sI+gy+Tav4BrzEmomVLeAEE8nt9mQLWDATTCqcJAKBF0a8l5X0MFXr
+         s5Cw==
+X-Gm-Message-State: AOJu0Yx61eRzuf8ThGPAxmhzPiEpjL99jGq1VVg/gsChjBXnaHrB5hHJ
+	e2bSPT5taYnI3HcyWfYcts5vjBf5wNqYvVn+ac/igRkgY671lGgIlzqISOEGGtY=
+X-Google-Smtp-Source: AGHT+IEZqYwNJrHEDeaHzZ7naxdfE4X1NGyfJELKrR6djyUokV5E53Zvh98ZWJ9alwwC/brnFRuBtQ==
+X-Received: by 2002:a5d:6c63:0:b0:33a:dee8:ac89 with SMTP id r3-20020a5d6c63000000b0033adee8ac89mr1136329wrz.99.1706354852743;
+        Sat, 27 Jan 2024 03:27:32 -0800 (PST)
+Received: from [172.20.10.4] (82-132-215-85.dab.02.net. [82.132.215.85])
+        by smtp.gmail.com with ESMTPSA id n6-20020a05600c500600b0040e3488f16dsm4369914wmr.12.2024.01.27.03.27.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Jan 2024 03:27:31 -0800 (PST)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, 
+ Rob Herring <robh@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240125134645.2549051-1-robh@kernel.org>
+References: <20240125134645.2549051-1-robh@kernel.org>
+Subject: Re: [PATCH] nvmem: fixed-cell: Simplify nested if/then schema
+Message-Id: <170635485051.40968.2673432461747170125.b4-ty@linaro.org>
+Date: Sat, 27 Jan 2024 11:27:30 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170635476620.398.13087052898452065480.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.2
 
-The following commit has been merged into the x86/sev branch of tip:
 
-Commit-ID:     aa8eff72842021f52600392b245fb82d113afa8a
-Gitweb:        https://git.kernel.org/tip/aa8eff72842021f52600392b245fb82d113afa8a
-Author:        Ard Biesheuvel <ardb@kernel.org>
-AuthorDate:    Fri, 26 Jan 2024 17:39:19 +01:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Sat, 27 Jan 2024 12:17:26 +01:00
+On Thu, 25 Jan 2024 07:46:44 -0600, Rob Herring wrote:
+> There's no reason to have a nested if/then schema as checking for compatible
+> being present and containing 'mac-base' can all be done in one 'if' schema.
+> 
+> 
 
-x86/sme: Fix memory encryption setting if enabled by default and not overridden
+Applied, thanks!
 
-Commit
+[1/1] nvmem: fixed-cell: Simplify nested if/then schema
+      commit: 290ea1d6f990c92d5ae599554d8acafdd0ddeb2e
 
-  cbebd68f59f0 ("x86/mm: Fix use of uninitialized buffer in sme_enable()")
+Best regards,
+-- 
+Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-'fixed' an issue in sme_enable() detected by static analysis, and broke
-the common case in the process.
-
-cmdline_find_option() will return < 0 on an error, or when the command
-line argument does not appear at all. In this particular case, the
-latter is not an error condition, and so the early exit is wrong.
-
-Instead, without mem_encrypt= on the command line, the compile time
-default should be honoured, which could be to enable memory encryption,
-and this is currently broken.
-
-Fix it by setting sme_me_mask to a preliminary value based on the
-compile time default, and only omitting the command line argument test
-when cmdline_find_option() returns an error.
-
-  [ bp: Drop active_by_default while at it. ]
-
-Fixes: cbebd68f59f0 ("x86/mm: Fix use of uninitialized buffer in sme_enable()")
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
-Link: https://lore.kernel.org/r/20240126163918.2908990-2-ardb+git@google.com
----
- arch/x86/mm/mem_encrypt_identity.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
-
-diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
-index d73aeb1..7f72472 100644
---- a/arch/x86/mm/mem_encrypt_identity.c
-+++ b/arch/x86/mm/mem_encrypt_identity.c
-@@ -507,7 +507,6 @@ void __init sme_enable(struct boot_params *bp)
- 	const char *cmdline_ptr, *cmdline_arg, *cmdline_on, *cmdline_off;
- 	unsigned int eax, ebx, ecx, edx;
- 	unsigned long feature_mask;
--	bool active_by_default;
- 	unsigned long me_mask;
- 	char buffer[16];
- 	bool snp;
-@@ -593,22 +592,19 @@ void __init sme_enable(struct boot_params *bp)
- 	     : "p" (sme_cmdline_off));
- 
- 	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT))
--		active_by_default = true;
--	else
--		active_by_default = false;
-+		sme_me_mask = me_mask;
- 
- 	cmdline_ptr = (const char *)((u64)bp->hdr.cmd_line_ptr |
- 				     ((u64)bp->ext_cmd_line_ptr << 32));
- 
- 	if (cmdline_find_option(cmdline_ptr, cmdline_arg, buffer, sizeof(buffer)) < 0)
--		return;
-+		goto out;
- 
- 	if (!strncmp(buffer, cmdline_on, sizeof(buffer)))
- 		sme_me_mask = me_mask;
- 	else if (!strncmp(buffer, cmdline_off, sizeof(buffer)))
- 		sme_me_mask = 0;
--	else
--		sme_me_mask = active_by_default ? me_mask : 0;
-+
- out:
- 	if (sme_me_mask) {
- 		physical_mask &= ~sme_me_mask;
 
