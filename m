@@ -1,291 +1,256 @@
-Return-Path: <linux-kernel+bounces-41345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5793483EF25
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 18:45:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C05283EF2C
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 18:51:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0B001F23881
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 17:45:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D4C4B228A7
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 17:51:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D76E22D05D;
-	Sat, 27 Jan 2024 17:45:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C33F52D058;
+	Sat, 27 Jan 2024 17:51:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nBmN5a1F"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kDNWFdkK"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1B121E860;
-	Sat, 27 Jan 2024 17:45:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA65E25777
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 17:50:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706377545; cv=none; b=OLmFDTr/SrIVto8LMpuR7OgJwuwB1DSOvY4Oia3ueUVKxJIKGdMC71uiUAfD5x8OkeFE6WjZq0YqxgP9hkxkZyoCpE8nxeZX3bK8kkKmuiqTYNbmbQdySvZpsdr9glYaVWRd/qPU8f8hWnIsr5Ec0kDq9bM+OwlRRnznpsOhgng=
+	t=1706377861; cv=none; b=GcbJLghUZ4S4sOb0nB9/fv2drN6QHDg9Ayl2sNqnaoXtGCin9Ks8hsWIsPjxhA74ycNd444pMd1RzPFiyBRNw18XFTTWFioyK4c3NgQEnfQ4tSM/SchV9ytCLiFK9jJfIuxWUB1khxteTNBzC4E9HoLaL0rRRkFIUcUAbJUQGq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706377545; c=relaxed/simple;
-	bh=CfTEgkFRXJec6DJgIyvZR86BWX77LAPIfK7gZooiXvs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fh0RwdHnNxa3yCTenyMEj1FkRxSc+yIRCx8hrvMRCJ8rZV6CfmtKginR+r8ecjl0HGl+KaT+16Kmk20yed+BdGt7nMbShG00wAwcnurJezpLZUKooY3fQvxwGmlsFtW/b0h0eKikWrUBVvOn2rJnpL13/cE1tWM2LkcP56V8wrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nBmN5a1F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3ABBEC433F1;
-	Sat, 27 Jan 2024 17:45:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706377544;
-	bh=CfTEgkFRXJec6DJgIyvZR86BWX77LAPIfK7gZooiXvs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nBmN5a1FhlhfVRsvU8rMlhDFPilBUXvOzN2+vn+jweNZ+pRAEzDtfWxISvdD6+VWB
-	 0a8zduKgnsHf6/7sXlskSoRSV/AiLI8s4Ku3vEXvYfYwiRn3d2bg3JMcYMB5i8++Zz
-	 kQSi50H62V/UDN4kJZSG+KJhnkPan1a6JnChMojeROF5+hPVFGDyV+wise3nEM6/BR
-	 dErjpmyCABm8O3qZAK8Gr56ASjN0pdreOanNWF1hlfPp76Iq1JhDtQkPwdI4vq5+cp
-	 59xm3S1IdOFEztSQC6VkOrfQNHZVmgpi4mj8ZKX/3Q5lM/in56fPmmy7EdYzIVCHAV
-	 uPCoetNJqhDfw==
-Date: Sat, 27 Jan 2024 09:45:43 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Joshua Ashton <joshua@froggi.es>, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-bcache@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH 3/5] bcachefs: bch2_time_stats_to_seq_buf()
-Message-ID: <20240127174543.GD6184@frogsfrogsfrogs>
-References: <20240126220655.395093-1-kent.overstreet@linux.dev>
- <20240126220655.395093-3-kent.overstreet@linux.dev>
- <DA69BC9C-D7FF-48F7-9F6D-EF96DC4C5C7B@froggi.es>
- <5efhxgruvtlrjiqe52kgmnduguw3tmg2jjugfzi7dhbywljrwi@zu2ndkvzunzs>
+	s=arc-20240116; t=1706377861; c=relaxed/simple;
+	bh=w1bv8M1JtpVH+FUwVsT2zyQxbIjJPUkOAhdT/yuGiPc=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=GWe1ywgEoBRcooxuvSYrS5vdR4TJoeOox94nWSVxIAQIBJYTagqstvaK1QoSRJC7iIjGmTMIG9xVuJd15qHVaiO/FdI/0u5/WJ3WTidbRsgErwQ/Ysw5baqXSY0dawsTfZ8ZFskiEEdTswfgj1WzxfdGzJ/b8i3bZvGd2ysSyWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kDNWFdkK; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706377860; x=1737913860;
+  h=date:from:to:cc:subject:message-id;
+  bh=w1bv8M1JtpVH+FUwVsT2zyQxbIjJPUkOAhdT/yuGiPc=;
+  b=kDNWFdkKMrutfSahhhj5mi4dgzjhWpus8RLXtaUlkrl+hsdnGe+hYRC9
+   /933SuAmWbFGNQF7C5aZN76U5z7Z1Rvg0IBV/CjTs/EFBkuDRfPfKEDMZ
+   8J/JeWMNQ7ENAjIYvkhyjyf41x5jwGeya3QovSiVxAicFjXjp/wQn75Pz
+   zX4ENsbmtADWPTzgUTNmjwMUkxWvwesiIkmBiOp6zdt+Qxp3vbQcQBogR
+   Fl32/ms60Lhcl/D6QY+zLY2m3ZdOtr9ZCADIUOv3cV24JlUeLc4/onLHr
+   /lg8U7mAjUlp6LQwlmLdjxN+H+tcW2xmCH3nQsK/tD0kfWcIWSedoMgAR
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10966"; a="2532203"
+X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
+   d="scan'208";a="2532203"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2024 09:50:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10966"; a="910643732"
+X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
+   d="scan'208";a="910643732"
+Received: from lkp-server01.sh.intel.com (HELO 370188f8dc87) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 27 Jan 2024 09:50:54 -0800
+Received: from kbuild by 370188f8dc87 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rTmpP-0002aS-29;
+	Sat, 27 Jan 2024 17:50:51 +0000
+Date: Sun, 28 Jan 2024 01:50:26 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:smp/core] BUILD SUCCESS
+ effe6d278e06f85289b6ada0402a6d16ebc149a5
+Message-ID: <202401280124.uXniRX9y-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5efhxgruvtlrjiqe52kgmnduguw3tmg2jjugfzi7dhbywljrwi@zu2ndkvzunzs>
 
-On Sat, Jan 27, 2024 at 10:20:48AM -0500, Kent Overstreet wrote:
-> On Sat, Jan 27, 2024 at 03:49:29AM +0000, Joshua Ashton wrote:
-> > Kernel patches need descriptions.
-> 
-> I think this one was pretty clear from the name and type signature :)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git smp/core
+branch HEAD: effe6d278e06f85289b6ada0402a6d16ebc149a5  kernel/cpu: Convert snprintf() to sysfs_emit()
 
-I was mildly confused by this patch until I read the /next/ patch and
-realized "Oh, patch 3 ports the timestats rendering code to seq_buf so
-that patch 4 can lift it to lib/."
+elapsed time: 1461m
 
-But I also thought the purpose of all this was kinda obvious from the
-cover letter, which was why I didn't say anything yesterday afternoon.
+configs tested: 167
+configs skipped: 2
 
-I really don't care about these sorts of things.  IMO the obviously
-interesting meat of the patchset is the patch that hoisted this to lib/
-and the critical review is brainstorming how I'd use this new piece of
-functionality, deciding if the api was ergonomic enough to start
-prototyping upon, and sending a conditional RVB if I demonstrated enough
-understanding of the problem being solved.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-As for rearranging deck chairs inside fs/bcachefs, that's Kent's thing.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240127   gcc  
+arc                   randconfig-002-20240127   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                             pxa_defconfig   gcc  
+arm                   randconfig-001-20240127   gcc  
+arm                   randconfig-002-20240127   gcc  
+arm                   randconfig-003-20240127   gcc  
+arm                   randconfig-004-20240127   gcc  
+arm                        spear6xx_defconfig   gcc  
+arm                           stm32_defconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240127   gcc  
+arm64                 randconfig-002-20240127   gcc  
+arm64                 randconfig-003-20240127   gcc  
+arm64                 randconfig-004-20240127   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240127   gcc  
+csky                  randconfig-002-20240127   gcc  
+hexagon                          allmodconfig   clang
+hexagon                          allyesconfig   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386                  randconfig-011-20240127   clang
+i386                  randconfig-012-20240127   clang
+i386                  randconfig-013-20240127   clang
+i386                  randconfig-014-20240127   clang
+i386                  randconfig-015-20240127   clang
+i386                  randconfig-016-20240127   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240127   gcc  
+loongarch             randconfig-002-20240127   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                         amcore_defconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                       m5275evb_defconfig   gcc  
+m68k                        mvme16x_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                       bmips_be_defconfig   gcc  
+mips                  decstation_64_defconfig   gcc  
+mips                           gcw0_defconfig   gcc  
+nios2                            alldefconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240127   gcc  
+nios2                 randconfig-002-20240127   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                generic-64bit_defconfig   gcc  
+parisc                randconfig-001-20240127   gcc  
+parisc                randconfig-002-20240127   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   clang
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                   currituck_defconfig   gcc  
+powerpc                     mpc83xx_defconfig   gcc  
+powerpc                      pasemi_defconfig   gcc  
+powerpc                      pcm030_defconfig   gcc  
+powerpc               randconfig-001-20240127   gcc  
+powerpc               randconfig-002-20240127   gcc  
+powerpc               randconfig-003-20240127   gcc  
+powerpc                  storcenter_defconfig   gcc  
+powerpc                     tqm8541_defconfig   gcc  
+powerpc                     tqm8555_defconfig   gcc  
+powerpc                         wii_defconfig   gcc  
+powerpc64             randconfig-001-20240127   gcc  
+powerpc64             randconfig-002-20240127   gcc  
+powerpc64             randconfig-003-20240127   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   clang
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20240127   gcc  
+riscv                 randconfig-002-20240127   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                          lboxre2_defconfig   gcc  
+sh                    randconfig-001-20240127   gcc  
+sh                    randconfig-002-20240127   gcc  
+sh                          rsk7201_defconfig   gcc  
+sh                          rsk7203_defconfig   gcc  
+sh                           se7722_defconfig   gcc  
+sh                   sh7724_generic_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                       sparc32_defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240127   gcc  
+sparc64               randconfig-002-20240127   gcc  
+um                               alldefconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240127   gcc  
+um                    randconfig-002-20240127   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240127   gcc  
+x86_64       buildonly-randconfig-002-20240127   gcc  
+x86_64       buildonly-randconfig-003-20240127   gcc  
+x86_64       buildonly-randconfig-004-20240127   gcc  
+x86_64       buildonly-randconfig-005-20240127   gcc  
+x86_64       buildonly-randconfig-006-20240127   gcc  
+x86_64                                  kexec   gcc  
+x86_64                randconfig-011-20240127   gcc  
+x86_64                randconfig-012-20240127   gcc  
+x86_64                randconfig-013-20240127   gcc  
+x86_64                randconfig-014-20240127   gcc  
+x86_64                randconfig-015-20240127   gcc  
+x86_64                randconfig-016-20240127   gcc  
+x86_64                randconfig-071-20240127   gcc  
+x86_64                randconfig-072-20240127   gcc  
+x86_64                randconfig-073-20240127   gcc  
+x86_64                randconfig-074-20240127   gcc  
+x86_64                randconfig-075-20240127   gcc  
+x86_64                randconfig-076-20240127   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                  nommu_kc705_defconfig   gcc  
+xtensa                randconfig-001-20240127   gcc  
+xtensa                randconfig-002-20240127   gcc  
+xtensa                         virt_defconfig   gcc  
 
---D
-
-> > 
-> > On January 26, 2024 10:06:53 PM GMT, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> > >Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > >---
-> > > fs/bcachefs/super.c |   2 +
-> > > fs/bcachefs/util.c  | 129 +++++++++++++++++++++++++++++++++++++++-----
-> > > fs/bcachefs/util.h  |   4 ++
-> > > 3 files changed, 121 insertions(+), 14 deletions(-)
-> > >
-> > >diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
-> > >index da8697c79a97..e74534096cb5 100644
-> > >--- a/fs/bcachefs/super.c
-> > >+++ b/fs/bcachefs/super.c
-> > >@@ -1262,6 +1262,8 @@ static struct bch_dev *__bch2_dev_alloc(struct bch_fs *c,
-> > > 
-> > > 	bch2_time_stats_init(&ca->io_latency[READ]);
-> > > 	bch2_time_stats_init(&ca->io_latency[WRITE]);
-> > >+	ca->io_latency[READ].quantiles_enabled = true;
-> > >+	ca->io_latency[WRITE].quantiles_enabled = true;
-> > > 
-> > > 	ca->mi = bch2_mi_to_cpu(member);
-> > > 
-> > >diff --git a/fs/bcachefs/util.c b/fs/bcachefs/util.c
-> > >index c7cf9c6fcf9a..f2c8550c1331 100644
-> > >--- a/fs/bcachefs/util.c
-> > >+++ b/fs/bcachefs/util.c
-> > >@@ -505,10 +505,8 @@ static inline void pr_name_and_units(struct printbuf *out, const char *name, u64
-> > > 
-> > > void bch2_time_stats_to_text(struct printbuf *out, struct bch2_time_stats *stats)
-> > > {
-> > >-	const struct time_unit *u;
-> > > 	s64 f_mean = 0, d_mean = 0;
-> > >-	u64 q, last_q = 0, f_stddev = 0, d_stddev = 0;
-> > >-	int i;
-> > >+	u64 f_stddev = 0, d_stddev = 0;
-> > > 
-> > > 	if (stats->buffer) {
-> > > 		int cpu;
-> > >@@ -607,19 +605,122 @@ void bch2_time_stats_to_text(struct printbuf *out, struct bch2_time_stats *stats
-> > > 
-> > > 	printbuf_tabstops_reset(out);
-> > > 
-> > >-	i = eytzinger0_first(NR_QUANTILES);
-> > >-	u = pick_time_units(stats->quantiles.entries[i].m);
-> > >+	if (stats->quantiles_enabled) {
-> > >+		int i = eytzinger0_first(NR_QUANTILES);
-> > >+		const struct time_unit *u =
-> > >+			pick_time_units(stats->quantiles.entries[i].m);
-> > >+		u64 last_q = 0;
-> > >+
-> > >+		prt_printf(out, "quantiles (%s):\t", u->name);
-> > >+		eytzinger0_for_each(i, NR_QUANTILES) {
-> > >+			bool is_last = eytzinger0_next(i, NR_QUANTILES) == -1;
-> > >+
-> > >+			u64 q = max(stats->quantiles.entries[i].m, last_q);
-> > >+			prt_printf(out, "%llu ", div_u64(q, u->nsecs));
-> > >+			if (is_last)
-> > >+				prt_newline(out);
-> > >+			last_q = q;
-> > >+		}
-> > >+	}
-> > >+}
-> > >+
-> > >+#include <linux/seq_buf.h>
-> > >+
-> > >+static void seq_buf_time_units_aligned(struct seq_buf *out, u64 ns)
-> > >+{
-> > >+	const struct time_unit *u = pick_time_units(ns);
-> > >+
-> > >+	seq_buf_printf(out, "%8llu %s", div64_u64(ns, u->nsecs), u->name);
-> > >+}
-> > >+
-> > >+void bch2_time_stats_to_seq_buf(struct seq_buf *out, struct bch2_time_stats *stats)
-> > >+{
-> > >+	s64 f_mean = 0, d_mean = 0;
-> > >+	u64 f_stddev = 0, d_stddev = 0;
-> > >+
-> > >+	if (stats->buffer) {
-> > >+		int cpu;
-> > > 
-> > >-	prt_printf(out, "quantiles (%s):\t", u->name);
-> > >-	eytzinger0_for_each(i, NR_QUANTILES) {
-> > >-		bool is_last = eytzinger0_next(i, NR_QUANTILES) == -1;
-> > >+		spin_lock_irq(&stats->lock);
-> > >+		for_each_possible_cpu(cpu)
-> > >+			__bch2_time_stats_clear_buffer(stats, per_cpu_ptr(stats->buffer, cpu));
-> > >+		spin_unlock_irq(&stats->lock);
-> > >+	}
-> > > 
-> > >-		q = max(stats->quantiles.entries[i].m, last_q);
-> > >-		prt_printf(out, "%llu ",
-> > >-		       div_u64(q, u->nsecs));
-> > >-		if (is_last)
-> > >-			prt_newline(out);
-> > >-		last_q = q;
-> > >+	/*
-> > >+	 * avoid divide by zero
-> > >+	 */
-> > >+	if (stats->freq_stats.n) {
-> > >+		f_mean = mean_and_variance_get_mean(stats->freq_stats);
-> > >+		f_stddev = mean_and_variance_get_stddev(stats->freq_stats);
-> > >+		d_mean = mean_and_variance_get_mean(stats->duration_stats);
-> > >+		d_stddev = mean_and_variance_get_stddev(stats->duration_stats);
-> > >+	}
-> > >+
-> > >+	seq_buf_printf(out, "count: %llu\n", stats->duration_stats.n);
-> > >+
-> > >+	seq_buf_printf(out, "                       since mount        recent\n");
-> > >+
-> > >+	seq_buf_printf(out, "duration of events\n");
-> > >+
-> > >+	seq_buf_printf(out, "  min:                     ");
-> > >+	seq_buf_time_units_aligned(out, stats->min_duration);
-> > >+	seq_buf_printf(out, "\n");
-> > >+
-> > >+	seq_buf_printf(out, "  max:                     ");
-> > >+	seq_buf_time_units_aligned(out, stats->max_duration);
-> > >+	seq_buf_printf(out, "\n");
-> > >+
-> > >+	seq_buf_printf(out, "  total:                   ");
-> > >+	seq_buf_time_units_aligned(out, stats->total_duration);
-> > >+	seq_buf_printf(out, "\n");
-> > >+
-> > >+	seq_buf_printf(out, "  mean:                    ");
-> > >+	seq_buf_time_units_aligned(out, d_mean);
-> > >+	seq_buf_time_units_aligned(out, mean_and_variance_weighted_get_mean(stats->duration_stats_weighted));
-> > >+	seq_buf_printf(out, "\n");
-> > >+
-> > >+	seq_buf_printf(out, "  stddev:                  ");
-> > >+	seq_buf_time_units_aligned(out, d_stddev);
-> > >+	seq_buf_time_units_aligned(out, mean_and_variance_weighted_get_stddev(stats->duration_stats_weighted));
-> > >+	seq_buf_printf(out, "\n");
-> > >+
-> > >+	seq_buf_printf(out, "time between events\n");
-> > >+
-> > >+	seq_buf_printf(out, "  min:                     ");
-> > >+	seq_buf_time_units_aligned(out, stats->min_freq);
-> > >+	seq_buf_printf(out, "\n");
-> > >+
-> > >+	seq_buf_printf(out, "  max:                     ");
-> > >+	seq_buf_time_units_aligned(out, stats->max_freq);
-> > >+	seq_buf_printf(out, "\n");
-> > >+
-> > >+	seq_buf_printf(out, "  mean:                    ");
-> > >+	seq_buf_time_units_aligned(out, f_mean);
-> > >+	seq_buf_time_units_aligned(out, mean_and_variance_weighted_get_mean(stats->freq_stats_weighted));
-> > >+	seq_buf_printf(out, "\n");
-> > >+
-> > >+	seq_buf_printf(out, "  stddev:                  ");
-> > >+	seq_buf_time_units_aligned(out, f_stddev);
-> > >+	seq_buf_time_units_aligned(out, mean_and_variance_weighted_get_stddev(stats->freq_stats_weighted));
-> > >+	seq_buf_printf(out, "\n");
-> > >+
-> > >+	if (stats->quantiles_enabled) {
-> > >+		int i = eytzinger0_first(NR_QUANTILES);
-> > >+		const struct time_unit *u =
-> > >+			pick_time_units(stats->quantiles.entries[i].m);
-> > >+		u64 last_q = 0;
-> > >+
-> > >+		prt_printf(out, "quantiles (%s):\t", u->name);
-> > >+		eytzinger0_for_each(i, NR_QUANTILES) {
-> > >+			bool is_last = eytzinger0_next(i, NR_QUANTILES) == -1;
-> > >+
-> > >+			u64 q = max(stats->quantiles.entries[i].m, last_q);
-> > >+			seq_buf_printf(out, "%llu ", div_u64(q, u->nsecs));
-> > >+			if (is_last)
-> > >+				seq_buf_printf(out, "\n");
-> > >+			last_q = q;
-> > >+		}
-> > > 	}
-> > > }
-> > > #else
-> > >diff --git a/fs/bcachefs/util.h b/fs/bcachefs/util.h
-> > >index c3b11c3d24ea..7ff2d4fe26f6 100644
-> > >--- a/fs/bcachefs/util.h
-> > >+++ b/fs/bcachefs/util.h
-> > >@@ -382,6 +382,7 @@ struct bch2_time_stat_buffer {
-> > > 
-> > > struct bch2_time_stats {
-> > > 	spinlock_t	lock;
-> > >+	bool		quantiles_enabled;
-> > > 	/* all fields are in nanoseconds */
-> > > 	u64             min_duration;
-> > > 	u64		max_duration;
-> > >@@ -435,6 +436,9 @@ static inline bool track_event_change(struct bch2_time_stats *stats,
-> > > 
-> > > void bch2_time_stats_to_text(struct printbuf *, struct bch2_time_stats *);
-> > > 
-> > >+struct seq_buf;
-> > >+void bch2_time_stats_to_seq_buf(struct seq_buf *, struct bch2_time_stats *);
-> > >+
-> > > void bch2_time_stats_exit(struct bch2_time_stats *);
-> > > void bch2_time_stats_init(struct bch2_time_stats *);
-> > > 
-> > >-- 
-> > >2.43.0
-> > >
-> > >
-> > 
-> > - Joshie 🐸✨
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
