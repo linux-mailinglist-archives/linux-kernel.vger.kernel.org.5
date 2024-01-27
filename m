@@ -1,86 +1,107 @@
-Return-Path: <linux-kernel+bounces-41183-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F187983ED01
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 12:57:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 290DC83ED10
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 13:31:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83E4D1F2319A
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 11:57:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD4D6B22F05
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 12:31:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 964D6200DC;
-	Sat, 27 Jan 2024 11:57:05 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC9021DDC9
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 11:57:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAD3720DDD;
+	Sat, 27 Jan 2024 12:31:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="mWiJavxc"
+Received: from m13139.mail.163.com (m13139.mail.163.com [220.181.13.139])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14A69D51B;
+	Sat, 27 Jan 2024 12:31:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.181.13.139
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706356625; cv=none; b=IdYUHmHwpcqmGTQb2U4Dy/6G7tFqBJ4FXJ0+Sf4iqkik5A7jPp1nyUZusqkYL1GWoRG7JBK3J7XIyVbQjZV4N64i3pp98xUGOj8mN5IrsHWj/7Q9F2JxDtAZxYUWAuqv/JkLjeW8kd3NTJm69TFiCzbsZEu279J8e8wMisjrwNU=
+	t=1706358700; cv=none; b=gq/Fs+OYvoqVh0DHLM4CVuc/DfXwT9rt0GdEqU1dkQwOvtvEIxSRgjnNE/gK/aabHoWfoRCTlzlkDujcryvjtroQnXwwH8r/bEJxLJ5RGJYuSYTxaI6Qg3E6akmhWQF7rmTD72H2rm7C5pLS66cM6iymhzjexgGNNQeWDF7cVjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706356625; c=relaxed/simple;
-	bh=ELeQLKSfUrP4nmRORmqTMiHFz5bQLj8g/Lp+1YPSxTE=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=MU0u3Ipdb8zfKTM2ArVnB4J7Zeurm3OWNpKxFQr1h9hawfgS/Pk9+isZmQC1zl9TxuXWXX9RM799/gzZ4gRX+9VoqTX5yUWA0KW96Rfj+SF+PJ41srHg7WAhDpqV6xbjgl9SlWlodzcDe1hmdpiBotRMBRfCOJmJafXibK63r+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7bf4c4559daso80539639f.2
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 03:57:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706356623; x=1706961423;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zLvdhTrqJLeO54h5WiprafX5rWVS7jzBQvDKngUHNyY=;
-        b=KUPlUfZPCXJ2gfnK0DGYzxb4S7BTekfDUxlxrCK4D3+Jj51pb0Pqgjms5NCNQqO1MO
-         TI2mBH9/me9pM2u/gGfvKlqTK5movsrjKMEz5rfMSddaJlYzM3RsGwDj0Tb+r8obNcba
-         rNGbqoiXnoUx303psXo4ommzO9af4ZnUq3tZG3/UtDc6B1GS7JOVXS+ss6q2DKJvjatQ
-         8FagYFuFmhm50O9NECYzP+WWW/PVJ/V8viJV2pVv0DCVJfs9887S4VjCHK56jT2rITHE
-         yxUgXbrRKPba3ZUSDAfjraHtax+zYk0kdmTlE7nBaE089C/u8XNILa6OuSahnoZUAG5n
-         +FfA==
-X-Gm-Message-State: AOJu0YydDI2mDfIxqV6a2EnYeQHGV3irxHvKL7u4+9/N2aiJpRPhE4DK
-	2JdyutjoxbenB8Ewy0V4xms8llTy9PPLAfL7N7KCSSWFCFFWPfM+TiSzwTCcE+pgJdaAkjRisAm
-	DsVEI1Z0Obl3PzoRiwrJiQ02XemyD42jcR0be0eZqDqo8l7Eb1NwPLA8=
-X-Google-Smtp-Source: AGHT+IFFIUhnSzB7cgzrY23iiAd6rc4vD/XsigOEI4bkV7WJjXzrf9DDyqW3XzgqCG4J5bE7AajkDYK7QSQI1gYvTbgWhuhFY1x1
+	s=arc-20240116; t=1706358700; c=relaxed/simple;
+	bh=VpaYJg611pNFtLcu4PHL8FORu4w1VV9s+dRZqRr9IOA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
+	 MIME-Version:Message-ID; b=Nz914lCKJ1QhkS2ro7ostRcI2oMQMxxaM39jSdnXQq8WYv/P2mHL6EB1cLrny90imdxmQ43Fw2p0FcSaQ1qYABtNvtSwugNyqhi2WIePcCOiLVRClbA73og5TvSUpzLMvQwgX3SoIL+LhIc1v6oOmLEPDYrOOw+nJDCCb/JPHIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=fail (1024-bit key) header.d=163.com header.i=@163.com header.b=mWiJavxc reason="signature verification failed"; arc=none smtp.client-ip=220.181.13.139
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
+	Message-ID; bh=ma9o5iWSbDq/1Z3hTE/8/k25l4jdI+7Y+bhwozoNTcw=; b=m
+	WiJavxcnTrDgrQJlFkqw6eMWHjSHG+eVZh3ErJQVYKz/mzpuljqv6C/mvzgslaIt
+	4/Jhd8snrHrSsgs0cm55DAvLHBfYU+ZTC5cSsKOaHDzDJI9YBdwC7EYrS2NLPyYr
+	RtUQN5qRM4a0rhk+dlGk/okiZRM44CJ3bb7Oq1nIU8=
+Received: from andyshrk$163.com ( [58.22.7.114] ) by ajax-webmail-wmsvr139
+ (Coremail) ; Sat, 27 Jan 2024 20:15:26 +0800 (CST)
+Date: Sat, 27 Jan 2024 20:15:26 +0800 (CST)
+From: "Andy Yan" <andyshrk@163.com>
+To: =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
+Cc: krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org, 
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org
+Subject: Re:Re: [PATCH 3/4] arm64: dts: rockchip: rename vcc5v0_usb30_host
+ regulator for Cool Pi CM5 EVB
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
+ Copyright (c) 2002-2024 www.mailtech.cn 163com
+In-Reply-To: <2798389.3c9HiEOlIg@diego>
+References: <20240127092034.887085-1-andyshrk@163.com>
+ <20240127092034.887085-3-andyshrk@163.com> <2798389.3c9HiEOlIg@diego>
+X-NTES-SC: AL_Qu2bBP+euE8p4CKZYulS4DxUw7xtJb7F8ohRo94OW8gAvCTt6w8Db1tdMXT1/NOI5AfO+aK8YQzQdyUxQsjv
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:184e:b0:361:9b75:b64 with SMTP id
- b14-20020a056e02184e00b003619b750b64mr146643ilv.4.1706356623075; Sat, 27 Jan
- 2024 03:57:03 -0800 (PST)
-Date: Sat, 27 Jan 2024 03:57:03 -0800
-In-Reply-To: <20240127114610.961-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000060f13d060fec1cf2@google.com>
-Subject: Re: [syzbot] [overlayfs?] possible deadlock in seq_read_iter (2)
-From: syzbot <syzbot+da4f9f61f96525c62cc7@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <23650d42.ecb.18d4ad89c0c.Coremail.andyshrk@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:i8GowAD3n2Le87RlFZ0GAA--.64795W
+X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/xtbB0g1yXmWXvvpVlwACsF
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 
-Hello,
-
-syzbot tried to test the proposed patch but the build/boot failed:
-
-failed to checkout kernel repo https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git on commit 2cf4f94d8e86: failed to run ["git" "fetch" "--force" "--tags" "4d52a57a3858a6eee0d0b25cc3a0c9533f747d8f" "2cf4f94d8e86"]: exit status 128
-fatal: couldn't find remote ref 2cf4f94d8e86
-
-
-
-Tested on:
-
-commit:         [unknown 
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 2cf4f94d8e86
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e5751b3a2226135d
-dashboard link: https://syzkaller.appspot.com/bug?extid=da4f9f61f96525c62cc7
-compiler:       
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=102f1930180000
-
+CgoKSGkgSGVpa2/vvJoKCkF0IDIwMjQtMDEtMjcgMTg6MzY6NDAsICJIZWlrbyBTdMO8Ym5lciIg
+PGhlaWtvQHNudGVjaC5kZT4gd3JvdGU6Cj5IaSBBbmR5LAo+Cj5BbSBTYW1zdGFnLCAyNy4gSmFu
+dWFyIDIwMjQsIDEwOjIwOjMzIENFVCBzY2hyaWViIEFuZHkgWWFuOgo+PiBBY2NvcmRpbmcgdG8g
+dGhlIHNjaGVtYXRpYywgdGhpcyByZWd1bGF0b3IgaXMgdXNlZCBib3RoIGZvciBVU0IzMCBhbmQK
+Pj4gVVNCMjAsIHNvIGdpdmUgaXQgYSBtb3JlIGFwcHJvcHJpYXRlIG5hbWUuCj4KPkkgZG9uJ3Qg
+aGF2ZSB0aGUgc2NoZW1hdGljcywgc28gSSdsbCBuZWVkIHlvdSB0byBhbnN3ZXIgdGhpcywgYnV0
+IHdoYXQKPmlzIHRoZSByZWd1bGF0b3IgY2FsbGVkIF9pbl8gdGhlIHNjaGVtYXRpY3M/CgpUaGVy
+ZSBhcmUgdHdvIHJlZ3VsYXRvcnMgY2FsbGVkIFZDQzUwX1VTQl9IT1NUMSBhbmQgVkNDNTBfVVNC
+X0hPU1QyLCBhbmQgdGhleSBhcmUgYm90aCBjb250cm9sbGVkIGJ5IEdQSU8xX0Q1ClRoZXkgYm90
+aCBmb3IgdHdvIHVzYiAyLjAgaG9zdHMsICBub3QgdXNiIDMwLCB0aGUgc2NoZW1hdGljcyBtYWtl
+CiBtZSBhIGJpdCBjb25mdXNlZC4KCj4KPkkuZS4gd2Ugd2FudCByZWd1bGF0b3JzIHRvIHJlYWxs
+eSBiZSBuYW1lZCB0aGUgc2FtZSBhcyBpbiB0aGUgc2NoZW1hdGljCj5zbyBwZW9wbGUgY2FuIGxv
+b2sgdXAgdGhpbmcgZnJvbSB0aGUgZHRzIGluIHRoZSBzY2hlbWF0aWNzIGFuZCB0aGUgb3RoZXIK
+PndheSBhcm91bmQgdG9vLgo+Cj4KPlRoYW5rcwo+SGVpa28KPgo+Cj4+IEZpeGVzOiA3OTFjMTU0
+YzM5ODIgKCJhcm02NDogZHRzOiByb2NrY2hpcDogQWRkIHN1cHBvcnQgZm9yIHJrMzU4OCBiYXNl
+ZCBib2FyZCBDb29sIFBpIENNNSBFVkIiKQo+PiBTaWduZWQtb2ZmLWJ5OiBBbmR5IFlhbiA8YW5k
+eXNocmtAMTYzLmNvbT4KPj4gLS0tCj4+IAo+PiAgYXJjaC9hcm02NC9ib290L2R0cy9yb2NrY2hp
+cC9yazM1ODgtY29vbHBpLWNtNS1ldmIuZHRzIHwgNiArKystLS0KPj4gIDEgZmlsZSBjaGFuZ2Vk
+LCAzIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pCj4+IAo+PiBkaWZmIC0tZ2l0IGEvYXJj
+aC9hcm02NC9ib290L2R0cy9yb2NrY2hpcC9yazM1ODgtY29vbHBpLWNtNS1ldmIuZHRzIGIvYXJj
+aC9hcm02NC9ib290L2R0cy9yb2NrY2hpcC9yazM1ODgtY29vbHBpLWNtNS1ldmIuZHRzCj4+IGlu
+ZGV4IDFiNTY4MWZlMDQ3MS4uNWY0MmYxMDY1ZDczIDEwMDY0NAo+PiAtLS0gYS9hcmNoL2FybTY0
+L2Jvb3QvZHRzL3JvY2tjaGlwL3JrMzU4OC1jb29scGktY201LWV2Yi5kdHMKPj4gKysrIGIvYXJj
+aC9hcm02NC9ib290L2R0cy9yb2NrY2hpcC9yazM1ODgtY29vbHBpLWNtNS1ldmIuZHRzCj4+IEBA
+IC04NCw3ICs4NCw3IEBAIHZjYzN2M19sY2Q6IHZjYzN2My1sY2QtcmVndWxhdG9yIHsKPj4gIAkJ
+dmluLXN1cHBseSA9IDwmdmNjM3YzX3N5cz47Cj4+ICAJfTsKPj4gIAo+PiAtCXZjYzV2MF91c2Iz
+MF9ob3N0OiB2Y2M1djAtdXNiMzAtaG9zdC1yZWd1bGF0b3Igewo+PiArCXZjYzV2MF91c2JfaG9z
+dDogdmNjNXYwLXVzYi1ob3N0LXJlZ3VsYXRvciB7Cj4+ICAJCWNvbXBhdGlibGUgPSAicmVndWxh
+dG9yLWZpeGVkIjsKPj4gIAkJcmVndWxhdG9yLW5hbWUgPSAidmNjNXYwX2hvc3QiOwo+PiAgCQly
+ZWd1bGF0b3ItYm9vdC1vbjsKPj4gQEAgLTIwMCwxMiArMjAwLDEyIEBAICZ1MnBoeTMgewo+PiAg
+fTsKPj4gIAo+PiAgJnUycGh5Ml9ob3N0IHsKPj4gLQlwaHktc3VwcGx5ID0gPCZ2Y2M1djBfdXNi
+MzBfaG9zdD47Cj4+ICsJcGh5LXN1cHBseSA9IDwmdmNjNXYwX3VzYl9ob3N0PjsKPj4gIAlzdGF0
+dXMgPSAib2theSI7Cj4+ICB9Owo+PiAgCj4+ICAmdTJwaHkzX2hvc3Qgewo+PiAtCXBoeS1zdXBw
+bHkgPSA8JnZjYzV2MF91c2IzMF9ob3N0PjsKPj4gKwlwaHktc3VwcGx5ID0gPCZ2Y2M1djBfdXNi
+X2hvc3Q+Owo+PiAgCXN0YXR1cyA9ICJva2F5IjsKPj4gIH07Cj4+ICAKPj4gCj4KPgo+Cj4KPgo+
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPmxpbnV4LWFy
+bS1rZXJuZWwgbWFpbGluZyBsaXN0Cj5saW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5v
+cmcKPmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtYXJt
+LWtlcm5lbAo=
 
