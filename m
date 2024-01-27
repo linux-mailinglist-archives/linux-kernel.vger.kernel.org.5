@@ -1,104 +1,167 @@
-Return-Path: <linux-kernel+bounces-41159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E866783ECBF
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 11:44:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0626C83ECC0
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 11:50:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27D001C21A8A
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 10:44:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A01851F22B2F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 10:50:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95964200BF;
-	Sat, 27 Jan 2024 10:44:37 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2D461F614;
+	Sat, 27 Jan 2024 10:50:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CRmIY+bn"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD53F13AF8;
-	Sat, 27 Jan 2024 10:44:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AF851D6B6
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 10:50:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706352277; cv=none; b=OSIyQNcG0dVAUhcKOVJ8heFPkovEdIIshO7wyquXW+2OnePHls4c1bKbVfUndEFEI1/GzBxODHfKNr44ndB6yw8dbByY9dIS1xxtcmN1bO+pjgCDEk6kjm+wYKBsQiuK3XgWDgdCuTP+3nhnFboidQ6CpfVvejyOAcG/UyDley0=
+	t=1706352643; cv=none; b=Lw1kPMcV91uwKuNOwF0rMbKy+uyAerC94t7VfxqmaB197qPFjQ2A7PJwBYUlGdzFKNQY8OSkOFY2e37AcZHrOCXopPDzbXv5xZod4J6DYCkht4z+6aNGPMPfdveghnpM5UF+vMMI1aR0WrymrqZA0KUcVJZ1e7shQwb3XKBm3Mk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706352277; c=relaxed/simple;
-	bh=Z0OLXXueoKiA/wGx60KBXxyU+VA6Uzmv+t+EL7bXNe4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=QvPDhN9EIoWg1J3qYGVTX7/S0/4B4PieLhiFSqeIeowkJJf+alVDxS+OJ0KMaNng3Kmf3ym1UWcH0262F7YtjH98i8kAK1l2BwHZrZOMIF3gpivX5SS9UYaatKxZPh3ICnREAmHIJzIgzShSKTtJBBtkeG9JxdXix7Ga1jNMv6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4TMWPf6K9jzNlbd;
-	Sat, 27 Jan 2024 18:43:34 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id F10CC18001C;
-	Sat, 27 Jan 2024 18:44:30 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sat, 27 Jan 2024 18:44:30 +0800
-Message-ID: <ad5c3487-e847-7ab9-41bc-f13329265abc@huawei.com>
-Date: Sat, 27 Jan 2024 18:44:29 +0800
+	s=arc-20240116; t=1706352643; c=relaxed/simple;
+	bh=PSSCxl/vGCadQUHaYhuq+bofa1hqjkrY1AooqvO8Dkg=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=q7jEEt/ejWDBdlrCcTBJbGcaJySuLRdDRHYvzhSkJbgWJodeW9PhxFUOXukMYQX1Fv4Rfqs4wcfRVGwha8m7qQtUyuXljGFOHMbEEo8ZBZKjt/WWbeGN2HFACcb2rauAV70MY6Ai651LX7RJ3/2F9JFSAfYa8JoC4i5rE6acLRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CRmIY+bn; arc=none smtp.client-ip=192.55.52.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706352641; x=1737888641;
+  h=date:from:to:cc:subject:message-id;
+  bh=PSSCxl/vGCadQUHaYhuq+bofa1hqjkrY1AooqvO8Dkg=;
+  b=CRmIY+bnJois0fFmnzKxJtz64ldRTRwz+irPB0Yebk3Tl3r957oy3jxq
+   xXCoTq8B9kz6FBOvygjNgRqiIS+vXBg3l+NOutxbu7X15+dpvSWaeQccJ
+   +43OnPnKCj5gEnV5JcfG3W9o8VjRdZIhYTijm5ob/1ZkKg5F0oY8JF1UJ
+   Hq4ZvdjAQTGrkh+uukTAxqyG/pfHK0wDIYqBnqjQozsMJ8YBUyUcXyYoC
+   Sz34QHvq5Eu+TCFphy84U9BTBUaSBcrxgEYkkj0268Hls90mQE/87mvVV
+   +uq4r5iLtWABnU6iPvcLZWNWYMlLc9hurJi6mN/dFYHqrmV9SL8q86qKW
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="401532560"
+X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
+   d="scan'208";a="401532560"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2024 02:50:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="877625433"
+X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
+   d="scan'208";a="877625433"
+Received: from lkp-server01.sh.intel.com (HELO 370188f8dc87) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 27 Jan 2024 02:50:39 -0800
+Received: from kbuild by 370188f8dc87 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rTgGj-0002Co-0B;
+	Sat, 27 Jan 2024 10:50:37 +0000
+Date: Sat, 27 Jan 2024 18:49:58 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [paulmck-rcu:dev.2024.01.25a] BUILD SUCCESS
+ 81622751ca402d42e7c1bd4b8e95a8dbbd3645a0
+Message-ID: <202401271856.NOxkrrmc-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH 1/7] ext4: avoid overflow when setting values via sysfs
-To: Alexey Dobriyan <adobriyan@gmail.com>
-CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-	<jack@suse.cz>, <ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
-	<yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
-References: <1da0649d-812f-4dee-9c1b-af567afa2e46@p183>
-Content-Language: en-US
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <1da0649d-812f-4dee-9c1b-af567afa2e46@p183>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500021.china.huawei.com (7.185.36.21)
 
-On 2024/1/27 17:44, Alexey Dobriyan wrote:
-> Baokun Li wrote:
->
->> @@ -463,6 +463,8 @@ static ssize_t ext4_attr_store(struct kobject *kobj,
->>   		ret = kstrtoul(skip_spaces(buf), 0, &t);
->>   		if (ret)
->>   			return ret;
->> +		if (t != (unsigned int)t)
->> +			return -EINVAL;
-> kstrto*() interface has variants for all standard types.
-> It should be changed to kstrtou32() or kstrtouint();
->
-> If you check if kstrto*() result fits into another type,
-> you're probably doing it wrong.
-Thanks for your comments!
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2024.01.25a
+branch HEAD: 81622751ca402d42e7c1bd4b8e95a8dbbd3645a0  squash! hrtimer: Report offline hrtimer enqueue
 
-The reason for not using those helper functions directly is as follows:
+elapsed time: 2415m
 
-1）Those functions are also based on kstrtoull() wrappers, and if we
-use kstrtou32() or kstrtouint(), we'd need to declare u32 t or int t,
-which would leave us with a lot of declared but unused variables,
-and an unsigned long t would be enough to cover our scenario.
+configs tested: 78
+configs skipped: 3
 
-2）Moreover, the actual range of a uint type sysfs interface may not
-be 0-UINT_MAX, but 0-INT_MAX or 0-s_clusters_per_group, and we
-need to limit the range of the variable according to the actual
-meaning of the variable.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-3）In addition, by declaring only an unsigned long type and then
-uniformly parsing it with kstrtoul() and then restricting the range
-of the variable according to the actual meaning of the variable,
-we can reduce a lot of repetitive code.
->>   		if (a->attr_ptr == ptr_ext4_super_block_offset)
->>   			*((__le32 *) ptr) = cpu_to_le32(t);
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240127   gcc  
+arc                   randconfig-002-20240127   gcc  
+arm                               allnoconfig   gcc  
+arm                                 defconfig   clang
+arm                   randconfig-001-20240127   gcc  
+arm                   randconfig-002-20240127   gcc  
+arm                   randconfig-003-20240127   gcc  
+arm                   randconfig-004-20240127   gcc  
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                                defconfig   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386         buildonly-randconfig-001-20240126   clang
+i386         buildonly-randconfig-002-20240126   clang
+i386         buildonly-randconfig-003-20240126   clang
+i386         buildonly-randconfig-004-20240126   clang
+i386         buildonly-randconfig-005-20240126   clang
+i386         buildonly-randconfig-006-20240126   clang
+i386                                defconfig   gcc  
+i386                  randconfig-001-20240126   clang
+i386                  randconfig-002-20240126   clang
+i386                  randconfig-003-20240126   clang
+i386                  randconfig-004-20240126   clang
+i386                  randconfig-005-20240126   clang
+i386                  randconfig-006-20240126   clang
+i386                  randconfig-011-20240126   gcc  
+i386                  randconfig-012-20240126   gcc  
+i386                  randconfig-013-20240126   gcc  
+i386                  randconfig-014-20240126   gcc  
+i386                  randconfig-015-20240126   gcc  
+i386                  randconfig-016-20240126   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   clang
+nios2                             allnoconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                           allnoconfig   gcc  
+riscv                             allnoconfig   clang
+riscv                               defconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                                defconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+
 -- 
-With Best Regards,
-Baokun Li
-.
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
