@@ -1,81 +1,80 @@
-Return-Path: <linux-kernel+bounces-41462-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41463-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1455A83F239
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 00:35:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F9CE83F23D
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 00:36:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2D9A281A1D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 23:35:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C709C1C212E0
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 23:36:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD34822F06;
-	Sat, 27 Jan 2024 23:35:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E049B22F17;
+	Sat, 27 Jan 2024 23:36:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cdQGcePf"
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GpfmGgUC"
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64E0920DC8
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 23:35:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5660621A02
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 23:36:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706398521; cv=none; b=Bkd53/QgVfSqyRhgdINIomS+nlplfWtEp3QOtILQY8IleX3GxysXLRmA6v5BN5wytfjNKllZCo5eXaS6ecvMRwPWD+k5jQ5AHEJUHGnXs7kunXsp3zhH/hDnrFzH5di0xYZ4nyTFogcEcY9fI2TunGYzSMmutctpYgBHwlVZyYg=
+	t=1706398577; cv=none; b=V84Daha5j+6ePA9fQ79IDYnXL2BDzbcA/4ttVt+4YuI+wx7f8cG0zLv9k0rQw74jKKvs7yHodV4DDaMra91DwmiMKiyevmeLGMjhyJEdOaQKrIyXLCQD4eiIbAeiMjR4RNPaizp1LNuSMrDSMQrlQckwbFTKsEfbpm/qgO/mmZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706398521; c=relaxed/simple;
-	bh=8dcs2TTkHifbaPOo0/++EzaKXk8QckqprO0d5UdvmNM=;
+	s=arc-20240116; t=1706398577; c=relaxed/simple;
+	bh=XVKbaMpkpPl4OamNNqyBIfrPPvBb/CuhmBwz5z4c778=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=da8/eZISkv3Cum8+I2hmJpEJbpQYp9dOkOmqdRb+8bv/viUHk+MDlax7isSt5LkEkXODzHzExU+rKAyifh1hYIVNwrLhaFiDWaDle72/kXYk4AciYun9ThSBNPc/34Ft+K32CTwfzf+DYUyyr7t7BDuf+Vee3oURt07Sj/uLNM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cdQGcePf; arc=none smtp.client-ip=209.85.128.177
+	 To:Cc:Content-Type; b=R8iGtTMJ/KjVO0C7Pel6JeM3/Wt1D5eKHaT5LMwxvQdRU+1VxDTgP5nJOvXB+FrqwKNiISD9218bz8e9u0SPYD7WU4NGzHeoSR+ICPVptZwYoBJVZoff84pD43JWb8LwE8zY/pQNEHaH+Ke6nF9CKrEdzV5if0jiF+y5CAS51JQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GpfmGgUC; arc=none smtp.client-ip=209.85.222.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-602d2e67217so14620977b3.2
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 15:35:18 -0800 (PST)
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-783f0995029so60399185a.1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 15:36:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706398517; x=1707003317; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706398573; x=1707003373; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8dcs2TTkHifbaPOo0/++EzaKXk8QckqprO0d5UdvmNM=;
-        b=cdQGcePfn+hWNuLbjso96g32qo8/g2TeSlD6FwjRe2t4wKn30YYAr8TA+t7sdi2h6h
-         rt1dmwhPWR7FJWmyBlGgnHgCzDY5RJBuAKgbJQjSv/5Tnhk2JaEY2/5M6SBuPVkiZax5
-         frvV24EabdjJZYpVIr3aR1pVC2NUurehT77c4U+iTyq5AFlG9LB6DiKsVVTo+8Dg/qYs
-         hCm3Ei3Nx9vT/y+2gAVKJMR73CCiRR9snspWLrQudQ+9IX4WGFjZQDg9VaHN4XhgBuMI
-         yQ8cXYx5+RmH+ig3geK6pJRoqq5WXNTYT6ymKi3o4ga6imFCtZovEKis2F/hu2L4u7rj
-         yr0Q==
+        bh=XVKbaMpkpPl4OamNNqyBIfrPPvBb/CuhmBwz5z4c778=;
+        b=GpfmGgUCzBt6GWD8FZab7OoSg3wEV6+Q89BeHMQDsO/fsAkiSvbomXq58QNB2qAKgR
+         oh+QeOn8F7vso94xK+/eHtvYcCkUrlx8h0MfcpWDqQBC51s2GsMs2Ux3G/Ku9gB6dnxx
+         feqWCcLKGl3Mhw5ccRANO1MBh+F4TWD8XqPWRyueCVvduWZTJ8MTjUYvrjaq32Cxl6vC
+         lo7zJyeqpS0IuCFAtPap38X+wG3BdqJ5SzOCfPeY0iSQkESRNm0sbfYkBZbZUj/6yOtI
+         dmoTZPYcKpA/QHJgcNLVs6mwl6RvPw9o1arwbUZ+cAf2+sZjsPFh1fK3vlmCljDBAFw/
+         QqvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706398517; x=1707003317;
+        d=1e100.net; s=20230601; t=1706398573; x=1707003373;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8dcs2TTkHifbaPOo0/++EzaKXk8QckqprO0d5UdvmNM=;
-        b=QCHh0OIKUxS+pMAbmHmYOnV28qyfaxWC9hL7wK9RLRjOreB8RscDcA5pfPix6WPqZd
-         deB+rY1J0Zb8EjcGSTlpaZOkUqsKcEK7knw3e++GrUuPPlH5VGhJY1q/40v3+eRPM/6d
-         q9nzBXUQW22gxWvsJqC0ITL7eKH66v6T9K2yq8bRYePmiHDP+RanPV2xzo76i2N3WgHJ
-         MhBBtkbqkk8Lk1PBD515c3qYvfGRUdk7u9c5BNfR4/NKJg41GbVMBNHJrZhxNwYu+4AX
-         wX8b9oa7WiZF5XadfGtwVdjtWAhSVrX0kGB5BJR1XjJA94+oNG3wiMWDR30Z5TDHLtNw
-         Duqw==
-X-Gm-Message-State: AOJu0YxWSqXkn6iWyP0HicUPiKO8/Leoh+X0f5hbeFQrgvlSVmYIgse/
-	E3k616jLbM3yZrX2VsjAzsk3fWyRyFpipaawkBdirPQ6deL24jZ//j4X/I35MaQLxsI2Qhch5Xq
-	dN5EJ4lEHwoqrOfUVi9vLp5oEu/edlqKL+o3XcQ==
-X-Google-Smtp-Source: AGHT+IG+6hWb0s/foSEZLTCcN7SlXEPPPDIG9Ie8b6zG/DvFbXAnoRbb9i8W1JXuHzPD5xc+sCGWgYH3mLKI3aCinio=
-X-Received: by 2002:a81:d80b:0:b0:600:2a65:cad2 with SMTP id
- d11-20020a81d80b000000b006002a65cad2mr2081570ywj.26.1706398517251; Sat, 27
- Jan 2024 15:35:17 -0800 (PST)
+        bh=XVKbaMpkpPl4OamNNqyBIfrPPvBb/CuhmBwz5z4c778=;
+        b=A/b5QHEQYwRPXDZ3wyUQgruULSneg6DfT54kdw7E9w8iMsya8nil/tvBJksZt49vVw
+         slST4YsI0HPHvWtJ0oIiw4tfXxKujnJxSPe61dWUxQ6cZx/V+NjwtH2vl/njHfKQ+T+Q
+         z0ruzbVLfu2FxcJgsPgitqID10oAbtBs6a6Wd6Joo8OBTXDts2S8OhGasgiVjVoyjDj2
+         vbuBTecaxbrxQnS4KiiEVbWr6KAaiOho3kqhAlQSE51NjknBPmaxY/7YHrp7rm3SlP03
+         3BzTI95WMozvrSC5vvGMduGpPr5E2k6hy+SeF3uwA0F/Td4I9/B0EIdezh1rHKlm5m7g
+         QWVw==
+X-Gm-Message-State: AOJu0YxYByj5a2Y7y8V/36S2MpV8NzbFbq+HwlxEaerLee9NPzv1hjik
+	MWgK+C4fzCcoL//n/u8uCZ+93YWohW8az6cnrUD6o70C54NgpOxlPtHzFjKw0I409xDkmC/j2sJ
+	GihDwKNgmcWaCm+zIg4M5HGjCgr4li/YYBXh0eQ==
+X-Google-Smtp-Source: AGHT+IEgp6Wx5JnuWyXYHz8pZVr0cnqh2sFmftzNYViLIBvxeKcfFE9nBHRj3w+ge53ptzIE4c2ITaNbwP7ir3iKXKM=
+X-Received: by 2002:a05:620a:20c3:b0:783:df74:8f97 with SMTP id
+ f3-20020a05620a20c300b00783df748f97mr2269258qka.148.1706398573145; Sat, 27
+ Jan 2024 15:36:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240110-pxa1908-lkml-v8-0-fea768a59474@skole.hr> <20240110-pxa1908-lkml-v8-2-fea768a59474@skole.hr>
-In-Reply-To: <20240110-pxa1908-lkml-v8-2-fea768a59474@skole.hr>
+References: <20240110-pxa1908-lkml-v8-0-fea768a59474@skole.hr> <20240110-pxa1908-lkml-v8-3-fea768a59474@skole.hr>
+In-Reply-To: <20240110-pxa1908-lkml-v8-3-fea768a59474@skole.hr>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Sun, 28 Jan 2024 00:35:06 +0100
-Message-ID: <CACRpkdbSSH6mBYVyk2u3G60vmbED7WhEdYnXoc3TwovOo3oJhA@mail.gmail.com>
-Subject: Re: [PATCH v8 2/9] dt-bindings: pinctrl: pinctrl-single: add
- marvell,pxa1908-padconf compatible
+Date: Sun, 28 Jan 2024 00:36:02 +0100
+Message-ID: <CACRpkdaZGc1z8y7NmS=xeHBSFkOe4agMaSBspcikTnrbaeB8rA@mail.gmail.com>
+Subject: Re: [PATCH v8 3/9] pinctrl: single: add marvell,pxa1908-padconf compatible
 To: =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
 Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
 	Rob Herring <robh+dt@kernel.org>, 
@@ -87,8 +86,7 @@ Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>
 	~postmarketos/upstreaming@lists.sr.ht, Karel Balej <balejk@matfyz.cz>, 
 	David Wronek <david@mainlining.org>, linux-clk@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	Rob Herring <robh@kernel.org>
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
@@ -98,10 +96,11 @@ On Wed, Jan 10, 2024 at 8:04=E2=80=AFPM Duje Mihanovi=C4=87 <duje.mihanovic=
 > Add the "marvell,pxa1908-padconf" compatible to allow migrating to a
 > separate pinctrl driver later.
 >
-> Reviewed-by: Rob Herring <robh@kernel.org>
 > Signed-off-by: Duje Mihanovi=C4=87 <duje.mihanovic@skole.hr>
 
 Acked-by: Linus Walleij <linus.walleij@linaro.org>
+
+I guess you will merge all of this through the SoC tree?
 
 Yours,
 Linus Walleij
