@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-41224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23D9C83ED9F
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:44:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BFB783EDA4
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:44:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 848E2282FE2
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 14:44:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44967B223F1
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 14:44:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D15462C84C;
-	Sat, 27 Jan 2024 14:43:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F31D02D04E;
+	Sat, 27 Jan 2024 14:43:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lAhGRx1G"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dB4l1/ng"
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CB5328E2B;
-	Sat, 27 Jan 2024 14:43:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D20E2C19C;
+	Sat, 27 Jan 2024 14:43:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706366590; cv=none; b=VUf5TvNVO2MhAndxyoHXihmWEzRM1MrTzVxM7wpmWTjhvDAQpHTKfuEDAzvaX6egVG3zgiHUP4h/qpkA3nypmx/K+mEU8P/5kp0DdxYuaJVZsZCySWXIV3oHO+8aejlnkSRpAhOfZ044m/TndEI9huhCkWFlIqtJ/RjQNkAGR8s=
+	t=1706366592; cv=none; b=Q7LLMiuexmwgtzYf1pC5DoBtwwhzNFrTJUwq1oXBD2wgB/jvqp1vB3iyqHtlqF6hc48eNADoHGbe4NeL3Av8WCQD5qLB+ikj2wILs18+le2kM+kFZ6H20Dv+TFWd/oOEt09h9nlEn4D4UHW2Q1Oa17d6RYUOtM7wrMrYd5Lo8w0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706366590; c=relaxed/simple;
-	bh=i62KNABa07BZCIvcQzrBR0X71X45B/MxJwWM1yIw45I=;
+	s=arc-20240116; t=1706366592; c=relaxed/simple;
+	bh=DxPDnkA/SQ4HzkflzN/6tBm6bjCviVDp9iQ5cwbqVs8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZUkJov4hUuDPiuH5wqq+oslqMSVSakIQ2o9XW93C3LKYnDLoxXPtpNZyFGreIaSP4OlibnD5DAjjFaGqWyjP+rfKDb11dGG+NcM+fxWHFfcVq4XN4OeduX8syq5OZGGaJaBfwOI3krJOr8da40zVs58BnA/qFTm0mHDrAxcpZFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lAhGRx1G; arc=none smtp.client-ip=209.85.128.44
+	 MIME-Version; b=eqcZhVoC1ZpHrTluieYvFOzc9a6pUGhuOqa7UoQXOZH/GlDZChbKWsIx822itXzwfmbaJZArTjlcoyE2Ny7GNviYfZS/zcGXHPfy/I0XAbIl/vFWdCXB7TVxYhW7u7cSj2+AF0ypnd4riaH/FJ5SRfRAy+Wzk0qG6YXAQ2VNmF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dB4l1/ng; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40eb033c1b0so20467925e9.2;
-        Sat, 27 Jan 2024 06:43:07 -0800 (PST)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3394ca0c874so1464148f8f.2;
+        Sat, 27 Jan 2024 06:43:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706366586; x=1706971386; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706366588; x=1706971388; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7bhVH/J1XDJSBi+P+FNHYsxGxJQ9xaiQ/A2lu6c80/k=;
-        b=lAhGRx1GagDZdLM5X/M+dyJrFezH5z2NdiaBSpd4yfJPk8ASVKEfCcyAbJMxXLLAgm
-         +9WBaLl0a6oos3tYwTGp1O+w7miQxtvJT+t9bUgda0SMjI28pgLgqW49+Hb9S/OlxyI/
-         cIj3JjCdfAK+BtPaNx1PCPiqkgt+DxS8uHcSbYGMeskzLZQBZSCYIsyLRMxJPcZMrVnY
-         A4cCFw2gwBG8KWNKYqbWjMLd6neZLvXKvEDlfjRFIBUf2/e+burPCcyamuBEzwQewnjW
-         woJ5BhNm01AtLGR9OvPavKulhM5OB/yQIFbSy9wDIC9HGqYdb2DMmbX5+yMzkccMjHL6
-         mKRQ==
+        bh=Ozy1f1RaoRRXP6hITOSjnDp7d5Lj56OaHEajcFkhQ6Q=;
+        b=dB4l1/ngOu1RxdL+mbAyqo9OjwOa6whm1q4gxSDVRZBWKFg0rzvF/uSkRPBSZMw5ho
+         buY+BTaWTazI77+Vnym9L4McjLCPuMm5MexgdLacx1jQAsIadsuLWds7GQUOkMnjrM8l
+         MM3vU/OKcJdrXjaATMThYbdyU3l2F4CcgQ1/2HwWc5dNJa1m1XBOwkD75G0dPDzhTQxw
+         IQ/cdFWnrOOu93Bz+UOhfQcboexvBFygtXu0fh4iKSF1hpgyRwTxsQkanGZtoUqKFwiC
+         Q9wOEsZVwVfOHWHztFXEV9rKsbNJSt1OGC+yOSK6PJA8IbzGJicbowE0Oav92nNxowaS
+         fjlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706366586; x=1706971386;
+        d=1e100.net; s=20230601; t=1706366588; x=1706971388;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7bhVH/J1XDJSBi+P+FNHYsxGxJQ9xaiQ/A2lu6c80/k=;
-        b=q52EnE/lAE8Mt+qcu31s93/IM4hL6W+BfN/OxfML1nVRl8ZUTiXzmywGOP5k//RMUO
-         ulzJtmn53lE6Mzk7r2GsoldVj45twkQ7oUh4eSLdwPDivMFcTCPzRww2zX0JjeIuJIIx
-         vVwzqiA4VgtGXaJJwnVgjc5xpIhl5AuISJqo5KzCGWFzION26nfjDz3AHo4HRXh74prG
-         XFQ86NgLKEzJSQ0nxvB3EU0B1XFkMDdBmJfiqcKAJvQFtszkBrBUL4u5dqEgO6OclJVj
-         wlg+tUJ8skOYGej0ThwG+jN5OAGIcCRKgr6Z4uQ7FV5kxa997FW5jPq4VCrP7Oe8/Jem
-         FWpA==
-X-Gm-Message-State: AOJu0Yw7HHmlJ5fQPV7HXgo6G3x8dlrKNxKTUsWZrWf5NLMHEZ0ksUOM
-	XDYd0MJTRNn0fDzf6Rn2L/6SyFOMOzfPA5zUiAKHaVhRxnsibcss8VS741Hb
-X-Google-Smtp-Source: AGHT+IEVSA0lRSfpvRp8gXTyAZJ5nFyUnzSs0h77gMYcriJ52wh+2AK4n6ySTkZq8Dm4tpmtBHtgyg==
-X-Received: by 2002:a05:600c:4f90:b0:40e:66ee:2ba3 with SMTP id n16-20020a05600c4f9000b0040e66ee2ba3mr1335290wmq.29.1706366586143;
-        Sat, 27 Jan 2024 06:43:06 -0800 (PST)
+        bh=Ozy1f1RaoRRXP6hITOSjnDp7d5Lj56OaHEajcFkhQ6Q=;
+        b=AciDkDF53RT6XoJuwaJfKqn8ynwy17wNGP+8cwmR5ODhpsiOo2IJPHsHmH8d70IHBU
+         k7unJnNsyxCkqHYr0kRkwgpw7xksNMpjnXSjtjrbk7T0UQCI83f/m9XIrvQ6TTjqCL8j
+         lzpaxZc5VIqs2Ic02M0N4EwVKIDd8HXtKFi7YdHJIgbwNc57u4Irs3yVINOMG7w+DTNV
+         W1fYOqaRGRcz180u5TtaBLLu7wPQbsT4oFmyf0ZYSlGHTe1RYHFeeavXelsWZNucT9Wb
+         UNNRLlQsNIl+Dud1rorFq8nSWfwotcw1+W8ka9Mp4fhIeACebdDOynHgXOePDN+RMxVs
+         Y0eg==
+X-Gm-Message-State: AOJu0YyzC8LIM3WcDXX+ZlhLEAsMfx12Ez30cgP8OmO1rXbDEhOTrAP5
+	IgbR4k9GJgE4EIle2MjM0EJEJHVTKDt4sKLu3PIj9QjxQZnPlgbF
+X-Google-Smtp-Source: AGHT+IGq8Osxi1R76smGwigHQMwTVvhD02xCxIb0YOSV8dZjHett70t3vo61ZJ+fJwk8zGdqWLwkFg==
+X-Received: by 2002:a5d:4446:0:b0:339:3595:474 with SMTP id x6-20020a5d4446000000b0033935950474mr1392028wrr.21.1706366587462;
+        Sat, 27 Jan 2024 06:43:07 -0800 (PST)
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id a11-20020a05600c348b00b0040eef2aed28sm1412590wmq.23.2024.01.27.06.43.04
+        by smtp.googlemail.com with ESMTPSA id a11-20020a05600c348b00b0040eef2aed28sm1412590wmq.23.2024.01.27.06.43.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Jan 2024 06:43:05 -0800 (PST)
+        Sat, 27 Jan 2024 06:43:06 -0800 (PST)
 From: Christian Marangi <ansuelsmth@gmail.com>
 To: Andrew Lunn <andrew@lunn.ch>,
 	Heiner Kallweit <hkallweit1@gmail.com>,
@@ -79,9 +79,9 @@ To: Andrew Lunn <andrew@lunn.ch>,
 	netdev@vger.kernel.org,
 	linux-arm-msm@vger.kernel.org
 Cc: Christian Marangi <ansuelsmth@gmail.com>
-Subject: [net-next PATCH v2 3/5] net: phy: qcom: deatch qca83xx PHY driver from at803x
-Date: Sat, 27 Jan 2024 15:42:43 +0100
-Message-ID: <20240127144252.24767-4-ansuelsmth@gmail.com>
+Subject: [net-next PATCH v2 4/5] net: phy: qcom: move additional functions to shared library
+Date: Sat, 27 Jan 2024 15:42:44 +0100
+Message-ID: <20240127144252.24767-5-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240127144252.24767-1-ansuelsmth@gmail.com>
 References: <20240127144252.24767-1-ansuelsmth@gmail.com>
@@ -93,645 +93,1024 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Deatch qca83xx PHY driver from at803x.
+Move additional functions to shared library in preparation for qca808x
+PHY Family to be detached from at803x driver.
 
-The QCA83xx PHYs implement specific function and doesn't use generic
-at803x so it can be detached from the driver and moved to a dedicated
-one.
-
-Probe function and priv struct is reimplemented to allocate and use
-only the qca83xx specific data. Unused data from at803x PHY driver
-are dropped from at803x priv struct.
-
-This is to make slimmer PHY drivers instead of including lots of bloat
-that would never be used in specific SoC.
-
-A new Kconfig flag QCA83XX_PHY is introduced to compile the new
-introduced PHY driver.
-
-As the Kconfig name starts with Qualcomm the same order is kept.
+Only the shared defines are moved to the shared qcom.h header.
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 ---
- drivers/net/phy/qcom/Kconfig   |  11 +-
- drivers/net/phy/qcom/Makefile  |   1 +
- drivers/net/phy/qcom/at803x.c  | 235 ----------------------------
- drivers/net/phy/qcom/qca83xx.c | 275 +++++++++++++++++++++++++++++++++
- 4 files changed, 284 insertions(+), 238 deletions(-)
- create mode 100644 drivers/net/phy/qcom/qca83xx.c
+ drivers/net/phy/qcom/at803x.c       | 428 +---------------------------
+ drivers/net/phy/qcom/qcom-phy-lib.c | 376 ++++++++++++++++++++++++
+ drivers/net/phy/qcom/qcom.h         |  84 ++++++
+ 3 files changed, 463 insertions(+), 425 deletions(-)
 
-diff --git a/drivers/net/phy/qcom/Kconfig b/drivers/net/phy/qcom/Kconfig
-index fe47cc7c94d2..ba78bbe31857 100644
---- a/drivers/net/phy/qcom/Kconfig
-+++ b/drivers/net/phy/qcom/Kconfig
-@@ -3,9 +3,14 @@ config QCOM_NET_PHYLIB
- 	tristate
- 
- config AT803X_PHY
--	tristate "Qualcomm Atheros AR803X PHYs and QCA833x PHYs"
-+	tristate "Qualcomm Atheros AR803X PHYs"
- 	select QCOM_NET_PHYLIB
- 	depends on REGULATOR
- 	help
--	  Currently supports the AR8030, AR8031, AR8033, AR8035 and internal
--	  QCA8337(Internal qca8k PHY) model
-+	  Currently supports the AR8030, AR8031, AR8033, AR8035 model
-+
-+config QCA83XX_PHY
-+	tristate "Qualcomm Atheros QCA833x PHYs"
-+	select QCOM_NET_PHYLIB
-+	help
-+	  Currently supports the internal QCA8337(Internal qca8k PHY) model
-diff --git a/drivers/net/phy/qcom/Makefile b/drivers/net/phy/qcom/Makefile
-index bfba2ed7db27..3d98e397e063 100644
---- a/drivers/net/phy/qcom/Makefile
-+++ b/drivers/net/phy/qcom/Makefile
-@@ -1,3 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_QCOM_NET_PHYLIB)	+= qcom-phy-lib.o
- obj-$(CONFIG_AT803X_PHY)	+= at803x.o
-+obj-$(CONFIG_QCA83XX_PHY)	+= qca83xx.o
 diff --git a/drivers/net/phy/qcom/at803x.c b/drivers/net/phy/qcom/at803x.c
-index 8194618c0865..638babc50df1 100644
+index 638babc50df1..442060793854 100644
 --- a/drivers/net/phy/qcom/at803x.c
 +++ b/drivers/net/phy/qcom/at803x.c
-@@ -102,17 +102,10 @@
- #define AT803X_PSSR				0x11	/*PHY-Specific Status Register*/
- #define AT803X_PSSR_MR_AN_COMPLETE		0x0200
+@@ -24,65 +24,11 @@
  
--#define AT803X_DEBUG_REG_3C			0x3C
+ #include "qcom.h"
+ 
+-#define AT803X_SPECIFIC_FUNCTION_CONTROL	0x10
+-#define AT803X_SFC_ASSERT_CRS			BIT(11)
+-#define AT803X_SFC_FORCE_LINK			BIT(10)
+-#define AT803X_SFC_MDI_CROSSOVER_MODE_M		GENMASK(6, 5)
+-#define AT803X_SFC_AUTOMATIC_CROSSOVER		0x3
+-#define AT803X_SFC_MANUAL_MDIX			0x1
+-#define AT803X_SFC_MANUAL_MDI			0x0
+-#define AT803X_SFC_SQE_TEST			BIT(2)
+-#define AT803X_SFC_POLARITY_REVERSAL		BIT(1)
+-#define AT803X_SFC_DISABLE_JABBER		BIT(0)
 -
--#define AT803X_DEBUG_REG_GREEN			0x3D
--#define   AT803X_DEBUG_GATE_CLK_IN1000		BIT(6)
+-#define AT803X_SPECIFIC_STATUS			0x11
+-#define AT803X_SS_SPEED_MASK			GENMASK(15, 14)
+-#define AT803X_SS_SPEED_1000			2
+-#define AT803X_SS_SPEED_100			1
+-#define AT803X_SS_SPEED_10			0
+-#define AT803X_SS_DUPLEX			BIT(13)
+-#define AT803X_SS_SPEED_DUPLEX_RESOLVED		BIT(11)
+-#define AT803X_SS_MDIX				BIT(6)
 -
- #define AT803X_DEBUG_REG_1F			0x1F
- #define AT803X_DEBUG_PLL_ON			BIT(2)
- #define AT803X_DEBUG_RGMII_1V8			BIT(3)
- 
--#define MDIO_AZ_DEBUG				0x800D
+-#define QCA808X_SS_SPEED_MASK			GENMASK(9, 7)
+-#define QCA808X_SS_SPEED_2500			4
 -
- /* AT803x supports either the XTAL input pad, an internal PLL or the
-  * DSP as clock reference for the clock output pad. The XTAL reference
-  * is only used for 25 MHz output, all other frequencies need the PLL.
-@@ -163,13 +156,7 @@
+-#define AT803X_INTR_ENABLE			0x12
+-#define AT803X_INTR_ENABLE_AUTONEG_ERR		BIT(15)
+-#define AT803X_INTR_ENABLE_SPEED_CHANGED	BIT(14)
+-#define AT803X_INTR_ENABLE_DUPLEX_CHANGED	BIT(13)
+-#define AT803X_INTR_ENABLE_PAGE_RECEIVED	BIT(12)
+-#define AT803X_INTR_ENABLE_LINK_FAIL		BIT(11)
+-#define AT803X_INTR_ENABLE_LINK_SUCCESS		BIT(10)
+-#define AT803X_INTR_ENABLE_LINK_FAIL_BX		BIT(8)
+-#define AT803X_INTR_ENABLE_LINK_SUCCESS_BX	BIT(7)
+-#define AT803X_INTR_ENABLE_WIRESPEED_DOWNGRADE	BIT(5)
+-#define AT803X_INTR_ENABLE_POLARITY_CHANGED	BIT(1)
+-#define AT803X_INTR_ENABLE_WOL			BIT(0)
+-
+-#define AT803X_INTR_STATUS			0x13
+-
+-#define AT803X_SMART_SPEED			0x14
+-#define AT803X_SMART_SPEED_ENABLE		BIT(5)
+-#define AT803X_SMART_SPEED_RETRY_LIMIT_MASK	GENMASK(4, 2)
+-#define AT803X_SMART_SPEED_BYPASS_TIMER		BIT(1)
+-#define AT803X_CDT				0x16
+-#define AT803X_CDT_MDI_PAIR_MASK		GENMASK(9, 8)
+-#define AT803X_CDT_ENABLE_TEST			BIT(0)
+-#define AT803X_CDT_STATUS			0x1c
+-#define AT803X_CDT_STATUS_STAT_NORMAL		0
+-#define AT803X_CDT_STATUS_STAT_SHORT		1
+-#define AT803X_CDT_STATUS_STAT_OPEN		2
+-#define AT803X_CDT_STATUS_STAT_FAIL		3
+-#define AT803X_CDT_STATUS_STAT_MASK		GENMASK(9, 8)
+-#define AT803X_CDT_STATUS_DELTA_TIME_MASK	GENMASK(7, 0)
+ #define AT803X_LED_CONTROL			0x18
  
- #define QCA8081_PHY_ID				0x004dd101
+ #define AT803X_PHY_MMD3_WOL_CTRL		0x8012
+ #define AT803X_WOL_EN				BIT(5)
+-#define AT803X_LOC_MAC_ADDR_0_15_OFFSET		0x804C
+-#define AT803X_LOC_MAC_ADDR_16_31_OFFSET	0x804B
+-#define AT803X_LOC_MAC_ADDR_32_47_OFFSET	0x804A
++
+ #define AT803X_REG_CHIP_CONFIG			0x1f
+ #define AT803X_BT_BX_REG_SEL			0x8000
  
--#define QCA8327_A_PHY_ID			0x004dd033
--#define QCA8327_B_PHY_ID			0x004dd034
--#define QCA8337_PHY_ID				0x004dd036
+@@ -138,10 +84,6 @@
+ #define AT803X_CLK_OUT_STRENGTH_HALF		1
+ #define AT803X_CLK_OUT_STRENGTH_QUARTER		2
+ 
+-#define AT803X_DEFAULT_DOWNSHIFT		5
+-#define AT803X_MIN_DOWNSHIFT			2
+-#define AT803X_MAX_DOWNSHIFT			9
+-
+ #define AT803X_MMD3_SMARTEEE_CTL1		0x805b
+ #define AT803X_MMD3_SMARTEEE_CTL2		0x805c
+ #define AT803X_MMD3_SMARTEEE_CTL3		0x805d
+@@ -158,6 +100,8 @@
+ 
  #define QCA9561_PHY_ID				0x004dd042
--#define QCA8K_PHY_ID_MASK			0xffffffff
--
--#define QCA8K_DEVFLAGS_REVISION_MASK		GENMASK(2, 0)
  
++#define AT803X_SS_SPEED_MASK			GENMASK(15, 14)
++
  #define AT803X_PAGE_FIBER			0
  #define AT803X_PAGE_COPPER			1
-@@ -379,12 +366,6 @@ MODULE_DESCRIPTION("Qualcomm Atheros AR803x and QCA808X PHY driver");
+ 
+@@ -366,11 +310,6 @@ MODULE_DESCRIPTION("Qualcomm Atheros AR803x and QCA808X PHY driver");
  MODULE_AUTHOR("Matus Ujhelyi");
  MODULE_LICENSE("GPL");
  
--static struct at803x_hw_stat qca83xx_hw_stats[] = {
--	{ "phy_idle_errors", 0xa, GENMASK(7, 0), PHY},
--	{ "phy_receive_errors", 0x15, GENMASK(15, 0), PHY},
--	{ "eee_wake_errors", 0x16, GENMASK(15, 0), MMD},
+-struct at803x_ss_mask {
+-	u16 speed_mask;
+-	u8 speed_shift;
 -};
 -
- struct at803x_ss_mask {
- 	u16 speed_mask;
- 	u8 speed_shift;
-@@ -400,7 +381,6 @@ struct at803x_priv {
- 	bool is_1000basex;
- 	struct regulator_dev *vddio_rdev;
- 	struct regulator_dev *vddh_rdev;
--	u64 stats[ARRAY_SIZE(qca83xx_hw_stats)];
- 	int led_polarity_mode;
- };
- 
-@@ -564,53 +544,6 @@ static void at803x_get_wol(struct phy_device *phydev,
- 		wol->wolopts |= WAKE_MAGIC;
+ struct at803x_priv {
+ 	int flags;
+ 	u16 clk_25m_reg;
+@@ -470,80 +409,6 @@ static void at803x_context_restore(struct phy_device *phydev,
+ 	phy_write(phydev, AT803X_LED_CONTROL, context->led_control);
  }
  
--static int qca83xx_get_sset_count(struct phy_device *phydev)
+-static int at803x_set_wol(struct phy_device *phydev,
+-			  struct ethtool_wolinfo *wol)
 -{
--	return ARRAY_SIZE(qca83xx_hw_stats);
--}
+-	int ret, irq_enabled;
 -
--static void qca83xx_get_strings(struct phy_device *phydev, u8 *data)
--{
--	int i;
+-	if (wol->wolopts & WAKE_MAGIC) {
+-		struct net_device *ndev = phydev->attached_dev;
+-		const u8 *mac;
+-		unsigned int i;
+-		static const unsigned int offsets[] = {
+-			AT803X_LOC_MAC_ADDR_32_47_OFFSET,
+-			AT803X_LOC_MAC_ADDR_16_31_OFFSET,
+-			AT803X_LOC_MAC_ADDR_0_15_OFFSET,
+-		};
 -
--	for (i = 0; i < ARRAY_SIZE(qca83xx_hw_stats); i++) {
--		strscpy(data + i * ETH_GSTRING_LEN,
--			qca83xx_hw_stats[i].string, ETH_GSTRING_LEN);
--	}
--}
+-		if (!ndev)
+-			return -ENODEV;
 -
--static u64 qca83xx_get_stat(struct phy_device *phydev, int i)
--{
--	struct at803x_hw_stat stat = qca83xx_hw_stats[i];
--	struct at803x_priv *priv = phydev->priv;
--	int val;
--	u64 ret;
+-		mac = (const u8 *)ndev->dev_addr;
 -
--	if (stat.access_type == MMD)
--		val = phy_read_mmd(phydev, MDIO_MMD_PCS, stat.reg);
--	else
--		val = phy_read(phydev, stat.reg);
+-		if (!is_valid_ether_addr(mac))
+-			return -EINVAL;
 -
--	if (val < 0) {
--		ret = U64_MAX;
+-		for (i = 0; i < 3; i++)
+-			phy_write_mmd(phydev, MDIO_MMD_PCS, offsets[i],
+-				      mac[(i * 2) + 1] | (mac[(i * 2)] << 8));
+-
+-		/* Enable WOL interrupt */
+-		ret = phy_modify(phydev, AT803X_INTR_ENABLE, 0, AT803X_INTR_ENABLE_WOL);
+-		if (ret)
+-			return ret;
 -	} else {
--		val = val & stat.mask;
--		priv->stats[i] += val;
--		ret = priv->stats[i];
+-		/* Disable WOL interrupt */
+-		ret = phy_modify(phydev, AT803X_INTR_ENABLE, AT803X_INTR_ENABLE_WOL, 0);
+-		if (ret)
+-			return ret;
 -	}
 -
--	return ret;
+-	/* Clear WOL status */
+-	ret = phy_read(phydev, AT803X_INTR_STATUS);
+-	if (ret < 0)
+-		return ret;
+-
+-	/* Check if there are other interrupts except for WOL triggered when PHY is
+-	 * in interrupt mode, only the interrupts enabled by AT803X_INTR_ENABLE can
+-	 * be passed up to the interrupt PIN.
+-	 */
+-	irq_enabled = phy_read(phydev, AT803X_INTR_ENABLE);
+-	if (irq_enabled < 0)
+-		return irq_enabled;
+-
+-	irq_enabled &= ~AT803X_INTR_ENABLE_WOL;
+-	if (ret & irq_enabled && !phy_polling_mode(phydev))
+-		phy_trigger_machine(phydev);
+-
+-	return 0;
 -}
 -
--static void qca83xx_get_stats(struct phy_device *phydev,
--			      struct ethtool_stats *stats, u64 *data)
+-static void at803x_get_wol(struct phy_device *phydev,
+-			   struct ethtool_wolinfo *wol)
 -{
--	int i;
+-	int value;
 -
--	for (i = 0; i < ARRAY_SIZE(qca83xx_hw_stats); i++)
--		data[i] = qca83xx_get_stat(phydev, i);
+-	wol->supported = WAKE_MAGIC;
+-	wol->wolopts = 0;
+-
+-	value = phy_read(phydev, AT803X_INTR_ENABLE);
+-	if (value < 0)
+-		return;
+-
+-	if (value & AT803X_INTR_ENABLE_WOL)
+-		wol->wolopts |= WAKE_MAGIC;
 -}
 -
  static int at803x_suspend(struct phy_device *phydev)
  {
  	int value;
-@@ -1707,124 +1640,6 @@ static int at8035_probe(struct phy_device *phydev)
- 	return at8035_parse_dt(phydev);
+@@ -816,73 +681,6 @@ static int at803x_config_init(struct phy_device *phydev)
+ 	return phy_modify(phydev, MII_ADVERTISE, MDIO_AN_CTRL1_XNP, 0);
  }
  
--static int qca83xx_config_init(struct phy_device *phydev)
+-static int at803x_ack_interrupt(struct phy_device *phydev)
 -{
--	u8 switch_revision;
+-	int err;
 -
--	switch_revision = phydev->dev_flags & QCA8K_DEVFLAGS_REVISION_MASK;
+-	err = phy_read(phydev, AT803X_INTR_STATUS);
 -
--	switch (switch_revision) {
--	case 1:
--		/* For 100M waveform */
--		at803x_debug_reg_write(phydev, AT803X_DEBUG_ANALOG_TEST_CTRL, 0x02ea);
--		/* Turn on Gigabit clock */
--		at803x_debug_reg_write(phydev, AT803X_DEBUG_REG_GREEN, 0x68a0);
--		break;
+-	return (err < 0) ? err : 0;
+-}
 -
--	case 2:
--		phy_write_mmd(phydev, MDIO_MMD_AN, MDIO_AN_EEE_ADV, 0x0);
--		fallthrough;
--	case 4:
--		phy_write_mmd(phydev, MDIO_MMD_PCS, MDIO_AZ_DEBUG, 0x803f);
--		at803x_debug_reg_write(phydev, AT803X_DEBUG_REG_GREEN, 0x6860);
--		at803x_debug_reg_write(phydev, AT803X_DEBUG_SYSTEM_CTRL_MODE, 0x2c46);
--		at803x_debug_reg_write(phydev, AT803X_DEBUG_REG_3C, 0x6000);
--		break;
+-static int at803x_config_intr(struct phy_device *phydev)
+-{
+-	int err;
+-	int value;
+-
+-	value = phy_read(phydev, AT803X_INTR_ENABLE);
+-
+-	if (phydev->interrupts == PHY_INTERRUPT_ENABLED) {
+-		/* Clear any pending interrupts */
+-		err = at803x_ack_interrupt(phydev);
+-		if (err)
+-			return err;
+-
+-		value |= AT803X_INTR_ENABLE_AUTONEG_ERR;
+-		value |= AT803X_INTR_ENABLE_SPEED_CHANGED;
+-		value |= AT803X_INTR_ENABLE_DUPLEX_CHANGED;
+-		value |= AT803X_INTR_ENABLE_LINK_FAIL;
+-		value |= AT803X_INTR_ENABLE_LINK_SUCCESS;
+-
+-		err = phy_write(phydev, AT803X_INTR_ENABLE, value);
+-	} else {
+-		err = phy_write(phydev, AT803X_INTR_ENABLE, 0);
+-		if (err)
+-			return err;
+-
+-		/* Clear any pending interrupts */
+-		err = at803x_ack_interrupt(phydev);
 -	}
 -
--	/* Following original QCA sourcecode set port to prefer master */
--	phy_set_bits(phydev, MII_CTRL1000, CTL1000_PREFER_MASTER);
+-	return err;
+-}
+-
+-static irqreturn_t at803x_handle_interrupt(struct phy_device *phydev)
+-{
+-	int irq_status, int_enabled;
+-
+-	irq_status = phy_read(phydev, AT803X_INTR_STATUS);
+-	if (irq_status < 0) {
+-		phy_error(phydev);
+-		return IRQ_NONE;
+-	}
+-
+-	/* Read the current enabled interrupts */
+-	int_enabled = phy_read(phydev, AT803X_INTR_ENABLE);
+-	if (int_enabled < 0) {
+-		phy_error(phydev);
+-		return IRQ_NONE;
+-	}
+-
+-	/* See if this was one of our enabled interrupts */
+-	if (!(irq_status & int_enabled))
+-		return IRQ_NONE;
+-
+-	phy_trigger_machine(phydev);
+-
+-	return IRQ_HANDLED;
+-}
+-
+ static void at803x_link_change_notify(struct phy_device *phydev)
+ {
+ 	/*
+@@ -908,69 +706,6 @@ static void at803x_link_change_notify(struct phy_device *phydev)
+ 	}
+ }
+ 
+-static int at803x_read_specific_status(struct phy_device *phydev,
+-				       struct at803x_ss_mask ss_mask)
+-{
+-	int ss;
+-
+-	/* Read the AT8035 PHY-Specific Status register, which indicates the
+-	 * speed and duplex that the PHY is actually using, irrespective of
+-	 * whether we are in autoneg mode or not.
+-	 */
+-	ss = phy_read(phydev, AT803X_SPECIFIC_STATUS);
+-	if (ss < 0)
+-		return ss;
+-
+-	if (ss & AT803X_SS_SPEED_DUPLEX_RESOLVED) {
+-		int sfc, speed;
+-
+-		sfc = phy_read(phydev, AT803X_SPECIFIC_FUNCTION_CONTROL);
+-		if (sfc < 0)
+-			return sfc;
+-
+-		speed = ss & ss_mask.speed_mask;
+-		speed >>= ss_mask.speed_shift;
+-
+-		switch (speed) {
+-		case AT803X_SS_SPEED_10:
+-			phydev->speed = SPEED_10;
+-			break;
+-		case AT803X_SS_SPEED_100:
+-			phydev->speed = SPEED_100;
+-			break;
+-		case AT803X_SS_SPEED_1000:
+-			phydev->speed = SPEED_1000;
+-			break;
+-		case QCA808X_SS_SPEED_2500:
+-			phydev->speed = SPEED_2500;
+-			break;
+-		}
+-		if (ss & AT803X_SS_DUPLEX)
+-			phydev->duplex = DUPLEX_FULL;
+-		else
+-			phydev->duplex = DUPLEX_HALF;
+-
+-		if (ss & AT803X_SS_MDIX)
+-			phydev->mdix = ETH_TP_MDI_X;
+-		else
+-			phydev->mdix = ETH_TP_MDI;
+-
+-		switch (FIELD_GET(AT803X_SFC_MDI_CROSSOVER_MODE_M, sfc)) {
+-		case AT803X_SFC_MANUAL_MDI:
+-			phydev->mdix_ctrl = ETH_TP_MDI;
+-			break;
+-		case AT803X_SFC_MANUAL_MDIX:
+-			phydev->mdix_ctrl = ETH_TP_MDI_X;
+-			break;
+-		case AT803X_SFC_AUTOMATIC_CROSSOVER:
+-			phydev->mdix_ctrl = ETH_TP_MDI_AUTO;
+-			break;
+-		}
+-	}
 -
 -	return 0;
 -}
 -
--static int qca8327_config_init(struct phy_device *phydev)
+ static int at803x_read_status(struct phy_device *phydev)
+ {
+ 	struct at803x_ss_mask ss_mask = { 0 };
+@@ -1006,50 +741,6 @@ static int at803x_read_status(struct phy_device *phydev)
+ 	return 0;
+ }
+ 
+-static int at803x_config_mdix(struct phy_device *phydev, u8 ctrl)
 -{
--	/* QCA8327 require DAC amplitude adjustment for 100m set to +6%.
--	 * Disable on init and enable only with 100m speed following
--	 * qca original source code.
--	 */
--	at803x_debug_reg_mask(phydev, AT803X_DEBUG_ANALOG_TEST_CTRL,
--			      QCA8327_DEBUG_MANU_CTRL_EN, 0);
+-	u16 val;
 -
--	return qca83xx_config_init(phydev);
--}
--
--static void qca83xx_link_change_notify(struct phy_device *phydev)
--{
--	/* Set DAC Amplitude adjustment to +6% for 100m on link running */
--	if (phydev->state == PHY_RUNNING) {
--		if (phydev->speed == SPEED_100)
--			at803x_debug_reg_mask(phydev, AT803X_DEBUG_ANALOG_TEST_CTRL,
--					      QCA8327_DEBUG_MANU_CTRL_EN,
--					      QCA8327_DEBUG_MANU_CTRL_EN);
--	} else {
--		/* Reset DAC Amplitude adjustment */
--		at803x_debug_reg_mask(phydev, AT803X_DEBUG_ANALOG_TEST_CTRL,
--				      QCA8327_DEBUG_MANU_CTRL_EN, 0);
--	}
--}
--
--static int qca83xx_resume(struct phy_device *phydev)
--{
--	int ret, val;
--
--	/* Skip reset if not suspended */
--	if (!phydev->suspended)
+-	switch (ctrl) {
+-	case ETH_TP_MDI:
+-		val = AT803X_SFC_MANUAL_MDI;
+-		break;
+-	case ETH_TP_MDI_X:
+-		val = AT803X_SFC_MANUAL_MDIX;
+-		break;
+-	case ETH_TP_MDI_AUTO:
+-		val = AT803X_SFC_AUTOMATIC_CROSSOVER;
+-		break;
+-	default:
 -		return 0;
+-	}
 -
--	/* Reinit the port, reset values set by suspend */
--	qca83xx_config_init(phydev);
+-	return phy_modify_changed(phydev, AT803X_SPECIFIC_FUNCTION_CONTROL,
+-			  AT803X_SFC_MDI_CROSSOVER_MODE_M,
+-			  FIELD_PREP(AT803X_SFC_MDI_CROSSOVER_MODE_M, val));
+-}
 -
--	/* Reset the port on port resume */
--	phy_set_bits(phydev, MII_BMCR, BMCR_RESET | BMCR_ANENABLE);
+-static int at803x_prepare_config_aneg(struct phy_device *phydev)
+-{
+-	int ret;
 -
--	/* On resume from suspend the switch execute a reset and
--	 * restart auto-negotiation. Wait for reset to complete.
--	 */
--	ret = phy_read_poll_timeout(phydev, MII_BMCR, val, !(val & BMCR_RESET),
--				    50000, 600000, true);
--	if (ret)
+-	ret = at803x_config_mdix(phydev, phydev->mdix_ctrl);
+-	if (ret < 0)
 -		return ret;
 -
--	usleep_range(1000, 2000);
--
--	return 0;
--}
--
--static int qca83xx_suspend(struct phy_device *phydev)
--{
--	at803x_debug_reg_mask(phydev, AT803X_DEBUG_REG_GREEN,
--			      AT803X_DEBUG_GATE_CLK_IN1000, 0);
--
--	at803x_debug_reg_mask(phydev, AT803X_DEBUG_REG_HIB_CTRL,
--			      AT803X_DEBUG_HIB_CTRL_EN_ANY_CHANGE |
--			      AT803X_DEBUG_HIB_CTRL_SEL_RST_80U, 0);
--
--	return 0;
--}
--
--static int qca8337_suspend(struct phy_device *phydev)
--{
--	/* Only QCA8337 support actual suspend. */
--	genphy_suspend(phydev);
--
--	return qca83xx_suspend(phydev);
--}
--
--static int qca8327_suspend(struct phy_device *phydev)
--{
--	u16 mask = 0;
--
--	/* QCA8327 cause port unreliability when phy suspend
--	 * is set.
+-	/* Changes of the midx bits are disruptive to the normal operation;
+-	 * therefore any changes to these registers must be followed by a
+-	 * software reset to take effect.
 -	 */
--	mask |= ~(BMCR_SPEED1000 | BMCR_FULLDPLX);
--	phy_modify(phydev, MII_BMCR, mask, 0);
+-	if (ret == 1) {
+-		ret = genphy_soft_reset(phydev);
+-		if (ret < 0)
+-			return ret;
+-	}
 -
--	return qca83xx_suspend(phydev);
+-	return 0;
 -}
 -
- static int qca808x_phy_fast_retrain_config(struct phy_device *phydev)
+ static int at803x_config_aneg(struct phy_device *phydev)
  {
- 	int ret;
-@@ -2598,53 +2413,6 @@ static struct phy_driver at803x_driver[] = {
- 	.read_status		= at803x_read_status,
- 	.soft_reset		= genphy_soft_reset,
- 	.config_aneg		= at803x_config_aneg,
--}, {
--	/* QCA8337 */
--	.phy_id			= QCA8337_PHY_ID,
--	.phy_id_mask		= QCA8K_PHY_ID_MASK,
--	.name			= "Qualcomm Atheros 8337 internal PHY",
--	/* PHY_GBIT_FEATURES */
--	.probe			= at803x_probe,
--	.flags			= PHY_IS_INTERNAL,
--	.config_init		= qca83xx_config_init,
--	.soft_reset		= genphy_soft_reset,
--	.get_sset_count		= qca83xx_get_sset_count,
--	.get_strings		= qca83xx_get_strings,
--	.get_stats		= qca83xx_get_stats,
--	.suspend		= qca8337_suspend,
--	.resume			= qca83xx_resume,
--}, {
--	/* QCA8327-A from switch QCA8327-AL1A */
--	.phy_id			= QCA8327_A_PHY_ID,
--	.phy_id_mask		= QCA8K_PHY_ID_MASK,
--	.name			= "Qualcomm Atheros 8327-A internal PHY",
--	/* PHY_GBIT_FEATURES */
--	.link_change_notify	= qca83xx_link_change_notify,
--	.probe			= at803x_probe,
--	.flags			= PHY_IS_INTERNAL,
--	.config_init		= qca8327_config_init,
--	.soft_reset		= genphy_soft_reset,
--	.get_sset_count		= qca83xx_get_sset_count,
--	.get_strings		= qca83xx_get_strings,
--	.get_stats		= qca83xx_get_stats,
--	.suspend		= qca8327_suspend,
--	.resume			= qca83xx_resume,
--}, {
--	/* QCA8327-B from switch QCA8327-BL1A */
--	.phy_id			= QCA8327_B_PHY_ID,
--	.phy_id_mask		= QCA8K_PHY_ID_MASK,
--	.name			= "Qualcomm Atheros 8327-B internal PHY",
--	/* PHY_GBIT_FEATURES */
--	.link_change_notify	= qca83xx_link_change_notify,
--	.probe			= at803x_probe,
--	.flags			= PHY_IS_INTERNAL,
--	.config_init		= qca8327_config_init,
--	.soft_reset		= genphy_soft_reset,
--	.get_sset_count		= qca83xx_get_sset_count,
--	.get_strings		= qca83xx_get_strings,
--	.get_stats		= qca83xx_get_stats,
--	.suspend		= qca8327_suspend,
--	.resume			= qca83xx_resume,
- }, {
- 	/* Qualcomm QCA8081 */
- 	PHY_ID_MATCH_EXACT(QCA8081_PHY_ID),
-@@ -2683,9 +2451,6 @@ static struct mdio_device_id __maybe_unused atheros_tbl[] = {
- 	{ PHY_ID_MATCH_EXACT(ATH8032_PHY_ID) },
- 	{ PHY_ID_MATCH_EXACT(ATH8035_PHY_ID) },
- 	{ PHY_ID_MATCH_EXACT(ATH9331_PHY_ID) },
--	{ PHY_ID_MATCH_EXACT(QCA8337_PHY_ID) },
--	{ PHY_ID_MATCH_EXACT(QCA8327_A_PHY_ID) },
--	{ PHY_ID_MATCH_EXACT(QCA8327_B_PHY_ID) },
- 	{ PHY_ID_MATCH_EXACT(QCA9561_PHY_ID) },
- 	{ PHY_ID_MATCH_EXACT(QCA8081_PHY_ID) },
- 	{ }
-diff --git a/drivers/net/phy/qcom/qca83xx.c b/drivers/net/phy/qcom/qca83xx.c
-new file mode 100644
-index 000000000000..5d083ef0250e
---- /dev/null
-+++ b/drivers/net/phy/qcom/qca83xx.c
-@@ -0,0 +1,275 @@
-+// SPDX-License-Identifier: GPL-2.0+
+ 	struct at803x_priv *priv = phydev->priv;
+@@ -1065,80 +756,6 @@ static int at803x_config_aneg(struct phy_device *phydev)
+ 	return genphy_config_aneg(phydev);
+ }
+ 
+-static int at803x_get_downshift(struct phy_device *phydev, u8 *d)
+-{
+-	int val;
+-
+-	val = phy_read(phydev, AT803X_SMART_SPEED);
+-	if (val < 0)
+-		return val;
+-
+-	if (val & AT803X_SMART_SPEED_ENABLE)
+-		*d = FIELD_GET(AT803X_SMART_SPEED_RETRY_LIMIT_MASK, val) + 2;
+-	else
+-		*d = DOWNSHIFT_DEV_DISABLE;
+-
+-	return 0;
+-}
+-
+-static int at803x_set_downshift(struct phy_device *phydev, u8 cnt)
+-{
+-	u16 mask, set;
+-	int ret;
+-
+-	switch (cnt) {
+-	case DOWNSHIFT_DEV_DEFAULT_COUNT:
+-		cnt = AT803X_DEFAULT_DOWNSHIFT;
+-		fallthrough;
+-	case AT803X_MIN_DOWNSHIFT ... AT803X_MAX_DOWNSHIFT:
+-		set = AT803X_SMART_SPEED_ENABLE |
+-		      AT803X_SMART_SPEED_BYPASS_TIMER |
+-		      FIELD_PREP(AT803X_SMART_SPEED_RETRY_LIMIT_MASK, cnt - 2);
+-		mask = AT803X_SMART_SPEED_RETRY_LIMIT_MASK;
+-		break;
+-	case DOWNSHIFT_DEV_DISABLE:
+-		set = 0;
+-		mask = AT803X_SMART_SPEED_ENABLE |
+-		       AT803X_SMART_SPEED_BYPASS_TIMER;
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	ret = phy_modify_changed(phydev, AT803X_SMART_SPEED, mask, set);
+-
+-	/* After changing the smart speed settings, we need to perform a
+-	 * software reset, use phy_init_hw() to make sure we set the
+-	 * reapply any values which might got lost during software reset.
+-	 */
+-	if (ret == 1)
+-		ret = phy_init_hw(phydev);
+-
+-	return ret;
+-}
+-
+-static int at803x_get_tunable(struct phy_device *phydev,
+-			      struct ethtool_tunable *tuna, void *data)
+-{
+-	switch (tuna->id) {
+-	case ETHTOOL_PHY_DOWNSHIFT:
+-		return at803x_get_downshift(phydev, data);
+-	default:
+-		return -EOPNOTSUPP;
+-	}
+-}
+-
+-static int at803x_set_tunable(struct phy_device *phydev,
+-			      struct ethtool_tunable *tuna, const void *data)
+-{
+-	switch (tuna->id) {
+-	case ETHTOOL_PHY_DOWNSHIFT:
+-		return at803x_set_downshift(phydev, *(const u8 *)data);
+-	default:
+-		return -EOPNOTSUPP;
+-	}
+-}
+-
+ static int at803x_cable_test_result_trans(u16 status)
+ {
+ 	switch (FIELD_GET(AT803X_CDT_STATUS_STAT_MASK, status)) {
+@@ -1170,45 +787,6 @@ static bool at803x_cdt_fault_length_valid(u16 status)
+ 	return false;
+ }
+ 
+-static int at803x_cdt_fault_length(int dt)
+-{
+-	/* According to the datasheet the distance to the fault is
+-	 * DELTA_TIME * 0.824 meters.
+-	 *
+-	 * The author suspect the correct formula is:
+-	 *
+-	 *   fault_distance = DELTA_TIME * (c * VF) / 125MHz / 2
+-	 *
+-	 * where c is the speed of light, VF is the velocity factor of
+-	 * the twisted pair cable, 125MHz the counter frequency and
+-	 * we need to divide by 2 because the hardware will measure the
+-	 * round trip time to the fault and back to the PHY.
+-	 *
+-	 * With a VF of 0.69 we get the factor 0.824 mentioned in the
+-	 * datasheet.
+-	 */
+-	return (dt * 824) / 10;
+-}
+-
+-static int at803x_cdt_start(struct phy_device *phydev,
+-			    u32 cdt_start)
+-{
+-	return phy_write(phydev, AT803X_CDT, cdt_start);
+-}
+-
+-static int at803x_cdt_wait_for_completion(struct phy_device *phydev,
+-					  u32 cdt_en)
+-{
+-	int val, ret;
+-
+-	/* One test run takes about 25ms */
+-	ret = phy_read_poll_timeout(phydev, AT803X_CDT, val,
+-				    !(val & cdt_en),
+-				    30000, 100000, true);
+-
+-	return ret < 0 ? ret : 0;
+-}
+-
+ static int at803x_cable_test_one_pair(struct phy_device *phydev, int pair)
+ {
+ 	static const int ethtool_pair[] = {
+diff --git a/drivers/net/phy/qcom/qcom-phy-lib.c b/drivers/net/phy/qcom/qcom-phy-lib.c
+index 7192184429b7..e0295d4b4a51 100644
+--- a/drivers/net/phy/qcom/qcom-phy-lib.c
++++ b/drivers/net/phy/qcom/qcom-phy-lib.c
+@@ -3,6 +3,9 @@
+ #include <linux/phy.h>
+ #include <linux/module.h>
+ 
++#include <linux/netdevice.h>
++#include <linux/etherdevice.h>
 +
-+#include <linux/phy.h>
-+#include <linux/module.h>
+ #include "qcom.h"
+ 
+ MODULE_DESCRIPTION("Qualcomm PHY driver Common Functions");
+@@ -51,3 +54,376 @@ int at803x_debug_reg_write(struct phy_device *phydev, u16 reg, u16 data)
+ 	return phy_write(phydev, AT803X_DEBUG_DATA, data);
+ }
+ EXPORT_SYMBOL_GPL(at803x_debug_reg_write);
 +
-+#include "qcom.h"
-+
-+#define AT803X_DEBUG_REG_3C			0x3C
-+
-+#define AT803X_DEBUG_REG_GREEN			0x3D
-+#define   AT803X_DEBUG_GATE_CLK_IN1000		BIT(6)
-+
-+#define MDIO_AZ_DEBUG				0x800D
-+
-+#define QCA8327_A_PHY_ID			0x004dd033
-+#define QCA8327_B_PHY_ID			0x004dd034
-+#define QCA8337_PHY_ID				0x004dd036
-+#define QCA8K_PHY_ID_MASK			0xffffffff
-+
-+#define QCA8K_DEVFLAGS_REVISION_MASK		GENMASK(2, 0)
-+
-+static struct at803x_hw_stat qca83xx_hw_stats[] = {
-+	{ "phy_idle_errors", 0xa, GENMASK(7, 0), PHY},
-+	{ "phy_receive_errors", 0x15, GENMASK(15, 0), PHY},
-+	{ "eee_wake_errors", 0x16, GENMASK(15, 0), MMD},
-+};
-+
-+struct qca83xx_priv {
-+	u64 stats[ARRAY_SIZE(qca83xx_hw_stats)];
-+};
-+
-+MODULE_DESCRIPTION("Qualcomm Atheros QCA83XX PHY driver");
-+MODULE_AUTHOR("Matus Ujhelyi");
-+MODULE_AUTHOR("Christian Marangi <ansuelsmth@gmail.com>");
-+MODULE_LICENSE("GPL");
-+
-+static int qca83xx_get_sset_count(struct phy_device *phydev)
++int at803x_set_wol(struct phy_device *phydev,
++		   struct ethtool_wolinfo *wol)
 +{
-+	return ARRAY_SIZE(qca83xx_hw_stats);
-+}
++	int ret, irq_enabled;
 +
-+static void qca83xx_get_strings(struct phy_device *phydev, u8 *data)
-+{
-+	int i;
++	if (wol->wolopts & WAKE_MAGIC) {
++		struct net_device *ndev = phydev->attached_dev;
++		const u8 *mac;
++		unsigned int i;
++		static const unsigned int offsets[] = {
++			AT803X_LOC_MAC_ADDR_32_47_OFFSET,
++			AT803X_LOC_MAC_ADDR_16_31_OFFSET,
++			AT803X_LOC_MAC_ADDR_0_15_OFFSET,
++		};
 +
-+	for (i = 0; i < ARRAY_SIZE(qca83xx_hw_stats); i++) {
-+		strscpy(data + i * ETH_GSTRING_LEN,
-+			qca83xx_hw_stats[i].string, ETH_GSTRING_LEN);
-+	}
-+}
++		if (!ndev)
++			return -ENODEV;
 +
-+static u64 qca83xx_get_stat(struct phy_device *phydev, int i)
-+{
-+	struct at803x_hw_stat stat = qca83xx_hw_stats[i];
-+	struct qca83xx_priv *priv = phydev->priv;
-+	int val;
-+	u64 ret;
++		mac = (const u8 *)ndev->dev_addr;
 +
-+	if (stat.access_type == MMD)
-+		val = phy_read_mmd(phydev, MDIO_MMD_PCS, stat.reg);
-+	else
-+		val = phy_read(phydev, stat.reg);
++		if (!is_valid_ether_addr(mac))
++			return -EINVAL;
 +
-+	if (val < 0) {
-+		ret = U64_MAX;
++		for (i = 0; i < 3; i++)
++			phy_write_mmd(phydev, MDIO_MMD_PCS, offsets[i],
++				      mac[(i * 2) + 1] | (mac[(i * 2)] << 8));
++
++		/* Enable WOL interrupt */
++		ret = phy_modify(phydev, AT803X_INTR_ENABLE, 0, AT803X_INTR_ENABLE_WOL);
++		if (ret)
++			return ret;
 +	} else {
-+		val = val & stat.mask;
-+		priv->stats[i] += val;
-+		ret = priv->stats[i];
++		/* Disable WOL interrupt */
++		ret = phy_modify(phydev, AT803X_INTR_ENABLE, AT803X_INTR_ENABLE_WOL, 0);
++		if (ret)
++			return ret;
 +	}
++
++	/* Clear WOL status */
++	ret = phy_read(phydev, AT803X_INTR_STATUS);
++	if (ret < 0)
++		return ret;
++
++	/* Check if there are other interrupts except for WOL triggered when PHY is
++	 * in interrupt mode, only the interrupts enabled by AT803X_INTR_ENABLE can
++	 * be passed up to the interrupt PIN.
++	 */
++	irq_enabled = phy_read(phydev, AT803X_INTR_ENABLE);
++	if (irq_enabled < 0)
++		return irq_enabled;
++
++	irq_enabled &= ~AT803X_INTR_ENABLE_WOL;
++	if (ret & irq_enabled && !phy_polling_mode(phydev))
++		phy_trigger_machine(phydev);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(at803x_set_wol);
++
++void at803x_get_wol(struct phy_device *phydev,
++		    struct ethtool_wolinfo *wol)
++{
++	int value;
++
++	wol->supported = WAKE_MAGIC;
++	wol->wolopts = 0;
++
++	value = phy_read(phydev, AT803X_INTR_ENABLE);
++	if (value < 0)
++		return;
++
++	if (value & AT803X_INTR_ENABLE_WOL)
++		wol->wolopts |= WAKE_MAGIC;
++}
++EXPORT_SYMBOL_GPL(at803x_get_wol);
++
++int at803x_ack_interrupt(struct phy_device *phydev)
++{
++	int err;
++
++	err = phy_read(phydev, AT803X_INTR_STATUS);
++
++	return (err < 0) ? err : 0;
++}
++EXPORT_SYMBOL_GPL(at803x_ack_interrupt);
++
++int at803x_config_intr(struct phy_device *phydev)
++{
++	int err;
++	int value;
++
++	value = phy_read(phydev, AT803X_INTR_ENABLE);
++
++	if (phydev->interrupts == PHY_INTERRUPT_ENABLED) {
++		/* Clear any pending interrupts */
++		err = at803x_ack_interrupt(phydev);
++		if (err)
++			return err;
++
++		value |= AT803X_INTR_ENABLE_AUTONEG_ERR;
++		value |= AT803X_INTR_ENABLE_SPEED_CHANGED;
++		value |= AT803X_INTR_ENABLE_DUPLEX_CHANGED;
++		value |= AT803X_INTR_ENABLE_LINK_FAIL;
++		value |= AT803X_INTR_ENABLE_LINK_SUCCESS;
++
++		err = phy_write(phydev, AT803X_INTR_ENABLE, value);
++	} else {
++		err = phy_write(phydev, AT803X_INTR_ENABLE, 0);
++		if (err)
++			return err;
++
++		/* Clear any pending interrupts */
++		err = at803x_ack_interrupt(phydev);
++	}
++
++	return err;
++}
++EXPORT_SYMBOL_GPL(at803x_config_intr);
++
++irqreturn_t at803x_handle_interrupt(struct phy_device *phydev)
++{
++	int irq_status, int_enabled;
++
++	irq_status = phy_read(phydev, AT803X_INTR_STATUS);
++	if (irq_status < 0) {
++		phy_error(phydev);
++		return IRQ_NONE;
++	}
++
++	/* Read the current enabled interrupts */
++	int_enabled = phy_read(phydev, AT803X_INTR_ENABLE);
++	if (int_enabled < 0) {
++		phy_error(phydev);
++		return IRQ_NONE;
++	}
++
++	/* See if this was one of our enabled interrupts */
++	if (!(irq_status & int_enabled))
++		return IRQ_NONE;
++
++	phy_trigger_machine(phydev);
++
++	return IRQ_HANDLED;
++}
++EXPORT_SYMBOL_GPL(at803x_handle_interrupt);
++
++int at803x_read_specific_status(struct phy_device *phydev,
++				struct at803x_ss_mask ss_mask)
++{
++	int ss;
++
++	/* Read the AT8035 PHY-Specific Status register, which indicates the
++	 * speed and duplex that the PHY is actually using, irrespective of
++	 * whether we are in autoneg mode or not.
++	 */
++	ss = phy_read(phydev, AT803X_SPECIFIC_STATUS);
++	if (ss < 0)
++		return ss;
++
++	if (ss & AT803X_SS_SPEED_DUPLEX_RESOLVED) {
++		int sfc, speed;
++
++		sfc = phy_read(phydev, AT803X_SPECIFIC_FUNCTION_CONTROL);
++		if (sfc < 0)
++			return sfc;
++
++		speed = ss & ss_mask.speed_mask;
++		speed >>= ss_mask.speed_shift;
++
++		switch (speed) {
++		case AT803X_SS_SPEED_10:
++			phydev->speed = SPEED_10;
++			break;
++		case AT803X_SS_SPEED_100:
++			phydev->speed = SPEED_100;
++			break;
++		case AT803X_SS_SPEED_1000:
++			phydev->speed = SPEED_1000;
++			break;
++		case QCA808X_SS_SPEED_2500:
++			phydev->speed = SPEED_2500;
++			break;
++		}
++		if (ss & AT803X_SS_DUPLEX)
++			phydev->duplex = DUPLEX_FULL;
++		else
++			phydev->duplex = DUPLEX_HALF;
++
++		if (ss & AT803X_SS_MDIX)
++			phydev->mdix = ETH_TP_MDI_X;
++		else
++			phydev->mdix = ETH_TP_MDI;
++
++		switch (FIELD_GET(AT803X_SFC_MDI_CROSSOVER_MODE_M, sfc)) {
++		case AT803X_SFC_MANUAL_MDI:
++			phydev->mdix_ctrl = ETH_TP_MDI;
++			break;
++		case AT803X_SFC_MANUAL_MDIX:
++			phydev->mdix_ctrl = ETH_TP_MDI_X;
++			break;
++		case AT803X_SFC_AUTOMATIC_CROSSOVER:
++			phydev->mdix_ctrl = ETH_TP_MDI_AUTO;
++			break;
++		}
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(at803x_read_specific_status);
++
++int at803x_config_mdix(struct phy_device *phydev, u8 ctrl)
++{
++	u16 val;
++
++	switch (ctrl) {
++	case ETH_TP_MDI:
++		val = AT803X_SFC_MANUAL_MDI;
++		break;
++	case ETH_TP_MDI_X:
++		val = AT803X_SFC_MANUAL_MDIX;
++		break;
++	case ETH_TP_MDI_AUTO:
++		val = AT803X_SFC_AUTOMATIC_CROSSOVER;
++		break;
++	default:
++		return 0;
++	}
++
++	return phy_modify_changed(phydev, AT803X_SPECIFIC_FUNCTION_CONTROL,
++			  AT803X_SFC_MDI_CROSSOVER_MODE_M,
++			  FIELD_PREP(AT803X_SFC_MDI_CROSSOVER_MODE_M, val));
++}
++EXPORT_SYMBOL_GPL(at803x_config_mdix);
++
++int at803x_prepare_config_aneg(struct phy_device *phydev)
++{
++	int ret;
++
++	ret = at803x_config_mdix(phydev, phydev->mdix_ctrl);
++	if (ret < 0)
++		return ret;
++
++	/* Changes of the midx bits are disruptive to the normal operation;
++	 * therefore any changes to these registers must be followed by a
++	 * software reset to take effect.
++	 */
++	if (ret == 1) {
++		ret = genphy_soft_reset(phydev);
++		if (ret < 0)
++			return ret;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(at803x_prepare_config_aneg);
++
++static int at803x_get_downshift(struct phy_device *phydev, u8 *d)
++{
++	int val;
++
++	val = phy_read(phydev, AT803X_SMART_SPEED);
++	if (val < 0)
++		return val;
++
++	if (val & AT803X_SMART_SPEED_ENABLE)
++		*d = FIELD_GET(AT803X_SMART_SPEED_RETRY_LIMIT_MASK, val) + 2;
++	else
++		*d = DOWNSHIFT_DEV_DISABLE;
++
++	return 0;
++}
++
++static int at803x_set_downshift(struct phy_device *phydev, u8 cnt)
++{
++	u16 mask, set;
++	int ret;
++
++	switch (cnt) {
++	case DOWNSHIFT_DEV_DEFAULT_COUNT:
++		cnt = AT803X_DEFAULT_DOWNSHIFT;
++		fallthrough;
++	case AT803X_MIN_DOWNSHIFT ... AT803X_MAX_DOWNSHIFT:
++		set = AT803X_SMART_SPEED_ENABLE |
++		      AT803X_SMART_SPEED_BYPASS_TIMER |
++		      FIELD_PREP(AT803X_SMART_SPEED_RETRY_LIMIT_MASK, cnt - 2);
++		mask = AT803X_SMART_SPEED_RETRY_LIMIT_MASK;
++		break;
++	case DOWNSHIFT_DEV_DISABLE:
++		set = 0;
++		mask = AT803X_SMART_SPEED_ENABLE |
++		       AT803X_SMART_SPEED_BYPASS_TIMER;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	ret = phy_modify_changed(phydev, AT803X_SMART_SPEED, mask, set);
++
++	/* After changing the smart speed settings, we need to perform a
++	 * software reset, use phy_init_hw() to make sure we set the
++	 * reapply any values which might got lost during software reset.
++	 */
++	if (ret == 1)
++		ret = phy_init_hw(phydev);
 +
 +	return ret;
 +}
 +
-+static void qca83xx_get_stats(struct phy_device *phydev,
-+			      struct ethtool_stats *stats, u64 *data)
++int at803x_get_tunable(struct phy_device *phydev,
++		       struct ethtool_tunable *tuna, void *data)
 +{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(qca83xx_hw_stats); i++)
-+		data[i] = qca83xx_get_stat(phydev, i);
-+}
-+
-+static int qca83xx_probe(struct phy_device *phydev)
-+{
-+	struct device *dev = &phydev->mdio.dev;
-+	struct qca83xx_priv *priv;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	phydev->priv = priv;
-+
-+	return 0;
-+}
-+
-+static int qca83xx_config_init(struct phy_device *phydev)
-+{
-+	u8 switch_revision;
-+
-+	switch_revision = phydev->dev_flags & QCA8K_DEVFLAGS_REVISION_MASK;
-+
-+	switch (switch_revision) {
-+	case 1:
-+		/* For 100M waveform */
-+		at803x_debug_reg_write(phydev, AT803X_DEBUG_ANALOG_TEST_CTRL, 0x02ea);
-+		/* Turn on Gigabit clock */
-+		at803x_debug_reg_write(phydev, AT803X_DEBUG_REG_GREEN, 0x68a0);
-+		break;
-+
-+	case 2:
-+		phy_write_mmd(phydev, MDIO_MMD_AN, MDIO_AN_EEE_ADV, 0x0);
-+		fallthrough;
-+	case 4:
-+		phy_write_mmd(phydev, MDIO_MMD_PCS, MDIO_AZ_DEBUG, 0x803f);
-+		at803x_debug_reg_write(phydev, AT803X_DEBUG_REG_GREEN, 0x6860);
-+		at803x_debug_reg_write(phydev, AT803X_DEBUG_SYSTEM_CTRL_MODE, 0x2c46);
-+		at803x_debug_reg_write(phydev, AT803X_DEBUG_REG_3C, 0x6000);
-+		break;
-+	}
-+
-+	/* Following original QCA sourcecode set port to prefer master */
-+	phy_set_bits(phydev, MII_CTRL1000, CTL1000_PREFER_MASTER);
-+
-+	return 0;
-+}
-+
-+static int qca8327_config_init(struct phy_device *phydev)
-+{
-+	/* QCA8327 require DAC amplitude adjustment for 100m set to +6%.
-+	 * Disable on init and enable only with 100m speed following
-+	 * qca original source code.
-+	 */
-+	at803x_debug_reg_mask(phydev, AT803X_DEBUG_ANALOG_TEST_CTRL,
-+			      QCA8327_DEBUG_MANU_CTRL_EN, 0);
-+
-+	return qca83xx_config_init(phydev);
-+}
-+
-+static void qca83xx_link_change_notify(struct phy_device *phydev)
-+{
-+	/* Set DAC Amplitude adjustment to +6% for 100m on link running */
-+	if (phydev->state == PHY_RUNNING) {
-+		if (phydev->speed == SPEED_100)
-+			at803x_debug_reg_mask(phydev, AT803X_DEBUG_ANALOG_TEST_CTRL,
-+					      QCA8327_DEBUG_MANU_CTRL_EN,
-+					      QCA8327_DEBUG_MANU_CTRL_EN);
-+	} else {
-+		/* Reset DAC Amplitude adjustment */
-+		at803x_debug_reg_mask(phydev, AT803X_DEBUG_ANALOG_TEST_CTRL,
-+				      QCA8327_DEBUG_MANU_CTRL_EN, 0);
++	switch (tuna->id) {
++	case ETHTOOL_PHY_DOWNSHIFT:
++		return at803x_get_downshift(phydev, data);
++	default:
++		return -EOPNOTSUPP;
 +	}
 +}
++EXPORT_SYMBOL_GPL(at803x_get_tunable);
 +
-+static int qca83xx_resume(struct phy_device *phydev)
++int at803x_set_tunable(struct phy_device *phydev,
++		       struct ethtool_tunable *tuna, const void *data)
 +{
-+	int ret, val;
++	switch (tuna->id) {
++	case ETHTOOL_PHY_DOWNSHIFT:
++		return at803x_set_downshift(phydev, *(const u8 *)data);
++	default:
++		return -EOPNOTSUPP;
++	}
++}
++EXPORT_SYMBOL_GPL(at803x_set_tunable);
 +
-+	/* Skip reset if not suspended */
-+	if (!phydev->suspended)
-+		return 0;
-+
-+	/* Reinit the port, reset values set by suspend */
-+	qca83xx_config_init(phydev);
-+
-+	/* Reset the port on port resume */
-+	phy_set_bits(phydev, MII_BMCR, BMCR_RESET | BMCR_ANENABLE);
-+
-+	/* On resume from suspend the switch execute a reset and
-+	 * restart auto-negotiation. Wait for reset to complete.
++int at803x_cdt_fault_length(int dt)
++{
++	/* According to the datasheet the distance to the fault is
++	 * DELTA_TIME * 0.824 meters.
++	 *
++	 * The author suspect the correct formula is:
++	 *
++	 *   fault_distance = DELTA_TIME * (c * VF) / 125MHz / 2
++	 *
++	 * where c is the speed of light, VF is the velocity factor of
++	 * the twisted pair cable, 125MHz the counter frequency and
++	 * we need to divide by 2 because the hardware will measure the
++	 * round trip time to the fault and back to the PHY.
++	 *
++	 * With a VF of 0.69 we get the factor 0.824 mentioned in the
++	 * datasheet.
 +	 */
-+	ret = phy_read_poll_timeout(phydev, MII_BMCR, val, !(val & BMCR_RESET),
-+				    50000, 600000, true);
-+	if (ret)
-+		return ret;
-+
-+	usleep_range(1000, 2000);
-+
-+	return 0;
++	return (dt * 824) / 10;
 +}
++EXPORT_SYMBOL_GPL(at803x_cdt_fault_length);
 +
-+static int qca83xx_suspend(struct phy_device *phydev)
++int at803x_cdt_start(struct phy_device *phydev, u32 cdt_start)
 +{
-+	at803x_debug_reg_mask(phydev, AT803X_DEBUG_REG_GREEN,
-+			      AT803X_DEBUG_GATE_CLK_IN1000, 0);
-+
-+	at803x_debug_reg_mask(phydev, AT803X_DEBUG_REG_HIB_CTRL,
-+			      AT803X_DEBUG_HIB_CTRL_EN_ANY_CHANGE |
-+			      AT803X_DEBUG_HIB_CTRL_SEL_RST_80U, 0);
-+
-+	return 0;
++	return phy_write(phydev, AT803X_CDT, cdt_start);
 +}
++EXPORT_SYMBOL_GPL(at803x_cdt_start);
 +
-+static int qca8337_suspend(struct phy_device *phydev)
++int at803x_cdt_wait_for_completion(struct phy_device *phydev,
++				   u32 cdt_en)
 +{
-+	/* Only QCA8337 support actual suspend. */
-+	genphy_suspend(phydev);
++	int val, ret;
 +
-+	return qca83xx_suspend(phydev);
++	/* One test run takes about 25ms */
++	ret = phy_read_poll_timeout(phydev, AT803X_CDT, val,
++				    !(val & cdt_en),
++				    30000, 100000, true);
++
++	return ret < 0 ? ret : 0;
 +}
++EXPORT_SYMBOL_GPL(at803x_cdt_wait_for_completion);
+diff --git a/drivers/net/phy/qcom/qcom.h b/drivers/net/phy/qcom/qcom.h
+index 8eb476d7c282..344f8c01d5b8 100644
+--- a/drivers/net/phy/qcom/qcom.h
++++ b/drivers/net/phy/qcom/qcom.h
+@@ -1,5 +1,61 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ 
++#define AT803X_SPECIFIC_FUNCTION_CONTROL	0x10
++#define AT803X_SFC_ASSERT_CRS			BIT(11)
++#define AT803X_SFC_FORCE_LINK			BIT(10)
++#define AT803X_SFC_MDI_CROSSOVER_MODE_M		GENMASK(6, 5)
++#define AT803X_SFC_AUTOMATIC_CROSSOVER		0x3
++#define AT803X_SFC_MANUAL_MDIX			0x1
++#define AT803X_SFC_MANUAL_MDI			0x0
++#define AT803X_SFC_SQE_TEST			BIT(2)
++#define AT803X_SFC_POLARITY_REVERSAL		BIT(1)
++#define AT803X_SFC_DISABLE_JABBER		BIT(0)
 +
-+static int qca8327_suspend(struct phy_device *phydev)
-+{
-+	u16 mask = 0;
++#define AT803X_SPECIFIC_STATUS			0x11
++#define AT803X_SS_SPEED_1000			2
++#define AT803X_SS_SPEED_100			1
++#define AT803X_SS_SPEED_10			0
++#define AT803X_SS_DUPLEX			BIT(13)
++#define AT803X_SS_SPEED_DUPLEX_RESOLVED		BIT(11)
++#define AT803X_SS_MDIX				BIT(6)
 +
-+	/* QCA8327 cause port unreliability when phy suspend
-+	 * is set.
-+	 */
-+	mask |= ~(BMCR_SPEED1000 | BMCR_FULLDPLX);
-+	phy_modify(phydev, MII_BMCR, mask, 0);
++#define QCA808X_SS_SPEED_2500			4
 +
-+	return qca83xx_suspend(phydev);
-+}
++#define AT803X_INTR_ENABLE			0x12
++#define AT803X_INTR_ENABLE_AUTONEG_ERR		BIT(15)
++#define AT803X_INTR_ENABLE_SPEED_CHANGED	BIT(14)
++#define AT803X_INTR_ENABLE_DUPLEX_CHANGED	BIT(13)
++#define AT803X_INTR_ENABLE_PAGE_RECEIVED	BIT(12)
++#define AT803X_INTR_ENABLE_LINK_FAIL		BIT(11)
++#define AT803X_INTR_ENABLE_LINK_SUCCESS		BIT(10)
++#define AT803X_INTR_ENABLE_LINK_FAIL_BX		BIT(8)
++#define AT803X_INTR_ENABLE_LINK_SUCCESS_BX	BIT(7)
++#define AT803X_INTR_ENABLE_WIRESPEED_DOWNGRADE	BIT(5)
++#define AT803X_INTR_ENABLE_POLARITY_CHANGED	BIT(1)
++#define AT803X_INTR_ENABLE_WOL			BIT(0)
 +
-+static struct phy_driver qca83xx_driver[] = {
-+{
-+	/* QCA8337 */
-+	.phy_id			= QCA8337_PHY_ID,
-+	.phy_id_mask		= QCA8K_PHY_ID_MASK,
-+	.name			= "Qualcomm Atheros 8337 internal PHY",
-+	/* PHY_GBIT_FEATURES */
-+	.probe			= qca83xx_probe,
-+	.flags			= PHY_IS_INTERNAL,
-+	.config_init		= qca83xx_config_init,
-+	.soft_reset		= genphy_soft_reset,
-+	.get_sset_count		= qca83xx_get_sset_count,
-+	.get_strings		= qca83xx_get_strings,
-+	.get_stats		= qca83xx_get_stats,
-+	.suspend		= qca8337_suspend,
-+	.resume			= qca83xx_resume,
-+}, {
-+	/* QCA8327-A from switch QCA8327-AL1A */
-+	.phy_id			= QCA8327_A_PHY_ID,
-+	.phy_id_mask		= QCA8K_PHY_ID_MASK,
-+	.name			= "Qualcomm Atheros 8327-A internal PHY",
-+	/* PHY_GBIT_FEATURES */
-+	.link_change_notify	= qca83xx_link_change_notify,
-+	.probe			= qca83xx_probe,
-+	.flags			= PHY_IS_INTERNAL,
-+	.config_init		= qca8327_config_init,
-+	.soft_reset		= genphy_soft_reset,
-+	.get_sset_count		= qca83xx_get_sset_count,
-+	.get_strings		= qca83xx_get_strings,
-+	.get_stats		= qca83xx_get_stats,
-+	.suspend		= qca8327_suspend,
-+	.resume			= qca83xx_resume,
-+}, {
-+	/* QCA8327-B from switch QCA8327-BL1A */
-+	.phy_id			= QCA8327_B_PHY_ID,
-+	.phy_id_mask		= QCA8K_PHY_ID_MASK,
-+	.name			= "Qualcomm Atheros 8327-B internal PHY",
-+	/* PHY_GBIT_FEATURES */
-+	.link_change_notify	= qca83xx_link_change_notify,
-+	.probe			= qca83xx_probe,
-+	.flags			= PHY_IS_INTERNAL,
-+	.config_init		= qca8327_config_init,
-+	.soft_reset		= genphy_soft_reset,
-+	.get_sset_count		= qca83xx_get_sset_count,
-+	.get_strings		= qca83xx_get_strings,
-+	.get_stats		= qca83xx_get_stats,
-+	.suspend		= qca8327_suspend,
-+	.resume			= qca83xx_resume,
-+}, };
++#define AT803X_INTR_STATUS			0x13
 +
-+module_phy_driver(qca83xx_driver);
++#define AT803X_SMART_SPEED			0x14
++#define AT803X_SMART_SPEED_ENABLE		BIT(5)
++#define AT803X_SMART_SPEED_RETRY_LIMIT_MASK	GENMASK(4, 2)
++#define AT803X_SMART_SPEED_BYPASS_TIMER		BIT(1)
 +
-+static struct mdio_device_id __maybe_unused qca83xx_tbl[] = {
-+	{ PHY_ID_MATCH_EXACT(QCA8337_PHY_ID) },
-+	{ PHY_ID_MATCH_EXACT(QCA8327_A_PHY_ID) },
-+	{ PHY_ID_MATCH_EXACT(QCA8327_B_PHY_ID) },
-+	{ }
++#define AT803X_CDT				0x16
++#define AT803X_CDT_MDI_PAIR_MASK		GENMASK(9, 8)
++#define AT803X_CDT_ENABLE_TEST			BIT(0)
++#define AT803X_CDT_STATUS			0x1c
++#define AT803X_CDT_STATUS_STAT_NORMAL		0
++#define AT803X_CDT_STATUS_STAT_SHORT		1
++#define AT803X_CDT_STATUS_STAT_OPEN		2
++#define AT803X_CDT_STATUS_STAT_FAIL		3
++#define AT803X_CDT_STATUS_STAT_MASK		GENMASK(9, 8)
++#define AT803X_CDT_STATUS_DELTA_TIME_MASK	GENMASK(7, 0)
++
++#define AT803X_LOC_MAC_ADDR_0_15_OFFSET		0x804C
++#define AT803X_LOC_MAC_ADDR_16_31_OFFSET	0x804B
++#define AT803X_LOC_MAC_ADDR_32_47_OFFSET	0x804A
++
+ #define AT803X_DEBUG_ADDR			0x1D
+ #define AT803X_DEBUG_DATA			0x1E
+ 
+@@ -16,6 +72,10 @@
+ #define   AT803X_DEBUG_HIB_CTRL_EN_ANY_CHANGE	BIT(13)
+ #define   AT803X_DEBUG_HIB_CTRL_PS_HIB_EN	BIT(15)
+ 
++#define AT803X_DEFAULT_DOWNSHIFT		5
++#define AT803X_MIN_DOWNSHIFT			2
++#define AT803X_MAX_DOWNSHIFT			9
++
+ enum stat_access_type {
+ 	PHY,
+ 	MMD
+@@ -28,7 +88,31 @@ struct at803x_hw_stat {
+ 	enum stat_access_type access_type;
+ };
+ 
++struct at803x_ss_mask {
++	u16 speed_mask;
++	u8 speed_shift;
 +};
 +
-+MODULE_DEVICE_TABLE(mdio, qca83xx_tbl);
+ int at803x_debug_reg_read(struct phy_device *phydev, u16 reg);
+ int at803x_debug_reg_mask(struct phy_device *phydev, u16 reg,
+ 			  u16 clear, u16 set);
+ int at803x_debug_reg_write(struct phy_device *phydev, u16 reg, u16 data);
++int at803x_set_wol(struct phy_device *phydev,
++		   struct ethtool_wolinfo *wol);
++void at803x_get_wol(struct phy_device *phydev,
++		    struct ethtool_wolinfo *wol);
++int at803x_ack_interrupt(struct phy_device *phydev);
++int at803x_config_intr(struct phy_device *phydev);
++irqreturn_t at803x_handle_interrupt(struct phy_device *phydev);
++int at803x_read_specific_status(struct phy_device *phydev,
++				struct at803x_ss_mask ss_mask);
++int at803x_config_mdix(struct phy_device *phydev, u8 ctrl);
++int at803x_prepare_config_aneg(struct phy_device *phydev);
++int at803x_get_tunable(struct phy_device *phydev,
++		       struct ethtool_tunable *tuna, void *data);
++int at803x_set_tunable(struct phy_device *phydev,
++		       struct ethtool_tunable *tuna, const void *data);
++int at803x_cdt_fault_length(int dt);
++int at803x_cdt_start(struct phy_device *phydev, u32 cdt_start);
++int at803x_cdt_wait_for_completion(struct phy_device *phydev,
++				   u32 cdt_en);
 -- 
 2.43.0
 
