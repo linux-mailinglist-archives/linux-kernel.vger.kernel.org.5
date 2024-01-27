@@ -1,117 +1,83 @@
-Return-Path: <linux-kernel+bounces-41144-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E82D83EC82
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 10:57:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D6B883EC88
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 10:58:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 637C21C21B2E
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 09:57:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1391B1F2329C
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 09:58:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 721E81EB32;
-	Sat, 27 Jan 2024 09:57:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84EE41F608;
+	Sat, 27 Jan 2024 09:58:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=iki.fi header.i=@iki.fi header.b="NhI2acQ1"
-Received: from meesny.iki.fi (meesny.iki.fi [195.140.195.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VA112hqr"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37E5D1E86C;
-	Sat, 27 Jan 2024 09:57:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=195.140.195.201
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706349430; cv=pass; b=oZJjePR3Gp7yfLfe97N+B8dXMAe/U23JT8BOmftyBc8YBsAscqKcw6aMbfr6onK0ALw+2sBNDqr+iKxVMoepxwX7PkByHSGcXPKBdE4jKZvLfawtum2EyydmOqwlMktvHjzQorKg1U/Qq9X5kkZsdXsl7WPxzGDqBbl332OC3po=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706349430; c=relaxed/simple;
-	bh=BYB6jC3aI2xiPrDsSv3GPmsr+ClEbamMjWpzzNbk00E=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B01BA1EA72;
+	Sat, 27 Jan 2024 09:58:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706349501; cv=none; b=X1zq7/4eGScG7rfz0xDeQNvWd5LVnbh15kVv8rRuUqKXfaCC0ryCzIAcwL58TBCCld1VE5rwU/pprx7Fhh5K7CG9N+1D4OTEnOAvWVXTdXlNs/qAdDgf8e2y7YHvawRbgsdR0Kf3aMyQC5Gw1DzjOOQ41MM6UeM1HIDqyor6h0M=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706349501; c=relaxed/simple;
+	bh=r+T7mnQmtI5J+JZqBTfH0y2lgNd/RUDtr9kKlTXAe0w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jEdLMv6RW3cZk1Hu1JG63O62T1CRK1Nj+urC7JDyEbKDB7XusxbHL0lmTMrf1fzh+v3Cxxn+mRQ2qplrdy4sydX6xA5Wu4toAxqOXglcKh2aKt6rcNimtanKKequXeEgUI/GgjS23gEoNwzjJOgBwQGW9aBdlLi19HlqS4FPDqg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=pass smtp.mailfrom=iki.fi; dkim=pass (1024-bit key) header.d=iki.fi header.i=@iki.fi header.b=NhI2acQ1; arc=pass smtp.client-ip=195.140.195.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iki.fi
-Received: from hillosipuli.retiisi.eu (2a00-1190-d1dd-0-c641-1eff-feae-163c.v6.cust.suomicom.net [IPv6:2a00:1190:d1dd:0:c641:1eff:feae:163c])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sailus)
-	by meesny.iki.fi (Postfix) with ESMTPSA id 4TMVN020rqzyPp;
-	Sat, 27 Jan 2024 11:57:04 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
-	t=1706349424;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UAj93A+QldIc2BlOVJOBkygnNhIiKNVEocFWLbjrq44=;
-	b=NhI2acQ1O4J7xZMn0vxDy8AsXgy5iOSZLbslZXaEFG7Lm3WiP4d9HQgxKlv9pKIZXqfitW
-	JX54ndZ8TEsE+QpN/C6fy01whRVK9LqnhbRyzMZUQO5WFLzLYxisKWkTDJx/d8rmHa8Gvi
-	TaVyx/W7YDoo8w1ZFsPJSIGVTE0b6Bg=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-	s=meesny; t=1706349424;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UAj93A+QldIc2BlOVJOBkygnNhIiKNVEocFWLbjrq44=;
-	b=m5Afe8MEqZqYfQ7DsoCfsbTinjVAmnmLBU8rNzuv9udyXlHrhZXaS3mEOQHJOqcmiewyzF
-	fRgYXOHQjzUTOWlujiymp1Wte6IdetR83dQuN86Ib4/u8wHyoha75sp28/u+e7dkWZFHBk
-	fj/dpnp2t7MzQU1oXNFueKAnW3dOws4=
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
-ARC-Seal: i=1; s=meesny; d=iki.fi; t=1706349424; a=rsa-sha256; cv=none;
-	b=cuM4Wm24bJ+zli7jFhPml/vGiMkLf7Mx4y1JSql7NWzDMObPe8xmwGI1sk58uB95Yih6lJ
-	AFsCph2L2PqQDvxd3l2qDs9GVbhsaUZRTB28h1qM7+iUeEJhxm0LUcY0hRcw/XsV+j8DYu
-	NZ/tFKPGsRG853g4AKokaRvVeYY6DdI=
-Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 9319C634C93;
-	Sat, 27 Jan 2024 11:57:03 +0200 (EET)
-Date: Sat, 27 Jan 2024 09:57:03 +0000
-From: Sakari Ailus <sakari.ailus@iki.fi>
-To: Ricardo Ribalda <ribalda@chromium.org>
-Cc: Tiffany Lin <tiffany.lin@mediatek.com>,
-	Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-	Yunfei Dong <yunfei.dong@mediatek.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Kieran Bingham <kieran.bingham@ideasonboard.com>,
-	Bin Liu <bin.liu@mediatek.com>,
-	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-	Vikash Garodia <quic_vgarodia@quicinc.com>,
-	Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Sylwester Nawrocki <s.nawrocki@samsung.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Andrzej Hajda <andrzej.hajda@intel.com>,
-	Bingbu Cao <bingbu.cao@intel.com>,
-	Tianshu Qiu <tian.shu.qiu@intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	linux-rockchip@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org, linux-staging@lists.linux.dev,
-	linux-amlogic@lists.infradead.org
-Subject: Re: [PATCH 17/17] linux: v4l2-vp9.h: Fix kerneldoc
-Message-ID: <ZbTTb-SdK-EubGdc@valkosipuli.retiisi.eu>
-References: <20240126-gix-mtk-warnings-v1-0-eed7865fce18@chromium.org>
- <20240126-gix-mtk-warnings-v1-17-eed7865fce18@chromium.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hHXMth1Rex+pOwUTT2NsJSUSdJB2x0z1Xc2EaFAniNbyBozLMyr5+ZLvHv7gC6/HbMtflqr0qPLNxkJqnZpjFi4Ooc/rV1XbrYuhOyWUn2O1cu8phBGgj9iqV0e3J/p5KFMv5zDKOIXmiQ9ESwPS+xY57bYfap1G5SYcBbuSPHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VA112hqr; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706349500; x=1737885500;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=r+T7mnQmtI5J+JZqBTfH0y2lgNd/RUDtr9kKlTXAe0w=;
+  b=VA112hqrYRupkh7rKxM6DbxY+kTCWm+p1LKfc5LR0Tx/oE32VK66tpIx
+   9z9IfaDb4y5z1xZvwXalxyN2IFgd4gGgY98S2qhMK7GMPTXQniaxSERsc
+   1NY877O/+myrgO3Yp14LL6KlIrXJbi9LlY7cE+/Bwt4dD2+aQyp3W7wjk
+   4tmvnOHpgZ0BTvOfLOhk+TIJ6l8gvr1LeapzV+FmBRZlyozG7FEyomO1Y
+   V+Kt+hK/hpRDCoWLSZ1cWD7+s2AtweTIc4V/SXXEtqW7aOLXi7uzU5Z+B
+   UoJD3+ygQRqXtZvZFtBpcmXUQgNsQmbFQua7Y41i0fNe9WK+mUQ4aW2P9
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="9341796"
+X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
+   d="scan'208";a="9341796"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2024 01:58:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
+   d="scan'208";a="2947041"
+Received: from lkp-server01.sh.intel.com (HELO 370188f8dc87) ([10.239.97.150])
+  by fmviesa004.fm.intel.com with ESMTP; 27 Jan 2024 01:58:13 -0800
+Received: from kbuild by 370188f8dc87 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rTfRz-00025e-0m;
+	Sat, 27 Jan 2024 09:58:11 +0000
+Date: Sat, 27 Jan 2024 17:57:59 +0800
+From: kernel test robot <lkp@intel.com>
+To: Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	Mike Snitzer <snitzer@kernel.org>, dm-devel@lists.linux.dev,
+	Chris Mason <chris.mason@fusionio.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
+	Chao Yu <chao@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+	Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+	Chaitanya Kulkarni <kch@nvidia.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, linux-block@vger.kernel.org,
+	linux-nvme@lists.infradead.org,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: Re: [PATCH 5/5] block: remove gfp_flags from blkdev_zone_mgmt
+Message-ID: <202401271724.LJfDQ6VB-lkp@intel.com>
+References: <20240123-zonefs_nofs-v1-5-cc0b0308ef25@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -120,26 +86,81 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240126-gix-mtk-warnings-v1-17-eed7865fce18@chromium.org>
+In-Reply-To: <20240123-zonefs_nofs-v1-5-cc0b0308ef25@wdc.com>
 
-Hi Ricardo,
+Hi Johannes,
 
-On Fri, Jan 26, 2024 at 11:16:16PM +0000, Ricardo Ribalda wrote:
-> Kerneldoc cannot understand arrays defined like
-> v4l2_frame_symbol_counts.
-> 
-> Adding an asterisk to the name does do the trick.
-> 
-> Disable the kerneldoc notation for now, it is already ignored:
-> https://docs.kernel.org/search.html?q=v4l2_vp9_frame_symbol_counts
+kernel test robot noticed the following build errors:
 
-Wouldn't it be nicer to fix kerneldoc instead? It might not be difficult at
-all.
+[auto build test ERROR on 7ed2632ec7d72e926b9e8bcc9ad1bb0cd37274bf]
 
-Feel free to, but I can also give it a try.
+url:    https://github.com/intel-lab-lkp/linux/commits/Johannes-Thumshirn/zonefs-pass-GFP_KERNEL-to-blkdev_zone_mgmt-call/20240123-174911
+base:   7ed2632ec7d72e926b9e8bcc9ad1bb0cd37274bf
+patch link:    https://lore.kernel.org/r/20240123-zonefs_nofs-v1-5-cc0b0308ef25%40wdc.com
+patch subject: [PATCH 5/5] block: remove gfp_flags from blkdev_zone_mgmt
+config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20240127/202401271724.LJfDQ6VB-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240127/202401271724.LJfDQ6VB-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401271724.LJfDQ6VB-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   drivers/md/dm-zoned-metadata.c: In function 'dmz_reset_zone':
+>> drivers/md/dm-zoned-metadata.c:1659:23: error: too many arguments to function 'blkdev_zone_mgmt'
+    1659 |                 ret = blkdev_zone_mgmt(dev->bdev, REQ_OP_ZONE_RESET,
+         |                       ^~~~~~~~~~~~~~~~
+   In file included from drivers/md/dm-zoned.h:12,
+                    from drivers/md/dm-zoned-metadata.c:8:
+   include/linux/blkdev.h:327:5: note: declared here
+     327 | int blkdev_zone_mgmt(struct block_device *bdev, enum req_op op,
+         |     ^~~~~~~~~~~~~~~~
+
+
+vim +/blkdev_zone_mgmt +1659 drivers/md/dm-zoned-metadata.c
+
+3b1a94c88b798d Damien Le Moal     2017-06-07  1639  
+3b1a94c88b798d Damien Le Moal     2017-06-07  1640  /*
+3b1a94c88b798d Damien Le Moal     2017-06-07  1641   * Reset a zone write pointer.
+3b1a94c88b798d Damien Le Moal     2017-06-07  1642   */
+3b1a94c88b798d Damien Le Moal     2017-06-07  1643  static int dmz_reset_zone(struct dmz_metadata *zmd, struct dm_zone *zone)
+3b1a94c88b798d Damien Le Moal     2017-06-07  1644  {
+3b1a94c88b798d Damien Le Moal     2017-06-07  1645  	int ret;
+3b1a94c88b798d Damien Le Moal     2017-06-07  1646  
+3b1a94c88b798d Damien Le Moal     2017-06-07  1647  	/*
+3b1a94c88b798d Damien Le Moal     2017-06-07  1648  	 * Ignore offline zones, read only zones,
+3b1a94c88b798d Damien Le Moal     2017-06-07  1649  	 * and conventional zones.
+3b1a94c88b798d Damien Le Moal     2017-06-07  1650  	 */
+3b1a94c88b798d Damien Le Moal     2017-06-07  1651  	if (dmz_is_offline(zone) ||
+3b1a94c88b798d Damien Le Moal     2017-06-07  1652  	    dmz_is_readonly(zone) ||
+3b1a94c88b798d Damien Le Moal     2017-06-07  1653  	    dmz_is_rnd(zone))
+3b1a94c88b798d Damien Le Moal     2017-06-07  1654  		return 0;
+3b1a94c88b798d Damien Le Moal     2017-06-07  1655  
+3b1a94c88b798d Damien Le Moal     2017-06-07  1656  	if (!dmz_is_empty(zone) || dmz_seq_write_err(zone)) {
+8f22272af7a727 Hannes Reinecke    2020-06-02  1657  		struct dmz_dev *dev = zone->dev;
+3b1a94c88b798d Damien Le Moal     2017-06-07  1658  
+6c1b1da58f8c7a Ajay Joshi         2019-10-27 @1659  		ret = blkdev_zone_mgmt(dev->bdev, REQ_OP_ZONE_RESET,
+3b1a94c88b798d Damien Le Moal     2017-06-07  1660  				       dmz_start_sect(zmd, zone),
+c4d4977392621f Johannes Thumshirn 2024-01-23  1661  				       zmd->zone_nr_sectors, GFP_KERNEL);
+3b1a94c88b798d Damien Le Moal     2017-06-07  1662  		if (ret) {
+3b1a94c88b798d Damien Le Moal     2017-06-07  1663  			dmz_dev_err(dev, "Reset zone %u failed %d",
+b71228739851a9 Hannes Reinecke    2020-05-11  1664  				    zone->id, ret);
+3b1a94c88b798d Damien Le Moal     2017-06-07  1665  			return ret;
+3b1a94c88b798d Damien Le Moal     2017-06-07  1666  		}
+3b1a94c88b798d Damien Le Moal     2017-06-07  1667  	}
+3b1a94c88b798d Damien Le Moal     2017-06-07  1668  
+3b1a94c88b798d Damien Le Moal     2017-06-07  1669  	/* Clear write error bit and rewind write pointer position */
+3b1a94c88b798d Damien Le Moal     2017-06-07  1670  	clear_bit(DMZ_SEQ_WRITE_ERR, &zone->flags);
+3b1a94c88b798d Damien Le Moal     2017-06-07  1671  	zone->wp_block = 0;
+3b1a94c88b798d Damien Le Moal     2017-06-07  1672  
+3b1a94c88b798d Damien Le Moal     2017-06-07  1673  	return 0;
+3b1a94c88b798d Damien Le Moal     2017-06-07  1674  }
+3b1a94c88b798d Damien Le Moal     2017-06-07  1675  
 
 -- 
-Regards,
-
-Sakari Ailus
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
