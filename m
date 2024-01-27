@@ -1,113 +1,150 @@
-Return-Path: <linux-kernel+bounces-41199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8144E83ED46
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 14:25:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BEE283ED49
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 14:28:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FEB51C214D5
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 13:25:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA2DD1C218B5
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 13:28:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3E8625613;
-	Sat, 27 Jan 2024 13:25:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75CE125620;
+	Sat, 27 Jan 2024 13:28:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KmlwGCty"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G0+mCO1k"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACD482033E
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 13:25:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3C428831;
+	Sat, 27 Jan 2024 13:28:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706361928; cv=none; b=XSurJF5GOC07YE+WAtIqgAzvec3QOMCo8xT/QEZowSFEE6JfFaI275DL9VJIKaA0SBJ1iykeL3GB2Ep2dKyFwYhvaWSEFdO8PfORg4PqLSpaBJ++zyNPBDx4beLzjpjF4noooFcXcCZG29d1I0XZGm6rNvgG2AElW0NmVXt+1wk=
+	t=1706362107; cv=none; b=M6USz3CvAqayFBEKE4L7gWIsFWAlZSyp6rD7KmSZOcWwaQVUL7er/e1TOWQLC8hZ/J9xewVaxZi+LdfOO0ZMiV1eOHMwOo27nsZPyewZzpHV/LsxjswfOS3hWRcdD789RuIU/nTocagrDq7Ec8qseCGEJzofn+rNK7OtBGAXtdw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706361928; c=relaxed/simple;
-	bh=Kte6+PlCsiofEdaZqFJNODbByl5H5MlPI+EHaexYAVQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GHRh9CrpAGNqM9joG9gtuTSOvaDqFG4TBXb6nnfMNqud5BghC0oRrdHqmPNkp6ujo9tlSJDRsRMjuYGNpJCDP8C7ws5MUcOTz1lkQxeXsmZBvwvaCwKHZVNj+65KiqjdYIEtNqaR9F7Xr2Sz7ZTq9SX2WbgGbiQqkDZRh/ZLtf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KmlwGCty; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706361925;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4Lnr97CrSqQs3fRVxc+xLD2K4SR4VLmsyw/Pt+9O36E=;
-	b=KmlwGCty8G5AdqMcw33nesnB/A0wi8quyCHmVEBInPq/ZKjQmT9EpYfli/VIUxC3Z0DO8M
-	Z9a+lRpDx14gfOd/8hmPzya4Ezn5kr7LmSGJNKdEcimlWMpNYzArAFNDmNvj0VvTt6MyzM
-	IzcrNrVmL9JGPR5rigCy1EzSzeVwMhw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-501-t_i4sPUTO26LobOv1zOi0Q-1; Sat, 27 Jan 2024 08:25:23 -0500
-X-MC-Unique: t_i4sPUTO26LobOv1zOi0Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0E55685A588;
-	Sat, 27 Jan 2024 13:25:23 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.41])
-	by smtp.corp.redhat.com (Postfix) with SMTP id ADF631121306;
-	Sat, 27 Jan 2024 13:25:21 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Sat, 27 Jan 2024 14:24:09 +0100 (CET)
-Date: Sat, 27 Jan 2024 14:24:07 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
-	Tycho Andersen <tandersen@netflix.com>,
-	Tycho Andersen <tycho@tycho.pizza>, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] pidfd: don't do_notify_pidfd() if !thread_group_empty()
-Message-ID: <20240127132407.GA29136@redhat.com>
-References: <20240127132043.GA29080@redhat.com>
+	s=arc-20240116; t=1706362107; c=relaxed/simple;
+	bh=YySa0Fk3UXJKapcjnXd2lKKSfNAEPCo71Yx8GEe4vOw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eDQzshI7aRYsjFTfRr4oKY1zwMVpffFVJdWawZK02nrteKgNn/CpcsqyuOQQoruU9w9ABz38LQuTTFXZlKVAnAJswNkxhgOC8g6lOkwyTp/zYgxakC1+YwFAFXhizMEBJlMsJYQoxWSwcZGS1VUACi7bov58FoE91hcrUBVpOpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G0+mCO1k; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84258C43390;
+	Sat, 27 Jan 2024 13:28:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706362107;
+	bh=YySa0Fk3UXJKapcjnXd2lKKSfNAEPCo71Yx8GEe4vOw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=G0+mCO1kNZlkXqGHpVucNcZ+kDrr/VQfHBiPohNoXeY1rxq0AeFrMpyAfJ2eY7L8g
+	 v17lbMi6os42Ei+XAQncxT8sSg1Mn4MiUcM0jJKHxdASOd7/vOGG8gL8wfy0bOxzw7
+	 1RSK0tuP1rahtS6ui6vBraJ4Hw3XOhHRWYgoNdYG5gA/U30LsX5z9ZKx/Pao9rRWg7
+	 mJpeJXWE4eNg7Y30xDIZC9+ZAZq1olIiwDxGBQJ2Kpwj9WSvBNpK1TZSaX3j01t3oD
+	 Ftg5NmC4vAjYzCKfNhCWTczIisIJFv0FxAjdoEbGNsl0iDdW9vMa81/kD1K42DhU2b
+	 I2Skedw9wvTkw==
+From: Masahiro Yamada <masahiroy@kernel.org>
+To: linux-kbuild@vger.kernel.org
+Cc: Masahiro Yamada <masahiroy@kernel.org>,
+	Aiden Leong <aiden.leong@aibsd.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: [PATCH] modpost: avoid using the alias attribute
+Date: Sat, 27 Jan 2024 22:28:11 +0900
+Message-Id: <20240127132811.726504-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240127132043.GA29080@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+Content-Transfer-Encoding: 8bit
 
-do_notify_pidfd() makes no sense until the whole thread group exits, change
-do_notify_parent() to check thread_group_empty().
+Aiden Leong reported modpost fails to build on macOS since commit
+16a473f60edc ("modpost: inform compilers that fatal() never returns"):
 
-This avoids the unnecessary do_notify_pidfd() when tsk is not a leader, or
-it exits before other threads, or it has a ptraced EXIT_ZOMBIE sub-thread.
+  scripts/mod/modpost.c:93:21: error: aliases are not supported on darwin
 
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+Nathan's research indicates that Darwin seems to support weak aliases
+at least [1]. Although the situation might be improved in future Clang
+versions, we can achieve a similar outcome without relying on it.
+
+This commit makes fatal() a macro of error() + exit(1) in modpost.h, as
+compilers recognize that exit() never returns.
+
+[1]: https://github.com/llvm/llvm-project/issues/71001
+
+Fixes: 16a473f60edc ("modpost: inform compilers that fatal() never returns")
+Reported-by: Aiden Leong <aiden.leong@aibsd.com>
+Closes: https://lore.kernel.org/all/d9ac2960-6644-4a87-b5e4-4bfb6e0364a8@aibsd.com/
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- kernel/signal.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/signal.c b/kernel/signal.c
-index c9c57d053ce4..9561a3962ca6 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2050,9 +2050,11 @@ bool do_notify_parent(struct task_struct *tsk, int sig)
- 
- 	WARN_ON_ONCE(!tsk->ptrace &&
- 	       (tsk->group_leader != tsk || !thread_group_empty(tsk)));
+ scripts/mod/modpost.c | 12 +-----------
+ scripts/mod/modpost.h |  6 +-----
+ 2 files changed, 2 insertions(+), 16 deletions(-)
+
+diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+index 795b21154446..3ab2db83428b 100644
+--- a/scripts/mod/modpost.c
++++ b/scripts/mod/modpost.c
+@@ -70,9 +70,7 @@ void modpost_log(enum loglevel loglevel, const char *fmt, ...)
+ 		break;
+ 	case LOG_ERROR:
+ 		fprintf(stderr, "ERROR: ");
+-		break;
+-	case LOG_FATAL:
+-		fprintf(stderr, "FATAL: ");
++		error_occurred = true;
+ 		break;
+ 	default: /* invalid loglevel, ignore */
+ 		break;
+@@ -83,16 +81,8 @@ void modpost_log(enum loglevel loglevel, const char *fmt, ...)
+ 	va_start(arglist, fmt);
+ 	vfprintf(stderr, fmt, arglist);
+ 	va_end(arglist);
 -
--	/* Wake up all pidfd waiters */
--	do_notify_pidfd(tsk);
-+	/*
-+	 * tsk is a group leader and has no threads, wake up the pidfd waiters.
-+	 */
-+	if (thread_group_empty(tsk))
-+		do_notify_pidfd(tsk);
+-	if (loglevel == LOG_FATAL)
+-		exit(1);
+-	if (loglevel == LOG_ERROR)
+-		error_occurred = true;
+ }
  
- 	if (sig != SIGCHLD) {
- 		/*
+-void __attribute__((alias("modpost_log")))
+-modpost_log_noret(enum loglevel loglevel, const char *fmt, ...);
+-
+ static inline bool strends(const char *str, const char *postfix)
+ {
+ 	if (strlen(str) < strlen(postfix))
+diff --git a/scripts/mod/modpost.h b/scripts/mod/modpost.h
+index 835cababf1b0..ee43c7950636 100644
+--- a/scripts/mod/modpost.h
++++ b/scripts/mod/modpost.h
+@@ -194,15 +194,11 @@ void *sym_get_data(const struct elf_info *info, const Elf_Sym *sym);
+ enum loglevel {
+ 	LOG_WARN,
+ 	LOG_ERROR,
+-	LOG_FATAL
+ };
+ 
+ void __attribute__((format(printf, 2, 3)))
+ modpost_log(enum loglevel loglevel, const char *fmt, ...);
+ 
+-void __attribute__((format(printf, 2, 3), noreturn))
+-modpost_log_noret(enum loglevel loglevel, const char *fmt, ...);
+-
+ /*
+  * warn - show the given message, then let modpost continue running, still
+  *        allowing modpost to exit successfully. This should be used when
+@@ -218,4 +214,4 @@ modpost_log_noret(enum loglevel loglevel, const char *fmt, ...);
+  */
+ #define warn(fmt, args...)	modpost_log(LOG_WARN, fmt, ##args)
+ #define error(fmt, args...)	modpost_log(LOG_ERROR, fmt, ##args)
+-#define fatal(fmt, args...)	modpost_log_noret(LOG_FATAL, fmt, ##args)
++#define fatal(fmt, args...)	do { error(fmt, ##args); exit(1); } while (1)
 -- 
-2.25.1.362.g51ebf55
-
+2.40.1
 
 
