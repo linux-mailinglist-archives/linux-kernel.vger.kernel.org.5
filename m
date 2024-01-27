@@ -1,105 +1,131 @@
-Return-Path: <linux-kernel+bounces-41266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1D4D83EE37
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 17:06:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C97583EE3A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 17:08:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DC462841F2
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:06:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C4C51C21192
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:08:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED7252C191;
-	Sat, 27 Jan 2024 16:06:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D76D2C191;
+	Sat, 27 Jan 2024 16:08:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NUpjuXyY"
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JPb551Zu"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5EE525764;
-	Sat, 27 Jan 2024 16:06:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 337AC2942A;
+	Sat, 27 Jan 2024 16:08:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706371586; cv=none; b=C5wZioUn2McsQuct9TzyLigrAui2iHN4PUcqJLi86Il7OMtvF8E0SrzFpTAnTOKIEsWOEcgItS+KundiRfWZ23OWxKOtRVuONsgpqaQuuG8jnjcjkCPOBYLc2Hf7I5kNgSA+bZNrJ811yzURYRA52SfSvJPKRRt+Y0WIW7nmkp0=
+	t=1706371715; cv=none; b=go+hWoPWFOCvL/bax9C5+DQuZGRALUqrwdeB3heM44bszgUdKBiZQbLGsqJCqEoVAMpP2OYW6yt6mw9+QZ8VlLnAlJQ5w1YLsUveYid/NyBTe2xFSA6PhjsL2aGDtlL2wWXUME283mXL1/ccuhT/WICG+q3d8+OYAUhp62QejAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706371586; c=relaxed/simple;
-	bh=0b+Fc0OLP1xwiUwEjb+UIjcwfA3RtHX+defXLD+CgN0=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=ZxWs++s8ypC7ckOPuNk3nLWLLTpuie5C7A4c0D/Bu5coTCfG3diviTcRqwtESsi8ynUKsol1SULzL5z/Dq2tkifp59iIePAWXZiCbjFxV0WI7XVuG4v8LY7nE/TUgbBEJvUvmFTf+AFcs/3wz92NJdjsA9M+wyiSQAKLv6OyWuM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NUpjuXyY; arc=none smtp.client-ip=209.85.160.169
+	s=arc-20240116; t=1706371715; c=relaxed/simple;
+	bh=C2CeYRkE5RLmEYXES/Fzbtxrwz1n+LP4hgctq8H0Eys=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Sc7qoCmaEsZA6b2IB9FQyhbn+S3ACxsyKbGab9RZ/qFzHQQST29r8LOHsL6pWWM/CS7DsAEW8cmqf1b/3jTU1saOHzpDWw39ueGWspOAJC2RWSqaRR7FQS/dF2zpPGJTTi994KfsntWyHXC1UmsE/WJDiVXYJzZD0STfeQYLTdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JPb551Zu; arc=none smtp.client-ip=209.85.208.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-42a8af3c10cso6491121cf.0;
-        Sat, 27 Jan 2024 08:06:24 -0800 (PST)
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cf42ca9bb2so16276801fa.1;
+        Sat, 27 Jan 2024 08:08:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706371584; x=1706976384; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=790nGr4fxuNI+xFbDQMERosAfDIXV6m5tYkf7fACxZw=;
-        b=NUpjuXyYSp0+aGjoHwtYAszHL1NpfVIcn3iBRJEc5wgQJPusY3ps/giDY/GsucDNpB
-         8Y211LQNJHWJIs3AY4U2gUYHs0FL4gemX7NvYAs+AyMiSnVMgUQJqyss4EF+VS7oWujR
-         aBmN2skhzcbeM+fQMNCALKB0FGcf1ZIowXnzIPAtr3UBojLysRxVixRw0zY5KG8hqj66
-         bklyMo9qIHqBMFgEGh00HctHiJiCw2l3e8XsMu0Xidh2pHcmDX9+OYcW6p3fz/Jn2BFV
-         pWrGhRe3uQgYhrkuqzwjFH5T6MzG+9bZHBLZn493qfweGEhAd2cZgFgmISzikw2XseIo
-         09nQ==
+        d=gmail.com; s=20230601; t=1706371712; x=1706976512; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wHQuROvmjXF3d/D6baDnYm9M/+MQZ9uBBURjq2PNRBo=;
+        b=JPb551Zux5oVkUZlBzcHeriibF71aBZxvBOQ0DWaKnghASynr7jWSPaYhyh/TPhAGP
+         7BUyNGowF1Va6eDibqYDPP+QLJBWmg3VvYwowE80/qFQwP0ncSj/F7aHExT/YvrXzIj8
+         ge0Hj3NbnPiy7Y7xxpFm9bAV1KkgTH/4Z8XTqgtL76buM5AE3Sa6oeSW+BIiP234HYsd
+         cl+XEVqa8g+HX0detaymCLYsK9LHgU4FKvhxrfDfBiC/lbKrLhm+3IwnTVkc2mMIIwKy
+         1MBBiXD2BPYVgAybhRRovjgJw4Esqqz5jKHna7yYzGTOiKvI3SkwCeIz6qXYldO21kwB
+         TAEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706371584; x=1706976384;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=790nGr4fxuNI+xFbDQMERosAfDIXV6m5tYkf7fACxZw=;
-        b=VO1CYhyMQ7J4IeUgqPzoJUdcqhg8Nb+wlPUDdCrYPb7EWiRlc74iGeGHhDaJL/jF3j
-         LU/fxoN6qPi0fAWdLOS6Qasm7ypXuJpMMjfWE1SivAQKpTRqeSzwDBNGMVCa3oVBQkkV
-         PITfOLEpB4B2DwZ4yfvR+u2hl/MdyPAJQYCQI0m3vzdoyjqcUOgjwjWBszdTlV0tMVEd
-         GK1F+CjPcIln7dWJ7PztRqLOg11lDUdJL/xxmXgLywkkRl2NZz3hN3ZVcucsc8eOZQir
-         YNKMpV+Efob9x9UqtEM9+zsEW6zFDHy9uohxY0PT9lV+SvL09IkGN/b4mNCFMtDu7++Y
-         w/5w==
-X-Gm-Message-State: AOJu0YwnzJjdapKxm8+voqbM+pzcK7xw13XeHf8rRdbL7gDcAzNaultI
-	uMBRFufGzcPDpKoPDypFA/4NDKP+DLx97FrrZWDSvufb3ca2RZu+
-X-Google-Smtp-Source: AGHT+IG0+AooEdjbaiRETSdlbpv3v7HbGI1Ln+Yg6nAdJy9JxDZouPHu3lqF7ipIO61LQTEUrccCkg==
-X-Received: by 2002:a05:622a:a14:b0:42a:1609:eb18 with SMTP id bv20-20020a05622a0a1400b0042a1609eb18mr3302103qtb.137.1706371583752;
-        Sat, 27 Jan 2024 08:06:23 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVEBxehnMrRblNcAuiLMMuHsvcuOHhNlyAwKue0whF98IUpc+Dfo4VsiCySh6iRJU6Hf4lnwwU4b3X+CvN5+8WKQN5/LB4gyuDbPy/FlvNPa1jlQ3NpLNcSlJrHwxW+axJH6//q0hF4ZoFoQ//tNafu1LKteFjFCp3cUu+ZjHwOdXs44r3DsiS9Jkv/p6HHIt3m3mCbKV89uhPjoJF0t4/W0X/0cOkZXRUKIw4FvfoWs2l8qEzwkHxsIBaCb66LmMUErMopXUfv/RtAA91fFaVSOSUszXjl6aiuzIbmBZkULtZuxNdVXvAs
-Received: from localhost (131.65.194.35.bc.googleusercontent.com. [35.194.65.131])
-        by smtp.gmail.com with ESMTPSA id s40-20020a05622a1aa800b004281ce041f6sm1633997qtc.21.2024.01.27.08.06.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Jan 2024 08:06:23 -0800 (PST)
-Date: Sat, 27 Jan 2024 11:06:22 -0500
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Stephen Hemminger <stephen@networkplumber.org>, 
- netdev@vger.kernel.org
-Cc: Stephen Hemminger <stephen@networkplumber.org>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Jason Wang <jasowang@redhat.com>, 
- "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- linux-kernel@vger.kernel.org (open list)
-Message-ID: <65b529fee37d5_3a9e0b294d9@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20240126002550.169608-1-stephen@networkplumber.org>
-References: <20240126002550.169608-1-stephen@networkplumber.org>
-Subject: Re: [PATCH] net/tun: use reciprocal_scale
+        d=1e100.net; s=20230601; t=1706371712; x=1706976512;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wHQuROvmjXF3d/D6baDnYm9M/+MQZ9uBBURjq2PNRBo=;
+        b=TRaXP960gFKM+q0o5p7V1VAf8YDq2pOl+TA99K4KA2iMRaS6nBJUXorDxXOatMGZaW
+         Veqs8cd/50n1a9UPVqMQoKoPmtLDUk+fhMJTK91yXTtqVMYWPSC3RwlBMY1WhvOfPwi/
+         rzTGx405TrRpDUDWinAsBBURpZ89jsgy57D9LuQ9zMYA1zBMnSqcwtKYVeVKsWwMauDe
+         L+QyRwFQDNFM/i+nax2j3bu0IOKN63twEoLQNIsWj2PxswO8zznY9eujM5x0qqJigMJ4
+         eyoEvFIV8v9d0lYHvCwie4JSk+csZ8mxl9EY7nKNqiPCOG0W5c3DSVupQZVHd4tUU3Y1
+         LCXQ==
+X-Gm-Message-State: AOJu0YxNknmHV13KZ/grXgWkltSIEP/k95SvqCGXsD5ohEuVHm9LYZy9
+	iN3URRKL4p/DZXL8BEwkEVFSbARcr/jvC2dr5AhqTwnGhy+PiRfR
+X-Google-Smtp-Source: AGHT+IETbXuj6G+ZxwwtLZhYzvqvewX1Lt3TweERVApW6Fq9K9Ue7rFKR0LLm9sPAVhm1hOHmkPYWg==
+X-Received: by 2002:a05:651c:b8c:b0:2cf:4496:3e29 with SMTP id bg12-20020a05651c0b8c00b002cf44963e29mr1011386ljb.0.1706371711814;
+        Sat, 27 Jan 2024 08:08:31 -0800 (PST)
+Received: from ?IPV6:2a02:8389:41cf:e200:4080:59f1:b398:a889? (2a02-8389-41cf-e200-4080-59f1-b398-a889.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:4080:59f1:b398:a889])
+        by smtp.gmail.com with ESMTPSA id i20-20020a50fc14000000b0055c500158b4sm1758119edr.23.2024.01.27.08.08.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 27 Jan 2024 08:08:31 -0800 (PST)
+Message-ID: <b1cfcc79-d9c4-4edc-bdaf-2080b44e77eb@gmail.com>
+Date: Sat, 27 Jan 2024 17:08:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Revert "iio: add modifiers for A and B ultraviolet light"
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: Paul Cercueil <paul@crapouillou.net>, Lars-Peter Clausen
+ <lars@metafoo.de>, Nuno Sa <nuno.sa@analog.com>, linux-iio@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240123104305.10881-1-paul@crapouillou.net>
+ <0bd3319f-7d63-485b-9b44-d6858c045b37@gmail.com>
+ <a6f79ec0025e1862ba170c6a535447dd09e7dfad.camel@crapouillou.net>
+ <efdfb611-5ba4-4cd6-a7f0-bd96259cf1a6@gmail.com>
+ <20240127155247.00f6aa3b@jic23-huawei>
+Content-Language: en-US
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+In-Reply-To: <20240127155247.00f6aa3b@jic23-huawei>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-Stephen Hemminger wrote:
-> Use the inline function reciprocal_scale rather than open coding
-> the scale optimization.  Also, remove unnecessary initializations.
-> Resulting compiled code is unchanged (according to godbolt).
+
+
+On 27.01.24 16:52, Jonathan Cameron wrote:
+> ...
+>>> Can you just move these entries to the end of the enum in your new
+>>> patch?
+>>>   
+>>>>
+>>>> Thanks and best regards,
+>>>> Javier Carrasco  
+>>>
+>>> Cheers,
+>>> -Paul  
+>> Sure, I will do it right now.
+>>
+>> Thank you again and best regards,
+>> Javier Carrasco
 > 
-> Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+> Hi Javier,
+> 
+> If you sent a v2, it didn't reach me or the list.
+> 
+> Jonathan
+> 
+> 
+Hi Jonathan,
 
-Targeting net-next
+I retrieved the To and CC with b4 and it seems that you were one of
+them, but not the iio mailing list, maybe because the modification only
+applies to an include. The linux-kernel mailing list was added, though:
 
-Reviewed-by: Willem de Bruijn <willemb@google.com>
+https://lore.kernel.org/all/20240123-uva_uvb_fix-v1-1-5b9c25d50d90@gmail.com/T/
+
+Could you apply that patch like that or do you need a RESEND to the
+iio-mailing list?
+
+Best regards,
+Javier Carrasco
 
