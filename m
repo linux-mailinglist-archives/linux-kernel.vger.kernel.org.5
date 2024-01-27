@@ -1,209 +1,164 @@
-Return-Path: <linux-kernel+bounces-41048-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41049-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B45BD83EABC
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 04:54:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12B1483EABF
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 04:55:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CCCE288FA5
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 03:54:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37BE21C2324F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 03:55:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43D7111CB3;
-	Sat, 27 Jan 2024 03:54:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4472611CBB;
+	Sat, 27 Jan 2024 03:55:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="J/vQtpU4"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2042.outbound.protection.outlook.com [40.107.94.42])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mzj2cAyX"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85AB665C;
-	Sat, 27 Jan 2024 03:54:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.42
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706327669; cv=fail; b=aFbNjR8SI2JGMNWlaOnghUx2amXM3S/8dqKqmj2hLtYbqvi3gGelEzOUhmgXCw6flui6olMqBF02g2a/mPCPwTMJ5oBESREEoUvmrENIB+TqG8et4w+EIO4jn0dCdkfhIXbZ+0kjlWDMUJpCQDt21MsYTzhog7EbERh4uSxn8ns=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706327669; c=relaxed/simple;
-	bh=zut9fdHx+vnThw0K1+bxfzKF1CANtS/hAYbwAkonFr8=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=pkkeAJGDzChWFRrvMWJpFaYnwFf++GHE4BSFhBXeFD8Tsu07cvG3Ks8/8VtBgJRtON93en2HUcA+7onsjttr5ogztTtQbNfmWI1Z7iuVunK2/3cP31F5giO0JujcWPOr8jeJ8ME0hMyjGVLov+S6fP5PS6ycbZpngOwUIw95N+I=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=J/vQtpU4; arc=fail smtp.client-ip=40.107.94.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MmCAMUAfNuiqkYZsROgtjpiGy6QJfgkr4jffWMNlk0OTYVpvhWwXPBQMWtLYjqwE/cwHu5kJI4QyUp4In3/X+JA9YxJ30+AYrmX2n2iFq8lek+b3KCra2Tzvb9sMpADNx3VhqncEg0sa80R8Qw2r9lKNq/QdAfGoARBh+rdxL100hnf82f07yZzAXxLxHk9Qhm7b7/2oiDsGDGHObzryXKu+bTieiGhhEGeYC9WkGWGVBBsxR9SN1E78XPMAkIIO3KKUqAt7w8pk544Ve+B7B9JOa/2Htq7u9RpG9zoxrVBWT3+Rm1598jxtD/B7kDnsFc5SPKrt7J5N7QC9wTMfOA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=20Ji+SHbtreajnnd8hFs7Q4QfwP1UVPcJQAe1ekPaxY=;
- b=L/Wu42A86bptRuIQZIZCiS7C/wOJgLbrZBXFUia4bwSC1fsrUwLbsyAg33eaTYMs/KpcJb7amOpZX5qhrj2nAXZJeCo2h/I18OnnlA8kLocpV72RqLUsjNI+MPy25hj1P625xkCi2erasQPJqsUoFUeJUjAms8tsk7ufxkHzDBQzmxVOa83VTayqcOQ5dpDrhZporific0uz6MOwmHqRTGARfDnc21Yx0GmV94BwYTj8c1kQnN/+iariO616X1pJlfKlofLtrdIhvU7KZr6weyYyTcWTAxjy9NR0f8+sVh88vIQWzp1TNkFy2OfGJPgAdyV7MNK0YMATK513RRufhQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=20Ji+SHbtreajnnd8hFs7Q4QfwP1UVPcJQAe1ekPaxY=;
- b=J/vQtpU4OlYmz5niYx0h7pR5xHgt+VazpOBw2GpzeKkjkqLDMO96afdTkiDDeOyC3db68+trtzzjlNDxI+2iKvMQcZKhqI/K2XKBAmKEaAD8R088OIENyfqGoxAiLNm8BoqR8yMluMhpmb1hlOOThZ1xQRgQh9/W2xwNdJdEkPA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS7PR12MB6309.namprd12.prod.outlook.com (2603:10b6:8:96::19) by
- PH7PR12MB6905.namprd12.prod.outlook.com (2603:10b6:510:1b7::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.34; Sat, 27 Jan
- 2024 03:54:24 +0000
-Received: from DS7PR12MB6309.namprd12.prod.outlook.com
- ([fe80::9c66:393e:556b:7420]) by DS7PR12MB6309.namprd12.prod.outlook.com
- ([fe80::9c66:393e:556b:7420%4]) with mapi id 15.20.7228.022; Sat, 27 Jan 2024
- 03:54:23 +0000
-Message-ID: <8834a0d5-12dd-4dd6-bb03-2f66616db9ee@amd.com>
-Date: Sat, 27 Jan 2024 09:24:14 +0530
-User-Agent: Mozilla Thunderbird
-Reply-To: nikunj@amd.com
-Subject: Re: [PATCH v7 01/16] virt: sev-guest: Use AES GCM crypto library
-Content-Language: en-US
-To: Borislav Petkov <bp@alien8.de>
-Cc: linux-kernel@vger.kernel.org, thomas.lendacky@amd.com, x86@kernel.org,
- kvm@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
- dave.hansen@linux.intel.com, dionnaglaze@google.com, pgonda@google.com,
- seanjc@google.com, pbonzini@redhat.com
-References: <20231220151358.2147066-1-nikunj@amd.com>
- <20231220151358.2147066-2-nikunj@amd.com>
- <20240125103643.GWZbI5u88U341ORBq1@fat_crate.local>
-From: "Nikunj A. Dadhania" <nikunj@amd.com>
-In-Reply-To: <20240125103643.GWZbI5u88U341ORBq1@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN3PR01CA0179.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:be::6) To DS7PR12MB6309.namprd12.prod.outlook.com
- (2603:10b6:8:96::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8170A11C80;
+	Sat, 27 Jan 2024 03:55:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706327729; cv=none; b=TibgpiOOn29CxAohOFVNjGD2JfYtIrJ1d8gyn84braCTUChCSq0VFAxbqYd56baEEQhY18MEhVAsz/3IIOKd6xvX2qAwCd5cJDrHzmH/abBW3FhOLXDvVOpCvuHa499EquGWzMGHxy0qIEiMrND7o0G1CbX8/Ge4mLNa+NM8RX0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706327729; c=relaxed/simple;
+	bh=2YlrNsvY5YZx4tzdNL1t9wV1F+wTN43iqnuvGWOALuI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WB8IsMvYbvVXTtUzeD8CKsnByWD8mu7lvt8vvfUt7LhAq0G9gPxUcSWtts+gxPOTdDZhaeBqBYVwrnnRE0vljowLuGF7hb3Qq9v2Tsbx9XjS5I+/zHSfzrizjF3oL1wYhGTVh677ZdCrT1D92paK5nCxLe3A0ou3T1Wsnt79r48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mzj2cAyX; arc=none smtp.client-ip=134.134.136.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706327726; x=1737863726;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2YlrNsvY5YZx4tzdNL1t9wV1F+wTN43iqnuvGWOALuI=;
+  b=mzj2cAyX5vh6OuuISaGqkkA5leUdepStDnG0wYBM0fq+axoqObDIMkoz
+   I5mL/A0ICPsSmUdLKPn5xusAT3fVQSwTIlDqWElF9PkqQy/Nu03XTex81
+   C/Vtqch78hxxLzfiTWR7q80O7ad+yAFohtrVYfbjK5tdU92HHa7E7ACre
+   XQ380N7JmPQdHIETQeMEvW6eqd7xKeHzZrBoZorZ/6thc09VhoR6ZUiG2
+   gNnxy4Hk5sI6DbLcVcaBoL7nmm3P+rZZuWp4iMhiUsezvllEFygUYaO2t
+   sUNGupLYmi6OsZ7/gXFhGqH8wmf4ALcyzQ4fD7W2NMb6/iGL6E5BXM8ls
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="466917310"
+X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
+   d="scan'208";a="466917310"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 19:55:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
+   d="scan'208";a="29280502"
+Received: from lkp-server01.sh.intel.com (HELO 370188f8dc87) ([10.239.97.150])
+  by fmviesa001.fm.intel.com with ESMTP; 26 Jan 2024 19:55:23 -0800
+Received: from kbuild by 370188f8dc87 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rTZmq-0001ck-31;
+	Sat, 27 Jan 2024 03:55:20 +0000
+Date: Sat, 27 Jan 2024 11:55:09 +0800
+From: kernel test robot <lkp@intel.com>
+To: Ethan Zhao <haifeng.zhao@linux.intel.com>, baolu.lu@linux.intel.com,
+	bhelgaas@google.com, robin.murphy@arm.com, jgg@ziepe.ca
+Cc: oe-kbuild-all@lists.linux.dev, kevin.tian@intel.com,
+	dwmw2@infradead.org, will@kernel.org, lukas@wunner.de,
+	yi.l.liu@intel.com, iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	Ethan Zhao <haifeng.zhao@linux.intel.com>
+Subject: Re: [PATCH v11 3/5] iommu/vt-d: simplify parameters of
+ qi_submit_sync() ATS invalidation callers
+Message-ID: <202401271122.0kJRQe33-lkp@intel.com>
+References: <20240126014002.481294-4-haifeng.zhao@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB6309:EE_|PH7PR12MB6905:EE_
-X-MS-Office365-Filtering-Correlation-Id: fa717885-35a2-49f5-d0f4-08dc1eeba62b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	k2LZehs4zid1FsX6mkGhILQzK0m9Q3yUz5ZFPw/AZUfzKdcsACbnkFTrjFSJBqMaEgK1swlisf/n4AHrN5mAH9qSx4yueg+LCAr9JrBRgEh1WKPW0U6EDiLpQAfbIHOeLgLvrVZxiL5ETVASki+Z1njVHa7DP2bWE5VIYwW5R/lgDJiShEvI7GyuALNtx0Nuca5DwJ5a9pzDMwVNMfWALtUXl4M3DrnA4IsYazIXKDuSHSKHegX6u3QxQPlVmMg8O+b270Yyrah/jHjTH0Plo30wm8xjqMfHwi8vd+c/dnqfKgEt2OPlr8bKdsvYCp1Jaj3z51KqLqCXgnAP2U558IPF3grri8NV2ZjFKsO4ZOtf5+pVy9/ogZeAvBO3PqxuZad3xNEr/EpEDV9MxZjTRY6P5QfGL1FOmhIXHbJM0FmaC2J+viFMBSbFNG4q9gOTskbKInb16Sj6coXwRDtBDJ4DJl6MD/3ajk1wFfALsMDaQlT3+pIy8YwfoLm1zSPb/Ok9J5IlaN17FTjPuwtAPuQBcOXFo5JGlMtp8Wmhbf2fvEIjv4yGeJN6Jz4wqyRQLLt8RYnMsoxPbaJ2rHyWKuG2zTySFDGXnLtMN3SUohbFL00pYSLTGtLrvY5yKKDFpiOo0BH2d1rpb798kXiXSQ==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6309.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(346002)(366004)(39860400002)(376002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(31686004)(83380400001)(6506007)(6666004)(26005)(6512007)(53546011)(2616005)(36756003)(31696002)(7416002)(2906002)(38100700002)(8676002)(6486002)(41300700001)(3450700001)(6916009)(5660300002)(478600001)(66556008)(316002)(66946007)(4326008)(8936002)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?VTdJV1dGV2I2NFp6angxekVGWVFjei91cnF3NWtZUXExeWFCVW5Cd1k1WFFU?=
- =?utf-8?B?U1VxSGl6ZFl4QTFVUmRyUnd2bXpocnpsZno1azJ5QWFpWGdJN1BkMWF3UXAr?=
- =?utf-8?B?MlZLaHVnSUNNdWRQMWtaWXFBcmIwN21oNWMvVXkxeXRTOFdPVEpSdUE1YnlX?=
- =?utf-8?B?RlFHRmRqOHl3Q1ZxYlpkR3BIT01lVWZOcFI2TFlJV1B2OEI3UzlVTTBUeXNv?=
- =?utf-8?B?SDBreGlmbUl4akhkWGREZlU5WEdKMEYzQzdLUTRFc3BsSm1DUGNSZFJSS0hF?=
- =?utf-8?B?SHIvS3JpbnpkYXA4STk3V281QXJTUTdiUDRmUUZURmw2Rm4rT2ZwS3VWY0p4?=
- =?utf-8?B?OWZNRG1hb1IvZnAzNzk3Q2lOUGgwWkdhL0kwTk9rOUNJSmlRQUxMU0QxTTFV?=
- =?utf-8?B?cy85akNaMmtRdXU2R2lpZ2lmTXphRXBzTUNUTTlXeHNNSHJoOENCOFcwa0Vv?=
- =?utf-8?B?MkY4UDUyZWZ4NlBXazNMS1FzRFVXcjZtLzQ4QUx2WE1iU1lPWll3d0RIdmVY?=
- =?utf-8?B?YkM4SVFldUdtWXo1YXhGTWRFYW1oQXRkSUN6WXpqMWFaZlZjVzJsT0ZMTzBY?=
- =?utf-8?B?MGpHaUFtVSs2V3FWRy9xQS9RSmNoZ21USGpLd0Z0citmUTJKWm0vZUJUS0pk?=
- =?utf-8?B?R3Y3Q2I0U2I0a2pjbUtZWkdHcngwMUxMWTYzOE5USDQ1aStoN3dNWXBuTkFX?=
- =?utf-8?B?TGlDd1lHRU53dXJ1QkJaNS9BNFFWbWV5U3krOS9zK1F2Y3NmQlFBR0tBbTBD?=
- =?utf-8?B?K3pJcDd4WHcyRU92d2ZBRTBPZGVjd3lKR3d2MTFUWmY4WnBmQjR4aTlrWXhH?=
- =?utf-8?B?SncydWloNmIwS3BZQzRzeDhpOHJyWVd4TnVkb2dKeGFCek8wM1BjWmo5cHdR?=
- =?utf-8?B?U0hKbXBaMjJTbmMyYVhrM2RSR3dUOE1uL2ZjZEo3WElNeklIbW1QTWcwLzlx?=
- =?utf-8?B?a2RHOWhtYXExWTRjVTlXeEZ1Tzd5NEtiZVZLOW94RUFuYWdvQjNVTldRT0E5?=
- =?utf-8?B?Yld2bW9lSmxSM25VRmlya3IzSFAvMjA4L2dxL1FFWlNJbGNyVExEMlFkUXEy?=
- =?utf-8?B?SjVtSWZ4STgwSE1aSkZ4TURYTUNFWURGdzZwc0cvRVBVMkcrbC9wTkE2VjRh?=
- =?utf-8?B?bUI5MGRtTms2cDRsRVFvb0QrV25MY0p6VkVvWHBjQitQdkcxSGVaajRvd2lX?=
- =?utf-8?B?OVA2ZHNZSVcrTWNuZGo1dE04ODVwYkwrQ1g0V1FRUEpxdWNwakNEUUhoNnVu?=
- =?utf-8?B?STF6VjRzalo0NzJ0a3lRQWptK2xXcEsrOUI1ZGNlWHlURFJFcVZERUhvUEo5?=
- =?utf-8?B?cHJkUVlmc1IxSTZBN2FCOFd0Yk1ORDJWQ3RFdkIvWjVCUHJTUUNJTG5nWXNT?=
- =?utf-8?B?aHpYdDZQMlliNTBSaCthRDc3KzUxdHB0QzRHREszOWdadlFTbjRZa05sa095?=
- =?utf-8?B?V0EvVVFDQUV2SDBNQ3pyNGZSVWp0ZGh0S0RVUjdad2VEQWVsTXJXdVVKZGxm?=
- =?utf-8?B?RnBWYUplK0h5bmM3T2tsZGMzWkZ1cC91cHpiM3pzR3RQY25xL1Y1c0hSWkFP?=
- =?utf-8?B?bm9WRGs5dG9HVlN4NnpveTNHaFV3WFRRTzQ1SGluaDV1cE9CeHdlR2dEcysx?=
- =?utf-8?B?LzE0eFZTVWE0bDFTZ2FCWGlQbm5WRGluNVJBaThZYnVkMG5sb3RidnNsbHVD?=
- =?utf-8?B?UUlEMWU5eUVxRlRrV0d2ZWJ3NzVoTGEwVjh5OGMrVUdHRm45akE3NTVXeDdZ?=
- =?utf-8?B?dzhTU21uamNPeDBDOGVHTVNGSmRRNFdLeUIzM0hmQVk1V1FLR3docVg3Rkwv?=
- =?utf-8?B?V2I4UEo1NlVzNjQwbVF5MFRaQzRhSVZWeldLbGpiYTg4RExHcDQzZU1zd0Jv?=
- =?utf-8?B?S1hCeE02aFJaMGNuYS95K0EydFp3M2hZcjhrM2JraUpuc2FRRksrLytzUWlC?=
- =?utf-8?B?UWhFdlJMTzhJR0JUVUs5QmFnS0pUTEZmbyswT0VSK3QzSDJWZ3haUGVJeHps?=
- =?utf-8?B?b1FDK0txV2lieVFzMjBMSVNLakRWeFp6MzMwUUVYVzkrazNwMUFTN0RPODda?=
- =?utf-8?B?YWMvenVzM0NIcGljd1BadUh3VDFDeDB2QUVuNWZ2Tk02SERpV1UyNHh3Vk91?=
- =?utf-8?Q?/NYCcSvvw3bnjrbnuMLtVtJe1?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fa717885-35a2-49f5-d0f4-08dc1eeba62b
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6309.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2024 03:54:23.7787
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: D+l5g4xvwj7kOFVMjIVhvJ6ZYxTjwuIENhd7QZ2ZgZex6SKg0M16CqhfKjDKcsjr4448BIpcaVM+u4oAGVsW6Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6905
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240126014002.481294-4-haifeng.zhao@linux.intel.com>
 
-On 1/25/2024 4:06 PM, Borislav Petkov wrote:
-> On Wed, Dec 20, 2023 at 08:43:43PM +0530, Nikunj A Dadhania wrote:
->> @@ -307,11 +197,16 @@ static int verify_and_dec_payload(struct snp_guest_dev *snp_dev, void *payload,
->>  	 * If the message size is greater than our buffer length then return
->>  	 * an error.
->>  	 */
->> -	if (unlikely((resp_hdr->msg_sz + crypto->a_len) > sz))
->> +	if (unlikely((resp_hdr->msg_sz + ctx->authsize) > sz))
->>  		return -EBADMSG;
->>  
->>  	/* Decrypt the payload */
->> -	return dec_payload(snp_dev, resp, payload, resp_hdr->msg_sz + crypto->a_len);
->> +	memcpy(iv, &resp_hdr->msg_seqno, sizeof(resp_hdr->msg_seqno));
-> 
-> sizeof(iv) != sizeof(resp_hdr->msg_seqno) and it fits now.
-> 
-> However, for protection against future bugs, this should be:
-> 
-> 	memcpy(iv, &resp_hdr->msg_seqno, min(sizeof(iv), sizeof(resp_hdr->msg_seqno)));
+Hi Ethan,
 
-Sure, will change.
+kernel test robot noticed the following build warnings:
 
-> 
->> +	if (!aesgcm_decrypt(ctx, payload, resp->payload, resp_hdr->msg_sz,
->> +			    &resp_hdr->algo, AAD_LEN, iv, resp_hdr->authtag))
->> +		return -EBADMSG;
->> +
->> +	return 0;
->>  }
->>  
->>  static int enc_payload(struct snp_guest_dev *snp_dev, u64 seqno, int version, u8 type,
->> @@ -319,6 +214,8 @@ static int enc_payload(struct snp_guest_dev *snp_dev, u64 seqno, int version, u8
->>  {
->>  	struct snp_guest_msg *req = &snp_dev->secret_request;
->>  	struct snp_guest_msg_hdr *hdr = &req->hdr;
->> +	struct aesgcm_ctx *ctx = snp_dev->ctx;
->> +	u8 iv[GCM_AES_IV_SIZE] = {};
->>  
->>  	memset(req, 0, sizeof(*req));
->>  
->> @@ -338,7 +235,14 @@ static int enc_payload(struct snp_guest_dev *snp_dev, u64 seqno, int version, u8
->>  	dev_dbg(snp_dev->dev, "request [seqno %lld type %d version %d sz %d]\n",
->>  		hdr->msg_seqno, hdr->msg_type, hdr->msg_version, hdr->msg_sz);
->>  
->> -	return __enc_payload(snp_dev, req, payload, sz);
->> +	if (WARN_ON((sz + ctx->authsize) > sizeof(req->payload)))
->> +		return -EBADMSG;
->> +
->> +	memcpy(iv, &hdr->msg_seqno, sizeof(hdr->msg_seqno));
-> 
-> Ditto.
+[auto build test WARNING on pci/next]
+[also build test WARNING on pci/for-linus linus/master v6.8-rc1 next-20240125]
+[cannot apply to joro-iommu/next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Sure.
+url:    https://github.com/intel-lab-lkp/linux/commits/Ethan-Zhao/PCI-make-pci_dev_is_disconnected-helper-public-for-other-drivers/20240126-094305
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
+patch link:    https://lore.kernel.org/r/20240126014002.481294-4-haifeng.zhao%40linux.intel.com
+patch subject: [PATCH v11 3/5] iommu/vt-d: simplify parameters of qi_submit_sync() ATS invalidation callers
+config: i386-buildonly-randconfig-001-20240127 (https://download.01.org/0day-ci/archive/20240127/202401271122.0kJRQe33-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240127/202401271122.0kJRQe33-lkp@intel.com/reproduce)
 
-> 
->> +	aesgcm_encrypt(ctx, req->payload, payload, sz, &hdr->algo, AAD_LEN,
->> +		       iv, hdr->authtag);
->> +
->> +	return 0;
-> 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401271122.0kJRQe33-lkp@intel.com/
 
-Thanks,
-Nikunj
+All warnings (new ones prefixed by >>):
 
+   drivers/iommu/intel/iommu.c: In function 'quirk_extra_dev_tlb_flush':
+>> drivers/iommu/intel/iommu.c:4987:6: warning: variable 'sid' set but not used [-Wunused-but-set-variable]
+     u16 sid;
+         ^~~
+
+
+vim +/sid +4987 drivers/iommu/intel/iommu.c
+
+e65a6897be5e49 Jacob Pan  2022-12-01  4957  
+e65a6897be5e49 Jacob Pan  2022-12-01  4958  /*
+e65a6897be5e49 Jacob Pan  2022-12-01  4959   * Here we deal with a device TLB defect where device may inadvertently issue ATS
+e65a6897be5e49 Jacob Pan  2022-12-01  4960   * invalidation completion before posted writes initiated with translated address
+e65a6897be5e49 Jacob Pan  2022-12-01  4961   * that utilized translations matching the invalidation address range, violating
+e65a6897be5e49 Jacob Pan  2022-12-01  4962   * the invalidation completion ordering.
+e65a6897be5e49 Jacob Pan  2022-12-01  4963   * Therefore, any use cases that cannot guarantee DMA is stopped before unmap is
+e65a6897be5e49 Jacob Pan  2022-12-01  4964   * vulnerable to this defect. In other words, any dTLB invalidation initiated not
+e65a6897be5e49 Jacob Pan  2022-12-01  4965   * under the control of the trusted/privileged host device driver must use this
+e65a6897be5e49 Jacob Pan  2022-12-01  4966   * quirk.
+e65a6897be5e49 Jacob Pan  2022-12-01  4967   * Device TLBs are invalidated under the following six conditions:
+e65a6897be5e49 Jacob Pan  2022-12-01  4968   * 1. Device driver does DMA API unmap IOVA
+e65a6897be5e49 Jacob Pan  2022-12-01  4969   * 2. Device driver unbind a PASID from a process, sva_unbind_device()
+e65a6897be5e49 Jacob Pan  2022-12-01  4970   * 3. PASID is torn down, after PASID cache is flushed. e.g. process
+e65a6897be5e49 Jacob Pan  2022-12-01  4971   *    exit_mmap() due to crash
+e65a6897be5e49 Jacob Pan  2022-12-01  4972   * 4. Under SVA usage, called by mmu_notifier.invalidate_range() where
+e65a6897be5e49 Jacob Pan  2022-12-01  4973   *    VM has to free pages that were unmapped
+e65a6897be5e49 Jacob Pan  2022-12-01  4974   * 5. Userspace driver unmaps a DMA buffer
+e65a6897be5e49 Jacob Pan  2022-12-01  4975   * 6. Cache invalidation in vSVA usage (upcoming)
+e65a6897be5e49 Jacob Pan  2022-12-01  4976   *
+e65a6897be5e49 Jacob Pan  2022-12-01  4977   * For #1 and #2, device drivers are responsible for stopping DMA traffic
+e65a6897be5e49 Jacob Pan  2022-12-01  4978   * before unmap/unbind. For #3, iommu driver gets mmu_notifier to
+e65a6897be5e49 Jacob Pan  2022-12-01  4979   * invalidate TLB the same way as normal user unmap which will use this quirk.
+e65a6897be5e49 Jacob Pan  2022-12-01  4980   * The dTLB invalidation after PASID cache flush does not need this quirk.
+e65a6897be5e49 Jacob Pan  2022-12-01  4981   *
+e65a6897be5e49 Jacob Pan  2022-12-01  4982   * As a reminder, #6 will *NEED* this quirk as we enable nested translation.
+e65a6897be5e49 Jacob Pan  2022-12-01  4983   */
+e2fcf16ac26679 Ethan Zhao 2024-01-25  4984  void quirk_extra_dev_tlb_flush(struct device_domain_info *info, u32 pasid,
+e2fcf16ac26679 Ethan Zhao 2024-01-25  4985  			       unsigned long address, unsigned long mask)
+e65a6897be5e49 Jacob Pan  2022-12-01  4986  {
+e65a6897be5e49 Jacob Pan  2022-12-01 @4987  	u16 sid;
+e65a6897be5e49 Jacob Pan  2022-12-01  4988  
+e65a6897be5e49 Jacob Pan  2022-12-01  4989  	if (likely(!info->dtlb_extra_inval))
+e65a6897be5e49 Jacob Pan  2022-12-01  4990  		return;
+e65a6897be5e49 Jacob Pan  2022-12-01  4991  
+e65a6897be5e49 Jacob Pan  2022-12-01  4992  	sid = PCI_DEVID(info->bus, info->devfn);
+4298780126c298 Jacob Pan  2023-08-09  4993  	if (pasid == IOMMU_NO_PASID) {
+e2fcf16ac26679 Ethan Zhao 2024-01-25  4994  		qi_flush_dev_iotlb(info->iommu, info, address, mask);
+e65a6897be5e49 Jacob Pan  2022-12-01  4995  	} else {
+e2fcf16ac26679 Ethan Zhao 2024-01-25  4996  		qi_flush_dev_iotlb_pasid(info->iommu, info, address, pasid, mask);
+e65a6897be5e49 Jacob Pan  2022-12-01  4997  	}
+e65a6897be5e49 Jacob Pan  2022-12-01  4998  }
+dc57875866ab9f Kan Liang  2023-01-31  4999  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
