@@ -1,171 +1,145 @@
-Return-Path: <linux-kernel+bounces-41154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41144-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4B6683ECB4
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 11:20:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E82D83EC82
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 10:57:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 653B81F2387C
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 10:20:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 637C21C21B2E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 09:57:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36C431F16B;
-	Sat, 27 Jan 2024 10:20:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 721E81EB32;
+	Sat, 27 Jan 2024 09:57:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dhHElZAt"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (1024-bit key) header.d=iki.fi header.i=@iki.fi header.b="NhI2acQ1"
+Received: from meesny.iki.fi (meesny.iki.fi [195.140.195.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 982A71EB20;
-	Sat, 27 Jan 2024 10:20:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706350838; cv=none; b=PhMP/BOMqXlLsB+6t69nX2n0WpRZUS99AcmMgsz6gacOuF3L9Si+JTKrDrYZPbgjsU+S9atBtrfFjSIzW3iPcxeecNQT7Vx4TVmu6khqI7Qflwb8k9FzMao2Unf+xg4uJ9qB+cpTUKh3ZxlInh+xrKzvzT6J3ADZ1qO2AZ8Xbyc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706350838; c=relaxed/simple;
-	bh=ZIp07KLSbtqTKgIrZCzbzRih7jTMG+18gPMPyej+kaA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=H+8T3lR1Dq4/7cGKphb20E7QZiBdjewN8QdkFA3jyIkJl3ZK01qhjHcf6tYW5S5EFnRTH1+xlxrnhcc7Motv/9hjGnDLjXnPoAcL90FW0ZZokWoZ1gKW/rmPh8khqmC1QeC9cd9VH61/47fa4OkEdmM9Tktx8rbjYXIH5Wbo7tY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dhHElZAt; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706350837; x=1737886837;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ZIp07KLSbtqTKgIrZCzbzRih7jTMG+18gPMPyej+kaA=;
-  b=dhHElZAt9WdR/hy6R6svHYbhImQFm8t9rZDK2YknJW0TAjDUcxl9vv0z
-   GKlUJOm9UrBxvzaXuZ7hGeSO6Q5QTHp3ZVN1+h75jLD0Stl0MAn1ONu09
-   QkvNpW1kpANWegWafVnIzUIvHpHpYDSknlAioElSc9EVA5NuAOGC+s/Y/
-   gpb/B32x7NTFURZgW/mTwkZnNChlYM+6e3yN2jQDY7k29fGcELnCaRCx4
-   yXIK3US6/9EQhkQ0dqJohaR2kJPHivam5mjRJZb6eu+An1qK/VcVYZNMp
-   tTPwMhBWnQ6Tg41o+E2AZ9hxVYMslYwWXKhAlWxKfM7N/+gIfAiSv9c6a
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="2539942"
-X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
-   d="scan'208";a="2539942"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2024 02:20:36 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="787359545"
-X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
-   d="scan'208";a="787359545"
-Received: from unknown (HELO fred..) ([172.25.112.68])
-  by orsmga002.jf.intel.com with ESMTP; 27 Jan 2024 02:20:35 -0800
-From: Xin Li <xin3.li@intel.com>
-To: linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Cc: corbet@lwn.net,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	hpa@zytor.com,
-	ravi.v.shankar@intel.com,
-	andrew.cooper3@citrix.com
-Subject: [PATCH] x86/fred: Let command line option "fred" accept multiple options
-Date: Sat, 27 Jan 2024 01:49:12 -0800
-Message-ID: <20240127094912.1489-1-xin3.li@intel.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37E5D1E86C;
+	Sat, 27 Jan 2024 09:57:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=195.140.195.201
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706349430; cv=pass; b=oZJjePR3Gp7yfLfe97N+B8dXMAe/U23JT8BOmftyBc8YBsAscqKcw6aMbfr6onK0ALw+2sBNDqr+iKxVMoepxwX7PkByHSGcXPKBdE4jKZvLfawtum2EyydmOqwlMktvHjzQorKg1U/Qq9X5kkZsdXsl7WPxzGDqBbl332OC3po=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706349430; c=relaxed/simple;
+	bh=BYB6jC3aI2xiPrDsSv3GPmsr+ClEbamMjWpzzNbk00E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jEdLMv6RW3cZk1Hu1JG63O62T1CRK1Nj+urC7JDyEbKDB7XusxbHL0lmTMrf1fzh+v3Cxxn+mRQ2qplrdy4sydX6xA5Wu4toAxqOXglcKh2aKt6rcNimtanKKequXeEgUI/GgjS23gEoNwzjJOgBwQGW9aBdlLi19HlqS4FPDqg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=pass smtp.mailfrom=iki.fi; dkim=pass (1024-bit key) header.d=iki.fi header.i=@iki.fi header.b=NhI2acQ1; arc=pass smtp.client-ip=195.140.195.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iki.fi
+Received: from hillosipuli.retiisi.eu (2a00-1190-d1dd-0-c641-1eff-feae-163c.v6.cust.suomicom.net [IPv6:2a00:1190:d1dd:0:c641:1eff:feae:163c])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sailus)
+	by meesny.iki.fi (Postfix) with ESMTPSA id 4TMVN020rqzyPp;
+	Sat, 27 Jan 2024 11:57:04 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
+	t=1706349424;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UAj93A+QldIc2BlOVJOBkygnNhIiKNVEocFWLbjrq44=;
+	b=NhI2acQ1O4J7xZMn0vxDy8AsXgy5iOSZLbslZXaEFG7Lm3WiP4d9HQgxKlv9pKIZXqfitW
+	JX54ndZ8TEsE+QpN/C6fy01whRVK9LqnhbRyzMZUQO5WFLzLYxisKWkTDJx/d8rmHa8Gvi
+	TaVyx/W7YDoo8w1ZFsPJSIGVTE0b6Bg=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+	s=meesny; t=1706349424;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UAj93A+QldIc2BlOVJOBkygnNhIiKNVEocFWLbjrq44=;
+	b=m5Afe8MEqZqYfQ7DsoCfsbTinjVAmnmLBU8rNzuv9udyXlHrhZXaS3mEOQHJOqcmiewyzF
+	fRgYXOHQjzUTOWlujiymp1Wte6IdetR83dQuN86Ib4/u8wHyoha75sp28/u+e7dkWZFHBk
+	fj/dpnp2t7MzQU1oXNFueKAnW3dOws4=
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
+ARC-Seal: i=1; s=meesny; d=iki.fi; t=1706349424; a=rsa-sha256; cv=none;
+	b=cuM4Wm24bJ+zli7jFhPml/vGiMkLf7Mx4y1JSql7NWzDMObPe8xmwGI1sk58uB95Yih6lJ
+	AFsCph2L2PqQDvxd3l2qDs9GVbhsaUZRTB28h1qM7+iUeEJhxm0LUcY0hRcw/XsV+j8DYu
+	NZ/tFKPGsRG853g4AKokaRvVeYY6DdI=
+Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 9319C634C93;
+	Sat, 27 Jan 2024 11:57:03 +0200 (EET)
+Date: Sat, 27 Jan 2024 09:57:03 +0000
+From: Sakari Ailus <sakari.ailus@iki.fi>
+To: Ricardo Ribalda <ribalda@chromium.org>
+Cc: Tiffany Lin <tiffany.lin@mediatek.com>,
+	Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+	Yunfei Dong <yunfei.dong@mediatek.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Kieran Bingham <kieran.bingham@ideasonboard.com>,
+	Bin Liu <bin.liu@mediatek.com>,
+	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+	Vikash Garodia <quic_vgarodia@quicinc.com>,
+	Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Andrzej Hajda <andrzej.hajda@intel.com>,
+	Bingbu Cao <bingbu.cao@intel.com>,
+	Tianshu Qiu <tian.shu.qiu@intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Kevin Hilman <khilman@baylibre.com>,
+	Jerome Brunet <jbrunet@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	linux-rockchip@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-samsung-soc@vger.kernel.org, linux-staging@lists.linux.dev,
+	linux-amlogic@lists.infradead.org
+Subject: Re: [PATCH 17/17] linux: v4l2-vp9.h: Fix kerneldoc
+Message-ID: <ZbTTb-SdK-EubGdc@valkosipuli.retiisi.eu>
+References: <20240126-gix-mtk-warnings-v1-0-eed7865fce18@chromium.org>
+ <20240126-gix-mtk-warnings-v1-17-eed7865fce18@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240126-gix-mtk-warnings-v1-17-eed7865fce18@chromium.org>
 
-Let command line option "fred" accept multiple options to make it
-easier to tweak its behavior.
+Hi Ricardo,
 
-Currently two options 'on' and 'off' are allowed, and the default
-behavior is to disable FRED. To enable FRED, append "fred=on" to
-the kernel command line.
+On Fri, Jan 26, 2024 at 11:16:16PM +0000, Ricardo Ribalda wrote:
+> Kerneldoc cannot understand arrays defined like
+> v4l2_frame_symbol_counts.
+> 
+> Adding an asterisk to the name does do the trick.
+> 
+> Disable the kerneldoc notation for now, it is already ignored:
+> https://docs.kernel.org/search.html?q=v4l2_vp9_frame_symbol_counts
 
-Suggested-by: Borislav Petkov (AMD) <bp@alien8.de>
-Signed-off-by: Xin Li <xin3.li@intel.com>
----
- .../admin-guide/kernel-parameters.txt         |  7 +++--
- arch/x86/kernel/cpu/common.c                  |  3 ---
- arch/x86/kernel/traps.c                       | 26 +++++++++++++++++++
- 3 files changed, 31 insertions(+), 5 deletions(-)
+Wouldn't it be nicer to fix kerneldoc instead? It might not be difficult at
+all.
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index c6c1a2c79835..bca252946e5e 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -1539,8 +1539,11 @@
- 			Warning: use of this parameter will taint the kernel
- 			and may cause unknown problems.
- 
--	fred		[X86-64]
--			Enable flexible return and event delivery
-+	fred=		[X86-64]
-+			Enable/disable Flexible Return and Event Delivery.
-+			Format: { on | off }
-+			on: enable FRED when it's present.
-+			off: disable FRED, the default option in early stage.
- 
- 	ftrace=[tracer]
- 			[FTRACE] will set and start the specified tracer
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index 5ed968c0f9c5..cf82e3181f7a 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1484,9 +1484,6 @@ static void __init cpu_parse_early_param(void)
- 	char *argptr = arg, *opt;
- 	int arglen, taint = 0;
- 
--	if (!cmdline_find_option_bool(boot_command_line, "fred"))
--		setup_clear_cpu_cap(X86_FEATURE_FRED);
--
- #ifdef CONFIG_X86_32
- 	if (cmdline_find_option_bool(boot_command_line, "no387"))
- #ifdef CONFIG_MATH_EMULATION
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index cf198d9e98b2..1993e3bba1d1 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -1402,8 +1402,34 @@ DEFINE_IDTENTRY_SW(iret_error)
- }
- #endif
- 
-+/* Do not enable FRED by default in its early stage. */
-+static bool enable_fred __ro_after_init = false;
-+
-+#ifdef CONFIG_X86_FRED
-+static int __init fred_setup(char *str)
-+{
-+	if (!str)
-+		return -EINVAL;
-+
-+	if (!boot_cpu_has(X86_FEATURE_FRED))
-+		return 0;
-+
-+	if (!strcmp(str, "on"))
-+		enable_fred = true;
-+	else if (!strcmp(str, "off"))
-+		enable_fred = false;
-+	else
-+		pr_warn("invalid FRED option: 'fred=%s'\n", str);
-+	return 0;
-+}
-+early_param("fred", fred_setup);
-+#endif
-+
- void __init trap_init(void)
- {
-+	if (boot_cpu_has(X86_FEATURE_FRED) && !enable_fred)
-+		setup_clear_cpu_cap(X86_FEATURE_FRED);
-+
- 	/* Init cpu_entry_area before IST entries are set up */
- 	setup_cpu_entry_areas();
- 
+Feel free to, but I can also give it a try.
 
-base-commit: a9f26154bf5478fc155309fc69128415f3a1be08
 -- 
-2.43.0
+Regards,
 
+Sakari Ailus
 
