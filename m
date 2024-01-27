@@ -1,86 +1,116 @@
-Return-Path: <linux-kernel+bounces-41172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16F9383ECDB
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 12:21:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2238D83ECE2
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 12:24:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01714B230EA
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 11:21:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D39652841D1
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 11:24:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D91F2031A;
-	Sat, 27 Jan 2024 11:21:07 +0000 (UTC)
-Received: from mail114-240.sinamail.sina.com.cn (mail114-240.sinamail.sina.com.cn [218.30.114.240])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A43662033E;
+	Sat, 27 Jan 2024 11:23:55 +0000 (UTC)
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7A738831
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 11:20:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.114.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB8DD51B;
+	Sat, 27 Jan 2024 11:23:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706354466; cv=none; b=kUM1agnM/XQdrgcEp8gXqKbVnlnNv0jogL7jSZJAuVbGIMBQb36eR4js3XVUGCr0JxJHCuhhSioXehTr0dpbhM5PtKIrIFSodKrhV/xzAF9r3itilxgp1Mu1LT0+V7i2fGMxMp27oDYjy9RS2qDTGKSfWaw+GxH8beE8Wnitwcs=
+	t=1706354635; cv=none; b=iE3wo/Pi/boCEji9dzahncDVeChVToEsEJcSBsdXNU3HX6eLWiXycJY81Rm/GbXMF6mwPTKNI8IuaSuejTg7yXjsvuVWea/Zm01z6GRDGRNKaBP6FnTSnKEjLk/ilSYhnCHpLQ21Gcp9n5XpCVi9yjOyY31bMhbt6diJ6VFxnqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706354466; c=relaxed/simple;
-	bh=VWpQwLJccPYV5arsYWk3dcdPk77FtcCamRJXu4bd2DY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=H6aCyAFvKubJrej3dSnUfktuuLAWUVBnNNcaZGcMI2UmyLVzpPf0aEdvQt81HfwquWQuTrKjk8nkZk0iLhYhmLZXSCU2DpeFM3AXdC0J4PgX3ePN9rWP0ykAfbAOsfuXmhUkOyd60hjFMrB5fT+oYO6Q4B8BIOSV1jFFygPluzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.114.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([113.118.69.6])
-	by sina.com (172.16.235.24) with ESMTP
-	id 65B4E70D0000177C; Sat, 27 Jan 2024 19:20:48 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 91458845089280
-X-SMAIL-UIID: 8F1261EC481142AA8AC7E56975D96DA0-20240127-192048-1
-From: Hillf Danton <hdanton@sina.com>
-To: Benjamin Segall <bsegall@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] locking/percpu-rwsem: do not do lock handoff in percpu_up_write
-Date: Sat, 27 Jan 2024 19:20:39 +0800
-Message-Id: <20240127112039.896-1-hdanton@sina.com>
-In-Reply-To: <xm26sf2j3k1g.fsf@google.com>
-References: <xm26zfwx7z5p.fsf@google.com> <20240123150541.1508-1-hdanton@sina.com> <20240125110456.783-1-hdanton@sina.com> <20240126122230.838-1-hdanton@sina.com>
+	s=arc-20240116; t=1706354635; c=relaxed/simple;
+	bh=jWtlu4f+xH/V+LUIjZawejjNpeQWHOqY77AUo8SxgZs=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=u2282gxOowLRW889BIMSYTp5NeNkuPdyADMnNlncD8xDmVMnPB6mSY9p7G0IU9SoKPDFPX2wAYCNT1FDEHM2kNptyzv7Zbm+vKgfT7XAZHZJ1VFC5hd3CcpQsdkx5NtNhR9a2xggoF8kVskk5ghIjQlqBnPLPk8J+qkNIcx8wmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=none smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from fsav113.sakura.ne.jp (fsav113.sakura.ne.jp [27.133.134.240])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 40RBN64w055077;
+	Sat, 27 Jan 2024 20:23:06 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav113.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav113.sakura.ne.jp);
+ Sat, 27 Jan 2024 20:23:06 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav113.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 40RBN6FL055072
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Sat, 27 Jan 2024 20:23:06 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <f1ed6129-409a-484b-a7f4-71b2be90b60f@I-love.SAKURA.ne.jp>
+Date: Sat, 27 Jan 2024 20:23:06 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [6.8-rc1 Regression] Unable to exec apparmor_parser from
+ virt-aa-helper
+Content-Language: en-US
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Kees Cook <keescook@chromium.org>, Paul Moore <paul@paul-moore.com>,
+        Kevin Locke <kevin@kevinlocke.name>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mateusz Guzik <mjguzik@gmail.com>, Al Viro <viro@zeniv.linux.org.uk>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
+        Kentaro Takeda <takedakn@nttdata.co.jp>,
+        John Johansen <john.johansen@canonical.com>
+References: <ZbE4qn9_h14OqADK@kevinlocke.name>
+ <202401240832.02940B1A@keescook>
+ <CAHk-=wgJmDuYOQ+m_urRzrTTrQoobCJXnSYMovpwKckGgTyMxA@mail.gmail.com>
+ <CAHk-=wijSFE6+vjv7vCrhFJw=y36RY6zApCA07uD1jMpmmFBfA@mail.gmail.com>
+ <CAHk-=wiZj-C-ZjiJdhyCDGK07WXfeROj1ACaSy7OrxtpqQVe-g@mail.gmail.com>
+ <202401240916.044E6A6A7A@keescook>
+ <CAHk-=whq+Kn-_LTvu8naGqtN5iK0c48L1mroyoGYuq_DgFEC7g@mail.gmail.com>
+ <CAHk-=whDAUMSPhDhMUeHNKGd-ZX8ixNeEz7FLfQasAGvi_knDg@mail.gmail.com>
+ <a9210754-2f94-4075-872f-8f6a18f4af07@I-love.SAKURA.ne.jp>
+ <CAHk-=wjF=zwZ88vRZe-AvexnmP1OCpKZSp_2aCfTpGeH1vLMkA@mail.gmail.com>
+ <b5a12ecd-468d-4b50-9f8c-17ae2a2560b4@I-love.SAKURA.ne.jp>
+ <0d820f39-2b9e-4294-801b-4fe30c71f497@I-love.SAKURA.ne.jp>
+In-Reply-To: <0d820f39-2b9e-4294-801b-4fe30c71f497@I-love.SAKURA.ne.jp>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, 26 Jan 2024 12:40:43 -0800 Benjamin Segall <bsegall@google.com>
+On 2024/01/27 20:00, Tetsuo Handa wrote:
+> On 2024/01/27 16:04, Tetsuo Handa wrote:
+>> If we can accept revival of security_bprm_free(), we can "get rid of current->in_execve flag"
+>> and "stop saving things across two *independent* execve() calls".
 > 
-> I'm fine with "no, fairness is more important than these performance
-> numbers or mitigating already-sorta-broken situations", but it's not
+> Oops, I found a bug in TOMOYO (and possibly in AppArmor as well).
+> TOMOYO has to continue depending on current->in_execve flag even if
+> security_bprm_free() is revived.
 
-Fine too because your patch is never able to escape standing ovation.
+No. We can "get rid of current->in_execve flag" and "stop saving things across
+two *independent* execve() calls".
 
-And feel free to specify the broken situations you saw.
+> @@ -327,9 +322,13 @@ static int tomoyo_file_fcntl(struct file *file, unsigned int cmd,
+>   */
+>  static int tomoyo_file_open(struct file *f)
+>  {
+> -       /* Don't check read permission here if called from execve(). */
+> -       /* Illogically, FMODE_EXEC is in f_flags, not f_mode. */
+> -       if (f->f_flags & __FMODE_EXEC)
+> +       /*
+> +        * Don't check read permission here if called from execve() for
+> +        * the first time of that execve() request, for execute permission
+> +        * will be checked at tomoyo_bprm_check_security() with argv/envp
+> +        * taken into account.
+> +        */
+> +       if (current->in_execve && !tomoyo_task(current)->old_domain_info)
 
-> clear to me you've even understood the patch, because you keep only
-> talking about completely different forms of starvation, and suggesting
+Since "f->f_flags & __FMODE_EXEC" == "current->in_execve", TOMOYO can continue using
+"f->f_flags & __FMODE_EXEC", provided that tomoyo_task(current)->old_domain_info is
+reset to NULL via security_bprm_free() callback when previous execve() request failed.
 
-Given woken writer in your reply and sem->ww is write waiters, there is
-only one starvation in this thread.
+That is, if security_bprm_free() is revived, we can also get rid of current->in_execve.
 
-  |> >> My patch makes the entire #4 available to writers (or new readers), so
-  |> >> that the woken writer will instead get to run immediately. This is
-
-> changes that would if anything make the situation worse.
-
-I mitigate the starvation by making use of the known method without
-any heuristic added, though, I am happy to see why it no longer works.
 
