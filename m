@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-41225-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41226-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BFB783EDA4
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B3A283EDA5
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:45:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44967B223F1
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 14:44:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2151B21786
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 14:45:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F31D02D04E;
-	Sat, 27 Jan 2024 14:43:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9149B2E401;
+	Sat, 27 Jan 2024 14:43:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dB4l1/ng"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HPBLn1zh"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D20E2C19C;
-	Sat, 27 Jan 2024 14:43:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED6552C6B0;
+	Sat, 27 Jan 2024 14:43:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706366592; cv=none; b=Q7LLMiuexmwgtzYf1pC5DoBtwwhzNFrTJUwq1oXBD2wgB/jvqp1vB3iyqHtlqF6hc48eNADoHGbe4NeL3Av8WCQD5qLB+ikj2wILs18+le2kM+kFZ6H20Dv+TFWd/oOEt09h9nlEn4D4UHW2Q1Oa17d6RYUOtM7wrMrYd5Lo8w0=
+	t=1706366594; cv=none; b=JK7QqLi5NVU86TZSSySs6NVkvGNEZ3DQ35sT8z6R2Zstn02TUjMU1hMADWoXBqUqd70zCre88UsIUugDytmXFVDen49fFZGYjWC33NvO6tC7DD2rq/Ybu6pc+s1n5/cZMwLszabREbz3yBGyVXEiTsKKTW2fKMD+/Mp/dJGaj2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706366592; c=relaxed/simple;
-	bh=DxPDnkA/SQ4HzkflzN/6tBm6bjCviVDp9iQ5cwbqVs8=;
+	s=arc-20240116; t=1706366594; c=relaxed/simple;
+	bh=K7UbU3C60Yp5XVkanJaGkuPwtJvjrUmtxYSbWd1Rz1I=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eqcZhVoC1ZpHrTluieYvFOzc9a6pUGhuOqa7UoQXOZH/GlDZChbKWsIx822itXzwfmbaJZArTjlcoyE2Ny7GNviYfZS/zcGXHPfy/I0XAbIl/vFWdCXB7TVxYhW7u7cSj2+AF0ypnd4riaH/FJ5SRfRAy+Wzk0qG6YXAQ2VNmF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dB4l1/ng; arc=none smtp.client-ip=209.85.221.41
+	 MIME-Version; b=ORaEHudoZt7D/jVwrtUUA4YpwBiFiNB08gUzN8bZZyzSlFb8MoUHlElKghz6F0NjH4NQq1tc6HyyQ3sroi3tVq1MPxxYcEhDbFstKgF6Y9jPZIAZpQSSmFHp4S7fMbbu6Wb4PCzbQarDlewLplYcbET/wYYZn8k35JN+Y2ZjkP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HPBLn1zh; arc=none smtp.client-ip=209.85.128.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3394ca0c874so1464148f8f.2;
-        Sat, 27 Jan 2024 06:43:09 -0800 (PST)
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40ef0a84bfbso1859275e9.1;
+        Sat, 27 Jan 2024 06:43:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706366588; x=1706971388; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706366589; x=1706971389; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ozy1f1RaoRRXP6hITOSjnDp7d5Lj56OaHEajcFkhQ6Q=;
-        b=dB4l1/ngOu1RxdL+mbAyqo9OjwOa6whm1q4gxSDVRZBWKFg0rzvF/uSkRPBSZMw5ho
-         buY+BTaWTazI77+Vnym9L4McjLCPuMm5MexgdLacx1jQAsIadsuLWds7GQUOkMnjrM8l
-         MM3vU/OKcJdrXjaATMThYbdyU3l2F4CcgQ1/2HwWc5dNJa1m1XBOwkD75G0dPDzhTQxw
-         IQ/cdFWnrOOu93Bz+UOhfQcboexvBFygtXu0fh4iKSF1hpgyRwTxsQkanGZtoUqKFwiC
-         Q9wOEsZVwVfOHWHztFXEV9rKsbNJSt1OGC+yOSK6PJA8IbzGJicbowE0Oav92nNxowaS
-         fjlQ==
+        bh=WuLL16HL3+Hup/yzuVEUxUND0k6TKj5u1dP2dn1ZHBQ=;
+        b=HPBLn1zhZyaWI/4Uh2pqKUXO1kB3PZ7A2BCD1Enm2dSvXzR6xUfonJ7publSVkU7Bo
+         ButsOvmLNjDUbrrAiqHV9msGIvKA5ml4G4R2wjuvAxMTLcwZkh+5nic6nzA3aMFjHUip
+         t/jKYEzAMxhgxXiEVXy2Y3+wHAqnPx5CMwsN6lKxCSHKEB0M0VvhsbFBrcFeDm/GvBGT
+         qKtcy4J79RAjzifRY+iyWZt/AjBHXfDNZNFtYtX/HG9PAWkNHurcvdfghcYel7Of9nas
+         EtZFhV12t9XDaE+MWVwpQcBCJ480bIf+/kUCOIfJGHRqcwFiS21dnSfdJv2o1a+4I8Z+
+         QzmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706366588; x=1706971388;
+        d=1e100.net; s=20230601; t=1706366589; x=1706971389;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ozy1f1RaoRRXP6hITOSjnDp7d5Lj56OaHEajcFkhQ6Q=;
-        b=AciDkDF53RT6XoJuwaJfKqn8ynwy17wNGP+8cwmR5ODhpsiOo2IJPHsHmH8d70IHBU
-         k7unJnNsyxCkqHYr0kRkwgpw7xksNMpjnXSjtjrbk7T0UQCI83f/m9XIrvQ6TTjqCL8j
-         lzpaxZc5VIqs2Ic02M0N4EwVKIDd8HXtKFi7YdHJIgbwNc57u4Irs3yVINOMG7w+DTNV
-         W1fYOqaRGRcz180u5TtaBLLu7wPQbsT4oFmyf0ZYSlGHTe1RYHFeeavXelsWZNucT9Wb
-         UNNRLlQsNIl+Dud1rorFq8nSWfwotcw1+W8ka9Mp4fhIeACebdDOynHgXOePDN+RMxVs
-         Y0eg==
-X-Gm-Message-State: AOJu0YyzC8LIM3WcDXX+ZlhLEAsMfx12Ez30cgP8OmO1rXbDEhOTrAP5
-	IgbR4k9GJgE4EIle2MjM0EJEJHVTKDt4sKLu3PIj9QjxQZnPlgbF
-X-Google-Smtp-Source: AGHT+IGq8Osxi1R76smGwigHQMwTVvhD02xCxIb0YOSV8dZjHett70t3vo61ZJ+fJwk8zGdqWLwkFg==
-X-Received: by 2002:a5d:4446:0:b0:339:3595:474 with SMTP id x6-20020a5d4446000000b0033935950474mr1392028wrr.21.1706366587462;
-        Sat, 27 Jan 2024 06:43:07 -0800 (PST)
+        bh=WuLL16HL3+Hup/yzuVEUxUND0k6TKj5u1dP2dn1ZHBQ=;
+        b=BWV5DCzsmIZ4e9qG0KVlu0iTfTmxz8gUt+Fe2ttgMbdZFIXZjiwqeFHoBtyMqv7SSE
+         wBlztaBZGsrrfwXafwDE+TnLIQePNbcURDsVWGIT/IqxClGqr3j+5FSdaacQprFgOGkl
+         K1M66+Q1fdbUzTwQ8xAF423EOo5TREemHABHm6la9uG8+uvZwz0nv62bJ5xo8ai78W4C
+         Hnynqzc9AdeWa2LYI5Q0qXnQCf+meOMgorBWGNDz0yAWLtR8bmxH5T4M6uckkT4XUk30
+         IBBaIGT1u9W2cxV5gEkE1Lmbzjoafh2XZW3pak7gzM5+rpaiqSu+HIYCcT3mKIzzqJny
+         RRmA==
+X-Gm-Message-State: AOJu0YxiAl9D/fij357DwcdU945D3UK7AKH7x70C9jzXJyv+24Iz+pZa
+	K3ow9Oe2ymvPQlsrM+wK1EH7ktdNOE0KyfdtGlOjY0Hz6ELdeik1
+X-Google-Smtp-Source: AGHT+IFTXUcPW0dW6r3uCLDB4sMTtEaYeP1+/vbCsUF9iQQ4MyhFqwa5At1vHdd13NTBi5cGMeU/Qw==
+X-Received: by 2002:a05:600c:63ce:b0:40e:b93c:940f with SMTP id dx14-20020a05600c63ce00b0040eb93c940fmr1497170wmb.28.1706366588916;
+        Sat, 27 Jan 2024 06:43:08 -0800 (PST)
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id a11-20020a05600c348b00b0040eef2aed28sm1412590wmq.23.2024.01.27.06.43.06
+        by smtp.googlemail.com with ESMTPSA id a11-20020a05600c348b00b0040eef2aed28sm1412590wmq.23.2024.01.27.06.43.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Jan 2024 06:43:06 -0800 (PST)
+        Sat, 27 Jan 2024 06:43:08 -0800 (PST)
 From: Christian Marangi <ansuelsmth@gmail.com>
 To: Andrew Lunn <andrew@lunn.ch>,
 	Heiner Kallweit <hkallweit1@gmail.com>,
@@ -79,9 +79,9 @@ To: Andrew Lunn <andrew@lunn.ch>,
 	netdev@vger.kernel.org,
 	linux-arm-msm@vger.kernel.org
 Cc: Christian Marangi <ansuelsmth@gmail.com>
-Subject: [net-next PATCH v2 4/5] net: phy: qcom: move additional functions to shared library
-Date: Sat, 27 Jan 2024 15:42:44 +0100
-Message-ID: <20240127144252.24767-5-ansuelsmth@gmail.com>
+Subject: [net-next PATCH v2 5/5] net: phy: qcom: detach qca808x PHY driver from at803x
+Date: Sat, 27 Jan 2024 15:42:45 +0100
+Message-ID: <20240127144252.24767-6-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240127144252.24767-1-ansuelsmth@gmail.com>
 References: <20240127144252.24767-1-ansuelsmth@gmail.com>
@@ -93,1024 +93,1945 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Move additional functions to shared library in preparation for qca808x
-PHY Family to be detached from at803x driver.
+Almost all the QCA8081 PHY driver OPs are specific and only some of them
+use the generic at803x.
 
-Only the shared defines are moved to the shared qcom.h header.
+To make the at803x code slimmer, move all the specific qca808x regs and
+functions to a dedicated PHY driver.
+
+Probe function and priv struct is reworked to allocate and use only the
+qca808x specific data. Unused data from at803x PHY driver are dropped
+from at803x priv struct.
+
+Also a new Kconfig is introduced QCA808X_PHY, to compile the newly
+introduced PHY driver for QCA8081 PHY.
+
+As the Kconfig name starts with Qualcomm the same order is kept.
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 ---
- drivers/net/phy/qcom/at803x.c       | 428 +---------------------------
- drivers/net/phy/qcom/qcom-phy-lib.c | 376 ++++++++++++++++++++++++
- drivers/net/phy/qcom/qcom.h         |  84 ++++++
- 3 files changed, 463 insertions(+), 425 deletions(-)
+ drivers/net/phy/qcom/Kconfig   |   6 +
+ drivers/net/phy/qcom/Makefile  |   1 +
+ drivers/net/phy/qcom/at803x.c  | 897 +------------------------------
+ drivers/net/phy/qcom/qca808x.c | 936 +++++++++++++++++++++++++++++++++
+ 4 files changed, 944 insertions(+), 896 deletions(-)
+ create mode 100644 drivers/net/phy/qcom/qca808x.c
 
+diff --git a/drivers/net/phy/qcom/Kconfig b/drivers/net/phy/qcom/Kconfig
+index ba78bbe31857..80db24deb689 100644
+--- a/drivers/net/phy/qcom/Kconfig
++++ b/drivers/net/phy/qcom/Kconfig
+@@ -14,3 +14,9 @@ config QCA83XX_PHY
+ 	select QCOM_NET_PHYLIB
+ 	help
+ 	  Currently supports the internal QCA8337(Internal qca8k PHY) model
++
++config QCA808X_PHY
++	tristate "Qualcomm QCA808x PHYs"
++	select QCOM_NET_PHYLIB
++	help
++	  Currently supports the QCA8081 model
+diff --git a/drivers/net/phy/qcom/Makefile b/drivers/net/phy/qcom/Makefile
+index 3d98e397e063..0362d7ed47be 100644
+--- a/drivers/net/phy/qcom/Makefile
++++ b/drivers/net/phy/qcom/Makefile
+@@ -2,3 +2,4 @@
+ obj-$(CONFIG_QCOM_NET_PHYLIB)	+= qcom-phy-lib.o
+ obj-$(CONFIG_AT803X_PHY)	+= at803x.o
+ obj-$(CONFIG_QCA83XX_PHY)	+= qca83xx.o
++obj-$(CONFIG_QCA808X_PHY)	+= qca808x.o
 diff --git a/drivers/net/phy/qcom/at803x.c b/drivers/net/phy/qcom/at803x.c
-index 638babc50df1..442060793854 100644
+index 442060793854..e158c205fa5f 100644
 --- a/drivers/net/phy/qcom/at803x.c
 +++ b/drivers/net/phy/qcom/at803x.c
-@@ -24,65 +24,11 @@
+@@ -96,8 +96,6 @@
+ #define ATH8035_PHY_ID				0x004dd072
+ #define AT8030_PHY_ID_MASK			0xffffffef
  
- #include "qcom.h"
- 
--#define AT803X_SPECIFIC_FUNCTION_CONTROL	0x10
--#define AT803X_SFC_ASSERT_CRS			BIT(11)
--#define AT803X_SFC_FORCE_LINK			BIT(10)
--#define AT803X_SFC_MDI_CROSSOVER_MODE_M		GENMASK(6, 5)
--#define AT803X_SFC_AUTOMATIC_CROSSOVER		0x3
--#define AT803X_SFC_MANUAL_MDIX			0x1
--#define AT803X_SFC_MANUAL_MDI			0x0
--#define AT803X_SFC_SQE_TEST			BIT(2)
--#define AT803X_SFC_POLARITY_REVERSAL		BIT(1)
--#define AT803X_SFC_DISABLE_JABBER		BIT(0)
+-#define QCA8081_PHY_ID				0x004dd101
 -
--#define AT803X_SPECIFIC_STATUS			0x11
--#define AT803X_SS_SPEED_MASK			GENMASK(15, 14)
--#define AT803X_SS_SPEED_1000			2
--#define AT803X_SS_SPEED_100			1
--#define AT803X_SS_SPEED_10			0
--#define AT803X_SS_DUPLEX			BIT(13)
--#define AT803X_SS_SPEED_DUPLEX_RESOLVED		BIT(11)
--#define AT803X_SS_MDIX				BIT(6)
--
--#define QCA808X_SS_SPEED_MASK			GENMASK(9, 7)
--#define QCA808X_SS_SPEED_2500			4
--
--#define AT803X_INTR_ENABLE			0x12
--#define AT803X_INTR_ENABLE_AUTONEG_ERR		BIT(15)
--#define AT803X_INTR_ENABLE_SPEED_CHANGED	BIT(14)
--#define AT803X_INTR_ENABLE_DUPLEX_CHANGED	BIT(13)
--#define AT803X_INTR_ENABLE_PAGE_RECEIVED	BIT(12)
--#define AT803X_INTR_ENABLE_LINK_FAIL		BIT(11)
--#define AT803X_INTR_ENABLE_LINK_SUCCESS		BIT(10)
--#define AT803X_INTR_ENABLE_LINK_FAIL_BX		BIT(8)
--#define AT803X_INTR_ENABLE_LINK_SUCCESS_BX	BIT(7)
--#define AT803X_INTR_ENABLE_WIRESPEED_DOWNGRADE	BIT(5)
--#define AT803X_INTR_ENABLE_POLARITY_CHANGED	BIT(1)
--#define AT803X_INTR_ENABLE_WOL			BIT(0)
--
--#define AT803X_INTR_STATUS			0x13
--
--#define AT803X_SMART_SPEED			0x14
--#define AT803X_SMART_SPEED_ENABLE		BIT(5)
--#define AT803X_SMART_SPEED_RETRY_LIMIT_MASK	GENMASK(4, 2)
--#define AT803X_SMART_SPEED_BYPASS_TIMER		BIT(1)
--#define AT803X_CDT				0x16
--#define AT803X_CDT_MDI_PAIR_MASK		GENMASK(9, 8)
--#define AT803X_CDT_ENABLE_TEST			BIT(0)
--#define AT803X_CDT_STATUS			0x1c
--#define AT803X_CDT_STATUS_STAT_NORMAL		0
--#define AT803X_CDT_STATUS_STAT_SHORT		1
--#define AT803X_CDT_STATUS_STAT_OPEN		2
--#define AT803X_CDT_STATUS_STAT_FAIL		3
--#define AT803X_CDT_STATUS_STAT_MASK		GENMASK(9, 8)
--#define AT803X_CDT_STATUS_DELTA_TIME_MASK	GENMASK(7, 0)
- #define AT803X_LED_CONTROL			0x18
- 
- #define AT803X_PHY_MMD3_WOL_CTRL		0x8012
- #define AT803X_WOL_EN				BIT(5)
--#define AT803X_LOC_MAC_ADDR_0_15_OFFSET		0x804C
--#define AT803X_LOC_MAC_ADDR_16_31_OFFSET	0x804B
--#define AT803X_LOC_MAC_ADDR_32_47_OFFSET	0x804A
-+
- #define AT803X_REG_CHIP_CONFIG			0x1f
- #define AT803X_BT_BX_REG_SEL			0x8000
- 
-@@ -138,10 +84,6 @@
- #define AT803X_CLK_OUT_STRENGTH_HALF		1
- #define AT803X_CLK_OUT_STRENGTH_QUARTER		2
- 
--#define AT803X_DEFAULT_DOWNSHIFT		5
--#define AT803X_MIN_DOWNSHIFT			2
--#define AT803X_MAX_DOWNSHIFT			9
--
- #define AT803X_MMD3_SMARTEEE_CTL1		0x805b
- #define AT803X_MMD3_SMARTEEE_CTL2		0x805c
- #define AT803X_MMD3_SMARTEEE_CTL3		0x805d
-@@ -158,6 +100,8 @@
- 
  #define QCA9561_PHY_ID				0x004dd042
  
-+#define AT803X_SS_SPEED_MASK			GENMASK(15, 14)
-+
- #define AT803X_PAGE_FIBER			0
- #define AT803X_PAGE_COPPER			1
+ #define AT803X_SS_SPEED_MASK			GENMASK(15, 14)
+@@ -112,201 +110,7 @@
+ /* disable hibernation mode */
+ #define AT803X_DISABLE_HIBERNATION_MODE		BIT(2)
  
-@@ -366,11 +310,6 @@ MODULE_DESCRIPTION("Qualcomm Atheros AR803x and QCA808X PHY driver");
+-/* ADC threshold */
+-#define QCA808X_PHY_DEBUG_ADC_THRESHOLD		0x2c80
+-#define QCA808X_ADC_THRESHOLD_MASK		GENMASK(7, 0)
+-#define QCA808X_ADC_THRESHOLD_80MV		0
+-#define QCA808X_ADC_THRESHOLD_100MV		0xf0
+-#define QCA808X_ADC_THRESHOLD_200MV		0x0f
+-#define QCA808X_ADC_THRESHOLD_300MV		0xff
+-
+-/* CLD control */
+-#define QCA808X_PHY_MMD3_ADDR_CLD_CTRL7		0x8007
+-#define QCA808X_8023AZ_AFE_CTRL_MASK		GENMASK(8, 4)
+-#define QCA808X_8023AZ_AFE_EN			0x90
+-
+-/* AZ control */
+-#define QCA808X_PHY_MMD3_AZ_TRAINING_CTRL	0x8008
+-#define QCA808X_MMD3_AZ_TRAINING_VAL		0x1c32
+-
+-#define QCA808X_PHY_MMD1_MSE_THRESHOLD_20DB	0x8014
+-#define QCA808X_MSE_THRESHOLD_20DB_VALUE	0x529
+-
+-#define QCA808X_PHY_MMD1_MSE_THRESHOLD_17DB	0x800E
+-#define QCA808X_MSE_THRESHOLD_17DB_VALUE	0x341
+-
+-#define QCA808X_PHY_MMD1_MSE_THRESHOLD_27DB	0x801E
+-#define QCA808X_MSE_THRESHOLD_27DB_VALUE	0x419
+-
+-#define QCA808X_PHY_MMD1_MSE_THRESHOLD_28DB	0x8020
+-#define QCA808X_MSE_THRESHOLD_28DB_VALUE	0x341
+-
+-#define QCA808X_PHY_MMD7_TOP_OPTION1		0x901c
+-#define QCA808X_TOP_OPTION1_DATA		0x0
+-
+-#define QCA808X_PHY_MMD3_DEBUG_1		0xa100
+-#define QCA808X_MMD3_DEBUG_1_VALUE		0x9203
+-#define QCA808X_PHY_MMD3_DEBUG_2		0xa101
+-#define QCA808X_MMD3_DEBUG_2_VALUE		0x48ad
+-#define QCA808X_PHY_MMD3_DEBUG_3		0xa103
+-#define QCA808X_MMD3_DEBUG_3_VALUE		0x1698
+-#define QCA808X_PHY_MMD3_DEBUG_4		0xa105
+-#define QCA808X_MMD3_DEBUG_4_VALUE		0x8001
+-#define QCA808X_PHY_MMD3_DEBUG_5		0xa106
+-#define QCA808X_MMD3_DEBUG_5_VALUE		0x1111
+-#define QCA808X_PHY_MMD3_DEBUG_6		0xa011
+-#define QCA808X_MMD3_DEBUG_6_VALUE		0x5f85
+-
+-/* master/slave seed config */
+-#define QCA808X_PHY_DEBUG_LOCAL_SEED		9
+-#define QCA808X_MASTER_SLAVE_SEED_ENABLE	BIT(1)
+-#define QCA808X_MASTER_SLAVE_SEED_CFG		GENMASK(12, 2)
+-#define QCA808X_MASTER_SLAVE_SEED_RANGE		0x32
+-
+-/* Hibernation yields lower power consumpiton in contrast with normal operation mode.
+- * when the copper cable is unplugged, the PHY enters into hibernation mode in about 10s.
+- */
+-#define QCA808X_DBG_AN_TEST			0xb
+-#define QCA808X_HIBERNATION_EN			BIT(15)
+-
+-#define QCA808X_CDT_ENABLE_TEST			BIT(15)
+-#define QCA808X_CDT_INTER_CHECK_DIS		BIT(13)
+-#define QCA808X_CDT_STATUS			BIT(11)
+-#define QCA808X_CDT_LENGTH_UNIT			BIT(10)
+-
+-#define QCA808X_MMD3_CDT_STATUS			0x8064
+-#define QCA808X_MMD3_CDT_DIAG_PAIR_A		0x8065
+-#define QCA808X_MMD3_CDT_DIAG_PAIR_B		0x8066
+-#define QCA808X_MMD3_CDT_DIAG_PAIR_C		0x8067
+-#define QCA808X_MMD3_CDT_DIAG_PAIR_D		0x8068
+-#define QCA808X_CDT_DIAG_LENGTH_SAME_SHORT	GENMASK(15, 8)
+-#define QCA808X_CDT_DIAG_LENGTH_CROSS_SHORT	GENMASK(7, 0)
+-
+-#define QCA808X_CDT_CODE_PAIR_A			GENMASK(15, 12)
+-#define QCA808X_CDT_CODE_PAIR_B			GENMASK(11, 8)
+-#define QCA808X_CDT_CODE_PAIR_C			GENMASK(7, 4)
+-#define QCA808X_CDT_CODE_PAIR_D			GENMASK(3, 0)
+-
+-#define QCA808X_CDT_STATUS_STAT_TYPE		GENMASK(1, 0)
+-#define QCA808X_CDT_STATUS_STAT_FAIL		FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_TYPE, 0)
+-#define QCA808X_CDT_STATUS_STAT_NORMAL		FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_TYPE, 1)
+-#define QCA808X_CDT_STATUS_STAT_SAME_OPEN	FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_TYPE, 2)
+-#define QCA808X_CDT_STATUS_STAT_SAME_SHORT	FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_TYPE, 3)
+-
+-#define QCA808X_CDT_STATUS_STAT_MDI		GENMASK(3, 2)
+-#define QCA808X_CDT_STATUS_STAT_MDI1		FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_MDI, 1)
+-#define QCA808X_CDT_STATUS_STAT_MDI2		FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_MDI, 2)
+-#define QCA808X_CDT_STATUS_STAT_MDI3		FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_MDI, 3)
+-
+-/* NORMAL are MDI with type set to 0 */
+-#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_NORMAL	QCA808X_CDT_STATUS_STAT_MDI1
+-#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_OPEN		(QCA808X_CDT_STATUS_STAT_SAME_OPEN |\
+-									 QCA808X_CDT_STATUS_STAT_MDI1)
+-#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_SHORT	(QCA808X_CDT_STATUS_STAT_SAME_SHORT |\
+-									 QCA808X_CDT_STATUS_STAT_MDI1)
+-#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_NORMAL	QCA808X_CDT_STATUS_STAT_MDI2
+-#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_OPEN		(QCA808X_CDT_STATUS_STAT_SAME_OPEN |\
+-									 QCA808X_CDT_STATUS_STAT_MDI2)
+-#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_SHORT	(QCA808X_CDT_STATUS_STAT_SAME_SHORT |\
+-									 QCA808X_CDT_STATUS_STAT_MDI2)
+-#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_NORMAL	QCA808X_CDT_STATUS_STAT_MDI3
+-#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_OPEN		(QCA808X_CDT_STATUS_STAT_SAME_OPEN |\
+-									 QCA808X_CDT_STATUS_STAT_MDI3)
+-#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_SHORT	(QCA808X_CDT_STATUS_STAT_SAME_SHORT |\
+-									 QCA808X_CDT_STATUS_STAT_MDI3)
+-
+-/* Added for reference of existence but should be handled by wait_for_completion already */
+-#define QCA808X_CDT_STATUS_STAT_BUSY		(BIT(1) | BIT(3))
+-
+-#define QCA808X_MMD7_LED_GLOBAL			0x8073
+-#define QCA808X_LED_BLINK_1			GENMASK(11, 6)
+-#define QCA808X_LED_BLINK_2			GENMASK(5, 0)
+-/* Values are the same for both BLINK_1 and BLINK_2 */
+-#define QCA808X_LED_BLINK_FREQ_MASK		GENMASK(5, 3)
+-#define QCA808X_LED_BLINK_FREQ_2HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x0)
+-#define QCA808X_LED_BLINK_FREQ_4HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x1)
+-#define QCA808X_LED_BLINK_FREQ_8HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x2)
+-#define QCA808X_LED_BLINK_FREQ_16HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x3)
+-#define QCA808X_LED_BLINK_FREQ_32HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x4)
+-#define QCA808X_LED_BLINK_FREQ_64HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x5)
+-#define QCA808X_LED_BLINK_FREQ_128HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x6)
+-#define QCA808X_LED_BLINK_FREQ_256HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x7)
+-#define QCA808X_LED_BLINK_DUTY_MASK		GENMASK(2, 0)
+-#define QCA808X_LED_BLINK_DUTY_50_50		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x0)
+-#define QCA808X_LED_BLINK_DUTY_75_25		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x1)
+-#define QCA808X_LED_BLINK_DUTY_25_75		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x2)
+-#define QCA808X_LED_BLINK_DUTY_33_67		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x3)
+-#define QCA808X_LED_BLINK_DUTY_67_33		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x4)
+-#define QCA808X_LED_BLINK_DUTY_17_83		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x5)
+-#define QCA808X_LED_BLINK_DUTY_83_17		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x6)
+-#define QCA808X_LED_BLINK_DUTY_8_92		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x7)
+-
+-#define QCA808X_MMD7_LED2_CTRL			0x8074
+-#define QCA808X_MMD7_LED2_FORCE_CTRL		0x8075
+-#define QCA808X_MMD7_LED1_CTRL			0x8076
+-#define QCA808X_MMD7_LED1_FORCE_CTRL		0x8077
+-#define QCA808X_MMD7_LED0_CTRL			0x8078
+-#define QCA808X_MMD7_LED_CTRL(x)		(0x8078 - ((x) * 2))
+-
+-/* LED hw control pattern is the same for every LED */
+-#define QCA808X_LED_PATTERN_MASK		GENMASK(15, 0)
+-#define QCA808X_LED_SPEED2500_ON		BIT(15)
+-#define QCA808X_LED_SPEED2500_BLINK		BIT(14)
+-/* Follow blink trigger even if duplex or speed condition doesn't match */
+-#define QCA808X_LED_BLINK_CHECK_BYPASS		BIT(13)
+-#define QCA808X_LED_FULL_DUPLEX_ON		BIT(12)
+-#define QCA808X_LED_HALF_DUPLEX_ON		BIT(11)
+-#define QCA808X_LED_TX_BLINK			BIT(10)
+-#define QCA808X_LED_RX_BLINK			BIT(9)
+-#define QCA808X_LED_TX_ON_10MS			BIT(8)
+-#define QCA808X_LED_RX_ON_10MS			BIT(7)
+-#define QCA808X_LED_SPEED1000_ON		BIT(6)
+-#define QCA808X_LED_SPEED100_ON			BIT(5)
+-#define QCA808X_LED_SPEED10_ON			BIT(4)
+-#define QCA808X_LED_COLLISION_BLINK		BIT(3)
+-#define QCA808X_LED_SPEED1000_BLINK		BIT(2)
+-#define QCA808X_LED_SPEED100_BLINK		BIT(1)
+-#define QCA808X_LED_SPEED10_BLINK		BIT(0)
+-
+-#define QCA808X_MMD7_LED0_FORCE_CTRL		0x8079
+-#define QCA808X_MMD7_LED_FORCE_CTRL(x)		(0x8079 - ((x) * 2))
+-
+-/* LED force ctrl is the same for every LED
+- * No documentation exist for this, not even internal one
+- * with NDA as QCOM gives only info about configuring
+- * hw control pattern rules and doesn't indicate any way
+- * to force the LED to specific mode.
+- * These define comes from reverse and testing and maybe
+- * lack of some info or some info are not entirely correct.
+- * For the basic LED control and hw control these finding
+- * are enough to support LED control in all the required APIs.
+- *
+- * On doing some comparison with implementation with qca807x,
+- * it was found that it's 1:1 equal to it and confirms all the
+- * reverse done. It was also found further specification with the
+- * force mode and the blink modes.
+- */
+-#define QCA808X_LED_FORCE_EN			BIT(15)
+-#define QCA808X_LED_FORCE_MODE_MASK		GENMASK(14, 13)
+-#define QCA808X_LED_FORCE_BLINK_1		FIELD_PREP(QCA808X_LED_FORCE_MODE_MASK, 0x3)
+-#define QCA808X_LED_FORCE_BLINK_2		FIELD_PREP(QCA808X_LED_FORCE_MODE_MASK, 0x2)
+-#define QCA808X_LED_FORCE_ON			FIELD_PREP(QCA808X_LED_FORCE_MODE_MASK, 0x1)
+-#define QCA808X_LED_FORCE_OFF			FIELD_PREP(QCA808X_LED_FORCE_MODE_MASK, 0x0)
+-
+-#define QCA808X_MMD7_LED_POLARITY_CTRL		0x901a
+-/* QSDK sets by default 0x46 to this reg that sets BIT 6 for
+- * LED to active high. It's not clear what BIT 3 and BIT 4 does.
+- */
+-#define QCA808X_LED_ACTIVE_HIGH			BIT(6)
+-
+-/* QCA808X 1G chip type */
+-#define QCA808X_PHY_MMD7_CHIP_TYPE		0x901d
+-#define QCA808X_PHY_CHIP_TYPE_1G		BIT(0)
+-
+-#define QCA8081_PHY_SERDES_MMD1_FIFO_CTRL	0x9072
+-#define QCA8081_PHY_FIFO_RSTN			BIT(11)
+-
+-MODULE_DESCRIPTION("Qualcomm Atheros AR803x and QCA808X PHY driver");
++MODULE_DESCRIPTION("Qualcomm Atheros AR803x PHY driver");
  MODULE_AUTHOR("Matus Ujhelyi");
  MODULE_LICENSE("GPL");
  
--struct at803x_ss_mask {
--	u16 speed_mask;
--	u8 speed_shift;
--};
+@@ -320,7 +124,6 @@ struct at803x_priv {
+ 	bool is_1000basex;
+ 	struct regulator_dev *vddio_rdev;
+ 	struct regulator_dev *vddh_rdev;
+-	int led_polarity_mode;
+ };
+ 
+ struct at803x_context {
+@@ -521,9 +324,6 @@ static int at803x_probe(struct phy_device *phydev)
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	/* Init LED polarity mode to -1 */
+-	priv->led_polarity_mode = -1;
 -
- struct at803x_priv {
- 	int flags;
- 	u16 clk_25m_reg;
-@@ -470,80 +409,6 @@ static void at803x_context_restore(struct phy_device *phydev,
- 	phy_write(phydev, AT803X_LED_CONTROL, context->led_control);
+ 	phydev->priv = priv;
+ 
+ 	ret = at803x_parse_dt(phydev);
+@@ -1218,672 +1018,6 @@ static int at8035_probe(struct phy_device *phydev)
+ 	return at8035_parse_dt(phydev);
  }
  
--static int at803x_set_wol(struct phy_device *phydev,
--			  struct ethtool_wolinfo *wol)
--{
--	int ret, irq_enabled;
--
--	if (wol->wolopts & WAKE_MAGIC) {
--		struct net_device *ndev = phydev->attached_dev;
--		const u8 *mac;
--		unsigned int i;
--		static const unsigned int offsets[] = {
--			AT803X_LOC_MAC_ADDR_32_47_OFFSET,
--			AT803X_LOC_MAC_ADDR_16_31_OFFSET,
--			AT803X_LOC_MAC_ADDR_0_15_OFFSET,
--		};
--
--		if (!ndev)
--			return -ENODEV;
--
--		mac = (const u8 *)ndev->dev_addr;
--
--		if (!is_valid_ether_addr(mac))
--			return -EINVAL;
--
--		for (i = 0; i < 3; i++)
--			phy_write_mmd(phydev, MDIO_MMD_PCS, offsets[i],
--				      mac[(i * 2) + 1] | (mac[(i * 2)] << 8));
--
--		/* Enable WOL interrupt */
--		ret = phy_modify(phydev, AT803X_INTR_ENABLE, 0, AT803X_INTR_ENABLE_WOL);
--		if (ret)
--			return ret;
--	} else {
--		/* Disable WOL interrupt */
--		ret = phy_modify(phydev, AT803X_INTR_ENABLE, AT803X_INTR_ENABLE_WOL, 0);
--		if (ret)
--			return ret;
--	}
--
--	/* Clear WOL status */
--	ret = phy_read(phydev, AT803X_INTR_STATUS);
--	if (ret < 0)
--		return ret;
--
--	/* Check if there are other interrupts except for WOL triggered when PHY is
--	 * in interrupt mode, only the interrupts enabled by AT803X_INTR_ENABLE can
--	 * be passed up to the interrupt PIN.
--	 */
--	irq_enabled = phy_read(phydev, AT803X_INTR_ENABLE);
--	if (irq_enabled < 0)
--		return irq_enabled;
--
--	irq_enabled &= ~AT803X_INTR_ENABLE_WOL;
--	if (ret & irq_enabled && !phy_polling_mode(phydev))
--		phy_trigger_machine(phydev);
--
--	return 0;
--}
--
--static void at803x_get_wol(struct phy_device *phydev,
--			   struct ethtool_wolinfo *wol)
--{
--	int value;
--
--	wol->supported = WAKE_MAGIC;
--	wol->wolopts = 0;
--
--	value = phy_read(phydev, AT803X_INTR_ENABLE);
--	if (value < 0)
--		return;
--
--	if (value & AT803X_INTR_ENABLE_WOL)
--		wol->wolopts |= WAKE_MAGIC;
--}
--
- static int at803x_suspend(struct phy_device *phydev)
- {
- 	int value;
-@@ -816,73 +681,6 @@ static int at803x_config_init(struct phy_device *phydev)
- 	return phy_modify(phydev, MII_ADVERTISE, MDIO_AN_CTRL1_XNP, 0);
- }
- 
--static int at803x_ack_interrupt(struct phy_device *phydev)
--{
--	int err;
--
--	err = phy_read(phydev, AT803X_INTR_STATUS);
--
--	return (err < 0) ? err : 0;
--}
--
--static int at803x_config_intr(struct phy_device *phydev)
--{
--	int err;
--	int value;
--
--	value = phy_read(phydev, AT803X_INTR_ENABLE);
--
--	if (phydev->interrupts == PHY_INTERRUPT_ENABLED) {
--		/* Clear any pending interrupts */
--		err = at803x_ack_interrupt(phydev);
--		if (err)
--			return err;
--
--		value |= AT803X_INTR_ENABLE_AUTONEG_ERR;
--		value |= AT803X_INTR_ENABLE_SPEED_CHANGED;
--		value |= AT803X_INTR_ENABLE_DUPLEX_CHANGED;
--		value |= AT803X_INTR_ENABLE_LINK_FAIL;
--		value |= AT803X_INTR_ENABLE_LINK_SUCCESS;
--
--		err = phy_write(phydev, AT803X_INTR_ENABLE, value);
--	} else {
--		err = phy_write(phydev, AT803X_INTR_ENABLE, 0);
--		if (err)
--			return err;
--
--		/* Clear any pending interrupts */
--		err = at803x_ack_interrupt(phydev);
--	}
--
--	return err;
--}
--
--static irqreturn_t at803x_handle_interrupt(struct phy_device *phydev)
--{
--	int irq_status, int_enabled;
--
--	irq_status = phy_read(phydev, AT803X_INTR_STATUS);
--	if (irq_status < 0) {
--		phy_error(phydev);
--		return IRQ_NONE;
--	}
--
--	/* Read the current enabled interrupts */
--	int_enabled = phy_read(phydev, AT803X_INTR_ENABLE);
--	if (int_enabled < 0) {
--		phy_error(phydev);
--		return IRQ_NONE;
--	}
--
--	/* See if this was one of our enabled interrupts */
--	if (!(irq_status & int_enabled))
--		return IRQ_NONE;
--
--	phy_trigger_machine(phydev);
--
--	return IRQ_HANDLED;
--}
--
- static void at803x_link_change_notify(struct phy_device *phydev)
- {
- 	/*
-@@ -908,69 +706,6 @@ static void at803x_link_change_notify(struct phy_device *phydev)
- 	}
- }
- 
--static int at803x_read_specific_status(struct phy_device *phydev,
--				       struct at803x_ss_mask ss_mask)
--{
--	int ss;
--
--	/* Read the AT8035 PHY-Specific Status register, which indicates the
--	 * speed and duplex that the PHY is actually using, irrespective of
--	 * whether we are in autoneg mode or not.
--	 */
--	ss = phy_read(phydev, AT803X_SPECIFIC_STATUS);
--	if (ss < 0)
--		return ss;
--
--	if (ss & AT803X_SS_SPEED_DUPLEX_RESOLVED) {
--		int sfc, speed;
--
--		sfc = phy_read(phydev, AT803X_SPECIFIC_FUNCTION_CONTROL);
--		if (sfc < 0)
--			return sfc;
--
--		speed = ss & ss_mask.speed_mask;
--		speed >>= ss_mask.speed_shift;
--
--		switch (speed) {
--		case AT803X_SS_SPEED_10:
--			phydev->speed = SPEED_10;
--			break;
--		case AT803X_SS_SPEED_100:
--			phydev->speed = SPEED_100;
--			break;
--		case AT803X_SS_SPEED_1000:
--			phydev->speed = SPEED_1000;
--			break;
--		case QCA808X_SS_SPEED_2500:
--			phydev->speed = SPEED_2500;
--			break;
--		}
--		if (ss & AT803X_SS_DUPLEX)
--			phydev->duplex = DUPLEX_FULL;
--		else
--			phydev->duplex = DUPLEX_HALF;
--
--		if (ss & AT803X_SS_MDIX)
--			phydev->mdix = ETH_TP_MDI_X;
--		else
--			phydev->mdix = ETH_TP_MDI;
--
--		switch (FIELD_GET(AT803X_SFC_MDI_CROSSOVER_MODE_M, sfc)) {
--		case AT803X_SFC_MANUAL_MDI:
--			phydev->mdix_ctrl = ETH_TP_MDI;
--			break;
--		case AT803X_SFC_MANUAL_MDIX:
--			phydev->mdix_ctrl = ETH_TP_MDI_X;
--			break;
--		case AT803X_SFC_AUTOMATIC_CROSSOVER:
--			phydev->mdix_ctrl = ETH_TP_MDI_AUTO;
--			break;
--		}
--	}
--
--	return 0;
--}
--
- static int at803x_read_status(struct phy_device *phydev)
- {
- 	struct at803x_ss_mask ss_mask = { 0 };
-@@ -1006,50 +741,6 @@ static int at803x_read_status(struct phy_device *phydev)
- 	return 0;
- }
- 
--static int at803x_config_mdix(struct phy_device *phydev, u8 ctrl)
--{
--	u16 val;
--
--	switch (ctrl) {
--	case ETH_TP_MDI:
--		val = AT803X_SFC_MANUAL_MDI;
--		break;
--	case ETH_TP_MDI_X:
--		val = AT803X_SFC_MANUAL_MDIX;
--		break;
--	case ETH_TP_MDI_AUTO:
--		val = AT803X_SFC_AUTOMATIC_CROSSOVER;
--		break;
--	default:
--		return 0;
--	}
--
--	return phy_modify_changed(phydev, AT803X_SPECIFIC_FUNCTION_CONTROL,
--			  AT803X_SFC_MDI_CROSSOVER_MODE_M,
--			  FIELD_PREP(AT803X_SFC_MDI_CROSSOVER_MODE_M, val));
--}
--
--static int at803x_prepare_config_aneg(struct phy_device *phydev)
+-static int qca808x_phy_fast_retrain_config(struct phy_device *phydev)
 -{
 -	int ret;
 -
--	ret = at803x_config_mdix(phydev, phydev->mdix_ctrl);
--	if (ret < 0)
+-	/* Enable fast retrain */
+-	ret = genphy_c45_fast_retrain(phydev, true);
+-	if (ret)
 -		return ret;
 -
--	/* Changes of the midx bits are disruptive to the normal operation;
--	 * therefore any changes to these registers must be followed by a
--	 * software reset to take effect.
--	 */
--	if (ret == 1) {
--		ret = genphy_soft_reset(phydev);
+-	phy_write_mmd(phydev, MDIO_MMD_AN, QCA808X_PHY_MMD7_TOP_OPTION1,
+-		      QCA808X_TOP_OPTION1_DATA);
+-	phy_write_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_MSE_THRESHOLD_20DB,
+-		      QCA808X_MSE_THRESHOLD_20DB_VALUE);
+-	phy_write_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_MSE_THRESHOLD_17DB,
+-		      QCA808X_MSE_THRESHOLD_17DB_VALUE);
+-	phy_write_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_MSE_THRESHOLD_27DB,
+-		      QCA808X_MSE_THRESHOLD_27DB_VALUE);
+-	phy_write_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_MSE_THRESHOLD_28DB,
+-		      QCA808X_MSE_THRESHOLD_28DB_VALUE);
+-	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_1,
+-		      QCA808X_MMD3_DEBUG_1_VALUE);
+-	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_4,
+-		      QCA808X_MMD3_DEBUG_4_VALUE);
+-	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_5,
+-		      QCA808X_MMD3_DEBUG_5_VALUE);
+-	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_3,
+-		      QCA808X_MMD3_DEBUG_3_VALUE);
+-	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_6,
+-		      QCA808X_MMD3_DEBUG_6_VALUE);
+-	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_2,
+-		      QCA808X_MMD3_DEBUG_2_VALUE);
+-
+-	return 0;
+-}
+-
+-static int qca808x_phy_ms_seed_enable(struct phy_device *phydev, bool enable)
+-{
+-	u16 seed_value;
+-
+-	if (!enable)
+-		return at803x_debug_reg_mask(phydev, QCA808X_PHY_DEBUG_LOCAL_SEED,
+-				QCA808X_MASTER_SLAVE_SEED_ENABLE, 0);
+-
+-	seed_value = get_random_u32_below(QCA808X_MASTER_SLAVE_SEED_RANGE);
+-	return at803x_debug_reg_mask(phydev, QCA808X_PHY_DEBUG_LOCAL_SEED,
+-			QCA808X_MASTER_SLAVE_SEED_CFG | QCA808X_MASTER_SLAVE_SEED_ENABLE,
+-			FIELD_PREP(QCA808X_MASTER_SLAVE_SEED_CFG, seed_value) |
+-			QCA808X_MASTER_SLAVE_SEED_ENABLE);
+-}
+-
+-static bool qca808x_is_prefer_master(struct phy_device *phydev)
+-{
+-	return (phydev->master_slave_get == MASTER_SLAVE_CFG_MASTER_FORCE) ||
+-		(phydev->master_slave_get == MASTER_SLAVE_CFG_MASTER_PREFERRED);
+-}
+-
+-static bool qca808x_has_fast_retrain_or_slave_seed(struct phy_device *phydev)
+-{
+-	return linkmode_test_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->supported);
+-}
+-
+-static int qca808x_config_init(struct phy_device *phydev)
+-{
+-	int ret;
+-
+-	/* Active adc&vga on 802.3az for the link 1000M and 100M */
+-	ret = phy_modify_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_ADDR_CLD_CTRL7,
+-			     QCA808X_8023AZ_AFE_CTRL_MASK, QCA808X_8023AZ_AFE_EN);
+-	if (ret)
+-		return ret;
+-
+-	/* Adjust the threshold on 802.3az for the link 1000M */
+-	ret = phy_write_mmd(phydev, MDIO_MMD_PCS,
+-			    QCA808X_PHY_MMD3_AZ_TRAINING_CTRL,
+-			    QCA808X_MMD3_AZ_TRAINING_VAL);
+-	if (ret)
+-		return ret;
+-
+-	if (qca808x_has_fast_retrain_or_slave_seed(phydev)) {
+-		/* Config the fast retrain for the link 2500M */
+-		ret = qca808x_phy_fast_retrain_config(phydev);
+-		if (ret)
+-			return ret;
+-
+-		ret = genphy_read_master_slave(phydev);
 -		if (ret < 0)
 -			return ret;
+-
+-		if (!qca808x_is_prefer_master(phydev)) {
+-			/* Enable seed and configure lower ramdom seed to make phy
+-			 * linked as slave mode.
+-			 */
+-			ret = qca808x_phy_ms_seed_enable(phydev, true);
+-			if (ret)
+-				return ret;
+-		}
+-	}
+-
+-	/* Configure adc threshold as 100mv for the link 10M */
+-	return at803x_debug_reg_mask(phydev, QCA808X_PHY_DEBUG_ADC_THRESHOLD,
+-				     QCA808X_ADC_THRESHOLD_MASK,
+-				     QCA808X_ADC_THRESHOLD_100MV);
+-}
+-
+-static int qca808x_read_status(struct phy_device *phydev)
+-{
+-	struct at803x_ss_mask ss_mask = { 0 };
+-	int ret;
+-
+-	ret = phy_read_mmd(phydev, MDIO_MMD_AN, MDIO_AN_10GBT_STAT);
+-	if (ret < 0)
+-		return ret;
+-
+-	linkmode_mod_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->lp_advertising,
+-			 ret & MDIO_AN_10GBT_STAT_LP2_5G);
+-
+-	ret = genphy_read_status(phydev);
+-	if (ret)
+-		return ret;
+-
+-	/* qca8081 takes the different bits for speed value from at803x */
+-	ss_mask.speed_mask = QCA808X_SS_SPEED_MASK;
+-	ss_mask.speed_shift = __bf_shf(QCA808X_SS_SPEED_MASK);
+-	ret = at803x_read_specific_status(phydev, ss_mask);
+-	if (ret < 0)
+-		return ret;
+-
+-	if (phydev->link) {
+-		if (phydev->speed == SPEED_2500)
+-			phydev->interface = PHY_INTERFACE_MODE_2500BASEX;
+-		else
+-			phydev->interface = PHY_INTERFACE_MODE_SGMII;
+-	} else {
+-		/* generate seed as a lower random value to make PHY linked as SLAVE easily,
+-		 * except for master/slave configuration fault detected or the master mode
+-		 * preferred.
+-		 *
+-		 * the reason for not putting this code into the function link_change_notify is
+-		 * the corner case where the link partner is also the qca8081 PHY and the seed
+-		 * value is configured as the same value, the link can't be up and no link change
+-		 * occurs.
+-		 */
+-		if (qca808x_has_fast_retrain_or_slave_seed(phydev)) {
+-			if (phydev->master_slave_state == MASTER_SLAVE_STATE_ERR ||
+-			    qca808x_is_prefer_master(phydev)) {
+-				qca808x_phy_ms_seed_enable(phydev, false);
+-			} else {
+-				qca808x_phy_ms_seed_enable(phydev, true);
+-			}
+-		}
 -	}
 -
 -	return 0;
 -}
 -
- static int at803x_config_aneg(struct phy_device *phydev)
- {
- 	struct at803x_priv *priv = phydev->priv;
-@@ -1065,80 +756,6 @@ static int at803x_config_aneg(struct phy_device *phydev)
- 	return genphy_config_aneg(phydev);
- }
- 
--static int at803x_get_downshift(struct phy_device *phydev, u8 *d)
+-static int qca808x_soft_reset(struct phy_device *phydev)
 -{
--	int val;
--
--	val = phy_read(phydev, AT803X_SMART_SPEED);
--	if (val < 0)
--		return val;
--
--	if (val & AT803X_SMART_SPEED_ENABLE)
--		*d = FIELD_GET(AT803X_SMART_SPEED_RETRY_LIMIT_MASK, val) + 2;
--	else
--		*d = DOWNSHIFT_DEV_DISABLE;
--
--	return 0;
--}
--
--static int at803x_set_downshift(struct phy_device *phydev, u8 cnt)
--{
--	u16 mask, set;
 -	int ret;
 -
--	switch (cnt) {
--	case DOWNSHIFT_DEV_DEFAULT_COUNT:
--		cnt = AT803X_DEFAULT_DOWNSHIFT;
--		fallthrough;
--	case AT803X_MIN_DOWNSHIFT ... AT803X_MAX_DOWNSHIFT:
--		set = AT803X_SMART_SPEED_ENABLE |
--		      AT803X_SMART_SPEED_BYPASS_TIMER |
--		      FIELD_PREP(AT803X_SMART_SPEED_RETRY_LIMIT_MASK, cnt - 2);
--		mask = AT803X_SMART_SPEED_RETRY_LIMIT_MASK;
+-	ret = genphy_soft_reset(phydev);
+-	if (ret < 0)
+-		return ret;
+-
+-	if (qca808x_has_fast_retrain_or_slave_seed(phydev))
+-		ret = qca808x_phy_ms_seed_enable(phydev, true);
+-
+-	return ret;
+-}
+-
+-static bool qca808x_cdt_fault_length_valid(int cdt_code)
+-{
+-	switch (cdt_code) {
+-	case QCA808X_CDT_STATUS_STAT_SAME_SHORT:
+-	case QCA808X_CDT_STATUS_STAT_SAME_OPEN:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_NORMAL:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_OPEN:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_SHORT:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_NORMAL:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_OPEN:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_SHORT:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_NORMAL:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_OPEN:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_SHORT:
+-		return true;
+-	default:
+-		return false;
+-	}
+-}
+-
+-static int qca808x_cable_test_result_trans(int cdt_code)
+-{
+-	switch (cdt_code) {
+-	case QCA808X_CDT_STATUS_STAT_NORMAL:
+-		return ETHTOOL_A_CABLE_RESULT_CODE_OK;
+-	case QCA808X_CDT_STATUS_STAT_SAME_SHORT:
+-		return ETHTOOL_A_CABLE_RESULT_CODE_SAME_SHORT;
+-	case QCA808X_CDT_STATUS_STAT_SAME_OPEN:
+-		return ETHTOOL_A_CABLE_RESULT_CODE_OPEN;
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_NORMAL:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_OPEN:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_SHORT:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_NORMAL:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_OPEN:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_SHORT:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_NORMAL:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_OPEN:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_SHORT:
+-		return ETHTOOL_A_CABLE_RESULT_CODE_CROSS_SHORT;
+-	case QCA808X_CDT_STATUS_STAT_FAIL:
+-	default:
+-		return ETHTOOL_A_CABLE_RESULT_CODE_UNSPEC;
+-	}
+-}
+-
+-static int qca808x_cdt_fault_length(struct phy_device *phydev, int pair,
+-				    int result)
+-{
+-	int val;
+-	u32 cdt_length_reg = 0;
+-
+-	switch (pair) {
+-	case ETHTOOL_A_CABLE_PAIR_A:
+-		cdt_length_reg = QCA808X_MMD3_CDT_DIAG_PAIR_A;
 -		break;
--	case DOWNSHIFT_DEV_DISABLE:
--		set = 0;
--		mask = AT803X_SMART_SPEED_ENABLE |
--		       AT803X_SMART_SPEED_BYPASS_TIMER;
+-	case ETHTOOL_A_CABLE_PAIR_B:
+-		cdt_length_reg = QCA808X_MMD3_CDT_DIAG_PAIR_B;
+-		break;
+-	case ETHTOOL_A_CABLE_PAIR_C:
+-		cdt_length_reg = QCA808X_MMD3_CDT_DIAG_PAIR_C;
+-		break;
+-	case ETHTOOL_A_CABLE_PAIR_D:
+-		cdt_length_reg = QCA808X_MMD3_CDT_DIAG_PAIR_D;
 -		break;
 -	default:
 -		return -EINVAL;
 -	}
 -
--	ret = phy_modify_changed(phydev, AT803X_SMART_SPEED, mask, set);
+-	val = phy_read_mmd(phydev, MDIO_MMD_PCS, cdt_length_reg);
+-	if (val < 0)
+-		return val;
 -
--	/* After changing the smart speed settings, we need to perform a
--	 * software reset, use phy_init_hw() to make sure we set the
--	 * reapply any values which might got lost during software reset.
+-	if (result == ETHTOOL_A_CABLE_RESULT_CODE_SAME_SHORT)
+-		val = FIELD_GET(QCA808X_CDT_DIAG_LENGTH_SAME_SHORT, val);
+-	else
+-		val = FIELD_GET(QCA808X_CDT_DIAG_LENGTH_CROSS_SHORT, val);
+-
+-	return at803x_cdt_fault_length(val);
+-}
+-
+-static int qca808x_cable_test_start(struct phy_device *phydev)
+-{
+-	int ret;
+-
+-	/* perform CDT with the following configs:
+-	 * 1. disable hibernation.
+-	 * 2. force PHY working in MDI mode.
+-	 * 3. for PHY working in 1000BaseT.
+-	 * 4. configure the threshold.
 -	 */
--	if (ret == 1)
--		ret = phy_init_hw(phydev);
 -
--	return ret;
+-	ret = at803x_debug_reg_mask(phydev, QCA808X_DBG_AN_TEST, QCA808X_HIBERNATION_EN, 0);
+-	if (ret < 0)
+-		return ret;
+-
+-	ret = at803x_config_mdix(phydev, ETH_TP_MDI);
+-	if (ret < 0)
+-		return ret;
+-
+-	/* Force 1000base-T needs to configure PMA/PMD and MII_BMCR */
+-	phydev->duplex = DUPLEX_FULL;
+-	phydev->speed = SPEED_1000;
+-	ret = genphy_c45_pma_setup_forced(phydev);
+-	if (ret < 0)
+-		return ret;
+-
+-	ret = genphy_setup_forced(phydev);
+-	if (ret < 0)
+-		return ret;
+-
+-	/* configure the thresholds for open, short, pair ok test */
+-	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x8074, 0xc040);
+-	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x8076, 0xc040);
+-	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x8077, 0xa060);
+-	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x8078, 0xc050);
+-	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x807a, 0xc060);
+-	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x807e, 0xb060);
+-
+-	return 0;
 -}
 -
--static int at803x_get_tunable(struct phy_device *phydev,
--			      struct ethtool_tunable *tuna, void *data)
+-static int qca808x_cable_test_get_pair_status(struct phy_device *phydev, u8 pair,
+-					      u16 status)
 -{
--	switch (tuna->id) {
--	case ETHTOOL_PHY_DOWNSHIFT:
--		return at803x_get_downshift(phydev, data);
+-	int length, result;
+-	u16 pair_code;
+-
+-	switch (pair) {
+-	case ETHTOOL_A_CABLE_PAIR_A:
+-		pair_code = FIELD_GET(QCA808X_CDT_CODE_PAIR_A, status);
+-		break;
+-	case ETHTOOL_A_CABLE_PAIR_B:
+-		pair_code = FIELD_GET(QCA808X_CDT_CODE_PAIR_B, status);
+-		break;
+-	case ETHTOOL_A_CABLE_PAIR_C:
+-		pair_code = FIELD_GET(QCA808X_CDT_CODE_PAIR_C, status);
+-		break;
+-	case ETHTOOL_A_CABLE_PAIR_D:
+-		pair_code = FIELD_GET(QCA808X_CDT_CODE_PAIR_D, status);
+-		break;
 -	default:
--		return -EOPNOTSUPP;
+-		return -EINVAL;
 -	}
+-
+-	result = qca808x_cable_test_result_trans(pair_code);
+-	ethnl_cable_test_result(phydev, pair, result);
+-
+-	if (qca808x_cdt_fault_length_valid(pair_code)) {
+-		length = qca808x_cdt_fault_length(phydev, pair, result);
+-		ethnl_cable_test_fault_length(phydev, pair, length);
+-	}
+-
+-	return 0;
 -}
 -
--static int at803x_set_tunable(struct phy_device *phydev,
--			      struct ethtool_tunable *tuna, const void *data)
+-static int qca808x_cable_test_get_status(struct phy_device *phydev, bool *finished)
 -{
--	switch (tuna->id) {
--	case ETHTOOL_PHY_DOWNSHIFT:
--		return at803x_set_downshift(phydev, *(const u8 *)data);
--	default:
--		return -EOPNOTSUPP;
--	}
+-	int ret, val;
+-
+-	*finished = false;
+-
+-	val = QCA808X_CDT_ENABLE_TEST |
+-	      QCA808X_CDT_LENGTH_UNIT;
+-	ret = at803x_cdt_start(phydev, val);
+-	if (ret)
+-		return ret;
+-
+-	ret = at803x_cdt_wait_for_completion(phydev, QCA808X_CDT_ENABLE_TEST);
+-	if (ret)
+-		return ret;
+-
+-	val = phy_read_mmd(phydev, MDIO_MMD_PCS, QCA808X_MMD3_CDT_STATUS);
+-	if (val < 0)
+-		return val;
+-
+-	ret = qca808x_cable_test_get_pair_status(phydev, ETHTOOL_A_CABLE_PAIR_A, val);
+-	if (ret)
+-		return ret;
+-
+-	ret = qca808x_cable_test_get_pair_status(phydev, ETHTOOL_A_CABLE_PAIR_B, val);
+-	if (ret)
+-		return ret;
+-
+-	ret = qca808x_cable_test_get_pair_status(phydev, ETHTOOL_A_CABLE_PAIR_C, val);
+-	if (ret)
+-		return ret;
+-
+-	ret = qca808x_cable_test_get_pair_status(phydev, ETHTOOL_A_CABLE_PAIR_D, val);
+-	if (ret)
+-		return ret;
+-
+-	*finished = true;
+-
+-	return 0;
 -}
 -
- static int at803x_cable_test_result_trans(u16 status)
- {
- 	switch (FIELD_GET(AT803X_CDT_STATUS_STAT_MASK, status)) {
-@@ -1170,45 +787,6 @@ static bool at803x_cdt_fault_length_valid(u16 status)
- 	return false;
- }
- 
--static int at803x_cdt_fault_length(int dt)
+-static int qca808x_get_features(struct phy_device *phydev)
 -{
--	/* According to the datasheet the distance to the fault is
--	 * DELTA_TIME * 0.824 meters.
--	 *
--	 * The author suspect the correct formula is:
--	 *
--	 *   fault_distance = DELTA_TIME * (c * VF) / 125MHz / 2
--	 *
--	 * where c is the speed of light, VF is the velocity factor of
--	 * the twisted pair cable, 125MHz the counter frequency and
--	 * we need to divide by 2 because the hardware will measure the
--	 * round trip time to the fault and back to the PHY.
--	 *
--	 * With a VF of 0.69 we get the factor 0.824 mentioned in the
--	 * datasheet.
+-	int ret;
+-
+-	ret = genphy_c45_pma_read_abilities(phydev);
+-	if (ret)
+-		return ret;
+-
+-	/* The autoneg ability is not existed in bit3 of MMD7.1,
+-	 * but it is supported by qca808x PHY, so we add it here
+-	 * manually.
 -	 */
--	return (dt * 824) / 10;
+-	linkmode_set_bit(ETHTOOL_LINK_MODE_Autoneg_BIT, phydev->supported);
+-
+-	/* As for the qca8081 1G version chip, the 2500baseT ability is also
+-	 * existed in the bit0 of MMD1.21, we need to remove it manually if
+-	 * it is the qca8081 1G chip according to the bit0 of MMD7.0x901d.
+-	 */
+-	ret = phy_read_mmd(phydev, MDIO_MMD_AN, QCA808X_PHY_MMD7_CHIP_TYPE);
+-	if (ret < 0)
+-		return ret;
+-
+-	if (QCA808X_PHY_CHIP_TYPE_1G & ret)
+-		linkmode_clear_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->supported);
+-
+-	return 0;
 -}
 -
--static int at803x_cdt_start(struct phy_device *phydev,
--			    u32 cdt_start)
+-static int qca808x_config_aneg(struct phy_device *phydev)
 -{
--	return phy_write(phydev, AT803X_CDT, cdt_start);
+-	int phy_ctrl = 0;
+-	int ret;
+-
+-	ret = at803x_prepare_config_aneg(phydev);
+-	if (ret)
+-		return ret;
+-
+-	/* The reg MII_BMCR also needs to be configured for force mode, the
+-	 * genphy_config_aneg is also needed.
+-	 */
+-	if (phydev->autoneg == AUTONEG_DISABLE)
+-		genphy_c45_pma_setup_forced(phydev);
+-
+-	if (linkmode_test_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->advertising))
+-		phy_ctrl = MDIO_AN_10GBT_CTRL_ADV2_5G;
+-
+-	ret = phy_modify_mmd_changed(phydev, MDIO_MMD_AN, MDIO_AN_10GBT_CTRL,
+-				     MDIO_AN_10GBT_CTRL_ADV2_5G, phy_ctrl);
+-	if (ret < 0)
+-		return ret;
+-
+-	return __genphy_config_aneg(phydev, ret);
 -}
 -
--static int at803x_cdt_wait_for_completion(struct phy_device *phydev,
--					  u32 cdt_en)
+-static void qca808x_link_change_notify(struct phy_device *phydev)
 -{
--	int val, ret;
--
--	/* One test run takes about 25ms */
--	ret = phy_read_poll_timeout(phydev, AT803X_CDT, val,
--				    !(val & cdt_en),
--				    30000, 100000, true);
--
--	return ret < 0 ? ret : 0;
+-	/* Assert interface sgmii fifo on link down, deassert it on link up,
+-	 * the interface device address is always phy address added by 1.
+-	 */
+-	mdiobus_c45_modify_changed(phydev->mdio.bus, phydev->mdio.addr + 1,
+-				   MDIO_MMD_PMAPMD, QCA8081_PHY_SERDES_MMD1_FIFO_CTRL,
+-				   QCA8081_PHY_FIFO_RSTN,
+-				   phydev->link ? QCA8081_PHY_FIFO_RSTN : 0);
 -}
 -
- static int at803x_cable_test_one_pair(struct phy_device *phydev, int pair)
+-static int qca808x_led_parse_netdev(struct phy_device *phydev, unsigned long rules,
+-				    u16 *offload_trigger)
+-{
+-	/* Parsing specific to netdev trigger */
+-	if (test_bit(TRIGGER_NETDEV_TX, &rules))
+-		*offload_trigger |= QCA808X_LED_TX_BLINK;
+-	if (test_bit(TRIGGER_NETDEV_RX, &rules))
+-		*offload_trigger |= QCA808X_LED_RX_BLINK;
+-	if (test_bit(TRIGGER_NETDEV_LINK_10, &rules))
+-		*offload_trigger |= QCA808X_LED_SPEED10_ON;
+-	if (test_bit(TRIGGER_NETDEV_LINK_100, &rules))
+-		*offload_trigger |= QCA808X_LED_SPEED100_ON;
+-	if (test_bit(TRIGGER_NETDEV_LINK_1000, &rules))
+-		*offload_trigger |= QCA808X_LED_SPEED1000_ON;
+-	if (test_bit(TRIGGER_NETDEV_LINK_2500, &rules))
+-		*offload_trigger |= QCA808X_LED_SPEED2500_ON;
+-	if (test_bit(TRIGGER_NETDEV_HALF_DUPLEX, &rules))
+-		*offload_trigger |= QCA808X_LED_HALF_DUPLEX_ON;
+-	if (test_bit(TRIGGER_NETDEV_FULL_DUPLEX, &rules))
+-		*offload_trigger |= QCA808X_LED_FULL_DUPLEX_ON;
+-
+-	if (rules && !*offload_trigger)
+-		return -EOPNOTSUPP;
+-
+-	/* Enable BLINK_CHECK_BYPASS by default to make the LED
+-	 * blink even with duplex or speed mode not enabled.
+-	 */
+-	*offload_trigger |= QCA808X_LED_BLINK_CHECK_BYPASS;
+-
+-	return 0;
+-}
+-
+-static int qca808x_led_hw_control_enable(struct phy_device *phydev, u8 index)
+-{
+-	u16 reg;
+-
+-	if (index > 2)
+-		return -EINVAL;
+-
+-	reg = QCA808X_MMD7_LED_FORCE_CTRL(index);
+-
+-	return phy_clear_bits_mmd(phydev, MDIO_MMD_AN, reg,
+-				  QCA808X_LED_FORCE_EN);
+-}
+-
+-static int qca808x_led_hw_is_supported(struct phy_device *phydev, u8 index,
+-				       unsigned long rules)
+-{
+-	u16 offload_trigger = 0;
+-
+-	if (index > 2)
+-		return -EINVAL;
+-
+-	return qca808x_led_parse_netdev(phydev, rules, &offload_trigger);
+-}
+-
+-static int qca808x_led_hw_control_set(struct phy_device *phydev, u8 index,
+-				      unsigned long rules)
+-{
+-	u16 reg, offload_trigger = 0;
+-	int ret;
+-
+-	if (index > 2)
+-		return -EINVAL;
+-
+-	reg = QCA808X_MMD7_LED_CTRL(index);
+-
+-	ret = qca808x_led_parse_netdev(phydev, rules, &offload_trigger);
+-	if (ret)
+-		return ret;
+-
+-	ret = qca808x_led_hw_control_enable(phydev, index);
+-	if (ret)
+-		return ret;
+-
+-	return phy_modify_mmd(phydev, MDIO_MMD_AN, reg,
+-			      QCA808X_LED_PATTERN_MASK,
+-			      offload_trigger);
+-}
+-
+-static bool qca808x_led_hw_control_status(struct phy_device *phydev, u8 index)
+-{
+-	u16 reg;
+-	int val;
+-
+-	if (index > 2)
+-		return false;
+-
+-	reg = QCA808X_MMD7_LED_FORCE_CTRL(index);
+-
+-	val = phy_read_mmd(phydev, MDIO_MMD_AN, reg);
+-
+-	return !(val & QCA808X_LED_FORCE_EN);
+-}
+-
+-static int qca808x_led_hw_control_get(struct phy_device *phydev, u8 index,
+-				      unsigned long *rules)
+-{
+-	u16 reg;
+-	int val;
+-
+-	if (index > 2)
+-		return -EINVAL;
+-
+-	/* Check if we have hw control enabled */
+-	if (qca808x_led_hw_control_status(phydev, index))
+-		return -EINVAL;
+-
+-	reg = QCA808X_MMD7_LED_CTRL(index);
+-
+-	val = phy_read_mmd(phydev, MDIO_MMD_AN, reg);
+-	if (val & QCA808X_LED_TX_BLINK)
+-		set_bit(TRIGGER_NETDEV_TX, rules);
+-	if (val & QCA808X_LED_RX_BLINK)
+-		set_bit(TRIGGER_NETDEV_RX, rules);
+-	if (val & QCA808X_LED_SPEED10_ON)
+-		set_bit(TRIGGER_NETDEV_LINK_10, rules);
+-	if (val & QCA808X_LED_SPEED100_ON)
+-		set_bit(TRIGGER_NETDEV_LINK_100, rules);
+-	if (val & QCA808X_LED_SPEED1000_ON)
+-		set_bit(TRIGGER_NETDEV_LINK_1000, rules);
+-	if (val & QCA808X_LED_SPEED2500_ON)
+-		set_bit(TRIGGER_NETDEV_LINK_2500, rules);
+-	if (val & QCA808X_LED_HALF_DUPLEX_ON)
+-		set_bit(TRIGGER_NETDEV_HALF_DUPLEX, rules);
+-	if (val & QCA808X_LED_FULL_DUPLEX_ON)
+-		set_bit(TRIGGER_NETDEV_FULL_DUPLEX, rules);
+-
+-	return 0;
+-}
+-
+-static int qca808x_led_hw_control_reset(struct phy_device *phydev, u8 index)
+-{
+-	u16 reg;
+-
+-	if (index > 2)
+-		return -EINVAL;
+-
+-	reg = QCA808X_MMD7_LED_CTRL(index);
+-
+-	return phy_clear_bits_mmd(phydev, MDIO_MMD_AN, reg,
+-				  QCA808X_LED_PATTERN_MASK);
+-}
+-
+-static int qca808x_led_brightness_set(struct phy_device *phydev,
+-				      u8 index, enum led_brightness value)
+-{
+-	u16 reg;
+-	int ret;
+-
+-	if (index > 2)
+-		return -EINVAL;
+-
+-	if (!value) {
+-		ret = qca808x_led_hw_control_reset(phydev, index);
+-		if (ret)
+-			return ret;
+-	}
+-
+-	reg = QCA808X_MMD7_LED_FORCE_CTRL(index);
+-
+-	return phy_modify_mmd(phydev, MDIO_MMD_AN, reg,
+-			      QCA808X_LED_FORCE_EN | QCA808X_LED_FORCE_MODE_MASK,
+-			      QCA808X_LED_FORCE_EN | value ? QCA808X_LED_FORCE_ON :
+-							     QCA808X_LED_FORCE_OFF);
+-}
+-
+-static int qca808x_led_blink_set(struct phy_device *phydev, u8 index,
+-				 unsigned long *delay_on,
+-				 unsigned long *delay_off)
+-{
+-	int ret;
+-	u16 reg;
+-
+-	if (index > 2)
+-		return -EINVAL;
+-
+-	reg = QCA808X_MMD7_LED_FORCE_CTRL(index);
+-
+-	/* Set blink to 50% off, 50% on at 4Hz by default */
+-	ret = phy_modify_mmd(phydev, MDIO_MMD_AN, QCA808X_MMD7_LED_GLOBAL,
+-			     QCA808X_LED_BLINK_FREQ_MASK | QCA808X_LED_BLINK_DUTY_MASK,
+-			     QCA808X_LED_BLINK_FREQ_4HZ | QCA808X_LED_BLINK_DUTY_50_50);
+-	if (ret)
+-		return ret;
+-
+-	/* We use BLINK_1 for normal blinking */
+-	ret = phy_modify_mmd(phydev, MDIO_MMD_AN, reg,
+-			     QCA808X_LED_FORCE_EN | QCA808X_LED_FORCE_MODE_MASK,
+-			     QCA808X_LED_FORCE_EN | QCA808X_LED_FORCE_BLINK_1);
+-	if (ret)
+-		return ret;
+-
+-	/* We set blink to 4Hz, aka 250ms */
+-	*delay_on = 250 / 2;
+-	*delay_off = 250 / 2;
+-
+-	return 0;
+-}
+-
+-static int qca808x_led_polarity_set(struct phy_device *phydev, int index,
+-				    unsigned long modes)
+-{
+-	struct at803x_priv *priv = phydev->priv;
+-	bool active_low = false;
+-	u32 mode;
+-
+-	for_each_set_bit(mode, &modes, __PHY_LED_MODES_NUM) {
+-		switch (mode) {
+-		case PHY_LED_ACTIVE_LOW:
+-			active_low = true;
+-			break;
+-		default:
+-			return -EINVAL;
+-		}
+-	}
+-
+-	/* PHY polarity is global and can't be set per LED.
+-	 * To detect this, check if last requested polarity mode
+-	 * match the new one.
+-	 */
+-	if (priv->led_polarity_mode >= 0 &&
+-	    priv->led_polarity_mode != active_low) {
+-		phydev_err(phydev, "PHY polarity is global. Mismatched polarity on different LED\n");
+-		return -EINVAL;
+-	}
+-
+-	/* Save the last PHY polarity mode */
+-	priv->led_polarity_mode = active_low;
+-
+-	return phy_modify_mmd(phydev, MDIO_MMD_AN,
+-			      QCA808X_MMD7_LED_POLARITY_CTRL,
+-			      QCA808X_LED_ACTIVE_HIGH,
+-			      active_low ? 0 : QCA808X_LED_ACTIVE_HIGH);
+-}
+-
+ static struct phy_driver at803x_driver[] = {
  {
- 	static const int ethtool_pair[] = {
-diff --git a/drivers/net/phy/qcom/qcom-phy-lib.c b/drivers/net/phy/qcom/qcom-phy-lib.c
-index 7192184429b7..e0295d4b4a51 100644
---- a/drivers/net/phy/qcom/qcom-phy-lib.c
-+++ b/drivers/net/phy/qcom/qcom-phy-lib.c
-@@ -3,6 +3,9 @@
- #include <linux/phy.h>
- #include <linux/module.h>
+ 	/* Qualcomm Atheros AR8035 */
+@@ -1991,34 +1125,6 @@ static struct phy_driver at803x_driver[] = {
+ 	.read_status		= at803x_read_status,
+ 	.soft_reset		= genphy_soft_reset,
+ 	.config_aneg		= at803x_config_aneg,
+-}, {
+-	/* Qualcomm QCA8081 */
+-	PHY_ID_MATCH_EXACT(QCA8081_PHY_ID),
+-	.name			= "Qualcomm QCA8081",
+-	.flags			= PHY_POLL_CABLE_TEST,
+-	.probe			= at803x_probe,
+-	.config_intr		= at803x_config_intr,
+-	.handle_interrupt	= at803x_handle_interrupt,
+-	.get_tunable		= at803x_get_tunable,
+-	.set_tunable		= at803x_set_tunable,
+-	.set_wol		= at803x_set_wol,
+-	.get_wol		= at803x_get_wol,
+-	.get_features		= qca808x_get_features,
+-	.config_aneg		= qca808x_config_aneg,
+-	.suspend		= genphy_suspend,
+-	.resume			= genphy_resume,
+-	.read_status		= qca808x_read_status,
+-	.config_init		= qca808x_config_init,
+-	.soft_reset		= qca808x_soft_reset,
+-	.cable_test_start	= qca808x_cable_test_start,
+-	.cable_test_get_status	= qca808x_cable_test_get_status,
+-	.link_change_notify	= qca808x_link_change_notify,
+-	.led_brightness_set	= qca808x_led_brightness_set,
+-	.led_blink_set		= qca808x_led_blink_set,
+-	.led_hw_is_supported	= qca808x_led_hw_is_supported,
+-	.led_hw_control_set	= qca808x_led_hw_control_set,
+-	.led_hw_control_get	= qca808x_led_hw_control_get,
+-	.led_polarity_set	= qca808x_led_polarity_set,
+ }, };
  
-+#include <linux/netdevice.h>
-+#include <linux/etherdevice.h>
-+
- #include "qcom.h"
+ module_phy_driver(at803x_driver);
+@@ -2030,7 +1136,6 @@ static struct mdio_device_id __maybe_unused atheros_tbl[] = {
+ 	{ PHY_ID_MATCH_EXACT(ATH8035_PHY_ID) },
+ 	{ PHY_ID_MATCH_EXACT(ATH9331_PHY_ID) },
+ 	{ PHY_ID_MATCH_EXACT(QCA9561_PHY_ID) },
+-	{ PHY_ID_MATCH_EXACT(QCA8081_PHY_ID) },
+ 	{ }
+ };
  
- MODULE_DESCRIPTION("Qualcomm PHY driver Common Functions");
-@@ -51,3 +54,376 @@ int at803x_debug_reg_write(struct phy_device *phydev, u16 reg, u16 data)
- 	return phy_write(phydev, AT803X_DEBUG_DATA, data);
- }
- EXPORT_SYMBOL_GPL(at803x_debug_reg_write);
+diff --git a/drivers/net/phy/qcom/qca808x.c b/drivers/net/phy/qcom/qca808x.c
+new file mode 100644
+index 000000000000..5a5a50f8646d
+--- /dev/null
++++ b/drivers/net/phy/qcom/qca808x.c
+@@ -0,0 +1,936 @@
++// SPDX-License-Identifier: GPL-2.0+
 +
-+int at803x_set_wol(struct phy_device *phydev,
-+		   struct ethtool_wolinfo *wol)
-+{
-+	int ret, irq_enabled;
++#include <linux/phy.h>
++#include <linux/module.h>
++#include <linux/ethtool_netlink.h>
 +
-+	if (wol->wolopts & WAKE_MAGIC) {
-+		struct net_device *ndev = phydev->attached_dev;
-+		const u8 *mac;
-+		unsigned int i;
-+		static const unsigned int offsets[] = {
-+			AT803X_LOC_MAC_ADDR_32_47_OFFSET,
-+			AT803X_LOC_MAC_ADDR_16_31_OFFSET,
-+			AT803X_LOC_MAC_ADDR_0_15_OFFSET,
-+		};
++#include "qcom.h"
 +
-+		if (!ndev)
-+			return -ENODEV;
++/* ADC threshold */
++#define QCA808X_PHY_DEBUG_ADC_THRESHOLD		0x2c80
++#define QCA808X_ADC_THRESHOLD_MASK		GENMASK(7, 0)
++#define QCA808X_ADC_THRESHOLD_80MV		0
++#define QCA808X_ADC_THRESHOLD_100MV		0xf0
++#define QCA808X_ADC_THRESHOLD_200MV		0x0f
++#define QCA808X_ADC_THRESHOLD_300MV		0xff
 +
-+		mac = (const u8 *)ndev->dev_addr;
++/* CLD control */
++#define QCA808X_PHY_MMD3_ADDR_CLD_CTRL7		0x8007
++#define QCA808X_8023AZ_AFE_CTRL_MASK		GENMASK(8, 4)
++#define QCA808X_8023AZ_AFE_EN			0x90
 +
-+		if (!is_valid_ether_addr(mac))
-+			return -EINVAL;
++/* AZ control */
++#define QCA808X_PHY_MMD3_AZ_TRAINING_CTRL	0x8008
++#define QCA808X_MMD3_AZ_TRAINING_VAL		0x1c32
 +
-+		for (i = 0; i < 3; i++)
-+			phy_write_mmd(phydev, MDIO_MMD_PCS, offsets[i],
-+				      mac[(i * 2) + 1] | (mac[(i * 2)] << 8));
++#define QCA808X_PHY_MMD1_MSE_THRESHOLD_20DB	0x8014
++#define QCA808X_MSE_THRESHOLD_20DB_VALUE	0x529
 +
-+		/* Enable WOL interrupt */
-+		ret = phy_modify(phydev, AT803X_INTR_ENABLE, 0, AT803X_INTR_ENABLE_WOL);
-+		if (ret)
-+			return ret;
-+	} else {
-+		/* Disable WOL interrupt */
-+		ret = phy_modify(phydev, AT803X_INTR_ENABLE, AT803X_INTR_ENABLE_WOL, 0);
-+		if (ret)
-+			return ret;
-+	}
++#define QCA808X_PHY_MMD1_MSE_THRESHOLD_17DB	0x800E
++#define QCA808X_MSE_THRESHOLD_17DB_VALUE	0x341
 +
-+	/* Clear WOL status */
-+	ret = phy_read(phydev, AT803X_INTR_STATUS);
-+	if (ret < 0)
-+		return ret;
++#define QCA808X_PHY_MMD1_MSE_THRESHOLD_27DB	0x801E
++#define QCA808X_MSE_THRESHOLD_27DB_VALUE	0x419
 +
-+	/* Check if there are other interrupts except for WOL triggered when PHY is
-+	 * in interrupt mode, only the interrupts enabled by AT803X_INTR_ENABLE can
-+	 * be passed up to the interrupt PIN.
-+	 */
-+	irq_enabled = phy_read(phydev, AT803X_INTR_ENABLE);
-+	if (irq_enabled < 0)
-+		return irq_enabled;
++#define QCA808X_PHY_MMD1_MSE_THRESHOLD_28DB	0x8020
++#define QCA808X_MSE_THRESHOLD_28DB_VALUE	0x341
 +
-+	irq_enabled &= ~AT803X_INTR_ENABLE_WOL;
-+	if (ret & irq_enabled && !phy_polling_mode(phydev))
-+		phy_trigger_machine(phydev);
++#define QCA808X_PHY_MMD7_TOP_OPTION1		0x901c
++#define QCA808X_TOP_OPTION1_DATA		0x0
 +
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(at803x_set_wol);
++#define QCA808X_PHY_MMD3_DEBUG_1		0xa100
++#define QCA808X_MMD3_DEBUG_1_VALUE		0x9203
++#define QCA808X_PHY_MMD3_DEBUG_2		0xa101
++#define QCA808X_MMD3_DEBUG_2_VALUE		0x48ad
++#define QCA808X_PHY_MMD3_DEBUG_3		0xa103
++#define QCA808X_MMD3_DEBUG_3_VALUE		0x1698
++#define QCA808X_PHY_MMD3_DEBUG_4		0xa105
++#define QCA808X_MMD3_DEBUG_4_VALUE		0x8001
++#define QCA808X_PHY_MMD3_DEBUG_5		0xa106
++#define QCA808X_MMD3_DEBUG_5_VALUE		0x1111
++#define QCA808X_PHY_MMD3_DEBUG_6		0xa011
++#define QCA808X_MMD3_DEBUG_6_VALUE		0x5f85
 +
-+void at803x_get_wol(struct phy_device *phydev,
-+		    struct ethtool_wolinfo *wol)
-+{
-+	int value;
++/* master/slave seed config */
++#define QCA808X_PHY_DEBUG_LOCAL_SEED		9
++#define QCA808X_MASTER_SLAVE_SEED_ENABLE	BIT(1)
++#define QCA808X_MASTER_SLAVE_SEED_CFG		GENMASK(12, 2)
++#define QCA808X_MASTER_SLAVE_SEED_RANGE		0x32
 +
-+	wol->supported = WAKE_MAGIC;
-+	wol->wolopts = 0;
++/* Hibernation yields lower power consumpiton in contrast with normal operation mode.
++ * when the copper cable is unplugged, the PHY enters into hibernation mode in about 10s.
++ */
++#define QCA808X_DBG_AN_TEST			0xb
++#define QCA808X_HIBERNATION_EN			BIT(15)
 +
-+	value = phy_read(phydev, AT803X_INTR_ENABLE);
-+	if (value < 0)
-+		return;
++#define QCA808X_CDT_ENABLE_TEST			BIT(15)
++#define QCA808X_CDT_INTER_CHECK_DIS		BIT(13)
++#define QCA808X_CDT_STATUS			BIT(11)
++#define QCA808X_CDT_LENGTH_UNIT			BIT(10)
 +
-+	if (value & AT803X_INTR_ENABLE_WOL)
-+		wol->wolopts |= WAKE_MAGIC;
-+}
-+EXPORT_SYMBOL_GPL(at803x_get_wol);
++#define QCA808X_MMD3_CDT_STATUS			0x8064
++#define QCA808X_MMD3_CDT_DIAG_PAIR_A		0x8065
++#define QCA808X_MMD3_CDT_DIAG_PAIR_B		0x8066
++#define QCA808X_MMD3_CDT_DIAG_PAIR_C		0x8067
++#define QCA808X_MMD3_CDT_DIAG_PAIR_D		0x8068
++#define QCA808X_CDT_DIAG_LENGTH_SAME_SHORT	GENMASK(15, 8)
++#define QCA808X_CDT_DIAG_LENGTH_CROSS_SHORT	GENMASK(7, 0)
 +
-+int at803x_ack_interrupt(struct phy_device *phydev)
-+{
-+	int err;
++#define QCA808X_CDT_CODE_PAIR_A			GENMASK(15, 12)
++#define QCA808X_CDT_CODE_PAIR_B			GENMASK(11, 8)
++#define QCA808X_CDT_CODE_PAIR_C			GENMASK(7, 4)
++#define QCA808X_CDT_CODE_PAIR_D			GENMASK(3, 0)
 +
-+	err = phy_read(phydev, AT803X_INTR_STATUS);
++#define QCA808X_CDT_STATUS_STAT_TYPE		GENMASK(1, 0)
++#define QCA808X_CDT_STATUS_STAT_FAIL		FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_TYPE, 0)
++#define QCA808X_CDT_STATUS_STAT_NORMAL		FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_TYPE, 1)
++#define QCA808X_CDT_STATUS_STAT_SAME_OPEN	FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_TYPE, 2)
++#define QCA808X_CDT_STATUS_STAT_SAME_SHORT	FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_TYPE, 3)
 +
-+	return (err < 0) ? err : 0;
-+}
-+EXPORT_SYMBOL_GPL(at803x_ack_interrupt);
++#define QCA808X_CDT_STATUS_STAT_MDI		GENMASK(3, 2)
++#define QCA808X_CDT_STATUS_STAT_MDI1		FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_MDI, 1)
++#define QCA808X_CDT_STATUS_STAT_MDI2		FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_MDI, 2)
++#define QCA808X_CDT_STATUS_STAT_MDI3		FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_MDI, 3)
 +
-+int at803x_config_intr(struct phy_device *phydev)
-+{
-+	int err;
-+	int value;
++/* NORMAL are MDI with type set to 0 */
++#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_NORMAL	QCA808X_CDT_STATUS_STAT_MDI1
++#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_OPEN		(QCA808X_CDT_STATUS_STAT_SAME_OPEN |\
++									 QCA808X_CDT_STATUS_STAT_MDI1)
++#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_SHORT	(QCA808X_CDT_STATUS_STAT_SAME_SHORT |\
++									 QCA808X_CDT_STATUS_STAT_MDI1)
++#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_NORMAL	QCA808X_CDT_STATUS_STAT_MDI2
++#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_OPEN		(QCA808X_CDT_STATUS_STAT_SAME_OPEN |\
++									 QCA808X_CDT_STATUS_STAT_MDI2)
++#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_SHORT	(QCA808X_CDT_STATUS_STAT_SAME_SHORT |\
++									 QCA808X_CDT_STATUS_STAT_MDI2)
++#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_NORMAL	QCA808X_CDT_STATUS_STAT_MDI3
++#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_OPEN		(QCA808X_CDT_STATUS_STAT_SAME_OPEN |\
++									 QCA808X_CDT_STATUS_STAT_MDI3)
++#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_SHORT	(QCA808X_CDT_STATUS_STAT_SAME_SHORT |\
++									 QCA808X_CDT_STATUS_STAT_MDI3)
 +
-+	value = phy_read(phydev, AT803X_INTR_ENABLE);
++/* Added for reference of existence but should be handled by wait_for_completion already */
++#define QCA808X_CDT_STATUS_STAT_BUSY		(BIT(1) | BIT(3))
 +
-+	if (phydev->interrupts == PHY_INTERRUPT_ENABLED) {
-+		/* Clear any pending interrupts */
-+		err = at803x_ack_interrupt(phydev);
-+		if (err)
-+			return err;
++#define QCA808X_MMD7_LED_GLOBAL			0x8073
++#define QCA808X_LED_BLINK_1			GENMASK(11, 6)
++#define QCA808X_LED_BLINK_2			GENMASK(5, 0)
++/* Values are the same for both BLINK_1 and BLINK_2 */
++#define QCA808X_LED_BLINK_FREQ_MASK		GENMASK(5, 3)
++#define QCA808X_LED_BLINK_FREQ_2HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x0)
++#define QCA808X_LED_BLINK_FREQ_4HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x1)
++#define QCA808X_LED_BLINK_FREQ_8HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x2)
++#define QCA808X_LED_BLINK_FREQ_16HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x3)
++#define QCA808X_LED_BLINK_FREQ_32HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x4)
++#define QCA808X_LED_BLINK_FREQ_64HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x5)
++#define QCA808X_LED_BLINK_FREQ_128HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x6)
++#define QCA808X_LED_BLINK_FREQ_256HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x7)
++#define QCA808X_LED_BLINK_DUTY_MASK		GENMASK(2, 0)
++#define QCA808X_LED_BLINK_DUTY_50_50		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x0)
++#define QCA808X_LED_BLINK_DUTY_75_25		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x1)
++#define QCA808X_LED_BLINK_DUTY_25_75		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x2)
++#define QCA808X_LED_BLINK_DUTY_33_67		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x3)
++#define QCA808X_LED_BLINK_DUTY_67_33		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x4)
++#define QCA808X_LED_BLINK_DUTY_17_83		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x5)
++#define QCA808X_LED_BLINK_DUTY_83_17		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x6)
++#define QCA808X_LED_BLINK_DUTY_8_92		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x7)
 +
-+		value |= AT803X_INTR_ENABLE_AUTONEG_ERR;
-+		value |= AT803X_INTR_ENABLE_SPEED_CHANGED;
-+		value |= AT803X_INTR_ENABLE_DUPLEX_CHANGED;
-+		value |= AT803X_INTR_ENABLE_LINK_FAIL;
-+		value |= AT803X_INTR_ENABLE_LINK_SUCCESS;
++#define QCA808X_MMD7_LED2_CTRL			0x8074
++#define QCA808X_MMD7_LED2_FORCE_CTRL		0x8075
++#define QCA808X_MMD7_LED1_CTRL			0x8076
++#define QCA808X_MMD7_LED1_FORCE_CTRL		0x8077
++#define QCA808X_MMD7_LED0_CTRL			0x8078
++#define QCA808X_MMD7_LED_CTRL(x)		(0x8078 - ((x) * 2))
 +
-+		err = phy_write(phydev, AT803X_INTR_ENABLE, value);
-+	} else {
-+		err = phy_write(phydev, AT803X_INTR_ENABLE, 0);
-+		if (err)
-+			return err;
++/* LED hw control pattern is the same for every LED */
++#define QCA808X_LED_PATTERN_MASK		GENMASK(15, 0)
++#define QCA808X_LED_SPEED2500_ON		BIT(15)
++#define QCA808X_LED_SPEED2500_BLINK		BIT(14)
++/* Follow blink trigger even if duplex or speed condition doesn't match */
++#define QCA808X_LED_BLINK_CHECK_BYPASS		BIT(13)
++#define QCA808X_LED_FULL_DUPLEX_ON		BIT(12)
++#define QCA808X_LED_HALF_DUPLEX_ON		BIT(11)
++#define QCA808X_LED_TX_BLINK			BIT(10)
++#define QCA808X_LED_RX_BLINK			BIT(9)
++#define QCA808X_LED_TX_ON_10MS			BIT(8)
++#define QCA808X_LED_RX_ON_10MS			BIT(7)
++#define QCA808X_LED_SPEED1000_ON		BIT(6)
++#define QCA808X_LED_SPEED100_ON			BIT(5)
++#define QCA808X_LED_SPEED10_ON			BIT(4)
++#define QCA808X_LED_COLLISION_BLINK		BIT(3)
++#define QCA808X_LED_SPEED1000_BLINK		BIT(2)
++#define QCA808X_LED_SPEED100_BLINK		BIT(1)
++#define QCA808X_LED_SPEED10_BLINK		BIT(0)
 +
-+		/* Clear any pending interrupts */
-+		err = at803x_ack_interrupt(phydev);
-+	}
++#define QCA808X_MMD7_LED0_FORCE_CTRL		0x8079
++#define QCA808X_MMD7_LED_FORCE_CTRL(x)		(0x8079 - ((x) * 2))
 +
-+	return err;
-+}
-+EXPORT_SYMBOL_GPL(at803x_config_intr);
++/* LED force ctrl is the same for every LED
++ * No documentation exist for this, not even internal one
++ * with NDA as QCOM gives only info about configuring
++ * hw control pattern rules and doesn't indicate any way
++ * to force the LED to specific mode.
++ * These define comes from reverse and testing and maybe
++ * lack of some info or some info are not entirely correct.
++ * For the basic LED control and hw control these finding
++ * are enough to support LED control in all the required APIs.
++ *
++ * On doing some comparison with implementation with qca807x,
++ * it was found that it's 1:1 equal to it and confirms all the
++ * reverse done. It was also found further specification with the
++ * force mode and the blink modes.
++ */
++#define QCA808X_LED_FORCE_EN			BIT(15)
++#define QCA808X_LED_FORCE_MODE_MASK		GENMASK(14, 13)
++#define QCA808X_LED_FORCE_BLINK_1		FIELD_PREP(QCA808X_LED_FORCE_MODE_MASK, 0x3)
++#define QCA808X_LED_FORCE_BLINK_2		FIELD_PREP(QCA808X_LED_FORCE_MODE_MASK, 0x2)
++#define QCA808X_LED_FORCE_ON			FIELD_PREP(QCA808X_LED_FORCE_MODE_MASK, 0x1)
++#define QCA808X_LED_FORCE_OFF			FIELD_PREP(QCA808X_LED_FORCE_MODE_MASK, 0x0)
 +
-+irqreturn_t at803x_handle_interrupt(struct phy_device *phydev)
-+{
-+	int irq_status, int_enabled;
++#define QCA808X_MMD7_LED_POLARITY_CTRL		0x901a
++/* QSDK sets by default 0x46 to this reg that sets BIT 6 for
++ * LED to active high. It's not clear what BIT 3 and BIT 4 does.
++ */
++#define QCA808X_LED_ACTIVE_HIGH			BIT(6)
 +
-+	irq_status = phy_read(phydev, AT803X_INTR_STATUS);
-+	if (irq_status < 0) {
-+		phy_error(phydev);
-+		return IRQ_NONE;
-+	}
++/* QCA808X 1G chip type */
++#define QCA808X_PHY_MMD7_CHIP_TYPE		0x901d
++#define QCA808X_PHY_CHIP_TYPE_1G		BIT(0)
 +
-+	/* Read the current enabled interrupts */
-+	int_enabled = phy_read(phydev, AT803X_INTR_ENABLE);
-+	if (int_enabled < 0) {
-+		phy_error(phydev);
-+		return IRQ_NONE;
-+	}
++#define QCA8081_PHY_SERDES_MMD1_FIFO_CTRL	0x9072
++#define QCA8081_PHY_FIFO_RSTN			BIT(11)
 +
-+	/* See if this was one of our enabled interrupts */
-+	if (!(irq_status & int_enabled))
-+		return IRQ_NONE;
++#define QCA8081_PHY_ID				0x004dd101
 +
-+	phy_trigger_machine(phydev);
++#define QCA808X_SS_SPEED_MASK			GENMASK(9, 7)
 +
-+	return IRQ_HANDLED;
-+}
-+EXPORT_SYMBOL_GPL(at803x_handle_interrupt);
++MODULE_DESCRIPTION("Qualcomm Atheros QCA808X PHY driver");
++MODULE_AUTHOR("Matus Ujhelyi");
++MODULE_LICENSE("GPL");
 +
-+int at803x_read_specific_status(struct phy_device *phydev,
-+				struct at803x_ss_mask ss_mask)
-+{
-+	int ss;
++struct qca808x_priv {
++	int led_polarity_mode;
++};
 +
-+	/* Read the AT8035 PHY-Specific Status register, which indicates the
-+	 * speed and duplex that the PHY is actually using, irrespective of
-+	 * whether we are in autoneg mode or not.
-+	 */
-+	ss = phy_read(phydev, AT803X_SPECIFIC_STATUS);
-+	if (ss < 0)
-+		return ss;
-+
-+	if (ss & AT803X_SS_SPEED_DUPLEX_RESOLVED) {
-+		int sfc, speed;
-+
-+		sfc = phy_read(phydev, AT803X_SPECIFIC_FUNCTION_CONTROL);
-+		if (sfc < 0)
-+			return sfc;
-+
-+		speed = ss & ss_mask.speed_mask;
-+		speed >>= ss_mask.speed_shift;
-+
-+		switch (speed) {
-+		case AT803X_SS_SPEED_10:
-+			phydev->speed = SPEED_10;
-+			break;
-+		case AT803X_SS_SPEED_100:
-+			phydev->speed = SPEED_100;
-+			break;
-+		case AT803X_SS_SPEED_1000:
-+			phydev->speed = SPEED_1000;
-+			break;
-+		case QCA808X_SS_SPEED_2500:
-+			phydev->speed = SPEED_2500;
-+			break;
-+		}
-+		if (ss & AT803X_SS_DUPLEX)
-+			phydev->duplex = DUPLEX_FULL;
-+		else
-+			phydev->duplex = DUPLEX_HALF;
-+
-+		if (ss & AT803X_SS_MDIX)
-+			phydev->mdix = ETH_TP_MDI_X;
-+		else
-+			phydev->mdix = ETH_TP_MDI;
-+
-+		switch (FIELD_GET(AT803X_SFC_MDI_CROSSOVER_MODE_M, sfc)) {
-+		case AT803X_SFC_MANUAL_MDI:
-+			phydev->mdix_ctrl = ETH_TP_MDI;
-+			break;
-+		case AT803X_SFC_MANUAL_MDIX:
-+			phydev->mdix_ctrl = ETH_TP_MDI_X;
-+			break;
-+		case AT803X_SFC_AUTOMATIC_CROSSOVER:
-+			phydev->mdix_ctrl = ETH_TP_MDI_AUTO;
-+			break;
-+		}
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(at803x_read_specific_status);
-+
-+int at803x_config_mdix(struct phy_device *phydev, u8 ctrl)
-+{
-+	u16 val;
-+
-+	switch (ctrl) {
-+	case ETH_TP_MDI:
-+		val = AT803X_SFC_MANUAL_MDI;
-+		break;
-+	case ETH_TP_MDI_X:
-+		val = AT803X_SFC_MANUAL_MDIX;
-+		break;
-+	case ETH_TP_MDI_AUTO:
-+		val = AT803X_SFC_AUTOMATIC_CROSSOVER;
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	return phy_modify_changed(phydev, AT803X_SPECIFIC_FUNCTION_CONTROL,
-+			  AT803X_SFC_MDI_CROSSOVER_MODE_M,
-+			  FIELD_PREP(AT803X_SFC_MDI_CROSSOVER_MODE_M, val));
-+}
-+EXPORT_SYMBOL_GPL(at803x_config_mdix);
-+
-+int at803x_prepare_config_aneg(struct phy_device *phydev)
++static int qca808x_phy_fast_retrain_config(struct phy_device *phydev)
 +{
 +	int ret;
 +
-+	ret = at803x_config_mdix(phydev, phydev->mdix_ctrl);
-+	if (ret < 0)
++	/* Enable fast retrain */
++	ret = genphy_c45_fast_retrain(phydev, true);
++	if (ret)
 +		return ret;
 +
-+	/* Changes of the midx bits are disruptive to the normal operation;
-+	 * therefore any changes to these registers must be followed by a
-+	 * software reset to take effect.
-+	 */
-+	if (ret == 1) {
-+		ret = genphy_soft_reset(phydev);
++	phy_write_mmd(phydev, MDIO_MMD_AN, QCA808X_PHY_MMD7_TOP_OPTION1,
++		      QCA808X_TOP_OPTION1_DATA);
++	phy_write_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_MSE_THRESHOLD_20DB,
++		      QCA808X_MSE_THRESHOLD_20DB_VALUE);
++	phy_write_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_MSE_THRESHOLD_17DB,
++		      QCA808X_MSE_THRESHOLD_17DB_VALUE);
++	phy_write_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_MSE_THRESHOLD_27DB,
++		      QCA808X_MSE_THRESHOLD_27DB_VALUE);
++	phy_write_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_MSE_THRESHOLD_28DB,
++		      QCA808X_MSE_THRESHOLD_28DB_VALUE);
++	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_1,
++		      QCA808X_MMD3_DEBUG_1_VALUE);
++	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_4,
++		      QCA808X_MMD3_DEBUG_4_VALUE);
++	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_5,
++		      QCA808X_MMD3_DEBUG_5_VALUE);
++	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_3,
++		      QCA808X_MMD3_DEBUG_3_VALUE);
++	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_6,
++		      QCA808X_MMD3_DEBUG_6_VALUE);
++	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_2,
++		      QCA808X_MMD3_DEBUG_2_VALUE);
++
++	return 0;
++}
++
++static int qca808x_phy_ms_seed_enable(struct phy_device *phydev, bool enable)
++{
++	u16 seed_value;
++
++	if (!enable)
++		return at803x_debug_reg_mask(phydev, QCA808X_PHY_DEBUG_LOCAL_SEED,
++				QCA808X_MASTER_SLAVE_SEED_ENABLE, 0);
++
++	seed_value = get_random_u32_below(QCA808X_MASTER_SLAVE_SEED_RANGE);
++	return at803x_debug_reg_mask(phydev, QCA808X_PHY_DEBUG_LOCAL_SEED,
++			QCA808X_MASTER_SLAVE_SEED_CFG | QCA808X_MASTER_SLAVE_SEED_ENABLE,
++			FIELD_PREP(QCA808X_MASTER_SLAVE_SEED_CFG, seed_value) |
++			QCA808X_MASTER_SLAVE_SEED_ENABLE);
++}
++
++static bool qca808x_is_prefer_master(struct phy_device *phydev)
++{
++	return (phydev->master_slave_get == MASTER_SLAVE_CFG_MASTER_FORCE) ||
++		(phydev->master_slave_get == MASTER_SLAVE_CFG_MASTER_PREFERRED);
++}
++
++static bool qca808x_has_fast_retrain_or_slave_seed(struct phy_device *phydev)
++{
++	return linkmode_test_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->supported);
++}
++
++static int qca808x_probe(struct phy_device *phydev)
++{
++	struct device *dev = &phydev->mdio.dev;
++	struct qca808x_priv *priv;
++
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	/* Init LED polarity mode to -1 */
++	priv->led_polarity_mode = -1;
++
++	phydev->priv = priv;
++
++	return 0;
++}
++
++static int qca808x_config_init(struct phy_device *phydev)
++{
++	int ret;
++
++	/* Active adc&vga on 802.3az for the link 1000M and 100M */
++	ret = phy_modify_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_ADDR_CLD_CTRL7,
++			     QCA808X_8023AZ_AFE_CTRL_MASK, QCA808X_8023AZ_AFE_EN);
++	if (ret)
++		return ret;
++
++	/* Adjust the threshold on 802.3az for the link 1000M */
++	ret = phy_write_mmd(phydev, MDIO_MMD_PCS,
++			    QCA808X_PHY_MMD3_AZ_TRAINING_CTRL,
++			    QCA808X_MMD3_AZ_TRAINING_VAL);
++	if (ret)
++		return ret;
++
++	if (qca808x_has_fast_retrain_or_slave_seed(phydev)) {
++		/* Config the fast retrain for the link 2500M */
++		ret = qca808x_phy_fast_retrain_config(phydev);
++		if (ret)
++			return ret;
++
++		ret = genphy_read_master_slave(phydev);
 +		if (ret < 0)
 +			return ret;
++
++		if (!qca808x_is_prefer_master(phydev)) {
++			/* Enable seed and configure lower ramdom seed to make phy
++			 * linked as slave mode.
++			 */
++			ret = qca808x_phy_ms_seed_enable(phydev, true);
++			if (ret)
++				return ret;
++		}
++	}
++
++	/* Configure adc threshold as 100mv for the link 10M */
++	return at803x_debug_reg_mask(phydev, QCA808X_PHY_DEBUG_ADC_THRESHOLD,
++				     QCA808X_ADC_THRESHOLD_MASK,
++				     QCA808X_ADC_THRESHOLD_100MV);
++}
++
++static int qca808x_read_status(struct phy_device *phydev)
++{
++	struct at803x_ss_mask ss_mask = { 0 };
++	int ret;
++
++	ret = phy_read_mmd(phydev, MDIO_MMD_AN, MDIO_AN_10GBT_STAT);
++	if (ret < 0)
++		return ret;
++
++	linkmode_mod_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->lp_advertising,
++			 ret & MDIO_AN_10GBT_STAT_LP2_5G);
++
++	ret = genphy_read_status(phydev);
++	if (ret)
++		return ret;
++
++	/* qca8081 takes the different bits for speed value from at803x */
++	ss_mask.speed_mask = QCA808X_SS_SPEED_MASK;
++	ss_mask.speed_shift = __bf_shf(QCA808X_SS_SPEED_MASK);
++	ret = at803x_read_specific_status(phydev, ss_mask);
++	if (ret < 0)
++		return ret;
++
++	if (phydev->link) {
++		if (phydev->speed == SPEED_2500)
++			phydev->interface = PHY_INTERFACE_MODE_2500BASEX;
++		else
++			phydev->interface = PHY_INTERFACE_MODE_SGMII;
++	} else {
++		/* generate seed as a lower random value to make PHY linked as SLAVE easily,
++		 * except for master/slave configuration fault detected or the master mode
++		 * preferred.
++		 *
++		 * the reason for not putting this code into the function link_change_notify is
++		 * the corner case where the link partner is also the qca8081 PHY and the seed
++		 * value is configured as the same value, the link can't be up and no link change
++		 * occurs.
++		 */
++		if (qca808x_has_fast_retrain_or_slave_seed(phydev)) {
++			if (phydev->master_slave_state == MASTER_SLAVE_STATE_ERR ||
++			    qca808x_is_prefer_master(phydev)) {
++				qca808x_phy_ms_seed_enable(phydev, false);
++			} else {
++				qca808x_phy_ms_seed_enable(phydev, true);
++			}
++		}
 +	}
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(at803x_prepare_config_aneg);
 +
-+static int at803x_get_downshift(struct phy_device *phydev, u8 *d)
++static int qca808x_soft_reset(struct phy_device *phydev)
 +{
-+	int val;
-+
-+	val = phy_read(phydev, AT803X_SMART_SPEED);
-+	if (val < 0)
-+		return val;
-+
-+	if (val & AT803X_SMART_SPEED_ENABLE)
-+		*d = FIELD_GET(AT803X_SMART_SPEED_RETRY_LIMIT_MASK, val) + 2;
-+	else
-+		*d = DOWNSHIFT_DEV_DISABLE;
-+
-+	return 0;
-+}
-+
-+static int at803x_set_downshift(struct phy_device *phydev, u8 cnt)
-+{
-+	u16 mask, set;
 +	int ret;
 +
-+	switch (cnt) {
-+	case DOWNSHIFT_DEV_DEFAULT_COUNT:
-+		cnt = AT803X_DEFAULT_DOWNSHIFT;
-+		fallthrough;
-+	case AT803X_MIN_DOWNSHIFT ... AT803X_MAX_DOWNSHIFT:
-+		set = AT803X_SMART_SPEED_ENABLE |
-+		      AT803X_SMART_SPEED_BYPASS_TIMER |
-+		      FIELD_PREP(AT803X_SMART_SPEED_RETRY_LIMIT_MASK, cnt - 2);
-+		mask = AT803X_SMART_SPEED_RETRY_LIMIT_MASK;
++	ret = genphy_soft_reset(phydev);
++	if (ret < 0)
++		return ret;
++
++	if (qca808x_has_fast_retrain_or_slave_seed(phydev))
++		ret = qca808x_phy_ms_seed_enable(phydev, true);
++
++	return ret;
++}
++
++static bool qca808x_cdt_fault_length_valid(int cdt_code)
++{
++	switch (cdt_code) {
++	case QCA808X_CDT_STATUS_STAT_SAME_SHORT:
++	case QCA808X_CDT_STATUS_STAT_SAME_OPEN:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_NORMAL:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_OPEN:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_SHORT:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_NORMAL:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_OPEN:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_SHORT:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_NORMAL:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_OPEN:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_SHORT:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static int qca808x_cable_test_result_trans(int cdt_code)
++{
++	switch (cdt_code) {
++	case QCA808X_CDT_STATUS_STAT_NORMAL:
++		return ETHTOOL_A_CABLE_RESULT_CODE_OK;
++	case QCA808X_CDT_STATUS_STAT_SAME_SHORT:
++		return ETHTOOL_A_CABLE_RESULT_CODE_SAME_SHORT;
++	case QCA808X_CDT_STATUS_STAT_SAME_OPEN:
++		return ETHTOOL_A_CABLE_RESULT_CODE_OPEN;
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_NORMAL:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_OPEN:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_SHORT:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_NORMAL:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_OPEN:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_SHORT:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_NORMAL:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_OPEN:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_SHORT:
++		return ETHTOOL_A_CABLE_RESULT_CODE_CROSS_SHORT;
++	case QCA808X_CDT_STATUS_STAT_FAIL:
++	default:
++		return ETHTOOL_A_CABLE_RESULT_CODE_UNSPEC;
++	}
++}
++
++static int qca808x_cdt_fault_length(struct phy_device *phydev, int pair,
++				    int result)
++{
++	int val;
++	u32 cdt_length_reg = 0;
++
++	switch (pair) {
++	case ETHTOOL_A_CABLE_PAIR_A:
++		cdt_length_reg = QCA808X_MMD3_CDT_DIAG_PAIR_A;
 +		break;
-+	case DOWNSHIFT_DEV_DISABLE:
-+		set = 0;
-+		mask = AT803X_SMART_SPEED_ENABLE |
-+		       AT803X_SMART_SPEED_BYPASS_TIMER;
++	case ETHTOOL_A_CABLE_PAIR_B:
++		cdt_length_reg = QCA808X_MMD3_CDT_DIAG_PAIR_B;
++		break;
++	case ETHTOOL_A_CABLE_PAIR_C:
++		cdt_length_reg = QCA808X_MMD3_CDT_DIAG_PAIR_C;
++		break;
++	case ETHTOOL_A_CABLE_PAIR_D:
++		cdt_length_reg = QCA808X_MMD3_CDT_DIAG_PAIR_D;
 +		break;
 +	default:
 +		return -EINVAL;
 +	}
 +
-+	ret = phy_modify_changed(phydev, AT803X_SMART_SPEED, mask, set);
++	val = phy_read_mmd(phydev, MDIO_MMD_PCS, cdt_length_reg);
++	if (val < 0)
++		return val;
 +
-+	/* After changing the smart speed settings, we need to perform a
-+	 * software reset, use phy_init_hw() to make sure we set the
-+	 * reapply any values which might got lost during software reset.
++	if (result == ETHTOOL_A_CABLE_RESULT_CODE_SAME_SHORT)
++		val = FIELD_GET(QCA808X_CDT_DIAG_LENGTH_SAME_SHORT, val);
++	else
++		val = FIELD_GET(QCA808X_CDT_DIAG_LENGTH_CROSS_SHORT, val);
++
++	return at803x_cdt_fault_length(val);
++}
++
++static int qca808x_cable_test_start(struct phy_device *phydev)
++{
++	int ret;
++
++	/* perform CDT with the following configs:
++	 * 1. disable hibernation.
++	 * 2. force PHY working in MDI mode.
++	 * 3. for PHY working in 1000BaseT.
++	 * 4. configure the threshold.
 +	 */
-+	if (ret == 1)
-+		ret = phy_init_hw(phydev);
 +
-+	return ret;
++	ret = at803x_debug_reg_mask(phydev, QCA808X_DBG_AN_TEST, QCA808X_HIBERNATION_EN, 0);
++	if (ret < 0)
++		return ret;
++
++	ret = at803x_config_mdix(phydev, ETH_TP_MDI);
++	if (ret < 0)
++		return ret;
++
++	/* Force 1000base-T needs to configure PMA/PMD and MII_BMCR */
++	phydev->duplex = DUPLEX_FULL;
++	phydev->speed = SPEED_1000;
++	ret = genphy_c45_pma_setup_forced(phydev);
++	if (ret < 0)
++		return ret;
++
++	ret = genphy_setup_forced(phydev);
++	if (ret < 0)
++		return ret;
++
++	/* configure the thresholds for open, short, pair ok test */
++	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x8074, 0xc040);
++	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x8076, 0xc040);
++	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x8077, 0xa060);
++	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x8078, 0xc050);
++	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x807a, 0xc060);
++	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x807e, 0xb060);
++
++	return 0;
 +}
 +
-+int at803x_get_tunable(struct phy_device *phydev,
-+		       struct ethtool_tunable *tuna, void *data)
++static int qca808x_cable_test_get_pair_status(struct phy_device *phydev, u8 pair,
++					      u16 status)
 +{
-+	switch (tuna->id) {
-+	case ETHTOOL_PHY_DOWNSHIFT:
-+		return at803x_get_downshift(phydev, data);
++	int length, result;
++	u16 pair_code;
++
++	switch (pair) {
++	case ETHTOOL_A_CABLE_PAIR_A:
++		pair_code = FIELD_GET(QCA808X_CDT_CODE_PAIR_A, status);
++		break;
++	case ETHTOOL_A_CABLE_PAIR_B:
++		pair_code = FIELD_GET(QCA808X_CDT_CODE_PAIR_B, status);
++		break;
++	case ETHTOOL_A_CABLE_PAIR_C:
++		pair_code = FIELD_GET(QCA808X_CDT_CODE_PAIR_C, status);
++		break;
++	case ETHTOOL_A_CABLE_PAIR_D:
++		pair_code = FIELD_GET(QCA808X_CDT_CODE_PAIR_D, status);
++		break;
 +	default:
-+		return -EOPNOTSUPP;
++		return -EINVAL;
 +	}
-+}
-+EXPORT_SYMBOL_GPL(at803x_get_tunable);
 +
-+int at803x_set_tunable(struct phy_device *phydev,
-+		       struct ethtool_tunable *tuna, const void *data)
-+{
-+	switch (tuna->id) {
-+	case ETHTOOL_PHY_DOWNSHIFT:
-+		return at803x_set_downshift(phydev, *(const u8 *)data);
-+	default:
-+		return -EOPNOTSUPP;
++	result = qca808x_cable_test_result_trans(pair_code);
++	ethnl_cable_test_result(phydev, pair, result);
++
++	if (qca808x_cdt_fault_length_valid(pair_code)) {
++		length = qca808x_cdt_fault_length(phydev, pair, result);
++		ethnl_cable_test_fault_length(phydev, pair, length);
 +	}
-+}
-+EXPORT_SYMBOL_GPL(at803x_set_tunable);
 +
-+int at803x_cdt_fault_length(int dt)
++	return 0;
++}
++
++static int qca808x_cable_test_get_status(struct phy_device *phydev, bool *finished)
 +{
-+	/* According to the datasheet the distance to the fault is
-+	 * DELTA_TIME * 0.824 meters.
-+	 *
-+	 * The author suspect the correct formula is:
-+	 *
-+	 *   fault_distance = DELTA_TIME * (c * VF) / 125MHz / 2
-+	 *
-+	 * where c is the speed of light, VF is the velocity factor of
-+	 * the twisted pair cable, 125MHz the counter frequency and
-+	 * we need to divide by 2 because the hardware will measure the
-+	 * round trip time to the fault and back to the PHY.
-+	 *
-+	 * With a VF of 0.69 we get the factor 0.824 mentioned in the
-+	 * datasheet.
++	int ret, val;
++
++	*finished = false;
++
++	val = QCA808X_CDT_ENABLE_TEST |
++	      QCA808X_CDT_LENGTH_UNIT;
++	ret = at803x_cdt_start(phydev, val);
++	if (ret)
++		return ret;
++
++	ret = at803x_cdt_wait_for_completion(phydev, QCA808X_CDT_ENABLE_TEST);
++	if (ret)
++		return ret;
++
++	val = phy_read_mmd(phydev, MDIO_MMD_PCS, QCA808X_MMD3_CDT_STATUS);
++	if (val < 0)
++		return val;
++
++	ret = qca808x_cable_test_get_pair_status(phydev, ETHTOOL_A_CABLE_PAIR_A, val);
++	if (ret)
++		return ret;
++
++	ret = qca808x_cable_test_get_pair_status(phydev, ETHTOOL_A_CABLE_PAIR_B, val);
++	if (ret)
++		return ret;
++
++	ret = qca808x_cable_test_get_pair_status(phydev, ETHTOOL_A_CABLE_PAIR_C, val);
++	if (ret)
++		return ret;
++
++	ret = qca808x_cable_test_get_pair_status(phydev, ETHTOOL_A_CABLE_PAIR_D, val);
++	if (ret)
++		return ret;
++
++	*finished = true;
++
++	return 0;
++}
++
++static int qca808x_get_features(struct phy_device *phydev)
++{
++	int ret;
++
++	ret = genphy_c45_pma_read_abilities(phydev);
++	if (ret)
++		return ret;
++
++	/* The autoneg ability is not existed in bit3 of MMD7.1,
++	 * but it is supported by qca808x PHY, so we add it here
++	 * manually.
 +	 */
-+	return (dt * 824) / 10;
-+}
-+EXPORT_SYMBOL_GPL(at803x_cdt_fault_length);
++	linkmode_set_bit(ETHTOOL_LINK_MODE_Autoneg_BIT, phydev->supported);
 +
-+int at803x_cdt_start(struct phy_device *phydev, u32 cdt_start)
++	/* As for the qca8081 1G version chip, the 2500baseT ability is also
++	 * existed in the bit0 of MMD1.21, we need to remove it manually if
++	 * it is the qca8081 1G chip according to the bit0 of MMD7.0x901d.
++	 */
++	ret = phy_read_mmd(phydev, MDIO_MMD_AN, QCA808X_PHY_MMD7_CHIP_TYPE);
++	if (ret < 0)
++		return ret;
++
++	if (QCA808X_PHY_CHIP_TYPE_1G & ret)
++		linkmode_clear_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->supported);
++
++	return 0;
++}
++
++static int qca808x_config_aneg(struct phy_device *phydev)
 +{
-+	return phy_write(phydev, AT803X_CDT, cdt_start);
-+}
-+EXPORT_SYMBOL_GPL(at803x_cdt_start);
++	int phy_ctrl = 0;
++	int ret;
 +
-+int at803x_cdt_wait_for_completion(struct phy_device *phydev,
-+				   u32 cdt_en)
++	ret = at803x_prepare_config_aneg(phydev);
++	if (ret)
++		return ret;
++
++	/* The reg MII_BMCR also needs to be configured for force mode, the
++	 * genphy_config_aneg is also needed.
++	 */
++	if (phydev->autoneg == AUTONEG_DISABLE)
++		genphy_c45_pma_setup_forced(phydev);
++
++	if (linkmode_test_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->advertising))
++		phy_ctrl = MDIO_AN_10GBT_CTRL_ADV2_5G;
++
++	ret = phy_modify_mmd_changed(phydev, MDIO_MMD_AN, MDIO_AN_10GBT_CTRL,
++				     MDIO_AN_10GBT_CTRL_ADV2_5G, phy_ctrl);
++	if (ret < 0)
++		return ret;
++
++	return __genphy_config_aneg(phydev, ret);
++}
++
++static void qca808x_link_change_notify(struct phy_device *phydev)
 +{
-+	int val, ret;
-+
-+	/* One test run takes about 25ms */
-+	ret = phy_read_poll_timeout(phydev, AT803X_CDT, val,
-+				    !(val & cdt_en),
-+				    30000, 100000, true);
-+
-+	return ret < 0 ? ret : 0;
++	/* Assert interface sgmii fifo on link down, deassert it on link up,
++	 * the interface device address is always phy address added by 1.
++	 */
++	mdiobus_c45_modify_changed(phydev->mdio.bus, phydev->mdio.addr + 1,
++				   MDIO_MMD_PMAPMD, QCA8081_PHY_SERDES_MMD1_FIFO_CTRL,
++				   QCA8081_PHY_FIFO_RSTN,
++				   phydev->link ? QCA8081_PHY_FIFO_RSTN : 0);
 +}
-+EXPORT_SYMBOL_GPL(at803x_cdt_wait_for_completion);
-diff --git a/drivers/net/phy/qcom/qcom.h b/drivers/net/phy/qcom/qcom.h
-index 8eb476d7c282..344f8c01d5b8 100644
---- a/drivers/net/phy/qcom/qcom.h
-+++ b/drivers/net/phy/qcom/qcom.h
-@@ -1,5 +1,61 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- 
-+#define AT803X_SPECIFIC_FUNCTION_CONTROL	0x10
-+#define AT803X_SFC_ASSERT_CRS			BIT(11)
-+#define AT803X_SFC_FORCE_LINK			BIT(10)
-+#define AT803X_SFC_MDI_CROSSOVER_MODE_M		GENMASK(6, 5)
-+#define AT803X_SFC_AUTOMATIC_CROSSOVER		0x3
-+#define AT803X_SFC_MANUAL_MDIX			0x1
-+#define AT803X_SFC_MANUAL_MDI			0x0
-+#define AT803X_SFC_SQE_TEST			BIT(2)
-+#define AT803X_SFC_POLARITY_REVERSAL		BIT(1)
-+#define AT803X_SFC_DISABLE_JABBER		BIT(0)
 +
-+#define AT803X_SPECIFIC_STATUS			0x11
-+#define AT803X_SS_SPEED_1000			2
-+#define AT803X_SS_SPEED_100			1
-+#define AT803X_SS_SPEED_10			0
-+#define AT803X_SS_DUPLEX			BIT(13)
-+#define AT803X_SS_SPEED_DUPLEX_RESOLVED		BIT(11)
-+#define AT803X_SS_MDIX				BIT(6)
++static int qca808x_led_parse_netdev(struct phy_device *phydev, unsigned long rules,
++				    u16 *offload_trigger)
++{
++	/* Parsing specific to netdev trigger */
++	if (test_bit(TRIGGER_NETDEV_TX, &rules))
++		*offload_trigger |= QCA808X_LED_TX_BLINK;
++	if (test_bit(TRIGGER_NETDEV_RX, &rules))
++		*offload_trigger |= QCA808X_LED_RX_BLINK;
++	if (test_bit(TRIGGER_NETDEV_LINK_10, &rules))
++		*offload_trigger |= QCA808X_LED_SPEED10_ON;
++	if (test_bit(TRIGGER_NETDEV_LINK_100, &rules))
++		*offload_trigger |= QCA808X_LED_SPEED100_ON;
++	if (test_bit(TRIGGER_NETDEV_LINK_1000, &rules))
++		*offload_trigger |= QCA808X_LED_SPEED1000_ON;
++	if (test_bit(TRIGGER_NETDEV_LINK_2500, &rules))
++		*offload_trigger |= QCA808X_LED_SPEED2500_ON;
++	if (test_bit(TRIGGER_NETDEV_HALF_DUPLEX, &rules))
++		*offload_trigger |= QCA808X_LED_HALF_DUPLEX_ON;
++	if (test_bit(TRIGGER_NETDEV_FULL_DUPLEX, &rules))
++		*offload_trigger |= QCA808X_LED_FULL_DUPLEX_ON;
 +
-+#define QCA808X_SS_SPEED_2500			4
++	if (rules && !*offload_trigger)
++		return -EOPNOTSUPP;
 +
-+#define AT803X_INTR_ENABLE			0x12
-+#define AT803X_INTR_ENABLE_AUTONEG_ERR		BIT(15)
-+#define AT803X_INTR_ENABLE_SPEED_CHANGED	BIT(14)
-+#define AT803X_INTR_ENABLE_DUPLEX_CHANGED	BIT(13)
-+#define AT803X_INTR_ENABLE_PAGE_RECEIVED	BIT(12)
-+#define AT803X_INTR_ENABLE_LINK_FAIL		BIT(11)
-+#define AT803X_INTR_ENABLE_LINK_SUCCESS		BIT(10)
-+#define AT803X_INTR_ENABLE_LINK_FAIL_BX		BIT(8)
-+#define AT803X_INTR_ENABLE_LINK_SUCCESS_BX	BIT(7)
-+#define AT803X_INTR_ENABLE_WIRESPEED_DOWNGRADE	BIT(5)
-+#define AT803X_INTR_ENABLE_POLARITY_CHANGED	BIT(1)
-+#define AT803X_INTR_ENABLE_WOL			BIT(0)
++	/* Enable BLINK_CHECK_BYPASS by default to make the LED
++	 * blink even with duplex or speed mode not enabled.
++	 */
++	*offload_trigger |= QCA808X_LED_BLINK_CHECK_BYPASS;
 +
-+#define AT803X_INTR_STATUS			0x13
++	return 0;
++}
 +
-+#define AT803X_SMART_SPEED			0x14
-+#define AT803X_SMART_SPEED_ENABLE		BIT(5)
-+#define AT803X_SMART_SPEED_RETRY_LIMIT_MASK	GENMASK(4, 2)
-+#define AT803X_SMART_SPEED_BYPASS_TIMER		BIT(1)
++static int qca808x_led_hw_control_enable(struct phy_device *phydev, u8 index)
++{
++	u16 reg;
 +
-+#define AT803X_CDT				0x16
-+#define AT803X_CDT_MDI_PAIR_MASK		GENMASK(9, 8)
-+#define AT803X_CDT_ENABLE_TEST			BIT(0)
-+#define AT803X_CDT_STATUS			0x1c
-+#define AT803X_CDT_STATUS_STAT_NORMAL		0
-+#define AT803X_CDT_STATUS_STAT_SHORT		1
-+#define AT803X_CDT_STATUS_STAT_OPEN		2
-+#define AT803X_CDT_STATUS_STAT_FAIL		3
-+#define AT803X_CDT_STATUS_STAT_MASK		GENMASK(9, 8)
-+#define AT803X_CDT_STATUS_DELTA_TIME_MASK	GENMASK(7, 0)
++	if (index > 2)
++		return -EINVAL;
 +
-+#define AT803X_LOC_MAC_ADDR_0_15_OFFSET		0x804C
-+#define AT803X_LOC_MAC_ADDR_16_31_OFFSET	0x804B
-+#define AT803X_LOC_MAC_ADDR_32_47_OFFSET	0x804A
++	reg = QCA808X_MMD7_LED_FORCE_CTRL(index);
 +
- #define AT803X_DEBUG_ADDR			0x1D
- #define AT803X_DEBUG_DATA			0x1E
- 
-@@ -16,6 +72,10 @@
- #define   AT803X_DEBUG_HIB_CTRL_EN_ANY_CHANGE	BIT(13)
- #define   AT803X_DEBUG_HIB_CTRL_PS_HIB_EN	BIT(15)
- 
-+#define AT803X_DEFAULT_DOWNSHIFT		5
-+#define AT803X_MIN_DOWNSHIFT			2
-+#define AT803X_MAX_DOWNSHIFT			9
++	return phy_clear_bits_mmd(phydev, MDIO_MMD_AN, reg,
++				  QCA808X_LED_FORCE_EN);
++}
 +
- enum stat_access_type {
- 	PHY,
- 	MMD
-@@ -28,7 +88,31 @@ struct at803x_hw_stat {
- 	enum stat_access_type access_type;
- };
- 
-+struct at803x_ss_mask {
-+	u16 speed_mask;
-+	u8 speed_shift;
++static int qca808x_led_hw_is_supported(struct phy_device *phydev, u8 index,
++				       unsigned long rules)
++{
++	u16 offload_trigger = 0;
++
++	if (index > 2)
++		return -EINVAL;
++
++	return qca808x_led_parse_netdev(phydev, rules, &offload_trigger);
++}
++
++static int qca808x_led_hw_control_set(struct phy_device *phydev, u8 index,
++				      unsigned long rules)
++{
++	u16 reg, offload_trigger = 0;
++	int ret;
++
++	if (index > 2)
++		return -EINVAL;
++
++	reg = QCA808X_MMD7_LED_CTRL(index);
++
++	ret = qca808x_led_parse_netdev(phydev, rules, &offload_trigger);
++	if (ret)
++		return ret;
++
++	ret = qca808x_led_hw_control_enable(phydev, index);
++	if (ret)
++		return ret;
++
++	return phy_modify_mmd(phydev, MDIO_MMD_AN, reg,
++			      QCA808X_LED_PATTERN_MASK,
++			      offload_trigger);
++}
++
++static bool qca808x_led_hw_control_status(struct phy_device *phydev, u8 index)
++{
++	u16 reg;
++	int val;
++
++	if (index > 2)
++		return false;
++
++	reg = QCA808X_MMD7_LED_FORCE_CTRL(index);
++
++	val = phy_read_mmd(phydev, MDIO_MMD_AN, reg);
++
++	return !(val & QCA808X_LED_FORCE_EN);
++}
++
++static int qca808x_led_hw_control_get(struct phy_device *phydev, u8 index,
++				      unsigned long *rules)
++{
++	u16 reg;
++	int val;
++
++	if (index > 2)
++		return -EINVAL;
++
++	/* Check if we have hw control enabled */
++	if (qca808x_led_hw_control_status(phydev, index))
++		return -EINVAL;
++
++	reg = QCA808X_MMD7_LED_CTRL(index);
++
++	val = phy_read_mmd(phydev, MDIO_MMD_AN, reg);
++	if (val & QCA808X_LED_TX_BLINK)
++		set_bit(TRIGGER_NETDEV_TX, rules);
++	if (val & QCA808X_LED_RX_BLINK)
++		set_bit(TRIGGER_NETDEV_RX, rules);
++	if (val & QCA808X_LED_SPEED10_ON)
++		set_bit(TRIGGER_NETDEV_LINK_10, rules);
++	if (val & QCA808X_LED_SPEED100_ON)
++		set_bit(TRIGGER_NETDEV_LINK_100, rules);
++	if (val & QCA808X_LED_SPEED1000_ON)
++		set_bit(TRIGGER_NETDEV_LINK_1000, rules);
++	if (val & QCA808X_LED_SPEED2500_ON)
++		set_bit(TRIGGER_NETDEV_LINK_2500, rules);
++	if (val & QCA808X_LED_HALF_DUPLEX_ON)
++		set_bit(TRIGGER_NETDEV_HALF_DUPLEX, rules);
++	if (val & QCA808X_LED_FULL_DUPLEX_ON)
++		set_bit(TRIGGER_NETDEV_FULL_DUPLEX, rules);
++
++	return 0;
++}
++
++static int qca808x_led_hw_control_reset(struct phy_device *phydev, u8 index)
++{
++	u16 reg;
++
++	if (index > 2)
++		return -EINVAL;
++
++	reg = QCA808X_MMD7_LED_CTRL(index);
++
++	return phy_clear_bits_mmd(phydev, MDIO_MMD_AN, reg,
++				  QCA808X_LED_PATTERN_MASK);
++}
++
++static int qca808x_led_brightness_set(struct phy_device *phydev,
++				      u8 index, enum led_brightness value)
++{
++	u16 reg;
++	int ret;
++
++	if (index > 2)
++		return -EINVAL;
++
++	if (!value) {
++		ret = qca808x_led_hw_control_reset(phydev, index);
++		if (ret)
++			return ret;
++	}
++
++	reg = QCA808X_MMD7_LED_FORCE_CTRL(index);
++
++	return phy_modify_mmd(phydev, MDIO_MMD_AN, reg,
++			      QCA808X_LED_FORCE_EN | QCA808X_LED_FORCE_MODE_MASK,
++			      QCA808X_LED_FORCE_EN | value ? QCA808X_LED_FORCE_ON :
++							     QCA808X_LED_FORCE_OFF);
++}
++
++static int qca808x_led_blink_set(struct phy_device *phydev, u8 index,
++				 unsigned long *delay_on,
++				 unsigned long *delay_off)
++{
++	int ret;
++	u16 reg;
++
++	if (index > 2)
++		return -EINVAL;
++
++	reg = QCA808X_MMD7_LED_FORCE_CTRL(index);
++
++	/* Set blink to 50% off, 50% on at 4Hz by default */
++	ret = phy_modify_mmd(phydev, MDIO_MMD_AN, QCA808X_MMD7_LED_GLOBAL,
++			     QCA808X_LED_BLINK_FREQ_MASK | QCA808X_LED_BLINK_DUTY_MASK,
++			     QCA808X_LED_BLINK_FREQ_4HZ | QCA808X_LED_BLINK_DUTY_50_50);
++	if (ret)
++		return ret;
++
++	/* We use BLINK_1 for normal blinking */
++	ret = phy_modify_mmd(phydev, MDIO_MMD_AN, reg,
++			     QCA808X_LED_FORCE_EN | QCA808X_LED_FORCE_MODE_MASK,
++			     QCA808X_LED_FORCE_EN | QCA808X_LED_FORCE_BLINK_1);
++	if (ret)
++		return ret;
++
++	/* We set blink to 4Hz, aka 250ms */
++	*delay_on = 250 / 2;
++	*delay_off = 250 / 2;
++
++	return 0;
++}
++
++static int qca808x_led_polarity_set(struct phy_device *phydev, int index,
++				    unsigned long modes)
++{
++	struct qca808x_priv *priv = phydev->priv;
++	bool active_low = false;
++	u32 mode;
++
++	for_each_set_bit(mode, &modes, __PHY_LED_MODES_NUM) {
++		switch (mode) {
++		case PHY_LED_ACTIVE_LOW:
++			active_low = true;
++			break;
++		default:
++			return -EINVAL;
++		}
++	}
++
++	/* PHY polarity is global and can't be set per LED.
++	 * To detect this, check if last requested polarity mode
++	 * match the new one.
++	 */
++	if (priv->led_polarity_mode >= 0 &&
++	    priv->led_polarity_mode != active_low) {
++		phydev_err(phydev, "PHY polarity is global. Mismatched polarity on different LED\n");
++		return -EINVAL;
++	}
++
++	/* Save the last PHY polarity mode */
++	priv->led_polarity_mode = active_low;
++
++	return phy_modify_mmd(phydev, MDIO_MMD_AN,
++			      QCA808X_MMD7_LED_POLARITY_CTRL,
++			      QCA808X_LED_ACTIVE_HIGH,
++			      active_low ? 0 : QCA808X_LED_ACTIVE_HIGH);
++}
++
++static struct phy_driver qca808x_driver[] = {
++{
++	/* Qualcomm QCA8081 */
++	PHY_ID_MATCH_EXACT(QCA8081_PHY_ID),
++	.name			= "Qualcomm QCA8081",
++	.flags			= PHY_POLL_CABLE_TEST,
++	.probe			= qca808x_probe,
++	.config_intr		= at803x_config_intr,
++	.handle_interrupt	= at803x_handle_interrupt,
++	.get_tunable		= at803x_get_tunable,
++	.set_tunable		= at803x_set_tunable,
++	.set_wol		= at803x_set_wol,
++	.get_wol		= at803x_get_wol,
++	.get_features		= qca808x_get_features,
++	.config_aneg		= qca808x_config_aneg,
++	.suspend		= genphy_suspend,
++	.resume			= genphy_resume,
++	.read_status		= qca808x_read_status,
++	.config_init		= qca808x_config_init,
++	.soft_reset		= qca808x_soft_reset,
++	.cable_test_start	= qca808x_cable_test_start,
++	.cable_test_get_status	= qca808x_cable_test_get_status,
++	.link_change_notify	= qca808x_link_change_notify,
++	.led_brightness_set	= qca808x_led_brightness_set,
++	.led_blink_set		= qca808x_led_blink_set,
++	.led_hw_is_supported	= qca808x_led_hw_is_supported,
++	.led_hw_control_set	= qca808x_led_hw_control_set,
++	.led_hw_control_get	= qca808x_led_hw_control_get,
++	.led_polarity_set	= qca808x_led_polarity_set,
++}, };
++
++module_phy_driver(qca808x_driver);
++
++static struct mdio_device_id __maybe_unused qca808x_tbl[] = {
++	{ PHY_ID_MATCH_EXACT(QCA8081_PHY_ID) },
++	{ }
 +};
 +
- int at803x_debug_reg_read(struct phy_device *phydev, u16 reg);
- int at803x_debug_reg_mask(struct phy_device *phydev, u16 reg,
- 			  u16 clear, u16 set);
- int at803x_debug_reg_write(struct phy_device *phydev, u16 reg, u16 data);
-+int at803x_set_wol(struct phy_device *phydev,
-+		   struct ethtool_wolinfo *wol);
-+void at803x_get_wol(struct phy_device *phydev,
-+		    struct ethtool_wolinfo *wol);
-+int at803x_ack_interrupt(struct phy_device *phydev);
-+int at803x_config_intr(struct phy_device *phydev);
-+irqreturn_t at803x_handle_interrupt(struct phy_device *phydev);
-+int at803x_read_specific_status(struct phy_device *phydev,
-+				struct at803x_ss_mask ss_mask);
-+int at803x_config_mdix(struct phy_device *phydev, u8 ctrl);
-+int at803x_prepare_config_aneg(struct phy_device *phydev);
-+int at803x_get_tunable(struct phy_device *phydev,
-+		       struct ethtool_tunable *tuna, void *data);
-+int at803x_set_tunable(struct phy_device *phydev,
-+		       struct ethtool_tunable *tuna, const void *data);
-+int at803x_cdt_fault_length(int dt);
-+int at803x_cdt_start(struct phy_device *phydev, u32 cdt_start);
-+int at803x_cdt_wait_for_completion(struct phy_device *phydev,
-+				   u32 cdt_en);
++MODULE_DEVICE_TABLE(mdio, qca808x_tbl);
 -- 
 2.43.0
 
