@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-41348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F19783EF30
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 18:52:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3041983EF32
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 18:52:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE1B2B23434
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 17:52:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62A801C21EBC
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 17:52:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 507AB2D05B;
-	Sat, 27 Jan 2024 17:52:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A77612DF9F;
+	Sat, 27 Jan 2024 17:52:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ho7zQpRj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SWWd1YWH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 922E42D04B;
-	Sat, 27 Jan 2024 17:52:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E95792DF7D;
+	Sat, 27 Jan 2024 17:52:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706377933; cv=none; b=uxV9a3BrMhKa/gsC6Ht/U8x3hIFzLc/mk2e4WfpDub+yFuZx6SjZUvq8xJLAAPJyAic0POzEoHH5X4NSw9B4KyQa1/DVUmtj0bjPXoeaHYA/iWXrmpt+qXh4YUcHusiT70Q90I1KcvOKsf5AJNuMcT+qlPI2egU+pbMGbuCQXVw=
+	t=1706377939; cv=none; b=DwDuVyXPaEsj/+igmmTVwKHHQwhLVwhGdpS9qxrvzN4aiVEpVLDoLzfW/pdjzo/Ii5+rJgG7T02Er1hq9fRj4xWAiDlpja5iwb1buviSllHuW0J8OUQVvjZe1tsUg6sUM/jMvc5f+hl6wgKHKBrYaq+IcS1PiaCs1SKJPJWlYwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706377933; c=relaxed/simple;
-	bh=cHUMv9BxHgjuTEkUZtkOw43yclWbhFewLbNmc9L9s/4=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=YabZDrGG4Z8JnniryjyzgdJCuz5BKXuPSoVaUNf9IqFXWcn391ofIiOb0fhyleS3Ed9nM1/A09AykxnRbs9sJBWBF9bM4aETIrbe53JvFEY6P16ymSnpD/WEEt02nGd7P+WgM0AevfUBwQrpmYCV5i8agvtZNOoa6f0ddEt2hBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ho7zQpRj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1825CC433F1;
-	Sat, 27 Jan 2024 17:52:13 +0000 (UTC)
+	s=arc-20240116; t=1706377939; c=relaxed/simple;
+	bh=Yq1CsnU6frX1la2STNxIBPcDP7o/7y9Djk1ccm7Ws8c=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=UH0HqpNugIRaNEU6II5afRgLiSkV8z1tpH6BG7fvsBfEmY76GRFzisM/LV4WfY7yXBo6zk4RIFruNH0u7URMt7sT6p+qLlFHNYHCw+xhB2gerNqIrsdK3yxk+E5q4y/mwkf2CygILV+qSfBzB/r9j28XdGWw1J27DU0E1U1vI9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SWWd1YWH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6D7A3C433C7;
+	Sat, 27 Jan 2024 17:52:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706377933;
-	bh=cHUMv9BxHgjuTEkUZtkOw43yclWbhFewLbNmc9L9s/4=;
+	s=k20201202; t=1706377938;
+	bh=Yq1CsnU6frX1la2STNxIBPcDP7o/7y9Djk1ccm7Ws8c=;
 	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=ho7zQpRjTX0gyri29QJKmbqX4TPUzRrHZQwfONV6aJe2zW3ikbnY6WM0+icfQE0zj
-	 782rtegjHCm0p3qwOsuOZWbTi5qAN2W6HD3qQgKBtU/wWsKE03HJ2YlmbGl9Dl3Jkj
-	 0gbkeVxoLCq8T4KyxQAF7m1nNv2sH/+fZHOcJNPaTE8dBm4RYnN6E7AFO7wkcxnwWt
-	 Un3ibMNcxvK4iAiUlUJ1HG7PWKmy+I9FVbuYUdSIplxfUo+ACZy8iLULfROA2XIMn9
-	 NQsGYpaiuW4DDwLYDPsgiO4T+R+L9XP4DluZIbOEcu5D3B1JisbWxihnGEKseGZxEQ
-	 MwcMX/lGRafXw==
+	b=SWWd1YWHuBTc/fbs1z6AheGUNO3mcsq83yn3ES7++Q5B99BJ4b7XXvfDbAZI0MDRY
+	 Ca7VlBi1a5OowWyhnQjzreEmHa++RrjG4aSYJosDc+brrZBqpSkU2VWofTMw8Tk184
+	 VF97IbIp0iB82TbqlDP45zIAvbG0jXVE450rPLVF65kQ7adh3aJ5TcuIDkKCRa0NdG
+	 znGUvZ/3OIJNJBbYUV0vH/iGm42/+wOlWzrT4azK0zGBKt2KwDY3pEGUYQemkjWUmP
+	 hgbGSPStXGDE28tKPuQ6fKSXdsRARLI07WJXCTko2LGic16d2aAk6K2pOAPN59l5ew
+	 HAnx/zKqhn7bQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 04344DFF762;
-	Sat, 27 Jan 2024 17:52:13 +0000 (UTC)
-Subject: Re: [GIT PULL] LoongArch fixes for v6.8-rc2
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 596D6DFF762;
+	Sat, 27 Jan 2024 17:52:18 +0000 (UTC)
+Subject: Re: [GIT PULL] platform-drivers-x86 for 6.8-2
 From: pr-tracker-bot@kernel.org
-In-Reply-To: <20240127081412.810197-1-chenhuacai@loongson.cn>
-References: <20240127081412.810197-1-chenhuacai@loongson.cn>
-X-PR-Tracked-List-Id: <loongarch.lists.linux.dev>
-X-PR-Tracked-Message-Id: <20240127081412.810197-1-chenhuacai@loongson.cn>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-fixes-6.8-1
-X-PR-Tracked-Commit-Id: 48ef9e87b407f89f230f804815af7ac2031ec17a
+In-Reply-To: <0a9cc4d2-6adb-4f79-a559-1a57a2b72de7@redhat.com>
+References: <0a9cc4d2-6adb-4f79-a559-1a57a2b72de7@redhat.com>
+X-PR-Tracked-List-Id: <platform-driver-x86.vger.kernel.org>
+X-PR-Tracked-Message-Id: <0a9cc4d2-6adb-4f79-a559-1a57a2b72de7@redhat.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v6.8-2
+X-PR-Tracked-Commit-Id: 1abdf288b0ef5606f76b6e191fa6df05330e3d7e
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 955340433a7926ab80838e904814461598adcd8c
-Message-Id: <170637793300.20657.2907853438443954078.pr-tracker-bot@kernel.org>
-Date: Sat, 27 Jan 2024 17:52:13 +0000
-To: Huacai Chen <chenhuacai@loongson.cn>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>, Jiaxun Yang <jiaxun.yang@flygoat.com>, Huacai Chen <chenhuacai@loongson.cn>
+X-PR-Merge-Commit-Id: 8a696a29c6905594e4abf78eaafcb62165ac61f1
+Message-Id: <170637793836.20657.10833731981724197985.pr-tracker-bot@kernel.org>
+Date: Sat, 27 Jan 2024 17:52:18 +0000
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, platform-driver-x86@vger.kernel.org, =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-The pull request you sent on Sat, 27 Jan 2024 16:14:12 +0800:
+The pull request you sent on Sat, 27 Jan 2024 16:50:03 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-fixes-6.8-1
+> git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v6.8-2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/955340433a7926ab80838e904814461598adcd8c
+https://git.kernel.org/torvalds/c/8a696a29c6905594e4abf78eaafcb62165ac61f1
 
 Thank you!
 
