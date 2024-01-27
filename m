@@ -1,150 +1,131 @@
-Return-Path: <linux-kernel+bounces-41465-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 155D383F246
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 00:42:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D651983F24C
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 00:46:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CEA2E28258D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 23:42:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91EB81F231AD
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 23:46:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C65E23745;
-	Sat, 27 Jan 2024 23:42:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E66723745;
+	Sat, 27 Jan 2024 23:46:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RMCoWS7R"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3Ov+yiQW"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8DC822F0F
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 23:42:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14D192033C
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 23:46:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706398923; cv=none; b=L2w2IH0lSasoZKufl4LyFzcGfXMpJlUGO1vABMONVVdnN1t2odMxmigw825vvVF0C3WUNuRNRsQCDFmq4q1tn363NWm4UKGCx+mKCa7+sv8bdsdtcPjnCzF52GORMx5XBs3pcTbrugbvNSTMvv2vy202yxklwo4KcS7+Pddr2Qc=
+	t=1706399205; cv=none; b=cy68mhag2raT3HM4YCO1VS60SkSmcTm2H9bS2N7TworrJp7ZAAUWZQfD8bmn83OVYyJijh3zUGhU8TneVBRqT3rFILQVaOWpxhy0RkvlikCkQdw06pkAELb/P/bz1Mk1b/paX+HLxOl4FQh0j/8mU2mjYUzHITKeqrC9movCAus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706398923; c=relaxed/simple;
-	bh=aLwsjk+yqZJ8iDmZN++A6YSY8VPjmsd8uJByyE+0yic=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TTmeN3mQcCBxOh5uUjW67BoUiR8YmZ+12g58g9z9SdMrC5/niGIsSgfY0uaBntwnP1pQO3LYNwreKVETZLJd6VIt3T//asHixTmCVurCTo6LGLBoQ9tCQ8tv3e+0JwUQ8vQhp4bdxfynIe+fUTsfcV/eIyhg5+OhDwF1A4kjJuw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RMCoWS7R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89135C4166B
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 23:42:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706398923;
-	bh=aLwsjk+yqZJ8iDmZN++A6YSY8VPjmsd8uJByyE+0yic=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=RMCoWS7RHEo8nhQFvZPcaWsccsH97v0vREo4GbTlKeqs1Ma/nR7q8KiYpgf2S5krL
-	 5ed0URKDyDU6ppoyYCyQZYunRGrT98uaxFaFOaKECCtPSxKMq2SbVjLSmKbAqyMZpe
-	 w9/hrV9Re7Sbreays5AxS6Vi28D9karYZmqtA9zzr1UjsBwkwuYTM0tFm1HjUb2p/1
-	 wycOdo1v1stuZwd7RilsmoGrhoBiU+Ghu6WrpJhAXJ0tOQqCgkGDdgkQqrxnX4Fsq4
-	 X4ZiImJEvqnbo/is7lOhleMeG6USBd9mFLudy9ZmKUcpoL5WAAlez4Weh9lw47ttJ0
-	 qenfayiqkpFoA==
-Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-3606ebda57cso4820595ab.2
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 15:42:03 -0800 (PST)
-X-Gm-Message-State: AOJu0YzU4zUvffb8yVXfZ/ThK18xSmvodXOV6e9ut3eTEbTqr/7JyAHa
-	rAgj7YSTf3I8HudgzXSHvDN1I/Es9X9VWDvwfezWhlpT2egchfF7J1dkJQH/uhiN5RSDQ7zK/lJ
-	ELr3emHisye+UhO3HrAsiW5LFB26kyzXKDh+x
-X-Google-Smtp-Source: AGHT+IHMmu2yTpnyL+/ZXXoAtF/7A3G+VhWLCcrtqUzTADdDWs3F5D1IQl0EO/XykzpJM61HYI/TYpJ5L4Hlk9Ugw8w=
-X-Received: by 2002:a92:2a03:0:b0:363:73ae:5f86 with SMTP id
- r3-20020a922a03000000b0036373ae5f86mr2119802ile.2.1706398922757; Sat, 27 Jan
- 2024 15:42:02 -0800 (PST)
+	s=arc-20240116; t=1706399205; c=relaxed/simple;
+	bh=P9bo665rDuTuKgck3NtYPkXUGHEK21LpXvICqeEA9QE=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=csZivSUB9rtanflMxBOTB92VFZUX+awmAh625DXKdgCFyIOCMu9YxFW/JykXf2HXybDD9G16VU1q5KNl5rTfhADiW4478IEJbQztEIwxbLnp3DCkeO2C+Gt1no1JJbfzcvScuzVwQT9ZsWCEPTmQSKpWSbkuNjd5Hh5+b25hlL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--neelnatu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3Ov+yiQW; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--neelnatu.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc26605c3aaso2651798276.0
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 15:46:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706399203; x=1707004003; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=CyDN4+TiT46Ds8Ohg+X9G0B6d1j9fxP1UwZKU33b3Qc=;
+        b=3Ov+yiQWz22AnoiSnpnSUcu8Vqk7ejee/4CuOcY74ayBgpLjwp8zuBUgzMS554YPHR
+         fPsqouKA8noDM4nLsNpuD9WaFK6efvK8rnwfvcFxCJEw1IurvkndlM1Dg5fejJelflle
+         9soJHwzKfio+aXFxsv+791rudwqjL7cz8Cm4k83Cdo6Yuj0AWu8No18i5dXkR3vMTgWF
+         w7/GP/piZvl1kab6/966osIAdTAmRqIzC/+GL2c5Vf9en8LIrzh/2LzEIR4pv7njBPHu
+         I8lsLMW7UVkDO952aIYRuljv1sJcwPNG7Y4wHvmmFLNq/u1Avfp+ko3FCKXntxs7OcKI
+         MrlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706399203; x=1707004003;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CyDN4+TiT46Ds8Ohg+X9G0B6d1j9fxP1UwZKU33b3Qc=;
+        b=cC0c9wLMvsEsRA1kDu4Rg/vDgclPaYUK6fklQvyGdeZyU3Wpzq1PgpKjF9+LyO21hi
+         n3U+mwJ8Gc4E89+fbUroe6TzuW1qCZwkgcVqrp0kPy+xYMatEmCnhUGz+L3GjHP4K5Fj
+         WhN6AgYOL3nxm8+oDUnxSUQACP/x3yLLm2WDG/pLaf4Dy23FmDlZBHmt6d9gzDRI1zT3
+         b+sFCjJkN+CxN/GDv1woDbL4oYoR7myYwvjfhED5RjbHRALwwe0SOzP4BWwdsCuKni9e
+         Lw0FO/lmDSYg0Coi+/ZPnY42GiMRUTatI7qdGSdPN73LIDqhmRbcf6CvSE4MkeoIp+rv
+         A7nw==
+X-Gm-Message-State: AOJu0Yz/ao4ZVNE1o352GeD6pixnRJsXhyBFifFI81feGDWZI4MyIDuH
+	PMUswabuhg42jY4LnHwHf5RETj8TLHwnWRmmojSmoub6xXEMmZL6tgfaLkOp+X76C7aJj6VeYv8
+	kIWJn5EOLNQ==
+X-Google-Smtp-Source: AGHT+IEKkL4EMXHgh2RpZmfXmjVGCo7PoFbgzv69iMBgoK6/rpUgGJE5z20/1SaJyqVS/IvgcuZmrMBDsov7jw==
+X-Received: from neelnatu.svl.corp.google.com ([2620:15c:2a3:200:9829:f4d9:886a:c45f])
+ (user=neelnatu job=sendgmr) by 2002:a05:6902:250b:b0:dc2:65db:786c with SMTP
+ id dt11-20020a056902250b00b00dc265db786cmr214540ybb.5.1706399203103; Sat, 27
+ Jan 2024 15:46:43 -0800 (PST)
+Date: Sat, 27 Jan 2024 15:46:36 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231025144546.577640-1-ryan.roberts@arm.com> <20240118111036.72641-1-21cnbao@gmail.com>
- <20240118111036.72641-6-21cnbao@gmail.com>
-In-Reply-To: <20240118111036.72641-6-21cnbao@gmail.com>
-From: Chris Li <chrisl@kernel.org>
-Date: Sat, 27 Jan 2024 15:41:50 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuN0RkubcLpj-NT8Crycf2-TciM2yGhUDBNpzBji6TQ3rg@mail.gmail.com>
-Message-ID: <CAF8kJuN0RkubcLpj-NT8Crycf2-TciM2yGhUDBNpzBji6TQ3rg@mail.gmail.com>
-Subject: Re: [PATCH RFC 5/6] mm: rmap: weaken the WARN_ON in __folio_add_anon_rmap()
-To: Barry Song <21cnbao@gmail.com>
-Cc: ryan.roberts@arm.com, akpm@linux-foundation.org, david@redhat.com, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, mhocko@suse.com, 
-	shy828301@gmail.com, wangkefeng.wang@huawei.com, willy@infradead.org, 
-	xiang@kernel.org, ying.huang@intel.com, yuzhao@google.com, surenb@google.com, 
-	steven.price@arm.com, Barry Song <v-songbaohua@oppo.com>, 
-	Chuanhua Han <hanchuanhua@oppo.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Message-ID: <20240127234636.609265-1-neelnatu@google.com>
+Subject: [PATCH] kernfs: fix false-positive WARN(nr_mmapped) in kernfs_drain_open_files
+From: Neel Natu <neelnatu@google.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Tejun Heo <tj@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Neel Natu <neelnatu@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 18, 2024 at 3:12=E2=80=AFAM Barry Song <21cnbao@gmail.com> wrot=
-e:
->
-> From: Barry Song <v-songbaohua@oppo.com>
->
-> In do_swap_page(), while supporting large folio swap-in, we are using the=
- helper
-> folio_add_anon_rmap_ptes. This is triggerring a WARN_ON in __folio_add_an=
-on_rmap.
-> We can make the warning quiet by two ways
-> 1. in do_swap_page, we call folio_add_new_anon_rmap() if we are sure the =
-large
-> folio is new allocated one; we call folio_add_anon_rmap_ptes() if we find=
- the
-> large folio in swapcache.
-> 2. we always call folio_add_anon_rmap_ptes() in do_swap_page but weaken t=
-he
-> WARN_ON in __folio_add_anon_rmap() by letting the WARN_ON less sensitive.
->
-> Option 2 seems to be better for do_swap_page() as it can use unified code=
- for
-> all cases.
->
-> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> Tested-by: Chuanhua Han <hanchuanhua@oppo.com>
-> ---
->  mm/rmap.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index f5d43edad529..469fcfd32317 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1304,7 +1304,10 @@ static __always_inline void __folio_add_anon_rmap(=
-struct folio *folio,
->                  * page.
->                  */
->                 VM_WARN_ON_FOLIO(folio_test_large(folio) &&
-> -                                level !=3D RMAP_LEVEL_PMD, folio);
-> +                                level !=3D RMAP_LEVEL_PMD &&
-> +                                (!IS_ALIGNED(address, nr_pages * PAGE_SI=
-ZE) ||
-Some minor nitpick here.
-There are two leading "(" in this and next line. This is the first "("
-> +                                (folio_test_swapcache(folio) && !IS_ALIG=
-NED(folio->index, nr_pages)) ||
- Second "("  here.
+Prior to this change 'on->nr_mmapped' tracked the total number of
+mmaps across all of its associated open files via kernfs_fop_mmap().
+Thus if the file descriptor associated with a kernfs_open_file was
+mmapped 10 times then we would have: 'of->mmapped = true' and
+'of_on(of)->nr_mmapped = 10'.
 
-These two "(" are NOT at the same nested level. They should not have
-the same indentation.
-On my first glance, I misread the scope of the "||" due to the same
-level indentation.
-We can do one of the two
-1) add more indentation on the second "(" to reflect the nesting level.
+The problem is that closing or draining a 'of->mmapped' file would
+only decrement one from the 'of_on(of)->nr_mmapped' counter.
 
-> +                                page !=3D &folio->page), folio);
+For e.g. we have this from kernfs_unlink_open_file():
+        if (of->mmapped)
+                on->nr_mmapped--;
 
-Also moving the folio to the next line, because the multiline
-expression is huge and complex. Make it obvious the ending "folio" is
-not part of the testing condition.
+The WARN_ON_ONCE(on->nr_mmapped) in kernfs_drain_open_files() is
+easy to reproduce by:
+1. opening a (mmap-able) kernfs file.
+2. mmap-ing that file more than once (mapping just once masks the issue).
+3. trigger a drain of that kernfs file.
 
-2) Move the multiline test condition to a checking function. Inside
-the function it can return early when the shortcut condition is met.
-That will also help the readability of this warning condition.
+Modulo out-of-tree patches I was able to trigger this reliably by
+identifying pci device nodes in sysfs that have resource regions
+that are mmap-able and that don't have any driver attached to them
+(steps 1 and 2). For step 3 we can "echo 1 > remove" to trigger a
+kernfs_drain.
 
-Chris
+Signed-off-by: Neel Natu <neelnatu@google.com>
+---
+ fs/kernfs/file.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
->                 __folio_set_anon(folio, vma, address,
->                                  !!(flags & RMAP_EXCLUSIVE));
->         } else if (likely(!folio_test_ksm(folio))) {
-> --
-> 2.34.1
->
->
+diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
+index ffa4565c275a..e9df2f87072c 100644
+--- a/fs/kernfs/file.c
++++ b/fs/kernfs/file.c
+@@ -483,9 +483,11 @@ static int kernfs_fop_mmap(struct file *file, struct vm_area_struct *vma)
+ 		goto out_put;
+ 
+ 	rc = 0;
+-	of->mmapped = true;
+-	of_on(of)->nr_mmapped++;
+-	of->vm_ops = vma->vm_ops;
++	if (!of->mmapped) {
++		of->mmapped = true;
++		of_on(of)->nr_mmapped++;
++		of->vm_ops = vma->vm_ops;
++	}
+ 	vma->vm_ops = &kernfs_vm_ops;
+ out_put:
+ 	kernfs_put_active(of->kn);
+-- 
+2.43.0.429.g432eaa2c6b-goog
+
 
