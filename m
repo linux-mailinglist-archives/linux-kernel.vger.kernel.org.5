@@ -1,176 +1,97 @@
-Return-Path: <linux-kernel+bounces-41268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41260-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3DEF83EE3C
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 17:11:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC5AB83EE2B
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 17:04:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A5C01F22BEC
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:11:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 822021F224DC
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:04:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2500C2C19C;
-	Sat, 27 Jan 2024 16:10:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 642962C19A;
+	Sat, 27 Jan 2024 16:04:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="R8rDkWRY"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b="COIITEB8"
+Received: from mail.subdimension.ro (skycaves.subdimension.ro [172.104.132.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A88C3224DD;
-	Sat, 27 Jan 2024 16:10:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30A1C28E02;
+	Sat, 27 Jan 2024 16:04:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.104.132.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706371856; cv=none; b=qZl7ASHInW/uVOVYPo+PYiv1sC9K0QJcum57Fmh8rfsRV4BE42oFMjm+SUQvYljqNFYNn15mY5er60i+jKlWoyZvzs+sTGI2jesn1sUdddO9rs918is7hsWZl9IMNz7WK9BiPoV9T9WpUPyzcyvBzVnCmYaf+V3ThzU7OpYU6/U=
+	t=1706371461; cv=none; b=G+RLVxDnIVn0Zkx7/s+qpr4bB3+1FI8dnWXJ9H+U1/E+wiceDmzxeqkdF1L+dStq/a/h73KRYVfJoYSsEozzISJI2n/pB2LAcKeSeHLNjiMAxgoKDQEdIql2NrDzKkE6d1a/FACGWkYsuUiPEGWL2RZRYN3gJut2+idwNJeOh+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706371856; c=relaxed/simple;
-	bh=GC4fVdRsHNvUDt/q1fyQJYqojn4dlLXr9MCgr6ezbYY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ltMmHwmfInfnWR1njZU35H7qniPUiabCAESEKKhLH11GMRPGfq+iGMjS9OPV0tov579HHKtVG7O83IWGXAPxSm+ArKiLRxXxBPi7mrRyGSxadx+6e4QybmGJ6EA2AGwoT6tfnPT1ftlBYvjZujvOKlFk2xQDqMyPpPNSuyON8Yo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=R8rDkWRY; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 54F6740E01A9;
-	Sat, 27 Jan 2024 16:03:37 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id lu71nTCNoEp9; Sat, 27 Jan 2024 16:03:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706371414; bh=zJjvOvg09j/JxgCLQEW8hFY2bFZEzCn3tUUE3IeXvDI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=R8rDkWRY9JApzGfMhoO/ltUpWhxXsJorl0xs3AW2oEMUGgqBJJ7et23aCsX/6rSk7
-	 L1JZYSWGKq7guE8YqyGaMRXJrgA5qVJ9suCJL5LaRAjq9FgHLzJdkEZMxnSFMc2dtO
-	 gI4C12ZpMQGXlnS6ee8Hmd71QGrLYIjVdKj4p1Ryh0bmpobnRyMq49pcLhPYQikihj
-	 ue5l4fe7Nu2OCWJjYUTML+jOR/Z+9YoxQUnqYVWHEPdCUjY9UuUpJc4g+VS02kKWIW
-	 m6wXthg1Rtf8TnMSi5t1h7SkVGOiOlGC4YOldUaHQHzwLVqUUOuKrYZ3JBzjl4bi04
-	 rs90xV6Ajdo+l1b0MRawQxxeu/ulhLAeopq07RMbJff6rXn1FQFYWl397VI847fDKM
-	 ETxBr43+USwVBUxwmJYsP0SHnk4yZUfN6etUbxgZlUqlH9uzKgyIY95J0r5YXAXZl6
-	 iLYItOwjknaULfEgslHWFl6kTpSlysbnoqnWLxZeb/icAB9I6CmJ7keyRbjk7M3QFB
-	 liy7SwZp6fLivc4G3qmFGJ/LpDY3kVBGUC1ykFRxaYnoSobjO181UN8BzgedLbuQFB
-	 1MtGE0JiOZbMIg+4bbG09P2gpteSN1AQ0jQW/wgSXWwaEcucT55dtP6lvCMlfx8Ozk
-	 GL8HCR0ME/5W6ZUstLeOYxkE=
-Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
+	s=arc-20240116; t=1706371461; c=relaxed/simple;
+	bh=LTtc/KGc3er11Li2smUvdjG1aLcglxo3OSttIx7IDpI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YlIOODYG8r2XTYD9cpJDaGBbVcUfHmsjgvSRQ/cB2ztPe0RIWBLE3TINpwpW07CJAJ5tXeN81I/NxhpDz0fghBhijvCv5KLTIN5NQ73OegEijLuHcVHSEnScSOt70PmjRjPCLiDIGv0QV9PI6i2AmXiQvujCvk7OeyYeDA8ctB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=subdimension.ro; spf=pass smtp.mailfrom=subdimension.ro; dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b=COIITEB8; arc=none smtp.client-ip=172.104.132.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=subdimension.ro
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=subdimension.ro
+Received: from localhost.localdomain (unknown [188.24.80.170])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 64B8D40E016C;
-	Sat, 27 Jan 2024 16:02:58 +0000 (UTC)
-Date: Sat, 27 Jan 2024 17:02:49 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Michael Roth <michael.roth@amd.com>
-Cc: x86@kernel.org, kvm@vger.kernel.org, linux-coco@lists.linux.dev,
-	linux-mm@kvack.org, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-	ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-	peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-	rientjes@google.com, tobin@ibm.com, vbabka@suse.cz,
-	kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-	pankaj.gupta@amd.com, liam.merwick@oracle.com
-Subject: Re: [PATCH v2 11/25] x86/sev: Adjust directmap to avoid inadvertant
- RMP faults
-Message-ID: <20240127160249.GDZbUpKW_cqRzdYn7Z@fat_crate.local>
-References: <20240126041126.1927228-1-michael.roth@amd.com>
- <20240126041126.1927228-12-michael.roth@amd.com>
- <20240126153451.GDZbPRG3KxaQik-0aY@fat_crate.local>
- <20240126170415.f7r4nvsrzgpzcrzv@amd.com>
- <20240126184340.GEZbP9XA13X91-eybA@fat_crate.local>
- <20240126235420.mu644waj2eyoxqx6@amd.com>
- <20240127114207.GBZbTsDyC3hFq8pQ3D@fat_crate.local>
- <20240127154506.v3wdio25zs6i2lc3@amd.com>
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.subdimension.ro (Postfix) with ESMTPSA id F079628F2BC;
+	Sat, 27 Jan 2024 16:04:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
+	s=skycaves; t=1706371452;
+	bh=LTtc/KGc3er11Li2smUvdjG1aLcglxo3OSttIx7IDpI=;
+	h=From:To:Cc:Subject:Date;
+	b=COIITEB8x+6MkFg/9rAcIUXu8R1EmER2zdVDa8IY3vKQa324tO+sxBv0r7rYNY4oG
+	 u2z+HUjyKsb7O8fX5707+pr3kQg3Fkae3vMk/A6cg/TL0SKTAVBtRsJtFElZQQAVKp
+	 +OgDkzYzPZyhkfHEBTZG9Kxe1z/g0exQaIBoBuIU=
+From: Petre Rodan <petre.rodan@subdimension.ro>
+To: linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Petre Rodan <petre.rodan@subdimension.ro>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH v2 0/4] iio: pressure: hsc030pa: cleanup and triggered buffer
+Date: Sat, 27 Jan 2024 18:03:54 +0200
+Message-ID: <20240127160405.19696-1-petre.rodan@subdimension.ro>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240127154506.v3wdio25zs6i2lc3@amd.com>
+Content-Transfer-Encoding: 8bit
 
-On Sat, Jan 27, 2024 at 09:45:06AM -0600, Michael Roth wrote:
-> directmap maps all physical memory accessible by kernel, including text
-> pages, so those are valid PFNs as far as this function is concerned.
+This set of patches covers the following:
 
-Why don't you have a look at
+ - small cleanup
+ - mandatory 2ms delay between readings
+ - support for triggered buffer readings
 
-Documentation/arch/x86/x86_64/mm.rst
+The support for devices that have "sleep mode" factory option that was
+present in v1 of this patchset was removed, for a few reasons:
 
-to sync up on the nomenclature first?
+ - a Honeywell employee told me that this chip variant is extremely
+    unlikely to be found in the wild, which also makes testing the
+    driver functionality impossible
+ - I found no reliable way of generating i2c/spi bus traffic with no
+    payload (toggle CS for SPI case, send i2c packet containing only
+    the address byte) that are required for the wakeup sequence.
 
-   ffff888000000000 | -119.5  TB | ffffc87fffffffff |   64 TB | direct mapping of all physical memory (page_offset_base)
 
-   ...
+Petre Rodan (4):
+  dt-bindings: iio: pressure: honeywell,hsc030pa.yaml add spi props
+  iio: pressure: hsc030pa cleanup
+  iio: pressure: hsc030pa add mandatory delay
+  iio: pressure: hsc030pa add triggered buffer
 
-   ffffffff80000000 |   -2    GB | ffffffff9fffffff |  512 MB | kernel text mapping, mapped to physical address 0
-
-and so on.
-
-> The expectation is that the caller is aware of what PFNs it is passing in,
-
-There are no expectations. Have you written them down somewhere?
-
-> This function only splits mappings in the 0xffff888000000000 directmap
-> range.
-
-This function takes any PFN it gets passed in as it is. I don't care
-who its users are now or in the future and whether they pay attention
-what they pass into - it needs to be properly defined.
-
-Mike, please get on with the program. Use the right naming for the
-function and basta.
-
-IOW, this:
-
-diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
-index 0a8f9334ec6e..652ee63e87fd 100644
---- a/arch/x86/virt/svm/sev.c
-+++ b/arch/x86/virt/svm/sev.c
-@@ -394,7 +394,7 @@ EXPORT_SYMBOL_GPL(psmash);
-  * More specifics on how these checks are carried out can be found in APM
-  * Volume 2, "RMP and VMPL Access Checks".
-  */
--static int adjust_direct_map(u64 pfn, int rmp_level)
-+static int split_pfn(u64 pfn, int rmp_level)
- {
- 	unsigned long vaddr = (unsigned long)pfn_to_kaddr(pfn);
- 	unsigned int level;
-@@ -405,7 +405,12 @@ static int adjust_direct_map(u64 pfn, int rmp_level)
- 	if (WARN_ON_ONCE(rmp_level > PG_LEVEL_2M))
- 		return -EINVAL;
- 
--	if (WARN_ON_ONCE(rmp_level == PG_LEVEL_2M && !IS_ALIGNED(pfn, PTRS_PER_PMD)))
-+       if (!pfn_valid(pfn))
-+               return -EINVAL;
-+
-+       if (rmp_level == PG_LEVEL_2M &&
-+           (!IS_ALIGNED(pfn, PTRS_PER_PMD) ||
-+            !pfn_valid(pfn + PTRS_PER_PMD - 1)))
- 		return -EINVAL;
- 
- 	/*
-@@ -456,7 +461,7 @@ static int rmpupdate(u64 pfn, struct rmp_state *state)
- 
- 	level = RMP_TO_PG_LEVEL(state->pagesize);
- 
--	if (adjust_direct_map(pfn, level))
-+	if (split_pfn(pfn, level))
- 		return -EFAULT;
- 
- 	do {
-
+ .../iio/pressure/honeywell,hsc030pa.yaml      |  3 ++
+ drivers/iio/pressure/Kconfig                  |  2 +
+ drivers/iio/pressure/hsc030pa.c               | 49 ++++++++++++++++++-
+ drivers/iio/pressure/hsc030pa.h               |  7 +++
+ drivers/iio/pressure/hsc030pa_i2c.c           |  9 +++-
+ drivers/iio/pressure/hsc030pa_spi.c           |  7 ++-
+ 6 files changed, 73 insertions(+), 4 deletions(-)
 
 -- 
-Regards/Gruss,
-    Boris.
+2.43.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
