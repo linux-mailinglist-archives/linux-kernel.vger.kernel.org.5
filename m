@@ -1,149 +1,131 @@
-Return-Path: <linux-kernel+bounces-41395-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41396-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DA6D83F012
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 21:59:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4785B83F01B
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 22:03:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2371F1F24044
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 20:59:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02396285BEF
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 21:03:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECF881A723;
-	Sat, 27 Jan 2024 20:59:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B58611A731;
+	Sat, 27 Jan 2024 21:02:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="LE0BRl6u"
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ibM3Qz6B"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51D6819474
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 20:59:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC93418EA8;
+	Sat, 27 Jan 2024 21:02:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706389176; cv=none; b=HDfDEpNp9iGS6dVBsQ9azdignlR1RErrBEz878nKcOO5Ao5W5rT2atuq4nujKmv0VEakiq3O3cahTJJhuoj2ZZJ3FyHdoRsfAi6RPd9VFsG4UrLBXhOiZzS3sMHnL2Lmaz1vWg5Lj7/x7s9hlkbGFtEnivFn2xWlq7ioNsrZ3P4=
+	t=1706389379; cv=none; b=KM/sSUoDRKlJZ5KAh+eT+wfv356BvDsv8BAlo27bQlgRDKh/++grA7ggWrGJ4QiJ6qOJItZ3DtGqYQf9tN8b8ZzeqsO6deEofCY6kp435Jrf6pWBbXV0KJsvU8ezft68EP86gV9AqOA5a1hYL+9koyJub9+P+619jIxFTy5ReOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706389176; c=relaxed/simple;
-	bh=X7sfGFwjXzv3hDjZ7pBOcFdlwJFwBoQuoJ8UWnTjxa4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UeCZkkUUwdQZSIk0oW60wOBzRsxye/gwUuqbij9uU9iBMZ9RSeLEwQVm8fm0NewKhLuumqRoSvcK7IQ70BgCWSwtAkkcyRy0DydaHET8pQqACghGhuR3fYrjvggK0w/ZnEknYR+qiar6n3jncPkjtv3Q22p9LOrESDky8CtKtJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=LE0BRl6u; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7838af983c1so122782185a.3
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 12:59:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1706389172; x=1706993972; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Xi+XXGXLtGOnaTnHAzpID7MnZZG5IPUxmL4L9FGcLVk=;
-        b=LE0BRl6u8pGAYbXPj2TltHHMj5sgjsvlRiXMPjku3ejzVRa74uhaY9HkJxhUoNZ7FB
-         gJA27MdJNPaQSGYaRm+DrNgFLj52sbOAj581XOJktHeHu2bbG0M5v0QE5kADi3WGWKdR
-         fF7UOFRaeEbL3Rctx8TH2RelGg/lEs7XIOvhixiRgKmWrHP1YabP4uLofVYF9hFRbdEC
-         l+p+03d9MJT6xjSwhDUFJ6J7EZRiZVyvcxzI6rh35Yu/Qlti3CQ9DkLH/A44yI5ksJwA
-         A63VbGTMWJFqq3rKTaecturOD8PanVubpBdsUOLu1fx4yirmAiM/pB71a6wi95b3hEB0
-         ni9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706389172; x=1706993972;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Xi+XXGXLtGOnaTnHAzpID7MnZZG5IPUxmL4L9FGcLVk=;
-        b=omgEUmo1gCjM93xzxNwftSXi3h6db7P2pl2LC3Q3TwRdCARN/+YswfYcSchldscUrp
-         NpLZoIpJFfrIG3uBBGsl8y0Y9EnJrLfuti+NmVAe5A8pLb30oInmMXoG+wYHsTECG8B2
-         a5hLSgF+iPapRCLul3ovwCfx2upJc3Wsv0/UK3g6gAJmUR6HZyvU3mWFOQcAjuSPdO03
-         lqFJrkfWmpFNOwPSUvyGZXq8Ob1yIjADC1Y/BRnvVYk33FF7XS1id6vB0Jhel+gCpt6L
-         /UMTeBxNKHHvStq4XmhP6tUTFrozri68YfGn1be1SlF2jwc8EkPGqip5BhNP8uinH8UA
-         54Vg==
-X-Gm-Message-State: AOJu0Yz14xWmp1McdSEygC/DZxuy8JDLFL96219h5YRH01Rg7ZzyCuV4
-	Jo+5NbG0Sv/ax7WARVBazKnIeCxxtD6TbG4tTAbOOrwVpAec/v9A3lSU8Kx/H+eMo/ToZ0Yx8UI
-	dE13ULcv+m2A5/mV3B2vfzg/g8WqOHOH2SROsaQ==
-X-Google-Smtp-Source: AGHT+IHfJzVeJM2xkAmUTr8ZLVYE1O6BzSpTjAVfgyKB0IlYK7KettRLZzpgOBAYKoyC3tCT7jMMH6X40Yjsa9zTcz0=
-X-Received: by 2002:ac8:5893:0:b0:42a:96ef:6deb with SMTP id
- t19-20020ac85893000000b0042a96ef6debmr1350096qta.61.1706389172118; Sat, 27
- Jan 2024 12:59:32 -0800 (PST)
+	s=arc-20240116; t=1706389379; c=relaxed/simple;
+	bh=HMjywx9YgDjqee2LdbCwGdobVt39SnJFpWmiRKOYguo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZbLcwTtMjhRldphfg2eoa/PtlaVV7ddldzoyy7ML+rfs5DxJuL0DHjUC7aXq0moiH/dvFmI00JUqrAcO2jemUYRWV9fzMjUIL10rvT4Cn7/iDWV3LJ9sK0XGbGdSRfrlhpVxEzZaBRg2Rnhp7wz278P2aI7RAd7q4DrbiKXGUzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ibM3Qz6B; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=LHqW8kH7shctWwwB3SlliSPu5mFAQXdBMQK5ohwulNE=; b=ibM3Qz6BFjxEmRqv4SkKaQ+8ln
+	u4xprfF6WrJEnDSBlDOqWj21QabdevMpN9d7xLpt1hweM3nT0RA2VLZ8mvzMyypEOrGdA9RRn6Dnq
+	rJEUbPm8XUu7fY4RXO0NYKYenIBOxtojKZXYp0tE4Ulm493jfturrc3f7lF6CIlainboSs1IAn+RX
+	hS5piWSzx3zUmNnXw5FGlbgnRqu7tBFoE8THav0APkfqAx52nP7a9yikeBupejxHwp9JzV8dhhhIf
+	5n+QjwLULWl1Mn5muQQ4RfAkgWw9Pp4lGNoGYCbz2qaTJ4SlvjVkTRO4chcDGneL8tk4UC3xe5pDx
+	GegliW+A==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rTppC-00000008CEz-3sDa;
+	Sat, 27 Jan 2024 21:02:52 +0000
+Message-ID: <70bf533c-fd77-4e4f-819c-8299ac764ca5@infradead.org>
+Date: Sat, 27 Jan 2024 13:02:49 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102-j7200-pcie-s2r-v2-0-8e4f7d228ec2@bootlin.com> <20240102-j7200-pcie-s2r-v2-1-8e4f7d228ec2@bootlin.com>
-In-Reply-To: <20240102-j7200-pcie-s2r-v2-1-8e4f7d228ec2@bootlin.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Sat, 27 Jan 2024 21:59:21 +0100
-Message-ID: <CAMRc=MepTF6vV=MwqDNL2_PRjymn18b-RH7TN5TYAGaO=VGDWw@mail.gmail.com>
-Subject: Re: [PATCH v2 01/15] gpio: pca953x: move suspend()/resume() to suspend_noirq()/resume_noirq()
-To: Thomas Richard <thomas.richard@bootlin.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Andy Shevchenko <andy@kernel.org>, 
-	Tony Lindgren <tony@atomide.com>, Haojian Zhuang <haojian.zhuang@linaro.org>, 
-	Vignesh R <vigneshr@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, 
-	Janusz Krzysztofik <jmkrzyszt@gmail.com>, Andi Shyti <andi.shyti@kernel.org>, 
-	Peter Rosin <peda@axentia.se>, Vinod Koul <vkoul@kernel.org>, 
-	Kishon Vijay Abraham I <kishon@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
-	Tom Joseph <tjoseph@cadence.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	linux-phy@lists.infradead.org, linux-pci@vger.kernel.org, 
-	gregory.clement@bootlin.com, theo.lebrun@bootlin.com, 
-	thomas.petazzoni@bootlin.com, u-kumar1@ti.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 04/17] media: cec.h: Fix kerneldoc
+Content-Language: en-US
+To: Ricardo Ribalda <ribalda@chromium.org>,
+ Tiffany Lin <tiffany.lin@mediatek.com>,
+ Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+ Yunfei Dong <yunfei.dong@mediatek.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Hans Verkuil <hverkuil-cisco@xs4all.nl>, Hans Verkuil <hverkuil@xs4all.nl>,
+ Kieran Bingham <kieran.bingham@ideasonboard.com>,
+ Bin Liu <bin.liu@mediatek.com>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Philipp Zabel <p.zabel@pengutronix.de>,
+ Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+ Vikash Garodia <quic_vgarodia@quicinc.com>,
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Alim Akhtar <alim.akhtar@samsung.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Andrzej Hajda <andrzej.hajda@intel.com>, Bingbu Cao <bingbu.cao@intel.com>,
+ Tianshu Qiu <tian.shu.qiu@intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+ linux-samsung-soc@vger.kernel.org, linux-staging@lists.linux.dev,
+ linux-amlogic@lists.infradead.org
+References: <20240126-gix-mtk-warnings-v1-0-eed7865fce18@chromium.org>
+ <20240126-gix-mtk-warnings-v1-4-eed7865fce18@chromium.org>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240126-gix-mtk-warnings-v1-4-eed7865fce18@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jan 26, 2024 at 3:37=E2=80=AFPM Thomas Richard
-<thomas.richard@bootlin.com> wrote:
->
-> Some IOs can be needed during suspend_noirq()/resume_noirq().
-> So move suspend()/resume() to noirq.
->
-> Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
+
+
+On 1/26/24 15:16, Ricardo Ribalda wrote:
+> The fields are gone, remove their documentation.
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+
+Thanks.
+
 > ---
->  drivers/gpio/gpio-pca953x.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/gpio/gpio-pca953x.c b/drivers/gpio/gpio-pca953x.c
-> index 00ffa168e405..6e495fc67a93 100644
-> --- a/drivers/gpio/gpio-pca953x.c
-> +++ b/drivers/gpio/gpio-pca953x.c
-> @@ -1234,7 +1234,7 @@ static void pca953x_save_context(struct pca953x_chi=
-p *chip)
->         regcache_cache_only(chip->regmap, true);
->  }
->
-> -static int pca953x_suspend(struct device *dev)
-> +static int pca953x_suspend_noirq(struct device *dev)
->  {
->         struct pca953x_chip *chip =3D dev_get_drvdata(dev);
->
-> @@ -1248,7 +1248,7 @@ static int pca953x_suspend(struct device *dev)
->         return 0;
->  }
->
-> -static int pca953x_resume(struct device *dev)
-> +static int pca953x_resume_noirq(struct device *dev)
->  {
->         struct pca953x_chip *chip =3D dev_get_drvdata(dev);
->         int ret;
-> @@ -1268,7 +1268,8 @@ static int pca953x_resume(struct device *dev)
->         return ret;
->  }
->
-> -static DEFINE_SIMPLE_DEV_PM_OPS(pca953x_pm_ops, pca953x_suspend, pca953x=
-_resume);
-> +static DEFINE_NOIRQ_DEV_PM_OPS(pca953x_pm_ops,
-> +                              pca953x_suspend_noirq, pca953x_resume_noir=
-q);
->
->  /* convenience to stop overlong match-table lines */
->  #define OF_653X(__nrgpio, __int) ((void *)(__nrgpio | PCAL653X_TYPE | __=
-int))
->
-> --
-> 2.39.2
->
+>  include/media/cec.h | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/include/media/cec.h b/include/media/cec.h
+> index d77982685116..10c9cf6058b7 100644
+> --- a/include/media/cec.h
+> +++ b/include/media/cec.h
+> @@ -224,8 +224,6 @@ struct cec_adap_ops {
+>   * @notifier:		CEC notifier
+>   * @pin:		CEC pin status struct
+>   * @cec_dir:		debugfs cec directory
+> - * @status_file:	debugfs cec status file
+> - * @error_inj_file:	debugfs cec error injection file
+>   * @sequence:		transmit sequence counter
+>   * @input_phys:		remote control input_phys name
+>   *
+> 
 
-Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+-- 
+#Randy
 
