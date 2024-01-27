@@ -1,158 +1,148 @@
-Return-Path: <linux-kernel+bounces-41208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F46883ED6B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 14:47:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68B7D83ED6F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:08:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C4771C21F35
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 13:47:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6BF9B2287F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 14:08:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C3052576B;
-	Sat, 27 Jan 2024 13:47:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8436025769;
+	Sat, 27 Jan 2024 14:08:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="enKQqQey"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	dkim=pass (1024-bit key) header.d=kpnmail.nl header.i=@kpnmail.nl header.b="YpY6eFSj"
+Received: from ewsoutbound.kpnmail.nl (ewsoutbound.kpnmail.nl [195.121.94.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C44DF25615;
-	Sat, 27 Jan 2024 13:47:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D23FA1E51D
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 14:08:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.121.94.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706363267; cv=none; b=pl+C9a8XfIJXfzx3VhcOJ6k/mem9jb6JVDG5ZxzxE08l1XElxfiAFzCV87J1hdqje5RKQptIw3fPHD6LN37ZHuN7sdfz06t2CAnVOYE0p2ypsYIbOEcRzYwYXvSgpWbGT/T4cAM56Z0M3w+GqsqnIOl2Or0Dj+pq4RcFGVEjZXY=
+	t=1706364487; cv=none; b=e5VpUIXsQuxv1sbLS3fb4VIzyC7pTgLeRPVB7w7n6QvtbDqh4D329WyZAPnIgD7+j6/8UrJEA4xH3PXZxVXyuLRADPYYKi4RF0zWr3O7cyO7aSUMCWEzXxtbJC/23vQW94hfXcABo8pLPGmTPnEadeEY+l7f0UydZAwbZ0/qFI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706363267; c=relaxed/simple;
-	bh=aRVHGBE+E6YdaQtcIX4FAyk7BsARAU5+7Mp+IKkOdkY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DBywnDiALXl7EwOCpI2MeWpiQmleBpv72Ux2vzps6bgR/EIk5gjjCFwBcY7awSNjJ3Z8JOdsHWXz179FVileNYBpzF24Eh+KgCOlCVU8o1EhIxbhJ5dtzBkDeVXcSVovqgaihl0rO56/Xg8dDUUzu9mYAaxwn+vD5jJNIC1PtBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=enKQqQey; arc=none smtp.client-ip=192.55.52.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706363265; x=1737899265;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=aRVHGBE+E6YdaQtcIX4FAyk7BsARAU5+7Mp+IKkOdkY=;
-  b=enKQqQeys8X4sbDyC5kjWlpT2YT6Es9hxHESuxjOl8ShGegezQNYMdE7
-   3Uq7MXkHHlczHmUZO+01M6tzAH8aBp7kgDIh5MvZ5JL4Y4J2YJz2PvmXA
-   VtRUCZnBeJARxa5B/4zOVLT2BqEMCT9NKNByDK6WTaaUpCqEbi4E2jJjt
-   Y+rw3izC/T28pvUaR3kEH8a4DY69FZBfx+KeWI/Cgl6Msmj0dX84BV3Zo
-   XHjAtSz3qul7k5XLtU/7YmHQjCTvMaoMHKHz0lemYdW7rB2H9ez9qvgdl
-   aGGRadS9g8nhUaXdIQIkic+DyuV3t6ux/KOCznirrdUb+VHuKd6MQ4JrA
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="401543230"
-X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
-   d="scan'208";a="401543230"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2024 05:47:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="910611848"
-X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
-   d="scan'208";a="910611848"
-Received: from dcai-bmc-sherry-1.sh.intel.com ([10.239.138.57])
-  by orsmga004.jf.intel.com with ESMTP; 27 Jan 2024 05:47:38 -0800
-From: Haiyue Wang <haiyue.wang@intel.com>
-To: bpf@vger.kernel.org
-Cc: Haiyue Wang <haiyue.wang@intel.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH bpf-next v1] bpf,token: use BIT_ULL() to convert the bit mask
-Date: Sat, 27 Jan 2024 21:48:56 +0800
-Message-ID: <20240127134901.3698613-1-haiyue.wang@intel.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706364487; c=relaxed/simple;
+	bh=cw1eeOM4RkSe0XSNPxAa/P/Ot8H/KXwR4u6/EczyARw=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=qR2vTND6kDbdTfq0/sF4jZ6MDW8kvvapncZ2HVS3xDhsktzq1FYYpc6VmaPIdaxyrmlEy4qTgVipgYShk4NzA0le+zSKB9n5RDYm62yE1dwAuHiLUAduFHDLTnJIT5cxa/aN/CbK8i5vCY/anlK2IccE7N58p0xqwCOSEbwUa/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nctdev.nl; spf=pass smtp.mailfrom=nctdev.nl; dkim=pass (1024-bit key) header.d=kpnmail.nl header.i=@kpnmail.nl header.b=YpY6eFSj; arc=none smtp.client-ip=195.121.94.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nctdev.nl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nctdev.nl
+X-KPN-MessageId: 514459e5-bd1d-11ee-abd4-005056999439
+Received: from smtp.kpnmail.nl (unknown [10.31.155.7])
+	by ewsoutbound.so.kpn.org (Halon) with ESMTPS
+	id 514459e5-bd1d-11ee-abd4-005056999439;
+	Sat, 27 Jan 2024 15:06:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=kpnmail.nl; s=kpnmail01;
+	h=content-type:subject:from:to:mime-version:date:message-id;
+	bh=bBpLD8rwKBISkYLaBimopWAIUafM5MHOvmogIK8NVCc=;
+	b=YpY6eFSjjmBCmJ6/oSckRvnNyNKdIZ1YUAv42Z8p/HzXPjN32oOcXclKlTxARzZOy4b8Hi5Fz4224
+	 QgF/zcqTGFoRI7ypSGJHKVwwpXANFD/rEausj140fge7lSgo4OCa47dj1IwsiPqYGIW0bsyeKjlAu6
+	 9RKmwdJITA7Mgubo=
+Received: from [192.168.2.19] (84-86-195-241.fixed.kpn.net [84.86.195.241])
+	by smtp.kpnmail.nl (Halon) with ESMTP
+	id 51b0c109-bd1d-11ee-ad35-005056998788;
+	Sat, 27 Jan 2024 15:06:51 +0100 (CET)
+Message-ID: <9a001fc8-d748-7d45-9a0f-6a2a5dd3438d@nctdev.nl>
+Date: Sat, 27 Jan 2024 15:06:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Content-Language: en-US
+To: linux-kernel@vger.kernel.org
+From: Nico Coesel <nico@nctdev.nl>
+Subject: Patch to allow hot-plugging Atmel AT24 eeproms
+Organization: NCT Developments
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Replace the '(1ULL << *)' with the macro BIT_ULL(nr).
+Hello,
+I'm working on an embedded project which uses SFPs (hot-pluggable 
+optical network interface modules) which have two Atmel 'AT24' 
+compatible eeproms inside. I wanted to be able to read the contents of 
+the eeproms through the nvme subsystem as a file so the higher level 
+software doesn't need to mess with I2C and all.
 
-Signed-off-by: Haiyue Wang <haiyue.wang@intel.com>
----
- kernel/bpf/token.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+I tried to use the at24 driver but it tests if the device is present or 
+not. Since the device may not be present, this behaviour is not suitable 
+for the project I'm working on. The patch below (against kernel version 
+5.4.142) adds a hotplug flag so the 'device present' test is skipped and 
+the device is added nevertheless. The behaviour is controlled by an 
+extra device property called 'hotplug'.
 
-diff --git a/kernel/bpf/token.c b/kernel/bpf/token.c
-index 0bca93b60c43..d6ccf8d00eab 100644
---- a/kernel/bpf/token.c
-+++ b/kernel/bpf/token.c
-@@ -72,28 +72,28 @@ static void bpf_token_show_fdinfo(struct seq_file *m, struct file *filp)
- 	u64 mask;
- 
- 	BUILD_BUG_ON(__MAX_BPF_CMD >= 64);
--	mask = (1ULL << __MAX_BPF_CMD) - 1;
-+	mask = BIT_ULL(__MAX_BPF_CMD) - 1;
- 	if ((token->allowed_cmds & mask) == mask)
- 		seq_printf(m, "allowed_cmds:\tany\n");
- 	else
- 		seq_printf(m, "allowed_cmds:\t0x%llx\n", token->allowed_cmds);
- 
- 	BUILD_BUG_ON(__MAX_BPF_MAP_TYPE >= 64);
--	mask = (1ULL << __MAX_BPF_MAP_TYPE) - 1;
-+	mask = BIT_ULL(__MAX_BPF_MAP_TYPE) - 1;
- 	if ((token->allowed_maps & mask) == mask)
- 		seq_printf(m, "allowed_maps:\tany\n");
- 	else
- 		seq_printf(m, "allowed_maps:\t0x%llx\n", token->allowed_maps);
- 
- 	BUILD_BUG_ON(__MAX_BPF_PROG_TYPE >= 64);
--	mask = (1ULL << __MAX_BPF_PROG_TYPE) - 1;
-+	mask = BIT_ULL(__MAX_BPF_PROG_TYPE) - 1;
- 	if ((token->allowed_progs & mask) == mask)
- 		seq_printf(m, "allowed_progs:\tany\n");
- 	else
- 		seq_printf(m, "allowed_progs:\t0x%llx\n", token->allowed_progs);
- 
- 	BUILD_BUG_ON(__MAX_BPF_ATTACH_TYPE >= 64);
--	mask = (1ULL << __MAX_BPF_ATTACH_TYPE) - 1;
-+	mask = BIT_ULL(__MAX_BPF_ATTACH_TYPE) - 1;
- 	if ((token->allowed_attachs & mask) == mask)
- 		seq_printf(m, "allowed_attachs:\tany\n");
- 	else
-@@ -253,7 +253,7 @@ bool bpf_token_allow_cmd(const struct bpf_token *token, enum bpf_cmd cmd)
- {
- 	if (!token)
- 		return false;
--	if (!(token->allowed_cmds & (1ULL << cmd)))
-+	if (!(token->allowed_cmds & BIT_ULL(cmd)))
- 		return false;
- 	return security_bpf_token_cmd(token, cmd) == 0;
- }
-@@ -263,7 +263,7 @@ bool bpf_token_allow_map_type(const struct bpf_token *token, enum bpf_map_type t
- 	if (!token || type >= __MAX_BPF_MAP_TYPE)
- 		return false;
- 
--	return token->allowed_maps & (1ULL << type);
-+	return token->allowed_maps & BIT_ULL(type);
- }
- 
- bool bpf_token_allow_prog_type(const struct bpf_token *token,
-@@ -273,6 +273,6 @@ bool bpf_token_allow_prog_type(const struct bpf_token *token,
- 	if (!token || prog_type >= __MAX_BPF_PROG_TYPE || attach_type >= __MAX_BPF_ATTACH_TYPE)
- 		return false;
- 
--	return (token->allowed_progs & (1ULL << prog_type)) &&
--	       (token->allowed_attachs & (1ULL << attach_type));
-+	return (token->allowed_progs & BIT_ULL(prog_type)) &&
-+	       (token->allowed_attachs & BIT_ULL(attach_type));
- }
+
+diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
+index 2cccd82..c4e9cf3 100644
+--- a/drivers/misc/eeprom/at24.c
++++ b/drivers/misc/eeprom/at24.c
+@@ -24,6 +24,9 @@
+  #include <linux/pm_runtime.h>
+  #include <linux/gpio/consumer.h>
+
++//NC: Added flag to support devices not being preseny
++#define AT24_FLAG_HOTPLUG    BIT(8)
++
+  /* Address pointer is 16 bit. */
+  #define AT24_FLAG_ADDR16    BIT(7)
+  /* sysfs-entry will be read-only. */
+@@ -592,6 +595,10 @@
+      if (device_property_present(dev, "no-read-rollover"))
+          flags |= AT24_FLAG_NO_RDROL;
+
++    //NC: Add hotplug flag. This skips device detection
++    if (device_property_present(dev, "hotplug"))
++        flags |= AT24_FLAG_HOTPLUG;
++
+      err = device_property_read_u32(dev, "address-width", &addrw);
+      if (!err) {
+          switch (addrw) {
+@@ -709,11 +716,14 @@
+       * Perform a one-byte test read to verify that the
+       * chip is functional.
+       */
+-    err = at24_read(at24, 0, &test_byte, 1);
+-    pm_runtime_idle(dev);
+-    if (err) {
+-        pm_runtime_disable(dev);
+-        return -ENODEV;
++    if ((flags & AT24_FLAG_HOTPLUG) ==0)
++        {
++        err = at24_read(at24, 0, &test_byte, 1);
++        pm_runtime_idle(dev);
++        if (err) {
++            pm_runtime_disable(dev);
++            return -ENODEV;
++        }
+      }
+
+      dev_info(dev, "%u byte %s EEPROM, %s, %u bytes/write\n",
+
+I used the device tree snippet from below:
+
+     sfp1_info: eeprom@50 {
+         compatible = "atmel,24c02";
+         reg = <0x50>;
+         read-only;
+         pagesize = <1>;
+         hotplug;
+     };
+
+I hope this can be of use to somebody.
+
+Regards,
+Nico Coesel
+
 -- 
-2.43.0
+o---------------------------------------------------------------o
+|                       N C T  Developments                     |
+|Innovative embedded solutions                                  |
+o---------------------------------------------------------------o
 
 
