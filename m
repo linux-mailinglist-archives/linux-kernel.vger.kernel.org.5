@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-40946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 187AD83E8A5
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 01:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 34CA083E8A9
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 01:44:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DCB51C22668
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 00:43:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59C871C22321
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 00:44:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A91445665;
-	Sat, 27 Jan 2024 00:43:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B5FA8F49;
+	Sat, 27 Jan 2024 00:43:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="g8rS4Tr6"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PjuKReo6"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31EE23C1C
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 00:43:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 816CC8F40
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 00:43:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706316215; cv=none; b=Rl0iIQnM8mgY/Oj1SRilBmLvAipMqOKl3OJCcJiV9GTrnHFx0NeP3Pvc6MtGOXW5RAq1K5MQMFjHuCW6fEWm9UMOzviAeHqFzVnKvxcicP1SWe0jN7GcMD5G+US+aL6B5VqzroBQCuI8359yQin1wHQuDNnkRYAWYtUzEx9o1FY=
+	t=1706316220; cv=none; b=WYVgqwKurMyTbrPyKBNE+eVpVwqlSPCyo0xmW++sdU0G2Rtgxfvw582zEeMV/g7m4Irw68qdaBqkRBGgDu/Ihuqf5FHoxUGRO0+MoooF/QdXoCD5LO1tUELn4yN89TqdsXgmf1W2cVOAAJa7zz6hZlmxgM5Yzqykn/XbWqJuFKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706316215; c=relaxed/simple;
-	bh=FLh37MtrGgxAZbOEtksVIMPeDxGh9lhShCJV0PP9zsA=;
+	s=arc-20240116; t=1706316220; c=relaxed/simple;
+	bh=NcvEgjiiC9dhO/10JdNmADGge4yx5Q6VfAy8AVjWODA=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=e7aIf/Y4IsjolX3GY6R2pPof3MhKIt0AaviBtbaqg7zjsho8kUJqIEXGhkRt3VQ2ZtbYeZ7iWSZC9yLebuufCq8dbNQ3CBl1E1KgsA+5nRpUCIsRCMbVU7bMqprR4TiPztuy70w7j3cBPw0rZUcvljd5lBKYXQ4+LpeRssEhpFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--davidai.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=g8rS4Tr6; arc=none smtp.client-ip=209.85.219.201
+	 To:Cc:Content-Type; b=d36kIHNT5UiXl6tuf/5quYhW72wAERISRVHj9lOzUWky+8YgDcuafMsFOgJisnP6uVoxoaobqYwOWSVQWb5Zu+WrOZcCASxCwYYx7g+knC8fvMm3kQNs1sKKgB4MOI0yg2c1on3SpCGXv58+vnLj0d15E+GA+Sy3D9VKAgXk4D4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--davidai.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PjuKReo6; arc=none smtp.client-ip=209.85.128.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--davidai.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-d9a541b720aso1713656276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 16:43:34 -0800 (PST)
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-602d563287cso11247687b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 16:43:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706316213; x=1706921013; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1706316217; x=1706921017; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vWcySjj6Okvs9yBn0W41qrIqSKP3wnCoOn0mL6uTY9k=;
-        b=g8rS4Tr6cxN0qQ6y2ez5wRpJwQe8CttNRVm8XTSa/Umc4aDOOTPUN7qfMQv6kGqeyF
-         VcEK/H8W8zYzVMNsfCMOIwWgVA0mZrXu+hMIMYEuB2Ern+20nIfXgGBDtUCLCJJWkWMm
-         0RcnpUK/KTHP42JFjErPSzBILCte7CdafjxK+vZopc3e8HrWT/H/6bK6lTJ4QkXDffXh
-         WD20W+vXe6KP0V8VhqiNlvEQgWxAsyZU/gesJvNKOXhOrtNJpzioM9vI1izRyZUlJgwM
-         jX6hoANKrCMuaVTuCVy6xtWX70XBDOMdl5dKfi66YDcPTRU5NoPy2OwTXoQcxSEvzPkx
-         J+eQ==
+        bh=rVpEyU1ZEIUtuB66OZBKS+wM/IebWFfxC7N5VZ5jlTQ=;
+        b=PjuKReo6Mawf1qc0aM1uvio3gZiQfmDjAB+Tssw+7JMVIGcT7vsPpgTMhZ099OztPc
+         4Lh1c02x5/wl51OPIIqHJW2h+gSd8B/szL62KbF3uQAbZ9KazSJPuDQNSTrPvBIzJ6tQ
+         5MLxbZSvjl+wVQ3pdasNENnqe/78Shek7ugwfazLdQQb00/whRl42a8kqrr1u76ErByE
+         Oayt+Tgfm8MskNlD2SBihoI/EpAIvwX6x2xFlhYdwdBhbD/SRuRTJBeJzlR/0akgx6QD
+         H16BzR4kZnD68h586tMOozCLIUy1YLoSWmRphuCCb/nUVT+rWIn/AU4Xp2gbKdVNQsLH
+         9Q9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706316213; x=1706921013;
+        d=1e100.net; s=20230601; t=1706316217; x=1706921017;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vWcySjj6Okvs9yBn0W41qrIqSKP3wnCoOn0mL6uTY9k=;
-        b=Hi46YwuTFcKEvDJwbV+G4rE889n9taBQIftspBO9++Rdu37DHItzuzCLjnP9HNd2b4
-         YEszhEdG2mF/IFKoSDtS0fseOtrypECWzUIGSNcdT96f5PAUUi6P/PwVQEZdbjpZE5is
-         LgnU4gQX+IJEeN4Fhm+rOO+nCOlXYFBvRElcGyw6VyXBcTfRgS8cuofLOrdxrCXzuGxi
-         x76cAlawBjurnycY/JH7xnH1X+f8RG2m3k+LGMPuYMBq8aaDFqgdccBzeav07j9uT8SS
-         xzG97sfUsGuABnCXvBIuNZ/kICFmdo5aQ36Nlb58uyb83eFi06q9qXmqmh/o0k/3/+qN
-         weLw==
-X-Gm-Message-State: AOJu0Yzg5k39TxrnSVvHfWa7w6Ny5ED2zSH7SRroC9KGY2tu6LwBhNMl
-	zhI0HKqo1EkQr81lN5p3q9TU7biB+7wOn9dqC54/QdUe/rsgQGTc/bKybsMylABErNTZI4DIRdy
-	FxflaHg==
-X-Google-Smtp-Source: AGHT+IHE75xRExeRW8631Xw+f5EC+Wzp3aOn5SVy5OmK0nm2p16TAsb9X9xJgRY4CGuHCaB1HiVAMZrps4aD
+        bh=rVpEyU1ZEIUtuB66OZBKS+wM/IebWFfxC7N5VZ5jlTQ=;
+        b=Xzvxw4kzLVPicttlUKhXGW5OmAjYCHoLTYlSZQGrhC2vX7z1d4TxFgIiaAgkHraDuZ
+         OEep18y2+jy94sl4CsfJuebT3R38eH8IrbOkIBMyxhTjUs3lsT5rybJ1zFUxK0b7gvsO
+         NOYDX1qdZztigCtFjZCQ6t/hyj/uBP6gz/1GZ1gHUBbsJ7y53wSF7JXsBX1Qwci1+Nfm
+         ZNwGzh2b37z8VQVc4icuyE813k8bIsP9RDtVlcCt10386Jl6/uwF55CYmrGMZ9VEY/AF
+         yHtbCZQoWrakiz4Gm9NRpce2IOKpu1VKb7daehoftJnPS7UgWweLUG/GDuwyg7dWgopy
+         6+Yw==
+X-Gm-Message-State: AOJu0YwoepWaKtLiWHIeYgtQ6/M3iPna3dVQLN6AxKFQU3dYYAxn0NcN
+	DVTktQgYewSxE+D/pluzutM6QLlWHJCoNHsi3KxJyqkZ10AwmOTcWJNV+kfQF0jQoPXLoI9TJZx
+	XSmGOuA==
+X-Google-Smtp-Source: AGHT+IE/szBT3vMFudSKm/AaI5aALFjntml/r3QIAjBs49SCBNQLy3ZZ3SM/FAzldN3YhxhaxDGm+OxIWSk5
 X-Received: from davidai2.mtv.corp.google.com ([2620:15c:211:201:d621:88fa:6f6:1b46])
- (user=davidai job=sendgmr) by 2002:a05:6902:2489:b0:dc2:2d2c:962a with SMTP
- id ds9-20020a056902248900b00dc22d2c962amr348609ybb.8.1706316213251; Fri, 26
- Jan 2024 16:43:33 -0800 (PST)
-Date: Fri, 26 Jan 2024 16:43:15 -0800
+ (user=davidai job=sendgmr) by 2002:a05:6902:2102:b0:dc2:54a9:cbf7 with SMTP
+ id dk2-20020a056902210200b00dc254a9cbf7mr340146ybb.13.1706316217535; Fri, 26
+ Jan 2024 16:43:37 -0800 (PST)
+Date: Fri, 26 Jan 2024 16:43:16 -0800
 In-Reply-To: <20240127004321.1902477-1-davidai@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -72,8 +72,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240127004321.1902477-1-davidai@google.com>
 X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Message-ID: <20240127004321.1902477-2-davidai@google.com>
-Subject: [PATCH v5 1/2] dt-bindings: cpufreq: add virtual cpufreq device
+Message-ID: <20240127004321.1902477-3-davidai@google.com>
+Subject: [PATCH v5 2/2] cpufreq: add virtual-cpufreq driver
 From: David Dai <davidai@google.com>
 To: "Rafael J. Wysocki" <rafael@kernel.org>, Viresh Kumar <viresh.kumar@linaro.org>, 
 	Rob Herring <robh+dt@kernel.org>, 
@@ -89,139 +89,295 @@ Cc: Quentin Perret <qperret@google.com>, Masami Hiramatsu <mhiramat@google.com>,
 	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Adding bindings to represent a virtual cpufreq device.
+Introduce a virtualized cpufreq driver for guest kernels to improve
+performance and power of workloads within VMs.
 
-Virtual machines may expose MMIO regions for a virtual cpufreq device
-for guests to read frequency information or to request frequency
-selection. The virtual cpufreq device has an individual controller for
-each frequency domain. Performance points for a given domain can be
-normalized across all domains for ease of allowing for virtual machines
-to migrate between hosts.
+This driver does two main things:
+
+1. Sends the frequency of vCPUs as a hint to the host. The host uses the
+hint to schedule the vCPU threads and decide physical CPU frequency.
+
+2. If a VM does not support a virtualized FIE(like AMUs), it queries the
+host CPU frequency by reading a MMIO region of a virtual cpufreq device
+to update the guest's frequency scaling factor periodically. This enables
+accurate Per-Entity Load Tracking for tasks running in the guest.
 
 Co-developed-by: Saravana Kannan <saravanak@google.com>
 Signed-off-by: Saravana Kannan <saravanak@google.com>
 Signed-off-by: David Dai <davidai@google.com>
 ---
- .../cpufreq/qemu,cpufreq-virtual.yaml         | 110 ++++++++++++++++++
- 1 file changed, 110 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/cpufreq/qemu,cpufreq-virtual.yaml
+ drivers/cpufreq/Kconfig           |  15 +++
+ drivers/cpufreq/Makefile          |   1 +
+ drivers/cpufreq/virtual-cpufreq.c | 209 ++++++++++++++++++++++++++++++
+ include/linux/arch_topology.h     |   1 +
+ 4 files changed, 226 insertions(+)
+ create mode 100644 drivers/cpufreq/virtual-cpufreq.c
 
-diff --git a/Documentation/devicetree/bindings/cpufreq/qemu,cpufreq-virtual.yaml b/Documentation/devicetree/bindings/cpufreq/qemu,cpufreq-virtual.yaml
+diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
+index 35efb53d5492..f2d37075aa10 100644
+--- a/drivers/cpufreq/Kconfig
++++ b/drivers/cpufreq/Kconfig
+@@ -217,6 +217,21 @@ config CPUFREQ_DT
+ 
+ 	  If in doubt, say N.
+ 
++config CPUFREQ_VIRT
++	tristate "Virtual cpufreq driver"
++	depends on OF
++	select PM_OPP
++	help
++	  This adds a virtualized cpufreq driver for guest kernels that
++	  read/writes to a MMIO region for a virtualized cpufreq device to
++	  communicate with the host. It sends frequency updates to the host
++	  which gets used as a hint to schedule vCPU threads and select CPU
++	  frequency. If a VM does not support a virtualized FIE such as AMUs,
++	  it updates the frequency scaling factor by polling host CPU frequency
++	  to enable accurate Per-Entity Load Tracking for tasks running in the guest.
++
++	  If in doubt, say N.
++
+ config CPUFREQ_DT_PLATDEV
+ 	tristate "Generic DT based cpufreq platdev driver"
+ 	depends on OF
+diff --git a/drivers/cpufreq/Makefile b/drivers/cpufreq/Makefile
+index 8d141c71b016..eb72ecdc24db 100644
+--- a/drivers/cpufreq/Makefile
++++ b/drivers/cpufreq/Makefile
+@@ -16,6 +16,7 @@ obj-$(CONFIG_CPU_FREQ_GOV_ATTR_SET)	+= cpufreq_governor_attr_set.o
+ 
+ obj-$(CONFIG_CPUFREQ_DT)		+= cpufreq-dt.o
+ obj-$(CONFIG_CPUFREQ_DT_PLATDEV)	+= cpufreq-dt-platdev.o
++obj-$(CONFIG_CPUFREQ_VIRT)		+= virtual-cpufreq.o
+ 
+ # Traces
+ CFLAGS_amd-pstate-trace.o               := -I$(src)
+diff --git a/drivers/cpufreq/virtual-cpufreq.c b/drivers/cpufreq/virtual-cpufreq.c
 new file mode 100644
-index 000000000000..cd617baf75e7
+index 000000000000..0132f430a13e
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/cpufreq/qemu,cpufreq-virtual.yaml
-@@ -0,0 +1,110 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/cpufreq/qemu,cpufreq-virtual.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/drivers/cpufreq/virtual-cpufreq.c
+@@ -0,0 +1,209 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2023 Google LLC
++ */
 +
-+title: Virtual CPUFreq
++#include <linux/arch_topology.h>
++#include <linux/cpufreq.h>
++#include <linux/init.h>
++#include <linux/sched.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/of_address.h>
++#include <linux/of_platform.h>
++#include <linux/platform_device.h>
++#include <linux/pm_opp.h>
++#include <linux/slab.h>
 +
-+maintainers:
-+  - David Dai <davidai@google.com>
-+  - Saravana Kannan <saravanak@google.com>
++#define REG_CUR_FREQ_KHZ_OFFSET 0x0
++#define REG_SET_FREQ_KHZ_OFFSET 0x4
++#define PER_CPU_OFFSET 0x8
 +
-+description:
-+  Virtual CPUFreq is a virtualized driver in guest kernels that sends frequency
-+  selection of its vCPUs as a hint to the host through MMIO regions. Each vCPU
-+  is associated with a frequency domain which can be shared with other vCPUs.
-+  Each frequency domain has its own set of registers for frequency controls.
++static void __iomem *base;
 +
-+properties:
-+  compatible:
-+    const: qemu,virtual-cpufreq
++static void virt_scale_freq_tick(void)
++{
++	int cpu = smp_processor_id();
++	u32 max_freq = (u32)cpufreq_get_hw_max_freq(cpu);
++	u64 cur_freq;
++	unsigned long scale;
 +
-+  reg:
-+    maxItems: 1
-+    description:
-+      Address and size of region containing frequency controls for each of the
-+      frequency domains. Regions for each frequency domain is placed
-+      contiguously and contain registers for controlling DVFS(Dynamic Frequency
-+      and Voltage) characteristics. The size of the region is proportional to
-+      total number of frequency domains. This device also needs the CPUs to
-+      list their OPPs using operating-points-v2 tables. The OPP tables for the
-+      CPUs should use normalized "frequency" values where the OPP with the
-+      highest performance among all the vCPUs is listed as 1024 KHz. The rest
-+      of the frequencies of all the vCPUs should be normalized based on their
-+      performance relative to that 1024 KHz OPP. This makes it much easier to
-+      migrate the VM across systems which might have different physical CPU
-+      OPPs.
++	cur_freq = (u64)readl_relaxed(base + cpu * PER_CPU_OFFSET
++			+ REG_CUR_FREQ_KHZ_OFFSET);
 +
-+required:
-+  - compatible
-+  - reg
++	cur_freq <<= SCHED_CAPACITY_SHIFT;
++	scale = (unsigned long)div_u64(cur_freq, max_freq);
++	scale = min(scale, SCHED_CAPACITY_SCALE);
 +
-+additionalProperties: false
++	this_cpu_write(arch_freq_scale, scale);
++}
 +
-+examples:
-+  - |
-+    // This example shows a two CPU configuration with a frequency domain
-+    // for each CPU showing normalized performance points.
-+    cpus {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
++static struct scale_freq_data virt_sfd = {
++	.source = SCALE_FREQ_SOURCE_VIRT,
++	.set_freq_scale = virt_scale_freq_tick,
++};
 +
-+      cpu@0 {
-+        compatible = "arm,armv8";
-+        device_type = "cpu";
-+        reg = <0x0>;
-+        operating-points-v2 = <&opp_table0>;
-+      };
++static unsigned int virt_cpufreq_set_perf(struct cpufreq_policy *policy,
++					  unsigned int target_freq)
++{
++	writel_relaxed(target_freq,
++		       base + policy->cpu * PER_CPU_OFFSET + REG_SET_FREQ_KHZ_OFFSET);
++	return 0;
++}
 +
-+      cpu@1 {
-+        compatible = "arm,armv8";
-+        device_type = "cpu";
-+        reg = <0x0>;
-+        operating-points-v2 = <&opp_table1>;
-+      };
-+    };
++static unsigned int virt_cpufreq_fast_switch(struct cpufreq_policy *policy,
++					     unsigned int target_freq)
++{
++	virt_cpufreq_set_perf(policy, target_freq);
++	return target_freq;
++}
 +
-+    opp_table0: opp-table-0 {
-+      compatible = "operating-points-v2";
++static int virt_cpufreq_target_index(struct cpufreq_policy *policy,
++				     unsigned int index)
++{
++	return virt_cpufreq_set_perf(policy,
++				     policy->freq_table[index].frequency);
++}
 +
-+      opp64000 { opp-hz = /bits/ 64 <64000>; };
-+      opp128000 { opp-hz = /bits/ 64 <128000>; };
-+      opp192000 { opp-hz = /bits/ 64 <192000>; };
-+      opp256000 { opp-hz = /bits/ 64 <256000>; };
-+      opp320000 { opp-hz = /bits/ 64 <320000>; };
-+      opp384000 { opp-hz = /bits/ 64 <384000>; };
-+      opp425000 { opp-hz = /bits/ 64 <425000>; };
-+    };
++static int virt_cpufreq_cpu_init(struct cpufreq_policy *policy)
++{
++	struct cpufreq_frequency_table *table;
++	struct device *cpu_dev;
++	int ret;
 +
-+    opp_table1: opp-table-1 {
-+      compatible = "operating-points-v2";
++	cpu_dev = get_cpu_device(policy->cpu);
++	if (!cpu_dev)
++		return -ENODEV;
 +
-+      opp64000 { opp-hz = /bits/ 64 <64000>; };
-+      opp128000 { opp-hz = /bits/ 64 <128000>; };
-+      opp192000 { opp-hz = /bits/ 64 <192000>; };
-+      opp256000 { opp-hz = /bits/ 64 <256000>; };
-+      opp320000 { opp-hz = /bits/ 64 <320000>; };
-+      opp384000 { opp-hz = /bits/ 64 <384000>; };
-+      opp448000 { opp-hz = /bits/ 64 <448000>; };
-+      opp512000 { opp-hz = /bits/ 64 <512000>; };
-+      opp576000 { opp-hz = /bits/ 64 <576000>; };
-+      opp640000 { opp-hz = /bits/ 64 <640000>; };
-+      opp704000 { opp-hz = /bits/ 64 <704000>; };
-+      opp768000 { opp-hz = /bits/ 64 <768000>; };
-+      opp832000 { opp-hz = /bits/ 64 <832000>; };
-+      opp896000 { opp-hz = /bits/ 64 <896000>; };
-+      opp960000 { opp-hz = /bits/ 64 <960000>; };
-+      opp1024000 { opp-hz = /bits/ 64 <1024000>; };
++	ret = dev_pm_opp_of_add_table(cpu_dev);
++	if (ret)
++		return ret;
 +
-+    };
++	ret = dev_pm_opp_get_opp_count(cpu_dev);
++	if (ret <= 0) {
++		dev_err(cpu_dev, "OPP table can't be empty\n");
++		return -ENODEV;
++	}
 +
-+    soc {
-+      #address-cells = <1>;
-+      #size-cells = <1>;
++	ret = dev_pm_opp_init_cpufreq_table(cpu_dev, &table);
++	if (ret) {
++		dev_err(cpu_dev, "failed to init cpufreq table: %d\n", ret);
++		return ret;
++	}
 +
-+      cpufreq@1040000 {
-+        compatible = "qemu,virtual-cpufreq";
-+        reg = <0x1040000 0x10>;
-+      };
-+    };
++	policy->freq_table = table;
++
++	/*
++	 * To simplify and improve latency of handling frequency requests on
++	 * the host side, this ensures that the vCPU thread triggering the MMIO
++	 * abort is the same thread whose performance constraints (Ex. uclamp
++	 * settings) need to be updated. This simplifies the VMM (Virtual
++	 * Machine Manager) having to find the correct vCPU thread and/or
++	 * facing permission issues when configuring other threads.
++	 */
++	policy->dvfs_possible_from_any_cpu = false;
++	policy->fast_switch_possible = true;
++
++	/*
++	 * Using the default SCALE_FREQ_SOURCE_CPUFREQ is insufficient since
++	 * the actual physical CPU frequency may not match requested frequency
++	 * from the vCPU thread due to frequency update latencies or other
++	 * inputs to the physical CPU frequency selection. This additional FIE
++	 * source allows for more accurate freq_scale updates and only takes
++	 * effect if another FIE source such as AMUs have not been registered.
++	 */
++	topology_set_scale_freq_source(&virt_sfd, policy->cpus);
++
++	return 0;
++}
++
++static int virt_cpufreq_cpu_exit(struct cpufreq_policy *policy)
++{
++	struct device *cpu_dev;
++
++	cpu_dev = get_cpu_device(policy->cpu);
++	if (!cpu_dev)
++		return -ENODEV;
++
++	topology_clear_scale_freq_source(SCALE_FREQ_SOURCE_VIRT, policy->related_cpus);
++	dev_pm_opp_free_cpufreq_table(cpu_dev, &policy->freq_table);
++	return 0;
++}
++
++static int virt_cpufreq_online(struct cpufreq_policy *policy)
++{
++	/* Nothing to restore. */
++	return 0;
++}
++
++static int virt_cpufreq_offline(struct cpufreq_policy *policy)
++{
++	/* Dummy offline() to avoid exit() being called and freeing resources. */
++	return 0;
++}
++
++static struct cpufreq_driver cpufreq_virt_driver = {
++	.name		= "virt-cpufreq",
++	.init		= virt_cpufreq_cpu_init,
++	.exit		= virt_cpufreq_cpu_exit,
++	.online         = virt_cpufreq_online,
++	.offline        = virt_cpufreq_offline,
++	.verify		= cpufreq_generic_frequency_table_verify,
++	.target_index	= virt_cpufreq_target_index,
++	.fast_switch	= virt_cpufreq_fast_switch,
++	.attr		= cpufreq_generic_attr,
++};
++
++static int virt_cpufreq_driver_probe(struct platform_device *pdev)
++{
++	int ret;
++
++	base = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(base))
++		return PTR_ERR(base);
++
++	ret = cpufreq_register_driver(&cpufreq_virt_driver);
++	if (ret) {
++		dev_err(&pdev->dev, "Virtual CPUFreq driver failed to register: %d\n", ret);
++		return ret;
++	}
++
++	dev_dbg(&pdev->dev, "Virtual CPUFreq driver initialized\n");
++	return 0;
++}
++
++static int virt_cpufreq_driver_remove(struct platform_device *pdev)
++{
++	cpufreq_unregister_driver(&cpufreq_virt_driver);
++	return 0;
++}
++
++static const struct of_device_id virt_cpufreq_match[] = {
++	{ .compatible = "qemu,virtual-cpufreq", .data = NULL},
++	{}
++};
++MODULE_DEVICE_TABLE(of, virt_cpufreq_match);
++
++static struct platform_driver virt_cpufreq_driver = {
++	.probe = virt_cpufreq_driver_probe,
++	.remove = virt_cpufreq_driver_remove,
++	.driver = {
++		.name = "virt-cpufreq",
++		.of_match_table = virt_cpufreq_match,
++	},
++};
++
++static int __init virt_cpufreq_init(void)
++{
++	return platform_driver_register(&virt_cpufreq_driver);
++}
++postcore_initcall(virt_cpufreq_init);
++
++static void __exit virt_cpufreq_exit(void)
++{
++	platform_driver_unregister(&virt_cpufreq_driver);
++}
++module_exit(virt_cpufreq_exit);
++
++MODULE_DESCRIPTION("Virtual cpufreq driver");
++MODULE_LICENSE("GPL");
+diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
+index a63d61ca55af..fb272b4bf7b1 100644
+--- a/include/linux/arch_topology.h
++++ b/include/linux/arch_topology.h
+@@ -49,6 +49,7 @@ enum scale_freq_source {
+ 	SCALE_FREQ_SOURCE_CPUFREQ = 0,
+ 	SCALE_FREQ_SOURCE_ARCH,
+ 	SCALE_FREQ_SOURCE_CPPC,
++	SCALE_FREQ_SOURCE_VIRT,
+ };
+ 
+ struct scale_freq_data {
 -- 
 2.43.0.429.g432eaa2c6b-goog
 
