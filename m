@@ -1,102 +1,130 @@
-Return-Path: <linux-kernel+bounces-41375-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7562283EFC6
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 20:33:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 476CC83EFC2
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 20:32:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30F39283AC9
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 19:33:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DEE0FB2290B
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 19:32:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 249C82E847;
-	Sat, 27 Jan 2024 19:33:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ACE72E647;
+	Sat, 27 Jan 2024 19:32:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RxNyqPLv"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="1gf57pjy"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E51752E834
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 19:33:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E9432EAF9
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 19:32:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706384010; cv=none; b=X4OY9XXRZmz37jOGGYDa4WzB8n7+C764X+j/ZmBBhZJT/3uSKrxb7/FLFDRZED/hGDt9Q+u3FV5nHDWpcoz1FK8MjapXePQ+yzFKT/bO66aKuiCGwY2QrZMC+jOH5jDrPCzcmTyvObwVv2lvesfjs394i0e86qB9lAXPdMcLOGc=
+	t=1706383951; cv=none; b=Wj2Zbc56ID9SNZTJia3kfbJ2QkIXcHN/eEYFd92SaghmX4hRw6N7cd6HoLRO/NiwVNUWh+2cdF0dF2hvtw83eJDRZIVBvr62An2N3ZnM6STCDdchYK7xGMFJbF6eM1pkgdNGTEjN4bgNqwTN20hNjAaATKsvo7BbrXerz8EX/vQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706384010; c=relaxed/simple;
-	bh=tspagdP0rzK+AQCZ0dOlmKPm6GSncitJWM+JedleeQk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e0bKfESGu6l2ICnSFx+RY+hXSnHsyj+r+QDqNvOJv8Pv5Rh6IbXZsE1xIOXinywE8rz4VvnhY6e1IimnEC4QSIdxY3eGQH1vO1NPFlhrJbKMqhiK+aGcMU7ddADVcfBlQ/iMHNJgtIUNsZHBE1Y0clEXzqsyoUeYpuFcKccN5tI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RxNyqPLv; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706384008;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tspagdP0rzK+AQCZ0dOlmKPm6GSncitJWM+JedleeQk=;
-	b=RxNyqPLvWOFOyjid8yKyAA/sj9xS35JTJSpV5cbFQFDZYj8TaJ4tJdkHR2frMLQqOmQKWW
-	aQf+J03ACEsqsevx7Jfp3MOBnPPFpmg1oMsuLX7OaaAwUFG7KO9JmlBbM83xJwDF3/fU1N
-	d38o95RqP2xogNHEGl/EApL/77O0MVg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-213-t_1FSmKlMQmL8ucdYDk2cg-1; Sat, 27 Jan 2024 14:33:21 -0500
-X-MC-Unique: t_1FSmKlMQmL8ucdYDk2cg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 15B81185A780;
-	Sat, 27 Jan 2024 19:33:21 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.4])
-	by smtp.corp.redhat.com (Postfix) with SMTP id B10E6C15587;
-	Sat, 27 Jan 2024 19:33:19 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Sat, 27 Jan 2024 20:32:07 +0100 (CET)
-Date: Sat, 27 Jan 2024 20:32:05 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Tycho Andersen <tycho@tycho.pizza>
-Cc: Christian Brauner <brauner@kernel.org>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	Tycho Andersen <tandersen@netflix.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] pidfd: don't do_notify_pidfd() if
- !thread_group_empty()
-Message-ID: <20240127193204.GD13787@redhat.com>
-References: <20240127132043.GA29080@redhat.com>
- <20240127132105.GA29091@redhat.com>
- <ZbU72/83nv2UdcCK@tycho.pizza>
+	s=arc-20240116; t=1706383951; c=relaxed/simple;
+	bh=OFosktua+nK1lqL1BScwNQWTYhvw0nvKXrNIUt/Ki8s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NBvB7xTggv6X0zP7MKtn5NmUkTi8PlGACkbrYGMxiPU8VVz1JgRQOzsaZR4h5p4z6PfQGd+8g2ufu0pcloiPZ7WM9AO1FxJPfDAS8YtEgrJ40Jl0yCx/3LAps2aqRLjkvqeY1YuMWKQe0nhoKeb5u7szOz6wHcnYFLIzvq6GWU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b=1gf57pjy; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40ef0643722so4143195e9.3
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 11:32:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1706383947; x=1706988747; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gEpUxuHvkxdnVuo1JHby3iXUNzNjMXHPh3NuTZ9HCOY=;
+        b=1gf57pjy7tEUx1Chg08s81C4tQa2d+Rro1DSGA9fitH4uYeb7fZZh2d/nnFMRL07As
+         W/9HsVT8/ngJNKtnLmmx/0BLgqljmzTKFPToVEe2gMXI5Jgi/2AMpMH7uFVKNgUmD3aV
+         MDcEk6/F2XoSMDfvbwCmm5JqEEm3lKfl3IzB59HEaLhFufnK4+6F+n8kQQ0VW6377HYz
+         VAiwVSiPozRIExjW+xFO/k6YOcDIq7eBjLm6xG/3jnE9zvOtIjRW5bgtTJvQG5ChV0h3
+         6yVql69ze5ipRydSah9ZukK5VHxYAAJcj0hUWzpi5Qf5I7X6FD6aOnFi8JVlis7Ce3t3
+         N4qA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706383947; x=1706988747;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gEpUxuHvkxdnVuo1JHby3iXUNzNjMXHPh3NuTZ9HCOY=;
+        b=ZydCGCAfEsrgbKDlwoH3AaQDK66rb95We8BN9U5kA28yOdxcz/xI5akCPeAgs7t7ya
+         uieaVnNp+07KQYAk8u3SIthBP/e56MhtlPqVDqwOxcBX3dk3BezQJ5BRDkVc/wfhN8sE
+         2MmU4/6MYwPJyKejONRkRfsKJ4maTvDl+9u83o8InW0briqedpBUxMlBEPdAjnAIVABT
+         R3PMJPTm48+Wf/CgVBP4bgIq1NdIOEwPWl8xMCwV+gOthkdiJmLZlHBXxIm/JI3OyM6h
+         loBdS0Sew3f0XtfNnGcyy3qGb1QPKdQG73nrUxEsIHYFUWdCB8TvrSYOP0GWXeUoweMf
+         9UwA==
+X-Gm-Message-State: AOJu0Yx/0pGJ5reWgxvw2sWFa0QROUGx7ZQJlElDmkntJ/1LM/wDnhRx
+	T8RYLb/8ph+PgnuSGKf2H+Pwj5tcFHZZtcAogdAv+B3LaeE+Hehnu8W/IznRgEA=
+X-Google-Smtp-Source: AGHT+IFIburJoW4BFrmc+K2ya7vO19XpEC4+2WG74/eThfZcJLQyym2s9GswrAXPsaEejM+mq4MJwg==
+X-Received: by 2002:a05:600c:3493:b0:40e:ef00:af57 with SMTP id a19-20020a05600c349300b0040eef00af57mr1308153wmq.36.1706383947218;
+        Sat, 27 Jan 2024 11:32:27 -0800 (PST)
+Received: from [192.168.0.161] ([62.73.69.208])
+        by smtp.gmail.com with ESMTPSA id a11-20020a05600c348b00b0040eef2aed28sm1999515wmq.23.2024.01.27.11.32.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 27 Jan 2024 11:32:26 -0800 (PST)
+Message-ID: <43a266e9-7cde-472a-9846-c16756be8c09@blackwall.org>
+Date: Sat, 27 Jan 2024 21:32:25 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbU72/83nv2UdcCK@tycho.pizza>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net v2] bridge: mcast: fix disabled snooping after long
+ uptime
+Content-Language: en-US
+To: =?UTF-8?Q?Linus_L=C3=BCssing?= <linus.luessing@c0d3.blue>,
+ netdev@vger.kernel.org
+Cc: bridge@lists.linux.dev, b.a.t.m.a.n@lists.open-mesh.org,
+ linux-kernel@vger.kernel.org, Roopa Prabhu <roopa@nvidia.com>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>
+References: <20240127175033.9640-1-linus.luessing@c0d3.blue>
+From: Nikolay Aleksandrov <razor@blackwall.org>
+In-Reply-To: <20240127175033.9640-1-linus.luessing@c0d3.blue>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 01/27, Tycho Andersen wrote:
->
-> On Sat, Jan 27, 2024 at 02:21:05PM +0100, Oleg Nesterov wrote:
-> > do_notify_pidfd() makes no sense until the whole thread group exits, change
-> > do_notify_parent() to check thread_group_empty().
-> >
-> > This avoids the unnecessary do_notify_pidfd() when tsk is not a leader, or
-> > it exits before other threads, or it has a ptraced EXIT_ZOMBIE sub-thread.
-> >
-> > Signed-off-by: Oleg Nesterov <oleg@redhat.com>
->
-> Looks good to me, thanks.
->
-> Reviewed-by: Tycho Andersen <tandersen@netflix.com>
+On 27/01/2024 19:50, Linus Lüssing wrote:
+> The original idea of the delay_time check was to not apply multicast
+> snooping too early when an MLD querier appears. And to instead wait at
+> least for MLD reports to arrive before switching from flooding to group
+> based, MLD snooped forwarding, to avoid temporary packet loss.
+> 
+> However in a batman-adv mesh network it was noticed that after 248 days of
+> uptime 32bit MIPS based devices would start to signal that they had
+> stopped applying multicast snooping due to missing queriers - even though
+> they were the elected querier and still sending MLD queries themselves.
+> 
+> While time_is_before_jiffies() generally is safe against jiffies
+> wrap-arounds, like the code comments in jiffies.h explain, it won't
+> be able to track a difference larger than ULONG_MAX/2. With a 32bit
+> large jiffies and one jiffies tick every 10ms (CONFIG_HZ=100) on these MIPS
+> devices running OpenWrt this would result in a difference larger than
+> ULONG_MAX/2 after 248 (= 2^32/100/60/60/24/2) days and
+> time_is_before_jiffies() would then start to return false instead of
+> true. Leading to multicast snooping not being applied to multicast
+> packets anymore.
+> 
+> Fix this issue by using a proper timer_list object which won't have this
+> ULONG_MAX/2 difference limitation.
+> 
+> Fixes: b00589af3b04 ("bridge: disable snooping if there is no querier")
+> Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
+> ---
+> Changelog v2:
+> * removed "inline" from br_multicast_query_delay_expired()
+> 
+>  net/bridge/br_multicast.c | 20 +++++++++++++++-----
+>  net/bridge/br_private.h   |  4 ++--
+>  2 files changed, 17 insertions(+), 7 deletions(-)
+> 
 
-Thanks Tycho,
-
-Oleg.
+Acked-by: Nikolay Aleksandrov <razor@blackwall.org>
 
 
