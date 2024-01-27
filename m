@@ -1,338 +1,175 @@
-Return-Path: <linux-kernel+bounces-41298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64C9183EE85
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 17:25:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1580383EE8E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 17:26:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0D6A1F23E22
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:25:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5B64284B2A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:26:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B86AA605B2;
-	Sat, 27 Jan 2024 16:20:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B62560DCC;
+	Sat, 27 Jan 2024 16:20:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="XEAIN9Xc"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jF3MusBl"
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ADD5605AB
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 16:20:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4589060DC9;
+	Sat, 27 Jan 2024 16:20:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706372432; cv=none; b=NA7Od3kZcC3Mcu5uVqXRMpsjcKD4UvEYuXI66pmOAoUDOGqSrj8zwVCOVXmgL3ZH4oibE2/zeHFXQ5ZLeMLbZOhcM+Phh2g4vcZq8rVBgPLa96Re30UJknF1p6dsc95ipPqHzM0H64ge5f6tnzwqvQUIRbw55acDTd1x+27nVJA=
+	t=1706372456; cv=none; b=PY+KhNjxBkJyXQwJaEiHMoOE6HoxG+DZUGYnS0Y2ZNzWVGfhablMNLHAKsdvlp84bXpuLoO0566ZWxkD/brWyJFCO2jNGHz+lOubJiwzWAd5+0y9OBRbuADo0CwmyBfMgoc/KYN/C2aZCs5JeCbytX/dMfQN9FHgosaDV9MWBa8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706372432; c=relaxed/simple;
-	bh=qrbJ651XdJENdBe3aEpsMlLqPeGFNjAOY16+iFWQTOs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=khqXmoEjkJ3ssxxDcY7wZKog9qR0+ZCjpZ8dsPlwxHElTFjhpmpC0xlwC+tqy+HEQY2vCof0AzqIfBss2ySkeOgaiDzJIUWc6IthzbJU1Rz+QfLHMtCJxLy87LXvmX4I67tePtp4C9cPle6vvAwnEGHFXD1UliRDk33vNUPt4A8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=XEAIN9Xc; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2cfad2c62daso1412631fa.1
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 08:20:30 -0800 (PST)
+	s=arc-20240116; t=1706372456; c=relaxed/simple;
+	bh=vuJqFnZtTpTssMFoMa9G7Fw9QNg4vClPrMPI4Vl+fQo=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=fafJxih7yCJwLVqGxaNM4DGQWx80i4IBNBWBGI3YjxUljNFdb+Ajn6UyfUoFh/pYQW1qvWtk7VOLERAZEMIPMI0hSdH9i2zcPtaDbobR1FO4g2PEH1ZIceyyRpz1WphrNYGgkwaHCckgfUX40bAIML/9vFBOUCYoTXvzTWotA0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jF3MusBl; arc=none smtp.client-ip=209.85.219.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-68c37bf73aaso9925036d6.2;
+        Sat, 27 Jan 2024 08:20:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1706372428; x=1706977228; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1706372452; x=1706977252; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cs22FUCSh/QKVUEnHbkZdHK+B7Cwzv+8TU0ghWB1nTI=;
-        b=XEAIN9Xc8x48JgFPVHHEeb2q/v+IAGTGeX69Re0fM4/td5SQG/2lAVYelUpdixB2Ce
-         npU5IX00ik6cYQ9SX3AqtZjzlmCv6i2ZFUCqrUT/B5oj/4EhIH6gKcU3Jf07sfAH36jb
-         ZLa9g+7R169tHkQ8ad3UpPrvAuDBDd6SHyAGPPIgKLSmDHwbGsEZHYeQSJHHfmPs7tX4
-         b/hXvtKlOMj9xuxifY/2GY1dhh3/0drdFS+sX0qnxVkQmX0fjVgDbJ2KUaOHF2Hng39r
-         n2B88iWS+z8duKM2Wd+WyZDz2mzXfCPF4cPnWpgemvG6Ax6jIw4T0Az+Ip3xFMmgiNlx
-         wFHA==
+        bh=khozqR2J5qyGoQPqSuwAokWTqr1QO39YPwi2HTUl2g4=;
+        b=jF3MusBlQFXatW7qXIZGK2UaaN+1M9baONpaP/BIfrGdix5COoJp+mc1fQNsL24Qjw
+         xV+ASIUQhjc27doTnXRWVUUDo4UTFylG1IvsrJO87Q5dHCG+n8AGEfLocqIv2cy52a3J
+         s+7KIxvm54f+DLC5SlDlbOOf0qtfQyGqG+bFxFjpMSFO59AVQamlcSxC5v/XesvaS8m1
+         qA2uPtTbqdRtSE5Ks3IByQb1GLaKmd/lHk/e+S0DIiGj3VDirSN3oMv1bz9mOZTIOY7T
+         x5f++Yx5wtyqyyC0QpTHvTDnbBZpJsX3VKqkVbfyu3kpyHXXiVyN7c3saEkOT0i75cXN
+         /Xlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706372428; x=1706977228;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cs22FUCSh/QKVUEnHbkZdHK+B7Cwzv+8TU0ghWB1nTI=;
-        b=oJhEg8pOyVI2/IPqG54Ho8Df+k4suLURS/pD1EAwTVxoJm3N8HnsRjC6i8/sjVmQuf
-         8Fac0Hl8ZDZ2hTgM9H4cnJbHwuuYKoUhj8GdeSBk0QkszKRtwCmhjA18cQdEvAgmC7jn
-         YF2Mn6Dpd5mtl+yr7EuiyoMVBrkPKFXRb2O61hL3G8rqF6WtIcW9FLlQ6KQhrFSbJS3v
-         8gmm1IjqbBhVvNjmhl759/4IW4cfSVtJGzBqCqJaSFS5nlxIBwuJG9KE04X3tfZXYGsy
-         D2sZXEPZXgiiOzPaf37J0cwCwDzPYr1wLw1Dp1uVc47IlaYBP+EV2fd691YyX1wCIoGu
-         Dwjw==
-X-Gm-Message-State: AOJu0YwFKC/Vm7l4f+pLMUqO+zRnxuyq0JxyoEGonzsx7wrkfyHu0kKF
-	DfNv0CFvkybXv3/85IOGz0El7LJ8L7OOnVAEqEqTthUAywzTIx2+0ZPRDpGeMgay9CEE3omZL4K
-	l9bVgUVLmibRsaX5fGffVvvZLFjCQCnUHLdkK7g==
-X-Google-Smtp-Source: AGHT+IGF6Sch5alDMQDKFPphLYwHjJnDfls8OumK/Oo1CumL91mn384i/BuE4WD1qUPncRKGuTcHHFFkt/3bd4Ldd/o=
-X-Received: by 2002:a19:750f:0:b0:50e:fe09:6597 with SMTP id
- y15-20020a19750f000000b0050efe096597mr1061774lfe.69.1706372428170; Sat, 27
- Jan 2024 08:20:28 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706372452; x=1706977252;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=khozqR2J5qyGoQPqSuwAokWTqr1QO39YPwi2HTUl2g4=;
+        b=JoNYKuC6NP42vw6qW6PekBOYr5OEQbp4p+HS0HreG7Db5PElSjZROKze6RSFhL5q6W
+         TfvNNzGD7nRKjG6D20runw8xszcZSZrspayeOzp3oaGUO7qL6HYOD5PU+H5375hItqQs
+         TPd14NmdavbSl0xbYv2z4pbfUUBina1hbeSraKuiMEzfuG7P5VYmLrth1xtm4nsHQdUp
+         HjxVz2z3YnwpDCbKFq/Y16aW/x1zYIuK5lJEsL/3+6HMbmF/Sf0cPbDoKpLpVdYaJn3d
+         kddguNUGcdQWG+XKp7Dep/kd9SxjIzBJFqvKsv4Pq1NSRIxsRB52QmD/iB+j1+8kRpSk
+         P5eg==
+X-Gm-Message-State: AOJu0YxRSBZsHQPEy47QB6CyuzKn62Pd1gU3QdKYJ+vplNj4V0XFbe8B
+	QvAxxjAtoEfyFVUbLRpxBAid54PtCbXKRLnJ0axAVBajaxPl/cPz
+X-Google-Smtp-Source: AGHT+IEtYpnrWB7Pm3yuX4jPsKtMVMAT7CxIrt/thqrPJmnt6o0+3z1I+ItZujRzlRejHx8eF/YXDg==
+X-Received: by 2002:a05:6214:d4b:b0:67f:c133:3922 with SMTP id 11-20020a0562140d4b00b0067fc1333922mr2597732qvr.129.1706372452055;
+        Sat, 27 Jan 2024 08:20:52 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCU3+LBrHc5Zp2e/HJFvVOcowk2itTDRWVCeBu9FGgIoLhx1ERum609+VtwSXCmHZuqS5yjQCmPIOTKaPjOQe/dQTVYgq22FobAr2B/krJF/ABfPP6m7x4EnV1WSKu3Favw3R/CbLgjf5/KoV1SK7vMijxAF6bl7l3CjFbqXYhiVyfr3NdcT1IalWJrnDIDvwQXAH+8vMcCn58UmXIbIdpGi+QIRmYUiAKDZeK8dweFrlaJHhu4odqc7bkwALp38FVz8uctVXmeUDwB2/lw9r84h8fC5wfZhacmiPwbaeYB3uK3FMUsy8WMyqwZXvQ662JodMK+Ckz8Vlrh7uJX+WpaEhUDH4HWu9luhqqgzcCnUIez7adveWXYigeEOT6Zs2Evn+zFaqWUOPBcTgbt4mcOuWRmZGrpy3P4iXeTwtZWOD0UK0KTMIWxIPwu4cEAA2yoetHwyrCqg1YG4B4J6RX3Q7rnAuGmWy0F4Gy6JaivBNAUqAkkiQZgBXJpME8ViDxeKurO8zLRLDOGIuFJPQ88yzzDp/OTK3y5gqH5eSq8NpgoEKKTj1WZFsCugbWRMRWNXvOegG169A2OY8YlYSBY4PUT5sbUgfxPMVKXw9UCzIkqmEqs1SBrOvjAuDw1VaUfY1RD1QerhxTAoKJLFboH6DAaoR5tB7H6C1ZgOQC0MGvtl5XP66jVYbk3z4nIo7ssbaJuvZFei+ixltrx+QSNWmB6p9dDBN4po1+Vyn1pRQo8ZgWv/HC+BAFi/v8Gywoc8ablY6S2+UpeRQTwJHYvapimI5O/v3A//4++ejuPmhlC+hAFzmidM7s5mCcyBZchB8mGo1SGwUnUTcXnlopGASubLZKb11JA4GUSgJYN7obbCcauHOF5YwR9g7BW1x1AfpwyR0pDLQzI6wG4HgQG9mxfQlJ0QswjplomeljUhaHVAE0x1mVra5t3f
+Received: from localhost (131.65.194.35.bc.googleusercontent.com. [35.194.65.131])
+        by smtp.gmail.com with ESMTPSA id ly9-20020a0562145c0900b0068509353fb6sm991500qvb.133.2024.01.27.08.20.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Jan 2024 08:20:51 -0800 (PST)
+Date: Sat, 27 Jan 2024 11:20:51 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Joe Damato <jdamato@fastly.com>, 
+ linux-kernel@vger.kernel.org, 
+ netdev@vger.kernel.org
+Cc: chuck.lever@oracle.com, 
+ jlayton@kernel.org, 
+ linux-api@vger.kernel.org, 
+ brauner@kernel.org, 
+ edumazet@google.com, 
+ davem@davemloft.net, 
+ alexander.duyck@gmail.com, 
+ sridhar.samudrala@intel.com, 
+ kuba@kernel.org, 
+ willemdebruijn.kernel@gmail.com, 
+ weiwan@google.com, 
+ Joe Damato <jdamato@fastly.com>, 
+ Alexander Viro <viro@zeniv.linux.org.uk>, 
+ Andrew Waterman <waterman@eecs.berkeley.edu>, 
+ Arnd Bergmann <arnd@arndb.de>, 
+ Dominik Brodowski <linux@dominikbrodowski.net>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Jan Kara <jack@suse.cz>, 
+ Jiri Slaby <jirislaby@kernel.org>, 
+ Jonathan Corbet <corbet@lwn.net>, 
+ Julien Panis <jpanis@baylibre.com>, 
+ linux-doc@vger.kernel.org (open list:DOCUMENTATION), 
+ "(open list:FILESYSTEMS \\(VFS and infrastructure\\))" <linux-fsdevel@vger.kernel.org>, 
+ Michael Ellerman <mpe@ellerman.id.au>, 
+ Nathan Lynch <nathanl@linux.ibm.com> (open list:FILESYSTEMS \(VFS and infrastructure\)), 
+ Palmer Dabbelt <palmer@dabbelt.com>, 
+ Steve French <stfrench@microsoft.com>, 
+ Thomas Huth <thuth@redhat.com>, 
+ Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <65b52d6381de7_3a9e0b2943d@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20240125225704.12781-1-jdamato@fastly.com>
+References: <20240125225704.12781-1-jdamato@fastly.com>
+Subject: Re: [PATCH net-next v3 0/3] Per epoll context busy poll support
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240127161753.114685-1-apatel@ventanamicro.com>
-In-Reply-To: <20240127161753.114685-1-apatel@ventanamicro.com>
-From: Anup Patel <apatel@ventanamicro.com>
-Date: Sat, 27 Jan 2024 21:50:15 +0530
-Message-ID: <CAK9=C2Vwtj2gZg-P73yLMxu0rPXQ3YrRRuxq6HcpHMXgs-jHaw@mail.gmail.com>
-Subject: Re: [PATCH v12 00/25] Linux RISC-V AIA Support
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>, Marc Zyngier <maz@kernel.org>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, Atish Patra <atishp@atishpatra.org>, 
-	Andrew Jones <ajones@ventanamicro.com>, Sunil V L <sunilvl@ventanamicro.com>, 
-	Saravana Kannan <saravanak@google.com>, Anup Patel <anup@brainfault.org>, 
-	linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Conor Dooley <conor+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Hi Thomas,
+Joe Damato wrote:
+> Greetings:
+> 
+> Welcome to v3. Cover letter updated from v2 to explain why ioctl and
+> adjusted my cc_cmd to try to get the correct people in addition to folks
+> who were added in v1 & v2. Labeled as net-next because it seems networking
+> related to me even though it is fs code.
+> 
+> TL;DR This builds on commit bf3b9f6372c4 ("epoll: Add busy poll support to
+> epoll with socket fds.") by allowing user applications to enable
+> epoll-based busy polling and set a busy poll packet budget on a per epoll
+> context basis.
+> 
+> This makes epoll-based busy polling much more usable for user
+> applications than the current system-wide sysctl and hardcoded budget.
+> 
+> To allow for this, two ioctls have been added for epoll contexts for
+> getting and setting a new struct, struct epoll_params.
+> 
+> ioctl was chosen vs a new syscall after reviewing a suggestion by Willem
+> de Bruijn [1]. I am open to using a new syscall instead of an ioctl, but it
+> seemed that: 
+>   - Busy poll affects all existing epoll_wait and epoll_pwait variants in
+>     the same way, so new verions of many syscalls might be needed. It
 
-On Sat, Jan 27, 2024 at 9:48=E2=80=AFPM Anup Patel <apatel@ventanamicro.com=
-> wrote:
->
-> The RISC-V AIA specification is ratified as-per the RISC-V international
-> process. The latest ratified AIA specifcation can be found at:
-> https://github.com/riscv/riscv-aia/releases/download/1.0/riscv-interrupts=
--1.0.pdf
->
-> At a high-level, the AIA specification adds three things:
-> 1) AIA CSRs
->    - Improved local interrupt support
-> 2) Incoming Message Signaled Interrupt Controller (IMSIC)
->    - Per-HART MSI controller
->    - Support MSI virtualization
->    - Support IPI along with virtualization
-> 3) Advanced Platform-Level Interrupt Controller (APLIC)
->    - Wired interrupt controller
->    - In MSI-mode, converts wired interrupt into MSIs (i.e. MSI generator)
->    - In Direct-mode, injects external interrupts directly into HARTs
->
-> For an overview of the AIA specification, refer the AIA virtualization
-> talk at KVM Forum 2022:
-> https://static.sched.com/hosted_files/kvmforum2022/a1/AIA_Virtualization_=
-in_KVM_RISCV_final.pdf
-> https://www.youtube.com/watch?v=3Dr071dL8Z0yo
->
-> To test this series, use QEMU v7.2 (or higher) and OpenSBI v1.2 (or highe=
-r).
->
-> These patches can also be found in the riscv_aia_v12 branch at:
-> https://github.com/avpatel/linux.git
->
-> Changes since v11:
->  - Rebased on Linux-6.8-rc1
->  - Included kernel/irq related patches from "genirq, irqchip: Convert ARM
->    MSI handling to per device MSI domains" series by Thomas.
->    (PATCH7, PATCH8, PATCH9, PATCH14, PATCH16, PATCH17, PATCH18, PATCH19,
->     PATCH20, PATCH21, PATCH22, PATCH23, and PATCH32 of
->     https://lore.kernel.org/linux-arm-kernel/20221121135653.208611233@lin=
-utronix.de/)
->  - Updated APLIC MSI-mode driver to use the new WIRED_TO_MSI mechanism.
->  - Updated IMSIC driver to support per-device MSI domains for PCI and
->    platform devices.
->
-> Changes since v10:
->  - Rebased on Linux-6.6-rc7
->  - Dropped PATCH3 of v10 series since this has been merged by MarcZ
->    for Linux-6.6-rc7
->  - Changed the IMSIC ID management strategy from 1-n approach to
->    x86-style 1-1 approach
->
-> Changes since v9:
->  - Rebased on Linux-6.6-rc4
->  - Use builtin_platform_driver() in PATCH5, PATCH9, and PATCH12
->
-> Changes since v8:
->  - Rebased on Linux-6.6-rc3
->  - Dropped PATCH2 of v8 series since we won't be requiring
->    riscv_get_intc_hartid() based on Marc Z's comments on ACPI AIA support=
-.
->  - Addressed Saravana's comments in PATCH3 of v8 series
->  - Update PATCH9 and PATCH13 of v8 series based on comments from Sunil
->
-> Changes since v7:
->  - Rebased on Linux-6.6-rc1
->  - Addressed comments on PATCH1 of v7 series and split it into two PATCHe=
-s
->  - Use DEFINE_SIMPLE_PROP() in PATCH2 of v7 series
->
-> Changes since v6:
->  - Rebased on Linux-6.5-rc4
->  - Updated PATCH2 to use IS_ENABLED(CONFIG_SPARC) instead of
->    !IS_ENABLED(CONFIG_OF_IRQ)
->  - Added new PATCH4 to fix syscore registration in PLIC driver
->  - Update PATCH5 to convert PLIC driver into full-blown platform driver
->    with a re-written probe function.
->
-> Changes since v5:
->  - Rebased on Linux-6.5-rc2
->  - Updated the overall series to ensure that only IPI, timer, and
->    INTC drivers are probed very early whereas rest of the interrupt
->    controllers (such as PLIC, APLIC, and IMISC) are probed as
->    regular platform drivers.
->  - Renamed riscv_fw_parent_hartid() to riscv_get_intc_hartid()
->  - New PATCH1 to add fw_devlink support for msi-parent DT property
->  - New PATCH2 to ensure all INTC suppliers are initialized which in-turn
->    fixes the probing issue for PLIC, APLIC and IMSIC as platform driver
->  - New PATCH3 to use platform driver probing for PLIC
->  - Re-structured the IMSIC driver into two separate drivers: early and
->    platform. The IMSIC early driver (PATCH7) only initialized IMSIC state
->    and provides IPIs whereas the IMSIC platform driver (PATCH8) is probed
->    provides MSI domain for platform devices.
->  - Re-structure the APLIC platform driver into three separe sources: main=
-,
->    direct mode, and MSI mode.
->
-> Changes since v4:
->  - Rebased on Linux-6.5-rc1
->  - Added "Dependencies" in the APLIC bindings (PATCH6 in v4)
->  - Dropped the PATCH6 which was changing the IOMMU DMA domain APIs
->  - Dropped use of IOMMU DMA APIs in the IMSIC driver (PATCH4)
->
-> Changes since v3:
->  - Rebased on Linux-6.4-rc6
->  - Droped PATCH2 of v3 series instead we now set FWNODE_FLAG_BEST_EFFORT =
-via
->    IRQCHIP_DECLARE()
->  - Extend riscv_fw_parent_hartid() to support both DT and ACPI in PATCH1
->  - Extend iommu_dma_compose_msi_msg() instead of adding iommu_dma_select_=
-msi()
->    in PATCH6
->  - Addressed Conor's comments in PATCH3
->  - Addressed Conor's and Rob's comments in PATCH7
->
-> Changes since v2:
->  - Rebased on Linux-6.4-rc1
->  - Addressed Rob's comments on DT bindings patches 4 and 8.
->  - Addessed Marc's comments on IMSIC driver PATCH5
->  - Replaced use of OF apis in APLIC and IMSIC drivers with FWNODE apis
->    this makes both drivers easily portable for ACPI support. This also
->    removes unnecessary indirection from the APLIC and IMSIC drivers.
->  - PATCH1 is a new patch for portability with ACPI support
->  - PATCH2 is a new patch to fix probing in APLIC drivers for APLIC-only s=
-ystems.
->  - PATCH7 is a new patch which addresses the IOMMU DMA domain issues poin=
-ted
->    out by SiFive
->
-> Changes since v1:
->  - Rebased on Linux-6.2-rc2
->  - Addressed comments on IMSIC DT bindings for PATCH4
->  - Use raw_spin_lock_irqsave() on ids_lock for PATCH5
->  - Improved MMIO alignment checks in PATCH5 to allow MMIO regions
->    with holes.
->  - Addressed comments on APLIC DT bindings for PATCH6
->  - Fixed warning splat in aplic_msi_write_msg() caused by
->    zeroed MSI message in PATCH7
->  - Dropped DT property riscv,slow-ipi instead will have module
->    parameter in future.
->
-> Anup Patel (11):
->   irqchip/sifive-plic: Convert PLIC driver into a platform driver
->   irqchip/riscv-intc: Add support for RISC-V AIA
->   dt-bindings: interrupt-controller: Add RISC-V incoming MSI controller
->   irqchip: Add RISC-V incoming MSI controller early driver
->   irqchip/riscv-imsic: Add device MSI domain support for platform
->     devices
->   irqchip/riscv-imsic: Add device MSI domain support for PCI devices
->   dt-bindings: interrupt-controller: Add RISC-V advanced PLIC
->   irqchip: Add RISC-V advanced PLIC driver for direct-mode
->   irqchip/riscv-aplic: Add support for MSI-mode
->   RISC-V: Select APLIC and IMSIC drivers
->   MAINTAINERS: Add entry for RISC-V AIA drivers
->
-> Bj=C3=B6rn T=C3=B6pel (1):
->   genirq/matrix: Dynamic bitmap allocation
->
-> Thomas Gleixner (13):
->   irqchip/gic-v3: Make gic_irq_domain_select() robust for zero parameter
->     count
->   genirq/irqdomain: Remove the param count restriction from select()
->   genirq/msi: Extend msi_parent_ops
->   genirq/irqdomain: Add DOMAIN_BUS_DEVICE_IMS
->   platform-msi: Prepare for real per device domains
->   irqchip: Convert all platform MSI users to the new API
->   genirq/msi: Provide optional translation op
->   genirq/msi: Split msi_domain_alloc_irq_at()
->   genirq/msi: Provide DOMAIN_BUS_WIRED_TO_MSI
->   genirq/msi: Optionally use dev->fwnode for device domain
->   genirq/msi: Provide allocation/free functions for "wired" MSI
->     interrupts
->   genirq/irqdomain: Reroute device MSI create_mapping
->   genirq/msi: Provide MSI_FLAG_PARENT_PM_DEV
+There is no need to support a new feature on legacy calls. Applications have
+to be upgraded to the new ioctl, so they can also be upgraded to the latest
+epoll_wait variant.
 
-I have rebased and included 13 patches (which add per-device MSI domain
-infrastructure) from your series [1]. In this series, the IMSIC driver
-implements the msi_parent_ops and APLIC driver implements wired-to-msi
-bridge using your new infrastructure.
+epoll_pwait extends epoll_wait with a sigmask.
+epoll_pwait2 extends extends epoll_pwait with nsec resolution timespec.
+Since they are supersets, nothing is lots by limiting to the most recent API.
 
-The remaining 27 patches of your series [1] requires testing on ARM
-platforms which I don't have. I suggest these remaining patches to
-go as separate series.
+In the discussion of epoll_pwait2 the addition of a forward looking flags
+argument was discussed, but eventually dropped. Based on the argument that
+adding a syscall is not a big task and does not warrant preemptive code.
+This decision did receive a suitably snarky comment from Jonathan Corbet [1].
 
-I hope you are okay with this approach.
+It is definitely more boilerplate, but essentially it is as feasible to add an
+epoll_pwait3 that takes an optional busy poll argument. In which case, I also
+believe that it makes more sense to configure the behavior of the syscall
+directly, than through another syscall and state stored in the kernel.
 
-Best Regards,
-Anup
+I don't think that the usec fine grain busy poll argument is all that useful.
+Documentation always suggests setting it to 50us or 100us, based on limited
+data. Main point is to set it to exceed the round-trip delay of whatever the
+process is trying to wait on. Overestimating is not costly, as the call
+returns as soon as the condition is met. An epoll_pwait3 flag EPOLL_BUSY_POLL
+with default 100us might be sufficient.
 
-[1] https://lore.kernel.org/linux-arm-kernel/20221121135653.208611233@linut=
-ronix.de/
+[1] https://lwn.net/Articles/837816/
 
 
->
->  .../interrupt-controller/riscv,aplic.yaml     | 172 ++++
->  .../interrupt-controller/riscv,imsics.yaml    | 172 ++++
->  MAINTAINERS                                   |  14 +
->  arch/riscv/Kconfig                            |   2 +
->  arch/x86/include/asm/hw_irq.h                 |   2 -
->  drivers/base/platform-msi.c                   |  97 ++
->  drivers/dma/mv_xor_v2.c                       |   8 +-
->  drivers/dma/qcom/hidma.c                      |   6 +-
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   |   5 +-
->  drivers/irqchip/Kconfig                       |  25 +
->  drivers/irqchip/Makefile                      |   3 +
->  drivers/irqchip/irq-gic-v3.c                  |   6 +-
->  drivers/irqchip/irq-riscv-aplic-direct.c      | 343 +++++++
->  drivers/irqchip/irq-riscv-aplic-main.c        | 232 +++++
->  drivers/irqchip/irq-riscv-aplic-main.h        |  53 ++
->  drivers/irqchip/irq-riscv-aplic-msi.c         | 256 +++++
->  drivers/irqchip/irq-riscv-imsic-early.c       | 241 +++++
->  drivers/irqchip/irq-riscv-imsic-platform.c    | 403 ++++++++
->  drivers/irqchip/irq-riscv-imsic-state.c       | 887 ++++++++++++++++++
->  drivers/irqchip/irq-riscv-imsic-state.h       | 105 +++
->  drivers/irqchip/irq-riscv-intc.c              |  34 +-
->  drivers/irqchip/irq-sifive-plic.c             | 239 +++--
->  drivers/mailbox/bcm-flexrm-mailbox.c          |   8 +-
->  drivers/perf/arm_smmuv3_pmu.c                 |   4 +-
->  drivers/ufs/host/ufs-qcom.c                   |   8 +-
->  include/linux/irqchip/riscv-aplic.h           | 119 +++
->  include/linux/irqchip/riscv-imsic.h           |  87 ++
->  include/linux/irqdomain.h                     |  17 +
->  include/linux/irqdomain_defs.h                |   2 +
->  include/linux/msi.h                           |  21 +
->  kernel/irq/irqdomain.c                        |  28 +-
->  kernel/irq/matrix.c                           |  28 +-
->  kernel/irq/msi.c                              | 184 +++-
->  33 files changed, 3636 insertions(+), 175 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controlle=
-r/riscv,aplic.yaml
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controlle=
-r/riscv,imsics.yaml
->  create mode 100644 drivers/irqchip/irq-riscv-aplic-direct.c
->  create mode 100644 drivers/irqchip/irq-riscv-aplic-main.c
->  create mode 100644 drivers/irqchip/irq-riscv-aplic-main.h
->  create mode 100644 drivers/irqchip/irq-riscv-aplic-msi.c
->  create mode 100644 drivers/irqchip/irq-riscv-imsic-early.c
->  create mode 100644 drivers/irqchip/irq-riscv-imsic-platform.c
->  create mode 100644 drivers/irqchip/irq-riscv-imsic-state.c
->  create mode 100644 drivers/irqchip/irq-riscv-imsic-state.h
->  create mode 100644 include/linux/irqchip/riscv-aplic.h
->  create mode 100644 include/linux/irqchip/riscv-imsic.h
->
-> --
-> 2.34.1
->
+>     seems much simpler for users to use the correct
+>     epoll_wait/epoll_pwait for their app and add a call to ioctl to enable
+>     or disable busy poll as needed. This also probably means less work to
+>     get an existing epoll app using busy poll.
+
 
