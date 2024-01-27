@@ -1,145 +1,115 @@
-Return-Path: <linux-kernel+bounces-40965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 317EE83E90D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 02:39:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4502083E913
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 02:40:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90D1A2881CF
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 01:39:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8B731F28D3E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 01:40:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7263CB65D;
-	Sat, 27 Jan 2024 01:38:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BABE79471;
+	Sat, 27 Jan 2024 01:40:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="HEAXzmCx"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XgCqaS6D"
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CADCC944D;
-	Sat, 27 Jan 2024 01:38:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C0B0944D
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 01:40:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706319531; cv=none; b=MaC3nWxJkNNgNwDoCnavlc0rKVgC7zLCialhYhRejLNZyxC2qW/wGwa/F2gy/LVSJjCSjDup1jrbNNsXm7lPpMR1k2Ph4cfCCDCLwCKv70wzlBD0KT1RiOln3gAQamqDQn3ysry7zzHGhtaN+ItWMOj2nJmVnoSu8LrNWfm8AGY=
+	t=1706319611; cv=none; b=fs/4nqUZonDYb3NR+tFaczRB23KtIU+A4rCcOf1iM4i1d9Vkl0dBxLu3GARqRqd3oLTxiTnMExBxtueKoombbddjgRsupHSRd9lq0snswz8czENmpXHMMlTIqj2X7ns4UFBKDJvVMQOywq7uh8qfgYL6BlBNcjqdPi0XTLJ7N3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706319531; c=relaxed/simple;
-	bh=A1/ygdm7x3wtNRu3eyRy8/a37du/hTt3ajMykS1TWZc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ufUadhr++8z5y5mF201yYNSSEVCCvXDUuW4SvTXu29ZIjwH39qdknedFKeo2Ewlp++oXtlzZ5AZDaYcbqbfDeOLSN+Pa6JvvctI6y14M2AlvTMri1YgMImJbU4o5c0WYrBlH+45ZyyLWZIgdX9U9t8PqcxRTd3S2EQ9IdpZD5Vo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=HEAXzmCx; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=XYytVHxOlurwd5+2vgAlofMMVVyo2Oaj6o0YkShtiUY=; b=HEAXzmCxPE9euMRkJ6PQe+i7AP
-	gNkn1XIiNFqlmQ51Ukxam68ZoJwn2Dx50z9XGYSSVlVtG+QHDL4LjrGbTVZCY7HEhrQI/2MMtlb/X
-	VNmGXTLsn5t06Ji9O96CY3PotfVqeHV+/nkfI5Ulmetow1iGDkiRcRsxvunduSTNZg0oBFOGl9++O
-	sI+DYOZDI+sq0WCmP9bgglcKnI8xJL7nu7Dbn9FKOHxHWYywvcw7y8MlXP5JS0BzdvLaVllNvKpNX
-	8EE0G6ALTofZQfsWVaQDVuLSMOBLYxDtEZtUWNOuWzBvO+xel9b7pcBa9J5sEDhA43oRbp+1YhlkF
-	stt9sCog==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rTXeY-000000068Aw-1jDt;
-	Sat, 27 Jan 2024 01:38:38 +0000
-Message-ID: <4131bd36-a6a8-4ec3-b323-b7c4aa487703@infradead.org>
-Date: Fri, 26 Jan 2024 17:38:34 -0800
+	s=arc-20240116; t=1706319611; c=relaxed/simple;
+	bh=2YnRIQRgnlZQnOPzyfaHkE0dDE0sohaqmY/s2G+mfzg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=YGmkUdecuueTGkqq9sjntbTrtWIiYuZP3x9zTsmRoUFTecVHg//B/LhpVyKfZIXyV6/jkYDMtTjBt6aOOLJZi9VA8gERp6X4x066z5cKvrBrfP8uUEckPFrDm/BR66u/sM45DyLh5sBl1h0LZZN/+URla8RAq3lVGHwdCEbMqAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XgCqaS6D; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-339231c062bso1056206f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 17:40:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706319608; x=1706924408; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2YnRIQRgnlZQnOPzyfaHkE0dDE0sohaqmY/s2G+mfzg=;
+        b=XgCqaS6DxHVmuWKwezOIapkseM35czie2cfoXTew0eQlot6qE+NUQmfxg5XMUccSFz
+         lCPfz0EAD8ufFs9YaUGONVgj71Zn0lgxPcWE30uWiqVO4jGW2yTOVEltN+vIVppblsSs
+         H5p5RglYzllCdHh2DR4FyjRsY6DeBXDi2/cT9sV7RU/LNBy/3g0nfwPu8iGxD1t3y/q3
+         XVyc7S9ZCYrj7f3viY9lTPAJWHDJwj7NOPAfCKddNnA00cdOphaXQYy6Xnz+ZaSMrhAw
+         DY57nYuYvnV3+F0tZf2lxzN5cTMF4IZffRCQnHX07Bo0Ggv+BeoYYIzL8+j5+6ylxwYX
+         zNQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706319608; x=1706924408;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2YnRIQRgnlZQnOPzyfaHkE0dDE0sohaqmY/s2G+mfzg=;
+        b=Ul+ZdVJZJDhgK6Je828rVdEg9yu4cFp8PhnbOhQ0Bw6bR3AwpI/afgXHUJygymAE9H
+         nA0R9UCngpVhQkceFSAaiZyEsJRpMSrkqcIE3KKhW1H6c0wiPpjiPYipOJNCiPaTjYgk
+         o4tVTIDoC6nVuP20mXPdFrwqbgf1rmok0V2EaG/b8ZPmBHvvawVppA4d9pF7subJwc9o
+         oVcX6aEOd4axxFef2MM8Z0O8KdWGXJT+FtyuVqGhWr69SzNzGXZZZ/IiPEg0sUoP3v78
+         pBk58S7ospTRiE1WS63zosVup2D7N+VqC8JDgAUq08ZPcba0LhMDJXWVz9qtYM58jzU4
+         i9FA==
+X-Gm-Message-State: AOJu0YzgIM+LV4z8mIQRqQJ9MzA3UK60nr/DAJo89MLII6cOJywwLi4B
+	MuKPO0wioIhA70BEpF+M/kmbQX+mG7XpAISL/HoVn6QDZNKSoqFMajfcJKjJajQ=
+X-Google-Smtp-Source: AGHT+IHSkzXyOriK243MXugaHyRihAWS/eBnZxFTiXv8p/Ej6AY/TMoTn1KUKXTbyrMaGD1ksZyjRg==
+X-Received: by 2002:adf:a418:0:b0:337:c58a:a5fe with SMTP id d24-20020adfa418000000b00337c58aa5femr380086wra.12.1706319607878;
+        Fri, 26 Jan 2024 17:40:07 -0800 (PST)
+Received: from [10.1.1.109] ([80.111.64.44])
+        by smtp.gmail.com with ESMTPSA id bj7-20020a0560001e0700b0033920dfd287sm2357862wrb.19.2024.01.26.17.40.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 17:40:07 -0800 (PST)
+Message-ID: <8af4f6c9c36474d971556f00981ba76d3506d81d.camel@linaro.org>
+Subject: Re: [PATCH 3/9] clk: samsung: gs101: add support for cmu_peric1
+From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
+To: peter.griffin@linaro.org, mturquette@baylibre.com, sboyd@kernel.org, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@android.com, 
+ tudor.ambarus@linaro.org, willmcvicker@google.com,
+ semen.protsenko@linaro.org,  alim.akhtar@samsung.com,
+ s.nawrocki@samsung.com, tomasz.figa@gmail.com,  cw00.choi@samsung.com,
+ linux-arm-kernel@lists.infradead.org,  linux-samsung-soc@vger.kernel.org,
+ linux-clk@vger.kernel.org,  devicetree@vger.kernel.org
+Date: Sat, 27 Jan 2024 01:40:06 +0000
+In-Reply-To: <20240127001926.495769-4-andre.draszik@linaro.org>
+References: <20240127001926.495769-1-andre.draszik@linaro.org>
+	 <20240127001926.495769-4-andre.draszik@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1-1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/17] media: mediatek: vcodec: Fix kerneldoc warnings
-Content-Language: en-US
-To: Ricardo Ribalda <ribalda@chromium.org>,
- Tiffany Lin <tiffany.lin@mediatek.com>,
- Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
- Yunfei Dong <yunfei.dong@mediatek.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Sakari Ailus <sakari.ailus@linux.intel.com>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Hans Verkuil <hverkuil-cisco@xs4all.nl>, Hans Verkuil <hverkuil@xs4all.nl>,
- Kieran Bingham <kieran.bingham@ideasonboard.com>,
- Bin Liu <bin.liu@mediatek.com>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
- Vikash Garodia <quic_vgarodia@quicinc.com>,
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Alim Akhtar <alim.akhtar@samsung.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- Andrzej Hajda <andrzej.hajda@intel.com>, Bingbu Cao <bingbu.cao@intel.com>,
- Tianshu Qiu <tian.shu.qiu@intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-arm-msm@vger.kernel.org,
- linux-samsung-soc@vger.kernel.org, linux-staging@lists.linux.dev,
- linux-amlogic@lists.infradead.org
-References: <20240126-gix-mtk-warnings-v1-0-eed7865fce18@chromium.org>
- <20240126-gix-mtk-warnings-v1-1-eed7865fce18@chromium.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240126-gix-mtk-warnings-v1-1-eed7865fce18@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
+On Sat, 2024-01-27 at 00:19 +0000, Andr=C3=A9 Draszik wrote:
+> The clocks marked as CLK_IGNORE_UNUSED need to be kept on until we have
+> updated the respective drivers for the following reasons:
+> =C2=A0=C2=A0=C2=A0 * gout_peric1_gpio_peric1_pclk is required by the pinc=
+trl
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 configuration. With this clock disabled, r=
+econfiguring the pins
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (for USI/I2C, USI/UART) will hang during r=
+egister access.
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Since pingctrl-samsung doesn't support a c=
+lock at the moment, we
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 just keep the kernel from disabling it at =
+boot, until we have an
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 update for samsung-pinctrl, at which point=
+ we'll drop the flag.
 
+I have patches for pinctrl-samsung implementing this new clock ready. Will
+send next week.
 
-On 1/26/24 15:16, Ricardo Ribalda wrote:
-> These fields seems to be gone:
-> drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp8_req_if.c:57: warning: Excess struct member 'wait_key_frame' description in 'vdec_vp8_slice_info'
-> drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c:166: warning: Excess struct member 'mv_joint' description in 'vdec_vp9_slice_counts_map'
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Cheers,
+Andre'
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> ---
->  drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp8_req_if.c    | 1 -
->  .../media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c    | 1 -
->  2 files changed, 2 deletions(-)
-> 
-> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp8_req_if.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp8_req_if.c
-> index f64b21c07169..f677e499fefa 100644
-> --- a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp8_req_if.c
-> +++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp8_req_if.c
-> @@ -37,7 +37,6 @@
->   * @bs_sz:		bitstream size
->   * @resolution_changed:resolution change flag 1 - changed,  0 - not change
->   * @frame_header_type:	current frame header type
-> - * @wait_key_frame:	wait key frame coming
->   * @crc:		used to check whether hardware's status is right
->   * @reserved:		reserved, currently unused
->   */
-> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
-> index 69d37b93bd35..cf48d09b78d7 100644
-> --- a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
-> +++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
-> @@ -141,7 +141,6 @@ struct vdec_vp9_slice_frame_counts {
->   * @skip:	skip counts.
->   * @y_mode:	Y prediction mode counts.
->   * @filter:	interpolation filter counts.
-> - * @mv_joint:	motion vector joint counts.
->   * @sign:	motion vector sign counts.
->   * @classes:	motion vector class counts.
->   * @class0:	motion vector class0 bit counts.
-> 
-
--- 
-#Randy
 
