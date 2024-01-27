@@ -1,127 +1,90 @@
-Return-Path: <linux-kernel+bounces-41125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00A1D83EC38
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 10:03:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD0FD83EC3A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 10:05:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAD8E1F226CD
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 09:03:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E03D71C21D3B
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 09:05:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 552501EA7A;
-	Sat, 27 Jan 2024 09:03:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NJFemUh5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E68521EA76;
+	Sat, 27 Jan 2024 09:05:09 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EABC7F;
-	Sat, 27 Jan 2024 09:03:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D85C7F
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 09:05:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706346209; cv=none; b=tudypocM4OGpn3+PzQ6j22kTgUicy2qM60qXhnQwXYXSYCJW8fH9zxRpccVMakH2YfCWLqxhld6CHUd0hKoU7NAfrkqAhk4Lh/+J7ZnWtZdYSrRotwGAwGSNcaqZBrWt57x9ToQCNnvbZu0FhvsRRyZbJmgVyYvFHCie7Cpj9Jc=
+	t=1706346309; cv=none; b=LBd5BFeNdDCSQSx+BRYX0R81hy56QNlxfBOgAqCiw0ujxdM7gTYtCceW2g9Ha/Dqi1A+NUAVlhiPFuRmwcLJbeabWdkNEYSwMihcgjpApDFPYcHj613PL7ZStVCl7FTIpThPo0xI1j62vxOWQSgGmwjA5arjluG/knBDn8nPxzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706346209; c=relaxed/simple;
-	bh=yg/Y2lPHCXw+ApriwYjx7xRqzTngKb2FdtskFU96fy4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=t2YuY6ceXhaJYQfpvSM9ybC53BmTD1Hqb2ExuoP76FtUFFDtdW/4yslNF6K9GcrvUKNF2086VZE6KFm9Ant37wpHjnFjSR2dptowPWJljqb1/ua8ZVFO/YkpjbLC1cYhFKZqkycYaFMTgkpKvjAurtpUGupdsFyalB1idMovwZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NJFemUh5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B31A6C433F1;
-	Sat, 27 Jan 2024 09:03:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706346209;
-	bh=yg/Y2lPHCXw+ApriwYjx7xRqzTngKb2FdtskFU96fy4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=NJFemUh5XosxEzuQNYr3ZBJxlqQ88LeyRThWQPYHhcBd46I/Ha71V2zIDrpWwj/MY
-	 EsXjF9jf85sFYjJqroHoV/XVk1x3zTb5rN/b2ZmgAH35P2eFALCd3qsoxqchHK3NRC
-	 rcuN4tcEBcihc5qfYkufSpRehgZSWYRzEWup5xUr+XMZ3lXWcWk6pGbeMV/Y1asZnB
-	 8Vf5RSM+8smD09u4yHzl6W7LMVppvovI3ad3Kmb7zu7o9vNNfFQXNZKY/tNk6N26S0
-	 nVLllaA54+Ghqv+biNjbI95CloERJfE7oXByp5kUnhCRb4niUoL10fPw03vgH/0Dsm
-	 UJ57YxXzKwe9g==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Mykola
- Lysenko <mykolal@fb.com>, bpf@vger.kernel.org, netdev@vger.kernel.org,
- =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
- linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: Include runner extras for
- install target
-In-Reply-To: <CAEf4BzaewwHQn7xBgiuckH3xbRHGc6GxvAq6rXf6Ep+KDWDEFg@mail.gmail.com>
-References: <20240125160502.1512422-1-bjorn@kernel.org>
- <CAEf4BzaewwHQn7xBgiuckH3xbRHGc6GxvAq6rXf6Ep+KDWDEFg@mail.gmail.com>
-Date: Sat, 27 Jan 2024 10:03:25 +0100
-Message-ID: <87r0i34082.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1706346309; c=relaxed/simple;
+	bh=ns7XcGUGA6EXzw9WjRju1sbQES5lkWOliR3cZs0XBLM=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=WnnhKRoiKzgwVxatrsQDCxB1+PYn6B9g6UBBT/VBrJ5PDTtQ2ye3ufbHs9Z7zZeBNd7mtmEMKCULd06MfH2gekY9VNnLqqf51d/zwHfT3zR6u6xoaxBHRuLsqHK0h/rSOL/WK5OESbOdoqjeriUS1HFaWRwC3+gW8INInABufzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7baa6cc3af2so87988339f.2
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 01:05:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706346307; x=1706951107;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=r07qcjZtk/1Kh0i0MS4Bc56d9Yw9HmQpMjUB3qESI2w=;
+        b=lIEAWzEOnhLA+s3JgRTPUBX871n+mFKFejNh+wBZecwvm1BSBmsiAlgmsL0BtvuGR6
+         uwJvvL1ogABj/WUUU+QgTcBqkN6a3UCuMm9e4RVcSNrtoi1dvrQl3f/R1WGGP1dK2HYh
+         PE/NSce/dJXHtYxTVIKHqxmew5relcwtOZm13RT378E/9J/fPW05/6x8SOkQ/ss1woXg
+         ccdQi/DG+kAlUp0MoUxZqAi42sJaw0x8XRgdbtXcB85WNt2RlIfkrIhXClc3K10BTkgG
+         ng4lPKR/Enu/zZi8FtSqqTieZBQSgr4buL5rAbNx7uHmNcJvma3sP2FZjnDMW7DgW+kI
+         YgAw==
+X-Gm-Message-State: AOJu0YzPHMEcPZzp/De73I1XR+OciQLdPkuvHuBo4059HaH0+NORLZ+O
+	mQPrqRaCFXoDvBWahC9mj2aOTGYStuCbF9M9tWjhE0NUPIvknElmRkJaKqGwUKpsk8rOrW1KBbt
+	rddteyeVFqct1D9q2D+aIRRm76Qu80CTzplG3Qv46gDXOuL+pfC5k5Qc=
+X-Google-Smtp-Source: AGHT+IHvq6oghf9D1tVy/Q1TIUTPUfvvY/I50fF3yj9XD1Ne0UfhLLjH39DdxYrYMn9IskGwwMbQzZhGEjiao+RdXb3YIM3mTPfH
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a05:6e02:1d99:b0:361:aae3:4ee0 with SMTP id
+ h25-20020a056e021d9900b00361aae34ee0mr142037ila.1.1706346305289; Sat, 27 Jan
+ 2024 01:05:05 -0800 (PST)
+Date: Sat, 27 Jan 2024 01:05:05 -0800
+In-Reply-To: <000000000000c7970f05ff1ecb4d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000064064a060fe9b55a@google.com>
+Subject: Re: [syzbot] [ext4?] KASAN: use-after-free Read in ext4_find_extent (3)
+From: syzbot <syzbot+7ec4ebe875a7076ebb31@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, axboe@kernel.dk, brauner@kernel.org, 
+	jack@suse.cz, linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+syzbot suspects this issue was fixed by commit:
 
-> On Thu, Jan 25, 2024 at 8:05=E2=80=AFAM Bj=C3=B6rn T=C3=B6pel <bjorn@kern=
-el.org> wrote:
->>
->> From: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
->>
->> When using the "install" or targets depending on install, e.g.
->> "gen_tar", the "runner extras" weren't included for the BPF machine
->> flavors.
->>
->> Make sure the necessary helper scripts/tools are added to
->> corresponding BPF machine flavor.
->>
->> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
->> ---
->> v2: Added btf_dump_test_case files
->> ---
->> tools/testing/selftests/bpf/Makefile | 18 +++++++++++++++---
->>  1 file changed, 15 insertions(+), 3 deletions(-)
->>
->> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selfte=
-sts/bpf/Makefile
->> index fd15017ed3b1..d5cff32997b3 100644
->> --- a/tools/testing/selftests/bpf/Makefile
->> +++ b/tools/testing/selftests/bpf/Makefile
->> @@ -744,8 +744,20 @@ EXTRA_CLEAN :=3D $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR=
-) $(HOST_SCRATCH_DIR)     \
->>  DEFAULT_INSTALL_RULE :=3D $(INSTALL_RULE)
->>  override define INSTALL_RULE
->>         $(DEFAULT_INSTALL_RULE)
->> -       @for DIR in $(TEST_INST_SUBDIRS); do              \
->> -               mkdir -p $(INSTALL_PATH)/$$DIR;   \
->> -               rsync -a $(OUTPUT)/$$DIR/*.bpf.o $(INSTALL_PATH)/$$DIR;\
->> +       @for DIR in $(TEST_INST_SUBDIRS); do                    \
->> +               mkdir -p $(INSTALL_PATH)/$$DIR;                 \
->> +               rsync -a --copy-unsafe-links                    \
->> +                       $(OUTPUT)/$$DIR/bpf_testmod.ko          \
->> +                       $(OUTPUT)/$$DIR/bpftool                 \
->> +                       $(OUTPUT)/$$DIR/ima_setup.sh            \
->> +                       $(OUTPUT)/$$DIR/liburandom_read.so      \
->> +                       $(OUTPUT)/$$DIR/sign-file               \
->> +                       $(OUTPUT)/$$DIR/uprobe_multi            \
->> +                       $(OUTPUT)/$$DIR/urandom_read            \
->> +                       $(OUTPUT)/$$DIR/verify_sig_setup.sh     \
->> +                       $(OUTPUT)/$$DIR/xdp_synproxy            \
->> +                       $(OUTPUT)/$$DIR/btf_dump_test_case_*.c  \
->> +                       $(OUTPUT)/$$DIR/*.bpf.o                 \
->> +                       $(INSTALL_PATH)/$$DIR;                  \
->
-> My concern is that this will get out of sync and will go unnoticed
-> next time we add another "extra" file. We have TRUNNER_EXTRA_FILES,
-> should we use that list to keep these extras in fewer places?
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-Yeah, you're completely right -- this was a lazy approach. I'll spin a
-more robust v3.
+    fs: Block writes to mounted block devices
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17b36eefe80000
+start commit:   c42d9eeef8e5 Merge tag 'hardening-v6.7-rc2' of git://git.k..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d05dd66e2eb2c872
+dashboard link: https://syzkaller.appspot.com/bug?extid=7ec4ebe875a7076ebb31
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1585ea50e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=157ef53f680000
 
-Cheers,
-Bj=C3=B6rn
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fs: Block writes to mounted block devices
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
