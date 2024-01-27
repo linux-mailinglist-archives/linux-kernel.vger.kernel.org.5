@@ -1,101 +1,108 @@
-Return-Path: <linux-kernel+bounces-41440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41441-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16A0E83F174
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 00:02:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0163983F177
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 00:06:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6671287481
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 23:02:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8E77B24E99
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 23:05:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8F74200B2;
-	Sat, 27 Jan 2024 23:02:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57A47200B2;
+	Sat, 27 Jan 2024 23:05:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LL5J5/am"
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MK4rkd8U"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B17191F93F
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 23:02:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E531F946;
+	Sat, 27 Jan 2024 23:05:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706396569; cv=none; b=AomusCTUpgXCx5VRVyjEghLO3O8xjFW1eGQUvK6uJMlYbO3MFjpvGY+NoT/JfSksR+UXEBdt36p23q/vrF582DLhnNj1eDRPi8sS+TcJ+QLw2swR3gs0XlruMIvGTb28L5Sd6bE+2CBN6ou2XHYMf6XI8z5W9mZENvNQlc6GgHs=
+	t=1706396749; cv=none; b=jFBKTRRiFP42dkcF1go+7eXZY+fxXkia6e3bzTo9uburC8zOgnSYB5sgaSC0RXItEbsIbM0grVMptQNaxEP2gTjqORbkRUTw8F/pj79f3hX1uvhN30Mh4WTyiimq/hdiZujyNHlib8EolWOXmeKTPl/H9yvjF4vuUG/xWfmev5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706396569; c=relaxed/simple;
-	bh=OI/DYxsJSWBx+d25tKtsRfVL4GAUVdxqmdpn8lShZf4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=At71nFkgbWpfeemW/sCHge7nBERpmW337ELut3uXq0iy92lUtH2dBJlrm+AHQiSqUx+q2CkpkFYo+8p+vrWaZ//TsnwrCvb0UmWsxjjQc72x8RBa1O1q1yzE6fT1DvrNeN3/+cQEuc1K83NwbhalqWLfQgfVlNsIJzj4cHxiQcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LL5J5/am; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5ff7a8b5e61so15049687b3.2
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 15:02:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706396565; x=1707001365; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OI/DYxsJSWBx+d25tKtsRfVL4GAUVdxqmdpn8lShZf4=;
-        b=LL5J5/amWFJyixSoJ4X2157faCEDESiXfEqGXLzuJt4ntBLdTnR8KGnquBI5J+zLHf
-         RWghWMasiJqaD7N3H11e8rTymFRe0B154vMispUPO3t9fMyCtf17XZKph10kFok4QVRu
-         cVc6qLoMJaYrflGi73rh9yDKdyrqBnIg2c025wURB5TpupoCXv/6ckkfS0SQ2GJOIL1v
-         8oe9zCXmLy6Cx66UKAjaPEmvu/AjfXWJhmNySjrU0yizVfxwgyaZJebW7ELoZbc6Yct+
-         fuBhxDTqCmYO4U2kMS7gsWJjX6FIUTd8T9uMkSV/i0mBiA8+8LY9V7GUsB3l5My+L9Nt
-         R0AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706396565; x=1707001365;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OI/DYxsJSWBx+d25tKtsRfVL4GAUVdxqmdpn8lShZf4=;
-        b=ob+Aysup+Mxws1QpQ21NlHM9G0yQUZxmf7tx/BalID2AlVJ1lSeETJYooHfVhLsrPa
-         BZ8Imn63BvRyrgYpUtmroLOhYbiPqrDM8q5dYgr7cEV0yWcFABH3EYiDNvJFVCWe1kBq
-         gOjl+7yZCAiG+Q+W35OgerPyt8lWh3HHjlv7iBgb6+KmJLxxU1R7+cCb10a3rQGcUHR8
-         XxzB4R20/HidqPEW8Xp+U4QiULGBE46SllPWQNjuuwgyN/E3kIhuLpiptEMYlsTgEuaT
-         AvxkxG9Bmh7Ww8c1HEzV2osiOJUEPQj9w1hcXBUw2Jv3CGqwekpfR3dnZuLU0WTnQdYs
-         hoZA==
-X-Gm-Message-State: AOJu0YxYlt5bYMfnxrLZpA+iuNmILD6V7n+wcxDESncdjcKfEaqLEOY9
-	fyC8C84dLsqdob5hvIY0Av3QE0gsEYE2cQ5nVpbPSbVaPDXncP/oGtCPLlgh6+5/FF2QWu/hhE1
-	gszG/DjR6GJW5n/DolVwyiOjpjfd9+T5zj5qvZA==
-X-Google-Smtp-Source: AGHT+IGyjw9LIiDDoT2S5tGsoR6J36rkT7VTljb52lUEVS87VMLK8vJpNqzNYIdeGvFGjm5XifyDw3lPWoEfckgnn6c=
-X-Received: by 2002:a81:a709:0:b0:5ff:6173:e98e with SMTP id
- e9-20020a81a709000000b005ff6173e98emr1920073ywh.63.1706396565671; Sat, 27 Jan
- 2024 15:02:45 -0800 (PST)
+	s=arc-20240116; t=1706396749; c=relaxed/simple;
+	bh=/yaiKqzmIqnD8fr1qIOUHF0xjSRO2KGj2637HcMaerY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LBqftbnwWSuUPi2TsaDTireo44NonNoiKAVdo0CtcFKO63+lyPVIV0OMcCMz7rvLEsvgQVWqlXWmHXHPBlb8QJjWasKHQId9AwN8L+tbCtEVmpNuugXINOrybBb3OJFCoof6yE2H8Mg1JGC/sHpgsg+q4tJgRpbM1fFT7a4cUAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MK4rkd8U; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED8E1C433F1;
+	Sat, 27 Jan 2024 23:05:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706396748;
+	bh=/yaiKqzmIqnD8fr1qIOUHF0xjSRO2KGj2637HcMaerY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MK4rkd8Ulvzp65xBfacaVnFBaCqEfhiKN5k1B7YRXHECj5lCi7z2q3o8YlONV9yON
+	 zlkX6PGszyWdhQaqB+u8Jj7G6F7mKeeHJTzogLqNWIrsjY7oLppQ7xvSF87/TX+TCK
+	 fbtBqcYD1Fv3IpButCg636K5EJw8IXJ3Pf2HfahvEky1xgOOeOxGnGOi5m/L6+5jt+
+	 TztClaMoDgoqXDjNz6HA7whjHmNURG3e4ZeBrIu1KsF0Osu3QvJ3Uga1iyU3mpRa86
+	 jcsnvKmN+skibxV1447hVfMTD8LuAlzWP9cmaX/n8sQdiczitRNBW/+6GO0JrYtPuN
+	 yeTpmQwNLrgCQ==
+Date: Sat, 27 Jan 2024 17:05:45 -0600
+From: Bjorn Andersson <andersson@kernel.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Philipp Zabel <p.zabel@pengutronix.de>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Dikshita Agarwal <quic_dikshita@quicinc.com>, Vikash Garodia <quic_vgarodia@quicinc.com>, 
+	Manivannan Sadhasivam <mani@kernel.org>
+Subject: Re: Re: [PATCH 09/18] clk: qcom: gcc-sm8250: Set delay for Venus CLK
+ resets
+Message-ID: <5vi4an3kgmekjnfupigr6ukxrwanieavvvzmxv2vy3wozjjh3z@ulvjm7qmtbbc>
+References: <20240105-topic-venus_reset-v1-0-981c7a624855@linaro.org>
+ <20240105-topic-venus_reset-v1-9-981c7a624855@linaro.org>
+ <0cbedc75-cacf-43f8-a1f9-284546ad548a@linaro.org>
+ <19eceba8-dfc3-40d0-a681-8c47a0248cfd@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103132852.298964-1-emil.renner.berthing@canonical.com> <20240103132852.298964-3-emil.renner.berthing@canonical.com>
-In-Reply-To: <20240103132852.298964-3-emil.renner.berthing@canonical.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Sun, 28 Jan 2024 00:02:34 +0100
-Message-ID: <CACRpkdZhzC_4ZFV6cpA5=tHfzyv+NjFBoFC3=jenS2x0-0DZmg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/8] pinctrl: Add driver for the T-Head TH1520 SoC
-To: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Drew Fustini <dfustini@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <19eceba8-dfc3-40d0-a681-8c47a0248cfd@linaro.org>
 
-On Wed, Jan 3, 2024 at 2:29=E2=80=AFPM Emil Renner Berthing
-<emil.renner.berthing@canonical.com> wrote:
+On Tue, Jan 09, 2024 at 10:33:39AM +0100, Konrad Dybcio wrote:
+> 
+> 
+> On 1/9/24 01:34, Bryan O'Donoghue wrote:
+> > On 08/01/2024 12:32, Konrad Dybcio wrote:
+> > > Some Venus resets may require more time when toggling. Describe that.
+> > 
+> > May or does ?
+> > 
+> > I'd prefer a strong declaration of where this value came from and why its being added.
+> > 
+> > May is ambiguous.
+> > 
+> > "Downstream has a 150 us delay for this. My own testing shows this to be necessary in upstream"
+> 
+> Alright
+> 
+> > 
+> > Later commits want to add a 1000 us delay. Have all of these delays been tested ?
+> 
+> No, we don't support Venus on many of the newer SoCs..
+> 
+> 
+> > 
+> > If not please describe where the values come.
+> 
+> They come from the downstream Venus driver as you mentioned.
+> I checked a couple different downstream SoC kernel trees and
+> tried to assign the values based on what I found in a kernel
+> for that platform. Some are fairly educated guesses.
+> 
 
-> Add pinctrl driver for the T-Head TH1520 RISC-V SoC.
->
-> Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+It would be nice to have documented for which cases you guessed (and in
+which downstream kernel you found other values?), so that if anyone is
+coming to the tree later with conflicting information they have a better
+chance to reason about the discrepancy.
 
-This driver looks mostly fine but I am waiting for the bindings
-to be hashed out.
-
-Yours,
-Linus Walleij
+Thanks,
+Bjorn
 
