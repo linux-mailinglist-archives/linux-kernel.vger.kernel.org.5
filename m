@@ -1,175 +1,325 @@
-Return-Path: <linux-kernel+bounces-41250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C210483EDFE
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:37:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CF3783EE01
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:39:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 775391F2279C
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:37:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA4AF2830BB
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:39:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1BB228E39;
-	Sat, 27 Jan 2024 15:37:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 314C42940B;
+	Sat, 27 Jan 2024 15:39:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Nn4e4sJE"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E1qFzL5u"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7BF3200AB;
-	Sat, 27 Jan 2024 15:37:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 245F328DAB;
+	Sat, 27 Jan 2024 15:39:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706369845; cv=none; b=OQtgqhiYjrYMJUoTKfIh6AancUwpDDCS3wDzoHU5Ru0H1dSvGbki7ESMm2N+Al9tf0t2Z6FP2G8tHjkBPdr7c0+qBNfsd/mrBdC/fx1QyRNA8tQsRQzrh0u3MCWdNOhPoSSxlOsDsBF9D/PL9Oqx3FYa8TjCoGztj5bhKNr0//U=
+	t=1706369947; cv=none; b=l7Q5UQdkHieWO4IJzABhlH9IR7f58Ah+eY2ERLFdSTYCaEMrmz60DISai5AJndjfDRphco3k4E0Zws1Bc9jDtiZGo5CvzUy/BbCEELxXnQD8dI+vFepclOMH5hboJU6Rs3IJdkKbGK3HH8HG5WYt+/OIIOHwwV1SOm+WdfcziRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706369845; c=relaxed/simple;
-	bh=yeEb+DX6g1gaZS5hxdUJC6t92mKaMthuJkbpJ+wrn88=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=B5TFVh9sfMdkbMcMt9xOzRnaoFT+puSIJ1bnRySs44J8j6sOS2Q0UxokRYNyEdzFLUpVUudUdjKj3E/Hi+kMyQr14dduBLHxISYH+ZPoafCKcXBLtrC5lGUecxhfKuMS/0Fvt1nnHOb/rNua7kTH1G4bKozmLKUr9DMU2L0zz5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Nn4e4sJE; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40RFM4Lb013249;
-	Sat, 27 Jan 2024 15:37:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=GL6DcGHInWdFEK4wiTfvMS/9wuVoeUooATeGAfyk74g=; b=Nn
-	4e4sJEnhmmnRkWBWJ94KqtJ3coDqiv9jsdQ/J9CbZsmWqGPHxml0MIyfSNyB0msi
-	HoyLVSvR6E8sPw13CFryQh+3fwWllxpYYcicH9ePoZ5XhpCGym1xopAhArC0pkW6
-	uV1ZX1S8C1XeynjrqKXqEc4ZZl9jK2Sv4Yr+Ek8b199oygyDi4auuCig4dsoAUGe
-	pEDMTxlpYZUOfwUeRpRQBWqiFC/F1YSFg6WArP58P1REpow9l3j1wdKoNtiPG2UV
-	PzHlRVZnWu7d2bYdqtb1lzEc3QZorzHpqrAy2R90cnwHXOIXOQJ2dLV0xwPsAMLN
-	WuMAYHMCHcwcvUTJoNNg==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vvswy8phd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 27 Jan 2024 15:37:08 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40RFb7ne028845
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 27 Jan 2024 15:37:07 GMT
-Received: from [10.216.45.141] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sat, 27 Jan
- 2024 07:37:03 -0800
-Message-ID: <1cd754e5-fc5e-bd8b-1d70-8de40c9a85e7@quicinc.com>
-Date: Sat, 27 Jan 2024 21:07:00 +0530
+	s=arc-20240116; t=1706369947; c=relaxed/simple;
+	bh=lb9Uaffl5vXy1p3Zzot+RjOxBbBWyqOBeptq65PZiNA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ACLHfkhyTIRJRVBBlCBq5mMORl20vLqMeg3JKfLV0MSKNVGiaaIZdgwMAqTv3SzbYJBrEtSUmYqHL/54cobHA5L4XY2SrXaJ90LIcpAY2bv9OxsEWiCY+0PRbBZpArKvKHWRUafXNpLPlsDa9bpuPuB40Nn4z+MeZVndyRrnmQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E1qFzL5u; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35C60C433C7;
+	Sat, 27 Jan 2024 15:39:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706369946;
+	bh=lb9Uaffl5vXy1p3Zzot+RjOxBbBWyqOBeptq65PZiNA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=E1qFzL5utrew6nOuVychcFUAQGBdldyVcGQWW+eD75whSHhJFL8YucUYSB4SOEmjs
+	 Fa+wgP5OgCVF9SRmmzOwsR60qAnVQNNkPzXuilXRWuBsQVM7oIjrHV2/WI/KwGSbD6
+	 fSiLPHU5lAx4uF1EZSKtsnXX8gNZTHLHg6wzfFkPQ5UW3rutxH1PzgbPnOumryGd67
+	 ZPsThJLsnQZxp/SJxa+LBnQBjR0NEoILeq4bJEnWeN02qTBx7QUimijzVfHaAhrgb8
+	 /kc/09hsjyV0eFeRLHD8eSE1YMv2vOhVjebkeKgpJzLgorMPFc/FXDqpnGylLS75i6
+	 KH0LFpIyFxTDg==
+Date: Sat, 27 Jan 2024 15:38:53 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Ramona Gradinariu <ramona.gradinariu@analog.com>
+Cc: <corbet@lwn.net>, <linux-doc@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <nuno.sa@analog.com>,
+ <linux-iio@vger.kernel.org>
+Subject: Re: [PATCH v2 1/1] docs: iio: add documentation for adis16475
+ driver
+Message-ID: <20240127153853.02d4f0d2@jic23-huawei>
+In-Reply-To: <20240123150029.465443-2-ramona.gradinariu@analog.com>
+References: <20240123150029.465443-1-ramona.gradinariu@analog.com>
+	<20240123150029.465443-2-ramona.gradinariu@analog.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.40; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] thermal/drivers/tsens: Add suspend to RAM support for
- tsens
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Priyansh Jain
-	<quic_priyjain@quicinc.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Thara Gopinath
-	<thara.gopinath@gmail.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Rafael J
- . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
-        <linux-pm@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <",quic_mkshah"@quicinc.com>,
-        ",Raghavendra
- Kakarla" <quic_rkakarla@quicinc.com>
-References: <20240122100726.16993-1-quic_priyjain@quicinc.com>
- <548e2f24-a51e-4593-9463-09506488c70e@linaro.org>
- <f415a8cd-4cae-d7c3-60fc-674b3e660f6b@quicinc.com>
- <aeae2e69-8407-4d90-9d16-27798e2f3248@linaro.org>
- <be69e0a6-fdc8-c24b-9beb-adaac4a97776@quicinc.com>
- <b5ea1c8c-c35d-45e3-9b90-d3dc480f4463@linaro.org>
-From: Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
-In-Reply-To: <b5ea1c8c-c35d-45e3-9b90-d3dc480f4463@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: GACN8c85PyCVK4Yhzs7Uc5A2ahGGIDp1
-X-Proofpoint-GUID: GACN8c85PyCVK4Yhzs7Uc5A2ahGGIDp1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-25_14,2024-01-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 suspectscore=0 bulkscore=0 phishscore=0 clxscore=1011
- impostorscore=0 mlxlogscore=254 malwarescore=0 mlxscore=0
- lowpriorityscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2401190000 definitions=main-2401270117
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-+Maulik and Raghavendra
+On Tue, 23 Jan 2024 17:00:29 +0200
+Ramona Gradinariu <ramona.gradinariu@analog.com> wrote:
 
-Hi Konrad,
+> Add documentation for adis16475 driver which describes
+> the driver device files and shows how the user may use the
+> ABI for various scenarios (configuration, measurement, etc.).
 
-On 1/25/2024 4:38 PM, Konrad Dybcio wrote:
->
->
-> On 1/24/24 16:25, Priyansh Jain wrote:
->>
->>
->> On 1/24/2024 6:04 PM, Konrad Dybcio wrote:
->>>
->>>
->>> On 1/24/24 11:42, Priyansh Jain wrote:
->>>>
->>>>
->>>> On 1/22/2024 8:02 PM, Konrad Dybcio wrote:
->>>>> On 22.01.2024 11:07, Priyansh Jain wrote:
->>>>>> Add suspend callback support for tsens which disables tsens 
->>>>>> interrupts
->>>>>> in suspend to RAM callback.
->>>>>
->>>>> Would it not be preferrable to have the "critical overheat", wakeup-
->>>>> capable interrupts be enabled, even if the system is suspended?
->>>>>
->>>>
->>>>
->>>> As part of suspend to RAM, tsens hardware will be turned off and it 
->>>> cannot generate any interrupt.Also system doesn't want to abort 
->>>> suspend to RAM due to tsens interrupts since system is already 
->>>> going into lowest
->>>> power state. Hence disabling tsens interrupt during suspend to RAM 
->>>> callback.
->>>
->>> Is that a hardware limitation, or a software design choice? I'm not
->>> sure I want my phone to have thermal notifications disabled when
->>> it's suspended.
->>
->>> Konrad
->>
->> As part of suspend to RAM , entire SOC will be off,
->
-> What do you mean by "entire SOC[sic] will be off"? Surely the memory
-> controller must be on to keep refreshing the memory? Are you thinking
-> of suspend-to-disk (hibernation), by chance?
+hi Ramona,
 
-Yes, Memory will be in self refreshing  mode(Retained). But SOC will be off
+I'm not against more documentation in the tree, but I'd like
+a little info in this patch description for why you feel this
+particular driver needs it?  Fine to argue they all do if that's
+the reasoning!
 
-and will do cold boot to come out of S2R.
+To be useful I think we need some more detail on the raw data
+from the chardev readout and that perhaps belongs in some generic
+docs (fine to use this driver as an example).
 
->
->> this mode (suspend to RAM) is not intended for Mobile product. Tsens 
->> interrupts are not
->> disabled as part of suspend to idle(suspend mode for mobile).
->
-> That's clearly untrue, e.g. the PSCI firmware on SM8550 implements
-> PSCI_SYSTEM_SUSPEND, which does S2R.
+Thanks,
 
-IIUC, PSCI_SYSTEM_SUSPEND will be enabled only for S2R supported 
-products and will be removed it for others.
+Jonathan
 
-Maulik/Raghavendra can comment more
+>=20
+> Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
+> ---
+> changes in v2:
+>  - added adis16475 documentation file to iio index.rst file
+>  Documentation/iio/adis16475.rst | 327 ++++++++++++++++++++++++++++++++
+>  Documentation/iio/index.rst     |   2 +
+>  2 files changed, 329 insertions(+)
+>  create mode 100644 Documentation/iio/adis16475.rst
+>=20
+> diff --git a/Documentation/iio/adis16475.rst b/Documentation/iio/adis1647=
+5.rst
+> new file mode 100644
+> index 000000000000..9af054f4af79
+> --- /dev/null
+> +++ b/Documentation/iio/adis16475.rst
+> @@ -0,0 +1,327 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +ADIS16475 driver
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +This driver supports Analog Device's IMUs on SPI bus.
+> +
+> +1. Supported devices
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +* `ADIS16465 <https://www.analog.com/ADIS16465>`_
+> +* `ADIS16467 <https://www.analog.com/ADIS16467>`_
+> +* `ADIS16470 <https://www.analog.com/ADIS16470>`_
+> +* `ADIS16475 <https://www.analog.com/ADIS16475>`_
+> +* `ADIS16477 <https://www.analog.com/ADIS16477>`_
+> +* `ADIS16500 <https://www.analog.com/ADIS16500>`_
+> +* `ADIS16505 <https://www.analog.com/ADIS16505>`_
+> +* `ADIS16507 <https://www.analog.com/ADIS16507>`_
+> +
+> +Each supported device is a precision, miniature microelectromechanical s=
+ystem
+> +(MEMS) inertial measurement unit (IMU) that includes a triaxial gyroscop=
+e and a
+> +triaxial accelerometer. Each inertial sensor in the IMU device combines =
+with
+> +signal conditioning that optimizes dynamic performance. The factory cali=
+bration
+> +characterizes each sensor for sensitivity, bias, alignment, linear accel=
+eration
+> +(gyroscope bias), and point of percussion (accelerometer location). As a=
+ result,
+> +each sensor has dynamic compensation formulas that provide accurate sens=
+or
+> +measurements over a broad set of conditions.
+> +
+> +2. Device attributes
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +Accelerometer, gyroscope measures are always provided. Furthermore, the =
+driver
+> +offers the capability to retrieve the delta angle and the delta velocity
+> +measurements computed by the device.
+> +
+> +The delta angle measurements represent a calculation of angular displace=
+ment
+> +between each sample update, while  the delta velocity measurements repre=
+sent a
+> +calculation of linear velocity change between each sample update.
+> +
+> +Finally, temperature data are provided which show a coarse measurement of
+> +the temperature inside of the IMU device. This data is most useful for
+> +monitoring relative changes in the thermal environment.
+> +
+> +The signal chain of each inertial sensor (accelerometers and
 
->
-> Konrad
+Wrapping is inconsistent. Please tidy that up so that for all the normal te=
+xt you
+wrap at same line length - this paragraph seems 10 chars shorter than the p=
+revious
+one.
+
+> +gyroscopes) includes the application of unique correction
+> +formulas, which are derived from extensive characterization
+> +of bias, sensitivity, alignment, response to linear acceleration
+> +(gyroscopes), and point of percussion (accelerometer location)
+> +over a temperature range of =E2=88=9240=C2=B0C to +85=C2=B0C, for each A=
+DIS device.
+> +These correction formulas are not accessible, but users do have
+> +the opportunity to adjust the bias for each sensor individually
+> +through the calibbias attribute.
+> +
+> ++-------------------------------------------+---------------------------=
+-------------------------------+
+> +| 3-Axis Accelerometer related device files | Description               =
+                               |
+> ++-------------------------------------------+---------------------------=
+-------------------------------+
+> +| in_accel_scale                            | Scale for the acceleromete=
+r channels.                    |
+
+Probably good to add a sentence explaining where these files are - I'm gues=
+sing they are just the ones in the
+iio\:deviceX directory and not the sub-directories below that.
+
+> ++-------------------------------------------+---------------------------=
+-------------------------------+
+> +| in_accel_x_calibbias                      | Calibration offset for the=
+ X-axis accelerometer channel. |
+> ++-------------------------------------------+---------------------------=
+-------------------------------+
+> +| accel_calibbias_x                         | x-axis acceleration offset=
+ correction                    |
+> ++-------------------------------------------+---------------------------=
+-------------------------------+
+> +| in_accel_x_raw                            | Raw X-axis accelerometer c=
+hannel value.                  |
+> ++-------------------------------------------+---------------------------=
+-------------------------------+
+> +| accel_calibbias_y                         | y-axis acceleration offset=
+ correction                    |
+
+no in_ prefix?
+
+> ++-------------------------------------------+---------------------------=
+-------------------------------+
+> +| in_accel_y_raw                            | Raw Y-axis accelerometer c=
+hannel value.                  |
+> ++-------------------------------------------+---------------------------=
+-------------------------------+
+> +| in_accel_z_calibbias                      | Calibration offset for the=
+ Z-axis accelerometer channel. |
+> ++-------------------------------------------+---------------------------=
+-------------------------------+
+> +| in_accel_z_raw                            | Raw Z-axis accelerometer c=
+hannel value.                  |
+> ++-------------------------------------------+---------------------------=
+-------------------------------+
+> +| in_deltavelocity_scale                    | Scale for delta velocity c=
+hannels.                       |
+> ++-------------------------------------------+---------------------------=
+-------------------------------+
+> +| in_deltavelocity_x_raw                    | Raw X-axis delta velocity =
+channel value.                 |
+> ++-------------------------------------------+---------------------------=
+-------------------------------+
+> +| in_deltavelocity_y_raw                    | Raw Y-axis delta velocity =
+channel value.                 |
+> ++-------------------------------------------+---------------------------=
+-------------------------------+
+> +| in_deltavelocity_z_raw                    | Raw Z-axis delta velocity =
+channel value.                 |
+> ++-------------------------------------------+---------------------------=
+-------------------------------+
+> +
+> ++---------------------------------------+-------------------------------=
+-----------------------+
+> +| 3-Axis Gyroscope related device files | Description                   =
+                       |
+> ++---------------------------------------+-------------------------------=
+-----------------------+
+> +| in_anglvel_scale                      | Scale for the gyroscope channe=
+ls.                    |
+> ++---------------------------------------+-------------------------------=
+-----------------------+
+> +| in_anglvel_x_calibbias                | Calibration offset for the X-a=
+xis gyroscope channel. |
+> ++---------------------------------------+-------------------------------=
+-----------------------+
+> +| anglvel_calibbias_x                   | x-axis gyroscope offset correc=
+tion                   |
+
+A before, I think there is a in_ prefix on all these.
+
+> ++---------------------------------------+-------------------------------=
+-----------------------+
+> +| in_anglvel_x_raw                      | Raw X-axis gyroscope channel v=
+alue.                  |
+> ++---------------------------------------+-------------------------------=
+-----------------------+
+..
+
+
+> +Usage examples
+> +--------------
+> +
+> +Set trigger if not available:
+
+What do you mean by not available?
+
+
+> +Obtain buffered data:
+> +
+> +.. code-block:: bash
+> +
+> +        root:/sys/bus/iio/devices/iio:device0> hexdump /dev/iio\:device0
+> +        ...
+> +        0044760 3901 0000 ffff f9fe ffff 29ee 0100 f79b
+> +        0044770 3901 0000 ffff 98fe ffff 1aef 0100 439a
+> +        0044780 3901 0000 ffff b4fe ffff 32ef 0100 c199
+> +        0044790 3901 0000 ffff bdfe ffff 20ef 0100 5f9a
+> +        00447a0 3901 0000 ffff 37ff ffff 1eef 0100 389b
+> +        00447b0 3901 0000 ffff 7dff ffff 96ee 0100 5a9c
+> +        ...
+I'd use hexdump -C to list them byte wise - otherwise endian effects make
+this rather incomprehensible.
+
+Also if you want to list the raw data, good to explain what the various par=
+ts are
+and how that is derived from the info in scan_elements.
+That might be best done in a separate document though that is then referred=
+ to from
+here. I don't think we have such a userspace document, having long relied on
+people figuring it out from the example tools or using google to find talks=
+ various
+folk have given (or the ADI wiki which might have stuff on this?)
+
+
+> diff --git a/Documentation/iio/index.rst b/Documentation/iio/index.rst
+> index 1b7292c58cd0..0087c0dafe59 100644
+> --- a/Documentation/iio/index.rst
+> +++ b/Documentation/iio/index.rst
+> @@ -12,3 +12,5 @@ Industrial I/O
+>     ep93xx_adc
+>=20
+>     bno055
+> +
+> +   adis16475
+
+Hmm. It's already in a random order but let's not make it worse to fix that=
+ up.
+Put this before the bno055.
+
+If you want to add some more formatting to this, say to add some section ti=
+tles and
+that would be great as a separate patch.
+
+> --
+> 2.34.1
+>=20
+
 
