@@ -1,94 +1,126 @@
-Return-Path: <linux-kernel+bounces-41178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C19D683ECF6
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 12:43:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E28083ECF2
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 12:43:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52808B2307E
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 11:43:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13D99B22FC1
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 11:43:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E44052033E;
-	Sat, 27 Jan 2024 11:43:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C58A208B2;
+	Sat, 27 Jan 2024 11:42:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="B1cO5iIC"
-Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="eC4rs6Wd"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4315200BF;
-	Sat, 27 Jan 2024 11:43:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 514281E869;
+	Sat, 27 Jan 2024 11:42:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706355827; cv=none; b=QD2mxO+EfTw5xF+JVMdr71x3nkX51L8U3c9/i7EK1RRMBMmLRq8m8hingGb7C/Nj2kzwmh+F5KlRMKtVwB1nOU2G58Y7CELE8MkvLatNXmA1Y3Oiyd3wQenzkm2/T8DLEoK5T2UkWIWy7RgRTRKZ33R9zwipZJMxfuB/Wll1sIU=
+	t=1706355776; cv=none; b=m4CoccuxWjVdLMxYfnsDDPUS0uUGa1QUeIbits8BRvLzRJ0+mjmwMnkR2cUZ1n9tlzxQyVPLS1xG0/p9U6CzAdCoHnTBMnBja7zl0aF7+s8p+tJ/bSum4DvteQAlNI9uSVVA/btKWzWgm42khLxV4q34xFaI4Q48mrtgDwnYCz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706355827; c=relaxed/simple;
-	bh=DwL4arpEzXWec++owa4mghw2Jbc0zA8jYLA9Oc9uFco=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qy2wF8iktuOuu/Vba2aH/1ZEV7d3jD3BMmel5mYRanF73KJXc502sNdE1VdGUAg3eGr2LBuC80cm1odAwUeOcIlRZxVKaUl0Wt2biABcw1ueF/JRXqve/XhOqebfgT/d2RhwBQ7Odq8Z3iOF5pv2dGra6SLcAnGKUHXPFnF3hck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=B1cO5iIC; arc=none smtp.client-ip=198.252.153.129
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
-Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
+	s=arc-20240116; t=1706355776; c=relaxed/simple;
+	bh=nAOcTFP3pwvvDUbQsgTedOGhxngX6Aj/2e6lzNcC4KI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZF4ed+98TDlcxjkWGRzP7FySZe2CdD2z7wlvQj/7+DdrU1iodYtvjXZNSIvQRB9LsLwewVThAO0+m4pzoEZ9ILjH3fnRnYFQcA433UnNmCUe76Gs6YWqWyiLnM7XF+/bpUEOrtwc48bwV9RD3nzu6wyLA39E2emgVoekbN/4cN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=eC4rs6Wd; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4F3AA40E0196;
+	Sat, 27 Jan 2024 11:42:51 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id CIObjHhXZrUT; Sat, 27 Jan 2024 11:42:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706355768; bh=Z+24pU73zrvlVW/zZsFzlGVxb2gSvEeHL9ZKSaOfvm8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=eC4rs6WdjoEAKl2hlM4DT8Ngyn7hIzO1XtLqEGVdcosggtPTaawBo0zgWCPYL0fp0
+	 tXHcSXmV9rsQa1LznoqFpESHm5PRtL6p7P9t91N+pCjdpT1nUmTFRfqvLzPi4yPncD
+	 AbFcv6pi0dgWN3pzy7KBBMK5uYvXEf1+cCbxD3wogXe/gdKmqYtCs1R723GFv2uqTF
+	 r9qdDIguH8bY6RrAQRDKIbyGKezDOrtTmgibvnjyMAPZ/mcYg+iNHpb6Qbq+lpoYaG
+	 h/H3Xzhi5LwTQxppVDMluSTI+kUEINJjQkBkOVUlhk/xseeqzpv8bH0wc7bp0u2Sbc
+	 bPelKuYVSeN74fAIy+GORMmBwW3Q0wjtRqCjXPfImX6pM3GEF6+1w8uetPJmV2MDsf
+	 gmF1XSHCxkf1VTEMBYkknctBJfZrPSlBy5xIfAzqUf83N3nAJlCBEZg0vtyhS/2XwG
+	 Mx6ApzoIcVSR17zE4NkrPPRoHVJ1e46DR3F24AYYrzcEQo2JQvwE3NNP3BXz/wY4Eh
+	 f+j7/Rox/xWnB99wp6N7L8V+buOHpbNVVEAC2hNWsfizH9XIRtc1rFJXd6yXzU2VqM
+	 9bGD1cD5mLnomB2H9Xxv5PJslPh068zLfH20RKayB50XALaa6PGfV1mhv1/y6bhKqu
+	 pKzTDG5kVuhAuqJOMmtPjZy0=
+Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	by mx1.riseup.net (Postfix) with ESMTPS id 4TMXZk1VqjzDqFf;
-	Sat, 27 Jan 2024 11:36:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1706355391; bh=DwL4arpEzXWec++owa4mghw2Jbc0zA8jYLA9Oc9uFco=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=B1cO5iICyRmgAJiJG9CFWboHg9qYa2wTt56r24VzWxhNPvQyh3G6YLKd8ycOTZGpA
-	 EXvdnQ04gJc0HuOXoK3pubBBkT9OGygapXT3To0cQTnNFzoHpdiPKCJPmoLliKPNzP
-	 lrBDkjOpiPoWx/gtI3RPuqzNLSla2qC0h6IxBquU=
-X-Riseup-User-ID: DEFF9060E8EA107706D83953584E1815F0490610DEB87FA764577ACB26A6E682
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4TMXZF6PvXzJp9g;
-	Sat, 27 Jan 2024 11:36:05 +0000 (UTC)
-From: Dang Huynh <danct12@riseup.net>
-To: Neil Armstrong <neil.armstrong@linaro.org>,
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
- Sandy Huang <hjc@rock-chips.com>, Mark Yao <markyao0591@gmail.com>,
- Diederik de Haas <didi.debian@cknow.org>,
- Segfault <awarnecke002@hotmail.com>, Arnaud Ferraris <aferraris@debian.org>,
- Ondrej Jirman <megi@xff.cz>, Manuel Traut <manut@mecka.net>
-Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, Manuel Traut <manut@mecka.net>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v4 0/4] arm64: rockchip: Pine64 PineTab2 support
-Date: Sat, 27 Jan 2024 18:35:50 +0700
-Message-ID: <6035442.lOV4Wx5bFT@melttower>
-In-Reply-To: <20240127-pinetab2-v4-0-37aab1c39194@mecka.net>
-References: <20240127-pinetab2-v4-0-37aab1c39194@mecka.net>
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7310540E016C;
+	Sat, 27 Jan 2024 11:42:12 +0000 (UTC)
+Date: Sat, 27 Jan 2024 12:42:07 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Michael Roth <michael.roth@amd.com>
+Cc: x86@kernel.org, kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+	linux-mm@kvack.org, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+	ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+	peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+	rientjes@google.com, tobin@ibm.com, vbabka@suse.cz,
+	kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
+	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+	pankaj.gupta@amd.com, liam.merwick@oracle.com
+Subject: Re: [PATCH v2 11/25] x86/sev: Adjust directmap to avoid inadvertant
+ RMP faults
+Message-ID: <20240127114207.GBZbTsDyC3hFq8pQ3D@fat_crate.local>
+References: <20240126041126.1927228-1-michael.roth@amd.com>
+ <20240126041126.1927228-12-michael.roth@amd.com>
+ <20240126153451.GDZbPRG3KxaQik-0aY@fat_crate.local>
+ <20240126170415.f7r4nvsrzgpzcrzv@amd.com>
+ <20240126184340.GEZbP9XA13X91-eybA@fat_crate.local>
+ <20240126235420.mu644waj2eyoxqx6@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240126235420.mu644waj2eyoxqx6@amd.com>
 
-Hi Manuel,
+On Fri, Jan 26, 2024 at 05:54:20PM -0600, Michael Roth wrote:
+> Is something like this close to what you're thinking? I've re-tested with
+> SNP guests and it seems to work as expected.
+> 
+> diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
+> index 846e9e53dff0..c09497487c08 100644
+> --- a/arch/x86/virt/svm/sev.c
+> +++ b/arch/x86/virt/svm/sev.c
+> @@ -421,7 +421,12 @@ static int adjust_direct_map(u64 pfn, int rmp_level)
+>         if (WARN_ON_ONCE(rmp_level > PG_LEVEL_2M))
+>                 return -EINVAL;
+> 
+> -       if (WARN_ON_ONCE(rmp_level == PG_LEVEL_2M && !IS_ALIGNED(pfn, PTRS_PER_PMD)))
+> +       if (!pfn_valid(pfn))
 
-Since the BOE patches have been accepted to next, you do not need to include 
-it in this patch series.
+_text at VA 0xffffffff81000000 is also a valid pfn so no, this is not
+enough.
 
-Best regards,
-Dang
+Either this function should not have "direct map" in the name as it
+converts *any* valid pfn not just the direct map ones or it should check
+whether the pfn belongs to the direct map range.
 
-On Saturday, January 27, 2024 4:48:41 PM +07 Manuel Traut wrote:
-> - BOE TH101MB31IG002 LCD Panel:
->   * Picked patches from https://anongit.freedesktop.org/git/drm/drm-misc.git
-> (drm-misc-next)
+Thx.
 
+-- 
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
