@@ -1,70 +1,127 @@
-Return-Path: <linux-kernel+bounces-41123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41125-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCA0583EC2D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 10:00:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00A1D83EC38
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 10:03:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80B30B21F77
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 09:00:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAD8E1F226CD
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 09:03:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44B601E874;
-	Sat, 27 Jan 2024 09:00:35 +0000 (UTC)
-Received: from mail.enpas.org (zhong.enpas.org [46.38.239.100])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 552501EA7A;
+	Sat, 27 Jan 2024 09:03:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NJFemUh5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 515F07F;
-	Sat, 27 Jan 2024 09:00:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.38.239.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EABC7F;
+	Sat, 27 Jan 2024 09:03:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706346034; cv=none; b=dofGgdGrnEJ8+XiwE3YVd5AgC0QcU7pJ21olsrJSq/spaztgwwqCQJUhuDrMUVWndNCnKib1YaQzYW0li99tgv8sbciRYC5aUQNhZzY2y7AzsI1lBV17wf36PgAO+0pSe1dwB4hZ/gHNSLp0+Oh8TaSBfhYQrVxCtnbgpn4xQW4=
+	t=1706346209; cv=none; b=tudypocM4OGpn3+PzQ6j22kTgUicy2qM60qXhnQwXYXSYCJW8fH9zxRpccVMakH2YfCWLqxhld6CHUd0hKoU7NAfrkqAhk4Lh/+J7ZnWtZdYSrRotwGAwGSNcaqZBrWt57x9ToQCNnvbZu0FhvsRRyZbJmgVyYvFHCie7Cpj9Jc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706346034; c=relaxed/simple;
-	bh=MTcmCQpu8tFv5u/b7S3uCF52aneP6XDxxhzrgLd62ZQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=js+mbm5MZTQH5MBBJB3ITuCwXi6vGf3uWzU2wOkPVYHves6Uh8+J6F0Th9MayKXOmclxyCEPBn9JJP0A1ubjG08bvd5ModQmNeovUshVbY+2Hi9krrmv1HW1sQXqOmfG1U7aItVgJD1d4bFZwUr454ScfM5eVJgcAsnkpaxnU+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enpas.org; spf=pass smtp.mailfrom=enpas.org; arc=none smtp.client-ip=46.38.239.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enpas.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=enpas.org
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	by mail.enpas.org (Postfix) with ESMTPSA id 80F7E1015FF;
-	Sat, 27 Jan 2024 09:00:28 +0000 (UTC)
-Message-ID: <9a51083e-f22d-4bbf-8a16-441becfdf00a@enpas.org>
-Date: Sat, 27 Jan 2024 18:00:25 +0900
+	s=arc-20240116; t=1706346209; c=relaxed/simple;
+	bh=yg/Y2lPHCXw+ApriwYjx7xRqzTngKb2FdtskFU96fy4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=t2YuY6ceXhaJYQfpvSM9ybC53BmTD1Hqb2ExuoP76FtUFFDtdW/4yslNF6K9GcrvUKNF2086VZE6KFm9Ant37wpHjnFjSR2dptowPWJljqb1/ua8ZVFO/YkpjbLC1cYhFKZqkycYaFMTgkpKvjAurtpUGupdsFyalB1idMovwZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NJFemUh5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B31A6C433F1;
+	Sat, 27 Jan 2024 09:03:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706346209;
+	bh=yg/Y2lPHCXw+ApriwYjx7xRqzTngKb2FdtskFU96fy4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=NJFemUh5XosxEzuQNYr3ZBJxlqQ88LeyRThWQPYHhcBd46I/Ha71V2zIDrpWwj/MY
+	 EsXjF9jf85sFYjJqroHoV/XVk1x3zTb5rN/b2ZmgAH35P2eFALCd3qsoxqchHK3NRC
+	 rcuN4tcEBcihc5qfYkufSpRehgZSWYRzEWup5xUr+XMZ3lXWcWk6pGbeMV/Y1asZnB
+	 8Vf5RSM+8smD09u4yHzl6W7LMVppvovI3ad3Kmb7zu7o9vNNfFQXNZKY/tNk6N26S0
+	 nVLllaA54+Ghqv+biNjbI95CloERJfE7oXByp5kUnhCRb4niUoL10fPw03vgH/0Dsm
+	 UJ57YxXzKwe9g==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Mykola
+ Lysenko <mykolal@fb.com>, bpf@vger.kernel.org, netdev@vger.kernel.org,
+ =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+ linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: Include runner extras for
+ install target
+In-Reply-To: <CAEf4BzaewwHQn7xBgiuckH3xbRHGc6GxvAq6rXf6Ep+KDWDEFg@mail.gmail.com>
+References: <20240125160502.1512422-1-bjorn@kernel.org>
+ <CAEf4BzaewwHQn7xBgiuckH3xbRHGc6GxvAq6rXf6Ep+KDWDEFg@mail.gmail.com>
+Date: Sat, 27 Jan 2024 10:03:25 +0100
+Message-ID: <87r0i34082.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 5/7] HID: playstation: DS4: Parse minimal report 0x01
-Content-Language: en-US
-To: Roderick Colenbrander <thunderbird2k@gmail.com>
-Cc: Roderick Colenbrander <roderick.colenbrander@sony.com>,
- Jiri Kosina <jikos@kernel.org>,
- Benjamin Tissoires <benjamin.tissoires@redhat.com>,
- linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240115144538.12018-1-max@enpas.org>
- <20240115144538.12018-6-max@enpas.org>
- <CAEc3jaCYWpXX=YgeNzXJd0Pg4yn4WKqL=GBSAzaWNzo=3RSw1A@mail.gmail.com>
-From: Max Staudt <max@enpas.org>
-In-Reply-To: <CAEc3jaCYWpXX=YgeNzXJd0Pg4yn4WKqL=GBSAzaWNzo=3RSw1A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 1/25/24 09:54, Roderick Colenbrander wrote:
-> I would say let's turn this into a 'return 0'. The goto is not useful
-> since there is no need for any common cleanup or some other common
-> logic later.
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-Oops, that one slipped through the cracks.
+> On Thu, Jan 25, 2024 at 8:05=E2=80=AFAM Bj=C3=B6rn T=C3=B6pel <bjorn@kern=
+el.org> wrote:
+>>
+>> From: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+>>
+>> When using the "install" or targets depending on install, e.g.
+>> "gen_tar", the "runner extras" weren't included for the BPF machine
+>> flavors.
+>>
+>> Make sure the necessary helper scripts/tools are added to
+>> corresponding BPF machine flavor.
+>>
+>> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+>> ---
+>> v2: Added btf_dump_test_case files
+>> ---
+>> tools/testing/selftests/bpf/Makefile | 18 +++++++++++++++---
+>>  1 file changed, 15 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selfte=
+sts/bpf/Makefile
+>> index fd15017ed3b1..d5cff32997b3 100644
+>> --- a/tools/testing/selftests/bpf/Makefile
+>> +++ b/tools/testing/selftests/bpf/Makefile
+>> @@ -744,8 +744,20 @@ EXTRA_CLEAN :=3D $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR=
+) $(HOST_SCRATCH_DIR)     \
+>>  DEFAULT_INSTALL_RULE :=3D $(INSTALL_RULE)
+>>  override define INSTALL_RULE
+>>         $(DEFAULT_INSTALL_RULE)
+>> -       @for DIR in $(TEST_INST_SUBDIRS); do              \
+>> -               mkdir -p $(INSTALL_PATH)/$$DIR;   \
+>> -               rsync -a $(OUTPUT)/$$DIR/*.bpf.o $(INSTALL_PATH)/$$DIR;\
+>> +       @for DIR in $(TEST_INST_SUBDIRS); do                    \
+>> +               mkdir -p $(INSTALL_PATH)/$$DIR;                 \
+>> +               rsync -a --copy-unsafe-links                    \
+>> +                       $(OUTPUT)/$$DIR/bpf_testmod.ko          \
+>> +                       $(OUTPUT)/$$DIR/bpftool                 \
+>> +                       $(OUTPUT)/$$DIR/ima_setup.sh            \
+>> +                       $(OUTPUT)/$$DIR/liburandom_read.so      \
+>> +                       $(OUTPUT)/$$DIR/sign-file               \
+>> +                       $(OUTPUT)/$$DIR/uprobe_multi            \
+>> +                       $(OUTPUT)/$$DIR/urandom_read            \
+>> +                       $(OUTPUT)/$$DIR/verify_sig_setup.sh     \
+>> +                       $(OUTPUT)/$$DIR/xdp_synproxy            \
+>> +                       $(OUTPUT)/$$DIR/btf_dump_test_case_*.c  \
+>> +                       $(OUTPUT)/$$DIR/*.bpf.o                 \
+>> +                       $(INSTALL_PATH)/$$DIR;                  \
+>
+> My concern is that this will get out of sync and will go unnoticed
+> next time we add another "extra" file. We have TRUNNER_EXTRA_FILES,
+> should we use that list to keep these extras in fewer places?
 
-Thank you, will do!
+Yeah, you're completely right -- this was a lazy approach. I'll spin a
+more robust v3.
 
 
-Max
-
+Cheers,
+Bj=C3=B6rn
 
