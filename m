@@ -1,183 +1,175 @@
-Return-Path: <linux-kernel+bounces-41249-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C80C83EDFA
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:30:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C210483EDFE
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:37:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 138F11F22648
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:30:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 775391F2279C
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:37:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB7292D602;
-	Sat, 27 Jan 2024 15:29:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1BB228E39;
+	Sat, 27 Jan 2024 15:37:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="hWbf0GPv"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Nn4e4sJE"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7402F2C84C
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 15:29:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7BF3200AB;
+	Sat, 27 Jan 2024 15:37:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706369345; cv=none; b=M9d37cHLQY1FiPCd5bv2bN6tKRq4Argi1SjQjTIK/6VWVRPZGHqYpMA5WeHT/EhW8y5d7BFitJA/mpm0fkrp9YaGNltQ6OS6oe2fgih7As5Cfb7XkqfUQutZGLvyx9h2UgO084G5CkmgXed4mllHAmmnQTReO+DNYE4qJCVfj2E=
+	t=1706369845; cv=none; b=OQtgqhiYjrYMJUoTKfIh6AancUwpDDCS3wDzoHU5Ru0H1dSvGbki7ESMm2N+Al9tf0t2Z6FP2G8tHjkBPdr7c0+qBNfsd/mrBdC/fx1QyRNA8tQsRQzrh0u3MCWdNOhPoSSxlOsDsBF9D/PL9Oqx3FYa8TjCoGztj5bhKNr0//U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706369345; c=relaxed/simple;
-	bh=6/Y7z9KwYjfa4Sd9CyzInb+l3G4aYLUZmzfjXeJF/s8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lKnd6wBF7ns06ZFcGUeHGg84g9Ub2UMDYli6c8yKVAg171Zu5vq1X3fRYeWpIZKwe1cyoWZNhqKHfwQczjlFTntrY8j6psDbvRC4nXSVup66lHriEqXrtmIcQ3bJW4udXuadOTIoHW6Noo49FW2G1QWZ26lO4U1op4MIc3sLrUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com; spf=pass smtp.mailfrom=amarulasolutions.com; dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b=hWbf0GPv; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33ae3cc8a6aso486795f8f.2
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 07:29:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1706369342; x=1706974142; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jr5hMNUd1x8YCEgCqvY7QTv9IEyl6KU3Ejyn2wYPqRg=;
-        b=hWbf0GPvfRKC34na3dFWVRAJxTMzNUvrzde4rIqx5eGK1pm1u4ixm4uUngthBJ3qPJ
-         /0kDZcsHlEVVwRM0V8wW8bf3WGRFiQw0jwdGrlBD022+dDQGpm8xfbgHoZ+U1g/rZE0c
-         fgvA8kFwtV9bv8w0+4Xn/y26QJ/B2b7N8oDas=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706369342; x=1706974142;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jr5hMNUd1x8YCEgCqvY7QTv9IEyl6KU3Ejyn2wYPqRg=;
-        b=pPaT/FzOYQGuhbIPx/YQuDs5hXbRL5IVJjpksRv3BllQhxxwz9sGJ2sJ2cvvK3Oc05
-         pRlibkljkC/c5IFaBc8HS6QpwO1TPhE9TEwygkEsKKt7gaLGMSRIssrxlcRlnOwx+xnJ
-         cvHHTvXtYbaW9Sw56uPgVNylKa29SgjWT9FG96Wr2pV1zRYwBXXkPAn0XgtzycOfVW70
-         vNNhxJQhcJOY3HnpxtSRUSwOU/+YgX6YvZAx1e0blFHUJPcCZi8DGKmqOjK9UZuCKrII
-         FIVn9W9ETsp+vFcEvCqCru2nDMaAIhxXMPgFmdkiaAkdN4w0JTZUzINFA7H2y6/G33Oe
-         fl/Q==
-X-Gm-Message-State: AOJu0YwUG5Kv7vGmS6YYQ9GRs/Jgwn3DhwZnCaTdfIozzVrCgSmOu0CD
-	tZ19YWKr2yoy/P1wTjh8CPK1FDPyBny+iiqJUnRMjq0ohewwWsUg8EjNHzCXdM0Dm/jVzONM+di
-	u
-X-Google-Smtp-Source: AGHT+IFOp9OP4FcMBTo00Ve4mfOu7PZh6QSfp8vwCqTlsNUh8pHjMhtyqQLLFLD21GtKlIfVpbbfgg==
-X-Received: by 2002:adf:ef0f:0:b0:339:38c2:14c8 with SMTP id e15-20020adfef0f000000b0033938c214c8mr1378646wro.81.1706369342516;
-        Sat, 27 Jan 2024 07:29:02 -0800 (PST)
-Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-79-21-103-141.retail.telecomitalia.it. [79.21.103.141])
-        by smtp.gmail.com with ESMTPSA id l5-20020a056402344500b0055974a2a2d4sm1745220edc.39.2024.01.27.07.29.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Jan 2024 07:29:02 -0800 (PST)
-From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-To: linux-kernel@vger.kernel.org
-Cc: linux-amarula@amarulasolutions.com,
-	Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
-	Lee Jones <lee@kernel.org>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Andre Przywara <andre.przywara@arm.com>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	=?UTF-8?q?Leonard=20G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Sean Nyekjaer <sean@geanix.com>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH v10 5/5] ARM: dts: add stm32f769-disco-mb1166-reva09
-Date: Sat, 27 Jan 2024 16:28:49 +0100
-Message-ID: <20240127152853.65937-6-dario.binacchi@amarulasolutions.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240127152853.65937-1-dario.binacchi@amarulasolutions.com>
-References: <20240127152853.65937-1-dario.binacchi@amarulasolutions.com>
+	s=arc-20240116; t=1706369845; c=relaxed/simple;
+	bh=yeEb+DX6g1gaZS5hxdUJC6t92mKaMthuJkbpJ+wrn88=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=B5TFVh9sfMdkbMcMt9xOzRnaoFT+puSIJ1bnRySs44J8j6sOS2Q0UxokRYNyEdzFLUpVUudUdjKj3E/Hi+kMyQr14dduBLHxISYH+ZPoafCKcXBLtrC5lGUecxhfKuMS/0Fvt1nnHOb/rNua7kTH1G4bKozmLKUr9DMU2L0zz5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Nn4e4sJE; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40RFM4Lb013249;
+	Sat, 27 Jan 2024 15:37:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=GL6DcGHInWdFEK4wiTfvMS/9wuVoeUooATeGAfyk74g=; b=Nn
+	4e4sJEnhmmnRkWBWJ94KqtJ3coDqiv9jsdQ/J9CbZsmWqGPHxml0MIyfSNyB0msi
+	HoyLVSvR6E8sPw13CFryQh+3fwWllxpYYcicH9ePoZ5XhpCGym1xopAhArC0pkW6
+	uV1ZX1S8C1XeynjrqKXqEc4ZZl9jK2Sv4Yr+Ek8b199oygyDi4auuCig4dsoAUGe
+	pEDMTxlpYZUOfwUeRpRQBWqiFC/F1YSFg6WArP58P1REpow9l3j1wdKoNtiPG2UV
+	PzHlRVZnWu7d2bYdqtb1lzEc3QZorzHpqrAy2R90cnwHXOIXOQJ2dLV0xwPsAMLN
+	WuMAYHMCHcwcvUTJoNNg==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vvswy8phd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 27 Jan 2024 15:37:08 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40RFb7ne028845
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 27 Jan 2024 15:37:07 GMT
+Received: from [10.216.45.141] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sat, 27 Jan
+ 2024 07:37:03 -0800
+Message-ID: <1cd754e5-fc5e-bd8b-1d70-8de40c9a85e7@quicinc.com>
+Date: Sat, 27 Jan 2024 21:07:00 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] thermal/drivers/tsens: Add suspend to RAM support for
+ tsens
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Priyansh Jain
+	<quic_priyjain@quicinc.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Thara Gopinath
+	<thara.gopinath@gmail.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "Rafael J
+ . Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
+        <linux-pm@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <",quic_mkshah"@quicinc.com>,
+        ",Raghavendra
+ Kakarla" <quic_rkakarla@quicinc.com>
+References: <20240122100726.16993-1-quic_priyjain@quicinc.com>
+ <548e2f24-a51e-4593-9463-09506488c70e@linaro.org>
+ <f415a8cd-4cae-d7c3-60fc-674b3e660f6b@quicinc.com>
+ <aeae2e69-8407-4d90-9d16-27798e2f3248@linaro.org>
+ <be69e0a6-fdc8-c24b-9beb-adaac4a97776@quicinc.com>
+ <b5ea1c8c-c35d-45e3-9b90-d3dc480f4463@linaro.org>
+From: Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
+In-Reply-To: <b5ea1c8c-c35d-45e3-9b90-d3dc480f4463@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: GACN8c85PyCVK4Yhzs7Uc5A2ahGGIDp1
+X-Proofpoint-GUID: GACN8c85PyCVK4Yhzs7Uc5A2ahGGIDp1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-25_14,2024-01-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 suspectscore=0 bulkscore=0 phishscore=0 clxscore=1011
+ impostorscore=0 mlxlogscore=254 malwarescore=0 mlxscore=0
+ lowpriorityscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2401190000 definitions=main-2401270117
 
-As reported in the section 8.3 (i. e. Board revision history) of document
-UM2033 (i. e. Discovery kit with STM32F769NI MCU) these are the changes
-related to the board revision addressed by the patch:
-- Board MB1166 revision A-09:
-  - LCD FRIDA FRD397B25009-D-CTK replaced by FRIDA FRD400B25025-A-CTK
++Maulik and Raghavendra
 
-The patch adds the DTS support for the new display which belongs to the
-the Novatek NT35510-based panel family.
+Hi Konrad,
 
-Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Reviewed-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+On 1/25/2024 4:38 PM, Konrad Dybcio wrote:
+>
+>
+> On 1/24/24 16:25, Priyansh Jain wrote:
+>>
+>>
+>> On 1/24/2024 6:04 PM, Konrad Dybcio wrote:
+>>>
+>>>
+>>> On 1/24/24 11:42, Priyansh Jain wrote:
+>>>>
+>>>>
+>>>> On 1/22/2024 8:02 PM, Konrad Dybcio wrote:
+>>>>> On 22.01.2024 11:07, Priyansh Jain wrote:
+>>>>>> Add suspend callback support for tsens which disables tsens 
+>>>>>> interrupts
+>>>>>> in suspend to RAM callback.
+>>>>>
+>>>>> Would it not be preferrable to have the "critical overheat", wakeup-
+>>>>> capable interrupts be enabled, even if the system is suspended?
+>>>>>
+>>>>
+>>>>
+>>>> As part of suspend to RAM, tsens hardware will be turned off and it 
+>>>> cannot generate any interrupt.Also system doesn't want to abort 
+>>>> suspend to RAM due to tsens interrupts since system is already 
+>>>> going into lowest
+>>>> power state. Hence disabling tsens interrupt during suspend to RAM 
+>>>> callback.
+>>>
+>>> Is that a hardware limitation, or a software design choice? I'm not
+>>> sure I want my phone to have thermal notifications disabled when
+>>> it's suspended.
+>>
+>>> Konrad
+>>
+>> As part of suspend to RAM , entire SOC will be off,
+>
+> What do you mean by "entire SOC[sic] will be off"? Surely the memory
+> controller must be on to keep refreshing the memory? Are you thinking
+> of suspend-to-disk (hibernation), by chance?
 
----
+Yes, Memory will be in self refreshing  mode(Retained). But SOC will be off
 
-Changes in v10:
-- Drop backlight references
+and will do cold boot to come out of S2R.
 
-Changes in v9:
-- Change commit message
-- Rename stm32f769-disco-mb1225-revb03-mb1166-reva09 to
-  stm32f769-disco-mb1166-reva09
+>
+>> this mode (suspend to RAM) is not intended for Mobile product. Tsens 
+>> interrupts are not
+>> disabled as part of suspend to idle(suspend mode for mobile).
+>
+> That's clearly untrue, e.g. the PSCI firmware on SM8550 implements
+> PSCI_SYSTEM_SUSPEND, which does S2R.
 
-Changes in v8:
-- Add Reviewed-by tag of Linus Walleij
-- Add Reviewed-by tag of Raphael Gallais-Pou
+IIUC, PSCI_SYSTEM_SUSPEND will be enabled only for S2R supported 
+products and will be removed it for others.
 
-Changes in v7:
-- Replace .dts with .dtb in the Makefile
+Maulik/Raghavendra can comment more
 
-Changes in v6:
-- Drop patches
-  - [5/8] dt-bindings: nt35510: add compatible for FRIDA FRD400B25025-A-CTK
-  - [7/8] drm/panel: nt35510: move hardwired parameters to configuration
-  - [8/8] drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK
-  because applied by the maintainer Linus Walleij
-
-Changes in v5:
-- Replace GPIOD_ASIS with GPIOD_OUT_HIGH in the call to devm_gpiod_get_optional().
-
-Changes in v2:
-- Change the status of panel_backlight node to "disabled"
-- Delete backlight property from panel0 node.
-- Re-write the patch [8/8] "drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK"
-  in the same style as the original driver.
-
- arch/arm/boot/dts/st/Makefile                       |  1 +
- .../boot/dts/st/stm32f769-disco-mb1166-reva09.dts   | 13 +++++++++++++
- 2 files changed, 14 insertions(+)
- create mode 100644 arch/arm/boot/dts/st/stm32f769-disco-mb1166-reva09.dts
-
-diff --git a/arch/arm/boot/dts/st/Makefile b/arch/arm/boot/dts/st/Makefile
-index 7892ad69b441..9fedd6776208 100644
---- a/arch/arm/boot/dts/st/Makefile
-+++ b/arch/arm/boot/dts/st/Makefile
-@@ -23,6 +23,7 @@ dtb-$(CONFIG_ARCH_STM32) += \
- 	stm32f469-disco.dtb \
- 	stm32f746-disco.dtb \
- 	stm32f769-disco.dtb \
-+	stm32f769-disco-mb1166-reva09.dtb \
- 	stm32429i-eval.dtb \
- 	stm32746g-eval.dtb \
- 	stm32h743i-eval.dtb \
-diff --git a/arch/arm/boot/dts/st/stm32f769-disco-mb1166-reva09.dts b/arch/arm/boot/dts/st/stm32f769-disco-mb1166-reva09.dts
-new file mode 100644
-index 000000000000..ff7ff32371d0
---- /dev/null
-+++ b/arch/arm/boot/dts/st/stm32f769-disco-mb1166-reva09.dts
-@@ -0,0 +1,13 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2023 Dario Binacchi <dario.binacchi@amarulasolutions.com>
-+ */
-+
-+#include "stm32f769-disco.dts"
-+
-+&panel0 {
-+	compatible = "frida,frd400b25025", "novatek,nt35510";
-+	vddi-supply = <&vcc_3v3>;
-+	vdd-supply = <&vcc_3v3>;
-+	/delete-property/power-supply;
-+};
--- 
-2.43.0
-
+>
+> Konrad
 
