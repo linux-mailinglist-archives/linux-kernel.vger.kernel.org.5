@@ -1,130 +1,116 @@
-Return-Path: <linux-kernel+bounces-41397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA6CD83F022
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 22:04:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBDEE83F025
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 22:11:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71BF5286270
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 21:04:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A0021C225AE
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 21:11:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4040C1AAA5;
-	Sat, 27 Jan 2024 21:04:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A90E1AAA9;
+	Sat, 27 Jan 2024 21:11:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DUIO8APS"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cYlsdlfm"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59D701774B;
-	Sat, 27 Jan 2024 21:04:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10DD41A279
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 21:11:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706389443; cv=none; b=vFN82k9mAxDN2rWaRHjUuQV/8F4IXm/G7rRN5ExMxehQ9225FxMcdrfaSQGPMAYEXONAjSceMLRAwFEAJXPlE3ACKIQy6jGXYkFp5PRq/dMVYihOpa4mNLS6fnfq2dIXRg4yC34xWAQWnkXQyn+YtJ5+MnbfMLEZmzYXKG+8uRk=
+	t=1706389895; cv=none; b=jlZBenaZUkGi4epcv4DT0LZapBmw8wq4jubshYBXQ8MY1Lg1Y3dmpMjmPbemp9sVHPrPdxDEjFBYWpjuIUJaqss1R+bkEPNTsQYme7PWq6+Ur6bjZZ5MlBegPNgzB0k4l55A2Y7hoZlKCTbu1VSpTKzW5oiRBRUNy1QCYMGhDCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706389443; c=relaxed/simple;
-	bh=1LFn8fP92vZ+FiNhj2fAma0+oND2LVGTGYNWYwU8wrw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HeBTDcSTLR/ZgHLOS12hyzhTxO6N4Zphg3VF0l0RzmQfOxPYq07N6sEdE+Gizd7pSJubQFXfR4CulcY51cfMMKoPEWJ2ywtYZZ5Ge5Q42Pm+mFEHGd+zPPVtJ3DmdVJn3Hd2tGnTUB+27EXCCBf+1PvWGHdti6pJ0zwJ9AakGsg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=DUIO8APS; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=o2qMCLVTADfJ6fB50r+bipM7dIFRLMPccc6A3oE+288=; b=DUIO8APSbGUZYWrHDbpK9Ffxab
-	YWzfGaNY64URWCOlsSVr7HrAhsORN4gHnBvj/uIj2/8llJLiQWiYYyHXp3eFsCRRRPqxYY/k6utpi
-	CSAPP99E7QXq4WCtB6msnzggHRsroZuZ4DeB84G8XneVCDP0rfGv3SamhW3LTqgDeUdaU1nq7Ce4o
-	977IdPyPQk0Nnm1lr2vXJ6H42Ou93R3TENHNIsdMr5U1CreE3T2/f8f2e8MdiY4XTd7nFKbn1zocd
-	RaaJQh/hOrEM5xBO2h7APENpS1z3lhZyY3z2fWlxmBgOsEbkAvRd/0ptsWW088rLszi9QoSMSRwK8
-	XEe248Mg==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rTpqG-00000008CEz-2lDd;
-	Sat, 27 Jan 2024 21:03:56 +0000
-Message-ID: <4a3150da-b71f-4d86-a69b-d72a8baef252@infradead.org>
-Date: Sat, 27 Jan 2024 13:03:55 -0800
+	s=arc-20240116; t=1706389895; c=relaxed/simple;
+	bh=e9ssbtj5/gqXRUdezTmszQ5A3hRAEynVyD59GYaJgEc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zsw/MkaQIlcNH2LHuP0TfUzSDvzjNNPY7TN+/f/rmkYlIiKO5CHqS5W+CRyFeJ+Q94V4vTTNcFNfAkSGNqhiuV23AI6Bkx2k48wkLs7+bfOk22E3CWKKHizC12pAOH4YtRvINIKco7jZaaYWbIJQlY8vsrTXpUVsKdSC2vSNeH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cYlsdlfm; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706389892;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RxDG8FbkrxGkzjJwUDG8WjeC4k+DKoBsMZSfq3CWFgY=;
+	b=cYlsdlfmt8SdilZ+k7oI83iko2z2s2MBO4qaK9cwmV+ZBhYnUqXqAtGxxobnWBd1o9AuSZ
+	8rRPoB8XZEWALhreMaLkmVRTmauEQmCLy4F9HLaZkrUOquq0RcBbn8nPQqfGfTOsbTMnoF
+	EnUmirxoAcLFye6rT663mPTmVAyDM7U=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-13-GEniBBKxMF2e41sgRC3b0w-1; Sat, 27 Jan 2024 16:11:29 -0500
+X-MC-Unique: GEniBBKxMF2e41sgRC3b0w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 150571013768;
+	Sat, 27 Jan 2024 21:11:29 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.37])
+	by smtp.corp.redhat.com (Postfix) with SMTP id A1C5E1121306;
+	Sat, 27 Jan 2024 21:11:27 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Sat, 27 Jan 2024 22:10:14 +0100 (CET)
+Date: Sat, 27 Jan 2024 22:10:12 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Tycho Andersen <tycho@tycho.pizza>
+Cc: Christian Brauner <brauner@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-api@vger.kernel.org, Tycho Andersen <tandersen@netflix.com>,
+	"Eric W. Biederman" <ebiederm@xmission.com>
+Subject: Re: [PATCH v3 1/3] pidfd: allow pidfd_open() on non-thread-group
+ leaders
+Message-ID: <20240127210634.GE13787@redhat.com>
+References: <20240123195608.GB9978@redhat.com>
+ <ZbArN3EYRfhrNs3o@tycho.pizza>
+ <20240125140830.GA5513@redhat.com>
+ <ZbQpPknTTCyiyxrP@tycho.pizza>
+ <20240127105410.GA13787@redhat.com>
+ <ZbUngjQMg+YUBAME@tycho.pizza>
+ <20240127163117.GB13787@redhat.com>
+ <ZbU7d0dpTY08JgIl@tycho.pizza>
+ <20240127193127.GC13787@redhat.com>
+ <ZbVrRgIvudX242ZU@tycho.pizza>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 05/17] media: pci: dt315.h: Fix kerneldoc
-Content-Language: en-US
-To: Ricardo Ribalda <ribalda@chromium.org>,
- Tiffany Lin <tiffany.lin@mediatek.com>,
- Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
- Yunfei Dong <yunfei.dong@mediatek.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Sakari Ailus <sakari.ailus@linux.intel.com>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Hans Verkuil <hverkuil-cisco@xs4all.nl>, Hans Verkuil <hverkuil@xs4all.nl>,
- Kieran Bingham <kieran.bingham@ideasonboard.com>,
- Bin Liu <bin.liu@mediatek.com>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
- Vikash Garodia <quic_vgarodia@quicinc.com>,
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Alim Akhtar <alim.akhtar@samsung.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- Andrzej Hajda <andrzej.hajda@intel.com>, Bingbu Cao <bingbu.cao@intel.com>,
- Tianshu Qiu <tian.shu.qiu@intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-arm-msm@vger.kernel.org,
- linux-samsung-soc@vger.kernel.org, linux-staging@lists.linux.dev,
- linux-amlogic@lists.infradead.org
-References: <20240126-gix-mtk-warnings-v1-0-eed7865fce18@chromium.org>
- <20240126-gix-mtk-warnings-v1-5-eed7865fce18@chromium.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240126-gix-mtk-warnings-v1-5-eed7865fce18@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZbVrRgIvudX242ZU@tycho.pizza>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
+On 01/27, Tycho Andersen wrote:
+>
+> On Sat, Jan 27, 2024 at 08:31:27PM +0100, Oleg Nesterov wrote:
+> >
+> > On the second thought I am starting to understand your concern...
+> >
+> > Indeed, in this case -EBADF is technically correct but it can confuse
+> > the user which doesn't or can't know that this task/thread is exiting,
+> > because EBADF looks as if the "int fd" argument was wrong.
+> >
+> > Sorry I missed your point before.
+>
+> No worries. I realized it's not so hard to fix with your new
+> xxx_exited() helper from the PIDFD_THREAD patch, so maybe worth
+> cleaning up after all?
 
+OK, lets discuss this later.
 
-On 1/26/24 15:16, Ricardo Ribalda wrote:
-> The field is gone, remove it.
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+I'll (hopefully) send v2 on top of
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+	pidfd: cleanup the usage of __pidfd_prepare's flags
+	pidfd: don't do_notify_pidfd() if !thread_group_empty()
 
-Thanks.
+on Monday, will be busy tomorrow (family duties ;)
 
-> ---
->  drivers/media/pci/dt3155/dt3155.h | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/media/pci/dt3155/dt3155.h b/drivers/media/pci/dt3155/dt3155.h
-> index c9ce79cb5566..ce1835d9691e 100644
-> --- a/drivers/media/pci/dt3155/dt3155.h
-> +++ b/drivers/media/pci/dt3155/dt3155.h
-> @@ -162,7 +162,6 @@
->   * @height:		frame height
->   * @input:		current input
->   * @sequence:		frame counter
-> - * @stats:		statistics structure
->   * @regs:		local copy of mmio base register
->   * @csr2:		local copy of csr2 register
->   * @config:		local copy of config register
-> 
+Oleg.
 
--- 
-#Randy
 
