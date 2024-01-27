@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-41240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEB3F83EDE1
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:23:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6118183EDE3
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:24:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D8C51F22316
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:23:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C537D1F21EEA
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:24:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFA7E28DDA;
-	Sat, 27 Jan 2024 15:23:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CF2928DDA;
+	Sat, 27 Jan 2024 15:24:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bImckJaG"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="er16ZyBh"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 888AA2560C;
-	Sat, 27 Jan 2024 15:22:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E7D5200A8;
+	Sat, 27 Jan 2024 15:24:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706368981; cv=none; b=tgx+goqmWx/q/C6apXkxgnOo+iUNIonAjpdA1cuhylwDYiNAY7RIPogB98tqhT+cOwVAFUlUoLgOXdUv5YDqsQNOV5AbO2hGUHLTrdQhVJi3jAAfTjzSBcJQ6rON7bE2XaYAhsrluyfq5FbBLW+XROsSoTzNvpIE3cG/4uK4YR4=
+	t=1706369049; cv=none; b=aCRdwNVDrqETCzRIDxcL4fusyzURu+QWjqQRPzzEER6JnJXg7g8XhsHmmf96JiujLOtNru2k43DqYX759xUgZ7YIxj7kmiaxx8MAVjcSM/oeaSlXH4S8VDRKedHvKGdHdDxDZP5/kP5UNRd8fvyygZ0BszRqX0A8o88vzDryLoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706368981; c=relaxed/simple;
-	bh=EJdl90MgoH5kBGjmSvI7dU1KGni89hqf0o2hNIdSJkI=;
+	s=arc-20240116; t=1706369049; c=relaxed/simple;
+	bh=K2VeuDd4mRfpzkcKQFHum0Quyfo70GsfmikUSqBBEeM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qexbuRK9QazClJpn/phk5J7ylPRN1a4YV0+3vLuKmgwHpmYfMkf8tI6rTk1Y4GQ2BXbdxKgKiMnju1fezKYmMu4PmsDb5Th2OBHkWys+ar7sqT6UytE9ElSEsxnfS6F5DeD0+ivo81gbiMntBr3fjOdO6Ly9oiL5ZgJWoZYLwx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bImckJaG; arc=none smtp.client-ip=209.85.214.176
+	 In-Reply-To:Content-Type; b=UPgLa1Cqo5Tnx6+EgMpt2hp1kPQFRQUSxXes7ldYlUz4sZO2hbsqygKBVmZ6Sg1ORggLD6P7vb6hbID8kh8v6oLrPRoY0v+bAExu0sRINKQk4eLewAuy6xb4ZhhlifaTjn7R2XHKyghy/bXq6+3JvNR+xKq/YacKzzG08YWxb6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=er16ZyBh; arc=none smtp.client-ip=209.85.214.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d7393de183so7076715ad.3;
-        Sat, 27 Jan 2024 07:22:59 -0800 (PST)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d71c844811so7160075ad.3;
+        Sat, 27 Jan 2024 07:24:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706368979; x=1706973779; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706369046; x=1706973846; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=OkRiytXujd9Yjdg3qm1RPX8UuP6jqGHhK/jxzi2EaE4=;
-        b=bImckJaGBWJOYv59BObfiql65lKjk2bNVmCQXts/MLMbtMk1hG31U+BIhamjFHmL05
-         Hz9K5QWRv+TNL9pLr8AkDsSo4ZdrVkLB1REa/vHx1k3EZ+ajtDOltRp+PNN8zpbFldt0
-         kfgO7H3d+1t/awPOCM8XZksoYJq7C7EJAYaBEiKuCcAq0/FXMPe5B6GAU68oQc7vtLfQ
-         QESd3v+73JGnYe+p2jXPwRFGlDTB/ZjNie+G5j26K6ctOZA6hgX4/OZlFq4rAeEf9dUj
-         KNKDGbX1ZBMkgrdSd1Txsay/4K7ZCEXvNPagNn2K/GbYKDloqF7C4Axpmo6GOWOb17ud
-         owsA==
+        bh=QpnGBBNar5l03MU9RgyEjF2qQ9HN+i6J9QDtg2pFE0Y=;
+        b=er16ZyBhvn33cwASFAG0/zEaxmag/u+q+S86uqC03gtgNSQGygTpbJxnDHQNHDX30L
+         xQghWYUE0eiVfGV0a6VyXH7LDLfr1hHoCHGclRlmteAusxwCKEkINGbg7wb6hdNqGBEV
+         BqezBAhyM+hIJTgiqdkQBiV3O1YdXgG6hcsnyC2KPrQ6iX+ODsLDzg0TL/adTzLMHcdr
+         KP1Z4SqQECe+k9qVVz9TiDcD2jQz4LmjFI3B+FLqk8UJTRow9cDPMIMwLHTaiVosWVjY
+         oOEt/mDjap7g0rCiPOBKqma4AHb06fROc0wkiPb0OaEO6KVCW5X9cBeGAZotpI7P+LqL
+         Iv9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706368979; x=1706973779;
+        d=1e100.net; s=20230601; t=1706369046; x=1706973846;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :sender:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=OkRiytXujd9Yjdg3qm1RPX8UuP6jqGHhK/jxzi2EaE4=;
-        b=K2S8iCXxMQT8wSLEOsxZEQF06N1YXQgp58QypJpSC8PblqVFD6ckiPi8br8Iz/a6Ev
-         pNqlKgHaebovQrYka101bjLjvGnzHTM00c55jgDJ8myjwtOvfB1yClehn8tC/oRMFVss
-         jFhttahA80u6zZh8TUtdw9q2aoynczK58djwAZIxFd2PoRVaB3SkAeKjJFs9npLT0tTV
-         Cgzqh3D8mgasUQdmIS4NiC3BjJlZe7vSUMCRQ0WKziKBE+4a4FqMr9pSxAWiZzWVD0HV
-         4xZclzfkvHA9k4Y8l+4mfSOqGyvQUd3oR1tjuNo7Ia+RO48nhdKfV/Ysg6+XvslByG/8
-         biHg==
-X-Gm-Message-State: AOJu0YzCg0bfkMvhZMpAmgPiSl5xkGnAaQOJjsTodfwjp6BNC9AtagFH
-	xzmAVAegdiHTvcxMgRsDMvU0UY/64lkiNuJm5SFk3OOnPf3kJUz5UJychPkV
-X-Google-Smtp-Source: AGHT+IFWQNZ2/QVhbd/vkjfNOuLauINgVdFHp9HGjwtFlXLozkbVRE+TTej2IVQW4hlfb4LEgehC5w==
-X-Received: by 2002:a17:902:784e:b0:1d5:7cb:7761 with SMTP id e14-20020a170902784e00b001d507cb7761mr880456pln.51.1706368978581;
-        Sat, 27 Jan 2024 07:22:58 -0800 (PST)
+        bh=QpnGBBNar5l03MU9RgyEjF2qQ9HN+i6J9QDtg2pFE0Y=;
+        b=of2x7hlkuAD6FhVJMfHAOVozx0H4ogQB5qkr9O+iClU8tbLdThUQYEV+pF+JuDf8QH
+         s7oiXmbgNYBhAOIc6hlCO1AeFIO1Ogcjmr2FXHKbRin4CSiqJ3Um+teWbsrMbi4eB8ya
+         IKik8dczCHApgkzUImdxJCpYVFRGWCI3VpLRims6zpR39eJtYwgKtJcK+XUiV0jvZAhh
+         CQ0DPF4P9TZtgh4FAqbqDKK5+q/+W2Q0d4YCJsGN6HuSlJiJNPnhOeoYW9WyeihVi18w
+         Jaw1x7BMvvagm8zNPGs3uqfSu8qGoTEuDsdt60ZVUHqfULeWTLAvoWFxOMgHSlEbXdCp
+         8bzA==
+X-Gm-Message-State: AOJu0YzFLJGZRh8N+UdfWvQE2Uw7M5YqMmtvQ5Z0ZBBbMFgkM6mN9CBL
+	MvNiC0mwwo6KsdixQd4wl9mjyzU5yhUpsmLImRSrIMPDT/mBCWMXishYff39
+X-Google-Smtp-Source: AGHT+IFc/fYGR7BB2NzAiKZrJnOkk7rkWCvnnMiGYqHVJNix2972AJfFSk9WAer9xKkewvbCfRkP7Q==
+X-Received: by 2002:a17:903:2347:b0:1d8:b6d1:be2d with SMTP id c7-20020a170903234700b001d8b6d1be2dmr293930plh.36.1706369046247;
+        Sat, 27 Jan 2024 07:24:06 -0800 (PST)
 Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u11-20020a17090282cb00b001d7505fd14csm2546520plz.215.2024.01.27.07.22.56
+        by smtp.gmail.com with ESMTPSA id u11-20020a17090282cb00b001d7505fd14csm2546520plz.215.2024.01.27.07.24.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 27 Jan 2024 07:22:57 -0800 (PST)
+        Sat, 27 Jan 2024 07:24:05 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <33da3135-4450-4c5e-92af-0d361c3b7489@roeck-us.net>
-Date: Sat, 27 Jan 2024 07:22:56 -0800
+Message-ID: <c853502f-230b-47b3-9c93-28d99f4d83b8@roeck-us.net>
+Date: Sat, 27 Jan 2024 07:24:05 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,15 +76,16 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] hwmon: (pmbus/mp2975) Fix driver initialization for
+Subject: Re: [PATCH v3] hwmon: (pmbus/mp2975) Fix driver initialization for
  MP2975 device
 Content-Language: en-US
-To: Konstantin Aladyshev <aladyshev22@gmail.com>
+To: Patrick Rudolph <patrick.rudolph@9elements.com>,
+ Konstantin Aladyshev <aladyshev22@gmail.com>
 Cc: Jean Delvare <jdelvare@suse.com>,
- Naresh Solanki <Naresh.Solanki@9elements.com>,
- Patrick Rudolph <patrick.rudolph@9elements.com>,
- linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240127092516.1641-1-aladyshev22@gmail.com>
+ Naresh Solanki <Naresh.Solanki@9elements.com>, linux-hwmon@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240126205714.2363-1-aladyshev22@gmail.com>
+ <CALNFmy2KVbiwvuEz=qjcB1vL82OOPSsZMuYWze56siCHLQ8JgQ@mail.gmail.com>
 From: Guenter Roeck <linux@roeck-us.net>
 Autocrypt: addr=linux@roeck-us.net; keydata=
  xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
@@ -129,44 +130,34 @@ Autocrypt: addr=linux@roeck-us.net; keydata=
  WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
  HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
  mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20240127092516.1641-1-aladyshev22@gmail.com>
+In-Reply-To: <CALNFmy2KVbiwvuEz=qjcB1vL82OOPSsZMuYWze56siCHLQ8JgQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 1/27/24 01:25, Konstantin Aladyshev wrote:
-> The commit 1feb31e810b0 ("hwmon: (pmbus/mp2975) Simplify VOUT code")
-> has introduced a bug that makes it impossible to initialize MP2975
-> device:
-> """
-> mp2975 5-0020: Failed to identify chip capabilities
-> i2c i2c-5: new_device: Instantiated device mp2975 at 0x20
-> i2c i2c-5: delete_device: Deleting device mp2975 at 0x20
-> """
-> Since the 'read_byte_data' function was removed from the
-> 'pmbus_driver_info ' structure the driver no longer reports correctly
-> that VOUT mode is direct. Therefore 'pmbus_identify_common' fails
-> with error, making it impossible to initialize the device.
+On 1/27/24 00:56, Patrick Rudolph wrote:
+> Hi Konstantin,
+> Thank you for fixing this regression.
 > 
-> Restore 'read_byte_data' function to fix the issue.
+> The comment is no longer true as the driver doesn't internally convert
+> from VID to direct,
+> but rather configures READ_VOUT using MFR_DC_LOOP_CTRL.
 > 
-> Tested:
-> - before: it is not possible to initialize MP2975 device with the
-> 'mp2975' driver,
-> - after: 'mp2975' correctly initializes MP2975 device and all sensor
-> data is correct.
+> The comment thus should read as the following:
 > 
-> Fixes: 1feb31e810b0 ("hwmon: (pmbus/mp2975) Simplify VOUT code")
+> Report direct format as configured by MFR_DC_LOOP_CTRL.
+> Unlike on MP2971/MP2973 the reported VOUT_MODE isn't automatically
+> internally updated,
+> but always reads as PB_VOUT_MODE_VID.
 > 
-> Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com>
-> ---
-> Changes in v4:
->   - Correct comment inside the 'mp2975_read_byte_data' function as
-> suggested by Patrick Rudolph
-> 
+> Regards,
+> Patrick
 
-I already applied version 3 of the patch. Feel free to send a follow-up
-to that patch. It is too late for a v4 of the original patch.
+Please don't top-post.
 
+This patch has already been applied. Please send a follow-up to that patch
+to update it.
+
+Thanks,
 Guenter
 
 
