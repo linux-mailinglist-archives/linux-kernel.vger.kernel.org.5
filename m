@@ -1,133 +1,107 @@
-Return-Path: <linux-kernel+bounces-41315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C458783EEB4
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 17:34:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8FB983EEBC
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 17:38:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E421D1C21EF2
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:34:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEE521C211B3
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:38:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85C1044C69;
-	Sat, 27 Jan 2024 16:32:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C56B2C6A4;
+	Sat, 27 Jan 2024 16:37:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZfxcEB/P"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vKlss4he"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C7C22E635;
-	Sat, 27 Jan 2024 16:32:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E2DA25571
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 16:37:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706373177; cv=none; b=ff30xOuK3T7GUzFFgQYaNEDqA991V/0tW+83nNDV/+kWrmz6rvHZE0sDiEdMt3FVjBr4gDTl/m2AT9tNFUIvtysti22HdMKhQNxjoQK6iK1g5TuRAsSRsMkDt76zDZV4zcHKX5dGDqLIERrxvMAtqcSa194joOWb4OkkK759rsQ=
+	t=1706373475; cv=none; b=W3zU9ZQw4gbtJxU0d34FYoniC315p67eBUQgCZtRwASCQ2uZ3Bc4CYVQs4TmWDwkUIHc7P44zKhuasDUHoWefcDMCameR0wAvZwOXJxYw/rJX+urzr2XuO/66zYWNX5VGpMRaL1Zil0V2lkhCsc2Zt8h5aDPgJ6HnKdeeznL0JE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706373177; c=relaxed/simple;
-	bh=eAd7srBbetTNuoTznQNyc5Zq6J7HU6wdNysZdYd3kxE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=izvwT0QqnBRlWUkDSAi7PJsXCJ3EcnkJlpIkppSQsyjXqGI2EtjOGE/2n39fS9DiIVBJO4FEmkjofvmMEV4ZNP9KS/y4UD9HwFiVJ2/6+wXy14MXEMVkTlmKdpX9otYPgIotqK5Eiy16YlsdDnAM9OfdxMIaPzf/D43hLqRJjq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZfxcEB/P; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 300EBC32782;
-	Sat, 27 Jan 2024 16:32:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706373177;
-	bh=eAd7srBbetTNuoTznQNyc5Zq6J7HU6wdNysZdYd3kxE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZfxcEB/PjxKgjc/wwsQqMoHdUsXoHcutXwR54Zz40tbIJXiovoDWfeN2uMIdDB59T
-	 hM6+YDMoFZqvX6il/E5dr7lY6HkkXWdBiCpifCLQEUR5NwmlSdCKnzXY2qaJo/10sE
-	 NtZu6vr8Lxl5EBkdeY3/XyYXBJX+3XDG0lR/cH1WhoneVu0SMDVZZh6qLSf9oq+6w3
-	 GKjLZNe0SXeazRSN53MmOCtRbwLlr/q0iqSECdPaDJWIiqHFXX+cAPde9PawemAPgt
-	 Bec634DL1z171RBlA2cLg4ECC8TEDIl+4khHl52kIHZ/Bgf+9Zzj4UDFcU8P/i06cO
-	 HeusOAzAQND/g==
-Received: by wens.tw (Postfix, from userid 1000)
-	id 925475FEC6; Sun, 28 Jan 2024 00:32:52 +0800 (CST)
-From: Chen-Yu Tsai <wens@kernel.org>
-To: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Vinod Koul <vkoul@kernel.org>
-Cc: Chen-Yu Tsai <wens@csie.org>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-sunxi@lists.linux.dev,
-	linux-sound@vger.kernel.org,
-	dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Andre Przywara <andre.przywara@arm.com>
-Subject: [PATCH v2 7/7] arm64: dts: allwinner: h616: Add SPDIF device node
-Date: Sun, 28 Jan 2024 00:32:47 +0800
-Message-Id: <20240127163247.384439-8-wens@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240127163247.384439-1-wens@kernel.org>
-References: <20240127163247.384439-1-wens@kernel.org>
+	s=arc-20240116; t=1706373475; c=relaxed/simple;
+	bh=52EY/SemdzO86LZW+X24P5o9GxO2ePPo7tueqcrByxo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hddcifbUfw6kNQRNGRqE29Yis1xyZxCWU39r4R7A1HnMbLUSAypXvfUUJm/TefwHpZz5DN9k9LM8gNY8j7dwF+4/HZQScprz1tGPp8SjmuYqa9nfgB1L6IL9w6+vZC341+Z2f9hziVRO7SPGNdshL/hxgEi4QfHW//1VBYtci18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vKlss4he; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc6432ee799so1670798276.0
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 08:37:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706373473; x=1706978273; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=52EY/SemdzO86LZW+X24P5o9GxO2ePPo7tueqcrByxo=;
+        b=vKlss4he7FarMg/PdNMJ5UXiiR9iT4LtdMH2jlHxI4bQx3PApbu0nXjCCgyo8RK1uA
+         MZADbYTMSOgm/JzSRIoMFLO9LT7iHdDjCOaySeugXJyjTUaLRIUpqlbRTTdA0IsaLI1i
+         owU1CG0cqi+lZOmCaGGV5TL0wNv9flW2URzsuZwvvb9f7VutX4FYnJRn1rlyPAMGw/NY
+         z+aBE8X2qyNx1AcapLR4mBIp0X5FwmqVXYIyQr4VIN5vgeL0YCX5AELBVOAS4mLvcMSZ
+         9KGqm9M/sqviyEO5gR0TE3q7/EJjko4qvL8xdTO1FXyCH9FPZE0LCTrLgryRAv+VtLdk
+         wPHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706373473; x=1706978273;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=52EY/SemdzO86LZW+X24P5o9GxO2ePPo7tueqcrByxo=;
+        b=V+EiIHj9DABqFQlGXdGz6FJhsCUB8zlJ7MqsQTW4na40KEtLwbKNWatslVC2pBkxDb
+         V8Fq+51esPS89gSMqYVtBzg6FqxLy+cutONEqSVYaJE7C+w8Lz865auO/gt2kDe2zJNs
+         P3sNhInRJWXCCE5kYhpXsQHRyCAQIrfp9fgCng5NHNkkXwBWo8c38Ts0t+Z3Hb2vnuvk
+         n8yaqv9RNBgBaWlQMaA3hYfu9114ug2HOJaLOD9pwDwrlTp00ZGge4amZCejVNCA8Mld
+         ajSSr7naBsz9HipmWUdg6wQYyscSiDJ4R248wV5IfZiKuSSNbTV4ewAB/33I1TelSh/P
+         fg5A==
+X-Gm-Message-State: AOJu0YxK/FM47fVj48hEKgalNPbcStGMZ7N17EIQTP3N4vsaKS6P5ria
+	RU6Xlgrf/DYoqDRoiC2J+QB3xsuFbt20JrkeE3EFpA4M1acxl+BgWaomajnW/d4WOXoyrf3mwDd
+	y0IZnWid46CMLHk4+FN3r2g6jmfzISneXvK0g0g==
+X-Google-Smtp-Source: AGHT+IH6HdQ44ye/NMuXOgVUS/M7BGq7rU9eYNVXXNby5gNVSNwzfvRR0haZYsZfH2tla5inOMuU4vBcMP+4+MEWckk=
+X-Received: by 2002:a25:848d:0:b0:dc5:f51e:6a60 with SMTP id
+ v13-20020a25848d000000b00dc5f51e6a60mr1838267ybk.6.1706373456517; Sat, 27 Jan
+ 2024 08:37:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240126223150.work.548-kees@kernel.org>
+In-Reply-To: <20240126223150.work.548-kees@kernel.org>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Sat, 27 Jan 2024 17:37:25 +0100
+Message-ID: <CACRpkdbpQNoh_ESB=CcUcP0_pcvDYCs9FeJ_wY74a7WJ77sLBg@mail.gmail.com>
+Subject: Re: [PATCH] wifi: brcmfmac: Adjust n_channels usage for __counted_by
+To: Kees Cook <keescook@chromium.org>
+Cc: Arend van Spriel <aspriel@gmail.com>, Franky Lin <franky.lin@broadcom.com>, 
+	Hante Meuleman <hante.meuleman@broadcom.com>, Kalle Valo <kvalo@kernel.org>, 
+	Chi-hsien Lin <chi-hsien.lin@infineon.com>, Ian Lin <ian.lin@infineon.com>, 
+	Johannes Berg <johannes.berg@intel.com>, Wright Feng <wright.feng@cypress.com>, 
+	Hector Martin <marcan@marcan.st>, linux-wireless@vger.kernel.org, 
+	brcm80211-dev-list.pdl@broadcom.com, 
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>, Jisoo Jang <jisoo.jang@yonsei.ac.kr>, 
+	Hans de Goede <hdegoede@redhat.com>, Aloka Dixit <quic_alokad@quicinc.com>, 
+	John Keeping <john@keeping.me.uk>, Jeff Johnson <quic_jjohnson@quicinc.com>, 
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Chen-Yu Tsai <wens@csie.org>
+On Fri, Jan 26, 2024 at 11:31=E2=80=AFPM Kees Cook <keescook@chromium.org> =
+wrote:
 
-The H616 SoC has an SPDIF transmitter hardware block, which has the same
-layout as the one in the H6, minus the receiver side.
+> After commit e3eac9f32ec0 ("wifi: cfg80211: Annotate struct
+> cfg80211_scan_request with __counted_by"), the compiler may enforce
+> dynamic array indexing of req->channels to stay below n_channels. As a
+> result, n_channels needs to be increased _before_ accessing the newly
+> added array index. Increment it first, then use "i" for the prior index.
+> Solves this warning in the coming GCC that has __counted_by support:
 
-Add a device node for it, and a default pinmux.
+Makes perfect sense.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
-Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
----
- .../arm64/boot/dts/allwinner/sun50i-h616.dtsi | 20 +++++++++++++++++++
- 1 file changed, 20 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
-index 885809137b9d..b1bf4fb5fc58 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
-@@ -253,6 +253,11 @@ spi1_cs0_pin: spi1-cs0-pin {
- 				function = "spi1";
- 			};
- 
-+			spdif_tx_pin: spdif-tx-pin {
-+				pins = "PH4";
-+				function = "spdif";
-+			};
-+
- 			uart0_ph_pins: uart0-ph-pins {
- 				pins = "PH0", "PH1";
- 				function = "uart0";
-@@ -550,6 +555,21 @@ mdio0: mdio {
- 			};
- 		};
- 
-+		spdif: spdif@5093000 {
-+			compatible = "allwinner,sun50i-h616-spdif";
-+			reg = <0x05093000 0x400>;
-+			interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_SPDIF>, <&ccu CLK_SPDIF>;
-+			clock-names = "apb", "spdif";
-+			resets = <&ccu RST_BUS_SPDIF>;
-+			dmas = <&dma 2>;
-+			dma-names = "tx";
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&spdif_tx_pin>;
-+			#sound-dai-cells = <0>;
-+			status = "disabled";
-+		};
-+
- 		usbotg: usb@5100000 {
- 			compatible = "allwinner,sun50i-h616-musb",
- 				     "allwinner,sun8i-h3-musb";
--- 
-2.39.2
-
+Yours,
+Linus Walleij
 
