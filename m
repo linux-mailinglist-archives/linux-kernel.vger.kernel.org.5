@@ -1,95 +1,79 @@
-Return-Path: <linux-kernel+bounces-41061-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41062-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CB7983EB0B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 05:40:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 172F883EB0D
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 05:44:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D1821F24851
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 04:40:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A11D1C224C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 04:44:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 143B313AE2;
-	Sat, 27 Jan 2024 04:40:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8FF513AE2;
+	Sat, 27 Jan 2024 04:44:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XAbgo4Jo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S55sBXu6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52957125A1;
-	Sat, 27 Jan 2024 04:40:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0558311CAF;
+	Sat, 27 Jan 2024 04:44:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706330427; cv=none; b=FlLNeYSKaLLkgEep933zmfHS/MYrkTU+ObCod8NGkkbiuRkWkCcj3vLZaSovKy4jBYQz8DAHV4nW/W0TTl5JVE+qQHKn8Bl6K5hIGwZl0cUxHLKjsW8spmboahkwNoi+FZrQ3m2knxE+Ke0id9EwSPkwcMit2uQhrfA1hh+uCQ8=
+	t=1706330665; cv=none; b=H4WHhdPODo+gd0QNh6fqdFl53RKDqrH0Bf1HOjxtKPZ63pSXqbh+RNZgjqhqj6TwlfTDwkck400THWzhED2rAC6YnbipZA5+9f/gdGJkQgOodRcQNZREsCIWfieLXhlp9IE9dILeKMMD0kb3Efc/AMlZX6/8lv3J6RVQN5NSce4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706330427; c=relaxed/simple;
-	bh=Fa54+stwdOC7SyjNCmWKpZ6BNsnqZ7X6lOOGTr9GTOY=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=AVv0SFaqVmLl/rzGpMaojTNSMbSsAHHNpGdDVVQRPJMGFSxEKut7Y8PuPcU6RYicXWmhWqtvc83aJy22ZTp4+CdCrxO/mhrmR0ibq7BmJUiQ63z1gaD5Uj7M85sB9Z9/cVQxPjqXtXyV9ElNEckveVOFE/5ptZ2TQU7NKEP4isM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XAbgo4Jo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BE59EC433F1;
-	Sat, 27 Jan 2024 04:40:26 +0000 (UTC)
+	s=arc-20240116; t=1706330665; c=relaxed/simple;
+	bh=EEVrPSo++7IeRvcKVZvtophgR0qotpsnHk5/F/gDV48=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=I1cC5vCoYOIsH0mFPMX19gj1R7rt/PgeUhckw+efpiz+pz7vm5wB3DWDQ5MSVLpKW3jIZZ1dWlOqKrZz2K6Ov5Kj0NULOO2XOJTxlHsJiA2IrgDkRyabcviz4h1MfpnZXSmJzTOpqVwUSQK++iQz+Ui92FHRXymlVMISB/Wf6IQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S55sBXu6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 168CBC433F1;
+	Sat, 27 Jan 2024 04:44:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706330426;
-	bh=Fa54+stwdOC7SyjNCmWKpZ6BNsnqZ7X6lOOGTr9GTOY=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=XAbgo4JoVubLqSfkxGeZEBZv/j8kHykk6Jle3TD4/XhK90SxqMQZcbhDd3PBcoGqn
-	 IEumJBPwYwFbJaPa7pEs0YJn6EwoiCdDaT6QDKXQtwE8BdOLb91nvIy9mUl/5RPjNs
-	 JarAmakm0gn5iA3l3qLkHBGqVoKFLj1xiDGdZFJLkJk9yEjyXDm/PxoadL+UEf7POf
-	 84QtfozdGiSIQNtP4LEwEqG8wt35J8gANMnAekANRz0r8DDNwJChQgRvICXliwHVJX
-	 rzFIqVuov+ws0BgJZi+1dD5H5Ja6KcvhIvP0aiB1Z73JwrzWqVHnpCYWi+A97aGqER
-	 UJAUdNM3Gs1yA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A27E5D8C962;
-	Sat, 27 Jan 2024 04:40:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1706330664;
+	bh=EEVrPSo++7IeRvcKVZvtophgR0qotpsnHk5/F/gDV48=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=S55sBXu6TUvYGGufO1tVf8KqBEjEXUI2su1UTJtcQpFr9zgF6U1HVdAQ16Mj6BH3Y
+	 tYmBQ0qQ6EtAJTCYYMSI26IvkMFyCHiWZXE/FQ74GaK3mWAIqgtFU82FcBtudv9l8m
+	 xW9Mlr+ur7Gob7zP1S2ZEwZ4u7fWUYW1bLPnJeCxv7TKRL4nqr5xR/rIwhRyw77Nu9
+	 pYrNBBHD5IXo0MCpxtm15jr2LaYDaerW+jg5A+JtoK9Y4xTRy264Su6SRO6ogGQ2Fz
+	 zm10OvKmTJ8TxX0Flu5QqOTGzuvVpV5I9yuD98n5zM1aOaZmzhuccyWI05T8bctQTS
+	 iXSKqcrtuZfqg==
+Date: Fri, 26 Jan 2024 20:44:23 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Brett Creeley <brett.creeley@amd.com>
+Cc: <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
+ <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <shannon.nelson@amd.com>
+Subject: Re: [PATCH v2 net-next 0/10] pds_core: Various improvements and AQ
+ race condition cleanup
+Message-ID: <20240126204423.47c20ef6@kernel.org>
+In-Reply-To: <20240126174255.17052-1-brett.creeley@amd.com>
+References: <20240126174255.17052-1-brett.creeley@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: dsa: mt7530: select MEDIATEK_GE_PHY for
- NET_DSA_MT7530_MDIO
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170633042666.8750.8620962707423438801.git-patchwork-notify@kernel.org>
-Date: Sat, 27 Jan 2024 04:40:26 +0000
-References: <20240122053451.8004-1-arinc.unal@arinc9.com>
-In-Reply-To: <20240122053451.8004-1-arinc.unal@arinc9.com>
-To: =?utf-8?b?QXLEsW7DpyDDnE5BTCA8YXJpbmMudW5hbEBhcmluYzkuY29tPg==?=@codeaurora.org
-Cc: andrew@lunn.ch, f.fainelli@gmail.com, olteanv@gmail.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- mithat.guner@xeront.com, erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello:
-
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Mon, 22 Jan 2024 08:34:51 +0300 you wrote:
-> Quoting from commit 4223f8651287 ("net: dsa: mt7530: make NET_DSA_MT7530
-> select MEDIATEK_GE_PHY"):
+On Fri, 26 Jan 2024 09:42:45 -0800 Brett Creeley wrote:
+> This series includes the following changes:
 > 
-> Make MediaTek MT753x DSA driver enable MediaTek Gigabit PHYs driver to
-> properly control MT7530 and MT7531 switch PHYs.
+> There can be many users of the pds_core's adminq. This includes
+> pds_core's uses and any clients that depend on it. When the pds_core
+> device goes through a reset for any reason the adminq is freed
+> and reconfigured. There are some gaps in the current implementation
+> that will cause crashes during reset if any of the previously mentioned
+> users of the adminq attempt to use it after it's been freed.
 > 
-> A noticeable change is that the behaviour of switchport interfaces going
-> up-down-up-down is no longer there.
-> 
-> [...]
+> Issues around how resets are handled, specifically regarding the driver's
+> error handlers.
 
-Here is the summary with links:
-  - [net-next] net: dsa: mt7530: select MEDIATEK_GE_PHY for NET_DSA_MT7530_MDIO
-    https://git.kernel.org/netdev/net-next/c/fb4bb62aaac7
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Patches 1, 2 and 4 look like fixes. Is there any reason these are
+targeting net-next? If someone deploys this device at scale rare
+things will happen a lot..
 
