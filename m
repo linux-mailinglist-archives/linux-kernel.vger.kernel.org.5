@@ -1,128 +1,116 @@
-Return-Path: <linux-kernel+bounces-41341-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41336-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 021A083EF13
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 18:24:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 388A683EF04
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 18:22:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B074B20A44
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 17:24:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E10602819B4
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 17:22:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 126E82D60A;
-	Sat, 27 Jan 2024 17:24:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B44FB2CCB4;
+	Sat, 27 Jan 2024 17:22:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rong.moe header.i=i@rong.moe header.b="C7xMRoQE"
-Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
+	dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b="YiI/KIK2";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="IK+hT4KW"
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D29022E41C;
-	Sat, 27 Jan 2024 17:24:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706376245; cv=pass; b=U/bDnAJsiQBMZZVuvGqWxeqXWIyTBeDxnEg3be/RFbnlklPRkoOXbYYOzfFJY1zAajXk/bTwju7vRG0fe1hC+tjyKfI5GDbNT4EDXsfyJnHsFipGxV/x3gKKEv0y7A6jeMgd7pI4N4UjKkc2PZ7e7GwsNM9MBuyZkRYj+G7Q5Ms=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706376245; c=relaxed/simple;
-	bh=ZZJDvmwgaVNUkd/QLeaQQXIy40n2tDqzdfn4OklKNVA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bKkDi9Gn3y1oiEpZ0WV5lOnZqRXuk6+lnnQu6rK4iwL+SkPdNqrsayo+2I4omN6o9ImeMzh1ChuzYWeoCnk3FoHVDXGgDTlSNVGJAce8KMyzD4p25G8yumsY0QJLlsApRDySlNIUY876CjuXyO4LVTxP9mFyHsKZQlFoRhrCDtM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rong.moe; spf=pass smtp.mailfrom=rong.moe; dkim=pass (1024-bit key) header.d=rong.moe header.i=i@rong.moe header.b=C7xMRoQE; arc=pass smtp.client-ip=136.143.188.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rong.moe
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rong.moe
-Delivered-To: i@rong.moe
-ARC-Seal: i=1; a=rsa-sha256; t=1706376240; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=nTPb8H7xvRgdLGEg2j8n83xs1KESybnQCz5lyIuil0J39LUkdE1p3QfZ0wg4ikORaQ517AQNbiOG5b0n3H2RJVEM6Q2zM4mGf8JXW42+XBrnbaMh+cRfV6q1ENRZ8m8VzwCdHpVEDr+B6SQWBfng1ZnM4kTGBqdoxGQ8AX4iqEc=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1706376240; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=j651x5Hilte5Xbmo4xSk1+lCVyQJvHUohQWSnBdMyQw=; 
-	b=CEEeMxdwNdLypKowaFmcHBUmeqYr4bIcTWuOumFPA8y5WKOwLSnITmmh+07jdUT6EC7h2p8o/QdGDrr0AGu8r9YnLrUx/qn+TqQ2/6bXPRyAEeNlEI5gnuYCCj5T6JaQHA4cEQl+jBDcxxR807Xzu0Yu8mkMWrC0FO1Cv4Qw0kY=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=rong.moe;
-	spf=pass  smtp.mailfrom=i@rong.moe;
-	dmarc=pass header.from=<i@rong.moe>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1706376240;
-	s=zmail; d=rong.moe; i=i@rong.moe;
-	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=j651x5Hilte5Xbmo4xSk1+lCVyQJvHUohQWSnBdMyQw=;
-	b=C7xMRoQEth9LevVh3MTtyXoIBncnolsugccpdeifSTkVtGnQB7343r6fBJWO5b35
-	xH/qAFyvqfH1exttrDlp1vH6VyukwTMN14QjwN8VL4s9/aOiGutUkfVM9xCEYY3W/xP
-	Pe9oJh9STJwHcnLWkS4U8QSHksLDHhCZampfs8jk=
-Received: from tb.lan (182.118.239.249 [182.118.239.249]) by mx.zohomail.com
-	with SMTPS id 1706376237613521.4403435319042; Sat, 27 Jan 2024 09:23:57 -0800 (PST)
-From: Rong Zhang <i@rong.moe>
-To: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: Rong Zhang <i@rong.moe>,
-	linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Icenowy Zheng <uwu@icenowy.me>
-Subject: [PATCH v2 4/4] ARM: dts: qcom: msm8974: Add DTS for Samsung Galaxy S5 China (kltechn)
-Date: Sun, 28 Jan 2024 01:21:53 +0800
-Message-ID: <20240127172155.63624-5-i@rong.moe>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240127172155.63624-1-i@rong.moe>
-References: <20240127172155.63624-1-i@rong.moe>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50B722C85A
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 17:22:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.26
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706376159; cv=none; b=dTiQ9caDKWEHppKwMfz1hq9Dw4UeZjPmaM5P+NZch9jn2z/9lYNNqTur+3Y8aIj382w5tzPxR98IbxcZRwMcY+/Iov7+uNZwF76DqoEjn+sS3/h2WwE/TDze/W7uELnMqWsRE25gQyCL11pm2TCyYRB07/1Rz7wgsr8BKNVlIog=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706376159; c=relaxed/simple;
+	bh=GLpeF7tKBkJQpK/HoDJhmJ33WffFzG6KRYtzM+zQ1Fo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s/iuxCyRDO/FiFl9AIwWjtGY1ss05F2xVdrMcfB0+eg/ood418y0/5bDywgZ9mA8YiKtREOUdSpZvwQ5QBAPj3vvn3VOvLI1Ymar4WkcqMtaACC/fRRFCMJWzi+F4Ha4aGVHaE0BA9dyUNjli+Ib1U+BbA4lZo3PfTUOZFlqwXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza; spf=pass smtp.mailfrom=tycho.pizza; dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b=YiI/KIK2; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=IK+hT4KW; arc=none smtp.client-ip=66.111.4.26
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tycho.pizza
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.nyi.internal (Postfix) with ESMTP id 68D505C00A1;
+	Sat, 27 Jan 2024 12:22:37 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Sat, 27 Jan 2024 12:22:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1706376157; x=1706462557; bh=TGCzW0dxep
+	QwwblJTJF2TdlDPBbGBPOjAiGMUcsUm+s=; b=YiI/KIK2FtTk/D2Mh1aZjOAuSe
+	GFY9xhHTx0MGi7R3bjO6z0udu3UqQ2U4OBg/8VtC4qls4+KkPIzCrxatGRU0fmLW
+	KKkfAdBEk4bzN/59SDHCq5kJYWxq+dU61r82L3ePUD8AOX/KAv7BiV3d5sQ3FXhq
+	WEbx0iChkStC9CPXauNjso7YPZzD3b6dgNmDHCLWdUUNyuOAC2lGYkL4IFt9JXjt
+	wcNCA7F85hZlDGNXKcUBXKbUOFqke5rOX0V40+oOTYcdEDWNwnw22sPg2JCP3LiA
+	+8XwbjBLDsb6u4MLd6mejzwJalEIDLA85xgHlS6cz0kgECmfHGk0FURNP5yw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706376157; x=1706462557; bh=TGCzW0dxepQwwblJTJF2TdlDPBbG
+	BPOjAiGMUcsUm+s=; b=IK+hT4KWdAXc7moYqsU18vYlDNDvDiyrp7j45Yh4kY4E
+	W+lTbfYnf13AWiIYYIO9lFG3BO/63bU7z7LLuI4OrqwsYc16FtuoAtvOzY39iwp7
+	Y0zIljQKVM011mZYn4V4FbZyqTTMPgfQvr9ES00CFnDWVuOCBQXb87YZ+0viy1ny
+	Z+PtFGezHSR3+i6T7Am0tlXEucJxp/ReZ+GMwATXDgaYmsgy6wegrTJc+kVfT2C/
+	7P/v8Ic/kfVwMAxI5RQqHSJVelMFQcK7iL5QqpHYkQ6yGy9aiOqxRDv5ouJLIrTp
+	VzIlkBI7kMUjJmig8BVLva3+IrPRzT9genjhs9t/2w==
+X-ME-Sender: <xms:3Tu1ZdBf3LD-5wHjkFZY-WS8mh9kLYdFALi7vlm-p2f3x-heMT5weA>
+    <xme:3Tu1ZbjHn0fm4A4gq2w2p3URQa3iMI9t2cNpy2H_qQvY03pj1c_Xia5mHxgjdvhFj
+    ThE4QO6mLTeUfaTTEs>
+X-ME-Received: <xmr:3Tu1ZYmxd7EYUbZsbtINVs87EdNrHwLHjKmzXN-A98QLQuFK2r_H9hZsNm4tnt2P7KtJe1KY-zMQEBzeSQ0SWWNCHzno>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdelledgleelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfihtghh
+    ohcutehnuggvrhhsvghnuceothihtghhohesthihtghhohdrphhiiiiirgeqnecuggftrf
+    grthhtvghrnhepueettdetgfejfeffheffffekjeeuveeifeduleegjedutdefffetkeel
+    hfelleetnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomh
+    epthihtghhohesthihtghhohdrphhiiiiirg
+X-ME-Proxy: <xmx:3Tu1ZXwZp9ZE37bn8fKV5dA61Hy02MM406sxqaG9T0i_TqrhnBkvZA>
+    <xmx:3Tu1ZSQGn8hj-VitulyFUjfX7DUcJnmxCH-j6ggtlFHjV0GEOEWFeQ>
+    <xmx:3Tu1ZaaRUK0e5NaEvAKg0Hqalox-MRrcTvnxxZpbTEQbdosrrJomlQ>
+    <xmx:3Tu1ZYO6It51LcxBjXJPe1YDEBirAs1eo3XEQE5jH6XetIfWvPGUmg>
+Feedback-ID: i21f147d5:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 27 Jan 2024 12:22:36 -0500 (EST)
+Date: Sat, 27 Jan 2024 10:22:35 -0700
+From: Tycho Andersen <tycho@tycho.pizza>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Tycho Andersen <tandersen@netflix.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] pidfd: don't do_notify_pidfd() if
+ !thread_group_empty()
+Message-ID: <ZbU72/83nv2UdcCK@tycho.pizza>
+References: <20240127132043.GA29080@redhat.com>
+ <20240127132105.GA29091@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240127132105.GA29091@redhat.com>
 
-The only difference between Samsung Galaxy S5 China (kltechn) and klte
-is the gpio pins of i2c_led_gpio. With pins corrected, the LEDs and WiFi
-are able to work properly.
+On Sat, Jan 27, 2024 at 02:21:05PM +0100, Oleg Nesterov wrote:
+> do_notify_pidfd() makes no sense until the whole thread group exits, change
+> do_notify_parent() to check thread_group_empty().
+> 
+> This avoids the unnecessary do_notify_pidfd() when tsk is not a leader, or
+> it exits before other threads, or it has a ptraced EXIT_ZOMBIE sub-thread.
+> 
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 
-Signed-off-by: Rong Zhang <i@rong.moe>
----
- arch/arm/boot/dts/qcom/Makefile                  |  1 +
- .../dts/qcom/qcom-msm8974pro-samsung-kltechn.dts | 16 ++++++++++++++++
- 2 files changed, 17 insertions(+)
- create mode 100644 arch/arm/boot/dts/qcom/qcom-msm8974pro-samsung-kltechn.dts
+Looks good to me, thanks.
 
-diff --git a/arch/arm/boot/dts/qcom/Makefile b/arch/arm/boot/dts/qcom/Makefile
-index 9cc1e14e6cd0..5d7a34adf826 100644
---- a/arch/arm/boot/dts/qcom/Makefile
-+++ b/arch/arm/boot/dts/qcom/Makefile
-@@ -44,6 +44,7 @@ dtb-$(CONFIG_ARCH_QCOM) += \
- 	qcom-msm8974pro-fairphone-fp2.dtb \
- 	qcom-msm8974pro-oneplus-bacon.dtb \
- 	qcom-msm8974pro-samsung-klte.dtb \
-+	qcom-msm8974pro-samsung-kltechn.dtb \
- 	qcom-msm8974pro-sony-xperia-shinano-castor.dtb \
- 	qcom-mdm9615-wp8548-mangoh-green.dtb \
- 	qcom-sdx55-mtp.dtb \
-diff --git a/arch/arm/boot/dts/qcom/qcom-msm8974pro-samsung-kltechn.dts b/arch/arm/boot/dts/qcom/qcom-msm8974pro-samsung-kltechn.dts
-new file mode 100644
-index 000000000000..b902e31b16c2
---- /dev/null
-+++ b/arch/arm/boot/dts/qcom/qcom-msm8974pro-samsung-kltechn.dts
-@@ -0,0 +1,16 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "qcom-msm8974pro-samsung-klte-common.dtsi"
-+
-+/ {
-+	model = "Samsung Galaxy S5 China";
-+	compatible = "samsung,kltechn", "samsung,klte", "qcom,msm8974pro", "qcom,msm8974";
-+};
-+
-+&i2c_led_gpio {
-+	scl-gpios = <&tlmm 61 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-+	sda-gpios = <&tlmm 60 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-+};
-+
-+&i2c_led_gpioex_pins {
-+	pins = "gpio60", "gpio61";
-+};
--- 
-2.43.0
+Reviewed-by: Tycho Andersen <tandersen@netflix.com>
 
+Tycho
 
