@@ -1,687 +1,187 @@
-Return-Path: <linux-kernel+bounces-41359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42BE483EF98
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 19:57:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74E0683EFA3
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 20:02:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E9471F23D0E
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 18:57:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8B882841DB
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 19:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AF9E2D610;
-	Sat, 27 Jan 2024 18:57:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DEF82E419;
+	Sat, 27 Jan 2024 19:02:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="C5F4575T"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PFeFLkg2"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67DA12BCFD
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 18:57:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3629029CEE;
+	Sat, 27 Jan 2024 19:02:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706381845; cv=none; b=K63ajbB7CZ/h8fe0qG+vTL/d/94mVbT+wjVLTSAkEScny+Z8OL6oiUOuQFuFeOA7tgNPFuxrSS4y7qreOs3H5QGYjJJAfmJ76AjZGS19EBZFZaJPdFTj0KOw1Ijd4Z0vtfSH4VDO0ZinMY8G1z3bxv6ksTpNrdpj+/u69B0Rq/I=
+	t=1706382150; cv=none; b=noeNkD5JL4pmUGJOfapF+lZEt0an0pgWV2AZ/uareO0yyjOIItaFC1hxx5TJyPPqu0lOITWpDoDzOXJyg24bt8AubXf7QhtmH18PJSOhLcSt5BWv3M4dQXxvLgb1x3hZMzHkmQDoCHmhPYdINEYaF1mFATzJpl3jP5494c1kIR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706381845; c=relaxed/simple;
-	bh=O1lz14sW8zh6yhwJbT6BbIW7IIcppOxZOVkf0X98lQM=;
-	h=Subject:From:To:Cc:Date:Message-ID:Content-Type:MIME-Version; b=BxGOZmgRrpT1HvpxBtHU9kJJD8BciVsne0xp5dAc0yAlcb6AE8BZGUPiBqGLdyXY/DBKeSsiONUFXrIVvp9TKoLEhxLdFCddOuHCXjYw6m5vJIRUfYFqO8Gw4t2bq6SamHfANJtV26AHR7VYV+BqySXss5ojqYZ+JB8iEEvTBKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=C5F4575T; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40RFf0v4010065;
-	Sat, 27 Jan 2024 18:57:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=pp1; bh=9agy8MCVX/WtbIvWGsE51gPASNWqFL9RNca4nEqECZE=;
- b=C5F4575TWf6xqOucfN3uGO/DTze55cW0TK6UJoHZpvcdC1xmUkJbIGqXAo+SJwRx2mZd
- q0n0CUeSulnM2swxsMK2iJA2KDM+Qb+pYEBUDg75nzGhvmnByM/2kWJFfwGKyBM2P2i5
- kp033ehGvccZKfzrgb+3MpJnE4HKlTBa/q5m5yLRs6Ta36r7A/8YXhO4jZS6yIuhOTMr
- s4cz5BZAhA4EsHsu+V4JYzbVfAu8CgAiGMbCCzAgiVw9GKnTrV4X+TLcFf+OS+o+y73r
- M44Q2ZXYdfwFJwiVGLo/bmMioV+JreVoQkshZKhchDRp5GGhN0RQPqXY3kXy7LrmFnmm SA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vw209csd2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 27 Jan 2024 18:57:08 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40RIV3Vs013870;
-	Sat, 27 Jan 2024 18:57:07 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vw209csct-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 27 Jan 2024 18:57:07 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40RH0E6S026507;
-	Sat, 27 Jan 2024 18:57:06 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vrrgu2ym2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 27 Jan 2024 18:57:06 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40RIv3QG27198152
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 27 Jan 2024 18:57:03 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 86FCC20040;
-	Sat, 27 Jan 2024 18:57:03 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E383520043;
-	Sat, 27 Jan 2024 18:57:00 +0000 (GMT)
-Received: from ltcd48-lp2.aus.stglab.ibm.com (unknown [9.3.101.175])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Sat, 27 Jan 2024 18:57:00 +0000 (GMT)
-Subject: [REPOST PATCH v3] powerpc/papr_scm: Move duplicate definitions to
- common header files
-From: Shivaprasad G Bhat <sbhat@linux.ibm.com>
-To: nvdimm@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
-        nvdimm@lists.linux.dev
-Cc: sbhat@linux.ibm.com, dan.j.williams@intel.com, mpe@ellerman.id.au,
-        linux-kernel@vger.kernel.org, aneesh.kumar@linux.ibm.com,
-        vaibhav@linux.ibm.com, ira.weiny@intel.com, dave.jiang@intel.com,
-        vishal.l.verma@intel.com, naveen.n.rao@linux.ibm.com,
-        christophe.leroy@csgroup.eu, npiggin@gmail.com,
-        gregkh@linuxfoundation.org, yi.zhang@redhat.com,
-        benjamin.tissoires@redhat.com
-Date: Sat, 27 Jan 2024 12:57:00 -0600
-Message-ID: 
- <170638176942.112443.2937254675538057083.stgit@ltcd48-lp2.aus.stglab.ibm.com>
-User-Agent: StGit/1.5
-Content-Type: text/plain; charset="utf-8"
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: cN0r3r8uJbuWiLBjHPNbTqnNj2Mg9Yyi
-X-Proofpoint-ORIG-GUID: pFDvBdDL9J_9Y01_zIu725jCFvEVZGc-
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1706382150; c=relaxed/simple;
+	bh=bVSkgtWaDc4HiE/gfuQmggubh0l2IydsPMAF0Xm/Z0E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EEdqBNlgpAyPoH8AJcodqOKBpjuTxredwq769n6YJ1WVkhCD0WdvaJwUFEqy/IEn1/hkS3S5WDbMk8XKOZQ+j5zj5m1Va9BhvyAN9eAVsznfOdoXabcEfqljiP0CzDVVEvXxm6GsfFXZWlynJmCJrAMAxlK9KHNW981ou7L+SOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PFeFLkg2; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706382148; x=1737918148;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=bVSkgtWaDc4HiE/gfuQmggubh0l2IydsPMAF0Xm/Z0E=;
+  b=PFeFLkg2iHTLiu/s7b0pNn7I1fZCBlc4hm+0xZ6mWsixyBzdS1z735dQ
+   Uh5SUD951Qnq4K6SZfX/UtQ+78ws1k5CsNYDvXybG/iL6i2Zv9Ug+AojB
+   px2xopVDTr3Am0Nqc4gKoebIw/0lktvmUfSAZjbSQgP7DZbjrPY3z9kIS
+   Inus0aq+bcf4T+onifkcWQPf/UcsiwFFFbwrtrFN9uZ7UYa8z4LrjxCCL
+   OzWD1t2q0uhBUvE4qK23398tOEDrq/6OVg41vDd4AZbihTGTJmqGEmC4O
+   UKW/rlZ9I1dXfMOXfb2BLCOBQtsaHZ77gxeyXoo8jsz1LbKij2eylLT6n
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10966"; a="16230663"
+X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
+   d="scan'208";a="16230663"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2024 11:02:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10966"; a="857712413"
+X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
+   d="scan'208";a="857712413"
+Received: from lkp-server01.sh.intel.com (HELO 370188f8dc87) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 27 Jan 2024 11:01:55 -0800
+Received: from kbuild by 370188f8dc87 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rTnw9-0002dy-1Q;
+	Sat, 27 Jan 2024 19:01:53 +0000
+Date: Sun, 28 Jan 2024 03:01:06 +0800
+From: kernel test robot <lkp@intel.com>
+To: Perry Yuan <perry.yuan@amd.com>, rafael.j.wysocki@intel.com,
+	Mario.Limonciello@amd.com, viresh.kumar@linaro.org,
+	Ray.Huang@amd.com, gautham.shenoy@amd.com, Borislav.Petkov@amd.com
+Cc: oe-kbuild-all@lists.linux.dev, Alexander.Deucher@amd.com,
+	Xinmei.Huang@amd.com, Xiaojian.Du@amd.com, Li.Meng@amd.com,
+	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/7] cpufreq: amd-pstate: initialize new core precision
+ boost state
+Message-ID: <202401280215.WvGTuIEq-lkp@intel.com>
+References: <0409d40c500eeb8d4d84ecb028b73f2eee147822.1706255676.git.perry.yuan@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-25_14,2024-01-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 adultscore=0 clxscore=1011 spamscore=0 mlxlogscore=999
- phishscore=0 suspectscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401270143
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0409d40c500eeb8d4d84ecb028b73f2eee147822.1706255676.git.perry.yuan@amd.com>
 
-papr_scm and ndtest share common PDSM payload structs like
-nd_papr_pdsm_health. Presently these structs are duplicated across
-papr_pdsm.h and ndtest.h header files. Since 'ndtest' is essentially
-arch independent and can run on platforms other than PPC64, a way
-needs to be deviced to avoid redundancy and duplication of PDSM
-structs in future.
+Hi Perry,
 
-So the patch proposes moving the PDSM header from arch/powerpc/include-
--/uapi/ to the generic include/uapi/linux directory. Also, there
-are some #defines common between papr_scm and ndtest which are not
-exported to the user space. So, move them to a header file which
-can be shared across ndtest and papr_scm via newly introduced
-include/linux/papr_scm.h.
+kernel test robot noticed the following build errors:
 
-Signed-off-by: Shivaprasad G Bhat <sbhat@linux.ibm.com>
-Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
-Suggested-by: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
----
-Changelog:
-Repost of v3:
-Link: https://lore.kernel.org/all/165763948558.3501667.16230079003621326755.stgit@ltc-boston123.aus.stglabs.ibm.com/
-Rebased again, no changes.
+[auto build test ERROR on rafael-pm/acpi-bus]
+[also build test ERROR on v6.8-rc1 next-20240125]
+[cannot apply to rafael-pm/linux-next linus/master rafael-pm/devprop]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Repost of v3:
-Link: https://lore.kernel.org/nvdimm/165025666388.2927278.9540058958498766114.stgit@lep8c.aus.stglabs.ibm.com/
-Rebased and no changes.
+url:    https://github.com/intel-lab-lkp/linux/commits/Perry-Yuan/cpufreq-amd-pstate-remove-set_boost-callback-for-passive-mode/20240126-171412
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-bus
+patch link:    https://lore.kernel.org/r/0409d40c500eeb8d4d84ecb028b73f2eee147822.1706255676.git.perry.yuan%40amd.com
+patch subject: [PATCH 2/7] cpufreq: amd-pstate: initialize new core precision boost state
+config: i386-randconfig-141-20240127 (https://download.01.org/0day-ci/archive/20240128/202401280215.WvGTuIEq-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240128/202401280215.WvGTuIEq-lkp@intel.com/reproduce)
 
-Since v2:
-Link: https://patchwork.kernel.org/project/linux-nvdimm/patch/163454440296.431294.2368481747380790011.stgit@lep8c.aus.stglabs.ibm.com/
-* Made it like v1, and rebased.
-* Fixed repeating words in comments of the header file papr_scm.h
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401280215.WvGTuIEq-lkp@intel.com/
 
-Since v1:
-Link: https://patchwork.kernel.org/project/linux-nvdimm/patch/162505488483.72147.12741153746322191381.stgit@56e104a48989/
-* Removed dependency on this patch for the other patches
+All errors (new ones prefixed by >>):
 
- MAINTAINERS                               |    2
- arch/powerpc/include/uapi/asm/papr_pdsm.h |  165 -----------------------------
- arch/powerpc/platforms/pseries/papr_scm.c |   43 --------
- include/linux/papr_scm.h                  |   49 +++++++++
- include/uapi/linux/papr_pdsm.h            |  165 +++++++++++++++++++++++++++++
- tools/testing/nvdimm/test/ndtest.c        |    2
- tools/testing/nvdimm/test/ndtest.h        |   31 -----
- 7 files changed, 220 insertions(+), 237 deletions(-)
- delete mode 100644 arch/powerpc/include/uapi/asm/papr_pdsm.h
- create mode 100644 include/linux/papr_scm.h
- create mode 100644 include/uapi/linux/papr_pdsm.h
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 39219b144c23..70da9aa81654 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12393,6 +12393,8 @@ F:	drivers/rtc/rtc-opal.c
- F:	drivers/scsi/ibmvscsi/
- F:	drivers/tty/hvc/hvc_opal.c
- F:	drivers/watchdog/wdrtas.c
-+F:	include/linux/papr_scm.h
-+F:	include/uapi/linux/papr_pdsm.h
- F:	tools/testing/selftests/powerpc
- N:	/pmac
- N:	powermac
-diff --git a/arch/powerpc/include/uapi/asm/papr_pdsm.h b/arch/powerpc/include/uapi/asm/papr_pdsm.h
-deleted file mode 100644
-index 17439925045c..000000000000
---- a/arch/powerpc/include/uapi/asm/papr_pdsm.h
-+++ /dev/null
-@@ -1,165 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
--/*
-- * PAPR nvDimm Specific Methods (PDSM) and structs for libndctl
-- *
-- * (C) Copyright IBM 2020
-- *
-- * Author: Vaibhav Jain <vaibhav at linux.ibm.com>
-- */
--
--#ifndef _UAPI_ASM_POWERPC_PAPR_PDSM_H_
--#define _UAPI_ASM_POWERPC_PAPR_PDSM_H_
--
--#include <linux/types.h>
--#include <linux/ndctl.h>
--
--/*
-- * PDSM Envelope:
-- *
-- * The ioctl ND_CMD_CALL exchange data between user-space and kernel via
-- * envelope which consists of 2 headers sections and payload sections as
-- * illustrated below:
-- *  +-----------------+---------------+---------------------------+
-- *  |   64-Bytes      |   8-Bytes     |       Max 184-Bytes       |
-- *  +-----------------+---------------+---------------------------+
-- *  | ND-HEADER       |  PDSM-HEADER  |      PDSM-PAYLOAD         |
-- *  +-----------------+---------------+---------------------------+
-- *  | nd_family       |               |                           |
-- *  | nd_size_out     | cmd_status    |                           |
-- *  | nd_size_in      | reserved      |     nd_pdsm_payload       |
-- *  | nd_command      | payload   --> |                           |
-- *  | nd_fw_size      |               |                           |
-- *  | nd_payload ---> |               |                           |
-- *  +---------------+-----------------+---------------------------+
-- *
-- * ND Header:
-- * This is the generic libnvdimm header described as 'struct nd_cmd_pkg'
-- * which is interpreted by libnvdimm before passed on to papr_scm. Important
-- * member fields used are:
-- * 'nd_family'		: (In) NVDIMM_FAMILY_PAPR_SCM
-- * 'nd_size_in'		: (In) PDSM-HEADER + PDSM-IN-PAYLOAD (usually 0)
-- * 'nd_size_out'        : (In) PDSM-HEADER + PDSM-RETURN-PAYLOAD
-- * 'nd_command'         : (In) One of PAPR_PDSM_XXX
-- * 'nd_fw_size'         : (Out) PDSM-HEADER + size of actual payload returned
-- *
-- * PDSM Header:
-- * This is papr-scm specific header that precedes the payload. This is defined
-- * as nd_cmd_pdsm_pkg.  Following fields aare available in this header:
-- *
-- * 'cmd_status'		: (Out) Errors if any encountered while servicing PDSM.
-- * 'reserved'		: Not used, reserved for future and should be set to 0.
-- * 'payload'            : A union of all the possible payload structs
-- *
-- * PDSM Payload:
-- *
-- * The layout of the PDSM Payload is defined by various structs shared between
-- * papr_scm and libndctl so that contents of payload can be interpreted. As such
-- * its defined as a union of all possible payload structs as
-- * 'union nd_pdsm_payload'. Based on the value of 'nd_cmd_pkg.nd_command'
-- * appropriate member of the union is accessed.
-- */
--
--/* Max payload size that we can handle */
--#define ND_PDSM_PAYLOAD_MAX_SIZE 184
--
--/* Max payload size that we can handle */
--#define ND_PDSM_HDR_SIZE \
--	(sizeof(struct nd_pkg_pdsm) - ND_PDSM_PAYLOAD_MAX_SIZE)
--
--/* Various nvdimm health indicators */
--#define PAPR_PDSM_DIMM_HEALTHY       0
--#define PAPR_PDSM_DIMM_UNHEALTHY     1
--#define PAPR_PDSM_DIMM_CRITICAL      2
--#define PAPR_PDSM_DIMM_FATAL         3
--
--/* struct nd_papr_pdsm_health.extension_flags field flags */
--
--/* Indicate that the 'dimm_fuel_gauge' field is valid */
--#define PDSM_DIMM_HEALTH_RUN_GAUGE_VALID 1
--
--/* Indicate that the 'dimm_dsc' field is valid */
--#define PDSM_DIMM_DSC_VALID 2
--
--/*
-- * Struct exchanged between kernel & ndctl in for PAPR_PDSM_HEALTH
-- * Various flags indicate the health status of the dimm.
-- *
-- * extension_flags	: Any extension fields present in the struct.
-- * dimm_unarmed		: Dimm not armed. So contents wont persist.
-- * dimm_bad_shutdown	: Previous shutdown did not persist contents.
-- * dimm_bad_restore	: Contents from previous shutdown werent restored.
-- * dimm_scrubbed	: Contents of the dimm have been scrubbed.
-- * dimm_locked		: Contents of the dimm cant be modified until CEC reboot
-- * dimm_encrypted	: Contents of dimm are encrypted.
-- * dimm_health		: Dimm health indicator. One of PAPR_PDSM_DIMM_XXXX
-- * dimm_fuel_gauge	: Life remaining of DIMM as a percentage from 0-100
-- */
--struct nd_papr_pdsm_health {
--	union {
--		struct {
--			__u32 extension_flags;
--			__u8 dimm_unarmed;
--			__u8 dimm_bad_shutdown;
--			__u8 dimm_bad_restore;
--			__u8 dimm_scrubbed;
--			__u8 dimm_locked;
--			__u8 dimm_encrypted;
--			__u16 dimm_health;
--
--			/* Extension flag PDSM_DIMM_HEALTH_RUN_GAUGE_VALID */
--			__u16 dimm_fuel_gauge;
--
--			/* Extension flag PDSM_DIMM_DSC_VALID */
--			__u64 dimm_dsc;
--		};
--		__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
--	};
--};
--
--/* Flags for injecting specific smart errors */
--#define PDSM_SMART_INJECT_HEALTH_FATAL		(1 << 0)
--#define PDSM_SMART_INJECT_BAD_SHUTDOWN		(1 << 1)
--
--struct nd_papr_pdsm_smart_inject {
--	union {
--		struct {
--			/* One or more of PDSM_SMART_INJECT_ */
--			__u32 flags;
--			__u8 fatal_enable;
--			__u8 unsafe_shutdown_enable;
--		};
--		__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
--	};
--};
--
--/*
-- * Methods to be embedded in ND_CMD_CALL request. These are sent to the kernel
-- * via 'nd_cmd_pkg.nd_command' member of the ioctl struct
-- */
--enum papr_pdsm {
--	PAPR_PDSM_MIN = 0x0,
--	PAPR_PDSM_HEALTH,
--	PAPR_PDSM_SMART_INJECT,
--	PAPR_PDSM_MAX,
--};
--
--/* Maximal union that can hold all possible payload types */
--union nd_pdsm_payload {
--	struct nd_papr_pdsm_health health;
--	struct nd_papr_pdsm_smart_inject smart_inject;
--	__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
--} __packed;
--
--/*
-- * PDSM-header + payload expected with ND_CMD_CALL ioctl from libnvdimm
-- * Valid member of union 'payload' is identified via 'nd_cmd_pkg.nd_command'
-- * that should always precede this struct when sent to papr_scm via CMD_CALL
-- * interface.
-- */
--struct nd_pkg_pdsm {
--	__s32 cmd_status;	/* Out: Sub-cmd status returned back */
--	__u16 reserved[2];	/* Ignored and to be set as '0' */
--	union nd_pdsm_payload payload;
--} __packed;
--
--#endif /* _UAPI_ASM_POWERPC_PAPR_PDSM_H_ */
-diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
-index 1a53e048ceb7..362f1c77ccbb 100644
---- a/arch/powerpc/platforms/pseries/papr_scm.c
-+++ b/arch/powerpc/platforms/pseries/papr_scm.c
-@@ -16,7 +16,8 @@
- #include <linux/nd.h>
-
- #include <asm/plpar_wrappers.h>
--#include <asm/papr_pdsm.h>
-+#include <uapi/linux/papr_pdsm.h>
-+#include <linux/papr_scm.h>
- #include <asm/mce.h>
- #include <asm/unaligned.h>
- #include <linux/perf_event.h>
-@@ -29,46 +30,6 @@
- 	 (1ul << ND_CMD_SET_CONFIG_DATA) | \
- 	 (1ul << ND_CMD_CALL))
-
--/* DIMM health bitmap indicators */
--/* SCM device is unable to persist memory contents */
--#define PAPR_PMEM_UNARMED                   (1ULL << (63 - 0))
--/* SCM device failed to persist memory contents */
--#define PAPR_PMEM_SHUTDOWN_DIRTY            (1ULL << (63 - 1))
--/* SCM device contents are persisted from previous IPL */
--#define PAPR_PMEM_SHUTDOWN_CLEAN            (1ULL << (63 - 2))
--/* SCM device contents are not persisted from previous IPL */
--#define PAPR_PMEM_EMPTY                     (1ULL << (63 - 3))
--/* SCM device memory life remaining is critically low */
--#define PAPR_PMEM_HEALTH_CRITICAL           (1ULL << (63 - 4))
--/* SCM device will be garded off next IPL due to failure */
--#define PAPR_PMEM_HEALTH_FATAL              (1ULL << (63 - 5))
--/* SCM contents cannot persist due to current platform health status */
--#define PAPR_PMEM_HEALTH_UNHEALTHY          (1ULL << (63 - 6))
--/* SCM device is unable to persist memory contents in certain conditions */
--#define PAPR_PMEM_HEALTH_NON_CRITICAL       (1ULL << (63 - 7))
--/* SCM device is encrypted */
--#define PAPR_PMEM_ENCRYPTED                 (1ULL << (63 - 8))
--/* SCM device has been scrubbed and locked */
--#define PAPR_PMEM_SCRUBBED_AND_LOCKED       (1ULL << (63 - 9))
--
--/* Bits status indicators for health bitmap indicating unarmed dimm */
--#define PAPR_PMEM_UNARMED_MASK (PAPR_PMEM_UNARMED |		\
--				PAPR_PMEM_HEALTH_UNHEALTHY)
--
--/* Bits status indicators for health bitmap indicating unflushed dimm */
--#define PAPR_PMEM_BAD_SHUTDOWN_MASK (PAPR_PMEM_SHUTDOWN_DIRTY)
--
--/* Bits status indicators for health bitmap indicating unrestored dimm */
--#define PAPR_PMEM_BAD_RESTORE_MASK  (PAPR_PMEM_EMPTY)
--
--/* Bit status indicators for smart event notification */
--#define PAPR_PMEM_SMART_EVENT_MASK (PAPR_PMEM_HEALTH_CRITICAL | \
--				    PAPR_PMEM_HEALTH_FATAL |	\
--				    PAPR_PMEM_HEALTH_UNHEALTHY)
--
--#define PAPR_SCM_PERF_STATS_EYECATCHER __stringify(SCMSTATS)
--#define PAPR_SCM_PERF_STATS_VERSION 0x1
--
- /* Struct holding a single performance metric */
- struct papr_scm_perf_stat {
- 	u8 stat_id[8];
-diff --git a/include/linux/papr_scm.h b/include/linux/papr_scm.h
-new file mode 100644
-index 000000000000..eb36453813db
---- /dev/null
-+++ b/include/linux/papr_scm.h
-@@ -0,0 +1,49 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+#ifndef __LINUX_PAPR_SCM_H
-+#define __LINUX_PAPR_SCM_H
-+
-+/* DIMM health bitmap indicators */
-+/* SCM device is unable to persist memory contents */
-+#define PAPR_PMEM_UNARMED                   (1ULL << (63 - 0))
-+/* SCM device failed to persist memory contents */
-+#define PAPR_PMEM_SHUTDOWN_DIRTY            (1ULL << (63 - 1))
-+/* SCM device contents are persisted from previous IPL */
-+#define PAPR_PMEM_SHUTDOWN_CLEAN            (1ULL << (63 - 2))
-+/* SCM device contents are not persisted from previous IPL */
-+#define PAPR_PMEM_EMPTY                     (1ULL << (63 - 3))
-+/* SCM device memory life remaining is critically low */
-+#define PAPR_PMEM_HEALTH_CRITICAL           (1ULL << (63 - 4))
-+/* SCM device will be garded off next IPL due to failure */
-+#define PAPR_PMEM_HEALTH_FATAL              (1ULL << (63 - 5))
-+/* SCM contents cannot persist due to current platform health status */
-+#define PAPR_PMEM_HEALTH_UNHEALTHY          (1ULL << (63 - 6))
-+/* SCM device is unable to persist memory contents in certain conditions */
-+#define PAPR_PMEM_HEALTH_NON_CRITICAL       (1ULL << (63 - 7))
-+/* SCM device is encrypted */
-+#define PAPR_PMEM_ENCRYPTED                 (1ULL << (63 - 8))
-+/* SCM device has been scrubbed and locked */
-+#define PAPR_PMEM_SCRUBBED_AND_LOCKED       (1ULL << (63 - 9))
-+
-+#define PAPR_PMEM_SAVE_FAILED               (1ULL << (63 - 10))
-+
-+/* Bits status indicators for health bitmap indicating unarmed dimm */
-+#define PAPR_PMEM_UNARMED_MASK (PAPR_PMEM_UNARMED |            \
-+				PAPR_PMEM_HEALTH_UNHEALTHY)
-+
-+/* Bits status indicators for health bitmap indicating unflushed dimm */
-+#define PAPR_PMEM_BAD_SHUTDOWN_MASK (PAPR_PMEM_SHUTDOWN_DIRTY)
-+
-+/* Bits status indicators for health bitmap indicating unrestored dimm */
-+#define PAPR_PMEM_BAD_RESTORE_MASK  (PAPR_PMEM_EMPTY)
-+
-+/* Bit status indicators for smart event notification */
-+#define PAPR_PMEM_SMART_EVENT_MASK (PAPR_PMEM_HEALTH_CRITICAL | \
-+					PAPR_PMEM_HEALTH_FATAL | \
-+					PAPR_PMEM_HEALTH_UNHEALTHY)
-+
-+#define PAPR_PMEM_SAVE_MASK                (PAPR_PMEM_SAVE_FAILED)
-+
-+#define PAPR_SCM_PERF_STATS_EYECATCHER __stringify(SCMSTATS)
-+#define PAPR_SCM_PERF_STATS_VERSION 0x1
-+
-+#endif /* __LINUX_PAPR_SCM_H */
-diff --git a/include/uapi/linux/papr_pdsm.h b/include/uapi/linux/papr_pdsm.h
-new file mode 100644
-index 000000000000..17439925045c
---- /dev/null
-+++ b/include/uapi/linux/papr_pdsm.h
-@@ -0,0 +1,165 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+/*
-+ * PAPR nvDimm Specific Methods (PDSM) and structs for libndctl
-+ *
-+ * (C) Copyright IBM 2020
-+ *
-+ * Author: Vaibhav Jain <vaibhav at linux.ibm.com>
-+ */
-+
-+#ifndef _UAPI_ASM_POWERPC_PAPR_PDSM_H_
-+#define _UAPI_ASM_POWERPC_PAPR_PDSM_H_
-+
-+#include <linux/types.h>
-+#include <linux/ndctl.h>
-+
-+/*
-+ * PDSM Envelope:
-+ *
-+ * The ioctl ND_CMD_CALL exchange data between user-space and kernel via
-+ * envelope which consists of 2 headers sections and payload sections as
-+ * illustrated below:
-+ *  +-----------------+---------------+---------------------------+
-+ *  |   64-Bytes      |   8-Bytes     |       Max 184-Bytes       |
-+ *  +-----------------+---------------+---------------------------+
-+ *  | ND-HEADER       |  PDSM-HEADER  |      PDSM-PAYLOAD         |
-+ *  +-----------------+---------------+---------------------------+
-+ *  | nd_family       |               |                           |
-+ *  | nd_size_out     | cmd_status    |                           |
-+ *  | nd_size_in      | reserved      |     nd_pdsm_payload       |
-+ *  | nd_command      | payload   --> |                           |
-+ *  | nd_fw_size      |               |                           |
-+ *  | nd_payload ---> |               |                           |
-+ *  +---------------+-----------------+---------------------------+
-+ *
-+ * ND Header:
-+ * This is the generic libnvdimm header described as 'struct nd_cmd_pkg'
-+ * which is interpreted by libnvdimm before passed on to papr_scm. Important
-+ * member fields used are:
-+ * 'nd_family'		: (In) NVDIMM_FAMILY_PAPR_SCM
-+ * 'nd_size_in'		: (In) PDSM-HEADER + PDSM-IN-PAYLOAD (usually 0)
-+ * 'nd_size_out'        : (In) PDSM-HEADER + PDSM-RETURN-PAYLOAD
-+ * 'nd_command'         : (In) One of PAPR_PDSM_XXX
-+ * 'nd_fw_size'         : (Out) PDSM-HEADER + size of actual payload returned
-+ *
-+ * PDSM Header:
-+ * This is papr-scm specific header that precedes the payload. This is defined
-+ * as nd_cmd_pdsm_pkg.  Following fields aare available in this header:
-+ *
-+ * 'cmd_status'		: (Out) Errors if any encountered while servicing PDSM.
-+ * 'reserved'		: Not used, reserved for future and should be set to 0.
-+ * 'payload'            : A union of all the possible payload structs
-+ *
-+ * PDSM Payload:
-+ *
-+ * The layout of the PDSM Payload is defined by various structs shared between
-+ * papr_scm and libndctl so that contents of payload can be interpreted. As such
-+ * its defined as a union of all possible payload structs as
-+ * 'union nd_pdsm_payload'. Based on the value of 'nd_cmd_pkg.nd_command'
-+ * appropriate member of the union is accessed.
-+ */
-+
-+/* Max payload size that we can handle */
-+#define ND_PDSM_PAYLOAD_MAX_SIZE 184
-+
-+/* Max payload size that we can handle */
-+#define ND_PDSM_HDR_SIZE \
-+	(sizeof(struct nd_pkg_pdsm) - ND_PDSM_PAYLOAD_MAX_SIZE)
-+
-+/* Various nvdimm health indicators */
-+#define PAPR_PDSM_DIMM_HEALTHY       0
-+#define PAPR_PDSM_DIMM_UNHEALTHY     1
-+#define PAPR_PDSM_DIMM_CRITICAL      2
-+#define PAPR_PDSM_DIMM_FATAL         3
-+
-+/* struct nd_papr_pdsm_health.extension_flags field flags */
-+
-+/* Indicate that the 'dimm_fuel_gauge' field is valid */
-+#define PDSM_DIMM_HEALTH_RUN_GAUGE_VALID 1
-+
-+/* Indicate that the 'dimm_dsc' field is valid */
-+#define PDSM_DIMM_DSC_VALID 2
-+
-+/*
-+ * Struct exchanged between kernel & ndctl in for PAPR_PDSM_HEALTH
-+ * Various flags indicate the health status of the dimm.
-+ *
-+ * extension_flags	: Any extension fields present in the struct.
-+ * dimm_unarmed		: Dimm not armed. So contents wont persist.
-+ * dimm_bad_shutdown	: Previous shutdown did not persist contents.
-+ * dimm_bad_restore	: Contents from previous shutdown werent restored.
-+ * dimm_scrubbed	: Contents of the dimm have been scrubbed.
-+ * dimm_locked		: Contents of the dimm cant be modified until CEC reboot
-+ * dimm_encrypted	: Contents of dimm are encrypted.
-+ * dimm_health		: Dimm health indicator. One of PAPR_PDSM_DIMM_XXXX
-+ * dimm_fuel_gauge	: Life remaining of DIMM as a percentage from 0-100
-+ */
-+struct nd_papr_pdsm_health {
-+	union {
-+		struct {
-+			__u32 extension_flags;
-+			__u8 dimm_unarmed;
-+			__u8 dimm_bad_shutdown;
-+			__u8 dimm_bad_restore;
-+			__u8 dimm_scrubbed;
-+			__u8 dimm_locked;
-+			__u8 dimm_encrypted;
-+			__u16 dimm_health;
-+
-+			/* Extension flag PDSM_DIMM_HEALTH_RUN_GAUGE_VALID */
-+			__u16 dimm_fuel_gauge;
-+
-+			/* Extension flag PDSM_DIMM_DSC_VALID */
-+			__u64 dimm_dsc;
-+		};
-+		__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
-+	};
-+};
-+
-+/* Flags for injecting specific smart errors */
-+#define PDSM_SMART_INJECT_HEALTH_FATAL		(1 << 0)
-+#define PDSM_SMART_INJECT_BAD_SHUTDOWN		(1 << 1)
-+
-+struct nd_papr_pdsm_smart_inject {
-+	union {
-+		struct {
-+			/* One or more of PDSM_SMART_INJECT_ */
-+			__u32 flags;
-+			__u8 fatal_enable;
-+			__u8 unsafe_shutdown_enable;
-+		};
-+		__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
-+	};
-+};
-+
-+/*
-+ * Methods to be embedded in ND_CMD_CALL request. These are sent to the kernel
-+ * via 'nd_cmd_pkg.nd_command' member of the ioctl struct
-+ */
-+enum papr_pdsm {
-+	PAPR_PDSM_MIN = 0x0,
-+	PAPR_PDSM_HEALTH,
-+	PAPR_PDSM_SMART_INJECT,
-+	PAPR_PDSM_MAX,
-+};
-+
-+/* Maximal union that can hold all possible payload types */
-+union nd_pdsm_payload {
-+	struct nd_papr_pdsm_health health;
-+	struct nd_papr_pdsm_smart_inject smart_inject;
-+	__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
-+} __packed;
-+
-+/*
-+ * PDSM-header + payload expected with ND_CMD_CALL ioctl from libnvdimm
-+ * Valid member of union 'payload' is identified via 'nd_cmd_pkg.nd_command'
-+ * that should always precede this struct when sent to papr_scm via CMD_CALL
-+ * interface.
-+ */
-+struct nd_pkg_pdsm {
-+	__s32 cmd_status;	/* Out: Sub-cmd status returned back */
-+	__u16 reserved[2];	/* Ignored and to be set as '0' */
-+	union nd_pdsm_payload payload;
-+} __packed;
-+
-+#endif /* _UAPI_ASM_POWERPC_PAPR_PDSM_H_ */
-diff --git a/tools/testing/nvdimm/test/ndtest.c b/tools/testing/nvdimm/test/ndtest.c
-index b8419f460368..fa9d1327fc71 100644
---- a/tools/testing/nvdimm/test/ndtest.c
-+++ b/tools/testing/nvdimm/test/ndtest.c
-@@ -13,6 +13,8 @@
- #include <nd-core.h>
- #include <linux/printk.h>
- #include <linux/seq_buf.h>
-+#include <linux/papr_scm.h>
-+#include <uapi/linux/papr_pdsm.h>
-
- #include "../watermark.h"
- #include "nfit_test.h"
-diff --git a/tools/testing/nvdimm/test/ndtest.h b/tools/testing/nvdimm/test/ndtest.h
-index 2c54c9cbb90c..8f27ad6f7319 100644
---- a/tools/testing/nvdimm/test/ndtest.h
-+++ b/tools/testing/nvdimm/test/ndtest.h
-@@ -5,37 +5,6 @@
- #include <linux/platform_device.h>
- #include <linux/libnvdimm.h>
-
--/* SCM device is unable to persist memory contents */
--#define PAPR_PMEM_UNARMED                   (1ULL << (63 - 0))
--/* SCM device failed to persist memory contents */
--#define PAPR_PMEM_SHUTDOWN_DIRTY            (1ULL << (63 - 1))
--/* SCM device contents are not persisted from previous IPL */
--#define PAPR_PMEM_EMPTY                     (1ULL << (63 - 3))
--#define PAPR_PMEM_HEALTH_CRITICAL           (1ULL << (63 - 4))
--/* SCM device will be garded off next IPL due to failure */
--#define PAPR_PMEM_HEALTH_FATAL              (1ULL << (63 - 5))
--/* SCM contents cannot persist due to current platform health status */
--#define PAPR_PMEM_HEALTH_UNHEALTHY          (1ULL << (63 - 6))
--
--/* Bits status indicators for health bitmap indicating unarmed dimm */
--#define PAPR_PMEM_UNARMED_MASK (PAPR_PMEM_UNARMED |		\
--				PAPR_PMEM_HEALTH_UNHEALTHY)
--
--#define PAPR_PMEM_SAVE_FAILED                (1ULL << (63 - 10))
--
--/* Bits status indicators for health bitmap indicating unflushed dimm */
--#define PAPR_PMEM_BAD_SHUTDOWN_MASK (PAPR_PMEM_SHUTDOWN_DIRTY)
--
--/* Bits status indicators for health bitmap indicating unrestored dimm */
--#define PAPR_PMEM_BAD_RESTORE_MASK  (PAPR_PMEM_EMPTY)
--
--/* Bit status indicators for smart event notification */
--#define PAPR_PMEM_SMART_EVENT_MASK (PAPR_PMEM_HEALTH_CRITICAL | \
--				    PAPR_PMEM_HEALTH_FATAL |	\
--				    PAPR_PMEM_HEALTH_UNHEALTHY)
--
--#define PAPR_PMEM_SAVE_MASK                (PAPR_PMEM_SAVE_FAILED)
--
- struct ndtest_config;
-
- struct ndtest_priv {
+   drivers/cpufreq/amd-pstate-ut.c: In function 'amd_pstate_ut_check_freq':
+>> drivers/cpufreq/amd-pstate-ut.c:229:28: error: 'struct amd_cpudata' has no member named 'boost_supported'
+     229 |                 if (cpudata->boost_supported) {
+         |                            ^~
+   In file included from drivers/cpufreq/amd-pstate-ut.c:29:
+   include/linux/amd-pstate.h: At top level:
+   include/linux/amd-pstate.h:104:27: warning: 'amd_pstate_mode_string' defined but not used [-Wunused-const-variable=]
+     104 | static const char * const amd_pstate_mode_string[] = {
+         |                           ^~~~~~~~~~~~~~~~~~~~~~
 
 
+vim +229 drivers/cpufreq/amd-pstate-ut.c
+
+14eb1c96e3a3fd Meng Li        2022-08-17  193  
+14eb1c96e3a3fd Meng Li        2022-08-17  194  /*
+14eb1c96e3a3fd Meng Li        2022-08-17  195   * Check if frequency values are reasonable.
+14eb1c96e3a3fd Meng Li        2022-08-17  196   * max_freq >= nominal_freq > lowest_nonlinear_freq > min_freq > 0
+14eb1c96e3a3fd Meng Li        2022-08-17  197   * check max freq when set support boost mode.
+14eb1c96e3a3fd Meng Li        2022-08-17  198   */
+14eb1c96e3a3fd Meng Li        2022-08-17  199  static void amd_pstate_ut_check_freq(u32 index)
+14eb1c96e3a3fd Meng Li        2022-08-17  200  {
+14eb1c96e3a3fd Meng Li        2022-08-17  201  	int cpu = 0;
+14eb1c96e3a3fd Meng Li        2022-08-17  202  	struct cpufreq_policy *policy = NULL;
+14eb1c96e3a3fd Meng Li        2022-08-17  203  	struct amd_cpudata *cpudata = NULL;
+14eb1c96e3a3fd Meng Li        2022-08-17  204  
+14eb1c96e3a3fd Meng Li        2022-08-17  205  	for_each_possible_cpu(cpu) {
+14eb1c96e3a3fd Meng Li        2022-08-17  206  		policy = cpufreq_cpu_get(cpu);
+14eb1c96e3a3fd Meng Li        2022-08-17  207  		if (!policy)
+14eb1c96e3a3fd Meng Li        2022-08-17  208  			break;
+14eb1c96e3a3fd Meng Li        2022-08-17  209  		cpudata = policy->driver_data;
+14eb1c96e3a3fd Meng Li        2022-08-17  210  
+14eb1c96e3a3fd Meng Li        2022-08-17  211  		if (!((cpudata->max_freq >= cpudata->nominal_freq) &&
+14eb1c96e3a3fd Meng Li        2022-08-17  212  			(cpudata->nominal_freq > cpudata->lowest_nonlinear_freq) &&
+14eb1c96e3a3fd Meng Li        2022-08-17  213  			(cpudata->lowest_nonlinear_freq > cpudata->min_freq) &&
+14eb1c96e3a3fd Meng Li        2022-08-17  214  			(cpudata->min_freq > 0))) {
+14eb1c96e3a3fd Meng Li        2022-08-17  215  			amd_pstate_ut_cases[index].result = AMD_PSTATE_UT_RESULT_FAIL;
+14eb1c96e3a3fd Meng Li        2022-08-17  216  			pr_err("%s cpu%d max=%d >= nominal=%d > lowest_nonlinear=%d > min=%d > 0, the formula is incorrect!\n",
+14eb1c96e3a3fd Meng Li        2022-08-17  217  				__func__, cpu, cpudata->max_freq, cpudata->nominal_freq,
+14eb1c96e3a3fd Meng Li        2022-08-17  218  				cpudata->lowest_nonlinear_freq, cpudata->min_freq);
+60dd283804479c Swapnil Sapkal 2023-08-18  219  			goto skip_test;
+14eb1c96e3a3fd Meng Li        2022-08-17  220  		}
+14eb1c96e3a3fd Meng Li        2022-08-17  221  
+14eb1c96e3a3fd Meng Li        2022-08-17  222  		if (cpudata->min_freq != policy->min) {
+14eb1c96e3a3fd Meng Li        2022-08-17  223  			amd_pstate_ut_cases[index].result = AMD_PSTATE_UT_RESULT_FAIL;
+14eb1c96e3a3fd Meng Li        2022-08-17  224  			pr_err("%s cpu%d cpudata_min_freq=%d policy_min=%d, they should be equal!\n",
+14eb1c96e3a3fd Meng Li        2022-08-17  225  				__func__, cpu, cpudata->min_freq, policy->min);
+60dd283804479c Swapnil Sapkal 2023-08-18  226  			goto skip_test;
+14eb1c96e3a3fd Meng Li        2022-08-17  227  		}
+14eb1c96e3a3fd Meng Li        2022-08-17  228  
+14eb1c96e3a3fd Meng Li        2022-08-17 @229  		if (cpudata->boost_supported) {
+14eb1c96e3a3fd Meng Li        2022-08-17  230  			if ((policy->max == cpudata->max_freq) ||
+14eb1c96e3a3fd Meng Li        2022-08-17  231  					(policy->max == cpudata->nominal_freq))
+14eb1c96e3a3fd Meng Li        2022-08-17  232  				amd_pstate_ut_cases[index].result = AMD_PSTATE_UT_RESULT_PASS;
+14eb1c96e3a3fd Meng Li        2022-08-17  233  			else {
+14eb1c96e3a3fd Meng Li        2022-08-17  234  				amd_pstate_ut_cases[index].result = AMD_PSTATE_UT_RESULT_FAIL;
+14eb1c96e3a3fd Meng Li        2022-08-17  235  				pr_err("%s cpu%d policy_max=%d should be equal cpu_max=%d or cpu_nominal=%d !\n",
+14eb1c96e3a3fd Meng Li        2022-08-17  236  					__func__, cpu, policy->max, cpudata->max_freq,
+14eb1c96e3a3fd Meng Li        2022-08-17  237  					cpudata->nominal_freq);
+60dd283804479c Swapnil Sapkal 2023-08-18  238  				goto skip_test;
+14eb1c96e3a3fd Meng Li        2022-08-17  239  			}
+14eb1c96e3a3fd Meng Li        2022-08-17  240  		} else {
+14eb1c96e3a3fd Meng Li        2022-08-17  241  			amd_pstate_ut_cases[index].result = AMD_PSTATE_UT_RESULT_FAIL;
+14eb1c96e3a3fd Meng Li        2022-08-17  242  			pr_err("%s cpu%d must support boost!\n", __func__, cpu);
+60dd283804479c Swapnil Sapkal 2023-08-18  243  			goto skip_test;
+14eb1c96e3a3fd Meng Li        2022-08-17  244  		}
+60dd283804479c Swapnil Sapkal 2023-08-18  245  		cpufreq_cpu_put(policy);
+14eb1c96e3a3fd Meng Li        2022-08-17  246  	}
+14eb1c96e3a3fd Meng Li        2022-08-17  247  
+14eb1c96e3a3fd Meng Li        2022-08-17  248  	amd_pstate_ut_cases[index].result = AMD_PSTATE_UT_RESULT_PASS;
+60dd283804479c Swapnil Sapkal 2023-08-18  249  	return;
+60dd283804479c Swapnil Sapkal 2023-08-18  250  skip_test:
+60dd283804479c Swapnil Sapkal 2023-08-18  251  	cpufreq_cpu_put(policy);
+14eb1c96e3a3fd Meng Li        2022-08-17  252  }
+14eb1c96e3a3fd Meng Li        2022-08-17  253  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
