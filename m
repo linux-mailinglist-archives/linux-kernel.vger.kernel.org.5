@@ -1,214 +1,179 @@
-Return-Path: <linux-kernel+bounces-40970-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-40971-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D6A683E91F
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 02:51:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF4E483E923
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 02:51:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 19FB5B265DF
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 01:51:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E32641C209B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 01:51:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E375947A;
-	Sat, 27 Jan 2024 01:51:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCB0DB66C;
+	Sat, 27 Jan 2024 01:51:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W15xlWoR"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="1bMYiW8P"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD915944D
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 01:50:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BFDC8C14;
+	Sat, 27 Jan 2024 01:51:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706320260; cv=none; b=XL5o7bFTmFR5eBnhfp097+kIUqoGnZ0mP39sQ/x6uDBAqceMwnGNxjUYGol473seFO16gdCKdQK4/Oi1gWk3HIdcRNqPG71/v4G6m0Cv06MO4yfBUpWT/eQVETAoR0pVS0YRwhuJS5HoXmcUyA1c59O+MjE9na09C0SnFgexdvg=
+	t=1706320277; cv=none; b=J/2RrfqIRhXs5ybmCthzze6ZDqJ/cKAjennNnK0hrv2CWBX0X4a6v4uWA6R/14D7SoZBT/5mnbtqMgdwKARRhNhDRt0NE9+5pdqnZfTgRGu3+mD5Xxr5zzB6Lf4naCWzfnA8ZSoLjIkta6LuSp9SBXBRIK+AbrZegv6FQXwtOnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706320260; c=relaxed/simple;
-	bh=BnnJeZ4BTM80PQPwIVpnYMr36VU4wyw4EydrHn9OuFk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aFUufOL3Vr17vRDiHGTxGNRRWgpm7hE1IgFXz+jor/Gy4aBHBcNQHRb8eR8W+MkwYzjzHVNrr+lNZUtN5N3pbukuKLqIfJgwOW9ah/2TJi/4pUu/QlS3EU89tvs5IIcnB/hwcIkSKa0cQ5S8h9t9EyXJJKJc0OBcPcXGk/qsNMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W15xlWoR; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33924df7245so1305058f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jan 2024 17:50:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706320257; x=1706925057; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j3KL7omzR2YR5H0m3wzbipCveRvJiJv/pASMUWh3gAY=;
-        b=W15xlWoRS25VMrTYcKTxfF8U200qnP01XW8oqzqxN6wsuWLpqQ9qo5oFesf4SLkkMR
-         QuSjrGsVJd2n/7fMqkiAviwJdznxbK/vGQ+bgJjIYS6quwDeD+GVZ1+aYtAXlpLZp85k
-         /r5vlt+Ry+cobdg0hUmTJV/PrpeBlD11DnQHysH3NuHBouUMCYD16Kv1DqYfPjBnTTj+
-         wszeoUNTNMM2BuHLEQrd/E381glJwAAyETwk5HWVl409bVjR/iNau9/UQojPjR/s9udL
-         d4sBOBHPywCl4X+s251+R394BHLkNEkeJfG4Oj3mPsDW3XJ1b29GHGov9zj2TCeO/G83
-         4gCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706320257; x=1706925057;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j3KL7omzR2YR5H0m3wzbipCveRvJiJv/pASMUWh3gAY=;
-        b=r61JIvROHJoKDslhFisWMnBFuXJLuVtpClirp6rISM430altM/fw+jyk66PWa7fdSe
-         256JgP1+QhqQ7MbPex1lDzDIBe1BnEu3zrVIX0/4HPn0eTqn65X2tDwcL2wx8IlwpaC+
-         9T6TC90WnQTiPzHO4+U0W8frR5nOQhgd8EiUfP6PuuULtZkFUw8YpSQA2MAIZ9te6Kx1
-         bcS2dKp0H/gepCcUXIVZh9It9G3hyYL8TBYPfOf9AfN/NVoVH8XQq7t+xaHPqA6ekaEu
-         dJ5LoLS/reups4E0DftiYgDK2TD9/ouhOwupWULAV1d15KS9xwT2MIN/rFn+FYpcIUUh
-         BZXg==
-X-Gm-Message-State: AOJu0YxNEqR0RzX+RdHVnfnMpDPleZwCfrMrJz5dvo//O1pStQPwkBLz
-	hrA6uEfp9+Os1dNnDvQ9Bre/T93jV+JRpbqiIGCVOhk86oR/gE/dLHWVr9tK1UB6i9OaB6CHd5Y
-	cLjLDqkq9bSUfMz0cU7xRkq7LEpA=
-X-Google-Smtp-Source: AGHT+IF6EA1uHHXa9SQzgottx81xTzWh22Lm6Qzcn2k1JqhAXulDIjCqtrzFoKMaNwIXTXd1psxtsOcvSmftc4z3UtQ=
-X-Received: by 2002:adf:e34e:0:b0:337:a81a:a92 with SMTP id
- n14-20020adfe34e000000b00337a81a0a92mr381731wrj.16.1706320256834; Fri, 26 Jan
- 2024 17:50:56 -0800 (PST)
+	s=arc-20240116; t=1706320277; c=relaxed/simple;
+	bh=KZpDU/PEAGyFwGtY9AhJRKxcH3CF40SmBvZ9Xq2HTvQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kmPxyjYstJb9ncLIY444V4NRq6yUeby3OZH2P1wjqxzRsAxoSxWmBMobEp3YHsI0gGF7QEQZyW1rmzgELMpf890QHdZIeOuUUJ9vz/R8Qh3E6xTzzaSv2wsiAuFBZVpE2Ode3Owh++eeK6oLv+WWpcvUgBVZ6z6hqaBI5IbJXz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=1bMYiW8P; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=lxYFxs/8WK1pTjOIC0n7A2x231owOnOSLs3pwAFP9f4=; b=1bMYiW8PDwIA/3MpD5Mm8+w+B0
+	4HPN+fwJNQjcSaprS2W8q9+6vfk42Gb3sTsDNQ+pIabWuHzsqkf+98E96uvPutlmyddM+L/2qoMbC
+	NRpDaTwop0LKEeGTwntNwgBk2rSDpH2wGpjGjYhAlFzIEgmQ21ZJa+5nkOMlGFvsiJq+zMPrV7tBY
+	04hs3cdz9Xv5yNANmbKaCgEp4k5ZFkhxSN9PADo9l2iMGgP69sPl5nOYSRfLn2zNzmqgD0vY9LY0k
+	wxpO4av5GvnO5h4PVFD7WUt6tHeMBewPRm8f1NBGaTXuxJl4jvsXNNRyI01rOxD8P0/SttTdwfp9j
+	bxAUHJfg==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rTXqe-00000006Alx-2cQm;
+	Sat, 27 Jan 2024 01:51:08 +0000
+Message-ID: <e6b72dff-911e-4923-9996-b3b7db36fb8e@infradead.org>
+Date: Fri, 26 Jan 2024 17:51:06 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125094815.2041933-1-elver@google.com> <CA+fCnZfzpPvg3UXKfxhe8n-tT2Pqhfysy_HdrMb6MxaEtnJ2BQ@mail.gmail.com>
- <ZbO8yD_ofPQ1Z2NT@elver.google.com>
-In-Reply-To: <ZbO8yD_ofPQ1Z2NT@elver.google.com>
-From: Andrey Konovalov <andreyknvl@gmail.com>
-Date: Sat, 27 Jan 2024 02:50:46 +0100
-Message-ID: <CA+fCnZeD_UpKw+hMUY3rkTAkPqYvhFe85HP8LSZOHrv1DyQ-Ug@mail.gmail.com>
-Subject: Re: [PATCH 1/2] stackdepot: use variable size records for
- non-evictable entries
-To: Marco Elver <elver@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Alexander Potapenko <glider@google.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, Vlastimil Babka <vbabka@suse.cz>, 
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>, Vincenzo Frascino <vincenzo.frascino@arm.com>, 
-	linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 03/17] media: media-entity.h: Fix kerneldoc
+Content-Language: en-US
+To: Ricardo Ribalda <ribalda@chromium.org>,
+ Tiffany Lin <tiffany.lin@mediatek.com>,
+ Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+ Yunfei Dong <yunfei.dong@mediatek.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Hans Verkuil <hverkuil-cisco@xs4all.nl>, Hans Verkuil <hverkuil@xs4all.nl>,
+ Kieran Bingham <kieran.bingham@ideasonboard.com>,
+ Bin Liu <bin.liu@mediatek.com>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Philipp Zabel <p.zabel@pengutronix.de>,
+ Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+ Vikash Garodia <quic_vgarodia@quicinc.com>,
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Alim Akhtar <alim.akhtar@samsung.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Andrzej Hajda <andrzej.hajda@intel.com>, Bingbu Cao <bingbu.cao@intel.com>,
+ Tianshu Qiu <tian.shu.qiu@intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+ linux-samsung-soc@vger.kernel.org, linux-staging@lists.linux.dev,
+ linux-amlogic@lists.infradead.org
+References: <20240126-gix-mtk-warnings-v1-0-eed7865fce18@chromium.org>
+ <20240126-gix-mtk-warnings-v1-3-eed7865fce18@chromium.org>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240126-gix-mtk-warnings-v1-3-eed7865fce18@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jan 26, 2024 at 3:08=E2=80=AFPM Marco Elver <elver@google.com> wrot=
-e:
->
-> On Thu, Jan 25, 2024 at 11:35PM +0100, Andrey Konovalov wrote:
-> [...]
-> > I wonder if we should separate the stat counters for
-> > evictable/non-evictable cases. For non-evictable, we could count the
-> > amount of consumed memory.
-> [...]
-> >
-> > We can also now drop the special case for DEPOT_POOLS_CAP for KMSAN.
-> >
-> > Otherwise, looks good to me.
-> >
-> > Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
-> >
-> > Thank you for cleaning this up!
->
-> Thanks - probably will add this change for v2:
->
-> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-> index 1b0d948a053c..8f3b2c84ec2d 100644
-> --- a/lib/stackdepot.c
-> +++ b/lib/stackdepot.c
-> @@ -44,17 +44,7 @@
->  #define DEPOT_OFFSET_BITS (DEPOT_POOL_ORDER + PAGE_SHIFT - DEPOT_STACK_A=
-LIGN)
->  #define DEPOT_POOL_INDEX_BITS (DEPOT_HANDLE_BITS - DEPOT_OFFSET_BITS - \
->                                STACK_DEPOT_EXTRA_BITS)
-> -#if IS_ENABLED(CONFIG_KMSAN) && CONFIG_STACKDEPOT_MAX_FRAMES >=3D 32
-> -/*
-> - * KMSAN is frequently used in fuzzing scenarios and thus saves a lot of=
- stack
-> - * traces. As KMSAN does not support evicting stack traces from the stac=
-k
-> - * depot, the stack depot capacity might be reached quickly with large s=
-tack
-> - * records. Adjust the maximum number of stack depot pools for this case=
-.
-> - */
-> -#define DEPOT_POOLS_CAP (8192 * (CONFIG_STACKDEPOT_MAX_FRAMES / 16))
-> -#else
->  #define DEPOT_POOLS_CAP 8192
-> -#endif
->  #define DEPOT_MAX_POOLS \
->         (((1LL << (DEPOT_POOL_INDEX_BITS)) < DEPOT_POOLS_CAP) ? \
->          (1LL << (DEPOT_POOL_INDEX_BITS)) : DEPOT_POOLS_CAP)
-> @@ -128,18 +118,22 @@ static DEFINE_RAW_SPINLOCK(pool_lock);
->
->  /* Statistics counters for debugfs. */
->  enum depot_counter_id {
-> -       DEPOT_COUNTER_ALLOCS,
-> -       DEPOT_COUNTER_FREES,
-> -       DEPOT_COUNTER_INUSE,
-> +       DEPOT_COUNTER_REFD_ALLOCS,
-> +       DEPOT_COUNTER_REFD_FREES,
-> +       DEPOT_COUNTER_REFD_INUSE,
->         DEPOT_COUNTER_FREELIST_SIZE,
-> +       DEPOT_COUNTER_PERSIST_COUNT,
-> +       DEPOT_COUNTER_PERSIST_BYTES,
->         DEPOT_COUNTER_COUNT,
->  };
->  static long counters[DEPOT_COUNTER_COUNT];
->  static const char *const counter_names[] =3D {
-> -       [DEPOT_COUNTER_ALLOCS]          =3D "allocations",
-> -       [DEPOT_COUNTER_FREES]           =3D "frees",
-> -       [DEPOT_COUNTER_INUSE]           =3D "in_use",
-> +       [DEPOT_COUNTER_REFD_ALLOCS]     =3D "refcounted_allocations",
-> +       [DEPOT_COUNTER_REFD_FREES]      =3D "refcounted_frees",
-> +       [DEPOT_COUNTER_REFD_INUSE]      =3D "refcounted_in_use",
->         [DEPOT_COUNTER_FREELIST_SIZE]   =3D "freelist_size",
-> +       [DEPOT_COUNTER_PERSIST_COUNT]   =3D "persistent_count",
-> +       [DEPOT_COUNTER_PERSIST_BYTES]   =3D "persistent_bytes",
->  };
->  static_assert(ARRAY_SIZE(counter_names) =3D=3D DEPOT_COUNTER_COUNT);
->
-> @@ -388,7 +382,7 @@ static struct stack_record *depot_pop_free_pool(void =
-**prealloc, size_t size)
->         return stack;
->  }
->
-> -/* Try to find next free usable entry. */
-> +/* Try to find next free usable entry from the freelist. */
->  static struct stack_record *depot_pop_free(void)
->  {
->         struct stack_record *stack;
-> @@ -466,9 +460,13 @@ depot_alloc_stack(unsigned long *entries, int nr_ent=
-ries, u32 hash, depot_flags_
->
->         if (flags & STACK_DEPOT_FLAG_GET) {
->                 refcount_set(&stack->count, 1);
-> +               counters[DEPOT_COUNTER_REFD_ALLOCS]++;
-> +               counters[DEPOT_COUNTER_REFD_INUSE]++;
->         } else {
->                 /* Warn on attempts to switch to refcounting this entry. =
-*/
->                 refcount_set(&stack->count, REFCOUNT_SATURATED);
-> +               counters[DEPOT_COUNTER_PERSIST_COUNT]++;
-> +               counters[DEPOT_COUNTER_PERSIST_BYTES] +=3D record_size;
->         }
->
->         /*
-> @@ -477,8 +475,6 @@ depot_alloc_stack(unsigned long *entries, int nr_entr=
-ies, u32 hash, depot_flags_
->          */
->         kmsan_unpoison_memory(stack, record_size);
->
-> -       counters[DEPOT_COUNTER_ALLOCS]++;
-> -       counters[DEPOT_COUNTER_INUSE]++;
->         return stack;
->  }
->
-> @@ -546,8 +542,8 @@ static void depot_free_stack(struct stack_record *sta=
-ck)
->         list_add_tail(&stack->free_list, &free_stacks);
->
->         counters[DEPOT_COUNTER_FREELIST_SIZE]++;
-> -       counters[DEPOT_COUNTER_FREES]++;
-> -       counters[DEPOT_COUNTER_INUSE]--;
-> +       counters[DEPOT_COUNTER_REFD_FREES]++;
-> +       counters[DEPOT_COUNTER_REFD_INUSE]--;
->
->         printk_deferred_exit();
->         raw_spin_unlock_irqrestore(&pool_lock, flags);
 
-Looks good to me, thanks!
+
+On 1/26/24 15:16, Ricardo Ribalda wrote:
+> The fields seems to be documented twice.
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> ---
+>  include/media/media-entity.h | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> diff --git a/include/media/media-entity.h b/include/media/media-entity.h
+> index 2b6cd343ee9e..c79176ed6299 100644
+> --- a/include/media/media-entity.h
+> +++ b/include/media/media-entity.h
+> @@ -337,10 +337,6 @@ enum media_entity_type {
+>   * @info.dev:	Contains device major and minor info.
+>   * @info.dev.major: device node major, if the device is a devnode.
+>   * @info.dev.minor: device node minor, if the device is a devnode.
+> - * @major:	Devnode major number (zero if not applicable). Kept just
+> - *		for backward compatibility.
+> - * @minor:	Devnode minor number (zero if not applicable). Kept just
+> - *		for backward compatibility.
+>   *
+>   * .. note::
+>   *
+> 
+
+I'd say that this is correct based on
+https://patchwork.kernel.org/project/linux-media/patch/20231223050707.14091-1-rdunlap@infradead.org/
+
+
+Hans, can you please explain this message from you, on 2024-Jan-22, that I cannot find in the media patchwork:
+
+
+Subject: [git:media_stage/master] media: media-entity.h: fix Excess kernel-doc description warnings
+
+
+
+This is an automatic generated email to let you know that the following patch were queued:
+
+Subject: media: media-entity.h: fix Excess kernel-doc description warnings
+Author:  Randy Dunlap <rdunlap@infradead.org>
+Date:    Fri Dec 22 21:07:07 2023 -0800
+
+Remove the @major: and @minor: lines to prevent the kernel-doc warnings:
+
+include/media/media-entity.h:376: warning: Excess struct member 'major' description in 'media_entity'
+include/media/media-entity.h:376: warning: Excess struct member 'minor' description in 'media_entity'
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+
+ include/media/media-entity.h | 4 ----
+ 1 file changed, 4 deletions(-)
+
+---
+
+diff --git a/include/media/media-entity.h b/include/media/media-entity.h
+index 2b6cd343ee9e..c79176ed6299 100644
+--- a/include/media/media-entity.h
++++ b/include/media/media-entity.h
+@@ -337,10 +337,6 @@ enum media_entity_type {
+  * @info.dev:	Contains device major and minor info.
+  * @info.dev.major: device node major, if the device is a devnode.
+  * @info.dev.minor: device node minor, if the device is a devnode.
+- * @major:	Devnode major number (zero if not applicable). Kept just
+- *		for backward compatibility.
+- * @minor:	Devnode minor number (zero if not applicable). Kept just
+- *		for backward compatibility.
+  *
+  * .. note::
+  *
+
+
+
+Thanks.
+-- 
+#Randy
 
