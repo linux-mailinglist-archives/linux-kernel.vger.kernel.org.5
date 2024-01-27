@@ -1,53 +1,86 @@
-Return-Path: <linux-kernel+bounces-41381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00E3683EFD4
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 20:48:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D14E183EFD8
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 20:51:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23A101C22ED5
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 19:48:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0174A1C228DB
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 19:51:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFAE72E634;
-	Sat, 27 Jan 2024 19:48:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE31864A;
+	Sat, 27 Jan 2024 19:51:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=zytor.com header.i=@zytor.com header.b="GB1KW9Qu"
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="Ynmg5jif";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="QFZf5DrC"
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC3A2E626;
-	Sat, 27 Jan 2024 19:48:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A98B414AB0;
+	Sat, 27 Jan 2024 19:51:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.29
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706384891; cv=none; b=dY+uNlROQ/tJNYzSHTSLWUvd25FSBb5YfHBhGIPKaDDQDq6lfjtOsUxpfe20vIA40o5hxU9Ch5PgMm0k/vxXktwK9NYqnQ8Vyvms72kdKYkrxl4tdi2ZCav8jk7PfjaILrNabuUzmxX+koPIe6njdImF5oJGwzrWJweDTARBaIA=
+	t=1706385064; cv=none; b=i88kxMEn16FfL9BMw8OKBUTM8BZXoWLJYn/CYxZEp+DvDedXFP5e1RL1P8QDUlLMlmby4lVicMgXeACHr9m7Ltj8Dgtx/h5wSlsvtLlV96XD+gHd4VFRdmU+MdEct0vd4cWfuhKEaMGHH4OCYarZpCVBnlFMMq8/gy9EU4zopzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706384891; c=relaxed/simple;
-	bh=rdgatAYjjoEr2tTsPC9ZlGPbaVz0FL4qRco3vhj96KA=;
+	s=arc-20240116; t=1706385064; c=relaxed/simple;
+	bh=wrKLrNOoOGi1Scl6PQrNxqhLPOyWttVYNowKaTpIVJs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Zc57jJ5FkST8nXdTyXQjVPCniVkoPIdIqKVmKEHFHIrZSyaFjkfW9NQOPhOAVFjVxzRhRa8gg27KZNCYonIZdsdEBf3tHdm+9E8OeE3WJoOHdHqa0Ik6ol6c3R7FiwmER74/lFDfhC52yTWg+u1UGoyub5RJ17nJzTN55OsIKfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=GB1KW9Qu; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [192.168.7.187] ([73.202.249.128])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 40RJlSfj1287190
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Sat, 27 Jan 2024 11:47:29 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 40RJlSfj1287190
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2024011201; t=1706384850;
-	bh=vdtoRWtPevl85cGDyBhkbuw0MUYwEA7T+UstKWSXl+Y=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=GB1KW9QuxS/8pv1y+9J3h2s6K3yAwQESMnDTyQ2bE+QRkLHGBtR1bKB50138Qfxb3
-	 kS+xQNb9L24IuqpFr0H8m0cFXSYHa/EMsUcVm95lWt6VyLDIV6WtjMbxzpJ/zzSePA
-	 D5g/tiVxfZRmmN64rOzP9xNKtPTeb7HHvmzfTvl+z+ngliO9wEUnwi6uudl/nw676F
-	 tj3AjZq/62h9WTZazeObprQLh/1OVZTLj17tJtEmWLcXs5XqAlbtwBabKbkbapQKVc
-	 4kDvv83s/alDDPD705Mcij5IqhTzlolZKYW5CMHr3vTKF841a1HdaeDmJhaUjLhMOG
-	 OZ49cuEMaR+NQ==
-Message-ID: <30966e59-d757-43f2-a89b-75bf41426611@zytor.com>
-Date: Sat, 27 Jan 2024 11:47:26 -0800
+	 In-Reply-To:Content-Type; b=XrxG6/yOohL/ihurC6958eAmB6K5MRPyyyZuq1PZKJgZSp3UQH8TAiC46COiqSGdFgPgQ6yBuQhzQPkgXKOTavd1Kf8d2ZoK7bmihFmkdb/pmkSpHVlBDPX+6l6bShlTGn+vxBzpzRUQ3OfiucKwv0/WAqrrAB0rUOShTAV4DK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com; spf=pass smtp.mailfrom=flygoat.com; dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b=Ynmg5jif; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=QFZf5DrC; arc=none smtp.client-ip=66.111.4.29
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailout.nyi.internal (Postfix) with ESMTP id 9ABA45C00B9;
+	Sat, 27 Jan 2024 14:51:00 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Sat, 27 Jan 2024 14:51:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1706385060;
+	 x=1706471460; bh=ZSWlcrKfahlCoAOYqiTq12Gh5vrCNnHbyzpOV80pl2E=; b=
+	Ynmg5jifNzoYkXlKSZe9FVYS4z8xCnWGyUMxseXvEIQ12wylvdUiZewN0Ug/tVJa
+	A7eY1/ypYU0SYKcSuT5kVM5pSqF1JSXQ/QYB2AqrS7d3weDtlDN63GKpK0t8JSR2
+	1rw/UITThr6VV9A4xs+4dbF+gSY0y6TOWf3lprC7VO79+pQuXWQ3q5eWsNC5RHlU
+	wR9vJ80UGnkFPBSbgBWsh4V7kRkrl9LpubSIVcMew+Nmrxul1gqxrKYjFbemygeh
+	9/xIi9RfDUV1xJaFproMeqg9Qnm5yh/gdNXAKZnPi1Pi++HUAK80hdTZu+1m1D0m
+	AOUVKsEIsJ2e6Ee//byLtg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706385060; x=
+	1706471460; bh=ZSWlcrKfahlCoAOYqiTq12Gh5vrCNnHbyzpOV80pl2E=; b=Q
+	FZf5DrCulON30Hxz+AnI/LNo3x2kjIO7jTyePrdr8Ie0+iURiqBMLYmo0bKXl9wC
+	drGghd0vIVrFIDmRrKx5bT0HNLPqKcGUt9AojvJSwSo1cJLppb/tvFzZtZpX0++v
+	RIRBYSSmv6qFDn9Y6xRudTvM9ZupBFE1FrPMzDR+YArP6Z3zhgG0I13FOharv3sV
+	1G/u3211S0GK0htGZzYqzVGCBu16MS8uw1xb2Pu86/pn/IV/0BUVN4Q1UnSjOj17
+	mOZeBQGP4culZ0UzcPsHGcA5WFnBsrNY9FT3jLsJI5sLkhAL3kwwVc8fwkxY/W0l
+	kDJAMZqTMPhrk4VBozbOw==
+X-ME-Sender: <xms:pF61ZXuto2mHOWAYm4HbHdib5LdHcAZY3WGspbxyToNHO4BdWZJoFw>
+    <xme:pF61ZYd75-eep0lPE0UvFQMMu-NrwqJdof4PYSsXTaPNTk7wp3YC1kSUUnIrYZiP5
+    TyzeGb6Nm8KPzIvrpw>
+X-ME-Received: <xmr:pF61Zaw6X6C8o9NGQNVQRYT37P8bATmfCe-vA2shjIK9fEz7-4StyDAtAPUbjOchIZ4FQVUHxYlK1KB5UDzBA02LdaA0WZr30JhfRHE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdelledguddvkecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefkffggfgfuvfevfhfhjggtgfesthekredttddvjeenucfhrhhomheplfhi
+    rgiguhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqe
+    enucggtffrrghtthgvrhhnpeelueffheehgeeluedvlefghfeukeejteeuveeuhffftdfg
+    uefhgefgueekffeftdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:pF61ZWPvtVqcwXdSG-Anb95CpZNt9qQ0m-CvnUlt6EIizI6-vtnJoA>
+    <xmx:pF61ZX-jEdqZEcjF5Z9WScizyw1S1nbHpvlEC_j69t1L50QIDRP6sQ>
+    <xmx:pF61ZWVTYQ6DuaQZ5DZDei4EKM3lMlz2YmYCCaIy5GwlVIMV4l-nxw>
+    <xmx:pF61ZabgmPs9Ibt2vh3muRYqZOVGYYuwieHaeZHcs6fHLNmuPrcIpg>
+Feedback-ID: ifd894703:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 27 Jan 2024 14:50:59 -0500 (EST)
+Message-ID: <b365fa0a-845c-4698-bf37-9b8a15fd9f98@flygoat.com>
+Date: Sat, 27 Jan 2024 19:50:57 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,138 +88,181 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/2] x86/kprobes: Prohibit kprobing on INT and UD
-To: Jinghao Jia <jinghao7@illinois.edu>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc: linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240127044124.57594-1-jinghao7@illinois.edu>
- <20240127044124.57594-2-jinghao7@illinois.edu>
+Subject: Re: [PATCH 1/1] MIPS: move unselectable entries out of the "CPU type"
+ choice
+To: Masahiro Yamada <masahiroy@kernel.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-mips@vger.kernel.org
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240127162309.1026549-1-masahiroy@kernel.org>
+ <20240127162309.1026549-2-masahiroy@kernel.org>
 Content-Language: en-US
-From: Xin Li <xin@zytor.com>
-Autocrypt: addr=xin@zytor.com; keydata=
- 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
- l75w1xInsg==
-In-Reply-To: <20240127044124.57594-2-jinghao7@illinois.edu>
+From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Autocrypt: addr=jiaxun.yang@flygoat.com;
+ keydata= xsFNBFnp/kwBEADEHKlSYJNLpFE1HPHfvsxjggAIK3ZtHTj5iLuRkEHDPiyyiLtmIgimmD3+
+ XN/uu2k1FFbrYiYgMjpGCXeRtdCLqkd+g9V4kYMlgi4MPHLt3XEuHcoKD1Yd2qYPT/OiQeGM
+ 6bPtGUZlgfOpze1XuqHQ2VMWATL+kLYzk6FUUL715t8J5J9TgZBvSy8zc6gvpp3awsCwjFSv
+ X3fiPMTC2dIiiMh4rKQKGboI1c7svgu6blHpy/Q5pXlEVqfLc7tFTGnvUp95jsK639GD8Ht3
+ 0fSBxHGrTslrT775Aqi+1IsbJKBOmxIuU9eUGBUaZ00beGE09ovxiz2n2JKXKKZklNqhzifb
+ 6uyVCOKdckR8uGqzRuohxDS7vlDZfFD5Z5OhplFY/9q+2IjCrWMmbHGSWYs9VV52XGM+wiEG
+ sM5bup03N2q1kDXUWJ+zNNYowuOJKN9uxF3jBjdXSDi3uJu/ZUL/mBqI58SkHq5NTaHypRoE
+ 5BxVmgDMCGQe93adKHUNmt4HK28R506S7019+umg1bq5vA/ncmh/J2k8MFGPXqO8t1xVI2O5
+ qrRheRKu1oST46ZJ7vKET1UwgcXTZ1iwqFlA26/iKxXoL7R7/AqWrapokEsUzRblGcutGZ/b
+ 4lJVOxxAWaRcajpWvwqscI2mUF++O7DxYbhOJ/EFY2rv0i6+/QARAQABzSVKaWF4dW4gWWFu
+ ZyA8amlheHVuLnlhbmdAZmx5Z29hdC5jb20+wsGRBBMBCAA7AhsjAh4BAheABQsJCAcCBhUK
+ CQgLAgQWAgMBFiEEmAN5vv6/v0d+oE75wRGUkHP8D2cFAmKcjj8CGQEACgkQwRGUkHP8D2fx
+ LxAAuNjknjfMBXIwEDpY+L2KMMU4V5rvTBATQ0dHZZzTlmTJuEduj/YdlVo0uTClRr9qkfEr
+ Nfdr/YIS6BN6Am1x6nF2PAqHu/MkTNNFSAFiABh35hcm032jhrZVqLgAPLeydwQguIR8KXQB
+ pP6S/jL3c7mUvVkoYy2g5PE1eH1MPeBwkg/r/ib9qNJSTuJH3SXnfZ4zoynvf3ipqnHsn2Sa
+ 90Ta0Bux6ZgXIVlTL+LRDU88LISTpjBITyzn5F6fNEArxNDQFm4yrbPNbpWJXml50AWqsywp
+ q9jRpu9Ly4qX2szkruJ/EnnAuS/FbEd4Agx2KZFb6LxxGAr4useXn6vab9p1bwRVBzfiXzqR
+ WeTRAqwmJtdvzyo3tpkLmNC/jC3UsjqgfyBtiDSQzq0pSu7baOjvCGiRgeDCRSWq/T3HGZug
+ 02QAi0Wwt/k5DX7jJS4Z5AAkfimXG3gq2nhiA6R995bYRyO8nIa+jmkMlYRFkwWdead3i/a0
+ zrtUyfZnIyWxUOsqHrfsN45rF2b0wHGpnFUfnR3Paa4my1uuwfp4BI6ZDVSVjz0oFBJ5y39A
+ DCvFSpJkiJM/q71Erhyqn6c1weRnMok3hmG0rZ8RCSh5t7HllmyUUWe4OT97d5dhI7K/rnhc
+ ze8vkrTNT6/fOvyPFqpSgYRDXGz2qboX/P6MG3zOOARlnqgjEgorBgEEAZdVAQUBAQdAUBqi
+ bYcf0EGVya3wlwRABMwYsMimlsLEzvE4cKwoZzEDAQgHwsF2BBgBCAAgFiEEmAN5vv6/v0d+
+ oE75wRGUkHP8D2cFAmWeqCMCGwwACgkQwRGUkHP8D2dXlw/8CGKNXDloh1d7v/jDgcPPmlXd
+ lQ4hssICgi6D+9aj3qYChIyuaNncRsUEOYvTmZoCHgQ6ymUUUBDuuog1KpuP3Ap8Pa3r5Tr6
+ TXtOl6Zi23ZWsrmthuYtJ8Yn5brxs6KQ5k4vCTkbF8ukue4Xl4O0RVlaIgJihJHZTfd9rUZy
+ QugM8X98iLuUqYHCq2bAXHOq9h+mTLrhdy09dUalFyhOVejWMftULGfoXnRVz6OaHSBjTz5P
+ HwZDAFChOUUR6vh31Lac2exTqtY/g+TjiUbXUPDEzN4mENACF/Aw+783v5CSEkSNYNxrCdt8
+ 5+MRdhcj7y1wGfnSsKubHTOkBQJSanNr0cZZlPsJK0gxB2YTG6Nin13oX8mV7sAa3vBqqwfj
+ ZtjNA+Up9IJY4Iz5upykUDAtCcvm82UnJoe5bMuoiyVccuqd5K/058AAxWv8fIvB4bSgmGMM
+ aAN9l7GLyi4NhsKCCcAGSc2YAsxFrH6whVqY6JIF+08n1kur5ULrEKHpTTeffwajCgZPWpFc
+ 7Mg2PDpoOwdpKLKlmIpyDexGVH0Lj/ycBL8ujDYZ2tA9HhEaO4dW6zsQyt1v6mZffpWK+ZXb
+ Cs8oFeACbrtNFF0nhNI6LUPH3oaVOkUoRQUYDuX6mIc4VTwMA8EoZlueKEHfZIKrRf2QYbOZ
+ HVO98ZmbMeg=
+In-Reply-To: <20240127162309.1026549-2-masahiroy@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 1/26/2024 8:41 PM, Jinghao Jia wrote:
-> Both INTs (INT n, INT1, INT3, INTO) and UDs (UD0, UD1, UD2) serve
-> special purposes in the kernel, e.g., INT3 is used by KGDB and UD2 is
-> involved in LLVM-KCFI instrumentation. At the same time, attaching
-> kprobes on these instructions (particularly UDs) will pollute the stack
-> trace dumped in the kernel ring buffer, since the exception is triggered
-> in the copy buffer rather than the original location.
-> 
-> Check for INTs and UDs in can_probe and reject any kprobes trying to
-> attach to these instructions.
-> 
-> Suggested-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> Signed-off-by: Jinghao Jia <jinghao7@illinois.edu>
+
+
+在 2024/1/27 16:23, Masahiro Yamada 写道:
+> Move the following entries out of the "CPU type" choice:
+>
+>   - LOONGSON3_ENHANCEMENT
+>   - CPU_LOONGSON3_WORKAROUNDS
+>   - CPU_LOONGSON3_CPUCFG_EMULATION
+>
+> These entries cannot be selected from the choice because they depend on
+> CPU_LOONGSON64, which is also located in the same choice.
+>
+> In fact, Kconfig does not consider them as choice values because they
+> become children of CPU_LOOONGSON64 due to the automatic submenu creation
+> in menu_finalize().
+>
+> However, it is hard to understand this behavior unless you are familiar
+> with the Kconfig internals.
+>
+> "choice" should contain only selectable entries.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+
+Thanks!
 > ---
->   arch/x86/kernel/kprobes/core.c | 33 ++++++++++++++++++++++++++-------
->   1 file changed, 26 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-> index e8babebad7b8..792b38d22126 100644
-> --- a/arch/x86/kernel/kprobes/core.c
-> +++ b/arch/x86/kernel/kprobes/core.c
-> @@ -252,6 +252,22 @@ unsigned long recover_probed_instruction(kprobe_opcode_t *buf, unsigned long add
->   	return __recover_probed_insn(buf, addr);
->   }
+>
+>   arch/mips/Kconfig | 76 +++++++++++++++++++++++------------------------
+>   1 file changed, 38 insertions(+), 38 deletions(-)
+>
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index 797ae590ebdb..a70b4f959fb1 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -1269,44 +1269,6 @@ config CPU_LOONGSON64
+>   	  3B1000, 3B1500, 3A2000, 3A3000 and 3A4000) processors. However, old
+>   	  Loongson-2E/2F is not covered here and will be removed in future.
 >   
-> +static inline int is_exception_insn(struct insn *insn)
-
-s/int/bool
-
-> +{
-> +	if (insn->opcode.bytes[0] == 0x0f) {
-> +		/* UD0 / UD1 / UD2 */
-> +		return insn->opcode.bytes[1] == 0xff ||
-> +		       insn->opcode.bytes[1] == 0xb9 ||
-> +		       insn->opcode.bytes[1] == 0x0b;
-> +	} else {
-> +		/* INT3 / INT n / INTO / INT1 */
-> +		return insn->opcode.bytes[0] == 0xcc ||
-> +		       insn->opcode.bytes[0] == 0xcd ||
-> +		       insn->opcode.bytes[0] == 0xce ||
-> +		       insn->opcode.bytes[0] == 0xf1;
-> +	}
-> +}
-> +
->   /* Check if paddr is at an instruction boundary */
->   static int can_probe(unsigned long paddr)
->   {
-> @@ -294,6 +310,16 @@ static int can_probe(unsigned long paddr)
->   #endif
->   		addr += insn.length;
->   	}
-> +	__addr = recover_probed_instruction(buf, addr);
-> +	if (!__addr)
-> +		return 0;
-> +
-> +	if (insn_decode_kernel(&insn, (void *)__addr) < 0)
-> +		return 0;
-> +
-> +	if (is_exception_insn(&insn))
-> +		return 0;
-> +
->   	if (IS_ENABLED(CONFIG_CFI_CLANG)) {
->   		/*
->   		 * The compiler generates the following instruction sequence
-> @@ -308,13 +334,6 @@ static int can_probe(unsigned long paddr)
->   		 * Also, these movl and addl are used for showing expected
->   		 * type. So those must not be touched.
->   		 */
-> -		__addr = recover_probed_instruction(buf, addr);
-> -		if (!__addr)
-> -			return 0;
+> -config LOONGSON3_ENHANCEMENT
+> -	bool "New Loongson-3 CPU Enhancements"
+> -	default n
+> -	depends on CPU_LOONGSON64
+> -	help
+> -	  New Loongson-3 cores (since Loongson-3A R2, as opposed to Loongson-3A
+> -	  R1, Loongson-3B R1 and Loongson-3B R2) has many enhancements, such as
+> -	  FTLB, L1-VCache, EI/DI/Wait/Prefetch instruction, DSP/DSPr2 ASE, User
+> -	  Local register, Read-Inhibit/Execute-Inhibit, SFB (Store Fill Buffer),
+> -	  Fast TLB refill support, etc.
 > -
-> -		if (insn_decode_kernel(&insn, (void *)__addr) < 0)
-> -			return 0;
+> -	  This option enable those enhancements which are not probed at run
+> -	  time. If you want a generic kernel to run on all Loongson 3 machines,
+> -	  please say 'N' here. If you want a high-performance kernel to run on
+> -	  new Loongson-3 machines only, please say 'Y' here.
 > -
->   		if (insn.opcode.value == 0xBA)
->   			offset = 12;
->   		else if (insn.opcode.value == 0x3)
+> -config CPU_LOONGSON3_WORKAROUNDS
+> -	bool "Loongson-3 LLSC Workarounds"
+> -	default y if SMP
+> -	depends on CPU_LOONGSON64
+> -	help
+> -	  Loongson-3 processors have the llsc issues which require workarounds.
+> -	  Without workarounds the system may hang unexpectedly.
+> -
+> -	  Say Y, unless you know what you are doing.
+> -
+> -config CPU_LOONGSON3_CPUCFG_EMULATION
+> -	bool "Emulate the CPUCFG instruction on older Loongson cores"
+> -	default y
+> -	depends on CPU_LOONGSON64
+> -	help
+> -	  Loongson-3A R4 and newer have the CPUCFG instruction available for
+> -	  userland to query CPU capabilities, much like CPUID on x86. This
+> -	  option provides emulation of the instruction on older Loongson
+> -	  cores, back to Loongson-3A1000.
+> -
+> -	  If unsure, please say Y.
+> -
+>   config CPU_LOONGSON2E
+>   	bool "Loongson 2E"
+>   	depends on SYS_HAS_CPU_LOONGSON2E
+> @@ -1644,6 +1606,44 @@ config CPU_BMIPS
+>   
+>   endchoice
+>   
+> +config LOONGSON3_ENHANCEMENT
+> +	bool "New Loongson-3 CPU Enhancements"
+> +	default n
+> +	depends on CPU_LOONGSON64
+> +	help
+> +	  New Loongson-3 cores (since Loongson-3A R2, as opposed to Loongson-3A
+> +	  R1, Loongson-3B R1 and Loongson-3B R2) has many enhancements, such as
+> +	  FTLB, L1-VCache, EI/DI/Wait/Prefetch instruction, DSP/DSPr2 ASE, User
+> +	  Local register, Read-Inhibit/Execute-Inhibit, SFB (Store Fill Buffer),
+> +	  Fast TLB refill support, etc.
+> +
+> +	  This option enable those enhancements which are not probed at run
+> +	  time. If you want a generic kernel to run on all Loongson 3 machines,
+> +	  please say 'N' here. If you want a high-performance kernel to run on
+> +	  new Loongson-3 machines only, please say 'Y' here.
+> +
+> +config CPU_LOONGSON3_WORKAROUNDS
+> +	bool "Loongson-3 LLSC Workarounds"
+> +	default y if SMP
+> +	depends on CPU_LOONGSON64
+> +	help
+> +	  Loongson-3 processors have the llsc issues which require workarounds.
+> +	  Without workarounds the system may hang unexpectedly.
+> +
+> +	  Say Y, unless you know what you are doing.
+> +
+> +config CPU_LOONGSON3_CPUCFG_EMULATION
+> +	bool "Emulate the CPUCFG instruction on older Loongson cores"
+> +	default y
+> +	depends on CPU_LOONGSON64
+> +	help
+> +	  Loongson-3A R4 and newer have the CPUCFG instruction available for
+> +	  userland to query CPU capabilities, much like CPUID on x86. This
+> +	  option provides emulation of the instruction on older Loongson
+> +	  cores, back to Loongson-3A1000.
+> +
+> +	  If unsure, please say Y.
+> +
+>   config CPU_MIPS32_3_5_FEATURES
+>   	bool "MIPS32 Release 3.5 Features"
+>   	depends on SYS_HAS_CPU_MIPS32_R3_5
 
 -- 
-Thanks!
-     Xin
+---
+Jiaxun Yang
 
 
