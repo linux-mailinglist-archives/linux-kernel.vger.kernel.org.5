@@ -1,107 +1,141 @@
-Return-Path: <linux-kernel+bounces-41185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41184-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 290DC83ED10
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 13:31:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 344E783ED0B
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 13:19:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD4D6B22F05
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 12:31:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DECFA2850A3
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 12:19:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAD3720DDD;
-	Sat, 27 Jan 2024 12:31:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78F39208D1;
+	Sat, 27 Jan 2024 12:19:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="mWiJavxc"
-Received: from m13139.mail.163.com (m13139.mail.163.com [220.181.13.139])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14A69D51B;
-	Sat, 27 Jan 2024 12:31:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.181.13.139
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="afLj884O"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07E721E493;
+	Sat, 27 Jan 2024 12:19:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706358700; cv=none; b=gq/Fs+OYvoqVh0DHLM4CVuc/DfXwT9rt0GdEqU1dkQwOvtvEIxSRgjnNE/gK/aabHoWfoRCTlzlkDujcryvjtroQnXwwH8r/bEJxLJ5RGJYuSYTxaI6Qg3E6akmhWQF7rmTD72H2rm7C5pLS66cM6iymhzjexgGNNQeWDF7cVjs=
+	t=1706357982; cv=none; b=s33WdXzzAQdalmvLKbLJYhSIza5jlxQ0UsZymPy331/SznruGMFrj3jmm3fcnFfiUF78ounrVzD2w4OFIp6SqUp/1+HYVFyGAi5HQeGfah2bRy+1K+04gquLa2Xnp6OOnpx/K21St5W1C7qy/IF+yuOx7cBlWaG1iwyZg0mRHVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706358700; c=relaxed/simple;
-	bh=VpaYJg611pNFtLcu4PHL8FORu4w1VV9s+dRZqRr9IOA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID; b=Nz914lCKJ1QhkS2ro7ostRcI2oMQMxxaM39jSdnXQq8WYv/P2mHL6EB1cLrny90imdxmQ43Fw2p0FcSaQ1qYABtNvtSwugNyqhi2WIePcCOiLVRClbA73og5TvSUpzLMvQwgX3SoIL+LhIc1v6oOmLEPDYrOOw+nJDCCb/JPHIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=fail (1024-bit key) header.d=163.com header.i=@163.com header.b=mWiJavxc reason="signature verification failed"; arc=none smtp.client-ip=220.181.13.139
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
-	Message-ID; bh=ma9o5iWSbDq/1Z3hTE/8/k25l4jdI+7Y+bhwozoNTcw=; b=m
-	WiJavxcnTrDgrQJlFkqw6eMWHjSHG+eVZh3ErJQVYKz/mzpuljqv6C/mvzgslaIt
-	4/Jhd8snrHrSsgs0cm55DAvLHBfYU+ZTC5cSsKOaHDzDJI9YBdwC7EYrS2NLPyYr
-	RtUQN5qRM4a0rhk+dlGk/okiZRM44CJ3bb7Oq1nIU8=
-Received: from andyshrk$163.com ( [58.22.7.114] ) by ajax-webmail-wmsvr139
- (Coremail) ; Sat, 27 Jan 2024 20:15:26 +0800 (CST)
-Date: Sat, 27 Jan 2024 20:15:26 +0800 (CST)
-From: "Andy Yan" <andyshrk@163.com>
-To: =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
-Cc: krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org, 
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org
-Subject: Re:Re: [PATCH 3/4] arm64: dts: rockchip: rename vcc5v0_usb30_host
- regulator for Cool Pi CM5 EVB
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
- Copyright (c) 2002-2024 www.mailtech.cn 163com
-In-Reply-To: <2798389.3c9HiEOlIg@diego>
-References: <20240127092034.887085-1-andyshrk@163.com>
- <20240127092034.887085-3-andyshrk@163.com> <2798389.3c9HiEOlIg@diego>
-X-NTES-SC: AL_Qu2bBP+euE8p4CKZYulS4DxUw7xtJb7F8ohRo94OW8gAvCTt6w8Db1tdMXT1/NOI5AfO+aK8YQzQdyUxQsjv
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+	s=arc-20240116; t=1706357982; c=relaxed/simple;
+	bh=QxnHtD5P3AwtVXPxKcw+KIPISw6GhG7GubZ3UIXvWkU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WCbOsc1yR1+h57PcbMnWOWewK4ePeOTcIp4zaVF9qppo82mhsdwIp5BScyyy/qSiTCXmlKEDcFOBpIDqrg43c/deEwPPUAHU95Hvu8rSizIyiXfv88wcw4XGkQkN9jV2gQn/FW7hH9ZReb6YL/GDSfMlj/Bue8UH8GfRRuLt/Jc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=afLj884O; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id BB42B40E01A9;
+	Sat, 27 Jan 2024 12:19:37 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id bVxSQzP6HkWQ; Sat, 27 Jan 2024 12:19:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706357975; bh=5nyRNUaZUTU6WCk60U74aF9FI/0suhGdH8eOJI11zVQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=afLj884OcK8C4cHqVjUxxCJX9IzRyS8T72b/KLDsxEVTMfe+JilhHsFbJG65XcTvH
+	 6gnoiRyHBaLUdoGa+WjpiVW58yUE004X3VxjciudcSd2aOBhXswMTrTChu3+nYj4Lp
+	 kcUdFwnbsdKcrrF8pZwpsv2LnUxbFlOnYJsIibjrnxoGabU0o3S9Vx6aQWUhT+cz4I
+	 TCKoaR5HNZ5GJ4NoyTXYqA6y7FN9u6PfJzjYaMbw/7cud1ss5Qf/9zWayE+TM5/dA6
+	 ai7BzHNAfloM6/VPImWZtcObMiUlmzx+iXioXE5Pq2lH6eNuCAtD42mMMCxtr/m+Ok
+	 ExBl2RbUt6ddErxUiQkmChBrYr0bbHhJwq1LyzVzbOOKZU5nTZ+TexyNXKeO4pJcEC
+	 qjbhG9xi9X3QcY4J0Xo9SD7KzbXhs/+6wiy/e2wxD/62t0gkitoxk/iIV1UDatMJay
+	 KAKxaysqZGlc1E/Zb9xN9fmz0/EZLpjWEZRnCwD03K9lRM3MdteCIEuPvCIzj4XrUL
+	 e3lYqzLf0i9gB1ctt2aziSRewrgFfdlcKqlfoufXSHzqtL5nHCq9Mdwhw2eXCrDquL
+	 48H5nPbazsVLnrgUZRZusOG/mLNIKWTHAqitr0/0uJx6cO5JA5Z6068up9PuWtgBvh
+	 qB4uryi7jzqH4PIj3toO93LU=
+Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3B8D140E016C;
+	Sat, 27 Jan 2024 12:19:26 +0000 (UTC)
+Date: Sat, 27 Jan 2024 13:19:21 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Luck, Tony" <tony.luck@intel.com>
+Cc: Avadhut Naik <avadhut.naik@amd.com>,
+	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
+	"linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+	"rostedt@goodmis.org" <rostedt@goodmis.org>,
+	"x86@kernel.org" <x86@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
+	"avadnaik@amd.com" <avadnaik@amd.com>
+Subject: Re: [PATCH v2 0/2] Update mce_record tracepoint
+Message-ID: <20240127121921.GCZbT0yXiYGvw7aefr@fat_crate.local>
+References: <20240125185821.GDZbKvTW93APAiY1LP@fat_crate.local>
+ <SJ1PR11MB6083DAA7A6EDBBDAF5987A80FC7A2@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240126102721.GCZbOJCTqTVmvgOEuM@fat_crate.local>
+ <SJ1PR11MB60839509241AA98A59B78D15FC792@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240126185649.GFZbQAccZphdW_0CkH@fat_crate.local>
+ <SJ1PR11MB6083E6BF178B9D394BD58DDBFC792@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240126194522.GGZbQL0gTwpniYGDHw@fat_crate.local>
+ <SJ1PR11MB6083E1000D4B267CF4271135FC792@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240126211133.GHZbQgBfqX4Qkdbmu_@fat_crate.local>
+ <SJ1PR11MB6083B9CEE1398878664D90F7FC792@SJ1PR11MB6083.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <23650d42.ecb.18d4ad89c0c.Coremail.andyshrk@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:i8GowAD3n2Le87RlFZ0GAA--.64795W
-X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/xtbB0g1yXmWXvvpVlwACsF
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <SJ1PR11MB6083B9CEE1398878664D90F7FC792@SJ1PR11MB6083.namprd11.prod.outlook.com>
 
-CgoKSGkgSGVpa2/vvJoKCkF0IDIwMjQtMDEtMjcgMTg6MzY6NDAsICJIZWlrbyBTdMO8Ym5lciIg
-PGhlaWtvQHNudGVjaC5kZT4gd3JvdGU6Cj5IaSBBbmR5LAo+Cj5BbSBTYW1zdGFnLCAyNy4gSmFu
-dWFyIDIwMjQsIDEwOjIwOjMzIENFVCBzY2hyaWViIEFuZHkgWWFuOgo+PiBBY2NvcmRpbmcgdG8g
-dGhlIHNjaGVtYXRpYywgdGhpcyByZWd1bGF0b3IgaXMgdXNlZCBib3RoIGZvciBVU0IzMCBhbmQK
-Pj4gVVNCMjAsIHNvIGdpdmUgaXQgYSBtb3JlIGFwcHJvcHJpYXRlIG5hbWUuCj4KPkkgZG9uJ3Qg
-aGF2ZSB0aGUgc2NoZW1hdGljcywgc28gSSdsbCBuZWVkIHlvdSB0byBhbnN3ZXIgdGhpcywgYnV0
-IHdoYXQKPmlzIHRoZSByZWd1bGF0b3IgY2FsbGVkIF9pbl8gdGhlIHNjaGVtYXRpY3M/CgpUaGVy
-ZSBhcmUgdHdvIHJlZ3VsYXRvcnMgY2FsbGVkIFZDQzUwX1VTQl9IT1NUMSBhbmQgVkNDNTBfVVNC
-X0hPU1QyLCBhbmQgdGhleSBhcmUgYm90aCBjb250cm9sbGVkIGJ5IEdQSU8xX0Q1ClRoZXkgYm90
-aCBmb3IgdHdvIHVzYiAyLjAgaG9zdHMsICBub3QgdXNiIDMwLCB0aGUgc2NoZW1hdGljcyBtYWtl
-CiBtZSBhIGJpdCBjb25mdXNlZC4KCj4KPkkuZS4gd2Ugd2FudCByZWd1bGF0b3JzIHRvIHJlYWxs
-eSBiZSBuYW1lZCB0aGUgc2FtZSBhcyBpbiB0aGUgc2NoZW1hdGljCj5zbyBwZW9wbGUgY2FuIGxv
-b2sgdXAgdGhpbmcgZnJvbSB0aGUgZHRzIGluIHRoZSBzY2hlbWF0aWNzIGFuZCB0aGUgb3RoZXIK
-PndheSBhcm91bmQgdG9vLgo+Cj4KPlRoYW5rcwo+SGVpa28KPgo+Cj4+IEZpeGVzOiA3OTFjMTU0
-YzM5ODIgKCJhcm02NDogZHRzOiByb2NrY2hpcDogQWRkIHN1cHBvcnQgZm9yIHJrMzU4OCBiYXNl
-ZCBib2FyZCBDb29sIFBpIENNNSBFVkIiKQo+PiBTaWduZWQtb2ZmLWJ5OiBBbmR5IFlhbiA8YW5k
-eXNocmtAMTYzLmNvbT4KPj4gLS0tCj4+IAo+PiAgYXJjaC9hcm02NC9ib290L2R0cy9yb2NrY2hp
-cC9yazM1ODgtY29vbHBpLWNtNS1ldmIuZHRzIHwgNiArKystLS0KPj4gIDEgZmlsZSBjaGFuZ2Vk
-LCAzIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pCj4+IAo+PiBkaWZmIC0tZ2l0IGEvYXJj
-aC9hcm02NC9ib290L2R0cy9yb2NrY2hpcC9yazM1ODgtY29vbHBpLWNtNS1ldmIuZHRzIGIvYXJj
-aC9hcm02NC9ib290L2R0cy9yb2NrY2hpcC9yazM1ODgtY29vbHBpLWNtNS1ldmIuZHRzCj4+IGlu
-ZGV4IDFiNTY4MWZlMDQ3MS4uNWY0MmYxMDY1ZDczIDEwMDY0NAo+PiAtLS0gYS9hcmNoL2FybTY0
-L2Jvb3QvZHRzL3JvY2tjaGlwL3JrMzU4OC1jb29scGktY201LWV2Yi5kdHMKPj4gKysrIGIvYXJj
-aC9hcm02NC9ib290L2R0cy9yb2NrY2hpcC9yazM1ODgtY29vbHBpLWNtNS1ldmIuZHRzCj4+IEBA
-IC04NCw3ICs4NCw3IEBAIHZjYzN2M19sY2Q6IHZjYzN2My1sY2QtcmVndWxhdG9yIHsKPj4gIAkJ
-dmluLXN1cHBseSA9IDwmdmNjM3YzX3N5cz47Cj4+ICAJfTsKPj4gIAo+PiAtCXZjYzV2MF91c2Iz
-MF9ob3N0OiB2Y2M1djAtdXNiMzAtaG9zdC1yZWd1bGF0b3Igewo+PiArCXZjYzV2MF91c2JfaG9z
-dDogdmNjNXYwLXVzYi1ob3N0LXJlZ3VsYXRvciB7Cj4+ICAJCWNvbXBhdGlibGUgPSAicmVndWxh
-dG9yLWZpeGVkIjsKPj4gIAkJcmVndWxhdG9yLW5hbWUgPSAidmNjNXYwX2hvc3QiOwo+PiAgCQly
-ZWd1bGF0b3ItYm9vdC1vbjsKPj4gQEAgLTIwMCwxMiArMjAwLDEyIEBAICZ1MnBoeTMgewo+PiAg
-fTsKPj4gIAo+PiAgJnUycGh5Ml9ob3N0IHsKPj4gLQlwaHktc3VwcGx5ID0gPCZ2Y2M1djBfdXNi
-MzBfaG9zdD47Cj4+ICsJcGh5LXN1cHBseSA9IDwmdmNjNXYwX3VzYl9ob3N0PjsKPj4gIAlzdGF0
-dXMgPSAib2theSI7Cj4+ICB9Owo+PiAgCj4+ICAmdTJwaHkzX2hvc3Qgewo+PiAtCXBoeS1zdXBw
-bHkgPSA8JnZjYzV2MF91c2IzMF9ob3N0PjsKPj4gKwlwaHktc3VwcGx5ID0gPCZ2Y2M1djBfdXNi
-X2hvc3Q+Owo+PiAgCXN0YXR1cyA9ICJva2F5IjsKPj4gIH07Cj4+ICAKPj4gCj4KPgo+Cj4KPgo+
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPmxpbnV4LWFy
-bS1rZXJuZWwgbWFpbGluZyBsaXN0Cj5saW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5v
-cmcKPmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtYXJt
-LWtlcm5lbAo=
+On Fri, Jan 26, 2024 at 10:01:29PM +0000, Luck, Tony wrote:
+> PPIN: Nice to have. People that send stuff to me are terrible about
+> providing surrounding details. The record already includes
+> CPUID(1).EAX ... so I can at least skip the step of asking them which
+> CPU family/model/stepping they were using). But PPIN can be recovered
+> (so long as the submitter kept good records about which system
+> generated the record).
+
+Yes.
+
+> MICROCODE: Must have. Microcode version can be changed at run time.
+> Going back to the system to check later may not give the correct
+> answer to what was active at the time of the error. Especially for an
+> error reported while a microcode update is waling across the CPUs
+> poking the MSR on each in turn.
+
+Easy:
+
+- You've got an MCE? Was it during scheduled microcode updates?
+- Yes.
+- Come back to me when it happens again, *outside* of the microcode
+  update schedule.
+
+Anyway, I still don't buy that. Maybe I'm wrong and maybe I need to talk
+to data center operators more but this sounds like microcode update
+failing is such a common thing to happen so that we *absolutely* *must*
+capture the microcode revision when an MCE happens.
+
+Maybe we should make microcode updates more resilient and add a retry
+mechanism which doesn't back off as easily.
+
+Or maybe people should script around it and keep retrying, dunno.
+
+In my world, microcode update just works in the vast majority of the
+cases and if it doesn't, then those cases need a specific look.
+
+And if I am debugging an issue and I want to see the microcode revision,
+I look at /proc/cpuinfo.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
