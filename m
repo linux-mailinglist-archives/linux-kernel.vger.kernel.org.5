@@ -1,99 +1,160 @@
-Return-Path: <linux-kernel+bounces-41242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2983B83EDE5
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:27:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00C0483EDE7
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:28:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AC1E28358A
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:27:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B36331F22683
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:28:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C74528DD0;
-	Sat, 27 Jan 2024 15:27:16 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F1BA28E1B;
+	Sat, 27 Jan 2024 15:28:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="gcSbM8Ck"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14B6728DC9
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 15:27:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50F0228DC9
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 15:28:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706369235; cv=none; b=unA5XZvx5z6llpxEySzPEzA1XFsqsb+rrpS5Qz//fUZVf30kv4H7FU0abqLpai0CH7XltelJqI/bjzm+2aVElAx2WALj5fHxPUoINwGnQse0WwumpIYQ7sHmx0XIiAUk8YCrlxC0YQ0PfoOYxmhSgEFDz7DCFNtGHnq1IgXrBF0=
+	t=1706369311; cv=none; b=Cmc+b+i1SzeAaKIj48lTHMfpv8oA8XnmMA+zAoYFpVQFdpLjA+imO/xmqy+THVVfx4Axt5uOqRwldfkFLpbJeCz6Vvj/mXUJTeywCSB3LniOUysAQzfPCCS7cS9CfJdEhCeFIW1idWC2quR5HxsC/McIkb5KEwiRSbKdmJyfTqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706369235; c=relaxed/simple;
-	bh=iFW2ERuTEIYk+fmvTQBQjnNRLBqVcxtT7bSBGDVOQEQ=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=u/MnA8e52PrVjfnvK7cRNzGwPUtpoCa+XTO3jTeyWo1Rfz7HKXsVS4R87WX7Xx/vgfRVMzgAp6/pk5sGrtO7krNce2pyrJMsMBvmHqwed4NAHxxgWYpmCkeQS7V6r1TUP2PiFsxOtkJUCZJaCBzspOQbohEbdu9a3P+Q7v46tVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-87-hz-_3iJRN8aUc6HcCR5UTA-1; Sat, 27 Jan 2024 15:27:11 +0000
-X-MC-Unique: hz-_3iJRN8aUc6HcCR5UTA-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 27 Jan
- 2024 15:26:51 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sat, 27 Jan 2024 15:26:51 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Linus Torvalds' <torvalds@linux-foundation.org>, Steven Rostedt
-	<rostedt@goodmis.org>
-CC: LKML <linux-kernel@vger.kernel.org>, Linux Trace Devel
-	<linux-trace-devel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner
-	<brauner@kernel.org>, Ajay Kaher <ajay.kaher@broadcom.com>, "Geert
- Uytterhoeven" <geert@linux-m68k.org>, linux-fsdevel
-	<linux-fsdevel@vger.kernel.org>
-Subject: RE: [PATCH] eventfs: Have inodes have unique inode numbers
-Thread-Topic: [PATCH] eventfs: Have inodes have unique inode numbers
-Thread-Index: AQHaUJ+9Uz3INJwNPU61vvwJRYci6bDtx3zg
-Date: Sat, 27 Jan 2024 15:26:51 +0000
-Message-ID: <9b34c04465ff46dba90c81b4240fbbd1@AcuMS.aculab.com>
-References: <20240126150209.367ff402@gandalf.local.home>
- <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
- <20240126162626.31d90da9@gandalf.local.home>
- <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
-In-Reply-To: <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1706369311; c=relaxed/simple;
+	bh=B1lQN2DRgn3nQBtFdWkRtHnud7Y315A8P2HYAFO7EV4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Q3BBt5PmyTi8I6tpaUofGOoLBTqmLAiHvsuRmwVY53+JdQSsOrKKElOcjiV+yQ0JGkMKr939mM4mXPgiiwpFg+CCb4SlYX44LmYrt8zo6apjxLWK3hhuXpvDVzgdFN7IX/awTOx4bBzh1BN80N/xXdAJnRFH6P9BOcZxVXVIO7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com; spf=pass smtp.mailfrom=amarulasolutions.com; dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b=gcSbM8Ck; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a277339dcf4so129603866b.2
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 07:28:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google; t=1706369308; x=1706974108; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=haBaXjP3IuqWi4Vh3TynqcBtGi5D9/RbAjyH8MaxFEk=;
+        b=gcSbM8CkOWCDF+p+eNKp7quYEF1qTbiUKuPCtutrj74yh7XXteIhq1thvHMUJW3z9f
+         Nwee7ZIKqZb7EMrRgHx0uO3iQxemyB10MpeOXmQ4i/0+bqi9b58fORmNFrrJBI7RNYR8
+         ofXaySANPiWe81hUVtcWIcaz47T7Kco5T8Q6k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706369308; x=1706974108;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=haBaXjP3IuqWi4Vh3TynqcBtGi5D9/RbAjyH8MaxFEk=;
+        b=CA0+eIvcgMQqtQDMFo9rVFnO5PgU3BKDpNpvGTwur6SprpLZfOPHH7Kuee+DlUWibX
+         44HUuvSC1/RNm3WgMZ+fPW1x3Yo99Q2reed5xy+L+4O+DQ2RPnMqh4YdUhu20nKpQtV7
+         bFQQjKhsa7ctZ5/Aehad9n/P/HGw88YXcNYTa+yMpj2on9x4RfPJlJf/K/J/FHYCeqc/
+         PX1GI9RFqgFzOUCCkd9JUpAvNnwGotmCFSvC4vLdTfv8bys3o4FzTfQL8lu/p7TnmApL
+         0LYeOvYTXHyJAl46LJvrJgLzpvwxILZOLUlFlYceRtSt1ilTD2i1l2125wUIJ47M7HXw
+         GbLQ==
+X-Gm-Message-State: AOJu0YzM0/HlKT54pelglAUpz+vSE0p/i7bKtB+VEe6bpqew45uLKkbH
+	zUIYzLZrtLFUQ/Hh9XD6bxyT6k8Dyp3A4rp6L6H7B1nj9WR5FpPcYDpcCnkyK6RqLKSW56Fq9Wo
+	5
+X-Google-Smtp-Source: AGHT+IErhFoxSEE+bInbELtSYR5kkaNSeW62dXAyFHtebD7TQBYzbADVG8K8/cyVC3nEdk8weBw+vw==
+X-Received: by 2002:a17:906:6953:b0:a34:af8a:ee3d with SMTP id c19-20020a170906695300b00a34af8aee3dmr1160137ejs.16.1706369308266;
+        Sat, 27 Jan 2024 07:28:28 -0800 (PST)
+Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-79-21-103-141.retail.telecomitalia.it. [79.21.103.141])
+        by smtp.gmail.com with ESMTPSA id vs3-20020a170907a58300b00a3550c56127sm509361ejc.9.2024.01.27.07.28.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Jan 2024 07:28:27 -0800 (PST)
+From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+To: linux-kernel@vger.kernel.org
+Cc: Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	David Airlie <airlied@gmail.com>,
+	Jessica Zhang <quic_jesszhan@quicinc.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	devicetree@vger.kernel.org,
+	dri-devel@lists.freedesktop.org
+Subject: [drm-drm-misc:drm-misc-next] dt-bindings: nt35510: document 'port' property
+Date: Sat, 27 Jan 2024 16:28:08 +0100
+Message-ID: <20240127152821.65744-1-dario.binacchi@amarulasolutions.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 
-RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMjYgSmFudWFyeSAyMDI0IDIxOjM2DQo+IA0K
-PiBPbiBGcmksIDI2IEphbiAyMDI0IGF0IDEzOjI2LCBTdGV2ZW4gUm9zdGVkdCA8cm9zdGVkdEBn
-b29kbWlzLm9yZz4gd3JvdGU6DQo+ID4NCj4gPiBJJ2QgYmUgaGFwcHkgdG8gY2hhbmdlIHRoYXQg
-cGF0Y2ggdG8gd2hhdCBJIG9yaWdpbmFsbHkgZGlkIGJlZm9yZSBkZWNpZGluZw0KPiA+IHRvIGNv
-cHkgZ2V0X25leHRfaW5vKCk6DQo+ID4NCj4gPiB1bnNpZ25lZCBpbnQgdHJhY2Vmc19nZXRfbmV4
-dF9pbm8oaW50IGZpbGVzKQ0KPiA+IHsNCj4gPiAgICAgICAgIHN0YXRpYyBhdG9taWNfdCBuZXh0
-X2lub2RlOw0KPiA+ICAgICAgICAgdW5zaWduZWQgaW50IHJlczsNCj4gPg0KPiA+ICAgICAgICAg
-ZG8gew0KPiA+ICAgICAgICAgICAgICAgICByZXMgPSBhdG9taWNfYWRkX3JldHVybihmaWxlcyAr
-IDEsICZuZXh0X2lub2RlKTsNCj4gPg0KPiA+ICAgICAgICAgICAgICAgICAvKiBDaGVjayBmb3Ig
-b3ZlcmZsb3cgKi8NCj4gPiAgICAgICAgIH0gd2hpbGUgKHVubGlrZWx5KHJlcyA8IGZpbGVzICsg
-MSkpOw0KPiA+DQo+ID4gICAgICAgICByZXR1cm4gcmVzIC0gZmlsZXM7DQo+IA0KPiBTdGlsbCBl
-bnRpcmVseSBwb2ludGxlc3MuDQo+IA0KPiBJZiB5b3UgaGF2ZSBtb3JlIHRoYW4gNCBiaWxsaW9u
-IGlub2Rlcywgc29tZXRoaW5nIGlzIHJlYWxseSByZWFsbHkgd3JvbmcuDQo+IA0KPiBTbyB3aHkg
-aXMgaXQgdGVuIGxpbmVzIGluc3RlYWQgb2Ygb25lPw0KDQpEb2Vzbid0IExpbnV4IHN1cHBvcnQg
-NjRiaXQgaW5vZGUgbnVtYmVycz8NClRoZXkgc29sdmUgdGhlIHdyYXAgcHJvYmxlbS4uLg0KDQpJ
-IGFsc28gZG9uJ3Qga25vdyB3aGF0IGZpbGVzeXN0ZW1zIGxpa2UgTlRGUyB1c2UgLSB0aGV5IGRv
-bid0IGhhdmUNCnRoZSBjb25jZXB0IG9mIGlub2RlLg0KDQpJSVJDIE5GUyB1c2VkIHRvIHVzZSB0
-aGUgaW5vZGUgbnVtYmVyIGZvciBpdHMgJ2ZpbGUgaGFuZGxlJy4NClJhdGhlciBhIHBhaW4gd2hl
-biB0cnlpbmcgdG8gd3JpdGUgY29kZSB0byBleHBvcnQgYSBsYXllcmVkIEZTDQooZXNwZWNpYWxs
-eSBpZiBhIGxheWVyIG1pZ2h0IGJlIGFuIE5GUyBtb3VudCEpLg0KDQoJRGF2aWQNCg0KLQ0KUmVn
-aXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRv
-biBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+Allow 'port' property (coming from panel-common.yaml) to be used in DTS:
+
+  st/stm32f769-disco-mb1166-reva09.dtb: panel@0: 'port' does not match any of the regexes: 'pinctrl-[0-9]+'
+
+Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+
+---
+
+ .../display/panel/novatek,nt35510.yaml        | 34 +++++++++++++++++++
+ 1 file changed, 34 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml b/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml
+index a4afaff483b7..72913719df23 100644
+--- a/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml
++++ b/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml
+@@ -31,6 +31,22 @@ properties:
+   vddi-supply:
+     description: regulator that supplies the vddi voltage
+   backlight: true
++  port:
++    $ref: /schemas/graph.yaml#/properties/port
++
++if:
++  properties:
++    compatible:
++      contains:
++        enum:
++          - frida,frd400b25025
++then:
++  required:
++    - port
++
++else:
++  properties:
++    port: false
+ 
+ required:
+   - compatible
+@@ -54,5 +70,23 @@ examples:
+             backlight = <&gpio_bl>;
+         };
+     };
++  - |
++    dsi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        panel@0 {
++            compatible = "frida,frd400b25025", "novatek,nt35510";
++            vddi-supply = <&vcc_3v3>;
++            vdd-supply = <&vcc_3v3>;
++            reg = <0>; /* dsi virtual channel (0..3) */
++            reset-gpios = <&gpioj 15 GPIO_ACTIVE_LOW>;
+ 
++            port {
++                dsi_panel_in: endpoint {
++                    remote-endpoint = <&dsi_out>;
++                };
++            };
++        };
++    };
+ ...
+-- 
+2.43.0
 
 
