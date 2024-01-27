@@ -1,271 +1,172 @@
-Return-Path: <linux-kernel+bounces-41239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF0DB83EDDD
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:21:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEB3F83EDE1
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 16:23:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6408928336B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:21:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D8C51F22316
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 15:23:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B06528E34;
-	Sat, 27 Jan 2024 15:20:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFA7E28DDA;
+	Sat, 27 Jan 2024 15:23:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WGKPTwHv"
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bImckJaG"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B83628DD0
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 15:20:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 888AA2560C;
+	Sat, 27 Jan 2024 15:22:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706368856; cv=none; b=t6n5gU6KbTDgcJHOv82owyMX6MtUC0HfMkluB7Hju7Cbm7Kx6TTmUHc191YoyLg1CvSEhl//Qnc87RXpW4Derz4buPR7ZGifvlz3zxi43rZLUwxp3+9x7iXNHZAtBJQGh1FkRYslGthVFayQRIM+Img5TOx3IxF/xoEAp+o1xQg=
+	t=1706368981; cv=none; b=tgx+goqmWx/q/C6apXkxgnOo+iUNIonAjpdA1cuhylwDYiNAY7RIPogB98tqhT+cOwVAFUlUoLgOXdUv5YDqsQNOV5AbO2hGUHLTrdQhVJi3jAAfTjzSBcJQ6rON7bE2XaYAhsrluyfq5FbBLW+XROsSoTzNvpIE3cG/4uK4YR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706368856; c=relaxed/simple;
-	bh=wilSicJhWwERnmVX9GceQmQr35AE1fiUYJoUpMTUsHg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TPpjgkMEi64qA9wqi4KWYxpOYepni6XXud1iDU41c42Mw2IKN9SuExzfwifgBuoLpDJUrvIapgPy5x/kkTC+a2DhGmHQhymkAVumMnenAqWEE81t9YMwbPnFRDS4lWZcyHNSY65rLf+frMHWZpwamtmlOB7ySG7GIkurZ6isw/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WGKPTwHv; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Sat, 27 Jan 2024 10:20:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706368851;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=02z/TrmtiGbUOiCDc1VZWJkHRhcxM9+ZNLI+hwzY088=;
-	b=WGKPTwHvBpWp2pyFXXTRUnKV8+jhjqe2vf5mHhl8eFkJBnAVn/HYBzEg1o//BjUllTcCF3
-	1qKfLwP1Mu6nWeQkhRO/dRbuZ07hKPXOEApu2ADhXxOYNefP/2HSnH0johtQ2lkDwlhb7e
-	54aSs6UAawKU1I54wnGkJWZrWrMN0I4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Joshua Ashton <joshua@froggi.es>
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-bcache@vger.kernel.org, linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH 3/5] bcachefs: bch2_time_stats_to_seq_buf()
-Message-ID: <5efhxgruvtlrjiqe52kgmnduguw3tmg2jjugfzi7dhbywljrwi@zu2ndkvzunzs>
-References: <20240126220655.395093-1-kent.overstreet@linux.dev>
- <20240126220655.395093-3-kent.overstreet@linux.dev>
- <DA69BC9C-D7FF-48F7-9F6D-EF96DC4C5C7B@froggi.es>
+	s=arc-20240116; t=1706368981; c=relaxed/simple;
+	bh=EJdl90MgoH5kBGjmSvI7dU1KGni89hqf0o2hNIdSJkI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qexbuRK9QazClJpn/phk5J7ylPRN1a4YV0+3vLuKmgwHpmYfMkf8tI6rTk1Y4GQ2BXbdxKgKiMnju1fezKYmMu4PmsDb5Th2OBHkWys+ar7sqT6UytE9ElSEsxnfS6F5DeD0+ivo81gbiMntBr3fjOdO6Ly9oiL5ZgJWoZYLwx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bImckJaG; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d7393de183so7076715ad.3;
+        Sat, 27 Jan 2024 07:22:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706368979; x=1706973779; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=OkRiytXujd9Yjdg3qm1RPX8UuP6jqGHhK/jxzi2EaE4=;
+        b=bImckJaGBWJOYv59BObfiql65lKjk2bNVmCQXts/MLMbtMk1hG31U+BIhamjFHmL05
+         Hz9K5QWRv+TNL9pLr8AkDsSo4ZdrVkLB1REa/vHx1k3EZ+ajtDOltRp+PNN8zpbFldt0
+         kfgO7H3d+1t/awPOCM8XZksoYJq7C7EJAYaBEiKuCcAq0/FXMPe5B6GAU68oQc7vtLfQ
+         QESd3v+73JGnYe+p2jXPwRFGlDTB/ZjNie+G5j26K6ctOZA6hgX4/OZlFq4rAeEf9dUj
+         KNKDGbX1ZBMkgrdSd1Txsay/4K7ZCEXvNPagNn2K/GbYKDloqF7C4Axpmo6GOWOb17ud
+         owsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706368979; x=1706973779;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OkRiytXujd9Yjdg3qm1RPX8UuP6jqGHhK/jxzi2EaE4=;
+        b=K2S8iCXxMQT8wSLEOsxZEQF06N1YXQgp58QypJpSC8PblqVFD6ckiPi8br8Iz/a6Ev
+         pNqlKgHaebovQrYka101bjLjvGnzHTM00c55jgDJ8myjwtOvfB1yClehn8tC/oRMFVss
+         jFhttahA80u6zZh8TUtdw9q2aoynczK58djwAZIxFd2PoRVaB3SkAeKjJFs9npLT0tTV
+         Cgzqh3D8mgasUQdmIS4NiC3BjJlZe7vSUMCRQ0WKziKBE+4a4FqMr9pSxAWiZzWVD0HV
+         4xZclzfkvHA9k4Y8l+4mfSOqGyvQUd3oR1tjuNo7Ia+RO48nhdKfV/Ysg6+XvslByG/8
+         biHg==
+X-Gm-Message-State: AOJu0YzCg0bfkMvhZMpAmgPiSl5xkGnAaQOJjsTodfwjp6BNC9AtagFH
+	xzmAVAegdiHTvcxMgRsDMvU0UY/64lkiNuJm5SFk3OOnPf3kJUz5UJychPkV
+X-Google-Smtp-Source: AGHT+IFWQNZ2/QVhbd/vkjfNOuLauINgVdFHp9HGjwtFlXLozkbVRE+TTej2IVQW4hlfb4LEgehC5w==
+X-Received: by 2002:a17:902:784e:b0:1d5:7cb:7761 with SMTP id e14-20020a170902784e00b001d507cb7761mr880456pln.51.1706368978581;
+        Sat, 27 Jan 2024 07:22:58 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id u11-20020a17090282cb00b001d7505fd14csm2546520plz.215.2024.01.27.07.22.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 27 Jan 2024 07:22:57 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <33da3135-4450-4c5e-92af-0d361c3b7489@roeck-us.net>
+Date: Sat, 27 Jan 2024 07:22:56 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <DA69BC9C-D7FF-48F7-9F6D-EF96DC4C5C7B@froggi.es>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] hwmon: (pmbus/mp2975) Fix driver initialization for
+ MP2975 device
+Content-Language: en-US
+To: Konstantin Aladyshev <aladyshev22@gmail.com>
+Cc: Jean Delvare <jdelvare@suse.com>,
+ Naresh Solanki <Naresh.Solanki@9elements.com>,
+ Patrick Rudolph <patrick.rudolph@9elements.com>,
+ linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240127092516.1641-1-aladyshev22@gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20240127092516.1641-1-aladyshev22@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sat, Jan 27, 2024 at 03:49:29AM +0000, Joshua Ashton wrote:
-> Kernel patches need descriptions.
-
-I think this one was pretty clear from the name and type signature :)
-
+On 1/27/24 01:25, Konstantin Aladyshev wrote:
+> The commit 1feb31e810b0 ("hwmon: (pmbus/mp2975) Simplify VOUT code")
+> has introduced a bug that makes it impossible to initialize MP2975
+> device:
+> """
+> mp2975 5-0020: Failed to identify chip capabilities
+> i2c i2c-5: new_device: Instantiated device mp2975 at 0x20
+> i2c i2c-5: delete_device: Deleting device mp2975 at 0x20
+> """
+> Since the 'read_byte_data' function was removed from the
+> 'pmbus_driver_info ' structure the driver no longer reports correctly
+> that VOUT mode is direct. Therefore 'pmbus_identify_common' fails
+> with error, making it impossible to initialize the device.
 > 
-> On January 26, 2024 10:06:53 PM GMT, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> >Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> >---
-> > fs/bcachefs/super.c |   2 +
-> > fs/bcachefs/util.c  | 129 +++++++++++++++++++++++++++++++++++++++-----
-> > fs/bcachefs/util.h  |   4 ++
-> > 3 files changed, 121 insertions(+), 14 deletions(-)
-> >
-> >diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
-> >index da8697c79a97..e74534096cb5 100644
-> >--- a/fs/bcachefs/super.c
-> >+++ b/fs/bcachefs/super.c
-> >@@ -1262,6 +1262,8 @@ static struct bch_dev *__bch2_dev_alloc(struct bch_fs *c,
-> > 
-> > 	bch2_time_stats_init(&ca->io_latency[READ]);
-> > 	bch2_time_stats_init(&ca->io_latency[WRITE]);
-> >+	ca->io_latency[READ].quantiles_enabled = true;
-> >+	ca->io_latency[WRITE].quantiles_enabled = true;
-> > 
-> > 	ca->mi = bch2_mi_to_cpu(member);
-> > 
-> >diff --git a/fs/bcachefs/util.c b/fs/bcachefs/util.c
-> >index c7cf9c6fcf9a..f2c8550c1331 100644
-> >--- a/fs/bcachefs/util.c
-> >+++ b/fs/bcachefs/util.c
-> >@@ -505,10 +505,8 @@ static inline void pr_name_and_units(struct printbuf *out, const char *name, u64
-> > 
-> > void bch2_time_stats_to_text(struct printbuf *out, struct bch2_time_stats *stats)
-> > {
-> >-	const struct time_unit *u;
-> > 	s64 f_mean = 0, d_mean = 0;
-> >-	u64 q, last_q = 0, f_stddev = 0, d_stddev = 0;
-> >-	int i;
-> >+	u64 f_stddev = 0, d_stddev = 0;
-> > 
-> > 	if (stats->buffer) {
-> > 		int cpu;
-> >@@ -607,19 +605,122 @@ void bch2_time_stats_to_text(struct printbuf *out, struct bch2_time_stats *stats
-> > 
-> > 	printbuf_tabstops_reset(out);
-> > 
-> >-	i = eytzinger0_first(NR_QUANTILES);
-> >-	u = pick_time_units(stats->quantiles.entries[i].m);
-> >+	if (stats->quantiles_enabled) {
-> >+		int i = eytzinger0_first(NR_QUANTILES);
-> >+		const struct time_unit *u =
-> >+			pick_time_units(stats->quantiles.entries[i].m);
-> >+		u64 last_q = 0;
-> >+
-> >+		prt_printf(out, "quantiles (%s):\t", u->name);
-> >+		eytzinger0_for_each(i, NR_QUANTILES) {
-> >+			bool is_last = eytzinger0_next(i, NR_QUANTILES) == -1;
-> >+
-> >+			u64 q = max(stats->quantiles.entries[i].m, last_q);
-> >+			prt_printf(out, "%llu ", div_u64(q, u->nsecs));
-> >+			if (is_last)
-> >+				prt_newline(out);
-> >+			last_q = q;
-> >+		}
-> >+	}
-> >+}
-> >+
-> >+#include <linux/seq_buf.h>
-> >+
-> >+static void seq_buf_time_units_aligned(struct seq_buf *out, u64 ns)
-> >+{
-> >+	const struct time_unit *u = pick_time_units(ns);
-> >+
-> >+	seq_buf_printf(out, "%8llu %s", div64_u64(ns, u->nsecs), u->name);
-> >+}
-> >+
-> >+void bch2_time_stats_to_seq_buf(struct seq_buf *out, struct bch2_time_stats *stats)
-> >+{
-> >+	s64 f_mean = 0, d_mean = 0;
-> >+	u64 f_stddev = 0, d_stddev = 0;
-> >+
-> >+	if (stats->buffer) {
-> >+		int cpu;
-> > 
-> >-	prt_printf(out, "quantiles (%s):\t", u->name);
-> >-	eytzinger0_for_each(i, NR_QUANTILES) {
-> >-		bool is_last = eytzinger0_next(i, NR_QUANTILES) == -1;
-> >+		spin_lock_irq(&stats->lock);
-> >+		for_each_possible_cpu(cpu)
-> >+			__bch2_time_stats_clear_buffer(stats, per_cpu_ptr(stats->buffer, cpu));
-> >+		spin_unlock_irq(&stats->lock);
-> >+	}
-> > 
-> >-		q = max(stats->quantiles.entries[i].m, last_q);
-> >-		prt_printf(out, "%llu ",
-> >-		       div_u64(q, u->nsecs));
-> >-		if (is_last)
-> >-			prt_newline(out);
-> >-		last_q = q;
-> >+	/*
-> >+	 * avoid divide by zero
-> >+	 */
-> >+	if (stats->freq_stats.n) {
-> >+		f_mean = mean_and_variance_get_mean(stats->freq_stats);
-> >+		f_stddev = mean_and_variance_get_stddev(stats->freq_stats);
-> >+		d_mean = mean_and_variance_get_mean(stats->duration_stats);
-> >+		d_stddev = mean_and_variance_get_stddev(stats->duration_stats);
-> >+	}
-> >+
-> >+	seq_buf_printf(out, "count: %llu\n", stats->duration_stats.n);
-> >+
-> >+	seq_buf_printf(out, "                       since mount        recent\n");
-> >+
-> >+	seq_buf_printf(out, "duration of events\n");
-> >+
-> >+	seq_buf_printf(out, "  min:                     ");
-> >+	seq_buf_time_units_aligned(out, stats->min_duration);
-> >+	seq_buf_printf(out, "\n");
-> >+
-> >+	seq_buf_printf(out, "  max:                     ");
-> >+	seq_buf_time_units_aligned(out, stats->max_duration);
-> >+	seq_buf_printf(out, "\n");
-> >+
-> >+	seq_buf_printf(out, "  total:                   ");
-> >+	seq_buf_time_units_aligned(out, stats->total_duration);
-> >+	seq_buf_printf(out, "\n");
-> >+
-> >+	seq_buf_printf(out, "  mean:                    ");
-> >+	seq_buf_time_units_aligned(out, d_mean);
-> >+	seq_buf_time_units_aligned(out, mean_and_variance_weighted_get_mean(stats->duration_stats_weighted));
-> >+	seq_buf_printf(out, "\n");
-> >+
-> >+	seq_buf_printf(out, "  stddev:                  ");
-> >+	seq_buf_time_units_aligned(out, d_stddev);
-> >+	seq_buf_time_units_aligned(out, mean_and_variance_weighted_get_stddev(stats->duration_stats_weighted));
-> >+	seq_buf_printf(out, "\n");
-> >+
-> >+	seq_buf_printf(out, "time between events\n");
-> >+
-> >+	seq_buf_printf(out, "  min:                     ");
-> >+	seq_buf_time_units_aligned(out, stats->min_freq);
-> >+	seq_buf_printf(out, "\n");
-> >+
-> >+	seq_buf_printf(out, "  max:                     ");
-> >+	seq_buf_time_units_aligned(out, stats->max_freq);
-> >+	seq_buf_printf(out, "\n");
-> >+
-> >+	seq_buf_printf(out, "  mean:                    ");
-> >+	seq_buf_time_units_aligned(out, f_mean);
-> >+	seq_buf_time_units_aligned(out, mean_and_variance_weighted_get_mean(stats->freq_stats_weighted));
-> >+	seq_buf_printf(out, "\n");
-> >+
-> >+	seq_buf_printf(out, "  stddev:                  ");
-> >+	seq_buf_time_units_aligned(out, f_stddev);
-> >+	seq_buf_time_units_aligned(out, mean_and_variance_weighted_get_stddev(stats->freq_stats_weighted));
-> >+	seq_buf_printf(out, "\n");
-> >+
-> >+	if (stats->quantiles_enabled) {
-> >+		int i = eytzinger0_first(NR_QUANTILES);
-> >+		const struct time_unit *u =
-> >+			pick_time_units(stats->quantiles.entries[i].m);
-> >+		u64 last_q = 0;
-> >+
-> >+		prt_printf(out, "quantiles (%s):\t", u->name);
-> >+		eytzinger0_for_each(i, NR_QUANTILES) {
-> >+			bool is_last = eytzinger0_next(i, NR_QUANTILES) == -1;
-> >+
-> >+			u64 q = max(stats->quantiles.entries[i].m, last_q);
-> >+			seq_buf_printf(out, "%llu ", div_u64(q, u->nsecs));
-> >+			if (is_last)
-> >+				seq_buf_printf(out, "\n");
-> >+			last_q = q;
-> >+		}
-> > 	}
-> > }
-> > #else
-> >diff --git a/fs/bcachefs/util.h b/fs/bcachefs/util.h
-> >index c3b11c3d24ea..7ff2d4fe26f6 100644
-> >--- a/fs/bcachefs/util.h
-> >+++ b/fs/bcachefs/util.h
-> >@@ -382,6 +382,7 @@ struct bch2_time_stat_buffer {
-> > 
-> > struct bch2_time_stats {
-> > 	spinlock_t	lock;
-> >+	bool		quantiles_enabled;
-> > 	/* all fields are in nanoseconds */
-> > 	u64             min_duration;
-> > 	u64		max_duration;
-> >@@ -435,6 +436,9 @@ static inline bool track_event_change(struct bch2_time_stats *stats,
-> > 
-> > void bch2_time_stats_to_text(struct printbuf *, struct bch2_time_stats *);
-> > 
-> >+struct seq_buf;
-> >+void bch2_time_stats_to_seq_buf(struct seq_buf *, struct bch2_time_stats *);
-> >+
-> > void bch2_time_stats_exit(struct bch2_time_stats *);
-> > void bch2_time_stats_init(struct bch2_time_stats *);
-> > 
-> >-- 
-> >2.43.0
-> >
-> >
+> Restore 'read_byte_data' function to fix the issue.
 > 
-> - Joshie 🐸✨
+> Tested:
+> - before: it is not possible to initialize MP2975 device with the
+> 'mp2975' driver,
+> - after: 'mp2975' correctly initializes MP2975 device and all sensor
+> data is correct.
+> 
+> Fixes: 1feb31e810b0 ("hwmon: (pmbus/mp2975) Simplify VOUT code")
+> 
+> Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com>
+> ---
+> Changes in v4:
+>   - Correct comment inside the 'mp2975_read_byte_data' function as
+> suggested by Patrick Rudolph
+> 
+
+I already applied version 3 of the patch. Feel free to send a follow-up
+to that patch. It is too late for a v4 of the original patch.
+
+Guenter
+
 
