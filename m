@@ -1,39 +1,39 @@
-Return-Path: <linux-kernel+bounces-41193-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41195-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EE9683ED38
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 14:16:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A433A83ED3B
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 14:16:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AAB2282E3B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 13:16:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C93361C21943
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 13:16:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95380286B2;
-	Sat, 27 Jan 2024 13:16:19 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EE8628DDB;
+	Sat, 27 Jan 2024 13:16:20 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBF5125576;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 018E025605;
 	Sat, 27 Jan 2024 13:16:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706361379; cv=none; b=CGS7O/CJV7f7jl+O0m6PT/PVQoLw44bqcmHgM6O0zCWilpI4wG/gcvx+5vfvBtutQtiEL/CBR392bqJSSKTV5NeSc0Z3yRFjuwDqp9OFCBTu+CJLFtMP0La5nvocFp+b70/x+qnon/tgkRlvlmJVaUTnwzBtgHmXApz8wt4c6rI=
+	t=1706361379; cv=none; b=WiXdFmFl4r57hNZZ8XAa0ScEsQW3pEFhw+aLurnMEw3A7b4qbUNudCNtp8ZIug+w6DM4m8H8aBF1ZPcAr/wsy26Ea+DMyXnxi6HiSuq8k9+nSj7YH7CEZT34d5/McoHtd1uXS2dQSWdGn79OBRK/RWTW1NK7T+BVqB/xEq8Cn0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706361379; c=relaxed/simple;
-	bh=adMdrd33BWAncTlu9FqQSrWBDalVJlLFUuqtc5QT7uo=;
+	bh=AZsQGYh2SSe2QjkfiwvBD9EI/D+zNEfKjIndVdoNK+g=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rCpzS5eX8dQfVdnAQCdmr/ySzHdXC2McepcHiqXI3F9s0tEOTIFsjt9BbcQixSOVwXpQHtpbBN4oTAJL31YxiuQ4M1li9sUP2TG6SJPdWsAkfgcs1ni9pzUB3XZbfx3wvU4biXJYeS77FaVMvckdDN0wYSdguyAPrMhCgqrJtLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+	 MIME-Version:Content-Type; b=SUiffKG80vtGvFf/yR5rsAPze/dYWyXi5FMm1TozeJWiSMJMjE44ttijloh9Uh6VaS8AAldQAmSzy+EOyQZq+OvJeFJ/zHS2U4xdxmkLLcj8BjzbYGRJl0KvrcQzouiaAMZwps3NGSCv8nLvzpSNYBbJp94qnSFKuZeqVqdC3n8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4TMZmh5VRzzNlX3;
-	Sat, 27 Jan 2024 21:15:16 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TMZmJ1t07zXggg;
+	Sat, 27 Jan 2024 21:14:56 +0800 (CST)
 Received: from kwepemm600009.china.huawei.com (unknown [7.193.23.164])
-	by mail.maildlp.com (Postfix) with ESMTPS id ED18518001C;
-	Sat, 27 Jan 2024 21:16:12 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 39AF2140153;
+	Sat, 27 Jan 2024 21:16:13 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -42,9 +42,9 @@ From: Weili Qian <qianweili@huawei.com>
 To: <herbert@gondor.apana.org.au>
 CC: <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<liulongfang@huawei.com>
-Subject: [PATCH 1/3] crypto: hisilicon/qm - add stop function by hardware
-Date: Sat, 27 Jan 2024 21:15:28 +0800
-Message-ID: <20240127131530.64617-2-qianweili@huawei.com>
+Subject: [PATCH 2/3] crypto: hisilicon/qm - obtain stop queue status
+Date: Sat, 27 Jan 2024 21:15:29 +0800
+Message-ID: <20240127131530.64617-3-qianweili@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20240127131530.64617-1-qianweili@huawei.com>
 References: <20240127131530.64617-1-qianweili@huawei.com>
@@ -59,130 +59,304 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  kwepemm600009.china.huawei.com (7.193.23.164)
 
-Hardware V3 could be able to drain function by sending mailbox
-to hardware which will trigger tasks in device to be flushed out.
-When the function is reset, the function can be stopped by this way.
+The debugfs files 'dev_state' and 'dev_timeout' are added.
+Users can query the current queue stop status through these two
+files. And set the waiting timeout when the queue is released.
+
+dev_state: if dev_timeout is set, dev_state indicates the status
+of stopping the queue. 0 indicates that the queue is stopped
+successfully. Other values indicate that the queue stops fail.
+if dev_timeout is not set, the value of dev_state is 0;
+
+dev_timeout: If the queue fails to stop, the queue is released
+after waiting dev_timeout * 20ms.
 
 Signed-off-by: Weili Qian <qianweili@huawei.com>
 ---
- drivers/crypto/hisilicon/qm.c | 40 ++++++++++++++++++++++++++++-------
- include/linux/hisi_acc_qm.h   |  2 ++
- 2 files changed, 34 insertions(+), 8 deletions(-)
+ Documentation/ABI/testing/debugfs-hisi-hpre | 15 ++++
+ Documentation/ABI/testing/debugfs-hisi-sec  | 15 ++++
+ Documentation/ABI/testing/debugfs-hisi-zip  | 15 ++++
+ drivers/crypto/hisilicon/debugfs.c          |  5 ++
+ drivers/crypto/hisilicon/qm.c               | 97 +++++++++++++++------
+ include/linux/hisi_acc_qm.h                 | 14 +++
+ 6 files changed, 135 insertions(+), 26 deletions(-)
 
+diff --git a/Documentation/ABI/testing/debugfs-hisi-hpre b/Documentation/ABI/testing/debugfs-hisi-hpre
+index 6ed9258605c7..e6394a2fb371 100644
+--- a/Documentation/ABI/testing/debugfs-hisi-hpre
++++ b/Documentation/ABI/testing/debugfs-hisi-hpre
+@@ -118,6 +118,21 @@ Description:	Dump the state of the device.
+ 		0: busy, 1: idle.
+ 		Only available for PF, and take no other effect on HPRE.
+ 
++What:		/sys/kernel/debug/hisi_hpre/<bdf>/qm/dev_timeout
++Date:		Jan 2024
++Contact:	linux-crypto@vger.kernel.org
++Description:	Set the wait time when stop queue fails. Available for both PF
++		and VF, and take no other effect on HPRE.
++		0: not wait(default), others value: wait dev_timeout * 20 microsecond.
++
++What:		/sys/kernel/debug/hisi_hpre/<bdf>/qm/dev_state
++Date:		Jan 2024
++Contact:	linux-crypto@vger.kernel.org
++Description:	Dump the stop queue status of the QM. The default value is 0,
++		if dev_timeout is set, when stop queue fails, the dev_state
++		will return non-zero value. Available for both PF and VF,
++		and take no other effect on HPRE.
++
+ What:		/sys/kernel/debug/hisi_hpre/<bdf>/hpre_dfx/diff_regs
+ Date:		Mar 2022
+ Contact:	linux-crypto@vger.kernel.org
+diff --git a/Documentation/ABI/testing/debugfs-hisi-sec b/Documentation/ABI/testing/debugfs-hisi-sec
+index 403f5de96318..2b5db193b5e6 100644
+--- a/Documentation/ABI/testing/debugfs-hisi-sec
++++ b/Documentation/ABI/testing/debugfs-hisi-sec
+@@ -98,6 +98,21 @@ Description:	Dump the state of the device.
+ 		0: busy, 1: idle.
+ 		Only available for PF, and take no other effect on SEC.
+ 
++What:		/sys/kernel/debug/hisi_sec2/<bdf>/qm/dev_timeout
++Date:		Jan 2024
++Contact:	linux-crypto@vger.kernel.org
++Description:	Set the wait time when stop queue fails. Available for both PF
++		and VF, and take no other effect on SEC.
++		0: not wait(default), others value: wait dev_timeout * 20 microsecond.
++
++What:		/sys/kernel/debug/hisi_sec2/<bdf>/qm/dev_state
++Date:		Jan 2024
++Contact:	linux-crypto@vger.kernel.org
++Description:	Dump the stop queue status of the QM. The default value is 0,
++		if dev_timeout is set, when stop queue fails, the dev_state
++		will return non-zero value. Available for both PF and VF,
++		and take no other effect on SEC.
++
+ What:		/sys/kernel/debug/hisi_sec2/<bdf>/sec_dfx/diff_regs
+ Date:		Mar 2022
+ Contact:	linux-crypto@vger.kernel.org
+diff --git a/Documentation/ABI/testing/debugfs-hisi-zip b/Documentation/ABI/testing/debugfs-hisi-zip
+index 2394e6a3cfe2..260c514e0e9e 100644
+--- a/Documentation/ABI/testing/debugfs-hisi-zip
++++ b/Documentation/ABI/testing/debugfs-hisi-zip
+@@ -111,6 +111,21 @@ Description:	Dump the state of the device.
+ 		0: busy, 1: idle.
+ 		Only available for PF, and take no other effect on ZIP.
+ 
++What:		/sys/kernel/debug/hisi_zip/<bdf>/qm/dev_timeout
++Date:		Jan 2024
++Contact:	linux-crypto@vger.kernel.org
++Description:	Set the wait time when stop queue fails. Available for both PF
++		and VF, and take no other effect on ZIP.
++		0: not wait(default), others value: wait dev_timeout * 20 microsecond.
++
++What:		/sys/kernel/debug/hisi_zip/<bdf>/qm/dev_state
++Date:		Jan 2024
++Contact:	linux-crypto@vger.kernel.org
++Description:	Dump the stop queue status of the QM. The default value is 0,
++		if dev_timeout is set, when stop queue fails, the dev_state
++		will return non-zero value. Available for both PF and VF,
++		and take no other effect on ZIP.
++
+ What:		/sys/kernel/debug/hisi_zip/<bdf>/zip_dfx/diff_regs
+ Date:		Mar 2022
+ Contact:	linux-crypto@vger.kernel.org
+diff --git a/drivers/crypto/hisilicon/debugfs.c b/drivers/crypto/hisilicon/debugfs.c
+index 06e67eda409f..cd67fa348ca7 100644
+--- a/drivers/crypto/hisilicon/debugfs.c
++++ b/drivers/crypto/hisilicon/debugfs.c
+@@ -1112,6 +1112,7 @@ DEFINE_DEBUGFS_ATTRIBUTE(qm_atomic64_ops, qm_debugfs_atomic64_get,
+ void hisi_qm_debug_init(struct hisi_qm *qm)
+ {
+ 	struct dfx_diff_registers *qm_regs = qm->debug.qm_diff_regs;
++	struct qm_dev_dfx *dev_dfx = &qm->debug.dev_dfx;
+ 	struct qm_dfx *dfx = &qm->debug.dfx;
+ 	struct dentry *qm_d;
+ 	void *data;
+@@ -1140,6 +1141,10 @@ void hisi_qm_debug_init(struct hisi_qm *qm)
+ 
+ 	debugfs_create_file("status", 0444, qm->debug.qm_d, qm,
+ 			&qm_status_fops);
++
++	debugfs_create_u32("dev_state", 0444, qm->debug.qm_d, &dev_dfx->dev_state);
++	debugfs_create_u32("dev_timeout", 0644, qm->debug.qm_d, &dev_dfx->dev_timeout);
++
+ 	for (i = 0; i < ARRAY_SIZE(qm_dfx_files); i++) {
+ 		data = (atomic64_t *)((uintptr_t)dfx + qm_dfx_files[i].offset);
+ 		debugfs_create_file(qm_dfx_files[i].name,
 diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 4b20b94e6371..3b015482b4e6 100644
+index 3b015482b4e6..75d0b2ea117e 100644
 --- a/drivers/crypto/hisilicon/qm.c
 +++ b/drivers/crypto/hisilicon/qm.c
-@@ -312,6 +312,7 @@ static const struct hisi_qm_cap_info qm_cap_info_comm[] = {
- 	{QM_SUPPORT_DB_ISOLATION, 0x30,   0, BIT(0),  0x0, 0x0, 0x0},
- 	{QM_SUPPORT_FUNC_QOS,     0x3100, 0, BIT(8),  0x0, 0x0, 0x1},
- 	{QM_SUPPORT_STOP_QP,      0x3100, 0, BIT(9),  0x0, 0x0, 0x1},
-+	{QM_SUPPORT_STOP_FUNC,     0x3100, 0, BIT(10), 0x0, 0x0, 0x1},
- 	{QM_SUPPORT_MB_COMMAND,   0x3100, 0, BIT(11), 0x0, 0x0, 0x1},
- 	{QM_SUPPORT_SVA_PREFETCH, 0x3100, 0, BIT(14), 0x0, 0x0, 0x1},
- };
-@@ -1674,6 +1675,11 @@ static int qm_ping_pf(struct hisi_qm *qm, u64 cmd)
- 	return ret;
+@@ -2037,43 +2037,25 @@ static void qp_stop_fail_cb(struct hisi_qp *qp)
+ 	}
  }
  
-+static int qm_drain_qm(struct hisi_qm *qm)
+-/**
+- * qm_drain_qp() - Drain a qp.
+- * @qp: The qp we want to drain.
+- *
+- * Determine whether the queue is cleared by judging the tail pointers of
+- * sq and cq.
+- */
+-static int qm_drain_qp(struct hisi_qp *qp)
++static int qm_wait_qp_empty(struct hisi_qm *qm, u32 *state, u32 qp_id)
+ {
+-	struct hisi_qm *qm = qp->qm;
+ 	struct device *dev = &qm->pdev->dev;
+ 	struct qm_sqc sqc;
+ 	struct qm_cqc cqc;
+ 	int ret, i = 0;
+ 
+-	/* No need to judge if master OOO is blocked. */
+-	if (qm_check_dev_error(qm))
+-		return 0;
+-
+-	/* Kunpeng930 supports drain qp by device */
+-	if (test_bit(QM_SUPPORT_STOP_QP, &qm->caps)) {
+-		ret = qm_stop_qp(qp);
+-		if (ret)
+-			dev_err(dev, "Failed to stop qp(%u)!\n", qp->qp_id);
+-		return ret;
+-	}
+-
+ 	while (++i) {
+-		ret = qm_set_and_get_xqc(qm, QM_MB_CMD_SQC, &sqc, qp->qp_id, 1);
++		ret = qm_set_and_get_xqc(qm, QM_MB_CMD_SQC, &sqc, qp_id, 1);
+ 		if (ret) {
+ 			dev_err_ratelimited(dev, "Failed to dump sqc!\n");
++			*state = DUMP_SQC_FAIL;
+ 			return ret;
+ 		}
+ 
+-		ret = qm_set_and_get_xqc(qm, QM_MB_CMD_CQC, &cqc, qp->qp_id, 1);
++		ret = qm_set_and_get_xqc(qm, QM_MB_CMD_CQC, &cqc, qp_id, 1);
+ 		if (ret) {
+ 			dev_err_ratelimited(dev, "Failed to dump cqc!\n");
++			*state = DUMP_CQC_FAIL;
+ 			return ret;
+ 		}
+ 
+@@ -2082,8 +2064,9 @@ static int qm_drain_qp(struct hisi_qp *qp)
+ 			break;
+ 
+ 		if (i == MAX_WAIT_COUNTS) {
+-			dev_err(dev, "Fail to empty queue %u!\n", qp->qp_id);
+-			return -EBUSY;
++			dev_err(dev, "Fail to empty queue %u!\n", qp_id);
++			*state = STOP_QUEUE_FAIL;
++			return -ETIMEDOUT;
+ 		}
+ 
+ 		usleep_range(WAIT_PERIOD_US_MIN, WAIT_PERIOD_US_MAX);
+@@ -2092,6 +2075,49 @@ static int qm_drain_qp(struct hisi_qp *qp)
+ 	return 0;
+ }
+ 
++/**
++ * qm_drain_qp() - Drain a qp.
++ * @qp: The qp we want to drain.
++ *
++ * If the device does not support stopping queue by sending mailbox,
++ * determine whether the queue is cleared by judging the tail pointers of
++ * sq and cq.
++ */
++static int qm_drain_qp(struct hisi_qp *qp)
 +{
-+	return hisi_qm_mb(qm, QM_MB_CMD_FLUSH_QM, 0, 0, 0);
++	struct hisi_qm *qm = qp->qm;
++	struct hisi_qm *pf_qm = pci_get_drvdata(pci_physfn(qm->pdev));
++	u32 state = 0;
++	int ret;
++
++	/* No need to judge if master OOO is blocked. */
++	if (qm_check_dev_error(pf_qm))
++		return 0;
++
++	/* HW V3 supports drain qp by device */
++	if (test_bit(QM_SUPPORT_STOP_QP, &qm->caps)) {
++		ret = qm_stop_qp(qp);
++		if (ret) {
++			dev_err(&qm->pdev->dev, "Failed to stop qp!\n");
++			state = STOP_QUEUE_FAIL;
++			goto set_dev_state;
++		}
++		return ret;
++	}
++
++	ret = qm_wait_qp_empty(qm, &state, qp->qp_id);
++	if (ret)
++		goto set_dev_state;
++
++	return 0;
++
++set_dev_state:
++	if (qm->debug.dev_dfx.dev_timeout)
++		qm->debug.dev_dfx.dev_state = state;
++
++	return ret;
 +}
 +
- static int qm_stop_qp(struct hisi_qp *qp)
- {
- 	return hisi_qm_mb(qp->qm, QM_MB_CMD_STOP_QP, 0, qp->qp_id, 0);
-@@ -2088,7 +2094,8 @@ static int qm_drain_qp(struct hisi_qp *qp)
- 
  static int qm_stop_qp_nolock(struct hisi_qp *qp)
  {
--	struct device *dev = &qp->qm->pdev->dev;
+ 	struct hisi_qm *qm = qp->qm;
+@@ -2319,7 +2345,26 @@ static int hisi_qm_uacce_start_queue(struct uacce_queue *q)
+ 
+ static void hisi_qm_uacce_stop_queue(struct uacce_queue *q)
+ {
+-	hisi_qm_stop_qp(q->priv);
++	struct hisi_qp *qp = q->priv;
 +	struct hisi_qm *qm = qp->qm;
-+	struct device *dev = &qm->pdev->dev;
- 	int ret;
- 
- 	/*
-@@ -2104,11 +2111,14 @@ static int qm_stop_qp_nolock(struct hisi_qp *qp)
- 
- 	atomic_set(&qp->qp_status.flags, QP_STOP);
- 
--	ret = qm_drain_qp(qp);
--	if (ret)
--		dev_err(dev, "Failed to drain out data for stopping!\n");
-+	/* V3 supports direct stop function when FLR prepare */
-+	if (qm->ver < QM_HW_V3 || qm->status.stop_reason == QM_NORMAL) {
-+		ret = qm_drain_qp(qp);
-+		if (ret)
-+			dev_err(dev, "Failed to drain out data for stopping qp(%u)!\n", qp->qp_id);
-+	}
- 
--	flush_workqueue(qp->qm->wq);
-+	flush_workqueue(qm->wq);
- 	if (unlikely(qp->is_resetting && atomic_read(&qp->qp_status.used)))
- 		qp_stop_fail_cb(qp);
- 
-@@ -3112,16 +3122,29 @@ int hisi_qm_stop(struct hisi_qm *qm, enum qm_stop_reason r)
- 
- 	down_write(&qm->qps_lock);
- 
--	qm->status.stop_reason = r;
- 	if (atomic_read(&qm->status.flags) == QM_STOP)
- 		goto err_unlock;
- 
- 	/* Stop all the request sending at first. */
- 	atomic_set(&qm->status.flags, QM_STOP);
-+	qm->status.stop_reason = r;
- 
--	if (qm->status.stop_reason == QM_SOFT_RESET ||
--	    qm->status.stop_reason == QM_DOWN) {
-+	if (qm->status.stop_reason != QM_NORMAL) {
- 		hisi_qm_set_hw_reset(qm, QM_RESET_STOP_TX_OFFSET);
-+		/*
-+		 * When performing soft reset, the hardware will no longer
-+		 * do tasks, and the tasks in the device will be flushed
-+		 * out directly since the master ooo is closed.
-+		 */
-+		if (test_bit(QM_SUPPORT_STOP_FUNC, &qm->caps) &&
-+		    r != QM_SOFT_RESET) {
-+			ret = qm_drain_qm(qm);
-+			if (ret) {
-+				dev_err(dev, "failed to drain qm!\n");
-+				goto err_unlock;
-+			}
++	struct qm_dev_dfx *dev_dfx = &qm->debug.dev_dfx;
++	u32 i = 0;
++
++	hisi_qm_stop_qp(qp);
++
++	if (!dev_dfx->dev_timeout || !dev_dfx->dev_state)
++		return;
++
++	while (++i) {
++		if (!i || i > dev_dfx->dev_timeout) {
++			dev_err(&qm->pdev->dev, "Stop q %u timeout, state %u\n",
++			       qp->qp_id, dev_dfx->dev_state);
++			dev_dfx->dev_state = FINISH_WAIT;
++			break;
 +		}
 +
- 		ret = qm_stop_started_qp(qm);
- 		if (ret < 0) {
- 			dev_err(dev, "Failed to stop started qp!\n");
-@@ -3141,6 +3164,7 @@ int hisi_qm_stop(struct hisi_qm *qm, enum qm_stop_reason r)
- 	}
++		msleep(WAIT_PERIOD);
++	}
+ }
  
- 	qm_clear_queues(qm);
-+	qm->status.stop_reason = QM_NORMAL;
- 
- err_unlock:
- 	up_write(&qm->qps_lock);
+ static int hisi_qm_is_q_updated(struct uacce_queue *q)
 diff --git a/include/linux/hisi_acc_qm.h b/include/linux/hisi_acc_qm.h
-index 5f4c74facf6a..720f10874a66 100644
+index 720f10874a66..ec5a70ade511 100644
 --- a/include/linux/hisi_acc_qm.h
 +++ b/include/linux/hisi_acc_qm.h
-@@ -43,6 +43,7 @@
- #define QM_MB_CMD_CQC_BT                0x5
- #define QM_MB_CMD_SQC_VFT_V2            0x6
- #define QM_MB_CMD_STOP_QP               0x8
-+#define QM_MB_CMD_FLUSH_QM		0x9
- #define QM_MB_CMD_SRC                   0xc
- #define QM_MB_CMD_DST                   0xd
- 
-@@ -151,6 +152,7 @@ enum qm_cap_bits {
- 	QM_SUPPORT_DB_ISOLATION = 0x0,
- 	QM_SUPPORT_FUNC_QOS,
- 	QM_SUPPORT_STOP_QP,
-+	QM_SUPPORT_STOP_FUNC,
- 	QM_SUPPORT_MB_COMMAND,
- 	QM_SUPPORT_SVA_PREFETCH,
+@@ -158,6 +158,19 @@ enum qm_cap_bits {
  	QM_SUPPORT_RPM,
+ };
+ 
++enum qm_dev_fail_state {
++	STOP_QUEUE_FAIL = 1,
++	ALLOC_CTX_FAIL,
++	DUMP_SQC_FAIL,
++	DUMP_CQC_FAIL,
++	FINISH_WAIT,
++};
++
++struct qm_dev_dfx {
++	u32 dev_state;
++	u32 dev_timeout;
++};
++
+ struct qm_dev_alg {
+ 	u64 alg_msk;
+ 	const char *alg;
+@@ -191,6 +204,7 @@ struct qm_debug {
+ 	struct dentry *debug_root;
+ 	struct dentry *qm_d;
+ 	struct debugfs_file files[DEBUG_FILE_NUM];
++	struct qm_dev_dfx dev_dfx;
+ 	unsigned int *qm_last_words;
+ 	/* ACC engines recoreding last regs */
+ 	unsigned int *last_words;
 -- 
 2.33.0
 
