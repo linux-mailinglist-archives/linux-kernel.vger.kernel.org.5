@@ -1,138 +1,98 @@
-Return-Path: <linux-kernel+bounces-41133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F162483EC52
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 10:34:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CC3083EC5D
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 10:43:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63E3C1F228A7
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 09:34:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C00421C21139
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 09:43:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A0261EB39;
-	Sat, 27 Jan 2024 09:34:24 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C5CD1EB23;
+	Sat, 27 Jan 2024 09:43:16 +0000 (UTC)
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC9871EB21;
-	Sat, 27 Jan 2024 09:34:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5224313AF8;
+	Sat, 27 Jan 2024 09:43:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.18.0.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706348063; cv=none; b=eHP7MTW/Ge2AAukZnSOOuM5BgQ4mWnY4SDMqyDCntzMMlbbMjUItGV5zkXl2s1te4EoomMah4/kWjfrFLiJTW1GVvHQoBzXLRTYBDoB6ZWtGW4DVMpqos3ybe4IOA7RyPrNDbkshl2nZJvnzukNzY/kJD+63pquggLv15KYleJo=
+	t=1706348596; cv=none; b=u16ZQzSaeIKwCBWcqrYv0IXUVadt8+uN+g9Cn0CGlEctmUAJIuNJuahc0PXj8IXaO8fciA4U7MEXL3X18fQC6koqe6WQzntHnekYKd7JGD+Vt9OYasM8wcIvUdXoHBfdf6MiIqd/W3lr7Jb1Ra57NpYmQJMhl+l8xtVPMh3rgx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706348063; c=relaxed/simple;
-	bh=jWWHAvPyYDmqWSnWLY25KtBJxBARbNBlduXIIg7JPi4=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=eyiOs8KiP29kFiIRBGWsDITVFR+AvKyAISGISYAEtmkoL9s68tMoguz4xZ+Lrw8LOFuomAV+srZVc3LBGdenmTq2Y1rweGdXnwJMaISlb7lBiyVUuV0+lJXWkDlGpKb61ojDocKC8Gf+CD/Vf1/ZfyJ9MovyesdeVODVj2hkb3A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TMTqt3f6XzvVKf;
-	Sat, 27 Jan 2024 17:32:42 +0800 (CST)
-Received: from dggpemm500008.china.huawei.com (unknown [7.185.36.136])
-	by mail.maildlp.com (Postfix) with ESMTPS id E0421180079;
-	Sat, 27 Jan 2024 17:34:17 +0800 (CST)
-Received: from dggpemm500008.china.huawei.com (7.185.36.136) by
- dggpemm500008.china.huawei.com (7.185.36.136) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sat, 27 Jan 2024 17:34:17 +0800
-Received: from dggpemm500008.china.huawei.com ([7.185.36.136]) by
- dggpemm500008.china.huawei.com ([7.185.36.136]) with mapi id 15.01.2507.035;
- Sat, 27 Jan 2024 17:34:17 +0800
-From: wangyunjian <wangyunjian@huawei.com>
-To: wangyunjian <wangyunjian@huawei.com>, Jason Wang <jasowang@redhat.com>
-CC: "mst@redhat.com" <mst@redhat.com>, "willemdebruijn.kernel@gmail.com"
-	<willemdebruijn.kernel@gmail.com>, "kuba@kernel.org" <kuba@kernel.org>,
-	"davem@davemloft.net" <davem@davemloft.net>, "magnus.karlsson@intel.com"
-	<magnus.karlsson@intel.com>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"virtualization@lists.linux.dev" <virtualization@lists.linux.dev>, xudingke
-	<xudingke@huawei.com>
-Subject: RE: [PATCH net-next 2/2] tun: AF_XDP Rx zero-copy support
-Thread-Topic: [PATCH net-next 2/2] tun: AF_XDP Rx zero-copy support
-Thread-Index: AQHaTqkDLHSSzcU2CESolpkubpTJa7DpcBcAgAD60ACAAvY/kA==
-Date: Sat, 27 Jan 2024 09:34:17 +0000
-Message-ID: <156030296fea4f7abef6ab7155ba2e32@huawei.com>
-References: <1706089075-16084-1-git-send-email-wangyunjian@huawei.com>
- <CACGkMEu5PaBgh37X4KysoF9YB8qy6jM5W4G6sm+8fjrnK36KXA@mail.gmail.com>
- <ad74a361d5084c62a89f7aa276273649@huawei.com>
-In-Reply-To: <ad74a361d5084c62a89f7aa276273649@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1706348596; c=relaxed/simple;
+	bh=0YlTECjXbMzxOJ9SvYsij9ghpBp0aA2YujbgFnfdvw8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=NtKRSfMXlrvgZvSfo+5ZhOQi1hIU5tZ4/YmOMyVzyDGuXGTkmUqzuPVgA/u8mM1r3NHZm38QMgC5L6YXDiJnzhAYcW5ouw3LDsyFAC5YgtSq9YabLczzRUxgVaizLaqueRa1qrAC7lCRbGrktnx/zAOX8nE2+vrXcUbUOvQaNcY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=nefkom.net; arc=none smtp.client-ip=212.18.0.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nefkom.net
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+	by mail-out.m-online.net (Postfix) with ESMTP id 4TMTwn1jqyz1syBm;
+	Sat, 27 Jan 2024 10:36:57 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.68])
+	by mail.m-online.net (Postfix) with ESMTP id 4TMTwm61CLz1qqlW;
+	Sat, 27 Jan 2024 10:36:56 +0100 (CET)
+X-Virus-Scanned: amavis at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+ by localhost (dynscan1.mail.m-online.net [192.168.6.68]) (amavis, port 10024)
+ with ESMTP id NOGV83LWqDOm; Sat, 27 Jan 2024 10:36:55 +0100 (CET)
+X-Auth-Info: LasxOhhX5uau7EcsWEa3k+xXe1y6nnjwUIZEYRn4b8JwSFE2+vRy5vt8DQL1Wdwx
+Received: from tiger.home (aftr-62-216-202-105.dynamic.mnet-online.de [62.216.202.105])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by mail.mnet-online.de (Postfix) with ESMTPSA;
+	Sat, 27 Jan 2024 10:36:55 +0100 (CET)
+Received: by tiger.home (Postfix, from userid 1000)
+	id 31180252088; Sat, 27 Jan 2024 10:36:55 +0100 (CET)
+From: Andreas Schwab <schwab@linux-m68k.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Matthew Wilcox <willy@infradead.org>,  Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>,  Steven Rostedt <rostedt@goodmis.org>,
+  LKML <linux-kernel@vger.kernel.org>,  Linux Trace Devel
+ <linux-trace-devel@vger.kernel.org>,  Masami Hiramatsu
+ <mhiramat@kernel.org>,  Christian Brauner <brauner@kernel.org>,  Ajay
+ Kaher <ajay.kaher@broadcom.com>,  Geert Uytterhoeven
+ <geert@linux-m68k.org>,  linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
+In-Reply-To: <CAHk-=whqu_21AnXM9_ohxONvmotGqE=98YS2pLZq+qcY8z85SQ@mail.gmail.com>
+	(Linus Torvalds's message of "Fri, 26 Jan 2024 15:17:14 -0800")
+References: <20240126150209.367ff402@gandalf.local.home>
+	<CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
+	<20240126162626.31d90da9@gandalf.local.home>
+	<CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
+	<CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
+	<8547159a-0b28-4d75-af02-47fc450785fa@efficios.com>
+	<ZbQzXfqA5vK5JXZS@casper.infradead.org>
+	<CAHk-=wiF0ATuuxJhwgm707izS=5q4xBUSh+06U2VwFEJj0FNRw@mail.gmail.com>
+	<ZbQ6gkZ78kvbcF8A@casper.infradead.org>
+	<CAHk-=wgSy9ozqC4YfySobH5vZNt9nEyAp2kGL3dW--=4OUmmfw@mail.gmail.com>
+	<CAHk-=whqu_21AnXM9_ohxONvmotGqE=98YS2pLZq+qcY8z85SQ@mail.gmail.com>
+X-Yow: Here I am in the POSTERIOR OLFACTORY LOBULE but I don't see CARL SAGAN
+ anywhere!!
+Date: Sat, 27 Jan 2024 10:36:55 +0100
+Message-ID: <878r4b2k3s.fsf@linux-m68k.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain
 
-PiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gRnJvbTogSmFzb24gV2FuZyBbbWFp
-bHRvOmphc293YW5nQHJlZGhhdC5jb21dDQo+ID4gU2VudDogVGh1cnNkYXksIEphbnVhcnkgMjUs
-IDIwMjQgMTI6NDkgUE0NCj4gPiBUbzogd2FuZ3l1bmppYW4gPHdhbmd5dW5qaWFuQGh1YXdlaS5j
-b20+DQo+ID4gQ2M6IG1zdEByZWRoYXQuY29tOyB3aWxsZW1kZWJydWlqbi5rZXJuZWxAZ21haWwu
-Y29tOyBrdWJhQGtlcm5lbC5vcmc7DQo+ID4gZGF2ZW1AZGF2ZW1sb2Z0Lm5ldDsgbWFnbnVzLmth
-cmxzc29uQGludGVsLmNvbTsNCj4gPiBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJu
-ZWxAdmdlci5rZXJuZWwub3JnOw0KPiA+IGt2bUB2Z2VyLmtlcm5lbC5vcmc7IHZpcnR1YWxpemF0
-aW9uQGxpc3RzLmxpbnV4LmRldjsgeHVkaW5na2UNCj4gPiA8eHVkaW5na2VAaHVhd2VpLmNvbT4N
-Cj4gPiBTdWJqZWN0OiBSZTogW1BBVENIIG5ldC1uZXh0IDIvMl0gdHVuOiBBRl9YRFAgUnggemVy
-by1jb3B5IHN1cHBvcnQNCj4gPg0KPiA+IE9uIFdlZCwgSmFuIDI0LCAyMDI0IGF0IDU6MzjigK9Q
-TSBZdW5qaWFuIFdhbmcNCj4gPHdhbmd5dW5qaWFuQGh1YXdlaS5jb20+DQo+ID4gd3JvdGU6DQo+
-ID4gPg0KPiA+ID4gTm93IHRoZSB6ZXJvLWNvcHkgZmVhdHVyZSBvZiBBRl9YRFAgc29ja2V0IGlz
-IHN1cHBvcnRlZCBieSBzb21lDQo+ID4gPiBkcml2ZXJzLCB3aGljaCBjYW4gcmVkdWNlIENQVSB1
-dGlsaXphdGlvbiBvbiB0aGUgeGRwIHByb2dyYW0uDQo+ID4gPiBUaGlzIHBhdGNoIHNldCBhbGxv
-d3MgdHVuIHRvIHN1cHBvcnQgQUZfWERQIFJ4IHplcm8tY29weSBmZWF0dXJlLg0KPiA+ID4NCj4g
-PiA+IFRoaXMgcGF0Y2ggdHJpZXMgdG8gYWRkcmVzcyB0aGlzIGJ5Og0KPiA+ID4gLSBVc2UgcGVl
-a19sZW4gdG8gY29uc3VtZSBhIHhzay0+ZGVzYyBhbmQgZ2V0IHhzay0+ZGVzYyBsZW5ndGguDQo+
-ID4gPiAtIFdoZW4gdGhlIHR1biBzdXBwb3J0IEFGX1hEUCBSeCB6ZXJvLWNvcHksIHRoZSB2cSdz
-IGFycmF5IG1heWJlIGVtcHR5Lg0KPiA+ID4gU28gYWRkIGEgY2hlY2sgZm9yIGVtcHR5IHZxJ3Mg
-YXJyYXkgaW4gdmhvc3RfbmV0X2J1Zl9wcm9kdWNlKCkuDQo+ID4gPiAtIGFkZCBYRFBfU0VUVVBf
-WFNLX1BPT0wgYW5kIG5kb194c2tfd2FrZXVwIGNhbGxiYWNrIHN1cHBvcnQNCj4gPiA+IC0gYWRk
-IHR1bl9wdXRfdXNlcl9kZXNjIGZ1bmN0aW9uIHRvIGNvcHkgdGhlIFJ4IGRhdGEgdG8gVk0NCj4g
-Pg0KPiA+IENvZGUgZXhwbGFpbnMgdGhlbXNlbHZlcywgbGV0J3MgZXhwbGFpbiB3aHkgeW91IG5l
-ZWQgdG8gZG8gdGhpcy4NCj4gPg0KPiA+IDEpIHdoeSB5b3Ugd2FudCB0byB1c2UgcGVla19sZW4N
-Cj4gPiAyKSBmb3IgInZxJ3MgYXJyYXkiLCB3aGF0IGRvZXMgaXQgbWVhbj8NCj4gPiAzKSBmcm9t
-IHRoZSB2aWV3IG9mIFRVTi9UQVAgdHVuX3B1dF91c2VyX2Rlc2MoKSBpcyB0aGUgVFggcGF0aCwg
-c28gSQ0KPiA+IGd1ZXNzIHlvdSBtZWFudCBUWCB6ZXJvY29weSBpbnN0ZWFkIG9mIFJYIChhcyBJ
-IGRvbid0IHNlZSBjb2RlcyBmb3INCj4gPiBSWD8pDQo+IA0KPiBPSywgSSBhZ3JlZSBhbmQgdXNl
-IFRYIHplcm9jb3B5IGluc3RlYWQgb2YgUlggemVyb2NvcHkuIEkgbWVhbnQgUlggemVyb2NvcHkN
-Cj4gZnJvbSB0aGUgdmlldyBvZiB2aG9zdC1uZXQuDQo+IA0KPiA+DQo+ID4gQSBiaWcgcXVlc3Rp
-b24gaXMgaG93IGNvdWxkIHlvdSBoYW5kbGUgR1NPIHBhY2tldHMgZnJvbSB1c2Vyc3BhY2UvZ3Vl
-c3RzPw0KPiANCj4gTm93IGJ5IGRpc2FibGluZyBWTSdzIFRTTyBhbmQgY3N1bSBmZWF0dXJlLiBY
-RFAgZG9lcyBub3Qgc3VwcG9ydCBHU08NCj4gcGFja2V0cy4NCj4gSG93ZXZlciwgdGhpcyBmZWF0
-dXJlIGNhbiBiZSBhZGRlZCBvbmNlIFhEUCBzdXBwb3J0cyBpdCBpbiB0aGUgZnV0dXJlLg0KPiAN
-Cj4gPg0KPiA+ID4NCj4gPiA+IFNpZ25lZC1vZmYtYnk6IFl1bmppYW4gV2FuZyA8d2FuZ3l1bmpp
-YW5AaHVhd2VpLmNvbT4NCj4gPiA+IC0tLQ0KPiA+ID4gIGRyaXZlcnMvbmV0L3R1bi5jICAgfCAx
-NjUNCj4gPiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLQ0KPiA+
-ID4gIGRyaXZlcnMvdmhvc3QvbmV0LmMgfCAgMTggKysrLS0NCj4gPiA+ICAyIGZpbGVzIGNoYW5n
-ZWQsIDE3NiBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQ0KDQpbLi4uXQ0KDQo+ID4gPg0K
-PiA+ID4gIHN0YXRpYyBpbnQgcGVla19oZWFkX2xlbihzdHJ1Y3Qgdmhvc3RfbmV0X3ZpcnRxdWV1
-ZSAqcnZxLCBzdHJ1Y3QNCj4gPiA+IHNvY2sNCj4gPiA+ICpzaykgIHsNCj4gPiA+ICsgICAgICAg
-c3RydWN0IHNvY2tldCAqc29jayA9IHNrLT5za19zb2NrZXQ7DQo+ID4gPiAgICAgICAgIHN0cnVj
-dCBza19idWZmICpoZWFkOw0KPiA+ID4gICAgICAgICBpbnQgbGVuID0gMDsNCj4gPiA+ICAgICAg
-ICAgdW5zaWduZWQgbG9uZyBmbGFnczsNCj4gPiA+DQo+ID4gPiAtICAgICAgIGlmIChydnEtPnJ4
-X3JpbmcpDQo+ID4gPiAtICAgICAgICAgICAgICAgcmV0dXJuIHZob3N0X25ldF9idWZfcGVlayhy
-dnEpOw0KPiA+ID4gKyAgICAgICBpZiAocnZxLT5yeF9yaW5nKSB7DQo+ID4gPiArICAgICAgICAg
-ICAgICAgbGVuID0gdmhvc3RfbmV0X2J1Zl9wZWVrKHJ2cSk7DQo+ID4gPiArICAgICAgICAgICAg
-ICAgaWYgKGxpa2VseShsZW4pKQ0KPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJu
-IGxlbjsNCj4gPiA+ICsgICAgICAgfQ0KPiA+ID4gKw0KPiA+ID4gKyAgICAgICBpZiAoc29jay0+
-b3BzLT5wZWVrX2xlbikNCj4gPiA+ICsgICAgICAgICAgICAgICByZXR1cm4gc29jay0+b3BzLT5w
-ZWVrX2xlbihzb2NrKTsNCj4gPg0KPiA+IFdoYXQgcHJldmVudHMgeW91IGZyb20gcmV1c2luZyB0
-aGUgcHRyX3JpbmcgaGVyZT8gVGhlbiB5b3UgZG9uJ3QgbmVlZA0KPiA+IHRoZSBhYm92ZSB0cmlj
-a3MuDQo+IA0KPiBUaGFuayB5b3UgZm9yIHlvdXIgc3VnZ2VzdGlvbi4gSSB3aWxsIGNvbnNpZGVy
-IGhvdyB0byByZXVzZSB0aGUgcHRyX3JpbmcuDQoNCklmIHB0cl9yaW5nIGlzIHVzZWQgdG8gdHJh
-bnNmZXIgeGRwX2Rlc2NzLCB0aGVyZSBpcyBhIHByb2JsZW06IEFmdGVyIHNvbWUNCnhkcF9kZXNj
-cyBhcmUgb2J0YWluZWQgdGhyb3VnaCB4c2tfdHhfcGVla19kZXNjKCksIHRoZSBkZXNjcyBtYXkg
-ZmFpbA0KdG8gYmUgYWRkZWQgdG8gcHRyX3JpbmcuIEhvd2V2ZXIsIG5vIEFQSSBpcyBhdmFpbGFi
-bGUgdG8gaW1wbGVtZW50IHRoZQ0Kcm9sbGJhY2sgZnVuY3Rpb24uDQoNClRoYW5rcw0KDQo+IA0K
-PiA+DQo+ID4gVGhhbmtzDQo+ID4NCj4gPg0KPiA+ID4NCj4gPiA+ICAgICAgICAgc3Bpbl9sb2Nr
-X2lycXNhdmUoJnNrLT5za19yZWNlaXZlX3F1ZXVlLmxvY2ssIGZsYWdzKTsNCj4gPiA+ICAgICAg
-ICAgaGVhZCA9IHNrYl9wZWVrKCZzay0+c2tfcmVjZWl2ZV9xdWV1ZSk7DQo+ID4gPiAtLQ0KPiA+
-ID4gMi4zMy4wDQo+ID4gPg0KDQo=
+On Jan 26 2024, Linus Torvalds wrote:
+
+> Note the "might". I don't know why glibc would have special-cased
+> st_ino of 0, but I suspect it's some internal oddity in the readdir()
+> implementation.
+
+It was traditionally used for deleted entries in a directory.
+
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
 
