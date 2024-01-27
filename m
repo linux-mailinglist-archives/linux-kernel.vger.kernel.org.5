@@ -1,90 +1,94 @@
-Return-Path: <linux-kernel+bounces-41126-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD0FD83EC3A
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 10:05:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB21783EC57
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 10:36:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E03D71C21D3B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 09:05:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 498E428309D
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jan 2024 09:36:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E68521EA76;
-	Sat, 27 Jan 2024 09:05:09 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D85C7F
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 09:05:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E11D1EA7A;
+	Sat, 27 Jan 2024 09:36:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="C32EE0x9"
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A33941EB20;
+	Sat, 27 Jan 2024 09:36:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706346309; cv=none; b=LBd5BFeNdDCSQSx+BRYX0R81hy56QNlxfBOgAqCiw0ujxdM7gTYtCceW2g9Ha/Dqi1A+NUAVlhiPFuRmwcLJbeabWdkNEYSwMihcgjpApDFPYcHj613PL7ZStVCl7FTIpThPo0xI1j62vxOWQSgGmwjA5arjluG/knBDn8nPxzc=
+	t=1706348190; cv=none; b=TpEWUN4uUm/YCAqkKHOCyZhNVUax2cJ+alVtbqff3GeYUo4FGbNetGD8vktjD1hkmOfXGklTeLv2eGGHmaRZS7BKef96KUXWD3ALHGB4ZJ+T6SAeytzleYzghkcLZ6HXy0yrMQMjV6GLhGqd6okhNJEoUK/Ef9GEzhAlVdcmaLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706346309; c=relaxed/simple;
-	bh=ns7XcGUGA6EXzw9WjRju1sbQES5lkWOliR3cZs0XBLM=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=WnnhKRoiKzgwVxatrsQDCxB1+PYn6B9g6UBBT/VBrJ5PDTtQ2ye3ufbHs9Z7zZeBNd7mtmEMKCULd06MfH2gekY9VNnLqqf51d/zwHfT3zR6u6xoaxBHRuLsqHK0h/rSOL/WK5OESbOdoqjeriUS1HFaWRwC3+gW8INInABufzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7baa6cc3af2so87988339f.2
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 01:05:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706346307; x=1706951107;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=r07qcjZtk/1Kh0i0MS4Bc56d9Yw9HmQpMjUB3qESI2w=;
-        b=lIEAWzEOnhLA+s3JgRTPUBX871n+mFKFejNh+wBZecwvm1BSBmsiAlgmsL0BtvuGR6
-         uwJvvL1ogABj/WUUU+QgTcBqkN6a3UCuMm9e4RVcSNrtoi1dvrQl3f/R1WGGP1dK2HYh
-         PE/NSce/dJXHtYxTVIKHqxmew5relcwtOZm13RT378E/9J/fPW05/6x8SOkQ/ss1woXg
-         ccdQi/DG+kAlUp0MoUxZqAi42sJaw0x8XRgdbtXcB85WNt2RlIfkrIhXClc3K10BTkgG
-         ng4lPKR/Enu/zZi8FtSqqTieZBQSgr4buL5rAbNx7uHmNcJvma3sP2FZjnDMW7DgW+kI
-         YgAw==
-X-Gm-Message-State: AOJu0YzPHMEcPZzp/De73I1XR+OciQLdPkuvHuBo4059HaH0+NORLZ+O
-	mQPrqRaCFXoDvBWahC9mj2aOTGYStuCbF9M9tWjhE0NUPIvknElmRkJaKqGwUKpsk8rOrW1KBbt
-	rddteyeVFqct1D9q2D+aIRRm76Qu80CTzplG3Qv46gDXOuL+pfC5k5Qc=
-X-Google-Smtp-Source: AGHT+IHvq6oghf9D1tVy/Q1TIUTPUfvvY/I50fF3yj9XD1Ne0UfhLLjH39DdxYrYMn9IskGwwMbQzZhGEjiao+RdXb3YIM3mTPfH
+	s=arc-20240116; t=1706348190; c=relaxed/simple;
+	bh=VQD/NidxocXfg3lbUSR9Mn1auVgxyDDPdrTS//OCFiI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Xp0jmr7WsmKotQ4aCIX0JcE3goKFbL/UDgiqxFudPDnA4GZrTd98qBszDCjiO9Q+gqgPWFVhMSmTXZ9T9iY/8Z8vet1s/EXkUvQk17K7GQkMimBlG1cutlLMjpNW+/U2xq04vwuUxDPc4AIfZJG8caiYRaMNEBRDPWxEsTxFEVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=C32EE0x9; arc=none smtp.client-ip=220.197.31.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=hRdLF
+	PkToQCEg+EFjZ96iBxTD5I3RysLL03nVwpagOk=; b=C32EE0x9vy7+8if1qdJ6I
+	wP/yZT0FljOx5/VpQaiLdGaTDSTQWjeaui2QA58KrINKiGf3JWunC0uPAFLcAGwC
+	5+rQtsg6HqayBfa3Dt1qFHiWyVSaPftv5XpLfrMT3m2UFQhwXbf2/ZOVoVeT5uYu
+	zUbOJv2cpph+X6FJ1ED9T0=
+Received: from ProDesk.. (unknown [58.22.7.114])
+	by gzga-smtp-mta-g0-4 (Coremail) with SMTP id _____wD3rzHkyrRl5GopBA--.2976S2;
+	Sat, 27 Jan 2024 17:20:39 +0800 (CST)
+From: Andy Yan <andyshrk@163.com>
+To: heiko@sntech.de
+Cc: krzysztof.kozlowski+dt@linaro.org,
+	robh+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-rockchip@lists.infradead.org,
+	Andy Yan <andyshrk@163.com>
+Subject: [PATCH 1/4] arm64: dts: rockchip: aliase sdmmc as mmc1 for Cool Pi 4B
+Date: Sat, 27 Jan 2024 17:20:31 +0800
+Message-Id: <20240127092034.887085-1-andyshrk@163.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d99:b0:361:aae3:4ee0 with SMTP id
- h25-20020a056e021d9900b00361aae34ee0mr142037ila.1.1706346305289; Sat, 27 Jan
- 2024 01:05:05 -0800 (PST)
-Date: Sat, 27 Jan 2024 01:05:05 -0800
-In-Reply-To: <000000000000c7970f05ff1ecb4d@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000064064a060fe9b55a@google.com>
-Subject: Re: [syzbot] [ext4?] KASAN: use-after-free Read in ext4_find_extent (3)
-From: syzbot <syzbot+7ec4ebe875a7076ebb31@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, axboe@kernel.dk, brauner@kernel.org, 
-	jack@suse.cz, linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wD3rzHkyrRl5GopBA--.2976S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZryDuFyDJw1kuFyDZFyxZrb_yoW3uFg_ta
+	47Wr1kJa93Jry3X3s8ta45Ga47G34q9w4fGa4YyaykJF13Xan7Jay5Ja9F93WUAF4jkr4x
+	JrW3ZF1UJw1YkjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRpHq2PUUUUU==
+X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/xtbB0glyXmWXvvkQYgAAsw
 
-syzbot suspects this issue was fixed by commit:
+Follow others rk3588 based boards, and u-boot only use mmc0/1
+as mmc boot targets, so aliase sdmmc as mmc1.
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+Fixes: 3f5d336d64d6 ("arm64: dts: rockchip: Add support for rk3588s based board Cool Pi 4B")
+Signed-off-by: Andy Yan <andyshrk@163.com>
+---
 
-    fs: Block writes to mounted block devices
+ arch/arm64/boot/dts/rockchip/rk3588s-coolpi-4b.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17b36eefe80000
-start commit:   c42d9eeef8e5 Merge tag 'hardening-v6.7-rc2' of git://git.k..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d05dd66e2eb2c872
-dashboard link: https://syzkaller.appspot.com/bug?extid=7ec4ebe875a7076ebb31
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1585ea50e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=157ef53f680000
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-coolpi-4b.dts b/arch/arm64/boot/dts/rockchip/rk3588s-coolpi-4b.dts
+index 3fae40b9ae1b..3b9d21a6f8bf 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588s-coolpi-4b.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3588s-coolpi-4b.dts
+@@ -20,8 +20,8 @@ / {
+ 
+ 	aliases {
+ 		mmc0 = &sdhci;
+-		mmc1 = &sdio;
+-		mmc2 = &sdmmc;
++		mmc1 = &sdmmc;
++		mmc2 = &sdio;
+ 	};
+ 
+ 	analog-sound {
+-- 
+2.34.1
 
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: fs: Block writes to mounted block devices
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
