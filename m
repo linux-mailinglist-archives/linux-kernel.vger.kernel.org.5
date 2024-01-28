@@ -1,136 +1,123 @@
-Return-Path: <linux-kernel+bounces-41582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41583-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23D3283F4E8
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 11:07:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E051083F4EF
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 11:12:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBED7283451
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 10:07:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 955E61F21A8B
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 10:12:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90E0E1EB36;
-	Sun, 28 Jan 2024 10:07:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FA80DDC5;
+	Sun, 28 Jan 2024 10:12:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="en7EVd3y"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Lqe0JbpY"
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2034D1DFF0
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 10:07:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1623C1DFEB;
+	Sun, 28 Jan 2024 10:12:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706436434; cv=none; b=DB+F9AJemO8GU/MYDLZs7bcJRJM8hD8Beo2m3nsG/Qs7tyu1YMy/e34Xj890SsLIiq8+ZsgBY3xUiqzvptGr9S2aD+ny+o8X/TMWQt3zEuRko91d1Br62aFwQIosDImqtaPwR7HAF+MU/2WQ6Sp7TMU16oU/LzwbsgSsUy9jX9A=
+	t=1706436732; cv=none; b=duwobisfg3Gs/jDecv4AC1o4x6jeo15JQjmf4Yqut7UYN5GSDSoVuM4e7xZ+qd9bfHxJtFy4mhd1rO+HTDk1r5wnT1lBxSrCf74wadxVssrwpcsxE3XgJsVgZlOJgTtZIXcVt+lksBs+FYoySLGtDzRS15QAB3AhpnFVZvj/Gq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706436434; c=relaxed/simple;
-	bh=bwa27LPghA/Z+iovmHgsGsmYAnt5TQVFVn/A8ynBvi0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=kcBQeqTWFM8vG6R3425ahVmKf40Xx4FNeSUELB1zlVhJrPte0tj/mB7FI+FUL6nj7WmACR59iIbzQrGtTndbYETDqW8ggqFAsZm4CgmsOlMWVuR0y6Ta6Yrw0R7KKQTZbGL6Jc8y/ZryzKrSFHOnwsJSj0oBI+AI9XgucqGT8sQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=en7EVd3y; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5823940E01A9;
-	Sun, 28 Jan 2024 10:07:08 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id vJJpScOhn7WP; Sun, 28 Jan 2024 10:07:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706436426; bh=Kyc7Zz/obRuHwnlaWBciafecRh8ISWDpy/VEawheWyQ=;
-	h=Date:From:To:Cc:Subject:From;
-	b=en7EVd3yy3xau2ZBvK5u2TtjSPHGW33k9SuWSSvysMwuRg3Fcc8M6Cr2rvGfHVwyD
-	 7ek0lABCPYY2Zi3MlxikN/WjZFR5pNUzpNoVOgROefijW8ntkUUey4hSPEUrR0QeJj
-	 yF9M3prEa5TWy9/K9VWNzRV2gT9uJHAZV+ehtG8kgi2WVj5BwBM6YLn9U3LS9xumhg
-	 cbRxwG34ygR24+5z57JjIdPOqDd1BlRbS0H+LdmbjiOupoEUuyI967KCCKXXAmJUWx
-	 g40wsBicBSnGjl+5i9/gT2Q34axeaWflWL3irgY0LCC6qwcS1YMuMq1GNsSeOST52B
-	 a0XXUanvQeHirWzEH6s6pzNd1ur+yiV4+8YCNssc5gtnBcKKWWtTVvnyPxVA3f1+UO
-	 a+BA/zMIPaz3Be78t96XVVdnGNb7lRMAshQegvUdpCg7y402icNd4QfkSdyXlU4Voj
-	 +bEmOu5ivgx4Xj5CIMAeuQzEljtyqzvrnPX26kMTf+TOBKyY26EsWC9ApZ9GkQvCBy
-	 YakkdQ5NNvFdOd0A8YSygbB9gqkRRJFgP+bdHBX+KdkfE/kENZlIcSEIG1D6eipRPY
-	 mu6qOobgubbcvuVcMwSlhxEzcwBkr98SFmPUPX/4D4WJs/urrxkm90HXh8vOR8AE5T
-	 DefWUSDyDBcJuFShEZgcgbnQ=
-Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2612C40E0196;
-	Sun, 28 Jan 2024 10:07:03 +0000 (UTC)
-Date: Sun, 28 Jan 2024 11:06:57 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/urgent for v6.8-rc2
-Message-ID: <20240128100657.GAZbYnQVcyLF9Vm5KR@fat_crate.local>
+	s=arc-20240116; t=1706436732; c=relaxed/simple;
+	bh=mCoAPlVmO/9vSpNsBEHIAWFIC2QNuikQwdXZmb3c91E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kxT6ebxOTbJ2Hy3msMMfdlvZbbtJJfksVzt4upkG7JGUxgK6dz67sboKtv/mmFCmeFufSRB8aDQ6eS4j0kKTXCkxkSITSlfhH7Hpbke0aK/hDKcKTMQK34l9b0N0jNXUYONi/Ega+EvyDg3xAuKNQG+//27iSZJ/fNy6HaJl9bQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Lqe0JbpY; arc=none smtp.client-ip=209.85.160.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-42a8a3973c5so10846381cf.2;
+        Sun, 28 Jan 2024 02:12:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706436730; x=1707041530; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mO33kD1qCH+Xc/yFNRT1niS7MhTMqAIfmIanUTcJPKk=;
+        b=Lqe0JbpYIlDxOE3l4FQHIh0JzPJXzT9VjicuSk+BmxT8jh9q3kLFZ6WQD9goC/uvpO
+         uO4xxUKviL4Yj8VcsHleavDikUijzUm5+PfNEX3FpGxgovo6onUlWzRLrX+5DR0PR0jC
+         p84c2+wU44wfs5eE4BIZwh0rczfl4V476K1er4oGK93Y4lrbv5WrL62JGPp4v8UW5h9C
+         L8BV1uxpSD/uNik7+aQzG56afMnr9hLcBQnkPdAe5xL/908XyfQn8AIvowlR9ZlYYVMf
+         urLgsG1kLA351gwY/tryBWudU14ac5+wVzTXwrfLXbJ+ckOQW1oKjZgqps0XulT/nn1p
+         wzgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706436730; x=1707041530;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mO33kD1qCH+Xc/yFNRT1niS7MhTMqAIfmIanUTcJPKk=;
+        b=u3jbAKn8iZ8qpcQI4j/Wgc0z8C5CWG4/UtFhKS1z+hXEMr+pBw2LGU/ZsXR8yGF42d
+         6/HFVN4zBKmc3izSQDCmTfs5EGzWCQz9665cdFgWTRGCrTDkfV1Z6fhhZ1jLwjenMEP7
+         ctfCE37Akp5KVJX8PC3I4vpPnJ77tNPlzvrdgfII317W17f1U9G74F+YNj3yJjpJbzzu
+         52wIWIPNb4/1Kk8+YHdXLTb/IaP7AKAFtNYFIRKW1LMMoh9Vb1kGjo0dN/wIFrNFQRR3
+         PfYGPP/aOCs2af1lwhpAuLvyTI2oJfl7j8hQ8M+mDVypt6oJS0dUgbbAYnMYVnRDndGj
+         5xag==
+X-Gm-Message-State: AOJu0YwHr6ilD45sTJoPNYiizuro7bQMlSUm+ZDJY3CrX0juyx1SurIU
+	QCe31i6v56VsK/teR/x1Azxjcegd8BPuccFjRhGJIx5ve04ruoESiOQ6CHeOstkdJidlVU2/F4/
+	r6OwROTA9dL40bduXgozGYnYv9q4=
+X-Google-Smtp-Source: AGHT+IGEQyN89e2gKXZ2v54m8Uh1CP51MaZEK3vyrIpJ46WZV8MmymronXm9dKbYWX8CBxq0YBMAeTEl36GwPqh1qWc=
+X-Received: by 2002:a05:6214:cc9:b0:686:955c:f70e with SMTP id
+ 9-20020a0562140cc900b00686955cf70emr3851961qvx.6.1706436729859; Sun, 28 Jan
+ 2024 02:12:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <000000000000e171200600d6d8bd@google.com> <000000000000910cf5060fe42991@google.com>
+In-Reply-To: <000000000000910cf5060fe42991@google.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Sun, 28 Jan 2024 12:11:58 +0200
+Message-ID: <CAOQ4uxg-nL69cbs8J4xmOd=EAQTiB-cfWgZR0TvY+hb144nZSA@mail.gmail.com>
+Subject: Re: [syzbot] [overlayfs?] possible deadlock in seq_read_iter (2)
+To: syzbot <syzbot+da4f9f61f96525c62cc7@syzkaller.appspotmail.com>
+Cc: axboe@kernel.dk, brauner@kernel.org, dhowells@redhat.com, hch@lst.de, 
+	jack@suse.cz, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-unionfs@vger.kernel.org, miklos@szeredi.hu, rafael@kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
+On Sat, Jan 27, 2024 at 4:28=E2=80=AFAM syzbot
+<syzbot+da4f9f61f96525c62cc7@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit da40448ce4eb4de18eb7b0db61dddece32677939
+> Author: Amir Goldstein <amir73il@gmail.com>
+> Date:   Thu Nov 30 14:16:23 2023 +0000
+>
+>     fs: move file_start_write() into direct_splice_actor()
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D105aa1a018=
+0000
+> start commit:   2cf4f94d8e86 Merge tag 'scsi-fixes' of git://git.kernel.o=
+r..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3De5751b3a22261=
+35d
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dda4f9f61f96525c=
+62cc7
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D176a4f49e80=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D154aa8d6e8000=
+0
+>
+> If the result looks correct, please mark the issue as fixed by replying w=
+ith:
+>
+> #syz fix: fs: move file_start_write() into direct_splice_actor()
 
-please pull a couple of urgent x86 fixes for v6.8-rc2.
+Yes. I already wrote that this work is going to fix this repro
+as well as other potential deadlocks.
 
-Thx.
+#syz fix: fs: move file_start_write() into direct_splice_actor()
 
----
-
-The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
-
-  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v6.8_rc2
-
-for you to fetch changes up to b9328fd636bd50da89e792e135b234ba8e6fe59f:
-
-  x86/CPU/AMD: Add more models to X86_FEATURE_ZEN5 (2024-01-25 12:26:21 +0100)
-
-----------------------------------------------------------------
-- Make sure 32-bit syscall registers are properly sign-extended
-
-- Add detection for AMD's Zen5 generation CPUs and Intel's Clearwater
-  Forest CPU model number
-
-- Make a stub function export non-GPL because it is part of the
-  paravirt alternatives and that can be used by non-GPL code
-
-----------------------------------------------------------------
-Borislav Petkov (AMD) (1):
-      x86/CPU/AMD: Add X86_FEATURE_ZEN5
-
-Juergen Gross (1):
-      x86/paravirt: Make BUG_func() usable by non-GPL modules
-
-Mario Limonciello (1):
-      x86/CPU/AMD: Add more models to X86_FEATURE_ZEN5
-
-Richard Palethorpe (1):
-      x86/entry/ia32: Ensure s32 is sign extended to s64
-
-Tony Luck (1):
-      x86/cpu: Add model number for Intel Clearwater Forest processor
-
- arch/x86/include/asm/cpufeatures.h     |  4 +---
- arch/x86/include/asm/intel-family.h    |  2 ++
- arch/x86/include/asm/syscall_wrapper.h | 25 +++++++++++++++++++++----
- arch/x86/kernel/alternative.c          |  2 +-
- arch/x86/kernel/cpu/amd.c              | 28 ++++++++++++++++++++++++----
- include/linux/syscalls.h               |  1 +
- 6 files changed, 50 insertions(+), 12 deletions(-)
-
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+Amir.
 
