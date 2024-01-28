@@ -1,86 +1,51 @@
-Return-Path: <linux-kernel+bounces-42007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7DDE83FAE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 00:19:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18D2383FAEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 00:21:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FB071F22800
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 23:19:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A43161F22E2D
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 23:21:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA63E446CF;
-	Sun, 28 Jan 2024 23:19:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D278A446DC;
+	Sun, 28 Jan 2024 23:21:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=feathertop.org header.i=@feathertop.org header.b="MTt7WYjl";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="HtZoouw2"
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="4a4FcSrr"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 846311E4A8;
-	Sun, 28 Jan 2024 23:19:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63862446C5;
+	Sun, 28 Jan 2024 23:21:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706483987; cv=none; b=SJk29p/ywJDXoz6PpHFfdOpmRm2C8J0xm7mUSg+u1FtxNyDNFgILe1cvhxhYLXEr8hzQnJ1OsymExtB3EVDhB3p5oBdthc7TjJW1Fsnx8xRezy2nLEMa7dCOdOlVIyYCdpXttGokzTzGKBLDTXIm77yRkK/DCDyzeIFu9/eFxyA=
+	t=1706484073; cv=none; b=PPDMvw3HPp40i/riqEMq1qpBP/nid5rhV/bM2F1lqLsu/ZkaPyWoor3nRCtzFacY7KnGy38iGuh1XD9X4lHw3o26Claj4tIcxxdMwvIwa8Bwe3MgfS+QqUICGWh0JfpxHqt1N7bONlo2flOB9V/Y+h6ATHzTPu8fIroZuW38P7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706483987; c=relaxed/simple;
-	bh=QEUfb2sA8KJ3vwu3DjUFRPuqRsbyUiZ+F9amISTLbU8=;
+	s=arc-20240116; t=1706484073; c=relaxed/simple;
+	bh=FhSTrVH5zrmp01WnNuro1Rqyjl2zO1fLnyrlz07saWM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Mx5v3LivOm8yIExudMHmgKbw8Mpt/OZ19/Ch0BiRY9KToLfPpVi6qvsH/b1PT892Uc/gLnFXdmfxojU9NFYbi9qxfkldBBwMmIle9ZpwoTtprjO4/wwGZ6iqdUf5Px/NsimFM0Vzl4cTAGe/3lRVg56BgXwib0zE5MQWWc33iKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=feathertop.org; spf=pass smtp.mailfrom=feathertop.org; dkim=pass (2048-bit key) header.d=feathertop.org header.i=@feathertop.org header.b=MTt7WYjl; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=HtZoouw2; arc=none smtp.client-ip=64.147.123.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=feathertop.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=feathertop.org
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailout.west.internal (Postfix) with ESMTP id C6D8F3200A7A;
-	Sun, 28 Jan 2024 18:19:43 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Sun, 28 Jan 2024 18:19:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=feathertop.org;
-	 h=cc:cc:content-transfer-encoding:content-type:content-type
-	:date:date:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=fm2;
-	 t=1706483983; x=1706570383; bh=1fKfNWclQmzN7rLysWXCqLcTCDbjGptQ
-	Vt1xQ/FClcA=; b=MTt7WYjl2HZPvvVjU3x1449zJ75O42f4XLIyEEXaZehlmBfv
-	7b7Sf8dK1z2x5qip0c+5b9/1RhsR/5K46hSZ6KISGh8yB9pZT1rai1gewNj0aASB
-	MMsOqixRmsCDX4qu1qwU+HVgAQuBUbq8+QoExkvTGFGVD1L0eC2OluF14umQ9hVa
-	7DDXxzHLmdJP9oUeV9tOiXPiZRnK9AOAtMYqIzdSjl3oL7rmlYxxRivHyNfOKQZG
-	H6Lf+xOYF6Eisb4nl3i5kIjq9fVYtz0qMqGMW8dG3C1XegO5mVvbIprtByuf3EcQ
-	jR+l9mrtfU2eqZaHMAdZBwFxHuDbkuMk97XsoQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706483983; x=
-	1706570383; bh=1fKfNWclQmzN7rLysWXCqLcTCDbjGptQVt1xQ/FClcA=; b=H
-	tZoouw2KWp888ydU+aBBPKcYu3/9eLYWilcQVPQobJnsnjpo018BlGWkbW0sQUK/
-	kwsvhZUyNMMOvvnOKi5EiIHBDcGUbQ9jXQm76TtgR3KDch+NLPUOIxa7fouiwlPF
-	CydOXmzkC18BjLuUwbuUtJk5PSlsrJHOvKMGD2K2ewNe4lRdezOwBS2QuSPkI7QC
-	rRpuilma1cEOx3h/ucmQ5mTlYMaSeSFnQ4/cw7QMOjDXKYwLQsAB+qpJRAelmwQJ
-	B7Rvf4xVSPYH3F9sUEBXO9CdSllZ5SP+iODiUAb4+w3e/Ekdby83ESWBESjzJDo1
-	DxSG4K7kOaSXMN8C0UEvQ==
-X-ME-Sender: <xms:DuG2ZQXsxg30Bgpj0yLpIiO13CyGwVPLDSzI-FnjJaiO87ZqhpuNbg>
-    <xme:DuG2ZUkYUcicLuK-olDOCl6KGQOm5xXbWKfLwZCcnG70IKtT0QmPC4hjkkXXJm5sc
-    vJBInn9wg>
-X-ME-Received: <xmr:DuG2ZUZFBc83PoUuvkUtd0I3PzySMUp5jywhDF_WDC9_zC1x89_GgRE7R7LDIV0oB9ERzfYafUO1sXU1sujAfQ-QtbHB8Zy1khTkmA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtfedgtdekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdejnecuhfhrohhmpefvihhm
-    ucfnuhhnnhcuoehtihhmsehfvggrthhhvghrthhophdrohhrgheqnecuggftrfgrthhtvg
-    hrnhepueegfefgveeuiedtheffgfefveejkeetiefhhfdvjeevlefhueekudeuleeghfek
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepthhimh
-    esfhgvrghthhgvrhhtohhprdhorhhg
-X-ME-Proxy: <xmx:DuG2ZfXO5rafG7DDuUnj8H8nidQvmanzsnFODoAkDDz7u6URHBVZfA>
-    <xmx:DuG2ZakAVrrsPN5fxrPtXjx0SFRlKkRekDq9DT2hFDrskRC1hffkJg>
-    <xmx:DuG2ZUe66EWt5D3omkzr7KK9QXlmsc-DVKAhbQ6CCG0E_pIpP5UCyg>
-    <xmx:D-G2ZcVGRdLsXVztB9damzissF5osJhFZBQzxpqdd8BggjP5B3avSQ>
-Feedback-ID: i1f8241ce:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 28 Jan 2024 18:19:39 -0500 (EST)
-Message-ID: <030766c0-a6b9-401d-9e9a-fe5d11c5d381@feathertop.org>
-Date: Mon, 29 Jan 2024 10:19:35 +1100
+	 In-Reply-To:Content-Type; b=ZbhUOw2e5ko5rOvRyC63DnNEMWBzzKWs9NiV/UdcVOCuibNYUszuxFNrlYHTjYI8//tkl0dZNmj3m5CdQZTACCKX23Sd+4ErgKP6jGshs/XNkZYRliEI1KKeewt8dn+oHyEovWBAF/8EnDy/7TkJ/jmaJApQ9Dl/1thKwLA491s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=4a4FcSrr; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=3pgIaJ7MkTtY//7CcCezghloHGWFY713Or2R1yaWIm4=; b=4a4FcSrrklo1A7he8JHnJGqUki
+	9mKoWKFz4miOUi7DEygXN/OmgNQviNVJ5b0P64D9n+DH3Ui4EWb4/0SYuT8SPXk5EfFb01VDnLmVk
+	sJIZeM6rehxUUJ+LkCSR6E6MxCHX7PTF7gfhZ+ECEDHW3V8L/drpE/AZvCbuUKt1tUarRUIxBeOkh
+	cfHfG870F8WLjJSDB8RpOW6/s6rA4Hp79AjnVFt9pv8Xd9Fg7CGl/A5fLCvBYwQMdJrML/ZnVHW8r
+	r3Upz4YvDQwtTxszFqUGEkyyRsInvJraBb73kRbCfTPCjNjqV4v9NGnr4uEKokMI3O8abnPXItDxA
+	a4z84hxQ==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rUESU-0000000AjkV-3qtf;
+	Sun, 28 Jan 2024 23:21:03 +0000
+Message-ID: <621fe651-8538-43d5-a797-c1e66436b2dc@infradead.org>
+Date: Sun, 28 Jan 2024 15:21:01 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,66 +53,58 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH AUTOSEL 6.1 27/27] i2c: rk3x: Adjust mask/value offset for
- i2c2 on rv1126
+Subject: Re: [PATCH] doc: ipu3: Fix UAPI header doc warnings
 Content-Language: en-US
-To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Cc: Heiko Stuebner <heiko@sntech.de>, Andi Shyti <andi.shyti@kernel.org>,
- Wolfram Sang <wsa@kernel.org>, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-i2c@vger.kernel.org
-References: <20240128161424.203600-1-sashal@kernel.org>
- <20240128161424.203600-27-sashal@kernel.org>
-From: Tim Lunn <tim@feathertop.org>
-In-Reply-To: <20240128161424.203600-27-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To: Kohshi Yamaguchi <kohshi54.yam@gmail.com>, sakari.ailus@linux.intel.com,
+ bingbu.cao@intel.com, tian.shu.qiu@intel.com
+Cc: mchehab@kernel.org, gregkh@linuxfoundation.org,
+ linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+ linux-kernel@vger.kernel.org, skhan@linuxfoundation.org
+References: <20240128225258.50375-1-kohshi54.yam@gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240128225258.50375-1-kohshi54.yam@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Sasha,
 
-   Support for the rv1126 SoC was only added around linux 6.2 and 6.3, 
-thus doesnt make sense to pick this patch up in 6.1
-
-Regards
-   Tim
-
-On 1/29/24 03:14, Sasha Levin wrote:
-> From: Tim Lunn <tim@feathertop.org>
->
-> [ Upstream commit 92a85b7c6262f19c65a1c115cf15f411ba65a57c ]
->
-> Rockchip RV1126 is using old style i2c controller, the i2c2
-> bus uses a non-sequential offset in the grf register for the
-> mask/value bits for this bus.
->
-> This patch fixes i2c2 bus on rv1126 SoCs.
->
-> Signed-off-by: Tim Lunn <tim@feathertop.org>
-> Acked-by: Heiko Stuebner <heiko@sntech.de>
-> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
-> Signed-off-by: Wolfram Sang <wsa@kernel.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+On 1/28/24 14:52, Kohshi Yamaguchi wrote:
+> The ipu3_uapi_acc_param struct in the IPU3 UAPI header mentioned
+> reserved1 and reserved2 fields, which are absent in the actual
+> structure definition. This mismatch led to Sphinx build warnings
+> due to inconsistencies between the documentation and the code.
+> 
+> This patch removes these non-existent reserved field references
+> from the documentation, resolving the Sphinx build warnings and
+> ensuring the UAPI header is accurately documented.
+> 
+> Signed-off-by: Kohshi Yamaguchi <kohshi54.yam@gmail.com>
 > ---
->   drivers/i2c/busses/i2c-rk3x.c | 8 ++++++--
->   1 file changed, 6 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/i2c/busses/i2c-rk3x.c b/drivers/i2c/busses/i2c-rk3x.c
-> index 6aa4f1f06240..c8cd5cadcf56 100644
-> --- a/drivers/i2c/busses/i2c-rk3x.c
-> +++ b/drivers/i2c/busses/i2c-rk3x.c
-> @@ -1295,8 +1295,12 @@ static int rk3x_i2c_probe(struct platform_device *pdev)
->   			return -EINVAL;
->   		}
->   
-> -		/* 27+i: write mask, 11+i: value */
-> -		value = BIT(27 + bus_nr) | BIT(11 + bus_nr);
-> +		/* rv1126 i2c2 uses non-sequential write mask 20, value 4 */
-> +		if (i2c->soc_data == &rv1126_soc_data && bus_nr == 2)
-> +			value = BIT(20) | BIT(4);
-> +		else
-> +			/* 27+i: write mask, 11+i: value */
-> +			value = BIT(27 + bus_nr) | BIT(11 + bus_nr);
->   
->   		ret = regmap_write(grf, i2c->soc_data->grf_offset, value);
->   		if (ret != 0) {
+>  drivers/staging/media/ipu3/include/uapi/intel-ipu3.h | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h b/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
+> index caa358e0bae4..926fcf84e33c 100644
+> --- a/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
+> +++ b/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
+> @@ -2485,11 +2485,9 @@ struct ipu3_uapi_anr_config {
+>   *		&ipu3_uapi_yuvp1_y_ee_nr_config
+>   * @yds:	y down scaler config. See &ipu3_uapi_yuvp1_yds_config
+>   * @chnr:	chroma noise reduction config. See &ipu3_uapi_yuvp1_chnr_config
+> - * @reserved1: reserved
+>   * @yds2:	y channel down scaler config. See &ipu3_uapi_yuvp1_yds_config
+>   * @tcc:	total color correction config as defined in struct
+>   *		&ipu3_uapi_yuvp2_tcc_static_config
+> - * @reserved2: reserved
+>   * @anr:	advanced noise reduction config.See &ipu3_uapi_anr_config
+>   * @awb_fr:	AWB filter response config. See ipu3_uapi_awb_fr_config
+>   * @ae:	auto exposure config  As specified by &ipu3_uapi_ae_config
+
+posted 2 days ago:
+
+https://lore.kernel.org/linux-media/eed7560f-cd7d-4e07-9b38-038ca65445bf@infradead.org/T/#mda377078e30cb5d784f23de95d8d7cca13265562
+
+Thanks.
+
+-- 
+#Randy
 
