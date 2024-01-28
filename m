@@ -1,60 +1,56 @@
-Return-Path: <linux-kernel+bounces-41516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD65C83F36C
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 03:58:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E03883F395
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 04:10:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B6011C212C5
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 02:58:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBEE81F22707
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 03:10:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A16F4437;
-	Sun, 28 Jan 2024 02:58:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1987E3FEC;
+	Sun, 28 Jan 2024 03:10:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="re3sFDq2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rhKyo9ey"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A23C17F5;
-	Sun, 28 Jan 2024 02:58:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 560D2184E;
+	Sun, 28 Jan 2024 03:10:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706410701; cv=none; b=KG52dQJCUTkvn+Pm/k1pXPvYij4+MMBtmLfMPsb294xkHLmo7qWtTti1FVbbJj9/zcDRHwGdW7GBVnQgLaXFg4fRcuL+rz2IdWGqWXH/Ysfyzj6QG8wbG4J5GA2D8x3tseC9jNuDVCAwB3gSUehJK/P5XpMihEYn4PTVIDdxcH0=
+	t=1706411412; cv=none; b=PaGqd9Ic29nO0sHAz3PJ7wOJUB7ISNKrTImUDUQURNFzmZPW+Cwp+ZMFKM+kbg4dsiFLVDUB0ltelD4cxFeowFZAvOCYkI7nOnOO0vyqPyo2BN8hYrWfxx7DeTMHfCyA0CwdymfIpiwXmrrhbErRO5UC8u5GEauCsrIG38aj6qY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706410701; c=relaxed/simple;
-	bh=I2JHP2n51qFJXJlFgu6I1eAj34ctCNFkTtkBruBv+7o=;
+	s=arc-20240116; t=1706411412; c=relaxed/simple;
+	bh=lZ1liFir3gGA6qym7RTTve5VZosP9tUOA/xKqvBePHs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bduqJH461UavZZfJigAlv+WAJslgPH8QqKliGR2vT0YBAlD1dJuqEUd4H7bCIogWS57gQXbSfhvBTLgmfkfQUDoFpJVKe6VkygyTjPBr9bjWM9o2tlmOrm1XUwqBc4xTOL2WDR/WjkNixsGukyzhjwXAV4VD5Zacamba39LAavs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=re3sFDq2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBD5CC433C7;
-	Sun, 28 Jan 2024 02:58:18 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=MDUIf+H4jjWOzrFOh3K1R7Mge8NHATxFBsIjmRwnmcCW086HgulAwrB1PsF2rCZ/qS04sTlIqq8InoZ6Dt78qBd5mBdVYjrJPO4Vl8Bbd/LY3xlBIpx+DwP/kT6rQRMl9V/0OWAQjQAiQCppIl4H5/IZxavJtGAG7VbUfa+H/lI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rhKyo9ey; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F25BCC433F1;
+	Sun, 28 Jan 2024 03:10:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706410701;
-	bh=I2JHP2n51qFJXJlFgu6I1eAj34ctCNFkTtkBruBv+7o=;
+	s=k20201202; t=1706411411;
+	bh=lZ1liFir3gGA6qym7RTTve5VZosP9tUOA/xKqvBePHs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=re3sFDq2VrRHtBJpU5WFEzsvCO3D4//VGt8/TPGPUEHLuOcc+0LArSoGeiJWeAaM1
-	 0PwhWNvQ218v4SmjQ70WyaSkFM6aGV+u2r+46EgMH3c1W9tfcHBw/qONMj9aBYXjSD
-	 +JEapPqzF7wE0edCFPLwYNLqDKkojra5cRCKbt314xwnew0aA6s8i5do+/LWop085s
-	 s9X0yfqnX/msm9kZZckiFT1ZSD9t4VMeVLCgWDTWQ5AMUlKV+4CUKIqXfyAAqlJV8R
-	 CqutGiZitH/FESUFT7lMQYs5HXgrlcUijnWgEKRQ8L866a6nCqcLlhfdNyMLUwspHd
-	 u9+jplvnbb0cw==
-Date: Sat, 27 Jan 2024 20:58:17 -0600
+	b=rhKyo9eyuKqMAgPrBLE/xhDRZNC2VnI9KOcRvXQXtKN69wNt1wSXKV9VAlhp1s3Np
+	 MBKOeCzyjxYaNr9rSPqbBCwgA8Z6R71VY6QIpRTM6EuZi7RAbBstf76u1tdaL29slt
+	 x0bnRL/v1t1CYcId+UvfmxsZTCR3/xydD3GUAMCjZ+WrWbHehPSTRMiVTo8KF0rf5T
+	 nCc14LNN2cstiiTHk0FHV3CLU3kGVbFdjaf1JHEjth+rxBM+P/FSxZD+un+nem5N7E
+	 qnPBCtK4HivrK4ZgGZ4yuZFNYLs+fvIuLoQy7tmNkEZ2+eTNRrt/4CXqv+Z/7bDEoJ
+	 D8I23lrQKx6oQ==
+Date: Sat, 27 Jan 2024 21:10:08 -0600
 From: Bjorn Andersson <andersson@kernel.org>
-To: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-Cc: agross@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
-	conor+dt@kernel.org, konrad.dybcio@linaro.org, mani@kernel.org, robh+dt@kernel.org, 
-	quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com, quic_ramkri@quicinc.com, 
-	quic_nayiluri@quicinc.com, dmitry.baryshkov@linaro.org, robh@kernel.org, 
-	quic_krichai@quicinc.com, quic_vbadigan@quicinc.com, quic_parass@quicinc.com, 
-	quic_schintav@quicinc.com, quic_shijjose@quicinc.com, Bjorn Helgaas <bhelgaas@google.com>, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>, 
-	Kishon Vijay Abraham I <kishon@kernel.org>, linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, mhi@lists.linux.dev
-Subject: Re: [PATCH v9 0/5] arm64: qcom: sa8775p: add support for EP PCIe
-Message-ID: <pm2emx3nnypdtfo63f6vly4guybl3pguqe3djgeqgiojxgqttl@oainfndei3qa>
-References: <1701432377-16899-1-git-send-email-quic_msarkar@quicinc.com>
+To: Douglas Anderson <dianders@chromium.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-arm-kernel@lists.infradead.org, 
+	Stephen Boyd <swboyd@chromium.org>, linux-serial@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] soc: qcom: geni-se: Add M_TX_FIFO_NOT_EMPTY bit
+ definition
+Message-ID: <jrdc5uhwu2tqud5bqu2r7mfnbh2mdbqtgs56h65xv5t4lvwvhm@f7rhtbpxxcwi>
+References: <20240112150307.1.I7dc0993c1e758a1efedd651e7e1670deb1b430fb@changeid>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,89 +59,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1701432377-16899-1-git-send-email-quic_msarkar@quicinc.com>
+In-Reply-To: <20240112150307.1.I7dc0993c1e758a1efedd651e7e1670deb1b430fb@changeid>
 
-On Fri, Dec 01, 2023 at 05:36:11PM +0530, Mrinmay Sarkar wrote:
-> This series adds the relavent DT bindings, new compatible string,
-> add support to EPF driver and add EP PCIe node in dtsi file for
-> ep pcie0 controller.
+On Fri, Jan 12, 2024 at 03:03:07PM -0800, Douglas Anderson wrote:
+> According to the docs I have, bit 21 of the status register is
+> asserted when the FIFO is _not_ empty. Add the definition.
 > 
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
-Waiting for the driver changes to be picked up, so that I can merge
-patch 5 through the qcom tree. Are there any unresolved issues that I'm
-failing to spot?
+Acked-by: Bjorn Andersson <andersson@kernel.org>
 
 Regards,
 Bjorn
 
-> v8 -> v9:
-> - update author in "Add pci_epf_mhi_ prefix to the function" patch.
-> - add ack by and reviewed by tag in commit message.
+> ---
 > 
-> v7 -> v8:
-> - Add new patch PCI: epf-mhi: Add "pci_epf_mhi_" prefix to the function
->   names
-> - Update PCI: epf-mhi: Add support for SA8775P patch on top of the new
->   patch and update commit message.
+>  include/linux/soc/qcom/geni-se.h | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> v6 -> v7:
-> - add reviewed by tag in commit message in all patches.
-> - update commit message in patch 2 as per comment.
-> - update reason for reusing PID in commit message.
-> 
-> v5 -> v6:
-> - update cover letter.
-> 
-> v4 -> v5:
-> - add maxItems to the respective field to constrain io space and
->   interrupt in all variants.
-> 
-> v3 -> v4:
-> - add maxItems field in dt bindings
-> - update comment in patch2
-> - dropped PHY driver patch as it is already applied [1]
-> - update comment in EPF driver patch
-> - update commect in dtsi and add iommus instead of iommu-map
-> 
-> [1] https://lore.kernel.org/all/169804254205.383714.18423881810869732517.b4-ty@kernel.org/
-> 
-> v2 -> v3:
-> - removed if/then schemas, added minItems for reg,
->   reg-bnames, interrupt and interrupt-names instead.
-> - adding qcom,sa8775p-pcie-ep compitable for sa8775p
->   as we have some specific change to add.
-> - reusing sm8450's pcs_misc num table as it is same as sa8775p.
->   used appropriate namespace for pcs.
-> - remove const from sa8775p_header as kernel test robot
->   throwing some warnings due to this.
-> - remove fallback compatiable as we are adding compatiable for sa8775p.
-> 
-> v1 -> v2:
-> - update description for dma
-> - Reusing qcom,sdx55-pcie-ep compatibe so remove compaitable
->   for sa8775p
-> - sort the defines in phy header file and remove extra defines
-> - add const in return type pci_epf_header and remove MHI_EPF_USE_DMA
->   flag as hdma patch is not ready
-> - add fallback compatiable as qcom,sdx55-pcie-ep, add iommu property
-> 
-> 
-> Manivannan Sadhasivam (1):
->   PCI: epf-mhi: Add "pci_epf_mhi_" prefix to the function names
-> 
-> Mrinmay Sarkar (4):
->   dt-bindings: PCI: qcom-ep: Add support for SA8775P SoC
->   PCI: qcom-ep: Add support for SA8775P SOC
->   PCI: epf-mhi: Add support for SA8775P
->   arm64: dts: qcom: sa8775p: Add ep pcie0 controller node
-> 
->  .../devicetree/bindings/pci/qcom,pcie-ep.yaml      | 64 +++++++++++++++++++++-
->  arch/arm64/boot/dts/qcom/sa8775p.dtsi              | 46 ++++++++++++++++
->  drivers/pci/controller/dwc/pcie-qcom-ep.c          |  1 +
->  drivers/pci/endpoint/functions/pci-epf-mhi.c       | 21 ++++++-
->  4 files changed, 128 insertions(+), 4 deletions(-)
-> 
+> diff --git a/include/linux/soc/qcom/geni-se.h b/include/linux/soc/qcom/geni-se.h
+> index 29e06905bc1f..0f038a1a0330 100644
+> --- a/include/linux/soc/qcom/geni-se.h
+> +++ b/include/linux/soc/qcom/geni-se.h
+> @@ -178,6 +178,7 @@ struct geni_se {
+>  #define M_GP_IRQ_3_EN			BIT(12)
+>  #define M_GP_IRQ_4_EN			BIT(13)
+>  #define M_GP_IRQ_5_EN			BIT(14)
+> +#define M_TX_FIFO_NOT_EMPTY_EN		BIT(21)
+>  #define M_IO_DATA_DEASSERT_EN		BIT(22)
+>  #define M_IO_DATA_ASSERT_EN		BIT(23)
+>  #define M_RX_FIFO_RD_ERR_EN		BIT(24)
 > -- 
-> 2.7.4
+> 2.43.0.275.g3460e3d667-goog
 > 
 
