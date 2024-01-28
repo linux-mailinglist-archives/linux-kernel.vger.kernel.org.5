@@ -1,131 +1,103 @@
-Return-Path: <linux-kernel+bounces-41650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1DC183F5E1
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 15:36:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E0B583F5E3
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 15:38:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6960D283A73
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 14:36:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98C871F211CD
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 14:38:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52A5D1F955;
-	Sun, 28 Jan 2024 14:36:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B17491E51F;
+	Sun, 28 Jan 2024 14:38:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="VO8NY6o1"
-Received: from mout.web.de (mout.web.de [212.227.17.12])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Jwls1GSd"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83B8A210EC;
-	Sun, 28 Jan 2024 14:36:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B4F924B2C;
+	Sun, 28 Jan 2024 14:38:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.93
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706452566; cv=none; b=DFPBdQgZd3WmpsfiLu2iEJqFWlL1JA0fU2ZKYTDSjO1E3sUSfkIcgPpP1sAYaLhGxx4A/7gOTqjRh0F1tUa/0uDlBqGX5lfnEE2ijya9w/y9fAHhHE4LIT44x6pvh3Q6ug8biuNB+7R20dTQUqZ888FJVVehFgOev5ypnm901mY=
+	t=1706452692; cv=none; b=AApK9YuRkmG8UmDbi2uA8pBRgkeeYZPARfzt4fBXPEFy9BT9UtVFSTMUdu4P++R7k0kIiMBi4JD5riQgkVGhmY0x13KmcLqMh/XJzyKScI7x12+sM3sZG4/MS4fqObJc1mPo9a4rnDLF6Si9D3nV94YwZy0R1rFbgfUsGiK/w6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706452566; c=relaxed/simple;
-	bh=aDhTgz/lX7Bkp3K6CN8opRhhDbmP/3uNFck7LgFe5CU=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=SHoJGbxpB9jKHkQs0Pu7ViYM1jI8HMTvc8kqVBPTZQR4Q4DbTYZjzBBshUrVlG8HlK9UQsLOgfTr4Hi0zvAc7Bn6MZIlVrDeqfJRByNEIERHoGwC3mNHdsHdI3sLMEOMywp3VlPKjE2NkzW6FoD32OSlmAvB9mtzMeNWfJ7WfNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=VO8NY6o1; arc=none smtp.client-ip=212.227.17.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1706452523; x=1707057323; i=markus.elfring@web.de;
-	bh=aDhTgz/lX7Bkp3K6CN8opRhhDbmP/3uNFck7LgFe5CU=;
-	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
-	b=VO8NY6o1qfC2CM0mraF4vuZSgvoWdJoqLKjcPonwW4G3xN9mhhLA7klmNPWkdcRu
-	 BuDCol+0gbX7dxft0pVjLcXbx90EUgQib0YZXNGT37h0/OTfxjzIVbVJ2BNBuJtpw
-	 VOtlqmLf+p+MwdxBDdvzlucyi5Gt9YtlRjc2eLPeT/Lor8Y3UEZBBPGjTlNdIo59k
-	 W2tuiZZ7Xl1o65QhoIgILPAW5opsS/nQtdjqoBc191VFHSIx+3YTJ7pgXWisiQn3i
-	 81FZygEvhzTYbAktBEmnjWVcBhr7xXUy9WgjPOMde8QUoy8ouZ9jyDPDq9vLOHdCF
-	 M6N85Nt9gJt6kU7hkw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.81.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MdfCN-1qvJfO1p33-00ZKhY; Sun, 28
- Jan 2024 15:35:23 +0100
-Message-ID: <e5d9404d-eb3b-4d35-a027-790229986cdf@web.de>
-Date: Sun, 28 Jan 2024 15:35:19 +0100
+	s=arc-20240116; t=1706452692; c=relaxed/simple;
+	bh=ANwtYKhLvju5//43bnHV/uOQimOHUSPddVFPoST5fb4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g6vptIKg9cjcKXmhJvcx2mbFpkRkmp1GadPVz0QCzt8yLmHretONER2IHfUFtwuVqLg7UePco8TQ1rreVSIeVXuiDWLBLQdtTpsotfQS8245+B35yzJ8NCN500eQAtnQmOniNUQKxH5njzaUiG9BIctVfIVRItZDv5K8hE5LUIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Jwls1GSd; arc=none smtp.client-ip=192.55.52.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706452690; x=1737988690;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ANwtYKhLvju5//43bnHV/uOQimOHUSPddVFPoST5fb4=;
+  b=Jwls1GSdyA4V5DcPsoENmvwxyMFanY+KCijv3NMnmoebcSEg82xMdALB
+   tNvsBukrH7t/1UdMUSaPHnzspgOXsaqgWu0dJhFUiiDnQmvDY2cwyWtMk
+   rmo6u5f2UaqPw4MCNLrF5ifalFkQNwiVFz1vnhBCBeZEfPh4l0IAWMABl
+   PGPzQ3S1/PRm95j/Ti+TI5mCHRpYDlHkH1eevc2//iZY8z5vHEbp0cfLe
+   kN0FeE24QZQh1GLZL5jau725WeB6PUa5l9oGIJ/uLXJIIgaKOOTHKYc5t
+   PovDndfJ6riEcBp8kDUOJ9WRITgVEu0ss6UGAwKiMsMR3yhnbDU46s8Ga
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10966"; a="399932777"
+X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
+   d="scan'208";a="399932777"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2024 06:38:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10966"; a="906818358"
+X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
+   d="scan'208";a="906818358"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2024 06:38:07 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rU6IO-0000000HTqZ-2aVl;
+	Sun, 28 Jan 2024 16:38:04 +0200
+Date: Sun, 28 Jan 2024 16:38:04 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Daniel Thompson <daniel.thompson@linaro.org>
+Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Lee Jones <lee@kernel.org>,
+	Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH v1 1/4] backlight: hx8357: Make use of device properties
+Message-ID: <ZbZmzC6A_TxGvEWm@smile.fi.intel.com>
+References: <20240114152759.1040563-1-andriy.shevchenko@linux.intel.com>
+ <20240114152759.1040563-2-andriy.shevchenko@linux.intel.com>
+ <20240124171953.GA15539@aspen.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-arm-msm@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Arnd Bergmann <arnd@arndb.de>, Amol Maheshwari <amahesh@qti.qualcomm.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>, Cong Liu <liucong2@kylinos.cn>,
- Kunwu Chan <chentao@kylinos.cn>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] misc: fastrpc: Use memdup_user() rather than duplicating its
- implementation
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:zZMLk8SHPdlT/iFiSdZ96fIUhgyIRJ8/yu4u6XWi3ISKCeTji/X
- vMt3iqkqVdSwkBiDBsO/x+Ck7VH2nS3ezzOngZ0DIh7yee2GtGAz9PVLntmHT0RozzKwGyl
- eECNFurF6wnnyJSkZFsKew5FHOjE+liIy9+ZzZ90Jub/+vC1qiDKdlIbOI0egQcifDuRtw1
- MqiN+h5G2QU5coCXi2HHQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:nBeIRC6Gwa8=;SOz2uok6iiYTx+oo4qTbZNPc9z+
- XA9ypAbomu0MU5kJNtcwx+69odXvSk3UOsT+aB1bHPx8AWPDIebHl9o6Ux+NxLaw08bP/T3uB
- uzEZlo9Ug47s4A4VR1ChhfGRht8kLvJuxhvZLjFtP61q9SSgOx0os3s3kAUqAhm7hgt6Zrc0w
- 6rVrU+6eSm+UdZQC2zZTtWfJOkHbBubCrs/NkTQwk4E+08Wy6C6f/q9Kj0jnvBPN7t3VqEbFu
- shT9Mkr4gyzRAGA6q1atE+gzzdPDPZKWDdgFcrmBxf5dXI7c1nFo2htop5hhPuiG6Thpn2cpl
- k9P2oEYQ+Mj8aBv4feQl7ONYNjCEdor0mqP2jUtKYhvN6kVWAqTD4d3KgDCEuatmSKsPlxPdt
- +uweEjw9Vq45Cdf8sdiSlqfXZaRqnn4FUEcJ9rec6ZmXzN+k6Qoag6IDqm9jUl7Gnq6XcSwtq
- 4pa8Co6rvj4MNnrbSHZ5S/cNl13cleTWO3jH0cQpK+njtx76NOAZB+esdfEVPPOWnwBRuDYg5
- IoORNqAa2meEx8tea1hAVDcZiOsyvqTr6ZIa+01LPimEHjjPbjpoEVyeBKFiDA5MuaTO7yPWp
- pJTFQbQ2fcbzUAfeJ9+27h7fs+8QBUBMN62mUUGesmZ1Nbc1yFMU76haTBas4F5WFisWyjQxn
- x83c2w+y8N0n7NgdzA3i0ZMVu9wybfPoWho9G6HVqGmVXJ6XUyZnpJKWFmaJCVD4KumLQvi9H
- U1r91xuGWx5RTDFAXYF5yRWB3ucL1v8StYFavKAxiIZjEOn9DauUovoa2uKcQ1571gcR/R7Vl
- 7Yp9IUgn1RUrJa95S3uz5xq+Evuat37N6AfAxv9nHJIpN6wG9d2AEzuz3EhUJ/kXnx6MnMQES
- VUbH3hlcJm4vjRpHcOZXRLqY7Wpj1dGPG/c0VREF0VSTS9EYNmXYkEXBhFtlq2TiWGOkXiOtR
- KcSBZNTSSbXksyR71YBE/Zn8M8M=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240124171953.GA15539@aspen.lan>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sun, 28 Jan 2024 15:17:03 +0100
+On Wed, Jan 24, 2024 at 05:19:53PM +0000, Daniel Thompson wrote:
+> On Sun, Jan 14, 2024 at 05:25:08PM +0200, Andy Shevchenko wrote:
 
-Reuse existing functionality from memdup_user() instead of keeping
-duplicate source code.
+..
 
-Generated by: scripts/coccinelle/api/memdup_user.cocci
+> > +typedef int (*hx8357_init)(struct lcd_device *);
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/misc/fastrpc.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+> > +	hx8357_init init;
+> 
+> As somewhere else in this thread, I'd find this a lot more readable
+> as:
+> 	hx8357_init_fn init_fn;
 
-diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-index 1c6c62a7f7f5..83da6ad4e541 100644
-=2D-- a/drivers/misc/fastrpc.c
-+++ b/drivers/misc/fastrpc.c
-@@ -1260,17 +1260,12 @@ static int fastrpc_init_create_static_process(stru=
-ct fastrpc_user *fl,
- 		goto err;
- 	}
+I agree with you, dunno why I haven't added _fn in the first place...
 
--	name =3D kzalloc(init.namelen, GFP_KERNEL);
--	if (!name) {
--		err =3D -ENOMEM;
-+	name =3D memdup_user(init.name, init.namelen);
-+	if (IS_ERR(name) {
-+		err =3D PTR_ERR(name);
- 		goto err;
- 	}
+-- 
+With Best Regards,
+Andy Shevchenko
 
--	if (copy_from_user(name, (void __user *)(uintptr_t)init.name, init.namel=
-en)) {
--		err =3D -EFAULT;
--		goto err_name;
--	}
--
- 	if (!fl->cctx->remote_heap) {
- 		err =3D fastrpc_remote_heap_alloc(fl, fl->sctx->dev, init.memlen,
- 						&fl->cctx->remote_heap);
-=2D-
-2.43.0
 
 
