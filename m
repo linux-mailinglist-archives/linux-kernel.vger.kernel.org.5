@@ -1,116 +1,92 @@
-Return-Path: <linux-kernel+bounces-41975-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0989283FA31
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 22:53:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42D7A83FA48
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 23:15:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA38F282D55
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 21:53:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9B251F226CE
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 22:15:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 311983C47E;
-	Sun, 28 Jan 2024 21:53:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="bKCMLFQ2"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D651E3C082;
-	Sun, 28 Jan 2024 21:53:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 413513C493;
+	Sun, 28 Jan 2024 22:15:44 +0000 (UTC)
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 042E23C46B;
+	Sun, 28 Jan 2024 22:15:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706478791; cv=none; b=JQcjqhbUKyeKPZVL4yJTjrLJr4LkZ+YvGMSqmR2I1nbyRerHk1B9wGSUuZs+I0X1HCovTcJJ/TLwBMXtxvG8h4wVk57FJQD+fowpWGYvoSbqL8RySoX6UsXu8OR28Z0NQqbXDVSqLS3DykT30AZT5kstrWlWpMAblc8vovMlMrs=
+	t=1706480143; cv=none; b=L1vdBk2IRMrW/ARQeFveLzCwMjYbn8JrhDwfVhcMG80f8vi4C+OFfpJO9+PY+T07YYNz9JuQ86FmDRxhIX1nuhMd0sGxcJK0lJbo4Su/mlW3zoigBOHoANVTeh6N3t/BkwaXcxRtqFouLGYwHIC2JzTnvMsdLo7EvvtYeGT4Vnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706478791; c=relaxed/simple;
-	bh=yaUWbY1oUaSRGJ3fokVxSpbJK4jJy/AGjLwGcK+D9JE=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=kRxu37YruKwz4V1z1wqz5tWZwZtB1JhwPwas4czjNZr5BTjNbjajMpFMtu+LmylTXt+9efoRppXP9cCvMs85+tHPWmcA631Ve/ng1P+znKYdW9HOmOuXx9W2Qoezew8criELZIaP6kniCArn3O//AY5ZlhqlLXjeMmBtC5VKHPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=bKCMLFQ2; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1706478784;
-	bh=c0dCsj8bvKSas1/xBqPrrvD7tLg1R9eK8Z2xbNVGXmY=;
-	h=Date:From:To:Cc:Subject:From;
-	b=bKCMLFQ2wwZO7EEXdfnOgznq5H0hjvBju8/mjZ5ie8yhb0Hw/EzgEGZYvapi/klas
-	 7NhArawQNfwP/PKnxGumL7l4aLtIp4eIdTlsE5IAJGXh7GOsDRKro3COzRMj79XVpG
-	 X0GbtXxijdPux6HsmvuQMvvP+AAp7iHKSGv6EUG5Y+eykgY07Z52J6gpzBMMkaWo8V
-	 wN5s2q79CtoaGkxFgaxIlJycoc2N/LpcA6ORLhy9jiGZFA/tSdngrmx9jEULTf8g5c
-	 amO0L97Ld+zc+7N6UcRUrqXTsLB/6pzZV/V0b+S157oyFa6BgIYi7S1VwGuKSU4XPY
-	 nn6eUTXLgLRgg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TNQCg22t8z4wc6;
-	Mon, 29 Jan 2024 08:53:03 +1100 (AEDT)
-Date: Mon, 29 Jan 2024 08:53:01 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Shuah Khan <shuah@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: "Hu.Yadi" <hu.yadi@h3c.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>, Muhammad Usama Anjum
- <usama.anjum@collabora.com>, Shuah Khan <skhan@linuxfoundation.org>
-Subject: linux-next: manual merge of the kselftest-fixes tree with the
- mm-hotfixes tree
-Message-ID: <20240129085301.5458880a@canb.auug.org.au>
+	s=arc-20240116; t=1706480143; c=relaxed/simple;
+	bh=vNYgDf0RboUzfGtK3sr9l72mJp9VU/gn//gCBuw27QM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AFBm4xDMhc7X6dBvYpJoj00q2RCq2zSJUKgJ7R7b1rsztNOIXCgP0uE0c2g9TlA3Dwk6qPgyMlM2X2McLUEvTaE9/m+3NXJA0oaW9qKjeXL09bhrbYB5IR/lCyXA243xXqfjhAbXIS+iS1H38tVimWHaTqa03Wi3jLEMKwvMmF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1rUDR3-0005sj-00; Sun, 28 Jan 2024 23:15:29 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id 8EF83C0489; Sun, 28 Jan 2024 22:54:08 +0100 (CET)
+Date: Sun, 28 Jan 2024 22:54:08 +0100
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Xi Ruoyao <xry111@xry111.site>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org,
+	Ralf Baechle <ralf@linux-mips.org>,
+	"Maciej W. Rozycki" <macro@orcam.me.uk>,
+	YunQiang Su <wzssyqa@gmail.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v2] mips: Call lose_fpu(0) before initializing fcr31 in
+ mips_set_personality_nan
+Message-ID: <ZbbNAESbgzwJN5qc@alpha.franken.de>
+References: <20240126210557.12442-1-xry111@xry111.site>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/BhzWz.dN6KBzdwan9nN4ZKz";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240126210557.12442-1-xry111@xry111.site>
 
---Sig_/BhzWz.dN6KBzdwan9nN4ZKz
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sat, Jan 27, 2024 at 05:05:57AM +0800, Xi Ruoyao wrote:
+> If we still own the FPU after initializing fcr31, when we are preempted
+> the dirty value in the FPU will be read out and stored into fcr31,
+> clobbering our setting.  This can cause an improper floating-point
+> environment after execve().  For example:
+> 
+>     zsh% cat measure.c
+>     #include <fenv.h>
+>     int main() { return fetestexcept(FE_INEXACT); }
+>     zsh% cc measure.c -o measure -lm
+>     zsh% echo $((1.0/3)) # raising FE_INEXACT
+>     0.33333333333333331
+>     zsh% while ./measure; do ; done
+>     (stopped in seconds)
+> 
+> Call lose_fpu(0) before setting fcr31 to prevent this.
+> 
+> Closes: https://lore.kernel.org/linux-mips/7a6aa1bbdbbe2e63ae96ff163fab0349f58f1b9e.camel@xry111.site/
+> Fixes: 9b26616c8d9d ("MIPS: Respect the ISA level in FCSR handling")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Xi Ruoyao <xry111@xry111.site>
+> ---
+> 
+> v1 -> v2: Fix stable list address in Cc line.
+> 
+>  arch/mips/kernel/elf.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 
-Hi all,
+applied to mips-fixes.
 
-Today's linux-next merge of the kselftest-fixes tree got a conflict in:
+Thomas.
 
-  tools/testing/selftests/core/close_range_test.c
-
-between commit:
-
-  27a593e3f13a ("selftests: core: include linux/close_range.h for CLOSE_RAN=
-GE_* macros")
-
-from the mm-hotfixes-unstable branch of the mm-hotfixes tree and commit:
-
-  b5a8a6de69bc ("selftests/core: Fix build issue with CLOSE_RANGE_UNSHARE")
-
-from the kselftest-fixes tree.
-
-I fixed it up (basically the same patch, I used the former which kept
-the blank line) and can carry the fix as necessary. This is now fixed
-as far as linux-next is concerned, but any non trivial conflicts should
-be mentioned to your upstream maintainer when your tree is submitted for
-merging.  You may also want to consider cooperating with the maintainer
-of the conflicting tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/BhzWz.dN6KBzdwan9nN4ZKz
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmW2zL0ACgkQAVBC80lX
-0Gx1Qwf/dH0jDQMJIhLy2JVgJShYzAqq/jEkeDOtAXGJ8Q49S04vU8xk5/+L8rMf
-TgWtWTiXIgsezYftqYnTbOz6nczn51mKS15B5b7xzY2HSIeroMEonY+K9sJ3C8PO
-F0MRlSbw1t4jO/E4XhKX6ZmkOAW4fzvJWJTzL4QjowbA8gHYI3kVV4yxxWmfRPGm
-Ihq6K3wXIt73YFfr7gudz93o2VVIUc7dvlT7zBQ4so7Gabn/J94FUObGleULUtKS
-HwK/VwpiTm8qA9kOvVh0IJhtX4lP/9DQcC6qV5Lo6ExglRYOKueXvDxFTH4kBkUv
-zxZgt0k9ZQodTRXIVpLgzHXJP1oIGg==
-=IBZo
------END PGP SIGNATURE-----
-
---Sig_/BhzWz.dN6KBzdwan9nN4ZKz--
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
 
