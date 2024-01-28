@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-41678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F94C83F647
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:06:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9FE983F64A
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:07:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 523E31C217CB
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:06:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 193D31C21B66
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:07:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74EA42E65B;
-	Sun, 28 Jan 2024 16:06:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C3A8288DF;
+	Sun, 28 Jan 2024 16:06:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qfMWcqXQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BThAZpoj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B37B32E644;
-	Sun, 28 Jan 2024 16:06:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98F7F2EB1D;
+	Sun, 28 Jan 2024 16:06:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706457972; cv=none; b=mDe7Fm+MLDygoinMqoVydFBKYTa6dheuWwcmjK1vTmPM9UGgATITtsI1WXReLppsRNDloZALV+Eaep2NFBokCIeGWZZdkN19iTPOlRUGwCkLvHDqgxnJDzhSw18MxpUX4qdPKsYJq3NzFMUb+2AJ24qdjmsHcO1L2/pwzCQUkXo=
+	t=1706457976; cv=none; b=jZv8d6tAm1eeznrd/QFU5y2+u8Ha2/5rtOnoXlUCymcjM9VIpFCSB/OENeOtcsFf8F34nC6iPb+dVUCi1x1B/cVqI4s9gKWM3EmBxKNvW7JqIAaqUj4WUoPpETk2YT52B0gC7pipU65ke9T7lyc8cp4rqYOx9rrjWpAAQfSJGKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706457972; c=relaxed/simple;
-	bh=1UnqaSq6US/sXw4AotStqr/RUKhvvYzhNHwicWeq4pM=;
+	s=arc-20240116; t=1706457976; c=relaxed/simple;
+	bh=tUG4O+PgRfdAjKLE8Z/uNA5hf36Y7t+Ym1/UMNDsPG8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=M3N3Bz+2ouBQ++XLHf2K7A0Sx7SLmii5qKHjPOC19xRIGB4wHf47vTnzKkWU8ZrUrHQKKayRLGLYFsbCxd/fpxXINihazidr3/J10Ui+a6uFDyMBwO55O85Bl3N5C7ozb7SdcW3/aelpDDn1AKKUh/KLlXZ7m4L8+8yeeWf26i0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qfMWcqXQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BA3CC43394;
-	Sun, 28 Jan 2024 16:06:09 +0000 (UTC)
+	 MIME-Version; b=Lx9M6dpqQf0KrFZDD01k5/l7qDzA+Xj0ekaDiUCSUyA0VUlSUSLcviG0Aho9vyAGS4qA9JBb7UT0vlZdfaZn/Whs2qptOpHLGqrN0++np5f7eseVI1e8gxQkmLXbaRcbKGvVeM0FkA8UJtgaPglMQdE7uy7VL7yKrW/0tOUplZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BThAZpoj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B20E4C43390;
+	Sun, 28 Jan 2024 16:06:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706457972;
-	bh=1UnqaSq6US/sXw4AotStqr/RUKhvvYzhNHwicWeq4pM=;
+	s=k20201202; t=1706457976;
+	bh=tUG4O+PgRfdAjKLE8Z/uNA5hf36Y7t+Ym1/UMNDsPG8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qfMWcqXQJuyNNX7HTwLclM8TLDtUP6uRfAE1TNMORFXG8gztAiXwty3tUBRAD6G2w
-	 1UEZwjtVgOM+bZFNxdcukilsqEA6dzQ+Qq70YCR/Ze57qbGW10O/CkLpgbP65ElTaC
-	 dDwM85Z+swUBxO5/RquDc23ErRWPiFKm3njXeRm8YNbQcN4Foi7Bg275xOCzOE+/me
-	 MX3NURYzHj/GYCcWB5bRqzifBc80oe7k84cb5kX8pdLuXgaR+KdC8Yq9yX2WIY1QvA
-	 lzaJUBfoTwrHZKwVCAOVVELKTozQl8zKw2kV4rKZWvgZ9NS9zM1Cnda79ZcqPjLOLZ
-	 V3O5iVUHsBbBQ==
+	b=BThAZpojLE/4qW5yzHzRBtAaQ7rhFO+NUqYv44ES20PUvjB5NGz6RUOcWp2AZpJEi
+	 qh6gbkaCh1mhTHsXgcs6vFa9oIhl1NsB06Eo1RZMKuqES4qwTMgF4hJiAXNNX17XBG
+	 /FwgagQbrKgDiZaSaWoh5tsP+QZrOF+PssTTauB1B3OpK1a46p64iYEx+9Mv5BA0dp
+	 G4kV060SGIsaS6iCxRHsIPpPDahgWoLz9ro9uK5yiWO/NT22nOlDSabvhRobvlUrKm
+	 op9U9XtMFY79DF6z+ETw+paZ9C435G9B4tLCHCIcUB9HaAEEx4qo4edkoX2GrHqrPV
+	 gTQ5BaBELC9Xw==
 From: Jonathan Cameron <jic23@kernel.org>
 To: linux-iio@vger.kernel.org,
 	Rob Herring <robh@kernel.org>,
@@ -55,9 +55,9 @@ Cc: Julia Lawall <Julia.Lawall@inria.fr>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	=?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
 	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [RFC PATCH 2/5] of: Introduce for_each_child_of_node_scoped() to automate of_node_put() handling
-Date: Sun, 28 Jan 2024 16:05:39 +0000
-Message-ID: <20240128160542.178315-3-jic23@kernel.org>
+Subject: [RFC PATCH 3/5] of: unittest: Use for_each_child_of_node_scoped()
+Date: Sun, 28 Jan 2024 16:05:40 +0000
+Message-ID: <20240128160542.178315-4-jic23@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128160542.178315-1-jic23@kernel.org>
 References: <20240128160542.178315-1-jic23@kernel.org>
@@ -71,37 +71,49 @@ Content-Transfer-Encoding: 8bit
 
 From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-To avoid issues with out of order cleanup, or ambiguity about when the
-auto freed data is first instantiated, do it within the for loop definition.
-
-The disadvantage is that the struct device_node *child variable creation
-is not immediately obvious where this is used.
-However, in many cases, if there is another definition of
-struct device_node *child; the compiler / static analysers will notify us
-that it is unused, or uninitialized.
+A simple example of the utility of this autocleanup approach to
+handling of_node_put()
 
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 ---
- include/linux/of.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/of/unittest.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/of.h b/include/linux/of.h
-index 50e882ee91da..f822226eac6d 100644
---- a/include/linux/of.h
-+++ b/include/linux/of.h
-@@ -1434,6 +1434,12 @@ static inline int of_property_read_s32(const struct device_node *np,
- 	for (child = of_get_next_available_child(parent, NULL); child != NULL; \
- 	     child = of_get_next_available_child(parent, child))
+diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
+index cfd60e35a899..d353327767b3 100644
+--- a/drivers/of/unittest.c
++++ b/drivers/of/unittest.c
+@@ -233,27 +233,22 @@ static void __init of_unittest_dynamic(void)
  
-+#define for_each_child_of_node_scoped(parent, child) \
-+	for (struct device_node *child __free(device_node) =		\
-+	     of_get_next_child(parent, NULL);				\
-+	     child != NULL;						\
-+	     child = of_get_next_available_child(parent, child))
-+
- #define for_each_of_cpu_node(cpu) \
- 	for (cpu = of_get_next_cpu_node(NULL); cpu != NULL; \
- 	     cpu = of_get_next_cpu_node(cpu))
+ static int __init of_unittest_check_node_linkage(struct device_node *np)
+ {
+-	struct device_node *child;
+ 	int count = 0, rc;
+ 
+-	for_each_child_of_node(np, child) {
++	for_each_child_of_node_scoped(np, child) {
+ 		if (child->parent != np) {
+ 			pr_err("Child node %pOFn links to wrong parent %pOFn\n",
+ 				 child, np);
+-			rc = -EINVAL;
+-			goto put_child;
++			return -EINVAL;
+ 		}
+ 
+ 		rc = of_unittest_check_node_linkage(child);
+ 		if (rc < 0)
+-			goto put_child;
++			return rc;
+ 		count += rc;
+ 	}
+ 
+ 	return count + 1;
+-put_child:
+-	of_node_put(child);
+-	return rc;
+ }
+ 
+ static void __init of_unittest_check_tree_linkage(void)
 -- 
 2.43.0
 
