@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-41710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5930583F6DE
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:19:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0136983F6E2
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:19:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E46B1F270BB
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:19:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 342751C2253E
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:19:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE98C54FAD;
-	Sun, 28 Jan 2024 16:12:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A789C55794;
+	Sun, 28 Jan 2024 16:12:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tPdJ3mxR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rnHoGkij"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B9EF54FA3;
-	Sun, 28 Jan 2024 16:12:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E067055761;
+	Sun, 28 Jan 2024 16:12:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458357; cv=none; b=D+H4vAZfiB0ZYHfquDmlxEI087Sb+9x3xo/RiicPWT2hUPnVyBgy/pPFl4bnqoC5YyzipTuTCtfCaf0JxV0Dfz2GRKMlUfTrYhHnhewshu2QhzdHCv9dpWvFEKlfpx6D73URfuh2ehf17AG5IzIC4tL875oaXFA+3yYvpzh6an0=
+	t=1706458359; cv=none; b=lU5R1xYrNYnX4nMLOAgkDDoKrBGBJsgyUWhkCaVnuZ4eAh+aw1I9+V2n7d5xt5rWnb53Or9U01/vwNFuiJcZuw1j2s6iLnfXsEcY7q1VlstTUPmS3aIhftadKp54SSoG8n27KqvZit2R5o2wZIn+mVgLtQB5n7MKMAIJoLn/trk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458357; c=relaxed/simple;
-	bh=8aKHccqRKaxRqRGjKPbEcWHb9fi3toq2KzUKKsr5HSw=;
+	s=arc-20240116; t=1706458359; c=relaxed/simple;
+	bh=6QH+OrglpnmleDhcenEX4vVIDStz6FnK9DRSXxbjPgs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gAUsfWI9hDElczlKfpUgc6wk+IiovuZ4Z007M0eAETPL1E7/BCrJoLc4ZpR8K+l5kl32ebsmRgsx9TCT7k4w43hpTbYwQAe0PznUO0UFDLz59emREKpaxX+kB/4L8OXm/nku7z484KKFXxwVbakMtC//y0VxZWpHCs6Mz8wG3IY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tPdJ3mxR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C71AC433F1;
-	Sun, 28 Jan 2024 16:12:35 +0000 (UTC)
+	 MIME-Version:Content-Type; b=sv3o8OGyBDflcvwAPLkUUaJ5nBI/0zF1DsuJeMjoPNIq6RQWJmi+W3an3Uk0GQQviIvS8Lg/dIPCqYmv8ftwS+15+9aull0pBgG4ZTZ7Dk+mSiMS/4G1xwHmz2+VLTztgR41R5SMgelhoIFMsLrJkl0xp2HqD6NKzpJkv9K3iqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rnHoGkij; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 149ABC433C7;
+	Sun, 28 Jan 2024 16:12:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706458356;
-	bh=8aKHccqRKaxRqRGjKPbEcWHb9fi3toq2KzUKKsr5HSw=;
+	s=k20201202; t=1706458358;
+	bh=6QH+OrglpnmleDhcenEX4vVIDStz6FnK9DRSXxbjPgs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tPdJ3mxRFkQmzpqgOYspfu6zfcd3TxjAb6sS4nQEkAOQXOWrqgt77h/tcOVXOjha2
-	 JvYWdEzv2tCJPEf35O1hg5oX2ZD+XzDENlaHmhnzFuGz8Hj7CzVkQH8r2BZX4g1Nvj
-	 wM1YJA3LQ1Mbx3aK+Syw6Fs7b0S2cdG2Tq0t7LAfzhz7dUl7SbnDLqEkIEDcRGd3Mz
-	 xO7+VoUEwZlT9F8aRhNcGGPRXn/90ZMqqBgGqfGT8Ta5o/isqs5YkTIC5un1RBC4BL
-	 /lDMiEgUlUb9X5bmpwF3OWkAOec287t0z0ea23Sdf274t4iqh20lHpEIAUYJpylDWn
-	 4QNytJCWPB+2A==
+	b=rnHoGkijQi9IRGQNLwtsxzFd2DtfWtTN9jBhLvypo9xQOkD1/Afz24tWHCEMLll7Q
+	 VoeDmqqU7mgXkDhTdyScRc9pZGJKh/hPZrhcNa2OLQzn2325SPXiNM1BvOuAtrTWvx
+	 rGvnYTKwIAwHCo2z/vMSupjhsBHl4kE/G1bQlqz3QmZB2qgp6lOj4C4wchwv1sd4e3
+	 6Pcr7v6qiX9BsImMXAeF4xCJwZnXRMgT9GUlPDM5KTYbmPKGFEuVBKbTZkRZvDdjUr
+	 hwW80nLw9QkKNR8bpGPxCIhol0BKOzNmNiaJIUsM5YWt1y3ahZoLx+u2/obr8/UeoP
+	 f4EgXzMywoloQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Philip Yang <Philip.Yang@amd.com>,
-	Felix Kuehling <felix.kuehling@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
+Cc: Zhu Yanjun <yanjun.zhu@linux.dev>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	Felix.Kuehling@amd.com,
-	christian.koenig@amd.com,
-	Xinhui.Pan@amd.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.7 28/39] drm/amdkfd: Fix lock dependency warning with srcu
-Date: Sun, 28 Jan 2024 11:10:48 -0500
-Message-ID: <20240128161130.200783-28-sashal@kernel.org>
+	mst@redhat.com,
+	jasowang@redhat.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	virtualization@lists.linux.dev,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 29/39] =?UTF-8?q?virtio=5Fnet:=20Fix=20"?= =?UTF-8?q?=E2=80=98%d=E2=80=99=20directive=20writing=20between=201=20and?= =?UTF-8?q?=2011=20bytes=20into=20a=20region=20of=20size=2010"=20warnings?=
+Date: Sun, 28 Jan 2024 11:10:49 -0500
+Message-ID: <20240128161130.200783-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128161130.200783-1-sashal@kernel.org>
 References: <20240128161130.200783-1-sashal@kernel.org>
@@ -66,106 +66,83 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.2
 Content-Transfer-Encoding: 8bit
 
-From: Philip Yang <Philip.Yang@amd.com>
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-[ Upstream commit 2a9de42e8d3c82c6990d226198602be44f43f340 ]
+[ Upstream commit e3fe8d28c67bf6c291e920c6d04fa22afa14e6e4 ]
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.5.0-kfd-yangp #2289 Not tainted
-------------------------------------------------------
-kworker/0:2/996 is trying to acquire lock:
-        (srcu){.+.+}-{0:0}, at: __synchronize_srcu+0x5/0x1a0
+Fix the warnings when building virtio_net driver.
 
-but task is already holding lock:
-        ((work_completion)(&svms->deferred_list_work)){+.+.}-{0:0}, at:
-	process_one_work+0x211/0x560
+"
+drivers/net/virtio_net.c: In function ‘init_vqs’:
+drivers/net/virtio_net.c:4551:48: warning: ‘%d’ directive writing between 1 and 11 bytes into a region of size 10 [-Wformat-overflow=]
+ 4551 |                 sprintf(vi->rq[i].name, "input.%d", i);
+      |                                                ^~
+In function ‘virtnet_find_vqs’,
+    inlined from ‘init_vqs’ at drivers/net/virtio_net.c:4645:8:
+drivers/net/virtio_net.c:4551:41: note: directive argument in the range [-2147483643, 65534]
+ 4551 |                 sprintf(vi->rq[i].name, "input.%d", i);
+      |                                         ^~~~~~~~~~
+drivers/net/virtio_net.c:4551:17: note: ‘sprintf’ output between 8 and 18 bytes into a destination of size 16
+ 4551 |                 sprintf(vi->rq[i].name, "input.%d", i);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/virtio_net.c: In function ‘init_vqs’:
+drivers/net/virtio_net.c:4552:49: warning: ‘%d’ directive writing between 1 and 11 bytes into a region of size 9 [-Wformat-overflow=]
+ 4552 |                 sprintf(vi->sq[i].name, "output.%d", i);
+      |                                                 ^~
+In function ‘virtnet_find_vqs’,
+    inlined from ‘init_vqs’ at drivers/net/virtio_net.c:4645:8:
+drivers/net/virtio_net.c:4552:41: note: directive argument in the range [-2147483643, 65534]
+ 4552 |                 sprintf(vi->sq[i].name, "output.%d", i);
+      |                                         ^~~~~~~~~~~
+drivers/net/virtio_net.c:4552:17: note: ‘sprintf’ output between 9 and 19 bytes into a destination of size 16
+ 4552 |                 sprintf(vi->sq[i].name, "output.%d", i);
 
-which lock already depends on the new lock.
+"
 
-the existing dependency chain (in reverse order) is:
-
--> #3 ((work_completion)(&svms->deferred_list_work)){+.+.}-{0:0}:
-        __flush_work+0x88/0x4f0
-        svm_range_list_lock_and_flush_work+0x3d/0x110 [amdgpu]
-        svm_range_set_attr+0xd6/0x14c0 [amdgpu]
-        kfd_ioctl+0x1d1/0x630 [amdgpu]
-        __x64_sys_ioctl+0x88/0xc0
-
--> #2 (&info->lock#2){+.+.}-{3:3}:
-        __mutex_lock+0x99/0xc70
-        amdgpu_amdkfd_gpuvm_restore_process_bos+0x54/0x740 [amdgpu]
-        restore_process_helper+0x22/0x80 [amdgpu]
-        restore_process_worker+0x2d/0xa0 [amdgpu]
-        process_one_work+0x29b/0x560
-        worker_thread+0x3d/0x3d0
-
--> #1 ((work_completion)(&(&process->restore_work)->work)){+.+.}-{0:0}:
-        __flush_work+0x88/0x4f0
-        __cancel_work_timer+0x12c/0x1c0
-        kfd_process_notifier_release_internal+0x37/0x1f0 [amdgpu]
-        __mmu_notifier_release+0xad/0x240
-        exit_mmap+0x6a/0x3a0
-        mmput+0x6a/0x120
-        do_exit+0x322/0xb90
-        do_group_exit+0x37/0xa0
-        __x64_sys_exit_group+0x18/0x20
-        do_syscall_64+0x38/0x80
-
--> #0 (srcu){.+.+}-{0:0}:
-        __lock_acquire+0x1521/0x2510
-        lock_sync+0x5f/0x90
-        __synchronize_srcu+0x4f/0x1a0
-        __mmu_notifier_release+0x128/0x240
-        exit_mmap+0x6a/0x3a0
-        mmput+0x6a/0x120
-        svm_range_deferred_list_work+0x19f/0x350 [amdgpu]
-        process_one_work+0x29b/0x560
-        worker_thread+0x3d/0x3d0
-
-other info that might help us debug this:
-Chain exists of:
-  srcu --> &info->lock#2 --> (work_completion)(&svms->deferred_list_work)
-
-Possible unsafe locking scenario:
-
-        CPU0                    CPU1
-        ----                    ----
-        lock((work_completion)(&svms->deferred_list_work));
-                        lock(&info->lock#2);
-			lock((work_completion)(&svms->deferred_list_work));
-        sync(srcu);
-
-Signed-off-by: Philip Yang <Philip.Yang@amd.com>
-Reviewed-by: Felix Kuehling <felix.kuehling@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+Link: https://lore.kernel.org/r/20240104020902.2753599-1-yanjun.zhu@intel.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdkfd/kfd_svm.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/virtio_net.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-index 92d8b1513e57..f66f88d2b643 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-@@ -2366,8 +2366,10 @@ static void svm_range_deferred_list_work(struct work_struct *work)
- 		mutex_unlock(&svms->lock);
- 		mmap_write_unlock(mm);
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 51b1868d2f22..1caf21fd5032 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -4096,10 +4096,11 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
+ {
+ 	vq_callback_t **callbacks;
+ 	struct virtqueue **vqs;
+-	int ret = -ENOMEM;
+-	int i, total_vqs;
+ 	const char **names;
++	int ret = -ENOMEM;
++	int total_vqs;
+ 	bool *ctx;
++	u16 i;
  
--		/* Pairs with mmget in svm_range_add_list_work */
--		mmput(mm);
-+		/* Pairs with mmget in svm_range_add_list_work. If dropping the
-+		 * last mm refcount, schedule release work to avoid circular locking
-+		 */
-+		mmput_async(mm);
- 
- 		spin_lock(&svms->deferred_list_lock);
- 	}
+ 	/* We expect 1 RX virtqueue followed by 1 TX virtqueue, followed by
+ 	 * possible N-1 RX/TX queue pairs used in multiqueue mode, followed by
+@@ -4136,8 +4137,8 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
+ 	for (i = 0; i < vi->max_queue_pairs; i++) {
+ 		callbacks[rxq2vq(i)] = skb_recv_done;
+ 		callbacks[txq2vq(i)] = skb_xmit_done;
+-		sprintf(vi->rq[i].name, "input.%d", i);
+-		sprintf(vi->sq[i].name, "output.%d", i);
++		sprintf(vi->rq[i].name, "input.%u", i);
++		sprintf(vi->sq[i].name, "output.%u", i);
+ 		names[rxq2vq(i)] = vi->rq[i].name;
+ 		names[txq2vq(i)] = vi->sq[i].name;
+ 		if (ctx)
 -- 
 2.43.0
 
