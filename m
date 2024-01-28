@@ -1,55 +1,61 @@
-Return-Path: <linux-kernel+bounces-41693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AE9383F68C
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:14:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4B2883F694
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:14:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0B0C1F22A15
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:14:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 824B5282625
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:14:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8198645BEA;
-	Sun, 28 Jan 2024 16:11:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3548D4C618;
+	Sun, 28 Jan 2024 16:11:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LaGLwdWW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tMoeY4NG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C84D345979;
-	Sun, 28 Jan 2024 16:11:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 785224C3BF;
+	Sun, 28 Jan 2024 16:11:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458311; cv=none; b=dNuGQN+EaKC8MoK06FSN2gmNKMXH1mXxbejgIpsIGtpYfO+L/QknIKRGiLhmtoReYi5K4fUyqMMFzQuQdvr5u0ltsyHLIwYBvJP4WPTalgJ4LICmVxPzub9OJ28UV647A1BjSQByt7oSr8NxcubnlEVUqxNKCi2YcgZU7yNQr0A=
+	t=1706458313; cv=none; b=YXsxBoCmT+9Ya2MyNzo2aIRqUwqUEv74r9QX8PiN1TH6nZWD2kpe/pfDa3fgdD4Qa96VJ1PSIY/C923nVd7I2EcwHhWgCQzg+Ym/nAAwOru1G7AfZ8nuXtVqXkAAp+nun3sEbLSl/mbI8ehrlwr/afPMj9/ChE0qYg/m3ggZBnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458311; c=relaxed/simple;
-	bh=uMnD0aUO2l3M2khXx2m/8Vx9nla+p5h2CdRabr2cOEM=;
+	s=arc-20240116; t=1706458313; c=relaxed/simple;
+	bh=51cvES8B4cwsZRZH2wNWrxlvRklkeZm6la8scxzeXso=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=k2t0N4dlCT3VCul1VWPc+zIg3+V3DcJFNoV4ZKTZk3cupg+HBgbupLh50jJs/2YUapdAtkWLZCK1DZZX7HP5ff7IJVkW4JQ9G+DHulsQLHcKah1njZz5O3zX1EwPYgEDacrKGbK6G/CTkvi/MLwiua6zuZN35GIPh3lCXK/dmJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LaGLwdWW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC2DAC433F1;
-	Sun, 28 Jan 2024 16:11:50 +0000 (UTC)
+	 MIME-Version; b=MbOoBJnkuKvZ3CKj+tcobsjBILEG7qoave8c8yb0G1eRP4E0ae/yn+Ilm9gUAO4s5mqX4HdQHOSRn89zQqvpdksfjhbAGeWNKU9o2Wo/JCg8DHmZtYyQOun2haIQvI7qM2BU0DgNNcL92sGcASqvdG+iGy8u3u+ipdZBXv6yxX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tMoeY4NG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AC0DC43399;
+	Sun, 28 Jan 2024 16:11:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706458311;
-	bh=uMnD0aUO2l3M2khXx2m/8Vx9nla+p5h2CdRabr2cOEM=;
+	s=k20201202; t=1706458313;
+	bh=51cvES8B4cwsZRZH2wNWrxlvRklkeZm6la8scxzeXso=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LaGLwdWWi9AL7Y3QMPGSS8GQ1hOKKUTXpo311vhBalW/LC0tsIUfU4AIymZ4w1S/6
-	 Pe0j2kFwQoiPPeWFGwSkOPoApcft+h05zoDHawbZiCe3TnH1DuPj8c9IvNV2yGJ47g
-	 BqiSHM+4sLXaC2Ps9FAkIsaOE1CYjZtr1yes0SzvOKlsKe6rkiTamrrKzy9/uAVGC9
-	 ju8uwEn6JhZLZNt3x5eqh/GLaeFaV8Kv7Y7LwEjkLDlhx28dhWRO08YT3hekgeIIWB
-	 NR9qp73j3fOC8L6IlDMSIozTDKWgoCpNnnHPhxdk3xk9SE5LyspnO3frtGcmTWddh4
-	 zQ6+oojchV+Wg==
+	b=tMoeY4NGzjEsGE5qX5o9Sr+1z6sFZ9ZCk82bqeSIz9PVS16ild8MvbfWqht5ruV3+
+	 +4OrJMd1EMGO3HZMxUM0EoXbTBmSz8Ixzg/Yh9PHVC+bArdbsgEBp7Jdbu1jTzM++v
+	 lR4MJ71OVrKKoDzVTZZqa6DBUxbiHTfN1IyvoRujQMpao5TTkr0468sfgg3G1GUbgV
+	 CVl+olOnLce0Ff4d34paEj7rKDOSZGYhvUy1CdYUurV02czUrrV1RDIGV6M5i/rxIU
+	 bH6TKyJCaZ6i/P3uOqRy6TD3bWfuCOXOayCDFUut8U0Lnwt3p+F7BieSSxIM/tZoXV
+	 /Rt2HaitZwx0g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Max Kellermann <max.kellermann@ionos.com>,
-	Tejun Heo <tj@kernel.org>,
+Cc: Yu-Che Cheng <giver@chromium.org>,
+	Fei Shao <fshao@chromium.org>,
+	Chen-Yu Tsai <wenst@chromium.org>,
+	Stephen Boyd <sboyd@kernel.org>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 6.7 11/39] fs/kernfs/dir: obey S_ISGID
-Date: Sun, 28 Jan 2024 11:10:31 -0500
-Message-ID: <20240128161130.200783-11-sashal@kernel.org>
+	Sasha Levin <sashal@kernel.org>,
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.7 12/39] spmi: mediatek: Fix UAF on device remove
+Date: Sun, 28 Jan 2024 11:10:32 -0500
+Message-ID: <20240128161130.200783-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128161130.200783-1-sashal@kernel.org>
 References: <20240128161130.200783-1-sashal@kernel.org>
@@ -64,56 +70,76 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.2
 Content-Transfer-Encoding: 8bit
 
-From: Max Kellermann <max.kellermann@ionos.com>
+From: Yu-Che Cheng <giver@chromium.org>
 
-[ Upstream commit 5133bee62f0ea5d4c316d503cc0040cac5637601 ]
+[ Upstream commit e821d50ab5b956ed0effa49faaf29912fd4106d9 ]
 
-Handling of S_ISGID is usually done by inode_init_owner() in all other
-filesystems, but kernfs doesn't use that function.  In kernfs, struct
-kernfs_node is the primary data structure, and struct inode is only
-created from it on demand.  Therefore, inode_init_owner() can't be
-used and we need to imitate its behavior.
+The pmif driver data that contains the clocks is allocated along with
+spmi_controller.
+On device remove, spmi_controller will be freed first, and then devres
+, including the clocks, will be cleanup.
+This leads to UAF because putting the clocks will access the clocks in
+the pmif driver data, which is already freed along with spmi_controller.
 
-S_ISGID support is useful for the cgroup filesystem; it allows
-subtrees managed by an unprivileged process to retain a certain owner
-gid, which then enables sharing access to the subtree with another
-unprivileged process.
+This can be reproduced by enabling DEBUG_TEST_DRIVER_REMOVE and
+building the kernel with KASAN.
 
---
-v1 -> v2: minor coding style fix (comment)
+Fix the UAF issue by using unmanaged clk_bulk_get() and putting the
+clocks before freeing spmi_controller.
 
-Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Link: https://lore.kernel.org/r/20231208093310.297233-2-max.kellermann@ionos.com
+Reported-by: Fei Shao <fshao@chromium.org>
+Signed-off-by: Yu-Che Cheng <giver@chromium.org>
+Link: https://lore.kernel.org/r/20230717173934.1.If004a6e055a189c7f2d0724fa814422c26789839@changeid
+Tested-by: Fei Shao <fshao@chromium.org>
+Reviewed-by: Fei Shao <fshao@chromium.org>
+Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Link: https://lore.kernel.org/r/20231206231733.4031901-3-sboyd@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/kernfs/dir.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/spmi/spmi-mtk-pmif.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-index 8b2bd65d70e7..62d39ecf0a46 100644
---- a/fs/kernfs/dir.c
-+++ b/fs/kernfs/dir.c
-@@ -676,6 +676,18 @@ struct kernfs_node *kernfs_new_node(struct kernfs_node *parent,
- {
- 	struct kernfs_node *kn;
+diff --git a/drivers/spmi/spmi-mtk-pmif.c b/drivers/spmi/spmi-mtk-pmif.c
+index b3c991e1ea40..74b73f9bc222 100644
+--- a/drivers/spmi/spmi-mtk-pmif.c
++++ b/drivers/spmi/spmi-mtk-pmif.c
+@@ -465,7 +465,7 @@ static int mtk_spmi_probe(struct platform_device *pdev)
+ 	for (i = 0; i < arb->nclks; i++)
+ 		arb->clks[i].id = pmif_clock_names[i];
  
-+	if (parent->mode & S_ISGID) {
-+		/* this code block imitates inode_init_owner() for
-+		 * kernfs
-+		 */
-+
-+		if (parent->iattr)
-+			gid = parent->iattr->ia_gid;
-+
-+		if (flags & KERNFS_DIR)
-+			mode |= S_ISGID;
-+	}
-+
- 	kn = __kernfs_new_node(kernfs_root(parent), parent,
- 			       name, mode, uid, gid, flags);
- 	if (kn) {
+-	err = devm_clk_bulk_get(&pdev->dev, arb->nclks, arb->clks);
++	err = clk_bulk_get(&pdev->dev, arb->nclks, arb->clks);
+ 	if (err) {
+ 		dev_err(&pdev->dev, "Failed to get clocks: %d\n", err);
+ 		goto err_put_ctrl;
+@@ -474,7 +474,7 @@ static int mtk_spmi_probe(struct platform_device *pdev)
+ 	err = clk_bulk_prepare_enable(arb->nclks, arb->clks);
+ 	if (err) {
+ 		dev_err(&pdev->dev, "Failed to enable clocks: %d\n", err);
+-		goto err_put_ctrl;
++		goto err_put_clks;
+ 	}
+ 
+ 	ctrl->cmd = pmif_arb_cmd;
+@@ -498,6 +498,8 @@ static int mtk_spmi_probe(struct platform_device *pdev)
+ 
+ err_domain_remove:
+ 	clk_bulk_disable_unprepare(arb->nclks, arb->clks);
++err_put_clks:
++	clk_bulk_put(arb->nclks, arb->clks);
+ err_put_ctrl:
+ 	spmi_controller_put(ctrl);
+ 	return err;
+@@ -509,6 +511,7 @@ static void mtk_spmi_remove(struct platform_device *pdev)
+ 	struct pmif *arb = spmi_controller_get_drvdata(ctrl);
+ 
+ 	clk_bulk_disable_unprepare(arb->nclks, arb->clks);
++	clk_bulk_put(arb->nclks, arb->clks);
+ 	spmi_controller_remove(ctrl);
+ 	spmi_controller_put(ctrl);
+ }
 -- 
 2.43.0
 
