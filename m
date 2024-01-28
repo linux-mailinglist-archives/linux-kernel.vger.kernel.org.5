@@ -1,121 +1,85 @@
-Return-Path: <linux-kernel+bounces-41579-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72EB683F4DC
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 10:39:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A69E83F4DE
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 10:41:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2C5B1C21055
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 09:39:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4589F2842C8
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 09:41:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 100981947E;
-	Sun, 28 Jan 2024 09:39:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="h7PFbpsO"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7CD21E88A;
+	Sun, 28 Jan 2024 09:41:06 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EE08DF55;
-	Sun, 28 Jan 2024 09:39:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A8ED1D6AA
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 09:41:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706434769; cv=none; b=qHYG/qYcPeG6GxRbIytaGq4m/sq6gpuPp+SIRGsWdAGBObvKFUfkN0NMRpxDk4EqXBdScVWLGoR2bQnxdL9XjRTNLy55O5PfyGPGsfqNuSQRH7g22Cruk1keVCO+HCkWa/8D7FFB/F4kn5RlfJ1/KYhj7gF2WZ+zQMd+ZYiFUJw=
+	t=1706434866; cv=none; b=JJ80dGEEVhbTn+ezgkQPzCwsMeOoIcS84/0odDABJxzGr5jYCEDUyu5Mz5opriZKb1J4Ev2ksRsP4VSBGk94egACo9uRZf82yGntLIwwmUSTMtU0t3flBRU2d6sWhhPdscnwOJadz2T2iE4rqXXqmzJulGV83Bq4avMwsZWNnDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706434769; c=relaxed/simple;
-	bh=fdCtoglZXG7iKsGa+puUFV3eAFQc046my63SuMWnsd4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cC37hj2fg89MIThHeH6Bom3dsTHyUJ047u8KGKLjIAUHxYkx3W/FGPSVg/sQ+799Kar2SG/YWoGa2/E7Pf5vaUsASD+tWlQGsxa3bohfJPVOeg9012WzqxumLrvXTQPl18ISi8mX83Ag6GUtU3rgX3JOFuAE0nL9lwpn1Jb0yYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=h7PFbpsO; arc=none smtp.client-ip=192.55.52.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706434767; x=1737970767;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=fdCtoglZXG7iKsGa+puUFV3eAFQc046my63SuMWnsd4=;
-  b=h7PFbpsOUZLPx0R3ogO7ZFFU8rwDkKINQmNrFm7OiQ8rw1IXm7DNWAGa
-   pGIwVSVR2HhmBen31i/8z0+x6Bx4oDx5p0qEPYtYu2kOp+cfj8DEJpXdo
-   35CCshNVUcgQwK5Nb8Ui+0vZKwhGnVuzY2vnPD89fzLsAxKAenAhJSZ3y
-   P48L0/VkAaZ2z52XQEy4q/lKn0KwrNdsAjUW8p67U64K8M53tTrI2cMaZ
-   Xvz0kGyo0ejz0amSEo1WceSr9B1Hffk1zPu17c2cn7cB/V3Yj22ubRobG
-   o7Z9H9iMKiRk5FaMkluaekaxm1NIm+V3l3rTWXjBIxnxm9LxxaiASCCH4
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10966"; a="433919595"
-X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
-   d="scan'208";a="433919595"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2024 01:39:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10966"; a="910763413"
-X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
-   d="scan'208";a="910763413"
-Received: from lkp-server01.sh.intel.com (HELO 370188f8dc87) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 28 Jan 2024 01:39:22 -0800
-Received: from kbuild by 370188f8dc87 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rU1dI-0003Hq-1o;
-	Sun, 28 Jan 2024 09:39:20 +0000
-Date: Sun, 28 Jan 2024 17:39:06 +0800
-From: kernel test robot <lkp@intel.com>
-To: Yunjian Wang <wangyunjian@huawei.com>, mst@redhat.com,
-	willemdebruijn.kernel@gmail.com, jasowang@redhat.com,
-	kuba@kernel.org, davem@davemloft.net, magnus.karlsson@intel.com
-Cc: oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-	virtualization@lists.linux.dev, xudingke@huawei.com,
-	Yunjian Wang <wangyunjian@huawei.com>
-Subject: Re: [PATCH net-next 2/2] tun: AF_XDP Rx zero-copy support
-Message-ID: <202401281735.bX1dign9-lkp@intel.com>
-References: <1706089075-16084-1-git-send-email-wangyunjian@huawei.com>
+	s=arc-20240116; t=1706434866; c=relaxed/simple;
+	bh=5YildW7VjU3TCIEBjQYTAGOA5Qsf8hjg940UtwPskTg=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=TbPyIoyu5Y6HyMhp7O/MviBTK11Xa/ZjmKTxYGbwjVfNPij3EbmRlK1vOCL145Ik/Gr5npgjCui4tGMdWYMWSWE4webHyqBa1UCvCw4Ise5R3upM2PErCQsxOOudiV1yRxBBSQOt9w6r4S+9vMEpF8plJN+ABype9ok5GMwjHec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7bfeb848712so22719439f.2
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 01:41:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706434864; x=1707039664;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QnqBrwOjYJm92wiZttPsfDDPZs/Vhpv/Kl7Eke2ZJtc=;
+        b=oh4VGDs/t3yNt6r26e7uFfxVVqYwmvL7Z9bMXMFtn7nK9Laac16oVrLApqofEZTx/L
+         u4c8d2/xup9dHS/1ewh7U4Xqm4+jvp0h08DVzUpuHyZT8lhBIYL2PuxMH1kalYbRq9FT
+         CFnlctqWKwM5G0p11v1CX+sQmgl7B0qGJskNJSAx0FK2mRU5eluc1KO5lm5/MxwH/vsX
+         H2omkOL5jUyZsYSitPpAhoLjRCWwbG3I0gny5dx7jhbg+jQDT6Ww2ZtOmJNMDIb0KGh0
+         v9KSoxFiQEMDegRYW4/TzNAAzViOMFyUQwo0+QUKNcQDzrGp4PMTF19fWQ8XQLa2TM4a
+         kniQ==
+X-Gm-Message-State: AOJu0Yyf+HFNQqhTVJmjt3xfizwgMYy0xEBm3NryUcbd4dYLiLqnikAB
+	nnMgwKoe6jbGnjIBkf2VTyaqoH5PJ/cAhFvynEcnOdKPA8Dqtj/M0irej5KPY6zgkxD4mFl2pT5
+	GwdR+eCmyJMQ+4SQAE8inxezNasM5819oKMCKNsCnhuqbQO4XQWDG/u4=
+X-Google-Smtp-Source: AGHT+IEAgXolaXGAfzmBgg7P1MwiV7RUtAwT46rPQ4zO0i5q5VcpiC1ADHSbZB/fPOy8YdEWCsrUGjTOP883omD/id2vjENfEJiC
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1706089075-16084-1-git-send-email-wangyunjian@huawei.com>
+X-Received: by 2002:a92:ca4f:0:b0:363:7ea6:578c with SMTP id
+ q15-20020a92ca4f000000b003637ea6578cmr43976ilo.5.1706434864349; Sun, 28 Jan
+ 2024 01:41:04 -0800 (PST)
+Date: Sun, 28 Jan 2024 01:41:04 -0800
+In-Reply-To: <20240128091521.1102-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ec0da5060ffe53ab@google.com>
+Subject: Re: [syzbot] [bluetooth?] INFO: task hung in hci_conn_failed
+From: syzbot <syzbot+a984066a63e9c1e62662@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Yunjian,
+Hello,
 
-kernel test robot noticed the following build warnings:
+syzbot tried to test the proposed patch but the build/boot failed:
 
-[auto build test WARNING on net-next/main]
+/include/linux/stddef.h:16:33: error: 'struct hci_chan' has no member named 'rcu'
+/include/linux/rcupdate.h:992:41: error: 'struct hci_chan' has no member named 'rcu'
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Yunjian-Wang/xsk-Remove-non-zero-dma_page-check-in-xp_assign_dev/20240124-174011
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/1706089075-16084-1-git-send-email-wangyunjian%40huawei.com
-patch subject: [PATCH net-next 2/2] tun: AF_XDP Rx zero-copy support
-config: i386-randconfig-062-20240127 (https://download.01.org/0day-ci/archive/20240128/202401281735.bX1dign9-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240128/202401281735.bX1dign9-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401281735.bX1dign9-lkp@intel.com/
+Tested on:
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/net/tun.c:1298:5: sparse: sparse: symbol 'tun_xsk_pool_setup' was not declared. Should it be static?
-   drivers/net/tun.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/umh.h, include/linux/kmod.h, ...):
-   include/linux/page-flags.h:242:46: sparse: sparse: self-comparison always evaluates to false
+commit:         8a696a29 Merge tag 'platform-drivers-x86-v6.8-2' of gi..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bc36d99546fe9035
+dashboard link: https://syzkaller.appspot.com/bug?extid=a984066a63e9c1e62662
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=11d9682fe80000
 
-vim +/tun_xsk_pool_setup +1298 drivers/net/tun.c
-
-  1297	
-> 1298	int tun_xsk_pool_setup(struct net_device *dev, struct xsk_buff_pool *pool,
-  1299			       u16 qid)
-  1300	{
-  1301		return pool ? tun_xsk_pool_enable(dev, pool, qid) :
-  1302			tun_xsk_pool_disable(dev, qid);
-  1303	}
-  1304	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
