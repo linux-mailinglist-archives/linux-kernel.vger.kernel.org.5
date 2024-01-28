@@ -1,95 +1,110 @@
-Return-Path: <linux-kernel+bounces-41671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 459C583F62E
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:52:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1946A83F632
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:57:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F36C0282456
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 15:52:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4375C1C21B66
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 15:57:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 129CE25773;
-	Sun, 28 Jan 2024 15:52:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 112641D690;
+	Sun, 28 Jan 2024 15:57:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="P/QQdRSd"
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=l.guzenko@web.de header.b="oGFND3vc"
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E452C24214
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 15:52:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9601F28DD2
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 15:57:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706457145; cv=none; b=k/slR2+82u82Josv36L4xIdavbYbDl7o4aFzoccD1EOi4NKiZBGmFdnrkmQ8o1x5BykjqOrTzPJv0g9Us7ZAxFi1rgehcXNiAYssov/jpmkN+Nq1E0kAJpHxX83kL3S3Yt4pP/ldKZA+OSs5Ll59zdB5IABHuF7HhGgIE1TMh5Y=
+	t=1706457447; cv=none; b=TnB3VAguAee3LuYhsje13DBfrquyEe2jrBwOqLsQ6fK/AW9KjyPKLydH5hHmQLAppv+4N342z+kylPwvwWRXE343bHRw9AaItw8JUBfkFGlcZW1ITnXVbbBM1aTVp9Q2NN1iZWJ//K9qpI6k2vMZUlKkVSpxiBm1u1ju+czjWqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706457145; c=relaxed/simple;
-	bh=6/GwWArs03dM8kHet8ssnePwsOiKDu4GIU+4Sx5AQfw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pavLwlSFZlAS3IzeH/qe+A18nJxseb4WeCJr3g4za4asg0gpBDOgSCSiuWAqMPBXRIyp7qxe91lQBBaf+y8coWHlWH5HgLKyXiCb9c9JhBlp/nbZN0ordQBjg8NOQIYpGeoM7MI5NEVHh2JMIr9SxfBT4m1cdK7MNxbXypy2dbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=P/QQdRSd; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-42a35c720b8so13737631cf.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 07:52:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706457140; x=1707061940; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hmwam5A1aWEjCpVOYcrw8L5g1crjLSprXNSn1UxQ0Rc=;
-        b=P/QQdRSdR8+g8aBK9dQy9xqyMHgwGtT8D3jQKSzwwqSL9/gWF6Kd3DSAlyPu3TKX3q
-         6IV0gwFEFo0qamxBYdKLSlfHuRmuOh+9P4ma3FvENG31v1D+bcfax29IYxs+PXiyNS02
-         Rrpn2u3lwjZrjG5DBX/Ux83EH+PtbTM2EUxK86Cvor+8hvzJejbIG/O8kQVBNlwgJ13P
-         wX8AJdkYG4OqeBhrCutLwRaMDbiDgijxoyXI1wK5nymIEsOE4OoNYXvXr+Fnk2QOdUY1
-         BaH7FLy484hNN6qmYZDB/Ev/4elb0FQRxh8348JcF0ZqyauHEZz4tV4vZLY3+BXoVHuu
-         yDEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706457140; x=1707061940;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Hmwam5A1aWEjCpVOYcrw8L5g1crjLSprXNSn1UxQ0Rc=;
-        b=qcyRCA0XSJF9f4RiG97B46iNk5dhEsk26Ck77RbHpf5yRlyl4cDT9ABhIGyyhCNn45
-         PuVHvIUWivbstFk5RmtkKDZYCFu4lvCsOVe9lbpa4ONR/KubISL8u1XMMzVbCAJbGWKG
-         DEN+vB+YUHwvQlw99m2N51vg+K7qtMMY/dSAKZ3rxkOuWlexXHrxln0pmrvE9IIivXQT
-         63LLk9UMQ3rmCSc7WXOeCvG/EQX6faA1jvBcpYFQPZSfgMxtblejvLJsCArbxyLqUn6g
-         9Hl2EVBbKzmLCrZZlH6zGquMqJtYNLRtcc0UZjVEFOH4niIrzewlnA7iN7QV3LvzV2YA
-         I0IQ==
-X-Gm-Message-State: AOJu0YxRYcBkymyrjJ2V1ThccgpGNuAfq55O8J64s8VHO7iLU6j/ohzD
-	raquwMqDN551pjEOXARwJkDdEaFEIHuLSvzrxxQNk8nnntQn/sH294Fc6j2U3yQ=
-X-Google-Smtp-Source: AGHT+IGKG6888HXOQ+dC+iDyzFMolaR7r39UNQTZfh6xyvg92x9HinieTKotXvW+l6sg4D7Ase98mQ==
-X-Received: by 2002:ac8:57c9:0:b0:42a:3ca8:910f with SMTP id w9-20020ac857c9000000b0042a3ca8910fmr3384689qta.39.1706457140552;
-        Sun, 28 Jan 2024 07:52:20 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id hb6-20020a05622a2b4600b0042a0fa8bbe9sm2660527qtb.22.2024.01.28.07.52.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jan 2024 07:52:20 -0800 (PST)
-Date: Sun, 28 Jan 2024 10:52:19 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Yosry Ahmed <yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Chris Li <chriscli@google.com>, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH v2 3/3] mm/list_lru: remove list_lru_putback()
-Message-ID: <20240128155219.GA174688@cmpxchg.org>
-References: <20240126-zswap-writeback-race-v2-0-b10479847099@bytedance.com>
- <20240126-zswap-writeback-race-v2-3-b10479847099@bytedance.com>
+	s=arc-20240116; t=1706457447; c=relaxed/simple;
+	bh=GFS4F0OefxoOXjJnNopMDwR/bp9rgwp1BO9HRQFGLes=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MY5nqE2yLHlJ6P1DncI7ASH8gqiy1ZrgPRdSSoTKioj5PZQ/O3h4Hc+cMaj1X278ZVUS3bHofjJdFHYETgmOWeUD40bVzd8ENuLLPaGCiz55gZNdvRTl/GeU+u63p9ah9NysKNXlmI7CAnk29W2ITWjRWSIeT4+Wht+8uSqOEVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=l.guzenko@web.de header.b=oGFND3vc; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1706457436; x=1707062236; i=l.guzenko@web.de;
+	bh=GFS4F0OefxoOXjJnNopMDwR/bp9rgwp1BO9HRQFGLes=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=oGFND3vc5jt5BFEIX0PsPmoVix1E06UYyOfec8U87k+8eq1djVxi2EoNryq3tBhr
+	 1AYRLV4lk4wksHZ/4tgnm9OdhKmzUvDiw8n+3likow42+/8yzqVcRlMZM/eXxXFAr
+	 QYvULxIQC0sjhGyJMUdGvkMNgzBSCSCpCWToyBL+wSx8lnnk3Z5ETZvBhPzeeWjWW
+	 AqPKk/+zLnOzxO1Fo97hDr4k/yENcE+JzuUCNh301hnsavAOrhp6eykEzX2P4sS8r
+	 zhUopN7OmPxoSFY/3huG3qzbVg/PqeDOib/QJNFin7NcpLdHcMEmFAjhyy8mnwJQN
+	 mQA0Lvo7McyaCKhFuQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from luka-spectre.fritz.box ([78.51.251.250]) by smtp.web.de
+ (mrweb106 [213.165.67.124]) with ESMTPSA (Nemesis) id
+ 1MRk4e-1reSaU0aaY-00TNem; Sun, 28 Jan 2024 16:57:16 +0100
+From: Luka Guzenko <l.guzenko@web.de>
+To: tiwai@suse.com
+Cc: alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	Luka Guzenko <l.guzenko@web.de>
+Subject: [PATCH] ALSA: hda/realtek: Enable Mute LED on HP Laptop 14-fq0xxx
+Date: Sun, 28 Jan 2024 16:57:04 +0100
+Message-ID: <20240128155704.2333812-1-l.guzenko@web.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240126-zswap-writeback-race-v2-3-b10479847099@bytedance.com>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:I8Fom4DyIjORlkYYIjOgd3x3ac0zGP5cFmWQ1/kwnbPjVWpPew5
+ hg+Gy7hpKpHkjoFw8zCAbvXVQjy9+RZIhZWqIxWdmu/LxBdTWrOGPtckt7mEwVoubaOR3oW
+ 4usUuEgZGPYu+7zPwFCb4udKsmHQHPf0UcLvNiFOkho6DkmzT820blsrNXjuGomYBdoXIme
+ T6vqazPYITvaI2byUjwKQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:HTLPyXCyhFs=;cPQ3PlqVxSG6pIMGL/NTeirKysV
+ EWvM4gq+Ac5F6a5AAas5JG4jMbZZMkpcg9yvL+oKnBaNM9huN8cdSsChr/jYK7rkyVYpOQkfH
+ QFXaHKjVgR2I+K30UP3XJFLPuo55OFVhOiNkd0mJ/Q3FuVz7Ol6y6Ec7vnD6YbQVvf3jsxqP3
+ m+TVrPpWBMCAoC19oLBaLeu/yoen1vrcLphEmRuCJ378nRgsi2yP+HncAn4OHP+1xI0VCylQp
+ pXBMvyn/BsnaAid1g5eApBw9T5g/Ol1TwpsndnzZ5t0U/UJIQohiffwDoJVy1qcq/Cu7xFnJn
+ 0rWD+KfyTyln+82rjbOAnhxB/mvEEL/wB/Dk6EyJjfpJE37yQksbFDzg4rBImL7TUX33SIa8G
+ MMZGh73HrJ+UDo3Oggeb53bgaL78+fuQEjY/Z3UTX0gcjlrsVOnTGXIOGUYvyGIoQOgAT5mD/
+ gKCfi9Bou2QjU70YlBMU3HMv2ih515BldnkQEXmZwxtWx8xJ6EqU2x6uG1e0XZxX+ZRkMop02
+ s/zW7TcOFmAVgZqDqidE2w6XZ9mkuntMn13CYHS/Ml4ECo19AARSOLIJLph0WVXFAbdfUsmRK
+ 4S11B5ROS4EeUzSD14nULp+TToafR5NymijBF+0Vxcf+LCKgCvqdGNNx2NYZbhZLoAWGHu8/G
+ g1SdLmhp2Ni73KI+KlBbizQkicso+5BtEyU6ktHt4p5i/D5v93Dc860z3rjaOpXQJlzobx5bc
+ 5Ea14zGbMPtXNkCtSBhCPfzb3ZrDeLFZ/FOTsmbLgwdNLwclYuSNp4ZxDWzN6BJgRBEuZYequ
+ oSTd4x8BKfsVx9xa9A/sjr+JS8MOoqXRn+T5+8Gb+Bs2Z+X8lZoD9y/sLGFgesld5hk4vJilq
+ +S+i3CsD3SNIg76C26VqHDc4fd7MLDyuaj01q7l1wjfABQNMNh1bZEt3atqQaS5+5gRMQEL9A
+ TCSnLXHmktQlzfO1/akmBcg6VTw=
 
-On Sun, Jan 28, 2024 at 01:28:51PM +0000, Chengming Zhou wrote:
-> Since the only user zswap_lru_putback() has gone, remove
-> list_lru_putback() too.
-> 
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+This HP Laptop uses ALC236 codec with COEF 0x07 controlling the
+mute LED. Enable existing quirk for this device.
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Signed-off-by: Luka Guzenko <l.guzenko@web.de>
+=2D--
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index f6f16622f9cc..0d2fbb8b24b3 100644
+=2D-- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9852,6 +9852,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[]=
+ =3D {
+ 	SND_PCI_QUIRK(0x103c, 0x8786, "HP OMEN 15", ALC285_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8787, "HP OMEN 15", ALC285_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8788, "HP OMEN 15", ALC285_FIXUP_HP_MUTE_LED),
++	SND_PCI_QUIRK(0x103c, 0x87b7, "HP Laptop 14-fq0xxx", ALC236_FIXUP_HP_MUT=
+E_LED_COEFBIT2),
+ 	SND_PCI_QUIRK(0x103c, 0x87c8, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87e5, "HP ProBook 440 G8 Notebook PC", ALC236_FI=
+XUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87e7, "HP ProBook 450 G8 Notebook PC", ALC236_FI=
+XUP_HP_GPIO_LED),
+=2D-
+2.43.0
+
 
