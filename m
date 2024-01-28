@@ -1,54 +1,71 @@
-Return-Path: <linux-kernel+bounces-41600-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E223583F52E
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 12:28:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C9A783F535
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 12:34:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2045D1C20F93
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 11:28:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CBA02833E0
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 11:34:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF4C1200AA;
-	Sun, 28 Jan 2024 11:28:40 +0000 (UTC)
-Received: from mail115-95.sinamail.sina.com.cn (mail115-95.sinamail.sina.com.cn [218.30.115.95])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4B31208CB;
+	Sun, 28 Jan 2024 11:34:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="q8lyiM9W"
+Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DE981F60B
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 11:28:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.95
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D37D1CA9C
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 11:34:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706441320; cv=none; b=if6APmdKwEBoOAuZl105U04cjWfXozmPdt39MaRdN+x2W9VJYB7yv7Gl60Rv8ALAsvI8p6UlhL0aA66BJxIqtHFhNuAbJKOodZH0cwYHbtMd5cCmxte9Sgu7MSEIMXBNxrGuS6mYvWrFadJoF2Qm1dANFkR9tBX58WdFJd4NvUE=
+	t=1706441682; cv=none; b=DYGr+iJd3fPTDhTZPVtfFeuoKKYihFZ0mS1WUAywWW6MTXh1R5JPiqzXuXIqCTJrCDc/ffg8R5DQWDVQgx0mGDnUBpNDPzEWIgcTDZSNjohTG9F99+VV1vw2KRk6KCBBgc0ihsEB6ejot9UNtphBrZiyMN0ZGFs5QiCONuztjuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706441320; c=relaxed/simple;
-	bh=pgM5f+lftG3/Fldgk+3owBs7XN3I/60sQYwS/xInNkQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NNlAevycfnal8SwMx22ojzUiYlJwXZTrPb1fPLHg4/Fx6O4uQfIa4AQplL21UTwNk3Ioc/JgjaMOyu7cQNvkEiIb2Va6oO2m78NTXW6XuEs16vJ+Wl9ZUZ4BerBWBo8dWQBNKPUtIAVI0bXTKOV97VLV+ggIR2rM/3myIVMlTC8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([113.118.68.210])
-	by sina.com (172.16.235.24) with ESMTP
-	id 65B63A5500003E03; Sun, 28 Jan 2024 19:28:24 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 74785645089398
-X-SMAIL-UIID: A654D357F48240759A5F1057ED89CDA1-20240128-192824-1
-From: Hillf Danton <hdanton@sina.com>
-To: syzbot <syzbot+a984066a63e9c1e62662@syzkaller.appspotmail.com>
+	s=arc-20240116; t=1706441682; c=relaxed/simple;
+	bh=KIqqe6b7++tdELzI8weZpXwb9c1lX1twgOwQ23G4KaU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=INLhJ0yQYMRLW3yADX3vaawa6pDrp3xStg7nvmn6ExpF9/VHMUVu4LrjY2J1xCpYdUAb/LY5vnjaVKJcTkfcgzMBzB6HA2noumRDActVKnAwEVR/4S27UFz4Q76JGcQt6Pz9WLh9GPLH1O6pAZhQQkTrh26JeyEdX2Gx6ZNxmYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=q8lyiM9W; arc=none smtp.client-ip=80.12.242.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from fedora.home ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id U3QhrO2WGJujcU3Qirni2Q; Sun, 28 Jan 2024 12:34:30 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1706441671;
+	bh=bty2xukFdRkPEFlCnTL1HrECxC57pxJIVp0ohvU2AgA=;
+	h=From:To:Cc:Subject:Date;
+	b=q8lyiM9WQo/EgvGQysdvx+kePnrw+P5IQ8+wLP2buInfRszrFigPMdnwqTLcwekay
+	 vxgYWtn0UQ+qlLLJH6llJzZRvaCGAwdSDbWvN6MzDu9zJPkJlMt2ntFi93UwdbbudT
+	 KhHTSLQ4dxRf+1xEoK3P5vX3oQwnX1hfDina0d1b4sFDov8yKJA3eUUXk6ppcwcRf8
+	 599nG14+4uqV+HixiKORto7wOAZ2vzJr3Z9XKK6lCBItSgDixxsBCp6rPYHzNRHZ8U
+	 Gt+ZlR2tLvuG91dcgdYNZABgVG238N+WPdZrts6wUkezYezM+bH9s7SjtfUkAomxjO
+	 jFHBjw2MxLgNw==
+X-ME-Helo: fedora.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 28 Jan 2024 12:34:31 +0100
+X-ME-IP: 92.140.202.140
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Vaibhav Jain <vaibhav@linux.ibm.com>,
+	Kautuk Consul <kconsul@linux.vnet.ibm.com>,
+	Amit Machhiwal <amachhiw@linux.vnet.ibm.com>,
+	Jordan Niethe <jniethe5@gmail.com>
 Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [bluetooth?] INFO: task hung in hci_conn_failed
-Date: Sun, 28 Jan 2024 19:28:15 +0800
-Message-Id: <20240128112815.1161-1-hdanton@sina.com>
-In-Reply-To: <000000000000ba736b060ff5da23@google.com>
-References: <000000000000ba736b060ff5da23@google.com>
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Gautam Menghani <gautam@linux.ibm.com>,
+	linuxppc-dev@lists.ozlabs.org,
+	kvm@vger.kernel.org
+Subject: [PATCH] KVM: PPC: Book3S HV nestedv2: Fix an error handling path in gs_msg_ops_kvmhv_nestedv2_config_fill_info()
+Date: Sun, 28 Jan 2024 12:34:25 +0100
+Message-ID: <a7ed4cc12e0a0bbd97fac44fe6c222d1c393ec95.1706441651.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,46 +74,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On Sat, 27 Jan 2024 15:34:31 -0800
-> HEAD commit:    7ed2632ec7d7 drm/ttm: fix ttm pool initialization for no-d..
-> git tree:       upstream
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=116e5bbfe80000
+The return value of kvmppc_gse_put_buff_info() is not assigned to 'rc' and
+'rc' is uninitialized at this point.
+So the error handling can not work.
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
+Assign the expected value to 'rc' to fix the issue.
 
---- x/net/bluetooth/hci_conn.c
-+++ y/net/bluetooth/hci_conn.c
-@@ -2819,16 +2819,13 @@ void hci_chan_del(struct hci_chan *chan)
- 	BT_DBG("%s hcon %p chan %p", hdev->name, conn, chan);
+Fixes: 19d31c5f1157 ("KVM: PPC: Add support for nestedv2 guests")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ arch/powerpc/kvm/book3s_hv_nestedv2.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/powerpc/kvm/book3s_hv_nestedv2.c b/arch/powerpc/kvm/book3s_hv_nestedv2.c
+index 5378eb40b162..be5f87e69637 100644
+--- a/arch/powerpc/kvm/book3s_hv_nestedv2.c
++++ b/arch/powerpc/kvm/book3s_hv_nestedv2.c
+@@ -71,8 +71,8 @@ gs_msg_ops_kvmhv_nestedv2_config_fill_info(struct kvmppc_gs_buff *gsb,
+ 	}
  
- 	list_del_rcu(&chan->list);
--
--	synchronize_rcu();
--
- 	/* Prevent new hci_chan's to be created for this hci_conn */
- 	set_bit(HCI_CONN_DROP, &conn->flags);
- 
- 	hci_conn_put(conn);
- 
- 	skb_queue_purge(&chan->data_q);
--	kfree(chan);
-+	kfree_rcu(chan, rcu);
- }
- 
- void hci_chan_list_flush(struct hci_conn *conn)
---- x/include/net/bluetooth/hci_core.h
-+++ y/include/net/bluetooth/hci_core.h
-@@ -797,7 +797,10 @@ struct hci_chan {
- 	struct list_head list;
- 	__u16 handle;
- 	struct hci_conn *conn;
--	struct sk_buff_head data_q;
-+	union {
-+		struct sk_buff_head 	data_q;
-+		struct rcu_head 	rcu;
-+	};
- 	unsigned int	sent;
- 	__u8		state;
- 	bool		amp;
---
+ 	if (kvmppc_gsm_includes(gsm, KVMPPC_GSID_RUN_OUTPUT)) {
+-		kvmppc_gse_put_buff_info(gsb, KVMPPC_GSID_RUN_OUTPUT,
+-					 cfg->vcpu_run_output_cfg);
++		rc = kvmppc_gse_put_buff_info(gsb, KVMPPC_GSID_RUN_OUTPUT,
++					      cfg->vcpu_run_output_cfg);
+ 		if (rc < 0)
+ 			return rc;
+ 	}
+-- 
+2.43.0
+
 
