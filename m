@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-41586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87ED483F4F5
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 11:22:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2101083F4F7
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 11:28:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 608A5B21E66
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 10:22:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B92251F21C0F
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 10:28:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE0761D524;
-	Sun, 28 Jan 2024 10:22:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A550B1EB36;
+	Sun, 28 Jan 2024 10:28:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="gg40532A"
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="IYPAwNCx"
 Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBA8FDF6C
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 10:22:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 432011EA91
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 10:28:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706437357; cv=none; b=gNRiIHy06O/O/kY9BmKXXeVtHL9C/MT2cKmXmkAlJKT8o1Cq6cHOJQZtGRhQh00sMGtXJeC14p1eJCT76pY7RUNCjk7aqhq6pFTPU9FMbngIUNbzTlgnJ/JM8FZet6+2kDk2Nf1238lysPQmQmy/viOwCNh0EZ6/S4QC/pNRUmk=
+	t=1706437690; cv=none; b=hSQW2kf9jLW7Uskw6HCKMoHmD6dSB2dj3AUbiYp/fH14HdJ+yp8i/hF1cHAivJHU34jLyw6TxvVR0WGDW8zJA3nBbtEVCuaHRNkIjXhzcElf81E2/0tNq9AcUeKSV1tX1qAw9rwPM/2Bz8ZTPZ2ZCySTgGs6rJlwQ5N29ttiFfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706437357; c=relaxed/simple;
-	bh=1jyGYBxQljDpPmnMrORGZudzs8YuOvvIAR0vEWYgXZU=;
+	s=arc-20240116; t=1706437690; c=relaxed/simple;
+	bh=C3TsDwLyG4S3aC6RigAdtSCVtpne54nq0rzX5ZhIEYw=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=MqYtP94dDVgQtdF+AxrGpTvH/z9iPnpcNzSR19te9dVA9IQDVtZ8Y/4KDWy4cF4bV1xIRavTdZL7rpcCHlOEuWmY5VWlKnjOEtwL6Lxua2/qcUw4Z2nZIofPTTtwCXipcvsHfLHMTsx3H07+Yg16MdRqCs4kkc5vBi1RQkl4ZZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=gg40532A; arc=none smtp.client-ip=65.109.113.108
+	 Content-Disposition; b=GPWb+FniGPE/O7ABM48MvCjW1xuy5Lz0tKM5GdNkNK90aaGg+zmhMcqOYDkr39xm5yg+bvhKeCwqZPyO7IgD6KD5vi4gBN85e+Da2fjY8WiBzJ4q+msiFkcK8tnthrLZt9X6qn3GwuCbfdGKFmVpm4fo+5TD1ghDQafJ/4qpp34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=IYPAwNCx; arc=none smtp.client-ip=65.109.113.108
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
 Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id AB82B40E01A9;
-	Sun, 28 Jan 2024 10:22:32 +0000 (UTC)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id F3EC140E01A9;
+	Sun, 28 Jan 2024 10:28:06 +0000 (UTC)
 X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
 Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
 	header.d=alien8.de
 Received: from mail.alien8.de ([127.0.0.1])
 	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Rq6zGMukCGKA; Sun, 28 Jan 2024 10:22:31 +0000 (UTC)
+	with ESMTP id k5H91esahFlH; Sun, 28 Jan 2024 10:28:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706437350; bh=XvoQDsasovu689xaenFWPJzjR3i2LGUruk5ZV73msTk=;
+	t=1706437685; bh=2pVrWTiWi7+Pti06BgLwhGW9RWEZZxHDTmsuckK0BKc=;
 	h=Date:From:To:Cc:Subject:From;
-	b=gg40532AhX9fuy6vY9oXp5qRXTg4wNT1BYUq0rnI1ZAcGo0o+/JSkB/q+pFWx6oJl
-	 scZmftVYzD1uKEFaahOCuF65YYNBhtnXl9vt6JLaKnzRG2xqr24TrXroS1gXm4lZMw
-	 3tBNPogjShwOckTsx8hweu3wLOkqDvOO9OaGNcZyPqyzBuGhbSQQrpE96YWizoe5o4
-	 G0skSyCrssVglw71GsaO8d3gVri5DwQqhv6NLuPZQ0E0TIUNQQYigXSs+XEyRVFZrs
-	 opkogIFVXRfZfBqb42wDxniM/DN/tWGG/M+TVlt6i3pD/uq0PSk5hpbAFYLiO9PtHt
-	 ihowQ2Fc0Sn4R+GpJSdMoImc+aBPGcljuOJMdL9y+mN8J/PmqysabkR2olcELWT8La
-	 anFFqWy6Sv/oxjoVRevriFWNuYfICBK+1WHUjRLpcIlW8wYzJHRXXFdqIIehPnrmjz
-	 xFIgUKuJmK/7amI2XAieLe6q6/MPASyP8SCWmo04/w+6Rn3dMK3CYBqmt1xZaqhafr
-	 Y2nkYx1Q685JsGriez+kwh1DHBQDPFN07aJXn2Xe8U8jfB8Y5/JhfKgDn2+kOb7jyi
-	 tF9Fn4S0oYf3OsnupxXlcwEDOdF7weURBm3iR796eFvUDk0Penp5JsI9pTEATd3s3Q
-	 0sGBJrbDR6p2+HR485z7Y79g=
+	b=IYPAwNCxS/hyXRJYf7J6fGv7NYSeM5hfX9ULaU/LTBbkeTTJUoZ+tK2ZiOomMbF3N
+	 f4GynhnMc3rENreowBeYVd0m7VmcgTbX5E8qQCxy/sUYcMvOAcPpFDasWWyCNaD6W/
+	 ZmovWfIccHDQcUj0Yd2wz3PzaJ4xU3eGh0QGiXFEGXPQosv2rjzAg7wQnjr5knvrGF
+	 DEtNpFdv6sTzkyDYpIPxJRyKpmFRpqDzlCldP0OwV8AO9ZHuYWMpgjiNSIpug3A4Uv
+	 YEJd/JUsbeXzz1AKtv7uwYebN2sNm8o77A/8GCogQsYKgJ55mWtLfnFW0y/2XCKpLP
+	 YLtrg/31GwLvXQSheP8fg5XDFGldk69LI4WeEPGQmTQm0d1zjuknpHDPY5b5M77+vq
+	 wEx0RoimZBJap7l54sQ7Qy7OaaJL1xMfKe/i9U8o1zHBPdNYCTM0eqcGlt0kCJ4z5T
+	 z4XAZO4pexcXqZo01SfxozpOgYm9qzzvtyChp49KS283eGWjWP+pyy1PILjcQlGiYa
+	 b+R58H0Whyji6h4b4fCV7zMbqjL11nIIB6TiOozHDH1vjcem7j3KkIjYiDfvwsTzFk
+	 VbrqsMRIBQKpOM35hJehguJeoG3Ub8HIaVWmi3Gm+CBFgey+LSfrQDit2ROJOxEH3p
+	 F+o+Vtt595IOvzZmmPjgjFbQ=
 Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B73DA40E00C5;
-	Sun, 28 Jan 2024 10:22:27 +0000 (UTC)
-Date: Sun, 28 Jan 2024 11:22:27 +0100
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 23CE640E00C5;
+	Sun, 28 Jan 2024 10:28:02 +0000 (UTC)
+Date: Sun, 28 Jan 2024 11:28:01 +0100
 From: Borislav Petkov <bp@alien8.de>
 To: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] irq/urgent for v6.8-rc2
-Message-ID: <20240128102227.GAZbYq41uhKVmVFc_F@fat_crate.local>
+Subject: [GIT PULL] locking/urgent for v6.8-rc2
+Message-ID: <20240128102801.GAZbYsMbCfydNijU_y@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,33 +76,35 @@ Content-Disposition: inline
 
 Hi Linus,
 
-please pull an urgent IRQ subsystem fix for v6.8-rc2.
+please pull an urgent futex locking fix for v6.8-rc2.
 
 Thx.
 
 ---
 
-The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
+The following changes since commit 296455ade1fdcf5f8f8c033201633b60946c589a:
 
-  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
+  Merge tag 'char-misc-6.8-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc (2024-01-17 16:47:17 -0800)
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/irq_urgent_for_v6.8_rc2
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/locking_urgent_for_v6.8_rc2
 
-for you to fetch changes up to b184c8c2889ceef0a137c7d0567ef9fe3d92276e:
+for you to fetch changes up to e626cb02ee8399fd42c415e542d031d185783903:
 
-  genirq: Initialize resend_node hlist for all interrupt descriptors (2024-01-24 14:15:41 +0100)
-
-----------------------------------------------------------------
-- Initialize the resend node of each IRQ descriptor, not only the first one
+  futex: Prevent the reuse of stale pi_state (2024-01-19 12:58:17 +0100)
 
 ----------------------------------------------------------------
-Dawei Li (1):
-      genirq: Initialize resend_node hlist for all interrupt descriptors
+- Prevent an inconsistent futex operation leading to stale state
+  exposure
 
- kernel/irq/irqdesc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+----------------------------------------------------------------
+Sebastian Andrzej Siewior (1):
+      futex: Prevent the reuse of stale pi_state
+
+ kernel/futex/core.c | 15 ++++++++++++---
+ kernel/futex/pi.c   | 11 ++++++++---
+ 2 files changed, 20 insertions(+), 6 deletions(-)
 
 
 -- 
