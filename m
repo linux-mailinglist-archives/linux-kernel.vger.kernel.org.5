@@ -1,58 +1,61 @@
-Return-Path: <linux-kernel+bounces-41767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46C1883F77D
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:34:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BF7983F780
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:34:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F05C91F237AA
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:34:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41B6C1F21D66
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:34:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EC8E6DD11;
-	Sun, 28 Jan 2024 16:14:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1154768FB;
+	Sun, 28 Jan 2024 16:14:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Va9lCwBI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IVHaagHJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BD8D6EB66;
-	Sun, 28 Jan 2024 16:14:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D339474E28;
+	Sun, 28 Jan 2024 16:14:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458486; cv=none; b=ASSdwqq/dS8C2u1B1Vi+AQHPxsIQvOka/dMcC10Ic+nv9Ke1oHT2zUUepFNZz0V8n8ROcDeamX60O9XMwcaDOuW0+sJdO03vM3XFqJMplkke8hKcdPxRHVjo3KIpGLGimCRnFi/uCGQmFIE2Aj1F250A+G+zNqtBLSBs7hLc89A=
+	t=1706458487; cv=none; b=jDD48kaNwh2LwtyjTm50EguZkYda1ELYaP1xJ3yBMDGmffuqmOAbrt66zph3rtWYOjyUqAjqfceObflokYHzk8HH6AfsU8AGgfWHsVu6SU2O3GzgsO4WC+gXINPSSqvfOmg/yrKhzOL2fKJYZzPhXBXa6Gud5kAG7CVpvVDFpuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458486; c=relaxed/simple;
-	bh=7Oc7XQZw0BQgE7vpQeYLErcpNOAZHMGGgfcBbkIJeDE=;
+	s=arc-20240116; t=1706458487; c=relaxed/simple;
+	bh=u7SVI9qUo9q53OR8A8IJE7j3KNcd9J1N/pSHxSjcf/8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=L1luvTwUBotib3X+sHcNXwCJvwfYcl1HAkawH7MZArun740wwNapXGclN/tZg1twX42ZDYBL/Fkzz/+A3HA+/SyvFQ/qQ8iHHFigZL+3E5pC+SQCimQBx7dJg/D9bYKwyaJR9cQXx1V9eXlcSyLcdxg4rPltgDkS2K86VVlzNps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Va9lCwBI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB3FFC433C7;
-	Sun, 28 Jan 2024 16:14:44 +0000 (UTC)
+	 MIME-Version; b=giI5jasActGJhyjkpsb0vcSJWmiqJdTveRy+Ch/Pc3VbrUw62Zxs+y8INUsEMJS1BXh2TkrwABqGi8SsMcaUSh9k2YlCFDBHpA4x6gW3kRlJZgGx0EsWKZRO7cJjd4itUbzSeEbD7gQq6fHqeOeKTTYB4I4b7JIbxu2GjiyLwr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IVHaagHJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68AB5C433A6;
+	Sun, 28 Jan 2024 16:14:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706458485;
-	bh=7Oc7XQZw0BQgE7vpQeYLErcpNOAZHMGGgfcBbkIJeDE=;
+	s=k20201202; t=1706458487;
+	bh=u7SVI9qUo9q53OR8A8IJE7j3KNcd9J1N/pSHxSjcf/8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Va9lCwBIIFEK8Wjzgae8HaljqSkHWgy/Ma9zzXoES1GmZH4rRLjjZzZ+7+FSiqBvK
-	 X5Ypt/CMBm9OvZRhytTqxKr5NNtC7lqL6k55/eeSLMCgYS6O+kbpvY9ytRGECIX7L8
-	 dHA8cwYU1Xotqq7Cgm2b82B961hzlPgjLG5PYToVDmMM77JWNGT2n/RGECOOtf2uEz
-	 SNPRM7NeH7Ac08dscE14dUWsKCoJbwP0aShPYVIzq53RFA6mhleH/3beyOaVX76w3c
-	 fCoBP8CxHVw4cKG32bsRJde1RhTr6WaGtx6kSg+c8KjPEYjenVKWtAT1xIErD5yTAg
-	 WwoZCNBVCUK6Q==
+	b=IVHaagHJdsoY3NnJoGaLpNk2gXFFXtSb5bKoDmX1+7/M9ZoC5aPnc/SlLotMSDGCr
+	 /OyeKk06IPMAfCX58gYAWooSTR9dUcYSVPimfPvZj2931GLo/E2Kb4LR5nlxCwx77P
+	 kx+FWBMYE9jUu1hVXS54o27NB8GupakibOpnJcyqRyFiRjj79n/W5qwev272brdI3W
+	 f34C/+QdfAywKaVuZ5/ynpFh/38EI5y6ryX016s7qFKR9ZknFgCc497UU3qTs3NZy/
+	 3rUZxomU4O1NDKts9PRwZaEnEF3VATxIE1TevBK0TKMqamPUJMKB9QCLLhI94Erylk
+	 NKt3TH/yf96PA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	Sasha Levin <sashal@kernel.org>,
-	mahesh@linux.ibm.com,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-pci@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 12/27] PCI/AER: Decode Requester ID when no error info found
-Date: Sun, 28 Jan 2024 11:13:57 -0500
-Message-ID: <20240128161424.203600-12-sashal@kernel.org>
+Cc: David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	v9fs@lists.linux.dev,
+	linux-cachefs@redhat.com,
+	linux-fsdevel@vger.kernel.org,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 13/27] 9p: Fix initialisation of netfs_inode for 9p
+Date: Sun, 28 Jan 2024 11:13:58 -0500
+Message-ID: <20240128161424.203600-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128161424.203600-1-sashal@kernel.org>
 References: <20240128161424.203600-1-sashal@kernel.org>
@@ -67,67 +70,96 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.75
 Content-Transfer-Encoding: 8bit
 
-From: Bjorn Helgaas <bhelgaas@google.com>
+From: David Howells <dhowells@redhat.com>
 
-[ Upstream commit 1291b716bbf969e101d517bfb8ba18d958f758b8 ]
+[ Upstream commit 9546ac78b232bac56ff975072b1965e0e755ebd4 ]
 
-When a device with AER detects an error, it logs error information in its
-own AER Error Status registers.  It may send an Error Message to the Root
-Port (RCEC in the case of an RCiEP), which logs the fact that an Error
-Message was received (Root Error Status) and the Requester ID of the
-message source (Error Source Identification).
+The 9p filesystem is calling netfs_inode_init() in v9fs_init_inode() -
+before the struct inode fields have been initialised from the obtained file
+stats (ie. after v9fs_stat2inode*() has been called), but netfslib wants to
+set a couple of its fields from i_size.
 
-aer_print_port_info() prints the Requester ID from the Root Port Error
-Source in the usual Linux "bb:dd.f" format, but when find_source_device()
-finds no error details in the hierarchy below the Root Port, it printed the
-raw Requester ID without decoding it.
-
-Decode the Requester ID in the usual Linux format so it matches other
-messages.
-
-Sample message changes:
-
-  - pcieport 0000:00:1c.5: AER: Correctable error received: 0000:00:1c.5
-  - pcieport 0000:00:1c.5: AER: can't find device of ID00e5
-  + pcieport 0000:00:1c.5: AER: Correctable error message received from 0000:00:1c.5
-  + pcieport 0000:00:1c.5: AER: found no error details for 0000:00:1c.5
-
-Link: https://lore.kernel.org/r/20231206224231.732765-3-helgaas@kernel.org
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Reported-by: Marc Dionne <marc.dionne@auristor.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Tested-by: Marc Dionne <marc.dionne@auristor.com>
+Tested-by: Dominique Martinet <asmadeus@codewreck.org>
+Acked-by: Dominique Martinet <asmadeus@codewreck.org>
+cc: Eric Van Hensbergen <ericvh@kernel.org>
+cc: Latchesar Ionkov <lucho@ionkov.net>
+cc: Dominique Martinet <asmadeus@codewreck.org>
+cc: Christian Schoenebeck <linux_oss@crudebyte.com>
+cc: v9fs@lists.linux.dev
+cc: linux-cachefs@redhat.com
+cc: linux-fsdevel@vger.kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/pcie/aer.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ fs/9p/v9fs_vfs.h       | 1 +
+ fs/9p/vfs_inode.c      | 6 +++---
+ fs/9p/vfs_inode_dotl.c | 1 +
+ 3 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-index e2d8a74f83c3..5426f450ce91 100644
---- a/drivers/pci/pcie/aer.c
-+++ b/drivers/pci/pcie/aer.c
-@@ -748,7 +748,7 @@ static void aer_print_port_info(struct pci_dev *dev, struct aer_err_info *info)
- 	u8 bus = info->id >> 8;
- 	u8 devfn = info->id & 0xff;
- 
--	pci_info(dev, "%s%s error received: %04x:%02x:%02x.%d\n",
-+	pci_info(dev, "%s%s error message received from %04x:%02x:%02x.%d\n",
- 		 info->multi_error_valid ? "Multiple " : "",
- 		 aer_error_severity_string[info->severity],
- 		 pci_domain_nr(dev->bus), bus, PCI_SLOT(devfn),
-@@ -936,7 +936,12 @@ static bool find_source_device(struct pci_dev *parent,
- 		pci_walk_bus(parent->subordinate, find_device_iter, e_info);
- 
- 	if (!e_info->error_dev_num) {
--		pci_info(parent, "can't find device of ID%04x\n", e_info->id);
-+		u8 bus = e_info->id >> 8;
-+		u8 devfn = e_info->id & 0xff;
-+
-+		pci_info(parent, "found no error details for %04x:%02x:%02x.%d\n",
-+			 pci_domain_nr(parent->bus), bus, PCI_SLOT(devfn),
-+			 PCI_FUNC(devfn));
- 		return false;
+diff --git a/fs/9p/v9fs_vfs.h b/fs/9p/v9fs_vfs.h
+index bc417da7e9c1..633fe4f527b8 100644
+--- a/fs/9p/v9fs_vfs.h
++++ b/fs/9p/v9fs_vfs.h
+@@ -46,6 +46,7 @@ struct inode *v9fs_alloc_inode(struct super_block *sb);
+ void v9fs_free_inode(struct inode *inode);
+ struct inode *v9fs_get_inode(struct super_block *sb, umode_t mode,
+ 			     dev_t rdev);
++void v9fs_set_netfs_context(struct inode *inode);
+ int v9fs_init_inode(struct v9fs_session_info *v9ses,
+ 		    struct inode *inode, umode_t mode, dev_t rdev);
+ void v9fs_evict_inode(struct inode *inode);
+diff --git a/fs/9p/vfs_inode.c b/fs/9p/vfs_inode.c
+index 4d1a4a8d9277..5e2657c1dbbe 100644
+--- a/fs/9p/vfs_inode.c
++++ b/fs/9p/vfs_inode.c
+@@ -250,7 +250,7 @@ void v9fs_free_inode(struct inode *inode)
+ /*
+  * Set parameters for the netfs library
+  */
+-static void v9fs_set_netfs_context(struct inode *inode)
++void v9fs_set_netfs_context(struct inode *inode)
+ {
+ 	struct v9fs_inode *v9inode = V9FS_I(inode);
+ 	netfs_inode_init(&v9inode->netfs, &v9fs_req_ops);
+@@ -344,8 +344,6 @@ int v9fs_init_inode(struct v9fs_session_info *v9ses,
+ 		err = -EINVAL;
+ 		goto error;
  	}
- 	return true;
+-
+-	v9fs_set_netfs_context(inode);
+ error:
+ 	return err;
+ 
+@@ -377,6 +375,7 @@ struct inode *v9fs_get_inode(struct super_block *sb, umode_t mode, dev_t rdev)
+ 		iput(inode);
+ 		return ERR_PTR(err);
+ 	}
++	v9fs_set_netfs_context(inode);
+ 	return inode;
+ }
+ 
+@@ -479,6 +478,7 @@ static struct inode *v9fs_qid_iget(struct super_block *sb,
+ 		goto error;
+ 
+ 	v9fs_stat2inode(st, inode, sb, 0);
++	v9fs_set_netfs_context(inode);
+ 	v9fs_cache_inode_get_cookie(inode);
+ 	unlock_new_inode(inode);
+ 	return inode;
+diff --git a/fs/9p/vfs_inode_dotl.c b/fs/9p/vfs_inode_dotl.c
+index 5cfa4b4f070f..e15ad46833e0 100644
+--- a/fs/9p/vfs_inode_dotl.c
++++ b/fs/9p/vfs_inode_dotl.c
+@@ -130,6 +130,7 @@ static struct inode *v9fs_qid_iget_dotl(struct super_block *sb,
+ 		goto error;
+ 
+ 	v9fs_stat2inode_dotl(st, inode, 0);
++	v9fs_set_netfs_context(inode);
+ 	v9fs_cache_inode_get_cookie(inode);
+ 	retval = v9fs_get_acl(inode, fid);
+ 	if (retval)
 -- 
 2.43.0
 
