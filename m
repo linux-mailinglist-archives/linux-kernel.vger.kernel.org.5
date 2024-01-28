@@ -1,161 +1,90 @@
-Return-Path: <linux-kernel+bounces-41911-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41912-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34BC383F980
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:37:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAF1283F985
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:38:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC826B20E30
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 19:37:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5DB87B21837
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 19:38:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B51A2EB10;
-	Sun, 28 Jan 2024 19:37:14 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A06CA36138;
+	Sun, 28 Jan 2024 19:38:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lB5VtcFy"
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28CDD33CF1
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 19:37:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9289831A98
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 19:38:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706470633; cv=none; b=UaaCZ4Vvr51aNsVz1h3n9yXU6qEm2AnH8nbYZ8fyI6vIXTEfQJWXiDr4hGo4y839lVxFqLEYnptcjbCLJr2a0WjZO043yq1wuvAGKJg72awlMRusa8uGOevApFTwDLLlSQm0e8tC7OQqSA4toPE8rwgQlOFGoYoIpaCcC5rk9fQ=
+	t=1706470690; cv=none; b=EaBloLy69LE05WCTVfFX6iDjDpeJfaOzQ/3alApVt0WIOItm0SfnMw7z81QQ6VonOjSFNuGU0ZE+RTQbKWywdfckh1Np6IdxZewGfR6AukgGP9heiE5ePId68wTToOfn8dlfXYO/QkjlTRm4JYM/8aZ4U9K4U2lg38wzkpPBZig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706470633; c=relaxed/simple;
-	bh=ZrixvhkJhbKZGck4jka4XG69l4/CfS4dYctLM5kLuEc=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=hWICuv9HhKCrA6Wb8UWthvfoFaSwKOkWDQpIpROV5RW4/JbJtemug9+mVJAu2BxEI+BwiyfpvDhTK34Wo/DQACBE3ewbocOfjsNWtlHTlv6y4fx398mYOtNCj1IsXX5h2SUz9jNbidZWORxNqec0P77I1Nu6Aroyxvf+plWIpfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-227-RgW8bFtTPC263FLYeWYyZg-1; Sun, 28 Jan 2024 19:37:05 +0000
-X-MC-Unique: RgW8bFtTPC263FLYeWYyZg-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 28 Jan
- 2024 19:36:41 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sun, 28 Jan 2024 19:36:41 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>, "'Linus
- Torvalds'" <torvalds@linux-foundation.org>, 'Netdev'
-	<netdev@vger.kernel.org>, "'dri-devel@lists.freedesktop.org'"
-	<dri-devel@lists.freedesktop.org>
-CC: 'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>, 'Andrew Morton'
-	<akpm@linux-foundation.org>, "'Matthew Wilcox (Oracle)'"
-	<willy@infradead.org>, 'Christoph Hellwig' <hch@infradead.org>, "'Dan
- Carpenter'" <dan.carpenter@linaro.org>, 'Linus Walleij'
-	<linus.walleij@linaro.org>, "'David S . Miller'" <davem@davemloft.net>,
-	"'linux-btrfs@vger.kernel.org'" <linux-btrfs@vger.kernel.org>, 'Jens Axboe'
-	<axboe@kernel.dk>
-Subject: [PATCH next 11/11] minmax: min() and max() don't need to return
- constant expressions
-Thread-Topic: [PATCH next 11/11] minmax: min() and max() don't need to return
- constant expressions
-Thread-Index: AdpSIVojuBa8D6X6RNmhjGfjyElxVg==
-Date: Sun, 28 Jan 2024 19:36:41 +0000
-Message-ID: <30b5bc6c60a147f9985b47fb1cc08d2e@AcuMS.aculab.com>
-References: <0ca26166dd2a4ff5a674b84704ff1517@AcuMS.aculab.com>
-In-Reply-To: <0ca26166dd2a4ff5a674b84704ff1517@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1706470690; c=relaxed/simple;
+	bh=fX9kLBzWyB/CMt5krU9aRo2/9LWbOP//s9WREBYu03U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RBkC2f3Mnsb7hfFC4zD7rW/NsqAu18JIDY+e+IiSvg30CR7Ar+t/nwZZ5ieuRhyTzDmXZtR9Q+XBQq4nrF5yI7P7PIcfyyz0pNcuO+2yIF5Zfxc/GpQ4Te1opeNY9pn0avHv6PDinW6wEc1ZDl1zfQlwqRrdFeG6rsQewTQwyWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lB5VtcFy; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Sun, 28 Jan 2024 14:38:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706470686;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/XSVKc6w+A+XmgwvfzwCcqpDMcWCgObA9/bvZvw48qU=;
+	b=lB5VtcFy7aF6cpkgma6yez8sMpMAz/mpV/YD1xJVy1FuCar5hxpJTFi3bXxiuHfPR8T3mx
+	7OqKn9T7SJlh2lOz/oCvxWjLIIlfuiaupGHKe3sIwWauc3J+ctzrPr+EvTIOTQ/AFWHEB7
+	4LKC5jHFfK6Wrvnby/iaqtNonDci1xc=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: boqun.feng@gmail.com, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, peterz@infradead.org
+Subject: Re: [PATCH 4/4] af_unix: convert to lock_cmp_fn
+Message-ID: <suyvonwf55vfeumeujeats2mtozs2q4wcx6ijz4hqfd54mibjj@6dt26flhrfdh>
+References: <20240127020833.487907-5-kent.overstreet@linux.dev>
+ <20240128082838.3961-1-kuniyu@amazon.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240128082838.3961-1-kuniyu@amazon.com>
+X-Migadu-Flow: FLOW_OUT
 
-After changing the handful of places max() was used to size an on-stack
-array to use max_const() it is no longer necessary for min() and max()
-to return constant expressions from constant inputs.
-Remove the associated logic to reduce the expanded text.
+On Sun, Jan 28, 2024 at 12:28:38AM -0800, Kuniyuki Iwashima wrote:
+> From: Kent Overstreet <kent.overstreet@linux.dev>
+> Date: Fri, 26 Jan 2024 21:08:31 -0500
+> > Kill
+> >  - unix_state_lock_nested
+> >  - _nested usage for net->unx.table.locks[].
+> > 
+> > replace both with lock_set_cmp_fn_ptr_order(&u->lock).
+> > 
+> > The lock ordering in sk_diag_dump_icons() looks suspicious; this may
+> > turn up a real issue.
+> 
+> Yes, you cannot use lock_cmp_fn() for unix_state_lock_nested().
+> 
+> The lock order in sk_diag_dump_icons() is
+> 
+>   listening socket -> child socket in the listener's queue
+> 
+> , and the inverse order never happens.  ptr comparison does not make
+> sense in this case, and lockdep will complain about false positive.
 
-Remove the 'hack' that allowed max(bool, bool).
+Is that a real lock ordering? Is this parent -> child relationship well
+defined?
 
-Fixup the initial block comment to match current reality.
-
-Signed-off-by: David Laight <david.laight@aculab.com>
----
- include/linux/minmax.h | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
-
-diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index c08916588425..5e65c98ff256 100644
---- a/include/linux/minmax.h
-+++ b/include/linux/minmax.h
-@@ -8,13 +8,10 @@
- #include <linux/types.h>
-=20
- /*
-- * min()/max()/clamp() macros must accomplish three things:
-+ * min()/max()/clamp() macros must accomplish several things:
-  *
-  * - Avoid multiple evaluations of the arguments (so side-effects like
-  *   "x++" happen only once) when non-constant.
-- * - Retain result as a constant expressions when called with only
-- *   constant expressions (to avoid tripping VLA warnings in stack
-- *   allocation usage).
-  * - Perform signed v unsigned type-checking (to generate compile
-  *   errors instead of nasty runtime surprises).
-  * - Unsigned char/short are always promoted to signed int and can be
-@@ -22,13 +19,19 @@
-  * - Unsigned arguments can be compared against non-negative signed consta=
-nts.
-  * - Comparison of a signed argument against an unsigned constant fails
-  *   even if the constant is below __INT_MAX__ and could be cast to int.
-+ *
-+ * The return value of min()/max() is not a constant expression for
-+ * constant parameters - so will trigger a VLA warging if used to size
-+ * an on-stack array.
-+ * Instead use min_const() or max_const() which do generate constant
-+ * expressions and are also valid for static initialisers.
-  */
- #define __typecheck(x, y) \
- =09(!!(sizeof((typeof(x) *)1 =3D=3D (typeof(y) *)1)))
-=20
- /* Allow unsigned compares against non-negative signed constants. */
- #define __is_ok_unsigned(x) \
--=09(is_unsigned_type(typeof(x)) || (__is_constexpr(x) ? (x) + 0 >=3D 0 : 0=
-))
-+=09(is_unsigned_type(typeof(x)) || (__is_constexpr(x) ? (x) >=3D 0 : 0))
-=20
- /* Check for signed after promoting unsigned char/short to int */
- #define __is_ok_signed(x) is_signed_type(typeof((x) + 0))
-@@ -53,12 +56,10 @@
- =09typeof(y) __y_##uniq =3D (y);=09=09\
- =09__cmp(op, __x_##uniq, __y_##uniq); })
-=20
--#define __careful_cmp(op, x, y, uniq)=09=09=09=09\
--=09__builtin_choose_expr(__is_constexpr((x) - (y)),=09\
--=09=09__cmp(op, x, y),=09=09=09=09\
--=09=09({ _Static_assert(__types_ok(x, y),=09=09\
--=09=09=09#op "(" #x ", " #y ") signedness error, fix types or consider u" =
-#op "() before " #op "_t()"); \
--=09=09__cmp_once(op, x, y, uniq); }))
-+#define __careful_cmp(op, x, y, uniq) ({=09\
-+=09_Static_assert(__types_ok(x, y),=09\
-+=09=09#op "(" #x ", " #y ") signedness error, fix types or consider u" #op=
- "() before " #op "_t()"); \
-+=09__cmp_once(op, x, y, uniq); })
-=20
- #define __careful_cmp_const(op, x, y)=09=09=09=09\
- =09(BUILD_BUG_ON_ZERO(!__is_constexpr((x) - (y))) +=09\
---=20
-2.17.1
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
-
+If it is, we should be able to write a lock_cmp_fn for it, as long as
+it's not some handwavy "this will never happen but _nested won't check
+for it" like I saw elsewhere in the net code... :)
 
