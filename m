@@ -1,50 +1,74 @@
-Return-Path: <linux-kernel+bounces-41840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 418B783F872
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 18:10:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 550EF83F877
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 18:13:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6582C1C20B30
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:10:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B307283428
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:13:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E7AB2D058;
-	Sun, 28 Jan 2024 17:09:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 455352D05E;
+	Sun, 28 Jan 2024 17:13:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="JTzbCmuQ"
-Received: from mout.web.de (mout.web.de [212.227.17.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KY1un6OB"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E062414288;
-	Sun, 28 Jan 2024 17:09:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B442A2C68B;
+	Sun, 28 Jan 2024 17:13:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706461796; cv=none; b=jZ1F8mRII7oJtOSFdS2t7nRyoqI9cpWqiOnFiT+HwLhG/HxTG7sAvKux8Gm+gub5DJlb2co53lkmD8ZSDPf0+7GgIxWlPtnOOs2XTwBavSbW1nDzkRuIIxxPVW4mNkz9X7DymmWnwpRPQ0p6phdMhXufMk2Vq1dSylbaVA5g6nU=
+	t=1706461997; cv=none; b=iaIA6GivhSTajkfJVcFSdFg1hPG4gLzFhMqoHSqZwejdlKR9QhD5cVJaKCDQkNbRnEj0hh7WYbPWv9q/ojJlBnFbk+zJqLK7WWmWxR5Klq3jBM60rkH4FOb6sLNg0Kcc7bInZTYfusz9IgpP4w3Z3AoJRnA3gbzIBImiot8o/ro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706461796; c=relaxed/simple;
-	bh=skl6m8d4+uXGtWa5IbVdYrFKC3oF+ITHrCIEfSyrSJw=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=akl62nDcqNJLnRggusSOGjuE2gasNy+IlAa9NSE6Jdu9OyIGwR44n1Q9lhROS7JtxVFjUMnHbZw+bDORq+macetdHDFnP08+wb8e28X5L1LmXRP8seAVL5lLq0nRDyLFQVtTQenurzD+U3t1UQnpXtJg4rpJ//rgos+URDb5VMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=JTzbCmuQ; arc=none smtp.client-ip=212.227.17.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1706461774; x=1707066574; i=markus.elfring@web.de;
-	bh=skl6m8d4+uXGtWa5IbVdYrFKC3oF+ITHrCIEfSyrSJw=;
-	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
-	b=JTzbCmuQAOJ1kPZq5j1qaYAsHcjBkpcnu2qhErvAN2LpefDUUeM8b2YxSueGD71B
-	 j3eef9Aa7lTg7dMClGwevaaI/naVIePVANvgwvsxllGUm2u4KQBiBZpEHsN3Ge9ET
-	 /olSkTUN96PGcHvaKkcFYx3KkJXJx/ggDHvxAy2e0PpH0dgdZ4koTAtljuvqJIqJD
-	 I95lUgxOg94U1tQgmlZ0bc5OwJ57nktLwYazqriKFh6Ef/EBYKc2zFaKNOnos3iVR
-	 K/J/lW4DLGoS6zIj6opNVr9FEH4OAba3LSfjiW4G6hk871iGmBZHEC0Kp5XTe6oqA
-	 BY/3ZEr14c52yJwQug==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.81.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MuFD5-1rDqKJ2XxF-00uach; Sun, 28
- Jan 2024 18:09:34 +0100
-Message-ID: <41e333f7-1f3a-41b6-a121-a3c0ae54e36f@web.de>
-Date: Sun, 28 Jan 2024 18:09:30 +0100
+	s=arc-20240116; t=1706461997; c=relaxed/simple;
+	bh=jNDfSP0iz6F45hxisn1nC9nJOoP8Llt5SFMdhiO4ow8=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=Lc14tjP5VG3+E2G6bPxV/9jQxz/Qye+2cQhikwRzuvvBskFjEIGXjrHV5C3bHs4SYN7UaWgEPEZ5j2xaNtIzwVC1FhkaCtR+uzblBuQBeqqvZeZB0nY4VWuGEPaZtF3D+LZB1326BjrXokU++gzxCnGc7Mbx6EyWfGnaZ5zXQlc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KY1un6OB; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d8cec0f71aso2782435ad.1;
+        Sun, 28 Jan 2024 09:13:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706461995; x=1707066795; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=6cDy7Rb25xoEXZNoitNmW/3Zfu/z4arLpo3N6K1MDEs=;
+        b=KY1un6OB5x0a8E+t2A1PFv6n8QmxOnuvq1EcGpWi4vNjE7ReZvrV4oeLbObwKS2osT
+         5rXQ11METOk5GfmOP8RGbOmJMWvr3Jers654XazEIHctnQ0yzXfCzqznDWbHUFX8e+H+
+         Bc+JopscQZLTBY1ysB/+UKcS697QePgGQhz9D4GLTng1hwG2UZ8Fc534oZeTrnqettfK
+         2ob3aCZ13naOqU/DM8o0HssNEHQowxx+kDRmMnkcWEzHZZjp38K+GlSEen+1y9XWndhx
+         jOBSOiv6BptI95EuWkg6ZAi+UGN2sG0RyvcnVc6Xkoyz9twFCz+Vn4t7ysBPPeggyhFh
+         /zNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706461995; x=1707066795;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6cDy7Rb25xoEXZNoitNmW/3Zfu/z4arLpo3N6K1MDEs=;
+        b=I9b0h1wekW42HQNT16BVbUMDpQC5vXiWvxS2csyghqJ4YAdMJRt6R/vN4mh9MxOZTx
+         eQriFV40uD78cmg5f9ekn8woD6mrVm1+ldwU4KkyOcnZ2Om4fkks6k0BtzjUpOhNivRc
+         iFkBR+Uw/sisZcRCtESMEkh0xyuv/Q2n8s7BPRoTb7QrvLTWdBgLeeRiG8pYGkXnbg0u
+         BJGU5gCYK6EFbNWHThVuoRj3eB1G8fEXj9PopbY/vaQNyPZnpn3N52bhDy6Yl/IBY3O7
+         Dj22Vv1tqf3gZIuZRKk/6ClYDaj15hnYG+HPlGgw0ZvguymMYoBTQ2mpnpk9dAadaI9L
+         C31A==
+X-Gm-Message-State: AOJu0Yy6QbCyddPjfdiUTK9SxZ6iRiYwOwFU2pihE8SzY2pSURDTIT8s
+	VDF/0wmRedE1U4u+w3hrgTMV/mF87DnfCfFn/41PL7WM40XuJ7PH
+X-Google-Smtp-Source: AGHT+IHG4xQpWy5Yeqyu7lIOVrg/6i6qbqw0HjEhQzLzzE2jHDaUtrmZQMKIruoyu8kYli+xdFUaMw==
+X-Received: by 2002:a17:902:e84a:b0:1d8:dbd0:bb42 with SMTP id t10-20020a170902e84a00b001d8dbd0bb42mr759372plg.21.1706461994795;
+        Sun, 28 Jan 2024 09:13:14 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j71-20020a63804a000000b005d7c02994c4sm4560870pgd.60.2024.01.28.09.13.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Jan 2024 09:13:13 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <cc561e9a-e493-43dd-ac9b-cf14786130ff@roeck-us.net>
+Date: Sun, 28 Jan 2024 09:13:12 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -52,93 +76,107 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: xen-devel@lists.xenproject.org, kernel-janitors@vger.kernel.org,
- =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
- Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
- Stefano Stabellini <sstabellini@kernel.org>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] xen/privcmd: Use memdup_array_user() in alloc_ioreq()
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7yhNhlRvw29pkPL2ElLfqurRFvlr5JJnJHUrCA7cARjU+fJm2cn
- 3ujTOQNviQlobkUnrNwknyt+XzrmHGGoXkQ4NrRjmuViRPoSvBYWkVfI3o9bqxr9CK9PxHo
- DF+/WB0T4smezgtgZs2nDtVFzun5IFBJdLTaFJKZ7V3FEOVV6NN3keRdYqGfzR/fGr7aePR
- BEM+3ALcJia7TLbSBgNMA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:K4Ht/mjTrr0=;HvmWwv7eLngddWj6ev5tcIOfD/L
- fuWb7rfhHAnB5LpBTTNR4OiesAjJUwwhF3MgQbNIdh+LbcEt98tGW9hBMFrE4T9+ZOwwh7dNM
- Px5t7eSuh2tc0vc5ehXthTGamsAK27FgVmIET5sZ0xX53ynF5qk+KANhqwFS9J4KaytBdiyzg
- 5MecokBmUjUMZRyto8m/3sEMeyJdiro2ayMQRmUPeig2dp1b9Lk1hleCypE54v/xYr06s5tT1
- fHhppLdShkYf+MkmlTvSThJgBKbvbVKNrVKlk3UG/G9hNvKOgc/uOs7YO8CVEzOxVAUdqO+8J
- aTvGFwWoReQVtnpBTCv8i/tTZ6IBMvROCP+P9Z8aa85abNLVwxN++gm2uIFa1mXSZlzTZz3R5
- TzlCcJJWnEwiKHLB9F32pv+12mWVOGknoyV8AFJgGkrnJZ1RHDMpzTC3Alkf2rTh7hjw24O2X
- xqopT23zNzYz0rm6dpeNS8RQC2XaGBv42mGl0eplnas0/1ULxR3knkays35S5ZDW4McERbseK
- RnA6KkFawxQnVWLubFpKwQXSI22Q+wu6Uin9GEX7xhQhvjYNEuz8VGuIWZcHAuSBhCVgyMlZv
- 90XQm4cXaT1TkJQrX0sllUEyVXNlImxf9PyYOLXoXib/kmHFCzOh7hU8EwFul1A4Lk3ZeLFiF
- qtoGJcHiZaRJm/tdCNNYdEf3OYMmQPYAwZWDZ1o8QfgIKpOu3Ke8Mr1czn0PdHKFzTNcVGcON
- m3wEZkY3VCt8/7W5e/fNnNX2fng1WzGrkFxEo7ARFoInHcrawQWU2Pig5connBaeO2Eo4ekbb
- GMzlFi2hhJmlwBpDmvIlTtNDIk1owuaHJrM8VyKxNS3hd8JFvIL3wmurSeo5XBIEAM9HRfrUD
- ZpFSaYxoZAGCDIySsAXMoO0QCuC7WYH1v10S3OYTwozdNHejdJEHqWYrh3/b438sDAwKqfdv4
- 3J8eOg==
+Subject: Re: [PATCH v1] hwmon: Add driver for MPS MPQ8785 Synchronous
+ Step-Down Converter
+Content-Language: en-US
+From: Guenter Roeck <linux@roeck-us.net>
+To: Charles Hsu <ythsu0511@gmail.com>
+Cc: jdelvare@suse.com, corbet@lwn.net, Delphine_CC_Chiu@wiwynn.com,
+ linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+ Charles.Hsu@quantatw.com
+References: <20240126075213.1707572-1-ythsu0511@gmail.com>
+ <81860c27-43ac-4e55-a653-e7f5597ffa93@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <81860c27-43ac-4e55-a653-e7f5597ffa93@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sun, 28 Jan 2024 17:50:43 +0100
+On 1/27/24 16:00, Guenter Roeck wrote:
+> On Fri, Jan 26, 2024 at 03:52:13PM +0800, Charles Hsu wrote:
+>> Add support for mpq8785 device from Monolithic Power Systems, Inc.
+>> (MPS) vendor. This is synchronous step-down controller.
+>>
+> 
+> "(MPS) vendor" above has no value.
+> 
+> I find no reference that this chip actually exists. Sorry, but I can not
+> apply such patches without confirmation that the chip actually exists.
+> 
 
-* The function =E2=80=9Cmemdup_array_user=E2=80=9D was added with the
-  commit 313ebe47d75558511aa1237b6e35c663b5c0ec6f ("string.h: add
-  array-wrappers for (v)memdup_user()").
-  Thus use it accordingly.
+I since learned that the chip does exist, so this is no longer a concern.
 
-  This issue was detected by using the Coccinelle software.
+>> Signed-off-by: Charles Hsu <ythsu0511@gmail.com>
+>> ---
+>> Change in v1:
+>>      Initial patchset.
+> 
+> A change log or v1 tag is not needed for the first version of a patch
+> or patch series.
+> 
+>> ---
+> ...
+>> +		PMBUS_HAVE_VIN | PMBUS_HAVE_VOUT | PMBUS_HAVE_TEMP | PMBUS_HAVE_IOUT |
+>> +		PMBUS_HAVE_STATUS_INPUT | PMBUS_HAVE_STATUS_TEMP,
+> 
+> I am not too happy that all those drivers claim to have no output status
+> registers. It always makes me wonder if the definitions are just copied
+> from one driver to the next.
 
-* Delete a label which became unnecessary with this refactoring.
+I also learned that the chip supports additional status registers. Please
+list all supported status registers.
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/xen/privcmd.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+I also learned that the chips voltage output mode is configurable. As such,
 
-diff --git a/drivers/xen/privcmd.c b/drivers/xen/privcmd.c
-index 35b6e306026a..2c8f6d047c11 100644
-=2D-- a/drivers/xen/privcmd.c
-+++ b/drivers/xen/privcmd.c
-@@ -1223,18 +1223,13 @@ struct privcmd_kernel_ioreq *alloc_ioreq(struct pr=
-ivcmd_ioeventfd *ioeventfd)
- 	kioreq->ioreq =3D (struct ioreq *)(page_to_virt(pages[0]));
- 	mmap_write_unlock(mm);
++	.format[PSC_CURRENT_OUT] = direct,
 
--	size =3D sizeof(*ports) * kioreq->vcpus;
--	ports =3D kzalloc(size, GFP_KERNEL);
--	if (!ports) {
--		ret =3D -ENOMEM;
-+	ports =3D memdup_array_user(u64_to_user_ptr(ioeventfd->ports),
-+				  kioreq->vcpus, sizeof(*ports));
-+	if (IS_ERR(ports) {
-+		ret =3D PTR_ERR(ports);
- 		goto error_kfree;
- 	}
+won't do because it cause instantiation to fail due to mode mismatch
+in pmbus_identify_common() if the mode is configured to linear or vid mode.
+This will need to be addressed.
 
--	if (copy_from_user(ports, u64_to_user_ptr(ioeventfd->ports), size)) {
--		ret =3D -EFAULT;
--		goto error_kfree_ports;
--	}
--
- 	for (i =3D 0; i < kioreq->vcpus; i++) {
- 		kioreq->ports[i].vcpu =3D i;
- 		kioreq->ports[i].port =3D ports[i];
-@@ -1256,7 +1251,7 @@ struct privcmd_kernel_ioreq *alloc_ioreq(struct priv=
-cmd_ioeventfd *ioeventfd)
- error_unbind:
- 	while (--i >=3D 0)
- 		unbind_from_irqhandler(irq_from_evtchn(ports[i]), &kioreq->ports[i]);
--error_kfree_ports:
-+
- 	kfree(ports);
- error_kfree:
- 	kfree(kioreq);
-=2D-
-2.43.0
+Thanks,
+Guenter
 
 
