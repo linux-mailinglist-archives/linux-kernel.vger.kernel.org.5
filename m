@@ -1,105 +1,189 @@
-Return-Path: <linux-kernel+bounces-41926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4FC483F9A9
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 21:04:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF11C83F9AA
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 21:06:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 018B9B20940
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:04:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54B751F21E26
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:06:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1CD33BB55;
-	Sun, 28 Jan 2024 20:04:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1EB83219F;
+	Sun, 28 Jan 2024 20:06:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PYryKuyl"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="vz/Q/L43"
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC64033CD6;
-	Sun, 28 Jan 2024 20:04:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85F6831A82;
+	Sun, 28 Jan 2024 20:06:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706472258; cv=none; b=EH4/ruTUmorDn31uhTE2F0LresCscmL34Pyb0FNGmNybjxCzQlvEmIpWSEha2+gvxn9IkAvTzsRTIkNuighLzXZcWlMPKgIKzIUfC3UBQuzU5+ItfkLxLE/FbNmefu3pSCWcqZDXNKhIBE7KzD9VFRpNP7F6EycwB3ddiHWkvCg=
+	t=1706472396; cv=none; b=KvhXzCMlhsFd1Yr/mwLd4A9OSCbWLTNaugn/fgyUy+AE58PyXIms8xbp6HXlhENH5Co28FidPwMLxcT2Vgee167BL83+PQzV+zLARFJr+APjeeOsAlOr0p8dw2Ds7DGfsMF0jb4BtXTNZv2rjbHS9wCvIsDmrp/pgkxzms021Jw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706472258; c=relaxed/simple;
-	bh=9S3wfQZkihmike9xgBCv7o3FsGpq1FyElKHqMnPKnfA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c2NX01/cUIKlQW22w9M+9iFli3oX7y68ExesK9bhbGXHIxJcMeFK8wQz4hytJ4MAdxs9oF5s7E7e81Lg7TftXiAB2lSldQe5KXRsG17QLmwxAu1S5MWYwZ3PQVyHV+sAWT8cfnvSr0bppWTMmWAZJKBlVouSHTww2CK938swZ9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PYryKuyl; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-6029e069e08so28483187b3.0;
-        Sun, 28 Jan 2024 12:04:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706472256; x=1707077056; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9S3wfQZkihmike9xgBCv7o3FsGpq1FyElKHqMnPKnfA=;
-        b=PYryKuylj0e5Vwgo5z1RVjrHywzRSVOU5BxL6UUejB3Sw1YSr2xMwZY77zQke6dkAp
-         heNjysT8dRcZZV4GcM83n+83obmhok34buAwbnXFIIsECLjymgYxYpmSI+F//LNv/ulr
-         Fr92TATYawz3EES7XFAWYW3zltwfXZAAEga0zWhhycJwodte/L2alZPLK4s3oM5JeJnr
-         sKLJ0kbHI6tZ9SK9awMJJ6KT7UMCKWy+oMTvzQpJtwvo349XLd5GgxeMDjr99+X4JZHR
-         kTM/oI6P0arDESJhvlGF++msQZTsSynK7ofUU7k3EDN+EkQjr5CqS7hgY7U2PQ4ivva2
-         0Tuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706472256; x=1707077056;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9S3wfQZkihmike9xgBCv7o3FsGpq1FyElKHqMnPKnfA=;
-        b=sbo5zyKGVK6ZwQ3lsUdEKCdUuzUZ+vvpTSZ+72k28cgtWiYkXFkMyZlHQuepqPXkJt
-         zTC8UAHoeeb4W5fDkXSinqho+Qt0ulpUodQYvGdEfMHQarOuhQHmASxx9BSeHVFhowUO
-         e+hqROTT5bNSImqSW/Mhmx9yGcOXpd/IJxfTGG8hwUpouzkk3FawQvAVUCMMSxSzMBxy
-         fp+aQd75TXeSTPrXCv1s2H69fL950LQGR56XetXUFFXfytCIkMYx6BGSr1aJx71X3X36
-         hfR4JuTXLYAV8w++k6c6v1+8Oe/AdzPUiFaaumtxeQJEHOpu2TtFwXL8J1408/PXCuyz
-         I68Q==
-X-Gm-Message-State: AOJu0YxxnJ9vn64cHCxMrQX1MKRbpjIRW+IF2SahWmnxyFD3hFqyI5t3
-	jFDBHJFDiA+gj4EYbDVfdXM50JnhNIsjJQHS8+DuirN2MRdX+WyzakE9FAF/jfLl5H8glx6Tfle
-	ohc5tSGx9tt1Um4FB8nAUN7jwCSI=
-X-Google-Smtp-Source: AGHT+IEyKJdkMN/kf7/gqXc3y+MmKAwmeLzIw6JXklbGpM3d02BOESQBvIGtxP5qvDNS880qNhJVxNuMxY6sffQyHHI=
-X-Received: by 2002:a0d:d8d2:0:b0:5ff:9b2a:d0b9 with SMTP id
- a201-20020a0dd8d2000000b005ff9b2ad0b9mr2486371ywe.97.1706472255731; Sun, 28
- Jan 2024 12:04:15 -0800 (PST)
+	s=arc-20240116; t=1706472396; c=relaxed/simple;
+	bh=NgaXvXQoHsjxe/EA1Ybr+FQWYg9KhJGN4jFPViGSQxU=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=aTBflspv3NwAd/cF5Sxkjw3JGa879KNhbT7GA2+UvR0fjOS6oMQLJlyLjY3QdCLlrtshiXLyDmYnthuqg2Tf7g182n5XbQOXaWu95obFBjjFjrck8TocOs7XUEUMOBC0JJXaFzSTQTkuANSYDttcyYMPeNWkq2XtMO4NbBXuf9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=vz/Q/L43; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1706472371; x=1707077171; i=markus.elfring@web.de;
+	bh=NgaXvXQoHsjxe/EA1Ybr+FQWYg9KhJGN4jFPViGSQxU=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=vz/Q/L43/Tc6KJxGJGbdWl8qyaIutUMg/3lI5CrC9uehl8vYhCoWHl0V/D9yvoJI
+	 9pnI3QKHgIpLt6YTQiJS5KDX2ppq2CPESw5rhpSUOM3LQPnDBsjGiDPvAf38LM6UO
+	 RCor65Dgnvj6JeXS+4FPGFwsAQ6k731rdCL4xY3HcKkn9ex0OOQinNGSPmH8QghM+
+	 uEKcoztXp7QTOdZD9PL8QO3qDlM8Yl1298+PA3/mtgNchVmagKlaSeoF8Jjp/9zJi
+	 3muccUJZ+xxaatwaZEsDn3VjVNee/MItKlklBV4MsyoyuDUqMuPnc5OXsGirN6w0O
+	 rgvhTPAh4NsYSWt9jg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.81.95]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1Myf3v-1r9U8U2P6L-00yX9a; Sun, 28
+ Jan 2024 21:06:11 +0100
+Message-ID: <c07221ed-8eaf-490e-9672-033b1cfe7b6e@web.de>
+Date: Sun, 28 Jan 2024 21:06:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108-rb-new-condvar-methods-v4-0-88e0c871cc05@google.com>
-In-Reply-To: <20240108-rb-new-condvar-methods-v4-0-88e0c871cc05@google.com>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Sun, 28 Jan 2024 21:04:04 +0100
-Message-ID: <CANiq72kx8oBO_oFZqfKdC2U9R+je1UiA+nVAAwZAEivqvfiZQA@mail.gmail.com>
-Subject: Re: [PATCH v4 0/4] Additional CondVar methods needed by Rust Binder
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>, 
-	Waiman Long <longman@redhat.com>, Tiago Lam <tiagolam@gmail.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, rust-for-linux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+To: dri-devel@lists.freedesktop.org, kernel-janitors@vger.kernel.org,
+ Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+ Donald Robson <donald.robson@imgtec.com>,
+ Frank Binns <frank.binns@imgtec.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Matt Coster <matt.coster@imgtec.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Sarah Walker <sarah.walker@imgtec.com>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] drm/imagination: Use memdup_user() rather than duplicating
+ its implementation
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:koqS3eLltv+QIPN2RCW3+Is0PGswqbQ+2Rizm/ODddQBc60oNWw
+ zsO7XtPEFBC/fYJPfyzbKTyXby9HwP2MYakOHwpAhdyTV+R+mxOhB7f2s1JV+tNvwmhwqpk
+ /rC2b440t+5NuTYmzEOJVbrLTJXE6hgFBAxN9bAYLcyU2uuilqZ+453fERFTSqIirVuqLqe
+ Ojh24tWpBrPas8DOKi8BQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:06n3TwzjoMw=;WhAmErG28I8KWN9Gnz8yyeHqEEh
+ +AIQfj6wNSVkJKDyoFhoYA+2h+Mz8gNpke7q0+aS3I8Ub5Uev/yTyTXj3+vE01BbvtSbMG8+p
+ 2m22BKjoTrmOzp96SzciIJS/4PbRbcGeuFf27QQmeJp5qVoySyUigpiVqQ/08tB7uElJ8sSj3
+ FZEZkftcJXsmwzOoCCmHwvPHt74grQC5+rAw8vqeq9o9Hsl7N7HORizLgqpRIgOmPJ8sSIl9p
+ EU1Huagt9m8rw6h1qsOhMDCWHzuwlS9Vtb7mj9sDCbTwJihK5xBd0VNHt2Nv/VrB8SzzaGSQy
+ aLMJiOPhZsJeRWVLfXAZToGIVlhhV444JTlZhjlSwzRrKHpca82O/VVKZAjyAgWu7er2d6vJK
+ mpr6fRRy1zyaltc9bodZlRiIZVD7Wt5M4qb+b+DrN7FvTjtIVm74dvLaUl3BlhPwRf9bS8Rjy
+ aujj7LpfASJhWqpe77q3TrkSo7YHNdJxu62cJ/LTt0Hn7wQaSBKKPs4nm4OOxLxueiakmZfo/
+ Hk8K0/FSsacskAms6/Uok9Bq4a5vp/hTljqydjDelXpPUs/WtuwCX/MIVo111H7tTo1cNRiRQ
+ bTjpF6y4ma4vzpKTqE/LEvPF64S9eJr1vY774HtkID4cUIKwmo6JrhP6Q0DMCmdQNTtgCup0n
+ hwZLtUjBs44Iq0j/0iaTiq15YTB8FM06r8tlaJ35/a4YglCiV01/+ZJgXeC0rHX3+vJJyiDZF
+ 0hW7Fv4NhkqQQEA/8V4yC6ENm37+/yrrtzsb7lAHA0GPRKAJcZOKCVBHuY0laqf2eKXxs0UmW
+ GjWVYMPWvafsysOD3LD+KfKPlKmVCiR/U+NCIOYM85gwdBj7BX7ZsWQriVVRwtVfWZgzdr6gA
+ YWfmTBp5ZP49ielVhdZLsLvW7xG1lFjb0cu531ZMaNsXd7Ui1d3pQUukRE4/kQrQ4Mf81XMiY
+ iwblTQ==
 
-On Mon, Jan 8, 2024 at 3:50=E2=80=AFPM Alice Ryhl <aliceryhl@google.com> wr=
-ote:
->
-> This patchset contains some CondVar methods that Rust Binder needs.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Sun, 28 Jan 2024 20:50:36 +0100
 
-Applied to `rust-next` with conflicts resolved after the `wait_list`
-rename, added `CondVarTimeoutResult` re-export, fixed typo and added
-note on the `sizeof(int)` being unlikely to change.
+* Reuse existing functionality from memdup_user() instead of keeping
+  duplicate source code.
 
-Alice: please double-check if I missed something.
+  Generated by: scripts/coccinelle/api/memdup_user.cocci
 
-Thanks everyone!
+* Delete labels and statements which became unnecessary
+  with this refactoring.
 
-Cheers,
-Miguel
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ drivers/gpu/drm/imagination/pvr_context.c | 21 +++------------------
+ drivers/gpu/drm/imagination/pvr_job.c     | 15 +++------------
+ 2 files changed, 6 insertions(+), 30 deletions(-)
+
+diff --git a/drivers/gpu/drm/imagination/pvr_context.c b/drivers/gpu/drm/i=
+magination/pvr_context.c
+index eded5e955cc0..27814ae8a8f8 100644
+=2D-- a/drivers/gpu/drm/imagination/pvr_context.c
++++ b/drivers/gpu/drm/imagination/pvr_context.c
+@@ -66,29 +66,14 @@ static int
+ process_static_context_state(struct pvr_device *pvr_dev, const struct pvr=
+_stream_cmd_defs *cmd_defs,
+ 			     u64 stream_user_ptr, u32 stream_size, void *dest)
+ {
+-	void *stream;
+ 	int err;
++	void *stream =3D memdup_user(u64_to_user_ptr(stream_user_ptr), stream_si=
+ze);
+
+-	stream =3D kzalloc(stream_size, GFP_KERNEL);
+-	if (!stream)
+-		return -ENOMEM;
+-
+-	if (copy_from_user(stream, u64_to_user_ptr(stream_user_ptr), stream_size=
+)) {
+-		err =3D -EFAULT;
+-		goto err_free;
+-	}
++	if (IS_ERR(stream))
++		return PTR_ERR(stream);
+
+ 	err =3D pvr_stream_process(pvr_dev, cmd_defs, stream, stream_size, dest)=
+;
+-	if (err)
+-		goto err_free;
+-
+ 	kfree(stream);
+-
+-	return 0;
+-
+-err_free:
+-	kfree(stream);
+-
+ 	return err;
+ }
+
+diff --git a/drivers/gpu/drm/imagination/pvr_job.c b/drivers/gpu/drm/imagi=
+nation/pvr_job.c
+index 78c2f3c6dce0..e17d53b93b1f 100644
+=2D-- a/drivers/gpu/drm/imagination/pvr_job.c
++++ b/drivers/gpu/drm/imagination/pvr_job.c
+@@ -87,23 +87,14 @@ static int pvr_fw_cmd_init(struct pvr_device *pvr_dev,=
+ struct pvr_job *job,
+ 			   const struct pvr_stream_cmd_defs *stream_def,
+ 			   u64 stream_userptr, u32 stream_len)
+ {
+-	void *stream;
+ 	int err;
++	void *stream =3D memdup_user(u64_to_user_ptr(stream_userptr), stream_len=
+);
+
+-	stream =3D kzalloc(stream_len, GFP_KERNEL);
+-	if (!stream)
+-		return -ENOMEM;
+-
+-	if (copy_from_user(stream, u64_to_user_ptr(stream_userptr), stream_len))=
+ {
+-		err =3D -EFAULT;
+-		goto err_free_stream;
+-	}
++	if (IS_ERR(stream))
++		return PTR_ERR(stream);
+
+ 	err =3D pvr_job_process_stream(pvr_dev, stream_def, stream, stream_len, =
+job);
+-
+-err_free_stream:
+ 	kfree(stream);
+-
+ 	return err;
+ }
+
+=2D-
+2.43.0
+
 
