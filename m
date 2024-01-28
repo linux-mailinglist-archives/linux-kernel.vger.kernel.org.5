@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-41931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09F6483F9B8
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 21:12:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94C2883F9C3
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 21:13:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B5661F21A17
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:12:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7ECC1C21241
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:13:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CAA83C6BA;
-	Sun, 28 Jan 2024 20:11:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FFA54CB2E;
+	Sun, 28 Jan 2024 20:11:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="otzzt1QX"
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="UrR3EttZ"
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 931A433CFB;
-	Sun, 28 Jan 2024 20:11:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2340E4205B;
+	Sun, 28 Jan 2024 20:11:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706472695; cv=none; b=M52Vncg9xWS4rr4Jxn30icz3IwtakOnKmyjheC3+cGdqC/+OSjMLuZOe1V7FXuxYJnHlyoqcJ5rkhu2N6flYV78CRSwuVxEUn5Fg6AoZfSaO4qNapTOXOmQCf33zH4TVoOV9Q9+TDIAZz49cYzKRoLhWryD8Ji7HnHZSXIYzm3g=
+	t=1706472699; cv=none; b=ofVjrUgRPGfrUm3xTG8s8UapWH0XoBip0bM1/BbOayQdvZSvQD44aIPZIgrH6hN/DDhdVYmChUCQdOnZojYG6VF57pZjSG9bcojbtWcyPZBHQMiIUXcns4AVvFfD7QlLFSOFkY1U/BAceUqFGkjEqsWZX2s1kgyJM/TNBX7uz3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706472695; c=relaxed/simple;
-	bh=/a3XjCwkev4UaYRviAJl/ZXYOyQ9EIrLw/7tcHWkLhU=;
+	s=arc-20240116; t=1706472699; c=relaxed/simple;
+	bh=EvWVaRec1ycNuQtUFFeYTjYmPaMgYbG3dLiPYQu5/tA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qUIzD6w3XHnNyOaYvjlQdtklJ/8dZ947B/7rzKJWLoGgrtZsSXE22YePyn3K21s/tkB6M+SR2gxBZFuDPtcufg0OLN+iRGFmSViAdsBdCXgpF2JGMVZ6xuz2bSZBMNzi4fy1yMJaJvPHSjKOml37Lp08ay9PuM0guhSmaqOlZV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=otzzt1QX; arc=none smtp.client-ip=212.227.17.22
+	 MIME-Version; b=ZZJo+vtBm+q73UXHIjQTQEjwcUY4IKUnWVtPW+WPSSEczGThFzqiPuYAsXXS3kpVe+1ARVdqUmcE60pFqHTgu9PgxEqdJqScDdvWTi+W9vr+2pBPgFcajQc1pRQpO4BteQBmshr7mzaZpPA3GOrS9VqRuovWcBy7DIMc4r/W5nA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=UrR3EttZ; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-	s=s31663417; t=1706472679; x=1707077479; i=wahrenst@gmx.net;
-	bh=/a3XjCwkev4UaYRviAJl/ZXYOyQ9EIrLw/7tcHWkLhU=;
+	s=s31663417; t=1706472680; x=1707077480; i=wahrenst@gmx.net;
+	bh=EvWVaRec1ycNuQtUFFeYTjYmPaMgYbG3dLiPYQu5/tA=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
 	 References;
-	b=otzzt1QXppw4obX+GPdGZOxii8Z06Ewhus1r+tAKsXsNVZI+YbF3nglLyJNw0sEc
-	 L6lP24L+lXB25FKKkQoPULoShQSiQPn50bpvktfw5/CyA7F72gZtLIbMROh0IvJNR
-	 B9WofLgHBen6tX43YgC0jerpWJil1m5C7XSYiAz9B8hhHiKr+17E8WW3wh1WYbb5u
-	 twPEyVRpaEKnjcRh5I3aKRDHVSjyDTnL2y4EsaE/BhnyIXoxLQXzHyKMNo8b+hutO
-	 c/AhaG4A2Y6eb7+96sJeKm1tKk4RqyAgKItmg2H/e2saBglO+0q+85E44sdLo+u5s
-	 G3zad8iM8KuS9JoD5g==
+	b=UrR3EttZj3Z2wsFOp415PThIDGs8xyaaV6WbV8tkqbW2cQFlQ3e/G9q+wh2+BdR5
+	 EPadAbx0epd5fRN1+eEiqzQsP6vl1ds8nMLi4P2AFbFkIIWmFtfM2S1radAwJWbTW
+	 4TkxiYtEz70dRLJscpQoTcXbI4YWMpk/KFZT3uw94ou0jgZhPB4dLwhqZKDPlRCNX
+	 Gr2BgNK3R9QbvAqvklTN4DUGZKscmRX6y1KAk4HrsXpe3d9B/0ZjTLvA0pBl/BBJ0
+	 ownLgLWSxiBCMAls2UW6X+n/O3+RUW2RcrOE7Y+UfafJ4cl1jyEUMcSiQPbV9Yx0p
+	 OZGqXpgQlfx92A2Qew==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from stefanw-SCHENKER ([37.4.248.43]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N8XU1-1qzXcc0i5B-014Qt9; Sun, 28
- Jan 2024 21:11:19 +0100
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MZTmY-1rWwtq0tlu-00WSqi; Sun, 28
+ Jan 2024 21:11:20 +0100
 From: Stefan Wahren <wahrenst@gmx.net>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -54,10 +54,11 @@ Cc: Lino Sanfilippo <LinoSanfilippo@gmx.de>,
 	Florian Fainelli <f.fainelli@gmail.com>,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Stefan Wahren <wahrenst@gmx.net>
-Subject: [PATCH V4 02/15 net-next] qca_spi: Improve SPI thread creation
-Date: Sun, 28 Jan 2024 21:10:46 +0100
-Message-Id: <20240128201059.6259-3-wahrenst@gmx.net>
+	Stefan Wahren <wahrenst@gmx.net>,
+	Jacob Keller <jacob.e.keller@intel.com>
+Subject: [PATCH V4 03/15 net-next] qca_spi: Improve SPI IRQ handling
+Date: Sun, 28 Jan 2024 21:10:47 +0100
+Message-Id: <20240128201059.6259-4-wahrenst@gmx.net>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240128201059.6259-1-wahrenst@gmx.net>
 References: <20240128201059.6259-1-wahrenst@gmx.net>
@@ -68,73 +69,93 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:aSIglkDEsq3lvXRURyTBI5gPLVY4vpipUM2fSsP0gU2Uz2gH2rB
- 1QEncOnqSzk4xWAl1JueiJ09GmqadnIBEAKZuxMOnLj/8G2sphgbPHJREFxkRrhbmFb5y+X
- CDRpswJNhoV3znHHrSRZPGUnjQa2Xe97OGn6Q+OXAPD54sY7prCxeRhyoeHYt1AWYY6CxtU
- nDgCVAS6OZp9fH/Pq4jUA==
+X-Provags-ID: V03:K1:0qDF2kdiWLKjmfUwJYeiHshUoj2sGIuQE7pBTDcXDxqU8T0VUo2
+ rBGqTThab3fjaL7hWHqHZLV/QY9Une6vElWDWBASFZpJz5UAlWZh2KWBZW2hlQOwxAWaj1T
+ Z7vWX3PJ0mLOyB96nqx9GjwdnJh8cyyzjhKtO5i357PhCkGKZO/y8+0q3IxNn5g/CJGzlJU
+ vA3EKRXebpUMtqdHi00Xg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:rKY1ZPzsqiU=;x6UvKh/oCtolnBl8IPtzKpMzoJu
- 0XtzR/eXHTLA7bk/ONfy1zL84PIvnpg7bSR3kxHIohnoXh5joLpx/hBvR0TqyLAfVyVW28/4A
- J/F/UWZIwvwuXypZVXUip+wyly/2ZQupVjcjq1k7ULjUbM4w6rzsHHKlid72yEUfN13ZfPsif
- c+p2wY3z6Dat2Fa8xUmexn+Jbrc6133UcLPYTM4AVZzJOfoLGfceNZwwRRy49F1xSDJjB5Kny
- m835jvDSf5sPl7sJCbYrvjfFiMOv3h1p8NWwEwm7ofIze/wlAvPS4T4kFXhwuWBqHQLa5p5PI
- 6bO7xL7svKzVCbIShMAuvM2eymn4OEfz1/ts0ghgpj7AvJhNE7c7jim0a47tUr9mZwUgkHQ46
- kAotx6zQLzqaMsAf5CjcRK3j7ecLWOxSOg9uuy07rp8V1Y7/752ptKLwq13viZbbNY++zgryL
- 3Isxlu24//mR2UWN0V12S5+WtkI4T7QYiKwfKaMBxQXpD9xrZPpRDpYM9/FXhjGVWWQXmCXHO
- lDEJ2/nVU8teTSKKNscKc7ROgTPvWCgmNnGztQIVJHI7FnjGAZ4QtqIz4jTt5/3eBJvGGCSZ+
- +0vx5Q2X4mLrJQh0NX/JhMr1Lt/650kOY6BV2l58GovHW4TD3xEr+W8MfnthagavvO94W5hXN
- ihAYbgR5IxZkIA4ZuplhkD+ea4fGLfoVOj8kLG4EyBxfQBSLanUQx7Ct8ntPQdVM/f6wT3T8e
- HzCOEBe/AIrS8z9AD+Qlz6dTQYpVugqO8vTrrWbWC0smMCQqTxVzZ6NxfyNDQahtBcDjmBxXx
- TL69+J61mNhld67uurJi8qjtTeT9A19qnoOZX0PyNjHP6EV0bjYzybfJ7+Y1DolbmAL/xMCrY
- NeWawaLU5X0iPrlha7xxU8cvaxllGkaj9GH075BNv3jPCP4yYgEK33p1Gwh4889hzOzot9dTN
- ojYiHA==
+UI-OutboundReport: notjunk:1;M01:P0:qugKrmXZGRc=;I7ZoPvnut6nxSVLeyeeLCLFwlL9
+ uuE/hgVWJs5Q0jTUTqmz+lowGz5ZORbsgPX1QWgAeRhm+/7CPjdfACuIz46Iq6KKvmw3LZlD4
+ bMfHfHj/oAeQNfHIlcqlDgFgJnm5QhMDTOPH7twMfJfMvGaaGEJXBPeNpauu3Nhwg5jYZaPJn
+ Vrj5pz53vuguG11PoKBEupBwqZkklkeUGss+IOQ1yvsbwyp5n40RpT68fN9qnu2Y8mBy/1NbF
+ Bu5K8GqzCKpiIsGvlm+cwV+SJyFT43Yc857VmHKWHOKLuDM6oii57TiI2N4qmnXVpzsvn12EP
+ jof2Xv4zkfv2d8Rn4/2rOEQRsfLCaohQY5L9WxEHPfbT67pcRwQVpatcmLrOhXGnIS1Wt/3uM
+ RZ/XGX+9Qis7Wv+ieJPr/FUJ5IfRDWrstB4tpxKB/mVlyZeDxzklKDNTPq+8P+Ec2xNfic2sK
+ 4ZTjp+eMW/eLoXvDM8ajJYmCttZQadm8EoaRnrqVGU63gQzc7f1dwefRoJ+1rqAUvJb4BU6Pf
+ ONRZjLYn1TNmFNCeG20XqcueVl2L1x/RfLGIJofX46h9FFOS3Ut5QnY0j4tUuAZrDRABheaZJ
+ sEW7MA28IgoPUkp8lAEI5xWaBKak/V+Qty3cXGckBLWu3eqZs/b5Hoy4hlRu1FhxYf/TJFpHu
+ R5o7mYKHeZIoDuTtcBvpCwYKh1opFMG6jhm6PyZvo6GRLxZTPcBscbiwIVAD+JVPssFvcP90g
+ ftxWfivIXKIOon9FfzezQKQ/4J109zs91SdvmPYvt9F5MOSj1/7moFaAAMDO6PnwEpWJbNTCw
+ n6tyrpiRsOBk8AnwwexOeRcErvVcevCN8Hs5tYQeIMC8wb+xBMOM+vRG3hWc5iBL6gEV0i9mA
+ bZrJ1IzzkpDbiuKv8RHse7bs7YtmjX3mPWsZCtHSXOFrmSi1qJzMS2Ix82VGVJtQ3SkT6Qlic
+ 0WmxXWmNCKSK9OHhwjfduOz5wpE=
 
-Directly storing the result of kthread_run within the private
-driver data makes it harder to identify if the pointer has a
-running thread or not. So better use a local variable for
-the result check and we don't have to care about error pointer
-in the rest of the code.
+The functions qcaspi_netdev_open/close are responsible of request &
+free of the SPI interrupt, which wasn't the best choice because
+allocation problems are discovered not during probe. So let us split
+IRQ allocation & enabling, so we can take advantage of a device
+managed IRQ.
 
 Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
 =2D--
- drivers/net/ethernet/qualcomm/qca_spi.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/qualcomm/qca_spi.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/net/ethernet/qualcomm/qca_spi.c b/drivers/net/etherne=
 t/qualcomm/qca_spi.c
-index 77bab8bf5203..fe50c2dd7cc8 100644
+index fe50c2dd7cc8..3f7e38a11ba0 100644
 =2D-- a/drivers/net/ethernet/qualcomm/qca_spi.c
 +++ b/drivers/net/ethernet/qualcomm/qca_spi.c
-@@ -687,6 +687,7 @@ static int
- qcaspi_netdev_open(struct net_device *dev)
+@@ -688,7 +688,6 @@ qcaspi_netdev_open(struct net_device *dev)
  {
  	struct qcaspi *qca =3D netdev_priv(dev);
-+	struct task_struct *thread;
- 	int ret =3D 0;
+ 	struct task_struct *thread;
+-	int ret =3D 0;
 
  	if (!qca)
-@@ -697,15 +698,17 @@ qcaspi_netdev_open(struct net_device *dev)
- 	qca->sync =3D QCASPI_SYNC_UNKNOWN;
- 	qcafrm_fsm_init_spi(&qca->frm_handle);
+ 		return -EINVAL;
+@@ -709,14 +708,7 @@ qcaspi_netdev_open(struct net_device *dev)
 
--	qca->spi_thread =3D kthread_run((void *)qcaspi_spi_thread,
--				      qca, "%s", dev->name);
-+	thread =3D kthread_run((void *)qcaspi_spi_thread,
-+			     qca, "%s", dev->name);
+ 	qca->spi_thread =3D thread;
 
--	if (IS_ERR(qca->spi_thread)) {
-+	if (IS_ERR(thread)) {
- 		netdev_err(dev, "%s: unable to start kernel thread.\n",
- 			   QCASPI_DRV_NAME);
--		return PTR_ERR(qca->spi_thread);
-+		return PTR_ERR(thread);
- 	}
+-	ret =3D request_irq(qca->spi_dev->irq, qcaspi_intr_handler, 0,
+-			  dev->name, qca);
+-	if (ret) {
+-		netdev_err(dev, "%s: unable to get IRQ %d (irqval=3D%d).\n",
+-			   QCASPI_DRV_NAME, qca->spi_dev->irq, ret);
+-		kthread_stop(qca->spi_thread);
+-		return ret;
+-	}
++	enable_irq(qca->spi_dev->irq);
 
-+	qca->spi_thread =3D thread;
+ 	/* SPI thread takes care of TX queue */
+
+@@ -731,7 +723,7 @@ qcaspi_netdev_close(struct net_device *dev)
+ 	netif_stop_queue(dev);
+
+ 	qcaspi_write_register(qca, SPI_REG_INTR_ENABLE, 0, wr_verify);
+-	free_irq(qca->spi_dev->irq, qca);
++	disable_irq(qca->spi_dev->irq);
+
+ 	if (qca->spi_thread) {
+ 		kthread_stop(qca->spi_thread);
+@@ -989,6 +981,15 @@ qca_spi_probe(struct spi_device *spi)
+
+ 	spi_set_drvdata(spi, qcaspi_devs);
+
++	ret =3D devm_request_irq(&spi->dev, spi->irq, qcaspi_intr_handler,
++			       IRQF_NO_AUTOEN, qca->net_dev->name, qca);
++	if (ret) {
++		dev_err(&spi->dev, "Unable to get IRQ %d (irqval=3D%d).\n",
++			spi->irq, ret);
++		free_netdev(qcaspi_devs);
++		return ret;
++	}
 +
- 	ret =3D request_irq(qca->spi_dev->irq, qcaspi_intr_handler, 0,
- 			  dev->name, qca);
+ 	ret =3D of_get_ethdev_address(spi->dev.of_node, qca->net_dev);
  	if (ret) {
+ 		eth_hw_addr_random(qca->net_dev);
 =2D-
 2.34.1
 
