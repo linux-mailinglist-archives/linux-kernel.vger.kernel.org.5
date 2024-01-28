@@ -1,58 +1,55 @@
-Return-Path: <linux-kernel+bounces-41792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7217D83F7C1
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:41:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D49C83F7C3
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:41:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02F90281613
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:41:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 804371C20E09
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:41:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7978112DDB2;
-	Sun, 28 Jan 2024 16:15:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0239212F598;
+	Sun, 28 Jan 2024 16:15:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SCx1MjGV"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uzu/A0QJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB26F12DD97;
-	Sun, 28 Jan 2024 16:15:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A20B12F583;
+	Sun, 28 Jan 2024 16:15:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458540; cv=none; b=CrJSSAqxH1CtUNoLoGIMJ3aTextAq9gmICg7B+4A9bzw1zGeq/+BUqNHTZP9wqdmd2gGQf4SWEjwz0ALrG+LqJzAkqCla79u6fR8M85M9Fbu7SJSyDYaGKXWesaOEfSbvBSeAzoTwY81NVWxFKBeCOhbMQqr8MrHYCgRg6IoNHo=
+	t=1706458542; cv=none; b=Jd6En0QSIGznTzHhQd6E0fQtGCJ8qhZPG5AmwkQ8CYBqlQR6d5QpcTtCyVfY31BhtH1HExzTjnCMdDwSusY6NvZ1xO4g/q8hL3O0+CQB5gsKqH0IytXZJEGHERFA7JTzXvxdDGLW41pKCkRAX+BFGxTyciz0Wn8aTPZgH4OaOLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458540; c=relaxed/simple;
-	bh=+Yq0HRTUMdA5mxhiAiQbJVRXxoEGhhvJmDwIDTXekFo=;
+	s=arc-20240116; t=1706458542; c=relaxed/simple;
+	bh=DiQgD9NCB54KPjllKj/bkllHla7Fp6tDSo7Fr6H+YsY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nXWcInc3tmVpOjSRbrrhDbgzrfzW+ILfXXi5rbOJX2ebbYgKWr+YS+DxiF/eAJFNNSoijiJjS+w8AvSeebqnK1Em8/iK2nHXPXmBSlN9Qkj2ihef41hm/8xaFVIAe/5A1FP1CYxh5xXpxGMWCEn372oumZHU08IGZLi0uBbV3Nc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SCx1MjGV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BFEFC43390;
-	Sun, 28 Jan 2024 16:15:39 +0000 (UTC)
+	 MIME-Version; b=HQBgawuT4NfVmhGklSXNod3Af6JpkL83yTBuWVi3sKjFKjPvRhv1lWR8WqyJuOPSTZsZitidzeZkn8TaAVeE5fja7YUSD9fzGbu5rKGYMIGjmOo0Xz5xTY5iy7bCZomraeUTMmlUfeUPph8WfnCpi0HTwYrKPXy0eGmfQ+7ezmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uzu/A0QJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 051B3C433C7;
+	Sun, 28 Jan 2024 16:15:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706458540;
-	bh=+Yq0HRTUMdA5mxhiAiQbJVRXxoEGhhvJmDwIDTXekFo=;
+	s=k20201202; t=1706458541;
+	bh=DiQgD9NCB54KPjllKj/bkllHla7Fp6tDSo7Fr6H+YsY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SCx1MjGVXNcogqkf/yQ5FRhhzY2L4JcLYcFVY4T5NI651+6KJdU0n5CDGUxP9zqC/
-	 q5/pLBFpxyAsKSaT6Oa7NAjT8cwhev4jtiX8wrFuGlScHZ4KO4z+IXzstChDJYTnvH
-	 uXHIeWVko9XmeC9EYHDrJMWPFaa0drE7HqhwDbT9sIFqdYvBWLwoxxv4QiArd97MpZ
-	 1cD14BTTREB3j3QxHPsg88ArtFuKp3mInAEwBh31DsDk7HO2vWDBfLlKLsGMu1oN1E
-	 nESful9vvQwAm9u+1gAVKO59v3BPeTT274/ON5gbzUiEBljgPSHLoYfuEF8YrXuMor
-	 4S1dyt9wd9vEw==
+	b=Uzu/A0QJTmE5YZXKhvDa9vFpScKo3nVTTKqe23pbRdJGLe/utD3OfSab4G2+dycJU
+	 dFssEPMX3hSeck21mac/DrhznDgafy9wo4Tdz/vi/Iwo+gTtAuUhhqxYEqEOvd/LeJ
+	 DbVYpRm57GE2zMaJYXq2yfGUwsIdd43ZGnJfz82btPpubNcWf9Z3VHrnmuRQLyTGsg
+	 pQpGFtyiPcI51dbV5sCjdHhPyJX+bS24kZcd8LJEw94CKvNkUtTbToRG4zZpYnLbc3
+	 wEJDFH0rJkr8nxAFqm+omTbMUwyfom2M9Uyxl+bCji06GtN1eyQXQENHtdp8SJUUBz
+	 hweGzcroP08Yw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+Cc: Hans de Goede <hdegoede@redhat.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>,
-	mahesh@linux.ibm.com,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-pci@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 10/19] PCI/AER: Decode Requester ID when no error info found
-Date: Sun, 28 Jan 2024 11:15:07 -0500
-Message-ID: <20240128161524.204182-10-sashal@kernel.org>
+	eric.piel@tremplin-utc.net
+Subject: [PATCH AUTOSEL 5.15 11/19] misc: lis3lv02d_i2c: Add missing setting of the reg_ctrl callback
+Date: Sun, 28 Jan 2024 11:15:08 -0500
+Message-ID: <20240128161524.204182-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128161524.204182-1-sashal@kernel.org>
 References: <20240128161524.204182-1-sashal@kernel.org>
@@ -67,67 +64,58 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.148
 Content-Transfer-Encoding: 8bit
 
-From: Bjorn Helgaas <bhelgaas@google.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 1291b716bbf969e101d517bfb8ba18d958f758b8 ]
+[ Upstream commit b1b9f7a494400c0c39f8cd83de3aaa6111c55087 ]
 
-When a device with AER detects an error, it logs error information in its
-own AER Error Status registers.  It may send an Error Message to the Root
-Port (RCEC in the case of an RCiEP), which logs the fact that an Error
-Message was received (Root Error Status) and the Requester ID of the
-message source (Error Source Identification).
+The lis3lv02d_i2c driver was missing a line to set the lis3_dev's
+reg_ctrl callback.
 
-aer_print_port_info() prints the Requester ID from the Root Port Error
-Source in the usual Linux "bb:dd.f" format, but when find_source_device()
-finds no error details in the hierarchy below the Root Port, it printed the
-raw Requester ID without decoding it.
+lis3_reg_ctrl(on) is called from the init callback, but due to
+the missing reg_ctrl callback the regulators where never turned off
+again leading to the following oops/backtrace when detaching the driver:
 
-Decode the Requester ID in the usual Linux format so it matches other
-messages.
+[   82.313527] ------------[ cut here ]------------
+[   82.313546] WARNING: CPU: 1 PID: 1724 at drivers/regulator/core.c:2396 _regulator_put+0x219/0x230
+..
+[   82.313695] RIP: 0010:_regulator_put+0x219/0x230
+..
+[   82.314767] Call Trace:
+[   82.314770]  <TASK>
+[   82.314772]  ? _regulator_put+0x219/0x230
+[   82.314777]  ? __warn+0x81/0x170
+[   82.314784]  ? _regulator_put+0x219/0x230
+[   82.314791]  ? report_bug+0x18d/0x1c0
+[   82.314801]  ? handle_bug+0x3c/0x80
+[   82.314806]  ? exc_invalid_op+0x13/0x60
+[   82.314812]  ? asm_exc_invalid_op+0x16/0x20
+[   82.314845]  ? _regulator_put+0x219/0x230
+[   82.314857]  regulator_bulk_free+0x39/0x60
+[   82.314865]  i2c_device_remove+0x22/0xb0
 
-Sample message changes:
+Add the missing setting of the callback so that the regulators
+properly get turned off again when not used.
 
-  - pcieport 0000:00:1c.5: AER: Correctable error received: 0000:00:1c.5
-  - pcieport 0000:00:1c.5: AER: can't find device of ID00e5
-  + pcieport 0000:00:1c.5: AER: Correctable error message received from 0000:00:1c.5
-  + pcieport 0000:00:1c.5: AER: found no error details for 0000:00:1c.5
-
-Link: https://lore.kernel.org/r/20231206224231.732765-3-helgaas@kernel.org
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20231224183402.95640-1-hdegoede@redhat.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/pcie/aer.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/misc/lis3lv02d/lis3lv02d_i2c.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-index ca9ac8c6a202..4f7744aab6c7 100644
---- a/drivers/pci/pcie/aer.c
-+++ b/drivers/pci/pcie/aer.c
-@@ -743,7 +743,7 @@ static void aer_print_port_info(struct pci_dev *dev, struct aer_err_info *info)
- 	u8 bus = info->id >> 8;
- 	u8 devfn = info->id & 0xff;
- 
--	pci_info(dev, "%s%s error received: %04x:%02x:%02x.%d\n",
-+	pci_info(dev, "%s%s error message received from %04x:%02x:%02x.%d\n",
- 		 info->multi_error_valid ? "Multiple " : "",
- 		 aer_error_severity_string[info->severity],
- 		 pci_domain_nr(dev->bus), bus, PCI_SLOT(devfn),
-@@ -931,7 +931,12 @@ static bool find_source_device(struct pci_dev *parent,
- 		pci_walk_bus(parent->subordinate, find_device_iter, e_info);
- 
- 	if (!e_info->error_dev_num) {
--		pci_info(parent, "can't find device of ID%04x\n", e_info->id);
-+		u8 bus = e_info->id >> 8;
-+		u8 devfn = e_info->id & 0xff;
-+
-+		pci_info(parent, "found no error details for %04x:%02x:%02x.%d\n",
-+			 pci_domain_nr(parent->bus), bus, PCI_SLOT(devfn),
-+			 PCI_FUNC(devfn));
- 		return false;
- 	}
- 	return true;
+diff --git a/drivers/misc/lis3lv02d/lis3lv02d_i2c.c b/drivers/misc/lis3lv02d/lis3lv02d_i2c.c
+index 52555d2e824b..ab1db760ba4e 100644
+--- a/drivers/misc/lis3lv02d/lis3lv02d_i2c.c
++++ b/drivers/misc/lis3lv02d/lis3lv02d_i2c.c
+@@ -151,6 +151,7 @@ static int lis3lv02d_i2c_probe(struct i2c_client *client,
+ 	lis3_dev.init	  = lis3_i2c_init;
+ 	lis3_dev.read	  = lis3_i2c_read;
+ 	lis3_dev.write	  = lis3_i2c_write;
++	lis3_dev.reg_ctrl = lis3_reg_ctrl;
+ 	lis3_dev.irq	  = client->irq;
+ 	lis3_dev.ac	  = lis3lv02d_axis_map;
+ 	lis3_dev.pm_dev	  = &client->dev;
 -- 
 2.43.0
 
