@@ -1,121 +1,134 @@
-Return-Path: <linux-kernel+bounces-41751-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A42283F750
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:30:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46C1883F77D
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:34:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6713DB2114F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:30:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F05C91F237AA
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:34:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDDE567721;
-	Sun, 28 Jan 2024 16:14:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EC8E6DD11;
+	Sun, 28 Jan 2024 16:14:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DBhVCham"
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Va9lCwBI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71AA6664AD
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 16:14:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BD8D6EB66;
+	Sun, 28 Jan 2024 16:14:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458447; cv=none; b=RSUdWraqcrhYy/GO6kDL2LHjRzPG0Ilct8pMwmOoyR+RWGoSfjXXwAOx820QqCUsBI3nWjw4sJtx6cOwPt1Ey2ZezFb4yuAtVGgq50yJCow04hZX/xi2ppXawSH1wVJgzqAi2EvnXoddWgq67QyOve4chsjkMQopN6TR4fFUiL8=
+	t=1706458486; cv=none; b=ASSdwqq/dS8C2u1B1Vi+AQHPxsIQvOka/dMcC10Ic+nv9Ke1oHT2zUUepFNZz0V8n8ROcDeamX60O9XMwcaDOuW0+sJdO03vM3XFqJMplkke8hKcdPxRHVjo3KIpGLGimCRnFi/uCGQmFIE2Aj1F250A+G+zNqtBLSBs7hLc89A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458447; c=relaxed/simple;
-	bh=kX1smuKrBmV0CLC0kA1GU07Ctzs/J2a31TpEn1dthpk=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=m4JSTubpkzKvOl/RzKXVAb8oyWXBYCetEeDZOhnW4T6JC57kbiE5pq6faWKW2FfVLSg6g37sCuFtipJLfhSaa5iHG3fuUJ53+dSfJFP2D78sV69/YQOUTEep+XWh53aoHK1Y4SJyoh7zLDUrIoJGrkGD6aVBESYH2Ufo08qb1oo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=DBhVCham; arc=none smtp.client-ip=209.85.219.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-6818a9fe380so16708626d6.2
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 08:14:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706458444; x=1707063244; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0m/P1zm+p3BLtEev+qUE8lpx92ojld2E2PJGrd3/bdc=;
-        b=DBhVChamScDpPuZOsf1dh0dusltwcYJixkZ3rAqVSNhoD230gU3usuAhGazpLGadPu
-         6yH91TZAGuY26ou7sSipelcjWeBI7NsmnLTHZxUolq/5Yzgvw1mhiQGk57xSdvB/OZ2C
-         PMhEpN4fliag772bRXuiYGxNinpm9P+BZuzOA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706458444; x=1707063244;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0m/P1zm+p3BLtEev+qUE8lpx92ojld2E2PJGrd3/bdc=;
-        b=IlYruclaMuSkBwQO781xDv0rzWhAECfWce2dww4ga1+hpZzzLx8vfF2SfGbVszzSoN
-         Gf3uttyYwLO8CqdrIahscswB6qe7NdraPDqrpve1xNNsjkp3tFzMpp5SmNpz3SwLrSK9
-         dZtiwYQo3x0apSc2/ZFjtRVjvSG/LOxCpUsVRrOG1AzW3c713+7IGEJ13UmXc/Y7frfW
-         /L1Vh5ixRCwHep8IZ2908kvEuUWVQpH8c/jOoVoLAmTycSB7AsudiWm3XdCGwbGIM2Jz
-         KarIhg4G1+ej7WhzG0T1x8Xt86TEi1Nx2nT/rkX190GIryUz/gbeEwGD/5XgApxX7Ags
-         BhKQ==
-X-Gm-Message-State: AOJu0Yx0YhHxn7me6rIn5QTqU8q+iISM8dcN6eNmWOO9qD5Ji3VW0sdS
-	W9zMxmGiA33pc1/uvI+qNaxlFx91RSKbz6en0If6L+gWnrHkijnlVL8BXPiOniur8g2B8WvbZD7
-	0NA==
-X-Google-Smtp-Source: AGHT+IFpFnYrtsvv/PZSGrHMTLLAsQo9nx3jvGx+Qy0aib/OUFMOdMy+oEDsUYYR6HbDZ0N/K9VkLw==
-X-Received: by 2002:a05:6214:e88:b0:685:5639:fb1a with SMTP id hf8-20020a0562140e8800b006855639fb1amr5171396qvb.102.1706458444437;
-        Sun, 28 Jan 2024 08:14:04 -0800 (PST)
-Received: from denia.c.googlers.com (240.157.150.34.bc.googleusercontent.com. [34.150.157.240])
-        by smtp.gmail.com with ESMTPSA id dz11-20020ad4588b000000b0068c493426edsm566640qvb.104.2024.01.28.08.14.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jan 2024 08:14:03 -0800 (PST)
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Sun, 28 Jan 2024 16:13:57 +0000
-Subject: [PATCH 2/2] media: usb: s2255: Refactor s2255_get_fx2fw
+	s=arc-20240116; t=1706458486; c=relaxed/simple;
+	bh=7Oc7XQZw0BQgE7vpQeYLErcpNOAZHMGGgfcBbkIJeDE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=L1luvTwUBotib3X+sHcNXwCJvwfYcl1HAkawH7MZArun740wwNapXGclN/tZg1twX42ZDYBL/Fkzz/+A3HA+/SyvFQ/qQ8iHHFigZL+3E5pC+SQCimQBx7dJg/D9bYKwyaJR9cQXx1V9eXlcSyLcdxg4rPltgDkS2K86VVlzNps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Va9lCwBI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB3FFC433C7;
+	Sun, 28 Jan 2024 16:14:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706458485;
+	bh=7Oc7XQZw0BQgE7vpQeYLErcpNOAZHMGGgfcBbkIJeDE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Va9lCwBIIFEK8Wjzgae8HaljqSkHWgy/Ma9zzXoES1GmZH4rRLjjZzZ+7+FSiqBvK
+	 X5Ypt/CMBm9OvZRhytTqxKr5NNtC7lqL6k55/eeSLMCgYS6O+kbpvY9ytRGECIX7L8
+	 dHA8cwYU1Xotqq7Cgm2b82B961hzlPgjLG5PYToVDmMM77JWNGT2n/RGECOOtf2uEz
+	 SNPRM7NeH7Ac08dscE14dUWsKCoJbwP0aShPYVIzq53RFA6mhleH/3beyOaVX76w3c
+	 fCoBP8CxHVw4cKG32bsRJde1RhTr6WaGtx6kSg+c8KjPEYjenVKWtAT1xIErD5yTAg
+	 WwoZCNBVCUK6Q==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Sasha Levin <sashal@kernel.org>,
+	mahesh@linux.ibm.com,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-pci@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 12/27] PCI/AER: Decode Requester ID when no error info found
+Date: Sun, 28 Jan 2024 11:13:57 -0500
+Message-ID: <20240128161424.203600-12-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240128161424.203600-1-sashal@kernel.org>
+References: <20240128161424.203600-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240128-gcc-11-warnings-v1-2-52bbdf492049@chromium.org>
-References: <20240128-gcc-11-warnings-v1-0-52bbdf492049@chromium.org>
-In-Reply-To: <20240128-gcc-11-warnings-v1-0-52bbdf492049@chromium.org>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
- Sascha Hauer <s.hauer@pengutronix.de>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>, 
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>
-Cc: linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, Ricardo Ribalda <ribalda@chromium.org>
-X-Mailer: b4 0.12.3
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.1.75
+Content-Transfer-Encoding: 8bit
 
-Resize the buffer to the actual size needed and initialize it. With this
-we can convince gcc-11 that the variable is not used uninitialized.
+From: Bjorn Helgaas <bhelgaas@google.com>
 
-drivers/media/usb/s2255/s2255drv.c:1914:25: warning: 'transBuffer' may be used uninitialized [-Wmaybe-uninitialized]
+[ Upstream commit 1291b716bbf969e101d517bfb8ba18d958f758b8 ]
 
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+When a device with AER detects an error, it logs error information in its
+own AER Error Status registers.  It may send an Error Message to the Root
+Port (RCEC in the case of an RCiEP), which logs the fact that an Error
+Message was received (Root Error Status) and the Requester ID of the
+message source (Error Source Identification).
+
+aer_print_port_info() prints the Requester ID from the Root Port Error
+Source in the usual Linux "bb:dd.f" format, but when find_source_device()
+finds no error details in the hierarchy below the Root Port, it printed the
+raw Requester ID without decoding it.
+
+Decode the Requester ID in the usual Linux format so it matches other
+messages.
+
+Sample message changes:
+
+  - pcieport 0000:00:1c.5: AER: Correctable error received: 0000:00:1c.5
+  - pcieport 0000:00:1c.5: AER: can't find device of ID00e5
+  + pcieport 0000:00:1c.5: AER: Correctable error message received from 0000:00:1c.5
+  + pcieport 0000:00:1c.5: AER: found no error details for 0000:00:1c.5
+
+Link: https://lore.kernel.org/r/20231206224231.732765-3-helgaas@kernel.org
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/s2255/s2255drv.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/pci/pcie/aer.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/usb/s2255/s2255drv.c b/drivers/media/usb/s2255/s2255drv.c
-index 3c2627712fe9..8e1de1e8bd12 100644
---- a/drivers/media/usb/s2255/s2255drv.c
-+++ b/drivers/media/usb/s2255/s2255drv.c
-@@ -1906,9 +1906,10 @@ static int s2255_get_fx2fw(struct s2255_dev *dev)
- {
- 	int fw;
- 	int ret;
--	unsigned char transBuffer[64];
--	ret = s2255_vendor_req(dev, S2255_VR_FW, 0, 0, transBuffer, 2,
--			       S2255_VR_IN);
-+	u8 transBuffer[2] = {};
+diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+index e2d8a74f83c3..5426f450ce91 100644
+--- a/drivers/pci/pcie/aer.c
++++ b/drivers/pci/pcie/aer.c
+@@ -748,7 +748,7 @@ static void aer_print_port_info(struct pci_dev *dev, struct aer_err_info *info)
+ 	u8 bus = info->id >> 8;
+ 	u8 devfn = info->id & 0xff;
+ 
+-	pci_info(dev, "%s%s error received: %04x:%02x:%02x.%d\n",
++	pci_info(dev, "%s%s error message received from %04x:%02x:%02x.%d\n",
+ 		 info->multi_error_valid ? "Multiple " : "",
+ 		 aer_error_severity_string[info->severity],
+ 		 pci_domain_nr(dev->bus), bus, PCI_SLOT(devfn),
+@@ -936,7 +936,12 @@ static bool find_source_device(struct pci_dev *parent,
+ 		pci_walk_bus(parent->subordinate, find_device_iter, e_info);
+ 
+ 	if (!e_info->error_dev_num) {
+-		pci_info(parent, "can't find device of ID%04x\n", e_info->id);
++		u8 bus = e_info->id >> 8;
++		u8 devfn = e_info->id & 0xff;
 +
-+	ret = s2255_vendor_req(dev, S2255_VR_FW, 0, 0, transBuffer,
-+			       sizeof(transBuffer), S2255_VR_IN);
- 	if (ret < 0)
- 		dprintk(dev, 2, "get fw error: %x\n", ret);
- 	fw = transBuffer[0] + (transBuffer[1] << 8);
-
++		pci_info(parent, "found no error details for %04x:%02x:%02x.%d\n",
++			 pci_domain_nr(parent->bus), bus, PCI_SLOT(devfn),
++			 PCI_FUNC(devfn));
+ 		return false;
+ 	}
+ 	return true;
 -- 
-2.43.0.429.g432eaa2c6b-goog
+2.43.0
 
 
