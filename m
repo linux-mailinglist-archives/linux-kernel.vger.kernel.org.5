@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-41967-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41969-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E06A83FA1F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 22:27:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30D8383FA22
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 22:28:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A6252820E6
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 21:27:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1E0EB2157A
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 21:27:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A9593C470;
-	Sun, 28 Jan 2024 21:27:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B71C3C489;
+	Sun, 28 Jan 2024 21:27:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="neVF0c65"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="OUnIzzVO"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73B1C25772
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 21:27:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AA0E3C46B
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 21:27:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706477245; cv=none; b=AD0pS5HfZBhnrMoHYH6Cop4KWF+gTBG+KKnTAR6Na0gHAFnNNpHa2GKj/JCSpJRFF4KUkLUPQCve2MUY8EbPMcp4oqhhZlNZWpUI2zCBaAox4KJ8SwAWmfeFNMHSnq3uvH9HuYnus8nQYB+03LnJNKFtsjyx2FLoctAuJZiBitk=
+	t=1706477247; cv=none; b=euZmD5QlHuKaaA61g/8ysD8pfUw8nc01p8httUPXiAuge50LeQVP8XIyiivLsouG30OAdtOzEea9i9C3/eFbsIPJ+nLLgsEtxPATiUtE3gL284cgiAr02JVUqHIiq2CRCys4AF8oJ85ZtcN+OXuYoTuW68BUhgwf7tvkdeNgoHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706477245; c=relaxed/simple;
-	bh=5BDRz7/kXrA/SKMGZUudnZHtf0X1AaM/GMriOO/cC7E=;
+	s=arc-20240116; t=1706477247; c=relaxed/simple;
+	bh=uCMir8UpOW/6Sz8HK3q/nTaZiN/nTURZjTlJjYqsDCA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gapXP5+CwlCgHwNPUGCO5Mmdx94DMQISDOctwSiFge8/q9YBeNl0UjqeN2nORPHncoX5WVNe+Y1CDFYlNnkyvdMyp5d873yYrd2pGRFO8Rzt1RaZZrW3Xrr9tKt2targ+3lJI51eyXNHt/DWx0xB8cg9ZpqOjyCQRmt9z7sNKz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=neVF0c65; arc=none smtp.client-ip=209.85.128.54
+	 MIME-Version; b=aXPSLQngAGuVunQJPbH691us0hfNGsaC1GST+IevV+bA7SuwkGB+oP9tpl1UAw+g3B4Lt6p4gVuUYaUX8vF0tUiHEvxMwjZhlWlueG7jHJt2ZlEqhgqHw+1wZb4T5fL6N6d+NXV1HKXjO3vG10JuubKsCgLRLunXiSHOrzYnXQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=OUnIzzVO; arc=none smtp.client-ip=209.85.128.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40ef6da20feso1410985e9.0
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 13:27:23 -0800 (PST)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40e8fec0968so31093895e9.1
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 13:27:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706477241; x=1707082041; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706477243; x=1707082043; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=X2SAo9LdnR8uwhVnCuLDyqIe/++QGHcrtzG7xwQ0BCc=;
-        b=neVF0c65R4jKbWs4kZX7/29HFelgX27F3iEMFyhjxSNH4qaxYdnpFP3/IQwnKC4OnL
-         +gOigw9+rCf5Q/TX/QXuc1rQe9KU4CGSv2xOgkmxtD23YcscCDW1sz1HO+N50gHB/H3f
-         AsACgi+PGQPb2G5En5J4lJcGjuNe/roqEN+M/2YGxFX7jvjZ6hG/FaxvrK5LxiKbLNs8
-         OYJ8kihxeRJN7Mtz/jNxpnmmjNYJoqBkz+JGziW75FUM2tT/KzSAAjjYFri331rRoifq
-         6n/7aZ7wc1TJwyr44bjD2OTaViavLakGRe7qyR3RFfBY316wj7T8aKLQdZn02599ASUo
-         FYcQ==
+        bh=z4CfMrpXU7mLg0Nr9hLBE9YLoMVHIJD5HpnMqiflm7A=;
+        b=OUnIzzVOI4WcFVpRkm+qcb5JA/iLyEygneEyCn6PaF81yIZWw6kcTc7moA3JijrQV3
+         hDsRK2nNp2zmb6YigLTT+rmj0f0Wz2WMSok2koMpSdwP7/+ULRI6eEyF6Ha5f427QKu6
+         pnuYYPpmqm/VgOR87EIOyRJ7+NdtVXQmSgtslrZicrKKHNzw3XlocECogDqaZgquna5i
+         RZJx/6UUC8sIJay/uaDFVJ8ZSIoO4lBaRmy2VZEYxm99+pxyhF7SJFNLbImJu1+p09+5
+         DnReHNWkYeHCKdzl/MMh+sOiaz4sj72inTKFxmPbQmCNzWTysgSax2qMBstGl3DxD/aW
+         V/dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706477241; x=1707082041;
+        d=1e100.net; s=20230601; t=1706477243; x=1707082043;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=X2SAo9LdnR8uwhVnCuLDyqIe/++QGHcrtzG7xwQ0BCc=;
-        b=XvE4/SbuT/GDNPwrJnfsf3LHxLSzRwCHxS6KKxL9Fted6trbswQzMUDcqzTIeev7nU
-         uelDGuF8m5bs5+h2155xMbVm4dtb0fguxlcjSLpMJyskIuke+3KsfSnz9Y2P02NjkqUl
-         huc/5vTOXQo7HuDe+UQQZApWEWb1+hBAtPfUM75gShDT/MCZoZUpcqYUob119bFXfnF0
-         GtjVvKlm7WxqVXLc1eoC21nmNZeJDGIv3wBOomLk4t63nPjcPubnTQm6709c4+tVW84j
-         uKHrFQrKdzZPfl61pZCZ74r9Xk22Oj+kv4LZKn1EOiAoPwx+jSTsABcPtjgeKAn5Y3Vj
-         5G8Q==
-X-Gm-Message-State: AOJu0YxPM9IPONvLEtNe2Rboaksbx8bH9wX8aXxtgU6eGm0PpNXnIMZR
-	2pXH3YAnmIQI/vxGvw2Mz5VC8ypzmwcyRZ2yzEM15XSBzovlBrvV9NzDZnWRc/s=
-X-Google-Smtp-Source: AGHT+IH7I/Y0oeuRogEAXZZ4W+1eugSgt+2idcW2aYyaWuUEipfC6kDbb4se7qMFvg/EplAlKYj8Nw==
-X-Received: by 2002:a05:600c:1d1b:b0:40e:9fd3:6b75 with SMTP id l27-20020a05600c1d1b00b0040e9fd36b75mr2971518wms.2.1706477241698;
-        Sun, 28 Jan 2024 13:27:21 -0800 (PST)
+        bh=z4CfMrpXU7mLg0Nr9hLBE9YLoMVHIJD5HpnMqiflm7A=;
+        b=OI/SO8f02jDJjiJ9w2nnLaLTCJMOYGBOSKUOXqsDgHIXqeDuUmT0ofS0CIUVE9QVb6
+         O8kcBTNw7uk6mGEfvVMVhoVPRzcn1CUxI620B/mbhqm/idqMTtsNG8Mw4qx/weg4HBDj
+         fUEdNElO88bsVtpkeWFrF9tmkCYd9VGhEzxQMQPrTL1eVhE5KuwtzEW0G90S4wNpBLML
+         rLIC2b9Os/duGqDexpjlkucPcrZR9fYbPeSRVvaxJQe4WJPA+zUdH5zJdAU72hBKSIwQ
+         Eq2xAmDx8Efh59j8xW8zJVSZ6JQqPg9qDc6M56+YktPlW3TI1RT6FJfBiUP1NvSPDwK3
+         /nhw==
+X-Gm-Message-State: AOJu0Yz+2m1BO76NyuArbJZxVYSE/wRCMf8zhO44DH/5G8D9unF3ZmXa
+	qZp97YxAMYBmt5tohaMeEnVEn71uk/ocRlt0ZUMzCTTXmpE2fR1ZxS4P+Qnpyvc=
+X-Google-Smtp-Source: AGHT+IFlkGrr3ppdEspRfcA7a89/Y0U2wI5XLbr2d3eVOIRo3fHhwMqy9985919yLYtc6tJ7AGn4WA==
+X-Received: by 2002:a05:600c:310d:b0:40e:ce97:445c with SMTP id g13-20020a05600c310d00b0040ece97445cmr3978490wmo.13.1706477242886;
+        Sun, 28 Jan 2024 13:27:22 -0800 (PST)
 Received: from vermeer.ba.rivosinc.com (lfbn-mon-1-1176-165.w90-113.abo.wanadoo.fr. [90.113.119.165])
-        by smtp.gmail.com with ESMTPSA id h17-20020a05600c315100b0040d62f89381sm8218208wmo.35.2024.01.28.13.27.20
+        by smtp.gmail.com with ESMTPSA id h17-20020a05600c315100b0040d62f89381sm8218208wmo.35.2024.01.28.13.27.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jan 2024 13:27:21 -0800 (PST)
+        Sun, 28 Jan 2024 13:27:22 -0800 (PST)
 From: Samuel Ortiz <sameo@rivosinc.com>
 To: Dan Williams <dan.j.williams@intel.com>
 Cc: Samuel Ortiz <sameo@rivosinc.com>,
@@ -77,9 +77,9 @@ Cc: Samuel Ortiz <sameo@rivosinc.com>,
 	linux-coco@lists.linux.dev,
 	linux-integrity@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v2 2/4] tsm: Add RTMRs to the configfs-tsm hierarchy
-Date: Sun, 28 Jan 2024 22:25:21 +0100
-Message-ID: <20240128212532.2754325-3-sameo@rivosinc.com>
+Subject: [RFC PATCH v2 3/4] tsm: Map RTMRs to TCG TPM PCRs
+Date: Sun, 28 Jan 2024 22:25:22 +0100
+Message-ID: <20240128212532.2754325-4-sameo@rivosinc.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20240128212532.2754325-1-sameo@rivosinc.com>
 References: <20240128212532.2754325-1-sameo@rivosinc.com>
@@ -91,249 +91,155 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-RTMRs are defined and managed by their corresponding TSM provider. As
-such, they can be configured through the TSM configfs root.
+Many user space and internal kernel subsystems (e.g. the Linux IMA)
+expect a Root of Trust for Storage (RTS) that allows for extending
+and reading measurement registers that are compatible with the TCG TPM
+PCRs layout, e.g. a TPM. In order to allow those components to
+alternatively use a platform TSM as their RTS, a TVM could map the
+available RTMRs to one or more TCG TPM PCRs. Once configured, those PCR
+to RTMR mappings give the kernel TSM layer all the necessary information
+to be a RTS for e.g. the Linux IMA or any other components that expects
+a TCG compliant TPM PCRs layout.
 
-An additional `rtmrs` directory is added by default under the `tsm` one,
-where each supported RTMR can be configured:
+TPM PCR mappings are statically configured through the TSM provider
+capabilities. A TSM backend defines its number of RTMRs, and for each
+one of them can define a bitmask of TCG TPM PCR it maps to. As they are
+TSM backend specific, those mappings are to some extend architecture
+specific. Each architecture is free to decide and choose how it builds
+it, e.g. by requesting an EFI firmware when it supports the EFI_CC
+protocol.
 
-mkdir /sys/kernel/config/tsm/rtmrs/rtmr0
-echo 0 > /sys/kernel/config/tsm/rtmrs/rtmr0/index
-
-An RTMR can not be extended nor read before its configured by assigning
-it an index. It is the TSM backend responsibility and choice to map that
-index to a hardware RTMR.
+The tsm-configfs rtmrs/<rtmrN>tcg_map describes these static mappings.
 
 Signed-off-by: Samuel Ortiz <sameo@rivosinc.com>
 ---
- Documentation/ABI/testing/configfs-tsm |  11 ++
- drivers/virt/coco/tsm.c                | 164 +++++++++++++++++++++++++
- 2 files changed, 175 insertions(+)
+ Documentation/ABI/testing/configfs-tsm | 14 +++++
+ drivers/virt/coco/tsm.c                | 74 ++++++++++++++++++++++++++
+ 2 files changed, 88 insertions(+)
 
 diff --git a/Documentation/ABI/testing/configfs-tsm b/Documentation/ABI/testing/configfs-tsm
-index dd24202b5ba5..590e103a9bcd 100644
+index 590e103a9bcd..5d20a872475e 100644
 --- a/Documentation/ABI/testing/configfs-tsm
 +++ b/Documentation/ABI/testing/configfs-tsm
-@@ -80,3 +80,14 @@ Contact:	linux-coco@lists.linux.dev
- Description:
- 		(RO) Indicates the minimum permissible value that can be written
- 		to @privlevel.
+@@ -91,3 +91,17 @@ Description:
+                 can be mapped to a hardware RTMR by writing into its index
+                 attribute. The TSM provider will then map the configfs entry to
+                 its corresponding hardware register.
 +
-+What:		/sys/kernel/config/tsm/rtmrs/$name/index
++What:		/sys/kernel/config/tsm/rtmrs/$name/tcg_map
 +Date:		January, 2024
 +KernelVersion:	v6.8
 +Contact:	linux-coco@lists.linux.dev
 +Description:
-+		(RW) A Runtime Measurement Register (RTMR) hardware index.
-+                Once created under /sys/kernel/config/tsm/rtmrs/, an RTMR entry
-+                can be mapped to a hardware RTMR by writing into its index
-+                attribute. The TSM provider will then map the configfs entry to
-+                its corresponding hardware register.
++		(RO) A representation of the architecturally defined mapping
++		between this RTMR and one or more TCG TPM PCRs [1]. When using
++		a TSM as Root of Trust for Storage (RTS), TCG TPM PCRs
++		associated semantics and indexes can be used when RTMRs are
++		logically mapped to TPM PCRs.
++
++		[1]: TCG PC Client Specific Platform Firmware Profile Specification
++		https://trustedcomputinggroup.org/resource/pc-client-specific-platform-firmware-profile-specification/
 diff --git a/drivers/virt/coco/tsm.c b/drivers/virt/coco/tsm.c
-index 1a8c3c096120..bb9ed2d2accc 100644
+index bb9ed2d2accc..d03cf5173bc9 100644
 --- a/drivers/virt/coco/tsm.c
 +++ b/drivers/virt/coco/tsm.c
-@@ -419,6 +419,108 @@ static const struct config_item_type tsm_reports_type = {
+@@ -419,6 +419,46 @@ static const struct config_item_type tsm_reports_type = {
  	.ct_group_ops = &tsm_report_group_ops,
  };
  
-+static ssize_t tsm_rtmr_index_store(struct config_item *cfg,
-+				    const char *buf, size_t len)
++static int tsm_rtmr_build_tcg_map(const struct tsm_provider *tsm,
++				const struct tsm_rtmr_state *rtmr_state,
++				u32 rtmr_idx)
 +{
-+	struct tsm_rtmr_state *rtmr_state = to_tsm_rtmr_state(cfg);
 +	const struct tsm_ops *ops;
-+	unsigned int val;
-+	int rc;
++	unsigned long pcr_mask;
++	int i;
 +
-+	rc = kstrtouint(buf, 0, &val);
-+	if (rc)
-+		return rc;
++	lockdep_assert_held_write(&tsm_rwsem);
 +
-+	guard(rwsem_write)(&tsm_rwsem);
-+
-+	/* Index can only be configured once */
-+	if (is_rtmr_configured(rtmr_state))
-+		return -EBUSY;
-+
-+	/* Check that index stays within the TSM provided capabilities */
-+	ops = provider.ops;
++	ops = tsm->ops;
 +	if (!ops)
 +		return -ENOTTY;
 +
-+	if (val > ops->capabilities.num_rtmrs - 1)
-+		return -EINVAL;
++	if (!ops->capabilities.rtmrs)
++		return -ENXIO;
 +
-+	/* Check that this index is available */
-+	if (tsm_rtmrs->rtmrs[val])
-+		return -EINVAL;
++	pcr_mask = ops->capabilities.rtmrs[rtmr_idx].tcg_pcr_mask;
 +
-+	rtmr_state->index = val;
-+	rtmr_state->alg = ops->capabilities.rtmrs[val].hash_alg;
++	/* Check that the PCR mask is valid  */
++	for (i = 0; i < TPM2_PLATFORM_PCR; i++) {
++		if (!(pcr_mask & BIT(i)))
++			continue;
 +
-+	tsm_rtmrs->rtmrs[val] = rtmr_state;
++		/* If another RTMR maps to this PCR, the mask is discarded */
++		if (tsm_rtmrs->tcg_map[i] &&
++			tsm_rtmrs->tcg_map[i] != rtmr_state)
++			return -EBUSY;
++	}
++
++	for (i = 0; i < TPM2_PLATFORM_PCR; i++) {
++		if (!(pcr_mask & BIT(i)))
++			continue;
++
++		tsm_rtmrs->tcg_map[i] = rtmr_state;
++	}
++
++	return 0;
++}
++
+ static ssize_t tsm_rtmr_index_store(struct config_item *cfg,
+ 				    const char *buf, size_t len)
+ {
+@@ -449,6 +489,10 @@ static ssize_t tsm_rtmr_index_store(struct config_item *cfg,
+ 	if (tsm_rtmrs->rtmrs[val])
+ 		return -EINVAL;
+ 
++	rc = tsm_rtmr_build_tcg_map(&provider, rtmr_state, val);
++	if (rc)
++		return rc;
++
+ 	rtmr_state->index = val;
+ 	rtmr_state->alg = ops->capabilities.rtmrs[val].hash_alg;
+ 
+@@ -472,8 +516,38 @@ static ssize_t tsm_rtmr_index_show(struct config_item *cfg,
+ }
+ CONFIGFS_ATTR(tsm_rtmr_, index);
+ 
++static ssize_t tsm_rtmr_tcg_map_show(struct config_item *cfg,
++				     char *buf)
++{
++	struct tsm_rtmr_state *rtmr_state = to_tsm_rtmr_state(cfg);
++	unsigned int nr_pcrs = ARRAY_SIZE(tsm_rtmrs->tcg_map), i;
++	unsigned long *pcr_mask;
++	ssize_t len;
++
++	/* Build a bitmap mask of all PCRs that this RTMR covers */
++	pcr_mask = bitmap_zalloc(nr_pcrs, GFP_KERNEL);
++	if (!pcr_mask)
++		return -ENOMEM;
++
++	guard(rwsem_read)(&tsm_rwsem);
++	for (i = 0; i < nr_pcrs; i++) {
++		if (tsm_rtmrs->tcg_map[i] != rtmr_state)
++			continue;
++
++		__set_bit(i, pcr_mask);
++	}
++
++	len = bitmap_print_list_to_buf(buf, pcr_mask, nr_pcrs, 0,
++				       nr_pcrs * 3 /* 2 ASCII digits and one comma */);
++	bitmap_free(pcr_mask);
 +
 +	return len;
 +}
++CONFIGFS_ATTR_RO(tsm_rtmr_, tcg_map);
 +
-+static ssize_t tsm_rtmr_index_show(struct config_item *cfg,
-+				   char *buf)
-+{
-+	struct tsm_rtmr_state *rtmr_state = to_tsm_rtmr_state(cfg);
-+
-+	guard(rwsem_read)(&tsm_rwsem);
-+
-+	/* An RTMR is not available if it has not been configured */
-+	if (!is_rtmr_configured(rtmr_state))
-+		return -ENXIO;
-+
-+	return sysfs_emit(buf, "%u\n", rtmr_state->index);
-+}
-+CONFIGFS_ATTR(tsm_rtmr_, index);
-+
-+static struct configfs_attribute *tsm_rtmr_attrs[] = {
-+	&tsm_rtmr_attr_index,
-+	NULL,
-+};
-+
-+static void tsm_rtmr_item_release(struct config_item *cfg)
-+{
-+	struct tsm_rtmr_state *state = to_tsm_rtmr_state(cfg);
-+
-+	kfree(state);
-+}
-+
-+static struct configfs_item_operations tsm_rtmr_item_ops = {
-+	.release = tsm_rtmr_item_release,
-+};
-+
-+const struct config_item_type tsm_rtmr_type = {
-+	.ct_owner = THIS_MODULE,
-+	.ct_attrs = tsm_rtmr_attrs,
-+	.ct_item_ops = &tsm_rtmr_item_ops,
-+};
-+
-+static struct config_item *tsm_rtmrs_make_item(struct config_group *group,
-+					       const char *name)
-+{
-+	struct tsm_rtmr_state *state;
-+
-+	guard(rwsem_read)(&tsm_rwsem);
-+	if (!(provider.ops && (provider.ops->capabilities.num_rtmrs > 0)))
-+		return ERR_PTR(-ENXIO);
-+
-+	state = kzalloc(sizeof(*state), GFP_KERNEL);
-+	if (!state)
-+		return ERR_PTR(-ENOMEM);
-+	state->index = U32_MAX;
-+
-+	config_item_init_type_name(&state->cfg, name, &tsm_rtmr_type);
-+	return &state->cfg;
-+}
-+
-+static struct configfs_group_operations tsm_rtmrs_group_ops = {
-+	.make_item = tsm_rtmrs_make_item,
-+};
-+
-+static const struct config_item_type tsm_rtmrs_type = {
-+	.ct_owner = THIS_MODULE,
-+	.ct_group_ops = &tsm_rtmrs_group_ops,
-+};
-+
- static const struct config_item_type tsm_root_group_type = {
- 	.ct_owner = THIS_MODULE,
- };
-@@ -433,10 +535,48 @@ static struct configfs_subsystem tsm_configfs = {
- 	.su_mutex = __MUTEX_INITIALIZER(tsm_configfs.su_mutex),
+ static struct configfs_attribute *tsm_rtmr_attrs[] = {
+ 	&tsm_rtmr_attr_index,
++	&tsm_rtmr_attr_tcg_map,
+ 	NULL,
  };
  
-+static int tsm_rtmr_register(const struct tsm_ops *ops)
-+{
-+	struct config_group *rtmrs_group;
-+
-+	lockdep_assert_held_write(&tsm_rwsem);
-+
-+	if (!ops || !ops->capabilities.num_rtmrs)
-+		return 0;
-+
-+	if (ops->capabilities.num_rtmrs > TSM_MAX_RTMR)
-+		return -EINVAL;
-+
-+	tsm_rtmrs = kzalloc(sizeof(struct tsm_rtmrs_state), GFP_KERNEL);
-+	if (!tsm_rtmrs)
-+		return -ENOMEM;
-+
-+	tsm_rtmrs->rtmrs = kcalloc(ops->capabilities.num_rtmrs,
-+				   sizeof(struct tsm_rtmr_state *),
-+				   GFP_KERNEL);
-+	if (!tsm_rtmrs->rtmrs) {
-+		kfree(tsm_rtmrs);
-+		return -ENOMEM;
-+	}
-+
-+	rtmrs_group = configfs_register_default_group(&tsm_configfs.su_group, "rtmrs",
-+						      &tsm_rtmrs_type);
-+	if (IS_ERR(rtmrs_group)) {
-+		kfree(tsm_rtmrs->rtmrs);
-+		kfree(tsm_rtmrs);
-+		return PTR_ERR(rtmrs_group);
-+	}
-+
-+	tsm_rtmrs->group = rtmrs_group;
-+
-+	return 0;
-+}
-+
- int tsm_register(const struct tsm_ops *ops, void *priv,
- 		 const struct config_item_type *type)
- {
- 	const struct tsm_ops *conflict;
-+	int rc;
- 
- 	if (!type)
- 		type = &tsm_report_default_type;
-@@ -450,6 +590,10 @@ int tsm_register(const struct tsm_ops *ops, void *priv,
- 		return -EBUSY;
- 	}
- 
-+	rc = tsm_rtmr_register(ops);
-+	if (rc < 0)
-+		return rc;
-+
- 	provider.ops = ops;
- 	provider.data = priv;
- 	provider.type = type;
-@@ -457,11 +601,31 @@ int tsm_register(const struct tsm_ops *ops, void *priv,
- }
- EXPORT_SYMBOL_GPL(tsm_register);
- 
-+static int tsm_rtmr_unregister(const struct tsm_ops *ops)
-+{
-+	lockdep_assert_held_write(&tsm_rwsem);
-+
-+	if ((ops) && (ops->capabilities.num_rtmrs > 0)) {
-+		configfs_unregister_default_group(tsm_rtmrs->group);
-+		kfree(tsm_rtmrs->rtmrs);
-+		kfree(tsm_rtmrs);
-+	}
-+
-+	return 0;
-+}
-+
- int tsm_unregister(const struct tsm_ops *ops)
- {
-+	int rc;
-+
- 	guard(rwsem_write)(&tsm_rwsem);
- 	if (ops != provider.ops)
- 		return -EBUSY;
-+
-+	rc = tsm_rtmr_unregister(ops);
-+	if (rc < 0)
-+		return rc;
-+
- 	provider.ops = NULL;
- 	provider.data = NULL;
- 	provider.type = NULL;
 -- 
 2.42.0
 
