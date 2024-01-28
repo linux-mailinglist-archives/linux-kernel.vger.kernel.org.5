@@ -1,58 +1,60 @@
-Return-Path: <linux-kernel+bounces-41691-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D0E083F67C
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C29BC83F687
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:14:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97A171F21DCE
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:13:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 399551F218C7
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:14:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 907673EA60;
-	Sun, 28 Jan 2024 16:11:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7F3F2D05C;
+	Sun, 28 Jan 2024 16:11:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cxrW5Sjr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K+/N0+1b"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF13D2E859;
-	Sun, 28 Jan 2024 16:11:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8BE145973;
+	Sun, 28 Jan 2024 16:11:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458307; cv=none; b=srhtViDOQKYdpWUyIQsf07F0TAioOxITSqW7R4xITn7RKc86oY5i2EeFJGp6emC8ysCD6q34YhfTgYJy42IO/scI6TbLylkx8GBxn3cEo3BdF3wzQvd4dTj10v69coFDM5HJvkmbpe1axrXIMjBbOZIeI4CnCHnGocNNSeUsodU=
+	t=1706458311; cv=none; b=SaGNPj7X0UaxAdDviY/lA3/sBzBSzpB9YK9imocSoRRBij535DiK3fznS9MxDqaadEtJJ4WEKiDAXEm3thjza/ZrPNR3Ayfr4KU88oY6YPfWnnvnyQwTEWni3JK+Y4kGWLaomn8LAdSIE0lW2snKAH7P987NVOL4dppJOGNbBjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458307; c=relaxed/simple;
-	bh=8GsaSRSpBbUFIUJRDwnv2uLOoYAWgl+p8B2HJ2fIT6k=;
+	s=arc-20240116; t=1706458311; c=relaxed/simple;
+	bh=bDRFmt9TPDWC71U4gviKIO8cCZqDHb0Zd0pX0lGIH/k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IjlG6P4M+x8k/5kChxIWmHB7t9isuVLAkd0JgPaffwoDCHfv6RIn3588/2PShWp8IUO5TI0KVK+7MjDVQDCx909vxBnA1Wa2NI0NN0iH5iDcGEXbRjKOl50sqm2QwD8ITJzNqwWlrAyFo4sJIfVASuSHPbbMLamvOqGdCD6HG3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cxrW5Sjr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AADCCC433F1;
-	Sun, 28 Jan 2024 16:11:46 +0000 (UTC)
+	 MIME-Version; b=fPKaWIKW4Ht6H/qZ+8HR8tpb8j/RWvhd576dqemSOAHwR5GSbmgv23y2P4E+xwC4fNudpTBx6SIesIyRZWw80TrpBYPUugXXssFN8MA6ru0aQrf/Zeg9O3Pq8+spUrBVYlagUT6eLeHmSGDwhYdpOjiwtgnFR192ophrmstC+FQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K+/N0+1b; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4784DC433C7;
+	Sun, 28 Jan 2024 16:11:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706458307;
-	bh=8GsaSRSpBbUFIUJRDwnv2uLOoYAWgl+p8B2HJ2fIT6k=;
+	s=k20201202; t=1706458310;
+	bh=bDRFmt9TPDWC71U4gviKIO8cCZqDHb0Zd0pX0lGIH/k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cxrW5Sjr2ZC3QsoVdb6cC5yzvSRI+IuI2PGStSTBiXTjZomGn2OoIyLxEZtph9AP1
-	 EUQ3hDkAE7RcJrxOB17eLY509waR/znvZpXSLBCB1DHi3x3MCGLZXYI6ERdboviujb
-	 qcbdZAi2wJwOP81yeuc+JkzAhJ2DzRGeEo05OYcH1RPCKlVlkPgUke0f28Ytdfco8P
-	 +W1gHZhasB6OV0TMti2iVJTqwCqHKG4dSMVO/zZstlZIR3CBwZmJWdgLug7YNM7uIi
-	 u/JL5KNP40Dt0f+CXAHK2+ffj5TIgKjd3vCEhxjxUZnKmfoMcubH/KKZD67HPKQYk9
-	 uMI/TrfjR6DxA==
+	b=K+/N0+1b63Oi/C85HBOzAS2QSRWHaR2q+F0CnVuheuTSxarX/3jHtVJUK4GxA53jN
+	 q1b568hbYX87bIUnfaAZCUMVepuCOKATitGud3IV4+HKWyL7ukV1i3BYtrrp+Ml2Qz
+	 zc9qboDn3HOFSOWGh0Tx0Srrd6gSwdf1uuR5HujCtmA518raoHuSNQHitgrOcjlL9O
+	 /BWYYESi/Jh9zg08MmyC0a4cQcB8LirJXp6GgiqCRciaaggUKhunbxJrFFy3Nn6W16
+	 FRqnFHkK5Pq1mgQcWjG85xZ/QPjWkMPJLyFYVyRhQQTZn87HfHv/0TIX3Rtzm8gTGl
+	 5BC6qbid0nQmg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Adrian Reber <areber@redhat.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Andrei Vagin <avagin@gmail.com>,
+Cc: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>,
+	Jiri Slaby <jirislaby@kernel.org>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>,
-	jirislaby@kernel.org,
+	cang1@live.co.uk,
+	andriy.shevchenko@linux.intel.com,
+	jiaqing.zhao@linux.intel.com,
+	kumaravel.thiagarajan@microchip.com,
 	linux-serial@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 09/39] tty: allow TIOCSLCKTRMIOS with CAP_CHECKPOINT_RESTORE
-Date: Sun, 28 Jan 2024 11:10:29 -0500
-Message-ID: <20240128161130.200783-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.7 10/39] tty: serial: 8250: Set RS422 interface by default to fix Moxa RS422/RS485 PCIe boards
+Date: Sun, 28 Jan 2024 11:10:30 -0500
+Message-ID: <20240128161130.200783-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128161130.200783-1-sashal@kernel.org>
 References: <20240128161130.200783-1-sashal@kernel.org>
@@ -67,61 +69,115 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.2
 Content-Transfer-Encoding: 8bit
 
-From: Adrian Reber <areber@redhat.com>
+From: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
 
-[ Upstream commit e0f25b8992345aa5f113da2815f5add98738c611 ]
+[ Upstream commit 43f012df3c1e979966524f79b5371fde6545488a ]
 
-The capability CAP_CHECKPOINT_RESTORE was introduced to allow non-root
-users to checkpoint and restore processes as non-root with CRIU.
+MOXA PCIe RS422/RS485 boards will not function by default because of the
+initial default serial interface of all MOXA PCIe boards is set to
+RS232.
 
-This change extends CAP_CHECKPOINT_RESTORE to enable the CRIU option
-'--shell-job' as non-root. CRIU's man-page describes the '--shell-job'
-option like this:
+This patch fixes the problem above by setting the initial default serial
+interface to RS422 for those MOXA RS422/RS485 PCIe boards.
 
-  Allow one to dump shell jobs. This implies the restored task will
-  inherit session and process group ID from the criu itself. This option
-  also allows to migrate a single external tty connection, to migrate
-  applications like top.
-
-TIOCSLCKTRMIOS can only be done if the process has CAP_SYS_ADMIN and
-this change extends it to CAP_SYS_ADMIN or CAP_CHECKPOINT_RESTORE.
-
-With this change it is possible to checkpoint and restore processes
-which have a tty connection as non-root if CAP_CHECKPOINT_RESTORE is
-set.
-
-Acked-by: Christian Brauner <brauner@kernel.org>
-Signed-off-by: Adrian Reber <areber@redhat.com>
-Acked-by: Andrei Vagin <avagin@gmail.com>
-Link: https://lore.kernel.org/r/20231208143656.1019-1-areber@redhat.com
+Signed-off-by: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+Link: https://lore.kernel.org/r/20231214060234.6147-1-crescentcy.hsieh@moxa.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/tty_ioctl.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/tty/serial/8250/8250_pci.c | 58 +++++++++++++++++++++++++++++-
+ 1 file changed, 57 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/tty/tty_ioctl.c b/drivers/tty/tty_ioctl.c
-index 4b499301a3db..85de90eebc7b 100644
---- a/drivers/tty/tty_ioctl.c
-+++ b/drivers/tty/tty_ioctl.c
-@@ -844,7 +844,7 @@ int tty_mode_ioctl(struct tty_struct *tty, unsigned int cmd, unsigned long arg)
- 			ret = -EFAULT;
- 		return ret;
- 	case TIOCSLCKTRMIOS:
--		if (!capable(CAP_SYS_ADMIN))
-+		if (!checkpoint_restore_ns_capable(&init_user_ns))
- 			return -EPERM;
- 		copy_termios_locked(real_tty, &kterm);
- 		if (user_termios_to_kernel_termios(&kterm,
-@@ -861,7 +861,7 @@ int tty_mode_ioctl(struct tty_struct *tty, unsigned int cmd, unsigned long arg)
- 			ret = -EFAULT;
- 		return ret;
- 	case TIOCSLCKTRMIOS:
--		if (!capable(CAP_SYS_ADMIN))
-+		if (!checkpoint_restore_ns_capable(&init_user_ns))
- 			return -EPERM;
- 		copy_termios_locked(real_tty, &kterm);
- 		if (user_termios_to_kernel_termios_1(&kterm,
+diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
+index 614be0f13a31..8ccf691935b7 100644
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -19,6 +19,7 @@
+ #include <linux/serial_core.h>
+ #include <linux/8250_pci.h>
+ #include <linux/bitops.h>
++#include <linux/bitfield.h>
+ 
+ #include <asm/byteorder.h>
+ #include <asm/io.h>
+@@ -1970,6 +1971,20 @@ pci_sunix_setup(struct serial_private *priv,
+ 
+ #define MOXA_GPIO_PIN2	BIT(2)
+ 
++#define MOXA_RS232	0x00
++#define MOXA_RS422	0x01
++#define MOXA_RS485_4W	0x0B
++#define MOXA_RS485_2W	0x0F
++#define MOXA_UIR_OFFSET	0x04
++#define MOXA_EVEN_RS_MASK	GENMASK(3, 0)
++#define MOXA_ODD_RS_MASK	GENMASK(7, 4)
++
++enum {
++	MOXA_SUPP_RS232 = BIT(0),
++	MOXA_SUPP_RS422 = BIT(1),
++	MOXA_SUPP_RS485 = BIT(2),
++};
++
+ static bool pci_moxa_is_mini_pcie(unsigned short device)
+ {
+ 	if (device == PCI_DEVICE_ID_MOXA_CP102N	||
+@@ -1983,13 +1998,54 @@ static bool pci_moxa_is_mini_pcie(unsigned short device)
+ 	return false;
+ }
+ 
++static unsigned int pci_moxa_supported_rs(struct pci_dev *dev)
++{
++	switch (dev->device & 0x0F00) {
++	case 0x0000:
++	case 0x0600:
++		return MOXA_SUPP_RS232;
++	case 0x0100:
++		return MOXA_SUPP_RS232 | MOXA_SUPP_RS422 | MOXA_SUPP_RS485;
++	case 0x0300:
++		return MOXA_SUPP_RS422 | MOXA_SUPP_RS485;
++	}
++	return 0;
++}
++
++static int pci_moxa_set_interface(const struct pci_dev *dev,
++				  unsigned int port_idx,
++				  u8 mode)
++{
++	resource_size_t iobar_addr = pci_resource_start(dev, 2);
++	resource_size_t UIR_addr = iobar_addr + MOXA_UIR_OFFSET + port_idx / 2;
++	u8 val;
++
++	val = inb(UIR_addr);
++
++	if (port_idx % 2) {
++		val &= ~MOXA_ODD_RS_MASK;
++		val |= FIELD_PREP(MOXA_ODD_RS_MASK, mode);
++	} else {
++		val &= ~MOXA_EVEN_RS_MASK;
++		val |= FIELD_PREP(MOXA_EVEN_RS_MASK, mode);
++	}
++	outb(val, UIR_addr);
++
++	return 0;
++}
++
+ static int pci_moxa_init(struct pci_dev *dev)
+ {
+ 	unsigned short device = dev->device;
+ 	resource_size_t iobar_addr = pci_resource_start(dev, 2);
+-	unsigned int num_ports = (device & 0x00F0) >> 4;
++	unsigned int num_ports = (device & 0x00F0) >> 4, i;
+ 	u8 val;
+ 
++	if (!(pci_moxa_supported_rs(dev) & MOXA_SUPP_RS232)) {
++		for (i = 0; i < num_ports; ++i)
++			pci_moxa_set_interface(dev, i, MOXA_RS422);
++	}
++
+ 	/*
+ 	 * Enable hardware buffer to prevent break signal output when system boots up.
+ 	 * This hardware buffer is only supported on Mini PCIe series.
 -- 
 2.43.0
 
