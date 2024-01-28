@@ -1,100 +1,121 @@
-Return-Path: <linux-kernel+bounces-41766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8442883F77A
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:34:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A42283F750
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:30:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39D551F23404
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:34:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6713DB2114F
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:30:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9FE76E2C1;
-	Sun, 28 Jan 2024 16:14:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDDE567721;
+	Sun, 28 Jan 2024 16:14:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KO0XW7jq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DBhVCham"
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 005506DD15;
-	Sun, 28 Jan 2024 16:14:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71AA6664AD
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 16:14:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458485; cv=none; b=Bo/A3q+0zqFBvDgk724q4uq3ZWMr4aIjkmmPROBBXqnrH25EJa2KbZBYcNZMzefjaoFTLeT+HtEhbikG4uc/eSXTUVpG2wQXMg6d561gRgS1nnILumR0J2qZHwifeSwvqOs87vKrO67mgT6BZpcL9zd+7mG/iT9j5cBOCW2ZgVk=
+	t=1706458447; cv=none; b=RSUdWraqcrhYy/GO6kDL2LHjRzPG0Ilct8pMwmOoyR+RWGoSfjXXwAOx820QqCUsBI3nWjw4sJtx6cOwPt1Ey2ZezFb4yuAtVGgq50yJCow04hZX/xi2ppXawSH1wVJgzqAi2EvnXoddWgq67QyOve4chsjkMQopN6TR4fFUiL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458485; c=relaxed/simple;
-	bh=IpK14T6a2JY3qyCdxkZ5SFrzyR3FJ/x2m+Xk2BjcEmM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IUeytbVpx2/j7B5UPu/AdTTsuw90iDoegSGrDZ64ghx0onCGlwL3HRviUaNpemaov4DYoNs1hgOSqfM3cisXpm0/UxK0YIR0SQCPRWrpHwNn5UziF42ZUfi2eV11YNEpKYg+NGR/pJFpjhKGpmUHPCe5a4i3sp12mpy8c4WYaWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KO0XW7jq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCEBDC433F1;
-	Sun, 28 Jan 2024 16:14:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706458484;
-	bh=IpK14T6a2JY3qyCdxkZ5SFrzyR3FJ/x2m+Xk2BjcEmM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KO0XW7jqw93EJKcmcjzQsUpU0CzDoOrGNA/vg8LQUoJ2l/EFHu6r6a4s5poZSGghW
-	 +Zo190krE+0Ft0QsM2hDdBWQ5pwWwFdIhHoNHldneByJxnP8mvEVd8yFIo2x9XqDVl
-	 BS7ZvAsDKVHQihQfFaxju1BcCibT63jRY3xQEpD0HAKXE3/hb/gWD5aErinVsrrzmZ
-	 9T244DQQr/k0NOiB8aApoKamoNa567Xok005M/m6okKfkU24A2ftf6jeK6kvUTeXlk
-	 vIVBUfdbCZ95G8loO0HJS3sFDxUtpGfGrSpiEvJfxyVcgXIXGkMFA4Maw2D+99W0Yg
-	 wQbtK+IvGHONQ==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Sasha Levin <sashal@kernel.org>,
-	linux-pci@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 11/27] PCI: Fix 64GT/s effective data rate calculation
-Date: Sun, 28 Jan 2024 11:13:56 -0500
-Message-ID: <20240128161424.203600-11-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240128161424.203600-1-sashal@kernel.org>
-References: <20240128161424.203600-1-sashal@kernel.org>
+	s=arc-20240116; t=1706458447; c=relaxed/simple;
+	bh=kX1smuKrBmV0CLC0kA1GU07Ctzs/J2a31TpEn1dthpk=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=m4JSTubpkzKvOl/RzKXVAb8oyWXBYCetEeDZOhnW4T6JC57kbiE5pq6faWKW2FfVLSg6g37sCuFtipJLfhSaa5iHG3fuUJ53+dSfJFP2D78sV69/YQOUTEep+XWh53aoHK1Y4SJyoh7zLDUrIoJGrkGD6aVBESYH2Ufo08qb1oo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=DBhVCham; arc=none smtp.client-ip=209.85.219.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-6818a9fe380so16708626d6.2
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 08:14:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706458444; x=1707063244; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0m/P1zm+p3BLtEev+qUE8lpx92ojld2E2PJGrd3/bdc=;
+        b=DBhVChamScDpPuZOsf1dh0dusltwcYJixkZ3rAqVSNhoD230gU3usuAhGazpLGadPu
+         6yH91TZAGuY26ou7sSipelcjWeBI7NsmnLTHZxUolq/5Yzgvw1mhiQGk57xSdvB/OZ2C
+         PMhEpN4fliag772bRXuiYGxNinpm9P+BZuzOA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706458444; x=1707063244;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0m/P1zm+p3BLtEev+qUE8lpx92ojld2E2PJGrd3/bdc=;
+        b=IlYruclaMuSkBwQO781xDv0rzWhAECfWce2dww4ga1+hpZzzLx8vfF2SfGbVszzSoN
+         Gf3uttyYwLO8CqdrIahscswB6qe7NdraPDqrpve1xNNsjkp3tFzMpp5SmNpz3SwLrSK9
+         dZtiwYQo3x0apSc2/ZFjtRVjvSG/LOxCpUsVRrOG1AzW3c713+7IGEJ13UmXc/Y7frfW
+         /L1Vh5ixRCwHep8IZ2908kvEuUWVQpH8c/jOoVoLAmTycSB7AsudiWm3XdCGwbGIM2Jz
+         KarIhg4G1+ej7WhzG0T1x8Xt86TEi1Nx2nT/rkX190GIryUz/gbeEwGD/5XgApxX7Ags
+         BhKQ==
+X-Gm-Message-State: AOJu0Yx0YhHxn7me6rIn5QTqU8q+iISM8dcN6eNmWOO9qD5Ji3VW0sdS
+	W9zMxmGiA33pc1/uvI+qNaxlFx91RSKbz6en0If6L+gWnrHkijnlVL8BXPiOniur8g2B8WvbZD7
+	0NA==
+X-Google-Smtp-Source: AGHT+IFpFnYrtsvv/PZSGrHMTLLAsQo9nx3jvGx+Qy0aib/OUFMOdMy+oEDsUYYR6HbDZ0N/K9VkLw==
+X-Received: by 2002:a05:6214:e88:b0:685:5639:fb1a with SMTP id hf8-20020a0562140e8800b006855639fb1amr5171396qvb.102.1706458444437;
+        Sun, 28 Jan 2024 08:14:04 -0800 (PST)
+Received: from denia.c.googlers.com (240.157.150.34.bc.googleusercontent.com. [34.150.157.240])
+        by smtp.gmail.com with ESMTPSA id dz11-20020ad4588b000000b0068c493426edsm566640qvb.104.2024.01.28.08.14.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Jan 2024 08:14:03 -0800 (PST)
+From: Ricardo Ribalda <ribalda@chromium.org>
+Date: Sun, 28 Jan 2024 16:13:57 +0000
+Subject: [PATCH 2/2] media: usb: s2255: Refactor s2255_get_fx2fw
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.75
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240128-gcc-11-warnings-v1-2-52bbdf492049@chromium.org>
+References: <20240128-gcc-11-warnings-v1-0-52bbdf492049@chromium.org>
+In-Reply-To: <20240128-gcc-11-warnings-v1-0-52bbdf492049@chromium.org>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>
+Cc: linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, Ricardo Ribalda <ribalda@chromium.org>
+X-Mailer: b4 0.12.3
 
-From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Resize the buffer to the actual size needed and initialize it. With this
+we can convince gcc-11 that the variable is not used uninitialized.
 
-[ Upstream commit ac4f1897fa5433a1b07a625503a91b6aa9d7e643 ]
+drivers/media/usb/s2255/s2255drv.c:1914:25: warning: 'transBuffer' may be used uninitialized [-Wmaybe-uninitialized]
 
-Unlike the lower rates, the PCIe 64GT/s Data Rate uses 1b/1b encoding, not
-128b/130b (PCIe r6.1 sec 1.2, Table 1-1).  Correct the PCIE_SPEED2MBS_ENC()
-calculation to reflect that.
-
-Link: https://lore.kernel.org/r/20240102172701.65501-1-ilpo.jarvinen@linux.intel.com
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/pci/pci.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/usb/s2255/s2255drv.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index ed6d75d138c7..e1d02b7c6029 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -274,7 +274,7 @@ void pci_bus_put(struct pci_bus *bus);
- 
- /* PCIe speed to Mb/s reduced by encoding overhead */
- #define PCIE_SPEED2MBS_ENC(speed) \
--	((speed) == PCIE_SPEED_64_0GT ? 64000*128/130 : \
-+	((speed) == PCIE_SPEED_64_0GT ? 64000*1/1 : \
- 	 (speed) == PCIE_SPEED_32_0GT ? 32000*128/130 : \
- 	 (speed) == PCIE_SPEED_16_0GT ? 16000*128/130 : \
- 	 (speed) == PCIE_SPEED_8_0GT  ?  8000*128/130 : \
+diff --git a/drivers/media/usb/s2255/s2255drv.c b/drivers/media/usb/s2255/s2255drv.c
+index 3c2627712fe9..8e1de1e8bd12 100644
+--- a/drivers/media/usb/s2255/s2255drv.c
++++ b/drivers/media/usb/s2255/s2255drv.c
+@@ -1906,9 +1906,10 @@ static int s2255_get_fx2fw(struct s2255_dev *dev)
+ {
+ 	int fw;
+ 	int ret;
+-	unsigned char transBuffer[64];
+-	ret = s2255_vendor_req(dev, S2255_VR_FW, 0, 0, transBuffer, 2,
+-			       S2255_VR_IN);
++	u8 transBuffer[2] = {};
++
++	ret = s2255_vendor_req(dev, S2255_VR_FW, 0, 0, transBuffer,
++			       sizeof(transBuffer), S2255_VR_IN);
+ 	if (ret < 0)
+ 		dprintk(dev, 2, "get fw error: %x\n", ret);
+ 	fw = transBuffer[0] + (transBuffer[1] << 8);
+
 -- 
-2.43.0
+2.43.0.429.g432eaa2c6b-goog
 
 
