@@ -1,132 +1,124 @@
-Return-Path: <linux-kernel+bounces-41862-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07F7683F8EF
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 18:58:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D33E383F8F3
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 19:00:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAB0B1C21A8E
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:58:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6847F1F22B06
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 18:00:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4628F2E400;
-	Sun, 28 Jan 2024 17:58:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E80D12E413;
+	Sun, 28 Jan 2024 18:00:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BEb9qVMU"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FsT1GXoX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF7932D05E;
-	Sun, 28 Jan 2024 17:58:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 323652D044;
+	Sun, 28 Jan 2024 18:00:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706464726; cv=none; b=pPPsJetkvjC0Qznb7e3zHLEuZsTOjK1D2si9nyXClayJ3riKDI9Ah2CgfBmlxz3um+T+n26RFu/zwkHW1u5YJYMIAWMzsvT9izz3Bz3Jsbjw6UxlXA/HfszmHW2gYG/6Y3Nvzp0Z3e6HTjO96IlhbEpQ7SOndvUJD1R9fGCs1UI=
+	t=1706464830; cv=none; b=jv8OSSoQSL8gzKVRoJqeKcTTMtEerVNddP1RwpV89Jwgjx69YJpGQtYL4zlWsE9cG2u2lGfynsy5m5TNQi0WghAyYcpdRruOMiU/LvjAWkA+Vrk4YUEUOddxzEnCQYyc++JhaSfa10NFbWziztMF0TDVCMJuIzUUypYqarg1kOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706464726; c=relaxed/simple;
-	bh=5cEP+zWFr/nlAcAv00WyKAUSHk9AI618LLTjG1LtvxI=;
+	s=arc-20240116; t=1706464830; c=relaxed/simple;
+	bh=6qEE5iFXL0RGoiqfGo6GjJkdO/zywWgXuJlLPmA7+5k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M2inkDcAc/ai1DezCaAJbXk218TnMR+YoTbcRvKwuV3WHcX6cBuze9OIL74tRqOr4xpCUviIZhkMo1BamSbA9qxDgwudRGQpUelIBkpp1UrGV6m7JJL1y7YES2fkNo7Fjz3NuaFt0OcHzEqHzG0bD/byppUQB/AeO7ZxngIX5Io=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BEb9qVMU; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706464725; x=1738000725;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=5cEP+zWFr/nlAcAv00WyKAUSHk9AI618LLTjG1LtvxI=;
-  b=BEb9qVMUL2wTPdn0Ini3p++w2SS/mD7iBpID5EXzULckXsOBfDasMPir
-   +1gqwgrIgFMWK4asep7mOLXlkVn4ld8nRxTl1OIWC2SN7JkRSiN7KNq+j
-   8ABTCOcspHLPjds+mJ5Ch1TVpM4CNaw6k8K5OerTRH7VMEUfmgCvsIjpp
-   hdmJQkkywE0BpfB/NTI5PjtHacSMBKiioNUj39BgpHGoGv01uFFfDA+FK
-   KbGKE24kTF/ReSgZ5LaJEBgO/iGWHUnpVLsmQlKumYfVfwF5UaqsfiPqm
-   kf+VyYU2iZv1B17EoAXU82URpc1Q13rLx5OncYv/PRwZGunveJIZYOqCC
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="2683755"
-X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
-   d="scan'208";a="2683755"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2024 09:58:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="737165941"
-X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
-   d="scan'208";a="737165941"
-Received: from lkp-server01.sh.intel.com (HELO 370188f8dc87) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 28 Jan 2024 09:58:35 -0800
-Received: from kbuild by 370188f8dc87 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rU9QP-0003cs-1f;
-	Sun, 28 Jan 2024 17:58:33 +0000
-Date: Mon, 29 Jan 2024 01:58:09 +0800
-From: kernel test robot <lkp@intel.com>
-To: Huang Shijie <shijie@os.amperecomputing.com>,
-	gregkh@linuxfoundation.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	patches@amperecomputing.com, rafael@kernel.org,
-	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
-	yury.norov@gmail.com, kuba@kernel.org, vschneid@redhat.com,
-	mingo@kernel.org, akpm@linux-foundation.org, vbabka@suse.cz,
-	rppt@kernel.org, tglx@linutronix.de, jpoimboe@kernel.org,
-	ndesaulniers@google.com, mikelley@microsoft.com,
-	mhiramat@kernel.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
-	will@kernel.org, mark.rutland@arm.com, mpe@ellerman.id.au,
-	linuxppc-dev@lists.ozlabs.org, chenhuacai@kernel.org,
-	jiaxun.yang@flygoat.com, linux-mips@vger.kernel.org
-Subject: Re: [PATCH] init: refactor the generic cpu_to_node for NUMA
-Message-ID: <202401290116.GpUOCzGd-lkp@intel.com>
-References: <20240118031412.3300-1-shijie@os.amperecomputing.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=isJ3TLAzV502IGeCTDWnN0Tv3OEnoP1TrJ+S8zC8GQKcy0i6mD9yRt7kItCX/3WecVxliAn3FwNnl99oOxjTcIjcpKRhuTM5w5MHn13qLgn5PgJoN4hVWLRhU589yjXwBuHI4CcYO/lcB0q2qAd6kSiLuSy9XTyJM+SFRObOhAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FsT1GXoX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3FFAC433C7;
+	Sun, 28 Jan 2024 18:00:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706464828;
+	bh=6qEE5iFXL0RGoiqfGo6GjJkdO/zywWgXuJlLPmA7+5k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FsT1GXoXSH/52LxccsjtDsNIjuDdp8OxanWHiflBkvM4boc+NDZQgx38HErpRkpjr
+	 zWNUG4SsPOUwkzQRjwyvB1o9KRmCjIw4WWycMBKjEGkTXf1FAYJZnnk+yWAbIacRSu
+	 J2bLdsy2Xs7Ev/FQCB1EqbtLo3KqFCeutoaBwdALuQWsEWpqyItBbN3TWeXzTqotwX
+	 VxF5zvN16MRc13vmRb6mx34Osu22+d5xhVzSDqsBrbug2pOW6YnLOZH+RRVSkyLGtF
+	 ejemvflsjZmD4nJRYlITF+ri8myBfU6f8pqhQ5mllrbuo6bpZoFxOWEWdkuPb2Th/5
+	 t3lTUck/b9GvA==
+Date: Sun, 28 Jan 2024 12:00:25 -0600
+From: Bjorn Andersson <andersson@kernel.org>
+To: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Luca Weiss <luca.weiss@fairphone.com>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Amit Pundir <amit.pundir@linaro.org>, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>, 
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Subject: Re: Re: [PATCH] arm64: dts: qcom: sdm845: Fix wild reboot during
+ Antutu test
+Message-ID: <iiggyplhtyf3pnj37k4tdzymry26uxzpaldhiqfi6abxk5xjgi@6v6ovkdevn7d>
+References: <20240116115921.804185-1-daniel.lezcano@linaro.org>
+ <CYG4WTCOBTG2.11PA7Q4A3H93H@fairphone.com>
+ <5db88d48-4868-49f0-b702-6eea14400e5b@linaro.org>
+ <CYG6QOFYOX79.2ROURJ8FK446C@fairphone.com>
+ <70b359c6-f094-4874-b903-1dca07d0db7c@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240118031412.3300-1-shijie@os.amperecomputing.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <70b359c6-f094-4874-b903-1dca07d0db7c@linaro.org>
 
-Hi Huang,
+On Tue, Jan 16, 2024 at 04:38:33PM +0100, Daniel Lezcano wrote:
+> On 16/01/2024 15:03, Luca Weiss wrote:
+> > On Tue Jan 16, 2024 at 1:51 PM CET, Daniel Lezcano wrote:
+> > > On 16/01/2024 13:37, Luca Weiss wrote:
+> > > > On Tue Jan 16, 2024 at 12:59 PM CET, Daniel Lezcano wrote:
+> > > > > Running an Antutu benchmark makes the board to do a hard reboot.
+> > > > > 
+> > > > > Cause: it appears the gpu-bottom and gpu-top temperature sensors are showing
+> > > > > too high temperatures, above 115°C.
+> > > > > 
+> > > > > Out of tree configuratons show the gpu thermal zone is configured to
+> > > > > be mitigated at 85°C with devfreq.
+> > > > > 
+> > > > > Add the DT snippet to enable the thermal mitigation on the sdm845
+> > > > > based board.
+> > > > > 
+> > > > > Fixes: c79800103eb18 ("arm64: dts: sdm845: Add gpu and gmu device nodes")
+> > > > > Cc: Amit Pundir <amit.pundir@linaro.org>
+> > > > > Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> > > > 
+> > > > A part of this is already included with this patch:
+> > > > https://lore.kernel.org/linux-arm-msm/20240102-topic-gpu_cooling-v1-4-fda30c57e353@linaro.org/
+> > > > 
+> > > > Maybe rebase on top of that one and add the 85degC trip point or
+> > > > something?
+> > > 
+> > > Actually, I think the patch is wrong.
+> > 
+> > I recommend telling Konrad in that patch then, not me :)
+> 
+> That's good Konrad is in the recipient list :)
+> 
+> > > The cooling effect does not operate on 'hot' trip point type as it is
+> > > considered as a critical trip point. The governor is not invoked, so no
+> > > mitigation happen. The 'hot' trip point type results in sending a
+> > > notification to userspace to give the last chance to do something before
+> > > 'critical' is reached where the system is shut down.
+> > > 
+> > > I suggest to revert it and pick the one I proposed.
+> > 
+> > It hasn't been applied yet so it can be fixed in v2 there.
+> 
+> The patch was submitted without testing AFAICT. So it is preferable to pick
+> the one I sent which was tested by Amit and me.
+> 
 
-kernel test robot noticed the following build errors:
+I would have loved to have that feedback in the thread that is wrong!
 
-[auto build test ERROR on driver-core/driver-core-testing]
-[also build test ERROR on driver-core/driver-core-next driver-core/driver-core-linus linus/master v6.8-rc1 next-20240125]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Due to my lack of understanding of this detail, and only positive
+reviews I merged said series. Please fix your patch and rebase it on top
+of linux-next.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Huang-Shijie/init-refactor-the-generic-cpu_to_node-for-NUMA/20240118-111802
-base:   driver-core/driver-core-testing
-patch link:    https://lore.kernel.org/r/20240118031412.3300-1-shijie%40os.amperecomputing.com
-patch subject: [PATCH] init: refactor the generic cpu_to_node for NUMA
-config: x86_64-rhel-8.3-rust (https://download.01.org/0day-ci/archive/20240129/202401290116.GpUOCzGd-lkp@intel.com/config)
-compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240129/202401290116.GpUOCzGd-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401290116.GpUOCzGd-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> ld.lld: error: undefined symbol: cpu_to_node
-   >>> referenced by main.c:880 (init/main.c:880)
-   >>>               init/main.o:(start_kernel) in archive vmlinux.a
-   >>> referenced by main.c:1542 (init/main.c:1542)
-   >>>               init/main.o:(kernel_init_freeable) in archive vmlinux.a
-   >>> referenced by core.c:550 (arch/x86/events/amd/core.c:550)
-   >>>               arch/x86/events/amd/core.o:(amd_pmu_cpu_prepare) in archive vmlinux.a
-   >>> referenced 179 more times
---
->> ld.lld: error: undefined symbol: _cpu_to_node
-   >>> referenced by main.c:1542 (init/main.c:1542)
-   >>>               init/main.o:(kernel_init_freeable) in archive vmlinux.a
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Bjorn
 
