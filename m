@@ -1,60 +1,57 @@
-Return-Path: <linux-kernel+bounces-41685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 524E383F65B
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:12:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81DBC83F65E
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:12:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CFD93B2216F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:12:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D8E12809E4
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:12:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B04022E84F;
-	Sun, 28 Jan 2024 16:11:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E29531A8F;
+	Sun, 28 Jan 2024 16:11:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cceGmvXW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XMEHDjX6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFEBE2E645;
-	Sun, 28 Jan 2024 16:11:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 797802E859;
+	Sun, 28 Jan 2024 16:11:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458297; cv=none; b=hWT4ze7cDFgKIlvKQL3kxE+nKOlCPHCspYHS/9zqG9tT2xiJu/LZ1bXrvvII2l9w7NxwkforiBXBzrwKbUW+oFjRCz+93RCqsSgmcHnbjNe9GV7gBxf/68pqihP67fPm74fEDxtsRaub8nexKQ5lV2Q9H43kXj9p8Ot5Y0tXinE=
+	t=1706458298; cv=none; b=YXc4OqNn+Ki+RVBAN+d1b02iwrjezbsBIkJzW78awfQX/lT+Q4i2YIkT1SKS9eWAfEjEsmTBi2Nss681da0IVApFpw4GKMyjXmbiVje/7cFXiWf5lAWffLC29JYdi0Qz05fwl/8SfFq8kCScpKlhsMw8y+uVi9q6627rUwDEtjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458297; c=relaxed/simple;
-	bh=Fqc/uo6ExpDJaHd6Xd6fzWxlrwxDk6ABwIiIkzcrpsM=;
+	s=arc-20240116; t=1706458298; c=relaxed/simple;
+	bh=i9w97A/UPdtvWNElCK7Md2UfyJCJGsdEuguymyFbZBo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QBdMAQXjN7b1mzFV+WVWZ8HKLJCDekY9MRqNpD7a1Bj7qj6yok1C8pl00bvTSpBhCy7/Dg1jGHU/TkyUnWIoBLa4yhcdHARH7Cugd2mK7HNPSuDt3eFOq/7jQ+UN7iSyvF7T0FD0+FKP72WugoQyHyl8aQW7eAgNa1XcjWz9mZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cceGmvXW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E94BC43390;
-	Sun, 28 Jan 2024 16:11:35 +0000 (UTC)
+	 MIME-Version; b=UOBm/R8Fvscy4g/kf3PgjQnbOqSzodW0i9iPVL9k05O8HnA6ke9E6kPaZRvNbia8/egiI7/fM45TCu+FOiRLwJ5PrStpzRRFeoVK/jOOawyAoIIaMjP9S9HDQFihnNOI7U547G4la4OD1m7LAno1bnO4BpMj8gHV5qvuJeVY7cI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XMEHDjX6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1093AC433F1;
+	Sun, 28 Jan 2024 16:11:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706458296;
-	bh=Fqc/uo6ExpDJaHd6Xd6fzWxlrwxDk6ABwIiIkzcrpsM=;
+	s=k20201202; t=1706458297;
+	bh=i9w97A/UPdtvWNElCK7Md2UfyJCJGsdEuguymyFbZBo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cceGmvXWQ2t2EoNKXrDlBfEz8BUhLspK/CxAVEQw3wzqJpzifwhOYv6GV5ILFqhty
-	 PTWszAYbck9rDRe5GvoI58E4eAg1iJsJFdbQCzUCds90vraYAirwvNNo8Ha+eeaLx5
-	 lZHjp5aR5IhQHwcmwLOKPRe2InpmFUHxUezJmhfwf3snSJKrpC71lyvkAolD2vEsCN
-	 Dnr8N7mBs5tIAttZ8E1yTTEBiTCTN3osG/Xha+sI997BK9Nr7smc6buU19a+5DN9Mn
-	 pAZBVkvFmqnC0/2HVR59r2kp0YvN1NBBIx8yca8xO7ffNnyQVIn6BJdrqDTxc9WPCD
-	 QeF1fXXZoY3Hw==
+	b=XMEHDjX6iOaGRyHCZ+wmnhsWgZvgMOhTso3kf6+jIgPaEpuT3qyYeO/UbtoOBiGSN
+	 2QOcv2kowr01AL7S2V0bdHBdopqMiPo9cxMpbSHQuDAhyri6U6gW0nL61SKoX6Yuve
+	 9pzB5NdmSqjHdbFC5Ctqr51sRB2Xk1QybfQjame8iwQOgm2xpby/PFvjX9Se41jOcg
+	 vgJk1GBUj63Cc1vZ9BYklTWsl0orJ0ATqDqt1Izc5Qio6M28Q61lBiYQvDsBE7RvMs
+	 qKB4X3NfDt1FeRvlEmi0tJupUtZbbeLw2eHO0sD6YUGCw8fTh83w8IgOMfBmTn7I/Y
+	 iA2XOPSXyh6Wg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: James Clark <james.clark@arm.com>,
-	Ian Rogers <irogers@google.com>,
-	Leo Yan <leo.yan@linaro.org>,
-	John Garry <john.g.garry@oracle.com>,
-	Mike Leach <mike.leach@linaro.org>,
-	Will Deacon <will@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	Arnaldo Carvalho de Melo <acme@redhat.com>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 6.7 03/39] perf cs-etm: Bump minimum OpenCSD version to ensure a bugfix is present
-Date: Sun, 28 Jan 2024 11:10:23 -0500
-Message-ID: <20240128161130.200783-3-sashal@kernel.org>
+Cc: Mathias Nyman <mathias.nyman@linux.intel.com>,
+	Kuen-Han Tsai <khtsai@google.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Sasha Levin <sashal@kernel.org>,
+	mathias.nyman@intel.com,
+	linux-usb@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 04/39] xhci: fix possible null pointer deref during xhci urb enqueue
+Date: Sun, 28 Jan 2024 11:10:24 -0500
+Message-ID: <20240128161130.200783-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128161130.200783-1-sashal@kernel.org>
 References: <20240128161130.200783-1-sashal@kernel.org>
@@ -69,56 +66,96 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.2
 Content-Transfer-Encoding: 8bit
 
-From: James Clark <james.clark@arm.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-[ Upstream commit 2dbba30fd69b604802a9535b74bddb5bcca23793 ]
+[ Upstream commit e2e2aacf042f52854c92775b7800ba668e0bdfe4 ]
 
-Since commit d927ef5004ef ("perf cs-etm: Add exception level consistency
-check"), the exception that was added to Perf will be triggered unless
-the following bugfix from OpenCSD is present:
+There is a short gap between urb being submitted and actually added to the
+endpoint queue (linked). If the device is disconnected during this time
+then usb core is not yet aware of the pending urb, and device may be freed
+just before xhci_urq_enqueue() continues, dereferencing the freed device.
 
- - _Version 1.2.1_:
-  - __Bugfix__:
-    ETM4x / ETE - output of context elements to client can in some
-    circumstances be delayed until after subsequent atoms have been
-    processed leading to incorrect memory decode access via the client
-    callbacks. Fixed to flush context elements immediately they are
-    committed.
+Freeing the device is protected by the xhci spinlock, so make sure we take
+and keep the lock while checking that device exists, dereference it, and
+add the urb to the queue.
 
-Rather than remove the assert and silently fail, just increase the
-minimum version requirement to avoid hard to debug issues and
-regressions.
+Remove the unnecessary URB check, usb core checks it before calling
+xhci_urb_enqueue()
 
-Reviewed-by: Ian Rogers <irogers@google.com>
-Signed-off-by: James Clark <james.clark@arm.com>
-Tested-by: Leo Yan <leo.yan@linaro.org>
-Cc: John Garry <john.g.garry@oracle.com>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Link: https://lore.kernel.org/r/20230901133716.677499-1-james.clark@arm.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Suggested-by: Kuen-Han Tsai <khtsai@google.com>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20231201150647.1307406-20-mathias.nyman@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/build/feature/test-libopencsd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/host/xhci.c | 40 +++++++++++++++++++++++-----------------
+ 1 file changed, 23 insertions(+), 17 deletions(-)
 
-diff --git a/tools/build/feature/test-libopencsd.c b/tools/build/feature/test-libopencsd.c
-index eb6303ff446e..4cfcef9da3e4 100644
---- a/tools/build/feature/test-libopencsd.c
-+++ b/tools/build/feature/test-libopencsd.c
-@@ -4,9 +4,9 @@
- /*
-  * Check OpenCSD library version is sufficient to provide required features
-  */
--#define OCSD_MIN_VER ((1 << 16) | (1 << 8) | (1))
-+#define OCSD_MIN_VER ((1 << 16) | (2 << 8) | (1))
- #if !defined(OCSD_VER_NUM) || (OCSD_VER_NUM < OCSD_MIN_VER)
--#error "OpenCSD >= 1.1.1 is required"
-+#error "OpenCSD >= 1.2.1 is required"
- #endif
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index 884b0898d9c9..ddb686301af5 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -1522,24 +1522,7 @@ static int xhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb, gfp_t mem_flag
+ 	struct urb_priv	*urb_priv;
+ 	int num_tds;
  
- int main(void)
+-	if (!urb)
+-		return -EINVAL;
+-	ret = xhci_check_args(hcd, urb->dev, urb->ep,
+-					true, true, __func__);
+-	if (ret <= 0)
+-		return ret ? ret : -EINVAL;
+-
+-	slot_id = urb->dev->slot_id;
+ 	ep_index = xhci_get_endpoint_index(&urb->ep->desc);
+-	ep_state = &xhci->devs[slot_id]->eps[ep_index].ep_state;
+-
+-	if (!HCD_HW_ACCESSIBLE(hcd))
+-		return -ESHUTDOWN;
+-
+-	if (xhci->devs[slot_id]->flags & VDEV_PORT_ERROR) {
+-		xhci_dbg(xhci, "Can't queue urb, port error, link inactive\n");
+-		return -ENODEV;
+-	}
+ 
+ 	if (usb_endpoint_xfer_isoc(&urb->ep->desc))
+ 		num_tds = urb->number_of_packets;
+@@ -1578,12 +1561,35 @@ static int xhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb, gfp_t mem_flag
+ 
+ 	spin_lock_irqsave(&xhci->lock, flags);
+ 
++	ret = xhci_check_args(hcd, urb->dev, urb->ep,
++			      true, true, __func__);
++	if (ret <= 0) {
++		ret = ret ? ret : -EINVAL;
++		goto free_priv;
++	}
++
++	slot_id = urb->dev->slot_id;
++
++	if (!HCD_HW_ACCESSIBLE(hcd)) {
++		ret = -ESHUTDOWN;
++		goto free_priv;
++	}
++
++	if (xhci->devs[slot_id]->flags & VDEV_PORT_ERROR) {
++		xhci_dbg(xhci, "Can't queue urb, port error, link inactive\n");
++		ret = -ENODEV;
++		goto free_priv;
++	}
++
+ 	if (xhci->xhc_state & XHCI_STATE_DYING) {
+ 		xhci_dbg(xhci, "Ep 0x%x: URB %p submitted for non-responsive xHCI host.\n",
+ 			 urb->ep->desc.bEndpointAddress, urb);
+ 		ret = -ESHUTDOWN;
+ 		goto free_priv;
+ 	}
++
++	ep_state = &xhci->devs[slot_id]->eps[ep_index].ep_state;
++
+ 	if (*ep_state & (EP_GETTING_STREAMS | EP_GETTING_NO_STREAMS)) {
+ 		xhci_warn(xhci, "WARN: Can't enqueue URB, ep in streams transition state %x\n",
+ 			  *ep_state);
 -- 
 2.43.0
 
