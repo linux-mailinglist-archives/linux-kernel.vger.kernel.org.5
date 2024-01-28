@@ -1,58 +1,55 @@
-Return-Path: <linux-kernel+bounces-41805-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABF8F83F7E6
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:44:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F3FBF83F7E8
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:44:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67D1F286970
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:44:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0488286D29
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:44:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7521113DB86;
-	Sun, 28 Jan 2024 16:16:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4870B13DB9C;
+	Sun, 28 Jan 2024 16:16:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TPN30Vy8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YgkwXj0D"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B365013D516;
-	Sun, 28 Jan 2024 16:16:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8762C4F1FF;
+	Sun, 28 Jan 2024 16:16:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458574; cv=none; b=o+Jk+SgADo1BwvvmrRjnT4Xw+1QAcEjpYeQyPY/1DoBg0Rnmrmtm+9wF76PxjFauPety/MrKuEs2KB7YA26ouFXKS5ph33MZZWFnwXBAL9urpArzq03J9KyfE8ADU+7ley8JH6omWqiK8pf/eL4vZX5lKaWCH/W1AsaCG9pdJ3Q=
+	t=1706458575; cv=none; b=nZPAVvb9GCzbu+OYcGGnxf8aVhk/a9TgnBL+vRJy2iegGSM4sW1Ag75fLJ41fHjB6PevwhboNzUrpnULCOBYkqYQHZaloGcErhK0hBN1thlOwLP/5D/ZH6E9fE9CYt3D9QFG7dJdFXH5eU/yv47uPHFNaIhFBBVuhjJY2HgifbM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458574; c=relaxed/simple;
-	bh=fcdbbPgvAY8bSDapOWRbFEZJ8W2aev2un9RJ7QJHQM8=;
+	s=arc-20240116; t=1706458575; c=relaxed/simple;
+	bh=bRb2TgQA90tQ63dWvVFph0qMSAhZizRyeXQGobEQo5U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ECKDKB2TC/W0XNLXTwx9gGPag398UZYm10O8vuh/QLt9h1vq/rkPA0TyQm77/Bxf70iGzIgehXpWxKeCYDkUHLcvSmamYCtI/27pXlMui/e4Rj9c6Uls2dHkODm1YEaIzMs6eaHC8qiYQ2Aqgtk2dY3OCgFlcRQF54JvvC2IU9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TPN30Vy8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4316CC43399;
-	Sun, 28 Jan 2024 16:16:13 +0000 (UTC)
+	 MIME-Version; b=gcW7kciQYzQnOhBMJCaPbJTK32P56AX5cHnrdPnCi8QzeY547TAffX62PBAgpM4MPsog/t3mI0HG875T/lN8Xu2eshZCL42wmzSIdHXkyTYX84pbjOfCRYxDGizYmx9e96tq8HxCi6/Yq+FKMDAERvHMdDC5kHiqvGfg3Zllq/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YgkwXj0D; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8202C433B1;
+	Sun, 28 Jan 2024 16:16:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706458574;
-	bh=fcdbbPgvAY8bSDapOWRbFEZJ8W2aev2un9RJ7QJHQM8=;
+	s=k20201202; t=1706458575;
+	bh=bRb2TgQA90tQ63dWvVFph0qMSAhZizRyeXQGobEQo5U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TPN30Vy8WxKhSoBT69rDbPEJf3EMCHpN2NEEe+dKWGOvJITA4afADMqo+hXkgpA6E
-	 VQGfpnPpY72ZNRurKEPF08lHdDaba9QnczHPtIMpR4L1yBOECCob2LIe2bIx4z+blD
-	 itnRCRMXl6XTetBEjg61MTGIUB9iTKmh+5WPgYFg3YVg45tsC3lqFPTFNnOEUHLvAn
-	 /3tQe5Xg9wYDGBNjO0oKsuUk+qLni6+Wr6/420mRDW48bE9H/OxDqdPlPBafa8AbZh
-	 5c2I85/vpIzFQde1kf4xkAuCG7GK49H5OI4R4XD8wI/jmnoZ1NKJuPyFJF7eXZDE2S
-	 Z92DiPzp4pl5Q==
+	b=YgkwXj0DcTeiuiC6KL5/MXDaCIzb1+3BOlLSiOEzFqGssnCO+SgTBt6vPkCwO+IYB
+	 2w4bjVCoUEn5wDFbDWZfpY+UyvUYBRfb/zM/aSZsZfeynWv9dJsMQzDeVBg8+pZmVD
+	 VjnGtO1na9mwXeqz8xefbyFMX4UTTYYz9XDKIpCVisbSZr96S/BdsLGYejqI/cLjiB
+	 dVB/28AieTKDxXafdVfq8pgT1Yglx4JwCKvdKy+60mrWROSeCcKoGOtnS8GCTFsVB9
+	 ej0fUm3HchnkYV/Ea9OKp2Z+2V9mxgXHAWPoC7DDXax+41ZNjMTrj6nvsuqRTrVSrv
+	 xAxieQ2TbAcwg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Adrian Reber <areber@redhat.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Andrei Vagin <avagin@gmail.com>,
+Cc: Max Kellermann <max.kellermann@ionos.com>,
+	Tejun Heo <tj@kernel.org>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sasha Levin <sashal@kernel.org>,
-	jirislaby@kernel.org,
-	linux-serial@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 04/13] tty: allow TIOCSLCKTRMIOS with CAP_CHECKPOINT_RESTORE
-Date: Sun, 28 Jan 2024 11:15:50 -0500
-Message-ID: <20240128161606.205221-4-sashal@kernel.org>
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 05/13] fs/kernfs/dir: obey S_ISGID
+Date: Sun, 28 Jan 2024 11:15:51 -0500
+Message-ID: <20240128161606.205221-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128161606.205221-1-sashal@kernel.org>
 References: <20240128161606.205221-1-sashal@kernel.org>
@@ -67,61 +64,56 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.209
 Content-Transfer-Encoding: 8bit
 
-From: Adrian Reber <areber@redhat.com>
+From: Max Kellermann <max.kellermann@ionos.com>
 
-[ Upstream commit e0f25b8992345aa5f113da2815f5add98738c611 ]
+[ Upstream commit 5133bee62f0ea5d4c316d503cc0040cac5637601 ]
 
-The capability CAP_CHECKPOINT_RESTORE was introduced to allow non-root
-users to checkpoint and restore processes as non-root with CRIU.
+Handling of S_ISGID is usually done by inode_init_owner() in all other
+filesystems, but kernfs doesn't use that function.  In kernfs, struct
+kernfs_node is the primary data structure, and struct inode is only
+created from it on demand.  Therefore, inode_init_owner() can't be
+used and we need to imitate its behavior.
 
-This change extends CAP_CHECKPOINT_RESTORE to enable the CRIU option
-'--shell-job' as non-root. CRIU's man-page describes the '--shell-job'
-option like this:
+S_ISGID support is useful for the cgroup filesystem; it allows
+subtrees managed by an unprivileged process to retain a certain owner
+gid, which then enables sharing access to the subtree with another
+unprivileged process.
 
-  Allow one to dump shell jobs. This implies the restored task will
-  inherit session and process group ID from the criu itself. This option
-  also allows to migrate a single external tty connection, to migrate
-  applications like top.
+--
+v1 -> v2: minor coding style fix (comment)
 
-TIOCSLCKTRMIOS can only be done if the process has CAP_SYS_ADMIN and
-this change extends it to CAP_SYS_ADMIN or CAP_CHECKPOINT_RESTORE.
-
-With this change it is possible to checkpoint and restore processes
-which have a tty connection as non-root if CAP_CHECKPOINT_RESTORE is
-set.
-
-Acked-by: Christian Brauner <brauner@kernel.org>
-Signed-off-by: Adrian Reber <areber@redhat.com>
-Acked-by: Andrei Vagin <avagin@gmail.com>
-Link: https://lore.kernel.org/r/20231208143656.1019-1-areber@redhat.com
+Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+Acked-by: Tejun Heo <tj@kernel.org>
+Link: https://lore.kernel.org/r/20231208093310.297233-2-max.kellermann@ionos.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/tty_ioctl.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/kernfs/dir.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/tty/tty_ioctl.c b/drivers/tty/tty_ioctl.c
-index 68b07250dcb6..134f07c2431e 100644
---- a/drivers/tty/tty_ioctl.c
-+++ b/drivers/tty/tty_ioctl.c
-@@ -763,7 +763,7 @@ int tty_mode_ioctl(struct tty_struct *tty, struct file *file,
- 			ret = -EFAULT;
- 		return ret;
- 	case TIOCSLCKTRMIOS:
--		if (!capable(CAP_SYS_ADMIN))
-+		if (!checkpoint_restore_ns_capable(&init_user_ns))
- 			return -EPERM;
- 		copy_termios_locked(real_tty, &kterm);
- 		if (user_termios_to_kernel_termios(&kterm,
-@@ -780,7 +780,7 @@ int tty_mode_ioctl(struct tty_struct *tty, struct file *file,
- 			ret = -EFAULT;
- 		return ret;
- 	case TIOCSLCKTRMIOS:
--		if (!capable(CAP_SYS_ADMIN))
-+		if (!checkpoint_restore_ns_capable(&init_user_ns))
- 			return -EPERM;
- 		copy_termios_locked(real_tty, &kterm);
- 		if (user_termios_to_kernel_termios_1(&kterm,
+diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+index c91ee05cce74..0ba056e06e48 100644
+--- a/fs/kernfs/dir.c
++++ b/fs/kernfs/dir.c
+@@ -696,6 +696,18 @@ struct kernfs_node *kernfs_new_node(struct kernfs_node *parent,
+ {
+ 	struct kernfs_node *kn;
+ 
++	if (parent->mode & S_ISGID) {
++		/* this code block imitates inode_init_owner() for
++		 * kernfs
++		 */
++
++		if (parent->iattr)
++			gid = parent->iattr->ia_gid;
++
++		if (flags & KERNFS_DIR)
++			mode |= S_ISGID;
++	}
++
+ 	kn = __kernfs_new_node(kernfs_root(parent), parent,
+ 			       name, mode, uid, gid, flags);
+ 	if (kn) {
 -- 
 2.43.0
 
