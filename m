@@ -1,70 +1,63 @@
-Return-Path: <linux-kernel+bounces-41780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9ACA83F7A0
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:38:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EC2483F7A2
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:38:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 495BF1F25E7A
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:38:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36B121C212F6
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:38:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 762861292EC;
-	Sun, 28 Jan 2024 16:15:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F253129A7F;
+	Sun, 28 Jan 2024 16:15:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dSSrQ7FL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="azOleIcH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B100F4C3BF;
-	Sun, 28 Jan 2024 16:15:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F0294CB5C;
+	Sun, 28 Jan 2024 16:15:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458512; cv=none; b=Ln1WNl2VMtKVcqHCaZPaB4cuV5rGJ4LmBtokJQa8mLsn//h/xuyFPs00jUOSfXc/+oAOcgik+Pln8d93t654kvobcNdOGSuwUpU0JrbJ9hDh0MCLRNCTZZQ8P/xE5oJumaRKbCLnLDmcvlK5IW0yHSEUp20E/xO6vSTXDZhg8Do=
+	t=1706458514; cv=none; b=G2xLXNfE6E6UqJLd7cwf2tYYTiFyHQIZdNY35qZCYZdjaUc3XmSMqEu1oz/kI5PJRja+KbJsryzXyizAugPjG/mBUoDXpk67uxUe1ztY1LMKPNI17VoOmtxRHioB+Th6ZlPo657W9rr3uum/XJ2IfFOc5kiafVSehpJZVPWI5o0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458512; c=relaxed/simple;
-	bh=ZLEFwxCOTOF7EO6ou+YDVHqeyA9KKThtYa1MsczjO6k=;
+	s=arc-20240116; t=1706458514; c=relaxed/simple;
+	bh=NpCssRGcPw6Ho6Q1LNkhGIO2w4cpnGoDPuYXWBLOIns=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eBGBfkCLIIMs+1ccmUIMlI3s0rUWbm6v3Cr1Vao4OkqmPKXs1E+Atb97os/kKKYShOyyVzrCwcMMHoPZRHHDwtbxxKcJRo58FBQiR72FBpCsZ+vTYusPKZH5BRtwSnhuN63e2C1QKXNIEcL5Gh81m0Hca/r7z+BsUK57QEyJrJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dSSrQ7FL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44EC3C433F1;
-	Sun, 28 Jan 2024 16:15:10 +0000 (UTC)
+	 MIME-Version:Content-Type; b=PM5BRzYWKQZ7TP3vdVULHkf7Bu9ezjEg8RUZ8mANirvIBEzxasCIlNDxe14ai9nIDSmKbTZrnHZ+Pd7GcUrFKt4hHagDz2TlkfIAUJzxPJ6jfr4PfBUWkyLgOVJT1D94LQ71UpepuxT0wbMWMXnijxyRBg+82CT0/NFnfeaXZa8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=azOleIcH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF7F5C433C7;
+	Sun, 28 Jan 2024 16:15:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706458512;
-	bh=ZLEFwxCOTOF7EO6ou+YDVHqeyA9KKThtYa1MsczjO6k=;
+	s=k20201202; t=1706458514;
+	bh=NpCssRGcPw6Ho6Q1LNkhGIO2w4cpnGoDPuYXWBLOIns=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dSSrQ7FL+bgBxwghse5MGsL/X4wB3Daun+XJMCx6yOkQO2CvCflcRKqf5I/lOme0F
-	 L4MfF8iKo7y1OKKUhOC9jtRCvv4F8pQogRgQz6osjMEern+m6tsIwNJLl2+FGAHFkN
-	 OYbg/jo3daQm3NKokutSvKSe8+m4nqIQ6HLj2PVPeSNjXPzEmpwKUYnOdsRgtZcmmn
-	 F3/uqAkVHHgzBBaK75O06Cw+caJqZXUJqWDZG9F1XYKfYiPLHH1KlywVQWsg/ga8vU
-	 j3mQbUybvC6dvm6NdHnSnqbVl8DvM9TwfCLzOi4KTZw+4CaMK0XgQoSIzftOz02E9a
-	 KcxpxaHGG0VIQ==
+	b=azOleIcHycB9c7GtudfTyKsscHRfNYAoli3++BuxP+QXi3mhKmACH1YiUE2BE2zXR
+	 ic9bUNaUV7YGH9PVCpsrc40Rh+7F8PWuLrfwqiC4lXPbvwNSykZgZnVeM8tQuEg/yL
+	 1xaNFh2QzWHrPnK+PDUrKFsT48L+7+HQwioHLnL7YloScd40abazok1ekRfbO4w7Dn
+	 oSnE3Da88w5jzr4wLgT2wXlpuR1uYPBQ0sMRNhj3hRpjJNMBfgE48gIyuirt0SPF3q
+	 B3eMCambfS12iluXTQITaBBpTe3/PN10Z9PkLuJG/KoHvu+tTxetclB/hG6nIxIs0J
+	 rJC+6HBhRvbug==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-	Monk Liu <Monk.Liu@amd.com>,
+	Philip Yang <Philip.Yang@amd.com>,
+	Felix Kuehling <Felix.Kuehling@amd.com>,
 	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
 	Alex Deucher <alexander.deucher@amd.com>,
-	Lijo Lazar <lijo.lazar@amd.com>,
+	Felix Kuehling <felix.kuehling@amd.com>,
 	Sasha Levin <sashal@kernel.org>,
 	Xinhui.Pan@amd.com,
 	airlied@gmail.com,
 	daniel@ffwll.ch,
-	Hawking.Zhang@amd.com,
-	mario.limonciello@amd.com,
-	candice.li@amd.com,
-	le.ma@amd.com,
-	victorchengchi.lu@amd.com,
-	shashank.sharma@amd.com,
-	andrealmeid@igalia.com,
-	hamza.mahfooz@amd.com,
 	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.1 25/27] drm/amdgpu: Release 'adev->pm.fw' before return in 'amdgpu_device_need_post()'
-Date: Sun, 28 Jan 2024 11:14:10 -0500
-Message-ID: <20240128161424.203600-25-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 26/27] drm/amdkfd: Fix 'node' NULL check in 'svm_range_get_range_boundaries()'
+Date: Sun, 28 Jan 2024 11:14:11 -0500
+Message-ID: <20240128161424.203600-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128161424.203600-1-sashal@kernel.org>
 References: <20240128161424.203600-1-sashal@kernel.org>
@@ -82,40 +75,59 @@ Content-Transfer-Encoding: 8bit
 
 From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
 
-[ Upstream commit 8a44fdd3cf91debbd09b43bd2519ad2b2486ccf4 ]
+[ Upstream commit d7a254fad873775ce6c32b77796c81e81e6b7f2e ]
 
-In function 'amdgpu_device_need_post(struct amdgpu_device *adev)' -
-'adev->pm.fw' may not be released before return.
+Range interval [start, last] is ordered by rb_tree, rb_prev, rb_next
+return value still needs NULL check, thus modified from "node" to "rb_node".
 
-Using the function release_firmware() to release adev->pm.fw.
+Fixes the below:
+drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_svm.c:2691 svm_range_get_range_boundaries() warn: can 'node' even be NULL?
 
-Thus fixing the below:
-drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:1571 amdgpu_device_need_post() warn: 'adev->pm.fw' from request_firmware() not released on lines: 1554.
-
-Cc: Monk Liu <Monk.Liu@amd.com>
+Suggested-by: Philip Yang <Philip.Yang@amd.com>
+Cc: Felix Kuehling <Felix.Kuehling@amd.com>
 Cc: Christian König <christian.koenig@amd.com>
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Suggested-by: Lijo Lazar <lijo.lazar@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Reviewed-by: Felix Kuehling <felix.kuehling@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/amd/amdkfd/kfd_svm.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-index a5352e5e2bd4..4b91f95066ec 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-@@ -1310,6 +1310,7 @@ bool amdgpu_device_need_post(struct amdgpu_device *adev)
- 				return true;
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
+index 5188c4d2e7c0..7fa5e70f1aac 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
+@@ -2553,6 +2553,7 @@ svm_range_get_range_boundaries(struct kfd_process *p, int64_t addr,
+ {
+ 	struct vm_area_struct *vma;
+ 	struct interval_tree_node *node;
++	struct rb_node *rb_node;
+ 	unsigned long start_limit, end_limit;
  
- 			fw_ver = *((uint32_t *)adev->pm.fw->data + 69);
-+			release_firmware(adev->pm.fw);
- 			if (fw_ver < 0x00160e00)
- 				return true;
- 		}
+ 	vma = find_vma(p->mm, addr << PAGE_SHIFT);
+@@ -2575,16 +2576,15 @@ svm_range_get_range_boundaries(struct kfd_process *p, int64_t addr,
+ 	if (node) {
+ 		end_limit = min(end_limit, node->start);
+ 		/* Last range that ends before the fault address */
+-		node = container_of(rb_prev(&node->rb),
+-				    struct interval_tree_node, rb);
++		rb_node = rb_prev(&node->rb);
+ 	} else {
+ 		/* Last range must end before addr because
+ 		 * there was no range after addr
+ 		 */
+-		node = container_of(rb_last(&p->svms.objects.rb_root),
+-				    struct interval_tree_node, rb);
++		rb_node = rb_last(&p->svms.objects.rb_root);
+ 	}
+-	if (node) {
++	if (rb_node) {
++		node = container_of(rb_node, struct interval_tree_node, rb);
+ 		if (node->last >= addr) {
+ 			WARN(1, "Overlap with prev node and page fault addr\n");
+ 			return -EFAULT;
 -- 
 2.43.0
 
