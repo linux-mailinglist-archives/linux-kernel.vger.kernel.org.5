@@ -1,156 +1,110 @@
-Return-Path: <linux-kernel+bounces-41633-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86EB683F59C
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 14:30:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4A3E83F5A5
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 14:42:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CEB1282D0A
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 13:30:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 426751F22135
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 13:42:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 153D02376D;
-	Sun, 28 Jan 2024 13:30:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C501123769;
+	Sun, 28 Jan 2024 13:42:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mDB8MS8Z"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qh+gAG+S"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32A1C23761;
-	Sun, 28 Jan 2024 13:30:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BD8423746;
+	Sun, 28 Jan 2024 13:42:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706448608; cv=none; b=dFkAWlahkJfG1KJKj1b2sVTDG8WWMzPq4XYdbIWW66NbAZXkkaxHZNrzi08sJCmBqeqjwCqQR48ZAsTvnYs6ej0RAiWIYGAUbfOMpsdt5xpwlf5NiEIz5UcczrgsboihhwipWuXzM6kKBKHvBUyYnGBDHAFgUSJ0Va8nkL2tucM=
+	t=1706449330; cv=none; b=CCkD4M4kwDHb10ykxjtzzafRdRFBKkC+qdCS8L2LbwmFKUqKo4ZrLKdtchuOSkjSa4+t1UiqDbQDj3NGmcs6EXP1n/+goZZozYZXyaVHmFN8GKE9R0ZJwNjSci6oy6hkB2jVUXRKC9dbhkZC6yyMOUSDp7FrC+gnIqPMmIYtZdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706448608; c=relaxed/simple;
-	bh=edA6KdPPNfWm2BtEdfY8oMP0a6+joeslKgk0ety0Rg4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=re9D5wQzoNSa19DjSmZ6JNXdbUYawI9e2KKdKq9dZAungjRF0j10mh4W3tJfWwQ4WuuAZdBriIIkgEHa5ShgKrVwgRCYCLZpB4TpWkAPz/yHFNvKxey6A8XWp5HTCXUE/2jIjYb+yeE5EDw/M+TqiXzD2J/NJEKV81XFNPu95To=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mDB8MS8Z; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706448606; x=1737984606;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=edA6KdPPNfWm2BtEdfY8oMP0a6+joeslKgk0ety0Rg4=;
-  b=mDB8MS8ZwtoEVpDyHGiJkrBy/AnQl9/LUEgpoiBkMRn58IIQl/owt0SS
-   WboPE8Pjc3Ecm+Cc4dgluO7BWGDXBxcY3RBFl61oSuF2VHmVPyQFlwFyt
-   RyyxN0KoX4bLphiGqGvbM8Iwva78D1yCLbuTr3w3idOhz7g9cxB9XaNGp
-   Iy3CV77raySLyufDT2qVQLNPlmXoMScSr0fvH3pR8e4RFPFCDfM68qyeT
-   I2uR1AExPIqrMdtSME8JEUo1fBHDmkvbYLnAK/8IFfpHpvhRbs/8iLtFr
-   RSsfoj6eV4UN91//yb0CnZMMEgU7MhoUp29gdJbzn5EVhEo73H2/QjhIH
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10966"; a="9886555"
-X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
-   d="scan'208";a="9886555"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2024 05:30:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
-   d="scan'208";a="3162430"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.93.8.92]) ([10.93.8.92])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2024 05:30:01 -0800
-Message-ID: <06eae6f9-be90-459d-a808-29de602b7b5f@linux.intel.com>
-Date: Sun, 28 Jan 2024 21:29:59 +0800
+	s=arc-20240116; t=1706449330; c=relaxed/simple;
+	bh=zoqzVmA6GSns3s2tk0r/sjhN7fyHiGxTng4Rr+3BZwY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=uhgf1bYEB1LveLqrI/GsGOlv40TtCbt2nWyfYF4DuZE8M5V/A82eLVsz0AaIo5dhLoAtTWJrD365lnooogHuGiFDmd/xCyxqHZ0ADDs4SZXIhdyDlbrx1x/HHGprqIT1RNAxf/zWqNK69dmXx6KJC6m7aOzRZXtV6cbQ174ajFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qh+gAG+S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF8D9C433C7;
+	Sun, 28 Jan 2024 13:41:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706449328;
+	bh=zoqzVmA6GSns3s2tk0r/sjhN7fyHiGxTng4Rr+3BZwY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=qh+gAG+S9RQfu5h216l/VB2X7CdrrAAb5FDF2PGVNLWQ/LTCqwC2v6h+pHKXFJh9v
+	 WDCCUQ/Lh/+dJdaTd6S/S/HbsrorPr/QRRtP7LsEVdOVCN+HTB4a6u9tlbrqnhh1jK
+	 fHO682aEiE6FzA8mZUkMVq32xXRd3VCwLzQRcnC2mtdHU1dQivCm0FJe6maiwJiwMw
+	 gtwrKm9/ADuB04EgGl6uUeMvzRqlrhduyFKOvCl865xp0hHR4gLgeuR3G0k7fYaGLj
+	 3B1gUqjN0bB/EaqrAkqHexX7F7E09jh9Oz2U4lK+VZ7Bqwce5OJ2OrbZoGhAPv1s2X
+	 Q3fiI8Oi4fqBQ==
+Date: Sun, 28 Jan 2024 13:41:35 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, Jonathan
+ Cameron <Jonathan.Cameron@huawei.com>, Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH RESEND] iio: move LIGHT_UVA and LIGHT_UVB to the end of
+ iio_modifier
+Message-ID: <20240128134057.075b23ae@jic23-huawei>
+In-Reply-To: <20240127200208.185815-1-javier.carrasco.cruz@gmail.com>
+References: <20240127200208.185815-1-javier.carrasco.cruz@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v18 037/121] KVM: x86/mmu: Allow non-zero value for
- non-present SPTE and removed SPTE
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
- Sean Christopherson <sean.j.christopherson@intel.com>
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <a99cb866897c7083430dce7f24c63b17d7121134.1705965635.git.isaku.yamahata@intel.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <a99cb866897c7083430dce7f24c63b17d7121134.1705965635.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
+On Sat, 27 Jan 2024 21:02:08 +0100
+Javier Carrasco <javier.carrasco.cruz@gmail.com> wrote:
 
+> The new modifiers should have added to the end of the enum, so they do
+> not affect the existing entries.
+> 
+> No modifiers were added since then, so they can be moved safely to the
+> end of the list.
+> 
+> Move IIO_MOD_LIGHT_UVA and IIO_MOD_LIGHT_UVB to the end of iio_modifier.
+> 
+> Fixes: b89710bd215e ("iio: add modifiers for A and B ultraviolet light")
+> Suggested-by: Paul Cercueil <paul@crapouillou.net>
+> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Thanks for the resend.
 
-On 1/23/2024 7:53 AM, isaku.yamahata@intel.com wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
->
-> For TD guest, the current way to emulate MMIO doesn't work any more, as KVM
-> is not able to access the private memory of TD guest and do the emulation.
-> Instead, TD guest expects to receive #VE when it accesses the MMIO and then
-> it can explicitly make hypercall to KVM to get the expected information.
->
-> To achieve this, the TDX module always enables "EPT-violation #VE" in the
-> VMCS control.  And accordingly, for the MMIO spte for the shared GPA,
-> 1. KVM needs to set "suppress #VE" bit for the non-present SPTE so that EPT
-> violation happens on TD accessing MMIO range.  2. On EPT violation, KVM
-> sets the MMIO spte to clear "suppress #VE" bit so the TD guest can receive
-> the #VE instead of EPT misconfigration unlike VMX case.  For the shared GPA
-s/misconfigration/misconfiguration
+Applied to the fixes-togreg branch of iio.git
 
-
-> that is not populated yet, EPT violation need to be triggered when TD guest
-> accesses such shared GPA.  The non-present SPTE value for shared GPA should
-> set "suppress #VE" bit.
->
-> Add "suppress #VE" bit (bit 63) to SHADOW_NONPRESENT_VALUE and
-> REMOVED_SPTE.  Unconditionally set the "suppress #VE" bit (which is bit 63)
-> for both AMD and Intel as: 1) AMD hardware doesn't use this bit when
-> present bit is off; 2) for normal VMX guest, KVM never enables the
-> "EPT-violation #VE" in VMCS control and "suppress #VE" bit is ignored by
-> hardware.
->
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-Nit: one typo above.
-
-Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
+Jonathan
 
 > ---
->   arch/x86/kvm/mmu/spte.h | 15 ++++++++++++++-
->   1 file changed, 14 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
-> index 4d1799ba2bf8..26bc95bbc962 100644
-> --- a/arch/x86/kvm/mmu/spte.h
-> +++ b/arch/x86/kvm/mmu/spte.h
-> @@ -149,7 +149,20 @@ static_assert(MMIO_SPTE_GEN_LOW_BITS == 8 && MMIO_SPTE_GEN_HIGH_BITS == 11);
->   
->   #define MMIO_SPTE_GEN_MASK		GENMASK_ULL(MMIO_SPTE_GEN_LOW_BITS + MMIO_SPTE_GEN_HIGH_BITS - 1, 0)
->   
-> +/*
-> + * Non-present SPTE value for both VMX and SVM for TDP MMU.
-> + * For SVM NPT, for non-present spte (bit 0 = 0), other bits are ignored.
-> + * For VMX EPT, bit 63 is ignored if #VE is disabled. (EPT_VIOLATION_VE=0)
-> + *              bit 63 is #VE suppress if #VE is enabled. (EPT_VIOLATION_VE=1)
-> + * For TDX:
-> + *   TDX module sets EPT_VIOLATION_VE for Secure-EPT and conventional EPT
-> + */
-> +#ifdef CONFIG_X86_64
-> +#define SHADOW_NONPRESENT_VALUE	BIT_ULL(63)
-> +static_assert(!(SHADOW_NONPRESENT_VALUE & SPTE_MMU_PRESENT_MASK));
-> +#else
->   #define SHADOW_NONPRESENT_VALUE	0ULL
-> +#endif
->   
->   extern u64 __read_mostly shadow_host_writable_mask;
->   extern u64 __read_mostly shadow_mmu_writable_mask;
-> @@ -196,7 +209,7 @@ extern u64 __read_mostly shadow_nonpresent_or_rsvd_mask;
->    *
->    * Only used by the TDP MMU.
->    */
-> -#define REMOVED_SPTE	0x5a0ULL
-> +#define REMOVED_SPTE	(SHADOW_NONPRESENT_VALUE | 0x5a0ULL)
->   
->   /* Removed SPTEs must not be misconstrued as shadow present PTEs. */
->   static_assert(!(REMOVED_SPTE & SPTE_MMU_PRESENT_MASK));
+>  include/uapi/linux/iio/types.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/uapi/linux/iio/types.h b/include/uapi/linux/iio/types.h
+> index 5060963707b1..f2e0b2d50e6b 100644
+> --- a/include/uapi/linux/iio/types.h
+> +++ b/include/uapi/linux/iio/types.h
+> @@ -91,8 +91,6 @@ enum iio_modifier {
+>  	IIO_MOD_CO2,
+>  	IIO_MOD_VOC,
+>  	IIO_MOD_LIGHT_UV,
+> -	IIO_MOD_LIGHT_UVA,
+> -	IIO_MOD_LIGHT_UVB,
+>  	IIO_MOD_LIGHT_DUV,
+>  	IIO_MOD_PM1,
+>  	IIO_MOD_PM2P5,
+> @@ -107,6 +105,8 @@ enum iio_modifier {
+>  	IIO_MOD_PITCH,
+>  	IIO_MOD_YAW,
+>  	IIO_MOD_ROLL,
+> +	IIO_MOD_LIGHT_UVA,
+> +	IIO_MOD_LIGHT_UVB,
+>  };
+>  
+>  enum iio_event_type {
 
 
