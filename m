@@ -1,115 +1,97 @@
-Return-Path: <linux-kernel+bounces-41866-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A80DF83F8FC
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 19:03:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7889383F907
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 19:07:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EC01282726
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 18:03:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6EDDB2187C
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 18:07:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17FA82E62E;
-	Sun, 28 Jan 2024 18:03:49 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CBA22E652;
+	Sun, 28 Jan 2024 18:06:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="tIOrCohy"
+Received: from smtp-relay-canonical-1.canonical.com (smtp-relay-canonical-1.canonical.com [185.125.188.121])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC57A2E3E5;
-	Sun, 28 Jan 2024 18:03:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A854A3C489;
+	Sun, 28 Jan 2024 18:06:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.121
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706465028; cv=none; b=p7xlUxEL41oID8UK1NSwE+U7uvpr+/GIUwLE1GMDrX3MdabyKQLmqDcYITu+aGNJUedtiMvZWpPWzG+XgciUOTRHj2iuiKrdw0avpRUzhFqgJLCsh1mhW2AuR1Ud42YaLZYtyfjrqp3H6hgSMkK0CHzUgb2TA/S1ddRU1/DnCTE=
+	t=1706465195; cv=none; b=ExQTqC5SmOvz7VD6kPD+hDD2dP3p4ArqnhhLRvnqdUcN5rcS8eIAQdnwXBeBKEy1e9JB+BgdAFAp2ekpULRpSEZIA+b9/i4/djRhRMUW/NCjeWsMf31pnz3mpLLYxAvIOfhrM4aCprUic9FaKmuJ4Ra9GTCYG2bGtd43FAfsj5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706465028; c=relaxed/simple;
-	bh=/AQjfd6GrGgywp48SoGoQbVnAzv4csY2JQDkqAOXrCA=;
-	h=Subject:From:To:CC:References:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=puVBYkd+4uphG2QqBbSZu+bX35vMGCxhziQ19rKGQ1e84AwHpUOVA6D592mMKbzihKLNiczkczMXeC1oOEEs8WDdPnrpOuC0QLbf9zvcXLrC1pN6FQ6swwQ8ewye4oOIrzwv1UM7f+pywhSFjucZw7IDdRwBv83BIls9NjKq3I8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.105] (178.176.74.225) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sun, 28 Jan
- 2024 21:03:37 +0300
-Subject: Re: [PATCH net-next v4 08/15] net: ravb: Move the IRQs get and
- request in the probe function
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
-	<geert+renesas@glider.be>
-CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Claudiu Beznea
-	<claudiu.beznea.uj@bp.renesas.com>
-References: <20240123125829.3970325-1-claudiu.beznea.uj@bp.renesas.com>
- <20240123125829.3970325-9-claudiu.beznea.uj@bp.renesas.com>
- <bb26b1a9-a848-7b5a-26fd-192f004184d8@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <ada0e1ac-dd33-aad2-52f9-0448b819bc94@omp.ru>
-Date: Sun, 28 Jan 2024 21:03:36 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	s=arc-20240116; t=1706465195; c=relaxed/simple;
+	bh=9SWqwkxkc7LbiSD5VD/OyNGtFRJ/bAopc0MZJ5DlSvI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OLRvkszrCrbufH21xcuoXQT2UIn3kP+C7G+tSHjdHDgtaw4vGGfB+ik05oMhBGMHij5ZfWV7+/2v/AGZNLRfzQPypAofZB6nNOrbNU4NezlonhvhpRUZbu8uTzHULnKFI/QBsEpYeHKrE+n1/XYBGOzEO9VhmTi5YLIf3RebsXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=tIOrCohy; arc=none smtp.client-ip=185.125.188.121
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from localhost.localdomain (ip-178-202-040-247.um47.pools.vodafone-ip.de [178.202.40.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id E5F83413CE;
+	Sun, 28 Jan 2024 18:06:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1706465185;
+	bh=dLYNl6OEot/tkl0vnc26UAKkt+SMWAraqyc+cGDkzMA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version;
+	b=tIOrCohyNvMGB/Xqa1hFx6N+xOZi4izO98fMk2/D1/9U/Wv+AXMuaLhHlxiF0x7x4
+	 UYEuEsv4QiCaW/Vy+U00+80z9rbqssgy8+1neN7fe5975fWaNsOHHgunsSTwFiMKea
+	 /I6PmGlncnhqJZfkLgN+T41qROW1YkM9GeA+KvYZjO5c1XRHlwG4AdegTN/Wb1Lngk
+	 a0KGLvHHGwy/k9QaNOgfs6uqZqmBgqyMiN2x2NaHUdaYi4l5/bJvJpVzQ/k0+6FkcE
+	 SCsIZCprhjCX5Ke/TQdxA0+nIeR3xAgJGoTTG+RD/LrSE4BPFoHEZKqr+dj0NTJmqg
+	 61At2TvNAlroQ==
+From: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+To: Conor Dooley <conor@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	linux-riscv@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Subject: [PATCH 1/1] dt-bindings: riscv: cpus: reg matches hart ID
+Date: Sun, 28 Jan 2024 19:06:21 +0100
+Message-ID: <20240128180621.85686-1-heinrich.schuchardt@canonical.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <bb26b1a9-a848-7b5a-26fd-192f004184d8@omp.ru>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/28/2024 17:47:03
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 182979 [Jan 28 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Int_BEC_cat_st_0}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.225 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.225 in (user)
- dbl.spamhaus.org}
-X-KSE-AntiSpam-Info:
-	d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1;178.176.74.225:7.4.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: {cloud_iprep_silent}
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.74.225
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 01/28/2024 17:50:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 1/28/2024 3:09:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+Content-Transfer-Encoding: 8bit
 
-On 1/28/24 9:01 PM, Sergey Shtylyov wrote:
-[...]
+Add a description to the CPU reg property to clarify that
+the reg property must match the hart ID.
 
->    I suggest the following subject "net: ravb: Move getting/requesting IRQs in
-> the probe() method".
+Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+---
+ Documentation/devicetree/bindings/riscv/cpus.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-   Oops, s/in/to/. :-)
+diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentation/devicetree/bindings/riscv/cpus.yaml
+index f392e367d673..fa9da59d9316 100644
+--- a/Documentation/devicetree/bindings/riscv/cpus.yaml
++++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
+@@ -74,6 +74,10 @@ properties:
+       - riscv,sv57
+       - riscv,none
+ 
++  reg:
++    description:
++      The hart ID of this CPU node.
++
+   riscv,cbom-block-size:
+     $ref: /schemas/types.yaml#/definitions/uint32
+     description:
+-- 
+2.43.0
 
-[...]
-
-MBR, Sergey
 
