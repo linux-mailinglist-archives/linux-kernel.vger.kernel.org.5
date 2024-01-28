@@ -1,124 +1,103 @@
-Return-Path: <linux-kernel+bounces-41883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41882-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29E5283F92C
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 19:32:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7563883F92A
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 19:27:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8DA42820F0
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 18:32:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BD1F282DDC
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 18:27:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 369E72E65B;
-	Sun, 28 Jan 2024 18:32:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 500872E84B;
+	Sun, 28 Jan 2024 18:26:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="BzuF8bzU"
-Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hm6e5IUw"
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E27198C1F;
-	Sun, 28 Jan 2024 18:32:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 414C72E62B;
+	Sun, 28 Jan 2024 18:26:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706466756; cv=none; b=KtNeZ5KP9FiipN+M3BsbSrzcO4a5BBYbhJH7qKfvnxuwMs1mpouIn7x7JNwvLL8+OMqkmmd0V1VO5FNFrV8+RNVD3xQigRCXD2Mpo8uH1hSy8XAcuD98M4b+piIiNv9lo+SHMCqod63WxYn6rD9h2Ta7/UKrYCdtXIHdnmK8B6k=
+	t=1706466418; cv=none; b=kCr3n9Pv6BbiuHu32Q1j8k5Mlosu7eyhxAwZQQsAAFz80+gcMBNX3vXvmb2loMewv9MdjGh7pZ1WYMabVg+zY0Nl11wN5t/IatQmo1FueEAGLcV8LFRPP/fD9TYlBRs60bwu+ksrTXfvnc05b+3I+qDE+6QMbRIdLCAqa9UPhp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706466756; c=relaxed/simple;
-	bh=uTT/jcj1NmTzHT+D89Z39WUaWCXDZ3FlJM+w3u9zLuU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=T4s4IBRK7NtRtVpogcUWv6cHGeMIHjltn0vRjNwk3qoJuHLDQxBTNocEer18bJpzIy2ye8Q9ViAN5FtE8mtECXB+MGcti3oY1XaZZvIInUjL/W7y5KInE1RzPyDsK3aHInoDgY5XFtmaRJXA2nbaSWi9aQ0FzpvInOotiLGCQ3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=BzuF8bzU; arc=none smtp.client-ip=185.125.188.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from [192.168.123.161] (ip-178-202-040-247.um47.pools.vodafone-ip.de [178.202.40.247])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 3DEB63F2CA;
-	Sun, 28 Jan 2024 18:23:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1706466218;
-	bh=Vutysr8zKp94azivfu5X8ZtSSGaT9WFnXqrtSd/Jfpg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type;
-	b=BzuF8bzUYA4t+yxx6PQycQS2U0JOsRK15YX6jpA/cIdC/LtCrqjhTAc1GDGQHC8S5
-	 PkncFd4yspBegHIhL9r4HaKXwhcbboBrohdvi/PiewF49cbKQ9yt+pi6FeKddDGG6p
-	 WK+KyyQBfLeEq5RqC3uNKmNWhZyAt+oFC7Pv+MYefkkwqx99PPF15XJOtDvlv65ESu
-	 P98N0bXOT27F25UfRNzn46YitsyxrbcB1cOM0EmtMsPzNpT33onSeyUZBxbxhWHt6B
-	 peORJ9cMegLl91r3oSEQBK5B/BYIKh+I31hbcdY/NGf70Va4ou/c0hUZ8+q+EVwvqZ
-	 ylMv858ZtReew==
-Message-ID: <3f751ed6-871e-424e-a50e-4362e1bfb527@canonical.com>
-Date: Sun, 28 Jan 2024 19:23:39 +0100
+	s=arc-20240116; t=1706466418; c=relaxed/simple;
+	bh=UXTngv2IRaXa+2eC4u2kVj1o4DgKsM6J1Yyn4x6/qHw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rP4CaSKzKBI65DvKzM8UZewPQGhW1EZB4EKAfjJImUTINmnJSoycRfxzNl9TurKgJT+6K4uUNGK/h2laky2NeSlkLHAgwojHfBANVMPFA12gHVZmgw3pWtDJcxJpQMG/nBEW/6F4pg9f2Z61jHCppIFqGIUO11/RzHaw8FNYPKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hm6e5IUw; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-602d0126e80so16950687b3.3;
+        Sun, 28 Jan 2024 10:26:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706466416; x=1707071216; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UXTngv2IRaXa+2eC4u2kVj1o4DgKsM6J1Yyn4x6/qHw=;
+        b=hm6e5IUwAEylMWdb0I2crHU8S80NVqt/M26Hd4P2OAwrNytL5rzVptCWlzgaUTeVtF
+         bnhuLTmpLU57UwF47MAFdsE+gGIkVih0XnkS0lBALzODYlPv6ciIVeRBcQwB+2qHMvAs
+         /Ap+TnNkuNwm3VTaAtlzgYjt8YpyvkKItnNvGcmWSJzl0htRK2kRIxcSbVnqTHB13frv
+         /X+O61uE3GnlzzHdf2nvu3EV11r9eOrqxiWsXjJsTRdBPo1dLW0Yapv4Ipk7bDvKmtWs
+         +gxNl2kXJwAUkk/KzO/YhsooF4AsI0873jqac8Twos0ZL98MObYD9Quq3jOICFVXc63m
+         UcHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706466416; x=1707071216;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UXTngv2IRaXa+2eC4u2kVj1o4DgKsM6J1Yyn4x6/qHw=;
+        b=FUzb/XuDAFs8qqwkKVzobrKs+5yxj5lVrM252j5TenBDJJbv+wyc5tGrrbK2c1R4p1
+         yqrT4JW77NSHJfBOsmmbgvJnXJPpM5Z07xiQ9oSFHRhclhSZgXy2/QBp+ssJpLJGSSWN
+         yaDIzddUZeSXMuDN5Sl9EXNhNZJ37pR8vqg90tvRUzXGpKRb9P2/2eLxrgQZk4dwvv3S
+         wN95zMgzx4SKcf77q3p+diDivN7CprpCUoEtt4OsWj3Foag0yKrylpxeaNwG71cdOXaV
+         GpElWUwZXSvsE8iQnADLbGTXsE7eT1NCAPbPoQSRZyCH6h2quTi0RvUKQsGsCtFB8Dvq
+         jtWQ==
+X-Gm-Message-State: AOJu0YyfX0iV/doaodpzyXuK+DktoMISlJl3EtmJETL7Tv9v3wLzr2jz
+	JmNHo61l6RQg4fOrSbhCYFD/KVywQxgYKjCHuoozCW4uOPkHIuhFcFH1ZrsJF/oNlwd0pvH/jLo
+	RGepX4ywCF+K5T+KR+K/DAXOtr48=
+X-Google-Smtp-Source: AGHT+IH4qPrdNAcAUFXsMfaYWG5heoS9259jnH7OV1Wc3BHu64nL+mQKDxGhwtH2ZbLGQ3WmWJjvggFPbjyNKRDRnPc=
+X-Received: by 2002:a81:4006:0:b0:5ff:9810:e8d5 with SMTP id
+ l6-20020a814006000000b005ff9810e8d5mr2500689ywn.87.1706466416118; Sun, 28 Jan
+ 2024 10:26:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] dt-bindings: riscv: cpus: reg matches hart ID
-Content-Language: en-US, de-DE
-To: Conor Dooley <conor@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240128180621.85686-1-heinrich.schuchardt@canonical.com>
- <20240128-simile-endocrine-9e8af979d361@spud>
-From: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-In-Reply-To: <20240128-simile-endocrine-9e8af979d361@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20231023174449.251550-1-ojeda@kernel.org>
+In-Reply-To: <20231023174449.251550-1-ojeda@kernel.org>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Sun, 28 Jan 2024 19:26:45 +0100
+Message-ID: <CANiq72kGPTxC09GigzcLdD8qP6QPch0M7FB8iyqNHNnXN52L4w@mail.gmail.com>
+Subject: Re: [PATCH 1/4] x86/rust: support RETPOLINE
+To: Miguel Ojeda <ojeda@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Josh Poimboeuf <jpoimboe@kernel.org>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, 
+	Gary Guo <gary@garyguo.net>, =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, x86@kernel.org, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, patches@lists.linux.dev, 
+	Daniel Borkmann <daniel@iogearbox.net>, "H. Peter Anvin" <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/28/24 19:20, Conor Dooley wrote:
-> On Sun, Jan 28, 2024 at 07:06:21PM +0100, Heinrich Schuchardt wrote:
->> Add a description to the CPU reg property to clarify that
->> the reg property must match the hart ID.
-> 
-> That is the expected usage alright. Did you come across something where
-> it was not being used in that way?
+On Mon, Oct 23, 2023 at 7:45=E2=80=AFPM Miguel Ojeda <ojeda@kernel.org> wro=
+te:
+>
+> Support the `RETPOLINE` speculation mitigation by enabling the target
+> features that Clang does.
 
-No. I was simply missing it in the documentation.
+x86: do you plan/want to pick this series up?
 
-There is a page 
-https://www.kernel.org/doc/Documentation/devicetree/bindings/riscv/cpus.txt 
-but that seems not to be generated from the kernel tree.
+Thanks!
 
-Best regards
-
-Heinrich
-
-> 
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> 
-> Cheers,
-> Conor.
-> 
->>
->> Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
->> ---
->>   Documentation/devicetree/bindings/riscv/cpus.yaml | 4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentation/devicetree/bindings/riscv/cpus.yaml
->> index f392e367d673..fa9da59d9316 100644
->> --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
->> +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
->> @@ -74,6 +74,10 @@ properties:
->>         - riscv,sv57
->>         - riscv,none
->>   
->> +  reg:
->> +    description:
->> +      The hart ID of this CPU node.
->> +
->>     riscv,cbom-block-size:
->>       $ref: /schemas/types.yaml#/definitions/uint32
->>       description:
->> -- 
->> 2.43.0
->>
-
+Cheers,
+Miguel
 
