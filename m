@@ -1,142 +1,100 @@
-Return-Path: <linux-kernel+bounces-41752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A28083F751
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:30:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8442883F77A
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:34:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C7131C20ABA
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:30:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39D551F23404
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:34:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E37B267729;
-	Sun, 28 Jan 2024 16:14:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9FE76E2C1;
+	Sun, 28 Jan 2024 16:14:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FzWuLFMx"
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KO0XW7jq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D0A6664D8
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 16:14:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 005506DD15;
+	Sun, 28 Jan 2024 16:14:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458447; cv=none; b=SZB7iNVTNDO9m+5meIAfNwXRCtBj25s9BJmSOEzQeNRW8umLNX8O4hmpx+7cS3qpbtFPrjcMhkjvZvKYYQF+FM1L58jFWni8fYMTVPik1FtiU5W4zjtBp5vWDAU/30bAiU7IrrvkDOi0KViZAUzGHIV/Fexqibu3snPriTKYYxI=
+	t=1706458485; cv=none; b=Bo/A3q+0zqFBvDgk724q4uq3ZWMr4aIjkmmPROBBXqnrH25EJa2KbZBYcNZMzefjaoFTLeT+HtEhbikG4uc/eSXTUVpG2wQXMg6d561gRgS1nnILumR0J2qZHwifeSwvqOs87vKrO67mgT6BZpcL9zd+7mG/iT9j5cBOCW2ZgVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458447; c=relaxed/simple;
-	bh=/xWOilo4Hud6QzZM3cj00D+5v080/58h43sQggsHgHg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=qph3M8QqODVMnOO5+1QprWQ04ADKAGSZgq7+/s7yN6jSDkLkCpaZ0B0HU3nXuDhfmMXOa0T4K/1K89nVo9uzpbemI159WpSrtzj72WdE/9T+JR27ACNOHVjCFlOLlO2z40qrcBTMpo0IFE2xYK8b2QdlshwaHSnaUekFdLKDr2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=FzWuLFMx; arc=none smtp.client-ip=209.85.219.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-68c3b845643so12535046d6.1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 08:14:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706458443; x=1707063243; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gyrr36Rbe8AgWubab7y8Kw9tDT0keELEe6KuPO/35LY=;
-        b=FzWuLFMxaZaLG5NdsCCqSV2MCwNpFUQJkrzYErKrXyacRrj9MIM0G9DgtGnGcBKTrZ
-         Km9+MW6IxrEpblm/gMQ0NKe9+SN+8Uh0AU5zwKL73erSXSVS1R8m9id2TihS+sbvcBk+
-         s8B1xvVtdglp9AHNKjfV6UujEbzsd+CzrzOfo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706458443; x=1707063243;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gyrr36Rbe8AgWubab7y8Kw9tDT0keELEe6KuPO/35LY=;
-        b=rFFBAGE51kZCzV4jbih+hUa+7Q30T05HHNHuzEIzKY0kKeKHXLN7RDwRLkJFxYuRKO
-         VGeJqTz7RBEn22AQM46R5KSgDJ84xF9nClUk1FStCsJ6iO0lnAJXcFCml0mpUl8Mfg63
-         GvmceoxiivtG69HX9Ib+AdhEyHh8SrBlLQrpPVvXevsDB28Wccj4ipRIc4FK50cKEYal
-         s5BKTOV0sHlmLry5N2EKwpAzNvP32whZZXBLz41ckYT93KXzItQ3E38yAQDW0I2lNnDZ
-         nTw9CeojLdNc5xLvmhFqPJAkZxt7j35fK6iRPXL7BBR6CAHnC4Hsdzc4a8c6vz/ZUZ7V
-         LL3w==
-X-Gm-Message-State: AOJu0YzQqSKgIkyXAdfBSWIE7RvN3Xg1Cq+/OwHbOHjq8IOxTYOmFbZH
-	CpRcvBGxfRuVm3F5i+Ii9i+9UJPBGJUf7Ex37Afn5kevmVjiTgK+ZnG1Onjpkw==
-X-Google-Smtp-Source: AGHT+IEi91bgjGpdxd6b1KVJteAO32/e7rfk2MgI0un8dbL/yrThhpzpxRXTFzO5dYTWX+Rat0dJbg==
-X-Received: by 2002:a05:6214:2483:b0:68c:46ab:c8df with SMTP id gi3-20020a056214248300b0068c46abc8dfmr1995323qvb.128.1706458443430;
-        Sun, 28 Jan 2024 08:14:03 -0800 (PST)
-Received: from denia.c.googlers.com (240.157.150.34.bc.googleusercontent.com. [34.150.157.240])
-        by smtp.gmail.com with ESMTPSA id dz11-20020ad4588b000000b0068c493426edsm566640qvb.104.2024.01.28.08.14.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jan 2024 08:14:03 -0800 (PST)
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Sun, 28 Jan 2024 16:13:56 +0000
-Subject: [PATCH 1/2] media: nxp: imx8-isi: Factor out a variable
+	s=arc-20240116; t=1706458485; c=relaxed/simple;
+	bh=IpK14T6a2JY3qyCdxkZ5SFrzyR3FJ/x2m+Xk2BjcEmM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=IUeytbVpx2/j7B5UPu/AdTTsuw90iDoegSGrDZ64ghx0onCGlwL3HRviUaNpemaov4DYoNs1hgOSqfM3cisXpm0/UxK0YIR0SQCPRWrpHwNn5UziF42ZUfi2eV11YNEpKYg+NGR/pJFpjhKGpmUHPCe5a4i3sp12mpy8c4WYaWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KO0XW7jq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCEBDC433F1;
+	Sun, 28 Jan 2024 16:14:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706458484;
+	bh=IpK14T6a2JY3qyCdxkZ5SFrzyR3FJ/x2m+Xk2BjcEmM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=KO0XW7jqw93EJKcmcjzQsUpU0CzDoOrGNA/vg8LQUoJ2l/EFHu6r6a4s5poZSGghW
+	 +Zo190krE+0Ft0QsM2hDdBWQ5pwWwFdIhHoNHldneByJxnP8mvEVd8yFIo2x9XqDVl
+	 BS7ZvAsDKVHQihQfFaxju1BcCibT63jRY3xQEpD0HAKXE3/hb/gWD5aErinVsrrzmZ
+	 9T244DQQr/k0NOiB8aApoKamoNa567Xok005M/m6okKfkU24A2ftf6jeK6kvUTeXlk
+	 vIVBUfdbCZ95G8loO0HJS3sFDxUtpGfGrSpiEvJfxyVcgXIXGkMFA4Maw2D+99W0Yg
+	 wQbtK+IvGHONQ==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Sasha Levin <sashal@kernel.org>,
+	linux-pci@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 11/27] PCI: Fix 64GT/s effective data rate calculation
+Date: Sun, 28 Jan 2024 11:13:56 -0500
+Message-ID: <20240128161424.203600-11-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240128161424.203600-1-sashal@kernel.org>
+References: <20240128161424.203600-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240128-gcc-11-warnings-v1-1-52bbdf492049@chromium.org>
-References: <20240128-gcc-11-warnings-v1-0-52bbdf492049@chromium.org>
-In-Reply-To: <20240128-gcc-11-warnings-v1-0-52bbdf492049@chromium.org>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
- Sascha Hauer <s.hauer@pengutronix.de>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>, 
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>
-Cc: linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, Ricardo Ribalda <ribalda@chromium.org>
-X-Mailer: b4 0.12.3
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.1.75
+Content-Transfer-Encoding: 8bit
 
-gcc-11 seems to believe that coffs can be used uninitialized. Refactor
-the code and remove the csen variable to convince gcc that we are doing
-a good job.
+From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-drivers/media/platform/nxp/imx8-isi/imx8-isi-hw.c:218:20: warning: 'coeffs' may be used uninitialized in this function [-Wmaybe-uninitialized]
+[ Upstream commit ac4f1897fa5433a1b07a625503a91b6aa9d7e643 ]
 
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Unlike the lower rates, the PCIe 64GT/s Data Rate uses 1b/1b encoding, not
+128b/130b (PCIe r6.1 sec 1.2, Table 1-1).  Correct the PCIE_SPEED2MBS_ENC()
+calculation to reflect that.
+
+Link: https://lore.kernel.org/r/20240102172701.65501-1-ilpo.jarvinen@linux.intel.com
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/nxp/imx8-isi/imx8-isi-hw.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/pci/pci.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/nxp/imx8-isi/imx8-isi-hw.c b/drivers/media/platform/nxp/imx8-isi/imx8-isi-hw.c
-index 19e80b95ffea..5623914f95e6 100644
---- a/drivers/media/platform/nxp/imx8-isi/imx8-isi-hw.c
-+++ b/drivers/media/platform/nxp/imx8-isi/imx8-isi-hw.c
-@@ -215,8 +215,7 @@ static void mxc_isi_channel_set_csc(struct mxc_isi_pipe *pipe,
- 		[MXC_ISI_ENC_RGB] = "RGB",
- 		[MXC_ISI_ENC_YUV] = "YUV",
- 	};
--	const u32 *coeffs;
--	bool cscen = true;
-+	const u32 *coeffs = NULL;
- 	u32 val;
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index ed6d75d138c7..e1d02b7c6029 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -274,7 +274,7 @@ void pci_bus_put(struct pci_bus *bus);
  
- 	val = mxc_isi_read(pipe, CHNL_IMG_CTRL);
-@@ -235,14 +234,13 @@ static void mxc_isi_channel_set_csc(struct mxc_isi_pipe *pipe,
- 		val |= CHNL_IMG_CTRL_CSC_MODE(CHNL_IMG_CTRL_CSC_MODE_RGB2YCBCR);
- 	} else {
- 		/* Bypass CSC */
--		cscen = false;
- 		val |= CHNL_IMG_CTRL_CSC_BYPASS;
- 	}
- 
- 	dev_dbg(pipe->isi->dev, "CSC: %s -> %s\n",
- 		encodings[in_encoding], encodings[out_encoding]);
- 
--	if (cscen) {
-+	if (coeffs) {
- 		mxc_isi_write(pipe, CHNL_CSC_COEFF0, coeffs[0]);
- 		mxc_isi_write(pipe, CHNL_CSC_COEFF1, coeffs[1]);
- 		mxc_isi_write(pipe, CHNL_CSC_COEFF2, coeffs[2]);
-@@ -253,7 +251,7 @@ static void mxc_isi_channel_set_csc(struct mxc_isi_pipe *pipe,
- 
- 	mxc_isi_write(pipe, CHNL_IMG_CTRL, val);
- 
--	*bypass = !cscen;
-+	*bypass = !coeffs;
- }
- 
- void mxc_isi_channel_set_alpha(struct mxc_isi_pipe *pipe, u8 alpha)
-
+ /* PCIe speed to Mb/s reduced by encoding overhead */
+ #define PCIE_SPEED2MBS_ENC(speed) \
+-	((speed) == PCIE_SPEED_64_0GT ? 64000*128/130 : \
++	((speed) == PCIE_SPEED_64_0GT ? 64000*1/1 : \
+ 	 (speed) == PCIE_SPEED_32_0GT ? 32000*128/130 : \
+ 	 (speed) == PCIE_SPEED_16_0GT ? 16000*128/130 : \
+ 	 (speed) == PCIE_SPEED_8_0GT  ?  8000*128/130 : \
 -- 
-2.43.0.429.g432eaa2c6b-goog
+2.43.0
 
 
