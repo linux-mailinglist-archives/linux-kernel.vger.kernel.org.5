@@ -1,172 +1,106 @@
-Return-Path: <linux-kernel+bounces-41521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 815C583F3A4
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 04:43:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6C9C83F3A6
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 04:45:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A65171C214C9
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 03:43:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 247DA1C21384
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 03:45:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D031763D9;
-	Sun, 28 Jan 2024 03:43:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66F50469E;
+	Sun, 28 Jan 2024 03:45:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j8OVdmOI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Lvds9SRs"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12AEC4C85;
-	Sun, 28 Jan 2024 03:43:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A9B1C36;
+	Sun, 28 Jan 2024 03:45:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706413428; cv=none; b=JPn5qL+BXFGsyA73KBlkkGVIIuvjaRAPLoIvHnDRWhd1wAyQRt39MOTwtnpoBUG6Rsn2eMCya2mW/+sl5Gs5YFct2mHCIQmXzJmqwxXqSU7YHfAG/dTeqNQd70zxwGDncQhZOMDmlDNsJTG44gsy7SjJLP/g3Ygb2Q3cYaMrqCU=
+	t=1706413546; cv=none; b=mf7djzneiRhPE92EhzhEQegAhNx3amYHezDWBCbHd8aP9QQqWKOmjvnNLQhylJIj9BN39K9bmA7KFXb3Pbget5BzCQKE8p7yIRNZWqveRrPOoaCaxV7FR6HwIAsHwbcmHUsUSRBRzQghwJv1GyrKYt7b7zyLdS/UKkRZDwFAIeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706413428; c=relaxed/simple;
-	bh=aY4B8zzOWdf/8l2np8fF4UyMvfNAxrpL2qafcdX+Fas=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S0gSWYjVfHxveJSVDeYbfivlGzOW1+RQl0Qe9bBZjf35eq+B3KIzzEXEUsZBOJj7WO4OYo2DXXfV9GXFXg5dzi5ptPGEck5cEEiB1KDDVFVpXt008kGe4w8z0GDrrUIr7SIQlcCfh+Ie14brTL8wORSXRsnPZMBiTbbqyH3T9rY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j8OVdmOI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAB65C433F1;
-	Sun, 28 Jan 2024 03:43:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706413427;
-	bh=aY4B8zzOWdf/8l2np8fF4UyMvfNAxrpL2qafcdX+Fas=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=j8OVdmOIg9bXCe9vyzExOtj9qjrVgQLT4VhnwVBY6bHgeTVfVfKCiscH72ZYgLrnB
-	 dUi1VKo5TZikLO2hvBHo3RUStnYWozpIJ/g8eW5+cJzisiymjAmzNnge0678oERuDA
-	 UP9CBwFvg8zqlbH2lF9PAufRmdtVpVX2cwDB/Vsp8bAvET6zl5iG+BmDlb9PgK1yMT
-	 Ymqjb4ivPz+r0SX96FDAADKZgmB5kGTJDzP4narx8DjAQrfUnqqVRRzgwAygItgcSe
-	 RqlOvgITf78kYh2b7QC+UFUl129AC2XXbMIhyDa/g7gSsqFndd0J48fR3D21SjuCd7
-	 VcL5t+t7JZyeA==
-Date: Sat, 27 Jan 2024 21:43:45 -0600
-From: Bjorn Andersson <andersson@kernel.org>
-To: Maulik Shah <quic_mkshah@quicinc.com>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, quic_eberman@quicinc.com, 
-	quic_collinsd@quicinc.com, quic_lsrao@quicinc.com
-Subject: Re: [PATCH v2] soc: qcom: rpmh-rsc: Enhance check for VREG in-flight
- request
-Message-ID: <xjcefuurfbv7oquotsmm4iv4pnwzoone7jxrm42vjsnpfcgk4z@mnrsxec43bhp>
-References: <20240119-rpmh-rsc-fixes-v2-1-e42c0a9e36f0@quicinc.com>
+	s=arc-20240116; t=1706413546; c=relaxed/simple;
+	bh=GyG3XRmmIxmkIx2xPPpLaY05k99GraX++O3IXXHsvT8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=MIIkL+X6mWOeN4s0ZhSTwlAQJKLxs1WGUjqPANxTinXRZ2He6bTZHLiK+LaYALitdoZFlgT80PSX4JugEyYtX+PDjKZYOX3jk/7BudfLWq8GlUzCvjFjkg4lib2m9f1bbXkXAVrP6UBNP/qTDgLTokgizpLSnIGXQ88dmLO8Vnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=Lvds9SRs; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1706413541;
+	bh=taedcObMTGubyjHmYKbWTUWvc+pOzIOAUb6FsIlbmwQ=;
+	h=Date:From:To:Cc:Subject:From;
+	b=Lvds9SRseLB/SNUsH33Lvdlb4cA9CtIPjNvBPwYv0+3o8JhAH3LF0SUpPIz5AE+de
+	 MubJ66ewulp88YFaiY/Cyaeay3Zaz0JyeKaZNeMtwHkCETp5lnnR3cJ0cFN+4EOj8W
+	 NIEvuXLUKOr5KHa0GosnXkFrxgWJWxzi2dl6Kgiafu2ghVxOC9Y+dYNwV49BToDIrS
+	 CAPa67N3paYAXfAGbFB6+UDpcu2X3o98f98hNg2dTz2jPVoWg43FT8InPiPtWlA8Hr
+	 SFLHqGF9jKHB583Jf+9tXjrwl38r1MF1H/+MuTXp3gEnUPvKk0ffpwEfO0LoBx7p+7
+	 w+YjVix5mM8yA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TMy504p0gz4wd4;
+	Sun, 28 Jan 2024 14:45:40 +1100 (AEDT)
+Date: Sun, 28 Jan 2024 14:45:37 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Conor Dooley <Conor.Dooley@microchip.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Chen Wang <unicorn_wang@outlook.com>,
+ Inochi Amaoto <inochiama@outlook.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patch in the riscv-dt-fixes tree
+Message-ID: <20240128144537.78dcaf09@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240119-rpmh-rsc-fixes-v2-1-e42c0a9e36f0@quicinc.com>
+Content-Type: multipart/signed; boundary="Sig_/XEFbEvd_==u+4Nf/dOIVpLZ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Fri, Jan 19, 2024 at 01:56:54PM +0530, Maulik Shah wrote:
-> Each RPMh VREG accelerator resource has 3 or 4 contiguous 4-byte aligned
-> addresses associated with it. These control voltage, enable state, mode,
-> and in legacy targets, voltage headroom. The current in-flight request
-> checking logic looks for exact address matches. Requests for different
-> addresses of the same RPMh resource as thus not detected as in-flight.
-> 
-> Enhance the in-flight request check for VREG requests by ignoring the
-> address offset. This ensures that only one request is allowed to be
-> in-flight for a given VREG resource. This is needed to avoid scenarios
-> where request commands are carried out by RPMh hardware out-of-order
-> leading to LDO regulator over-current protection triggering.
-> 
-> Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
-> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+--Sig_/XEFbEvd_==u+4Nf/dOIVpLZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The s-o-b chain doesn't look right.
+Hi all,
 
-> ---
-> Changes in v2:
-> - Use GENMASK() and FIELD_GET()
-> - Link to v1: https://lore.kernel.org/r/20240117-rpmh-rsc-fixes-v1-1-71ee4f8f72a4@quicinc.com
-> ---
->  drivers/soc/qcom/rpmh-rsc.c | 21 ++++++++++++++++++++-
->  1 file changed, 20 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
-> index a021dc71807b..e480cde783fe 100644
-> --- a/drivers/soc/qcom/rpmh-rsc.c
-> +++ b/drivers/soc/qcom/rpmh-rsc.c
-> @@ -1,11 +1,13 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
->   * Copyright (c) 2016-2018, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2023-2024, Qualcomm Innovation Center, Inc. All rights reserved.
->   */
->  
->  #define pr_fmt(fmt) "%s " fmt, KBUILD_MODNAME
->  
->  #include <linux/atomic.h>
-> +#include <linux/bitfield.h>
->  #include <linux/cpu_pm.h>
->  #include <linux/delay.h>
->  #include <linux/interrupt.h>
-> @@ -91,6 +93,15 @@ enum {
->  #define CMD_STATUS_ISSUED		BIT(8)
->  #define CMD_STATUS_COMPL		BIT(16)
->  
-> +#define ACCL_TYPE(addr)			FIELD_GET(GENMASK(19, 16), addr)
+The following commit is also in Linus Torvalds' tree as a different commit
+(but the same patch):
 
-Command DB is there so we don't have to make assumptions about the
-addresses of resources. As such, I dislike this define.
+  a75f0b6e6f74 ("riscv: dts: sophgo: separate sg2042 mtime and mtimecmp to =
+fit aclint format")
 
-> +#define VREG_ADDR(addr)			FIELD_GET(GENMASK(19, 4), addr)
-> +
-> +enum {
-> +	HW_ACCL_CLK = 0x3,
-> +	HW_ACCL_VREG,
-> +	HW_ACCL_BUS,
+This is commit
 
-We already define these in the kernel, but with different names:
-CMD_DB_HW_ARC, CMD_DB_HW_VRM, CMD_DB_HW_BCM. I see no reason to use
-different names for the same thing.
+  1f4a994be2c3 ("riscv: dts: sophgo: separate sg2042 mtime and mtimecmp to =
+fit aclint format")
 
-> +};
-> +
->  /*
->   * Here's a high level overview of how all the registers in RPMH work
->   * together:
-> @@ -557,7 +568,15 @@ static int check_for_req_inflight(struct rsc_drv *drv, struct tcs_group *tcs,
->  		for_each_set_bit(j, &curr_enabled, MAX_CMDS_PER_TCS) {
->  			addr = read_tcs_cmd(drv, drv->regs[RSC_DRV_CMD_ADDR], i, j);
->  			for (k = 0; k < msg->num_cmds; k++) {
-> -				if (addr == msg->cmds[k].addr)
-> +				/*
-> +				 * Each RPMh VREG accelerator resource has 3 or 4 contiguous 4-byte
-> +				 * aligned addresses associated with it. Ignore the offset to check
-> +				 * for in-flight VREG requests.
-> +				 */
-> +				if (ACCL_TYPE(msg->cmds[k].addr) == HW_ACCL_VREG &&
-> +				    VREG_ADDR(msg->cmds[k].addr) == VREG_ADDR(addr))
+in Linus' tree.
 
-I'm sure this work, at least for some targets, but I don't fancy
-encoding this information here. It feels like a hack.
+--=20
+Cheers,
+Stephen Rothwell
 
-Furthermore, I really would like TP_printk() of trace_rpmh_send_msg() to
-be able to resolve the symbolic names for VRMs as well, and it would
-need the same information...
+--Sig_/XEFbEvd_==u+4Nf/dOIVpLZ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Please consider how we can query command db for the type and/or grouping
-information.
+-----BEGIN PGP SIGNATURE-----
 
-Regards,
-Bjorn
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmW1zeEACgkQAVBC80lX
+0GySzAf6Al+em9H/h1YZYBNoSJRLTOd+L9oKqEliHMeDe+mjhj9w07D5SYRwydAi
+SQaVlzyvWxX78M6uysYPkKsu3OFO2gP/BYq6N+fiBZc35Dtr6E//p3zY1Og2Y/TX
+rPGN6mhBAx5UkzLM5ueXSfyHN8YTr1oq6+rxYFREN306mcFxLVerRZhLdgh1jlA7
+QUmq9y6OJXzhux278tjqKXtmSpDBd3HpLLNQzSoOvXtT6ji/w24AmcUSYO4qG+kC
+g17gh+ppRjWGovSc41Hlg60VUDtEEP38oqz0ho1iAYig4Tad0zxIcDOT2al04UmY
+wykZHashBwTlVAzCdWDn+hXJp+bMJg==
+=xM/8
+-----END PGP SIGNATURE-----
 
-> +					return -EBUSY;
-> +				else if (addr == msg->cmds[k].addr)
->  					return -EBUSY;
->  			}
->  		}
-> 
-> ---
-> base-commit: 943b9f0ab2cfbaea148dd6ac279957eb08b96904
-> change-id: 20240117-rpmh-rsc-fixes-6c43c7051828
-> 
-> Best regards,
-> -- 
-> Maulik Shah <quic_mkshah@quicinc.com>
-> 
+--Sig_/XEFbEvd_==u+4Nf/dOIVpLZ--
 
