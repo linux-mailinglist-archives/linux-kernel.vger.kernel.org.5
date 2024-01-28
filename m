@@ -1,57 +1,62 @@
-Return-Path: <linux-kernel+bounces-41857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95C1783F8B8
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 18:48:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10AAB83F8BB
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 18:48:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C83381C21C95
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:48:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C04D428421E
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:48:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA94D4CB5C;
-	Sun, 28 Jan 2024 17:46:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25F724D58E;
+	Sun, 28 Jan 2024 17:46:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hKDrzLnp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bFCV7gFW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D79B4C627;
-	Sun, 28 Jan 2024 17:46:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6467E4CE13;
+	Sun, 28 Jan 2024 17:46:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706463970; cv=none; b=GBj29JCABwEYt7SoWv/SoXGJezko1zjVhI3xxhAbv/y7haKmCojr+qKRDh21XJuOJkIqs5XmXSpg3GrH9UsgHkFqyeUfWZXqG5XQQm6QnZ1ftAvCPlpSf0dE/LRIeBZSzPt6MlsqBMwLL7nfOXYrSGMztLNPj8ue/Aqx88vAw6w=
+	t=1706463971; cv=none; b=U6fFtf/lHwbti4cNaIhUF5+Tj1H/qVg67XF/uZdqwpxO7STTuvPGSCxPfo4i/7YH1w9CAno8IFVpKy5JpK1FG4WqP1rLDhiWDv8WIoGKVJgasDq2rcZ+HhdhMAkd3x15LB8HZMQh8LDO5KmWpoRdmO7+Jn/hWxqAOAMCUIlW1ZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706463970; c=relaxed/simple;
-	bh=BjQIRF8nVXDS2r1inckIhVIOx6wVZvQH+HvmFHGysNc=;
+	s=arc-20240116; t=1706463971; c=relaxed/simple;
+	bh=Qy9pX/xMxl5aQ+IVqAgyddGLNa0mQU6nTpN/RKv77s0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iOuqacB1hVXDX5ayDiXgoYeNrsbY0+VRxS3f0PansDUKO9Wr4uLu85nuQ4x3JdHZKeIpSv/pSu5jDXSjJsJQqy4PR3aVYxR4gw4P+wzW/gspHgDlrFBG7FT8JG7iYL3ighWEkpuA28rG/VnDEK8oOIGYJD4uh972sRzjAB95C9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hKDrzLnp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 731F7C43390;
-	Sun, 28 Jan 2024 17:46:09 +0000 (UTC)
+	 MIME-Version:Content-Type; b=bj22KBuyxDTufa6Xcr4ruCJfMIFz49JzcpZEyt3fPFF720uexpR3QuDs1Qre6qu+eLQ2bYaOR/vid7lY7Td4UjaEf+cMEPDjHpvIghRfzfI7UR8Vdyw7nvCWNxXPyjfmXI2bQlwg/6ihWgCb/OJaZLsBatkxysff/k3Qpfe8sV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bFCV7gFW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 259ADC433F1;
+	Sun, 28 Jan 2024 17:46:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706463969;
-	bh=BjQIRF8nVXDS2r1inckIhVIOx6wVZvQH+HvmFHGysNc=;
+	s=k20201202; t=1706463970;
+	bh=Qy9pX/xMxl5aQ+IVqAgyddGLNa0mQU6nTpN/RKv77s0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hKDrzLnpqecjM4GBFOATdsqVjuAbGDF1aSC2rWTXONK5h4LGkDHKYK1pJuH38/RSH
-	 mocAtujqyV7aNwikvdlI/jHfcxxTQhBvcgIKgHLMwnw89MlaOh17blOaZQTI/qz3xB
-	 kVTjy55zHnZPmNNvPf6vdx7+C6B5Zcp2TUcImRVRUn2ro2lvDfoAHY2Ek//r70K5hx
-	 YiRz0s2MIhw3kvA7ogkxq0YVFhnd4WNBKgDTrd+nfDhVrUex7zyFSfpf+uEs848UJ3
-	 xFjbRDYrxq9pMBqn7hQvstAbqo9f/+tDbioa3tw+EGUYmhgWnsO1KC+yfVVMGIj5L1
-	 4l5AI5hYbtLgw==
+	b=bFCV7gFWJeO8y6F0mkvmgurgF0GDMtF+PZ7Hbl/8yQzUy5CnOgwdxUxKaymVT3vSo
+	 IPhSt1l41q3newrsZ3/OcHD3HxJ0ESE3gYWLnfnVNtWn2ygAB6dN/w2scRRxDjoAAY
+	 dn5YF1DXf9K8rRy1P2efJ2uo1ZuQssF0rm3FjKmsTgMwDeGpSVya9WC1cZsPJh9tQo
+	 1CHUdi44N3Km2a6rQvwWuA/t3sy66PLW64tBv1Q9BPnt8Gwnxr7rKywzflrfUoAVG7
+	 oMnTRG5z8L+alqybglhzvG2PexwHrNCfQySmE5PmOhx5OsZem3Jrvoq3vmjTlxVUID
+	 EUugyBnW6TcNQ==
 From: Bjorn Andersson <andersson@kernel.org>
 To: konrad.dybcio@linaro.org,
-	Tao Zhang <quic_taozhan@quicinc.com>
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	dmitry.baryshkov@linaro.org,
+	Tengfei Fan <quic_tengfan@quicinc.com>
 Cc: linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	kernel@quicinc.com
-Subject: Re: [PATCH] qcom: smem: remove hwspinlock from item get routine
-Date: Sun, 28 Jan 2024 11:45:52 -0600
-Message-ID: <170646395043.64610.5018917783604688842.b4-ty@kernel.org>
+Subject: Re: (subset) [PATCH v4 0/6] arm64: qcom: add AIM300 AIoT board support
+Date: Sun, 28 Jan 2024 11:45:53 -0600
+Message-ID: <170646395046.64610.18292159117967930553.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240102022512.999635-1-quic_taozhan@quicinc.com>
-References: <20240102022512.999635-1-quic_taozhan@quicinc.com>
+In-Reply-To: <20240119100621.11788-1-quic_tengfan@quicinc.com>
+References: <20240119100621.11788-1-quic_tengfan@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,24 +67,22 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Tue, 02 Jan 2024 07:55:12 +0530, Tao Zhang wrote:
-> During an SSR(Sub-System Restart) process, the remoteproc driver will
-> try to read the crash reason from SMEM. The qcom_smem_get() backing such
-> operations does however take the hwspinlock (tcsr mutex), which might be
-> held by the dying remoteproc.
-> 
-> The associated timeout on the hwspin_lock_timeout_irqsave() would take
-> care of the system not hanging forever, but the get operation will fail,
-> unnecessarily delaying the process for the 'HWSPINLOCK_TIMEOUT' duration
-> (currently is '1s'), and finally resulting in failure to get crash
-> information from SMEM.
+On Fri, 19 Jan 2024 18:06:15 +0800, Tengfei Fan wrote:
+> Add AIM300 AIoT support along with usb, ufs, regulators, serial, PCIe,
+> sound card and PMIC functions.
+> AIM300 Series is a highly optimized family of modules designed to
+> support AIoT applications. The module is mounted onto Qualcomm AIoT
+> carrier board to support verification, evaluation and development. It
+> integrates QCS8550 SoC, UFS and PMIC chip etc.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] qcom: smem: remove hwspinlock from item get routine
-      commit: 27825593c972abac86b9a4453a8c8c9a2c1ec60f
+[2/6] dt-bindings: arm: qcom,ids: add SoC ID for QCM8550 and QCS8550
+      commit: 3019d8f7eacdd2d14502f0fa5c3e4267da8409a3
+[3/6] soc: qcom: socinfo: add SoC Info support for QCM8550 and QCS8550 platform
+      commit: d7f3a3691e3c133c637fa381cdc91e7d1af9c5d7
 
 Best regards,
 -- 
