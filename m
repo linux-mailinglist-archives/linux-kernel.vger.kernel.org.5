@@ -1,57 +1,55 @@
-Return-Path: <linux-kernel+bounces-41725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9605483F707
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:23:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59FBE83F709
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:23:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04AA3B20C94
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:23:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 164482898C1
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:23:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF4B95C5E5;
-	Sun, 28 Jan 2024 16:13:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 170395B5BA;
+	Sun, 28 Jan 2024 16:13:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A8/dH8Y1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ChWI94tj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C5B35B211;
-	Sun, 28 Jan 2024 16:13:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48ABE5D73B;
+	Sun, 28 Jan 2024 16:13:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458403; cv=none; b=SWppDSv1EEPTo5RS3/vf/xXbdCcGZqMX2nfbegJJJQXSDRnloCUSRbmnhY7gasATiYWQwc6Ys3DbzkbVStobVvGfAki2RxTo8H0dwgg4k/wkIlEYrbxJX/HX+xQA3m7tbTlZ8bnmYVkQ//d1G1hgTO+CXPp9HX1FEFg1bcj30M4=
+	t=1706458404; cv=none; b=UviNv4+Fr2bc92t5NUy0w25jwDsh699+5c0WKpOH64Ybs9kdH1v1srxwQO66Ka6C1/hV5M2G0UTM5DIgOKvdDzZtOSpZBUYoK5+oFW7gsV7QW8jngb3eMul8Q+lo3frowPEv95y2TsFNer5dvfAYpJ/hbVUj06DCvkWX9/3OwDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458403; c=relaxed/simple;
-	bh=IIE6rK5b2ck2c5U9EOv80xRLq3JhUK13cGioQvyBkoo=;
+	s=arc-20240116; t=1706458404; c=relaxed/simple;
+	bh=gL25tZW+oDdybgmrusSLsw8xBCDBD0WxxVan4IYL3WE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nbCRSamw/i3wA+WbV2Pewkyglcsdk7PV9o5pvtZvyWdf5dBwkJsiaPy8Jr29TRiXb/WhROzbIWmIjxD3t28RiNhvRPN7P0yeSq+GoNdu+qFERhjiyW+omGj3+KinS/ZM/dEBNRbnITg3gZ7Z+QQbXSXi85RSM4t8rP1jZ/xoxfI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A8/dH8Y1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6AC6C43390;
-	Sun, 28 Jan 2024 16:13:21 +0000 (UTC)
+	 MIME-Version; b=hmkkPTaIyqpEH7gBlEzJtnuztoBOiiUwg1NbiZO8cKXU+8TsxHpHq8wnHydOg82H3/eRmlAlcyEWl3rFlARW7fROBu1XYH17L7kbu00r5e8CUPtIaJElUkd+8Tc0FenwGXyAwk3ht96EQNZWkg5q0CzjuTm4af7bxEfez/qdZ0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ChWI94tj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E995C43399;
+	Sun, 28 Jan 2024 16:13:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706458402;
-	bh=IIE6rK5b2ck2c5U9EOv80xRLq3JhUK13cGioQvyBkoo=;
+	s=k20201202; t=1706458403;
+	bh=gL25tZW+oDdybgmrusSLsw8xBCDBD0WxxVan4IYL3WE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=A8/dH8Y1KQPzTOKd10VuVEGhI/tvS4s4YzBOE4eLsIgRQu0Jz7ryiHJdXuH4Jdzog
-	 NLvpS5vJ43/vCYNbzfhB/x69ewu368wvtQQN1qDRpHoIiOe+RibHJLqVMJ8ZaQXtKQ
-	 YsxIjgOmSJyvJq/NmKhQKMrlWleksyBu6AJ24nSkB2X9nFLoM4V6uxmLndOXTcNR1b
-	 RNcv8zbSXJaiN5F5ndF6dsWHDELoygU8SWiCegEyow6dUhmbR+HoFFQysbwXZxZPXP
-	 NX9ihskK9ToWAmso/FEyubjZc7Q6sGJ3vdBUN8TJxm5Njjp7sY3Uz1W783ekTtQa1G
-	 JwerPtpb0pREw==
+	b=ChWI94tjJs2TiyL8p40I+FrdlY8uMMyWLjuEIiXnLQs8MhRgr3hwx/USGKxLxBhVe
+	 cZON0+9dCCmMntUOs9uAORgrpJyReeosiA2Cia6udbsCU9PO5o/h7n7MlMQ0DITbwM
+	 SEoDupEbb5t/mlwT920mtHLK0vkjSFawUdeZgJD26jyjydvLdmpZ+hhMz7UaJ5ma+f
+	 dHWi2rN/ZkBeZNoGrwQXFEVhRi4LVTtgP3zw/h3vHmJElIXlVsmkqc9fQoqXwqz1RI
+	 N9pRCr0b5vnKkjl/UvGZsyPd9yXMhuyVUWhnjIl3KlIAijcuYYEJhQv5kHexYXhCsV
+	 CidPjIy1+ilyg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Mathias Nyman <mathias.nyman@linux.intel.com>,
-	Kuen-Han Tsai <khtsai@google.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+Cc: Yaxiong Tian <tianyaxiong@kylinos.cn>,
+	Chanwoo Choi <cw00.choi@samsung.com>,
 	Sasha Levin <sashal@kernel.org>,
-	mathias.nyman@intel.com,
-	linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 04/31] xhci: fix possible null pointer deref during xhci urb enqueue
-Date: Sun, 28 Jan 2024 11:12:34 -0500
-Message-ID: <20240128161315.201999-4-sashal@kernel.org>
+	myungjoo.ham@samsung.com
+Subject: [PATCH AUTOSEL 6.6 05/31] extcon: fix possible name leak in extcon_dev_register()
+Date: Sun, 28 Jan 2024 11:12:35 -0500
+Message-ID: <20240128161315.201999-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128161315.201999-1-sashal@kernel.org>
 References: <20240128161315.201999-1-sashal@kernel.org>
@@ -66,96 +64,43 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.14
 Content-Transfer-Encoding: 8bit
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Yaxiong Tian <tianyaxiong@kylinos.cn>
 
-[ Upstream commit e2e2aacf042f52854c92775b7800ba668e0bdfe4 ]
+[ Upstream commit e66523c72c9aae0ff0dae6859eb77b04de1e8e5f ]
 
-There is a short gap between urb being submitted and actually added to the
-endpoint queue (linked). If the device is disconnected during this time
-then usb core is not yet aware of the pending urb, and device may be freed
-just before xhci_urq_enqueue() continues, dereferencing the freed device.
+In the error path after calling dev_set_name(), the device
+name is leaked. To fix this, moving dev_set_name() after the
+error path and before device_register.
 
-Freeing the device is protected by the xhci spinlock, so make sure we take
-and keep the lock while checking that device exists, dereference it, and
-add the urb to the queue.
-
-Remove the unnecessary URB check, usb core checks it before calling
-xhci_urb_enqueue()
-
-Suggested-by: Kuen-Han Tsai <khtsai@google.com>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20231201150647.1307406-20-mathias.nyman@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/lkml/TYZPR01MB4784ADCD3E951E0863F3DB72D5B8A@TYZPR01MB4784.apcprd01.prod.exchangelabs.com/
+Signed-off-by: Yaxiong Tian <tianyaxiong@kylinos.cn>
+Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/xhci.c | 40 +++++++++++++++++++++++-----------------
- 1 file changed, 23 insertions(+), 17 deletions(-)
+ drivers/extcon/extcon.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index 132b76fa7ca6..e39c5ba9b7c7 100644
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -1498,24 +1498,7 @@ static int xhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb, gfp_t mem_flag
- 	struct urb_priv	*urb_priv;
- 	int num_tds;
+diff --git a/drivers/extcon/extcon.c b/drivers/extcon/extcon.c
+index 6f7a60d2ed91..e7f55c021e56 100644
+--- a/drivers/extcon/extcon.c
++++ b/drivers/extcon/extcon.c
+@@ -1280,8 +1280,6 @@ int extcon_dev_register(struct extcon_dev *edev)
  
--	if (!urb)
--		return -EINVAL;
--	ret = xhci_check_args(hcd, urb->dev, urb->ep,
--					true, true, __func__);
--	if (ret <= 0)
--		return ret ? ret : -EINVAL;
+ 	edev->id = ret;
+ 
+-	dev_set_name(&edev->dev, "extcon%d", edev->id);
 -
--	slot_id = urb->dev->slot_id;
- 	ep_index = xhci_get_endpoint_index(&urb->ep->desc);
--	ep_state = &xhci->devs[slot_id]->eps[ep_index].ep_state;
--
--	if (!HCD_HW_ACCESSIBLE(hcd))
--		return -ESHUTDOWN;
--
--	if (xhci->devs[slot_id]->flags & VDEV_PORT_ERROR) {
--		xhci_dbg(xhci, "Can't queue urb, port error, link inactive\n");
--		return -ENODEV;
--	}
+ 	ret = extcon_alloc_cables(edev);
+ 	if (ret < 0)
+ 		goto err_alloc_cables;
+@@ -1310,6 +1308,7 @@ int extcon_dev_register(struct extcon_dev *edev)
+ 	RAW_INIT_NOTIFIER_HEAD(&edev->nh_all);
  
- 	if (usb_endpoint_xfer_isoc(&urb->ep->desc))
- 		num_tds = urb->number_of_packets;
-@@ -1554,12 +1537,35 @@ static int xhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb, gfp_t mem_flag
+ 	dev_set_drvdata(&edev->dev, edev);
++	dev_set_name(&edev->dev, "extcon%d", edev->id);
+ 	edev->state = 0;
  
- 	spin_lock_irqsave(&xhci->lock, flags);
- 
-+	ret = xhci_check_args(hcd, urb->dev, urb->ep,
-+			      true, true, __func__);
-+	if (ret <= 0) {
-+		ret = ret ? ret : -EINVAL;
-+		goto free_priv;
-+	}
-+
-+	slot_id = urb->dev->slot_id;
-+
-+	if (!HCD_HW_ACCESSIBLE(hcd)) {
-+		ret = -ESHUTDOWN;
-+		goto free_priv;
-+	}
-+
-+	if (xhci->devs[slot_id]->flags & VDEV_PORT_ERROR) {
-+		xhci_dbg(xhci, "Can't queue urb, port error, link inactive\n");
-+		ret = -ENODEV;
-+		goto free_priv;
-+	}
-+
- 	if (xhci->xhc_state & XHCI_STATE_DYING) {
- 		xhci_dbg(xhci, "Ep 0x%x: URB %p submitted for non-responsive xHCI host.\n",
- 			 urb->ep->desc.bEndpointAddress, urb);
- 		ret = -ESHUTDOWN;
- 		goto free_priv;
- 	}
-+
-+	ep_state = &xhci->devs[slot_id]->eps[ep_index].ep_state;
-+
- 	if (*ep_state & (EP_GETTING_STREAMS | EP_GETTING_NO_STREAMS)) {
- 		xhci_warn(xhci, "WARN: Can't enqueue URB, ep in streams transition state %x\n",
- 			  *ep_state);
+ 	ret = device_register(&edev->dev);
 -- 
 2.43.0
 
