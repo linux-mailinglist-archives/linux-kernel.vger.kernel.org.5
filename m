@@ -1,121 +1,115 @@
-Return-Path: <linux-kernel+bounces-41825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D68F83F81E
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:49:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01CFF83F821
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:49:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF4D51F211BE
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:49:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B03D328AEDD
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:49:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E5B41474CD;
-	Sun, 28 Jan 2024 16:17:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9E01524D9;
+	Sun, 28 Jan 2024 16:17:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IesHNUZc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kimVa8Gp"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 525931474CC;
-	Sun, 28 Jan 2024 16:16:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5041524CE;
+	Sun, 28 Jan 2024 16:17:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458619; cv=none; b=kOMzsApX9QruWKaRu7Lc1wUDQt4yPavAH9TBv3QAb0n5/qzWe8nVrvhHl2gZYcdHYDT7HWR3lPHFBXWrhWCwT5jSjX+4IF26nd2tWKILXVLZIlpU8v7r5xY9EgmnhBNHgUyqKKuV5V88mn47oq5MGuUuQA/6rycjhPw5adTdf+g=
+	t=1706458626; cv=none; b=ScnmdyWpuuLQPufnxM4fWCAMQTk3YSa+smelUCf4y7IYm7og4C3QqGm1shPIZVzuvNqyiYjPHNcfxv//Ix5P5bjSe2KA1B9dUfsufo4X2I/8afhhMF0vU7Q/g8RB0QhxXPZdvJgbS9Bj8NW18YuixDZrejomDLMN/6/lbrQivHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458619; c=relaxed/simple;
-	bh=eAQJARwjTPNNCWJVhfVjlvXJ/Q7ey7Ccu6Mw70EJ+D0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dff2kPaXjvR3AHgF8xtkMuf2mQyWIqoBmupdUvGwlyFWi8Afxl9Dgu5gaAvTeyemFrHi6Dy+iIu80KLHRcWg0SjRR/0p5u5FRDnHUNhKmcNREOU3XlLZ8de1ayjiC3UA9xuPfcq4NApktICLIZIEQZXhazgNrlHDdi+WQwdHPIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IesHNUZc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5978C433F1;
-	Sun, 28 Jan 2024 16:16:56 +0000 (UTC)
+	s=arc-20240116; t=1706458626; c=relaxed/simple;
+	bh=u0q5FwEYgYwFyxIi/xiCF/f00BSFyTncHUQhJOmA/oU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MchCz34PRweTfO0g5q8+XzD70lsEQL6j5iN9qtzIIJ6ITzyzJdtUju48SPpji0NxDvymcc5cRBq7g2UcfA3Kt3jNr9HqxnkST8J8hdEeE6dt7NCIkbCsI3zqkAwTs1GkOVGn1KAg9LZyGCFVfVQ5/nzeukLOGVV4DJQVnOdMmP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kimVa8Gp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76284C433C7;
+	Sun, 28 Jan 2024 16:17:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706458618;
-	bh=eAQJARwjTPNNCWJVhfVjlvXJ/Q7ey7Ccu6Mw70EJ+D0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IesHNUZc+F0qNb1JklfvoWw36RzweOfAsfw2ck3OFw+qv6JwXV6C6N0Sni10sBHdr
-	 ZjBb6dXqH+54SOnhmtlEwFJh2uaS1Yf8DNGBg0rX6rCIBisr5nJZZsdg+kgvHiu4po
-	 Dr8FAL8uXjfHtsxH+rewuQtmqVKnXcO+NvImOA3Pb9WKQJq7uawbHUUA4SeO+tahvx
-	 Q5UaKKjAiVUH6MWm99x6pEeM+tMtymVYvU8FFlikmLemIl5gL/vz1WZJIZkltHPeO+
-	 AfsmMjelThs9IlnqtK3w9DzQVpZB2PPYTfBbrsE+hWZT68oEj+plX9sAccldZD2/61
-	 y9+n+I076Kypw==
+	s=k20201202; t=1706458626;
+	bh=u0q5FwEYgYwFyxIi/xiCF/f00BSFyTncHUQhJOmA/oU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=kimVa8GpB7Ve8hR1grHF8iV/zVNMj+Pm0JxVXZjCgj7veRQSlMlsWrTYC6ytXNEZf
+	 PMGslZXPVecSEHGjp/yod+vAcoEARcaJp6wzmrLyhnoqoJBWurfmT9Op8+f06SGyWT
+	 Ha+iam4V/RV1u8I62QrtSsyAEUF4KwGQ8aLheUQgs0xdFCyFeltXBpAEGAJFI0TZEm
+	 YtDU0cFH5YF5EAB/yTZKCrNc+k6ot+MrLC+HXjkt5ClnVwu/QKo9lJ7TIyoKbcfSev
+	 saMjlJEFFU2WgFMBjpt7qsFWWXqE58hY2ZtsR25ceJPRzLet4OqtK/9ndbBkBYS7+b
+	 150TN9WGyxSvA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-	Monk Liu <Monk.Liu@amd.com>,
-	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Lijo Lazar <lijo.lazar@amd.com>,
+Cc: "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Huang Rui <ray.huang@amd.com>,
+	Vicki Pfau <vi@endrift.com>,
 	Sasha Levin <sashal@kernel.org>,
-	Xinhui.Pan@amd.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	mario.limonciello@amd.com,
-	Hawking.Zhang@amd.com,
-	candice.li@amd.com,
-	le.ma@amd.com,
-	victorchengchi.lu@amd.com,
-	shashank.sharma@amd.com,
-	andrealmeid@igalia.com,
-	hamza.mahfooz@amd.com,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.4 11/11] drm/amdgpu: Release 'adev->pm.fw' before return in 'amdgpu_device_need_post()'
-Date: Sun, 28 Jan 2024 11:16:32 -0500
-Message-ID: <20240128161637.205509-11-sashal@kernel.org>
+	linux-pci@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 1/8] PCI: Only override AMD USB controller if required
+Date: Sun, 28 Jan 2024 11:16:52 -0500
+Message-ID: <20240128161704.205756-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240128161637.205509-1-sashal@kernel.org>
-References: <20240128161637.205509-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.268
+X-stable-base: Linux 4.19.306
 Content-Transfer-Encoding: 8bit
 
-From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
 
-[ Upstream commit 8a44fdd3cf91debbd09b43bd2519ad2b2486ccf4 ]
+[ Upstream commit e585a37e5061f6d5060517aed1ca4ccb2e56a34c ]
 
-In function 'amdgpu_device_need_post(struct amdgpu_device *adev)' -
-'adev->pm.fw' may not be released before return.
+By running a Van Gogh device (Steam Deck), the following message
+was noticed in the kernel log:
 
-Using the function release_firmware() to release adev->pm.fw.
+  pci 0000:04:00.3: PCI class overridden (0x0c03fe -> 0x0c03fe) so dwc3 driver can claim this instead of xhci
 
-Thus fixing the below:
-drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:1571 amdgpu_device_need_post() warn: 'adev->pm.fw' from request_firmware() not released on lines: 1554.
+Effectively this means the quirk executed but changed nothing, since the
+class of this device was already the proper one (likely adjusted by newer
+firmware versions).
 
-Cc: Monk Liu <Monk.Liu@amd.com>
-Cc: Christian König <christian.koenig@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Suggested-by: Lijo Lazar <lijo.lazar@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Check and perform the override only if necessary.
+
+Link: https://lore.kernel.org/r/20231120160531.361552-1-gpiccoli@igalia.com
+Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Huang Rui <ray.huang@amd.com>
+Cc: Vicki Pfau <vi@endrift.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/pci/quirks.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-index e5032eb9ae29..9dcb38bab0e1 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-@@ -847,6 +847,7 @@ bool amdgpu_device_need_post(struct amdgpu_device *adev)
- 				return true;
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index eb507751c115..af9aba7c196e 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -611,10 +611,13 @@ static void quirk_amd_dwc_class(struct pci_dev *pdev)
+ {
+ 	u32 class = pdev->class;
  
- 			fw_ver = *((uint32_t *)adev->pm.fw->data + 69);
-+			release_firmware(adev->pm.fw);
- 			if (fw_ver < 0x00160e00)
- 				return true;
- 		}
+-	/* Use "USB Device (not host controller)" class */
+-	pdev->class = PCI_CLASS_SERIAL_USB_DEVICE;
+-	pci_info(pdev, "PCI class overridden (%#08x -> %#08x) so dwc3 driver can claim this instead of xhci\n",
+-		 class, pdev->class);
++	if (class != PCI_CLASS_SERIAL_USB_DEVICE) {
++		/* Use "USB Device (not host controller)" class */
++		pdev->class = PCI_CLASS_SERIAL_USB_DEVICE;
++		pci_info(pdev,
++			"PCI class overridden (%#08x -> %#08x) so dwc3 driver can claim this instead of xhci\n",
++			class, pdev->class);
++	}
+ }
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_NL_USB,
+ 		quirk_amd_dwc_class);
 -- 
 2.43.0
 
