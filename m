@@ -1,265 +1,172 @@
-Return-Path: <linux-kernel+bounces-41543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC5E383F420
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 06:38:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68E8483F423
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 06:39:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F08CC1C21C74
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 05:38:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0524B2110C
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 05:39:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB9CD748D;
-	Sun, 28 Jan 2024 05:38:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 731B3D52F;
+	Sun, 28 Jan 2024 05:39:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="X9kRzy6U"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2078.outbound.protection.outlook.com [40.107.244.78])
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="QGIBCckh"
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABA346FAF
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 05:38:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.78
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706420315; cv=fail; b=dM46fWEiMOXVAGmNgPVajz22rCuxLq2Cx9Yf7LrwVJNHKLb9vyf1Ku+a3lnOKPQh6cYVrxY5jRMWOQmEvAx/l8BkfGvV/R04Ofckggg/SEB1bIjdLIC+bTnlabyUwN4t8f+4aEr6lTtBBnJKz6RNDFJ80cUEerrwNSP9SpF/g0U=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706420315; c=relaxed/simple;
-	bh=PNBKKFgZDX4vwi1n7xBsEqlbTGBx6JMY8dcA+jm2W1g=;
-	h=Message-ID:Date:Subject:From:To:Cc:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=rY0jg+BLTUbCO4/zC6FwWfFljH/cn4QAS0Yw0ePwVYtjFnTkGG8/0qCL0BqN1tnvIKSXcp3dH3e8rf7gqGFqwaFWktWUcDqYDaOKIVtXavA7MvQxSHdZXhWCkR79/sKiZYf2wV1xvuh66LI4QA+Jx1NDOJKoqFFGmcg4S9IsZLY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=X9kRzy6U; arc=fail smtp.client-ip=40.107.244.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fjD+dkEcR75Kv6JzvPJLWhzCwlfl3mxreVPyDeljtSFTayVx1GRBAEcU9u/dDAGu0MjT8QEqDVJnr9NeTs8BEwkjhEeOwN9iELeX0lRi6PUbJk1mgmWUAisV3XalHHP9AWHnLEKWlAhsQ/D7gaIyMJQrusEs2T4BXt8OgEF2H1wkUFkslGmxv/lLGYq0brgy0r7opBfBd/zJQDPxtVC759+ZLVFGIa+cn5zhLLbZC2npTLMlSToEAIt+ghj8eeovw30yXQwA9v1SvHHKUJF38NVYsqj+weh2mXMnbIMpSdPAHlkRbWLo3Eqk2E01MwmIP6o6npcjCXRq9SECFnLzUg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+qheq8SiHYSJy+xlflvbKnnsiqtoSUXKSs28gSxfcAg=;
- b=UoWmoTD0aQr4/lKDRvQtcW3MyT8w1Pj8DbDJ7/23LPxcvNJ+HXKLz3v29AFS3fYz8+3V9DwCbTJI3hqiNqr4HsxM0+eRfrRcvbRvhqIGvYbrQ3uxDFZDfoWBEBZfMWSvLIaTq1ScNjNWPbr5dB4faPLFYBmZolgMvRc0+LSBagaXeuOfxEBtoqCCp5qAMChPdbPQb5SuEGHeBs6/z25L+KE2j8vuH1O+Bt7f7Gcyr2zrX/1xl7xLlZv+blPNw3mFKh+JCv50qcYD+f5LcxV8oh3cs5tmGEI5hxFGGAqPNZTjG6BPsONkiyIjR5T5kGbwYZF7mbBV67UDHwLRwfz57w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+qheq8SiHYSJy+xlflvbKnnsiqtoSUXKSs28gSxfcAg=;
- b=X9kRzy6UDus+sWOVIbA2L06KkLei8TmbF00XyUjTux7+SaM0LaE2Vn0u45T1UH7SjbJ07VFQ6wHq1edHVNmYZpy2ioANifDyOiJIIaog/QXYNfGdepS2LyArKmHEc1MmsdX+tS1YV1rDkGTlL2ijTIqJNgH6ex63vSPbkY/m80w=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by DS7PR12MB6118.namprd12.prod.outlook.com (2603:10b6:8:9a::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7228.28; Sun, 28 Jan 2024 05:38:31 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::c30:614f:1cbd:3c64]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::c30:614f:1cbd:3c64%4]) with mapi id 15.20.7228.029; Sun, 28 Jan 2024
- 05:38:31 +0000
-Message-ID: <1162e59e-3f53-4c84-b186-bb2f4642216b@amd.com>
-Date: Sat, 27 Jan 2024 23:38:28 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/amd/display: add panel_power_savings sysfs entry to
- eDP connectors
-Content-Language: en-US
-From: Mario Limonciello <mario.limonciello@amd.com>
-To: Hamza Mahfooz <hamza.mahfooz@amd.com>, amd-gfx@lists.freedesktop.org
-Cc: Harry Wentland <harry.wentland@amd.com>, Leo Li <sunpeng.li@amd.com>,
- Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
- Alex Deucher <alexander.deucher@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Alex Hung <alex.hung@amd.com>,
- Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
- Wayne Lin <wayne.lin@amd.com>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240126222300.119292-1-hamza.mahfooz@amd.com>
- <1b8de155-4788-4c12-9c40-d45e508a526c@amd.com>
-In-Reply-To: <1b8de155-4788-4c12-9c40-d45e508a526c@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: CH2PR05CA0068.namprd05.prod.outlook.com
- (2603:10b6:610:38::45) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DAECD51C
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 05:39:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.19
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706420366; cv=none; b=hqKo/daZfWaK4LTLnW4Jo9uAnuLj8otpz+D4a+jGVnCcIJp5kje24+AIFIkDlIjcsQ7UOAR5cgVhF5dm65YTpsl5XKE3/2vnx3Hk3vEshGWA1QS6wwUODFk5vg9hNCJjO1q2U1l5DXc0KkLKEqagyXhM/k2XpPt4v65LsC1P2oM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706420366; c=relaxed/simple;
+	bh=ACKTKOuJWUOirQ98WBHpdV1H/YZfxrXRPTERjk4FaYg=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=FZ7JaJBucxvepqSgltHgLHW/xKc8FB+wcSeA4lyeKxfcPYFjhUET/ztOzD9R9OQNyfhbkYPVKXzcw6req9yqH6SAxu41xV6ug2k6SiCzUF/Yuo6Skeg09mk/wlqnVQPyJJQYzU/9YKl3C03aNrWiQrQoZBz6j04j55pPcL6WAEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=QGIBCckh; arc=none smtp.client-ip=64.147.123.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailout.west.internal (Postfix) with ESMTP id 0443F32004CE;
+	Sun, 28 Jan 2024 00:39:19 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Sun, 28 Jan 2024 00:39:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706420359; x=1706506759; bh=/tykfuzP/yR2RGWwFOx8HgWGqcUI
+	yxkAtWGbaAySd0o=; b=QGIBCckh5pOYqdjAwRDpZ5oAxbCS1/KBe2w3cEpypgWA
+	CDMJDnnDumnw9Mpknp92wKit1tdkTEnN7cXRdtTYHDM3ssaigpx90XRr9hRub+FJ
+	QL4yDoP2uM2xtF0MNfGPQO1QuljgMUSEHFM3O4KIccPPg07SirFI9DpdKzlvgDRJ
+	cX1onb86SbT9miZaZKSYNrCS2flEEwxVXb9x63zuA8agwsoUhFVSPXxJ2S2JrvYi
+	bx68MHms7RG//VDiNryn5MhaYhpaOs/eEokgUK/PHBDgPx+fabQzDzn2cPzbNMZL
+	wy121y6ijwYVVzAgsnE/WOcIKRC21Q+iSx0KUiB9gg==
+X-ME-Sender: <xms:hui1Zf_xlyl9BjJ4ir9hFoSVgAtZLBWtC4obzARRnbZwnyx-qhfs6A>
+    <xme:hui1Zbs_J7onqkko3z0-HKMhfG5vhgngjZJ2dX3A_n_Rct7ZowReWdO7nnu5pz_oV
+    ZytEZjssJ7jFE2HNb8>
+X-ME-Received: <xmr:hui1ZdB8vGd93PFvBuS0XicnNUsAMPh6wN750GlXTlh674_KYTn_rqadVPm5GSXjjKh4hM1vQa0yaEvhzWhda3BFgTbRAgKOz9Y>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedttddgkedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
+    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
+    htthgvrhhnpeefieehjedvtefgiedtudethfekieelhfevhefgvddtkeekvdekhefftdek
+    vedvueenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieek
+    khdrohhrgh
+X-ME-Proxy: <xmx:hui1ZbdwBzhax__TQMIFf4fycmgkJSzHWDXwEaaK8wUKVYjurlWmvQ>
+    <xmx:hui1ZUMsZ2ENIFb9DkVlMZsf0CETLeD-IcGgIEg2pT8xMPtKfOvnVg>
+    <xmx:hui1ZdmmXJPbAheteJw4h8jAPUrv4zMKsGELv-j0SOjh0gkW171Qeg>
+    <xmx:h-i1Zblc6qpduetkIU1SmqcjjD_MuPpcQKVTPLmNiizhF33epcexFA>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 28 Jan 2024 00:39:16 -0500 (EST)
+Date: Sun, 28 Jan 2024 16:39:18 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+    Yury Norov <yury.norov@gmail.com>, 
+    Nick Desaulniers <ndesaulniers@google.com>, 
+    Douglas Anderson <dianders@chromium.org>, 
+    Kees Cook <keescook@chromium.org>, Petr Mladek <pmladek@suse.com>, 
+    Randy Dunlap <rdunlap@infradead.org>, 
+    Zhaoyang Huang <zhaoyang.huang@unisoc.com>, 
+    Geert Uytterhoeven <geert+renesas@glider.be>, 
+    Marco Elver <elver@google.com>, Brian Cain <bcain@quicinc.com>, 
+    Geert Uytterhoeven <geert@linux-m68k.org>, 
+    Matthew Wilcox <willy@infradead.org>, 
+    "Paul E . McKenney" <paulmck@kernel.org>, linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH v4 2/5] m68k/bitops: use __builtin_{clz,ctzl,ffs} to
+ evaluate constant expressions
+In-Reply-To: <20240128050449.1332798-3-mailhol.vincent@wanadoo.fr>
+Message-ID: <c47fedaf-cdc9-f970-460f-d2ee7e806da4@linux-m68k.org>
+References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr> <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr> <20240128050449.1332798-3-mailhol.vincent@wanadoo.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|DS7PR12MB6118:EE_
-X-MS-Office365-Filtering-Correlation-Id: e404e8af-5259-4dce-399c-08dc1fc35cae
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	FIRVBN/AejC/PMWbuniYsUdbfpE7KdLsPqfRm2jYnR8jdrQXCOj9nr20m/2e6LM4fLkvc4dEJ+PyqCoeQgW/mhHaCyfBgFd2ElFpXY3AigoVrvNpxdTV8RnorWUlw4KuI8iuFF6Du5q+oj9DmKDBamSfDe7tTWfwm/+y9A8cqfGezj/hDklwfRH9ETbGPeG7+7r0hdqMPvX5G412kx53bZtWIlAu3A9WxKsJCxNrqyHzfmz/qMULML5amUhSATX2Y4eMdBdTfJPmGqMo7JWFE5xtIiauh1okJ4SE9/8P62frDjRDz8npuQqivNQ+FZITbq/JEpHDq7uN3wV7mY4+snJNn8FK4ywoubLRtfmI6ZtQ5JWfkQNv/THqzNAYw43mUOSPpERels7OQxEFkbjZgFGqhwqm6frok6QaGobzchuQfWDdPPvFutj0RIQva0pyj4vjwiQjNFqJqCqgKIVWMxkK/4GGIUyS4/6G0hCA7pXTjsP0k86Aeb70U5yiNiooeKca6Vowe9c2FUH2UJwc1n5SbnQoYXpLvkMyCIZoLRjN+gyIO6rjvlg0QyAPGaWCG7myS/AzVQPyuSr5NcErZkTqGyN0cj9GN/noj3mL+fOneHRTRKmM7s8XfVl1jkYJ2oNJ9uqcSdOJbmdJ2V5VeA==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(366004)(396003)(136003)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(2616005)(53546011)(66574015)(6506007)(6666004)(6512007)(83380400001)(5660300002)(44832011)(2906002)(41300700001)(478600001)(6486002)(8936002)(4326008)(66946007)(66556008)(316002)(66476007)(54906003)(8676002)(36756003)(31696002)(86362001)(38100700002)(26005)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?MSsrcmdwRDM1eHRySlpjTkZvOHR3WjlYTjRSU2xMTUExWDdpS1pvenIyOTI2?=
- =?utf-8?B?TkV2VkpkdEFOL2xrMGRtOWorc3g4UnRkUXkvOS9lVWZPU0FIeWJQTkRraDlZ?=
- =?utf-8?B?UjZ6S1hxOHBxQlNDSDF0MWR5QzJCN2drR0JMRlV4OEptdEFydXNheFVkRUtV?=
- =?utf-8?B?Q280VkxDV1hBbWRYcURyN2wrUDNUWHVjWlIzUkhtOFdsU29oT3lwV3FsQUp4?=
- =?utf-8?B?dys3VWppTjFHbXhWYStnTmFXT08xSHNkZjZHWG81dm5XTzd4R2dZZEVpQ3dT?=
- =?utf-8?B?c0w3SmdjRFVwVVBwb0YrZWRpQ2dhSHA4U1RwT3NmR0l3SEZySmYwMGJveGpX?=
- =?utf-8?B?ZitkdXc4bU0yb1NPbUxlcGlMWVJLelVhUlpEYVFNZnhJTlR4WklqbzRUUEZp?=
- =?utf-8?B?M0VqNjF3UFV6K255QkxuYTc5ME5jV3JBbFQ5eUg5VFBRVWN6UzV2SVpudnZI?=
- =?utf-8?B?cGRpUDNnSXFoZzhaREExbUVyM05DZk5GTTEwQk1mQjVxTHdLekVEMWtJM25z?=
- =?utf-8?B?cUxscnNkM1c5VStVRGVUUk1RUGRmMERjMGJoLzNnbkNqZ2p6a08rYmFRUzFJ?=
- =?utf-8?B?YitUMTRsaS9wcCtlUUdHSVdXS3ErSmRmMkxja3NJaklXTFdaOGt5NDhIOTYv?=
- =?utf-8?B?akZzblEyRm5UMk40ZFF0cDhHTk95SHplaDNncjJQcGZqVnFGemtQMWRiWTNv?=
- =?utf-8?B?S0k4bnFWL1lhTzNvM3prUldiWGlEQ1VVeit1b3RCUnpEcHJPQVF6eTJzYUwx?=
- =?utf-8?B?UVR6VExMVEMyQTM1OTU5clJDYnNOZVFjcWZnWUYwanBsYUZLY1J5bHlkb2JW?=
- =?utf-8?B?OTYxcjY2VmkybmROdGp1NzF4UjZtL0piZWZ1RDJCVUtxYXJxYXhrNEkzek4y?=
- =?utf-8?B?U3hINFVzdllWUGVoY1R6NmxhZndHU0tQR0dUWHF4QXlCcDh0eTZYN1VBeGxC?=
- =?utf-8?B?L081bHhHUkdYc25lVGhHaFdzajJyZVFkUWRDVHRMdnN0RzNhd1c1dFNhM2hp?=
- =?utf-8?B?QlRjSzBSK2pkSnEzaGpmNkJlQmVGQ0l4VmNjdjlsRUVRRy95TkMyN3hTb2VD?=
- =?utf-8?B?Tm0wWWt2a2tZdHlMWnA3dlNsZllacS9JM3Iyd1NOU0w3eEtmVU9TeHRFdnRj?=
- =?utf-8?B?V2hSbEZCT3c0MGtteW1KT3dpOHpVb2VqL3F6QnFkMW44NExwMDJUTXdxZVF3?=
- =?utf-8?B?YTRRMGliaC9SWWdSdjZiZndsOFBQZHVyQnhwTFdzVnZicnEvTTBubENjZWhP?=
- =?utf-8?B?NWZZbU1FVUMyZzNLWVlkcGpySnorSm5ncTQxdnBrcStNMnArbXpHWHczUjRS?=
- =?utf-8?B?WHNRVVFkdTloUjNYRTVoYnprYzhBRHNLcTNLbU9RNWdlMmlweFUxOUVaKzJK?=
- =?utf-8?B?djY0bVJWcCt6cEZJTEVhMVNVRWMyN0s5cExxR3F5VldENXVYWW9FQWZiZEll?=
- =?utf-8?B?Z0hiTUhEeWQwc1BsUzRwbmgxcysvdWhBaXJ1VFdEWWxVU2JEYkRwaDhqb05E?=
- =?utf-8?B?Njc4NGRNZE1sL2pKTStDUkgvWFFCSXZIYmRZRmlyZW1saXhvL3krc3EvOWxj?=
- =?utf-8?B?Um9EdUlOV2cwRHRId3NzYWZ4V1RCSXptNXVQc0tmNy9OZ293UDlMN0krVXJI?=
- =?utf-8?B?ekR2aWpsSWgvYTVnVVdLQS9CSEZrMXZvR0xDbGU3RXdGaTRrZ0gwbU84U3V6?=
- =?utf-8?B?KzR3Q0JHSXJGNWluNXpLUnM4MkRWOUhUUzJpcTI4YmZUVWFoNTBCc1RZdTk5?=
- =?utf-8?B?N1piNlVndC9PNkVYK0theVBEcGRtQW4vaEtqL1pYVnlDcGNJeE5IbXdZRDJt?=
- =?utf-8?B?WkRPK0xJQkx3dU1acFNSUWJtV0hOTldIM0lCWXpheEdzbTdFaU5melJ0cEVT?=
- =?utf-8?B?VndZcndZTStSMTZRZVc5NERiZHViUDBtZytDdUFmR1E2OVdTN0hud3ZuVXhs?=
- =?utf-8?B?ZXdER1BWbWYrb24rNjQ2Y1ltd0tDM0xNN2pnb1ZxVjFLNkxyanZtVHNhR0NJ?=
- =?utf-8?B?VmowMlVreHZBc25jRS9WeXNYbFRXVjFTTFBWWm5xNGx6VnlIRGZCR2MvbjRy?=
- =?utf-8?B?ODBBRlExQ292SWJBZG5BVG1yVk8wRGkrU0pSNFBTNy9ZTm1zN1JkQ1dBVG9J?=
- =?utf-8?Q?3nLHrHZx5dKcjt2gslCz5cYlr?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e404e8af-5259-4dce-399c-08dc1fc35cae
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jan 2024 05:38:31.4962
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: y0E2eAWyNJJlpK+9T6P45foWK5KmGVIPVYeJWKoT8KDd6LNyBcLtNjeYnGeIZyx9pP4cJv9w8/GQDK8j5BLSHQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6118
+Content-Type: text/plain; charset=US-ASCII
 
-On 1/26/2024 16:34, Mario Limonciello wrote:
-> On 1/26/2024 16:22, Hamza Mahfooz wrote:
->> We want programs besides the compositor to be able to enable or disable
->> panel power saving features. However, since they are currently only
->> configurable through DRM properties, that isn't possible. So, to remedy
->> that issue introduce a new "panel_power_savings" sysfs attribute.
->>
->> Cc: Mario Limonciello <mario.limonciello@amd.com>
->> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
->> ---
->>   .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 59 +++++++++++++++++++
->>   1 file changed, 59 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c 
->> b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
->> index cd98b3565178..b3fcd833015d 100644
->> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
->> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
->> @@ -6534,6 +6534,58 @@ 
->> amdgpu_dm_connector_atomic_duplicate_state(struct drm_connector 
->> *connector)
->>       return &new_state->base;
->>   }
->> +static ssize_t panel_power_savings_show(struct device *device,
->> +                    struct device_attribute *attr,
->> +                    char *buf)
->> +{
->> +    struct drm_connector *connector = dev_get_drvdata(device);
->> +    struct drm_device *dev = connector->dev;
->> +    ssize_t val;
->> +
->> +    drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
->> +    val = to_dm_connector_state(connector->state)->abm_level;
->> +    drm_modeset_unlock(&dev->mode_config.connection_mutex);
->> +
->> +    return sysfs_emit(buf, "%lu\n", val);
 
-When the system is first booted up with nothing on the kernel command 
-line, this emits the value for ABM_LEVEL_IMMEDIATE_DISABLE, which isn't 
-something we normally should be showing to people.
+On Sun, 28 Jan 2024, Vincent Mailhol wrote:
 
-I think you should be special casing it similar to how the store special 
-case works.
-
->> +}
->> +
->> +static ssize_t panel_power_savings_store(struct device *device,
->> +                     struct device_attribute *attr,
->> +                     const char *buf, size_t count)
->> +{
->> +    struct drm_connector *connector = dev_get_drvdata(device);
->> +    struct drm_device *dev = connector->dev;
->> +    long val;
->> +    int ret;
->> +
->> +    ret = kstrtol(buf, 0, &val);
->> +
->> +    if (ret)
->> +        return ret;
->> +
->> +    if (val < 0 || val > 4)
->> +        return -EINVAL;
->> +
->> +    drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
->> +    to_dm_connector_state(connector->state)->abm_level = val ?:
->> +        ABM_LEVEL_IMMEDIATE_DISABLE;
->> +    drm_modeset_unlock(&dev->mode_config.connection_mutex);
->> +
-
-It appears that the ABM doesn't actually take effect by writing this 
-value until the next modeset.
-This is also reported by Dominik Förderer.  I suggested he try to change 
-resolutions in his DE and that activated ABM.
-
-So I think it's missing another call to flush out to the hardware.
-
->> +    return count;
->> +}
->> +
+> The compiler is not able to do constant folding on "asm volatile" code.
 > 
-> To make this more discoverable I think you want some kerneldoc.
+> Evaluate whether or not the function argument is a constant expression
+> and if this is the case, return an equivalent builtin expression.
 > 
->> +static DEVICE_ATTR_RW(panel_power_savings);
->> +
->> +static struct attribute *amdgpu_attrs[] = {
->> +    &dev_attr_panel_power_savings.attr,
->> +    NULL
->> +};
->> +
->> +static const struct attribute_group amdgpu_group = {
->> +    .name = "amdgpu",
->> +    .attrs = amdgpu_attrs
->> +};
->> +
->>   static int
->>   amdgpu_dm_connector_late_register(struct drm_connector *connector)
->>   {
->> @@ -6541,6 +6593,13 @@ amdgpu_dm_connector_late_register(struct 
->> drm_connector *connector)
->>           to_amdgpu_dm_connector(connector);
->>       int r;
->> +    if (connector->connector_type == DRM_MODE_CONNECTOR_eDP) {
->> +        r = sysfs_create_group(&connector->kdev->kobj,
->> +                       &amdgpu_group);
->> +        if (r)
->> +            return r;
->> +    }
->> +
+> On linux 6.7 with an allyesconfig and GCC 13.2.1, it saves roughly 11 KB.
 > 
-> I think there should be some matching code sysfs_remove_group(), maybe 
-> in early_unregister() callback.
+>   $ size --format=GNU vmlinux.before vmlinux.after
+>     text       data        bss      total filename
+>     60457964   70953697    2288644  133700305 vmlinux.before
+>     60441196   70957057    2290724  133688977 vmlinux.after
 > 
->>       amdgpu_dm_register_backlight_device(amdgpu_dm_connector);
->>       if ((connector->connector_type == 
->> DRM_MODE_CONNECTOR_DisplayPort) ||
+> Reference: commit fdb6649ab7c1 ("x86/asm/bitops: Use __builtin_ctzl() to evaluate constant expressions")
+> Link: https://git.kernel.org/torvalds/c/fdb6649ab7c1
 > 
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+> ---
+>  arch/m68k/include/asm/bitops.h | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
+> index a8b23f897f24..02ec8a193b96 100644
+> --- a/arch/m68k/include/asm/bitops.h
+> +++ b/arch/m68k/include/asm/bitops.h
+> @@ -469,6 +469,9 @@ static __always_inline unsigned long ffz(unsigned long word)
+>  {
+>  	int res;
+>  
+> +	if (__builtin_constant_p(word))
+> +		return __builtin_ctzl(~word);
+> +
+>  	__asm__ __volatile__ ("bfffo %1{#0,#0},%0"
+>  			      : "=d" (res) : "d" (~word & -~word));
+>  	return res ^ 31;
 
+If the builtin has the desired behaviour, why do we reimplement it in asm? 
+Shouldn't we abandon one or the other to avoid having to prove (and 
+maintain) their equivalence?
+
+> @@ -490,6 +493,9 @@ static __always_inline unsigned long ffz(unsigned long word)
+>  	!defined(CONFIG_M68000)
+>  static __always_inline unsigned long __ffs(unsigned long x)
+>  {
+> +	if (__builtin_constant_p(x))
+> +		return __builtin_ctzl(x);
+> +
+>  	__asm__ __volatile__ ("bitrev %0; ff1 %0"
+>  		: "=d" (x)
+>  		: "0" (x));
+> @@ -522,6 +528,9 @@ static __always_inline int ffs(int x)
+>  {
+>  	int cnt;
+>  
+> +	if (__builtin_constant_p(x))
+> +		return __builtin_ffs(x);
+> +
+>  	__asm__ ("bfffo %1{#0:#0},%0"
+>  		: "=d" (cnt)
+>  		: "dm" (x & -x));
+> @@ -540,6 +549,9 @@ static __always_inline int fls(unsigned int x)
+>  {
+>  	int cnt;
+>  
+> +	if (__builtin_constant_p(x))
+> +		return x ? BITS_PER_TYPE(x) - __builtin_clz(x) : 0;
+> +
+>  	__asm__ ("bfffo %1{#0,#0},%0"
+>  		: "=d" (cnt)
+>  		: "dm" (x));
+> 
 
