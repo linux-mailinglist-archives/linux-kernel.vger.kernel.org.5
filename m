@@ -1,133 +1,115 @@
-Return-Path: <linux-kernel+bounces-41801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41802-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBE9783F7D8
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:43:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 611D783F7DB
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:43:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 178111C22591
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:43:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 100201F21319
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:43:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1ACD13B7B7;
-	Sun, 28 Jan 2024 16:15:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEDF24F1F3;
+	Sun, 28 Jan 2024 16:16:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AoBB5fGl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dkK99O5W"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4163013B799;
-	Sun, 28 Jan 2024 16:15:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 083D313BEA3;
+	Sun, 28 Jan 2024 16:16:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458559; cv=none; b=EOMCx6tDapvSAzLeRxzjprXje9Fd3gTFAXXXW29WuzaEkW1BHcgHyt/TVp7Yx5q4aCxlKxOKskxMe+RHtAZlz2FPrjJZXTP9cyF1PsyVKcE+UkHcZ3Ph/2y4RBufT7tozSZkbrD49e7X7hxRXGdxUBSP/w564go2OPY4fNtiZXM=
+	t=1706458569; cv=none; b=FyXjYuyJH9kHvILOADfqG1XluhPZRaxF4DF0W14T2jXFlJQ7pxus/FBsDpbhyE8QrpUp953FREnlm7IIJN14LZ92FNLIyTrmVg/L4vEZkSui7rozEn6L8xMBCjDM3K71qeUfUtUzl74ggJ7Fme68FKgnGb7zTonsoentzMwuQik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458559; c=relaxed/simple;
-	bh=lIoljhouP1oJTBFRiXsRV3C9KwRxMV61vpODY4Dof24=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NGFgtXiTyW7G+ZzlFa0kHoQoq/Imj52C6GFgIzNiFobTHDICt6UIXjLi8AWx6agHWTlckqcwBQDA61jnkhwjFsnf9AWrZG5Bs/3hfvZwihO256gEXe2LmQTintFlVwlSHVNXsGwg7Br1KaRzbX6sNDeI2Y3pFJv1T1b/F3hVwcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AoBB5fGl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5FEFC43394;
-	Sun, 28 Jan 2024 16:15:57 +0000 (UTC)
+	s=arc-20240116; t=1706458569; c=relaxed/simple;
+	bh=MpGym25+0xsBa9yTq0iFKbRgXNgQwFzL0JBmq/qXBC4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rYHIMK679CRHIyySEaLIpd6v2ABE/OSQFUzDCS1wnaRB+x/srDD/+FZ5m/C9gHVLNfbHz+1R0peNj34uzmQi5ck17ZdNWp4otWIG/SH3nOrQlvREE0V40DWzeI6Vm1ECay0vMCal7+osZUn7g5iZuTOKN5nLsm/iIGN8UDZiwdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dkK99O5W; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94D77C43390;
+	Sun, 28 Jan 2024 16:16:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706458559;
-	bh=lIoljhouP1oJTBFRiXsRV3C9KwRxMV61vpODY4Dof24=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AoBB5fGlywsbZbfa75X7d2PBh4w4ZluNWhH7rltvLYc8OAqcxLoKfjyQK0dOaGIvx
-	 /LglXqCBlVVjSSTz8/fLUycC2Udf0RFPazJBDixoLkGPVUmOvbnaQ1OKG2kFuQZ3EM
-	 /IGy6fl9XenInP/g96IWFBJf22BNwGiEZ9EOPTyAe+9/oqioVtRTsw12L1r7PME2T7
-	 9JZ99tokGMevBGkTa4V/DyoSHx3Erp/ZI6ZkLktL7UM/oYuZOvWv8ZI5dsYOyEhPxD
-	 RHruvjkA+U0q7h+mq+0Aj2n6dNRxKI3pc/Dum2x/sspqUZnN8jAoDYwZ0oBeN7uDiI
-	 QPVa4TvNKrToQ==
+	s=k20201202; t=1706458568;
+	bh=MpGym25+0xsBa9yTq0iFKbRgXNgQwFzL0JBmq/qXBC4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=dkK99O5WLKGk2cJGuHpbrcySRwNqc6zfHFk0Z+FCrAtwHTVI6X7sst+aEVao3m7lN
+	 dMTiZqfWJy/SOEYSwHamBlmJXAzF1Fz/K3+Ee6idnQ/GNpcwtzMqMtAvnwrEd9JqAg
+	 K6B80BJ053/UVQzBA7vCu9unQv4yqD478Rf7TZBZk0l4EV7fixdU5Gep6Y94rYiJ4I
+	 tI+RtyPgni6wGuvov2lNkrLRMPAgMxexmdGEaLNtouxSbKfNvFwNYReSc5rrg6Xcjq
+	 alG3sNSXJyHGvTjmfMDy0XnmwFu8gNlL6LWS8SJBqzmbp4X7PG8C8RizdntRIEduMz
+	 FpURFP0TH/s/A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-	Philip Yang <Philip.Yang@amd.com>,
-	Felix Kuehling <Felix.Kuehling@amd.com>,
-	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Felix Kuehling <felix.kuehling@amd.com>,
+Cc: "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Huang Rui <ray.huang@amd.com>,
+	Vicki Pfau <vi@endrift.com>,
 	Sasha Levin <sashal@kernel.org>,
-	Xinhui.Pan@amd.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.15 19/19] drm/amdkfd: Fix 'node' NULL check in 'svm_range_get_range_boundaries()'
-Date: Sun, 28 Jan 2024 11:15:16 -0500
-Message-ID: <20240128161524.204182-19-sashal@kernel.org>
+	linux-pci@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 01/13] PCI: Only override AMD USB controller if required
+Date: Sun, 28 Jan 2024 11:15:47 -0500
+Message-ID: <20240128161606.205221-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240128161524.204182-1-sashal@kernel.org>
-References: <20240128161524.204182-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.148
+X-stable-base: Linux 5.10.209
 Content-Transfer-Encoding: 8bit
 
-From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
 
-[ Upstream commit d7a254fad873775ce6c32b77796c81e81e6b7f2e ]
+[ Upstream commit e585a37e5061f6d5060517aed1ca4ccb2e56a34c ]
 
-Range interval [start, last] is ordered by rb_tree, rb_prev, rb_next
-return value still needs NULL check, thus modified from "node" to "rb_node".
+By running a Van Gogh device (Steam Deck), the following message
+was noticed in the kernel log:
 
-Fixes the below:
-drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_svm.c:2691 svm_range_get_range_boundaries() warn: can 'node' even be NULL?
+  pci 0000:04:00.3: PCI class overridden (0x0c03fe -> 0x0c03fe) so dwc3 driver can claim this instead of xhci
 
-Suggested-by: Philip Yang <Philip.Yang@amd.com>
-Cc: Felix Kuehling <Felix.Kuehling@amd.com>
-Cc: Christian König <christian.koenig@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Reviewed-by: Felix Kuehling <felix.kuehling@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Effectively this means the quirk executed but changed nothing, since the
+class of this device was already the proper one (likely adjusted by newer
+firmware versions).
+
+Check and perform the override only if necessary.
+
+Link: https://lore.kernel.org/r/20231120160531.361552-1-gpiccoli@igalia.com
+Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Huang Rui <ray.huang@amd.com>
+Cc: Vicki Pfau <vi@endrift.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdkfd/kfd_svm.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/pci/quirks.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-index e2d4e2b42a7c..7f55decc5f37 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-@@ -2325,6 +2325,7 @@ svm_range_get_range_boundaries(struct kfd_process *p, int64_t addr,
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 500905dad643..b663b3b3c87a 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -609,10 +609,13 @@ static void quirk_amd_dwc_class(struct pci_dev *pdev)
  {
- 	struct vm_area_struct *vma;
- 	struct interval_tree_node *node;
-+	struct rb_node *rb_node;
- 	unsigned long start_limit, end_limit;
+ 	u32 class = pdev->class;
  
- 	vma = find_vma(p->mm, addr << PAGE_SHIFT);
-@@ -2341,16 +2342,15 @@ svm_range_get_range_boundaries(struct kfd_process *p, int64_t addr,
- 	if (node) {
- 		end_limit = min(end_limit, node->start);
- 		/* Last range that ends before the fault address */
--		node = container_of(rb_prev(&node->rb),
--				    struct interval_tree_node, rb);
-+		rb_node = rb_prev(&node->rb);
- 	} else {
- 		/* Last range must end before addr because
- 		 * there was no range after addr
- 		 */
--		node = container_of(rb_last(&p->svms.objects.rb_root),
--				    struct interval_tree_node, rb);
-+		rb_node = rb_last(&p->svms.objects.rb_root);
- 	}
--	if (node) {
-+	if (rb_node) {
-+		node = container_of(rb_node, struct interval_tree_node, rb);
- 		if (node->last >= addr) {
- 			WARN(1, "Overlap with prev node and page fault addr\n");
- 			return -EFAULT;
+-	/* Use "USB Device (not host controller)" class */
+-	pdev->class = PCI_CLASS_SERIAL_USB_DEVICE;
+-	pci_info(pdev, "PCI class overridden (%#08x -> %#08x) so dwc3 driver can claim this instead of xhci\n",
+-		 class, pdev->class);
++	if (class != PCI_CLASS_SERIAL_USB_DEVICE) {
++		/* Use "USB Device (not host controller)" class */
++		pdev->class = PCI_CLASS_SERIAL_USB_DEVICE;
++		pci_info(pdev,
++			"PCI class overridden (%#08x -> %#08x) so dwc3 driver can claim this instead of xhci\n",
++			class, pdev->class);
++	}
+ }
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_NL_USB,
+ 		quirk_amd_dwc_class);
 -- 
 2.43.0
 
