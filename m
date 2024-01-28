@@ -1,189 +1,229 @@
-Return-Path: <linux-kernel+bounces-41927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF11C83F9AA
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 21:06:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08F5583F9AE
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 21:09:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54B751F21E26
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:06:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77CDC1F21A06
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:09:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1EB83219F;
-	Sun, 28 Jan 2024 20:06:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15BEE3BB48;
+	Sun, 28 Jan 2024 20:08:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="vz/Q/L43"
-Received: from mout.web.de (mout.web.de [212.227.17.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H9oXllqS"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85F6831A82;
-	Sun, 28 Jan 2024 20:06:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76E452E633;
+	Sun, 28 Jan 2024 20:08:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706472396; cv=none; b=KvhXzCMlhsFd1Yr/mwLd4A9OSCbWLTNaugn/fgyUy+AE58PyXIms8xbp6HXlhENH5Co28FidPwMLxcT2Vgee167BL83+PQzV+zLARFJr+APjeeOsAlOr0p8dw2Ds7DGfsMF0jb4BtXTNZv2rjbHS9wCvIsDmrp/pgkxzms021Jw=
+	t=1706472537; cv=none; b=JVu/Tgi5Qvk5oUKCXtHS42Mdbxscke37UJIdXQ1sA2rG58of+bFj14iNywGx6DGLr4L+vJOzGj1dTsCOD5mdfD8EwHtuFtEe+K3xdMytc5m/tq+F5Pb4EsJ2MQv1I+wbGBkSVjWlWnzkSaA7l9wupmrqFyYPMpZaGljgOAK4Cac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706472396; c=relaxed/simple;
-	bh=NgaXvXQoHsjxe/EA1Ybr+FQWYg9KhJGN4jFPViGSQxU=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=aTBflspv3NwAd/cF5Sxkjw3JGa879KNhbT7GA2+UvR0fjOS6oMQLJlyLjY3QdCLlrtshiXLyDmYnthuqg2Tf7g182n5XbQOXaWu95obFBjjFjrck8TocOs7XUEUMOBC0JJXaFzSTQTkuANSYDttcyYMPeNWkq2XtMO4NbBXuf9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=vz/Q/L43; arc=none smtp.client-ip=212.227.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1706472371; x=1707077171; i=markus.elfring@web.de;
-	bh=NgaXvXQoHsjxe/EA1Ybr+FQWYg9KhJGN4jFPViGSQxU=;
-	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
-	b=vz/Q/L43/Tc6KJxGJGbdWl8qyaIutUMg/3lI5CrC9uehl8vYhCoWHl0V/D9yvoJI
-	 9pnI3QKHgIpLt6YTQiJS5KDX2ppq2CPESw5rhpSUOM3LQPnDBsjGiDPvAf38LM6UO
-	 RCor65Dgnvj6JeXS+4FPGFwsAQ6k731rdCL4xY3HcKkn9ex0OOQinNGSPmH8QghM+
-	 uEKcoztXp7QTOdZD9PL8QO3qDlM8Yl1298+PA3/mtgNchVmagKlaSeoF8Jjp/9zJi
-	 3muccUJZ+xxaatwaZEsDn3VjVNee/MItKlklBV4MsyoyuDUqMuPnc5OXsGirN6w0O
-	 rgvhTPAh4NsYSWt9jg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.81.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1Myf3v-1r9U8U2P6L-00yX9a; Sun, 28
- Jan 2024 21:06:11 +0100
-Message-ID: <c07221ed-8eaf-490e-9672-033b1cfe7b6e@web.de>
-Date: Sun, 28 Jan 2024 21:06:05 +0100
+	s=arc-20240116; t=1706472537; c=relaxed/simple;
+	bh=0kZcbYb2bPI3GpT2W3oFrJwC0e+CxQQTZjnEcqPUZQs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YgQIWusEn+CpLF4DJ40P9SDMdJNvZgnDXfTB2ua0MIjbHu1zc+aNE399lMcwfSTTXg8y720J6GoKAhRMhg866IgxWFqY6BQ9f7WGRNrPRghfR3vY5a0KzOzBgReaBC+uEGFHaRsBUtMlbcr92gDDQjfBbuZVPkRGfU5veDVjDQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H9oXllqS; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-55f0367b15fso122070a12.0;
+        Sun, 28 Jan 2024 12:08:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706472533; x=1707077333; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hpcFb9CQUcmE0qw9BfWGbhCG2pDHXS8RAhRX4upBQ/0=;
+        b=H9oXllqSUfxbbyc6L7czNAvelVHH59bSm4dloCUl6fw6/uDjbPOFnn7G3xMrhtWkf4
+         BmTICtECgGkyfVwUJKvBi+NdyXbyOjg7d8Id/PwPhLNktxmsX0xrDKepRXAETT1i82ve
+         6YwJERD3qA8CpyP4kZsT0FHuCLp0Cym+Gt1IZ9txUsWn4Jr0D5VeM94irxHttAkeGCw4
+         WcpfrY87Y0OR0Hsoh4L33jMNezwwxqEPI1YAVIWKXJHHniJcu2gmEsPII89wlDD7PytE
+         BooBoM0fETWg7Wi276APhyaLTWnpeQ9ySLF8VhHIluvrjQ44deuOsbtKViQLcEEwPEZH
+         IJ7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706472533; x=1707077333;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hpcFb9CQUcmE0qw9BfWGbhCG2pDHXS8RAhRX4upBQ/0=;
+        b=X8He8+NjlJgUhhmkrVl6OpzRztLBOH6o+mVdWBbuQ5pBMYjgTDxmbPCp2AqTxee26Q
+         fiN6p5SjT7jn651xMgPEh++MuI/babE9Rj/eWCpB5A2cDbfuQ7DgZAyFKeEoVI5b1gtW
+         erUsNammBS9qAXLLCbLxmn4PlnpyA4aOP9CrY2w1Q57MeEAuNUPnnOYdAjDLRVD5YUR1
+         tgDaC82idKCR1l4bNMgvpdiFCRbCfKftVpNoeTfxKKjO/ETqcjHYmC2J23yZhJxE8XkU
+         mBG+oe9XaBhKQo0RDvPD5M+H5G/hktiYwKIScIp7OM313hiJrd8ireekO+7DQ9QT7uuj
+         XDsA==
+X-Gm-Message-State: AOJu0YxhZimbjas5RnF3rOSo+GxN4RcbIMIMmUNGQubj69FhVCN9BrZh
+	d2dCXFNz/Uv+7lcNMyNtpGQhqHZrxqShJd4hu6/b/XGeig7RqITj6sw+oyhSyaqp8BlG0zD8o2c
+	m6ODA8nc8Jxv4ryD+MRIh54q07y4=
+X-Google-Smtp-Source: AGHT+IEOEjeCTkeOpSuhG+HjHqJqutXlzhA2zejgtwIdHI9kusmjwwmozj7v/6JbFoiL4ZomYyqtT+oyEnlfzY2Vm0g=
+X-Received: by 2002:a17:906:65cf:b0:a31:8b26:47ee with SMTP id
+ z15-20020a17090665cf00b00a318b2647eemr2671421ejn.55.1706472533292; Sun, 28
+ Jan 2024 12:08:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: dri-devel@lists.freedesktop.org, kernel-janitors@vger.kernel.org,
- Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
- Donald Robson <donald.robson@imgtec.com>,
- Frank Binns <frank.binns@imgtec.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Matt Coster <matt.coster@imgtec.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Sarah Walker <sarah.walker@imgtec.com>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] drm/imagination: Use memdup_user() rather than duplicating
- its implementation
-Content-Type: text/plain; charset=UTF-8
+References: <20240125-rk-dts-additions-v1-0-5879275db36f@gmail.com>
+ <20240125-rk-dts-additions-v1-3-5879275db36f@gmail.com> <df062818d21f3318c033859d0e95efc7@manjaro.org>
+ <b5b1900a6e309890f449ec91594b8d6c@manjaro.org>
+In-Reply-To: <b5b1900a6e309890f449ec91594b8d6c@manjaro.org>
+From: Alexey Charkov <alchark@gmail.com>
+Date: Mon, 29 Jan 2024 00:08:41 +0400
+Message-ID: <CABjd4YxqarUCbZ-a2XLe3TWJ-qjphGkyq=wDnctnEhdoSdPPpw@mail.gmail.com>
+Subject: Re: [PATCH 3/4] arm64: dts: rockchip: enable temperature driven fan
+ control on Rock 5B
+To: Dragan Simic <dsimic@manjaro.org>
+Cc: Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Heiko Stuebner <heiko@sntech.de>, Daniel Lezcano <daniel.lezcano@linaro.org>, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:koqS3eLltv+QIPN2RCW3+Is0PGswqbQ+2Rizm/ODddQBc60oNWw
- zsO7XtPEFBC/fYJPfyzbKTyXby9HwP2MYakOHwpAhdyTV+R+mxOhB7f2s1JV+tNvwmhwqpk
- /rC2b440t+5NuTYmzEOJVbrLTJXE6hgFBAxN9bAYLcyU2uuilqZ+453fERFTSqIirVuqLqe
- Ojh24tWpBrPas8DOKi8BQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:06n3TwzjoMw=;WhAmErG28I8KWN9Gnz8yyeHqEEh
- +AIQfj6wNSVkJKDyoFhoYA+2h+Mz8gNpke7q0+aS3I8Ub5Uev/yTyTXj3+vE01BbvtSbMG8+p
- 2m22BKjoTrmOzp96SzciIJS/4PbRbcGeuFf27QQmeJp5qVoySyUigpiVqQ/08tB7uElJ8sSj3
- FZEZkftcJXsmwzOoCCmHwvPHt74grQC5+rAw8vqeq9o9Hsl7N7HORizLgqpRIgOmPJ8sSIl9p
- EU1Huagt9m8rw6h1qsOhMDCWHzuwlS9Vtb7mj9sDCbTwJihK5xBd0VNHt2Nv/VrB8SzzaGSQy
- aLMJiOPhZsJeRWVLfXAZToGIVlhhV444JTlZhjlSwzRrKHpca82O/VVKZAjyAgWu7er2d6vJK
- mpr6fRRy1zyaltc9bodZlRiIZVD7Wt5M4qb+b+DrN7FvTjtIVm74dvLaUl3BlhPwRf9bS8Rjy
- aujj7LpfASJhWqpe77q3TrkSo7YHNdJxu62cJ/LTt0Hn7wQaSBKKPs4nm4OOxLxueiakmZfo/
- Hk8K0/FSsacskAms6/Uok9Bq4a5vp/hTljqydjDelXpPUs/WtuwCX/MIVo111H7tTo1cNRiRQ
- bTjpF6y4ma4vzpKTqE/LEvPF64S9eJr1vY774HtkID4cUIKwmo6JrhP6Q0DMCmdQNTtgCup0n
- hwZLtUjBs44Iq0j/0iaTiq15YTB8FM06r8tlaJ35/a4YglCiV01/+ZJgXeC0rHX3+vJJyiDZF
- 0hW7Fv4NhkqQQEA/8V4yC6ENm37+/yrrtzsb7lAHA0GPRKAJcZOKCVBHuY0laqf2eKXxs0UmW
- GjWVYMPWvafsysOD3LD+KfKPlKmVCiR/U+NCIOYM85gwdBj7BX7ZsWQriVVRwtVfWZgzdr6gA
- YWfmTBp5ZP49ielVhdZLsLvW7xG1lFjb0cu531ZMaNsXd7Ui1d3pQUukRE4/kQrQ4Mf81XMiY
- iwblTQ==
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sun, 28 Jan 2024 20:50:36 +0100
+On Sun, Jan 28, 2024 at 12:27=E2=80=AFAM Dragan Simic <dsimic@manjaro.org> =
+wrote:
+>
+> Hello Alexey,
 
-* Reuse existing functionality from memdup_user() instead of keeping
-  duplicate source code.
+Hello Dragan,
 
-  Generated by: scripts/coccinelle/api/memdup_user.cocci
+> On 2024-01-26 00:13, Dragan Simic wrote:
+> > On 2024-01-24 21:30, Alexey Charkov wrote:
+> >> This enables thermal monitoring on Radxa Rock 5B and links the PWM
+> >> fan as an active cooling device managed automatically by the thermal
+> >> subsystem, with a target SoC temperature of 55C
+> >>
+> >> Signed-off-by: Alexey Charkov <alchark@gmail.com>
+> >> ---
+> >>  arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts | 25
+> >> ++++++++++++++++++++++++-
+> >>  1 file changed, 24 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+> >> b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+> >> index 9b7bf6cec8bd..c4c94e0b6163 100644
+> >> --- a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+> >> +++ b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+> >> @@ -52,7 +52,7 @@ led_rgb_b {
+> >>
+> >>      fan: pwm-fan {
+> >>              compatible =3D "pwm-fan";
+> >> -            cooling-levels =3D <0 95 145 195 255>;
+> >> +            cooling-levels =3D <0 120 150 180 210 240 255>;
+> >>              fan-supply =3D <&vcc5v0_sys>;
+> >>              pwms =3D <&pwm1 0 50000 0>;
+> >>              #cooling-cells =3D <2>;
+> >> @@ -180,6 +180,25 @@ &cpu_l3 {
+> >>      cpu-supply =3D <&vdd_cpu_lit_s0>;
+> >>  };
+> >>
+> >> +&package_thermal {
+> >> +    polling-delay =3D <1000>;
+> >> +
+> >> +    trips {
+> >> +            package_fan: package-fan {
+> >> +                    temperature =3D <55000>;
+> >> +                    hysteresis =3D <2000>;
+> >> +                    type =3D "active";
+> >> +            };
+> >> +    };
+> >> +
+> >> +    cooling-maps {
+> >> +            map-fan {
+> >> +                    trip =3D <&package_fan>;
+> >> +                    cooling-device =3D <&fan THERMAL_NO_LIMIT THERMAL=
+_NO_LIMIT>;
+> >> +            };
+> >> +    };
+> >> +};
+> >
+> > It should be better to have two new trips and two new cooling maps
+> > defined, instead of having just one trip/map pair, like this:
+> >
+> > &package_thermal {
+> >       polling-delay =3D <1000>;
+> >
+> >       trips {
+> >               package_warm: package-warm {
+> >                       temperature =3D <55000>;
+> >                       hysteresis =3D <2000>;
+> >                       type =3D "active";
+> >               };
+> >
+> >               package_hot: package-hot {
+> >                       temperature =3D <65000>;
+> >                       hysteresis =3D <2000>;
+> >                       type =3D "active";
+> >               };
+> >       };
+> >
+> >       cooling-maps {
+> >               mapX {
+> >                       trip =3D <&package_warm>;
+> >                       cooling-device =3D <&fan THERMAL_NO_LIMIT 1>;
+> >               };
+> >
+> >               mapY {
+> >                       trip =3D <&package_hot>;
+> >                       cooling-device =3D <&fan 2 THERMAL_NO_LIMIT>;
+> >               };
+> >       };
+> > };
+> >
+> > The idea behind this approach is to keep the fan spinning at the lowest
+> > available speed until the package temperature reaches the second trip's
+> > temperature level, at which point the fan starts ramping up.  An
+> > approach
+> > like this is already employed by the Pine64 RockPro64 SBC.
+> >
+> > This way, we'll be doing our best to keep the fan noise down;  of
+> > course,
+> > it will depend on the particular heatsink and fan combo how long the
+> > fan
+> > can be kept at the lowest speed, but we should aim at supporting as
+> > many
+> > different cooling setups as possible, and as well as possible, out of
+> > the
+> > box and with no additional tweaking required.
+> >
+> > Please notice "mapX" and "mapY" as the names of the additional cooling
+> > maps,
+> > where X and Y are simply the next lowest available indices, which is
+> > pretty
+> > much the usual way to name the additional cooling maps.
+>
+> Just checking, have you seen this?  Quite a few messages were exchanged
+> on the same day, so just wanted to make sure you didn't miss this one.
 
-* Delete labels and statements which became unnecessary
-  with this refactoring.
+Yes, thank you for pointing it out and following up.
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/gpu/drm/imagination/pvr_context.c | 21 +++------------------
- drivers/gpu/drm/imagination/pvr_job.c     | 15 +++------------
- 2 files changed, 6 insertions(+), 30 deletions(-)
+I've been testing different setups to get my thoughts together on this
+one. Long story short, your suggested setup indeed makes the system
+quieter most of the time while still being safely far from hitting the
+throttling threshold, though it appears that the main influence is
+from the higher temperature value in the second trip (after which the
+fan accelerates) rather than from the presence of the first trip and
+the corresponding cooling map capped at the minimum-speed fan action.
 
-diff --git a/drivers/gpu/drm/imagination/pvr_context.c b/drivers/gpu/drm/i=
-magination/pvr_context.c
-index eded5e955cc0..27814ae8a8f8 100644
-=2D-- a/drivers/gpu/drm/imagination/pvr_context.c
-+++ b/drivers/gpu/drm/imagination/pvr_context.c
-@@ -66,29 +66,14 @@ static int
- process_static_context_state(struct pvr_device *pvr_dev, const struct pvr=
-_stream_cmd_defs *cmd_defs,
- 			     u64 stream_user_ptr, u32 stream_size, void *dest)
- {
--	void *stream;
- 	int err;
-+	void *stream =3D memdup_user(u64_to_user_ptr(stream_user_ptr), stream_si=
-ze);
+In my observation, the system rarely crosses the 55C threshold under
+partial load, and when the load is high (e.g. compiling stuff with 8
+concurrent jobs) it takes ~2 seconds to go from below the first trip
+point to above the second trip point, so the fan doesn't really get
+the chance to stay at its leisurely first state.
 
--	stream =3D kzalloc(stream_size, GFP_KERNEL);
--	if (!stream)
--		return -ENOMEM;
--
--	if (copy_from_user(stream, u64_to_user_ptr(stream_user_ptr), stream_size=
-)) {
--		err =3D -EFAULT;
--		goto err_free;
--	}
-+	if (IS_ERR(stream))
-+		return PTR_ERR(stream);
+So frankly I'm inclined to leave one trip point here, and simply
+change its temperature threshold from 55C to 65C - just to keep it
+simple.
 
- 	err =3D pvr_stream_process(pvr_dev, cmd_defs, stream, stream_size, dest)=
-;
--	if (err)
--		goto err_free;
--
- 	kfree(stream);
--
--	return 0;
--
--err_free:
--	kfree(stream);
--
- 	return err;
- }
+What do you think?
 
-diff --git a/drivers/gpu/drm/imagination/pvr_job.c b/drivers/gpu/drm/imagi=
-nation/pvr_job.c
-index 78c2f3c6dce0..e17d53b93b1f 100644
-=2D-- a/drivers/gpu/drm/imagination/pvr_job.c
-+++ b/drivers/gpu/drm/imagination/pvr_job.c
-@@ -87,23 +87,14 @@ static int pvr_fw_cmd_init(struct pvr_device *pvr_dev,=
- struct pvr_job *job,
- 			   const struct pvr_stream_cmd_defs *stream_def,
- 			   u64 stream_userptr, u32 stream_len)
- {
--	void *stream;
- 	int err;
-+	void *stream =3D memdup_user(u64_to_user_ptr(stream_userptr), stream_len=
-);
-
--	stream =3D kzalloc(stream_len, GFP_KERNEL);
--	if (!stream)
--		return -ENOMEM;
--
--	if (copy_from_user(stream, u64_to_user_ptr(stream_userptr), stream_len))=
- {
--		err =3D -EFAULT;
--		goto err_free_stream;
--	}
-+	if (IS_ERR(stream))
-+		return PTR_ERR(stream);
-
- 	err =3D pvr_job_process_stream(pvr_dev, stream_def, stream, stream_len, =
-job);
--
--err_free_stream:
- 	kfree(stream);
--
- 	return err;
- }
-
-=2D-
-2.43.0
-
+Best regards,
+Alexey
 
