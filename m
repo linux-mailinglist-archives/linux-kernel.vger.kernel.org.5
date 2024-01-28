@@ -1,58 +1,56 @@
-Return-Path: <linux-kernel+bounces-41774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C44FC83F78F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:36:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66C9E83F792
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:36:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67A22B21956
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:36:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 059A51F24C04
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:36:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F2FD85C5C;
-	Sun, 28 Jan 2024 16:14:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68EC786145;
+	Sun, 28 Jan 2024 16:15:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j1h8xPyv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rnpfjvmb"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6067782D6F;
-	Sun, 28 Jan 2024 16:14:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99E8185C72;
+	Sun, 28 Jan 2024 16:14:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458498; cv=none; b=eTb/mcp3WghBxRZrWZWxo/jtS5gVe3di5LmoaprQx/RTOWuecl6sJux4kFiRlRnlG/q5AR4aaPTFHSJgeSRajd+9DpDgUM9RkF0foATpDQoOUpZh9jx4kcnIOJLVZUX4ZADhF32v745cwaWjoTiYrWzjC73onfK1RL19BVeVQDQ=
+	t=1706458499; cv=none; b=A7mw52kUh8vw8xNKIqCWSoaOEHct+K01HPi4Z17lUgX9PeEA99iqNwD+JEwjIhrntwOF3if7oIbcFuiqxEKkNgHYcK5QunWU0WwZPQbBmJ82urw0HzFUhTIAIPlXyGJJJu8j28uTaKEjv5a5lRb+zyfRv3vzdJD1upVB1jF+6/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458498; c=relaxed/simple;
-	bh=ZIMFWPnxYDeogjeezlHi+N02zoM2rGIKE0whfUbqQ6M=;
+	s=arc-20240116; t=1706458499; c=relaxed/simple;
+	bh=OQh/WkUxd9pGHLShgHQD+MmfBJhAHHbHq4FOwNrwc50=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=l9wDbvPt19KSc68zrOsQwYvVSBcd0vzCD0MgxqZT9pYDKwerS6VbMT95y0Amd0PUsKP/u2KFNMcVzZPcUljiiHOXoYRLlVmX3B8ZFGSezkh57sl3vnHfAZfkF4WcmeVPhs7iVe7W6QlQKjOSw6LKKrTZjxJwhDc0Bqn9+7tvm3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j1h8xPyv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A45CC433B2;
-	Sun, 28 Jan 2024 16:14:57 +0000 (UTC)
+	 MIME-Version; b=iOq7ULIe9nZnwNjiXffc58+TugJW6zh2fNulrE5KPc/bWVG4fGdNGjVFwLaZpns5xgWPONJ2DN+sVcCOOCrrQ0as/3dLG+TqXLL956/oAFeHBDHsU8xDlDAz9JgAhyaYLEWV8ABuhIkr+foB3A5XHeH2DqzWC2tCx4m4wq8LrH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rnpfjvmb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1D28C433C7;
+	Sun, 28 Jan 2024 16:14:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706458498;
-	bh=ZIMFWPnxYDeogjeezlHi+N02zoM2rGIKE0whfUbqQ6M=;
+	s=k20201202; t=1706458499;
+	bh=OQh/WkUxd9pGHLShgHQD+MmfBJhAHHbHq4FOwNrwc50=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=j1h8xPyvLUz9gieQtRoCH55jkiVDKhJxWLtRc3eVcoshLXsgySR92QM6/zQk3iOkT
-	 hWgLEiRrKuFIPtXzD1jFgkbL2aRKK8IS2PEPPC/YE25BOef1KnjCdNGf8k39COIVso
-	 uyIAH01Np6QqEMqfJUl4rjo/P0bfkmqnZCUBEuTZU4FvFkldUyIbOSk1BeVZ1jx2+0
-	 6AkqbPUH4SMl0iJkaOv0FLhBvT24fNyai1uW9Ji8MzdIHc/5YzKh1HrdA8QDffx05s
-	 HYuOqoNL9Ma5Ap7tRJ0SlttDXvXLDvrV6gpNjTwIknQCzyF5904VaLGKt1YOSF2Hob
-	 gvaAklxw/UNmg==
+	b=Rnpfjvmb6qbKXI7dC8LIeM47yAfok6s674cO2psLBztsSiJqgjHkrfU6vrFYCoctq
+	 SlGRq0gUn0gEiEiRKdamB9gt1t+Id787K68glOVLxajItrCYVQ30wjNIXAlXh2w1uy
+	 zEmFOnUBii2AcW1m9sQ726bzRID7aha6+jbqf2U5WWBNda68sSoZ8iS/KMZ2jZOik9
+	 NPoobDKLxnuRAFembaWT+VKeTbWIu7/MczSsI726x/Rqjg0J4XFtGYR1qVv03X3EZl
+	 bv3bVXEKCpHiYkAsld9fX0W0pCwYCd0obXn1Xc24BhcEHuvcgaecbuAAzGibgC8jz6
+	 0J5ViOEIzeGcw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ming Lei <ming.lei@redhat.com>,
-	Jan Kara <jack@suse.cz>,
-	Kemeng Shi <shikemeng@huaweicloud.com>,
-	Changhui Zhong <czhong@redhat.com>,
-	Jens Axboe <axboe@kernel.dk>,
+Cc: Venky Shankar <vshankar@redhat.com>,
+	Xiubo Li <xiubli@redhat.com>,
+	Ilya Dryomov <idryomov@gmail.com>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 19/27] blk-mq: fix IO hang from sbitmap wakeup race
-Date: Sun, 28 Jan 2024 11:14:04 -0500
-Message-ID: <20240128161424.203600-19-sashal@kernel.org>
+	ceph-devel@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 20/27] ceph: reinitialize mds feature bit even when session in open
+Date: Sun, 28 Jan 2024 11:14:05 -0500
+Message-ID: <20240128161424.203600-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128161424.203600-1-sashal@kernel.org>
 References: <20240128161424.203600-1-sashal@kernel.org>
@@ -67,70 +65,43 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.75
 Content-Transfer-Encoding: 8bit
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Venky Shankar <vshankar@redhat.com>
 
-[ Upstream commit 5266caaf5660529e3da53004b8b7174cab6374ed ]
+[ Upstream commit f48e0342a74d7770cdf1d11894bdc3b6d989b29e ]
 
-In blk_mq_mark_tag_wait(), __add_wait_queue() may be re-ordered
-with the following blk_mq_get_driver_tag() in case of getting driver
-tag failure.
+Following along the same lines as per the user-space fix. Right
+now this isn't really an issue with the ceph kernel driver because
+of the feature bit laginess, however, that can change over time
+(when the new snaprealm info type is ported to the kernel driver)
+and depending on the MDS version that's being upgraded can cause
+message decoding issues - so, fix that early on.
 
-Then in __sbitmap_queue_wake_up(), waitqueue_active() may not observe
-the added waiter in blk_mq_mark_tag_wait() and wake up nothing, meantime
-blk_mq_mark_tag_wait() can't get driver tag successfully.
-
-This issue can be reproduced by running the following test in loop, and
-fio hang can be observed in < 30min when running it on my test VM
-in laptop.
-
-	modprobe -r scsi_debug
-	modprobe scsi_debug delay=0 dev_size_mb=4096 max_queue=1 host_max_queue=1 submit_queues=4
-	dev=`ls -d /sys/bus/pseudo/drivers/scsi_debug/adapter*/host*/target*/*/block/* | head -1 | xargs basename`
-	fio --filename=/dev/"$dev" --direct=1 --rw=randrw --bs=4k --iodepth=1 \
-       		--runtime=100 --numjobs=40 --time_based --name=test \
-        	--ioengine=libaio
-
-Fix the issue by adding one explicit barrier in blk_mq_mark_tag_wait(), which
-is just fine in case of running out of tag.
-
-Cc: Jan Kara <jack@suse.cz>
-Cc: Kemeng Shi <shikemeng@huaweicloud.com>
-Reported-by: Changhui Zhong <czhong@redhat.com>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Link: https://lore.kernel.org/r/20240112122626.4181044-1-ming.lei@redhat.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Link: http://tracker.ceph.com/issues/63188
+Signed-off-by: Venky Shankar <vshankar@redhat.com>
+Reviewed-by: Xiubo Li <xiubli@redhat.com>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-mq.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ fs/ceph/mds_client.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 368f1947c895..ebfefbcb3604 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -1859,6 +1859,22 @@ static bool blk_mq_mark_tag_wait(struct blk_mq_hw_ctx *hctx,
- 	wait->flags &= ~WQ_FLAG_EXCLUSIVE;
- 	__add_wait_queue(wq, wait);
+diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+index 82874be94524..da9fcf48ab6c 100644
+--- a/fs/ceph/mds_client.c
++++ b/fs/ceph/mds_client.c
+@@ -3650,11 +3650,11 @@ static void handle_session(struct ceph_mds_session *session,
+ 		if (session->s_state == CEPH_MDS_SESSION_RECONNECTING)
+ 			pr_info("mds%d reconnect success\n", session->s_mds);
  
-+	/*
-+	 * Add one explicit barrier since blk_mq_get_driver_tag() may
-+	 * not imply barrier in case of failure.
-+	 *
-+	 * Order adding us to wait queue and allocating driver tag.
-+	 *
-+	 * The pair is the one implied in sbitmap_queue_wake_up() which
-+	 * orders clearing sbitmap tag bits and waitqueue_active() in
-+	 * __sbitmap_queue_wake_up(), since waitqueue_active() is lockless
-+	 *
-+	 * Otherwise, re-order of adding wait queue and getting driver tag
-+	 * may cause __sbitmap_queue_wake_up() to wake up nothing because
-+	 * the waitqueue_active() may not observe us in wait queue.
-+	 */
-+	smp_mb();
-+
- 	/*
- 	 * It's possible that a tag was freed in the window between the
- 	 * allocation failure and adding the hardware queue to the wait
++		session->s_features = features;
+ 		if (session->s_state == CEPH_MDS_SESSION_OPEN) {
+ 			pr_notice("mds%d is already opened\n", session->s_mds);
+ 		} else {
+ 			session->s_state = CEPH_MDS_SESSION_OPEN;
+-			session->s_features = features;
+ 			renewed_caps(mdsc, session, 0);
+ 			if (test_bit(CEPHFS_FEATURE_METRIC_COLLECT,
+ 				     &session->s_features))
 -- 
 2.43.0
 
