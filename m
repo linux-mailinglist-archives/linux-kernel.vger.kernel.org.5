@@ -1,62 +1,57 @@
-Return-Path: <linux-kernel+bounces-41755-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6481983F75B
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:31:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A09483F75E
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:31:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 196C2284BDF
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:31:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 460281C20FDF
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:31:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9802767E75;
-	Sun, 28 Jan 2024 16:14:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A459745958;
+	Sun, 28 Jan 2024 16:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GM1TlSKZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IZ4OA2zO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8AD167E60;
-	Sun, 28 Jan 2024 16:14:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E45FA67E80;
+	Sun, 28 Jan 2024 16:14:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458451; cv=none; b=oOUOLm22CKa+/vSSPeIS/ZvtANAQ1uxrEBmOGSywHm6ZRjLbDmRPhQJsPKXkXU5fTiP0Ay/UCYp93JGLdRZsi1XV53+kVQeppBqHonn+xo+3AWja3hyJwUzxLmPmxw7kCK/AJsNwiKTrD9uHJ3Fb0n7w/TrcbTorL0CSw587fx4=
+	t=1706458467; cv=none; b=bhUZqYTc+WDjN5EuBTKbre08crjObeKKyFIxl5/OzveaZNITknm0Iat2hjGx3g1DschCaJhdJJ1RjmgyrIteXwAsd5JJb7fD5RX5VWorp62T01n07V6VmFKYkxFxNe/16mjzZvkXbKs0YuqWjgmpct0drbX/PCs8KB7BLv/drsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458451; c=relaxed/simple;
-	bh=4Gqb/Kft+ydmG62lfpNUxY10aIVDjYIQjA1SGPOZj7U=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Q1gNy2FVcl0Hg/na7RcEjokeVYBaudxVH3Z83+FUpyRruz6uDkig28uaUVXPywCp26mjddh2w9yriBLKF95+/Bf09r6yzZ74IQG11uRYoFgaiPID4I3Elg3FJg+TWjm07MWqY3Jcdke93cKLN7JANSydaFRYc9OZeM0HD+DhXro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GM1TlSKZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97D7CC433F1;
-	Sun, 28 Jan 2024 16:14:10 +0000 (UTC)
+	s=arc-20240116; t=1706458467; c=relaxed/simple;
+	bh=BHTcqvUgtPvztzSo0fBhW5ml0BE2+RcAl3Xy4aZ74bM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=h4mZqM+U56llu1ictYc2cFh0JkeX/+cU+UJzS71UsbYGKNPyXOuPAWUm+OnyIHrMGTGESp9OdeiIm6TwlC6p2oywkSHPWFlRVhmkW1ZtZ6FmklsN9yEcs/YGZxDGexEc4X9LlkQeZvXoO4gYrxXF2N/2AdJ+c6OgtqmexD3k2aM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IZ4OA2zO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5C14C433F1;
+	Sun, 28 Jan 2024 16:14:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706458451;
-	bh=4Gqb/Kft+ydmG62lfpNUxY10aIVDjYIQjA1SGPOZj7U=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GM1TlSKZ4fucQqpQWAGBbXOWz/4ME9lbto9ilQZewvMNTPcqOv5X2mc54ysTP/18h
-	 ltTUlJFHkpZFD93DCcv9DVwDBG+dU8wjs5yTjd38OOjjnFkbf1kvEhTHyFSkwXaoOH
-	 k4ubFM+v3OJGqcGUPXGTVv/imPMer/CLN9j3mnJaO1ncmZjuf78iGAWASVFVImDeGu
-	 lja0dtRfhXje7hUlPrT8+XaJbCUsAm7SYcsv9VOA8AIvcfZSS/kBBlHAbyA5AhlzF3
-	 J3JgxiAlPsCZYRul83JEr4HuRVgjUv7DIYpNamcmPptpvFA94PxG0yB/wUrZ2TEDGC
-	 QLde+SwL3SE/A==
+	s=k20201202; t=1706458466;
+	bh=BHTcqvUgtPvztzSo0fBhW5ml0BE2+RcAl3Xy4aZ74bM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=IZ4OA2zO+7E4DAjQaOOutnG9oJxLE8l3SIiSdMhiCYmCwEI5yLMrZd//uPz/x15Zv
+	 pBa3TBVtZq5fegssTRkqzJBSy0Yp6J7sOl6LQ1yVeT/ZcTc+v5sjLCu93A2m4U0dW9
+	 umBfwRfkcWy5oPGUf6t+U5hxbAQ9piFBZRmVCWteHyd0ubTFEdKWTtPzF9Plxa0uQh
+	 DieMLFP5+efhOkwNT3fZJ8PErO2f5T8M8gxF/ubjcPSOYevuwL70vidunCoBrMYaAz
+	 nWV7RPFJ/ugtN4CzRcOFiK32aN9K2fMVMdSR68snHjkZiqqFUBfgtvWVEI0CGfsJ4S
+	 wIswfcJ2i5Vdw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Tim Lunn <tim@feathertop.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Wolfram Sang <wsa@kernel.org>,
+Cc: "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Huang Rui <ray.huang@amd.com>,
+	Vicki Pfau <vi@endrift.com>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	linux-i2c@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 31/31] i2c: rk3x: Adjust mask/value offset for i2c2 on rv1126
-Date: Sun, 28 Jan 2024 11:13:01 -0500
-Message-ID: <20240128161315.201999-31-sashal@kernel.org>
+	linux-pci@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 01/27] PCI: Only override AMD USB controller if required
+Date: Sun, 28 Jan 2024 11:13:46 -0500
+Message-ID: <20240128161424.203600-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240128161315.201999-1-sashal@kernel.org>
-References: <20240128161315.201999-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,47 +60,56 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.14
+X-stable-base: Linux 6.1.75
 Content-Transfer-Encoding: 8bit
 
-From: Tim Lunn <tim@feathertop.org>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
 
-[ Upstream commit 92a85b7c6262f19c65a1c115cf15f411ba65a57c ]
+[ Upstream commit e585a37e5061f6d5060517aed1ca4ccb2e56a34c ]
 
-Rockchip RV1126 is using old style i2c controller, the i2c2
-bus uses a non-sequential offset in the grf register for the
-mask/value bits for this bus.
+By running a Van Gogh device (Steam Deck), the following message
+was noticed in the kernel log:
 
-This patch fixes i2c2 bus on rv1126 SoCs.
+  pci 0000:04:00.3: PCI class overridden (0x0c03fe -> 0x0c03fe) so dwc3 driver can claim this instead of xhci
 
-Signed-off-by: Tim Lunn <tim@feathertop.org>
-Acked-by: Heiko Stuebner <heiko@sntech.de>
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Effectively this means the quirk executed but changed nothing, since the
+class of this device was already the proper one (likely adjusted by newer
+firmware versions).
+
+Check and perform the override only if necessary.
+
+Link: https://lore.kernel.org/r/20231120160531.361552-1-gpiccoli@igalia.com
+Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Huang Rui <ray.huang@amd.com>
+Cc: Vicki Pfau <vi@endrift.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-rk3x.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/pci/quirks.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-rk3x.c b/drivers/i2c/busses/i2c-rk3x.c
-index 4362db7c5789..086fdf262e7b 100644
---- a/drivers/i2c/busses/i2c-rk3x.c
-+++ b/drivers/i2c/busses/i2c-rk3x.c
-@@ -1295,8 +1295,12 @@ static int rk3x_i2c_probe(struct platform_device *pdev)
- 			return -EINVAL;
- 		}
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 8765544bac35..75b297c15cf5 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -607,10 +607,13 @@ static void quirk_amd_dwc_class(struct pci_dev *pdev)
+ {
+ 	u32 class = pdev->class;
  
--		/* 27+i: write mask, 11+i: value */
--		value = BIT(27 + bus_nr) | BIT(11 + bus_nr);
-+		/* rv1126 i2c2 uses non-sequential write mask 20, value 4 */
-+		if (i2c->soc_data == &rv1126_soc_data && bus_nr == 2)
-+			value = BIT(20) | BIT(4);
-+		else
-+			/* 27+i: write mask, 11+i: value */
-+			value = BIT(27 + bus_nr) | BIT(11 + bus_nr);
- 
- 		ret = regmap_write(grf, i2c->soc_data->grf_offset, value);
- 		if (ret != 0) {
+-	/* Use "USB Device (not host controller)" class */
+-	pdev->class = PCI_CLASS_SERIAL_USB_DEVICE;
+-	pci_info(pdev, "PCI class overridden (%#08x -> %#08x) so dwc3 driver can claim this instead of xhci\n",
+-		 class, pdev->class);
++	if (class != PCI_CLASS_SERIAL_USB_DEVICE) {
++		/* Use "USB Device (not host controller)" class */
++		pdev->class = PCI_CLASS_SERIAL_USB_DEVICE;
++		pci_info(pdev,
++			"PCI class overridden (%#08x -> %#08x) so dwc3 driver can claim this instead of xhci\n",
++			class, pdev->class);
++	}
+ }
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_NL_USB,
+ 		quirk_amd_dwc_class);
 -- 
 2.43.0
 
