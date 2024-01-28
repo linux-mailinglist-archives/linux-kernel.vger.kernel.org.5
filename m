@@ -1,104 +1,118 @@
-Return-Path: <linux-kernel+bounces-41668-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41669-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 197B483F622
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:33:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F149783F629
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:49:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40D6C1C224D4
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 15:33:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FD6D284024
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 15:49:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA9432556D;
-	Sun, 28 Jan 2024 15:33:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2BAC25635;
+	Sun, 28 Jan 2024 15:49:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PJHHwVZD"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="B8ikNft5";
+	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="BVNGuGDP"
+Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B408524B39;
-	Sun, 28 Jan 2024 15:33:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 393D425772;
+	Sun, 28 Jan 2024 15:49:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=88.97.38.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706455986; cv=none; b=Rfqe/0ru5mUvJqIEu8l6tdf6A+xqaO+33E5Wu+RvDSJSOqVQAV25MI9NkujwbEf3iHOyWPl7K63nL+fx+v2IBvRGXHvKT2TEB1yP/uGPem/ukihVaVekUcSAn1Mv6bo9J+hjB6JnnyFt2cQsx9AuFtkwotyPI+lLQQ84qqNfCAw=
+	t=1706456966; cv=none; b=MbA4G6v7gv8QSmOdElvMYlDi5iizOoVmQwmQUlefK5CGX9hJQ2AeKBBpV8RC+dT8cDa699c71fRSQru6b95Zb3LPvc8ukPORHiuruVgChdhYWlx7gz1shMKvWZ938F14XDQbhvbYpLoohDpgPjCSY0GZnETBZoSvqgZonozJRSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706455986; c=relaxed/simple;
-	bh=v4IlAJTa40g79PNQvpu6vZR5qPIThE5gVQjHysgEezg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i9vvpOiYBFvHFMGMWVLiRuDz5WeFHy1Ur1Db7CnsRMmLN7QtUH6dORUnfRanS3Lv8U4ULEZjHBxlWmDxQimzxWYrVJShEB0q9std2CCO67OthaFKnkZ8QpcHVaBSLbR4yQLFiqwgzibDSmQ/cFLM1V0R5O/jbRWmGiBWVMivv8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PJHHwVZD; arc=none smtp.client-ip=134.134.136.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706455984; x=1737991984;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=v4IlAJTa40g79PNQvpu6vZR5qPIThE5gVQjHysgEezg=;
-  b=PJHHwVZD8PzJ2tpC5Fu8VdoQsZCXL346oNAsmSe0Ri3Aw0j8E6tlpQcw
-   /ptkHetOpD2b/HOpMrLMTcS76iHw6S0FKt1Ifc9GraM+iW/mMIIqj8EMS
-   1smvffTyTjYWgeEl7apc8j3LLDkb2CeB9VChbk+nlYQ72tIiQgqb3/GEH
-   tF3ClXLL1UuhTUq4M22i25jzrSH14LYWRO+x73RY4EUaPJceq4xgGgV79
-   X1h6y1HRD16fpUUzOWNcXHQeP21x9qMsGsk5tBbZTsCVRjcs+n8Zk8k1S
-   DfIYlz5ULGYwzLfPlWbXUFu1CWkZqKWL3FpzFB/HoWgwujqQEx/ScHI21
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="406506870"
-X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
-   d="scan'208";a="406506870"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2024 07:33:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="857865944"
-X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
-   d="scan'208";a="857865944"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2024 07:33:00 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rU75b-0000000HUSl-0Xhx;
-	Sun, 28 Jan 2024 17:28:55 +0200
-Date: Sun, 28 Jan 2024 17:28:54 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Rengarajan S <rengarajan.s@microchip.com>
-Cc: kumaravel.thiagarajan@microchip.com,
-	tharunkumar.pasumarthi@microchip.com, gregkh@linuxfoundation.org,
-	jirislaby@kernel.org, ilpo.jarvinen@linux.intel.com,
-	f.fainelli@gmail.com, john.ogness@linutronix.de, tony@atomide.com,
-	tglx@linutronix.de, jiaqing.zhao@linux.intel.com,
-	linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-	UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH v1 tty] 8250: microchip: Add 4 Mbps support in PCI1XXXX
- UART
-Message-ID: <ZbZytn3N0R8XNiF5@smile.fi.intel.com>
-References: <20240125100619.154873-1-rengarajan.s@microchip.com>
- <ZbZyW_g4OOkCqIxf@smile.fi.intel.com>
+	s=arc-20240116; t=1706456966; c=relaxed/simple;
+	bh=pIUGZH0WA/dnmasx5Fb75KygIBvTRFfwHo3C1qQyatU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jKSTIurqmvR5S2ibaXOLgNH72y99w4xbL+uY2iwS8eFPbFO3Mzyh6bLm/iCg8r8UqloMJ25KCssSuJrb52VFyc0zn1ApozSxADj37TwqIYxg9LXrd5D9GX2l/Yy128g0QowTOnndDufSwGorC+y98gEBF5sSqMwe89sGuBlmjow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mess.org; spf=pass smtp.mailfrom=mess.org; dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b=B8ikNft5; dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b=BVNGuGDP; arc=none smtp.client-ip=88.97.38.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mess.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mess.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+	t=1706456955; bh=pIUGZH0WA/dnmasx5Fb75KygIBvTRFfwHo3C1qQyatU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=B8ikNft5M3ZiBK7NHoTnEBITCVUwtkDt3vhcDOlGKG73fUvC4g6x3TU6T44ygh5UI
+	 gRTvSkr5wZqCV+YFsQNvxJ9vl8RfDZTeLHuefPmyhKaXDcEnnxmS3PcfCU9PhpouMZ
+	 o5whQIGNAhwCzLw0fhFftjg8k+aA/4JXpjKqKPvOOrPqu/kc8/mFM3VJ6cFka8JsCL
+	 QA2dQRjY83Ty4WZNDe6k5R1nbLT/uGJjIt1Flwx8eH6xnuPFLNghFbNaA7pkjzM4QW
+	 cCVl0seEh0CL0giiin4fmbOQU5o1ueKMN2+RRxWK2AJj/rsadpRegN40o+t19qqCMr
+	 6cv2/+nzY+sBQ==
+Received: by gofer.mess.org (Postfix, from userid 501)
+	id 999141009C0; Sun, 28 Jan 2024 15:49:15 +0000 (GMT)
+X-Spam-Level: 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+	t=1706456953; bh=pIUGZH0WA/dnmasx5Fb75KygIBvTRFfwHo3C1qQyatU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=BVNGuGDPkHcq680/07H+MZm6kSMUHplL3QA/QQ1CydeLArEadowfvbwxBbASXbF0n
+	 baez3+xNJuwljbqm8wU8V4zzh5hww0sWtfqzGOwJJDxcxOJdDHYe0uXx3dWQLTOSb+
+	 5tgaLO5pon+/1mF7hZ4q+c6qFSXEjv5qEVq8sMp/jbzKUsj8Nl2/BZD8j6GAB6Q2mk
+	 FDqCWXWGeJGkJhqdF035VBmEhOJEfIH6nFJyz3aGzhpzkFzZHtdW6srpYnvnsReaYI
+	 ovnTJGJudjBtRV9DhZOBpSSVlfhR9E+KBVQd+mQeF6H1qz3aiBoK8s3LTVMo4/WFgT
+	 AJmVh+swGsFtw==
+Received: from bigcore.mess.org (bigcore.local [IPv6:2a02:8011:d000:212:bc3c:1b4a:a6fa:362f])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by gofer.mess.org (Postfix) with ESMTPSA id 6CFC91000B2;
+	Sun, 28 Jan 2024 15:49:13 +0000 (GMT)
+From: Sean Young <sean@mess.org>
+To: Flavio Suligoi <f.suligoi@asem.it>,
+	Lee Jones <lee@kernel.org>,
+	Daniel Thompson <daniel.thompson@linaro.org>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Helge Deller <deller@gmx.de>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Sean Young <sean@mess.org>,
+	dri-devel@lists.freedesktop.org,
+	linux-fbdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-pwm@vger.kernel.org
+Subject: [PATCH] backlight: mp3309c: Use pwm_apply_might_sleep()
+Date: Sun, 28 Jan 2024 15:49:04 +0000
+Message-ID: <20240128154905.407302-1-sean@mess.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbZyW_g4OOkCqIxf@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 
-On Sun, Jan 28, 2024 at 05:27:24PM +0200, Andy Shevchenko wrote:
-> On Thu, Jan 25, 2024 at 03:36:19PM +0530, Rengarajan S wrote:
+pwm_apply_state() is deprecated since commit c748a6d77c06a ("pwm: Rename
+pwm_apply_state() to pwm_apply_might_sleep()"). This is the final user
+in the tree.
 
-..
+Signed-off-by: Sean Young <sean@mess.org>
+---
+ drivers/video/backlight/mp3309c.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> > +#define UART_BAUD_4MBPS				4000000
-> 
-> (4 * MEGA) ? (will need to include units.h, if not yet)
-
-..and use proper namespace for the definition.
-UART_ one is not owned by this driver.
-
+diff --git a/drivers/video/backlight/mp3309c.c b/drivers/video/backlight/mp3309c.c
+index 34d71259fac1d..b0d9aef6942b3 100644
+--- a/drivers/video/backlight/mp3309c.c
++++ b/drivers/video/backlight/mp3309c.c
+@@ -131,7 +131,7 @@ static int mp3309c_bl_update_status(struct backlight_device *bl)
+ 					    chip->pdata->levels[brightness],
+ 					    chip->pdata->levels[chip->pdata->max_brightness]);
+ 		pwmstate.enabled = true;
+-		ret = pwm_apply_state(chip->pwmd, &pwmstate);
++		ret = pwm_apply_might_sleep(chip->pwmd, &pwmstate);
+ 		if (ret)
+ 			return ret;
+ 
+@@ -393,7 +393,7 @@ static int mp3309c_probe(struct i2c_client *client)
+ 					    chip->pdata->default_brightness,
+ 					    chip->pdata->max_brightness);
+ 		pwmstate.enabled = true;
+-		ret = pwm_apply_state(chip->pwmd, &pwmstate);
++		ret = pwm_apply_might_sleep(chip->pwmd, &pwmstate);
+ 		if (ret)
+ 			return dev_err_probe(chip->dev, ret,
+ 					     "error setting pwm device\n");
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.43.0
 
 
