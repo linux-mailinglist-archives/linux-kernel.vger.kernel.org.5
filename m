@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-41936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41933-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2685D83F9C8
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 21:13:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBC8983F9BC
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 21:12:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A89581F21C43
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:13:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C78B1F21B8B
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:12:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED1D4E1DD;
-	Sun, 28 Jan 2024 20:11:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A626145977;
+	Sun, 28 Jan 2024 20:11:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="tTcF6HLp"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="pLkrkDb8"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE33D41C85;
-	Sun, 28 Jan 2024 20:11:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 105F23C699;
+	Sun, 28 Jan 2024 20:11:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706472699; cv=none; b=CchqvnBiwD5LF3wGcypPUR8huEdtYO4wy66ez0XmCNbtjtobLAzn9uGMqSWcWbUaBj5tF4laweanEE6dgTnCyfE6pIVV2VaP78G2B0oLf7IsmzDgVMhvDy99VDuHUoB91gdvo7m+F+vgtBzzaMh2AGOArCAoklkyM+gkW7VSk3g=
+	t=1706472697; cv=none; b=P6lFeD5g+e60jSkOpo0SBaK2cYQgrn5K6xTg99AEHDvLb5cGiyH5o0ExNv92JTa4Yg9gjWVTBujO38DjufDOXUux6Yb628AtXtVlVkDrYIZ2yix88aDTRyGLmG/DdWwXtufT6RJ46K3yYbvE/Nj4xs5JkurWLI93dtCjUhbIhd8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706472699; c=relaxed/simple;
-	bh=qrDaTsk7HTfc8TrmJHba7pRVGRstI4yMYwXgF2rjUlY=;
+	s=arc-20240116; t=1706472697; c=relaxed/simple;
+	bh=s+C5yRBMXtAg248/XAUH77adEcGlMjvS8LegdnUr0Qo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=krW1Aj94fMgfI6rOMWLIdFh+akoZOleLbwE5CuT6kHwEYI1jllTvinAfwcRnE3fR0AxxQ/G9xXMQzdOtn0yHERSRmRWLQ25ZkSRgYPVJWmsp8ge7ejScR9OZH9hf2MsRq8Num6xRcEH4gh8tpzbfdkjY+FeXb0wMR9uwoA0Uxnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=tTcF6HLp; arc=none smtp.client-ip=212.227.17.21
+	 MIME-Version; b=dOm5hMuo+dm2I8Uq92uwNsfcCJCibyPvLwmE0KO+d1L2NNd19ZXfMz1FS2zwljN3fk6QUOWd/RQSngn6SAtIK2HwRPCM962aOjY7+B2Y7gVDLCxqoauc7Fc2DXnRB0ytwFK8ZRbtK2oh2fa8etsrsqkRpQpzFhex8hLPXAvA2kQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=pLkrkDb8; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
 	s=s31663417; t=1706472681; x=1707077481; i=wahrenst@gmx.net;
-	bh=qrDaTsk7HTfc8TrmJHba7pRVGRstI4yMYwXgF2rjUlY=;
+	bh=s+C5yRBMXtAg248/XAUH77adEcGlMjvS8LegdnUr0Qo=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
 	 References;
-	b=tTcF6HLprL22VAD0O+Ir7RABGx40LNO5i7fDqumLJFRm3GwodUul70mmVT02+8T8
-	 I0PFEOrBeXcwh6K150d45gcSPZM8sq9wTD3j++nCmeh62PUS8YjBYszFoVbwnwu5n
-	 gyHNK/BGj/fYqaHdD3NnjJR6sS5b0guuB7nAO2iCRQWeogz3b5pkXBSzNDAC78QzH
-	 SAlFloTVfs0OoOPJ1Ap8ZWE8evP0hfkN0KeaWNfeJ5bHFCV+wNC4Tzbe+IaicOdMn
-	 rRPzJQTkdp81lUS+iX3zjJqpvyb81Dz1cUL5pASqIUOnh8rlwNhiTNN0IuiZx+egi
-	 F5fmIU0oQK6xl6WpJg==
+	b=pLkrkDb8Jc0oAEY/WseIA4TLBNGf30xJw/u4CC+fRPlzt1/fJzD2c4y6+ZMplQ25
+	 vBOUqsMtmlqBIcdMGU1y6SURcI5UjkS8BS2D442A0CKluurpfjQbmwxvrX91DDBm4
+	 xjXV+YgNwQmJzsb1kZnZShoajGiBDSx1VdZQld9QB+t/ATDD6C/yadGZSVNanf9Gt
+	 Jitwoo6HvNiye8+awaRen+bLnm88m/v49ex0We912fyhbyjirzJQaw3MO5Ou4vamu
+	 xEVS6y2YIW3jvRzpq9LL991qDmBGhQfn0CjykBvk7pWD/oYGttDd5UXhpEbjinrXZ
+	 dD6/+CFbMS0zTTxU+g==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from stefanw-SCHENKER ([37.4.248.43]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MUGiJ-1rckJu0dFb-00REBN; Sun, 28
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MwfWU-1r9lAZ2Vxa-00y9Dk; Sun, 28
  Jan 2024 21:11:21 +0100
 From: Stefan Wahren <wahrenst@gmx.net>
 To: "David S. Miller" <davem@davemloft.net>,
@@ -56,9 +56,9 @@ Cc: Lino Sanfilippo <LinoSanfilippo@gmx.de>,
 	linux-kernel@vger.kernel.org,
 	Stefan Wahren <wahrenst@gmx.net>,
 	Jacob Keller <jacob.e.keller@intel.com>
-Subject: [PATCH V4 05/15 net-next] qca_7k_common: Drop unnecessary function description
-Date: Sun, 28 Jan 2024 21:10:49 +0100
-Message-Id: <20240128201059.6259-6-wahrenst@gmx.net>
+Subject: [PATCH V4 06/15 net-next] qca_7k_common: Drop unused len from qcafrm_handle
+Date: Sun, 28 Jan 2024 21:10:50 +0100
+Message-Id: <20240128201059.6259-7-wahrenst@gmx.net>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240128201059.6259-1-wahrenst@gmx.net>
 References: <20240128201059.6259-1-wahrenst@gmx.net>
@@ -69,61 +69,50 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:+Qu2GViOiUfHEkQicjzPEyIBrIAa1MFYCLZ5ZvBNpPxXfLIdsG6
- Di4QCjyU7rsdzl7sXQVNqn0EZ8EU77Tctz+dbYzAMhZsuEtES+TBJxhCUctdl5axdFJ1cuE
- mXRKDn+0/b2HiMrqYKjYQSaLmAiNK5CMxg7nVZlgbZIbhZWtWieZfrUo3yO8Nr8XSzUL75k
- kU33VH9SpVGZD2Jg6c65g==
+X-Provags-ID: V03:K1:E/sFtk9/uq2rtDnmVUG7YxQ1S/BpIZ31n091PvTo2DhEWfYuLie
+ ThSN5Ix4JmtqDH9NtKKFZYeqY4ONhhmzWfT/C+XB1zmQsbXDlXRLRAQ6XoYi6PcMLO/vvXT
+ EEG1wMdvopt3/z3l81wj7qqyf1Eeo6SqdIMCRgTCKFX2kv7iWB2IhPM1mIMdRd1Ya+cQ3a2
+ mfW6J8YVhSSyO7mqQ+ihA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:kAoRPM2GeSk=;7JUgHRIaySRwE7vGkfoM01Y1e9c
- KLYMwhjzBqttNp81J116rMohewK2pEuFZTUIXvSPDtHVvbH79oTIwZ5YINJcIy4VtGMC+3/dt
- 5h/punMBQvGgFhHux4pRFOA5rUiQRaF2IPcppB6GpKtxHWCxBnZYqKTrdv2GpAXRo0ViVJVIx
- 1LV4MXMplqlDTn6ojUGeC2LIZWTIVrb4Q/6Xg19hFK6Xx8LG0TWxBYTbbatPHWnlKa34r+3xu
- 8c3WKTzN+A3V+XJyutnpHMapUz7k+JOxyp4v+XTBoFudI40h0clHaKq5UPzpe+YSiZp6ugYT8
- LQ5/8VLg8f53ptVcTrorTiC+Nl0UeVoXlZycazjJDmD51+sSHB44qq1EqCDolxtxr7XR6IzUs
- k3zpLIZXD719r81F7J6qcJUtcrfyEEeAuVM2daIHH8UpV29X5qZ5G1E6SQfo25QMTRUM4XU5T
- BQrevwBtRlBb2VyiFdVHVOanQJ/ELq15AcTjSt53AReg9iLKDkA5wkwBIgR7Gprp34myB5Uxf
- QtpxJIhqPBKj6IJQBkF238uVlv6SA+sjrYgKEVC8GHCrrB32yJCgNFvbfKsMJuiJQIuJ9j5co
- e1ltAIredbWyE/i/EbLXU3GfN3fXgh9+Wcw/rxUYsonXyMnE3heaDhHZ2Z0B438lbG3bQjfra
- uIFz/RctPu5m6M/ysEQdX79SOfVXaqllNs0KzbPSr4b9L/Qw3nRyvQ7iLz5f9xnz8liweLeNn
- i8e3NFbB2cIEZXlUNtfVC3FYKSiKhDTlAjoIBVdQmh2G3jlZbWqHo0GgDiEhFm5Uy/78Nn1Gz
- gobbgHlH3em83Kj4cemsdINZTfEhgPJns6XXogbAwaqwnZurwhisnoXw6F/FkdxBiJnXVKUO2
- mQ+Hf82rYt2kgEkNLZTyeJOf6kSe93mSoU1McEJvLua2wOx8N4JzqlPtGMXcjMgetWgA1rMtO
- Sqvs6bJDi/oRI+Vz3FoH5OSsE54=
+UI-OutboundReport: notjunk:1;M01:P0:AWUveRcSymQ=;oKLwGwV5/z4+29d4ar82OFldb8K
+ IalBExTsPAA7TFEwSPRWrTzUj8Gnqqbh5pt6eo+qh54LGKPCTg7VHte3/1Fo3ERH1faXjAxx6
+ JVR5kiOsWxgiFEH28UitDjiC7UcbdSnfKVCwJswv53qw+oFJPekriRz4UJwxOJId8vXI6dtye
+ OiBEkG5DgraAeMpCLkjMFdZq8JfQJBHP0U/cDCEGSNlt7prXU/5LTM2snLPrQ2KmUsOIl5NfN
+ Sd2I9iVv5rUhVE1uIaGszPJk+gOxm/ojq+aq0OYta1uYZ8NIHmJfysBFLrhjf4q5rBNTRXgre
+ SdviqLOBOi+oNiqAhsCZIAzqJccJBTL/HNiKvNCviZtuNbt7a6JpJRIn9D2vAHfhvMqhBS+oO
+ WHvsjillpmt2n4DKjt8h/8xUVL1q4gDt6bqMg+Q/ovHkPu1zAosG4kwYEiJDEzIEjZ1ouZt2Q
+ qAfv24zKxYUGVr3/dGdDgGffzXI3L/dSxHKS4V4iiO11e7+fXE3u3bu+TCMO2WKLbGC3ZWkRd
+ c865q/yvk/iAn/xRTIrGUM26DSdV0VBvWgG9jVfbsZ5LIuwKqBHUrT4QUj19EkMRSNWuh2AkE
+ 1SyN+75YjdvNZYf9C0BGv/RKQAx4pJUWTTEe3JM7vfW7bjW6kuAESfeiJuv8eTRsp60L0Pgop
+ t+lo7wFaz8qsFksY542Go48mfEbL2rFG573Xc2aOV3zJtKZtp8fkhk+iO6Pjti9HoQYTAtY44
+ j5KvGO+7CHg0/Tn8G05P4Xd21imSxJDqSBot5ojMENZfRzSEa8cYBF47nECKFXBOsAiL3iCIK
+ v3LeoNy5oFify3A1URfK8A43UXhIjQRVKyY3fX7Dcl6C8HDduU9tD0ud34hIhk9TmeEBflp43
+ YH+u0mbNUZzOVpyQc1h8QS/aHPcPc/ThIkTxwrsaP58GPnes9v5t2qanXubWcE2JbIc2SwVB8
+ hYlxVw==
 
-qcafrm_fsm_decode has the almost the same function description in
-qca_7k_common.c. So drop the comment here.
+This member is never used. So drop it.
 
 Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
 Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
 =2D--
- drivers/net/ethernet/qualcomm/qca_7k_common.h | 11 -----------
- 1 file changed, 11 deletions(-)
+ drivers/net/ethernet/qualcomm/qca_7k_common.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/drivers/net/ethernet/qualcomm/qca_7k_common.h b/drivers/net/e=
 thernet/qualcomm/qca_7k_common.h
-index 928554f11e35..71bdf5d9f8d7 100644
+index 71bdf5d9f8d7..088cca7f61db 100644
 =2D-- a/drivers/net/ethernet/qualcomm/qca_7k_common.h
 +++ b/drivers/net/ethernet/qualcomm/qca_7k_common.h
-@@ -128,17 +128,6 @@ static inline void qcafrm_fsm_init_uart(struct qcafrm=
-_handle *handle)
- 	handle->state =3D handle->init;
- }
+@@ -107,9 +107,6 @@ struct qcafrm_handle {
 
--/*   Gather received bytes and try to extract a full Ethernet frame
-- *   by following a simple state machine.
-- *
-- * Return:   QCAFRM_GATHER       No Ethernet frame fully received yet.
-- *           QCAFRM_NOHEAD       Header expected but not found.
-- *           QCAFRM_INVLEN       QCA7K frame length is invalid
-- *           QCAFRM_NOTAIL       Footer expected but not found.
-- *           > 0                 Number of byte in the fully received
-- *                               Ethernet frame
-- */
+ 	/* Offset in buffer (borrowed for length too) */
+ 	u16 offset;
 -
- s32 qcafrm_fsm_decode(struct qcafrm_handle *handle, u8 *buf, u16 buf_len,=
- u8 recv_byte);
+-	/* Frame length as kept by this module */
+-	u16 len;
+ };
 
- #endif /* _QCA_FRAMING_H */
+ u16 qcafrm_create_header(u8 *buf, u16 len);
 =2D-
 2.34.1
 
