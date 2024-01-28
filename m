@@ -1,150 +1,121 @@
-Return-Path: <linux-kernel+bounces-42015-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95DED83FAF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 00:33:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3609483FAFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 00:33:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 350B01F23A62
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 23:33:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E55FD28574E
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 23:33:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9604C4C63A;
-	Sun, 28 Jan 2024 23:32:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59A9C4595D;
+	Sun, 28 Jan 2024 23:33:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KB42YIRH"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="xkUCCe7x"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43DA64595D;
-	Sun, 28 Jan 2024 23:32:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5182D446CF
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 23:33:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706484738; cv=none; b=Fsp4gZWasuFbtiVrVkGpI1ni0ouziL67rn8xRY/KjAnMBlNAsY8xOm9LUNCo8FLGCfY4GgcAQz6b3DtmvG5FSW2ugXSzjlFfYMJlXiGnJaOwaLoSAt0MqsTXYJOu3DjzhMHAlHM/dh1565yGZU/GrjZUkGL/s03D930ITxyg+R8=
+	t=1706484784; cv=none; b=aKXs3eYV2E8TFBhoEgDXobP60PMRulCZ93TMwwW7jpJzhvijcxvNfR1Q2uQrOL+DxXANW2k41O9HsRDrId2/LyZIpN3bhZbdssSbQvwTYQLf1oq9j2f5YKxuY/I5PnPUhoPam78lsvoP4Cv1WXDsi6zHjarzNbykH8GLs+KOZJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706484738; c=relaxed/simple;
-	bh=bx8duAkTrynztEMQULCsS8d2N4dVOXeKVQtbu5S9ZNg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Dsoa4hUlwB7B5G3MLZIDuhd1QoT/045iaruvjZ9X4SiE7IHvDk95Do5qQ16YhIVBQuBJJJYWMF2cwwk/4FfRMKiS0TNxiKUp2vPBdTt9G0wzV2rQH7Rg+NTO1cWT8ehPMCvBNcoxM+RVlNoAFV6NTARljp39TEtkdtD8EN6rtuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KB42YIRH; arc=none smtp.client-ip=134.134.136.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706484737; x=1738020737;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=bx8duAkTrynztEMQULCsS8d2N4dVOXeKVQtbu5S9ZNg=;
-  b=KB42YIRH/UaRoyB0x2L/QGye/5MNpgpWjmrYB25jR7nuQemssAC+QkI4
-   7M+1z11B0VYLKWWlylIHFy65OupVMwfyC8rbhLVNcgOg8tOSdi23tr1VH
-   V3K08mrGTp30+gHYgD2EAM3Y19tz6nubc+wcx+Q6QmiuAR0G6quBAC5Cm
-   IeREyRD/6WplW3HuE+ozu1Sia3n4tOuliamr4Pr3L9bn5qROspXJSRRLI
-   gvCjTrDW6GiV7hkfCYmCieySZVoxDeg9Hy46XPUaru/gfLn1dQJYx8Fnz
-   iSVWKgwEscPX0p02A/TMo/hy6te6LiSbrLxyi27onwxyU+Ie/LWqIyRlq
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="467081131"
-X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
-   d="scan'208";a="467081131"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2024 15:32:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="930913784"
-X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
-   d="scan'208";a="930913784"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2024 15:32:14 -0800
-Received: from debox1-desk4.intel.com (sdutta-mobl2.amr.corp.intel.com [10.209.55.52])
-	by linux.intel.com (Postfix) with ESMTP id 12C9F580DDD;
-	Sun, 28 Jan 2024 15:32:14 -0800 (PST)
-From: "David E. Box" <david.e.box@linux.intel.com>
-To: mika.westerberg@linux.intel.com,
-	david.e.box@linux.intel.com,
-	ilpo.jarvinen@linux.intel.com,
-	bhelgaas@google.com,
-	rjw@rjwysocki.net
-Cc: tasev.stefanoska@skynet.be,
-	enriquezmark36@gmail.com,
-	kernel@witt.link,
-	wse@tuxedocomputers.com,
-	vidyas@nvidia.com,
-	kai.heng.feng@canonical.com,
-	sathyanarayanan.kuppuswamy@linux.intel.com,
-	ricky_wu@realtek.com,
-	mario.limonciello@amd.com,
-	linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] PCI: Save and restore LTR state from pci_save/restore_pcie_state()
-Date: Sun, 28 Jan 2024 15:32:12 -0800
-Message-Id: <20240128233212.1139663-6-david.e.box@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240128233212.1139663-1-david.e.box@linux.intel.com>
-References: <20240128233212.1139663-1-david.e.box@linux.intel.com>
+	s=arc-20240116; t=1706484784; c=relaxed/simple;
+	bh=SGuu+3iE4RlZQwaoMsKXScsaTohl1/2a2dg8UqbNqDA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WzsAuGVd8aq00Tw0DnbE5/rXRu0h0Cbcs3Ks04e74uU71DyW2BnmMUKiMW4RGB7IJOpgPo6zihoY/P4d3ksM4xCqm9Q+XyeS6Tf0I4aZupx9p/nBpSyIihuUTX+E4UPQbOKgIZIJv+JA+fs6eDrEIfbtTxkESFdLCCtszrjQgs0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=xkUCCe7x; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40ef207c654so7850355e9.1
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 15:33:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1706484780; x=1707089580; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pAPh3t3T8gwSHK3fFX1PEbp1JEaD53zS+zqHNXDYu34=;
+        b=xkUCCe7xb5hnF7/G5eC4+bjata2fEA/UsKzii51hEqa1zDVLnDZT2HgCqD9rLX9SMM
+         OB+HtrVmQ20m+gQ1TCVlmKlP8VaAPlgejldZm8r3B/9Gqp0b+PLNIO9tgII2TNrAPCAr
+         x6pftmPca0GpdoCeRtkJ4vgY1YyGj0eujT5cvzsMqUNWrVz5ttD71ZRNsmTjcN35KY4z
+         oZRMyHXlPxqP4/ootJOKjIKv0FF5c5iuH0iACITEvzJPtxGk27zBP+ve6FUxYsGtYd4E
+         TjNTmw5GoyHulYiP9/DsFPztDYmLvXomwfW7YE12P/8GzCV/8JDC6aPTGZN0JyGFlD/C
+         fvVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706484780; x=1707089580;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pAPh3t3T8gwSHK3fFX1PEbp1JEaD53zS+zqHNXDYu34=;
+        b=ecPtHHcgJFOjJhrYH4FRrmR+3qSkAIZFEp8dzpsdntDp6aF4sMy1aJcsRRvx3vFUl+
+         qzfQTyPPAMYXiD2Kc8dy/B5zCzgkJ6znJxIDMy7s/C07mv7TC2vtu+deZSFbsDXUWReH
+         y/H9HXcaZupZXojxk3VFtevFO70j4d2AvayGiBhTZDlBSrLOAnWeQtU1Lb3eSA8pUGR1
+         SfgrSU+9oxTSwQbWwQ/OHi8Spwb4xaUUwLmW+yKIJMXa28Yx7pKwH8AM53ie5l/TK30t
+         Pi4WSfDT9Q9JcvvIXNuPteA/28OwsIdYv3p2xXyRX2Nl0Yb25eu7EO+SArsaNfaiaDi2
+         qdUg==
+X-Gm-Message-State: AOJu0Ywwl2Gbk0jtVG+r6YxixT4NB5mGueO1RVG+gUW4tkuV7J1Js0f8
+	kko4gZHxVWp7LGCkTTiviqRsns/qClWb6cWlO0kMAPKLGJhM5Cg4v2XGfAZdUmM=
+X-Google-Smtp-Source: AGHT+IFrWEVqvNUKKq5Ig5A1BFlI/2jjIkb1Ylq5XuathEIlswwp77sRIMjCx8j8LQ3ZRkxwWCg/IQ==
+X-Received: by 2002:a05:600c:4e01:b0:40e:f539:f6ca with SMTP id b1-20020a05600c4e0100b0040ef539f6camr2082703wmq.36.1706484780362;
+        Sun, 28 Jan 2024 15:33:00 -0800 (PST)
+Received: from airbuntu ([213.122.231.14])
+        by smtp.gmail.com with ESMTPSA id fm24-20020a05600c0c1800b0040ef61dfd48sm2069918wmb.11.2024.01.28.15.32.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Jan 2024 15:32:59 -0800 (PST)
+Date: Sun, 28 Jan 2024 23:32:58 +0000
+From: Qais Yousef <qyousef@layalina.io>
+To: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	linux-kernel@vger.kernel.org,
+	Pierre Gondois <Pierre.Gondois@arm.com>
+Subject: Re: [PATCH v4 1/2] sched/fair: Check a task has a fitting cpu when
+ updating misfit
+Message-ID: <20240128233258.wwftb36ultqdifu3@airbuntu>
+References: <20240105222014.1025040-1-qyousef@layalina.io>
+ <20240105222014.1025040-2-qyousef@layalina.io>
+ <CAKfTPtBTbudKM3Lxv0dQ4EXchLW9G8LszArzp6phzhND4O7XSw@mail.gmail.com>
+ <20240124223842.zjsolwhp26w7vowu@airbuntu>
+ <CAKfTPtAHQ9vJK_GZdpDC3GzHYWnzLc9USFNW9LSONcWVxybwrA@mail.gmail.com>
+ <20240126020743.tca257nvnlpyya2y@airbuntu>
+ <CAKfTPtAincvMD8GGJsk32-chXCsvgMrPikf=z97kRy=5R-kXgA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtAincvMD8GGJsk32-chXCsvgMrPikf=z97kRy=5R-kXgA@mail.gmail.com>
 
-ASPM state is saved and restored from pci_save/restore_pcie_state().
-Since the LTR Capability is linked with ASPM, move the LTR save and
-restore calls there as well.
+On 01/26/24 15:15, Vincent Guittot wrote:
 
-Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
-Signed-off-by: David E. Box <david.e.box@linux.intel.com>
----
- drivers/pci/pci.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+> > > TBH, I don't know. I would need time to think about this...
+> > > May be when we set the new affinity of the task
+> >
+> > I was thinking to actually call update_misfit_status() from another less
+> > expensive location.
+> >
+> > We can certainly do something to help the check less expensive if we must do it
+> > in pick_next_task(). For example set a flag if the task belongs to a single
+> > capacity value; and store the highest capacity its affinity belongs too. But
+> > with cpuset v1, v2 and hotplug I am wary that might get messy.
+> 
+> I think it worth looking at such solution as this would mean parsing
+> the possible max capacity for the task only once per affinity change
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 61e56e040510..78c3c9d82b3b 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -1561,6 +1561,7 @@ static int pci_save_pcie_state(struct pci_dev *dev)
- 	pcie_capability_read_word(dev, PCI_EXP_SLTCTL2, &cap[i++]);
- 
- 	pci_save_aspm_state(dev);
-+	pci_save_ltr_state(dev);
- 
- 	return 0;
- }
-@@ -1571,6 +1572,12 @@ static void pci_restore_pcie_state(struct pci_dev *dev)
- 	struct pci_cap_saved_state *save_state;
- 	u16 *cap, val;
- 
-+	/*
-+	 * Restore max latencies (in the LTR capability) before enabling
-+	 * LTR itself (in the PCIe capability).
-+	 */
-+	pci_restore_ltr_state(dev);
-+
- 	save_state = pci_find_saved_cap(dev, PCI_CAP_ID_EXP);
- 	if (!save_state)
- 		return;
-@@ -1660,7 +1667,6 @@ int pci_save_state(struct pci_dev *dev)
- 	if (i != 0)
- 		return i;
- 
--	pci_save_ltr_state(dev);
- 	pci_save_dpc_state(dev);
- 	pci_save_aer_state(dev);
- 	pci_save_ptm_state(dev);
-@@ -1761,12 +1767,6 @@ void pci_restore_state(struct pci_dev *dev)
- 	if (!dev->state_saved)
- 		return;
- 
--	/*
--	 * Restore max latencies (in the LTR capability) before enabling
--	 * LTR itself (in the PCIe capability).
--	 */
--	pci_restore_ltr_state(dev);
--
- 	pci_restore_pcie_state(dev);
- 	pci_restore_pasid_state(dev);
- 	pci_restore_pri_state(dev);
--- 
-2.34.1
+Okay. It might not be that bad and just need to do the parsing when we update
+the cpus_ptr, which seems to happen only in set_cpus_allowed_common(). I think
+I can create a wrapper for fair where we do set_cpus_allowed_common() then do
+the checks to discover the max_allowed_capacity and whether the new affinity is
+asymmetric or not.
 
+
+Cheers
+
+--
+Qais Yousef
 
