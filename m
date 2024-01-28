@@ -1,147 +1,114 @@
-Return-Path: <linux-kernel+bounces-41622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AABF383F580
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 13:36:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AF6C83F584
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 13:38:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6758328312D
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 12:36:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBA46283136
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 12:38:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D516B219FC;
-	Sun, 28 Jan 2024 12:36:22 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE88E22F17;
+	Sun, 28 Jan 2024 12:38:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A+mGpzcd"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37E5A208AD
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 12:36:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B121720B04;
+	Sun, 28 Jan 2024 12:38:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706445382; cv=none; b=WAMXVNy7psDx1mdDNtDLQH32v7wEAUHNFp3ZXek7brWZFXPWe3PQt6qfVQ6jBEReE/mrxAtcJNyr0LhJ36zT1tcAlIopdJJ28lqRyDc9s7wYex8vbdxKQHzXnC/PWOGfUqIs3Latta6zN++v88ywK0qoT5DQJjEc43hA5Md5Ne8=
+	t=1706445521; cv=none; b=LHjFMkv5kxQJLdJwdbBuD8PB7q1tbTMl8/x3O1Ttdgy2h7eeOMznzvLL7iZKWOIzuchsXCFWxqhoPvaN/gjuE+EFLFS03CEH7wEaHjJfhhi2IAbupsqpO+tGCN+dqp5rSlHg4btO/PZUhJSvaV7jDHi3mcBraWnkQt2R7oetBro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706445382; c=relaxed/simple;
-	bh=AO5e8HxcukgmlxCKaaT+Yy3hUdVZUwg2ySjru/JA0HM=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=E2twj/pH7eENoA04x5bxj+Qm0nLTnh3bVeiCfIFQgVEjuzF90mbolLVml9hA4F9Ioam01ISaRz654EDQMTCegya24jE86qFMQ+sPbCxujV6obk7y3dGI0hEzxEQTxAmvi6rIcvy/sozwWDyY4kmEYj2j76liL8MSkJ8b3RpVvEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-317-Eq0wpz7mO1e21GBJ1oOirA-1; Sun, 28 Jan 2024 12:36:16 +0000
-X-MC-Unique: Eq0wpz7mO1e21GBJ1oOirA-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 28 Jan
- 2024 12:35:53 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sun, 28 Jan 2024 12:35:53 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Jisheng Zhang' <jszhang@kernel.org>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
-	<aou@eecs.berkeley.edu>
-CC: "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Matteo Croce
-	<mcroce@microsoft.com>, kernel test robot <lkp@intel.com>
-Subject: RE: [PATCH 1/3] riscv: optimized memcpy
-Thread-Topic: [PATCH 1/3] riscv: optimized memcpy
-Thread-Index: AQHaUdxgc9Zy837AxkOiZhjgW4/PA7DvJZjg
-Date: Sun, 28 Jan 2024 12:35:53 +0000
-Message-ID: <dc1f54f90642401ca6135c75e399c06d@AcuMS.aculab.com>
-References: <20240128111013.2450-1-jszhang@kernel.org>
- <20240128111013.2450-2-jszhang@kernel.org>
-In-Reply-To: <20240128111013.2450-2-jszhang@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1706445521; c=relaxed/simple;
+	bh=tKwUFnxuzYj62IcC9B9LprzswbdAqj5/rvK4x50IGoA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WVqwMVS4/iWky1KMaukttHJnn1F5/jijBMeaVRH9eIB/PBVSVSU0Qabm3pP68I83RleF5eqzA+yz7kHJxQxDr5zPJH+CGCXUZrAG+cMkdlF+NgNkpJMkVmKq96YHsWEIR+1FYVV1jQSUIA0IY4AdHEHxqDWtpfdZ/ysWsowiFcY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A+mGpzcd; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2cf3a095ba6so19409831fa.2;
+        Sun, 28 Jan 2024 04:38:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706445518; x=1707050318; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XMoR8tdddP7YkCO+TVLJDCihWfN9qzXvX9tzIymJSa8=;
+        b=A+mGpzcdNDVwsvPVG9QgWd6j+TQ7ftTwOUb0t5kkpj1zgsQJjFJ4imOL5fraOExJ+T
+         Ch3UJFcR+bpEwykmO8X/w1QiQWG8xXAMNHW5X5yi+EJ4eQ5Bdnto0ORvTzPzeaJCLH6b
+         xz2noknO1hrm5GvXSqaVKue/f8Py8nLLH8vXiu426y5Ku0nJ6nNCKgfa29eORWd/j9uv
+         3RxJm62lEStwYKtn+BFHhmcV/lPOKqqZO6Ni46/tQf9wxEgluXpbVOxustyJQsqkkTL8
+         qLeZR5xmxhCSOnAVn5ir0upWw89Xi5MduotzpalSpnSEtp5JMEFD2YRYyndq5P+PZv5y
+         OmZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706445518; x=1707050318;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XMoR8tdddP7YkCO+TVLJDCihWfN9qzXvX9tzIymJSa8=;
+        b=A7aVxSpuRbZkGVMW0iXnrjMYrEbTuQLAxtLG6KaQfYnbC4erA+pI9Fb4OLADnP4MEu
+         DrQXNfTmrgV6ITp3K4x+w4cWb8CgZQfEbnZ66fay3Fe5euSCEMAbkgPTTDBw2QW0ZFto
+         bD2X05bhgSGzv3FobnKixVG2HHtHjfiohPJI0vCJc/9QxEuccvhfKh/IDW5kGDkDjl8i
+         6zI6KCsyFYCA4r27Sor3BSdiJ/jPZVNTbrQ8XVLavwq6OBlrBfE55llr1F3DaXH/Uugs
+         dsweBoy+mENiQB0aOTiVGiqoq1imzvV4MKWSa/BtdMFtfsu8mLQ49jee+JEMt8a1tqMm
+         r70w==
+X-Gm-Message-State: AOJu0YxLgze9QGq8kWSyn25Acb9+7agKVzcMV2JbLmLjs5nuQPlwQRcz
+	7jnXaE2Vt/2yNB4ATP8BLgTFcxtIZIj7rRQtLC6U8ILvreP1dpHnfpTqQtjhyunS9l7RPwg+PIm
+	X9kwKWuVU5d9mflA32g8wSrZVwtE=
+X-Google-Smtp-Source: AGHT+IF+0nTXIboXcRryDkc5o2FJVgoAz88gONQuhrs/mEmLyEYrwuchszSkeAgN9zqOGUjOxCiAY3AmkAoImw9Iwa4=
+X-Received: by 2002:a05:651c:1505:b0:2cd:f093:7939 with SMTP id
+ e5-20020a05651c150500b002cdf0937939mr2414049ljf.32.1706445517369; Sun, 28 Jan
+ 2024 04:38:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
+References: <20240128145626.53e7a0d3@canb.auug.org.au>
+In-Reply-To: <20240128145626.53e7a0d3@canb.auug.org.au>
+From: Steve French <smfrench@gmail.com>
+Date: Sun, 28 Jan 2024 06:38:26 -0600
+Message-ID: <CAH2r5mt5UJjP0nwE6k4uoN8UHdgs2xHTnP4-o0Z-jidX4=9umA@mail.gmail.com>
+Subject: Re: linux-next: Signed-off-by missing for commit in the cifs tree
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: CIFS <linux-cifs@vger.kernel.org>, Steve French <stfrench@microsoft.com>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-From: Jisheng Zhang
-> Sent: 28 January 2024 11:10
->=20
-> From: Matteo Croce <mcroce@microsoft.com>
->=20
-> Write a C version of memcpy() which uses the biggest data size allowed,
-> without generating unaligned accesses.
->=20
-> The procedure is made of three steps:
-> First copy data one byte at time until the destination buffer is aligned
-> to a long boundary.
-> Then copy the data one long at time shifting the current and the next u8
-> to compose a long at every cycle.
-> Finally, copy the remainder one byte at time.
->=20
-> On a BeagleV, the TCP RX throughput increased by 45%:
-..
-> +static void __memcpy_aligned(unsigned long *dest, const unsigned long *s=
-rc, size_t count)
-> +{
+fixed
 
-You should be able to remove an instruction from the loop by using:
-=09const unsigned long *src_lim =3D src + count;
-=09for (; src < src_lim; ) {
+On Sat, Jan 27, 2024 at 9:56=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org=
+au> wrote:
+>
+> Hi all,
+>
+> Commits
+>
+>   60c2fcda9c84 ("smb: client: add support for WSL reparse points")
+>   f6819b9b72b5 ("smb: client: reduce number of parameters in smb2_compoun=
+d_op()")
+>   c08113706498 ("smb: client: fix potential broken compound request")
+>   35f88f006a3f ("smb: client: move most of reparse point handling code to=
+ common file")
+>   985f1bce45c4 ("smb: client: introduce reparse mount option")
+>
+> are missing a Signed-off-by from their committer.
+>
+> --
+> Cheers,
+> Stephen Rothwell
 
-> +=09for (; count > 0; count -=3D BYTES_LONG * 8) {
-> +=09=09register unsigned long d0, d1, d2, d3, d4, d5, d6, d7;
 
-register is completely ignored and pointless.
-(More annoyingly auto is also ignored.)
 
-> +=09=09d0 =3D src[0];
-> +=09=09d1 =3D src[1];
-> +=09=09d2 =3D src[2];
-> +=09=09d3 =3D src[3];
-> +=09=09d4 =3D src[4];
-> +=09=09d5 =3D src[5];
-> +=09=09d6 =3D src[6];
-> +=09=09d7 =3D src[7];
-> +=09=09dest[0] =3D d0;
-> +=09=09dest[1] =3D d1;
-> +=09=09dest[2] =3D d2;
-> +=09=09dest[3] =3D d3;
-> +=09=09dest[4] =3D d4;
-> +=09=09dest[5] =3D d5;
-> +=09=09dest[6] =3D d6;
-> +=09=09dest[7] =3D d7;
-> +=09=09dest +=3D 8;
-> +=09=09src +=3D 8;
+--=20
+Thanks,
 
-There two lines belong in the for (...) statement.
-
-> +=09}
-> +}
-
-If you __always_inline the function you can pass &src and &dest
-and use the updated pointers following the loop.
-
-I don't believe that risc-v supports 'reg+reg+(imm5<<3)' addressing
-(although there is probably space in the instruction for it.
-Actually 'reg+reg' addressing could be supported for loads but
-not stores - since the latter would require 3 registers be read.
-
-We use the Nios-II cpu in some fpgas. Intel are removing support
-in favour of Risc-V - we are thinking of re-implementing Nios-II
-ourselves!
-I don't think they understand what the cpu get used for!
-
-=09David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
-
+Steve
 
