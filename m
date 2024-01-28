@@ -1,107 +1,115 @@
-Return-Path: <linux-kernel+bounces-41835-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41836-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CD2583F837
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:51:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F164083F842
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:52:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D236A1F2120E
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:51:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FEA31C22ADC
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:52:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D813731A89;
-	Sun, 28 Jan 2024 16:28:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AquRfRat"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E833D2EB1D;
+	Sun, 28 Jan 2024 16:44:07 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2710031A7E;
-	Sun, 28 Jan 2024 16:28:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC55A2D03C
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 16:44:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706459287; cv=none; b=ABoZ+NMxPS6SQzJJOat1QT3iQlNRNVPdhebDZTDuC00xxmA+55Hd26uPZP3D8kk3aGzXzc/Re9IKC0g8Sx+JOHQpDqTF/fwPU38DeVoyBLDOurRobIttWMCZCTgwe8nxcIt97yobDifxxEx/amkd5j4TMyw+YD8IXD5t+QQIdx0=
+	t=1706460247; cv=none; b=l32IGELjPtHLfR4sK3erw6h+Trtc+rjKudPatyfZ/efQxmwZyv1/VHbJ0cLob+uO6Wxs4WVNFe1+XB1XRZHZczQFmM9n4fDhFA8jcZLpOJrR/4GcChOrGyvRh7EAdFX+7Jld9rDUJ8VHyjSIMhSDGTeFD9VGzvz2dGUHgdM0/+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706459287; c=relaxed/simple;
-	bh=/W2K331dVIKg1A5n58BV8W/mEY0UJaxcXNBQ+I1OcYc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ai/pxUQVqfAT1NeTA745AI5OQfnPVZWEhgeCDxKvsqoK8+p6bvRfsF+0oU0hFld/kVG6dsuoPlI2uvjwjLNKvipjouDcXTSmU4MtU4x2YXuXINmkODSHfez902MHAY/+e25CdG25Xon/JXJUBrZjC/nap7ZHXiTtyV3eFCcSeAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AquRfRat; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06EA5C433C7;
-	Sun, 28 Jan 2024 16:28:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706459286;
-	bh=/W2K331dVIKg1A5n58BV8W/mEY0UJaxcXNBQ+I1OcYc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AquRfRat1KOj7piVyl+sFa7F8s3phwllA7jHYvPOtsqPq1ozuXMsu/C42RmHIRzSf
-	 5fxuwbfZ/2V9/IoKlUdQvnxsrsD/6/SNpjt2E/K/II1DIpNG6xb+sWc5HctqJ8und2
-	 cd9xVu3L97GlW5qNazkFrkKywY4HHl9JhpjUqVvVoSfMA3CYBwBpbphECxGaV2zHaB
-	 IpFafXZKa32vDwlxjecKQ+/WvKDZYCUw+iHF/9FeUvrogroeNPFtrv5b1RLLujcD8r
-	 bazrqpR6bHbw3BNTbdYMQwxFGHyZAUQlsd2H2pEPlagKyVGQ/+y2VHZyC7LngojsJD
-	 QIqn7+jxu34eA==
-From: SeongJae Park <sj@kernel.org>
-To: cuiyangpei <cuiyangpei@gmail.com>
-Cc: SeongJae Park <sj38.park@gmail.com>,
-	sj@kernel.org,
-	akpm@linux-foundation.org,
-	damon@lists.linux.dev,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	xiongping1@xiaomi.com
-Subject: Re: [PATCH 1/2] mm/damon/sysfs: Implement recording feature
-Date: Sun, 28 Jan 2024 08:28:04 -0800
-Message-Id: <20240128162804.17866-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <ZbYanPU16klwz0HA@cyp-ubuntu>
-References: 
+	s=arc-20240116; t=1706460247; c=relaxed/simple;
+	bh=EmgOgNfJOoUg/I2634CBEsy1X290BU37QjN2TFLRu2Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=M7a14NrnegyezIBFDV/63tDB8QlF2WgphpE50i2egT2pHF4FyyRUXjCg1h0H/Z6ONrwhIr6RLY/vB/AF9u67paLFComb3BD/+HdVYbgHMvsV6AxtpEJb1SPZaLbFo6Z87/FdpsxqfTHpAWMliNy9ikVRcbma44jBgbSXeKT00nE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rU8Fv-0002V2-20; Sun, 28 Jan 2024 17:43:39 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rU8Ft-002z8T-Uv; Sun, 28 Jan 2024 17:43:37 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rU8Ft-00AGqM-2m;
+	Sun, 28 Jan 2024 17:43:37 +0100
+Date: Sun, 28 Jan 2024 17:43:37 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Sean Young <sean@mess.org>
+Cc: Flavio Suligoi <f.suligoi@asem.it>, Lee Jones <lee@kernel.org>, 
+	Daniel Thompson <daniel.thompson@linaro.org>, Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>, 
+	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-pwm@vger.kernel.org
+Subject: Re: [PATCH] backlight: mp3309c: Use pwm_apply_might_sleep()
+Message-ID: <apuuk7hi5233xi2ujou4ndovlkq5qr5rgbkoij2jsfi7rwxgbi@2nie6c53ru3z>
+References: <20240128154905.407302-1-sean@mess.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-
-On Sun, 28 Jan 2024 17:13:00 +0800 cuiyangpei <cuiyangpei@gmail.com> wrote:
-
-> On Fri, Jan 26, 2024 at 12:04:54AM -0800, SeongJae Park wrote:
-[...]
-> > So, 'update_schemes_tried_regions' command is firstly handled by
-> > 'damon_sysfs_cmd_request_callback()', which is registered as
-> > after_wmarks_check() and after_aggregation() callback.  Hence
-> > 'update_schemes_tried_regions' command is still effectively working in
-> > aggregation interval granularity.  I think this is what you found, right?
-> > 
-> Yes.
-> > If I'm not wrongly understanding your point, I think the concern is valid.  I
-> > think we should make it works in sampling interval granularity.  I will try to
-> > make so.  Would that work for your use case?
-> > 
-> It's much better than working in aggregation interval.
-
-Thank you for confirming.  I will start working on this.
-
-> 
-> I have a question. Why does the 'update_schemes_tried_regions' command need to work
-> in the sampling time or aggregation time? 'update_schemes_tried_regions' is a
-> relatively special state that updates the regions that corresponding operation scheme.
-> Can it be separated from other states and controlled by sysfs node to respond immediately
-> after being written?
-
-Mainly because the region data is updated by a kdamond thread.  To safely
-access the region, the accessor should do some kind of synchronization with the
-kdamond thread.  To minimize such synchronization overhead, DAMON let the API
-users (kernel components) to register callbacks which kdamond invokes under
-specific events including 'after_sampling' or 'after_aggregate'.  Because the
-callback is executed in the kdamond thread, callbacks can safely access the
-data without additional synchronization.  DAMON sysfs interface is using the
-callback mechanism, and hence need to work in the sampling or aggregation
-times.
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="kvi2qh5kgw6q2equ"
+Content-Disposition: inline
+In-Reply-To: <20240128154905.407302-1-sean@mess.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
 
-Thanks,
-SJ
+--kvi2qh5kgw6q2equ
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[...]
+Hello Sean,
+
+On Sun, Jan 28, 2024 at 03:49:04PM +0000, Sean Young wrote:
+> pwm_apply_state() is deprecated since commit c748a6d77c06a ("pwm: Rename
+> pwm_apply_state() to pwm_apply_might_sleep()"). This is the final user
+> in the tree.
+>=20
+> Signed-off-by: Sean Young <sean@mess.org>
+
+The "problem" here is that the mp3309c driver didn't exist yet in commit
+c748a6d77c06a, so it relies on the pwm_apply_state compatibility stub.
+
+I would mention that in the commit log.
+
+Otherwise the change looks fine.
+
+thanks for catching and addressing this issue
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--kvi2qh5kgw6q2equ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmW2hDMACgkQj4D7WH0S
+/k769AgAuhICKH8tjWxmVW/U6B4fj9zEKtlPa3ebg5wrtKvlXBuwKhif676Epb1q
+OCvuQNg5wsJ5MSngBPzpoGK+AL9Ew4oRzlNl+AUCpJUw/6IlhZXw/Ga0TLCdVuig
+a6kz+rAq4/NDOck8BAhOqBjoo6xM4/4GDQaV3E39lJPQfZrtXWpJ407w6HvXor//
+x9+7x7oIL3bLkBboHzkRFChlRvqsj6HIYLI9RNpBlJiu2MymHIOgN0SyyFILIA4Y
+fv2DNlEZjceu6ubg+JdHd9nUFUDftD+bt979N6q8BXv9oz1nq/qTIpELI/f2UotK
+NogEFu3nSIG56vcJAJZIimQ9qxbYtw==
+=nndy
+-----END PGP SIGNATURE-----
+
+--kvi2qh5kgw6q2equ--
 
