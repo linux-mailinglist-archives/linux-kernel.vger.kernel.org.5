@@ -1,110 +1,113 @@
-Return-Path: <linux-kernel+bounces-41585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52AE583F4F4
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 11:19:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87ED483F4F5
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 11:22:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7572282485
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 10:19:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 608A5B21E66
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 10:22:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73C9B1AAAE;
-	Sun, 28 Jan 2024 10:18:57 +0000 (UTC)
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE0761D524;
+	Sun, 28 Jan 2024 10:22:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="gg40532A"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31E2CDF55;
-	Sun, 28 Jan 2024 10:18:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBA8FDF6C
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 10:22:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706437137; cv=none; b=LX5Q34AZhQLjMrISZW45ouMuFH0OKajJCkmyJrGn/QPEoUoWDH9XePCTK1vZK3rhiuLOS1lDuEmbFLb0O/xWVl/oFBD8Vt0Rk1Nh6nZtKaf90ZwEmJy/9egFI3DEUgbGE+5m3WdMpGMWL+WRWkrojV+H9uRNRErKvFTsJpy3zko=
+	t=1706437357; cv=none; b=gNRiIHy06O/O/kY9BmKXXeVtHL9C/MT2cKmXmkAlJKT8o1Cq6cHOJQZtGRhQh00sMGtXJeC14p1eJCT76pY7RUNCjk7aqhq6pFTPU9FMbngIUNbzTlgnJ/JM8FZet6+2kDk2Nf1238lysPQmQmy/viOwCNh0EZ6/S4QC/pNRUmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706437137; c=relaxed/simple;
-	bh=xY9d5ERXouy1ZaiI+F1+aXQOChBlb7NLWX7kgpBMQkg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IIBJeAYZNdkxFukYxywHvKYT0U3wBSY7bZ5G9zrP/x7aAc9Cbk58Mj2aCWMVL+KZ0zjak8MmSfsMkSLkJ/1BxUG86ypWSxDFiuZ26zwVV//2blwZSTFfoa7VtoTWe/O50gmJgayhcl6RceiN8cpqC8Tgh+SCtBFiFga2qzQKhaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40ef64d8955so747715e9.3;
-        Sun, 28 Jan 2024 02:18:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706437133; x=1707041933;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+jLClgMgKHAYy8oi26SoamRje703fIGbCXV126plVXY=;
-        b=NPRFWsja7jrGluOBwcp6Sp6UcAy4MfJMtatrukG97sa8m0GB++CtBnpP3YV94guOgD
-         CIhkTtJpOU6H2eYnouwRu6OEqcisDZ9oMcOSKJ36YridA3JtplbDMr0iS1Np/BA7A8gX
-         mWLTpAy+tQgSJjbV2OYwC5XmxMPfWRK/Rz3TbBI37EkHyGp1hLxHIjHegLmKzaq5MHSF
-         mKd+W1enDb9WEonNCTudoafkq2XokAb0SXGKZ08MA7LfNMQoTwt40d/nNeZ0BjaieWdd
-         sqwtAAPmcIrViAf0wmLZvoUFC4IF7aGJW326NVIStzdR5U6xKvW80vMfxwEAhHF+NY8t
-         MLyg==
-X-Gm-Message-State: AOJu0Yy/dSp9vtm6adUNWuYlCKnN2z8AICLzTzooSIlKDAeoycZu9Q+H
-	jLzkqtoBDBx2F54potv6LjHCtgAwZtvfqEdERgempC7gOwENRL8Z
-X-Google-Smtp-Source: AGHT+IGkaMhTMf/7LomVjGIRaR8Le+S1R05a9PLNUKI7dKlEL9Quuc9mhxceiJs/myFU1LsgSsaWJA==
-X-Received: by 2002:a05:600c:35d6:b0:40e:6703:af8a with SMTP id r22-20020a05600c35d600b0040e6703af8amr2667929wmq.41.1706437133059;
-        Sun, 28 Jan 2024 02:18:53 -0800 (PST)
-Received: from ryzen.lan (cpc147820-finc19-2-0-cust1005.4-2.cable.virginm.net. [86.16.175.238])
-        by smtp.gmail.com with ESMTPSA id g9-20020a05600c310900b0040ef2e7041esm1594505wmo.6.2024.01.28.02.18.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jan 2024 02:18:52 -0800 (PST)
-From: Lucas Tanure <tanure@linux.com>
-To: Bryan Whitehead <bryan.whitehead@microchip.com>,
-	UNGLinuxDriver@microchip.com,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Richard Cochran <richardcochran@gmail.com>
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Lucas Tanure <tanure@linux.com>
-Subject: [PATCH] ptp: lan743x: Use spin_lock instead of spin_lock_bh
-Date: Sun, 28 Jan 2024 10:18:49 +0000
-Message-ID: <20240128101849.107298-1-tanure@linux.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706437357; c=relaxed/simple;
+	bh=1jyGYBxQljDpPmnMrORGZudzs8YuOvvIAR0vEWYgXZU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=MqYtP94dDVgQtdF+AxrGpTvH/z9iPnpcNzSR19te9dVA9IQDVtZ8Y/4KDWy4cF4bV1xIRavTdZL7rpcCHlOEuWmY5VWlKnjOEtwL6Lxua2/qcUw4Z2nZIofPTTtwCXipcvsHfLHMTsx3H07+Yg16MdRqCs4kkc5vBi1RQkl4ZZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=gg40532A; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id AB82B40E01A9;
+	Sun, 28 Jan 2024 10:22:32 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Rq6zGMukCGKA; Sun, 28 Jan 2024 10:22:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706437350; bh=XvoQDsasovu689xaenFWPJzjR3i2LGUruk5ZV73msTk=;
+	h=Date:From:To:Cc:Subject:From;
+	b=gg40532AhX9fuy6vY9oXp5qRXTg4wNT1BYUq0rnI1ZAcGo0o+/JSkB/q+pFWx6oJl
+	 scZmftVYzD1uKEFaahOCuF65YYNBhtnXl9vt6JLaKnzRG2xqr24TrXroS1gXm4lZMw
+	 3tBNPogjShwOckTsx8hweu3wLOkqDvOO9OaGNcZyPqyzBuGhbSQQrpE96YWizoe5o4
+	 G0skSyCrssVglw71GsaO8d3gVri5DwQqhv6NLuPZQ0E0TIUNQQYigXSs+XEyRVFZrs
+	 opkogIFVXRfZfBqb42wDxniM/DN/tWGG/M+TVlt6i3pD/uq0PSk5hpbAFYLiO9PtHt
+	 ihowQ2Fc0Sn4R+GpJSdMoImc+aBPGcljuOJMdL9y+mN8J/PmqysabkR2olcELWT8La
+	 anFFqWy6Sv/oxjoVRevriFWNuYfICBK+1WHUjRLpcIlW8wYzJHRXXFdqIIehPnrmjz
+	 xFIgUKuJmK/7amI2XAieLe6q6/MPASyP8SCWmo04/w+6Rn3dMK3CYBqmt1xZaqhafr
+	 Y2nkYx1Q685JsGriez+kwh1DHBQDPFN07aJXn2Xe8U8jfB8Y5/JhfKgDn2+kOb7jyi
+	 tF9Fn4S0oYf3OsnupxXlcwEDOdF7weURBm3iR796eFvUDk0Penp5JsI9pTEATd3s3Q
+	 0sGBJrbDR6p2+HR485z7Y79g=
+Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B73DA40E00C5;
+	Sun, 28 Jan 2024 10:22:27 +0000 (UTC)
+Date: Sun, 28 Jan 2024 11:22:27 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] irq/urgent for v6.8-rc2
+Message-ID: <20240128102227.GAZbYq41uhKVmVFc_F@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-lan743x_ptp_request_tx_timestamp uses spin_lock_bh, but it is
-only called from lan743x_tx_xmit_frame where all IRQs are
-already disabled.
+Hi Linus,
 
-This fixes the "IRQs not enabled as expected" warning.
+please pull an urgent IRQ subsystem fix for v6.8-rc2.
 
-Signed-off-by: Lucas Tanure <tanure@linux.com>
+Thx.
+
 ---
- drivers/net/ethernet/microchip/lan743x_ptp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/microchip/lan743x_ptp.c b/drivers/net/ethernet/microchip/lan743x_ptp.c
-index 2f04bc77a118..2801f08bf1c9 100644
---- a/drivers/net/ethernet/microchip/lan743x_ptp.c
-+++ b/drivers/net/ethernet/microchip/lan743x_ptp.c
-@@ -1712,13 +1712,13 @@ bool lan743x_ptp_request_tx_timestamp(struct lan743x_adapter *adapter)
- 	struct lan743x_ptp *ptp = &adapter->ptp;
- 	bool result = false;
- 
--	spin_lock_bh(&ptp->tx_ts_lock);
-+	spin_lock(&ptp->tx_ts_lock);
- 	if (ptp->pending_tx_timestamps < LAN743X_PTP_NUMBER_OF_TX_TIMESTAMPS) {
- 		/* request granted */
- 		ptp->pending_tx_timestamps++;
- 		result = true;
- 	}
--	spin_unlock_bh(&ptp->tx_ts_lock);
-+	spin_unlock(&ptp->tx_ts_lock);
- 	return result;
- }
- 
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
+
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/irq_urgent_for_v6.8_rc2
+
+for you to fetch changes up to b184c8c2889ceef0a137c7d0567ef9fe3d92276e:
+
+  genirq: Initialize resend_node hlist for all interrupt descriptors (2024-01-24 14:15:41 +0100)
+
+----------------------------------------------------------------
+- Initialize the resend node of each IRQ descriptor, not only the first one
+
+----------------------------------------------------------------
+Dawei Li (1):
+      genirq: Initialize resend_node hlist for all interrupt descriptors
+
+ kernel/irq/irqdesc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+
 -- 
-2.43.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
