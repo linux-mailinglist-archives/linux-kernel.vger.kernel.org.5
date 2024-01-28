@@ -1,151 +1,171 @@
-Return-Path: <linux-kernel+bounces-41864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44A2B83F8F6
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 19:02:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69CA983F8F9
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 19:02:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82D0AB21612
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 18:02:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EB771C21B3B
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 18:02:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE65C2E62B;
-	Sun, 28 Jan 2024 18:01:56 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D95B2E413;
+	Sun, 28 Jan 2024 18:02:32 +0000 (UTC)
+Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F1B62D60A;
-	Sun, 28 Jan 2024 18:01:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BF572E407;
+	Sun, 28 Jan 2024 18:02:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706464916; cv=none; b=S4zaPiokHUtW13LDGyN5U0yPn3l3Z9dEygXy2BQmlmjsOyW+vyJIGjp9PJ4bQioNB7rTPnfN7+av9cMMIH0h2YpDzaTv9EABfx2L04QFE/BqE08FCvEPOnXylW9CEYAzj5eIqtuYdReWVVQkWbwSaR+Gv2DupaOnzNVqbBgS+nM=
+	t=1706464952; cv=none; b=SGz99hECoYgAiHYDpCncGVOm7WWpLqymrlebbRx1AI3NVOWO6byuqOb441+Ap30RyBrVDtjiWRQuVjwNsL6h1FvFfzOC2LM/b97N80oWjXTzfAQO51spT5gaIy+pemdTAq74XcTRj5CkI76as7G8+ijZWDWdAW7tVcEjYuQiflo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706464916; c=relaxed/simple;
-	bh=vOfs+m+BbxLk/reMFaIjPXLuBEleunnZ3wlO2LKnsPM=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=L9lxS1GAoWI4H2xXzzUtqqEetvvSkYN6wmli2YyJhf8Y90G8ONZVSqOK2/bN4X34TZCa998PbbrM4W21YzTKV17Je6Fu0Z0TY9W8764X0A/DgiC6ZxPEuXEmi+DCEK0j/PDLg8Dxipx0lBuOCIxXRTffFQUDl+rDPnDdlGzXmm4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.105] (178.176.74.225) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sun, 28 Jan
- 2024 21:01:36 +0300
-Subject: Re: [PATCH net-next v4 08/15] net: ravb: Move the IRQs get and
- request in the probe function
-To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
-	<geert+renesas@glider.be>
-CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Claudiu Beznea
-	<claudiu.beznea.uj@bp.renesas.com>
-References: <20240123125829.3970325-1-claudiu.beznea.uj@bp.renesas.com>
- <20240123125829.3970325-9-claudiu.beznea.uj@bp.renesas.com>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <bb26b1a9-a848-7b5a-26fd-192f004184d8@omp.ru>
-Date: Sun, 28 Jan 2024 21:01:35 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	s=arc-20240116; t=1706464952; c=relaxed/simple;
+	bh=zUIHGKbtwdi0dbaHD+pyc3Pkx/L5jYZarkDnWKJcBXA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ktRF+1IN2WQH5jqq4eKKXC3elbMxr3MebTD/ZpC1TrNjbiz9yDFGEVxlPBFdzEmgVGveKH8u3VMlYXHJ+jhCidQ0AptGYxKfAJAIKJc3HMoxW5DC7g/qPidiNvtedeLgnc2S6KlDXqkcdbtg2xsjH5R8WZQMLGyKnj4CQsXVpNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
+Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id A800681F3D;
+	Sun, 28 Jan 2024 19:02:18 +0100 (CET)
+From: Duje =?utf-8?B?TWloYW5vdmnEhw==?= <duje.mihanovic@skole.hr>
+To: Conor Dooley <conor@kernel.org>
+Cc: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mmp-dma: convert to YAML
+Date: Sun, 28 Jan 2024 19:01:36 +0100
+Message-ID: <2924724.e9J7NaK4W3@radijator>
+In-Reply-To: <20240128-feminine-sulfite-8891c60ec123@spud>
+References:
+ <20240127-pxa-dma-yaml-v1-1-573bafe86454@skole.hr>
+ <20240128-feminine-sulfite-8891c60ec123@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240123125829.3970325-9-claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/28/2024 17:47:03
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 182979 [Jan 28 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.225 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.225 in (user)
- dbl.spamhaus.org}
-X-KSE-AntiSpam-Info:
-	d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1;178.176.74.225:7.4.1,7.7.3,7.1.2;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: {cloud_iprep_silent}
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.74.225
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 01/28/2024 17:50:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 1/28/2024 3:09:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+Autocrypt: addr=duje.mihanovic@skole.hr;
+ keydata=
+ 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
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 
-Hello!
+On Sunday, January 28, 2024 6:28:03 PM CET Conor Dooley wrote:
+> On Sat, Jan 27, 2024 at 05:53:45PM +0100, Duje Mihanovi=C4=87 wrote:
+> > +allOf:
+> > +  - $ref: dma-controller.yaml#
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            enum:
+> > +              - marvell,adma-1.0
+> > +              - marvell,pxa910-squ
+> > +    then:
+> > +      properties:
+> > +        asram:
+> > +          description:
+> > +            phandle to the SRAM pool
+> > +          minItems: 1
+> > +          maxItems: 1
+> > +        iram:
+>=20
+> > +          maxItems:
+> These properties are not mentioned in the text binding, nor commit
+> message. Where did they come from?
 
-   I suggest the following subject "net: ravb: Move getting/requesting IRQs in
-the probe() method".
+Both of them can be found in arch/arm/boot/dts/marvell/mmp2.dtsi. There is =
+one=20
+major difference between the two: iram is not mentioned at all by the mmp_t=
+dma=20
+driver (on the other hand, asram is not only used but also required for a=20
+successful probe), but I left it here as it's still found in the MMP2 dtsi.=
+ On=20
+second thought it should probably be dropped both here and in the dtsi.
 
-On 1/23/24 3:58 PM, Claudiu wrote:
+> That said, for properties that are only usable on some platforms, please
+> define them at the top level and conditionally permit/constrain them.
 
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> 
-> The runtime PM implementation will disable clocks at the end of
-> ravb_probe(). As some IP variants switch to reset mode as a result of
-> setting module standby through clock disable APIs, to implement runtime PM
-> the resource parsing and requesting are moved in the probe function and IP
-> settings are moved in the open function. This is done because at the end of
-> the probe some IP variants will switch anyway to reset mode and the
-> registers content is lost. Also keeping only register specific operations 
+Could you please point me to how to do so if this if/then does not do it=20
+properly?
 
-   Register contents?
+> > +unevaluatedProperties: false
+> > +
+> > +examples:
+> > +  # Peripheral controller
+> > +  - |
+> > +    pdma0: dma-controller@d4000000 {
+>=20
+> The label is not needed here or below.
+> In fact, I'd probably delete the second example as it shows nothing that
+> the first one does not.
 
-> in the ravb_open()/ravb_close() functions will make them faster.
-> 
-> Commit moves IRQ requests to ravb_probe() to have all the IRQs ready when
-> the interface is open. As now IRQs gets and requests are in a single place
+I'd rather add the asram property in the second node (adding onto the above=
+=20
+comment, I now see that it shouldn't have even passed dt_binding_check beca=
+use=20
+of the missing asram, but it did).
 
-   Again, getting/requesting IRQs.
+Regards,
+=2D-=20
+Duje
 
-> there is no need to keep intermediary data (like ravb_rx_irqs[] and
-> ravb_tx_irqs[] arrays or IRQs in struct ravb_private).
-> 
-> In order to avoid accessing the IP registers while the IP is runtime
-> suspended (e.g. in the timeframe b/w the probe requests shared IRQs and
-> IP clocks are enabled) in the interrupt handlers were introduced
-> pm_runtime_active() checks. The device runtime PM usage counter has been
-> incremented to avoid disabling the device's clocks while the check is in
-> progress (if any).
 
-   Oh, so this scheme does have some complications...
 
-> This is a preparatory change to add runtime PM support for all IP variants.
-> 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-
-   With the above fixed:
-
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-
-[...]
-
-MBR, Sergey
 
