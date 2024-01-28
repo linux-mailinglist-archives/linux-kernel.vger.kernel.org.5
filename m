@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-41968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41967-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2073D83FA21
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 22:27:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E06A83FA1F
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 22:27:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9DEC3B21568
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 21:27:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A6252820E6
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 21:27:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06CEB3C087;
-	Sun, 28 Jan 2024 21:27:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A9593C470;
+	Sun, 28 Jan 2024 21:27:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="KKoVHgND"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="neVF0c65"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CDEA3C472
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 21:27:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73B1C25772
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 21:27:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706477245; cv=none; b=CBq90iRG1qzMxOKPFv0YON/uKEjGaWPgRr8QLORr0RSeUY3qJpVN3+OUgAk1HBUIyAv0sowA3jbARizzW598ZFp/S2aMb3g8cZyAkK0gTlgE+U9+4NIsn4FqUHojhRrSeqwKUSCv9DPjShTA/D8+VAnP5gsgptU22iRFnbDt4LI=
+	t=1706477245; cv=none; b=AD0pS5HfZBhnrMoHYH6Cop4KWF+gTBG+KKnTAR6Na0gHAFnNNpHa2GKj/JCSpJRFF4KUkLUPQCve2MUY8EbPMcp4oqhhZlNZWpUI2zCBaAox4KJ8SwAWmfeFNMHSnq3uvH9HuYnus8nQYB+03LnJNKFtsjyx2FLoctAuJZiBitk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706477245; c=relaxed/simple;
-	bh=iAvElGpmB/Rvg9W98fx+iYhTPLkcxixxyEQE/0lymRA=;
+	bh=5BDRz7/kXrA/SKMGZUudnZHtf0X1AaM/GMriOO/cC7E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=q3ggIT3DWfabIyGyzBrANNoi4WTortP0hF5clh6r2tjBYP2eKKWBXZOogtVR9tU2yiVL2nlCahRBfxZEkc7BuCLPMbdm1WNE2rqhAv18M4ddyNZACGw6PfoJCJzGxNnCBmwZhemu5F68GW/OfWcqDCvxBT0YEFZBflVyHbtL5Oo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=KKoVHgND; arc=none smtp.client-ip=209.85.128.44
+	 MIME-Version; b=gapXP5+CwlCgHwNPUGCO5Mmdx94DMQISDOctwSiFge8/q9YBeNl0UjqeN2nORPHncoX5WVNe+Y1CDFYlNnkyvdMyp5d873yYrd2pGRFO8Rzt1RaZZrW3Xrr9tKt2targ+3lJI51eyXNHt/DWx0xB8cg9ZpqOjyCQRmt9z7sNKz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=neVF0c65; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40e775695c6so18493945e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 13:27:22 -0800 (PST)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40ef6da20feso1410985e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 13:27:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706477241; x=1707082041; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FAdowOYiNk9LMfv+UynB8I9wUbUzkvAgTWLx2oynNk0=;
-        b=KKoVHgNDN4keI6iixSCOcp0I5KEPyMlEl4nJPCXOSz9dvIA2sga7GBB4DZeGAiYLb1
-         xO6q8NyMyVMHoa80GACx2lHKWs1G/17FeOlxwo76dfockahmLq4/rMq6dccnwsqc4dCd
-         aTGRImhHkwbm2g8ZaU2rjQyUsmqofgq3J30ZY8Zim+hSjxcWnq7z1IEQXjhhJYEPRp0h
-         hh9tZLn+ct+NjXwZuY+dJcCTPADgbcNUeOIml6NyGa3deYynRiqzYLjvDklQaRZv0gOq
-         uX7RgWZmGy7hTd1F+ZIc1820Es1c325sUEbQyCifiiKxyJKJVeIOOQxTvUWi9K6uNNGe
-         UoFA==
+        bh=X2SAo9LdnR8uwhVnCuLDyqIe/++QGHcrtzG7xwQ0BCc=;
+        b=neVF0c65R4jKbWs4kZX7/29HFelgX27F3iEMFyhjxSNH4qaxYdnpFP3/IQwnKC4OnL
+         +gOigw9+rCf5Q/TX/QXuc1rQe9KU4CGSv2xOgkmxtD23YcscCDW1sz1HO+N50gHB/H3f
+         AsACgi+PGQPb2G5En5J4lJcGjuNe/roqEN+M/2YGxFX7jvjZ6hG/FaxvrK5LxiKbLNs8
+         OYJ8kihxeRJN7Mtz/jNxpnmmjNYJoqBkz+JGziW75FUM2tT/KzSAAjjYFri331rRoifq
+         6n/7aZ7wc1TJwyr44bjD2OTaViavLakGRe7qyR3RFfBY316wj7T8aKLQdZn02599ASUo
+         FYcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1706477241; x=1707082041;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FAdowOYiNk9LMfv+UynB8I9wUbUzkvAgTWLx2oynNk0=;
-        b=VN5Xtv1rrlsvrA6wNv8rHxZ9VRn60cPofhxZrPksNQMBA8zerbfYzQE8Z7uxkzTP/t
-         axajVSx8gDU5rvjBJ99TLS87e0e67LQLsW3GcXuqaH78DSIttHVkoVmPvIy6hDFHGWI2
-         3pMry8txfotYd1TXI0rJu0nYxl7nr4fS5Fh8SwRey/VTVEI7sEZB46hCoJaUo9I41Atp
-         xp6sv1NJvlJex1KWw6oyJljSj184Z1NsfJEKVt37uYkxxYnJNdJywmQ7kSoR47QDUHm8
-         DMhBpy+lDgNLD5sI2X01BZHBu0D8ZnFrinZtDTLNM2JA8HZpznb4unEY3rgY7Bc9GilZ
-         Jg9w==
-X-Gm-Message-State: AOJu0Yw0s+G2NccTsDSJk61vMlryAl/qX6KsvaVog9opweJSmOeRuxwo
-	8OoafSBQjvgFq9peuwALBQ6/OcuowMwun6HzI7pglJMTjRdGuEE0j3w40C2rHoE=
-X-Google-Smtp-Source: AGHT+IG11VpZM9f0yxDJuq8DM4wLRKDiN+1lAEjzdzfh9r9Cl/M6Y5bSwrD4NhvWpmwjeSFcK4Shhg==
-X-Received: by 2002:a05:600c:4715:b0:40e:bed4:4d07 with SMTP id v21-20020a05600c471500b0040ebed44d07mr4395060wmo.8.1706477240534;
-        Sun, 28 Jan 2024 13:27:20 -0800 (PST)
+        bh=X2SAo9LdnR8uwhVnCuLDyqIe/++QGHcrtzG7xwQ0BCc=;
+        b=XvE4/SbuT/GDNPwrJnfsf3LHxLSzRwCHxS6KKxL9Fted6trbswQzMUDcqzTIeev7nU
+         uelDGuF8m5bs5+h2155xMbVm4dtb0fguxlcjSLpMJyskIuke+3KsfSnz9Y2P02NjkqUl
+         huc/5vTOXQo7HuDe+UQQZApWEWb1+hBAtPfUM75gShDT/MCZoZUpcqYUob119bFXfnF0
+         GtjVvKlm7WxqVXLc1eoC21nmNZeJDGIv3wBOomLk4t63nPjcPubnTQm6709c4+tVW84j
+         uKHrFQrKdzZPfl61pZCZ74r9Xk22Oj+kv4LZKn1EOiAoPwx+jSTsABcPtjgeKAn5Y3Vj
+         5G8Q==
+X-Gm-Message-State: AOJu0YxPM9IPONvLEtNe2Rboaksbx8bH9wX8aXxtgU6eGm0PpNXnIMZR
+	2pXH3YAnmIQI/vxGvw2Mz5VC8ypzmwcyRZ2yzEM15XSBzovlBrvV9NzDZnWRc/s=
+X-Google-Smtp-Source: AGHT+IH7I/Y0oeuRogEAXZZ4W+1eugSgt+2idcW2aYyaWuUEipfC6kDbb4se7qMFvg/EplAlKYj8Nw==
+X-Received: by 2002:a05:600c:1d1b:b0:40e:9fd3:6b75 with SMTP id l27-20020a05600c1d1b00b0040e9fd36b75mr2971518wms.2.1706477241698;
+        Sun, 28 Jan 2024 13:27:21 -0800 (PST)
 Received: from vermeer.ba.rivosinc.com (lfbn-mon-1-1176-165.w90-113.abo.wanadoo.fr. [90.113.119.165])
-        by smtp.gmail.com with ESMTPSA id h17-20020a05600c315100b0040d62f89381sm8218208wmo.35.2024.01.28.13.27.19
+        by smtp.gmail.com with ESMTPSA id h17-20020a05600c315100b0040d62f89381sm8218208wmo.35.2024.01.28.13.27.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jan 2024 13:27:20 -0800 (PST)
+        Sun, 28 Jan 2024 13:27:21 -0800 (PST)
 From: Samuel Ortiz <sameo@rivosinc.com>
 To: Dan Williams <dan.j.williams@intel.com>
 Cc: Samuel Ortiz <sameo@rivosinc.com>,
@@ -77,9 +77,9 @@ Cc: Samuel Ortiz <sameo@rivosinc.com>,
 	linux-coco@lists.linux.dev,
 	linux-integrity@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v2 1/4] tsm: Runtime measurement register support
-Date: Sun, 28 Jan 2024 22:25:20 +0100
-Message-ID: <20240128212532.2754325-2-sameo@rivosinc.com>
+Subject: [RFC PATCH v2 2/4] tsm: Add RTMRs to the configfs-tsm hierarchy
+Date: Sun, 28 Jan 2024 22:25:21 +0100
+Message-ID: <20240128212532.2754325-3-sameo@rivosinc.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20240128212532.2754325-1-sameo@rivosinc.com>
 References: <20240128212532.2754325-1-sameo@rivosinc.com>
@@ -91,204 +91,249 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Some confidential computing architecture (Intel TDX, ARM-CCA, RISC-V
-CoVE) provide the TVM (confidential computing guest) with a set of
-runtime measurement registers (RTMR). TVMs can extend those registers
-with their measurements at runtime, i.e. after the TVM initial
-measurements are finalized and the TVM actually runs.
+RTMRs are defined and managed by their corresponding TSM provider. As
+such, they can be configured through the TSM configfs root.
 
-RTMRs are separated from the initial measurement registers set, and TSMs
-typically includes RTMR values into a distinct section of their signed
-attestion reports.
+An additional `rtmrs` directory is added by default under the `tsm` one,
+where each supported RTMR can be configured:
 
-We add support for extending and reading a TSM runtime measurement
-registers by extending the TSM ops structure with resp. an rtmr_extend()
-and an rtmr_read() function pointers. TSM providers/backends will
-implement those ops if they are capable of exposing RTMRs to their
-TVMs. This capability is now described by a tsm_capabilites structure,
-passed by the TSM provider to the TSM framework at registration time.
+mkdir /sys/kernel/config/tsm/rtmrs/rtmr0
+echo 0 > /sys/kernel/config/tsm/rtmrs/rtmr0/index
 
-TVMs can configure, extend and read RTMRs from the configfs-tsm interface.
+An RTMR can not be extended nor read before its configured by assigning
+it an index. It is the TSM backend responsibility and choice to map that
+index to a hardware RTMR.
 
 Signed-off-by: Samuel Ortiz <sameo@rivosinc.com>
 ---
- drivers/virt/coco/tsm.c | 80 +++++++++++++++++++++++++++++++++++++++++
- include/linux/tsm.h     | 39 +++++++++++++++++++-
- 2 files changed, 118 insertions(+), 1 deletion(-)
+ Documentation/ABI/testing/configfs-tsm |  11 ++
+ drivers/virt/coco/tsm.c                | 164 +++++++++++++++++++++++++
+ 2 files changed, 175 insertions(+)
 
+diff --git a/Documentation/ABI/testing/configfs-tsm b/Documentation/ABI/testing/configfs-tsm
+index dd24202b5ba5..590e103a9bcd 100644
+--- a/Documentation/ABI/testing/configfs-tsm
++++ b/Documentation/ABI/testing/configfs-tsm
+@@ -80,3 +80,14 @@ Contact:	linux-coco@lists.linux.dev
+ Description:
+ 		(RO) Indicates the minimum permissible value that can be written
+ 		to @privlevel.
++
++What:		/sys/kernel/config/tsm/rtmrs/$name/index
++Date:		January, 2024
++KernelVersion:	v6.8
++Contact:	linux-coco@lists.linux.dev
++Description:
++		(RW) A Runtime Measurement Register (RTMR) hardware index.
++                Once created under /sys/kernel/config/tsm/rtmrs/, an RTMR entry
++                can be mapped to a hardware RTMR by writing into its index
++                attribute. The TSM provider will then map the configfs entry to
++                its corresponding hardware register.
 diff --git a/drivers/virt/coco/tsm.c b/drivers/virt/coco/tsm.c
-index d1c2db83a8ca..1a8c3c096120 100644
+index 1a8c3c096120..bb9ed2d2accc 100644
 --- a/drivers/virt/coco/tsm.c
 +++ b/drivers/virt/coco/tsm.c
-@@ -11,6 +11,7 @@
- #include <linux/module.h>
- #include <linux/cleanup.h>
- #include <linux/configfs.h>
-+#include <linux/tpm.h>
- 
- static struct tsm_provider {
- 	const struct tsm_ops *ops;
-@@ -50,6 +51,85 @@ enum tsm_data_select {
- 	TSM_CERTS,
+@@ -419,6 +419,108 @@ static const struct config_item_type tsm_reports_type = {
+ 	.ct_group_ops = &tsm_report_group_ops,
  };
  
-+/**
-+ * DOC: Trusted Security Module (TSM) Runtime Measurement Register (RTMR) Interface
-+ *
-+ * The TSM RTMR interface is a common ABI for allowing TVMs to extend
-+ * and read measurement registers at runtime, i.e. after the TVM initial
-+ * measurement is finalized. TSMs that support such capability will typically
-+ * include all runtime measurement registers values into their signed
-+ * attestation report, providing the TVM post-boot measurements to e.g. remote
-+ * attestation services.
-+ *
-+ * A TVM uses the TSM RTMR configfs ABI to create all runtime measurement
-+ * registers (RTMR) that it needs. Each created RTMR must be configured first
-+ * before being readable and extensible. TVM configures an RTMR by setting its
-+ * index and optionally by mapping it to one or more TCG PCR indexes.
-+ *
-+ * A TSM backend statically declares the number of RTMRs it supports and which
-+ * hash algorithm must be used when extending them. This declaration is done
-+ * through the tsm_capabilities structure, at TSM registration time (see
-+ * tsm_register()).
-+ */
++static ssize_t tsm_rtmr_index_store(struct config_item *cfg,
++				    const char *buf, size_t len)
++{
++	struct tsm_rtmr_state *rtmr_state = to_tsm_rtmr_state(cfg);
++	const struct tsm_ops *ops;
++	unsigned int val;
++	int rc;
 +
-+/**
-+ * struct tsm_rtmr_state - tracks the state of a TSM RTMR.
-+ * @index: The RTMR hardware index.
-+ * @alg: The hash algorithm used for this RTMR.
-+ * @digest: The RTMR cached digest value.
-+ * @cached_digest: Is the RTMR cached digest valid or not.
-+ * @cfg: The configfs item for this RTMR.
-+ */
-+struct tsm_rtmr_state {
-+	u32 index;
-+	enum hash_algo alg;
-+	u8 digest[TSM_DIGEST_MAX];
-+	bool cached_digest;
-+	struct config_item cfg;
++	rc = kstrtouint(buf, 0, &val);
++	if (rc)
++		return rc;
++
++	guard(rwsem_write)(&tsm_rwsem);
++
++	/* Index can only be configured once */
++	if (is_rtmr_configured(rtmr_state))
++		return -EBUSY;
++
++	/* Check that index stays within the TSM provided capabilities */
++	ops = provider.ops;
++	if (!ops)
++		return -ENOTTY;
++
++	if (val > ops->capabilities.num_rtmrs - 1)
++		return -EINVAL;
++
++	/* Check that this index is available */
++	if (tsm_rtmrs->rtmrs[val])
++		return -EINVAL;
++
++	rtmr_state->index = val;
++	rtmr_state->alg = ops->capabilities.rtmrs[val].hash_alg;
++
++	tsm_rtmrs->rtmrs[val] = rtmr_state;
++
++	return len;
++}
++
++static ssize_t tsm_rtmr_index_show(struct config_item *cfg,
++				   char *buf)
++{
++	struct tsm_rtmr_state *rtmr_state = to_tsm_rtmr_state(cfg);
++
++	guard(rwsem_read)(&tsm_rwsem);
++
++	/* An RTMR is not available if it has not been configured */
++	if (!is_rtmr_configured(rtmr_state))
++		return -ENXIO;
++
++	return sysfs_emit(buf, "%u\n", rtmr_state->index);
++}
++CONFIGFS_ATTR(tsm_rtmr_, index);
++
++static struct configfs_attribute *tsm_rtmr_attrs[] = {
++	&tsm_rtmr_attr_index,
++	NULL,
 +};
 +
-+static bool is_rtmr_configured(struct tsm_rtmr_state *rtmr_state)
++static void tsm_rtmr_item_release(struct config_item *cfg)
 +{
-+	return rtmr_state->index != U32_MAX;
++	struct tsm_rtmr_state *state = to_tsm_rtmr_state(cfg);
++
++	kfree(state);
 +}
 +
-+/**
-+ * struct tsm_rtmrs_state - tracks the state of all RTMRs for a TSM.
-+ * @rtmrs: The array of all created RTMRs.
-+ * @tcg_map: A mapping between TCG PCR and RTMRs, indexed by PCR indexes.
-+ * Entry `i` on this map points to an RTMR that covers TCG PCR[i] for the TSM
-+ * hash algorithm.
-+ * @group: The configfs group for a TSM RTMRs.
-+ */
-+static struct tsm_rtmrs_state {
-+	struct tsm_rtmr_state **rtmrs;
-+	const struct tsm_rtmr_state *tcg_map[TPM2_PLATFORM_PCR];
-+	struct config_group *group;
-+} *tsm_rtmrs;
++static struct configfs_item_operations tsm_rtmr_item_ops = {
++	.release = tsm_rtmr_item_release,
++};
 +
-+static int tsm_rtmr_read(struct tsm_provider *tsm, u32 idx,
-+			 u8 *digest, size_t digest_size)
++const struct config_item_type tsm_rtmr_type = {
++	.ct_owner = THIS_MODULE,
++	.ct_attrs = tsm_rtmr_attrs,
++	.ct_item_ops = &tsm_rtmr_item_ops,
++};
++
++static struct config_item *tsm_rtmrs_make_item(struct config_group *group,
++					       const char *name)
 +{
-+	if (tsm->ops && tsm->ops->rtmr_read)
-+		return tsm->ops->rtmr_read(idx, digest, digest_size);
++	struct tsm_rtmr_state *state;
 +
-+	return -ENXIO;
++	guard(rwsem_read)(&tsm_rwsem);
++	if (!(provider.ops && (provider.ops->capabilities.num_rtmrs > 0)))
++		return ERR_PTR(-ENXIO);
++
++	state = kzalloc(sizeof(*state), GFP_KERNEL);
++	if (!state)
++		return ERR_PTR(-ENOMEM);
++	state->index = U32_MAX;
++
++	config_item_init_type_name(&state->cfg, name, &tsm_rtmr_type);
++	return &state->cfg;
 +}
 +
-+static int tsm_rtmr_extend(struct tsm_provider *tsm, u32 idx,
-+			   const u8 *digest, size_t digest_size)
-+{
-+	if (tsm->ops && tsm->ops->rtmr_extend)
-+		return tsm->ops->rtmr_extend(idx, digest, digest_size);
++static struct configfs_group_operations tsm_rtmrs_group_ops = {
++	.make_item = tsm_rtmrs_make_item,
++};
 +
-+	return -ENXIO;
++static const struct config_item_type tsm_rtmrs_type = {
++	.ct_owner = THIS_MODULE,
++	.ct_group_ops = &tsm_rtmrs_group_ops,
++};
++
+ static const struct config_item_type tsm_root_group_type = {
+ 	.ct_owner = THIS_MODULE,
+ };
+@@ -433,10 +535,48 @@ static struct configfs_subsystem tsm_configfs = {
+ 	.su_mutex = __MUTEX_INITIALIZER(tsm_configfs.su_mutex),
+ };
+ 
++static int tsm_rtmr_register(const struct tsm_ops *ops)
++{
++	struct config_group *rtmrs_group;
++
++	lockdep_assert_held_write(&tsm_rwsem);
++
++	if (!ops || !ops->capabilities.num_rtmrs)
++		return 0;
++
++	if (ops->capabilities.num_rtmrs > TSM_MAX_RTMR)
++		return -EINVAL;
++
++	tsm_rtmrs = kzalloc(sizeof(struct tsm_rtmrs_state), GFP_KERNEL);
++	if (!tsm_rtmrs)
++		return -ENOMEM;
++
++	tsm_rtmrs->rtmrs = kcalloc(ops->capabilities.num_rtmrs,
++				   sizeof(struct tsm_rtmr_state *),
++				   GFP_KERNEL);
++	if (!tsm_rtmrs->rtmrs) {
++		kfree(tsm_rtmrs);
++		return -ENOMEM;
++	}
++
++	rtmrs_group = configfs_register_default_group(&tsm_configfs.su_group, "rtmrs",
++						      &tsm_rtmrs_type);
++	if (IS_ERR(rtmrs_group)) {
++		kfree(tsm_rtmrs->rtmrs);
++		kfree(tsm_rtmrs);
++		return PTR_ERR(rtmrs_group);
++	}
++
++	tsm_rtmrs->group = rtmrs_group;
++
++	return 0;
 +}
 +
-+static struct tsm_rtmr_state *to_tsm_rtmr_state(struct config_item *cfg)
-+{
-+	return container_of(cfg, struct tsm_rtmr_state, cfg);
-+}
-+
- static struct tsm_report *to_tsm_report(struct config_item *cfg)
+ int tsm_register(const struct tsm_ops *ops, void *priv,
+ 		 const struct config_item_type *type)
  {
- 	struct tsm_report_state *state =
-diff --git a/include/linux/tsm.h b/include/linux/tsm.h
-index de8324a2223c..a546983c24fc 100644
---- a/include/linux/tsm.h
-+++ b/include/linux/tsm.h
-@@ -2,11 +2,13 @@
- #ifndef __TSM_H
- #define __TSM_H
+ 	const struct tsm_ops *conflict;
++	int rc;
  
-+#include <crypto/hash_info.h>
- #include <linux/sizes.h>
- #include <linux/types.h>
+ 	if (!type)
+ 		type = &tsm_report_default_type;
+@@ -450,6 +590,10 @@ int tsm_register(const struct tsm_ops *ops, void *priv,
+ 		return -EBUSY;
+ 	}
  
- #define TSM_INBLOB_MAX 64
- #define TSM_OUTBLOB_MAX SZ_32K
-+#define TSM_DIGEST_MAX SHA512_DIGEST_SIZE
- 
- /*
-  * Privilege level is a nested permission concept to allow confidential
-@@ -42,12 +44,44 @@ struct tsm_report {
- 	u8 *auxblob;
- };
- 
-+#define TSM_MAX_RTMR 32
++	rc = tsm_rtmr_register(ops);
++	if (rc < 0)
++		return rc;
 +
-+/**
-+ * struct tsm_rtmr_desc - Describes a TSM Runtime Measurement Register (RTMR).
-+ * @hash_alg: The hash algorithm used to extend this runtime measurement
-+ *            register.
-+ * @tcg_pcr_mask: A bit mask of all TCG PCRs mapped to this RTMR.
-+ */
-+struct tsm_rtmr_desc {
-+	enum hash_algo hash_alg;
-+	unsigned long tcg_pcr_mask;
-+};
-+
-+/**
-+ * struct tsm_capabilities - Describes a TSM capabilities.
-+ * @num_rtmrs: The number of Runtime Measurement Registers (RTMR) available from
-+ *             a TSM.
-+ * @rtmr_hash_alg: The hash algorithm used to extend a runtime measurement
-+ *                 register.
-+ */
-+struct tsm_capabilities {
-+	size_t num_rtmrs;
-+	const struct tsm_rtmr_desc *rtmrs;
-+};
-+
- /**
-  * struct tsm_ops - attributes and operations for tsm instances
-  * @name: tsm id reflected in /sys/kernel/config/tsm/report/$report/provider
-  * @privlevel_floor: convey base privlevel for nested scenarios
-+ * @capabilities: Describe the TSM capabilities, e.g. the number of available
-+ *                runtime measurement registers (see `struct tsm_capabilities`).
-  * @report_new: Populate @report with the report blob and auxblob
-- * (optional), return 0 on successful population, or -errno otherwise
-+ *              (optional), return 0 on successful population, or -errno
-+ *              otherwise
-+ * @rtmr_extend: Extend an RTMR with the provided digest.
-+ *               Return 0 on successful extension, or -errno otherwise.
-+ * @rtmr_read: Reads the value of an RTMR.
-+ *             Return the number of bytes read or -errno for errors.
-  *
-  * Implementation specific ops, only one is expected to be registered at
-  * a time i.e. only one of "sev-guest", "tdx-guest", etc.
-@@ -55,7 +89,10 @@ struct tsm_report {
- struct tsm_ops {
- 	const char *name;
- 	const unsigned int privlevel_floor;
-+	const struct tsm_capabilities capabilities;
- 	int (*report_new)(struct tsm_report *report, void *data);
-+	int (*rtmr_extend)(u32 idx, const u8 *digest, size_t digest_size);
-+	ssize_t (*rtmr_read)(u32 idx, u8 *digest, size_t digest_size);
- };
+ 	provider.ops = ops;
+ 	provider.data = priv;
+ 	provider.type = type;
+@@ -457,11 +601,31 @@ int tsm_register(const struct tsm_ops *ops, void *priv,
+ }
+ EXPORT_SYMBOL_GPL(tsm_register);
  
- extern const struct config_item_type tsm_report_default_type;
++static int tsm_rtmr_unregister(const struct tsm_ops *ops)
++{
++	lockdep_assert_held_write(&tsm_rwsem);
++
++	if ((ops) && (ops->capabilities.num_rtmrs > 0)) {
++		configfs_unregister_default_group(tsm_rtmrs->group);
++		kfree(tsm_rtmrs->rtmrs);
++		kfree(tsm_rtmrs);
++	}
++
++	return 0;
++}
++
+ int tsm_unregister(const struct tsm_ops *ops)
+ {
++	int rc;
++
+ 	guard(rwsem_write)(&tsm_rwsem);
+ 	if (ops != provider.ops)
+ 		return -EBUSY;
++
++	rc = tsm_rtmr_unregister(ops);
++	if (rc < 0)
++		return rc;
++
+ 	provider.ops = NULL;
+ 	provider.data = NULL;
+ 	provider.type = NULL;
 -- 
 2.42.0
 
