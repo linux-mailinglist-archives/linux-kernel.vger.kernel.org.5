@@ -1,153 +1,100 @@
-Return-Path: <linux-kernel+bounces-41620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A76C83F578
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 13:21:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BC2383F581
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 13:36:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AA1F282935
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 12:21:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7323B217DC
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 12:36:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B6B222EE8;
-	Sun, 28 Jan 2024 12:20:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NnV1nIPu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33A2B23779;
+	Sun, 28 Jan 2024 12:36:31 +0000 (UTC)
+Received: from mailout08.t-online.de (mailout08.t-online.de [194.25.134.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D458C208AF;
-	Sun, 28 Jan 2024 12:20:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFF9423761
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 12:36:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.25.134.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706444458; cv=none; b=UhGTyfA3s6Pl3owQYFgkt0I41z07S3NMoQtOje/IUCvx9AemBh/0xQH+TNg8MN8n1oh5r9cViKLvP//YfsPk2VYzB8xy8/PZAeXDVS92ucyd8GeNIIKyUcVJYQQb855rUEa1YpwFoxtLRI6N876gpABU4E6RqU2zHONBc/hNKaY=
+	t=1706445390; cv=none; b=OX3j9ulMB8G+1L0s09NS37uUY4VHoL0LkZBe11sZnc8N/NnEPqaTtClNZSQgkOr/4WS7YTokVDCxypJjcoQY4Z+Q3SOudqWA0r755K2b87xFnBsG1sQ0MQH4AaCdziyaf4GhDlCHgdqgkDtsFs9FrFPRz2rSb4OhA1YxS5rIPnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706444458; c=relaxed/simple;
-	bh=+dvUSGHsnkRFKjgjnSLq9+73NC8nrTxMZZZ+gNL+okQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=qVeJF2hpuG9X5yviuLr0r6tzzroMqgAWxT5gRB4Vp4YbXul6Xzr1gCv1kA6X5JU896KvySX7guCEcQsKJZWCK5kWxQuVxilBFSiGeqYV88oFJL+9Hq1pIftBhewcMTbhD1Sbrbd3ysRoDuKsqL4Ku50I5PTpKDbp1EckNcrD1nI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NnV1nIPu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B43A5C433C7;
-	Sun, 28 Jan 2024 12:20:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706444457;
-	bh=+dvUSGHsnkRFKjgjnSLq9+73NC8nrTxMZZZ+gNL+okQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=NnV1nIPu2RF3iUB939WzMArE+4YHveOlJpmr4/zRsZNivVH0eDf4l1j68bds4ioLJ
-	 sdbyVV6XySyJhk19cjaNkIeH2JGCIna2SFyeDDgiA4GN5xc7aoyOgt1rbTNPpYB8gS
-	 BfU9OgEJk3RRlN2ndCE2hFok7cyvB91cTdizboWyvjd6dx5yh+YgBfJyVlhzu4pLsS
-	 G3WGlHm081uSyTqbkqHGl63JMfJuJu/+PZaNfhC4nsVa/IKjOA2r1gfC9aM64n/02u
-	 Zp1+7B32socTh1gLU/KDdmBm75sCrtLhba+1DybE/RDI8w7N6A0qbt5qRVnyBd+j3r
-	 aZ3RyNF054aZw==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Mykola
- Lysenko <mykolal@fb.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
- linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: Make install target copy
- test_progs extra files
-In-Reply-To: <875xzex50m.fsf@all.your.base.are.belong.to.us>
-References: <20240127133327.1594026-1-bjorn@kernel.org>
- <20240127133327.1594026-2-bjorn@kernel.org>
- <875xzex50m.fsf@all.your.base.are.belong.to.us>
-Date: Sun, 28 Jan 2024 13:20:54 +0100
-Message-ID: <8734uh7iop.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1706445390; c=relaxed/simple;
+	bh=c1+LDDtW52Mdi+O0WFO7kYLUFHSb/KiaVRBVuzuOfhc=;
+	h=Message-ID:Subject:From:To:Cc:Date:Content-Type:MIME-Version; b=rfasQ6/BDBWKKIPxV+dJp0lmJM/iTRYp9OrPAR9+QGyeJit73E1S1foRz7NOfdCzCf4rKwvJa2pzHIFZz5ny0+3Lg2FphvhlJcNUMQNVngVG97eBdwZEW6Blp9MiCARe64F8qoUdUS7c1Ox6kh+Jiu6T+TjZixE/XyjINkfWjDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=t-online.de; spf=pass smtp.mailfrom=t-online.de; arc=none smtp.client-ip=194.25.134.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=t-online.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-online.de
+Received: from fwd77.aul.t-online.de (fwd77.aul.t-online.de [10.223.144.103])
+	by mailout08.t-online.de (Postfix) with SMTP id DEFACD830
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 13:26:30 +0100 (CET)
+Received: from [10.2.3.136] ([80.145.193.127]) by fwd77.t-online.de
+	with (TLSv1.3:TLS_AES_256_GCM_SHA384 encrypted)
+	esmtp id 1rU4F3-222Ang0; Sun, 28 Jan 2024 13:26:29 +0100
+Message-ID: <dfe9213bb86939ca4502b5b3fdd3ab77ef1b6f1b.camel@t-online.de>
+Subject: Western Digital SSD freezes on power saving
+From: Frank Tornack <f-tornack@t-online.de>
+Reply-To: f-tornack@t-online.de
+To: linux-kernel@vger.kernel.org
+Cc: f-tornack@t-online.de
+Date: Sun, 28 Jan 2024 13:26:23 +0100
+Autocrypt: addr=f-tornack@t-online.de; prefer-encrypt=mutual;
+ keydata=mDMEYPp0PBYJKwYBBAHaRw8BAQdA9MoQWxT+PljXoionhEHpIAuLlhUME07Jht42EmJS9/K0f0ZyYW5rIEVja2hhcmQgVG9ybmFjayAodGhpcyBrZXkgaXMgdXNlZCBhZnRlciAyMy4wNy4yMDIxLiBBbiBhdHRlbXB0IHdhcyBtYWRlIHRvIGludmFsaWRhdGUgb3RoZXIga2V5cykgPGYtdG9ybmFja0B0LW9ubGluZS5kZT6JAoYEExYIAi4CGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4ACGQFEFIAAAAAAEAArcHJvb2ZAYXJpYWRuZS5pZGh0dHBzOi8vdHViZS50Y2huY3MuZGUvYS9ib2xsZXJ3YWdlbnBpY2FyZC9iFIAAAAAAEgBHcHJvb2ZAbWV0YWNvZGUuYml6aHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20vZnJhbmtlbnN0ZWluOTEvOGE2ZmEwNmMxM2ZiY2VlZjhhMjRmZDFiNmRlNzIyYmFFFIAAAAAAEgAqcHJvb2ZAbWV0YWNvZGUuYml6aHR0cHM6Ly9tYXN0b2RvbnRlY2guZGUvQEJvbGxlcndhZ2VuUGljYXJkqhSAAAAAABIAj3Byb29mQG1ldGFjb2RlLmJpem1hdHJpeDp1L0Bib2xsZXJ3YWdlbnBpY2FyZDp0Y2huY3MuZGU/b3JnLmtleW94aWRlLnI9IWRCZlFaeENvR1ZtU1R1amZpdjptYXRyaXgub3JnJm9yZy5rZXlveGlkZS5lPSRjWGVqcnQ3dWJ1RUF5aTNsaFVDeWFEUUlBa0lnRktHMnF3TF8yTXl6MDY0UxSAAAAAABIAOHByb29mQG1ldGFjb2RlLmJpemh0dHBzOi8vZ2l0LmdnYy1wcm9qZWN0LmRlL0JvbGxlcndhZ2VuUGljYXJkL2dpdGVhX3Byb29mFiEEirOWSf3d6fB6q3EmVa3qmdMF6s0FAmR3n
+	hEFCQWlCuQACgkQVa3qmdMF6s3KvgD+O46flI8ye2GWKixgtdQz4aDS78b+LES2ROInCv7N9IwA/ihgH1BlnCypJ4oXSb4KoPmC2M/HLfjtN/kG8x9B6VAPtFBGcmFua2Vuc3RlaW45MSAoRGllcyBpc3QgbWVpbmUgU3BhbSBFLU1haWwpIDxmcmFua2Vuc3RlaW45MS5pbmZvQGdvb2dsZW1haWwuY29tPojQBBMWCAB4AhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAORSAAAAAABIAHnByb29mQG1ldGFjb2RlLmJpemh0dHBzOi8vbGljaGVzcy5vcmcvQC9NVExGcmFuaxYhBIqzlkn93enweqtxJlWt6pnTBerNBQJkd54XBQkFpQrkAAoJEFWt6pnTBerNBPYBAPQqJRcB3bXZBZMBkWvYRPf44BZeYZPikE0jWpzmvil7AP4372uJBCKvTDX/v3ONDVBxK5kDn96yKTMVmm1PsJZVCrRMRnJhbmtlbnN0ZWluOTEgPGZyYW5rZW5zdGVpbjkxLmluZm9AZ21haWwuY29tPiAoc2hvcnQgdmVyc2lvbiBvZiBHb29nbGVtYWlsKYiWBBMWCAA+AhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAFiEEirOWSf3d6fB6q3EmVa3qmdMF6s0FAmR3nhcFCQWlCuQACgkQVa3qmdMF6s3FegD9EF0ViEKoXrUtjeyxTNr7TZybm0C72s73E0cVLZnjfXYA/3XPhEYxgcKxLQ8Ee9vg20C7QwtumLf4dewXSjE+3jEJ
+Organization: Privat
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-TOI-EXPURGATEID: 150726::1706444789-3F7FD877-70A9FF13/0/0 CLEAN NORMAL
+X-TOI-MSGID: e8d36ad7-195c-4e13-abc3-6231d56fac44
 
-Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
 
-> Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
->
->> From: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
->>
->> Currently, "make install" does not install the required test_progs
->> "extra files" (e.g. kernel modules, helper shell scripts, etc.) for
->> the BPF machine flavors (e.g. cpuv4).
->>
->> Add the missing "extra files" dependencies to rsync, called from the
->> install target.
->>
->> Unfortunately, kselftest does not use bash as the default shell, so
->> the globbering is limited. Blindly enabling "SHELL:=3D/bin/bash" for the
->> Makefile breaks in other places. Workaround by explicitly call
->> "/bin/bash" to expand the file globbing.
->>
->> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
->> ---
->> v3: Do not use hardcoded file names (Andrii)
->> v2: Added btf_dump_test_case files
->> ---
->>  tools/testing/selftests/bpf/Makefile | 29 +++++++++++++++++-----------
->>  1 file changed, 18 insertions(+), 11 deletions(-)
->>
->> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selfte=
-sts/bpf/Makefile
->> index 830a34f0aa37..d66c689f0f3c 100644
->> --- a/tools/testing/selftests/bpf/Makefile
->> +++ b/tools/testing/selftests/bpf/Makefile
->> @@ -605,14 +605,15 @@ TRUNNER_EXTRA_SOURCES :=3D test_progs.c		\
->>  			 json_writer.c 		\
->>  			 flow_dissector_load.h	\
->>  			 ip_check_defrag_frags.h
->> -TRUNNER_EXTRA_FILES :=3D $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmod.k=
-o	\
->> -		       $(OUTPUT)/liburandom_read.so			\
->> -		       $(OUTPUT)/xdp_synproxy				\
->> -		       $(OUTPUT)/sign-file				\
->> -		       $(OUTPUT)/uprobe_multi				\
->> -		       ima_setup.sh 					\
->> -		       verify_sig_setup.sh				\
->> -		       $(wildcard progs/btf_dump_test_case_*.c)
->> +TRUNNER_PROGS_EXTRA_FILES:=3D $(OUTPUT)/urandom_read $(OUTPUT)/bpf_test=
-mod.ko	\
->> +			    $(OUTPUT)/liburandom_read.so			\
->> +			    $(OUTPUT)/xdp_synproxy				\
->> +			    $(OUTPUT)/sign-file					\
->> +			    $(OUTPUT)/uprobe_multi				\
->> +			    ima_setup.sh					\
->> +			    verify_sig_setup.sh					\
->> +			    $(wildcard progs/btf_dump_test_case_*.c)
->> +TRUNNER_EXTRA_FILES :=3D $(TRUNNER_PROGS_EXTRA_FILES)
->>  TRUNNER_BPF_BUILD_RULE :=3D CLANG_BPF_BUILD_RULE
->>  TRUNNER_BPF_CFLAGS :=3D $(BPF_CFLAGS) $(CLANG_CFLAGS) -DENABLE_ATOMICS_=
-TESTS
->>  $(eval $(call DEFINE_TEST_RUNNER,test_progs))
->> @@ -740,11 +741,17 @@ EXTRA_CLEAN :=3D $(TEST_CUSTOM_PROGS) $(SCRATCH_DI=
-R) $(HOST_SCRATCH_DIR)	\
->>  # Delete partially updated (corrupted) files on error
->>  .DELETE_ON_ERROR:
->>=20=20
->> +space :=3D $(subst ,, )
->> +comma :=3D ,
->> +EXTRA_FILES_GLOB :=3D {$(subst $(space),$(comma),$(notdir $(TRUNNER_PRO=
-GS_EXTRA_FILES)))}
->>  DEFAULT_INSTALL_RULE :=3D $(INSTALL_RULE)
->>  override define INSTALL_RULE
->>  	$(DEFAULT_INSTALL_RULE)
->> -	@for DIR in $(TEST_INST_SUBDIRS); do		  \
->> -		mkdir -p $(INSTALL_PATH)/$$DIR;   \
->> -		rsync -a $(OUTPUT)/$$DIR/*.bpf.o $(INSTALL_PATH)/$$DIR;\
->> +	@for DIR in $(TEST_INST_SUBDIRS); do						\
->> +		mkdir -p $(INSTALL_PATH)/$$DIR;						\
->> +		rsync -a $(OUTPUT)/$$DIR/*.bpf.o $(INSTALL_PATH)/$$DIR;			\
->> +		rsync -a --copy-unsafe-links						\
->> +			$$(/bin/bash -c "echo $(OUTPUT)/$$DIR/$(EXTRA_FILE_GLOB)")	\
->
-> Argh! Bad commit. EXTRA_FILE_GLOB should be EXTRA_FILES_GLOB. :-(
->
-> LMK if you can fix it up, or if you want me to resubmit.
+Hello Linux kernel developers and experts,
 
-..and bpftool is missing.
+I have a question that I think is not tied to a specific distribution
+and goes pretty deep into the Linux kernel. I hope you can help me
+without subscribing to the mailing list and remember to include me in
+the answer discussion.=20
 
-I'll spin a v4. :-(
+In my old notebook I used an nvme-ssd from WD (wds500g1b0c-00s6u0),
+which is affected by a well-known bug. I currently use the parameter
+`nvme_core.default_ps_max_latency_us=3D0` to prevent the system from
+freezing.=20
+
+I would like to use a new SSD in my new notebook. However, as it is
+difficult to sell used SSDs, I would like to continue using the old SSD
+affected by the bug. I plan to move the SSD to a Thunderbolt enclosure
+for this purpose. I think since Thunderbolt is based on PCIe, the same
+energy saving measures and the associated bugs will probably apply.
+
+In the hope that my new SSD doesn't have the same bug, I would prefer
+not to disable the Powersafe in the laptop. Is there a way to set this
+flag only for a specific SSD? By identifying it by name or serial
+number?=20
+
+I apologise prophylactically if my question is completely out of place
+and thank you for your help. As a long-time Linux user, I would also
+like to thank you in general. If you have any follow-up questions,
+please do not hesitate to contact me.
+
+- --=20
+Frank Tornack <f-tornack@t-online.de>
+Privat
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQSKs5ZJ/d3p8HqrcSZVreqZ0wXqzQUCZbZH7wAKCRBVreqZ0wXq
+zcQkAPwMA+J3eO/S6T92Gsz9YBamYVHhwLlcUAG3qsYM2g8sRAD/UY+If8RlsT5V
+uKg89rhH2bnWrVF9PKGU4ZamfHo8eQ0=3D
+=3Dgfie
+-----END PGP SIGNATURE-----
 
