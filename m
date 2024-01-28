@@ -1,63 +1,59 @@
-Return-Path: <linux-kernel+bounces-41720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B86F183F6F8
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:22:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 50BE783F6FB
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:22:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75240288951
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:22:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DC91288DEF
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:22:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02DC459144;
-	Sun, 28 Jan 2024 16:13:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C93DD59175;
+	Sun, 28 Jan 2024 16:13:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tY0dEH4k"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S0bcu7Nn"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EA1E58AA5;
-	Sun, 28 Jan 2024 16:12:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1056A5915B;
+	Sun, 28 Jan 2024 16:13:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458379; cv=none; b=Rh2TykeRd+dwHIyxwdu3ISusgVwVvnZf/ZLwA+IDZ9//hT6UvTiWdcNf2jdvukiTRiUxRKy3Vj5Jwej0aaTi54xUUpxfd6pbFefgNgXIXfondQppcI0XSQAiZrhn/8dip4Qhi6uuIRZlQKW/a+27RirKD19mEc2FHOh5nFwX1vs=
+	t=1706458381; cv=none; b=q0uHO+mxPWku6JKwSdTlBHChgoXRSaXB+6CeegBUCTDbPB2injl+prApEhwCVHHk/7y0qvwna6PrQVbRJyGu6IrnI0luyeun9v5V0WC+SlaM7sn6ayYvnQatStk5QOgTluxoAFeIWanh22XWbwSOM8y6l/sBL7MI5xAI9WOO7zc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458379; c=relaxed/simple;
-	bh=pQa7YpwrQOyq63PQ2Q7ZkEOrrI8ZRQA0RlDWMSvtQYg=;
+	s=arc-20240116; t=1706458381; c=relaxed/simple;
+	bh=4Gqb/Kft+ydmG62lfpNUxY10aIVDjYIQjA1SGPOZj7U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Ni5HmCA9YKyd+p+G58Bm4oBLxbN0mf5K4Cmz4kHGggXv3K8hk15WEbeWu7P32dWMadNTxsydcCqLKpMxH3LctUVxduZHGqkQrISaRB0XG/6CQRIdtNEiV9tyUweigsJB1Ss3VKTLNFWRYgLvfsE7nQmlKy5nJeHpWn3w+X8cjCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tY0dEH4k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 959B1C433C7;
-	Sun, 28 Jan 2024 16:12:57 +0000 (UTC)
+	 MIME-Version; b=T/rRbqWtGl1T7lEioRt80khLd1b4U7gex5uVQZXYmeKSaM4wB0nD2ES1/tWms4PSDnoP9aorhMRit3t2YmfG8RRA/AzhpBz1oH/mjkQioYHB4Pl5FvwA0D+cgOSpo1CLgUzV0EXJdL2US9Zn/JzzUQtLmY9v09kLwU2R7FP1Nm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S0bcu7Nn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 836A7C43394;
+	Sun, 28 Jan 2024 16:12:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706458379;
-	bh=pQa7YpwrQOyq63PQ2Q7ZkEOrrI8ZRQA0RlDWMSvtQYg=;
+	s=k20201202; t=1706458380;
+	bh=4Gqb/Kft+ydmG62lfpNUxY10aIVDjYIQjA1SGPOZj7U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tY0dEH4kImexMGykMthxLzgThflzchCcg51EbA5oy6Sp6qlrrGOTC2v+7XR5he4Ci
-	 LRz9yy2m61/pUK5WGRBw69urAakQ1ERzRyax4Acd7PI5LxrxHAkfeEAURMYd9qM1Or
-	 5dIRxIrsXMj3oT6mMATv4JVjvAJwAR/3xjHLunWO7DaIp/kiFxTT+JT8dCqlS7YoOA
-	 7QyT5LJ3KGfTTUim9ORgBc2K2bzqrdIeFJnwaAjG2CVtOa8p9/FqxdccvRq78ej7sY
-	 EzmycjbI/onoPdmjFaO7/0Bb+XaqpAUs4DMsCYMJLUstw2K/kja00/SFPVmayCu/6g
-	 o1dfkIiDJT78Q==
+	b=S0bcu7NnBXaetr1p08xjP/tzQj2ecLM6y4CDB9HWju+1doAMzgP/fuSODPbL+IqVP
+	 wbLwAR+2p/Uc/XaJPOyBojJQPtGZWOnWEkylZxXgHHxCTrpQmpCxNsGPDuH1zL8v5G
+	 leG1LMXi7IYkAR/nTDdZ/ZUgAqj7gljYMHBF8uTFki9+o07PJoM6Rb0Q2ep/fXlbQM
+	 dg25n6hcTdc7Xq4jaxJQeD6AmX0EigBZU1Cf6WwZiswtHzAN9WIGBjBSzu40lhL3Fa
+	 pBo/u8dT8tuDTFObvoZP7uaxev/OAXXHjcRrLlM4V1n8QqsEBdIuZv+1wOdVzJ1wJf
+	 IxVxZV2VzQy/w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-	Philip Yang <Philip.Yang@amd.com>,
-	Felix Kuehling <Felix.Kuehling@amd.com>,
-	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Felix Kuehling <felix.kuehling@amd.com>,
+Cc: Tim Lunn <tim@feathertop.org>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Wolfram Sang <wsa@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	Xinhui.Pan@amd.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.7 38/39] drm/amdkfd: Fix 'node' NULL check in 'svm_range_get_range_boundaries()'
-Date: Sun, 28 Jan 2024 11:10:58 -0500
-Message-ID: <20240128161130.200783-38-sashal@kernel.org>
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-i2c@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 39/39] i2c: rk3x: Adjust mask/value offset for i2c2 on rv1126
+Date: Sun, 28 Jan 2024 11:10:59 -0500
+Message-ID: <20240128161130.200783-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128161130.200783-1-sashal@kernel.org>
 References: <20240128161130.200783-1-sashal@kernel.org>
@@ -67,67 +63,49 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.2
 Content-Transfer-Encoding: 8bit
 
-From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+From: Tim Lunn <tim@feathertop.org>
 
-[ Upstream commit d7a254fad873775ce6c32b77796c81e81e6b7f2e ]
+[ Upstream commit 92a85b7c6262f19c65a1c115cf15f411ba65a57c ]
 
-Range interval [start, last] is ordered by rb_tree, rb_prev, rb_next
-return value still needs NULL check, thus modified from "node" to "rb_node".
+Rockchip RV1126 is using old style i2c controller, the i2c2
+bus uses a non-sequential offset in the grf register for the
+mask/value bits for this bus.
 
-Fixes the below:
-drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_svm.c:2691 svm_range_get_range_boundaries() warn: can 'node' even be NULL?
+This patch fixes i2c2 bus on rv1126 SoCs.
 
-Suggested-by: Philip Yang <Philip.Yang@amd.com>
-Cc: Felix Kuehling <Felix.Kuehling@amd.com>
-Cc: Christian König <christian.koenig@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Reviewed-by: Felix Kuehling <felix.kuehling@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Tim Lunn <tim@feathertop.org>
+Acked-by: Heiko Stuebner <heiko@sntech.de>
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdkfd/kfd_svm.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/i2c/busses/i2c-rk3x.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-index f66f88d2b643..9af1d094385a 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-@@ -2680,6 +2680,7 @@ svm_range_get_range_boundaries(struct kfd_process *p, int64_t addr,
- {
- 	struct vm_area_struct *vma;
- 	struct interval_tree_node *node;
-+	struct rb_node *rb_node;
- 	unsigned long start_limit, end_limit;
+diff --git a/drivers/i2c/busses/i2c-rk3x.c b/drivers/i2c/busses/i2c-rk3x.c
+index 4362db7c5789..086fdf262e7b 100644
+--- a/drivers/i2c/busses/i2c-rk3x.c
++++ b/drivers/i2c/busses/i2c-rk3x.c
+@@ -1295,8 +1295,12 @@ static int rk3x_i2c_probe(struct platform_device *pdev)
+ 			return -EINVAL;
+ 		}
  
- 	vma = vma_lookup(p->mm, addr << PAGE_SHIFT);
-@@ -2699,16 +2700,15 @@ svm_range_get_range_boundaries(struct kfd_process *p, int64_t addr,
- 	if (node) {
- 		end_limit = min(end_limit, node->start);
- 		/* Last range that ends before the fault address */
--		node = container_of(rb_prev(&node->rb),
--				    struct interval_tree_node, rb);
-+		rb_node = rb_prev(&node->rb);
- 	} else {
- 		/* Last range must end before addr because
- 		 * there was no range after addr
- 		 */
--		node = container_of(rb_last(&p->svms.objects.rb_root),
--				    struct interval_tree_node, rb);
-+		rb_node = rb_last(&p->svms.objects.rb_root);
- 	}
--	if (node) {
-+	if (rb_node) {
-+		node = container_of(rb_node, struct interval_tree_node, rb);
- 		if (node->last >= addr) {
- 			WARN(1, "Overlap with prev node and page fault addr\n");
- 			return -EFAULT;
+-		/* 27+i: write mask, 11+i: value */
+-		value = BIT(27 + bus_nr) | BIT(11 + bus_nr);
++		/* rv1126 i2c2 uses non-sequential write mask 20, value 4 */
++		if (i2c->soc_data == &rv1126_soc_data && bus_nr == 2)
++			value = BIT(20) | BIT(4);
++		else
++			/* 27+i: write mask, 11+i: value */
++			value = BIT(27 + bus_nr) | BIT(11 + bus_nr);
+ 
+ 		ret = regmap_write(grf, i2c->soc_data->grf_offset, value);
+ 		if (ret != 0) {
 -- 
 2.43.0
 
