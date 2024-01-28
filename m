@@ -1,69 +1,70 @@
-Return-Path: <linux-kernel+bounces-41750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41752-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7A3F83F74E
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:30:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A28083F751
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:30:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A30A7285E6D
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:30:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C7131C20ABA
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:30:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2316266B22;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E37B267729;
 	Sun, 28 Jan 2024 16:14:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="O64EN5E0"
-Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FzWuLFMx"
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6FC9664AA
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 16:14:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D0A6664D8
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 16:14:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458446; cv=none; b=BznbUERlmnMlgsDE1FcZwmpSnE8aWaf1y0x1D4RWye0JMD1klfMLf8Q2CB+HiXbCw99zhMu/JAtLxHCfU7eXoI35C8S7xPo3M3ODg+VkovR6hOzjBjg7jIbnYqhNm4vlKen9CAPyMu+wwWZo2G9ayeYCwVszWDH/qLUZV9jibSc=
+	t=1706458447; cv=none; b=SZB7iNVTNDO9m+5meIAfNwXRCtBj25s9BJmSOEzQeNRW8umLNX8O4hmpx+7cS3qpbtFPrjcMhkjvZvKYYQF+FM1L58jFWni8fYMTVPik1FtiU5W4zjtBp5vWDAU/30bAiU7IrrvkDOi0KViZAUzGHIV/Fexqibu3snPriTKYYxI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458446; c=relaxed/simple;
-	bh=SvazET5cvoizwnCav2UmC+F26NoJafLS2DPv3VLtt5g=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=VfMTHjaWsyrCsLHganEhun9RNNtYvE4A3XCb4KUJ1YdtSj8BJpIWGKVuzF3difoOkwTJOeM/3L26QkKNxt+IIxxJiAOGhbvmhOMy6YOt+jx7z/qTZbV+12S5u34fMlrwimJgvGbLpjCc5x3nM3OoeZIOeWd3iqbpOZCvaqnEzlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=O64EN5E0; arc=none smtp.client-ip=209.85.219.52
+	s=arc-20240116; t=1706458447; c=relaxed/simple;
+	bh=/xWOilo4Hud6QzZM3cj00D+5v080/58h43sQggsHgHg=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=qph3M8QqODVMnOO5+1QprWQ04ADKAGSZgq7+/s7yN6jSDkLkCpaZ0B0HU3nXuDhfmMXOa0T4K/1K89nVo9uzpbemI159WpSrtzj72WdE/9T+JR27ACNOHVjCFlOLlO2z40qrcBTMpo0IFE2xYK8b2QdlshwaHSnaUekFdLKDr2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=FzWuLFMx; arc=none smtp.client-ip=209.85.219.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-6860ff3951aso15906136d6.1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 08:14:03 -0800 (PST)
+Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-68c3b845643so12535046d6.1
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 08:14:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google; t=1706458443; x=1707063243; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4bSToxy5CAGcJZTlMmZs/1RykWirU/TWtFNPtD7p0tY=;
-        b=O64EN5E0rBu5u4XKgHNHHAbLjI0PydCqWCdlY+Ny7MjoSSNRA9M4mwWWTNgtUABPe0
-         eUNOmuXrxg/Lkk2WCkI9KnV8kPS8YlaY4seik0pRlu2ejGEj++T8DKKWP7rl5bGBE6e7
-         QulReKcKmtGSBgMG7fCMGvrIxfLo2VVXxsrDY=
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gyrr36Rbe8AgWubab7y8Kw9tDT0keELEe6KuPO/35LY=;
+        b=FzWuLFMxaZaLG5NdsCCqSV2MCwNpFUQJkrzYErKrXyacRrj9MIM0G9DgtGnGcBKTrZ
+         Km9+MW6IxrEpblm/gMQ0NKe9+SN+8Uh0AU5zwKL73erSXSVS1R8m9id2TihS+sbvcBk+
+         s8B1xvVtdglp9AHNKjfV6UujEbzsd+CzrzOfo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1706458443; x=1707063243;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4bSToxy5CAGcJZTlMmZs/1RykWirU/TWtFNPtD7p0tY=;
-        b=samOPZBPuZiPzw9PVhTNRE9P6aB2Xug7Gdb+o/qLBqDoYmO2HomorxhwUDxPv+GaxO
-         eI567uW17qv808XuSTtHrnAUHo2/6acRwh9v2M894GNmePOG6U9XpuFA1vETImMPNu81
-         0WFtRTQxxJmMa5JOFrhWAB6GN2v6pDDj/eUv+eSVqik+KVCmZxdZn9G3VA2em/+mid42
-         JaeHXvC6pN9zsnDYFsnxh8Z8joIir88s+K2NJBcP0W3Rki87tN5/KxfFeiUwfNyxI8NR
-         EdVvJ0foVgR/iKmULAnw3KOgW0igquR5awWyc3KoMywcWwhFAB2h+N0abdAOYVPMoUTK
-         HPbQ==
-X-Gm-Message-State: AOJu0YwFYZqbHrDFfZnk+UhgCjBFPY97OofM+DbCcgyKgfbwFid8CIJ7
-	pXQfQXrdgpxtNKH/V97YXD8OQjL2cbdLMkcYSxNhFGSDFvXmWdjY8NXtxZ0zyA==
-X-Google-Smtp-Source: AGHT+IGPj/bWw10peow8+ThqZ4AksGoB8+fhu6FGjZno0b2aG69izlBUsWRzjFmhWV39AxgNwh/u1Q==
-X-Received: by 2002:a05:6214:301e:b0:685:f795:dfc2 with SMTP id ke30-20020a056214301e00b00685f795dfc2mr4607832qvb.86.1706458442616;
-        Sun, 28 Jan 2024 08:14:02 -0800 (PST)
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gyrr36Rbe8AgWubab7y8Kw9tDT0keELEe6KuPO/35LY=;
+        b=rFFBAGE51kZCzV4jbih+hUa+7Q30T05HHNHuzEIzKY0kKeKHXLN7RDwRLkJFxYuRKO
+         VGeJqTz7RBEn22AQM46R5KSgDJ84xF9nClUk1FStCsJ6iO0lnAJXcFCml0mpUl8Mfg63
+         GvmceoxiivtG69HX9Ib+AdhEyHh8SrBlLQrpPVvXevsDB28Wccj4ipRIc4FK50cKEYal
+         s5BKTOV0sHlmLry5N2EKwpAzNvP32whZZXBLz41ckYT93KXzItQ3E38yAQDW0I2lNnDZ
+         nTw9CeojLdNc5xLvmhFqPJAkZxt7j35fK6iRPXL7BBR6CAHnC4Hsdzc4a8c6vz/ZUZ7V
+         LL3w==
+X-Gm-Message-State: AOJu0YzQqSKgIkyXAdfBSWIE7RvN3Xg1Cq+/OwHbOHjq8IOxTYOmFbZH
+	CpRcvBGxfRuVm3F5i+Ii9i+9UJPBGJUf7Ex37Afn5kevmVjiTgK+ZnG1Onjpkw==
+X-Google-Smtp-Source: AGHT+IEi91bgjGpdxd6b1KVJteAO32/e7rfk2MgI0un8dbL/yrThhpzpxRXTFzO5dYTWX+Rat0dJbg==
+X-Received: by 2002:a05:6214:2483:b0:68c:46ab:c8df with SMTP id gi3-20020a056214248300b0068c46abc8dfmr1995323qvb.128.1706458443430;
+        Sun, 28 Jan 2024 08:14:03 -0800 (PST)
 Received: from denia.c.googlers.com (240.157.150.34.bc.googleusercontent.com. [34.150.157.240])
-        by smtp.gmail.com with ESMTPSA id dz11-20020ad4588b000000b0068c493426edsm566640qvb.104.2024.01.28.08.14.01
+        by smtp.gmail.com with ESMTPSA id dz11-20020ad4588b000000b0068c493426edsm566640qvb.104.2024.01.28.08.14.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jan 2024 08:14:02 -0800 (PST)
+        Sun, 28 Jan 2024 08:14:03 -0800 (PST)
 From: Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH 0/2] media: Fix build warnings with gcc-11
-Date: Sun, 28 Jan 2024 16:13:55 +0000
-Message-Id: <20240128-gcc-11-warnings-v1-0-52bbdf492049@chromium.org>
+Date: Sun, 28 Jan 2024 16:13:56 +0000
+Subject: [PATCH 1/2] media: nxp: imx8-isi: Factor out a variable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,9 +73,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAEN9tmUC/x3MQQqAIBBA0avErBtwJMG6SrQQHW02FgoVhHdPW
- r7F/y9ULsIVluGFwpdUOXIHjQP43eXEKKEbtNKTIm0xeY9EeLuSJaeKZIIzUc/Wmgi9OgtHef7
- jurX2AWVPfVxhAAAA
+Message-Id: <20240128-gcc-11-warnings-v1-1-52bbdf492049@chromium.org>
+References: <20240128-gcc-11-warnings-v1-0-52bbdf492049@chromium.org>
+In-Reply-To: <20240128-gcc-11-warnings-v1-0-52bbdf492049@chromium.org>
 To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
  Mauro Carvalho Chehab <mchehab@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
  Sascha Hauer <s.hauer@pengutronix.de>, 
@@ -84,24 +85,58 @@ Cc: linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org, Ricardo Ribalda <ribalda@chromium.org>
 X-Mailer: b4 0.12.3
 
-gcc-11 throws some warnings, most of them are false positive... but with
-a simple refactor the code looks nicer and the warnings are gone.
+gcc-11 seems to believe that coffs can be used uninitialized. Refactor
+the code and remove the csen variable to convince gcc that we are doing
+a good job.
+
+drivers/media/platform/nxp/imx8-isi/imx8-isi-hw.c:218:20: warning: 'coeffs' may be used uninitialized in this function [-Wmaybe-uninitialized]
 
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
-Ricardo Ribalda (2):
-      media: nxp: imx8-isi: Factor out a variable
-      media: usb: s2255: Refactor s2255_get_fx2fw
-
  drivers/media/platform/nxp/imx8-isi/imx8-isi-hw.c | 8 +++-----
- drivers/media/usb/s2255/s2255drv.c                | 7 ++++---
- 2 files changed, 7 insertions(+), 8 deletions(-)
----
-base-commit: 615d300648869c774bd1fe54b4627bb0c20faed4
-change-id: 20240128-gcc-11-warnings-15da5f29885f
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-Best regards,
+diff --git a/drivers/media/platform/nxp/imx8-isi/imx8-isi-hw.c b/drivers/media/platform/nxp/imx8-isi/imx8-isi-hw.c
+index 19e80b95ffea..5623914f95e6 100644
+--- a/drivers/media/platform/nxp/imx8-isi/imx8-isi-hw.c
++++ b/drivers/media/platform/nxp/imx8-isi/imx8-isi-hw.c
+@@ -215,8 +215,7 @@ static void mxc_isi_channel_set_csc(struct mxc_isi_pipe *pipe,
+ 		[MXC_ISI_ENC_RGB] = "RGB",
+ 		[MXC_ISI_ENC_YUV] = "YUV",
+ 	};
+-	const u32 *coeffs;
+-	bool cscen = true;
++	const u32 *coeffs = NULL;
+ 	u32 val;
+ 
+ 	val = mxc_isi_read(pipe, CHNL_IMG_CTRL);
+@@ -235,14 +234,13 @@ static void mxc_isi_channel_set_csc(struct mxc_isi_pipe *pipe,
+ 		val |= CHNL_IMG_CTRL_CSC_MODE(CHNL_IMG_CTRL_CSC_MODE_RGB2YCBCR);
+ 	} else {
+ 		/* Bypass CSC */
+-		cscen = false;
+ 		val |= CHNL_IMG_CTRL_CSC_BYPASS;
+ 	}
+ 
+ 	dev_dbg(pipe->isi->dev, "CSC: %s -> %s\n",
+ 		encodings[in_encoding], encodings[out_encoding]);
+ 
+-	if (cscen) {
++	if (coeffs) {
+ 		mxc_isi_write(pipe, CHNL_CSC_COEFF0, coeffs[0]);
+ 		mxc_isi_write(pipe, CHNL_CSC_COEFF1, coeffs[1]);
+ 		mxc_isi_write(pipe, CHNL_CSC_COEFF2, coeffs[2]);
+@@ -253,7 +251,7 @@ static void mxc_isi_channel_set_csc(struct mxc_isi_pipe *pipe,
+ 
+ 	mxc_isi_write(pipe, CHNL_IMG_CTRL, val);
+ 
+-	*bypass = !cscen;
++	*bypass = !coeffs;
+ }
+ 
+ void mxc_isi_channel_set_alpha(struct mxc_isi_pipe *pipe, u8 alpha)
+
 -- 
-Ricardo Ribalda <ribalda@chromium.org>
+2.43.0.429.g432eaa2c6b-goog
 
 
