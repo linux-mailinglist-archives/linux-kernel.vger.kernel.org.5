@@ -1,64 +1,62 @@
-Return-Path: <linux-kernel+bounces-41502-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41503-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FDFD83F2E3
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 03:18:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 571C683F2E7
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 03:18:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 928411C21332
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 02:18:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EADEA1F22631
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 02:18:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFC578BEA;
-	Sun, 28 Jan 2024 02:17:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED730D51C;
+	Sun, 28 Jan 2024 02:17:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YQfGGHfy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hr7BWLKW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0082610B;
-	Sun, 28 Jan 2024 02:17:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C12D8F7A;
+	Sun, 28 Jan 2024 02:17:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706408253; cv=none; b=VJ/7HvpwbmIx+4mTSBayTnaq9sttewFraivXYrVDvYH6o2uCbSiUA5XEgCz1meqSnYr5UDJPy/0Cly7FgY1wGT1nLBt6gtOtIXWIDEZKHN19a8YDraQ5NwiU1AntWrK2WMK0/ZFl2/U/vBI9YcRki4fU2dkDcuXCHC9wv0df57U=
+	t=1706408254; cv=none; b=QKJRfFLxZR30erhR8hHmf7IsAKgnUVYAAOGsflFvKkrLGer1JoDvdDnXLrNZeflenASqtfPO64jTmVez5KNNoFafNqXwdhxu/KkdAxYy5oAmJS8z2rx/+htxcYMPGo4wKZerxHAYVjuuORXNBiXmsx4RxaJ6mosptE59XYuSgGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706408253; c=relaxed/simple;
-	bh=iD1CPpXwvEfOSs+T8TQEMGHBoiifxZuVk/oWRMwKebM=;
+	s=arc-20240116; t=1706408254; c=relaxed/simple;
+	bh=ZbJOu5LKswB4T8UzyEXjsEuS56DwkLrDfR3gGtYXBMc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SFL6r8F3DWW9nAZ5z7pUJCGqUCCnTz8sz8izfw80fS5TUooffSikqt1Aytq3QV0pmk1LlsKWMC4ioL5k5Ql3EHrpK5MOKSlaCrYvH9+EM2TBu/L/jqqT3itz8mKJFlsO6XS038H1akDaYAbiiL5GL/MLQmqjw6tirZAB9XwF4/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YQfGGHfy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97945C433F1;
-	Sun, 28 Jan 2024 02:17:31 +0000 (UTC)
+	 MIME-Version:Content-Type; b=Ze77rAi842Ea7BOUWI+5RTKKatmj/2l/6ZjoHGtIySxG3nNTcSLKpmaGy6WReNzcAasNtHPuD6b5e3eiz+54HOGRr1XOtMhOYqk8l+z3XdnDcNGxuB8tJ9gmHO0e+cLM5ef4J7FB2NpRvE/9mCSC0yoNuzI8ffWDhR5r84Z/oho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hr7BWLKW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6001C43394;
+	Sun, 28 Jan 2024 02:17:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706408252;
-	bh=iD1CPpXwvEfOSs+T8TQEMGHBoiifxZuVk/oWRMwKebM=;
+	s=k20201202; t=1706408253;
+	bh=ZbJOu5LKswB4T8UzyEXjsEuS56DwkLrDfR3gGtYXBMc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YQfGGHfyalJifMaGsKgc7AOGANZUw+ZInFEQOnk5Y4hBg/xB/w3KS/cmQM7bSQePY
-	 H+fFLB9QMJptkn1C1mauicOM7roDXPD+cxgO/o0C5+P9gc2i/0X+2rfIQAzqNdLYKz
-	 McHfyq8X1XK8OaBiXSqAV8FE9YG3DekZbtuvCr6Ee6GkD1vAH/w/NGBo2pbkct7zMB
-	 B41j8QLDaft7J4ckHXJetSKkY52U80T/+RDp/ygLXu+mtk6qnRQbMPl/SUiqtAk4K1
-	 L3JDkURS8bQbRgR7j9GxazEpRlPlfpaAas1f4lnZjgqYNUvPQZqLgZd31bUp0GOPM4
-	 imTaKZ56GbHHw==
+	b=hr7BWLKWNlCItl9BMmLR1Dk5jGrlk5XcWvGS7NH8kDH31v7j3iYzCm8u2i5qqG7uE
+	 7pslFI8+hMH8pA48O+RSjYaGvH4GQE4ftFvIxvTIR/XxiUqrJ6xMU5EcFSQwdEVtUD
+	 bnJbLjSXXryQ8/u9E0NelwejYUkl80SoNvoKAryZYG1ow+DBowciMenVFbNb/TYWge
+	 SYILJRAfZJc1DtdAygYakzoxGERKJTjtN5ntdHWi4aNemCzI+qiNAXMvlIng5LW4ol
+	 KN2xCQXj2gI59S1bwdcfso5cPVYXOdfy92ejImMEt+OJw5M7dyZbW3VFlPC2vZL+lf
+	 J6gAp0SUrexkA==
 From: Bjorn Andersson <andersson@kernel.org>
-To: Rob Herring <robh+dt@kernel.org>,
+To: Andy Gross <agross@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Vinod Koul <vkoul@kernel.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Konrad Dybcio <konrad.dybcio@somainline.org>,
 	linux-arm-msm@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Georgi Djakov <djakov@kernel.org>
-Subject: Re: [PATCH] arm64: dts: qcom: sm8450: Add missing interconnects to serial
-Date: Sat, 27 Jan 2024 20:17:19 -0600
-Message-ID: <170640822847.30820.7246520308284398083.b4-ty@kernel.org>
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: stable@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: sm8450-hdk: correct AMIC4 and AMIC5 microphones
+Date: Sat, 27 Jan 2024 20:17:20 -0600
+Message-ID: <170640822843.30820.12830781344408633837.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240116-topic-8450serial-v1-1-b685e6a5ad78@linaro.org>
-References: <20240116-topic-8450serial-v1-1-b685e6a5ad78@linaro.org>
+In-Reply-To: <20240124121855.162730-1-krzysztof.kozlowski@linaro.org>
+References: <20240124121855.162730-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,16 +67,21 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Tue, 16 Jan 2024 13:25:44 +0100, Konrad Dybcio wrote:
-> The serial ports did not have their interconnect paths specified when
-> they were first introduced. Fix that.
+On Wed, 24 Jan 2024 13:18:55 +0100, Krzysztof Kozlowski wrote:
+> Due to lack of documentation the AMIC4 and AMIC5 analogue microphones
+> were never actually working, so the audio routing for them was added
+> hoping it is correct.  It turned out not correct - their routing should
+> point to SWR_INPUT0 (so audio mixer TX SMIC MUX0 = SWR_MIC0) and
+> SWR_INPUT1 (so audio mixer TX SMIC MUX0 = SWR_MIC1), respectively.  With
+> proper mixer settings and fixed LPASS TX macr codec TX SMIC MUXn
+> widgets, this makes all microphones working on HDK8450.
 > 
-> 
+> [...]
 
 Applied, thanks!
 
-[1/1] arm64: dts: qcom: sm8450: Add missing interconnects to serial
-      commit: 6e115b75b43bd12d4061e53c8ff175e387783d8a
+[1/1] arm64: dts: qcom: sm8450-hdk: correct AMIC4 and AMIC5 microphones
+      commit: 915253bdd64f2372fa5f6c58d75cb99972c7401d
 
 Best regards,
 -- 
