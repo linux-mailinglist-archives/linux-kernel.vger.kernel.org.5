@@ -1,100 +1,88 @@
-Return-Path: <linux-kernel+bounces-41566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B30383F4A8
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 09:48:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3244E83F4AC
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 09:54:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B57371F2225B
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 08:48:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB8DC1F222C5
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 08:54:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE30DF66;
-	Sun, 28 Jan 2024 08:47:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 305F0DF4D;
+	Sun, 28 Jan 2024 08:54:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="W+py6fgA"
-Received: from smtp.smtpout.orange.fr (smtp-25.smtpout.orange.fr [80.12.242.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G9OkGm2k"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DE6ADDA2
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 08:47:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AA07DDC4;
+	Sun, 28 Jan 2024 08:53:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706431677; cv=none; b=j6pjNvthzkio7EDAOA1JrskrSt9SsvnABST5T0CUKBcoJ4WT+wLQRNSLC0cHUtWjwOFVn7ZDYEUWf0SGqEpamgYDdZEgzXj2XnXY/7tH50Xclu9v/ctuK9Qv6h7R1pKZx88PMzWOfTVWiDiCY0vxDCsC5Bt+zBsqRzTHJUp1dZM=
+	t=1706432040; cv=none; b=TmJF0vq3roFlv1K99RyB5wIsALo6vaBGLROA21VQT0tLrKM2XpMmCw7YwY7AJjFP4/r/5dCPCVsNXhNCu4greTXiyPfDUGF4odAdxMbbHNMS/Vz0FonKqWiZJlb8qnuyiSfvPJy3A2XLOhaL9s06k9PChW98iCPLOVO6pYvkGjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706431677; c=relaxed/simple;
-	bh=aJw6AqhVkV5H+6qkrHrVvQkMiGIYDaRTkcVg98CSjFM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DRpe0ssOpaIEO/qkMIEA2/VCSAeHrTO6X7aySzUhwWBc4vrW6dJ6wlnB48H90r7Fkc0Boejv+x6LQWK82OYDpSsshsSkm7pKRIMLpdcRg/PVKoZY8ZuDubZnddheZolbNI2V3ysVaL1Rtqjtft/7+rkfSJNmGiorkzRuThyou6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=W+py6fgA; arc=none smtp.client-ip=80.12.242.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from fedora.home ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id U0pVr3FypwnxGU0pVrvuNg; Sun, 28 Jan 2024 09:47:54 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1706431674;
-	bh=PvDm6o18p5eO0SWxCbyfOmNYdKnWHShtEZV/Rr+hpA0=;
-	h=From:To:Cc:Subject:Date;
-	b=W+py6fgAl++QyAGnzSJQDzXdfdUMFcFYkCcv8rH5F4Eg4+VXXpMT3kYKQ3mfhJEjS
-	 TaOSsATcd+8sYIuP+u+qulReV4NmA9genmKpQUU9DFEHDCk7mmr5gppFKDyRLZwOmB
-	 Jww+7z0j3FpXmbKGfgZ8Uy/oibBSwsoydYaL1OlRm0E13wUo1EoG3ApS5Iq4a9fR+T
-	 3ff52tj4Liw18qCZqo1o5pweEvls3R8mJNcF3rOc4Vt43YpDHmFIx3QFhTx0r3nuQC
-	 IVRNADMv7qp6c0F2ANawb1j1jeNXC/+noCFxYTHTyhZ9zBzNvLv01BPFETpMiUgo7G
-	 nmBceHbN0Ez6g==
-X-ME-Helo: fedora.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 28 Jan 2024 09:47:54 +0100
-X-ME-IP: 92.140.202.140
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Vincent Shih <vincent.sunplus@gmail.com>,
-	Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	linux-usb@vger.kernel.org,
-	linux-phy@lists.infradead.org
-Subject: [PATCH] phy: sunplus: Fix a memory leak in update_disc_vol()
-Date: Sun, 28 Jan 2024 09:47:50 +0100
-Message-ID: <451016052782f18c8b52ed0f836d7ab5c69bac3d.1706431643.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706432040; c=relaxed/simple;
+	bh=qCDdwLKf3bT6cGGaU4frMAHoDwbySJE5/GyHOk7wHgg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=CeX4DdbKGMDVvV1HZ/Q9dpkBpj6TmMx9FDZ/iob6z75+CzHlBzy8BbcrGFMS5EuvvmYWOFXTTN7ckcQz+R30XeQDyi47zmKtTwfvxKykRajzyqpyQNUkZJeXmFa0UAf/TEsVHxD5N1PFvCy1tCM1gcdf0pF9rrJcmEOOJ9hyA8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G9OkGm2k; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67774C433F1;
+	Sun, 28 Jan 2024 08:53:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706432039;
+	bh=qCDdwLKf3bT6cGGaU4frMAHoDwbySJE5/GyHOk7wHgg=;
+	h=Date:From:To:Cc:Subject:From;
+	b=G9OkGm2kEYH4gtzh31ggEe5BqfS6B6LMQy+ElheFFabiGciApVqloUDURStdBSnW3
+	 uNO+cEx1HKbpoWvh4eqyuAPAIeug+LIN44/jPyOhBEXupka+3uz/j6S9bxhD+eoB5I
+	 chR7MnQpwf0EQTRXcocVMpH2EzPmgncyohuGAWlyC50GAhmlDya6TmXxXIVEvD28gU
+	 GHosdvIEkpa2e6P//D6gAF9zlyCjWh7Pl/Gwg7FC7ysTLL8GghiAO+bBCedE/8eBL+
+	 O8XHg7E+q0x84A8VuZLxs62SCUhIggTsBya7pvK0ypqut7L09SXHaAvSyCH4bz1BH6
+	 np+mscw0MUuFA==
+Date: Sun, 28 Jan 2024 09:53:55 +0100
+From: Helge Deller <deller@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+	linux-bcachefs@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
+Subject: [PATCH] bcachefs: Fix build on parisc by avoiding __multi3()
+Message-ID: <ZbYWI_s05yxbvubr@p100>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-'otp_v', allocated by nvmem_cell_read(), is leaking.
-It must be freed before leaving the function to avoid a leak.
+The gcc compiler on paric does support the __int128 type, although the
+architecture does not have native 128-bit support.
 
-Fixes: 99d9ccd97385 ("phy: usb: Add USB2.0 phy driver for Sunplus SP7021")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-This patch is speculative and based on comparison on the usage of
-nvmem_cell_read() in other driver.
+The effect is, that the bcachefs u128_square() function will pull in the
+libgcc __multi3() helper, which breaks the kernel build when bcachefs is
+built as module since this function isn't currently exported in
+arch/parisc/kernel/parisc_ksyms.c.
+The build failure can be seen in the latest debian kernel build at:
+https://buildd.debian.org/status/fetch.php?pkg=linux&arch=hppa&ver=6.7.1-1%7Eexp1&stamp=1706132569&raw=0
 
-Review with care.
----
- drivers/phy/sunplus/phy-sunplus-usb2.c | 2 ++
- 1 file changed, 2 insertions(+)
+We prefer to not export that symbol, so fall back to the optional 64-bit
+implementation provided by bcachefs and thus avoid usage of __multi3().
 
-diff --git a/drivers/phy/sunplus/phy-sunplus-usb2.c b/drivers/phy/sunplus/phy-sunplus-usb2.c
-index 637a5fbae6d9..50f1f91ac052 100644
---- a/drivers/phy/sunplus/phy-sunplus-usb2.c
-+++ b/drivers/phy/sunplus/phy-sunplus-usb2.c
-@@ -105,6 +105,8 @@ static int update_disc_vol(struct sp_usbphy *usbphy)
- 	val = (val & ~J_DISC) | set;
- 	writel(val, usbphy->phy_regs + CONFIG7);
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+
+diff --git a/fs/bcachefs/mean_and_variance.h b/fs/bcachefs/mean_and_variance.h
+index b2be565bb8f2..64df11ab422b 100644
+--- a/fs/bcachefs/mean_and_variance.h
++++ b/fs/bcachefs/mean_and_variance.h
+@@ -17,7 +17,7 @@
+  * Rust and rustc has issues with u128.
+  */
  
-+	kfree(otp_v);
-+
- 	return 0;
- }
+-#if defined(__SIZEOF_INT128__) && defined(__KERNEL__)
++#if defined(__SIZEOF_INT128__) && defined(__KERNEL__) && !defined(CONFIG_PARISC)
  
--- 
-2.43.0
-
+ typedef struct {
+ 	unsigned __int128 v;
 
