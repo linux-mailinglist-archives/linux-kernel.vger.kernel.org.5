@@ -1,121 +1,153 @@
-Return-Path: <linux-kernel+bounces-41619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D067A83F573
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 13:17:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A76C83F578
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 13:21:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9167E282BD1
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 12:17:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AA1F282935
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 12:21:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 401AB208AF;
-	Sun, 28 Jan 2024 12:17:17 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B6B222EE8;
+	Sun, 28 Jan 2024 12:20:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NnV1nIPu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94F2E208B4
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 12:17:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D458C208AF;
+	Sun, 28 Jan 2024 12:20:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706444236; cv=none; b=PclIobvy81jVUAECLyOy2x9kFBp2XyJnTU6i0nHsWRxERko7F0HyDlWrBs4U1q/YjFImU/eo6oLNwCLrqNLmJ8VrvOFkiuf8FLkTDGF45c7lw8FFO91GFVcBMWxT0Ccfz7nYkw0M4q9URZ/PNovGI/9DX1BwF8ZUOV9VVb82IGA=
+	t=1706444458; cv=none; b=UhGTyfA3s6Pl3owQYFgkt0I41z07S3NMoQtOje/IUCvx9AemBh/0xQH+TNg8MN8n1oh5r9cViKLvP//YfsPk2VYzB8xy8/PZAeXDVS92ucyd8GeNIIKyUcVJYQQb855rUEa1YpwFoxtLRI6N876gpABU4E6RqU2zHONBc/hNKaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706444236; c=relaxed/simple;
-	bh=SozXLh3KenyMR0qcRmmuAZrWrBYZ30sZ1xNaH0/AzYQ=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=lhIY5qw9cUOkR5jGjz/H8dMtF+vqSbUPklOb9SCzSz3jOcnMrVHVMnP2Xoh2JXShq9XX5SvgAuGhFNatd9Xvnrj3LmaUFBlNWRyh6uaHCcID6VxMZ+JaQWDQO0z5qYGzrhB65ixmAsXUBodGgT5BBja80ZMAMDui+XNG9DFssKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-275--Xf6UUp_NjOr1vM6gW-ukg-1; Sun, 28 Jan 2024 12:17:05 +0000
-X-MC-Unique: -Xf6UUp_NjOr1vM6gW-ukg-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 28 Jan
- 2024 12:16:42 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sun, 28 Jan 2024 12:16:41 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Vincent MAILHOL' <mailhol.vincent@wanadoo.fr>, Finn Thain
-	<fthain@linux-m68k.org>
-CC: Andrew Morton <akpm@linux-foundation.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Yury Norov <yury.norov@gmail.com>, "Nick
- Desaulniers" <ndesaulniers@google.com>, Douglas Anderson
-	<dianders@chromium.org>, Kees Cook <keescook@chromium.org>, Petr Mladek
-	<pmladek@suse.com>, Randy Dunlap <rdunlap@infradead.org>, Zhaoyang Huang
-	<zhaoyang.huang@unisoc.com>, Geert Uytterhoeven <geert+renesas@glider.be>,
-	Marco Elver <elver@google.com>, Brian Cain <bcain@quicinc.com>, "Geert
- Uytterhoeven" <geert@linux-m68k.org>, Matthew Wilcox <willy@infradead.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>, "linux-m68k@lists.linux-m68k.org"
-	<linux-m68k@lists.linux-m68k.org>
-Subject: RE: [PATCH v4 2/5] m68k/bitops: use __builtin_{clz,ctzl,ffs} to
- evaluate constant expressions
-Thread-Topic: [PATCH v4 2/5] m68k/bitops: use __builtin_{clz,ctzl,ffs} to
- evaluate constant expressions
-Thread-Index: AQHaUbL1xJNZnFSfqkuoXGWoPFOF8LDvIt6w
-Date: Sun, 28 Jan 2024 12:16:41 +0000
-Message-ID: <9d9be9dbe92f43d2a95d11d6b2f434c1@AcuMS.aculab.com>
-References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr>
- <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr>
- <20240128050449.1332798-3-mailhol.vincent@wanadoo.fr>
- <c47fedaf-cdc9-f970-460f-d2ee7e806da4@linux-m68k.org>
- <CAMZ6RqKj207uv5AF_fvb65nhCM32V=VAQXsUGLNmbeXYKPvZJg@mail.gmail.com>
-In-Reply-To: <CAMZ6RqKj207uv5AF_fvb65nhCM32V=VAQXsUGLNmbeXYKPvZJg@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1706444458; c=relaxed/simple;
+	bh=+dvUSGHsnkRFKjgjnSLq9+73NC8nrTxMZZZ+gNL+okQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=qVeJF2hpuG9X5yviuLr0r6tzzroMqgAWxT5gRB4Vp4YbXul6Xzr1gCv1kA6X5JU896KvySX7guCEcQsKJZWCK5kWxQuVxilBFSiGeqYV88oFJL+9Hq1pIftBhewcMTbhD1Sbrbd3ysRoDuKsqL4Ku50I5PTpKDbp1EckNcrD1nI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NnV1nIPu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B43A5C433C7;
+	Sun, 28 Jan 2024 12:20:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706444457;
+	bh=+dvUSGHsnkRFKjgjnSLq9+73NC8nrTxMZZZ+gNL+okQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=NnV1nIPu2RF3iUB939WzMArE+4YHveOlJpmr4/zRsZNivVH0eDf4l1j68bds4ioLJ
+	 sdbyVV6XySyJhk19cjaNkIeH2JGCIna2SFyeDDgiA4GN5xc7aoyOgt1rbTNPpYB8gS
+	 BfU9OgEJk3RRlN2ndCE2hFok7cyvB91cTdizboWyvjd6dx5yh+YgBfJyVlhzu4pLsS
+	 G3WGlHm081uSyTqbkqHGl63JMfJuJu/+PZaNfhC4nsVa/IKjOA2r1gfC9aM64n/02u
+	 Zp1+7B32socTh1gLU/KDdmBm75sCrtLhba+1DybE/RDI8w7N6A0qbt5qRVnyBd+j3r
+	 aZ3RyNF054aZw==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Mykola
+ Lysenko <mykolal@fb.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+ linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: Make install target copy
+ test_progs extra files
+In-Reply-To: <875xzex50m.fsf@all.your.base.are.belong.to.us>
+References: <20240127133327.1594026-1-bjorn@kernel.org>
+ <20240127133327.1594026-2-bjorn@kernel.org>
+ <875xzex50m.fsf@all.your.base.are.belong.to.us>
+Date: Sun, 28 Jan 2024 13:20:54 +0100
+Message-ID: <8734uh7iop.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-RnJvbTogVmluY2VudCBNQUlMSE9MDQo+IFNlbnQ6IDI4IEphbnVhcnkgMjAyNCAwNjoyNw0KPiAN
-Cj4gT24gU3VuLiAyOCBKYW4uIDIwMjQgYXQgMTQ6MzksIEZpbm4gVGhhaW4gPGZ0aGFpbkBsaW51
-eC1tNjhrLm9yZz4gd3JvdGU6DQo+ID4gT24gU3VuLCAyOCBKYW4gMjAyNCwgVmluY2VudCBNYWls
-aG9sIHdyb3RlOg0KPiA+DQo+ID4gPiBUaGUgY29tcGlsZXIgaXMgbm90IGFibGUgdG8gZG8gY29u
-c3RhbnQgZm9sZGluZyBvbiAiYXNtIHZvbGF0aWxlIiBjb2RlLg0KPiA+ID4NCj4gPiA+IEV2YWx1
-YXRlIHdoZXRoZXIgb3Igbm90IHRoZSBmdW5jdGlvbiBhcmd1bWVudCBpcyBhIGNvbnN0YW50IGV4
-cHJlc3Npb24NCj4gPiA+IGFuZCBpZiB0aGlzIGlzIHRoZSBjYXNlLCByZXR1cm4gYW4gZXF1aXZh
-bGVudCBidWlsdGluIGV4cHJlc3Npb24uDQo+ID4gPg0KLi4uDQo+ID4gSWYgdGhlIGJ1aWx0aW4g
-aGFzIHRoZSBkZXNpcmVkIGJlaGF2aW91ciwgd2h5IGRvIHdlIHJlaW1wbGVtZW50IGl0IGluIGFz
-bT8NCj4gPiBTaG91bGRuJ3Qgd2UgYWJhbmRvbiBvbmUgb3IgdGhlIG90aGVyIHRvIGF2b2lkIGhh
-dmluZyB0byBwcm92ZSAoYW5kDQo+ID4gbWFpbnRhaW4pIHRoZWlyIGVxdWl2YWxlbmNlPw0KPiAN
-Cj4gVGhlIGFzbSBpcyBtZWFudCB0byBwcm9kdWNlIGJldHRlciByZXN1bHRzIHdoZW4gdGhlIGFy
-Z3VtZW50IGlzIG5vdCBhDQo+IGNvbnN0YW50IGV4cHJlc3Npb24uIEJlbG93IGNvbW1pdCBpcyBh
-IGdvb2QgaWxsdXN0cmF0aW9uIG9mIHdoeSB3ZQ0KPiB3YW50IGJvdGggdGhlIGFzbSBhbmQgdGhl
-IGJ1aWx0Og0KPiANCj4gICBodHRwczovL2dpdC5rZXJuZWwub3JnL3RvcnZhbGRzL2MvMTQ2MDM0
-ZmVkNmVlDQo+IA0KPiBJIHNheSAiaXMgbWVhbnQiLCBiZWNhdXNlIEkgZGlkIG5vdCBhc3NlcnQg
-d2hldGhlciB0aGlzIGlzIHN0aWxsIHRydWUuDQo+IE5vdGUgdGhhdCB0aGVyZSBhcmUgc29tZSBj
-YXNlcyBpbiB3aGljaCB0aGUgYXNtIGlzIG5vdCBiZXR0ZXIgYW55bW9yZSwNCj4gZm9yIGV4YW1w
-bGUsIHNlZSB0aGlzIHRocmVhZDoNCj4gDQo+ICAgaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGtt
-bC8yMDIyMTEwNjA5NTEwNi44NDkxNTQtMi1tYWlsaG9sLnZpbmNlbnRAd2FuYWRvby5mci8NCj4g
-DQo+IGJ1dCBJIGRpZCBub3QgcmVjZWl2ZSBtb3JlIGFuc3dlcnMsIHNvIEkgc3RvcHBlZCB0cnlp
-bmcgdG8gaW52ZXN0aWdhdGUNCj4gdGhlIHN1YmplY3QuDQo+IA0KPiBJZiB5b3Ugd2FudCwgeW91
-IGNhbiBjaGVjayB0aGUgcHJvZHVjZWQgYXNzZW1ibHkgb2YgYm90aCB0aGUgYXNtIGFuZA0KPiB0
-aGUgYnVpbHRpbiBmb3IgYm90aCBjbGFuZyBhbmQgZ2NjLCBhbmQgaWYgdGhlIGJ1aWx0aW4gaXMg
-YWx3YXlzDQo+IGVpdGhlciBiZXR0ZXIgb3IgZXF1aXZhbGVudCwgdGhlbiB0aGUgYXNtIGNhbiBi
-ZSByZW1vdmVkLiBUaGF0IHNhaWQsIEkNCj4gYW0gbm90IHNwZW5kaW5nIG1vcmUgZWZmb3J0IHRo
-ZXJlIGFmdGVyIGJlaW5nIGdob3N0ZWQgb25jZSAoYy5mLiBhYm92ZQ0KPiB0aHJlYWQpLg0KDQpJ
-IGRvbid0IHNlZSBhbnkgZXhhbXBsZSB0aGVyZSBvZiB3aHkgdGhlIF9fYnVpbHRpbl94eHgoKSB2
-ZXJzaW9ucw0Kc2hvdWxkbid0IGJlIHVzZWQgYWxsIHRoZSB0aW1lLg0KKFRoZSB4ODYtNjQgYXNt
-IGJsb2NrcyBjb250YWluIHVucmVsYXRlZCBjYWxsIGluc3RydWN0aW9ucyBhbmQgb2JqZHVtcA0K
-d2Fzbid0IHBhc3NlZCAtZCB0byBzaG93IHdoYXQgdGhleSB3ZXJlLg0KT25lIGV2ZW4gaGFzIHRo
-ZSAncmV0dXJuIHRodW5rIHBlc3NpbWlzYXRpb24gc2hvd2luZy4pDQoNCkkgYWN0dWFsbHkgc3Vz
-cGVjdCB0aGUgYXNtIHZlcnNpb25zIHByZWRhdGUgdGhlIGJ1aWx0aW5zLg0KDQpEb2VzIChvciBj
-YW4pIHRoZSBvdXRlciBjb21tb24gaGVhZGVyIHVzZSB0aGUgX19idWlsdGluIGZ1bmN0aW9ucw0K
-aWYgbm8gYXNtIHZlcnNpb24gZXhpc3RzPw0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRy
-ZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1L
-MSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
 
+> Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
+>
+>> From: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+>>
+>> Currently, "make install" does not install the required test_progs
+>> "extra files" (e.g. kernel modules, helper shell scripts, etc.) for
+>> the BPF machine flavors (e.g. cpuv4).
+>>
+>> Add the missing "extra files" dependencies to rsync, called from the
+>> install target.
+>>
+>> Unfortunately, kselftest does not use bash as the default shell, so
+>> the globbering is limited. Blindly enabling "SHELL:=3D/bin/bash" for the
+>> Makefile breaks in other places. Workaround by explicitly call
+>> "/bin/bash" to expand the file globbing.
+>>
+>> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+>> ---
+>> v3: Do not use hardcoded file names (Andrii)
+>> v2: Added btf_dump_test_case files
+>> ---
+>>  tools/testing/selftests/bpf/Makefile | 29 +++++++++++++++++-----------
+>>  1 file changed, 18 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selfte=
+sts/bpf/Makefile
+>> index 830a34f0aa37..d66c689f0f3c 100644
+>> --- a/tools/testing/selftests/bpf/Makefile
+>> +++ b/tools/testing/selftests/bpf/Makefile
+>> @@ -605,14 +605,15 @@ TRUNNER_EXTRA_SOURCES :=3D test_progs.c		\
+>>  			 json_writer.c 		\
+>>  			 flow_dissector_load.h	\
+>>  			 ip_check_defrag_frags.h
+>> -TRUNNER_EXTRA_FILES :=3D $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmod.k=
+o	\
+>> -		       $(OUTPUT)/liburandom_read.so			\
+>> -		       $(OUTPUT)/xdp_synproxy				\
+>> -		       $(OUTPUT)/sign-file				\
+>> -		       $(OUTPUT)/uprobe_multi				\
+>> -		       ima_setup.sh 					\
+>> -		       verify_sig_setup.sh				\
+>> -		       $(wildcard progs/btf_dump_test_case_*.c)
+>> +TRUNNER_PROGS_EXTRA_FILES:=3D $(OUTPUT)/urandom_read $(OUTPUT)/bpf_test=
+mod.ko	\
+>> +			    $(OUTPUT)/liburandom_read.so			\
+>> +			    $(OUTPUT)/xdp_synproxy				\
+>> +			    $(OUTPUT)/sign-file					\
+>> +			    $(OUTPUT)/uprobe_multi				\
+>> +			    ima_setup.sh					\
+>> +			    verify_sig_setup.sh					\
+>> +			    $(wildcard progs/btf_dump_test_case_*.c)
+>> +TRUNNER_EXTRA_FILES :=3D $(TRUNNER_PROGS_EXTRA_FILES)
+>>  TRUNNER_BPF_BUILD_RULE :=3D CLANG_BPF_BUILD_RULE
+>>  TRUNNER_BPF_CFLAGS :=3D $(BPF_CFLAGS) $(CLANG_CFLAGS) -DENABLE_ATOMICS_=
+TESTS
+>>  $(eval $(call DEFINE_TEST_RUNNER,test_progs))
+>> @@ -740,11 +741,17 @@ EXTRA_CLEAN :=3D $(TEST_CUSTOM_PROGS) $(SCRATCH_DI=
+R) $(HOST_SCRATCH_DIR)	\
+>>  # Delete partially updated (corrupted) files on error
+>>  .DELETE_ON_ERROR:
+>>=20=20
+>> +space :=3D $(subst ,, )
+>> +comma :=3D ,
+>> +EXTRA_FILES_GLOB :=3D {$(subst $(space),$(comma),$(notdir $(TRUNNER_PRO=
+GS_EXTRA_FILES)))}
+>>  DEFAULT_INSTALL_RULE :=3D $(INSTALL_RULE)
+>>  override define INSTALL_RULE
+>>  	$(DEFAULT_INSTALL_RULE)
+>> -	@for DIR in $(TEST_INST_SUBDIRS); do		  \
+>> -		mkdir -p $(INSTALL_PATH)/$$DIR;   \
+>> -		rsync -a $(OUTPUT)/$$DIR/*.bpf.o $(INSTALL_PATH)/$$DIR;\
+>> +	@for DIR in $(TEST_INST_SUBDIRS); do						\
+>> +		mkdir -p $(INSTALL_PATH)/$$DIR;						\
+>> +		rsync -a $(OUTPUT)/$$DIR/*.bpf.o $(INSTALL_PATH)/$$DIR;			\
+>> +		rsync -a --copy-unsafe-links						\
+>> +			$$(/bin/bash -c "echo $(OUTPUT)/$$DIR/$(EXTRA_FILE_GLOB)")	\
+>
+> Argh! Bad commit. EXTRA_FILE_GLOB should be EXTRA_FILES_GLOB. :-(
+>
+> LMK if you can fix it up, or if you want me to resubmit.
+
+..and bpftool is missing.
+
+I'll spin a v4. :-(
 
