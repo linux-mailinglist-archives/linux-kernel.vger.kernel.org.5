@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-41879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FD7A83F924
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 19:23:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A92FD83F927
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 19:23:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2A001F21C08
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 18:23:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AF611F21A24
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 18:23:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C92A631A98;
-	Sun, 28 Jan 2024 18:23:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A13762E84F;
+	Sun, 28 Jan 2024 18:23:38 +0000 (UTC)
 Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9977331A93;
-	Sun, 28 Jan 2024 18:23:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 022D12D60C;
+	Sun, 28 Jan 2024 18:23:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706466194; cv=none; b=QKhOfGdZlHmpwBdJgxuGZrQW/QmhPhWaDGkYWhkGW9VqNttn9a4sv0fEXsZZoc8VaCB+CQTHuN+mQVyL4P3B8P/bGqYOXQoAf//CFHF+tYxihmaWZSvuolhw1B1ItnTNiQkfHiC2lSWmS6AsDdCdnvsz1apDBfq0r5gTmhK3LRo=
+	t=1706466218; cv=none; b=iQrzmWA69W0Yr8dPFVs/3fDrOlmBU9EJLeKLUsVxe1OE8bm7ADHpqHbwbeFvhecYsHJE6n2lwNm1GaNuU6iOmNcdVgySsVjVu6fKLKe6M3ZOKgN0mpXGRHQwZ6Hx2h062wopZQoNBBZ0Q+mrrlrDVGga513UB4kSD2Pw7uzufv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706466194; c=relaxed/simple;
-	bh=4/rZR42xEDUEKBuhsxAoPbAjoVhj37dpEubn0dEsJmo=;
+	s=arc-20240116; t=1706466218; c=relaxed/simple;
+	bh=G7Jpfdji6M56B/m9Li+JBNGni3v02X9hJGUwPpehbhA=;
 	h=Subject:From:To:CC:References:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=DQsAYf1tS7OUsWAIaJf2hqraMX3VcFynrxscA63x5W0aQMYarxJypDMWi68VxS+yeLYTYL4Aqr6iYvXlcfl29AB9BHgQfMkjYQV930rT2cqaHhoPGF/jjUEUCO/4fkBrbkarnXErTjnQpuj0yQDg1PqJNtgv7OiVvD+ovZuwYwg=
+	 In-Reply-To:Content-Type; b=m6li6CZF6C87dAEThqarrAqPmS5x0ssRbixGuFt5y/ONJeCLhlyB7Y+B22egrZIurXcKqjqJhnsv5ABCJdCqfomzF38HT9h4zIG3QuoBCyLUbpTa1I9Ow4XRU1aLOMNqoTilsmxp+qvBN0fDB9H6Pu69XsIZW3uupRQx06enJv4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
 Received: from [192.168.1.105] (178.176.74.225) by msexch01.omp.ru
  (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sun, 28 Jan
- 2024 21:23:02 +0300
+ 2024 21:23:28 +0300
 Subject: Re: [PATCH net-next v4 08/15] net: ravb: Move the IRQs get and
  request in the probe function
 From: Sergey Shtylyov <s.shtylyov@omp.ru>
@@ -47,8 +47,8 @@ References: <20240123125829.3970325-1-claudiu.beznea.uj@bp.renesas.com>
  <bb26b1a9-a848-7b5a-26fd-192f004184d8@omp.ru>
  <ada0e1ac-dd33-aad2-52f9-0448b819bc94@omp.ru>
 Organization: Open Mobile Platform
-Message-ID: <dd7b35a1-b3c8-328e-5d32-a18a1798211b@omp.ru>
-Date: Sun, 28 Jan 2024 21:23:02 +0300
+Message-ID: <46bf2a4e-fdf4-fba1-f0de-0df2496b0c36@omp.ru>
+Date: Sun, 28 Jan 2024 21:23:27 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 Precedence: bulk
@@ -84,7 +84,7 @@ X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.225 in (user)
 X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.225 in (user)
  dbl.spamhaus.org}
 X-KSE-AntiSpam-Info:
-	178.176.74.225:7.1.2,7.7.3,7.4.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;omp.ru:7.1.1
+	127.0.0.199:7.1.2;omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;178.176.74.225:7.4.1
 X-KSE-AntiSpam-Info: {cloud_iprep_silent}
 X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.74.225
 X-KSE-AntiSpam-Info: {DNS response errors}
@@ -114,8 +114,8 @@ On 1/28/24 9:03 PM, Sergey Shtylyov wrote:
 >    Oops, s/in/to/. :-)
 
    Well, we don't move getting IRQs to the probe() method, but
-we move the platform_get_irq[_byname]() calls to a sperate function.
-So, pperhaps "in" was good... :-) 
+we move the platform_get_irq[_byname]() calls to a separate function.
+So, perhaps "in" was good... :-) 
 
 [...]
 
