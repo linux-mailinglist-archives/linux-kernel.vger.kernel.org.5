@@ -1,176 +1,153 @@
-Return-Path: <linux-kernel+bounces-42006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C603383FAE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 00:12:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7DDE83FAE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 00:19:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F12CB21EB6
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 23:12:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FB071F22800
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 23:19:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C9C7446DC;
-	Sun, 28 Jan 2024 23:12:34 +0000 (UTC)
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA63E446CF;
+	Sun, 28 Jan 2024 23:19:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=feathertop.org header.i=@feathertop.org header.b="MTt7WYjl";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="HtZoouw2"
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1F664438C
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 23:12:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 846311E4A8;
+	Sun, 28 Jan 2024 23:19:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706483553; cv=none; b=MuAs/WHp94hT8/E3sqizF672GHiFefPpyTDyLQ4Bd1ms70c8K51PFunQ9QZ+U15WUvaSrwT7B/bcEPJB2NOsqU4K75Qlhv+zqdWcEz1GpooBGn6BYj5rPt+TidYOyswrXXPXuUNOhdnT8jJqMdgU94PLvFquXxxnEp08KHgznT8=
+	t=1706483987; cv=none; b=SJk29p/ywJDXoz6PpHFfdOpmRm2C8J0xm7mUSg+u1FtxNyDNFgILe1cvhxhYLXEr8hzQnJ1OsymExtB3EVDhB3p5oBdthc7TjJW1Fsnx8xRezy2nLEMa7dCOdOlVIyYCdpXttGokzTzGKBLDTXIm77yRkK/DCDyzeIFu9/eFxyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706483553; c=relaxed/simple;
-	bh=WJAAKVyPTm7H7EAi0thvSIUBdndkaUmmG3b/Vu5ZgHM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HX4PLrVEix92FpGAZZ/5+K7gAYXGZjAX8cNKFWGrhI8a4xwjzQhKlqH0XpEdp4mfIOY/GVYP+9Vb8xoe1o0Ff0stVVWW3G4trg0R9K5SH9z3YRW6HQaYjEsrFT6D1ly7pthCSTRfasiULFntHCgvK+U51h9MrRQRE5+3uJaHK2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.219.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-6869e87c8d8so11971466d6.2
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 15:12:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706483551; x=1707088351;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GD5NdHDnfxOWQObF5uD/hMjS9qKRT60jFamS6md7FkU=;
-        b=Icb88R+mPYDT2lrporwyQIxDKgPAiy8OSmhxR51Bbl/Oi2nYJ4+NuSJ1FJUcP62vcR
-         G5hXEQkbbSj/ufu5qku00xJipYJm9Q997Bp7csE5WxMMjMzUJKdNMxxdPNgLPHfj4IS1
-         GimGTxbG/rxVG/iB94iInchKqC4FfMQAu8oRaMc/nIgFLF4yk8ebJt0Dkp0mPyZo+rri
-         XvIQdtpGYP+wHlNxpavFYZqPPIgtvKRVYKMkqdx1/f4nzHOP0VmgoHi9cixppmuIx5bg
-         6gZfk/jyNzr1mP/WKjRQ6BpxX4AC7hMt2WjCaAw8Hu+9b5LSrsnCHnKi62ES3pUAXsrM
-         LNOA==
-X-Gm-Message-State: AOJu0YwY9LgHUxFcIpPqfb0ML8FinBE8/4A07KNLBo88vZmyEzDpIddj
-	vCiZxgXetfNuvg8dkrI3IcCJeEKWxgj7vZIKlN4ZwrNDNO13klbYBJ7mlPa3XA==
-X-Google-Smtp-Source: AGHT+IHK0/nUNToH8edwxVlWmvEyvZIHDEpHgPaEgJjUzz7rMirW/s8is9RvU2aReauLMczsnC32Uw==
-X-Received: by 2002:ad4:5aa2:0:b0:686:9f2e:d984 with SMTP id u2-20020ad45aa2000000b006869f2ed984mr5509530qvg.22.1706483550841;
-        Sun, 28 Jan 2024 15:12:30 -0800 (PST)
-Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
-        by smtp.gmail.com with ESMTPSA id pg10-20020a0562144a0a00b0068690c3a04asm2816450qvb.20.2024.01.28.15.12.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jan 2024 15:12:30 -0800 (PST)
-Date: Sun, 28 Jan 2024 18:12:29 -0500
-From: Mike Snitzer <snitzer@kernel.org>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Ming Lei <ming.lei@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, Don Dutile <ddutile@redhat.com>,
-	Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>
-Subject: Re: [RFC PATCH] mm/readahead: readahead aggressively if read drops
- in willneed range
-Message-ID: <ZbbfXVg9FpWRUVDn@redhat.com>
-References: <20240128142522.1524741-1-ming.lei@redhat.com>
- <ZbbPCQZdazF7s0_b@casper.infradead.org>
+	s=arc-20240116; t=1706483987; c=relaxed/simple;
+	bh=QEUfb2sA8KJ3vwu3DjUFRPuqRsbyUiZ+F9amISTLbU8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Mx5v3LivOm8yIExudMHmgKbw8Mpt/OZ19/Ch0BiRY9KToLfPpVi6qvsH/b1PT892Uc/gLnFXdmfxojU9NFYbi9qxfkldBBwMmIle9ZpwoTtprjO4/wwGZ6iqdUf5Px/NsimFM0Vzl4cTAGe/3lRVg56BgXwib0zE5MQWWc33iKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=feathertop.org; spf=pass smtp.mailfrom=feathertop.org; dkim=pass (2048-bit key) header.d=feathertop.org header.i=@feathertop.org header.b=MTt7WYjl; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=HtZoouw2; arc=none smtp.client-ip=64.147.123.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=feathertop.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=feathertop.org
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailout.west.internal (Postfix) with ESMTP id C6D8F3200A7A;
+	Sun, 28 Jan 2024 18:19:43 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Sun, 28 Jan 2024 18:19:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=feathertop.org;
+	 h=cc:cc:content-transfer-encoding:content-type:content-type
+	:date:date:from:from:in-reply-to:in-reply-to:message-id
+	:mime-version:references:reply-to:subject:subject:to:to; s=fm2;
+	 t=1706483983; x=1706570383; bh=1fKfNWclQmzN7rLysWXCqLcTCDbjGptQ
+	Vt1xQ/FClcA=; b=MTt7WYjl2HZPvvVjU3x1449zJ75O42f4XLIyEEXaZehlmBfv
+	7b7Sf8dK1z2x5qip0c+5b9/1RhsR/5K46hSZ6KISGh8yB9pZT1rai1gewNj0aASB
+	MMsOqixRmsCDX4qu1qwU+HVgAQuBUbq8+QoExkvTGFGVD1L0eC2OluF14umQ9hVa
+	7DDXxzHLmdJP9oUeV9tOiXPiZRnK9AOAtMYqIzdSjl3oL7rmlYxxRivHyNfOKQZG
+	H6Lf+xOYF6Eisb4nl3i5kIjq9fVYtz0qMqGMW8dG3C1XegO5mVvbIprtByuf3EcQ
+	jR+l9mrtfU2eqZaHMAdZBwFxHuDbkuMk97XsoQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706483983; x=
+	1706570383; bh=1fKfNWclQmzN7rLysWXCqLcTCDbjGptQVt1xQ/FClcA=; b=H
+	tZoouw2KWp888ydU+aBBPKcYu3/9eLYWilcQVPQobJnsnjpo018BlGWkbW0sQUK/
+	kwsvhZUyNMMOvvnOKi5EiIHBDcGUbQ9jXQm76TtgR3KDch+NLPUOIxa7fouiwlPF
+	CydOXmzkC18BjLuUwbuUtJk5PSlsrJHOvKMGD2K2ewNe4lRdezOwBS2QuSPkI7QC
+	rRpuilma1cEOx3h/ucmQ5mTlYMaSeSFnQ4/cw7QMOjDXKYwLQsAB+qpJRAelmwQJ
+	B7Rvf4xVSPYH3F9sUEBXO9CdSllZ5SP+iODiUAb4+w3e/Ekdby83ESWBESjzJDo1
+	DxSG4K7kOaSXMN8C0UEvQ==
+X-ME-Sender: <xms:DuG2ZQXsxg30Bgpj0yLpIiO13CyGwVPLDSzI-FnjJaiO87ZqhpuNbg>
+    <xme:DuG2ZUkYUcicLuK-olDOCl6KGQOm5xXbWKfLwZCcnG70IKtT0QmPC4hjkkXXJm5sc
+    vJBInn9wg>
+X-ME-Received: <xmr:DuG2ZUZFBc83PoUuvkUtd0I3PzySMUp5jywhDF_WDC9_zC1x89_GgRE7R7LDIV0oB9ERzfYafUO1sXU1sujAfQ-QtbHB8Zy1khTkmA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtfedgtdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdejnecuhfhrohhmpefvihhm
+    ucfnuhhnnhcuoehtihhmsehfvggrthhhvghrthhophdrohhrgheqnecuggftrfgrthhtvg
+    hrnhepueegfefgveeuiedtheffgfefveejkeetiefhhfdvjeevlefhueekudeuleeghfek
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepthhimh
+    esfhgvrghthhgvrhhtohhprdhorhhg
+X-ME-Proxy: <xmx:DuG2ZfXO5rafG7DDuUnj8H8nidQvmanzsnFODoAkDDz7u6URHBVZfA>
+    <xmx:DuG2ZakAVrrsPN5fxrPtXjx0SFRlKkRekDq9DT2hFDrskRC1hffkJg>
+    <xmx:DuG2ZUe66EWt5D3omkzr7KK9QXlmsc-DVKAhbQ6CCG0E_pIpP5UCyg>
+    <xmx:D-G2ZcVGRdLsXVztB9damzissF5osJhFZBQzxpqdd8BggjP5B3avSQ>
+Feedback-ID: i1f8241ce:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 28 Jan 2024 18:19:39 -0500 (EST)
+Message-ID: <030766c0-a6b9-401d-9e9a-fe5d11c5d381@feathertop.org>
+Date: Mon, 29 Jan 2024 10:19:35 +1100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbbPCQZdazF7s0_b@casper.infradead.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH AUTOSEL 6.1 27/27] i2c: rk3x: Adjust mask/value offset for
+ i2c2 on rv1126
+Content-Language: en-US
+To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+Cc: Heiko Stuebner <heiko@sntech.de>, Andi Shyti <andi.shyti@kernel.org>,
+ Wolfram Sang <wsa@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-i2c@vger.kernel.org
+References: <20240128161424.203600-1-sashal@kernel.org>
+ <20240128161424.203600-27-sashal@kernel.org>
+From: Tim Lunn <tim@feathertop.org>
+In-Reply-To: <20240128161424.203600-27-sashal@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sun, Jan 28 2024 at  5:02P -0500,
-Matthew Wilcox <willy@infradead.org> wrote:
+Hi Sasha,
 
-> On Sun, Jan 28, 2024 at 10:25:22PM +0800, Ming Lei wrote:
-> > Since commit 6d2be915e589 ("mm/readahead.c: fix readahead failure for
-> > memoryless NUMA nodes and limit readahead max_pages"), ADV_WILLNEED
-> > only tries to readahead 512 pages, and the remained part in the advised
-> > range fallback on normal readahead.
-> 
-> Does the MAINTAINERS file mean nothing any more?
+   Support for the rv1126 SoC was only added around linux 6.2 and 6.3, 
+thus doesnt make sense to pick this patch up in 6.1
 
-"Ming, please use scripts/get_maintainer.pl when submitting patches."
+Regards
+   Tim
 
-(I've cc'd accordingly with this email).
-
-> > If bdi->ra_pages is set as small, readahead will perform not efficient
-> > enough. Increasing read ahead may not be an option since workload may
-> > have mixed random and sequential I/O.
-> 
-> I thik there needs to be a lot more explanation than this about what's
-> going on before we jump to "And therefore this patch is the right
-> answer".
-
-The patch is "RFC". Ming didn't declare his RFC is "the right answer".
-All ideas for how best to fix this issue are welcome.
-
-I agree this patch's header could've worked harder to establish the
-problem that it fixes.  But I'll now take a crack at backfilling the
-regression report that motivated this patch be developed:
-
-Linux 3.14 was the last kernel to allow madvise (MADV_WILLNEED)
-allowed mmap'ing a file more optimally if read_ahead_kb < max_sectors_kb.
-
-Ths regressed with commit 6d2be915e589 (so Linux 3.15) such that
-mounting XFS on a device with read_ahead_kb=64 and max_sectors_kb=1024
-and running this reproducer against a 2G file will take ~5x longer
-(depending on the system's capabilities), mmap_load_test.java follows:
-
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.io.RandomAccessFile;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-public class mmap_load_test {
-
-        public static void main(String[] args) throws FileNotFoundException, IOException, InterruptedException {
-		if (args.length == 0) {
-			System.out.println("Please provide a file");
-			System.exit(0);
-		}
-		FileChannel fc = new RandomAccessFile(new File(args[0]), "rw").getChannel();
-		MappedByteBuffer mem = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
-
-		System.out.println("Loading the file");
-
-		long startTime = System.currentTimeMillis();
-		mem.load();
-		long endTime = System.currentTimeMillis();
-		System.out.println("Done! Loading took " + (endTime-startTime) + " ms");
-		
-	}
-}
-
-reproduce with:
-
-javac mmap_load_test.java
-echo 64 > /sys/block/sda/queue/read_ahead_kb
-echo 1024 > /sys/block/sda/queue/max_sectors_kb
-mkfs.xfs /dev/sda
-mount /dev/sda /mnt/test
-dd if=/dev/zero of=/mnt/test/2G_file bs=1024k count=2000
-
-echo 3 > /proc/sys/vm/drop_caches
-java mmap_load_test /mnt/test/2G_file
-
-Without a fix, like the patch Ming provided, iostat will show rareq-sz
-is 64 rather than ~1024.
-
-> > @@ -972,6 +974,7 @@ struct file_ra_state {
-> >  	unsigned int ra_pages;
-> >  	unsigned int mmap_miss;
-> >  	loff_t prev_pos;
-> > +	struct maple_tree *need_mt;
-> 
-> No.  Embed the struct maple tree.  Don't allocate it.
-
-Constructive feedback, thanks.
-
-> What made you think this was the right approach?
-
-But then you closed with an attack, rather than inform Ming and/or
-others why you feel so strongly, e.g.: Best to keep memory used for
-file_ra_state contiguous.
+On 1/29/24 03:14, Sasha Levin wrote:
+> From: Tim Lunn <tim@feathertop.org>
+>
+> [ Upstream commit 92a85b7c6262f19c65a1c115cf15f411ba65a57c ]
+>
+> Rockchip RV1126 is using old style i2c controller, the i2c2
+> bus uses a non-sequential offset in the grf register for the
+> mask/value bits for this bus.
+>
+> This patch fixes i2c2 bus on rv1126 SoCs.
+>
+> Signed-off-by: Tim Lunn <tim@feathertop.org>
+> Acked-by: Heiko Stuebner <heiko@sntech.de>
+> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+> Signed-off-by: Wolfram Sang <wsa@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>   drivers/i2c/busses/i2c-rk3x.c | 8 ++++++--
+>   1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/i2c/busses/i2c-rk3x.c b/drivers/i2c/busses/i2c-rk3x.c
+> index 6aa4f1f06240..c8cd5cadcf56 100644
+> --- a/drivers/i2c/busses/i2c-rk3x.c
+> +++ b/drivers/i2c/busses/i2c-rk3x.c
+> @@ -1295,8 +1295,12 @@ static int rk3x_i2c_probe(struct platform_device *pdev)
+>   			return -EINVAL;
+>   		}
+>   
+> -		/* 27+i: write mask, 11+i: value */
+> -		value = BIT(27 + bus_nr) | BIT(11 + bus_nr);
+> +		/* rv1126 i2c2 uses non-sequential write mask 20, value 4 */
+> +		if (i2c->soc_data == &rv1126_soc_data && bus_nr == 2)
+> +			value = BIT(20) | BIT(4);
+> +		else
+> +			/* 27+i: write mask, 11+i: value */
+> +			value = BIT(27 + bus_nr) | BIT(11 + bus_nr);
+>   
+>   		ret = regmap_write(grf, i2c->soc_data->grf_offset, value);
+>   		if (ret != 0) {
 
