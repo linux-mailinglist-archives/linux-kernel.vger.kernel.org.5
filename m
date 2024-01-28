@@ -1,131 +1,88 @@
-Return-Path: <linux-kernel+bounces-41628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBB7683F597
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 14:28:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0F9783F598
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 14:29:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A939B1C210DB
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 13:28:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C470D1C210F6
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 13:29:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40A5823761;
-	Sun, 28 Jan 2024 13:28:51 +0000 (UTC)
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB64522EE8;
-	Sun, 28 Jan 2024 13:28:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E92324B57;
+	Sun, 28 Jan 2024 13:29:03 +0000 (UTC)
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C125024208
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 13:29:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706448530; cv=none; b=dbg0ARYmaorXmyJieOnmiC0Ptt7YHIhQvUn3ISjbQt11O2RndQrgZZyljDlaQ00QYd+E+JIob+wi2LPP4PGTuBGoaQeREWtUQGFPp4/11jsJKKuhyUjUNsw6gxFjPBuLnGGFxTFhtGF9QvyUa8zRAJCqsI5OAFCxwpxo28CRnNM=
+	t=1706448543; cv=none; b=qMjEyeYL5WfY2up4A74Pf7PlWN+qdwDLvjyEK8Bq/JX/qtEkpEhMXvaWkW+yv5/RfNkuzc1JsN3ql2hRobz2EydcChKDH7Q2zTRbGQi2W2qscaLOqPih7IbVpm/I+5f8Ebp0T74y1TV2T6b8WjwkT15c+Nu8iJr/8aXJir2Wqq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706448530; c=relaxed/simple;
-	bh=xOmYMZ5MtseVU76edISPYkHc5kt/+yu5YKMYOBQHCJ8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=NXg/vZbfkmSvW8bvUiMJOkuuEBuIPiCMftii1alJLzio5aEBbRTctoxJYo8HpGNoT2mZ9gsT68s8WKkQa6Gm+3itlBmyP2/Hc390lTGb+sHYypChDlzIkSw5tHj68ZHnEdZPgKtG8ijUrD7QaLWlnaM+smLBZzg6n2pZ5c0LgBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1rU5DA-0001qH-00; Sun, 28 Jan 2024 14:28:36 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id A5CCCC0135; Sun, 28 Jan 2024 14:28:29 +0100 (CET)
-Date: Sun, 28 Jan 2024 14:28:29 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: torvalds@linux-foundation.org
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] MIPS fixes for v6.8
-Message-ID: <ZbZWfaAxU0MyPU9i@alpha.franken.de>
+	s=arc-20240116; t=1706448543; c=relaxed/simple;
+	bh=dWbGtbEMBMFYMR3C/ud22kaKap4o7b4BCbU9hiNRVfI=;
+	h=Subject:MIME-Version:Content-Type:From:Date:Message-Id:To:Cc; b=Rq8P5cPsA5HhRmgB01ADl8t6TFOLdVCjz5NBU9CaLDov6g6FMqOtviCkXWez+DM+QgItw9wE+cAVI5CRbRJ0cSyW8Tq8TDd68b9GmLedY0Y0rLmN6M+76J20qbPLzMomBS+TQklDg6WLbNVgQL12x1z/Rlz5AUMU5EWz8OdGWAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Subject: [PATCH v2 0/3] mm/zswap: fix race between lru writeback and swapoff
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-b4-tracking: H4sIAJBWtmUC/w3LQQqEMAwAwK9IzhuoURT8TVqDBqVKoiso/t0e5zAPuJiKw1A9YPJX1y0X0K+CNH
+ OeBHUsBgrUhpo6vP3iHS/TQyKnBY2TIPV9EyVww2MLpUZ2wWic01xyPtf1fT81pNc3awAAAA==
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Chengming Zhou <zhouchengming@bytedance.com>
+Date: Sun, 28 Jan 2024 13:28:48 +0000
+Message-Id: <20240126-zswap-writeback-race-v2-0-b10479847099@bytedance.com>
+To: Johannes Weiner <hannes@cmpxchg.org>, Yosry Ahmed <yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Chris Li <chriscli@google.com>
+Cc: Chengming Zhou <zhouchengming@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org
+X-Migadu-Flow: FLOW_OUT
 
-The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
+This is based on mm-unstable and the "mm: zswap: fix missing folio cleanup
+in writeback race path" patch [1].
 
-  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
+Changes in v2:
+- Append a patch to remove list_lru_putback() since its only user
+  in zswap has gone, per Nhat.
+- Improve the commit messages per Johannes.
+- Add comments about the lru rotate in shrink_memcg_cb() per Johannes.
+- Collect tags.
+- Link to v1: https://lore.kernel.org/all/20240126083015.3557006-1-chengming.zhou@linux.dev/
 
-are available in the Git repository at:
+This series mainly fix the race problem between lru writeback and swapoff,
+which is spotted by Yosry [2]. Please see the commits for details.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips-fixes_6.8_1
+Thanks for review and comments!
 
-for you to fetch changes up to 59be5c35850171e307ca5d3d703ee9ff4096b948:
+[1] https://lore.kernel.org/all/20240125085127.1327013-1-yosryahmed@google.com/
+[2] https://lore.kernel.org/all/CAJD7tkasHsRnT_75-TXsEe58V9_OW6m3g6CF7Kmsvz8CKRG_EA@mail.gmail.com/
 
-  mips: Call lose_fpu(0) before initializing fcr31 in mips_set_personality_nan (2024-01-27 11:08:04 +0100)
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+---
+Chengming Zhou (3):
+      mm/zswap: don't return LRU_SKIP if we have dropped lru lock
+      mm/zswap: fix race between lru writeback and swapoff
+      mm/list_lru: remove list_lru_putback()
 
-----------------------------------------------------------------
-- fix for boot issue on single core Lantiq Danube devices
-- fix for boot issue on Loongson64 platforms
-- fix for improper FPU setup
-- fix missing prototypes issues
+ include/linux/list_lru.h |  16 -------
+ mm/list_lru.c            |  14 ------
+ mm/zswap.c               | 120 ++++++++++++++++++++---------------------------
+ 3 files changed, 51 insertions(+), 99 deletions(-)
+---
+base-commit: 13d63cb513841433b69564b07614169e61113720
+change-id: 20240126-zswap-writeback-race-2773be0a3ad4
 
-----------------------------------------------------------------
-Aleksander Jan Bajkowski (1):
-      MIPS: lantiq: register smp_ops on non-smp platforms
-
-Florian Fainelli (3):
-      MIPS: Cobalt: Fix missing prototypes
-      MIPS: Alchemy: Fix missing prototypes
-      MIPS: BCM63XX: Fix missing prototypes
-
-Huang Pei (3):
-      MIPS: reserve exception vector space ONLY ONCE
-      MIPS: loongson64: set nid for reserved memblock region
-      MIPS: loongson64: set nid for reserved memblock region
-
-Thomas Bogendoerfer (5):
-      MIPS: sgi-ip27: Fix missing prototypes
-      MIPS: fw arc: Fix missing prototypes
-      MIPS: sgi-ip30: Fix missing prototypes
-      MIPS: sgi-ip32: Fix missing prototypes
-      Revert "MIPS: loongson64: set nid for reserved memblock region"
-
-Xi Ruoyao (1):
-      mips: Call lose_fpu(0) before initializing fcr31 in mips_set_personality_nan
-
- arch/mips/alchemy/common/prom.c            |   1 +
- arch/mips/alchemy/common/setup.c           |   4 +-
- arch/mips/bcm63xx/boards/board_bcm963xx.c  |   2 +-
- arch/mips/bcm63xx/dev-rng.c                |   2 +-
- arch/mips/bcm63xx/dev-uart.c               |   1 +
- arch/mips/bcm63xx/dev-wdt.c                |   2 +-
- arch/mips/bcm63xx/irq.c                    |   2 +-
- arch/mips/bcm63xx/setup.c                  |   2 +-
- arch/mips/bcm63xx/timer.c                  |   2 +-
- arch/mips/cobalt/setup.c                   |   3 -
- arch/mips/fw/arc/memory.c                  |   2 +-
- arch/mips/include/asm/mach-au1x00/au1000.h |   3 +
- arch/mips/include/asm/mach-cobalt/cobalt.h |   3 +
- arch/mips/kernel/elf.c                     |   6 +
- arch/mips/kernel/traps.c                   |   8 +-
- arch/mips/lantiq/prom.c                    |   7 +-
- arch/mips/loongson64/init.c                |   3 +
- arch/mips/loongson64/numa.c                |   2 +
- arch/mips/sgi-ip27/Makefile                |   2 +-
- arch/mips/sgi-ip27/ip27-berr.c             |   4 +-
- arch/mips/sgi-ip27/ip27-common.h           |   2 +
- arch/mips/sgi-ip27/ip27-hubio.c            | 185 -----------------------------
- arch/mips/sgi-ip27/ip27-irq.c              |   2 +
- arch/mips/sgi-ip27/ip27-memory.c           |   1 +
- arch/mips/sgi-ip27/ip27-nmi.c              |  25 ++--
- arch/mips/sgi-ip30/ip30-console.c          |   1 +
- arch/mips/sgi-ip30/ip30-setup.c            |   1 +
- arch/mips/sgi-ip32/crime.c                 |   6 +-
- arch/mips/sgi-ip32/ip32-berr.c             |   2 +
- arch/mips/sgi-ip32/ip32-common.h           |  15 +++
- arch/mips/sgi-ip32/ip32-irq.c              |   6 +-
- arch/mips/sgi-ip32/ip32-memory.c           |   1 +
- arch/mips/sgi-ip32/ip32-reset.c            |   2 +
- arch/mips/sgi-ip32/ip32-setup.c            |   3 +-
- 34 files changed, 83 insertions(+), 230 deletions(-)
- delete mode 100644 arch/mips/sgi-ip27/ip27-hubio.c
- create mode 100644 arch/mips/sgi-ip32/ip32-common.h
-
+Best regards,
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Chengming Zhou <zhouchengming@bytedance.com>
 
