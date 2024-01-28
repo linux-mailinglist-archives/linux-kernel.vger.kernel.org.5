@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-41535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 200E883F3F5
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 06:06:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97AF883F3F6
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 06:06:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB72A283D7A
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 05:06:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DFFB1F21837
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 05:06:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0464AD2F7;
-	Sun, 28 Jan 2024 05:06:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 951B3DF67;
+	Sun, 28 Jan 2024 05:06:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rgazrkj6"
-Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A3SpdN5X"
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91C358F6E
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 05:06:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E010D527
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 05:06:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706418371; cv=none; b=S6U8U9Y3Nv46/vs2qZ9rABTDpigGp4H6X5mOcaSkvYCMw/5jeffNkNpYx77/9r1LAUhdvv7z/k9yCQS98nmDaQEyZKr/i2PUueMQKM09vDQulvjExV7UrG35NoZU3hsQi9FkLhuj0z/gJqZF5tuhF21Bzion7O6Dld3XGGxu8dY=
+	t=1706418374; cv=none; b=Hg0+yB07XDcohxxdGbASLYDFBNsyQXImdqAYPjx9lIvHFO73EOoXtTO1WiYjDDowAvcDMbz9QABFQOn00zyN7ZFU2AYXq0LSJS3+gHzHY76Z0ftEd8NtybuwlGkcPHrzycM8nihFkIYYcJYIxulRT1hjNbgCbY0QyrLumB13wVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706418371; c=relaxed/simple;
-	bh=qP1S1rXP0UMtjHp5qx9OgsIHVeo/JJwGD+kMiT1E4bU=;
+	s=arc-20240116; t=1706418374; c=relaxed/simple;
+	bh=ExuY3mPusE/FWbLSFzM/M9SA0b5v24qHPt/95eQI/Gg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NvTh+tmoyfWnAjp80a1gK8rfw+cSFCIsdHEM47YUhtHgf9XVzSAk1fbFJKU/FaQFP49hgaY9S9BAiCOR8fF558KuU8+S3+zRPzzSQHVrT833itiDumrHHefPuFLqXl0O0tYxXV55qgNLR0EgavW1dcFmcLhFLlXj183Qn71avas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rgazrkj6; arc=none smtp.client-ip=209.85.167.181
+	 MIME-Version; b=asnBv/nWq0niiAz7ja7ToC8bpHi5ZtaQjG63025AWwTqQ0HUEo3/wpyaAgmt5kI1V4Byzgb9N8zauO08t8QOs3uPkUKEDcg8i2dztetm45bTJ68cxwEDExY9yDo1wLVMDXSEuEfcjKPYAUxbgSAdg+jo49wkVvGjkfKhDqVboao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A3SpdN5X; arc=none smtp.client-ip=209.85.167.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3bd5c4cffefso2162478b6e.1
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 21:06:09 -0800 (PST)
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3bd5c4cffefso2162519b6e.1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 21:06:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706418368; x=1707023168; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706418372; x=1707023172; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=19sNIGW0pghbkIABBLpZ8u04puBnH22vL76jF4wAKJM=;
-        b=Rgazrkj6j04Hl5jIA2RNOaZRpPUlXrsO9yjGn682flVLQnc7lcjNQpYJB237DFfKY9
-         ImVmQxWpJh5zxTfZ4rm/VzY03twK1cyFYwVQoYLHzEtvJ7B615HeTuu7cBDkJgZGkpts
-         2eId0sSAiKEA3Xx58FIfUGUs0yliTIVHJn4nc+pvHdWJDnNZ/Rkto2XyxMsIboxzFLQp
-         nqQh12vs/icWZubTKl+gj1ZtjzSjRvAPThOQkOL3iuzrsb3Yn9BxWJ8RiLwf1p+5kx2F
-         Mw8Gb1oszTubPBRH+eb6EAFh78v3z7YTxeh7m3kTLJGdjEddFmBDemcNXzBhF/cJfC++
-         8VGg==
+        bh=Afm8icB/y+Dcgg++6LXAA0U3DRuhdcifD/F9kyq+8Bw=;
+        b=A3SpdN5XK3K1mTaGdxFBRPKefIXvQFS5O8e2a6a+brw8qALDde5KG1JK/2plQ9EdHb
+         hUIEP/8h9PYPf+cNM9to8lIOLM9nyBMNkxfZQc78UGzIbIiDycJDq2E1lvFlIY8GWLPR
+         YGBq8jST8hNo5jphplFViUVJueaBfAkIhLEfO2Q6wYbBJFqDl+ONKlY9m1atA0TAF/om
+         ODLPXue4UFk20DnZKcZzh/iOCOP5SQkC8GKoRRQCIoyYiIaD2CCetWG6wPEsVhEivAwu
+         pm0qJjVSqaoufugs7ngmF8bTEohKdMM20AK82O/eH3tlpbRSbD95ujgsAKAdh5xNpU5b
+         YXGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706418368; x=1707023168;
+        d=1e100.net; s=20230601; t=1706418372; x=1707023172;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=19sNIGW0pghbkIABBLpZ8u04puBnH22vL76jF4wAKJM=;
-        b=I0T35BB2sApoC+89+joHmF8HjQJTdOPdXJ2XRsfiLDo3trRETdXyIQ1ucSkU4UKW8s
-         YTBhG2HItlFd/Q0WV8LWT5E5TPy8+bb08N2YQZF76jQCu5EorpVNSTtUFkn9syF9pjZW
-         lI8klBaWPt1FQMLk76e6Pimbb2pQCkh+kCMG6T0xnIDmy11S+Rni8Ud28AJPr1vmgnAx
-         0SPvh52F2nb2hWwzMsx6ko5gYaam3eF1ItbDcB6qUUAHB0SmYI+ZyYEltgN+nBmXL1GI
-         +4cTi4WLLnInFfGs2Firwv3b2h4AXdcdbMB7cg5qzA9beNMXywMn+akNXbV69PUOxf83
-         q1Eg==
-X-Gm-Message-State: AOJu0YwoCbwHYsH6MhITt7wxkym3idfFgUeuhKAKPXwKRQ5Ls2CyTF3m
-	qNJQVIUYpIPgDxxsdydQIzOOHgRI/wyL15Jy/VNZY71XzfPwzXv9
-X-Google-Smtp-Source: AGHT+IGBTtbhRceHwTa0x3eZf1sJmCivqoJmPoyAxwOiobLNypPD+byqKoFmrztSRgvKweXB+qAZ3Q==
-X-Received: by 2002:a05:6808:1815:b0:3be:2175:98e9 with SMTP id bh21-20020a056808181500b003be217598e9mr2912252oib.18.1706418368391;
-        Sat, 27 Jan 2024 21:06:08 -0800 (PST)
+        bh=Afm8icB/y+Dcgg++6LXAA0U3DRuhdcifD/F9kyq+8Bw=;
+        b=WDt4y/DrTyjf/SnadLGfjzJxmVcSWOUvumlmt1idlzMnFg9zLezfM6VwLk0hM7frFQ
+         w0ayRj9uxnimBKinvFI8jYkKXT0oV6D1rB8bPgb2cIY8Nz/KT5WZei3gcKm0WH6x5q/u
+         H8ZDVhUcTP4gj858yk26XyDdM5ACNmyJ4mcrWJkm11sm+EyXOeThirXZYzqKIaQSmcYk
+         uJkne0kzlz7+nQfqZ+9KnyRRqWV61fYpwTvE8ny1aMToCPc1lS3lNWvbcxLYJXG6F8cH
+         o7aJWq14WQctaWSZ943FuhKZwIt5leEXDxXtKj5II23fdtBG3C0CPmi+WHmni1DLHQZT
+         pFJg==
+X-Gm-Message-State: AOJu0YwVh0br0zON9urQRZoCbAOBKn4+5wGedU41dc519vZZ08j5w0uG
+	09hOGYa30Ml2jrtW/4fPBRBAmCSO7Z49OiQmWqpP+N6GkjUXJLEg
+X-Google-Smtp-Source: AGHT+IFX51ILylxaSYnl18EoW6kL48m7lSuyH/v3viP4NEjjW8STalhGnaCEAi2BeLIKKaIi3ElmTQ==
+X-Received: by 2002:a05:6808:1189:b0:3bd:a71f:9bf0 with SMTP id j9-20020a056808118900b003bda71f9bf0mr3657759oil.39.1706418372492;
+        Sat, 27 Jan 2024 21:06:12 -0800 (PST)
 Received: from localhost.localdomain (124x33x176x97.ap124.ftth.ucom.ne.jp. [124.33.176.97])
-        by smtp.gmail.com with ESMTPSA id lp17-20020a056a003d5100b006ddd182bf1csm3550372pfb.46.2024.01.27.21.06.04
+        by smtp.gmail.com with ESMTPSA id lp17-20020a056a003d5100b006ddd182bf1csm3550372pfb.46.2024.01.27.21.06.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Jan 2024 21:06:07 -0800 (PST)
+        Sat, 27 Jan 2024 21:06:11 -0800 (PST)
 Sender: Vincent Mailhol <vincent.mailhol@gmail.com>
 From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 To: Andrew Morton <akpm@linux-foundation.org>,
@@ -84,9 +84,9 @@ Cc: Yury Norov <yury.norov@gmail.com>,
 	"Paul E . McKenney" <paulmck@kernel.org>,
 	linux-m68k@lists.linux-m68k.org,
 	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v4 1/5] m68k/bitops: force inlining of all bit-find functions
-Date: Sun, 28 Jan 2024 14:00:07 +0900
-Message-ID: <20240128050449.1332798-2-mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v4 2/5] m68k/bitops: use __builtin_{clz,ctzl,ffs} to evaluate constant expressions
+Date: Sun, 28 Jan 2024 14:00:08 +0900
+Message-ID: <20240128050449.1332798-3-mailhol.vincent@wanadoo.fr>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr>
 References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr>
@@ -99,100 +99,71 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The inline keyword actually does not guarantee that the compiler will
-inline a functions. Whenever the goal is to actually inline a
-function, __always_inline should always be preferred instead.
+The compiler is not able to do constant folding on "asm volatile" code.
 
-__always_inline is also needed for further optimizations which will
-come up in a follow-up patch.
+Evaluate whether or not the function argument is a constant expression
+and if this is the case, return an equivalent builtin expression.
 
-Inline all the bit-find function which have a custom m68k assembly
-implementation, namely: __ffs(), ffs(), ffz(), __fls(), fls().
-
-On linux v6.7 allyesconfig with GCC 13.2.1, it does not impact the
-final size, meaning that, overall, those function were already inlined
-on modern GCCs:
+On linux 6.7 with an allyesconfig and GCC 13.2.1, it saves roughly 11 KB.
 
   $ size --format=GNU vmlinux.before vmlinux.after
     text       data        bss      total filename
-    60457956   70953665    2288644  133700265 vmlinux.before
-    60457964   70953697    2288644  133700305 vmlinux.after
+    60457964   70953697    2288644  133700305 vmlinux.before
+    60441196   70957057    2290724  133688977 vmlinux.after
 
-Reference: commit 8dd5032d9c54 ("x86/asm/bitops: Force inlining of test_and_set_bit and friends")
-Link: https://git.kernel.org/torvalds/c/8dd5032d9c54
+Reference: commit fdb6649ab7c1 ("x86/asm/bitops: Use __builtin_ctzl() to evaluate constant expressions")
+Link: https://git.kernel.org/torvalds/c/fdb6649ab7c1
 
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 ---
- arch/m68k/include/asm/bitops.h | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ arch/m68k/include/asm/bitops.h | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
-index 14c64a6f1217..a8b23f897f24 100644
+index a8b23f897f24..02ec8a193b96 100644
 --- a/arch/m68k/include/asm/bitops.h
 +++ b/arch/m68k/include/asm/bitops.h
-@@ -465,7 +465,7 @@ static inline int find_next_bit(const unsigned long *vaddr, int size,
-  * ffz = Find First Zero in word. Undefined if no zero exists,
-  * so code should check against ~0UL first..
-  */
--static inline unsigned long ffz(unsigned long word)
-+static __always_inline unsigned long ffz(unsigned long word)
+@@ -469,6 +469,9 @@ static __always_inline unsigned long ffz(unsigned long word)
  {
  	int res;
  
-@@ -488,7 +488,7 @@ static inline unsigned long ffz(unsigned long word)
-  */
- #if (defined(__mcfisaaplus__) || defined(__mcfisac__)) && \
++	if (__builtin_constant_p(word))
++		return __builtin_ctzl(~word);
++
+ 	__asm__ __volatile__ ("bfffo %1{#0,#0},%0"
+ 			      : "=d" (res) : "d" (~word & -~word));
+ 	return res ^ 31;
+@@ -490,6 +493,9 @@ static __always_inline unsigned long ffz(unsigned long word)
  	!defined(CONFIG_M68000)
--static inline unsigned long __ffs(unsigned long x)
-+static __always_inline unsigned long __ffs(unsigned long x)
+ static __always_inline unsigned long __ffs(unsigned long x)
  {
++	if (__builtin_constant_p(x))
++		return __builtin_ctzl(x);
++
  	__asm__ __volatile__ ("bitrev %0; ff1 %0"
  		: "=d" (x)
-@@ -496,7 +496,7 @@ static inline unsigned long __ffs(unsigned long x)
- 	return x;
- }
- 
--static inline int ffs(int x)
-+static __always_inline int ffs(int x)
- {
- 	if (!x)
- 		return 0;
-@@ -518,7 +518,7 @@ static inline int ffs(int x)
-  *	the libc and compiler builtin ffs routines, therefore
-  *	differs in spirit from the above ffz (man ffs).
-  */
--static inline int ffs(int x)
-+static __always_inline int ffs(int x)
+ 		: "0" (x));
+@@ -522,6 +528,9 @@ static __always_inline int ffs(int x)
  {
  	int cnt;
  
-@@ -528,7 +528,7 @@ static inline int ffs(int x)
- 	return 32 - cnt;
- }
- 
--static inline unsigned long __ffs(unsigned long x)
-+static __always_inline unsigned long __ffs(unsigned long x)
- {
- 	return ffs(x) - 1;
- }
-@@ -536,7 +536,7 @@ static inline unsigned long __ffs(unsigned long x)
- /*
-  *	fls: find last bit set.
-  */
--static inline int fls(unsigned int x)
-+static __always_inline int fls(unsigned int x)
++	if (__builtin_constant_p(x))
++		return __builtin_ffs(x);
++
+ 	__asm__ ("bfffo %1{#0:#0},%0"
+ 		: "=d" (cnt)
+ 		: "dm" (x & -x));
+@@ -540,6 +549,9 @@ static __always_inline int fls(unsigned int x)
  {
  	int cnt;
  
-@@ -546,7 +546,7 @@ static inline int fls(unsigned int x)
- 	return 32 - cnt;
- }
- 
--static inline unsigned long __fls(unsigned long x)
-+static __always_inline unsigned long __fls(unsigned long x)
- {
- 	return fls(x) - 1;
- }
++	if (__builtin_constant_p(x))
++		return x ? BITS_PER_TYPE(x) - __builtin_clz(x) : 0;
++
+ 	__asm__ ("bfffo %1{#0,#0},%0"
+ 		: "=d" (cnt)
+ 		: "dm" (x));
 -- 
 2.43.0
 
