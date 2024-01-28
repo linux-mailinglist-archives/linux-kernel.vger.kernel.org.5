@@ -1,80 +1,81 @@
-Return-Path: <linux-kernel+bounces-41917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0EFA83F991
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:57:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE7DD83F99D
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 21:00:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FDE21F219BD
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 19:57:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95654282986
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:00:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9C223BB3B;
-	Sun, 28 Jan 2024 19:57:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 270A142060;
+	Sun, 28 Jan 2024 19:59:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BXG8zA/D"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="BJMKk/A8"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAD1C2D61A;
-	Sun, 28 Jan 2024 19:57:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAF7A3C68C;
+	Sun, 28 Jan 2024 19:59:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706471863; cv=none; b=bTMuPxgWaJrF+tjXWg3v/yAuku8FveUSvR+54Ug1/rN3CKw/jcHj+l3U60DZ8bcml9sGKTNlZSGNw1udXr2xdqDw/NVFcJ/wjP568VESUz2NUAuJD2BLN5AwzoYq5DQGdVCl5L9UmjRNdxL/kVYSHnDb9lGrp/Wo5tP+C9AVgPc=
+	t=1706471955; cv=none; b=YU/XKuAPhZJNmjxxg6egJcUFYowu/eLFsSvmQoXYacXgrAz8qhp9Y402tr9z+FeRHewFbZmW6P3q2O3BaQbxixidxJU5EgIPq2BN6/iMrzWMtY4atFkZLPtMtPb+t+9Z6KBpccUjNFGOIZt4YH8zvFycy+2x9ktcNZ38odYyhjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706471863; c=relaxed/simple;
-	bh=/QPR/qDfKOcrRm87Xiko56xF+rk8CX4zS8nZ1M+uiRQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DueldzJyyUsRzLoZMK0PoKXdtvh2YrUZzK9dnN/jQP7PTi8xRi2ugujJPafPBscCLPqUoVHEJ5GDd4U2BzVwklJueFIrNJcuNXMEBrexc6uVHlTscbvBLtycigvb1/gLSHwPGCVfA5oNfBdRa618CYQcGbGwbFDauO9qbIWexVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BXG8zA/D; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d76671e5a4so15934305ad.0;
-        Sun, 28 Jan 2024 11:57:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706471861; x=1707076661; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=W5rvBIjZB6f/l7eWENYMQezAWoxVgyOQwzg5bdH8Pi0=;
-        b=BXG8zA/DhJLW5CZCfCm+gs3W6vs+2j7OAZhAaS4ZKmHSCfAoqGjppCiQhv6meS3Aqy
-         c7DjeP6Js7AEMr54rzi5FMforfWNTB7bV2wVJHBu3BP4k7kcDuTRuqpNFH0OaWzPjylG
-         wYrE4KAu+hEh5ykJdf5haVqJFRRRPQGN8EzfkjgGn3xhvVSGyLlY81oNJ7Bf0b+oWF4S
-         kXgutm7PRZ9q21JL1rRQLvJyPlx0FwcUmTxyefbhrNwUYFq1TYWzYQgCcW9P5m+aVfy6
-         qFdRSD1iMWDZudLKdlHMt7k2/hYMe4S8wN4qYNmCQd+i0Iv2FPeXcMDEUjwCfFsrcqQE
-         hEAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706471861; x=1707076661;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=W5rvBIjZB6f/l7eWENYMQezAWoxVgyOQwzg5bdH8Pi0=;
-        b=qEXigE0DOqaOvAxTU8+dUnCltn//2hnRxoK1mi+gq5ggl3H5qOkHIVP20qkUG18p+d
-         X3srX4xvatVw9A8MosX6U/xXe9rYEBPeOlb+KvK+L7u39zW7Une8W6e2dPeAwhXRxKyZ
-         TzOHOvO34GpEQgC/QWKiApr8oanGCEvVVCQYXTP+CPkdveDfDAeMIVTbm+UFGQ9ELtxD
-         gOTVV4m1SYfuG+LQrRJphv2ChTMJU+NtSpZ0N/OHCb3K3RAj+a1F2gyG/n3sLPVhyA/D
-         onFDCPlD1tP3312gXkvMukQDfUgX4PwoWeqxk5985qJ6KLDad5QktqK7OFi7pQzrvQcz
-         2xTQ==
-X-Gm-Message-State: AOJu0YzOLjza6ONDZvy9YVTn0K/5+D8gq7vjRQ5e4RVjUklAlseZQ9YD
-	N/GHakGWW0EP2ndfBNaDV8IIrxr40jwubpkzp0cFdrwiuGaxNMT2
-X-Google-Smtp-Source: AGHT+IF8LNP683ZdD/msPWljI3oDdXkEgvLJE+R0BVknqxo0xfx6cWTXK7UsQFjH7TI9GBziHWtryQ==
-X-Received: by 2002:a17:902:7845:b0:1d8:ca24:d654 with SMTP id e5-20020a170902784500b001d8ca24d654mr2260474pln.100.1706471860894;
-        Sun, 28 Jan 2024 11:57:40 -0800 (PST)
-Received: from kohshi54-ThinkCentre-M715q.. ([2404:7a80:c880:6500:7f79:d78c:e8ac:f086])
-        by smtp.gmail.com with ESMTPSA id g10-20020a170902c98a00b001d5e340d979sm1113365plc.6.2024.01.28.11.57.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jan 2024 11:57:40 -0800 (PST)
-From: Kohshi Yamaguchi <kohshi54.yam@gmail.com>
-To: gregkh@linuxfoundation.org,
-	corbet@lwn.net
-Cc: Kohshi Yamaguchi <kohshi54.yam@gmail.com>,
-	linux-usb@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	skhan@linuxfoundation.org
-Subject: [PATCH] doc: Fix malformed table in gadget-testing.rst
-Date: Mon, 29 Jan 2024 04:57:31 +0900
-Message-Id: <20240128195731.40003-1-kohshi54.yam@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706471955; c=relaxed/simple;
+	bh=2SUnMmASJH8Zosdufbfuq/QquqLnb55c0ttzhxwGzF0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YzGB6RfhVNtHNQ0nPJeJcp/3G5WYanXXlor/H+BWZsBLMOiHrWgG2hu2RQ8a8UqI3mjSnN3hdRVWLTl5CSbvhlbzc9TbOyg+BNZHaU6/+mzWeAqHood4g/h1XNqcRUEz+AYVjw1/7GD8gd7udmK+p3S+yHenlWIhUt84cSPNK34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=BJMKk/A8; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40SHDW0Q002736;
+	Sun, 28 Jan 2024 19:59:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=+dcdQLiT/nfsDiyjwPQCWNxl4S7aRhJdMu+54Asw0Gc=;
+ b=BJMKk/A8CiaUcu2xRCvYs6nwy0MRd2ZgGOovF4CcM/uAV3SMBdFmV/ggT4BtiQzBjUjv
+ AYKWMzP+wWfrMx/egfqJkEWCmT2BKrr8yYp3vgU5IKCk00IvHGdWnWVxeNlWWfD0iuvE
+ tn4ve/aDDYuiwx59ZctnYoFc9Xn5S61d6wTehpLDmgNeTZ8/8+ORNNyjaR3vtrRKCkgm
+ VI4kRgCxxHy9/AbbSA5kUj/JocwfO4z6sgTGYduGCkVMDctw0DzJVrhbDE0zTxJ42Ymu
+ 3XH5U7RfJR/RbV+6Tt85RwUTbbw+NrdkjuqDKTJ81tz+yALIrLjGTmaGHjlO6ApujeWR uQ== 
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vw209y73w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 28 Jan 2024 19:58:59 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40SH0MxN010511;
+	Sun, 28 Jan 2024 19:58:58 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vwd5nc6x9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 28 Jan 2024 19:58:58 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40SJwtsc57868730
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sun, 28 Jan 2024 19:58:55 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id EDE8C2004E;
+	Sun, 28 Jan 2024 19:58:54 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id DD7F22004B;
+	Sun, 28 Jan 2024 19:58:54 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Sun, 28 Jan 2024 19:58:54 +0000 (GMT)
+Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55669)
+	id A8968E0499; Sun, 28 Jan 2024 20:58:54 +0100 (CET)
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: Frederic Weisbecker <frederic@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>
+Cc: linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH 0/5] sched/vtime: vtime.h headers cleanup
+Date: Sun, 28 Jan 2024 20:58:49 +0100
+Message-Id: <cover.1706470223.git.agordeev@linux.ibm.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,54 +83,51 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 3t3W68bBEGZdHty-p09wI73TlhqoZ5Bl
+X-Proofpoint-ORIG-GUID: 3t3W68bBEGZdHty-p09wI73TlhqoZ5Bl
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-25_14,2024-01-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 adultscore=0 clxscore=1015 spamscore=0 mlxlogscore=713
+ phishscore=0 suspectscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401280151
 
-The table describing the NCM function attributes in gadget-testing.rst
-was malformed, causing Sphinx build warnings. This patch fixes the table
-format to align with the reStructuredText specifications.
+Hi all,
 
-The border lines of the table were not properly aligned with the column
-headers, which was corrected by adjusting the border line lengths to
-match the headers.
+Please find a small cleanup to vtime_task_switch() wiring.
+I split it into smaller patches to allow separate PowerPC
+vs s390 reviews. Otherwise patches 2+3 and 4+5 could have
+been merged.
 
-Signed-off-by: Kohshi Yamaguchi <kohshi54.yam@gmail.com>
----
- Documentation/usb/gadget-testing.rst | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+I tested it on s390 and compile-tested it on 32- and 64-bit
+PowerPC and few other major architectures only, but it is
+only of concern for CONFIG_VIRT_CPU_ACCOUNTING_NATIVE-capable
+ones (AFAICT).
 
-diff --git a/Documentation/usb/gadget-testing.rst b/Documentation/usb/gadget-testing.rst
-index 8cd62c466d20..1d1737f246df 100644
---- a/Documentation/usb/gadget-testing.rst
-+++ b/Documentation/usb/gadget-testing.rst
-@@ -448,17 +448,17 @@ Function-specific configfs interface
- The function name to use when creating the function directory is "ncm".
- The NCM function provides these attributes in its function directory:
- 
--	===============   ==================================================
--	ifname		  network device interface name associated with this
--			  function instance
--	qmult		  queue length multiplier for high and super speed
--	host_addr	  MAC address of host's end of this
--			  Ethernet over USB link
--	dev_addr	  MAC address of device's end of this
--			  Ethernet over USB link
--	max_segment_size  Segment size required for P2P connections. This
--			  will set MTU to (max_segment_size - 14 bytes)
--	===============   ==================================================
-+	================   ==================================================
-+	ifname		   network device interface name associated with this
-+			   function instance
-+	qmult		   queue length multiplier for high and super speed
-+	host_addr	   MAC address of host's end of this
-+			   Ethernet over USB link
-+	dev_addr	   MAC address of device's end of this
-+			   Ethernet over USB link
-+	max_segment_size   Segment size required for P2P connections. This
-+			   will set MTU to (max_segment_size - 14 bytes)
-+	================   ==================================================
- 
- and after creating the functions/ncm.<instance name> they contain default
- values: qmult is 5, dev_addr and host_addr are randomly selected.
+Thanks!
+
+Alexander Gordeev (5):
+  sched/vtime: remove confusing arch_vtime_task_switch() declaration
+  sched/vtime: get rid of generic vtime_task_switch() implementation
+  s390/vtime: remove unused __ARCH_HAS_VTIME_TASK_SWITCH leftover
+  s390/irq,nmi: do not include <linux/vtime.h> header
+  sched/vtime: do not include <asm/vtime.h> header
+
+ arch/powerpc/include/asm/cputime.h | 13 -------------
+ arch/powerpc/kernel/time.c         | 22 ++++++++++++++++++++++
+ arch/s390/include/asm/vtime.h      |  2 --
+ arch/s390/kernel/irq.c             |  1 +
+ arch/s390/kernel/nmi.c             |  1 +
+ include/asm-generic/vtime.h        |  1 -
+ include/linux/vtime.h              |  5 -----
+ kernel/sched/cputime.c             | 13 -------------
+ 8 files changed, 24 insertions(+), 34 deletions(-)
+ delete mode 100644 include/asm-generic/vtime.h
+
 -- 
-2.34.1
+2.40.1
 
 
