@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-41677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41678-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DCBA83F643
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:06:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F94C83F647
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:06:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A050283C79
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:06:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 523E31C217CB
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:06:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEA0E2D61B;
-	Sun, 28 Jan 2024 16:06:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74EA42E65B;
+	Sun, 28 Jan 2024 16:06:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jb2HZ1kE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qfMWcqXQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 338CF2C850;
-	Sun, 28 Jan 2024 16:06:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B37B32E644;
+	Sun, 28 Jan 2024 16:06:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706457969; cv=none; b=R/ihIY1Tr94nNWDcm6pypm3nQbF03n0u+zaw2qZ8c71pqEXJmyUOmHVp53LKVG78gL5Uimg6zL0IHWACGJ/kXpDbTtrodP33TGwn6xwmOJASFipID3kxVybaytVu7lIItBQ/SOJMltkoCnPrZnt88tLGWv3+xVKLbt7RWdyXxgw=
+	t=1706457972; cv=none; b=mDe7Fm+MLDygoinMqoVydFBKYTa6dheuWwcmjK1vTmPM9UGgATITtsI1WXReLppsRNDloZALV+Eaep2NFBokCIeGWZZdkN19iTPOlRUGwCkLvHDqgxnJDzhSw18MxpUX4qdPKsYJq3NzFMUb+2AJ24qdjmsHcO1L2/pwzCQUkXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706457969; c=relaxed/simple;
-	bh=yeij2zd0BfAatAVK4xbn+gh4HqFxqVbeELw/h09d40M=;
+	s=arc-20240116; t=1706457972; c=relaxed/simple;
+	bh=1UnqaSq6US/sXw4AotStqr/RUKhvvYzhNHwicWeq4pM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=itT9UpRPTikvLRkXfQGUIMe1TTTqYLvYgRhTnwr2gZgB9yK2whr07cC4bE0puKsbHDasnWW8nq3D7rOQQv4K2r1mN85cfqOa2I9THbfMGF0tCnLMZuiGam7XoJG1fRQEN2KWds8kUTiZCGChkCFy6vaLqb2zcvEPfNZaYz6ygCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jb2HZ1kE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A14FBC433C7;
-	Sun, 28 Jan 2024 16:06:05 +0000 (UTC)
+	 MIME-Version; b=M3N3Bz+2ouBQ++XLHf2K7A0Sx7SLmii5qKHjPOC19xRIGB4wHf47vTnzKkWU8ZrUrHQKKayRLGLYFsbCxd/fpxXINihazidr3/J10Ui+a6uFDyMBwO55O85Bl3N5C7ozb7SdcW3/aelpDDn1AKKUh/KLlXZ7m4L8+8yeeWf26i0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qfMWcqXQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BA3CC43394;
+	Sun, 28 Jan 2024 16:06:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706457968;
-	bh=yeij2zd0BfAatAVK4xbn+gh4HqFxqVbeELw/h09d40M=;
+	s=k20201202; t=1706457972;
+	bh=1UnqaSq6US/sXw4AotStqr/RUKhvvYzhNHwicWeq4pM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jb2HZ1kEkbL0DLPQcYUxBWFWA7qb8nt71qZmUTAr5BnSXXpsHKdsiClKo21MNV6RI
-	 bBUGqmXuF6hfD06WHH9DiGveI40ItBUmgxLczStwAVBciTKvjJ9Gglrkki2xCkcmh7
-	 fvl9qg9PolIQflEtnDyLyheTTTBWPJVeNa/Z0gzoC6+BhAiSmF1vI2fQjNhvU61gVy
-	 OqA8fRmohjQxuB/C5hknO1wWRPvUT39YxvAycjzTrzJaiS9li3WvEF4Dad+UOI81Wx
-	 UMXRWSu46uoMJdmr5u6S6dk5ZMUIDNmpfwPWkJVMUABsg/mh4u64103CkX8UBYq5MK
-	 cmJYh1bVV6oUg==
+	b=qfMWcqXQJuyNNX7HTwLclM8TLDtUP6uRfAE1TNMORFXG8gztAiXwty3tUBRAD6G2w
+	 1UEZwjtVgOM+bZFNxdcukilsqEA6dzQ+Qq70YCR/Ze57qbGW10O/CkLpgbP65ElTaC
+	 dDwM85Z+swUBxO5/RquDc23ErRWPiFKm3njXeRm8YNbQcN4Foi7Bg275xOCzOE+/me
+	 MX3NURYzHj/GYCcWB5bRqzifBc80oe7k84cb5kX8pdLuXgaR+KdC8Yq9yX2WIY1QvA
+	 lzaJUBfoTwrHZKwVCAOVVELKTozQl8zKw2kV4rKZWvgZ9NS9zM1Cnda79ZcqPjLOLZ
+	 V3O5iVUHsBbBQ==
 From: Jonathan Cameron <jic23@kernel.org>
 To: linux-iio@vger.kernel.org,
 	Rob Herring <robh@kernel.org>,
@@ -55,9 +55,9 @@ Cc: Julia Lawall <Julia.Lawall@inria.fr>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	=?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
 	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [RFC PATCH 1/5] of: Add cleanup.h based auto release via __free(device_node) markings.
-Date: Sun, 28 Jan 2024 16:05:38 +0000
-Message-ID: <20240128160542.178315-2-jic23@kernel.org>
+Subject: [RFC PATCH 2/5] of: Introduce for_each_child_of_node_scoped() to automate of_node_put() handling
+Date: Sun, 28 Jan 2024 16:05:39 +0000
+Message-ID: <20240128160542.178315-3-jic23@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128160542.178315-1-jic23@kernel.org>
 References: <20240128160542.178315-1-jic23@kernel.org>
@@ -71,61 +71,37 @@ Content-Transfer-Encoding: 8bit
 
 From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-The recent addition of scope based cleanup support to the kernel
-provides a convenient tool to reduce the chances of leaking reference
-counts where of_node_put() should have been called in an error path.
+To avoid issues with out of order cleanup, or ambiguity about when the
+auto freed data is first instantiated, do it within the for loop definition.
 
-This enables
-	struct device_node *child __free(device_node) = NULL;
-
-	for_each_child_of_node(np, child) {
-		if (test)
-			return test;
-	}
-
-with no need for a manual call of of_node_put().
-A following patch will reduce the scope of the child variable to the
-for loop, to avoid an issues with ordering of autocleanup, and make it
-obvious when this assigned a non NULL value.
-
-In this simple example the gains are small but there are some very
-complex error handling cases buried in these loops that will be
-greatly simplified by enabling early returns with out the need
-for this manual of_node_put() call.
-
-Note that there are coccinelle checks in
-scripts/coccinelle/iterators/for_each_child.cocci to detect a failure
-to call of_node_put(). This new approach does not cause false positives.
-Longer term we may want to add scripting to check this new approach is
-done correctly with no double of_node_put() calls being introduced due
-to the auto cleanup. It may also be useful to script finding places
-this new approach is useful.
+The disadvantage is that the struct device_node *child variable creation
+is not immediately obvious where this is used.
+However, in many cases, if there is another definition of
+struct device_node *child; the compiler / static analysers will notify us
+that it is unused, or uninitialized.
 
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 ---
- include/linux/of.h | 2 ++
- 1 file changed, 2 insertions(+)
+ include/linux/of.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/include/linux/of.h b/include/linux/of.h
-index 6a9ddf20e79a..50e882ee91da 100644
+index 50e882ee91da..f822226eac6d 100644
 --- a/include/linux/of.h
 +++ b/include/linux/of.h
-@@ -13,6 +13,7 @@
-  */
- #include <linux/types.h>
- #include <linux/bitops.h>
-+#include <linux/cleanup.h>
- #include <linux/errno.h>
- #include <linux/kobject.h>
- #include <linux/mod_devicetable.h>
-@@ -134,6 +135,7 @@ static inline struct device_node *of_node_get(struct device_node *node)
- }
- static inline void of_node_put(struct device_node *node) { }
- #endif /* !CONFIG_OF_DYNAMIC */
-+DEFINE_FREE(device_node, struct device_node *, if (_T) of_node_put(_T))
+@@ -1434,6 +1434,12 @@ static inline int of_property_read_s32(const struct device_node *np,
+ 	for (child = of_get_next_available_child(parent, NULL); child != NULL; \
+ 	     child = of_get_next_available_child(parent, child))
  
- /* Pointer for first entry in chain of all nodes. */
- extern struct device_node *of_root;
++#define for_each_child_of_node_scoped(parent, child) \
++	for (struct device_node *child __free(device_node) =		\
++	     of_get_next_child(parent, NULL);				\
++	     child != NULL;						\
++	     child = of_get_next_available_child(parent, child))
++
+ #define for_each_of_cpu_node(cpu) \
+ 	for (cpu = of_get_next_cpu_node(NULL); cpu != NULL; \
+ 	     cpu = of_get_next_cpu_node(cpu))
 -- 
 2.43.0
 
