@@ -1,56 +1,66 @@
-Return-Path: <linux-kernel+bounces-41746-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41747-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B208C83F745
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:29:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EF4A83F747
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:29:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 369011F24AEC
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:29:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41A8F1C223E1
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:29:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18918657BB;
-	Sun, 28 Jan 2024 16:13:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0734446D2;
+	Sun, 28 Jan 2024 16:14:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fQ/ADdLs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jb/kzU7B"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 422DF657DC;
-	Sun, 28 Jan 2024 16:13:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEE6565BD8;
+	Sun, 28 Jan 2024 16:13:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458437; cv=none; b=HK2QS8vysKr/QRJDe64D6Wdr1ujgPXOthkFrNjUVtXg7ZG10rO7lheyBTOVUfsieXP1YWwpIb2UKg3d9+p+ymBu1LQrSYNWcoAhM8bNfGy1u6iFuxDbNp/HXpFZhWd5KqxXX6sJKnEzFqttvEwLszDedcvHqD0sfKdlx8MQFr+A=
+	t=1706458440; cv=none; b=bejKgTOgM9/EFg6Us8Giqa7dVpFY7HoKDiozqoKIZ8UiF3xXe31xvzQWWTdp6rKYR5L2oEluS/INsgquVuAAsf/8C96gADGqPMsQzDIyXNdMFfH82A5kNBx5I4g+SBPBDy4hcItaoWKx6dZnGOQIGFAes7q7C3tjCGPt15nU8gM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458437; c=relaxed/simple;
-	bh=+tz46MaXGXaNAhV+LKQZqBPN9T29kafpRdmIUMP/QwM=;
+	s=arc-20240116; t=1706458440; c=relaxed/simple;
+	bh=azj0o16XNmiPoWegTfpJ3DfekAM5KM8ILmUwFJKxRGE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CL1DdaLDWUje964fGzvWq/CbOOpuMxSWuqMOJvBFRCp827L4Jg53CjrQzkByX2kAfND2uZc181RiISwMBI0NM1mAi2LOdq6aX8O4/2keZ9uK4msiMp0Y4UViF/lifiS6bQ/6yOX5jdvPOjWhmtmG70X+WKZY1PzW9PFS9cRFumk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fQ/ADdLs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF497C433F1;
-	Sun, 28 Jan 2024 16:13:55 +0000 (UTC)
+	 MIME-Version; b=gxkuOxgLPEErzzAhfUOjzibs4FwCpzYu3z4diS8wOpk6BvMVYIRFlsBkcVWoDL/xnZI+aEBmhRG8ZCDGAqb8nEXlv6scl6I5JarCihFGiO4fMAKIiJbT3OeOLy7BjO803mWa8xd+c6/xcugn/qvy+GY2Srn2X2ilXbtKJKQb288=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jb/kzU7B; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE7EBC433F1;
+	Sun, 28 Jan 2024 16:13:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706458436;
-	bh=+tz46MaXGXaNAhV+LKQZqBPN9T29kafpRdmIUMP/QwM=;
+	s=k20201202; t=1706458439;
+	bh=azj0o16XNmiPoWegTfpJ3DfekAM5KM8ILmUwFJKxRGE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fQ/ADdLsaAxd5uXggrZYobHIIjFMndFXp/bolHKrM2hRDNSislMJnwbPuKE/J+X+l
-	 BErIJ2w9RT+CH0AYG9Zow3YJL01qol/GBNoC5BTr4yWssBZZpOBqtAf7VXFh95vzXy
-	 1TTdhYndy8wBU7wQE7w85q52EXu3RyBTIJRC8/08DA6+z2/ZyUMvdvPyBf0n0P4L3H
-	 7cZcJXIP5L0tWxjf4lze5CPBaSIjvl3gCVj5os4w6yW6uCTuJp1TtjcF0A0VEiSKES
-	 Hrj7Nqsos5drPLqTjRPCx45B31hbdE+XQYsSRVO/iVlg2hVwu6XmYNzR7kT3tv2m4D
-	 EXvhQsnE7D3IQ==
+	b=Jb/kzU7BYafSVjcFWnn673KnlxOJZYL9f2PYZ50zux7IDbNcraqPNBa7qx9u2eurA
+	 zR/+WTSwBQ4e0laV3MQfcUSrqkmhGs6NXB8XViTIh9YP8sfi5NmjepIiK0VN4P/xK5
+	 ua3raibRDmV4PfLXrLVYyElyIgo7Nk5vsXaqzLxXtatd0/Zaeib+uvATpitflDcoQU
+	 clrlRUOhyQZJBYTH+YFRd7EhACGUxekePbwRFfyMvK5XGEROdHXHJzcL5yexDZVND2
+	 lNzI+3MqGAWRE1bJIrIz5MkYqUqWaeDe+yDkDH0skN9SYQE/icqpxirAtPlPMPgPvd
+	 gpcDpJLSBEeOw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Wenchao Hao <haowenchao2@huawei.com>,
-	Xiubo Li <xiubli@redhat.com>,
-	Ilya Dryomov <idryomov@gmail.com>,
+Cc: Alex Deucher <alexander.deucher@amd.com>,
+	Yang Wang <kevinyang.wang@amd.com>,
 	Sasha Levin <sashal@kernel.org>,
-	ceph-devel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 25/31] ceph: fix invalid pointer access if get_quota_realm return ERR_PTR
-Date: Sun, 28 Jan 2024 11:12:55 -0500
-Message-ID: <20240128161315.201999-25-sashal@kernel.org>
+	evan.quan@amd.com,
+	christian.koenig@amd.com,
+	Xinhui.Pan@amd.com,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	mario.limonciello@amd.com,
+	ruanjinjie@huawei.com,
+	lijo.lazar@amd.com,
+	alexious@zju.edu.cn,
+	sunran001@208suo.com,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.6 26/31] drm/amdgpu: fix avg vs input power reporting on smu7
+Date: Sun, 28 Jan 2024 11:12:56 -0500
+Message-ID: <20240128161315.201999-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128161315.201999-1-sashal@kernel.org>
 References: <20240128161315.201999-1-sashal@kernel.org>
@@ -65,136 +75,55 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.14
 Content-Transfer-Encoding: 8bit
 
-From: Wenchao Hao <haowenchao2@huawei.com>
+From: Alex Deucher <alexander.deucher@amd.com>
 
-[ Upstream commit 0f4cf64eabc6e16cfc2704f1960e82dc79d91c8d ]
+[ Upstream commit 25852d4b97572ff62ffee574cb8bb4bc551af23a ]
 
-This issue is reported by smatch that get_quota_realm() might return
-ERR_PTR but we did not handle it. It's not a immediate bug, while we
-still should address it to avoid potential bugs if get_quota_realm()
-is changed to return other ERR_PTR in future.
+Hawaii, Bonaire, Fiji, and Tonga support average power, the others
+support current power.
 
-Set ceph_snap_realm's pointer in get_quota_realm()'s to address this
-issue, the pointer would be set to NULL if get_quota_realm() failed
-to get struct ceph_snap_realm, so no ERR_PTR would happen any more.
-
-[ xiubli: minor code style clean up ]
-
-Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
-Reviewed-by: Xiubo Li <xiubli@redhat.com>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Reviewed-by: Yang Wang <kevinyang.wang@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ceph/quota.c | 39 ++++++++++++++++++++++-----------------
- 1 file changed, 22 insertions(+), 17 deletions(-)
+ .../gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ceph/quota.c b/fs/ceph/quota.c
-index f7fcf7f08ec6..ca4932e6f71b 100644
---- a/fs/ceph/quota.c
-+++ b/fs/ceph/quota.c
-@@ -194,10 +194,10 @@ void ceph_cleanup_quotarealms_inodes(struct ceph_mds_client *mdsc)
- }
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
+index 11372fcc59c8..a2c7b2e111fa 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
+@@ -3995,6 +3995,7 @@ static int smu7_read_sensor(struct pp_hwmgr *hwmgr, int idx,
+ 	uint32_t sclk, mclk, activity_percent;
+ 	uint32_t offset, val_vid;
+ 	struct smu7_hwmgr *data = (struct smu7_hwmgr *)(hwmgr->backend);
++	struct amdgpu_device *adev = hwmgr->adev;
  
- /*
-- * This function walks through the snaprealm for an inode and returns the
-- * ceph_snap_realm for the first snaprealm that has quotas set (max_files,
-+ * This function walks through the snaprealm for an inode and set the
-+ * realmp with the first snaprealm that has quotas set (max_files,
-  * max_bytes, or any, depending on the 'which_quota' argument).  If the root is
-- * reached, return the root ceph_snap_realm instead.
-+ * reached, set the realmp with the root ceph_snap_realm instead.
-  *
-  * Note that the caller is responsible for calling ceph_put_snap_realm() on the
-  * returned realm.
-@@ -208,18 +208,19 @@ void ceph_cleanup_quotarealms_inodes(struct ceph_mds_client *mdsc)
-  * this function will return -EAGAIN; otherwise, the snaprealms walk-through
-  * will be restarted.
-  */
--static struct ceph_snap_realm *get_quota_realm(struct ceph_mds_client *mdsc,
--					       struct inode *inode,
--					       enum quota_get_realm which_quota,
--					       bool retry)
-+static int get_quota_realm(struct ceph_mds_client *mdsc, struct inode *inode,
-+			   enum quota_get_realm which_quota,
-+			   struct ceph_snap_realm **realmp, bool retry)
- {
- 	struct ceph_inode_info *ci = NULL;
- 	struct ceph_snap_realm *realm, *next;
- 	struct inode *in;
- 	bool has_quota;
- 
-+	if (realmp)
-+		*realmp = NULL;
- 	if (ceph_snap(inode) != CEPH_NOSNAP)
--		return NULL;
-+		return 0;
- 
- restart:
- 	realm = ceph_inode(inode)->i_snap_realm;
-@@ -245,7 +246,7 @@ static struct ceph_snap_realm *get_quota_realm(struct ceph_mds_client *mdsc,
- 				break;
- 			ceph_put_snap_realm(mdsc, realm);
- 			if (!retry)
--				return ERR_PTR(-EAGAIN);
-+				return -EAGAIN;
- 			goto restart;
- 		}
- 
-@@ -254,8 +255,11 @@ static struct ceph_snap_realm *get_quota_realm(struct ceph_mds_client *mdsc,
- 		iput(in);
- 
- 		next = realm->parent;
--		if (has_quota || !next)
--		       return realm;
-+		if (has_quota || !next) {
-+			if (realmp)
-+				*realmp = realm;
-+			return 0;
-+		}
- 
- 		ceph_get_snap_realm(mdsc, next);
- 		ceph_put_snap_realm(mdsc, realm);
-@@ -264,7 +268,7 @@ static struct ceph_snap_realm *get_quota_realm(struct ceph_mds_client *mdsc,
- 	if (realm)
- 		ceph_put_snap_realm(mdsc, realm);
- 
--	return NULL;
-+	return 0;
- }
- 
- bool ceph_quota_is_same_realm(struct inode *old, struct inode *new)
-@@ -272,6 +276,7 @@ bool ceph_quota_is_same_realm(struct inode *old, struct inode *new)
- 	struct ceph_mds_client *mdsc = ceph_sb_to_mdsc(old->i_sb);
- 	struct ceph_snap_realm *old_realm, *new_realm;
- 	bool is_same;
-+	int ret;
- 
- restart:
- 	/*
-@@ -281,9 +286,9 @@ bool ceph_quota_is_same_realm(struct inode *old, struct inode *new)
- 	 * dropped and we can then restart the whole operation.
- 	 */
- 	down_read(&mdsc->snap_rwsem);
--	old_realm = get_quota_realm(mdsc, old, QUOTA_GET_ANY, true);
--	new_realm = get_quota_realm(mdsc, new, QUOTA_GET_ANY, false);
--	if (PTR_ERR(new_realm) == -EAGAIN) {
-+	get_quota_realm(mdsc, old, QUOTA_GET_ANY, &old_realm, true);
-+	ret = get_quota_realm(mdsc, new, QUOTA_GET_ANY, &new_realm, false);
-+	if (ret == -EAGAIN) {
- 		up_read(&mdsc->snap_rwsem);
- 		if (old_realm)
- 			ceph_put_snap_realm(mdsc, old_realm);
-@@ -485,8 +490,8 @@ bool ceph_quota_update_statfs(struct ceph_fs_client *fsc, struct kstatfs *buf)
- 	bool is_updated = false;
- 
- 	down_read(&mdsc->snap_rwsem);
--	realm = get_quota_realm(mdsc, d_inode(fsc->sb->s_root),
--				QUOTA_GET_MAX_BYTES, true);
-+	get_quota_realm(mdsc, d_inode(fsc->sb->s_root), QUOTA_GET_MAX_BYTES,
-+			&realm, true);
- 	up_read(&mdsc->snap_rwsem);
- 	if (!realm)
- 		return false;
+ 	/* size must be at least 4 bytes for all sensors */
+ 	if (*size < 4)
+@@ -4038,7 +4039,21 @@ static int smu7_read_sensor(struct pp_hwmgr *hwmgr, int idx,
+ 		*size = 4;
+ 		return 0;
+ 	case AMDGPU_PP_SENSOR_GPU_INPUT_POWER:
+-		return smu7_get_gpu_power(hwmgr, (uint32_t *)value);
++		if ((adev->asic_type != CHIP_HAWAII) &&
++		    (adev->asic_type != CHIP_BONAIRE) &&
++		    (adev->asic_type != CHIP_FIJI) &&
++		    (adev->asic_type != CHIP_TONGA))
++			return smu7_get_gpu_power(hwmgr, (uint32_t *)value);
++		else
++			return -EOPNOTSUPP;
++	case AMDGPU_PP_SENSOR_GPU_AVG_POWER:
++		if ((adev->asic_type != CHIP_HAWAII) &&
++		    (adev->asic_type != CHIP_BONAIRE) &&
++		    (adev->asic_type != CHIP_FIJI) &&
++		    (adev->asic_type != CHIP_TONGA))
++			return -EOPNOTSUPP;
++		else
++			return smu7_get_gpu_power(hwmgr, (uint32_t *)value);
+ 	case AMDGPU_PP_SENSOR_VDDGFX:
+ 		if ((data->vr_config & VRCONF_VDDGFX_MASK) ==
+ 		    (VR_SVI2_PLANE_2 << VRCONF_VDDGFX_SHIFT))
 -- 
 2.43.0
 
