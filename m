@@ -1,118 +1,126 @@
-Return-Path: <linux-kernel+bounces-41669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F149783F629
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:49:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2BEA83F62C
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:50:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FD6D284024
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 15:49:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66A40283F4B
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 15:50:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2BAC25635;
-	Sun, 28 Jan 2024 15:49:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 874DD25772;
+	Sun, 28 Jan 2024 15:49:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="B8ikNft5";
-	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="BVNGuGDP"
-Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YloWInVu"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 393D425772;
-	Sun, 28 Jan 2024 15:49:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=88.97.38.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BA462D629
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 15:49:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706456966; cv=none; b=MbA4G6v7gv8QSmOdElvMYlDi5iizOoVmQwmQUlefK5CGX9hJQ2AeKBBpV8RC+dT8cDa699c71fRSQru6b95Zb3LPvc8ukPORHiuruVgChdhYWlx7gz1shMKvWZ938F14XDQbhvbYpLoohDpgPjCSY0GZnETBZoSvqgZonozJRSc=
+	t=1706456996; cv=none; b=Ts8kro72HIqcEvjQC/U6RDff4lu+AkGKEmKmy41i/tmO+TiycNLAEnP5PwOmF0RjKRkq2Cr6Thm+VNeu2x7XoYZggyC0uwxJYtPhoExXOcJrNWoTnTymvaKSkhxJeQBnxq387gzCA3zs6XAjnqVw9qXLAfjA+bNiqCIxcA2tOe4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706456966; c=relaxed/simple;
-	bh=pIUGZH0WA/dnmasx5Fb75KygIBvTRFfwHo3C1qQyatU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jKSTIurqmvR5S2ibaXOLgNH72y99w4xbL+uY2iwS8eFPbFO3Mzyh6bLm/iCg8r8UqloMJ25KCssSuJrb52VFyc0zn1ApozSxADj37TwqIYxg9LXrd5D9GX2l/Yy128g0QowTOnndDufSwGorC+y98gEBF5sSqMwe89sGuBlmjow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mess.org; spf=pass smtp.mailfrom=mess.org; dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b=B8ikNft5; dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b=BVNGuGDP; arc=none smtp.client-ip=88.97.38.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mess.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mess.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-	t=1706456955; bh=pIUGZH0WA/dnmasx5Fb75KygIBvTRFfwHo3C1qQyatU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=B8ikNft5M3ZiBK7NHoTnEBITCVUwtkDt3vhcDOlGKG73fUvC4g6x3TU6T44ygh5UI
-	 gRTvSkr5wZqCV+YFsQNvxJ9vl8RfDZTeLHuefPmyhKaXDcEnnxmS3PcfCU9PhpouMZ
-	 o5whQIGNAhwCzLw0fhFftjg8k+aA/4JXpjKqKPvOOrPqu/kc8/mFM3VJ6cFka8JsCL
-	 QA2dQRjY83Ty4WZNDe6k5R1nbLT/uGJjIt1Flwx8eH6xnuPFLNghFbNaA7pkjzM4QW
-	 cCVl0seEh0CL0giiin4fmbOQU5o1ueKMN2+RRxWK2AJj/rsadpRegN40o+t19qqCMr
-	 6cv2/+nzY+sBQ==
-Received: by gofer.mess.org (Postfix, from userid 501)
-	id 999141009C0; Sun, 28 Jan 2024 15:49:15 +0000 (GMT)
-X-Spam-Level: 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-	t=1706456953; bh=pIUGZH0WA/dnmasx5Fb75KygIBvTRFfwHo3C1qQyatU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=BVNGuGDPkHcq680/07H+MZm6kSMUHplL3QA/QQ1CydeLArEadowfvbwxBbASXbF0n
-	 baez3+xNJuwljbqm8wU8V4zzh5hww0sWtfqzGOwJJDxcxOJdDHYe0uXx3dWQLTOSb+
-	 5tgaLO5pon+/1mF7hZ4q+c6qFSXEjv5qEVq8sMp/jbzKUsj8Nl2/BZD8j6GAB6Q2mk
-	 FDqCWXWGeJGkJhqdF035VBmEhOJEfIH6nFJyz3aGzhpzkFzZHtdW6srpYnvnsReaYI
-	 ovnTJGJudjBtRV9DhZOBpSSVlfhR9E+KBVQd+mQeF6H1qz3aiBoK8s3LTVMo4/WFgT
-	 AJmVh+swGsFtw==
-Received: from bigcore.mess.org (bigcore.local [IPv6:2a02:8011:d000:212:bc3c:1b4a:a6fa:362f])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by gofer.mess.org (Postfix) with ESMTPSA id 6CFC91000B2;
-	Sun, 28 Jan 2024 15:49:13 +0000 (GMT)
-From: Sean Young <sean@mess.org>
-To: Flavio Suligoi <f.suligoi@asem.it>,
-	Lee Jones <lee@kernel.org>,
-	Daniel Thompson <daniel.thompson@linaro.org>,
-	Jingoo Han <jingoohan1@gmail.com>,
-	Helge Deller <deller@gmx.de>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Sean Young <sean@mess.org>,
-	dri-devel@lists.freedesktop.org,
-	linux-fbdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-pwm@vger.kernel.org
-Subject: [PATCH] backlight: mp3309c: Use pwm_apply_might_sleep()
-Date: Sun, 28 Jan 2024 15:49:04 +0000
-Message-ID: <20240128154905.407302-1-sean@mess.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706456996; c=relaxed/simple;
+	bh=b9YOMazdycLIyx8go7JhQ7ohEA+spjOnKg86jFJ9vGQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=m/W143EbeSA3S9FB0AqObHt1iBFZg86uPqSsDLNZuA9C6POoECXxZpx3E5HaJa+Z3ZauuYheDXauDBMJoWLfHiWPdP9uaKM5goxF1f9/2YdBchOJbP0kKnlRM8Oxw8eI22CKi/wpZoBIVp0WmhhXQnRvioV+HrXl0OYp8ASraW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YloWInVu; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dc6432ee799so2232570276.0
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 07:49:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706456994; x=1707061794; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gi0ytb2PS1JbjjM4o7VAyC0Cey5FRxMI0Z/urzxWn1E=;
+        b=YloWInVurMqV0uCP9OF2WZNs+Lp9fsWC3kSNTxALfD0J9liZih1XGjw1uPN3XfGg2r
+         xFQMeqtqe+Puv1tMzkLlLCfeTKfo1T55aKnkAPh88YcHXvpuXkEYzdgjfCfQLbfs33E9
+         oD0EH+NkzXAFJqYp0rZMYUoNUrkXRUfIilxBata0rd0rjZqiJXpelc4lqFtatYawa9vI
+         qXbUCBZxNa2ppRWaQGAm5uGHcA1brGS7SM5lR5+uVl/JWL7noyPB/A6g4QZbtXetk2Xm
+         TtTxO+LnHqHxDBhepxRN4qv1w015fTTmf2TTGOmMgSjatFifay+uD8O/4AreQqxJ8U5q
+         F6hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706456994; x=1707061794;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gi0ytb2PS1JbjjM4o7VAyC0Cey5FRxMI0Z/urzxWn1E=;
+        b=nomuaEnJCWQDtgWNjC2VgrTdzxtDPqGi/DwoynH+0fSCpmrLfT5G9F7wBTKffeazKS
+         YbI+wzYLjxrdwL0jvatLumr5KyqVjyw5gg5ZWP4rwV0n70PFO7ecy0ENQwX8kNBQK93H
+         DIsXQrXIEDYqTATrL3X+uJRF7No7mrbPIVz7dIxO5d6oFrc1V18TruAsFh4QggTMrUQf
+         7i94r6JgSszNKK1PU/bYbFC7Ns9HXJBFiCrLF3+3U8xePLaxWC7iM+jzksN4GoUl38yX
+         RsTS2MY15QqkKTN4l74ln03LobE1XFij3//d+pURa+ZLCttrXPCwelNy0HTwTRpZABb1
+         4Naw==
+X-Gm-Message-State: AOJu0Yyq/vtD9d+Yx0A3D5fNUu1fFjCsDzuAB7qkhk1ZMzFpcZeP39Q3
+	NdREd8rdbLTq9ooIxkrrS/KeZP4EMU6E6bn/+WWUGUAHl3/EFAOQEELPi2EzaV4vwwoixgjMi6R
+	jrQhfmKKoZAekg3DIQJPVb0Lt6zR2ONRcR3Dm00Mx0mOXNcs6/ew=
+X-Google-Smtp-Source: AGHT+IGJWMQydQjjqGuMPg05Ai+wt32rzyv2gomooaD3rn4+LJmjeir6ImCczZPw+dWTd7x/1YV5YVnQnyEGpklyaLY=
+X-Received: by 2002:a05:6902:2808:b0:dbd:ac60:bcd4 with SMTP id
+ ed8-20020a056902280800b00dbdac60bcd4mr3313016ybb.75.1706456994245; Sun, 28
+ Jan 2024 07:49:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240123080637.1902578-1-ychuang570808@gmail.com> <20240123080637.1902578-5-ychuang570808@gmail.com>
+In-Reply-To: <20240123080637.1902578-5-ychuang570808@gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Sun, 28 Jan 2024 16:49:42 +0100
+Message-ID: <CACRpkdYi-y9zWAR71rQOtKVJOuGgE4n8Q47YXZW=Pt345UWDkw@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] pinctrl: nuvoton: Add ma35d1 pinctrl and GPIO driver
+To: Jacky Huang <ychuang570808@gmail.com>
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	p.zabel@pengutronix.de, j.neuschaefer@gmx.net, 
+	linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	ychuang3@nuvoton.com, schung@nuvoton.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-pwm_apply_state() is deprecated since commit c748a6d77c06a ("pwm: Rename
-pwm_apply_state() to pwm_apply_might_sleep()"). This is the final user
-in the tree.
+Hi Jacky,
 
-Signed-off-by: Sean Young <sean@mess.org>
----
- drivers/video/backlight/mp3309c.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+thanks for your patch!
 
-diff --git a/drivers/video/backlight/mp3309c.c b/drivers/video/backlight/mp3309c.c
-index 34d71259fac1d..b0d9aef6942b3 100644
---- a/drivers/video/backlight/mp3309c.c
-+++ b/drivers/video/backlight/mp3309c.c
-@@ -131,7 +131,7 @@ static int mp3309c_bl_update_status(struct backlight_device *bl)
- 					    chip->pdata->levels[brightness],
- 					    chip->pdata->levels[chip->pdata->max_brightness]);
- 		pwmstate.enabled = true;
--		ret = pwm_apply_state(chip->pwmd, &pwmstate);
-+		ret = pwm_apply_might_sleep(chip->pwmd, &pwmstate);
- 		if (ret)
- 			return ret;
- 
-@@ -393,7 +393,7 @@ static int mp3309c_probe(struct i2c_client *client)
- 					    chip->pdata->default_brightness,
- 					    chip->pdata->max_brightness);
- 		pwmstate.enabled = true;
--		ret = pwm_apply_state(chip->pwmd, &pwmstate);
-+		ret = pwm_apply_might_sleep(chip->pwmd, &pwmstate);
- 		if (ret)
- 			return dev_err_probe(chip->dev, ret,
- 					     "error setting pwm device\n");
--- 
-2.43.0
+this caught my eye:
 
+On Tue, Jan 23, 2024 at 9:06=E2=80=AFAM Jacky Huang <ychuang570808@gmail.co=
+m> wrote:
+
+> From: Jacky Huang <ychuang3@nuvoton.com>
+>
+> Add common pinctrl and GPIO driver for Nuvoton MA35 series SoC, and
+> add support for ma35d1 pinctrl.
+>
+> Signed-off-by: Jacky Huang <ychuang3@nuvoton.com>
+(...)
+
+> +       if (ma35_pinconf_get_power_source(npctl, pin) =3D=3D MVOLT_1800) =
+{
+> +               for (i =3D 0; i < sizeof(ds_1800mv_tbl) / sizeof(u32); i+=
++) {
+
+Isn't this equivalent to:
+
+for (i =3D 0; i < ARRAY_SIZE(ds_1800mv_tbl; i++) {
+
+> +                       if (ds_1800mv_tbl[i] =3D=3D strength)
+> +                               ds_val =3D i;
+> +               }
+> +       } else {
+> +               for (i =3D 0; i < sizeof(ds_3300mv_tbl) / sizeof(u32); i+=
++) {
+
+Dito
+
+Perhaps more cases, pls check!
+
+Yours,
+Linus Walleij
 
