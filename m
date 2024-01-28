@@ -1,222 +1,141 @@
-Return-Path: <linux-kernel+bounces-41954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F81883F9F3
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 21:57:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A573583F9FE
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 22:09:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73E491C21CFB
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:57:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 325A31F21E8C
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 21:09:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DAEB3C099;
-	Sun, 28 Jan 2024 20:56:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 828D33C463;
+	Sun, 28 Jan 2024 21:09:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="bkXwz3GF"
-Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="OKZid2V6"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0202F31A7E;
-	Sun, 28 Jan 2024 20:56:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 163D93BB3E
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 21:09:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706475411; cv=none; b=pVLRvikIZaKaC8KhZHgqUY3U+pAVlHfstej6dyeOxu/VkEZ8iWyWO3gd+amUUznbDzw7kSu9vgcOXA4X+cMsjKbodC21hrsq/cyEfL12La11kGf9driTe3wyX26WFim/5D2UMT6onOdb45QKQ8JqbHg4zNM9vzugc/h8BA6aCUs=
+	t=1706476157; cv=none; b=TNQPllM4yxV2iWRtBHok32lkQvJYtBfEwMaD2OzEe6ZDeySnqBh8FhAN01y/q9+B2AUVfjAmHw74IpADZ0aFI2IwiQcx9W98d9f8/vL73dplklfqGu8/J2zvF0cbIjIatGPNFdp1rcwmeS9CIZAEiMrQfxEUfCy5CIJkEMJkweo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706475411; c=relaxed/simple;
-	bh=zQPpEUHp5eKj9EhyK7RuxwngFTVum61WXyXTsZdGoLA=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Kar06IDagJGhzesuO2TqBOspHVjmepp3hEEQTJu317hoNPJI+w8+kgrOlPtnp/Xq4FI4ldbMZm/s+I5T8C2heOZ2vTVZVtx9sCaHsxUwsdhUnAvOEld37FrX7jJD1feAjde2TJf2SXBWzkKCbOfHukybRdrIcip2ggEksfAvgIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=bkXwz3GF; arc=none smtp.client-ip=99.78.197.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+	s=arc-20240116; t=1706476157; c=relaxed/simple;
+	bh=o4RRkX5gCxLFuN2ynOpDSrsGXRB6T46LcRbk3K1Vsoo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ihOxunrBtIVnPel9MChihjInrSmMyPGllCF0yHX0HBgk6VaeeAbUNYxavxzfBQLHvtmKHNaEtloJ7f1kLP4N22M9PEA92HIgxDQDOG90eDS8+D9x63BOTE9SgWO3HMDzIY2Z2v/uMNFbjIIDeFnlEqG38ImYRS3b+woiT40zoco=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=OKZid2V6; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2cf588c4dbcso13081101fa.1
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 13:09:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1706475410; x=1738011410;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=kNjMyJ+fMASTc2wcvJOQRFW38HN5NRSbZjppugncMZ4=;
-  b=bkXwz3GFwWBo4hVI+2kTN+ZFgQweXRFupBhXOnkjq70/EC97uGgp7Tg1
-   gfygGgNNoKEOju0K9SvDrN4TLovT0zYs3g8uwRvBzdS98B0wN0ft6TKtk
-   kOT+hvx70MoU6+MfTqKVx8fa29f2LhOiWEEOoMDgZg2xm14dCf4moPyAB
-   s=;
-X-IronPort-AV: E=Sophos;i="6.05,220,1701129600"; 
-   d="scan'208";a="270070340"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-3e1fab07.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2024 20:56:48 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
-	by email-inbound-relay-iad-1e-m6i4x-3e1fab07.us-east-1.amazon.com (Postfix) with ESMTPS id B9CCD80632;
-	Sun, 28 Jan 2024 20:56:45 +0000 (UTC)
-Received: from EX19MTAUWA002.ant.amazon.com [10.0.7.35:53888]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.6.162:2525] with esmtp (Farcaster)
- id b7ac26ac-411e-4303-8e3e-96e5a3a16879; Sun, 28 Jan 2024 20:56:45 +0000 (UTC)
-X-Farcaster-Flow-ID: b7ac26ac-411e-4303-8e3e-96e5a3a16879
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Sun, 28 Jan 2024 20:56:44 +0000
-Received: from 88665a182662.ant.amazon.com (10.106.101.48) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.40;
- Sun, 28 Jan 2024 20:56:41 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <kent.overstreet@linux.dev>
-CC: <boqun.feng@gmail.com>, <kuniyu@amazon.com>,
-	<linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <peterz@infradead.org>
-Subject: Re: [PATCH 4/4] af_unix: convert to lock_cmp_fn
-Date: Sun, 28 Jan 2024 12:56:32 -0800
-Message-ID: <20240128205632.93670-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <suyvonwf55vfeumeujeats2mtozs2q4wcx6ijz4hqfd54mibjj@6dt26flhrfdh>
-References: <suyvonwf55vfeumeujeats2mtozs2q4wcx6ijz4hqfd54mibjj@6dt26flhrfdh>
+        d=linux-foundation.org; s=google; t=1706476154; x=1707080954; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8d+KpAUb3yjw2hNji3XL+yeN/4QOnDBQuqnD1AB0yzU=;
+        b=OKZid2V6t1WLFcNCHYyJyGYnEW6Sldt4Y7lhIvqbRFunQ3qAoVAZJK1YgR+vEUqCpI
+         I5yG4un9ziFrkGEY9pC1Csjn+9lbsZ+AaTe6e8P1yXMJA3YCtdjVNwRLsit2tVEBvUoF
+         fFbduUKtUNtoEHc6OHrUpc7XLStKeeX+s9774=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706476154; x=1707080954;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8d+KpAUb3yjw2hNji3XL+yeN/4QOnDBQuqnD1AB0yzU=;
+        b=dpJf/HuZSRljEH9R7DPP+TCWW2fivY4PRGmv4siXK5Lf7k/OBn0dHBxXBvcZKbpnOd
+         VfQ42QRwVdh/lQdQDOfuOlbQUnYyLCc3WqVfqbkHrSbq6VJMP3vKc5LzcxGGmcH0g0kX
+         XoROdIjGMmJHNX9SxRiijiKpO4sfPZJi8eB6XSThaspwJip/a2iyP3mOt3UDg4cf5hZn
+         FGqBFwE4nYxMIn4ue3DigL4x14dxny8ZFWocdz/bNf69byAHQAjvrBJNElD6PmjErQZ3
+         m+ZP8f/F7WMGUoSIWFjnnuAwnwJxfGGMcr8RkgIB0k4kyViqy0l3dt6U2VWwiF1RJEGg
+         cOVA==
+X-Gm-Message-State: AOJu0YzEM8r6ZreiHUJfPHWik4IT0uW1Uf4h3FwbI3XtBOyGHfj//6Xo
+	JyEmddumi9R7pJ60MCfbDSISqiN1uqD4EEAQgzG/Hy3AX/ig+cwUEHL3EGjzuNR9eFdOQ9eiSwL
+	YzBM=
+X-Google-Smtp-Source: AGHT+IG4oSXcVGnYRshLBW7O9T1FTCgHDMwIszkg8tF5+DX8dNYKGpK3QD4vvXcwk4QDv6EdMzRcAQ==
+X-Received: by 2002:ac2:482d:0:b0:510:2582:5592 with SMTP id 13-20020ac2482d000000b0051025825592mr3288919lft.38.1706476153942;
+        Sun, 28 Jan 2024 13:09:13 -0800 (PST)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
+        by smtp.gmail.com with ESMTPSA id v23-20020a197417000000b0051023975059sm891896lfe.61.2024.01.28.13.09.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Jan 2024 13:09:13 -0800 (PST)
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2cf59559b2fso7579681fa.2
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 13:09:12 -0800 (PST)
+X-Received: by 2002:a2e:b254:0:b0:2ce:926:f651 with SMTP id
+ n20-20020a2eb254000000b002ce0926f651mr3165518ljm.1.1706476152131; Sun, 28 Jan
+ 2024 13:09:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D035UWB002.ant.amazon.com (10.13.138.97) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-Precedence: Bulk
+References: <20240126150209.367ff402@gandalf.local.home> <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
+ <20240126162626.31d90da9@gandalf.local.home> <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
+ <CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
+ <CAHk-=wj+DsZZ=2iTUkJ-Nojs9fjYMvPs1NuoM3yK7aTDtJfPYQ@mail.gmail.com>
+ <20240128151542.6efa2118@rorschach.local.home> <CAHk-=whKJ6dzQJX27gvL4Xug5bFRKW7_Cx4XpngMKmWxOtb+Qg@mail.gmail.com>
+In-Reply-To: <CAHk-=whKJ6dzQJX27gvL4Xug5bFRKW7_Cx4XpngMKmWxOtb+Qg@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sun, 28 Jan 2024 13:08:55 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiWo9Ern_MKkWJ-6MEh6fUtBtwU3avQRm=N51VsHevzQg@mail.gmail.com>
+Message-ID: <CAHk-=wiWo9Ern_MKkWJ-6MEh6fUtBtwU3avQRm=N51VsHevzQg@mail.gmail.com>
+Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	Linux Trace Devel <linux-trace-devel@vger.kernel.org>, Christian Brauner <brauner@kernel.org>, 
+	Ajay Kaher <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Kent Overstreet <kent.overstreet@linux.dev>
-Date: Sun, 28 Jan 2024 14:38:02 -0500
-> On Sun, Jan 28, 2024 at 12:28:38AM -0800, Kuniyuki Iwashima wrote:
-> > From: Kent Overstreet <kent.overstreet@linux.dev>
-> > Date: Fri, 26 Jan 2024 21:08:31 -0500
-> > > Kill
-> > >  - unix_state_lock_nested
-> > >  - _nested usage for net->unx.table.locks[].
-> > > 
-> > > replace both with lock_set_cmp_fn_ptr_order(&u->lock).
-> > > 
-> > > The lock ordering in sk_diag_dump_icons() looks suspicious; this may
-> > > turn up a real issue.
-> > 
-> > Yes, you cannot use lock_cmp_fn() for unix_state_lock_nested().
-> > 
-> > The lock order in sk_diag_dump_icons() is
-> > 
-> >   listening socket -> child socket in the listener's queue
-> > 
-> > , and the inverse order never happens.  ptr comparison does not make
-> > sense in this case, and lockdep will complain about false positive.
-> 
-> Is that a real lock ordering? Is this parent -> child relationship well
-> defined?
-> 
-> If it is, we should be able to write a lock_cmp_fn for it, as long as
-> it's not some handwavy "this will never happen but _nested won't check
-> for it" like I saw elsewhere in the net code... :)
+On Sun, 28 Jan 2024 at 12:53, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> Now, the RCU delay may be needed if the lookup of said structure
+> happens under RCU, but no, saying "I use SRCU to make sure the
+> lifetime is at least X" is just broken.
 
-The problem would be there's no handy way to detect the relationship
-except for iterating the queue again.
+Put another way, the only reason for any RCU should be that you don't
+use locking at lookup, and the normal lookup routine should follow a
+pattern something like this:
 
----8<---
-static int unix_state_lock_cmp_fn(const struct lockdep_map *_a,
-				  const struct lockdep_map *_b)
-{
-	const struct unix_sock *a = container_of(_a, struct unix_sock, lock.dep_map);
-	const struct unix_sock *b = container_of(_b, struct unix_sock, lock.dep_map);
+    rcu_read_lock();
+    entry = find_entry(...);
+    if (entry && !atomic_inc_not_zero(&entry->refcount))
+        entry = NULL;
+    rcu_read_unlock();
 
-	if (a->sk.sk_state == TCP_LISTEN && b->sk.sk_state == TCP_ESTABLISHED) {
-		/* check if b is a's cihld */
-	}
+and the freeing should basically follow a pattern like
 
-	/* otherwise, ptr comparison here. */
-}
----8<---
+    if (atomic_dec_and_test(&entry->refcount))
+        rcu_free(entry);
 
+IOW, the *lifetime* is entirely about the refcount. No "I have killed
+this entry" stuff. The RCU is purely about "look, we have to look up
+the entry while it's being torn down, so I can fundamentally race with
+the teardown, and so I need to be able to see that zero refcount".
 
-This can be resolved by a patch like this, which is in my local tree
-for another series.
+Of course, the "remove it from whatever hash lists or other data
+structures that can reach it" happens before the freeing,
 
-So, after posting the series, I can revisit this and write lock_cmp_fn
-for u->lock.
+*One* such thing would be the "->d_release()" of a dentry that has a
+ref to it in d_fsdata, but presumably there are then other
+subsystem-specific hash tables etc that have their own refcounts.
 
----8<---
-commit 12d39766b06068fda5987f4e7b4827e8c3273137
-Author: Kuniyuki Iwashima <kuniyu@amazon.com>
-Date:   Thu Jan 11 22:36:58 2024 +0000
+And a side note - I personally happen to believe that if you think you
+need SRCU rather than regular RCU, you've already done something
+wrong.
 
-    af_unix: Save listener for embryo socket.
-    
-    Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+And the reason for that is possibly because you've mixed up the
+refcount logic with some other subsystem locking logic, so you're
+using sleeping locks to protect a refcount. That's a mistake of its
+own. The refcounts are generally better just done using atomics (maybe
+krefs).
 
-diff --git a/include/net/af_unix.h b/include/net/af_unix.h
-index 9ea04653c7c9..d0c0d81bcb1d 100644
---- a/include/net/af_unix.h
-+++ b/include/net/af_unix.h
-@@ -82,6 +82,7 @@ struct scm_stat {
- struct unix_sock {
- 	/* WARNING: sk has to be the first member */
- 	struct sock		sk;
-+#define usk_listener		sk.__sk_common.skc_unix_listener
- 	struct unix_address	*addr;
- 	struct path		path;
- 	struct mutex		iolock, bindlock;
-diff --git a/include/net/sock.h b/include/net/sock.h
-index a9d99a9c583f..3df3d068345a 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -142,6 +142,8 @@ typedef __u64 __bitwise __addrpair;
-  *		[union with @skc_incoming_cpu]
-  *	@skc_tw_rcv_nxt: (aka tw_rcv_nxt) TCP window next expected seq number
-  *		[union with @skc_incoming_cpu]
-+ *	@skc_unix_listener: connection request listener socket for AF_UNIX
-+ *		[union with @skc_rxhash]
-  *	@skc_refcnt: reference count
-  *
-  *	This is the minimal network layer representation of sockets, the header
-@@ -227,6 +229,7 @@ struct sock_common {
- 		u32		skc_rxhash;
- 		u32		skc_window_clamp;
- 		u32		skc_tw_snd_nxt; /* struct tcp_timewait_sock */
-+		struct sock	*skc_unix_listener; /* struct unix_sock */
- 	};
- 	/* public: */
- };
-diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-index 5f9871555ec6..4a41bb727c32 100644
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -991,6 +991,7 @@ static struct sock *unix_create1(struct net *net, struct socket *sock, int kern,
- 	sk->sk_max_ack_backlog	= net->unx.sysctl_max_dgram_qlen;
- 	sk->sk_destruct		= unix_sock_destructor;
- 	u = unix_sk(sk);
-+	u->usk_listener = NULL;
- 	u->inflight = 0;
- 	u->path.dentry = NULL;
- 	u->path.mnt = NULL;
-@@ -1612,6 +1613,7 @@ static int unix_stream_connect(struct socket *sock, struct sockaddr *uaddr,
- 	newsk->sk_type		= sk->sk_type;
- 	init_peercred(newsk);
- 	newu = unix_sk(newsk);
-+	newu->usk_listener = other;
- 	RCU_INIT_POINTER(newsk->sk_wq, &newu->peer_wq);
- 	otheru = unix_sk(other);
- 
-@@ -1707,8 +1709,8 @@ static int unix_accept(struct socket *sock, struct socket *newsock, int flags,
- 		       bool kern)
- {
- 	struct sock *sk = sock->sk;
--	struct sock *tsk;
- 	struct sk_buff *skb;
-+	struct sock *tsk;
- 	int err;
- 
- 	err = -EOPNOTSUPP;
-@@ -1733,6 +1735,7 @@ static int unix_accept(struct socket *sock, struct socket *newsock, int flags,
- 	}
- 
- 	tsk = skb->sk;
-+	unix_sk(tsk)->usk_listener = NULL;
- 	skb_free_datagram(sk, skb);
- 	wake_up_interruptible(&unix_sk(sk)->peer_wait);
- 
----8<---
-
+               Linus
 
