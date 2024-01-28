@@ -1,62 +1,69 @@
-Return-Path: <linux-kernel+bounces-41778-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8803A83F79B
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:37:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D20183F79E
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:38:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB2561C2135A
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:37:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FC2B1C208D4
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:38:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C00494CB30;
-	Sun, 28 Jan 2024 16:15:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4343D4CB3D;
+	Sun, 28 Jan 2024 16:15:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kjQgxB6O"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SmRY0cx3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A9CF12837D;
-	Sun, 28 Jan 2024 16:15:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 863661292CD;
+	Sun, 28 Jan 2024 16:15:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458505; cv=none; b=RuVG7e4XN0o3mw4JYmOMWgc+Cg+i2IN1feU3Aee73ks5W+aeC+50hdidCb2mteu9SS/dbWAD3csZSlPJxxEifQqOp7BDeTaxkzOxLGT02qzLYgygQoWszEGY02bTylnNp0OTRTkn4+EImHyXAtPhlb3A+XJabWoXgCXku0lriW0=
+	t=1706458508; cv=none; b=BbJZaSHAt/PHuEWyXWlw2TN+DU/gVXrTOFyLhZC11gdyvCP4y2fa1oXC5rp/mgGqA/9kjYGP3HuzjVstp7eiqWpcwShx6w/4y10Wwh8dPbHno1MLMgHt9Izhg/BKmX9WzK4iux8VXKk6jXnPFlx0kQ3by2LWwW1LcMgQ8718+TM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458505; c=relaxed/simple;
-	bh=//GeY34yk8RDTyVL3z8PggsoJVR+7RJuYVHF4BbXmUk=;
+	s=arc-20240116; t=1706458508; c=relaxed/simple;
+	bh=h9y2lAYglnEeDHVIfLbYIRCSzH858WPaNlhqC2pj/Qs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Hb7qzhHb1r3VFn+Ywt/D6iTNzc8h0CwB9wsopw36RQ19DGTJYyTEHyP2CZIadphf1diGYlm4xxRB+7HVegtLfv06zulFz6KBVi3L9babMonZJDrOubyo+pmoxtrS00Fy2w+XggHzv1fcZ+yVxbfqQPnDpErrphT4+zyBpa/soTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kjQgxB6O; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79103C433C7;
-	Sun, 28 Jan 2024 16:15:03 +0000 (UTC)
+	 MIME-Version:Content-Type; b=VIgKhSqNQawMdXImd8ENZMa3v36C1zTy3LchekOh0181aVRDPWRnqnSWTwJHJsfE9y1ybQV8kU0/hBThxTHSIBMuBkHbOCGG2J8cqyjIdQ2YEhS5saSZRAeqfTf9lNYBkFDOA+cHLuUyfLnhuPYtnEej7QMW3kk+2CISLhKN03I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SmRY0cx3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60AEFC433F1;
+	Sun, 28 Jan 2024 16:15:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706458504;
-	bh=//GeY34yk8RDTyVL3z8PggsoJVR+7RJuYVHF4BbXmUk=;
+	s=k20201202; t=1706458508;
+	bh=h9y2lAYglnEeDHVIfLbYIRCSzH858WPaNlhqC2pj/Qs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kjQgxB6OX9oy97kOW6rGLiQUxYODndhe0zflqX60mT25YFddoTOk5PJUsdfUvtjPE
-	 BSkCX9/ythA8/CzcYPOCPs40v4vCZBNR1INQ2CPPBdhyhCVhNfiC02GrsmmP+vD9Wk
-	 tjlcsIBb/oUcYF+XLI4ZxrENMc3oMsCMV4yqa4n6enO/4BMnSf8zs2YAdmZ6t0+zv5
-	 GKiPYCJbjXES7s7ez/DSJ0p6+3xHMSp1j2iDY+hvTFNwcUokmBNtD7+xRTQQeZEv/o
-	 GqNMzi3lFmTd5gZpQwDs8U1yOkuns4F0WBgnhsl85uuGYGBjZ8gOPcqdRuTNO7E88b
-	 TzmnXscr0dt5A==
+	b=SmRY0cx3STI3JZGtzyp3Vvwz/KxwYXVjnQ6c+d+SzPLKLovwsTQzB/+yX6kWuLj+H
+	 NT2vg6TVDbQuT8ba7JhGC29VGgbp+VZiy/YsKrfPnn54bXVhPmkB+un+5J4a335avp
+	 P+C+3CmmpHXpC5ZszXFk58TrxLGOROCTjdUasNEQjTVb38LhCrnbMlFXpFdNdz4/tZ
+	 sK5qStLf1pJvuSBXZm0xpaFG6+aL2gt+Pj0NGnBG6uvvVEd7n+amssq0ZcN7uP5Ogi
+	 hM8ndiTivRAMUDwnwZjFmOVwOMfrLeE6t/lX/OqB4X22yu6F9K7c2kNoSW+wDbVso/
+	 qfGsLwVeq57Gg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-	Eric Huang <JinHuiEric.Huang@amd.com>,
+	Xiaojian Du <Xiaojian.Du@amd.com>,
+	Lijo Lazar <lijo.lazar@amd.com>,
 	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
 	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>,
-	evan.quan@amd.com,
 	Xinhui.Pan@amd.com,
 	airlied@gmail.com,
 	daniel@ffwll.ch,
+	Hawking.Zhang@amd.com,
+	Felix.Kuehling@amd.com,
+	tao.zhou1@amd.com,
+	ikshwaku.chauhan@amd.com,
+	mukul.joshi@amd.com,
+	shiwu.zhang@amd.com,
+	mario.limonciello@amd.com,
 	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.1 23/27] drm/amd/powerplay: Fix kzalloc parameter 'ATOM_Tonga_PPM_Table' in 'get_platform_power_management_table()'
-Date: Sun, 28 Jan 2024 11:14:08 -0500
-Message-ID: <20240128161424.203600-23-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 24/27] drm/amdgpu: Fix with right return code '-EIO' in 'amdgpu_gmc_vram_checking()'
+Date: Sun, 28 Jan 2024 11:14:09 -0500
+Message-ID: <20240128161424.203600-24-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128161424.203600-1-sashal@kernel.org>
 References: <20240128161424.203600-1-sashal@kernel.org>
@@ -74,39 +81,69 @@ Content-Transfer-Encoding: 8bit
 
 From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
 
-[ Upstream commit 6616b5e1999146b1304abe78232af810080c67e3 ]
+[ Upstream commit fac4ebd79fed60e79cccafdad45a2bb8d3795044 ]
 
-In 'struct phm_ppm_table *ptr' allocation using kzalloc, an incorrect
-structure type is passed to sizeof() in kzalloc, larger structure types
-were used, thus using correct type 'struct phm_ppm_table' fixes the
-below:
+The amdgpu_gmc_vram_checking() function in emulation checks whether
+all of the memory range of shared system memory could be accessed by
+GPU, from this aspect, -EIO is returned for error scenarios.
 
-drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:203 get_platform_power_management_table() warn: struct type mismatch 'phm_ppm_table vs _ATOM_Tonga_PPM_Table'
+Fixes the below:
+drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c:919 gmc_v6_0_hw_init() warn: missing error code? 'r'
+drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c:1103 gmc_v7_0_hw_init() warn: missing error code? 'r'
+drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c:1223 gmc_v8_0_hw_init() warn: missing error code? 'r'
+drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c:2344 gmc_v9_0_hw_init() warn: missing error code? 'r'
 
-Cc: Eric Huang <JinHuiEric.Huang@amd.com>
+Cc: Xiaojian Du <Xiaojian.Du@amd.com>
+Cc: Lijo Lazar <lijo.lazar@amd.com>
 Cc: Christian König <christian.koenig@amd.com>
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Suggested-by: Christian König <christian.koenig@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0.c
-index f2a55c1413f5..17882f8dfdd3 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0.c
-+++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0.c
-@@ -200,7 +200,7 @@ static int get_platform_power_management_table(
- 		struct pp_hwmgr *hwmgr,
- 		ATOM_Tonga_PPM_Table *atom_ppm_table)
- {
--	struct phm_ppm_table *ptr = kzalloc(sizeof(ATOM_Tonga_PPM_Table), GFP_KERNEL);
-+	struct phm_ppm_table *ptr = kzalloc(sizeof(*ptr), GFP_KERNEL);
- 	struct phm_ppt_v1_information *pp_table_information =
- 		(struct phm_ppt_v1_information *)(hwmgr->pptable);
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c
+index 2bc791ed8830..ea0fb079f942 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c
+@@ -808,19 +808,26 @@ int amdgpu_gmc_vram_checking(struct amdgpu_device *adev)
+ 	 * seconds, so here, we just pick up three parts for emulation.
+ 	 */
+ 	ret = memcmp(vram_ptr, cptr, 10);
+-	if (ret)
+-		return ret;
++	if (ret) {
++		ret = -EIO;
++		goto release_buffer;
++	}
  
+ 	ret = memcmp(vram_ptr + (size / 2), cptr, 10);
+-	if (ret)
+-		return ret;
++	if (ret) {
++		ret = -EIO;
++		goto release_buffer;
++	}
+ 
+ 	ret = memcmp(vram_ptr + size - 10, cptr, 10);
+-	if (ret)
+-		return ret;
++	if (ret) {
++		ret = -EIO;
++		goto release_buffer;
++	}
+ 
++release_buffer:
+ 	amdgpu_bo_free_kernel(&vram_bo, &vram_gpu,
+ 			&vram_ptr);
+ 
+-	return 0;
++	return ret;
+ }
 -- 
 2.43.0
 
