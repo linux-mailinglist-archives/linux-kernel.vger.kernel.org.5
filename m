@@ -1,59 +1,55 @@
-Return-Path: <linux-kernel+bounces-41733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E44D583F71D
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:25:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB5FA83F720
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:25:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 702781F2A6DB
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:25:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09B9D1C22898
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:25:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D22DE60DD8;
-	Sun, 28 Jan 2024 16:13:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4232E60ED8;
+	Sun, 28 Jan 2024 16:13:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pHAf7F2X"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k1GD1WhQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB72360899;
-	Sun, 28 Jan 2024 16:13:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76A5160DE2;
+	Sun, 28 Jan 2024 16:13:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458417; cv=none; b=kF4PvOlXY8aw/Qgpml3TwegoJEqpz6ZTqn58miG8cRlLKU7SzsyY0v9Z7O4+R9dMws4t0P5oXFa8Ld60zjP9CP6F/Dj5xvRVu1uvNTSxdKQ1LbOuXgAjtW2GrNCLr9uoaOV2E3x4W02g8PFxKmBRJScU1G0qOwKkfQezWA92d8k=
+	t=1706458418; cv=none; b=BUX0dxBxVOtGLTjatpjZZMm+KaewI2553qe6oQRImHrsRhCUhe4a1SuCFbg9sQTgvnH6TZ2uhVfAEeDqIvY9+JqPzv2Jere5uBikTEsQ+gGS+49b/1VT8JBlQqQ0ZLe3uomorh7bbT/z2MOAx7jvDFCCDZlhrM18ExyxgPraUvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458417; c=relaxed/simple;
-	bh=IsjkGq7r2ZRS9Sa1YiAaxwYPtBr+IZGLQatioFb8px0=;
+	s=arc-20240116; t=1706458418; c=relaxed/simple;
+	bh=bAcWqAhQUqIXHIRsmqUiFdqDByAUih+G9oofDlAEWLc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=M18TcyQ08w4pjwz/xpEgTVZ93c9C2vBuH2R+zUfayu7h4NS6x0VvZlsUiOABB+G2sckgMq1Y+bwQsQzsfb1d6z1HeJESQmBMgSAGlOn7AH2+7Y4ar+xF2t1mfo+edOyeeR5hGeR7dsVHR6g3KErT90SqPr3MmxHPqcTBqBp1Sog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pHAf7F2X; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7672C43390;
-	Sun, 28 Jan 2024 16:13:35 +0000 (UTC)
+	 MIME-Version:Content-Type; b=BoW7OH/pkhw21acK0Q8BJbgy12Jr2zWza7upbd7jWNJt/D9KRfXbq8M37IKXAw/bCcCHG1tIf9q28pjp2FkOxwRmJK6LGhfPTtNNPq6DwDIVWNH6oJ+qJkGCd6FtI24xXYVrjbFpDiqtt25G0heJU43+HoQpBEQTZPdV7nRtGrw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k1GD1WhQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38A15C433A6;
+	Sun, 28 Jan 2024 16:13:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706458416;
-	bh=IsjkGq7r2ZRS9Sa1YiAaxwYPtBr+IZGLQatioFb8px0=;
+	s=k20201202; t=1706458417;
+	bh=bAcWqAhQUqIXHIRsmqUiFdqDByAUih+G9oofDlAEWLc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pHAf7F2XZZJ9TlQNjtZuAE9fpRHQb8RXZNQZV8uBSk+fLRpdLi3r1RNWTSiCChTit
-	 UIN48gNj6xrRKjqeZg0115cmMj+LOBnAWlcQKieNGEN6q3C4WT8faKMBQliRha3Hpy
-	 CKh6+4EF90m2qCnuHdWEyLhketcRINydx5kHuzLZHHY6xfa+JYYAAWijsWQnt09vYl
-	 Li8bQ4PyK+aivJww3q7gB9z5y3X05kteIISKsU8joSWjbnopHvXSSMhb4DELWBiXxN
-	 1CdN0FhRj7hqydiJkhFdFBSc6+2NNEkCk3hPBqkUU/zkNw1YeKZxvtQ6b6ieM8SYbc
-	 NjeU3Zt/ZilbA==
+	b=k1GD1WhQFjGPKnWesPYcx9s/POQEHNOleV3yEj6LKdWX1ksJUV4MIx8iwxTRpicAA
+	 T0NaEOEua8xGvVv/iUKAV3qSYogD6JoQ13YFGhctl7EIemH6LdztPH1F08mjhP91ts
+	 WrmDznKIa1yMHz6RA1GPQa0DcdXp3LlXOU4ZWctrT5qQp4yAgs8VT0CRmd9+P0Pig2
+	 tbSQaE6MXysq6L6lUv5wOHRXdDyLtfACzWDn7fOadJ7P6uwAli1yM6VlNSoDHO0fyO
+	 O8veMvKi9QhZ1LHcy+ESW3zI72mVo3MEGMjV/bzuIPotJfzkrsiO8e+DXYRsoLV+TL
+	 4tEW1oO5jWNIA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Luca Weiss <luca.weiss@fairphone.com>,
-	Sebastian Reichel <sebastian.reichel@collabora.com>,
+Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
 	Sasha Levin <sashal@kernel.org>,
-	andersson@kernel.org,
-	sre@kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-pm@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 12/31] power: supply: qcom_battmgr: Register the power supplies after PDR is up
-Date: Sun, 28 Jan 2024 11:12:42 -0500
-Message-ID: <20240128161315.201999-12-sashal@kernel.org>
+	linux-pci@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 13/31] PCI: Fix 64GT/s effective data rate calculation
+Date: Sun, 28 Jan 2024 11:12:43 -0500
+Message-ID: <20240128161315.201999-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128161315.201999-1-sashal@kernel.org>
 References: <20240128161315.201999-1-sashal@kernel.org>
@@ -63,191 +59,41 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.14
 Content-Transfer-Encoding: 8bit
 
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
+From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-[ Upstream commit b43f7ddc2b7a5a90447d96cb4d3c6d142dd4a810 ]
+[ Upstream commit ac4f1897fa5433a1b07a625503a91b6aa9d7e643 ]
 
-Currently, a not-yet-entirely-initialized battmgr (e.g. with pd-mapper
-not having yet started or ADSP not being up etc.) results in a couple of
-zombie power supply devices hanging around.
+Unlike the lower rates, the PCIe 64GT/s Data Rate uses 1b/1b encoding, not
+128b/130b (PCIe r6.1 sec 1.2, Table 1-1).  Correct the PCIE_SPEED2MBS_ENC()
+calculation to reflect that.
 
-This is particularly noticeable when trying to suspend the device (even
-s2idle): the PSY-internal thermal zone is inaccessible and returns
--ENODEV, which causes log spam.
-
-Register the power supplies only after we received some notification
-indicating battmgr is ready to take off.
-
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Tested-by: Luca Weiss <luca.weiss@fairphone.com>
-Link: https://lore.kernel.org/r/20231218-topic-battmgr_fixture_attempt-v1-1-6145745f34fe@linaro.org
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Link: https://lore.kernel.org/r/20240102172701.65501-1-ilpo.jarvinen@linux.intel.com
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/qcom_battmgr.c | 109 +++++++++++++++-------------
- 1 file changed, 60 insertions(+), 49 deletions(-)
+ drivers/pci/pci.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/power/supply/qcom_battmgr.c b/drivers/power/supply/qcom_battmgr.c
-index ec163d1bcd18..a12e2a66d516 100644
---- a/drivers/power/supply/qcom_battmgr.c
-+++ b/drivers/power/supply/qcom_battmgr.c
-@@ -282,6 +282,7 @@ struct qcom_battmgr_wireless {
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index 5484048f457d..99abc4cec0df 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -269,7 +269,7 @@ void pci_bus_put(struct pci_bus *bus);
  
- struct qcom_battmgr {
- 	struct device *dev;
-+	struct auxiliary_device *adev;
- 	struct pmic_glink_client *client;
- 
- 	enum qcom_battmgr_variant variant;
-@@ -1293,11 +1294,69 @@ static void qcom_battmgr_enable_worker(struct work_struct *work)
- 		dev_err(battmgr->dev, "failed to request power notifications\n");
- }
- 
-+static char *qcom_battmgr_battery[] = { "battery" };
-+
-+static void qcom_battmgr_register_psy(struct qcom_battmgr *battmgr)
-+{
-+	struct power_supply_config psy_cfg_supply = {};
-+	struct auxiliary_device *adev = battmgr->adev;
-+	struct power_supply_config psy_cfg = {};
-+	struct device *dev = &adev->dev;
-+
-+	psy_cfg.drv_data = battmgr;
-+	psy_cfg.of_node = adev->dev.of_node;
-+
-+	psy_cfg_supply.drv_data = battmgr;
-+	psy_cfg_supply.of_node = adev->dev.of_node;
-+	psy_cfg_supply.supplied_to = qcom_battmgr_battery;
-+	psy_cfg_supply.num_supplicants = 1;
-+
-+	if (battmgr->variant == QCOM_BATTMGR_SC8280XP) {
-+		battmgr->bat_psy = devm_power_supply_register(dev, &sc8280xp_bat_psy_desc, &psy_cfg);
-+		if (IS_ERR(battmgr->bat_psy))
-+			dev_err(dev, "failed to register battery power supply (%ld)\n",
-+				PTR_ERR(battmgr->bat_psy));
-+
-+		battmgr->ac_psy = devm_power_supply_register(dev, &sc8280xp_ac_psy_desc, &psy_cfg_supply);
-+		if (IS_ERR(battmgr->ac_psy))
-+			dev_err(dev, "failed to register AC power supply (%ld)\n",
-+				PTR_ERR(battmgr->ac_psy));
-+
-+		battmgr->usb_psy = devm_power_supply_register(dev, &sc8280xp_usb_psy_desc, &psy_cfg_supply);
-+		if (IS_ERR(battmgr->usb_psy))
-+			dev_err(dev, "failed to register USB power supply (%ld)\n",
-+				PTR_ERR(battmgr->usb_psy));
-+
-+		battmgr->wls_psy = devm_power_supply_register(dev, &sc8280xp_wls_psy_desc, &psy_cfg_supply);
-+		if (IS_ERR(battmgr->wls_psy))
-+			dev_err(dev, "failed to register wireless charing power supply (%ld)\n",
-+				PTR_ERR(battmgr->wls_psy));
-+	} else {
-+		battmgr->bat_psy = devm_power_supply_register(dev, &sm8350_bat_psy_desc, &psy_cfg);
-+		if (IS_ERR(battmgr->bat_psy))
-+			dev_err(dev, "failed to register battery power supply (%ld)\n",
-+				PTR_ERR(battmgr->bat_psy));
-+
-+		battmgr->usb_psy = devm_power_supply_register(dev, &sm8350_usb_psy_desc, &psy_cfg_supply);
-+		if (IS_ERR(battmgr->usb_psy))
-+			dev_err(dev, "failed to register USB power supply (%ld)\n",
-+				PTR_ERR(battmgr->usb_psy));
-+
-+		battmgr->wls_psy = devm_power_supply_register(dev, &sm8350_wls_psy_desc, &psy_cfg_supply);
-+		if (IS_ERR(battmgr->wls_psy))
-+			dev_err(dev, "failed to register wireless charing power supply (%ld)\n",
-+				PTR_ERR(battmgr->wls_psy));
-+	}
-+}
-+
- static void qcom_battmgr_pdr_notify(void *priv, int state)
- {
- 	struct qcom_battmgr *battmgr = priv;
- 
- 	if (state == SERVREG_SERVICE_STATE_UP) {
-+		if (!battmgr->bat_psy)
-+			qcom_battmgr_register_psy(battmgr);
-+
- 		battmgr->service_up = true;
- 		schedule_work(&battmgr->enable_work);
- 	} else {
-@@ -1312,13 +1371,9 @@ static const struct of_device_id qcom_battmgr_of_variants[] = {
- 	{}
- };
- 
--static char *qcom_battmgr_battery[] = { "battery" };
--
- static int qcom_battmgr_probe(struct auxiliary_device *adev,
- 			      const struct auxiliary_device_id *id)
- {
--	struct power_supply_config psy_cfg_supply = {};
--	struct power_supply_config psy_cfg = {};
- 	const struct of_device_id *match;
- 	struct qcom_battmgr *battmgr;
- 	struct device *dev = &adev->dev;
-@@ -1328,14 +1383,7 @@ static int qcom_battmgr_probe(struct auxiliary_device *adev,
- 		return -ENOMEM;
- 
- 	battmgr->dev = dev;
--
--	psy_cfg.drv_data = battmgr;
--	psy_cfg.of_node = adev->dev.of_node;
--
--	psy_cfg_supply.drv_data = battmgr;
--	psy_cfg_supply.of_node = adev->dev.of_node;
--	psy_cfg_supply.supplied_to = qcom_battmgr_battery;
--	psy_cfg_supply.num_supplicants = 1;
-+	battmgr->adev = adev;
- 
- 	INIT_WORK(&battmgr->enable_work, qcom_battmgr_enable_worker);
- 	mutex_init(&battmgr->lock);
-@@ -1347,43 +1395,6 @@ static int qcom_battmgr_probe(struct auxiliary_device *adev,
- 	else
- 		battmgr->variant = QCOM_BATTMGR_SM8350;
- 
--	if (battmgr->variant == QCOM_BATTMGR_SC8280XP) {
--		battmgr->bat_psy = devm_power_supply_register(dev, &sc8280xp_bat_psy_desc, &psy_cfg);
--		if (IS_ERR(battmgr->bat_psy))
--			return dev_err_probe(dev, PTR_ERR(battmgr->bat_psy),
--					     "failed to register battery power supply\n");
--
--		battmgr->ac_psy = devm_power_supply_register(dev, &sc8280xp_ac_psy_desc, &psy_cfg_supply);
--		if (IS_ERR(battmgr->ac_psy))
--			return dev_err_probe(dev, PTR_ERR(battmgr->ac_psy),
--					     "failed to register AC power supply\n");
--
--		battmgr->usb_psy = devm_power_supply_register(dev, &sc8280xp_usb_psy_desc, &psy_cfg_supply);
--		if (IS_ERR(battmgr->usb_psy))
--			return dev_err_probe(dev, PTR_ERR(battmgr->usb_psy),
--					     "failed to register USB power supply\n");
--
--		battmgr->wls_psy = devm_power_supply_register(dev, &sc8280xp_wls_psy_desc, &psy_cfg_supply);
--		if (IS_ERR(battmgr->wls_psy))
--			return dev_err_probe(dev, PTR_ERR(battmgr->wls_psy),
--					     "failed to register wireless charing power supply\n");
--	} else {
--		battmgr->bat_psy = devm_power_supply_register(dev, &sm8350_bat_psy_desc, &psy_cfg);
--		if (IS_ERR(battmgr->bat_psy))
--			return dev_err_probe(dev, PTR_ERR(battmgr->bat_psy),
--					     "failed to register battery power supply\n");
--
--		battmgr->usb_psy = devm_power_supply_register(dev, &sm8350_usb_psy_desc, &psy_cfg_supply);
--		if (IS_ERR(battmgr->usb_psy))
--			return dev_err_probe(dev, PTR_ERR(battmgr->usb_psy),
--					     "failed to register USB power supply\n");
--
--		battmgr->wls_psy = devm_power_supply_register(dev, &sm8350_wls_psy_desc, &psy_cfg_supply);
--		if (IS_ERR(battmgr->wls_psy))
--			return dev_err_probe(dev, PTR_ERR(battmgr->wls_psy),
--					     "failed to register wireless charing power supply\n");
--	}
--
- 	battmgr->client = devm_pmic_glink_register_client(dev,
- 							  PMIC_GLINK_OWNER_BATTMGR,
- 							  qcom_battmgr_callback,
+ /* PCIe speed to Mb/s reduced by encoding overhead */
+ #define PCIE_SPEED2MBS_ENC(speed) \
+-	((speed) == PCIE_SPEED_64_0GT ? 64000*128/130 : \
++	((speed) == PCIE_SPEED_64_0GT ? 64000*1/1 : \
+ 	 (speed) == PCIE_SPEED_32_0GT ? 32000*128/130 : \
+ 	 (speed) == PCIE_SPEED_16_0GT ? 16000*128/130 : \
+ 	 (speed) == PCIE_SPEED_8_0GT  ?  8000*128/130 : \
 -- 
 2.43.0
 
