@@ -1,104 +1,111 @@
-Return-Path: <linux-kernel+bounces-41525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41526-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE16583F3AF
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 04:56:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0594083F3B7
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 05:19:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D5352841E2
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 03:56:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E1481C20E86
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 04:19:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEBEB46AF;
-	Sun, 28 Jan 2024 03:56:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE16F5256;
+	Sun, 28 Jan 2024 04:19:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="qXM77+uY"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bsDweI7/"
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5ECC3C35;
-	Sun, 28 Jan 2024 03:56:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A80B5469E;
+	Sun, 28 Jan 2024 04:19:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706414191; cv=none; b=jVE99JR38GUtaIyv8iNxSx+LPOFaVx8wbTZmIAowWNzeAlU5xLXZdR24P9KeOSPObTRuvk/tMvbBC22WZRVh0/WjQPgvDWbM2C74KEYggx6r09OVp/3VrIa350S0q/sShTiNYV1D563StQrHrMVDykbJ3pfdBB7Vd7jZd0SJ/ws=
+	t=1706415585; cv=none; b=UedSX4UxHNSssfcAiGfInpEPR56lA9e5OjvumT0HQo34wY2S8Dy3bmczTgBCZU4PnCouRZ98d3TIom+1ANSBwQDBCPSq9YJxk48LnqvaS5ri+cxFU/pMAy+/tUS5c27z++TzFmi0aHHpsd2658bWbjPx3NoAN5wCPG0nNfA9ldI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706414191; c=relaxed/simple;
-	bh=DkqjdcDp8yw1gRWxs7b/P6TwSwEjLEV1DUmqAJg7TUU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=LvT3iw7vtQGOl8QXjG6e93r/j66are7bpsXboXx2dtk6iQEr59I+hUJXwCRHBsCQjevsmy8lt+ILx2a982CtmsEPUGFA5PLBiHuEcOkI+86G7pjm22wqTQDjzhz5ZLiA3BtHyB9idFOWE1r8EUjzGVoiV0GqpRGLkl6R4GM12Hs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=qXM77+uY; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1706414187;
-	bh=vXn7ksdiJVIxoUKftEdiEi30oaIcq5qpDJAZ1K4V/VA=;
-	h=Date:From:To:Cc:Subject:From;
-	b=qXM77+uYZE5mD66LI6BffxtOErGdOfX+LX0c1aGHOMzx4qPtrv1cbCxZ+RiDF2rKW
-	 aBD413ViATvolpKY2CRFi9hGKBNo+L/6Cp7t2cBqNfuPKuQLL/bzjo6RZXxdlNCiOu
-	 AWVjq6gRGoYM9ot/vQeqsyktdziPbSmOiRTIVOqa1qaXn9gvbmMHgyaRZlPLKfXBl4
-	 QKBirU257eQ9KpHJf49LTk0XIh5a1ee+RlyzSyA96ehitT6fUdErKOqk6uTVjQsJea
-	 HlMmGydGToWXcVPA1f76tP4pH2i/BbCRUA5HziwCh0UsdVcMx4QzBdSMRfDaDTkiex
-	 esZkc0aFthFNQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TMyKR03rLz4wc6;
-	Sun, 28 Jan 2024 14:56:26 +1100 (AEDT)
-Date: Sun, 28 Jan 2024 14:56:26 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Steve French <smfrench@gmail.com>, CIFS <linux-cifs@vger.kernel.org>
-Cc: Steve French <stfrench@microsoft.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the cifs tree
-Message-ID: <20240128145626.53e7a0d3@canb.auug.org.au>
+	s=arc-20240116; t=1706415585; c=relaxed/simple;
+	bh=ouvRLb+Ds//L/skH9q1zWlfq8nHjlpo/XAlc5ITQhLs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bU7wTswN9YYMrqmTuDiebxCgyhdyQj71B7mTF4qAzYzdY8KDiYEq13360HsNHfJ7J1Ei+JsTk95CeQ6hgEXSrmhBL7IUYs2ONT/qh4QMrE/wX1++7Noqzuk73sCGgOz9OskP7057bFYx02bKULztan1co6agVdQwXSnLkiCDc9A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bsDweI7/; arc=none smtp.client-ip=209.85.161.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-59502aa878aso887244eaf.1;
+        Sat, 27 Jan 2024 20:19:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706415582; x=1707020382; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=15t886RIABr313J9wigXhAHcQ7ucTJcHxOCOzS75ZHE=;
+        b=bsDweI7/nGrXbmx3KMtbaaTJzJPPb1ag2iHaFAARU3rZEB+6eLkuG11MGygoP8ksuD
+         dFfwgZFl38jLezGlJ7oM4m7QNcjv3ruVaq7K4alC1s+ogBc+HU1cnDRxRRF2j1SYzWaJ
+         wgG58MIISfrbR8Epg/e7oli2q2wPp5Ac0MjeKRVLxmJE1lom+ko4k6o6MdYLDfckRYgc
+         9NEB3fgbu4hqDBeoUQmAjtfjYvBhcL0SYRCR0A1eWOJAl14OmaBARFoKGQzHkyqvzC4y
+         A8CWfsE7yaniEFktQI+ArsfpJgR/RIyYOIthGt4GeTGS2xNMPPF7fsdlNViOSDwH2BEa
+         kZSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706415582; x=1707020382;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=15t886RIABr313J9wigXhAHcQ7ucTJcHxOCOzS75ZHE=;
+        b=fD9/yp+bKc7p7Lvy+Wnx4TPH2nfxK8P5DFPKW26FgXwOr2c7tkyvrgAMwT1B55Jx+y
+         YC1+V/B3s2cZ7RfCBmN/muycb4QTvT72s/OOFNNlsvdVJOg2heOMcNlrXdCAVvKKxT4I
+         mgxnuaFUaHlaYrF0u3cS1EkVnhiV/t1wwlOYh2R0rx3cfIz2t1dG87rPVzsVvMQ9a2t/
+         7icyU6r/f11uQXfG6ZRf5heKukQpnagDqfbCKcbYu2Tdy14HLbH8GjfmmAZQc3E2FRDh
+         u5+NofUJ8M2Buio6K2hOzyp431KHiQBvhRXeNRnmOXWwgTMZpo7GrxVcfdlz90I0Rf/g
+         5NqQ==
+X-Gm-Message-State: AOJu0Yy6F206bBonPAEzyQy7nf7NKHp4qZZV+MSUrFEL3rKI/wT9/vV0
+	GXhGixLOG9CAaVv+MeEZQ/tvdJMcTKyJJORYcDXIN0UtpHJ14cnl
+X-Google-Smtp-Source: AGHT+IEBSQgi7IiC6vD8LPU9eld5W2djGlEuzGvkzp59fjqExYM58z4CUAPqsm22eW81t5/Baln3DQ==
+X-Received: by 2002:a05:6359:1501:b0:175:c16b:126f with SMTP id jt1-20020a056359150100b00175c16b126fmr2599450rwb.56.1706415582367;
+        Sat, 27 Jan 2024 20:19:42 -0800 (PST)
+Received: from ubuntu.localdomain ([219.143.159.9])
+        by smtp.gmail.com with ESMTPSA id x15-20020a17090a164f00b00295210e5a9asm2442047pje.48.2024.01.27.20.19.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Jan 2024 20:19:41 -0800 (PST)
+From: Donglin Peng <dolinux.peng@gmail.com>
+To: peterz@infradead.org
+Cc: jolsa@kernel.org,
+	wangnan0@huawei.com,
+	linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Donglin Peng <dolinux.peng@gmail.com>
+Subject: [PATCH] perf/ring-buffer: refactor code of reading the value of data_tail
+Date: Sat, 27 Jan 2024 20:19:35 -0800
+Message-Id: <20240128041935.513800-1-dolinux.peng@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ODSJ.Wj51jgF_/jSwry+gH4";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 
---Sig_/ODSJ.Wj51jgF_/jSwry+gH4
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The tail variable will only be accessed when overwrite is 0, so we can
+put the assignment statement in the if branch.
 
-Hi all,
+Fixes: d1b26c70246b ("perf/ring_buffer: Prepare writing into the ring-buffer from the end")
+Signed-off-by: Donglin Peng <dolinux.peng@gmail.com>
+---
+ kernel/events/ring_buffer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Commits
+diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
+index 60ed43d1c29e..86b150a822b7 100644
+--- a/kernel/events/ring_buffer.c
++++ b/kernel/events/ring_buffer.c
+@@ -194,8 +194,8 @@ __perf_output_begin(struct perf_output_handle *handle,
+ 	offset = local_read(&rb->head);
+ 	do {
+ 		head = offset;
+-		tail = READ_ONCE(rb->user_page->data_tail);
+ 		if (!rb->overwrite) {
++			tail = READ_ONCE(rb->user_page->data_tail);
+ 			if (unlikely(!ring_buffer_has_space(head, tail,
+ 							    perf_data_size(rb),
+ 							    size, backward)))
+-- 
+2.25.1
 
-  60c2fcda9c84 ("smb: client: add support for WSL reparse points")
-  f6819b9b72b5 ("smb: client: reduce number of parameters in smb2_compound_=
-op()")
-  c08113706498 ("smb: client: fix potential broken compound request")
-  35f88f006a3f ("smb: client: move most of reparse point handling code to c=
-ommon file")
-  985f1bce45c4 ("smb: client: introduce reparse mount option")
-
-are missing a Signed-off-by from their committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ODSJ.Wj51jgF_/jSwry+gH4
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmW10GoACgkQAVBC80lX
-0GxLNAgAlCoozwRf49j2+NpjUJ8AtbPXhAw6hiXNDQrW4/U7BLqHsTwgXSN6jY4m
-iBul3QJIVp3bXMY/Slck+6pF3JQQxc9ZkZbkz6TjTZu00XEvVJTOzyAhIlTe221d
-tegI6bfePbHo7ny7Y0leUoj4ME7rYWEBq0J+5p4cEBXL1gwJzHcEgVNZ8YosO0Qz
-v8vDiVUkjRTkeECE0ifpQatpVyljV2fAXBmV3W1tBo1MIbTcqGAaZbV180ZWVMT3
-lkse/bsI+yysZjfV8rqw9RzrkmWUfvBJg06VxG0hT6gq122iLOYIfLNNKtbnWhjV
-SX9QtslMAz8aKXKJbuMpwTebW/ExsA==
-=57xP
------END PGP SIGNATURE-----
-
---Sig_/ODSJ.Wj51jgF_/jSwry+gH4--
 
