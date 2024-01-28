@@ -1,145 +1,135 @@
-Return-Path: <linux-kernel+bounces-41916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF0E683F98E
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:52:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0EFA83F991
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:57:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05025B21408
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 19:52:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FDE21F219BD
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 19:57:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4257136AE1;
-	Sun, 28 Jan 2024 19:52:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9C223BB3B;
+	Sun, 28 Jan 2024 19:57:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="k6eS+Jqh"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BXG8zA/D"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F73528E34;
-	Sun, 28 Jan 2024 19:52:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAD1C2D61A;
+	Sun, 28 Jan 2024 19:57:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706471539; cv=none; b=iMWpdr8HRTN6MhGTNG65299CrgdHEwjIWL8ljwCwbhnyV51QSaD0fQIjkjWdWCj4v0z7v/282va9kJS3MGal/mk/X+QuORA4NqZrTKTsvBwmT099QisWgrm9aProcrnp30LuMtoPMnTKAPAtINdq8hD9Bb67LUlqWjXm/Mi4628=
+	t=1706471863; cv=none; b=bTMuPxgWaJrF+tjXWg3v/yAuku8FveUSvR+54Ug1/rN3CKw/jcHj+l3U60DZ8bcml9sGKTNlZSGNw1udXr2xdqDw/NVFcJ/wjP568VESUz2NUAuJD2BLN5AwzoYq5DQGdVCl5L9UmjRNdxL/kVYSHnDb9lGrp/Wo5tP+C9AVgPc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706471539; c=relaxed/simple;
-	bh=XN+UyRHggajKOjpCssvw2790TXAKAkFvBUvkFhyl96E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FXZiAJVtjGGJMYnEp4WMNdXgKXM/eQQ5GvDfbwQybInzuFWIqrDL7A+cnzqy1iiN2wCDXWvRPQus3k7hS91MZVyWcJJOTcE2TVDfQfygKJ3nA8cSwE5MuwJncW5QQ44LMZGeJ1b6jkFhUxo0Q4kCH0edAzkDFkxrUlJzoU/nArM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=k6eS+Jqh; arc=none smtp.client-ip=212.227.15.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-	s=s31663417; t=1706471523; x=1707076323; i=wahrenst@gmx.net;
-	bh=XN+UyRHggajKOjpCssvw2790TXAKAkFvBUvkFhyl96E=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=k6eS+Jqh99fuLVl15IHOI0rKG2fZWFA1xD/uaw6fTmBPJ/Sb0SKeb3MgLxUzN7sd
-	 6iLLSY4RbI5ES8hCIxhWRIrVfuHzdNMdIiyody4Qkh6sBxNfzYKI1s1w11a9i6b/l
-	 CnctQmYTeNVhlzzsMVnON84AmU0NvgVq9N9jvPvNoIyQS+JQChnbF+okVr/DnKD7S
-	 XQrwlXNU8dRvOQJQWlPP6aPBAHV1CwXGC1ea4rM5QjAp9+kxXQ0mjDF0gLax6M9AE
-	 YMFFy3TRm5HV6a1++8z6sH4WrSQJx5fKBSl6CnX6lpiq+c9l3RO0zOHUHYJvz9tKL
-	 ziMGH4YRbBnkEbuuSA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.1.167] ([37.4.248.43]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MRTN9-1rgbuo1pdV-00NSQQ; Sun, 28
- Jan 2024 20:52:03 +0100
-Message-ID: <309c899d-551c-41a8-a574-421a796e79cf@gmx.net>
-Date: Sun, 28 Jan 2024 20:52:02 +0100
+	s=arc-20240116; t=1706471863; c=relaxed/simple;
+	bh=/QPR/qDfKOcrRm87Xiko56xF+rk8CX4zS8nZ1M+uiRQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DueldzJyyUsRzLoZMK0PoKXdtvh2YrUZzK9dnN/jQP7PTi8xRi2ugujJPafPBscCLPqUoVHEJ5GDd4U2BzVwklJueFIrNJcuNXMEBrexc6uVHlTscbvBLtycigvb1/gLSHwPGCVfA5oNfBdRa618CYQcGbGwbFDauO9qbIWexVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BXG8zA/D; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d76671e5a4so15934305ad.0;
+        Sun, 28 Jan 2024 11:57:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706471861; x=1707076661; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=W5rvBIjZB6f/l7eWENYMQezAWoxVgyOQwzg5bdH8Pi0=;
+        b=BXG8zA/DhJLW5CZCfCm+gs3W6vs+2j7OAZhAaS4ZKmHSCfAoqGjppCiQhv6meS3Aqy
+         c7DjeP6Js7AEMr54rzi5FMforfWNTB7bV2wVJHBu3BP4k7kcDuTRuqpNFH0OaWzPjylG
+         wYrE4KAu+hEh5ykJdf5haVqJFRRRPQGN8EzfkjgGn3xhvVSGyLlY81oNJ7Bf0b+oWF4S
+         kXgutm7PRZ9q21JL1rRQLvJyPlx0FwcUmTxyefbhrNwUYFq1TYWzYQgCcW9P5m+aVfy6
+         qFdRSD1iMWDZudLKdlHMt7k2/hYMe4S8wN4qYNmCQd+i0Iv2FPeXcMDEUjwCfFsrcqQE
+         hEAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706471861; x=1707076661;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=W5rvBIjZB6f/l7eWENYMQezAWoxVgyOQwzg5bdH8Pi0=;
+        b=qEXigE0DOqaOvAxTU8+dUnCltn//2hnRxoK1mi+gq5ggl3H5qOkHIVP20qkUG18p+d
+         X3srX4xvatVw9A8MosX6U/xXe9rYEBPeOlb+KvK+L7u39zW7Une8W6e2dPeAwhXRxKyZ
+         TzOHOvO34GpEQgC/QWKiApr8oanGCEvVVCQYXTP+CPkdveDfDAeMIVTbm+UFGQ9ELtxD
+         gOTVV4m1SYfuG+LQrRJphv2ChTMJU+NtSpZ0N/OHCb3K3RAj+a1F2gyG/n3sLPVhyA/D
+         onFDCPlD1tP3312gXkvMukQDfUgX4PwoWeqxk5985qJ6KLDad5QktqK7OFi7pQzrvQcz
+         2xTQ==
+X-Gm-Message-State: AOJu0YzOLjza6ONDZvy9YVTn0K/5+D8gq7vjRQ5e4RVjUklAlseZQ9YD
+	N/GHakGWW0EP2ndfBNaDV8IIrxr40jwubpkzp0cFdrwiuGaxNMT2
+X-Google-Smtp-Source: AGHT+IF8LNP683ZdD/msPWljI3oDdXkEgvLJE+R0BVknqxo0xfx6cWTXK7UsQFjH7TI9GBziHWtryQ==
+X-Received: by 2002:a17:902:7845:b0:1d8:ca24:d654 with SMTP id e5-20020a170902784500b001d8ca24d654mr2260474pln.100.1706471860894;
+        Sun, 28 Jan 2024 11:57:40 -0800 (PST)
+Received: from kohshi54-ThinkCentre-M715q.. ([2404:7a80:c880:6500:7f79:d78c:e8ac:f086])
+        by smtp.gmail.com with ESMTPSA id g10-20020a170902c98a00b001d5e340d979sm1113365plc.6.2024.01.28.11.57.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Jan 2024 11:57:40 -0800 (PST)
+From: Kohshi Yamaguchi <kohshi54.yam@gmail.com>
+To: gregkh@linuxfoundation.org,
+	corbet@lwn.net
+Cc: Kohshi Yamaguchi <kohshi54.yam@gmail.com>,
+	linux-usb@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	skhan@linuxfoundation.org
+Subject: [PATCH] doc: Fix malformed table in gadget-testing.rst
+Date: Mon, 29 Jan 2024 04:57:31 +0900
+Message-Id: <20240128195731.40003-1-kohshi54.yam@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V3 01/14 next] qca_spi: Improve SPI thread creation
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Lino Sanfilippo <LinoSanfilippo@gmx.de>,
- Florian Fainelli <f.fainelli@gmail.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240124223211.4687-1-wahrenst@gmx.net>
- <20240124223211.4687-2-wahrenst@gmx.net> <20240125183639.585ec73f@kernel.org>
-Content-Language: en-US
-From: Stefan Wahren <wahrenst@gmx.net>
-In-Reply-To: <20240125183639.585ec73f@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:QgQ7x7NJvc52CZk+n++xkBDbbZpS2r3wMkA7O/F2gmDP2qV3fNt
- oNXMkVR2ShknWjYSaEU+4fhBiJIW0NlsqIlOTQBanH6T0s8wXwgZBU2Pxr7hky9PHZpc82p
- qT5gbKoYFy7alaNYcoU95jfQ2gre7t1W+zsL0b8zqtgMeFIcLCvUBjiOk9CNkRnbEEbhLLf
- G1SooQBvjRiyF7ywPGKcg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:AQKGmC8yLQA=;/V0VdTOAuT6gvYHWNvvRthNQ5kC
- TrF7KSmzhCIlZJDEdwCu7AfEMW8Gi/gcgQAxAq9k0pYAF3JGflNGy8cANF3HrYHi+rNyPC8GL
- WBceOdcmGYRBlyeI5ZIDQhrkDe8+IFMMjLvldcn26l8Yw0vbxIATcxuulI0K4sGcS8VngDIQ2
- 3mLG6+4yVxima2E/wBBHxIp5YWulVYVLFHyAWEyuBkZ58StDiDKi8SqZeXAut65a7Biv3XdV8
- GK4+7QnOBCkQUv1myZfi+kk4pw1AFc40ldQU9SskSlxm3CJhELSioXqy5tX1gM9BRlQMSg1//
- z0RYMzDmOLvFbx1lD7iJmEZdJ7wz0ucOdPwW4Pp/c/N/RlwTH2UmyyqjSUzp2bramDjJeV+6G
- ayeXoGNlm+1y/4dmoAYvBqEtOcRhv6+Q7i3D3FkHDczcgEZIOMmidPtuWQXtnkGRh0y+HOKfY
- exRBVDe875FKVYuaXrK9hAYSo1MFjz62GDPoHxA6rdkPGW4oaS/sxXT6Okx/JoxhB7YniwCxH
- 2BkI9zDkh9YSQ/1hD1eMUyfoBpyLqt7Avskn8gH3SfjupvU+xDMUi1xL2KHSuoT5+1WZJA46Z
- QRCG3jg290CNiQO6GT5IKc309b/dn+OS8Wf5DM84DNabuOG84Zu6eBOmdSUClIxh8cshnEdjq
- pSogK56flOEfTxsZ37r1GigzzWS0RHfGiUPK8wM0IiD+AR4C6TLIA+eiREDHf3iFRsxjjA3E2
- mv3OyWDso025RtlLN3EhvVGxWE+Xa+/hdN9K+hIxlslxKnC8g85pMs7Mxvlcu5lWerX118SVz
- UmY8AVJljR8EuAGVU+1MJ1VTLiaNdk6COObCbC7/eZhw3sn8p8EF32RIYlm0D9bR/GZ6MP2HO
- xJxxyib6jKNni62vAM4d+K3HPPlk4cP711o3CaUeU4+qAiG3QAFwlMgSDTMjSxYb7SJfaWxGH
- rqEmPLUxItTTi8FEG+2RTjiHRPk=
+Content-Transfer-Encoding: 8bit
 
-Hi Jakub,
+The table describing the NCM function attributes in gadget-testing.rst
+was malformed, causing Sphinx build warnings. This patch fixes the table
+format to align with the reStructuredText specifications.
 
-Am 26.01.24 um 03:36 schrieb Jakub Kicinski:
-> On Wed, 24 Jan 2024 23:31:58 +0100 Stefan Wahren wrote:
->> The qca_spi driver create/stop the SPI kernel thread in case
->> of netdev_open/close. This isn't optimal because there is no
->> need for such an expensive operation.
->>
->> So improve this by moving create/stop of the SPI kernel into
->> the init/uninit ops. The open/close ops could just
->> 'park/unpark' the SPI kernel thread.
-> What's the concern? I don't think that creating a thread is all
-> expensive. And we shouldn't have a thread sitting around when
-> the interface isn't use. I mean - if you ask me what's better
-> a small chance that the creation will fail at open or having
-> a parked and unused thread when device is down - I'd pick
-> the former.. But I may well be missing the point.
-there is actually another reason for this change which is not mentioned
-in the commit message. The pointer spi_thread can have 3 states:
-- valid thread
-- error pointer
-- NULL
+The border lines of the table were not properly aligned with the column
+headers, which was corrected by adjusting the border line lengths to
+match the headers.
 
-So the second motivation was to eliminate the possibility of an error
-pointer
-by using a local variable. So we only have to care about NULL.
+Signed-off-by: Kohshi Yamaguchi <kohshi54.yam@gmail.com>
+---
+ Documentation/usb/gadget-testing.rst | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-I will change this in V4.
->
->> @@ -825,6 +813,7 @@ static int
->>   qcaspi_netdev_init(struct net_device *dev)
->>   {
->>   	struct qcaspi *qca =3D netdev_priv(dev);
->> +	struct task_struct *thread;
->>
->>   	dev->mtu =3D QCAFRM_MAX_MTU;
->>   	dev->type =3D ARPHRD_ETHER;
->> @@ -848,6 +837,15 @@ qcaspi_netdev_init(struct net_device *dev)
->>   		return -ENOBUFS;
->>   	}
->>
->> +	thread =3D kthread_create(qcaspi_spi_thread, qca, "%s", dev->name);
->> +	if (IS_ERR(thread)) {
->> +		netdev_err(dev, "%s: unable to start kernel thread.\n",
->> +			   QCASPI_DRV_NAME);
->> +		return PTR_ERR(thread);
-> I'm 90% sure this leaks resources on failure, too.
-Oops
-
-Best regards
->
-> Rest of the series LGTM!
+diff --git a/Documentation/usb/gadget-testing.rst b/Documentation/usb/gadget-testing.rst
+index 8cd62c466d20..1d1737f246df 100644
+--- a/Documentation/usb/gadget-testing.rst
++++ b/Documentation/usb/gadget-testing.rst
+@@ -448,17 +448,17 @@ Function-specific configfs interface
+ The function name to use when creating the function directory is "ncm".
+ The NCM function provides these attributes in its function directory:
+ 
+-	===============   ==================================================
+-	ifname		  network device interface name associated with this
+-			  function instance
+-	qmult		  queue length multiplier for high and super speed
+-	host_addr	  MAC address of host's end of this
+-			  Ethernet over USB link
+-	dev_addr	  MAC address of device's end of this
+-			  Ethernet over USB link
+-	max_segment_size  Segment size required for P2P connections. This
+-			  will set MTU to (max_segment_size - 14 bytes)
+-	===============   ==================================================
++	================   ==================================================
++	ifname		   network device interface name associated with this
++			   function instance
++	qmult		   queue length multiplier for high and super speed
++	host_addr	   MAC address of host's end of this
++			   Ethernet over USB link
++	dev_addr	   MAC address of device's end of this
++			   Ethernet over USB link
++	max_segment_size   Segment size required for P2P connections. This
++			   will set MTU to (max_segment_size - 14 bytes)
++	================   ==================================================
+ 
+ and after creating the functions/ncm.<instance name> they contain default
+ values: qmult is 5, dev_addr and host_addr are randomly selected.
+-- 
+2.34.1
 
 
