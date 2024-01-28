@@ -1,102 +1,159 @@
-Return-Path: <linux-kernel+bounces-41638-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41639-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FEC083F5B2
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 15:01:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7986D83F5B5
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 15:03:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B990F1F22D5A
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 14:01:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01A661F22D72
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 14:03:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCE7023748;
-	Sun, 28 Jan 2024 14:01:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B3A0241E9;
+	Sun, 28 Jan 2024 14:03:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Be6XmJOE"
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hw+rL0Au"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A883623745
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 14:01:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BA4023748;
+	Sun, 28 Jan 2024 14:03:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706450480; cv=none; b=p/m5Nfq5Sfz2X0vaJ3PztWx44ym1Ek3loqYksPk2V01MSK2MNAn24k7rID6fJ2LipDUdBjnpe2e6XNKUmTGgYPCOXd+PbegLTw74iMg/eDegv9jwzi4JLwNbL2lwYU3mLR+OTuM1k7FFEzmgwrCFfqx2Fgh4tEQdj0HpnpTvWZ0=
+	t=1706450614; cv=none; b=K/C5SQAFD2X0J5laumq9lZjVLD9kqOrOLzKQevme8hpKZdco76MApe996qiVfVRNcQvYCcMSnF78NcP/LVwvxBC02CHRqryRotKDYoIz6BPXULXqO2AHQtQ5wwYSBz1osVHxuBjjRE+hneJ1h/0Ar6UmWvSBF0ds2WsPtiedXd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706450480; c=relaxed/simple;
-	bh=avMCpwuFUa2i4x7tiD4dco/h0z+G0ypjNSRfns11g5c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C8LMxRAZT/KnEUuLTL0IrzTADjKDGTwx7K1sZ/0IvG/5vKqe2Bb82nrxkl+T5NKpjBuTqo5Jcr3tKFtYsSgbnikjFy5k16Fx+/xDrjU+Rj9iNONFXDvZk832e0mqK0TdVcnxJ4+sjtn/elKRq3hKBfmYWIz9skysrkSEJOqmsO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Be6XmJOE; arc=none smtp.client-ip=209.85.160.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-42a99dc9085so91071cf.0
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 06:01:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706450477; x=1707055277; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=avMCpwuFUa2i4x7tiD4dco/h0z+G0ypjNSRfns11g5c=;
-        b=Be6XmJOE95K8C9Hr0UPrko3RJZJYUNa/4ZDDUa8aYeKyh+1QVM5hWE0V5HDmcZ3gXh
-         BCRX1HHdEQ6Bq5b/FnuMA8uWL0eVrVw1POtn6hT8DgHP4to8breZqXfCY7dVjotRLN0w
-         GjWEx6DH0mSE8xH1e9h0MDLxVDQLkzOasfwLGI/ykBn+Wh65WEhHQVq97IC57B83cTZx
-         ZKw2TObQ6VeU+5p4qgC6DvA88bSXyc3RsG7/NdTr7QAdOdOIhdLrGf9iTBl4wEsGdKYX
-         RfNELY5Kr/Tnv26j3/CIUZYknhIx/KAtaaNpFJpeYhcNieIRS9TTUgJfX0+Vt8k1Io9v
-         CsOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706450477; x=1707055277;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=avMCpwuFUa2i4x7tiD4dco/h0z+G0ypjNSRfns11g5c=;
-        b=mHcgfitBEm6x/RW6QZUFxJE1HHUrVo2skIVesDleuUe53PNarSNnX6RqdN/zKamsh8
-         j3zo/Y5KEsisvpkMwBr4R6F1YJRmadH9blykYr3KheRocZCSIvi4WcLQs6YmiEHAkH+m
-         9yBxWpiTsZae9II5ZQkuNencxWqFnmij8UlC9P8lpIlBTNkSkBF74FxxstEogySjqhby
-         rQoyTSaS0JI6oCxAMqcl9R1MYgKpz3fYjxFg65y+j9BWWEWTG3ntFjwvCFBLyPMjj54R
-         vxb0fbKmtqTU2t/3TZuFmpSegS+8wCWpJmZwAsa7GAqe7BXUiI7RP6/YFMCUNrQ0HP5E
-         f8EQ==
-X-Gm-Message-State: AOJu0Yy/Ao10N+SxXs837f3ZdthsZaY73OltJg8Dcb+EwcfEaofERdUw
-	wogpkwnMUQNUjjYSI/cRgZ9kv19WszeVlr3mXrbEd1jrPQogzpvtcH5/25pg1ED53yeGzQShQCS
-	QO3GBk9BV3UWsnAsthDAiXEJMqScSjdzrUl+j
-X-Google-Smtp-Source: AGHT+IHh1HEBb8ULsyRDgozer+s4BS5WKyZ75DXxeVJYw3c1vuZ16gFOug+pKMBLafShcXmZ+HFEwzDxpPouZEg7gLM=
-X-Received: by 2002:a05:622a:1bab:b0:42a:6b64:da7f with SMTP id
- bp43-20020a05622a1bab00b0042a6b64da7fmr402749qtb.27.1706450476977; Sun, 28
- Jan 2024 06:01:16 -0800 (PST)
+	s=arc-20240116; t=1706450614; c=relaxed/simple;
+	bh=QPKARJhphJTFFYHrEyYFlYgl8/7ZAhez9TimfUCJ8Ek=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=No/UhxktnpgnpKvc1OaMvnEEuDH9zdmzj6PFWgwAvEr5wvDSkmrvop59iCxzvY7XHB/Hf+eYfvmiJjZDBVkm++psOjpUIDW8yY9+iYpQzIfsyiBiOTyJ2vpbABTuBU+dzD6EMCRJWk1f/sol/20UpB1KaLpNfjB0LTgX9AFSXok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hw+rL0Au; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706450612; x=1737986612;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=QPKARJhphJTFFYHrEyYFlYgl8/7ZAhez9TimfUCJ8Ek=;
+  b=hw+rL0AueG+Bemx188kmIITPFk46DT58rY9fvqvbRYAD9Ri/ZWan0gB8
+   fNAZf6oQT0VTyanLltOKilpOd0JMC+9Oy753IuCKAXRpvOkTNK3eFkobR
+   SS1fEKv6ksOLX1vYgkqgK/mS+ahb9EK9H1YL1wHpZX6Hu+IKWtD2ZfnRs
+   DqxtWmnbK2CLjwvU5Z42VIwQvy7f48YPPfmDIGWy01DXKvmfG2w2EiVsT
+   ZXOhNHz4I5LfyEit1ZGiaPnaq7SPdMo1ngF+ccctYkbGfCVFm1nbkoJtH
+   vvRIObqnm5gpPYrNyXeFxCmpZ9s6t/Cp+n8HQbwt0S42h4QC2aA1bIiBb
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10966"; a="2604464"
+X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
+   d="scan'208";a="2604464"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2024 06:03:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
+   d="scan'208";a="29273411"
+Received: from lkp-server01.sh.intel.com (HELO 370188f8dc87) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 28 Jan 2024 06:03:29 -0800
+Received: from kbuild by 370188f8dc87 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rU5ks-0003RI-1M;
+	Sun, 28 Jan 2024 14:03:26 +0000
+Date: Sun, 28 Jan 2024 22:02:31 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Jason J. Herne" <jjherne@linux.ibm.com>, linux-s390@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	pasic@linux.ibm.com, akrowiak@linux.ibm.com
+Subject: Re: [PATCH 3/3] s390/vfio-ap: Add write support to sysfs attr
+ ap_config
+Message-ID: <202401282141.A8V47yFI-lkp@intel.com>
+References: <20240126143533.14043-4-jjherne@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240116141801.396398-1-khtsai@google.com> <02bec7b8-7754-4b9d-84ae-51621d6aa7ec@kernel.org>
- <2024012724-chirpy-google-51bb@gregkh>
-In-Reply-To: <2024012724-chirpy-google-51bb@gregkh>
-From: Kuen-Han Tsai <khtsai@google.com>
-Date: Sun, 28 Jan 2024 22:00:49 +0800
-Message-ID: <CAKzKK0oEO5_-CBKvYSw4DKY4Wp5UPrrt1ehBFRd79idy7FsUuQ@mail.gmail.com>
-Subject: Re: [PATCH] usb: gadget: u_serial: Add null pointer checks after
- RX/TX submission
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: Jiri Slaby <jirislaby@kernel.org>, quic_prashk@quicinc.com, 
-	stern@rowland.harvard.edu, linux-usb@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240126143533.14043-4-jjherne@linux.ibm.com>
 
-Hi Greg & Jiri,
+Hi Jason,
 
->> Or you switch to tty_port refcounting and need not fiddling with this at all
->> ;).
-> I agree, Kuen-Han, why not do that instead?
+kernel test robot noticed the following build warnings:
 
-Thanks for the feedback! I agree that switching to tty_port
-refcounting is the right approach.
+[auto build test WARNING on kvms390/next]
+[cannot apply to s390/features linus/master v6.8-rc1 next-20240125]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-I'm currently digging into tty_port.c to understand the best way to
-implement this change. Could you confirm if I'm on the right track by
-using tty_kref_get() and tty_kref_put() to address race conditions?
-Additionally, do I need to refactor other functions in u_serial.c that
-interact with the TTY without refcounting?
+url:    https://github.com/intel-lab-lkp/linux/commits/Jason-J-Herne/s390-ap-Externalize-AP-bus-specific-bitmap-reading-function/20240126-223952
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kvms390/linux.git next
+patch link:    https://lore.kernel.org/r/20240126143533.14043-4-jjherne%40linux.ibm.com
+patch subject: [PATCH 3/3] s390/vfio-ap: Add write support to sysfs attr ap_config
+config: s390-defconfig (https://download.01.org/0day-ci/archive/20240128/202401282141.A8V47yFI-lkp@intel.com/config)
+compiler: s390-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240128/202401282141.A8V47yFI-lkp@intel.com/reproduce)
 
-Regards,
-Kuen-Han
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401282141.A8V47yFI-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from include/linux/cpumask.h:12,
+                    from include/linux/smp.h:13,
+                    from include/linux/lockdep.h:14,
+                    from include/linux/spinlock.h:63,
+                    from include/linux/mmzone.h:8,
+                    from include/linux/gfp.h:7,
+                    from include/linux/mm.h:7,
+                    from include/linux/scatterlist.h:8,
+                    from include/linux/iommu.h:10,
+                    from include/linux/vfio.h:12,
+                    from drivers/s390/crypto/vfio_ap_ops.c:12:
+   In function 'bitmap_copy',
+       inlined from 'ap_matrix_copy' at drivers/s390/crypto/vfio_ap_ops.c:1593:2,
+       inlined from 'ap_config_store' at drivers/s390/crypto/vfio_ap_ops.c:1616:2:
+>> include/linux/bitmap.h:245:17: warning: 'memcpy' reading 32 bytes from a region of size 0 [-Wstringop-overread]
+     245 |                 memcpy(dst, src, len);
+         |                 ^~~~~~~~~~~~~~~~~~~~~
+   In function 'ap_config_store':
+   cc1: note: source object is likely at address zero
+   In function 'bitmap_copy',
+       inlined from 'ap_matrix_copy' at drivers/s390/crypto/vfio_ap_ops.c:1594:2,
+       inlined from 'ap_config_store' at drivers/s390/crypto/vfio_ap_ops.c:1616:2:
+>> include/linux/bitmap.h:245:17: warning: 'memcpy' reading 32 bytes from a region of size 0 [-Wstringop-overread]
+     245 |                 memcpy(dst, src, len);
+         |                 ^~~~~~~~~~~~~~~~~~~~~
+   In function 'ap_config_store':
+   cc1: note: source object is likely at address zero
+   In function 'bitmap_copy',
+       inlined from 'ap_matrix_copy' at drivers/s390/crypto/vfio_ap_ops.c:1595:2,
+       inlined from 'ap_config_store' at drivers/s390/crypto/vfio_ap_ops.c:1616:2:
+>> include/linux/bitmap.h:245:17: warning: 'memcpy' reading 32 bytes from a region of size 0 [-Wstringop-overread]
+     245 |                 memcpy(dst, src, len);
+         |                 ^~~~~~~~~~~~~~~~~~~~~
+   In function 'ap_config_store':
+   cc1: note: source object is likely at address zero
+
+
+vim +/memcpy +245 include/linux/bitmap.h
+
+^1da177e4c3f41 Linus Torvalds    2005-04-16  236  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  237  static inline void bitmap_copy(unsigned long *dst, const unsigned long *src,
+8b4daad52fee77 Rasmus Villemoes  2015-02-12  238  			unsigned int nbits)
+^1da177e4c3f41 Linus Torvalds    2005-04-16  239  {
+8b4daad52fee77 Rasmus Villemoes  2015-02-12  240  	unsigned int len = BITS_TO_LONGS(nbits) * sizeof(unsigned long);
+3e7e5baaaba780 Alexander Lobakin 2022-06-24  241  
+3e7e5baaaba780 Alexander Lobakin 2022-06-24  242  	if (small_const_nbits(nbits))
+3e7e5baaaba780 Alexander Lobakin 2022-06-24  243  		*dst = *src;
+3e7e5baaaba780 Alexander Lobakin 2022-06-24  244  	else
+^1da177e4c3f41 Linus Torvalds    2005-04-16 @245  		memcpy(dst, src, len);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  246  }
+^1da177e4c3f41 Linus Torvalds    2005-04-16  247  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
