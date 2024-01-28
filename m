@@ -1,97 +1,105 @@
-Return-Path: <linux-kernel+bounces-41914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D48683F98A
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:46:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 48EF383F98C
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:52:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D5F11F213B5
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 19:46:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E73C01F219D9
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 19:52:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D789C31A73;
-	Sun, 28 Jan 2024 19:46:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11C5436138;
+	Sun, 28 Jan 2024 19:51:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IYd37yhl"
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="uPCpuVrs"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2AEC33CD3
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 19:46:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D7AE1E4A8;
+	Sun, 28 Jan 2024 19:51:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706471173; cv=none; b=oKRbK0qcMtD2VowNm/g9vgC+Lh7qCkpy/1H0XFJpm/V7Zxspl+/XDr1fHoc9ifwnddwRssxf9I25np6tEhC5lD8zk+U1j641k3LtfFjm0VS13AlMXckLBw4uv96aTzCJk9wuEQmRpw801J7sSAG0PCS4p2Q18grb4ASkxFOD6vU=
+	t=1706471516; cv=none; b=hAvwM70iS+yBqlzfOAHJJO82SpVn6KhnaAkKCOLfkQniTI+SHXQdhXc3H3MeydlE74Nk1KwiNlq1gvhK6aTeYnH+EhHbXyrLrPbpreEZJhPkDlaQEk7gJE6wspgHvLnX1PWmcV7woc1nnxFZAjxxq2sbuKF4yRrvKRyfgGy62tI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706471173; c=relaxed/simple;
-	bh=wMBCuymaQLGVg6pkHDonjz4+0HoNQanG++ojQ1umdF4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OTEoMhx0jDy9o/ltd7Z4zGgAgKvqM7BOy3MtylgvBiDceRgoAOd8cRfuYrXQXwjGsZ0GR/UKBZP/mn70ic0c5A/B+rwftCeRvpcqhGbunsq3QtUxqTNbvQGOuQbZV9cX4z8gVOCDFavDaH6CEXo9uNcmWqfun5zzoksmhXUgj2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IYd37yhl; arc=none smtp.client-ip=209.85.166.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-36378ce9550so2018745ab.1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 11:46:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706471170; x=1707075970; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wMBCuymaQLGVg6pkHDonjz4+0HoNQanG++ojQ1umdF4=;
-        b=IYd37yhlfn/b85SEnkBFTZFzCEU6a1V385LDRBZbgQH9e+izBwmFw8EXGBQYcclbIU
-         GjBKiuVCrYwU8GGWghbr0p22BLv78QGBnQ+WMCuM/vVyY3kvFs8HltRLHeGBixrCGCtJ
-         tG2vHj0t41FfYwDd1bNMa/R+MTN6w1Q/RlzXMDh/NpmQ1dU1V7IBw7aA6or5TVHLsQ9q
-         b4sjiJEQFfMlKzz5PoCHqbV/XFsONGrplNzR6OgmELZIp4BLL1NtnQyFfUoJiNz6JHKA
-         dFhN9s0AspvLWOMF41oxKSZYJXBNvcqNSI6oAvXVytcchdKLJzlwejxPShBpN9QNGjFP
-         EkAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706471170; x=1707075970;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wMBCuymaQLGVg6pkHDonjz4+0HoNQanG++ojQ1umdF4=;
-        b=t4mR77EtCukePZF7ydplq/aysnEqsv31xEr7KwRrYKKDTPMtK+yapJW4lmXFsjsGk1
-         e67mXLsQZ5yrNNtcNZ+4u2CkLJKHLXn18IqWBbokFwnRVfUe45fQ32nhjgTEHRZeJrWn
-         wEIFRpW4snEFujylgsbGrp/AKvHJKl6F8h07NMHxxcZszikGI/zbOnZX71CUPTBqcS7N
-         nV5Rk7p9Gv+20vcv8CLVAZfO/dOWnQPPxMFyNmpygHbUPIUdUaBlLzQ3S/Wcv+QW9IrO
-         gYERlV9t2hiP/w2Hg9nwwNgyMXXqxEjFwf8/0MtR/SWUNaUBc7JabkYEo9pPrY0SHEz1
-         fpng==
-X-Gm-Message-State: AOJu0YwH6eAEqgXofBQCd2q1Nj+IhgVQPXTn3FK2gj4r+R4b58bWWkIs
-	e2lCRDubh7r/p7lEvc4vyn5d9zCfxsoewAppTxKxYMcDT1PJVJcO+RR9/Z7iAm3dW+J0Br1ghNb
-	o8QNFdmA3+1x0pmZPM7AYupbwNHE=
-X-Google-Smtp-Source: AGHT+IF/yb1xwlCBY63voHmWvi4riWQdt3Du+qgSUxHTk5rfmpuyqxSM77NrODH15q/kn4LGRy23X4e0seT2nKenxp0=
-X-Received: by 2002:a05:6e02:20cb:b0:363:8030:e98a with SMTP id
- 11-20020a056e0220cb00b003638030e98amr554771ilq.0.1706471170535; Sun, 28 Jan
- 2024 11:46:10 -0800 (PST)
+	s=arc-20240116; t=1706471516; c=relaxed/simple;
+	bh=lLilySja1+gc0vAWoFafuKa9MQjftBe1Lq4AAaEBby8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=orXgTYmq8OHMDJwlTaH+njaMVBlu2fvzKLo2atxsH3aFDZfyI1W+Mn+6vJ2xEN7jYdmytKuigSzK+5gumfQTKbEAgyrMuXzgZd0yNnYs4AjlOF6hbvySw61eOGOBj31gNxDzSxoO5Fxq7afT6nGM9P+Pa2gsEPXAujrP3vZ9qOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=uPCpuVrs; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1706471515; x=1738007515;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=lLilySja1+gc0vAWoFafuKa9MQjftBe1Lq4AAaEBby8=;
+  b=uPCpuVrsJHf4raNSdf87QdrOG+ea0SOvRHoOB6j6/1G9FqIofDMasJLJ
+   Hh4aL604EB3gXfVqAfuVyW4HYEzRj+W7daL4P0aAXbW+T+upRhlF9ozA5
+   eIlGYFvUoQVazEXXRZKYWJdukcHBJCa8ilIFpv6W0t/CBuqrcQmuXXdhX
+   d9zUSPFUTrg6O7LWHrsGTyb+0wSeia1yZkDB7Fy78nxY2OvCeIXSY3Ia3
+   VnuBCZdcJKY5r3MejxOpLsitcYwXmUUAMeKUnZVWK4GoUhmqUzjWYZB+C
+   053qiX7eykYJ0jbaNFYvaP4hjU7Xi3noneEwuIFwN1+P3oj6BtS8px3vX
+   Q==;
+X-CSE-ConnectionGUID: HmkKQebqTiaf2PC3A5r6Ng==
+X-CSE-MsgGUID: 66EsYmfdS92wC7EMm983ng==
+X-IronPort-AV: E=Sophos;i="6.05,220,1701154800"; 
+   d="scan'208";a="246137979"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 28 Jan 2024 12:51:48 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sun, 28 Jan 2024 12:51:39 -0700
+Received: from DEN-DL-M31836.microsemi.net (10.10.85.11) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Sun, 28 Jan 2024 12:51:38 -0700
+From: Horatiu Vultur <horatiu.vultur@microchip.com>
+To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <UNGLinuxDriver@microchip.com>
+CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Horatiu Vultur
+	<horatiu.vultur@microchip.com>
+Subject: [PATCH net-next] net: lan966x: debugfs: Fix showing the port keyset
+Date: Sun, 28 Jan 2024 20:51:34 +0100
+Message-ID: <20240128195134.3600629-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126-zswap-writeback-race-v2-0-b10479847099@bytedance.com>
- <20240126-zswap-writeback-race-v2-3-b10479847099@bytedance.com> <20240128155219.GA174688@cmpxchg.org>
-In-Reply-To: <20240128155219.GA174688@cmpxchg.org>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Sun, 28 Jan 2024 11:45:59 -0800
-Message-ID: <CAKEwX=N1q5PRqBR796VZB2NsyS5NCf+B3BwqQ9Om0mAo7T960g@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] mm/list_lru: remove list_lru_putback()
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Chengming Zhou <zhouchengming@bytedance.com>, Yosry Ahmed <yosryahmed@google.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Chris Li <chriscli@google.com>, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-On Sun, Jan 28, 2024 at 7:52=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> On Sun, Jan 28, 2024 at 01:28:51PM +0000, Chengming Zhou wrote:
-> > Since the only user zswap_lru_putback() has gone, remove
-> > list_lru_putback() too.
-> >
-> > Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
->
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Acked-by: Nhat Pham <nphamcs@gmail.com>
+On lan966x, it is possible to use debugfs to print different information
+about the VCAPs. Information like, if it is enabled, how the ports are
+configured, print the actual rules. The issue is that when printing how
+the ports are configured for IS1 lookups, it was parsing the wrong
+register to get this information. The fix consists in reading the
+correct register that contains this information.
+
+Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+---
+ drivers/net/ethernet/microchip/lan966x/lan966x_vcap_debugfs.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_vcap_debugfs.c b/drivers/net/ethernet/microchip/lan966x/lan966x_vcap_debugfs.c
+index ac525ff1503e6..3a01e13bd10b7 100644
+--- a/drivers/net/ethernet/microchip/lan966x/lan966x_vcap_debugfs.c
++++ b/drivers/net/ethernet/microchip/lan966x/lan966x_vcap_debugfs.c
+@@ -25,6 +25,8 @@ static void lan966x_vcap_is1_port_keys(struct lan966x_port *port,
+ 	for (int l = 0; l < admin->lookups; ++l) {
+ 		out->prf(out->dst, "\n    Lookup %d: ", l);
+ 
++		val = lan_rd(lan966x, ANA_VCAP_S1_CFG(port->chip_port, l));
++
+ 		out->prf(out->dst, "\n      other: ");
+ 		switch (ANA_VCAP_S1_CFG_KEY_OTHER_CFG_GET(val)) {
+ 		case VCAP_IS1_PS_OTHER_NORMAL:
+-- 
+2.34.1
+
 
