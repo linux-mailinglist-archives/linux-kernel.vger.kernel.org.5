@@ -1,238 +1,172 @@
-Return-Path: <linux-kernel+bounces-41520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C90A83F3A0
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 04:36:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 815C583F3A4
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 04:43:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0E64283F2A
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 03:36:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A65171C214C9
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 03:43:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEA993C35;
-	Sun, 28 Jan 2024 03:36:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D031763D9;
+	Sun, 28 Jan 2024 03:43:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="KG6rScrR"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j8OVdmOI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D30903FEF;
-	Sun, 28 Jan 2024 03:36:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12AEC4C85;
+	Sun, 28 Jan 2024 03:43:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706412970; cv=none; b=XRsUcSRGZAxpxEXxMGo+5OGNa5rTx5equrBT4VXtAAzp39RKuDf223gwDq9hGf0HCDwPzsc+lHbzNKONMb1cQpRF5QB61pfKrrMJf5+7e8REshzSAkHi3wUlUCQg10g7ptloW6YsMln0xq4McfeC+v15T/c5zmbOEwb4bo7b9dY=
+	t=1706413428; cv=none; b=JPn5qL+BXFGsyA73KBlkkGVIIuvjaRAPLoIvHnDRWhd1wAyQRt39MOTwtnpoBUG6Rsn2eMCya2mW/+sl5Gs5YFct2mHCIQmXzJmqwxXqSU7YHfAG/dTeqNQd70zxwGDncQhZOMDmlDNsJTG44gsy7SjJLP/g3Ygb2Q3cYaMrqCU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706412970; c=relaxed/simple;
-	bh=KYQFlIIyPOnAYU4BCpmcqOZW2Fk66y/U3GkF/Ses4e8=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=QCg/Ut2cbi2V1owaLm6JIKWrQ0x+PpCgFjcvDv77D34YBNwGt6KoB+qOpvbcU510DBF53Y5pSRdViyJ6oY4NRJBFldrjDzMq1XLYHl4ggZXDJ7EJI+rsrWGpM6SBxWD6NKx773rMIufPR1i2pXIg6uOxAGn0GKBjut8/vGICMkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=KG6rScrR; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1706413428; c=relaxed/simple;
+	bh=aY4B8zzOWdf/8l2np8fF4UyMvfNAxrpL2qafcdX+Fas=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S0gSWYjVfHxveJSVDeYbfivlGzOW1+RQl0Qe9bBZjf35eq+B3KIzzEXEUsZBOJj7WO4OYo2DXXfV9GXFXg5dzi5ptPGEck5cEEiB1KDDVFVpXt008kGe4w8z0GDrrUIr7SIQlcCfh+Ie14brTL8wORSXRsnPZMBiTbbqyH3T9rY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j8OVdmOI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAB65C433F1;
+	Sun, 28 Jan 2024 03:43:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706413427;
+	bh=aY4B8zzOWdf/8l2np8fF4UyMvfNAxrpL2qafcdX+Fas=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=j8OVdmOIg9bXCe9vyzExOtj9qjrVgQLT4VhnwVBY6bHgeTVfVfKCiscH72ZYgLrnB
+	 dUi1VKo5TZikLO2hvBHo3RUStnYWozpIJ/g8eW5+cJzisiymjAmzNnge0678oERuDA
+	 UP9CBwFvg8zqlbH2lF9PAufRmdtVpVX2cwDB/Vsp8bAvET6zl5iG+BmDlb9PgK1yMT
+	 Ymqjb4ivPz+r0SX96FDAADKZgmB5kGTJDzP4narx8DjAQrfUnqqVRRzgwAygItgcSe
+	 RqlOvgITf78kYh2b7QC+UFUl129AC2XXbMIhyDa/g7gSsqFndd0J48fR3D21SjuCd7
+	 VcL5t+t7JZyeA==
+Date: Sat, 27 Jan 2024 21:43:45 -0600
+From: Bjorn Andersson <andersson@kernel.org>
+To: Maulik Shah <quic_mkshah@quicinc.com>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, quic_eberman@quicinc.com, 
+	quic_collinsd@quicinc.com, quic_lsrao@quicinc.com
+Subject: Re: [PATCH v2] soc: qcom: rpmh-rsc: Enhance check for VREG in-flight
+ request
+Message-ID: <xjcefuurfbv7oquotsmm4iv4pnwzoone7jxrm42vjsnpfcgk4z@mnrsxec43bhp>
+References: <20240119-rpmh-rsc-fixes-v2-1-e42c0a9e36f0@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1706412958;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IGynTAOYEGgnqBwfLRvahiiezGVmO/RYQ5/JRIx6Ctk=;
-	b=KG6rScrRZHwd6CM0HJJfXU/XWE00HNFc5rAeAejlPdmECoKkqpbO62Qeqy2q9DNE9cgk9g
-	P9io/r1zWzHMvU6jV6jd32bXQecZALlr61VkUpTB/5GQ2ye5R8Q4fOdg29UXOc/LtNLcup
-	DasNWw3fAqWceknmDXZHUp/OaSdniHAmUluORsO6YZvv/5FksGr6k5JTBgfYjUyZJckAH8
-	VNa17VsMXlMhKqg4XfYGkhP+H+5Q595YPnsmv+odGHio5qtz8SlX/gJ56i2zKTF7lT8HiM
-	77ORaZwK7M77FpFPPJzoOA6X4MAquOIRGWP67I5YXk20m+vMBt7JIA0TsIUBPQ==
-Date: Sun, 28 Jan 2024 04:35:58 +0100
-From: Dragan Simic <dsimic@manjaro.org>
-To: Alexey Charkov <alchark@gmail.com>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org, Viresh Kumar <viresh.kumar@linaro.org>
-Subject: Re: [PATCH 4/4] arm64: dts: rockchip: Add OPP data for CPU cores on
- RK3588
-In-Reply-To: <CABjd4YyyuB9ou-BaOrvt_rrv1-jPE=wtwWDHDqNqyT4a0E51wg@mail.gmail.com>
-References: <20240125-rk-dts-additions-v1-0-5879275db36f@gmail.com>
- <20240125-rk-dts-additions-v1-4-5879275db36f@gmail.com>
- <731aac66-f698-4a1e-b9ee-46a7f24ecae5@linaro.org>
- <ccc004cfae513195351ce0a79e12f6af@manjaro.org>
- <CABjd4YxSTLZjrnSCn0fh81US682-uhZ16-cgydzz97shhCpq4w@mail.gmail.com>
- <1f0608831cfb95c80edf16cd751eee76@manjaro.org>
- <CABjd4Yx06igrZQvHA4q-mcr2oSEf7eQyUS+KEATUGbw6qLc2sg@mail.gmail.com>
- <528a37d84cdd871e717b4ebf648bb8a7@manjaro.org>
- <9b72b688-be63-464e-a5dc-cf6051ccee12@linaro.org>
- <CABjd4YzdD9ciMn=p=opEK+fdxCkeCodsryph7pkqgsEUNcNrUQ@mail.gmail.com>
- <5ef9bab979260884866efe30d19ba8f1@manjaro.org>
- <CABjd4YyyuB9ou-BaOrvt_rrv1-jPE=wtwWDHDqNqyT4a0E51wg@mail.gmail.com>
-Message-ID: <9fda41efe365241ce06bd58974c8e055@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240119-rpmh-rsc-fixes-v2-1-e42c0a9e36f0@quicinc.com>
 
-On 2024-01-27 20:41, Alexey Charkov wrote:
-> On Sat, Jan 27, 2024 at 12:33 AM Dragan Simic <dsimic@manjaro.org> 
-> wrote:
->> On 2024-01-26 14:44, Alexey Charkov wrote:
->> > On Fri, Jan 26, 2024 at 4:56 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->> >> On 26/01/2024 08:49, Dragan Simic wrote:
->> >> > On 2024-01-26 08:30, Alexey Charkov wrote:
->> >> >> On Fri, Jan 26, 2024 at 11:05 AM Dragan Simic <dsimic@manjaro.org> wrote:
->> >> >>> On 2024-01-26 07:44, Alexey Charkov wrote:
->> >> >>> > On Fri, Jan 26, 2024 at 10:32 AM Dragan Simic <dsimic@manjaro.org> wrote:
->> >> >>> >> On 2024-01-25 10:30, Daniel Lezcano wrote:
->> >> >> Throttling would also lower the voltage at some point, which cools it
->> >> >> down much faster!
->> >> >
->> >> > Of course, but the key is not to cool (and slow down) the CPU cores too
->> >> > much, but just enough to stay within the available thermal envelope,
->> >> > which is where the same-voltage, lower-frequency OPPs should shine.
->> >>
->> >> That implies the resulting power is sustainable which I doubt it is
->> >> the
->> >> case.
->> >>
->> >> The voltage scaling makes the cooling effect efficient not the
->> >> frequency.
->> >>
->> >> For example:
->> >>         opp5 = opp(2GHz, 1V) => 2 BogoWatt
->> >>         opp4 = opp(1.9GHz, 1V) => 1.9 BogoWatt
->> >>         opp3 = opp(1.8GHz, 0.9V) => 1.458 BogoWatt
->> >>         [ other states but we focus on these 3 ]
->> >>
->> >> opp5->opp4 => -5% compute capacity, -5% power, ratio=1
->> >> opp4->opp3 => -5% compute capacity, -23.1% power, ratio=21,6
->> >>
->> >> opp5->opp3 => -10% compute capacity, -27.1% power, ratio=36.9
->> >>
->> >> In burst operation (no thermal throttling), opp4 is pointless we agree
->> >> on that.
->> >>
->> >> IMO the following will happen: in burst operation with thermal
->> >> throttling we hit the trip point and then the step wise governor
->> >> reduces
->> >> opp5 -> opp4. We have slight power reduction but the temperature does
->> >> not decrease, so at the next iteration, it is throttle at opp3. And at
->> >> the end we have opp4 <-> opp3 back and forth instead of opp5 <-> opp3.
->> >>
->> >> It is probable we end up with an equivalent frequency average (or
->> >> compute capacity avg).
->> >>
->> >> opp4 <-> opp3 (longer duration in states, less transitions)
->> >> opp5 <-> opp3 (shorter duration in states, more transitions)
->> >>
->> >> Some platforms had their higher OPPs with the same voltage and they
->> >> failed to cool down the CPU in the long run.
->> >>
->> >> Anyway, there is only one way to check it out :)
->> >>
->> >> Alexey, is it possible to compare the compute duration for 'dhrystone'
->> >> with these voltage OPP and without ? (with a period of cool down
->> >> between
->> >> the test in order to start at the same thermal condition) ?
->> >
->> > Sure, let me try that - would be interesting to see the results. In my
->> > previous tinkering there were cases when the system stayed at 2.35GHz
->> > for all big cores for non-trivial time (using the step-wise thermal
->> > governor), and that's an example of "same voltage, lower frequency".
->> > Other times though it throttled one cluster down to 1.8GHz and kept
->> > the other at 2.4GHz, and was also stationary at those parameters for
->> > extended time. This probably indicates that both of those states use
->> > sustainable power in my cooling setup.
->> 
->> IMHO, there are simply too many factors at play, including different
->> possible cooling setups, so providing additional CPU throttling
->> granularity can only be helpful.  Of course, testing and recording
->> data is the way to move forward, but I think we should use a few
->> different tests.
+On Fri, Jan 19, 2024 at 01:56:54PM +0530, Maulik Shah wrote:
+> Each RPMh VREG accelerator resource has 3 or 4 contiguous 4-byte aligned
+> addresses associated with it. These control voltage, enable state, mode,
+> and in legacy targets, voltage headroom. The current in-flight request
+> checking logic looks for exact address matches. Requests for different
+> addresses of the same RPMh resource as thus not detected as in-flight.
 > 
-> Soooo, benchmarking these turned out a bit trickier than I had hoped
-> for. Apparently, dhrystone uses an unsigned int rather than an
-> unsigned long for the loops count (or something of that sort), which
-> means that I can't get it to run enough loops to heat up my chip from
-> a stable idle state to the throttling state (due to counter
-> wraparound). So I ended up with a couple of crutches, namely:
-
-Huh, it seems that recent SBCs may have become a bit too fast for it,
-which is great. :)  Thank you for the benchmarking.
-
->  - run dhrystone continuously on 6 out of 8 cores to make the chip
-> warm enough (`taskset -c 0-5 ./dhrystone -t 6 -r 6000` - note that on
-> my machine cores 6-7 are usually the first ones to get throttled, due
-> to whatever thermal peculiarities)
->  - wait for the temperature to stabilize (which happens at 79.5C)
->  - then run timed dhrystone on the remaining 2 out of 6 cores (big
-> ones) to see how throttling with different OPP tables affects overall
-> performance.
-
-Just checking, running the test on just two CPU cores was enough to
-keep the package temperature at around 80 oC?
-
-> In the end, here's what I got with the 'original' OPP table (including
-> "same voltage - different frequencies" states):
-> alchark@rock-5b ~ $ taskset -c 6-7 ./dhrystone -t 2 -l 4000000000
-> duration: 0 seconds
-> number of threads: 2
-> number of loops: 4000000000000000
-> delay between starting threads: 0 seconds
+> Enhance the in-flight request check for VREG requests by ignoring the
+> address offset. This ensures that only one request is allowed to be
+> in-flight for a given VREG resource. This is needed to avoid scenarios
+> where request commands are carried out by RPMh hardware out-of-order
+> leading to LDO regulator over-current protection triggering.
 > 
-> Dhrystone(1.1) time for 1233977344 passes = 29.7
-> This machine benchmarks at 41481539 dhrystones/second
->                            23609 DMIPS
-> Dhrystone(1.1) time for 1233977344 passes = 29.8
-> This machine benchmarks at 41476618 dhrystones/second
->                            23606 DMIPS
-> 
-> Total dhrystone run time: 30.864492 seconds.
-> 
-> And here's what I got with the 'reduced' OPP table (keeping only the
-> highest frequency state for each voltage):
-> alchark@rock-5b ~ $ taskset -c 6-7 ./dhrystone -t 2 -l 4000000000
-> duration: 0 seconds
-> number of threads: 2
-> number of loops: 4000000000000000
-> delay between starting threads: 0 seconds
-> 
-> Dhrystone(1.1) time for 1233977344 passes = 30.9
-> This machine benchmarks at 39968549 dhrystones/second
->                           22748 DMIPS
-> Dhrystone(1.1) time for 1233977344 passes = 31.0
-> This machine benchmarks at 39817431 dhrystones/second
->                           22662 DMIPS
-> 
-> Total dhrystone run time: 31.995136 seconds.
-> 
-> Bottomline: removing the lower-frequency OPPs led to a 3.8% drop in
-> performance in this setup. This is probably far from a reliable
-> estimate, but I guess it indeed indicates that having lower-frequency
-> states might be beneficial in some load scenarios.
+> Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
+> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
 
-Measuring a difference of about 4% may be attributed to some unknown
-inaccuracy or test deviation, but again, a performance improvement of
-about 4% that comes free of charge is nothing to be sneezed at, IMHO.
+The s-o-b chain doesn't look right.
 
-> Note though that several seconds after hitting the throttling
-> threshold cores 6-7 were oscillating between 1.608GHz and 1.8GHz in
-> both runs, which implies that the whole difference in performance was
-> due to different speed of initial throttling (i.e. it might be a
-> peculiarity of the step-wise thermal governor operation when it has to
-> go through more cooling states to reach the "steady-state" one). Given
-> that both 1.608GHz and 1.8GHz have no lower-frequency same-voltage
-> siblings in either of the OPP tables, it implies that under prolonged
-> constant load there should be no performance difference at all.
+> ---
+> Changes in v2:
+> - Use GENMASK() and FIELD_GET()
+> - Link to v1: https://lore.kernel.org/r/20240117-rpmh-rsc-fixes-v1-1-71ee4f8f72a4@quicinc.com
+> ---
+>  drivers/soc/qcom/rpmh-rsc.c | 21 ++++++++++++++++++++-
+>  1 file changed, 20 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
+> index a021dc71807b..e480cde783fe 100644
+> --- a/drivers/soc/qcom/rpmh-rsc.c
+> +++ b/drivers/soc/qcom/rpmh-rsc.c
+> @@ -1,11 +1,13 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+>   * Copyright (c) 2016-2018, The Linux Foundation. All rights reserved.
+> + * Copyright (c) 2023-2024, Qualcomm Innovation Center, Inc. All rights reserved.
+>   */
+>  
+>  #define pr_fmt(fmt) "%s " fmt, KBUILD_MODNAME
+>  
+>  #include <linux/atomic.h>
+> +#include <linux/bitfield.h>
+>  #include <linux/cpu_pm.h>
+>  #include <linux/delay.h>
+>  #include <linux/interrupt.h>
+> @@ -91,6 +93,15 @@ enum {
+>  #define CMD_STATUS_ISSUED		BIT(8)
+>  #define CMD_STATUS_COMPL		BIT(16)
+>  
+> +#define ACCL_TYPE(addr)			FIELD_GET(GENMASK(19, 16), addr)
 
-.. all that with one possible cooling setup, and with one synthetic
-test.  We simply can't know in advance how would a different cooling
-setup on the same or on a different board behave, if you agree.
+Command DB is there so we don't have to make assumptions about the
+addresses of resources. As such, I dislike this define.
+
+> +#define VREG_ADDR(addr)			FIELD_GET(GENMASK(19, 4), addr)
+> +
+> +enum {
+> +	HW_ACCL_CLK = 0x3,
+> +	HW_ACCL_VREG,
+> +	HW_ACCL_BUS,
+
+We already define these in the kernel, but with different names:
+CMD_DB_HW_ARC, CMD_DB_HW_VRM, CMD_DB_HW_BCM. I see no reason to use
+different names for the same thing.
+
+> +};
+> +
+>  /*
+>   * Here's a high level overview of how all the registers in RPMH work
+>   * together:
+> @@ -557,7 +568,15 @@ static int check_for_req_inflight(struct rsc_drv *drv, struct tcs_group *tcs,
+>  		for_each_set_bit(j, &curr_enabled, MAX_CMDS_PER_TCS) {
+>  			addr = read_tcs_cmd(drv, drv->regs[RSC_DRV_CMD_ADDR], i, j);
+>  			for (k = 0; k < msg->num_cmds; k++) {
+> -				if (addr == msg->cmds[k].addr)
+> +				/*
+> +				 * Each RPMh VREG accelerator resource has 3 or 4 contiguous 4-byte
+> +				 * aligned addresses associated with it. Ignore the offset to check
+> +				 * for in-flight VREG requests.
+> +				 */
+> +				if (ACCL_TYPE(msg->cmds[k].addr) == HW_ACCL_VREG &&
+> +				    VREG_ADDR(msg->cmds[k].addr) == VREG_ADDR(addr))
+
+I'm sure this work, at least for some targets, but I don't fancy
+encoding this information here. It feels like a hack.
+
+Furthermore, I really would like TP_printk() of trace_rpmh_send_msg() to
+be able to resolve the symbolic names for VRMs as well, and it would
+need the same information...
+
+Please consider how we can query command db for the type and/or grouping
+information.
+
+Regards,
+Bjorn
+
+> +					return -EBUSY;
+> +				else if (addr == msg->cmds[k].addr)
+>  					return -EBUSY;
+>  			}
+>  		}
+> 
+> ---
+> base-commit: 943b9f0ab2cfbaea148dd6ac279957eb08b96904
+> change-id: 20240117-rpmh-rsc-fixes-6c43c7051828
+> 
+> Best regards,
+> -- 
+> Maulik Shah <quic_mkshah@quicinc.com>
+> 
 
