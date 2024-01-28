@@ -1,162 +1,194 @@
-Return-Path: <linux-kernel+bounces-41533-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41534-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF89883F3F3
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 06:02:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DB9B83F3F4
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 06:06:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70BD9283967
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 05:02:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D00F9B226AB
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 05:06:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 160227484;
-	Sun, 28 Jan 2024 05:02:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D16D5748D;
+	Sun, 28 Jan 2024 05:06:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y+1cLkCS"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P8VtzQrj"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DDAD53A6;
-	Sun, 28 Jan 2024 05:02:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FE9F63DF
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 05:06:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706418140; cv=none; b=LysV2g5Qu7Z6dQmgjxPxVRPzVry19AIpq7/g2nlcYKey9vckc+dKugzGHqwKVnJ1fy+aupE7wkN8i5Rv2tfXKr3JyCl91/JT2OrhFnvLzNIQpO/carNfZUmNYlXOrB/RLZjW6x7VcAJT3qUrbfrmBxoZ9ibUk2KYnpoTeNCMnys=
+	t=1706418367; cv=none; b=IW5hngbw/+NNPUtDzA7SthUAswkx2Qu9V1kEPSNdMyJDiUXjO6PhRpxhMWLvpKLrtotUCAHB8FpVIWH9QfjEeQ5xcrnhOda9KCJV5zbwuTV63WiNtilEHMJ+0IPKR+04XnR6ORtZO9lkMVQdy5C15TyF9kS1wqSujAwWRLgOIcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706418140; c=relaxed/simple;
-	bh=EqmmZIu81GWPbHbee6X4MmpvxWOYMvGa84unotv6/pM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Mo3he8J3hL5xTcxO3O8gs88/7cPHR89qnBVeRkCT6RETT+AD1NJ7+Og0dEh7gGasYL0kaNKDsHZ3HeAbmM9UZBoAuAsM8oIFWewkqjqcxihtyqO2yRvH6lu/eaEd2rVI/KM2qztctwRgNVsBDxVybBBFtx/D1ehKiG7moJs8Nxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y+1cLkCS; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706418139; x=1737954139;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=EqmmZIu81GWPbHbee6X4MmpvxWOYMvGa84unotv6/pM=;
-  b=Y+1cLkCSDPpFrIp0ZgbuG2MudjtS/froZdtJLahSsqdD2rucdlLfUoLu
-   tJSbcsol52g4ZIK5u/qJvol+1n1NTC7BK90XFz5F/wCXqIHauE1Hyq5aK
-   Fm9nbU/4Th1CaEYI5fi0FWZIBh66W3AQDPHa8tKe2buvtx1ZgL2FC02t6
-   QjFQDUQnzuAWZ1GrlHkD3x2NtJ/jov52xzN5SXYjAmf7ahSp7IS2tqNIG
-   DGCEBKa8aPrEfsDAxFsWaE/GfL90GjMB3A8JfgzHoH4eX2XAyicbRh8Zq
-   aEkaTuTfd3m+IZiR1BxcNbt8YwQA1Ft0XyGWOz9azzevs/p2kLGPvUFEk
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10966"; a="9394995"
-X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
-   d="scan'208";a="9394995"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2024 21:02:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10966"; a="821532394"
-X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
-   d="scan'208";a="821532394"
-Received: from lkp-server01.sh.intel.com (HELO 370188f8dc87) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 27 Jan 2024 21:02:14 -0800
-Received: from kbuild by 370188f8dc87 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rTxJ6-00035q-08;
-	Sun, 28 Jan 2024 05:02:12 +0000
-Date: Sun, 28 Jan 2024 13:01:58 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ethan Zhao <haifeng.zhao@linux.intel.com>, baolu.lu@linux.intel.com,
-	bhelgaas@google.com, robin.murphy@arm.com, jgg@ziepe.ca
-Cc: oe-kbuild-all@lists.linux.dev, kevin.tian@intel.com,
-	dwmw2@infradead.org, will@kernel.org, lukas@wunner.de,
-	yi.l.liu@intel.com, iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	Ethan Zhao <haifeng.zhao@linux.intel.com>
-Subject: Re: [PATCH v11 3/5] iommu/vt-d: simplify parameters of
- qi_submit_sync() ATS invalidation callers
-Message-ID: <202401281203.zNQINNbM-lkp@intel.com>
-References: <20240126014002.481294-4-haifeng.zhao@linux.intel.com>
+	s=arc-20240116; t=1706418367; c=relaxed/simple;
+	bh=woUTGpV2lL/Prio24DhLsAC1y4k4dXyC3Djn7wPcNNg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=UwFMx8XqBUqWvWGRWJsjWDQidEG3fZ09eZr7sZHNfjhCL7yFZqdUg4uFIJrDfQk1y4x0h/803VCRSE9GYwZWwyQBb8aOYEvIMGNgyXsttZW70irWHFcem/ulaByuPymPOuHfoMBYnGDOnSa76dK4eimif7ZKXp+2/+q2VpjzOlg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P8VtzQrj; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6de0f53f8e8so505360b3a.0
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 21:06:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706418364; x=1707023164; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cq/z7gzXK8vY4MJq5h6j8eIlm4yN+X+iR4tLkhOxEwY=;
+        b=P8VtzQrj2aMFNhWpJXZZnaeXl2DaGVYDIwbyWC0AP/lmDRjhRZHqBACwNmunlRkSEF
+         jHP3UOkPg/SLMhzeKQwrnqPtTFkI6QqkotjZPjIxx+wb1UM2cax6DwS6M17OWhxd5rPD
+         HNfRnHylIfeV1RodC4B0YyrI3b92h4cZ4EZr2fvu+4SsEdOFjaywMqeuvEHnaPsuKn98
+         8dIfnqQuIKB6w0KGwozgCDsv0ZvNYA5o7SHqCS23WRMLLyNGPlzJU2KWSvXNkXbskBAm
+         ieFz1eJ+bWUI8Su3MBqXCsulY6/YqpG1wWi+l19WvbYkdalNUAsU7kI4ICMDbLPgKRiW
+         bm4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706418364; x=1707023164;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=cq/z7gzXK8vY4MJq5h6j8eIlm4yN+X+iR4tLkhOxEwY=;
+        b=bDHhbylaLUFL/URtT+fsbqsZXAGDghnAzswDGX4QPKhZfM3dEhjZFOuoLqoV5gad+7
+         nkabNiJLKUAxSjQqsSLxAwYuvLiYzvI5SC3t1n7gdIR8UMd+wbR1p5FoYTnIC3vq8hwU
+         znHQ9Aw57KyhnfTb6eyPM7/TZhgQXAEHUvaaEuTlPCL0kJtqmFdSti21AjfZWrayZhOT
+         6wof2UEiVxCwwZaQCLX7PDRfcZfqcEVQNIrt6p9zDWrIIC8QcViF7gqgeK0q916LBec+
+         sAYqAnw5JO4GQI8wKHeyeAkIedo8vCgJbNGTJczkbGHUjYE5gQn8116C0Mnkd+xC1Hg+
+         cpAw==
+X-Gm-Message-State: AOJu0YzDvADM7YW8Od7Q/sxHAZOPWeutO30l7lFDW0VXrJSpwvBH7LKP
+	cPWs6lJzb7H7Yr/iPoHqjbo0S1nTwL06OGtT5aV+BNtf+6sjTf50
+X-Google-Smtp-Source: AGHT+IHlaF9aAss+wN3s/ZF+gmHMOoO6NWHBaUA46qNNRgoQwLErqdMCz/eggLIziRpdriVL6IV3Wg==
+X-Received: by 2002:a05:6a20:4caa:b0:19c:678c:6d37 with SMTP id fq42-20020a056a204caa00b0019c678c6d37mr2616311pzb.37.1706418364398;
+        Sat, 27 Jan 2024 21:06:04 -0800 (PST)
+Received: from localhost.localdomain (124x33x176x97.ap124.ftth.ucom.ne.jp. [124.33.176.97])
+        by smtp.gmail.com with ESMTPSA id lp17-20020a056a003d5100b006ddd182bf1csm3550372pfb.46.2024.01.27.21.05.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Jan 2024 21:06:03 -0800 (PST)
+Sender: Vincent Mailhol <vincent.mailhol@gmail.com>
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org
+Cc: Yury Norov <yury.norov@gmail.com>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Douglas Anderson <dianders@chromium.org>,
+	Kees Cook <keescook@chromium.org>,
+	Petr Mladek <pmladek@suse.com>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Marco Elver <elver@google.com>,
+	Brian Cain <bcain@quicinc.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	linux-m68k@lists.linux-m68k.org,
+	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v4 0/5] bitops: optimize code and add tests
+Date: Sun, 28 Jan 2024 14:00:06 +0900
+Message-ID: <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr>
+References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240126014002.481294-4-haifeng.zhao@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Ethan,
+This series adds a compile test to make sure that all the bitops
+operations (namely __ffs(), ffs(), ffz(), __fls(), fls(), fls64())
+correctly fold constant expressions given that their argument is also
+a constant expression. The other functions from bitops.h are out of
+scope.
 
-kernel test robot noticed the following build warnings:
+So far, only the n68k and the hexagon architectures lack such
+optimization. To this extend, the first two patches optimize m68k
+architecture, the third and fourth optimize the hexagon architecture
+bitops function.
 
-[auto build test WARNING on pci/next]
-[also build test WARNING on pci/for-linus linus/master v6.8-rc1 next-20240125]
-[cannot apply to joro-iommu/next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+The fifth and final patch adds the compile time tests to assert that
+the constant folding occurs and that the result is accurate.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ethan-Zhao/PCI-make-pci_dev_is_disconnected-helper-public-for-other-drivers/20240126-094305
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
-patch link:    https://lore.kernel.org/r/20240126014002.481294-4-haifeng.zhao%40linux.intel.com
-patch subject: [PATCH v11 3/5] iommu/vt-d: simplify parameters of qi_submit_sync() ATS invalidation callers
-config: x86_64-randconfig-005-20240128 (https://download.01.org/0day-ci/archive/20240128/202401281203.zNQINNbM-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240128/202401281203.zNQINNbM-lkp@intel.com/reproduce)
+This is tested on arm, arm64, hexagon, m68k, x86 and x86_64. For other
+architectures, I am putting my trust into the kernel test robot to
+send a report if ever one of these still lacks bitops
+optimizations. The kernel test robot did not complain on v3, giving me
+confidence that all architectures are now properly optimized.
+---
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401281203.zNQINNbM-lkp@intel.com/
+** Changelog **
 
-All warnings (new ones prefixed by >>):
+v3 -> v4:
 
-   drivers/iommu/intel/svm.c: In function 'intel_flush_svm_all':
->> drivers/iommu/intel/svm.c:229:67: warning: passing argument 2 of 'qi_flush_dev_iotlb_pasid' makes pointer from integer without a cast [-Wint-conversion]
-     229 |                         qi_flush_dev_iotlb_pasid(sdev->iommu, sdev->sid, info->pfsid,
-         |                                                               ~~~~^~~~~
-         |                                                                   |
-         |                                                                   u16 {aka short unsigned int}
-   In file included from drivers/iommu/intel/svm.c:22:
-   drivers/iommu/intel/iommu.h:1047:58: note: expected 'struct device_domain_info *' but argument is of type 'u16' {aka 'short unsigned int'}
-    1047 |                               struct device_domain_info *info, u64 addr,
-         |                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
-   drivers/iommu/intel/svm.c:229:25: error: too many arguments to function 'qi_flush_dev_iotlb_pasid'
-     229 |                         qi_flush_dev_iotlb_pasid(sdev->iommu, sdev->sid, info->pfsid,
-         |                         ^~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/iommu/intel/iommu.h:1046:6: note: declared here
-    1046 | void qi_flush_dev_iotlb_pasid(struct intel_iommu *iommu,
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/iommu/intel/svm.c:232:25: error: too many arguments to function 'quirk_extra_dev_tlb_flush'
-     232 |                         quirk_extra_dev_tlb_flush(info, 0, 64 - VTD_PAGE_SHIFT,
-         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/iommu/intel/iommu.h:1049:6: note: declared here
-    1049 | void quirk_extra_dev_tlb_flush(struct device_domain_info *info, u32 pasid,
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~
+  - Only apply the __always_inline to the bit-find functions, do not
+    touch other functions from bitops.h. I discovered that the
+    benchmark done in the v3 was incorrect (refer to the thread for
+    details). The scope was thus narrowed down to the bit-find
+    functions for which I could demonstrate the gain in the benchmark.
 
+  - Add benchmark for hexagon (patch 3/5 and 4/5). Contrarily to the
+    m68k benchmark which is with an allyesconfig, the hexagon
+    benchmark uses a defconfig. The reason is just that the
+    allyesconfig did not work on first try on my environment (even
+    before applying this series), and I did not spent efforts to
+    troubleshoot.
 
-vim +/qi_flush_dev_iotlb_pasid +229 drivers/iommu/intel/svm.c
+  - Add Geert review tag in patch 2/5. Despite also receiving the tag
+    for patch 1/5, I did not apply due to new changes in that patch.
 
-2f26e0a9c9860d drivers/iommu/intel-svm.c David Woodhouse 2015-09-09  217  
-e7ad6c2a4b1aa7 drivers/iommu/intel/svm.c Lu Baolu        2023-11-22  218  static void intel_flush_svm_all(struct intel_svm *svm)
-e7ad6c2a4b1aa7 drivers/iommu/intel/svm.c Lu Baolu        2023-11-22  219  {
-e7ad6c2a4b1aa7 drivers/iommu/intel/svm.c Lu Baolu        2023-11-22  220  	struct device_domain_info *info;
-e7ad6c2a4b1aa7 drivers/iommu/intel/svm.c Lu Baolu        2023-11-22  221  	struct intel_svm_dev *sdev;
-e7ad6c2a4b1aa7 drivers/iommu/intel/svm.c Lu Baolu        2023-11-22  222  
-e7ad6c2a4b1aa7 drivers/iommu/intel/svm.c Lu Baolu        2023-11-22  223  	rcu_read_lock();
-e7ad6c2a4b1aa7 drivers/iommu/intel/svm.c Lu Baolu        2023-11-22  224  	list_for_each_entry_rcu(sdev, &svm->devs, list) {
-e7ad6c2a4b1aa7 drivers/iommu/intel/svm.c Lu Baolu        2023-11-22  225  		info = dev_iommu_priv_get(sdev->dev);
-e7ad6c2a4b1aa7 drivers/iommu/intel/svm.c Lu Baolu        2023-11-22  226  
-e7ad6c2a4b1aa7 drivers/iommu/intel/svm.c Lu Baolu        2023-11-22  227  		qi_flush_piotlb(sdev->iommu, sdev->did, svm->pasid, 0, -1UL, 0);
-e7ad6c2a4b1aa7 drivers/iommu/intel/svm.c Lu Baolu        2023-11-22  228  		if (info->ats_enabled) {
-e7ad6c2a4b1aa7 drivers/iommu/intel/svm.c Lu Baolu        2023-11-22 @229  			qi_flush_dev_iotlb_pasid(sdev->iommu, sdev->sid, info->pfsid,
-e7ad6c2a4b1aa7 drivers/iommu/intel/svm.c Lu Baolu        2023-11-22  230  						 svm->pasid, sdev->qdep,
-e7ad6c2a4b1aa7 drivers/iommu/intel/svm.c Lu Baolu        2023-11-22  231  						 0, 64 - VTD_PAGE_SHIFT);
-e7ad6c2a4b1aa7 drivers/iommu/intel/svm.c Lu Baolu        2023-11-22  232  			quirk_extra_dev_tlb_flush(info, 0, 64 - VTD_PAGE_SHIFT,
-e7ad6c2a4b1aa7 drivers/iommu/intel/svm.c Lu Baolu        2023-11-22  233  						  svm->pasid, sdev->qdep);
-e7ad6c2a4b1aa7 drivers/iommu/intel/svm.c Lu Baolu        2023-11-22  234  		}
-e7ad6c2a4b1aa7 drivers/iommu/intel/svm.c Lu Baolu        2023-11-22  235  	}
-e7ad6c2a4b1aa7 drivers/iommu/intel/svm.c Lu Baolu        2023-11-22  236  	rcu_read_unlock();
-e7ad6c2a4b1aa7 drivers/iommu/intel/svm.c Lu Baolu        2023-11-22  237  }
-e7ad6c2a4b1aa7 drivers/iommu/intel/svm.c Lu Baolu        2023-11-22  238  
+  - Do not split the lines containing tags.
+
+  Link: https://lore.kernel.org/all/20231217071250.892867-1-mailhol.vincent@wanadoo.fr/
+
+v2 -> v3:
+
+  - Add patches 1/5 and 2/5 to optimize m68k architecture bitops.
+    Thanks to the kernel test robot for reporting!
+
+  - Add patches 3/5 and 4/5 to optimize hexagon architecture bitops.
+    Thanks to the kernel test robot for reporting!
+
+  - Patch 5/5: mark test_bitops_const_eval() as __always_inline, this
+    done, pass n (the test number) as a parameter. Previously, only
+    BITS(10) was tested. Add tests for BITS(0) and BITS(31).
+
+  Link: https://lore.kernel.org/all/20231130102717.1297492-1-mailhol.vincent@wanadoo.fr/
+
+v1 -> v2:
+
+  - Drop the RFC patch. v1 was not ready to be applied on x86 because
+    of pending changes in arch/x86/include/asm/bitops.h. This was
+    finally fixed by Nick in commit 3dae5c43badf ("x86/asm/bitops: Use
+    __builtin_clz{l|ll} to evaluate constant expressions").
+    Thanks Nick!
+
+  - Update the commit description.
+
+  - Introduce the test_const_eval() macro to factorize code.
+
+  - No functional change.
+
+  Link: https://lore.kernel.org/all/20221111081316.30373-1-mailhol.vincent@wanadoo.fr/
+
+Vincent Mailhol (5):
+  m68k/bitops: force inlining of all bit-find functions
+  m68k/bitops: use __builtin_{clz,ctzl,ffs} to evaluate constant
+    expressions
+  hexagon/bitops: force inlining of all bit-find functions
+  hexagon/bitops: use __builtin_{clz,ctzl,ffs} to evaluate constant
+    expressions
+  lib: test_bitops: add compile-time optimization/evaluations assertions
+
+ arch/hexagon/include/asm/bitops.h | 25 +++++++++++++++++++-----
+ arch/m68k/include/asm/bitops.h    | 26 ++++++++++++++++++-------
+ lib/Kconfig.debug                 |  4 ++++
+ lib/test_bitops.c                 | 32 +++++++++++++++++++++++++++++++
+ 4 files changed, 75 insertions(+), 12 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.43.0
+
 
