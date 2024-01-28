@@ -1,110 +1,154 @@
-Return-Path: <linux-kernel+bounces-42008-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42009-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18D2383FAEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 00:21:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E88D183FAEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 00:24:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A43161F22E2D
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 23:21:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 646B4B20F76
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 23:24:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D278A446DC;
-	Sun, 28 Jan 2024 23:21:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9AAF45943;
+	Sun, 28 Jan 2024 23:24:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="4a4FcSrr"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="II43344E"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63862446C5;
-	Sun, 28 Jan 2024 23:21:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CF94446C7
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 23:24:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706484073; cv=none; b=PPDMvw3HPp40i/riqEMq1qpBP/nid5rhV/bM2F1lqLsu/ZkaPyWoor3nRCtzFacY7KnGy38iGuh1XD9X4lHw3o26Claj4tIcxxdMwvIwa8Bwe3MgfS+QqUICGWh0JfpxHqt1N7bONlo2flOB9V/Y+h6ATHzTPu8fIroZuW38P7U=
+	t=1706484272; cv=none; b=tTWXB8d+w0xklVqRZx1Yv+imlRnpNnFu5bS0AUhDKrQF4SFelzid1n2gxCqawZwexsKFhOMFaWxfz47RQ/RPWMhgK0RJCLX3m+MZ2ezH8XxPWB/w5RS8um3HIPXHIgmmoZGp1EjPs1kjCHA+Y41Ed3z2jzBV/SYM0C8gFz8I1oA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706484073; c=relaxed/simple;
-	bh=FhSTrVH5zrmp01WnNuro1Rqyjl2zO1fLnyrlz07saWM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZbhUOw2e5ko5rOvRyC63DnNEMWBzzKWs9NiV/UdcVOCuibNYUszuxFNrlYHTjYI8//tkl0dZNmj3m5CdQZTACCKX23Sd+4ErgKP6jGshs/XNkZYRliEI1KKeewt8dn+oHyEovWBAF/8EnDy/7TkJ/jmaJApQ9Dl/1thKwLA491s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=4a4FcSrr; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=3pgIaJ7MkTtY//7CcCezghloHGWFY713Or2R1yaWIm4=; b=4a4FcSrrklo1A7he8JHnJGqUki
-	9mKoWKFz4miOUi7DEygXN/OmgNQviNVJ5b0P64D9n+DH3Ui4EWb4/0SYuT8SPXk5EfFb01VDnLmVk
-	sJIZeM6rehxUUJ+LkCSR6E6MxCHX7PTF7gfhZ+ECEDHW3V8L/drpE/AZvCbuUKt1tUarRUIxBeOkh
-	cfHfG870F8WLjJSDB8RpOW6/s6rA4Hp79AjnVFt9pv8Xd9Fg7CGl/A5fLCvBYwQMdJrML/ZnVHW8r
-	r3Upz4YvDQwtTxszFqUGEkyyRsInvJraBb73kRbCfTPCjNjqV4v9NGnr4uEKokMI3O8abnPXItDxA
-	a4z84hxQ==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rUESU-0000000AjkV-3qtf;
-	Sun, 28 Jan 2024 23:21:03 +0000
-Message-ID: <621fe651-8538-43d5-a797-c1e66436b2dc@infradead.org>
-Date: Sun, 28 Jan 2024 15:21:01 -0800
+	s=arc-20240116; t=1706484272; c=relaxed/simple;
+	bh=9/r5pGc0syXMlG1sSpc6aC3inL799ywZ/tGalu+3l60=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G4jypEkM9yeREd8TWmkKQHeWtKzbTZ7PmfLUOHqYz7bZNAxW4bv+0K+VBS9F+OiFjxkxXoZu0vvOxfep/hCLiVGQiQIbdb7gJ5G+9fSPHvWWKUdamtQoW5lZ8B7rTVG8Sa6tIxLr5LwjhjhL4M7EXuVi8qF5JD9RDM19F81/0pk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=II43344E; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d04fb2f36bso352791fa.2
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 15:24:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1706484268; x=1707089068; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8xYcjk2qCrA+lcOwLQA0ixbhMQnVA5kQAe6loZvmX60=;
+        b=II43344EzuRtLxWRYIYQ1ku2EyINcHsK3HSfV2nWQpeHJcA0w3GTuYug9tzJd6/5XH
+         yxZn9cJkOKMRRtausXDKfEyRuGiQvnB9H9s5281jE1h1r3V/YfzBnu2j1CcL3z9s8lwp
+         Pv6FUmB2pCp3Y3tF8huGtvE3LYdO6+uKWAwz8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706484268; x=1707089068;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8xYcjk2qCrA+lcOwLQA0ixbhMQnVA5kQAe6loZvmX60=;
+        b=k2ndEfpyFBuP4ZD14N/i1HUY4dJkThu5WUhjx+kfxtuaTZJJyz76yCsREQ3DRB4oX0
+         p0BvVKNxWcqQlrqPzW6Pbwl4ZqYtiV9geTISwQ68Z2rp0hOnYKcwoOYqqMPJy1GaDCQq
+         KT4B/fuOUFG8rgB63T3KOeSw8JgkXS4dE9XiEJ4oUSNf5KLJc7VKTyB7ljBV0/xMOSrD
+         /9IaPVUmy5TTrSwE1XkXW9euPTOC9Mi1MRX22Ql6EGdvRdhspf30n9F/eP/4FBcsKhMH
+         Go+a+iWD03Wz90r3ST341xHMsnoVhNIhw9W2IJLlSy24kgMngGbOh/MOvgNc7X5US0ew
+         R2YA==
+X-Gm-Message-State: AOJu0YyU8t+OiVwOdw+9u8c9fk6iee9IR7iKZfEpXEDKDh6HNlWBht9M
+	OL4J+WT4IYXaq/896BnVRTigxq1MfiW2X02ZQj9OrVjo3Ci4Qk2xwGJgyWFqroAQLuEtiemK/SY
+	ARjr3AQ==
+X-Google-Smtp-Source: AGHT+IFqU0BQeelzd9jNakf3WbpD7T9AE4CqFB5L+ydF6XadPLR9/gi/lTn3YThRlsRFCyeBsFDTFw==
+X-Received: by 2002:a2e:a36d:0:b0:2cf:2ef2:87f7 with SMTP id i13-20020a2ea36d000000b002cf2ef287f7mr2998031ljn.53.1706484268201;
+        Sun, 28 Jan 2024 15:24:28 -0800 (PST)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id x7-20020a2e7c07000000b002cf2966f94csm947564ljc.43.2024.01.28.15.24.27
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Jan 2024 15:24:27 -0800 (PST)
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2cf1fd1cc5bso24643831fa.3
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 15:24:27 -0800 (PST)
+X-Received: by 2002:a2e:a4bc:0:b0:2d0:4e84:b278 with SMTP id
+ g28-20020a2ea4bc000000b002d04e84b278mr160192ljm.7.1706484266774; Sun, 28 Jan
+ 2024 15:24:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] doc: ipu3: Fix UAPI header doc warnings
-Content-Language: en-US
-To: Kohshi Yamaguchi <kohshi54.yam@gmail.com>, sakari.ailus@linux.intel.com,
- bingbu.cao@intel.com, tian.shu.qiu@intel.com
-Cc: mchehab@kernel.org, gregkh@linuxfoundation.org,
- linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
- linux-kernel@vger.kernel.org, skhan@linuxfoundation.org
-References: <20240128225258.50375-1-kohshi54.yam@gmail.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240128225258.50375-1-kohshi54.yam@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240126150209.367ff402@gandalf.local.home> <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
+ <20240126162626.31d90da9@gandalf.local.home> <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
+ <CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
+ <CAHk-=wj+DsZZ=2iTUkJ-Nojs9fjYMvPs1NuoM3yK7aTDtJfPYQ@mail.gmail.com> <20240128175111.69f8b973@rorschach.local.home>
+In-Reply-To: <20240128175111.69f8b973@rorschach.local.home>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sun, 28 Jan 2024 15:24:09 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjHc48QSGWtgBekej7F+Ln3b0j1tStcqyEf3S-Pj_MHHw@mail.gmail.com>
+Message-ID: <CAHk-=wjHc48QSGWtgBekej7F+Ln3b0j1tStcqyEf3S-Pj_MHHw@mail.gmail.com>
+Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	Linux Trace Devel <linux-trace-devel@vger.kernel.org>, Christian Brauner <brauner@kernel.org>, 
+	Ajay Kaher <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
+On Sun, 28 Jan 2024 at 14:51, Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> I was working on getting rid of ei->dentry, but then I hit:
+>
+> void eventfs_remove_dir(struct eventfs_inode *ei)
+> { [..]
+>
+> Where it deletes the all the existing dentries in a tree. Is this a
+> valid place to keep ei->dentry?
 
-On 1/28/24 14:52, Kohshi Yamaguchi wrote:
-> The ipu3_uapi_acc_param struct in the IPU3 UAPI header mentioned
-> reserved1 and reserved2 fields, which are absent in the actual
-> structure definition. This mismatch led to Sphinx build warnings
-> due to inconsistencies between the documentation and the code.
-> 
-> This patch removes these non-existent reserved field references
-> from the documentation, resolving the Sphinx build warnings and
-> ensuring the UAPI header is accurately documented.
-> 
-> Signed-off-by: Kohshi Yamaguchi <kohshi54.yam@gmail.com>
-> ---
->  drivers/staging/media/ipu3/include/uapi/intel-ipu3.h | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h b/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
-> index caa358e0bae4..926fcf84e33c 100644
-> --- a/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
-> +++ b/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
-> @@ -2485,11 +2485,9 @@ struct ipu3_uapi_anr_config {
->   *		&ipu3_uapi_yuvp1_y_ee_nr_config
->   * @yds:	y down scaler config. See &ipu3_uapi_yuvp1_yds_config
->   * @chnr:	chroma noise reduction config. See &ipu3_uapi_yuvp1_chnr_config
-> - * @reserved1: reserved
->   * @yds2:	y channel down scaler config. See &ipu3_uapi_yuvp1_yds_config
->   * @tcc:	total color correction config as defined in struct
->   *		&ipu3_uapi_yuvp2_tcc_static_config
-> - * @reserved2: reserved
->   * @anr:	advanced noise reduction config.See &ipu3_uapi_anr_config
->   * @awb_fr:	AWB filter response config. See ipu3_uapi_awb_fr_config
->   * @ae:	auto exposure config  As specified by &ipu3_uapi_ae_config
+No, when you remove the directory, just leave the child dentries
+alone. Remember: they are purely caches, and you either have
 
-posted 2 days ago:
+ - somebody is still using it (you can 'rmdir()' a directory that some
+other process has as its cwd, for example), which keeps it alive and
+active anyway
 
-https://lore.kernel.org/linux-media/eed7560f-cd7d-4e07-9b38-038ca65445bf@infradead.org/T/#mda377078e30cb5d784f23de95d8d7cca13265562
+ - when the last user is done, the dcache code will just free the
+dentries anyway
 
-Thanks.
+so there's no reason to remove any of the dentries by hand - and in
+fact simple_recursive_removal() never did that anyway for anything
+that was still busy.
 
--- 
-#Randy
+For a pure cached set of dentries (that have no users), doing the last
+"dput()" on a directory will free that directory dentry, but it will
+also automatically free all the unreachable children recursively.
+
+Sure, simple_recursive_removal() does other things (sets inode flags
+to S_DEAD, does fsnotify etc), but none of those should actually
+matter.
+
+I think that whole logic is simply left-over from when the dentries
+weren't a filesystem cache, but were the *actual* filesystem. So it
+actually became actively wrong when you started doing your own backing
+store, but it just didn't hurt (except for code legibility).
+
+Of course, eventfs is slightly odd and special in that this isn't a
+normal "rmdir()", so it can happen with files still populated. And
+those children will stick around  and be useless baggage until they
+are shrunk under memory pressure.
+
+But I don't think it should *semantically* matter, exactly because
+they always could stay around anyway due to having users.
+
+There are some cacheability knobs like
+
+        .d_delete = always_delete_dentry,
+
+which probably makes sense for any virtual filesystem (it limits
+caching of dentries with no more users - normally the dcache will
+happily keep caching dentries for the *next* user, but that may or may
+not make sense for virtual filesystems)
+
+So there is tuning that can be done, but in general, I think you
+should actively think of the dcache as just "it's just a cache, leave
+stale stuff alone"
+
+                  Linus
 
