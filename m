@@ -1,112 +1,118 @@
-Return-Path: <linux-kernel+bounces-41545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BE3A83F440
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 06:53:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93D2783F441
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 06:54:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBDA61C21FA1
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 05:53:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27AF01F21EFB
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 05:54:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBA088BF7;
-	Sun, 28 Jan 2024 05:53:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DD63D52A;
+	Sun, 28 Jan 2024 05:54:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nabijaczleweli.xyz header.i=@nabijaczleweli.xyz header.b="VBklWV0x"
-Received: from tarta.nabijaczleweli.xyz (tarta.nabijaczleweli.xyz [139.28.40.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="iS7lodvy"
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FC847484;
-	Sun, 28 Jan 2024 05:53:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.28.40.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6D90D50F
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 05:54:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706421214; cv=none; b=Xe7kw+9UZ0HXrAxVuZBCg3pLMgZTJ5SWPcbnNnvrkyLoGGGEOnohWaTwlxbRouvMJMRJ/tiUhktqErjM+pSmFROg96N614sq1L705XCYD4bbuXXhEtORZL9h+pWyHPcCy6KGy2AlI3Y7kbcqzkxMlCD++WvEjg6rN5K6T8Ct5KI=
+	t=1706421269; cv=none; b=WWvUU3kv3IJMWDMI2SjwSuCHoipg6u9DItUyt/MqyV8WPcNShnCg3HL1aFO+W0v8juzgFPjvHoznQh6MgH/egqZqhaQbFvfUGQN+la142WQpHRZDzGDsPzYalcom0qyN8tRImdhBirAT3cyrQRwdamlzUzgc3GalUb7MPjiqF8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706421214; c=relaxed/simple;
-	bh=ghuqAVEd3oaGLjuiR4Jx/XjOr/RW3i3vBZYuvTFT7es=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=I04VcDOMBDvX46xqlZW7m7EbxPYE9ft/jCS3vURSPMiiVi5IlJ9/McITSKmM0IQMDr4NI4fJGV01K+nxBA7ZJlhDtpxDJt2CFohI2SAK/9XLEqA94ux6hXchpID3/HqdUI1BDOE8PxKoqgUILQXEuugC6bA3wI13AkE1MfOaKfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nabijaczleweli.xyz; spf=pass smtp.mailfrom=nabijaczleweli.xyz; dkim=pass (2048-bit key) header.d=nabijaczleweli.xyz header.i=@nabijaczleweli.xyz header.b=VBklWV0x; arc=none smtp.client-ip=139.28.40.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nabijaczleweli.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nabijaczleweli.xyz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nabijaczleweli.xyz;
-	s=202305; t=1706421200;
-	bh=ghuqAVEd3oaGLjuiR4Jx/XjOr/RW3i3vBZYuvTFT7es=;
-	h=Date:From:To:Subject:From;
-	b=VBklWV0xwrqGtzcJLES3UwV2RGw33yXXWVHI1ERfoXktt2wetU4jYxclGKP01phrl
-	 Gdu/+LHtKRjt2eMedRLfBxnli9xnp6mJEATl5eDKuKOnwopBMKSvg5ah4u3wmW9984
-	 ESWBmRgP7MuihI3I2AqdoLCT9GKFslFOiDzjEHyg8OF6WxR4DIdcqtW/UJ6zc6Qz+x
-	 82euWzauXfT9yAxBFFcAE9jAhP4hxrY5ct9NfwYrhLQtjgbpf35hF4gG2227zs+0xx
-	 HgMIhz+rrHsm5AT4RcmWgVXrz3tDk1JzGqpz2IqtrnQ/Yel4JiTFE99f98oyLTjwfA
-	 NR65vJetf3PLg==
-Received: from tarta.nabijaczleweli.xyz (unknown [192.168.1.250])
-	by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 1AEE866A;
-	Sun, 28 Jan 2024 06:53:20 +0100 (CET)
-Date: Sun, 28 Jan 2024 06:53:19 +0100
-From: 
-	Ahelenia =?utf-8?Q?Ziemia=C5=84ska?= <nabijaczleweli@nabijaczleweli.xyz>
-To: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] spi: Kconfig: cap[c]ability
-Message-ID: <lq6gstev3sd7i4iw2btiq3gg7lhsraj5w74fkbp6lpbl6nkyff@tarta.nabijaczleweli.xyz>
+	s=arc-20240116; t=1706421269; c=relaxed/simple;
+	bh=T4a0KkJe3ySw24IAuPysHE97+mezCU60c6pezH3/Qas=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eNPboro1ORPeS8EDL0wRRI5ms5QoqVHbxmvvr3UQpEi1ZGbKOX6Be7pHPMqaGjajvTYu1LH2mqCzHHeBsQT7HzyBynSuySmEPq1DdrsxgWHQXlXt/iNY1SVWTUngFiiOTMzANqM506jGnURh0Dt6SqArGD/Tvyvd/vTyKyovaf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=iS7lodvy; arc=none smtp.client-ip=209.85.161.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-599fc25071bso1222168eaf.3
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 21:54:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1706421267; x=1707026067; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WoMzznv9gs9CVHyNB3sDyYu8pYaEpVdO9qAfTUaEKLQ=;
+        b=iS7lodvy3t5Qh83KiRk2C+o90nyiiD0XPE5FagdFsePnYmypF8cHdcz+A7XGNhY9pm
+         sDgYBhHQWahhjYmFeqEbEP4QlxQHt9ybJLUg9SDViqmr8i04OW4bHQdi6Svq9EmWpDlt
+         396GCnd+fXSIvgzJxAf4pAwwaqYgR8LgBtE9YDV6GyscBD/qbBhJlLKSG1VW6wM8tT4w
+         qhbUOfixZs1o1DsfW2vKsbv8FOQqbqimFBEhDIuZNnuAoqnbstoElakQM4RbfTXTiG71
+         n4P2xsDZJTVQswtj/gs44tYoO8wIY9zSGX9KJOHInPUJIgHjqAyUaFWtC8MpY4EW65EK
+         Of7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706421267; x=1707026067;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WoMzznv9gs9CVHyNB3sDyYu8pYaEpVdO9qAfTUaEKLQ=;
+        b=vyR22x+nKjgOPqcSRDERMdkv2QAaDnrQKoLXKdQ2Ng6ps4+7kouFcLV4V3NSe7Ib20
+         nhsMIiQgbKHIFzU7IZVOWMeaUCEyIQMf3gMs8I8M03aErdin91hRJ0C2CTYv557gyrOa
+         TOEn1gfFltuokMf1w9EOLpAz61qrnhx0uVc/JCv+1SD0PoS6T/UBtW6V9J3febBWIi9t
+         /Nxu5E/KuSV9l4ZUnRmVg7AAG3BAs3egaE96GTxZ2tZk9JSEIibRCYfc88olGl7oDWT0
+         dkk+j2yGR6wbBLhE2ntX+lR8fu/nVTPb7Sn5sRpF+gdmvKRbkglZXtSnFEyihWk5Tz/K
+         DlgQ==
+X-Gm-Message-State: AOJu0YxVbDB/M/mN1Ep1VUOBNlkqRbC5V3LCTcah4n2wAsNytUnuGYt3
+	8WW6ohgMWrUJUhmsAHPRbqlnqrgrWiUo8hiP7CVMWSxXvs18MUQE8NZwxiffh5k=
+X-Google-Smtp-Source: AGHT+IF3BhZQ0kd9MaydOR06jsyngD/uQTkBOXKbnxIlTgDR5uNidOeNUBMOv+APKTb+c7/0nhvxaw==
+X-Received: by 2002:a05:6358:2489:b0:176:a102:568e with SMTP id m9-20020a056358248900b00176a102568emr3049490rwc.5.1706421266793;
+        Sat, 27 Jan 2024 21:54:26 -0800 (PST)
+Received: from localhost.localdomain ([43.129.244.20])
+        by smtp.gmail.com with ESMTPSA id u12-20020a17090ac88c00b0029272682390sm3757020pjt.27.2024.01.27.21.54.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Jan 2024 21:54:26 -0800 (PST)
+From: Menglong Dong <dongmenglong.8@bytedance.com>
+To: andrii@kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Menglong Dong <dongmenglong.8@bytedance.com>
+Subject: [PATCH bpf-next] bpf: remove unused field "mod" in struct bpf_trampoline
+Date: Sun, 28 Jan 2024 13:54:43 +0800
+Message-Id: <20240128055443.413291-1-dongmenglong.8@bytedance.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="l6vk4hkabiji5e3b"
-Content-Disposition: inline
-User-Agent: NeoMutt/20231221-2-4202cf-dirty
+Content-Transfer-Encoding: 8bit
 
+It seems that the field "mod" in struct bpf_trampoline is not used
+anywhere after the commit 31bf1dbccfb0 ("bpf: Fix attaching
+fentry/fexit/fmod_ret/lsm to modules"). So we can just remove it now.
 
---l6vk4hkabiji5e3b
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Signed-off-by: Ahelenia Ziemia=C5=84ska <nabijaczleweli@nabijaczleweli.xyz>
+Signed-off-by: Menglong Dong <dongmenglong.8@bytedance.com>
 ---
- drivers/spi/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/bpf.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index ddae0fde798e..bc7021da2fe9 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -694,7 +694,7 @@ config SPI_MTK_SNFI
- 	  This enables support for SPI-NAND mode on the MediaTek NAND
- 	  Flash Interface found on MediaTek ARM SoCs. This controller
- 	  is implemented as a SPI-MEM controller with pipelined ECC
--	  capcability.
-+	  capability.
-=20
- config SPI_WPCM_FIU
- 	tristate "Nuvoton WPCM450 Flash Interface Unit"
---=20
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index b86bd15a051d..1ebbee1d648e 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1189,7 +1189,6 @@ struct bpf_trampoline {
+ 	int progs_cnt[BPF_TRAMP_MAX];
+ 	/* Executable image of trampoline */
+ 	struct bpf_tramp_image *cur_image;
+-	struct module *mod;
+ };
+ 
+ struct bpf_attach_target_info {
+-- 
 2.39.2
 
---l6vk4hkabiji5e3b
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmW1688ACgkQvP0LAY0m
-WPG2KA/+IFI65pbCFK2PV4oxgUvRFkItAh8bfASw7zDuPl8WYGr2cETwLGbB7chg
-m5nKmNtj8QyOdgnBpO39IQL72O9RiqqwvHwoSC6KXTb1SRPPk68VzULYS4uI/09a
-UEhVyPRA8fxKQaISRsBkQd6MRK8KS9risdh1DZpXiqVene0iFWvofN/mQv9ZZ4Jl
-uLFxZmjvLAqrfluLQ0AMOeODr/FrfCVoqufqIS/KPSVfsjQlBmLJgj56dU/FaGG7
-vANpbbldDBz6PbdhT0pNRPg2QttD2l4LQCpdGVzD5l2DaaLZadONFSoLj+wV34WM
-wQcgWBG6pDUI9NGxxWF5SWaovTbdeauu9DvsFg+qJe2PlbqBAYDfMP54yc5BnSQi
-/2kLNd0kzUMUpWu2cMPOIGXUwjJVHeG5Z30FQ+8PGfFIa0D5qcml9rElYm9hV3iK
-+iUe3FRheJBShAkK+0h4vouIeuNJFLk9OMa8y+g8X9mTh2j464e7DnQU6OWfFt6o
-jglJB1tOPKSoN5wU1bE0y9H/TRRdOyi8042KYYQ03WGSjms4HC4wB6BMmBcD3gfP
-ksqtIn8e+Dx3TPogtd8LcjQiDsGbkhN6Vuv9K4zv9W6/OvJrznbdCfta6frLm+BN
-dRPrVETHZvEsHMHZMAW2idWP3jRD8wApkJuj52aHR7/+hW6Rvy8=
-=teq6
------END PGP SIGNATURE-----
-
---l6vk4hkabiji5e3b--
 
