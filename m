@@ -1,132 +1,227 @@
-Return-Path: <linux-kernel+bounces-41838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFA5A83F856
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:58:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5FD683F86A
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 18:03:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BE43282978
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:58:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E2681C22539
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:03:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 846562E859;
-	Sun, 28 Jan 2024 16:58:52 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B7B02C850;
+	Sun, 28 Jan 2024 17:03:20 +0000 (UTC)
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56B272E834
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 16:58:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D5A928E03;
+	Sun, 28 Jan 2024 17:03:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706461132; cv=none; b=TmR+81WP9OqP/LzseML8ZdrEbMBhvReXDpNW4xoFRCsCjQRvzozWOEuAWniDM70+V4HF3o6GPjtii4ZrCFvEuBdVu1eXCmA4LI239gxX9BUaGWCxoaQgrF2ssZbbcilOxvKWQ+OqOX1bDMB0bM0ZsXXXK1KSCwnjG8xTbnLDEYk=
+	t=1706461399; cv=none; b=hNQ8pB0mZHSbJS5V1xsdsIpqasF8047ylrmSEYvkY12sW4CtirTpdGHT7rStqrkDlybn0qkHhsvNdNzfRhxIyy0/L0G6p/LUpP4YDY05gC3ulCdftzxzWesG2u1MVoRpVyU3n+MIjXhN8yIp8cenpsrKBPD/H+uxKFwZhzOvKJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706461132; c=relaxed/simple;
-	bh=tS1E/qQYkSQDoMFRMaQZJxtUcksskFokiqe+iIG/bSw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=spOG8EHVAhUzRc4sgjiq9mDUN9fJyph8X283RRGKjxEmEOww0VN2+W60E0F1Pbdx6EerFdAUBU9CZb8XDqEzMhIm2g3FYeVgYIeikCidVDIyFAgRCsCggcoimywTAR2jtC1pHcnUk1mmNbbE/I2s7T5x79LzgvS2N6azNNVA6Kg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rU8UR-0003As-S0; Sun, 28 Jan 2024 17:58:39 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rU8UQ-002z9m-RT; Sun, 28 Jan 2024 17:58:38 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rU8UQ-00AHAA-2U;
-	Sun, 28 Jan 2024 17:58:38 +0100
-Date: Sun, 28 Jan 2024 17:58:38 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Raag Jadav <raag.jadav@intel.com>, jarkko.nikula@linux.intel.com, 
-	mika.westerberg@linux.intel.com, lakshmi.sowjanya.d@intel.com, linux-pwm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/3] pwm: dwc: simplify error handling
-Message-ID: <r6vulwv76x7ydkmszlwlswjve7y2pmasz77wkqub73qopd5src@y3ta72owtw5b>
-References: <20240122030238.29437-1-raag.jadav@intel.com>
- <20240122030238.29437-3-raag.jadav@intel.com>
- <ZbZpMO9b7L-DNIcb@smile.fi.intel.com>
+	s=arc-20240116; t=1706461399; c=relaxed/simple;
+	bh=hoGLeTx931dYTROijJ6Yud2063fpjpNZ3M75yTo2dgo=;
+	h=From:To:Subject:Date:Message-Id:Content-Type:MIME-Version; b=bowDaySr6p/228Wsi9FXSA7sANm7d7fS5+s0uFlgra6gJXVZ4xTOgZmgixetDaAS7QM/2nOSEA2BgeT/vqGVfnbbnSePSuH6ax/qIajywSjnM2rHX4JXYz8UBYKYAytYDoIa6Y5ugH73pCsKl9wG+qnDm4fCbDXRbrFGZXfuQ0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+Received: from [2a02:8108:8980:2478:5054:ff:feb3:8f48] (helo=regzbot.fritz.box); authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	id 1rU8Ys-0002QN-UN; Sun, 28 Jan 2024 18:03:15 +0100
+From: "Regzbot (on behalf of Thorsten Leemhuis)" <regressions@leemhuis.info>
+To: LKML <linux-kernel@vger.kernel.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Linux regressions report  for mainline [2024-01-28]
+Date: Sun, 28 Jan 2024 17:03:13 +0000
+Message-Id: <170646134151.3426506.9467210052600500703@leemhuis.info>
+X-Mailer: git-send-email 2.40.1
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="4vfzke46slaro6ed"
-Content-Disposition: inline
-In-Reply-To: <ZbZpMO9b7L-DNIcb@smile.fi.intel.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1706461397;4dfb79b2;
+X-HE-SMSGID: 1rU8Ys-0002QN-UN
+
+Hi Linus. Nothing much to report from my side. Here are a few things I
+nevertheless want to point out wrt. to regression from this or the
+previous cycle:
+
+* As already mentioned last week: quite a few people reported problems
+that among others "break 32bit processes on x86_64 (at least). In
+particular, 32bit kernel or firefox builds in our build system" (quote
+from Jiri). The mm fix for that is in -next since Tuesday (currently as
+0d0498b139768f ("mm: mmap: map MAP_STACK to VM_NOHUGEPAGE")), but sadly
+not yet on the way to you (at least afaics):
+https://lore.kernel.org/all/20240126075612.87780C433F1@smtp.kernel.org/
+
+ For details and problems reports see:
+
+  https://lore.kernel.org/linux-mm/d0a136a0-4a31-46bc-adf4-2db109a61672@kernel.org/
+  https://lore.kernel.org/linux-mm/CAJuCfpHXLdQy1a2B6xN2d7quTYwg2OoZseYPZTRpU0eHHKD-sQ@mail.gmail.com/
+  https://lore.kernel.org/all/1e8f5ac7-54ce-433a-ae53-81522b2320e1@arm.com/
+  https://lore.kernel.org/all/a914c7f2-cf9f-44a8-99d4-c25a66d39f1c@arm.com/
 
 
---4vfzke46slaro6ed
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+* There have been multiple reports that the keyboard on the popular
+Dell XPS 13 9350 / 9360 / 9370 models on 6.7 has stopped working after
+suspend/resume -- and the culprit that causes it recently sadly was
+backported to a few stable/longterm series. Hans posted a fix on Friday
+and asked sending them your way "ASAP", but that afaics has not happened
+yet (no wonder given the timing):
 
-Hello,
+  https://lore.kernel.org/all/20240126160724.13278-1-hdegoede@redhat.com/
 
-On Sun, Jan 28, 2024 at 04:48:16PM +0200, Andy Shevchenko wrote:
-> On Mon, Jan 22, 2024 at 08:32:37AM +0530, Raag Jadav wrote:
-> > Simplify error handling in ->probe() function using dev_err_probe() hel=
-per.
->=20
-> ...
->=20
-> >  	ret =3D pcim_iomap_regions(pci, BIT(0), pci_name(pci));
-> > -	if (ret) {
-> > -		dev_err(dev, "Failed to iomap PCI BAR (%pe)\n", ERR_PTR(ret));
-> > -		return ret;
-> > -	}
-> > +	if (ret)
-> > +		return dev_err_probe(dev, ret, "Failed to iomap PCI BAR (%pe)\n", ER=
-R_PTR(ret));
-> > =20
-> >  	base =3D pcim_iomap_table(pci)[0];
->=20
-> > -	if (!base) {
-> > -		dev_err(dev, "Base address missing\n");
-> > -		return -ENOMEM;
-> > -	}
-> > +	if (!base)
-> > +		return dev_err_probe(dev, -ENOMEM, "Base address missing\n");
->=20
-> This check is bogus. Just remove it completely.
 
-This would be a separate patch though. IMHO mechanically converting to
-dev_err_probe() is fine.
+* Speaking of popular Linus laptops, in case anyone cares: GPIO is
+broken on the Thinkpad T14s Gen1 AMD, a fix for it was posted on
+Tuesday, sadly was not yet picked up afaics:
 
-Best regards
-Uwe
+  https://lore.kernel.org/lkml/20240123180818.3994-1-mario.limonciello@amd.com/
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
---4vfzke46slaro6ed
-Content-Type: application/pgp-signature; name="signature.asc"
+* Ohh, and the Apple M1 is plagued by boot failures, a fix for it is in
+next as b40fed13870045 ("nvmem: include bit index in cell sysfs file
+name") and also found here:
 
------BEGIN PGP SIGNATURE-----
+  https://lore.kernel.org/all/20240122153442.7250-1-arnd@kernel.org/
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmW2h7gACgkQj4D7WH0S
-/k7MpggAoa8e8OxiEWhR+vVyUOs0kgmdMkXRNj2a6v+Rorm2yFeWHT1q6R/snxrN
-fLGDycNB+K9ApjaSUvs3moSkWQ0z2ZTkWHQozQjABA61pYSLy5ZR9sZmm0pjuZyX
-b/mQ0nyhb+HLQQOg2y1AaRS/0PR4GuytagNjjYULCQEYN81fZvEnJ/VKKZGMgGGq
-qrLRjp8WnOR/wiKM8bwUuHtYrjUCIwtd3WlH2a/88qOjiuGjSd3fT7Jnkyb5PUXk
-VunvmyyirBt0FM1QVdkGzECfsnpkgFSXLThZ3/va10AKd6VRBNugGnHJ5oWUkPkY
-FRCBzUaZIH6nZvk1hMyJA416f/ppLg==
-=QQyq
------END PGP SIGNATURE-----
 
---4vfzke46slaro6ed--
+Ciao, Thorsten
+
+---
+
+Hi, this is regzbot, the Linux kernel regression tracking bot.
+
+Currently I'm aware of 6 regressions in linux-mainline. Find the
+current status below and the latest on the web:
+
+https://linux-regtracking.leemhuis.info/regzbot/mainline/
+
+Bye bye, hope to see you soon for the next report.
+   Regzbot (on behalf of Thorsten Leemhuis)
+
+
+======================================================
+current cycle (v6.7.. aka v6.8-rc), culprit identified
+======================================================
+
+
+[ *NEW* ] Regression by b17ef04bf3a4 ("drm/amd/display: Pass pwrseq inst for backlight and ABM")
+------------------------------------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/ZbUB0YWxEET3Y0xA@eldamar.lan/
+https://lore.kernel.org/lkml/ZbUB0YWxEET3Y0xA@eldamar.lan/
+
+By Salvatore Bonaccorso; 1 days ago; 3 activities, latest 0 days ago.
+Introduced in b17ef04bf3a4 (v6.8-rc1)
+
+Recent activities from: Debian Bug Tracking System (1), Linux regression
+  tracking (Thorsten Leemhuis) (1), Salvatore Bonaccorso (1)
+
+Noteworthy links:
+* https://bugs.debian.org/1061449
+
+
+[ *NEW* ] nvmem: boot failure for linux-6.8-rc1 on Apple M1
+-----------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/20240122153442.7250-1-arnd@kernel.org/
+https://lore.kernel.org/lkml/20240122153442.7250-1-arnd@kernel.org/
+
+By Arnd Bergmann; 6 days ago; 8 activities, latest 1 days ago.
+Introduced in 0331c611949f (v6.8-rc1)
+
+Fix incoming:
+* nvmem: include bit index in cell sysfs file name
+  https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=master&id=b40fed13870045731e374e6bb48800cde0feb4e2
+
+
+[ *NEW* ] md/raid5: issue with raid5 with journal device
+--------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/20240123005700.9302-1-dan@danm.net/
+https://lore.kernel.org/lkml/20240123005700.9302-1-dan@danm.net/
+
+By Dan Moulding; 5 days ago; 24 activities, latest 2 days ago.
+Introduced in bed9e27baf52 (v6.8-rc1)
+
+Fix incoming:
+* Revert "Revert "md/raid5: Wait for MD_SB_CHANGE_PENDING in raid5d""
+  https://lore.kernel.org/regressions/a68c06ec-b303-4caf-ac39-882a1acb75b1@leemhuis.info/
+
+
+[ *NEW* ] mm: multiple 30-38% regressions in vm-scalability, will-it-scale-tlb_flush2, and will-it-scale-fallocate1
+-------------------------------------------------------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/202401221624.cb53a8ca-oliver.sang@intel.com/
+https://lore.kernel.org/lkml/202401221624.cb53a8ca-oliver.sang@intel.com/
+
+By kernel test robot; 6 days ago; 10 activities, latest 2 days ago.
+Introduced in 8d59d2214c23 (v6.8-rc1)
+
+Fix incoming:
+* mm: memcg: optimize parent iteration in memcg_rstat_updated()
+  https://lore.kernel.org/regressions/ddf5f638-1854-47e0-9527-2549034005dd@leemhuis.info/
+
+
+[ *NEW* ] ACPI: OSL:/pinctrl: GPIO controller failing to work
+-------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/20240123180818.3994-1-mario.limonciello@amd.com/
+https://lore.kernel.org/lkml/20240123180818.3994-1-mario.limonciello@amd.com/
+https://bugzilla.kernel.org/show_bug.cgi?id=218407
+
+By Mario Limonciello and Christian Heusel; 4 days ago; 3 activities, latest 4 days ago.
+Introduced in 7a36b901a6eb (v6.8-rc1)
+
+Fix incoming:
+* pinctrl: amd: Add IRQF_ONESHOT to the interrupt request
+  https://lore.kernel.org/lkml/0fd03c79-5e86-4cf8-99ae-944d73d5515a@leemhuis.info/
+
+
+[ *NEW* ] sched: DT kselftests on meson-gxl-s905x-libretech-cc fail
+-------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/Za8cjQXptttuyb6c@finisterre.sirena.org.uk/
+https://lore.kernel.org/lkml/Za8cjQXptttuyb6c@finisterre.sirena.org.uk/
+
+By Mark Brown; 5 days ago; 9 activities, latest 5 days ago.
+Introduced in b3edde44e5d4 (v6.8-rc1)
+
+Fix incoming:
+* topology: Set capacity_freq_ref in all cases
+  https://lore.kernel.org/regressions/753e71de-9e0b-4335-baba-dfe8e2ce7f6d@leemhuis.info/
+
+
+=============
+End of report
+=============
+
+All regressions marked '[ *NEW* ]' were added since the previous report,
+which can be found here:
+https://lore.kernel.org/r/170585059505.2778011.9564698506290962184@leemhuis.info
+
+Thanks for your attention, have a nice day!
+
+  Regzbot, your hard working Linux kernel regression tracking robot
+
+
+P.S.: Wanna know more about regzbot or how to use it to track regressions
+for your subsystem? Then check out the getting started guide or the
+reference documentation:
+
+https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
+https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
+
+The short version: if you see a regression report you want to see
+tracked, just send a reply to the report where you Cc
+regressions@lists.linux.dev with a line like this:
+
+#regzbot introduced: v5.13..v5.14-rc1
+
+If you want to fix a tracked regression, just do what is expected
+anyway: add a 'Link:' tag with the url to the report, e.g.:
+
+Link: https://lore.kernel.org/all/30th.anniversary.repost@klaava.Helsinki.FI/
 
