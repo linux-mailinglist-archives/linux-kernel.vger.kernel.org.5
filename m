@@ -1,114 +1,225 @@
-Return-Path: <linux-kernel+bounces-41907-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C95DF83F971
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:34:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AB20C83F975
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:35:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A9161F22192
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 19:34:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 197301F2210C
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 19:35:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2151233CFC;
-	Sun, 28 Jan 2024 19:34:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="GxElQOIg"
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 040C83C472;
+	Sun, 28 Jan 2024 19:34:56 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29BDF33CD3
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 19:34:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB5A933CD6
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 19:34:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706470459; cv=none; b=s50vWDK3nCfycBpYzOCiCEruPXCC4D9PNS9gYt8TPIF2F9XN3OUtEELvp9XShDFJTkXDOgm9qQjx/wEABWyqr9m4M1uiY/qnQy+XbnRKrXkDYCnpdIUiCobbTH5/1tn67QGMtjj+Bue9YbqwTA1PvrVilj4upNWVQXmOi5eTmjI=
+	t=1706470492; cv=none; b=Z6Io8+xPF44Zhakil2rp191FDpyLCxM7es/NeuR4kRlwoF4rm/OZx5WxpzI24QDVLHWDVrNATwHzgJeyP8KsjXTVAb6YZ72ZEo10QpsN79SvS07d5ekOmVAhdKuYJ3oWUk6H6l0NhsFHLdV5MzJggvyrzrruacVDrVvXYrtEkG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706470459; c=relaxed/simple;
-	bh=zAyr8u6NAVcez0p7NSlziYI9cWPcjuKrqp86JKbpV0I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XWH/XMb9fzmzwL8xUiBuuuJ0fdR9wdWSC7NHwLVL4c+N4fFYlfxfnwo6xYH/irqX3Dv52NpOWbYK4LFXoovG0o5zrtKy41Xtn+MeB7Lof/AJgzx3njyHXtDRqwQQ6cJP2AGOrBw8JHaqq0WSZXQyNO5/DODVvFl8EnRYh6aUsT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=fail (0-bit key) header.d=zytor.com header.i=@zytor.com header.b=GxElQOIg reason="key not found in DNS"; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [IPV6:2601:646:8002:4641:eb14:ad94:2806:1c1a] ([IPv6:2601:646:8002:4641:eb14:ad94:2806:1c1a])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 40SJXPkw1789355
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Sun, 28 Jan 2024 11:33:25 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 40SJXPkw1789355
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2024011201; t=1706470406;
-	bh=96vGipOx59lTT3wlSdaxzIA8bgY6RlhghuOy110T7sA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=GxElQOIg00h+OinI2TjStUbTe8pHUW9FBVErhCsvEUHcfV332f7n1MvQi4VNTO9LD
-	 HHkeNubnVL/z+FoUeWCJSkMw5bjym1vTScRHo6R+z9EQw7jDGS+Bf95CobbSLWdStB
-	 DQXjYiiiZuRoxoA/MCIC5GRtdMJIJBBR/KX8JCPMjcybil6aJzKj2mKc5BlwXhqrdM
-	 FKfHLigmYPVOQa2MlxwfXE0uObucmN7x1DVLLCl5TA2PHEwtSTxv3fA2ax7sRpLABb
-	 wgTfVcI4eFsftj4CY09G/kIUXRM0fJEjGlabPs3QazmUjTxxBc8YwwMTBYB7GtB6OZ
-	 gtx/Jbw8NFZPg==
-Message-ID: <882e400f-913b-4ed5-9611-ef87cd8b58b2@zytor.com>
-Date: Sun, 28 Jan 2024 11:33:20 -0800
+	s=arc-20240116; t=1706470492; c=relaxed/simple;
+	bh=juZ2M3HUxnqIFqWU7GAGrFjPnoxq0zOmMPMgSI4HXxI=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=Btd6DQIt4d5UaxvAt9sC3D+x9LgaIw7+O8YbfINcu1aeaC94d5LSelwutmTMUGhLIDM1wNLyUzVTsvVybP9sLjZUHY0Lo4tgc3RxONufukQ3koQtF57kotTs55LXnbMsVjvtUuYf3uJlXQVo+J9saCylZimj56u0bLYnbh6bvTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-323-SOw5q3D0MG6-hLHIb3ORig-1; Sun, 28 Jan 2024 19:34:47 +0000
+X-MC-Unique: SOw5q3D0MG6-hLHIb3ORig-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 28 Jan
+ 2024 19:34:23 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sun, 28 Jan 2024 19:34:23 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>, "'Linus
+ Torvalds'" <torvalds@linux-foundation.org>, 'Netdev'
+	<netdev@vger.kernel.org>, "'dri-devel@lists.freedesktop.org'"
+	<dri-devel@lists.freedesktop.org>
+CC: 'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>, 'Andrew Morton'
+	<akpm@linux-foundation.org>, "'Matthew Wilcox (Oracle)'"
+	<willy@infradead.org>, 'Christoph Hellwig' <hch@infradead.org>, "'Dan
+ Carpenter'" <dan.carpenter@linaro.org>, 'Linus Walleij'
+	<linus.walleij@linaro.org>, "'David S . Miller'" <davem@davemloft.net>,
+	"'linux-btrfs@vger.kernel.org'" <linux-btrfs@vger.kernel.org>, 'Jens Axboe'
+	<axboe@kernel.dk>
+Subject: [PATCH next 09/11] tree-wide: minmax: Replace all the uses of max()
+ for array sizes with max_const()
+Thread-Topic: [PATCH next 09/11] tree-wide: minmax: Replace all the uses of
+ max() for array sizes with max_const()
+Thread-Index: AdpSIQx7w4lMNPy/TmCWjt5UFKRyKA==
+Date: Sun, 28 Jan 2024 19:34:23 +0000
+Message-ID: <10638249b13c43cab9a5522271aa99e2@AcuMS.aculab.com>
+References: <0ca26166dd2a4ff5a674b84704ff1517@AcuMS.aculab.com>
+In-Reply-To: <0ca26166dd2a4ff5a674b84704ff1517@AcuMS.aculab.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] x86/fred: Fix build with clang
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-To: "Li, Xin3" <xin3.li@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "luto@kernel.org" <luto@kernel.org>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>
-References: <20240127093728.1323-1-xin3.li@intel.com>
- <20240127093728.1323-2-xin3.li@intel.com>
- <49BA730F-E9A0-44AA-AB62-D2F40C5C11DD@zytor.com>
- <SA1PR11MB6734916F2BB7E296A6FEE52EA8782@SA1PR11MB6734.namprd11.prod.outlook.com>
-From: "H. Peter Anvin" <hpa@zytor.com>
-In-Reply-To: <SA1PR11MB6734916F2BB7E296A6FEE52EA8782@SA1PR11MB6734.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On 1/27/24 11:46, Li, Xin3 wrote:
->>> diff --git a/arch/x86/entry/entry_64_fred.S
->>> b/arch/x86/entry/entry_64_fred.S index eedf98de7538..5427e0da190d
->>> 100644
->>> --- a/arch/x86/entry/entry_64_fred.S
->>> +++ b/arch/x86/entry/entry_64_fred.S
->>> @@ -43,13 +43,12 @@ SYM_INNER_LABEL(asm_fred_exit_user,
->> SYM_L_GLOBAL)
->>> 	_ASM_EXTABLE_TYPE(1b, asm_fred_entrypoint_user, EX_TYPE_ERETU)
->>> SYM_CODE_END(asm_fred_entrypoint_user)
->>>
->>> -.fill asm_fred_entrypoint_kernel - ., 1, 0xcc
->>> -
->>> /*
->>>   * The new RIP value that FRED event delivery establishes is
->>>   * (IA32_FRED_CONFIG & ~FFFH) + 256 for events that occur in
->>>   * ring 0, i.e., asm_fred_entrypoint_user + 256.
->>>   */
->>> +	.fill asm_fred_entrypoint_user + 256 - ., 1, 0xcc
->>> 	.org asm_fred_entrypoint_user + 256
->>> SYM_CODE_START_NOALIGN(asm_fred_entrypoint_kernel)
->>> 	FRED_ENTER
->>
->> .fill and .org here are redundant; in fact, there two directives mean exactly the
->> same thing except that .org implicitly subtracts the current offset.
-> 
-> Ah, right, .fill already does the job!
-> 
-> I will remove .org.
-> 
+These are the only uses of max() that require a constant value
+from constant parameters.
+There don't seem to be any similar uses of min().
 
-Incidentally, was there a problem with .org ..., 0xcc?
+Replacing the max() by max_const() lets min()/max() be simplified
+speeding up compilation.
 
-Not a criticism, I just want to know to better understand current 
-binutils limitations.
+max_const() will convert enums to int (or unsigned int) so that the
+casts added by max_t() are no longer needed.
 
-	-hpa
+Signed-off-by: David Laight <david.laight@aculab.com>
+---
+ drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c         | 2 +-
+ drivers/gpu/drm/drm_color_mgmt.c               | 4 ++--
+ drivers/input/touchscreen/cyttsp4_core.c       | 2 +-
+ drivers/net/can/usb/etas_es58x/es58x_devlink.c | 2 +-
+ fs/btrfs/tree-checker.c                        | 2 +-
+ lib/vsprintf.c                                 | 4 ++--
+ net/ipv4/proc.c                                | 2 +-
+ net/ipv6/proc.c                                | 2 +-
+ 8 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c b/drivers/gpu/drm/amd/p=
+m/swsmu/smu_cmn.c
+index 00cd615bbcdc..935fb4014f7c 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c
++++ b/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c
+@@ -708,7 +708,7 @@ static const char *smu_get_feature_name(struct smu_cont=
+ext *smu,
+ size_t smu_cmn_get_pp_feature_mask(struct smu_context *smu,
+ =09=09=09=09   char *buf)
+ {
+-=09int8_t sort_feature[max(SMU_FEATURE_COUNT, SMU_FEATURE_MAX)];
++=09int8_t sort_feature[max_const(SMU_FEATURE_COUNT, SMU_FEATURE_MAX)];
+ =09uint64_t feature_mask;
+ =09int i, feature_index;
+ =09uint32_t count =3D 0;
+diff --git a/drivers/gpu/drm/drm_color_mgmt.c b/drivers/gpu/drm/drm_color_m=
+gmt.c
+index d021497841b8..43a6bd0ca960 100644
+--- a/drivers/gpu/drm/drm_color_mgmt.c
++++ b/drivers/gpu/drm/drm_color_mgmt.c
+@@ -532,8 +532,8 @@ int drm_plane_create_color_properties(struct drm_plane =
+*plane,
+ {
+ =09struct drm_device *dev =3D plane->dev;
+ =09struct drm_property *prop;
+-=09struct drm_prop_enum_list enum_list[max_t(int, DRM_COLOR_ENCODING_MAX,
+-=09=09=09=09=09=09       DRM_COLOR_RANGE_MAX)];
++=09struct drm_prop_enum_list enum_list[max_const(DRM_COLOR_ENCODING_MAX,
++=09=09=09=09=09=09      DRM_COLOR_RANGE_MAX)];
+ =09int i, len;
+=20
+ =09if (WARN_ON(supported_encodings =3D=3D 0 ||
+diff --git a/drivers/input/touchscreen/cyttsp4_core.c b/drivers/input/touch=
+screen/cyttsp4_core.c
+index 7cb26929dc73..c6884c3c3fca 100644
+--- a/drivers/input/touchscreen/cyttsp4_core.c
++++ b/drivers/input/touchscreen/cyttsp4_core.c
+@@ -871,7 +871,7 @@ static void cyttsp4_get_mt_touches(struct cyttsp4_mt_da=
+ta *md, int num_cur_tch)
+ =09struct cyttsp4_touch tch;
+ =09int sig;
+ =09int i, j, t =3D 0;
+-=09int ids[max(CY_TMA1036_MAX_TCH, CY_TMA4XX_MAX_TCH)];
++=09int ids[max_const(CY_TMA1036_MAX_TCH, CY_TMA4XX_MAX_TCH)];
+=20
+ =09memset(ids, 0, si->si_ofs.tch_abs[CY_TCH_T].max * sizeof(int));
+ =09for (i =3D 0; i < num_cur_tch; i++) {
+diff --git a/drivers/net/can/usb/etas_es58x/es58x_devlink.c b/drivers/net/c=
+an/usb/etas_es58x/es58x_devlink.c
+index 635edeb8f68c..28fa87668bf8 100644
+--- a/drivers/net/can/usb/etas_es58x/es58x_devlink.c
++++ b/drivers/net/can/usb/etas_es58x/es58x_devlink.c
+@@ -215,7 +215,7 @@ static int es58x_devlink_info_get(struct devlink *devli=
+nk,
+ =09struct es58x_sw_version *fw_ver =3D &es58x_dev->firmware_version;
+ =09struct es58x_sw_version *bl_ver =3D &es58x_dev->bootloader_version;
+ =09struct es58x_hw_revision *hw_rev =3D &es58x_dev->hardware_revision;
+-=09char buf[max(sizeof("xx.xx.xx"), sizeof("axxx/xxx"))];
++=09char buf[max_const(sizeof("xx.xx.xx"), sizeof("axxx/xxx"))];
+ =09int ret =3D 0;
+=20
+ =09if (es58x_sw_version_is_valid(fw_ver)) {
+diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+index 6eccf8496486..aec4729a9a82 100644
+--- a/fs/btrfs/tree-checker.c
++++ b/fs/btrfs/tree-checker.c
+@@ -615,7 +615,7 @@ static int check_dir_item(struct extent_buffer *leaf,
+ =09=09 */
+ =09=09if (key->type =3D=3D BTRFS_DIR_ITEM_KEY ||
+ =09=09    key->type =3D=3D BTRFS_XATTR_ITEM_KEY) {
+-=09=09=09char namebuf[max(BTRFS_NAME_LEN, XATTR_NAME_MAX)];
++=09=09=09char namebuf[max_const(BTRFS_NAME_LEN, XATTR_NAME_MAX)];
+=20
+ =09=09=09read_extent_buffer(leaf, namebuf,
+ =09=09=09=09=09(unsigned long)(di + 1), name_len);
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index 552738f14275..6c3c319afd86 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -1080,8 +1080,8 @@ char *resource_string(char *buf, char *end, struct re=
+source *res,
+ #define FLAG_BUF_SIZE=09=09(2 * sizeof(res->flags))
+ #define DECODED_BUF_SIZE=09sizeof("[mem - 64bit pref window disabled]")
+ #define RAW_BUF_SIZE=09=09sizeof("[mem - flags 0x]")
+-=09char sym[max(2*RSRC_BUF_SIZE + DECODED_BUF_SIZE,
+-=09=09     2*RSRC_BUF_SIZE + FLAG_BUF_SIZE + RAW_BUF_SIZE)];
++=09char sym[max_const(2*RSRC_BUF_SIZE + DECODED_BUF_SIZE,
++=09=09=09   2*RSRC_BUF_SIZE + FLAG_BUF_SIZE + RAW_BUF_SIZE)];
+=20
+ =09char *p =3D sym, *pend =3D sym + sizeof(sym);
+ =09int decode =3D (fmt[0] =3D=3D 'R') ? 1 : 0;
+diff --git a/net/ipv4/proc.c b/net/ipv4/proc.c
+index 5f4654ebff48..a4aff27f949b 100644
+--- a/net/ipv4/proc.c
++++ b/net/ipv4/proc.c
+@@ -43,7 +43,7 @@
+ #include <net/sock.h>
+ #include <net/raw.h>
+=20
+-#define TCPUDP_MIB_MAX max_t(u32, UDP_MIB_MAX, TCP_MIB_MAX)
++#define TCPUDP_MIB_MAX max_const(UDP_MIB_MAX, TCP_MIB_MAX)
+=20
+ /*
+  *=09Report socket allocation statistics [mea@utu.fi]
+diff --git a/net/ipv6/proc.c b/net/ipv6/proc.c
+index 6d1d9221649d..7fedb60aaeac 100644
+--- a/net/ipv6/proc.c
++++ b/net/ipv6/proc.c
+@@ -27,7 +27,7 @@
+ #include <net/ipv6.h>
+=20
+ #define MAX4(a, b, c, d) \
+-=09max_t(u32, max_t(u32, a, b), max_t(u32, c, d))
++=09max_const(max_const(a, b), max_const(c, d))
+ #define SNMP_MIB_MAX MAX4(UDP_MIB_MAX, TCP_MIB_MAX, \
+ =09=09=09IPSTATS_MIB_MAX, ICMP_MIB_MAX)
+=20
+--=20
+2.17.1
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
+
 
