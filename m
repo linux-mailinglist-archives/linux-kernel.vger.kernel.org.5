@@ -1,55 +1,58 @@
-Return-Path: <linux-kernel+bounces-41818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E487083F80B
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:47:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C233A83F80E
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:47:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B9F628A5F0
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:47:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E78E28AA6D
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:47:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88131144636;
-	Sun, 28 Jan 2024 16:16:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 941AE145334;
+	Sun, 28 Jan 2024 16:16:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b+VxVNV7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fS0W0u7J"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8223144629;
-	Sun, 28 Jan 2024 16:16:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFF6F14463A;
+	Sun, 28 Jan 2024 16:16:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458605; cv=none; b=OBVSmZAESvcqo17QbCLFRpdJxnYa/ZbcNis93Bz3Z6r5VKP9lNJfjyHJkQ21yQOK9x4bs++iydHUNLw83Hb00J4rhbtpcbHHUFAllj+ncFp1hHYI4tpqCCPUF24OK0z7CFYoc9HfGoh2CkMaCvd/Fl7/xOqYSQxzB36g4Yl96E0=
+	t=1706458606; cv=none; b=XoaSctYmi6HxAeMZyqKsTgaoH4Kg7MK1TavaJrNCSqD4ePf5k8Zi+ewaRGztNUUB+EVPAIKMWdRhTHGHRnD42gvqKE65XScP/n00t/cEBLjTk9F+majlkvXhb2GMuCWkjxbeJCtQKNrvViEO1N6FICa5VzWJf+s9RfBK3sQ/65Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458605; c=relaxed/simple;
-	bh=TVrjnz4N4BXeetl0qonNX9Rk4p9IAvClyH7GaIBkBKA=;
+	s=arc-20240116; t=1706458606; c=relaxed/simple;
+	bh=ibuTUKfdCzg4UDqPb3PSDJf0BgqNp+ixUt1f6mQxToA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mtxNCzMz0W10t8N74at3nfILYUmpY6+apgyf0xM/yLFFBbRokioLPQkjFZx8TN38Ir4MStPltatiXZFOa3tN+TR8OIf3dF/0KYN1Vbwk/hzbHprRDzvARvzoP+q2NRzzeed7Wcw8Nzl8vj4zGsLXhicY6TCK0qDo3GKOIewFw1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b+VxVNV7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88338C433F1;
-	Sun, 28 Jan 2024 16:16:44 +0000 (UTC)
+	 MIME-Version; b=fy0mEilp2OiwlnhtSzfGoNwAjKIuMF/B1zvFnTpO7svjrYSuI+WgDudF3L0z8i1NR8wtezFjoutb3qEXLqXOJh504JkSEoAe0+jkP050WhNGRD+3bviJ+adIgUKp1wPQqjE2j7xQmXXkz+CN8piD3YHtx7HlDQIBWZyT+VzvKBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fS0W0u7J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACF8EC43399;
+	Sun, 28 Jan 2024 16:16:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706458605;
-	bh=TVrjnz4N4BXeetl0qonNX9Rk4p9IAvClyH7GaIBkBKA=;
+	s=k20201202; t=1706458606;
+	bh=ibuTUKfdCzg4UDqPb3PSDJf0BgqNp+ixUt1f6mQxToA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=b+VxVNV77WSuGMXas77mF8GxZfpAViFVdLsarG2B9MbN9XoUgSBIa++gXGelx7aN1
-	 8QDxiZe7xfAiGfytHCBLKFRoWzzU1chgP/+97GefEXBOeNEJwLxP9FGqsxUkWE+ew9
-	 +2gdSS0FIQ7WAFnvyT7V8nTxeUq0SRSt/bkIjF2Vg1VnXStMzuqQEsqU9mEk7gqYRH
-	 ToXusGW3yZNbU8cGncStIq61ZqxPKSMwfK58rPBa/6SCCeUENBz1LmQRWrVra+VcwE
-	 OSG08/+zIHsASF/2cSRRPdkTW2nS6d57Fqo2Q9PcGvEHhJBu5wRHr3Df9G95xSa7YA
-	 DqFwVv4HgZkkA==
+	b=fS0W0u7J3fzQ/RhXsp5XlTTBjuxphbq7Pff35JQrbp47YEHfkU7BnVPZ2jJnFSEjr
+	 l2m+x9Nkhedi1NAmgJTi+BmHakdSyOSB7OI6a8sbcXl0ijvKBfThte4umLKY0WXa+a
+	 Su1AqK5EbTikRv1GYGaHkWbRb3j5lnr7rJU7uUoIBu1GqcbNIa2iCnnGz3iyuIHIUb
+	 ZB0jIO+opAgYkjxfFaBLZv7WpVbPgnT/4dzreOnx/OirhV2pGqQP4vCuzqs8ZX1RDy
+	 555Nsly1a6XOUJgKPQhzfUTQdXHtKIbCKH3b1hXhIIULa0p5Qu/DWSIfbyfhB01jvA
+	 BCAvwdK5Y6yIg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Max Kellermann <max.kellermann@ionos.com>,
-	Tejun Heo <tj@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 04/11] fs/kernfs/dir: obey S_ISGID
-Date: Sun, 28 Jan 2024 11:16:25 -0500
-Message-ID: <20240128161637.205509-4-sashal@kernel.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Sasha Levin <sashal@kernel.org>,
+	mahesh@linux.ibm.com,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-pci@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 05/11] PCI/AER: Decode Requester ID when no error info found
+Date: Sun, 28 Jan 2024 11:16:26 -0500
+Message-ID: <20240128161637.205509-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128161637.205509-1-sashal@kernel.org>
 References: <20240128161637.205509-1-sashal@kernel.org>
@@ -64,56 +67,67 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.4.268
 Content-Transfer-Encoding: 8bit
 
-From: Max Kellermann <max.kellermann@ionos.com>
+From: Bjorn Helgaas <bhelgaas@google.com>
 
-[ Upstream commit 5133bee62f0ea5d4c316d503cc0040cac5637601 ]
+[ Upstream commit 1291b716bbf969e101d517bfb8ba18d958f758b8 ]
 
-Handling of S_ISGID is usually done by inode_init_owner() in all other
-filesystems, but kernfs doesn't use that function.  In kernfs, struct
-kernfs_node is the primary data structure, and struct inode is only
-created from it on demand.  Therefore, inode_init_owner() can't be
-used and we need to imitate its behavior.
+When a device with AER detects an error, it logs error information in its
+own AER Error Status registers.  It may send an Error Message to the Root
+Port (RCEC in the case of an RCiEP), which logs the fact that an Error
+Message was received (Root Error Status) and the Requester ID of the
+message source (Error Source Identification).
 
-S_ISGID support is useful for the cgroup filesystem; it allows
-subtrees managed by an unprivileged process to retain a certain owner
-gid, which then enables sharing access to the subtree with another
-unprivileged process.
+aer_print_port_info() prints the Requester ID from the Root Port Error
+Source in the usual Linux "bb:dd.f" format, but when find_source_device()
+finds no error details in the hierarchy below the Root Port, it printed the
+raw Requester ID without decoding it.
 
---
-v1 -> v2: minor coding style fix (comment)
+Decode the Requester ID in the usual Linux format so it matches other
+messages.
 
-Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Link: https://lore.kernel.org/r/20231208093310.297233-2-max.kellermann@ionos.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Sample message changes:
+
+  - pcieport 0000:00:1c.5: AER: Correctable error received: 0000:00:1c.5
+  - pcieport 0000:00:1c.5: AER: can't find device of ID00e5
+  + pcieport 0000:00:1c.5: AER: Correctable error message received from 0000:00:1c.5
+  + pcieport 0000:00:1c.5: AER: found no error details for 0000:00:1c.5
+
+Link: https://lore.kernel.org/r/20231206224231.732765-3-helgaas@kernel.org
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/kernfs/dir.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/pci/pcie/aer.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-index d2068566c0b8..d3a602ea795b 100644
---- a/fs/kernfs/dir.c
-+++ b/fs/kernfs/dir.c
-@@ -702,6 +702,18 @@ struct kernfs_node *kernfs_new_node(struct kernfs_node *parent,
- {
- 	struct kernfs_node *kn;
+diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+index aec1748cc821..6b5c9f7916fa 100644
+--- a/drivers/pci/pcie/aer.c
++++ b/drivers/pci/pcie/aer.c
+@@ -782,7 +782,7 @@ static void aer_print_port_info(struct pci_dev *dev, struct aer_err_info *info)
+ 	u8 bus = info->id >> 8;
+ 	u8 devfn = info->id & 0xff;
  
-+	if (parent->mode & S_ISGID) {
-+		/* this code block imitates inode_init_owner() for
-+		 * kernfs
-+		 */
+-	pci_info(dev, "%s%s error received: %04x:%02x:%02x.%d\n",
++	pci_info(dev, "%s%s error message received from %04x:%02x:%02x.%d\n",
+ 		 info->multi_error_valid ? "Multiple " : "",
+ 		 aer_error_severity_string[info->severity],
+ 		 pci_domain_nr(dev->bus), bus, PCI_SLOT(devfn),
+@@ -968,7 +968,12 @@ static bool find_source_device(struct pci_dev *parent,
+ 	pci_walk_bus(parent->subordinate, find_device_iter, e_info);
+ 
+ 	if (!e_info->error_dev_num) {
+-		pci_info(parent, "can't find device of ID%04x\n", e_info->id);
++		u8 bus = e_info->id >> 8;
++		u8 devfn = e_info->id & 0xff;
 +
-+		if (parent->iattr)
-+			gid = parent->iattr->ia_gid;
-+
-+		if (flags & KERNFS_DIR)
-+			mode |= S_ISGID;
-+	}
-+
- 	kn = __kernfs_new_node(kernfs_root(parent), parent,
- 			       name, mode, uid, gid, flags);
- 	if (kn) {
++		pci_info(parent, "found no error details for %04x:%02x:%02x.%d\n",
++			 pci_domain_nr(parent->bus), bus, PCI_SLOT(devfn),
++			 PCI_FUNC(devfn));
+ 		return false;
+ 	}
+ 	return true;
 -- 
 2.43.0
 
