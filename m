@@ -1,124 +1,105 @@
-Return-Path: <linux-kernel+bounces-41925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CE3683F9A4
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 21:01:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4FC483F9A9
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 21:04:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 432291F24201
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:01:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 018B9B20940
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:04:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 550FE36138;
-	Sun, 28 Jan 2024 20:01:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1CD33BB55;
+	Sun, 28 Jan 2024 20:04:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u3mpEZfn"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PYryKuyl"
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 597072AD0E
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 20:01:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC64033CD6;
+	Sun, 28 Jan 2024 20:04:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706472075; cv=none; b=f9ChdM8N9pZ36GJw2HPUd5wbgBxgqffWuBR3yE8vuc5NaDSgGefUiijmPt2uL3BRSCunXde1rG7icF1uzx3X371TCZvJv7YPYzAG8kh8Gq86zIbebn4Nma0CB64Yn9h1emGewhJb8cu3sQl+xk1TWYNLlss6p5NxnAKwH/paK84=
+	t=1706472258; cv=none; b=EH4/ruTUmorDn31uhTE2F0LresCscmL34Pyb0FNGmNybjxCzQlvEmIpWSEha2+gvxn9IkAvTzsRTIkNuighLzXZcWlMPKgIKzIUfC3UBQuzU5+ItfkLxLE/FbNmefu3pSCWcqZDXNKhIBE7KzD9VFRpNP7F6EycwB3ddiHWkvCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706472075; c=relaxed/simple;
-	bh=/YUY7lcIFxAF2x8ffEtZ0SwOrVeUnlqbB08lR83ef5w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CBkUIKP876rFVWc5K52tjEjA0mXdcRwFJ3pFg8ZO+6Qk6I5lYZsC+ttnynIis1cHABe97w58ob6diqSdZW/CtlXsOKbPT28Xs7IstrjkyCQx36DKfyokiX2k+OMmRKrLX7KctTUejWurR5XihyZUaAdaj9VpM1O+Sbno/8amSBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u3mpEZfn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5EDCC433F1;
-	Sun, 28 Jan 2024 20:01:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706472074;
-	bh=/YUY7lcIFxAF2x8ffEtZ0SwOrVeUnlqbB08lR83ef5w=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=u3mpEZfnXlywMMeUZm2PnMXMql8GwZNM1tzi0tQ1eSb/PWyn/OQRHk0/ei04pirAw
-	 s4cwYrVpmxazgD96u7YNC1NezwHP8H/hvR/mcG/jbML3JUanVaBmXnh4qtWxuWcJGD
-	 LpU944W1FV7bvod6QG+GqsZiBaoI5rg/XAAJhpgVqH2uC0DsNjefnmmx7Pz+A//OU2
-	 LhibRizo1jSVvCCudStxDAlEjQwl133bjosWfVgpFA/PVNDxpTxECjQ9WAjbomGOVb
-	 t+3QfoGBa6Z4lQNHZk9nMEzCkgDUQUP5haUlfK7axtCpGZbLiAF56u087kJFdlK/S6
-	 80bdQz1YRPgEA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 4EC00CE1380; Sun, 28 Jan 2024 12:01:14 -0800 (PST)
-Date: Sun, 28 Jan 2024 12:01:14 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: "Zhang, Rui" <rui.zhang@intel.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"Raj, Ashok" <ashok.raj@intel.com>,
-	"mhklinux@outlook.com" <mhklinux@outlook.com>,
-	"arjan@linux.intel.com" <arjan@linux.intel.com>,
-	"ray.huang@amd.com" <ray.huang@amd.com>,
-	"thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-	"andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
-	"Sivanich, Dimitri" <dimitri.sivanich@hpe.com>,
-	"Tang, Feng" <feng.tang@intel.com>,
-	"kan.liang@linux.intel.com" <kan.liang@linux.intel.com>,
-	"Mehta, Sohil" <sohil.mehta@intel.com>,
-	"peterz@infradead.org" <peterz@infradead.org>,
-	"kprateek.nayak@amd.com" <kprateek.nayak@amd.com>,
-	"jgross@suse.com" <jgross@suse.com>,
-	"andy@infradead.org" <andy@infradead.org>,
-	"x86@kernel.org" <x86@kernel.org>
-Subject: Re: [patch v2 21/30] x86/cpu/topology: Use topology bitmaps for
- sizing
-Message-ID: <e2d18e01-13f3-4ab6-828e-38a191da4fd7@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240118123127.055361964@linutronix.de>
- <20240118123649.739960607@linutronix.de>
- <7c8874d971c69fb4c22c1b771983f8d5109a9387.camel@intel.com>
- <87fryjhmjs.ffs@tglx>
+	s=arc-20240116; t=1706472258; c=relaxed/simple;
+	bh=9S3wfQZkihmike9xgBCv7o3FsGpq1FyElKHqMnPKnfA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=c2NX01/cUIKlQW22w9M+9iFli3oX7y68ExesK9bhbGXHIxJcMeFK8wQz4hytJ4MAdxs9oF5s7E7e81Lg7TftXiAB2lSldQe5KXRsG17QLmwxAu1S5MWYwZ3PQVyHV+sAWT8cfnvSr0bppWTMmWAZJKBlVouSHTww2CK938swZ9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PYryKuyl; arc=none smtp.client-ip=209.85.128.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-6029e069e08so28483187b3.0;
+        Sun, 28 Jan 2024 12:04:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706472256; x=1707077056; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9S3wfQZkihmike9xgBCv7o3FsGpq1FyElKHqMnPKnfA=;
+        b=PYryKuylj0e5Vwgo5z1RVjrHywzRSVOU5BxL6UUejB3Sw1YSr2xMwZY77zQke6dkAp
+         heNjysT8dRcZZV4GcM83n+83obmhok34buAwbnXFIIsECLjymgYxYpmSI+F//LNv/ulr
+         Fr92TATYawz3EES7XFAWYW3zltwfXZAAEga0zWhhycJwodte/L2alZPLK4s3oM5JeJnr
+         sKLJ0kbHI6tZ9SK9awMJJ6KT7UMCKWy+oMTvzQpJtwvo349XLd5GgxeMDjr99+X4JZHR
+         kTM/oI6P0arDESJhvlGF++msQZTsSynK7ofUU7k3EDN+EkQjr5CqS7hgY7U2PQ4ivva2
+         0Tuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706472256; x=1707077056;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9S3wfQZkihmike9xgBCv7o3FsGpq1FyElKHqMnPKnfA=;
+        b=sbo5zyKGVK6ZwQ3lsUdEKCdUuzUZ+vvpTSZ+72k28cgtWiYkXFkMyZlHQuepqPXkJt
+         zTC8UAHoeeb4W5fDkXSinqho+Qt0ulpUodQYvGdEfMHQarOuhQHmASxx9BSeHVFhowUO
+         e+hqROTT5bNSImqSW/Mhmx9yGcOXpd/IJxfTGG8hwUpouzkk3FawQvAVUCMMSxSzMBxy
+         fp+aQd75TXeSTPrXCv1s2H69fL950LQGR56XetXUFFXfytCIkMYx6BGSr1aJx71X3X36
+         hfR4JuTXLYAV8w++k6c6v1+8Oe/AdzPUiFaaumtxeQJEHOpu2TtFwXL8J1408/PXCuyz
+         I68Q==
+X-Gm-Message-State: AOJu0YxxnJ9vn64cHCxMrQX1MKRbpjIRW+IF2SahWmnxyFD3hFqyI5t3
+	jFDBHJFDiA+gj4EYbDVfdXM50JnhNIsjJQHS8+DuirN2MRdX+WyzakE9FAF/jfLl5H8glx6Tfle
+	ohc5tSGx9tt1Um4FB8nAUN7jwCSI=
+X-Google-Smtp-Source: AGHT+IEyKJdkMN/kf7/gqXc3y+MmKAwmeLzIw6JXklbGpM3d02BOESQBvIGtxP5qvDNS880qNhJVxNuMxY6sffQyHHI=
+X-Received: by 2002:a0d:d8d2:0:b0:5ff:9b2a:d0b9 with SMTP id
+ a201-20020a0dd8d2000000b005ff9b2ad0b9mr2486371ywe.97.1706472255731; Sun, 28
+ Jan 2024 12:04:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87fryjhmjs.ffs@tglx>
+References: <20240108-rb-new-condvar-methods-v4-0-88e0c871cc05@google.com>
+In-Reply-To: <20240108-rb-new-condvar-methods-v4-0-88e0c871cc05@google.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Sun, 28 Jan 2024 21:04:04 +0100
+Message-ID: <CANiq72kx8oBO_oFZqfKdC2U9R+je1UiA+nVAAwZAEivqvfiZQA@mail.gmail.com>
+Subject: Re: [PATCH v4 0/4] Additional CondVar methods needed by Rust Binder
+To: Alice Ryhl <aliceryhl@google.com>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>, 
+	Waiman Long <longman@redhat.com>, Tiago Lam <tiagolam@gmail.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 26, 2024 at 09:22:47PM +0100, Thomas Gleixner wrote:
-> On Fri, Jan 26 2024 at 07:07, Zhang, Rui wrote:
-> >> >  
-> >> > +       cnta = domain_weight(TOPO_PKG_DOMAIN);
-> >> > +       cntb = domain_weight(TOPO_DIE_DOMAIN);
-> >> > +       __max_logical_packages = cnta;
-> >> > +       __max_dies_per_package = 1U << (get_count_order(cntb) - >
-> >> > get_count_order(cnta));
-> >> > +
-> >> > +       pr_info("Max. logical packages: %3u\n", cnta);
-> >> > +       pr_info("Max. logical dies:     %3u\n", cntb);
-> >> > +       pr_info("Max. dies per package: %3u\n", >
-> >> > __max_dies_per_package);
-> >> > +
-> >> > +       cnta = domain_weight(TOPO_CORE_DOMAIN);
-> >> > +       cntb = domain_weight(TOPO_SMT_DOMAIN);
-> >> > +       smp_num_siblings = 1U << (get_count_order(cntb) - >
-> >> > get_count_order(cnta));
-> >> > +       pr_info("Max. threads per core: %3u\n", smp_num_siblings);
-> >> > +
-> >
-> > I missed this but Ashok catches it.
-> >
-> > Say, on my Adlerlake platform, which has 4 Pcores with HT + 8 Ecores,
-> > cnta is 12, cntb is 16, and smp_num_siblings is set to 1 erroneously.
-> >
-> > I think we should use
-> > 	smp_num_siblings = DIV_ROUND_UP(cntb, cnta);
-> > here.
-> 
-> Indeed. That's more than obvious.
-> 
-> > Or even check each core to get the maximum value (in case there are
-> > more than 2 siblings in a core some day).
-> 
-> We want to get rid of HT not make it worse.
+On Mon, Jan 8, 2024 at 3:50=E2=80=AFPM Alice Ryhl <aliceryhl@google.com> wr=
+ote:
+>
+> This patchset contains some CondVar methods that Rust Binder needs.
 
-Hear, hear!!!  ;-)
+Applied to `rust-next` with conflicts resolved after the `wait_list`
+rename, added `CondVarTimeoutResult` re-export, fixed typo and added
+note on the `sizeof(int)` being unlikely to change.
 
-							Thanx, Paul
+Alice: please double-check if I missed something.
+
+Thanks everyone!
+
+Cheers,
+Miguel
 
