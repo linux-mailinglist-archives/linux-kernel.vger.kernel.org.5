@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-41937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B95A83F9C7
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 21:13:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AFE183F9C9
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 21:13:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA6DA28178F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:13:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2860E282406
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 20:13:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B23924E1C8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3CE04EB53;
 	Sun, 28 Jan 2024 20:11:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="r6ae9JeS"
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="k4Hgpt9z"
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFD2D446C6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CFA7446D2;
 	Sun, 28 Jan 2024 20:11:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706472699; cv=none; b=lT+Aj7KSSk6igmFbB9SVh5v6tXPUH48+GP9wY95AFNPH3FfGM9EnV21rRggzwNesHtRIXZIKXiuiOansdYk8Md6QZVaYEmhOWiJXbN1r5zBTU9sWKkZU9+0BurERdNHnBr/llM/UhJWVnzPOtNux3vVUivxBhbxZgfgRtoFYZe0=
+	t=1706472700; cv=none; b=fdnzFrJf61UY7BSpIl/LmJXZnEhkTr4Ctgxvv7voLXzYkDrnfAWugV/QiZ53iyRxOCRiLNGGQjBRn3KMa28ZqtTNkAXHbfkZiAlb5ozxYKWPKG8QTOFcrIVKfv2LCKe2KZ/tqVFPKGD9Qr/VUl+dWuj9MwcifPVLDFQI0r+ZDfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706472699; c=relaxed/simple;
-	bh=h1bRRRY/FCZQLy4wDwHzxX7GldpDd9TCNFjh9pcU9A4=;
+	s=arc-20240116; t=1706472700; c=relaxed/simple;
+	bh=ckHhRGX1uFe4zXOay/HZNXKKKQjSfzNMM+9KeqUPzlk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=W3j5uCcCu/cx0TfuDZZn4eXKRmigTlIeyVy0KdKX2xKyDK9XR+Hu5SyIj2wTc7Py21SuFxkmmE5PWlnqJWTXpjMXRxFaJ4L1vgRzfNTi5igQqm+5RAQ3uJrKz1PZxakKmFqyTD0ca/wk5dIdFj77pBfQKvt1WGv1rZv0l3CnYEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=r6ae9JeS; arc=none smtp.client-ip=212.227.17.20
+	 MIME-Version; b=mX00Q+vF/6qnbWGtdVLrBzGpEoklahs9LU0B4b9aU1KfwbnNIw+R0ix8fVvzAntGvfiU/EQF+v/EWC6V0QJEI6fk+cu+BSXX1nTKJkS5W9PWgAN+y2bpSpmDFPk9OUMJ4QoAcLNPm7qPrIYZ7Ww37nI8iqJJ0izIrrQ2ucy4pZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=k4Hgpt9z; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
 	s=s31663417; t=1706472683; x=1707077483; i=wahrenst@gmx.net;
-	bh=h1bRRRY/FCZQLy4wDwHzxX7GldpDd9TCNFjh9pcU9A4=;
+	bh=ckHhRGX1uFe4zXOay/HZNXKKKQjSfzNMM+9KeqUPzlk=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
 	 References;
-	b=r6ae9JeSEnQIjEUur+y45c+7j56bya2DGrIgYoGIcsD1eCBR60CLdMki6D6GABvQ
-	 b7wQaNmr0Yctt9izc8YEt1qzL8MF2AAsBgbUS/GBRiAXoe54BmCx7uTkHklgO6LrP
-	 I60YQ09dxszUK9g2HA4WXLXVb/QILMo70TqVJWeIadgW/XQtBgVehnvewHNlWjvnX
-	 dO1LWy4uZR4IP+1gl3RtYqc7LZ1PDO5GZ3LmgRrvuNaf/5HT365nHpjeUZA+quUZR
-	 EoRt6efjQMVK42s+bePog9q4Glaq9mwm6xceTD52w1JsONF+IhB7UvjA4LCsnhFw+
-	 N7kUBHQvaP+wevb2LA==
+	b=k4Hgpt9zRKMhtZsO6/LMZQGfK083sOv5ylNGnl6sclCUToWpCKsdpF63FJKfYeeL
+	 9FgjSY981h4eRnyiqWfJER/bccMmd5HMRBgLSrXfHav9yVnz2waJ6tmM/ubifzllW
+	 qCvvtHM9bM5F43GMGxF5RP8IEwTxX3h39uI0Vacp0kBFEsbpIqcvzOh6coTxIWkE7
+	 NSizIiJq5rpj83axkuvDg4PD0tb3EaY38Iu7LxBB1whp7N3POuFdYH/XnESOM7mGM
+	 431IG6ZLCvZ72kV+DTF5GOnOSIv3JOZkp/DjRZPmHJ5YCOpbBqGqoBnxzXPV4bdCU
+	 /ui+fGKcrVMhHMN0Fw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from stefanw-SCHENKER ([37.4.248.43]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MryXN-1qglmp49Vl-00nzy3; Sun, 28
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1McpJq-1quIiP1lS6-00Zzai; Sun, 28
  Jan 2024 21:11:23 +0100
 From: Stefan Wahren <wahrenst@gmx.net>
 To: "David S. Miller" <davem@davemloft.net>,
@@ -56,9 +56,9 @@ Cc: Lino Sanfilippo <LinoSanfilippo@gmx.de>,
 	linux-kernel@vger.kernel.org,
 	Stefan Wahren <wahrenst@gmx.net>,
 	Jacob Keller <jacob.e.keller@intel.com>
-Subject: [PATCH V4 09/15 net-next] qca_spi: Improve calculation of RX buffer size
-Date: Sun, 28 Jan 2024 21:10:53 +0100
-Message-Id: <20240128201059.6259-10-wahrenst@gmx.net>
+Subject: [PATCH V4 10/15 net-next] qca_spi: Log expected signature in error case
+Date: Sun, 28 Jan 2024 21:10:54 +0100
+Message-Id: <20240128201059.6259-11-wahrenst@gmx.net>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240128201059.6259-1-wahrenst@gmx.net>
 References: <20240128201059.6259-1-wahrenst@gmx.net>
@@ -69,37 +69,30 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:GpuL5zWeB90TuO9uSQDgdEb89KM9M+6A0tu0E6ZGeFrbn2VEh54
- OylkLOomk9qabeX59uMDRiNsskuydqlOKHx0gCP7tQM4MzM3YPbcbfNZ577ZFr4Bu91cMF1
- 36YAe+tbJQ+j5zSHW0ameSlYhhqe+liK4AFpKLpEEfokNrvX9NnMhaM2uhteuss9uHPs/+5
- MIn38seGJbNJutZUieqSw==
+X-Provags-ID: V03:K1:9dHEZTQTt3oQtnOq7nBtaz/TRLP2O8x1r4rxHiNaBMx8eoTD0A4
+ rbFq4f+RzEGZSs1gH3+T2CRDwl5lhwdufkw/mBOS3fya7QarNTtTxKYdOz9BgCmiEOHrdHc
+ pQULQ2eYPd3bgJnrDouTYMcNTRoYxrR4WdJsVLIO7N2AiORxCDXqnPFK+Ph5HtX24MnMRTt
+ 4/HnV414RDx4j1qtWdqiw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:CbkIpR0cq8k=;X2z0o+pYvxeEgaoaRyY+zRdtQyT
- apwhvG98UPrU9OylE7Vl9lVbBrAPx33/cNI38hNA87ZrJ9+BqNVn3WYGi8EFMgQ1VR+WHZ3Qa
- WRiB4p9iMbVsgIlWwMQuVwPVEBD/MMC9iUGgV9tqp/7xTUOYqMWgJ66Od6u9v2774hu2Ny8+N
- aAGl05kyOF04OiTU3JcR5qgeCJ4ErLRsEsKtHX+9aIZO4VhTO0b/vGKDrdWpPmD8yUkLfsYJk
- v6tRvU8YX2oeMtq9X7d8XzCbheIUzZliJFjT9Facty8u+GRBNNKRpBihW3ZO2BMUmgN9nOCje
- gZsa6L+qT5GsGhd4rgR5GQxbZlCFoScuqqAUIbYJ3EqmQuwFg/nqCl+mGkfVHf/6lCsUNnoVl
- BvLMppVYZVq0NovnvT4NKMMeWT8Gq2SbfcHrrATWfmzhM1WWzWrDL6XbUt+PjRWIzYkxwtVbz
- w4jA0yJ8DIqPrI+gT7Za2jaX4x+15act1PosMFc8VmICiH9Oun3hT6AKg+d0hXIduFH4/VjFF
- NQ4l9YwfZWxKi5G6XNeV2EihsAHZq4uBa1rBzY2eFCAKY4OgHA6RtMUrGwUcBLemdmS9Jvzak
- Qs6pmtoc8Hcsm1FNiB2XB//ZLvjQVvPLCargZNMq71xBm81D4qpqaVTzt/GAe84yJL7RQmPnL
- BDOq2wvzvxOHdpocy7eGPOSSAvvATGeb8v5zSieExbQExAkPKyCOKWklKTma5EeyELCzNd56n
- fBiZvPhE6Tm3s6LMSpvzRT0zvmtQtEegP8Fa76y2VIDeDzl2xq2qiURbVkNQzdvIS+uJrlaiv
- o7Wd5e4zz4iNnui2F1WF+ON2iuo2dg39OTuOVVaDihwAGwBo4H35WdN91q0iJJ38WDYyBpmBp
- VQOjYcwtuHgLekBUpOa35YFMjBS1itrCeVmDSzK4S2iVHXz9cXSRt/IcBrhXf3UuhkK6UU7Lq
- q4Hnsw==
+UI-OutboundReport: notjunk:1;M01:P0:R9CMuJyLgoQ=;34SKGDBlBplOqnPuEy9NEznJpAy
+ PD2abgE73JEFTVPZj58zRHAgGKp9cY8X6zkRmYvoXx566PlgCH4Yi9w6moj46hxDyTxe4c/Nt
+ qR9NisDCwllxtR76/dYQs12hVMIcc3FpKq1r/BS4NOZa13EfHortGf5RZpNk4pwnheZl6+W5r
+ 15Gxb8EPZB7TwTI3auh5+SjfEeYWLCqzo4KgMjjrfeTqVp3rdJeL4WeVTckdgnq+DdvFv1kSl
+ qSWREEeRNQvXyn/57Mj4gsdw5Na/2OIbKydi9aDMSpCdBBjLxuIHGEVTiOkMVK1xBRCfItFLV
+ B3a+dOa0YXUH3bq+o1cxuCE9kkufiEyF7JhLFPPo91RUnl+lNS4abwwOqPiGSXuOyfXvecMla
+ 5aAZjWc8eyFigywhRkqRNOa2q7HGibMHpRWPaLFoCWgu1vjT8dIuV8ckklCVjU2cUfHNNOT/+
+ Fj3+BS0J06yQa0f6cxSpccH20bbzcxeAl4Uwdk9e5oBJlh/RzCLh1QsgvLBm47m1k1/he2aHH
+ hnbKJ90175CecMwdIFjVJKRFoK8addabPRiThYdFxAmXawOm0PoneIFhfKXhWJra6jOPbxVEx
+ YI/RKz9C42OgFMlPq6QYiCW7+9j14QXleMHJmQuIVvrVmQ8xQ79TsNmmznSsf1LDKThgETLgg
+ Tl9BVbfa5MQtz9/s3/NLR6kR388llSM06+Uchc/QT4eKeRmNplEIoXT2E7mOCPva1ZfHPYyTo
+ Ovm2Xlf9qucKrSl45FLFpcwOTgJQzV2fhzdVqn6MC0FQvzSB/EliuRpYS/OoxGqxW08pHyHiM
+ 3H6GgV4H9tv+xu/9x41JkQJUjS8TWW6CpoMOgsY5yI11Kb/xlOzzsvtdIOhQdKX1CURk+yOMA
+ WE0Y1aBiHRo92pKxAakGqXzdaDCFeLmITWM82uCjT3pgunflGAZ7DYI4YvaUAFHZQOs14A4Un
+ 0KYcyOdP1CLxrBMKqjX9BdC+xfo=
 
-There are two points with the calculation of RX buffer size which are
-not optimal:
-1. dev->mtu is a mutual parameter and it's currently initialized with
-   QCAFRM_MAX_MTU. But for RX buffer size calculation we always need the
-   maximum possible MTU. So better use the define directly.
-2. This magic number 4 represent the hardware generated frame length
-   which is specific to SPI. We better replace this with the suitable
-   define.
-
-There is no functional change.
+Most of the users doesn't know the expected signature of the QCA700x.
+So provide it within the error message. Btw use lowercase for hex as
+in the rest of the driver.
 
 Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
 Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
@@ -109,21 +102,21 @@ Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
 
 diff --git a/drivers/net/ethernet/qualcomm/qca_spi.c b/drivers/net/etherne=
 t/qualcomm/qca_spi.c
-index c0f6bd3d331a..b35fabcd488b 100644
+index b35fabcd488b..d2d68c20b32c 100644
 =2D-- a/drivers/net/ethernet/qualcomm/qca_spi.c
 +++ b/drivers/net/ethernet/qualcomm/qca_spi.c
-@@ -828,8 +828,8 @@ qcaspi_netdev_init(struct net_device *dev)
- 	qca->clkspeed =3D qcaspi_clkspeed;
- 	qca->burst_len =3D qcaspi_burst_len;
- 	qca->spi_thread =3D NULL;
--	qca->buffer_size =3D (dev->mtu + VLAN_ETH_HLEN + QCAFRM_HEADER_LEN +
--		QCAFRM_FOOTER_LEN + 4) * QCASPI_RX_MAX_FRAMES;
-+	qca->buffer_size =3D (QCAFRM_MAX_MTU + VLAN_ETH_HLEN + QCAFRM_HEADER_LEN=
- +
-+		QCAFRM_FOOTER_LEN + QCASPI_HW_PKT_LEN) * QCASPI_RX_MAX_FRAMES;
+@@ -1006,8 +1006,8 @@ qca_spi_probe(struct spi_device *spi)
+ 		qcaspi_read_register(qca, SPI_REG_SIGNATURE, &signature);
 
- 	memset(&qca->stats, 0, sizeof(struct qcaspi_stats));
-
+ 		if (signature !=3D QCASPI_GOOD_SIGNATURE) {
+-			dev_err(&spi->dev, "Invalid signature (0x%04X)\n",
+-				signature);
++			dev_err(&spi->dev, "Invalid signature (expected 0x%04x, read 0x%04x)\n=
+",
++				QCASPI_GOOD_SIGNATURE, signature);
+ 			free_netdev(qcaspi_devs);
+ 			return -EFAULT;
+ 		}
 =2D-
 2.34.1
 
