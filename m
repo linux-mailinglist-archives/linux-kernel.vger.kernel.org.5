@@ -1,109 +1,136 @@
-Return-Path: <linux-kernel+bounces-41531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6232B83F3EE
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 05:54:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF52D83F3F1
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 06:00:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 456A51C21462
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 04:54:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41A15283D7A
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 05:00:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D62FF6FB8;
-	Sun, 28 Jan 2024 04:53:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C456FB0;
+	Sun, 28 Jan 2024 05:00:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="1gFmqsBx"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="qaEkJ80M"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 646E46116;
-	Sun, 28 Jan 2024 04:53:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D16186116;
+	Sun, 28 Jan 2024 05:00:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706417633; cv=none; b=eM0zjTPv7YxiKEUc8S2wuoiSmWBtscH0OuELLLNHpWBjgxHXiG5a+9sUOFJ/zeFQNWX9xiBRTTjos/hng3kvwtMVSiVoW5YLYjaXlSBp4ZpyxCwY0mdQr60zQBcwH9+5RwMi9AWePZ4EAvpBl0zeebql1HtO25yelkpUJXoEWaE=
+	t=1706418043; cv=none; b=CcaSYzQDndwja6fUS+SE/MDBl3BvAOO6O01qDrSMnbZ7us+JfX7t345qQCaS/X8zmUUaOUwlXsQEdj4LtfjXjWRKjlH5wVUg3kwrXsbHb1gPOANouF1yn6Z9AdpIfSxnd1zFCFCtVmoDNd+AgZ6BwLUzSlRXp56Qh+9HxzO7o7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706417633; c=relaxed/simple;
-	bh=N8OAfAAMd64feZpXPmfhCadvsAZERJxQmTW0JK/hyXM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Y9oVjaIHvC/gzL7zi4kjuw9kMBo23vhya5vkoSghNEGL/6A2DY2c2OJuRXM2JqmKqNuN0TGrOyCQ2gEUgMyXoNIS+NOyPqSa+2o3u5kcRiD8iGvu4EnVXrVxyf8sfwBTysa6qS2or5ljWvkwRfkVO2e7vbJA5f67la0+AlLRLE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=1gFmqsBx; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=Jhwv+0/QNmEjIq4GNRuX+cmD/88pv8YEVncUT+Cq1So=; b=1gFmqsBx4D2AYNJpbqL8sLgZO9
-	n9iKt2Z100zcdDyEYD6MGmW8i+7ftVcnbCfKWoF7Iguf8rSlPz8ULyz4UTR2kK5cq0QVdC3dpiewj
-	7qm2abZZ9bWjXEbnKknRlJb+/9XT5aLIZZS2GwpIUr5CncMhCHjNsJs+C0oLGRyeBFMUiGWM0RzEC
-	MdwpmJf5NaZKgIjyDFHwnroASFlDaEHagWkimlz1BJYGOwviOf32P5E1uxOkAqjrcLLwszu4RBip6
-	hFhgAw0qSJDIBEVHnkzBWCc4+g29cBPknnaK/bb/+ZYyeswb2E9sq3uABeyy3PvMwP6rcS56Y0V+m
-	OaKUWEpw==;
-Received: from [50.53.50.0] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rTxAz-00000008jQB-29YC;
-	Sun, 28 Jan 2024 04:53:49 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Krishna Kurapati <quic_kriskura@quicinc.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-usb@vger.kernel.org,
-	Jonathan Corbet <corbet@lwn.net>,
-	linux-doc@vger.kernel.org,
-	Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Subject: [PATCH v2] usb: gadget: fix max_segment_size malformed table
-Date: Sat, 27 Jan 2024 20:53:47 -0800
-Message-ID: <20240128045347.25909-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706418043; c=relaxed/simple;
+	bh=ogcAvDrUKdfvDm23jvMymVOtUfnEhfEGQUl/5hs1Ywk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=NJWoj6Wf/mfP412cBwei3EKo/kYWjdRnmfZzbHNg3EvAW6gspNaD5wbOWkE4q9laj4qPTjylNRL3zIvQqTsATrKPEZsq8fXClWbqa8p7sduLa5t0tX/kxJXwhjN1avLlCCf+ZQ5wEhpcAhXvBhHXzeCFkpUfQftVOgc417n0NBI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=qaEkJ80M; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40S50VR9000624;
+	Sat, 27 Jan 2024 23:00:31 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706418031;
+	bh=731f90R3A/dRcqxYvM7aL6//fI0w+YT6eNiSJ79wbIc=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=qaEkJ80M34VyUHFGQuU0YJvfohF+SHUdMpEQrFutBby43nSw1wb0I9Lbcd39p8sbK
+	 PFbURZW3954GCI62jSdWPpxETnUMnY28leA9vDO/Dmxsj87KU/b1IToTB7ezraWduO
+	 4G3LG1eF2sxECr7PR/kwP/Q65wFeGVwl5RCLUbfU=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40S50VOl019212
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Sat, 27 Jan 2024 23:00:31 -0600
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sat, 27
+ Jan 2024 23:00:30 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sat, 27 Jan 2024 23:00:30 -0600
+Received: from [10.249.141.75] ([10.249.141.75])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40S50R8U107717;
+	Sat, 27 Jan 2024 23:00:28 -0600
+Message-ID: <2286ff68-ae30-47d4-9362-16bc780bfe03@ti.com>
+Date: Sun, 28 Jan 2024 10:30:27 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dmaengine: ti: k3-psil-j721s2: Add entry for CSI2RX
+Content-Language: en-US
+To: Vaishnav Achath <vaishnav.a@ti.com>, <vkoul@kernel.org>,
+        <peter.ujfalusi@gmail.com>
+CC: <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <j-choudhary@ti.com>
+References: <20240125111449.855876-1-vaishnav.a@ti.com>
+From: "Kumar, Udit" <u-kumar1@ti.com>
+In-Reply-To: <20240125111449.855876-1-vaishnav.a@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Sphinx reports a malformed table due to the table begin/end line
-segments being too short for the word "max_segment_size", so
-extend them by one more '=' character to prevent the error.
+Thanks Vaishnav
 
-Documentation/usb/gadget-testing.rst:459: ERROR: Malformed table.
-Text in column margin in table line 9.
+On 1/25/2024 4:44 PM, Vaishnav Achath wrote:
+> The CSI2RX subsystem uses PSI-L DMA to transfer frames to memory. It can
+> have up to 32 threads per instance. J721S2 has two instances of the
+> subsystem, so there are 64 threads total, Add them to the endpoint map.
+>
+> Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
+> ---
+> Tested on J721S2 EVM on 6.8.0-rc1-next-20240124 for CSI2RX capture with
+> OV5640: https://gist.github.com/vaishnavachath/e6918ae4dadeb34c4cbad515bffcc558
+>
+>   drivers/dma/ti/k3-psil-j721s2.c | 73 +++++++++++++++++++++++++++++++++
+>   1 file changed, 73 insertions(+)
+>
+> diff --git a/drivers/dma/ti/k3-psil-j721s2.c b/drivers/dma/ti/k3-psil-j721s2.c
+> index 1d5430fc5724..ba08bdcdcd2b 100644
+> --- a/drivers/dma/ti/k3-psil-j721s2.c
+> +++ b/drivers/dma/ti/k3-psil-j721s2.c
+> @@ -57,6 +57,14 @@
+>   		},					\
+>   	}
+>   
+> +#define PSIL_CSI2RX(x)					\
+> +	{						\
+> +		.thread_id = x,				\
+> +		.ep_config = {				\
+> +			.ep_type = PSIL_EP_NATIVE,	\
+> +		},					\
+> +	}
+> +
+>   /* PSI-L source thread IDs, used for RX (DMA_DEV_TO_MEM) */
+>   static struct psil_ep j721s2_src_ep_map[] = {
+>   	/* PDMA_MCASP - McASP0-4 */
+> @@ -114,6 +122,71 @@ static struct psil_ep j721s2_src_ep_map[] = {
+>   	PSIL_PDMA_XY_PKT(0x4707),
+>   	PSIL_PDMA_XY_PKT(0x4708),
+>   	PSIL_PDMA_XY_PKT(0x4709),
+> +	/* CSI2RX */
+> +	PSIL_CSI2RX(0x4940),
+> +	PSIL_CSI2RX(0x4941),
+> +	PSIL_CSI2RX(0x4942),
+> +	PSIL_CSI2RX(0x4943),
+> +	PSIL_CSI2RX(0x4944),
+> +	PSIL_CSI2RX(0x4945),
+> +	PSIL_CSI2RX(0x4946),
+> +	PSIL_CSI2RX(0x4947),
+> +	PSIL_CSI2RX(0x4948),
+> +	PSIL_CSI2RX(0x4949),
 
-Fixes: 1900daeefd3e ("usb: gadget: ncm: Add support to update wMaxSegmentSize via configfs")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Krishna Kurapati <quic_kriskura@quicinc.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-usb@vger.kernel.org
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
-Cc: Sergei Shtylyov <sergei.shtylyov@gmail.com>
----
-v2: s /to error/the error/ in the patch description.
+Reviewed-by: Udit Kumar <u-kumar1@ti.com>
 
- Documentation/usb/gadget-testing.rst |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff -- a/Documentation/usb/gadget-testing.rst b/Documentation/usb/gadget-testing.rst
---- a/Documentation/usb/gadget-testing.rst
-+++ b/Documentation/usb/gadget-testing.rst
-@@ -448,7 +448,7 @@ Function-specific configfs interface
- The function name to use when creating the function directory is "ncm".
- The NCM function provides these attributes in its function directory:
- 
--	===============   ==================================================
-+	================  ==================================================
- 	ifname		  network device interface name associated with this
- 			  function instance
- 	qmult		  queue length multiplier for high and super speed
-@@ -458,7 +458,7 @@ The NCM function provides these attribut
- 			  Ethernet over USB link
- 	max_segment_size  Segment size required for P2P connections. This
- 			  will set MTU to (max_segment_size - 14 bytes)
--	===============   ==================================================
-+	================  ==================================================
- 
- and after creating the functions/ncm.<instance name> they contain default
- values: qmult is 5, dev_addr and host_addr are randomly selected.
+> +	PSIL_CSI2RX(0x494a),
+> +	PSIL_CSI2RX(0x494b),
+> [..]
 
