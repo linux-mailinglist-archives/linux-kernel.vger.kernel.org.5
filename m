@@ -1,57 +1,70 @@
-Return-Path: <linux-kernel+bounces-41824-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41825-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0717383F81C
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:49:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D68F83F81E
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:49:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39B341C226CA
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:49:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF4D51F211BE
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:49:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8F9714691E;
-	Sun, 28 Jan 2024 16:16:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E5B41474CD;
+	Sun, 28 Jan 2024 16:17:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zewjo0rj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IesHNUZc"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10A82146901;
-	Sun, 28 Jan 2024 16:16:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 525931474CC;
+	Sun, 28 Jan 2024 16:16:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458615; cv=none; b=rDolzuA5s9tpZDq6ahtIiPWPvi+dfI3GeHmjI2TTQllIDMOgWFqDDevlZCryHVzcCseGIGl8EW3ENz6J3iG8lR6ixokuUNZapp3Qpve+HaHlAH5WMBlmUSMCu0RPDxHfXD3xuj0QTTHaSE7wlsgMHTXAx1bNfpyIY7n87ErSl2M=
+	t=1706458619; cv=none; b=kOMzsApX9QruWKaRu7Lc1wUDQt4yPavAH9TBv3QAb0n5/qzWe8nVrvhHl2gZYcdHYDT7HWR3lPHFBXWrhWCwT5jSjX+4IF26nd2tWKILXVLZIlpU8v7r5xY9EgmnhBNHgUyqKKuV5V88mn47oq5MGuUuQA/6rycjhPw5adTdf+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458615; c=relaxed/simple;
-	bh=+7lTP5uTbjLdLjS8zddCHsem+QvSmGZ8iv7dh5FS9fU=;
+	s=arc-20240116; t=1706458619; c=relaxed/simple;
+	bh=eAQJARwjTPNNCWJVhfVjlvXJ/Q7ey7Ccu6Mw70EJ+D0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=moJ0SWIqP90Qu7o621WP0UhIoNulQGkb0oZTx7Nfauo0FWV0+kWkL6zXIt47BVP4rbVOQ8cvGxOYUkt3C1Rqp60Bh7OC+RFvwxEQrSg0vjRAjw+9fGZwsMWp3NYiCsQGm+MVS/9AGYXyqitDl6iNhzfUvGVxiMZXu7rW+WZ7SFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zewjo0rj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03CC7C433B1;
-	Sun, 28 Jan 2024 16:16:53 +0000 (UTC)
+	 MIME-Version:Content-Type; b=dff2kPaXjvR3AHgF8xtkMuf2mQyWIqoBmupdUvGwlyFWi8Afxl9Dgu5gaAvTeyemFrHi6Dy+iIu80KLHRcWg0SjRR/0p5u5FRDnHUNhKmcNREOU3XlLZ8de1ayjiC3UA9xuPfcq4NApktICLIZIEQZXhazgNrlHDdi+WQwdHPIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IesHNUZc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5978C433F1;
+	Sun, 28 Jan 2024 16:16:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706458614;
-	bh=+7lTP5uTbjLdLjS8zddCHsem+QvSmGZ8iv7dh5FS9fU=;
+	s=k20201202; t=1706458618;
+	bh=eAQJARwjTPNNCWJVhfVjlvXJ/Q7ey7Ccu6Mw70EJ+D0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Zewjo0rjnRoHAKTWy/2yETyui5BlFHQjV9w2BLkqpRJXH101pkP4OYdeBe4AUOwZG
-	 tE2BcZf3Ijq2DezHalf2WXgpwRxBaui5lOSwLNHwO7yWzTHg0MILg5xrPsqO3XKEIV
-	 sqWsmZmfEU67tz4hy+yZbR7QzpiO3m+SUsA1ImzR9DyuLmq5duNXUJqdmDGW0cQyFS
-	 nV7NDA5ZIGWphZ1jZROItUPFuy/GJw6kGHT0YpY6hyDz2lG/iMoBVdIVaPXys0rK4e
-	 goZKDPuX4xFOhtCIjMJX/agWsN8EnPb5Y+dOKILIjiLLBUBp034OW4WO8rXTnhkqkh
-	 1oW8gOT4FGJWA==
+	b=IesHNUZc+F0qNb1JklfvoWw36RzweOfAsfw2ck3OFw+qv6JwXV6C6N0Sni10sBHdr
+	 ZjBb6dXqH+54SOnhmtlEwFJh2uaS1Yf8DNGBg0rX6rCIBisr5nJZZsdg+kgvHiu4po
+	 Dr8FAL8uXjfHtsxH+rewuQtmqVKnXcO+NvImOA3Pb9WKQJq7uawbHUUA4SeO+tahvx
+	 Q5UaKKjAiVUH6MWm99x6pEeM+tMtymVYvU8FFlikmLemIl5gL/vz1WZJIZkltHPeO+
+	 AfsmMjelThs9IlnqtK3w9DzQVpZB2PPYTfBbrsE+hWZT68oEj+plX9sAccldZD2/61
+	 y9+n+I076Kypw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Xiubo Li <xiubli@redhat.com>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Jeff Layton <jlayton@kernel.org>,
-	Ilya Dryomov <idryomov@gmail.com>,
+Cc: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+	Monk Liu <Monk.Liu@amd.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Lijo Lazar <lijo.lazar@amd.com>,
 	Sasha Levin <sashal@kernel.org>,
-	ceph-devel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 10/11] ceph: fix deadlock or deadcode of misusing dget()
-Date: Sun, 28 Jan 2024 11:16:31 -0500
-Message-ID: <20240128161637.205509-10-sashal@kernel.org>
+	Xinhui.Pan@amd.com,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	mario.limonciello@amd.com,
+	Hawking.Zhang@amd.com,
+	candice.li@amd.com,
+	le.ma@amd.com,
+	victorchengchi.lu@amd.com,
+	shashank.sharma@amd.com,
+	andrealmeid@igalia.com,
+	hamza.mahfooz@amd.com,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.4 11/11] drm/amdgpu: Release 'adev->pm.fw' before return in 'amdgpu_device_need_post()'
+Date: Sun, 28 Jan 2024 11:16:32 -0500
+Message-ID: <20240128161637.205509-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128161637.205509-1-sashal@kernel.org>
 References: <20240128161637.205509-1-sashal@kernel.org>
@@ -61,66 +74,48 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.4.268
 Content-Transfer-Encoding: 8bit
 
-From: Xiubo Li <xiubli@redhat.com>
+From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
 
-[ Upstream commit b493ad718b1f0357394d2cdecbf00a44a36fa085 ]
+[ Upstream commit 8a44fdd3cf91debbd09b43bd2519ad2b2486ccf4 ]
 
-The lock order is incorrect between denty and its parent, we should
-always make sure that the parent get the lock first.
+In function 'amdgpu_device_need_post(struct amdgpu_device *adev)' -
+'adev->pm.fw' may not be released before return.
 
-But since this deadcode is never used and the parent dir will always
-be set from the callers, let's just remove it.
+Using the function release_firmware() to release adev->pm.fw.
 
-Link: https://lore.kernel.org/r/20231116081919.GZ1957730@ZenIV
-Reported-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Xiubo Li <xiubli@redhat.com>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Thus fixing the below:
+drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:1571 amdgpu_device_need_post() warn: 'adev->pm.fw' from request_firmware() not released on lines: 1554.
+
+Cc: Monk Liu <Monk.Liu@amd.com>
+Cc: Christian König <christian.koenig@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+Suggested-by: Lijo Lazar <lijo.lazar@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ceph/caps.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
-index 4e88cb990723..45b8f6741f8d 100644
---- a/fs/ceph/caps.c
-+++ b/fs/ceph/caps.c
-@@ -4304,12 +4304,14 @@ int ceph_encode_dentry_release(void **p, struct dentry *dentry,
- 			       struct inode *dir,
- 			       int mds, int drop, int unless)
- {
--	struct dentry *parent = NULL;
- 	struct ceph_mds_request_release *rel = *p;
- 	struct ceph_dentry_info *di = ceph_dentry(dentry);
- 	int force = 0;
- 	int ret;
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+index e5032eb9ae29..9dcb38bab0e1 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -847,6 +847,7 @@ bool amdgpu_device_need_post(struct amdgpu_device *adev)
+ 				return true;
  
-+	/* This shouldn't happen */
-+	BUG_ON(!dir);
-+
- 	/*
- 	 * force an record for the directory caps if we have a dentry lease.
- 	 * this is racy (can't take i_ceph_lock and d_lock together), but it
-@@ -4319,14 +4321,9 @@ int ceph_encode_dentry_release(void **p, struct dentry *dentry,
- 	spin_lock(&dentry->d_lock);
- 	if (di->lease_session && di->lease_session->s_mds == mds)
- 		force = 1;
--	if (!dir) {
--		parent = dget(dentry->d_parent);
--		dir = d_inode(parent);
--	}
- 	spin_unlock(&dentry->d_lock);
- 
- 	ret = ceph_encode_inode_release(p, dir, mds, drop, unless, force);
--	dput(parent);
- 
- 	spin_lock(&dentry->d_lock);
- 	if (ret && di->lease_session && di->lease_session->s_mds == mds) {
+ 			fw_ver = *((uint32_t *)adev->pm.fw->data + 69);
++			release_firmware(adev->pm.fw);
+ 			if (fw_ver < 0x00160e00)
+ 				return true;
+ 		}
 -- 
 2.43.0
 
