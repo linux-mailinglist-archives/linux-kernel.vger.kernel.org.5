@@ -1,61 +1,64 @@
-Return-Path: <linux-kernel+bounces-41505-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41506-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30F0683F2EE
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 03:18:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B54383F2F1
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 03:19:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67F89282BEC
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 02:18:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9EE9282E0F
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 02:19:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A9461D524;
-	Sun, 28 Jan 2024 02:17:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67F1C1E877;
+	Sun, 28 Jan 2024 02:17:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="STPu8luq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nJyz3Z+/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 781E1DF6C;
-	Sun, 28 Jan 2024 02:17:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4E371DFCE;
+	Sun, 28 Jan 2024 02:17:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706408256; cv=none; b=IbgHzGL07yiy01qdeT9PzlZnOcRp+8MqnSOgoDuBFUZ9V5sE/vQ+Ttb6rJKWvbLAKzCojfiAIKfYQ3SdnFROGg8qcPqb/+NoyOhhGZLQOYbtWkJFiFPUIMHOArgg8VF2Z93bP9XI3nvrxBAJIstNxOy+8Wdr6z7+1X95Swuhm6k=
+	t=1706408257; cv=none; b=X9imKtIh32TeReug9xtNHLhNAn8tUs/weafDaexV+pT32/o0VOSL+RitvMpV3AoAa4Kj6zdxFYKqqMQ7ssGJjdgtvTHK8DkgxpDviCr/AqhkFt3ZfliFq33U9QGeCwqWILLQ0KQXjMPFQgsnK4OvbGwYDOf7dgmQlXnuBewvVRw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706408256; c=relaxed/simple;
-	bh=OuAFKNujzmRVftjnUxxa1bJozS1U6HlOp+aYQi+hXfc=;
+	s=arc-20240116; t=1706408257; c=relaxed/simple;
+	bh=cVJL8MyIxr5BmjqCluPciO1Iot2tHS7Io9JALEBbMo8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=AKqJhnRA7/Qskk9Yjp1Zgqc8Y9Ao1ODsKu3UdCOQl10gb2Eolvpy8LkcW+y1ouU+siFYCDqd3+kDaAz/7AqnAwBmd+uQWfGen2DyYGEhaA1cAYuwe18cWFGIlXETTTe4UNYQAWx4DPpq9iAYNOTWz3RG248LUCFSQkYhjaRdHpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=STPu8luq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F6F5C433F1;
-	Sun, 28 Jan 2024 02:17:35 +0000 (UTC)
+	 MIME-Version:Content-Type; b=p22GNzwhPRIxNUJkstXwkNY1FdBqja6ucGATrPJDTGTr2hR1iK4SrERJtQaY+fZBOd/7IAJXoDulP7LiSY8AEJY3JMXSzBXiGH5FuE222PruLdbbYA99ksdtyyXtU7SLRxF93CmzYDBL2oQy4NK/lq6W2JUBs1iA4fYd3BJN76A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nJyz3Z+/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40009C43390;
+	Sun, 28 Jan 2024 02:17:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706408256;
-	bh=OuAFKNujzmRVftjnUxxa1bJozS1U6HlOp+aYQi+hXfc=;
+	s=k20201202; t=1706408257;
+	bh=cVJL8MyIxr5BmjqCluPciO1Iot2tHS7Io9JALEBbMo8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=STPu8luqHd2lzOEoss1ibrjn2Xl4MGEChFTO8yt1mE4cYTjHHD+L9KCwcTu/5LNdT
-	 36aG9kJla3mKKIl+KhSFfFLhj5DVnHqEfHHp/AAmwmD2PJp1Io0gq04StqGkyAB3NO
-	 k7AIUW1Iu4xjDKCf32gh1OHyyHzDMiNhbk+IwdZoaNdFJZsPkk7q6cNOHb9BxVvLsz
-	 lj6mwCoeyMo5Qd6RnMbxdOQJ693RiSiLhntHINXYBx/42Mokg5Cke/cYxZiCb3XMhg
-	 r+oElCJ/FBrIUjEtAZUrQI7OcH5HzxyivfAk5xXsPfeWQrO2VMNX4G4/TC2pNgzDzC
-	 2veBQHLBxYb4g==
+	b=nJyz3Z+/gnVA9EHGR5xVpo1mLlPVvJmRxyCw4+TlTTzDWyUpd54dsdc0uD0epbc/H
+	 BtAAk0zsCyPrdoUkaBdXrHzXYcZF8q/eewgKjlZd/KGQq5BSCsL1n1PbvM5BLFkOhl
+	 q/Hk7iJD8XPmN+y+cB+ArMOKQArZLP3oxFBiCPXTSGFMKdmXzw3Bv+Li5nVmrE22+V
+	 bNtwhnIeb/xbBpfyGtuKhB3oSKzF6Ql3NXkWYFyvQ0y1qsxMPFVdB6Idd+y8PYaWHH
+	 wp8JoxnhUa/KHGhqK+8TCN1yo7qr4CXOwp3rz4Ca1EuyIXKbT05Q5ijnlFlJfbkdAp
+	 SXKnEg5QhqZ7w==
 From: Bjorn Andersson <andersson@kernel.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org,
+	Johan Hovold <johan+linaro@kernel.org>,
+	cros-qcom-dts-watchers@chromium.org,
+	Krishna Kurapati <quic_kriskura@quicinc.com>
+Cc: linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
 	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v3 0/2] arm64: qcom: sm8550: add support for the SM8550-HDK board
-Date: Sat, 27 Jan 2024 20:17:22 -0600
-Message-ID: <170640822834.30820.7929773072144035739.b4-ty@kernel.org>
+	quic_ppratap@quicinc.com,
+	quic_jackp@quicinc.com
+Subject: Re: [PATCH v2 0/4] Fix USB Interrupts on Qualcomm Platforms
+Date: Sat, 27 Jan 2024 20:17:23 -0600
+Message-ID: <170640822832.30820.5935978325598948079.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240125-topic-sm8550-upstream-hdk8550-v3-0-73bb5ef11cf8@linaro.org>
-References: <20240125-topic-sm8550-upstream-hdk8550-v3-0-73bb5ef11cf8@linaro.org>
+In-Reply-To: <20240120191904.15408-1-quic_kriskura@quicinc.com>
+References: <20240120191904.15408-1-quic_kriskura@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,35 +69,26 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Thu, 25 Jan 2024 09:13:33 +0100, Neil Armstrong wrote:
-> The SM8550-HDK is an embedded development platforms for the
-> Snapdragon 8 Gen 2 SoC aka SM8550, with the following features:
-> - Qualcomm SM8550 SoC
-> - 16GiB On-board LPDDR5
-> - On-board WiFi 7 + Bluetooth 5.3/BLE
-> - On-board UFS4.0
-> - M.2 Key B+M Gen3x2 PCIe Slot
-> - HDMI Output
-> - USB-C Connector with DP Almode & Audio Accessory mode
-> - Micro-SDCard Slot
-> - Audio Jack with Playback and Microphone
-> - 2 On-board Analog microphones
-> - 2 On-board Speakers
-> - 96Boards Compatible Low-Speed and High-Speed connectors [1]
-> - For Camera, Sensors and external Display cards
-> - Compatible with the Linaro Debug board [2]
-> - SIM Slot for Modem
-> - Debug connectors
-> - 6x On-Board LEDs
+On Sun, 21 Jan 2024 00:49:00 +0530, Krishna Kurapati wrote:
+> Currently the interrupts mentioned in most of Qualcomm platforms
+> are partially faulty because of following reasons:
+> 
+> 1. hs_phy_irq mentioned on QUSB2 PHY targets is actually qusb2_phy interrupt
+> 2. pwr_event irq is missing for many targets
+> 3. Actual hs_phy_irq is also missing for most of the platforms
 > 
 > [...]
 
 Applied, thanks!
 
-[1/2] dt-bindings: arm: qcom: Document the HDK8550 board
-      commit: 507cad6e0f0ea64d33f9d7902520d7c72fc8c0ca
-[2/2] arm64: dts: qcom: sm8550: add support for the SM8550-HDK board
-      commit: b5e25ded2721ad75456eac21acb5b2fc6fa5d2bb
+[1/4] arm64: dts: qcom: Fix hs_phy_irq for QUSB2 targets
+      commit: 2c6597c72e9722ac020102d5af40126df0437b82
+[2/4] arm64: dts: qcom: Fix hs_phy_irq for non-QUSB2 targets
+      commit: 6bf150aef236fbb6d9fd299081fa8f1f0f6fde6f
+[3/4] arm64: dts: qcom: Fix hs_phy_irq for SDM670/SDM845/SM6350
+      commit: 7c9afa1fd84ba1fb5b80eed490bfcde2206ef5b0
+[4/4] arm64: dts: qcom: Add missing interrupts for qcs404/ipq5332
+      commit: 927173bf8a0e36d3ec47b808652822c594807fc2
 
 Best regards,
 -- 
