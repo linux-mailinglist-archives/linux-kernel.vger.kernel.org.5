@@ -1,265 +1,288 @@
-Return-Path: <linux-kernel+bounces-41664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41667-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6719583F607
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:06:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AAE083F61D
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:28:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBAA11F22087
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 15:06:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B646283DC0
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 15:28:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51E0F2377B;
-	Sun, 28 Jan 2024 15:06:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 755C525776;
+	Sun, 28 Jan 2024 15:27:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="osdiZg8n"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OUvs9tGT"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 603F6210EC
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 15:06:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F28022D61B;
+	Sun, 28 Jan 2024 15:27:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706454390; cv=none; b=DWtXVP2aqcSw3UmYOWh9p01ODVDoTJS5+nxJuKmzRnyk52kIP1vYCW0JOmVLRa5e7hzFj1IQjfV+ltLpOWvm467fziXSHQjMbRbuBF0EmoQ/+mF1JoWk9xws15xupmqa6s0chM9vvbBX0y5cyGPDigjmmZGlhU//Kd2qbQZMWCg=
+	t=1706455671; cv=none; b=uKnWrGCdEvKn9rCay7Todwku01YSw88M8PVuGFhrBPAWv7jCd3ZWeTulYqKtTZjbB+mQz08LwtO67MUj+3ArcuSSlkgMBI0957oGu8Zy9A1t5SaTXEYW9hw8xh7ta630u0+gVZrEhWVsVfH9gdbcNohOGVyaBwroRCftbYnH2NI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706454390; c=relaxed/simple;
-	bh=jzi4kRN7E6mn0sx12bR/OnSoPhoWuNopIeB+ZGs9/sw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JsE0gG/sJUl67uSsGR/zXMAoMOc8mTiEHZ3ccEsfOT0EjaWAFFAL11PtIfAMYxD5fj0HH5V9zTHVVU+PsCY1tnVwvjzz7fKODEL+Bp7t8KiyuoM0zXT0N+RAWDA/t3e2HWLNQFA2VCMk0hPc3vcu5YsW/Mgg/fcfux+B0/EZqDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=osdiZg8n; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e775695c6so16759365e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 07:06:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706454386; x=1707059186; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gt2GoiZlVl4m7DcHB944zDkl2TnQCtXQoPzD4lLJEE4=;
-        b=osdiZg8nwxO0kOz9CRPr4nqMhb3N6Iu6rRxUfSyM7BULSAAJG6VCLUE4zJHsRUL1eu
-         F+8/g9ywYPd83IHJomq6g8Q+F/yRmqF/cfhTJiD+83gncnm7Vc3Oat9w58qBal7cWGqy
-         Xo6kpNmS67cNADIK5Q4+uqaQsQXG9FcMS7RCnJJ/DJDEvGqrmkq5suk/bw2eMU1oXDrz
-         aD0AyoOI+o7RGjTljZvxCSU4ud7wUeJ8IALk6i9AL1DlH0xJeC4waHMUsGPCaIBb15oA
-         Pe6wQLoxZImtWZg78zp/HJW613q/849jkifBJEmW6uufDekheWHGMoeiKHaBVs42l4dq
-         9mpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706454386; x=1707059186;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gt2GoiZlVl4m7DcHB944zDkl2TnQCtXQoPzD4lLJEE4=;
-        b=EP0QszZOaVVKR+1600wG6OsxpC2QFhXjeqYeXwe1Keff5rM2VFGvqKGxG/W6ietReA
-         1wj5yrhSbQSvKxYRoeTt8Uhuif0PQi+GGdLFtzYgAALQ/LyAitwG3FGVAhFW6XwXm0A5
-         U+ar+AC6iLsYfuW6B7QWIOB63qdi92wfyNt1Pfje3eKJFdFkHTJHgzh5YLfywINnD85F
-         VulTB6qTYRXK6Q0X7ZmMyus2/SHF5lkB7yd1IM/i2QPFdz7TpOK96A4wAfB8FJkiwjdG
-         pDiMMIKW0RRBaCYUdFLkPrqVkQpkw6yGPK9FVBg4pytGFJznudaRg+31yK3NEDyoSKTK
-         Ge9w==
-X-Gm-Message-State: AOJu0YxEs8Djmtv0wcE6Nz4z9tgwUbRE9k7TiXM9kDMsItNeESzgdeqa
-	5XJ3aEY80tX/BHEtYfHeF8U/KjkN/xV0IM7c2iXzv6gkTJqox64AXvZeg+pG0Wg=
-X-Google-Smtp-Source: AGHT+IEj9+cXeSMOZkusGROt1uVn5aKOHGnQIK07UeyCT4an0oglnKBtK3VSSbl0Sq4m0/i3YBG4PA==
-X-Received: by 2002:a05:600c:3d0b:b0:40e:70c0:5054 with SMTP id bh11-20020a05600c3d0b00b0040e70c05054mr4446371wmb.2.1706454386169;
-        Sun, 28 Jan 2024 07:06:26 -0800 (PST)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id fc20-20020a05600c525400b0040ed1e5d5f3sm10579779wmb.41.2024.01.28.07.06.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Jan 2024 07:06:25 -0800 (PST)
-Message-ID: <ab664c65-954e-4be0-9c1f-6676694e1f11@linaro.org>
-Date: Sun, 28 Jan 2024 16:06:25 +0100
+	s=arc-20240116; t=1706455671; c=relaxed/simple;
+	bh=JAN47VwN1SePpdyAoHFsl6vnWsIXfB8fiYqRy73CAS4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FmeodD34v2HTzHUNexPSSb+jWAW2ukIvGugn1iN4u9fJksQJbg4RX8WVsFBYdklQ2gB+yDTJMZ8l68RrhS/PULqtWLyGZNgZNpmEJ/W/IcLngDb1cbTi2o77tTyxR33ZhWWVNAWkHZUTU3ftPR13453AH5iCqw6TvQlzQdI2JsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OUvs9tGT; arc=none smtp.client-ip=192.55.52.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706455670; x=1737991670;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=JAN47VwN1SePpdyAoHFsl6vnWsIXfB8fiYqRy73CAS4=;
+  b=OUvs9tGT6sWcQSw7gk+ikGV67PwTrkMNmKoAv8hmI9ZoC8ahZnKtsda+
+   x57/qcVKdReX7BoAqEqnuQ0Laxvk5ne5nRVcrQoDjzr1DIY/XZo2hpsIK
+   9kehEREWI/3tx+cHiYApwunfdQiNOLIVtCms1CcbVpSbVD72HEtDM7700
+   BZllTGB5ljMliA/8d3P3VU52kBojnZq/PHtm2m8VcX2PFlAoTsYYc0G0d
+   GiyVekNgA84W3zadooKNsZjfPuYbSdkWglhb/W+zuF9FwZjtIAgdfNTS4
+   IiAbwuhMZV9pLNlHctASbHlwySvlV5SYnv+awIqBh+IoJpiNHO/v/k8uJ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="433945030"
+X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
+   d="scan'208";a="433945030"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2024 07:27:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="737145749"
+X-IronPort-AV: E=Sophos;i="6.05,220,1701158400"; 
+   d="scan'208";a="737145749"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2024 07:27:44 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rU6oc-0000000HUFn-3Zl7;
+	Sun, 28 Jan 2024 17:11:22 +0200
+Date: Sun, 28 Jan 2024 17:11:22 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Shenghao Ding <shenghao-ding@ti.com>
+Cc: broonie@kernel.org, conor+dt@kernel.org, krzysztof.kozlowski@linaro.org,
+	robh+dt@kernel.org, kevin-lu@ti.com, baojun.xu@ti.com,
+	devicetree@vger.kernel.org, lgirdwood@gmail.com, perex@perex.cz,
+	pierre-louis.bossart@linux.intel.com, 13916275206@139.com,
+	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+	liam.r.girdwood@intel.com, soyer@irl.hu, jkhuang3@ti.com,
+	tiwai@suse.de, pdjuandi@ti.com, j-mcpherson@ti.com, navada@ti.com
+Subject: Re: [PATCH v1 1/4] ASoc: pcm6240: Create pcm6240 codec driver code
+Message-ID: <ZbZumnfISSojuA80@smile.fi.intel.com>
+References: <20240123111411.850-1-shenghao-ding@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] arm64: dts: rockchip: Add OPP data for CPU cores on
- RK3588
-Content-Language: en-US
-To: Alexey Charkov <alchark@gmail.com>, Dragan Simic <dsimic@manjaro.org>
-Cc: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
- Viresh Kumar <viresh.kumar@linaro.org>
-References: <20240125-rk-dts-additions-v1-0-5879275db36f@gmail.com>
- <20240125-rk-dts-additions-v1-4-5879275db36f@gmail.com>
- <731aac66-f698-4a1e-b9ee-46a7f24ecae5@linaro.org>
- <ccc004cfae513195351ce0a79e12f6af@manjaro.org>
- <CABjd4YxSTLZjrnSCn0fh81US682-uhZ16-cgydzz97shhCpq4w@mail.gmail.com>
- <1f0608831cfb95c80edf16cd751eee76@manjaro.org>
- <CABjd4Yx06igrZQvHA4q-mcr2oSEf7eQyUS+KEATUGbw6qLc2sg@mail.gmail.com>
- <528a37d84cdd871e717b4ebf648bb8a7@manjaro.org>
- <9b72b688-be63-464e-a5dc-cf6051ccee12@linaro.org>
- <CABjd4YzdD9ciMn=p=opEK+fdxCkeCodsryph7pkqgsEUNcNrUQ@mail.gmail.com>
- <5ef9bab979260884866efe30d19ba8f1@manjaro.org>
- <CABjd4YyyuB9ou-BaOrvt_rrv1-jPE=wtwWDHDqNqyT4a0E51wg@mail.gmail.com>
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <CABjd4YyyuB9ou-BaOrvt_rrv1-jPE=wtwWDHDqNqyT4a0E51wg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240123111411.850-1-shenghao-ding@ti.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+
+On Tue, Jan 23, 2024 at 07:14:07PM +0800, Shenghao Ding wrote:
+> PCM6240 driver implements a flexible and configurable setting for register
+> and filter coefficients, to one, two or even multiple PCM6240 Family Audio
+> chips.
+
+..
+
+> +#include <linux/of_gpio.h>
 
 
-Hi Alexey,
+No new code is supposed to use this header.
+Also the header inclusion here is a mess, please use IWYU principle
+(Include What You Use).
 
-On 27/01/2024 20:41, Alexey Charkov wrote:
-> On Sat, Jan 27, 2024 at 12:33 AM Dragan Simic <dsimic@manjaro.org> wrote:
->>
->> On 2024-01-26 14:44, Alexey Charkov wrote:
->>> On Fri, Jan 26, 2024 at 4:56 PM Daniel Lezcano
->>> <daniel.lezcano@linaro.org> wrote:
->>>> On 26/01/2024 08:49, Dragan Simic wrote:
->>>>> On 2024-01-26 08:30, Alexey Charkov wrote:
->>>>>> On Fri, Jan 26, 2024 at 11:05 AM Dragan Simic <dsimic@manjaro.org> wrote:
->>>>>>> On 2024-01-26 07:44, Alexey Charkov wrote:
->>>>>>>> On Fri, Jan 26, 2024 at 10:32 AM Dragan Simic <dsimic@manjaro.org>
->>>>>>>> wrote:
->>>>>>>>> On 2024-01-25 10:30, Daniel Lezcano wrote:
->>>>>>>>>> On 24/01/2024 21:30, Alexey Charkov wrote:
->>>>>>>>>>> By default the CPUs on RK3588 start up in a conservative
->>>>>>> performance
->>>>>>>>>>> mode. Add frequency and voltage mappings to the device tree to
->>>>>>> enable
->>>>
->>>> [ ... ]
->>>>
->>>>>> Throttling would also lower the voltage at some point, which cools it
->>>>>> down much faster!
->>>>>
->>>>> Of course, but the key is not to cool (and slow down) the CPU cores too
->>>>> much, but just enough to stay within the available thermal envelope,
->>>>> which is where the same-voltage, lower-frequency OPPs should shine.
->>>>
->>>> That implies the resulting power is sustainable which I doubt it is
->>>> the
->>>> case.
->>>>
->>>> The voltage scaling makes the cooling effect efficient not the
->>>> frequency.
->>>>
->>>> For example:
->>>>          opp5 = opp(2GHz, 1V) => 2 BogoWatt
->>>>          opp4 = opp(1.9GHz, 1V) => 1.9 BogoWatt
->>>>          opp3 = opp(1.8GHz, 0.9V) => 1.458 BogoWatt
->>>>          [ other states but we focus on these 3 ]
->>>>
->>>> opp5->opp4 => -5% compute capacity, -5% power, ratio=1
->>>> opp4->opp3 => -5% compute capacity, -23.1% power, ratio=21,6
->>>>
->>>> opp5->opp3 => -10% compute capacity, -27.1% power, ratio=36.9
->>>>
->>>> In burst operation (no thermal throttling), opp4 is pointless we agree
->>>> on that.
->>>>
->>>> IMO the following will happen: in burst operation with thermal
->>>> throttling we hit the trip point and then the step wise governor
->>>> reduces
->>>> opp5 -> opp4. We have slight power reduction but the temperature does
->>>> not decrease, so at the next iteration, it is throttle at opp3. And at
->>>> the end we have opp4 <-> opp3 back and forth instead of opp5 <-> opp3.
->>>>
->>>> It is probable we end up with an equivalent frequency average (or
->>>> compute capacity avg).
->>>>
->>>> opp4 <-> opp3 (longer duration in states, less transitions)
->>>> opp5 <-> opp3 (shorter duration in states, more transitions)
->>>>
->>>> Some platforms had their higher OPPs with the same voltage and they
->>>> failed to cool down the CPU in the long run.
->>>>
->>>> Anyway, there is only one way to check it out :)
->>>>
->>>> Alexey, is it possible to compare the compute duration for 'dhrystone'
->>>> with these voltage OPP and without ? (with a period of cool down
->>>> between
->>>> the test in order to start at the same thermal condition) ?
->>>
->>> Sure, let me try that - would be interesting to see the results. In my
->>> previous tinkering there were cases when the system stayed at 2.35GHz
->>> for all big cores for non-trivial time (using the step-wise thermal
->>> governor), and that's an example of "same voltage, lower frequency".
->>> Other times though it throttled one cluster down to 1.8GHz and kept
->>> the other at 2.4GHz, and was also stationary at those parameters for
->>> extended time. This probably indicates that both of those states use
->>> sustainable power in my cooling setup.
->>
->> IMHO, there are simply too many factors at play, including different
->> possible cooling setups, so providing additional CPU throttling
->> granularity can only be helpful.  Of course, testing and recording
->> data is the way to move forward, but I think we should use a few
->> different tests.
-> 
-> Soooo, benchmarking these turned out a bit trickier than I had hoped
-> for. Apparently, dhrystone uses an unsigned int rather than an
-> unsigned long for the loops count (or something of that sort), which
-> means that I can't get it to run enough loops to heat up my chip from
-> a stable idle state to the throttling state (due to counter
-> wraparound). So I ended up with a couple of crutches, namely:
->   - run dhrystone continuously on 6 out of 8 cores to make the chip
-> warm enough (`taskset -c 0-5 ./dhrystone -t 6 -r 6000` - note that on
-> my machine cores 6-7 are usually the first ones to get throttled, due
-> to whatever thermal peculiarities)
->   - wait for the temperature to stabilize (which happens at 79.5C)
->   - then run timed dhrystone on the remaining 2 out of 6 cores (big
-> ones) to see how throttling with different OPP tables affects overall
-> performance.
+..
 
-Thanks for taking the time to test.
+> +static struct pcmdevice_mixer_control adc5120_analog_gain_ctl[] = {
+> +	{
+> +		.shift = 1,
+> +		.reg = ADC5120_REG_CH1_ANALOG_GAIN,
+> +		.max = 0x54,
+> +		.invert = 0,
 
-> In the end, here's what I got with the 'original' OPP table (including
-> "same voltage - different frequencies" states):
-> alchark@rock-5b ~ $ taskset -c 6-7 ./dhrystone -t 2 -l 4000000000
-> duration: 0 seconds
-> number of threads: 2
-> number of loops: 4000000000000000
-> delay between starting threads: 0 seconds
-> 
-> Dhrystone(1.1) time for 1233977344 passes = 29.7
-> This machine benchmarks at 41481539 dhrystones/second
->                             23609 DMIPS
-> Dhrystone(1.1) time for 1233977344 passes = 29.8
-> This machine benchmarks at 41476618 dhrystones/second
->                             23606 DMIPS
-> 
-> Total dhrystone run time: 30.864492 seconds.
-> 
-> And here's what I got with the 'reduced' OPP table (keeping only the
-> highest frequency state for each voltage):
-> alchark@rock-5b ~ $ taskset -c 6-7 ./dhrystone -t 2 -l 4000000000
-> duration: 0 seconds
-> number of threads: 2
-> number of loops: 4000000000000000
-> delay between starting threads: 0 seconds
-> 
-> Dhrystone(1.1) time for 1233977344 passes = 30.9
-> This machine benchmarks at 39968549 dhrystones/second
->                            22748 DMIPS
-> Dhrystone(1.1) time for 1233977344 passes = 31.0
-> This machine benchmarks at 39817431 dhrystones/second
->                            22662 DMIPS
-> 
-> Total dhrystone run time: 31.995136 seconds.
-> 
-> Bottomline: removing the lower-frequency OPPs led to a 3.8% drop in
-> performance in this setup. This is probably far from a reliable
-> estimate, but I guess it indeed indicates that having lower-frequency
-> states might be beneficial in some load scenarios.
+Strictly speaking assignments to 0, false, NULL are unnecessary for static
+variables, but I'm not against this as it might make cleaner to see what's
+going on here. Btw, shouldn't these global variables be const?
 
-What is the duration between these two tests?
+> +	},
+> +	{
+> +		.shift = 1,
+> +		.reg = ADC5120_REG_CH2_ANALOG_GAIN,
+> +		.max = 0x54,
+> +		.invert = 0,
+> +	}
+> +};
 
-I would be curious if it is repeatable by inverting the setup (reduced 
-OPP table and then original OPP table).
+..
 
-BTW: I used -l 10000 for a ~30 seconds workload more or less on the 
-rk3399, may be -l 20000 will be ok for the rk3588.
+> +static int pcmdev_change_dev(struct pcmdevice_priv *pcm_priv,
+> +	unsigned short dev_no)
+> +{
+> +	struct i2c_client *client = (struct i2c_client *)pcm_priv->client;
+
+Why do you need casting? Is that variable is not void *?
+
+> +	struct regmap *map = pcm_priv->regmap;
+
+> +	int ret = 0;
+
+Unneeded assignment, just return 0 directly.
+
+> +
+> +	if (client->addr != pcm_priv->addr[dev_no]) {
+> +		client->addr = pcm_priv->addr[dev_no];
+> +		/* All pcmdevices share the same regmap, clear the page
+> +		 * inside regmap once switching to another pcmdevice.
+> +		 * Register 0 at any pages inside pcmdevice is the same
+> +		 * one for page-switching.
+> +		 */
+> +		ret = regmap_write(map, PCMDEVICE_PAGE_SELECT, 0);
+> +		if (ret < 0)
+> +			dev_err(pcm_priv->dev, "%s, E=%d\n", __func__, ret);
+> +	}
+> +
+> +	return ret;
+> +}
+
+..
+
+> +static int pcmdev_dev_read(struct pcmdevice_priv *pcm_dev,
+> +	unsigned int dev_no, unsigned int reg, unsigned int *val)
+> +{
+
+> +	int ret = -EINVAL;
+
+Unneeded assignment, use this value directly.
+
+> +	if (dev_no < pcm_dev->ndev) {
+> +		struct regmap *map = pcm_dev->regmap;
+> +
+> +		ret = pcmdev_change_dev(pcm_dev, dev_no);
+> +		if (ret < 0) {
+> +			dev_err(pcm_dev->dev, "%s, E=%d\n", __func__, ret);
+> +			goto out;
+> +		}
+> +
+> +		ret = regmap_read(map, reg, val);
+> +		if (ret < 0)
+> +			dev_err(pcm_dev->dev, "%s, E=%d\n", __func__, ret);
+> +	} else
+
+Besides broken style, this 'else' becomes redundant after proposed changes.
+
+> +		dev_err(pcm_dev->dev, "%s, no such channel(%d)\n", __func__,
+> +			dev_no);
+> +
+> +
+> +out:
+
+Useless label.
+
+> +	return ret;
+> +}
+
+I believe you may reduce code size by ~2-3% just by refactoring it in a better
+way. (Some examples are given above)
+
+..
+
+> +static int pcmdev_dev_bulk_write(struct pcmdevice_priv *pcm_dev,
+> +	unsigned int dev_no, unsigned int reg, unsigned char *data,
+> +	unsigned int len)
+
+Ditto and so on!
+
+..
+
+> +	struct snd_soc_component *codec
+> +		= snd_soc_kcontrol_component(kcontrol);
+
+= on the previous line, but you may just put all on one line.
+
+..
+
+> +	struct pcmdevice_priv *pcm_dev =
+> +		snd_soc_component_get_drvdata(codec);
+
+Ditto, and so on...
+
+
+> +	ucontrol->value.integer.value[0] = pcm_dev->cur_conf;
+> +
+> +	return 0;
+> +}
+
+..
+
+> +{
+> +	struct snd_soc_component *codec
+> +		= snd_soc_kcontrol_component(kcontrol);
+> +	struct pcmdevice_priv *pcm_dev =
+> +		snd_soc_component_get_drvdata(codec);
+
+> +	int ret = 0;
+
+Useless variable, return number directly.
+
+> +
+> +	if (pcm_dev->cur_conf != ucontrol->value.integer.value[0]) {
+> +		pcm_dev->cur_conf = ucontrol->value.integer.value[0];
+> +		ret = 1;
+> +	}
+> +
+> +	return ret;
+> +}
+
+..
+
+> +	unsigned int mask = (1 << fls(max)) - 1;
+
+BIT() ?
+
+..
+
+> +	mutex_lock(&pcm_dev->codec_lock);
+
+Why not using cleanup.h?
+
+> +	rc = pcmdev_dev_read(pcm_dev, dev_no, reg, &val);
+> +	if (rc) {
+> +		dev_err(pcm_dev->dev, "%s:read, ERROR, E=%d\n",
+> +			__func__, rc);
+> +		goto out;
+> +	}
+> +
+> +	val = (val >> shift) & mask;
+> +	val = (val > max) ? max : val;
+> +	val = mc->invert ? max - val : val;
+> +	ucontrol->value.integer.value[0] = val;
+
+> +out:
+> +	mutex_unlock(&pcm_dev->codec_lock);
+
+With cleanup.h becomes redundant.
+
+> +	return rc;
+
+Be consistent with name, ret, rc, what else?
+
+..
+
+> +};
+> +
+
+Unnecessary blank line.
+
+> +module_i2c_driver(pcmdevice_i2c_driver);
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+With Best Regards,
+Andy Shevchenko
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
 
 
