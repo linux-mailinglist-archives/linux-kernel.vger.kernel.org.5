@@ -1,90 +1,116 @@
-Return-Path: <linux-kernel+bounces-41495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC9B883F2CC
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 02:57:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCCDE83F2D1
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 03:12:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 046251C213B9
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 01:57:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59DC91F22449
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 02:12:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 474583FE4;
-	Sun, 28 Jan 2024 01:57:06 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15A7C3234;
+	Sun, 28 Jan 2024 02:12:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Nk84Iplo"
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D6221870
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 01:57:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A68B15A4
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 02:12:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706407025; cv=none; b=lebSRrIQx2WVJygzev6xe/V1RIxi4uRk0FaNEfuZntNIZmn38JQiQQ6CTLRmqumGktBJM2iy6ZjE+KX0v1Bp3f8O5DSnEobAq4nh8rgm2auov08fVPj7PcvqhOtySoHPWSfIQo3v2m9NaABFpv/SHRVPp6yD/02jtHnwVlmh6LI=
+	t=1706407944; cv=none; b=LW17oFu6n/erm0r9rC5jRQjOnDg6zmceyOCFEfK/LkpslL2O8jVkKje1NnCgV7Z1ee3GKj5C6VWoIq3I868yiYfCVNf0mdWn+RLJWNq1mQe9p9yWYNSn9WD4zKLPVxNMbVp3RCPs7jFARosmQdp4XoZqyxJNasDDpW9ISOuj3hg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706407025; c=relaxed/simple;
-	bh=V+GAjd8Lml5y1XoTxNEuHT5WQVdZ9Rzj6DZ8JzsEmr0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=ekCC5qkCKtEVaSbKHKIIecI5XbgYKf62YXl52Z75inVa3bvgrZ2JaYIDYCPHKvADvbaCb6Kc2GhVixUCPolI215AScHSk5kQlAGxYRbyJwKacgFgEYTlM6wjttOYSeQykNqe3BH3jZWt3Nrcwbw64khroo8ndF1EgTFActB4Uok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3627d99cbe5so7378925ab.2
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 17:57:04 -0800 (PST)
+	s=arc-20240116; t=1706407944; c=relaxed/simple;
+	bh=vYXWXYwsJVuOt1QS9UcPPIEtBivA4uOaogtA5hEmjCI=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=j/SlTfLf/UhOx84D/tp15j1RNI5hLQozU0fuagXf95efapzsoZOKGzdQV+J+38HDRMfyxWKL8+DzCVvLTh3Mz5qbvEq3ss3exzxZkvr5MouUIVQ6zfCAgDtCzTFW7t10f17q1bsbHVfl47Y1/FPaOwq2RhISxQH4AAYsbNxqBx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Nk84Iplo; arc=none smtp.client-ip=209.85.160.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-42a032cf012so17548301cf.1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 18:12:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706407941; x=1707012741; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Os4wPtYXMOk5j6YcX2wbCDq2BXooZiO0dAGB9kYAD7I=;
+        b=Nk84IploiUS1g3vTp8Zj67z4vXSyo/gP1kIxNlaj6Kk+4fj0H/7IlSDq1bpxg0V1zN
+         TJO0S4B1eyrBfHjxLfm15+sjmYwis8W9/Yuzz2kAc5yfrLsx0cBa15RBw60yu3SOjgYj
+         9H3f9iIdDxhIxFaX7dQJXWmjfmzXJhb9SUgRw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706407023; x=1707011823;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YwxdzYEPbsFuO+TSL8DKdjJZvhazGlttvbnyxJ7rcOk=;
-        b=rGS6chA+O0CoO8x7L24RqaEQX3ZdU8rTjGVNziR2QsxZk2Hhkt8gNKNFLAm1ZxKNTL
-         bnfNR/ZrhahP6sfiyS26qbxQ51O+VCJFc6B6F8O5aTeCdZ9lw70LlfF0GAxfS7zw2Bcz
-         VUTb9wfEvaEh+LkpIG15PkEDrHqH17MqPuHAqNZspNG2/xg5VftLF12pPuWmUYl9aXCU
-         ZBDH14vBeJJUTgMWfrE1JJvkaL/6MlKVezzBBAsYUUlNvXzGjKXmpYLa678Z9M4a/2uf
-         iLeZY+CImV4dsmxsSbUznSSXvmSAqQBblWDqf3skiO7PLtvPuIW9/chkJxo+Uqho8kxQ
-         Q9pw==
-X-Gm-Message-State: AOJu0Yxj6yCIeRMUehkhBJCpsQbnWqR7+XtkIbZgad8KSBS06EAWb2+3
-	I7GtGtOMhPsgfjFbDs68xiNxpJEzgxodswxgWXPvvRh83h4yHAw2FsjDecfhB+uuKQP8F0vvtsp
-	yc6q5WOTcyaXd9/ePkvCziHNoAMNyCGVBmSdXPC3572ilTqgln9GmfS8=
-X-Google-Smtp-Source: AGHT+IGIsY+fMOJ0iyEu9vfmYTToKr3Wef5yEAsQXVlhDr+6lu2vJj0cPpbE+RJLYb7ZvpWo457ot7GIknMwxDxUZO/evxFsZ7EA
+        d=1e100.net; s=20230601; t=1706407941; x=1707012741;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Os4wPtYXMOk5j6YcX2wbCDq2BXooZiO0dAGB9kYAD7I=;
+        b=redEPWm4o3iR7mOcRMQdX3wHVIwgptQC2LKGxOgla+oy0FqA1btCUWQS0479qlhqjv
+         73LvSF56PFbJs8bfmKKRAxThBg2SaMCdYU+vIJPHYOFzWawtTb+uwr5CT9OmENAEC5MV
+         UfC06/Y2JBhF6cHqivWawrrmfQXDUef5merPwM3HDVEyekCtaDGWtbz5PoEbCgTEFZXF
+         59qYNw4on+rbAFCZfAWGPGlnH2i2xJgezVCGulq+N+uWKviZtEl0RBph4YSCNi7At1GW
+         MCATU9QF7/EE6CqXnRk/IxPHRTJP68iEXBSlpuIxE40r5V017QYL8OazAIXqGFNG0JsA
+         2oaQ==
+X-Gm-Message-State: AOJu0YzqICKI3pqx02POHADriY2ARc2FofbfEk1sU07Lm7GCV6x/ZwT9
+	Hy8IANQmf+DS53SeEdOCatV5e+a9aF9x78KB2mFpMKW/l6F/V8CGdxFiF5/42g==
+X-Google-Smtp-Source: AGHT+IH6NXk/WvjaiaDj9r8/fahbRrGy45ANWovc96JmRb+SX77746RDy8yuddFdapSADOOCEgbhNQ==
+X-Received: by 2002:ac8:5e0c:0:b0:42a:2ec3:e8d2 with SMTP id h12-20020ac85e0c000000b0042a2ec3e8d2mr3154130qtx.50.1706407941471;
+        Sat, 27 Jan 2024 18:12:21 -0800 (PST)
+Received: from denia.c.googlers.com (240.157.150.34.bc.googleusercontent.com. [34.150.157.240])
+        by smtp.gmail.com with ESMTPSA id ka23-20020a05622a441700b0042a98bf0117sm568061qtb.78.2024.01.27.18.12.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Jan 2024 18:12:21 -0800 (PST)
+From: Ricardo Ribalda <ribalda@chromium.org>
+Subject: [PATCH 0/3] media: Fix warnings building with LLVM=1
+Date: Sun, 28 Jan 2024 02:12:19 +0000
+Message-Id: <20240128-fix-clang-warnings-v1-0-1d946013a421@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:3207:b0:35f:a338:44ae with SMTP id
- cd7-20020a056e02320700b0035fa33844aemr285298ilb.3.1706407023592; Sat, 27 Jan
- 2024 17:57:03 -0800 (PST)
-Date: Sat, 27 Jan 2024 17:57:03 -0800
-In-Reply-To: <000000000000e9e9ee05f716c445@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007bd31e060ff7d8f0@google.com>
-Subject: Re: [syzbot] [udf?] WARNING in udf_new_block
-From: syzbot <syzbot+cc717c6c5fee9ed6e41d@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, brauner@kernel.org, jack@suse.com, jack@suse.cz, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAO4tWUC/x2MSwqAMAwFryJZG2iD+LuKuNAaa0CqtKBC8e4Gl
+ 8ObNxkSR+EEfZEh8iVJjqBgywLcNgXPKIsykKHKWGpxlQfdrgveUwwSfMLaWerIVHXjZtDjGVm
+ tPzqM7/sBzrWH3GQAAAA=
+To: Mauro Carvalho Chehab <mchehab@kernel.org>, 
+ Nathan Chancellor <nathan@kernel.org>, 
+ Nick Desaulniers <ndesaulniers@google.com>, 
+ Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
+ Mike Isely <isely@pobox.com>, Tiffany Lin <tiffany.lin@mediatek.com>, 
+ Andrew-CT Chen <andrew-ct.chen@mediatek.com>, 
+ Yunfei Dong <yunfei.dong@mediatek.com>, 
+ Matthias Brugger <matthias.bgg@gmail.com>, 
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ llvm@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+ linux-mediatek@lists.infradead.org, Ricardo Ribalda <ribalda@chromium.org>
+X-Mailer: b4 0.12.3
 
-syzbot suspects this issue was fixed by commit:
+LLVM does check -Wcast-function-type-sctrict, which is triggered in a
+couple of places in the media subsystem.
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+---
+Ricardo Ribalda (3):
+      media: pci: sta2x11: Fix Wcast-function-type-strict warnings
+      media: usb: pvrusb2: Fix Wcast-function-type-strict warnings
+      media: mediatek: vcodedc: Fix Wcast-function-type-strict warnings
 
-    fs: Block writes to mounted block devices
+ drivers/media/pci/sta2x11/sta2x11_vip.c                           | 5 +++--
+ drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_fw_vpu.c | 6 ++++--
+ drivers/media/usb/pvrusb2/pvrusb2-context.c                       | 5 +++--
+ drivers/media/usb/pvrusb2/pvrusb2-dvb.c                           | 7 ++++---
+ drivers/media/usb/pvrusb2/pvrusb2-v4l2.c                          | 7 ++++---
+ 5 files changed, 18 insertions(+), 12 deletions(-)
+---
+base-commit: 615d300648869c774bd1fe54b4627bb0c20faed4
+change-id: 20240128-fix-clang-warnings-6c12920467cb
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15fe39a7e80000
-start commit:   10a6e5feccb8 Merge tag 'drm-fixes-2023-10-13' of git://ano..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=11e478e28144788c
-dashboard link: https://syzkaller.appspot.com/bug?extid=cc717c6c5fee9ed6e41d
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16700ae5680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17f897f1680000
+Best regards,
+-- 
+Ricardo Ribalda <ribalda@chromium.org>
 
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: fs: Block writes to mounted block devices
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
