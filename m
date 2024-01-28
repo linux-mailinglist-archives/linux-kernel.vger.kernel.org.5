@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-41790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1EDA83F7BB
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:40:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B68D83F7BE
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:41:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E49B2814C8
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:40:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30E4C1F26F67
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:41:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE02012CDAE;
-	Sun, 28 Jan 2024 16:15:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6B4312DD95;
+	Sun, 28 Jan 2024 16:15:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GmTNlocl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rcTfUczS"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FF3912CD93;
-	Sun, 28 Jan 2024 16:15:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D13FF12CDBF;
+	Sun, 28 Jan 2024 16:15:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458538; cv=none; b=ZMuWaVMAYpYur9F1OAyKvYzySdvbcqdvaPGQ4ucXZS2AVvkpv5Cz/HfYT6PFQzyAp37UThKD6CcAqumq+GackLhMg/UWwPVYuddDzpp2w1MhWbyb1c8Gr9obltH7IspxZpgfrBX8UKEDu8l1HtpiG6LryaNSSJLiO6hoZwH5zxI=
+	t=1706458539; cv=none; b=rDaqrTXSFgUATr5v95PnlqgxoFROEol+306CSsDdK6+RGT1QZRGXNQgB6xuPpBxQqitU1HROeuoyzQ6YG5CQ9yg/6h8gY1GaM3HisA1LXVGak6AAdXbI5/bmWemQgFxIkX7rkDarrEpZTHHOuLv+kx8u1trxNov9P9U+xd9M0Kw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458538; c=relaxed/simple;
-	bh=+h8UwIgo2JSvj9tCrTavYxJpiKhEB2zmGZO2EJqh8zE=;
+	s=arc-20240116; t=1706458539; c=relaxed/simple;
+	bh=Xl7920HQkZ7swwIi9lvrg+gUWUgjO2e+J2L2je5hU5s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lJA4HCa9CRyiGhtLxlJVKqegDY73hzP9koXYsZfTEiEVVOg6OTLmp9xOi/eNNPuMADToBbzyN+wli1RV2UPkMmpUAQpVFgQ+jwchJ8BtwU38QFm1oY4vYvNHtrrH+t6Zz2C/Fq9NnpPaAEfShJmcqOoUwSsn6naYS+zLAqA0FdA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GmTNlocl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64F1BC433C7;
-	Sun, 28 Jan 2024 16:15:37 +0000 (UTC)
+	 MIME-Version:Content-Type; b=uw7AFKZrSIJUomR/tiKIrfVtzwcuq81m4uzP1/WinjlUPmSKkj0YOXpNA7nbJiEz2mvu8GNNDTfaplsafPUubGMeNjLWzgsanMCqn3+YkxTLNwQq9mjZYopnVHYiAHya1A4iSjNz7Vxza2h/M0r/QRJODbq4v3p2vuYt0h5B8eg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rcTfUczS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FF3AC433F1;
+	Sun, 28 Jan 2024 16:15:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706458538;
-	bh=+h8UwIgo2JSvj9tCrTavYxJpiKhEB2zmGZO2EJqh8zE=;
+	s=k20201202; t=1706458539;
+	bh=Xl7920HQkZ7swwIi9lvrg+gUWUgjO2e+J2L2je5hU5s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GmTNloclwREBjKfnxjekxaWp3hudfeDvd9fcisp4oneUu0ReHN8pI0KksUBq6/8m0
-	 OqhTkw1JL3eKS7SpnX39vaxJda79QUC8Px7kdXtApWTIrlHWqfPAxfqGjCisbbnm6C
-	 AswKQQ/C5ltagPnVqu/H7TUtTmqOGixNH2tt7JhL3kckt+36A24xpTwT5saC2Dblj9
-	 FifCBQVDXiKMY5WTOkDKudhZIL3L9m67efGDCcQrd+z8EsS/4xGM9d+pNnzFFdZyBW
-	 QM86R4FC5Lb9b4+4bnvjyYAEucv5w1PxPX1WNq5/2dg0Xsa9OKFG8DPPqbydUYNP2W
-	 epOPYPeRcBYGA==
+	b=rcTfUczSJgks6ar+0kDCH6mENgkHEp4i+hSi3ntv8M+Sqtr2v1e42Vdsg5O4eM51j
+	 YiH1uqz6Bh4Zk7+zNerA0LMqpFteAyKbjasLW0ZPDLL4MMMaBk8lH1ag7Mn9zmhNKm
+	 Gg61TQMyJfEt6BaA1G/Wzir+y/43jQ0kvwZOjuYQ/FDyH8qjDLIffW6jOsDFWAN7Tl
+	 dERQ/rA61qKzSShltJTtWcw5rU0Ynq0HWVaw2UdW5U3ZK1zJdqV3zlOZNmZNm9gPF0
+	 GxjLdVOb/Xi3hRd3HdnYyYez/MYzn914/Sf9dVhgMYosS/a/3Ns2mFnU3d4DqUibT/
+	 CPEj3GMQosSJQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Max Kellermann <max.kellermann@ionos.com>,
-	Tejun Heo <tj@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.15 08/19] fs/kernfs/dir: obey S_ISGID
-Date: Sun, 28 Jan 2024 11:15:05 -0500
-Message-ID: <20240128161524.204182-8-sashal@kernel.org>
+Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Sasha Levin <sashal@kernel.org>,
+	linux-pci@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 09/19] PCI: Fix 64GT/s effective data rate calculation
+Date: Sun, 28 Jan 2024 11:15:06 -0500
+Message-ID: <20240128161524.204182-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128161524.204182-1-sashal@kernel.org>
 References: <20240128161524.204182-1-sashal@kernel.org>
@@ -59,61 +59,41 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.148
 Content-Transfer-Encoding: 8bit
 
-From: Max Kellermann <max.kellermann@ionos.com>
+From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-[ Upstream commit 5133bee62f0ea5d4c316d503cc0040cac5637601 ]
+[ Upstream commit ac4f1897fa5433a1b07a625503a91b6aa9d7e643 ]
 
-Handling of S_ISGID is usually done by inode_init_owner() in all other
-filesystems, but kernfs doesn't use that function.  In kernfs, struct
-kernfs_node is the primary data structure, and struct inode is only
-created from it on demand.  Therefore, inode_init_owner() can't be
-used and we need to imitate its behavior.
+Unlike the lower rates, the PCIe 64GT/s Data Rate uses 1b/1b encoding, not
+128b/130b (PCIe r6.1 sec 1.2, Table 1-1).  Correct the PCIE_SPEED2MBS_ENC()
+calculation to reflect that.
 
-S_ISGID support is useful for the cgroup filesystem; it allows
-subtrees managed by an unprivileged process to retain a certain owner
-gid, which then enables sharing access to the subtree with another
-unprivileged process.
-
---
-v1 -> v2: minor coding style fix (comment)
-
-Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Link: https://lore.kernel.org/r/20231208093310.297233-2-max.kellermann@ionos.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20240102172701.65501-1-ilpo.jarvinen@linux.intel.com
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/kernfs/dir.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/pci/pci.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-index 6a1cb2a182b6..36430bdf9381 100644
---- a/fs/kernfs/dir.c
-+++ b/fs/kernfs/dir.c
-@@ -654,6 +654,18 @@ struct kernfs_node *kernfs_new_node(struct kernfs_node *parent,
- {
- 	struct kernfs_node *kn;
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index 72280e9b23b2..2b5337980da7 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -312,7 +312,7 @@ void pci_bus_put(struct pci_bus *bus);
  
-+	if (parent->mode & S_ISGID) {
-+		/* this code block imitates inode_init_owner() for
-+		 * kernfs
-+		 */
-+
-+		if (parent->iattr)
-+			gid = parent->iattr->ia_gid;
-+
-+		if (flags & KERNFS_DIR)
-+			mode |= S_ISGID;
-+	}
-+
- 	kn = __kernfs_new_node(kernfs_root(parent), parent,
- 			       name, mode, uid, gid, flags);
- 	if (kn) {
+ /* PCIe speed to Mb/s reduced by encoding overhead */
+ #define PCIE_SPEED2MBS_ENC(speed) \
+-	((speed) == PCIE_SPEED_64_0GT ? 64000*128/130 : \
++	((speed) == PCIE_SPEED_64_0GT ? 64000*1/1 : \
+ 	 (speed) == PCIE_SPEED_32_0GT ? 32000*128/130 : \
+ 	 (speed) == PCIE_SPEED_16_0GT ? 16000*128/130 : \
+ 	 (speed) == PCIE_SPEED_8_0GT  ?  8000*128/130 : \
 -- 
 2.43.0
 
