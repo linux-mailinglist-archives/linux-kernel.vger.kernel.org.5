@@ -1,185 +1,140 @@
-Return-Path: <linux-kernel+bounces-41539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99CF083F3F9
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 06:07:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4008E83F407
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 06:29:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29FFA1F22121
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 05:07:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8E86B21696
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 05:29:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3958522087;
-	Sun, 28 Jan 2024 05:06:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="grpLTiGS"
-Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA9C7748D;
+	Sun, 28 Jan 2024 05:29:09 +0000 (UTC)
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ED31208B4
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 05:06:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20DE56116;
+	Sun, 28 Jan 2024 05:29:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706418387; cv=none; b=tva42E15bZuSai/K9puEcuxR1ynmGKfcOAEHoXu5TQIIch+Gq5reKsZYyWouDAtrmKsxdW1nUSE7tLnBT5ooRG0chRl78VspVUaM/zs5xVFRY2Bnm+1830y2QFMLicWSMqBtV3Y/iqnr+CJMrWS+ifH3u2cENOJMR3P604p9e/A=
+	t=1706419749; cv=none; b=IZoyTbywdkIqPt4musehZV9iyu/4LyesVqjcB7Xp77ffFyBE8JNY6afC/AGHkgY0683eeDOuwxsDp0vJuNIYOdGTiJF77p4dwzcCNjByWGQuKmPfjn2G+MIwkCyZMfdKQ/inbwYVnw1OVnQckwxxEP2v1YGe7OfceMwkXi5I78A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706418387; c=relaxed/simple;
-	bh=sqYZMDlKDRUfnljor6SGKDrcquN71PTrtDOFGVVMCyI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kScuWIbZS/MDr6Y4O0+XdVqoeuTLgpowE/5frefYdC4KJUdvdSl0vx3XWRroAPDa9MXOtERHyMqJ5vu8hWFtBf1QvFTjiWylQEYkQ7QHUzNmesxcFgWXwntyAElH4gWtYOl0zJAE7IFd/GWf9dZVeI4tz5KzWXOX1GPh3mDZCYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=grpLTiGS; arc=none smtp.client-ip=209.85.167.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3bd6581bc66so1568747b6e.1
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 21:06:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706418385; x=1707023185; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Klq863pFaGoDv/8+20XN12p6t4dw+6WO92EMrH2yao8=;
-        b=grpLTiGSYbX1nqjDPil48wSclML50UBppOs5Z7oYohbns2Vj3FGn3ktoR0d8WaAZNV
-         v3Vnl6JxI6Fc/AeRcuX/2F1ig/zaUhQW0L8/i2RSYTDOWjfKeuFeXFpIdxmiqhFdESpO
-         /rMzCo5mJ9lKq9AefbVVNLLKiYozv1h1huUA4Z98nk9IIl8aCiEhHJneJ/K970ZqyXOR
-         f28xmcFtivFSWuN2VXQjjWl/8QiMYGsEhgVbFQkc6W/wTtWjR1xXEwQ+2QUjzUlXbGhS
-         T0MwsmBa7ohy13f1rm8k8FtZBp4pv5dlo0QejgnYsfyigpn7/bjxY9NqUz1Bd6asYeVa
-         NX/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706418385; x=1707023185;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Klq863pFaGoDv/8+20XN12p6t4dw+6WO92EMrH2yao8=;
-        b=g5ZX7o8fRysor6ySubqGX4K4JV0U7eobPpgM43JrxBb6IGDlvN+G2AMMZDXUCdMpYH
-         ZB5lskDh+1Agzqd/yZyo+MO5ifrdtFZH9LJKD013ueu8Szvcb3JySR5TFhGFb4XeUtyV
-         Dlk2hCAkKfZkOFEdRSPgK70PhXeRxv7hwiwtOzg1WN8XLIswkaUZhngmMjAd+9qTTOqq
-         26Eq2UV8iwupQJg7CGVYCL74qHAVb2RguxPPKOyFi8K9uHbdhoQvUmrt1o3UULEH/XHP
-         ZHobPlZvbqVHiNvxJNdNYG2sUUwrLsaZUPpafz63cnRiYpx+HF9zVQLGZvMcDnuDUeO2
-         aesw==
-X-Gm-Message-State: AOJu0YybPLkV7zU8WB7KJzqeAaF7NOTAph8YT9dLSDUVeW9jfgnZqDx0
-	h8eTee2Eyx8Frq0Jo7WjsI205+WgKCbE28edu3PKOoxEvKaCnhH7
-X-Google-Smtp-Source: AGHT+IFJKmp+bAvhbdfzCBdTHyX1Zr9Yd3+YnQ7Hr1irLdsB79h6IjRdALDmguFKws+ptaAXM7qdlQ==
-X-Received: by 2002:a05:6808:d49:b0:3be:3a9e:5cd6 with SMTP id w9-20020a0568080d4900b003be3a9e5cd6mr804691oik.34.1706418385049;
-        Sat, 27 Jan 2024 21:06:25 -0800 (PST)
-Received: from localhost.localdomain (124x33x176x97.ap124.ftth.ucom.ne.jp. [124.33.176.97])
-        by smtp.gmail.com with ESMTPSA id lp17-20020a056a003d5100b006ddd182bf1csm3550372pfb.46.2024.01.27.21.06.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Jan 2024 21:06:24 -0800 (PST)
-Sender: Vincent Mailhol <vincent.mailhol@gmail.com>
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org
-Cc: Yury Norov <yury.norov@gmail.com>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Douglas Anderson <dianders@chromium.org>,
-	Kees Cook <keescook@chromium.org>,
-	Petr Mladek <pmladek@suse.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Marco Elver <elver@google.com>,
-	Brian Cain <bcain@quicinc.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	linux-m68k@lists.linux-m68k.org,
-	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v4 5/5] lib: test_bitops: add compile-time optimization/evaluations assertions
-Date: Sun, 28 Jan 2024 14:00:11 +0900
-Message-ID: <20240128050449.1332798-6-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr>
-References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr>
- <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr>
+	s=arc-20240116; t=1706419749; c=relaxed/simple;
+	bh=RuBcm8S1vTe9HAWaPid9zok/yeAdJ2G0EHaTlXq9CwA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DKOspgeHDEDoaWrNceFPaqE8GbUApn/MmEZGipjpl5XlF42oqBsThmYNa9qISHlyHD9z9RP0BPB+NlPfdb1a0wVGaNWPPXiLkcKxLJIX163UWOml30n/QVWfNvy2u0AjXtOidjOTqxhcdqvSSdVL36nsfcGPGRaL9es8tb1WWhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rTxiv-0001cd-BH; Sun, 28 Jan 2024 06:28:53 +0100
+Message-ID: <a373a71c-f5b6-471b-b7d2-b1f21dc505ca@leemhuis.info>
+Date: Sun, 28 Jan 2024 06:28:52 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: More detailed text about bisecting Linux kernel regression --
+ request for comments and help
+Content-Language: en-US, de-DE
+To: Bagas Sanjaya <bagasdotme@gmail.com>,
+ Linux kernel regressions list <regressions@lists.linux.dev>,
+ Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Greg KH <gregkh@linuxfoundation.org>
+References: <c763e15e-e82e-49f8-a540-d211d18768a3@leemhuis.info>
+ <ZbW5emVndDNZlPTg@archie.me>
+From: Thorsten Leemhuis <linux@leemhuis.info>
+Autocrypt: addr=linux@leemhuis.info; keydata=
+ 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 n7RI
+In-Reply-To: <ZbW5emVndDNZlPTg@archie.me>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1706419747;f850648e;
+X-HE-SMSGID: 1rTxiv-0001cd-BH
 
-Add a function in the bitops test suite to assert that the bitops
-helper functions correctly fold into constant expressions (or trigger
-a build bug otherwise). This should work on all the optimization
-levels supported by Kbuild.
+On 28.01.24 03:18, Bagas Sanjaya wrote:
+> On Wed, Jan 24, 2024 at 01:19:16PM +0100, Thorsten Leemhuis wrote:
+>> .. _bisectstart_bissbs:
+>>
+>> * Start the bisection and tell Git about the versions earlier
+>> established as 'good' and 'bad'::
+>>
+>>     cd ~/linux/
+>>     git bisect start
+>>     git bisect good v6.0
+>>     git bisect bad v6.1.5
+> 
+> If stable release tag is supplied instead as "good" version instead (e.g.
+> v6.0.1), as in many regression cases, git will ask to test the merge base
+> instead, which is corresponding mainline release (in this case v6.0).
 
-The added function does not perform any runtime tests and gets
-optimized out to nothing after passing the build assertions.
+That should not happen if people follow the guide, as this is avoided by
+an earlier step:
 
-Suggested-by: Yury Norov <yury.norov@gmail.com>
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
----
- lib/Kconfig.debug |  4 ++++
- lib/test_bitops.c | 32 ++++++++++++++++++++++++++++++++
- 2 files changed, 36 insertions(+)
+"'"
+. _rangecheck_bissbs:
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 4405f81248fb..85f8638b3ae6 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2439,6 +2439,10 @@ config TEST_BITOPS
- 	  compilations. It has no dependencies and doesn't run or load unless
- 	  explicitly requested by name.  for example: modprobe test_bitops.
- 
-+	  In addition, check that the compiler is able to fold the bitops
-+	  function into a compile-time constant (given that the argument is also
-+	  a compile-time constant) and trigger a build bug otherwise.
-+
- 	  If unsure, say N.
- 
- config TEST_VMALLOC
-diff --git a/lib/test_bitops.c b/lib/test_bitops.c
-index 3b7bcbee84db..99b612515eb6 100644
---- a/lib/test_bitops.c
-+++ b/lib/test_bitops.c
-@@ -50,6 +50,34 @@ static unsigned long order_comb_long[][2] = {
- };
- #endif
- 
-+/* Assert that a boolean expression can be folded in a constant and is true. */
-+#define test_const_eval(test_expr)				\
-+({								\
-+	/* Evaluate once so that compiler can fold it. */	\
-+	bool __test_expr = test_expr;				\
-+								\
-+	BUILD_BUG_ON(!__builtin_constant_p(__test_expr));	\
-+	BUILD_BUG_ON(!__test_expr);				\
-+})
-+
-+/*
-+ * On any supported optimization level (-O2, -Os) and if invoked with
-+ * a compile-time constant argument, the compiler must be able to fold
-+ * into a constant expression all the bit find functions. Namely:
-+ * __ffs(), ffs(), ffz(), __fls(), fls() and fls64(). Otherwise,
-+ * trigger a build bug.
-+ */
-+static __always_inline void test_bitops_const_eval(unsigned int n)
-+{
-+	test_const_eval(__ffs(BIT(n)) == n);
-+	test_const_eval(ffs(BIT(n)) == n + 1);
-+	test_const_eval(ffz(~BIT(n)) == n);
-+	test_const_eval(__fls(BIT(n)) == n);
-+	test_const_eval(fls(BIT(n)) == n + 1);
-+	test_const_eval(fls64(BIT_ULL(n)) == n + 1);
-+	test_const_eval(fls64(BIT_ULL(n + 32)) == n + 33);
-+}
-+
- static int __init test_bitops_startup(void)
- {
- 	int i, bit_set;
-@@ -94,6 +122,10 @@ static int __init test_bitops_startup(void)
- 	if (bit_set != BITOPS_LAST)
- 		pr_err("ERROR: FOUND SET BIT %d\n", bit_set);
- 
-+	test_bitops_const_eval(0);
-+	test_bitops_const_eval(10);
-+	test_bitops_const_eval(31);
-+
- 	pr_info("Completed bitops test\n");
- 
- 	return 0;
--- 
-2.43.0
+* Determine the kernel versions considered 'good' and 'bad' throughout
+this guide:
+
+[...]
+
+  * Some function stopped working when updating from 6.0.11 to 6.1.4?
+Then for the time being consider 'v6.0' as the last 'good' version and
+'v6.1.4' as the 'bad' one. Note, it is at this point an assumption that
+6.0 is fine that will be checked later.
+
+"'"
+
+Ciao, Thorsten
+
 
 
