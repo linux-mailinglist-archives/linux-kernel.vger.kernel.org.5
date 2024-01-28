@@ -1,134 +1,91 @@
-Return-Path: <linux-kernel+bounces-41845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0442A83F891
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 18:39:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 066CB83F899
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 18:46:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A94231F22197
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:39:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF45B1F2102C
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:46:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D07C32D044;
-	Sun, 28 Jan 2024 17:38:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0A062E413;
+	Sun, 28 Jan 2024 17:46:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PC3NU5LA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cOaRa1Y/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1702B2D04F;
-	Sun, 28 Jan 2024 17:38:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EACE023745;
+	Sun, 28 Jan 2024 17:45:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706463538; cv=none; b=PE585S+hFzjpS3i5MdJV62L5Bq2hUUgh4SCfR4OfYRkhou4IM123ZWWpVfcBHvlGOyLByUjpVS9mjTA1KEiJCCIkDcPqEM2KVejl59Q/RcGjbG3nFZEJH0zjA0JqsX37TPp61tct7Xg+47RdbVlY+4rTr0q06TPXJPg5KZztiUM=
+	t=1706463960; cv=none; b=b3bLAjr1kmNVEY5pa9JY53n5P4+LNuRWmT06N0nfq0KovrGmStXZxEM6XGOfTD08/g1r6O0x7HtI778tYMNzU4qkPzhbw11C7XZ3KPcqGGGu2EhOJqfWq4PZ05MhdGEamdV8CsCy5qKX/e+8S3ZtUCRmlKeKaYJD3/QdSyafqpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706463538; c=relaxed/simple;
-	bh=IjQ/1TqkmYZebuFP5yVrH0wPzR/hJ4PTWRo5b1Q6T2c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T4/u15/DD5RbdjXE95ES8QrGcGJb7csQKU7j/sp3gKLirl47jl9z1nbi36avFWR3UWVsOsVi01YElXKpIsxxU5VBy5Ep+UK2O8cXiY1Y/GuZBf6ChS+fyNWZ68lfX3ytLrwt0PLhGxXAJTMlgl5Mld9FacJS6vx+XuTTkYz6gm4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PC3NU5LA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0482C433F1;
-	Sun, 28 Jan 2024 17:38:54 +0000 (UTC)
+	s=arc-20240116; t=1706463960; c=relaxed/simple;
+	bh=T2gZhT7bqNZFPeyBjwatwdiknnzawEsBDJAHm1MVP24=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=dCx9PO21HQ8uPC5Wo1I4JsvkR/kuWqLjmoNFx5tHU4gc8kQl1osfDPFT+/9BewyiREukL/6+fzBjKCehiSJPE7q1Y7WhS2hq0WGn+iqYll/b9HLjeQQC9cGfm9vikDK3uvj5+SgygrtgVwvTRhyMLO4YQSkCPnej0wBD/3HhgEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cOaRa1Y/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A70B6C433F1;
+	Sun, 28 Jan 2024 17:45:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706463537;
-	bh=IjQ/1TqkmYZebuFP5yVrH0wPzR/hJ4PTWRo5b1Q6T2c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PC3NU5LACNJBxfpFA7Iuka8V4DlexS01lk6nHfhY4crAXEFKzph7Ea3BMTKdDD8OU
-	 mN0nDgRh9teIeu//jlOYOwekqTTDbwKc3xEPVqrDR9n0vT1AYEcmtwEOIUqMBC7Z4d
-	 vQwisJJsADIkEZVg94tY4Dec1c+vNcjVl7nZNr+Q5hogO/oqt/bTOOY395ZZSjdXNj
-	 5passx4f1Up7lxWhDBEbH013lW88itoR4B+GYlKvw6yxZoLsuR4VJ+vL2B4wFoAu14
-	 be8baMLhrfXYunbzdQ9OVGbzNRubG7bUhP7r91SSXDkuPG9Z2uk6lFmMSA9WlQ9DpM
-	 2hRy93oGsUtUw==
-Date: Sun, 28 Jan 2024 17:38:52 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	s=k20201202; t=1706463958;
+	bh=T2gZhT7bqNZFPeyBjwatwdiknnzawEsBDJAHm1MVP24=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=cOaRa1Y/EgshGHzRHC0ynwxoJKymgNDEyUFur8wxgkijU5LwlgwvX/B5jmh1aIReo
+	 xeh3q2nQn8hD/M7HWq3tAV1e/9RzbuARt16G4STsi9L/d+mMsSZTcdiCxybN/JQOB3
+	 KeUKyjWKe41xpt3p65Ce2bm3dBPt0K5hF71vCeKflYa7N5TWlAq1mwb5aFODkRuGVc
+	 SqHgw7h5bYT1MspBANpNQ6toVg7pWPUpGsBquD+nxyTYUfNxUCZ4wsaCfm9LcDLE21
+	 1OT7FvgTgcraZO0rok6ugSa2QY6U44fGd8FKaqPG7kLlxjR5zR426M7NmsjwseN1L0
+	 bidGv691kjhlw==
+From: Bjorn Andersson <andersson@kernel.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	quentin.schulz@theobroma-systems.com
-Subject: Re: [PATCH v4 3/6] dt-bindings: serial: add binding for rs485
- rx-enable state when rs485 is disabled
-Message-ID: <20240128-vagabond-mutilator-cf8dc6ac8a41@spud>
-References: <20240126-dev-rx-enable-v4-0-45aaf4d96328@theobroma-systems.com>
- <20240126-dev-rx-enable-v4-3-45aaf4d96328@theobroma-systems.com>
+	Caleb Connolly <caleb.connolly@linaro.org>,
+	Dylan Van Assche <me@dylanvanassche.be>,
+	David Heidelberg <david@ixit.cz>
+Cc: linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: sdm845-oneplus-common: improve DAI node naming
+Date: Sun, 28 Jan 2024 11:45:41 -0600
+Message-ID: <170646395043.64610.5068987727804354474.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231229200245.259689-1-david@ixit.cz>
+References: <20231229200245.259689-1-david@ixit.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="DzRBhgrdidHhTC1B"
-Content-Disposition: inline
-In-Reply-To: <20240126-dev-rx-enable-v4-3-45aaf4d96328@theobroma-systems.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
 
---DzRBhgrdidHhTC1B
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, 29 Dec 2023 21:02:33 +0100, David Heidelberg wrote:
+> Make it easier to understand what the reg in those nodes is by using the
+> constants provided by qcom,q6dsp-lpass-ports.h.
+> 
+> Name nodes according to dt-binding expectations.
+> 
+> Fix for
+> ```
+> arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dtb: service@4: dais: Unevaluated properties are not allowed ('qi2s@22', 'qi2s@23' were unexpected)
+> ```
+> 
+> [...]
 
-On Fri, Jan 26, 2024 at 03:55:12PM +0100, Farouk Bouabid wrote:
-> RS485 can have a receiver-enable gpio (rx-enable-gpios). When rs485 is
-> enabled, this gpio, if provided, must be driven active while receiving.
-> However when RS485 is disabled this gpio should not have an undefined
-> state. In that case, as DE and RE pins can be connected both to this gpio,
-> if its state is not properly defined, can cause unexpected transceiver
-> behavior.
-> This binding depend on rx-enable-gpios to be implemented.
+Applied, thanks!
 
-Why do you need a dedicated property for this when there exists a device
-specific compatible for the uart on both of the affected rockchip
-systems?
+[1/1] arm64: dts: qcom: sdm845-oneplus-common: improve DAI node naming
+      commit: 278d3807d304c90e59edb61aa7ed8a05e1e836bf
 
-Thanks,
-Conor.
-
->=20
-> Signed-off-by: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
-> ---
->  Documentation/devicetree/bindings/serial/rs485.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/serial/rs485.yaml b/Docume=
-ntation/devicetree/bindings/serial/rs485.yaml
-> index b64577036b5c..4c79dfaaf460 100644
-> --- a/Documentation/devicetree/bindings/serial/rs485.yaml
-> +++ b/Documentation/devicetree/bindings/serial/rs485.yaml
-> @@ -55,6 +55,11 @@ properties:
->      description: GPIO to handle a separate RS485 receive enable signal
->      maxItems: 1
-> =20
-> +  rs485-rx-enable-inactive-when-rs485-disabled:
-> +    description: rx-enable GPIO is not active when RS485 is disabled. If=
- missing, active-state
-> +      is assumed.
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +
->    rs485-term-gpios:
->      description: GPIO pin to enable RS485 bus termination.
->      maxItems: 1
->=20
-> --=20
-> 2.34.1
->=20
-
---DzRBhgrdidHhTC1B
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbaRLAAKCRB4tDGHoIJi
-0lVcAP9p7fg8n4e6rLO8EL2Eb1sSnS3GQtn1fONEOpidqgF31AEAvoJXIDhzhnRF
-r/P/IvBUvRkQTjXM4O4aoPKsdLrOQwM=
-=9qkJ
------END PGP SIGNATURE-----
-
---DzRBhgrdidHhTC1B--
+Best regards,
+-- 
+Bjorn Andersson <andersson@kernel.org>
 
