@@ -1,93 +1,103 @@
-Return-Path: <linux-kernel+bounces-41485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41486-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22B1783F296
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 01:38:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DAAE83F29D
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 01:40:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D5042874E6
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 00:38:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD5481F22F7D
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 00:40:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EA601362;
-	Sun, 28 Jan 2024 00:38:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E6EF1378;
+	Sun, 28 Jan 2024 00:40:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="yJF0FdT0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="r2dKyg/d"
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A4AF38B;
-	Sun, 28 Jan 2024 00:38:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14F4DEC2
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 00:40:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706402293; cv=none; b=izCoFG/dU6/kqgD9xY/k8Mh8An24+LNQ1yCqa1KJI/ywoJFu/4Z924ht6Od+yyX/MBKM05luLTM+05u5CVou71JG2p62v4fcN48jY2dFnIpU5Ya2iKlR7d+WzpsWRz5KZMdvUIlE0gVTD1MzlLo1md/ZA7tPb3alw6MYt0FB904=
+	t=1706402403; cv=none; b=QVSh8rDBFuYZ3WR9FUvFvPilQDXmHEIkOQpo0PW2j6bob1pCRJ7hIDhW0J9qlZ2njLSoPwp5SRF5ox7rcYjI+QF7sWHFOqpqTtXaxdft8ZH+y9f8oYmjWNg3szQRDsY8JIyDSuS2BufFWbHYYhnUVpzfJ9oZZFWoeo7wGffTzxk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706402293; c=relaxed/simple;
-	bh=f1JwIbdBjUssU7NR7CQ0VJJn3U/J1RElaxkhWnn95rU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P3Xvxk/N5men/pa9ZG5ui6IcFrsGKgQGUmrFvpHsgQpok6kaXTQ/ZdF5p640RVH32ngV/YaFDpGYIQwFybh5YK8E2/uY0povW/miL0JL3M7RwgAyGQ4jtU4UAkQV5ldXDfKl+6Ar4i0mCwPoHbOlbJXy/0kJMvcL/R+1cFyn3c0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=yJF0FdT0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A5A5C433F1;
-	Sun, 28 Jan 2024 00:38:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1706402292;
-	bh=f1JwIbdBjUssU7NR7CQ0VJJn3U/J1RElaxkhWnn95rU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=yJF0FdT0GiVwZjD718RftAjYV6JM07PCxik3HhvJlojlA6KSfWKEJ8cj7tH7OgUKm
-	 IAqC5+AkjgKKn/MnwMe66xAiqBYu4huu+zuhaj44mOh2AF4LmJstMJJbnG0vo/PsAo
-	 x87RtBj/qZelGTOwxatEMQz28hVZpQ6VqlPULzWI=
-Date: Sat, 27 Jan 2024 16:38:11 -0800
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: dwc3-of-simple: Stop using
- of_reset_control_array_get() directly
-Message-ID: <2024012705-rabid-slighting-8d50@gregkh>
-References: <20240124-dwc3-of-simple-reset-control-array-fix-v1-1-808182cc3f0e@pengutronix.de>
- <2024012400-subtitle-magnitude-45ff@gregkh>
- <63a1bfa2acb84bc24b87a8dbd60b665c733d13cd.camel@pengutronix.de>
- <2024012705-pantry-synapse-749a@gregkh>
+	s=arc-20240116; t=1706402403; c=relaxed/simple;
+	bh=QRzZYp6PIx386k68QDCzDOD7UVHoc7rvAMQvOzXv7hQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HaVW9mW9Au7BaklRqDQSdP9R9nezJQ1LzI6vTZxMFju1W21zSTmFnhtabbo9RI/C/IfZkLf1MZRszMPgF+SBYPEnYTUjWJ2yYMOi5CVfKOZ/cQW5UUHQAQ4jOtb5DCWLIUhoL5q0wbS+rvcoo584/iJpp2f/ebVq0KMJw7I6n9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=r2dKyg/d; arc=none smtp.client-ip=209.85.128.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5f0629e67f4so19615467b3.3
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jan 2024 16:40:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706402401; x=1707007201; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QRzZYp6PIx386k68QDCzDOD7UVHoc7rvAMQvOzXv7hQ=;
+        b=r2dKyg/d2yewVMxX3LHa7VU1AsRmfzogwqGISrHWmusm86D2Jhq1y1r+Me0u9OB1dU
+         6rsd4TNMvd6ztv2s4U1ZpNZE80mLTJBuAQrcx5m9qZMFytCKvxJXnIF7yctFxL8d66mC
+         FM3zJ8alATFa7KnF8RPBGt0VZTpSDGL6Uojc2ociMePa8oLUtWtFqxP11UT/FMEUG1bO
+         bXqhwUxMXKn4iNjW3M3yyVK78bZVstH4/ZYHmm5GjgKsW0Njvl7WTfZjzbBgmLiVmOpQ
+         QMWlfyZY1zS+TbMKdXycOCCJ0i9OKLKRbb1jKhDRQ+/cVDL49Qs74qcxvj7QjKK7j1vG
+         nFMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706402401; x=1707007201;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QRzZYp6PIx386k68QDCzDOD7UVHoc7rvAMQvOzXv7hQ=;
+        b=v1I5lj48Klr5Panvu59KtvASTV6bxPXXDhkxshtGBE72VuW1C9VxbdvMvJajY3M+yT
+         xPG5kY5NKixofPubPl6FWgZDGEHIGSUzNa0BTTsgp+a+S/a0gsg0r8OxsQy26TAYsFzu
+         iDklPakt6oYEXMI10ND+1cQWY3iszolvVFTjiQ9mqnVjIRM76iRb8ciuHtKk9E3E3tUF
+         FuXduOZCmq2OHIZJ6asmzysDY/88d6Vx/N6CcpXxnbbjr1yyTVGQ3RgAwxW+rcrbFDr1
+         N1EM/81Q1U226xBx0z3hyWQyXU607O739Xobza5GZ9gAhtVBZbE5lHqd5HX1uVyNTgZC
+         VLlQ==
+X-Gm-Message-State: AOJu0YwpOVwLlljE+XQWgbowWJ76NS0ldkeuTrQoxXfJlaa395cPC848
+	Zx5XDYZ9h1cocOM6pvHugMoNZ5WGtFz9v1l8JXOg7OxX7OV55+HzFa6Yyr28aJdYGEW7rvMx9rH
+	v9A2P6RPOiWoBv5id086SxmtmkXU9p5TVRrxp4g==
+X-Google-Smtp-Source: AGHT+IHD8S1WP5J7m0ocSNO7pQgXHBCJmcjr56OoYWSunpFttRnhhjQGC9S9kx9v0RNFLWGmnCmzFF2GWnnjZ15IBb0=
+X-Received: by 2002:a05:690c:82c:b0:602:cabb:64f4 with SMTP id
+ by12-20020a05690c082c00b00602cabb64f4mr2155595ywb.97.1706402401071; Sat, 27
+ Jan 2024 16:40:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024012705-pantry-synapse-749a@gregkh>
+References: <20240104-pinctrl-scmi-v2-0-a9bd86ab5a84@nxp.com>
+ <20240104-pinctrl-scmi-v2-4-a9bd86ab5a84@nxp.com> <CACRpkdbOVu4A0JdwvBaxvgvoT5u3VbjTyQi0mgqknCixR2vzYw@mail.gmail.com>
+ <DU0PR04MB9417E697C5AF094C449C851D887F2@DU0PR04MB9417.eurprd04.prod.outlook.com>
+In-Reply-To: <DU0PR04MB9417E697C5AF094C449C851D887F2@DU0PR04MB9417.eurprd04.prod.outlook.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Sun, 28 Jan 2024 01:39:50 +0100
+Message-ID: <CACRpkdb8ByjDN2=Cuj6+v87_Ad95nG6o3HguN==y+-4zz_SSvA@mail.gmail.com>
+Subject: Re: [PATCH v2 4/6] pinctrl: Implementation of the generic
+ scmi-pinctrl driver
+To: Peng Fan <peng.fan@nxp.com>
+Cc: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, Sudeep Holla <sudeep.holla@arm.com>, 
+	Cristian Marussi <cristian.marussi@arm.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Oleksii Moisieiev <oleksii_moisieiev@epam.com>, Shawn Guo <shawnguo@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	Fabio Estevam <festevam@gmail.com>, dl-linux-imx <linux-imx@nxp.com>, 
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
+	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, AKASHI Takahiro <takahiro.akashi@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jan 27, 2024 at 04:34:14PM -0800, Greg Kroah-Hartman wrote:
-> On Wed, Jan 24, 2024 at 01:56:18PM +0100, Philipp Zabel wrote:
-> > On Mi, 2024-01-24 at 04:39 -0800, Greg Kroah-Hartman wrote:
-> > > On Wed, Jan 24, 2024 at 12:26:20PM +0100, Philipp Zabel wrote:
-> > > > Use of_reset_control_array_get_optional_exclusive() instead, it is
-> > > > implemented as:
-> > > > 
-> > > >   static inline struct reset_control *
-> > > >   of_reset_control_array_get_optional_exclusive(struct device_node *node)
-> > > >   {
-> > > >           return of_reset_control_array_get(node, false, true, true);
-> > > >   }
-> > > > 
-> > > > This makes the code easier to understand and removes the last remaining
-> > > > direct use of of_reset_control_array_get(). No functional changes.
-> > > > 
-> > > > Fixes: f4cc91ddd856 ("usb: dwc3: of-simple: remove Amlogic GXL and AXG compatibles")
-> > > 
-> > > No functional change, but a Fixes: tag?  That doesn't make sense to me,
-> > > sorry.
-> > 
-> > The referenced patch made the boolean parameters const but missed that
-> > there is a static inline wrapper for this combination. I can drop the
-> > Fixes: tag and describe this in the text.
-> 
-> That would be best, thanks.
+On Sun, Jan 28, 2024 at 1:28=E2=80=AFAM Peng Fan <peng.fan@nxp.com> wrote:
 
-Ah you already did so, thanks!
+> Would you ACK the current V3 patch or wait I add OF dependency?
+
+I ACKed it, don't worry it's just a nitpick.
+
+Yours,
+Linus Walleij
 
