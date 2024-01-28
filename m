@@ -1,55 +1,62 @@
-Return-Path: <linux-kernel+bounces-41828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F252D83F826
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:50:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 001EC83F828
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 17:50:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36808B215B7
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:50:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 387E5B2113F
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jan 2024 16:50:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8137852F6C;
-	Sun, 28 Jan 2024 16:17:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30B50148309;
+	Sun, 28 Jan 2024 16:17:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OY2L4iQt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dmuWS5aS"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9008148309;
-	Sun, 28 Jan 2024 16:17:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75F1D1487D5;
+	Sun, 28 Jan 2024 16:17:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706458630; cv=none; b=XsUEsT0YqFLxBLyOgTXLRwnc7odb4aQjZ2ntVDgDVJdehoSi0jy2eMvSK5jSBq7T29O3yqJ24hFDuod1joRHNbrwEwRn5LNV5qyCAgP/7FjiiXumBQb3P/b0DuviRqUI6IzK+h/ySs+A/WpqIWE/8OJnzKlQQAEUVXaA2PxszjQ=
+	t=1706458633; cv=none; b=ZTYkDE9rsijEXfjK0wP7NJc6dSvpr3T1CST0aafEKdPHltXA1RHai0u2scMLjKILdbsAWBqdsY9F2DZ3A+JQwFvq9C8JfFNTHvmD6yjiLdIWN1/0hJBwePRARIacRVnKyRVk8lc9mf3QFa7+EUxcYhVcvXI/A66TjZhWj5iWzWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706458630; c=relaxed/simple;
-	bh=Ozbl9lP0AmxpwPp3oa01zQIN9FIA1Lu/jLDLKxX96a8=;
+	s=arc-20240116; t=1706458633; c=relaxed/simple;
+	bh=M6xQ5kPfjgUCaL/CzdSiLrR73e1XID4Ir7kfTv+Ehj8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XdWhtqHKwaraqS7TUR9dKnUQl+z4aiRQ66haYikDWMZZ4nxaacgfsSw12zkAwDVug1C6ailj+30RMfgp6MIL25fQdVXxm1C2CtTFflNqiJRHZ2qDPbRiprQGw37iQQTFTC1Pnnbklyb0f0h8BNyimLLoOwrJe0g2kwolNbaDX2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OY2L4iQt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A09A9C43399;
-	Sun, 28 Jan 2024 16:17:09 +0000 (UTC)
+	 MIME-Version; b=S/uGgkz244EYtK87Te2+bd07b8f99pdh97ieVxCnWQ24pqB8l8kfQtZSLFoN0PcoU/edY0cihAJLcEWxmyaMeWgqSAaAZ9a8VpN9QpA3LnuWFE9dpy2MnNDozB3vXsYqvT+b3RHd7s4745xuIw6TZ6uZPQ/BhCeoEd6yIcn8U2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dmuWS5aS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FB53C433C7;
+	Sun, 28 Jan 2024 16:17:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706458630;
-	bh=Ozbl9lP0AmxpwPp3oa01zQIN9FIA1Lu/jLDLKxX96a8=;
+	s=k20201202; t=1706458632;
+	bh=M6xQ5kPfjgUCaL/CzdSiLrR73e1XID4Ir7kfTv+Ehj8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OY2L4iQtuJMK+yPhH8dUBYebPGKE79TAzz7wrKRyDu9X4ZszlfSAFfN7/ZMIqvkwm
-	 6ZakZfpdnCtTzjulOddet3kO8civylvX7qbDtu0htHWHWFbwdUg7p4iZWA6o5K3A8r
-	 V3W+ieXkOAg96+tz81qsGw8R6+r7vTkivABgkzNr0xuUOyTLhPgjVrFkPzUp7h5zf1
-	 OBD7VoTMdDTMt77+nAHQ1LyURmesB9BOHSKoLaTNZvLkQ1RQUu9bWWzqGTed7rOztU
-	 yfyzXwQSSkRm82Y+BXYxyre4IG3e5jla1BN8+GjzlC36mPWrC2/eE96JY43/LtxupB
-	 82I4W3XrwQ2zQ==
+	b=dmuWS5aS54VLIYFHDMhwvbPiUV8SCeDiqqkYSkGLFLyvgD82Wo+svoXbw+WVsyZeE
+	 cWStPlQbP9w4MGlzO/Zho11nlmse+jafD2h3O+nj2Q76eoWVbDzByuM/gpMoYaAOS+
+	 At/fnUsUBN+a/Cvox1hh8BUy5ocwwSKI5NCcTz+/f5j7ukxzal8RKB2MmV3qz13hlc
+	 ueKpoO2NJcVMk9i+8de6HOE2oJFLF4Baxv33V0Bkmuq8c01l63FnjxIRu6E45NycRR
+	 kBUOrmRokmM+L9xrOUqOJgsvZbLHVq14ad1vutDWRocjS6U1gbGlVw6147BBFOS66M
+	 gTEX+fnFETCAQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hans de Goede <hdegoede@redhat.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sasha Levin <sashal@kernel.org>,
-	eric.piel@tremplin-utc.net
-Subject: [PATCH AUTOSEL 4.19 3/8] misc: lis3lv02d_i2c: Add missing setting of the reg_ctrl callback
-Date: Sun, 28 Jan 2024 11:16:54 -0500
-Message-ID: <20240128161704.205756-3-sashal@kernel.org>
+Cc: Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Chenyuan Mi <cymi20@fudan.edu.cn>,
+	Ingo Molnar <mingo@redhat.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Arnaldo Carvalho de Melo <acme@redhat.com>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 4/8] libsubcmd: Fix memory leak in uniq()
+Date: Sun, 28 Jan 2024 11:16:55 -0500
+Message-ID: <20240128161704.205756-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128161704.205756-1-sashal@kernel.org>
 References: <20240128161704.205756-1-sashal@kernel.org>
@@ -64,58 +71,60 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.306
 Content-Transfer-Encoding: 8bit
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Ian Rogers <irogers@google.com>
 
-[ Upstream commit b1b9f7a494400c0c39f8cd83de3aaa6111c55087 ]
+[ Upstream commit ad30469a841b50dbb541df4d6971d891f703c297 ]
 
-The lis3lv02d_i2c driver was missing a line to set the lis3_dev's
-reg_ctrl callback.
+uniq() will write one command name over another causing the overwritten
+string to be leaked. Fix by doing a pass that removes duplicates and a
+second that removes the holes.
 
-lis3_reg_ctrl(on) is called from the init callback, but due to
-the missing reg_ctrl callback the regulators where never turned off
-again leading to the following oops/backtrace when detaching the driver:
-
-[   82.313527] ------------[ cut here ]------------
-[   82.313546] WARNING: CPU: 1 PID: 1724 at drivers/regulator/core.c:2396 _regulator_put+0x219/0x230
-..
-[   82.313695] RIP: 0010:_regulator_put+0x219/0x230
-..
-[   82.314767] Call Trace:
-[   82.314770]  <TASK>
-[   82.314772]  ? _regulator_put+0x219/0x230
-[   82.314777]  ? __warn+0x81/0x170
-[   82.314784]  ? _regulator_put+0x219/0x230
-[   82.314791]  ? report_bug+0x18d/0x1c0
-[   82.314801]  ? handle_bug+0x3c/0x80
-[   82.314806]  ? exc_invalid_op+0x13/0x60
-[   82.314812]  ? asm_exc_invalid_op+0x16/0x20
-[   82.314845]  ? _regulator_put+0x219/0x230
-[   82.314857]  regulator_bulk_free+0x39/0x60
-[   82.314865]  i2c_device_remove+0x22/0xb0
-
-Add the missing setting of the callback so that the regulators
-properly get turned off again when not used.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20231224183402.95640-1-hdegoede@redhat.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ian Rogers <irogers@google.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Chenyuan Mi <cymi20@fudan.edu.cn>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20231208000515.1693746-1-irogers@google.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/lis3lv02d/lis3lv02d_i2c.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/lib/subcmd/help.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/misc/lis3lv02d/lis3lv02d_i2c.c b/drivers/misc/lis3lv02d/lis3lv02d_i2c.c
-index 14b7d539fed6..e8da06020c81 100644
---- a/drivers/misc/lis3lv02d/lis3lv02d_i2c.c
-+++ b/drivers/misc/lis3lv02d/lis3lv02d_i2c.c
-@@ -164,6 +164,7 @@ static int lis3lv02d_i2c_probe(struct i2c_client *client,
- 	lis3_dev.init	  = lis3_i2c_init;
- 	lis3_dev.read	  = lis3_i2c_read;
- 	lis3_dev.write	  = lis3_i2c_write;
-+	lis3_dev.reg_ctrl = lis3_reg_ctrl;
- 	lis3_dev.irq	  = client->irq;
- 	lis3_dev.ac	  = lis3lv02d_axis_map;
- 	lis3_dev.pm_dev	  = &client->dev;
+diff --git a/tools/lib/subcmd/help.c b/tools/lib/subcmd/help.c
+index 2859f107abc8..4260c8b4257b 100644
+--- a/tools/lib/subcmd/help.c
++++ b/tools/lib/subcmd/help.c
+@@ -50,11 +50,21 @@ void uniq(struct cmdnames *cmds)
+ 	if (!cmds->cnt)
+ 		return;
+ 
+-	for (i = j = 1; i < cmds->cnt; i++)
+-		if (strcmp(cmds->names[i]->name, cmds->names[i-1]->name))
+-			cmds->names[j++] = cmds->names[i];
+-
++	for (i = 1; i < cmds->cnt; i++) {
++		if (!strcmp(cmds->names[i]->name, cmds->names[i-1]->name))
++			zfree(&cmds->names[i - 1]);
++	}
++	for (i = 0, j = 0; i < cmds->cnt; i++) {
++		if (cmds->names[i]) {
++			if (i == j)
++				j++;
++			else
++				cmds->names[j++] = cmds->names[i];
++		}
++	}
+ 	cmds->cnt = j;
++	while (j < i)
++		cmds->names[j++] = NULL;
+ }
+ 
+ void exclude_cmds(struct cmdnames *cmds, struct cmdnames *excludes)
 -- 
 2.43.0
 
