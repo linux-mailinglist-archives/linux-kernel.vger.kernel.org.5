@@ -1,141 +1,143 @@
-Return-Path: <linux-kernel+bounces-42769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B450484066E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:13:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29339840675
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:14:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B612C1C24399
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:13:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C1D22896C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:13:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B20C629EE;
-	Mon, 29 Jan 2024 13:13:02 +0000 (UTC)
-Received: from lynxeye.de (ns.lynxeye.de [87.118.118.114])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B77264CE2
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:12:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=87.118.118.114
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72F9D633E1;
+	Mon, 29 Jan 2024 13:13:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Lks3LUW5"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48DE26281E;
+	Mon, 29 Jan 2024 13:13:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706533981; cv=none; b=WsRi/uTREszhq0yQ9OHde9L+DN9y5KI512UrKEqyIL3803/PK2X14ZwmvKSw9wBiawkYUPxdkobMNyvH8DagUXDUxupbqebKBC1hd3AVmORwDreL02SHOsNngAs9gkqaSsMXKjfURa2gvYBTADmEj/omtSdcwydQfpPFa8Olu4I=
+	t=1706534024; cv=none; b=uLmHLROvrSO9htLhylWGi4meaERpQJDy1ic+61xUkdcv/FOCKJLRyqBiv0h5M26ID2ybiYiWKAaDYLuWY/cn8qCqaNwohFze3FHoDUciw6PMgRzo/Ohcuqna7ishouF5lDJxszMSZJKFJlu1bQLVubz9Die4d8Mf76x3Vtc4Q9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706533981; c=relaxed/simple;
-	bh=EFeyZNe55OkGXa/T1yJqXJ+LwYv80+YyvZ1pwixNL8Y=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=l5stKfa1/IqpHB7YyCzOxDyMHp+VtVjUiC/zA/DgiiRaLnDF7gNjbwCOdEtwqxh3lzQgI/JzDs0AOxYQp3oUlKdRaQb702pB5jH4yUc+lLRgCcqRKTzfdSvUWnGTZVK9n2mgzzh/nojC2HoaaZsIZA/PzKM6nGuXxYFbo1Zai/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lynxeye.de; spf=none smtp.mailfrom=lynxeye.de; arc=none smtp.client-ip=87.118.118.114
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lynxeye.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=lynxeye.de
-Received: by lynxeye.de (Postfix, from userid 501)
-	id 1492CE74016; Mon, 29 Jan 2024 14:12:52 +0100 (CET)
-X-Spam-Level: 
-Received: from [192.168.178.22] (a89-183-231-132.net-htp.de [89.183.231.132])
-	by lynxeye.de (Postfix) with ESMTPSA id 813FDE74012;
-	Mon, 29 Jan 2024 14:12:50 +0100 (CET)
-Message-ID: <8b56a3fa53435d7ad634d87b98bbebe80df337ef.camel@lynxeye.de>
-Subject: Re: Re: Uncached buffers from CMA DMA heap on some Arm devices?
-From: Lucas Stach <dev@lynxeye.de>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Maxime Ripard
-	 <mripard@redhat.com>
-Cc: Pavel Machek <pavel@ucw.cz>, kernel list <linux-kernel@vger.kernel.org>,
-  Milan Zamazal <mzamazal@redhat.com>, Christoph Hellwig <hch@lst.de>,
- iommu@lists.linux.dev, Will Deacon <will@kernel.org>,
- catalin.marinas@arm.com, Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
- Andrey Konovalov <andrey.konovalov.ynk@gmail.com>, 
- kieran.bingham@ideasonboard.com, Hans de Goede <hdegoede@redhat.com>
-Date: Mon, 29 Jan 2024 14:12:50 +0100
-In-Reply-To: <20240129120723.GB8131@pendragon.ideasonboard.com>
-References: <87bk9ahex7.fsf@redhat.com>
-	 <d2ff8df896d8a167e9abf447ae184ce2f5823852.camel@lynxeye.de>
-	 <Zbd8lOgVqfCrGUL7@duo.ucw.cz>
-	 <xd5ofun26gfdgn7hig3gipj5rgojqyuouwmii7xecgrbzyliil@y6rufxtwdmrc>
-	 <20240129120723.GB8131@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	s=arc-20240116; t=1706534024; c=relaxed/simple;
+	bh=1A2kwv15wQygVVOoqucjQOG6yZvrsKLSOxdqdrtflpo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WgNVtu48PSlitj169KMOH2Ucatxx1ZYmcRrlsgYRG+tzla23/WaiE83XgzJuZkgItqy2eKH/g2T5oZBbT5IrVgCEz5i9GskFcEcYEZXtN6HGGRIcyJfrLotPJxw/ZkRBGLOlQrLs7f7glaRkBK5ofo+r/mmNPM15B6EQ8f5KwAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Lks3LUW5; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706534024; x=1738070024;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=1A2kwv15wQygVVOoqucjQOG6yZvrsKLSOxdqdrtflpo=;
+  b=Lks3LUW5kikOTYIsZHogC66eDYYP+quAz/YTIE6ggUGSheUDKfFESczK
+   f6+EcvBj0ftXVaKDQ0g5hiJ3hb5PKgvBN44CNL2NsCnwTOJDIfp4S+lJh
+   ndtOJZaWVy1rLqk7m/aFTxFuzyqIniFU3SbUp8dZ5fqXZ7ufavUWpgQzg
+   VsDHsWLeAMJrt59bBKBu0k+w9ufC+Qmufs2DPeHMCEHX9iH6gQxvjco7q
+   6hAkVODIP2F2HxeBY8jksoHNbs3c/SBZ/e1F5YMy0IgBp9aDZRSRdqveT
+   bX+oTJZI4iFWED+vOZdansj5dSjzxvRUOaPyQqrMaaBIbbkH3ZQf/tC5Y
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="10328513"
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="10328513"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 05:13:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="878068306"
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="878068306"
+Received: from choongyo-mobl.gar.corp.intel.com (HELO [10.247.122.111]) ([10.247.122.111])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 05:13:28 -0800
+Message-ID: <41f08e94-3a0b-442b-be79-d30579f3e12d@linux.intel.com>
+Date: Mon, 29 Jan 2024 21:13:28 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v3 0/5] TSN auto negotiation between 1G and 2.5G
+Content-Language: en-US
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>,
+ Andrew Lunn <andrew@lunn.ch>
+Cc: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+ David E Box <david.e.box@linux.intel.com>,
+ Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>,
+ Jose Abreu <Jose.Abreu@synopsys.com>, Heiner Kallweit
+ <hkallweit1@gmail.com>, "David S . Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, =?UTF-8?Q?Marek_Beh=C3=BAn?=
+ <kabel@kernel.org>, Jean Delvare <jdelvare@suse.com>,
+ Guenter Roeck <linux@roeck-us.net>,
+ Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Jose Abreu <joabreu@synopsys.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Wong Vee Khee
+ <veekhee@apple.com>, Jon Hunter <jonathanh@nvidia.com>,
+ Jesse Brandeburg <jesse.brandeburg@intel.com>,
+ Revanth Kumar Uppala <ruppala@nvidia.com>,
+ Shenwei Wang <shenwei.wang@nxp.com>,
+ Andrey Konovalov <andrey.konovalov@linaro.org>,
+ Jochen Henneberg <jh@henneberg-systemdesign.com>,
+ David E Box <david.e.box@intel.com>, Andrew Halaney <ahalaney@redhat.com>,
+ Simon Horman <simon.horman@corigine.com>,
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, platform-driver-x86@vger.kernel.org,
+ linux-hwmon@vger.kernel.org, bpf@vger.kernel.org,
+ Voon Wei Feng <weifeng.voon@intel.com>,
+ Tan Tee Min <tee.min.tan@linux.intel.com>,
+ Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+ Lai Peter Jun Ann <jun.ann.lai@intel.com>
+References: <20230921121946.3025771-1-yong.liang.choong@linux.intel.com>
+ <4caade36-d4be-4670-ac79-d9d00488293d@lunn.ch>
+ <ZQxOgfw3LD5Bu2iD@shell.armlinux.org.uk>
+From: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+In-Reply-To: <ZQxOgfw3LD5Bu2iD@shell.armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Am Montag, dem 29.01.2024 um 14:07 +0200 schrieb Laurent Pinchart:
-> On Mon, Jan 29, 2024 at 11:32:08AM +0100, Maxime Ripard wrote:
-> > On Mon, Jan 29, 2024 at 11:23:16AM +0100, Pavel Machek wrote:
-> > > Hi!
-> > >=20
-> > > > That's right and a reality you have to deal with on those small ARM
-> > > > systems. The ARM architecture allows for systems that don't enforce
-> > > > hardware coherency across the whole SoC and many of the small/cheap=
- SoC
-> > > > variants make use of this architectural feature.
-> > > >=20
-> > > > What this means is that the CPU caches aren't coherent when it come=
-s to
-> > > > DMA from other masters like the video capture units. There are two =
-ways
-> > > > to enforce DMA coherency on such systems:
-> > > > 1. map the DMA buffers uncached on the CPU
-> > > > 2. require explicit cache maintenance when touching DMA buffers wit=
-h
-> > > > the CPU
-> > > >=20
-> > > > Option 1 is what you see is happening in your setup, as it is simpl=
-e,
-> > > > straight-forward and doesn't require any synchronization points.
-> > >=20
-> > > Yeah, and it also does not work :-).
-> > >=20
-> > > Userspace gets the buffers, and it is not really equipped to work wit=
-h
-> > > them. For example, on pinephone, memcpy() crashes on uncached
-> > > memory. I'm pretty sure user could have some kind of kernel-crashing
-> > > fun if he passed the uncached memory to futex or something similar.
-> >=20
-> > Uncached buffers are ubiquitous on arm/arm64 so there must be something
-> > else going on. And there's nothing to equip for, it's just a memory
-> > array you can access in any way you want (but very slowly).
-> >=20
-> > How does it not work?
->=20
-> I agree, this should just work (albeit possibly slowly). A crash is a
-> sign something needs to be fixed.
->=20
-Optimized memcpy implementations might use unligned access at the edges
-of the copy regions, which will in fact not work with uncached memory,
-as hardware unaligned access support on ARM(64) requires the bufferable
-memory attribute, so you might see aborts in this case.
 
-write-combined mappings are bufferable and thus don't exhibit this
-issue.
 
-> > > > Option 2 could be implemented by allocating cached DMA buffers in t=
-he
-> > > > V4L2 device and then executing the necessary cache synchronization =
-in
-> > > > qbuf/dqbuf when ownership of the DMA buffer changes between CPU and=
- DMA
-> > > > master. However this isn't guaranteed to be any faster, as the cach=
-e
-> > > > synchronization itself is a pretty heavy-weight operation when you =
-are
-> > > > dealing with buffer that are potentially multi-megabytes in size.
-> > >=20
-> > > Yes, cache synchronization can be slow, but IIRC it was on order of
-> > > milisecond in the worst case.. and copying megayte images is still
-> > > slower than that.
->=20
-> Those numbers are platform-specific, you can't assume this to be true
-> everywhere.
->=20
-Last time I looked at this was on a pretty old platform (Cortex-A9).
-There the TLB walks caused by the cache maintenance by virtual address
-was causing severe slowdowns, to the point where actually copying the
-data performs similar to the cache maintenance within noise margins,
-with the significant difference that copying actually causes the data
-to be cache hot for the following operations.
-
-Regards,
-Lucas
+On 21/9/2023 10:09 pm, Russell King (Oracle) wrote:
+> On Thu, Sep 21, 2023 at 03:14:59PM +0200, Andrew Lunn wrote:
+>>> Auto-negotiation between 10, 100, 1000Mbps will use
+>>> in-band auto negotiation. Auto-negotiation between 10/100/1000Mbps and
+>>> 2.5Gbps will work as the following proposed flow, the stmmac driver reads
+>>> the PHY link status registers then identifies the negotiated speed.
+>>
+>> I don't think you replied to my comment.
+>>
+>> in-band is just an optimisation. It in theory allows you to avoid a
+>> software path, the PHY driver talking to the MAC driver about the PHY
+>> status. As an optimisation, it is optional. Linux has the software
+>> path and the MAC driver you are using basically has it implemented.
+> 
+> Sorry Andrew, I have to disagree. It isn't always optional - there are
+> PHYs out there where they won't pass data until the in-band exchange
+> has completed. If you try to operate out-of-band without the PHY being
+> told that is the case, and program the MAC/PCS end not to respond to
+> the in-band frames from the PHY, the PHY will report link up as normal
+> (since it reports the media side), but no data will flow because the
+> MAC facing side of the PHY hasn't completed.
+> 
+> The only exception are PHYs that default to in-band but have an inband
+> bypass mode also enabled to cover the case where the MAC/PCS doesn't
+> respond to the inband messages.
+> 
+Russell is correct, we did set out-of-band for PCS and configured MAC.
+Due to the PHY not being completed, there will be no data flow through.
 
