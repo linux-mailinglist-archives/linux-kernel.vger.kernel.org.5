@@ -1,137 +1,174 @@
-Return-Path: <linux-kernel+bounces-42069-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8046883FBE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 02:43:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C18B83FBE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 02:43:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32A2C1F21EBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 01:43:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03FDC1F2205D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 01:43:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3D35DF55;
-	Mon, 29 Jan 2024 01:42:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CF86F9EF;
+	Mon, 29 Jan 2024 01:43:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="EPoje+CC"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="e8iuOjNa"
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12A34DDC7
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 01:42:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93856F9D6
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 01:43:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706492573; cv=none; b=qTEj+huiZZQEaAkkmkwnhImcfq+GDBGAI69GRZN2kXTAj/vcEtqeLCaf8gnOYvjfsgZ84yQykfRiDTqMsucj7P9OXk9j3YvSREt8hEHbJgYpPQC/ll4OZ3zOIn7PfjeefN7QOrG7eN859TSUDDn/HG80A68ksKLRF1sYuO6/B+I=
+	t=1706492610; cv=none; b=hQtKXKFan7eHMrYY9v1nm23H93PS1ayBGNWO3ZGoBs8Udf4cuQFvQzlL9mPa/vfCwB2pi1+c1paAosfzpxEiMoL7e8XDXxYux9qAJ6fosRF7Y+hgfkRslUHcqljUtPuXuAAoOIKnv52ZQD6zAhQ9xxTpCPtJ8mpXSkKB0cc4TUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706492573; c=relaxed/simple;
-	bh=jWloI5phTfFMjDxmvM5fOgnQ0vyxnALm4mf/sCbpm20=;
+	s=arc-20240116; t=1706492610; c=relaxed/simple;
+	bh=e5l7ZTxBAuhvL8BJjaJ0QXiYojG9CC69RFkwfv0aqgE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qn+Y7V6ziid4XNRwwJYBOUjqa4sS3XJRrZ/lc2I8jw3TSTYo8HVRsSIMygHuEb3U8Ic7MjytRiSVw9bxfb3ii3caDOfDSPqXe85SVSo9hyDWDc5427z0Mj1ED2DD6+xhAJG4ea0DRPPnuOjZpxZhuaxRGmhXj750DIOH5+vDPNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=EPoje+CC; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2cf1fd1cc5bso25411321fa.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 17:42:50 -0800 (PST)
+	 To:Cc:Content-Type; b=LmLCWPLc5XvY5G0sQdae2Ml0rYi9YZ/KHt7JhpiioAeeAtNBDf9qgOWbl57wWbqCPv9H6doMe6k9rRwiRTsCD7P7DEHlJbRZzS8jhsu5a3g76SX5M2Act3Da5yOsAmTBGuqfcY/IUVm4aaG4LeJqEJ4lzJsAVjYq/NpknCSzO7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=e8iuOjNa; arc=none smtp.client-ip=209.85.160.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-204235d0913so1123449fac.1
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 17:43:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1706492569; x=1707097369; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=tmwJigiCm1y/pWMgjrvap0eEiQZ4O/kCC0i78tTYfew=;
-        b=EPoje+CCAclWIpjRXfnDgG3Nz6WnRC8FZSxgmqIW8oLuvFk+EL2fhnGYmcDKWsV/u9
-         j93QXlJX/RY1WivxAJHmBGl9sJpY6s9dD0nYkITI45Uv7aQUJotzdrLn9RYZQ0R9MlzE
-         Yt5wBhzMZUpdxTvQLImF0fnPd/gzDtDsBwUzc=
+        d=bytedance.com; s=google; t=1706492606; x=1707097406; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EdQUmqGdZQkSaRtssstol3Hg+wBOCg5SlEWZbS6wjcc=;
+        b=e8iuOjNaGDRqvdu0lj1OW0IbFWeuc6xJO8LgAqznxwJgqTwhHV6LMzUWXj4sSg4esJ
+         hcDt4pvEfrr7+ukjOIbv8PyEVRP9i8h3qFr5O/RV70N/7FIvw8ojkP1f4vYroJ0TwwkT
+         +sWltJsjBYHd5j47XBdNHLH2ADvYMGCrpa9WZvdBCmEgGEnRu2YDBOalsqYhtQvLGFad
+         dCwGF+JJ7dC+ploe34yQQFf5JLasl1kll+7crdxnVE6el2PVCILUYU5D5ABPFsN0VjMp
+         eGxJX1khxZmodEn+vHuvXy3cwcXkqF/kkzeAnk+zAiSsacYwWk18BT1bGEW60K8iKiH/
+         v24A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706492569; x=1707097369;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tmwJigiCm1y/pWMgjrvap0eEiQZ4O/kCC0i78tTYfew=;
-        b=lYJyeQ+NDOFFOvKoKOriUEWLKNB3nLUN8hQ1xYK0Ae6o8G4Xqh+ETFHv88y/1IDmoL
-         ovD1S49kXVyez8Jk211y2SLC1Xdd2cyyB7Wodez0ZFUzYWGSWCaKahlEVbvvEvdecuwK
-         whB1DJbmUiGcq5HTM3nWRmO5OyJK5a/scslnWvxphrDyiubHl67hHc94t/6sZlooHn7N
-         T9SqNHqGsPQJTZOdl0nCD/G60thz3tjuasSh5liWNtZMW6KeSaMpUf/HxSth8nyDau5d
-         C1+sSGv+t2ru2Z9b8b2CS8MZ15xgdJ+3qEDRN5K0qmUzgq41SgHfbyk2JPuslZ52JH1n
-         oj8g==
-X-Gm-Message-State: AOJu0Yx9F9RWHfdBzGYpnV48NaiVfWZ4fDLPkSRX1gVkOxAqg14nH5dj
-	DN48tc0UFYvsi9GZgpqBhExPXMfTN3vAzTLrgp9O/I/Cah9awVSAUSUDkcpZUgfVA/L04llD8mh
-	vwdg=
-X-Google-Smtp-Source: AGHT+IEhssYfCmHSam59b7Vp/3DXKRKTt1QEOO4oc4Ry7XXBnSZIiEVp7JZyKoGjXybj+rTLssacwA==
-X-Received: by 2002:a05:651c:2209:b0:2cc:a66d:3356 with SMTP id y9-20020a05651c220900b002cca66d3356mr3926619ljq.11.1706492568783;
-        Sun, 28 Jan 2024 17:42:48 -0800 (PST)
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
-        by smtp.gmail.com with ESMTPSA id c9-20020a509f89000000b0055eb53aae03sm2256123edf.94.2024.01.28.17.42.47
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Jan 2024 17:42:47 -0800 (PST)
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55f13b682d4so4282a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 17:42:47 -0800 (PST)
-X-Received: by 2002:aa7:c70f:0:b0:55e:c2d9:3750 with SMTP id
- i15-20020aa7c70f000000b0055ec2d93750mr2555420edq.5.1706492567478; Sun, 28 Jan
- 2024 17:42:47 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706492606; x=1707097406;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EdQUmqGdZQkSaRtssstol3Hg+wBOCg5SlEWZbS6wjcc=;
+        b=oBwMi1+ndnrkWZ3snFRexjrcaP4ssmem28xwdlMOfsESukd7oSY8DUjU/PEv1iCzfw
+         TlzKzloJY7/vkDvPYICxXxQhH8+fvCdAJBJv2uTEBji73oI9ZjWlWyGiqYgABCTMYZML
+         LcbNx5RWFF7hEaFqqoHafm3CNKjF9cVPRJbPMoeUSFhbdFmqcIhM3ar8ehlcrSgsVc9l
+         pEidztVCyatmVJfSUflbGQRACRYNVVJPdjzL6TtNdJu3Ve33lIkRPgUI9/Y9GdCQQGM5
+         T0ZkFelUuOtyR9z0YIZodWUx/rZVK+SzrQem6AznADG+GTfzTxuyN+Z+kuwVi4CMCl8P
+         JY2A==
+X-Gm-Message-State: AOJu0Ywrhh28bMUVtMSLxYA6hE6ZQtBrNUjTnGho6xCGC2HdsKk8yd8t
+	vqpx/cOrzr6mWrYllKVbtdcc5eayPC23BbLLsMe2ohy5t++WvK+dm99H+10BOeNvcDo/V/x1hEU
+	AvR01oeikWm384dqzX5grNKcjKz25/JAgN4XyKwY39VVMn+0QmpmJ4g==
+X-Google-Smtp-Source: AGHT+IEh7zJtrT4zoZeDgoIevMP0HldKJUu/niw/hjgIwiABPGc7e8ykKyUMlP3CGRljf3HMKBVGKg9BWeKb6uapTu8=
+X-Received: by 2002:a05:6870:5d9a:b0:206:bbc9:be01 with SMTP id
+ fu26-20020a0568705d9a00b00206bbc9be01mr2527073oab.41.1706492606614; Sun, 28
+ Jan 2024 17:43:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126150209.367ff402@gandalf.local.home> <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
- <20240126162626.31d90da9@gandalf.local.home> <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
- <CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
- <CAHk-=wj+DsZZ=2iTUkJ-Nojs9fjYMvPs1NuoM3yK7aTDtJfPYQ@mail.gmail.com>
- <20240128175111.69f8b973@rorschach.local.home> <CAHk-=wjHc48QSGWtgBekej7F+Ln3b0j1tStcqyEf3S-Pj_MHHw@mail.gmail.com>
- <20240128185943.6920388b@rorschach.local.home> <20240128192108.6875ecf4@rorschach.local.home>
- <CAHk-=wg7tML8L+27j=7fh8Etk4Wvo0Ay3mS5U7JOTEGxjy1viA@mail.gmail.com>
-In-Reply-To: <CAHk-=wg7tML8L+27j=7fh8Etk4Wvo0Ay3mS5U7JOTEGxjy1viA@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sun, 28 Jan 2024 17:42:30 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjKagcAh5rHuNPMqp9hH18APjF4jW7LQ06pNQwZ1Qp0Eg@mail.gmail.com>
-Message-ID: <CAHk-=wjKagcAh5rHuNPMqp9hH18APjF4jW7LQ06pNQwZ1Qp0Eg@mail.gmail.com>
-Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	Linux Trace Devel <linux-trace-devel@vger.kernel.org>, Christian Brauner <brauner@kernel.org>, 
-	Ajay Kaher <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20240123132730.2297719-1-alexghiti@rivosinc.com>
+ <CAEEQ3wk5edUFTuE3H3KDGkCXj0+=i7Z1BM2M+6X-Tk9_m8X_iQ@mail.gmail.com>
+ <ZbDICZkatO3/lGf/@snowbird> <cd68cf4e-7a6b-4875-ae1b-0c28a6eacaad@ghiti.fr> <65bd3d38-dcc0-4e64-b35b-8a2e697768ff@ghiti.fr>
+In-Reply-To: <65bd3d38-dcc0-4e64-b35b-8a2e697768ff@ghiti.fr>
+From: yunhui cui <cuiyunhui@bytedance.com>
+Date: Mon, 29 Jan 2024 09:43:15 +0800
+Message-ID: <CAEEQ3w=+yDpvsjd3NqZjJOCR8WaHyMBArpavvXPDgU5eKczk+g@mail.gmail.com>
+Subject: Re: [External] [PATCH] riscv: Fix wrong size passed to local_flush_tlb_range_asid()
+To: Alexandre Ghiti <alex@ghiti.fr>
+Cc: Dennis Zhou <dennis@kernel.org>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, 28 Jan 2024 at 17:00, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+Hi Alexandre,
+
+On Wed, Jan 24, 2024 at 4:41=E2=80=AFPM Alexandre Ghiti <alex@ghiti.fr> wro=
+te:
 >
->    mkdir dummy
->    cd dummy
->    echo "Hello" > hello
->    ( sleep 10; cat ) < hello &
->    rm hello
->    cd ..
->    rmdir dummy
+> On 24/01/2024 09:38, Alexandre Ghiti wrote:
+> > Hi Dennis, Yunhui,
+> >
+> > On 24/01/2024 09:19, Dennis Zhou wrote:
+> >> Hello,
+> >>
+> >> On Wed, Jan 24, 2024 at 10:44:12AM +0800, yunhui cui wrote:
+> >>> Hi Alexandre,
+> >>>
+> >>> On Tue, Jan 23, 2024 at 9:31=E2=80=AFPM Alexandre Ghiti
+> >>> <alexghiti@rivosinc.com> wrote:
+> >>>> local_flush_tlb_range_asid() takes the size as argument, not the
+> >>>> end of
+> >>>> the range to flush, so fix this by computing the size from the end a=
+nd
+> >>>> the start of the range.
+> >>>>
+> >>>> Fixes: 7a92fc8b4d20 ("mm: Introduce flush_cache_vmap_early()")
+> >>>> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> >>>> ---
+> >>>>   arch/riscv/mm/tlbflush.c | 2 +-
+> >>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>>
+> >>>> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+> >>>> index 8d12b26f5ac3..9619965f6501 100644
+> >>>> --- a/arch/riscv/mm/tlbflush.c
+> >>>> +++ b/arch/riscv/mm/tlbflush.c
+> >>>> @@ -68,7 +68,7 @@ static inline void
+> >>>> local_flush_tlb_range_asid(unsigned long start,
+> >>>>
+> >>>>   void local_flush_tlb_kernel_range(unsigned long start, unsigned
+> >>>> long end)
+> >>>>   {
+> >>>> -       local_flush_tlb_range_asid(start, end, PAGE_SIZE,
+> >>>> FLUSH_TLB_NO_ASID);
+> >>>> +       local_flush_tlb_range_asid(start, end - start, PAGE_SIZE,
+> >>>> FLUSH_TLB_NO_ASID);
+> >>>>   }
+> >> Well this was a miss during code review.. I'm going to take another lo=
+ok
+> >> tomorrow and then likely pull this into a fixes branch.
+> >>
+> >>> What makes me curious is that this patch has not been tested?
+> >>> BTW, It is best to keep the parameter order of all functions in
+> >>> tlbflush.c consistent: cpumask, start, size, stride, asid.
+> >>>
+> >> I can't speak to the riscv communities testing/regression suites, but
+> >> this would only be caught in a performance regression test.
+> >>
+> >> That being said, Alexandre, can you please lmk what level of testing
+> >> this has gone through?
+> >
+> >
+> > All my patches go through the same level of testing:
+> >
+> > * Build/boot an Ubuntu kernel with and without KASAN + a few simple
+> > testsuites (libhugetlbfs, riscv kselftests and other)
+> > * Build/boot a simple rootfs on ~40 different rv64 configs
+> > * Build/boot a simple rootfs on ~30 different rv32 configs
+> >
+> > And I run LTP/full kselftests/perf testsuite on a weekly basis on
+> > every rc. All this validation is done on qemu.
+> >
+> > The patch is functional, it "simply" flushes the whole TLB instead of
+> > a few entries, so the only way to catch that would have been a
+> > performance regression. But given it only runs on qemu, it would have
+> > been hard to catch any performance regression since that involves the
+> > TLB.
+> >
+> > @Yunhui: Please let me know how I should validate my patches better.
+>
+>
+> @Yunhui: And BTW, we lack reviewers, so feel free to help ;)
 
-Note that it's worth repeating that simple_recursive_removal()
-wouldn't change any of the above. It only unhashes things and makes
-them *look* gone, doing things like clearing i_nlink etc.
+Okay, if you don=E2=80=99t mind, I will also review the RISC-V TLB related
+patches later.
+BTW, I mailed a patch "RISC-V: add uniprocessor flush_tlb_range()
+support", and please help me review it, thank you ~
 
-But those VFS data structures would still exist, and the files that
-had them open would still continue to be open.
-
-So if you thought that simple_recursive_removal() would make the above
-kind of thing not able to happen, and that eventfs wouldn't have to
-deal with dentries that point to event_inodes that are dead, you were
-always wrong.
-
-simple_recursive_removal() is mostly just lipstick on a pig. It does
-cause the cached dentries that have no active use be removed earlier,
-so it has that "memory pressure" kind of effect, but it has no real
-fundamental semantic effect.
-
-Of course, for a filesystem where the dentry tree *is* the underlying
-data (ie the 'tmpfs' kind, but also things like debugfs or ipathfs,
-for example), then things are different.
-
-There the dentries are the primary thing, and not just a cache in
-front of the backing store.
-
-But you didn't want that, and those days are long gone as far as
-tracefs is concerned.
-
-              Linus
+Thanks,
+Yunhui
 
