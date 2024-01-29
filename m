@@ -1,177 +1,191 @@
-Return-Path: <linux-kernel+bounces-42600-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CFBC84039E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:15:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEACD8403A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:16:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8FC01F22EE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:15:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4AEA2858AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:16:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 262D35BAD2;
-	Mon, 29 Jan 2024 11:15:42 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 722615B5C9;
+	Mon, 29 Jan 2024 11:16:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DoLfR8QC"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E7395BAD8
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 11:15:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D97415C8FD
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 11:16:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706526941; cv=none; b=o2zLPdc01dUFYhzWq2el26Kg9pSSlw5qnOltDMSsjR9kZqeojCAgMky2lsP0uzq5lZcnfdLevPWufoTDHUnVr7P9iUG82iyKNUsmFWAC2DQauv4Q3CEeTynMWf/3enk9cLrnnLRUFnxHx0xDR6at5IGlZrORKbDFrhmAsmlC9pY=
+	t=1706526962; cv=none; b=bRnj+daKrNBbaTXoh1YWItsXXBGrmRn6ZWSsWBsDe5gTFXIvFPW1WNEfmu0lGE5W93j1amLa95Hv4T+EverhHz1AxLTRVv1XDbLgej9kGy8cwjgjVP/4zaqylqwFmkMVdAzvZZCTmi7BuGTOvP7sQF5mGRp5XAM+ITM1gUwHlvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706526941; c=relaxed/simple;
-	bh=kOUlYic7Fn4tmPG/QHZOYrN/pkry6BjIpcGyJkSF12E=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=K6MUyrCyGsjW0Iq2aA7hJU3xET7gWmWOjfGfzqPBoPnjbb9igzyh4i8mwyxG8MLjkbopiQKxhBj/fqmiE+FJHR4rmclFCPiglIEInHhHt4v9w3jYcudd83JTYPIv1pDdUpwP+ptTY8d1cTQC5YeiO8h4soT4EVm4RKKNfFUjSFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-363887f15c2so284835ab.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 03:15:39 -0800 (PST)
+	s=arc-20240116; t=1706526962; c=relaxed/simple;
+	bh=RpKJBPyAuJx70Gw2vedDa9+hb0ZDyAGj7AdkuSzaxD0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pttel/jZdXX1vDdgbHn3aPQUKvSPP4D3TTVkMK3Il+zDBWV0IfEO5COdeDArGi2yQs7iI8m84qpU1nr9sFYp2Kqp+3/9nSoW2YbbEpKbJObp2Oi5G735DPR7pKtSuAVlKXQgO/LVuFQyj8HSDPBY/ucXGj8m8LcnClru6++c1NM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DoLfR8QC; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706526959;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PdmBCDGtM8wSDqYKx2ZDXDpktAyoxR2CO0TvUORZDug=;
+	b=DoLfR8QCd/dk5uwbVCn7dGIsgOHlI/pz4pTUgue8ZHxHup5x1BLwPWfkWiOq1bxappQ2GW
+	l/GKHFXYcx/tk47J1T4mAw/MV8a6omE8Yy5fk9K/MBB3DWlfEMOpCpBiPBxT1XZcq+BTlT
+	GCsjpvkJV6yjHTPMwznAamPTXx+dRfA=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-397-4_HHGjQ4Njii0vgE3CJX-Q-1; Mon, 29 Jan 2024 06:15:56 -0500
+X-MC-Unique: 4_HHGjQ4Njii0vgE3CJX-Q-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a358c652e42so51660766b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 03:15:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706526938; x=1707131738;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ycDQ6Z9P2JkRi6wLH7pT3fZX69qKnXMvwBk2WNT/alY=;
-        b=nyMh6gBYj4dpJaFhq+9Bzkh/ByAyLh6UrV7wlvHwA3AgH8gsLEjYMMy/2ltKd13hlU
-         MaEEo1qYMocrTrTZa53dUq6Cb2EdKlh3n9omDyy3mmgJyWPsY3UnsB9HVHvTwYH9gCh4
-         0mp4bcEsajWpLonTc6FRjexPcjFcpx7SAnjTliVh3FppuBA9uPos80JygpEPMywpey3L
-         bFql9LEeQAU2ZfI+IzsUxV/k/v0rDDjCd6ipCYQp0ciG/ZVZ32Jw3o+9Ws+3Ul1tI+LW
-         hUcOjzfKqeUXKwOZ93WPXaVBQ0rcbbNFUsdSbac5AEXJTRokTXwX7BuEHYG9/uKKd1u6
-         jwiQ==
-X-Gm-Message-State: AOJu0YwDIQLH+kWUy+OaGzX31uXWiP/ZQOcwv3TRVBJbLWjrsAzEBNsB
-	ON3zVha60TuPfWSfofD6PW3M+xsh98guiWWsPU6zb9CELtRJY/Vm5CwmLPkO+KrRv71J+zSKHOD
-	r4B9JaQI/85bbrd5H/0ErFJCMbCMbHg6xpXec1Bz8dfrt/9MvFifIoiU=
-X-Google-Smtp-Source: AGHT+IFQIkVLb54/9JdZ/Ho960jFLmVYI3EuhujB8GBn5vCDmVPYpcBM+vVYMoO3oGrw4zD61NfxpGSpEaiszqEySMhxQLtEcO5v
+        d=1e100.net; s=20230601; t=1706526955; x=1707131755;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PdmBCDGtM8wSDqYKx2ZDXDpktAyoxR2CO0TvUORZDug=;
+        b=L7CnT1ug9Vv8ROEnda+2eNDYRT8jwu6uuQRmYoHIJx8nWVekMfePQgsKo8Jdmh8cAF
+         kFEikak3suLV9CugJ/dmtHmrS0bwhmoRPtugs/+QTHJrkEkkUzcSlNvpX/FL2/fQn/QS
+         YyfJEim68Lz8VhHkBizzOT68suiZ6TQs/fcOuqDwcwKwqj4dTt+oDE/94KgCVujk33Hv
+         Vr/J07fCDZ5AvGZGhDP0qpwuueXZqFYPGzCzV1ChE2hxeT3ta1/GDp1GEgKAIPVdcD3X
+         jrdNnmV17tsw08RX2Fhkm0/hzISfbLvVY2BhxOqEHGJBAlJ8jMmfxZxEedid1JK4jcVL
+         itsg==
+X-Gm-Message-State: AOJu0YwyVMlEnwfGQP6z175ggKxoihsNkaGH0kAdHpBOX7g7r9NYIDtm
+	6NlDrJlQXTYCoKf0Z5NFlJJIlRNmJiY/UjYNSAox/iUs46QJotpqrzqufXdMxmZNS+wj5mTBzsY
+	kn3Fj1O6tZ6Xhf9qkBcFLuWm+Spv86dUSBAU0HzMhcMAS1V7wn3bG6h081EU1pw==
+X-Received: by 2002:a17:906:a013:b0:a2b:a7e:3496 with SMTP id p19-20020a170906a01300b00a2b0a7e3496mr3812588ejy.28.1706526955473;
+        Mon, 29 Jan 2024 03:15:55 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGpAHqhErhQZXiA+dg1bA0riWjrWB83FQhDQeuo1UG0xYvOnaHB3CqQACeeik/4F+TYM4aupQ==
+X-Received: by 2002:a17:906:a013:b0:a2b:a7e:3496 with SMTP id p19-20020a170906a01300b00a2b0a7e3496mr3812571ejy.28.1706526955125;
+        Mon, 29 Jan 2024 03:15:55 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id qx25-20020a170906fcd900b00a311a360433sm3893770ejb.143.2024.01.29.03.15.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jan 2024 03:15:54 -0800 (PST)
+Message-ID: <e21c0853-d10a-44b5-917a-3f3c08102b87@redhat.com>
+Date: Mon, 29 Jan 2024 12:15:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:170a:b0:363:820f:72b8 with SMTP id
- u10-20020a056e02170a00b00363820f72b8mr208755ill.1.1706526938621; Mon, 29 Jan
- 2024 03:15:38 -0800 (PST)
-Date: Mon, 29 Jan 2024 03:15:38 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f9f23d061013c383@google.com>
-Subject: [syzbot] [mm?] kernel BUG in validate_mm (3)
-From: syzbot <syzbot+39a72b995ba73633c1a7@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 10/10] drm/vboxvideo: fix mapping leaks
+Content-Language: en-US, nl
+To: Philipp Stanner <pstanner@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Bjorn Helgaas <bhelgaas@google.com>, Sam Ravnborg <sam@ravnborg.org>,
+ dakr@redhat.com
+Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org,
+ stable@kernel.vger.org
+References: <20240123094317.15958-1-pstanner@redhat.com>
+ <20240123094317.15958-11-pstanner@redhat.com>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20240123094317.15958-11-pstanner@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello,
+Hi Philipp,
 
-syzbot found the following issue on:
+On 1/23/24 10:43, Philipp Stanner wrote:
+> When the PCI devres API was introduced to this driver, it was wrongly
+> assumed that initializing the device with pcim_enable_device() instead
+> of pci_enable_device() will make all PCI functions managed.
+> 
+> This is wrong and was caused by the quite confusing devres API for PCI
+> in which some, but not all, functions become managed that way.
+> 
+> The function pci_iomap_range() is never managed.
+> 
+> Replace pci_iomap_range() with the actually managed function
+> pcim_iomap_range().
+> 
+> Additionally, add a call to pcim_request_region() to ensure exclusive
+> access to BAR 0.
 
-HEAD commit:    596764183be8 Add linux-next specific files for 20240129
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=142042f3e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=584144ad19f381aa
-dashboard link: https://syzkaller.appspot.com/bug?extid=39a72b995ba73633c1a7
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11844ba7e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15bd01efe80000
+I'm a bit worried about this last change. There might be
+issues where the pcim_request_region() fails due to
+e.g. a conflict with the simplefb / simpledrm code.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/b647c038857b/disk-59676418.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/729e26c3ac55/vmlinux-59676418.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/15aa5e287059/bzImage-59676418.xz
+There is a drm_aperture_remove_conflicting_pci_framebuffers()
+call done before hw_init() gets called, but still this
+has been known to cause issues in the past.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+39a72b995ba73633c1a7@syzkaller.appspotmail.com
+Can you split out the adding of the pcim_request_region()
+into a separate patch and *not* mark that separate patch
+for stable ?
 
-arg_start 7fffd9277efb arg_end 7fffd9277f14 env_start 7fffd9277f14 env_end 7fffd9277fdf
-binfmt ffffffff8d9c5c00 flags 80007fd
-ioctx_table 0000000000000000
-owner ffff88802c0cda00 exe_file ffff88801ff60500
-notifier_subscriptions 0000000000000000
-numa_next_scan 0 numa_scan_offset 0 numa_scan_seq 0
-tlb_flush_pending 0
-def_flags: 0x0()
-------------[ cut here ]------------
-kernel BUG at mm/mmap.c:328!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-CPU: 1 PID: 5058 Comm: syz-executor310 Not tainted 6.8.0-rc1-next-20240129-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-RIP: 0010:validate_mm+0x3f3/0x4b0 mm/mmap.c:328
-Code: 0f 84 a4 fd ff ff e9 47 ff ff ff e8 77 91 b9 ff 44 89 f2 89 de 48 c7 c7 e0 af 19 8b e8 56 69 9b ff 4c 89 ff e8 ce c4 fa ff 90 <0f> 0b e8 56 91 b9 ff 0f b6 15 1f dd b1 0d 31 ff 89 d6 88 14 24 e8
-RSP: 0018:ffffc900035df958 EFLAGS: 00010282
-RAX: 000000000000032a RBX: 000000000000000d RCX: ffffffff816e2f59
-RDX: 0000000000000000 RSI: ffffffff816eb7e6 RDI: 0000000000000005
-RBP: dffffc0000000000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000000 R11: 0000000000000001 R12: 00007fffd92ff000
-R13: 0000000000000000 R14: 000000000000000e R15: ffff88802c6b8000
-FS:  0000555557046380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f10ada208a0 CR3: 000000007b434000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- vma_merge+0x16a9/0x3d70 mm/mmap.c:1033
- vma_merge_new_vma mm/mmap.c:2465 [inline]
- mmap_region+0x206b/0x2760 mm/mmap.c:2841
- do_mmap+0x8ae/0xf10 mm/mmap.c:1380
- vm_mmap_pgoff+0x1ab/0x3c0 mm/util.c:573
- ksys_mmap_pgoff+0x425/0x5b0 mm/mmap.c:1426
- __do_sys_mmap arch/x86/kernel/sys_x86_64.c:93 [inline]
- __se_sys_mmap arch/x86/kernel/sys_x86_64.c:86 [inline]
- __x64_sys_mmap+0x125/0x190 arch/x86/kernel/sys_x86_64.c:86
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7f10ad9e52a9
-Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fffd9276338 EFLAGS: 00000246 ORIG_RAX: 0000000000000009
-RAX: ffffffffffffffda RBX: 00007fffd9276518 RCX: 00007f10ad9e52a9
-RDX: 0000000000000001 RSI: 0000000000002000 RDI: 0000000020ffc000
-RBP: 00007f10ada58610 R08: 0000000000000003 R09: 0000000000000000
-R10: 0000000000000011 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007fffd9276508 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:validate_mm+0x3f3/0x4b0 mm/mmap.c:328
-Code: 0f 84 a4 fd ff ff e9 47 ff ff ff e8 77 91 b9 ff 44 89 f2 89 de 48 c7 c7 e0 af 19 8b e8 56 69 9b ff 4c 89 ff e8 ce c4 fa ff 90 <0f> 0b e8 56 91 b9 ff 0f b6 15 1f dd b1 0d 31 ff 89 d6 88 14 24 e8
-RSP: 0018:ffffc900035df958 EFLAGS: 00010282
-RAX: 000000000000032a RBX: 000000000000000d RCX: ffffffff816e2f59
-RDX: 0000000000000000 RSI: ffffffff816eb7e6 RDI: 0000000000000005
-RBP: dffffc0000000000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000000 R11: 0000000000000001 R12: 00007fffd92ff000
-R13: 0000000000000000 R14: 000000000000000e R15: ffff88802c6b8000
-FS:  0000555557046380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000664740 CR3: 000000007b434000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Regards,
+
+Hans
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+> 
+> CC: <stable@kernel.vger.org> # v5.10+
+> Fixes: 8558de401b5f ("drm/vboxvideo: use managed pci functions")
+> Signed-off-by: Philipp Stanner <pstanner@redhat.com>
+> ---
+>  drivers/gpu/drm/vboxvideo/vbox_main.c | 24 +++++++++++++-----------
+>  1 file changed, 13 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/vboxvideo/vbox_main.c b/drivers/gpu/drm/vboxvideo/vbox_main.c
+> index 42c2d8a99509..7f686a0190e6 100644
+> --- a/drivers/gpu/drm/vboxvideo/vbox_main.c
+> +++ b/drivers/gpu/drm/vboxvideo/vbox_main.c
+> @@ -42,12 +42,11 @@ static int vbox_accel_init(struct vbox_private *vbox)
+>  	/* Take a command buffer for each screen from the end of usable VRAM. */
+>  	vbox->available_vram_size -= vbox->num_crtcs * VBVA_MIN_BUFFER_SIZE;
+>  
+> -	vbox->vbva_buffers = pci_iomap_range(pdev, 0,
+> -					     vbox->available_vram_size,
+> -					     vbox->num_crtcs *
+> -					     VBVA_MIN_BUFFER_SIZE);
+> -	if (!vbox->vbva_buffers)
+> -		return -ENOMEM;
+> +	vbox->vbva_buffers = pcim_iomap_range(
+> +			pdev, 0, vbox->available_vram_size,
+> +			vbox->num_crtcs * VBVA_MIN_BUFFER_SIZE);
+> +	if (IS_ERR(vbox->vbva_buffers))
+> +		return PTR_ERR(vbox->vbva_buffers);
+>  
+>  	for (i = 0; i < vbox->num_crtcs; ++i) {
+>  		vbva_setup_buffer_context(&vbox->vbva_info[i],
+> @@ -115,12 +114,15 @@ int vbox_hw_init(struct vbox_private *vbox)
+>  
+>  	DRM_INFO("VRAM %08x\n", vbox->full_vram_size);
+>  
+> +	ret = pcim_request_region(pdev, 0, "vboxvideo");
+> +	if (ret)
+> +		return ret;
+> +
+>  	/* Map guest-heap at end of vram */
+> -	vbox->guest_heap =
+> -	    pci_iomap_range(pdev, 0, GUEST_HEAP_OFFSET(vbox),
+> -			    GUEST_HEAP_SIZE);
+> -	if (!vbox->guest_heap)
+> -		return -ENOMEM;
+> +	vbox->guest_heap = pcim_iomap_range(pdev, 0,
+> +			GUEST_HEAP_OFFSET(vbox), GUEST_HEAP_SIZE);
+> +	if (IS_ERR(vbox->guest_heap))
+> +		return PTR_ERR(vbox->guest_heap);
+>  
+>  	/* Create guest-heap mem-pool use 2^4 = 16 byte chunks */
+>  	vbox->guest_pool = devm_gen_pool_create(vbox->ddev.dev, 4, -1,
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
