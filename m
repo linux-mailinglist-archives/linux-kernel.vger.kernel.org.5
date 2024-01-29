@@ -1,118 +1,166 @@
-Return-Path: <linux-kernel+bounces-42434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A8C684015D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:24:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A929784015F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:25:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D9BA1C21A7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:24:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F6851F23B50
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:25:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 282E455779;
-	Mon, 29 Jan 2024 09:24:38 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2517054F93;
-	Mon, 29 Jan 2024 09:24:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30D3355762;
+	Mon, 29 Jan 2024 09:24:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b6VMHbKv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5845655C29;
+	Mon, 29 Jan 2024 09:24:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706520277; cv=none; b=J9BXUB33LQF1JwDZfYd07jKDDQuRkX40fW6XULlS0BxFvRPIGKFHNNJbT8JNSlUQTCmZSvjhReXDH71p5ThPLSF5W5ZtQpZV11P6XRw6590x2OngZnRDDcxb35ESxUnQ8QTYp209uLXy2vbj7wOOOYKdhdpNn7p5UAb9v+KXb+w=
+	t=1706520286; cv=none; b=ehMg7PmPueA0NFk1iZ+ny2acIZWceqcCEMlIq8WNUKCf+SeaoiHihZWN8/eXJP5TiKjXpUiLiVwW9dQHYHKYYaLuZaQe8jnYHYXksOacZk2U2I3F3V7gjDM0Y6Kdn2ndWUS2nhKmfhf2UYNptKbnywAsTK4YZEmV58nCf8Xkj9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706520277; c=relaxed/simple;
-	bh=inmOTze7uKfZeWIoyGwST8hZ+d0IPucCCcqmZ34CTwM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RSaub6YEpF49Y5VZS9ojZ54+jfYWYJR0RoOmNL7zwrOEEX3548X0A/DVzQ6Y8bljG8NWn3su5xFC5PNHdYNCEeQs42ufOEA62JagMQM1tuhBjxfmWFHAaWU98o+SVJwDMQxTY4jCdkhyj99xI42nxdjfB6VdDw1DAmdqz5lUsfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 132871FB;
-	Mon, 29 Jan 2024 01:25:18 -0800 (PST)
-Received: from [10.162.42.11] (a077893.blr.arm.com [10.162.42.11])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5B6393F762;
-	Mon, 29 Jan 2024 01:24:23 -0800 (PST)
-Message-ID: <0a71c87a-ae2c-4a61-8adb-3a51d6369b99@arm.com>
-Date: Mon, 29 Jan 2024 14:54:20 +0530
+	s=arc-20240116; t=1706520286; c=relaxed/simple;
+	bh=CaVyL8/alkHSlyanSOlgNxf/AcPt6spU+xNLSCDKduo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=daIfGOIRjP2e8KNX0R223Nvd8Gme9B0jn6PKgcFR2dOqZQ3vfI1/TRrJT+XvoYmhDLH5RDR6R2w/GU4T0jvq4bSoP9w9kbClm2MY8CbhfV6faeL6c29HJSKg57RjqsZ3S0YVKj2bQKJVAYqFlEL4tQ1G0R5vNyB1Ks9qu0Bmooc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b6VMHbKv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8958FC433F1;
+	Mon, 29 Jan 2024 09:24:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706520285;
+	bh=CaVyL8/alkHSlyanSOlgNxf/AcPt6spU+xNLSCDKduo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=b6VMHbKvkfmIjyVW8DfjfU6DjAshN7JrYkKyqBumkbaN5uHXmHEHw0gyeWv48KCEY
+	 hNY/FHP2YbM4FLIXI3R6KcbunDu+tH2tF5EccYJjBQvh1q3hLZH1Qf6AX2J3YJ/wzQ
+	 /NR059Vl9Qj6YDj7LBVFN9Cp0+NvjuUImvin6wL+Hk9/PJ88tAaBdQt+dvhiXXyw1w
+	 mI1gJRv0OYJ6C61NIyR2q1QL9OTscf7U12Tprz5PRoapKhmc+3SyM4mV2mQhEqFCnT
+	 B12xJMzY/EKAwV+eMvwyhrSOLFqVMhMv+16qCeQJE2wa1yxatchRPP1e0vdq5hQ8ss
+	 03DawQAdEX+FA==
+Date: Mon, 29 Jan 2024 09:24:40 +0000
+From: Lee Jones <lee@kernel.org>
+To: David Laight <David.Laight@aculab.com>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Petr Mladek <pmladek@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Crutcher Dunnavant <crutcher+kernel@datastacks.com>,
+	Juergen Quade <quade@hsnr.de>
+Subject: Re: [PATCH 1/1] lib/vsprintf: Implement ssprintf() to catch
+ truncated strings
+Message-ID: <20240129092440.GA1708181@google.com>
+References: <20240125083921.1312709-1-lee@kernel.org>
+ <a37e8071-32ac-4f5d-95e8-ddd2eb21edcd@rasmusvillemoes.dk>
+ <20240125103624.GC74950@google.com>
+ <54e518b6dd9647c1add38b706eccbb4b@AcuMS.aculab.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v3 06/35] mm: cma: Make CMA_ALLOC_SUCCESS/FAIL count
- the number of pages
-Content-Language: en-US
-To: Alexandru Elisei <alexandru.elisei@arm.com>, catalin.marinas@arm.com,
- will@kernel.org, oliver.upton@linux.dev, maz@kernel.org,
- james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com,
- arnd@arndb.de, akpm@linux-foundation.org, mingo@redhat.com,
- peterz@infradead.org, juri.lelli@redhat.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
- mhiramat@kernel.org, rppt@kernel.org, hughd@google.com
-Cc: pcc@google.com, steven.price@arm.com, vincenzo.frascino@arm.com,
- david@redhat.com, eugenis@google.com, kcc@google.com, hyesoo.yu@samsung.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-mm@kvack.org,
- linux-trace-kernel@vger.kernel.org
-References: <20240125164256.4147-1-alexandru.elisei@arm.com>
- <20240125164256.4147-7-alexandru.elisei@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20240125164256.4147-7-alexandru.elisei@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <54e518b6dd9647c1add38b706eccbb4b@AcuMS.aculab.com>
 
+NB: I was _just_ about to send out v2 with Rasmus's suggestions before I
+saw your reply.  I'm going to submit it anyway and Cc both you and
+Rasmus.  If you still disagree with my suggested approach, we can either
+continue discussion here or on the new version.
 
+More below:
 
-On 1/25/24 22:12, Alexandru Elisei wrote:
-> The CMA_ALLOC_SUCCESS, respectively CMA_ALLOC_FAIL, are increased by one
-> after each cma_alloc() function call. This is done even though cma_alloc()
-> can allocate an arbitrary number of CMA pages. When looking at
-> /proc/vmstat, the number of successful (or failed) cma_alloc() calls
-> doesn't tell much with regards to how many CMA pages were allocated via
-> cma_alloc() versus via the page allocator (regular allocation request or
-> PCP lists refill).
+> From: Lee Jones
+> > Sent: 25 January 2024 10:36
+> > On Thu, 25 Jan 2024, Rasmus Villemoes wrote:
+> > 
+> > > On 25/01/2024 09.39, Lee Jones wrote:
+> > > > There is an ongoing effort to replace the use of {v}snprintf() variants
+> > > > with safer alternatives - for a more in depth view, see Jon's write-up
+> > > > on LWN [0] and/or Alex's on the Kernel Self Protection Project [1].
+> > > >
+> > > > Whist executing the task, it quickly became apparent that the initial
+> > > > thought of simply s/snprintf/scnprintf/ wasn't going to be adequate for
+> > > > a number of cases.  Specifically ones where the caller needs to know
+> > > > whether the given string ends up being truncated.  This is where
+> > > > ssprintf() [based on similar semantics of strscpy()] comes in, since it
+> > > > takes the best parts of both of the aforementioned variants.  It has the
+> > > > testability of truncation of snprintf() and returns the number of Bytes
+> > > > *actually* written, similar to scnprintf(), making it a very programmer
+> > > > friendly alternative.
+> > > >
+> > > > Here's some examples to show the differences:
+> > > >
+> > > >   Success: No truncation - all 9 Bytes successfully written to the buffer
+> > > >
+> > > >     ret = snprintf (buf, 10, "%s", "123456789");  // ret = 9
+> > > >     ret = scnprintf(buf, 10, "%s", "123456789");  // ret = 9
+> > > >     ret = ssprintf (buf, 10, "%s", "123456789");  // ret = 9
+> > > >
+> > > >   Failure: Truncation - only 9 of 10 Bytes written; '-' is truncated
+> > > >
+> > > >     ret = snprintf (buf, 10, "%s", "123456789-"); // ret = 10
+> > > >
+> > > >       Reports: "10 Bytes would have been written if buf was large enough"
+> > > >       Issue: Programmers need to know/remember to check ret against "10"
+> > >
+> > > Yeah, so I'm not at all sure we need yet-another-wrapper with
+> > > yet-another-hard-to-read-prefix when people can just RTFM and learn how
+> > > to check for truncation or whatnot. But if you do this:
+> > 
+> > As wonderful as it would be for people to "just RTFM", we're seeing a
+> > large number of cases where this isn't happening.  Providing a more
+> > programmer friendly way is thought, by people way smarter than me, to be
+> > a solid means to solve this issue.  Please also see Kees Cook's related
+> > work to remove strlcpy() use.
 > 
-> This can also be rather confusing to a user who isn't familiar with the
-> code, since the unit of measurement for nr_free_cma is the number of pages,
-> but cma_alloc_success and cma_alloc_fail count the number of cma_alloc()
-> function calls.
-> 
-> Let's make this consistent, and arguably more useful, by having
-> CMA_ALLOC_SUCCESS count the number of successfully allocated CMA pages, and
-> CMA_ALLOC_FAIL count the number of pages the cma_alloc() failed to
-> allocate.
-> 
-> For users that wish to track the number of cma_alloc() calls, there are
-> tracepoints for that already implemented.
-> 
-> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> ---
->  mm/cma.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/cma.c b/mm/cma.c
-> index f49c95f8ee37..dbf7fe8cb1bd 100644
-> --- a/mm/cma.c
-> +++ b/mm/cma.c
-> @@ -517,10 +517,10 @@ struct page *cma_alloc(struct cma *cma, unsigned long count,
->  	pr_debug("%s(): returned %p\n", __func__, page);
->  out:
->  	if (page) {
-> -		count_vm_event(CMA_ALLOC_SUCCESS);
-> +		count_vm_events(CMA_ALLOC_SUCCESS, count);
->  		cma_sysfs_account_success_pages(cma, count);
->  	} else {
-> -		count_vm_event(CMA_ALLOC_FAIL);
-> +		count_vm_events(CMA_ALLOC_FAIL, count);
->  		if (cma)
->  			cma_sysfs_account_fail_pages(cma, count);
->  	}
+> My worry is that people will believe the length and forget that
+> it might be an error code.
 
-Without getting into the merits of this patch - which is actually trying to do
-semantics change to /proc/vmstat, wondering how is this even related to this
-particular series ? If required this could be debated on it's on separately.
+My plan is to go around and convert these myself.  All of the examples
+in the kernel will check the return value for error.  We can go one
+further and author a Coccinelle rule to enforce the semantics.
+
+> So you replace one set of errors (truncated data), with another
+> worse set (eg write before start of buffer).
+
+Under-running the buffer is no worse over-running.  However, as I say,
+we're going to make a concerted effort to prevent that via various
+proactive and passive measures.
+
+> I'm sure that the safest return for 'truncated' is the buffer length.
+> The a series of statements like:
+> 	buf += xxx(buf, buf_end - buf, .....);
+> can all be called with a single overflow check at the end.
+>
+> Forget the check, and the length just contains a trailing '\0'
+> which might cause confusion but isn't going to immediately
+> break the world.
+
+snprintf() does this and has been proven to cause buffer-overflows.
+There have been multiple articles authored describing why using
+snprintf() is not generally a good idea for the masses including the 2
+linked in the commit message:
+
+LWN: snprintf() confusion
+  https://lwn.net/Articles/69419/
+
+KSPP: Replace uses of snprintf() and vsnprintf()
+  https://github.com/KSPP/linux/issues/105
+
+Yes, you should check ssprintf() for error.  This is no different to the
+many hundreds of APIs where this is also a stipulation.  Not checking
+(m)any of the memory allocation APIs for error will also lead to similar
+results which is why we enforce the check.
+
+-- 
+Lee Jones [李琼斯]
 
