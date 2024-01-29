@@ -1,315 +1,116 @@
-Return-Path: <linux-kernel+bounces-42745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2F0D8405F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:04:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F08084064F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:10:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22D79B212C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:04:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 915FD1C23596
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:10:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0AB1629FF;
-	Mon, 29 Jan 2024 13:04:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BA8164CE0;
+	Mon, 29 Jan 2024 13:07:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="G02VFL5d"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="lkJJhIQY"
+Received: from aposti.net (aposti.net [89.234.176.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05866627F6;
-	Mon, 29 Jan 2024 13:04:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9A9F62805;
+	Mon, 29 Jan 2024 13:07:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.234.176.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706533446; cv=none; b=lEYtt80EXAPS2Mm35ErG3vwRSun005YuY6Hl1kz6WE8X0xZ0WvNaaKbG0h38OY0Jl5TcxrB8fXv6knpLgsZDugk+UV0o2JSUOg1sSCqdqNa3BqUdFa4jb2QuXMZH1I77CAzZ5vwREL2P92wr01FjmXJG6kYNeGw/5VhBHEs95tw=
+	t=1706533630; cv=none; b=tRqrbhgulL9qOau4pBj/A9u069C6ycS0dBp5yQjr/ADgKDyqgPrnhd8rR1M6L+/eYr7zld9P7crIJZwy/sh4Qhu0Mf4zAFBDyj/BXF4eqIWGRpQDzFMcfa/g0SQj81Bf61DdbJjo424NkqXtHCy75iXORrHHedvLfFYgRKO3FuQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706533446; c=relaxed/simple;
-	bh=27JOn8pMPLxrkKswcEytxNvifYEawTPWb/P+SH4Wzlw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gaswHZia6DGSUPDTg4+AXnTbE3I3FWEssOaxUTdtwngTA9cagwA4HKfG0QeX9uKRO5ZAzGHHXCImFHkuyTtd5KH9bFfcWt42y+V8V8Tx4xLmKO7Nh++N2frZgH5eLorv/dJapZwCppFHXsxu7Wsiu2Xy6pQvMzYzhVKVwCWhO/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=G02VFL5d; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706533443;
-	bh=27JOn8pMPLxrkKswcEytxNvifYEawTPWb/P+SH4Wzlw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=G02VFL5dsxDBMfml0ydsZpY7Kk9QshJxGmTO7apRcr+KB5hSL5GNDSk9+ZudJXzOH
-	 bQS7M2E0uW0QVNbB8MdOvWe6wQO1dLhPrLEPTcV1pZfjr0OMfWU3wtGRtwBdndNXSE
-	 7i0Z6dEJBkaiaVydPd8rR8u0a7C5F4yCHX1u4HYH2IWOQAUpJX/ScvMWbH5RKJBHnJ
-	 HJWGNPzDTjj6Po/NJFOD6S5APQat0FBc+6xxOWd0051Mf0/SyB4Lc68lhAXanD4JB1
-	 Y+T4xYC8DlYDDMSzsNrpQMlFV45UI0HkRQcWr8zYOgrBs4Qw0o+qcG8F7G/xoIv6/D
-	 4eYlGWDVH/sGA==
-Received: from mercury (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	(Authenticated sender: sre)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 5D030378003D;
-	Mon, 29 Jan 2024 13:04:03 +0000 (UTC)
-Received: by mercury (Postfix, from userid 1000)
-	id 081221063ADA; Mon, 29 Jan 2024 14:04:02 +0100 (CET)
-Date: Mon, 29 Jan 2024 14:04:02 +0100
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Luca Weiss <luca.weiss@fairphone.com>, andersson@kernel.org, 
-	linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org, Johan Hovold <johan+linaro@kernel.org>
-Subject: Re: [PATCH AUTOSEL 6.6 12/31] power: supply: qcom_battmgr: Register
- the power supplies after PDR is up
-Message-ID: <wqq4ga5m5qvhvzebdl5p7ecwhhbtgyil4isjx7htq6zto3yoex@dqi75okjckob>
-References: <20240128161315.201999-1-sashal@kernel.org>
- <20240128161315.201999-12-sashal@kernel.org>
+	s=arc-20240116; t=1706533630; c=relaxed/simple;
+	bh=ohwrdZDM8vaPRClPA73d/eC9TaOp9u2xSfByKk4W4Wc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=BVanrIfzaTZ9vgGaRuPfMy9BkfNK1UtvTf/kpORf43yh40m5ikDa1czUhJVrF/kcSMPu7G1IU8WjUldaAjWDZtdnlTg9No7KXETtkmy9SOn5gxb8j1h/59oGfovKt08bCSYiqBF2IF8fGFyQVb82XCvKsiiqHAER+qX7TnFLmho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=lkJJhIQY; arc=none smtp.client-ip=89.234.176.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+	s=mail; t=1706533620;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=WZ6n1UUyKZ6/GqoAl9C1IKiMh8xfnXYw9yivuJaenjc=;
+	b=lkJJhIQY7TfMtm88L38sEkEJxselNAE/Twb2fKnBQqdR6TXUlZ2g4KFkZoV01JpOgc4RAR
+	rYr2XoaTW10D8p2tIFa0TUtnH8Nx8VUwnoNONT3e/nD7GZ+aKpfpdjZxhhLhw4eziLUrZs
+	1uCNQrzVPFDxkK4VvOHIVRP3VMh3YSE=
+Message-ID: <aac82ce15a49c5e4b939a69229b9a8a51ca00f5d.camel@crapouillou.net>
+Subject: Re: [PATCH v5 5/8] iio: core: Add new DMABUF interface
+ infrastructure
+From: Paul Cercueil <paul@crapouillou.net>
+To: Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>, 
+	Jonathan Cameron
+	 <jic23@kernel.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Sumit Semwal
+ <sumit.semwal@linaro.org>,  Vinod Koul <vkoul@kernel.org>, Jonathan Corbet
+ <corbet@lwn.net>, linux-doc@vger.kernel.org,  linux-kernel@vger.kernel.org,
+ dmaengine@vger.kernel.org,  linux-iio@vger.kernel.org,
+ linux-media@vger.kernel.org,  dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org, Nuno =?ISO-8859-1?Q?S=E1?=
+ <noname.nuno@gmail.com>, Michael Hennerich <Michael.Hennerich@analog.com>
+Date: Mon, 29 Jan 2024 14:06:58 +0100
+In-Reply-To: <d6bef39c-f940-4097-8ca3-0cf4ef89a743@amd.com>
+References: <20231219175009.65482-1-paul@crapouillou.net>
+	 <20231219175009.65482-6-paul@crapouillou.net>
+	 <20231221120624.7bcdc302@jic23-huawei>
+	 <ee5d7bb2fb3e74e8fc621d745b23d1858e1f0c3c.camel@crapouillou.net>
+	 <20240127165044.22f1b329@jic23-huawei>
+	 <d6bef39c-f940-4097-8ca3-0cf4ef89a743@amd.com>
+Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
+ keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZMLQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5UzFZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtNz8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe+rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIPdlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7Urf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KFlBwgAhlGy6nqP7O3u7q23hRW5AQ0EXQqFwQEIAMo+MgvYHsyjX3Ja4Oolg1Txzm8woj30ch2nACFCqaO0R/1kLj2VVeLrDyQUOlXx9PD6IQI4M8wy8m0sR4wV2p/g/paw7k65cjzYYLh+FdLNyO7IW
+	YXndJO+wDPi3aK/YKUYepqlP+QsmaHNYNdXEQDRKqNfJg8t0f5rfzp9ryxd1tCnbV+tG8VHQWiZXNqN7062DygSNXFUfQ0vZ3J2D4oAcIAEXTymRQ2+hr3Hf7I61KMHWeSkCvCG2decTYsHlw5Erix/jYWqVOtX0roOOLqWkqpQQJWtU+biWrAksmFmCp5fXIg1Nlg39v21xCXBGxJkxyTYuhdWyu1yDQ+LSIUAEQEAAYkBNgQYAQoAIBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsMAAoJEHPua9InSr1B4wsH/Az767YCT0FSsMNt1jkkdLCBi7nY0GTW+PLP1a4zvVqFMo/vD6uz1ZflVTUAEvcTi3VHYZrlgjcxmcGu239oruqUS8Qy/xgZBp9KF0NTWQSl1iBfVbIU5VV1vHS6r77W5x0qXgfvAUWOH4gmN3MnF01SH2zMcLiaUGF+mcwl15rHbjnT3Nu2399aSE6cep86igfCAyFUOXjYEGlJy+c6UyT+DUylpjQg0nl8MlZ/7Whg2fAU9+FALIbQYQzGlT4c71SibR9T741jnegHhlmV4WXXUD6roFt54t0MSAFSVxzG8mLcSjR2cLUJ3NIPXixYUSEn3tQhfZj07xIIjWxAYZo=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ejjavpsvnbuzsgx4"
-Content-Disposition: inline
-In-Reply-To: <20240128161315.201999-12-sashal@kernel.org>
 
+Hi Christian,
 
---ejjavpsvnbuzsgx4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Sun, Jan 28, 2024 at 11:12:42AM -0500, Sasha Levin wrote:
-> From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Le lundi 29 janvier 2024 =C3=A0 13:52 +0100, Christian K=C3=B6nig a =C3=A9c=
+rit=C2=A0:
+> Am 27.01.24 um 17:50 schrieb Jonathan Cameron:
+> > > > > +	iio_buffer_dmabuf_put(attach);
+> > > > > +
+> > > > > +out_dmabuf_put:
+> > > > > +	dma_buf_put(dmabuf);
+> > > > As below. Feels like a __free(dma_buf_put) bit of magic would
+> > > > be a
+> > > > nice to have.
+> > > I'm working on the patches right now, just one quick question.
+> > >=20
+> > > Having a __free(dma_buf_put) requires that dma_buf_put is first
+> > > "registered" as a freeing function using DEFINE_FREE() in
+> > > <linux/dma-
+> > > buf.h>, which has not been done yet.
+> > >=20
+> > > That would mean carrying a dma-buf specific patch in your tree,
+> > > are you
+> > > OK with that?
+> > Needs an ACK from appropriate maintainer, but otherwise I'm fine
+> > doing
+> > so.=C2=A0 Alternative is to circle back to this later after this code i=
+s
+> > upstream.
 >=20
-> [ Upstream commit b43f7ddc2b7a5a90447d96cb4d3c6d142dd4a810 ]
->=20
-> Currently, a not-yet-entirely-initialized battmgr (e.g. with pd-mapper
-> not having yet started or ADSP not being up etc.) results in a couple of
-> zombie power supply devices hanging around.
->=20
-> This is particularly noticeable when trying to suspend the device (even
-> s2idle): the PSY-internal thermal zone is inaccessible and returns
-> -ENODEV, which causes log spam.
->=20
-> Register the power supplies only after we received some notification
-> indicating battmgr is ready to take off.
->=20
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> Tested-by: Luca Weiss <luca.weiss@fairphone.com>
-> Link: https://lore.kernel.org/r/20231218-topic-battmgr_fixture_attempt-v1=
--1-6145745f34fe@linaro.org
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
+> Separate patches for that please, the autocleanup feature is so new
+> that=20
+> I'm not 100% convinced that everything works out smoothly from the
+> start.
 
-Please drop. I have a patch queued reverting this patch.
+Separate patches is a given, did you mean outside this patchset?
+Because I can send a separate patchset that introduces scope-based
+management for dma_fence and dma_buf, but then it won't have users.
 
--- Sebastian
-
->  drivers/power/supply/qcom_battmgr.c | 109 +++++++++++++++-------------
->  1 file changed, 60 insertions(+), 49 deletions(-)
->=20
-> diff --git a/drivers/power/supply/qcom_battmgr.c b/drivers/power/supply/q=
-com_battmgr.c
-> index ec163d1bcd18..a12e2a66d516 100644
-> --- a/drivers/power/supply/qcom_battmgr.c
-> +++ b/drivers/power/supply/qcom_battmgr.c
-> @@ -282,6 +282,7 @@ struct qcom_battmgr_wireless {
-> =20
->  struct qcom_battmgr {
->  	struct device *dev;
-> +	struct auxiliary_device *adev;
->  	struct pmic_glink_client *client;
-> =20
->  	enum qcom_battmgr_variant variant;
-> @@ -1293,11 +1294,69 @@ static void qcom_battmgr_enable_worker(struct wor=
-k_struct *work)
->  		dev_err(battmgr->dev, "failed to request power notifications\n");
->  }
-> =20
-> +static char *qcom_battmgr_battery[] =3D { "battery" };
-> +
-> +static void qcom_battmgr_register_psy(struct qcom_battmgr *battmgr)
-> +{
-> +	struct power_supply_config psy_cfg_supply =3D {};
-> +	struct auxiliary_device *adev =3D battmgr->adev;
-> +	struct power_supply_config psy_cfg =3D {};
-> +	struct device *dev =3D &adev->dev;
-> +
-> +	psy_cfg.drv_data =3D battmgr;
-> +	psy_cfg.of_node =3D adev->dev.of_node;
-> +
-> +	psy_cfg_supply.drv_data =3D battmgr;
-> +	psy_cfg_supply.of_node =3D adev->dev.of_node;
-> +	psy_cfg_supply.supplied_to =3D qcom_battmgr_battery;
-> +	psy_cfg_supply.num_supplicants =3D 1;
-> +
-> +	if (battmgr->variant =3D=3D QCOM_BATTMGR_SC8280XP) {
-> +		battmgr->bat_psy =3D devm_power_supply_register(dev, &sc8280xp_bat_psy=
-_desc, &psy_cfg);
-> +		if (IS_ERR(battmgr->bat_psy))
-> +			dev_err(dev, "failed to register battery power supply (%ld)\n",
-> +				PTR_ERR(battmgr->bat_psy));
-> +
-> +		battmgr->ac_psy =3D devm_power_supply_register(dev, &sc8280xp_ac_psy_d=
-esc, &psy_cfg_supply);
-> +		if (IS_ERR(battmgr->ac_psy))
-> +			dev_err(dev, "failed to register AC power supply (%ld)\n",
-> +				PTR_ERR(battmgr->ac_psy));
-> +
-> +		battmgr->usb_psy =3D devm_power_supply_register(dev, &sc8280xp_usb_psy=
-_desc, &psy_cfg_supply);
-> +		if (IS_ERR(battmgr->usb_psy))
-> +			dev_err(dev, "failed to register USB power supply (%ld)\n",
-> +				PTR_ERR(battmgr->usb_psy));
-> +
-> +		battmgr->wls_psy =3D devm_power_supply_register(dev, &sc8280xp_wls_psy=
-_desc, &psy_cfg_supply);
-> +		if (IS_ERR(battmgr->wls_psy))
-> +			dev_err(dev, "failed to register wireless charing power supply (%ld)\=
-n",
-> +				PTR_ERR(battmgr->wls_psy));
-> +	} else {
-> +		battmgr->bat_psy =3D devm_power_supply_register(dev, &sm8350_bat_psy_d=
-esc, &psy_cfg);
-> +		if (IS_ERR(battmgr->bat_psy))
-> +			dev_err(dev, "failed to register battery power supply (%ld)\n",
-> +				PTR_ERR(battmgr->bat_psy));
-> +
-> +		battmgr->usb_psy =3D devm_power_supply_register(dev, &sm8350_usb_psy_d=
-esc, &psy_cfg_supply);
-> +		if (IS_ERR(battmgr->usb_psy))
-> +			dev_err(dev, "failed to register USB power supply (%ld)\n",
-> +				PTR_ERR(battmgr->usb_psy));
-> +
-> +		battmgr->wls_psy =3D devm_power_supply_register(dev, &sm8350_wls_psy_d=
-esc, &psy_cfg_supply);
-> +		if (IS_ERR(battmgr->wls_psy))
-> +			dev_err(dev, "failed to register wireless charing power supply (%ld)\=
-n",
-> +				PTR_ERR(battmgr->wls_psy));
-> +	}
-> +}
-> +
->  static void qcom_battmgr_pdr_notify(void *priv, int state)
->  {
->  	struct qcom_battmgr *battmgr =3D priv;
-> =20
->  	if (state =3D=3D SERVREG_SERVICE_STATE_UP) {
-> +		if (!battmgr->bat_psy)
-> +			qcom_battmgr_register_psy(battmgr);
-> +
->  		battmgr->service_up =3D true;
->  		schedule_work(&battmgr->enable_work);
->  	} else {
-> @@ -1312,13 +1371,9 @@ static const struct of_device_id qcom_battmgr_of_v=
-ariants[] =3D {
->  	{}
->  };
-> =20
-> -static char *qcom_battmgr_battery[] =3D { "battery" };
-> -
->  static int qcom_battmgr_probe(struct auxiliary_device *adev,
->  			      const struct auxiliary_device_id *id)
->  {
-> -	struct power_supply_config psy_cfg_supply =3D {};
-> -	struct power_supply_config psy_cfg =3D {};
->  	const struct of_device_id *match;
->  	struct qcom_battmgr *battmgr;
->  	struct device *dev =3D &adev->dev;
-> @@ -1328,14 +1383,7 @@ static int qcom_battmgr_probe(struct auxiliary_dev=
-ice *adev,
->  		return -ENOMEM;
-> =20
->  	battmgr->dev =3D dev;
-> -
-> -	psy_cfg.drv_data =3D battmgr;
-> -	psy_cfg.of_node =3D adev->dev.of_node;
-> -
-> -	psy_cfg_supply.drv_data =3D battmgr;
-> -	psy_cfg_supply.of_node =3D adev->dev.of_node;
-> -	psy_cfg_supply.supplied_to =3D qcom_battmgr_battery;
-> -	psy_cfg_supply.num_supplicants =3D 1;
-> +	battmgr->adev =3D adev;
-> =20
->  	INIT_WORK(&battmgr->enable_work, qcom_battmgr_enable_worker);
->  	mutex_init(&battmgr->lock);
-> @@ -1347,43 +1395,6 @@ static int qcom_battmgr_probe(struct auxiliary_dev=
-ice *adev,
->  	else
->  		battmgr->variant =3D QCOM_BATTMGR_SM8350;
-> =20
-> -	if (battmgr->variant =3D=3D QCOM_BATTMGR_SC8280XP) {
-> -		battmgr->bat_psy =3D devm_power_supply_register(dev, &sc8280xp_bat_psy=
-_desc, &psy_cfg);
-> -		if (IS_ERR(battmgr->bat_psy))
-> -			return dev_err_probe(dev, PTR_ERR(battmgr->bat_psy),
-> -					     "failed to register battery power supply\n");
-> -
-> -		battmgr->ac_psy =3D devm_power_supply_register(dev, &sc8280xp_ac_psy_d=
-esc, &psy_cfg_supply);
-> -		if (IS_ERR(battmgr->ac_psy))
-> -			return dev_err_probe(dev, PTR_ERR(battmgr->ac_psy),
-> -					     "failed to register AC power supply\n");
-> -
-> -		battmgr->usb_psy =3D devm_power_supply_register(dev, &sc8280xp_usb_psy=
-_desc, &psy_cfg_supply);
-> -		if (IS_ERR(battmgr->usb_psy))
-> -			return dev_err_probe(dev, PTR_ERR(battmgr->usb_psy),
-> -					     "failed to register USB power supply\n");
-> -
-> -		battmgr->wls_psy =3D devm_power_supply_register(dev, &sc8280xp_wls_psy=
-_desc, &psy_cfg_supply);
-> -		if (IS_ERR(battmgr->wls_psy))
-> -			return dev_err_probe(dev, PTR_ERR(battmgr->wls_psy),
-> -					     "failed to register wireless charing power supply\n");
-> -	} else {
-> -		battmgr->bat_psy =3D devm_power_supply_register(dev, &sm8350_bat_psy_d=
-esc, &psy_cfg);
-> -		if (IS_ERR(battmgr->bat_psy))
-> -			return dev_err_probe(dev, PTR_ERR(battmgr->bat_psy),
-> -					     "failed to register battery power supply\n");
-> -
-> -		battmgr->usb_psy =3D devm_power_supply_register(dev, &sm8350_usb_psy_d=
-esc, &psy_cfg_supply);
-> -		if (IS_ERR(battmgr->usb_psy))
-> -			return dev_err_probe(dev, PTR_ERR(battmgr->usb_psy),
-> -					     "failed to register USB power supply\n");
-> -
-> -		battmgr->wls_psy =3D devm_power_supply_register(dev, &sm8350_wls_psy_d=
-esc, &psy_cfg_supply);
-> -		if (IS_ERR(battmgr->wls_psy))
-> -			return dev_err_probe(dev, PTR_ERR(battmgr->wls_psy),
-> -					     "failed to register wireless charing power supply\n");
-> -	}
-> -
->  	battmgr->client =3D devm_pmic_glink_register_client(dev,
->  							  PMIC_GLINK_OWNER_BATTMGR,
->  							  qcom_battmgr_callback,
-> --=20
-> 2.43.0
->=20
-
---ejjavpsvnbuzsgx4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmW3okIACgkQ2O7X88g7
-+poDwA/9GUhI/yZTzwvrtYOc5qnHAJvS+H8dTwX/Qp5VHVUxpBLeVuqyg1jqh4a+
-b5ji6+2LsZCWiJ/EJPcNp3Xviv/5lf0KWkuOCKA/4skWwvR7Aw3kdRUVcRD3LHUJ
-jh6ZjTh1nzbIY72z8x846KKHX3G+EXjVcikgdh52L/CQbOt/pN+teK3YctHqSBfd
-8Lpo5ZzhDi+P3ki9vNtn9MY7bQx/mLbO669TY6cDa7OvYH55sZ8G6ICeyeR0X0oF
-oi8ZsH2S7tj0JiQX40Ku9VxiuM+ONelqqr2SGiErcLYICRwNDe+OTJp8yJVAoMiV
-HXk1I2oxiEeG8so3sH+9C7CHR6xqcZS3bNhff9SxWx9SROtmOZFwhmuchefoV+gt
-s/xkh0zpL9r0Iuq5eECnoaLNbRd7TGGVeseZZ6qqMb/fPKO49diI5zFSHGRlwgWv
-CyzBql0gvm8ZRrkcLEH2ggqP8uwrTJF4VWjsPZE6d0ldc2Ckigj1GnY0S6kbChtH
-vDwOhwSLzNcrK4KsgGsq4mkFC4Ezitg+TJ5INcxf8PGhruIQO5k+5HWEwhgZCox2
-gQM0qlNwW5CE9HAb/EpxjSCouceklITmu7kVCbA6cvubnyTpZX/eOCyMmYqhB3C+
-jlxZ9fEcRqdWvm7xu6IkgSk/KVBldINRZR+aWW2hSzVLfg48NsA=
-=O+nP
------END PGP SIGNATURE-----
-
---ejjavpsvnbuzsgx4--
+Cheers,
+-Paul
 
