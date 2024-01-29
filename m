@@ -1,241 +1,223 @@
-Return-Path: <linux-kernel+bounces-43265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 738DA841192
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:03:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBE0884119A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:05:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED732B259A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:03:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 560981F2396F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:05:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC0066F086;
-	Mon, 29 Jan 2024 18:01:19 +0000 (UTC)
-Received: from air.basealt.ru (air.basealt.ru [194.107.17.39])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA2173F9E9;
+	Mon, 29 Jan 2024 18:05:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="u+u97NKp"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D78523F9CE;
-	Mon, 29 Jan 2024 18:01:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.107.17.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5990D3F9CD
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 18:05:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706551279; cv=none; b=DrrADzmp9MG+0x+/Yx4n23ZhR9yqiXIhNExlNz0jEYU/hS2Khfo1TuTADoXpXwLOtUOnH4rZm7CC/d0jv+gl6DRH2ap0VDXULQtN9fveFo17r7Bc3NtvrvVZsPZaLx9R1sbJKdJGh6PdD8EtVmrebKK43l0y2OaeTSyNdGDbg0M=
+	t=1706551531; cv=none; b=QpqwbjqDLznDolYTVVKnjZxECs/pu1q2iRUhN+J49A4m0MXEgKK61pJ1exsAo+OtPUWFjZvATZ4d7PwfDRKCpTB/knQMOwApkEZa5i4CPkaW8M+M4Nqcu+IT5qIbU+h8csOceOMRHhCQ2/UkDkqo4JF82tNJcss3dFqzX7Xojzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706551279; c=relaxed/simple;
-	bh=Hrejm2+nPiXGDrGvpmgjccNwyZv7ISowuAb2TxHXSww=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=pYEMetUNq1VRlgU5wpc4lw9Ri53JkZ+H1eY71LUEv0KMeO/rWjWPQDIFXiLu9bOeKWfuH8RWHCvjn7aQOR/tu34Hg4VRgzipHjdsKXv3mnVSgP++xRy21SIel7oUm92wmshPo50H2UdzEFnd0nx5F6cXE2gp8LTDCYJuO1eWuCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=194.107.17.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
-Received: by air.basealt.ru (Postfix, from userid 490)
-	id 9615E2F2023F; Mon, 29 Jan 2024 18:01:13 +0000 (UTC)
-X-Spam-Level: 
-Received: from altlinux.malta.altlinux.ru (obninsk.basealt.ru [217.15.195.17])
-	by air.basealt.ru (Postfix) with ESMTPSA id C090E2F2022A;
-	Mon, 29 Jan 2024 18:01:08 +0000 (UTC)
-From: kovalev@altlinux.org
-To: stable@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	kpsingh@kernel.org,
-	john.fastabend@gmail.com,
-	yhs@fb.com,
-	songliubraving@fb.com,
-	kafai@fb.com,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	kovalev@altlinux.org
-Subject: [PATCH 5.15.y] bpf: Convert BPF_DISPATCHER to use static_call() (not ftrace)
-Date: Mon, 29 Jan 2024 21:01:08 +0300
-Message-Id: <20240129180108.284057-1-kovalev@altlinux.org>
-X-Mailer: git-send-email 2.33.8
+	s=arc-20240116; t=1706551531; c=relaxed/simple;
+	bh=YdhZ66KOErP/puxhjIeE2xj8p2TmW0k7m++j4/SciGY=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=tqNmDIKEoT4EYK3wxnpsfaVPbp+IHsoQGICQPkLZ/iwoKjcscAqwnUM/9EIkRbUEcPbGgfAR4OPJx2h5b/wElDur+7ULrwkW9tVjAgXMHHhdTo7O3p4vlPTkId2Z1mYaLFNWMvz2mdDRficafba7eYuQ056j/1dcCDxxNsGkMbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=u+u97NKp; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc22f3426aeso5716631276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 10:05:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706551528; x=1707156328; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=0dgHDmyiuf24yKbMsV5rC/PIHquqMJzNMfIw3GnnTIc=;
+        b=u+u97NKp6UC4HnYs6s2q0nQfUi8jWB4uOaoeESTWWQHvNDyPc6lSQpF7s8niY15gVf
+         UbGwEgk4FUZlVVWVlk878dJiMjYOdslph8C12B0DCfKIqnZ8NdDInhAfQ1vKRJgsZej+
+         Auo0bBNnyX2hHqdw/8Q9EhhxgPCEhB/4nEKqmmomglkLSzzdqYO8gEQBzTulTv9xx/bp
+         Q0RDUpdDmM9FhV4oEBqAqqAP4QiB4yUSZJyYfZuBT6i/QT5UYI5DUQxG6vPtKbnnGTH1
+         SM6lFm/C2/XHift2BahCUAMpnpypPof57eSzhpxCYoELt2n5xi9STbsdE0lP94gumbR6
+         GQzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706551528; x=1707156328;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0dgHDmyiuf24yKbMsV5rC/PIHquqMJzNMfIw3GnnTIc=;
+        b=Bc7lXM1SWUGSzZU8ZnguLbHW5UV2wXnLRBv7CwXMZhhhRdwfL2TmNQQV5IP8V8Hoeu
+         vAmQr3gUNkBZDIkvydOem6Y5RwsjI0LVXkJ7Ndz0AVRtppV78bb/qm1iKpXpaH+AMyzf
+         pOXIoCyP7ZI7SHmqwQNKX8E1T5lRtuik6D18+4w5NNsaKjLrMuFr/m3fNhy0LWUvPn5P
+         +8/rajHWV/GT8VdeLquQYXuTCshnUQyZVchXzBq2RFSMSRTvjD3huBiY0GnpiVn0vhXY
+         YjShVSynIjf4CnHVU1vFdYZ1lhCz3pEfpDKhplksZRQhdEQeEZZucXTasMjTRS5olKxp
+         CM9A==
+X-Gm-Message-State: AOJu0YxROPCJ2gD9z5hffgseay31vteNmYr/p1Gp43Fg8pFdWcj0x0Rx
+	U3mud7iX6xFHJDo9ykP450d/dNOw/txnyl3o6hzM+ispgehlRDnsGtJzJo1cpv3X6yAscAlRUaD
+	g0CStlKDoh7JwcXedIL1cSW5qkPXleF+1HLNS4DUMytvV4TnUIXQQ1V5V52QdXu7NLGfWcqPOrJ
+	HOPQEA6xpOBQHzpDBCRELZJL5PFbrIaQ==
+X-Google-Smtp-Source: AGHT+IGaATphYw3isIigM+VeGOYOeH4enRg6wjibBlkhiC3PQiWztkmu11zGrZOwDGivx7JkOKdoPSL7
+X-Received: from palermo.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:118a])
+ (user=ardb job=sendgmr) by 2002:a25:8908:0:b0:dc3:696e:ffae with SMTP id
+ e8-20020a258908000000b00dc3696effaemr1936135ybl.3.1706551528335; Mon, 29 Jan
+ 2024 10:05:28 -0800 (PST)
+Date: Mon, 29 Jan 2024 19:05:03 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6464; i=ardb@kernel.org;
+ h=from:subject; bh=3TIgd8JH8leGyvCOvibsMg9R6VNfjDFus1JZk+AZ7Zs=;
+ b=owGbwMvMwCFmkMcZplerG8N4Wi2JIXX7i/N3XHfs68hwrlq/xO1Tou0aE1lPb6fL/mVP5vzJ8
+ VrOzTy/o5SFQYyDQVZMkUVg9t93O09PlKp1niULM4eVCWQIAxenAEwk/jgjw78vwX51p59YF/JM
+ 799+tWSLWe/KJNc+hdU6mQxtRa+70hj+R0w3TQm7uXryiQkLjjyfIio1Y/+lf93qm3/8mDH76nd eZz4A
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Message-ID: <20240129180502.4069817-21-ardb+git@google.com>
+Subject: [PATCH v3 00/19] x86: Confine early 1:1 mapped startup code
+From: Ard Biesheuvel <ardb+git@google.com>
+To: linux-kernel@vger.kernel.org
+Cc: Ard Biesheuvel <ardb@kernel.org>, Kevin Loughlin <kevinloughlin@google.com>, 
+	Tom Lendacky <thomas.lendacky@amd.com>, Dionna Glaze <dionnaglaze@google.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, 
+	llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-[ Upstream commit c86df29d11dfba27c0a1f5039cd6fe387fbf4239 ]
+This is a follow-up to my RFC [0] that proposed to build the entire core
+kernel with -fPIC, to reduce the likelihood that code that runs
+extremely early from the 1:1 mapping of memory will misbehave.
 
-The dispatcher function is currently abusing the ftrace __fentry__
-call location for its own purposes -- this obviously gives trouble
-when the dispatcher and ftrace are both in use.
+This is needed to address reports that SEV boot on Clang built kernels
+is broken, due to the fact that this early code attempts to access
+virtual kernel address that are not mapped yet. Kevin has suggested some
+workarounds to this [1] but this is really something that requires a
+more rigorous approach, rather than addressing a couple of symptoms of
+the underlying defect.
 
-A previous solution tried using __attribute__((patchable_function_entry()))
-which works, except it is GCC-8+ only, breaking the build on the
-earlier still supported compilers. Instead use static_call() -- which
-has its own annotations and does not conflict with ftrace -- to
-rewrite the dispatch function.
+As it turns out, the use of fPIE for the entire kernel is neither
+necessary nor sufficient, and has its own set of problems, including the
+fact that the PIE small C code model uses FS rather than GS for the
+per-CPU register, and only recent GCC and Clang versions permit this to
+be overridden on the command line.
 
-By using: return static_call()(ctx, insni, bpf_func) you get a perfect
-forwarding tail call as function body (iow a single jmp instruction).
-By having the default static_call() target be bpf_dispatcher_nop_func()
-it retains the default behaviour (an indirect call to the argument
-function). Only once a dispatcher program is attached is the target
-rewritten to directly call the JIT'ed image.
+But the real problem is that even position independent code is not
+guaranteed to execute correctly at any offset unless all statically
+initialized pointer variables use the same translation as the code.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: Björn Töpel <bjorn@kernel.org>
-Tested-by: Jiri Olsa <jolsa@kernel.org>
-Acked-by: Björn Töpel <bjorn@kernel.org>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Link: https://lkml.kernel.org/r/Y1/oBlK0yFk5c/Im@hirez.programming.kicks-ass.net
-Link: https://lore.kernel.org/bpf/20221103120647.796772565@infradead.org
-Signed-off-by: Vasiliy Kovalev <kovalev@altlinux.org>
----
- include/linux/bpf.h     | 39 ++++++++++++++++++++++++++++++++++++++-
- kernel/bpf/dispatcher.c | 22 ++++++++--------------
- 2 files changed, 46 insertions(+), 15 deletions(-)
+So instead, this v2 and later proposes another solution, taking the
+following approach:
+- clean up and refactor the startup code so that the primary startup
+  code executes from the 1:1 mapping but nothing else;
+- define a new text section type .pi.text and enforce that it can only
+  call into other .pi.text sections;
+- (tbd) require that objects containing .pi.text sections are built with
+  -fPIC, and disallow any absolute references from such objects.
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 00c615fc8ec3c3..633b8842e617e8 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -23,6 +23,7 @@
- #include <linux/slab.h>
- #include <linux/percpu-refcount.h>
- #include <linux/bpfptr.h>
-+#include <linux/static_call.h>
- 
- struct bpf_verifier_env;
- struct bpf_verifier_log;
-@@ -765,6 +766,10 @@ struct bpf_dispatcher {
- 	void *image;
- 	u32 image_off;
- 	struct bpf_ksym ksym;
-+#ifdef CONFIG_HAVE_STATIC_CALL
-+	struct static_call_key *sc_key;
-+	void *sc_tramp;
-+#endif
- };
- 
- static __always_inline __nocfi unsigned int bpf_dispatcher_nop_func(
-@@ -782,6 +787,34 @@ struct bpf_trampoline *bpf_trampoline_get(u64 key,
- 					  struct bpf_attach_target_info *tgt_info);
- void bpf_trampoline_put(struct bpf_trampoline *tr);
- int arch_prepare_bpf_dispatcher(void *image, s64 *funcs, int num_funcs);
-+
-+/*
-+ * When the architecture supports STATIC_CALL replace the bpf_dispatcher_fn
-+ * indirection with a direct call to the bpf program. If the architecture does
-+ * not have STATIC_CALL, avoid a double-indirection.
-+ */
-+#ifdef CONFIG_HAVE_STATIC_CALL
-+
-+#define __BPF_DISPATCHER_SC_INIT(_name)				\
-+	.sc_key = &STATIC_CALL_KEY(_name),			\
-+	.sc_tramp = STATIC_CALL_TRAMP_ADDR(_name),
-+
-+#define __BPF_DISPATCHER_SC(name)				\
-+	DEFINE_STATIC_CALL(bpf_dispatcher_##name##_call, bpf_dispatcher_nop_func)
-+
-+#define __BPF_DISPATCHER_CALL(name)				\
-+	static_call(bpf_dispatcher_##name##_call)(ctx, insnsi, bpf_func)
-+
-+#define __BPF_DISPATCHER_UPDATE(_d, _new)			\
-+	__static_call_update((_d)->sc_key, (_d)->sc_tramp, (_new))
-+
-+#else
-+#define __BPF_DISPATCHER_SC_INIT(name)
-+#define __BPF_DISPATCHER_SC(name)
-+#define __BPF_DISPATCHER_CALL(name)		bpf_func(ctx, insnsi)
-+#define __BPF_DISPATCHER_UPDATE(_d, _new)
-+#endif
-+
- #define BPF_DISPATCHER_INIT(_name) {				\
- 	.mutex = __MUTEX_INITIALIZER(_name.mutex),		\
- 	.func = &_name##_func,					\
-@@ -793,20 +826,23 @@ int arch_prepare_bpf_dispatcher(void *image, s64 *funcs, int num_funcs);
- 		.name  = #_name,				\
- 		.lnode = LIST_HEAD_INIT(_name.ksym.lnode),	\
- 	},							\
-+	__BPF_DISPATCHER_SC_INIT(_name##_call)			\
- }
- 
- #define DEFINE_BPF_DISPATCHER(name)					\
-+	__BPF_DISPATCHER_SC(name);					\
- 	noinline __nocfi unsigned int bpf_dispatcher_##name##_func(	\
- 		const void *ctx,					\
- 		const struct bpf_insn *insnsi,				\
- 		unsigned int (*bpf_func)(const void *,			\
- 					 const struct bpf_insn *))	\
- 	{								\
--		return bpf_func(ctx, insnsi);				\
-+		return __BPF_DISPATCHER_CALL(name);			\
- 	}								\
- 	EXPORT_SYMBOL(bpf_dispatcher_##name##_func);			\
- 	struct bpf_dispatcher bpf_dispatcher_##name =			\
- 		BPF_DISPATCHER_INIT(bpf_dispatcher_##name);
-+
- #define DECLARE_BPF_DISPATCHER(name)					\
- 	unsigned int bpf_dispatcher_##name##_func(			\
- 		const void *ctx,					\
-@@ -814,6 +850,7 @@ int arch_prepare_bpf_dispatcher(void *image, s64 *funcs, int num_funcs);
- 		unsigned int (*bpf_func)(const void *,			\
- 					 const struct bpf_insn *));	\
- 	extern struct bpf_dispatcher bpf_dispatcher_##name;
-+
- #define BPF_DISPATCHER_FUNC(name) bpf_dispatcher_##name##_func
- #define BPF_DISPATCHER_PTR(name) (&bpf_dispatcher_##name)
- void bpf_dispatcher_change_prog(struct bpf_dispatcher *d, struct bpf_prog *from,
-diff --git a/kernel/bpf/dispatcher.c b/kernel/bpf/dispatcher.c
-index 2444bd15cc2d03..23042cfb5e809b 100644
---- a/kernel/bpf/dispatcher.c
-+++ b/kernel/bpf/dispatcher.c
-@@ -4,6 +4,7 @@
- #include <linux/hash.h>
- #include <linux/bpf.h>
- #include <linux/filter.h>
-+#include <linux/static_call.h>
- 
- /* The BPF dispatcher is a multiway branch code generator. The
-  * dispatcher is a mechanism to avoid the performance penalty of an
-@@ -104,17 +105,11 @@ static int bpf_dispatcher_prepare(struct bpf_dispatcher *d, void *image)
- 
- static void bpf_dispatcher_update(struct bpf_dispatcher *d, int prev_num_progs)
- {
--	void *old, *new;
--	u32 noff;
--	int err;
--
--	if (!prev_num_progs) {
--		old = NULL;
--		noff = 0;
--	} else {
--		old = d->image + d->image_off;
-+	void *new;
-+	u32 noff = 0;
-+
-+	if (prev_num_progs)
- 		noff = d->image_off ^ (PAGE_SIZE / 2);
--	}
- 
- 	new = d->num_progs ? d->image + noff : NULL;
- 	if (new) {
-@@ -122,11 +117,10 @@ static void bpf_dispatcher_update(struct bpf_dispatcher *d, int prev_num_progs)
- 			return;
- 	}
- 
--	err = bpf_arch_text_poke(d->func, BPF_MOD_JUMP, old, new);
--	if (err || !new)
--		return;
-+	__BPF_DISPATCHER_UPDATE(d, new ?: &bpf_dispatcher_nop_func);
- 
--	d->image_off = noff;
-+	if (new)
-+		d->image_off = noff;
- }
- 
- void bpf_dispatcher_change_prog(struct bpf_dispatcher *d, struct bpf_prog *from,
+The latter point is not implemented yet in this v3, but this could be
+done rather straight-forwardly. (The EFI stub already does something
+similar across all architectures)
+
+Changes since v2: [2]
+- move command line parsing out of early startup code entirely
+- fix LTO and instrumentation related build warnings reported by Nathan
+- omit PTI related PGD/P4D setters when creating the early page tables,
+  instead of pulling that code into the 'early' set
+
+[0] https://lkml.kernel.org/r/20240122090851.851120-7-ardb%2Bgit%40google.com
+[1] https://lore.kernel.org/all/20240111223650.3502633-1-kevinloughlin@google.com/T/#u
+[2] https://lkml.kernel.org/r/20240125112818.2016733-19-ardb%2Bgit%40google.com
+
+Cc: Kevin Loughlin <kevinloughlin@google.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Dionna Glaze <dionnaglaze@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Justin Stitt <justinstitt@google.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Brian Gerst <brgerst@gmail.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-arch@vger.kernel.org
+Cc: llvm@lists.linux.dev
+
+Ard Biesheuvel (19):
+  efi/libstub: Add generic support for parsing mem_encrypt=
+  x86/boot: Move mem_encrypt= parsing to the decompressor
+  x86/startup_64: Drop long return to initial_code pointer
+  x86/startup_64: Simplify calculation of initial page table address
+  x86/startup_64: Simplify CR4 handling in startup code
+  x86/startup_64: Drop global variables keeping track of LA57 state
+  x86/startup_64: Simplify virtual switch on primary boot
+  x86/head64: Replace pointer fixups with PIE codegen
+  x86/head64: Simplify GDT/IDT initialization code
+  asm-generic: Add special .pi.text section for position independent
+    code
+  x86: Move return_thunk to __pitext section
+  x86/head64: Move early startup code into __pitext
+  modpost: Warn about calls from __pitext into other text sections
+  x86/coco: Make cc_set_mask() static inline
+  x86/sev: Make all code reachable from 1:1 mapping __pitext
+  x86/sev: Avoid WARN() in early code
+  x86/sev: Use PIC codegen for early SEV startup code
+  x86/sev: Drop inline asm LEA instructions for RIP-relative references
+  x86/startup_64: Don't bother setting up GS before the kernel is mapped
+
+ arch/x86/Makefile                              |   8 +
+ arch/x86/boot/compressed/Makefile              |   2 +-
+ arch/x86/boot/compressed/misc.c                |  22 +++
+ arch/x86/boot/compressed/pgtable_64.c          |   2 -
+ arch/x86/boot/compressed/sev.c                 |   6 +
+ arch/x86/coco/core.c                           |   7 +-
+ arch/x86/include/asm/coco.h                    |   8 +-
+ arch/x86/include/asm/desc.h                    |   3 +-
+ arch/x86/include/asm/init.h                    |   2 -
+ arch/x86/include/asm/mem_encrypt.h             |   8 +-
+ arch/x86/include/asm/pgtable_64.h              |  12 +-
+ arch/x86/include/asm/pgtable_64_types.h        |  15 +-
+ arch/x86/include/asm/setup.h                   |   4 +-
+ arch/x86/include/asm/sev.h                     |   6 +-
+ arch/x86/include/uapi/asm/bootparam.h          |   2 +
+ arch/x86/kernel/Makefile                       |   7 +
+ arch/x86/kernel/cpu/common.c                   |   2 -
+ arch/x86/kernel/head64.c                       | 206 +++++++-------------
+ arch/x86/kernel/head_64.S                      | 156 +++++----------
+ arch/x86/kernel/sev-shared.c                   |  54 +++--
+ arch/x86/kernel/sev.c                          |  27 ++-
+ arch/x86/kernel/vmlinux.lds.S                  |   3 +-
+ arch/x86/lib/Makefile                          |  13 --
+ arch/x86/lib/memcpy_64.S                       |   3 +-
+ arch/x86/lib/memset_64.S                       |   3 +-
+ arch/x86/lib/retpoline.S                       |   2 +-
+ arch/x86/mm/Makefile                           |   2 +-
+ arch/x86/mm/kasan_init_64.c                    |   3 -
+ arch/x86/mm/mem_encrypt_boot.S                 |   3 +-
+ arch/x86/mm/mem_encrypt_identity.c             |  98 +++-------
+ drivers/firmware/efi/libstub/efi-stub-helper.c |   8 +
+ drivers/firmware/efi/libstub/efistub.h         |   2 +-
+ drivers/firmware/efi/libstub/x86-stub.c        |   6 +
+ include/asm-generic/vmlinux.lds.h              |   3 +
+ include/linux/init.h                           |  12 ++
+ scripts/mod/modpost.c                          |  11 +-
+ tools/objtool/check.c                          |  26 +--
+ 37 files changed, 319 insertions(+), 438 deletions(-)
+
+
+base-commit: aa8eff72842021f52600392b245fb82d113afa8a
 -- 
-2.33.8
+2.43.0.429.g432eaa2c6b-goog
 
 
