@@ -1,99 +1,110 @@
-Return-Path: <linux-kernel+bounces-42785-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 815FB8406BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:23:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 301EA8406C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:24:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 158E7B252FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:23:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62A1C1C241DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:24:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B25C26312F;
-	Mon, 29 Jan 2024 13:23:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NchS+6Nw"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 021BC634F0;
+	Mon, 29 Jan 2024 13:24:30 +0000 (UTC)
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3417E62A03
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:23:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47E48634E7;
+	Mon, 29 Jan 2024 13:24:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706534590; cv=none; b=TJ/ODFWvmev2r//Oh4rLla1NqNvX6gsVm8armycNWSvV7zg4dl31M/yr/GZvpHKWhiht6Bbs548YiJ+W5LHFstBzGPZ6Oe3Cb6ITPS2NpnmEuLeq7NFMGMdF30GQ9pytmiP8QnJlNyQMmxpPk4vf2p/qiu+z6/Ek9VbKCBbGjgw=
+	t=1706534669; cv=none; b=uO0K8DWJhAdp53T2CGUdmOyG8uJcY3lFYsGIiaPQUY1ctv8Jbqm+GhACYEvCZcI/VsAGn69taEmGnLJExLv3WC/NnFNn+Q9D5o+BKCpPb5ABMpf6LLKtwfNzvbdIr4C9vq4gFOtgyhBQwnx1e3neMQ+tSoyoUbS9VDoMPnuK/AM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706534590; c=relaxed/simple;
-	bh=GOL4CLf7NJSi1+Yl6Eux39JaESbVEoPmfBFe2dFCDvc=;
+	s=arc-20240116; t=1706534669; c=relaxed/simple;
+	bh=MaNdJSmcRmSoKWAWXNV6XJ3Z/352Xc8kckkjeiHFpn4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JMVP6gVwCvAlc1uSnK4/EOpw9MpcLLmXGx2SX4op+ISAdVXU+wkX9410rbAQJGYX+A81zQwNc8eGgbzCq2ETNK2rgK9o6mez6kFc673452E63sfWUa/7DUWEW8qkiAeZm9Hs5MowPhfgLf34e53+NudAjfzIAKRg/Vs74WZKezU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NchS+6Nw; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55eda7c5bffso8495a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 05:23:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706534586; x=1707139386; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GOL4CLf7NJSi1+Yl6Eux39JaESbVEoPmfBFe2dFCDvc=;
-        b=NchS+6NwDS6r4IRefpKVS2LqB+DEKBdMPk/o6EJzgCS5qiU5GJ/+2zpUFUvTs366Bp
-         K6Fd/27iPgaSvVbZZQdOlswH8tZ2/tKeasamnTFwcpFXemiQLl2+bMv/4H/XoQE9v5MF
-         +LQQdUcZNWgfKBeI7t1fSLD3aHMl6kafZtlti8eS7UKBiuFYPLciO8wTPrnfHRTSHzzw
-         xE082tsC+J+e6GpUtI0Fs/7KSFG6zno3nF8EWrhnymU/r87FSTdh1RA58ezb4Jci8/Ww
-         IWjcfjToVuhAYCLLNEfb5ZFtXncb5/MwbooDB9LKorUgSXzbGsmAi3mpHMGZN7JglTxn
-         jJVA==
+	 To:Cc:Content-Type; b=uTZVnNlGxIeXD+OO88XTH7WE5BnursAlDKiZDjphS+B0IDh30NO1CKU7D5HXAGjFoFLxc32HcGN/ZpwnZE8D99VFfmJyYwZRC6j3nx79f1jo0Jv5Bu2Cb5NWKrJ9TMlioBixQsmT2FOr1M609dhKihSeNVsgVN0xjCmTlyuEU8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-602ab446cd8so26499057b3.1;
+        Mon, 29 Jan 2024 05:24:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706534586; x=1707139386;
+        d=1e100.net; s=20230601; t=1706534666; x=1707139466;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GOL4CLf7NJSi1+Yl6Eux39JaESbVEoPmfBFe2dFCDvc=;
-        b=vBm50A1WUi5jdMVGxfsjZUQ2hOyIUlyxcwqgE+rvMH2hEkepLHvMNe+/uvT3H+IkDQ
-         xZliN64QRvp25aWBhja3Rqpn5219ZsZGKTY6ZtWnH3kPx5Blpv//00tfWEMKVyUTkXon
-         qOcHcXrokmF7HxAhie0pIgrqbjvsdn6UiUWmzQqGWx9QovAkfNrXRDqeSEne6VysCCxy
-         1YHEJFl25Rv9g2CAVlvbTABqd+hVqQGuAi9nXf1OJN0/akaocrmUTWsBjhX7UvjYzsXl
-         YkwXIeGGRPrzr5eGIQAyukzdVlbbprnc/HnYfdpyuRvTftpn4RbDqqH233r+VAPU75CR
-         s32A==
-X-Gm-Message-State: AOJu0Yya5qJhMSB/M/Q16SCRhJpHjeFGTWMM1hdIgmv2bCBktK37Jrkq
-	86+SuKOqNJsPjyTX5akkbAtpcMTOEiJYG6w7agDU+aAUbu4BMoAYdbHr9eebxZWY8rRGenYIClG
-	6Pj89R+j+oQrtCC7hWBUMhz1eGBAjuZ1xrazqPFKlojRFFn7msA==
-X-Google-Smtp-Source: AGHT+IG1astNKH1/HDc0wBTVk6TC8yGv+pvI7UwKY5UN/sQS0hwFaBZIZw8cIgMPOsBKIZYZeMT8luqWWhKHlR6S/3c=
-X-Received: by 2002:a05:6402:b9d:b0:55c:ebca:e69e with SMTP id
- cf29-20020a0564020b9d00b0055cebcae69emr482056edb.5.1706534586055; Mon, 29 Jan
- 2024 05:23:06 -0800 (PST)
+        bh=60bQeQ4OLSEiw7dGbd1NiVHh4XdBGJExrqOIQcNDss0=;
+        b=Js3uSvvore/iXnNefzIyvelUBRUSywv2T69Hv9M22Hi8vi9fv3uNI2OXvyC1yIySNC
+         aDEJ5sMfSRlMtvvkM4wKg+emlmyu42uXGwqpogejVKsLTcsz1stYUZeiDsiiDjEueJFU
+         +TBQAyYvgn5YveHJKuv+p2C988A3W6dT6toxux675tOqa4CIjI8GKJ19W3BOAU+G6Uvi
+         GXvrcVGPn4BF+6LMWSjHOKkw75+eX9EnEsIgSXgyNsFTJm/W3lSYtxClX/h2kZ5mMRbt
+         5ZwAEtXkPd95KJTFVv+A9BPddhxT/Ob9CykGSRCbElYAuN3TV1OREtb+Hr69XGp9Zyva
+         iMAA==
+X-Gm-Message-State: AOJu0YxMgaANt5JlnL7lebCkXoTl5gNMFu9ZwFUkURaR+81wU+1sNqK9
+	FY+drh1ONJfL3MzYvEG2hFKEqE2gN+6A3wb1+2Fw0n+Za5bcAhQYe/RtlQ0FO1w=
+X-Google-Smtp-Source: AGHT+IEEGHiW2XJUkOVt9t4Yty+4Oq+ZJE3BDAnGN5akOpUfyFzcMJhqZ+5Mk3T79Pe278ga2YaaHg==
+X-Received: by 2002:a0d:d4c4:0:b0:5ff:7f34:1e92 with SMTP id w187-20020a0dd4c4000000b005ff7f341e92mr4065766ywd.98.1706534666153;
+        Mon, 29 Jan 2024 05:24:26 -0800 (PST)
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
+        by smtp.gmail.com with ESMTPSA id p64-20020a819843000000b00602b93f6f27sm2465433ywg.120.2024.01.29.05.24.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jan 2024 05:24:25 -0800 (PST)
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-602ab446cd8so26498827b3.1;
+        Mon, 29 Jan 2024 05:24:25 -0800 (PST)
+X-Received: by 2002:a81:c444:0:b0:5ff:aa81:b47d with SMTP id
+ s4-20020a81c444000000b005ffaa81b47dmr3501080ywj.88.1706534665529; Mon, 29 Jan
+ 2024 05:24:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129091017.2938835-1-alexious@zju.edu.cn>
-In-Reply-To: <20240129091017.2938835-1-alexious@zju.edu.cn>
-From: Eric Dumazet <edumazet@google.com>
-Date: Mon, 29 Jan 2024 14:22:55 +0100
-Message-ID: <CANn89i+eR_WHdndbCWCgZymB=QnmMaURKeVj-by-+=fXJNgDxg@mail.gmail.com>
-Subject: Re: [PATCH] [v2] net: ipv4: fix a memleak in ip_setup_cork
-To: Zhipeng Lu <alexious@zju.edu.cn>
-Cc: "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20240117131807.24997-1-wsa+renesas@sang-engineering.com>
+ <20240117131807.24997-3-wsa+renesas@sang-engineering.com> <CAMuHMdX7Z8w0JykKuboP__ZE4x+LeKSQAGdyrUezERxysPUCKA@mail.gmail.com>
+ <ZbPKPGB7DIHhZ3GJ@ninjato>
+In-Reply-To: <ZbPKPGB7DIHhZ3GJ@ninjato>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 29 Jan 2024 14:24:13 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdW6KV0Gh-JA8x2Z_vj2n5QPDLLFFZRNLUg2rdc3wFqChg@mail.gmail.com>
+Message-ID: <CAMuHMdW6KV0Gh-JA8x2Z_vj2n5QPDLLFFZRNLUg2rdc3wFqChg@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 2/2] arm64: dts: renesas: ulcb-kf: add node for GNSS
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-renesas-soc@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 29, 2024 at 10:23=E2=80=AFAM Zhipeng Lu <alexious@zju.edu.cn> w=
-rote:
->
-> When inetdev_valid_mtu fails, cork->opt should be freed if it is
-> allocated in ip_setup_cork. Otherwise there could be a memleak.
->
-> Fixes: 501a90c94510 ("inet: protect against too small mtu values.")
-> Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
-> ---
+Hi Wolfram,
 
-Okay, although the changelog is a bit confusing, since we do not free
-cork->opt anymore in V2...
+On Fri, Jan 26, 2024 at 4:05=E2=80=AFPM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> > Can it be used over I2C too? Is there some strapping to select the
+> > interface used? I couldn't find that in the documentation.
+>
+> It looks to me they both work at the same time. I was able to write and
+> read via I2C (thus not very meaningful data) while serial port was doing
+> the real work. I am not aware of a full GNSS implementation supporting
+> the I2C interface, so I considered it good at that point.
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+Indeed, drivers/gnss/ seems to have no support for I2C yet.
+Queuing in renesas-devel for v6.9.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
