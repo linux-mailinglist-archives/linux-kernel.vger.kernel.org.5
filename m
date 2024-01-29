@@ -1,115 +1,114 @@
-Return-Path: <linux-kernel+bounces-42740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2105E8405D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:57:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54EB28405D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:57:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1711281059
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:57:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10BEB2868D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:57:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AABD0627F0;
-	Mon, 29 Jan 2024 12:57:08 +0000 (UTC)
-Received: from sgoci-sdnproxy-4.icoremail.net (sgoci-sdnproxy-4.icoremail.net [129.150.39.64])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B283D627EB
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 12:57:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.150.39.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B653627E5;
+	Mon, 29 Jan 2024 12:57:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AQ8jbGBV"
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 535056166D;
+	Mon, 29 Jan 2024 12:57:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706533028; cv=none; b=dbGdA+UHZ+uqFLDaMdC+3GqmiEd1t4hbiZnaR7nAi46W7OLcAzAXOZSb7GWt2ghX4Ej1YDZfdMf7wBZnOedInSxNetjzXCfms8/Jm9U3rVOMiDDjKLwocbqNCvmdVvkDrv5llZ4jUOMI9cBqPqsUqfZNKEZI4bIpVtF2WlIyHSc=
+	t=1706533056; cv=none; b=RdsvLInHso8YEbSLS4CLY1hViypu9O4ZuhbcPzOsMeR8+iEqkbdgNXh0X46lgtsVag3eSE5LDkMStFi/lDkSQargzAppTRZx4O8enmbArp50PLe36fEWmEiLuoLrVY/EORSjK/YXAtyaLBnaFoHodLGRiebho33FpjVYCZ/69/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706533028; c=relaxed/simple;
-	bh=vR0ArKJ2th+NhUTmkgYK4TmELLECOMJ7bjwvwhPRXXE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID; b=g333GlA5FP3sfHF2FfNI2Xum+Q94eFrux46Ri5W+HzUp+h6no2A1sA0HCZG13ATzLSTFvB8mFjiVBeLuynlorMVUilPeH1lP0Zugaq24qorxXU11dQpaV11smgcnJfKQGYaWODD9wz9I0WKMKDPCxd2bJ98VWDIQuuShYWFfIKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=129.150.39.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from alexious$zju.edu.cn ( [10.190.77.58] ) by
- ajax-webmail-mail-app4 (Coremail) ; Mon, 29 Jan 2024 20:56:52 +0800
- (GMT+08:00)
-Date: Mon, 29 Jan 2024 20:56:52 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From: alexious@zju.edu.cn
-To: "Dan Carpenter" <dan.carpenter@linaro.org>
-Cc: "Parthiban Veerasooran" <parthiban.veerasooran@microchip.com>,
-	"Christian Gromm" <christian.gromm@microchip.com>,
-	"Dan Carpenter" <error27@gmail.com>,
-	"Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] most: fix a memleak in audio_probe_channel
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.4-cmXT5 build
- 20231205(37e20f0e) Copyright (c) 2002-2024 www.mailtech.cn
- mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
-In-Reply-To: <4e065b3a-240e-4cd9-acd8-53e5a56abed0@moroto.mountain>
-References: <20240122172044.3840976-1-alexious@zju.edu.cn>
- <4e065b3a-240e-4cd9-acd8-53e5a56abed0@moroto.mountain>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+	s=arc-20240116; t=1706533056; c=relaxed/simple;
+	bh=uQ/Xzy1t1vgnWJ/4O5irvMHl8vFPdVlozjit+qHy3vw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=nFBZI1hoL6Q3C6fmASR3ApmctQ438UsrqBj/Diz1yvmGLqOg7+qKTXBuyT/IaLrZbDPgt4ZmEIbrRF6y5n7pRRXgWCmsROQ0mxE9aGrEX+VSG3Mt1uIQLuj03IiTGwuaYxahY05S2aM5Cnw0dtyIvX9XXo14KDjfs2KwPcIl3Cs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AQ8jbGBV; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-6001449a2beso17037007b3.3;
+        Mon, 29 Jan 2024 04:57:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706533050; x=1707137850; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Q7MRtgQq1559VqTtq0fV0eOYg6mrlq7EbBFuJ58DRMI=;
+        b=AQ8jbGBVOFd6xGwO0CItRemwVgIIWS0L8O0IVV/eR7Ic1oMicAUU/HgFHfAVX7zuDd
+         6Kxfc8C28ZtOHC35cHmKwUBXmPkE4onDQTPGEXYrXwwsqj/9zBkkQ1G5+knLDGqlWeky
+         sAPVkDEGajz+D5h1dDV3sHHlgSTlV60yhHxwjLMNdgd3+1kVIToCPEuYnvRQ7+pWoOa5
+         x2r4gi0bgOQQdhQaCO8xCYfgbdsgmN/RqDOefGsmLPsZVMe8Wt0B+tBeiMcNZ0CdSLeP
+         ET/x7aUnZvfeA5jhAlj1O2chu9KGSeTKBZFqXzemTa/PWD0zGjgZLbVJA2PU9Wp3b2yN
+         8XWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706533050; x=1707137850;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q7MRtgQq1559VqTtq0fV0eOYg6mrlq7EbBFuJ58DRMI=;
+        b=KM00yC+n8uI0pM+7FACzj+ERLjmqW9niV8a0NBRS53F29feicOtB0HJJU6HsTOkZ/5
+         xVKeLdyyj3/VjanGBhbSGvEo2eHevZ+lLrlQA97CmQcmuoxdDYeqsvM5Pl3KppyxWrav
+         Wcd5hUV+U9BkOEclEzHaPia/50iusJF5bkcSV2ydEDvBE+LizbezKPJVVnkh9ojs1iej
+         PfmQ6LXfh1iPa4VHtcQAJB8x/ZJhNfQUOd9oB71UoR2e0+uVuu3xu716gtEOfn1/44Zp
+         dSDsTNryu9Ii/sgW6JQDPAsDUWL2cFCd1o3fJ+QuLUrdzGjBAp0mm+SmauwbQugd+Nj1
+         /HCw==
+X-Gm-Message-State: AOJu0YzsVBCSTeVKuiC2xZHb3PKO+yBTuYi01vYTDdJDt+SEiV9TaFJP
+	M0HUeyjj3kpSAgIi6Jv+PQKaEWnmP8YKs0ccfsgXrnJDDowkDXg=
+X-Google-Smtp-Source: AGHT+IEEzC5ixYHXvoggCQs5qrvbv9IqQr5jYpj6wOIk6jV/fBwm69ksRVsje5mHZpNEaplLRhBK2Q==
+X-Received: by 2002:a0d:d793:0:b0:602:ac0e:697f with SMTP id z141-20020a0dd793000000b00602ac0e697fmr3722989ywd.51.1706533050102;
+        Mon, 29 Jan 2024 04:57:30 -0800 (PST)
+Received: from localhost ([207.181.197.26])
+        by smtp.gmail.com with ESMTPSA id v7-20020a05620a0f0700b00783b6da58a9sm3077939qkl.39.2024.01.29.04.57.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 04:57:29 -0800 (PST)
+Date: Mon, 29 Jan 2024 06:57:28 -0600
+From: Lenko Donchev <lenko.donchev@gmail.com>
+To: Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: qat-linux@intel.com, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] crypto: qat - use kcalloc() instead of kzalloc()
+Message-ID: <ZbeguDTmVrP9SnDr@nixos>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <1eef96d5.2150.18d554b44ca.Coremail.alexious@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:cS_KCgAXooCUoLdlyr3DAA--.13596W
-X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/1tbiAgAPAGW2oGMXhwACsP
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-	daVFxhVjvjDU=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-PiBPbiBUdWUsIEphbiAyMywgMjAyNCBhdCAwMToyMDo0NEFNICswODAwLCBaaGlwZW5nIEx1IHdy
-b3RlOgo+ID4gV2hlbiBnZXRfY2hhbm5lbCBmYWlscywgYXVkaW9fcHJvYmVfY2hhbm5lbCBzaG91
-bGQgZnJlZSBhZHB0IGxpa2UgYWxsCj4gPiBpdHMgZm9sbG93aW5nIGVycm9yLWhhbmRsaW5nIHBh
-dGhzIGFmdGVyIGdldF9jaGFubmVsLiBPdGhlcndpc2UgdGhlcmUKPiA+IGNvdWxkIGJlIGEgbWVt
-bGVhay4KPiA+IAo+ID4gRml4ZXM6IDE1NjAwYWVhMjc1NCAoInN0YWdpbmc6IG1vc3Q6IHNvdW5k
-OiBjcmVhdGUgb25lIHNvdW5kIGNhcmQgdy8gbXVsdGlwbGUgUENNIGRldmljZXMgcGVyIE1PU1Qg
-ZGV2aWNlIikKPiA+IFNpZ25lZC1vZmYtYnk6IFpoaXBlbmcgTHUgPGFsZXhpb3VzQHpqdS5lZHUu
-Y24+Cj4gPiAtLS0KPiA+ICBkcml2ZXJzL21vc3QvbW9zdF9zbmQuYyB8IDMgKystCj4gPiAgMSBm
-aWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQo+ID4gCj4gPiBkaWZm
-IC0tZ2l0IGEvZHJpdmVycy9tb3N0L21vc3Rfc25kLmMgYi9kcml2ZXJzL21vc3QvbW9zdF9zbmQu
-Ywo+ID4gaW5kZXggNDVkNzYyODA0YzVlLi42Y2NjYzljMjY3OTYgMTAwNjQ0Cj4gPiAtLS0gYS9k
-cml2ZXJzL21vc3QvbW9zdF9zbmQuYwo+ID4gKysrIGIvZHJpdmVycy9tb3N0L21vc3Rfc25kLmMK
-PiA+IEBAIC01NjQsNyArNTY0LDggQEAgc3RhdGljIGludCBhdWRpb19wcm9iZV9jaGFubmVsKHN0
-cnVjdCBtb3N0X2ludGVyZmFjZSAqaWZhY2UsIGludCBjaGFubmVsX2lkLAo+ID4gIAlpZiAoZ2V0
-X2NoYW5uZWwoaWZhY2UsIGNoYW5uZWxfaWQpKSB7Cj4gPiAgCQlwcl9lcnIoImNoYW5uZWwgKCVz
-OiVkKSBpcyBhbHJlYWR5IGxpbmtlZFxuIiwKPiA+ICAJCSAgICAgICBpZmFjZS0+ZGVzY3JpcHRp
-b24sIGNoYW5uZWxfaWQpOwo+ID4gLQkJcmV0dXJuIC1FRVhJU1Q7Cj4gPiArCQlyZXQgPSAtRUVY
-SVNUOwo+ID4gKwkJZ290byBlcnJfZnJlZV9hZHB0Owo+IAo+IE5vLCB0aGlzIGRvZXNuJ3Qgd29y
-ay4gIFNvbWVvbmUgc2hvdWxkIGFkZCBhIGNvbW1lbnQgaGVyZSBleHBsYWluaW5nCj4gd2h5Lgo+
-IAo+IFRoaXMgZnVuY3Rpb24gaXMgYSBiaXQgY29tcGxpY2F0ZWQgYmVjYXVzZSB3ZSBzb21ldGlt
-ZXMgYWxsb2NhdGUgImFkcHQiCj4gYW5kIHNvbWV0aW1lcyB3ZSBkb24ndC4gIFdoeSBjYW4gd2Ug
-bm90IG1ha2UgaXQgY29uc2lzdGVudGx5IG9uZSB3YXkgb3IKPiB0aGUgb3RoZXI/ICBUaGlzIGlz
-IG5vdCBteSBjb2RlIGFuZCBJIGRvbid0IGtub3cuICBCdXQgcHJlc3VtYWJseSB0aGVyZQo+IGlz
-IGEgZ29vZCByZWFzb24uICBJIGxvb2tlZCB1cCB0aGUgcHJldmlvdXMgZGlzY3Vzc2lvbiBvZiB0
-aGlzIGFuZCBmb3VuZAo+IHRoaXMgdGhyZWFkLgo+IAo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3Jn
-L2FsbC83OGNjNTliMzEwNDJmODY1ZTk0N2EyYzA5YTVkMTBjYzYwZGRjMDFjLmNhbWVsQG1pY3Jv
-Y2hpcC5jb20vCj4gCj4gQW55d2F5LCBpbiB0aGUgZW5kLCB3ZSdyZSB0cnlpbmcgdG8gY2xlYW4g
-dXAgYW5kIG9uIHRoZSBvdGhlciBlcnJvcgo+IHBhdGhzIHdlJ3JlIGFsbG93ZWQgdG8gZnJlZSAi
-YWRwdCIgZXZlbiB0aG91Z2ggd2UgZGlkbid0IGFsbG9jYXRlIGl0Lgo+IAo+IEhvd2V2ZXIgb25j
-ZSBpdCdzIGdvdCBhIGNoYW5uZWwgbGlua2VkIHRoZW4gd2UgY2Fubm90LiAgQXQgdGhhdCBzdGFn
-ZQo+ICJhZHB0IiBpcyBhbHJlYWR5IGFkZGVkIHRvIHRoZSAmaWZhY2UtPnAtPmNoYW5uZWxfbGlz
-dCBsaXN0LiAgVGhlCj4gcmVsZWFzZV9hZGFwdGVyKCkgYWRhcHRlciBmdW5jdGlvbiB3aWxsIGZy
-ZWUgaXQgd2l0aG91dCByZW1vdmluZyBpdCBmcm9tCj4gdGhlIGxpc3Qgc28gaXQgbGVhZHMgdG8g
-YSB1c2UgYWZ0ZXIgZnJlZS4KPiAKPiBIb3dldmVyLCBtZW1vcnkgb24gdGhpcyBwYXRoIGlzIG5v
-dCBsZWFrZWQgYXMgeW91ciBjb21taXQgbWVzc2FnZSBzYXlzLgo+ICJhZHB0IiBpcyBzdGlsbCBv
-biB0aGUgbGlzdHMuICBUaGUgc3R1ZmYgaXMgaW4gYSBtZXNzZWQgdXAgc3RhdGUgc28gdGhlCj4g
-dXNlciB3aWxsIG5lZWQgdG8gdGVhciBpdCBhbGwgZG93biBtYW51YWxseSBhbmQgcmVjcmVhdGUg
-dGhlCj4gY29uZmlndXJhdGlvbi4gIFF1b3RpbmcgdGhlIGVtYWlsIEkgbGlua2VkIHRvLCAiVGhp
-cwo+IGludm9sdmVzIHRoZSBjYWxsIHRvIG1kZXZfbGlua19kZXN0cm95X2xpbmtfc3RvcmUoKSB0
-aGF0IGNsZWFucyB1cAo+IGV2ZXJ5dGhpbmcuIgo+IAo+IFNvIHdlIGNhbid0IGFwcGx5IHlvdXIg
-cGF0Y2ggYmVjYXVzZSBpdCBsZWFkcyB0byBhIHVzZSBhZnRlciBmcmVlLiAgQnV0Cj4gd2UgY291
-bGQgYXBwbHkgYSBwYXRjaCB3aGljaCBhZGRzIGEgY29tbWVudCBsaWtlOgo+IAo+IAkvKgo+IAkg
-KiBUaGlzIGVycm9yIHBhdGggZG9lc24ndCBsZWFrLiAgSWYgdGhlIGNoYW5uZWwgaXMgYWxyZWFk
-eSBzZXQKPiAJICogdXAgdGhlbiBzb21ldGhpbmcgaGFzIGdvbmUgYmFkbHkgd3JvbmcuICBUaGUg
-dXNlciB3aWxsIGhhdmUKPiAJICogdG8gdGVhciBldmVyeXRoaW5nIGRvd24gYW5kIHJlY29uZmln
-dXJlIGZyb20gc2NyYXRjaC4gIFRoZQo+IAkgKiBtZW1vcnkgd2lsbCBiZSByZWxlYXNlZCB2aWEg
-bWRldl9saW5rX2Rlc3Ryb3lfbGlua19zdG9yZSgpLgo+IAkgKgo+IAkgKi8KPiAKClRoYW5rIHlv
-dSBmb3IgeW91ciBjb3JyZWN0aW9uIGFuZCBhZHZpc2UuIApXZSB3b3VsZCBsaWtlIHRvIHN1Ym1p
-dCBhIG5ldyBwYXRjaCB0byBhZGQgc3VjaCBjb21tZW50LlwKClJlZ2FyZHMsClpoaXBlbmcuCgoK
-PiByZWdhcmRzLAo+IGRhbiBjYXJwZW50ZXIK
+We are trying to get rid of all multiplications from allocation
+functions to prevent integer overflows[1]. Here the multiplication is
+obviously safe, but using kcalloc() is more appropriate and improves
+readability. This patch has no effect on runtime behavior.
+
+Link: https://github.com/KSPP/linux/issues/162 [1]
+Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [2]
+
+Signed-off-by: Lenko Donchev <lenko.donchev@gmail.com>
+---
+ drivers/crypto/intel/qat/qat_common/adf_isr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/crypto/intel/qat/qat_common/adf_isr.c b/drivers/crypto/intel/qat/qat_common/adf_isr.c
+index 3557a0d6dea2..a13d9885d60f 100644
+--- a/drivers/crypto/intel/qat/qat_common/adf_isr.c
++++ b/drivers/crypto/intel/qat/qat_common/adf_isr.c
+@@ -272,7 +272,7 @@ static int adf_isr_alloc_msix_vectors_data(struct adf_accel_dev *accel_dev)
+ 	if (!accel_dev->pf.vf_info)
+ 		msix_num_entries += hw_data->num_banks;
+ 
+-	irqs = kzalloc_node(msix_num_entries * sizeof(*irqs),
++	irqs = kcalloc_node(msix_num_entries, sizeof(*irqs),
+ 			    GFP_KERNEL, dev_to_node(&GET_DEV(accel_dev)));
+ 	if (!irqs)
+ 		return -ENOMEM;
+-- 
+2.43.0
+
 
