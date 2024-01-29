@@ -1,60 +1,39 @@
-Return-Path: <linux-kernel+bounces-42156-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2D0A83FD36
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 05:29:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BD6783FD43
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 05:43:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D2D4B21F7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 04:29:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C96328548E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 04:43:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE9CD18E25;
-	Mon, 29 Jan 2024 04:29:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OmFk+bD2"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D94B14AAA;
-	Mon, 29 Jan 2024 04:29:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BF363C49C;
+	Mon, 29 Jan 2024 04:43:13 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1ABF3C47A;
+	Mon, 29 Jan 2024 04:43:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706502567; cv=none; b=mKR/TfEIR/NSVy4BCSx/Txf6GhTuPu/GFTaE9Rhg9P7iVHwp5OA9DEXSPMyITpOCdgSdOypESIaBtuqZ/KoiNPkbLW8abeiVVoutbDo2AB6amKN3+/uIZgYbLP4CyIrkhuRCM1b8BEtfhDnMnBCcU9QyB1eGhOCG0OA0sFf0IFU=
+	t=1706503392; cv=none; b=ku1z1b9qTX8qdXncRyftmiHsDAhRrUP+BF5ido3NuiMC7U2nPglWLQJbOMpCVD1tL1yMRx4i+RDSVhv9APwh37OPfkDV0nqP9mu4AYKrn4Gc/CVvmyuplzIO5e3eLG3Omx3NSLVYXd4PAK98oNJwuHHh0KXWJusvKkCU0Dh40DY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706502567; c=relaxed/simple;
-	bh=3EK/8yxeed8m7k4dlgjD0V/NjwPLMBHE+69C12MTZ18=;
+	s=arc-20240116; t=1706503392; c=relaxed/simple;
+	bh=DVoyBZNdn0ZpcZOfTMl8Qqe1JpBcwVKk8DU4sA9fXL8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Hw3SBe0QSKWkCtxY2ypV7dAfEYmdji0P9mMLVnsYw0UMhUDCfLgHgOBUKc8BguOADY8i02Ds822LAfed80DdQauPnSWoxjoh0u42uEjTwJ4dvC2rBES07HuZQO5Wk00/08R8HGbQ8TEKS3nIfnc3FdX7KJIP2X5Swd7mhrfjiuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OmFk+bD2; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706502565; x=1738038565;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=3EK/8yxeed8m7k4dlgjD0V/NjwPLMBHE+69C12MTZ18=;
-  b=OmFk+bD2PXX+IfN88vXweFzYh5e5D0jSpW6UMakb4VbR+ai1EC+PUw1w
-   jOqlcWdM8lswiiO6SKlH8z0cwMypgQeQeLPZunNSBNHGHg6uwd4wLIXq8
-   8cJFJcLVy91sGktP6Na8qKB8i6Hb6+QidF84a8g84wM0XmjCkfkjB6hx0
-   ArR8/0nVjbXdah8nYPSM7WhPd0YfVZnK2nuFvU1h6a/roQ1UDIeYttSZc
-   MH0u43LuHt7xSWjhJIvu8WQc9IVTVADAhn+J368yUkSLg+gl/ii1R9GF/
-   LznAK6Z9lRlNHDMZf8t15GrruMzuhxqXtka1NU3xiHILOncDxJNdC8bev
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="9521283"
-X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
-   d="scan'208";a="9521283"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2024 20:29:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
-   d="scan'208";a="3229390"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.49]) ([10.238.10.49])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2024 20:29:21 -0800
-Message-ID: <56882cd9-67f5-4396-b91b-52fb202d3386@linux.intel.com>
-Date: Mon, 29 Jan 2024 12:29:18 +0800
+	 In-Reply-To:Content-Type; b=XQuzUV6Hb226+JaSYiTlh82DmrKM9Tb4MWADc57621fP/zJj6gmaXPutDAHURslwNdLgCn51fjo2Bws4pyqqx9I/hqWtqE5qxK5LXb7Knj41kgU52lLhOWrZcsGKD08vPYRL9uQcCFPpGyL62kRM8vCXM7GfO2RgicKUboVZonY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6AFCD1FB;
+	Sun, 28 Jan 2024 20:36:24 -0800 (PST)
+Received: from [10.162.42.11] (a077893.blr.arm.com [10.162.42.11])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1E77E3F762;
+	Sun, 28 Jan 2024 20:35:35 -0800 (PST)
+Message-ID: <893041d1-9715-4b2d-ac28-6cca3121082d@arm.com>
+Date: Mon, 29 Jan 2024 10:05:32 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,246 +41,528 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v18 047/121] KVM: x86/mmu: Add a private pointer to struct
- kvm_mmu_page
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <3a97d83c79350c4a2ae10de86270ee8f8d0bf1e2.1705965635.git.isaku.yamahata@intel.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <3a97d83c79350c4a2ae10de86270ee8f8d0bf1e2.1705965635.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH V16 3/8] drivers: perf: arm_pmuv3: Enable branch stack
+ sampling framework
+Content-Language: en-US
+To: Suzuki K Poulose <suzuki.poulose@arm.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com
+Cc: Mark Brown <broonie@kernel.org>, James Clark <james.clark@arm.com>,
+ Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>, linux-perf-users@vger.kernel.org
+References: <20240125094119.2542332-1-anshuman.khandual@arm.com>
+ <20240125094119.2542332-4-anshuman.khandual@arm.com>
+ <4548445a-aefe-4111-be8d-12f7cc46188b@arm.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <4548445a-aefe-4111-be8d-12f7cc46188b@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 
 
-On 1/23/2024 7:53 AM, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
->
-> For private GPA, CPU refers a private page table whose contents are
-> encrypted.  The dedicated APIs to operate on it (e.g. updating/reading its
-> PTE entry) are used and their cost is expensive.
->
-> When KVM resolves KVM page fault, it walks the page tables.  To reuse the
-> existing KVM MMU code and mitigate the heavy cost to directly walk private
-> page table, allocate one more page to copy the dummy page table for KVM MMU
-> code to directly walk.  Resolve KVM page fault with the existing code, and
-> do additional operations necessary for the private page table.  To
-> distinguish such cases, the existing KVM page table is called a shared page
-> table (i.e. not associated with private page table), and the page table
-> with private page table is called a private page table.  The relationship
-> is depicted below.
->
-> Add a private pointer to struct kvm_mmu_page for private page table and
-> add helper functions to allocate/initialize/free a private page table
-> page.
->
->                KVM page fault                     |
->                       |                           |
->                       V                           |
->          -------------+----------                 |
->          |                      |                 |
->          V                      V                 |
->       shared GPA           private GPA            |
->          |                      |                 |
->          V                      V                 |
->      shared PT root      dummy PT root            |    private PT root
->          |                      |                 |           |
->          V                      V                 |           V
->       shared PT            dummy PT ----propagate---->   private PT
->          |                      |                 |           |
->          |                      \-----------------+------\    |
->          |                                        |      |    |
->          V                                        |      V    V
->    shared guest page                              |    private guest page
->                                                   |
->                             non-encrypted memory  |    encrypted memory
->                                                   |
-> PT: page table
-> - Shared PT is visible to KVM and it is used by CPU.
-> - Private PT is used by CPU but it is invisible to KVM.
-> - Dummy PT is visible to KVM but not used by CPU.  It is used to
->    propagate PT change to the actual private PT which is used by CPU.
+On 1/25/24 19:14, Suzuki K Poulose wrote:
+> On 25/01/2024 09:41, Anshuman Khandual wrote:
+>> Branch stack sampling support i.e capturing branch records during execution
+>> in core perf, rides along with normal HW events being scheduled on the PMU.
+>> This prepares ARMV8 PMU framework for branch stack support on relevant PMUs
+>> with required HW implementation.
+>>
+>> ARMV8 PMU hardware support for branch stack sampling is indicated via a new
+>> feature flag called 'has_branch_stack' that can be ascertained via probing.
+>> This modifies current gate in armpmu_event_init() which blocks branch stack
+>> sampling based perf events unconditionally. Instead allows such perf events
+>> getting initialized on supporting PMU hardware.
+>>
+>> Branch stack sampling is enabled and disabled along with regular PMU events
+>> . This adds required function callbacks in armv8pmu_branch_xxx() format, to
+>> drive the PMU branch stack hardware when supported. This also adds fallback
+>> stub definitions for these callbacks for PMUs which would not have required
+>> support.
+>>
+>> If a task gets scheduled out, the current branch records get saved in the
+>> task's context data, which can be later used to fill in the records upon an
+>> event overflow. Hence, we enable PERF_ATTACH_TASK_DATA (event->attach_state
+>> based flag) for branch stack requesting perf events. But this also requires
+>> adding support for pmu::sched_task() callback to arm_pmu.
+>>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>> Changes in V16:
+>>
+>> - Renamed arm_brbe.h as arm_pmuv3_branch.h
+>> - Updated perf_sample_save_brstack()'s new argument requirements with NULL
+>>
+>>   drivers/perf/arm_pmu.c          |  57 ++++++++++++-
+>>   drivers/perf/arm_pmuv3.c        | 141 +++++++++++++++++++++++++++++++-
+>>   drivers/perf/arm_pmuv3_branch.h |  50 +++++++++++
+>>   include/linux/perf/arm_pmu.h    |  29 ++++++-
+>>   include/linux/perf/arm_pmuv3.h  |   1 -
+>>   5 files changed, 273 insertions(+), 5 deletions(-)
+>>   create mode 100644 drivers/perf/arm_pmuv3_branch.h
+>>
+>> diff --git a/drivers/perf/arm_pmu.c b/drivers/perf/arm_pmu.c
+>> index 8458fe2cebb4..16f488ae7747 100644
+>> --- a/drivers/perf/arm_pmu.c
+>> +++ b/drivers/perf/arm_pmu.c
+>> @@ -317,6 +317,15 @@ armpmu_del(struct perf_event *event, int flags)
+>>       struct hw_perf_event *hwc = &event->hw;
+>>       int idx = hwc->idx;
+>>   +    if (has_branch_stack(event)) {
+>> +        WARN_ON_ONCE(!hw_events->brbe_users);
+>> +        hw_events->brbe_users--;
+> 
+> ^^ Should we do this only if the event matches the sample type ? Put the other way around, what does brbe_users track ? The number of events that
+> "share" the BRBE instance ? Or the number of active events that
+> has_branch_stack() ?
 
-Nit: one typo below.
+Active perf events with has_branch_stack() irrespective of whether
+there is branch_sample_type match or not i.e branch records might
+be consumed or not.
 
-Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
+> 
+>> +        if (!hw_events->brbe_users) {
+>> +            hw_events->brbe_context = NULL;
+>> +            hw_events->brbe_sample_type = 0;
+>> +        }
+>> +    }
+>> +
+>>       armpmu_stop(event, PERF_EF_UPDATE);
+>>       hw_events->events[idx] = NULL;
+>>       armpmu->clear_event_idx(hw_events, event);
+>> @@ -333,6 +342,38 @@ armpmu_add(struct perf_event *event, int flags)
+>>       struct hw_perf_event *hwc = &event->hw;
+>>       int idx;
+>>   +    if (has_branch_stack(event)) {
+>> +        /*
+>> +         * Reset branch records buffer if a new CPU bound event
+>> +         * gets scheduled on a PMU. Otherwise existing branch
+>> +         * records present in the buffer might just leak into
+>> +         * such events.
+>> +         *
+>> +         * Also reset current 'hw_events->brbe_context' because
+>> +         * any previous task bound event now would have lost an
+>> +         * opportunity for continuous branch records.
+>> +         */
+>> +        if (!event->ctx->task) {
+>> +            hw_events->brbe_context = NULL;
+>> +            if (armpmu->branch_reset)
+>> +                armpmu->branch_reset();
+>> +        }
+>> +
+>> +        /*
+>> +         * Reset branch records buffer if a new task event gets
+>> +         * scheduled on a PMU which might have existing records.
+>> +         * Otherwise older branch records present in the buffer
+>> +         * might leak into the new task event.
+>> +         */
+>> +        if (event->ctx->task && hw_events->brbe_context != event->ctx) {
+>> +            hw_events->brbe_context = event->ctx;
+>> +            if (armpmu->branch_reset)
+>> +                armpmu->branch_reset();
+>> +        }
+>> +        hw_events->brbe_users++;
+>> +        hw_events->brbe_sample_type = event->attr.branch_sample_type;
+>> +    }
+>> +
+>>       /* An event following a process won't be stopped earlier */
+>>       if (!cpumask_test_cpu(smp_processor_id(), &armpmu->supported_cpus))
+>>           return -ENOENT;
+>> @@ -511,13 +552,24 @@ static int armpmu_event_init(struct perf_event *event)
+>>           !cpumask_test_cpu(event->cpu, &armpmu->supported_cpus))
+>>           return -ENOENT;
+>>   -    /* does not support taken branch sampling */
+>> -    if (has_branch_stack(event))
+>> +    /*
+>> +     * Branch stack sampling events are allowed
+>> +     * only on PMU which has required support.
+>> +     */
+>> +    if (has_branch_stack(event) && !armpmu->has_branch_stack)
+>>           return -EOPNOTSUPP;
+>>         return __hw_perf_event_init(event);
+>>   }
+>>   +static void armpmu_sched_task(struct perf_event_pmu_context *pmu_ctx, bool sched_in)
+>> +{
+>> +    struct arm_pmu *armpmu = to_arm_pmu(pmu_ctx->pmu);
+>> +
+>> +    if (armpmu->sched_task)
+>> +        armpmu->sched_task(pmu_ctx, sched_in);
+>> +}
+>> +
+>>   static void armpmu_enable(struct pmu *pmu)
+>>   {
+>>       struct arm_pmu *armpmu = to_arm_pmu(pmu);
+>> @@ -864,6 +916,7 @@ struct arm_pmu *armpmu_alloc(void)
+>>       }
+>>         pmu->pmu = (struct pmu) {
+>> +        .sched_task    = armpmu_sched_task,
+>>           .pmu_enable    = armpmu_enable,
+>>           .pmu_disable    = armpmu_disable,
+>>           .event_init    = armpmu_event_init,
+>> diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
+>> index 23fa6c5da82c..9e17764a0929 100644
+>> --- a/drivers/perf/arm_pmuv3.c
+>> +++ b/drivers/perf/arm_pmuv3.c
+>> @@ -26,6 +26,7 @@
+>>   #include <linux/nmi.h>
+>>     #include <asm/arm_pmuv3.h>
+>> +#include "arm_pmuv3_branch.h"
+>>     /* ARMv8 Cortex-A53 specific event types. */
+>>   #define ARMV8_A53_PERFCTR_PREF_LINEFILL                0xC2
+>> @@ -829,14 +830,56 @@ static void armv8pmu_start(struct arm_pmu *cpu_pmu)
+>>       armv8pmu_pmcr_write(armv8pmu_pmcr_read() | ARMV8_PMU_PMCR_E);
+>>         kvm_vcpu_pmu_resync_el0();
+>> +    if (cpu_pmu->has_branch_stack)
+>> +        armv8pmu_branch_enable(cpu_pmu);
+> 
+> Is there a reason why do this after kvm_vcpu_pmu_resync_el0() ?
+> Ideally, we should get counting as soon as the PMU is on ?
 
->
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->   arch/x86/include/asm/kvm_host.h |  5 ++
->   arch/x86/kvm/mmu/mmu.c          |  7 +++
->   arch/x86/kvm/mmu/mmu_internal.h | 83 +++++++++++++++++++++++++++++++--
->   arch/x86/kvm/mmu/tdp_mmu.c      |  1 +
->   4 files changed, 92 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 0cdbbc21136b..1d074956ac0d 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -841,6 +841,11 @@ struct kvm_vcpu_arch {
->   	struct kvm_mmu_memory_cache mmu_shadow_page_cache;
->   	struct kvm_mmu_memory_cache mmu_shadowed_info_cache;
->   	struct kvm_mmu_memory_cache mmu_page_header_cache;
-> +	/*
-> +	 * This cache is to allocate private page table. E.g.  Secure-EPT used
-> +	 * by the TDX module.
-> +	 */
-> +	struct kvm_mmu_memory_cache mmu_private_spt_cache;
->   
->   	/*
->   	 * QEMU userspace and the guest each have their own FPU state.
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 583ae9d6bf5d..32c619125be4 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -685,6 +685,12 @@ static int mmu_topup_memory_caches(struct kvm_vcpu *vcpu, bool maybe_indirect)
->   				       1 + PT64_ROOT_MAX_LEVEL + PTE_PREFETCH_NUM);
->   	if (r)
->   		return r;
-> +	if (kvm_gfn_shared_mask(vcpu->kvm)) {
-> +		r = kvm_mmu_topup_memory_cache(&vcpu->arch.mmu_private_spt_cache,
-> +					       PT64_ROOT_MAX_LEVEL);
-> +		if (r)
-> +			return r;
-> +	}
->   	r = kvm_mmu_topup_memory_cache(&vcpu->arch.mmu_shadow_page_cache,
->   				       PT64_ROOT_MAX_LEVEL);
->   	if (r)
-> @@ -704,6 +710,7 @@ static void mmu_free_memory_caches(struct kvm_vcpu *vcpu)
->   	kvm_mmu_free_memory_cache(&vcpu->arch.mmu_pte_list_desc_cache);
->   	kvm_mmu_free_memory_cache(&vcpu->arch.mmu_shadow_page_cache);
->   	kvm_mmu_free_memory_cache(&vcpu->arch.mmu_shadowed_info_cache);
-> +	kvm_mmu_free_memory_cache(&vcpu->arch.mmu_private_spt_cache);
->   	kvm_mmu_free_memory_cache(&vcpu->arch.mmu_page_header_cache);
->   }
->   
-> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-> index 97af4e39ce6f..957654c3cde9 100644
-> --- a/arch/x86/kvm/mmu/mmu_internal.h
-> +++ b/arch/x86/kvm/mmu/mmu_internal.h
-> @@ -101,7 +101,23 @@ struct kvm_mmu_page {
->   		int root_count;
->   		refcount_t tdp_mmu_root_count;
->   	};
-> -	unsigned int unsync_children;
-> +	union {
-> +		struct {
-> +			unsigned int unsync_children;
-> +			/*
-> +			 * Number of writes since the last time traversal
-> +			 * visited this page.
-> +			 */
-> +			atomic_t write_flooding_count;
-> +		};
-> +#ifdef CONFIG_KVM_MMU_PRIVATE
-> +		/*
-> +		 * Associated private shadow page table, e.g. Secure-EPT page
-> +		 * passed to the TDX module.
-> +		 */
-> +		void *private_spt;
-> +#endif
-> +	};
->   	union {
->   		struct kvm_rmap_head parent_ptes; /* rmap pointers to parent sptes */
->   		tdp_ptep_t ptep;
-> @@ -124,9 +140,6 @@ struct kvm_mmu_page {
->   	int clear_spte_count;
->   #endif
->   
-> -	/* Number of writes since the last time traversal visited this page.  */
-> -	atomic_t write_flooding_count;
-> -
->   #ifdef CONFIG_X86_64
->   	/* Used for freeing the page asynchronously if it is a TDP MMU page. */
->   	struct rcu_head rcu_head;
-> @@ -150,6 +163,68 @@ static inline bool is_private_sp(const struct kvm_mmu_page *sp)
->   	return kvm_mmu_page_role_is_private(sp->role);
->   }
->   
-> +#ifdef CONFIG_KVM_MMU_PRIVATE
-> +static inline void *kvm_mmu_private_spt(struct kvm_mmu_page *sp)
-> +{
-> +	return sp->private_spt;
-> +}
-> +
-> +static inline void kvm_mmu_init_private_spt(struct kvm_mmu_page *sp, void *private_spt)
-> +{
-> +	sp->private_spt = private_spt;
-> +}
-> +
-> +static inline void kvm_mmu_alloc_private_spt(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
-> +{
-> +	bool is_root = vcpu->arch.root_mmu.root_role.level == sp->role.level;
-> +
-> +	KVM_BUG_ON(!kvm_mmu_page_role_is_private(sp->role), vcpu->kvm);
-> +	if (is_root)
-> +		/*
-> +		 * Because TDX module assigns root Secure-EPT page and set it to
-> +		 * Secure-EPTP when TD vcpu is created, secure page table for
-> +		 * root isn't needed.
-> +		 */
-> +		sp->private_spt = NULL;
-> +	else {
-> +		/*
-> +		 * Because the TDX module doesn't trust VMM and initializes
-> +		 * the pages itself, KVM doesn't initialize them.  Allocate
-> +		 * pages with garbage and give them to the TDX module.
-> +		 */
-> +		sp->private_spt = kvm_mmu_memory_cache_alloc(&vcpu->arch.mmu_private_spt_cache);
-> +		/*
-> +		 * Because mmu_private_spt_cache is topped up before staring kvm
-s/staring/starting
+But if the kernel is also being traced, branches from kvm_vcpu_pmu_resync_el0()
+might get into final BRBE samples as well. Placing branch_enable() at the last
+help avoid such situations. Although the same could also be reasoned about
+normal PMU event counters being enabled via armv8pmu_pmcr_write() as well. So
+armv8pmu_branch_enable() could be moved before kvm_vcpu_pmu_resync_el0().
 
-> +		 * page fault resolving, the allocation above shouldn't fail.
-> +		 */
-> +		WARN_ON_ONCE(!sp->private_spt);
-> +	}
-> +}
-> +
-> +static inline void kvm_mmu_free_private_spt(struct kvm_mmu_page *sp)
-> +{
-> +	if (sp->private_spt)
-> +		free_page((unsigned long)sp->private_spt);
-> +}
-> +#else
-> +static inline void *kvm_mmu_private_spt(struct kvm_mmu_page *sp)
-> +{
-> +	return NULL;
-> +}
-> +
-> +static inline void kvm_mmu_init_private_spt(struct kvm_mmu_page *sp, void *private_spt)
-> +{
-> +}
-> +
-> +static inline void kvm_mmu_alloc_private_spt(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
-> +{
-> +}
-> +
-> +static inline void kvm_mmu_free_private_spt(struct kvm_mmu_page *sp)
-> +{
-> +}
-> +#endif
-> +
->   static inline bool kvm_mmu_page_ad_need_write_protect(struct kvm_mmu_page *sp)
->   {
->   	/*
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 87233b3ceaef..d47f0daf1b03 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -53,6 +53,7 @@ void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm)
->   
->   static void tdp_mmu_free_sp(struct kvm_mmu_page *sp)
->   {
-> +	kvm_mmu_free_private_spt(sp);
->   	free_page((unsigned long)sp->spt);
->   	kmem_cache_free(mmu_page_header_cache, sp);
->   }
+> 
+>>   }
+>>     static void armv8pmu_stop(struct arm_pmu *cpu_pmu)
+>>   {
+>> +    if (cpu_pmu->has_branch_stack)
+>> +        armv8pmu_branch_disable();
+>> +
+>>       /* Disable all counters */
+>>       armv8pmu_pmcr_write(armv8pmu_pmcr_read() & ~ARMV8_PMU_PMCR_E);
+>>   }
+>>   +static void read_branch_records(struct pmu_hw_events *cpuc,
+>> +                struct perf_event *event,
+>> +                struct perf_sample_data *data,
+>> +                bool *branch_captured)
+>> +{
+>> +    /*
+>> +     * CPU specific branch records buffer must have been allocated already
+>> +     * for the hardware records to be captured and processed further.
+>> +     */
+>> +    if (WARN_ON(!cpuc->branches))
+>> +        return;
+>> +
+>> +    /*
+>> +     * Overflowed event's branch_sample_type does not match the configured
+>> +     * branch filters in the BRBE HW. So the captured branch records here
+>> +     * cannot be co-related to the overflowed event. Report to the user as
+>> +     * if no branch records have been captured, and flush branch records.
+>> +     * The same scenario is applicable when the current task context does
+>> +     * not match with overflown event.
+>> +     */
+>> +    if ((cpuc->brbe_sample_type != event->attr.branch_sample_type) ||
+>> +        (event->ctx->task && cpuc->brbe_context != event->ctx))
+>> +        return;
+>> +
+>> +    /*
+>> +     * Read the branch records from the hardware once after the PMU IRQ
+>> +     * has been triggered but subsequently same records can be used for
+>> +     * other events that might have been overflowed simultaneously thus
+>> +     * saving much CPU cycles.
+>> +     */
+>> +    if (!*branch_captured) {
+>> +        armv8pmu_branch_read(cpuc, event);
+>> +        *branch_captured = true;
+>> +    }
+>> +    perf_sample_save_brstack(data, event, &cpuc->branches->branch_stack, NULL);
+>> +}
+>> +
+>>   static irqreturn_t armv8pmu_handle_irq(struct arm_pmu *cpu_pmu)
+>>   {
+>>       u32 pmovsr;
+>> @@ -844,6 +887,7 @@ static irqreturn_t armv8pmu_handle_irq(struct arm_pmu *cpu_pmu)
+>>       struct pmu_hw_events *cpuc = this_cpu_ptr(cpu_pmu->hw_events);
+>>       struct pt_regs *regs;
+>>       int idx;
+>> +    bool branch_captured = false;
+>>         /*
+>>        * Get and reset the IRQ flags
+>> @@ -887,6 +931,13 @@ static irqreturn_t armv8pmu_handle_irq(struct arm_pmu *cpu_pmu)
+>>           if (!armpmu_event_set_period(event))
+>>               continue;
+>>   +        /*
+>> +         * PMU IRQ should remain asserted until all branch records
+>> +         * are captured and processed into struct perf_sample_data.
+>> +         */
+>> +        if (has_branch_stack(event) && cpu_pmu->has_branch_stack)
+> 
+> nit: Do we really need the cpu_pmu->has_branch_stack check ? The event
+> wouldn't reach here if the PMU doesn't supported it ?
 
+This is just an additional check - has_branch_stack() based event might
+not have reached here otherwise i.e without the PMU supporting branch
+records.
+
+> 
+>> +            read_branch_records(cpuc, event, &data, &branch_captured);
+>> +
+>>           /*
+>>            * Perf event overflow will queue the processing of the event as
+>>            * an irq_work which will be taken care of in the handling of
+>> @@ -896,6 +947,8 @@ static irqreturn_t armv8pmu_handle_irq(struct arm_pmu *cpu_pmu)
+>>               cpu_pmu->disable(event);
+>>       }
+>>       armv8pmu_start(cpu_pmu);
+>> +    if (cpu_pmu->has_branch_stack)
+>> +        armv8pmu_branch_reset();
+>>         return IRQ_HANDLED;
+>>   }
+>> @@ -985,6 +1038,24 @@ static int armv8pmu_user_event_idx(struct perf_event *event)
+>>       return event->hw.idx;
+>>   }
+>>   +static void armv8pmu_sched_task(struct perf_event_pmu_context *pmu_ctx, bool sched_in)
+>> +{
+>> +    struct arm_pmu *armpmu = to_arm_pmu(pmu_ctx->pmu);
+>> +    void *task_ctx = pmu_ctx->task_ctx_data;
+>> +
+>> +    if (armpmu->has_branch_stack) {
+>> +        /* Save branch records in task_ctx on sched out */
+>> +        if (task_ctx && !sched_in) {
+>> +            armv8pmu_branch_save(armpmu, task_ctx);
+>> +            return;
+>> +        }
+>> +
+>> +        /* Reset branch records on sched in */
+>> +        if (sched_in)
+>> +            armv8pmu_branch_reset();
+>> +    }
+>> +}
+>> +
+>>   /*
+>>    * Add an event filter to a given event.
+>>    */
+>> @@ -1077,6 +1148,9 @@ static void armv8pmu_reset(void *info)
+>>           pmcr |= ARMV8_PMU_PMCR_LP;
+>>         armv8pmu_pmcr_write(pmcr);
+>> +
+>> +    if (cpu_pmu->has_branch_stack)
+>> +        armv8pmu_branch_reset();
+>>   }
+>>     static int __armv8_pmuv3_map_event_id(struct arm_pmu *armpmu,
+>> @@ -1114,6 +1188,20 @@ static int __armv8_pmuv3_map_event(struct perf_event *event,
+>>         hw_event_id = __armv8_pmuv3_map_event_id(armpmu, event);
+>>   +    if (has_branch_stack(event)) {
+>> +        if (!armv8pmu_branch_attr_valid(event))
+>> +            return -EOPNOTSUPP;
+>> +
+>> +        /*
+>> +         * If a task gets scheduled out, the current branch records
+>> +         * get saved in the task's context data, which can be later
+>> +         * used to fill in the records upon an event overflow. Let's
+>> +         * enable PERF_ATTACH_TASK_DATA in 'event->attach_state' for
+>> +         * all branch stack sampling perf events.
+>> +         */
+>> +        event->attach_state |= PERF_ATTACH_TASK_DATA;
+>> +    }
+>> +
+>>       /*
+>>        * CHAIN events only work when paired with an adjacent counter, and it
+>>        * never makes sense for a user to open one in isolation, as they'll be
+>> @@ -1229,6 +1317,41 @@ static void __armv8pmu_probe_pmu(void *info)
+>>           cpu_pmu->reg_pmmir = read_pmmir();
+>>       else
+>>           cpu_pmu->reg_pmmir = 0;
+>> +
+>> +    /*
+>> +     * BRBE is being probed on a single cpu for a
+>> +     * given PMU. The remaining cpus, are assumed
+>> +     * to have the exact same BRBE implementation.
+>> +     */
+>> +    armv8pmu_branch_probe(cpu_pmu);
+>> +}
+>> +
+>> +static int branch_records_alloc(struct arm_pmu *armpmu)
+>> +{
+>> +    struct branch_records __percpu *records;
+>> +    int cpu;
+>> +
+>> +    records = alloc_percpu_gfp(struct branch_records, GFP_KERNEL);
+>> +    if (!records)
+>> +        return -ENOMEM;
+>> +
+>> +    /*
+>> +     * percpu memory allocated for 'records' gets completely consumed
+>> +     * here, and never required to be freed up later. So permanently
+>> +     * losing access to this anchor i.e 'records' is acceptable.
+>> +     *
+>> +     * Otherwise this allocation handle would have to be saved up for
+>> +     * free_percpu() release later if required.
+>> +     */
+>> +    for_each_possible_cpu(cpu) {
+>> +        struct pmu_hw_events *events_cpu;
+>> +        struct branch_records *records_cpu;
+>> +
+>> +        events_cpu = per_cpu_ptr(armpmu->hw_events, cpu);
+>> +        records_cpu = per_cpu_ptr(records, cpu);
+>> +        events_cpu->branches = records_cpu;
+>> +    }
+>> +    return 0;
+>>   }
+>>     static int armv8pmu_probe_pmu(struct arm_pmu *cpu_pmu)
+>> @@ -1245,7 +1368,21 @@ static int armv8pmu_probe_pmu(struct arm_pmu *cpu_pmu)
+>>       if (ret)
+>>           return ret;
+>>   -    return probe.present ? 0 : -ENODEV;
+>> +    if (!probe.present)
+>> +        return -ENODEV;
+>> +
+>> +    if (cpu_pmu->has_branch_stack) {
+>> +        ret = armv8pmu_task_ctx_cache_alloc(cpu_pmu);
+>> +        if (ret)
+>> +            return ret;
+>> +
+>> +        ret = branch_records_alloc(cpu_pmu);
+>> +        if (ret) {
+>> +            armv8pmu_task_ctx_cache_free(cpu_pmu);
+>> +            return ret;
+>> +        }
+>> +    }
+>> +    return 0;
+>>   }
+>>     static void armv8pmu_disable_user_access_ipi(void *unused)
+>> @@ -1304,6 +1441,8 @@ static int armv8_pmu_init(struct arm_pmu *cpu_pmu, char *name,
+>>       cpu_pmu->set_event_filter    = armv8pmu_set_event_filter;
+>>         cpu_pmu->pmu.event_idx        = armv8pmu_user_event_idx;
+>> +    cpu_pmu->sched_task        = armv8pmu_sched_task;
+>> +    cpu_pmu->branch_reset        = armv8pmu_branch_reset;
+>>         cpu_pmu->name            = name;
+>>       cpu_pmu->map_event        = map_event;
+>> diff --git a/drivers/perf/arm_pmuv3_branch.h b/drivers/perf/arm_pmuv3_branch.h
+>> new file mode 100644
+>> index 000000000000..609e4d4ccac6
+>> --- /dev/null
+>> +++ b/drivers/perf/arm_pmuv3_branch.h
+>> @@ -0,0 +1,50 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +/*
+>> + * Branch Record Buffer Extension Helpers.
+>> + *
+>> + * Copyright (C) 2022-2023 ARM Limited
+>> + *
+>> + * Author: Anshuman Khandual <anshuman.khandual@arm.com>
+>> + */
+>> +#include <linux/perf/arm_pmu.h>
+>> +
+>> +static inline void armv8pmu_branch_reset(void)
+>> +{
+>> +}
+>> +
+>> +static inline void armv8pmu_branch_probe(struct arm_pmu *arm_pmu)
+>> +{
+>> +}
+>> +
+>> +static inline bool armv8pmu_branch_attr_valid(struct perf_event *event)
+>> +{
+>> +    WARN_ON_ONCE(!has_branch_stack(event));
+>> +    return false;
+>> +}
+>> +
+>> +static inline void armv8pmu_branch_enable(struct arm_pmu *arm_pmu)
+>> +{
+>> +}
+>> +
+>> +static inline void armv8pmu_branch_disable(void)
+>> +{
+>> +}
+>> +
+>> +static inline void armv8pmu_branch_read(struct pmu_hw_events *cpuc,
+>> +                    struct perf_event *event)
+>> +{
+>> +    WARN_ON_ONCE(!has_branch_stack(event));
+>> +}
+>> +
+>> +static inline void armv8pmu_branch_save(struct arm_pmu *arm_pmu, void *ctx)
+>> +{
+>> +}
+>> +
+>> +static inline int armv8pmu_task_ctx_cache_alloc(struct arm_pmu *arm_pmu)
+>> +{
+>> +    return 0;
+>> +}
+>> +
+>> +static inline void armv8pmu_task_ctx_cache_free(struct arm_pmu *arm_pmu)
+>> +{
+>> +}
+>> diff --git a/include/linux/perf/arm_pmu.h b/include/linux/perf/arm_pmu.h
+>> index b3b34f6670cf..8cfcc735c0f7 100644
+>> --- a/include/linux/perf/arm_pmu.h
+>> +++ b/include/linux/perf/arm_pmu.h
+>> @@ -46,6 +46,18 @@ static_assert((PERF_EVENT_FLAG_ARCH & ARMPMU_EVT_63BIT) == ARMPMU_EVT_63BIT);
+>>       },                                \
+>>   }
+>>   +/*
+>> + * Maximum branch record entries which could be processed
+>> + * for core perf branch stack sampling support, regardless
+>> + * of the hardware support available on a given ARM PMU.
+>> + */
+>> +#define MAX_BRANCH_RECORDS 64
+>> +
+>> +struct branch_records {
+>> +    struct perf_branch_stack    branch_stack;
+>> +    struct perf_branch_entry    branch_entries[MAX_BRANCH_RECORDS];
+>> +};
+>> +
+>>   /* The events for a given PMU register set. */
+>>   struct pmu_hw_events {
+>>       /*
+>> @@ -66,6 +78,17 @@ struct pmu_hw_events {
+>>       struct arm_pmu        *percpu_pmu;
+>>         int irq;
+>> +
+>> +    struct branch_records    *branches;
+>> +
+>> +    /* Active context for task events */
+>> +    void            *brbe_context;
+>> +
+>> +    /* Active events requesting branch records */
+> 
+> Please see my comment above.
+
+This is true - brbe_users tracks number of active perf events requesting
+branch records, irrespective of whether their branch_sample_type matches
+with each other or not.
+
+> 
+>> +    unsigned int        brbe_users;
+>> +
+>> +    /* Active branch sample type filters */
+>> +    unsigned long        brbe_sample_type;
+>>   };
+>>     enum armpmu_attr_groups {
+>> @@ -96,8 +119,12 @@ struct arm_pmu {
+>>       void        (*stop)(struct arm_pmu *);
+>>       void        (*reset)(void *);
+>>       int        (*map_event)(struct perf_event *event);
+>> +    void        (*sched_task)(struct perf_event_pmu_context *pmu_ctx, bool sched_in);
+>> +    void        (*branch_reset)(void);
+>>       int        num_events;
+>> -    bool        secure_access; /* 32-bit ARM only */
+>> +    unsigned int    secure_access    : 1, /* 32-bit ARM only */
+>> +            has_branch_stack: 1, /* 64-bit ARM only */
+>> +            reserved    : 30;
+>>   #define ARMV8_PMUV3_MAX_COMMON_EVENTS        0x40
+>>       DECLARE_BITMAP(pmceid_bitmap, ARMV8_PMUV3_MAX_COMMON_EVENTS);
+>>   #define ARMV8_PMUV3_EXT_COMMON_EVENT_BASE    0x4000
+>> diff --git a/include/linux/perf/arm_pmuv3.h b/include/linux/perf/arm_pmuv3.h
+>> index 46377e134d67..c3e7d2cfb737 100644
+>> --- a/include/linux/perf/arm_pmuv3.h
+>> +++ b/include/linux/perf/arm_pmuv3.h
+>> @@ -308,5 +308,4 @@
+>>           default: WARN(1, "Invalid PMEV* index\n");    \
+>>           }                        \
+>>       } while (0)
+>> -
+> 
+> nit: Unrelated change ?
+
+Right, will fix and fold.
 
