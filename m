@@ -1,327 +1,209 @@
-Return-Path: <linux-kernel+bounces-42029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42031-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B58383FB37
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 01:26:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 229AE83FB3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 01:40:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0EA0285D78
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 00:26:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2F5A1F22085
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 00:40:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0F6DD271;
-	Mon, 29 Jan 2024 00:26:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93FFB8F5B;
+	Mon, 29 Jan 2024 00:40:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="K9y80/vn"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S3fcEKHk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E52B5382
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 00:26:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C55495382
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 00:40:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706487968; cv=none; b=NpzI7HYEu0lmKl+SmzX83tQExXy7NuBhyF7O2SAbsdexjGB8XmoRxs5UujbEDEkx5AJCH5yMcPEwBoOR+PQv0aYQcEGX9Gzv025X/G/53TqXvrExxKztwzIqCtJ1Zhgo1PWgARoCkcJUe6Qz8JVOMIyZUL1S0BRAknivHSvvzYI=
+	t=1706488801; cv=none; b=CtvZgDWguoolyVuetIv0FFDyhlbRdHsDZgdhXCmPQvxm8I9XPPxW+VMC37QKq0y4e6tVFhC1Ug22XrIYF8Q1NVgJyblIAWevenjJfQyhqF+IpjFbI20iDCcifd15JGLSDswXxhf1PnMMyjqc9kbN9d8oTgmuiOpjgt9/CXllimU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706487968; c=relaxed/simple;
-	bh=yM1HmbxAWSUJwXV+g2TEaMJpy6Jb8p7jALfobB13IKc=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=KGEccvB+ykXsjhNvtyYPIPhT1golqrzbMiilx+6K3ZFJGnHDVci/18Mv5c2QTqSAYGbu0dJV1qmtkQ6AIunA18bY2Pz/r1FCeSsJSfMIJh/NcCfhXd9SkKrjtnIPCGwFXF6sH8zDnhye44qOrKP8OkUZzMZ8pNTRN7CNxXWHFFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=K9y80/vn; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-55817a12ad8so1849840a12.2
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 16:26:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706487964; x=1707092764; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=G+F65PytcQ8bRw7rSmz8tj7JMLr040VbpgsehDx14EU=;
-        b=K9y80/vnM0Q5nj3FpHLdKQsUbEm0D2/LtuW9EJDJzN5J61qHi1ZRjQLBHPQXuCuv4b
-         jZfExAL39nQDyM0nhSO9BDCfnfyb7Jl7YNUnHQ137Pl3tcyaFm0ocO0ldLJjEoVhy51B
-         AHBuB6PwGP0HyjY9TKjPDc+uUJbeFSJXGsQxPkKAvPvszCmztCOYsE1lEsXePQJec+HB
-         LcaW6P3I2+QuIAXxYMgszVmgEB34edFo0z2XjZrLczQHyeOuYfle+8Y1OTtUem2l2IRr
-         GtwB5v7ABLsYYVe/9COqfzV4CuASENnolLQ9g+lhjitob+XH6ZR6mRIWadKi4uCwI5b+
-         Q/dA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706487964; x=1707092764;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G+F65PytcQ8bRw7rSmz8tj7JMLr040VbpgsehDx14EU=;
-        b=oq8U9iVcnmFrlne//j0IlstNQwxHx2wawVW+E2jJtfqxBPo99XbFi2pucCpjUXF5pU
-         h7i/0SITE8OijUjFQGqCTyNeumjXaJzj7j99efkWky73yZENW+DKiG1BorC0k5+pKgIB
-         Udog3wp+QI6CsAuvr7i6Zi5xMhcjEQ9IQni7iUB9ff5jq0gS0gCXi6rThhztqHa0fRji
-         emrRC1y6WnSydT+5pGbklzBc9UzJnBYd6INvi+ZESU0m9AO6hWbmdtP1NvGB51ciyUxE
-         qxizsmlXEcM1QimjfU2waNYEGdmeGFgREVn3JkPho4GUe1OSN2wBOVlp0dxNHHETer2U
-         obCQ==
-X-Gm-Message-State: AOJu0Yw46UTTazwNJcXRaDUP0UFOZ+Js848TfoYUka05g+sh1cm/Uyhp
-	IgK8foNWMg3NbQEr4ja2oG2j2AA5TuLSQcGmxGAa+r9SFHRgAVxBowtTxEmGqF0=
-X-Google-Smtp-Source: AGHT+IFyUWqmlpnke6uDNFyKcCEQzDpvi2OmpUheL+tQmlsCZedhqTKqkQKEgSUx5CrdYc+q84z6Xw==
-X-Received: by 2002:a05:6402:22d9:b0:55e:da7c:607a with SMTP id dm25-20020a05640222d900b0055eda7c607amr1549330edb.15.1706487963793;
-        Sun, 28 Jan 2024 16:26:03 -0800 (PST)
-Received: from [127.0.1.1] ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id h29-20020a0564020e9d00b0055cfb3f948fsm3208193eda.76.2024.01.28.16.26.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jan 2024 16:26:03 -0800 (PST)
-From: Abel Vesa <abel.vesa@linaro.org>
-Date: Mon, 29 Jan 2024 02:25:46 +0200
-Subject: [PATCH v3 2/2] phy: qcom: edp: Add set_mode op for configuring
- eDP/DP submode
+	s=arc-20240116; t=1706488801; c=relaxed/simple;
+	bh=GOR+vztBp9qsOfWG/p7VJatHV1ebL3mS/nkMHAUATnU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WwI6wuGfEFD2v2oSTDjOekO2AM6CDvu4K9IDI6rdYlOQnjTixNZl2apCd8jZYkVB22xhUTsqnZf5vm7rrkKxu7BRf8enZPBPMZLYnRqGxG8Arc3751scrlORjqWfxv7nOEOu57WGwG5yiNM12kiMVTn2MwsN+q28d26ZFiySaBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S3fcEKHk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 636C6C433B2
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 00:40:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706488801;
+	bh=GOR+vztBp9qsOfWG/p7VJatHV1ebL3mS/nkMHAUATnU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=S3fcEKHkqEqitRMIVj5hmqHJZU8fhO5OEUusrfOzN27629hkWvh/7fyDdeLi0PZr9
+	 n3vr5PXcB47an+jKNzx35aEt0hmZOf9EWGsH5XYeb9ylZl1NWtz4bqsBvWTpD44/lm
+	 nT1LsovvG7nanfo1PWWW25GgvPqdNHMVyPJDiLO0zJZETUyw/QsgWENqq+dOaSLyQI
+	 zX9iTaHdT580sJjFb1dFA0vAfwPmUzC8iU4yrYfigwYmpILiBfCFgIb1+6MDMKfjxO
+	 Z+7cssDVheDauDC40B3Stqn2Awq+CmHEyVgw2Vs0HQVYtQUtE8VYNA5yZ6/gCc8Q/y
+	 Y0ksnseRU6AFw==
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a3510d79ae9so200394266b.0
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 16:40:01 -0800 (PST)
+X-Gm-Message-State: AOJu0Ywzwn69PxMugZFiGnXsaWMCL9YuNae3wmQGGpjnN/um5PJfzQ//
+	qSqoIHWpoEOOzI5AYVjd2+xNy5dRqE51E/69eNu3ShfhkCnodNJwr1pnESjuYA6Voit6YPUoFLZ
+	Rpbqy6w3I3s0CRaXjV3Llp8QV+36fbUwAU/2a
+X-Google-Smtp-Source: AGHT+IEPQs8sUOkrWs+g/b4bMXhiO6ykzksvP2pqvceFjnm3ic5S2cUnErkR5WyrynR1Nl/rh9HjuD9/FYsibH5QMSY=
+X-Received: by 2002:a17:906:6810:b0:a31:4cf0:cf81 with SMTP id
+ k16-20020a170906681000b00a314cf0cf81mr2993727ejr.37.1706488799959; Sun, 28
+ Jan 2024 16:39:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240129-x1e80100-phy-edp-compatible-refactor-v3-2-e71f3359c535@linaro.org>
-References: <20240129-x1e80100-phy-edp-compatible-refactor-v3-0-e71f3359c535@linaro.org>
-In-Reply-To: <20240129-x1e80100-phy-edp-compatible-refactor-v3-0-e71f3359c535@linaro.org>
-To: Vinod Koul <vkoul@kernel.org>, 
- Kishon Vijay Abraham I <kishon@kernel.org>, 
- Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
- Johan Hovold <johan@kernel.org>
-Cc: linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org, 
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- Abel Vesa <abel.vesa@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7035; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=yM1HmbxAWSUJwXV+g2TEaMJpy6Jb8p7jALfobB13IKc=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBltvCW9TNARm3SS4noZQ5mY3dhee2QdRN1DRyTm
- guXBvIlmcSJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZbbwlgAKCRAbX0TJAJUV
- VrjSEADBSV/ePjnpJojvR5Bn7TxeeIZ7zL/FVXA7KsnHrtifKS+SxSU7ohYYmRImrHIfyCT1KYD
- 9r1SpeKEKjk8uRnqYx899n0MxDcNK/l/Uub50Xz3RGsuc+2l4tnG0MyMnXkXpu7mVSsoDBxkbSw
- 0aLeQWb57pduXWOa3O3eyhsdsRmWUMpAwmrP0PXLHX3fmvyZljALWtDxvNIAhbXuOTWAp1bOUoS
- AcR+xxMqmLvFSr76hu0u8kUqtDP+ygb+JNR5iTiW6ubIzLtB4AecYvAtyT5eVHg7sFuAFP1YrVh
- q5mI9LPIE1Tvmzhv99FoHOmeUwFMDKqR8q5WhbI7/5WBSb9ZQml0Y6PohnQ6t45VrUmis7nQDkj
- CzeQKMxzJqKaHFZyY0aKXB7NmBqsd16VR4UPI8xKGmPXobmHwnu9er1reEXcdcknCANQVqd/4uG
- HJEeH5ZnFTTzxo440Fsr8zVCs6NUp6Li4wic2qNxKsJB5KOdVIP/YaE/Gv6x0dqwd4i8v6JopV5
- DgsJktl6kr769gfnMCHMAee+HkrF8TyAMdlD+4UV/Dj/uKVMg7BdjTbdCd29C2RHB6ZG4fHXByO
- dpk5lroqj+jZP9Qfs2884A6sABODt1+DA7h9maM4HFw7MFd2PYk7qHfOfnSHjYQt98jq+3y07A8
- gRXR89NRHj+25qg==
-X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
- fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
+References: <20240128142522.1524741-1-ming.lei@redhat.com> <ZbbPCQZdazF7s0_b@casper.infradead.org>
+ <ZbbfXVg9FpWRUVDn@redhat.com> <ZbbvfFxcVgkwbhFv@casper.infradead.org>
+In-Reply-To: <ZbbvfFxcVgkwbhFv@casper.infradead.org>
+From: Mike Snitzer <snitzer@kernel.org>
+Date: Sun, 28 Jan 2024 19:39:49 -0500
+X-Gmail-Original-Message-ID: <CAH6w=aw_46Ker0w8HmSA41vUUDKGDGC3gxBFWAhd326+kEtrNg@mail.gmail.com>
+Message-ID: <CAH6w=aw_46Ker0w8HmSA41vUUDKGDGC3gxBFWAhd326+kEtrNg@mail.gmail.com>
+Subject: Re: [RFC PATCH] mm/readahead: readahead aggressively if read drops in
+ willneed range
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Mike Snitzer <snitzer@kernel.org>, Ming Lei <ming.lei@redhat.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-fsdevel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Don Dutile <ddutile@redhat.com>, Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Future platforms should not use different compatibles to differentiate
-between eDP and DP mode. Instead, they should use a single compatible as the
-IP block is the same. It will be the job of the controller to set the submode
-of the PHY accordingly.
+On Sun, Jan 28, 2024 at 7:22=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
+> wrote:
+>
+> On Sun, Jan 28, 2024 at 06:12:29PM -0500, Mike Snitzer wrote:
+> > On Sun, Jan 28 2024 at  5:02P -0500,
+> > Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > > On Sun, Jan 28, 2024 at 10:25:22PM +0800, Ming Lei wrote:
+> > > > Since commit 6d2be915e589 ("mm/readahead.c: fix readahead failure f=
+or
+> > > > memoryless NUMA nodes and limit readahead max_pages"), ADV_WILLNEED
+> > > > only tries to readahead 512 pages, and the remained part in the adv=
+ised
+> > > > range fallback on normal readahead.
+> > >
+> > > Does the MAINTAINERS file mean nothing any more?
+> >
+> > "Ming, please use scripts/get_maintainer.pl when submitting patches."
+>
+> That's an appropriate response to a new contributor, sure.  Ming has
+> been submitting patches since, what, 2008?  Surely they know how to
+> submit patches by now.
+>
+> > I agree this patch's header could've worked harder to establish the
+> > problem that it fixes.  But I'll now take a crack at backfilling the
+> > regression report that motivated this patch be developed:
+>
+> Thank you.
+>
+> > Linux 3.14 was the last kernel to allow madvise (MADV_WILLNEED)
+> > allowed mmap'ing a file more optimally if read_ahead_kb < max_sectors_k=
+b.
+> >
+> > Ths regressed with commit 6d2be915e589 (so Linux 3.15) such that
+> > mounting XFS on a device with read_ahead_kb=3D64 and max_sectors_kb=3D1=
+024
+> > and running this reproducer against a 2G file will take ~5x longer
+> > (depending on the system's capabilities), mmap_load_test.java follows:
+> >
+> > import java.nio.ByteBuffer;
+> > import java.nio.ByteOrder;
+> > import java.io.RandomAccessFile;
+> > import java.nio.MappedByteBuffer;
+> > import java.nio.channels.FileChannel;
+> > import java.io.File;
+> > import java.io.FileNotFoundException;
+> > import java.io.IOException;
+> >
+> > public class mmap_load_test {
+> >
+> >         public static void main(String[] args) throws FileNotFoundExcep=
+tion, IOException, InterruptedException {
+> >               if (args.length =3D=3D 0) {
+> >                       System.out.println("Please provide a file");
+> >                       System.exit(0);
+> >               }
+> >               FileChannel fc =3D new RandomAccessFile(new File(args[0])=
+, "rw").getChannel();
+> >               MappedByteBuffer mem =3D fc.map(FileChannel.MapMode.READ_=
+ONLY, 0, fc.size());
+> >
+> >               System.out.println("Loading the file");
+> >
+> >               long startTime =3D System.currentTimeMillis();
+> >               mem.load();
+> >               long endTime =3D System.currentTimeMillis();
+> >               System.out.println("Done! Loading took " + (endTime-start=
+Time) + " ms");
+> >
+> >       }
+> > }
+>
+> It's good to have the original reproducer.  The unfortunate part is
+> that being at such a high level, it doesn't really show what syscalls
+> the library makes on behalf of the application.  I'll take your word
+> for it that it calls madvise(MADV_WILLNEED).  An strace might not go
+> amiss.
+>
+> > reproduce with:
+> >
+> > javac mmap_load_test.java
+> > echo 64 > /sys/block/sda/queue/read_ahead_kb
+> > echo 1024 > /sys/block/sda/queue/max_sectors_kb
+> > mkfs.xfs /dev/sda
+> > mount /dev/sda /mnt/test
+> > dd if=3D/dev/zero of=3D/mnt/test/2G_file bs=3D1024k count=3D2000
+> >
+> > echo 3 > /proc/sys/vm/drop_caches
+>
+> (I prefer to unmount/mount /mnt/test; it drops the cache for
+> /mnt/test/2G_file without affecting the rest of the system)
+>
+> > java mmap_load_test /mnt/test/2G_file
+> >
+> > Without a fix, like the patch Ming provided, iostat will show rareq-sz
+> > is 64 rather than ~1024.
+>
+> Understood.  But ... the application is asking for as much readahead as
+> possible, and the sysadmin has said "Don't readahead more than 64kB at
+> a time".  So why will we not get a bug report in 1-15 years time saying
+> "I put a limit on readahead and the kernel is ignoring it"?  I think
+> typically we allow the sysadmin to override application requests,
+> don't we?
 
-The existing platforms will remain with separate compatibles for each mode.
+The application isn't knowingly asking for readahead.  It is asking to
+mmap the file (and reporter wants it done as quickly as possible..
+like occurred before).
 
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
----
- drivers/phy/qualcomm/phy-qcom-edp.c | 71 ++++++++++++++++++++++++++-----------
- 1 file changed, 51 insertions(+), 20 deletions(-)
+This fix is comparable to Jens' commit 9491ae4aade6 ("mm: don't cap
+request size based on read-ahead setting") -- same logic, just applied
+to callchain that ends up using madvise(MADV_WILLNEED).
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-edp.c b/drivers/phy/qualcomm/phy-qcom-edp.c
-index 8e5078304646..af941d6c5588 100644
---- a/drivers/phy/qualcomm/phy-qcom-edp.c
-+++ b/drivers/phy/qualcomm/phy-qcom-edp.c
-@@ -14,6 +14,7 @@
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/phy/phy.h>
-+#include <linux/phy/phy-dp.h>
- #include <linux/platform_device.h>
- #include <linux/regulator/consumer.h>
- #include <linux/reset.h>
-@@ -68,19 +69,21 @@
- 
- #define TXn_TRAN_DRVR_EMP_EN                    0x0078
- 
--struct qcom_edp_cfg {
--	bool is_dp;
--
--	/* DP PHY swing and pre_emphasis tables */
-+struct qcom_edp_swing_pre_emph_cfg {
- 	const u8 (*swing_hbr_rbr)[4][4];
- 	const u8 (*swing_hbr3_hbr2)[4][4];
- 	const u8 (*pre_emphasis_hbr_rbr)[4][4];
- 	const u8 (*pre_emphasis_hbr3_hbr2)[4][4];
- };
- 
-+struct qcom_edp_phy_cfg {
-+	bool is_edp;
-+	const struct qcom_edp_swing_pre_emph_cfg *swing_pre_emph_cfg;
-+};
-+
- struct qcom_edp {
- 	struct device *dev;
--	const struct qcom_edp_cfg *cfg;
-+	const struct qcom_edp_phy_cfg *cfg;
- 
- 	struct phy *phy;
- 
-@@ -96,6 +99,8 @@ struct qcom_edp {
- 
- 	struct clk_bulk_data clks[2];
- 	struct regulator_bulk_data supplies[2];
-+
-+	bool is_edp;
- };
- 
- static const u8 dp_swing_hbr_rbr[4][4] = {
-@@ -126,8 +131,7 @@ static const u8 dp_pre_emp_hbr2_hbr3[4][4] = {
- 	{ 0x04, 0xff, 0xff, 0xff }
- };
- 
--static const struct qcom_edp_cfg dp_phy_cfg = {
--	.is_dp = true,
-+static const struct qcom_edp_swing_pre_emph_cfg dp_phy_swing_pre_emph_cfg = {
- 	.swing_hbr_rbr = &dp_swing_hbr_rbr,
- 	.swing_hbr3_hbr2 = &dp_swing_hbr2_hbr3,
- 	.pre_emphasis_hbr_rbr = &dp_pre_emp_hbr_rbr,
-@@ -162,18 +166,28 @@ static const u8 edp_pre_emp_hbr2_hbr3[4][4] = {
- 	{ 0x00, 0xff, 0xff, 0xff }
- };
- 
--static const struct qcom_edp_cfg edp_phy_cfg = {
--	.is_dp = false,
-+static const struct qcom_edp_swing_pre_emph_cfg edp_phy_swing_pre_emph_cfg = {
- 	.swing_hbr_rbr = &edp_swing_hbr_rbr,
- 	.swing_hbr3_hbr2 = &edp_swing_hbr2_hbr3,
- 	.pre_emphasis_hbr_rbr = &edp_pre_emp_hbr_rbr,
- 	.pre_emphasis_hbr3_hbr2 = &edp_pre_emp_hbr2_hbr3,
- };
- 
-+static const struct qcom_edp_phy_cfg sc7280_dp_phy_cfg = {
-+};
-+
-+static const struct qcom_edp_phy_cfg sc8280xp_dp_phy_cfg = {
-+	.swing_pre_emph_cfg = &dp_phy_swing_pre_emph_cfg,
-+};
-+
-+static const struct qcom_edp_phy_cfg sc8280xp_edp_phy_cfg = {
-+	.is_edp = true,
-+	.swing_pre_emph_cfg = &edp_phy_swing_pre_emph_cfg,
-+};
-+
- static int qcom_edp_phy_init(struct phy *phy)
- {
- 	struct qcom_edp *edp = phy_get_drvdata(phy);
--	const struct qcom_edp_cfg *cfg = edp->cfg;
- 	int ret;
- 	u8 cfg8;
- 
-@@ -200,7 +214,7 @@ static int qcom_edp_phy_init(struct phy *phy)
- 	       DP_PHY_PD_CTL_PLL_PWRDN | DP_PHY_PD_CTL_DP_CLAMP_EN,
- 	       edp->edp + DP_PHY_PD_CTL);
- 
--	if (cfg && cfg->is_dp)
-+	if (edp->cfg->swing_pre_emph_cfg && !edp->is_edp)
- 		cfg8 = 0xb7;
- 	else
- 		cfg8 = 0x37;
-@@ -234,7 +248,7 @@ static int qcom_edp_phy_init(struct phy *phy)
- 
- static int qcom_edp_set_voltages(struct qcom_edp *edp, const struct phy_configure_opts_dp *dp_opts)
- {
--	const struct qcom_edp_cfg *cfg = edp->cfg;
-+	const struct qcom_edp_swing_pre_emph_cfg *cfg = edp->cfg->swing_pre_emph_cfg;
- 	unsigned int v_level = 0;
- 	unsigned int p_level = 0;
- 	u8 ldo_config;
-@@ -245,6 +259,9 @@ static int qcom_edp_set_voltages(struct qcom_edp *edp, const struct phy_configur
- 	if (!cfg)
- 		return 0;
- 
-+	if (edp->is_edp)
-+		cfg = &edp_phy_swing_pre_emph_cfg;
-+
- 	for (i = 0; i < dp_opts->lanes; i++) {
- 		v_level = max(v_level, dp_opts->voltage[i]);
- 		p_level = max(p_level, dp_opts->pre[i]);
-@@ -261,7 +278,7 @@ static int qcom_edp_set_voltages(struct qcom_edp *edp, const struct phy_configur
- 	if (swing == 0xff || emph == 0xff)
- 		return -EINVAL;
- 
--	ldo_config = (cfg && cfg->is_dp) ? 0x1 : 0x0;
-+	ldo_config = edp->is_edp ? 0x0 : 0x1;
- 
- 	writel(ldo_config, edp->tx0 + TXn_LDO_CONFIG);
- 	writel(swing, edp->tx0 + TXn_TX_DRV_LVL);
-@@ -447,10 +464,9 @@ static int qcom_edp_set_vco_div(const struct qcom_edp *edp, unsigned long *pixel
- static int qcom_edp_phy_power_on(struct phy *phy)
- {
- 	const struct qcom_edp *edp = phy_get_drvdata(phy);
--	const struct qcom_edp_cfg *cfg = edp->cfg;
- 	u32 bias0_en, drvr0_en, bias1_en, drvr1_en;
- 	unsigned long pixel_freq;
--	u8 ldo_config;
-+	u8 ldo_config = 0x0;
- 	int timeout;
- 	int ret;
- 	u32 val;
-@@ -468,7 +484,8 @@ static int qcom_edp_phy_power_on(struct phy *phy)
- 		return timeout;
- 
- 
--	ldo_config = (cfg && cfg->is_dp) ? 0x1 : 0x0;
-+	if (edp->cfg->swing_pre_emph_cfg && !edp->cfg->is_edp)
-+		ldo_config = 0x1;
- 
- 	writel(ldo_config, edp->tx0 + TXn_LDO_CONFIG);
- 	writel(ldo_config, edp->tx1 + TXn_LDO_CONFIG);
-@@ -589,6 +606,18 @@ static int qcom_edp_phy_power_off(struct phy *phy)
- 	return 0;
- }
- 
-+static int qcom_edp_phy_set_mode(struct phy *phy, enum phy_mode mode, int submode)
-+{
-+	struct qcom_edp *edp = phy_get_drvdata(phy);
-+
-+	if (mode != PHY_MODE_DP)
-+		return -EINVAL;
-+
-+	edp->is_edp = submode == PHY_SUBMODE_EDP ? true : false;
-+
-+	return 0;
-+}
-+
- static int qcom_edp_phy_exit(struct phy *phy)
- {
- 	struct qcom_edp *edp = phy_get_drvdata(phy);
-@@ -604,6 +633,7 @@ static const struct phy_ops qcom_edp_ops = {
- 	.configure	= qcom_edp_phy_configure,
- 	.power_on	= qcom_edp_phy_power_on,
- 	.power_off	= qcom_edp_phy_power_off,
-+	.set_mode	= qcom_edp_phy_set_mode,
- 	.exit		= qcom_edp_phy_exit,
- 	.owner		= THIS_MODULE,
- };
-@@ -781,6 +811,7 @@ static int qcom_edp_phy_probe(struct platform_device *pdev)
- 
- 	edp->dev = dev;
- 	edp->cfg = of_device_get_match_data(&pdev->dev);
-+	edp->is_edp = edp->cfg->is_edp;
- 
- 	edp->edp = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(edp->edp))
-@@ -839,10 +870,10 @@ static int qcom_edp_phy_probe(struct platform_device *pdev)
- }
- 
- static const struct of_device_id qcom_edp_phy_match_table[] = {
--	{ .compatible = "qcom,sc7280-edp-phy" },
--	{ .compatible = "qcom,sc8180x-edp-phy" },
--	{ .compatible = "qcom,sc8280xp-dp-phy", .data = &dp_phy_cfg },
--	{ .compatible = "qcom,sc8280xp-edp-phy", .data = &edp_phy_cfg },
-+	{ .compatible = "qcom,sc7280-edp-phy" , .data = &sc7280_dp_phy_cfg, },
-+	{ .compatible = "qcom,sc8180x-edp-phy", .data = &sc7280_dp_phy_cfg, },
-+	{ .compatible = "qcom,sc8280xp-dp-phy", .data = &sc8280xp_dp_phy_cfg, },
-+	{ .compatible = "qcom,sc8280xp-edp-phy", .data = &sc8280xp_edp_phy_cfg, },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, qcom_edp_phy_match_table);
+> > > > @@ -972,6 +974,7 @@ struct file_ra_state {
+> > > >   unsigned int ra_pages;
+> > > >   unsigned int mmap_miss;
+> > > >   loff_t prev_pos;
+> > > > + struct maple_tree *need_mt;
+> > >
+> > > No.  Embed the struct maple tree.  Don't allocate it.
+> >
+> > Constructive feedback, thanks.
+> >
+> > > What made you think this was the right approach?
+> >
+> > But then you closed with an attack, rather than inform Ming and/or
+> > others why you feel so strongly, e.g.: Best to keep memory used for
+> > file_ra_state contiguous.
+>
+> That's not an attack, it's a genuine question.  Is there somewhere else
+> doing it wrong that Ming copied from?  Does the documentation need to
+> be clearer?  I can't fix what I don't know.
 
--- 
-2.34.1
-
+OK
 
