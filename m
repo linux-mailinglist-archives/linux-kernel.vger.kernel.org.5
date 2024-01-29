@@ -1,382 +1,260 @@
-Return-Path: <linux-kernel+bounces-42919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EB2B840881
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:35:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6A7D840886
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:36:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AAE7BB275EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:35:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F66DB26EA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:36:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69EDE154BFC;
-	Mon, 29 Jan 2024 14:33:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C514152E14;
+	Mon, 29 Jan 2024 14:35:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="F97i03YE"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IAU7azqg"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A1E9152DF3
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 14:33:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706538802; cv=none; b=ot6xf0GdMREzkq7sHn4k7CfWZatiIo9/D2nuqHKPONdkucL7sVXFaAK2rrcJE+ePi1YvrCS/qXVof8x96rZ9MIBIjt+52SX6q3raCpltoKF7PItb9gKbmCVQKkjPRUKG4g/S92SLyYeLHK41fhMICmJinZOt+xpQuZFinaNs9rw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706538802; c=relaxed/simple;
-	bh=TSmfVJpTFAI5Bi+X9dzLq2pbCeH7Qo4+UMUFhytmPFY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eLrn3Mu5Z2aKaE8UX8VvbMMPmP1f+xKt+1hyfbcZqtK2592HOK3+lLz/FZAMbylcdjMAzGD2gprtX26NW4wJfusuTQ4AGwx/zB3gsWd3esBwct91fTnMXVYOxlhFPI3Rf/+sWafiPokI6h2Hda+grhjW1WXaAeI5MSeUrUGrueM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=F97i03YE; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706538799;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zfDWyrOXB1mD+zgjXEawbz7aquFQMadFUbUPJ1Y1hbE=;
-	b=F97i03YECXe79BXV7uUfU5EVmejwHr570tKMWuKTtqrxRUNnLynrlsMpP9N73rAn3M8x3+
-	CeBlPrvwLCBVf7POPFrSXI2EgAWGYh88IOZ6/hkESUWPhSFSNK+QhMAWDmDz8RnscjEaGM
-	/f1mjH6Je4WU0WK+G9GCGPS01EYd3os=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-434-G5xnxcuDPh6_dHlX6DUXrg-1; Mon, 29 Jan 2024 09:33:13 -0500
-X-MC-Unique: G5xnxcuDPh6_dHlX6DUXrg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D140685A597;
-	Mon, 29 Jan 2024 14:33:11 +0000 (UTC)
-Received: from t14s.fritz.box (unknown [10.39.194.46])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id E6EB5AD1;
-	Mon, 29 Jan 2024 14:33:07 +0000 (UTC)
-From: David Hildenbrand <david@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org,
-	David Hildenbrand <david@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	"Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-	Nick Piggin <npiggin@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	linux-arch@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-s390@vger.kernel.org
-Subject: [PATCH v1 9/9] mm/memory: optimize unmap/zap with PTE-mapped THP
-Date: Mon, 29 Jan 2024 15:32:21 +0100
-Message-ID: <20240129143221.263763-10-david@redhat.com>
-In-Reply-To: <20240129143221.263763-1-david@redhat.com>
-References: <20240129143221.263763-1-david@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 619BC65BA7;
+	Mon, 29 Jan 2024 14:35:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.13
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706538903; cv=fail; b=KieP7oE25giibuoVAgzxXFGumNc/2ruSUPMFP9elsniiUgIVKAPgmaAERaEurcxRmyJQUUjQgfd3fN6tv2Z4130q9ns2ExoBjNFeKz9yzlm6RACRC55v66jCbOgfnsG6qLWd3axpJTbqIf5g0jk9Mlntp5HMRIv8HdXUDX1cJMU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706538903; c=relaxed/simple;
+	bh=PXmEb15lBT1oMuuzaz6EyrAllEYSieD9SVsfmposTAM=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=IwHH9INJZ94pRHuBWoHrMl88DW/SwXhMTDQ2c7C5lsLPRgIDQgW6TkpKrGzU4Sgqli2mVAd4Q3V3dH9LmU3iiPTBM3qQwHm26EQAVh9B3c4yLfwmzDVa7DQg/j2V4ANfdib6dojggAm0oDgg953akWqUduiknvrOutpVxkKShXY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IAU7azqg; arc=fail smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706538901; x=1738074901;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=PXmEb15lBT1oMuuzaz6EyrAllEYSieD9SVsfmposTAM=;
+  b=IAU7azqgVj+HDtmnitkRVIIX0UVLWMtOqiDPFQfDy6CgV1ALJpTpOcdl
+   gA/338dxs6WfdaxI8Zx7cMJqQii4KtwvqLpFXE455TezWc6OP4CRThHm5
+   aOYeWDj9w2B1s2TVT+hD1Hku2A4eLeAZzMcV/0S+AIrTQIzy3yG9+wBU2
+   4o27zkPPRoHQwPvN6etlt6CDs5JLlbZE4YCX2XzKuxs8jLKYW2WKcpQlm
+   vGC8hEA9Gd+rePVYZu52ZGfu1W6r/xwI+5TJRE0n1FkRtvIvFHSVzX0u5
+   jwqeAWYyhOZj1o8Lj4KvCYXBfeTXOb6sxy2KR1r4ubpqc+ZhLYLe3F8Xk
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="1896607"
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="1896607"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 06:35:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="878084629"
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="878084629"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Jan 2024 06:35:00 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 29 Jan 2024 06:34:59 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 29 Jan 2024 06:34:59 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 29 Jan 2024 06:34:59 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Oq0z8MhGQJElVoVNgS7vubRcNR18zOgGHQ4eL3zXBTnJLidyACPvXcsD7lrDtzA+nCqzftSqlmNyQx26MA/7IK9A02FJD4/bKjubP6dH2taydL8YUCVIjJQGNH3vBkWT1cYTgC/2F1soSg7SXg6ZqnRgysXqKLgivW81UqQieSDo73iHa+YPBy84+RHy6DqpGuRqWtVfX9SXGDsYaBUWF+fe4lItyOaXSbe0n3kDaIIc4j/EItHShuYad7OarFblLBRSJqCq8CFAdISYjjxnnko+GmUdif8KhYJVz/xWlpWWYhOAke47S/Hf3cc6+4xuDVQS+CPyftxRgEY9l6rG0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DVwOixy8je0tu3qWHr6D764JcmTCkGYkEQ4bvkcR5CQ=;
+ b=Wql6quz6RyBiTmpo/JECHEso7pIn8e7dtSaRXKoYCS/gncHICzA9smxd5bBZG4m1i+q+nf285qRrOXnO/eEeNfr52TWASEaTQecmAkp4YWSK4x3f0IRjtJewPZ+F1x7uBRoIOPlYFPFLcSyQ5+9olk6Tgz9HQxLOlTQ1AjN9HEzjBWrQ5ksAgxSTYqcOH1hUS9YRN6EiLUK1tonYg8czDkUeO2JCyBxiEcT9hGDT4leBwHF2UqshVM3Vm23LekH/fFU7XE6u3bjcEQF10FxwrH+YaGXEeeSSkQ3aLmI/j4Yt+PoAOzET0aB9nk/zEj4R0wv3x8UxSmeXk0WX5V0eCA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com (2603:10b6:8:1b9::20)
+ by SA1PR11MB8521.namprd11.prod.outlook.com (2603:10b6:806:3ab::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Mon, 29 Jan
+ 2024 14:34:57 +0000
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::8760:b5ec:92af:7769]) by DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::8760:b5ec:92af:7769%6]) with mapi id 15.20.7228.029; Mon, 29 Jan 2024
+ 14:34:57 +0000
+Message-ID: <c3e314f4-f145-472f-8321-b696e367fb08@intel.com>
+Date: Mon, 29 Jan 2024 15:34:26 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 2/7] dma: avoid expensive redundant calls for
+ sync operations
+Content-Language: en-US
+To: Robin Murphy <robin.murphy@arm.com>
+CC: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Christoph Hellwig <hch@lst.de>, Marek Szyprowski
+	<m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>, Will Deacon
+	<will@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael
+ J. Wysocki" <rafael@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Alexander Duyck
+	<alexanderduyck@fb.com>, <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>
+References: <20240126135456.704351-1-aleksander.lobakin@intel.com>
+ <20240126135456.704351-3-aleksander.lobakin@intel.com>
+ <0f6f550c-3eee-46dc-8c42-baceaa237610@arm.com>
+ <7ff3cf5d-b3ff-4b52-9031-30a1cb71c0c9@intel.com>
+ <3d9f7f89-9d62-4916-8f3f-a4aaad85a8e2@intel.com>
+ <9ab3aa81-294c-4b16-a4e3-97b4fe358be8@arm.com>
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+In-Reply-To: <9ab3aa81-294c-4b16-a4e3-97b4fe358be8@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR5P281CA0011.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:f2::19) To DS0PR11MB8718.namprd11.prod.outlook.com
+ (2603:10b6:8:1b9::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB8718:EE_|SA1PR11MB8521:EE_
+X-MS-Office365-Filtering-Correlation-Id: 47dd3d3f-4f21-4e0f-9640-08dc20d77788
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: U9vkfU4dsP34Ur39CQIG0Sx94jQe0Rl3j1nMxrCKiDJWekkP8EqgxjBiD8eTPS+nqdQmzRgnWRnqRJ6abpnSYct34jq1BzSU4kWoERMbHZBMEsD1qiC0Qdzow3eQcQFzjRaR8i9crb9BPeOaCrmDzA00w+Ejl8MEPU5S3qcCHhLpS4IahOigZ+f30IyZwTwYcb5bnjGC3PjY36WhjgV0mltuhA2G3Qlk+A6ihUqVmapXEpvUS7xaCkI63a+6aDt4c3MGMbX37zrqFjg6mkQSju0VXQzRBYcmUNwdIZjWcTBAODMV1HcgyDIMBo9JPBQ7Ee9X+tRUcAqtCoEH0GXkp/xyA2Evc3ENzKfYHB82C19QZ1zEW9QKcPmGAKpUMeg/nDYcmgmtM9MMFcVvdguamtb5WpM/IMbSYrsggCOuFYrMNPtBD28MKTjEuFuBxhHzOzbSCZub6fjgwXXCHnMq47rIWvb3E1tmmwOyGIOl0tfbcQrM/IX4GBXcoP9fLmCamac+fW8iCy6I7PnhmifuOOQM+wEv1+wXBU3eVUhKbWiZN0dbMkv1fWRyHmjXFTJWc4n2P+gj5q4ltLACxMgn/Ke4z7sE8XTOMZ5sc3pKqnp/BiOFJ8T+y1nDCLzkik+UO4XuXj+FhgzPabdVErUlbg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB8718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(346002)(396003)(39860400002)(376002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(82960400001)(31696002)(6486002)(6666004)(478600001)(86362001)(38100700002)(53546011)(6506007)(2616005)(6512007)(4326008)(8936002)(26005)(5660300002)(7416002)(54906003)(6916009)(66556008)(316002)(66946007)(66476007)(8676002)(36756003)(2906002)(31686004)(41300700001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?djRCRnNIZjBRTFBlOGJSZHMvR3hqUU9yZGJ1QmRMa2wxczR4NTZ5dCtGZkVz?=
+ =?utf-8?B?bkZxb2Zxb29wdWpuUFVOdkxscm83Rzk5OFN1c0tTb0lqdEYwbXRHcXp4QjNJ?=
+ =?utf-8?B?Q2dLcDhpajJnOTlZOExmVmwxRElodHptanRYTytQRFJtZkhFcGtVSCt1YkhV?=
+ =?utf-8?B?QjUyL3RqemcvYjJNY0JMU2htZkdvNFY0M0gzdlFsWVIxWTZGQ0t1NDdjYm5t?=
+ =?utf-8?B?dUh4aEZKMFpNMGgzVTNWS0dvT3IvMWRJRHhuVkhKWVpUbVdjZXRhWGpBdjBD?=
+ =?utf-8?B?dmRqek9NNHEzUlB4NTFjWjNva3lKUXdMcGZ2YVBqR2lDOUF2ZDhZUSsxaUlq?=
+ =?utf-8?B?U0tUS3pGM3JUQ21zOWFFWHMySVFRZC9VV1o3ck9QaDdoNkdUUVNBMnJ1OEtE?=
+ =?utf-8?B?bk1HVTkxa21NT1JoNVI2Rzd3Z3NRZjFpM1VFRnIwYysrS2ZSNlA3NW5GWmg0?=
+ =?utf-8?B?dWE1K1E3TjJIc25teWQ5emVnMmtmSmhLOHBRSnUyMzNDMk1acGNlS0h6RU5P?=
+ =?utf-8?B?N2lQYXYxYnBTWHlRNDl1OWdRSXFxamV2dEk2T1lHZjI2S2FhN0JvQzgvRDN6?=
+ =?utf-8?B?Sk9NSGJGbWRHZE9iSzE0bS82UkhWMUgycEh3dTlqbjJ3MStrUUdmT2VpYm1S?=
+ =?utf-8?B?SlFTQXVBL0JxbjBvSEcvVDBMZ09WRnpyVG90Zml0aW1GUzBCZU1QU3VHOEY4?=
+ =?utf-8?B?Zlk0Z25Ubk9VOVpkWWxTQzFHcjM3eHJVZlgyaHhZampJSXA2MDVCdU9tNUhC?=
+ =?utf-8?B?TkxVaUozRm5TRm05WGJIaE90SU4zblNLeWViTHRVSStrVXVGWmtEWEhZOFJm?=
+ =?utf-8?B?ejJNYy9VVjFrd1gxL0xPa3VwMmNMbFJyNlRpUEpnZWdzcUo5TXJzb1hwMVBk?=
+ =?utf-8?B?VVpzeDVTc0IrdTFQSmdDN0MwbklkN2FVRjZlYU1pYlpRbVI5b3FXR3FLS2FB?=
+ =?utf-8?B?QzZmU3NJdDUxalljN2xiTmR3SXd1c01Jdy9JWW84TkVCMjBrQndNQkk0YTVa?=
+ =?utf-8?B?UFNjaC9zSmZvWlQrUDg0L09JcE41ekd0a1Q2V2dlQ0M5R1JFeUR1YVhjcGt2?=
+ =?utf-8?B?V1FoNkszM2RXVWdkdzlONVBqYmVkL2c5blhwRkhsSEhnbVFvT1Uvak9kbk9E?=
+ =?utf-8?B?K2VKc2Z1Nkp6KzdzbXRZZ1VmT2ZvYW45VVF6bGVFRXhBdE1pZG5BSE4vSHN6?=
+ =?utf-8?B?Z2JXeVhwZ01UVnh2YzYwNjFmNmRRNFhrRk1zVTlaeEdYK1VqOENtTHdSaFA3?=
+ =?utf-8?B?Q1VXU0cvWUdsSGFvRUw0V1VBcXhFKzQ3blFMLzBDdHlSdU15ODhUa2txVmk3?=
+ =?utf-8?B?TnBqSFIyMHp4TkZjcW1tWjhyRkU1cUdGWDZaZUdJdFF3N28zR011Y1RaaVpl?=
+ =?utf-8?B?MlprRStPNUs1S01nY3diRnRyUzh4Z1lrOWNFbmZmNTZrNzRKN3VIMjBhSXFK?=
+ =?utf-8?B?aU1ydzJNdWpEalNRMnhTM01kempnNFVJUFI2WEpBUy9Nc0svMjI3ZmFCbXZy?=
+ =?utf-8?B?QkcycXhXSlZScnlxWVRUWm5LRnZ6UmJEdzRXbUkxTSs2cVdnVmJ4alZFSVV1?=
+ =?utf-8?B?RkJWcTJRQ3NXcFYvcVJwYVVFMXlseld6OXg1KzNLa3pKMlROKzY2K0hxK2hi?=
+ =?utf-8?B?elB6d0VYZmFUQUFlS0NTeTJMVzJQVm9IcjVpZ0lUM081M2ZyOEVXVWtkQWFy?=
+ =?utf-8?B?TVlXN2UvZ1E3KytQVDdDWXZpUEhkMktZR3JMOWQzWm1HSnMvUTI4MUZ0WWtN?=
+ =?utf-8?B?V09KSnlkNGNyZ3lBTGdaSnZUdkFqYXpVY2dMQ043NW15cGlXQ2hCTnZjdVY3?=
+ =?utf-8?B?Zzg0cE9TWXNaMFQ5Y1pKRkNSVUJscEZvWUllb1JPVlhqUlM3Nm8zaCtaRmRD?=
+ =?utf-8?B?b2FJS1llTnRhZ2RpZWpwVkl4cytaMFBJZENwRUpmQ2xnakJCQzNaNDRkMHRP?=
+ =?utf-8?B?aHlNK0NwL05ldmR4eFU1enJheHVyQXovTWxOMi9KQjZBQnFnRkhsL2xubGxY?=
+ =?utf-8?B?bjVWUjRWSmVqNjVDc2ZyRW1aV3phbTJFWFFyRDNIQzJJZ05pVmJmNkI3T3lF?=
+ =?utf-8?B?eFZtTUZGN2N2Q1VXcXcyK21QNkJWdFQvOWFWTmdoTWs3amwzYWZQRUN0a05j?=
+ =?utf-8?B?NnJxRm5ERVR6dFFLK0VXakdwZzR0UDFyUE45WFRVWFZScjFHdTZiSTh2OWFQ?=
+ =?utf-8?B?VFE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 47dd3d3f-4f21-4e0f-9640-08dc20d77788
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB8718.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 14:34:57.6406
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BtNKmm5XS0NtsYl0o7AcsSShSviygxmt+OEJo+MKsT9BicYlBUhSC74mPuxPIKZ/RuR5td17NIGd3zsJBRzLCIuADntGLYWClNtFmSgdbnc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB8521
+X-OriginatorOrg: intel.com
 
-Similar to how we optimized fork(), let's implement PTE batching when
-consecutive (present) PTEs map consecutive pages of the same large
-folio.
+From: Robin Murphy <robin.murphy@arm.com>
+Date: Mon, 29 Jan 2024 14:29:43 +0000
 
-Most infrastructure we need for batching (mmu gather, rmap) is already
-there. We only have to add get_and_clear_full_ptes() and
-clear_full_ptes(). Similarly, extend zap_install_uffd_wp_if_needed() to
-process a PTE range.
+> On 2024-01-29 2:07 pm, Alexander Lobakin wrote:
+>> From: Alexander Lobakin <aleksander.lobakin@intel.com>
+>> Date: Fri, 26 Jan 2024 17:45:11 +0100
+>>
+>>> From: Robin Murphy <robin.murphy@arm.com>
+>>> Date: Fri, 26 Jan 2024 15:48:54 +0000
+>>>
+>>>> On 26/01/2024 1:54 pm, Alexander Lobakin wrote:
+>>>>> From: Eric Dumazet <edumazet@google.com>
+>>>>>
+>>>>> Quite often, NIC devices do not need dma_sync operations on x86_64
+>>>>> at least.
+>>>>> Indeed, when dev_is_dma_coherent(dev) is true and
+>>>>> dev_use_swiotlb(dev) is false, iommu_dma_sync_single_for_cpu()
+>>>>> and friends do nothing.
+>>>>>
+>>>>> However, indirectly calling them when CONFIG_RETPOLINE=y consumes
+>>>>> about
+>>>>> 10% of cycles on a cpu receiving packets from softirq at ~100Gbit
+>>>>> rate.
+>>>>> Even if/when CONFIG_RETPOLINE is not set, there is a cost of about 3%.
+>>>>>
+>>>>> Add dev->skip_dma_sync boolean which is set during the device
+>>>>> initialization depending on the setup: dev_is_dma_coherent() for
+>>>>> direct
+>>>>> DMA, !(sync_single_for_device || sync_single_for_cpu) or positive
+>>>>> result
+>>>>> from the new callback, dma_map_ops::can_skip_sync for non-NULL DMA
+>>>>> ops.
+>>>>> Then later, if/when swiotlb is used for the first time, the flag
+>>>>> is turned off, from swiotlb_tbl_map_single().
+>>>>
+>>>> I think you could probably just promote the dma_uses_io_tlb flag from
+>>>> SWIOTLB_DYNAMIC to a general SWIOTLB thing to serve this purpose now.
+>>>
+>>> Nice catch!
+>>
+>> BTW, this implies such hotpath check:
+>>
+>>     if (dev->dma_skip_sync && !READ_ONCE(dev->dma_uses_io_tlb))
+>>         // ...
+>>
+>> This seems less effective than just resetting dma_skip_sync on first
+>> allocation.
+> 
+> Well, my point is not to have a dma_skip_sync at all; I'm suggesting the
+> check would be:
+> 
+>     if (dev_is_dma_coherent(dev) && dev_uses_io_tlb(dev))
+>         ...
 
-We won't bother sanity-checking the mapcount of all subpages, but only
-check the mapcount of the first subpage we process.
+Aaah, okay, but what about dma_map_ops?
+It would then become:
 
-To keep small folios as fast as possible force inlining of a specialized
-variant using __always_inline with nr=1.
+	if ((!dev->dma_ops ||
+	     (!dev->dma_ops->sync_single_for_device &&
+	      !dev->dma_ops->sync_single_for_cpu)) ||
+	     (dev->dma_ops->flags & DMA_F_SKIP_SYNC)) &&
+	    dev_is_dma_coherent(dev) && !dev_uses_io_tlb(dev))
+		dma_sync_ ...
 
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- include/linux/pgtable.h | 66 +++++++++++++++++++++++++++++
- mm/memory.c             | 92 +++++++++++++++++++++++++++++------------
- 2 files changed, 132 insertions(+), 26 deletions(-)
+Quite a lot and everything except dev_uses_io_tlb() is known at device
+probing time, that's why I decided to cache the result into a new flag...
 
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index aab227e12493..f0feae7f89fb 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -580,6 +580,72 @@ static inline pte_t ptep_get_and_clear_full(struct mm_struct *mm,
- }
- #endif
- 
-+#ifndef get_and_clear_full_ptes
-+/**
-+ * get_and_clear_full_ptes - Clear PTEs that map consecutive pages of the same
-+ *			     folio, collecting dirty/accessed bits.
-+ * @mm: Address space the pages are mapped into.
-+ * @addr: Address the first page is mapped at.
-+ * @ptep: Page table pointer for the first entry.
-+ * @nr: Number of entries to clear.
-+ * @full: Whether we are clearing a full mm.
-+ *
-+ * May be overridden by the architecture; otherwise, implemented as a simple
-+ * loop over ptep_get_and_clear_full(), merging dirty/accessed bits into
-+ * returned PTE.
-+ *
-+ * Note that PTE bits in the PTE range besides the PFN can differ. For example,
-+ * some PTEs might be write-protected.
-+ *
-+ * Context: The caller holds the page table lock.  The PTEs map consecutive
-+ * pages that belong to the same folio.  The PTEs are all in the same PMD.
-+ */
-+static inline pte_t get_and_clear_full_ptes(struct mm_struct *mm,
-+		unsigned long addr, pte_t *ptep, unsigned int nr, int full)
-+{
-+	pte_t pte, tmp_pte;
-+
-+	pte = ptep_get_and_clear_full(mm, addr, ptep, full);
-+	while (--nr) {
-+		ptep++;
-+		addr += PAGE_SIZE;
-+		tmp_pte = ptep_get_and_clear_full(mm, addr, ptep, full);
-+		if (pte_dirty(tmp_pte))
-+			pte = pte_mkdirty(pte);
-+		if (pte_young(tmp_pte))
-+			pte = pte_mkyoung(pte);
-+	}
-+	return pte;
-+}
-+#endif
-+
-+#ifndef clear_full_ptes
-+/**
-+ * clear_full_ptes - Clear PTEs that map consecutive pages of the same folio.
-+ * @mm: Address space the pages are mapped into.
-+ * @addr: Address the first page is mapped at.
-+ * @ptep: Page table pointer for the first entry.
-+ * @nr: Number of entries to clear.
-+ * @full: Whether we are clearing a full mm.
-+ *
-+ * Note that PTE bits in the PTE range besides the PFN can differ. For example,
-+ * some PTEs might be write-protected.
-+ *
-+ * Context: The caller holds the page table lock.  The PTEs map consecutive
-+ * pages that belong to the same folio.  The PTEs are all in the same PMD.
-+ */
-+static inline void clear_full_ptes(struct mm_struct *mm, unsigned long addr,
-+		pte_t *ptep, unsigned int nr, int full)
-+{
-+	for (;;) {
-+		ptep_get_and_clear_full(mm, addr, ptep, full);
-+		if (--nr == 0)
-+			break;
-+		ptep++;
-+		addr += PAGE_SIZE;
-+	}
-+}
-+#endif
- 
- /*
-  * If two threads concurrently fault at the same page, the thread that
-diff --git a/mm/memory.c b/mm/memory.c
-index a2190d7cfa74..38a010c4d04d 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -1515,7 +1515,7 @@ static inline bool zap_drop_file_uffd_wp(struct zap_details *details)
-  */
- static inline void
- zap_install_uffd_wp_if_needed(struct vm_area_struct *vma,
--			      unsigned long addr, pte_t *pte,
-+			      unsigned long addr, pte_t *pte, int nr,
- 			      struct zap_details *details, pte_t pteval)
- {
- 	/* Zap on anonymous always means dropping everything */
-@@ -1525,20 +1525,27 @@ zap_install_uffd_wp_if_needed(struct vm_area_struct *vma,
- 	if (zap_drop_file_uffd_wp(details))
- 		return;
- 
--	pte_install_uffd_wp_if_needed(vma, addr, pte, pteval);
-+	for (;;) {
-+		/* the PFN in the PTE is irrelevant. */
-+		pte_install_uffd_wp_if_needed(vma, addr, pte, pteval);
-+		if (--nr == 0)
-+			break;
-+		pte++;
-+		addr += PAGE_SIZE;
-+	}
- }
- 
--static inline void zap_present_folio_pte(struct mmu_gather *tlb,
-+static __always_inline void zap_present_folio_ptes(struct mmu_gather *tlb,
- 		struct vm_area_struct *vma, struct folio *folio,
--		struct page *page, pte_t *pte, pte_t ptent, unsigned long addr,
--		struct zap_details *details, int *rss, bool *force_flush,
--		bool *force_break)
-+		struct page *page, pte_t *pte, pte_t ptent, unsigned int nr,
-+		unsigned long addr, struct zap_details *details, int *rss,
-+		bool *force_flush, bool *force_break)
- {
- 	struct mm_struct *mm = tlb->mm;
- 	bool delay_rmap = false;
- 
- 	if (!folio_test_anon(folio)) {
--		ptent = ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
-+		ptent = get_and_clear_full_ptes(mm, addr, pte, nr, tlb->fullmm);
- 		if (pte_dirty(ptent)) {
- 			folio_mark_dirty(folio);
- 			if (tlb_delay_rmap(tlb)) {
-@@ -1548,36 +1555,49 @@ static inline void zap_present_folio_pte(struct mmu_gather *tlb,
- 		}
- 		if (pte_young(ptent) && likely(vma_has_recency(vma)))
- 			folio_mark_accessed(folio);
--		rss[mm_counter(folio)]--;
-+		rss[mm_counter(folio)] -= nr;
- 	} else {
- 		/* We don't need up-to-date accessed/dirty bits. */
--		ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
--		rss[MM_ANONPAGES]--;
-+		clear_full_ptes(mm, addr, pte, nr, tlb->fullmm);
-+		rss[MM_ANONPAGES] -= nr;
- 	}
-+	/* Checking a single PTE in a batch is sufficient. */
- 	arch_check_zapped_pte(vma, ptent);
--	tlb_remove_tlb_entry(tlb, pte, addr);
-+	tlb_remove_tlb_entries(tlb, pte, nr, addr);
- 	if (unlikely(userfaultfd_pte_wp(vma, ptent)))
--		zap_install_uffd_wp_if_needed(vma, addr, pte, details, ptent);
-+		zap_install_uffd_wp_if_needed(vma, addr, pte, nr, details,
-+					      ptent);
- 
- 	if (!delay_rmap) {
--		folio_remove_rmap_pte(folio, page, vma);
-+		folio_remove_rmap_ptes(folio, page, nr, vma);
-+
-+		/* Only sanity-check the first page in a batch. */
- 		if (unlikely(page_mapcount(page) < 0))
- 			print_bad_pte(vma, addr, ptent, page);
- 	}
--	if (unlikely(__tlb_remove_page(tlb, page, delay_rmap))) {
-+	if (unlikely(__tlb_remove_folio_pages(tlb, page, nr, delay_rmap))) {
- 		*force_flush = true;
- 		*force_break = true;
- 	}
- }
- 
--static inline void zap_present_pte(struct mmu_gather *tlb,
-+/*
-+ * Zap or skip one present PTE, trying to batch-process subsequent PTEs that map
-+ * consecutive pages of the same folio.
-+ *
-+ * Returns the number of processed (skipped or zapped) PTEs (at least 1).
-+ */
-+static inline int zap_present_ptes(struct mmu_gather *tlb,
- 		struct vm_area_struct *vma, pte_t *pte, pte_t ptent,
--		unsigned long addr, struct zap_details *details,
--		int *rss, bool *force_flush, bool *force_break)
-+		unsigned int max_nr, unsigned long addr,
-+		struct zap_details *details, int *rss, bool *force_flush,
-+		bool *force_break)
- {
-+	const fpb_t fpb_flags = FPB_IGNORE_DIRTY | FPB_IGNORE_SOFT_DIRTY;
- 	struct mm_struct *mm = tlb->mm;
- 	struct folio *folio;
- 	struct page *page;
-+	int nr;
- 
- 	page = vm_normal_page(vma, addr, ptent);
- 	if (!page) {
-@@ -1587,14 +1607,29 @@ static inline void zap_present_pte(struct mmu_gather *tlb,
- 		tlb_remove_tlb_entry(tlb, pte, addr);
- 		VM_WARN_ON_ONCE(userfaultfd_wp(vma));
- 		ksm_might_unmap_zero_page(mm, ptent);
--		return;
-+		return 1;
- 	}
- 
- 	folio = page_folio(page);
- 	if (unlikely(!should_zap_folio(details, folio)))
--		return;
--	zap_present_folio_pte(tlb, vma, folio, page, pte, ptent, addr, details,
--			      rss, force_flush, force_break);
-+		return 1;
-+
-+	/*
-+	 * Make sure that the common "small folio" case is as fast as possible
-+	 * by keeping the batching logic separate.
-+	 */
-+	if (unlikely(folio_test_large(folio) && max_nr != 1)) {
-+		nr = folio_pte_batch(folio, addr, pte, ptent, max_nr, fpb_flags,
-+				     NULL);
-+
-+		zap_present_folio_ptes(tlb, vma, folio, page, pte, ptent, nr,
-+				       addr, details, rss, force_flush,
-+				       force_break);
-+		return nr;
-+	}
-+	zap_present_folio_ptes(tlb, vma, folio, page, pte, ptent, 1, addr,
-+			       details, rss, force_flush, force_break);
-+	return 1;
- }
- 
- static unsigned long zap_pte_range(struct mmu_gather *tlb,
-@@ -1609,6 +1644,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 	pte_t *start_pte;
- 	pte_t *pte;
- 	swp_entry_t entry;
-+	int nr;
- 
- 	tlb_change_page_size(tlb, PAGE_SIZE);
- 	init_rss_vec(rss);
-@@ -1622,7 +1658,9 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 		pte_t ptent = ptep_get(pte);
- 		struct folio *folio = NULL;
- 		struct page *page;
-+		int max_nr;
- 
-+		nr = 1;
- 		if (pte_none(ptent))
- 			continue;
- 
-@@ -1630,10 +1668,12 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 			break;
- 
- 		if (pte_present(ptent)) {
--			zap_present_pte(tlb, vma, pte, ptent, addr, details,
--					rss, &force_flush, &force_break);
-+			max_nr = (end - addr) / PAGE_SIZE;
-+			nr = zap_present_ptes(tlb, vma, pte, ptent, max_nr,
-+					      addr, details, rss, &force_flush,
-+					      &force_break);
- 			if (unlikely(force_break)) {
--				addr += PAGE_SIZE;
-+				addr += nr * PAGE_SIZE;
- 				break;
- 			}
- 			continue;
-@@ -1687,8 +1727,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 			WARN_ON_ONCE(1);
- 		}
- 		pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
--		zap_install_uffd_wp_if_needed(vma, addr, pte, details, ptent);
--	} while (pte++, addr += PAGE_SIZE, addr != end);
-+		zap_install_uffd_wp_if_needed(vma, addr, pte, 1, details, ptent);
-+	} while (pte += nr, addr += PAGE_SIZE * nr, addr != end);
- 
- 	add_mm_rss_vec(mm, rss);
- 	arch_leave_lazy_mmu_mode();
--- 
-2.43.0
+> 
+> where on the platform which cares about this most, that first condition
+> is a compile-time constant (and as implied, the second would want to be
+> similarly wrapped for !SWIOTLB configs).
+> 
+> Thanks,
+> Robin.
 
+Thanks,
+Olek
 
