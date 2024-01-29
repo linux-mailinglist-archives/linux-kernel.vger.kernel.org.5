@@ -1,112 +1,137 @@
-Return-Path: <linux-kernel+bounces-43357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A5A2841293
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:47:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72A26841294
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:47:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E919B24D85
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:47:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CA7A2843AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:47:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CC7A163AB3;
-	Mon, 29 Jan 2024 18:36:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3D9C1E53A;
+	Mon, 29 Jan 2024 18:37:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vPN5xLNO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="jUcKDXDR"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B34F2163A8C;
-	Mon, 29 Jan 2024 18:36:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5FD3125CC
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 18:37:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706553399; cv=none; b=QtdNcVAn3EQuwSd00vbjzVEYR2cS1fDzpc6MVXckTzUnmsLURHHSlZiPqBE03NXhpkIxW/VUjA+jO32CoZVC413wdq1mLIG/Y34I9No0claLoTcTeC1OXK+YCfTFx2zlAOsc0UWOdkNPYERRe+LehYk2beZC6oLTgrYFBtGQrEE=
+	t=1706553455; cv=none; b=Kbb1KFD6uQDD3Ut6gqlA/1Ot14AgQDE5YCNf8HwzTsccgxOnetSeRCCYKncZhoz1lY0tEmHPRmvgmBkT08+ULzDlzTEJwCB7ahLCVcMgROa5dLxRCrV+5aEYJgLojFJGuMPciypJHdYIWnqQaz7IOQI/hCUX2UwQ4/ouLOV2qQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706553399; c=relaxed/simple;
-	bh=IJj+o+sqNxtyfAHUVNauVEUUerzlkQDRMA0j72uWKmI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=N9lJDgtB5JplnRIY0hoHUkD3+pA9QteJ/R/umizaIfLPRmpwW+f5/VCYEhe08R4TygXP547T8/S7vhLIC0vREl2hejhSbA2+PsT+4rb/uZkAhma6hi5XZBk7AnN6ldI6qWwp9jCA1UyvM3uxFNcgDBEPk/wZ8ayuclGAFFiNiyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vPN5xLNO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74C27C43390;
-	Mon, 29 Jan 2024 18:36:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706553399;
-	bh=IJj+o+sqNxtyfAHUVNauVEUUerzlkQDRMA0j72uWKmI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=vPN5xLNOpOpRlkUog7YHfMKMO6iZF+vOs831QFi6dVHLUFEXwWXBwlty5hJDCq02s
-	 T2HlFCogdYR6VkZqBIsAoqgPO0+NZzghhJ6OE0tglHAUQ2I0GpTKQ7UVWnnxW+F0VS
-	 wD3uh7mqtTIfjYjmyQYySAEBao8vX4nlSglejW2ROg50mtetNMo3twpwLWCHpKb+DE
-	 M/YFrtjhFFZi8ud2ND0qM/pb/gqptks9QyaLtvg+GcjCns1rrh1nB+SU4HGErUJrcz
-	 2lnKf6KEC2/qTrN5G92H9XM4Rmou+e1OndATke8ouPAOgUZ5NR5iYTsTvGwRU1M3mj
-	 akgjZKeOSlHGA==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Vinod Koul <vkoul@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	dmaengine@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 2/2] dmaengine: shdma: increase size of 'dev_id'
-Date: Mon, 29 Jan 2024 13:36:31 -0500
-Message-ID: <20240129183633.464847-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240129183633.464847-1-sashal@kernel.org>
-References: <20240129183633.464847-1-sashal@kernel.org>
+	s=arc-20240116; t=1706553455; c=relaxed/simple;
+	bh=90HpXRkuAYjZRHJFMyOU2HX/eq/5yDzcx8txY4NB+uA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ZhSuk43VmxRAF4PnIKqfzdiv3kklDE3KHVdGEg7NXN81xIw3p6idghs0WUFh/hr30BkurjtQ1sVkDzJTnoWRKA4hCH/xmtvDS7XZ1lQZSHkWE21pfgIOp4h/JMaIM7Ieh4D7N0GJMDuo3s88Fpl8Mx38Kv+XzkHVQK5XlsnLLQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=jUcKDXDR; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d74045c463so15772415ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 10:37:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706553452; x=1707158252; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fla7JsNhKo492vdE3w3Tg2/OHYB++/QCBkeo0Lo52hM=;
+        b=jUcKDXDRvQWvDoFvr09kRTHfQcmQM+VkpXBXmJxptHzfNmgPY6VarzRp6JtZmWuQ7u
+         rt1fNUyS1vms+6XdY+m9kcN93jWVU2zfq3mLkIRnoCAbjIFTim+tpxwOdFucrDJ5qzsd
+         bqAIScw8lDy1MQrczuoc5lEeNOrmOog/fTgwM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706553452; x=1707158252;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Fla7JsNhKo492vdE3w3Tg2/OHYB++/QCBkeo0Lo52hM=;
+        b=P7YJCnSr5PqnwjNF8oR+iybsb6AvfNhRe+axqB7hvHI1UydWWOi1oqqSRIyffov9Fd
+         WB38Z5R7AGP6zkLsEAafjwLQzW2z08vsao40DkFiOxf6oxR3e9a3T/e3KFphAEFhuzNx
+         XubujhnuTEuTeJJCE5HQ3Doi4FOEb6f06xoHI6MLohM13/2o0VW9u6tRhD5oUdGMqft2
+         PH0apBRxsRQU5scadg8pCYnKEJ2aZPnwO3DlFeHzzE2y4rO7lrQuzU0iefaLK/8McIL8
+         zyMH3V/iiIBtAHWbQpWVYk93A09fY3tzBKqrl9kC4jbcGQ4trOfAt505pq9vOH6jHYU1
+         ArEg==
+X-Gm-Message-State: AOJu0YweyH3Ny0tLkhNBPWDlZX1Gi3fg07hyXcuoyXOWzrcfwfyD1ZEQ
+	8We+wTEVxgApKpPWdrJ1tYTv6oNxOyDDyZ7dSYQwldbyJu0mqAeb5lYy/eRS7w==
+X-Google-Smtp-Source: AGHT+IFdSaR5vk/z/in9yVOswwyJHDAI7aDS5JDJDlfLvz6Tr/EaV2A7KUXoI1jRQ/PbokdQDWowhQ==
+X-Received: by 2002:a17:902:8349:b0:1d7:4353:aba5 with SMTP id z9-20020a170902834900b001d74353aba5mr2989671pln.58.1706553452033;
+        Mon, 29 Jan 2024 10:37:32 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id kf13-20020a17090305cd00b001d8fb2591b0sm634433plb.301.2024.01.29.10.37.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 10:37:31 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH] iov_iter: Avoid wrap-around instrumentation in copy_compat_iovec_from_user()
+Date: Mon, 29 Jan 2024 10:37:29 -0800
+Message-Id: <20240129183729.work.991-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.19.306
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1535; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=90HpXRkuAYjZRHJFMyOU2HX/eq/5yDzcx8txY4NB+uA=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlt/BpxNgSkSBKSux6ybMpFyLH/AlD9KaCDrzvt
+ zEDkh9HEfiJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZbfwaQAKCRCJcvTf3G3A
+ JnjjD/sHeWCKm3lg/E+QFrgqXUNgcIvHzer7ewmsf+ihKlwoeIwPQ5RQmISAu0wDhSGkszJbr4S
+ LR1R/yqBxSOCQqAdDKM7jN68oBOd9qFo4IMXeFaqJZJu8nR/tuWBrZNlG+VOHaKwyoKrHDeRQw9
+ BLswyT3fks3NI+ggmDNeBWT042vySVCGveZ1swPQQZTjgw04BOTfM0gRE2mPv8Bv/KCw5njgZi8
+ /f7NZ2XKc3CIrHLcfQXahsWyB0AORAjz3N6KIpi8xHlFdicAVy+rdEFG+TZts5a4BiLopEeFc13
+ orkQ1h2moHoetfbDh14khgoG0FfeCWIyNkXrATK6C99djej9ROR6oXDjz1NBu8DMVhI9M1htMHg
+ txYpfwgrlqc3UZeDYtUsmlVg8OXlT4GAIhjTMKHBw2GzsUpgWAdTxzcLnwxLqQM4ag6EBWOt51n
+ m+uJKNbNlchD4Uq61PnxncNkPT9BVjZ0HaAkUmi7+wzcWxRYIbHl/Qyick3ed/nA3nQzki6a5Iv
+ gi7i6i0yuQAcBxj7mbbsFyVDZy34vRaLrA/FW9qxvdhOrlSaZIhexwDQSIXtr+1aygAfBEZlsZA
+ fSpJohpZU1/66FVLY1fztGTlNFnCANiBVVm7H0ltwYYysXzsogYKl7jxsp5gYUiWpvQ3esmJ0FJ
+ dR/pBKO pa+wo1RA==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
-From: Vinod Koul <vkoul@kernel.org>
+The loop counter "i" in copy_compat_iovec_from_user() is an int, but
+because the nr_segs argument is unsigned long, the signed overflow
+sanitizer got worried "i" could wrap around. Instead of making "i" an
+unsigned long (which may enlarge the type size), switch both nr_segs
+and i to u32. There is no truncation with nr_segs since it is never
+larger than UIO_MAXIOV anyway. This keeps sanitizer instrumentation[1]
+out of a UACCESS path:
 
-[ Upstream commit 404290240827c3bb5c4e195174a8854eef2f89ac ]
+vmlinux.o: warning: objtool: copy_compat_iovec_from_user+0xa9: call to __ubsan_handle_add_overflow() with UACCESS enabled
 
-We seem to have hit warnings of 'output may be truncated' which is fixed
-by increasing the size of 'dev_id'
-
-drivers/dma/sh/shdmac.c: In function ‘sh_dmae_probe’:
-drivers/dma/sh/shdmac.c:541:34: error: ‘%d’ directive output may be truncated writing between 1 and 10 bytes into a region of size 9 [-Werror=format-truncation=]
-  541 |                          "sh-dmae%d.%d", pdev->id, id);
-      |                                  ^~
-In function ‘sh_dmae_chan_probe’,
-    inlined from ‘sh_dmae_probe’ at drivers/dma/sh/shdmac.c:845:9:
-drivers/dma/sh/shdmac.c:541:26: note: directive argument in the range [0, 2147483647]
-  541 |                          "sh-dmae%d.%d", pdev->id, id);
-      |                          ^~~~~~~~~~~~~~
-drivers/dma/sh/shdmac.c:541:26: note: directive argument in the range [0, 19]
-drivers/dma/sh/shdmac.c:540:17: note: ‘snprintf’ output between 11 and 21 bytes into a destination of size 16
-  540 |                 snprintf(sh_chan->dev_id, sizeof(sh_chan->dev_id),
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  541 |                          "sh-dmae%d.%d", pdev->id, id);
-      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://github.com/KSPP/linux/issues/26 [1]
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/dma/sh/shdma.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/iov_iter.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/dma/sh/shdma.h b/drivers/dma/sh/shdma.h
-index 2c0a969adc9f..35987a35a848 100644
---- a/drivers/dma/sh/shdma.h
-+++ b/drivers/dma/sh/shdma.h
-@@ -29,7 +29,7 @@ struct sh_dmae_chan {
- 	const struct sh_dmae_slave_config *config; /* Slave DMA configuration */
- 	int xmit_shift;			/* log_2(bytes_per_xfer) */
- 	void __iomem *base;
--	char dev_id[16];		/* unique name per DMAC of channel */
-+	char dev_id[32];		/* unique name per DMAC of channel */
- 	int pm_error;
- 	dma_addr_t slave_addr;
- };
+diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+index e0aa6b440ca5..d797a43dca91 100644
+--- a/lib/iov_iter.c
++++ b/lib/iov_iter.c
+@@ -1166,11 +1166,12 @@ const void *dup_iter(struct iov_iter *new, struct iov_iter *old, gfp_t flags)
+ EXPORT_SYMBOL(dup_iter);
+ 
+ static __noclone int copy_compat_iovec_from_user(struct iovec *iov,
+-		const struct iovec __user *uvec, unsigned long nr_segs)
++		const struct iovec __user *uvec, u32 nr_segs)
+ {
+ 	const struct compat_iovec __user *uiov =
+ 		(const struct compat_iovec __user *)uvec;
+-	int ret = -EFAULT, i;
++	int ret = -EFAULT;
++	u32 i;
+ 
+ 	if (!user_access_begin(uiov, nr_segs * sizeof(*uiov)))
+ 		return -EFAULT;
 -- 
-2.43.0
+2.34.1
 
 
