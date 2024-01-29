@@ -1,329 +1,145 @@
-Return-Path: <linux-kernel+bounces-42309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 264DA83FF77
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:56:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E2D683FF78
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:56:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1340284221
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 07:56:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 610EE1C23749
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 07:56:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EF2A5732B;
-	Mon, 29 Jan 2024 07:52:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4583B57898;
+	Mon, 29 Jan 2024 07:53:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="G7tfQOND"
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="u2n9Trm7"
+Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC23B5644D;
-	Mon, 29 Jan 2024 07:52:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.141.245
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CE7E57887
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 07:53:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706514768; cv=none; b=iChJwH2zcTjUtT89RiaEE3xsQkpU8eHqEqVd1WSpmzPVXy/ifID8Gel3qz5G23woC5FMWzZOkGhTN5lBMJp/lSJaolTS7XLTwUehMuFV+djt2laolvATMjvqGMEEC86giMsgQYh1lK9QRaSU9c4KcKUuVl+mzzBShRq7kji0d/E=
+	t=1706514808; cv=none; b=WeY4ze9MX0zkEfrbJrUkMScsZqj+bmHJsvT169pWMKQvA/q4qrfuz2ZVf+Jali8s9zV3mdGpNwocpZWI2A/eiAKfta3BatbHkx2ZBlBOYr7q4z1lB3lDi6d+/NTfiMfN/YWZiOsm+m3BTxnlwW2fs4NxVscXY8SFMbrJJgV/3pg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706514768; c=relaxed/simple;
-	bh=PpBx+EPFfjh41Vxsoq76s95w7MJ2ZC/siDhDiJq7ERo=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Kd74KIy/ZeteZsRhnRC0P1CRgO9oBTUpfy8ldlcjg0O+DNOZ3X9ez6wdKW2YrWB+RpkbHmEMygh+RM8MQIbksoDNmZkvUoZwkpFoFTZ5ZWVMFkyyElPCRoX7u2tRfVXXO1AD0Zv4db2WUoQoz92MwHIIgdsd5uwlOHPYYASencY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=G7tfQOND; arc=none smtp.client-ip=68.232.141.245
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1706514765; x=1738050765;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=PpBx+EPFfjh41Vxsoq76s95w7MJ2ZC/siDhDiJq7ERo=;
-  b=G7tfQONDVFNXB3zA0fUXvWP9zQI88UEJfMu8FiDgCUXnKszNjTCG4muo
-   uKPxfishT4lERBkDBjEtB6ExHDBQmiFwMtgAsuZH5C34Ft9Eqty5ZvQrx
-   xHkHVEbPNJ18q+7miIk/mnVoszdGisnEeUJoMzyVJWBcVl5iWWX7iswOG
-   cndbd3ticYrVP0kaxmA0hudF/XiFArHFpCclBuyvzsdSwqmKh0RzcoHFq
-   PCxmNI9N1mEK3v9wioVQTd3RNgbmeOG3FqEanK76ACDHItbMjPB34e8fc
-   nkeRBzH5dD1MjBhli55ZWOU/XKH5y/wKCVDVSv0sIjh3wy4/iydJ6wNKp
-   w==;
-X-CSE-ConnectionGUID: Xk+gjZVsT1ef/BaE3lfzsA==
-X-CSE-MsgGUID: pJxqI5TSQTOYfvj45PhUqA==
-X-IronPort-AV: E=Sophos;i="6.05,226,1701100800"; 
-   d="scan'208";a="8194644"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 29 Jan 2024 15:52:44 +0800
-IronPort-SDR: w5dfAAcH9znvLcsVvmuHSdKKUWCBFSJuu2wqZd5xDsn0or6FLD1W8vRJURRmMPWsGSLb4v3Up0
- A9yQZygO3WUw==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 28 Jan 2024 22:56:59 -0800
-IronPort-SDR: w3d8Eh2UpJd9ku1WKTx1l7lwBk19wKMIxKUulcA1HE+QC0AEAbgf1CiOpn4o1PvGPT4PiPry8K
- e+EhHc5cQv2w==
-WDCIronportException: Internal
-Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
-  by uls-op-cesaip02.wdc.com with ESMTP; 28 Jan 2024 23:52:41 -0800
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Date: Sun, 28 Jan 2024 23:52:20 -0800
-Subject: [PATCH v3 5/5] block: remove gfp_flags from blkdev_zone_mgmt
+	s=arc-20240116; t=1706514808; c=relaxed/simple;
+	bh=C5/YmQiOYf1bM02I+5RvLMrUrx0MMswr/SIee6klngA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=APT1QDrj5bOlSbDYhzR1TJ0I5+qTooTiDJyiGRROksN1RTe6HmONLVhTMM/f95Ps6ErzDGGJvrUeYkmF8ngJ9vQSfRy100wUnh43cZATOjkvLmqOpy5zxMw6ts2TjeLCZl02dVAA4l47Z7QmwCuQ04vWaLvkr6yuq/+E8IuQEIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=u2n9Trm7; arc=none smtp.client-ip=91.218.175.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706514802;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=I5LyXm335j6PMvtoknG0DUGXbxAqHQBfeRBYbfkRtTU=;
+	b=u2n9Trm7n2i4J+PRhNgk8iG8hI5XnpXnhkuFrieEV9sNBZejxTSo82JR4PRVtmGiqlPpcW
+	Qj0mFqBZQ8QtaLyOZWaebB42+wu8VdcG2P69tzf1AVuDTsIxAD3KBwYTa2ZYpjPKPaHReN
+	P164ETp3VFij3UD+/bPw0MjgY5ZKAJI=
+From: Yajun Deng <yajun.deng@linux.dev>
+To: akpm@linux-foundation.org
+Cc: Liam.Howlett@Oracle.com,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH] mm/mmap: remove the mm parameter in vma_complete()
+Date: Mon, 29 Jan 2024 15:53:05 +0800
+Message-Id: <20240129075305.3512138-1-yajun.deng@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240128-zonefs_nofs-v3-5-ae3b7c8def61@wdc.com>
-References: <20240128-zonefs_nofs-v3-0-ae3b7c8def61@wdc.com>
-In-Reply-To: <20240128-zonefs_nofs-v3-0-ae3b7c8def61@wdc.com>
-To: Damien Le Moal <dlemoal@kernel.org>, 
- Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, 
- Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>, 
- Mikulas Patocka <mpatocka@redhat.com>, dm-devel@lists.linux.dev, 
- Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
- David Sterba <dsterba@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>, 
- Chao Yu <chao@kernel.org>, Jens Axboe <axboe@kernel.dk>, 
- Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, 
- Chaitanya Kulkarni <kch@nvidia.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
- linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, 
- Johannes Thumshirn <johannes.thumshirn@wdc.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706514743; l=9256;
- i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id;
- bh=PpBx+EPFfjh41Vxsoq76s95w7MJ2ZC/siDhDiJq7ERo=;
- b=oCtzmy3ITlmPQ0I/vbm4lgoeb/xUc1LeL2O2f6dsxxzA35tnxHEs/YC14icO27gxc0NReEIiH
- ZJVjIO0fA0FDTjArN8Omfw25NOwirlGb0nD0Nph+pcgva18XgTyEuAu
-X-Developer-Key: i=johannes.thumshirn@wdc.com; a=ed25519;
- pk=TGmHKs78FdPi+QhrViEvjKIGwReUGCfa+3LEnGoR2KM=
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Now that all callers pass in GFP_KERNEL to blkdev_zone_mgmt() and use
-memalloc_no{io,fs}_{save,restore}() to define the allocation scope, we can
-drop the gfp_mask parameter from blkdev_zone_mgmt() as well as
-blkdev_zone_reset_all() and blkdev_zone_reset_all_emulated().
+There are vma_merge() and do_brk_flags() pass mm to vma_complete(), others
+would pass the vma->vm_mm. The following explains that the mm is the
+vma->vm_mm in vma_merge() and do_brk_flags().
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+All vma will point to the same mm struct if the vma_merge() is successful.
+So the mm and the vma->mm are the same.
+
+vm_brk_flags() and brk syscall will initialize vmi with current->mm,
+so the vma->vm_mm and the current->mm are the same if vma exists in
+do_brk_flags().
+
+Remove the mm parameter in vma_complete() and get mm from the vma in vp.
+
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 ---
- block/blk-zoned.c              | 19 ++++++++-----------
- drivers/md/dm-zoned-metadata.c |  2 +-
- drivers/nvme/target/zns.c      |  5 ++---
- fs/btrfs/zoned.c               | 14 +++++---------
- fs/f2fs/segment.c              |  4 ++--
- fs/zonefs/super.c              |  2 +-
- include/linux/blkdev.h         |  2 +-
- 7 files changed, 20 insertions(+), 28 deletions(-)
+ mm/mmap.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/block/blk-zoned.c b/block/blk-zoned.c
-index d343e5756a9c..d4f4f8325eff 100644
---- a/block/blk-zoned.c
-+++ b/block/blk-zoned.c
-@@ -177,8 +177,7 @@ static int blk_zone_need_reset_cb(struct blk_zone *zone, unsigned int idx,
- 	}
- }
- 
--static int blkdev_zone_reset_all_emulated(struct block_device *bdev,
--					  gfp_t gfp_mask)
-+static int blkdev_zone_reset_all_emulated(struct block_device *bdev)
- {
- 	struct gendisk *disk = bdev->bd_disk;
- 	sector_t capacity = bdev_nr_sectors(bdev);
-@@ -205,7 +204,7 @@ static int blkdev_zone_reset_all_emulated(struct block_device *bdev,
- 		}
- 
- 		bio = blk_next_bio(bio, bdev, 0, REQ_OP_ZONE_RESET | REQ_SYNC,
--				   gfp_mask);
-+				   GFP_KERNEL);
- 		bio->bi_iter.bi_sector = sector;
- 		sector += zone_sectors;
- 
-@@ -223,7 +222,7 @@ static int blkdev_zone_reset_all_emulated(struct block_device *bdev,
- 	return ret;
- }
- 
--static int blkdev_zone_reset_all(struct block_device *bdev, gfp_t gfp_mask)
-+static int blkdev_zone_reset_all(struct block_device *bdev)
- {
- 	struct bio bio;
- 
-@@ -238,7 +237,6 @@ static int blkdev_zone_reset_all(struct block_device *bdev, gfp_t gfp_mask)
-  * @sector:	Start sector of the first zone to operate on
-  * @nr_sectors:	Number of sectors, should be at least the length of one zone and
-  *		must be zone size aligned.
-- * @gfp_mask:	Memory allocation flags (for bio_alloc)
+diff --git a/mm/mmap.c b/mm/mmap.c
+index e97b9144c61a..9b968d1edf55 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -509,11 +509,11 @@ static inline void vma_prepare(struct vma_prepare *vp)
   *
-  * Description:
-  *    Perform the specified operation on the range of zones specified by
-@@ -248,7 +246,7 @@ static int blkdev_zone_reset_all(struct block_device *bdev, gfp_t gfp_mask)
-  *    or finish request.
+  * @vp: The vma_prepare struct
+  * @vmi: The vma iterator
+- * @mm: The mm_struct
   */
- int blkdev_zone_mgmt(struct block_device *bdev, enum req_op op,
--		     sector_t sector, sector_t nr_sectors, gfp_t gfp_mask)
-+		     sector_t sector, sector_t nr_sectors)
+-static inline void vma_complete(struct vma_prepare *vp,
+-				struct vma_iterator *vmi, struct mm_struct *mm)
++static inline void vma_complete(struct vma_prepare *vp, struct vma_iterator *vmi)
  {
- 	struct request_queue *q = bdev_get_queue(bdev);
- 	sector_t zone_sectors = bdev_zone_sectors(bdev);
-@@ -285,12 +283,12 @@ int blkdev_zone_mgmt(struct block_device *bdev, enum req_op op,
- 	 */
- 	if (op == REQ_OP_ZONE_RESET && sector == 0 && nr_sectors == capacity) {
- 		if (!blk_queue_zone_resetall(q))
--			return blkdev_zone_reset_all_emulated(bdev, gfp_mask);
--		return blkdev_zone_reset_all(bdev, gfp_mask);
-+			return blkdev_zone_reset_all_emulated(bdev);
-+		return blkdev_zone_reset_all(bdev);
++	struct mm_struct *mm = vp->vma->vm_mm;
++
+ 	if (vp->file) {
+ 		if (vp->adj_next)
+ 			vma_interval_tree_insert(vp->adj_next,
+@@ -666,7 +666,7 @@ int vma_expand(struct vma_iterator *vmi, struct vm_area_struct *vma,
+ 	vma_set_range(vma, start, end, pgoff);
+ 	vma_iter_store(vmi, vma);
+ 
+-	vma_complete(&vp, vmi, vma->vm_mm);
++	vma_complete(&vp, vmi);
+ 	return 0;
+ 
+ nomem:
+@@ -707,7 +707,7 @@ int vma_shrink(struct vma_iterator *vmi, struct vm_area_struct *vma,
+ 
+ 	vma_iter_clear(vmi);
+ 	vma_set_range(vma, start, end, pgoff);
+-	vma_complete(&vp, vmi, vma->vm_mm);
++	vma_complete(&vp, vmi);
+ 	return 0;
+ }
+ 
+@@ -1030,7 +1030,7 @@ static struct vm_area_struct
+ 		}
  	}
  
- 	while (sector < end_sector) {
--		bio = blk_next_bio(bio, bdev, 0, op | REQ_SYNC, gfp_mask);
-+		bio = blk_next_bio(bio, bdev, 0, op | REQ_SYNC, GFP_KERNEL);
- 		bio->bi_iter.bi_sector = sector;
- 		sector += zone_sectors;
+-	vma_complete(&vp, vmi, mm);
++	vma_complete(&vp, vmi);
+ 	khugepaged_enter_vma(res, vm_flags);
+ 	return res;
  
-@@ -419,8 +417,7 @@ int blkdev_zone_mgmt_ioctl(struct block_device *bdev, blk_mode_t mode,
- 		return -ENOTTY;
+@@ -2377,7 +2377,7 @@ static int __split_vma(struct vma_iterator *vmi, struct vm_area_struct *vma,
  	}
  
--	ret = blkdev_zone_mgmt(bdev, op, zrange.sector, zrange.nr_sectors,
--			       GFP_KERNEL);
-+	ret = blkdev_zone_mgmt(bdev, op, zrange.sector, zrange.nr_sectors);
+ 	/* vma_complete stores the new vma */
+-	vma_complete(&vp, vmi, vma->vm_mm);
++	vma_complete(&vp, vmi);
  
- fail:
- 	if (cmd == BLKRESETZONE)
-diff --git a/drivers/md/dm-zoned-metadata.c b/drivers/md/dm-zoned-metadata.c
-index 165996cc966c..8156881a31de 100644
---- a/drivers/md/dm-zoned-metadata.c
-+++ b/drivers/md/dm-zoned-metadata.c
-@@ -1660,7 +1660,7 @@ static int dmz_reset_zone(struct dmz_metadata *zmd, struct dm_zone *zone)
- 		noio_flag = memalloc_noio_save();
- 		ret = blkdev_zone_mgmt(dev->bdev, REQ_OP_ZONE_RESET,
- 				       dmz_start_sect(zmd, zone),
--				       zmd->zone_nr_sectors, GFP_KERNEL);
-+				       zmd->zone_nr_sectors);
- 		memalloc_noio_restore(noio_flag);
- 		if (ret) {
- 			dmz_dev_err(dev, "Reset zone %u failed %d",
-diff --git a/drivers/nvme/target/zns.c b/drivers/nvme/target/zns.c
-index 5b5c1e481722..3148d9f1bde6 100644
---- a/drivers/nvme/target/zns.c
-+++ b/drivers/nvme/target/zns.c
-@@ -456,8 +456,7 @@ static u16 nvmet_bdev_execute_zmgmt_send_all(struct nvmet_req *req)
- 	switch (zsa_req_op(req->cmd->zms.zsa)) {
- 	case REQ_OP_ZONE_RESET:
- 		ret = blkdev_zone_mgmt(req->ns->bdev, REQ_OP_ZONE_RESET, 0,
--				       get_capacity(req->ns->bdev->bd_disk),
--				       GFP_KERNEL);
-+				       get_capacity(req->ns->bdev->bd_disk));
- 		if (ret < 0)
- 			return blkdev_zone_mgmt_errno_to_nvme_status(ret);
- 		break;
-@@ -508,7 +507,7 @@ static void nvmet_bdev_zmgmt_send_work(struct work_struct *w)
+ 	/* Success. */
+ 	if (new_below)
+@@ -3145,7 +3145,7 @@ static int do_brk_flags(struct vma_iterator *vmi, struct vm_area_struct *vma,
+ 		vm_flags_set(vma, VM_SOFTDIRTY);
+ 		vma_iter_store(vmi, vma);
+ 
+-		vma_complete(&vp, vmi, mm);
++		vma_complete(&vp, vmi);
+ 		khugepaged_enter_vma(vma, flags);
  		goto out;
  	}
- 
--	ret = blkdev_zone_mgmt(bdev, op, sect, zone_sectors, GFP_KERNEL);
-+	ret = blkdev_zone_mgmt(bdev, op, sect, zone_sectors);
- 	if (ret < 0)
- 		status = blkdev_zone_mgmt_errno_to_nvme_status(ret);
- 
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 05640d61e435..cf2e779d8ef4 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -830,8 +830,7 @@ static int sb_log_location(struct block_device *bdev, struct blk_zone *zones,
- 
- 			nofs_flags = memalloc_nofs_save();
- 			ret = blkdev_zone_mgmt(bdev, REQ_OP_ZONE_RESET,
--					       reset->start, reset->len,
--					       GFP_KERNEL);
-+					       reset->start, reset->len);
- 			memalloc_nofs_restore(nofs_flags);
- 			if (ret)
- 				return ret;
-@@ -984,7 +983,7 @@ int btrfs_advance_sb_log(struct btrfs_device *device, int mirror)
- 				nofs_flags = memalloc_nofs_save();
- 				ret = blkdev_zone_mgmt(device->bdev,
- 						REQ_OP_ZONE_FINISH, zone->start,
--						zone->len, GFP_KERNEL);
-+						zone->len);
- 				memalloc_nofs_restore(nofs_flags);
- 				if (ret)
- 					return ret;
-@@ -1023,8 +1022,7 @@ int btrfs_reset_sb_log_zones(struct block_device *bdev, int mirror)
- 	nofs_flags = memalloc_nofs_save();
- 	ret = blkdev_zone_mgmt(bdev, REQ_OP_ZONE_RESET,
- 			       zone_start_sector(sb_zone, bdev),
--			       zone_sectors * BTRFS_NR_SB_LOG_ZONES,
--			       GFP_KERNEL);
-+			       zone_sectors * BTRFS_NR_SB_LOG_ZONES);
- 	memalloc_nofs_restore(nofs_flags);
- 	return ret;
- }
-@@ -1143,8 +1141,7 @@ int btrfs_reset_device_zone(struct btrfs_device *device, u64 physical,
- 	*bytes = 0;
- 	nofs_flags = memalloc_nofs_save();
- 	ret = blkdev_zone_mgmt(device->bdev, REQ_OP_ZONE_RESET,
--			       physical >> SECTOR_SHIFT, length >> SECTOR_SHIFT,
--			       GFP_KERNEL);
-+			       physical >> SECTOR_SHIFT, length >> SECTOR_SHIFT);
- 	memalloc_nofs_restore(nofs_flags);
- 	if (ret)
- 		return ret;
-@@ -2258,8 +2255,7 @@ static int do_zone_finish(struct btrfs_block_group *block_group, bool fully_writ
- 		nofs_flags = memalloc_nofs_save();
- 		ret = blkdev_zone_mgmt(device->bdev, REQ_OP_ZONE_FINISH,
- 				       physical >> SECTOR_SHIFT,
--				       zinfo->zone_size >> SECTOR_SHIFT,
--				       GFP_KERNEL);
-+				       zinfo->zone_size >> SECTOR_SHIFT);
- 		memalloc_nofs_restore(nofs_flags);
- 
- 		if (ret)
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 0094fe491364..e1065ba70207 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -1977,7 +1977,7 @@ static int __f2fs_issue_discard_zone(struct f2fs_sb_info *sbi,
- 			trace_f2fs_issue_reset_zone(bdev, blkstart);
- 			nofs_flags = memalloc_nofs_save();
- 			ret = blkdev_zone_mgmt(bdev, REQ_OP_ZONE_RESET,
--						sector, nr_sects, GFP_KERNEL);
-+						sector, nr_sects);
- 			memalloc_nofs_restore(nofs_flags);
- 			return ret;
- 		}
-@@ -4921,7 +4921,7 @@ static int check_zone_write_pointer(struct f2fs_sb_info *sbi,
- 
- 	nofs_flags = memalloc_nofs_save();
- 	ret = blkdev_zone_mgmt(fdev->bdev, REQ_OP_ZONE_FINISH,
--				zone->start, zone->len, GFP_KERNEL);
-+				zone->start, zone->len);
- 	memalloc_nofs_restore(nofs_flags);
- 	if (ret == -EOPNOTSUPP) {
- 		ret = blkdev_issue_zeroout(fdev->bdev, zone->wp,
-diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
-index 63fbac018c04..cadb1364f951 100644
---- a/fs/zonefs/super.c
-+++ b/fs/zonefs/super.c
-@@ -113,7 +113,7 @@ static int zonefs_zone_mgmt(struct super_block *sb,
- 
- 	trace_zonefs_zone_mgmt(sb, z, op);
- 	ret = blkdev_zone_mgmt(sb->s_bdev, op, z->z_sector,
--			       z->z_size >> SECTOR_SHIFT, GFP_KERNEL);
-+			       z->z_size >> SECTOR_SHIFT);
- 	if (ret) {
- 		zonefs_err(sb,
- 			   "Zone management operation %s at %llu failed %d\n",
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 99e4f5e72213..8467c1910404 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -325,7 +325,7 @@ void disk_set_zoned(struct gendisk *disk);
- int blkdev_report_zones(struct block_device *bdev, sector_t sector,
- 		unsigned int nr_zones, report_zones_cb cb, void *data);
- int blkdev_zone_mgmt(struct block_device *bdev, enum req_op op,
--		sector_t sectors, sector_t nr_sectors, gfp_t gfp_mask);
-+		sector_t sectors, sector_t nr_sectors);
- int blk_revalidate_disk_zones(struct gendisk *disk,
- 		void (*update_driver_data)(struct gendisk *disk));
- 
-
 -- 
-2.43.0
+2.25.1
 
 
