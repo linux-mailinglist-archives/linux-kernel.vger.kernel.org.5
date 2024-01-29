@@ -1,272 +1,118 @@
-Return-Path: <linux-kernel+bounces-42445-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EF3F84016C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:27:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A8C684015D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:24:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5FA12829B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:27:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D9BA1C21A7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:24:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF3A45644B;
-	Mon, 29 Jan 2024 09:25:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Cdy394qw"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 536F356441
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:25:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 282E455779;
+	Mon, 29 Jan 2024 09:24:38 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2517054F93;
+	Mon, 29 Jan 2024 09:24:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706520343; cv=none; b=AE0UFi13MGYae1RmiMBaj3MVaW+qLXKlV8OTOrNqRXgVZIhm5fK294L8rCZHXlh01gfpwvgST8Y6fg5bmrjpfv/17IOEg/gT/QdR6EZpZKQsCKU8D44B4lW6OIyLIy27y9y+XLyNPS3DmbRRxJ4IO+yLwcydxXxM2rVNzsYaA10=
+	t=1706520277; cv=none; b=J9BXUB33LQF1JwDZfYd07jKDDQuRkX40fW6XULlS0BxFvRPIGKFHNNJbT8JNSlUQTCmZSvjhReXDH71p5ThPLSF5W5ZtQpZV11P6XRw6590x2OngZnRDDcxb35ESxUnQ8QTYp209uLXy2vbj7wOOOYKdhdpNn7p5UAb9v+KXb+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706520343; c=relaxed/simple;
-	bh=A7zhmYqSGF3f91x5Sfj8wc2+BL0d/H7Pomw5rky9/34=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bgb7pM71N20oupOZPLK7TQwmN6ErcE4kvNfAHRzMGnUgIxGZCBpsFkJbJmu0X1icHJhxJB2Ty5UHMPCRIdQZ+ZrwB3a9Fh/TsMaPYiI39XYJGbjPLDsMofPcFk5ZGnogZm/sGpBZ87qYjn9EBBi0RlbUHrmmvAWRUAJUKfPOrWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=Cdy394qw; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1706520341; x=1738056341;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=A7zhmYqSGF3f91x5Sfj8wc2+BL0d/H7Pomw5rky9/34=;
-  b=Cdy394qwkfYABnZsOWywKivFaQK9VrfvWbF8r7Xwc0jy20/CRDwepb02
-   TQ+1lxPW6TvxhYY0H1K4egMGUM9UX85JuixIMNzD7MrXwD+wfIhsO5r/l
-   U8gMxUbj0jmOFk6ametbJpO3GYdJ/zNrEqGgNsMPfKi3/R+YZ1YKLJ0N9
-   JmvyynRMZ+RFA+W6fRal1TIBOV37WFC5KSE5X4P3wlwMXtVpGvTJX1dFe
-   +NYRJstI/jvYL4PCgqF8QlYIYBR74ydpb5GfS6lNu+b+2RUChQimnCPG5
-   dSrdtnKofXu92gTocRrt0E4jQbozd7dig1g9Euk373TNfOhibEHIoblZB
-   w==;
-X-CSE-ConnectionGUID: JMZNa0W0TwelpxkBzp+3Tg==
-X-CSE-MsgGUID: OO2i0OZfQBG2uogTKO6FKA==
-X-IronPort-AV: E=Sophos;i="6.05,226,1701154800"; 
-   d="scan'208";a="182680029"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 29 Jan 2024 02:25:40 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 29 Jan 2024 02:25:20 -0700
-Received: from che-lt-i67131.microchip.com (10.10.85.11) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Mon, 29 Jan 2024 02:25:13 -0700
-From: Manikandan Muralidharan <manikandan.m@microchip.com>
-To: <sam@ravnborg.org>, <bbrezillon@kernel.org>, <airlied@gmail.com>,
-	<daniel@ffwll.ch>, <nicolas.ferre@microchip.com>,
-	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
-	<lee@kernel.org>, <dri-devel@lists.freedesktop.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC: <Hari.PrasathGE@microchip.com>, <Balamanikandan.Gunasundar@microchip.com>,
-	<Durai.ManickamKR@microchip.com>, <Nayabbasha.Sayed@microchip.com>,
-	<Dharma.B@microchip.com>, <Varshini.Rajendran@microchip.com>,
-	<Balakrishnan.S@microchip.com>, Manikandan Muralidharan
-	<manikandan.m@microchip.com>, Durai Manickam KR
-	<durai.manickamkr@microchip.com>
-Subject: [PATCH RESEND v7 7/7] drm: atmel-hlcdc: add support for DSI output formats
-Date: Mon, 29 Jan 2024 14:53:19 +0530
-Message-ID: <20240129092319.199365-8-manikandan.m@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240129092319.199365-1-manikandan.m@microchip.com>
-References: <20240129092319.199365-1-manikandan.m@microchip.com>
+	s=arc-20240116; t=1706520277; c=relaxed/simple;
+	bh=inmOTze7uKfZeWIoyGwST8hZ+d0IPucCCcqmZ34CTwM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RSaub6YEpF49Y5VZS9ojZ54+jfYWYJR0RoOmNL7zwrOEEX3548X0A/DVzQ6Y8bljG8NWn3su5xFC5PNHdYNCEeQs42ufOEA62JagMQM1tuhBjxfmWFHAaWU98o+SVJwDMQxTY4jCdkhyj99xI42nxdjfB6VdDw1DAmdqz5lUsfQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 132871FB;
+	Mon, 29 Jan 2024 01:25:18 -0800 (PST)
+Received: from [10.162.42.11] (a077893.blr.arm.com [10.162.42.11])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5B6393F762;
+	Mon, 29 Jan 2024 01:24:23 -0800 (PST)
+Message-ID: <0a71c87a-ae2c-4a61-8adb-3a51d6369b99@arm.com>
+Date: Mon, 29 Jan 2024 14:54:20 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v3 06/35] mm: cma: Make CMA_ALLOC_SUCCESS/FAIL count
+ the number of pages
+Content-Language: en-US
+To: Alexandru Elisei <alexandru.elisei@arm.com>, catalin.marinas@arm.com,
+ will@kernel.org, oliver.upton@linux.dev, maz@kernel.org,
+ james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com,
+ arnd@arndb.de, akpm@linux-foundation.org, mingo@redhat.com,
+ peterz@infradead.org, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+ mhiramat@kernel.org, rppt@kernel.org, hughd@google.com
+Cc: pcc@google.com, steven.price@arm.com, vincenzo.frascino@arm.com,
+ david@redhat.com, eugenis@google.com, kcc@google.com, hyesoo.yu@samsung.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-mm@kvack.org,
+ linux-trace-kernel@vger.kernel.org
+References: <20240125164256.4147-1-alexandru.elisei@arm.com>
+ <20240125164256.4147-7-alexandru.elisei@arm.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <20240125164256.4147-7-alexandru.elisei@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Add support for the following DPI mode if the encoder type
-is DSI as per the XLCDC IP datasheet:
-- 16BPPCFG1
-- 16BPPCFG2
-- 16BPPCFG3
-- 18BPPCFG1
-- 18BPPCFG2
-- 24BPP
 
-Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
-[durai.manickamkr@microchip.com: update output format using is_xlcdc flag]
-Signed-off-by: Durai Manickam KR <durai.manickamkr@microchip.com>
----
- .../gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c    | 123 +++++++++++++-----
- 1 file changed, 88 insertions(+), 35 deletions(-)
 
-diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
-index 1899be2eb6a3..6f529769b036 100644
---- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
-+++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
-@@ -295,11 +295,18 @@ static void atmel_hlcdc_crtc_atomic_enable(struct drm_crtc *c,
- 
- }
- 
--#define ATMEL_HLCDC_RGB444_OUTPUT	BIT(0)
--#define ATMEL_HLCDC_RGB565_OUTPUT	BIT(1)
--#define ATMEL_HLCDC_RGB666_OUTPUT	BIT(2)
--#define ATMEL_HLCDC_RGB888_OUTPUT	BIT(3)
--#define ATMEL_HLCDC_OUTPUT_MODE_MASK	GENMASK(3, 0)
-+#define ATMEL_HLCDC_RGB444_OUTPUT		BIT(0)
-+#define ATMEL_HLCDC_RGB565_OUTPUT		BIT(1)
-+#define ATMEL_HLCDC_RGB666_OUTPUT		BIT(2)
-+#define ATMEL_HLCDC_RGB888_OUTPUT		BIT(3)
-+#define ATMEL_HLCDC_DPI_RGB565C1_OUTPUT		BIT(4)
-+#define ATMEL_HLCDC_DPI_RGB565C2_OUTPUT		BIT(5)
-+#define ATMEL_HLCDC_DPI_RGB565C3_OUTPUT		BIT(6)
-+#define ATMEL_HLCDC_DPI_RGB666C1_OUTPUT		BIT(7)
-+#define ATMEL_HLCDC_DPI_RGB666C2_OUTPUT		BIT(8)
-+#define ATMEL_HLCDC_DPI_RGB888_OUTPUT		BIT(9)
-+#define ATMEL_HLCDC_OUTPUT_MODE_MASK		GENMASK(3, 0)
-+#define ATMEL_XLCDC_OUTPUT_MODE_MASK		GENMASK(9, 0)
- 
- static int atmel_hlcdc_connector_output_mode(struct drm_connector_state *state)
- {
-@@ -313,53 +320,99 @@ static int atmel_hlcdc_connector_output_mode(struct drm_connector_state *state)
- 	if (!encoder)
- 		encoder = connector->encoder;
- 
--	switch (atmel_hlcdc_encoder_get_bus_fmt(encoder)) {
--	case 0:
--		break;
--	case MEDIA_BUS_FMT_RGB444_1X12:
--		return ATMEL_HLCDC_RGB444_OUTPUT;
--	case MEDIA_BUS_FMT_RGB565_1X16:
--		return ATMEL_HLCDC_RGB565_OUTPUT;
--	case MEDIA_BUS_FMT_RGB666_1X18:
--		return ATMEL_HLCDC_RGB666_OUTPUT;
--	case MEDIA_BUS_FMT_RGB888_1X24:
--		return ATMEL_HLCDC_RGB888_OUTPUT;
--	default:
--		return -EINVAL;
--	}
--
--	for (j = 0; j < info->num_bus_formats; j++) {
--		switch (info->bus_formats[j]) {
--		case MEDIA_BUS_FMT_RGB444_1X12:
--			supported_fmts |= ATMEL_HLCDC_RGB444_OUTPUT;
-+	if (encoder->encoder_type == DRM_MODE_ENCODER_DSI) {
-+		/*
-+		 * atmel-hlcdc to support DSI formats with DSI video pipeline
-+		 * when DRM_MODE_ENCODER_DSI type is set by
-+		 * connector driver component.
-+		 */
-+		switch (atmel_hlcdc_encoder_get_bus_fmt(encoder)) {
-+		case 0:
- 			break;
- 		case MEDIA_BUS_FMT_RGB565_1X16:
--			supported_fmts |= ATMEL_HLCDC_RGB565_OUTPUT;
--			break;
-+			return ATMEL_HLCDC_DPI_RGB565C1_OUTPUT;
- 		case MEDIA_BUS_FMT_RGB666_1X18:
--			supported_fmts |= ATMEL_HLCDC_RGB666_OUTPUT;
--			break;
-+			return ATMEL_HLCDC_DPI_RGB666C1_OUTPUT;
-+		case MEDIA_BUS_FMT_RGB666_1X24_CPADHI:
-+			return ATMEL_HLCDC_DPI_RGB666C2_OUTPUT;
- 		case MEDIA_BUS_FMT_RGB888_1X24:
--			supported_fmts |= ATMEL_HLCDC_RGB888_OUTPUT;
--			break;
-+			return ATMEL_HLCDC_DPI_RGB888_OUTPUT;
- 		default:
-+			return -EINVAL;
-+		}
-+
-+		for (j = 0; j < info->num_bus_formats; j++) {
-+			switch (info->bus_formats[j]) {
-+			case MEDIA_BUS_FMT_RGB565_1X16:
-+				supported_fmts |=
-+					ATMEL_HLCDC_DPI_RGB565C1_OUTPUT;
-+				break;
-+			case MEDIA_BUS_FMT_RGB666_1X18:
-+				supported_fmts |=
-+					ATMEL_HLCDC_DPI_RGB666C1_OUTPUT;
-+				break;
-+			case MEDIA_BUS_FMT_RGB666_1X24_CPADHI:
-+				supported_fmts |=
-+					ATMEL_HLCDC_DPI_RGB666C2_OUTPUT;
-+				break;
-+			case MEDIA_BUS_FMT_RGB888_1X24:
-+				supported_fmts |=
-+					ATMEL_HLCDC_DPI_RGB888_OUTPUT;
-+				break;
-+			default:
-+				break;
-+			}
-+		}
-+	} else {
-+		switch (atmel_hlcdc_encoder_get_bus_fmt(encoder)) {
-+		case 0:
- 			break;
-+		case MEDIA_BUS_FMT_RGB444_1X12:
-+			return ATMEL_HLCDC_RGB444_OUTPUT;
-+		case MEDIA_BUS_FMT_RGB565_1X16:
-+			return ATMEL_HLCDC_RGB565_OUTPUT;
-+		case MEDIA_BUS_FMT_RGB666_1X18:
-+			return ATMEL_HLCDC_RGB666_OUTPUT;
-+		case MEDIA_BUS_FMT_RGB888_1X24:
-+			return ATMEL_HLCDC_RGB888_OUTPUT;
-+		default:
-+			return -EINVAL;
- 		}
--	}
- 
-+		for (j = 0; j < info->num_bus_formats; j++) {
-+			switch (info->bus_formats[j]) {
-+			case MEDIA_BUS_FMT_RGB444_1X12:
-+				supported_fmts |= ATMEL_HLCDC_RGB444_OUTPUT;
-+				break;
-+			case MEDIA_BUS_FMT_RGB565_1X16:
-+				supported_fmts |= ATMEL_HLCDC_RGB565_OUTPUT;
-+				break;
-+			case MEDIA_BUS_FMT_RGB666_1X18:
-+				supported_fmts |= ATMEL_HLCDC_RGB666_OUTPUT;
-+				break;
-+			case MEDIA_BUS_FMT_RGB888_1X24:
-+				supported_fmts |= ATMEL_HLCDC_RGB888_OUTPUT;
-+				break;
-+			default:
-+				break;
-+			}
-+		}
-+	}
- 	return supported_fmts;
- }
- 
- static int atmel_hlcdc_crtc_select_output_mode(struct drm_crtc_state *state)
- {
--	unsigned int output_fmts = ATMEL_HLCDC_OUTPUT_MODE_MASK;
-+	unsigned int output_fmts;
- 	struct atmel_hlcdc_crtc_state *hstate;
- 	struct drm_connector_state *cstate;
- 	struct drm_connector *connector;
--	struct atmel_hlcdc_crtc *crtc;
-+	struct atmel_hlcdc_crtc *crtc = drm_crtc_to_atmel_hlcdc_crtc(state->crtc);
- 	int i;
-+	bool is_xlcdc = crtc->dc->desc->is_xlcdc;
- 
--	crtc = drm_crtc_to_atmel_hlcdc_crtc(state->crtc);
-+	output_fmts = is_xlcdc ? ATMEL_XLCDC_OUTPUT_MODE_MASK :
-+		      ATMEL_HLCDC_OUTPUT_MODE_MASK;
- 
- 	for_each_new_connector_in_state(state->state, connector, cstate, i) {
- 		unsigned int supported_fmts = 0;
-@@ -380,7 +433,7 @@ static int atmel_hlcdc_crtc_select_output_mode(struct drm_crtc_state *state)
- 
- 	hstate = drm_crtc_state_to_atmel_hlcdc_crtc_state(state);
- 	hstate->output_mode = fls(output_fmts) - 1;
--	if (crtc->dc->desc->is_xlcdc) {
-+	if (is_xlcdc) {
- 		/* check if MIPI DPI bit needs to be set */
- 		if (fls(output_fmts) > 3) {
- 			hstate->output_mode -= 4;
--- 
-2.25.1
+On 1/25/24 22:12, Alexandru Elisei wrote:
+> The CMA_ALLOC_SUCCESS, respectively CMA_ALLOC_FAIL, are increased by one
+> after each cma_alloc() function call. This is done even though cma_alloc()
+> can allocate an arbitrary number of CMA pages. When looking at
+> /proc/vmstat, the number of successful (or failed) cma_alloc() calls
+> doesn't tell much with regards to how many CMA pages were allocated via
+> cma_alloc() versus via the page allocator (regular allocation request or
+> PCP lists refill).
+> 
+> This can also be rather confusing to a user who isn't familiar with the
+> code, since the unit of measurement for nr_free_cma is the number of pages,
+> but cma_alloc_success and cma_alloc_fail count the number of cma_alloc()
+> function calls.
+> 
+> Let's make this consistent, and arguably more useful, by having
+> CMA_ALLOC_SUCCESS count the number of successfully allocated CMA pages, and
+> CMA_ALLOC_FAIL count the number of pages the cma_alloc() failed to
+> allocate.
+> 
+> For users that wish to track the number of cma_alloc() calls, there are
+> tracepoints for that already implemented.
+> 
+> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> ---
+>  mm/cma.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/cma.c b/mm/cma.c
+> index f49c95f8ee37..dbf7fe8cb1bd 100644
+> --- a/mm/cma.c
+> +++ b/mm/cma.c
+> @@ -517,10 +517,10 @@ struct page *cma_alloc(struct cma *cma, unsigned long count,
+>  	pr_debug("%s(): returned %p\n", __func__, page);
+>  out:
+>  	if (page) {
+> -		count_vm_event(CMA_ALLOC_SUCCESS);
+> +		count_vm_events(CMA_ALLOC_SUCCESS, count);
+>  		cma_sysfs_account_success_pages(cma, count);
+>  	} else {
+> -		count_vm_event(CMA_ALLOC_FAIL);
+> +		count_vm_events(CMA_ALLOC_FAIL, count);
+>  		if (cma)
+>  			cma_sysfs_account_fail_pages(cma, count);
+>  	}
 
+Without getting into the merits of this patch - which is actually trying to do
+semantics change to /proc/vmstat, wondering how is this even related to this
+particular series ? If required this could be debated on it's on separately.
 
