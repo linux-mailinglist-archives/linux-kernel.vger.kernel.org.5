@@ -1,62 +1,39 @@
-Return-Path: <linux-kernel+bounces-42340-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42342-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8618E83FFE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:19:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B197783FFEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:20:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B906D1C232D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:19:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D75C282EAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:20:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 373CE52F9E;
-	Mon, 29 Jan 2024 08:19:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="N5ZfhKub"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AF23537EA;
-	Mon, 29 Jan 2024 08:19:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8ABE53E24;
+	Mon, 29 Jan 2024 08:20:02 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB09553E07;
+	Mon, 29 Jan 2024 08:19:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706516345; cv=none; b=ILT+xmoUpMDo27gcOX/C1MXtpe1w9QBWqbkMbIqRhGxXcNOJ1LpuylPI1UoW3RSbH4WV03o9xGsm1xpqUKxxJAuiKJWMx47JFaCtOl3UavQPsidgKTK402lKUZhRYXrHw6PUJ52MDr5q/Mcrncqs17Bkxgtn5VLimAWZxCzg7gU=
+	t=1706516402; cv=none; b=MCwyoCcg2GrnIkI5wZq4dCbTNKZglF74qyh7PC65O9QaW8HRPOIUpGz9hJwJIva6897DP83edTYMZw4BXYy5wdHJ31HophgpQ7wSY965a6nZVIsmIVMEEFZW+8jNAGjd98BckJA6sjTbWpLMOcU5KNBP0+faHurRAy6ACuI2Y8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706516345; c=relaxed/simple;
-	bh=Wltv3IcF4GiJwkC0spp3IeKWcmLfqFMKNnqdYsxaHYI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=KB9ZQmoiuj5RKLeToKoA7Xwqgr9lE0250WqtMe/AZ7UeXrazHrz/cDyqXrcC3G5Hp7SkyNcUtSjEdAJl0ABcTXNRKJYeiDUDZcwlxmbFYNsNBLw7mc+gRaEIOrNURiydFmxmwpyQmZnRknMO52PhYHHCP062v6JecBfgdMgT7e8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=N5ZfhKub; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40T6mMT4009270;
-	Mon, 29 Jan 2024 08:18:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=M4mWjMiuS2Jg4y+4lTwMuCIV8p9H63+kb0jufrdS76Q=; b=N5
-	ZfhKubZbDKLFqlcSQVlUIIAfGGTYSJ3LRssmHgyZIQTQJmM00MJ+6NoTdLi0BEFB
-	WSRwAHNNLdQssTxKdnBbKIaEoRT30tw9E7WKWpZIK3sAshmhi3XMemquDDGhvhwC
-	s/0KZq+5MxjymnIgWzdoxLiYSqm5KkIqCGo0mQsFt2Va3eTCemZ0xBamEr0/jIV7
-	Y4wQPOxtu6zqV7SgCNL/2YNc8vufCxQZ10OfcoXzyReFqL9tEwSKUP5+0FyWupuj
-	DwHgC4SVgkvxTTnw8/YRJe6UHnvLv9PiAUn5yTzZ8t4UCXy8l9w99/GztBVN9BQW
-	lOMyFkv38wsRfhfYIenQ==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vvt2734a3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Jan 2024 08:18:55 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40T8ItGZ028794
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Jan 2024 08:18:55 GMT
-Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 29 Jan
- 2024 00:18:49 -0800
-Message-ID: <842bf6ad-46e1-43d8-86be-79ab0f49710b@quicinc.com>
-Date: Mon, 29 Jan 2024 16:18:47 +0800
+	s=arc-20240116; t=1706516402; c=relaxed/simple;
+	bh=/lbhVQWmoDQHkZRgu7qWrmr97K4vg6zIU1je+zx3+Yc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iIq6fIwg3Fxj8tfT7SdUyWL2WGReY+QsBXtkVsxpFNrzr63FcjXQReJ5EOJ3qCC81fKWqqVjR2QLlxwrAe85faNUM1dJYNPywGACwRvsEs5QhlOz3TLgSRhOizj0ullp2iaLodoiCRM9FfxN+7P0zvygQQhHLFp2hbJvNkxrTf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 859F61FB;
+	Mon, 29 Jan 2024 00:20:42 -0800 (PST)
+Received: from [10.162.42.11] (a077893.blr.arm.com [10.162.42.11])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 920AA3F762;
+	Mon, 29 Jan 2024 00:19:47 -0800 (PST)
+Message-ID: <8d1c6b04-105e-4fb2-b514-1c5dea0fcce6@arm.com>
+Date: Mon, 29 Jan 2024 13:49:44 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,74 +41,95 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 6/6] arm64: dts: qcom: aim300: add AIM300 AIoT
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <dmitry.baryshkov@linaro.org>
-CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
-        Qiang Yu
-	<quic_qianyu@quicinc.com>,
-        Ziyue Zhang <quic_ziyuzhan@quicinc.com>
-References: <20240119100621.11788-1-quic_tengfan@quicinc.com>
- <20240119100621.11788-7-quic_tengfan@quicinc.com>
- <d3ef45cf-2de8-4f5b-8857-62d1996f3f58@linaro.org>
-From: Tengfei Fan <quic_tengfan@quicinc.com>
-In-Reply-To: <d3ef45cf-2de8-4f5b-8857-62d1996f3f58@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [PATCH RFC v3 02/35] mm: page_alloc: Add an arch hook early in
+ free_pages_prepare()
+Content-Language: en-US
+To: Alexandru Elisei <alexandru.elisei@arm.com>, catalin.marinas@arm.com,
+ will@kernel.org, oliver.upton@linux.dev, maz@kernel.org,
+ james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com,
+ arnd@arndb.de, akpm@linux-foundation.org, mingo@redhat.com,
+ peterz@infradead.org, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+ mhiramat@kernel.org, rppt@kernel.org, hughd@google.com
+Cc: pcc@google.com, steven.price@arm.com, vincenzo.frascino@arm.com,
+ david@redhat.com, eugenis@google.com, kcc@google.com, hyesoo.yu@samsung.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-mm@kvack.org,
+ linux-trace-kernel@vger.kernel.org
+References: <20240125164256.4147-1-alexandru.elisei@arm.com>
+ <20240125164256.4147-3-alexandru.elisei@arm.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <20240125164256.4147-3-alexandru.elisei@arm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: GFvjIMrBw-IAX8pgqYDqSMZVedBCa_v-
-X-Proofpoint-ORIG-GUID: GFvjIMrBw-IAX8pgqYDqSMZVedBCa_v-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-29_04,2024-01-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- phishscore=0 suspectscore=0 lowpriorityscore=0 mlxlogscore=485
- clxscore=1015 spamscore=0 mlxscore=0 impostorscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2401290059
 
 
 
-On 1/29/2024 4:09 PM, Krzysztof Kozlowski wrote:
-> On 19/01/2024 11:06, Tengfei Fan wrote:
->> Add AIM300 AIoT board DTS support, including usb, serial, PCIe, mpss,
->> adsp, cdsp and sound card functions support.
->>
+On 1/25/24 22:12, Alexandru Elisei wrote:
+> The arm64 MTE code uses the PG_arch_2 page flag, which it renames to
+> PG_mte_tagged, to track if a page has been mapped with tagging enabled.
+> That flag is cleared by free_pages_prepare() by doing:
 > 
-> ...
+> 	page->flags &= ~PAGE_FLAGS_CHECK_AT_PREP;
 > 
->> +
->> +	sound {
->> +		compatible = "qcom,sm8550-sndcard", "qcom,sm8450-sndcard";
->> +		model = "AIM300-AIOT";
->> +		audio-routing = "SpkrLeft IN", "WSA_SPK1 OUT",
->> +				"SpkrRight IN", "WSA_SPK2 OUT",
->> +				"IN1_HPHL", "HPHL_OUT",
->> +				"IN2_HPHR", "HPHR_OUT",
->> +				"AMIC2", "MIC BIAS2",
->> +				"VA DMIC0", "MIC BIAS1",
->> +				"VA DMIC1", "MIC BIAS1",
->> +				"VA DMIC2", "MIC BIAS3",
->> +				"TX DMIC0", "MIC BIAS1",
->> +				"TX DMIC1", "MIC BIAS2",
->> +				"TX DMIC2", "MIC BIAS3",
->> +				"TX SWR_ADC1", "ADC2_OUTPUT";
+> When tag storage management is added, tag storage will be reserved for a
+> page if and only if the page is mapped as tagged (the page flag
+> PG_mte_tagged is set). When a page is freed, likewise, the code will have
+> to look at the the page flags to determine if the page has tag storage
+> reserved, which should also be freed.
 > 
-> This should be probably TX SWR_INPUT1.
-> 
-> Best regards,
-> Krzysztof
-> 
+> For this purpose, add an arch_free_pages_prepare() hook that is called
+> before that page flags are cleared. The function arch_free_page() has also
+> been considered for this purpose, but it is called after the flags are
+> cleared.
 
-I will double check this with related team and I will update this.
+arch_free_pages_prepare() makes sense as a prologue to arch_free_page().  
 
--- 
-Thx and BRs,
-Tengfei Fan
+s/arch_free_pages_prepare/arch_free_page_prepare to match similar functions.
+
+> 
+> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> ---
+> 
+> Changes since rfc v2:
+> 
+> * Expanded commit message (David Hildenbrand).
+> 
+>  include/linux/pgtable.h | 4 ++++
+>  mm/page_alloc.c         | 1 +
+>  2 files changed, 5 insertions(+)
+> 
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index f6d0e3513948..6d98d5fdd697 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -901,6 +901,10 @@ static inline void arch_do_swap_page(struct mm_struct *mm,
+>  }
+>  #endif
+>  
+> +#ifndef __HAVE_ARCH_FREE_PAGES_PREPARE
+
+I guess new __HAVE_ARCH_ constructs are not being added lately. Instead
+something like '#ifndef arch_free_pages_prepare' might be better suited.
+
+> +static inline void arch_free_pages_prepare(struct page *page, int order) { }
+> +#endif
+> +
+>  #ifndef __HAVE_ARCH_UNMAP_ONE
+>  /*
+>   * Some architectures support metadata associated with a page. When a
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 2c140abe5ee6..27282a1c82fe 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -1092,6 +1092,7 @@ static __always_inline bool free_pages_prepare(struct page *page,
+>  
+>  	trace_mm_page_free(page, order);
+>  	kmsan_free_page(page, order);
+> +	arch_free_pages_prepare(page, order);
+>  
+>  	if (memcg_kmem_online() && PageMemcgKmem(page))
+>  		__memcg_kmem_uncharge_page(page, order);
 
