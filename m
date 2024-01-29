@@ -1,106 +1,125 @@
-Return-Path: <linux-kernel+bounces-43163-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2508840C9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:59:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9767840BF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:43:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4BD81C234B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:59:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5ACFC28817F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:43:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF20B15705A;
-	Mon, 29 Jan 2024 16:59:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15D4815702D;
+	Mon, 29 Jan 2024 16:42:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="O/w/xzoV"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xe2Ru7KI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B8F4155A5F
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 16:59:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F449664D2;
+	Mon, 29 Jan 2024 16:42:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706547549; cv=none; b=awF53WnnQDSJy7L1eBaiQWMx7vmdHsb5c5Ddf9aSc681FN9bLJPze6ZFdzQwobWWlkT8lJx+QUewEy+5Oo8rn22QdOfALDxgIWBIggCyiyvFS9jZ0LhD+Hj+PofOUa5XQHmpn/SOy5eECsY77SNGoUxCKRILrQhuthoEpDOC4+E=
+	t=1706546548; cv=none; b=g6c3Wtr3RfXWnAlH0wVIpkT0gwvqzkYhTHeLPrB2Nb4eMxQp7plg2tPuAjaoqvaHlzdHO+QvYGcwFYLheCVPUaL4qiOyohtHtv7uSMnXBH9RNtdEBBU6HI1sQAfzunuj1HAULM9pD6AelqwU/jo3cYdHpY+A8OUDcF+Sf54+9DQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706547549; c=relaxed/simple;
-	bh=orEs8V0KcQLlcZg+WsnWSS40wmP3mUbL/yu7YTdCOOI=;
+	s=arc-20240116; t=1706546548; c=relaxed/simple;
+	bh=g3GyVwVm9A2ORsU6HtbjS2gjCOf/orJ2eMhSmwsWz5Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AdWNUTDxWuQ3YZb+0lS+vtVyFI1GnTZ10tnFFKdnTaITeUJqTRFXtOYGJXw03WMiTD162IgVm6+OumiE+E+KuRggbWJE12+2eN5ZWcZBcW81U1ZnEYRKTHSL3FSMC0x+CEcXgOeUW9Z7iFTLjwfNPkWKuuywKwjJwYqIFhIirEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=O/w/xzoV; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706547548; x=1738083548;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=orEs8V0KcQLlcZg+WsnWSS40wmP3mUbL/yu7YTdCOOI=;
-  b=O/w/xzoVKBgNoD1OkahskHDUDbwiHoi2qKYCDOgG7kkeRnF3NUxXNRdR
-   yxGZTR+2LlPsGHKEXMUaM8UR1R35JR9p3KaklcD9fddjumZ1C1vLI9QcG
-   xrc7SjkD8jZ6YE8jAKDk/ytLcUckRu+sjqJhgzl/RkYF+WIfg8gYlAb/4
-   8MRclTa3jP/im9RT89jTzONBDqz30JM64MsVEj+H3/dGlYvqz8OAXayON
-   fGEcgS3Dy7dP1mXKARzVVpOV8NtXnSVr0jd33q/lUY6O+yxWmQAhkZSt1
-   CuWMRWrtYKsJlzKdhY9eC/dsT2M0ZlRTseVobPPjutLa70sj9C0ftlW6y
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="2871385"
-X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="2871385"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 08:59:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="911123505"
-X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="911123505"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga004.jf.intel.com with ESMTP; 29 Jan 2024 08:59:02 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id AE38DFF; Mon, 29 Jan 2024 18:41:49 +0200 (EET)
-Date: Mon, 29 Jan 2024 18:41:49 +0200
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	"H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Theodore Ts'o <tytso@mit.edu>, 
-	"Jason A. Donenfeld" <Jason@zx2c4.com>, 
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, Elena Reshetova <elena.reshetova@intel.com>, 
-	Jun Nakajima <jun.nakajima@intel.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
-	"Kalra, Ashish" <ashish.kalra@amd.com>, Sean Christopherson <seanjc@google.com>, 
-	linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [RFC] Randomness on confidential computing platforms
-Message-ID: <dqiaimv3qqh77cfm2huzja4vsho3jls7vjmnwgda7enw633ke2@qiqrdnno75a7>
-References: <20240126134230.1166943-1-kirill.shutemov@linux.intel.com>
- <276aaeee-cb01-47d3-a3bf-f8fa2e59016c@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=uee9VI0jtfJENcl8RtDxp6CwrTdDJnO7EQ3/v2W61XluLD9+N1p/jZWy1IF7DOL0HQe7mb7hLXcvP9fVlY8Wp3xwb3BqyL2RSJQGlgWe/8NjPwNVN0f8YvbVfIIqkOTEbW4CInATbNqIlWoItN0cVpLqKceiIkqybqmsbGTHd6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xe2Ru7KI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA5F0C433C7;
+	Mon, 29 Jan 2024 16:42:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706546547;
+	bh=g3GyVwVm9A2ORsU6HtbjS2gjCOf/orJ2eMhSmwsWz5Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Xe2Ru7KIOUinWP3vGIcfmWHxSKIc8ljP+Bo10KK2EP+LOP+j/KpzGbkU2rKfYmKTJ
+	 JNjralO0DsqImisealJ0UWoUZxEvmKGHJ4OdyITG2hjbkEGK8Hs4f12Qui2oNAGzIP
+	 XDXF0xF7IvynwXTQet/C3LjS5tgDX1DBaTMox181pNbyudIAfJO8SrSZ8Xk5GnjrdV
+	 yJ4QDN2Tf/IoQfmREozaubTVFcBhKmAy3+OY6oRXKteoNcMBXCV+T1MRihnq+WS/nc
+	 RdHiNSu1acggs1ARXjOaRS00WpqbHWFuhqlUi41Z2nIJPhfYYsXedGCXomewS4ody2
+	 ZX/PnZaJ8P05g==
+Date: Mon, 29 Jan 2024 16:42:22 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: Sam Protsenko <semen.protsenko@linaro.org>, andi.shyti@kernel.org,
+	krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
+	jassi.brar@samsung.com, linux-spi@vger.kernel.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	andre.draszik@linaro.org, peter.griffin@linaro.org,
+	kernel-team@android.com, willmcvicker@google.com
+Subject: Re: [PATCH v3 17/17] spi: s3c64xx: use bitfield access macros
+Message-ID: <56f81e10-86b7-4bd6-938c-e2e9acd6a755@sirena.org.uk>
+References: <20240126171546.1233172-1-tudor.ambarus@linaro.org>
+ <20240126171546.1233172-18-tudor.ambarus@linaro.org>
+ <CAPLW+4nL6D7R88Q_kJjAT-bWTFBk8a=FT0vL+fyRgxaDeSyhNw@mail.gmail.com>
+ <b5ecacaa-8ccc-4588-b3be-4b5f85813909@linaro.org>
+ <CAPLW+4nN--gG9XsOu6a-mo5vcM-GycRrhPQFOtNidfVTM=KonQ@mail.gmail.com>
+ <facbcbf3-7dba-43a1-b4fe-ac77b5bef545@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="DaUgeyoITWwGHbnv"
 Content-Disposition: inline
-In-Reply-To: <276aaeee-cb01-47d3-a3bf-f8fa2e59016c@intel.com>
+In-Reply-To: <facbcbf3-7dba-43a1-b4fe-ac77b5bef545@linaro.org>
+X-Cookie: Jenkinson's Law:
 
-On Mon, Jan 29, 2024 at 08:30:11AM -0800, Dave Hansen wrote:
-> On 1/26/24 05:42, Kirill A. Shutemov wrote:
-> > 3. Panic after enough re-tries of RDRAND/RDSEED instructions fail.
-> >    Another DoS variant against the Guest.
-> 
-> I think Sean was going down the same path, but I really dislike the idea
-> of having TDX-specific (or CoCo-specific) policy here.
-> 
-> How about we WARN_ON() RDRAND/RDSEED going bonkers?  The paranoid folks
-> can turn on panic_on_warn, if they haven't already.
 
-Sure, we can do it for kernel, but we have no control on what userspace
-does.
+--DaUgeyoITWwGHbnv
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sensible userspace on RDRAND/RDSEED failure should fallback to kernel
-asking for random bytes, but who knows if it happens in practice
-everywhere.
+On Sat, Jan 27, 2024 at 03:44:24AM +0000, Tudor Ambarus wrote:
+> On 1/27/24 03:38, Sam Protsenko wrote:
 
-Do we care?
+> >>>> -               val |=3D S3C64XX_SPI_MODE_BUS_TSZ_HALFWORD;
+> >>>> -               val |=3D S3C64XX_SPI_MODE_CH_TSZ_HALFWORD;
+> >>>> +               val |=3D FIELD_PREP(S3C64XX_SPI_MODE_BUS_TSZ_MASK,
+> >>>> +                                 S3C64XX_SPI_MODE_BUS_TSZ_HALFWORD)=
+ |
+> >>>> +                      FIELD_PREP(S3C64XX_SPI_MODE_CH_TSZ_MASK,
+> >>>> +                                 S3C64XX_SPI_MODE_CH_TSZ_HALFWORD);
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+> >>> Two people complained it makes the code harder to read. Yet it's not
+> >>> addressed in v3. Please see my comments for your previous submission
+> >>> explaining what can be done, and also Andi's comment on that matter.
+
+> >> I kept these intentionally. Please read my reply on that matter or the
+> >> cover letter to this patch set.
+
+> > I read it. But still don't like it =F0=9F=99=82 I'm sure it's possible =
+to do
+> > this modification, but at the same time keep the code clean an easy to
+> > read. The code above -- I don't like at all, sorry. It was much better
+> > before this patch, IMHO.
+
+> Yeah, I guess Mark will tip the scale.
+
+All other things being equal I tend to try not to get too involved with
+minor coding style stuff in drivers.  People do seem to like
+FIELD_PREP() but I have a hard time getting *too* excited.
+
+--DaUgeyoITWwGHbnv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmW31W0ACgkQJNaLcl1U
+h9D1sgf+LsNlBetwedyUQFVkLWeD2/eL+pfYu8FM0WZj/O6r4MV2XRHnCBXfL473
+NLaB0yLgsgtPb86HqHYBS2btNVBJK4PFOcLChFITzvAUc/1VQGEeS7ZCcUF3BNA9
+3wqAL3YScnNgFBDTT4Mr/jis+phwYukz8uC+ThBVRFUMQhe/ujrL6yJJAxFjf1Nd
+gyAVOQvDDL6FmlGVrUg//dAddncv7HXiXDKv0cLqdtqYKMF7MTBRABw+Cc55NryM
+aXw3zjIItX9v4bGy5YB0PcoB0QaOlQaM8UXZ9mxPItbY1AAw6IJzVarKCZUg66HG
+9stVfnJhiRnXanRUk/YMGyVbYKT4Cg==
+=GxVd
+-----END PGP SIGNATURE-----
+
+--DaUgeyoITWwGHbnv--
 
