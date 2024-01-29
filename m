@@ -1,306 +1,471 @@
-Return-Path: <linux-kernel+bounces-42692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90C29840519
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:37:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54E9C840521
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:39:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06EB31F221F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:37:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B93D281C06
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:39:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36D8D612E9;
-	Mon, 29 Jan 2024 12:37:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFFC2612FC;
+	Mon, 29 Jan 2024 12:39:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="Qj8UHHh/"
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2049.outbound.protection.outlook.com [40.107.8.49])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ruHWALRW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5112460EE5;
-	Mon, 29 Jan 2024 12:37:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.49
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706531831; cv=fail; b=DqqWDZt3V5ACILeckiHlHNKnTY7/gfaAUSHrdOSriiWC9WbrCOA7enmcA8srUm3BKzW2HdZJgJK5Zw75jnV90yAzViWxIDbX095mS4mhhmm3nlFuNxiKtyw+3ZNLBDTuhrG4zPhEfJ89D+aBpnySEgyQaHGik3KMLb6iTPrfI4E=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706531831; c=relaxed/simple;
-	bh=+13vYZeoIcjLwfjY2XzTx8o5Gm0M7lMWUm265Ha8iGM=;
-	h=Message-ID:Date:Subject:From:To:Cc:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=cpABkAI9Oq/sfTsi0O5fmfKnZ+TEXtnmEZhWGYs0dYuQ6Fjk5hKhyQQwrnfCd9Quw/lhgErPDlPK0WQzeyoYFTCIbfMk5CM3WgG/CyhV7vzeXDs18bcs2wesSUcXvnQjUA1Ah3byQLTJcUGKquYMtlnKaSLAwOzbcQR1d5kKjHk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=Qj8UHHh/; arc=fail smtp.client-ip=40.107.8.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lnGMUb1yqHpI/FRiCaMD9uutOM0a7PRU/XutzGeTmZakVHJ9h141ZJaFapUW8RtyYcaN4h3iN8TwQRabCYiIwzpgiHEkQItv1QLVj+Ir7Bbv/D4anE38DwhFgZ+zg6SeyTESUrolkU6XCVc0oR7+fozkwtdKnL42dsA3vrygR+WF8a8sWO8tUbxLj4ima7ty+Ik9W/pYLoD0ndAZY0k8aVpJdhVrSGqa6ZFbHZWfxjncM5n+tKtT7xWwBxwBsc4zCGVKTM9PeHuViY2PRVIKbwTskAIsqVVwRIV0CrlJrW5OxZpfc5W1rJQqk0SsXB5ksQZXUK1dD8tmOlU02uiJ6g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XUhrAlia65ftKCeSaayFNDRnUYsq7ddijTTENeq6F/c=;
- b=DTaBndP0X4irj5YcMn3Jdz46LokFARwowKfqazdD3F0hMxOIR684rexrzhNlnAtRKP8K9GceXaLCjYur9hgSn87IfOdQqSiunoLffcXSSqA2GcY41gQJXeSxra8VLfK8c4YM2jKf6LAsOG1zvyagHw5w5Hrj0rnUpusAUc9jZXO68Bkn49JFUtXRR1jp2hRf0usD23UrhqBEL65COJgq+rl2EwUN5l3glMBi/biJ8nbLLTmM/sAwqwMJSPMVjWRJlDDLzafwINP5dNOTVEwbcVaeSZAjMDeymTgVAO62hUvaN8uMTVbgIdFjceFpPEkEVCGfDzAAPXbSvcxsYAyR+w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XUhrAlia65ftKCeSaayFNDRnUYsq7ddijTTENeq6F/c=;
- b=Qj8UHHh//eAUcw8YILhAaLb/BCGnuhoZltKxbsDwfHKL6jKZwSms/B0N8W0HYrOjiwamzzfRyVRNaJGJYpMRt0Agh3weIsDcIE65aqf1TsiBfTo4p+W9GGBlsHvAPLEs1hQgkf3SQUvfiObqtgaDToXBHajFw/iOm8N7P3Ztt1o=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by AS8PR04MB7557.eurprd04.prod.outlook.com (2603:10a6:20b:294::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Mon, 29 Jan
- 2024 12:37:04 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::c499:8cef:9bb1:ced6]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::c499:8cef:9bb1:ced6%3]) with mapi id 15.20.7228.029; Mon, 29 Jan 2024
- 12:37:03 +0000
-Message-ID: <f88d07ef-83b2-4d14-976a-6dbbd71e036f@oss.nxp.com>
-Date: Mon, 29 Jan 2024 20:36:50 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/6] firmware: arm_scmi: Add SCMI v3.2 pincontrol
- protocol basic support
-From: Peng Fan <peng.fan@oss.nxp.com>
-To: Sudeep Holla <sudeep.holla@arm.com>,
- Cristian Marussi <cristian.marussi@arm.com>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Oleksii Moisieiev <oleksii_moisieiev@epam.com>,
- Linus Walleij <linus.walleij@linaro.org>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
- AKASHI Takahiro <takahiro.akashi@linaro.org>, Peng Fan <peng.fan@nxp.com>,
- Rob Herring <robh@kernel.org>
-References: <20240121-pinctrl-scmi-v3-0-8d94ba79dca8@nxp.com>
-In-Reply-To: <20240121-pinctrl-scmi-v3-0-8d94ba79dca8@nxp.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SI1PR02CA0034.apcprd02.prod.outlook.com
- (2603:1096:4:1f6::10) To DU0PR04MB9417.eurprd04.prod.outlook.com
- (2603:10a6:10:358::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB29260EED;
+	Mon, 29 Jan 2024 12:39:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706531947; cv=none; b=dHvTJzsBhTb38PJt01GnejpxHYYtazSGBO0utyrJYtnwBOQtvcAztc+MGaooIQi8/9cZF3otnBVaypcg9S6N/QDmiqz2WzPzLm2GR4Wj7CEXuSGAhlX0qD0TAk8Oq06IdMlNFB8OPt5+mvxQpB8vKK4AIKqD54+jOZT5sjCsIDI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706531947; c=relaxed/simple;
+	bh=/XzKBfVseUd8Pb5Zd9tKnmSCcUIJlYaGFrxY8DxUInI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HaAfu5hx5aDcQZnpw9fh8c1QFKLgwTZQRv2vxVEuJoxs4NwrnSZuArufX4nCkvG6PT/IBO52k0/9RJRSGhS+nrZuBqmUMdCv20hv6wqaTNS7rThsiIBdDQozYn/IEwEE2snUVFjlikthzR68ZR+bRudV9hApsOJP0cP6FSQgozI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ruHWALRW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E0AEC43394;
+	Mon, 29 Jan 2024 12:39:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706531947;
+	bh=/XzKBfVseUd8Pb5Zd9tKnmSCcUIJlYaGFrxY8DxUInI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ruHWALRWiSMDmod3M6h3B9hWnhxOffcA/PmTofm1pXrvNZUswsPwqiBKTJBskt/IU
+	 CyK1cLaP1jXkNaiXGgLtU5r68coBMY/8INbN70/THuEo8uSNQ5/PZV5lcOIKJpg2AK
+	 TS58r8iveRm9tftkBlsTZne1zbE4gKJfPNK6qDOAfjyF5RcKZaRNea1G8ZTlJb39va
+	 rAlSaOM2wuv2F3WvDLxnrvd6HAw6CQdXDUDYAQlNjtJBsnRS3iLKkTD6s47Ptm5Nvd
+	 j0NhjFEI8O/1ekwKXbRRELpM5hYZlsSq9LAWg8PXn8P18FpPN0R+x0J/j+/fOzsv0s
+	 5v/SxHregcLsQ==
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-55eb1f9d1f0so3302275a12.0;
+        Mon, 29 Jan 2024 04:39:07 -0800 (PST)
+X-Gm-Message-State: AOJu0YzCrDIOdaWFGnjxBQ5UyEmcGRsJ0t+jb++N2CBeH8OZQG/Xuggu
+	TUzuQvcIhNBWT11/nvgwc1EwZCLjqWPuGLtKoyBEiaUgUq/4KGRNJE9wgioNuEaGEIvBvy8lJ5B
+	/rLNM1EwWrdzVMs09AE2KEy6EXMU=
+X-Google-Smtp-Source: AGHT+IH2+Hqul+rGlR6WvXavfhDDwsl05gG/JWObkXjRKt7+OP5ABhiNwhLljGERzXzK/HVB1ZU2lG2h1QPc6LiSuOI=
+X-Received: by 2002:a05:6402:3418:b0:55f:20f0:546b with SMTP id
+ k24-20020a056402341800b0055f20f0546bmr507069edc.1.1706531945606; Mon, 29 Jan
+ 2024 04:39:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|AS8PR04MB7557:EE_
-X-MS-Office365-Filtering-Correlation-Id: eb5f4252-e711-42a5-c697-08dc20c6fefe
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	iEUMT1aGda6xh7CNiC8MyDdmSIQfd25S93RFFpvo6Augn2SQMyilIOQM6/tYv1p0GsePORxYy8dUY0L9j3kxds9Odiz2eSvt5H9KuE4jQwiLFdzpYNSEHxNojpPACCCjBfi7g0uHJVX2f3nwl7yghREQfMY2amZPRS5xhfqtw1nlR/malzoMBjCvXlR0fOaBSifSwT01B6ZjvfWECnoxtodQZZJvpSEdMN0BJ45K63DX0n1dx/lc0CYi5BkVPW6bh+EYiAg2kRKK4i3WqUBO8CIfY/hqSXt3/+S0DOO512N4c6JI8dMXMWbDIidTtpeZ2aid5LfS5jMGw0+n8+Z8QSiP4AWEj4ov5D4A3jYpxGboOZD8Xd/Cp3CjJDlqQwi2Gz30vE7FkavKrZ2Bo6F47nfJeAMovD0eMVyYwqlQRo3+YxZmITCexZSdleJ6bXQ48kHAdxMOjT3b5tVDKKeNfziondrXZLqCOt5H05LAH+9UAQU9d1TxGRIHMlyNRelI85tPV00ZW1aVj1SUsUqsxKsN7q6b+wgNWo7Zdm+zWAkR+PT7hOjb38Z1ggL2bEqJOKsr9pmd/jdIe4ZrsA1KzjJ2aTajY0zF9J0CieA6eKc8XGy6YrOsVGSntPGUbZbgCnVGQV0mNIq6Sp242bpOSRu/jTxtm5qSrb6i7QQ7q6UtoZV0Xn0pYdyfI/j62XG/
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(366004)(396003)(136003)(376002)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(31686004)(84970400001)(83380400001)(26005)(6512007)(6506007)(6666004)(86362001)(31696002)(921011)(5660300002)(66556008)(7416002)(44832011)(8676002)(8936002)(41300700001)(4326008)(2616005)(2906002)(38100700002)(66476007)(66946007)(110136005)(316002)(966005)(6486002)(54906003)(4001150100001)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?YkdzT0ovUVp3emJ1TmdiVXZIeFd4U3RMcnNSdVNoTHFGRCtIU1FKTW94SDhV?=
- =?utf-8?B?ZFJ4ZmgvODJxU2ZLZUFMWFNlcmEwOWtCdHRCSVhVWE1ndG52cmVoeDFQcjR2?=
- =?utf-8?B?M0xjeExuMlNBYWNjcDA1ZC82NW1XOE1SOHRFTzVyeW13MG5ickZxSTNpa0NX?=
- =?utf-8?B?TUxXek9kQWUzVmdRVzUxYXY1OGE3dVVUNWIxS3R0NDlIRWZiTzFyRmxRektj?=
- =?utf-8?B?c0NoaXlkQUF0OHplNk9zdWNZTWhTbGJUZHpGZUYzL1NqbG0xV1VRYmhOcFpF?=
- =?utf-8?B?Z3B4NlZERzhBWmx4enJkQytFNEg4NnBYZFo0VGxLZjNXdUxhbHdZWnNHUGlm?=
- =?utf-8?B?Mno2RkdkVFk2N29DOTllQkl4ZTVmWTYwT0ZjamcybVZKdFlBM2pHN1UzVVJT?=
- =?utf-8?B?OEwvM3FsZ1dVVjB2cmtsdkZpb1E5eFVzcldiQ0MyNmpaVlFuZ0tvSC9URm5o?=
- =?utf-8?B?U0lKc2VaOGlPaGhxeXJxdXVwK1dzUHlYTUt3ZTVKanZEdzZlb3pIS3pBSXJG?=
- =?utf-8?B?WTRjYzQ2UlVBSGVlemdCbGsyL0RyNEpSY3hvVDRRV3k5YmFpd3B1SVJheitl?=
- =?utf-8?B?SVZselg2Q3FQTFlwUjdxV0xpelpSVGxHbkZzWm5uQkhySzh0c0tYYjlNUWJS?=
- =?utf-8?B?Kzhla1RUcENNNXpZRkovVklQYXdncGtCS05HSmRoUm1mb1Q4cnJ5cEhjbmxW?=
- =?utf-8?B?R09lSXpqZzVLb0R6WElaT3JxWHBtUGtMeHFCMGhmaEtBOVJJRmNWTlRBQkZZ?=
- =?utf-8?B?RU1xY0pyREE1VUJndmpTNXczenJhRE1SSE42VW1KUTIyT0hpZnp4bDI5ZGx6?=
- =?utf-8?B?blNRczhUVHNrRkYxa2hkbGE4eUFaczJ6elA1VWY5QjdoR0hVMDhmaWRDbTJE?=
- =?utf-8?B?MzRFSUNKeEpZeWFUS0o0eDhMYnFURi96SjBHd1AvTE02cGJqaCthd0NLbVhx?=
- =?utf-8?B?NCtLcFlJS09BK1BzTHluYXVKNklzK0NmeDRyRjF5NHNjMVE0ZGFHM2k2N3I5?=
- =?utf-8?B?TzNWRks4Y000MkdreDFOdlVoZG1aM2xESzNIWlg3dDZtcjVUVjFVeXA3RENl?=
- =?utf-8?B?bm4vTGMvUEZOQUszZFBFK1FwZEo4NmlWRkhtU1Fud0xKVWVtSUp0K1ZQa0Nw?=
- =?utf-8?B?OTFWbjNzNWFkYmRiQkRsL2U3N1gvTlh2ckxQN3luYUtXVEN5ZExOVC96S09K?=
- =?utf-8?B?RlM0dXV0cHV3U1V6KzFCNUNDZWp2THlGT2MwWWVkUGJacVBQTkQyTkJFakZF?=
- =?utf-8?B?dXB1UVNoZGhtcDk4dEd4c1BreHo5YVBCdDA2VU50SXVVUUVQUmxzWUhJYy9l?=
- =?utf-8?B?cFduVEVZSGZrazMvVlZZYU5iVmxoZUlqbjVuOWNqaXdNNmpsTGN0SWdPS3B1?=
- =?utf-8?B?WjhTS3UxTU8wV20xbks0Q3dhcFNWRVgvSTNwaGFUeldvQ1NVM3EvcWpXV0ht?=
- =?utf-8?B?RlJWUGxJcDNKS0RtU2pIdm9PQWdmbjM4UnpRMUJDTmYwZlpLV2JOZjZ2SjNJ?=
- =?utf-8?B?UmxQMWNOdGxKVkEwc0poLzFSM2JGeCtQazVWNVJsT3FFTTBqbEZINmh4THRr?=
- =?utf-8?B?bWdKY1lXRVlHQzZQeTFtMjl4WS92cy90MXlIYUV6V0cvbWpZNTUxQmhBSU8x?=
- =?utf-8?B?b0FaSVg5R1lIcnY2YS9GRjk1eml1U0w5WkN3d0dKTmhWU0QzN3lDa1k2aHg4?=
- =?utf-8?B?VG5ibWFaeG83S1NOZHBTZ0QyME05RkNjWmwzazRZU3lZYjFjVlhDWWtKZmQ3?=
- =?utf-8?B?ckkrR3NNOTFBdjduRzUxbWlSdGpNcGFjd2xtb3JQc3JVTXFQZzMvRWRuNGtG?=
- =?utf-8?B?WnFna0k0TDF6ZFFWdTV6U2FZRlBrTDVia1l1dTc4QnNaa052bnJJV1p0QzJr?=
- =?utf-8?B?Y1BTZFEvMVJNV0pjMGVOdURvMHllSkEwSUlmVFBQMm9JSHFoRFBiU3FKMGJq?=
- =?utf-8?B?Qlowb2xXNGtpTmJjQUFab0FOWmZBM2NQblRneUJUT3RZcmRQQ2FscDFSWnNQ?=
- =?utf-8?B?bzNWNFd1NEJkTzFCaFQveGdUbWYwYk1hM2RMc2pUM09Ec2dFdFdtSzd1Q1Nx?=
- =?utf-8?B?WGVsa2s1RDJabDFkc1pUQXdzRkFZcnpvSldEVExKMWVqOGR3TFBWM0NkaDdD?=
- =?utf-8?Q?O9p0AVLpbV1VpM1teMwcQ6Xei?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eb5f4252-e711-42a5-c697-08dc20c6fefe
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 12:37:03.8581
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eZ2K7s6PkxN/S6cHBzOa3g1aeTshOcYHwr/KQUUoX7ES11irKJssEXhG7cX7jxFetjqWwDunbPq2MPseeT1TBw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7557
+References: <20240122100313.1589372-1-maobibo@loongson.cn> <20240122100313.1589372-2-maobibo@loongson.cn>
+In-Reply-To: <20240122100313.1589372-2-maobibo@loongson.cn>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Mon, 29 Jan 2024 20:38:56 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6JnfdD1D0rMgDAk7gBWeYZn3ngFsE07_76Sk0Rv7Tksg@mail.gmail.com>
+Message-ID: <CAAhV-H6JnfdD1D0rMgDAk7gBWeYZn3ngFsE07_76Sk0Rv7Tksg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/6] LoongArch/smp: Refine ipi ops on LoongArch platform
+To: Bibo Mao <maobibo@loongson.cn>
+Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, loongarch@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, virtualization@lists.linux.dev, 
+	kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Sudeep, Cristian
+Hi, Bibo,
 
-Would you pick up patch 1-4?
-And for i.MX95 OEM extenstion, do you have any suggestions?
-I have two points:
-1. use vendor compatible. This would also benefit when supporting vendor 
-protocol.
-2. Introduce a property saying supporting-generic-pinconf
-
-How do you think?
-
-Thanks,
-Peng.
-
-在 1/21/2024 6:21 PM, Peng Fan (OSS) 写道:
-> This patchset is a rework from Oleksii's RFC v5 patchset
-> https://lore.kernel.org/all/cover.1698353854.git.oleksii_moisieiev@epam.com/
-> 
-> This patchset introduces some changes based on RFC v5:
-> - introduce helper get_max_msg_size
-> - support compatible string
-> - iterate the id_table
-> - Support multiple configs in one command
-> - Added i.MX support
-> - Patch 5 firmware: arm_scmi: Add SCMI v3.2 pincontrol protocol basic support
->    is almost same as RFCv5 expect multiple configs support.
-> - Patch 4 the dt-bindings includes compatible string to support i.MX
-> - Rebased on 2023-12-15 linux-next/master
-> 
-> If any comments from RFC v5 are missed, I am sorry in advance.
-> 
-> This PINCTRL Protocol is following Version 3.2 SCMI Spec Beta release.
-> 
-> On ARM-based systems, a separate Cortex-M based System Control Processor
-> (SCP) provides control on pins, as well as with power, clocks, reset
-> controllers. So implement the driver to support such cases.
-> 
-> The i.MX95 Example as below:
-> 
-> Configuration:
-> The scmi-pinctrl driver can be configured using DT bindings.
-> For example:
-> / {
-> 	sram0: sram@445b1000 {
-> 		compatible = "mmio-sram";
-> 		reg = <0x0 0x445b1000 0x0 0x400>;
-> 
-> 		#address-cells = <1>;
-> 		#size-cells = <1>;
-> 		ranges = <0x0 0x0 0x445b1000 0x400>;
-> 
-> 		scmi_buf0: scmi-sram-section@0 {
-> 			compatible = "arm,scmi-shmem";
-> 			reg = <0x0 0x80>;
-> 		};
-> 
-> 		scmi_buf1: scmi-sram-section@80 {
-> 			compatible = "arm,scmi-shmem";
-> 			reg = <0x80 0x80>;
-> 		};
-> 	};
-> 
-> 	firmware {
-> 		scmi {
-> 			compatible = "arm,scmi";
-> 			mboxes = <&mu2 5 0>, <&mu2 3 0>, <&mu2 3 1>;
-> 			shmem = <&scmi_buf0>, <&scmi_buf1>;
-> 			#address-cells = <1>;
-> 			#size-cells = <0>;
-> 
-> 			scmi_iomuxc: protocol@19 {
-> 				compatible = "fsl,imx95-scmi-pinctrl";
-> 				reg = <0x19>;
-> 			};
-> 		};
-> 	};
-> };
-> 
-> &scmi_iomuxc {
-> 	pinctrl_tpm3: tpm3grp {
-> 		fsl,pins = <
-> 			IMX95_PAD_GPIO_IO12__TPM3_CH2		0x51e
-> 		>;
-> 	};
-> };
-> 
-> This patchset has been tested on i.MX95-19x19-EVK board.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+On Mon, Jan 22, 2024 at 6:03=E2=80=AFPM Bibo Mao <maobibo@loongson.cn> wrot=
+e:
+>
+> This patch refines ipi handling on LoongArch platform, there are
+> three changes with this patch.
+> 1. Add generic get_percpu_irq api, replace some percpu irq function
+> such as get_ipi_irq/get_pmc_irq/get_timer_irq with get_percpu_irq.
+>
+> 2. Change parameter action definition with function
+> loongson_send_ipi_single and loongson_send_ipi_mask. Code encoding is use=
+d
+> here rather than bitmap encoding for ipi action, ipi hw sender uses actio=
+n
+> code, and ipi receiver will get action bitmap encoding, the ipi hw will
+> convert it into bitmap in ipi message buffer.
+>
+> 3. Add smp_ops on LoongArch platform so that pv ipi can be used later.
+>
+> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
 > ---
-> Changes in v3:
-> - Add R-b for dt-binding patch
-> - Use 80 chars per line to align with other scmi drivers
-> - Add pinctrl_scmi_alloc_configs pinctrl_scmi_free_configs to replace
->    driver global config_value and config_type array to avoid in parrell
->    access issue. When num_configs is larger than 4, use alloc, else use
->    stack.
-> - Drop the separate MAITAINERS entry for firmware scmi pinctrl
-> - Use enum type, not u8 when referring the scmi or generic pin conf type
-> - Drop scmi_pinctrl_config_get_all which is not used at all for now.
-> - Update copyright year to 2024
-> - Move the enum scmi_pinctrl_conf_type above pinctrl_proto_ops for consistency
-> - Link to v2: https://lore.kernel.org/r/20240104-pinctrl-scmi-v2-0-a9bd86ab5a84@nxp.com
-> 
-> Changes in v2:
->   Added comments, and added R-b for Patch 1
->   Moved the compatile string and i.MX patch to the end, marked NOT APPLY
->   Patchset based on lore.kernel.org/all/20231221151129.325749-1-cristian.marussi@arm.com/
->   Addressed the binding doc issue, dropped i.MX content.
->   For the firmware pinctrl scmi driver, addressed the comments from Cristian
->   For the pinctrl scmi driver, addressed comments from Cristian
-> 
->   For the i.MX95 OEM stuff, I not have good idea, expect using compatbile
->   string. Maybe the firmware public an protocol attribute to indicate it is
->   VENDOR stuff or NXP use a new protocol id, not 0x19. But I think
->   current pinctrl-scmi.c not able to support OEM config, should we extend
->   it with some method? Anyway if patch 1-4 is good enough, they could
->   be picked up first.
-> 
->   Since I am only able to test the patch on i.MX95 which not support
->   geneirc pinconf, only OEM configs are tested in my side.
-> 
-> ---
-> Oleksii Moisieiev (1):
->        firmware: arm_scmi: Add SCMI v3.2 pincontrol protocol basic support
-> 
-> Peng Fan (5):
->        firmware: arm_scmi: introduce helper get_max_msg_size
->        dt-bindings: firmware: arm,scmi: support pinctrl protocol
->        pinctrl: Implementation of the generic scmi-pinctrl driver
->        [NOT APPLY]firmware: scmi: support compatible string
->        [NOT APPLY] pinctrl: scmi: implement pinctrl_scmi_imx_dt_node_to_map
-> 
->   .../devicetree/bindings/firmware/arm,scmi.yaml     |  50 ++
->   MAINTAINERS                                        |   1 +
->   drivers/firmware/arm_scmi/Makefile                 |   1 +
->   drivers/firmware/arm_scmi/bus.c                    |  39 +-
->   drivers/firmware/arm_scmi/common.h                 |   2 +-
->   drivers/firmware/arm_scmi/driver.c                 |  32 +-
->   drivers/firmware/arm_scmi/pinctrl.c                | 908 +++++++++++++++++++++
->   drivers/firmware/arm_scmi/protocols.h              |   3 +
->   drivers/pinctrl/Kconfig                            |  11 +
->   drivers/pinctrl/Makefile                           |   1 +
->   drivers/pinctrl/pinctrl-scmi-imx.c                 | 117 +++
->   drivers/pinctrl/pinctrl-scmi.c                     | 609 ++++++++++++++
->   drivers/pinctrl/pinctrl-scmi.h                     |  12 +
->   include/linux/scmi_protocol.h                      |  77 ++
->   14 files changed, 1849 insertions(+), 14 deletions(-)
-> ---
-> base-commit: 5389a88b06eb19c3fb08200cc1519406e299b7b0
-> change-id: 20231215-pinctrl-scmi-4c5b0374f4c6
-> 
-> Best regards,
+>  arch/loongarch/include/asm/hardirq.h |  4 ++
+>  arch/loongarch/include/asm/irq.h     | 10 ++++-
+>  arch/loongarch/include/asm/smp.h     | 31 +++++++--------
+>  arch/loongarch/kernel/irq.c          | 22 +----------
+>  arch/loongarch/kernel/perf_event.c   | 14 +------
+>  arch/loongarch/kernel/smp.c          | 58 +++++++++++++++++++---------
+>  arch/loongarch/kernel/time.c         | 12 +-----
+>  7 files changed, 71 insertions(+), 80 deletions(-)
+>
+> diff --git a/arch/loongarch/include/asm/hardirq.h b/arch/loongarch/includ=
+e/asm/hardirq.h
+> index 0ef3b18f8980..9f0038e19c7f 100644
+> --- a/arch/loongarch/include/asm/hardirq.h
+> +++ b/arch/loongarch/include/asm/hardirq.h
+> @@ -12,6 +12,10 @@
+>  extern void ack_bad_irq(unsigned int irq);
+>  #define ack_bad_irq ack_bad_irq
+>
+> +enum ipi_msg_type {
+> +       IPI_RESCHEDULE,
+> +       IPI_CALL_FUNCTION,
+> +};
+>  #define NR_IPI 2
+>
+>  typedef struct {
+> diff --git a/arch/loongarch/include/asm/irq.h b/arch/loongarch/include/as=
+m/irq.h
+> index 218b4da0ea90..00101b6d601e 100644
+> --- a/arch/loongarch/include/asm/irq.h
+> +++ b/arch/loongarch/include/asm/irq.h
+> @@ -117,8 +117,16 @@ extern struct fwnode_handle *liointc_handle;
+>  extern struct fwnode_handle *pch_lpc_handle;
+>  extern struct fwnode_handle *pch_pic_handle[MAX_IO_PICS];
+>
+> -extern irqreturn_t loongson_ipi_interrupt(int irq, void *dev);
+> +static inline int get_percpu_irq(int vector)
+> +{
+> +       struct irq_domain *d;
+> +
+> +       d =3D irq_find_matching_fwnode(cpuintc_handle, DOMAIN_BUS_ANY);
+> +       if (d)
+> +               return irq_create_mapping(d, vector);
+>
+> +       return -EINVAL;
+> +}
+>  #include <asm-generic/irq.h>
+>
+>  #endif /* _ASM_IRQ_H */
+> diff --git a/arch/loongarch/include/asm/smp.h b/arch/loongarch/include/as=
+m/smp.h
+> index f81e5f01d619..330f1cb3741c 100644
+> --- a/arch/loongarch/include/asm/smp.h
+> +++ b/arch/loongarch/include/asm/smp.h
+> @@ -12,6 +12,13 @@
+>  #include <linux/threads.h>
+>  #include <linux/cpumask.h>
+>
+> +struct smp_ops {
+> +       void (*call_func_ipi)(const struct cpumask *mask, unsigned int ac=
+tion);
+> +       void (*call_func_single_ipi)(int cpu, unsigned int action);
+To keep consistency, it is better to use call_func_ipi_single and
+call_func_ipi_mask.
+
+> +       void (*ipi_init)(void);
+> +};
+> +
+> +extern struct smp_ops smp_ops;
+>  extern int smp_num_siblings;
+>  extern int num_processors;
+>  extern int disabled_cpus;
+> @@ -24,8 +31,6 @@ void loongson_prepare_cpus(unsigned int max_cpus);
+>  void loongson_boot_secondary(int cpu, struct task_struct *idle);
+>  void loongson_init_secondary(void);
+>  void loongson_smp_finish(void);
+> -void loongson_send_ipi_single(int cpu, unsigned int action);
+> -void loongson_send_ipi_mask(const struct cpumask *mask, unsigned int act=
+ion);
+>  #ifdef CONFIG_HOTPLUG_CPU
+>  int loongson_cpu_disable(void);
+>  void loongson_cpu_die(unsigned int cpu);
+> @@ -59,9 +64,12 @@ extern int __cpu_logical_map[NR_CPUS];
+>
+>  #define cpu_physical_id(cpu)   cpu_logical_map(cpu)
+>
+> -#define SMP_BOOT_CPU           0x1
+> -#define SMP_RESCHEDULE         0x2
+> -#define SMP_CALL_FUNCTION      0x4
+> +#define ACTTION_BOOT_CPU       0
+> +#define ACTTION_RESCHEDULE     1
+> +#define ACTTION_CALL_FUNCTION  2
+> +#define SMP_BOOT_CPU           BIT(ACTTION_BOOT_CPU)
+> +#define SMP_RESCHEDULE         BIT(ACTTION_RESCHEDULE)
+> +#define SMP_CALL_FUNCTION      BIT(ACTTION_CALL_FUNCTION)
+>
+>  struct secondary_data {
+>         unsigned long stack;
+> @@ -71,7 +79,8 @@ extern struct secondary_data cpuboot_data;
+>
+>  extern asmlinkage void smpboot_entry(void);
+>  extern asmlinkage void start_secondary(void);
+> -
+> +extern void arch_send_call_function_single_ipi(int cpu);
+> +extern void arch_send_call_function_ipi_mask(const struct cpumask *mask)=
+;
+Similarly, to keep consistency, it is better to use
+arch_send_function_ipi_single and arch_send_function_ipi_mask.
+
+Huacai
+
+>  extern void calculate_cpu_foreign_map(void);
+>
+>  /*
+> @@ -79,16 +88,6 @@ extern void calculate_cpu_foreign_map(void);
+>   */
+>  extern void show_ipi_list(struct seq_file *p, int prec);
+>
+> -static inline void arch_send_call_function_single_ipi(int cpu)
+> -{
+> -       loongson_send_ipi_single(cpu, SMP_CALL_FUNCTION);
+> -}
+> -
+> -static inline void arch_send_call_function_ipi_mask(const struct cpumask=
+ *mask)
+> -{
+> -       loongson_send_ipi_mask(mask, SMP_CALL_FUNCTION);
+> -}
+> -
+>  #ifdef CONFIG_HOTPLUG_CPU
+>  static inline int __cpu_disable(void)
+>  {
+> diff --git a/arch/loongarch/kernel/irq.c b/arch/loongarch/kernel/irq.c
+> index 883e5066ae44..1b58f7c3eed9 100644
+> --- a/arch/loongarch/kernel/irq.c
+> +++ b/arch/loongarch/kernel/irq.c
+> @@ -87,23 +87,9 @@ static void __init init_vec_parent_group(void)
+>         acpi_table_parse(ACPI_SIG_MCFG, early_pci_mcfg_parse);
+>  }
+>
+> -static int __init get_ipi_irq(void)
+> -{
+> -       struct irq_domain *d =3D irq_find_matching_fwnode(cpuintc_handle,=
+ DOMAIN_BUS_ANY);
+> -
+> -       if (d)
+> -               return irq_create_mapping(d, INT_IPI);
+> -
+> -       return -EINVAL;
+> -}
+> -
+>  void __init init_IRQ(void)
+>  {
+>         int i;
+> -#ifdef CONFIG_SMP
+> -       int r, ipi_irq;
+> -       static int ipi_dummy_dev;
+> -#endif
+>         unsigned int order =3D get_order(IRQ_STACK_SIZE);
+>         struct page *page;
+>
+> @@ -113,13 +99,7 @@ void __init init_IRQ(void)
+>         init_vec_parent_group();
+>         irqchip_init();
+>  #ifdef CONFIG_SMP
+> -       ipi_irq =3D get_ipi_irq();
+> -       if (ipi_irq < 0)
+> -               panic("IPI IRQ mapping failed\n");
+> -       irq_set_percpu_devid(ipi_irq);
+> -       r =3D request_percpu_irq(ipi_irq, loongson_ipi_interrupt, "IPI", =
+&ipi_dummy_dev);
+> -       if (r < 0)
+> -               panic("IPI IRQ request failed\n");
+> +       smp_ops.ipi_init();
+>  #endif
+>
+>         for (i =3D 0; i < NR_IRQS; i++)
+> diff --git a/arch/loongarch/kernel/perf_event.c b/arch/loongarch/kernel/p=
+erf_event.c
+> index 0491bf453cd4..3265c8f33223 100644
+> --- a/arch/loongarch/kernel/perf_event.c
+> +++ b/arch/loongarch/kernel/perf_event.c
+> @@ -456,16 +456,6 @@ static void loongarch_pmu_disable(struct pmu *pmu)
+>  static DEFINE_MUTEX(pmu_reserve_mutex);
+>  static atomic_t active_events =3D ATOMIC_INIT(0);
+>
+> -static int get_pmc_irq(void)
+> -{
+> -       struct irq_domain *d =3D irq_find_matching_fwnode(cpuintc_handle,=
+ DOMAIN_BUS_ANY);
+> -
+> -       if (d)
+> -               return irq_create_mapping(d, INT_PCOV);
+> -
+> -       return -EINVAL;
+> -}
+> -
+>  static void reset_counters(void *arg);
+>  static int __hw_perf_event_init(struct perf_event *event);
+>
+> @@ -473,7 +463,7 @@ static void hw_perf_event_destroy(struct perf_event *=
+event)
+>  {
+>         if (atomic_dec_and_mutex_lock(&active_events, &pmu_reserve_mutex)=
+) {
+>                 on_each_cpu(reset_counters, NULL, 1);
+> -               free_irq(get_pmc_irq(), &loongarch_pmu);
+> +               free_irq(get_percpu_irq(INT_PCOV), &loongarch_pmu);
+>                 mutex_unlock(&pmu_reserve_mutex);
+>         }
+>  }
+> @@ -562,7 +552,7 @@ static int loongarch_pmu_event_init(struct perf_event=
+ *event)
+>         if (event->cpu >=3D 0 && !cpu_online(event->cpu))
+>                 return -ENODEV;
+>
+> -       irq =3D get_pmc_irq();
+> +       irq =3D get_percpu_irq(INT_PCOV);
+>         flags =3D IRQF_PERCPU | IRQF_NOBALANCING | IRQF_NO_THREAD | IRQF_=
+NO_SUSPEND | IRQF_SHARED;
+>         if (!atomic_inc_not_zero(&active_events)) {
+>                 mutex_lock(&pmu_reserve_mutex);
+> diff --git a/arch/loongarch/kernel/smp.c b/arch/loongarch/kernel/smp.c
+> index a16e3dbe9f09..46735ba49815 100644
+> --- a/arch/loongarch/kernel/smp.c
+> +++ b/arch/loongarch/kernel/smp.c
+> @@ -66,11 +66,6 @@ static cpumask_t cpu_core_setup_map;
+>  struct secondary_data cpuboot_data;
+>  static DEFINE_PER_CPU(int, cpu_state);
+>
+> -enum ipi_msg_type {
+> -       IPI_RESCHEDULE,
+> -       IPI_CALL_FUNCTION,
+> -};
+> -
+>  static const char *ipi_types[NR_IPI] __tracepoint_string =3D {
+>         [IPI_RESCHEDULE] =3D "Rescheduling interrupts",
+>         [IPI_CALL_FUNCTION] =3D "Function call interrupts",
+> @@ -123,24 +118,19 @@ static u32 ipi_read_clear(int cpu)
+>
+>  static void ipi_write_action(int cpu, u32 action)
+>  {
+> -       unsigned int irq =3D 0;
+> -
+> -       while ((irq =3D ffs(action))) {
+> -               uint32_t val =3D IOCSR_IPI_SEND_BLOCKING;
+> +       uint32_t val;
+>
+> -               val |=3D (irq - 1);
+> -               val |=3D (cpu << IOCSR_IPI_SEND_CPU_SHIFT);
+> -               iocsr_write32(val, LOONGARCH_IOCSR_IPI_SEND);
+> -               action &=3D ~BIT(irq - 1);
+> -       }
+> +       val =3D IOCSR_IPI_SEND_BLOCKING | action;
+> +       val |=3D (cpu << IOCSR_IPI_SEND_CPU_SHIFT);
+> +       iocsr_write32(val, LOONGARCH_IOCSR_IPI_SEND);
+>  }
+>
+> -void loongson_send_ipi_single(int cpu, unsigned int action)
+> +static void loongson_send_ipi_single(int cpu, unsigned int action)
+>  {
+>         ipi_write_action(cpu_logical_map(cpu), (u32)action);
+>  }
+>
+> -void loongson_send_ipi_mask(const struct cpumask *mask, unsigned int act=
+ion)
+> +static void loongson_send_ipi_mask(const struct cpumask *mask, unsigned =
+int action)
+>  {
+>         unsigned int i;
+>
+> @@ -148,6 +138,16 @@ void loongson_send_ipi_mask(const struct cpumask *ma=
+sk, unsigned int action)
+>                 ipi_write_action(cpu_logical_map(i), (u32)action);
+>  }
+>
+> +void arch_send_call_function_single_ipi(int cpu)
+> +{
+> +       smp_ops.call_func_single_ipi(cpu, ACTTION_CALL_FUNCTION);
+> +}
+> +
+> +void arch_send_call_function_ipi_mask(const struct cpumask *mask)
+> +{
+> +       smp_ops.call_func_ipi(mask, ACTTION_CALL_FUNCTION);
+> +}
+> +
+>  /*
+>   * This function sends a 'reschedule' IPI to another CPU.
+>   * it goes straight through and wastes no time serializing
+> @@ -155,11 +155,11 @@ void loongson_send_ipi_mask(const struct cpumask *m=
+ask, unsigned int action)
+>   */
+>  void arch_smp_send_reschedule(int cpu)
+>  {
+> -       loongson_send_ipi_single(cpu, SMP_RESCHEDULE);
+> +       smp_ops.call_func_single_ipi(cpu, ACTTION_RESCHEDULE);
+>  }
+>  EXPORT_SYMBOL_GPL(arch_smp_send_reschedule);
+>
+> -irqreturn_t loongson_ipi_interrupt(int irq, void *dev)
+> +static irqreturn_t loongson_ipi_interrupt(int irq, void *dev)
+>  {
+>         unsigned int action;
+>         unsigned int cpu =3D smp_processor_id();
+> @@ -179,6 +179,26 @@ irqreturn_t loongson_ipi_interrupt(int irq, void *de=
+v)
+>         return IRQ_HANDLED;
+>  }
+>
+> +static void loongson_ipi_init(void)
+> +{
+> +       int r, ipi_irq;
+> +
+> +       ipi_irq =3D get_percpu_irq(INT_IPI);
+> +       if (ipi_irq < 0)
+> +               panic("IPI IRQ mapping failed\n");
+> +
+> +       irq_set_percpu_devid(ipi_irq);
+> +       r =3D request_percpu_irq(ipi_irq, loongson_ipi_interrupt, "IPI", =
+&irq_stat);
+> +       if (r < 0)
+> +               panic("IPI IRQ request failed\n");
+> +}
+> +
+> +struct smp_ops smp_ops =3D {
+> +       .call_func_single_ipi   =3D loongson_send_ipi_single,
+> +       .call_func_ipi          =3D loongson_send_ipi_mask,
+> +       .ipi_init               =3D loongson_ipi_init,
+> +};
+> +
+>  static void __init fdt_smp_setup(void)
+>  {
+>  #ifdef CONFIG_OF
+> @@ -256,7 +276,7 @@ void loongson_boot_secondary(int cpu, struct task_str=
+uct *idle)
+>
+>         csr_mail_send(entry, cpu_logical_map(cpu), 0);
+>
+> -       loongson_send_ipi_single(cpu, SMP_BOOT_CPU);
+> +       loongson_send_ipi_single(cpu, ACTTION_BOOT_CPU);
+>  }
+>
+>  /*
+> diff --git a/arch/loongarch/kernel/time.c b/arch/loongarch/kernel/time.c
+> index e7015f7b70e3..fd5354f9be7c 100644
+> --- a/arch/loongarch/kernel/time.c
+> +++ b/arch/loongarch/kernel/time.c
+> @@ -123,16 +123,6 @@ void sync_counter(void)
+>         csr_write64(init_offset, LOONGARCH_CSR_CNTC);
+>  }
+>
+> -static int get_timer_irq(void)
+> -{
+> -       struct irq_domain *d =3D irq_find_matching_fwnode(cpuintc_handle,=
+ DOMAIN_BUS_ANY);
+> -
+> -       if (d)
+> -               return irq_create_mapping(d, INT_TI);
+> -
+> -       return -EINVAL;
+> -}
+> -
+>  int constant_clockevent_init(void)
+>  {
+>         unsigned int cpu =3D smp_processor_id();
+> @@ -142,7 +132,7 @@ int constant_clockevent_init(void)
+>         static int irq =3D 0, timer_irq_installed =3D 0;
+>
+>         if (!timer_irq_installed) {
+> -               irq =3D get_timer_irq();
+> +               irq =3D get_percpu_irq(INT_TI);
+>                 if (irq < 0)
+>                         pr_err("Failed to map irq %d (timer)\n", irq);
+>         }
+> --
+> 2.39.3
+>
 
