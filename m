@@ -1,101 +1,93 @@
-Return-Path: <linux-kernel+bounces-42283-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42284-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6014C83FEFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:29:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D21783FEFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:30:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92AA41C231AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 07:29:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 183AA2828C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 07:30:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86C234EB35;
-	Mon, 29 Jan 2024 07:29:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B65A4F1F4;
+	Mon, 29 Jan 2024 07:30:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O6C7bYy4"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b="l/XJ42Yh"
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83E544E1C5;
-	Mon, 29 Jan 2024 07:29:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23FF14F1EA
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 07:30:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706513383; cv=none; b=EXR2G4m3B/KJHiWmYp8lO4WXKR9vM0+ovoAn3hmOT3Rjh3sR7CODPp1Cyd1nzhktva5Rriy/zvXG1W4lbTUgvG8jO1hfJFuRUHPbJtHJ6BUVpqNCv4BiVU9Bu00KrKMnro98716c9n4UDcocGdN5GsPa6NZ8P1aQynMPE/Bx7do=
+	t=1706513432; cv=none; b=M/tNyEIEdx0SI4QM7AfauF3qJcrs+M9yBYm0+Cl720q3fzCCbWPJkQlEoulT7EQfYWDyerqnZ/bbpEclAuaohI05fWc9ZF38K1Hgbhhxv/55OyShEjqh5GbTOCG175urx7Qfwol2AsMCDWK/inWHoMDuuZ3PdON70/hVDCzjY0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706513383; c=relaxed/simple;
-	bh=Jc9jn5Kx2NmcVs/vW6S/Hjf8twBJz4qR4JDcZ6C83/c=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fwKVDhb20Lwm6avACeVz5Zng4JqFtth8eGjVzd37brpJyvSRPejZoKveGGkx3ejs5uk3TD/3izJvuU4jP+waJtX1Wjo2Vd2rFAxjU09+n14+UfL9Sl91xBOnWjaIO4Vmngmw+P3GRRAFqFJ6SuIC9x8vpd+N9KpKLyDU42s9OhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O6C7bYy4; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5ce74ea4bf2so1416447a12.0;
-        Sun, 28 Jan 2024 23:29:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706513382; x=1707118182; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Jc9jn5Kx2NmcVs/vW6S/Hjf8twBJz4qR4JDcZ6C83/c=;
-        b=O6C7bYy4/j6vwHVuQhwux+PfuAnH8Lok5uqAktj37niW1R7prWiw7HL5gigVJqIUon
-         Qx18ASGfqaz79gN/W1UxWsYJ4KUrZTJT5vV2z5lYKQzBhd2iRAo7pa2xnUXcN2YOVYvD
-         rSFQggkdmKDp7a53JXwbPmv2rg+gEy4axbk4teSchAJ6brFDU7N4Vglu6WBqDJAi9GoB
-         S7n0zMaHHQMqNue2PcMWSSQpVbQL7vF8AY8kR9fLAvIdiROvmY11g4Z/BrNGUqboD+wp
-         xTf2oOwcYxv6Uyt/s+2jitLHUP8GmY9AkICYMHX3fdXp/Yb9pDcxBgTmApDLwZp+A1mn
-         Y+Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706513382; x=1707118182;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Jc9jn5Kx2NmcVs/vW6S/Hjf8twBJz4qR4JDcZ6C83/c=;
-        b=An50vc1InKuA3IYcYJ+ccF8MQ152Qs438m0YLNB2wTtiTDKOHoYU/8ZOeVR4leohs1
-         rRQuWp7bi1tSOxrEz4OJUmUwFNRbmX+FNAHFH0U3dL/3eq57deBA9Lqlet1eLk1Ob4xz
-         EsvODKKceF3HmK6otLhvBaMT9yJe4TkI3ZLDs8JGzHLRnevGMgxI9vPh67KAnvwFeKYa
-         veHolOUS4CvxuqTx2A3dOJcCCOZSGwbEfEW1en/FOq4tOqcyNaPahOTliHHp9VWhkfrC
-         geKJHDaAwj4PmXj3zb2siZphxfmLt7GddkB0/houIkowxnRQAYmL6IYD/rrmfvib0Skg
-         lmGw==
-X-Gm-Message-State: AOJu0YwTy4wceRX1c60LisSqmpPJJ9543gcTATGD1hu9uZLDcLXczCMn
-	7sT6UtKVfIb5WEkQFwstR34+98csbFPMo78BjRAduJQwm3OZCVTsGBRvJ7C6lsOQgg==
-X-Google-Smtp-Source: AGHT+IGGTBO+r3eRZTFlF3sN1pAYGUMy9Jx9OlnDSVJHQnlJLn/6GIgPdJD+ktAzomESSLxfbBW1/w==
-X-Received: by 2002:a05:6a20:9e4b:b0:19c:9c76:e9b2 with SMTP id mt11-20020a056a209e4b00b0019c9c76e9b2mr4376473pzb.13.1706513381660;
-        Sun, 28 Jan 2024 23:29:41 -0800 (PST)
-Received: from kohshi54-ThinkCentre-M715q.. ([2404:7a80:c880:6500:a374:2c9:8d38:9a2d])
-        by smtp.gmail.com with ESMTPSA id h8-20020aa79f48000000b006ddcadb1e2csm5166597pfr.29.2024.01.28.23.29.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jan 2024 23:29:41 -0800 (PST)
-From: Kohshi Yamaguchi <kohshi54.yam@gmail.com>
-To: rdunlap@infradead.org
-Cc: sakari.ailus@linux.intel.com,
-	bingbu.cao@intel.com,
-	tian.shu.qiu@intel.com,
-	mchehab@kernel.org,
-	gregkh@linuxfoundation.org,
-	linux-media@vger.kernel.org,
-	linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	skhan@linuxfoundation.org
-Subject: Re: [PATCH] doc: ipu3: Fix UAPI header doc warnings
-Date: Mon, 29 Jan 2024 16:29:37 +0900
-Message-Id: <20240129072937.51850-1-kohshi54.yam@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <621fe651-8538-43d5-a797-c1e66436b2dc@infradead.org>
-References: <621fe651-8538-43d5-a797-c1e66436b2dc@infradead.org>
+	s=arc-20240116; t=1706513432; c=relaxed/simple;
+	bh=RF9qsk72IRMY3eSbQpjccOhLtCKySy5fndAtSOJ6YmY=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=l80jaAkrHKYhXhqrYY/cmTpMEIEF0bjXpFH5OMvuZKAiBneLNPWb6YKHlpyVzcRQp1lwrbW9FoMS0MdZJfgEyqOOtxrT7IR39pilSV3rn5QOEls1nTSyHB1ShtmeJ/VEeZg7hJXyp0jhaeyi5eaE646B8YWt+Yqe5PaaFvK1oaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org; spf=pass smtp.mailfrom=cu-phil.org; dkim=pass (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b=l/XJ42Yh; arc=none smtp.client-ip=194.63.252.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cu-phil.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cu-phil.org
+	; s=ds202401; h=Content-Transfer-Encoding:Content-Type:Subject:From:To:
+	MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=8u1qxOzJnK9c0z6QjRx9iToy9c9hLFaYN0/NwTHDn6s=; b=l/XJ42YhqebprpDY4QOTfVaVXP
+	lFSW0raz++qX/h63SbP/xLVsWyAS3gI2Si8wa1ZYGDtRbaPZMsRTkivMZxvCbiTGfvao/pBnGd3QV
+	5ipUKMQWUqvlkgdFB6/1SCdlIKxpPudYqq+aVhEhhSbEkIucRHZOdRLeP93rWQM4n9gRPAYpngmFt
+	LnOhUUj1fQG3sNtEijuPHDJFEZ0hMo04+M7vcf0lf6Foivug9QRtd/GMFpOwutq2MEbBFut06mNcP
+	5xJg6Afh9u+1UhLw1r0w+0ylqaF52lPUUS2VdkCeOF+mcwfUxAiY7gDJ05uaJR7uho9COLoKC8w5c
+	WijlQbYg==;
+Received: from [84.215.119.50] (port=56226 helo=[192.168.0.2])
+	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <Ywe_Caerlyn@cu-phil.org>)
+	id 1rUM61-004mpa-Ny
+	for linux-kernel@vger.kernel.org;
+	Mon, 29 Jan 2024 08:30:21 +0100
+Message-ID: <391c02a0-0444-4431-8122-b3c345cc602f@cu-phil.org>
+Date: Mon, 29 Jan 2024 08:30:20 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+To: linux-kernel@vger.kernel.org
+From: Ywe Caerlyn <Ywe_Caerlyn@cu-phil.org>
+Subject: @ X - Finalized Philsophy
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Hi,
+@ X is the concept I have been researching for a while now. It supports 
+the much wanted (and demanded) Fair Source angle, for broad societal accept.
 
-Thank you for reviewing my patch and pointing out the overlap.
-I appreciate your feedback.
+The background of Fair Source is in Iclam, via the italic script Tio, 
+and supports and fully fluent translation. Hail Tio, The Great, The Good.
 
-Best regards,
---
-Kohshi Yamaguchi
+I have done mascot work as Saint-Bit for this aswell, summarized here: 
+https://www.youtube.com/@Ywe_Caerlyn_Norway/videos
+
+The other angle I have called "Coolians", and is mostly a "jungian" 
+psychiatry perspective, where one can consider there to be 7 archetypes 
+in popculture. Supporting Fair Souce Labour Party politics. And the @ 
+can also be considered to be in line with their symbol aswell.
+
+A test channel for this here aswell. 
+https://www.youtube.com/@Labour_Party_Digital/
+
+The OS will mostly have their angle, but ofcourse researchers will have 
+theirs, all the way to fully fluent translation of The Quran, and a 
+complete expression of Truth.
+
+I hope you have enjoyed my discussions.
+
+-Peace.
+Ywe Cærlyn
+
+
 
