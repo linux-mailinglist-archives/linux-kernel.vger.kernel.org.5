@@ -1,383 +1,276 @@
-Return-Path: <linux-kernel+bounces-43194-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43195-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0337E8410A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:29:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADBE48410AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:30:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 290B01C23AD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:29:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67D3A287678
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:30:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A293F15A49D;
-	Mon, 29 Jan 2024 17:19:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="WfpLEdZK"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2046.outbound.protection.outlook.com [40.107.93.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E40CA15B99E;
+	Mon, 29 Jan 2024 17:19:07 +0000 (UTC)
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 494A8157050;
-	Mon, 29 Jan 2024 17:18:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.46
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706548742; cv=fail; b=Xie/okkSaXlriBVLj/rIlmQWknfzWYXk0VFjEAVpMKCPVf//bt/5wcWSbxiKpBrJmwJnFgJ5qYJVyCzl4gZ7pIRr/o+i0GpbSdbgjSe6P+KnLHJOQCBCLR2d9tzp8RJ3brw1zyfP/jeOWHRxJ89gP4mHxtQkggQZsBfd/AC0tHE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706548742; c=relaxed/simple;
-	bh=kg5KIPR37sBWHaIg4GelxQwcbbdi8RLH1sScgF51IJY=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qk82xnhION0IN0n3In1P2Dn/2/OyGHXRgHIH2VIXeYmFVzPVNmzG8/x92ZN/6rHMjnf2DjkuVw/aRsACBSvIwDHLsLgPG9TacrIVnYH3AdJn05k/b3KaR2KalvCO8EWIkUebNFqCHT4a8Qbqqpfgtd8r9rtfl/l4sjYMcaYUEGA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=WfpLEdZK; arc=fail smtp.client-ip=40.107.93.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ipBSWDwSr6ZwvI6pERioMMQCZZvVqR7yY2QzesFan+wPp64arVzhr451XmM2nO9e5uXQ1dPjjvLOGP5aLQ8sCjmqjLJ08kQ/VnVVCpeltsqnplt9OY/9GhV2j6fZK78AfLeSj5U/rsCouzBfJbaCO57DOreDoi+QkcvILfMGxpnw/r/KkVoC//AHKjJyup4pjjA1WTi/vSFlLPdg2/TN0C/LVABQbRQ27wys7BxmHf3DMtgAB3mmcJHT94Oc7Lj6w10juhrzvfLCLS0kMVB7ApBoUQNI4mxpQr0/BcFvTVKbNspxUo88jIUALsInfZT6uXgr+4WwO8YA2f0jXvfRzA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hB0sImxyjoi7kcf0IcSUJhW+ONmBpYtOFM66PR9LX8E=;
- b=ERX5fB631T9fwhofQPt664l/gg8TuMDloBo1ymCPfrV7MqulZKymFKhcp1if76zdafXWan9D7cagPpPpr2BSuBI0Z+I/sS9dfW5E4vMM673PcqEXcKg9UUfEHeJQBfnUYHj37UyE3bCP+eqNqKlB8PPMtidcmvjMxniptOPuk3mRfH+yXWSr2/p/aRFY3yHl1cqGLs4Unrm1QgZRIdMdpum2iIgnzCav62w0Ht39p3YjecsKuOxHItBAhuBrxpHNEakB7/K1E9Q2hCn6SFcqKUSFOlV+BDurxd66Pq5J4cPoStqdzW7Ke0gcNgsRG4upaPp+35QSWeU0+zRTsJfBFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hB0sImxyjoi7kcf0IcSUJhW+ONmBpYtOFM66PR9LX8E=;
- b=WfpLEdZK9a7KB7ZolwqUgaav41WX8M1nQTbd9Pfx1yh8WiyfF+Sfy2hn+CWaia7Lr7PvgDBM4GclN/sVOjLIQZP0IkvuvUO7d74ipZlQ6z6nC/JfDIbkRNZ8t72O21yInWXGh4MdcP0gdBUOa51WoigkPerOY5rY0uEiSFvPoFs=
-Received: from BN8PR12CA0005.namprd12.prod.outlook.com (2603:10b6:408:60::18)
- by MN2PR12MB4127.namprd12.prod.outlook.com (2603:10b6:208:1d1::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Mon, 29 Jan
- 2024 17:18:57 +0000
-Received: from BN1PEPF00004689.namprd05.prod.outlook.com
- (2603:10b6:408:60:cafe::b1) by BN8PR12CA0005.outlook.office365.com
- (2603:10b6:408:60::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34 via Frontend
- Transport; Mon, 29 Jan 2024 17:18:57 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- BN1PEPF00004689.mail.protection.outlook.com (10.167.243.134) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7249.19 via Frontend Transport; Mon, 29 Jan 2024 17:18:56 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Mon, 29 Jan
- 2024 11:18:56 -0600
-Received: from xirmroche40.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
- Transport; Mon, 29 Jan 2024 11:18:55 -0600
-From: Dragan Cvetic <dragan.cvetic@amd.com>
-To: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
-	Derek Kiernan <derek.kiernan@amd.com>, Jonathan Corbet <corbet@lwn.net>,
-	Michal Simek <michal.simek@amd.com>, "Erim, Salih" <salih.erim@amd.com>,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
-	<devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, "open
- list:DOCUMENTATION" <linux-doc@vger.kernel.org>, "moderated list:ARM/ZYNQ
- ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v2] dt-bindings: misc: xlnx,sd-fec: convert bindings to yaml
-Date: Mon, 29 Jan 2024 17:18:51 +0000
-Message-ID: <20240129171854.3570055-1-dragan.cvetic@amd.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4488615A4A8
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:19:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706548747; cv=none; b=Rrd2IwoaJIhfVdkcNVLWeU1uWXi0agMi0k7Vpf2plKAbMutAap8x7lq8vfeYNqRcSHqlSoRBXe6svAMbdy1OfIIY5F7p9+EhIlAAuQqqe8J3JHYVbAzKjVpHfCDYwBkgu3c2MlGrQDMqxVhCy79kd7rZ3JwWjyLYlRWLJa3fwSI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706548747; c=relaxed/simple;
+	bh=CrGR3Vd24qjAv2UAMwqM3GvjrbypUhp/gwevW2vvwU8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=rBhWJX6q9ETyQTERPg7YOX29SMcnCVZnT7KMXll8mm8stn8TGh3pVbQjPBFE7Gco1V9Kbs28Veq9B1VZtNWShL4o5zj5hLvK5gL6ntz8WAa5FTLrd+HYqaIXMIG2Ee+w12uU9tq5uk4JVexCLpAruJGzBnoorOyQ1FlNQP6IplQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.160.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-42a029c8e76so24595951cf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:19:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706548744; x=1707153544;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:message-id:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NPbjIgKfD/DwpRuxKLxsFC/VJNggVx+ai46PgiPMXo4=;
+        b=t5yOeYOZC+D5gJfF5t4L5sl/THJ6tmCzt6NySyPbrxafSrVGRAcE0Tfc2CcBqc2cce
+         8wjCpLoWx7P4hX9tdF0rcDuK9Bei4pkykNOzRe0/WPbq0oLsCv/PVEbb9K4SHY7VHvwh
+         t5585q6b53RihKiowbwIYwiqqClhtOLYXwRu4PDAc9i/j99VyFtH9H8GzgKxGjIi4HlL
+         0/+ANb/lOMxLETtaBWLwDy42Zo2lhRx2n1moPxR43ERAzYC+BxOzsbJpIWpwK3/l227M
+         hyUjUZxpbXer27xBb4wN+56G8A5Ac+cmMZ5OR56cLEjslildDNTROqhiAaEcT9oMsx2y
+         BexA==
+X-Gm-Message-State: AOJu0Yyiecu1N5IqwdWuYmwYPJFxcfrDhPdOb1T71FrKo3x2y9jvqBst
+	D+bN+UIEc7+EUBvmPyFjQSTnnd+tKYwlR4llSO2KdobXbpIX3FLMCK+AL6GxskzrIEZmzRsIoxc
+	=
+X-Google-Smtp-Source: AGHT+IGMWvJG/c2YxNlYkeOxS82LVRw4JavNfZWOPvBKtSW6N6czT9K5qJL2QYtv2CJ4Y5tR122O5Q==
+X-Received: by 2002:a05:622a:589:b0:42a:72fc:d51f with SMTP id c9-20020a05622a058900b0042a72fcd51fmr7031035qtb.137.1706548744157;
+        Mon, 29 Jan 2024 09:19:04 -0800 (PST)
+Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
+        by smtp.gmail.com with ESMTPSA id ez12-20020a05622a4c8c00b0042a5c2a81a8sm3689174qtb.60.2024.01.29.09.19.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 09:19:03 -0800 (PST)
+Date: Mon, 29 Jan 2024 12:19:02 -0500
+From: Mike Snitzer <snitzer@kernel.org>
+To: Ming Lei <ming.lei@redhat.com>, Dave Chinner <david@fromorbit.com>,
+	Matthew Wilcox <willy@infradead.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, Don Dutile <ddutile@redhat.com>,
+	Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, linux-block@vger.kernel.org
+Subject: Re: [RFC PATCH] mm/readahead: readahead aggressively if read drops
+ in willneed range
+Message-ID: <ZbfeBrKVMaeSwtYm@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN1PEPF00004689:EE_|MN2PR12MB4127:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8519c73f-4eb4-42f1-49fe-08dc20ee604a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	M0MPjQYXaCpSjhMdVMr1ru1j3EIe3F8O7dqREOqOrDk7lGGtS4EiY8zYPvitF91O9GJE8cMwgyg0aObHWpvLpM1WuHeEz2wPnfmE5Xyvdv4xIS/E0DR7IbDUdoHEGhjduwyneKjlao6oRkOjQNvHPc/LVTYcfbIQibh4kdJRGk23zZtlHOg9+ueCmGE3ABB0vcPo1op5UhIMcq7QHr0CMmfGA6ZBuC+htIsr2FBLfcEuiUCH4CJirZtfsBGA5ps29jFLwTdAukkV/t+lvx/+EJDEQNEyke92Qi0exoAcpSukdfcdjMkiOC/tZBDqrMemI3Sz1cBABuNf9J3u0i09wQJ8jnEiNiqD1qyrdhZS6f5LSd8PKSSVIyDcBg8R0wjG8f/jfjDPe7TR7iaHMuQvdt9z8+jc8jMtYzBuBAKuzJ7WYUSKzurQoJHR2uohGdFLyuqG1ZVYxITK8FHAmT0xpK6XHbW6DH0HVBOcF4eYT3VnpfxtfKR7LGB827ZfNo+FXe6/r2RD8CBFADOIOPiONQdALAP673pZEp9WAz8432RqNgT5I9shAUvy9/jpATg/nQNS3jzd8JDGk24i2HLWmOP3hzjFdlECsy6v1FX3J2KtT9WLIvIBXNXU++Nr+8qgwDmoD6HOuxRkWDb0P0kkYPJI+AxCgnmU2W8FmfHPD7aDHWK9FD76KPur+gjsRdekL9ODhA1kmf0HXwNuYvpKUduJIBHKSuG9q1rOsZhtdmmbr5oDV2KyJFskm5RzXYXfkbLwvn5sgMvPn8DZwoZQiw==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(136003)(376002)(396003)(39860400002)(230922051799003)(451199024)(186009)(82310400011)(1800799012)(64100799003)(40470700004)(46966006)(36840700001)(47076005)(83380400001)(6666004)(40480700001)(40460700003)(44832011)(36860700001)(966005)(356005)(5660300002)(336012)(426003)(2616005)(478600001)(1076003)(26005)(66899024)(82740400003)(8936002)(8676002)(81166007)(30864003)(36756003)(41300700001)(2906002)(70206006)(86362001)(921011)(316002)(70586007)(110136005)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 17:18:56.9085
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8519c73f-4eb4-42f1-49fe-08dc20ee604a
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN1PEPF00004689.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4127
+In-Reply-To: <ZbenbtEXY82N6tHt@casper.infradead.org>
+ <Zbc0ZJceZPyt8m7q@dread.disaster.area>
+ <20240128142522.1524741-1-ming.lei@redhat.com>
 
-Convert AMD (Xilinx) sd-fec bindings to yaml format, so it can validate
-dt-entries as well as any future additions to yaml.
-Change in clocks is due to IP is itself configurable and
-only the first two clocks are in all combinations. The last
-6 clocks can be present in some of them. It means order is
-not really fixed and any combination is possible.
-Interrupt may or may not be present.
-The documentation for sd-fec bindings is now YAML, so update the
-MAINTAINERS file.
-Update the link to the new yaml file in xilinx_sdfec.rst.
+On Mon, Jan 29 2024 at  8:26P -0500, Matthew Wilcox <willy@infradead.org> wrote:
 
-Signed-off-by: Dragan Cvetic <dragan.cvetic@amd.com>
----
-Changes in v2:
----
-Drop clocks description.
-Use "contains:" with enum for optional clock-names and update
-comment explaining diference from the original DT binding file.
-Remove trailing full stops.
-Add more details in sdfec-code description.
-Set sdfec-code to "string" not "string-array"
----
- .../devicetree/bindings/misc/xlnx,sd-fec.txt  |  58 --------
- .../devicetree/bindings/misc/xlnx,sd-fec.yaml | 136 ++++++++++++++++++
- Documentation/misc-devices/xilinx_sdfec.rst   |   2 +-
- MAINTAINERS                                   |   2 +-
- 4 files changed, 138 insertions(+), 60 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/misc/xlnx,sd-fec.txt
- create mode 100644 Documentation/devicetree/bindings/misc/xlnx,sd-fec.yaml
+> On Mon, Jan 29, 2024 at 04:25:41PM +0800, Ming Lei wrote:
+> > Here the single .ra_pages may not work, that is why this patch stores
+> > the willneed range in maple tree, please see the following words from
+> > the original RH report:
+> > 
+> > "
+> > Increasing read ahead is not an option as it has a mixed I/O workload of
+> > random I/O and sequential I/O, so that a large read ahead is very counterproductive
+> > to the random I/O and is unacceptable.
+> > "
+> 
+> It is really frustrating having to drag this important information out of
+> you. Please send the full bug report (stripping identifying information
+> if that's what the customer needs).  We seem to be covering the same
+> ground again in public that apparently you've already done in private.
+> This is no way to work with upstream.
 
-diff --git a/Documentation/devicetree/bindings/misc/xlnx,sd-fec.txt b/Documentation/devicetree/bindings/misc/xlnx,sd-fec.txt
-deleted file mode 100644
-index e3289634fa30..000000000000
---- a/Documentation/devicetree/bindings/misc/xlnx,sd-fec.txt
-+++ /dev/null
-@@ -1,58 +0,0 @@
--* Xilinx SDFEC(16nm) IP *
--
--The Soft Decision Forward Error Correction (SDFEC) Engine is a Hard IP block
--which provides high-throughput LDPC and Turbo Code implementations.
--The LDPC decode & encode functionality is capable of covering a range of
--customer specified Quasi-cyclic (QC) codes. The Turbo decode functionality
--principally covers codes used by LTE. The FEC Engine offers significant
--power and area savings versus implementations done in the FPGA fabric.
--
--
--Required properties:
--- compatible: Must be "xlnx,sd-fec-1.1"
--- clock-names : List of input clock names from the following:
--    - "core_clk", Main processing clock for processing core (required)
--    - "s_axi_aclk", AXI4-Lite memory-mapped slave interface clock (required)
--    - "s_axis_din_aclk", DIN AXI4-Stream Slave interface clock (optional)
--    - "s_axis_din_words-aclk", DIN_WORDS AXI4-Stream Slave interface clock (optional)
--    - "s_axis_ctrl_aclk",  Control input AXI4-Stream Slave interface clock (optional)
--    - "m_axis_dout_aclk", DOUT AXI4-Stream Master interface clock (optional)
--    - "m_axis_dout_words_aclk", DOUT_WORDS AXI4-Stream Master interface clock (optional)
--    - "m_axis_status_aclk", Status output AXI4-Stream Master interface clock (optional)
--- clocks : Clock phandles (see clock_bindings.txt for details).
--- reg: Should contain Xilinx SDFEC 16nm Hardened IP block registers
--  location and length.
--- xlnx,sdfec-code : Should contain "ldpc" or "turbo" to describe the codes
--  being used.
--- xlnx,sdfec-din-words : A value 0 indicates that the DIN_WORDS interface is
--  driven with a fixed value and is not present on the device, a value of 1
--  configures the DIN_WORDS to be block based, while a value of 2 configures the
--  DIN_WORDS input to be supplied for each AXI transaction.
--- xlnx,sdfec-din-width : Configures the DIN AXI stream where a value of 1
--  configures a width of "1x128b", 2 a width of "2x128b" and 4 configures a width
--  of "4x128b".
--- xlnx,sdfec-dout-words : A value 0 indicates that the DOUT_WORDS interface is
--  driven with a fixed value and is not present on the device, a value of 1
--  configures the DOUT_WORDS to be block based, while a value of 2 configures the
--  DOUT_WORDS input to be supplied for each AXI transaction.
--- xlnx,sdfec-dout-width : Configures the DOUT AXI stream where a value of 1
--  configures a width of "1x128b", 2 a width of "2x128b" and 4 configures a width
--  of "4x128b".
--Optional properties:
--- interrupts: should contain SDFEC interrupt number
--
--Example
-----------------------------------------
--	sd_fec_0: sd-fec@a0040000 {
--		compatible = "xlnx,sd-fec-1.1";
--		clock-names = "core_clk","s_axi_aclk","s_axis_ctrl_aclk","s_axis_din_aclk","m_axis_status_aclk","m_axis_dout_aclk";
--		clocks = <&misc_clk_2>,<&misc_clk_0>,<&misc_clk_1>,<&misc_clk_1>,<&misc_clk_1>, <&misc_clk_1>;
--		reg = <0x0 0xa0040000 0x0 0x40000>;
--		interrupt-parent = <&axi_intc>;
--		interrupts = <1 0>;
--		xlnx,sdfec-code = "ldpc";
--		xlnx,sdfec-din-words = <0>;
--		xlnx,sdfec-din-width = <2>;
--		xlnx,sdfec-dout-words = <0>;
--		xlnx,sdfec-dout-width = <1>;
--	};
-diff --git a/Documentation/devicetree/bindings/misc/xlnx,sd-fec.yaml b/Documentation/devicetree/bindings/misc/xlnx,sd-fec.yaml
-new file mode 100644
-index 000000000000..8534beac042d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/misc/xlnx,sd-fec.yaml
-@@ -0,0 +1,136 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/misc/xlnx,sd-fec.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Xilinx SDFEC(16nm) IP
-+
-+maintainers:
-+  - Cvetic, Dragan <dragan.cvetic@amd.com>
-+  - Erim, Salih <salih.erim@amd.com>
-+
-+description: |
-+  The Soft Decision Forward Error Correction (SDFEC) Engine is a Hard IP block
-+  which provides high-throughput LDPC and Turbo Code implementations.
-+  The LDPC decode & encode functionality is capable of covering a range of
-+  customer specified Quasi-cyclic (QC) codes. The Turbo decode functionality
-+  principally covers codes used by LTE. The FEC Engine offers significant
-+  power and area savings versus implementations done in the FPGA fabric.
-+
-+properties:
-+  compatible:
-+    const: xlnx,sd-fec-1.1
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    minItems: 2
-+    maxItems: 8
-+    additionalItems: true
-+    items:
-+      - description: Main processing clock for processing core
-+      - description: AXI4-Lite memory-mapped slave interface clock
-+      - description: Control input AXI4-Stream Slave interface clock
-+      - description: DIN AXI4-Stream Slave interface clock
-+      - description: Status output AXI4-Stream Master interface clock
-+      - description: DOUT AXI4-Stream Master interface clock
-+      - description: DIN_WORDS AXI4-Stream Slave interface clock
-+      - description: DOUT_WORDS AXI4-Stream Master interface clock
-+
-+  clock-names:
-+    minItems: 2
-+    maxItems: 8
-+    additionalItems: true
-+    items:
-+      - const: core_clk
-+      - const: s_axi_aclk
-+    contains:
-+      enum:
-+        - s_axis_ctrl_aclk
-+        - s_axis_din_aclk
-+        - m_axis_status_aclk
-+        - m_axis_dout_aclk
-+        - s_axis_din_words_aclk
-+        - m_axis_dout_words_aclk
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  xlnx,sdfec-code:
-+    description: |
-+      The SD-FEC integrated block supports Low Density Parity Check (LDPC)
-+      decoding and encoding and Turbo code decoding. The LDPC codes used are
-+      highly configurable, and the specific code used can be specified on
-+      a codeword-by-codeword basis. The Turbo code decoding is required by LTE
-+      standard.
-+    $ref: /schemas/types.yaml#/definitions/string
-+    items:
-+      enum: [ ldpc, turbo ]
-+
-+  xlnx,sdfec-din-width:
-+    description: |
-+      Configures the DIN AXI stream where a value of 1
-+      configures a width of "1x128b", 2 a width of "2x128b" and 4 configures a width
-+      of "4x128b".
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [ 1, 2, 4 ]
-+
-+  xlnx,sdfec-din-words:
-+    description: |
-+      A value 0 indicates that the DIN_WORDS interface is
-+      driven with a fixed value and is not present on the device, a value of 1
-+      configures the DIN_WORDS to be block based, while a value of 2 configures the
-+      DIN_WORDS input to be supplied for each AXI transaction.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [ 0, 1, 2 ]
-+
-+  xlnx,sdfec-dout-width:
-+    description: |
-+      Configures the DOUT AXI stream where a value of 1 configures a width of "1x128b",
-+      2 a width of "2x128b" and 4 configures a width of "4x128b".
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [ 1, 2, 4 ]
-+
-+  xlnx,sdfec-dout-words:
-+    description: |
-+      A value 0 indicates that the DOUT_WORDS interface is
-+      driven with a fixed value and is not present on the device, a value of 1
-+      configures the DOUT_WORDS to be block based, while a value of 2 configures the
-+      DOUT_WORDS input to be supplied for each AXI transaction.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [ 0, 1, 2 ]
-+
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - xlnx,sdfec-code
-+  - xlnx,sdfec-din-width
-+  - xlnx,sdfec-din-words
-+  - xlnx,sdfec-dout-width
-+  - xlnx,sdfec-dout-words
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    sd-fec@a0040000 {
-+        compatible = "xlnx,sd-fec-1.1";
-+        reg = <0xa0040000 0x40000>;
-+        clocks = <&misc_clk_2>, <&misc_clk_0>, <&misc_clk_1>, <&misc_clk_1>,
-+                 <&misc_clk_1>, <&misc_clk_1>;
-+        clock-names = "core_clk", "s_axi_aclk", "s_axis_ctrl_aclk",
-+                      "s_axis_din_aclk", "m_axis_status_aclk",
-+                      "m_axis_dout_aclk";
-+        interrupts = <1 IRQ_TYPE_LEVEL_HIGH>;
-+        xlnx,sdfec-code = "ldpc";
-+        xlnx,sdfec-din-width = <2>;
-+        xlnx,sdfec-din-words = <0>;
-+        xlnx,sdfec-dout-width = <1>;
-+        xlnx,sdfec-dout-words = <0>;
-+    };
-+
-diff --git a/Documentation/misc-devices/xilinx_sdfec.rst b/Documentation/misc-devices/xilinx_sdfec.rst
-index 8c8a289d69a3..698e6630f3a7 100644
---- a/Documentation/misc-devices/xilinx_sdfec.rst
-+++ b/Documentation/misc-devices/xilinx_sdfec.rst
-@@ -29,7 +29,7 @@ follows:
-   - Does not support shared LDPC code table wraparound
- 
- The device tree entry is described in:
--`linux-xlnx/Documentation/devicetree/bindings/misc/xlnx,sd-fec.txt <https://github.com/Xilinx/linux-xlnx/blob/master/Documentation/devicetree/bindings/misc/xlnx%2Csd-fec.txt>`_
-+`linux-xlnx/Documentation/devicetree/bindings/misc/xlnx,sd-fec.yaml <https://github.com/Xilinx/linux-xlnx/blob/master/Documentation/devicetree/bindings/misc/xlnx%2Csd-fec.yaml>`_
- 
- 
- Modes of Operation
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 8999497011a2..d62e04322e19 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -24157,7 +24157,7 @@ XILINX SD-FEC IP CORES
- M:	Derek Kiernan <derek.kiernan@amd.com>
- M:	Dragan Cvetic <dragan.cvetic@amd.com>
- S:	Maintained
--F:	Documentation/devicetree/bindings/misc/xlnx,sd-fec.txt
-+F:	Documentation/devicetree/bindings/misc/xlnx,sd-fec.yaml
- F:	Documentation/misc-devices/xilinx_sdfec.rst
- F:	drivers/misc/Kconfig
- F:	drivers/misc/Makefile
--- 
-2.34.1
+We are all upstream developers here. And Ming is among the best of us,
+so please try to stay constructive.
 
+You now have the full bug report (I provided the reproducer and
+additonal context, and now Ming shared the "Increasing read ahead is
+not an option..." detail from the original report).
+
+BUT Ming did mention the potential for mixed workload in his original
+RFC patch header:
+
+On Sun, Jan 28 2024 at  9:25P -0500, Ming Lei <ming.lei@redhat.com> wrote:
+
+> Since commit 6d2be915e589 ("mm/readahead.c: fix readahead failure for
+> memoryless NUMA nodes and limit readahead max_pages"), ADV_WILLNEED
+> only tries to readahead 512 pages, and the remained part in the advised
+> range fallback on normal readahead.
+> 
+> If bdi->ra_pages is set as small, readahead will perform not efficient
+> enough. Increasing read ahead may not be an option since workload may
+> have mixed random and sequential I/O.
+
+And while both you and Dave rightly seized on the seemingly "Doctor it
+hurts when I clamp readahead to be small but then issue larger
+sequential reads and want it to use larger readahead" aspect of this
+report...
+
+Dave was helpful with his reasoned follow-up responses, culminating
+with this one (where the discussion evolved to clearly consider the
+fact that an integral part of addressing the reported issue is the
+need to allow for mixed workloads not stomping on each other when
+issuing IO to the same backing block device):
+
+On Mon, Jan 29 2024 at 12:15P -0500,
+Dave Chinner <david@fromorbit.com> wrote:
+
+> On Mon, Jan 29, 2024 at 11:57:45AM +0800, Ming Lei wrote:
+> > On Mon, Jan 29, 2024 at 12:47:41PM +1100, Dave Chinner wrote:
+> > > On Sun, Jan 28, 2024 at 07:39:49PM -0500, Mike Snitzer wrote:
+> > > > On Sun, Jan 28, 2024 at 7:22 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > > > >
+> > > > > On Sun, Jan 28, 2024 at 06:12:29PM -0500, Mike Snitzer wrote:
+> > > > > > On Sun, Jan 28 2024 at  5:02P -0500,
+> > > > > > Matthew Wilcox <willy@infradead.org> wrote:
+> > > > > Understood.  But ... the application is asking for as much readahead as
+> > > > > possible, and the sysadmin has said "Don't readahead more than 64kB at
+> > > > > a time".  So why will we not get a bug report in 1-15 years time saying
+> > > > > "I put a limit on readahead and the kernel is ignoring it"?  I think
+> > > > > typically we allow the sysadmin to override application requests,
+> > > > > don't we?
+> > > > 
+> > > > The application isn't knowingly asking for readahead.  It is asking to
+> > > > mmap the file (and reporter wants it done as quickly as possible..
+> > > > like occurred before).
+> > > 
+> > > ... which we do within the constraints of the given configuration.
+> > > 
+> > > > This fix is comparable to Jens' commit 9491ae4aade6 ("mm: don't cap
+> > > > request size based on read-ahead setting") -- same logic, just applied
+> > > > to callchain that ends up using madvise(MADV_WILLNEED).
+> > > 
+> > > Not really. There is a difference between performing a synchronous
+> > > read IO here that we must complete, compared to optimistic
+> > > asynchronous read-ahead which we can fail or toss away without the
+> > > user ever seeing the data the IO returned.
+> > 
+> > Yeah, the big readahead in this patch happens when user starts to read
+> > over mmaped buffer instead of madvise().
+> 
+> Yes, that's how it is intended to work :/
+> 
+> > > We want required IO to be done in as few, larger IOs as possible,
+> > > and not be limited by constraints placed on background optimistic
+> > > IOs.
+> > > 
+> > > madvise(WILLNEED) is optimistic IO - there is no requirement that it
+> > > complete the data reads successfully. If the data is actually
+> > > required, we'll guarantee completion when the user accesses it, not
+> > > when madvise() is called.  IOWs, madvise is async readahead, and so
+> > > really should be constrained by readahead bounds and not user IO
+> > > bounds.
+> > > 
+> > > We could change this behaviour for madvise of large ranges that we
+> > > force into the page cache by ignoring device readahead bounds, but
+> > > I'm not sure we want to do this in general.
+> > > 
+> > > Perhaps fadvise/madvise(willneed) can fiddle the file f_ra.ra_pages
+> > > value in this situation to override the device limit for large
+> > > ranges (for some definition of large - say 10x bdi->ra_pages) and
+> > > restore it once the readahead operation is done. This would make it
+> > > behave less like readahead and more like a user read from an IO
+> > > perspective...
+> > 
+> > ->ra_pages is just one hint, which is 128KB at default, and either
+> > device or userspace can override it.
+> > 
+> > fadvise/madvise(willneed) already readahead bytes from bdi->io_pages which
+> > is the max device sector size(often 10X of ->ra_pages), please see
+> > force_page_cache_ra().
+> 
+> Yes, but if we also change vma->file->f_ra->ra_pages during the
+> WILLNEED operation (as we do for FADV_SEQUENTIAL) then we get a
+> larger readahead window for the demand-paged access portion of the
+> WILLNEED access...
+> 
+> > 
+> > Follows the current report:
+> > 
+> > 1) usersapce call madvise(willneed, 1G)
+> > 
+> > 2) only the 1st part(size is from bdi->io_pages, suppose it is 2MB) is
+> > readahead in madvise(willneed, 1G) since commit 6d2be915e589
+> > 
+> > 3) the other parts(2M ~ 1G) is readahead by unit of bdi->ra_pages which is
+> > set as 64KB by userspace when userspace reads the mmaped buffer, then
+> > the whole application becomes slower.
+> 
+> It gets limited by file->f_ra->ra_pages being initialised to
+> bdi->ra_pages and then never changed as the advice for access
+> methods to the file are changed.
+> 
+> But the problem here is *not the readahead code*. The problem is
+> that the user has configured the device readahead window to be far
+> smaller than is optimal for the storage. Hence readahead is slow.
+> The fix for that is to either increase the device readahead windows,
+> or to change the specific readahead window for the file that has
+> sequential access patterns.
+> 
+> Indeed, we already have that - FADV_SEQUENTIAL will set
+> file->f_ra.ra_pages to 2 * bdi->ra_pages so that readahead uses
+> larger IOs for that access.
+> 
+> That's what should happen here - MADV_WILLNEED does not imply a
+> specific access pattern so the application should be running
+> MADV_SEQUENTIAL (triggers aggressive readahead) then MADV_WILLNEED
+> to start the readahead, and then the rest of the on-demand readahead
+> will get the higher readahead limits.
+> 
+> > This patch changes 3) to use bdi->io_pages as readahead unit.
+> 
+> I think it really should be changing MADV/FADV_SEQUENTIAL to set
+> file->f_ra.ra_pages to bdi->io_pages, not bdi->ra_pages * 2, and the
+> mem.load() implementation in the application converted to use
+> MADV_SEQUENTIAL to properly indicate it's access pattern to the
+> readahead algorithm.
+> 
+> Cheers,
+> 
+> Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
+> 
+
+Anyway, if we could all keep cool and just finish the discussion about
+how to address the reported issue in a long-term supported way that'd
+be _awesome_.
+
+While I'm sure this legacy application would love to not have to
+change its code at all, I think we can all agree that we need to just
+focus on how best to advise applications that have mixed workloads
+accomplish efficient mmap+read of both sequential and random.
+
+To that end, I heard Dave clearly suggest 2 things:
+
+1) update MADV/FADV_SEQUENTIAL to set file->f_ra.ra_pages to
+   bdi->io_pages, not bdi->ra_pages * 2
+
+2) Have the application first issue MADV_SEQUENTIAL to convey that for
+   the following MADV_WILLNEED is for sequential file load (so it is
+   desirable to use larger ra_pages)
+
+This overrides the default of bdi->io_pages and _should_ provide the
+required per-file duality of control for readahead, correct?
+
+Thanks,
+Mike
 
