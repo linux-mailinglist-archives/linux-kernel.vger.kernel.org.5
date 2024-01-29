@@ -1,204 +1,152 @@
-Return-Path: <linux-kernel+bounces-42897-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D128A840846
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:27:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 947648407F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:15:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C43031C21FAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:27:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BFE3DB23EC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:15:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE37766B25;
-	Mon, 29 Jan 2024 14:27:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1926B65BA2;
+	Mon, 29 Jan 2024 14:15:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b="Bnk4P57t"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="d1tm4uHv"
+Received: from aposti.net (aposti.net [89.234.176.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85CDA66B27
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 14:27:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB7146311F;
+	Mon, 29 Jan 2024 14:15:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.234.176.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706538465; cv=none; b=DeYuSCv9sjIYx/dExnd1K5oh3D8S4QLQDZ+asIw+w7+G+vV0lt9lGJAJHd/9Py1Qba5XclyBGedzFuuNkPk7mizBg7QkqkdziWvOzGbXB3PidoZo00ST6ZRD7OyZDWW0SxYDwUf8eFoSFKjAZx2nwRNwawj7q0Z+tN6/UdQVxyA=
+	t=1706537715; cv=none; b=ofMexdIUqJEOB4Z1UivvQ+0TfeBduGUJl6YB+PeSLZ18E36z1IXGLEpzBraSi7Al5TxdpKj9sbypUdSCHqS5hrok/i9FM7FZ4BvMoVoG82idtQ843qlNQpVbDCbfN/s0UT4DaFfY8PbWvAJWpx4976NDszHGvHwF6A6KhA2B0eU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706538465; c=relaxed/simple;
-	bh=6bzM16UBxP08WHaFfcFo1ofPi4ev583qMl2qYHoKPgo=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 MIME-Version:Content-Type; b=BUxXtnbUMFRkxpwX2WzKgg71G8CzhY2XQSB5mKDCeTLLTekDw8CHtm9zvIITFXDxB7a3WcTOY8nYe3bdyAk32W9r9sjKcacTMSxcaHGkTxuIrDRzIHxNfzMgPUtX+20aHENjDQ64+V/Xt/BVEv1tu9m78FEqeea13Oj5K282Id4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk; spf=none smtp.mailfrom=metaspace.dk; dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b=Bnk4P57t; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=metaspace.dk
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3394ca0c874so2529086f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 06:27:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metaspace-dk.20230601.gappssmtp.com; s=20230601; t=1706538461; x=1707143261; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=9SpRD2seb2hFO2F2eYuqqQkOpWG+jBIz46VQxNPe840=;
-        b=Bnk4P57t6cpXMr9bIHUjebrMow12H1ie7eOrIl+eYVcEK14V+XJm67zHWjQzAY9qPN
-         0/MLDsIWOmGgetC79xU08NO79JGNx3RS1FRPQeDLArzYBIoOL5gtzq9xRt/M3ERBm6Tu
-         T8shhjG6BpUS/vm9QYbdpcaUdnLIPbzCyfA2xUsIg2A4GWg6q2rIiHlZMCZfjg5xqm6q
-         SUT5D6DcQe6r2l00cs4tM2hnbtfIlGAUtsO3v+jFfm+dv3+TUBa9jvPtVO5UAgxsGY4I
-         kcqvzyuAUGcHAzQQ3OWyQq+OQUghA25FwbNF21uaieDNFzflnrA6Dmm8D38z80KirOoS
-         sX3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706538461; x=1707143261;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9SpRD2seb2hFO2F2eYuqqQkOpWG+jBIz46VQxNPe840=;
-        b=WM44xYtaAmccEYugukNb/EYr61wURqCevyH6AEEN80Ovsgtjpl5ugVH4mFC65Rvngs
-         QRs6VuDQdRaaLo1EbtcwhizrK7F4IdOHYK+9jQw7QwoCWBKZM+BalKHNSvFSsbl3Pcd4
-         3wG/3BA7J4aHcDrklAtnI5MOJ7pHaO3Soxn7pZzSZRQdnGV/q8tA34sWujX6QzCdvISW
-         nPuQjo7YFM1JN2DvWlK8LvFJ6SHE7/6i+fcZLimgDtMv85ujv8Qx5ZvB9OfnL/Ma/TpW
-         1a2RYcqqEUcXLhAZRowtNXFnEVFyTDWSn0ZOPX/cP8jhlfV+AE0cC3twpztoL2/h0JUo
-         l3Fg==
-X-Gm-Message-State: AOJu0YzEaKGNyVJU4qGqjNML1BH9oLZt/9+Innup9xTtIPezmbSnmmpe
-	OL135wlENtQSKxuC2/e4rwmlWJ5COzMBdSuAkSGOCnwDcXMy9GaWgqGSlGDmlX8=
-X-Google-Smtp-Source: AGHT+IF687yIs+FI2jGNHFF+JBGNUG60+S+Rqe4sHIAnRad9l9UQH5/3KSyty1FjpSpCXMtpmut+RQ==
-X-Received: by 2002:adf:8b56:0:b0:33a:e598:cabb with SMTP id v22-20020adf8b56000000b0033ae598cabbmr3910064wra.70.1706538460714;
-        Mon, 29 Jan 2024 06:27:40 -0800 (PST)
-Received: from localhost ([165.225.194.205])
-        by smtp.gmail.com with ESMTPSA id eo9-20020a056000428900b0033ae9e7f6b6sm4015743wrb.111.2024.01.29.06.27.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 06:27:40 -0800 (PST)
-References: <20230503090708.2524310-1-nmi@metaspace.dk>
- <20230503090708.2524310-4-nmi@metaspace.dk>
- <iL2M45BoRlK6yS9y8uo0A5yUXcZWMkdk3vtH3LRFSWXfvPVagVZ-0YC7taIKOBFUcjJYA_2xNNFPoC4WL-_ulCHOLkbqvsZlIshE_LEeYtU=@proton.me>
- <87il3kjgk0.fsf@metaspace.dk>
- <104a22f7-a5bb-4fb6-9ce9-aa2d4e63417f@proton.me>
- <874jf3kflx.fsf@metaspace.dk>
- <59f007a0-bb30-4291-ab49-0e69112e2566@proton.me>
-User-agent: mu4e 1.10.8; emacs 29.2
-From: "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
-To: Benno Lossin <benno.lossin@proton.me>
-Cc: Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, Keith
- Busch <kbusch@kernel.org>, Damien Le Moal <Damien.LeMoal@wdc.com>, Hannes
- Reinecke <hare@suse.de>, lsf-pc@lists.linux-foundation.org,
- rust-for-linux@vger.kernel.org, linux-block@vger.kernel.org, Matthew
- Wilcox <willy@infradead.org>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor
- <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun
- Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj?=
- =?utf-8?Q?=C3=B6rn?= Roy Baron
- <bjorn3_gh@protonmail.com>, linux-kernel@vger.kernel.org,
- gost.dev@samsung.com
-Subject: Re: [RFC PATCH 03/11] rust: block: introduce `kernel::block::mq`
- module
-Date: Mon, 29 Jan 2024 15:14:50 +0100
-In-reply-to: <59f007a0-bb30-4291-ab49-0e69112e2566@proton.me>
-Message-ID: <87r0i0gqp8.fsf@metaspace.dk>
+	s=arc-20240116; t=1706537715; c=relaxed/simple;
+	bh=joKOcQVzaGp+Eqm7uU448Qn7y9ce+cvNOf58xf3Uhm0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=k2St8h65daslB803RKO/ayq9KTslJORirwNofk/OngkeasLdFZvHQZyTOopL6CDKHaM0DqDsqwL+n4Fo1FNSR656Lh6hopFtcKpCF2SDB2h6Um4XdTaBUgxQD+96PuixFXSt/aqaNXz6oe9q+XSUzPPWTAQ2eZwvhz5Y7O9BMuk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=d1tm4uHv; arc=none smtp.client-ip=89.234.176.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+	s=mail; t=1706537710;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=pgidmgFeP0tk17gjD21+VDw69unAjkitiIzLDu66t2o=;
+	b=d1tm4uHvLjI5geAdOzhvTRgdZIr1L3eaCvN8jfDMVBENQ99GYSV5EcCEqcQrqH6LHIAL++
+	nfkRyyMWSUxnJPc+ogGTV6ArelezJ5g0QkZNbSG65vKXOClj6W+zGQdglXaZKVovqwiA1A
+	GslGn9EBvHWlk2dR9BvhuZ0iweu8854=
+Message-ID: <f676839ba47eefe7c33d3f46f4517fbdb1d01c7a.camel@crapouillou.net>
+Subject: Re: [PATCH v5 5/8] iio: core: Add new DMABUF interface
+ infrastructure
+From: Paul Cercueil <paul@crapouillou.net>
+To: Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>, 
+	Jonathan Cameron
+	 <jic23@kernel.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Sumit Semwal
+ <sumit.semwal@linaro.org>,  Vinod Koul <vkoul@kernel.org>, Jonathan Corbet
+ <corbet@lwn.net>, linux-doc@vger.kernel.org,  linux-kernel@vger.kernel.org,
+ dmaengine@vger.kernel.org,  linux-iio@vger.kernel.org,
+ linux-media@vger.kernel.org,  dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org, Nuno =?ISO-8859-1?Q?S=E1?=
+ <noname.nuno@gmail.com>, Michael Hennerich <Michael.Hennerich@analog.com>
+Date: Mon, 29 Jan 2024 15:15:08 +0100
+In-Reply-To: <fb4bcbefcfd0ab1982172c780ce5c5f1e96ae798.camel@crapouillou.net>
+References: <20231219175009.65482-1-paul@crapouillou.net>
+	 <20231219175009.65482-6-paul@crapouillou.net>
+	 <20231221120624.7bcdc302@jic23-huawei>
+	 <ee5d7bb2fb3e74e8fc621d745b23d1858e1f0c3c.camel@crapouillou.net>
+	 <20240127165044.22f1b329@jic23-huawei>
+	 <d6bef39c-f940-4097-8ca3-0cf4ef89a743@amd.com>
+	 <aac82ce15a49c5e4b939a69229b9a8a51ca00f5d.camel@crapouillou.net>
+	 <8fc55451-dfd7-4d09-8051-8b39048f85e2@amd.com>
+	 <fb4bcbefcfd0ab1982172c780ce5c5f1e96ae798.camel@crapouillou.net>
+Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
+ keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZMLQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5UzFZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtNz8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe+rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIPdlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7Urf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KFlBwgAhlGy6nqP7O3u7q23hRW5AQ0EXQqFwQEIAMo+MgvYHsyjX3Ja4Oolg1Txzm8woj30ch2nACFCqaO0R/1kLj2VVeLrDyQUOlXx9PD6IQI4M8wy8m0sR4wV2p/g/paw7k65cjzYYLh+FdLNyO7IW
+	YXndJO+wDPi3aK/YKUYepqlP+QsmaHNYNdXEQDRKqNfJg8t0f5rfzp9ryxd1tCnbV+tG8VHQWiZXNqN7062DygSNXFUfQ0vZ3J2D4oAcIAEXTymRQ2+hr3Hf7I61KMHWeSkCvCG2decTYsHlw5Erix/jYWqVOtX0roOOLqWkqpQQJWtU+biWrAksmFmCp5fXIg1Nlg39v21xCXBGxJkxyTYuhdWyu1yDQ+LSIUAEQEAAYkBNgQYAQoAIBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsMAAoJEHPua9InSr1B4wsH/Az767YCT0FSsMNt1jkkdLCBi7nY0GTW+PLP1a4zvVqFMo/vD6uz1ZflVTUAEvcTi3VHYZrlgjcxmcGu239oruqUS8Qy/xgZBp9KF0NTWQSl1iBfVbIU5VV1vHS6r77W5x0qXgfvAUWOH4gmN3MnF01SH2zMcLiaUGF+mcwl15rHbjnT3Nu2399aSE6cep86igfCAyFUOXjYEGlJy+c6UyT+DUylpjQg0nl8MlZ/7Whg2fAU9+FALIbQYQzGlT4c71SibR9T741jnegHhlmV4WXXUD6roFt54t0MSAFSVxzG8mLcSjR2cLUJ3NIPXixYUSEn3tQhfZj07xIIjWxAYZo=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
 
+Le lundi 29 janvier 2024 =C3=A0 14:32 +0100, Paul Cercueil a =C3=A9crit=C2=
+=A0:
+> Le lundi 29 janvier 2024 =C3=A0 14:17 +0100, Christian K=C3=B6nig a =C3=
+=A9crit=C2=A0:
+> > Am 29.01.24 um 14:06 schrieb Paul Cercueil:
+> > > Hi Christian,
+> > >=20
+> > > Le lundi 29 janvier 2024 =C3=A0 13:52 +0100, Christian K=C3=B6nig a =
+=C3=A9crit=C2=A0:
+> > > > Am 27.01.24 um 17:50 schrieb Jonathan Cameron:
+> > > > > > > > +	iio_buffer_dmabuf_put(attach);
+> > > > > > > > +
+> > > > > > > > +out_dmabuf_put:
+> > > > > > > > +	dma_buf_put(dmabuf);
+> > > > > > > As below. Feels like a __free(dma_buf_put) bit of magic
+> > > > > > > would
+> > > > > > > be a
+> > > > > > > nice to have.
+> > > > > > I'm working on the patches right now, just one quick
+> > > > > > question.
+> > > > > >=20
+> > > > > > Having a __free(dma_buf_put) requires that dma_buf_put is
+> > > > > > first
+> > > > > > "registered" as a freeing function using DEFINE_FREE() in
+> > > > > > <linux/dma-
+> > > > > > buf.h>, which has not been done yet.
+> > > > > >=20
+> > > > > > That would mean carrying a dma-buf specific patch in your
+> > > > > > tree,
+> > > > > > are you
+> > > > > > OK with that?
+> > > > > Needs an ACK from appropriate maintainer, but otherwise I'm
+> > > > > fine
+> > > > > doing
+> > > > > so.=C2=A0 Alternative is to circle back to this later after this
+> > > > > code is
+> > > > > upstream.
+> > > > Separate patches for that please, the autocleanup feature is so
+> > > > new
+> > > > that
+> > > > I'm not 100% convinced that everything works out smoothly from
+> > > > the
+> > > > start.
+> > > Separate patches is a given, did you mean outside this patchset?
+> > > Because I can send a separate patchset that introduces scope-
+> > > based
+> > > management for dma_fence and dma_buf, but then it won't have
+> > > users.
+> >=20
+> > Outside of the patchset, this is essentially brand new stuff.
+> >=20
+> > IIRC we have quite a number of dma_fence selftests and sw_sync
+> > which
+> > is=20
+> > basically code inside the drivers/dma-buf directory only there for=20
+> > testing DMA-buf functionality.
+> >=20
+> > Convert those over as well and I'm more than happy to upstream this
+> > change.
+>=20
+> Well there is very little to convert there; you can use scope-based
+> management when the unref is done in all exit points of the
+> functional
+> block, and the only place I could find that does that in drivers/dma-
+> buf/ was in dma_fence_chain_enable_signaling() in dma-fence-chain.c.
 
-Benno Lossin <benno.lossin@proton.me> writes:
+Actually - not even that, since it doesn't call dma_fence_get() and
+dma_fence_put() on the same fence.
 
-> On 23.01.24 19:39, Andreas Hindborg (Samsung) wrote:
->>>>>> +/// A generic block device
->>>>>> +///
->>>>>> +/// # Invariants
->>>>>> +///
->>>>>> +///  - `gendisk` must always point to an initialized and valid `struct gendisk`.
->>>>>> +pub struct GenDisk<T: Operations> {
->>>>>> +    _tagset: Arc<TagSet<T>>,
->>>>>> +    gendisk: *mut bindings::gendisk,
->>>>>
->>>>> Why are these two fields not embedded? Shouldn't the user decide where
->>>>> to allocate?
->>>>
->>>> The `TagSet` can be shared between multiple `GenDisk`. Using an `Arc`
->>>> seems resonable?
->>>>
->>>> For the `gendisk` field, the allocation is done by C and the address
->>>> must be stable. We are owning the pointee and must drop it when it goes out
->>>> of scope. I could do this:
->>>>
->>>> #[repr(transparent)]
->>>> struct GenDisk(Opaque<bindings::gendisk>);
->>>>
->>>> struct UniqueGenDiskRef {
->>>>       _tagset: Arc<TagSet<T>>,
->>>>       gendisk: Pin<&'static mut GenDisk>,
->>>>
->>>> }
->>>>
->>>> but it seems pointless. `struct GenDisk` would not be pub in that case. What do you think?
->>>
->>> Hmm, I am a bit confused as to how you usually use a `struct gendisk`.
->>> You said that a `TagSet` might be shared between multiple `GenDisk`s,
->>> but that is not facilitated by the C side?
->>>
->>> Is it the case that on the C side you create a struct containing a
->>> tagset and a gendisk for every block device you want to represent?
->> 
->> Yes, but the `struct tag_set` can be shared between multiple `struct
->> gendisk`.
->> 
->> Let me try to elaborate:
->> 
->> In C you would first allocate a `struct tag_set` and partially
->> initialize it. The allocation can be dynamic, static or part of existing
->> allocation. You would then partially initialize the structure and finish
->> the initialization by calling `blk_mq_alloc_tag_set()`. This populates
->> the rest of the structure which includes more dynamic allocations.
->> 
->> You then allocate a `struct gendisk` by calling `blk_mq_alloc_disk()`,
->> passing in a pointer to the `struct tag_set` you just created. This
->> function will return a pointer to a `struct gendisk` on success.
->> 
->> In the Rust abstractions, we allocate the `TagSet`:
->> 
->> #[pin_data(PinnedDrop)]
->> #[repr(transparent)]
->> pub struct TagSet<T: Operations> {
->>      #[pin]
->>      inner: Opaque<bindings::blk_mq_tag_set>,
->>      _p: PhantomData<T>,
->> }
->> 
->> with `PinInit` [^1]. The initializer will partially initialize the struct and
->> finish the initialization like C does by calling
->> `blk_mq_alloc_tag_set()`. We now need a place to point the initializer.
->> `Arc::pin_init()` is that place for now. It allows us to pass the
->> `TagSet` reference to multiple `GenDisk` if required. Maybe we could be
->> generic over `Deref<TagSet>` in the future. Bottom line is that we need
->> to hold on to that `TagSet` reference until the `GenDisk` is dropped.
->
-> I see, thanks for the elaborate explanation! I now think that using `Arc`
-> makes sense.
->
->> `struct tag_set` is not reference counted on the C side. C
->> implementations just take care to keep it alive, for instance by storing
->> it next to a pointer to `struct gendisk` that it is servicing.
->
-> This is interesting, is this also done in the case where it is shared
-> among multiple `struct gendisk`s?
+So I cannot use it anywhere in drivers/dma-buf/.
 
-Yes. The architecture is really quite flexible. For instance C NVMe uses
-one tag set for the admin queue of a nvme controller, and one tag set
-shared for all IO queues of a controller. The admin queue tag set is not
-actually attached to a `struct gendisk` and does not appear as a block
-device to the user. The IO queue tag set serves a number `struct
-gendisk`, one for each name space of the controller.
-
-> Does this have some deeper reason? Or am I right to assume that creating
-> `Gendisk`/`TagSet` is done rarely (i.e. only at initialization of the
-> driver)?
-
-I am not sure. It could probably be reference counted on C side. Perhaps
-nobody felt the need for it, since the lifetime of it is not that
-complex. And yes, it is relatively rare as it is only as part of
-initialization and tear down that you would create or destroy this
-structure.
-
-Best regards,
-Andreas
-
+-Paul
 
