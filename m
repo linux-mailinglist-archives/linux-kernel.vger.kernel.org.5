@@ -1,152 +1,167 @@
-Return-Path: <linux-kernel+bounces-42348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 555BF840008
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:26:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 357A584000D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:27:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB9081F24204
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:26:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE7F7281257
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:27:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A3D253805;
-	Mon, 29 Jan 2024 08:26:27 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8239537EE;
+	Mon, 29 Jan 2024 08:26:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QV3zFWLQ"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51EA9537F8
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 08:26:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2009353811
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 08:26:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706516787; cv=none; b=PvYTYW/GahXVO789SwLiMbxl8SylraEh5FNL4GiHLW7CVvEx4PsHFaL3Vzifg0DaemnufEou94ZJQDkHaaEpnaiWi9aZyqQUNluss/7zpawXvns4yif/cZmucKf5ehzSalckS6xcvQ7DEewU+/VSlDhiFXfN0jtM1WRDEkVfMeM=
+	t=1706516802; cv=none; b=n8dG3hvOrAlRb2+L/qPIpcqKgybWdoE2FDEZK5caIiqiZW6kECv/5IZBBafH3cg0oOSpd+qblOT0TZ93zT3/7H9wCc7L8Ye1Gol7EvQT4UgkqCXgBoR4Hd/iHQ1Y03iLitEgqXxZP1emC+2zDSvDRJRMmZRH2ys5USwtPBT5eiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706516787; c=relaxed/simple;
-	bh=n5mYzt6CIUKIXRBaJM3scUctqvjLnQUCO48pzYRK6PA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m7t6KF4lmD4z3WYijfqr8oSC0kzWwqeveVpYX/lq5n7FhBT28zEP9HAuW5Qi1XAlTTAfNpmKVVdAsb6MTrWruXbtgRGJqaRpEb1xPYZ61GdivHo51WFwYX9GgYA5hofCbayOJXYzPw7GFXriYLPXzahSxEQIkiLxFxfYs5weIB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rUMxz-00071K-Tv; Mon, 29 Jan 2024 09:26:07 +0100
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rUMxx-0037so-TF; Mon, 29 Jan 2024 09:26:05 +0100
-Received: from pengutronix.de (unknown [172.20.34.65])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 72691280715;
-	Mon, 29 Jan 2024 08:26:05 +0000 (UTC)
-Date: Mon, 29 Jan 2024 09:26:05 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: William Qiu <william.qiu@starfivetech.com>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-can@vger.kernel.org, 
-	Emil Renner Berthing <kernel@esmil.dk>, Rob Herring <robh+dt@kernel.org>, 
-	Wolfgang Grandegger <wg@grandegger.com>, Philipp Zabel <p.zabel@pengutronix.de>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>
-Subject: Re: [PATCH v1 3/4] can: cast: add driver for CAST CAN controller
-Message-ID: <20240129-zone-defame-c5580e596f72-mkl@pengutronix.de>
-References: <20240129031239.17037-1-william.qiu@starfivetech.com>
- <20240129031239.17037-4-william.qiu@starfivetech.com>
+	s=arc-20240116; t=1706516802; c=relaxed/simple;
+	bh=OCiIY8ur1Lo6Py5a+OluYwE0wRkNNIrdEe80tnv+5HI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EIi+jVcognH9Jk9nMUxGzQGs+euthRA6cO1bQj1ScovcZFFO/qibsoS6gPtsA3dkcml0G5Km6NHu+ghxDRHMzWpYH9eOMTOsE7f4bRn1x59z/6ea3VdU5b8StDWO2QiBAKzWSmJhn+iapWx2Ua+31meqqOUKv2lth/73zLzLXUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QV3zFWLQ; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-55efbaca48bso833646a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 00:26:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706516799; x=1707121599; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Oy/qLAHp0KhsUL3m3P3u9zkoWdumfOMuP9kP3yYA10o=;
+        b=QV3zFWLQdRxrVXhuoNy96SuYc2kUE6+73RuxVcJ9jOprFrP+ks5Eb0lqapjVFrt1/B
+         mxgcFAY0kOZYk3meoJwMXNw+E8kT6RTlO51GTz/B0NM4bzEF4vbV8o85HO4/X5i0bzLH
+         QdVh9GE27eEIEhhfrD0jDBnSgk9+MIgKdoX45yIVuZwnTIMsuncn3LXigKkvC0MD5/dr
+         yIYPw2vlARhPpSVu/oxD0CBtDxCGeQh8l0vu4EjpH+rn68JfeaWvx/GNY2bkaiXawBLb
+         Q65i5AQzYQL6nxRIC4eczJhSfluyFk7vF7c1U2ScCd0IGfMqTNlRzFTPLC4W7YdFVi8i
+         GQ5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706516799; x=1707121599;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Oy/qLAHp0KhsUL3m3P3u9zkoWdumfOMuP9kP3yYA10o=;
+        b=vzQQU8cJSruvqZUInA4lx/SfNdpVnNuPXnT/JxQBDFOMZ5XvO7CFHtysT/ZWRkZm6f
+         IChvgvgJJ1Va2DTh1sDMZeXpR8a0BqNP9WgZbCuQzzjhMG7V1VXoqC+5aeJbPVPVKJOe
+         nNhHfrRL20mZXCIqUOnHg6d2aI65XzdYfHDZ91JzHlrhagh+PZEVdbnSbZlUP7W0m+Ru
+         oI+a7Vk5g97y0B3QrTXU+Eg7N6rbbBgWQoVlZxLfQ40CrnPS7XsrydjqaF2kK0JksoYu
+         ylJL/NTuVn6T9TfM97gx1qJCPoNURkWDtqisdPoDZeI5vxaEY1K1SOo9rW0FqTVKAWmz
+         AM+Q==
+X-Gm-Message-State: AOJu0YwCeOKhKFujm3yM5CVyjeRynyDMKLKndKQcICQgtdxXn/nHnzjd
+	VYshfTKWNeGMEzeQzncySzchlW2tgCUFTNaJmbmfLMdBbgUNN1+VXWgIRKX3XiE=
+X-Google-Smtp-Source: AGHT+IFrdgTmjfCtxKa4ESY2W8g3zGb/92W8Fgb3xQu80Iava9D7c+buhI1Zl/0kRNFz8slGn9tP0Q==
+X-Received: by 2002:a05:6402:13cc:b0:55e:f9c4:129 with SMTP id a12-20020a05640213cc00b0055ef9c40129mr1245850edx.40.1706516799277;
+        Mon, 29 Jan 2024 00:26:39 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id es19-20020a056402381300b0055cffd3fd32sm3505346edb.68.2024.01.29.00.26.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jan 2024 00:26:38 -0800 (PST)
+Message-ID: <0a6f6dcb-18b0-48d5-8955-76bce0e1295d@linaro.org>
+Date: Mon, 29 Jan 2024 09:26:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="zggniggrx7ssk34l"
-Content-Disposition: inline
-In-Reply-To: <20240129031239.17037-4-william.qiu@starfivetech.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/2] dt-bindings: net: starfive,jh7110-dwmac: Add
+ JH7100 SoC compatible
+Content-Language: en-US
+To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Emil Renner Berthing <kernel@esmil.dk>,
+ Samin Guo <samin.guo@starfivetech.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Jose Abreu <joabreu@synopsys.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Giuseppe Cavallaro <peppe.cavallaro@st.com>, Andrew Lunn <andrew@lunn.ch>,
+ Jacob Keller <jacob.e.keller@intel.com>
+Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, kernel@collabora.com
+References: <20240126191319.1209821-1-cristian.ciocaltea@collabora.com>
+ <20240126191319.1209821-2-cristian.ciocaltea@collabora.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240126191319.1209821-2-cristian.ciocaltea@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+On 26/01/2024 20:13, Cristian Ciocaltea wrote:
+> The Synopsys DesignWare MAC found on StarFive JH7100 SoC is mostly
+> similar to the newer JH7110, but it requires only two interrupts and a
+> single reset line, which is 'ahb' instead of the commonly used
+> 'stmmaceth'.
+> 
+> Since the common binding 'snps,dwmac' allows selecting 'ahb' only in
+> conjunction with 'stmmaceth', extend the logic to also permit exclusive
+> usage of the 'ahb' reset name.  This ensures the following use cases are
+> supported:
+> 
+>   JH7110: reset-names = "stmmaceth", "ahb";
+>   JH7100: reset-names = "ahb";
+>   other:  reset-names = "stmmaceth";
 
 
---zggniggrx7ssk34l
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Hello William Qiu,
+Best regards,
+Krzysztof
 
-thank you for your contribution. I've some quick notes about your
-driver.
-
-On 29.01.2024 11:12:38, William Qiu wrote:
-> Add driver for CAST CAN Controller. And add compatibility code which
-> based on StarFive JH7110 SoC.
-
-Please add yourself or someone else at starfivetech to the Maintainers
-file.
-
-Please use BIT() and/or GEN_MASK() to create the _MASK enums. Please use
-FIELD_GET(), FIELD_PREP.
-
-Please replace the ccan_ioread8() by a proper 32 bit read and use
-FIELD_GET to access any non 32 bit value. Instead of ccan_iowrite8() use
-FIELD_PREP and a proper 32 bit write.
-
-The enum ccan_reg_bitchange looks very strange, why do you have OFF and
-SET values?
-
-The ccan_reigister_set_bit() and ccan_reigister_off_bit() functions
-looks very strange, too. I suggest to use a 32 bit read, set, clear the
-bits followed by a 32 bit write. Having set_bit() clear_bit() functions
-may lead to more register accesses than needed, if not handled with care.
-
-If you think the driver absolutely needs bit set/clear functions, please
-follow the name and signature of the regmap_update_bits(),
-regmap_set_bits() and regmap_clear_bits().
-
-Please use can_put_echo_skb(), can_get_echo_skb().
-
-Please implement proper TX-flow control. Stop the TX queue, if you HW
-queue is full, start the TX queue once the HW queue has space again.
-
-Consider using the rx_offload helper
-
-You claim you IRQ handler works with shared interrupts, but you return
-an error if there are no interrupts by your IP core.
-
-Please enable the clocks during open() and disabled during close()
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---zggniggrx7ssk34l
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmW3YRoACgkQvlAcSiqK
-BOgKmgf8CP4DHYvozr25yPE/15GRtr4yDQDy5doYFxV8tAO2r1Y1iiU0mIz3aCLp
-e3qWwbV9jcftKht75T5CgcurR8Ouc6P4O89HsGkpyRz0c4Pg4X/gswBJ29hTRFQw
-JyaxQCaelQ5mbSAq0i2ZFCNiqBEzk6KyegUcmUabqOHmQTlpcXRYiJWRgKlKMoHr
-xjkTF4HgTcViIXb/JislwP7q8C4F2/qEEtSLfqgOCzZjaPSRP6cTo8yy+YdITFhx
-ntGdaMLEktRyMJVCcMfk5TXzea45E7yCa6cLL/4+VNzm/dsB1YF7Si9CC/nTXP9U
-G5qmdcL6AIGzthY2poRxdC/oX7ppgw==
-=HX7Y
------END PGP SIGNATURE-----
-
---zggniggrx7ssk34l--
 
