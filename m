@@ -1,315 +1,400 @@
-Return-Path: <linux-kernel+bounces-42742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60EFC8405EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:03:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9C198405ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:03:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 860421C22018
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:03:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F44E1F21F7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:03:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A70866281A;
-	Mon, 29 Jan 2024 13:03:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 262D8627EB;
+	Mon, 29 Jan 2024 13:03:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="euLWzzu0"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QD3koDHy"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C4C66168A;
-	Mon, 29 Jan 2024 13:03:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0316460EFD
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:03:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706533398; cv=none; b=VQdinqyBD/XHTQK552xe8oyBHTzTWjbclCHc6pqWVyDZEGrp4iGlPS6zZAHp7BXTO2MbsaGkhRPpfHQYXC5cI7sJrIl7AjGiA6ZBXRa/IljUtP5DNJHcaHSFNmK0M5un+a2URTNLD8R4biB/l4DE9uvTHuQtN1fk1rAGS4CN5hs=
+	t=1706533424; cv=none; b=CqFHJHWVEmm0rDlwdo968SuQPEDiXfVkuGKwyEzdPtRImTlovuPXnucNBlV4nYrz6fA8VbNUfNLQPLF4ROPHPktSuYjy/bbk58Ms6Z5nudObikuFBl7FrjE/FFfRujtaQrd+xoLViaitx25mKXPwwcerC/4LWT3wL0VMIRJHwFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706533398; c=relaxed/simple;
-	bh=En+o/ta0oprAiI0bv2E8pNpWVrmO8oSUm1ARJDHKlQw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Cc15PRWFAR5GNiL/lF/gDxQuZoJmdVyhXFCE9qsItQQ93JPrXK7k9td6pjhrhSluwxo+5EEdoSsjQFaSgWdkcckqctYg0t/zCnO1aao9smjx5jj+Odv8eBJYXyec0KOnO5DFFaMLOjEebIS0rm2B6gD8khWr1F/cNr7VkvRJmIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=euLWzzu0; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706533394;
-	bh=En+o/ta0oprAiI0bv2E8pNpWVrmO8oSUm1ARJDHKlQw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=euLWzzu0h9883PFM9+Z7VZSJVKTi0XUrhG47g3Cf6xKbrRrt2dUIFBGfzb11aH4Gw
-	 Tb+RCmfX6qrSi2d+e4ZX12cFt+igISObDjGihrKyu7LA+bX0fY0fhOVn++irF0MnG8
-	 nwFpIaZ/DZCMcWNaoF7RLTSAV0Xb831OgxYy+pa32eRNvW0F8lIQsbLQGWQY+JLnVu
-	 EtWimpSorwB9TNmoqIU5JSVA2koGxQnwEM1+gjOJ9QQFvc3dlPXivvn5+zOcADZnd8
-	 QfSLCfUzadmIO7Sswa/5qmYerDMHr3RR7WL0Ga42W3HQFb3Mn1LG6tTETeRb85g+DF
-	 uqsa5IHj4ZzkQ==
-Received: from mercury (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sre)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8DEA0378003D;
-	Mon, 29 Jan 2024 13:03:14 +0000 (UTC)
-Received: by mercury (Postfix, from userid 1000)
-	id 28A471063ADA; Mon, 29 Jan 2024 14:03:14 +0100 (CET)
-Date: Mon, 29 Jan 2024 14:03:14 +0100
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Luca Weiss <luca.weiss@fairphone.com>, andersson@kernel.org, 
-	linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org, Johan Hovold <johan+linaro@kernel.org>
-Subject: Re: [PATCH AUTOSEL 6.7 15/39] power: supply: qcom_battmgr: Register
- the power supplies after PDR is up
-Message-ID: <rtghydsz532x6atjeshexkgevqlfxmw5owjexmnczwepeefvlb@gxinnf23tzij>
-References: <20240128161130.200783-1-sashal@kernel.org>
- <20240128161130.200783-15-sashal@kernel.org>
+	s=arc-20240116; t=1706533424; c=relaxed/simple;
+	bh=f4CkzfiG4I3FrpFXAkgEvQKaNqmSEe/+rslHPQcwWeY=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=ZYfQxKvg0cEFFe62V0Gz+/UINlj3pMZd8GlZKK+E/lwVHPtdfgi4XnjwvEekIUX9LAI9uN2kI5dOUFJxFGOc5xMIbasSbiS+D1cfVpd+wAuNFpDDgVgB+AEOu0/NtREvUSgfewIPu3KIGNWiOZpxwymsPV1/i51qJNDr+Z7rbo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QD3koDHy; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55817a12ad8so2537364a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 05:03:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706533420; x=1707138220; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8r023diyzmX0/qUHReOrNetNmJ26S3h2W1HRl4d6fy8=;
+        b=QD3koDHySN80dVn9h0wpyg8KEXNdgP5+9nhcnRJHrCWKJn553FUkemDoHWgAIWbAC2
+         7prG/0OvZoKjgeiGIbYAFFXiULOeViFrMmWVSFETtbJbhOX8076AKO/0ciItcni+eSUu
+         jR0QHo4woLOdaTxZBRTjuDrFcK849s4aB9f7eCpbQb0OOrk7iBk4kgIGjc3x5UI30Ccm
+         E4xcb/ME7AIm3m34GhuP6pOIm2sruWAnlU9liOmCQBUx3qbOzRTDw8P0/psc6nXXy+cE
+         G8VsV5QyBTxIMKajFV0hovj1/+vstr5F45CKbkSwP77J2Y8WQc/cBCb+Ego6oSk7AE+Z
+         kTCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706533420; x=1707138220;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8r023diyzmX0/qUHReOrNetNmJ26S3h2W1HRl4d6fy8=;
+        b=N1BG3ogdpToCNy72Kqrr2ddtZ2INhwChULPI84aHMRxd4CGzV40HyhRFIuLHiyFpaq
+         7fIqLoKKB8DpqIwXmBkB5ffdB4Co1yhTtWj6h8TrrH8b9QuLNiYq9RKT06x21QjBUrL/
+         Zm/w+gLpXKvDpKDPVL0p6T5sL/WzjQqt39NGwHsEgifN/wPVtfdngLYmZg++ScNTjKB5
+         k8EkWlyspfxwBllp/iZIMfni6lLB61AL4uVGBosyGQJlKN4Krzk43NMsrtX8P8AWmCra
+         qwdxwp2vVgkxWHRdBnmIQ5KIf73UTcgrRw7U1wLDu3Ghfo0qM2KRGvwIvVdhTac1s/EY
+         LsmA==
+X-Gm-Message-State: AOJu0Yyx3ffNmzyRvZXf11Z0RoH2ie+gi+j0RRuCYck+YPi8TLj9l5Jv
+	aSG++W1eng+4ZFEdkR2ipYfVpSDeKDrGOkL/WnAS2veZB9jRRdW178FB+HesTi0=
+X-Google-Smtp-Source: AGHT+IHsMw6jcPIgsA4nKZ/dNkKVHw9d8O9QohsDemIwIPIRLSA2IVECJtaLZo2EEgNxX4lMFgr9GA==
+X-Received: by 2002:a17:906:d7b1:b0:a35:c371:8b27 with SMTP id pk17-20020a170906d7b100b00a35c3718b27mr1445715ejb.30.1706533419955;
+        Mon, 29 Jan 2024 05:03:39 -0800 (PST)
+Received: from [127.0.1.1] ([79.115.23.25])
+        by smtp.gmail.com with ESMTPSA id vs3-20020a170907a58300b00a3550c56127sm2554867ejc.9.2024.01.29.05.03.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 05:03:39 -0800 (PST)
+From: Abel Vesa <abel.vesa@linaro.org>
+Date: Mon, 29 Jan 2024 15:03:24 +0200
+Subject: [PATCH v3] phy: qualcomm: eusb2-repeater: Rework init to drop
+ redundant zero-out loop
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="mqekvd7hqabcdj2t"
-Content-Disposition: inline
-In-Reply-To: <20240128161130.200783-15-sashal@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240129-phy-qcom-eusb2-repeater-fixes-v3-1-9a61ef3490de@linaro.org>
+X-B4-Tracking: v=1; b=H4sIABuit2UC/43NQQ6CMBCF4auQrh0zbcGCK+9hXNAyQhOl2GIjI
+ dzdwkpXuvzfJN/MLJC3FNgxm5mnaIN1fQq5y5jp6r4lsE1qJlDkyDGHoZvgYdwd6Bm0AE8D1SN
+ 5uNoXBTCVQM65RCkMS8bgaTsk4nxJ3dkwOj9t7yJf13/lyAEBc6WVPuhSSnm62b72bu98y1Y6i
+ k+u+MWJxClVNFVJqrli8cUty/IG9ZsuGxoBAAA=
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>
+Cc: Elliot Berman <quic_eberman@quicinc.com>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+ linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, Abel Vesa <abel.vesa@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=10431; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=f4CkzfiG4I3FrpFXAkgEvQKaNqmSEe/+rslHPQcwWeY=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlt6IlZUMsZ5mjG5Uk/xk6pkIoLRxjEBEHkcGKR
+ r0zzACSg62JAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZbeiJQAKCRAbX0TJAJUV
+ VtdVD/9jsM55qrgd0jpDHoxs3MILVTpag3HxOxt1IuJuQ/ziVDxDUOcy1kRpUto4BRRXkT+WYwR
+ r5fc+FjaPHo5CHwZ8KpLfv3GA52pJFzkDI4NB037bcxtnX+FC3DyLSFCYa5RAqHiH/J3kRtPVty
+ 0b7fsQ+z8938vzpQGUR6CVK+XEKYGtJxSBDAT+UiF2h/JtfqCvI4ueXc6jZxycrvtPfKbNBz9cs
+ w8AOXVZzxRfkeEYGcPXuO7yeKpv9s8jVMK62oeugOWJ+HSh7pE9I98VQiE5G6IDE6OEyqgmYzFU
+ Z5jDerqiHlXOgHHSaC80dQzVY5TCPO89FbE+prenxcXnV1E3m93XOrcrIH17FOUT97jo80rrksf
+ jBEEe5P58bmdZEGqtuWHdhrZYJgZE4isG0NNkltXJDw5I4h6K9rn7MN4Y2qV84KHF5Fd6PfX1Ve
+ kxw4kZi/lkeJ+9lYdIuRc4NwvGSStD2duQxciClvUFwbEXidzl8ueP4drpgEp/Ojmsck3ijcP80
+ eDLwVBvpPFeBlg2RfnPxInoow4vbtifFFc/i5QecbSCLUz5qRNGd4VZZzd5lWR13oXF2IsfFzJ4
+ Wxlh1XMQMjNUbw1MKAtBdLwKKOExLOmbhILu1gDAlI+Klq3t6xawoURFAPeG636lviP3nLUAL3I
+ U16GX7eJ+fqPWrA==
+X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
+ fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 
+The device match config init table already has zero values, so rework
+the container struct to hold a copy of the init table that can be
+override be the DT specified values. By doing this, only the number of
+vregs remain in the device match config that will be later needed, so
+instead of holding the cfg after probe, store the number of vregs in the
+container struct.
 
---mqekvd7hqabcdj2t
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: 99a517a582fc ("phy: qualcomm: phy-qcom-eusb2-repeater: Zero out untouched tuning regs")
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+---
+Changes in v3:
+- Reworked so that it uses base + reg-index.
+- Link to v2: https://lore.kernel.org/r/20240105-phy-qcom-eusb2-repeater-fixes-v2-0-775d98e7df05@linaro.org
 
-Hi,
+Changes in v2:
+- The regfields is being dropped from the repeater init, but it's done
+  in the second patch in order to not break bisectability, as it is
+  still needed by the zero-out loop.
+- Added Konrad's R-b tag to the first patch. Did not add Elliot's T-b
+  tag as the second patch has been reworked massively.
+- The zero-out loop is dropped now by holding a copy of the init_tlb in
+  the container struct. This led to dropping the cfg from the container
+  struct (see second patch commit message for more details).
+- Link to v1: https://lore.kernel.org/r/20240104-phy-qcom-eusb2-repeater-fixes-v1-0-047b7b6b8333@linaro.org
+---
+ drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c | 166 +++++++++----------------
+ 1 file changed, 62 insertions(+), 104 deletions(-)
 
-On Sun, Jan 28, 2024 at 11:10:35AM -0500, Sasha Levin wrote:
-> From: Konrad Dybcio <konrad.dybcio@linaro.org>
->=20
-> [ Upstream commit b43f7ddc2b7a5a90447d96cb4d3c6d142dd4a810 ]
->=20
-> Currently, a not-yet-entirely-initialized battmgr (e.g. with pd-mapper
-> not having yet started or ADSP not being up etc.) results in a couple of
-> zombie power supply devices hanging around.
->=20
-> This is particularly noticeable when trying to suspend the device (even
-> s2idle): the PSY-internal thermal zone is inaccessible and returns
-> -ENODEV, which causes log spam.
->=20
-> Register the power supplies only after we received some notification
-> indicating battmgr is ready to take off.
->=20
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> Tested-by: Luca Weiss <luca.weiss@fairphone.com>
-> Link: https://lore.kernel.org/r/20231218-topic-battmgr_fixture_attempt-v1=
--1-6145745f34fe@linaro.org
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
+diff --git a/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c b/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c
+index a623f092b11f..a43e20abb10d 100644
+--- a/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c
++++ b/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c
+@@ -37,56 +37,28 @@
+ #define EUSB2_TUNE_EUSB_EQU		0x5A
+ #define EUSB2_TUNE_EUSB_HS_COMP_CUR	0x5B
+ 
+-#define QCOM_EUSB2_REPEATER_INIT_CFG(r, v)	\
+-	{					\
+-		.reg = r,			\
+-		.val = v,			\
+-	}
+-
+-enum reg_fields {
+-	F_TUNE_EUSB_HS_COMP_CUR,
+-	F_TUNE_EUSB_EQU,
+-	F_TUNE_EUSB_SLEW,
+-	F_TUNE_USB2_HS_COMP_CUR,
+-	F_TUNE_USB2_PREEM,
+-	F_TUNE_USB2_EQU,
+-	F_TUNE_USB2_SLEW,
+-	F_TUNE_SQUELCH_U,
+-	F_TUNE_HSDISC,
+-	F_TUNE_RES_FSDIF,
+-	F_TUNE_IUSB2,
+-	F_TUNE_USB2_CROSSOVER,
+-	F_NUM_TUNE_FIELDS,
+-
+-	F_FORCE_VAL_5 = F_NUM_TUNE_FIELDS,
+-	F_FORCE_EN_5,
+-
+-	F_EN_CTL1,
+-
+-	F_RPTR_STATUS,
+-	F_NUM_FIELDS,
+-};
+-
+-static struct reg_field eusb2_repeater_tune_reg_fields[F_NUM_FIELDS] = {
+-	[F_TUNE_EUSB_HS_COMP_CUR] = REG_FIELD(EUSB2_TUNE_EUSB_HS_COMP_CUR, 0, 1),
+-	[F_TUNE_EUSB_EQU] = REG_FIELD(EUSB2_TUNE_EUSB_EQU, 0, 1),
+-	[F_TUNE_EUSB_SLEW] = REG_FIELD(EUSB2_TUNE_EUSB_SLEW, 0, 1),
+-	[F_TUNE_USB2_HS_COMP_CUR] = REG_FIELD(EUSB2_TUNE_USB2_HS_COMP_CUR, 0, 1),
+-	[F_TUNE_USB2_PREEM] = REG_FIELD(EUSB2_TUNE_USB2_PREEM, 0, 2),
+-	[F_TUNE_USB2_EQU] = REG_FIELD(EUSB2_TUNE_USB2_EQU, 0, 1),
+-	[F_TUNE_USB2_SLEW] = REG_FIELD(EUSB2_TUNE_USB2_SLEW, 0, 1),
+-	[F_TUNE_SQUELCH_U] = REG_FIELD(EUSB2_TUNE_SQUELCH_U, 0, 2),
+-	[F_TUNE_HSDISC] = REG_FIELD(EUSB2_TUNE_HSDISC, 0, 2),
+-	[F_TUNE_RES_FSDIF] = REG_FIELD(EUSB2_TUNE_RES_FSDIF, 0, 2),
+-	[F_TUNE_IUSB2] = REG_FIELD(EUSB2_TUNE_IUSB2, 0, 3),
+-	[F_TUNE_USB2_CROSSOVER] = REG_FIELD(EUSB2_TUNE_USB2_CROSSOVER, 0, 2),
+-
+-	[F_FORCE_VAL_5] = REG_FIELD(EUSB2_FORCE_VAL_5, 0, 7),
+-	[F_FORCE_EN_5] = REG_FIELD(EUSB2_FORCE_EN_5, 0, 7),
+-
+-	[F_EN_CTL1] = REG_FIELD(EUSB2_EN_CTL1, 0, 7),
+-
+-	[F_RPTR_STATUS] = REG_FIELD(EUSB2_RPTR_STATUS, 0, 7),
++enum eusb2_reg_layout {
++	TUNE_EUSB_HS_COMP_CUR,
++	TUNE_EUSB_EQU,
++	TUNE_EUSB_SLEW,
++	TUNE_USB2_HS_COMP_CUR,
++	TUNE_USB2_PREEM,
++	TUNE_USB2_EQU,
++	TUNE_USB2_SLEW,
++	TUNE_SQUELCH_U,
++	TUNE_HSDISC,
++	TUNE_RES_FSDIF,
++	TUNE_IUSB2,
++	TUNE_USB2_CROSSOVER,
++	NUM_TUNE_FIELDS,
++
++	FORCE_VAL_5 = NUM_TUNE_FIELDS,
++	FORCE_EN_5,
++
++	EN_CTL1,
++
++	RPTR_STATUS,
++	LAYOUT_SIZE,
+ };
+ 
+ struct eusb2_repeater_cfg {
+@@ -98,10 +70,11 @@ struct eusb2_repeater_cfg {
+ 
+ struct eusb2_repeater {
+ 	struct device *dev;
+-	struct regmap_field *regs[F_NUM_FIELDS];
++	struct regmap *regmap;
+ 	struct phy *phy;
+ 	struct regulator_bulk_data *vregs;
+ 	const struct eusb2_repeater_cfg *cfg;
++	u32 base;
+ 	enum phy_mode mode;
+ };
+ 
+@@ -109,10 +82,10 @@ static const char * const pm8550b_vreg_l[] = {
+ 	"vdd18", "vdd3",
+ };
+ 
+-static const u32 pm8550b_init_tbl[F_NUM_TUNE_FIELDS] = {
+-	[F_TUNE_IUSB2] = 0x8,
+-	[F_TUNE_SQUELCH_U] = 0x3,
+-	[F_TUNE_USB2_PREEM] = 0x5,
++static const u32 pm8550b_init_tbl[NUM_TUNE_FIELDS] = {
++	[TUNE_IUSB2] = 0x8,
++	[TUNE_SQUELCH_U] = 0x3,
++	[TUNE_USB2_PREEM] = 0x5,
+ };
+ 
+ static const struct eusb2_repeater_cfg pm8550b_eusb2_cfg = {
+@@ -140,47 +113,42 @@ static int eusb2_repeater_init_vregs(struct eusb2_repeater *rptr)
+ 
+ static int eusb2_repeater_init(struct phy *phy)
+ {
+-	struct reg_field *regfields = eusb2_repeater_tune_reg_fields;
+ 	struct eusb2_repeater *rptr = phy_get_drvdata(phy);
+ 	struct device_node *np = rptr->dev->of_node;
+-	u32 init_tbl[F_NUM_TUNE_FIELDS] = { 0 };
+-	u8 override;
++	struct regmap *regmap = rptr->regmap;
++	const u32 *init_tbl = rptr->cfg->init_tbl;
++	u8 tune_usb2_preem = init_tbl[TUNE_USB2_PREEM];
++	u8 tune_hsdisc = init_tbl[TUNE_HSDISC];
++	u8 tune_iusb2 = init_tbl[TUNE_IUSB2];
++	u32 base = rptr->base;
+ 	u32 val;
+ 	int ret;
+-	int i;
++
++	of_property_read_u8(np, "qcom,tune-usb2-amplitude", &tune_iusb2);
++	of_property_read_u8(np, "qcom,tune-usb2-disc-thres", &tune_hsdisc);
++	of_property_read_u8(np, "qcom,tune-usb2-preem", &tune_usb2_preem);
+ 
+ 	ret = regulator_bulk_enable(rptr->cfg->num_vregs, rptr->vregs);
+ 	if (ret)
+ 		return ret;
+ 
+-	regmap_field_update_bits(rptr->regs[F_EN_CTL1], EUSB2_RPTR_EN, EUSB2_RPTR_EN);
++	regmap_write(regmap, base + EUSB2_EN_CTL1, EUSB2_RPTR_EN);
+ 
+-	for (i = 0; i < F_NUM_TUNE_FIELDS; i++) {
+-		if (init_tbl[i]) {
+-			regmap_field_update_bits(rptr->regs[i], init_tbl[i], init_tbl[i]);
+-		} else {
+-			/* Write 0 if there's no value set */
+-			u32 mask = GENMASK(regfields[i].msb, regfields[i].lsb);
+-
+-			regmap_field_update_bits(rptr->regs[i], mask, 0);
+-		}
+-	}
+-	memcpy(init_tbl, rptr->cfg->init_tbl, sizeof(init_tbl));
++	regmap_write(regmap, base + EUSB2_TUNE_EUSB_HS_COMP_CUR, init_tbl[TUNE_EUSB_HS_COMP_CUR]);
++	regmap_write(regmap, base + EUSB2_TUNE_EUSB_EQU, init_tbl[TUNE_EUSB_EQU]);
++	regmap_write(regmap, base + EUSB2_TUNE_EUSB_SLEW, init_tbl[TUNE_EUSB_SLEW]);
++	regmap_write(regmap, base + EUSB2_TUNE_USB2_HS_COMP_CUR, init_tbl[TUNE_USB2_HS_COMP_CUR]);
++	regmap_write(regmap, base + EUSB2_TUNE_USB2_EQU, init_tbl[TUNE_USB2_EQU]);
++	regmap_write(regmap, base + EUSB2_TUNE_USB2_SLEW, init_tbl[TUNE_USB2_SLEW]);
++	regmap_write(regmap, base + EUSB2_TUNE_SQUELCH_U, init_tbl[TUNE_SQUELCH_U]);
++	regmap_write(regmap, base + EUSB2_TUNE_RES_FSDIF, init_tbl[TUNE_RES_FSDIF]);
++	regmap_write(regmap, base + EUSB2_TUNE_USB2_CROSSOVER, init_tbl[TUNE_USB2_CROSSOVER]);
+ 
+-	if (!of_property_read_u8(np, "qcom,tune-usb2-amplitude", &override))
+-		init_tbl[F_TUNE_IUSB2] = override;
++	regmap_write(regmap, base + EUSB2_TUNE_USB2_PREEM, tune_usb2_preem);
++	regmap_write(regmap, base + EUSB2_TUNE_HSDISC, tune_hsdisc);
++	regmap_write(regmap, base + EUSB2_TUNE_IUSB2, tune_iusb2);
+ 
+-	if (!of_property_read_u8(np, "qcom,tune-usb2-disc-thres", &override))
+-		init_tbl[F_TUNE_HSDISC] = override;
+-
+-	if (!of_property_read_u8(np, "qcom,tune-usb2-preem", &override))
+-		init_tbl[F_TUNE_USB2_PREEM] = override;
+-
+-	for (i = 0; i < F_NUM_TUNE_FIELDS; i++)
+-		regmap_field_update_bits(rptr->regs[i], init_tbl[i], init_tbl[i]);
+-
+-	ret = regmap_field_read_poll_timeout(rptr->regs[F_RPTR_STATUS],
+-					     val, val & RPTR_OK, 10, 5);
++	ret = regmap_read_poll_timeout(regmap, base + EUSB2_RPTR_STATUS, val, val & RPTR_OK, 10, 5);
+ 	if (ret)
+ 		dev_err(rptr->dev, "initialization timed-out\n");
+ 
+@@ -191,6 +159,8 @@ static int eusb2_repeater_set_mode(struct phy *phy,
+ 				   enum phy_mode mode, int submode)
+ {
+ 	struct eusb2_repeater *rptr = phy_get_drvdata(phy);
++	struct regmap *regmap = rptr->regmap;
++	u32 base = rptr->base;
+ 
+ 	switch (mode) {
+ 	case PHY_MODE_USB_HOST:
+@@ -199,10 +169,8 @@ static int eusb2_repeater_set_mode(struct phy *phy,
+ 		 * per eUSB 1.2 Spec. Below implement software workaround until
+ 		 * PHY and controller is fixing seen observation.
+ 		 */
+-		regmap_field_update_bits(rptr->regs[F_FORCE_EN_5],
+-					 F_CLK_19P2M_EN, F_CLK_19P2M_EN);
+-		regmap_field_update_bits(rptr->regs[F_FORCE_VAL_5],
+-					 V_CLK_19P2M_EN, V_CLK_19P2M_EN);
++		regmap_write(regmap, base + EUSB2_FORCE_EN_5, F_CLK_19P2M_EN);
++		regmap_write(regmap, base + EUSB2_FORCE_VAL_5, V_CLK_19P2M_EN);
+ 		break;
+ 	case PHY_MODE_USB_DEVICE:
+ 		/*
+@@ -211,10 +179,8 @@ static int eusb2_repeater_set_mode(struct phy *phy,
+ 		 * repeater doesn't clear previous value due to shared
+ 		 * regulators (say host <-> device mode switch).
+ 		 */
+-		regmap_field_update_bits(rptr->regs[F_FORCE_EN_5],
+-					 F_CLK_19P2M_EN, 0);
+-		regmap_field_update_bits(rptr->regs[F_FORCE_VAL_5],
+-					 V_CLK_19P2M_EN, 0);
++		regmap_write(regmap, base + EUSB2_FORCE_EN_5, 0);
++		regmap_write(regmap, base + EUSB2_FORCE_VAL_5, 0);
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -243,9 +209,8 @@ static int eusb2_repeater_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct phy_provider *phy_provider;
+ 	struct device_node *np = dev->of_node;
+-	struct regmap *regmap;
+-	int i, ret;
+ 	u32 res;
++	int ret;
+ 
+ 	rptr = devm_kzalloc(dev, sizeof(*rptr), GFP_KERNEL);
+ 	if (!rptr)
+@@ -258,22 +223,15 @@ static int eusb2_repeater_probe(struct platform_device *pdev)
+ 	if (!rptr->cfg)
+ 		return -EINVAL;
+ 
+-	regmap = dev_get_regmap(dev->parent, NULL);
+-	if (!regmap)
++	rptr->regmap = dev_get_regmap(dev->parent, NULL);
++	if (!rptr->regmap)
+ 		return -ENODEV;
+ 
+ 	ret = of_property_read_u32(np, "reg", &res);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	for (i = 0; i < F_NUM_FIELDS; i++)
+-		eusb2_repeater_tune_reg_fields[i].reg += res;
+-
+-	ret = devm_regmap_field_bulk_alloc(dev, regmap, rptr->regs,
+-					   eusb2_repeater_tune_reg_fields,
+-					   F_NUM_FIELDS);
+-	if (ret)
+-		return ret;
++	rptr->base = res;
+ 
+ 	ret = eusb2_repeater_init_vregs(rptr);
+ 	if (ret < 0) {
 
-Please drop it, I have a patch queued reverting this patch.=20
+---
+base-commit: 01af33cc9894b4489fb68fa35c40e9fe85df63dc
+change-id: 20240104-phy-qcom-eusb2-repeater-fixes-c9201113032c
 
--- Sebastian
+Best regards,
+-- 
+Abel Vesa <abel.vesa@linaro.org>
 
->  drivers/power/supply/qcom_battmgr.c | 109 +++++++++++++++-------------
->  1 file changed, 60 insertions(+), 49 deletions(-)
->=20
-> diff --git a/drivers/power/supply/qcom_battmgr.c b/drivers/power/supply/q=
-com_battmgr.c
-> index ec163d1bcd18..a12e2a66d516 100644
-> --- a/drivers/power/supply/qcom_battmgr.c
-> +++ b/drivers/power/supply/qcom_battmgr.c
-> @@ -282,6 +282,7 @@ struct qcom_battmgr_wireless {
-> =20
->  struct qcom_battmgr {
->  	struct device *dev;
-> +	struct auxiliary_device *adev;
->  	struct pmic_glink_client *client;
-> =20
->  	enum qcom_battmgr_variant variant;
-> @@ -1293,11 +1294,69 @@ static void qcom_battmgr_enable_worker(struct wor=
-k_struct *work)
->  		dev_err(battmgr->dev, "failed to request power notifications\n");
->  }
-> =20
-> +static char *qcom_battmgr_battery[] =3D { "battery" };
-> +
-> +static void qcom_battmgr_register_psy(struct qcom_battmgr *battmgr)
-> +{
-> +	struct power_supply_config psy_cfg_supply =3D {};
-> +	struct auxiliary_device *adev =3D battmgr->adev;
-> +	struct power_supply_config psy_cfg =3D {};
-> +	struct device *dev =3D &adev->dev;
-> +
-> +	psy_cfg.drv_data =3D battmgr;
-> +	psy_cfg.of_node =3D adev->dev.of_node;
-> +
-> +	psy_cfg_supply.drv_data =3D battmgr;
-> +	psy_cfg_supply.of_node =3D adev->dev.of_node;
-> +	psy_cfg_supply.supplied_to =3D qcom_battmgr_battery;
-> +	psy_cfg_supply.num_supplicants =3D 1;
-> +
-> +	if (battmgr->variant =3D=3D QCOM_BATTMGR_SC8280XP) {
-> +		battmgr->bat_psy =3D devm_power_supply_register(dev, &sc8280xp_bat_psy=
-_desc, &psy_cfg);
-> +		if (IS_ERR(battmgr->bat_psy))
-> +			dev_err(dev, "failed to register battery power supply (%ld)\n",
-> +				PTR_ERR(battmgr->bat_psy));
-> +
-> +		battmgr->ac_psy =3D devm_power_supply_register(dev, &sc8280xp_ac_psy_d=
-esc, &psy_cfg_supply);
-> +		if (IS_ERR(battmgr->ac_psy))
-> +			dev_err(dev, "failed to register AC power supply (%ld)\n",
-> +				PTR_ERR(battmgr->ac_psy));
-> +
-> +		battmgr->usb_psy =3D devm_power_supply_register(dev, &sc8280xp_usb_psy=
-_desc, &psy_cfg_supply);
-> +		if (IS_ERR(battmgr->usb_psy))
-> +			dev_err(dev, "failed to register USB power supply (%ld)\n",
-> +				PTR_ERR(battmgr->usb_psy));
-> +
-> +		battmgr->wls_psy =3D devm_power_supply_register(dev, &sc8280xp_wls_psy=
-_desc, &psy_cfg_supply);
-> +		if (IS_ERR(battmgr->wls_psy))
-> +			dev_err(dev, "failed to register wireless charing power supply (%ld)\=
-n",
-> +				PTR_ERR(battmgr->wls_psy));
-> +	} else {
-> +		battmgr->bat_psy =3D devm_power_supply_register(dev, &sm8350_bat_psy_d=
-esc, &psy_cfg);
-> +		if (IS_ERR(battmgr->bat_psy))
-> +			dev_err(dev, "failed to register battery power supply (%ld)\n",
-> +				PTR_ERR(battmgr->bat_psy));
-> +
-> +		battmgr->usb_psy =3D devm_power_supply_register(dev, &sm8350_usb_psy_d=
-esc, &psy_cfg_supply);
-> +		if (IS_ERR(battmgr->usb_psy))
-> +			dev_err(dev, "failed to register USB power supply (%ld)\n",
-> +				PTR_ERR(battmgr->usb_psy));
-> +
-> +		battmgr->wls_psy =3D devm_power_supply_register(dev, &sm8350_wls_psy_d=
-esc, &psy_cfg_supply);
-> +		if (IS_ERR(battmgr->wls_psy))
-> +			dev_err(dev, "failed to register wireless charing power supply (%ld)\=
-n",
-> +				PTR_ERR(battmgr->wls_psy));
-> +	}
-> +}
-> +
->  static void qcom_battmgr_pdr_notify(void *priv, int state)
->  {
->  	struct qcom_battmgr *battmgr =3D priv;
-> =20
->  	if (state =3D=3D SERVREG_SERVICE_STATE_UP) {
-> +		if (!battmgr->bat_psy)
-> +			qcom_battmgr_register_psy(battmgr);
-> +
->  		battmgr->service_up =3D true;
->  		schedule_work(&battmgr->enable_work);
->  	} else {
-> @@ -1312,13 +1371,9 @@ static const struct of_device_id qcom_battmgr_of_v=
-ariants[] =3D {
->  	{}
->  };
-> =20
-> -static char *qcom_battmgr_battery[] =3D { "battery" };
-> -
->  static int qcom_battmgr_probe(struct auxiliary_device *adev,
->  			      const struct auxiliary_device_id *id)
->  {
-> -	struct power_supply_config psy_cfg_supply =3D {};
-> -	struct power_supply_config psy_cfg =3D {};
->  	const struct of_device_id *match;
->  	struct qcom_battmgr *battmgr;
->  	struct device *dev =3D &adev->dev;
-> @@ -1328,14 +1383,7 @@ static int qcom_battmgr_probe(struct auxiliary_dev=
-ice *adev,
->  		return -ENOMEM;
-> =20
->  	battmgr->dev =3D dev;
-> -
-> -	psy_cfg.drv_data =3D battmgr;
-> -	psy_cfg.of_node =3D adev->dev.of_node;
-> -
-> -	psy_cfg_supply.drv_data =3D battmgr;
-> -	psy_cfg_supply.of_node =3D adev->dev.of_node;
-> -	psy_cfg_supply.supplied_to =3D qcom_battmgr_battery;
-> -	psy_cfg_supply.num_supplicants =3D 1;
-> +	battmgr->adev =3D adev;
-> =20
->  	INIT_WORK(&battmgr->enable_work, qcom_battmgr_enable_worker);
->  	mutex_init(&battmgr->lock);
-> @@ -1347,43 +1395,6 @@ static int qcom_battmgr_probe(struct auxiliary_dev=
-ice *adev,
->  	else
->  		battmgr->variant =3D QCOM_BATTMGR_SM8350;
-> =20
-> -	if (battmgr->variant =3D=3D QCOM_BATTMGR_SC8280XP) {
-> -		battmgr->bat_psy =3D devm_power_supply_register(dev, &sc8280xp_bat_psy=
-_desc, &psy_cfg);
-> -		if (IS_ERR(battmgr->bat_psy))
-> -			return dev_err_probe(dev, PTR_ERR(battmgr->bat_psy),
-> -					     "failed to register battery power supply\n");
-> -
-> -		battmgr->ac_psy =3D devm_power_supply_register(dev, &sc8280xp_ac_psy_d=
-esc, &psy_cfg_supply);
-> -		if (IS_ERR(battmgr->ac_psy))
-> -			return dev_err_probe(dev, PTR_ERR(battmgr->ac_psy),
-> -					     "failed to register AC power supply\n");
-> -
-> -		battmgr->usb_psy =3D devm_power_supply_register(dev, &sc8280xp_usb_psy=
-_desc, &psy_cfg_supply);
-> -		if (IS_ERR(battmgr->usb_psy))
-> -			return dev_err_probe(dev, PTR_ERR(battmgr->usb_psy),
-> -					     "failed to register USB power supply\n");
-> -
-> -		battmgr->wls_psy =3D devm_power_supply_register(dev, &sc8280xp_wls_psy=
-_desc, &psy_cfg_supply);
-> -		if (IS_ERR(battmgr->wls_psy))
-> -			return dev_err_probe(dev, PTR_ERR(battmgr->wls_psy),
-> -					     "failed to register wireless charing power supply\n");
-> -	} else {
-> -		battmgr->bat_psy =3D devm_power_supply_register(dev, &sm8350_bat_psy_d=
-esc, &psy_cfg);
-> -		if (IS_ERR(battmgr->bat_psy))
-> -			return dev_err_probe(dev, PTR_ERR(battmgr->bat_psy),
-> -					     "failed to register battery power supply\n");
-> -
-> -		battmgr->usb_psy =3D devm_power_supply_register(dev, &sm8350_usb_psy_d=
-esc, &psy_cfg_supply);
-> -		if (IS_ERR(battmgr->usb_psy))
-> -			return dev_err_probe(dev, PTR_ERR(battmgr->usb_psy),
-> -					     "failed to register USB power supply\n");
-> -
-> -		battmgr->wls_psy =3D devm_power_supply_register(dev, &sm8350_wls_psy_d=
-esc, &psy_cfg_supply);
-> -		if (IS_ERR(battmgr->wls_psy))
-> -			return dev_err_probe(dev, PTR_ERR(battmgr->wls_psy),
-> -					     "failed to register wireless charing power supply\n");
-> -	}
-> -
->  	battmgr->client =3D devm_pmic_glink_register_client(dev,
->  							  PMIC_GLINK_OWNER_BATTMGR,
->  							  qcom_battmgr_callback,
-> --=20
-> 2.43.0
->=20
-
---mqekvd7hqabcdj2t
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmW3ogoACgkQ2O7X88g7
-+pr3VhAAoFg3dDtbbHT5MDapdkU7KcQ+brvQC+RcR+iftwUusNtNBZaqhatssI6q
-silJgqzKQyHJGMsWyY4vnz9J1ukcvtt1ydQc5J80AEPogFUdOdu2Sm5uyUc3pVHg
-cW5bwZK/Y3Hnzn5n2vyKstLBwM8XtZf38hIZ75+5VtUxnrfrETAAwmCXe2/5qCeO
-55bRNOoiylfqjGDXDTIU9xR2e1LIqneq+PFWeYR333fXcdQ2+dTRGiL6qeP6MtsT
-FtKvr+PcYlgLwX+AtQS2/GF6W7WTmN3ldYCbGlY07pfptfmAdE38p5FOvZM88aZb
-7Lt1qKpwl3hZ2CJiV0r0SDbnMyPsPoQ8RyFoIzuqYPiVeJBw2sBAa1Ax65//po0I
-JCgsv6Xilxt6sPr5SdXMqJ7EaNeqqS7wcsUosUq5aLx+/y1rEZluZC/Q9qB9nswT
-+L758Nvyk444LmNOvS3OmmPGW5VPuGl3EpBAsmFJm3OHLSfwrpFZ9wyPQEck+mPG
-b+ov0rqU89+5WpDQR2KML1aGzLNULisGO+F95vtYgWABFChJ+quFe6XlmIyxKomA
-XSHIVerxec78nqTxybcnoP4TG97psejfcSs1T90efIR6i8O5PlEF82azHScTbO56
-ygKk5RM7oCJw3ifhzg7U0SMzkgA4dz9wZnZ7lSJrjTAiRKbRRkA=
-=Ik1F
------END PGP SIGNATURE-----
-
---mqekvd7hqabcdj2t--
 
