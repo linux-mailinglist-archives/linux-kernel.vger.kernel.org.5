@@ -1,114 +1,110 @@
-Return-Path: <linux-kernel+bounces-42350-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5E8984000E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:27:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F770840010
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:27:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 620272847CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:27:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2ACDEB2337F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:27:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1347A54BCF;
-	Mon, 29 Jan 2024 08:27:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="QbQI+BoY"
-Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67C4E54BC9
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 08:27:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67E8253802;
+	Mon, 29 Jan 2024 08:27:42 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 616C5537ED;
+	Mon, 29 Jan 2024 08:27:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706516831; cv=none; b=LcVgziOO95KWvRvwN1k8p+LbiqF6UvO26//7iJP+U71OYOD7Ij2thTEYIeeiLhr+RMXGqxwzV6XIcNIl1EXWuXDhBi5nOFIw2iCvwT12SgDIBS9RBH/aF3WntRv0+B2YQ2xFYoL6ubVSeWQWMAuWdTN6egCAgPE1vmBI4thVsy8=
+	t=1706516862; cv=none; b=ALoiltfD8DAFbjaxYBUKv2osxCjPZsIYHhIw1BQVTk5T5yCaYIOtUoC8PdiPkD2Jd+6LBn+0/G25HeRkxXmh1k5rLcqP1KOtZW6anRA5MpiGuqu6rPB2nEOW2BmQglq6+5M++etHdEdp91D05ArSXBbS87CiVMFR7nMeSQtcIHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706516831; c=relaxed/simple;
-	bh=VTQHhMexm2ZM5TNPgBoAoj25r4Z4mVEM9XexsAZqek8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qFm1alY7ojmq9ChrzKNQE3l88qNPHJ/gy29JAo6PNFPY60lIJT4a/aev46P+cimnYaxCPIaM2QXillZA/6qxWxe/5ft8G6SJ9RsfB+g8iMq35h/3Isy7RZlYm1iWLfDViwyI7jOT7y5wEu1wRVi1Lpy33Z2F9JGZ8pqMmCr01cc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=QbQI+BoY; arc=none smtp.client-ip=209.85.160.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-206689895bfso1488613fac.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 00:27:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1706516828; x=1707121628; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VTQHhMexm2ZM5TNPgBoAoj25r4Z4mVEM9XexsAZqek8=;
-        b=QbQI+BoYDIq7HKvMtIK01yPd5Da13cQrh2e4KlQbxduVUciUPLLEXAmhk/qwcSNjaW
-         pt9cgrsqAzUxqUZ1VUBkyTaw/sjuctgxwHUoP/djyOgs80UhFV73sIfwuBC7L/jX8375
-         L8kmBOeTH3ADFyIr7CftYI9+TD3qY1AIJqEOwRbkImwm/ikDgmysKhlrWiS6vZu3Ivkt
-         24InOEQrnaEIza6JssYEIUcaNY/CifLgv9mg7qm2fs1iHUYrAmJEcS2iz0fokHXaLCJO
-         vk34ly7zEzsSDQxED7180beEtRph0SEDKOwTZKywZxY0NhFxJ3z7eFAaHOdM1zYNXyyn
-         mfuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706516828; x=1707121628;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VTQHhMexm2ZM5TNPgBoAoj25r4Z4mVEM9XexsAZqek8=;
-        b=YHMQ3FSCERuosq0uW6VMKNhSFE+DZ48BSJbU76Fmqux11UNF2gWl+fVt9bXUE6FzXm
-         Tj6vBT5ugR+jMsQpwPQWeOYbD8JhUX7Y8hNe2piNvQ9yPZOR8saedHbYSbMVh769vAG6
-         Z3j4+TYLGPbLW2lX1ILwcwOpQlOT8TpONWslVCc9/rR+kW28J3A7TQHFCcmaCv5SJjjk
-         bfBEM/wjaw8YWPIZxfbAaVyz7G3dV9C6HVSXeXQ5yP2Qmp9Tl6267O0IqOtM2xoQfq2U
-         YP2SANGUr8PeW0fAoccW1U6KL3PaGetjPCWBFoE9BTSb/Xpn+nhaLyR4veE1JX/oj2h/
-         omJw==
-X-Gm-Message-State: AOJu0Yz062I3VpU+ECMEukjMPp6onz4Th+xdtdlNAfPZsDBAosQVJOwU
-	65E9wUhA9R88P8Pd3PJHp35tHvgQhaJLY14r2DCIbch1sLQ5I0q23aSv3TG3Oq9M44iGBh8X7pV
-	D/K65RoFiSxFHYEDL6rTPM8Z6gUwIlL3q7OgIww==
-X-Google-Smtp-Source: AGHT+IFPLAegwSqjHAvBOCSs83655JR4zi9SYuPyjsFZpCFEJQW3rQNKbNKDzJKKXiyjHErjX/NSRf+SuTel1+/ZIEQ=
-X-Received: by 2002:a05:6870:5250:b0:210:da44:c885 with SMTP id
- o16-20020a056870525000b00210da44c885mr2554711oai.45.1706516828322; Mon, 29
- Jan 2024 00:27:08 -0800 (PST)
+	s=arc-20240116; t=1706516862; c=relaxed/simple;
+	bh=yul8c8KuBdTXo/dcNvUV+pw6koXcl4vGdplZ6y2p8cg=;
+	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=Ve3jqNfR8a6VmcY66mQ5LNdhxBJCmj/x1Qn/ZIwDdlnt4KZmNPczhKFz3ZT50UxqIC31bwVEqf+9bx6zBbhJ17qacs4JoiDWtIAliH/hJYuT8k/sCk+aBghNJv/5a4WXqA6IBfgb881yZ8NG0D2Z6uwER8kSsi5sWsrWd3gOWU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [113.200.148.30])
+	by gateway (Coremail) with SMTP id _____8DxmfB4YbdlIrIHAA--.24452S3;
+	Mon, 29 Jan 2024 16:27:36 +0800 (CST)
+Received: from [10.130.0.149] (unknown [113.200.148.30])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8AxX891Ybdl9hwlAA--.16337S3;
+	Mon, 29 Jan 2024 16:27:33 +0800 (CST)
+Subject: Re: [PATCH v3 0/2] selftests/vDSO: Fix errors on LoongArch
+To: Shuah Khan <shuah@kernel.org>, Shuah Khan <skhan@linuxfoundation.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Mark Brown <broonie@kernel.org>
+References: <20231213012300.5640-1-yangtiezhu@loongson.cn>
+ <d73d107d-9e04-4250-f467-f6ff7eb92103@loongson.cn>
+Cc: linux-kselftest@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <e64b3529-fb62-3ddf-bde3-b3188f386bc0@loongson.cn>
+Date: Mon, 29 Jan 2024 16:27:33 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125062044.63344-1-cuiyunhui@bytedance.com> <ZbdYijWK1PnHXn47@xhacker>
-In-Reply-To: <ZbdYijWK1PnHXn47@xhacker>
-From: yunhui cui <cuiyunhui@bytedance.com>
-Date: Mon, 29 Jan 2024 16:26:57 +0800
-Message-ID: <CAEEQ3wnSN8dLh3FcmHq5yPwQRdjLQa_VjcuTH+7YYZLOqCzaCQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] RISC-V: add uniprocessor flush_tlb_range() support
-To: Jisheng Zhang <jszhang@kernel.org>
-Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
-	alexghiti@rivosinc.com, samuel.holland@sifive.com, ajones@ventanamicro.com, 
-	mchitale@ventanamicro.com, dylan@andestech.com, 
-	sergey.matyukevich@syntacore.com, prabhakar.mahadev-lad.rj@bp.renesas.com, 
-	apatel@ventanamicro.com, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <d73d107d-9e04-4250-f467-f6ff7eb92103@loongson.cn>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:AQAAf8AxX891Ybdl9hwlAA--.16337S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj9xXoW7XFWrWF1xtFW8KFy5Ar45CFX_yoWDCwbE9F
+	W8uFWkGrZ3WFsxAF4Fg345Zr9xJFWIkr4xWry29a17Jr9IyrWDGF4rKFW09FyagFW3tr9r
+	JF4DC39avr17XosvyTuYvTs0mTUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvT
+	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+	cSsGvfJTRUUUbfAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+	vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6r4UJVWxJr1ln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
+	xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y
+	6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
+	1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWU
+	JVW8JwCFI7km07C267AKxVWUXVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
+	vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IY
+	x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
+	xKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
+	wI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8hiSPUUUUU==
 
-Hi Jisheng,
 
-On Mon, Jan 29, 2024 at 4:02=E2=80=AFPM Jisheng Zhang <jszhang@kernel.org> =
-wrote:
->
-> On Thu, Jan 25, 2024 at 02:20:44PM +0800, Yunhui Cui wrote:
-> > Add support for flush_tlb_range() to improve TLB performance for
-> > UP systems. In order to avoid the mutual inclusion of tlbflush.h
-> > and hugetlb.h, the UP part is also implemented in tlbflush.c.
->
-> Hi Yunhui,
->
-> IIRC, Samuel sent similar patch series a few weeks ago.
->
-> https://lore.kernel.org/linux-riscv/20240102220134.3229156-1-samuel.holla=
-nd@sifive.com/
->
-> After that series, do you still need this patch?
 
-Thank you for your reminder. I didn't find it before I mailed my
-patch. I just looked at the content of this patch. I understand that
-my patch is needed. For a single core, a more concise TLB flush logic
-is needed, and it is helpful to improve performance.
+On 12/27/2023 03:55 PM, Tiezhu Yang wrote:
+> + Andrew Morton <akpm@linux-foundation.org>
+> + Mark Brown <broonie@kernel.org>
+>
+> On 12/13/2023 09:22 AM, Tiezhu Yang wrote:
+>> v3: Rebase on the next branch of linux-kselftest.git,
+>>     modify the patch title and update the commit message
+>>
+>> v2: Rebase on 6.5-rc1 and update the commit message
+>>
+>> Tiezhu Yang (2):
+>>   selftests/vDSO: Fix building errors on LoongArch
+>>   selftests/vDSO: Fix runtime errors on LoongArch
+>>
+>>  tools/testing/selftests/vDSO/vdso_config.h    |  6 ++++-
+>>  .../testing/selftests/vDSO/vdso_test_getcpu.c | 16 +++++-------
+>>  .../selftests/vDSO/vdso_test_gettimeofday.c   | 26 +++++--------------
+>>  3 files changed, 18 insertions(+), 30 deletions(-)
+>>
+>
+> Hi Shuah, Andrew and Mark,
+>
+> The patches still seem to apply cleanly.
+> Could you please review and merge them for the upcoming merge window?
+>
+> https://lore.kernel.org/lkml/20231213012300.5640-1-yangtiezhu@loongson.cn/
+
+Ping, any comments?
 
 Thanks,
-Yunhui
+Tiezhu
+
 
