@@ -1,166 +1,115 @@
-Return-Path: <linux-kernel+bounces-42435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42446-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A929784015F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:25:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 552D6840170
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:27:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F6851F23B50
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:25:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 103572818D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:27:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30D3355762;
-	Mon, 29 Jan 2024 09:24:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAF125645B;
+	Mon, 29 Jan 2024 09:25:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b6VMHbKv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="oG24e5bZ"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5845655C29;
-	Mon, 29 Jan 2024 09:24:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3783255E59;
+	Mon, 29 Jan 2024 09:25:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706520286; cv=none; b=ehMg7PmPueA0NFk1iZ+ny2acIZWceqcCEMlIq8WNUKCf+SeaoiHihZWN8/eXJP5TiKjXpUiLiVwW9dQHYHKYYaLuZaQe8jnYHYXksOacZk2U2I3F3V7gjDM0Y6Kdn2ndWUS2nhKmfhf2UYNptKbnywAsTK4YZEmV58nCf8Xkj9Q=
+	t=1706520344; cv=none; b=l3j2AOeuRpZkJ8YGncg1W5V6AgZJRLuIA9HngLKUS03+orVtHoiP0dhLtiVS12DL2tgfLm2qAkwxFKWW5KzwJkTu0V1kOQSgdktSA6UmM0odgC9FSQac7xA+66k6MjHj0jkQB0+uRu/CgBP3PdtZ+NrqaQl7ReOg82I456bHRgE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706520286; c=relaxed/simple;
-	bh=CaVyL8/alkHSlyanSOlgNxf/AcPt6spU+xNLSCDKduo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=daIfGOIRjP2e8KNX0R223Nvd8Gme9B0jn6PKgcFR2dOqZQ3vfI1/TRrJT+XvoYmhDLH5RDR6R2w/GU4T0jvq4bSoP9w9kbClm2MY8CbhfV6faeL6c29HJSKg57RjqsZ3S0YVKj2bQKJVAYqFlEL4tQ1G0R5vNyB1Ks9qu0Bmooc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b6VMHbKv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8958FC433F1;
-	Mon, 29 Jan 2024 09:24:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706520285;
-	bh=CaVyL8/alkHSlyanSOlgNxf/AcPt6spU+xNLSCDKduo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=b6VMHbKvkfmIjyVW8DfjfU6DjAshN7JrYkKyqBumkbaN5uHXmHEHw0gyeWv48KCEY
-	 hNY/FHP2YbM4FLIXI3R6KcbunDu+tH2tF5EccYJjBQvh1q3hLZH1Qf6AX2J3YJ/wzQ
-	 /NR059Vl9Qj6YDj7LBVFN9Cp0+NvjuUImvin6wL+Hk9/PJ88tAaBdQt+dvhiXXyw1w
-	 mI1gJRv0OYJ6C61NIyR2q1QL9OTscf7U12Tprz5PRoapKhmc+3SyM4mV2mQhEqFCnT
-	 B12xJMzY/EKAwV+eMvwyhrSOLFqVMhMv+16qCeQJE2wa1yxatchRPP1e0vdq5hQ8ss
-	 03DawQAdEX+FA==
-Date: Mon, 29 Jan 2024 09:24:40 +0000
-From: Lee Jones <lee@kernel.org>
-To: David Laight <David.Laight@aculab.com>
-Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Petr Mladek <pmladek@suse.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Crutcher Dunnavant <crutcher+kernel@datastacks.com>,
-	Juergen Quade <quade@hsnr.de>
-Subject: Re: [PATCH 1/1] lib/vsprintf: Implement ssprintf() to catch
- truncated strings
-Message-ID: <20240129092440.GA1708181@google.com>
-References: <20240125083921.1312709-1-lee@kernel.org>
- <a37e8071-32ac-4f5d-95e8-ddd2eb21edcd@rasmusvillemoes.dk>
- <20240125103624.GC74950@google.com>
- <54e518b6dd9647c1add38b706eccbb4b@AcuMS.aculab.com>
+	s=arc-20240116; t=1706520344; c=relaxed/simple;
+	bh=vTXQcys2pfiBXQp9kkz2sFHKc7t+RLM/St6Euk2Ljxo=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=UNqXUDOx+/EivBfjB1+Dzi7J5z3XGC3IV62Ori/KWyDplQhJuXlJAwB8Xgf0ccG7wIZBOC4ezmLDZht6aSXdnqh/AZN/K+03FXyvXNc3w2JWwh45v0WtwmoPVk0jaUtN3u/82c59NDcOu1xX7UuHs4SOY8gLFj/or7CZF/n1cgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=oG24e5bZ; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40T7hJ6B024274;
+	Mon, 29 Jan 2024 09:25:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	qcppdkim1; bh=GvTpZYbedktBrcPF9cFXdQzFU7WKnC9W5xOhGOM9gms=; b=oG
+	24e5bZiUAYb7mSOMdlNmF6HxtBzMejyHpIcFwxbEZqPyj0r2YpKzgG5vnxVaA89W
+	yQWaK+ZO/gDeJh39esR58fDtwtSd3VTIyXjURAUYVwAXtqQ2FBHEzdHKzLlNihc0
+	ZkUCBx+B5xN7OtpKZqP60V+I99n7i7KryPsfwHA9ODKXrIs6aNHlBhFhM8YBhmL2
+	5vyXwWzb0WvIz+EnK7yeB/f1Hc47ka0v1tdR6UMmk1pF/7k4mbWD5Q3PqZTOvqtc
+	yRbmtbpfzYSC9RwkpqNe+QFQ5fiSSpOSh4R6FPlUsxeLuLSEQ+AhIsKXHwd+SbS7
+	WQIZC7yRw0ZzZd84HsIQ==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vx3t9rkp4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Jan 2024 09:25:37 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40T9PaLS016171
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Jan 2024 09:25:36 GMT
+Received: from tengfan2-gv.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 29 Jan 2024 01:25:30 -0800
+From: Tengfei Fan <quic_tengfan@quicinc.com>
+To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <linus.walleij@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@quicinc.com>, Tengfei Fan <quic_tengfan@quicinc.com>
+Subject: [PATCH v2 0/2] update SM4450 pinctrl document
+Date: Mon, 29 Jan 2024 17:25:10 +0800
+Message-ID: <20240129092512.23602-1-quic_tengfan@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <54e518b6dd9647c1add38b706eccbb4b@AcuMS.aculab.com>
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Omqnw8GauF4qI7dAFpRyyKDcbVeRTYvB
+X-Proofpoint-ORIG-GUID: Omqnw8GauF4qI7dAFpRyyKDcbVeRTYvB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-29_04,2024-01-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=566 phishscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0
+ impostorscore=0 clxscore=1015 spamscore=0 suspectscore=0
+ priorityscore=1501 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2401190000 definitions=main-2401290065
 
-NB: I was _just_ about to send out v2 with Rasmus's suggestions before I
-saw your reply.  I'm going to submit it anyway and Cc both you and
-Rasmus.  If you still disagree with my suggested approach, we can either
-continue discussion here or on the new version.
+Update compatible name and consolidate functions to match with SM4450
+driver.
 
-More below:
+Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+---
 
-> From: Lee Jones
-> > Sent: 25 January 2024 10:36
-> > On Thu, 25 Jan 2024, Rasmus Villemoes wrote:
-> > 
-> > > On 25/01/2024 09.39, Lee Jones wrote:
-> > > > There is an ongoing effort to replace the use of {v}snprintf() variants
-> > > > with safer alternatives - for a more in depth view, see Jon's write-up
-> > > > on LWN [0] and/or Alex's on the Kernel Self Protection Project [1].
-> > > >
-> > > > Whist executing the task, it quickly became apparent that the initial
-> > > > thought of simply s/snprintf/scnprintf/ wasn't going to be adequate for
-> > > > a number of cases.  Specifically ones where the caller needs to know
-> > > > whether the given string ends up being truncated.  This is where
-> > > > ssprintf() [based on similar semantics of strscpy()] comes in, since it
-> > > > takes the best parts of both of the aforementioned variants.  It has the
-> > > > testability of truncation of snprintf() and returns the number of Bytes
-> > > > *actually* written, similar to scnprintf(), making it a very programmer
-> > > > friendly alternative.
-> > > >
-> > > > Here's some examples to show the differences:
-> > > >
-> > > >   Success: No truncation - all 9 Bytes successfully written to the buffer
-> > > >
-> > > >     ret = snprintf (buf, 10, "%s", "123456789");  // ret = 9
-> > > >     ret = scnprintf(buf, 10, "%s", "123456789");  // ret = 9
-> > > >     ret = ssprintf (buf, 10, "%s", "123456789");  // ret = 9
-> > > >
-> > > >   Failure: Truncation - only 9 of 10 Bytes written; '-' is truncated
-> > > >
-> > > >     ret = snprintf (buf, 10, "%s", "123456789-"); // ret = 10
-> > > >
-> > > >       Reports: "10 Bytes would have been written if buf was large enough"
-> > > >       Issue: Programmers need to know/remember to check ret against "10"
-> > >
-> > > Yeah, so I'm not at all sure we need yet-another-wrapper with
-> > > yet-another-hard-to-read-prefix when people can just RTFM and learn how
-> > > to check for truncation or whatnot. But if you do this:
-> > 
-> > As wonderful as it would be for people to "just RTFM", we're seeing a
-> > large number of cases where this isn't happening.  Providing a more
-> > programmer friendly way is thought, by people way smarter than me, to be
-> > a solid means to solve this issue.  Please also see Kees Cook's related
-> > work to remove strlcpy() use.
-> 
-> My worry is that people will believe the length and forget that
-> it might be an error code.
+v1 -> v2:
+  - update patches commit message
+  - Remove excess Spaces
 
-My plan is to go around and convert these myself.  All of the examples
-in the kernel will check the return value for error.  We can go one
-further and author a Coccinelle rule to enforce the semantics.
+previous discussion here:
+[1] v1: https://lore.kernel.org/linux-arm-msm/20240124023305.15755-1-quic_tengfan@quicinc.com/
 
-> So you replace one set of errors (truncated data), with another
-> worse set (eg write before start of buffer).
+Tengfei Fan (2):
+  dt-bindings: pinctrl: qcom: update compatible name for match with
+    driver
+  dt-bindings: pinctrl: qcom: consolidate functions to match with driver
 
-Under-running the buffer is no worse over-running.  However, as I say,
-we're going to make a concerted effort to prevent that via various
-proactive and passive measures.
+ .../bindings/pinctrl/qcom,sm4450-tlmm.yaml    | 53 +++++++------------
+ 1 file changed, 18 insertions(+), 35 deletions(-)
 
-> I'm sure that the safest return for 'truncated' is the buffer length.
-> The a series of statements like:
-> 	buf += xxx(buf, buf_end - buf, .....);
-> can all be called with a single overflow check at the end.
->
-> Forget the check, and the length just contains a trailing '\0'
-> which might cause confusion but isn't going to immediately
-> break the world.
 
-snprintf() does this and has been proven to cause buffer-overflows.
-There have been multiple articles authored describing why using
-snprintf() is not generally a good idea for the masses including the 2
-linked in the commit message:
-
-LWN: snprintf() confusion
-  https://lwn.net/Articles/69419/
-
-KSPP: Replace uses of snprintf() and vsnprintf()
-  https://github.com/KSPP/linux/issues/105
-
-Yes, you should check ssprintf() for error.  This is no different to the
-many hundreds of APIs where this is also a stipulation.  Not checking
-(m)any of the memory allocation APIs for error will also lead to similar
-results which is why we enforce the check.
-
+base-commit: 596764183be8ebb13352b281a442a1f1151c9b06
 -- 
-Lee Jones [李琼斯]
+2.17.1
+
 
