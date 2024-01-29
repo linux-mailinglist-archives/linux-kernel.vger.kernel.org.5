@@ -1,148 +1,111 @@
-Return-Path: <linux-kernel+bounces-43615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDB1C8416B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 00:24:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82DDA8416C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 00:28:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CE911F23B16
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:24:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25339B23CDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:28:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF7A44F1F5;
-	Mon, 29 Jan 2024 23:24:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96BCB15B2F3;
+	Mon, 29 Jan 2024 23:25:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XFGx3Gz4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bm5vgGd8"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0626D3DB9B;
-	Mon, 29 Jan 2024 23:24:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B431A15B10E;
+	Mon, 29 Jan 2024 23:25:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706570664; cv=none; b=qWn9pZKtu6vuibyvnkULK9aXQOQTV/Fy9hTnQynyDhuAgWZODi8pzNFVZQEzSCeMn5asJ5jcE/dRPYhwlcRVLOrMxgKIYMvtVxBDLs0FxFLqDSI7eJUPzaJccCkf4HIw1b/wQ0g7iOwoOo8TcNOYXrx4rpju60rbf3FvA+e1ncc=
+	t=1706570735; cv=none; b=DdGFcFaSitVg0CFk1TaD9guK6jweLdmXjkDGBuyi6bQF7XRzc4bbghVD5wvFdzOfDcbeDeOU3IYOKuAS1Bo1DGSUf/k+qZrdEnGXk4xYzTQPuxyFT9wDQdzZsYgpTVc6xHQ0sX9THB+pySKNoNoAY7K+10f0j7dFBdRkgp2VVtQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706570664; c=relaxed/simple;
-	bh=mWUBJyBeMt6z7cjJB3+Z1M8avUCRugedRzkfc+fGegs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V8g6rAy9jlcNrqA2W5LHv8DLUZl9KK6RH2vgu6js7SaEXiYEKLXqhbCMSoikdcRXC/Sm6+PNtbhByo7hDFH1AerRlOlcjMOuonW+GJBmFjbAH224DjaGQ72d4L5HaJO6abX1HlTAADbm/dvejSi6Kj/ptz9hzzkDCEradjMYC8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XFGx3Gz4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA6A8C433C7;
-	Mon, 29 Jan 2024 23:24:22 +0000 (UTC)
+	s=arc-20240116; t=1706570735; c=relaxed/simple;
+	bh=rlXD8wrR7LGaE3yPipo4oss7yBMRHRL+ZqlHjIj2kt4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=R51wLmC5sbzyflpHWnnkqyZWC3VVXbPufEobH8x+9Zm1VjLsD0dwTTKBrSnWFAFfzGwQSromofgG00iQJ9TSJh0RNN5uqgEXBZ7JDVplM3ZxVCF1ct2C08cUVQt0pNdM4zO3mqjhPz0xrYFmN+OV/AYYxhe7ByF8T9vFSj/+Mfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bm5vgGd8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A4E9C433F1;
+	Mon, 29 Jan 2024 23:25:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706570663;
-	bh=mWUBJyBeMt6z7cjJB3+Z1M8avUCRugedRzkfc+fGegs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XFGx3Gz4PCFhvob49dUcmVxul8W3WHlmW9+lobeVGy3HBZpjUfoMc1aRNp85XYBF0
-	 1+gfotfq8dfQEgOpqgCDcRpwCrLmKaJeYOmEAeS4gXuKZIwTTOiKzjkijavns98YOu
-	 9Fd+JXT5zY9QpqMnEw79kYZ/wnghpIxIskNh23v2ZrssT19IOgkJO67j1Rnp75GdBk
-	 eKul14sWvnKMW/Z3VvAw1m8LDtc2QfKHP6SQfzYoVKnoT2IiHH/mDaa9jYdRnG7fcx
-	 +YlqUeWInh2j8WAF51pxLyToR0mT4SxfjvW5SqPGfnQh0+HJJgtSORsY2SiCEWYb8v
-	 Hz69Tqfb3FQlA==
-Date: Tue, 30 Jan 2024 00:24:17 +0100
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Viken Dadhaniya <quic_vdadhani@quicinc.com>, 
-	Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc: andersson@kernel.org, konrad.dybcio@linaro.org, 
-	linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	vkoul@kernel.org, quic_bjorande@quicinc.com, manivannan.sadhasivam@linaro.org, 
-	quic_msavaliy@quicinc.com, quic_vtanuku@quicinc.com
-Subject: Re: [V2] i2c: i2c-qcom-geni: Correct I2C TRE sequence
-Message-ID: <lib6m2bty4uilvvu544sjlezeux7ne4cx5i25j6yndicx7miaw@tvxpuekiczwh>
-References: <20240129061003.4085-1-quic_vdadhani@quicinc.com>
+	s=k20201202; t=1706570735;
+	bh=rlXD8wrR7LGaE3yPipo4oss7yBMRHRL+ZqlHjIj2kt4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=bm5vgGd8iLgqVAS89ky5CprUejORrrO+L2Fm2jCGiGp9VUCRfnTu3zsHrnPsqtld/
+	 GxZX0GpHfKiJtELlkp//qvfy+Iumzg2up1xNCtSSH96om1ftwi/oHPyzuNe8oZQdPS
+	 FVh7JCk3yR8dHonw8oFafOdyX2eu5cEadJF1NwFhWQTA3YD9WIjfeTfBKqWjttbUp2
+	 yZwdUq0oPF2A/f8W0vp7FkRZXx5Sc+i3DX+NXwp/mcouZV/6Az6J2ugDuWlE9EDosr
+	 LuWkKwPhPn4vaMObQ6+6Y8YPEZepYVK7x5GzIQFzGSW6U4iJcePs0HWzVO/oxRMOUT
+	 m5ciZiseX3ZIQ==
+Message-ID: <6f0aed31-b9a9-4655-9c8c-839f978b40d9@kernel.org>
+Date: Tue, 30 Jan 2024 08:25:31 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240129061003.4085-1-quic_vdadhani@quicinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/5] zonefs: pass GFP_KERNEL to blkdev_zone_mgmt() call
+Content-Language: en-US
+To: Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+ Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>,
+ Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
+ Mikulas Patocka <mpatocka@redhat.com>, dm-devel@lists.linux.dev,
+ Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ Chao Yu <chao@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+ Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+ Chaitanya Kulkarni <kch@nvidia.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-block@vger.kernel.org, linux-nvme@lists.infradead.org
+References: <20240128-zonefs_nofs-v3-0-ae3b7c8def61@wdc.com>
+ <20240128-zonefs_nofs-v3-1-ae3b7c8def61@wdc.com>
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20240128-zonefs_nofs-v3-1-ae3b7c8def61@wdc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Viken,
+On 1/29/24 16:52, Johannes Thumshirn wrote:
+> Pass GFP_KERNEL instead of GFP_NOFS to the blkdev_zone_mgmt() call in
+> zonefs_zone_mgmt().
+> 
+> As as zonefs_zone_mgmt() and zonefs_inode_zone_mgmt() are never called
+> from a place that can recurse back into the filesystem on memory reclaim,
+> it is save to call blkdev_zone_mgmt() with GFP_KERNEL.
 
-as Bryan has done some comments in version 1, please, Cc him to
-this patch.
+s/save/safe
 
-On Mon, Jan 29, 2024 at 11:40:03AM +0530, Viken Dadhaniya wrote:
-> For i2c read operation, we are getting gsi mode timeout due
-> to malformed TRE(Transfer Ring Element). Currently we are
-> configuring incorrect TRE sequence in gpi driver
-> (drivers/dma/qcom/gpi.c) as below
-> 
-> - Sets up CONFIG
-> - Sets up DMA tre
-> - Sets up GO tre
-> 
-> As per HPG(Hardware programming guide), We should configure TREs in below
-> sequence for any i2c transfer
-> 
-> - Sets up CONFIG tre
-> - Sets up GO tre
-> - Sets up DMA tre
-> 
-> For only write operation or write followed by read operation,
-> existing software sequence is correct.
-> 
-> for only read operation, TRE sequence need to be corrected.
-> Hence, we have changed the sequence to submit GO tre before DMA tre.
-> 
-> Tested covering i2c read/write transfer on QCM6490 RB3 board.
-> 
-> Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-> Fixes: commit d8703554f4de ("i2c: qcom-geni: Add support for GPI DMA")
-
-The format is:
-
-Fixes: d8703554f4de ("i2c: qcom-geni: Add support for GPI DMA")
-
-and goes above the SoB.
-
+> Link: https://lore.kernel.org/all/ZZcgXI46AinlcBDP@casper.infradead.org/
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > ---
-> v1 -> v2:
-> - Remove redundant check.
-> - update commit log.
-> - add fix tag.
-> ---
-> ---
->  drivers/i2c/busses/i2c-qcom-geni.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
+>  fs/zonefs/super.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
-> index 0d2e7171e3a6..da94df466e83 100644
-> --- a/drivers/i2c/busses/i2c-qcom-geni.c
-> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
-> @@ -613,20 +613,20 @@ static int geni_i2c_gpi_xfer(struct geni_i2c_dev *gi2c, struct i2c_msg msgs[], i
+> diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
+> index 93971742613a..63fbac018c04 100644
+> --- a/fs/zonefs/super.c
+> +++ b/fs/zonefs/super.c
+> @@ -113,7 +113,7 @@ static int zonefs_zone_mgmt(struct super_block *sb,
 >  
->  		peripheral.addr = msgs[i].addr;
->  
-> +		ret =  geni_i2c_gpi(gi2c, &msgs[i], &config,
-> +				    &tx_addr, &tx_buf, I2C_WRITE, gi2c->tx_c);
-> +		if (ret)
-> +			goto err;
-> +
->  		if (msgs[i].flags & I2C_M_RD) {
->  			ret =  geni_i2c_gpi(gi2c, &msgs[i], &config,
->  					    &rx_addr, &rx_buf, I2C_READ, gi2c->rx_c);
->  			if (ret)
->  				goto err;
-> -		}
-> -
-> -		ret =  geni_i2c_gpi(gi2c, &msgs[i], &config,
-> -				    &tx_addr, &tx_buf, I2C_WRITE, gi2c->tx_c);
-> -		if (ret)
-> -			goto err;
->  
-> -		if (msgs[i].flags & I2C_M_RD)
->  			dma_async_issue_pending(gi2c->rx_c);
-> +		}
-> +
+>  	trace_zonefs_zone_mgmt(sb, z, op);
+>  	ret = blkdev_zone_mgmt(sb->s_bdev, op, z->z_sector,
+> -			       z->z_size >> SECTOR_SHIFT, GFP_NOFS);
+> +			       z->z_size >> SECTOR_SHIFT, GFP_KERNEL);
+>  	if (ret) {
+>  		zonefs_err(sb,
+>  			   "Zone management operation %s at %llu failed %d\n",
 
-Bryan, could you please check here?
+I think this is OK but I will need a little more time to fully convince myself.
+So let me look again at the code to check all the calls contexts.
 
-Thanks for your review!
+-- 
+Damien Le Moal
+Western Digital Research
 
-Andi
 
