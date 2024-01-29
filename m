@@ -1,128 +1,135 @@
-Return-Path: <linux-kernel+bounces-42449-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5836984017C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:28:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1BB4840195
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:30:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B6501C22410
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:28:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E5F7281C4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:30:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 687BF5731B;
-	Mon, 29 Jan 2024 09:26:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="GWhAUBS3"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3D3B5915C;
+	Mon, 29 Jan 2024 09:28:15 +0000 (UTC)
+Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net [60.248.80.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5819C5A7A2;
-	Mon, 29 Jan 2024 09:26:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F8F056457;
+	Mon, 29 Jan 2024 09:28:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.248.80.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706520371; cv=none; b=oReQNjsM0MbugGq22iWT7RxLKi25V6NkESURB77TBOvFtZQ+QlxnRJFh5NIlqqV8IrxezlqlGdVUvXVIcUgmU9AdPumdzVM1MJahva4pNAr3JjHtx/ILmw/lHvk6ZEV+K6T8ALQH+WiaEqq1iVBCoZ5R6LAHrreJLJHJ6cY/aOw=
+	t=1706520495; cv=none; b=NIok8W0UWGLvjH7aNq+uI9qaC3jT9uIP3vh6LgVI9ZPQXuH8k+iJl77UtAxbXueDdk1Vt72UXK+HjozYiceGrgrva8XJ4Hlm9nPDdx1dr4hLDRMc/SVqHahYjcd8dzYK4C5ot0BRGd1gBpYEATVJreF79qB3TE2KnP+OKu3hRA0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706520371; c=relaxed/simple;
-	bh=mD3BBaDSM6iKFRlP8495Jtw65FYthsPspbosIc10CTE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BBZu48o3t+lZ4Z7T66OGuC2hoci1gT6cox6Lita3AOnrt36pAhiW2ywhAG8xI/4v5qKYxXnLdSSToSwCMuNS6lJMJHInCkH1GApwbULSSpCi+xsPfrZzhlTofcdzQ/NwEJxt9mA8VubXp8m3IjC9TeP6rqof7cov0/jnfMA7vks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=GWhAUBS3; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B8C9540E0177;
-	Mon, 29 Jan 2024 09:25:58 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id EA-2cmC2PRoN; Mon, 29 Jan 2024 09:25:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706520355; bh=qIiXCGyqKwu2QJF8jAU5+a3LK41+trpgQG/R/t4oxjU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GWhAUBS3cS8L2SWwymaUv/gjaVObXWOINDOJFg6HEQ5FHeirOyVJ98u9n/6yb6ZLw
-	 jdfgtFZDdeK6ztDmlJjCoTKdycnkyCIlTdrGyrRzKiEYxYpu4Gehz8HgrMRz8ggYpJ
-	 UjvubAIIEE5CiK6JWn1/UGpza09rPXRrr4p7ZfNy9aOMEZms1TCjnPE/HDXWWShjkt
-	 HcfF8cH1g6A3hJrhiozPWoVbQqxel/YyfIslLG0CxQrrPhOtWjVeQ7zknVISzFbIFD
-	 8aHH+KVVuemUW80hIP3xhnRbEdYLWzVW6uRtY8RYQG9I9ZbvbM66KgSQJ8WC1ZJgk+
-	 QhrsY9dW283HuO6Lefy2jYCO5fmJLTAvOdbrQ4RPYTcK38BhXrR9dNIxG4YWsikDb6
-	 ZDQHMo/Wnb6MwPAlbNCriQAvGF9s+0NP2KSIgPu/FMZ/7m3PBzFx2Xgel9lPXE2q4M
-	 x64tP/3OKOdgmFlAVTXt6xIkVEHq+e3c58XxvEcg3rihLVsJXflL5Tlt7hWEXcOp2i
-	 b7mrfEB67NO+0rVGscj3ivW6c/w2Fofm1YskupDKDB/YhpANUkHFiinmuTZP4EZwG5
-	 G0Qg56j3ffprNxSCSJxaJ11RO290mr2HqzPWM3EGqXMO+Z0eUWTRzEunpVN/zRj2G2
-	 ddpwGuDQ8kW1REHYnLka5Va0=
-Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D3D0440E016C;
-	Mon, 29 Jan 2024 09:25:47 +0000 (UTC)
-Date: Mon, 29 Jan 2024 10:25:41 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
-	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
-	john.allen@amd.com, Muralidhara M K <muralidhara.mk@amd.com>
-Subject: Re: [PATCH] RAS/AMD/ATL: Add MI300 support
-Message-ID: <20240129092541.GAZbdvFbXrdpENB97h@fat_crate.local>
-References: <20240128155950.1434067-1-yazen.ghannam@amd.com>
+	s=arc-20240116; t=1706520495; c=relaxed/simple;
+	bh=V9Y1yX1zp9r8SCxikLX3xMWBS5X1n6TApm7GyCBw5Kw=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=oO+HBYb+h6o4e0N3OQ33Ejc+SDRSUDQE+JdqBk8sc6NqUxN53Rip1P+r9LLGTi8qLKKzcgdZqzZZhojOeJTyqvWiVr0o0onTw8c8/+zdqi9W0W2gmZm23V6U/limOwe9zZfWRWq8/DNrsoYHpy5Jg5R00dIqXgIz3dtJw+Qf/D0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=andestech.com; spf=pass smtp.mailfrom=andestech.com; arc=none smtp.client-ip=60.248.80.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=andestech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=andestech.com
+Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
+	by Atcsqr.andestech.com with ESMTP id 40T9Pxn0079984;
+	Mon, 29 Jan 2024 17:25:59 +0800 (+08)
+	(envelope-from peterlin@andestech.com)
+Received: from swlinux02.andestech.com (10.0.15.183) by ATCPCS16.andestech.com
+ (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0; Mon, 29 Jan 2024
+ 17:25:58 +0800
+From: Yu Chien Peter Lin <peterlin@andestech.com>
+To: <acme@kernel.org>, <adrian.hunter@intel.com>, <ajones@ventanamicro.com>,
+        <alexander.shishkin@linux.intel.com>, <andre.przywara@arm.com>,
+        <anup@brainfault.org>, <aou@eecs.berkeley.edu>,
+        <atishp@atishpatra.org>, <conor+dt@kernel.org>,
+        <conor.dooley@microchip.com>, <conor@kernel.org>,
+        <devicetree@vger.kernel.org>, <evan@rivosinc.com>,
+        <geert+renesas@glider.be>, <guoren@kernel.org>, <heiko@sntech.de>,
+        <irogers@google.com>, <jernej.skrabec@gmail.com>, <jolsa@kernel.org>,
+        <jszhang@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-perf-users@vger.kernel.org>,
+        <linux-renesas-soc@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+        <linux-sunxi@lists.linux.dev>, <locus84@andestech.com>,
+        <magnus.damm@gmail.com>, <mark.rutland@arm.com>, <mingo@redhat.com>,
+        <n.shubin@yadro.com>, <namhyung@kernel.org>, <palmer@dabbelt.com>,
+        <paul.walmsley@sifive.com>, <peterlin@andestech.com>,
+        <peterz@infradead.org>, <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        <rdunlap@infradead.org>, <robh+dt@kernel.org>, <samuel@sholland.org>,
+        <sunilvl@ventanamicro.com>, <tglx@linutronix.de>,
+        <tim609@andestech.com>, <uwu@icenowy.me>, <wens@csie.org>,
+        <will@kernel.org>, <inochiama@outlook.com>, <unicorn_wang@outlook.com>,
+        <wefu@redhat.com>
+Subject: [PATCH v8 00/10] Support Andes PMU extension
+Date: Mon, 29 Jan 2024 17:25:43 +0800
+Message-ID: <20240129092553.2058043-1-peterlin@andestech.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240128155950.1434067-1-yazen.ghannam@amd.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL:Atcsqr.andestech.com 40T9Pxn0079984
 
-On Sun, Jan 28, 2024 at 09:59:50AM -0600, Yazen Ghannam wrote:
-> From: Muralidhara M K <muralidhara.mk@amd.com>
-> 
-> AMD MI300 systems include on-die HBM3 memory and a unique topology. And
-> they fall under Data Fabric version 4.5 in overall design.
-> 
-> Generally, topology information (IDs, etc.) is gathered from Data Fabric
-> registers. However, the unique topology for MI300 means that some
-> topology information is fixed in hardware and follows arbitrary
-> mappings. Furthermore, not all hardware instances are software-visible,
-> so register accesses must be adjusted.
-> 
-> Recognize and add helper functions for the new MI300 interleave modes.
-> Add lookup tables for fixed values where appropriate. Adjust how Die and
-> Node IDs are found and used.
-> 
-> Also, fix some register bitmasks that were mislabeled.
-> 
-> Signed-off-by: Muralidhara M K <muralidhara.mk@amd.com>
-> Co-developed-by: Yazen Ghannam <yazen.ghannam@amd.com>
-> Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
+Hi All,
 
-Applied, thanks.
+This patch series introduces the Andes PMU extension, which serves the
+same purpose as Sscofpmf and Smcntrpmf. Its non-standard local interrupt
+is assigned to bit 18 in the custom S-mode local interrupt enable and
+pending registers (slie/slip), while the interrupt cause is (256 + 18).
 
-> ---
-> Notes:
-> This patch is based on patches 2, 4, and 5 from the following set.
-> https://lore.kernel.org/r/20231129073521.2127403-1-muralimk@amd.com
-> 
-> Patch 3 from above set is still needed for complete MI300 address
-> translation support. This will be the first to follow.
-> 
-> Patch 6 from above set is needed for expanding page retirement on MI300
-> systems. This will be the second to follow.
-> 
-> Patch 1 from above set adds MI200 support to ATL. This will be deferred
-> until after priority MI300 updates.
+Linux patches based on:
+- ed5b7cf ("riscv: errata: andes: Probe for IOCP only once in boot stage")
+It can be found on Andes Technology GitHub:
+- https://github.com/andestech/linux/commits/andes-pmu-support-v8
 
-Yap, agreed.
+The PMU device tree node used on AX45MP:
+- https://github.com/riscv-software-src/opensbi/blob/master/docs/pmu_support.md#example-3
 
-Thx.
+Locus Wei-Han Chen (1):
+  riscv: andes: Support specifying symbolic firmware and hardware raw
+    events
+
+Yu Chien Peter Lin (9):
+  riscv: errata: Rename defines for Andes
+  irqchip/riscv-intc: Allow large non-standard interrupt number
+  irqchip/riscv-intc: Introduce Andes hart-level interrupt controller
+  dt-bindings: riscv: Add Andes interrupt controller compatible string
+  riscv: dts: renesas: r9a07g043f: Update compatible string to use Andes
+    INTC
+  perf: RISC-V: Eliminate redundant interrupt enable/disable operations
+  perf: RISC-V: Introduce Andes PMU to support perf event sampling
+  dt-bindings: riscv: Add Andes PMU extension description
+  riscv: dts: renesas: Add Andes PMU extension for r9a07g043f
+
+ .../devicetree/bindings/riscv/cpus.yaml       |   6 +-
+ .../devicetree/bindings/riscv/extensions.yaml |   7 +
+ arch/riscv/boot/dts/renesas/r9a07g043f.dtsi   |   4 +-
+ arch/riscv/errata/andes/errata.c              |  10 +-
+ arch/riscv/include/asm/errata_list.h          |  13 +-
+ arch/riscv/include/asm/hwcap.h                |   1 +
+ arch/riscv/include/asm/vendorid_list.h        |   2 +-
+ arch/riscv/kernel/alternative.c               |   2 +-
+ arch/riscv/kernel/cpufeature.c                |   1 +
+ drivers/irqchip/irq-riscv-intc.c              |  88 ++++++++++--
+ drivers/perf/Kconfig                          |  14 ++
+ drivers/perf/riscv_pmu_sbi.c                  |  37 ++++-
+ include/linux/soc/andes/irq.h                 |  18 +++
+ .../arch/riscv/andes/ax45/firmware.json       |  68 ++++++++++
+ .../arch/riscv/andes/ax45/instructions.json   | 127 ++++++++++++++++++
+ .../arch/riscv/andes/ax45/memory.json         |  57 ++++++++
+ .../arch/riscv/andes/ax45/microarch.json      |  77 +++++++++++
+ tools/perf/pmu-events/arch/riscv/mapfile.csv  |   1 +
+ 18 files changed, 494 insertions(+), 39 deletions(-)
+ create mode 100644 include/linux/soc/andes/irq.h
+ create mode 100644 tools/perf/pmu-events/arch/riscv/andes/ax45/firmware.json
+ create mode 100644 tools/perf/pmu-events/arch/riscv/andes/ax45/instructions.json
+ create mode 100644 tools/perf/pmu-events/arch/riscv/andes/ax45/memory.json
+ create mode 100644 tools/perf/pmu-events/arch/riscv/andes/ax45/microarch.json
 
 -- 
-Regards/Gruss,
-    Boris.
+2.34.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
