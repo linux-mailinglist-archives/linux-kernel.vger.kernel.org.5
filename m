@@ -1,240 +1,115 @@
-Return-Path: <linux-kernel+bounces-43045-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68A76840AB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:00:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62C99840AB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:00:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77E9CB24073
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:00:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95B961C24166
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:00:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95A6A155317;
-	Mon, 29 Jan 2024 16:00:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94C93155316;
+	Mon, 29 Jan 2024 16:00:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DkR+Sn31"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="eH5y4ydM"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B32BD1552FE;
-	Mon, 29 Jan 2024 16:00:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13D0A155304;
+	Mon, 29 Jan 2024 16:00:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706544025; cv=none; b=MukbeoP4L0oeXZg1VeLzoVDvHkT6MRvrDbLpk2ximvohRlZik8A8ClISaPjtyomFRYvTFE0Ci8zKOo+WMDLtdcWMG6uiLnJPSIrHxmdaj3QbL4etUyDm5KWTox/Ys/3BCCgkzPrwNDbGMYx/viCBmAb7JgPGOXyecCMmePieQHc=
+	t=1706544016; cv=none; b=lVV1Gcy99AQ7/CiGJxFRgi88si9ERyeTQXGY5nS3FIflJYqliWQTH5E+VSPQcYYitLzhjCEs7ONZ/eZQks0jVyUqfNk1tALWzEcgVBQnZ2SCqGNAkpQZ/j05KCQRKtQWjtXn1to9LEnmIkBvfSaA9ODru2zCD1OgFghRjF5QdYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706544025; c=relaxed/simple;
-	bh=d7kTJL5yA5KYsTfmmiVBkb+irsEYdcGncOobIUTBvxE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sxzXNoEifFBtMvUVLRJIlL7lV1YwVCwZoz8Heorpi58/xn6k9js5C/CTfsjNst6nrMJvn+oopRkJY1VF6NpKl+To0cytj0NyEQQQlO7UOKJFJ+zZ7Whx8JpqzWPscRmvXszu6fSNdQbuc3Yh4Ba/te35qpTbvlB7b8Xv4isr/tY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DkR+Sn31; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABB10C43390;
-	Mon, 29 Jan 2024 16:00:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706544024;
-	bh=d7kTJL5yA5KYsTfmmiVBkb+irsEYdcGncOobIUTBvxE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DkR+Sn31qxVYwJj06PpjCcnkbakbuOXyswHUgHAnUQxfxXuPYNH9/AdJPIr9DFudP
-	 7LD2UJC56+6JehOKTitGXlPtwrjbpzXsQhY19AOlKRn4t9RNs42NrunwuYV9vv6lA1
-	 SiSCglNYWNiqIQw5ttetpifKZ3RfoiXarniIMKQ5NUSMMT08dXxutjpUURWMjl+tGQ
-	 2wio/1VoLqIPLC8pvOO0mJhnQGWhgY6K24EazISnuG88jFNx2Dzo5N7gn9LTFOPEV1
-	 sUa4FhHgfBDMvX+gGwGd0/ozZQvf3lOKBqq9Q1PK0pmooqSXJSRJDNUc1GWYpPuaGl
-	 /uJICIXalHPaw==
-Date: Mon, 29 Jan 2024 21:30:00 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Brian Masney <bmasney@redhat.com>,
-	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
-	vireshk@kernel.org, quic_vbadigan@quicinc.com,
-	quic_skananth@quicinc.com, quic_nitegupt@quicinc.com,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 6/6] PCI: qcom: Add OPP support to scale performance
- state of power domain
-Message-ID: <20240129160000.GF22617@thinkpad>
-References: <20240112-opp_support-v6-0-77bbf7d0cc37@quicinc.com>
- <20240112-opp_support-v6-6-77bbf7d0cc37@quicinc.com>
+	s=arc-20240116; t=1706544016; c=relaxed/simple;
+	bh=d6TFGi8BNctQDCOOatr9FnKfaGcVCb8rRipdC9S04zA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lvYOK9a9mCRbWIjEGm5C6tnFMaNwgThrQ4caiL0ywzj/KyxXpVt14l+WQEV428FvfRxLMjr642JRXzP2Jz9TmyoDu7k4I3G0IUjnDpq0PrcyF52jP/rikoJpGOMUhfiBSMHfJP80ZGZ//XkUJ9pMea9HHpw5ZstH5SxPKFPxh38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=eH5y4ydM; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1706544004;
+	bh=d6TFGi8BNctQDCOOatr9FnKfaGcVCb8rRipdC9S04zA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=eH5y4ydMRbjU95Ip5rq/FteulTBNtfQKx8mOIFp1ZYUmBoPKXEL40d2RlYMIfhbVx
+	 +TiWTWQ0BxCUziwp5QxjUncNLRFiqB5dptErtl+YbgRmL8yI2BmHrCTtVrZxhiC8Fg
+	 vT1kyFfHfAhPY0KG8ueGARoBM3M03Rb543NWzPz3SR0+2DqBH9nSU65sOcCREVE+89
+	 n+wSkfoOcBNepLWJTEXGLl/ad+bd4DtyOKSEwmHj4QJ9oOVGZjTHOEo6YPVszVFRZo
+	 umqepby1hblCNj/hBrn66bW7B8Y7pR3uwo7moTgpoZ5nVFv38om2wIi9OL7rICI5tC
+	 oCqmB+19MyMag==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TNtKw3S5fzVXK;
+	Mon, 29 Jan 2024 11:00:04 -0500 (EST)
+Message-ID: <3120f1f0-eaf8-4058-9a65-bdbee28c68c9@efficios.com>
+Date: Mon, 29 Jan 2024 11:00:04 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240112-opp_support-v6-6-77bbf7d0cc37@quicinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
+Content-Language: en-US
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, LKML
+ <linux-kernel@vger.kernel.org>,
+ Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Christian Brauner <brauner@kernel.org>, Ajay Kaher
+ <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20240126150209.367ff402@gandalf.local.home>
+ <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
+ <20240126162626.31d90da9@gandalf.local.home>
+ <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
+ <CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
+ <8547159a-0b28-4d75-af02-47fc450785fa@efficios.com>
+ <CAHk-=whAG6TM6PgH0YnsRe6U=RzL+JMvCi=_f0Bhw+q_7SSZuw@mail.gmail.com>
+ <29be300d-00c4-4759-b614-2523864c074b@efficios.com>
+ <CAHk-=wjpyv+fhxzV+XEQgsC+-HaouKT7Ns8qT31jkpN_Jm84_g@mail.gmail.com>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <CAHk-=wjpyv+fhxzV+XEQgsC+-HaouKT7Ns8qT31jkpN_Jm84_g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jan 12, 2024 at 07:52:05PM +0530, Krishna chaitanya chundru wrote:
-> QCOM Resource Power Manager-hardened (RPMh) is a hardware block which
-> maintains hardware state of a regulator by performing max aggregation of
-> the requests made by all of the processors.
+On 2024-01-26 17:49, Linus Torvalds wrote:
+> On Fri, 26 Jan 2024 at 14:41, Mathieu Desnoyers
+> <mathieu.desnoyers@efficios.com> wrote:
+>>
+>> Yes, there is even a note about stat.st_size in inode(7) explaining
+>> this:
 > 
+> Good. Send a patch to do the same for st_ino.
 
-s/processors/clients
+This breaks "cp -aH" and "cp -aL". Even setting st_nlink={0,1}
+does not help there, from coreutils 9.1:
 
-> PCIe controller can operate on different RPMh performance state of power
-> domain based up on the speed of the link. And this performance state varies
-> from target to target.
-> 
-> It is manadate to scale the performance state based up on the PCIe speed
-> link operates so that SoC can run under optimum power conditions.
-> 
-> Add Operating Performance Points(OPP) support to vote for RPMh state based
-> upon GEN speed link is operating.
-> 
-> OPP can handle ICC bw voting also, so move icc bw voting through opp
-> framework if opp entries are present.
-> 
-> In PCIe certain gen speeds like GEN1x2 & GEN2X1 or GEN3x2 & GEN4x1 use
-> same icc bw and has frequency, so use frequency based search to reduce
-> number of entries in the opp table.
-> 
-> Don't initialize icc if opp is supported.
-> 
-> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 83 ++++++++++++++++++++++++++++------
->  1 file changed, 70 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index 035953f0b6d8..31512dc9d6ff 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -22,6 +22,7 @@
->  #include <linux/of.h>
->  #include <linux/of_gpio.h>
->  #include <linux/pci.h>
-> +#include <linux/pm_opp.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/platform_device.h>
->  #include <linux/phy/pcie.h>
-> @@ -244,6 +245,7 @@ struct qcom_pcie {
->  	const struct qcom_pcie_cfg *cfg;
->  	struct dentry *debugfs;
->  	bool suspended;
-> +	bool opp_supported;
->  };
->  
->  #define to_qcom_pcie(x)		dev_get_drvdata((x)->dev)
-> @@ -1404,16 +1406,14 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
->  	return 0;
->  }
->  
-> -static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
-> +static void qcom_pcie_icc_opp_update(struct qcom_pcie *pcie)
->  {
->  	struct dw_pcie *pci = pcie->pci;
-> -	u32 offset, status;
-> +	u32 offset, status, freq;
-> +	struct dev_pm_opp *opp;
->  	int speed, width;
->  	int ret;
->  
-> -	if (!pcie->icc_mem)
-> -		return;
-> -
->  	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
->  	status = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
->  
-> @@ -1424,11 +1424,42 @@ static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
->  	speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, status);
->  	width = FIELD_GET(PCI_EXP_LNKSTA_NLW, status);
->  
-> -	ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
-> -	if (ret) {
-> -		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
-> -			ret);
-> +	if (pcie->opp_supported) {
-> +		switch (speed) {
-> +		case 1:
-> +			freq = 2500000;
-> +			break;
-> +		case 2:
-> +			freq = 5000000;
-> +			break;
-> +		case 3:
-> +			freq = 8000000;
-> +			break;
-> +		default:
-> +			WARN_ON_ONCE(1);
-> +			fallthrough;
-> +		case 4:
-> +			freq = 16000000;
-> +			break;
-> +		}
+copy_internal():
 
-This switch case is PCIe generic, so need to be moved to drivers/pci/pci.c.
-There is already an API, pcie_link_speed_mbps() that returns the frequency in
-MBps but uses the pcie_capability_read_word() API to read LNKSTA of the device.
+[...]
+   else if (x->preserve_links
+            && !x->hard_link
+            && (1 < src_sb.st_nlink
+                || (command_line_arg
+                    && x->dereference == DEREF_COMMAND_LINE_ARGUMENTS)
+                || x->dereference == DEREF_ALWAYS))
+     {
+       earlier_file = remember_copied (dst_relname,
+                                       src_sb.st_ino, src_sb.st_dev);
+     }
 
-But you can move the switch case inside that API to a separate function and
-reuse that here.
+Thanks,
 
-> +
-> +		opp = dev_pm_opp_find_freq_exact(pci->dev, freq * width, true);
-> +		if (!IS_ERR(opp)) {
-> +			ret = dev_pm_opp_set_opp(pci->dev, opp);
-> +			if (ret)
-> +				dev_err(pci->dev, "Failed to set opp: freq %ld ret %d\n",
-> +					dev_pm_opp_get_freq(opp), ret);
-> +			dev_pm_opp_put(opp);
-> +		}
-> +	} else {
-> +		ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
-> +		if (ret) {
-> +			dev_err(pci->dev, "failed to set interconnect bandwidth for pcie-mem: %d\n",
-> +				ret);
-> +		}
->  	}
-> +
-> +	return;
->  }
->  
->  static int qcom_pcie_link_transition_count(struct seq_file *s, void *data)
-> @@ -1471,8 +1502,10 @@ static void qcom_pcie_init_debugfs(struct qcom_pcie *pcie)
->  static int qcom_pcie_probe(struct platform_device *pdev)
->  {
->  	const struct qcom_pcie_cfg *pcie_cfg;
-> +	unsigned long max_freq = INT_MAX;
->  	struct device *dev = &pdev->dev;
->  	struct qcom_pcie *pcie;
-> +	struct dev_pm_opp *opp;
->  	struct dw_pcie_rp *pp;
->  	struct resource *res;
->  	struct dw_pcie *pci;
-> @@ -1539,9 +1572,33 @@ static int qcom_pcie_probe(struct platform_device *pdev)
->  		goto err_pm_runtime_put;
->  	}
->  
-> -	ret = qcom_pcie_icc_init(pcie);
-> -	if (ret)
-> +	 /* OPP table is optional */
-> +	ret = devm_pm_opp_of_add_table(dev);
-> +	if (ret && ret != -ENODEV) {
-> +		dev_err_probe(dev, ret, "Failed to add OPP table\n");
->  		goto err_pm_runtime_put;
-> +	}
-> +
-> +	/* vote for max freq in the opp table if opp table is present */
+Mathieu
 
-/*
- * Use highest OPP here if the OPP table is present. At the end of the probe(),
- * OPP will be updated using qcom_pcie_icc_opp_update().
- */
-
-- Mani
 
 -- 
-மணிவண்ணன் சதாசிவம்
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
 
