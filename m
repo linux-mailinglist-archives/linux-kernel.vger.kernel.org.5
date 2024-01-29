@@ -1,150 +1,157 @@
-Return-Path: <linux-kernel+bounces-43133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7EC1840BF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:43:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 582A7840BF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:43:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59E101F245A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:43:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A8A4B28E6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:43:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DFF0156980;
-	Mon, 29 Jan 2024 16:43:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D032115702E;
+	Mon, 29 Jan 2024 16:43:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="MloSh6nH"
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2040.outbound.protection.outlook.com [40.107.247.40])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="laRNPT3c"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A837715696E
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 16:43:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.247.40
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706546600; cv=fail; b=Z7AK7IvSRgrlNOD+K9AbUJIh3tstE5l6M2DKu11tKVGkkvS9OF9Cqo4HhYnlEX+hUvA5jUPKTvYk/xpnhWpl+EaGQc2cgCwib1r9G4hcmcuC/dIzdrzipXrbpHGCwiwxtiJYwdkUO0CIoAnRKV07Y2EDupWk5Wr+8eyNjQuZPDw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706546600; c=relaxed/simple;
-	bh=dfO9x7HjRcoCexUmQTo6QfAHq3TbYjd4vEZp3I8mlLA=;
-	h=From:To:Subject:Date:Message-Id:Content-Type:MIME-Version; b=WaXq1lTFmXfab8PoEUqDH8rxZ42/Uf5GqHRaqsLj22LdYoO2H4AjRsuMTpGO4m7Js84P6OVXmM7qRtaU92TjpXrvoFw85h+I9fdovvZozFcLMkAMXM3EIcaR/vrDHYG7vo2sP8G9UHwbdTQgxD0Apl5Pzi+zdhU03tNmyjMP19M=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=MloSh6nH; arc=fail smtp.client-ip=40.107.247.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XcsvDCwKJyrAwBgSXYqGKnt+1yI+MwLUy34dh7UlgAg0GjuaOk4O7DGFdTNYlQ3zJv+hXXhKaM8p2Gvn7Vu4syvgfNv1GOTwg3owI8eyysU08isWDddstq39Wl0o5B4fqNhRzNQupW3ENCWe+QoHyC3YkMWI9BLcPAILbEUEn1Lbt63YQRqDcKsMNHLA3s6Ph+mEtWlJpTZIU2rR5sQi6h7UBk3+mdHvxtIaQ6B56AAYCkvTimvDSjDY1Vkb4oSFVmzhaCZbckMCGbV5TzdJlkujIaCY//1y2TnWZytyqYyx+vMZ+qh2eops4lqaLNwjeIMUFIF/YTnVFrddtyoQJw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=l8Pmnh6ljAenpNpQJUacdgaNEBqTpmwj9v1N0Y5NdcA=;
- b=NuRG/4ommA9hEvAtijF0K3QfGvYlb7HAwNa4ToO4ILNg2NbidfE1UuYe0Ox9p1e5a/lDg/GhWI9aznZY3BxW5uwF7t06yoL+mJpVbSJNIB2mwdNbbw3woLEATalBO19BAu/UQtNz1GI82JsX7XyVCTv/dG63K8Qj4/+xVa3kglrGIohDsJIuXnw9kHjBNYp3/tbQTX/C8UBfysVTV9RRVa+V7QkvDNIw3Q30KEyuxKRE0XfEoU+aIsvtml4FuqdlA3mdArYtAVAMJpok9I4ZD0Olec+MyCbXeu0sDGWHe+/KF5TH21NQ/W7sZQPdFZ1MjOt09a7jRE3NwqFTCCl27A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l8Pmnh6ljAenpNpQJUacdgaNEBqTpmwj9v1N0Y5NdcA=;
- b=MloSh6nHqQ8w8BZ7pZwIOef7UXkDKBzb+sag5dawXZ1fTZcE6b1DWqB5hwwCgCTyh8RzHjV5szo4AwWYHHwTSyXNWv1RCWF1mkUAJE7fq90VjIcEMoPPaa4VI2CrvPxHVJpJp9RUFjgtpzcyDHxpX6+2Yn4+wDBepZUJK9i+mTU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by VI1PR04MB7088.eurprd04.prod.outlook.com (2603:10a6:800:11d::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Mon, 29 Jan
- 2024 16:43:15 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7228.029; Mon, 29 Jan 2024
- 16:43:15 +0000
-From: Frank Li <Frank.Li@nxp.com>
-To: imx@lists.linux.dev,
-	well@kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 1/1] MAINTAINERS: add mail list for freescale imx ddr pmu driver
-Date: Mon, 29 Jan 2024 11:42:57 -0500
-Message-Id: <20240129164257.193176-1-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR06CA0004.namprd06.prod.outlook.com
- (2603:10b6:a03:d4::17) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F12A15696E;
+	Mon, 29 Jan 2024 16:43:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706546609; cv=none; b=kuNj0dJHWDIm08Gz+Iywlyibg6P5JIOk3CnSoGKWbUXhY8MRjIY7eYTUgIhzowUUMFQQsmYjVQ+IXAV27SzPkTSCtF7DrvVWjAvmRP/5mKHEFXQZIjNbkvULLMOD6wa8c780D9LkLfAQTC3s1+wYIameZMsK+hc8nsfHwmgLD50=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706546609; c=relaxed/simple;
+	bh=voj97DXC6XBrs98JAwhjCQUkvl5U2tQpl3APSKbLqyI=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=gCZ82/xDxSKe8Ki0KK54YirXJzt0+aSDX0E3h5QniveFNm6C+SyerAOWc/BQZIUFtt06AvsX1yIdElBQF5v1k4I+wbttZiMXwZ2soXP/zCQwcCenlpnvdalPT0Ihm4gN+gwcu22k5hh++kESM7W9TLjEX6gKbzuSLfSYWnkYVUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=laRNPT3c; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBFCCC433F1;
+	Mon, 29 Jan 2024 16:43:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706546608;
+	bh=voj97DXC6XBrs98JAwhjCQUkvl5U2tQpl3APSKbLqyI=;
+	h=From:Date:Subject:To:Cc:From;
+	b=laRNPT3cOAwnQoEFi3BWxg44C7ZxS1WSuHp4MA7uMGDaOp2GkeTHIXBRppySguNeV
+	 zIm/Q9MeLm3smjFn8s177bZPzIgKHhYx61fkXfnO8bDJpkyiPr534K3g/TiWW637eq
+	 Uiy9Lq4eXf6k4lRiJNYFCnhtAXTSx0Ce9L4ZZeZciykEgois3svBp5qefEtc7O/h7w
+	 Wh26qh9Y28cBikTd7OYuh/l4H8cNhcX3uzLEv/WyGApedFwBz/HczZBiEnIS+hqNhD
+	 Pq9oJzuRvQ42fEkxscPIcqoyeIBP7n0HoDVU4SfriVPL3DV6H7mxHjmRRNWj+npqkU
+	 2VEcSL1WZskQQ==
+From: Jeff Layton <jlayton@kernel.org>
+Date: Mon, 29 Jan 2024 11:43:15 -0500
+Subject: [PATCH] sunrpc: fix assignment of to_retries in svc_process_bc
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|VI1PR04MB7088:EE_
-X-MS-Office365-Filtering-Correlation-Id: fa5f2f72-9c5e-47e0-d8b3-08dc20e9636f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	8O/qO4H1mwj7lTl3zr1cW1TYx+LUHlJaHZsvFo77Rguyi4u3QXamMQkuMGbwVk90XXkGWDD0yFE919GpMiKm+NICs1yzb9Ia/eULHhvIaaIKeEHeLe3nCHcyIJNSWignCIpZY9rfARHCcmbx3leMbjZHQIHUPOApfg8XLRT75nLBtvccbW+KYlJEM7tezfFRsi5yitKQFWixtNt/uqV3idlkwKkBHYF86UtCHlyZG+fV12l0Z4ouONf7eEUgxDX2Cwdohl+qzYRB+wq97XZbU+P4cU9ztdIdfQKQDaNjW2ltSrEGnTKC501y2F9ocXoP5HpCzuNWSGuysRSmpqBxLSv0qAzopt82xzn4mfw9KvtbkDunpPT3J7phvYOkeS0tKXW4OlZmeTWzjo4mouDsu6uA3c/vhW3H0G8mmJ/4+h3yFZQ2U7KIWtWTwWUTQusiIQ+UvcrVFng1+Enf3yZax5wfFkmoRw2Zxd4VuWgXKUUQJvNIU+9UyFGqQvBOMS/T+nowGvdGyVL8eDIYvQ9493x7OCUxBBqCZi5a7sQZxuNGI8gQA1VDP51opo910iLL3gcawQNqlxxNb87xnH4zKkwwMFxKp3xrWdxu5MgUOSxaSBjDIAgTSHdq5ZdRgdim
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(396003)(39860400002)(346002)(136003)(230922051799003)(186009)(451199024)(109986022)(1800799012)(64100799003)(83380400001)(6486002)(478600001)(52116002)(86362001)(6666004)(38100700002)(5660300002)(6506007)(6512007)(2616005)(8676002)(36756003)(2906002)(4744005)(316002)(8936002)(38350700005)(66476007)(66556008)(66946007)(26005)(1076003)(41300700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Q+vtAmsoWlHW3uK7JzW111xNntLEpdU4iSv6Rr+UjvU6885uowMynx5t9119?=
- =?us-ascii?Q?4qox2CFpi0oQScitNqJkn8eB+5fRk19YwpUSTC7s0QaRaaBCmj1o0ftKnHEW?=
- =?us-ascii?Q?rhAIzvxF275awHhE43u7PDrKkC6h65Q7teaZfl1DB0gUiryTrHRErdtc6zxM?=
- =?us-ascii?Q?M01mERFTNK6ZF8TJggCRz3yig1TvxGsGxxDBPE5AWWpExCFvKhtwXbDYd1fb?=
- =?us-ascii?Q?8oQoPVO7wnTzEnxm7CKHHqJcRfe5rB7XTxCPHsoJKon4bRtFAABSJOSZbksw?=
- =?us-ascii?Q?Wlnv//sAXqDnqETKckjU9om8MaFtksIZbjNdyhbNjGuCGkddu0696a5kK2w1?=
- =?us-ascii?Q?QdhF3ETtgDx9mv3lvOyqqdQ+DpWps5k4r917NKEWhxDx5lvMhUN3i2DM5TUa?=
- =?us-ascii?Q?0uZjx3fyxWB58kUTau079OXiuoAeTZVIhVuTvIM2J8EVGaMo1GQ/fcRfrsb+?=
- =?us-ascii?Q?PA45arMdZv26RUR55zxBlL6lQvqJyf4kd4iVtTS5lpU7KH5rHz7S3U8jUc5T?=
- =?us-ascii?Q?p11C7KNdaox4x+LLxUQ7FeKIOU1NG4aNNeCOJEFDP59r2pzH8JEdv8ItZZNB?=
- =?us-ascii?Q?JqywnsRpeJ9jq17hp6UZ/jDvkaGHE9qxtZwanTm77E815U5c1juPbAu4+fM+?=
- =?us-ascii?Q?8lkmtKWNRp21IyWrqvnzh80TZK5RYTdn4LaY/bg5TmYC2XQPJpajU6svmmYl?=
- =?us-ascii?Q?Y87z60paoOg5ismiwbsp8Y4PQP6olDLDM/szK1xwJOLWGtwLINW/C+pS5ppO?=
- =?us-ascii?Q?oYIAupDs6+elkPveyuDGBsPy7zntlEoYv0BpDIegwHOPCLYta7butfVNdXV0?=
- =?us-ascii?Q?g/3XesE227xqKVqrOBF3BdBPq6sB1CU0Gisc7K4PCFhrZYNZbhetbk8zB9o0?=
- =?us-ascii?Q?AVU8+K5c2WHJevhPBBYjMz7YpFiZv/XHuuGq/1n2RcZ9VuLVQW8gmmWU8iH3?=
- =?us-ascii?Q?d+8kmXxXR8rrLLISUbIG3GrCzSPPY8UFB2+1P0LwIBwIP3Tu7wFP1PW+ZGKk?=
- =?us-ascii?Q?ZwfAESsgaRVKLo7RCZ1tNdoZnln1qoFNqQ4mQmo5WH9YZZCQaw/kiwkIbZfh?=
- =?us-ascii?Q?XSnbzzvSuVeXTmUFGP8TxFTrr7rhxOWTV45nug2JrwloHzwFoV8a4hv+2Oa2?=
- =?us-ascii?Q?O+E5XkYyKoeLydiCQsJoZlH6UFIcaRFCReZV2m9vsUSubOqfxcod4ToltJII?=
- =?us-ascii?Q?5cJ8vY5JUtO1kpY0Q3E6ppS3dHzAePdbMaIMt2QoLUNhWO7nDTaZZg+W1H9y?=
- =?us-ascii?Q?cFqeuZWKmAsH7G7XInfRrkedTsQCwC0APjtHJ7K4vkswXgQm0mypLvKeBmVa?=
- =?us-ascii?Q?BawtarhWblOZDEjq6LkJho+a4loGtnDvE/wy1w1vW1553UWzys+cbqzm7IDt?=
- =?us-ascii?Q?HzA8F4+vaw113aR5g2gNKy9+AoL+6lQQqSciht3z9PVLuQriUipQb6LMRcUX?=
- =?us-ascii?Q?8/C3j2ydsXzgI9bMnoGFNN5/3Xm/3USMsLdUrfORWuRCL9K7XNzFhOmMH/Pd?=
- =?us-ascii?Q?0hJqBgq5/nugCG6G2+g2KxxzN/40/H1i4+Raep7R2919HoLVxpN7T/9AJfWB?=
- =?us-ascii?Q?kL07yuqkjRByyVs6zKUC11hrqwxl0pBawiiLb/FS?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fa5f2f72-9c5e-47e0-d8b3-08dc20e9636f
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 16:43:15.3812
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Zt72b18uJxt4JqObvuGnNpQ+zjac72MVtoLV0VpWG7tgDmfmcH3tHcShmI5l9aeA8AePKoY8go0RrjsX50tEcw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7088
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240129-nfsd-fixes-v1-1-49a3a45bd750@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAKLVt2UC/x2LQQqAIBAAvxJ7bkGlKPtKdDBday8WLkQg/j3pO
+ MxMAaHMJLB0BTI9LHylBrrvwJ8uHYQcGoNRZlDaWExRAkZ+SVAFO056dmr3DtpwZ/pF69et1g8
+ /ZnwAXAAAAA==
+To: Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>, 
+ Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
+ Tom Talpey <tom@talpey.com>, 
+ Trond Myklebust <trond.myklebust@hammerspace.com>, 
+ Anna Schumaker <anna@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Benjamin Coddington <bcodding@redhat.com>
+Cc: Anna Schumaker <Anna.Schumaker@Netapp.com>, linux-nfs@vger.kernel.org, 
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Alexander Aring <aahringo@redhat.com>, Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3126; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=voj97DXC6XBrs98JAwhjCQUkvl5U2tQpl3APSKbLqyI=;
+ b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBlt9Wo3maIIq7zxY5nmGdTf+p0pbNUVaGRsBRZl
+ dsQCOfFqFyJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZbfVqAAKCRAADmhBGVaC
+ FfXkD/45Y8ftsDp8DK1GXuy+/AT0x3FQytqhaMUXtSnfYnUsx79OWGVAIUNoKCx0G8+LI4DKWUk
+ fN/Vs/YRtn2oZ7UOjpUA2aLn9jTWOk73KMtbEjtt4AaT6i92C0LK65TXaQS4z8i2WF8Ck6xJXCk
+ Kx8gm9VkpgYjMLgIrhJdDZk3JDJ0mtWZQunqmm+oc2D6UPYbvbB0qKYDApcVqwk0CW4ZPvp7Qnl
+ N8Ug9RzE2DyJIVWs1mXmgRrmBHR1z25+vI4CDS2Y5GHexCHQ9+gyKUGBg8aC3TMNqP/I+eU7/0t
+ Dmh37QFdrmY+YDxT6cXM4B22Bsjb5LZof5bZLG0+ZKTHbAjhUMYfXXWFm7mj39auWROWMjXSB1/
+ QkMsdx8zV3Zj+XM/Tr0Zv8ZtQ0lMXjzAETlyQPmgS8+TVlQ8qrBlEBLZE+bl08r88HCo14cNiMm
+ ZsO1mIE4Sj7HymHwCNwQdGNvVVAMAx/p2sfKi0STPBy0YvokRYwh03pOgw2RVuBRz7UxJf/ixLv
+ TymzJcd3vgky1AuoaNN+NUu0q5PQLIufoXwEpoBqYmOwIHBPLUVIw60WC6Fa3tVNac8S/8p2mQC
+ z2BkMgwc76tHX5Sn4i4NZj+eOx9yaDriYiMJdROZzXpCUlbjv2sJ/7Y0Xkxg/mlLU98wu3tTyHJ
+ ydUw+goaJXhjdYQ==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 
-add mail list for freescale imx ddr pmu driver.
+Alex reported seeing this:
 
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
+    [   18.238266] ------------[ cut here ]------------
+    [   18.239286] UBSAN: shift-out-of-bounds in net/sunrpc/xprt.c:660:14
+    [   18.240699] shift exponent 60000 is too large for 64-bit type 'long unsigned int'
+    [   18.242277] CPU: 1 PID: 290 Comm: NFSv4 callback Not tainted 6.8.0-rc1devtest5+ #5814
+    [   18.243846] Hardware name: Red Hat KVM/RHEL-AV, BIOS 1.16.0-4.module+el8.9.0+19570+14a90618 04/01/2014
+    [   18.245460] Call Trace:
+    [   18.245855]  <TASK>
+    [   18.246200]  dump_stack_lvl+0x93/0xb0
+    [   18.246785]  dump_stack+0x10/0x20
+    [   18.247308]  ubsan_epilogue+0x9/0x40
+    [   18.247875]  __ubsan_handle_shift_out_of_bounds+0x110/0x170
+    [   18.248727]  ? ktime_get+0x130/0x2a0
+    [   18.249317]  xprt_calc_majortimeo.isra.13.cold.45+0x12/0x23
+    [   18.250184]  xprt_init_majortimeo.isra.27+0x9c/0x150
+    [   18.251062]  xprt_init_bc_request+0xc1/0xd0
+    [   18.251728]  rpc_run_bc_task+0xd3/0x1b0
+    [   18.252328]  ? __pfx_rpc_run_bc_task+0x10/0x10
+    [   18.253045]  ? __this_cpu_preempt_check+0x13/0x20
+    [   18.253780]  ? xdr_inline_decode+0x5b/0x260
+    [   18.254447]  svc_process_bc+0x3b2/0x4d0
+    [   18.255069]  ? __pfx_svc_process_bc+0x10/0x10
+    [   18.255755]  ? __lwq_dequeue+0x5c/0xe0
+    [   18.256350]  ? __kasan_check_read+0x11/0x20
+    [   18.257002]  ? svc_thread_should_sleep+0x15d/0x190
+    [   18.257754]  ? svc_recv+0x918/0x13b0
+    [   18.258321]  svc_recv+0xa7e/0x13b0
+    [   18.258892]  nfs4_callback_svc+0x53/0xb0
+    [   18.259508]  ? __pfx_nfs4_callback_svc+0x10/0x10
+    [   18.260227]  kthread+0x1c2/0x210
+    [   18.260744]  ? kthread+0x103/0x210
+    [   18.261278]  ? __pfx_kthread+0x10/0x10
+    [   18.261872]  ret_from_fork+0x3a/0x50
+    [   18.262433]  ? __pfx_kthread+0x10/0x10
+    [   18.263024]  ret_from_fork_asm+0x1b/0x30
+    [   18.263684]  </TASK>
+    [   18.264348] ---[ end trace ]---
+
+to_initval can be very large and cause a shift overflow later. Ensure we
+copy the correct value into to_retries.
+
+Cc: Benjamin Coddington <bcodding@redhat.com>
+Reported-by: Alexander Aring <aahringo@redhat.com>
+Fixes: 57331a59ac0d NFSv4.1: Use the nfs_client's rpc timeouts for backchannel
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+ net/sunrpc/svc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 72d27e3ad8bca..21894f83a501b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8508,6 +8508,7 @@ F:	drivers/video/fbdev/imxfb.c
- FREESCALE IMX DDR PMU DRIVER
- M:	Frank Li <Frank.li@nxp.com>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-+L:	imx@lists.linux.dev
- S:	Maintained
- F:	Documentation/admin-guide/perf/imx-ddr.rst
- F:	Documentation/devicetree/bindings/perf/fsl-imx-ddr.yaml
+diff --git a/net/sunrpc/svc.c b/net/sunrpc/svc.c
+index f60c93e5a25d..d86bf5b051fa 100644
+--- a/net/sunrpc/svc.c
++++ b/net/sunrpc/svc.c
+@@ -1598,7 +1598,7 @@ void svc_process_bc(struct rpc_rqst *req, struct svc_rqst *rqstp)
+ 	/* Finally, send the reply synchronously */
+ 	if (rqstp->bc_to_initval > 0) {
+ 		timeout.to_initval = rqstp->bc_to_initval;
+-		timeout.to_retries = rqstp->bc_to_initval;
++		timeout.to_retries = rqstp->bc_to_retries;
+ 	} else {
+ 		timeout.to_initval = req->rq_xprt->timeout->to_initval;
+ 		timeout.to_initval = req->rq_xprt->timeout->to_retries;
+
+---
+base-commit: 41bccc98fb7931d63d03f326a746ac4d429c1dd3
+change-id: 20240129-nfsd-fixes-0d95718a0bca
+
+Best regards,
 -- 
-2.34.1
+Jeff Layton <jlayton@kernel.org>
 
 
