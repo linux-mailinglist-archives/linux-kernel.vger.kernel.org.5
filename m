@@ -1,164 +1,159 @@
-Return-Path: <linux-kernel+bounces-42591-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42595-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EC35840389
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:10:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CD82840393
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:11:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F25471F2304C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:10:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD8CC284E34
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:11:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16A305BAE7;
-	Mon, 29 Jan 2024 11:10:41 +0000 (UTC)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D4E7604C9;
+	Mon, 29 Jan 2024 11:10:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="f42a5kof"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DCE95A7B3;
-	Mon, 29 Jan 2024 11:10:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D38C55F879
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 11:10:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706526640; cv=none; b=RDNYK9moT5evFA2VvhUDYxkAgYjB9ukGSzkejGJ+atjxg3qbe4K3q81/J4z0ZFA/Xjz5ejJTZnkmn+6+EmMvqOFOZADdbLDFwdyLpBAwhnnTLBi0yosQ19vfpNS9G6vrqOqqHvA5cDHCaMsFU/qeg/BTHu6YYoLqJXKHgTRBKFM=
+	t=1706526644; cv=none; b=q6URiezwzvsW+lsCuQR4Fe7TWd8uv20L1iumr6WmJwKxhbhWZ3r7zF2P0ZKoCHWh1PvVMIft2PHXAIsuckn+tbF2bwOMjJrrp+q2adVNnBKfn24BxeyI9D+KseQgrZz5DBvf73XfHhDS0NrA45fb+OUv+F/aypANZ4wRNXFpviE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706526640; c=relaxed/simple;
-	bh=XF0gGsYO9iDx7O+R5WdF16srQI/v5qvD1W7fKbgxUks=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Wd1EIBJgHC1kNbABzbC1ia0ELa/iBp4J383BiyCjWGbOBLnVOEdJAbYEKNgMHsBH9Y8Tjg+zcA/lIE3F/RqNJDyAvjZDDxpGMJn0p0Zw770Jm5+wBkRZRu7J1MC7+IB5bjGC9pVh/K2HGLT1ibmhlRuimFSYnpMwNXzYaCzZZ7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4TNltX1D17z1Q8bW;
-	Mon, 29 Jan 2024 19:09:24 +0800 (CST)
-Received: from kwepemd200002.china.huawei.com (unknown [7.221.188.186])
-	by mail.maildlp.com (Postfix) with ESMTPS id 67BE018001D;
-	Mon, 29 Jan 2024 19:10:33 +0800 (CST)
-Received: from dggpemm500008.china.huawei.com (7.185.36.136) by
- kwepemd200002.china.huawei.com (7.221.188.186) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.28; Mon, 29 Jan 2024 19:10:32 +0800
-Received: from dggpemm500008.china.huawei.com ([7.185.36.136]) by
- dggpemm500008.china.huawei.com ([7.185.36.136]) with mapi id 15.01.2507.035;
- Mon, 29 Jan 2024 19:10:32 +0800
-From: wangyunjian <wangyunjian@huawei.com>
-To: Jason Wang <jasowang@redhat.com>
-CC: "mst@redhat.com" <mst@redhat.com>, "willemdebruijn.kernel@gmail.com"
-	<willemdebruijn.kernel@gmail.com>, "kuba@kernel.org" <kuba@kernel.org>,
-	"davem@davemloft.net" <davem@davemloft.net>, "magnus.karlsson@intel.com"
-	<magnus.karlsson@intel.com>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"virtualization@lists.linux.dev" <virtualization@lists.linux.dev>, xudingke
-	<xudingke@huawei.com>
-Subject: RE: [PATCH net-next 2/2] tun: AF_XDP Rx zero-copy support
-Thread-Topic: [PATCH net-next 2/2] tun: AF_XDP Rx zero-copy support
-Thread-Index: AQHaTqkDLHSSzcU2CESolpkubpTJa7DpcBcAgAD60ACAAvY/kIACO22AgAEHRbA=
-Date: Mon, 29 Jan 2024 11:10:32 +0000
-Message-ID: <506f483f07eb41d0bbea58333ae0c933@huawei.com>
-References: <1706089075-16084-1-git-send-email-wangyunjian@huawei.com>
- <CACGkMEu5PaBgh37X4KysoF9YB8qy6jM5W4G6sm+8fjrnK36KXA@mail.gmail.com>
- <ad74a361d5084c62a89f7aa276273649@huawei.com>
- <156030296fea4f7abef6ab7155ba2e32@huawei.com>
- <CACGkMEuMTdr3NS=XdkN+XDRqiXouL2tWcXEk6-qTvOsm0JCc9Q@mail.gmail.com>
-In-Reply-To: <CACGkMEuMTdr3NS=XdkN+XDRqiXouL2tWcXEk6-qTvOsm0JCc9Q@mail.gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1706526644; c=relaxed/simple;
+	bh=iCt3ARyPFGaFcNNh6hPSDnvIq7kLiJZCIOO0G1SZ8xM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KrTwHHPi6bfGov8xE/iKWkY2JP2iH0LjmCuNNa0lUqHWg4iXlqIsBW6x/z3pw5kS3mGkDGD2prX11GSwdy41TfSkXWprPF4dkxqxYEr64aqv3QqvH6UnFWnTarT3nzRhVjE9UzsNT2TqkV2wj0cxOl+aHMXSSNPAOWmFu79AQOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=f42a5kof; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706526641;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VViNKQmytjZMa9HQwAlRrm1lQV2U6Y/HrJkRvfH9jxI=;
+	b=f42a5kofjjL76NJRQGCmjtK4L9TAU+IAF1vfgLjkMBDsj/Wr0gc+5sgarw2Ukcwy8EjSaV
+	kBpTR/2R0Wrp+LQ/2iS0jIlEHULhgSJfCQuNxgS3tqgmOmx6LhFfFlIRsjbbafKxiqk/n7
+	pIa/Ehd/RzzUsKrvMjUyeYbY0kumV64=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-689-QWjqyMXzOLKKg4XhpytMSQ-1; Mon, 29 Jan 2024 06:10:40 -0500
+X-MC-Unique: QWjqyMXzOLKKg4XhpytMSQ-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a30f9374db7so423101966b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 03:10:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706526639; x=1707131439;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VViNKQmytjZMa9HQwAlRrm1lQV2U6Y/HrJkRvfH9jxI=;
+        b=ZI4FTvWguW3If6eG1jSsDXDwVMFnHyZ6M+wbfjBIZT5KWHKfXjF10Yhp9EA6+80fGm
+         oxiWa6SVQp42brU2qIEZNrfdfZ1iZe0IzcrPxevqLpCvE+l+x30xOUA8Rh9/2vOrp5H/
+         gvEdYkNodTodUNd1omQL6Svfgvpq6E0QSUYNcqdjbL9YF24Qi36cTHy4qNLZuJl9hCgN
+         LTDywdQxdWF8tyYo/aeLrLoFBnjVxWyHvNP+0k3nuYmiUsKpdn/f6skv47e2O/On+7A0
+         g/cQ2ssxjGQeHIY2CdDS0DpFz7ura4SoX79i/dbz0JoA+pDE9F2q70MrWFovnEVnJSgN
+         uQ4Q==
+X-Gm-Message-State: AOJu0YwPsW/MkTUz8F0Bk9eoODuzWt2D65lc0kcVeKTPzTGpi2r8boDH
+	LXKq9cryfQPfF5E9vNotl27xNm0jQrHO9zxzSZRK27Frm2j+P+hky4QMzBoEzSzTrzC8wGTsy+o
+	BffYs2FjETTzCnarfspLx7QuiY8DLUYd9gheRjrN+2WrDCSa6dhW9SR5wMGMYHQ==
+X-Received: by 2002:a17:906:3691:b0:a2f:dae6:5987 with SMTP id a17-20020a170906369100b00a2fdae65987mr7350012ejc.33.1706526639095;
+        Mon, 29 Jan 2024 03:10:39 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHcHk7VsGGZmyJ31XzDUOwX/PEXGRkxnSxZgRRLBV6kLpC49QOXF5mRcEpT4h1mjOw9NQdpLQ==
+X-Received: by 2002:a17:906:3691:b0:a2f:dae6:5987 with SMTP id a17-20020a170906369100b00a2fdae65987mr7349995ejc.33.1706526638797;
+        Mon, 29 Jan 2024 03:10:38 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id cu2-20020a170906ba8200b00a35757cbd9esm1944925ejd.4.2024.01.29.03.10.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jan 2024 03:10:37 -0800 (PST)
+Message-ID: <4c68a68f-5fc6-4906-b958-4e2bd8fcd25a@redhat.com>
+Date: Mon, 29 Jan 2024 12:10:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Flood of logitech-hidpp-device messages in v6.7
+Content-Language: en-US, nl
+To: Jiri Kosina <jikos@kernel.org>
+Cc: Oleksandr Natalenko <oleksandr@natalenko.name>,
+ linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+ =?UTF-8?Q?Filipe_La=C3=ADns?= <lains@riseup.net>,
+ Bastien Nocera <hadess@hadess.net>,
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>
+References: <3277085.44csPzL39Z@natalenko.name>
+ <824573bb-ae01-41b9-8f97-a760ae8f3f18@redhat.com>
+ <nycvar.YFH.7.76.2401172001530.29548@cbobk.fhfr.pm>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <nycvar.YFH.7.76.2401172001530.29548@cbobk.fhfr.pm>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKYXNvbiBXYW5nIFttYWlsdG86
-amFzb3dhbmdAcmVkaGF0LmNvbV0NCj4gU2VudDogTW9uZGF5LCBKYW51YXJ5IDI5LCAyMDI0IDEx
-OjA1IEFNDQo+IFRvOiB3YW5neXVuamlhbiA8d2FuZ3l1bmppYW5AaHVhd2VpLmNvbT4NCj4gQ2M6
-IG1zdEByZWRoYXQuY29tOyB3aWxsZW1kZWJydWlqbi5rZXJuZWxAZ21haWwuY29tOyBrdWJhQGtl
-cm5lbC5vcmc7DQo+IGRhdmVtQGRhdmVtbG9mdC5uZXQ7IG1hZ251cy5rYXJsc3NvbkBpbnRlbC5j
-b207IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5v
-cmc7IGt2bUB2Z2VyLmtlcm5lbC5vcmc7DQo+IHZpcnR1YWxpemF0aW9uQGxpc3RzLmxpbnV4LmRl
-djsgeHVkaW5na2UgPHh1ZGluZ2tlQGh1YXdlaS5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0gg
-bmV0LW5leHQgMi8yXSB0dW46IEFGX1hEUCBSeCB6ZXJvLWNvcHkgc3VwcG9ydA0KPiANCj4gT24g
-U2F0LCBKYW4gMjcsIDIwMjQgYXQgNTozNOKAr1BNIHdhbmd5dW5qaWFuIDx3YW5neXVuamlhbkBo
-dWF3ZWkuY29tPg0KPiB3cm90ZToNCj4gPg0KPiA+ID4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2Ut
-LS0tLQ0KPiA+ID4gPiBGcm9tOiBKYXNvbiBXYW5nIFttYWlsdG86amFzb3dhbmdAcmVkaGF0LmNv
-bV0NCj4gPiA+ID4gU2VudDogVGh1cnNkYXksIEphbnVhcnkgMjUsIDIwMjQgMTI6NDkgUE0NCj4g
-PiA+ID4gVG86IHdhbmd5dW5qaWFuIDx3YW5neXVuamlhbkBodWF3ZWkuY29tPg0KPiA+ID4gPiBD
-YzogbXN0QHJlZGhhdC5jb207IHdpbGxlbWRlYnJ1aWpuLmtlcm5lbEBnbWFpbC5jb207DQo+ID4g
-PiA+IGt1YmFAa2VybmVsLm9yZzsgZGF2ZW1AZGF2ZW1sb2Z0Lm5ldDsgbWFnbnVzLmthcmxzc29u
-QGludGVsLmNvbTsNCj4gPiA+ID4gbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVs
-QHZnZXIua2VybmVsLm9yZzsNCj4gPiA+ID4ga3ZtQHZnZXIua2VybmVsLm9yZzsgdmlydHVhbGl6
-YXRpb25AbGlzdHMubGludXguZGV2OyB4dWRpbmdrZQ0KPiA+ID4gPiA8eHVkaW5na2VAaHVhd2Vp
-LmNvbT4NCj4gPiA+ID4gU3ViamVjdDogUmU6IFtQQVRDSCBuZXQtbmV4dCAyLzJdIHR1bjogQUZf
-WERQIFJ4IHplcm8tY29weSBzdXBwb3J0DQo+ID4gPiA+DQo+ID4gPiA+IE9uIFdlZCwgSmFuIDI0
-LCAyMDI0IGF0IDU6MzjigK9QTSBZdW5qaWFuIFdhbmcNCj4gPiA+IDx3YW5neXVuamlhbkBodWF3
-ZWkuY29tPg0KPiA+ID4gPiB3cm90ZToNCj4gPiA+ID4gPg0KPiA+ID4gPiA+IE5vdyB0aGUgemVy
-by1jb3B5IGZlYXR1cmUgb2YgQUZfWERQIHNvY2tldCBpcyBzdXBwb3J0ZWQgYnkgc29tZQ0KPiA+
-ID4gPiA+IGRyaXZlcnMsIHdoaWNoIGNhbiByZWR1Y2UgQ1BVIHV0aWxpemF0aW9uIG9uIHRoZSB4
-ZHAgcHJvZ3JhbS4NCj4gPiA+ID4gPiBUaGlzIHBhdGNoIHNldCBhbGxvd3MgdHVuIHRvIHN1cHBv
-cnQgQUZfWERQIFJ4IHplcm8tY29weSBmZWF0dXJlLg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gVGhp
-cyBwYXRjaCB0cmllcyB0byBhZGRyZXNzIHRoaXMgYnk6DQo+ID4gPiA+ID4gLSBVc2UgcGVla19s
-ZW4gdG8gY29uc3VtZSBhIHhzay0+ZGVzYyBhbmQgZ2V0IHhzay0+ZGVzYyBsZW5ndGguDQo+ID4g
-PiA+ID4gLSBXaGVuIHRoZSB0dW4gc3VwcG9ydCBBRl9YRFAgUnggemVyby1jb3B5LCB0aGUgdnEn
-cyBhcnJheSBtYXliZQ0KPiBlbXB0eS4NCj4gPiA+ID4gPiBTbyBhZGQgYSBjaGVjayBmb3IgZW1w
-dHkgdnEncyBhcnJheSBpbiB2aG9zdF9uZXRfYnVmX3Byb2R1Y2UoKS4NCj4gPiA+ID4gPiAtIGFk
-ZCBYRFBfU0VUVVBfWFNLX1BPT0wgYW5kIG5kb194c2tfd2FrZXVwIGNhbGxiYWNrIHN1cHBvcnQN
-Cj4gPiA+ID4gPiAtIGFkZCB0dW5fcHV0X3VzZXJfZGVzYyBmdW5jdGlvbiB0byBjb3B5IHRoZSBS
-eCBkYXRhIHRvIFZNDQo+ID4gPiA+DQo+ID4gPiA+IENvZGUgZXhwbGFpbnMgdGhlbXNlbHZlcywg
-bGV0J3MgZXhwbGFpbiB3aHkgeW91IG5lZWQgdG8gZG8gdGhpcy4NCj4gPiA+ID4NCj4gPiA+ID4g
-MSkgd2h5IHlvdSB3YW50IHRvIHVzZSBwZWVrX2xlbg0KPiA+ID4gPiAyKSBmb3IgInZxJ3MgYXJy
-YXkiLCB3aGF0IGRvZXMgaXQgbWVhbj8NCj4gPiA+ID4gMykgZnJvbSB0aGUgdmlldyBvZiBUVU4v
-VEFQIHR1bl9wdXRfdXNlcl9kZXNjKCkgaXMgdGhlIFRYIHBhdGgsIHNvDQo+ID4gPiA+IEkgZ3Vl
-c3MgeW91IG1lYW50IFRYIHplcm9jb3B5IGluc3RlYWQgb2YgUlggKGFzIEkgZG9uJ3Qgc2VlIGNv
-ZGVzDQo+ID4gPiA+IGZvcg0KPiA+ID4gPiBSWD8pDQo+ID4gPg0KPiA+ID4gT0ssIEkgYWdyZWUg
-YW5kIHVzZSBUWCB6ZXJvY29weSBpbnN0ZWFkIG9mIFJYIHplcm9jb3B5LiBJIG1lYW50IFJYDQo+
-ID4gPiB6ZXJvY29weSBmcm9tIHRoZSB2aWV3IG9mIHZob3N0LW5ldC4NCj4gPiA+DQo+ID4gPiA+
-DQo+ID4gPiA+IEEgYmlnIHF1ZXN0aW9uIGlzIGhvdyBjb3VsZCB5b3UgaGFuZGxlIEdTTyBwYWNr
-ZXRzIGZyb20NCj4gdXNlcnNwYWNlL2d1ZXN0cz8NCj4gPiA+DQo+ID4gPiBOb3cgYnkgZGlzYWJs
-aW5nIFZNJ3MgVFNPIGFuZCBjc3VtIGZlYXR1cmUuIFhEUCBkb2VzIG5vdCBzdXBwb3J0IEdTTw0K
-PiA+ID4gcGFja2V0cy4NCj4gPiA+IEhvd2V2ZXIsIHRoaXMgZmVhdHVyZSBjYW4gYmUgYWRkZWQg
-b25jZSBYRFAgc3VwcG9ydHMgaXQgaW4gdGhlIGZ1dHVyZS4NCj4gPiA+DQo+ID4gPiA+DQo+ID4g
-PiA+ID4NCj4gPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBZdW5qaWFuIFdhbmcgPHdhbmd5dW5qaWFu
-QGh1YXdlaS5jb20+DQo+ID4gPiA+ID4gLS0tDQo+ID4gPiA+ID4gIGRyaXZlcnMvbmV0L3R1bi5j
-ICAgfCAxNjUNCj4gPiA+ID4gKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKy0NCj4gPiA+ID4gPiAgZHJpdmVycy92aG9zdC9uZXQuYyB8ICAxOCArKystLQ0KPiA+ID4g
-PiA+ICAyIGZpbGVzIGNoYW5nZWQsIDE3NiBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQ0K
-PiA+DQo+ID4gWy4uLl0NCj4gPg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gIHN0YXRpYyBpbnQgcGVl
-a19oZWFkX2xlbihzdHJ1Y3Qgdmhvc3RfbmV0X3ZpcnRxdWV1ZSAqcnZxLA0KPiA+ID4gPiA+IHN0
-cnVjdCBzb2NrDQo+ID4gPiA+ID4gKnNrKSAgew0KPiA+ID4gPiA+ICsgICAgICAgc3RydWN0IHNv
-Y2tldCAqc29jayA9IHNrLT5za19zb2NrZXQ7DQo+ID4gPiA+ID4gICAgICAgICBzdHJ1Y3Qgc2tf
-YnVmZiAqaGVhZDsNCj4gPiA+ID4gPiAgICAgICAgIGludCBsZW4gPSAwOw0KPiA+ID4gPiA+ICAg
-ICAgICAgdW5zaWduZWQgbG9uZyBmbGFnczsNCj4gPiA+ID4gPg0KPiA+ID4gPiA+IC0gICAgICAg
-aWYgKHJ2cS0+cnhfcmluZykNCj4gPiA+ID4gPiAtICAgICAgICAgICAgICAgcmV0dXJuIHZob3N0
-X25ldF9idWZfcGVlayhydnEpOw0KPiA+ID4gPiA+ICsgICAgICAgaWYgKHJ2cS0+cnhfcmluZykg
-ew0KPiA+ID4gPiA+ICsgICAgICAgICAgICAgICBsZW4gPSB2aG9zdF9uZXRfYnVmX3BlZWsocnZx
-KTsNCj4gPiA+ID4gPiArICAgICAgICAgICAgICAgaWYgKGxpa2VseShsZW4pKQ0KPiA+ID4gPiA+
-ICsgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiBsZW47DQo+ID4gPiA+ID4gKyAgICAgICB9
-DQo+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ICsgICAgICAgaWYgKHNvY2stPm9wcy0+cGVla19sZW4p
-DQo+ID4gPiA+ID4gKyAgICAgICAgICAgICAgIHJldHVybiBzb2NrLT5vcHMtPnBlZWtfbGVuKHNv
-Y2spOw0KPiA+ID4gPg0KPiA+ID4gPiBXaGF0IHByZXZlbnRzIHlvdSBmcm9tIHJldXNpbmcgdGhl
-IHB0cl9yaW5nIGhlcmU/IFRoZW4geW91IGRvbid0DQo+ID4gPiA+IG5lZWQgdGhlIGFib3ZlIHRy
-aWNrcy4NCj4gPiA+DQo+ID4gPiBUaGFuayB5b3UgZm9yIHlvdXIgc3VnZ2VzdGlvbi4gSSB3aWxs
-IGNvbnNpZGVyIGhvdyB0byByZXVzZSB0aGUgcHRyX3JpbmcuDQo+ID4NCj4gPiBJZiBwdHJfcmlu
-ZyBpcyB1c2VkIHRvIHRyYW5zZmVyIHhkcF9kZXNjcywgdGhlcmUgaXMgYSBwcm9ibGVtOiBBZnRl
-cg0KPiA+IHNvbWUgeGRwX2Rlc2NzIGFyZSBvYnRhaW5lZCB0aHJvdWdoIHhza190eF9wZWVrX2Rl
-c2MoKSwgdGhlIGRlc2NzIG1heQ0KPiA+IGZhaWwgdG8gYmUgYWRkZWQgdG8gcHRyX3JpbmcuIEhv
-d2V2ZXIsIG5vIEFQSSBpcyBhdmFpbGFibGUgdG8NCj4gPiBpbXBsZW1lbnQgdGhlIHJvbGxiYWNr
-IGZ1bmN0aW9uLg0KPiANCj4gSSBkb24ndCB1bmRlcnN0YW5kLCB0aGlzIGlzc3VlIHNlZW1zIHRv
-IGV4aXN0IGluIHRoZSBwaHlzaWNhbCBOSUMgYXMgd2VsbD8NCj4gDQo+IFdlIGdldCBtb3JlIGRl
-c2NyaXB0b3JzIHRoYW4gdGhlIGZyZWUgc2xvdHMgaW4gdGhlIE5JQyByaW5nLg0KPiANCj4gSG93
-IGRpZCBvdGhlciBOSUMgc29sdmUgdGhpcyBpc3N1ZT8NCg0KQ3VycmVudGx5LCBwaHlzaWNhbCBO
-SUNzIHN1Y2ggYXMgaTQwZSwgaWNlLCBpeGdiZSwgaWdjLCBhbmQgbWx4NSBvYnRhaW5zDQphdmFp
-bGFibGUgTklDIGRlc2NyaXB0b3JzIGFuZCB0aGVuIHJldHJpZXZlIHRoZSBzYW1lIG51bWJlciBv
-ZiB4c2sNCmRlc2NyaXB0b3JzIGZvciBwcm9jZXNzaW5nLg0KDQpUaGFua3MNCg0KPiANCj4gVGhh
-bmtzDQo+IA0KPiA+DQo+ID4gVGhhbmtzDQo+ID4NCj4gPiA+DQo+ID4gPiA+DQo+ID4gPiA+IFRo
-YW5rcw0KPiA+ID4gPg0KPiA+ID4gPg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gICAgICAgICBzcGlu
-X2xvY2tfaXJxc2F2ZSgmc2stPnNrX3JlY2VpdmVfcXVldWUubG9jaywgZmxhZ3MpOw0KPiA+ID4g
-PiA+ICAgICAgICAgaGVhZCA9IHNrYl9wZWVrKCZzay0+c2tfcmVjZWl2ZV9xdWV1ZSk7DQo+ID4g
-PiA+ID4gLS0NCj4gPiA+ID4gPiAyLjMzLjANCj4gPiA+ID4gPg0KPiA+DQoNCg==
+Hi Jiri,
+
+On 1/17/24 20:01, Jiri Kosina wrote:
+> On Tue, 9 Jan 2024, Hans de Goede wrote:
+> 
+>>> Jan 09 10:05:06 spock kernel: logitech-hidpp-device 0003:046D:4051.0006: Disconnected
+>>> Jan 09 10:07:15 spock kernel: logitech-hidpp-device 0003:046D:408A.0005: Disconnected
+>>> Jan 09 10:16:51 spock kernel: logitech-hidpp-device 0003:046D:4051.0006: HID++ 4.5 device connected.
+>>> Jan 09 10:16:55 spock kernel: logitech-hidpp-device 0003:046D:408A.0005: HID++ 4.5 device connected.
+>>> Jan 09 10:16:55 spock kernel: logitech-hidpp-device 0003:046D:408A.0005: HID++ 4.5 device connected.
+>>> Jan 09 10:36:31 spock kernel: logitech-hidpp-device 0003:046D:4051.0006: Disconnected
+>>> Jan 09 10:37:07 spock kernel: logitech-hidpp-device 0003:046D:4051.0006: HID++ 4.5 device connected.
+>>> Jan 09 10:46:21 spock kernel: logitech-hidpp-device 0003:046D:4051.0006: Disconnected
+>>> Jan 09 10:48:23 spock kernel: logitech-hidpp-device 0003:046D:408A.0005: Disconnected
+>>> Jan 09 11:12:27 spock kernel: logitech-hidpp-device 0003:046D:4051.0006: HID++ 4.5 device connected.
+>>> Jan 09 11:12:47 spock kernel: logitech-hidpp-device 0003:046D:408A.0005: HID++ 4.5 device connected.
+>>> Jan 09 11:12:47 spock kernel: logitech-hidpp-device 0003:046D:408A.0005: HID++ 4.5 device connected.
+>>> Jan 09 11:38:32 spock kernel: logitech-hidpp-device 0003:046D:4051.0006: Disconnected
+>>> Jan 09 11:43:32 spock kernel: logitech-hidpp-device 0003:046D:408A.0005: Disconnected
+>>> Jan 09 11:45:10 spock kernel: logitech-hidpp-device 0003:046D:4051.0006: HID++ 4.5 device connected.
+>>> Jan 09 11:45:11 spock kernel: logitech-hidpp-device 0003:046D:408A.0005: HID++ 4.5 device connected.
+>>> Jan 09 11:45:11 spock kernel: logitech-hidpp-device 0003:046D:408A.0005: HID++ 4.5 device connected.
+>>> Jan 09 12:31:48 spock kernel: logitech-hidpp-device 0003:046D:4051.0006: Disconnected
+>>> Jan 09 12:33:21 spock kernel: logitech-hidpp-device 0003:046D:4051.0006: HID++ 4.5 device connected.
+>>> ```
+>>>
+>>> I've got the following hardware:
+>>>
+>>> * Bus 006 Device 004: ID 046d:c52b Logitech, Inc. Unifying Receiver
+>>> * Logitech MX Keys
+>>> * Logitech M510v2
+>>>
+>>> With v6.6 I do not get those messages.
+>>>
+>>> I think this is related to 680ee411a98e ("HID: logitech-hidpp: Fix connect event race").
+>>>
+>>> My speculation is that some of the devices enter powersaving state after being idle for some time (5 mins?), and then wake up and reconnect once I touch either keyboard or mouse. I should highlight that everything works just fine, it is the flood of messages that worries me.
+>>>
+>>> Is it expected?
+>>
+>> Yes this is expected, looking at your logs I see about 10 messages per
+>> hour which IMHO is not that bad.
+>>
+>> I guess we could change things to track we have logged the connect
+>> message once and if yes then log future connect messages (and all
+>> disconnect messages) at debug level.
+>>
+>> Jiri, Benjamin, do you have any opinion on this ?
+> 
+> Works for me, thanks. Do you plan to submit the patch implementing this?
+
+I was planning too, but I'm a bit swamped atm. I would not mind
+someone else implementing this suggestion and I would be happy
+to review and test.
+
+Regards,
+
+Hans
+
+
 
