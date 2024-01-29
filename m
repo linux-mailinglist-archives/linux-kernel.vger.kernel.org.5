@@ -1,125 +1,100 @@
-Return-Path: <linux-kernel+bounces-42665-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42645-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4A75840491
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:05:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8C59840451
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:54:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 606122849C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:05:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 284BA1C2222D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:54:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25A765D8FE;
-	Mon, 29 Jan 2024 12:05:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qb3eCHxg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 364AE5FDA9;
+	Mon, 29 Jan 2024 11:53:27 +0000 (UTC)
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E98755E58
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 12:05:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBC0060253;
+	Mon, 29 Jan 2024 11:53:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706529925; cv=none; b=SiJ1JXDxmwXiWWiU+n47TN/KNVib77dhB/6nerVRxU/L6x/4LU2LynwlMlx8V9+NjVIZ2zS7tBCvpckRe9MhFd4dYhnPA14tiKWhViP3Ayrn15BCjiuR7KXCm3wa+exVyafoNfGlU/GbvKuUWjs/O4A4Nejy41HFbHsMcEtJ7Ec=
+	t=1706529206; cv=none; b=U+GLMtlqWMCJEXUEYjNjoJgPuAdOibwpbVc0Bsv4jYg1QRlOzl4TdFOSFfXYgZc/+OdfpK6yZgTsuSvez3s8xWJBy6xDM6R2MdUjpTMEtDTPrFbGMAE5FCoCaui1uVP3uwzxCdoxPQDvGfgQI2emMhgRZbGWv/kOCTDS6Xj3so8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706529925; c=relaxed/simple;
-	bh=B31YqXWo2jR6Q6dfmNlAsdyMk4Lj6GHmNj2kx0cjzZw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bqTgiCddrtJ/+y3EcaW8aK36oiiebSKzdiEr3gbsBl4Vgk5y9ICLtQMZNaT1af4qWe02pYbVFDfQi4WpyOTKGR+R+Y0pVUgWVNyq8xlZjIbJTSZT/qfuIyqjLivhgzcqMcADD+iMAwIez/IjkXPIEXJ7CP9DcHUtXczNw7butu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qb3eCHxg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43055C43399;
-	Mon, 29 Jan 2024 12:05:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706529924;
-	bh=B31YqXWo2jR6Q6dfmNlAsdyMk4Lj6GHmNj2kx0cjzZw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qb3eCHxgl85vWgSsclmEXDaKG08hwQgCm5ulSL8tMkw4n9V1qQENErMX3CNueOhRC
-	 MrkxftfhKBdvIVA8t+k0jSLhr/aXd157nuL1BFQw2secdXQELTYQrzBUx+C37E1qde
-	 x1kxlouM4lP5HzpmDIo9Zb0jnQSTUQN0r4DT3hZmvqgOfhnH4WGAfw7LG6noAmhXD1
-	 PVKFoPMhw5GGKHpOjDWFKTadgqFBgzzMwtaDmeBEQzgmfdY+vLVp+E6G5+M0BqdgiK
-	 P7QVswmFsdY9o6IuaK5A7E7aCmmFQe3VlWeTrSHmKSzqvhKL4r7+XovFGmvg3lReG8
-	 VjrK6uFIt3+Yg==
-Date: Mon, 29 Jan 2024 19:52:33 +0800
-From: Jisheng Zhang <jszhang@kernel.org>
-To: yunhui cui <cuiyunhui@bytedance.com>
-Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
-	alexghiti@rivosinc.com, samuel.holland@sifive.com,
-	ajones@ventanamicro.com, mchitale@ventanamicro.com,
-	dylan@andestech.com, sergey.matyukevich@syntacore.com,
-	prabhakar.mahadev-lad.rj@bp.renesas.com, apatel@ventanamicro.com,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [External] Re: [PATCH] RISC-V: add uniprocessor
- flush_tlb_range() support
-Message-ID: <ZbeRgRBhvNnnTd8h@xhacker>
-References: <20240125062044.63344-1-cuiyunhui@bytedance.com>
- <ZbdYijWK1PnHXn47@xhacker>
- <CAEEQ3wnSN8dLh3FcmHq5yPwQRdjLQa_VjcuTH+7YYZLOqCzaCQ@mail.gmail.com>
- <ZbdyLJ24I2fa6oNb@xhacker>
- <CAEEQ3w=gpSTxzxTzh-zHbP37P8s5eVCzG6RZndBXF-U+mNrziw@mail.gmail.com>
+	s=arc-20240116; t=1706529206; c=relaxed/simple;
+	bh=qOaPb48Mg0Dn52P/04gL6UpkUhY24L+F/u9PD/A1rvc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dmAbqC8JpckQDJeikqu8tQvzug7ccWmpMll47Xi00fnMktCv1YjmS7DFZrkMNcDM8NwgSLYq5LhYuMWH82Nfm04Y19ajsJ2RD2KH9EY8r3r1GrTBLT+i3jlIBwSwXC1VDIuCDo5fg+xBEDymAu/1+1JdgmJii5+kR66R0WTPqZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55f0367b15fso945275a12.0;
+        Mon, 29 Jan 2024 03:53:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706529203; x=1707134003;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JRcfOqPZkCt5yj3TO5MHHKhmcnZx1t7myx7AttAycCY=;
+        b=ox97tXXKq8vI7zm/gcGmoea7REQEu5197xaJMbQiLcu+hpYEtdRUFrqQfqXve1l80L
+         rYaIar7z/yt6qLrr7f8ED33I54i9OPd1t6esv/tedj7L6uzujguX6FI+fZRFXOzLf1LB
+         kagJW/V7dl6En7vPVMRNZdQOTddA86163Ul6JHH1H8j/tHNWCuzjr9jHFc1cuHobgL6R
+         MjH+ibO4ZF4XP7+0TSM/sa9mMBrGFRlBlvR6rCrMK/JzQZ8myL8XF6Ze/6WCsP64W6qF
+         Q+45qF46+SU0jX94cLT0t/zCcEQx8Y1+EXjKufWaOULxuRdXPb/JVVDVGfSXVhQ+2zwO
+         CdMg==
+X-Gm-Message-State: AOJu0YwKuVcDv7N6hGmFv9lq9Wcp/8LYC/39grRFLiw783QS13AihyCj
+	7EPQ23C+FUfC4WbbopP9o7qQB/x6bZR6dz0cWwr3Su9Hp9EvnLCXicikhCDGbk0=
+X-Google-Smtp-Source: AGHT+IF+m7fX821IhTDAdXTLqeZfPk4/8eyXUyiGWqE+UJC4GLc1ejBi75mpNioDi5PkmKInhX3IBg==
+X-Received: by 2002:a05:6402:125a:b0:55f:28cd:bb3a with SMTP id l26-20020a056402125a00b0055f28cdbb3amr104624edw.18.1706529202823;
+        Mon, 29 Jan 2024 03:53:22 -0800 (PST)
+Received: from localhost (fwdproxy-lla-005.fbsv.net. [2a03:2880:30ff:5::face:b00c])
+        by smtp.gmail.com with ESMTPSA id da18-20020a056402177200b0055efaddeafdsm1113834edb.86.2024.01.29.03.53.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 03:53:22 -0800 (PST)
+From: Breno Leitao <leitao@debian.org>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Shuah Khan <shuah@kernel.org>
+Cc: jsavitz@redhat.com,
+	ryan.roberts@arm.com,
+	usama.anjum@collabora.com,
+	linux-mm@kvack.org (open list:MEMORY MANAGEMENT),
+	linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] selftests/mm: run_vmtests.sh: add hugetlb test category
+Date: Mon, 29 Jan 2024 03:52:46 -0800
+Message-Id: <20240129115246.1234253-1-leitao@debian.org>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEEQ3w=gpSTxzxTzh-zHbP37P8s5eVCzG6RZndBXF-U+mNrziw@mail.gmail.com>
 
-On Mon, Jan 29, 2024 at 07:02:10PM +0800, yunhui cui wrote:
-> Hi Jisheng,
-> 
-> On Mon, Jan 29, 2024 at 5:51 PM Jisheng Zhang <jszhang@kernel.org> wrote:
-> >
-> > On Mon, Jan 29, 2024 at 04:26:57PM +0800, yunhui cui wrote:
-> > > Hi Jisheng,
-> > >
-> > > On Mon, Jan 29, 2024 at 4:02 PM Jisheng Zhang <jszhang@kernel.org> wrote:
-> > > >
-> > > > On Thu, Jan 25, 2024 at 02:20:44PM +0800, Yunhui Cui wrote:
-> > > > > Add support for flush_tlb_range() to improve TLB performance for
-> > > > > UP systems. In order to avoid the mutual inclusion of tlbflush.h
-> > > > > and hugetlb.h, the UP part is also implemented in tlbflush.c.
-> > > >
-> > > > Hi Yunhui,
-> > > >
-> > > > IIRC, Samuel sent similar patch series a few weeks ago.
-> > > >
-> > > > https://lore.kernel.org/linux-riscv/20240102220134.3229156-1-samuel.holland@sifive.com/
-> > > >
-> > > > After that series, do you still need this patch?
-> > >
-> > > Thank you for your reminder. I didn't find it before I mailed my
-> > > patch. I just looked at the content of this patch. I understand that
-> > > my patch is needed. For a single core, a more concise TLB flush logic
-> > > is needed, and it is helpful to improve performance.
-> >
-> > Currently, riscv UP flush_tlb_range still use flush all TLB entries,
-> > obviously it's is a big hammer, this is what your patch is trying to
-> > optimize. I'm not sure whether I understand your code correctly or not.
-> > Let me know if I misunderstand your code.
-> >
-> > After patch5 of the Samuel's series, __flush_tlb_range is unified for
-> > SMP and UP, so that UP can also benefit from recent improvements, such
-> > as range flush rather than all.
-> 
-> In my opinion, UP does not need to combine some SMP if... else,
-> on_each_cpu(...) logic, which is also a manifestation of performance
+The usage of run_vmtests.sh does not include hugetlb, which is a valid
+test category.
 
-Hi Yunhui,
+Add the 'hugetlb' to the usage of run_vmtests.sh.
 
-IIRC, the compiler will optimise out the unnecessary logic under UP, I
-may misread the code. But if no, indeed, there's improvement room.
-However, even in this case, IMHO, it's better if you can base on
-Samuel's series.
-Anyway, the optimization(range tlb entries rather than *all* entries under
-UP case) you want to do has been implemented. While I'm not sure whether
-we can rely on the compiler to optimize out all unnecessary logics.
+Signed-off-by: Breno Leitao <leitao@debian.org>
+---
+ tools/testing/selftests/mm/run_vmtests.sh | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Thanks
-> improvement. what do you think?
-> Thanks,
-> Yunhui
+diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
+index 55898d64e2eb..2ee0a1c4740f 100755
+--- a/tools/testing/selftests/mm/run_vmtests.sh
++++ b/tools/testing/selftests/mm/run_vmtests.sh
+@@ -65,6 +65,8 @@ separated by spaces:
+ 	test copy-on-write semantics
+ - thp
+ 	test transparent huge pages
++- hugetlb
++	test hugetlbfs huge pages
+ - migration
+ 	invoke move_pages(2) to exercise the migration entry code
+ 	paths in the kernel
+-- 
+2.39.3
+
 
