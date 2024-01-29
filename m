@@ -1,121 +1,156 @@
-Return-Path: <linux-kernel+bounces-43063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43062-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4CFC840B09
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:13:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B700840B06
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:13:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70A5028D7D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:13:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55DE528D4BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:13:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF4CC155A5C;
-	Mon, 29 Jan 2024 16:13:25 +0000 (UTC)
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4EEF155A35;
+	Mon, 29 Jan 2024 16:13:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="VOm+VMpz";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="yb9+nKKm"
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0B50155A44;
-	Mon, 29 Jan 2024 16:13:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82F8D155A22;
+	Mon, 29 Jan 2024 16:13:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.26
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706544805; cv=none; b=ZZtjXtRZL+u3eEfnOYpNxPs2M03CdocG6yuwNwl3h8qGfzXVMSTP8KJ3EMWA7ozD12ldvj3PkKw2B/1LDx/f/g9seeL4SXnpBExZFcYyIeZoy4kY3Janh6EUXo6O1DDXDlnpL78EH1QynQe5/0YvuuSSUXhRt+LKrxL6ZiKWivU=
+	t=1706544799; cv=none; b=RTi38lYErZum4Cxmvr6jzas6OhSIbpqO4tO3zgtjJ5W6V2UPMd6E1LdBCFxhoBVqQe9bZ4nfMZg3z7aqJFkXarPWsIUkhjVf7EHzaZYV2g//K+Y32eQClJ1V9gTpiPOWpigrrQKbuTUOD4dCNHmheikZHLo2b7Bf9lSfyrzYrdI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706544805; c=relaxed/simple;
-	bh=iBuWSo0zZ0zhs3nszLVS5iO2TT7tnyzjI6i6+b4CDGs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Qbgl5BxzuCAfmoMUVCmmQsecE3akCw0CXF6sC2xWltj2WQJPwHjH5DFZ2MKHxJ7nOAY7iJkpTLGzVTR7dON0QYf/doXsWzN3VzFNOpD+XtFGJN6ldUBCi4kEIKMAbuUyclNx1w24yI2Pk1qkZ+KVBzsWVbg6nkezS2nrSNLZf5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dc6933a46efso506968276.0;
-        Mon, 29 Jan 2024 08:13:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706544801; x=1707149601;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=M34SovAVKIxJ85Xs2siD2UjRmVaUICuFPeB7G+JCjO0=;
-        b=U5FlurnfJr/7jEx+GmeSxjMpOuAGJpCMxBYvD+9KQDoKYVrXYQ5gHiaHpq32hOAr5O
-         RCAv9fdiiMuiPB6GU/mICSNkzKYT8Nl9orNs4z+7guao8s613r76LYYyt9ieEETBnFYf
-         5tAV9qfKDPrs18zORD2HjBaJyViBwhDXI47bWz/jnchxMmPz7ua3N9ploWKUhLTVW/4w
-         89VG6HH/Sc3qduN4qBvdCxQF4ZtmTmcnZv3GGlwi7TFy9juJuHn3WUFh0g860HwEicNR
-         DCps1WS3gvNnvTzrpOsV+ckOJ3WJqbWiFolq6ZxplZ5+iGMKFxjqIqU11q9GxLYpgGEl
-         AlSw==
-X-Gm-Message-State: AOJu0YzgPQRnyCxoiLKfFZEqkTPG12yVyGznBcdwQAMgfiaJw4eEZta+
-	5xUYhWlfvsR8d2Z8SmYpaXYLVuZwQO81+vgdA1bbGxNkDYdzPrnS8z7huXj1hO0=
-X-Google-Smtp-Source: AGHT+IHqA6CC3cQ+KmLzxCROgIdBf2cOfh+NJFawnRG0HhfD8zqHmnkna+802LAlVf+2t12PiG97GA==
-X-Received: by 2002:a25:8c8c:0:b0:dc2:1743:be55 with SMTP id m12-20020a258c8c000000b00dc21743be55mr2587882ybl.112.1706544801520;
-        Mon, 29 Jan 2024 08:13:21 -0800 (PST)
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com. [209.85.128.169])
-        by smtp.gmail.com with ESMTPSA id p65-20020a252944000000b00dbed7110107sm2341708ybp.12.2024.01.29.08.13.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 08:13:21 -0800 (PST)
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-6001449a2beso19300957b3.3;
-        Mon, 29 Jan 2024 08:13:21 -0800 (PST)
-X-Received: by 2002:a05:690c:3603:b0:5ff:83f7:57e7 with SMTP id
- ft3-20020a05690c360300b005ff83f757e7mr4614143ywb.31.1706544801029; Mon, 29
- Jan 2024 08:13:21 -0800 (PST)
+	s=arc-20240116; t=1706544799; c=relaxed/simple;
+	bh=U5knNVeSUC02Kp52IYtCJFDsNCRfi5Zfl/yaznZobHo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EniYrJKwrSJHV/07F5bkY1c/YPly0d22vzfV2g6BqcDMqXJTVnpLafq4sr4JtE+LRHiiwfcNmBfc5bYvHGneKHlP6B7j7Ta0YuVCwDha3GzNiXBHz7rlxB6zD6651I4dVHoyBq812nLydTtA2LTP3rdhDiAKdLeEQX8W/9el0WE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=VOm+VMpz; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=yb9+nKKm; arc=none smtp.client-ip=66.111.4.26
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.nyi.internal (Postfix) with ESMTP id 83E815C015C;
+	Mon, 29 Jan 2024 11:13:16 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 29 Jan 2024 11:13:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1706544796; x=1706631196; bh=NWhpZ4Anx6
+	A8C8PAGZ4L9Hr5r5a+wvYAeeIbNmcd0qU=; b=VOm+VMpzkv3+IsNZJ4sSO3Rhkm
+	1+Se7H6xOwopyi+D+1iV2XGPZNUXXk2219B5xWo8eRFBD0jEfx/w+xXYlRBp7sHw
+	HPA/Nbyfr80uufvyxzxpihct1FuYHvf6jz9PILZvgHDOMKj2Yt/OsDwJE6sct6NN
+	no3YxTYXrL8z0z2C9Hb3se69ZWKg6VduZsQgKD2HXmz2yeTJnwqn6uwv5T3JyvnX
+	FFzMVIbsTR4d3y9wS0YSYQH5lfdhgpoUQb9Vc8l0sqCyuocygVZHoZGp8JN01R1p
+	USaxulmlmJ9f6TZ72iWh5C+jUcWB9DqNjU9QX6LmUBzb6rsdUo5fe/JhDo8g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706544796; x=1706631196; bh=NWhpZ4Anx6A8C8PAGZ4L9Hr5r5a+
+	wvYAeeIbNmcd0qU=; b=yb9+nKKmeF6edNDEM1qJkq8963omb38gnHL78bXBIEgJ
+	mkzw3Hcu5Uq0tFTI4c5f0P7/iPZnZRrr6niOi7Au+80HNFi7MVBg0RkQ59cscuVx
+	YGi7tsjXOUVlL/2c76E06Og6kWLeR7mN3SEutmJpG452DgD+Aiy3ggvSyQu7kExD
+	gPTgk56208mjASRYNmmpg4FF1QwcygRQSdaHGBx4ti2DAnLPcKw3IsYd0GB3h2AA
+	Nmaq/Jvou7wny6YubLw8dKkRpGfzhcRpnwhwZebVPVQxkyDkPkHWy6481WcY3K83
+	WghA6RY9gaFz7c1d03lKcbWZ1BrPBbRwUUQSTz7oIA==
+X-ME-Sender: <xms:nM63ZTAPoFX3KNffT1rBQ3rx_K3AD6BBPKK508KUr0OHFxySHAGTQA>
+    <xme:nM63ZZizASsqB3pGgiMra1uurC9WOcN5ygDyO_Z7Kx8TtLZhCWUhMz0QeXj9ZlUj0
+    aBahjpvdXRfBC5Fxw>
+X-ME-Received: <xmr:nM63ZelflC7YE6_uhoOjA22N6xiwymfb2EgcdG1Grt9XYuSvaaRu4Hx-Y6w0qOsKWqArwaCI7V9lRJuXkiD6hERdDayzrylhq9Mh58Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtgedgjeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddt
+    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffekuedukeehudffudfffffg
+    geeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:nM63ZVyYB-Grv--dv8mYLQrpsJULhNM6ywbwmXama-kK9jn1cvPbBg>
+    <xmx:nM63ZYRLMhw5PJmUgH1X9qOfKiF7uOi04LAm0aIx-YYAUzxRKlq6Hw>
+    <xmx:nM63ZYZb2ccjU8IwfwIxUnY-0L3SaROyc9mf9fOK99k_ZwEp9RgGcw>
+    <xmx:nM63ZRAEp0tooN094oLEfrN1wuFgTtfBiSikXjMDlxz33Ogid7uyQw>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 29 Jan 2024 11:13:14 -0500 (EST)
+Date: Mon, 29 Jan 2024 09:13:13 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: quentin@isovalent.com, daniel@iogearbox.net, ast@kernel.org, 
+	andrii@kernel.org, alexei.starovoitov@gmail.com, alan.maguire@oracle.com, 
+	memxor@gmail.com, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com, 
+	haoluo@google.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next] bpftool: Support dumping kfunc prototypes from
+ BTF
+Message-ID: <spuzs32tv6v5czb76gstpvisv2xkfzz2scqw4hmqncflhxoj66@hie6m7pctfdo>
+References: <373d86f4c26c0ebf5046b6627c8988fa75ea7a1d.1706492080.git.dxu@dxuuu.xyz>
+ <ZbeV5adWhiNZu5xj@krava>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240115153453.99226-1-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20240115153453.99226-1-claudiu.beznea.uj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 29 Jan 2024 17:13:09 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXrLmBOFg-9soCYD+hAcW9hXCbtM5NkLb1Pa2SJ6bxSyg@mail.gmail.com>
-Message-ID: <CAMuHMdXrLmBOFg-9soCYD+hAcW9hXCbtM5NkLb1Pa2SJ6bxSyg@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: renesas: rzg2l: Fix locking in rzg2l_dt_subnode_to_map()
-To: Claudiu <claudiu.beznea@tuxon.dev>
-Cc: linus.walleij@linaro.org, linux-renesas-soc@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	dan.carpenter@linaro.org, Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZbeV5adWhiNZu5xj@krava>
 
-On Mon, Jan 15, 2024 at 4:35=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> =
-wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> Commit d3aaa7203a17 ("pinctrl: renesas: rzg2l: Add pin configuration
-> support for pinmux groups") introduced the possibility to parse pin
-> configuration for pinmux groups. It did that by calling
-> rzg2l_map_add_config() at the end of rzg2l_dt_subnode_to_map() and
-> jumping to the remove_group label in case rzg2l_map_add_config() failed.
-> But if that happens, the mutex will already be unlocked, thus this it wil=
-l
-> lead to double mutex unlock operation. To fix this move the
-> rzg2l_map_add_config() call just after all the name argument is ready and
-> before the mutex is locked. There is no harm in doing this, as this only
-> parses the data from device tree that will be further processed by
-> pinctrl core code.
->
-> Fixes: d3aaa7203a17 ("pinctrl: renesas: rzg2l: Add pin configuration supp=
-ort for pinmux groups")
-> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Hi Jiri,
 
-Closes: https://lore.kernel.org/all/f8c3a3a0-7c48-4e40-8af0-ed4e9d9b049f@mo=
-roto.mountain
+On Mon, Jan 29, 2024 at 01:11:17PM +0100, Jiri Olsa wrote:
+> On Sun, Jan 28, 2024 at 06:35:33PM -0700, Daniel Xu wrote:
+> > This patch enables dumping kfunc prototypes from bpftool. This is useful
+> > b/c with this patch, end users will no longer have to manually define
+> > kfunc prototypes. For the kernel tree, this also means we can drop
+> > kfunc prototypes from:
+> > 
+> >         tools/testing/selftests/bpf/bpf_kfuncs.h
+> >         tools/testing/selftests/bpf/bpf_experimental.h
+> > 
+> > Example usage:
+> > 
+> >         $ make PAHOLE=/home/dxu/dev/pahole/build/pahole -j30 vmlinux
+> > 
+> >         $ ./tools/bpf/bpftool/bpftool btf dump file ./vmlinux format c | rg "__ksym;" | head -3
+> >         extern void cgroup_rstat_updated(struct cgroup * cgrp, int cpu) __ksym;
+> >         extern void cgroup_rstat_flush(struct cgroup * cgrp) __ksym;
+> >         extern struct bpf_key * bpf_lookup_user_key(u32 serial, u64 flags) __ksym;
+> 
+> hi,
+> I'm getting following declaration for bpf_rbtree_add_impl:
+> 
+> 	extern int bpf_rbtree_add_impl(struct bpf_rb_root * root, struct bpf_rb_node * node, bool (struct bpf_rb_node *, const struct bpf_rb_node *)* less, void * meta__ign, u64 off) __ksym; 
+> 
+> and it fails to compile with:
+> 
+> 	In file included from skeleton/pid_iter.bpf.c:3:
+> 	./vmlinux.h:164511:141: error: expected ')'
+> 	 164511 | extern int bpf_rbtree_add_impl(struct bpf_rb_root * root, struct bpf_rb_node * node, bool (struct bpf_rb_node *, const struct bpf_rb_node *)* less, void * meta__ign, u64 off) __ksym;
+> 		|                                                                                                                                             ^
+> 	./vmlinux.h:164511:31: note: to match this '('
+> 	 164511 | extern int bpf_rbtree_add_impl(struct bpf_rb_root * root, struct bpf_rb_node * node, bool (struct bpf_rb_node *, const struct bpf_rb_node *)* less, void * meta__ign, u64 off) __ksym;
+> 
+> looks like the btf_dumper_type_only won't dump function pointer argument
+> properly.. I guess we should fix that, but looking at the other stuff in
+> vmlinux.h like *_ops struct we can print function pointers properly, so
+> perhaps another way around is to use btf_dumper interface instead
 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Ah, crap, looks like between all the branch switching I didn't build
+vmlinux with kfunc annotations. Having fixed that, I can repro this
+build failure.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-pinctrl for v6.9.
+I'll take a look and see what the best way to fix this is.
 
-Gr{oetje,eeting}s,
+Given that end to end the whole flow basically works, should we start
+working on merging patches?
 
-                        Geert
+Thanks,
+Daniel
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+[..]
 
