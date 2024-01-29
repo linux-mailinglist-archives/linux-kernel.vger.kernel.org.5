@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-43250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 563FF84116B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:57:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A07784116C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:57:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 098BA1F27CFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:57:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1866B251E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:57:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D8DF3F9F6;
-	Mon, 29 Jan 2024 17:56:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F9716F066;
+	Mon, 29 Jan 2024 17:56:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="heAvSSTb"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="OyneKBkT"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34DA7157E64
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:56:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B10C33F9EA
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 17:56:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706550973; cv=none; b=HsIuzmrBbm0ZESsbF+/TG1tvIvu4+bc6HTEZfU24Rwv8+SVrYf4H02AlpmpjTnodoqv1rcl6xd2qE/rl4P++BklKxKF/wv6EiBIpP4U2f0yCOdD+7M60mWVl7D0KrrV0OqD/V9eWbasUZES2W9W2UJwlBLZN0ZrvUaat/ubXfH0=
+	t=1706551011; cv=none; b=BpEoSj9APU7wJ43F8rqF1UcYPLKDSsbXo89HrGxaVrCBFVRRx4EB2HrAPqrq0Qc7GgXROcbj1j6fyTqpSa7Pk53/4x4U3lNyqr0XYqs4fx2xJj8zAEFqHUbi3Kk02NgdO7xLGovWWz0lO63tdSYi97LkPLKeo8j8/J0/EVyELWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706550973; c=relaxed/simple;
-	bh=eJ4tB/dpOgHGrxgqDYW104LSCUa8aT6Nh1QEcB2/LFo=;
+	s=arc-20240116; t=1706551011; c=relaxed/simple;
+	bh=tS4YyJziMo9kpVlp+pJ1MlqRkete9IXfSfz8JHxqHTM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EEnEjrCJkCFDI9UchLuhycGOge4YQw5KTT97B7CSH9ZiVO0QwfWN4rKl40bqhAyCQdKkg6qiiHL5Es/orTGA5Mf/TPiCuObcEUpwB93/htKXiQj0jKi59qOnMFoRP1ZkNu3dNPA0ODEjbzjrBHiLdd7XUmOi9NnxTsJCtsNX/Cc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=heAvSSTb; arc=none smtp.client-ip=209.85.208.179
+	 To:Cc:Content-Type; b=H2hKTgzwlbzcTdqznYjJAHSAAuVt8NExUyqhZmfzSysHZ97LUxYtsqzz2aywzKND1MNAIXukMne1WL8Hz5cfd74cJSRNRXhP+yid/tbyuojYZgjz4VlERImw5vEBabAq0A59AUd+ec8RKUqBgTLVOnY48I22wIhgUyCR8l8DSiw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=OyneKBkT; arc=none smtp.client-ip=209.85.208.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2cf42ca9bb2so36705511fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:56:11 -0800 (PST)
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d03fde0bd9so22147201fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:56:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1706550970; x=1707155770; darn=vger.kernel.org;
+        d=linux-foundation.org; s=google; t=1706551007; x=1707155807; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=AkYokCIwpJBz8xiFXNezYEF1FGA6YIGCtwREDWysAIE=;
-        b=heAvSSTb75W6Y3CJNKb21/ZtCHt/Bm7spFnt9UT+MeoMP0WaU8+xVdeLjW1Gsip9o/
-         j08cG/kTqWr1Mm/650KDN/juOcNmXP5Sv3YuoMvLhEeqMdv2NQAGtIAou7xuFv1bbZKZ
-         uGxL75ttWmr7nvcAAtLH5Rm1dJy4yF3dVYBOU=
+        bh=eM8zR6VYCF0hOlY4Lnp7mb0cO2V2uGCLbKBvIv9aWnU=;
+        b=OyneKBkT+V7hPYr1zSObEnfZZxK8n4mBELikTjOyYByd1suZviFYm7O6J4CKRakd+N
+         gGBeAyurwEuJbZkRw2K4Tv3Hir28wLSLWA0HYCHeenZdO4V8Bm4GGqLywJDXrk7xEF6w
+         MLpgO4b6lzuVBwIXFklum6eMdWmc2m/ww+ts8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706550970; x=1707155770;
+        d=1e100.net; s=20230601; t=1706551007; x=1707155807;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=AkYokCIwpJBz8xiFXNezYEF1FGA6YIGCtwREDWysAIE=;
-        b=V7t/vNAuoK3t1MmdQbLsSb43ICY0MBOfek6TtDSNBpPbL4lB2j9nQHdCbLVAHPAcQf
-         WTVIuw9gyUvf6rpg1WlK7+pdthiSgQJXD7W7QsQsYU3XUyAP9xrAZvmZDpoCuXNdqPah
-         OolHaWAmyZYsZ2QNTPje1N13S9GtcVfaEQYtqhFlnSE4LRouuUcmT11TdpNHIjJnwpId
-         itVHIvE0R2nTsedwHpi9XeGnN5XI2See3Tl2FUmB5YJeIKR1O3RRbB0TbuWR3deqV1wE
-         pwDEwYE33Jlj0judSEumR58GN4me3huytRPcC/t3/fNU07fx8dKv3gv1mYUKgH/nS7W9
-         vc4A==
-X-Gm-Message-State: AOJu0Ywxcjz0AI08bSsKkWGxJvC0Lw/LA4NqEX+fwrsecGjKnzhFVEtK
-	wM0InRONV5ptfekJy73Z+2TOB5AOMlBsetKyHCuHpzUZzMYCA80fQYggeUwAEyvsBUHJ3qcqu+V
-	ydHc=
-X-Google-Smtp-Source: AGHT+IGrHBkdHUaTDb2SxKunx0JZoiTau6GOv9cC7LP5t/sf+igFVfIaE26PgpKuV+tF4jpLEYJo+Q==
-X-Received: by 2002:a2e:9c4e:0:b0:2cf:33a3:42fd with SMTP id t14-20020a2e9c4e000000b002cf33a342fdmr4145474ljj.2.1706550969999;
-        Mon, 29 Jan 2024 09:56:09 -0800 (PST)
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com. [209.85.208.42])
-        by smtp.gmail.com with ESMTPSA id e25-20020a056402149900b0055efbf3b5basm1371776edv.56.2024.01.29.09.56.09
+        bh=eM8zR6VYCF0hOlY4Lnp7mb0cO2V2uGCLbKBvIv9aWnU=;
+        b=ndSD4ugbEJlg0JMEovEDf7gQagL9JkdvmOmdHxmZs2KyjltClZSROK7AshR09X2zgJ
+         z3tgrb0s39SLZn2w6irwrlfy0Fr7vsjb4rv77V7FqqZyPhYAYvS8uwZcKWP7gEcoRB+K
+         BLo5wdg9er3jCBfjdyukcxvnogWZEUXHCBtDe9V4w/GoEZRqwsdOLKC+c8KYCcftYXN1
+         YBQEilLa5bTyqwJpaknRcm0CHByywWHzlpzbbpVltIDYz0Au/TYpUNlPdGuTDtpyzS56
+         TP3VIxGIcLstKb3n06Q0sF6+L1LHGTuflSp2lmh2lTln2RzUXBaI6UR6f6Q/hGHWqDsi
+         ie0A==
+X-Gm-Message-State: AOJu0YyD449QYifldolCMiA4NMdR+yhYSk3LpnrFUzea21iSEN9w4qx8
+	I0q6AZI1y+8IK7G933r66gm5dUSH4Zd0wcN+dut/XJZFo0aSDVcbnp2ulqxgk5Oy65PoecAEAPN
+	ho1oubA==
+X-Google-Smtp-Source: AGHT+IFbyLboNHB9LvFMX0KXOU+YM3KX7iPvK2eEp6Nz3CzBfDXjjtqrvVo6bQOWXSxxdrFV1mcjdQ==
+X-Received: by 2002:a05:651c:2124:b0:2cf:3006:6dce with SMTP id a36-20020a05651c212400b002cf30066dcemr5406843ljq.15.1706551007666;
+        Mon, 29 Jan 2024 09:56:47 -0800 (PST)
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com. [209.85.208.45])
+        by smtp.gmail.com with ESMTPSA id j17-20020aa7c351000000b0055c4a251205sm3937000edr.90.2024.01.29.09.56.46
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 09:56:09 -0800 (PST)
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-55a035669d5so3799950a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:56:09 -0800 (PST)
-X-Received: by 2002:a05:6402:2709:b0:55a:392:143e with SMTP id
- y9-20020a056402270900b0055a0392143emr4968057edd.27.1706550969019; Mon, 29 Jan
- 2024 09:56:09 -0800 (PST)
+        Mon, 29 Jan 2024 09:56:47 -0800 (PST)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-55f13b682d4so1340027a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:56:46 -0800 (PST)
+X-Received: by 2002:aa7:d811:0:b0:55e:ebe5:f65a with SMTP id
+ v17-20020aa7d811000000b0055eebe5f65amr3047956edq.7.1706551006540; Mon, 29 Jan
+ 2024 09:56:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,11 +76,12 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <202401291043.e62e89dc-oliver.sang@intel.com> <CAHk-=wh0M=e8R=ZXxa4vesLTtvGmYWJ-w1VmXxW5Mva=Nimk4Q@mail.gmail.com>
  <20240129120125.605e97af@gandalf.local.home> <CAHk-=wghx8Abyx_jcSrCDuNj96SuWS0NvNMhfU8VjFGg9bgm_g@mail.gmail.com>
-In-Reply-To: <CAHk-=wghx8Abyx_jcSrCDuNj96SuWS0NvNMhfU8VjFGg9bgm_g@mail.gmail.com>
+ <20240129124436.4b7d0129@gandalf.local.home>
+In-Reply-To: <20240129124436.4b7d0129@gandalf.local.home>
 From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 29 Jan 2024 09:55:52 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgrTm3_Ro7_0WAsk0CW41g4pg1z7reZh4A0xCeMBUJtpQ@mail.gmail.com>
-Message-ID: <CAHk-=wgrTm3_Ro7_0WAsk0CW41g4pg1z7reZh4A0xCeMBUJtpQ@mail.gmail.com>
+Date: Mon, 29 Jan 2024 09:56:29 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiPMDeav5B1es50j+fZSK3wxGUc0cWca0obZGR-abrJbQ@mail.gmail.com>
+Message-ID: <CAHk-=wiPMDeav5B1es50j+fZSK3wxGUc0cWca0obZGR-abrJbQ@mail.gmail.com>
 Subject: Re: [linus:master] [eventfs] 852e46e239: BUG:unable_to_handle_page_fault_for_address
 To: Steven Rostedt <rostedt@goodmis.org>
 Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev, lkp@intel.com, 
@@ -90,51 +91,19 @@ Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev, lkp@intel
 	Ajay Kaher <ajay.kaher@broadcom.com>, linux-trace-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 29 Jan 2024 at 09:40, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Mon, 29 Jan 2024 at 09:44, Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> eventfs_create_events_dir() seems to have the same bug with ti->flags,
-> btw, but got the ti->private initialization right.
+> On Mon, 29 Jan 2024 09:40:06 -0800
+> Linus Torvalds <torvalds@linux-foundation.org> wrote:
 >
-> Funnily enough, create_file() got this right. I don't even understand
-> why create_dir() did what it did.
+> > Now, I do agree that your locking is strange, and that should be fixed
+> > *too*, but I think the above is the "right" fix for this particular
+> > issue.
 >
-> IOW, I think the right fix is really just this:
+> Would you be OK if I did both as a "fix"?
 
-Actually, I think you have another uninitialized field here too:
-'dentry->d_fsdata'.
+See my crossed email - not dropping the mutex *is* actually a fix for
+another piece of data.
 
-And it looks like both create_file and create_dir got that wrong, but
-eventfs_create_events_dir() got it right.
-
-So you *also* need to do that
-
-        dentry->d_fsdata = ei;
-
-before you do the d_instantiate().
-
-Now, from a quick look, all the d_fsdata accesses *do* seem to be
-protected by the eventfs_mutex, except
-
- (a) eventfs_create_events_dir() doesn't seem to take the mutex, but
-gets the ordering right, so is ok
-
- (b) create_dir_dentry() drops the mutex in the middle, so the mutex
-doesn't actually serialize anything
-
-Not dropping the mutex in create_dir_dentry() *will* fix this bug, but
-honestly, I'd suggest that in addition to not dropping the mutex, you
-just fix the ordering too.
-
-IOW, just do that
-
-        dentry->d_fsdata = ei;
-
-before you do d_instantiate(), and now accessing d_fsdata is just
-always safe and doesn't even need the mutex.
-
-The whole "initialize everything before exposing it to others" is
-simply just a good idea.
-
-                Linus
+          Linus
 
