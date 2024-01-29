@@ -1,126 +1,171 @@
-Return-Path: <linux-kernel+bounces-43412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5075B841388
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:32:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1FA484138A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:33:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4B461F27AB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:32:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80981B22D12
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:33:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D01852E3E3;
-	Mon, 29 Jan 2024 19:31:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23B574E1BA;
+	Mon, 29 Jan 2024 19:32:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="hwuprVcp"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TSrkougg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B6F448790
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 19:31:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 620E02E834;
+	Mon, 29 Jan 2024 19:32:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706556719; cv=none; b=WbtRX1nnWV5oMHD+XvVYMz4FPAzNiqms8iNbva6hCM1j5XqK4yFk/KXsBGxNa0odgNLGA4JyFu7hVjbbCVviAw0ix3pplNzTvTsWT1+UZk5lRqnluJOwB+jB3+r0j3uJj3Oi5c90NRrOSLhoLRzs8B+xesJ49WX5bjWA/s/BPeQ=
+	t=1706556776; cv=none; b=g5v5DPkZN2TyXPoZxq/DcxXQ7y8k09/QmIQ3c1JUNN0RDlcCQI7XeAs7iR6vJRklpJlL+9pHCcMqYvOqRetjKRtp6PaB6sJhUVvCXxvJvdRKAHX+xHhoQmU8R2iYCbwc8FPuuz8BIhXMRBH7kCeLfuY8JrHFfjP0a+ZOnW8EtOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706556719; c=relaxed/simple;
-	bh=IsB9JY/4AyjDEDK/QCSn5bRVf6sdMPgHiV31yELbmAo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Xi8/1wHp02h3/QA/fQqc5NbFYsgUAPXAOfx5jut+OWE5wKwgrOGlDtBoX4Q39PDpC8rqLScdfK5pbpFI1pL6kkeHXqaq5FdasMC14FGz5k5LmlkNOM798RpRQ1t2Kbd3aqD3pSuT758shaZ7uFAtIaU3josEcNmF8TWqdKSCNFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=hwuprVcp; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2cf3ed3b917so35137821fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 11:31:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1706556714; x=1707161514; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CQ9m1/F9S8yFHzEc2XLsfrTvCTLg95PwiYcPzfrZs1Y=;
-        b=hwuprVcpL9KbL5FWEvgOzJ4WtD49Z2mB3cqO+9mVuZVtjlzyWzQQMgnSwvyXNUPdnI
-         EIJn3awvfliePFHZFa8+Xk3vhQbmX+FmhyCnctkOg5ussmt9xBIo9LZ6ROpckJHrs9eM
-         Gb1gLALA99MuyXxCf8a3S7upXv8CI10nwm7tXr9eFEWpcgHMzaEC3CJbx5IV0ucLQ+Qh
-         /SSqdqK4a6AerB3xDbQw5KsTfPDzsAYj68fXmFONqrquhj3WU3lCzikZrJ4E5bEnMeAd
-         Z38FBzsCGcznkbDIbX1uy7hMmoaW8xsvHzU139vedKXagsSc2l89Tmle/U/9FMoUlx+c
-         l/yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706556714; x=1707161514;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CQ9m1/F9S8yFHzEc2XLsfrTvCTLg95PwiYcPzfrZs1Y=;
-        b=htmQyFciiqM/yXnJ3Ku3uLflaLj3cuF164yHtmmcGwK+khuDkRtfGvIiDs6o18oiwC
-         KN23I+lvB3eUMZVgzXlnfZlF6pSzH+wFG15a8voaOuUNMuQAcMOFD/sG8qKRvO4wpV4w
-         o8T55CAnQ18W/lqYHd4F84uzkKpHyGqRzQnX0OZ+gjXqvQWcsbdMIPceFIZqd6lKQlcu
-         0T2G48WlguF7OsxGSdrs3F7l+nziOLKX3kfuP59DitxopDiAosWGbSri6FF22dz+25js
-         /RC9S1m+fEdyo0nTYcYYnkEy5PwN8xdKSzMah5Co72ZKWnyvbmmb7PPcpRxG8zM31Kyn
-         iogA==
-X-Gm-Message-State: AOJu0YwPt6p4eccONK5GXUJFIGsDRlR1ELUIlgtJjrdeBiq9kD/DfvP6
-	g5CER4nQrcegk65xwY97iUZZ07ERMX5kCOo4JZ+ARQCotb4sjN7UFtUeJln37sYiQ4heQvA303f
-	G3ZUBhh9/znZrQHKTplaKTk5LDQGWAcdG51sqCzdG65d+gIXz
-X-Google-Smtp-Source: AGHT+IGlu3Tiw0qfV0S0tzXwqX/DkfK4vLT52WlR8EOqoCU/BIhR19RaJuUD1vdzsC5LVh4+FOq0hRyfxHc6Io8v9Jw=
-X-Received: by 2002:a2e:a99e:0:b0:2cd:fafe:1893 with SMTP id
- x30-20020a2ea99e000000b002cdfafe1893mr5696137ljq.4.1706556709852; Mon, 29 Jan
- 2024 11:31:49 -0800 (PST)
+	s=arc-20240116; t=1706556776; c=relaxed/simple;
+	bh=e6mp+P1n+MD3N4nOABL2qLlj5/FDmrpQ5T8NP6dsLAU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=al38AKnJv+VgylHAd6mZeBKetqQFmLkXK/BHef9/Sh5h81LyJjpj7Qo20zdtMhOh9LmWN8NO3l0KwNFz9b7mpG2dqMiJ/tjvXKtIjb3Swxr95BaFWrD3vJlUBu+qsLFsHTSjfeIdtLq7bFEh6j/81ycRyo0Q/hrYITMq5XNQ3Nc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TSrkougg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21208C433C7;
+	Mon, 29 Jan 2024 19:32:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706556775;
+	bh=e6mp+P1n+MD3N4nOABL2qLlj5/FDmrpQ5T8NP6dsLAU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TSrkouggTFEUXeQ71Ee9FWeMZdrxJjzRsuL00L3YVYyj6gghEHzuZYXqAWTK05daP
+	 LLuAsjzb6T5apHAOvfw5kf5W+gPYVrNWH2lmAlZ2EeyAzi31G6sF7MUy66q064RoDo
+	 0PfvxxQ9DPyopyj7GFrbQWM1InrOIw4HpAs921KICZbSs/mCNBb3SK2++inuTAnWnO
+	 JG5u4xyYypRe4pmfURBa3/ltpksLaH7Akmp3U4Z7GryeHZRRgz5tlKOk/rq8l7WwiV
+	 NZ0KXXXHLQPCXQTSk9+h0FNVxgRAbkJX1v0X9ONu73xnsYy+M6tDyJnfDz2q7A/pVT
+	 wdzkU9GD8RICw==
+Date: Mon, 29 Jan 2024 19:32:50 +0000
+From: Will Deacon <will@kernel.org>
+To: Petr =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
+	iommu@lists.linux.dev, Christoph Hellwig <hch@lst.de>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Petr Tesarik <petr.tesarik1@huawei-partners.com>,
+	Dexuan Cui <decui@microsoft.com>
+Subject: Re: [PATCH 1/2] swiotlb: Fix allocation alignment requirement when
+ searching slots
+Message-ID: <20240129193250.GB12631@willie-the-truck>
+References: <20240126151956.10014-1-will@kernel.org>
+ <20240126151956.10014-2-will@kernel.org>
+ <20240126180127.1a3fc4e6@meshulam.tesarici.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129174150.655088-1-dlechner@baylibre.com> <20240129174150.655088-3-dlechner@baylibre.com>
-In-Reply-To: <20240129174150.655088-3-dlechner@baylibre.com>
-From: David Lechner <dlechner@baylibre.com>
-Date: Mon, 29 Jan 2024 13:31:38 -0600
-Message-ID: <CAMknhBGEm6EOFf17xiYf0+h0JNS-NtfW3GnpsUc9e8PxCZ7tVw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] iio: adc: ad7380: don't use bool in FIELD_PREP
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: Michael Hennerich <michael.hennerich@analog.com>, =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
-	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240126180127.1a3fc4e6@meshulam.tesarici.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Mon, Jan 29, 2024 at 11:43=E2=80=AFAM David Lechner <dlechner@baylibre.c=
-om> wrote:
->
-> Although this technically works, it is better to avoid using bool as
-> a bit value.
->
-> Fixes sparse warning:
->
->      drivers/iio/adc/ad7380.c:353:34: sparse: sparse: dubious: x & !y
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202401280629.5kknB57C-lkp@i=
-ntel.com/
-> Signed-off-by: David Lechner <dlechner@baylibre.com>
-> ---
->  drivers/iio/adc/ad7380.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/iio/adc/ad7380.c b/drivers/iio/adc/ad7380.c
-> index 44b8b18ab213..a4aa0db47720 100644
-> --- a/drivers/iio/adc/ad7380.c
-> +++ b/drivers/iio/adc/ad7380.c
-> @@ -350,7 +350,8 @@ static int ad7380_init(struct ad7380_state *st)
->         /* select internal or external reference voltage */
->         ret =3D regmap_update_bits(st->regmap, AD7380_REG_ADDR_CONFIG1,
->                                  AD7380_CONFIG1_REFSEL,
-> -                                FIELD_PREP(AD7380_CONFIG1_REFSEL, !!st->=
-vref));
-> +                                FIELD_PREP(AD7380_CONFIG1_REFSEL,
-> +                                           st->vref : 1 : 0));
+On Fri, Jan 26, 2024 at 06:01:27PM +0100, Petr Tesařík wrote:
+> On Fri, 26 Jan 2024 15:19:55 +0000
+> Will Deacon <will@kernel.org> wrote:
+> > diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> > index b079a9a8e087..25febb9e670c 100644
+> > --- a/kernel/dma/swiotlb.c
+> > +++ b/kernel/dma/swiotlb.c
+> > @@ -982,7 +982,7 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
+> >  		phys_to_dma_unencrypted(dev, pool->start) & boundary_mask;
+> >  	unsigned long max_slots = get_max_slots(boundary_mask);
+> >  	unsigned int iotlb_align_mask =
+> > -		dma_get_min_align_mask(dev) | alloc_align_mask;
+> > +		dma_get_min_align_mask(dev) & ~(IO_TLB_SIZE - 1);
+> 
+> Good. So, iotlb_align_mask now specifies how many low bits of orig_addr
+> should be preserved in the bounce buffer address, ignoring the offset
+> within the TLB slot...
 
-Somehow managed to introduce a typo between testing and sending. :-(
+Yup, this is basically restoring the old behaviour.
 
-Will send a v2 with the fix.
+> >  	unsigned int nslots = nr_slots(alloc_size), stride;
+> >  	unsigned int offset = swiotlb_align_offset(dev, orig_addr);
+> >  	unsigned int index, slots_checked, count = 0, i;
+> > @@ -998,14 +998,13 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
+> >  	 * allocations.
+> >  	 */
+> >  	if (alloc_size >= PAGE_SIZE)
+> > -		iotlb_align_mask |= ~PAGE_MASK;
+> > -	iotlb_align_mask &= ~(IO_TLB_SIZE - 1);
+> > +		alloc_align_mask |= ~PAGE_MASK;
+> 
+> ...and alloc_align_mask specifies the desired TLB slot alignment.
 
->         if (ret < 0)
->                 return ret;
->
-> --
-> 2.43.0
->
+Yes, although actually I'm now wondering whether there's another bug here
+in that we don't return naturally aligned buffers for allocations bigger
+than a page. I think that was broken in 0eee5ae10256 ("swiotlb: fix slot
+alignment checks") because that stopped aligning the initial search index
+to the stride (which was in turn previously aligned to the allocation size).
+
+> >  	/*
+> >  	 * For mappings with an alignment requirement don't bother looping to
+> >  	 * unaligned slots once we found an aligned one.
+> >  	 */
+> > -	stride = (iotlb_align_mask >> IO_TLB_SHIFT) + 1;
+> > +	stride = (max(alloc_align_mask, iotlb_align_mask) >> IO_TLB_SHIFT) + 1;
+> 
+> I'm not quite sure about this one.
+> 
+> And I'm not even sure all combinations make sense!
+> 
+> For example, take these values:
+> 
+> *         TLB_SIZE ==              0x800  (2K)
+> * alloc_align_mask == 0xffffffffffffc000  (16K alignment, could be page size)
+> * iotlb_align_mask == 0xffffffffffff0000  (64K alignment)
+> *        orig_addr == 0x0000000000001234
+> 
+> Only the lowest 16 bits are relevant for the alignment check.
+> Device alignment requires 0x1000.
+> Alloc alignment requires one of 0x0000, 0x4000, 0x8000, or 0xc000.
+> Obviously, such allocation must always fail...
+
+Having an iotlb_align_mask with all those upper bits set looks wrong to me.
+Is that the same "braino" as bbb73a103fbb?
+
+> >  	spin_lock_irqsave(&area->lock, flags);
+> >  	if (unlikely(nslots > pool->area_nslabs - area->used))
+> > @@ -1015,15 +1014,18 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
+> >  	index = area->index;
+> >  
+> >  	for (slots_checked = 0; slots_checked < pool->area_nslabs; ) {
+> > +		phys_addr_t tlb_addr;
+> > +
+> >  		slot_index = slot_base + index;
+> > +		tlb_addr = slot_addr(tbl_dma_addr, slot_index);
+> > +
+> > +		if (tlb_addr & alloc_align_mask)
+> > +			goto next_slot;
+> 
+> Awww, come on. So your code jumps to a label and then inserts an
+> unconditional continue just before that label? I'm sure we'll find a
+> cleaner way to convey the loop logic. What about this:
+> 
+> 		if ((tlb_addr & alloc_align_mask) != 0 ||
+> 		    (orig_addr && (tlb_addr & io_tlb_align_mask !=
+> 				   orig_addr & iotlb_align_mask))) {
+> 			index = wrap_area_index(pool, index + 1);
+> 			slots_checked++;
+> 			continue;
+> 		}
+
+I'm hoping I can drop the alloc_align_mask check entirely if I restore
+the alignment of the index.
+
+> But yes, this patch looks like it should finally do the right thing.
+
+I don't think we're quite there yet. I'll spin a v2.
+
+Thanks for the review,
+
+Will
 
