@@ -1,63 +1,64 @@
-Return-Path: <linux-kernel+bounces-43322-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 474D984121F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:37:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C48C9841222
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:37:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB02628B877
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:37:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 653AB1F23AE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:37:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D31AA13ADA;
-	Mon, 29 Jan 2024 18:34:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09384158D9B;
+	Mon, 29 Jan 2024 18:34:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rE252tqz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bJBeMdWe"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED38A4CB37;
-	Mon, 29 Jan 2024 18:34:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47EF0158D6D;
+	Mon, 29 Jan 2024 18:34:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706553288; cv=none; b=cL38ZDI8l8+PEQGdl4Qj9xBAE06a57+F4lumw8DxEILTbq6cEmAOAuYwLBijsUpvtH5rz3vjDURdFbGFMdrVNJbfbxSt0MbJHddi/Jm2O1XeMcfJZqzvn87+xdU0suqOjpyYBYOSFnwVB4vEvyqIwzXymwaXXo5KagB4TUB40dk=
+	t=1706553292; cv=none; b=anfMjfAwsWcgYePl7oYwtIjG2VpO+UFFmIVVUU0hyRQgg5PR4HYEHxr3Ep7BK0EaE1VI0IKO0bMKNMD0xa81DvuW5ZpMZfmTON516CZa+uLdSrTvqQ0IUtf/OqLH67GPEbkB0a33Iyy+PK4j6jD6y6AZNw/ATQgxkFT214kDmBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706553288; c=relaxed/simple;
-	bh=AwxJS7Jf96UGE+l8L1yMrUBSR56MkBGVMG6Ie3ReMG4=;
+	s=arc-20240116; t=1706553292; c=relaxed/simple;
+	bh=zbxsB1oxUos+a3QWxXh+2OjTJJLQCeYRqaI3ZWG1QEI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ayYiwLP3fLF3v2O+wp6F79yKVLDnjL6fTmW0F0o26Nt1OpxRc2E0LUR/RDQjDY4QzgpZ8Ne1A6x3RDwKOKKc+RD5XA7iPzzhGvXjjXlj/LzN9695hSrOxGhFxfC4wOyARHTgb0wwBx+S+Zv4lh4SfyyN8ov4MezCLADOptIjgWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rE252tqz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAC56C433F1;
-	Mon, 29 Jan 2024 18:34:45 +0000 (UTC)
+	 MIME-Version:Content-Type; b=jRfaiZ2H54bzBWYvl8DWU1epFGzx2JxZcZ7hcIBzfV4udFE58EttbkVIOnki1DUzWjF9b8/n+UVT2YCxRjN4nTWTqHGrNSvrWI0HsSQUofoPNNHUPBG0pi7ZgS96kXAaAf8VU6QFKfHVuynFXvAjPC4bG8VyyXEWd+nVBvVWzHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bJBeMdWe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BF1BC43390;
+	Mon, 29 Jan 2024 18:34:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706553287;
-	bh=AwxJS7Jf96UGE+l8L1yMrUBSR56MkBGVMG6Ie3ReMG4=;
+	s=k20201202; t=1706553291;
+	bh=zbxsB1oxUos+a3QWxXh+2OjTJJLQCeYRqaI3ZWG1QEI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rE252tqzWojL2r/ADYNNEyPCuNByVlRkPNdgKD+YXzwiIV6ceJzniLfwC/2rC4oDw
-	 PmU9RxeSwobgiBJVKd8SSBxhfeqNilOvt3/SeBi1/2RjW/b6WdjpqMexPURT6TaRX7
-	 3P0z2QpTEgOX47BdLOnNNL433RFyAkmC62ZZ9KIXOt3BAi9xgCVB+WvK8j5rJuWnbY
-	 v5np1fGT8JELUkcw17AJDGXgceFf79WC0w405eyHuC8Y10Cc6TU7PkfjqhKDkCqKKN
-	 bWoItumrotdG7gx4F/skGs6giO22dQ6bAtes5AIuvNRdLeaM6GC3iz46DXJ2VVXOD/
-	 jno3GQ7NMgHoA==
+	b=bJBeMdWerZ4vPia3gjlF2Vpy0sG+4WuBYGxJ4wA+M3Yu/2xML3PY4w1jKSwZ9JoTR
+	 qCOFwAlFS0l22DHcetFC23dQThFgpKNvaTGuBNUUQNF0r7bYX84C623wRTmaNTFmSA
+	 GOG/ZaCWnsJKINE9sOLhiQaUeFohtYFE/RV47JbkFIzRaSPjB77ygjsgzB+TNnn0bt
+	 Ys+AXaHWwPmsbLqFRH3Wq2eq4l8qDdhnKxDJT+gn+f+omi57VTtcmJ4d6IFjckfTbs
+	 trfYSI3xQaDh3ZCB8DygX727N0HXeKJU57j2zERR30XIE4JOq1L/C135lsC1b35p+k
+	 Z9n5Rr68cex0Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Mahesh Rajashekhara <mahesh.rajashekhara@microchip.com>,
-	Scott Teel <scott.teel@microchip.com>,
-	Scott Benesh <scott.benesh@microchip.com>,
-	Mike McGowen <mike.mcgowen@microchip.com>,
-	Kevin Barnett <kevin.barnett@microchip.com>,
-	Murthy Bhat <Murthy.Bhat@microchip.com>,
-	Don Brace <don.brace@microchip.com>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
+Cc: =?UTF-8?q?Christoph=20M=C3=BCllner?= <christoph.muellner@vrull.eu>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Palmer Dabbelt <palmer@rivosinc.com>,
 	Sasha Levin <sashal@kernel.org>,
-	jejb@linux.ibm.com,
-	storagedev@microchip.com,
-	linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 03/12] scsi: smartpqi: Fix logical volume rescan race condition
-Date: Mon, 29 Jan 2024 13:34:12 -0500
-Message-ID: <20240129183440.463998-3-sashal@kernel.org>
+	shuah@kernel.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	conor.dooley@microchip.com,
+	evan@rivosinc.com,
+	linux-kselftest@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.7 04/12] tools: selftests: riscv: Fix compile warnings in hwprobe
+Date: Mon, 29 Jan 2024 13:34:13 -0500
+Message-ID: <20240129183440.463998-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240129183440.463998-1-sashal@kernel.org>
 References: <20240129183440.463998-1-sashal@kernel.org>
@@ -67,159 +68,52 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.2
 Content-Transfer-Encoding: 8bit
 
-From: Mahesh Rajashekhara <mahesh.rajashekhara@microchip.com>
+From: Christoph Müllner <christoph.muellner@vrull.eu>
 
-[ Upstream commit fb4cece17b4583f55b34a8538e27a4adc833c9d4 ]
+[ Upstream commit b91c26fdb0e8150cdb610cdaadea62bb5e43bee0 ]
 
-Correct rescan flag race condition.
+GCC prints a couple of format string warnings when compiling
+the hwprobe test. Let's follow the recommendation in
+Documentation/printk-formats.txt to fix these warnings.
 
-Multiple conditions are being evaluated before notifying OS to do a rescan.
-
-Driver will skip rescanning the device if any one of the following
-conditions are met:
-
- - Devices that have not yet been added to the OS or devices that have been
-   removed.
-
- - Devices which are already marked for removal or in the phase of removal.
-
-Under very rare conditions, after logical volume size expansion, the OS
-still sees the size of the logical volume which was before expansion.
-
-The rescan flag in the driver is used to signal the need for a logical
-volume rescan. A race condition can occur in the driver, and it leads to
-one thread overwriting the flag inadvertently. As a result, driver is not
-notifying the OS SML to rescan the logical volume.
-
-Move device->rescan update into new function pqi_mark_volumes_for_rescan()
-and protect with a spin lock.
-
-Move check for device->rescan into new function pqi_volume_rescan_needed()
-and protect function call with a spin_lock.
-
-Reviewed-by: Scott Teel <scott.teel@microchip.com>
-Reviewed-by: Scott Benesh <scott.benesh@microchip.com>
-Reviewed-by: Mike McGowen <mike.mcgowen@microchip.com>
-Reviewed-by: Kevin Barnett <kevin.barnett@microchip.com>
-Co-developed-by: Murthy Bhat <Murthy.Bhat@microchip.com>
-Signed-off-by: Murthy Bhat <Murthy.Bhat@microchip.com>
-Signed-off-by: Mahesh Rajashekhara <mahesh.rajashekhara@microchip.com>
-Signed-off-by: Don Brace <don.brace@microchip.com>
-Link: https://lore.kernel.org/r/20231219193653.277553-3-don.brace@microchip.com
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Christoph Müllner <christoph.muellner@vrull.eu>
+Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+Link: https://lore.kernel.org/r/20231123185821.2272504-2-christoph.muellner@vrull.eu
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/smartpqi/smartpqi.h      |  1 -
- drivers/scsi/smartpqi/smartpqi_init.c | 43 ++++++++++++++++++++++-----
- 2 files changed, 36 insertions(+), 8 deletions(-)
+ tools/testing/selftests/riscv/hwprobe/hwprobe.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/smartpqi/smartpqi.h b/drivers/scsi/smartpqi/smartpqi.h
-index 041940183516..cdedc271857a 100644
---- a/drivers/scsi/smartpqi/smartpqi.h
-+++ b/drivers/scsi/smartpqi/smartpqi.h
-@@ -1347,7 +1347,6 @@ struct pqi_ctrl_info {
- 	bool		controller_online;
- 	bool		block_requests;
- 	bool		scan_blocked;
--	u8		logical_volume_rescan_needed : 1;
- 	u8		inbound_spanning_supported : 1;
- 	u8		outbound_spanning_supported : 1;
- 	u8		pqi_mode_enabled : 1;
-diff --git a/drivers/scsi/smartpqi/smartpqi_init.c b/drivers/scsi/smartpqi/smartpqi_init.c
-index d56201120087..081bb2c09806 100644
---- a/drivers/scsi/smartpqi/smartpqi_init.c
-+++ b/drivers/scsi/smartpqi/smartpqi_init.c
-@@ -2093,8 +2093,6 @@ static void pqi_scsi_update_device(struct pqi_ctrl_info *ctrl_info,
- 		if (existing_device->devtype == TYPE_DISK) {
- 			existing_device->raid_level = new_device->raid_level;
- 			existing_device->volume_status = new_device->volume_status;
--			if (ctrl_info->logical_volume_rescan_needed)
--				existing_device->rescan = true;
- 			memset(existing_device->next_bypass_group, 0, sizeof(existing_device->next_bypass_group));
- 			if (!pqi_raid_maps_equal(existing_device->raid_map, new_device->raid_map)) {
- 				kfree(existing_device->raid_map);
-@@ -2164,6 +2162,20 @@ static inline void pqi_init_device_tmf_work(struct pqi_scsi_dev *device)
- 		INIT_WORK(&tmf_work->work_struct, pqi_tmf_worker);
- }
+diff --git a/tools/testing/selftests/riscv/hwprobe/hwprobe.c b/tools/testing/selftests/riscv/hwprobe/hwprobe.c
+index c474891df307..abb825811c70 100644
+--- a/tools/testing/selftests/riscv/hwprobe/hwprobe.c
++++ b/tools/testing/selftests/riscv/hwprobe/hwprobe.c
+@@ -29,7 +29,7 @@ int main(int argc, char **argv)
+ 		/* Fail if the kernel claims not to recognize a base key. */
+ 		if ((i < 4) && (pairs[i].key != i))
+ 			ksft_exit_fail_msg("Failed to recognize base key: key != i, "
+-					   "key=%ld, i=%ld\n", pairs[i].key, i);
++					   "key=%lld, i=%ld\n", pairs[i].key, i);
  
-+static inline bool pqi_volume_rescan_needed(struct pqi_scsi_dev *device)
-+{
-+	if (pqi_device_in_remove(device))
-+		return false;
-+
-+	if (device->sdev == NULL)
-+		return false;
-+
-+	if (!scsi_device_online(device->sdev))
-+		return false;
-+
-+	return device->rescan;
-+}
-+
- static void pqi_update_device_list(struct pqi_ctrl_info *ctrl_info,
- 	struct pqi_scsi_dev *new_device_list[], unsigned int num_new_devices)
- {
-@@ -2284,9 +2296,13 @@ static void pqi_update_device_list(struct pqi_ctrl_info *ctrl_info,
- 		if (device->sdev && device->queue_depth != device->advertised_queue_depth) {
- 			device->advertised_queue_depth = device->queue_depth;
- 			scsi_change_queue_depth(device->sdev, device->advertised_queue_depth);
--			if (device->rescan) {
--				scsi_rescan_device(device->sdev);
-+			spin_lock_irqsave(&ctrl_info->scsi_device_list_lock, flags);
-+			if (pqi_volume_rescan_needed(device)) {
- 				device->rescan = false;
-+				spin_unlock_irqrestore(&ctrl_info->scsi_device_list_lock, flags);
-+				scsi_rescan_device(device->sdev);
-+			} else {
-+				spin_unlock_irqrestore(&ctrl_info->scsi_device_list_lock, flags);
- 			}
- 		}
- 	}
-@@ -2308,8 +2324,6 @@ static void pqi_update_device_list(struct pqi_ctrl_info *ctrl_info,
- 		}
+ 		if (pairs[i].key != RISCV_HWPROBE_KEY_BASE_BEHAVIOR)
+ 			continue;
+@@ -37,7 +37,7 @@ int main(int argc, char **argv)
+ 		if (pairs[i].value & RISCV_HWPROBE_BASE_BEHAVIOR_IMA)
+ 			continue;
+ 
+-		ksft_exit_fail_msg("Unexpected pair: (%ld, %ld)\n", pairs[i].key, pairs[i].value);
++		ksft_exit_fail_msg("Unexpected pair: (%lld, %llu)\n", pairs[i].key, pairs[i].value);
  	}
  
--	ctrl_info->logical_volume_rescan_needed = false;
--
- }
- 
- static inline bool pqi_is_supported_device(struct pqi_scsi_dev *device)
-@@ -3702,6 +3716,21 @@ static bool pqi_ofa_process_event(struct pqi_ctrl_info *ctrl_info,
- 	return ack_event;
- }
- 
-+static void pqi_mark_volumes_for_rescan(struct pqi_ctrl_info *ctrl_info)
-+{
-+	unsigned long flags;
-+	struct pqi_scsi_dev *device;
-+
-+	spin_lock_irqsave(&ctrl_info->scsi_device_list_lock, flags);
-+
-+	list_for_each_entry(device, &ctrl_info->scsi_device_list, scsi_device_list_entry) {
-+		if (pqi_is_logical_device(device) && device->devtype == TYPE_DISK)
-+			device->rescan = true;
-+	}
-+
-+	spin_unlock_irqrestore(&ctrl_info->scsi_device_list_lock, flags);
-+}
-+
- static void pqi_disable_raid_bypass(struct pqi_ctrl_info *ctrl_info)
- {
- 	unsigned long flags;
-@@ -3742,7 +3771,7 @@ static void pqi_event_worker(struct work_struct *work)
- 				ack_event = true;
- 				rescan_needed = true;
- 				if (event->event_type == PQI_EVENT_TYPE_LOGICAL_DEVICE)
--					ctrl_info->logical_volume_rescan_needed = true;
-+					pqi_mark_volumes_for_rescan(ctrl_info);
- 				else if (event->event_type == PQI_EVENT_TYPE_AIO_STATE_CHANGE)
- 					pqi_disable_raid_bypass(ctrl_info);
- 			}
+ 	out = riscv_hwprobe(pairs, 8, 0, 0, 0);
 -- 
 2.43.0
 
