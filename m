@@ -1,105 +1,149 @@
-Return-Path: <linux-kernel+bounces-43136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23C45840C0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:47:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2686B840C16
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:47:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83EF5B2461E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:46:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58B781C214F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:47:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD11A156993;
-	Mon, 29 Jan 2024 16:46:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55B4A15698A;
+	Mon, 29 Jan 2024 16:47:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OwF4pNCZ"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jAWLzYVj"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84F36156989
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 16:46:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74BFB157038;
+	Mon, 29 Jan 2024 16:46:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706546799; cv=none; b=UrSi/ZhwTuyozvqq30b3RkbBzOkE6ZOKfEjdueP+2RMgtXBU/dTyrE8NGKvua4h7qO+rqNebo1mBH27ZOt+buGYLzVMakZ4KIqzDyM+XpFhGLku2WjYfHh7d2+vshoPpzWSTSJJ8VbSLz2iHzNOmm/DWlkdPUqGt8Rq6jff7BXw=
+	t=1706546819; cv=none; b=fVoZ5IysNY0oHdvJ03wt7hsEL61tXRTKpTBmhIu929kyEWRnd0LTn3/G6pMfDm0eUd8yd2aII0oxIUYpDn3rZSXqdJT4bnqUR+3U4kRv+tfcBV47YK2PcRs4qmJr1qOGu4mpWrgH3R8sZ7UbhOBZYz86h1QWfoJjz3lThyw9fNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706546799; c=relaxed/simple;
-	bh=mbENMP6ALwn3I6z8Y/mXtvTa2m+2zY7iKoHkFhuJDc4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qFlLkvyHuQ50kT6KklDFiOGm3oywGyUC9rpsGQ8oE8vUuKTUqH1sr0d4pcPXddhIl2ZqmgKMsVNhrYi5X7g5SdaNeAydeN89Ls0f+wmNDhZgCQATs5+UG50qG9hJcNZQcasi+KMCl7D6+5lrjQIbPojRvnpJgUIuzQz6oehBalY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OwF4pNCZ; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a35e9161b8cso103406666b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 08:46:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706546796; x=1707151596; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Q+f1+9NV9x1H6HYmKDscBmLQc10yQKPAhIN9I9MCfkQ=;
-        b=OwF4pNCZfnV9A/Pdsjytx3AX7yX4m/jyHqPKuoONZtlWqv9N5oRr1uWinxZVTqPSKu
-         rm9WahLftPjhRDOFKmWW+HXI7WEuJ+Z/tpQ0Sj+3XgoCVHENWXo5Livz1BYnQGIuUmlB
-         OWUlNq55iPGY9kbCqHHn/G8pxa2K0qSe59n4bLicgO5wzB35K5ZF8zx0ak/0NxnXG/5b
-         b1EFxLmBOhatShNT2eDbKP62BIuTbkSr/LggBpaCYW0rAToqVMjnmpc5tXA9zU5PLmUd
-         uam2lr5ooBW8Qwv3u8zKG300hH+lgtgu3Kbrrqj6hR/F8KZqVJLVSBcc6Fc1NEWUqZmI
-         ygrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706546796; x=1707151596;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q+f1+9NV9x1H6HYmKDscBmLQc10yQKPAhIN9I9MCfkQ=;
-        b=piqWpGgUF3RY43UCNGG9AJqDmBud3CQCPyER8BjME/GKyPkRpBq/fGnv2Fu3sgrfPq
-         qpRSFgJUGP2d9Gn4yYo0XiTBnP2D/i4GofX42NVGCA7OQq9D9yC3zUaIHl9XEMokiS0X
-         o+5JY4JNlo25kV+qYPUlVbH3pSvP/h6ahCyBgCZzfREkBWRi4l9VX7gr+gsHGVa58/A4
-         X6a752M9Dd11XNYAtTzLjjCxQGEI24MYXFnYBOnbcupgkLbVbwvNGn5yA6pdwTeNbNSI
-         XjlmzWojDJkMcU0TkPyJeJZGEKglxWlEIzHVWOyLGRMIny1oAPZampHdGjnL8Nftco+z
-         D6NQ==
-X-Gm-Message-State: AOJu0Yzqm+N+adst2gMdVuZPIvRCGotavpL6cieE9ohCzH3SkreO887P
-	bvtWbA3xNTMHCRsXDpz6IZTYzQzEFJD6+ZNWDgd3+Hp8CbddRhPpsR79+7Lf/ZI=
-X-Google-Smtp-Source: AGHT+IEAgNenRs7ZgVCn7z/QNduayBhI1e4zb16MJM4JFkdHotSTBXrMQjRH9PgRvYrvY7DsFi3P7w==
-X-Received: by 2002:a17:906:6c90:b0:a26:98ee:9fc0 with SMTP id s16-20020a1709066c9000b00a2698ee9fc0mr4624982ejr.43.1706546795890;
-        Mon, 29 Jan 2024 08:46:35 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id tx18-20020a1709078e9200b00a3551f727d1sm2744582ejc.68.2024.01.29.08.46.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 08:46:35 -0800 (PST)
-Message-ID: <6dd93b49-359c-45bb-99d0-b380882ce739@linaro.org>
-Date: Mon, 29 Jan 2024 16:46:33 +0000
+	s=arc-20240116; t=1706546819; c=relaxed/simple;
+	bh=44NsvH+KQdpWMlSBMIAtXvkxIIBjDimdakKzD/tf1eI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=p3wOuZl3KWh4vmNnXZ9ZmTVD//jF8Ni7w1bcZt3hN7DHbBLbb5aZEX9Ky75T502ApZP1xRVfglMT+iInVh2F2ik2+1GUhmy1DIaFFIFw8IL3xI8xab9A9wdhBMz1bblqGIF9D9jGCjGwaVZYz9toxEzrzgO1yGed+7U3iolIbHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jAWLzYVj; arc=none smtp.client-ip=134.134.136.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706546817; x=1738082817;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=44NsvH+KQdpWMlSBMIAtXvkxIIBjDimdakKzD/tf1eI=;
+  b=jAWLzYVjlY12yg+214YAeg3AKA40sLIlgXrP2bOheCzb0a7HDpuXCJ6/
+   g5unUVLPeBb1Zjq0XbWuCl/4Uy1KKlqiAa9Dp8GdEElg6fAfKGQIrADhL
+   sM2sWBnT35W9hvicmsyOkKZgP1ei614Izzdko1BzUay98o8kmN8b8PQqY
+   e58NrYFJeoTysot9tR5Yfpj5iBECf/bs5hFeg2bYL5J3VbJfAoOjZGLx8
+   KHX7OaI5jJLqbEZRk5fU/dAv0dzB4Re/y9fB6oXFWQxbmDERgelgUPxa0
+   SLl4jNuw9QL31Al0UQWFu18bbBu2bWj5BbQ8TX8YEQDMYm+epQrJLpqSG
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="467262299"
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="467262299"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 08:46:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="3423587"
+Received: from hbrandbe-mobl.ger.corp.intel.com (HELO localhost) ([10.252.59.53])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 08:46:53 -0800
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Mario Limonciello <mario.limonciello@amd.com>,
+ amd-gfx@lists.freedesktop.org, Alex Deucher <alexander.deucher@amd.com>,
+ Harry Wentland <harry.wentland@amd.com>, "Rafael J . Wysocki"
+ <rafael@kernel.org>, Hans de Goede <hdegoede@redhat.com>
+Cc: open list <linux-kernel@vger.kernel.org>, "open list:DRM DRIVERS"
+ <dri-devel@lists.freedesktop.org>, Melissa Wen <mwen@igalia.com>, "open
+ list:ACPI" <linux-acpi@vger.kernel.org>, Mark Pearson
+ <mpearson-lenovo@squebb.ca>
+Subject: Re: [PATCH 2/2] drm/amd: Fetch the EDID from _DDC if available for eDP
+In-Reply-To: <63c60424-1b2d-4912-81b2-7c7ead4c8289@amd.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240126184639.8187-1-mario.limonciello@amd.com>
+ <20240126184639.8187-3-mario.limonciello@amd.com>
+ <87le88jx63.fsf@intel.com> <63c60424-1b2d-4912-81b2-7c7ead4c8289@amd.com>
+Date: Mon, 29 Jan 2024 18:46:49 +0200
+Message-ID: <87cytkjddy.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/9] dt-bindings: clock: google,gs101-clock: add PERIC1
- clock management unit
-Content-Language: en-US
-To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
- peter.griffin@linaro.org, mturquette@baylibre.com, sboyd@kernel.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
- willmcvicker@google.com, semen.protsenko@linaro.org,
- alim.akhtar@samsung.com, s.nawrocki@samsung.com, tomasz.figa@gmail.com,
- cw00.choi@samsung.com, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org
-References: <20240127001926.495769-1-andre.draszik@linaro.org>
- <20240127001926.495769-3-andre.draszik@linaro.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20240127001926.495769-3-andre.draszik@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+
+On Mon, 29 Jan 2024, Mario Limonciello <mario.limonciello@amd.com> wrote:
+> On 1/29/2024 03:39, Jani Nikula wrote:
+>> On Fri, 26 Jan 2024, Mario Limonciello <mario.limonciello@amd.com> wrote:
+>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
+>>> index 9caba10315a8..c7e1563a46d3 100644
+>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
+>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
+>>> @@ -278,6 +278,11 @@ static void amdgpu_connector_get_edid(struct drm_connector *connector)
+>>>   	struct amdgpu_device *adev = drm_to_adev(dev);
+>>>   	struct amdgpu_connector *amdgpu_connector = to_amdgpu_connector(connector);
+>>>   
+>>> +	if (amdgpu_connector->edid)
+>>> +		return;
+>>> +
+>>> +	/* if the BIOS specifies the EDID via _DDC, prefer this */
+>>> +	amdgpu_connector->edid = amdgpu_acpi_edid(adev, connector);
+>> 
+>> Imagine the EDID returned by acpi_video_get_edid() has edid->extensions
+>> bigger than 4. Of course it should not, but you have no guarantees, and
+>> it originates outside of the kernel.
+>> 
+>> The real fix is to have the function return a struct drm_edid which
+>> tracks the allocation size separately. Unfortunately, it requires a
+>> bunch of changes along the way. We've mostly done it in i915, and I've
+>> sent a series to do this in drm/bridge [1].
+
+Looking at it again, perhaps the ACPI code should just return a blob,
+and the drm code should have a helper to wrap that around struct
+drm_edid, so that the ACPI code does not have to depend on drm. Basic
+idea remains.
+
+>> Bottom line, we should stop using struct edid in drivers. They'll all
+>> parse the info differently, and from what I've seen, often wrong.
+>> 
+>> 
+>
+> Thanks for the feedback.  In that case this specific change should 
+> probably rebase on the Melissa's work 
+> https://lore.kernel.org/amd-gfx/20240126163429.56714-1-mwen@igalia.com/ 
+> after she takes into account the feedback.
+>
+> Let me ask you this though - do you think that after that's done should 
+> we let all drivers get EDID from BIOS as a priority?  Or would you 
+> prefer that this is unique to amdgpu?
+
+If the reason for having this is that the panel EDID contains some
+garbage, that's certainly not unique to amdgpu... :p
+
+> Something like:
+>
+> 1) If user specifies on kernel command line and puts an EDID in 
+> /lib/firmware use that.
+> 2) If BIOS has EDID in _DDC and it's eDP panel, use that.
+
+I think we should also look into this. We currently don't do this, and
+it might help with some machines. However, gut feeling says it's
+probably better to keep this as a per driver decision instead of trying
+to bolt it into drm helpers.
+
+BR,
+Jani.
 
 
+> 3) Get panel EDID.
+>
 
-On 1/27/24 00:19, André Draszik wrote:
-> Add dt-schema documentation and clock IDs for the Connectivity
-> Peripheral 1 (PERIC1) clock management unit.
-> 
-> Signed-off-by: André Draszik <andre.draszik@linaro.org>
-
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+-- 
+Jani Nikula, Intel
 
