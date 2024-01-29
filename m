@@ -1,154 +1,101 @@
-Return-Path: <linux-kernel+bounces-43464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1967984143B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:26:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E6EA0841440
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:27:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89D6AB247B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:26:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A201B24F23
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:27:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCA181534EB;
-	Mon, 29 Jan 2024 20:26:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E405151CE0;
+	Mon, 29 Jan 2024 20:26:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="C+R5wmvj"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="al9pC9Lu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F0CA6F09C
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 20:26:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC3DD76048;
+	Mon, 29 Jan 2024 20:26:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706559987; cv=none; b=PEQzYV/jcXyvAe2LZobWu8V2qrFXAtPHod6LQSddiavB3Vf89PzCFUgkfu8yAYanSlQdYIgoXsZK/cVkqcRxgOquW2ySlhdie7cJfBF6vHtunZvkzAM+upLh/VOevkgC7h0s0bPt9GiK3ItsFAeLK1nqnz1gQfiH7I7ngk1jID8=
+	t=1706560014; cv=none; b=JcnSRhUr0BpZ4ocUN0V/+fIGTZA3bzmILQy1EBWu2v6Gs52OGV3AAN0Hv2medqVSJNM8SShx/SGIyvOYKIGMh4DeSWghm4q+or9/kosluWmefGyqKivg6GQ8ZXCcKvacvam9gDI7TY/n3o6FatPQJHRtjD/RyOr92zOYvIlykbE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706559987; c=relaxed/simple;
-	bh=SMrAnU030wuDhlboOt55byceqkItemYdSY9Vo59Y2yw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AOcsliQ4DDBwt6JxxOCWhWWjj7STclUUNKzC2cWIBUWQkdyo/TAGKDAlUcSFlWfuHwgyXalibwK+iQWKa4hCRp8tg7/uFTocLRzSEES9PCkKBStsNHT6ad3ejQtk5nnp/idFjFejx8X8ngdZoIMzXZGLFQCWDUHdkjy135lcSU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=C+R5wmvj; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6ddc1fad6ddso2690207b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 12:26:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706559985; x=1707164785; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6E+CSDDSvT91f9Viy+M6uu4Auu69C79V+Tns03Gp4VA=;
-        b=C+R5wmvjfctGYZ9SDDMSVdhjyUSByuz1xutV7NvLPV+DijWDZeL0ByHkiMBD9nuV42
-         cUMhqHqVCk9SaqAvZ09kpnC7D/IFzz2OjBu1Th9eqTBS2gWlDRpmew+m+G0g9QDSQJk8
-         hgt7tmGFi3bGZp1p+rPFWDyzoPpr8I4X1fysM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706559985; x=1707164785;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6E+CSDDSvT91f9Viy+M6uu4Auu69C79V+Tns03Gp4VA=;
-        b=L++LGq5fEIqT5tJZH+VNyzvhr47HlSjsr4aSJdMQDxysGI5HV0Lar2sZ+tiAdH7T4D
-         +f2S1hguWfBDqWI/CaVxZUcMnjUM7B81M6fHB3irqRjc66cvN0Nn2nUvmJOErFalE/cE
-         oqC4jZh6Hlr1fkfBioAjTt9AqnsCVvT3c+k1H5Mq3wVikbmq9XtSCPuB/35IA+oOiBXF
-         M9Xe1xAR1m80rlVXPHRrqGmgFJwNXoI5OnFCoDU0Baaad6obLvrpdixBNQtTWJ0iHhij
-         yVc0JnDel0TuT2qG7pQX1QrBhNySodBCo/u9sC0pd5tnZdsHhnmanxfJAmwVpLMqhf3i
-         8IZA==
-X-Gm-Message-State: AOJu0Yyhl0CAG1lWh0uXdqvICUWGNJ1vjx0ghgS44ZnepKM1ouZ5DF0r
-	Z062Jrqb/0lJokVPi32LlfQ4IzBsHcERK1TW0r+RJjxEEViYedoaosyLPAPD3g==
-X-Google-Smtp-Source: AGHT+IEljCTSge/PCk3xrZvAhS+vec3Iv/hm4f2dPqTNvAEMD81HKYx4c8Hh7l8Y79fYPZE4uKvCYQ==
-X-Received: by 2002:a05:6a00:d74:b0:6dd:8a25:e167 with SMTP id n52-20020a056a000d7400b006dd8a25e167mr4255359pfv.34.1706559985074;
-        Mon, 29 Jan 2024 12:26:25 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id a15-20020aa78e8f000000b006ddc3794de7sm6239422pfr.134.2024.01.29.12.26.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 12:26:24 -0800 (PST)
-Date: Mon, 29 Jan 2024 12:26:23 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Cc: Mark Rutland <mark.rutland@arm.com>, linux-hardening@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Miguel Ojeda <ojeda@kernel.org>, Marco Elver <elver@google.com>,
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH 4/5] overflow: Introduce add_wrap(), sub_wrap(), and
- mul_wrap()
-Message-ID: <202401291224.53CA9C17E0@keescook>
-References: <20240129182845.work.694-kees@kernel.org>
- <20240129183411.3791340-4-keescook@chromium.org>
- <8dead2fb-d522-492b-89f2-1358198c1cdf@prevas.dk>
+	s=arc-20240116; t=1706560014; c=relaxed/simple;
+	bh=30G65tljw/tJBwMTFx2tDliaqMNSFJuAgSbb75kyu5U=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=S/aOt2Uh3MzSEGD1iFVH19VWD8S4lBwxQ/iwCXibPzjaQ40uw7Q4KFgvEN4wIuMoINX9lshxxIUWXpqTWJWA8DUhowZTFk/mx5yRh6Vpyq1FdFdQuZiAGH3+eLP7R2+ZiQvxudIBNfk+wHEWFKbior8S7n+oK3+WG6OeXyr/uu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=al9pC9Lu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA2B0C433F1;
+	Mon, 29 Jan 2024 20:26:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706560013;
+	bh=30G65tljw/tJBwMTFx2tDliaqMNSFJuAgSbb75kyu5U=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=al9pC9Lu3KFW10x9B84NrzhDsftSFRDCJZ0f3O/jzI/eb9sjfyWFaMSOobqxSCUaH
+	 UVu6DQ4qTzeXkGPklD+uAcJreG3DAwPLVdo1vZa4v7hZWKmoJmzDkH+HHHH/k+xYta
+	 NGIF0zRhcWr+9W/tOu+bMwc6GFKLsnx9cNGAgmbY90ov4GcNJkE5eXxbvH8w/AkBDx
+	 YSvi5C4ql1aCk+IaK2Tu47nLOjnos9InsBbzXrlzeaUUbrD7addpi2fmi3VkfheLvb
+	 9Z2w4jf1AXfTQdW3emp13eROLa+d4GyOwWEW2j70g5yfWMUlvj8n6ZbKIoHQwd1JHK
+	 qOw8pp+udcLcQ==
+Date: Mon, 29 Jan 2024 12:26:51 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, Krzysztof Kozlowski
+ <krzysztof.kozlowski@linaro.org>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Rob
+ Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Emil Renner Berthing <kernel@esmil.dk>, Samin Guo
+ <samin.guo@starfivetech.com>, Alexandre Torgue
+ <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, Maxime
+ Coquelin <mcoquelin.stm32@gmail.com>, Giuseppe Cavallaro
+ <peppe.cavallaro@st.com>, Jacob Keller <jacob.e.keller@intel.com>,
+ netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, kernel@collabora.com
+Subject: Re: [PATCH v4 1/2] dt-bindings: net: starfive,jh7110-dwmac: Add
+ JH7100 SoC compatible
+Message-ID: <20240129122651.4b3c7b8e@kernel.org>
+In-Reply-To: <f113c4b6-a074-4566-b69b-f25c9590d23f@collabora.com>
+References: <20240126191319.1209821-1-cristian.ciocaltea@collabora.com>
+	<20240126191319.1209821-2-cristian.ciocaltea@collabora.com>
+	<0a6f6dcb-18b0-48d5-8955-76bce0e1295d@linaro.org>
+	<e29ae12b-5823-4fba-8029-e8e490462138@collabora.com>
+	<56f3bd3c-c099-405b-837b-16d8aeb4cc4b@lunn.ch>
+	<8c4cfc54-bd23-4d56-a4ae-9f3dd5cedb59@collabora.com>
+	<e99e72b3-e0f6-4a80-82c8-bd60c36d180a@lunn.ch>
+	<f113c4b6-a074-4566-b69b-f25c9590d23f@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8dead2fb-d522-492b-89f2-1358198c1cdf@prevas.dk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 29, 2024 at 09:08:43PM +0100, Rasmus Villemoes wrote:
-> On 29/01/2024 19.34, Kees Cook wrote:
-> > Provide helpers that will perform wrapping addition, subtraction, or
-> > multiplication without tripping the arithmetic wrap-around sanitizers. The
-> > first argument is the type under which the wrap-around should happen
-> > with. In other words, these two calls will get very different results:
+On Mon, 29 Jan 2024 20:51:43 +0200 Cristian Ciocaltea wrote:
+> > Well, b4 can do that:
 > > 
-> > 	add_wrap(int, 50, 50) == 2500
-> > 	add_wrap(u8,  50, 50) ==  196
-> 
-> s/add/mul/g I suppose.
-
-Oops, yes.
-
-> > Cc: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > Cc: linux-hardening@vger.kernel.org
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  include/linux/overflow.h | 54 ++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 54 insertions(+)
+> > https://b4.docs.kernel.org/en/latest/contributor/trailers.html
 > > 
-> > diff --git a/include/linux/overflow.h b/include/linux/overflow.h
-> > index 3c46c648d2e8..4f945e9e7881 100644
-> > --- a/include/linux/overflow.h
-> > +++ b/include/linux/overflow.h
-> > @@ -120,6 +120,24 @@ static inline bool __must_check __must_check_overflow(bool overflow)
-> >  		check_add_overflow(var, offset, &__result);	\
-> >  	}))
-> >  
-> > +/**
-> > + * add_wrap() - Intentionally perform a wrapping addition
-> > + * @type: type to check overflow against
+> > But i've no idea if the netdev tooling actual does.  
 > 
-> Well, nothing is "checked", so why not just say "type of result"?
-
-Yeah, that's better. I was trying to describe that @type will affect the
-value of the result.
-
-> > +/**
-> > + * sub_wrap() - Intentionally perform a wrapping subtraction
-> > + * @type: type to check underflow against
+> Jakub, please let me know how should we proceed further!
 > 
-> The terminology becomes muddy, is (INT_MAX) - (-1) an underflow or
-> overflow? Anyway, see above.
+> The problem is that we ended up with a RESEND to include a missing R-b
+> tag from Rob, but afterwards we also got this new R-b from Krzysztof
+> here.  If it's not possible for you to collect both tags, I could
+> prepare a v5 to avoid having another RESEND.
 
-Right, I should explicitly say "wrap-around".
+First off, have another read of our rules:
+https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#tl-dr
+:)
 
-> 
-> >  
-> > +/**
-> > + * mul_wrap() - Intentionally perform a wrapping multiplication
-> > + * @type: type to check underflow against
-> 
-> And here there's definitely a copy-pasto.
-
-Ek, yes.
-
-> The code itself looks fine.
-
-Thanks!
-
--- 
-Kees Cook
+IMHO forwarding the review tag to a newer version of the set yourself
+(like I just did) is fine. None of the tooling I know checks if that
+the person posting the tag matches the From:
 
