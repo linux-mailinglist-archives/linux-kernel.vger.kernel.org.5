@@ -1,129 +1,162 @@
-Return-Path: <linux-kernel+bounces-42957-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42959-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0171C840942
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:05:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BB4584094E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:06:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 945E81F288CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:05:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 012611F288E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:06:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67050152E03;
-	Mon, 29 Jan 2024 15:05:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ILWkiaqk"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49C9715351E;
+	Mon, 29 Jan 2024 15:05:57 +0000 (UTC)
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AD72657DB
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 15:05:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39C461534FA;
+	Mon, 29 Jan 2024 15:05:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706540713; cv=none; b=NAXk8fQnCc2cbEmo89ingsKvOTyzGUkigbUPxiSyeZcVz3lBAmLX33iOinocVTl7Ab1MItvbWlvOpv6IZtIGHJ0XP31PHIHGwH4H3Cw1aJTcJFOsupvZMDhPvU22JcgZmuyRTTgAcpJOIgtGwTZZwjFoKlbtmK1GzDdprGfjVoc=
+	t=1706540756; cv=none; b=BlTqYCNVkxatawn0jsvXkH0NOKXRJVJQUru+vHACrFOYlw3VKycmxn41v8TLVyZy80nK27VMYGCrK35PxToAgSd0dsVsWKPE6YgsLvuHNdPsiKS7fEsDggGbCcRr+5FVPsB/T0xXKynTOBk8J6nhUthTwOXYHYsIveqlOCmtmBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706540713; c=relaxed/simple;
-	bh=w0SmiVf1VIVWURSBibSHsWqoAWrZC4py0itUpxFcYnM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZM8GG0z+mOIOR72Zz1yod+x5kcbTJEjIDZZ6juXKaIstzRceLZkKA5uEwIzgn2I0rCJ0xqg068JQQzwmL0fG3oh3b8pcSHctauLwiEDrF4nASYIvY+FPioVOeRzEXQovPuelev4B4J0QiZXQRm8LoSIVyKQlNhbeaFdX50+9SV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ILWkiaqk; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-510e0d700c6so1469330e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 07:05:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706540708; x=1707145508; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=is7ro7B8vSrt0TvYSJ+DPFn+IXQv7f7Zkz1f/rmDyPY=;
-        b=ILWkiaqk9/a/cmBsH7vwMDCpY4e1MF8/5shvUoLYTVd569elx9/arEHeB3Wumvyo7E
-         CfK5/RDvOGkQEWnw6zHLkx3gsGrObAXOJQ23/4hkZXqfF8H4JIzkj9Kyc8IwCBMHZdtD
-         zGhtvuywz8F6Y9AMhq4ThUEUUehq2HSm6ArRwLofSLwdzjLS2K+0vUT3fQOIiV5va1f4
-         0oPeNXFIScxeuf/SL+I/+QK8FFIAS97tboGOvGiKtFU7TSt4JwM+VdbA7sTyb0laW0dp
-         kcC4XL1kWDqZqJQrBslsCSkpqTLTJGbFEE055j2yh6a/Jd42vM4RhdnKHnZoVwOWjQEo
-         kInw==
+	s=arc-20240116; t=1706540756; c=relaxed/simple;
+	bh=q6I0vmpSP+EMAN7W7TMgr8TqOcKWKp2AWgbxZCoyOoc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jshDNDuXyMa6IjBPRyZsbT5mW1WKGMJa5plJtQW1BQf4/9dSsAbrxH1ciqcJzZwl1+Kom0Kqor3+7S3V+yNJkugESGDile7P/tqhHaZed/qyp2bK1JqHM/GPxE0hNHZPgUJFhvTQsviiatpFtx+yDia5dywNbrieETJvoWx42qY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5958d3f2d8aso366388eaf.1;
+        Mon, 29 Jan 2024 07:05:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706540708; x=1707145508;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=is7ro7B8vSrt0TvYSJ+DPFn+IXQv7f7Zkz1f/rmDyPY=;
-        b=MrD0nmwPrB48ujs9PpYxozI+fZBAnrfiQTR2UdH5e903FR5B8UyoDn/Dza7xBsEOz2
-         I7jWtDlfih4KJJEl74skdUiH7dti8Gwtbg8wwdmyUl86RRvNCQG6PF7WJnHnvVfVnYwN
-         sePouDDAiICCJCVhWKpCWc7qCwi/vcvQZHDiYXxpb8xe4Kxnb/s8RvmXRSna2Ur5D+Hj
-         gO7PQUHjCdhG7lKYtI0fJ59KpOOkVuGHEpF8zWfSdqnilPa00Xl0opwct/9hhwPIoVqC
-         fCWIRe6yPRq3kT+5C6qCk+cvBO3O17j67NK3POCwHP/kD4dOuFaH++nHXduHldrLFhXG
-         OjPA==
-X-Gm-Message-State: AOJu0Yxy0OSOKze4yyNkrV+iTSz6Vz1T1pCA5rJPig/PK2h5ZX9HJoe0
-	QW++SXJ1WJKZquAPdsFHHxYITAwcxe02fvvMA+avREW1loTKpRek8GcPchiEJzQ=
-X-Google-Smtp-Source: AGHT+IEqmh/cI1PozuMSleeGae2wsgcL+hEQKSB8fVSpWf8NAz1wVQzEOkLik3p398u18vSo0zPTnA==
-X-Received: by 2002:a05:6512:20d2:b0:50e:7aaf:ec53 with SMTP id u18-20020a05651220d200b0050e7aafec53mr3597889lfr.12.1706540708419;
-        Mon, 29 Jan 2024 07:05:08 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id f7-20020a05600c4e8700b0040e4914f28dsm14282173wmq.18.2024.01.29.07.05.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 07:05:07 -0800 (PST)
-Date: Mon, 29 Jan 2024 18:05:04 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Meir Elisha <meir6264@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Ruan Jinjie <ruanjinjie@huawei.com>,
-	Yang Yingliang <yangyingliang@huawei.com>,
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] Staging: rtl8723bs: Remove extra spaces
-Message-ID: <080d2c0d-49b1-45e9-9b7b-fae2afaf0b4f@moroto.mountain>
-References: <20240129141856.416532-1-meir6264@Gmail.com>
- <20240129141856.416532-3-meir6264@Gmail.com>
+        d=1e100.net; s=20230601; t=1706540754; x=1707145554;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EkpAjVvacpcOYBIZJzTULHFzBo21BcPnaUhokGVxGPM=;
+        b=PMHpL80aiNTB4ZvOmet2EYAuO6Flfy9141JhM5N3Ummz/dDXwURf4bASPc1qeR2yJE
+         a4NhOIuROgiJ4gA6IA8RrynZYdKxL8LCvvFTQbliG3aXiI+uyJYBc1Cyq33+pAQ/z9Bj
+         dpBwiLH8fQZLe35za1edbynpQ+Qhv4524XM8S1w3AgKLEubxIbLakMZPw6vT/ydt+DK8
+         QtSkS77Td4qdfKCcuEfxz3hS02YbmpvGPizkAQwfegs4GtDgPdg1m0MYesRfvA3A/QCC
+         JiBmHSLFIi1GdjN7ABmy5tAdNxkftNge1xmGSUfzSE0rNNcMAq39rdQDnSStA7K6+kW8
+         DXLQ==
+X-Gm-Message-State: AOJu0Yxuk9ZpxzMuQXKzTXox41y8h4cz6jObDkWB14/QcJnxSKpEw4VZ
+	yYjUCv1YlapoMsaRph1JlGyJPMAX5WRRe7HxrJtry2iiAVpegOdDaLcsb0NGuPpzUG91n/ZpKKP
+	Njqg03uSDVtJz5BtSwE29ksegdlE=
+X-Google-Smtp-Source: AGHT+IEoV4wd4p7kTQOJWXxXpqTUH+qihI2/dlN0Po7tPQqbaCmtMIoU00Uv7+V2Gh58aCyndi1c4Fekk9NhHFrJKEg=
+X-Received: by 2002:a4a:c48a:0:b0:599:fbcc:1c75 with SMTP id
+ f10-20020a4ac48a000000b00599fbcc1c75mr6541388ooq.0.1706540754026; Mon, 29 Jan
+ 2024 07:05:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240129141856.416532-3-meir6264@Gmail.com>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk> <ZXxxa+XZjPZtNfJ+@shell.armlinux.org.uk>
+ <20231215161539.00000940@Huawei.com> <5760569.DvuYhMxLoT@kreacher>
+ <20240102143925.00004361@Huawei.com> <20240111101949.000075dc@Huawei.com>
+ <ZZ/CR/6Voec066DR@shell.armlinux.org.uk> <20240112115205.000043b0@Huawei.com> <Zbe8WQRASx6D6RaG@shell.armlinux.org.uk>
+In-Reply-To: <Zbe8WQRASx6D6RaG@shell.armlinux.org.uk>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 29 Jan 2024 16:05:42 +0100
+Message-ID: <CAJZ5v0iba93EhQB2k3LMdb2YczndbRmF5WGRYHhnqCHq6TQJ0A@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 01/21] ACPI: Only enumerate enabled (or functional) devices
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
+	acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, 
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, 
+	James Morse <james.morse@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 29, 2024 at 04:18:54PM +0200, Meir Elisha wrote:
-> Fix checkpatch warning: please, no space before tabs
-> 
-> Signed-off-by: Meir Elisha <meir6264@Gmail.com>
-> ---
->  drivers/staging/rtl8723bs/core/rtw_mlme.c | 48 +++++++++++------------
->  1 file changed, 23 insertions(+), 25 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme.c b/drivers/staging/rtl8723bs/core/rtw_mlme.c
-> index 5568215b35bd..a7c4350e0783 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_mlme.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_mlme.c
-> @@ -169,7 +169,7 @@ void _rtw_free_network(struct	mlme_priv *pmlmepriv, struct wlan_network *pnetwor
->  {
->  	unsigned int delta_time;
->  	u32 lifetime = SCANQUEUE_LIFETIME;
-> -/* 	_irqL irqL; */
-> +/*	_irqL irqL; */
+On Mon, Jan 29, 2024 at 3:55=E2=80=AFPM Russell King (Oracle)
+<linux@armlinux.org.uk> wrote:
+>
+> Hi Jonathan,
+>
+> On Fri, Jan 12, 2024 at 11:52:05AM +0000, Jonathan Cameron wrote:
+> > On Thu, 11 Jan 2024 10:26:15 +0000
+> > "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+> > > @@ -2381,16 +2388,38 @@ EXPORT_SYMBOL_GPL(acpi_dev_clear_dependencies=
+);
+> > >   * acpi_dev_ready_for_enumeration - Check if the ACPI device is read=
+y for enumeration
+> > >   * @device: Pointer to the &struct acpi_device to check
+> > >   *
+> > > - * Check if the device is present and has no unmet dependencies.
+> > > + * Check if the device is functional or enabled and has no unmet dep=
+endencies.
+> > >   *
+> > > - * Return true if the device is ready for enumeratino. Otherwise, re=
+turn false.
+> > > + * Return true if the device is ready for enumeration. Otherwise, re=
+turn false.
+> > >   */
+> > >  bool acpi_dev_ready_for_enumeration(const struct acpi_device *device=
+)
+> > >  {
+> > >     if (device->flags.honor_deps && device->dep_unmet)
+> > >             return false;
+> > >
+> > > -   return acpi_device_is_present(device);
+> > > +   /*
+> > > +    * ACPI 6.5's 6.3.7 "_STA (Device Status)" allows firmware to ret=
+urn
+> > > +    * (!present && functional) for certain types of devices that sho=
+uld be
+> > > +    * enumerated. Note that the enabled bit should not be set unless=
+ the
+> > > +    * present bit is set.
+> > > +    *
+> > > +    * However, limit this only to processor devices to reduce possib=
+le
+> > > +    * regressions with firmware.
+> > > +    */
+> > > +   if (device->status.functional)
+> > > +           return true;
+>
+> I have a report from within Oracle that this causes testing failures
+> with QEMU using -smp cpus=3D2,maxcpus=3D4. I think it needs to be:
+>
+>         if (!device->status.present)
+>                 return device->status.functional;
+>
+>         if (device->status.enabled)
+>                 return true;
+>
+>         return !acpi_device_is_processor(device);
 
-Just delete dead code.
+The above is fine by me.
 
->  	struct __queue *free_queue = &(pmlmepriv->free_bss_pool);
->  
->  	if (!pnetwork)
-> @@ -389,7 +389,7 @@ int is_same_network(struct wlan_bssid_ex *src, struct wlan_bssid_ex *dst, u8 fea
->  	d_cap = le16_to_cpu(tmpd);
->  
->  	return (src->ssid.ssid_length == dst->ssid.ssid_length) &&
-> -		/* 	(src->configuration.ds_config == dst->configuration.ds_config) && */
-> +		/*	(src->configuration.ds_config == dst->configuration.ds_config) && */
+> So we can better understand the history here, let's list it as a
+> truth table. P=3Dpresent, F=3Dfunctional, E=3Denabled, Orig=3Dhow the cod=
+e
+> is in mainline, James=3DJames' original proposal, Rafael=3Dthe proposed
+> replacement but seems to be buggy, Rmk=3Dthe fixed version that passes
+> tests:
+>
+> P F E   Orig    James   Rafael          Rmk
+> 0 0 0   0       0       0               0
+> 0 0 1   0       0       0               0
+> 0 1 0   1       1       1               1
+> 0 1 1   1       0       1               1
+> 1 0 0   1       0       !processor      !processor
+> 1 0 1   1       1       1               1
+> 1 1 0   1       0       1               !processor
+> 1 1 1   1       1       1               1
+>
+> Any objections to this?
 
-Here too.
-
->  			((!memcmp(src->mac_address, dst->mac_address, ETH_ALEN))) &&
->  			((!memcmp(src->ssid.ssid, dst->ssid.ssid, src->ssid.ssid_length))) &&
->  			((s_cap & WLAN_CAPABILITY_IBSS) ==
-
-regards,
-dan carpenter
-
+So AFAIAC it can return false if not enabled, but present and
+functional.  [Side note: I'm wondering what "functional" means then,
+but whatever.]
 
