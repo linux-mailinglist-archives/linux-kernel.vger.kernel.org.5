@@ -1,99 +1,123 @@
-Return-Path: <linux-kernel+bounces-42232-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42233-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69EA183FE4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 07:27:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C78BF83FE4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 07:28:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 209641F2266F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 06:27:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC3541C21B43
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 06:28:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CE504C610;
-	Mon, 29 Jan 2024 06:27:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDD7A4CB55;
+	Mon, 29 Jan 2024 06:28:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="kRB61PCh"
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="HtncqdXY"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73CB04C3A9
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 06:27:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 998EF4CB20;
+	Mon, 29 Jan 2024 06:28:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706509653; cv=none; b=camHyUiYKbBDc5At6hbb6sUSwnjL6tXX7iCNKbhu0J598N3cfgtYgJYAPEG43bw//yh8huW7eXcnbHrP2pxDoGHP7zN9zorU+OclpcLgeavlp2xbf4SX+pMkNhG5of70imGZ8yQYnH0oU2Uwhq0sMTxyfc5sdzeRtNa/fJbzpIU=
+	t=1706509688; cv=none; b=E9RCzKkjzYX0ZJm0um6z+0nkZ9vJTgky0yMGye9NVceIulXXo6/KJp1PijvC3goixbznaPf4xGwMSLEwzmqS6xwccVl8rn+V35Fk3QOHaD/F/TVxOvzJWN6pKEBJN9fp+MmwsFa1IQnl3d3Na5G54vgj9OfD0zeV5go1JCbUj44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706509653; c=relaxed/simple;
-	bh=hcGmZ7/kauprUFA9fmX+rybUuwydMTeCbv3H/HMqJrE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h3+kD0GpvujPKwfCJnQfIv5h2NSbVe/oDYls7lxZXKPKKyLpaHQr+RAsznMmZtXZX8aWudgjMO3sW049zSk16guFbwBcpzL/anWCf+7Pj82mDt0/ZYQdhlvkY/h2/2hwxDqAsCS8B7Ds1YFTul+jj0S3LhD+J0DkuJnbrv817RM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=kRB61PCh; arc=none smtp.client-ip=209.85.210.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6e11283948eso717211a34.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 22:27:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706509651; x=1707114451; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EDxbu0PKWqjMPM0OtvTRKUw3nFg/Z8Lcou0xHo9uBJI=;
-        b=kRB61PCh7hYyHcU3H3T9Cc2M8+gK0s5S7ysQrxdg7XtafaxO4gLJgXWEjIgrKzBC3d
-         /BbHwnovt37dPfmzlHf3t+t7rxd7gtELskay3kMcbTuaYEUvwxLx76sCS9G5exzI3g/J
-         FHnEvCjNpl7SJmQyybwJOtZO40DBPMGuJ/nQk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706509651; x=1707114451;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EDxbu0PKWqjMPM0OtvTRKUw3nFg/Z8Lcou0xHo9uBJI=;
-        b=euZFGAY4FL7JlAIsCvkg9rNQP/uedmTTyeCM0dq4ITl8C4ndpBf0+62zrVYb8VXJsI
-         8sws1xJGyP2sRKNOQ9VcNQEVCx95LN5YJiPPVtCopv+GyH6P4jSMI1sk7iH4EMsnMUvT
-         xDFVNXFqqmMTFzN0wGrLiXGegsb1iKY/fOXm7+Tyzo0pPG755t225O7T3kGYqRwkvSQL
-         PR10U4Jj5VjoUda5yKidTTtjJuqZS0GrGPzdV+ep64qlkOPuK9j/wtdsrAbnsGtTXnlF
-         gGedg2tZ4jrGEooOvT4z+SvO1lRASyVOISgBndV1dD9AWT5mxSeukvyrYdmbImWQcH5D
-         lsSg==
-X-Gm-Message-State: AOJu0YzXCjJma1SjxaoABAV8B6MkXjXEPs5eUphKxDBfbFO3qJR8XrAf
-	AFZIH8emru4ul7rPnD3XrjTChTLPJ0OruntbxmLNQCUVOx3MOZq+8evYqtIn9Q==
-X-Google-Smtp-Source: AGHT+IHR0VdJI7aAKAeSSYv8772Arwr20uBiO19FH978QHyj5alwAO2XhzCftoYqEsMh8OmLG+g4GQ==
-X-Received: by 2002:a05:6358:7581:b0:176:544a:4ffe with SMTP id x1-20020a056358758100b00176544a4ffemr1998434rwf.13.1706509651420;
-        Sun, 28 Jan 2024 22:27:31 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id r20-20020aa78b94000000b006ddddc7701fsm5063741pfd.4.2024.01.28.22.27.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jan 2024 22:27:30 -0800 (PST)
-Date: Sun, 28 Jan 2024 22:27:29 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: linux-hardening@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/82] overflow: Refactor open-coded arithmetic
- wrap-around
-Message-ID: <202401282226.A4C1153769@keescook>
-References: <20240122235208.work.748-kees@kernel.org>
- <Za-K-3aSBULf4NWE@FVFF77S0Q05N>
+	s=arc-20240116; t=1706509688; c=relaxed/simple;
+	bh=MJ8dmrrNeH24dihPagf9VsNviY6mf4kB3heVGxf5pxY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=aRsLi7Q1isP9S73XEOqv/67aotKidF/jX+/qxY/jG6zboPaoRCLwL+Zb5KZdL67E9dXAg+YFoQkm3gOdHJwta8PmDiFMBCHIuTIre9WjdH8O+hUXblMdzwYvn2llH02Kk6Wy/NtUD6HDDdAVPq/g9jVt058hlUK9PwRaCmM2mUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=HtncqdXY; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40T6CEUI005049;
+	Mon, 29 Jan 2024 06:28:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=iPuxWaexrafzEjbzvtOZ3NDk0BwxrfAdr+ss7HokmLo=; b=Ht
+	ncqdXYZ3uwMrNWCeQpL5OG9XqBwpqTmqvs1ogh1L+drMbjEI4Zo9vRiGmk+27ss3
+	KG53M+5KExPXzXeHieJLEy8GAUmrA2D/S0CTCK1WWPjByhBoEqCCuVvysKt1HqYv
+	W+60qiAllKQnlFNVtlVgYu68kDPTEi0m4i7OZE0DAEWFwold4ZRwnucTBO7cM2Ry
+	IkoWxR1QEKRjPMZjCZsXwuNdsbii4irmNa0vziXj+IQeVf9RSGbwywaW95tBh3BN
+	9hQIAm36qU5ppkDehVsWo7cCBLsiQfEpehF3rE/bAJjw9e2Lv9yyBaR0T2XEmi2G
+	ac/Ts5jpDSXY3Qdk6pmQ==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vvu4ctver-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Jan 2024 06:28:01 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40T6S0Jv016826
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Jan 2024 06:28:00 GMT
+Received: from [10.217.198.224] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 28 Jan
+ 2024 22:27:57 -0800
+Message-ID: <b3643a21-d0a8-4c4c-85de-852055a2d08b@quicinc.com>
+Date: Mon, 29 Jan 2024 11:57:54 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Za-K-3aSBULf4NWE@FVFF77S0Q05N>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] soc: qcom: rpmh-rsc: Enhance check for VREG in-flight
+ request
+Content-Language: en-US
+To: Andrew Halaney <ahalaney@redhat.com>
+CC: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_eberman@quicinc.com>, <quic_collinsd@quicinc.com>,
+        <quic_lsrao@quicinc.com>
+References: <20240119-rpmh-rsc-fixes-v2-1-e42c0a9e36f0@quicinc.com>
+ <dahguk6hyo35ydugwno5t5lbteporwkiddhvxp6uni5ggbtxcm@3bu6ptvg7mdg>
+From: "Maulik Shah (mkshah)" <quic_mkshah@quicinc.com>
+In-Reply-To: <dahguk6hyo35ydugwno5t5lbteporwkiddhvxp6uni5ggbtxcm@3bu6ptvg7mdg>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: RCtyLaC3rPkkjR5ke5GHoucGrpmMwyXe
+X-Proofpoint-ORIG-GUID: RCtyLaC3rPkkjR5ke5GHoucGrpmMwyXe
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-29_02,2024-01-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ clxscore=1011 priorityscore=1501 lowpriorityscore=0 adultscore=0
+ bulkscore=0 suspectscore=0 mlxlogscore=586 phishscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401190000 definitions=main-2401290045
 
-On Tue, Jan 23, 2024 at 09:46:35AM +0000, Mark Rutland wrote:
-> This also misses the include/linux/atomic/atomic-arch-fallback.h
-> implementations. Those are generated from the scripts/atomic/fallbacks/*
-> templates, and you'll need to adjust at least fetch_add_unless and
-> inc_unless_negative. As noted on other patches, my preference is to use
-> add_wrap() in those.
+Hi,
 
-How do I regenerate the header files using the templates? I found a
-script, but its use eluded me, and it doesn't seem wired up to the
-top-level Makefile? Maybe I missed something obvious...
+On 1/19/2024 9:17 PM, Andrew Halaney wrote:
 
--- 
-Kees Cook
+>> Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
+>> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+> 
+> Just noticed I commented on v1 when v2 was already out, sorry. Copy
+> pasting this just to keep it on the latest thread:
+> 
+> Two minor things:
+> 
+>      1. Does this deserve a Fixes: tag?
+>      2. The Signed-off-by chain here confuses me, you sent the patch
+>         so your SOB should be last, but then that makes me believe Elliot
+>         was the author which I don't think is reflected here (no From:
+>         line). Please read [0] for a bit more details
+> 
+> [0] https://www.kernel.org/doc/html/latest/process/submitting-patches.html#developer-s-certificate-of-origin-1-1
+
+Yes, this looks good to have patch, will include fixes:  tag and will 
+fix SOB in v3.
+
+Thanks,
+Maulik
 
