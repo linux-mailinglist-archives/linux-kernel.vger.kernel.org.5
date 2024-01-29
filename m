@@ -1,118 +1,175 @@
-Return-Path: <linux-kernel+bounces-42054-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 759AF83FBB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 02:22:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4A9D83FBBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 02:24:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 058861F21CBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 01:22:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 237A6282ACE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 01:24:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C5E5DDA7;
-	Mon, 29 Jan 2024 01:22:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 795D9DF46;
+	Mon, 29 Jan 2024 01:24:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="uK5XGN4S"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="Sp/P9ZFJ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="toSTS5fI"
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81DD5D512;
-	Mon, 29 Jan 2024 01:22:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 056A0D515;
+	Mon, 29 Jan 2024 01:24:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706491355; cv=none; b=qPrnUBL9D6cUiZgclc8tFAzJPZFGcypI+2my/7dPz4B5KbBnVMTNw52ViTcG0hC4KXez2va2oWuX265uMgonP02Iae76owhICwOw6/1i+hvxOVmJDWOoNhGpB2AaaK7BXFBNocLx0JCe6AlGEhv7LHr7Rkxgczqi4Ct6flMHXjc=
+	t=1706491464; cv=none; b=k7nF5f0u5nzgQc4LyZsEGJ0r62sZaaPT6e04HS1OQEP0xoCS1OCgJhCCM43IkXVmWHNt+qDt5z0g4URljhVjn8dwM0kxgBEqzU1Yg8O4Lg1fqHBO7Nrk9FWwB865n09YrOaBZiYVvZyGZtowuwj/U/n/Bj1TnorL4M8UEAiVLg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706491355; c=relaxed/simple;
-	bh=pjbYvFMENRbS68jZj8cjMBd/jpeufTJF+qdJQv7i5CU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=MZk7LvSkSGI9AbL8tgQrAYlks48NlEtbXHFkMyjS6PIZdgjUufzyALPyg/45rNFeygXb/6GvEUrfLiOm32Gq2F5WtXmljUL8zx40WQ63eF3elu4fMq62tR6F+dleFF28ZrwD6cB4G6S+qTW8AC80Lvx5Q7T1hGDImsp8FhPW7G4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=uK5XGN4S; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1706491346;
-	bh=ej++JI4xHBopx3cmrO3Csbo3V0nSbz03q6RENvGen1k=;
-	h=Date:From:To:Cc:Subject:From;
-	b=uK5XGN4SRcnIrVdEOHSZGGnFWIFfN03eRsQ2CWBSLRm2DD9sqQlXkR6iCI78r0Wzt
-	 HoX6lX8/exAM9ZVcTFhpIQWfWMNMHMdxx4GfNGA7VVHiFuYsxak9y8v7rrYPcNy3Ko
-	 5vW065r3zxtYt79VDgNVm/xs7H+dG+29hp6JXy/9SUHElKbKhdGkiE9mh1uBQZmR99
-	 LTUydIjo0imc326exahSYizZDL+GCdpJfxrCdfJ/Xvq/fZKEA3rXaLUskFjYCkWECP
-	 qQFNwO8LXrKKEw/1JYhMSVwdgSFY5ABebHPKhA/27KAg5sT5o3t5mWVrCX93kPUHLf
-	 reU9oLH9OPEcA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TNVsD3T4qz4wc3;
-	Mon, 29 Jan 2024 12:22:24 +1100 (AEDT)
-Date: Mon, 29 Jan 2024 12:22:22 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>
-Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Linux Kernel
- Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the tip tree
-Message-ID: <20240129122222.6b690c58@canb.auug.org.au>
+	s=arc-20240116; t=1706491464; c=relaxed/simple;
+	bh=kQEe3sxHRS25R01Huae1wLO1VdyUa7hma2vI+TmJQuw=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=exqo8w9XMcTruA7bYtaIu9paCGKyTt8AILpdfuy4KCx/c1TKaqn/3151u44By+F2Jc5rM+IQbQ7gU+HZHVDhAVhfaMep8Rq6YmN9KM0qi4BQ+fUHTKxBEOckf7uD7NoqtuA1KiEN6+STIyWhCBKebAsmhLArA8IUCA61Qv/uYKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=Sp/P9ZFJ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=toSTS5fI; arc=none smtp.client-ip=64.147.123.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.west.internal (Postfix) with ESMTP id 9954E3200ABB;
+	Sun, 28 Jan 2024 20:24:19 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Sun, 28 Jan 2024 20:24:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm2; t=1706491459; x=1706577859; bh=UASoXhX4PTY3QDklhg97M
+	HiJ1GxNYruI0l1hSTsM1IQ=; b=Sp/P9ZFJkQIEHfcvNH4pxlWQcJTVOu3NARJrb
+	QU0vlJmpM4nohk3iDeQEo/Uuk1NtXdRe9TzUPuLVLZwihZ2nMpR1SaHdOFYdPeJr
+	zyyOLJHWmQv7wFfiklp11U0lm+k97FGE2W734EFNtr2HA1l0VDW6mjxCvSRt+cv2
+	Jz2l6Sncb1dytEyLi2GEvXGQ8aodcH4vddVYUfcqlyPdggq74hiSUGoZkM9NARAL
+	grjLqJgJe/RfIVPH+Fxq0yr0PsDuKjMfahjqvFerrDmJPT3klD1YJQ4f8hx5H2my
+	hiIvvxRm3KeWyQfKVuh8g6GeiEUxoxvfTxyklE1gB/WGbzKRA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:date:date:feedback-id:feedback-id:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706491459; x=1706577859; bh=UASoXhX4PTY3QDklhg97MHiJ1GxN
+	YruI0l1hSTsM1IQ=; b=toSTS5fIeqME+j6fCgQl7sXWi2TbaNbgcEYAv/FUpQCi
+	ojINcUtIFRCemYQFFUCw9KMt6lbUje5JxS9ppMq3UONrtbV910ynaSb71OoD+HR9
+	MskHaANtEDpX/5ZHaX0tU+6v3twRjwEl6fh9aWg3iJaQzjt41KBNs7OnsV5nkZUf
+	9Gf8uMy5g2kYfJaAOtwMMELWFbjTIAF79KrHS0lZ5rR+jWV+YW/iswh8WhA3oYi3
+	iEncy2kWOFdpaGrtvFoMJ0nG9xynxVzhhwcsP7Sl9yD5qe/JLLH1f5gG1Q8jBSZK
+	VLY7S7aDF71kp6q6/qfmcapQgHbU65dYB5oHy/DKQw==
+X-ME-Sender: <xms:Qv62ZdjsQSYWbTlKTLSEqMzzeUVWsCelA_UpwRQPxO1pbHXMb9VtDw>
+    <xme:Qv62ZSAE8nNVyjnQSVjZrXsWge5dcgOFoP5891x2RYn4LJanvbYpqiM9jdLBQJ1P_
+    62DAc7xuFK7DVJxvA>
+X-ME-Received: <xmr:Qv62ZdHZoFIBgCnLzmLD3S7ZxEXX2DyqstxMiOMW2vy6EYK23Jj0mlqAdYVy07CZeSgvbkqi47Kp8joEaorqp0d-f4OR9TxCKAtWAHu_Fqg1hA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtfedgfeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlfeehmdenucfjughrpefhvf
+    fufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihu
+    segugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeffffegjeduheelgfdtudekie
+    ejgfegheehjefgieejveevteeiveeukefgheekjeenucffohhmrghinhepghhithhhuhgs
+    rdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:Qv62ZSTwvQHw03v-B2f1Bae6pN4fJB-3Qs8pCTG6pZi9wB0IlqrCtg>
+    <xmx:Qv62ZaxbEzm0olNmw8XT6u5Hgp2K4DFcOrRD_Mo1YqOS2_wuDmHRhA>
+    <xmx:Qv62ZY4sEd0MomoUDEp5-KW2l923PFpKcPYCM2P57eJmietEO2dsGA>
+    <xmx:Q_62Zfhc89QQ1-UiKEW_sidKxkm0BIiyi8TNBF-Dz_bCocdzYVhFcg>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 28 Jan 2024 20:24:17 -0500 (EST)
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: linux-trace-kernel@vger.kernel.org,
+	coreteam@netfilter.org,
+	bpf@vger.kernel.org,
+	linux-input@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-kselftest@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	fsverity@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	netfilter-devel@vger.kernel.org,
+	alexei.starovoitov@gmail.com,
+	olsajiri@gmail.com,
+	quentin@isovalent.com,
+	alan.maguire@oracle.com,
+	memxor@gmail.com
+Subject: [PATCH bpf-next v4 0/3] Annotate kfuncs in .BTF_ids section
+Date: Sun, 28 Jan 2024 18:24:05 -0700
+Message-ID: <cover.1706491398.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/nHeO8L+/kxhVHrklb2Pbdyv";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 
---Sig_/nHeO8L+/kxhVHrklb2Pbdyv
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+=== Description ===
 
-Hi all,
+This is a bpf-treewide change that annotates all kfuncs as such inside
+BTF_ids. This annotation eventually allows us to automatically generate
+kfunc prototypes from bpftool.
 
-After merging the tip tree, today's linux-next build (x86_64 allmodconfig)
-failed like this:
+We store this metadata inside a yet-unused flags field inside struct
+btf_id_set8 (thanks Kumar!). pahole will be taught where to look.
 
-In file included from include/linux/compiler_types.h:89,
-                 from <command-line>:
-kernel/irq/irq_sim.c: In function 'irq_domain_create_sim':
-include/linux/compiler_attributes.h:76:41: error: expected expression befor=
-e '__attribute__'
-   76 | #define __cleanup(func)                 __attribute__((__cleanup__(=
-func)))
-      |                                         ^~~~~~~~~~~~~
-include/linux/cleanup.h:64:25: note: in expansion of macro '__cleanup'
-   64 | #define __free(_name)   __cleanup(__free_##_name)
-      |                         ^~~~~~~~~
-kernel/irq/irq_sim.c:173:19: note: in expansion of macro '__free'
-  173 |         pending =3D __free(bitmap) =3D bitmap_zalloc(num_irqs, GFP_=
-KERNEL);
-      |                   ^~~~~~
+More details about the full chain of events are available in commit 3's
+description.
 
-Caused by commit
+The accompanying pahole and bpftool changes can be viewed
+here on these "frozen" branches [0][1].
 
-  590610d72a79 ("genirq/irq_sim: Shrink code by using cleanup helpers")
+[0]: https://github.com/danobi/pahole/tree/kfunc_btf-v3-mailed
+[1]: https://github.com/danobi/linux/tree/kfunc_bpftool-mailed
 
-I have used the tip tree from next-20240125 for today.
+=== Changelog ===
 
---=20
-Cheers,
-Stephen Rothwell
+Changes from v3:
+* Rebase to bpf-next and add missing annotation on new kfunc
 
---Sig_/nHeO8L+/kxhVHrklb2Pbdyv
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Changes from v2:
+* Only WARN() for vmlinux kfuncs
 
------BEGIN PGP SIGNATURE-----
+Changes from v1:
+* Move WARN_ON() up a call level
+* Also return error when kfunc set is not properly tagged
+* Use BTF_KFUNCS_START/END instead of flags
+* Rename BTF_SET8_KFUNC to BTF_SET8_KFUNCS
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmW2/c4ACgkQAVBC80lX
-0GyNDAgAnU/0sz8sLlaeAwJ93uQ3icCr92C7tIgqcxtiZtJ4RJvwxlYeViXVOEGB
-D64S8WmL/D3Q/jgWtAM/6VO86U+bNLlewRAfKMWa/HaI2Y0vqQNfmaFOVUskJG1u
-qkuQggEdWe3rjD2pa8DMyqomXspCD9XHCuBUZ9ttSe5wYlIaJZKltB4+g8Ytt/Ax
-ME/P5WoiEjzdH2NvI8hKsql1Y5vJtH8iZFeEpBHybs7aBeEN0qcwwvVkRXcTAm1M
-VSOxr4ck0forFXWFfTomxXTmpr0kq/LHHD7PRJI7c2zoLGLunH+LDeKfqY3D9QYP
-4AQ65L5+eutQC2zNgWO31Rs2Dk8MfQ==
-=fn+n
------END PGP SIGNATURE-----
+Daniel Xu (3):
+  bpf: btf: Support flags for BTF_SET8 sets
+  bpf: btf: Add BTF_KFUNCS_START/END macro pair
+  bpf: treewide: Annotate BPF kfuncs in BTF
 
---Sig_/nHeO8L+/kxhVHrklb2Pbdyv--
+ Documentation/bpf/kfuncs.rst                  |  8 +++----
+ drivers/hid/bpf/hid_bpf_dispatch.c            |  8 +++----
+ fs/verity/measure.c                           |  4 ++--
+ include/linux/btf_ids.h                       | 21 +++++++++++++++----
+ kernel/bpf/btf.c                              |  8 +++++++
+ kernel/bpf/cpumask.c                          |  4 ++--
+ kernel/bpf/helpers.c                          |  8 +++----
+ kernel/bpf/map_iter.c                         |  4 ++--
+ kernel/cgroup/rstat.c                         |  4 ++--
+ kernel/trace/bpf_trace.c                      |  8 +++----
+ net/bpf/test_run.c                            |  8 +++----
+ net/core/filter.c                             | 20 +++++++++---------
+ net/core/xdp.c                                |  4 ++--
+ net/ipv4/bpf_tcp_ca.c                         |  4 ++--
+ net/ipv4/fou_bpf.c                            |  4 ++--
+ net/ipv4/tcp_bbr.c                            |  4 ++--
+ net/ipv4/tcp_cubic.c                          |  4 ++--
+ net/ipv4/tcp_dctcp.c                          |  4 ++--
+ net/netfilter/nf_conntrack_bpf.c              |  4 ++--
+ net/netfilter/nf_nat_bpf.c                    |  4 ++--
+ net/xfrm/xfrm_interface_bpf.c                 |  4 ++--
+ net/xfrm/xfrm_state_bpf.c                     |  4 ++--
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  8 +++----
+ 23 files changed, 87 insertions(+), 66 deletions(-)
+
+-- 
+2.42.1
+
 
