@@ -1,62 +1,74 @@
-Return-Path: <linux-kernel+bounces-42853-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E6F98407BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:59:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18B3D8407BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:00:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 735621C24648
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:59:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 302051C22F72
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:00:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BEFD657CB;
-	Mon, 29 Jan 2024 13:59:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B96EA657D0;
+	Mon, 29 Jan 2024 14:00:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="TRI05WaM"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="QAESJruz"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE68965BA0;
-	Mon, 29 Jan 2024 13:59:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 296F2657B3
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 14:00:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706536774; cv=none; b=QMslcgx+1B4RyqBdJd4Ry6MvDR3ZOmLkXndbcHoltiahy8Ug+IXAUFJpd0imF59GKUqAxWryDpxsgfTTm5PEp4nAgpvhJm5r/81xuj9esGBUco1PIjA61TOiptD6oVf3w6ydmwNxUJm0owglhc2n76uyOp9GM1YB6WxqDvxFb7M=
+	t=1706536846; cv=none; b=lc/xsKcbblgQuEM+yzix3avgKsrb1MV5epURRsPkpURvCzhvWFGdTlPGxuZfFB80K44xZuVSGCVrSsUuPNp9/N+ubyAHgkzC0gLCPucHgbz2lPyH5jrfcJxnZ8n4fHhZ122C7Wh8T4ceZqznkuAT1kUZDYDhdGiKLL1Teul1pDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706536774; c=relaxed/simple;
-	bh=xJn1F7MAesV6tS4qm1/fKFLcvA/61etupSyvqTcNAfA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=TQc1X5qdIPpDCHKa2g0yuC85WD/KmEosrLYN6lyXFfCyTTTHGMlmqqmWecQ+L4dnVL5SS8cjuAdkHd4q9oYASJGAGHW3zwNLZgwav67bMpjQnTxFTyZVXv2RoRoggcoMpD5SKqDbhF8YbykPZsFDnnG1/aeUW/s/zbjhQUM6Bjs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=TRI05WaM; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40T5rKia013136;
-	Mon, 29 Jan 2024 13:59:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=YxVrAb5WKHv+F5epFgMr04iEH3uFT5hSdeiYGl8vc4E=; b=TR
-	I05WaMQ7bRubP3QMc8e8EKYvYG9urDJRwc/MXcC8bnFdT31XbXUi9b/bG2iMZ9C2
-	iP0UcHNeLLDga8cbHEiCDgVl9Ee1I2E3ms9PtZe0QxVDLIazd1ro3zDi+8hd6l4k
-	rIwKH3Zsm4v8q/sk6+5pqdyR5qGJ+ur2U071bpRbsUGVouIOdYNFQDWwNEA+211X
-	VY3QoWhlN2TSjwDfppH3fTaw9dJkypciy0zTc3mtsd4wmraPkIjpluae3OfizpNp
-	aD4bBB8ErH1HzN5JGBb0bHUdpSuuRIyOxGiPu4tO/5tWL17OVNySlynbmO5CX5va
-	DI9mW70ytYpFjh1G72Sg==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vx3t9sbas-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Jan 2024 13:59:12 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40TDxBlp022523
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Jan 2024 13:59:11 GMT
-Received: from [10.253.38.251] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 29 Jan
- 2024 05:59:06 -0800
-Message-ID: <cdd0e481-2738-465b-9ef8-b7ab79981fbe@quicinc.com>
-Date: Mon, 29 Jan 2024 21:59:03 +0800
+	s=arc-20240116; t=1706536846; c=relaxed/simple;
+	bh=SQ04STe/aYVjnCBxYeWBjsaMc9GpyngM0NMmL+Lhc24=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LfxVkd0GdaTFxhl1BI2cwisAICHT5RYdjvEeeIMux2sJbTKHo2N80Y+omwct2o3H/OD4afyuPuEZ2LiQp0xYUIM/4oWYsVXh1ovYz9A1sT2H9v6+SEwy73sY906O7HoNnV3g01qp4Vh6PMQHVOPNNCoJ4KhiIyDHXLI00GZ17BE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=QAESJruz; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d748f1320aso3916865ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 06:00:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1706536842; x=1707141642; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DPwleXPZEicef5bpuduhRFgNi3FvwGm9SY6PNmOkghM=;
+        b=QAESJruzc6Ul4WUtsezjJyP37fftVpXQHOkS9mGGLZZx67mL+MEPNTczo4sGps516S
+         JTIoE81Ia8PQOqLsn5mlMxbiUGSwWeKspn3z64LUerA4UHfpMFL+FfhJbjwWLqUIgdml
+         lVP2LnrO29rjetqfQHayzU4VttDssIJ6lYKKyFAGZZwH1PTRdQfLbZYDOgo5KPHjJ/I+
+         4IBxKSlfZJFVBTZz7EeAuYY242xbqhJSWKpzbJN7G/cuWTKl/MM4cZwgzynFtaUvCPw1
+         O6PW0Mk7zjNyYwAw7cLtSXGtE6nXMO/HCmmRCF+D1qatJGDVz3rqSHGqSzSr7+OIOhJx
+         Hpqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706536842; x=1707141642;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DPwleXPZEicef5bpuduhRFgNi3FvwGm9SY6PNmOkghM=;
+        b=ZmRN0EAAoiS+m8v0dQOPGA6MBebF0c0s6+kY73guLAM3tP9VSaOC6KntwdAyke7Scn
+         ln2dp501m65vMHwWkmcQn3++v103shwnBEk8DY9HJK0iney0KYGr6cTYoEmxWo00G1bm
+         g3wCTr2tvdT66+KhjSxauiGN5YLJddKdfhRjN5PdjXE8Du9jIWN8wbPZdT00QiCjqTZ5
+         i65bue+IKvW0lBPpH//y3pPQWUqF5Bx0HMebtQXjOGeN3Ag+25bOldALkFvyQfjoEQFz
+         lN2e8CEvNgQoxH9KEsJSl6fNUkxgq00U8CfwylJI4gP7gitRJq3MJdIxdvNPi5+gKmHY
+         Q94w==
+X-Forwarded-Encrypted: i=0; AJvYcCVejm002qqGVcQPwKF51llWEQwG8+wud4FOS3oAQsqD/0Z4KWmfCflhLt7Tql2N7orpcR2FGuum3oVpJGq2P8ivZ4ol6xnf222amta/
+X-Gm-Message-State: AOJu0Yz788lotHLQDpNDSYMbYkNho+wLzpFVG5e7qdk49VNg2axFyZD5
+	1lvri8a/Z94kFmmkbzUFoCu6LeF+cKlO/U/uZ9c7tC2m1+8K4Y3y0V+tuflbbgLussXmwVVXw4B
+	Xrm4=
+X-Google-Smtp-Source: AGHT+IGECYKLe+3ih3dbmJmXhd+Ud4nfFuMaOsev360L1iI0PLRcAM13Jno4R0i5Y1dRZV0aqbpz2Q==
+X-Received: by 2002:a17:903:32c5:b0:1d3:e503:5b55 with SMTP id i5-20020a17090332c500b001d3e5035b55mr8368129plr.2.1706536841622;
+        Mon, 29 Jan 2024 06:00:41 -0800 (PST)
+Received: from [192.168.1.150] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id x5-20020a1709029a4500b001d5d736d1b2sm5354692plv.261.2024.01.29.06.00.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jan 2024 06:00:41 -0800 (PST)
+Message-ID: <e2a84850-95a3-48a8-b4ce-e5b005fbf186@kernel.dk>
+Date: Mon, 29 Jan 2024 07:00:39 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,112 +76,76 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [net-next PATCH 0/3] net: mdio-ipq4019: fix wrong default MDC
- rate
+Subject: Re: [PATCH v7] io_uring: Statistics of the true utilization of sq
+ threads.
 Content-Language: en-US
-To: Christian Marangi <ansuelsmth@gmail.com>,
-        Dmitry Baryshkov
-	<dmitry.baryshkov@linaro.org>
-CC: Andrew Lunn <andrew@lunn.ch>, Andy Gross <agross@kernel.org>,
-        Bjorn
- Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Rob
- Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Robert Marko <robert.marko@sartura.hr>,
-        <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>
-References: <20240124213640.7582-1-ansuelsmth@gmail.com>
- <53445feb-a02c-4859-a993-ccf957208115@quicinc.com>
- <f8a9e328-5284-4f24-be5d-7e9804869ecd@lunn.ch>
- <5d778fc0-864c-4e91-9722-1e39551ffc45@quicinc.com>
- <CAA8EJppUGH1pMg579nJmG2iTHGsOJdgDL93kfOvKofANTGGdHw@mail.gmail.com>
- <65b3ecd7.050a0220.9e26c.0d9e@mx.google.com>
-From: Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <65b3ecd7.050a0220.9e26c.0d9e@mx.google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Xiaobing Li <xiaobing.li@samsung.com>
+Cc: asml.silence@gmail.com, linux-kernel@vger.kernel.org,
+ io-uring@vger.kernel.org, kun.dou@samsung.com, peiwei.li@samsung.com,
+ joshi.k@samsung.com, kundan.kumar@samsung.com, wenwen.chen@samsung.com,
+ ruyi.zhang@samsung.com
+References: <8e104175-7388-4930-b6a2-405fb9143a2d@kernel.dk>
+ <CGME20240129072655epcas5p35d140dba2234e1658b7aa40770b93314@epcas5p3.samsung.com>
+ <20240129071844.317225-1-xiaobing.li@samsung.com>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20240129071844.317225-1-xiaobing.li@samsung.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: yZM3yuQnxIPAraWf1Mq0QMxrwzmEYYz2
-X-Proofpoint-ORIG-GUID: yZM3yuQnxIPAraWf1Mq0QMxrwzmEYYz2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-29_07,2024-01-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=778 phishscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0
- impostorscore=0 clxscore=1015 spamscore=0 suspectscore=0
- priorityscore=1501 mlxscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2401190000 definitions=main-2401290102
 
-
-
-On 1/27/2024 1:33 AM, Christian Marangi wrote:
-> On Fri, Jan 26, 2024 at 07:20:03PM +0200, Dmitry Baryshkov wrote:
->> On Fri, 26 Jan 2024 at 18:03, Jie Luo <quic_luoj@quicinc.com> wrote:
->>>
->>>
->>>
->>> On 1/26/2024 1:18 AM, Andrew Lunn wrote:
->>>>> Hi Christian,
->>>>> Just a gentle reminder.
->>>>>
->>>>> The MDIO frequency config is already added by the following patch series.
->>>>> https://lore.kernel.org/netdev/28c8b31c-8dcb-4a19-9084-22c77a74b9a1@linaro.org/T/#m840cb8d269dca133c3ad3da3d112c63382ec2058
->>>>
->>>> I admit this version was posted first. However, its embedded in a
->>>> patch series which is not making much progress, and i doubt will make
->>>> progress any time soon.
->>>>
->>>> If you really want your version to be used, please split it out into a
->>>> standalone patch series adding just MDIO clock-frequency support, with
->>>> its binding, and nothing else.
->>>>
->>>>       Andrew
->>>
->>> Hi Andrew,
->>> We will rework the patch series to include only MDIO frequency related
->>> function and frequency dt binding, and post the updated patch series
->>> on th/Tuesdae Mondayy of next week. We will work with Christian to
->>> ensure he can re-use this patch as well.
+On 1/29/24 12:18 AM, Xiaobing Li wrote:
+> On 1/18/24 19:34, Jens Axboe wrote:
+>>> diff --git a/io_uring/sqpoll.h b/io_uring/sqpoll.h
+>>> index 8df37e8c9149..c14c00240443 100644
+>>> --- a/io_uring/sqpoll.h
+>>> +++ b/io_uring/sqpoll.h
+>>> @@ -16,6 +16,7 @@ struct io_sq_data {
+>>>  	pid_t			task_pid;
+>>>  	pid_t			task_tgid;
+>>>  
+>>> +	long long			work_time;
+>>>  	unsigned long		state;
+>>>  	struct completion	exited;
+>>>  };
 >>
->> Can you do the other way around: rebase your patches on top of Chritian's work?
-
-Hi Dmitry,
-Sure, we can take this approach if fine by Andrew as well.
-
+>> Probably just make that an u64.
 >>
+>> As Pavel mentioned, I think we really need to consider if fdinfo is the
+>> appropriate API for this. It's fine if you're running stuff directly and
+>> you're just curious, but it's a very cumbersome API in general as you
+>> need to know the pid of the task holding the ring, the fd of the ring,
+>> and then you can get it as a textual description. If this is something
+>> that is deemed useful, would it not make more sense to make it
+>> programatically available in addition, or even exclusively?
 > 
-> Would be ideal, also I have to send v2 that handle the 802.3 suggested
-> MDC rate (ready I just need to send after this has been handled).
+> Hi, Jens and Pavel
+> sorry for the late reply.
 > 
-> Also I can see some problem with Lui patch where thse divior
-> value is not reapplied after MDIO reset effectively reverting to the
-> default value.
+> I've tried some other methods, but overall, I haven't found a more suitable 
+> method than fdinfo.
+> If you think it is troublesome to obtain the PID,  then I can provide
+>  a shell script to output the total_time and work_time of all sqpoll threads 
+>  to the terminal, so that we do not have to manually obtain the PID of each 
+>  thread (the script can be placed in tools/ include/io_uring).
+> 
+> eg:
+> 
+> PID    WorkTime(us)   TotalTime(us)   COMMAND
+> 9330   1106578        2215321         iou-sqp-9329
+> 9454   1510658        1715321         iou-sqp-9453
+> 9478   165785         223219          iou-sqp-9477
+> 9587   106578         153217          iou-sqp-9586
+> 
+> What do you think of this solution?
 
-Hi Christian,
-In my version, the divisor is programmed in every MDIO operation and 
-hence I did not add the code to revert to configured value in reset 
-function. But sure. we can program it once during the probe/reset and 
-avoid doing it during read/write ops.
+I don't think it's a great interface, but at the same time, I don't feel
+that strongly about it and perhaps bundling a script that outputs the
+above in liburing would be Good Enough. I'm a bit reluctant to add a
+stats API via io_uring_register() just for this.
 
-In addition, the MDIO divisor 1, 2 and 4 are not supported by the MDIO
-hardware block, maybe we can remove these macros to avoid confusion, or 
-add a comment mentioning that these are not supported.
+So maybe spin a v8 with the s/long long/u64 change and include your
+script as well?
 
-> 
-> If it's a credits problem I can totally change the from or add
-> Co-devloped, I just need the feature since the thing is broken from a
-> looong time on ipq40xx and ipq807x.
-> 
+-- 
+Jens Axboe
+
 
