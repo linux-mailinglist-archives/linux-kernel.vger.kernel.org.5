@@ -1,135 +1,113 @@
-Return-Path: <linux-kernel+bounces-42962-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3937840958
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:09:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FED0840957
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:08:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 581791F22E00
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:09:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3795B22473
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:08:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 254F5153BCB;
-	Mon, 29 Jan 2024 15:08:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BF0A153BC2;
+	Mon, 29 Jan 2024 15:08:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KLQg21T0"
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CawMW8MK"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA35A1534F6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55D26152E03
 	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 15:08:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706540923; cv=none; b=DH7jbfioJrEXgIGJdQn5GFxLCnkYvrKG5sB+su9KMg7y+GPk72+vZJG3XKA3N6iqy2otYApRyeG6czQx9wWdNmhdcAI57ZU2jPMdgfGRMBFOHeYbENsODc3ONy17PLUz2NUFYCD9k543bKtgvKZliGuia83Sa2lHJZlBZPLN1gE=
+	t=1706540922; cv=none; b=ET1D+1SySxjdpThaRDhUwCGekTz5E5Z6nMgM3aWKYz8yuWG72GIbYXCcy9fzORYQjFk9G7Gvr5KFjCV33UqRvYmM5ERd+sz0xFHzOI4FeDu2OFcdpHPYsWfwd8fs22u1r3HmEV0WBU0fzgMf17h1Ojoy5Ee4DZ0woqrz6El59yM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706540923; c=relaxed/simple;
-	bh=7Ad9b8sC5p4drimOlyy33kQgcYMT6N80v45xUSMRDqA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JD2T61bsnkRws2WSvNDj4Eqv1NIw3LsrxGxMs/9PIebaATvW/xagKYTU3397czfFFgavhuAFjuEYGWoywGaNoH6445hpZSp3wFG39/NTc2ix3dhQe27sgWv9I/wsAO7zCdJPPIYzWSBvlfuvzKilF4tGftadXdmW+lsYi0A0rHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=KLQg21T0; arc=none smtp.client-ip=209.85.128.177
+	s=arc-20240116; t=1706540922; c=relaxed/simple;
+	bh=TvYc0o6580YbXidZl8mC8lUkNACoSav70Z1m/H+6tY0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N5nNNl8a6SMzGc5TGlLBQM8Ck9UP5nmd83XYEygJ0kcRORE4WpTY3lgABddVIy/Nz6TTp5JmeCh55dTf5i6FbsvGgrfy1vYWWxiJOLc/+E+9qdQ14HvSsVCBavlz6H5YBjodzEmd9BWHyDr9R3q4MlVELXg9wEXdW1b0rYGDUk8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CawMW8MK; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-6002a655d77so24762647b3.2
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40ef6bbb61fso9144205e9.1
         for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 07:08:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706540921; x=1707145721; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WHc0ySmd3+BUchE2A6eeEhPhJOTzoceSWy6/UF2YYmg=;
-        b=KLQg21T03+/PwPrp/bd8sHw9xBbxj4gWOBzAfzuAc0wnAR5lctlHxPGr/Z62PQkjZb
-         9o0YGarWzCHb7GBhhsuA3aCdXD0HNdDSXs/l66QHVEUE9Etn9m2kVw9jJY5LWT+1GLAz
-         5j3lUT+qz4KOZalNwE9v31ya2UyG7eIKMbVPeTRiY2u9Jchzr9BaPGAIqyEbqC07QCe4
-         R3JnOSibM43CNhMo5YNzisIqPdJhbhuA86URPbXiQ7+DrLiiUkwn7RdfEHyzZbKYr3yE
-         aNheC1DR5pkw8O4YzSUFiR1SDTp9wNedA5Ca0HS4gwzs2bXllVQTHncPXZSfNBTRSBrC
-         Cecg==
+        d=linaro.org; s=google; t=1706540919; x=1707145719; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=n6cwbDbWLh7v+Hr7qWbFBpGzaMo6CtewwpyzoCKYp78=;
+        b=CawMW8MKKsuTAQfSGmM+HzbrJRZxufMAkucWBYE9uxBcIKylYLc/az2f42pTwGw5q/
+         fhP8I8qjEEvLpl7X3CaiQ9wkEUZka9RpennOn33QLiaDB55Qf3/VYJfRlpwxdjsMEpba
+         fk97ftcaVRm+DXoYZzwD6Lbbzuyf6a13BC1pGhjygRXR6SNvlWgiwE5FRGhpQp5yeuuH
+         F3aX3eoksvTJmXInzGNQnrIraxXeG26CmcL+eXU6e3y/vhySm3WTzyMeCG7bMavI9U5z
+         CEGeuVIBYbjAmv7rB/PJVH2kP8e+0WrpDRXAOOhnLa9s9P4vaAkbowEMGLXSRFGpIqKn
+         7cHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706540921; x=1707145721;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WHc0ySmd3+BUchE2A6eeEhPhJOTzoceSWy6/UF2YYmg=;
-        b=o3oNj5hK0SiPwCEHqsZiAacVllnjUxaXsKrgNAht4Dl1/7Pd8L1AOeH6De+w/BeRl3
-         cJXm0f1vs0qkKiYCPL8BJ2FKvquH8tgHx6WYHmYHEgP1MVo4Vg29xO4BQLGDW2/i/tLF
-         qHoOy3tO68aXaoKG1Jlv0CljBKyjo4M/h1nKm4gsE1R0HHzKaraGFGsIuBud9hId1bo0
-         mwMMHyC79jwOV4ee1pNK+XTtovNw6+MgXHBt3cucWQwnej5NK2Or65Hvrnd3aRMEVGGZ
-         J4JcyXy1II9bCeNEbrKPm26KSKOVikaWa2SvAmYKQPfar5vDIwIFltneo+a+uicgRUhm
-         hVNQ==
-X-Gm-Message-State: AOJu0YzgYGmh/Op3TWJ7xLBLqAm/T8Lz+LJ3d1rDGGOjtJuXGtFr7YNZ
-	ZdFShn04wSLIodDx530lMMtzs2rTNd134MnI/IeMm/VyWjRNTUuwhuwmdoFexA89bOoIGEg+sAP
-	XemLk1xh/dL5b3f8kxyA9I0tjOmgWXYc14iQNcQ==
-X-Google-Smtp-Source: AGHT+IEGAtVAdaZvHFjfmQf1IJOtCdXiDeGVR3eL7R75RzaD4DvPC28PHklGGBsD3t+yL5unf4AHNAwUb1afgQibw48=
-X-Received: by 2002:a5b:18d:0:b0:dc2:23cf:6ada with SMTP id
- r13-20020a5b018d000000b00dc223cf6adamr2403587ybl.73.1706540920775; Mon, 29
- Jan 2024 07:08:40 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706540919; x=1707145719;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n6cwbDbWLh7v+Hr7qWbFBpGzaMo6CtewwpyzoCKYp78=;
+        b=YZScM0CJLmDZmHrmATuFaIOLhO2XLvR0DD//VarY86gpxov/I3DXLcpDAFUQIz5QVl
+         Igxdkijks7uecv5Dn3btvSmtLWdDuka/vzAidcmwlX4nb3Jtyoqru15LkRG5zdCbtvhd
+         MMRQ4dtCJOM5cfzYo3YCHrntVCdn6oxQU9z8D8itWfEX1RmSJJ1BUWXsjrMTypnwxX5A
+         p1BpbazZupdI2jCQX4DBO8x9uyou9m/0SjB5oQ4Q/d1rPhUpgEmwFXrvc4nnNpmfCcoT
+         BIA5xpoIbo9TuVkNDjqseIlG6uHRlnpASIiYzSavKrM9Gs0DWp03J8Lb8I4S0NW2K2V0
+         9Oig==
+X-Gm-Message-State: AOJu0YypCMfeuJ21D9n/BrTuHBxPDqx2nUuqN+AnNUPBMTOzzBTkIhUn
+	MaJ6ugii5Wvpd5eUUKHpUygaLzD5qeAEZwvG/wdKB+gKjx36bho5fqF5xOPm1ck=
+X-Google-Smtp-Source: AGHT+IHMJzhv2MnPPwPMGGUmJ06IHYBSMp+B4effQYkqj/MHj3BYszh4U8CN5g12VqY/IR2e7km/ng==
+X-Received: by 2002:adf:f884:0:b0:33a:e4da:2214 with SMTP id u4-20020adff884000000b0033ae4da2214mr3796745wrp.50.1706540919694;
+        Mon, 29 Jan 2024 07:08:39 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id er8-20020a056000438800b0033af0234b3esm2148627wrb.49.2024.01.29.07.08.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 07:08:39 -0800 (PST)
+Date: Mon, 29 Jan 2024 18:08:36 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Meir Elisha <meir6264@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Ruan Jinjie <ruanjinjie@huawei.com>,
+	Yang Yingliang <yangyingliang@huawei.com>,
+	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] Staging: rtl8723bs: fix else after break warning
+Message-ID: <83d0680c-e057-4fb4-a6ee-ed7e0ba06599@moroto.mountain>
+References: <20240129141856.416532-1-meir6264@Gmail.com>
+ <20240129141856.416532-5-meir6264@Gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129-x1e80100-display-v1-0-0d9eb8254df0@linaro.org> <20240129-x1e80100-display-v1-4-0d9eb8254df0@linaro.org>
-In-Reply-To: <20240129-x1e80100-display-v1-4-0d9eb8254df0@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Mon, 29 Jan 2024 17:08:29 +0200
-Message-ID: <CAA8EJpq1RSi4H6m6UQcyxEr=hip=ypKz9DhHziNKvDjUHsES8Q@mail.gmail.com>
-Subject: Re: [PATCH 4/5] drm/msm/dp: Try looking for link-frequencies into the
- port@0's endpoint first
-To: Abel Vesa <abel.vesa@linaro.org>
-Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, linux-arm-msm@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240129141856.416532-5-meir6264@Gmail.com>
 
-On Mon, 29 Jan 2024 at 15:19, Abel Vesa <abel.vesa@linaro.org> wrote:
->
-> From: Abhinav Kumar <quic_abhinavk@quicinc.com>
->
-> On platforms where the endpoint used is on port@0, looking for port@1
-> instead results in just ignoring the max link-frequencies altogether.
-> Look at port@0 first, then, if not found, look for port@1.
-
-NAK. Platforms do not "use port@0". It is for the connection between
-DPU and DP, while the link-frequencies property is for the link
-between DP controller and the actual display.
-
->
-> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+On Mon, Jan 29, 2024 at 04:18:56PM +0200, Meir Elisha wrote:
+> Fix checkpatch warning: else is not generally useful after a break or return
+> 
+> Signed-off-by: Meir Elisha <meir6264@Gmail.com>
 > ---
->  drivers/gpu/drm/msm/dp/dp_parser.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c b/drivers/gpu/drm/msm/dp/dp_parser.c
-> index 7032dcc8842b..eec5b8b83f4b 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_parser.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_parser.c
-> @@ -97,7 +97,11 @@ static u32 dp_parser_link_frequencies(struct device_node *of_node)
->         u64 frequency = 0;
->         int cnt;
->
-> -       endpoint = of_graph_get_endpoint_by_regs(of_node, 1, 0); /* port@1 */
-> +       endpoint = of_graph_get_endpoint_by_regs(of_node, 0, 0); /* port@0 */
-> +
-> +       if (!endpoint)
-> +               endpoint = of_graph_get_endpoint_by_regs(of_node, 1, 0); /* port@1 */
-> +
->         if (!endpoint)
->                 return 0;
->
->
-> --
-> 2.34.1
->
+>  drivers/staging/rtl8723bs/core/rtw_mlme.c | 38 +++++++++--------------
+>  1 file changed, 14 insertions(+), 24 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme.c b/drivers/staging/rtl8723bs/core/rtw_mlme.c
+> index 044483f3d678..efaac84f22b4 100644
+> --- a/drivers/staging/rtl8723bs/core/rtw_mlme.c
+> +++ b/drivers/staging/rtl8723bs/core/rtw_mlme.c
+> @@ -1540,30 +1540,23 @@ void _rtw_join_timeout_handler(struct timer_list *t)
+>  
+>  	spin_lock_bh(&pmlmepriv->lock);
+>  
+> -	if (rtw_to_roam(adapter) > 0) { /* join timeout caused by roaming */
+> +	if (rtw_to_roam(adapter) == 0) { /* join timeout caused by roaming */
 
+The comment is wrong now.
 
--- 
-With best wishes
-Dmitry
+regards,
+dan carpenter
+
 
