@@ -1,149 +1,149 @@
-Return-Path: <linux-kernel+bounces-43137-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2686B840C16
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:47:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ED7B8840C39
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:49:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58B781C214F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:47:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 256521C2153D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:49:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55B4A15698A;
-	Mon, 29 Jan 2024 16:47:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C4AD15956C;
+	Mon, 29 Jan 2024 16:48:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jAWLzYVj"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="frwD34HY"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74BFB157038;
-	Mon, 29 Jan 2024 16:46:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE6C8158D98;
+	Mon, 29 Jan 2024 16:48:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706546819; cv=none; b=fVoZ5IysNY0oHdvJ03wt7hsEL61tXRTKpTBmhIu929kyEWRnd0LTn3/G6pMfDm0eUd8yd2aII0oxIUYpDn3rZSXqdJT4bnqUR+3U4kRv+tfcBV47YK2PcRs4qmJr1qOGu4mpWrgH3R8sZ7UbhOBZYz86h1QWfoJjz3lThyw9fNs=
+	t=1706546885; cv=none; b=OEpOrksHQ3puVBylVnivYeoVZ769rCPQEOysNRO4TV7PAzXWV3nILWzrqnqYxtYqnShsS8bMK3jgV1izHO0SouPTr2kXuh6WyejUKfVQSKJVaK/irXhmjJZ+W3+AcgM/7n//WQxCigXNGLcksZDYVQgQCyW7Oxdb2VXlQSVuyMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706546819; c=relaxed/simple;
-	bh=44NsvH+KQdpWMlSBMIAtXvkxIIBjDimdakKzD/tf1eI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=p3wOuZl3KWh4vmNnXZ9ZmTVD//jF8Ni7w1bcZt3hN7DHbBLbb5aZEX9Ky75T502ApZP1xRVfglMT+iInVh2F2ik2+1GUhmy1DIaFFIFw8IL3xI8xab9A9wdhBMz1bblqGIF9D9jGCjGwaVZYz9toxEzrzgO1yGed+7U3iolIbHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jAWLzYVj; arc=none smtp.client-ip=134.134.136.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706546817; x=1738082817;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=44NsvH+KQdpWMlSBMIAtXvkxIIBjDimdakKzD/tf1eI=;
-  b=jAWLzYVjlY12yg+214YAeg3AKA40sLIlgXrP2bOheCzb0a7HDpuXCJ6/
-   g5unUVLPeBb1Zjq0XbWuCl/4Uy1KKlqiAa9Dp8GdEElg6fAfKGQIrADhL
-   sM2sWBnT35W9hvicmsyOkKZgP1ei614Izzdko1BzUay98o8kmN8b8PQqY
-   e58NrYFJeoTysot9tR5Yfpj5iBECf/bs5hFeg2bYL5J3VbJfAoOjZGLx8
-   KHX7OaI5jJLqbEZRk5fU/dAv0dzB4Re/y9fB6oXFWQxbmDERgelgUPxa0
-   SLl4jNuw9QL31Al0UQWFu18bbBu2bWj5BbQ8TX8YEQDMYm+epQrJLpqSG
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="467262299"
-X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="467262299"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 08:46:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="3423587"
-Received: from hbrandbe-mobl.ger.corp.intel.com (HELO localhost) ([10.252.59.53])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 08:46:53 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Mario Limonciello <mario.limonciello@amd.com>,
- amd-gfx@lists.freedesktop.org, Alex Deucher <alexander.deucher@amd.com>,
- Harry Wentland <harry.wentland@amd.com>, "Rafael J . Wysocki"
- <rafael@kernel.org>, Hans de Goede <hdegoede@redhat.com>
-Cc: open list <linux-kernel@vger.kernel.org>, "open list:DRM DRIVERS"
- <dri-devel@lists.freedesktop.org>, Melissa Wen <mwen@igalia.com>, "open
- list:ACPI" <linux-acpi@vger.kernel.org>, Mark Pearson
- <mpearson-lenovo@squebb.ca>
-Subject: Re: [PATCH 2/2] drm/amd: Fetch the EDID from _DDC if available for eDP
-In-Reply-To: <63c60424-1b2d-4912-81b2-7c7ead4c8289@amd.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240126184639.8187-1-mario.limonciello@amd.com>
- <20240126184639.8187-3-mario.limonciello@amd.com>
- <87le88jx63.fsf@intel.com> <63c60424-1b2d-4912-81b2-7c7ead4c8289@amd.com>
-Date: Mon, 29 Jan 2024 18:46:49 +0200
-Message-ID: <87cytkjddy.fsf@intel.com>
+	s=arc-20240116; t=1706546885; c=relaxed/simple;
+	bh=zMf4yKdogGXJoeObaueH6qXynndYIX55PcDoMto1YCA=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type:To:CC; b=mEkjXyEZ0y1Xi86An6ssQslim5JvMOBlD1bxhmQnHgtE2ZuAdgo3Bt6AeU9yqVXu+B/C5ecEYu/G8NAcX8e6TuXY17xEYRIXFxViq5PuRTWLO67XNtshi3kdtixjXEMO2r0W0UgoZQiW+SU6UP9R1Hk6vVFpRhXI7XVZpbRzvNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=frwD34HY; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40TFHYUK024662;
+	Mon, 29 Jan 2024 16:47:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:subject:date:message-id:mime-version:content-type
+	:content-transfer-encoding:to:cc; s=qcppdkim1; bh=CM0YBaqMELRYsB
+	aLS7k7vp9OYdBpKgjsI+yfycdpzVU=; b=frwD34HYa8I/p1qyB1P11von+fIlwc
+	OgZHANMnxyTWtNQVbhGAWySFBSMQJeyYExHUHsFSXQPS3iHvVB3lXTH3YTuAcHql
+	p/4kRhjvs7rBhW9PIRMsXKzbop5BY86jc6jUcK0frMvmnKBP6P+9lPQalvt21zrf
+	tp/uVdISJ+x3hn4gSkUq1SrdeZVfQL0MqoQJT9oR2AASYIaBWt+BP8oIEUUCTICa
+	We8+7uYF7Yose7xVI710B8OR1DcZ31ywgD72Er9CzZDwsZPA96kEU6tnaE5kjV2d
+	al1rEjdRSQkwTATtCH56aDjBqCC3WCydC0DUQjdgsenQEXlYNnuLlxMw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vx3t2htw7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Jan 2024 16:47:49 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40TGllru030126
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Jan 2024 16:47:47 GMT
+Received: from [169.254.0.1] (10.49.16.6) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 29 Jan
+ 2024 08:47:47 -0800
+From: Bjorn Andersson <quic_bjorande@quicinc.com>
+Subject: [PATCH v3 0/2] arm64: dts: qcom: sc8280xp-x13s: Enable touchscreen
+Date: Mon, 29 Jan 2024 08:47:46 -0800
+Message-ID: <20240129-x13s-touchscreen-v3-0-c4a933034145@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIALLWt2UC/33NTQ6CMBCG4auYrq3pH1pceQ/jAoepzMJWW2gwh
+ LtbWGliXL5fMs9MLGEkTOy4mVjETImCL6G3GwZd42/IqS3NlFBGSFXxUerE+zBAlyAiem5s2Z3
+ ToAyycvaI6GhcyfOldEepD/G1fshyWf9gWXLBm6sFa1WLrobTcyAgDzsId7ZwWX0S+x+EKkSlD
+ wYAapSi/SbmeX4DCo+JqPUAAAA=
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring
+	<robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Jiri Kosina
+	<jikos@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Johan Hovold <johan+linaro@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-input@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@somainline.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski@linaro.org>,
+        Bjorn Andersson
+	<quic_bjorande@quicinc.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706546867; l=1152;
+ i=quic_bjorande@quicinc.com; s=20230915; h=from:subject:message-id;
+ bh=zMf4yKdogGXJoeObaueH6qXynndYIX55PcDoMto1YCA=;
+ b=yME28zc6Zi3HsN3CIqYjgb5tmH4aF23nz1xArUUgY+Wxupp3MLpQV6FnSFvh+GHNVup27jxtF
+ zgf5yAouabbC2PebREkF7DQPmxSPZ6HTNGucBrMpSnJvzmhpqMNdZXm
+X-Developer-Key: i=quic_bjorande@quicinc.com; a=ed25519;
+ pk=VkhObtljigy9k0ZUIE1Mvr0Y+E1dgBEH9WoLQnUtbIM=
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: sIwXUeHzU4eV6rMt8hzr8PW5PYGBgAyU
+X-Proofpoint-GUID: sIwXUeHzU4eV6rMt8hzr8PW5PYGBgAyU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-29_10,2024-01-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ spamscore=0 clxscore=1015 impostorscore=0 mlxlogscore=819 mlxscore=0
+ phishscore=0 malwarescore=0 priorityscore=1501 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401190000 definitions=main-2401290124
 
-On Mon, 29 Jan 2024, Mario Limonciello <mario.limonciello@amd.com> wrote:
-> On 1/29/2024 03:39, Jani Nikula wrote:
->> On Fri, 26 Jan 2024, Mario Limonciello <mario.limonciello@amd.com> wrote:
->>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
->>> index 9caba10315a8..c7e1563a46d3 100644
->>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
->>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
->>> @@ -278,6 +278,11 @@ static void amdgpu_connector_get_edid(struct drm_connector *connector)
->>>   	struct amdgpu_device *adev = drm_to_adev(dev);
->>>   	struct amdgpu_connector *amdgpu_connector = to_amdgpu_connector(connector);
->>>   
->>> +	if (amdgpu_connector->edid)
->>> +		return;
->>> +
->>> +	/* if the BIOS specifies the EDID via _DDC, prefer this */
->>> +	amdgpu_connector->edid = amdgpu_acpi_edid(adev, connector);
->> 
->> Imagine the EDID returned by acpi_video_get_edid() has edid->extensions
->> bigger than 4. Of course it should not, but you have no guarantees, and
->> it originates outside of the kernel.
->> 
->> The real fix is to have the function return a struct drm_edid which
->> tracks the allocation size separately. Unfortunately, it requires a
->> bunch of changes along the way. We've mostly done it in i915, and I've
->> sent a series to do this in drm/bridge [1].
+This documents and defines the necessary properties for the I2C
+HID-based touchscreen found in some SKUs of the Lenovo Thinkpad X13s to
+work.
 
-Looking at it again, perhaps the ACPI code should just return a blob,
-and the drm code should have a helper to wrap that around struct
-drm_edid, so that the ACPI code does not have to depend on drm. Basic
-idea remains.
+Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+---
+Changes in v3:
+- Rewrote the commit message, to properly describe the problem being
+  resolved.
+- Link to v2: https://lore.kernel.org/r/20240126-x13s-touchscreen-v2-0-5374ccc9e10d@quicinc.com
 
->> Bottom line, we should stop using struct edid in drivers. They'll all
->> parse the info differently, and from what I've seen, often wrong.
->> 
->> 
->
-> Thanks for the feedback.  In that case this specific change should 
-> probably rebase on the Melissa's work 
-> https://lore.kernel.org/amd-gfx/20240126163429.56714-1-mwen@igalia.com/ 
-> after she takes into account the feedback.
->
-> Let me ask you this though - do you think that after that's done should 
-> we let all drivers get EDID from BIOS as a priority?  Or would you 
-> prefer that this is unique to amdgpu?
+Changes in v2:
+- Dropped output-high from &ts0_default, to avoid bouncing the reset
+  line unnecessarily
+- Link to v1: https://lore.kernel.org/r/20240125-x13s-touchscreen-v1-0-ab8c882def9c@quicinc.com
 
-If the reason for having this is that the panel EDID contains some
-garbage, that's certainly not unique to amdgpu... :p
+---
+Bjorn Andersson (2):
+      dt-bindings: HID: i2c-hid: Document reset-related properties
+      arm64: dts: qcom: sc8280xp-x13s: Fix/enable touchscreen
 
-> Something like:
->
-> 1) If user specifies on kernel command line and puts an EDID in 
-> /lib/firmware use that.
-> 2) If BIOS has EDID in _DDC and it's eDP panel, use that.
+ Documentation/devicetree/bindings/input/hid-over-i2c.yaml  | 6 ++++++
+ arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts | 7 +++++--
+ 2 files changed, 11 insertions(+), 2 deletions(-)
+---
+base-commit: 8bf1262c53f50fa91fe15d01e5ef5629db55313c
+change-id: 20240125-x13s-touchscreen-48012ff3c24e
 
-I think we should also look into this. We currently don't do this, and
-it might help with some machines. However, gut feeling says it's
-probably better to keep this as a per driver decision instead of trying
-to bolt it into drm helpers.
-
-BR,
-Jani.
-
-
-> 3) Get panel EDID.
->
-
+Best regards,
 -- 
-Jani Nikula, Intel
+Bjorn Andersson <quic_bjorande@quicinc.com>
+
 
