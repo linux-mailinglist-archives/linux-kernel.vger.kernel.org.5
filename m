@@ -1,147 +1,345 @@
-Return-Path: <linux-kernel+bounces-43428-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 982688413BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:52:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5D938413C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:52:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 306821F23B43
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:52:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAFC81C232C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:52:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7336C6F090;
-	Mon, 29 Jan 2024 19:52:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A07C7602A;
+	Mon, 29 Jan 2024 19:52:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="e+F+XGcc"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KRpE21nF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD3386A008
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 19:52:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D0366F07F;
+	Mon, 29 Jan 2024 19:52:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706557934; cv=none; b=NAPszr2yRZHnGkkTYq/weYEVqPXAKSqbAPO7w7qfUppFWkggQD+HY9y50xa+dtgFZPOM2lP4yjbig3ItISLmzVFvaTkhOtkYvQhVX8o3nRCUueX+92CqQZNbQXCMk2PbXgEPBPDRhtHpkmGWqNDR0keRevfw43W42HBuAD2kdXA=
+	t=1706557961; cv=none; b=Z/W74ItypzJmj1I8Zm8Q+ig8Nxf8aRFLlJObgz78qKXVJJtaVM2cUKYs9OZjJf5U0pAFPdDGy/Nunoz+kV76A5JjgijqTpvk1Fi/Do82h6QI8TWcKeVLXJkTxBHVIY357EC6XnVS1hUpU9lbJjL2G9S9Qock7lxUsmClOjFlY6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706557934; c=relaxed/simple;
-	bh=+U42MXYQmyPm0YLTZYN6+NqwTBjYG5RX5rdbE3Yhuts=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sIxxgwU4R1epDTwmTJ94nmLmj5iIFJ67MlUsuROHX/Y3go4YLYI77VsemPQpiyowS9n7bDDpbvTBS9N5rdSCPx1xuU2obWMKJxvK+kgMxmRNBT+29re1krCkj4HChpbt9If/Ifb0fb+YKAXLcVcpmdYgJkFk1ET3q4wwegt/eqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=e+F+XGcc; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3122b70439so426057166b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 11:52:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1706557930; x=1707162730; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=POvQx/OtzDWk0KpZLv1n2MuJ9LedkHIMhddtK9sWv5M=;
-        b=e+F+XGcc/Xysiz2RY2vioan6Fq+ZZyXzafhL04gc0yqdKBiWsZJUgzpRmc/NB+j5vQ
-         AmZMfM4dGL0OXsaCkqsA12Ihcvm8JfEDaub+jQyUKzWZwj82HSQpa5UknJmU0V4t/QUp
-         gppgh7VO8u9Y1JXAJlaPK8MB5GF8WN96C5O+w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706557930; x=1707162730;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=POvQx/OtzDWk0KpZLv1n2MuJ9LedkHIMhddtK9sWv5M=;
-        b=PaHIfndQxoWgKp9rvl1WJDivZg0XxI1nUbjosYQF7BGf7nKdB4asg4/hMNZjGm4eli
-         XuZS4t255vD6QBy8ByD3it5CJ9RKFH2HAbFn0ttLc9XeJrd/vzINBcRgKbd7MCPF0iT4
-         7sUY0iXJwaVloyfgEwK64Vnx9eI9K8Z5eMVnCQbJjWFxUq+UStsioJLBWfGDRJxHpgJE
-         TF4GeoYiU/gkq/pRXh3/9POIs8blueMeyVKFfVAB9t5+MI4ehWTkQcNJlPYW790puorc
-         huvdqCNdqla/bo+sYyCq6LfiHZVS3Fe+9gbTRD3h+smUtqUEYD4rcP00NerB4z8Tc6eL
-         sgIg==
-X-Gm-Message-State: AOJu0YxA9//osY6QN8PH3cREQQ4uIRWia1EMKcM84zA6j/f1eBTQsZ/5
-	qdYDzdzxtVQ6576ktsW7528EcbNVckI0DOHHaL1h9RiyqC2lu605F+yNPvuJvIbxHbVyrJ4A8pa
-	fH4A=
-X-Google-Smtp-Source: AGHT+IGyyNEmAmZSKhq2hE1Coy+jswThmilVQg6d2mukM4r5AggSUxD5mNbecEmt/zEXikY8PjYPTg==
-X-Received: by 2002:a17:906:848:b0:a2c:b5a1:f8 with SMTP id f8-20020a170906084800b00a2cb5a100f8mr5631512ejd.37.1706557930209;
-        Mon, 29 Jan 2024 11:52:10 -0800 (PST)
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
-        by smtp.gmail.com with ESMTPSA id pw18-20020a17090720b200b00a35c1d11621sm1237876ejb.131.2024.01.29.11.52.09
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 11:52:09 -0800 (PST)
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-55f15762840so1060825a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 11:52:09 -0800 (PST)
-X-Received: by 2002:a05:6402:51ca:b0:55e:e838:a20e with SMTP id
- r10-20020a05640251ca00b0055ee838a20emr3923739edd.25.1706557929185; Mon, 29
- Jan 2024 11:52:09 -0800 (PST)
+	s=arc-20240116; t=1706557961; c=relaxed/simple;
+	bh=sHc0fmgS2jXh98pYRazZPVZPqNnFkF0YYo3nUqXRrNY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Dfu0un4qT73+B/1XRL5o2v2m6bV0fhsPxguEoV/6uoEqhlvUoQ2KMhWQSeizTFJ7vv6tb5wlDJKXZ1MtUA8K5//Q15LjssEsb77IVat4UQiVgBxUmraUAJM/67Q7HHaAl9l8Gf0Gw2NbVh6wKyP3e34+HX+5bO+wGscpCEdzR7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KRpE21nF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A87B6C433F1;
+	Mon, 29 Jan 2024 19:52:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706557960;
+	bh=sHc0fmgS2jXh98pYRazZPVZPqNnFkF0YYo3nUqXRrNY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=KRpE21nFawx2gBcry94NPa8aUSsaRT9nqRTIKg+/gZvJtL16A9Nfy3O74ANgqaYaO
+	 ox98JUR9z/aPLDTMpdBjDmhbpyL7W81u0dMb7GGvQq8PFQ1RgP+khxWd2Sx4+nHYMB
+	 /ui6YW044dVvM7No36ftDT/hDc9/QF42PgvUd+/OKgEiPPKd3sjDnmVGNgUc8OZeyc
+	 2ON8ECRKkLuZWT50VmJKCrnOLmJ7hbTYzotgZmCJVrHm1x0gqfyfoMc1rzwX2/BCww
+	 AESkyT8tFW70m1RJt2+jfhX3y/cZvOaOrU6mbxzMxyLysCuVMTRHl3CZSBADMhFDzh
+	 wtqzAvBHIfDKQ==
+Date: Mon, 29 Jan 2024 19:52:27 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Julia Lawall <julia.lawall@inria.fr>
+Cc: Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+ linux-iio@vger.kernel.org, Rob Herring <robh@kernel.org>, Frank Rowand
+ <frowand.list@gmail.com>, linux-kernel@vger.kernel.org, Nicolas Palix
+ <nicolas.palix@imag.fr>, Sumera Priyadarsini <sylphrenadin@gmail.com>,
+ "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+ linux-acpi@vger.kernel.org, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>
+Subject: Re: [RFC PATCH 0/5] of: automate of_node_put() - new approach to
+ loops.
+Message-ID: <20240129195227.3c3adae1@jic23-huawei>
+In-Reply-To: <alpine.DEB.2.22.394.2401291455430.8649@hadrien>
+References: <20240128160542.178315-1-jic23@kernel.org>
+	<alpine.DEB.2.22.394.2401281903550.3119@hadrien>
+	<20240129114218.00003c34@Huawei.com>
+	<alpine.DEB.2.22.394.2401291455430.8649@hadrien>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202401291043.e62e89dc-oliver.sang@intel.com> <CAHk-=wh0M=e8R=ZXxa4vesLTtvGmYWJ-w1VmXxW5Mva=Nimk4Q@mail.gmail.com>
- <20240129120125.605e97af@gandalf.local.home> <CAHk-=wghx8Abyx_jcSrCDuNj96SuWS0NvNMhfU8VjFGg9bgm_g@mail.gmail.com>
- <CAHk-=whb91PWEaEJpRGsuWaQpYZGj98ji8HC2vvHD4xb_TqhJw@mail.gmail.com>
-In-Reply-To: <CAHk-=whb91PWEaEJpRGsuWaQpYZGj98ji8HC2vvHD4xb_TqhJw@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 29 Jan 2024 11:51:52 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgp7UkG31=cCcbSdhMv6-vBJ=orktUOUdiLzw4tQ4gDLg@mail.gmail.com>
-Message-ID: <CAHk-=wgp7UkG31=cCcbSdhMv6-vBJ=orktUOUdiLzw4tQ4gDLg@mail.gmail.com>
-Subject: Re: [linus:master] [eventfs] 852e46e239: BUG:unable_to_handle_page_fault_for_address
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev, lkp@intel.com, 
-	linux-kernel@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Christian Brauner <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Ajay Kaher <ajay.kaher@broadcom.com>, linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, 29 Jan 2024 at 11:24, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> So the patch was completely broken. Here's the one that should
-> actually compile (although still not actually *tested*).
+On Mon, 29 Jan 2024 15:02:19 +0100 (CET)
+Julia Lawall <julia.lawall@inria.fr> wrote:
 
-Note that this fixes the d_instantiate() ordering wrt initializing the inode.
+> On Mon, 29 Jan 2024, Jonathan Cameron wrote:
+> 
+> > On Sun, 28 Jan 2024 19:06:53 +0100 (CET)
+> > Julia Lawall <julia.lawall@inria.fr> wrote:
+> >  
+> > > On Sun, 28 Jan 2024, Jonathan Cameron wrote:
+> > >  
+> > > > From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > > >
+> > > > +CC includes peopleinterested in property.h equivalents to minimize
+> > > > duplication of discussion.  Outcome of this discussion will affect:
+> > > > https://lore.kernel.org/all/20240114172009.179893-1-jic23@kernel.org/
+> > > > [PATCH 00/13] device property / IIO: Use cleanup.h magic for fwnode_handle_put() handling.
+> > > >
+> > > > In discussion of previous approach with Rob Herring we talked about various
+> > > > ways to avoid a disconnect between the declaration of the __free(device_node)
+> > > > and the first non NULL assignment. Making this connection clear is useful for 2
+> > > > reasons:
+> > > > 1) Avoids out of order cleanup with respect to other cleanup.h usage.
+> > > > 2) Avoids disconnect between how cleanup is to be done and how the reference
+> > > >    was acquired in the first place.
+> > > >
+> > > > https://lore.kernel.org/all/20240117194743.GA2888190-robh@kernel.org/
+> > > >
+> > > > The options we discussed are:
+> > > >
+> > > > 1) Ignore this issue and merge original set.
+> > > >
+> > > > 2) Always put the declaration just before the for loop and don't set it NULL.
+> > > >
+> > > > {
+> > > > 	int ret;
+> > > >
+> > > > 	ret = ... and other fun code.
+> > > >
+> > > > 	struct device_node *child __free(device_node);
+> > > > 	for_each_child_of_node(np, child) {
+> > > > 	}
+> > > > }
+> > > >
+> > > > This works but careful review is needed to ensure that this unusual pattern is
+> > > > followed.  We don't set it to NULL as the loop will do that anyway if there are
+> > > > no child nodes, or the loop finishes without an early break or return.
+> > > >
+> > > > 3) Introduced the pointer to auto put device_node only within the
+> > > >    for loop scope.
+> > > >
+> > > > +#define for_each_child_of_node_scoped(parent, child) \
+> > > > +	for (struct device_node *child __free(device_node) =		\
+> > > > +	     of_get_next_child(parent, NULL);				\
+> > > > +	     child != NULL;						\
+> > > > +	     child = of_get_next_available_child(parent, child))
+> > > > +
+> > > >
+> > > > This series is presenting option 3.  I only implemented this loop out of
+> > > > all the similar ones and it is only compile tested.
+> > > >
+> > > > Disadvantage Rob raised is that it isn't obvious this macro will instantiate
+> > > > a struct device_node *child.  I can't see a way around that other than option 2
+> > > > above, but all suggestions welcome.  Note that if a conversion leaves an
+> > > > 'external' struct device_node *child variable, in many cases the compiler
+> > > > will catch that as an unused variable. We don't currently run shaddow
+> > > > variable detection in normal kernel builds, but that could also be used
+> > > > to catch such bugs.
+> > > >
+> > > > All comments welcome.  
+> > >
+> > > It looks promising to get rid of a lot of clunky and error-prone
+> > > error-handling code.  
+> >
+> > Absolutely. I think I spotted 2 bugs whilst just looking for places this pattern
+> > doesn't apply.  Will circle back to those once this discussion is resolved.
+> > I think I've taken dozen's of fixes for cases where these were missed over the years
+> > so hoping this means I'll never see another one!
+> >  
+> > >
+> > > I guess that
+> > >
+> > > for_each_child_of_node_scoped(parent, struct device_node *, child)
+> > >
+> > > would seem too verbose?  
+> >
+> > Intent just to make the allocated internal type clear?  Sure we can do that if
+> > it helps with making it clear something is being allocated.
+> > I can't think of a way this could be used with anything other than
+> > a struct device_node * as the second parameter but I guess it still helps
+> > 'hint' at what is going on..
 
-But as I look up the call chain, I see many more fundamental mistakes.
+To touch back on this, I'm still not sure what your intent was in suggesting
+having the explicit struct device_node *
 
-Steven - the reason you think that the VFS doesn't have documentation
-is that we *do* have tons of documentation, but it's of the kind "Here
-is what you should do".
+> >  
+> > >
+> > > There are a lot of opportunities for device_node loops, but also for some
+> > > more obscure loops over other types.  
+> >  
+> > > And there are a lot of of_node_puts
+> > > that could be eliminated independent of loops.  
+> >
+> > The non loop cases should be handled via the __free(device_node) as provided
+> > by patch 1.  We'll need to keep the declaration local and initial assignment
+> > together but that is easy enough to do and similar to the many other cleanup.h
+> > usecases that are surfacing.  
+> 
+> I tried the following semantic patch:
+> 
+> @@
+> identifier x,f;
+> attribute name __free;
+> expression list es;
+> expression e;
+> statement S;
+> @@
+> 
+> {
+> ... when != S
+> struct device_node *x
+> + __free(device_node)
+> ;
+> ... when strict
+> x = f(es);
+> <... when any
+>      when != x = e
+> -of_node_put(x);
+> ...>  
+> -of_node_put(x);
+> }
+> 
+Nice.  
+> It is written defensively in various ways:
+> 
+> when != S means tha tthe device_node declaration has t be at the top of
+> the block, perhaps with other declarations before it.
+> 
+> when strict means that all paths must lead from the declaration to the
+> initialization.  So there is no need to intiialize the variable to NULL,
+> as far as I understand.
+> 
+> when != x = e means that the declared variable is not reinitialized, which
+> would require keeping the previous of_node_put.
+> 
+> There is an of_node_put at the end of the block, so the use of __free
+> doesn't change the lifetime.
+> 
+> An unfortunate aspect of the last constraint is that some functions may
+> declare multiple device_node variables, and only one of the of_not_puts
+> can come at the very end of the block.  This can be solved by just running
+> the semantic patch again.
+> 
+> An alternative would be to move the initialization up to the declaration,
+> but the result was often a bit ugly, due to the various initialization
+> function calls having long names and argument lists.
 
-It is *not* of the kind that says "You messed up and did something
-else, and how do you recover from it?".
+You have to do that in order to ensure there is no window for someone to
+easily insert code that leaves them uninitialized.
 
-So the fundamental bug I now find is that eventfs_root_lookup() gets a
-target dentry, and for some unfathomable reason it then does
+Linus had some rather specific comments on that being the only right way to
+do it.
 
-        ret = simple_lookup(dir, dentry, flags);
+> 
+> The output is below.  I have looked quickly through all of the changes and
+> they all look reasonable, but have not tried compiling anything (which I
+> guess wouldn't currently work anyway).
+> 
+> julia
+> 
 
-on it. Which is *completely* broken, because what "simple_lookup()"
-does is just say "oh, you didn't have a dentry of this kind before, so
-clearly a lookup must be a non-existent file". Remember: this is for
-'tmpfs' kinds of filesystems where the dentry cache cotnains *ALL*
-files.
+I picked a couple from the end.  They show the sort of things that
+would want cleaning up.  The script is great for finding low hanging
+fruit but as you've identified there is often some stuff that isn't
+easy to automate.
 
-For the tracefs kind of filesystem, it's TOTALLY BOGUS. What the
-"simple_lookup()" will do is just a plain
+> diff -u -p a/drivers/clk/clk-nomadik.c b/drivers/clk/clk-nomadik.c
+> --- a/drivers/clk/clk-nomadik.c
+> +++ b/drivers/clk/clk-nomadik.c
+> @@ -87,7 +87,7 @@ static const struct of_device_id nomadik
+> 
+>  static void __init nomadik_src_init(void)
+>  {
+> -	struct device_node *np;
+> +	struct device_node *np __free(device_node);
+>  	u32 val;
+> 
+>  	np = of_find_matching_node(NULL, nomadik_src_match);
+> @@ -134,7 +134,6 @@ static void __init nomadik_src_init(void
+>  	register_reboot_notifier(&nomadik_clk_reboot_notifier);
+> 
+>  out_put:
+Can avoid the label given nothing to do any more. 
+> -	of_node_put(np);
+>  }
+> 
+>  /**
+> diff -u -p a/arch/powerpc/platforms/chrp/setup.c b/arch/powerpc/platforms/chrp/setup.c
+> --- a/arch/powerpc/platforms/chrp/setup.c
+> +++ b/arch/powerpc/platforms/chrp/setup.c
+> @@ -99,7 +99,7 @@ static void chrp_show_cpuinfo(struct seq
+>  {
+>  	int i, sdramen;
+>  	unsigned int t;
+> -	struct device_node *root;
+> +	struct device_node *root __free(device_node);
 
-        d_add(dentry, NULL);
+Same as next 2.
 
-and nothing else. And guess what *that* does? It basically
-instantiates a negative dentry, telling all other lookups that the
-path does not exist.
+>  	const char *model = "";
+> 
+>  	root = of_find_node_by_path("/");
+> @@ -152,7 +152,6 @@ static void chrp_show_cpuinfo(struct seq
+>  			   gg2_cachetypes[(t>>2) & 3],  
+>  			   gg2_cachemodes[t & 3]);
+>  	}
+> -	of_node_put(root);
+>  }
+> 
+>  /*
+> @@ -195,7 +194,7 @@ static void __init sio_fixup_irq(const c
+> 
+>  static void __init sio_init(void)
+>  {
+> -	struct device_node *root;
+> +	struct device_node *root __free(device_node);
 
-So if you have two concurrent lookups, one will do that
-simple_lookup(), and the other will then - depending on timing -
-either see the negative dentry and return -ENOENT, or - if it comes in
-a bit later - see the new inode that then later gets added by the
-first lookup with d_instantiate().
+As below needs to be 
+	struct device_node *root __free(device_node) = of_find_node_by_path("/");
+so there is no space for code to be added inbetween that might return before
+this is set.
 
-See? That simple_lookup() is not just unnecessary, but it's also
-actively completely WRONG. Because it instantiates a NULL pointer,
-other processes that race with the lookup may now end up saying "that
-file doesn't exist", even though it should.
+>  	const char *model;
+> 
+>  	root = of_find_node_by_path("/");
+> @@ -209,8 +208,6 @@ static void __init sio_init(void)
+>  		/* select logical device 1 (KBC/Mouse) */
+>  		sio_fixup_irq("mouse", 1, 12, 2);
+>  	}
+> -
+> -	of_node_put(root);
+>  }
+> 
+> 
+> @@ -364,7 +361,7 @@ static void chrp_8259_cascade(struct irq
+>   */
+>  static void __init chrp_find_openpic(void)
+>  {
+> -	struct device_node *np, *root;
+> +	struct device_node *np __free(device_node), *root;
 
-Basically, you can't use *any* of the "simple" filesystem helpers.
-Because they are all designed for that "the dentry tree is all there
-is" case.
+This one looks dangerous because of the chance of other code
+getting added between here and the point where it is set.
 
-                Linus
+Better to move that down so we have
+
+struct device_node *np __free(device_node) = of_find_node_by_type(NULL, "open-pic");
+
+Also there is a nicer use in:
+https://elixir.bootlin.com/linux/v6.8-rc2/source/arch/powerpc/platforms/chrp/setup.c#L217
+
+>  	int len, i, j;
+>  	int isu_size;
+>  	const unsigned int *iranges, *opprop = NULL;
+> @@ -438,7 +435,6 @@ static void __init chrp_find_openpic(voi
+>  	ppc_md.get_irq = mpic_get_irq;
+>   bail:
+>  	of_node_put(root);
+With root covered this can return early.
+
+> -	of_node_put(np);
+>  }
+> 
+
 
