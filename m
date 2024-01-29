@@ -1,178 +1,129 @@
-Return-Path: <linux-kernel+bounces-42733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCC908405BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:55:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2D478405BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:55:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1F241C21346
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:55:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A645283B6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:55:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C221633E8;
-	Mon, 29 Jan 2024 12:52:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E1D1634EA;
+	Mon, 29 Jan 2024 12:52:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="TBjnTcLN"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2047.outbound.protection.outlook.com [40.107.237.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U8q0z7j8"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78B1362A04;
-	Mon, 29 Jan 2024 12:52:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.47
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706532766; cv=fail; b=Ljs3LbUOKXHp9EzNV7RbietQpEJ4rZA2WTOn/AU9yJ6HNtNuoDFg8yxiVK0HIqavmxhtTluM+MSQW6vucX+I+Rd0N2TrgMNtDeh+lmkE7qP3wuEzuFmhYwumQ5JFOAa1gqmj9yWq3DU6bKIDgAGdH9MLBoxp5Cv1xP/ZyorWc4M=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706532766; c=relaxed/simple;
-	bh=Ln6DC6rzrndetma+XGZS7+bE1/sNNMaHj84oOB4R/XU=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=o9L9GCiHba47rJ8TV6gXZQWCBhTPIcQNvgV1LCD9TIxnPlDdalmcBuMO29iYYZgIp8qjFpGNU2KhAeFVTmUZFl/SJQGV/oKEaTPbjesJJ13/ADHvy1OYfLdoj2vZ1WAu2BKd+zd8ikG8CBK2OB6DZa17ls29B8JD17QHim35Xqk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=TBjnTcLN; arc=fail smtp.client-ip=40.107.237.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bZhLpGUobQ0iVkbxkCKOyCbM4OnU4Gjo2ybhtJYhL9Yj2B6B4tqSaSXVhsnPWfXXTVHsw6Ct16qp40rcUxz9hUTWpgQibiamIjdfxqo4gB0fb8j3ZmQm6lqYuPGrawc7djQaO62MUgJxqdgngtsIeno9i+ZnuevrzfWdYayWnQ4Aqy8Wv1OcSVv20MVvFy3UJD5m49Ho/B8Go/GBUk9C6Tt0Rh7vhDdjHoUxj+s3j79leuTTNViVbP9U15YBenfWShSUg3rT7CqrSu4EU0Rh2MLl9UUz++rVA1HhteHreSeB1DDGWFERGv5O2xTndmSC+ZV49wkueltBUPQHaAc+qw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5fYIetDL1jttk+LQ8Bsj/fol0+RxPpSbCxCApVQDM4E=;
- b=EvrFNN4dIhmN6GXCIgsuTPrOYHJ/Yc9QJUiGx9aXp40eZHZte6CkUAwgJEv7fnSWNdW+Vrf5laZBirxyJi9ckKSIXn9mbHwhBx0PaPdJGYFzMrA3GfcWmIZG5gQfuJ4SUlc6kGktr4wRs00c0r+zNq3JjrYrGArG9zPRIMA1j4J7MfIChM604GJbcPv7u0dmPCQUP7Xwgy9eQR8UjtgcmlImN95w1cZVSmCy3OkgMva0yMG4vR1RE3YXWJtRCj5xpr+Qvbihp5BJTAFG0tJL/csHNCg9Z+catJNFZa8Sn2o7kl6ypwJV8jEDFysLTTGWcj7Um6ZyZ7IKkXekKt5ilA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5fYIetDL1jttk+LQ8Bsj/fol0+RxPpSbCxCApVQDM4E=;
- b=TBjnTcLNkMT29BtGmewHc2/DHACs9sXdGlrR/NOxZ+2D0G6u/FeifrJxjuAYKXaB7dtCvdTwQCmYYhFPrGqWCz9FgNkSIyGsWb/0iv9eFRCRmUPsj0sBr5CAHluZ7n/a+To6woyzAr7XqwyvL4inPqKgFEzeqEafL+04dHD9pjg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by CH2PR12MB5515.namprd12.prod.outlook.com (2603:10b6:610:34::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Mon, 29 Jan
- 2024 12:52:41 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::e1fb:4123:48b1:653]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::e1fb:4123:48b1:653%4]) with mapi id 15.20.7228.029; Mon, 29 Jan 2024
- 12:52:41 +0000
-Message-ID: <d6bef39c-f940-4097-8ca3-0cf4ef89a743@amd.com>
-Date: Mon, 29 Jan 2024 13:52:33 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 5/8] iio: core: Add new DMABUF interface infrastructure
-Content-Language: en-US
-To: Jonathan Cameron <jic23@kernel.org>, Paul Cercueil <paul@crapouillou.net>
-Cc: Lars-Peter Clausen <lars@metafoo.de>,
- Sumit Semwal <sumit.semwal@linaro.org>, Vinod Koul <vkoul@kernel.org>,
- Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
- =?UTF-8?Q?Nuno_S=C3=A1?= <noname.nuno@gmail.com>,
- Michael Hennerich <Michael.Hennerich@analog.com>
-References: <20231219175009.65482-1-paul@crapouillou.net>
- <20231219175009.65482-6-paul@crapouillou.net>
- <20231221120624.7bcdc302@jic23-huawei>
- <ee5d7bb2fb3e74e8fc621d745b23d1858e1f0c3c.camel@crapouillou.net>
- <20240127165044.22f1b329@jic23-huawei>
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20240127165044.22f1b329@jic23-huawei>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: ZR0P278CA0158.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:41::17) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B7DD629E1;
+	Mon, 29 Jan 2024 12:52:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706532767; cv=none; b=OrnvjJiTqRc55rcezKpy95NTimPaa9LIUERrk2gBc/T52CiFWLdeZFDef5ZO46yswbe4dCcTONmC9WDwc+EzgqBHbxUaOLtWiVgncpX8sqMu9S8TsBe4BJVpfDqWthQ18OHfSINBg2SJa9IMSt09ew+AKM99NvVNFHWQHk7RJoM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706532767; c=relaxed/simple;
+	bh=km4zzHCmyYIUYlVLRRXqA6v9RwUyR2+jwg1Lubr/1JI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kFscUW1ZX1ozxPpg1gIuEjPydikynIFmfZk61v0rLgs7yXaxa04gHPHq6jO2EmyXGmRsTuXm6RoMe/oXnONsTFQJDDJcxdnaKohQuhwHjzeN1vK7yJ9uKdLnq0yY0NOs5SJCADuIegnXrRM53+p1z1a3wcbGQ4fIsnOv6jlbNug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U8q0z7j8; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-55a8fd60af0so2541491a12.1;
+        Mon, 29 Jan 2024 04:52:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706532764; x=1707137564; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=wh5PJX6dWm7kSDwjmqjlz8KtwMMRblZ6e8LLH/QNoIo=;
+        b=U8q0z7j8v0vckkUhC998/pQCZV0bzqSqvCjV5h0T9NMzYELaft5Gn7CSXVitvYKM4B
+         PhKZAfSjMYJOwT7qzy0buPNqP2DAbhzgqaO3j3QjpALHl0DxU6opQn5LL1ZLEAOhViK3
+         yEf3hBvyfzViR8qiqgSF5UqMHYhiMTH/trKPL9YBLIMtncBV5Tw8NO1DqTGOkAmilWnH
+         WnP4XUNArbm6L3cF7wq41A6Dews83WtMjqlCsH1ep5xKCbmDH86KqVJ+VEiii1fCvgb2
+         8OYZdkKK0zbU2O3fIzD4TGazXbINyUpUpCGFa8PuxPfPk+gXAni+byqRPKpNwSR+jdkH
+         GfEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706532764; x=1707137564;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wh5PJX6dWm7kSDwjmqjlz8KtwMMRblZ6e8LLH/QNoIo=;
+        b=erMyaywMoHHCcTTxGdbC0qz48WQfRd/FOWDGaRdkd8zJgNV948CVenT9AQLXUfpojh
+         12pEV54aoZPQrGsN4qPeY/15wcdQkEKmB7UZOL+VsYepDiPB/1v+2STxEfcO7M5NbOHx
+         I/MmnJ+baS0TlTy8H+sc+drAf+YoJG2lqnV3saF3lLIOmIUNmW9Hp1ltMP9+roYmDJru
+         Zx4iU7kUmjAh8c11mM45KhfaV2Nx94STbtoiukkOcS1c00CyU43Mbs5e54V7n1F+G2qV
+         nKPGpx7FpfB7KtwPXIKxIh2iF9qGs7WS3ikHNVIvsnFM6swsATlPvmHffNVgjscTCIsd
+         iGSg==
+X-Gm-Message-State: AOJu0YxW+zk8YCaKtRsxirTAvL0x48ZvkV9bUGgLO4EOVxyEg8Xp+Fkg
+	7DiSrjF9xrcnEp6agepXHNVRYVSEyJH4kPDNzDXdSOgaCzQWxLMfJ4LqXKFg8dA=
+X-Google-Smtp-Source: AGHT+IGbC5F/QL2xZapUcYogbDNebCDs/L/gjri3hScnNm/4bpqmoUfd2F93xmirprhA8WNJe/FXiA==
+X-Received: by 2002:a17:906:a45:b0:a28:fec2:ca17 with SMTP id x5-20020a1709060a4500b00a28fec2ca17mr3525460ejf.0.1706532764054;
+        Mon, 29 Jan 2024 04:52:44 -0800 (PST)
+Received: from skbuf ([188.25.173.195])
+        by smtp.gmail.com with ESMTPSA id cu12-20020a170906ba8c00b00a27a32e6502sm3847552ejd.117.2024.01.29.04.52.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 04:52:43 -0800 (PST)
+Date: Mon, 29 Jan 2024 14:52:41 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: arinc.unal@arinc9.com
+Cc: Daniel Golle <daniel@makrotopia.org>,
+	Landen Chao <Landen.Chao@mediatek.com>,
+	DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Russell King <linux@armlinux.org.uk>, mithat.guner@xeront.com,
+	erkin.bozoglu@xeront.com,
+	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next v3 6/7] net: dsa: mt7530: do not set
+ priv->p5_interface on mt7530_setup_port5()
+Message-ID: <20240129125241.gu4srgufad6hpwor@skbuf>
+References: <20240122-for-netnext-mt7530-improvements-1-v3-0-042401f2b279@arinc9.com>
+ <20240122-for-netnext-mt7530-improvements-1-v3-6-042401f2b279@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|CH2PR12MB5515:EE_
-X-MS-Office365-Filtering-Correlation-Id: e8a38a3a-476e-4675-56a4-08dc20c92da9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	DUF7/wJm0GfrNJ/SnEIkfEpCjhO2a+rf9VOCGJzr9hcHduQaSo4TpKUZIJ1JjbC2ti32zqKnG3A6PbVaa+1rBayHwWGW4RMKTVQcGL6TCWiVmte/tJJg3mPyw2PpK3QpIAz+NsWV5AhTfCo2bulBV0KtfSguHVBLYpp3lUmbU0SjN4CNPxiTDIProlJkVBrxEvNzOQKWyKvpyoyczz8hZTq1CpsXpLWJMxg8GyZCVsCqBdPSUry9EFmzy64Zcb7CAoB8qaEfQYRcAIWNT4RqOkOI9Z4wQ/i5S/iVcCxP5N/GPgh2Y89hzkwFtI1R61f87VsKFhHrP8eRwqmNZaPk6Z0gBoQtTsnBjXqCmhM2FvyeP4cJSFO7ATVUU97M0tubwoxxkZPVnzFkhG/IZ4abPeRCPlrmO6Tgq09Hy07JYcRIGA7KnlA5PlsZ4tay+tYizHoAhOUrCi096iXaUnxgNAp+d/Ge5KbDvaJ90LUjd7k67oEkypU5Hzv7ECVPdtGDkfO69ZesRgyDDetWeQ6U6PBXT35pGzZd9zmpnW14czX5YanDd24WtS9G5Esmaj7fevKbUeTz4q1Uw6IenDKauFaaqAdQldbBOQ1oNmsbf1MJ2koe/LxIEH9eyE3l9hm/ErROwl5GnskqB5t8Ha/Bng==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(396003)(366004)(346002)(376002)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(31696002)(36756003)(54906003)(66946007)(316002)(66556008)(86362001)(6506007)(110136005)(8676002)(8936002)(66476007)(6486002)(478600001)(26005)(4326008)(4744005)(6666004)(2906002)(7416002)(5660300002)(2616005)(6512007)(41300700001)(38100700002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?OTlXWEpqbGhlTXp5Q3BZQmNNZlVLc0syYVJiemJGRERkY3NuN2tpQmF6b0RY?=
- =?utf-8?B?WnBDdUJKTmRwWnlBZHJSZjJvUEVqSEo1VXdwRHYxVmJtaXl6RGFCeHJMeHNm?=
- =?utf-8?B?aGFIdDRRN29oMCtzNnl6ai9QZStBZmVvdFJrRDI1MG0wUGR4UlkySGFiQUpq?=
- =?utf-8?B?ck5kQUR4cFNxdk9KeEViekpjZzhxV0dTUTJ1VVFRQTUxWXdxMUt0UGhIRFlj?=
- =?utf-8?B?VXQ4b2VwdGJWYnduQXFLYWp0SlBJc040Q2hUbldWWXhVT2taaGJsMjhXc1o3?=
- =?utf-8?B?Qk9RdGx4cktwTTEvcWErOTFIOFZ2cnlJK1czeDZMb2crSWNWcUVJeGM5Y1F6?=
- =?utf-8?B?cmg1bFE0TURNRGN1QlZsbzl3SDFsYi9pVHlqUExISEN1Y2t1dm5hZnd4d3Vv?=
- =?utf-8?B?ZFhsMW43ZVlQWG9iNExnMlhjbldHT09nSmZWN290eW1PTFBBeXdhTUVkbDRy?=
- =?utf-8?B?eUZlL0NtVVRTNUNBYnd6cjVXSWFscWl6eS9CMUdRbWdGRTcrbmpCaFVRY2JT?=
- =?utf-8?B?MjJQRnovSHhMTTl5MXhDb0lKY2tOQUM3Qzh5OFZBck53UnRiQXQzdEJkeU1v?=
- =?utf-8?B?dFQ5SHV1MXREeU50RGJuanpBZmowN1psUW45TWZnMGMxb2JEV0o5WWVtVkhn?=
- =?utf-8?B?SmFSTDFYM3BZaHp4d245ZzNnWkZwMExxRk9IVXRWb3NhZTRYMFZjVVJtQkx5?=
- =?utf-8?B?R3ZUbWUzZ2t4NytZRWovTCtpcGhJQ3gvR3RTcjF4eXlGeVRhcEtrajVidXU2?=
- =?utf-8?B?VUdXZzdsYWpqM2pIU0JEL1B0VUJIQnEvMWswUW12UFR0a0MzWlQyVXZxdnVN?=
- =?utf-8?B?THl5STJmdzQ2TmJrYmYyQlVwcEthVDg4VWRUa3RQL3dMa1lPOEI0UEd0UG5G?=
- =?utf-8?B?S2ZjRERLODFSQWYvaEQ5MGY2YXhrNHJ0S3ErWk5PVk1ZWTdKZmRIbW9jWTda?=
- =?utf-8?B?RUJxRHdXUWZxN2Y5ZXBQL0xLTDkwRWNBSyt2NGNpMUhBQll2QmlsWDhlN0ND?=
- =?utf-8?B?bElOVDZZR0g0L3lOak1YL2NJV3V6eGFBa040MytMVVBEbzdDdDlhNDVaU3dT?=
- =?utf-8?B?dGJydG1YZ1BQMHFIUGpIbFVNenNsOGk2UWlMbEFSVU5QQ3RJUjgxZ25CWnZ2?=
- =?utf-8?B?djdpTllSQ2pORWRoRmlCVmV1K253dVZvZlFvNXNWcG85MUdMWGtlKzRkZDZY?=
- =?utf-8?B?Tm5ycFc2dDk3WXczSlJBTW5reDZyN0I3dlRxUlRCSkZkeXd1ZFZiQ09hcHVR?=
- =?utf-8?B?bkM1TmtxMUV6Q0w1STJndTEvYlBkOTIyMGdTSjJKQ013SE54VklwbzZhN2dT?=
- =?utf-8?B?WEFyRisrRWl0WExWbE5Ua1h3bEpmZHIwQ2NvYXZIdTNUdVAzUVpqQ2JWNVlm?=
- =?utf-8?B?MGg1Z2dobWR1NWdHNnh1eC9pNHJjemJNV0NNdk9SZUJXU2hpOEo4MGpqc2dS?=
- =?utf-8?B?c0FPVVcrekZma2ZHOXRRdEMrRVNpdlRqTENLYjZsTTBwOVBtQ3RIclFqZEpr?=
- =?utf-8?B?azVTRk8waUtZdkZnU00zZ1RxOTZhaWM5MWkwajFVZ2hTVU1CeTdhSDJteWU2?=
- =?utf-8?B?NjJYYmV6OUkrRWw5Z2VPcGZ3TUJTM0lvakxHUmtodTJ6aXBMTDRrTFhYdjIz?=
- =?utf-8?B?ZDJLb0dtZEE1YjhOaE5SWWFZemZDT1I2YVpwUEhwamNiS1VGb3p5Z2lSQ2h4?=
- =?utf-8?B?dFlEQlk2allCZ21rMkV4TFNURklxVzlnS0VJNjNqUFhpWmNmNFo3TXBIUWhW?=
- =?utf-8?B?cjFTSzNDWUl5K203aWdhNHZwbVBwQ1daZ3dQQ2dlWjV0RnpKYytnc1lYWjlN?=
- =?utf-8?B?eUZFMzR5MWlsQ3RuRWVZQTdxVTl2L296OWpqV1dkckxwNkl6ZElLTUs2TlBP?=
- =?utf-8?B?U3NYbGZybFUvRWpLNWErSXpHbTlDTjAzVzJGTjMwV0NXblFZc2NMQlV2clh2?=
- =?utf-8?B?Z3Z4b0daRG5aeDBzc0dqUklwTmRVOTE1enFMUG9tNG0rT1JqMWlmT2RINUov?=
- =?utf-8?B?djV1NGVJalh4dC9IMWdwcU9qR0VsRzkzMjJQaEY5N29yVkpDQjZ6T2tlTDho?=
- =?utf-8?B?czhTK294OVlDK2N1cjNaRHgrNm9DbmdGYWV5dEluWHY1NTYyeTFMSzZqYVNN?=
- =?utf-8?Q?ERZmOhw0x03hSZeh+OY9JMgFv?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e8a38a3a-476e-4675-56a4-08dc20c92da9
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 12:52:40.9135
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bZGa8s5yG7LOLlWGwtAGcrvr9+q1im6/XZZPYGmED7fcCr2V2FEY4qUQ+wnnPiTu
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB5515
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240122-for-netnext-mt7530-improvements-1-v3-6-042401f2b279@arinc9.com>
 
-Am 27.01.24 um 17:50 schrieb Jonathan Cameron:
->>>> +	iio_buffer_dmabuf_put(attach);
->>>> +
->>>> +out_dmabuf_put:
->>>> +	dma_buf_put(dmabuf);
->>> As below. Feels like a __free(dma_buf_put) bit of magic would be a
->>> nice to have.
->> I'm working on the patches right now, just one quick question.
->>
->> Having a __free(dma_buf_put) requires that dma_buf_put is first
->> "registered" as a freeing function using DEFINE_FREE() in <linux/dma-
->> buf.h>, which has not been done yet.
->>
->> That would mean carrying a dma-buf specific patch in your tree, are you
->> OK with that?
-> Needs an ACK from appropriate maintainer, but otherwise I'm fine doing
-> so.  Alternative is to circle back to this later after this code is upstream.
+On Mon, Jan 22, 2024 at 08:35:57AM +0300, Arınç ÜNAL via B4 Relay wrote:
+> From: Arınç ÜNAL <arinc.unal@arinc9.com>
+> 
+> Running mt7530_setup_port5() from mt7530_setup() used to handle all cases
+> of configuring port 5, including phylink.
+> 
+> Setting priv->p5_interface under mt7530_setup_port5() makes sure that
+> mt7530_setup_port5() from mt753x_phylink_mac_config() won't run.
+> 
+> The commit ("net: dsa: mt7530: improve code path for setting up port 5")
+> makes so that mt7530_setup_port5() from mt7530_setup() runs only on
+> non-phylink cases.
+> 
+> Get rid of unnecessarily setting priv->p5_interface under
+> mt7530_setup_port5() as port 5 phylink configuration will be done by
+> running mt7530_setup_port5() from mt753x_phylink_mac_config() now.
+> 
+> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> ---
 
-Separate patches for that please, the autocleanup feature is so new that 
-I'm not 100% convinced that everything works out smoothly from the start.
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 
-Regards,
-Christian.
+I hope this moves the patch set out of the 'deferred' state.
 
->
->> Cheers,
->> -Paul
-
+---
+pw-bot: under-review
 
