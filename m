@@ -1,103 +1,112 @@
-Return-Path: <linux-kernel+bounces-42971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAC80840972
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:14:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EC18840977
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:15:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EA221F2417B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:14:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9591281473
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:15:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54ACB153511;
-	Mon, 29 Jan 2024 15:14:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FE4B153BD7;
+	Mon, 29 Jan 2024 15:15:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r8zmKtt8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="izpldgeB"
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 986281534FC;
-	Mon, 29 Jan 2024 15:14:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B186A15351E
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 15:15:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706541274; cv=none; b=NB5lGFioET63vVyQnLYedKQrz+gy1j/wRMisADI58MGphpswhORAfcFuwEWSVrh/Tj2USNo0o9rAwW3ptRx9IymkxbbEGbiuAIuNKbQ6VVZESVzHvDEFbkiVicJ3QOim+gYtXnqqViZYVCIub7fIdkO8ozQjlnEdvqSIwuJ3efE=
+	t=1706541320; cv=none; b=m4k05Px+eOhsuDeHlO1M9O9FslwfH0MstRS+ZC2gndJ03SMGZFZEafxFfvKCAp0WBADk4QFk8UOrwxFl8x7u/21tbh89nWBpoahEl/65kF/8lDSgEt+UxEvRe05njNT+cVyo1/hxLFmfCWRLeQbmQz26x3jk5HNNVzfpP+prgS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706541274; c=relaxed/simple;
-	bh=AQDzrA2EHtRyGDHRWwJhVOioutXaThI2sgVCDXaZxvI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aotLFHWNZmjLZPWVITzHuzPI9J/r8Nsf40TpLUwTD/xHT36IcFUMwduTY1Xw7MkcP9AaB+quTqYPyO0C3qJZkQC0PpXc3WK7ZthT5sW1gRL6HBKW3e1+/DRLX/7kf/NGt9+itm8gVbrEP3q1iAjNs4XmxjwuN7nJMzAGnjMvH3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r8zmKtt8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17C7DC433F1;
-	Mon, 29 Jan 2024 15:14:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706541274;
-	bh=AQDzrA2EHtRyGDHRWwJhVOioutXaThI2sgVCDXaZxvI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=r8zmKtt8lW/obv/Usya0+bk7UUBloZ+dobiV5pMDR79mYucLHzwIE6oWSCsK06rlf
-	 E7qs0pTaK5eSihonnhV1zhhgzhcN0wxsqI1BDhYLsgjmOl+P3L87EAwoHGvNCj+lQS
-	 aeyN+rU2DSC/32GIygFfquvronbiwZVJnQ8D2HXlfXwsAgX9psJhbePsMQAoxbt1aK
-	 QcUML5GM/9h6KdMyJjXfTtxLYCXcrM/s8t0mTgQmx9OgBWthwQ9k1b+nfD2AvuoVxM
-	 tacPf0YKJYeDuDlFQKuxSQ5xaz5Fzt9KtR17eA5xPP+GfKeIFTCWTjj3vHH7W5s1jN
-	 jaVCUalrtP6Yw==
-Date: Mon, 29 Jan 2024 16:14:29 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Tycho Andersen <tycho@tycho.pizza>
-Cc: Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org, 
-	linux-api@vger.kernel.org, Tycho Andersen <tandersen@netflix.com>, 
-	"Eric W. Biederman" <ebiederm@xmission.com>
-Subject: Re: [RFC PATCH] pidfd: implement PIDFD_THREAD flag for pidfd_open()
-Message-ID: <20240129-autark-spachtel-c37fd31383cc@brauner>
-References: <20240127105410.GA13787@redhat.com>
- <ZbUngjQMg+YUBAME@tycho.pizza>
- <20240127163117.GB13787@redhat.com>
- <ZbU7d0dpTY08JgIl@tycho.pizza>
- <20240127193127.GC13787@redhat.com>
- <ZbVrRgIvudX242ZU@tycho.pizza>
- <20240127210634.GE13787@redhat.com>
- <20240129112313.GA11635@redhat.com>
- <20240129-plakat-einlud-4903633a5410@brauner>
- <Zbe2x+M8tDBotSNZ@tycho.pizza>
+	s=arc-20240116; t=1706541320; c=relaxed/simple;
+	bh=LAOkgM7jx1y/f+9AaVcx8l/Biq3RfK+MpOVFGABEq9g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=s2U52kUzqvSeiSViEsEiMP/6j5JwkMuepqN38cTr8cI3kaLluWyCWKasmZfASeSGkyi6fotL4peOfBimvbxp/kwcu86N729x0lE+f1X0nWYUqzmNcBjXcFHXCJuQKcb1HY3HamPItiHXmJEY5J0nsW1DnYuwBiYcBqxQsCXwHr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=izpldgeB; arc=none smtp.client-ip=209.85.219.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dc223d20a29so2606855276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 07:15:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706541317; x=1707146117; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=19g3oA8IiRUGTXPpvDGJllhbr2rfvg3/xxxfKuMshKI=;
+        b=izpldgeBa1V17LrXxazhRySc/joJA6JPehIUWW/JTUf/o7fca7843GmqBa/LavO0cn
+         X0R5h6pQo4C5pBUhLHDwp7kaX+Y5Q74CqdJcMJeWugT7zzT7sHs1cWxln6lxYYnnWqgx
+         dE54XGeEVN8P3+54ypI7LcSum9vD9ZF5w/re/8J4eD9E2lRoJXS4En1/f2IrxvOKds/s
+         uJDgZ7xO6xVq6UjCKG4geMGBLM+/weUjCgNpnbOBjjeTxkgD8fM4GHK9jdeEXZqj0xyi
+         1d/L6XuXbdjOKqBjYIFVh7fK6OFwwYFkxaqTCe2TrEwPQzfQ+pccWXX6472+6mvtg2QL
+         BRsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706541317; x=1707146117;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=19g3oA8IiRUGTXPpvDGJllhbr2rfvg3/xxxfKuMshKI=;
+        b=rkqnw6z+xii3zNW2bBaE3ACbrKB7VsW0X2o/lmO54EpojVobchjm8Upm5QdI3DG8ji
+         HRoLSuqAwFQvWPSr5nXGh46KrRryLB+/GtLq2F7QFnSQlkTR9KgdO9l86xVNVZuiNDUy
+         w7JL+oouo7idDhbrsaPVZVCNVnzVh2wHn+pfY1xn4V0Fm5E20Rv2jIAqbKIIcBx72zsX
+         Xf3Twqx8I/Z7v5+GZ+Dv9p9sEKreMrC53YUtvuXNPcp6x1A/KR9eiedkJLyCnqhHvcGQ
+         KBOpwshoH0eJEtzdG4qkyKulFTPp4n+JF6eOMPQJ30Teo6xr79toBKwzFFmuEPiPU06T
+         jH+w==
+X-Gm-Message-State: AOJu0YxDh8TuOxB9NTEnS8uZ8hssa7IdnfN3AggUof/Ak5RHhjm3lX71
+	uRCvklCVR4gzinKGXLMuJZFgKZg0dmgB0orhEOB2SlTspRRb5W+gwMSJzos263QD/QF3jPz7v7E
+	O4V4BwQxd6Mguef0FiOSutRHnH2ZRWoOIIauymg==
+X-Google-Smtp-Source: AGHT+IFydtOcrIJRlNoXpg56zZ7tHX71n5y4JJpZgFrLYNKvhBr3oibPkEQ4p09wGzgkORErJGWYlBptWzGE6KVbIJ8=
+X-Received: by 2002:a25:ec0a:0:b0:dc2:52f4:2356 with SMTP id
+ j10-20020a25ec0a000000b00dc252f42356mr3387101ybh.119.1706541317649; Mon, 29
+ Jan 2024 07:15:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Zbe2x+M8tDBotSNZ@tycho.pizza>
+References: <20240129-x1e80100-display-v1-0-0d9eb8254df0@linaro.org> <20240129-x1e80100-display-v1-5-0d9eb8254df0@linaro.org>
+In-Reply-To: <20240129-x1e80100-display-v1-5-0d9eb8254df0@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Mon, 29 Jan 2024 17:15:06 +0200
+Message-ID: <CAA8EJpp_S4Ug8WoiQ5f3hEESTy9_u1wOo-ETMD2Tky1_OQH0kg@mail.gmail.com>
+Subject: Re: [PATCH 5/5] drm/msm/dpu: Add X1E80100 support
+To: Abel Vesa <abel.vesa@linaro.org>
+Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, linux-arm-msm@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Jan 29, 2024 at 07:31:35AM -0700, Tycho Andersen wrote:
-> On Mon, Jan 29, 2024 at 02:41:11PM +0100, Christian Brauner wrote:
-> > On Mon, Jan 29, 2024 at 12:23:15PM +0100, Oleg Nesterov wrote:
-> > > --- a/kernel/signal.c
-> > > +++ b/kernel/signal.c
-> > > @@ -2051,7 +2051,8 @@ bool do_notify_parent(struct task_struct *tsk, int sig)
-> > >  	WARN_ON_ONCE(!tsk->ptrace &&
-> > >  	       (tsk->group_leader != tsk || !thread_group_empty(tsk)));
-> > >  	/*
-> > > -	 * tsk is a group leader and has no threads, wake up the pidfd waiters.
-> > > +	 * tsk is a group leader and has no threads, wake up the !PIDFD_THREAD
-> > > +	 * waiters.
-> > >  	 */
-> > >  	if (thread_group_empty(tsk))
-> > >  		do_notify_pidfd(tsk);
-> > > @@ -3926,6 +3927,7 @@ SYSCALL_DEFINE4(pidfd_send_signal, int, pidfd, int, sig,
-> > >  		prepare_kill_siginfo(sig, &kinfo);
-> > >  	}
-> > >  
-> > > +	/* TODO: respect PIDFD_THREAD */
-> > 
-> > So I've been thinking about this at the end of last week. Do we need to
-> > give userspace a way to send a thread-group wide signal even when a
-> > PIDFD_THREAD pidfd is passed? Or should we just not worry about this
-> > right now and wait until someone needs this?
-> 
-> I don't need it currently, but it would have been handy for some of
-> the tests I wrote.
-> 
-> Should I fix those up and send them too on top of Oleg's v2?
+On Mon, 29 Jan 2024 at 15:19, Abel Vesa <abel.vesa@linaro.org> wrote:
+>
+> Add definitions for the display hardware used on the Qualcomm X1E80100
+> platform.
+>
+> Co-developed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> ---
+>  .../drm/msm/disp/dpu1/catalog/dpu_9_2_x1e80100.h   | 449 +++++++++++++++++++++
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c     |   2 +
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h     |   1 +
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c            |   1 +
+>  4 files changed, 453 insertions(+)
+>
 
-Sure, I don't mind.
+
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+
+-- 
+With best wishes
+Dmitry
 
