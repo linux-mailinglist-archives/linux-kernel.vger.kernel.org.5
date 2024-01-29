@@ -1,194 +1,123 @@
-Return-Path: <linux-kernel+bounces-42849-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 500C08407AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:58:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D43CF8407C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:02:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B557288A27
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:58:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C9811F273C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:02:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 956DB65BD9;
-	Mon, 29 Jan 2024 13:57:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D68465BA4;
+	Mon, 29 Jan 2024 14:02:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=systec-electronic.com header.i=@systec-electronic.com header.b="W16Xs31P"
-Received: from mail.systec-electronic.com (mail.systec-electronic.com [77.220.239.22])
+	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="kd9we4ei"
+Received: from forward502c.mail.yandex.net (forward502c.mail.yandex.net [178.154.239.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C52AD65BC0;
-	Mon, 29 Jan 2024 13:57:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.220.239.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 552C8657BD;
+	Mon, 29 Jan 2024 14:02:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706536664; cv=none; b=qZOAFyiYKHJxTz4vIS+LoFPRn3sMRP5/RnCivYzBNmxWGaOYaTNuoKfslbp5eEIC/anSrdzHeOqHIuW/PuHMEIFyj9ckkTo3Yfs9TbuEsvdhceG6pQ5nmaKbRlvcseEKKKJx06dUhtAo7XtK7Al/+UWXH3kc1EWiFKId1IwB9OE=
+	t=1706536935; cv=none; b=brwcNFxN2hC+Fssp5ewyBwc8fOfM7k3W6LbJlA89htQTxw9dDfvoe5K6i+Y7Dy6PuXJJUmDa7xcj+ZC2nFrCb10NGHs/MU0kptvsZONnPlVvi0Tv7XdhJKbSKjnzk/t5QaqL0/Fh8G+GqETNlh96Lnj74BhlqiJlVeP+70Snoew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706536664; c=relaxed/simple;
-	bh=Ai3CARrEENYU4ep+MOW7EaLMr7eb+dJKM7gjFW62Ec0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=N4iGmDpPiWMPHWiHDG4lhDrlJShwwbOXX9JQqal4/pwO6wgMLP+/qYkPbxiN9uFDEsBLUSM+zaLnEDePshZsMHDn4W5kc/8Sb8q34dlJnJwzr4+nrRBOwtyLPK84uvthE6rbwNai3ejhlNSLZm9MpG6GoMZ340GYJ5+LmDHVxVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=systec-electronic.com; spf=pass smtp.mailfrom=systec-electronic.com; dkim=pass (2048-bit key) header.d=systec-electronic.com header.i=@systec-electronic.com header.b=W16Xs31P; arc=none smtp.client-ip=77.220.239.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=systec-electronic.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=systec-electronic.com
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.systec-electronic.com (Postfix) with ESMTP id 49E37941A5CF;
-	Mon, 29 Jan 2024 14:57:40 +0100 (CET)
-Received: from mail.systec-electronic.com ([127.0.0.1])
- by localhost (mail.systec-electronic.com [127.0.0.1]) (amavis, port 10032)
- with ESMTP id z1Fsjbw-VISF; Mon, 29 Jan 2024 14:57:40 +0100 (CET)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.systec-electronic.com (Postfix) with ESMTP id 24587941A5D5;
-	Mon, 29 Jan 2024 14:57:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.systec-electronic.com 24587941A5D5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=systec-electronic.com; s=B34D3B04-5DC7-11EE-83E3-4D8CAB78E8CD;
-	t=1706536660; bh=BLVBSipavZztTYx8CwSVW5BhkEJvYHjdnvg38MQ/MRg=;
-	h=From:To:Date:Message-ID:MIME-Version;
-	b=W16Xs31Phn0uLjZewKehKQq3Xgw6cOXveXd3Q2fcJua8zWKfqyRQYs0zXF3hCnuix
-	 oOZbc7Y08flzfNCqkSrVbJm38LGbI7bUrKJBj1kAdcP4rgNWgGYqEZ+4GnJGuzbMs2
-	 gBGXvOkaBTT/gmmuUGEca3BuS5jPPCGmOW4T9KXmcQFg7U1FOt+NVR9nU4zshZrfED
-	 LW58r9B/r7iO4J7pV70v280SD4F2Cg22GKnNUWkUD+VURgC2QcoiXT9s2LhnHRL9Ht
-	 6Inucs3Wtsdpf906N8YIqEhS+80gJp0FbESxka6HjfmwE0XtwNZzey1vfGHkNFPGH3
-	 0/I8tklEqEjmw==
-X-Virus-Scanned: amavis at systec-electronic.com
-Received: from mail.systec-electronic.com ([127.0.0.1])
- by localhost (mail.systec-electronic.com [127.0.0.1]) (amavis, port 10026)
- with ESMTP id Heug1LM32S_s; Mon, 29 Jan 2024 14:57:40 +0100 (CET)
-Received: from ws-565760.systec.local (unknown [212.185.67.148])
-	by mail.systec-electronic.com (Postfix) with ESMTPSA id CB609941A5CF;
-	Mon, 29 Jan 2024 14:57:39 +0100 (CET)
-From: Andre Werner <andre.werner@systec-electronic.com>
-To: andrew@lunn.ch,
-	hkallweit1@gmail.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: linux@armlinux.org.uk,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Andre Werner <andre.werner@systec-electronic.com>
-Subject: [net-next v5 2/2] net: phy: adin1100: Add interrupt support for link change
-Date: Mon, 29 Jan 2024 14:55:05 +0100
-Message-ID: <20240129135734.18975-3-andre.werner@systec-electronic.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240129135734.18975-1-andre.werner@systec-electronic.com>
-References: <20240129135734.18975-1-andre.werner@systec-electronic.com>
+	s=arc-20240116; t=1706536935; c=relaxed/simple;
+	bh=+VoVBN2iZqimRDp8AEtjDqCiyh8Yx8XdDbWDp0n2jVE=;
+	h=Message-ID:Date:MIME-Version:To:References:From:Cc:Subject:
+	 In-Reply-To:Content-Type; b=tjqic8G0nzRhFEnVzO25xr1wwrm3E5w168K16Sd0ZDIK8z6/yEXpEXXFp+Lo+Bodotk0M9EmefA9byrWLBdCugw0t6sjOlN+kJ383Op/hStcivUSJK7n2QtHygeA4iNb1DOTJE8Q2ecEmGmXsaAiOna+HylBwOhC+6ZhOUIUP2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=kd9we4ei; arc=none smtp.client-ip=178.154.239.210
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
+Received: from mail-nwsmtp-smtp-production-main-45.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-45.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:129d:0:640:2432:0])
+	by forward502c.mail.yandex.net (Yandex) with ESMTP id 2585260FCB;
+	Mon, 29 Jan 2024 16:55:28 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-45.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id QtYC59BOqSw0-34llu7cb;
+	Mon, 29 Jan 2024 16:55:27 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1706536527; bh=+VoVBN2iZqimRDp8AEtjDqCiyh8Yx8XdDbWDp0n2jVE=;
+	h=In-Reply-To:Cc:To:References:From:Subject:Date:Message-ID;
+	b=kd9we4eiJPi8VQTaK4wys6z5O+WS/jmzOGlufs6QuWtjF2CHYYsl7+3q/kEP9yIsX
+	 Ty0X6XvoGGKyhFLPN6AsuvpLJLEpaDnS0t7jL6JcGZw/9vzvtE+85hKZjuqOSdk1f9
+	 RkQGTGekSWU8GxSRPbc26zBqXJfB84qef62yqKk0=
+Authentication-Results: mail-nwsmtp-smtp-production-main-45.myt.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
+Message-ID: <59378600-8d36-4958-8882-fa693fcad4d6@yandex.ru>
+Date: Mon, 29 Jan 2024 16:55:26 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: =?UTF-8?Q?Ahelenia_Ziemia=C5=84ska?= <nabijaczleweli@nabijaczleweli.xyz>
+References: <xebnh5c5rnfequ6khyhieugefrtt5mdftr6rsw522ocpg3yvln@tarta.nabijaczleweli.xyz>
+From: Dmitry Antipov <dmantipov@yandex.ru>
+Autocrypt: addr=dmantipov@yandex.ru; keydata=
+ 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
+ tx98MCutXbJWn55RtnVKbpIiMfBrcB8=
+Cc: Brian Norris <briannorris@chromium.org>, Kalle Valo <kvalo@kernel.org>,
+ linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: memcpy: detected field-spanning write (size 101) of single field
+ "ext_scan->tlv_buffer" at drivers/net/wireless/marvell/mwifiex/scan.c:2251
+ (size 1)
+In-Reply-To: <xebnh5c5rnfequ6khyhieugefrtt5mdftr6rsw522ocpg3yvln@tarta.nabijaczleweli.xyz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-An interrupt handler was added to the driver as well as functions
-to enable interrupts at the phy.
-
-There are several interrupts maskable at the phy, but only link change
-interrupts are handled by the driver yet.
-
-Signed-off-by: Andre Werner <andre.werner@systec-electronic.com>
----
-v5:
-- Add reversed-x-max-notation to variables in adin_config_intr.
-- Delete empty line between function call and if statement.
-
-v4:
-- Change read-modify-write behavior as suggested to phy_modify_mmd.
-
-v3:
-- Correct rashly format error that was reported by checker.
-
-v2:
-- Clean format and reword commit message as suggested by reviewer of
-  first patch submission
----
- drivers/net/phy/adin1100.c | 55 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 55 insertions(+)
-
-diff --git a/drivers/net/phy/adin1100.c b/drivers/net/phy/adin1100.c
-index 7619d6185801..85f910e2d4fb 100644
---- a/drivers/net/phy/adin1100.c
-+++ b/drivers/net/phy/adin1100.c
-@@ -18,6 +18,12 @@
- #define PHY_ID_ADIN1110				0x0283bc91
- #define PHY_ID_ADIN2111				0x0283bca1
-=20
-+#define ADIN_PHY_SUBSYS_IRQ_MASK		0x0021
-+#define   ADIN_LINK_STAT_CHNG_IRQ_EN		BIT(1)
-+
-+#define ADIN_PHY_SUBSYS_IRQ_STATUS		0x0011
-+#define   ADIN_LINK_STAT_CHNG			BIT(1)
-+
- #define ADIN_FORCED_MODE			0x8000
- #define   ADIN_FORCED_MODE_EN			BIT(0)
-=20
-@@ -136,6 +142,53 @@ static int adin_config_aneg(struct phy_device *phyde=
-v)
- 	return genphy_c45_config_aneg(phydev);
- }
-=20
-+static int adin_phy_ack_intr(struct phy_device *phydev)
-+{
-+	/* Clear pending interrupts */
-+	int rc =3D phy_read_mmd(phydev, MDIO_MMD_VEND2,
-+			      ADIN_PHY_SUBSYS_IRQ_STATUS);
-+
-+	return rc < 0 ? rc : 0;
-+}
-+
-+static int adin_config_intr(struct phy_device *phydev)
-+{
-+	u16 irq_mask;
-+	int ret;
-+
-+	ret =3D adin_phy_ack_intr(phydev);
-+	if (ret)
-+		return ret;
-+
-+	if (phydev->interrupts =3D=3D PHY_INTERRUPT_ENABLED)
-+		irq_mask =3D ADIN_LINK_STAT_CHNG_IRQ_EN;
-+	else
-+		irq_mask =3D 0;
-+
-+	return phy_modify_mmd(phydev, MDIO_MMD_VEND2,
-+			      ADIN_PHY_SUBSYS_IRQ_MASK,
-+			      ADIN_LINK_STAT_CHNG_IRQ_EN, irq_mask);
-+}
-+
-+static irqreturn_t adin_phy_handle_interrupt(struct phy_device *phydev)
-+{
-+	int irq_status;
-+
-+	irq_status =3D phy_read_mmd(phydev, MDIO_MMD_VEND2,
-+				  ADIN_PHY_SUBSYS_IRQ_STATUS);
-+	if (irq_status < 0) {
-+		phy_error(phydev);
-+		return IRQ_NONE;
-+	}
-+
-+	if (!(irq_status & ADIN_LINK_STAT_CHNG))
-+		return IRQ_NONE;
-+
-+	phy_trigger_machine(phydev);
-+
-+	return IRQ_HANDLED;
-+}
-+
- static int adin_set_powerdown_mode(struct phy_device *phydev, bool en)
- {
- 	int ret;
-@@ -275,6 +328,8 @@ static struct phy_driver adin_driver[] =3D {
- 		.probe			=3D adin_probe,
- 		.config_aneg		=3D adin_config_aneg,
- 		.read_status		=3D adin_read_status,
-+		.config_intr		=3D adin_config_intr,
-+		.handle_interrupt	=3D adin_phy_handle_interrupt,
- 		.set_loopback		=3D adin_set_loopback,
- 		.suspend		=3D adin_suspend,
- 		.resume			=3D adin_resume,
---=20
-2.43.0
-
+T24gMS8yNi8yNCAyMjo0NywgQWhlbGVuaWEgWmllbWlhxYRza2Egd3JvdGU6DQoNCj4gWyAg
+IDQxLjMxNDYzNF0gbWVtY3B5OiBkZXRlY3RlZCBmaWVsZC1zcGFubmluZyB3cml0ZSAoc2l6
+ZSAxMDEpIG9mIHNpbmdsZSBmaWVsZCAiZXh0X3NjYW4tPnRsdl9idWZmZXIiIGF0IGRyaXZl
+cnMvbmV0L3dpcmVsZXNzL21hcnZlbGwvbXdpZmlleC9zY2FuLmM6MjI1MSAoc2l6ZSAxKQ0K
+DQpTaG9ydCBhbnN3ZXI6IGlmIHlvdXIgZGV2aWNlIHdvcmtzIGFzIGV4cGVjdGVkLCBtb3N0
+IGxpa2VseSB5b3UgY2FuIGlnbm9yZSB0aGlzLg0KDQpMb25nIGFuc3dlcjogdGhpcyBpcyBj
+YXVzZWQgYnkgdXNpbmcgQ09ORklHX0ZPUlRJRllfU09VUkNFIHdpdGggb2xkIHN0eWxlIG9u
+ZS1lbGVtZW50DQooaW4gdGhpcyBwYXJ0aWN1bGFyIGNhc2UpIG9yIHplcm8tbGVuZ3RoIGFy
+cmF5IG1lbWJlcnMuIFNlZSAiWmVyby1sZW5ndGggYW5kIG9uZS1lbGVtZW50DQphcnJheXMi
+IGF0IGh0dHBzOi8vd3d3Lmtlcm5lbC5vcmcvZG9jL2h0bWwvbGF0ZXN0L3Byb2Nlc3MvZGVw
+cmVjYXRlZC5odG1sLiBVbmZvcnR1bmF0ZWx5DQptd2lmaWV4IGlzIG5vdCBjb21wbGV0ZWx5
+IG1pZ3JhdGVkIHRvIEM5OS1zdHlsZSBmbGV4aWJsZSBhcnJheSBtZW1iZXJzOyBpZiB5b3Un
+cmUgYnJhdmUNCmVub3VnaCwgeW91IGNhbiBoZWxwIHRoZSBtYWludGFpbmVycyBieSB0cnlp
+bmcgdGhpczoNCg0KLS0tIGxpbnV4LTYuNi4xMS9kcml2ZXJzL25ldC93aXJlbGVzcy9tYXJ2
+ZWxsL213aWZpZXgvZncuaAkyMDI0LTAxLTEwIDE5OjE3OjAyLjAwMDAwMDAwMCArMDMwMA0K
+KysrIGxpbnV4LTYuNi4xMS9kcml2ZXJzL25ldC93aXJlbGVzcy9tYXJ2ZWxsL213aWZpZXgv
+ZncuaAkyMDI0LTAxLTI5IDE0OjIxOjU1LjU3NDI4MDcxOSArMDMwMA0KQEAgLTE1ODYsNyAr
+MTU4Niw3IEBADQoNCiAgc3RydWN0IGhvc3RfY21kX2RzXzgwMl8xMV9zY2FuX2V4dCB7DQog
+IAl1MzIgICByZXNlcnZlZDsNCi0JdTggICAgdGx2X2J1ZmZlclsxXTsNCisJdTggICAgdGx2
+X2J1ZmZlcltdOw0KICB9IF9fcGFja2VkOw0KDQogIHN0cnVjdCBtd2lmaWV4X2llX3R5cGVz
+X2Jzc19tb2RlIHsNCg0KRG1pdHJ5DQoNCg==
 
