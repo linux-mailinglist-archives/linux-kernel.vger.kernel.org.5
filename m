@@ -1,189 +1,175 @@
-Return-Path: <linux-kernel+bounces-42278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD93E83FEF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:19:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6797883FEFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:27:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A08901C20B23
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 07:19:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C13432823CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 07:27:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AECB4E1CE;
-	Mon, 29 Jan 2024 07:19:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09C494E1DD;
+	Mon, 29 Jan 2024 07:27:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="H5CReA+i"
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2079.outbound.protection.outlook.com [40.107.8.79])
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="E9vIl4BU"
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9830E4D5AC;
-	Mon, 29 Jan 2024 07:19:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.79
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706512746; cv=fail; b=tbi71z1oeaORnjA7g3YgHhhFzDDA2Z3Gt10K6L1V1bEk2oiOGi7qVvIJPizQAqcYIJabf54IBNjSLOrYkXbh7Fa9oA5fI6+9vMFlk0+VS377QrDMYo925cE1pCyawpP94RLYMUQ/jdwHqJIuNW+bwhe2W+Hhw41ecOQxZYKeUtc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706512746; c=relaxed/simple;
-	bh=ZP5Bcp41koVUz8nJAzOTWppzry3nQQQO23qniclPdIE=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=T1KAEyFAmbOlmt962Nu12eqqv8zoV6TibwkI2TDsVtgN+z7DRTK4lHB5S7P7PyXuHKisMV3T8Xbg3nX4b2kCuCbLjqiHhdOSLkkP6yZ2jaEAAomO6FHUFHpsaIatxFEsD8FHzn5j4byLWNb+l7348AONauREyi/TXQbYl8LgNx0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=H5CReA+i; arc=fail smtp.client-ip=40.107.8.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=edZGeqxgPXGu9ZFsROFyh2JCxaSKRJnKwqIz89wWIDiep8KttrNQq7dz+QaHYLzpPguL/0Nr1OiOgKWtVmh5BuflzTg0dEfRAg1yfEtMyQGbiFFfq9lXhmAOo1dGGF0YeoUj9dqV+88i7CwL0f3Ad7G7XlpWuJISznBVd5I/rt3gO8gO2zPXTqLgRrK2jqvPej6HegVCfPrvsia4ta8pC/bEGXuwSim6NmeG5G6fS5va/Wa/M9f8YYOc+iamNkkwdcrkGyttzigZNSWQ7ez1IQnoU5xMZ24M35wZIjfwT8N1YPIP2yUcSn8weh952wOLXoM/5eQ+E+ClLLYVuo3Rbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0uw+FaeGGnFvifwvejNBTN7XqSd+0cJJBDFAnEno47Y=;
- b=ByIfcE1VYyVNcUIycaV0b3rxD08jS1T9UcE9N3FFm315VgbIuoZr/dmhzC0rU+IvTLdKjfgVN0cbeSeqaMbOHicP47C9SRXduPSBt/dxEKwWKmYZmXWyErPkb63vh6aSvrVyrSRbjCnQ1LSJIfPA5vZpuJCQa3A6EtxEaL0IG/NfxBsfKu4HplKBqm6kN+qcp1UBZD3pD3R3pe/k91Vgq6Ys17vUHZG6hm2hSIeQgewZavLbKKS1gzmgmN4bI8yzfJuVnXJulcn80WHrmOVcVT4AuoyUMQKCnI/JPJhF36wzs3IKCASjgN2cfyNwk0nhi7Z16VuSUzK5Vf1ju3GrfQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0uw+FaeGGnFvifwvejNBTN7XqSd+0cJJBDFAnEno47Y=;
- b=H5CReA+iyzW6m8/vB2utoIYvOyAqtcKYY7STkwRUwfIVdN+LWgLPH/DGXfs+UVmt/xp1j073rkV3nZzibX4XfNnMIcqydsV1ru07Goi5DXmPUbo001JXyrThac3HyZoNOD47YfzsPfPsSntS3adeHPka7dkA6dr5ZoiLJSm7Fqs=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
- by DU2PR04MB8838.eurprd04.prod.outlook.com (2603:10a6:10:2e1::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Mon, 29 Jan
- 2024 07:19:01 +0000
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::2a3c:9a90:b09f:293c]) by DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::2a3c:9a90:b09f:293c%3]) with mapi id 15.20.7228.029; Mon, 29 Jan 2024
- 07:19:01 +0000
-From: Chancel Liu <chancel.liu@nxp.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	kuninori.morimoto.gx@renesas.com,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Chancel Liu <chancel.liu@nxp.com>
-Subject: [PATCH] ASoC: soc-core.c: Prefer to return dai->driver->name in snd_soc_dai_name_get()
-Date: Mon, 29 Jan 2024 16:18:39 +0900
-Message-ID: <20240129071839.2393483-1-chancel.liu@nxp.com>
-X-Mailer: git-send-email 2.43.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI1PR02CA0051.apcprd02.prod.outlook.com
- (2603:1096:4:1f5::6) To DB9PR04MB9498.eurprd04.prod.outlook.com
- (2603:10a6:10:360::21)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEECE4D5AC
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 07:27:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.34
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706513240; cv=none; b=l7Hn2RE6QhwRjbsaCZ+tmmj28ln6M8lzmX8dMao62w14E//CxHi80eup87lahBxkk/Gn6eRrEVHNMYIc2/GyzvFB/nbqViMZ0AT+ve7QuV9hkYW/uXZT9NIEXCtplhZRWnWgZSEO4kfB6E3U4Z95aPgLBCU/3Er4gUosopMcTaM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706513240; c=relaxed/simple;
+	bh=UQg/5njUp9OZkRWZYCC4RzpOoedARfKxs5rcJ9UqsdE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:MIME-Version:
+	 Content-Type:References; b=EhBs3UatUGWeHVZwWhhrnl2KcxMfz84prHMeKoy3x4wGjbzGFIwVGkWuSIHqVUaBqdFpceD+Il3L7ZcZYU7N7vptTfj1vMhNQYn6kBxAkJ205OAYKcbF7T+c/hvr1l4Z1AtFM/KaY102fkYemdyZm1e70eItLSS0ZbH84YzEc3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=E9vIl4BU; arc=none smtp.client-ip=203.254.224.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+	by mailout4.samsung.com (KnoxPortal) with ESMTP id 20240129072709epoutp04367ef4ec9318bc22502dab49212fe3b2~uwL2S2Vj11997119971epoutp04A
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 07:27:09 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20240129072709epoutp04367ef4ec9318bc22502dab49212fe3b2~uwL2S2Vj11997119971epoutp04A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1706513229;
+	bh=SlQ1IskImIa1p6m1vQ2rqgCrN2OhcIVK0Fav7DA6fWY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=E9vIl4BU/B0LE37zwdoxwMvznp5XhTPdEtVvBHEhQa/M9HzTprBRXnbP/gH3PAvpr
+	 bFnnJtaMfGQIlVpWAyJ6OMMDCkYFlE0dwOkIUal3VV7WmQ7PgR9lTkOhjvQ2sEwQ44
+	 UTEIIILDLAibQIxJpmea+bAgIIGOqS6ZdJoh5smU=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+	epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+	20240129072708epcas5p22bcc24d03a515c53b530109181280576~uwL15IV6v1618316183epcas5p2c;
+	Mon, 29 Jan 2024 07:27:08 +0000 (GMT)
+Received: from epsmges5p3new.samsung.com (unknown [182.195.38.176]) by
+	epsnrtp3.localdomain (Postfix) with ESMTP id 4TNfy252S4z4x9Q9; Mon, 29 Jan
+	2024 07:27:06 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+	epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	75.11.09672.94357B56; Mon, 29 Jan 2024 16:27:05 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+	epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
+	20240129072655epcas5p35d140dba2234e1658b7aa40770b93314~uwLpaXhW72948229482epcas5p3J;
+	Mon, 29 Jan 2024 07:26:55 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20240129072655epsmtrp2f78420a682b8202b3027a39fbfefe833~uwLpZjuDb0907209072epsmtrp2E;
+	Mon, 29 Jan 2024 07:26:55 +0000 (GMT)
+X-AuditID: b6c32a4b-39fff700000025c8-01-65b75349d03c
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+	epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+	8C.E4.18939.F3357B56; Mon, 29 Jan 2024 16:26:55 +0900 (KST)
+Received: from AHRE124.. (unknown [109.105.118.124]) by epsmtip2.samsung.com
+	(KnoxPortal) with ESMTPA id
+	20240129072654epsmtip2bb7a2b9f5aa86d3d4f891e5c5ecf9a1c~uwLoH6Q1u0936709367epsmtip2_;
+	Mon, 29 Jan 2024 07:26:53 +0000 (GMT)
+From: Xiaobing Li <xiaobing.li@samsung.com>
+To: axboe@kernel.dk
+Cc: asml.silence@gmail.com, linux-kernel@vger.kernel.org,
+	io-uring@vger.kernel.org, kun.dou@samsung.com, peiwei.li@samsung.com,
+	joshi.k@samsung.com, kundan.kumar@samsung.com, wenwen.chen@samsung.com,
+	ruyi.zhang@samsung.com, xiaobing.li@samsung.com
+Subject: Re: Re: [PATCH v7] io_uring: Statistics of the true utilization of
+ sq threads.
+Date: Mon, 29 Jan 2024 15:18:44 +0800
+Message-Id: <20240129071844.317225-1-xiaobing.li@samsung.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <8e104175-7388-4930-b6a2-405fb9143a2d@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB9PR04MB9498:EE_|DU2PR04MB8838:EE_
-X-MS-Office365-Filtering-Correlation-Id: dabf4d02-2244-415b-c26b-08dc209a911c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	3k8ChNFeogLe9qcu7OLdBLz2F07/RvNhwjFRxSt1jJ5Uv6o0rjxeaYPkvIHe0P+CQvP5YtgVcBjMKvhOdiDGYrdbEx1gA64dYCCi/xZC7t9BUosquxJp8ar6KOEQuNQELBdsEBArLp8RhVgWRXCdTi2b8UYXIPGCtV1YlBqciBLdrcZrVDgZPfT7DbW0na1BPycdHkxAXyWlU8/Uqb7PnCtiq3Nxr1ThU2bhkv6XIa0Fcbp7AK/grpFzWnggkGOzvGweN68MAHG/ahdJJiJ+BfWNH+klthFcNW/in/2k94C8Tft1dNu25j327qI5HfSX6+gq1y/QEA2L3Eo7gb9Sn0h6/dlp9UGWIUmmVCKCZrCFRf/FClnM9M/pQes+Z0RENzJzBk6zuSormX2Ar7YHSq/R83SkqD8qBXafPtOKQik89stBhh3TvFVsBo9WmMI5ny8HJWJuVd3BF/aWySpXbTP5u3QZ4rEou8MrkVeJ+2CNH3aBvbhHIYEk2pUx/kNjX+VN4uRNvFXqc8TUYO30ajm0eeeV3MSjOxZnt2ZPOJF4thOZgwd6NbQZkt30iKRX2sFuMWTRvNznqkuubFlKBwMDw1CEenKsiMx8G2MwLT6cqXDQpALabzf2c5Xstrqt
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(376002)(366004)(346002)(136003)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(26005)(2616005)(1076003)(41300700001)(38350700005)(316002)(36756003)(6512007)(478600001)(52116002)(6506007)(6666004)(6486002)(83380400001)(38100700002)(66476007)(66556008)(5660300002)(2906002)(66946007)(86362001)(44832011)(4326008)(8676002)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?nEbzJ1mQki5B1xPSH1HZmeNLHy4Eo+4oJHF4yCAQ9iMUuB98CP38iDs+v8Ll?=
- =?us-ascii?Q?BCOc47nuPKDjAFvGVqBM4IdFHhD6R2DCMqqooI6UzIUAf54aBvgbI+rGVGbS?=
- =?us-ascii?Q?GxJ4n7WhwESCjuqA/59kBZLKLnShznn04F4ZuKk6jqmzGdOHbLNCT4PTEexQ?=
- =?us-ascii?Q?IUeL7xbw+fjMsemuktW5pkO+S6CL8Mpd33jRIWuzc/q0bx9Serg7i7f3xrBS?=
- =?us-ascii?Q?ikF/KnGSXkjOHJ1Ifu0UTa9az3PZm4lv9k/bv/P7b7Li5cM5ONne4Z5e1sQU?=
- =?us-ascii?Q?sZcYheNQKDBcNaCxhndx4pT4idCh7cP8vw5wRuB/dCQJWqh1Ioqcty942c+2?=
- =?us-ascii?Q?x57acI3L9P6i/cCR9BAunBFD+eRCAIlaKfiUWivt2y0OKfPeX2qPwNMjmAv5?=
- =?us-ascii?Q?Z1oloONg9uld6cx1M7zJPVpZLdA3YehvJVF4elO8uz4n+cjPQnGmwkdwsWd2?=
- =?us-ascii?Q?NfyWWrYwwlHh8CEcgLCG0y1jh5A+fTTgCZmaZLoj7rhh+mc1mrS0N18lMGBF?=
- =?us-ascii?Q?161FK+n7hmwuW1yzZm/EEx/6LuncLB9Nir9oplwLdfkaUMioKinBq+jM+oET?=
- =?us-ascii?Q?vZepw89hK12e25zdRHDGAFRhrBuWc8zc1Fj6krIMUtdoRtZjj8kE/RURlcqr?=
- =?us-ascii?Q?/EFeoWXNV09u4oCXObmzM6leDGk9AimF6FLANKBdBVUvwLF3J7G1L5OJi5Ux?=
- =?us-ascii?Q?4rMadiQRmDsNR6qgb7sIBn0f20aDlE9LhH9B6vego89Kg6K/4ObOwl+g8Q5l?=
- =?us-ascii?Q?RHEzkr4uc14BJWJZ6QE/ag/DLFE+6yQpOzhzAidOdg64ZseWTDrSqai4x4tb?=
- =?us-ascii?Q?5/FjP5dl5g3C51ye8nLNbah49swEM6Q3FNRlBX17mvZxevmIbQqVQ8wangZ4?=
- =?us-ascii?Q?Scw5JhgKpuAkOKMYqKrpQDYJW6IqIvtLp5ePpkhkHW8cNKe9crLNV51epwRE?=
- =?us-ascii?Q?oCJuXcW+A0iwCLsIZ7F+0UH7OUo1MtZVRwBPjMyCHZLyEfWGxVDATOt05ozG?=
- =?us-ascii?Q?jEtSo/VGJ/gqgnO8iPqddsg7N4z4ho50E3/5CMXj1HbdCqc5pkLMiaZfIMxW?=
- =?us-ascii?Q?hCszFdHg/HhYiLkl7McljstEN8wTRx3ZDmEnJcBRQr2g3y13AAnVDZXljXhz?=
- =?us-ascii?Q?J0BXddxfXYM71fcUFnsgvsj6Op2g+2hedzF//vUPzkoAVRPkyOC/X2jxxCT0?=
- =?us-ascii?Q?dIFB7Awxvk4hePOF06O/b76SsNkcMx9rveqsY72b69RWb8bnbuwSrYWduU7p?=
- =?us-ascii?Q?2lhYmN5VMqe5oIN+e7QFfs2Wd+rFF/i3SDYt2/g2TtsYPtc8gV6e+0kSTCMW?=
- =?us-ascii?Q?2Q8ihfkMEFihfJ7fVQswZ61f52NJyN9wTfVFXaO8sz0f9Z7FTih+DaQv6v1E?=
- =?us-ascii?Q?D3xdPgDlmQX4kz1bulCq2z1Jr+5vaZ3HVgWSwvkkXhenb9EjuBDBNJdIKAb6?=
- =?us-ascii?Q?XA/loVtuVHwiNMxpn4bgCEe7GcyDdUJ9Xuc0uOVXR8lwCDw6T8+5IYMOHvB/?=
- =?us-ascii?Q?oPUOlZS9UfTuiKEYsM7IQFiXH18DN0CofUauoh4gaJlJ8FzrbHzanzXwUpDL?=
- =?us-ascii?Q?TONeqTwdIvxWx6GyMv4EwZkrOKKTeAhIcleekJYP?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dabf4d02-2244-415b-c26b-08dc209a911c
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 07:19:01.3107
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: j1iTdkn38hjkoKGP3Y7BxGITbYYU5QE+BDnWXaCoIQn1crnqjmAMJzlIaDotrQL5Ru1OwFJFRMUizuhVc1UpRw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8838
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrKJsWRmVeSWpSXmKPExsWy7bCmpq5n8PZUgyX75S3mrNrGaLH6bj+b
+	xbvWcywWR/+/ZbP41X2X0WLrl6+sFpd3zWGzeLaX0+LL4e/sFmcnfGC1mLplB5NFR8tlRgce
+	j52z7rJ7XD5b6tG3ZRWjx+dNcgEsUdk2GamJKalFCql5yfkpmXnptkrewfHO8aZmBoa6hpYW
+	5koKeYm5qbZKLj4Bum6ZOUCHKSmUJeaUAoUCEouLlfTtbIryS0tSFTLyi0tslVILUnIKTAr0
+	ihNzi0vz0vXyUkusDA0MjEyBChOyM84tusxc0Mhbcaj5M1MD4xvOLkZODgkBE4lnv7tZuxi5
+	OIQEdjNKTJ/+FMr5xCjROP0VgjOx5z8TTEvb9H4miMRORonm+6/ZIZyXjBI/GvewglSxCWhL
+	XF/XBWaLCAhL7O9oZQEpYhb4yygx4eVvZpCEsECkxIKPM9hAbBYBVYkd59+ygNi8ArYSh/tO
+	s0Ksk5fYf/AsWD0nUPzojelsEDWCEidnPgGrZwaqad46mxlkgYTAX3aJtpOr2SCaXSSuL1/L
+	DmELS7w6vgXKlpL4/G4vVE2xxJGe76wQzQ3AILh9FarIWuLflT1AGziANmhKrN+lDxGWlZh6
+	ah0TxGI+id7fT6DhwiuxYx6MrSqx+tJDFghbWuJ1w2+ouIfEudYbzJDgmgAMrtZ1jBMYFWYh
+	eWgWkodmIaxewMi8ilEytaA4Nz212LTAOC+1HB7Ryfm5mxjB6VXLewfjowcf9A4xMnEwHmKU
+	4GBWEuH9qbk1VYg3JbGyKrUoP76oNCe1+BCjKTDEJzJLiSbnAxN8Xkm8oYmlgYmZmZmJpbGZ
+	oZI47+vWuSlCAumJJanZqakFqUUwfUwcnFINTMpX1Zb3TeCY9nU/i8iCl02/q4/vW/u+5bDB
+	VbNVjBf/XeNb2OzuYWM6VbHYY9YHkR31hl+N0uZ4vzU+3/p138bWMm9zL7Upx7O/mqcrN615
+	vkQrZVZE0lcpjYezivwWybaEzXv75u0VpUWvxIK9V+//cmQpbyXrY/tHkbLbptlk3a0xW5zN
+	2uN7cktHUlJYrPSZzLsnSxdMcf++0d5/810Bzjub2FibWJNu5xhcTmp0jlz8Mrsib+vnJf1+
+	+VppEev9SgIPXrwnvvRYwfIj/Samp+UPSh9PE2GaP0fF4PODeaG2e+NZdkukXXrEevXYDtm/
+	rzxYt0/YZ7fmhHPbz5oz77JO7dLby7iHfXPz9hNKLMUZiYZazEXFiQBrkeYdOAQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrCLMWRmVeSWpSXmKPExsWy7bCSvK598PZUgwkTRC3mrNrGaLH6bj+b
+	xbvWcywWR/+/ZbP41X2X0WLrl6+sFpd3zWGzeLaX0+LL4e/sFmcnfGC1mLplB5NFR8tlRgce
+	j52z7rJ7XD5b6tG3ZRWjx+dNcgEsUVw2Kak5mWWpRfp2CVwZ5xZdZi5o5K041PyZqYHxDWcX
+	IyeHhICJRNv0fqYuRi4OIYHtjBIXHq4GcjiAEtISf/6UQ9QIS6z895wdouY5o8SXiUuZQBJs
+	AtoS19d1sYLYIkBF+ztaWUBsZoFOJonXn/VAbGGBcImVB3+A1bMIqErsOP8WrIZXwFbicN9p
+	VogF8hL7D55lBrE5geJHb0xnA7GFBGwkPj3+ygRRLyhxcuYTqPnyEs1bZzNPYBSYhSQ1C0lq
+	ASPTKkbR1ILi3PTc5AJDveLE3OLSvHS95PzcTYzggNcK2sG4bP1fvUOMTByMhxglOJiVRHh/
+	am5NFeJNSaysSi3Kjy8qzUktPsQozcGiJM6rnNOZIiSQnliSmp2aWpBaBJNl4uCUamAKKzUr
+	2LxG877Lba/myD2qyTbvJ83idzdoCZherJC/9P26I2/ZuniLC9ctNdv72Ku5NODrhMC1/zQd
+	diw5w+/mxZvRN0d7tqbV7VNrWW6He+effVIVaX5Z6VGYV+XGY9oJHw5x3n2twrZb+E4rg+Sk
+	XW6bWcLWffJV+Lai0s/1l0HLn+1Nd1+EZWZLvqg9qXZo3sSJW4QnRiRf0e9I+Xms48XepXVi
+	uzkFi6Ny37hN/Px3fXTb1c1x29vNJ1atOKTuMWmROGv/vspF/w0s2n/t/Rxte2LCFtauK1sF
+	DogwCmkvS5HnfHekLCNsDcuGmovxrvPWCIfsjax/5e2b7/PpOMdFxoi592dsuOxuErNTiaU4
+	I9FQi7moOBEA8AX/zecCAAA=
+X-CMS-MailID: 20240129072655epcas5p35d140dba2234e1658b7aa40770b93314
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240129072655epcas5p35d140dba2234e1658b7aa40770b93314
+References: <8e104175-7388-4930-b6a2-405fb9143a2d@kernel.dk>
+	<CGME20240129072655epcas5p35d140dba2234e1658b7aa40770b93314@epcas5p3.samsung.com>
 
-ASoC machine driver can use snd_soc_{of_}get_dlc() (A) to get DAI name
-for dlc (snd_soc_dai_link_component). In this function call
-dlc->dai_name is parsed via snd_soc_dai_name_get() (B).
+On 1/18/24 19:34, Jens Axboe wrote:
+>> diff --git a/io_uring/sqpoll.h b/io_uring/sqpoll.h
+>> index 8df37e8c9149..c14c00240443 100644
+>> --- a/io_uring/sqpoll.h
+>> +++ b/io_uring/sqpoll.h
+>> @@ -16,6 +16,7 @@ struct io_sq_data {
+>>  	pid_t			task_pid;
+>>  	pid_t			task_tgid;
+>>  
+>> +	long long			work_time;
+>>  	unsigned long		state;
+>>  	struct completion	exited;
+>>  };
+>
+>Probably just make that an u64.
+>
+>As Pavel mentioned, I think we really need to consider if fdinfo is the
+>appropriate API for this. It's fine if you're running stuff directly and
+>you're just curious, but it's a very cumbersome API in general as you
+>need to know the pid of the task holding the ring, the fd of the ring,
+>and then you can get it as a textual description. If this is something
+>that is deemed useful, would it not make more sense to make it
+>programatically available in addition, or even exclusively?
 
-(A)	int snd_soc_get_dlc(...)
-	{
-		...
-(B)		dlc->dai_name = snd_soc_dai_name_get(dai);
-		...
-	}
+Hi, Jens and Pavel
+sorry for the late reply.
 
-(B) has a priority to return dai->name as dlc->dai_name. In most cases
-card can probe successfully. However it has an issue that ASoC tries to
-rebind card. Here is a simplified flow for example:
+I've tried some other methods, but overall, I haven't found a more suitable 
+method than fdinfo.
+If you think it is troublesome to obtain the PID,  then I can provide
+ a shell script to output the total_time and work_time of all sqpoll threads 
+ to the terminal, so that we do not have to manually obtain the PID of each 
+ thread (the script can be placed in tools/ include/io_uring).
 
- |	a) Card probes successfully at first
- |	b) One of the component bound to this card is removed for some
- |	   reason the component->dev is released
- |	c) That component is re-registered
- v	d) ASoC calls snd_soc_try_rebind_card()
+eg:
 
-a) points dlc->dai_name to dai->name. b) releases all resource of the
-old DAI. c) creates new DAI structure. In result d) can not use
-dlc->dai_name to add new created DAI.
+PID    WorkTime(us)   TotalTime(us)   COMMAND
+9330   1106578        2215321         iou-sqp-9329
+9454   1510658        1715321         iou-sqp-9453
+9478   165785         223219          iou-sqp-9477
+9587   106578         153217          iou-sqp-9586
 
-So it's reasonable that prefer to return dai->driver->name in
-snd_soc_dai_name_get() because dai->driver is a pre-defined global
-variable.
-
-Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
----
- sound/soc/soc-core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 516350533e73..09467c693627 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -300,12 +300,12 @@ static int snd_soc_is_matching_dai(const struct snd_soc_dai_link_component *dlc,
- const char *snd_soc_dai_name_get(struct snd_soc_dai *dai)
- {
- 	/* see snd_soc_is_matching_dai() */
--	if (dai->name)
--		return dai->name;
--
- 	if (dai->driver->name)
- 		return dai->driver->name;
- 
-+	if (dai->name)
-+		return dai->name;
-+
- 	if (dai->component->name)
- 		return dai->component->name;
- 
--- 
-2.43.0
-
+What do you think of this solution?
 
