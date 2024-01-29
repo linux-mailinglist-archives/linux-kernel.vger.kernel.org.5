@@ -1,319 +1,129 @@
-Return-Path: <linux-kernel+bounces-42437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42410-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF4BF840161
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:25:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E35AF8400FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:10:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 003F11C21460
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:25:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E2E22813DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:10:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3666555E63;
-	Mon, 29 Jan 2024 09:24:51 +0000 (UTC)
-Received: from whm50.louhi.net (whm50.louhi.net [77.240.19.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6A4655C2C
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:24:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.240.19.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C964E54F93;
+	Mon, 29 Jan 2024 09:10:45 +0000 (UTC)
+Received: from zju.edu.cn (spam.zju.edu.cn [61.164.42.155])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A92CC6110;
+	Mon, 29 Jan 2024 09:10:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=61.164.42.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706520290; cv=none; b=IUSfcq5aejLitcL2X3w03Ye9Q7fzhiwgaGvdX7g6tSJuErNZG6Bw6hP55HaKtl5Vz/Cz6+pajUbUO8IawDq8kkAX4wnDW4G6xFN+DXyRC7uJHBa6Qs9Kh4BfSa2fawE4FTdvWonYUTkQ3tlsp5ei7r45H7YaVoj/SXGT3d/SdNs=
+	t=1706519445; cv=none; b=czrmBOJPS9j//8E1WeU24NzYg9m5IT8pe4XXQ5AMD5c4Nrg+hQGiRsWgNkUCFHX4MlBW3arLKjqYQWdaPLix0ahgOZIJWbdljblUhm8w2v9ykFIuTubrYLsneYemNgO6FfVeznjolLT4U9R6JNzmus1rc8Td9EKQ+gk7ybQUN5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706520290; c=relaxed/simple;
-	bh=NV0zhuJqettYgn4ZY1m7COgAL77d42NIPCPxUlnUrxo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=byvAYGF3NDK/oHSG2a5UDljXpzpiJfz++LevTaNDp3MbCwTx9h7v0t5lqJH/uknq95s8vDces74pygriegoYKxqDgrwTjeF1VVMH1X8c58JHHYWjvGRylkoXMd2SpjO+ww88AKQY9SN2V7iNZI73iE/qu/jQINWlNkgVY9HBim0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=haloniitty.fi; spf=pass smtp.mailfrom=haloniitty.fi; arc=none smtp.client-ip=77.240.19.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=haloniitty.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=haloniitty.fi
-Received: from [194.136.85.206] (port=46446 helo=eldfell)
-	by whm50.louhi.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <pekka.paalanen@haloniitty.fi>)
-	id 1rUNKy-0007D5-0Q;
-	Mon, 29 Jan 2024 10:49:52 +0200
-Date: Mon, 29 Jan 2024 10:49:34 +0200
-From: Pekka Paalanen <pekka.paalanen@haloniitty.fi>
-To: =?UTF-8?B?QW5kcsOp?= Almeida <andrealmeid@igalia.com>
-Cc: dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, kernel-dev@igalia.com,
- alexander.deucher@amd.com, christian.koenig@amd.com, Simon Ser
- <contact@emersion.fr>, daniel@ffwll.ch, Daniel Stone
- <daniel@fooishbar.org>, 'Marek =?UTF-8?B?T2zFocOhayc=?= <maraeo@gmail.com>,
- Dave Airlie <airlied@gmail.com>, ville.syrjala@linux.intel.com, Xaver Hugl
- <xaver.hugl@gmail.com>, Joshua Ashton <joshua@froggi.es>, Michel
- =?UTF-8?B?RMOkbnplcg==?= <michel.daenzer@mailbox.org>
-Subject: Re: [PATCH v3 1/3] drm/atomic: Allow drivers to write their own
- plane check for async flips
-Message-ID: <20240129104934.0b887ec7@eldfell>
-In-Reply-To: <20240128212515.630345-2-andrealmeid@igalia.com>
-References: <20240128212515.630345-1-andrealmeid@igalia.com>
-	<20240128212515.630345-2-andrealmeid@igalia.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706519445; c=relaxed/simple;
+	bh=5Gll6eNB7+3f5/28hX5K6oQLbYOQWak+KEzb8f3P1zM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
+	 MIME-Version:Message-ID; b=uYWrSTSuYz/fsxiwh/M98z3yCo0rEP1UlsKqgMK4CdWuSh/dxodlB3crJUPIQrarnRRYU8vH+kb9pmNe7hB4swXMibP4fk9UmpcnLcRovHX35Pvh5a0iNwXIZqNtR7EGtR99GJnT/8P9GW4Mu6wvCHVfwdVs6y26xb6OBsoOnTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=61.164.42.155
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from alexious$zju.edu.cn ( [10.190.77.58] ) by
+ ajax-webmail-mail-app4 (Coremail) ; Mon, 29 Jan 2024 17:02:08 +0800
+ (GMT+08:00)
+Date: Mon, 29 Jan 2024 17:02:08 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From: alexious@zju.edu.cn
+To: "Eric Dumazet" <edumazet@google.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	"David Ahern" <dsahern@kernel.org>,
+	"Jakub Kicinski" <kuba@kernel.org>,
+	"Paolo Abeni" <pabeni@redhat.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: ipv4: fix a memleak in ip_setup_cork
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.4-cmXT5 build
+ 20231205(37e20f0e) Copyright (c) 2002-2024 www.mailtech.cn
+ mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
+In-Reply-To: <CANn89i+3Maf90HUzaGzFQgw9UQDoZLP-Ob+KrE9Ns6jND=6D9w@mail.gmail.com>
+References: <20240126075127.2825068-1-alexious@zju.edu.cn>
+ <CANn89iKvoZLHGbptM-9Q_m826Ae4PF9UTjuj6UMFsthZmEUjiw@mail.gmail.com>
+ <CANn89i+3Maf90HUzaGzFQgw9UQDoZLP-Ob+KrE9Ns6jND=6D9w@mail.gmail.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/CyNE1g.rxLQR/tPHNy8jH2s";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - whm50.louhi.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - haloniitty.fi
-X-Get-Message-Sender-Via: whm50.louhi.net: authenticated_id: pekka.paalanen@haloniitty.fi
-X-Authenticated-Sender: whm50.louhi.net: pekka.paalanen@haloniitty.fi
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Message-ID: <5a97396e.1e36.18d54745ad4.Coremail.alexious@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:cS_KCgB3k4KQabdlLAHCAA--.15073W
+X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/1tbiAg0NAGWz-WMU2QAJsO
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+	daVFxhVjvjDU=
 
---Sig_/CyNE1g.rxLQR/tPHNy8jH2s
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On Sun, 28 Jan 2024 18:25:13 -0300
-Andr=C3=A9 Almeida <andrealmeid@igalia.com> wrote:
-
-> Some hardware are more flexible on what they can flip asynchronously, so
-> rework the plane check so drivers can implement their own check, lifting
-> up some of the restrictions.
->=20
-> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@igalia.com>
-> ---
-> v3: no changes
->=20
->  drivers/gpu/drm/drm_atomic_uapi.c | 62 ++++++++++++++++++++++---------
->  include/drm/drm_atomic_uapi.h     | 12 ++++++
->  include/drm/drm_plane.h           |  5 +++
->  3 files changed, 62 insertions(+), 17 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atom=
-ic_uapi.c
-> index aee4a65d4959..6d5b9fec90c7 100644
-> --- a/drivers/gpu/drm/drm_atomic_uapi.c
-> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
-> @@ -620,7 +620,7 @@ static int drm_atomic_plane_set_property(struct drm_p=
-lane *plane,
->  	return 0;
->  }
-> =20
-> -static int
-> +int
->  drm_atomic_plane_get_property(struct drm_plane *plane,
->  		const struct drm_plane_state *state,
->  		struct drm_property *property, uint64_t *val)
-> @@ -683,6 +683,7 @@ drm_atomic_plane_get_property(struct drm_plane *plane,
-> =20
->  	return 0;
->  }
-> +EXPORT_SYMBOL(drm_atomic_plane_get_property);
-> =20
->  static int drm_atomic_set_writeback_fb_for_connector(
->  		struct drm_connector_state *conn_state,
-> @@ -1026,18 +1027,54 @@ int drm_atomic_connector_commit_dpms(struct drm_a=
-tomic_state *state,
->  	return ret;
->  }
-> =20
-> -static int drm_atomic_check_prop_changes(int ret, uint64_t old_val, uint=
-64_t prop_value,
-> +int drm_atomic_check_prop_changes(int ret, uint64_t old_val, uint64_t pr=
-op_value,
-
-Hi,
-
-should the word "async" be somewhere in the function name?
-
->  					 struct drm_property *prop)
->  {
->  	if (ret !=3D 0 || old_val !=3D prop_value) {
->  		drm_dbg_atomic(prop->dev,
-> -			       "[PROP:%d:%s] No prop can be changed during async flip\n",
-> +			       "[PROP:%d:%s] This prop cannot be changed during async flip\n",
->  			       prop->base.id, prop->name);
->  		return -EINVAL;
->  	}
-> =20
->  	return 0;
->  }
-> +EXPORT_SYMBOL(drm_atomic_check_prop_changes);
-> +
-> +/* plane changes may have exceptions, so we have a special function for =
-them */
-> +static int drm_atomic_check_plane_changes(struct drm_property *prop,
-> +					  struct drm_plane *plane,
-> +					  struct drm_plane_state *plane_state,
-> +					  struct drm_mode_object *obj,
-> +					  u64 prop_value, u64 old_val)
-> +{
-> +	struct drm_mode_config *config =3D &plane->dev->mode_config;
-> +	int ret;
-> +
-> +	if (plane->funcs->check_async_props)
-> +		return plane->funcs->check_async_props(prop, plane, plane_state,
-> +							     obj, prop_value, old_val);
-
-Is it really ok to allow drivers to opt-in to also *reject* the FB_ID
-and IN_FENCE_FD props on async commits?
-
-Either intentionally or by accident.
-
-> +
-> +	/*
-> +	 * if you are trying to change something other than the FB ID, your
-> +	 * change will be either rejected or ignored, so we can stop the check
-> +	 * here
-> +	 */
-> +	if (prop !=3D config->prop_fb_id) {
-> +		ret =3D drm_atomic_plane_get_property(plane, plane_state,
-> +						    prop, &old_val);
-> +		return drm_atomic_check_prop_changes(ret, old_val, prop_value, prop);
-
-When I first read this code, it seemed to say: "If the prop is not
-FB_ID, then do the usual prop change checking that happens on all
-changes, not only async.". Reading this patch a few more times over, I
-finally realized drm_atomic_check_prop_changes() is about async
-specifically.
-
-> +	}
-> +
-> +	if (plane_state->plane->type !=3D DRM_PLANE_TYPE_PRIMARY) {
-> +		drm_dbg_atomic(prop->dev,
-> +			       "[OBJECT:%d] Only primary planes can be changed during async f=
-lip\n",
-> +			       obj->id);
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> =20
->  int drm_atomic_set_property(struct drm_atomic_state *state,
->  			    struct drm_file *file_priv,
-> @@ -1100,7 +1137,6 @@ int drm_atomic_set_property(struct drm_atomic_state=
- *state,
->  	case DRM_MODE_OBJECT_PLANE: {
->  		struct drm_plane *plane =3D obj_to_plane(obj);
->  		struct drm_plane_state *plane_state;
-> -		struct drm_mode_config *config =3D &plane->dev->mode_config;
-> =20
->  		plane_state =3D drm_atomic_get_plane_state(state, plane);
->  		if (IS_ERR(plane_state)) {
-> @@ -1108,19 +1144,11 @@ int drm_atomic_set_property(struct drm_atomic_sta=
-te *state,
->  			break;
->  		}
-> =20
-> -		if (async_flip && prop !=3D config->prop_fb_id) {
-> -			ret =3D drm_atomic_plane_get_property(plane, plane_state,
-> -							    prop, &old_val);
-> -			ret =3D drm_atomic_check_prop_changes(ret, old_val, prop_value, prop);
-> -			break;
-> -		}
-> -
-> -		if (async_flip && plane_state->plane->type !=3D DRM_PLANE_TYPE_PRIMARY=
-) {
-> -			drm_dbg_atomic(prop->dev,
-> -				       "[OBJECT:%d] Only primary planes can be changed during async =
-flip\n",
-> -				       obj->id);
-> -			ret =3D -EINVAL;
-> -			break;
-> +		if (async_flip) {
-> +			ret =3D drm_atomic_check_plane_changes(prop, plane, plane_state,
-
-Should there be "async" somewhere in the name of
-drm_atomic_check_plane_changes()?
-
-
-Thanks,
-pq
-
-> +							     obj, prop_value, old_val);
-> +			if (ret)
-> +				break;
->  		}
-> =20
->  		ret =3D drm_atomic_plane_set_property(plane,
-> diff --git a/include/drm/drm_atomic_uapi.h b/include/drm/drm_atomic_uapi.h
-> index 4c6d39d7bdb2..d65fa8fbbca0 100644
-> --- a/include/drm/drm_atomic_uapi.h
-> +++ b/include/drm/drm_atomic_uapi.h
-> @@ -29,6 +29,8 @@
->  #ifndef DRM_ATOMIC_UAPI_H_
->  #define DRM_ATOMIC_UAPI_H_
-> =20
-> +#include <linux/types.h>
-> +
->  struct drm_crtc_state;
->  struct drm_display_mode;
->  struct drm_property_blob;
-> @@ -37,6 +39,9 @@ struct drm_crtc;
->  struct drm_connector_state;
->  struct dma_fence;
->  struct drm_framebuffer;
-> +struct drm_mode_object;
-> +struct drm_property;
-> +struct drm_plane;
-> =20
->  int __must_check
->  drm_atomic_set_mode_for_crtc(struct drm_crtc_state *state,
-> @@ -53,4 +58,11 @@ int __must_check
->  drm_atomic_set_crtc_for_connector(struct drm_connector_state *conn_state,
->  				  struct drm_crtc *crtc);
-> =20
-> +int drm_atomic_plane_get_property(struct drm_plane *plane,
-> +				  const struct drm_plane_state *state,
-> +				  struct drm_property *property, uint64_t *val);
-> +
-> +int drm_atomic_check_prop_changes(int ret, uint64_t old_val, uint64_t pr=
-op_value,
-> +				  struct drm_property *prop);
-> +
->  #endif
-> diff --git a/include/drm/drm_plane.h b/include/drm/drm_plane.h
-> index c6565a6f9324..73dac8d76831 100644
-> --- a/include/drm/drm_plane.h
-> +++ b/include/drm/drm_plane.h
-> @@ -540,6 +540,11 @@ struct drm_plane_funcs {
->  	 */
->  	bool (*format_mod_supported)(struct drm_plane *plane, uint32_t format,
->  				     uint64_t modifier);
-> +
-> +	int (*check_async_props)(struct drm_property *prop, struct drm_plane *p=
-lane,
-> +				 struct drm_plane_state *plane_state,
-> +				 struct drm_mode_object *obj,
-> +				 u64 prop_value, u64 old_val);
->  };
-> =20
->  /**
-
-
---Sig_/CyNE1g.rxLQR/tPHNy8jH2s
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmW3Zp4ACgkQI1/ltBGq
-qqc8ehAAooc9fYyi2pAyuNuCwLMhuUV+A791NMTj40g1r5gP0brsb6TlW+iX8+Ge
-rNYw4wHQRPKqAhhd/JywuMR1YP/tRHLrOZiG2381ZWk8QJmhW6aT1Q3RtojeraxK
-ubNMvzadC7Di6VmkKVvH/9rLgCs79Brz2nAEAPCdEWJ/Q4fiXhajk8maKM4Zf21l
-q3+AVBpIbP0OFpvw+HKu1EkDV8TdlWHRJYebWR+ju5L7LxDStSL5PuUFNA2TFWbG
-kQfpoS4TLmeM2BA4GjaADB32mo5a6y6GEAHolGsp9AHxRrCaN0+wCLObNmCgz/Xs
-EcylMgMUvHWJuL9Nhr2UzDwb668fJa2Drirmx62bXubjsmqTEMACvmdiLtYNPFHd
-tmrskOq2jquNsYdSOO1lyNsrU5wL27mOR2qkY/L/niMKtKOxD+e7SNzYe8YiJDAT
-gup/t+jSEVj5uEP9Fh5KWQLjGpv5M7ZOx4El3BZ5OfmD48lEkUWm4Ol4Cvwgn79d
-7+x62h69VWFskO05OLt/c7rkCiPxMwl6JDQA7GXSS5lAkjFVfrlIPDlT62E7xWTm
-TH0gdwCKbZNh81QuZ7hxKX6GLyk5Z9Ir5SzX8kHRdnMENiyKWLtW9rIvj7nCCgli
-PMckBk7wycSe6xUZkDBsDsJpreMhNDu/oXn1Tl+unqMWmfStaUk=
-=19nM
------END PGP SIGNATURE-----
-
---Sig_/CyNE1g.rxLQR/tPHNy8jH2s--
+PiBPbiBGcmksIEphbiAyNiwgMjAyNCBhdCAxMToxM+KAr0FNIEVyaWMgRHVtYXpldCA8ZWR1bWF6
+ZXRAZ29vZ2xlLmNvbT4gd3JvdGU6Cj4gPgo+ID4gT24gRnJpLCBKYW4gMjYsIDIwMjQgYXQgODo1
+MeKAr0FNIFpoaXBlbmcgTHUgPGFsZXhpb3VzQHpqdS5lZHUuY24+IHdyb3RlOgo+ID4gPgo+ID4g
+PiBXaGVuIGluZXRkZXZfdmFsaWRfbXR1IGZhaWxzLCBjb3JrLT5vcHQgc2hvdWxkIGJlIGZyZWVk
+IGlmIGl0IGlzCj4gPiA+IGFsbG9jYXRlZCBpbiBpcF9zZXR1cF9jb3JrLiBPdGhlcndpc2UgdGhl
+cmUgY291bGQgYmUgYSBtZW1sZWFrLgo+ID4gPgo+ID4gPiBGaXhlczogNTAxYTkwYzk0NTEwICgi
+aW5ldDogcHJvdGVjdCBhZ2FpbnN0IHRvbyBzbWFsbCBtdHUgdmFsdWVzLiIpCj4gPiA+IFNpZ25l
+ZC1vZmYtYnk6IFpoaXBlbmcgTHUgPGFsZXhpb3VzQHpqdS5lZHUuY24+Cj4gPiA+IC0tLQo+ID4g
+PiAgbmV0L2lwdjQvaXBfb3V0cHV0LmMgfCA5ICsrKysrKysrLQo+ID4gPiAgMSBmaWxlIGNoYW5n
+ZWQsIDggaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQo+ID4gPgo+ID4gPiBkaWZmIC0tZ2l0
+IGEvbmV0L2lwdjQvaXBfb3V0cHV0LmMgYi9uZXQvaXB2NC9pcF9vdXRwdXQuYwo+ID4gPiBpbmRl
+eCBiMDZmNjc4YjAzYTEuLjMyMTVlYTA3ZDM5OCAxMDA2NDQKPiA+ID4gLS0tIGEvbmV0L2lwdjQv
+aXBfb3V0cHV0LmMKPiA+ID4gKysrIGIvbmV0L2lwdjQvaXBfb3V0cHV0LmMKPiA+ID4gQEAgLTEy
+ODIsNiArMTI4Miw3IEBAIHN0YXRpYyBpbnQgaXBfc2V0dXBfY29yayhzdHJ1Y3Qgc29jayAqc2ss
+IHN0cnVjdCBpbmV0X2NvcmsgKmNvcmssCj4gPiA+ICB7Cj4gPiA+ICAgICAgICAgc3RydWN0IGlw
+X29wdGlvbnNfcmN1ICpvcHQ7Cj4gPiA+ICAgICAgICAgc3RydWN0IHJ0YWJsZSAqcnQ7Cj4gPiA+
+ICsgICAgICAgaW50IGZyZWVfb3B0ID0gMDsKPiA+ID4KPiA+ID4gICAgICAgICBydCA9ICpydHA7
+Cj4gPiA+ICAgICAgICAgaWYgKHVubGlrZWx5KCFydCkpCj4gPiA+IEBAIC0xMjk3LDYgKzEyOTgs
+NyBAQCBzdGF0aWMgaW50IGlwX3NldHVwX2Nvcmsoc3RydWN0IHNvY2sgKnNrLCBzdHJ1Y3QgaW5l
+dF9jb3JrICpjb3JrLAo+ID4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIHNrLT5za19hbGxvY2F0aW9uKTsKPiA+ID4gICAgICAgICAgICAgICAgICAgICAgICAg
+aWYgKHVubGlrZWx5KCFjb3JrLT5vcHQpKQo+ID4gPiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIHJldHVybiAtRU5PQlVGUzsKPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgZnJl
+ZV9vcHQgPSAxOwo+ID4gPiAgICAgICAgICAgICAgICAgfQo+ID4gPiAgICAgICAgICAgICAgICAg
+bWVtY3B5KGNvcmstPm9wdCwgJm9wdC0+b3B0LCBzaXplb2Yoc3RydWN0IGlwX29wdGlvbnMpICsg
+b3B0LT5vcHQub3B0bGVuKTsKPiA+ID4gICAgICAgICAgICAgICAgIGNvcmstPmZsYWdzIHw9IElQ
+Q09SS19PUFQ7Cj4gPiA+IEBAIC0xMzA2LDggKzEzMDgsMTMgQEAgc3RhdGljIGludCBpcF9zZXR1
+cF9jb3JrKHN0cnVjdCBzb2NrICpzaywgc3RydWN0IGluZXRfY29yayAqY29yaywKPiA+ID4gICAg
+ICAgICBjb3JrLT5mcmFnc2l6ZSA9IGlwX3NrX3VzZV9wbXR1KHNrKSA/Cj4gPiA+ICAgICAgICAg
+ICAgICAgICAgICAgICAgICBkc3RfbXR1KCZydC0+ZHN0KSA6IFJFQURfT05DRShydC0+ZHN0LmRl
+di0+bXR1KTsKPiA+ID4KPiA+ID4gLSAgICAgICBpZiAoIWluZXRkZXZfdmFsaWRfbXR1KGNvcmst
+PmZyYWdzaXplKSkKPiA+ID4gKyAgICAgICBpZiAoIWluZXRkZXZfdmFsaWRfbXR1KGNvcmstPmZy
+YWdzaXplKSkgewo+ID4gPiArICAgICAgICAgICAgICAgaWYgKG9wdCAmJiBmcmVlX29wdCkgewo+
+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICBrZnJlZShjb3JrLT5vcHQpOwo+ID4gPiArICAg
+ICAgICAgICAgICAgICAgICAgICBjb3JrLT5vcHQgPSBOVUxMOwo+ID4gPiArICAgICAgICAgICAg
+ICAgfQo+ID4gPiAgICAgICAgICAgICAgICAgcmV0dXJuIC1FTkVUVU5SRUFDSDsKPiA+ID4gKyAg
+ICAgICB9Cj4gPiA+Cj4gPiA+ICAgICAgICAgY29yay0+Z3NvX3NpemUgPSBpcGMtPmdzb19zaXpl
+Owo+ID4gPgo+ID4gPiAtLQo+ID4gPiAyLjM0LjEKPiA+ID4KPiA+Cj4gPiBXaGF0IGFib3V0IHNv
+bWV0aGluZyBzaW1wbGVyIGxpa2UgOgo+ID4KPiA+IGRpZmYgLS1naXQgYS9uZXQvaXB2NC9pcF9v
+dXRwdXQuYyBiL25ldC9pcHY0L2lwX291dHB1dC5jCj4gPiBpbmRleCBiMDZmNjc4YjAzYTE5Yjgw
+NmZkMTQ3NjRhNGNhYWQ2MGNhZjAyOTE5Li40MTUzN2QxOGVlY2ZkNmUxMTYzYWFjYzM1ZTA0N2My
+MjQ2OGUwNGU2Cj4gPiAxMDA2NDQKPiA+IC0tLSBhL25ldC9pcHY0L2lwX291dHB1dC5jCj4gPiAr
+KysgYi9uZXQvaXB2NC9pcF9vdXRwdXQuYwo+ID4gQEAgLTEyODcsNiArMTI4NywxMiBAQCBzdGF0
+aWMgaW50IGlwX3NldHVwX2Nvcmsoc3RydWN0IHNvY2sgKnNrLAo+ID4gc3RydWN0IGluZXRfY29y
+ayAqY29yaywKPiA+ICAgICAgICAgaWYgKHVubGlrZWx5KCFydCkpCj4gPiAgICAgICAgICAgICAg
+ICAgcmV0dXJuIC1FRkFVTFQ7Cj4gPgo+ID4gKyAgICAgICBjb3JrLT5mcmFnc2l6ZSA9IGlwX3Nr
+X3VzZV9wbXR1KHNrKSA/Cj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgZHN0X210dSgmcnQt
+PmRzdCkgOiBSRUFEX09OQ0UocnQtPmRzdC5kZXYtPm10dSk7Cj4gPiArCj4gPiArICAgICAgIGlm
+ICghaW5ldGRldl92YWxpZF9tdHUoY29yay0+ZnJhZ3NpemUpKQo+ID4gKyAgICAgICAgICAgICAg
+IHJldHVybiAtRU5FVFVOUkVBQ0g7Cj4gPiArCj4gPiAgICAgICAgIC8qCj4gPiAgICAgICAgICAq
+IHNldHVwIGZvciBjb3JraW5nLgo+ID4gICAgICAgICAgKi8KPiA+IEBAIC0xMzAzLDEyICsxMzA5
+LDYgQEAgc3RhdGljIGludCBpcF9zZXR1cF9jb3JrKHN0cnVjdCBzb2NrICpzaywKPiA+IHN0cnVj
+dCBpbmV0X2NvcmsgKmNvcmssCj4gPiAgICAgICAgICAgICAgICAgY29yay0+YWRkciA9IGlwYy0+
+YWRkcjsKPiA+ICAgICAgICAgfQo+ID4KPiA+IC0gICAgICAgY29yay0+ZnJhZ3NpemUgPSBpcF9z
+a191c2VfcG10dShzaykgPwo+ID4gLSAgICAgICAgICAgICAgICAgICAgICAgIGRzdF9tdHUoJnJ0
+LT5kc3QpIDogUkVBRF9PTkNFKHJ0LT5kc3QuZGV2LT5tdHUpOwo+ID4gLQo+ID4gLSAgICAgICBp
+ZiAoIWluZXRkZXZfdmFsaWRfbXR1KGNvcmstPmZyYWdzaXplKSkKPiA+IC0gICAgICAgICAgICAg
+ICByZXR1cm4gLUVORVRVTlJFQUNIOwo+ID4gLQo+ID4gICAgICAgICBjb3JrLT5nc29fc2l6ZSA9
+IGlwYy0+Z3NvX3NpemU7Cj4gPgo+ID4gICAgICAgICBjb3JrLT5kc3QgPSAmcnQtPmRzdDsKPiAK
+PiBIaSBaaGlwZW5nIEx1Cj4gCj4gQ291bGQgeW91IHNlbmQgYSBWMiBvZmYgeW91ciBwYXRjaCA/
+IEkgd2lsbCB0aGVuIGFkZCBhIFJldmlld2VkLWJ5Ogo+IHRhZywgdGhhbmtzICEKCkhpIEVyaWMK
+U3VyZSwgSSdsbCBzb29uIHNlbmQgYSB2MiB2ZXJzaW9uIGZvbGxvd2luZyB5b3VyIHN1Z2dlc3Rp
+b24uCgo=
 
