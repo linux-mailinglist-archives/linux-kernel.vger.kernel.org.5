@@ -1,455 +1,148 @@
-Return-Path: <linux-kernel+bounces-43624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43615-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A07DC8416C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 00:27:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDB1C8416B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 00:24:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0ED541F2246C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:27:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CE911F23B16
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 23:24:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 186F515B107;
-	Mon, 29 Jan 2024 23:25:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF7A44F1F5;
+	Mon, 29 Jan 2024 23:24:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d+0JiUVy"
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XFGx3Gz4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE97215AAD5;
-	Mon, 29 Jan 2024 23:25:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0626D3DB9B;
+	Mon, 29 Jan 2024 23:24:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706570730; cv=none; b=rmS6mpGVqaaL8/w/UM2NXmU0SE/0crTsTh6AZonbTdnFR/c5fZgUYihKY9MAzHEgEBeCsedOnwWD/fukmOYEc8U+0/MmnMVtbAoafTz9zFO6scMtfDZgWWyyPv50ulGfvF78XqitMxs3W5Fh8xn3Wu8cW4z7PyYqHB6bqDBbQwM=
+	t=1706570664; cv=none; b=qWn9pZKtu6vuibyvnkULK9aXQOQTV/Fy9hTnQynyDhuAgWZODi8pzNFVZQEzSCeMn5asJ5jcE/dRPYhwlcRVLOrMxgKIYMvtVxBDLs0FxFLqDSI7eJUPzaJccCkf4HIw1b/wQ0g7iOwoOo8TcNOYXrx4rpju60rbf3FvA+e1ncc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706570730; c=relaxed/simple;
-	bh=nKX4ofVFmrw8XvgMWLXzPnBWCUfubUzZ7pqTqkHNnm0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bGN5vWPu8U8zfCB0ajYzIX4ALnsctouWj8dneE3QwJiKR/DpGfIWX/F4q9MgMSbogt9j65FV+l3VoeQgE0euSDsPJuFu4ppSi9EEAiAkGCzVbWfI4q3hvo6LBiAxtaGBqwghKPpR0sQRZIP+40RIb/ZJwUY72Ruyh4pSSrFvnTY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d+0JiUVy; arc=none smtp.client-ip=209.85.219.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-680b1335af6so40092416d6.1;
-        Mon, 29 Jan 2024 15:25:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706570728; x=1707175528; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=6Ds1hoUhG3JF+CidNPw7Wt36Vj4FavSCMYLcG+cPkCo=;
-        b=d+0JiUVyejmvkInM6b1q/MwZHMJcA8wbF6zpH1YGg96Kw3QNpjECJiV6Sp6UtqkIVP
-         4qpWMMTOibtNNTbRGbaYkw8jlxXhHDx0aBdYLfGZmSUWtnF0HBHpMhuEM9uLVbgoqXX9
-         HLv98HU0tOuaaxAlb93mmvdvulUSEEnkgReJUVSxdHKii6NICtbc+9u6K5zyoYw0ey06
-         TQOqXgTNJcGbN8euMww/Y22GaZi9mktLY1ZyRdsqY/0V4zaeOr2pVbO+VxR3dn8sxbOh
-         oukdDWXGOpRreOBgVd6WtO8HOUHxcJ1d6OkJ1fGo0jim+69rpXRUSbyI+wpc5V3DJvu3
-         tGMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706570728; x=1707175528;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6Ds1hoUhG3JF+CidNPw7Wt36Vj4FavSCMYLcG+cPkCo=;
-        b=tw4B1u0vZgkvoUH26JxOo8XnOWK9QV0580XDik+FwGO/C9YI63fnuQzzB3W7uewbCC
-         dXumZXFNnlSjvkH09zLcy7Hmu/nFGol7BVmfTB6VwBvdG18DHPYfeplcHqEK1tuQ5OLc
-         Np/WTnBbsLS6oOaA5CV2BonXMZHhly0ok9TWegMUsUIBRBhBa+HnjqqKJseAqX8UVypQ
-         mgIEEUMQ0XmnPMWEbRb4jU6ZAmHaS99PtItdZWF09rCf2SimjcGomAJ6lOjD+s/8E037
-         yHZx4b8ggTMw6untNZZgn92gCFufdgLl5oM4EI0mSc2bKCk9U1yGzHzQ8BT5KleK7IIJ
-         kW6A==
-X-Gm-Message-State: AOJu0YzMRQTogzuzo/VgkCKbB8IEypiPnDimcqm2U4rX5/xraWoBjFaP
-	1dOb2+P/CeDOhZpIGS/kLI/953yRmQSXnPyTP4aUxW75JyF5qgwoTaMIXyDz
-X-Google-Smtp-Source: AGHT+IGBgvvLP/o2QrfNWy9bxD3rEFVRWT02EilWPnmWc5O7lNoEWwrZwYTivW8fY0MnyXL8kzZM7A==
-X-Received: by 2002:a05:6214:28d:b0:68c:5c6e:3f1d with SMTP id l13-20020a056214028d00b0068c5c6e3f1dmr47061qvv.19.1706570727666;
-        Mon, 29 Jan 2024 15:25:27 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWXbJAjvneCcHcryOvH9anN9M+K0kQ/ZOE1+y1m/ousfqesbQ+wr/N219Yo68ucIr8wF7Ph24d0ttrNyFShyGStNNakqU7XPmflVEho/6dPfDORucQOZhDwlx5o9787nRcvjaFRxJ08XgNReBvNBS6HvEitNAhkE6XZ10NYqTruXb9UkqBivS/PEk/sG6ihO41GaeeEshuxW0IIrNI3zcCJmBpl/VcFO3+q1Mj9bKjOEUZ/6SwC9lOdkwCeFm+PV9m82ssiUPN9rSN/cnSbMj1uJSUKf/uHjcE/1j0LpajNuvfyHZX9IelicBvNhjCAwJi70CB+8J0+MvuNFFcOs4WpkmyC2jtvxbnW1Ka2fWN9c91k4PKT9aM1cxKVePBoz6JtbeSNXPav65vGwpH/1GU2NPOe4THs9jhwF2lU5fYJ+d96md7/KCiRXt5b1C1SBxAa01RoWeFQoTRvdcu6pdGyW3nziQ==
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id 12-20020ad45b8c000000b0068c501d0766sm1289369qvp.41.2024.01.29.15.25.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 15:25:26 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailauth.nyi.internal (Postfix) with ESMTP id D006627C005B;
-	Mon, 29 Jan 2024 18:25:25 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Mon, 29 Jan 2024 18:25:25 -0500
-X-ME-Sender: <xms:5TO4ZUgo5kgkz5T5yC8MNqTAOUSr6n0TkBzwQQTFabTmYfLwjVlElg>
-    <xme:5TO4ZdDyhay7NaUageQUCTSBe18bL5lfwQ-2I7RXzA-FEElo38MSUHjQAEvBdqKC-
-    D9VoVROlXGWT55uIg>
-X-ME-Received: <xmr:5TO4ZcGaT_zQAZFlFRb-X3s_63gK15xkL8gTEStomcR1v9PaZaaTmz8nKWoM4w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedthedgudduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeegleejiedthedvheeggfejveefjeejkefgveffieeujefhueeigfegueeh
-    geeggfenucevlhhushhtvghrufhiiigvpedvnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
-    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
-    igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:5TO4ZVS2vT-HG-8c1pr-Ca8dtGkrRC37cq_lJ7hTS4nSL61jqoAClQ>
-    <xmx:5TO4ZRzeSb_wzsAWMfzHoD4XytqW8orDRkt_R9t4NNn6W-du2XxTAg>
-    <xmx:5TO4ZT5Wt1pHT5lsOzODBaTf2uiemwAu7u6CB4bYsveT9qHb3q9jyQ>
-    <xmx:5TO4ZWIf2scKndzUkcZgYQsJ6LjagABtphlQxf-Cj5Yxxa5S1NO7Vw>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 29 Jan 2024 18:25:25 -0500 (EST)
-From: Boqun Feng <boqun.feng@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org
-Cc: Frederic Weisbecker <frederic@kernel.org>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: [PATCH 8/8] rcu/exp: Remove rcu_par_gp_wq
-Date: Mon, 29 Jan 2024 15:23:46 -0800
-Message-ID: <20240129232349.3170819-9-boqun.feng@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240129232349.3170819-1-boqun.feng@gmail.com>
-References: <20240129232349.3170819-1-boqun.feng@gmail.com>
+	s=arc-20240116; t=1706570664; c=relaxed/simple;
+	bh=mWUBJyBeMt6z7cjJB3+Z1M8avUCRugedRzkfc+fGegs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V8g6rAy9jlcNrqA2W5LHv8DLUZl9KK6RH2vgu6js7SaEXiYEKLXqhbCMSoikdcRXC/Sm6+PNtbhByo7hDFH1AerRlOlcjMOuonW+GJBmFjbAH224DjaGQ72d4L5HaJO6abX1HlTAADbm/dvejSi6Kj/ptz9hzzkDCEradjMYC8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XFGx3Gz4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA6A8C433C7;
+	Mon, 29 Jan 2024 23:24:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706570663;
+	bh=mWUBJyBeMt6z7cjJB3+Z1M8avUCRugedRzkfc+fGegs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XFGx3Gz4PCFhvob49dUcmVxul8W3WHlmW9+lobeVGy3HBZpjUfoMc1aRNp85XYBF0
+	 1+gfotfq8dfQEgOpqgCDcRpwCrLmKaJeYOmEAeS4gXuKZIwTTOiKzjkijavns98YOu
+	 9Fd+JXT5zY9QpqMnEw79kYZ/wnghpIxIskNh23v2ZrssT19IOgkJO67j1Rnp75GdBk
+	 eKul14sWvnKMW/Z3VvAw1m8LDtc2QfKHP6SQfzYoVKnoT2IiHH/mDaa9jYdRnG7fcx
+	 +YlqUeWInh2j8WAF51pxLyToR0mT4SxfjvW5SqPGfnQh0+HJJgtSORsY2SiCEWYb8v
+	 Hz69Tqfb3FQlA==
+Date: Tue, 30 Jan 2024 00:24:17 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Viken Dadhaniya <quic_vdadhani@quicinc.com>, 
+	Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, 
+	linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	vkoul@kernel.org, quic_bjorande@quicinc.com, manivannan.sadhasivam@linaro.org, 
+	quic_msavaliy@quicinc.com, quic_vtanuku@quicinc.com
+Subject: Re: [V2] i2c: i2c-qcom-geni: Correct I2C TRE sequence
+Message-ID: <lib6m2bty4uilvvu544sjlezeux7ne4cx5i25j6yndicx7miaw@tvxpuekiczwh>
+References: <20240129061003.4085-1-quic_vdadhani@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240129061003.4085-1-quic_vdadhani@quicinc.com>
 
-From: Frederic Weisbecker <frederic@kernel.org>
+Hi Viken,
 
-TREE04 running on short iterations can produce writer stalls of the
-following kind:
+as Bryan has done some comments in version 1, please, Cc him to
+this patch.
 
- ??? Writer stall state RTWS_EXP_SYNC(4) g3968 f0x0 ->state 0x2 cpu 0
- task:rcu_torture_wri state:D stack:14568 pid:83    ppid:2      flags:0x00004000
- Call Trace:
-  <TASK>
-  __schedule+0x2de/0x850
-  ? trace_event_raw_event_rcu_exp_funnel_lock+0x6d/0xb0
-  schedule+0x4f/0x90
-  synchronize_rcu_expedited+0x430/0x670
-  ? __pfx_autoremove_wake_function+0x10/0x10
-  ? __pfx_synchronize_rcu_expedited+0x10/0x10
-  do_rtws_sync.constprop.0+0xde/0x230
-  rcu_torture_writer+0x4b4/0xcd0
-  ? __pfx_rcu_torture_writer+0x10/0x10
-  kthread+0xc7/0xf0
-  ? __pfx_kthread+0x10/0x10
-  ret_from_fork+0x2f/0x50
-  ? __pfx_kthread+0x10/0x10
-  ret_from_fork_asm+0x1b/0x30
-  </TASK>
+On Mon, Jan 29, 2024 at 11:40:03AM +0530, Viken Dadhaniya wrote:
+> For i2c read operation, we are getting gsi mode timeout due
+> to malformed TRE(Transfer Ring Element). Currently we are
+> configuring incorrect TRE sequence in gpi driver
+> (drivers/dma/qcom/gpi.c) as below
+> 
+> - Sets up CONFIG
+> - Sets up DMA tre
+> - Sets up GO tre
+> 
+> As per HPG(Hardware programming guide), We should configure TREs in below
+> sequence for any i2c transfer
+> 
+> - Sets up CONFIG tre
+> - Sets up GO tre
+> - Sets up DMA tre
+> 
+> For only write operation or write followed by read operation,
+> existing software sequence is correct.
+> 
+> for only read operation, TRE sequence need to be corrected.
+> Hence, we have changed the sequence to submit GO tre before DMA tre.
+> 
+> Tested covering i2c read/write transfer on QCM6490 RB3 board.
+> 
+> Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+> Fixes: commit d8703554f4de ("i2c: qcom-geni: Add support for GPI DMA")
 
-Waiting for an expedited grace period and polling for an expedited
-grace period both are operations that internally rely on the same
-workqueue performing necessary asynchronous work.
+The format is:
 
-However, a dependency chain is involved between those two operations,
-as depicted below:
+Fixes: d8703554f4de ("i2c: qcom-geni: Add support for GPI DMA")
 
-       ====== CPU 0 =======                          ====== CPU 1 =======
+and goes above the SoB.
 
-                                                     synchronize_rcu_expedited()
-                                                         exp_funnel_lock()
-                                                             mutex_lock(&rcu_state.exp_mutex);
-    start_poll_synchronize_rcu_expedited
-        queue_work(rcu_gp_wq, &rnp->exp_poll_wq);
-                                                         synchronize_rcu_expedited_queue_work()
-                                                             queue_work(rcu_gp_wq, &rew->rew_work);
-                                                         wait_event() // A, wait for &rew->rew_work completion
-                                                         mutex_unlock() // B
-    //======> switch to kworker
+> ---
+> v1 -> v2:
+> - Remove redundant check.
+> - update commit log.
+> - add fix tag.
+> ---
+> ---
+>  drivers/i2c/busses/i2c-qcom-geni.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
+> index 0d2e7171e3a6..da94df466e83 100644
+> --- a/drivers/i2c/busses/i2c-qcom-geni.c
+> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
+> @@ -613,20 +613,20 @@ static int geni_i2c_gpi_xfer(struct geni_i2c_dev *gi2c, struct i2c_msg msgs[], i
+>  
+>  		peripheral.addr = msgs[i].addr;
+>  
+> +		ret =  geni_i2c_gpi(gi2c, &msgs[i], &config,
+> +				    &tx_addr, &tx_buf, I2C_WRITE, gi2c->tx_c);
+> +		if (ret)
+> +			goto err;
+> +
+>  		if (msgs[i].flags & I2C_M_RD) {
+>  			ret =  geni_i2c_gpi(gi2c, &msgs[i], &config,
+>  					    &rx_addr, &rx_buf, I2C_READ, gi2c->rx_c);
+>  			if (ret)
+>  				goto err;
+> -		}
+> -
+> -		ret =  geni_i2c_gpi(gi2c, &msgs[i], &config,
+> -				    &tx_addr, &tx_buf, I2C_WRITE, gi2c->tx_c);
+> -		if (ret)
+> -			goto err;
+>  
+> -		if (msgs[i].flags & I2C_M_RD)
+>  			dma_async_issue_pending(gi2c->rx_c);
+> +		}
+> +
 
-    sync_rcu_do_polled_gp() {
-        synchronize_rcu_expedited()
-            exp_funnel_lock()
-                mutex_lock(&rcu_state.exp_mutex); // C, wait B
-                ....
-    } // D
+Bryan, could you please check here?
 
-Since workqueues are usually implemented on top of several kworkers
-handling the queue concurrently, the above situation wouldn't deadlock
-most of the time because A then doesn't depend on D. But in case of
-memory stress, a single kworker may end up handling alone all the works
-in a serialized way. In that case the above layout becomes a problem
-because A then waits for D, closing a circular dependency:
+Thanks for your review!
 
-	A -> D -> C -> B -> A
-
-This however only happens when CONFIG_RCU_EXP_KTHREAD=n. Indeed
-synchronize_rcu_expedited() is otherwise implemented on top of a kthread
-worker while polling still relies on rcu_gp_wq workqueue, breaking the
-above circular dependency chain.
-
-Fix this with making expedited grace period to always rely on kthread
-worker. The workqueue based implementation is essentially a duplicate
-anyway now that the per-node initialization is performed by per-node
-kthread workers.
-
-Meanwhile the CONFIG_RCU_EXP_KTHREAD switch is still kept around to
-manage the scheduler policy of these kthread workers.
-
-Reported-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Reported-by: Thomas Gleixner <tglx@linutronix.de>
-Suggested-by: Joel Fernandes <joel@joelfernandes.org>
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-Suggested-by: Neeraj upadhyay <Neeraj.Upadhyay@amd.com>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/rcu.h      |  4 ---
- kernel/rcu/tree.c     | 40 ++++--------------------
- kernel/rcu/tree.h     |  6 +---
- kernel/rcu/tree_exp.h | 73 +------------------------------------------
- 4 files changed, 8 insertions(+), 115 deletions(-)
-
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index 6beaf70d629f..99032b9cb667 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -623,11 +623,7 @@ int rcu_get_gp_kthreads_prio(void);
- void rcu_fwd_progress_check(unsigned long j);
- void rcu_force_quiescent_state(void);
- extern struct workqueue_struct *rcu_gp_wq;
--#ifdef CONFIG_RCU_EXP_KTHREAD
- extern struct kthread_worker *rcu_exp_gp_kworker;
--#else /* !CONFIG_RCU_EXP_KTHREAD */
--extern struct workqueue_struct *rcu_par_gp_wq;
--#endif /* CONFIG_RCU_EXP_KTHREAD */
- void rcu_gp_slow_register(atomic_t *rgssp);
- void rcu_gp_slow_unregister(atomic_t *rgssp);
- #endif /* #else #ifdef CONFIG_TINY_RCU */
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 312c4c5d4509..9591c22408a1 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4394,7 +4394,6 @@ rcu_boot_init_percpu_data(int cpu)
- 	rcu_boot_init_nocb_percpu_data(rdp);
- }
- 
--#ifdef CONFIG_RCU_EXP_KTHREAD
- struct kthread_worker *rcu_exp_gp_kworker;
- 
- static void rcu_spawn_exp_par_gp_kworker(struct rcu_node *rnp)
-@@ -4414,7 +4413,9 @@ static void rcu_spawn_exp_par_gp_kworker(struct rcu_node *rnp)
- 		return;
- 	}
- 	WRITE_ONCE(rnp->exp_kworker, kworker);
--	sched_setscheduler_nocheck(kworker->task, SCHED_FIFO, &param);
-+
-+	if (IS_ENABLED(CONFIG_RCU_EXP_KTHREAD))
-+		sched_setscheduler_nocheck(kworker->task, SCHED_FIFO, &param);
- }
- 
- static struct task_struct *rcu_exp_par_gp_task(struct rcu_node *rnp)
-@@ -4438,39 +4439,14 @@ static void __init rcu_start_exp_gp_kworker(void)
- 		rcu_exp_gp_kworker = NULL;
- 		return;
- 	}
--	sched_setscheduler_nocheck(rcu_exp_gp_kworker->task, SCHED_FIFO, &param);
--}
--
--static inline void rcu_alloc_par_gp_wq(void)
--{
--}
--#else /* !CONFIG_RCU_EXP_KTHREAD */
--struct workqueue_struct *rcu_par_gp_wq;
--
--static void rcu_spawn_exp_par_gp_kworker(struct rcu_node *rnp)
--{
--}
--
--static struct task_struct *rcu_exp_par_gp_task(struct rcu_node *rnp)
--{
--	return NULL;
--}
--
--static void __init rcu_start_exp_gp_kworker(void)
--{
--}
- 
--static inline void rcu_alloc_par_gp_wq(void)
--{
--	rcu_par_gp_wq = alloc_workqueue("rcu_par_gp", WQ_MEM_RECLAIM, 0);
--	WARN_ON(!rcu_par_gp_wq);
-+	if (IS_ENABLED(CONFIG_RCU_EXP_KTHREAD))
-+		sched_setscheduler_nocheck(rcu_exp_gp_kworker->task, SCHED_FIFO, &param);
- }
--#endif /* CONFIG_RCU_EXP_KTHREAD */
- 
- static void rcu_spawn_rnp_kthreads(struct rcu_node *rnp)
- {
--	if ((IS_ENABLED(CONFIG_RCU_EXP_KTHREAD) ||
--	     IS_ENABLED(CONFIG_RCU_BOOST)) && rcu_scheduler_fully_active) {
-+	if (rcu_scheduler_fully_active) {
- 		mutex_lock(&rnp->kthread_mutex);
- 		rcu_spawn_one_boost_kthread(rnp);
- 		rcu_spawn_exp_par_gp_kworker(rnp);
-@@ -4554,9 +4530,6 @@ static void rcutree_affinity_setting(unsigned int cpu, int outgoingcpu)
- 	struct rcu_node *rnp;
- 	struct task_struct *task_boost, *task_exp;
- 
--	if (!IS_ENABLED(CONFIG_RCU_EXP_KTHREAD) && !IS_ENABLED(CONFIG_RCU_BOOST))
--		return;
--
- 	rdp = per_cpu_ptr(&rcu_data, cpu);
- 	rnp = rdp->mynode;
- 
-@@ -5245,7 +5218,6 @@ void __init rcu_init(void)
- 	/* Create workqueue for Tree SRCU and for expedited GPs. */
- 	rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM, 0);
- 	WARN_ON(!rcu_gp_wq);
--	rcu_alloc_par_gp_wq();
- 
- 	/* Fill in default value for rcutree.qovld boot parameter. */
- 	/* -After- the rcu_node ->lock fields are initialized! */
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index e173808f486f..f35e47f24d80 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -21,14 +21,10 @@
- 
- #include "rcu_segcblist.h"
- 
--/* Communicate arguments to a workqueue handler. */
-+/* Communicate arguments to a kthread worker handler. */
- struct rcu_exp_work {
- 	unsigned long rew_s;
--#ifdef CONFIG_RCU_EXP_KTHREAD
- 	struct kthread_work rew_work;
--#else
--	struct work_struct rew_work;
--#endif /* CONFIG_RCU_EXP_KTHREAD */
- };
- 
- /* RCU's kthread states for tracing. */
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 0318a8a062d5..6b83537480b1 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -418,7 +418,6 @@ static void __sync_rcu_exp_select_node_cpus(struct rcu_exp_work *rewp)
- 
- static void rcu_exp_sel_wait_wake(unsigned long s);
- 
--#ifdef CONFIG_RCU_EXP_KTHREAD
- static void sync_rcu_exp_select_node_cpus(struct kthread_work *wp)
- {
- 	struct rcu_exp_work *rewp =
-@@ -470,69 +469,6 @@ static inline void synchronize_rcu_expedited_queue_work(struct rcu_exp_work *rew
- 	kthread_queue_work(rcu_exp_gp_kworker, &rew->rew_work);
- }
- 
--static inline void synchronize_rcu_expedited_destroy_work(struct rcu_exp_work *rew)
--{
--}
--#else /* !CONFIG_RCU_EXP_KTHREAD */
--static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
--{
--	struct rcu_exp_work *rewp =
--		container_of(wp, struct rcu_exp_work, rew_work);
--
--	__sync_rcu_exp_select_node_cpus(rewp);
--}
--
--static inline bool rcu_exp_worker_started(void)
--{
--	return !!READ_ONCE(rcu_gp_wq);
--}
--
--static inline bool rcu_exp_par_worker_started(struct rcu_node *rnp)
--{
--	return !!READ_ONCE(rcu_par_gp_wq);
--}
--
--static inline void sync_rcu_exp_select_cpus_queue_work(struct rcu_node *rnp)
--{
--	int cpu = find_next_bit(&rnp->ffmask, BITS_PER_LONG, -1);
--
--	INIT_WORK(&rnp->rew.rew_work, sync_rcu_exp_select_node_cpus);
--	/* If all offline, queue the work on an unbound CPU. */
--	if (unlikely(cpu > rnp->grphi - rnp->grplo))
--		cpu = WORK_CPU_UNBOUND;
--	else
--		cpu += rnp->grplo;
--	queue_work_on(cpu, rcu_par_gp_wq, &rnp->rew.rew_work);
--}
--
--static inline void sync_rcu_exp_select_cpus_flush_work(struct rcu_node *rnp)
--{
--	flush_work(&rnp->rew.rew_work);
--}
--
--/*
-- * Work-queue handler to drive an expedited grace period forward.
-- */
--static void wait_rcu_exp_gp(struct work_struct *wp)
--{
--	struct rcu_exp_work *rewp;
--
--	rewp = container_of(wp, struct rcu_exp_work, rew_work);
--	rcu_exp_sel_wait_wake(rewp->rew_s);
--}
--
--static inline void synchronize_rcu_expedited_queue_work(struct rcu_exp_work *rew)
--{
--	INIT_WORK_ONSTACK(&rew->rew_work, wait_rcu_exp_gp);
--	queue_work(rcu_gp_wq, &rew->rew_work);
--}
--
--static inline void synchronize_rcu_expedited_destroy_work(struct rcu_exp_work *rew)
--{
--	destroy_work_on_stack(&rew->rew_work);
--}
--#endif /* CONFIG_RCU_EXP_KTHREAD */
--
- /*
-  * Select the nodes that the upcoming expedited grace period needs
-  * to wait for.
-@@ -965,7 +901,6 @@ static void rcu_exp_print_detail_task_stall_rnp(struct rcu_node *rnp)
-  */
- void synchronize_rcu_expedited(void)
- {
--	bool use_worker;
- 	unsigned long flags;
- 	struct rcu_exp_work rew;
- 	struct rcu_node *rnp;
-@@ -976,9 +911,6 @@ void synchronize_rcu_expedited(void)
- 			 lock_is_held(&rcu_sched_lock_map),
- 			 "Illegal synchronize_rcu_expedited() in RCU read-side critical section");
- 
--	use_worker = (rcu_scheduler_active != RCU_SCHEDULER_INIT) &&
--		      rcu_exp_worker_started();
--
- 	/* Is the state is such that the call is a grace period? */
- 	if (rcu_blocking_is_gp()) {
- 		// Note well that this code runs with !PREEMPT && !SMP.
-@@ -1008,7 +940,7 @@ void synchronize_rcu_expedited(void)
- 		return;  /* Someone else did our work for us. */
- 
- 	/* Ensure that load happens before action based on it. */
--	if (unlikely(!use_worker)) {
-+	if (unlikely((rcu_scheduler_active == RCU_SCHEDULER_INIT) || !rcu_exp_worker_started())) {
- 		/* Direct call during scheduler init and early_initcalls(). */
- 		rcu_exp_sel_wait_wake(s);
- 	} else {
-@@ -1025,9 +957,6 @@ void synchronize_rcu_expedited(void)
- 
- 	/* Let the next expedited grace period start. */
- 	mutex_unlock(&rcu_state.exp_mutex);
--
--	if (likely(use_worker))
--		synchronize_rcu_expedited_destroy_work(&rew);
- }
- EXPORT_SYMBOL_GPL(synchronize_rcu_expedited);
- 
--- 
-2.43.0
-
+Andi
 
