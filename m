@@ -1,127 +1,101 @@
-Return-Path: <linux-kernel+bounces-42846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5A658407A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:57:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1010F8407AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:58:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 862BD1F237B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:57:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2406D1C21721
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:58:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A211066B32;
-	Mon, 29 Jan 2024 13:56:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61024657CD;
+	Mon, 29 Jan 2024 13:57:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UPdF4R/4"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="CdFdim55"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F11965BBC;
-	Mon, 29 Jan 2024 13:56:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 191A967734
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:57:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706536591; cv=none; b=QprtkRb3e9ZQ8u0sKCeEJqEZwgnxN0iiDgPD+XYiqNl9kVXU1hpxVY2To8W2wAerIlSTonAIGiZ5d0i1cXX9KK7dwjOifZS/kGdSFGI107YdmnjvB2B6qrZsb/dT4265kg9xwoVtpFtv2M65CL+JQLeJHM6LyGJg0y8YA3AfPFQ=
+	t=1706536627; cv=none; b=G/D0MNKc1hbetKq5IEd60eHlxFLowtID4Z8IFZE52aV5N0lE0XJaGVtmM0KZYWA7I0z/zTswJAggOLA+PH+UfJ9Z4G3I/q5qpFK/XdH6bafN0XXDi4DdlJV6FTSAID7o/8do0sfbRYiF/3k1D16iiR9+C6cx97Yl/q3s0VHWnQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706536591; c=relaxed/simple;
-	bh=FGSEzWn1LxVZjMRgXwDQ9AesgqJ5I8CYMNMEr12U7U8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ao9lcxjSoCDnqksUnkiwu0Qc6tBuu8lHwxUpECVQsUXZm69/BjCC/aXHGU9guS0Bcbxkn77hB4AGQm84t5M23Jc0SpOGIdU7odJhugwvimycHYCnlO33ngu1s9ygmM50k3UBr1o2oVOPNmPqFjHgUoRXsjXKH/XnJ6CPdp4vZmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UPdF4R/4; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33ae3cc8a6aso1439272f8f.2;
-        Mon, 29 Jan 2024 05:56:29 -0800 (PST)
+	s=arc-20240116; t=1706536627; c=relaxed/simple;
+	bh=Ca8MXRaUc5LB1kOopLbePSXXIUNdjkZs4DNPghLWDFs=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=KVV5FyukC0LxZkijsCZd5hs4WoapDW7YiwFmDcYXGh0KVWeLeDl8eAjDH4nljKFB8inwJ8uOZUqNxvwl2gK21u4miL2p+barNnJ0G3AFsr45KklbDzQtBpAOB7fAfN0qjzfiZJY/dGXpQ7DMwJJxAz0Eg9e2BxfYssIxuKSdPGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=CdFdim55; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55c33773c0aso2628667a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 05:57:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706536588; x=1707141388; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WclvSvESBcB1ccyxeqjrdGj+frspJc0esD0QtgwrkCo=;
-        b=UPdF4R/4HpA0gTA5h7cj7VbUvWgfDWse7bQ3LQ9tIRNuF4M8u5mMelc5FlsZhZipH1
-         jzrOf2dBLibSfYiV1iwNCJTYVJ7SvnyFpFnC8oDTXxtmqDNAaeJkL8TIrAkCvlOWb3Rc
-         k2f++sgdECqMthvxKaBRZQy/wPzPhqMwKWLWpDMMsdpCZEliTT7ncJT1Chk8UgExMR1V
-         H+DGNpoYS7kEQuZAge5sPH4iI/Yg0Flwc3KZ9I3Jy7rvEWtNKKM6JNagRy5VwhfqjWE5
-         fJ22P2aWtnIZFGJtqLk+3j1R+0LWQkzsoVHMG45o17LHZZIVijLfZV+vd1yugUC2VYII
-         TRmg==
+        d=tuxon.dev; s=google; t=1706536624; x=1707141424; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ca8MXRaUc5LB1kOopLbePSXXIUNdjkZs4DNPghLWDFs=;
+        b=CdFdim5561+uOc/UZI9C1XkgwUQldxEv3HdepZ6CN/UDROdI3+1DBs6H4IPhVnI4bw
+         vyPm7Cbs4iB98f3jpQdS6h5fZDvC93kC0REBEWIQJLEheseVyJUIR0SlHTIGkTUmwUGJ
+         pZ1d6FTak/5nl0y4rOOFqbp7wplMj0WxZ5860PTlu5tP3lqcdjlUo3pjCdgSnJQ/N7qh
+         m8PHS+0C3PGQVZa5AR3xWi2AHnD2uNofCB4+JeUx+NCyiaxQ2FxWIypJJlgEnWnnoPAM
+         xxTUDHLEI/RBrGmXiZoUSWCxfdjfDRcHHd9kJj1cgHbIIoONco8yyhb7k1A2G8iXxzUb
+         Jjfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706536588; x=1707141388;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WclvSvESBcB1ccyxeqjrdGj+frspJc0esD0QtgwrkCo=;
-        b=nXUOOPoplC0BNmwaHyjFbN5RUPqNlEPceFmsuPyMkxcEXLvFxs/53wk3jf+C1wrLba
-         aSwQ4H2obu4hmUXaxi1LUz1Yd8b8g0hFmpYjnunuUUmkT5FR1SBK4bAyoOMhPP/GzMKl
-         6TndNIImjXyHO+DMCkhFhw2y3qT1ZKXX9d7aXa1rF/N+6icd9MhiXEof5cEFJouQ0jns
-         BR7cnHffoAesYACi8j/BasagO1BO5ECcmdxjan3h8mayd7DEHZ7uNg7GHiEg8yXQxpQ3
-         5I2km9KTF6NtddoTxScC2ALLcWmkMKpKeTn4ORARzNj3GJ2HctCjo9rDFx4EmwgNoAwJ
-         5Tcw==
-X-Gm-Message-State: AOJu0YypyoHlK9YpVF98iMqi7WNURn+CEfqTz8cIOxTGPxiPuWCobA/v
-	Iq7kyEPl/AHSOe/61iWxWcYc6ddFfLdeAYf2wC3Eb7d3pUAkJS18
-X-Google-Smtp-Source: AGHT+IE/VmvDYsDUatlkAcbfvFN0EbwPx+JdGJuMYr0hmxp2wA6wVVhbilb4HSjUJXPxhVsTUXxUyA==
-X-Received: by 2002:a5d:6da3:0:b0:33a:ed3b:3739 with SMTP id u3-20020a5d6da3000000b0033aed3b3739mr2973996wrs.30.1706536588205;
-        Mon, 29 Jan 2024 05:56:28 -0800 (PST)
-Received: from prasmi.home ([2a00:23c8:2500:a01:5616:a18c:ea50:2995])
-        by smtp.gmail.com with ESMTPSA id bh5-20020a05600005c500b0033aed46956csm3058057wrb.80.2024.01.29.05.56.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 05:56:27 -0800 (PST)
-From: Prabhakar <prabhakar.csengg@gmail.com>
-X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Linus Walleij <linus.walleij@linaro.org>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-renesas-soc@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	Prabhakar <prabhakar.csengg@gmail.com>,
-	Biju Das <biju.das.jz@bp.renesas.com>,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v6 4/4] riscv: dts: renesas: r9a07g043f: Update gpio-ranges property
-Date: Mon, 29 Jan 2024 13:55:56 +0000
-Message-Id: <20240129135556.63466-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240129135556.63466-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20240129135556.63466-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        d=1e100.net; s=20230601; t=1706536624; x=1707141424;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ca8MXRaUc5LB1kOopLbePSXXIUNdjkZs4DNPghLWDFs=;
+        b=dGtorzBDMz4ed0BcAGOZlUK6miO9TLQ3BVIxcw8MQ56JAPyZRBBjitmwb7Qdgtzvjv
+         dbh6Hy0aOtVCfdDlUSfP+bQLjmDr9beTqpwpcba7cIEoKW2Pg4nnSbYigqIk8erVOCRN
+         bsV5FNqdz0Py+K/7ihYmBdIltj24hp1GQaG/GmBIb8ynPqJ9T7TqSFgm4TlCmxI2d4da
+         3mRS3hcuw7qXKrDOTeaQm0cYMg4wvcZ23rlV8bpiJy588EQ12MTX6U6lKw6SThIwC67S
+         dDSWmiSHvivTF0jpG5tQsYhm5tLao8XJAnKtQpjQQI5JWu/Y61TNMw3WTuulgyXIEmPE
+         iDUA==
+X-Gm-Message-State: AOJu0YxoIAFR77cFe2S8do4PwlvhqyRJ+0fIi1jGjGfKbns2uqJlhcdV
+	M4yssKd/djo9LNTWwnOAjM2jB2YQ0k2dZzFlo6L40flaTbUHcldjT/WFikaSx00=
+X-Google-Smtp-Source: AGHT+IEZngk8qVNZ0ZJg2IQYeB89DXsyZ8UBaE7DGVYPd3w6M9dTCGVsz1F85xddMef/9D1DC0lpWg==
+X-Received: by 2002:a17:906:5fd7:b0:a30:d4f2:1603 with SMTP id k23-20020a1709065fd700b00a30d4f21603mr5299264ejv.15.1706536624234;
+        Mon, 29 Jan 2024 05:57:04 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.87])
+        by smtp.gmail.com with ESMTPSA id vx6-20020a170907a78600b00a35ea4a21e8sm425895ejc.2.2024.01.29.05.57.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jan 2024 05:57:03 -0800 (PST)
+Message-ID: <2ab72042-eefd-47d7-a0a5-5259fc8098f9@tuxon.dev>
+Date: Mon, 29 Jan 2024 15:57:02 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v4 10/15] net: ravb: Move delay mode set in the
+ driver's ndo_open API
+Content-Language: en-US
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+To: Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ richardcochran@gmail.com, p.zabel@pengutronix.de, geert+renesas@glider.be
+Cc: netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240123125829.3970325-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240123125829.3970325-11-claudiu.beznea.uj@bp.renesas.com>
+ <b0a4f320-6218-2631-a5a0-26cfa9a25ee1@omp.ru>
+ <1c680be4-67b7-435b-9609-b5f7a45ca675@tuxon.dev>
+In-Reply-To: <1c680be4-67b7-435b-9609-b5f7a45ca675@tuxon.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-On RZ/Five we have additional pins compared to the RZ/G2UL SoC so update
-the gpio-ranges property in RZ/Five SoC DTSI.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
----
- arch/riscv/boot/dts/renesas/r9a07g043f.dtsi | 4 ++++
- 1 file changed, 4 insertions(+)
+On 29.01.2024 15:55, claudiu beznea wrote:
+> As explained in the patch description ("Along with it, both delay specific
 
-diff --git a/arch/riscv/boot/dts/renesas/r9a07g043f.dtsi b/arch/riscv/boot/dts/renesas/r9a07g043f.dtsi
-index d2272a0bfb61..aa3b1d2b999d 100644
---- a/arch/riscv/boot/dts/renesas/r9a07g043f.dtsi
-+++ b/arch/riscv/boot/dts/renesas/r9a07g043f.dtsi
-@@ -46,6 +46,10 @@ cpu0_intc: interrupt-controller {
- 	};
- };
- 
-+&pinctrl {
-+	gpio-ranges = <&pinctrl 0 0 232>;
-+};
-+
- &soc {
- 	dma-noncoherent;
- 	interrupt-parent = <&plic>;
--- 
-2.34.1
-
+Or partially explained. I'll try to improve this ^
 
