@@ -1,127 +1,193 @@
-Return-Path: <linux-kernel+bounces-42688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 165F4840503
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:28:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E861E84050B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:31:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A048AB22B50
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:28:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4C1C282A68
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:31:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15B36605B2;
-	Mon, 29 Jan 2024 12:28:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8285660DEF;
+	Mon, 29 Jan 2024 12:31:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RblHS8Df"
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mpESaN2A"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC8E1605A6;
-	Mon, 29 Jan 2024 12:28:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDBFA3527A
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 12:31:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706531320; cv=none; b=teFGFiJRdGgMI921AnHaw8pXhb6O2XLJTOVba9ote4oAWxHiaJHsOqF0sQf5pdS9oE7NTlJdq2J2okwZl+t2Qy0BHvTbtgUCjAhYwES79VnpKc5mw7Qxj6fPl9VamaNSBXZ2N2GaMlA2k0bvttNec0VmVBZ8GJ84SUB8oytq1GU=
+	t=1706531463; cv=none; b=e41JgxZPfPN7itRf6tsWzBIeiS62cIt1dlyif8A0DwJB3ioKwVcL5zqt/mQFWcgtWe4BD3kQdTfgBTUyLMRT05NijiuJdEKH7x308vNv4EJG9DO9VKg26PcTvHCwNhPt8HbsVoW/QEOyP7DprgR00RmKrGSO5q1Cg6AS1IQpkrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706531320; c=relaxed/simple;
-	bh=mcInd08XvyCy6zd1QuAT3wWVCaUJDJbn6lvFceUBXvQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bna8+6Y5N/cA9zwynwAIhmZ5pt+2nww4SlFAtjn3WdYFlOH9EHVNJ9IEWAM4mPUkRwJcynLm+7CoMbdlydS2FK++yvOFDTnckpSZ2ng8pj6fpS3nhPvwFJ8+jdLExH0QKqJm6i4WuoBS5VNEChUUcDMGKeescZ2wkZA6eodCi+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RblHS8Df; arc=none smtp.client-ip=209.85.167.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bd72353d9fso2239796b6e.3;
-        Mon, 29 Jan 2024 04:28:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706531318; x=1707136118; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qQ1Xaz14ZyQBYq37o+9XH+aMANQ9nM3T0nzw2efla60=;
-        b=RblHS8Dfk+R1ZL9f26honvvqAAIGuuSITBCoW2XBb+F7TDSs4wjgryVp8kvmI8XCls
-         vI+uInVeX7kQQ9/c2WW/SHuWtjQHtdFFFEAwThi/1p8I6qk32JCrRHDinJyeiUbrccsx
-         kEO1byYi0+gVGEazdfizQazTGCGupOqzCd3bB6vEzfmkq/OJI6qB1LyA+lwtKVklogHu
-         +YNuIcZtKOOGiMG/MLSbutSRXZEFlk5BOqrfJAxftDU81113Tj6ptEIsFLKYLHipWXvU
-         EtW5aXO5/KAFsgpvuf/77p5W9QHYayYdIe3kCxmhWvLvZXkKi8V5PL6uwksCsWUCozGq
-         ya3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706531318; x=1707136118;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qQ1Xaz14ZyQBYq37o+9XH+aMANQ9nM3T0nzw2efla60=;
-        b=PRvtzVInm3svcwIFOjur9fuThoMr6ZhoE8Xgz1KFLPV6fcD8PsPT/hg/oV+NFjh4UK
-         ry6T99xXFbP0aZ4aSGLs6cW09VF/HC4fkN0nKgbJQgfbO2ai22uMd9oNc7eowOb7nmJB
-         LZYpknD3u0lYf70uabCC2fYS4d78OrFOlNVz3XXp+zW6KxRo8d/aRwYBiXhSG0JsjTqx
-         0PGRmtXaHWRZi1NmsDD1SYGXkWHPvwz/Ypkd+ernVdF7CpB/JpwCp1P15oUuly4znXLa
-         PP7Z3WkBxz9phmc6qABoHGg6bOSXX/kIV/ft+2S/4hHgMpe2OyeCrrGKIxbPSpgxdKtO
-         hE9Q==
-X-Gm-Message-State: AOJu0YxsUy5Q0fIheKsp7tb2dyI1p7vKYgxcX0BaPivMp5lNxgTPDvv7
-	w5K94ioOfmOFoywiuCrAZyeeRFoz5j4OUk0xsA2HftyxfEnncI7w
-X-Google-Smtp-Source: AGHT+IEpxyGkK3I2qfH0QfxhhGtyGzTOgWR/vf9S3KraxhEmCgG+oBGIvP2QSme6hM9sn60woT/VlQ==
-X-Received: by 2002:a05:6808:114d:b0:3bd:bba6:9b14 with SMTP id u13-20020a056808114d00b003bdbba69b14mr9693174oiu.27.1706531317785;
-        Mon, 29 Jan 2024 04:28:37 -0800 (PST)
-Received: from 192.168.10.7 ([2409:8a6a:542c:83f1:d1e7:d095:b7df:289d])
-        by smtp.gmail.com with ESMTPSA id c38-20020a630d26000000b005cfb6b8e471sm5833300pgl.14.2024.01.29.04.28.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 04:28:37 -0800 (PST)
-From: Jianhua Lu <lujianhua000@gmail.com>
-To: Jianhua Lu <lujianhua000@gmail.com>,
-	Lee Jones <lee@kernel.org>,
-	Daniel Thompson <daniel.thompson@linaro.org>,
-	Jingoo Han <jingoohan1@gmail.com>,
-	Helge Deller <deller@gmx.de>
-Cc: dri-devel@lists.freedesktop.org,
-	linux-fbdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] backlight: ktz8866: Correct the check for of_property_read_u32
-Date: Mon, 29 Jan 2024 20:28:29 +0800
-Message-ID: <20240129122829.16248-1-lujianhua000@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706531463; c=relaxed/simple;
+	bh=OMjG087pQhKBaSUbWJ01ewqPvsYZPCOIy7ZK/xWIyLM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lLw2Gv8fd4CFJpm2+jl8xbVGPMaavoRmN8Ai4AZiiSqDuISfbD20mMGVj0KKeIdcnlJbh9wBimm9BaWpZaztmoyBJTGaQbRvOHSLqqaL5rDJt0UssFQVJy/D4KKJzjaiKPCfbYIODjd/Bdjr3zKzJYS9WIDATTglyfkAqOh1cFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mpESaN2A; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8200AC433C7;
+	Mon, 29 Jan 2024 12:31:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706531463;
+	bh=OMjG087pQhKBaSUbWJ01ewqPvsYZPCOIy7ZK/xWIyLM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mpESaN2AmpfQFQYUKYs+EQbLWFkPPNM+IzD4Jn9kW1zbuPrDWsV+go03/pzx2lFuF
+	 r2X09hQBKVNvGDGOs1+Jn+JF1KLoqQ/J5L0aI3h/1p0CxRKVfD2z4m1NfxDlHiFU2h
+	 xGCenlPZpg72QOMHycpLzAMC/TzA8H+aScDbhWO4M7zIhh9gisOoIRhGZ8k1ug62rX
+	 DRlzGBJqjSv75FCBDIG5xdWJEmhIo2uAKAsKDwtav/ouSgPRfVL3useLSi2i0cxBrL
+	 JWX6m2gs0/H8gCAU4Aac91MhjZgp+0KjWEi99pX2j98Wg9YMgWEgQ1GJRh44yWUxp0
+	 unmvaNfw68XKw==
+Date: Mon, 29 Jan 2024 12:30:59 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Sia Jee Heng <jeeheng.sia@starfivetech.com>
+Cc: linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
+	sudeep.holla@arm.com, robh@kernel.org, conor.dooley@microchip.com,
+	suagrfillet@gmail.com
+Subject: Re: [RFC v1 2/2] riscv: cacheinfo: Refactor populate_cache_leaves()
+Message-ID: <20240129-parrot-dropout-c4ece33a98da@spud>
+References: <20240129075957.116033-1-jeeheng.sia@starfivetech.com>
+ <20240129075957.116033-3-jeeheng.sia@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="vVQN45TubuFKPBU4"
+Content-Disposition: inline
+In-Reply-To: <20240129075957.116033-3-jeeheng.sia@starfivetech.com>
 
-of_property_read_u32 returns 0 when success, so reverse the
-return value to get the true value.
 
-Fixes: f8449c8f7355 ("backlight: ktz8866: Add support for Kinetic KTZ8866 backlight")
-Signed-off-by: Jianhua Lu <lujianhua000@gmail.com>
----
- drivers/video/backlight/ktz8866.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+--vVQN45TubuFKPBU4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/video/backlight/ktz8866.c b/drivers/video/backlight/ktz8866.c
-index 9c980f2571ee..014877b5a984 100644
---- a/drivers/video/backlight/ktz8866.c
-+++ b/drivers/video/backlight/ktz8866.c
-@@ -97,20 +97,20 @@ static void ktz8866_init(struct ktz8866 *ktz)
- {
- 	unsigned int val = 0;
- 
--	if (of_property_read_u32(ktz->client->dev.of_node, "current-num-sinks", &val))
-+	if (!of_property_read_u32(ktz->client->dev.of_node, "current-num-sinks", &val))
- 		ktz8866_write(ktz, BL_EN, BIT(val) - 1);
- 	else
- 		/* Enable all 6 current sinks if the number of current sinks isn't specified. */
- 		ktz8866_write(ktz, BL_EN, BIT(6) - 1);
- 
--	if (of_property_read_u32(ktz->client->dev.of_node, "kinetic,current-ramp-delay-ms", &val)) {
-+	if (!of_property_read_u32(ktz->client->dev.of_node, "kinetic,current-ramp-delay-ms", &val)) {
- 		if (val <= 128)
- 			ktz8866_write(ktz, BL_CFG2, BIT(7) | (ilog2(val) << 3) | PWM_HYST);
- 		else
- 			ktz8866_write(ktz, BL_CFG2, BIT(7) | ((5 + val / 64) << 3) | PWM_HYST);
- 	}
- 
--	if (of_property_read_u32(ktz->client->dev.of_node, "kinetic,led-enable-ramp-delay-ms", &val)) {
-+	if (!of_property_read_u32(ktz->client->dev.of_node, "kinetic,led-enable-ramp-delay-ms", &val)) {
- 		if (val == 0)
- 			ktz8866_write(ktz, BL_DIMMING, 0);
- 		else {
--- 
-2.43.0
+Hey,
 
+Firstly, the $subject should really mention that the motivation for the
+refactoring is ACPI support.
+
+On Sun, Jan 28, 2024 at 11:59:57PM -0800, Sia Jee Heng wrote:
+> Refactoring the cache population function to support both DT and
+> ACPI-based platforms.
+>=20
+> Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
+> ---
+>  arch/riscv/kernel/cacheinfo.c | 47 ++++++++++++++---------------------
+>  1 file changed, 19 insertions(+), 28 deletions(-)
+>=20
+> diff --git a/arch/riscv/kernel/cacheinfo.c b/arch/riscv/kernel/cacheinfo.c
+> index 30a6878287ad..f10e26fb75b6 100644
+> --- a/arch/riscv/kernel/cacheinfo.c
+> +++ b/arch/riscv/kernel/cacheinfo.c
+> @@ -74,36 +74,27 @@ int populate_cache_leaves(unsigned int cpu)
+>  {
+>  	struct cpu_cacheinfo *this_cpu_ci =3D get_cpu_cacheinfo(cpu);
+>  	struct cacheinfo *this_leaf =3D this_cpu_ci->info_list;
+> -	struct device_node *np =3D of_cpu_device_node_get(cpu);
+> -	struct device_node *prev =3D NULL;
+> -	int levels =3D 1, level =3D 1;
+> -
+> -	if (of_property_read_bool(np, "cache-size"))
+> -		ci_leaf_init(this_leaf++, CACHE_TYPE_UNIFIED, level);
+> -	if (of_property_read_bool(np, "i-cache-size"))
+> -		ci_leaf_init(this_leaf++, CACHE_TYPE_INST, level);
+> -	if (of_property_read_bool(np, "d-cache-size"))
+> -		ci_leaf_init(this_leaf++, CACHE_TYPE_DATA, level);
+> -
+> -	prev =3D np;
+> -	while ((np =3D of_find_next_cache_node(np))) {
+> -		of_node_put(prev);
+> -		prev =3D np;
+> -		if (!of_device_is_compatible(np, "cache"))
+> -			break;
+> -		if (of_property_read_u32(np, "cache-level", &level))
+> -			break;
+> -		if (level <=3D levels)
+> -			break;
+> -		if (of_property_read_bool(np, "cache-size"))
+> -			ci_leaf_init(this_leaf++, CACHE_TYPE_UNIFIED, level);
+> -		if (of_property_read_bool(np, "i-cache-size"))
+> -			ci_leaf_init(this_leaf++, CACHE_TYPE_INST, level);
+> -		if (of_property_read_bool(np, "d-cache-size"))
+> +	unsigned int level, idx;
+> +
+> +	for (idx =3D 0, level =3D 1; level <=3D this_cpu_ci->num_levels &&
+> +	     idx < this_cpu_ci->num_leaves; idx++, level++) {
+> +		/*
+> +		 * Since the RISC-V architecture doesn't provide any register for dete=
+cting the
+> +		 * Cache Level and Cache type, this assumes that:
+> +		 * - There cannot be any split caches (data/instruction) above a unifi=
+ed cache.
+> +		 * - Data/instruction caches come in pairs.
+> +		 * - Significant work is required elsewhere to fully support data/inst=
+ruction-only
+> +		 *   type caches.
+> +		 * - The above assumptions are based on conventional system design and=
+ known
+> +		 *   examples.
+
+I don't think this comment matches what you are doing.
+
+For example, the comment only requires that split caches cannot be above
+unified ones, but the code will always make a level 1 cache be split and
+higher level caches unified.
+
+The place you took the comment about the split caches from does not
+enforce the type of cache layout that you do where the 1st level is
+always split and anything else is unified.
+
+populate_cache_leaves() only gets called in a fallback path when the
+information has not already been configured by other means (and as you
+probably noticed on things like arm64 it uses some other means to fill
+in the data).
+
+Is there a reason why we would not just return -ENOENT for ACPI systems
+if this has not been populated earlier in boot and leave the DT code
+here alone?
+
+Thanks,
+Conor.
+
+> +		 */
+> +		if (level =3D=3D 1) {
+>  			ci_leaf_init(this_leaf++, CACHE_TYPE_DATA, level);
+> -		levels =3D level;
+> +			ci_leaf_init(this_leaf++, CACHE_TYPE_INST, level);
+> +		} else {
+> +			ci_leaf_init(this_leaf++, CACHE_TYPE_UNIFIED, level);
+> +		}
+>  	}
+> -	of_node_put(np);
+> =20
+>  	return 0;
+>  }
+> --=20
+> 2.34.1
+>=20
+>=20
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
+--vVQN45TubuFKPBU4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbeagwAKCRB4tDGHoIJi
+0p2vAP91xqgYKdI5R4E8M2TeUKf7W4MillrhtPoe4A++bU5YagD+NYICS59UguEb
+kC/D3NRlCAVajtBJRjiLWpUC77PETws=
+=E7YN
+-----END PGP SIGNATURE-----
+
+--vVQN45TubuFKPBU4--
 
