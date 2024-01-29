@@ -1,204 +1,231 @@
-Return-Path: <linux-kernel+bounces-42758-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8091F84064A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:09:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40DBF8405F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:04:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 389FE289372
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:09:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACD071F21F7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:04:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DA3C66B5D;
-	Mon, 29 Jan 2024 13:06:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XJyKOJ9b"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADE2562804;
+	Mon, 29 Jan 2024 13:04:02 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17CB2629EF;
-	Mon, 29 Jan 2024 13:06:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57795627E5;
+	Mon, 29 Jan 2024 13:03:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706533604; cv=none; b=fS8oMgQzD01Hecl3WfyDtZx86kZDK1VItP/5sO4Uy8ZLadtIEfunUemFcsC+O/GtQ0Sk3vABJeZCeQsPw8v7gzXSUvw6uZtl/9QEXFkOvLJINdU7WRuADuQ2ZuZSJ7JkPTSfxR1AzkwmuzRs47ENeoiTNP8G1T3rFaa0AO4KEkI=
+	t=1706533442; cv=none; b=jJjV3NWEqLWsYgcvUYko8/sJNs+W3LbyvN/MipSd2Xb3/CkzmUBJix8MyG1lYJtv78nma+SOqBk38aOr0szq0a1HmJN0ZO1Gn/qpjBmo6pRfrTG2uHesU6MKADlB+fdRljvRNSijJu5/BZr8tO1J0S1a7wrtVqzPRWiO+6k+g7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706533604; c=relaxed/simple;
-	bh=LJf7dTcJbBMHD+bB1uzaU0zJsclsm818XWVIqsj/XS4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=MwcLG3JjKaj/In0mxzq+HgvoHlPepF4MnnyC3i9/LgwIz+4vAx7HHWCRy1mtYCb73inOHXjdibPgroFPGXdwm/5GaYJ3kv4BOywt+9b4mHn/31dQwif9zc/ngV79fftwtXVRDoEkE+ALv3E4wxTzIeHlX3x/kNU3HS1RiZcZ3GA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XJyKOJ9b; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706533604; x=1738069604;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=LJf7dTcJbBMHD+bB1uzaU0zJsclsm818XWVIqsj/XS4=;
-  b=XJyKOJ9bCRCETTL5vNlvw+NYHHvA8lldw2UUpA+o/4L2UD765i/wkJ4B
-   7s3kY2dEPeuAKWdFUeD8JEZIMxCRTvxfzEa3FdQrhf1ichydmo4fCBifY
-   zrd+PaaqVQFRHbk3EuuQjuqBX4sqUmS++AYpgdb2rqVFZJ6SL/PtPM0uO
-   ncP+aE+jmBkGZCZT+d9IE9L66YLBt/lZ0qjWWGiRq+8r+NgLHMIAXbq6P
-   8MKu2qhe38BfgZl/DUAO1CIK2zetKH4zwkJSoSj8+GT7s/R3iNRBMc/sA
-   9tsq36/k8d1Yr3p9Si0ubnDGxQV70CgjJBJS4OYx9e/MIAShyJhnam6Ql
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="21473742"
-X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="21473742"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 05:06:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="907106901"
-X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="907106901"
-Received: from yongliang-ubuntu20-ilbpg12.png.intel.com ([10.88.229.33])
-  by fmsmga002.fm.intel.com with ESMTP; 29 Jan 2024 05:06:35 -0800
-From: Choong Yong Liang <yong.liang.choong@linux.intel.com>
-To: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-	David E Box <david.e.box@linux.intel.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Mark Gross <markgross@kernel.org>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <Jose.Abreu@synopsys.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Andrew Halaney <ahalaney@redhat.com>,
-	Simon Horman <simon.horman@corigine.com>,
-	Serge Semin <fancer.lancer@gmail.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	platform-driver-x86@vger.kernel.org,
-	linux-hwmon@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Voon Wei Feng <weifeng.voon@intel.com>,
-	Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-	Lai Peter Jun Ann <jun.ann.lai@intel.com>,
-	Abdul Rahim Faizal <faizal.abdul.rahim@intel.com>
-Subject: [PATCH net-next v4 11/11] stmmac: intel: interface switching support for ADL-N platform
-Date: Mon, 29 Jan 2024 21:02:53 +0800
-Message-Id: <20240129130253.1400707-12-yong.liang.choong@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240129130253.1400707-1-yong.liang.choong@linux.intel.com>
-References: <20240129130253.1400707-1-yong.liang.choong@linux.intel.com>
+	s=arc-20240116; t=1706533442; c=relaxed/simple;
+	bh=MW5KypFg1nPfOH+4Z7+YG9/XkLK+cVPVSXFwwG/gf9E=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Hl2CS7t2n56jw+0eeN2dUSa7casXH90d43P9jwfty0SuDl2nEQx4vl2QIh9jVYJYPow71gpQ9jlYCaCd8+r2YZFla0GK4qcDlwLBvpfYCCHdhV15xhKGkRJASD9hYmZ6MkRn6BbHnOOOs1OBIv9aa8R6I8oRSgJTCqe+z6q9cDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TNpM75yZdz6K9JK;
+	Mon, 29 Jan 2024 21:00:51 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8F10A140A1B;
+	Mon, 29 Jan 2024 21:03:55 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 29 Jan
+ 2024 13:03:54 +0000
+Date: Mon, 29 Jan 2024 13:03:54 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC: "Rafael J. Wysocki" <rafael@kernel.org>, <linux-pm@vger.kernel.org>,
+	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-riscv@lists.infradead.org>,
+	<kvmarm@lists.linux.dev>, <x86@kernel.org>,
+	<acpica-devel@lists.linuxfoundation.org>, <linux-csky@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
+	<linux-parisc@vger.kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, <jianyong.wu@arm.com>,
+	<justin.he@arm.com>, James Morse <james.morse@arm.com>,
+	<vishnu@os.amperecomputing.com>, <miguel.luis@oracle.com>
+Subject: Re: [PATCH RFC v3 03/21] ACPI: processor: Register CPUs that are
+ online, but not described in the DSDT
+Message-ID: <20240129130354.0000042b@Huawei.com>
+In-Reply-To: <20240123092725.00004382@Huawei.com>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+	<E1rDOg2-00Dvjk-RI@rmk-PC.armlinux.org.uk>
+	<CAJZ5v0ju1JHgpjuFLHZVs4NZiARG6iBZN_wza6c2e0kDhZjK0w@mail.gmail.com>
+	<ZaURtUvWQyjYfiiO@shell.armlinux.org.uk>
+	<20240122160227.00002d83@Huawei.com>
+	<CAJZ5v0hamuXJ_w-TSmVb=5jGide=Lb7sCjbzzNb_rFuPrvkgxQ@mail.gmail.com>
+	<Za6mHRJVjb6M1mun@shell.armlinux.org.uk>
+	<20240123092725.00004382@Huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-'intel_get_pcs_neg_mode' and 'intel_config_serdes' was provided to
-handle interface mode change for ADL-S platform.
+On Tue, 23 Jan 2024 09:27:25 +0000
+Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
 
-Modphy register lane was provided to configure serdes on interface
-mode changing.
+> On Mon, 22 Jan 2024 17:30:05 +0000
+> "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+>=20
+> > On Mon, Jan 22, 2024 at 05:22:46PM +0100, Rafael J. Wysocki wrote: =20
+> > > On Mon, Jan 22, 2024 at 5:02=E2=80=AFPM Jonathan Cameron
+> > > <Jonathan.Cameron@huawei.com> wrote:   =20
+> > > >
+> > > > On Mon, 15 Jan 2024 11:06:29 +0000
+> > > > "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+> > > >   =20
+> > > > > On Mon, Dec 18, 2023 at 09:22:03PM +0100, Rafael J. Wysocki wrote=
+:   =20
+> > > > > > On Wed, Dec 13, 2023 at 1:49=E2=80=AFPM Russell King <rmk+kerne=
+l@armlinux.org.uk> wrote:   =20
+> > > > > > >
+> > > > > > > From: James Morse <james.morse@arm.com>
+> > > > > > >
+> > > > > > > ACPI has two descriptions of CPUs, one in the MADT/APIC table=
+, the other
+> > > > > > > in the DSDT. Both are required. (ACPI 6.5's 8.4 "Declaring Pr=
+ocessors"
+> > > > > > > says "Each processor in the system must be declared in the AC=
+PI
+> > > > > > > namespace"). Having two descriptions allows firmware authors =
+to get
+> > > > > > > this wrong.
+> > > > > > >
+> > > > > > > If CPUs are described in the MADT/APIC, they will be brought =
+online
+> > > > > > > early during boot. Once the register_cpu() calls are moved to=
+ ACPI,
+> > > > > > > they will be based on the DSDT description of the CPUs. When =
+CPUs are
+> > > > > > > missing from the DSDT description, they will end up online, b=
+ut not
+> > > > > > > registered.
+> > > > > > >
+> > > > > > > Add a helper that runs after acpi_init() has completed to reg=
+ister
+> > > > > > > CPUs that are online, but weren't found in the DSDT. Any CPU =
+that
+> > > > > > > is registered by this code triggers a firmware-bug warning an=
+d kernel
+> > > > > > > taint.
+> > > > > > >
+> > > > > > > Qemu TCG only describes the first CPU in the DSDT, unless cpu=
+-hotplug
+> > > > > > > is configured.   =20
+> > > > > >
+> > > > > > So why is this a kernel problem?   =20
+> > > > >
+> > > > > So what are you proposing should be the behaviour here? What this
+> > > > > statement seems to be saying is that QEMU as it exists today only
+> > > > > describes the first CPU in DSDT.   =20
+> > > >
+> > > > This confuses me somewhat, because I'm far from sure which machines=
+ this
+> > > > is true for in QEMU.  I'm guessing it's a legacy thing with
+> > > > some old distro version of QEMU - so we'll have to paper over it an=
+yway
+> > > > but for current QEMU I'm not sure it's true.
+> > > >
+> > > > Helpfully there are a bunch of ACPI table tests so I've been checki=
+ng
+> > > > through all the multi CPU cases.
+> > > >
+> > > > CPU hotplug not enabled.
+> > > > pc/DSDT.dimmpxm  - 4x Processor entries.  -smp 4
+> > > > pc/DSDT.acpihmat - 2x Processor entries.  -smp 2
+> > > > q35/DSDT.acpihmat - 2x Processor entries. -smp 2
+> > > > virt/DSDT.acpihmatvirt - 4x ACPI0007 entries -smp 4
+> > > > q35/DSDT.acpihmat-noinitiator - 4 x Processor () entries -smp 4
+> > > > virt/DSDT.topology - 8x ACPI0007 entries
+> > > >
+> > > > I've also looked at the code and we have various types of
+> > > > CPU hotplug on x86 but they all build appropriate numbers of
+> > > > Processor() entries in DSDT.
+> > > > Arm likewise seems to build the right number of ACPI0007 entries
+> > > > (and doesn't yet have CPU HP support).
+> > > >
+> > > > If anyone can add a reference on why this is needed that would be v=
+ery
+> > > > helpful.   =20
+> > >=20
+> > > Yes, it would.
+> > >=20
+> > > Personally, I would prefer to assume that it is not necessary until it
+> > > turns out that (1) there is firmware with this issue actually in use
+> > > and (2) updating the firmware in question to follow the specification
+> > > is not practical.
+> > >=20
+> > > Otherwise, we'd make it easier to ship non-compliant firmware for no
+> > > good reason.   =20
+> >=20
+> > If Salil can't come up with a reason, then I'm in favour of dropping
+> > the patch like already done for patch 2. If the code change serves no
+> > useful purpose, there's no point in making the change.
+> >  =20
+>=20
+> Salil's out today, but I've messaged him to follow up later in the week.
+>=20
+> It 'might' be the odd cold plug path where QEMU half comes up, then extra
+> CPUs are added, then it boots. (used by some orchestration frameworks)
 
-Signed-off-by: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
----
- .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 49 ++++++++++++++++++-
- .../net/ethernet/stmicro/stmmac/dwmac-intel.h |  2 +
- 2 files changed, 50 insertions(+), 1 deletion(-)
+I poked this on x86 - it only applies with hotplug enabled anyway so
+same result as doing the hotplug later - All possible Processor() entries
+already exist in DSDT. Hence this isn't the source of the mysterious
+broken configuration.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-index fd9d56b7c511..f54595d156fb 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-@@ -992,6 +992,53 @@ static int adls_sgmii_phy1_data(struct pci_dev *pdev,
- static struct stmmac_pci_info adls_sgmii1g_phy1_info = {
- 	.setup = adls_sgmii_phy1_data,
- };
-+
-+static int adln_common_data(struct pci_dev *pdev,
-+			    struct plat_stmmacenet_data *plat)
-+{
-+	struct intel_priv_data *intel_priv = plat->bsp_priv;
-+
-+	plat->rx_queues_to_use = 6;
-+	plat->tx_queues_to_use = 4;
-+	plat->clk_ptp_rate = 204800000;
-+
-+	plat->safety_feat_cfg->tsoee = 1;
-+	plat->safety_feat_cfg->mrxpee = 0;
-+	plat->safety_feat_cfg->mestee = 1;
-+	plat->safety_feat_cfg->mrxee = 1;
-+	plat->safety_feat_cfg->mtxee = 1;
-+	plat->safety_feat_cfg->epsi = 0;
-+	plat->safety_feat_cfg->edpp = 0;
-+	plat->safety_feat_cfg->prtyen = 0;
-+	plat->safety_feat_cfg->tmouten = 0;
-+
-+	intel_priv->tsn_lane_registers = adln_tsn_lane_registers;
-+	intel_priv->max_tsn_lane_registers = ARRAY_SIZE(adln_tsn_lane_registers);
-+
-+	return intel_mgbe_common_data(pdev, plat);
-+}
-+
-+static int adln_sgmii_phy0_data(struct pci_dev *pdev,
-+				struct plat_stmmacenet_data *plat)
-+{
-+	struct intel_priv_data *intel_priv = plat->bsp_priv;
-+
-+	plat->bus_id = 1;
-+	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
-+	plat->max_speed = SPEED_2500;
-+	plat->serdes_powerup = intel_serdes_powerup;
-+	plat->serdes_powerdown = intel_serdes_powerdown;
-+	plat->get_pcs_neg_mode = intel_get_pcs_neg_mode;
-+	plat->config_serdes = intel_config_serdes;
-+	intel_priv->pid_modphy = PID_MODPHY1;
-+
-+	return adln_common_data(pdev, plat);
-+}
-+
-+static struct stmmac_pci_info adln_sgmii1g_phy0_info = {
-+	.setup = adln_sgmii_phy0_data,
-+};
-+
- static const struct stmmac_pci_func_data galileo_stmmac_func_data[] = {
- 	{
- 		.func = 6,
-@@ -1374,7 +1421,7 @@ static const struct pci_device_id intel_eth_pci_id_table[] = {
- 	{ PCI_DEVICE_DATA(INTEL, TGLH_SGMII1G_1, &tgl_sgmii1g_phy1_info) },
- 	{ PCI_DEVICE_DATA(INTEL, ADLS_SGMII1G_0, &adls_sgmii1g_phy0_info) },
- 	{ PCI_DEVICE_DATA(INTEL, ADLS_SGMII1G_1, &adls_sgmii1g_phy1_info) },
--	{ PCI_DEVICE_DATA(INTEL, ADLN_SGMII1G, &tgl_sgmii1g_phy0_info) },
-+	{ PCI_DEVICE_DATA(INTEL, ADLN_SGMII1G, &adln_sgmii1g_phy0_info) },
- 	{ PCI_DEVICE_DATA(INTEL, RPLP_SGMII1G, &tgl_sgmii1g_phy0_info) },
- 	{}
- };
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-index 093eed977ab0..2c6b50958988 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-@@ -124,8 +124,10 @@ static const struct pmc_serdes_regs pid_modphy1_2p5g_regs[] = {
- 	{}
- };
- 
-+static const int adln_tsn_lane_registers[] = {6};
- static const int ehl_tsn_lane_registers[] = {7, 8, 9, 10, 11};
- #else
-+static const int adln_tsn_lane_registers[] = {};
- static const int ehl_tsn_lane_registers[] = {};
- #endif /* CONFIG_INTEL_PMC_IPC */
- 
--- 
-2.34.1
+If anyone does poke this path, the old discussion between James
+and Salil provides some instructions (mostly the thread is about
+another issue).
+https://op-lists.linaro.org/archives/list/linaro-open-discussions@op-lists.=
+linaro.org/thread/DNAGB2FB5ALVLV2BYWYOCLKGNF77PNXS/
+
+Also on x86 a test involving smp 2,max-cpus=3D4 and adding cpu-id 3
+(so skipping 2) doesn't boot. (this is without Salil's QEMU patches).
+I guess there are some well known rules in there that I don't know about
+and QEMU isn't preventing people shooting themselves in the foot.
+
+As I'm concerned, drop this patch.
+If there are platforms out there doing this wrong they'll surface once
+we get this into more test farms (so linux-next).  If we need this
+'fix' we can apply it when we have a problem firmware to point at.
+
+Thanks,
+
+Jonathan
+
+> I don't have a set up for that and I won't get to creating one today anyw=
+ay
+> (we all love start of the year planning workshops!)
+
+>=20
+> I've +CC'd a few people have run tests on the various iterations of this
+> work in the past.  Maybe one of them can shed some light on this?
+>=20
+> Jonathan
+>=20
+>=20
+>=20
+>=20
+>=20
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
 
