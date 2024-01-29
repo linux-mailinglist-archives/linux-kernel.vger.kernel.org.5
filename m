@@ -1,311 +1,147 @@
-Return-Path: <linux-kernel+bounces-43025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE5E3840A57
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:44:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15D05840A54
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:43:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 758B42855A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:44:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9BF0BB25ED4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:43:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 314A4155A3F;
-	Mon, 29 Jan 2024 15:43:02 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F19154C0C
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 15:42:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A2AD155317;
+	Mon, 29 Jan 2024 15:42:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="MUe+POmJ"
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B284D154445
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 15:42:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706542981; cv=none; b=fphoqa3EdyA/X7nXULgtwjUxcOS/OhfkvDZpLB9pws996teb3ZoMeom6u1gbIGPoY+IiyVfblHkqR313E+JMQuiP4rzz48raO6QlCyLsFY83UGYIQwoyoUNP+atPhlz+TDVxizlfDDeigzMS5YiJ98w970p4+9YqmoiKhFOH8ZE=
+	t=1706542968; cv=none; b=ILTYKAxF072bymuk1HOsjgjsY3VzYK/gbYA8KHkjMohEjrjsTdlFmAjviVil+rTiZ9Pm2Tzc2slXtujLlkVaLlQQE0p0pN8YnwCsZ6WiKZUPAwhdp2sf9E/iASQtOGAhLiXfYG/G40vZGd8VC1YoOnvRYUWk3aaiPP876VBFpWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706542981; c=relaxed/simple;
-	bh=V6gPdvWvE/f94nSb01JEWy7RqqLCh2EpZV9yIXNqpc0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=O/2mo4B1uiyMRJ5gRpWpjWG9frxZtS5johUtYeLJlLAnKELcecPj37V2IfL7dCL6ndj5jtZUi7vgk4XL+6W0kkCkp22gSAAXz24jY8TDZ5GqVvSU+Is5NjT4uB95sEyp3rD1Iitx/G48K5eADO2njLtdBp2eNRxW4HmyobY3CXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A0DF1DA7;
-	Mon, 29 Jan 2024 07:43:42 -0800 (PST)
-Received: from e127643.lan (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 27FA63F738;
-	Mon, 29 Jan 2024 07:42:55 -0800 (PST)
-From: James Clark <james.clark@arm.com>
-To: coresight@lists.linaro.org,
-	suzuki.poulose@arm.com
-Cc: James Clark <james.clark@arm.com>,
-	Mike Leach <mike.leach@linaro.org>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH v2 12/12] coresight: Add helper for setting csdev->mode
-Date: Mon, 29 Jan 2024 15:40:43 +0000
-Message-Id: <20240129154050.569566-13-james.clark@arm.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240129154050.569566-1-james.clark@arm.com>
-References: <20240129154050.569566-1-james.clark@arm.com>
+	s=arc-20240116; t=1706542968; c=relaxed/simple;
+	bh=E2pz83SaHUUBSu+k2FmR9GyqPifnumB7xkbI8/ZNP6c=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=IWFaXWHFRBCBbWbDo/0DDxIif28YEQMW3UIxoo+CQicxWTZ04VCWZlZsmOuWb+SSxEESv2foaU03G+qjA73MY9WYAHf8v09z0AObssPPWZpl83SB/7PBBH1OX2Vb+wgZ/VdaOceP1LelX1f0wlgQgsN6gx4KqY4a4/Yn2NR+05E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=MUe+POmJ; arc=none smtp.client-ip=185.125.188.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 3C7EA3FD9F
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 15:42:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1706542962;
+	bh=FmVwiL7ssmvBS/Rk3AP7EZwNHMhnVZ9IcleUiv9ucoo=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type;
+	b=MUe+POmJwanreQNkMuyXUEq1Gmq9m0Zpn4dwmRWFZQ5BzDHtJDEdYSbd9rki/VMhn
+	 dfeKT+ZUKscxbYDeyC3KelkrTJw1HbA7L9P7QTOlOe6BfmIElvg+wjzi/K0Jk+y0xF
+	 y65fe92JueevglKGclECrr2iB95ErVFt+4SCp2UZLlAY8GQysEiPd2itKVm//iUhZr
+	 KP7Xg0A+mkx/gS8biAlzu8ZQklRHklnZknAQTOd5MdTbkG/Gkcsst1k+IkrN4SLULj
+	 t69SIeJzDyouJzA+9nLCib2mpNC1TJbwZvsDwPTm9iVjqMNyeIwfjs2IswUrau5pcn
+	 9cKF1KwKjHLuw==
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a35a649c608so68701166b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 07:42:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706542961; x=1707147761;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FmVwiL7ssmvBS/Rk3AP7EZwNHMhnVZ9IcleUiv9ucoo=;
+        b=CAzXIZ0zmKI7X5VqKrT+MfGJHelkYOMir1Jffb7Bev4Nz9IGBQueMWv/AIZobyJrBZ
+         gS+fiGXIwpYMbJTvwLeH1d1NEHRWwliRxuLGZJSzGwuBD3ZDZJcWHLbG1I5oBPdFX+29
+         j57B0DKZvmFe2bynALPFriX+3ogHcbXprd2KK2OIK/rWBq4MYokvZroxePfvPdvIZfbS
+         rlyJ7sdSYIFfpocKRQci7I1a6+ne/iQO1zfQpJyrUouDJJPU+9bEXaLFd0cjMuTouRI9
+         XXomQUZ7zHhHxid2aU1K27OXqWLqk+xZMG4BfbQ+nGeIXH1nTjztNqXfwI2V5LSi3hlx
+         NGhA==
+X-Gm-Message-State: AOJu0Yy0PK5FqDesj2Za7uBWAOYwnEDlfRnZntdOfxSG3eb8kF5yADRV
+	LYX2k0CaQarD2X4IbYYrrA3t7bKyv5d+kphRjSCwC+CpNuzIG0xRXUD5yhfkq8dQ2rky+MzK+hM
+	EG+Dkl6advuu6piqLf65RhWMl02H1EivqoC3u3g2H6XRjH5k26X+IYUJJDkaV7fmStwuC7aPb/4
+	DVPg==
+X-Received: by 2002:a17:906:7f90:b0:a2c:3596:b0c1 with SMTP id f16-20020a1709067f9000b00a2c3596b0c1mr4985254ejr.75.1706542961640;
+        Mon, 29 Jan 2024 07:42:41 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF4WvBpWmKQPkCgy9/7v4IVO3JZ0fzYsBag+YDG8GPdLA0TxgRJEg58UOGotA/ZgDC9TpA24w==
+X-Received: by 2002:a17:906:7f90:b0:a2c:3596:b0c1 with SMTP id f16-20020a1709067f9000b00a2c3596b0c1mr4985242ejr.75.1706542961322;
+        Mon, 29 Jan 2024 07:42:41 -0800 (PST)
+Received: from amikhalitsyn ([91.64.72.41])
+        by smtp.gmail.com with ESMTPSA id fj18-20020a1709069c9200b00a3496fa1f7fsm4069969ejc.91.2024.01.29.07.42.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 07:42:40 -0800 (PST)
+Date: Mon, 29 Jan 2024 16:42:40 +0100
+From: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: mszeredi@redhat.com, stgraber@stgraber.org,
+ linux-fsdevel@vger.kernel.org, Seth Forshee <sforshee@kernel.org>, Miklos
+ Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, Bernd
+ Schubert <bschubert@ddn.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 4/9] fs/fuse: support idmapped getattr inode op
+Message-Id: <20240129164240.9e35bcf01695efcb1f966517@canonical.com>
+In-Reply-To: <20240120-heult-applaudieren-d6449392b497@brauner>
+References: <20240108120824.122178-1-aleksandr.mikhalitsyn@canonical.com>
+	<20240108120824.122178-5-aleksandr.mikhalitsyn@canonical.com>
+	<20240120-heult-applaudieren-d6449392b497@brauner>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Now that mode is in struct coresight_device, sets can be wrapped. This
-also allows us to add a sanity check that there have been no concurrent
-modifications of mode. Currently all usages of local_set() were inside
-the device's spin locks so this new warning shouldn't be triggered.
+On Sat, 20 Jan 2024 16:21:08 +0100
+Christian Brauner <brauner@kernel.org> wrote:
 
-coresight_take_mode() could maybe have been used in place of adding
-the warning, but there may be use cases which set the mode to the same
-mode which are valid but would fail in coresight_take_mode() because
-it requires the device to only be in the disabled state.
+> >  int fuse_update_attributes(struct inode *inode, struct file *file, u32 mask)
+> >  {
+> > -	return fuse_update_get_attr(inode, file, NULL, mask, 0);
+> > +	return fuse_update_get_attr(&nop_mnt_idmap, inode, file, NULL, mask, 0);
+> >  }
+> >  
+> >  int fuse_reverse_inval_entry(struct fuse_conn *fc, u64 parent_nodeid,
+> > @@ -1506,7 +1510,7 @@ static int fuse_perm_getattr(struct inode *inode, int mask)
+> >  		return -ECHILD;
+> >  
+> >  	forget_all_cached_acls(inode);
+> > -	return fuse_do_getattr(inode, NULL, NULL);
+> > +	return fuse_do_getattr(&nop_mnt_idmap, inode, NULL, NULL);
+> >  }
+> >  
+> >  /*
+> > @@ -2062,7 +2066,7 @@ static int fuse_setattr(struct mnt_idmap *idmap, struct dentry *entry,
+> >  			 * ia_mode calculation may have used stale i_mode.
+> >  			 * Refresh and recalculate.
+> >  			 */
+> > -			ret = fuse_do_getattr(inode, NULL, file);
+> > +			ret = fuse_do_getattr(&nop_mnt_idmap, inode, NULL, file);
+> >  			if (ret)
+> >  				return ret;
+> 
 
-Signed-off-by: James Clark <james.clark@arm.com>
----
- drivers/hwtracing/coresight/coresight-etb10.c    |  6 +++---
- .../hwtracing/coresight/coresight-etm3x-core.c   |  4 ++--
- .../hwtracing/coresight/coresight-etm4x-core.c   |  4 ++--
- drivers/hwtracing/coresight/coresight-stm.c      |  2 +-
- drivers/hwtracing/coresight/coresight-tmc-etf.c  | 10 +++++-----
- drivers/hwtracing/coresight/coresight-tmc-etr.c  |  6 +++---
- drivers/hwtracing/coresight/ultrasoc-smb.c       |  6 +++---
- include/linux/coresight.h                        | 16 ++++++++++++++++
- 8 files changed, 35 insertions(+), 19 deletions(-)
+Hi, Christian!
 
-diff --git a/drivers/hwtracing/coresight/coresight-etb10.c b/drivers/hwtracing/coresight/coresight-etb10.c
-index 4e82d9c20d36..aea4ce6fb0b6 100644
---- a/drivers/hwtracing/coresight/coresight-etb10.c
-+++ b/drivers/hwtracing/coresight/coresight-etb10.c
-@@ -158,7 +158,7 @@ static int etb_enable_sysfs(struct coresight_device *csdev)
- 		if (ret)
- 			goto out;
- 
--		local_set(&csdev->mode, CS_MODE_SYSFS);
-+		coresight_set_mode(csdev, CS_MODE_SYSFS);
- 	}
- 
- 	csdev->refcnt++;
-@@ -214,7 +214,7 @@ static int etb_enable_perf(struct coresight_device *csdev, void *data)
- 	if (!ret) {
- 		/* Associate with monitored process. */
- 		drvdata->pid = pid;
--		local_set(&drvdata->csdev->mode, CS_MODE_PERF);
-+		coresight_set_mode(drvdata->csdev, CS_MODE_PERF);
- 		csdev->refcnt++;
- 	}
- 
-@@ -365,7 +365,7 @@ static int etb_disable(struct coresight_device *csdev)
- 	etb_disable_hw(drvdata);
- 	/* Dissociate from monitored process. */
- 	drvdata->pid = -1;
--	local_set(&csdev->mode, CS_MODE_DISABLED);
-+	coresight_set_mode(csdev, CS_MODE_DISABLED);
- 	spin_unlock_irqrestore(&drvdata->spinlock, flags);
- 
- 	dev_dbg(&csdev->dev, "ETB disabled\n");
-diff --git a/drivers/hwtracing/coresight/coresight-etm3x-core.c b/drivers/hwtracing/coresight/coresight-etm3x-core.c
-index 63991029cda0..bda9fb61559c 100644
---- a/drivers/hwtracing/coresight/coresight-etm3x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm3x-core.c
-@@ -576,7 +576,7 @@ static int etm_enable(struct coresight_device *csdev, struct perf_event *event,
- 
- 	/* The tracer didn't start */
- 	if (ret)
--		local_set(&drvdata->csdev->mode, CS_MODE_DISABLED);
-+		coresight_set_mode(drvdata->csdev, CS_MODE_DISABLED);
- 
- 	return ret;
- }
-@@ -693,7 +693,7 @@ static void etm_disable(struct coresight_device *csdev,
- 	}
- 
- 	if (mode)
--		local_set(&csdev->mode, CS_MODE_DISABLED);
-+		coresight_set_mode(csdev, CS_MODE_DISABLED);
- }
- 
- static const struct coresight_ops_source etm_source_ops = {
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index 08451b3f8eaa..2d0a9da610c3 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -859,7 +859,7 @@ static int etm4_enable(struct coresight_device *csdev, struct perf_event *event,
- 
- 	/* The tracer didn't start */
- 	if (ret)
--		local_set(&csdev->mode, CS_MODE_DISABLED);
-+		coresight_set_mode(csdev, CS_MODE_DISABLED);
- 
- 	return ret;
- }
-@@ -1021,7 +1021,7 @@ static void etm4_disable(struct coresight_device *csdev,
- 	}
- 
- 	if (mode)
--		local_set(&csdev->mode, CS_MODE_DISABLED);
-+		coresight_set_mode(csdev, CS_MODE_DISABLED);
- }
- 
- static const struct coresight_ops_source etm4_source_ops = {
-diff --git a/drivers/hwtracing/coresight/coresight-stm.c b/drivers/hwtracing/coresight/coresight-stm.c
-index 53a07a536968..6e801191d1db 100644
---- a/drivers/hwtracing/coresight/coresight-stm.c
-+++ b/drivers/hwtracing/coresight/coresight-stm.c
-@@ -272,7 +272,7 @@ static void stm_disable(struct coresight_device *csdev,
- 
- 		pm_runtime_put(csdev->dev.parent);
- 
--		local_set(&csdev->mode, CS_MODE_DISABLED);
-+		coresight_set_mode(csdev, CS_MODE_DISABLED);
- 		dev_dbg(&csdev->dev, "STM tracing disabled\n");
- 	}
- }
-diff --git a/drivers/hwtracing/coresight/coresight-tmc-etf.c b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-index 77ef67c976e9..d4f641cd9de6 100644
---- a/drivers/hwtracing/coresight/coresight-tmc-etf.c
-+++ b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-@@ -228,7 +228,7 @@ static int tmc_enable_etf_sink_sysfs(struct coresight_device *csdev)
- 
- 	ret = tmc_etb_enable_hw(drvdata);
- 	if (!ret) {
--		local_set(&csdev->mode, CS_MODE_SYSFS);
-+		coresight_set_mode(csdev, CS_MODE_SYSFS);
- 		csdev->refcnt++;
- 	} else {
- 		/* Free up the buffer if we failed to enable */
-@@ -292,7 +292,7 @@ static int tmc_enable_etf_sink_perf(struct coresight_device *csdev, void *data)
- 		if (!ret) {
- 			/* Associate with monitored process. */
- 			drvdata->pid = pid;
--			local_set(&csdev->mode, CS_MODE_PERF);
-+			coresight_set_mode(csdev, CS_MODE_PERF);
- 			csdev->refcnt++;
- 		}
- 	} while (0);
-@@ -349,7 +349,7 @@ static int tmc_disable_etf_sink(struct coresight_device *csdev)
- 	tmc_etb_disable_hw(drvdata);
- 	/* Dissociate from monitored process. */
- 	drvdata->pid = -1;
--	local_set(&csdev->mode, CS_MODE_DISABLED);
-+	coresight_set_mode(csdev, CS_MODE_DISABLED);
- 
- 	spin_unlock_irqrestore(&drvdata->spinlock, flags);
- 
-@@ -375,7 +375,7 @@ static int tmc_enable_etf_link(struct coresight_device *csdev,
- 	if (csdev->refcnt == 0) {
- 		ret = tmc_etf_enable_hw(drvdata);
- 		if (!ret) {
--			local_set(&csdev->mode, CS_MODE_SYSFS);
-+			coresight_set_mode(csdev, CS_MODE_SYSFS);
- 			first_enable = true;
- 		}
- 	}
-@@ -405,7 +405,7 @@ static void tmc_disable_etf_link(struct coresight_device *csdev,
- 	csdev->refcnt--;
- 	if (csdev->refcnt == 0) {
- 		tmc_etf_disable_hw(drvdata);
--		local_set(&csdev->mode, CS_MODE_DISABLED);
-+		coresight_set_mode(csdev, CS_MODE_DISABLED);
- 		last_disable = true;
- 	}
- 	spin_unlock_irqrestore(&drvdata->spinlock, flags);
-diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-index 383cb8647589..e75428fa1592 100644
---- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
-+++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-@@ -1237,7 +1237,7 @@ static int tmc_enable_etr_sink_sysfs(struct coresight_device *csdev)
- 
- 	ret = tmc_etr_enable_hw(drvdata, sysfs_buf);
- 	if (!ret) {
--		local_set(&csdev->mode, CS_MODE_SYSFS);
-+		coresight_set_mode(csdev, CS_MODE_SYSFS);
- 		csdev->refcnt++;
- 	}
- 
-@@ -1684,7 +1684,7 @@ static int tmc_enable_etr_sink_perf(struct coresight_device *csdev, void *data)
- 	if (!rc) {
- 		/* Associate with monitored process. */
- 		drvdata->pid = pid;
--		local_set(&csdev->mode, CS_MODE_PERF);
-+		coresight_set_mode(csdev, CS_MODE_PERF);
- 		drvdata->perf_buf = etr_perf->etr_buf;
- 		csdev->refcnt++;
- 	}
-@@ -1730,7 +1730,7 @@ static int tmc_disable_etr_sink(struct coresight_device *csdev)
- 	tmc_etr_disable_hw(drvdata);
- 	/* Dissociate from monitored process. */
- 	drvdata->pid = -1;
--	local_set(&csdev->mode, CS_MODE_DISABLED);
-+	coresight_set_mode(csdev, CS_MODE_DISABLED);
- 	/* Reset perf specific data */
- 	drvdata->perf_buf = NULL;
- 
-diff --git a/drivers/hwtracing/coresight/ultrasoc-smb.c b/drivers/hwtracing/coresight/ultrasoc-smb.c
-index ad533aeb6786..1ad6f319a096 100644
---- a/drivers/hwtracing/coresight/ultrasoc-smb.c
-+++ b/drivers/hwtracing/coresight/ultrasoc-smb.c
-@@ -211,7 +211,7 @@ static void smb_enable_sysfs(struct coresight_device *csdev)
- 		return;
- 
- 	smb_enable_hw(drvdata);
--	local_set(&csdev->mode, CS_MODE_SYSFS);
-+	coresight_set_mode(csdev, CS_MODE_SYSFS);
- }
- 
- static int smb_enable_perf(struct coresight_device *csdev, void *data)
-@@ -234,7 +234,7 @@ static int smb_enable_perf(struct coresight_device *csdev, void *data)
- 	if (drvdata->pid == -1) {
- 		smb_enable_hw(drvdata);
- 		drvdata->pid = pid;
--		local_set(&csdev->mode, CS_MODE_PERF);
-+		coresight_set_mode(csdev, CS_MODE_PERF);
- 	}
- 
- 	return 0;
-@@ -297,7 +297,7 @@ static int smb_disable(struct coresight_device *csdev)
- 
- 	/* Dissociate from the target process. */
- 	drvdata->pid = -1;
--	local_set(&csdev->mode, CS_MODE_DISABLED);
-+	coresight_set_mode(csdev, CS_MODE_DISABLED);
- 	dev_dbg(&csdev->dev, "Ultrasoc SMB disabled\n");
- 
- 	return 0;
-diff --git a/include/linux/coresight.h b/include/linux/coresight.h
-index 4a728dd9338a..281b1b2603d8 100644
---- a/include/linux/coresight.h
-+++ b/include/linux/coresight.h
-@@ -596,6 +596,22 @@ static inline enum cs_mode coresight_get_mode(struct coresight_device *csdev)
- 	return local_read(&csdev->mode);
- }
- 
-+static inline void coresight_set_mode(struct coresight_device *csdev,
-+				      enum cs_mode new_mode)
-+{
-+	enum cs_mode current_mode = coresight_get_mode(csdev);
-+
-+	/*
-+	 * Changing to a new mode must be done from an already disabled state
-+	 * unless it's synchronized with coresight_take_mode(). Otherwise the
-+	 * device is already in use and signifies a locking issue.
-+	 */
-+	WARN(new_mode != CS_MODE_DISABLED && current_mode != CS_MODE_DISABLED &&
-+	     current_mode != new_mode, "Device already in use\n");
-+
-+	local_set(&csdev->mode, new_mode);
-+}
-+
- extern struct coresight_device *
- coresight_register(struct coresight_desc *desc);
- extern void coresight_unregister(struct coresight_device *csdev);
--- 
-2.34.1
+> These are internal getattr requests that don't originate from a specific mount?
+
+These requests do originate from a specific mount, but we don't need an idmapping in there
+because 3rd argument of fuse_do_getattr(struct mnt_idmap *idmap, struct inode *inode, struct kstat *stat, struct file *file) is NULL,
+which means that this request will not fill an stat structure => we don't need to take an idmapping into account.
+
+> Can you please add a comment about this in the commit message so it's
+> clear why it's ok to not pass the idmapping?
+
+Sure, that's my bad that I haven't added this explanation! It's not obvious at all.
+
+Will be fixed in -v2.
+
+Thanks,
+Alex
 
 
