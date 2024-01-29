@@ -1,195 +1,217 @@
-Return-Path: <linux-kernel+bounces-43006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43CB9840A2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:35:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C788840A31
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:37:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 685441C234E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:35:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC7A41F272AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:37:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B333F154BFA;
-	Mon, 29 Jan 2024 15:35:11 +0000 (UTC)
-Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97BD9154445;
+	Mon, 29 Jan 2024 15:37:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sCzSPJNF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A005153BC6;
-	Mon, 29 Jan 2024 15:35:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF3B815442B;
+	Mon, 29 Jan 2024 15:37:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706542511; cv=none; b=WNZe8QnOueebGLiCLsUHDh/gAPij+saLCPTwhCKdsxkGznywMLtxE6w5ScOW4hjf/V4HyN/2mqVCjRwo0prC16oKNvBE8Pd4AqBt7tnKdgjUJYHEcCqO1RkMCbpG3FqMIqoBiPxcbFf3gEWV3/k2RRMAVP7lwKn5sU5UzUWszfA=
+	t=1706542634; cv=none; b=b/LPSTBU1DuV8rl29+NXc3ZGNSOv2+KFUPWEoHYRlBIam1H0Zrp0XxsFynpxOu0mrPl2W3yxR67RG6l4ANTg/mZk/T3upyvlKj1ydlhATtPrArWfEa9gRSrn4p2dsLII0OEc38j/fuNKW52iATwzZi12FSGAfwfXlhg6eYz6vtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706542511; c=relaxed/simple;
-	bh=oqnGdtTv/k7O49UAKeLaHEMigeXSQOzpobeqbQwsRC0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bPLC4zhtyD4bU50kQ5nQKdGp9+5+fo5d5TJ5aRxiheqn2QQKb+GvBSYu9K2H4RRkuKkSXUdxu4oz9DRHxOKmlMySBZFJnqG32noFb8rFGiMUMl5G2YkvQ/ReVPNa6bzyq+pjsQDKs420imoenUeTntTcIb8uoUorvWjokVcguNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-210cd12fae2so25259fac.0;
-        Mon, 29 Jan 2024 07:35:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706542508; x=1707147308;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TG+8XeCHdsIlnW4L47AUTukqeea8Ay75J0VzHSz+j7A=;
-        b=Twa9prJe/xBthuLdZL8KpXHwppEh7BLCz6JGLBRsCNNLLjxF39VqYtZ2F2R5h+YEpr
-         Gt6/me2moiVq0hPU2hNf+a9COMR1bLm+5J6zGm6NFf9xi+X4qOEmlPfZm5wXrdouxNvz
-         +FI769+JpwDznPPZZ13kYDSfxUh0MwPH2rmtCzon6QGEtRMJCslxqcQeqDlN0SqEopgB
-         gcVBxuu8CPd9v8ceVp3tkjQMSVmx7+/ZrJdNC66cuWGg0y1lDDr3aUmctu2s3Od0jgQt
-         oLwWaNTTEzXEDTZs7MYHHorb3avTGz4bc23NV855AP8EAtjYlx5Pik3+E7vn972jJoHs
-         lQZg==
-X-Forwarded-Encrypted: i=0; AJvYcCWivtAILoZlBgyc8Hp0ORscZpsAnxqYMh/fjI5p6X+eFspXzltgbFcJn+aLewMld/OHzT6lLVJmgdQteGngui6Jm4Wx5cXCwLmF+BLAKQiccmNfQWjPheCfsJTmNAAo9/W6+FCp5kNAK9v7qkGTbqlhghnwhyp3SR498xZsQa+Ad9lfpvlH8gdPlcjTfXnyojvhfpeMGBGmo+mhx9OWJ7es/Ervw5GNtxX+adYh9Z7CrCZQdGWngK18sPQFiWvcnHc8PgRgqNts2mBGkkBfOxIjsiWsW49LI6otzGfK2t736aK6iTqqQgwb+OP/Pdyzg4D8T3bd+kIItrrJ3XaJcx8eLkv6n1Clw3bd/oRaug7g
-X-Gm-Message-State: AOJu0YzTLLTp9Lnb0CkAwCS2FdUSWTg8RDFNyM8Z/AhT2jLTf5O2DZO/
-	dm79IWnfNajpDMPwzIhXeJxWxsl/xpSCcWzcg5q1CCygHk4RLy6U/EawPuAn56nzeovVIyKVv5N
-	B4Ulk8YS2aLBN9fcXwko46xjSbE8=
-X-Google-Smtp-Source: AGHT+IHhrTU6Vx9l5tJAOVsHqvjFv8owslRWENpfX2JETljBTVS4w/It4UoW1njjPVf/6maja2wtMQZ5MonYr2C+WRA=
-X-Received: by 2002:a05:6870:230d:b0:214:fddf:99f7 with SMTP id
- w13-20020a056870230d00b00214fddf99f7mr7432263oao.5.1706542508620; Mon, 29 Jan
- 2024 07:35:08 -0800 (PST)
+	s=arc-20240116; t=1706542634; c=relaxed/simple;
+	bh=l8Gerv/RnUXdqS32Hvg6dJnaeNoXsPQ5rKnHUXy1+3Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rqT8bZVId88yM4fQ3rpH/pZmeNRhsk2yH/vLIZTxTRC+JcjD3oSBLAVGbQxabwr6Q0Ra1MExIqNcvBeWkmv8+lUzPfhOB6+SV8C+oliWNMkL9N8dC2yZaAtq172qXUt+pKEXULpLDjpwbDcsJ2djUU647U6L1hxJa/Xqre3NbZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sCzSPJNF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5DC7C433F1;
+	Mon, 29 Jan 2024 15:37:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706542634;
+	bh=l8Gerv/RnUXdqS32Hvg6dJnaeNoXsPQ5rKnHUXy1+3Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sCzSPJNF1f+jY8xMHnlLtWyLXT1HI1n9Z4l5hknVao0Sj9ZK35v8ZQshRQKY/BcQh
+	 U/LfUyh8lv+z9SSWk3kI8YaLHmO+7bYfg+L2dUKlx6/eCn2T2wJond/WgS4SsVssIK
+	 snu2PTE8kFw76oRqBBHS45J3rBnMwFsZpkaSVFfjtE1C8gsMbo0Dlyigho3/J4REU6
+	 P8soMwsIBftAs5Gdwfqx8QWi64XaOVfBXJYqCtDfdLK0NXJPj5rgpa24gLKmRAqM1S
+	 MNY60Zf+1CYLoDlW1j6B9CoTcS0LTvRXnW3r7BSx6yH9Q/9wyqbVFzMsctmng9N1h2
+	 h9oqmmVm0apTA==
+Date: Mon, 29 Jan 2024 15:37:08 +0000
+From: Conor Dooley <conor@kernel.org>
+To: William Qiu <william.qiu@starfivetech.com>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-can@vger.kernel.org,
+	Emil Renner Berthing <kernel@esmil.dk>,
+	Rob Herring <robh+dt@kernel.org>,
+	Wolfgang Grandegger <wg@grandegger.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>
+Subject: Re: [PATCH v1 2/4] dt-bindings: can: Add bindings for CAST CAN
+ Controller
+Message-ID: <20240129-garnet-polar-65afd461a1c6@spud>
+References: <20240129031239.17037-1-william.qiu@starfivetech.com>
+ <20240129031239.17037-3-william.qiu@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk> <ZXxxa+XZjPZtNfJ+@shell.armlinux.org.uk>
- <20231215161539.00000940@Huawei.com> <5760569.DvuYhMxLoT@kreacher>
- <20240102143925.00004361@Huawei.com> <20240111101949.000075dc@Huawei.com>
- <ZZ/CR/6Voec066DR@shell.armlinux.org.uk> <20240112115205.000043b0@Huawei.com>
- <Zbe8WQRASx6D6RaG@shell.armlinux.org.uk> <CAJZ5v0iba93EhQB2k3LMdb2YczndbRmF5WGRYHhnqCHq6TQJ0A@mail.gmail.com>
- <ZbfBYgdLzvEX/VjN@shell.armlinux.org.uk>
-In-Reply-To: <ZbfBYgdLzvEX/VjN@shell.armlinux.org.uk>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 29 Jan 2024 16:34:57 +0100
-Message-ID: <CAJZ5v0gr3ZmLY9m+rYGP36zQYNH4ohL=zbym4LS3Eq+Qt4nZLA@mail.gmail.com>
-Subject: Re: [PATCH RFC v3 01/21] ACPI: Only enumerate enabled (or functional) devices
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
-	"Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
-	acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, 
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, 
-	James Morse <james.morse@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="2qZLto2B8G05buYu"
+Content-Disposition: inline
+In-Reply-To: <20240129031239.17037-3-william.qiu@starfivetech.com>
+
+
+--2qZLto2B8G05buYu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 29, 2024 at 4:17=E2=80=AFPM Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
->
-> On Mon, Jan 29, 2024 at 04:05:42PM +0100, Rafael J. Wysocki wrote:
-> > On Mon, Jan 29, 2024 at 3:55=E2=80=AFPM Russell King (Oracle)
-> > <linux@armlinux.org.uk> wrote:
-> > >
-> > > Hi Jonathan,
-> > >
-> > > On Fri, Jan 12, 2024 at 11:52:05AM +0000, Jonathan Cameron wrote:
-> > > > On Thu, 11 Jan 2024 10:26:15 +0000
-> > > > "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
-> > > > > @@ -2381,16 +2388,38 @@ EXPORT_SYMBOL_GPL(acpi_dev_clear_dependen=
-cies);
-> > > > >   * acpi_dev_ready_for_enumeration - Check if the ACPI device is =
-ready for enumeration
-> > > > >   * @device: Pointer to the &struct acpi_device to check
-> > > > >   *
-> > > > > - * Check if the device is present and has no unmet dependencies.
-> > > > > + * Check if the device is functional or enabled and has no unmet=
- dependencies.
-> > > > >   *
-> > > > > - * Return true if the device is ready for enumeratino. Otherwise=
-, return false.
-> > > > > + * Return true if the device is ready for enumeration. Otherwise=
-, return false.
-> > > > >   */
-> > > > >  bool acpi_dev_ready_for_enumeration(const struct acpi_device *de=
-vice)
-> > > > >  {
-> > > > >     if (device->flags.honor_deps && device->dep_unmet)
-> > > > >             return false;
-> > > > >
-> > > > > -   return acpi_device_is_present(device);
-> > > > > +   /*
-> > > > > +    * ACPI 6.5's 6.3.7 "_STA (Device Status)" allows firmware to=
- return
-> > > > > +    * (!present && functional) for certain types of devices that=
- should be
-> > > > > +    * enumerated. Note that the enabled bit should not be set un=
-less the
-> > > > > +    * present bit is set.
-> > > > > +    *
-> > > > > +    * However, limit this only to processor devices to reduce po=
-ssible
-> > > > > +    * regressions with firmware.
-> > > > > +    */
-> > > > > +   if (device->status.functional)
-> > > > > +           return true;
-> > >
-> > > I have a report from within Oracle that this causes testing failures
-> > > with QEMU using -smp cpus=3D2,maxcpus=3D4. I think it needs to be:
-> > >
-> > >         if (!device->status.present)
-> > >                 return device->status.functional;
-> > >
-> > >         if (device->status.enabled)
-> > >                 return true;
-> > >
-> > >         return !acpi_device_is_processor(device);
-> >
-> > The above is fine by me.
-> >
-> > > So we can better understand the history here, let's list it as a
-> > > truth table. P=3Dpresent, F=3Dfunctional, E=3Denabled, Orig=3Dhow the=
- code
-> > > is in mainline, James=3DJames' original proposal, Rafael=3Dthe propos=
-ed
-> > > replacement but seems to be buggy, Rmk=3Dthe fixed version that passe=
-s
-> > > tests:
-> > >
-> > > P F E   Orig    James   Rafael          Rmk
-> > > 0 0 0   0       0       0               0
-> > > 0 0 1   0       0       0               0
-> > > 0 1 0   1       1       1               1
-> > > 0 1 1   1       0       1               1
-> > > 1 0 0   1       0       !processor      !processor
-> > > 1 0 1   1       1       1               1
-> > > 1 1 0   1       0       1               !processor
-> > > 1 1 1   1       1       1               1
-> > >
-> > > Any objections to this?
-> >
-> > So AFAIAC it can return false if not enabled, but present and
-> > functional.  [Side note: I'm wondering what "functional" means then,
-> > but whatever.]
->
-> From ACPI v6.5 (bit 3 is our "status.functional":
->
->  _STA may return bit 0 clear (not present) with bit [3] set (device is
->  functional). This case is used to indicate a valid device for which no
->  device driver should be loaded (for example, a bridge device.) Children
->  of this device may be present and valid. OSPM should continue
->  enumeration below a device whose _STA returns this bit combination.
->
-> So, for this case, acpi_dev_ready_for_enumeration() returning true for
-> this case is correct, since we're supposed to enumerate it and child
-> devices.
->
-> It's probably also worth pointing out that in the above table, the two
-> combinations with P=3D0 E=3D1 goes against the spec, but are included for
-> completness.
+Hey William,
 
-The difference between the last two columns is the present and
-functional, but not enabled combination AFAICS, for which my patch
-just returned true, but the firmware disagrees with that.
+On Mon, Jan 29, 2024 at 11:12:37AM +0800, William Qiu wrote:
+> Add bindings for CAST CAN Controller
+>=20
+> Signed-off-by: William Qiu <william.qiu@starfivetech.com>
+> ---
+>  .../devicetree/bindings/net/can/cast,can.yaml | 95 +++++++++++++++++++
+>  1 file changed, 95 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/can/cast,can.ya=
+ml
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/can/cast,can.yaml b/Do=
+cumentation/devicetree/bindings/net/can/cast,can.yaml
+> new file mode 100644
+> index 000000000000..ea52132d9b1c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/can/cast,can.yaml
+> @@ -0,0 +1,95 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/can/cast,can.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: CAST CAN controller
+> +
+> +maintainers:
+> +  - William Qiu <william.qiu@starfivetech.com>
+> +
+> +allOf:
+> +  - $ref: can-controller.yaml#
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: starfive,can
+> +    then:
+> +      required:
+> +        - starfive,syscon
 
-It is kind of analogous to the "not present and functional" case
-covered by the spec, which is why it is fine by me to return "false"
-then (for processors), but the spec is not crystal clear about it.
+If you've got property related stuff in the allOf, move it down after
+the property definitions.
+
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - cast,can
+> +      - cast,canfd
+
+I don't like these uber generic compatibles that have no users as a
+fallback. Allowing them in the binding only really discourages people
+=66rom creating device specific compatibles.
+Secondly, this is some purchased IP that I am sure has a versioning
+scheme and the compatibles that you have created do not reflect that.
+If they were being used as a fallback, I would request some versioning.
+That's not going to really work though since the canfd features on the
+jh7110 require setting u0_can_ctrl_can_fd_enable, so neither of these
+compatibles really has a use right now.
+
+> +      - starfive,can
+
+Just "starfive,can"? Can you please add device specific compatibles for
+the SoCs on which this is used?
+
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    minItems: 3
+> +
+> +  clock-names:
+> +    items:
+> +      - const: apb_clk
+> +      - const: timer_clk
+> +      - const: can_clk
+
+Drop _clk, they're all clocks!
+
+> +
+> +  resets:
+> +    minItems: 3
+> +
+> +  reset-names:
+> +    items:
+> +      - const: rst_apb
+> +      - const: rst_core
+> +      - const: rst_timer
+
+Same here, drop rst_
+
+> +
+> +  starfive,syscon:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    items:
+> +      - items:
+> +          - description: phandle to System Register Controller syscon no=
+de
+> +          - description: offset of SYS_SYSCON_NE__SAIF__SYSCFG register =
+for CAN controller
+
+The docs I have call this register "SYS_SYSCONSAIF__SYSCFG". Did the
+names change since the TRM I have was written?
+
+> +          - description: shift of SYS_SYSCON_NE__SAIF__SYSCFG register f=
+or CAN controller
+> +          - description: mask of SYS_SYSCON_NE__SAIF__SYSCFG register fo=
+r CAN controller
+> +    description:
+> +      Should be four parameters, the phandle to System Register Controll=
+er
+> +      syscon node and the offset/shift/mask of SYS_SYSCON_NE__SAIF__SYSC=
+FG register
+> +      for CAN controller.
+
+Cheers,
+Conor.
+
+--2qZLto2B8G05buYu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbfGJAAKCRB4tDGHoIJi
+0naRAP9mnACAXbLoF5wZAI6lRZERQ91NOgTNtwrrOxfxsnoi6QEAuxoA1rFwLJSd
+w8okICO/nnTr5tVns55t5LOoIKk5wwA=
+=jD/W
+-----END PGP SIGNATURE-----
+
+--2qZLto2B8G05buYu--
 
