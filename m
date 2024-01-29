@@ -1,100 +1,111 @@
-Return-Path: <linux-kernel+bounces-43290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CEC18411CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:13:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7E4E8411D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:13:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18F002821D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:13:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77F2BB258C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:13:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCB556F06A;
-	Mon, 29 Jan 2024 18:13:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tmOdqQRQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FCDC3F9E3;
-	Mon, 29 Jan 2024 18:13:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67FBC6F06B;
+	Mon, 29 Jan 2024 18:13:32 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 779AC3F9F3;
+	Mon, 29 Jan 2024 18:13:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706551988; cv=none; b=EA3E1atsJijdH5UrmGzYdp48GCZIpGDjiN0UgW/NjM92qGySpbz462JvqvsoLSbJAY0VrSa5C4bI5yQUjwBSw554szdMlEfkCOnp6JPIGdNYEhVE2ceDsHvnSv63Uk6CZDZM47ZzQpYHYPL83mXzIk4LIHTUHnz1q4qlsnviFsI=
+	t=1706552012; cv=none; b=Xqrkd2IwYlSG5pbhhVrOffDGB3VkHrPBKZmo/rKS/74zMBudPPDWOR9RK80TTmkh2MgLpQbJBBr6Qxa+deqVzbNiK+DejrWnsMyWpFtHJWIDM0Hyde+oqF03lz0NOI11WU3f14knIrUzfWAhsipuBVxYq7IcXbPwJMYKIqWY82g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706551988; c=relaxed/simple;
-	bh=u2QozD7LnyzCSm5BELpLWaOqEEfW4Er7azNLzRX6Ww4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=bNEjci3u31dj+x0SRNzDobibdz8ZFquY/lK0ageb2G3AH7wje5uetfZ2gaSqMqBe1sNhhjkZLljQ2ekeIwRCvopj3RD6cvGIZUEWJ7YPFF+yFNVFsyjs41ZIus7JmNWT6xm8jpApn/Wiavy/WKv8PxfVtwkMsDiSjdcvBTDXdEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tmOdqQRQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72CB3C433F1;
-	Mon, 29 Jan 2024 18:13:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706551986;
-	bh=u2QozD7LnyzCSm5BELpLWaOqEEfW4Er7azNLzRX6Ww4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=tmOdqQRQvBS+fc5uIk5mzMmtiNFeXZt2qYtIhNFGBcLptme+HLoNvqire9l748F9H
-	 ZVZxP/MMjQOgKlS9PKVdhzdLZ1MgRDxPXaYRZRqrgEM7gLchvedZecFgV99JTKzeGs
-	 +M+IQuAwfaaw8Ucpb4ZTjYR7nOERZo5+841IyIjEDyOdVSyy7v7yia7EC9fGmWhs1S
-	 EOaboyYj3X1jnI8uitAl43lt10gu2a6U2kO9dWBuJMpUstDkzcvRd4N69WiDfCR541
-	 z9qS5+YwTo2uhs+35mtT4Xgqw6IPiQ3LkxgpS/wiPBG9e1zOU8rdXXnf7LouBNj/KM
-	 BIQJjDyG6b3Sw==
-From: Mark Brown <broonie@kernel.org>
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
- Linux Sound System <linux-sound@vger.kernel.org>, 
- Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
- Takashi Iwai <tiwai@suse.com>, Jeremy Soller <jeremy@system76.com>, 
- Mario Limonciello <mario.limonciello@amd.com>, 
- Techno Mooney <techno.mooney@gmail.com>, stable@vger.kernel.org
-In-Reply-To: <20240129081148.1044891-1-bagasdotme@gmail.com>
-References: <20240129081148.1044891-1-bagasdotme@gmail.com>
-Subject: Re: [PATCH] ASoC: amd: yc: Add DMI quirk for MSI Bravo 15 C7VF
-Message-Id: <170655198308.64325.7818077761213434201.b4-ty@kernel.org>
-Date: Mon, 29 Jan 2024 18:13:03 +0000
+	s=arc-20240116; t=1706552012; c=relaxed/simple;
+	bh=7DItazupWpEHejnyNhSi31OzIpu1z8o8okNzfMilxlE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=deqgFZwVV4HQf+L7HFBCjGL8runIyZlDMfZA/9BQ2UL5E923YWnP5zHwy3mujHcT2khXzK8nsELbd+fj+8DDFpB30avPLakB67zwcdAkvWIMpRzD+Pm4MEReGtFwtSBclHZtfSS8bekbVa6NizuSsQ/9KjvCjFPv40nVesHkAlc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A2F0ADA7;
+	Mon, 29 Jan 2024 10:14:12 -0800 (PST)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7DF1B3F738;
+	Mon, 29 Jan 2024 10:13:26 -0800 (PST)
+Message-ID: <3e1a2865-e40e-4a7e-9c75-5768d717a1a6@arm.com>
+Date: Mon, 29 Jan 2024 19:13:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 12/23] PM: EM: Add em_perf_state_from_pd() to get
+ performance states table
+Content-Language: en-US
+To: Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
+ linux-pm@vger.kernel.org, rafael@kernel.org
+Cc: rui.zhang@intel.com, amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
+ daniel.lezcano@linaro.org, viresh.kumar@linaro.org, len.brown@intel.com,
+ pavel@ucw.cz, mhiramat@kernel.org, qyousef@layalina.io, wvw@google.com,
+ xuewen.yan94@gmail.com
+References: <20240117095714.1524808-1-lukasz.luba@arm.com>
+ <20240117095714.1524808-13-lukasz.luba@arm.com>
+From: Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <20240117095714.1524808-13-lukasz.luba@arm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-a684c
 
-On Mon, 29 Jan 2024 15:11:47 +0700, Bagas Sanjaya wrote:
-> The laptop requires a quirk ID to enable its internal microphone. Add
-> it to the DMI quirk table.
-> 
-> 
+On 17/01/2024 10:57, Lukasz Luba wrote:
 
-Applied to
+[...]
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+> index 494df6942cf7..5ebe9dbec8e1 100644
+> --- a/include/linux/energy_model.h
+> +++ b/include/linux/energy_model.h
+> @@ -339,6 +339,23 @@ static inline int em_pd_nr_perf_states(struct em_perf_domain *pd)
+>  	return pd->nr_perf_states;
+>  }
+>  
+> +/**
+> + * em_perf_state_from_pd() - Get the performance states table of perf.
+> + *				domain
+> + * @pd		: performance domain for which this must be done
+> + *
+> + * To use this function the rcu_read_lock() should be hold. After the usage
+> + * of the performance states table is finished, the rcu_read_unlock() should
+> + * be called.
+> + *
+> + * Return: the pointer to performance states table of the performance domain
+> + */
+> +static inline
+> +struct em_perf_state *em_perf_state_from_pd(struct em_perf_domain *pd)
 
-Thanks!
+This is IMHO hard to get since:
 
-[1/1] ASoC: amd: yc: Add DMI quirk for MSI Bravo 15 C7VF
-      commit: c6dce23ec993f7da7790a9eadb36864ceb60e942
+  struct em_perf_table {
+    struct rcu_head rcu;
+    struct kref kref;
+    struct em_perf_state state[];
+  };
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+So very often a 'struct em_perf_table' is named 'table' and 'struct
+em_perf_table::state' as well. E.g. in em_adjust_new_capacity().
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+  struct em_perf_state *new_table;
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+  new_table = em_table->state;
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+In older EM code, we used 'struct em_perf_state *ps' to avoid this
+confusion, I guess.
 
-Thanks,
-Mark
+And what you get from the PD is actually a state vector so maybe:
 
+struct em_perf_state *em_get_perf_states(struct em_perf_domain *pd)
+
+The 'from_pd' seems obvious because of the parameter?
+
+[...]
 
