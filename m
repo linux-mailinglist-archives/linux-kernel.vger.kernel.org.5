@@ -1,138 +1,124 @@
-Return-Path: <linux-kernel+bounces-43507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9234B8414F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:08:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 536478414F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:12:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47A1D1F25DF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:08:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 066F81F25E4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:12:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D80B15B108;
-	Mon, 29 Jan 2024 21:06:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24659157E80;
+	Mon, 29 Jan 2024 21:12:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="CcOYTXBC"
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fjsJMQ6s"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89212158D9E;
-	Mon, 29 Jan 2024 21:06:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9E1076043
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 21:12:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706562416; cv=none; b=IcuF6SZE4MfJtURYRwlr8Oc4Vg4mkhRHAbqwbRK3Bo1dnhHN8Ifp2XVdSe9nfhuZdtvlj/PNT1Mu2f8Erw+3xy8GME2irfU33Q5+w1KuamGCnc7SFEnQ4He0woxl4o5lkifYqyUt5wfCobl/Xp+QXaCdwyLl6WtKLF2nvcloZD8=
+	t=1706562759; cv=none; b=CryaMmAqVB8sSoaLkS3AVLmu2hZxy52NZhk07iVxmM3uP622I0dieHFe2evbGXrrvm1ildZrZPR+Sl9Vuzz4+xkfhsqTUL8Nlfx0aHvoB+yfk8Szr06FitWkNaAhNIfamGJAL/Qgji89XALLn5nq4JvJtn+4+o2SJxN/Gnt0uQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706562416; c=relaxed/simple;
-	bh=+9KVNYBLuRYpTotbk2zGsoJXymuo5SYIdtEsNtMMAo8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Wia5Kdbl0lskrOHtEZ1N04JXKVz6hCh8gslubX2SPWxW54bZQ8QG2tR6TL1YE4JKbHdZUqaZjZ1pJKmMFZAnkAVnU7TYJfllDRDZ4faP7t9orggM0Qh0ZQ0QvzJRbbfSWv82G6pMBAGHowBMcrDcFF018Uue84lEUh5r+9gBDy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=CcOYTXBC; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1706562411;
-	bh=+9KVNYBLuRYpTotbk2zGsoJXymuo5SYIdtEsNtMMAo8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CcOYTXBC+giecQFAnLXwCTdIA57noQj2OFLZSCDKOIqpDr07dTVy1a8yJ3JryQJFV
-	 2W5WB4QDkxTlNWbKpDcCfDCV1Yk9/dIKfFXxGJuTQcgowNhMsO3Yukg02bjPIMQFRv
-	 /baVDZYZtLVEz5A+3KUgQ0PgbI8sFNR5jmvB/7Vj1O8CCBTsO3bSZG9kBumQzDZiac
-	 Bm8evVOKtcBoj9wUdK5Wg/PiFVXjpfyrc41vpv1g5ItzalsHpw3MmQJYQPi57b1jWs
-	 DvIBjtghpS+h8EJifX32P3NqBz5VyeY9kNGlqU4+zvabpczDg6wWwsmvAwIDe9N3Eq
-	 k/288u39p8m6w==
-Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TP17v2W6RzVfr;
-	Mon, 29 Jan 2024 16:06:51 -0500 (EST)
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: Dan Williams <dan.j.williams@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>
-Cc: linux-kernel@vger.kernel.org,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Chandan Babu R <chandan.babu@oracle.com>,
-	"Darrick J . Wong" <djwong@kernel.org>,
-	linux-xfs@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-mm@kvack.org,
-	linux-arch@vger.kernel.org,
-	Matthew Wilcox <willy@infradead.org>,
-	nvdimm@lists.linux.dev,
-	linux-cxl@vger.kernel.org
-Subject: [RFC PATCH 7/7] xfs: Use dax_is_supported()
-Date: Mon, 29 Jan 2024 16:06:31 -0500
-Message-Id: <20240129210631.193493-8-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240129210631.193493-1-mathieu.desnoyers@efficios.com>
-References: <20240129210631.193493-1-mathieu.desnoyers@efficios.com>
+	s=arc-20240116; t=1706562759; c=relaxed/simple;
+	bh=toozhxA5OaN5MxZfRA9HcxV1TAMOi0VIEPmcKpxZ+qc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RY8hMZHLk6r2BYkgqhx2nPrjB6GD6Oy7LNCmPdOUxnvi0QuncaJvHeOPJLeNHDGF45vIaQ+V8oIYeRJGIWELytkq+BLhLjVgnY75PKvAUs4bhNIvLzFOwviqTyhvFFcqhQi4S5EGHofbfwrMTUmOxLxmVZwwC0h5T+PN5hEtJVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fjsJMQ6s; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706562756;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AJKK+vZkaLSD6C4kLn8D3sT5aXAcPFeyLxtieK2IGfY=;
+	b=fjsJMQ6sdV18P0L8XREkbeZF/Z19KZS/bDDDtYtwgsa6Hphei8H1UgoymMeS1CBuvaNjDU
+	CSdPtTSMvWqy5ekejjlAkksrrftu0iqV0yi0q8CgNBgAzNQHyPOWH9yTdwcXNpW6FOP0wV
+	6KCB4bv3AZ072l9r9I1K9USBQppjjQk=
+Received: from mail-vs1-f70.google.com (mail-vs1-f70.google.com
+ [209.85.217.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-631-MYzh2kQ4OfSqP4RNS3tsQA-1; Mon, 29 Jan 2024 16:12:35 -0500
+X-MC-Unique: MYzh2kQ4OfSqP4RNS3tsQA-1
+Received: by mail-vs1-f70.google.com with SMTP id ada2fe7eead31-46b0b625ee6so783697137.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:12:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706562754; x=1707167554;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AJKK+vZkaLSD6C4kLn8D3sT5aXAcPFeyLxtieK2IGfY=;
+        b=ux4ypoZ8BCn3+eRbvKjnVm1PFnK994nhGSQXMs+v/nDvs4M7YwbQuQc7yzG0uovgXk
+         z8bPVEXdRVRAiU2h9Ibe9qCuiS76Wp750x0pRzl+4hxixJ6Olc79uh4nFDqYQr6nLP85
+         MKnHpqX5GOiPTRHE7xPq5Gs6qkATMgKnz/7ywyjxeHIJbvpLAhaYvuxVHPyERwOGHqw1
+         9Uay4qgGOkuXxoBA7pSET9cGig5rOhYiB7IYynqyfVisEtNXTZHHq2LfKR23krn5hEm8
+         8677q4boBAAfKA+mWtLsFee95d5GdW4b/88e/c9cW4+tJkcmKKVEFk5AH5OPsp2Gf0Rr
+         TjGA==
+X-Gm-Message-State: AOJu0Yw/TOcMMgST0MVV9kqDROIPI0Ry3qxcRmIM804zX8ZCCpdhaoBg
+	AykTdyjsxNMP+saR4UNsR6QoR9r5+HpNl0FDjirEmHZafQ4Tu7OR0ySQXAIyYyBRfvQq2tu/xkV
+	q1CgebCm4/8t0wMA0dX9TMPkafuh+qPunsYpYLuQpd/FcVU/Y4dhSnQQNeUpD1mKobJqfXrMVtj
+	smyIX2RGM5LDMehesRGuW/y+3i54urNtbKWV+l
+X-Received: by 2002:a05:6102:4414:b0:46b:8824:bb88 with SMTP id df20-20020a056102441400b0046b8824bb88mr520679vsb.26.1706562754501;
+        Mon, 29 Jan 2024 13:12:34 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFNlEojws8R5wF5QnCXftN0hkfKgSKKeqtHsKEcYfVBtVb4+sL8QrxXrDDCkJEjoW6pFQYLBf/wB+o1BmxlrAI=
+X-Received: by 2002:a05:6102:4414:b0:46b:8824:bb88 with SMTP id
+ df20-20020a056102441400b0046b8824bb88mr520664vsb.26.1706562754231; Mon, 29
+ Jan 2024 13:12:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240129115246.1234253-1-leitao@debian.org>
+In-Reply-To: <20240129115246.1234253-1-leitao@debian.org>
+From: Joel Savitz <jsavitz@redhat.com>
+Date: Mon, 29 Jan 2024 16:12:18 -0500
+Message-ID: <CAL1p7m77d7okCJR4YwYVMZvbBmFCcWrcXMpa1p50N=ED6CDWVA@mail.gmail.com>
+Subject: Re: [PATCH] selftests/mm: run_vmtests.sh: add hugetlb test category
+To: Breno Leitao <leitao@debian.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>, ryan.roberts@arm.com, 
+	usama.anjum@collabora.com, "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Use dax_is_supported() to validate whether the architecture has
-virtually aliased caches at mount time.
+On Mon, Jan 29, 2024 at 6:53=E2=80=AFAM Breno Leitao <leitao@debian.org> wr=
+ote:
+>
+> The usage of run_vmtests.sh does not include hugetlb, which is a valid
+> test category.
+>
+> Add the 'hugetlb' to the usage of run_vmtests.sh.
+>
+> Signed-off-by: Breno Leitao <leitao@debian.org>
+> ---
+>  tools/testing/selftests/mm/run_vmtests.sh | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/se=
+lftests/mm/run_vmtests.sh
+> index 55898d64e2eb..2ee0a1c4740f 100755
+> --- a/tools/testing/selftests/mm/run_vmtests.sh
+> +++ b/tools/testing/selftests/mm/run_vmtests.sh
+> @@ -65,6 +65,8 @@ separated by spaces:
+>         test copy-on-write semantics
+>  - thp
+>         test transparent huge pages
+> +- hugetlb
+> +       test hugetlbfs huge pages
+>  - migration
+>         invoke move_pages(2) to exercise the migration entry code
+>         paths in the kernel
+> --
+> 2.39.3
+>
 
-This is relevant for architectures which require a dynamic check
-to validate whether they have virtually aliased data caches
-(ARCH_HAS_CACHE_ALIASING_DYNAMIC=y).
-
-Fixes: d92576f1167c ("dax: does not work correctly with virtual aliasing caches")
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Chandan Babu R <chandan.babu@oracle.com>
-Cc: Darrick J. Wong <djwong@kernel.org>
-Cc: linux-xfs@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-mm@kvack.org
-Cc: linux-arch@vger.kernel.org
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Vishal Verma <vishal.l.verma@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: nvdimm@lists.linux.dev
-Cc: linux-cxl@vger.kernel.org
----
- fs/xfs/xfs_super.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
-
-diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-index 764304595e8b..b27ecb11db66 100644
---- a/fs/xfs/xfs_super.c
-+++ b/fs/xfs/xfs_super.c
-@@ -1376,14 +1376,22 @@ xfs_fs_parse_param(
- 	case Opt_nodiscard:
- 		parsing_mp->m_features &= ~XFS_FEAT_DISCARD;
- 		return 0;
--#ifdef CONFIG_FS_DAX
- 	case Opt_dax:
--		xfs_mount_set_dax_mode(parsing_mp, XFS_DAX_ALWAYS);
--		return 0;
-+		if (dax_is_supported()) {
-+			xfs_mount_set_dax_mode(parsing_mp, XFS_DAX_ALWAYS);
-+			return 0;
-+		} else {
-+			xfs_warn(parsing_mp, "dax option not supported.");
-+			return -EINVAL;
-+		}
- 	case Opt_dax_enum:
--		xfs_mount_set_dax_mode(parsing_mp, result.uint_32);
--		return 0;
--#endif
-+		if (dax_is_supported()) {
-+			xfs_mount_set_dax_mode(parsing_mp, result.uint_32);
-+			return 0;
-+		} else {
-+			xfs_warn(parsing_mp, "dax option not supported.");
-+			return -EINVAL;
-+		}
- 	/* Following mount options will be removed in September 2025 */
- 	case Opt_ikeep:
- 		xfs_fs_warn_deprecated(fc, param, XFS_FEAT_IKEEP, true);
--- 
-2.39.2
+Reviewed-by: Joel Savitz <jsavitz@redhat.com>
 
 
