@@ -1,127 +1,141 @@
-Return-Path: <linux-kernel+bounces-42713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 988E6840570
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 65B8084059F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:53:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36D171F2326F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:50:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06F3F1F223D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:53:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61AD7629EE;
-	Mon, 29 Jan 2024 12:47:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA22E67E71;
+	Mon, 29 Jan 2024 12:48:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jHMNO3CR"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="apaxodvu"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D37D4629EB;
-	Mon, 29 Jan 2024 12:47:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97B6267E61
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 12:48:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706532422; cv=none; b=Sg5I3zlC7mXw3xscm0a0gfnMxYN40eXtjng4ajlSqBzfN4f/posfDBK1ruxKdeOOHgKWmeGzDjD/FKCnlgch7B42JG4ug3OSnsWHi/eHeID5GU/kvXu4lSxrux8yPjjG02EHO8SdWNZcOs7kcECPoALNfaekDntXI/S7NNsZxbE=
+	t=1706532497; cv=none; b=lTi92et+A/CIOc44grrUlRdl0x5HjFWEC1UwE3vGEuVnPDL39vSNSYDhX7MqvEJOW0EXRO8HVO64r77SneGnpyPb98Gls+jRgaOVzyf05jc6gx/T6bhdoTMwpRgwjjK9LGZ9IqFWog+VFPfUUaTNNl6szfJwzHyxP1p4I3Ivte0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706532422; c=relaxed/simple;
-	bh=1Z45lbmuua+VyNOBrONHhwFAho5Ew0nWG2uDmoVnSxg=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=sCIkjmBQqTC/177GQUl7BxLX6TTdL7ZXm3K+X7QthNo0TiTEx1xGzTMgAB46kUhvoBjC1RWebqbgync9D62WHjLLOQOVkWlpPJpmH4vFfYhJlVZsbltGnxq2T7sOF0vHCaJM999pMQ2Tw3PBzHV+d9GwjV6NiX7JMOxJhXwJrbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jHMNO3CR; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706532421; x=1738068421;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=1Z45lbmuua+VyNOBrONHhwFAho5Ew0nWG2uDmoVnSxg=;
-  b=jHMNO3CREBPeqX92dKlu/YRrk3kuZQtw8zbg2vyXOFu1NLvHCNdJUKtb
-   Gp7wy53btm6XGf5t9jxkkaLQms/ob8jLv2gaLWdJowhU2UxSBGJwumWB5
-   F4lnA8bjpupEVGt5YcYynCLHRunfXgFNIgk9DhBOr948WysK8C04oWmEZ
-   Koav6DmQ8cY1tR5drq2M6uT9jqD8OUQhbai4mPlAIRXqDRNvCKPaqmntv
-   0U6wfUf7Czj8C3y5qAy4rwN68qPOcTg81Nh0/saLVhAOIu3mf3Mh+Irau
-   Qo+dMD9hHjTD/zK3Nng2zQONiZMlwLKiDm5z7Na8YLeFJBxeEk3DOoLcN
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="2828980"
-X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="2828980"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 04:47:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="3299531"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.94.253.213])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 04:46:57 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Mon, 29 Jan 2024 14:46:45 +0200 (EET)
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-    Suma Hegde <suma.hegde@amd.com>
-cc: naveenkrishna.chatradhi@amd.com, LKML <linux-kernel@vger.kernel.org>, 
-    Carlos Bilbao <carlos.bilbao@amd.com>, Hans de Goede <hdegoede@redhat.com>, 
-    platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH] platform/x86/amd/hsmp: switch to use
- device_add_groups()
-In-Reply-To: <2024012822-exalted-fidgeting-f180@gregkh>
-Message-ID: <0d110d2a-da0c-017a-0e5a-fc6bef7b066a@linux.intel.com>
-References: <2024012822-exalted-fidgeting-f180@gregkh>
+	s=arc-20240116; t=1706532497; c=relaxed/simple;
+	bh=WCHlJn12la69YWdL2YUOIZTol8Gam56seomR3cgdlf8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=nDG7goiikzHUYHV5agBHLP3F9pI28q7kUCV8eFPzJCDakTMO9EQgFxd2UQ/3uAe5+WkEf64LmRMfBK9z+65pmb0AZS5Q4u7fcPlDActcxK41SJ0JkNjyTndJ72MQN2YgDY8eIYn6nNs72Wa+d2wok9Um3RxIJwGCWXEDOrr9DiY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=apaxodvu; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706532494;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cS+fj/Ib0GI5otmzNrt4qLpnZeCkiOZS5Y+GTIa0gvY=;
+	b=apaxodvu5Ho0lNvtdBYOSlY+///nImabbZg/KUjDpZzYNNy6HQZmIXeyUgTBFbKddQy3Er
+	FV5Bsfw92j0Brddd0eo9WZf6QF8wwHk9PKIya6+GiZR5y6TdPWIcxXtdicOfSPAydzGtBI
+	0FvUvmVHlfbJSnu0pB/Iz2ItPEEP+l8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-639-uopDDWlrNyiX6spNRSMRFQ-1; Mon, 29 Jan 2024 07:48:10 -0500
+X-MC-Unique: uopDDWlrNyiX6spNRSMRFQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D8CA6867943;
+	Mon, 29 Jan 2024 12:48:08 +0000 (UTC)
+Received: from t14s.fritz.box (unknown [10.39.194.46])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 99F798B;
+	Mon, 29 Jan 2024 12:48:03 +0000 (UTC)
+From: David Hildenbrand <david@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org,
+	David Hildenbrand <david@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	linux-arm-kernel@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	sparclinux@vger.kernel.org
+Subject: [PATCH v3 12/15] mm/memory: pass PTE to copy_present_pte()
+Date: Mon, 29 Jan 2024 13:46:46 +0100
+Message-ID: <20240129124649.189745-13-david@redhat.com>
+In-Reply-To: <20240129124649.189745-1-david@redhat.com>
+References: <20240129124649.189745-1-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323328-481654086-1706523055=:1439"
-Content-ID: <9ec7d7ac-21d3-1810-4e1e-7bd1e6c1a96b@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+We already read it, let's just forward it.
 
---8323328-481654086-1706523055=:1439
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <66ab558a-7c2c-910a-9c17-a61ea96c7b48@linux.intel.com>
+This patch is based on work by Ryan Roberts.
 
-+ Cc Suma Hegde.
+Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+ mm/memory.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-On Sun, 28 Jan 2024, Greg Kroah-Hartman wrote:
+diff --git a/mm/memory.c b/mm/memory.c
+index a3bdb25f4c8d..41b24da5be38 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -959,10 +959,9 @@ static inline void __copy_present_pte(struct vm_area_struct *dst_vma,
+  */
+ static inline int
+ copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+-		 pte_t *dst_pte, pte_t *src_pte, unsigned long addr, int *rss,
+-		 struct folio **prealloc)
++		 pte_t *dst_pte, pte_t *src_pte, pte_t pte, unsigned long addr,
++		 int *rss, struct folio **prealloc)
+ {
+-	pte_t pte = ptep_get(src_pte);
+ 	struct page *page;
+ 	struct folio *folio;
+ 
+@@ -1103,7 +1102,7 @@ copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+ 		}
+ 		/* copy_present_pte() will clear `*prealloc' if consumed */
+ 		ret = copy_present_pte(dst_vma, src_vma, dst_pte, src_pte,
+-				       addr, rss, &prealloc);
++				       ptent, addr, rss, &prealloc);
+ 		/*
+ 		 * If we need a pre-allocated page for this pte, drop the
+ 		 * locks, allocate, and try again.
+-- 
+2.43.0
 
-> The use of devm_*() functions works properly for when the device
-> structure itself is dynamic, but the hsmp driver is attempting to have a
-> local, static, struct device and then calls devm_() functions attaching
-> memory to the device that will never be freed.
->=20
-> The logic of having a static struct device is almost never a wise
-> choice, but for now, just remove the use of devm_device_add_groups() in
-> this driver as it obviously is not needed.
->=20
-> Cc: Naveen Krishna Chatradhi <naveenkrishna.chatradhi@amd.com>
-> Cc: Carlos Bilbao <carlos.bilbao@amd.com>
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Cc: "Ilpo J=E4rvinen" <ilpo.jarvinen@linux.intel.com>
-> Cc: platform-driver-x86@vger.kernel.org
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  drivers/platform/x86/amd/hsmp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/platform/x86/amd/hsmp.c b/drivers/platform/x86/amd/h=
-smp.c
-> index b55d80e29139..49ef0b1d6df0 100644
-> --- a/drivers/platform/x86/amd/hsmp.c
-> +++ b/drivers/platform/x86/amd/hsmp.c
-> @@ -471,7 +471,7 @@ static int hsmp_create_sysfs_interface(void)
->  =09=09if (ret)
->  =09=09=09return ret;
->  =09}
-> -=09return devm_device_add_groups(plat_dev.dev, hsmp_attr_grps);
-> +=09return device_add_groups(plat_dev.dev, hsmp_attr_grps);
->  }
-
-Thanks Greg for bringing this up. I've added Suma who has some patches=20
-which change code around this area.
-
---=20
- i.
---8323328-481654086-1706523055=:1439--
 
