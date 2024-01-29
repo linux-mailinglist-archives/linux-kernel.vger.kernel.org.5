@@ -1,165 +1,207 @@
-Return-Path: <linux-kernel+bounces-42896-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42898-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28BD484083C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:27:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 13881840847
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:28:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3361283479
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:27:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE44728783E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:28:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECF3665BD1;
-	Mon, 29 Jan 2024 14:26:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5176E67740;
+	Mon, 29 Jan 2024 14:28:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YA8ocWqD"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="K3LyIwYC"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6659A65BB9
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 14:26:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEEA267727
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 14:28:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706538416; cv=none; b=npijgMCaD866pW1sJhjc9GfsZFXoWEmyrz5+rKPHrABGlK+R/dG+jvvZGyIdVnYxu8I5gT3iEscj9soV1HBP3Ag8mGFMRneFmd6x1TJB4HCb4M1JesWCPbOX/zvqf1yjdib0PXFPY0TwajjQ2dzgbe8YkIStLltjpMhvmTw9gTc=
+	t=1706538492; cv=none; b=B2qaxRyPOljhDSsSdK3UyZfs834r21aLGG+2Zcg/pNjYnEFcGo4hAvRhLyiKmFZjgyvXlGinuXEZ29E7b0Q/zTw81XNlJzh5IR4uhCrFXAUyIsAAifEhSkkxr5cTUu+Klp0nQWM2XVYxsMkfMPXJoBbzFtnOY46VqE5VUyD3/ao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706538416; c=relaxed/simple;
-	bh=NCfehVqjR5Cj9j2TbgLuA6MKTFfTrvfb+PMVFfwU4eU=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=RtOQZpavPn/TMI0HTIH4/MMS0P9LHRTR8xnSRxmfOMe40EUvuckZYu9sQYjIpfa4H0kEZzO3lW5J95HhWtEiVDiVIdY9r74yNgWSvwEjpaotSzUaDDvvnai/t0T9keJxuiGXJQ+/Ot7pZWzx9ZaNWJz+ptEZd9ju107g74xTsqw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YA8ocWqD; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a2a17f3217aso389341066b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 06:26:54 -0800 (PST)
+	s=arc-20240116; t=1706538492; c=relaxed/simple;
+	bh=08vMVQVJ1OL1ZrKwTC27MiT2Y0Q66IzGXt2K5LTQM9o=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=Km4mpIgXPcO/zAgp35vdkwKUu7Bmikz0UvAk2XyDpC0KDqRXGtHeWPvWiRHAiBUB2yu+aNqE7vrO4jdp2y2lTXYt5SKt12KZBi0hf9/oHu1YngdVUteJ4RgUZOG7ikMbf7uY2Ua7UB1RolZNLW65olm4yEkN9dyIQ5BDSOk2gA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--vdonnefort.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=K3LyIwYC; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--vdonnefort.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc223d528cfso5246442276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 06:28:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706538412; x=1707143212; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=z/8SajdHHtiLWqLgdrEaXxFtoatwZriBX16EN6CF+8k=;
-        b=YA8ocWqD+8wPjwaPOjcSKwVF7n88N0P4N3/4GlSgELNLSZ3HKFiQ0gmoI8emQUmRtS
-         4kSLJHUOQyKMPf/1QLCvPP58C9t2WSvP/Kl+Pk5ANs9Kn6H8I1ZRONIu6O+xyl96Tcjb
-         Tc/DhLRtOOTwLsjIuDAw8jVYC7GOGrnxY/C9gpQSOX6J6rCHVD8rMMd+ypDT3KhIeXc6
-         KUPzQKwTMkFts4ZD8ME1KryZet3P9iQRzhYyiTHWwCwyEVBOkzOksugEBrOLk2M5mt5K
-         FeH70j7mt5zEMelY0baMQZzPV/IFq91sBo/J/DFE9zyNN5hqhdk7y1PhGc64ZpB6pbRs
-         oiTQ==
+        d=google.com; s=20230601; t=1706538490; x=1707143290; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=m6ix6w6jnc/r7m37oFEuHsrF8vE57HFuEmsPVrjGUaM=;
+        b=K3LyIwYCK+G+Lo6hvBHjsL9NoQkKrNa0sqARrSDIjLJYoi1XfrwYBcvOy3VFGOuf3m
+         iAefHLZWq7bbKHchUPh4fhgot3cD45M/+w1kxRrVSY0SpNi1tG5Ps4Xu+437n1Fuy2Tr
+         B7vD69eoNZ5wNW4Lj/XkkcSDXOOCVUzc86rmImpwiIwse2WP1nYzkjpDa5UNqeEfQ+Cv
+         oU7FaughFLMILAZ4UuJV6nbUzsMcXEquOVVYJri49nIt9GZHHMoLODj0QpQqlVwgg6kY
+         IV+FzokgR2jr5mal2YU4g6qkFq8SxQISC6IDASozwQ3aREj3h3ZYglOiZg1LOH4CwhT0
+         7LEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706538412; x=1707143212;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=z/8SajdHHtiLWqLgdrEaXxFtoatwZriBX16EN6CF+8k=;
-        b=Jd40HJjs59zL3nChy6DE4fJv4b1xFjdsK4pYP6oAzlsLCKJGPNhQtpiD5O6FdUe4uV
-         ATTNaVltHF/4glivXPTnoHMAJLrQDG1zKvdkAl0u3sv+XTM5IxQtiCceZM8lK69A4GjR
-         joQ6xK0mUp77G6yK2RLHmsEFy378wNEKDMnj410tJff2tcHbQjDePMZlU9gOJNQv9wue
-         tlqzIGEtEKUTiIxR7gLzOJryeReEBPwAgzBmDNtuBXsVLrPq8FGaWRvuEkJ4gJ2KwxDk
-         7Lyl7aR19N7i8HuGwtO0gYedQJpNFI7h5IFJStrJ1pN9ytFa+k5mZyJB9+++jElYBukx
-         q64w==
-X-Gm-Message-State: AOJu0YxjlR8lzx0EZ2Ok/TYYC7tmnpEd05llHcYGueXl3pdOIXiwCDIp
-	H6AmSGPbOutk24kTbYEX2IAnj+5+w+nMZtjg2COeyWRfjYA/nDjkc5J6LSIw8v4=
-X-Google-Smtp-Source: AGHT+IEAUZOMQLtPlVyM1GTDiHf2EOZEGrWn7XiJzSw2YnVmXyJxgDI4PHYffQWngYenQ85W7Cjefw==
-X-Received: by 2002:a17:906:4ad2:b0:a35:fbc4:4c20 with SMTP id u18-20020a1709064ad200b00a35fbc44c20mr326661ejt.6.1706538412474;
-        Mon, 29 Jan 2024 06:26:52 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id tz15-20020a170907c78f00b00a356e5ac7casm2200992ejc.86.2024.01.29.06.26.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 06:26:52 -0800 (PST)
-Message-ID: <e9b6f790-831c-4df6-b16c-8d7a2f8ddc26@linaro.org>
-Date: Mon, 29 Jan 2024 15:26:50 +0100
+        d=1e100.net; s=20230601; t=1706538490; x=1707143290;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=m6ix6w6jnc/r7m37oFEuHsrF8vE57HFuEmsPVrjGUaM=;
+        b=OCXPZ82M4dc4z4wMxXstdq3RMUiXScTyylgOnLX4/9uSRmqsNxW/wuO51m2KB2jHXg
+         cVDSv5i8iBOuD5J7V4AzRQieDYBIg8P3aVumLzc6IYzZk5aY3IIC6HJF4TYmAGa3qjyd
+         NLbLJRQCDIr1krKlyXlyKSzi4jrgLaJkZu8pMJRJXSLw3Clt2qkI5UokC+5KXIqGa7kw
+         9l8dpMLSTMIZR1fXKcZznjHh8XEDULQ+mwHgxwQw1vJN3MD6yXtJe26uv1XcAp/TyvZB
+         M3WKRxFCKDmCiZwnwbxyyNjWx+9aOdrIhjqR8tMC677uKIwGVGgZE0QO0ke35ZQ75q4U
+         p02A==
+X-Gm-Message-State: AOJu0YynBNMbwfuSylsrJAU5c+70aM1LWOg3bvfkndXdPmhIx6Zeaia2
+	2J0yKjgb+2sNP/RlT9/+P9P2DAR/t4eCTlWg800Gu+SZSpEjJIgeYagMf/Ca2HRlla+C+49LuYA
+	Bz0A3Oz4r9yWdmGQlbw==
+X-Google-Smtp-Source: AGHT+IFte0IYVAormlKW9S1uv8ALJPhQWbkSghp060KwuGekaE6Nm2aCF6VUI2ioQZuqMFJyJ+SRN1kWtMrBxlQh
+X-Received: from vdonnefort.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:2eea])
+ (user=vdonnefort job=sendgmr) by 2002:a05:6902:e0d:b0:dc6:785:1a10 with SMTP
+ id df13-20020a0569020e0d00b00dc607851a10mr2227607ybb.4.1706538489812; Mon, 29
+ Jan 2024 06:28:09 -0800 (PST)
+Date: Mon, 29 Jan 2024 14:27:56 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: sc8280xp-x13s: correct analogue
- microphone route
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240125154531.417098-1-krzysztof.kozlowski@linaro.org>
- <c34dd7ca-01b5-4424-a8ec-a525b8d722a3@linaro.org>
- <5497d428-cdc1-4057-afda-6861d2e3860a@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <5497d428-cdc1-4057-afda-6861d2e3860a@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Message-ID: <20240129142802.2145305-1-vdonnefort@google.com>
+Subject: [PATCH v13 0/6] Introducing trace buffer mapping by user-space
+From: Vincent Donnefort <vdonnefort@google.com>
+To: rostedt@goodmis.org, mhiramat@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org
+Cc: mathieu.desnoyers@efficios.com, kernel-team@android.com, 
+	Vincent Donnefort <vdonnefort@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 26/01/2024 14:22, Krzysztof Kozlowski wrote:
-> On 26/01/2024 14:21, Srinivas Kandagatla wrote:
->> Thanks Krzystof,
->>
->> On 25/01/2024 15:45, Krzysztof Kozlowski wrote:
->>> Starting with Qualcomm SM8350 SoC, so Low Power Audio SubSystem (LPASS)
->>> block version v9.2, the register responsible for TX SMIC MUXn muxes is
->>> different.  The LPASS TX macro codec driver is being fixed to handle
->>> that difference, so the DTS must be updated as well for new widget name.
->>>
->>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>>
->>> ---
->>>
->> Unfortunately this is breaking mic on X13s.
-> 
-> This alone? Of course, there is dependency... Or you meant something else?
+The tracing ring-buffers can be stored on disk or sent to network
+without any copy via splice. However the later doesn't allow real time
+processing of the traces. A solution is to give userspace direct access
+to the ring-buffer pages via a mapping. An application can now become a
+consumer of the ring-buffer, in a similar fashion to what trace_pipe
+offers.
 
-There was no further comments on my proposal to skip touching sc8280xp:
-https://lore.kernel.org/alsa-devel/20240125153110.410295-1-krzysztof.kozlowski@linaro.org/T/#mc45e487f25a2d6388b5c478b1b7827b113640f4f
+Support for this new feature can already be found in libtracefs from
+version 1.8, when built with EXTRA_CFLAGS=-DFORCE_MMAP_ENABLE.
 
-so I will go with that approach. Please ignore this DTS patch. I will
-send ASoC changes which won't affect sc8280xp.
+Vincent
 
-Best regards,
-Krzysztof
+v12 -> v13:
+  * Swap subbufs_{touched,lost} for Reserved fields.
+  * Add a flag field in the meta-page.
+  * Fix CONFIG_TRACER_MAX_TRACE.
+  * Rebase on top of trace/urgent. (29142dc92c37d3259a33aef15b03e6ee25b0d188)
+  * Add a comment for try_unregister_trigger()
+
+v11 -> v12:
+  * Fix code sample mmap bug.
+  * Add logging in sample code.
+  * Reset tracer in selftest.
+  * Add a refcount for the snapshot users.
+  * Prevent mapping when there are snapshot users and vice versa.
+  * Refine the meta-page.
+  * Fix types in the meta-page.
+  * Collect Reviewed-by.
+
+v10 -> v11:
+  * Add Documentation and code sample.
+  * Add a selftest.
+  * Move all the update to the meta-page into a single
+    rb_update_meta_page().
+  * rb_update_meta_page() is now called from
+    ring_buffer_map_get_reader() to fix NOBLOCK callers.
+  * kerneldoc for struct trace_meta_page.
+  * Add a patch to zero all the ring-buffer allocations.
+
+v9 -> v10:
+  * Refactor rb_update_meta_page()
+  * In-loop declaration for foreach_subbuf_page()
+  * Check for cpu_buffer->mapped overflow
+
+v8 -> v9:
+  * Fix the unlock path in ring_buffer_map()
+  * Fix cpu_buffer cast with rb_work_rq->is_cpu_buffer
+  * Rebase on linux-trace/for-next (3cb3091138ca0921c4569bcf7ffa062519639b6a)
+
+v7 -> v8:
+  * Drop the subbufs renaming into bpages
+  * Use subbuf as a name when relevant
+
+v6 -> v7:
+  * Rebase onto lore.kernel.org/lkml/20231215175502.106587604@goodmis.org/
+  * Support for subbufs
+  * Rename subbufs into bpages
+
+v5 -> v6:
+  * Rebase on next-20230802.
+  * (unsigned long) -> (void *) cast for virt_to_page().
+  * Add a wait for the GET_READER_PAGE ioctl.
+  * Move writer fields update (overrun/pages_lost/entries/pages_touched)
+    in the irq_work.
+  * Rearrange id in struct buffer_page.
+  * Rearrange the meta-page.
+  * ring_buffer_meta_page -> trace_buffer_meta_page.
+  * Add meta_struct_len into the meta-page.
+
+v4 -> v5:
+  * Trivial rebase onto 6.5-rc3 (previously 6.4-rc3)
+
+v3 -> v4:
+  * Add to the meta-page:
+       - pages_lost / pages_read (allow to compute how full is the
+	 ring-buffer)
+       - read (allow to compute how many entries can be read)
+       - A reader_page struct.
+  * Rename ring_buffer_meta_header -> ring_buffer_meta
+  * Rename ring_buffer_get_reader_page -> ring_buffer_map_get_reader_page
+  * Properly consume events on ring_buffer_map_get_reader_page() with
+    rb_advance_reader().
+
+v2 -> v3:
+  * Remove data page list (for non-consuming read)
+    ** Implies removing order > 0 meta-page
+  * Add a new meta page field ->read
+  * Rename ring_buffer_meta_page_header into ring_buffer_meta_header
+
+v1 -> v2:
+  * Hide data_pages from the userspace struct
+  * Fix META_PAGE_MAX_PAGES
+  * Support for order > 0 meta-page
+  * Add missing page->mapping.
+
+Vincent Donnefort (6):
+  ring-buffer: Zero ring-buffer sub-buffers
+  ring-buffer: Introducing ring-buffer mapping functions
+  tracing: Add snapshot refcount
+  tracing: Allow user-space mapping of the ring-buffer
+  Documentation: tracing: Add ring-buffer mapping
+  ring-buffer/selftest: Add ring-buffer mapping test
+
+ Documentation/trace/index.rst                 |   1 +
+ Documentation/trace/ring-buffer-map.rst       | 104 ++++++
+ include/linux/ring_buffer.h                   |   7 +
+ include/uapi/linux/trace_mmap.h               |  45 +++
+ kernel/trace/ring_buffer.c                    | 335 +++++++++++++++++-
+ kernel/trace/trace.c                          | 210 ++++++++++-
+ kernel/trace/trace.h                          |   6 +
+ kernel/trace/trace_events_trigger.c           |  58 ++-
+ tools/testing/selftests/ring-buffer/Makefile  |   8 +
+ tools/testing/selftests/ring-buffer/config    |   1 +
+ .../testing/selftests/ring-buffer/map_test.c  | 183 ++++++++++
+ 11 files changed, 918 insertions(+), 40 deletions(-)
+ create mode 100644 Documentation/trace/ring-buffer-map.rst
+ create mode 100644 include/uapi/linux/trace_mmap.h
+ create mode 100644 tools/testing/selftests/ring-buffer/Makefile
+ create mode 100644 tools/testing/selftests/ring-buffer/config
+ create mode 100644 tools/testing/selftests/ring-buffer/map_test.c
+
+
+base-commit: 29142dc92c37d3259a33aef15b03e6ee25b0d188
+-- 
+2.43.0.429.g432eaa2c6b-goog
 
 
