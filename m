@@ -1,306 +1,244 @@
-Return-Path: <linux-kernel+bounces-43109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43061-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EFE5840BA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:35:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBECF840B01
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:12:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B6EEB260D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:35:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 439E6B260AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:12:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F1F415B0EA;
-	Mon, 29 Jan 2024 16:32:10 +0000 (UTC)
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F7D0155A41;
+	Mon, 29 Jan 2024 16:12:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="JbqbEQLv"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 292EB15AAA8;
-	Mon, 29 Jan 2024 16:32:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706545929; cv=none; b=O37ozve6h8gbfzhlkSL17K3GJ7m7wIked4MS3aXs1NWs97Pf9lzCWaH7vaTkTj9z+blkqkW3QasYWtTCtykmhuGDzJ0124Z/sW84ORsgRAxu01DcYtQSSdtGRvhBhOHakGufh7+vH1jHKDr/TjUt5zKg+Z8kRJvhNKOfPEKTHPY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706545929; c=relaxed/simple;
-	bh=q9KBQe1lo01u+1uRitV87KkXak9vN8vXL2rVPb5l7TM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FJhMMhATocD395GW/Z8jRnfQLGH/CiC2vTWkJ9tHrbEcTPk2fhynlnBF43JbrGtf10wkPDNUbdmik0PeIzqx/HSKTwv63QIh6i9UZ1r9ik/OJ0QqyYOSAEz0s/6Z/CDFfNV5uWUkGRfW5aGiUJvGwvH2xnpyiicwdCDYNRwSE5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 5b143e9136138007; Mon, 29 Jan 2024 17:32:04 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 72B6666975C;
-	Mon, 29 Jan 2024 17:32:04 +0100 (CET)
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-Subject: [PATCH v2 02/10] PM: sleep: stats: Use an array of step failure counters
-Date: Mon, 29 Jan 2024 17:11:57 +0100
-Message-ID: <2192653.irdbgypaU6@kreacher>
-In-Reply-To: <5770175.DvuYhMxLoT@kreacher>
-References: <5770175.DvuYhMxLoT@kreacher>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9163D155A2D;
+	Mon, 29 Jan 2024 16:12:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706544740; cv=fail; b=ERslQDXvsk5Qg56AwpFnTE7eS08uFlYl3SwdKqzJYhq3dpqwN9M5kspu8Vagg5e8WaSpuLd6RhdVeFs6lSh2+WvWdDwUniIKVCe255lT6JaT9GDM0nXD9GHLQ2XvgpOIiAvDCHMLbFkvLuV/vr8ckwZVwLEW/wINiMDMsGkguLg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706544740; c=relaxed/simple;
+	bh=FKcylZbK6hfbi6V626vAb/bUbeCovYhcj9cmz9vFnO0=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=l+9dCZBWzvxNFYwduTxLQellIKS64a+bM5+QRta+szp1T5HWsTCwKCD5uBZ36Ey6ycHXq1Fi12rXnPiM09KX037nFsdw+6M4TURY+SKel8j7ouh8dUEa+O78O2aLVZvguy3jlvhRhxPOLDjK6NTyyv4le4RBizNW0Gi7pfkbhQU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=JbqbEQLv; arc=fail smtp.client-ip=40.107.236.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eHasazw7GnZA4Fq9hb1UB8qU1ozZxGAQ0COesDc1LAG6zbzkCGkIrB4iodVIAhtkCMKTttZjvkI7dHyFfm8k1Nd92JcEChVM4pC7Ge1eDLvYWZ1gg9N7Mo/z/Yp0xb2wLYehIE48t7SiHL5mMFTrDSel0gJTcLR9avwObCChP+peebtoZmaDsLnfU9t6DYoBeFQSjip1SRXDyss8MWmg9qOhy9VM7pA1+u4V1PRfPtx7DqZNayRuxnW98eBfS/CIEjXINAr+4Yd6MXklC2MwrUtrHJ+aP5Tc3eBUokPWQDAYyKWQFMOwEpzpozDuKWHpTik5MqYvfvIQ+DEPDbpb5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QwHTv7HzK2Ar2lLGcyA76rXtUaFVV5ulwcsDMDkI0v8=;
+ b=Sgnh0qGg+vVB2XTXWeLr+4YxlZRJTRok58Dbd2U0Tf963qrnM99LGcjpjC9n3GEJc9KD4gTYm/AX/lw5qB6Omz/eN6rWSSPSa1oqxHlOLADXqAqBcqm3v68vqkxfeA+Nt0xrClI0tFPTXQq3ZVEEB2fM0YbnZHZ+MP/ffRg77ynJKq7rW04X0kYsKmuhUg/xz7rcJFT7sPYfRUDhw/nf/oRS5A9Xc5YpxjNk76KeIxz48fGkKI2fyEGpZRkK8i7LCTA5IhdgA7SZJQhltIh715rAVMTmphFyfYgZ8hnkkCWO6NDiJ/QlaS9TxQ4qhnW6pcOdm+Sg1577dsBuOTOnbA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QwHTv7HzK2Ar2lLGcyA76rXtUaFVV5ulwcsDMDkI0v8=;
+ b=JbqbEQLv2BqYxgglR8K4jDF8UMOo+uiISY86Objp3djs92FGQOjvBayRHeo1wLDN+FYLVF4UPy0nqI1vPydpIUur0Xq5rbggk0XOzxXBaHnZ1uJmwXmG/FyecN8PvgSiazJdeuPTSvJC5OgtZqNj/e8jSiuskJgyYsReP574zfU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by SN7PR12MB6789.namprd12.prod.outlook.com (2603:10b6:806:26b::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Mon, 29 Jan
+ 2024 16:12:14 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::c30:614f:1cbd:3c64]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::c30:614f:1cbd:3c64%4]) with mapi id 15.20.7228.029; Mon, 29 Jan 2024
+ 16:12:14 +0000
+Message-ID: <ad625d5f-6b4b-41bb-a9c0-edb513697802@amd.com>
+Date: Mon, 29 Jan 2024 10:12:13 -0600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] ACPI: video: Handle fetching EDID that is longer than
+ 256 bytes
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: amd-gfx@lists.freedesktop.org, Alex Deucher <alexander.deucher@amd.com>,
+ Harry Wentland <harry.wentland@amd.com>, Hans de Goede
+ <hdegoede@redhat.com>, "open list:ACPI" <linux-acpi@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>,
+ "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+ Melissa Wen <mwen@igalia.com>, Mark Pearson <mpearson-lenovo@squebb.ca>
+References: <20240126184639.8187-1-mario.limonciello@amd.com>
+ <20240126184639.8187-2-mario.limonciello@amd.com>
+ <CAJZ5v0iX5=u5y0JS2OzYMvYNnjZBCM2YfSTsSdg3CtH4rBMyUw@mail.gmail.com>
+From: Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <CAJZ5v0iX5=u5y0JS2OzYMvYNnjZBCM2YfSTsSdg3CtH4rBMyUw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SA9PR03CA0007.namprd03.prod.outlook.com
+ (2603:10b6:806:20::12) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtgedgjeelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepgedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehulhhfrdhhrghnshhsohhnsehlihhnrghrohdrohhrghdprhgtphhtthhopehsthgrnhhishhlrgifrdhgrhhushiikhgrsehlihhnuhigrdhinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|SN7PR12MB6789:EE_
+X-MS-Office365-Filtering-Correlation-Id: 711d9a4b-14a7-485c-fde9-08dc20e50e99
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Y2MCyB4jQM1fTlL6Fa6O9O2MHDnv8FFMTtWLnzRLYryZWJfVMXUSex74POZYYf5wTnX5ZT9iQeQAralwq+50WBNMHZ0En/WKaCEt3LmPQKb2mnzrniDQ/ysn8srU1j9QSa/mJUT+HJE9yLLXOJvVxe0jLIwjpBycLGEFV+lc1mY/NrdrBbCXD32ETfCmXE3X7TCfoRMQEWBUjgGQoA8RXM3OtBKC0dnhuPsPv4pkQ+SkE92EIsrkFsaxROeGlflhgTWWKzM7WkK2ejXLW7juCVnYTiLT0QaDBjMt/rx0pq8FSNa35XuIkRhpWu8QMt/e4OiATwSjHXAvifBlr5jnzVv/BRzFZAvnCO07+bHmXkFeZd4hWrQxJgA0cdvg5iV6IY6BLieyzOmP3Risk/f544bis1X6/0tTsXlcbOo9kIWHRwoJLklep7HOm/nhPhCV9N+2kaX2ODkH3I8iN3c8+ezf+zpABgeYNtVhW/VjblCvLKVPTZNlktWQRMuiuEJw2Nap8+u7r8/0Tys0A0wV74iFXU/ssjZ4FhYKVSCv2LbPFz5jW/Dzc5ejJiq/ptMjlhh2/mYgkafUa78gppKLn0C/LuwtjqmUfODRiGVhJa0FGSe+zGCDmPh5H4yWU9DFrHiYZPIWqTaWaS6yMI7h34dZIrWrvRib98V0Z393B3I=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(396003)(376002)(39860400002)(136003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(41300700001)(31686004)(38100700002)(66556008)(6506007)(86362001)(316002)(54906003)(53546011)(6916009)(66946007)(66476007)(6486002)(966005)(8676002)(8936002)(44832011)(2616005)(5660300002)(6512007)(26005)(478600001)(2906002)(4326008)(31696002)(83380400001)(36756003)(148743002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?TjhiM0hBcTJ0ZnhYcXgrbnhBaXl2M3owbTNLSHgxUEwybzNQRmFzeHk5SHps?=
+ =?utf-8?B?WG5KTms5WU8wMFN6WjR3Z21Eb1dhZWFjM1lGcHZ0ZEZHV1dRY2x4RDlSaVU2?=
+ =?utf-8?B?NWVFUkpaOUFTMkZsSEJ5eGhyQllIYVI4TlpTd1FybEhpNFpvRkFoNkhjZlZw?=
+ =?utf-8?B?QWpQSlFETEVxMUFJUWZrcVlHc21ydmRlbXFlQkF0S2ZPaDN0K0JkTWc1SGlL?=
+ =?utf-8?B?VHhuSUFkV0o1a3lXRHhyUTBJTEZnYmV3bkY5NTFsUFBLMmUzRGgwUnk3d1Nr?=
+ =?utf-8?B?MFpwSDlDS3JuNnM0K3RXeHpOMnl1OVhodlc2Tytyb2h3WEl2V0xlVnFPbndw?=
+ =?utf-8?B?bEdMNUZDK083L2V1L0xCdE5UN0FLZFJFMjducEVZWUxqMVVBWVJCYlhKMGQ0?=
+ =?utf-8?B?OEpWa0JJN29uY2VKNjRQM05GZ3l2eW93MlBRNlFZWnZqcXdPcE5vckR5WGg0?=
+ =?utf-8?B?QzczRmF5UmhsZVVNUHVmb0g1ekJjbXRBV3hWVm4rOFR5blgvbC9HWjQ0cDJO?=
+ =?utf-8?B?azhLQktFY0RRYmk4NFNEaC9Ed2piVlg4WTUvVnN1aHRtS1FXZ0RBM3JnQ1pt?=
+ =?utf-8?B?bG5qalR3TlNFMXE1cU1LbzluRmVaWDJnTnRrQk9oeWM1ZXhaRTd0S3B3cHc3?=
+ =?utf-8?B?V3lhdTFVbFZRblhYZG9FNHlPclRWMFUwVGJsZjhoVmJXeGVqRjV0M1lHM21O?=
+ =?utf-8?B?YjUrNFFZT3NBQVlsRmV4UnhIUlR3dWh6MHVCR0lWSjBlN0RhSHAwMHNaN0tx?=
+ =?utf-8?B?ZC9rMGxxUW1OVCtYbDBBUEordHhhMENtanlIV0xnT0RpdFdrMFNhRFNaUVFu?=
+ =?utf-8?B?VlRvMThjbUZmdTh5ZXhyNXNrNHF0SURMTXVYZlptSVl5eHZHOXZJWGxDV3p3?=
+ =?utf-8?B?Y2pIV2FENm9aUm9ETENwZWhrQWFCZHpSRTg3WGpPTzVPVXJ4RWMzNlFvY25J?=
+ =?utf-8?B?WHhCd2duVU0yZmp1UTAxWmFDQ2pvZVE1aUhSaXVsNnJLVUQvUVkzTjVRRVd1?=
+ =?utf-8?B?RVNPSUtrYTM4QTZrd0NvL0pGd2V5VXAydjdMN09lK1I4cUhSbWRPZE9FK2xj?=
+ =?utf-8?B?Y1lUUjdva2x3NDU1TWFiYzJwUS9ZOUZzZHNpc0kyVlBOclhvWDNjMGttSEtV?=
+ =?utf-8?B?dXdxZE5aZlQ3eTZ2NHRQRi9qcEZGVm9zSWNPRUkrVk9RVGxlQmFDZ0JZUGJm?=
+ =?utf-8?B?OFBCb29mRnlqMmxxQS9sdjlRZTR4OWRwWDhCU25LL1dOL3JrS3g1eGpXQUJV?=
+ =?utf-8?B?SDUzd1lyaDRDcDNIZXZiNFk3bGVPT0VxZ0dLN3FYdmEwVVJ3SjRNbHM3aVJw?=
+ =?utf-8?B?SHRqdjFnZE92Y3ZXbVpoVGpaSC83V05XemhvRGhmanZBaU1scTlydmZ4QzUz?=
+ =?utf-8?B?aSszTGN3Sjd3Z3F4S2Y0VXFSdTNCcWpCRk0vUzBSUmdTeTM4ekg4alRoZ0Vs?=
+ =?utf-8?B?VHZZSUxvNGRVVndqTmphd0JHRCtORi9Ga1YvU29kSjgzRkZzOGVjWmpTVGgx?=
+ =?utf-8?B?U3JvRVUxOWxVRkJkUzZlZzdpOGVPaVlUWEo4ZGxsMVVnVWpJQm1LaStDYjdh?=
+ =?utf-8?B?VGpOSWh6Q0RLTFdEVTRtT0xManhqRkFSL1N3aE9hRWpiK2ttNG9uRCtwZFlI?=
+ =?utf-8?B?dk5OV3VESzF5TSs2UVYyeWdhMDJEcXhnZWczbGNlRytUWnRDZmh1YnlsUGNN?=
+ =?utf-8?B?RW5jU1cxM25BbHhqR3hVS2xKQW9NZUVUb2paNDg1WFlJTmE4R3BKWnl1WGFE?=
+ =?utf-8?B?dis4WUVseU1zZ1E4bDNLbEU2UDliYm1KdUx4aFlCQ0dnL29leXM0UWJnS1pF?=
+ =?utf-8?B?cXE3NENuR21jdGR6NDlEc2JUNVZkQjAxQzhxekM3L1JBZWNhSFhXQ2l6cjM1?=
+ =?utf-8?B?VUtob3pEcTRNTWoyS2c5RXFMMktYQUNWSXJqOEF5Zk1hYTIzVnVaN0hUS0Ex?=
+ =?utf-8?B?M2F0NlZpOWVabDhQQWRVZnR0Zm9XOHE0aThCVmx1M1JlL0Q4L0RIVGsyQ2hi?=
+ =?utf-8?B?SzAySi9wTG04bzVPSjkrTjRkb3VMUGxpOU1zUGhCYlZnRkU2eXJKcVJZOWwr?=
+ =?utf-8?B?aG1BUCtvMHluVFAyUWNtbjlZUURMY0V4SkF4YTltVDl2WElqTFBKMjRDdHA0?=
+ =?utf-8?Q?iwuuXjqpv43BlbTHe5zIhZKDo?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 711d9a4b-14a7-485c-fde9-08dc20e50e99
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 16:12:14.5492
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: b4myuZIPKU1Kcuip4bj6+eD3uAlhYGPv4GXvCSIzeDBX1taSN11iY95B39x4keeoCszQV+vnh5xKgGlSFLc3DQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6789
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On 1/29/2024 07:54, Rafael J. Wysocki wrote:
+> On Fri, Jan 26, 2024 at 7:55 PM Mario Limonciello
+> <mario.limonciello@amd.com> wrote:
+>>
+>> The ACPI specification allows for an EDID to be up to 512 bytes but
+>> the _DDC EDID fetching code will only try up to 256 bytes.
+>>
+>> Modify the code to instead start at 512 bytes and work it's way
+>> down instead.
+>>
+>> Link: https://uefi.org/htmlspecs/ACPI_Spec_6_4_html/Apx_B_Video_Extensions/output-device-specific-methods.html#ddc-return-the-edid-for-this-device
+>> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+>> ---
+>>   drivers/acpi/acpi_video.c | 23 ++++++++++++++++-------
+>>   1 file changed, 16 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/acpi/acpi_video.c b/drivers/acpi/acpi_video.c
+>> index 62f4364e4460..b3b15dd4755d 100644
+>> --- a/drivers/acpi/acpi_video.c
+>> +++ b/drivers/acpi/acpi_video.c
+>> @@ -624,6 +624,10 @@ acpi_video_device_EDID(struct acpi_video_device *device,
+>>                  arg0.integer.value = 1;
+>>          else if (length == 256)
+>>                  arg0.integer.value = 2;
+>> +       else if (length == 384)
+>> +               arg0.integer.value = 3;
+>> +       else if (length == 512)
+>> +               arg0.integer.value = 4;
+> 
+> It looks like switch () would be somewhat better.
+> 
+> Or maybe even
+> 
+> arg0.integer.value = length / 128;
+> 
+> The validation could be added too:
+> 
+> if (arg0.integer.value > 4 || arg0.integer.value * 128 != length)
+>          return -EINVAL;
+> 
+> but it is pointless, because the caller is never passing an invalid
+> number to it AFAICS.
+> 
 
-Instead of using a set of individual struct suspend_stats fields
-representing suspend step failure counters, use an array of counters
-indexed by enum suspend_stat_step for this purpose, which allows
-dpm_save_failed_step() to increment the appropriate counter
-automatically, so that its callers don't need to do that directly.
+Thanks.  I'll swap over to one of these suggestions.
 
-It also allows suspend_stats_show() to carry out a loop over the
-counters array to print their values.
+I will also split this patch separately from the other as the other will 
+take some time with refactoring necessary in DRM that will take a cycle 
+or two.
 
-Because the counters cannot become negative, use unsigned int for
-representing them.
-
-The only user-observable impact of this change is a different
-ordering of entries in the suspend_stats debugfs file which is not
-expected to matter.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
-
-v1 -> v2:
-   * Use one cell less in suspend_stats.step_failures[] to avoid
-     introducing an unused array cell (Stanislaw).
-
-@Stanislaw: This is different from setting SUSPEND_FREEZE to 0, because
-that would complicate printing in the sysfs attributes and the debugfs
-code, so I've not added the R-by.
-
----
- drivers/base/power/main.c |   22 ++++++++-----------
- include/linux/suspend.h   |   12 +++-------
- kernel/power/main.c       |   51 ++++++++++++++++++++++++----------------------
- kernel/power/suspend.c    |    1 
- 4 files changed, 40 insertions(+), 46 deletions(-)
-
-Index: linux-pm/include/linux/suspend.h
-===================================================================
---- linux-pm.orig/include/linux/suspend.h
-+++ linux-pm/include/linux/suspend.h
-@@ -52,17 +52,12 @@ enum suspend_stat_step {
- 	SUSPEND_RESUME
- };
- 
-+#define SUSPEND_NR_STEPS	SUSPEND_RESUME
-+
- struct suspend_stats {
-+	unsigned int step_failures[SUSPEND_NR_STEPS];
- 	int	success;
- 	int	fail;
--	int	failed_freeze;
--	int	failed_prepare;
--	int	failed_suspend;
--	int	failed_suspend_late;
--	int	failed_suspend_noirq;
--	int	failed_resume;
--	int	failed_resume_early;
--	int	failed_resume_noirq;
- #define	REC_FAILED_NUM	2
- 	int	last_failed_dev;
- 	char	failed_devs[REC_FAILED_NUM][40];
-@@ -95,6 +90,7 @@ static inline void dpm_save_failed_errno
- 
- static inline void dpm_save_failed_step(enum suspend_stat_step step)
- {
-+	suspend_stats.step_failures[step-1]++;
- 	suspend_stats.failed_steps[suspend_stats.last_failed_step] = step;
- 	suspend_stats.last_failed_step++;
- 	suspend_stats.last_failed_step %= REC_FAILED_NUM;
-Index: linux-pm/kernel/power/main.c
-===================================================================
---- linux-pm.orig/kernel/power/main.c
-+++ linux-pm/kernel/power/main.c
-@@ -341,18 +341,28 @@ static struct kobj_attribute _name = __A
- 
- suspend_attr(success, "%d\n");
- suspend_attr(fail, "%d\n");
--suspend_attr(failed_freeze, "%d\n");
--suspend_attr(failed_prepare, "%d\n");
--suspend_attr(failed_suspend, "%d\n");
--suspend_attr(failed_suspend_late, "%d\n");
--suspend_attr(failed_suspend_noirq, "%d\n");
--suspend_attr(failed_resume, "%d\n");
--suspend_attr(failed_resume_early, "%d\n");
--suspend_attr(failed_resume_noirq, "%d\n");
- suspend_attr(last_hw_sleep, "%llu\n");
- suspend_attr(total_hw_sleep, "%llu\n");
- suspend_attr(max_hw_sleep, "%llu\n");
- 
-+#define suspend_step_attr(_name, step)		\
-+static ssize_t _name##_show(struct kobject *kobj,		\
-+		struct kobj_attribute *attr, char *buf)		\
-+{								\
-+	return sprintf(buf, "%u\n",				\
-+		       suspend_stats.step_failures[step-1]);	\
-+}								\
-+static struct kobj_attribute _name = __ATTR_RO(_name)
-+
-+suspend_step_attr(failed_freeze, SUSPEND_FREEZE);
-+suspend_step_attr(failed_prepare, SUSPEND_PREPARE);
-+suspend_step_attr(failed_suspend, SUSPEND_SUSPEND);
-+suspend_step_attr(failed_suspend_late, SUSPEND_SUSPEND_LATE);
-+suspend_step_attr(failed_suspend_noirq, SUSPEND_SUSPEND_NOIRQ);
-+suspend_step_attr(failed_resume, SUSPEND_RESUME);
-+suspend_step_attr(failed_resume_early, SUSPEND_RESUME_EARLY);
-+suspend_step_attr(failed_resume_noirq, SUSPEND_RESUME_NOIRQ);
-+
- static ssize_t last_failed_dev_show(struct kobject *kobj,
- 		struct kobj_attribute *attr, char *buf)
- {
-@@ -439,6 +449,7 @@ static const struct attribute_group susp
- static int suspend_stats_show(struct seq_file *s, void *unused)
- {
- 	int i, index, last_dev, last_errno, last_step;
-+	enum suspend_stat_step step;
- 
- 	last_dev = suspend_stats.last_failed_dev + REC_FAILED_NUM - 1;
- 	last_dev %= REC_FAILED_NUM;
-@@ -446,22 +457,14 @@ static int suspend_stats_show(struct seq
- 	last_errno %= REC_FAILED_NUM;
- 	last_step = suspend_stats.last_failed_step + REC_FAILED_NUM - 1;
- 	last_step %= REC_FAILED_NUM;
--	seq_printf(s, "%s: %d\n%s: %d\n%s: %d\n%s: %d\n%s: %d\n"
--			"%s: %d\n%s: %d\n%s: %d\n%s: %d\n%s: %d\n",
--			"success", suspend_stats.success,
--			"fail", suspend_stats.fail,
--			"failed_freeze", suspend_stats.failed_freeze,
--			"failed_prepare", suspend_stats.failed_prepare,
--			"failed_suspend", suspend_stats.failed_suspend,
--			"failed_suspend_late",
--				suspend_stats.failed_suspend_late,
--			"failed_suspend_noirq",
--				suspend_stats.failed_suspend_noirq,
--			"failed_resume", suspend_stats.failed_resume,
--			"failed_resume_early",
--				suspend_stats.failed_resume_early,
--			"failed_resume_noirq",
--				suspend_stats.failed_resume_noirq);
-+
-+	seq_printf(s, "success: %d\nfail: %d\n",
-+		   suspend_stats.success, suspend_stats.fail);
-+
-+	for (step = SUSPEND_FREEZE; step <= SUSPEND_NR_STEPS; step++)
-+		seq_printf(s, "failed_%s: %u\n", suspend_step_names[step],
-+			   suspend_stats.step_failures[step-1]);
-+
- 	seq_printf(s,	"failures:\n  last_failed_dev:\t%-s\n",
- 		   suspend_stats.failed_devs[last_dev]);
- 	for (i = 1; i < REC_FAILED_NUM; i++) {
-Index: linux-pm/kernel/power/suspend.c
-===================================================================
---- linux-pm.orig/kernel/power/suspend.c
-+++ linux-pm/kernel/power/suspend.c
-@@ -367,7 +367,6 @@ static int suspend_prepare(suspend_state
- 	if (!error)
- 		return 0;
- 
--	suspend_stats.failed_freeze++;
- 	dpm_save_failed_step(SUSPEND_FREEZE);
- 	pm_notifier_call_chain(PM_POST_SUSPEND);
-  Restore:
-Index: linux-pm/drivers/base/power/main.c
-===================================================================
---- linux-pm.orig/drivers/base/power/main.c
-+++ linux-pm/drivers/base/power/main.c
-@@ -686,7 +686,6 @@ Out:
- 	TRACE_RESUME(error);
- 
- 	if (error) {
--		suspend_stats.failed_resume_noirq++;
- 		dpm_save_failed_step(SUSPEND_RESUME_NOIRQ);
- 		dpm_save_failed_dev(dev_name(dev));
- 		pm_dev_err(dev, state, async ? " async noirq" : " noirq", error);
-@@ -817,7 +816,6 @@ Out:
- 	complete_all(&dev->power.completion);
- 
- 	if (error) {
--		suspend_stats.failed_resume_early++;
- 		dpm_save_failed_step(SUSPEND_RESUME_EARLY);
- 		dpm_save_failed_dev(dev_name(dev));
- 		pm_dev_err(dev, state, async ? " async early" : " early", error);
-@@ -974,7 +972,6 @@ static void device_resume(struct device
- 	TRACE_RESUME(error);
- 
- 	if (error) {
--		suspend_stats.failed_resume++;
- 		dpm_save_failed_step(SUSPEND_RESUME);
- 		dpm_save_failed_dev(dev_name(dev));
- 		pm_dev_err(dev, state, async ? " async" : "", error);
-@@ -1323,10 +1320,9 @@ static int dpm_noirq_suspend_devices(pm_
- 	if (!error)
- 		error = async_error;
- 
--	if (error) {
--		suspend_stats.failed_suspend_noirq++;
-+	if (error)
- 		dpm_save_failed_step(SUSPEND_SUSPEND_NOIRQ);
--	}
-+
- 	dpm_show_time(starttime, state, error, "noirq");
- 	trace_suspend_resume(TPS("dpm_suspend_noirq"), state.event, false);
- 	return error;
-@@ -1509,8 +1505,8 @@ int dpm_suspend_late(pm_message_t state)
- 	async_synchronize_full();
- 	if (!error)
- 		error = async_error;
-+
- 	if (error) {
--		suspend_stats.failed_suspend_late++;
- 		dpm_save_failed_step(SUSPEND_SUSPEND_LATE);
- 		dpm_resume_early(resume_event(state));
- 	}
-@@ -1789,10 +1785,10 @@ int dpm_suspend(pm_message_t state)
- 	async_synchronize_full();
- 	if (!error)
- 		error = async_error;
--	if (error) {
--		suspend_stats.failed_suspend++;
-+
-+	if (error)
- 		dpm_save_failed_step(SUSPEND_SUSPEND);
--	}
-+
- 	dpm_show_time(starttime, state, error, NULL);
- 	trace_suspend_resume(TPS("dpm_suspend"), state.event, false);
- 	return error;
-@@ -1943,11 +1939,11 @@ int dpm_suspend_start(pm_message_t state
- 	int error;
- 
- 	error = dpm_prepare(state);
--	if (error) {
--		suspend_stats.failed_prepare++;
-+	if (error)
- 		dpm_save_failed_step(SUSPEND_PREPARE);
--	} else
-+	else
- 		error = dpm_suspend(state);
-+
- 	dpm_show_time(starttime, state, error, "start");
- 	return error;
- }
-
-
+>>          else
+>>                  return -EINVAL;
+>>
+>> @@ -1443,7 +1447,7 @@ int acpi_video_get_edid(struct acpi_device *device, int type, int device_id,
+>>
+>>          for (i = 0; i < video->attached_count; i++) {
+>>                  video_device = video->attached_array[i].bind_info;
+>> -               length = 256;
+>> +               length = 512;
+>>
+>>                  if (!video_device)
+>>                          continue;
+>> @@ -1478,13 +1482,18 @@ int acpi_video_get_edid(struct acpi_device *device, int type, int device_id,
+>>
+>>                  if (ACPI_FAILURE(status) || !buffer ||
+>>                      buffer->type != ACPI_TYPE_BUFFER) {
+>> -                       length = 128;
+>> -                       status = acpi_video_device_EDID(video_device, &buffer,
+>> -                                                       length);
+>> -                       if (ACPI_FAILURE(status) || !buffer ||
+>> -                           buffer->type != ACPI_TYPE_BUFFER) {
+>> -                               continue;
+>> +                       while (length) {
+> 
+> I would prefer a do {} while () loop here, which could include the
+> first invocation of acpi_video_device_EDID() too (and reduce code
+> duplication a bit).
+> 
+>> +                               length -= 128;
+>> +                               status = acpi_video_device_EDID(video_device, &buffer,
+>> +                                                               length);
+> 
+> No line break, please.
+> 
+>> +                               if (ACPI_FAILURE(status) || !buffer ||
+>> +                                   buffer->type != ACPI_TYPE_BUFFER) {
+>> +                                       continue;
+>> +                               }
+>> +                               break;
+>>                          }
+>> +                       if (!length)
+>> +                               continue;
+>>                  }
+>>
+>>                  *edid = buffer->buffer.pointer;
+>> --
 
 
