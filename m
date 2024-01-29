@@ -1,173 +1,155 @@
-Return-Path: <linux-kernel+bounces-43009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBABA840A34
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:38:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CFBB840A3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:40:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C3BC1C21EC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:38:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6BD8BB25A8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:39:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7422F154443;
-	Mon, 29 Jan 2024 15:37:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04C1C15444A;
+	Mon, 29 Jan 2024 15:39:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="owqHGQGq"
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Sm+GMl2y"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53800154426
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 15:37:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62DE115442B
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 15:39:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706542677; cv=none; b=kXj8POOVtc5o7tQEEJ5VEVuRTJwpAVHfRHB4i2uF9WbzkMEQ70DV4Caihmaw42vIIGNvjfZWcJv//c5sI5QkwXYbGXoTidiwLVkYHh647hXYhBRj2zmFI8S7DhRGIxKNF9Jsd6ztVvd9uYl63FBS66Ph4zRy4DeQvm4inxRkKw8=
+	t=1706542787; cv=none; b=AfNn4Qa/zlF2A4bxEPtZQReVpEMB9afqPzjuNFl2Tdqh8BN05D+jJ/IiLQWEP9Id5YmnqMo6fjaQZHWOXxDGONfj8Dh17eHKCS51Ir3Xdq4wPAARAlut7N2Ni8Lwq2xcDc2mR2gUt0PLuOjBcmgl5dK8Weaz+4+J/c3Pao4owiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706542677; c=relaxed/simple;
-	bh=dv7rvRTXCssC2Ucy3ETYL9O+pACUSn657yVE+v0ZMSE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t8lxoPu4h3RygMEB7uxjDv6SAPG+EQ4NuMMCQ4uu6tint/Km0BLeYbLTlxXS5xMX8QsZ36NYhN805m794p/DwwbEVtqLvJ0CY+3Rpp+/fDcXgbE+PuDfg8ag/jg3kjLxJVSrRxoLWUM/MW5vfGkfQsDfZrKJwLoOvf9J9KPsL7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=owqHGQGq; arc=none smtp.client-ip=209.85.210.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6e11faeb125so581929a34.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 07:37:55 -0800 (PST)
+	s=arc-20240116; t=1706542787; c=relaxed/simple;
+	bh=n9nCPEsYfSINBzdyiWwPDZaTjNh9Nu8piVjbdDNZNaA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pN+WFYW1sIa9O0wq9IosdADQeUAFbpvcOpDWUcczfkNxSofcgTyxhEDPZX08y1IeMLZedkl6uPdGp1u7hAeVQFWhmzC8ZEmq6y8GOa4iZT7oDIXV6N7gTgdvM5edlQ+re2Ww4O5/KFmxvX+3Se02ZPlz0RFliSwj6toBMTJK2zM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Sm+GMl2y; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a358ec50b7cso234737266b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 07:39:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1706542674; x=1707147474; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+u6y5RGZUaOEJts7DaeBk/aybPKOo63QfRuk7QPhhAo=;
-        b=owqHGQGqtbUf8a/Ho4QsD2/LPQhfOhR7WY0o2qDk6nIl1pmaEem9f3jleLmuH9xL+R
-         r2pIqwgrc3RnyvlTrYurSDufJwdm8Doy70TvefYh+MlAgihzO81X6C/yfhyqbvcZLf61
-         Vx+LAkc01OZE96jEO7j0v88l7iYeZagJpC9cDl8akCmP0knyd6cMu/Rqa5yRcGbI4zCY
-         zSZB6FOR1hkDkwwizyDk3VqXRUEe4q9JaE32HLZsPClYudxswxp0a/hyLIWUAoYoDRJ7
-         Hx73ANqu63r6vfK44l/t2fBSc/OQv+kIVYceWfAobtZp6tYXQBfOB5ut0GrooD2w54BK
-         vW/A==
+        d=linaro.org; s=google; t=1706542783; x=1707147583; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wkgPevqiSgLEurIHYt9EjLvopYwvRhZn075Iur8KFvo=;
+        b=Sm+GMl2y8tOGKqYtPVNOq1jhjqwyPwwO/T18UJfhyBgXSDiSAss9BLVfivLp9M74dk
+         voA+ol+TiiQ+aPTKom52KOsOWQXMHveQezNi7JWSTpNYpyBVMKAA1mFgG+LBB/vHnpU4
+         AQCzcwGIIC85dmB9NFTNRmWmNbnGJ7edS+HdhjOJB4mmn6kZe5oNORF9Vqk6APBoWj4z
+         x96LVpdu4fVkRZ8i7Fnc6beOthBoktgmy4STV+hDYVRSfDTIJ3qXc/kGhM128ibZb8RI
+         +0/bvxWEW8c6hLCSh7IXmVvNlTOslBlSCrnakkG8PRJhZnrdc+3qA4WduqvY2qHCWAm2
+         DCtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706542674; x=1707147474;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+u6y5RGZUaOEJts7DaeBk/aybPKOo63QfRuk7QPhhAo=;
-        b=lyCOV1vdcqIrTmCDlMmV5Z/ofIQUPIDSa7ZoCxXjNZR86bK3b/0rHd35BkC2J6JOBD
-         gRRkLWdX0++pSROKnlrstoQDGCPlEvumZ/nbbny83E9RYFEIsrkioCW1Rm+tNvBn+/VS
-         AtGxuDP7yy5tubayxUkXGC9Kb3ShPyY0oWrCciHUennqEehLgJ7khdd8HDo6nM9WqIor
-         lz7PE4YaZo0ow2e/9UYpFp7/bdamRpi1j+PuSGS9jyF1lfth4ayqfREuh8ydk2dyp+mV
-         m0Y9vvMKscxSGuqY2dmGuemZCltVYmDFsFPxyirqnd4wg+0SrsZh/2V4JkHYhh52St7S
-         OBQQ==
-X-Gm-Message-State: AOJu0Yw+MFkdwT5tjQ3JwVWOyobO8Y/oyIWNHTN02WddldETJZ0R6uxO
-	SeLjD962Q9+juL6E2QFgpSnDKsJFD0PduSWsBYx7h9LDJAu0oWCdc5TUwbwbyYk=
-X-Google-Smtp-Source: AGHT+IFioboZVLN9aAQFM+uMw6SK0ubssSHwws7ioYqVN5+2ra53qkjqKoRzZcZNHc4r/BPxL4LaUg==
-X-Received: by 2002:a9d:685a:0:b0:6e0:ba7c:4203 with SMTP id c26-20020a9d685a000000b006e0ba7c4203mr5515941oto.1.1706542674389;
-        Mon, 29 Jan 2024 07:37:54 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id z21-20020a05683008d500b006e12266433csm750687otg.27.2024.01.29.07.37.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 07:37:53 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rUTho-00A9vk-Ij;
-	Mon, 29 Jan 2024 11:37:52 -0400
-Date: Mon, 29 Jan 2024 11:37:52 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] iommu: Probe right iommu_ops for device
-Message-ID: <20240129153752.GE50608@ziepe.ca>
-References: <20240126105341.78086-1-baolu.lu@linux.intel.com>
- <20240126105341.78086-3-baolu.lu@linux.intel.com>
+        d=1e100.net; s=20230601; t=1706542783; x=1707147583;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wkgPevqiSgLEurIHYt9EjLvopYwvRhZn075Iur8KFvo=;
+        b=WuesCZYl7mNNp95AeOapdmluShOjscwFScpWpMCp8/6BLN4PjKhKrtqByKedmLLniY
+         YnuJBoJRgNSnrJuGyUiSDGS9dFOy0Q+Q8qHPphYlf64Mt00JElm97jKbN+savcqB+6sn
+         hedM6DzBDYWu8hPysb0b4VvEeOL1wvFeCZjtF95CsYCfo26ozLXqL4in8LOwV+sMDnM/
+         8N3Sc3VlZEqt8FnIIeor9XPa54A/5G+cVd4dqOpAnFBIjoLGg992Rf56xIU3rQfSsJH1
+         7ZIn2RoKJuxq522jcBgFKv86yhLew/LOqSHp3YCuE0PlCxGMwusf/6T7WeXJXx4EXgUY
+         xMIA==
+X-Gm-Message-State: AOJu0Yw/c7bdrhS0nNY/5fVTmvqdo5r+Q/jIKhj/rgiNuO5NToopoVT4
+	4YNAEsXigyIRLMf5/HNeqSJmfill2pfQK2q3AjP3LDGQqAijorP+g8fTBhi70No=
+X-Google-Smtp-Source: AGHT+IFYdid04IRF9e/VP+vofbM/pi1HxoRfriJJXvBTTWK5vVVNdrOFgdHvYkqQr5MJ2VEfT5XIwQ==
+X-Received: by 2002:a17:906:31c8:b0:a27:5fd1:791f with SMTP id f8-20020a17090631c800b00a275fd1791fmr7553364ejf.0.1706542783559;
+        Mon, 29 Jan 2024 07:39:43 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id wb1-20020a170907d50100b00a3549e9cc45sm2802574ejc.88.2024.01.29.07.39.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jan 2024 07:39:43 -0800 (PST)
+Message-ID: <e25b28f7-5f32-4b37-b898-294d50adaf8d@linaro.org>
+Date: Mon, 29 Jan 2024 16:39:41 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240126105341.78086-3-baolu.lu@linux.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 9/9] clk: samsung: gs101: don't CLK_IGNORE_UNUSED
+ peric1_sysreg clock
+Content-Language: en-US
+To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
+ peter.griffin@linaro.org, mturquette@baylibre.com, sboyd@kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
+ tudor.ambarus@linaro.org, willmcvicker@google.com,
+ semen.protsenko@linaro.org, alim.akhtar@samsung.com, s.nawrocki@samsung.com,
+ tomasz.figa@gmail.com, cw00.choi@samsung.com,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org
+References: <20240127001926.495769-1-andre.draszik@linaro.org>
+ <20240127001926.495769-10-andre.draszik@linaro.org>
+ <74b63fd9-bf7a-4a88-bfa9-a975a4f12bca@linaro.org>
+ <7d42f80acf7c8bd3882f5ac253a761c71de2034c.camel@linaro.org>
+ <e845e0fa-846c-4f26-9d8c-79eccae72cc2@linaro.org>
+ <7537f9d4c49a5f3891dba4a8f68ee7332f045cc5.camel@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <7537f9d4c49a5f3891dba4a8f68ee7332f045cc5.camel@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jan 26, 2024 at 06:53:41PM +0800, Lu Baolu wrote:
-> Previously, in the iommu probe device path, __iommu_probe_device() gets
-> the iommu_ops for the device from dev->iommu->fwspec if this field has
-> been initialized before probing. Otherwise, it is assumed that only one
-> of Intel, AMD, s390, PAMU or legacy SMMUv2 can be present, hence it's
-> feasible to lookup the global iommu device list and use the iommu_ops of
-> the first iommu device which has no dev->iommu->fwspec.
+On 29/01/2024 16:21, André Draszik wrote:
+> On Mon, 2024-01-29 at 15:08 +0100, Krzysztof Kozlowski wrote:
+>> For this case #9 must be squashed with #3. #4 with #9.
 > 
-> The assumption mentioned above is no longer correct with the introduction
-> of the IOMMUFD mock device on x86 platforms. There might be multiple
-> instances of iommu drivers, none of which have the dev->iommu->fwspec
-> field populated.
-> 
-> Probe the right iommu_ops for device by iterating over all the global
-> drivers and call their probe function to find a match.
-> 
-> Fixes: 17de3f5fdd35 ("iommu: Retire bus ops")
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  drivers/iommu/iommu.c | 76 +++++++++++++++++++++++++++----------------
->  1 file changed, 48 insertions(+), 28 deletions(-)
-> 
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index 0af0b5544072..2cdb01e411fa 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -396,30 +396,69 @@ void dev_iommu_priv_set(struct device *dev, void *priv)
->  }
->  EXPORT_SYMBOL_GPL(dev_iommu_priv_set);
->  
-> +static struct iommu_device *
-> +__iommu_do_probe_device(struct device *dev, const struct iommu_ops *ops)
-> +{
-> +	struct iommu_device *iommu_dev;
-> +
-> +	if (!try_module_get(ops->owner))
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	iommu_dev = ops->probe_device(dev);
-> +	if (IS_ERR(iommu_dev))
-> +		module_put(ops->owner);
+> Will do as you suggest, Krzysztof (I think you meant #4 with #8).
 
-This doesn't really do enough to protect against races, to do that
-fully we need to have iommu_device_unregister() do some better
-locking, and fix fwspec->ops lifecycle somehow.. Remember that module
-ref counts don't prevent iommu_device_unregister_bus() concurrency.
+Yes, indeed, the DTS patches.
 
-So, it would be simpler to leave the try_module_get in the
-iommu_init_device(), just move it after the probe_device call.
+Best regards,
+Krzysztof
 
-> +static struct iommu_device *iommu_probe_device_ops(struct device *dev)
-> +{
-> +	struct iommu_device *iter, *iommu_dev = ERR_PTR(-ENODEV);
-> +	struct iommu_fwspec *fwspec;
-> +
-> +	/*
-> +	 * For FDT-based systems and ACPI IORT/VIOT, drivers register IOMMU
-> +	 * instances with non-NULL fwnodes, and client devices should have been
-> +	 * identified with a fwspec by this point. Otherwise, we will iterate
-> +	 * over all the global drivers and call their probe function to find a
-> +	 * match.
-> +	 */
-> +	fwspec = dev_iommu_fwspec_get(dev);
-> +	if (fwspec && fwspec->ops)
-> +		return __iommu_do_probe_device(dev, fwspec->ops);
-> +
-> +	mutex_lock(&iommu_device_lock);
-> +	list_for_each_entry(iter, &iommu_device_list, list) {
-> +		iommu_dev = __iommu_do_probe_device(dev, iter->ops);
-> +		if (!IS_ERR(iommu_dev))
-> +			break;
-
-This does need to skip duplicate ops though (see my version), we don't
-want to call the same driver many times. And Kevin and Robin are
-right, since we recently removed a bunch of fwpsec checks from drivers
-the core code must now never call a fwspec expecting driver without a
-fwspec. (check for !iommu->fwnode)
-
-Otherwise this looks fine for me, thanks
-
-Jason
 
