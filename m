@@ -1,155 +1,179 @@
-Return-Path: <linux-kernel+bounces-42072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C94E83FBEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 02:48:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E624D83FBF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 02:50:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A70E1F21381
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 01:48:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 104BB1C20CC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 01:50:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95CE0DF6B;
-	Mon, 29 Jan 2024 01:47:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD830DF58;
+	Mon, 29 Jan 2024 01:50:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="2G3BDLap"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="S0qHdZIl"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F93DDCA
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 01:47:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 069FADDC1;
+	Mon, 29 Jan 2024 01:50:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706492869; cv=none; b=NB2XdcDEpt5WpaaZON7eAAymemcTG9H87dIxvEmQNpL/cp5Ybjk92vi/3jaACi478rd14BrXghLfbT+pvl52cE6vWclLvs4xUQC+Gphw8utZ+6o7enJkKrEoczmcWSjrgQmxZfg3fOnZiA95/mr5Q6dpBDdLdTVhOqwYPTZ4iDs=
+	t=1706493031; cv=none; b=WQ1U8N5GngDQTgxdqcA8Fkv+DuqdlVVgbilCerq6WPqF5pATzHem5TSSYgjstnvaf7UbO/5eaJLzCib2lqSvqcCbKVjjtSKw6JzZ+RM4yrXeUN5R7pGnk518dJb6AV2BXxUvkSdF4ku+lnAcs2WY/bftxi9Ye9RLyllIYlAxS/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706492869; c=relaxed/simple;
-	bh=LZpXrEqXUBZjxYKaP7iXfH75PEgXom/gvKUA5L2KGOo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LgAg3Jq6feomhN2KK5FIf7M2VnmzQqLA2hM7hJ+oU80rsa90QGxGP7kuNDQG7AP09mOKHrCWvCoZ+DghTrFNTMqEtSnv/0GkCOLRGDgvLWILqEQWTujPVrXwDhYau7aVbompdIpkVp5EQlY8x6WUBb1Qz+Hgzyns0LVrgguQtLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=2G3BDLap; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d7354ba334so17544585ad.1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 17:47:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1706492867; x=1707097667; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=/HXe1ZkYYO9fD1r0+7cwZjBt+if+SneUe0KqnaZMV1Y=;
-        b=2G3BDLapJJRYmG8he6BHWioT/r75gg2Gw+k5eCmjM3jyCwMaTXdzB6FtRC5NbREqhP
-         H5sbyadveC7rNVrjAbKlPltPcd63HMo8pBTv/eUPbUXAtu7AAvviBpJ0nu5ZKiJl/12w
-         rhM0xVA5nAUY0jGZViAxhrcNeQ2G+zHZ6waY0xtEVfzD1A54XxwVCCbLG0bYYX/uMS1E
-         nGEe6SbsRd5ex3fwJfIXfqK49KflqgqSozDyYIf7uSD1oo54tcByw5KmDnhOhnM46uDg
-         rMi8BznmQRIjH0BuscQKXLufbzejxw7A8/hSne933wfUDO+T4b5eoAna3lH7BO0wkorl
-         Feyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706492867; x=1707097667;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/HXe1ZkYYO9fD1r0+7cwZjBt+if+SneUe0KqnaZMV1Y=;
-        b=nP4NPnv/GudIp7oIYm0qnvrLh+xi2TVIEDb2eXf5NP9+VgEj2hhBIejHfb/t75/PrS
-         6xggeL2cOzqWJJWmW8QlqMuRhOxvX0lwRALUV9KLHUcThx6AkEMh6mAMUuX2SDiGrqf+
-         Q5nKU1/5Epl6E2WOmQCuOl3mmtd2lRv+zBQ5PCIaaOVdx8DqAaH9BnSfND82Zug6HzIz
-         TAQItzdtJJ8j90hQ8qMkKpZixy162PDh+4bQ37/sXFzrFEK6Z1OZmfD7SFYtJU4/m2EK
-         hJ4nQhxl63mRpFw7AF4jXhydsNaLUkxpdCDKrDO8hNxShj4hqPG9Wu6zkC3oStHOVfX/
-         awBg==
-X-Gm-Message-State: AOJu0YyERAy5Y+2QYY02WvTEWA1B7R1xa3OSXyNsp2MxGijJM2qD9xen
-	a9jNVXF/IAjImGBcipx66rN8NuxpNh8ZF5yLUGi/4BvH4MAavPSw5+KD47ZJq4o=
-X-Google-Smtp-Source: AGHT+IEq3c3K1ygyW/CVEYqCz0nHDHcKikCupujYmvZwln17s4zPmpinqbh5fIhJ0e17Gfa+s7b+aA==
-X-Received: by 2002:a17:902:d4c9:b0:1d8:c3be:8f10 with SMTP id o9-20020a170902d4c900b001d8c3be8f10mr3714366plg.46.1706492867567;
-        Sun, 28 Jan 2024 17:47:47 -0800 (PST)
-Received: from dread.disaster.area (pa49-181-38-249.pa.nsw.optusnet.com.au. [49.181.38.249])
-        by smtp.gmail.com with ESMTPSA id iz3-20020a170902ef8300b001d8e974ed2fsm292730plb.284.2024.01.28.17.47.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jan 2024 17:47:47 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rUGkP-00GfP7-0g;
-	Mon, 29 Jan 2024 12:47:41 +1100
-Date: Mon, 29 Jan 2024 12:47:41 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Mike Snitzer <snitzer@kernel.org>
-Cc: Matthew Wilcox <willy@infradead.org>, Ming Lei <ming.lei@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, Don Dutile <ddutile@redhat.com>,
-	Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>
-Subject: Re: [RFC PATCH] mm/readahead: readahead aggressively if read drops
- in willneed range
-Message-ID: <ZbcDvTkeDKttPfJ4@dread.disaster.area>
-References: <20240128142522.1524741-1-ming.lei@redhat.com>
- <ZbbPCQZdazF7s0_b@casper.infradead.org>
- <ZbbfXVg9FpWRUVDn@redhat.com>
- <ZbbvfFxcVgkwbhFv@casper.infradead.org>
- <CAH6w=aw_46Ker0w8HmSA41vUUDKGDGC3gxBFWAhd326+kEtrNg@mail.gmail.com>
+	s=arc-20240116; t=1706493031; c=relaxed/simple;
+	bh=SalaM6JGrf0LlUVTIAvgjUI/PUUumRog1VzeLyjKhQo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BMTOz3Vrb3WUD9J4HvJ32n/34bhXokqe8PlcpEMTQeO0FCMwkyna9YSpqc14qOAoVwtH7N2Jjo/ZqIEbo8seD2hphV2SouurPJqc963YL7keVzjOQ9hARxFMlHvU+H8Wv6ksEr1yQkVIstHZsnawW7iWg5uxRR/xQ8eBYbWghkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=S0qHdZIl; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706493029; x=1738029029;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=SalaM6JGrf0LlUVTIAvgjUI/PUUumRog1VzeLyjKhQo=;
+  b=S0qHdZIlBV74gow6C96e8x+TMlVUkVHkk+Y8too+PIGIsorVO5HhnYI/
+   hrhIbuBJKvCj+wu0LyPBsVLAFQwT1wuSpX96+aVcr+6gaHybuWvcp4qxR
+   WCik+uk8CdIvzhxRoIlI2ZDQCFLNle4KuubgSnIy/S1hGGui5qDUGv9EM
+   2uGBykNfVHnr09OQxd0VRkdxZ0hhIsZDwwcI+DywD2U4DgdkmexdpgYti
+   oI3LVxEyIowUyle8DD2IenTcC+rDm5uKApw2hTGd5cuqLmKRs36LxUmDi
+   qKgPTHDT9Yn65E8EwmLsKpqcrUAvfX0YflVM/XmMiSKk/E5qCzQI9P/hT
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="10214620"
+X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
+   d="scan'208";a="10214620"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2024 17:50:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
+   d="scan'208";a="3259814"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.93.8.92]) ([10.93.8.92])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2024 17:50:15 -0800
+Message-ID: <3833f6df-337f-442a-b37c-070a92bbd30f@linux.intel.com>
+Date: Mon, 29 Jan 2024 09:50:13 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAH6w=aw_46Ker0w8HmSA41vUUDKGDGC3gxBFWAhd326+kEtrNg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v18 046/121] KVM: x86/mmu: Add a new is_private member for
+ union kvm_mmu_page_role
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+ erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+ Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+ chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
+References: <cover.1705965634.git.isaku.yamahata@intel.com>
+ <33812f5282bc42e0e8e6eaaa2a6a63ce4d258bfc.1705965635.git.isaku.yamahata@intel.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <33812f5282bc42e0e8e6eaaa2a6a63ce4d258bfc.1705965635.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sun, Jan 28, 2024 at 07:39:49PM -0500, Mike Snitzer wrote:
-> On Sun, Jan 28, 2024 at 7:22 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Sun, Jan 28, 2024 at 06:12:29PM -0500, Mike Snitzer wrote:
-> > > On Sun, Jan 28 2024 at  5:02P -0500,
-> > > Matthew Wilcox <willy@infradead.org> wrote:
-> > Understood.  But ... the application is asking for as much readahead as
-> > possible, and the sysadmin has said "Don't readahead more than 64kB at
-> > a time".  So why will we not get a bug report in 1-15 years time saying
-> > "I put a limit on readahead and the kernel is ignoring it"?  I think
-> > typically we allow the sysadmin to override application requests,
-> > don't we?
-> 
-> The application isn't knowingly asking for readahead.  It is asking to
-> mmap the file (and reporter wants it done as quickly as possible..
-> like occurred before).
 
-.. which we do within the constraints of the given configuration.
 
-> This fix is comparable to Jens' commit 9491ae4aade6 ("mm: don't cap
-> request size based on read-ahead setting") -- same logic, just applied
-> to callchain that ends up using madvise(MADV_WILLNEED).
+On 1/23/2024 7:53 AM, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+>
+> Because TDX support introduces private mapping, add a new member in union
+> kvm_mmu_page_role with access functions to check the member.
+>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+>   arch/x86/include/asm/kvm_host.h | 27 +++++++++++++++++++++++++++
+>   arch/x86/kvm/mmu/mmu_internal.h |  5 +++++
+>   arch/x86/kvm/mmu/spte.h         |  6 ++++++
+>   3 files changed, 38 insertions(+)
+>
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 313519edd79e..0cdbbc21136b 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -349,7 +349,12 @@ union kvm_mmu_page_role {
+>   		unsigned ad_disabled:1;
+>   		unsigned guest_mode:1;
+>   		unsigned passthrough:1;
+> +#ifdef CONFIG_KVM_MMU_PRIVATE
+> +		unsigned is_private:1;
+> +		unsigned :4;
+> +#else
+>   		unsigned :5;
+> +#endif
+>   
+>   		/*
+>   		 * This is left at the top of the word so that
+> @@ -361,6 +366,28 @@ union kvm_mmu_page_role {
+>   	};
+>   };
+>   
+> +#ifdef CONFIG_KVM_MMU_PRIVATE
+> +static inline bool kvm_mmu_page_role_is_private(union kvm_mmu_page_role role)
+> +{
+> +	return !!role.is_private;
+> +}
+> +
+> +static inline void kvm_mmu_page_role_set_private(union kvm_mmu_page_role *role)
+> +{
+> +	role->is_private = 1;
+> +}
+> +#else
+> +static inline bool kvm_mmu_page_role_is_private(union kvm_mmu_page_role role)
+> +{
+> +	return false;
+> +}
+> +
+> +static inline void kvm_mmu_page_role_set_private(union kvm_mmu_page_role *role)
+> +{
+> +	WARN_ON_ONCE(1);
+> +}
+> +#endif
+> +
+>   /*
+>    * kvm_mmu_extended_role complements kvm_mmu_page_role, tracking properties
+>    * relevant to the current MMU configuration.   When loading CR0, CR4, or EFER,
+> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+> index 2b9377442927..97af4e39ce6f 100644
+> --- a/arch/x86/kvm/mmu/mmu_internal.h
+> +++ b/arch/x86/kvm/mmu/mmu_internal.h
+> @@ -145,6 +145,11 @@ static inline int kvm_mmu_page_as_id(struct kvm_mmu_page *sp)
+>   	return kvm_mmu_role_as_id(sp->role);
+>   }
+>   
+> +static inline bool is_private_sp(const struct kvm_mmu_page *sp)
+> +{
+> +	return kvm_mmu_page_role_is_private(sp->role);
+> +}
+> +
+>   static inline bool kvm_mmu_page_ad_need_write_protect(struct kvm_mmu_page *sp)
+>   {
+>   	/*
+> diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
+> index 1a163aee9ec6..88db32cba0fd 100644
+> --- a/arch/x86/kvm/mmu/spte.h
+> +++ b/arch/x86/kvm/mmu/spte.h
+> @@ -264,6 +264,12 @@ static inline struct kvm_mmu_page *root_to_sp(hpa_t root)
+>   	return spte_to_child_sp(root);
+>   }
+>   
+> +static inline bool is_private_sptep(u64 *sptep)
+> +{
+> +	WARN_ON_ONCE(!sptep);
 
-Not really. There is a difference between performing a synchronous
-read IO here that we must complete, compared to optimistic
-asynchronous read-ahead which we can fail or toss away without the
-user ever seeing the data the IO returned.
+If sptep is NULL, should return here, otherwise, the following code will
+de-reference a illegal pointer.
 
-We want required IO to be done in as few, larger IOs as possible,
-and not be limited by constraints placed on background optimistic
-IOs.
+> +	return is_private_sp(sptep_to_sp(sptep));
+> +}
+> +
+>   static inline bool is_mmio_spte(struct kvm *kvm, u64 spte)
+>   {
+>   	return (spte & shadow_mmio_mask) == kvm->arch.shadow_mmio_value &&
 
-madvise(WILLNEED) is optimistic IO - there is no requirement that it
-complete the data reads successfully. If the data is actually
-required, we'll guarantee completion when the user accesses it, not
-when madvise() is called.  IOWs, madvise is async readahead, and so
-really should be constrained by readahead bounds and not user IO
-bounds.
-
-We could change this behaviour for madvise of large ranges that we
-force into the page cache by ignoring device readahead bounds, but
-I'm not sure we want to do this in general.
-
-Perhaps fadvise/madvise(willneed) can fiddle the file f_ra.ra_pages
-value in this situation to override the device limit for large
-ranges (for some definition of large - say 10x bdi->ra_pages) and
-restore it once the readahead operation is done. This would make it
-behave less like readahead and more like a user read from an IO
-perspective...
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
 
