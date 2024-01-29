@@ -1,130 +1,169 @@
-Return-Path: <linux-kernel+bounces-42429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B290840146
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:20:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8CC7840149
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:20:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F0EC81F23496
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:20:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6097B282F3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:20:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BA5654FBB;
-	Mon, 29 Jan 2024 09:20:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C10054FB7;
+	Mon, 29 Jan 2024 09:20:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LPW1/iaD"
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=mysnt.onmicrosoft.com header.i=@mysnt.onmicrosoft.com header.b="LH6Z9PY2"
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2095.outbound.protection.outlook.com [40.107.20.95])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD54D54FB1
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:20:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706520015; cv=none; b=NS0gD+IVY9NG5zTHA++4LlTUHLBa/+nGNe4ZP2OU/Q7ozxLSDnt+Zz/jmHRo/W/4GJFh6hg11V3NwGWEAE9zt6HN+1zrcxtKiJiJn134BH3EyVjPyaEqXVBYf3qs6R9tRlSD28A6B/94o5U9ZZDcWuPl5oBLs9TYSwbCLPW+mws=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706520015; c=relaxed/simple;
-	bh=eT5M4PGPIMeg2fCeb3Yf5untV7QcKJ3QzLrXE3MWYzY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iEiYA3CTYhojFrQj1CMfNG70UwEMY6IDIEO9NtBYdM2Adk1Rq5CUgOMomOMckUTUct8viKbi+Axs/YuYrmmNZuvWorkdRmqD60Z2OQHj/iteYrOnsbBb2dPhWGDd7BqFBkkEWy65vOkxxZ3OWnuR6PMzvVLVCj0ZvvwgxlFThkM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LPW1/iaD; arc=none smtp.client-ip=209.85.219.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-68c3ac1fdb9so15346236d6.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 01:20:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706520013; x=1707124813; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=V5TI2xWX4WSWXGwvH1ONQ6nW9xXje+suf2TwS23YzRU=;
-        b=LPW1/iaDTzn1rIddldewPpgEmBxbGqcC/6Qo5JfMGo8JX6T8aDQnj1rIvlMOGxfHsi
-         a9nXI+8U+cYpvZm41EpAEIaH9iny0opaw/ufXJ34UJaLCCGy14GBDeq6mO0lDEq7Im+z
-         QA0F2qmVuATze4E73sV1j1EoDHOT5U3l1X2x2ya8QkhigTAV0LB9xfXDyBkEdLAH4nVf
-         6FP57GlANmc78co/sLwWt1wSp1aeMsHTR5AA+9ct7bhqIyHoe1wkQLMcw1puBiBpUAnP
-         tj2a48rM0E343lkn6Mm3rFKtqzEDUr4A6jeGacjMq0wHi0ZxnDuRG4BFjc6S5rQG8Keb
-         SCmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706520013; x=1707124813;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=V5TI2xWX4WSWXGwvH1ONQ6nW9xXje+suf2TwS23YzRU=;
-        b=ZewbL0TPFni8vOEhf4N8Y6/0YCYzI+2/NYgQfAotx+OAOdXDCFoGBWq0C1TLJctmuS
-         SemDJ+L/49Nsgv6ga+F3n6/+pZWk0H5qq+jz0NjxdLMNLCrrAw5MEfOpMkfJ7w0FGNl0
-         xFFDFboT6UccF4TUH0/51NNQBnu9FcGKXVPKfMX7yYgI5k9EzA8qdXuYHco1UVgD1K9w
-         ZngGy3CkvtTeviltVQTpsbaxHHQIrqNjfmG4QOx6vE8v4LgKKViUPU0KChwaxeNvED7b
-         pk2Pgc7p6smAdKPdT5caufXOHe6Dgk0AYBOE7xHAyKM1WY/x+ag//l36dbhKu6no4Znb
-         T6Uw==
-X-Gm-Message-State: AOJu0Yxo2knwJF0iMgScDz4l9fh5AbGqyjDh9jOTcrcnzrVtLM8BR+2o
-	CGZPb5FQxwFE42aU9iJJqSbLLB35Rmc+ZgLVYeZ1MU6PZw9m7KMI+Bia5nR+0wHRHtGpCinqD1f
-	/PbE5zBpZd2bkJwN5cNHGqmhvLIA31D/fRlYBng==
-X-Google-Smtp-Source: AGHT+IFgpJ8Pszt1MimvP0F6oYcpgps7CfEr4UpP5ROpsZKjeuq5nM0vRM/7HXvHUbqgAhUsYY/FjFO0TS7neZFlXRg=
-X-Received: by 2002:a05:6214:528d:b0:68c:4f44:159d with SMTP id
- kj13-20020a056214528d00b0068c4f44159dmr1497734qvb.30.1706520012762; Mon, 29
- Jan 2024 01:20:12 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D65A5576D
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 09:20:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.95
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706520041; cv=fail; b=nlGdbWrcTkqpEbz+2DvIVD5QxVo7Oh2ybJQSbEvMpRsGYCC1Wdrsco3OhLsiqhEY6oYjK4j5tRNxOrkeV8lYlEVy/8RCDufniFpsN8KQRVhIHNj/WnepRvjUrGO+9kMvINumTvbmZZClql8iowZ9GZDNUANUCIxprxdHV2s02vA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706520041; c=relaxed/simple;
+	bh=wycSP3FJB4WKMvEXVRntCt733okBsW15t42KWl3WVfw=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=EDcqGMWqmukI2GDzrUns6ZHPmNSPB9lBSwVZr6PNrcVL4keIN/mQ7ArBOVGTK8ZLNNtPZEt5M9zIc5d9wDOeb4UHsyvm35+E8yOcIHxx69oEqSA+HSG8xEWwhov3K0758/0cipNdUaBbPvdRGwZvVJuS5DTx9rTXUl0c7+UENcY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kontron.de; spf=pass smtp.mailfrom=kontron.de; dkim=pass (1024-bit key) header.d=mysnt.onmicrosoft.com header.i=@mysnt.onmicrosoft.com header.b=LH6Z9PY2; arc=fail smtp.client-ip=40.107.20.95
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kontron.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kontron.de
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bItDU4+J7L+G50aTcobMfhg5Vr/qcoGeduGSzk/2tPWdZENSI2x8E1zgafArdWW+tELWoWx2ca0Vc7r7KgKKgXwKJ0cG7NzOISVTOPUWKcl0zglP9+ETrNhZU2EES0U4N5r3jo8Orv1WbBgTlcHc2W651fxgEMwmYA6kAdCPBppmva+hxd0ML5mv4ldO6mNEtC0t5POtYh3Zf+zBhKRhrjmjsjL0Zl0QMXyZcITlfbT9IdT+Wsd/9yVPJ3bTKXunXQDTWnkOQrLtV7wIsZ+D1Fd3L3OUOIhqjvTePa9qZ9B7B3hFEWNISAcNzs/QXZ/QzIUjkcmhftIrvwgCBC10cg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mhAPFIm8yJqoBOItlE0oYv8X7BCbirV1KqXVx1Jha2g=;
+ b=MbLSIJwqu9eXZ0BBCMWaJtPr5d5tLo8JLY1IrxDeQ0pbbIOsQ9ju5mEUbDr0odan/+TSRNDlA2bTvtubDzOt8buqw6AEfEz1SszVyAVXlZg6mesUiYix0M8ZDowwXyu3VBNbsDa6XIrBFbqXTl53t4HsHGrE4fwe2wHVoLMMCQCrwDBuHWqRaamqe+fqQslPwFHJyOs3SjHihiEXk/Gs6qvshW84n00/dg3kKss30yDaD2skvc6uHs23TEepUrkFkqbBj3UM2DBBotssStm3529averc5S2rQfFlUSyuJkFIbAxue9kVYiHXLxLop1rOILFmmn2NL/Md+UHs6XMwhQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mhAPFIm8yJqoBOItlE0oYv8X7BCbirV1KqXVx1Jha2g=;
+ b=LH6Z9PY2OIhW9oSUIVwt6dAH9SFoZjJ9BTW9xxdQKQi4tvOyItM0qm5QwhuczN/lVT1AX/xuYL2KABimY25r/XogaWTKPLWA+KEWxPRaKkzS903pTUXd+MRFzBZgp9ricSaUCsfQRM86KoZ1j/zq9PT1Hq0Tg2ne6TXMu4WurvE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=kontron.de;
+Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:263::10)
+ by DB9PR10MB5905.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:398::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Mon, 29 Jan
+ 2024 09:20:30 +0000
+Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::44de:8e9c:72ac:a985]) by PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::44de:8e9c:72ac:a985%6]) with mapi id 15.20.7228.027; Mon, 29 Jan 2024
+ 09:20:30 +0000
+Message-ID: <49b26e7b-0205-45c6-b7ab-8424c20d3f6c@kontron.de>
+Date: Mon, 29 Jan 2024 10:20:23 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm: bridge: samsung-dsim: Don't use FORCE_STOP_STATE
+Content-Language: en-US, de-DE
+To: Dave Airlie <airlied@gmail.com>, Inki Dae <daeinki@gmail.com>
+Cc: Michael Walle <mwalle@kernel.org>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Robert Foss <rfoss@kernel.org>, Jagan Teki <jagan@amarulasolutions.com>,
+ Andrzej Hajda <andrzej.hajda@intel.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Jonas Karlman
+ <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Tim Harvey <tharvey@gateworks.com>,
+ Alexander Stein <alexander.stein@ew.tq-group.com>,
+ linux-kernel@vger.kernel.org,
+ DRI mailing list <dri-devel@lists.freedesktop.org>,
+ Daniel Vetter <daniel@ffwll.ch>
+References: <20231113164344.1612602-1-mwalle@kernel.org>
+ <631fe35a2a3b00781231e4f3f5094fae@kernel.org>
+ <1ef3dad2-5f55-40e5-bba7-3c71d71c12e4@kontron.de>
+ <CAAQKjZMccDwa63_PNJCP0rNOaHjTwcOz8AbKa=JXLQi-b0QVVw@mail.gmail.com>
+ <2400535875c353ff7208be2d86d4556f@kernel.org>
+ <ZZ1BBO2nNSp3g-gT@phenom.ffwll.local>
+ <CAAQKjZNnJQDn_r1+WNmsxM-2O48O0+yWAUAqpjZRjMYMT3xGwg@mail.gmail.com>
+ <CAPM=9tytMB9frxNeD08hu1qsusY=wEE3bJOFmUgA1rSpabwDpg@mail.gmail.com>
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
+In-Reply-To: <CAPM=9tytMB9frxNeD08hu1qsusY=wEE3bJOFmUgA1rSpabwDpg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0203.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:e5::6) To PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:102:263::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240127001926.495769-1-andre.draszik@linaro.org> <20240127001926.495769-5-andre.draszik@linaro.org>
-In-Reply-To: <20240127001926.495769-5-andre.draszik@linaro.org>
-From: Peter Griffin <peter.griffin@linaro.org>
-Date: Mon, 29 Jan 2024 09:20:01 +0000
-Message-ID: <CADrjBPrB1asSBxLe9wEfjbaNcEqz_3sXEu_3zfv=fTSk65o2sg@mail.gmail.com>
-Subject: Re: [PATCH 4/9] arm64: dts: exynos: gs101: enable cmu-peric1 clock controller
-To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
-Cc: mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	linux-kernel@vger.kernel.org, kernel-team@android.com, 
-	tudor.ambarus@linaro.org, willmcvicker@google.com, semen.protsenko@linaro.org, 
-	alim.akhtar@samsung.com, s.nawrocki@samsung.com, tomasz.figa@gmail.com, 
-	cw00.choi@samsung.com, linux-arm-kernel@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
-	devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PA4PR10MB5681:EE_|DB9PR10MB5905:EE_
+X-MS-Office365-Filtering-Correlation-Id: 597257bb-2ac4-4670-362f-08dc20ab89ac
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	DaDtz1WUiFL8X+hAtd7FfvmZi5FqIum3o5ktF0HOutQhcYfO2aooZIwVyn/dTrfHGPdjNmibbjdrTxBI7LS3OXmvpmkSX+rw4aK/wj4zFW+bGTMYy9Hj5qVQSOW4XlDTB42iTubdLVKAHNJt4QWp1S3yZ4Z3KOYgTwGz9XIg/8ovAeb4oRUCr36eoLOdrvjmimnSBT1oeEMkIYQf+dYuAFY7ASr/bYeJOQ0bohUE74Os/McqhxqGemu3tqJ0U6OTjCYdmLeWEMyYHVljwSDxO6M4T/0f1vTgVTGH+TrqqTJryMY1xAn6dKTSoLoSGZUWvqRoisKZwjUmclFZIgpRsKdkDsFwLV2uP0NmkR3fJTnnAjKAS69wEDkqxPmZpU4ZDgKSyZM2KiEykx93OHPOzyyjv7cRX3KBOXVi3AuwJGluBlon5b4p36U+/b0tDFC09FBLFnEGfH0cw6LthP/IvueuPI3i6S7xuMK3UM9CRO0nyZBPf8AwNoAr+EtSYAaiGazRGMu9aiCVQrLFeQiLGgcpio7otkSbe+r7yQOz5aY2HrJpOz8ORzCDhDNrgSHDiUmdYtcFn6iu1ch9B6E3QorfjaUuyKZb+bQzBGUzkEFccyfVkm/Ox0Z0UgyuFATKeROH5HIniHJN8jbQz2g40g==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(366004)(396003)(136003)(39850400004)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(41300700001)(31686004)(38100700002)(66556008)(53546011)(6506007)(110136005)(66946007)(54906003)(316002)(86362001)(6486002)(66476007)(8676002)(8936002)(44832011)(5660300002)(2616005)(6512007)(7416002)(31696002)(478600001)(2906002)(4744005)(4326008)(6666004)(26005)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?cFcyRThGdnlIdXZVSk53MHZScXMrdncrVWt5ZE90YWZwbC9HeW5semRidlBM?=
+ =?utf-8?B?Rlp5TVR0RElnaTNMRnVHZzVaQkRVZHJub3Z5RzlzUEhyNjhzcE9GTTFVSGdl?=
+ =?utf-8?B?TTVDaHY0d3F4NXVUakxBNHFYcHc3STZnQkRiSWRKUGg5WFNSWUdDL1ZUODlE?=
+ =?utf-8?B?UGk2dU5FUEZFWFh6VXcwRGNrWWROaDd6WWtyaHBVSG52YXVzQmFYYzRlWWFB?=
+ =?utf-8?B?T3hZaHJrNjJ4SXplNUFDejFNRzZPOHpwbXhWdU9sVXl4YmczbWRKZHpBSHZn?=
+ =?utf-8?B?OGN2TXdHY1JpdzJEYlBEREU5Tkx6WnFWTmdTVlJKNXhxWE1QWGFJaTl2d3ZO?=
+ =?utf-8?B?eVE3MEViM3l3TE5WdVlla2luYWo5QWljc1VDS0R2aENaaWtnalE2R1Rmemxl?=
+ =?utf-8?B?Y2ZXUGtCTUxtU3BFNExCMkZ4N0VKMUZPUEFQOG1QTUFyemViZmx2ZUhyUVFF?=
+ =?utf-8?B?cFozVWs5SFgvRjVuVHdoNHo4ZENhaHJCV1psNEpjMkttNlhhU1FNMm5PaVF0?=
+ =?utf-8?B?NXVIRXpSMlFuSGtJQjZtbTM2SFRiUHphN2l2c0V3czRQUUYyam9qZkZJN2Ix?=
+ =?utf-8?B?OFBaTU5LTHUrNnhsaUxXdUJ5WjhnTTFKOW9yMXFoVkROR0RrbDJXU0RlVEZt?=
+ =?utf-8?B?ZUxvSkJPUE5WY29HNmhzRjhlQ0ZsSE8xYVlLeU5VN3o2UDFobGRVbGkxS2Fr?=
+ =?utf-8?B?djZVd3FXT1YwU0JDZEthK1luRk1yTG1sT0x3SW1NMVNvQUtEQ2dQM0pnUUky?=
+ =?utf-8?B?WmNxRjlZL3VxT1RwWE9kQVJpazE4bnh2THNuVDhlRXNOYTlyOUoxMCtQM1dj?=
+ =?utf-8?B?ZlNERklGMFZOQ0FOUnluT0t1RENGUDliQ1laUXRkNWpzOG1zZkRTREdrWDFI?=
+ =?utf-8?B?Y3E5SDdZaXVOT1k4QmlvZTl6V3hDWEVscEhiZ0FGYUUyelhQWmdlMjBYODFL?=
+ =?utf-8?B?M2RSMmkrQ1dtTEJXdHNZUDFKcEo0ZnVqZWVFb1ZLVHZqMWxYUHZlTG9mampO?=
+ =?utf-8?B?bG4wamprdHRmTlFQSThLTys5Q3d5TWg3c1BLSlZJSUZ6REZzQWlXVjFDNC8x?=
+ =?utf-8?B?b1dxZzhzaGdaazhIWTF5NFN3UEt2dTRTZDBCUnZsRXRGR1FtR2RsSXR1R2lG?=
+ =?utf-8?B?SWl3N1NwZ1YybEFGdnlFamV4UGtPWnZkY0pvU3pSaUtLaHk5VzhOZ3k1TEU0?=
+ =?utf-8?B?bloreTIyWTVwbUV3TVZOTzhqekJUb1lTUndEcytKRm9hSjJTR0VSSmJwejBy?=
+ =?utf-8?B?OWxVSWVUYkxoc25HbS9PRFJ1bWF5VjUySWVVRnlDTHdYaWlMRW9QZkM4c2FQ?=
+ =?utf-8?B?YS9GUFBQZTRqNFJ5RURKL3BZcnh2c1FsRjE5eGsrWnVRQ2ZxaktzODBqejFD?=
+ =?utf-8?B?Ty85MWdaa1ZnUGNDQ21wM25kb0UxRVE0S3JKdENiZUh5cGsvKzBLbjJvWDNo?=
+ =?utf-8?B?bmdhSWFXWG0yVzZCTkZzNDZ4QldCRk5pMU9xUUZLTGNXRU5yMFZTRjNFYi9n?=
+ =?utf-8?B?T0Yxdlc3Z1IyN21nZldieHhGMC85TTNRNWdCRW5kSXR4M0ZCRWUvWG9DU3RI?=
+ =?utf-8?B?eTdSQjcyYmlTOGVjZ3pLc2VEZDcvK2RoTGZIT0FuTHRHVzU3Y0lXeEZYUHBY?=
+ =?utf-8?B?ekxqUUV5WDZOcXlsbHpsTEhOeGttL0FMcnpTczNjTGNvNmNaNTh0TjNRNzF4?=
+ =?utf-8?B?QTZoL2wrVU53NTZIclIrRDB4R0tRbnQ4K2xWMXVCVlJzaVU5THhQdGJtNGd2?=
+ =?utf-8?B?amVqWU5XaGpZN0NvTk9PMnJTRVhQdGdRZUY4SjllMUxFN2J1Q3FvNVIxY09P?=
+ =?utf-8?B?aVpmZWYraU1rVmVERktDK3N5RHcvQkp3Y3JYY3o5Y1NmK0FQNWJWd1NUODhx?=
+ =?utf-8?B?SkNEbzJHbEJrYkdqSE1oclBPQ0dtL3lSdUswM3gvZFVZZWpEV1RHeTZDL3hF?=
+ =?utf-8?B?TStUc0xWL0s4ZE9leklENUhVTGFEU2pwejhDOXZmR2IzbXhiK2ZjVWhzYjFG?=
+ =?utf-8?B?ZXZsaURPTldTbHVhMEhhRmJwN1lsSUZGNHBEbWN6VGhkQXBKTk91UmtaMFNw?=
+ =?utf-8?B?OGlIRGJvL0loOXNOSmZ6RUN5REc0MUNod042eEVKUGZBYXhDcVZ5Z01kUDBZ?=
+ =?utf-8?B?RTBxYXJrekFMVDVYaFp5VGUyRGdKbk1QeXgxTkU3alZVemxVbHRhYXhqLzBl?=
+ =?utf-8?B?WUE9PQ==?=
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: 597257bb-2ac4-4670-362f-08dc20ab89ac
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 09:20:30.2342
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aSMqUC9L3Bc8UiaIagnoEyM3D4uoPNaloDwdZME3PsLcq2pUFOl0FMPd9BvvPuVH1GzkOUj8zGmtWGV02paE3Am8+R+W79I6MFRIpKJtSeU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR10MB5905
 
-On Sat, 27 Jan 2024 at 00:19, Andr=C3=A9 Draszik <andre.draszik@linaro.org>=
- wrote:
->
-> Enable the cmu-peric1 clock controller. It feeds additional USI, I3C
-> and PWM interfaces / busses.
->
-> Signed-off-by: Andr=C3=A9 Draszik <andre.draszik@linaro.org>
-> ---
+On 26.01.24 19:28, Dave Airlie wrote:
+> Just FYI this conflictted pretty heavily with drm-misc-next changes in
+> the same area, someone should check drm-tip has the correct
+> resolution, I'm not really sure what is definitely should be.
+> 
+> Dave.
 
-Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
-
->  arch/arm64/boot/dts/exynos/google/gs101.dtsi | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/bo=
-ot/dts/exynos/google/gs101.dtsi
-> index aaac04df5e65..5088c81fd6aa 100644
-> --- a/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-> +++ b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-> @@ -429,6 +429,16 @@ serial_0: serial@10a00000 {
->                         };
->                 };
->
-> +               cmu_peric1: clock-controller@10c00000 {
-> +                       compatible =3D "google,gs101-cmu-peric1";
-> +                       reg =3D <0x10c00000 0x4000>;
-> +                       #clock-cells =3D <1>;
-> +                       clocks =3D <&ext_24_5m>,
-> +                                <&cmu_top CLK_DOUT_CMU_PERIC1_BUS>,
-> +                                <&cmu_top CLK_DOUT_CMU_PERIC1_IP>;
-> +                       clock-names =3D "oscclk", "bus", "ip";
-> +               };
-> +
->                 sysreg_peric1: syscon@10c20000 {
->                         compatible =3D "google,gs101-peric1-sysreg", "sys=
-con";
->                         reg =3D <0x10c20000 0x10000>;
-> --
-> 2.43.0.429.g432eaa2c6b-goog
->
+Thanks! I took a quick look at what is now in Linus' tree and it looks
+correct to me. The only thing I'm missing is my Reviewed-by tag which
+got lost somewhere, but I can get over that.
 
