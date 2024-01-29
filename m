@@ -1,198 +1,604 @@
-Return-Path: <linux-kernel+bounces-42424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 206F3840135
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:18:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9546684013D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:19:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB5E32814E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:18:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CFBE280E90
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:19:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 305D25789F;
-	Mon, 29 Jan 2024 09:18:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="eqtqcmFB";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="dXEVXfQT"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2F7955E51;
+	Mon, 29 Jan 2024 09:18:24 +0000 (UTC)
+Received: from air.basealt.ru (air.basealt.ru [194.107.17.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C698D57865;
-	Mon, 29 Jan 2024 09:18:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706519889; cv=fail; b=NGcaa2GIkAirFdzmUdyOfKmEcymAmEuQPi6GQynDysO57w+NWty89N/E748bOuE+raDaeYm2W0UwAJjsAYpF1Fav8acssMNUkqozx2TEYq5NkbcdokTDAsiME/BYW2F3c0AxKK+Qg/MbRIufwhNu4g6q2NvfJQsJiLxd4VsvIxM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706519889; c=relaxed/simple;
-	bh=/sfAZ7L3l/0NvQ1cVGx6/3f84sXh93T1m8A2NxmTqDk=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=u72KIY958QGKRlJj9S7zd0GI+5iyG5JIWg8pu2E1rZB5+NZj+ZYTyZKE53/vNqXpzvRdf7VJ37T8Slh60cnZNLY81atu8Z5DEwSf/eLtIWmBJ06N1SrS7k0L+z6H1OLfBdTCaXqXowUSBucMf1iLD5AV12cAw9J62UMUacMK3yo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=eqtqcmFB; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=dXEVXfQT; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40T6x3NU019955;
-	Mon, 29 Jan 2024 09:17:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=pcpJ7JgzhEEn2EGUcwn3HUGhg1VWOomkfkEt6VV2p9g=;
- b=eqtqcmFBSSgnqx2NYWYdaJkoum4F/4/9+pJQ8XTkp9ipJuLHUDYDtGWKvE5joBTiASF1
- y3HAk4ZhayxkSW6gz1U5vfPApPUwuh6vQkGMGGv3fqWknpAKA8Idt5xb8rFYF0jpJAvL
- sX8gVNYxEl2odNP2JTEGs5NeGlku9JTj8+KtjAyX9oMJwkDqqdtduq2+A0mLkRerj93h
- pcF4RQO4/Od8/IG23bWd6xi2TnUB4MvXyTav7d0ddQEMQCvveig65X6KfOQxVhp2Fqe0
- EEbE6mdgxZ0WFM68Zri9gA05VBN/HYv8RutcnxERECAfiDfDAKr4F7Ydcgce/G0W285d BQ== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vvr8eb8d2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 29 Jan 2024 09:17:18 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40T8QEAa014589;
-	Mon, 29 Jan 2024 09:17:18 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3vvr9bm21f-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 29 Jan 2024 09:17:18 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GKZvvrRQbx/hX/ugpohPQTPu9rymy3LLTZqIKohX6yJ9s6813/WsEWp46ZRce3XPnyGPxov2trkdVIj7K788oct63jfwTimaDJRGBL5o9pVgXanKPyTGK1mt9cZ5wQq9+MaXqqP9FPu0g/Bl3kW3hL1NQC2j0aEVJiK6JIstd2UDfwwdNvnic42N+ODSJa4Z/elA/3p4hqAjN+m2LGVh50TNw1us+qw8K4TN+D0c9PLRkReSQxZErTMKuPYUkZrf39BVzEvkUlpg5tZPIM6DllL5Ffsr2JncPMFxK5Xo+2x2ikg5hYpKhdSJy9mm7Z131PYOskotHUk8sWany40zsA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pcpJ7JgzhEEn2EGUcwn3HUGhg1VWOomkfkEt6VV2p9g=;
- b=hvCPPamT1XI5VZRWspa/U6jxGaVvRLXiib3ehHdD/hfeKDHbxuJSDbo2dFC5edz3/SSiaEuSlh3iBN+ZUz6I6FyQYw69CCTJb+/3zUEd50iLUMPUSy4nAkLlkLt0p7lzJ6LMmE5Rpb4XdpLnlfFti8PmExlgse9P/kXtzyXdxHuW8WqrPDFMlBEzaZpHP0WR6CjVrtNXUJXeqW+e6l9VU/3ddKh9OSQDW/pluqhDiC8t5KFPJgl2Kedypo+o31/dIbIGWcsCxlDbyRhyxeFUJbIrotWKy3kT4Pqt8WG46/uyeYDb5OQz9Tvha60S7dNQ2TVyynAWxCbwYa4Wvg96oA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pcpJ7JgzhEEn2EGUcwn3HUGhg1VWOomkfkEt6VV2p9g=;
- b=dXEVXfQTInI10lo5jwG8DfknJPxmCY0shSENmZJFDY6AVYQw1oDQAwYD4cF+ZwWaPAFFvUX3Ich8zpMDIF+mWu/nBVi1sv4x1NS38ynbAPQ9g5QtPRjBA3PARCgK3hVpYL82CVCQg9TNY+0DcKAipDu8la5+tYOakC/x7xJD/Xg=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by SJ0PR10MB4688.namprd10.prod.outlook.com (2603:10b6:a03:2db::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Mon, 29 Jan
- 2024 09:17:16 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::f11:7303:66e7:286c]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::f11:7303:66e7:286c%5]) with mapi id 15.20.7228.029; Mon, 29 Jan 2024
- 09:17:16 +0000
-Message-ID: <60dc2c30-bb05-4388-9a17-d325fda25bee@oracle.com>
-Date: Mon, 29 Jan 2024 09:17:11 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 00/15] block atomic writes
-To: Christoph Hellwig <hch@lst.de>
-Cc: axboe@kernel.dk, kbusch@kernel.org, sagi@grimberg.me, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, djwong@kernel.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, dchinner@redhat.com, jack@suse.cz,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-        linux-scsi@vger.kernel.org, ming.lei@redhat.com, ojaswin@linux.ibm.com,
-        bvanassche@acm.org
-References: <20240124113841.31824-1-john.g.garry@oracle.com>
- <20240129061839.GA19796@lst.de>
-Content-Language: en-US
-From: John Garry <john.g.garry@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <20240129061839.GA19796@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DB8PR06CA0040.eurprd06.prod.outlook.com
- (2603:10a6:10:120::14) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68AC654F85;
+	Mon, 29 Jan 2024 09:18:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.107.17.39
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706519903; cv=none; b=d6tRtksmV3jY0bQ+hkcq6WebxyTqgGVQZR7XNklM15nrX5uvmieBTGeRr6rZ1TT7Qu8NpAKTjxXkNfGTtVdNyIa+Jz/M1CoqDcIhFSqHfdCIQDMOLe0+Xp76KqAIPMM2QvrHM3RI1pRkQu1qh9OEGRWNzOt/JGsHhu4AepT8eg4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706519903; c=relaxed/simple;
+	bh=pegDcFvpeDmA2S8lEI/5yY9EQEQQacSqxB56edI44eQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ir+XhbiBDZ709lxXWp/EaBv+vMb+bs/oo7ZWlhanMXSFCxAf439rirRoQS4riGizEcj+p+1Fu025FrMq7SUEA7liTt9U6xHZbhBcVGBXtMWc+odWJdlqdw0fRybU5eIqVmwLXYjoC4QbszYEClykrPYODF7g1Rs+pavTSSUnN0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=194.107.17.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
+Received: by air.basealt.ru (Postfix, from userid 490)
+	id 856162F2024D; Mon, 29 Jan 2024 09:18:17 +0000 (UTC)
+X-Spam-Level: 
+Received: from altlinux.malta.altlinux.ru (obninsk.basealt.ru [217.15.195.17])
+	by air.basealt.ru (Postfix) with ESMTPSA id 59B662F20231;
+	Mon, 29 Jan 2024 09:18:13 +0000 (UTC)
+From: kovalev@altlinux.org
+To: stable@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	kpsingh@kernel.org,
+	john.fastabend@gmail.com,
+	yhs@fb.com,
+	songliubraving@fb.com,
+	kafai@fb.com,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	ast@kernel.org,
+	kovalev@altlinux.org,
+	nickel@altlinux.org,
+	oficerovas@altlinux.org,
+	dutyrok@altlinux.org
+Subject: [PATCH 5.10.y 0/1] bpf: fix warning ftrace_verify_code
+Date: Mon, 29 Jan 2024 12:17:45 +0300
+Message-Id: <20240129091746.260538-1-kovalev@altlinux.org>
+X-Mailer: git-send-email 2.33.8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|SJ0PR10MB4688:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0e3a547e-2cd7-4a15-d3e1-08dc20ab15b5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	vE3SY66546IxO44E/VUiuuJwRQZCzkSSTpj/bfoCX92vQbWuwiQ7RpfZZVS6nfkw2/qETuk6SEZvx1OzW6hRW5k/khMeK7lWUMwgptR0eRWh5VaNlr03QJcQ8rmPvOKAZaXrO9k0rfZU5QrIGt52uNZK9ooBmujQmQXXPXzUJ0DxwNnX6GAXNWLvBMInWh5nl7Ym6TWZ+o947DmUYWBSHAv4foen4ODv+dDpf9zaltXhGA2yVRIXo6Lj5ytamVE6p6EwVDpHABaBV25Ig0mSBiAXREO53SXelDSUIo5kxn+wUqBKbJKbs1AtsvOrjmoa2n3WmhoxT4FP1cP6GXo4jp8NiEofm5kWm/ZzXa07bXRchASz6OYEROHyO7VlyVOkM+Wk5Bvl5jgD4pk68mHXt+FgJVsT0XTN3w3bNvvnaT4ElyyrD4u2CvQpuLvh20YYY+wXkur/yBqxgP/P+rBRRTfoUO5n2Qmhuq5RoE5bBqUNlloQqbYmsmN6FdlpS/lFIlx049HhHL79R405KnvZH89e8eSOXFMAHYX/N1rY7hwUlyzLG901E8bta2j8tT7Vnnvhjgm47z208bdvisDhk5/Sq7rQHK7K0CZl/Dfoi+nw5a1i77/ji0+ZPV0yJU6Y
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(366004)(396003)(136003)(39860400002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(41300700001)(31686004)(38100700002)(66556008)(53546011)(6506007)(66946007)(36916002)(316002)(6916009)(86362001)(966005)(6486002)(66476007)(8676002)(8936002)(5660300002)(2616005)(6512007)(7416002)(31696002)(478600001)(2906002)(4744005)(4326008)(6666004)(26005)(83380400001)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?NHN5aVowSmJwZUk0NVhubjJrMXdIUzBqa092aTBHSy92VlFrV25DUVFUVTFZ?=
- =?utf-8?B?TE82TnpxL1pNREhobjRHOHZVc24zbkZ1QmJvVmhSWGtkR2ZIc2VjQTZSa0tk?=
- =?utf-8?B?TmQrU1U4Zit0SGk4WXNucEh2QTJ5amUyOGpiYVBvclBCeEJ3NHpyY1BRODlx?=
- =?utf-8?B?aUFWdE1rb2tUTjFyU2Z3Rk1IZUt2UHJ2L2I1b2RYb0NRMmZvb2g0K25RVUhh?=
- =?utf-8?B?RTVQVEFhUUtCLzVlblpIRmZtOHdlQmR0ejNrSmlRMDNON25BQUNaT0R2T2Nr?=
- =?utf-8?B?UFRUSjNwRzFtYk8zbTZIdzMzbW8rWXdWc1VHVWRXSmJzWFc3dWFndDdZODJV?=
- =?utf-8?B?WjQ5SXl2YUNGMTlDY2I5QnRNOVpvRjNBOGxQK0JqMmFzYTNlSHFwS0hQc0RT?=
- =?utf-8?B?dCt3NUkwL3pONytvTTQ4SEVxNUlUT2xtVkt5OGpsMGRsSDVsRDFNdGQ3Wk5P?=
- =?utf-8?B?RDlEejlpK29QZkx5YnhmQ3NzVjVPTFd0YmpXNFppTGJSOWtzMzRDbjYra1lG?=
- =?utf-8?B?Z2RaRGhscDdCRldUbVV0c0swS2hYb3l1S0ZHZXR5MWRGdlR4STZLSXdoOTA0?=
- =?utf-8?B?SjBlMGpPSENmWUk4WlF2dkNJdGNFYVZBbkRTbjZUR1lYL1JqNkxQZnhBMGdD?=
- =?utf-8?B?K0ZKLy9ZQnV5K1hrdEptM1NTdGVqb1BYY3RxUzZ5em43OHZTUFhFaGllL3hv?=
- =?utf-8?B?eXRNVUlOM0xxbnFDcisxR1dZeVZndGlrTVFDczJ5U29TdXBReUI2SG9HTDc5?=
- =?utf-8?B?ODZoYjRxWjUrb0gxcHoyMGJCT3hZYzZZdFRnUjd6ZXdLajlGRFJOZUdOdlpj?=
- =?utf-8?B?TVF6Qzdpd3Q1dW9Fc3dMYlN5bjdUNjVURWQ1cmI5aG11VEpCc2ZISVljMVZv?=
- =?utf-8?B?ZEtnMVhtQ0ZMWmZuQlVLUC9aVnU5cnJRL01lVUtnblhOYUZWN2xiMHUwLzI3?=
- =?utf-8?B?YzYwMWd4bnI5dDNrcEZxYzdicy94OVZDM1JYYmtXZ0VwOXRSd1hFZWVzWUxN?=
- =?utf-8?B?Sk1QVDYyL2dzanRpdXNQeXNZUmw3b3MzN09EQlIxUytGZE5odkxrZmdnTmJU?=
- =?utf-8?B?ZERIb3g3Ui9XSnBxSUpTSkVzcVVmNEtZcVh4VU5xS3pMQlBzalpDdnZxNUVT?=
- =?utf-8?B?dVUvUDBPcmRwd1NwZHBGMWJUM3pPZ1ZyQ2xiaC81TUpnMXBIdkNxcFhKbXFN?=
- =?utf-8?B?M1JBQlppRDZKN0k4WTFvL1lIZXZaV3EvWVZLb3Blc3VwUWIxUDZwRzY5OE9K?=
- =?utf-8?B?bzFqb0RReGw1K3R5Z205NDN1Ump1a21WNmRlZDhGQWpwOWVVL0hzbWx1bjE4?=
- =?utf-8?B?U2FsaDBIZkhmeEhsaWlFeGJQcHpJQ2g0YWhvZ1c5anhjbWliUVo4NWJuaDFh?=
- =?utf-8?B?czJtQVcxQnh0L3RrRXBtK0hnYjdVbU5aRmV6Y3dJblpTSTFwLzRaY2R3VzQ5?=
- =?utf-8?B?VW9TZ1ZyVFhHRE5pcmlsSHljSTYzY0VkL3NBOEpBWHYxWlVoWjN4QUZoZGx2?=
- =?utf-8?B?RXlDbVpkenVIRDI2aFY2QWM2MDZLREM1OTlUeFRoSjdmdlBBUVlWVzFvNjdn?=
- =?utf-8?B?SnlPcllTMDNsblNub3IzYUg3cEJPYW1QTnhSV0tEcFpUU3pGUUNqb3pZNU1k?=
- =?utf-8?B?Vkc3MUpUV2paN2pwN0xZN2tnZjRFZjBLNXRJRC9DaHNwOSsyNzVJZm5xSjlr?=
- =?utf-8?B?NURUZzNrQjdTUDlnSVN1bWtoYklNSzFpVGcxRkViRWROSUQxQkFqSFJiWkcw?=
- =?utf-8?B?cjEvOXRSL2Y4ZnB0ekhkeldnbzJsQ1RMZzhvWUt3eFhOY0pkZHhXTTRLV2l1?=
- =?utf-8?B?eHFDTlp4R1JQcEgyQkQ5MUNYR1RET2Q4eWEzUVpDYjZnRmVWancvdzl4eTFD?=
- =?utf-8?B?TCswaUpDNmF6ZW9vZGNhY0lVUjN1d3ZlUHUyNWs4SkNBQlIwL1lUTlA0VjhK?=
- =?utf-8?B?UlpFcmUyQWFqcU9kcEt5ZVcwaEljeU9ZNzI5enErTUovZ1BQWTltMUdDNVpI?=
- =?utf-8?B?TjlDY3ljTlVVQkx4Q2U1UEJqWlExc09US01rcGxzZUxYb0FnOGoyNG1IZU9n?=
- =?utf-8?B?NVhuR3JTVGY2eXFuNit3L2JUY2VuNlI4c0RNejgvWXNjbEp2VXVxQkZlaDIv?=
- =?utf-8?B?eU1rVXNFcjJWdExEMThhOC9RZXkyMGtFV3NYbXZ0dTdJYVNqeEpnQ01KNERL?=
- =?utf-8?B?Y2c9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	ccNkNKiqXYvBsvnM5OLXn1bv7yJvlbuXdFG429gf8VYKc8MwLHEMxDEaGxADPmi3YaMOVxuebgY5umbLzsX68g0arYh6Px+47CRcPOwvq931F+LaBG9AU8+GrxFMpVKanOzp0MkC44iC9J1sObgBYLpmOPH8jGLCGPEei3aU70pFnJOcEpc5fUxOOXy2N1deFa7I6fHmGESx+UXq3dhHph4oqzV3uy/5845o76rjxLL3tnVHGS/Z9gyHYad/CpGaWif9BzpUMeNE43YlENBiDjxTUqXgt99dkVTsI95Tkzw+q+02N/RupRN2PHi4OHuky2Un1X3UckpXylo86II14SwLWLSn6F6zBqvrR6bXMSMvftEpfQci1t1grkqRZkr7G113r+lKYZfe+YjwINQegR6IYPl3MgFR8MWuFiDGgL/SBmc770cJlZz8WO8nNmWPf+9kSnFw3LBZLZvMk1rwa1Bn3eiIb/9gZTUJ6iyCISGIYyLglC5j1kGbmQqNRvzYI4u7UtxUgjQHwzck5GJZw3ZgPyb/9AeUJiBqic4H0DdsGQb6FR1fMSzAepl9MG2HMWStAuuZnxqYadOlhXoicvkyFt0FMGVVk4Pze0I7HD4=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e3a547e-2cd7-4a15-d3e1-08dc20ab15b5
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 09:17:15.7773
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AtMEXji7RAmaWU/eq4CzmQ+c8vFVkELCng5ajuKpliRvP2MbMRQK3BRVRywTznM0pKzjZjderPR3FJm6q8cQFQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4688
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-29_04,2024-01-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- bulkscore=0 malwarescore=0 suspectscore=0 phishscore=0 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401290066
-X-Proofpoint-ORIG-GUID: R9JkMT61rdUSkVEykY7sSKwS13YiDam7
-X-Proofpoint-GUID: R9JkMT61rdUSkVEykY7sSKwS13YiDam7
+Content-Transfer-Encoding: 8bit
 
-On 29/01/2024 06:18, Christoph Hellwig wrote:
-> Do you have a git tree with all patches somewhere?
->
+Syzkaller hit 'WARNING in ftrace_verify_code' bug.
 
-They should apply cleanly on v6.8-rc1, but you can also check 
-https://github.com/johnpgarry/linux/commits/atomic-writes-v6.8-v3/ for 
-this series. The XFS series is at top and can be found at 
-https://github.com/johnpgarry/linux/tree/atomic-writes-v6.8-v3-fs
+This bug is not a vulnerability and is reproduced only when running
+with root privileges on stable 5.10 kernel.
 
-Cheers,
-John
+journalctl -k (v5.10.206):
+.. 
+bpfilter: Loaded bpfilter_umh pid 2732
+Started bpfilter
+------------[ cut here ]------------
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 4107 at arch/x86/kernel/ftrace.c:97 ftrace_verify_code+0x3e/0x80
+WARNING: CPU: 1 PID: 4107 at arch/x86/kernel/ftrace.c:97 ftrace_verify_code+0x3e/0x80
+Modules linked in: xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT nf_reject_ipv4 xt_tcpudp ip6table_mangle ip6table_nat ip6table_filter ip6_tables iptable_mangle iptable_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 libcrc32c iptable_filter bpfilter bridge stp llc qrtr bnep hid_generic usbhid uvcvideo videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 videobuf2_common btusb btrtl btbcm btintel videodev bluetooth mc ecdh_generic ecc nls_utf8 nls_cp866 vfat fat coretemp hwmon x86_pkg_temp_thermal intel_powerclamp mei_hdcp kvm_intel kvm rtsx_pci_sdmmc mmc_core irqbypass crct10dif_pclmul wmi_bmof crc32_pclmul crc32c_intel ghash_clmulni_intel aesni_intel crypto_simd xhci_pci mei_me ucsi_acpi ideapad_laptop cryptd xhci_pci_renesas glue_helper pcspkr typec_ucsi tiny_power_button rtsx_pci sparse_keymap xhci_hcd mei thermal typec wmi i2c_hid button fan rfkill hid acpi_pad intel_pmc_core battery video ac sch_fq_codel vboxnetadp(OE) vboxnetflt(OE) vboxdrv(OE) vboxvideo
+Modules linked in: xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT nf_reject_ipv4 xt_tcpudp ip6table_mangle ip6table_nat ip6table_filter ip6_tables iptable_mangle iptable_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 libcrc32c iptable_filter bpfilter bridge stp llc qrtr bnep hid_generic usbhid uvcvideo videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 videobuf2_common btusb btrtl btbcm btintel videodev bluetooth mc ecdh_generic ecc nls_utf8 nls_cp866 vfat fat coretemp hwmon x86_pkg_temp_thermal intel_powerclamp mei_hdcp kvm_intel kvm rtsx_pci_sdmmc mmc_core irqbypass crct10dif_pclmul wmi_bmof crc32_pclmul crc32c_intel ghash_clmulni_intel aesni_intel crypto_simd xhci_pci mei_me ucsi_acpi ideapad_laptop cryptd xhci_pci_renesas glue_helper pcspkr typec_ucsi tiny_power_button rtsx_pci sparse_keymap xhci_hcd mei thermal typec wmi i2c_hid button fan rfkill hid acpi_pad intel_pmc_core battery video ac sch_fq_codel vboxnetadp(OE) vboxnetflt(OE) vboxdrv(OE) vboxvideo
+ drm_vram_helper drm_ttm_helper ttm drm_kms_helper cec rc_core vboxsf vboxguest snd_seq_midi snd_seq_midi_event snd_seq snd_rawmidi snd_seq_device snd_timer snd soundcore drm msr fuse dm_mod efi_pstore efivarfs ip_tables x_tables autofs4 evdev input_leds serio_raw
+ drm_vram_helper drm_ttm_helper ttm drm_kms_helper cec rc_core vboxsf vboxguest snd_seq_midi snd_seq_midi_event snd_seq snd_rawmidi snd_seq_device snd_timer snd soundcore drm msr fuse dm_mod efi_pstore efivarfs ip_tables x_tables autofs4 evdev input_leds serio_raw
+CPU: 1 PID: 4107 Comm: repro5 Tainted: G           OE     5.10.206-std-def-alt1 #1
+CPU: 1 PID: 4107 Comm: repro5 Tainted: G           OE     5.10.206-std-def-alt1 #1
+Hardware name: LENOVO 82X8/LNVNB161216, BIOS LTCN30WW 11/08/2023
+Hardware name: LENOVO 82X8/LNVNB161216, BIOS LTCN30WW 11/08/2023
+RIP: 0010:ftrace_verify_code+0x3e/0x80
+RIP: 0010:ftrace_verify_code+0x3e/0x80
+Code: 25 28 00 00 00 48 89 44 24 08 31 c0 48 8d 7c 24 03 e8 56 f9 1b 00 48 85 c0 75 3e 8b 03 39 44 24 03 74 28 48 89 1d e2 1d 05 03 <0f> 0b b8 ea ff ff ff 48 8b 4c 24 08 65 48 2b 0c 25 28 00 00 00 75
+Code: 25 28 00 00 00 48 89 44 24 08 31 c0 48 8d 7c 24 03 e8 56 f9 1b 00 48 85 c0 75 3e 8b 03 39 44 24 03 74 28 48 89 1d e2 1d 05 03 <0f> 0b b8 ea ff ff ff 48 8b 4c 24 08 65 48 2b 0c 25 28 00 00 00 75
+RSP: 0018:ffffc90003aa7c88 EFLAGS: 00010212
+RSP: 0018:ffffc90003aa7c88 EFLAGS: 00010212
+RAX: 0000000000441f0f RBX: ffffffff82005684 RCX: 0000000000000010
+RAX: 0000000000441f0f RBX: ffffffff82005684 RCX: 0000000000000010
+RDX: 000000000f9dbb1f RSI: 0000000000000005 RDI: ffffffff8183d240
+RDX: 000000000f9dbb1f RSI: 0000000000000005 RDI: ffffffff8183d240
+RBP: ffff8881000607a0 R08: 0000000000000001 R09: 0000000000000000
+RBP: ffff8881000607a0 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: ffffffff840b9f40 R14: ffffffff82005684 R15: ffffffff82a6a760
+R13: ffffffff840b9f40 R14: ffffffff82005684 R15: ffffffff82a6a760
+FS:  00007f671d1c2640(0000) GS:ffff8882a7840000(0000) knlGS:0000000000000000
+FS:  00007f671d1c2640(0000) GS:ffff8882a7840000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007efd44003490 CR3: 000000013e3f2000 CR4: 0000000000750ee0
+CR2: 00007efd44003490 CR3: 000000013e3f2000 CR4: 0000000000750ee0
+PKRU: 55555554
+PKRU: 55555554
+Call Trace:
+Call Trace:
+ ? __warn+0x80/0x100
+ ? __warn+0x80/0x100
+ ? ftrace_verify_code+0x3e/0x80
+ ? ftrace_verify_code+0x3e/0x80
+ ? report_bug+0x9e/0xc0
+ ? report_bug+0x9e/0xc0
+ ? handle_bug+0x32/0xa0
+ ? handle_bug+0x32/0xa0
+ ? exc_invalid_op+0x14/0x70
+ ? exc_invalid_op+0x14/0x70
+ ? asm_exc_invalid_op+0x12/0x20
+ ? asm_exc_invalid_op+0x12/0x20
+ ? sk_lookup_convert_ctx_access+0x280/0x280
+ ? sk_lookup_convert_ctx_access+0x280/0x280
+ ? ftrace_verify_code+0x3e/0x80
+ ? ftrace_verify_code+0x3e/0x80
+ ? ftrace_verify_code+0x2a/0x80
+ ? ftrace_verify_code+0x2a/0x80
+ ftrace_replace_code+0xa6/0x190
+ ftrace_replace_code+0xa6/0x190
+ ftrace_modify_all_code+0xd8/0x170
+ ftrace_modify_all_code+0xd8/0x170
+ ftrace_run_update_code+0x13/0x70
+ ftrace_run_update_code+0x13/0x70
+ ftrace_startup.part.0+0xe9/0x160
+ ftrace_startup.part.0+0xe9/0x160
+ register_ftrace_function+0x52/0x90
+ register_ftrace_function+0x52/0x90
+ perf_trace_event_init+0x60/0x2b0
+ perf_trace_event_init+0x60/0x2b0
+ perf_trace_init+0x69/0xa0
+ perf_trace_init+0x69/0xa0
+ perf_tp_event_init+0x1b/0x50
+ perf_tp_event_init+0x1b/0x50
+ perf_try_init_event+0x42/0x130
+ perf_try_init_event+0x42/0x130
+ perf_event_alloc+0x5e3/0xdf0
+ perf_event_alloc+0x5e3/0xdf0
+ ? __alloc_fd+0x44/0x170
+ ? __alloc_fd+0x44/0x170
+ __do_sys_perf_event_open+0x1cd/0xec0
+ __do_sys_perf_event_open+0x1cd/0xec0
+ do_syscall_64+0x30/0x40
+ do_syscall_64+0x30/0x40
+ entry_SYSCALL_64_after_hwframe+0x62/0xc7
+ entry_SYSCALL_64_after_hwframe+0x62/0xc7
+RIP: 0033:0x7f671d2c0d49
+RIP: 0033:0x7f671d2c0d49
+Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ef 70 0d 00 f7 d8 64 89 01 48
+Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ef 70 0d 00 f7 d8 64 89 01 48
+RSP: 002b:00007f671d1c1df8 EFLAGS: 00000246 ORIG_RAX: 000000000000012a
+RSP: 002b:00007f671d1c1df8 EFLAGS: 00000246 ORIG_RAX: 000000000000012a
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f671d2c0d49
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f671d2c0d49
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000200000c0
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000200000c0
+RBP: 00007f671d1c1e20 R08: 0000000000000000 R09: 0000000000000000
+RBP: 00007f671d1c1e20 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffd562f62de
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffd562f62de
+R13: 00007ffd562f62df R14: 0000000000000000 R15: 00007f671d1c2640
+R13: 00007ffd562f62df R14: 0000000000000000 R15: 00007f671d1c2640
+---[ end trace 74a81e537b634ec5 ]---
+---[ end trace 74a81e537b634ec5 ]---
+------------[ ftrace bug ]------------
+------------[ ftrace bug ]------------
+ftrace failed to modify
+ftrace failed to modify
+[<ffffffff8183d240>] bpf_dispatcher_xdp_func+0x0/0x10
+[<ffffffff8183d240>] bpf_dispatcher_xdp_func+0x0/0x10
+ actual:   ffffffe9:ffffffbb:ffffff9d:0f:1f
+ actual:   ffffffe9:ffffffbb:ffffff9d:0f:1f
+ expected: 0f:1f:44:00:00
+ expected: 0f:1f:44:00:00
+Setting ftrace call site to call ftrace function
+Setting ftrace call site to call ftrace function
+ftrace record flags: 10000001
+ftrace record flags: 10000001
+ (1)
+ (1)
+                                  expected tramp: ffffffff81068ac0
+------------[ cut here ]------------
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 4107 at kernel/trace/ftrace.c:2075 ftrace_bug+0x22c/0x256
+WARNING: CPU: 1 PID: 4107 at kernel/trace/ftrace.c:2075 ftrace_bug+0x22c/0x256
+Modules linked in: xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT nf_reject_ipv4 xt_tcpudp ip6table_mangle ip6table_nat ip6table_filter ip6_tables iptable_mangle iptable_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 libcrc32c iptable_filter bpfilter bridge stp llc qrtr bnep hid_generic usbhid uvcvideo videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 videobuf2_common btusb btrtl btbcm btintel videodev bluetooth mc ecdh_generic ecc nls_utf8 nls_cp866 vfat fat coretemp hwmon x86_pkg_temp_thermal intel_powerclamp mei_hdcp kvm_intel kvm rtsx_pci_sdmmc mmc_core irqbypass crct10dif_pclmul wmi_bmof crc32_pclmul crc32c_intel ghash_clmulni_intel aesni_intel crypto_simd xhci_pci mei_me ucsi_acpi ideapad_laptop cryptd xhci_pci_renesas glue_helper pcspkr typec_ucsi tiny_power_button rtsx_pci sparse_keymap xhci_hcd mei thermal typec wmi i2c_hid button fan rfkill hid acpi_pad intel_pmc_core battery video ac sch_fq_codel vboxnetadp(OE) vboxnetflt(OE) vboxdrv(OE) vboxvideo
+Modules linked in: xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT nf_reject_ipv4 xt_tcpudp ip6table_mangle ip6table_nat ip6table_filter ip6_tables iptable_mangle iptable_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 libcrc32c iptable_filter bpfilter bridge stp llc qrtr bnep hid_generic usbhid uvcvideo videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 videobuf2_common btusb btrtl btbcm btintel videodev bluetooth mc ecdh_generic ecc nls_utf8 nls_cp866 vfat fat coretemp hwmon x86_pkg_temp_thermal intel_powerclamp mei_hdcp kvm_intel kvm rtsx_pci_sdmmc mmc_core irqbypass crct10dif_pclmul wmi_bmof crc32_pclmul crc32c_intel ghash_clmulni_intel aesni_intel crypto_simd xhci_pci mei_me ucsi_acpi ideapad_laptop cryptd xhci_pci_renesas glue_helper pcspkr typec_ucsi tiny_power_button rtsx_pci sparse_keymap xhci_hcd mei thermal typec wmi i2c_hid button fan rfkill hid acpi_pad intel_pmc_core battery video ac sch_fq_codel vboxnetadp(OE) vboxnetflt(OE) vboxdrv(OE) vboxvideo
+ drm_vram_helper drm_ttm_helper ttm drm_kms_helper cec rc_core vboxsf vboxguest snd_seq_midi snd_seq_midi_event snd_seq snd_rawmidi snd_seq_device snd_timer snd soundcore drm msr fuse dm_mod efi_pstore efivarfs ip_tables x_tables autofs4 evdev input_leds serio_raw
+ drm_vram_helper drm_ttm_helper ttm drm_kms_helper cec rc_core vboxsf vboxguest snd_seq_midi snd_seq_midi_event snd_seq snd_rawmidi snd_seq_device snd_timer snd soundcore drm msr fuse dm_mod efi_pstore efivarfs ip_tables x_tables autofs4 evdev input_leds serio_raw
+CPU: 1 PID: 4107 Comm: repro5 Tainted: G        W  OE     5.10.206-std-def-alt1 #1
+CPU: 1 PID: 4107 Comm: repro5 Tainted: G        W  OE     5.10.206-std-def-alt1 #1
+Hardware name: LENOVO 82X8/LNVNB161216, BIOS LTCN30WW 11/08/2023
+Hardware name: LENOVO 82X8/LNVNB161216, BIOS LTCN30WW 11/08/2023
+RIP: 0010:ftrace_bug+0x22c/0x256
+RIP: 0010:ftrace_bug+0x22c/0x256
+Code: ff 84 c0 74 d0 eb b4 48 c7 c7 36 4b 30 82 e8 0b c5 ff ff 48 89 ef e8 2a df 7a ff 48 c7 c7 47 4b 30 82 48 89 c6 e8 f4 c4 ff ff <0f> 0b c7 05 0f a5 2c 01 01 00 00 00 5b c7 05 14 a5 2c 01 00 00 00
+Code: ff 84 c0 74 d0 eb b4 48 c7 c7 36 4b 30 82 e8 0b c5 ff ff 48 89 ef e8 2a df 7a ff 48 c7 c7 47 4b 30 82 48 89 c6 e8 f4 c4 ff ff <0f> 0b c7 05 0f a5 2c 01 01 00 00 00 5b c7 05 14 a5 2c 01 00 00 00
+RSP: 0018:ffffc90003aa7c88 EFLAGS: 00010246
+RSP: 0018:ffffc90003aa7c88 EFLAGS: 00010246
+RAX: 0000000000000022 RBX: 00000000ffffffea RCX: ffff8882a7860808
+RAX: 0000000000000022 RBX: 00000000ffffffea RCX: ffff8882a7860808
+RDX: 0000000000000000 RSI: 0000000000000027 RDI: ffff8882a7860800
+RDX: 0000000000000000 RSI: 0000000000000027 RDI: ffff8882a7860800
+RBP: ffff8881000607a0 R08: 0000000000000000 R09: ffffc90003aa7ac8
+RBP: ffff8881000607a0 R08: 0000000000000000 R09: ffffc90003aa7ac8
+R10: ffffc90003aa7ac0 R11: ffffffff82ae22e8 R12: ffffffff8183d240
+R10: ffffc90003aa7ac0 R11: ffffffff82ae22e8 R12: ffffffff8183d240
+R13: ffffffff840b9f40 R14: ffffffff82005684 R15: ffffffff82a6a760
+R13: ffffffff840b9f40 R14: ffffffff82005684 R15: ffffffff82a6a760
+FS:  00007f671d1c2640(0000) GS:ffff8882a7840000(0000) knlGS:0000000000000000
+FS:  00007f671d1c2640(0000) GS:ffff8882a7840000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007efd44003490 CR3: 000000013e3f2000 CR4: 0000000000750ee0
+CR2: 00007efd44003490 CR3: 000000013e3f2000 CR4: 0000000000750ee0
+PKRU: 55555554
+PKRU: 55555554
+Call Trace:
+Call Trace:
+ ? __warn+0x80/0x100
+ ? __warn+0x80/0x100
+ ? ftrace_bug+0x22c/0x256
+ ? ftrace_bug+0x22c/0x256
+ ? report_bug+0x9e/0xc0
+ ? report_bug+0x9e/0xc0
+ ? handle_bug+0x32/0xa0
+ ? handle_bug+0x32/0xa0
+ ? exc_invalid_op+0x14/0x70
+ ? exc_invalid_op+0x14/0x70
+ ? asm_exc_invalid_op+0x12/0x20
+ ? asm_exc_invalid_op+0x12/0x20
+ ? sk_lookup_convert_ctx_access+0x280/0x280
+ ? sk_lookup_convert_ctx_access+0x280/0x280
+ ? ftrace_bug+0x22c/0x256
+ ? ftrace_bug+0x22c/0x256
+ ? ftrace_bug+0x22c/0x256
+ ? ftrace_bug+0x22c/0x256
+ ftrace_replace_code+0xbb/0x190
+ ftrace_replace_code+0xbb/0x190
+ ftrace_modify_all_code+0xd8/0x170
+ ftrace_modify_all_code+0xd8/0x170
+ ftrace_run_update_code+0x13/0x70
+ ftrace_run_update_code+0x13/0x70
+ ftrace_startup.part.0+0xe9/0x160
+ ftrace_startup.part.0+0xe9/0x160
+ register_ftrace_function+0x52/0x90
+ register_ftrace_function+0x52/0x90
+ perf_trace_event_init+0x60/0x2b0
+ perf_trace_event_init+0x60/0x2b0
+ perf_trace_init+0x69/0xa0
+ perf_trace_init+0x69/0xa0
+ perf_tp_event_init+0x1b/0x50
+ perf_tp_event_init+0x1b/0x50
+ perf_try_init_event+0x42/0x130
+ perf_try_init_event+0x42/0x130
+ perf_event_alloc+0x5e3/0xdf0
+ perf_event_alloc+0x5e3/0xdf0
+ ? __alloc_fd+0x44/0x170
+ ? __alloc_fd+0x44/0x170
+ __do_sys_perf_event_open+0x1cd/0xec0
+ __do_sys_perf_event_open+0x1cd/0xec0
+ do_syscall_64+0x30/0x40
+ do_syscall_64+0x30/0x40
+ entry_SYSCALL_64_after_hwframe+0x62/0xc7
+ entry_SYSCALL_64_after_hwframe+0x62/0xc7
+RIP: 0033:0x7f671d2c0d49
+RIP: 0033:0x7f671d2c0d49
+Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ef 70 0d 00 f7 d8 64 89 01 48
+Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ef 70 0d 00 f7 d8 64 89 01 48
+RSP: 002b:00007f671d1c1df8 EFLAGS: 00000246 ORIG_RAX: 000000000000012a
+RSP: 002b:00007f671d1c1df8 EFLAGS: 00000246 ORIG_RAX: 000000000000012a
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f671d2c0d49
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f671d2c0d49
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000200000c0
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000200000c0
+RBP: 00007f671d1c1e20 R08: 0000000000000000 R09: 0000000000000000
+RBP: 00007f671d1c1e20 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffd562f62de
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffd562f62de
+R13: 00007ffd562f62df R14: 0000000000000000 R15: 00007f671d1c2640
+R13: 00007ffd562f62df R14: 0000000000000000 R15: 00007f671d1c2640
+---[ end trace 74a81e537b634ec6 ]---
+---[ end trace 74a81e537b634ec6 ]---
 
 
+C reproducer:
+// autogenerated by syzkaller (https://github.com/google/syzkaller)
+
+#define _GNU_SOURCE 
+
+#include <endian.h>
+#include <errno.h>
+#include <pthread.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
+#include <time.h>
+#include <unistd.h>
+
+#include <linux/futex.h>
+
+#ifndef __NR_bpf
+#define __NR_bpf 321
+#endif
+
+static void sleep_ms(uint64_t ms)
+{
+	usleep(ms * 1000);
+}
+
+static uint64_t current_time_ms(void)
+{
+	struct timespec ts;
+	if (clock_gettime(CLOCK_MONOTONIC, &ts))
+	exit(1);
+	return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
+}
+
+static void thread_start(void* (*fn)(void*), void* arg)
+{
+	pthread_t th;
+	pthread_attr_t attr;
+	pthread_attr_init(&attr);
+	pthread_attr_setstacksize(&attr, 128 << 10);
+	int i = 0;
+	for (; i < 100; i++) {
+		if (pthread_create(&th, &attr, fn, arg) == 0) {
+			pthread_attr_destroy(&attr);
+			return;
+		}
+		if (errno == EAGAIN) {
+			usleep(50);
+			continue;
+		}
+		break;
+	}
+	exit(1);
+}
+
+#define BITMASK(bf_off,bf_len) (((1ull << (bf_len)) - 1) << (bf_off))
+#define STORE_BY_BITMASK(type,htobe,addr,val,bf_off,bf_len) *(type*)(addr) = htobe((htobe(*(type*)(addr)) & ~BITMASK((bf_off), (bf_len))) | (((type)(val) << (bf_off)) & BITMASK((bf_off), (bf_len))))
+
+typedef struct {
+	int state;
+} event_t;
+
+static void event_init(event_t* ev)
+{
+	ev->state = 0;
+}
+
+static void event_reset(event_t* ev)
+{
+	ev->state = 0;
+}
+
+static void event_set(event_t* ev)
+{
+	if (ev->state)
+	exit(1);
+	__atomic_store_n(&ev->state, 1, __ATOMIC_RELEASE);
+	syscall(SYS_futex, &ev->state, FUTEX_WAKE | FUTEX_PRIVATE_FLAG, 1000000);
+}
+
+static void event_wait(event_t* ev)
+{
+	while (!__atomic_load_n(&ev->state, __ATOMIC_ACQUIRE))
+		syscall(SYS_futex, &ev->state, FUTEX_WAIT | FUTEX_PRIVATE_FLAG, 0, 0);
+}
+
+static int event_isset(event_t* ev)
+{
+	return __atomic_load_n(&ev->state, __ATOMIC_ACQUIRE);
+}
+
+static int event_timedwait(event_t* ev, uint64_t timeout)
+{
+	uint64_t start = current_time_ms();
+	uint64_t now = start;
+	for (;;) {
+		uint64_t remain = timeout - (now - start);
+		struct timespec ts;
+		ts.tv_sec = remain / 1000;
+		ts.tv_nsec = (remain % 1000) * 1000 * 1000;
+		syscall(SYS_futex, &ev->state, FUTEX_WAIT | FUTEX_PRIVATE_FLAG, 0, &ts);
+		if (__atomic_load_n(&ev->state, __ATOMIC_ACQUIRE))
+			return 1;
+		now = current_time_ms();
+		if (now - start > timeout)
+			return 0;
+	}
+}
+
+struct thread_t {
+	int created, call;
+	event_t ready, done;
+};
+
+static struct thread_t threads[16];
+static void execute_call(int call);
+static int running;
+
+static void* thr(void* arg)
+{
+	struct thread_t* th = (struct thread_t*)arg;
+	for (;;) {
+		event_wait(&th->ready);
+		event_reset(&th->ready);
+		execute_call(th->call);
+		__atomic_fetch_sub(&running, 1, __ATOMIC_RELAXED);
+		event_set(&th->done);
+	}
+	return 0;
+}
+
+static void loop(void)
+{
+	int i, call, thread;
+	for (call = 0; call < 3; call++) {
+		for (thread = 0; thread < (int)(sizeof(threads) / sizeof(threads[0])); thread++) {
+			struct thread_t* th = &threads[thread];
+			if (!th->created) {
+				th->created = 1;
+				event_init(&th->ready);
+				event_init(&th->done);
+				event_set(&th->done);
+				thread_start(thr, th);
+			}
+			if (!event_isset(&th->done))
+				continue;
+			event_reset(&th->done);
+			th->call = call;
+			__atomic_fetch_add(&running, 1, __ATOMIC_RELAXED);
+			event_set(&th->ready);
+			event_timedwait(&th->done, 50 + (call == 0 ? 500 : 0));
+			break;
+		}
+	}
+	for (i = 0; i < 100 && __atomic_load_n(&running, __ATOMIC_RELAXED); i++)
+		sleep_ms(1);
+}
+
+uint64_t r[1] = {0xffffffffffffffff};
+
+void execute_call(int call)
+{
+		intptr_t res = 0;
+	switch (call) {
+	case 0:
+*(uint32_t*)0x20000000 = 6;
+*(uint32_t*)0x20000004 = 3;
+*(uint64_t*)0x20000008 = 0x200000c0;
+*(uint8_t*)0x200000c0 = 0x18;
+STORE_BY_BITMASK(uint8_t, , 0x200000c1, 0, 0, 4);
+STORE_BY_BITMASK(uint8_t, , 0x200000c1, 0, 4, 4);
+*(uint16_t*)0x200000c2 = 0;
+*(uint32_t*)0x200000c4 = 0;
+*(uint8_t*)0x200000c8 = 0;
+*(uint8_t*)0x200000c9 = 0;
+*(uint16_t*)0x200000ca = 0;
+*(uint32_t*)0x200000cc = 0;
+*(uint8_t*)0x200000d0 = 0x95;
+*(uint8_t*)0x200000d1 = 0;
+*(uint16_t*)0x200000d2 = 0;
+*(uint32_t*)0x200000d4 = 0;
+*(uint64_t*)0x20000010 = 0x20000100;
+memcpy((void*)0x20000100, "syzkaller\000", 10);
+*(uint32_t*)0x20000018 = 0;
+*(uint32_t*)0x2000001c = 0;
+*(uint64_t*)0x20000020 = 0;
+*(uint32_t*)0x20000028 = 0;
+*(uint32_t*)0x2000002c = 0;
+memset((void*)0x20000030, 0, 16);
+*(uint32_t*)0x20000040 = 0;
+*(uint32_t*)0x20000044 = 0x1b;
+*(uint32_t*)0x20000048 = -1;
+*(uint32_t*)0x2000004c = 8;
+*(uint64_t*)0x20000050 = 0;
+*(uint32_t*)0x20000058 = 0;
+*(uint32_t*)0x2000005c = 0x10;
+*(uint64_t*)0x20000060 = 0;
+*(uint32_t*)0x20000068 = 0;
+*(uint32_t*)0x2000006c = 0;
+*(uint32_t*)0x20000070 = 0;
+*(uint32_t*)0x20000074 = 0;
+*(uint64_t*)0x20000078 = 0;
+		res = syscall(__NR_bpf, 5ul, 0x20000000ul, 0x80ul);
+		if (res != -1)
+				r[0] = res;
+		break;
+	case 1:
+*(uint32_t*)0x20000280 = r[0];
+*(uint32_t*)0x20000284 = 0;
+*(uint32_t*)0x20000288 = 0;
+*(uint32_t*)0x2000028c = 0;
+*(uint64_t*)0x20000290 = 0;
+*(uint64_t*)0x20000298 = 0;
+*(uint32_t*)0x200002a0 = 0xffffff7f;
+*(uint32_t*)0x200002a4 = 0;
+*(uint32_t*)0x200002a8 = 0;
+*(uint32_t*)0x200002ac = 0;
+*(uint64_t*)0x200002b0 = 0;
+*(uint64_t*)0x200002b8 = 0;
+*(uint32_t*)0x200002c0 = 0;
+*(uint32_t*)0x200002c4 = 0;
+		syscall(__NR_bpf, 0xaul, 0x20000280ul, 0x48ul);
+		break;
+	case 2:
+*(uint32_t*)0x200000c0 = 2;
+*(uint32_t*)0x200000c4 = 0x80;
+*(uint8_t*)0x200000c8 = 1;
+*(uint8_t*)0x200000c9 = 0;
+*(uint8_t*)0x200000ca = 0;
+*(uint8_t*)0x200000cb = 0;
+*(uint32_t*)0x200000cc = 0;
+*(uint64_t*)0x200000d0 = 0;
+*(uint64_t*)0x200000d8 = 0;
+*(uint64_t*)0x200000e0 = 0;
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 0, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 1, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 2, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 3, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 4, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 5, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 6, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 7, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 8, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 9, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 10, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 11, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 12, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 13, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 14, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 15, 2);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 17, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 18, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 19, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 20, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 21, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 22, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 23, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 24, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 25, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 26, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 27, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 28, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 29, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 30, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 31, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 32, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 33, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 34, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 35, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 36, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 37, 1);
+STORE_BY_BITMASK(uint64_t, , 0x200000e8, 0, 38, 26);
+*(uint32_t*)0x200000f0 = 0;
+*(uint32_t*)0x200000f4 = 2;
+*(uint64_t*)0x200000f8 = 0;
+*(uint64_t*)0x20000100 = 0;
+*(uint64_t*)0x20000108 = 0;
+*(uint64_t*)0x20000110 = 4;
+*(uint32_t*)0x20000118 = 0;
+*(uint32_t*)0x2000011c = 0;
+*(uint64_t*)0x20000120 = 0;
+*(uint32_t*)0x20000128 = 0;
+*(uint16_t*)0x2000012c = 0;
+*(uint16_t*)0x2000012e = 0;
+*(uint32_t*)0x20000130 = 0;
+*(uint32_t*)0x20000134 = 0;
+*(uint64_t*)0x20000138 = 0;
+		syscall(__NR_perf_event_open, 0x200000c0ul, 0, 0ul, -1, 0ul);
+		break;
+	}
+
+}
+int main(void)
+{
+		syscall(__NR_mmap, 0x1ffff000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
+	syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 0ul);
+	syscall(__NR_mmap, 0x21000000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
+			loop();
+	return 0;
+}
+
+
+The following adapted patch is proposed to fix the bug on the 5.10.y kernel:
+[PATCH 5.10.y 1/1] bpf: Convert BPF_DISPATCHER to use static_call() (not ftrace)
 
 
