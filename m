@@ -1,122 +1,138 @@
-Return-Path: <linux-kernel+bounces-42549-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85CA28402F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:40:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D24A084030C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:43:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41F7728485A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:40:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 881FA1F2343A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 10:43:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3BBC56475;
-	Mon, 29 Jan 2024 10:40:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF3905915B;
+	Mon, 29 Jan 2024 10:42:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="s856pUGZ"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="2GSlDyqc"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5FA6537EE
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 10:40:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80A045821B
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 10:42:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706524807; cv=none; b=DNmQEdb/hJuxRWCkdagNEwRKUlkcqyP5pX9EhXC0yiKjJeGpPLNtBwYwu+6ig+PslGBp++uYhMUb3fzPmRxhqXLZJWJEtogDG6Kqeq/wp0yC9X+si48NJF0564fF6uNap5fqfuAPbbHm/Rfw+SSiFCUhEXcShBcjs7FWQ52pByI=
+	t=1706524934; cv=none; b=ivuRT9JkZZJJwI5vzA2x++DEHBcGC2CdVOyXFbWCsX6HCquBos3ty0SONo6yXlHaetRfGIg+IjQ+VwKBGJdUAA57xW1imOpVB1nCgDTxA7rFKBqGHDpD6BsvW0nDxbpEaNsOhzNklH58zZCZbNF/CItBDmRHpABOZhLoqIxOa/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706524807; c=relaxed/simple;
-	bh=WaFE+pXwPRypPxIRaulg/gFvImbvbsthbSmM+meA068=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ry5KG19diUf4uFwpY91pKeTHXvRtpEI3ThSD4+bmhUFlNQYC1IKPaDYMpuwU/xjYKWFkYSTOmNhbOS2BBNqecjjZvO6WT7Qf5klvLFLyewdRmpfLq4wBIClKd53A/EmgJIw/kGkoShWY1wVWvbxxTidQ3RufXp69nnB56tcFX0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=s856pUGZ; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40e80046246so13437605e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 02:40:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706524804; x=1707129604; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=J0JbM0JGF1J7IySg62RrNatTS3/ANKn5efUsptKY4Sw=;
-        b=s856pUGZ2tkBV2hqYXDZkr81tQsbD1UyyTRw2HdlLGVR+VwiC7bv54bsLYS32vfU9k
-         t3UjPfLuEqQuAond0sJTSU4/gQmWCpk2G7mjusYpnnarsI0AcKIwJzwxJ3rYeH8bPEbO
-         pNuyu8CnkR9FaBKUjB43YrEFC8T9x6theEnsY13vbmJszEFNRW097FPPQOTNm7rPQVE9
-         dXG8ttrI/JTHPMXECOTaVmHvY547JjLN6FGx8MaiRRSHL+FeMs1/SvUlqB885XkTD6FQ
-         SCbpxTtls6zx1zY1kULe7rlrzlEe81kS5B4fi6s/jjkZ/05z47nEQpliaJd4LLM0wEms
-         2bfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706524804; x=1707129604;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=J0JbM0JGF1J7IySg62RrNatTS3/ANKn5efUsptKY4Sw=;
-        b=nnUSGIWnQBa/I6nqSpAzTYYFoNlKSxQEHUEA47oB3TNUGFmNfuFsFt+Cp0g3ffzHcx
-         HwzAcSKqnyRdMChncVU1aKDmyB3B2g/E0j1MGc68NtPrwVFacFFIac6U3nOYt+JKRejf
-         5UsGFmqt8tTj1RW3IDIy0APCV7eLzeWwm8C9Y1OFVqq7jXU9To82GNl5RPNffhkx2Ts8
-         3BjkIa0onDLf3GV6QyIsfStcV1KwlkE0Gexl/rffC/GyyCOf0eOqLknqih9y1M5eJuQQ
-         KK+TAxZcIzuKGw1PkC+EyoQRDpuk4yKbwqYDXjZAHV7OhSWfOz4MZ3kyCqFySOxhpOe5
-         KL5w==
-X-Gm-Message-State: AOJu0Yz1zOT/MRGgfx6zSx9y5k06yiPaaDTMmqSRNvvjI9eECFDh4s0T
-	wN10sc0N/4QOOsPY6WBmenz4Rdtg5PGPh+bT+e670xGy4G09bYcq4sV/sJQC9+Q=
-X-Google-Smtp-Source: AGHT+IEgR4YcDqRDiTudYYipsxEtqbgIADWVwpxpCcbuB0Tw75yxRycXmOHhf4ySXorJ+nzxIfUq7g==
-X-Received: by 2002:a05:600c:1c12:b0:40e:fa51:3526 with SMTP id j18-20020a05600c1c1200b0040efa513526mr993752wms.10.1706524803970;
-        Mon, 29 Jan 2024 02:40:03 -0800 (PST)
-Received: from draszik.lan ([80.111.64.44])
-        by smtp.gmail.com with ESMTPSA id ay8-20020a05600c1e0800b0040eec3f384esm7001854wmb.42.2024.01.29.02.40.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 02:40:03 -0800 (PST)
-Message-ID: <0d3236e90604e82a609d205c6fbb56fd882ecfbb.camel@linaro.org>
-Subject: Re: [PATCH 6/9] arm64: dts: exynos: gs101: enable i2c bus 12 on
- gs101-oriole
-From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
-To: Sam Protsenko <semen.protsenko@linaro.org>
-Cc: peter.griffin@linaro.org, mturquette@baylibre.com, sboyd@kernel.org, 
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-  linux-kernel@vger.kernel.org, kernel-team@android.com,
- tudor.ambarus@linaro.org,  willmcvicker@google.com,
- alim.akhtar@samsung.com, s.nawrocki@samsung.com,  tomasz.figa@gmail.com,
- cw00.choi@samsung.com,  linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org,  linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org
-Date: Mon, 29 Jan 2024 10:40:02 +0000
-In-Reply-To: <CAPLW+4m4G+-zFLGr6Bp-73-mERCofxDiD7F=2fd_Wq+18iTs9g@mail.gmail.com>
-References: <20240127001926.495769-1-andre.draszik@linaro.org>
-	 <20240127001926.495769-7-andre.draszik@linaro.org>
-	 <CAPLW+4m4G+-zFLGr6Bp-73-mERCofxDiD7F=2fd_Wq+18iTs9g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1-1 
+	s=arc-20240116; t=1706524934; c=relaxed/simple;
+	bh=fvTMrxGTgQP5shcwR9YmUV+YxzR4KmUQp8IrSM1zMeA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=hvsn0Iu3+Cnk5e9ZSzfyMdcF2JoyQc/To8ybtBlRj2vIhqjhV0dM1oJoKJa+BwpRwfCFm11YKLziSxDtHuJW3lcF5AgSSKrg2UOzbD6EvfKGTeSRWzT7WUttGxEoqvASMCovrw60tezPHZTJa4eL2pHcitpcSc2BTf4QXN6L9iE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=2GSlDyqc; arc=none smtp.client-ip=185.132.182.106
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40T61ECc013749;
+	Mon, 29 Jan 2024 11:41:21 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=selector1; bh=7vOrMpK
+	rhmC5GZ7lLl0/bEb14hQaIT+NcW4xeoCn3wg=; b=2GSlDyqctOIb3x4m53c1K5/
+	Oide7sWqUf+6oQbsbk9X/s0qXKxkfTUq8dKtWnxmZcwYuDlGUD61WEgNLtZfkpPt
+	kKjb6PSZHK9vYqdaqle8FCDu3k7rrAWsl5vCouyBtRb3WXpMcZGwe57klr0udbNa
+	BPII8BBknXd3gZiav/gn3qMYbY8BBXm0YlBqvRXp1+I5qVuoCmHHG0GGkrc973d/
+	Mw2EZzQqbz0L60i/VzV8Mn1QoqHP8d5Pw4Fk4HTMFTMSIClw9+MbPydfNuHBldeK
+	dlp+VcrC+SePb21VjSIMv7i0WwEve26xRxt2qNiqJxBv9stP/hMKp+GTmBycpnA=
+	=
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3vwc94v9dk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Jan 2024 11:41:21 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E46AC100064;
+	Mon, 29 Jan 2024 11:41:18 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id DD6FB21683A;
+	Mon, 29 Jan 2024 11:41:18 +0100 (CET)
+Received: from localhost (10.252.28.37) by SHFDAG1NODE2.st.com (10.75.129.70)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 29 Jan
+ 2024 11:41:16 +0100
+From: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+To: Yannick Fertre <yannick.fertre@foss.st.com>,
+        Raphael Gallais-Pou
+	<raphael.gallais-pou@foss.st.com>,
+        Philippe Cornu
+	<philippe.cornu@foss.st.com>,
+        Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC: <dri-devel@lists.freedesktop.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH RESEND v3 0/3] Update STM DSI PHY driver
+Date: Mon, 29 Jan 2024 11:41:03 +0100
+Message-ID: <20240129104106.43141-1-raphael.gallais-pou@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-29_06,2024-01-29_01,2023-05-22_02
 
-Hi Sam,
 
-On Fri, 2024-01-26 at 20:58 -0600, Sam Protsenko wrote:
-> On Fri, Jan 26, 2024 at 6:19=E2=80=AFPM Andr=C3=A9 Draszik <andre.draszik=
-@linaro.org> wrote:
-> >=20
-> > This bus has various USB-related devices attached to it.
-> >=20
-> > [...]
-> >=20
-> > +&hsi2c_12 {
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 status =3D "okay";
->=20
-> But there are no bus clients declared here? A bit of explanation about
-> how this bus is being currently used would be nice to have (in commit
-> message); e.g. maybe it's used in user space somehow, etc. Because
-> otherwise it doesn't have much sense to enable the bus with no users.
+This patch series aims to add several features of the dw-mipi-dsi phy
+driver that are missing or need to be updated.
 
-As per the commit message, there are devices, but:
-* most or all don't have an upstream driver at this stage
-* it does make sense to enable the bus, as enabling it allows working on
-  the drivers for the devices that are attached to this bus
+First patch update a PM macro.
 
-Cheers,
-Andre'
+Second patch adds runtime PM functionality to the driver.
+
+Third patch adds a clock provider generated by the PHY itself.  As
+explained in the commit log of the second patch, a clock declaration is
+missing.  Since this clock is parent of 'dsi_k', it leads to an orphan
+clock.  Most importantly this patch is an anticipation for future
+versions of the DSI PHY, and its inclusion within the display subsystem
+and the DRM framework.
+
+Last patch fixes a corner effect introduced previously.  Since 'dsi' and
+'dsi_k' are gated by the same bit on the same register, both reference
+work as peripheral clock in the device-tree.
+
+---
+Changes in v3-resend:
+	- Removed last patch as it has been merged
+https://lore.kernel.org/lkml/bf49f4c9-9e81-4c91-972d-13782d996aaa@foss.st.com/
+
+Changes in v3:
+	- Fix smatch warning (disable dsi->pclk when clk_register fails)
+
+Changes in v2:
+	- Added patch 1/4 to use SYSTEM_SLEEP_PM_OPS instead of old macro
+	  and removed __maybe_used for accordingly
+	- Changed SET_RUNTIME_PM_OPS to RUNTIME_PM_OPS
+
+Raphael Gallais-Pou (3):
+  drm/stm: dsi: use new SYSTEM_SLEEP_PM_OPS() macro
+  drm/stm: dsi: expose DSI PHY internal clock
+
+Yannick Fertre (1):
+  drm/stm: dsi: add pm runtime ops
+
+ drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 279 ++++++++++++++++++++++----
+ 1 file changed, 238 insertions(+), 41 deletions(-)
+
+-- 
+2.25.1
 
 
