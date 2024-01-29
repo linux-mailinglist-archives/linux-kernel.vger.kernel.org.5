@@ -1,134 +1,106 @@
-Return-Path: <linux-kernel+bounces-42674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E72DC8404BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:14:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D3D228404C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:15:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53E06283E4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:14:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63C6D284226
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:15:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D94CA604C6;
-	Mon, 29 Jan 2024 12:13:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PTISgWzx"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD5D5604B8
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 12:13:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 372B3605A8;
+	Mon, 29 Jan 2024 12:15:15 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3D4F604AA;
+	Mon, 29 Jan 2024 12:15:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706530405; cv=none; b=XQ8+4jV9h0SDHQZSuPxUvIAby5oN3lU+V5gEHo/0fy53RKOkxkKPQYZYHjVkmGn04eO1x0ZzSzziZXRODbnHn2vp3qYHhsAxDtP8cV0ymbbsussWbws7EArlGxd20nh7TyDKtrjYXOqWGNPZWimLnvUn6LpYWigyGRQRkxlrLlQ=
+	t=1706530514; cv=none; b=J3+TrflixdwayOLQQV81P2iEqIXTIZVQAFoeFv0URYieRtUEfrSIq5vH/5ino5GuM91/S+2yc6eltviaxj1yilstCd4x1QET1bRl8nykYFKrXlW74tgGQBhjuMQLngcKSOPINrYFSIYzGKYengoBP5zm+1EfnvwemRNBk13r0Jc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706530405; c=relaxed/simple;
-	bh=WLvrHrbgSBFuvT4E7HlrAAw1sNsWn7JBXxbApEH6mhE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=REA3vx9KqQnRxCUlh4dyrfbEZvVguvBDXHpMdsfukbumbAPw90ZgSS2Vev8i0bmhXzqigOZcyaruEHb+nogiGMBmAwY4mnCeTMtcSwSwKP8lkrtgjPLCWNx6MSSzPx+4GDMrYSKKHDeGNaACU1WMC/RPex5gwXyQi5jmbsD4f7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PTISgWzx; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d8da50bfd9so3077245ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 04:13:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706530403; x=1707135203; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hoaRRVJZbpwuRBmsx74Q+sew1YTbfPVtekdObdLjHlE=;
-        b=PTISgWzxBsKKdQOw2Xjf2BD9ijlLC1o1mW8m50l42sJGPHEHkrPHFud0PTHj/XmCUp
-         X9C+idBG4yUYOAORQp8HieTBxfWnS8OZN7OkraLFZTsPDjs/8GP2tMvD3FnkqP7AY3i8
-         z+A5QJaChkoFPIKIHIi1MrfKkjfLqbW6gAK1MjsRyL+5+Qo2Ju/dxVVb0usZVTf5B1ZV
-         RQBOrJSiDvzBrQSKu4bGz1rogX3+jhUAHzaV/iFCZoeW3ldfw2oKybmIqMUegm24ovku
-         ngQ0DVJi8ZKbGYP511lDiyU0j75Ee/fYk4EZCcqeiYha24EIxCIfL1Ek/uLOqaUqGmnl
-         vlAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706530403; x=1707135203;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hoaRRVJZbpwuRBmsx74Q+sew1YTbfPVtekdObdLjHlE=;
-        b=mAqAw4L2q0e+kQrRg1YE/ypoasOxX6nADJEkpwW8otC8qqmhZWok+SxEnMTJA3owXh
-         onOnprCfRqJ9TeKU+0wEEoqasfeUfzG1e5Ph0YWj2z9I3wDJ2EROb6trow8U0hYBevr5
-         wYqjnEA3RYRPESwMVTWkcw+V2D1yRCL2v+kt15kpCHLrd1EcVhCAekLpAeuJqbNWCPCF
-         PswsYsCUu+1KlVfZWmS6oAVzKmpI5FKEIJDI8oE/ZZpZNj3038gzHXdBo0B9sWk3P+4w
-         tfLUAmqXIE0X9iJEQFE3KJ/jZJ4ddhB37xRNImDD3ELhZutZSMG9D+2uJplhj15AAJlB
-         gA2g==
-X-Gm-Message-State: AOJu0YyOn4Sj5Sv+Cw8Mbxuz7SS2YDkxjB+GRYxdS43nCIqerfGzx2Jv
-	oMiWh1pnHmm5rpxnIKHIevyVx4neHNagPpTkKgdrdNWKsBvNT7I2gMfiED5u
-X-Google-Smtp-Source: AGHT+IGe75wXRfHfhKAZFoV1YLgi2pirWtWkd84BfMTXVJ46oMR/sFEsWExHX0KeLGpQuF/FiHFUMA==
-X-Received: by 2002:a17:902:6804:b0:1d4:e04b:4742 with SMTP id h4-20020a170902680400b001d4e04b4742mr2117030plk.58.1706530403008;
-        Mon, 29 Jan 2024 04:13:23 -0800 (PST)
-Received: from cuiyangpei ([43.224.245.227])
-        by smtp.gmail.com with ESMTPSA id s10-20020a170902ea0a00b001d714a1530bsm5242067plg.176.2024.01.29.04.13.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 29 Jan 2024 04:13:22 -0800 (PST)
-Date: Mon, 29 Jan 2024 20:13:16 +0800
-From: cuiyangpei <cuiyangpei@gmail.com>
-To: SeongJae Park <sj@kernel.org>
-Cc: akpm@linux-foundation.org, damon@lists.linux.dev, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, xiongping1@xiaomi.com
-Subject: Re: [PATCH 1/2] mm/damon/sysfs: Implement recording feature
-Message-ID: <20240129121316.GA9706@cuiyangpei>
-References: <ZbYanPU16klwz0HA@cyp-ubuntu>
- <20240128162804.17866-1-sj@kernel.org>
+	s=arc-20240116; t=1706530514; c=relaxed/simple;
+	bh=CI2SITbEyDMK/SnfUcFawfQgI/5HdPELOd7hdQeM9Fw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uRD69cEOQSMzB7OMSXmKXP/6aOB+tyGHxs/g+1kBa7qPWsLBScS+Gm7mCz7NoJ/Cpz957Zalcmq/vwKBQ+pB+1w5BPsSA6VW+pRrAfOmv+TiPRRk67AMYsQsOuv9UOg47vGFxwB9gG1Bt2H5s3LpaqHvoeqOi7Iuv14vHI+PBOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 296821FB;
+	Mon, 29 Jan 2024 04:15:56 -0800 (PST)
+Received: from [10.57.77.253] (unknown [10.57.77.253])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A8F643F5A1;
+	Mon, 29 Jan 2024 04:15:09 -0800 (PST)
+Message-ID: <df8f1bf4-819a-4b2a-927d-e97fe196cdf6@arm.com>
+Date: Mon, 29 Jan 2024 12:15:07 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240128162804.17866-1-sj@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 1/7] dma: compile-out DMA sync op calls when not
+ used
+Content-Language: en-GB
+To: Alexander Lobakin <aleksander.lobakin@intel.com>,
+ Christoph Hellwig <hch@lst.de>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Marek Szyprowski
+ <m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Magnus Karlsson <magnus.karlsson@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Alexander Duyck <alexanderduyck@fb.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240126135456.704351-1-aleksander.lobakin@intel.com>
+ <20240126135456.704351-2-aleksander.lobakin@intel.com>
+ <20240129061136.GD19258@lst.de>
+ <4e23d103-ea1c-4fd3-852e-f7e2ec9170ad@intel.com>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <4e23d103-ea1c-4fd3-852e-f7e2ec9170ad@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sun, Jan 28, 2024 at 08:28:04AM -0800, SeongJae Park wrote:
-> On Sun, 28 Jan 2024 17:13:00 +0800 cuiyangpei <cuiyangpei@gmail.com> wrote:
+On 2024-01-29 11:07 am, Alexander Lobakin wrote:
+> From: Christoph Hellwig <hch@lst.de>
+> Date: Mon, 29 Jan 2024 07:11:36 +0100
 > 
-> > On Fri, Jan 26, 2024 at 12:04:54AM -0800, SeongJae Park wrote:
-> [...]
-> > > So, 'update_schemes_tried_regions' command is firstly handled by
-> > > 'damon_sysfs_cmd_request_callback()', which is registered as
-> > > after_wmarks_check() and after_aggregation() callback.  Hence
-> > > 'update_schemes_tried_regions' command is still effectively working in
-> > > aggregation interval granularity.  I think this is what you found, right?
-> > > 
-> > Yes.
-> > > If I'm not wrongly understanding your point, I think the concern is valid.  I
-> > > think we should make it works in sampling interval granularity.  I will try to
-> > > make so.  Would that work for your use case?
-> > > 
-> > It's much better than working in aggregation interval.
+>> On Fri, Jan 26, 2024 at 02:54:50PM +0100, Alexander Lobakin wrote:
+>>> Some platforms do have DMA, but DMA there is always direct and coherent.
+>>> Currently, even on such platforms DMA sync operations are compiled and
+>>> called.
+>>> Add a new hidden Kconfig symbol, DMA_NEED_SYNC, and set it only when
+>>> either sync operations are needed or there is DMA ops or swiotlb
+>>> enabled. Set dma_need_sync() and dma_skip_sync() (stub for now)
+>>> depending on this symbol state and don't call sync ops when
+>>> dma_skip_sync() is true.
+>>> The change allows for future optimizations of DMA sync calls depending
+>>> on compile-time or runtime conditions.
+>>
+>> So the idea of compiling out the calls sounds fine to me.  But what
+>> is the point of the extra indirection through the __-prefixed calls?
 > 
-> Thank you for confirming.  I will start working on this.
+> Because dma_sync_* ops are external functions, not inlines, and in the
+> next patch I'm adding a check there.
 > 
+>>
+>> And if we need that (please document it in the commit log), please
+>> make the wrappers proper inline functions and not macros.
 
-Great, looking forward to seeing the progress.
+In fact those wrappers could perhaps subsume the existing stub 
+definitions, by starting with a refactor along these lines:
 
-> > 
-> > I have a question. Why does the 'update_schemes_tried_regions' command need to work
-> > in the sampling time or aggregation time? 'update_schemes_tried_regions' is a
-> > relatively special state that updates the regions that corresponding operation scheme.
-> > Can it be separated from other states and controlled by sysfs node to respond immediately
-> > after being written?
-> 
-> Mainly because the region data is updated by a kdamond thread.  To safely
-> access the region, the accessor should do some kind of synchronization with the
-> kdamond thread.  To minimize such synchronization overhead, DAMON let the API
-> users (kernel components) to register callbacks which kdamond invokes under
-> specific events including 'after_sampling' or 'after_aggregate'.  Because the
-> callback is executed in the kdamond thread, callbacks can safely access the
-> data without additional synchronization.  DAMON sysfs interface is using the
-> callback mechanism, and hence need to work in the sampling or aggregation
-> times.
-> 
-Thank you for the detailed explanation.
+static inline dma_sync_x(...)
+{
+	if (IS_ENABLED(CONFIG_NEED_DMA_SYNC))
+		__dma_sync_x(...);
+}
 
-> Thanks,
-> SJ
-> 
-> [...]
+Cheers,
+Robin.
 
