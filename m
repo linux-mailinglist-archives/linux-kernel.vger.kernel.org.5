@@ -1,54 +1,39 @@
-Return-Path: <linux-kernel+bounces-42581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27438840371
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 76EDD840374
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:05:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB5731F22A4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:05:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15B461F228A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 11:05:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6802D5B20F;
-	Mon, 29 Jan 2024 11:05:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="I9yZrPy2"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 227545A78A;
-	Mon, 29 Jan 2024 11:05:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 474C25B202;
+	Mon, 29 Jan 2024 11:05:21 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D72B5B5D2;
+	Mon, 29 Jan 2024 11:05:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706526311; cv=none; b=sOpAh1aEceTUPr9Q4JuK2zyTiekVUebWiYBijf2gdQTsD+7UUSwoQ+I4aG46UrrnyWdWevlWQmlOylhYE/CWckdS7BvWGO5HluQ8A7Hxp5CdR6YS/dKbd8EWoLCu/G1teXwDIvtqmluvjJ4s377D9Sf+f440bB4udp9yOq9GZoE=
+	t=1706526320; cv=none; b=tL8biV2NZc80blawDH8YFl8GBf/l712bMB/B8E6HuBHND92wHVwBkydHztSOCQ8uSQ9A5ozEHWQEh9H1fRoSiP8k9OpZc6E44wbpScrszVlkBzPFduhP7KdBxmOJa4LP2rE5UasQJET5lqTFqDFp9lkQK4WFKL22ReuyKxGPw6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706526311; c=relaxed/simple;
-	bh=cAM4F7mXABDgUuuAxryLFBBtLF6iWnSdz7msYKa89Q4=;
+	s=arc-20240116; t=1706526320; c=relaxed/simple;
+	bh=z7vCLiWnpGh25FZ1AIsxRGIMMKUxxU4DDA304c/YCcQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dvMPn79fG1Ts/yzP31Cp1eRUlrVfZ9wgf6OAof6n9z4neYaCVMsEYnvb6CwHQYi64S2IJky0leSaYEhCsR4LZefBoHwywNddubwsIa/KHHJHVqnuLlvtYS7Soof4JkZ29ZnmHGoDTPGUahB1ciQAGV6lk331FZ63QzX8DsNCxVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=I9yZrPy2; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706526308;
-	bh=cAM4F7mXABDgUuuAxryLFBBtLF6iWnSdz7msYKa89Q4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=I9yZrPy29regUhzuTyK40h8+Nik5jOXg/Uh7inRJaKSITeDuaNUU718eX3r5KG136
-	 IUsv7lVEj6sv3aVKSNWRpVnnk/1ZUydGunOwBuzdcQCuOd6MxYYcwHUUwQDJyvZAi6
-	 Zt5Ddh2nofNWeGRZG/JwWfW7B4O0LaHQ01U+RJFWIlSifx+JOUE874qkY7HD0BR5/F
-	 rmkKVSjl/MGRF0fHb7sFVwRViF2nTqzuutSKeuBrHpvTWwMNUNfZma+OvQjLDW672U
-	 +r5X+0mwKFiKxzIE+YRN1S/EAjv05BDKjmkHqfBSJCgYPYx0R+htrNndyh2iNhycod
-	 xiyZgFy5ugCDg==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A482C37810CD;
-	Mon, 29 Jan 2024 11:05:07 +0000 (UTC)
-Message-ID: <81783153-45a4-478d-a0d1-8ab401e9da58@collabora.com>
-Date: Mon, 29 Jan 2024 12:05:07 +0100
+	 In-Reply-To:Content-Type; b=S4m59RpFt+gvoZI79IXbxwXXc8wW9yAHoRpqnw+tEXI6lIcDJERCYPcedWy0PVTeIgvlxUYv2oaHOg3W+yY31Dh8Dyg/zvcpM/JEBZD65j86yXOPlS5VnpFaQLK44X+rn4gR7gdYt2xfozjKkq7D7f3RvGPsBUF8UeB1gusme6k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 34BDC1FB;
+	Mon, 29 Jan 2024 03:06:00 -0800 (PST)
+Received: from [10.57.65.9] (unknown [10.57.65.9])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D2ECE3F5A1;
+	Mon, 29 Jan 2024 03:05:12 -0800 (PST)
+Message-ID: <7a34378c-3b1d-4ce1-80f8-938796ff3e6c@arm.com>
+Date: Mon, 29 Jan 2024 11:05:11 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,96 +41,132 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 6/6] arm64: dts: qcom: msm8956-loire: Add SD Card
- Detect to SDC2 pin states
-Content-Language: en-US
-To: Marijn Suijten <marijn.suijten@somainline.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, ~postmarketos/upstreaming@lists.sr.ht,
- Luca Weiss <luca@z3ntu.xyz>, Adam Skladowski <a39.skl@gmail.com>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Martin Botka <martin.botka@somainline.org>,
- Jami Kettunen <jami.kettunen@somainline.org>, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240121-msm8976-dt-v2-0-7b186a02dc72@somainline.org>
- <20240121-msm8976-dt-v2-6-7b186a02dc72@somainline.org>
- <9d3623f8-697b-44ab-a9eb-9d2d305b0e5c@collabora.com>
- <iatieesr52v5au4kkovw3gc34tn3snt454grq7le66oar6x7t4@4jfwxgxov36v>
- <48946c81-dad0-4e2d-9569-5fbac1675bb6@collabora.com>
- <quqkqv4eer7tmubvsqkbuwammqaa5qqxojedsh42ryax3laah7@v7khc2cq4eti>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <quqkqv4eer7tmubvsqkbuwammqaa5qqxojedsh42ryax3laah7@v7khc2cq4eti>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH v2 14/15] mm/memory: ignore dirty/accessed/soft-dirty bits
+ in folio_pte_batch()
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
+ <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
+References: <20240125193227.444072-1-david@redhat.com>
+ <20240125193227.444072-15-david@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240125193227.444072-15-david@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-Il 22/01/24 16:15, Marijn Suijten ha scritto:
-> On 2024-01-22 15:59:37, AngeloGioacchino Del Regno wrote:
->> Il 22/01/24 14:49, Marijn Suijten ha scritto:
->>> On 2024-01-22 12:48:27, AngeloGioacchino Del Regno wrote:
->>>> Il 21/01/24 23:33, Marijn Suijten ha scritto:
->>>>> In addition to the SDC2 pins, set the SD Card Detect pin in a sane state
->>>>> to be used as an interrupt when an SD Card is slotted in or removed.
->>>>>
->>>>> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
->>>>> ---
->>>>>     arch/arm64/boot/dts/qcom/msm8956-sony-xperia-loire.dtsi | 17 +++++++++++++++++
->>>>>     1 file changed, 17 insertions(+)
->>>>>
->>>>> diff --git a/arch/arm64/boot/dts/qcom/msm8956-sony-xperia-loire.dtsi b/arch/arm64/boot/dts/qcom/msm8956-sony-xperia-loire.dtsi
->>>>> index b0b83edd3627..75412e37334c 100644
->>>>> --- a/arch/arm64/boot/dts/qcom/msm8956-sony-xperia-loire.dtsi
->>>>> +++ b/arch/arm64/boot/dts/qcom/msm8956-sony-xperia-loire.dtsi
->>>>> @@ -264,10 +264,27 @@ &sdhc_1 {
->>>>>     	status = "okay";
->>>>>     };
->>>>>     
->>>>> +&sdc2_off_state {
->>>>> +	sd-cd-pins {
->>>>> +		pins = "gpio100";
->>>>> +		function = "gpio";
->>>>> +		drive-strength = <2>;
->>>>> +		bias-disable;
->>>>> +	};
->>>>
->>>> Are you sure that you really don't want card detect during system suspend?
->>>
->>> Does it make a difference if the rest of pinctrl and the SDHCI controller are
->>> also turned off?
->>>
->>>> You could simply add a sdc2-cd-pins out of sdc2_{on,off}_state and add use it for
->>>> both default and sleep.
->>>
->>> This sounds close to what Konrad suggested by using a new block wit its own
->>> label rather than extending the existing state.
->>>
->>>> pinctrl-0 = <&sdc2_on_state>, <&sdc2_card_det_n>;
->>>> pinctrl-1 = <&sdc2_off_state>;
->>>
->>> You said both, but it's not in pinctrl-1 here?  (And might unselect bias-pull-up
->>> implicitly instead of explicitly selecting bias-disable via an off node?)
->>>
->>
->> I meant to add it to both, sorry.
->>
->> In any case, take the typo'ed example as a simplification of your first version :-)
+On 25/01/2024 19:32, David Hildenbrand wrote:
+> Let's always ignore the accessed/young bit: we'll always mark the PTE
+> as old in our child process during fork, and upcoming users will
+> similarly not care.
 > 
-> Okay, I'll resend a version that creates a new pinctrl node and applies it to both cases.
+> Ignore the dirty bit only if we don't want to duplicate the dirty bit
+> into the child process during fork. Maybe, we could just set all PTEs
+> in the child dirty if any PTE is dirty. For now, let's keep the behavior
+> unchanged, this can be optimized later if required.
 > 
-> Unfortunately I can no longer test and confirm that it makes a difference
-> to have the card-detect IRQ always biased, even while the SDHCI controller
-> is "asleep" or off, so I'll trust your word for it.  If I remember correctly
-> downstream turns it off as well?
+> Ignore the soft-dirty bit only if the bit doesn't have any meaning in
+> the src vma, and similarly won't have any in the copied dst vma.
+> 
+> For now, we won't bother with the uffd-wp bit.
+> 
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-Marijn, I don't remember anything about a downstream kernel from 10 years ago..!
+Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
 
-But yes, it's okay to do so - the worst case is that it won't wake up, but that
-won't happen, as it's going to generate an interrupt and wake up the entire system
-which includes the SDHCI controller.
-
-Go on!
-
-Cheers,
-Angelo
+> ---
+>  mm/memory.c | 36 +++++++++++++++++++++++++++++++-----
+>  1 file changed, 31 insertions(+), 5 deletions(-)
+> 
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 4d1be89a01ee0..b3f035fe54c8d 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -953,24 +953,44 @@ static __always_inline void __copy_present_ptes(struct vm_area_struct *dst_vma,
+>  	set_ptes(dst_vma->vm_mm, addr, dst_pte, pte, nr);
+>  }
+>  
+> +/* Flags for folio_pte_batch(). */
+> +typedef int __bitwise fpb_t;
+> +
+> +/* Compare PTEs after pte_mkclean(), ignoring the dirty bit. */
+> +#define FPB_IGNORE_DIRTY		((__force fpb_t)BIT(0))
+> +
+> +/* Compare PTEs after pte_clear_soft_dirty(), ignoring the soft-dirty bit. */
+> +#define FPB_IGNORE_SOFT_DIRTY		((__force fpb_t)BIT(1))
+> +
+> +static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags)
+> +{
+> +	if (flags & FPB_IGNORE_DIRTY)
+> +		pte = pte_mkclean(pte);
+> +	if (likely(flags & FPB_IGNORE_SOFT_DIRTY))
+> +		pte = pte_clear_soft_dirty(pte);
+> +	return pte_mkold(pte);
+> +}
+> +
+>  /*
+>   * Detect a PTE batch: consecutive (present) PTEs that map consecutive
+>   * pages of the same folio.
+>   *
+> - * All PTEs inside a PTE batch have the same PTE bits set, excluding the PFN.
+> + * All PTEs inside a PTE batch have the same PTE bits set, excluding the PFN,
+> + * the accessed bit, dirty bit (with FPB_IGNORE_DIRTY) and soft-dirty bit
+> + * (with FPB_IGNORE_SOFT_DIRTY).
+>   */
+>  static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
+> -		pte_t *start_ptep, pte_t pte, int max_nr)
+> +		pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags)
+>  {
+>  	unsigned long folio_end_pfn = folio_pfn(folio) + folio_nr_pages(folio);
+>  	const pte_t *end_ptep = start_ptep + max_nr;
+> -	pte_t expected_pte = pte_next_pfn(pte);
+> +	pte_t expected_pte = __pte_batch_clear_ignored(pte_next_pfn(pte), flags);
+>  	pte_t *ptep = start_ptep + 1;
+>  
+>  	VM_WARN_ON_FOLIO(!pte_present(pte), folio);
+>  
+>  	while (ptep != end_ptep) {
+> -		pte = ptep_get(ptep);
+> +		pte = __pte_batch_clear_ignored(ptep_get(ptep), flags);
+>  
+>  		if (!pte_same(pte, expected_pte))
+>  			break;
+> @@ -1004,6 +1024,7 @@ copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
+>  {
+>  	struct page *page;
+>  	struct folio *folio;
+> +	fpb_t flags = 0;
+>  	int err, nr;
+>  
+>  	page = vm_normal_page(src_vma, addr, pte);
+> @@ -1018,7 +1039,12 @@ copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
+>  	 * by keeping the batching logic separate.
+>  	 */
+>  	if (unlikely(!*prealloc && folio_test_large(folio) && max_nr != 1)) {
+> -		nr = folio_pte_batch(folio, addr, src_pte, pte, max_nr);
+> +		if (src_vma->vm_flags & VM_SHARED)
+> +			flags |= FPB_IGNORE_DIRTY;
+> +		if (!vma_soft_dirty_enabled(src_vma))
+> +			flags |= FPB_IGNORE_SOFT_DIRTY;
+> +
+> +		nr = folio_pte_batch(folio, addr, src_pte, pte, max_nr, flags);
+>  		folio_ref_add(folio, nr);
+>  		if (folio_test_anon(folio)) {
+>  			if (unlikely(folio_try_dup_anon_rmap_ptes(folio, page,
 
 
