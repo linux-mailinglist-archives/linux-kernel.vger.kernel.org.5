@@ -1,120 +1,116 @@
-Return-Path: <linux-kernel+bounces-42815-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91DF7840724
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:37:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 189A5840736
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:39:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4D431C208D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:37:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7DA6287A22
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:39:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCCA7651B1;
-	Mon, 29 Jan 2024 13:37:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB220651AF;
+	Mon, 29 Jan 2024 13:39:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OXWVf8IL"
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="Mq/rZv4g"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7580663127
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:37:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BAC165197
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:39:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706535426; cv=none; b=PesIh9DVMaeMn3iCESoRjDPHr0yFN35Y60BOQuErP9eqDtbly8Do5fCF4IQLsbdg24NExFRzZ+P334yif69OcumsbiWwPPliIA/t0pHJtg1Bytch5XXYNkMb96508qhL7Kv5pNdrgIgCXFtVS6p8Dp2caeS4OtiLvIMKxOQSi/M=
+	t=1706535575; cv=none; b=OnjOGVEtJ5VRkSR9H0LE7/W4wTX+xFXRe4rxNedeqwL96zW/0iKqP569g83gEABMExOUacL0jkZZz5b7lsUTtRqmZTse5Ic4ue501H9cY8HRUuIQj/EpJ3gW4v0XTKvFwud1PvfV161AX11ZMTQd8jx0hN1S5fSnCcTMAW4+k9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706535426; c=relaxed/simple;
-	bh=ZCsj/za7RaBNkGKT7kYWtyXABqM1HFsxCWGwnZwyws0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DBUh/W0vsCkTphYldbxjhHZ3gPN7gejvUjlnH2eUo3BOoC1djWHdS1nB5DB0QR6U1caCYKmKy5bHeZ+4FTsAdmpckE3h9EDl9OKbzDmjj1dJjRrboBDxj4HYin0fghPm/JeK6uUPisWMLR3maKXKuzOzW1ZAraulgRrPxrR8Xos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OXWVf8IL; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5ff7dc53ce0so21004837b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 05:37:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706535423; x=1707140223; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZCsj/za7RaBNkGKT7kYWtyXABqM1HFsxCWGwnZwyws0=;
-        b=OXWVf8IL7ZqMV2ci5Jwg9lVK1Ybj6KfFHqZ34kNHNtNln6/fZBs/LeHdX0bghc1W+U
-         6QscO7l0tJCcUzy7a0rYNnZEdpkD9bMomaEPsi45cNK7qBRChA83dLoGndFcwGWU7/qT
-         GRN5EvDlC4y/Tvf8bFMlwIfhq0jRCAoHX7HkBtoJIUuLETKsZslhQod7PUIfwknvNQ/+
-         eVAwJUnaRIFa92t3zWkIW2+k4aMF8hPFDaGMAt+MaarnTNvML2hqEbuP5rV/Vh2WtVkG
-         2Kmj6/U5InXuo6XfUXy19KY7oBQtbNkk71cQHjmynmT3Pd/QtL6aNn4CX9+UYcg/M97I
-         z9YQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706535423; x=1707140223;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZCsj/za7RaBNkGKT7kYWtyXABqM1HFsxCWGwnZwyws0=;
-        b=iVymGy44vwx87ru2MAad/jLKWmBxaYtvkipBE8ZzRTyj1/sEvsIvwON3SLWmBJayt+
-         VR7H5JWRC5jhDug8NvNxgf1pb48qKdgB+jXUlbWgE8Ka7UwZZ4VLSEbnDAzM1e0kxF8r
-         /n2qss5OoJqYAU3oeHZPZ3hjlRZMqXQxfAvbKma46xBXYKzhvR5o21uR+nOsrx7jurqc
-         2zLfHPXa3rN7Um4g6h9JQ2DV1HFv8+KJc6YYJqOi1ZPgrdmCprHZPQ90vh+SHgYZsqcc
-         H2fuL7AiwHf4/gyrDRS54NqoMbk3yJF/LOimx8le52/BTZGNe6RF/mp/YEfy9ErT80iu
-         yfkg==
-X-Gm-Message-State: AOJu0YwOuQMe8oBmOS9ELlr7aRaDbwr9tM4zHWfu1PaqUHkPTE0UVmXH
-	efGxeaLRaNK9k5RrVWIPvrCHjXLu4+74FDXAbFkl1Ty452wB4zeO4HZO8ObPuwFjEK7IfjQxZf2
-	khUyig12eSruVdJFkdP1ona1HUaJE6C03hjxUMw==
-X-Google-Smtp-Source: AGHT+IHZ7ppV7Ra7ON9UtE6bhsWl2QM45AmHugXBrqcS6qRScJO5m5BM8d0Bu6WpG6iGltf56g+QXH1UdhgEs2wGbiI=
-X-Received: by 2002:a81:b61e:0:b0:5ff:e530:eebd with SMTP id
- u30-20020a81b61e000000b005ffe530eebdmr3227907ywh.19.1706535423411; Mon, 29
- Jan 2024 05:37:03 -0800 (PST)
+	s=arc-20240116; t=1706535575; c=relaxed/simple;
+	bh=DZLG/eaOFFdhgnpZbe7dOvuKH3LsocoZcT6b84kQCRU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y+6Szd1bXFZ3RU2hYagh/mDZjNn/AR++5otbepyF3MMBRbEJdL3dKe8v8cG2TxHC3aYG4Trcs91ZEAHT/UknpdT/bj2sV+5hhrL2mB8zBNhwhhkTSooo/N6CbMIfj9SElVYgxwA6wem40+0E5qNfVrYk+8413VkWt8LwyGz+wiA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=Mq/rZv4g; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:cc:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=DZLG
+	/eaOFFdhgnpZbe7dOvuKH3LsocoZcT6b84kQCRU=; b=Mq/rZv4guvldS3IWM2Ag
+	LwXdXmI/RnxvHNR/0tEUAbnWEXNfgA2RrQggsPjmuSkwuH5GU+5c7ReNkhYvnJVW
+	Ovj04jF4YuG0vkrG7EYLKNNEHaA74C16T/pCrrOLv240lUMNB4BINpGpg3Ss0kkt
+	bpd6Ex8ZKeJvq5Oqinh/FkX506nQU+En+Kv3G25//V8md8SHK2sVUIVR+/6h0JrJ
+	XLIQ/HVh3JklNJcIT8K5Cki2QRLhIZRPs/GIMpb8NOlvIXJaopQkIYDOXNWu0mEx
+	qoyqix4n4RrjBFq2aSfTA9362eT8o2Vy6LqlXhRqYxLp5GIJ4GIrsPQtGLGDyQDv
+	Tw==
+Received: (qmail 2495069 invoked from network); 29 Jan 2024 14:39:28 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 29 Jan 2024 14:39:28 +0100
+X-UD-Smtp-Session: l3s3148p1@5x5axhUQtJRehhtJ
+Date: Mon, 29 Jan 2024 14:39:27 +0100
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-renesas-soc@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v3 2/2] arm64: dts: renesas: ulcb-kf: add node for
+ GNSS
+Message-ID: <Zbeqj9c49GXIOWAs@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	linux-renesas-soc@vger.kernel.org,
+	Magnus Damm <magnus.damm@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+References: <20240117131807.24997-1-wsa+renesas@sang-engineering.com>
+ <20240117131807.24997-3-wsa+renesas@sang-engineering.com>
+ <CAMuHMdX7Z8w0JykKuboP__ZE4x+LeKSQAGdyrUezERxysPUCKA@mail.gmail.com>
+ <ZbPKPGB7DIHhZ3GJ@ninjato>
+ <CAMuHMdW6KV0Gh-JA8x2Z_vj2n5QPDLLFFZRNLUg2rdc3wFqChg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240121-pinctrl-scmi-v3-0-8d94ba79dca8@nxp.com> <f88d07ef-83b2-4d14-976a-6dbbd71e036f@oss.nxp.com>
-In-Reply-To: <f88d07ef-83b2-4d14-976a-6dbbd71e036f@oss.nxp.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Mon, 29 Jan 2024 14:36:52 +0100
-Message-ID: <CACRpkdYV=qYQ9qDUWYTLDAV1niay30gYH5S=zjfi31GpeY5o-A@mail.gmail.com>
-Subject: Re: [PATCH v3 0/6] firmware: arm_scmi: Add SCMI v3.2 pincontrol
- protocol basic support
-To: Peng Fan <peng.fan@oss.nxp.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>, Cristian Marussi <cristian.marussi@arm.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Oleksii Moisieiev <oleksii_moisieiev@epam.com>, Shawn Guo <shawnguo@kernel.org>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	AKASHI Takahiro <takahiro.akashi@linaro.org>, Peng Fan <peng.fan@nxp.com>, 
-	Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Ylaf6ZwSg+ufLk5J"
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdW6KV0Gh-JA8x2Z_vj2n5QPDLLFFZRNLUg2rdc3wFqChg@mail.gmail.com>
 
-On Mon, Jan 29, 2024 at 1:37=E2=80=AFPM Peng Fan <peng.fan@oss.nxp.com> wro=
-te:
 
-> And for i.MX95 OEM extenstion, do you have any suggestions?
-> I have two points:
-> 1. use vendor compatible. This would also benefit when supporting vendor
-> protocol.
-> 2. Introduce a property saying supporting-generic-pinconf
->
-> How do you think?
+--Ylaf6ZwSg+ufLk5J
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-While I don't know how OEM extensions to SCMI were designed,
-the pin control subsystem has the philosophy that extensions are
-for minor fringe stuff, such as a pin config option that no other
-silicon is using and thus have no use for anyone else. Well that
-is actually all the custom extensions we have.
-(This notion is even carried over to SCMI pinctrl.)
 
-The i.MX95 OEM extension is really odd to me, it looks like a
-reimplementation of the core aspects of SCMI pin control, and
-looks much more like the old i.MX drivers than like the SCMI driver.
+> Indeed, drivers/gnss/ seems to have no support for I2C yet.
 
-But I sure cannot speak of what is allowed in SCMI OEM
-extensions or not.
+Neither does GPSD. But looking again, I found a I2C->virtualSerial
+script to do it: https://github.com/MaffooClock/gpsd-i2c
 
-Yours,
-Linus Walleij
+Everything exists! :)
+
+
+--Ylaf6ZwSg+ufLk5J
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmW3qowACgkQFA3kzBSg
+KbaquQ//T/MwgHTKgIBWLbsnEsH4+wBZgWBfHs8cJfO6pOKm6OTcSVx6+2ULqbAp
+/QMDgt6S5DMzisMTbkTHP+iA1sj11HgPP2CO3cQjRSRbdLZAPnIXvofdVLw6Fiw5
+oM0O/gW/itXtwHhmdL/jQDyJ1eRVwRyQuYmWczdbZ4ShbCem6PXJfq9bP0WEt/8Q
+KUf+sMIHgRZPeRWhRNwaLri1pzq8wZ42e/HYYYHGY9a2UWCauKriITOtbEKK4jjU
+rXPE5ShNlkhBIQuPtjc7xdAh0SJQQXt71FyN6Cv83kbHgiESJ1kj2tnHqpuFhVqp
+C3Vxop1bmXvW0y0zPDNJjVzhiFu9KcXaAUEshYulO5Ysidsu4Oz0buHJEWI9YqYv
+ks/DMCp5YCAiMFeb4duByPy7vh8e7ps01KRaX/TLpxxlWfIKtkRE7dzjhGNrGMd5
+qoE6a38lzb16AFd4/lTBfmzb8vqHd1qDSWVwSdl4t/v03SpPUjAnX3RIT5DAt98e
+QqQdygdjCG4dNJx5TAbJ8eKstePK6PKGNQRxcT+3afqgCgZya0M82Tr+i2M1JSy7
+Oo7LKL/n7L+XdA2FxFWNWOzvRQTknFxKoxa/lTylULtH6n2NQWnudiHPJptgCe+N
+ZBQWL6pzji2hJmtGSNDxm/fq4LPU8NTD2qjEZdfVH+6ix+AVGQY=
+=LQru
+-----END PGP SIGNATURE-----
+
+--Ylaf6ZwSg+ufLk5J--
 
