@@ -1,286 +1,109 @@
-Return-Path: <linux-kernel+bounces-43308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBF938411F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:27:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4991E8411FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:29:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70C7B1F25EC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:27:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF1401F25CE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:29:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B12CD6F077;
-	Mon, 29 Jan 2024 18:27:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A26C76F07C;
+	Mon, 29 Jan 2024 18:29:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="hlS3WfGN"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12olkn2025.outbound.protection.outlook.com [40.92.23.25])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="TlTdSeJM"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFB731D682;
-	Mon, 29 Jan 2024 18:27:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.23.25
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706552868; cv=fail; b=RhxRTixZfRmfCO5ayJeoF/dPudZcWQb8/FP6q9DlwQFuOonv+bwwt7C0Pv8cNHFxksUo7B+caJ5WfdDu/Vs5fcXWWA1iNJlwUll2To5sj2yHs1PKbF9Nr042icY281qKexOOVKlfU+WBob0aWjv/qyPpGvsSz6ef+G140s0TcK4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706552868; c=relaxed/simple;
-	bh=LdMxtZm+7GExLPUdJ5k6CktKcUaZXm38Z6wlrVmmFQ8=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=C1jNEAA6De55HQgYyEwQt2ujXXWpkZJXHa0wuWYAdYFSSTyfCrqDMoGEzfK6Ahr72FMh6UWWTkpP1UZCObJmSel0D2gqDEqCFE0jgidX19EF1oceeXI4ummKMf1gO3jcKGIG4Eiuv/mbaUdXp8URWVtOcZgQim73p/bLNQPovTU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=hlS3WfGN; arc=fail smtp.client-ip=40.92.23.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jlNT64FGOOyOBoszz9N5Ac93N4hKdLp8ezxw4nxu+anvMKOaLvvExZauuaBc47zAjMcOtHZBKiykEEnVIKHaz6WNK61AKLeYZxINqXnSr5KRhTjTuEK9bHdXghN59G/DfgWjx39YO0a3u6IZ+Ih/N0sRo/Z+sVdQGWQoF7N+fhPtvHG6NCzG0vzjkb77cymtc+PZQ+RVsiN+ZDVESQvEtHOh4SNIh1gEz/6U1ClD9MgxpkcHg2v3afQJPfp5txfEhl+nzqiD0oCVuItlzFKSyqYuj1QXZtyFimf/LYJXYHadnA6X4yYimySeZseFe9vBMx/fcY5P93DUKU8I1xzh1w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LjMxWwuPQtMm7C9T4IqjJnUlv/VPPfxAPRGeKmPQz9s=;
- b=ggf6TzH9vXrbpybsDKAmvWd4BKQ8QwCgbiBcv27OYDrjGmgbnS8kp1rWC3fsmWpc6imRDggE93TpivcU5lVnly8JiyMm5ug2dk8hI9Mtpt7XMc9a9jHqIjSIR15UOssM128V0ZlmK5KPXITYZwobNnk0KictkdT93WBHkOjK4RlBaiewIvhwR2ZB8qBDH3CgNNJduEBN87zfrbz8L0Iy6Y1Twn5nSAMh+pOZdU5swTpzAz8SDqWb24qzdt+7t7yC59eaMJdovC0PP/yjWGZz2VQ0c9i5kAh+EkKOuST98xTknYE6tn367L8jhrkG7DUEEqr/fkcuq8La2FDVChetag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LjMxWwuPQtMm7C9T4IqjJnUlv/VPPfxAPRGeKmPQz9s=;
- b=hlS3WfGN88q3XUjwUXn1ymDbF/O/kyjexWKP8fdzBo80MEGekqC78rJYKys3mlXwoS8cdJ4Q6VH2H6VmKyCvNbSu1eT3VxPnqH2XDVXrY9wZYWr7sz4ZOnpr6LBEcAgqJA8H/sPLyWdj6smmQoDq2UxN6PFAnSnWKxdMHiY5SNJ7tNV2Pxd6eObM+g6gbc50g64LlHQGmDy8sDNht6Xfhg8Z9A94GZAxX2mjBSBqFbPJXRyUvhquts5K4EYAsJPEoSnjTZv6gmcQcFSJx066IHGq3ZC9mOowp3BVAz8my4bblT0i8IDCzImUC3ipUtw5K88Rjb4ML/M6HhIn+BAGvg==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by SJ2PR02MB9341.namprd02.prod.outlook.com (2603:10b6:a03:4cb::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Mon, 29 Jan
- 2024 18:27:44 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7228.029; Mon, 29 Jan 2024
- 18:27:44 +0000
-From: Michael Kelley <mhklinux@outlook.com>
-To: Baoquan He <bhe@redhat.com>, "kexec@lists.infradead.org"
-	<kexec@lists.infradead.org>, "akpm@linux-foundation.org"
-	<akpm@linux-foundation.org>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linuxppc-dev@lists.ozlabs.org"
-	<linuxppc-dev@lists.ozlabs.org>, "linux-s390@vger.kernel.org"
-	<linux-s390@vger.kernel.org>, "nathan@kernel.org" <nathan@kernel.org>
-Subject: RE: [PATCH linux-next 1/3] x86, crash: don't nest CONFIG_CRASH_DUMP
- ifdef inside CONFIG_KEXEC_CODE ifdef scope
-Thread-Topic: [PATCH linux-next 1/3] x86, crash: don't nest CONFIG_CRASH_DUMP
- ifdef inside CONFIG_KEXEC_CODE ifdef scope
-Thread-Index: AQHaUronjJlmGLvjNUqyTXz++ApJcbDxGaMg
-Date: Mon, 29 Jan 2024 18:27:43 +0000
-Message-ID:
- <SN6PR02MB41571397201804BD486C6148D47E2@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <20240129135033.157195-1-bhe@redhat.com>
-In-Reply-To: <20240129135033.157195-1-bhe@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tmn: [CPkbIpZavqPDb2Hf7oilxwsHApVfhc0K]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|SJ2PR02MB9341:EE_
-x-ms-office365-filtering-correlation-id: 1f0f8b42-44a2-4e82-cc0f-08dc20f7fc2e
-x-ms-exchange-slblob-mailprops:
- yzXCV5TiOCq5Z3EDOs7Daa/bauyyHrFwBpmHh+e35t913RSS8m4pszjD/We3Xl80buzZlM1XcoLMLCX3Bl2QOOQNNNHXyYztpg78Jlo0qMAvBzbQbS8wZ1wMGx8y+pxWGbyZH+FNTg/msqnNzqSZODReTRBvLFENeq5NTglyo0AEg7oECUo0wVJuF3173QNHV/fJ8JyHCdP6Xm+6YeyFVTVtHmjOZi2zEAGhZyAuGLI7BA+dR9bIEq0UWSsq/SykMa3MeQ26hcymR2+9F+gK3ARkJMZ1oO/VirbnPuoRtEuMUXG7nv0l1wySTKDwPmZyf0w+VHJln++2wb5W0NVPG8ptDZtXLn/KBfVLZPV6ZbYpYwI1e8X+69mkuPoOceAKh62yquRS2gaU0gBQ507RbCYM0/WHYECsh7SskRpW8RHgc63pHGPoHt6/IkHIdJTQZEDisEb+JmU9R0vJp4C1q736q1v6Q4jl2biEhHfxp073ZKAAoZYeNKatmJ27S+C2cBJfXIN49TGa7Iaov+IkYMs7U6XW2Vjixjuh4jqKDcG6AupYDqJJ7BJ593dbXTOilwjEuxZVKM03qRTt5tOH7eapcN/e1Fwp5UoLK+xCoStTr+ymsQ8k3QSEFIvRv6ULWSq8BfLGpcNy7i5HxRCVJ6OKr4pDtpV6+RmznDUWsYfEi/gBnlNqn0CTx58FRDzOyuU7rgI7Jzl7cw35JUQkXosOyzdlt4NutBP//GNEoif6n8c6UOGoc6sFr5ZtC44i2F8OkFtuqt61y9ZndnqwFlK3jpyip+rCndEKahOBK74cu0CGo4YeSSdgW4b6OXKjxQh450Xug2OBY+h71Xrdc4CJXUXuRzCOjram8HS3lbj3yvqK5CXD5XZN2M/o+Rsvqm09Sv2FrJg=
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- fBu7hcaA+NdMNh6mjBwwyqyHB6KoOv6BoPv+JLvJ/PQqkojVF3vVwCTk9s90ubcVhYA1m/0l6hHtyKRroE0ESDTpqkvvrlL2wWZJrKJh+lRDym5nS94n6rX+7NpPM9HXXLSCRlywPherMoIyOY/vGRO/6ZaJtpEilmmgY6bkYPelxZVRZMbDIiCckN8Ie0K735yTO69e6sci/HjM0/CwrbXnKDAP+pCDTtrDarlmAwLmZIkEknoPfWlLoY3FVqQFXVMRgZSnnzOYJdLQFtmcmykAkPnbTdUsbkPrcDBZOAeILumWoxwQaNFLBY9SpO6h46RQRk4m/43Marv2mmGaxNRWav5m5Wx7+7LBe9+9JLrtCgKntv+BB4nymcQ90ihvySzMGnMN6IKh3pn0ztiuN0TD9mvIaHd9Ys1EQnlUCtO751RHx6qZtBTHLQKtcOBxsmJnFWkhvqYwwkh25YCxDkB/0+cYFQ/4CKKTnv8qKxoH2zLiq3/IKh+wSmoJrJmziOlRB60b27nu0DAi8413R0skbVuDBCeCth8SJTdPBsSWqO8/3yjLi/4/eJJEL/20QnNMFyMo45yHrKPhg8Sdc9dFC83BUj/VNmU+NbIIMGMqn9N8sJYhy0hNKgeSi5CLxHBn9IKnyDRN/xdd52arVw==
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?dIeZuifxIMxxVG54PLpVHugirvrswqLMSCv44bBBUL5Bv2JgEs3id+qJdS1G?=
- =?us-ascii?Q?hzEkkrrRtz3/8JOA9huQMet/glgQYx8bXH3HB/59xBlTmZcotMGCMd4vo1MA?=
- =?us-ascii?Q?ypgGtCkuoJPRWM8BiE3iYQocw9HfGEYQ6T5BOlr54y0/7cpSxmwL/eBL/DHS?=
- =?us-ascii?Q?5XE9Nw8v/Azl7hNNQn6eyN79DBnR097mmtt/sf2lS9S1diQXtwSH7DxN3o6R?=
- =?us-ascii?Q?a5wKHM/ArpeFpyB63FOP2Iw+kqhA6OaJxZQUBvtCumrkAIsu0hwp2LgyCi9m?=
- =?us-ascii?Q?0+W/Vw3ZaVngbNHOOyibUuR2n98Wzq2pfBoPMk/1RXBNVUBFW9E5x7mJDsPO?=
- =?us-ascii?Q?f9oJcGdYenfj1JtkGPe5h5AkM8Og50OjS90LEN+OhiRjLxzgANfbcyzHzqu0?=
- =?us-ascii?Q?IbCSwrAtDCrdEYDTh41ruLvsTWhwudVn/qKiTlzlxpke3ewDb+Fso7m4At0h?=
- =?us-ascii?Q?B+m8Ztac8FZz9TBiMKQI5jycKY1jjlEI00IQ7AT1GD2TjCAqmPLPwAmWSfzT?=
- =?us-ascii?Q?NLKWwJe1t9FkRKktqr52qwgTrR3VwiXcJ288eV5kOKgvGRJX/SviMLTci3S5?=
- =?us-ascii?Q?E9+8vAXtN/f8xpbJU42qcx4KLq/GINHUMmRmmzIZBLY45Or0Gl7+iohIKKmL?=
- =?us-ascii?Q?JNRqDT5zINF77PhqD5RUfgVJsMwLQ2n4DMyE5ToPj04rqrvfaqksC2sj2LSn?=
- =?us-ascii?Q?/2pRg7LbU7rWgmC3BVdgqUnOh9+Ce8ojjkqfLdDhGznLPxZS/LjrJQi3koZB?=
- =?us-ascii?Q?UPUKH6lZyxi8tXbUcCzx7TmqsD46cBJOJyMJeOT+QVo5X2TrkYD5fnC9mfJL?=
- =?us-ascii?Q?/3EL7PIeefCBgERkpunJp3+uQbiYP89GhE+7q0kTcd81NMQmPMjwBXi1Fd4s?=
- =?us-ascii?Q?2s19Df3rYibJoQZBp9IkzwVOQkyQlgzCXtyGaBpieVf+osBTjE9vzmPvzmJk?=
- =?us-ascii?Q?YemM+PWjoDARs0F4yRDzyBeS4EFqXy7IJoQ6BdcnwOJCW8ry9m1tP1SOJHRC?=
- =?us-ascii?Q?Q+nuprDkqSA1VtGHttooALZioTmlDHcEQkh0BhrO35e4Np60P38XXUJuABnA?=
- =?us-ascii?Q?ytkK2QycQRYBIcbxWYjFc9l8fX+a7XWxpRWS4EouCLlXz4YgBVeFhauGRctq?=
- =?us-ascii?Q?8YZphCQOciv4E8nupslPpDnUUcu96DjPMY2Nfd5BCxReCTBD5kLNcpD4T2Xm?=
- =?us-ascii?Q?vVJWpdfyCFnCxH4KpbetqvF3AYgt1/b+xaoRAQ=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E3976F06A
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 18:29:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706552990; cv=none; b=UMqGCz6YRkMu+PaX5nRYAr95l2VwXWgSaz9fv4Xjp5uiHeCz7XXiWCwUgtoAv1CqIo3igjZjapPRAYVg3SvmKwDmRtrHs58lb/1nv4N/s7rr6hOasjLcwLWwJ4KyVdhaRwIEtSXliyL65pgRRxyDRUK9D3wHFVoqShYHhl9s9dc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706552990; c=relaxed/simple;
+	bh=C5reL8/AQXoUw1TSxfQy5hhY18bwgr15t49YsMn+zT0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Au9mseuvW9yjLSSlX2+FMxppilfbchitB5Oxtvllr2aUHuXagCT+hAS2l0mNRDhReoF0xuh++ZLNNQJP6PN/MszAmFowf7eQEQJT4PEMqcpev4O04lHcYFT1RloETz535wjYOdC5MAdUJL7acqp3i/x2eM2f6Qr8bclBoRl4HNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=TlTdSeJM; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=L15BcID6N2m2SSuhv58XpXjWm9YJ1v+eDodM3DQBG/I=; b=TlTdSeJMNlBeus/2VdtzaSVjyR
+	ZFIM0+AuNPyNvc4rwhbOFnptVPGtnvZvwMEa6hbE5/7DQJ1WioyE6L65sSpFSzKzwaqvlrk4Q0A5J
+	Q3QkOEJ+ESxun57sjoygJ9hE75u247qblK3KtHj76S0selNxypbHHUUoebVVMvG52CV8gSbXT73hm
+	ceRRXtkXKZrywY216Rd2bzHPkbaTNlBdbxCZN3ZG80hHZkz6rut6DJyMO97S3GPaiK/z8WM44A92v
+	8qBNw7mFeSOlIj0qohYunggZdda7u3R71zj6Z+SAi8RQYkitHzbrx1gqa7JYpVlQojxYkqo5sIX3V
+	njpB4acA==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rUWO8-00000007Oe2-32RT;
+	Mon, 29 Jan 2024 18:29:44 +0000
+Date: Mon, 29 Jan 2024 18:29:44 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Dave Kleikamp <dave.kleikamp@oracle.com>
+Cc: Manas Ghandat <ghandatmanas@gmail.com>,
+	Linux-kernel-mentees@lists.linuxfoundation.org,
+	jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+	syzbot+411debe54d318eaed386@syzkaller.appspotmail.com,
+	Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH] jfs: fix shift-out-of-bounds in dbJoin
+Message-ID: <ZbfumG4uLUwZkzlf@casper.infradead.org>
+References: <20231011143937.31996-1-ghandatmanas@gmail.com>
+ <Zba9zRWq6rZhWn-p@casper.infradead.org>
+ <a25c75af-c961-4ca6-9810-dbcfe64753d5@oracle.com>
+ <Zbe8c_CPNP8IdphB@casper.infradead.org>
+ <551e1e86-f990-487a-ad88-53799df0882a@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f0f8b42-44a2-4e82-cc0f-08dc20f7fc2e
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jan 2024 18:27:43.9438
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR02MB9341
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <551e1e86-f990-487a-ad88-53799df0882a@oracle.com>
 
-From: Baoquan He <bhe@redhat.com> Sent: Monday, January 29, 2024 5:51 AM
->=20
-> Michael pointed out that the #ifdef CONFIG_CRASH_DUMP is nested inside
-> arch/x86/xen/enlighten_hvm.c.
+On Mon, Jan 29, 2024 at 09:00:56AM -0600, Dave Kleikamp wrote:
+> On 1/29/24 8:55AM, Matthew Wilcox wrote:
+> > On Mon, Jan 29, 2024 at 08:39:18AM -0600, Dave Kleikamp wrote:
+> > > On 1/28/24 2:49PM, Matthew Wilcox wrote:
+> > > > On Wed, Oct 11, 2023 at 08:09:37PM +0530, Manas Ghandat wrote:
+> > > > > Currently while joining the leaf in a buddy system there is shift out
+> > > > > of bound error in calculation of BUDSIZE. Added the required check
+> > > > > to the BUDSIZE and fixed the documentation as well.
+> > > > 
+> > > > This patch causes xfstests to fail frequently.  The one this trace is
+> > > > from was generic/074.
+> > > 
+> > > Thanks for catching this. The sanity test is not right, so we need to revert
+> > > that one.
+> > 
+> > Unfortunately, my overnight test run with this patch reverted crashed
+> > again with the same signature.  I also reverted the parent commit,
+> > and when that crashed I also reverted the parent of that.  Which also
+> > crashed.
+> > 
+> > So maybe there's something else that makes this unstable.  Or maybe my
+> > bisect went wrong.  Or _something_.  Anyway, I'm going to spend much of
+> > today hammering on generic/074 with various kernel versions and see what
+> > I can deduce.
+> > 
+> > So far I see no evidence that v6.7 crashes with g/074.  And I know that
+> > next-20240125 does crash with g/074.  I'm pretty sure that v6.8-rc1 also
+> > crashes with g/074, but will confirm that.
+> 
+> I'll try to beat on it too and see what I find.
+> 
+> Sasha, maybe hold up on to all the jfs patches for the time being.
 
-Did some words get left out in the above sentence?  It mentions the Xen
-case, but not the Hyper-V case.  I'm not sure what you intended.
-
->=20
-> Although the nesting works well too since CONFIG_CRASH_DUMP has
-> dependency on CONFIG_KEXEC_CORE, it may cause confuse because there
-
-s/confusion/confuse/
-
-> are places where it's not nested, and people may think it need be nested
-
-s/need be/needs to be/
-
-> even though it doesn't have to.
->=20
-> Fix that by moving  CONFIG_CRASH_DUMP ifdeffery of codes out of
-> CONFIG_KEXEC_CODE ifdeffery scope.
->=20
-> And also fix a building error Nathan reported as below by replacing
-> CONFIG_KEXEC_CORE ifdef with CONFIG_VMCORE_INFO ifdef.
->=20
-> =3D=3D=3D=3D
-> $ curl -LSso .config https://git.alpinelinux.org/aports/plain/community/l=
-inux-edge/config-edge.x86_64=20
-> $ make -skj"$(nproc)" ARCH=3Dx86_64 CROSS_COMPILE=3Dx86_64-linux-
-> olddefconfig all
-> ...
-> x86_64-linux-ld: arch/x86/xen/mmu_pv.o: in function
-> `paddr_vmcoreinfo_note':
-> mmu_pv.c:(.text+0x3af3): undefined reference to `vmcoreinfo_note'
-> =3D=3D=3D=3D
->=20
-> Link: https://lore.kernel.org/all/SN6PR02MB4157931105FA68D72E3D3DB8D47B2@=
-SN6PR02MB4157.namprd02.prod.outlook.com/T/#u
-> Link: https://lore.kernel.org/all/20240126045551.GA126645@dev-arch.thelio=
--3990X/T/#u
-> Signed-off-by: Baoquan He <bhe@redhat.com>
-
-Modulo the commit message nits, LGTM.
-
-Reviewed-by: Michael Kelley <mhklinux@outlook.com>
-
-> ---
->  arch/x86/kernel/cpu/mshyperv.c | 10 ++++++----
->  arch/x86/kernel/reboot.c       |  2 +-
->  arch/x86/xen/enlighten_hvm.c   |  4 ++--
->  arch/x86/xen/mmu_pv.c          |  2 +-
->  4 files changed, 10 insertions(+), 8 deletions(-)
->=20
-> diff --git a/arch/x86/kernel/cpu/mshyperv.c
-> b/arch/x86/kernel/cpu/mshyperv.c
-> index f8163a59026b..2e8cd5a4ae85 100644
-> --- a/arch/x86/kernel/cpu/mshyperv.c
-> +++ b/arch/x86/kernel/cpu/mshyperv.c
-> @@ -209,6 +209,7 @@ static void hv_machine_shutdown(void)
->  	if (kexec_in_progress)
->  		hyperv_cleanup();
->  }
-> +#endif /* CONFIG_KEXEC_CORE */
->=20
->  #ifdef CONFIG_CRASH_DUMP
->  static void hv_machine_crash_shutdown(struct pt_regs *regs)
-> @@ -222,8 +223,7 @@ static void hv_machine_crash_shutdown(struct
-> pt_regs *regs)
->  	/* Disable the hypercall page when there is only 1 active CPU. */
->  	hyperv_cleanup();
->  }
-> -#endif
-> -#endif /* CONFIG_KEXEC_CORE */
-> +#endif /* CONFIG_CRASH_DUMP */
->  #endif /* CONFIG_HYPERV */
->=20
->  static uint32_t  __init ms_hyperv_platform(void)
-> @@ -497,9 +497,11 @@ static void __init ms_hyperv_init_platform(void)
->  	no_timer_check =3D 1;
->  #endif
->=20
-> -#if IS_ENABLED(CONFIG_HYPERV) && defined(CONFIG_KEXEC_CORE)
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +#if defined(CONFIG_KEXEC_CORE)
->  	machine_ops.shutdown =3D hv_machine_shutdown;
-> -#ifdef CONFIG_CRASH_DUMP
-> +#endif
-> +#if defined(CONFIG_CRASH_DUMP)
->  	machine_ops.crash_shutdown =3D hv_machine_crash_shutdown;
->  #endif
->  #endif
-> diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
-> index 1287b0d5962f..f3130f762784 100644
-> --- a/arch/x86/kernel/reboot.c
-> +++ b/arch/x86/kernel/reboot.c
-> @@ -826,7 +826,7 @@ void machine_halt(void)
->  	machine_ops.halt();
->  }
->=20
-> -#ifdef CONFIG_KEXEC_CORE
-> +#ifdef CONFIG_CRASH_DUMP
->  void machine_crash_shutdown(struct pt_regs *regs)
->  {
->  	machine_ops.crash_shutdown(regs);
-> diff --git a/arch/x86/xen/enlighten_hvm.c b/arch/x86/xen/enlighten_hvm.c
-> index 09e3db7ff990..0b367c1e086d 100644
-> --- a/arch/x86/xen/enlighten_hvm.c
-> +++ b/arch/x86/xen/enlighten_hvm.c
-> @@ -148,6 +148,7 @@ static void xen_hvm_shutdown(void)
->  	if (kexec_in_progress)
->  		xen_reboot(SHUTDOWN_soft_reset);
->  }
-> +#endif
->=20
->  #ifdef CONFIG_CRASH_DUMP
->  static void xen_hvm_crash_shutdown(struct pt_regs *regs)
-> @@ -156,7 +157,6 @@ static void xen_hvm_crash_shutdown(struct pt_regs
-> *regs)
->  	xen_reboot(SHUTDOWN_soft_reset);
->  }
->  #endif
-> -#endif
->=20
->  static int xen_cpu_up_prepare_hvm(unsigned int cpu)
->  {
-> @@ -238,10 +238,10 @@ static void __init xen_hvm_guest_init(void)
->=20
->  #ifdef CONFIG_KEXEC_CORE
->  	machine_ops.shutdown =3D xen_hvm_shutdown;
-> +#endif
->  #ifdef CONFIG_CRASH_DUMP
->  	machine_ops.crash_shutdown =3D xen_hvm_crash_shutdown;
->  #endif
-> -#endif
->  }
->=20
->  static __init int xen_parse_nopv(char *arg)
-> diff --git a/arch/x86/xen/mmu_pv.c b/arch/x86/xen/mmu_pv.c
-> index 218773cfb009..e21974f2cf2d 100644
-> --- a/arch/x86/xen/mmu_pv.c
-> +++ b/arch/x86/xen/mmu_pv.c
-> @@ -2520,7 +2520,7 @@ int xen_remap_pfn(struct vm_area_struct *vma,
-> unsigned long addr,
->  }
->  EXPORT_SYMBOL_GPL(xen_remap_pfn);
->=20
-> -#ifdef CONFIG_KEXEC_CORE
-> +#ifdef CONFIG_VMCORE_INFO
->  phys_addr_t paddr_vmcoreinfo_note(void)
->  {
->  	if (xen_pv_domain())
-> --
-> 2.41.0
+I have it reproducing easily on cca974daeb6c.  I ran it a lot on
+e0e1958f4c36 and have not reproduced it.  So I'm going back to my
+earlier assertion that cca974daeb6c is bad.  Now, maybe other commits
+are also bad?
 
 
