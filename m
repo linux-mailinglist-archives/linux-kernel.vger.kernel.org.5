@@ -1,165 +1,131 @@
-Return-Path: <linux-kernel+bounces-43113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43100-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 352C9840BAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:36:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A67F1840B8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:33:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6F271F23ADF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:36:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 141B2B2810D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:33:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C791115CD43;
-	Mon, 29 Jan 2024 16:32:11 +0000 (UTC)
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDD06156977;
+	Mon, 29 Jan 2024 16:28:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="XUTLamqS";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="XUTLamqS"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEC6115AAC2;
-	Mon, 29 Jan 2024 16:32:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8D2157035
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 16:28:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706545931; cv=none; b=sPOlqlG5PJmtqQ33XGGUsFcGsreUsohOwZ7hIuyK6RIgAdkDe6p0RdwR1nqZPkUzV07WU7FXD6grhVc6sisDaGubDUk87UqAr+1Wpj4wguUsUNxVUFC5rG0gbK+H4jZvT49iqf55uO8PTSNhgT8IvP58mOPynglATD6hNCXHfCM=
+	t=1706545732; cv=none; b=ApGNeZufBwM7aPjEyqN4Y/vaWsU2yPQ1oEM4krr64lSnEIULFGDymRhN3wTDRZFRUuWUpQ9prjlO5Hzk/IuvxQE7ya4BDJA3x2PB5DcXls96oZVv3F/6hdJD9fIxF++dA1bf1iNUUOOL3Y67mmwulTektynASwyYr71P/O/NOMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706545931; c=relaxed/simple;
-	bh=SjzW2UsvZ2GkecO/LbDZYZGdT8+JTKkaLkPfaULWwgo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OwwNWaG2cuqzWIGkGj4sg0X92mqrp+wM7ZcN07V9RriAOQPuqZpCbufYhCam1PugprqYuoOHJtrtuV7cDaW9F0gbEjb+JBXlRvPBkqBKuYQ76ZKO4QLwNfxWSwlbYU1dmQ5/zs0yiEjBHYsBy+scxtH5g86FdpnhUdg715mp7UY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 315201b9b6dcb32a; Mon, 29 Jan 2024 17:32:00 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
+	s=arc-20240116; t=1706545732; c=relaxed/simple;
+	bh=dLUua/FV/D+oSNf4wtskJdzGZLmArhy5mTtk5oBrNg0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=O47SyxYAqBRNIn2O6zB43k3NDt5WCAVu1pZWa3pdXcIfHNJ9Zawhi2xWsTkCK8NhAHZyD0B96MUnUnsfFhLZaVDusWzn4Iz9GnVjIaYk5he6nYfZFOzsOqLOMsUlUnmNASW+evSYwdJ9Bq1Cx+EYyOE9LrQc97/JF9AqC0xVp2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=XUTLamqS; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=XUTLamqS; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 6A39F66975C;
-	Mon, 29 Jan 2024 17:32:00 +0100 (CET)
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-Subject: [PATCH v2 09/10] PM: sleep: Move devices to new lists earlier in each suspend phase
-Date: Mon, 29 Jan 2024 17:28:37 +0100
-Message-ID: <1871146.atdPhlSkOF@kreacher>
-In-Reply-To: <5770175.DvuYhMxLoT@kreacher>
-References: <5770175.DvuYhMxLoT@kreacher>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 50EB322113;
+	Mon, 29 Jan 2024 16:28:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706545728; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xNOhVEGA1+wfkSw8lLpS1nHrin/VwWv41XiZwlbriU0=;
+	b=XUTLamqS6cd43HyhnadirfxcREIIdcSOwpPQRua7eYb0PQE6FwmmZFjot86SHgO4lr2i11
+	qkNTftHHazJjiCwG00CUWJ+G4hiywzyL5mq/aenxyeVDiiEOVLmcwqzU3eruhQKNUVYqMV
+	1SZy3nK9L/8NGIeJmwW4VTNi5A0IAjI=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706545728; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xNOhVEGA1+wfkSw8lLpS1nHrin/VwWv41XiZwlbriU0=;
+	b=XUTLamqS6cd43HyhnadirfxcREIIdcSOwpPQRua7eYb0PQE6FwmmZFjot86SHgO4lr2i11
+	qkNTftHHazJjiCwG00CUWJ+G4hiywzyL5mq/aenxyeVDiiEOVLmcwqzU3eruhQKNUVYqMV
+	1SZy3nK9L/8NGIeJmwW4VTNi5A0IAjI=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2B30012FF7;
+	Mon, 29 Jan 2024 16:28:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 8lD2BkDSt2V0UwAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Mon, 29 Jan 2024 16:28:48 +0000
+Date: Mon, 29 Jan 2024 17:28:47 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Lance Yang <ioworker0@gmail.com>
+Cc: akpm@linux-foundation.org, zokeefe@google.com, david@redhat.com,
+	songmuchun@bytedance.com, shy828301@gmail.com, peterx@redhat.com,
+	minchan@kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] mm/khugepaged: bypassing unnecessary scans with
+ MMF_DISABLE_THP check
+Message-ID: <ZbfSP6xt6JAE2NrH@tiehlicka>
+References: <20240129054551.57728-1-ioworker0@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtgedgjeelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepgedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehulhhfrdhhrghnshhsohhnsehlihhnrghrohdrohhrghdprhgtphhtthhopehsthgrnhhishhlrgifrdhgrhhushiikhgrsehlihhnuhigrdhinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240129054551.57728-1-ioworker0@gmail.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -0.81
+X-Spamd-Result: default: False [-0.81 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 FREEMAIL_TO(0.00)[gmail.com];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[linux-foundation.org,google.com,redhat.com,bytedance.com,gmail.com,kernel.org,kvack.org,vger.kernel.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.01)[50.99%]
+X-Spam-Flag: NO
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Mon 29-01-24 13:45:51, Lance Yang wrote:
+> khugepaged scans the entire address space in the
+> background for each given mm, looking for
+> opportunities to merge sequences of basic pages
+> into huge pages. However, when an mm is inserted
+> to the mm_slots list, and the MMF_DISABLE_THP flag
+> is set later, this scanning process becomes
+> unnecessary for that mm and can be skipped to avoid
+> redundant operations, especially in scenarios with
+> a large address space.
 
-During a system-wide suspend of devices, dpm_noirq_suspend_devices(),
-dpm_suspend_late() and dpm_suspend() move devices from one list to
-another.  They do it with each device after its PM callback in the
-given suspend phase has run or has been scheduled for asynchronous
-execution, in case it is deleted from the current list in the
-meantime.
-
-However, devices can be moved to a new list before invoking their PM
-callbacks (which usually is the case for the devices whose callbacks
-are executed asynchronously anyway), because doing so does not affect
-the ordering of that list.  In either case, each device is moved to
-the new list after the previous device has been moved to it or gone
-away, and if a device is removed, it does not matter which list it is
-in at that point, because deleting an entry from a list does not change
-the ordering of the other entries in it.
-
-Accordingly, modify the functions mentioned above to move devices to
-new lists without waiting for their PM callbacks to run regardless of
-whether or not they run asynchronously.
-
-No intentional functional impact.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
----
-
-v1 -> v2: Added R-by from Stanislaw.
-
----
- drivers/base/power/main.c |   24 +++---------------------
- 1 file changed, 3 insertions(+), 21 deletions(-)
-
-Index: linux-pm/drivers/base/power/main.c
-===================================================================
---- linux-pm.orig/drivers/base/power/main.c
-+++ linux-pm/drivers/base/power/main.c
-@@ -1304,18 +1304,12 @@ static int dpm_noirq_suspend_devices(pm_
- 	while (!list_empty(&dpm_late_early_list)) {
- 		struct device *dev = to_device(dpm_late_early_list.prev);
- 
-+		list_move(&dev->power.entry, &dpm_noirq_list);
- 		get_device(dev);
- 		mutex_unlock(&dpm_list_mtx);
- 
- 		error = device_suspend_noirq(dev);
- 
--		mutex_lock(&dpm_list_mtx);
--
--		if (!error && !list_empty(&dev->power.entry))
--			list_move(&dev->power.entry, &dpm_noirq_list);
--
--		mutex_unlock(&dpm_list_mtx);
--
- 		put_device(dev);
- 
- 		mutex_lock(&dpm_list_mtx);
-@@ -1486,19 +1480,13 @@ int dpm_suspend_late(pm_message_t state)
- 	while (!list_empty(&dpm_suspended_list)) {
- 		struct device *dev = to_device(dpm_suspended_list.prev);
- 
-+		list_move(&dev->power.entry, &dpm_late_early_list);
- 		get_device(dev);
- 
- 		mutex_unlock(&dpm_list_mtx);
- 
- 		error = device_suspend_late(dev);
- 
--		mutex_lock(&dpm_list_mtx);
--
--		if (!list_empty(&dev->power.entry))
--			list_move(&dev->power.entry, &dpm_late_early_list);
--
--		mutex_unlock(&dpm_list_mtx);
--
- 		put_device(dev);
- 
- 		mutex_lock(&dpm_list_mtx);
-@@ -1763,19 +1751,13 @@ int dpm_suspend(pm_message_t state)
- 	while (!list_empty(&dpm_prepared_list)) {
- 		struct device *dev = to_device(dpm_prepared_list.prev);
- 
-+		list_move(&dev->power.entry, &dpm_suspended_list);
- 		get_device(dev);
- 
- 		mutex_unlock(&dpm_list_mtx);
- 
- 		error = device_suspend(dev);
- 
--		mutex_lock(&dpm_list_mtx);
--
--		if (!error && !list_empty(&dev->power.entry))
--			list_move(&dev->power.entry, &dpm_suspended_list);
--
--		mutex_unlock(&dpm_list_mtx);
--
- 		put_device(dev);
- 
- 		mutex_lock(&dpm_list_mtx);
-
-
-
+Is this a real problem? I thought that the prctl is called
+on the parent before fork/exec. Or are you aware of any
+applications which do call prctl late enough that the race
+would be actually observable?
+-- 
+Michal Hocko
+SUSE Labs
 
