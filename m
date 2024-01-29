@@ -1,143 +1,130 @@
-Return-Path: <linux-kernel+bounces-43462-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CB85841439
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:26:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDDFD841498
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:44:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48D38286F99
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:25:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F27C1F23370
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:44:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5160F76056;
-	Mon, 29 Jan 2024 20:25:53 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57CCB159576;
+	Mon, 29 Jan 2024 20:44:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iQ9gsx7u"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D69557602D;
-	Mon, 29 Jan 2024 20:25:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEE061534EB
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 20:44:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706559952; cv=none; b=JDm+uLuBHRTIVKj886F2TYkAjctwEdvkWpkTeKAsKedW1vcuu70of/56klmTO/K7ipMz+EZE2++4KwWno9aXFLdW5QoAtgDi1QIXZrlk0hPG0enMGN1ee/wvVEUYUV7ToQj/lV6YwUiIwpFWlHQZx1euWHo+orWYNzdBPLiLqiA=
+	t=1706561054; cv=none; b=XyqV12AVH2fYxpdTluo+1mqlYWNcTJcE5ZnPCjFY1LisTOKfcEK/Fw8FXSbocHPkTnf/CEBpp0YMl8fO9lOSPEO3QJpvLivwflN1oKOk7NisKJ+AaV5OP1whCUyDCmubsAfHiIGHWT4p7MmupiPz2CtwDuiQoKNneb9W67oejNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706559952; c=relaxed/simple;
-	bh=o9GlGvU+XorjS2WWxQTCkke0/L8lAaSfWR3HPgKbdVU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=M6EMXz0lkX3ouvC8279/uZ9cH/AWS9xNFeIsbbtRQuvefKGYxMVGxyUiF4GRta1k1ok0URgQXeOVYHDnqahsJTGydZ7lybkgzS9dNcSRWbwUxcTqVUOA5kpZcnCr6jDpZj9jzOma/WZuAIMfTMfO2RTSVO4tUdq8uk3K/twkN2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20004C433A6;
-	Mon, 29 Jan 2024 20:25:51 +0000 (UTC)
-Date: Mon, 29 Jan 2024 15:26:00 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
- lkp@intel.com, linux-kernel@vger.kernel.org, Masami Hiramatsu
- <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner
- <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, Ajay Kaher
- <ajay.kaher@broadcom.com>, linux-trace-kernel@vger.kernel.org
-Subject: Re: [linus:master] [eventfs] 852e46e239:
- BUG:unable_to_handle_page_fault_for_address
-Message-ID: <20240129152600.7587d1aa@gandalf.local.home>
-In-Reply-To: <CAHk-=wgp7UkG31=cCcbSdhMv6-vBJ=orktUOUdiLzw4tQ4gDLg@mail.gmail.com>
-References: <202401291043.e62e89dc-oliver.sang@intel.com>
-	<CAHk-=wh0M=e8R=ZXxa4vesLTtvGmYWJ-w1VmXxW5Mva=Nimk4Q@mail.gmail.com>
-	<20240129120125.605e97af@gandalf.local.home>
-	<CAHk-=wghx8Abyx_jcSrCDuNj96SuWS0NvNMhfU8VjFGg9bgm_g@mail.gmail.com>
-	<CAHk-=whb91PWEaEJpRGsuWaQpYZGj98ji8HC2vvHD4xb_TqhJw@mail.gmail.com>
-	<CAHk-=wgp7UkG31=cCcbSdhMv6-vBJ=orktUOUdiLzw4tQ4gDLg@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706561054; c=relaxed/simple;
+	bh=Elo6Kas6QgeP8iJYfbZQ29s6uVogIsyKYcHhQDUTX4w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VxJJSN0VymY8lyFr1NRwQ4X+MAiH8xH9viMiSqQKkDZDVUy91lQfF9CMdQTfmFqBuwlc67wjn2Bv6VhpxZZWPK4z+utgS8hQvOcQDAzzF6hQlogd16K4VU1haZy8m8PB+Nu4uMUGK1ko5yr4Uen1esu19FeU0q5WxjX6OlA9/Vk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iQ9gsx7u; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706561053; x=1738097053;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Elo6Kas6QgeP8iJYfbZQ29s6uVogIsyKYcHhQDUTX4w=;
+  b=iQ9gsx7uYHD3Ow405moXh8YF/f8oPpayxZTt/D9tYublkUhRIX36oIvP
+   5HA1jvzwDCLrIfYf69ApCFXdw+vaUaMm7huZHyHFK2cEjROr0veGttdEQ
+   N9pIkP7g+PMaPlEODJiCPN/PLole5wjukZijYffmTjoHsUYgqj2DFIy8N
+   mRj/IqVXFi80dk/5w//skIfqpeM5QTDpYnv2nNoGkaPJ6Zz0DfHAdVWTY
+   ro5W/pmfmCXNvFT8EUKUt6I4B8gDK7ZNx6G7qKeSWDSNDfOVz2ymWJR5H
+   YuLALJ/sH8zyByDPmJiUuWhAPSTq5RmPUORUTucKx96Xd9Z1PFHAmTpHg
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="2913273"
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="2913273"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 12:44:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="858241427"
+X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
+   d="scan'208";a="858241427"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga004.fm.intel.com with ESMTP; 29 Jan 2024 12:44:07 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id E906FFF; Mon, 29 Jan 2024 22:26:06 +0200 (EET)
+Date: Mon, 29 Jan 2024 22:26:06 +0200
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	"H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Theodore Ts'o <tytso@mit.edu>, 
+	"Jason A. Donenfeld" <Jason@zx2c4.com>, 
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, Elena Reshetova <elena.reshetova@intel.com>, 
+	Jun Nakajima <jun.nakajima@intel.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
+	"Kalra, Ashish" <ashish.kalra@amd.com>, Sean Christopherson <seanjc@google.com>, 
+	linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [RFC] Randomness on confidential computing platforms
+Message-ID: <dlhffyn7cccn5d4uvubggkrmtyxl4jodj5ukffafpsxsnqini3@5rcbybumab4c>
+References: <20240126134230.1166943-1-kirill.shutemov@linux.intel.com>
+ <276aaeee-cb01-47d3-a3bf-f8fa2e59016c@intel.com>
+ <dqiaimv3qqh77cfm2huzja4vsho3jls7vjmnwgda7enw633ke2@qiqrdnno75a7>
+ <f5236e76-27d0-4a90-bde5-513ac9446184@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f5236e76-27d0-4a90-bde5-513ac9446184@intel.com>
 
-On Mon, 29 Jan 2024 11:51:52 -0800
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+On Mon, Jan 29, 2024 at 10:55:38AM -0800, Dave Hansen wrote:
+> On 1/29/24 08:41, Kirill A. Shutemov wrote:
+> > On Mon, Jan 29, 2024 at 08:30:11AM -0800, Dave Hansen wrote:
+> >> On 1/26/24 05:42, Kirill A. Shutemov wrote:
+> >>> 3. Panic after enough re-tries of RDRAND/RDSEED instructions fail.
+> >>>    Another DoS variant against the Guest.
+> >>
+> >> I think Sean was going down the same path, but I really dislike the idea
+> >> of having TDX-specific (or CoCo-specific) policy here.
+> >>
+> >> How about we WARN_ON() RDRAND/RDSEED going bonkers?  The paranoid folks
+> >> can turn on panic_on_warn, if they haven't already.
+> > 
+> > Sure, we can do it for kernel, but we have no control on what userspace
+> > does.
+> > 
+> > Sensible userspace on RDRAND/RDSEED failure should fallback to kernel
+> > asking for random bytes, but who knows if it happens in practice
+> > everywhere.
+> > 
+> > Do we care?
+> 
+> I want to make sure I understand the scenario:
+> 
+>  1. We're running in a guest under TDX (or SEV-SNP)
+>  2. The VMM (or somebody) is attacking the guest by eating all the
+>     hardware entropy and RDRAND is effectively busted
+>  3. Assuming kernel-based panic_on_warn and WARN_ON() rdrand_long()
+>     failure, that rdrand_long() never gets called.
 
-> On Mon, 29 Jan 2024 at 11:24, Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > So the patch was completely broken. Here's the one that should
-> > actually compile (although still not actually *tested*).  
-> 
-> Note that this fixes the d_instantiate() ordering wrt initializing the inode.
-> 
-> But as I look up the call chain, I see many more fundamental mistakes.
-> 
-> Steven - the reason you think that the VFS doesn't have documentation
-> is that we *do* have tons of documentation, but it's of the kind "Here
-> is what you should do".
-> 
-> It is *not* of the kind that says "You messed up and did something
-> else, and how do you recover from it?".
+Never gets called during attack. It can be used before and after.
 
-When I first worked on this, I did read all the VFS documentation, and it
-was difficult to understand what I needed and what I didn't. It is focused
-on a real file system and not a pseudo ones. Another mistake I made was
-thinking that debugfs was doing things the "right" way as well. And having
-a good idea of how debugfs worked, and thinking it was correct, just made
-reading VFS documentation even more difficult as I couldn't relate what I
-knew (about debugfs) with what was being explained. I thought it was
-perfectly fine to use dentry as a handle for the file system. I did until
-you told me it wasn't. That made a profound change in my understanding of
-how things are supposed to work.
+>  4. Userspace is using RDRAND output in some critical place like key
+>     generation and is not checking it for failure, nor mixing it with
+>     entropy from any other source
+>  5. Userspace uses the failed RDRAND output to generate a key
+>  6. Someone exploits the horrible key
+> 
+> Is that it?
 
-> 
-> So the fundamental bug I now find is that eventfs_root_lookup() gets a
-> target dentry, and for some unfathomable reason it then does
-> 
->         ret = simple_lookup(dir, dentry, flags);
-> 
-> on it. Which is *completely* broken, because what "simple_lookup()"
-> does is just say "oh, you didn't have a dentry of this kind before, so
-> clearly a lookup must be a non-existent file". Remember: this is for
-> 'tmpfs' kinds of filesystems where the dentry cache cotnains *ALL*
-> files.
+Yes.
 
-Sorry, I don't really understand what you mean by "ALL files"? You mean
-that all files in the pseudo file system has a dentry to it (like debugfs,
-and the rest of tracefs)?
-
-> 
-> For the tracefs kind of filesystem, it's TOTALLY BOGUS. What the
-> "simple_lookup()" will do is just a plain
-> 
->         d_add(dentry, NULL);
-> 
-> and nothing else. And guess what *that* does? It basically
-> instantiates a negative dentry, telling all other lookups that the
-> path does not exist.
-> 
-> So if you have two concurrent lookups, one will do that
-> simple_lookup(), and the other will then - depending on timing -
-> either see the negative dentry and return -ENOENT, or - if it comes in
-> a bit later - see the new inode that then later gets added by the
-> first lookup with d_instantiate().
-> 
-> See? That simple_lookup() is not just unnecessary, but it's also
-> actively completely WRONG. Because it instantiates a NULL pointer,
-> other processes that race with the lookup may now end up saying "that
-> file doesn't exist", even though it should.
-> 
-> Basically, you can't use *any* of the "simple" filesystem helpers.
-> Because they are all designed for that "the dentry tree is all there
-> is" case.
-
-Yeah, the above code did come about with me not fully understanding the
-above. It's not that it wasn't documented, but I admit, when I read the VFS
-documentation, I had a lot of trouble trying to make sense of things like
-negative dentries and how they relate.
-
-I now have a much better understanding of most of this, thanks to our
-discussion here, and also knowing that using dentry as the main handle to a
-file is *not* how to do it. When thinking it was, it made things much more
-difficult to comprehend.
-
--- Steve
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
