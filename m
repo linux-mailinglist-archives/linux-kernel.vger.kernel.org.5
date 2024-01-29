@@ -1,85 +1,79 @@
-Return-Path: <linux-kernel+bounces-42206-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42211-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39D8383FDDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 06:54:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D751583FDF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 07:03:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2E801F220BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 05:54:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E486B2144D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 06:03:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 043714CB55;
-	Mon, 29 Jan 2024 05:53:33 +0000 (UTC)
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67A3945BE7;
+	Mon, 29 Jan 2024 06:03:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="0M7yB0P8"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC73D4CB3D
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 05:53:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F059F45959;
+	Mon, 29 Jan 2024 06:03:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706507611; cv=none; b=gL2HppnpWgJ6bEoBg1F2JH6lJYsQMQaHvVZ1ocNpx8X5XRejnh0TaSwEx3fdkQCj7u3MwV4PF+OSJZEA9Nw52yBifbP4TAZnFsO8R5xWziltUyH9BEgCn5eBMqDSgTsOEmjnfOVqs7/qzJKWxXvxLA4ywwfO65/g1hogyes0mpw=
+	t=1706508190; cv=none; b=pd0Sb2qJLNsBLU0TKl4VgpN7KV7bJLzyRiyUhZ0Ho9JZg/0pQPmMPP5sf+G8l9NrWwfF5P0ZN8fMRiemPknyboPWQLUOnmMXdAT87cnFJRyALyziCfh0OUKVVrlcIKs6/UU8tt/ImYlrLpkqdoatlWgFjR3+YUfmej6uvibbbMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706507611; c=relaxed/simple;
-	bh=Zq8dje60apkizNP7D8NSgOhKVDsGAskUrrmUMmRVzjM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=g98FdWnqFydpyHldFp+cD516vk2YakiG6CkZIc/J4caZIDGYyWGBkFwdVSEX9THhYtTkmw2KB08B6DhPeSRb+3BAFJpG7+FiDnnYaOnhzEq7XTtFG+0ufJFnWSvTQIi80hOPd3Nk3tGFKnr66PHmCo0DCDzvDUfWTF43S6B0VBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from fsav112.sakura.ne.jp (fsav112.sakura.ne.jp [27.133.134.239])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 40T5rR3I094104;
-	Mon, 29 Jan 2024 14:53:27 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav112.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav112.sakura.ne.jp);
- Mon, 29 Jan 2024 14:53:27 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav112.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 40T5rMZw094055
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Mon, 29 Jan 2024 14:53:27 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <4c59b146-df67-48d8-9378-3948dd6fb427@I-love.SAKURA.ne.jp>
-Date: Mon, 29 Jan 2024 14:53:20 +0900
+	s=arc-20240116; t=1706508190; c=relaxed/simple;
+	bh=x8/7KaoluoPO5WDySCKhzBdWae05hg8D2uInhEtRJ/M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DCQk6NAJ5/RJ5ZCZzIM2VlP7yBErQyfRF66o1HraQlhmmzXnrgtsJ/wozhNb+OUhRbysPJZOsoP/Db5FXTn63fXFbOHQlehpuIBP/0rc4IPtvyE62xOLPDm6u0hkOBT/u5ggyN5aJlOiEyfot4AcffQCuIHNfhisqkwmYu58vcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=0M7yB0P8; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=1rltRGXbUtJPiVTvee3DGElZrEg5MBSlivgvAtcJSKE=; b=0M7yB0P8rn3UkuNR6s6SHjfSpk
+	XEdxUnGF+o4mxHea3x7MPkruVsyo4OhwBQ8gnIanhOqW4x+/24d091hGbw2Dz4Kk+kRlK+1zfZn76
+	7CpRazR+PjKPkHKnPh8Tf4Tjviuw0Ei52BgWHv5YKkDhJJYLcEXMAIkV5R86ivWFL5z4XURvw7V0k
+	wTAZhwXYMoc0GNHC+gDG4CFvmDXG+lStn3RB55Fr455KZ7XSWv4M4adj9/axv/EHSV5beoq6yuQGr
+	jSKIkG5aNmS+oX8c5y/TKu/m63RVYKG8txL04vKNhEYAfBHlU3dJee3c1p9utQ9rapNKATV4e48rM
+	9OmMVvKA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rUKja-0000000BPAm-00lQ;
+	Mon, 29 Jan 2024 06:03:06 +0000
+Date: Sun, 28 Jan 2024 22:03:05 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Lu Baolu <baolu.lu@linux.intel.com>
+Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Kevin Tian <kevin.tian@intel.com>, iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] iommu/vt-d: Remove INTEL_IOMMU_BROKEN_GFX_WA
+Message-ID: <Zbc_mdOYxMIxWAdd@infradead.org>
+References: <20240127064512.16744-1-baolu.lu@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [bluetooth?] INFO: task hung in hci_conn_failed
-Content-Language: en-US
-To: Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+a984066a63e9c1e62662@syzkaller.appspotmail.com>
-Cc: eadavis@qq.com, Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <tencent_4A66EF6ACD6878526F542C2D6D109794E80A@qq.com>
- <20240129044824.1218-1-hdanton@sina.com>
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <20240129044824.1218-1-hdanton@sina.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240127064512.16744-1-baolu.lu@linux.intel.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On 2024/01/29 13:48, Hillf Danton wrote:
->> 3 locks held by kworker/1:2/779:
->>  #0: ffff8880b993ccd8 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x29/0x130 kernel/sched/core.c:559
->>  #1: ffffc900038c7d80 ((work_completion)(&aux->work)#2){+.+.}-{0:0}, at: process_one_work+0x7eb/0x15d0 kernel/workqueue.c:2609
->>  #2: ffff888052984c80 (&aux->poke_mutex){+.+.}-{3:3}, at: __fd_array_map_delete_elem+0x125/0x2f0 kernel/bpf/arraymap.c:884
+On Sat, Jan 27, 2024 at 02:45:12PM +0800, Lu Baolu wrote:
+> Commit 62edf5dc4a524 ("intel-iommu: Restore DMAR_BROKEN_GFX_WA option for
+> broken graphics drivers") was introduced 24 years ago as a temporary
+> workaround for graphics drivers that used physical addresses for DMA and
+> avoided DMA APIs. This workaround was disabled by default.
 > 
-> Could locking people shed any light on the failure of detecting the
-> poke_mutex with rq lock held?
-> 
+> As 24 years have passed, it is expected that graphics driver developers
+> have migrated their drivers to use kernel DMA APIs. Therefore, this
+> workaround is no longer required and could been removed.
 
-Showing held locks (lockdep_print_held_locks()) is not a snapshot.
-Synchronous printk() can make #0 already released by the moment #2 is taken.
-
-Please consult printk() people for possibility of making printk() from
-lockdep reports (and/or hung task reports) asynchronous.
+How about you Cc the intel graphics maintainers and get a confirmation?
 
 
