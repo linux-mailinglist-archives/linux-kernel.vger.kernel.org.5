@@ -1,106 +1,154 @@
-Return-Path: <linux-kernel+bounces-43047-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E06DB840ABD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:01:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32E84840ABC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:01:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C65F281D4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:01:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9FF62B24BE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:01:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DC3715696D;
-	Mon, 29 Jan 2024 16:00:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70422155A58;
+	Mon, 29 Jan 2024 16:00:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XDN9Xdz+"
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="REb131pB"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FA9E155A32
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 16:00:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 736051552FE;
+	Mon, 29 Jan 2024 16:00:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706544036; cv=none; b=cAHCNMTtj9wnBSzfMtQjcoNjKHZVCvdfseUsP1J33OTzz8ukjbhyFbSFcMlhUjJqYwo2RL27ikDGf/mS2T9LPxxKcmQgEV3mlOEm++rM5tqbC+psC2SZo33Q0IaK0oUPEa7/LOPkHd25AUR3wJZpzMkSwr7Xszm3bI8PkxyleWA=
+	t=1706544034; cv=none; b=jvhxvE4/b+KZXKOrEX6yPqaqJ2jLqwCAv9zlNVKHNU6iCp/F3XP+RHYroshp/Jhrhj0v7TglAYs/AH53h/5hM2R33EOkDSHDmNXFEJT156voO8oxYrMt272HG6pUfl40MtCBxIZxPR1L/ku20JGBVUx0Fcx+Qi2uJgZRVUVeQr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706544036; c=relaxed/simple;
-	bh=IpNBFj7rTRncHa2LoXpyMTadF1pa/ioDUWs0SSZnZJA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VOdccN77eE9PqOHrqEmdpoknSlBwPK6WFNpgYNRAKoeG+eJuv6PRsID/s6ypilFVRmIPi9X/7F15Gr3PTXh7gf9rB+E3uvqE63Hi/5tA6A8IxLVjKehkCt1BeixhCQAAnSLiBkmVcuBllURB2LKYRpuWmnAO7b1b+3/udXqutkI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XDN9Xdz+; arc=none smtp.client-ip=209.85.215.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5d4a1e66750so1449239a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 08:00:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706544034; x=1707148834; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iRGYZpq7Hm473xlHR3mHisE1vtl8EqHHSDvobXAqEcc=;
-        b=XDN9Xdz+Rxg8jhroQAnxJ2od+jrukmqWLFepDcYTXrxST3N9JHWy6jT8aVx7ZKuM7a
-         JZNYK5mYBAkH2boehOi/c/RRvASbQiUgGvBCHV7pbryP9ln+zx75QlQ5Dq1GVHXElDcg
-         d7LE1QekAerMonq3IsC4l7SHSPu4hwxVD6gVdfi1A5xB99hPycJS/Z3XwMvqGpX6NGV3
-         0KJyORqSihxpYpNXNyA2VLODqZfMmK5MpvRfQz1JbfZWIe1tkjmxM0p5C6SIES0QBbiE
-         vMZaL37O44ZXwy6Q0ufwmFYn4qihn3IXDmLtxFgLww3MGNydj///9U+XJrBRa5h0EN+z
-         Aovw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706544034; x=1707148834;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iRGYZpq7Hm473xlHR3mHisE1vtl8EqHHSDvobXAqEcc=;
-        b=JD2yd2zCKsGVhOt9fAu3z3+hw0UojLw1XkldZxIlOMJ642gAJsZGT/GFbOuHhyC2CY
-         +q4m8YvESpiisQX/rZMK66Pcv8725XSwGDTIpFauSs8V98qBnFwAy0Wt0Ppn90J+m5aw
-         rDJ+FToXBI10RyaF2ISVhGjFoNzXh7lZzDAS5pliw2VnkFIYpNDwg4FLZuXzgH/QiyLc
-         O/bZom5P5VSbUyCRlkSTNo1tWzMTTm40cxowrDNokxT4/LZkvLh8rnC1RK+HJtTQ+6pO
-         gJpmbvIwNIIHI0C7R1oUPdOZw0t6V9Sr+zN7QfOj91JOARL2s9Y6m7XDrwGcAhpMtfDc
-         BF6Q==
-X-Gm-Message-State: AOJu0Yy/k4rP7PvwpdE9LpG45aqBPoYVMMXwGFh7a3+hnQsyZU7RAEB+
-	RdJ9st2Trv2tROfVDIfLfkbIfrduqtKKWiSMUvmrky3Ps/h+qBahGY9bQ6i1VUyLYjX7ESqizRs
-	75PEC1xqke5jWvYUo74/v1cQUmc4=
-X-Google-Smtp-Source: AGHT+IHYaG4TGyxxr+QUwFox3uX0KozbTrw1DkpCcQ884SLYhEdC9+JyrnlvINgX+uMWf1yitLFYVV1FQU1tdpUGP4c=
-X-Received: by 2002:a05:6a21:2d84:b0:19c:9ba4:4851 with SMTP id
- ty4-20020a056a212d8400b0019c9ba44851mr2176004pzb.14.1706544034239; Mon, 29
- Jan 2024 08:00:34 -0800 (PST)
+	s=arc-20240116; t=1706544034; c=relaxed/simple;
+	bh=FX/3JZsgoeRJk8/gT/ahewzSdOBqCFPARvgcZJkGxSA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kaz7dDcoCCNdojhomeQBjIiyNtRlwFa6pl1T0y7/bc72YyBCdzJt2C6vgrFfgtSmaM2IJuNQMlQ3INtzbfHuvNaRiLY6Ybc2vbpfZStKHL1wsDEOCwxYfVnSUBewFRPv6xJ4QxJQyIb57H6MBZRpJK55dD7qjpchFhfXWFAiKxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=REb131pB; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=pBVtJRmqf+crBbobrGzBK2lFMDtFqvFaWK9LtbdMiw0=; b=REb131pBQOlURPlaqY/BWYJkYn
+	6XiNQWL5ysnJDjT2Q/knsZymoxmJ9qg3ZTfjxAzf6s28tQ2qC1Ej9fGitEUS0C5NtE8hqJL7EnBxD
+	C/JZrsLTBbNkc1ACH0HcmRUwZOBoMDQ2lO5CbUnkpj5e3WtB+EImTFJ71cHYj126vSqqUID5tbF1z
+	pbQ5vbvK7Xy0+YFlr0gSMvXuWxBk9IpWXiUtwGPHQgFsV8nF2BPawr+OO5aM6hwKcaZFTE63IkmdY
+	d2w1qigl2szKcAIB8iDyKjNn+GVTOJr78eGOyl+6Zny6+WsIjo3bFpaYg1BK6O65xAHu46yrE1pTR
+	+ZBF5jNQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rUU3b-0000000DPH0-3JRj;
+	Mon, 29 Jan 2024 16:00:23 +0000
+Date: Mon, 29 Jan 2024 08:00:23 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Yoann Congal <yoann.congal@smile.fr>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Petr Mladek <pmladek@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kbuild@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Darren Hart <dvhart@infradead.org>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+	Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH v2] printk: Remove redundant CONFIG_BASE_SMALL
+Message-ID: <ZbfLl6PR_qxxreeX@bombadil.infradead.org>
+References: <20240127220026.1722399-1-yoann.congal@smile.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125170628.2017784-1-tj@kernel.org> <20240125170628.2017784-10-tj@kernel.org>
-In-Reply-To: <20240125170628.2017784-10-tj@kernel.org>
-From: Lai Jiangshan <jiangshanlai@gmail.com>
-Date: Tue, 30 Jan 2024 00:00:22 +0800
-Message-ID: <CAJhGHyAuoGNmaaDa0p+wiJMprXYVYnVV75PS4+kPy-fsPJVH8w@mail.gmail.com>
-Subject: Re: [PATCH 09/10] workqueue: Implement system-wide nr_active
- enforcement for unbound workqueues
-To: Tejun Heo <tj@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Naohiro.Aota@wdc.com, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240127220026.1722399-1-yoann.congal@smile.fr>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-Hello, Tejun
+You wanna address the printk maintainers, which I've added now.
+And Josh as he's interested in tiny linux.
 
-On Fri, Jan 26, 2024 at 1:06=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
+On Sat, Jan 27, 2024 at 11:00:26PM +0100, Yoann Congal wrote:
+> CONFIG_BASE_SMALL is currently a type int but is only used as a boolean
+> equivalent to !CONFIG_BASE_FULL.
+> 
+> So, remove it entirely and move every usage to !CONFIG_BASE_FULL.
 
-> @@ -5121,6 +5374,9 @@ void workqueue_set_max_active(struct workqueue_stru=
-ct *wq, int max_active)
->
->         wq->flags &=3D ~__WQ_ORDERED;
->         wq->saved_max_active =3D max_active;
-> +       if (wq->flags & WQ_UNBOUND)
-> +               wq->saved_min_active =3D min(wq->saved_min_active, max_ac=
-tive);
-> +
+Thanks for doing this.
 
-wq_update_node_max_active() must be also called here.
+> In addition, recent kconfig changes (see the discussion in Closes: tag)
+> revealed that using:
+>   config SOMETHING
+>      default "some value" if X
+> does not work as expected if X is not of type bool.
 
-Thanks
-Lai
+We should see if we can get kconfig to warn on this type of use.
+Also note that this was reported long ago by Vegard Nossum but he
+never really sent a fix [0] as I suggested, so thanks for doing this
+work.
 
->         wq_adjust_max_active(wq);
->
->         mutex_unlock(&wq->mutex);
+[0] https://lkml.iu.edu/hypermail/linux/kernel/2110.2/02402.html
+
+You should mention the one case which this patch fixes is:
+
+> CONFIG_BASE_SMALL was used that way in init/Kconfig:
+>   config LOG_CPU_MAX_BUF_SHIFT
+>   	default 12 if !BASE_SMALL
+>   	default 0 if BASE_SMALL
+
+You should then mention this has been using 12 for a long time now
+for BASE_SMALL, and so this patch is a functional fix for those
+who used BASE_SMALL and wanted a smaller printk buffer contribtion per
+cpu. The contribution was only per CPU, and since BASE_SMALL systems
+likely don't have many CPUs the impact of this was relatively small,
+4 KiB per CPU.  This patch fixes that back down to 0 KiB per CPU.
+
+So in practice I'd imagine this fix is not critical to stable. However
+if folks do want it backported I'll note BAS_FULL has been around since
+we started with git on Linux so it should backport just fine.
+
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 8d4e836e1b6b1..877b3f6f0e605 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -734,8 +734,8 @@ config LOG_CPU_MAX_BUF_SHIFT
+>  	int "CPU kernel log buffer size contribution (13 => 8 KB, 17 => 128KB)"
+>  	depends on SMP
+>  	range 0 21
+> -	default 12 if !BASE_SMALL
+> -	default 0 if BASE_SMALL
+> +	default 12 if BASE_FULL
+> +	default 0
+>  	depends on PRINTK
+>  	help
+>  	  This option allows to increase the default ring buffer size
+
+This is the only functional change, it is a fix, so please address
+this in a separate small patch where you can go into all the above
+details about its issue and implications of fixing this as per my
+note above.
+
+Then you can address a separate patch which addresses the move of
+BASE_SMALL users to BASE_FULL so to remove BASE_SMALL, that is
+because that commit would have no functional changes and it makes
+it easier to review.
+
+  Luis
 
