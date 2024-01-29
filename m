@@ -1,160 +1,133 @@
-Return-Path: <linux-kernel+bounces-43539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 959AB841547
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:56:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D98A841549
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:57:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41FA9B23A0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:56:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5373F286D32
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:57:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8C7E158D98;
-	Mon, 29 Jan 2024 21:56:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="E4GRtBmW"
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0826153BC1
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 21:56:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D529159560;
+	Mon, 29 Jan 2024 21:57:10 +0000 (UTC)
+Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E4DB158D68;
+	Mon, 29 Jan 2024 21:57:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.10.14.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706565379; cv=none; b=gFJc0JFrwPSw7W/2IaOzMkvtKt39cgSnD0UEtc15n9FBGe+YebijrOpUjFUXvzJSAWZ+Zfwmjx2+dy9Tl8dLfT266hhxH7Hbz0mQm2sNJ+NHEygGd/zFHNxWtqpxFB9fbSDqxGDHCAYrwR7NVMXJ9RhcAk6qC7yIJaxbIFC0rDs=
+	t=1706565430; cv=none; b=hOP0TOWVYq8fMBYN9/3grTxKeu5ylgHaAZ1SVQXRL3BUF67GQRjNRhuxlpEv67k4WkHtMvzjGPyDDvXnoXoEIDBT9gm9W9ZcTbzqo8G9iakQREregx1z4U4HUhVb0TbqRqjSfq91oKqD4wl9zLgl3Erf/KV+atX+OcsoaC6FWis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706565379; c=relaxed/simple;
-	bh=SGut10VocypQdQV3KZ8JxNWSezKusO01V74qBOL3voA=;
+	s=arc-20240116; t=1706565430; c=relaxed/simple;
+	bh=mPC+xQ4Dz5ztfF5Vr0v6InEG2owUyBpyLFQaFv8aEG8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sToeLWQnWbIu5Wz1dZh0lCS6wK53Y5/cy57T2P+gyH+zXiCfznwZY6RnPHEmSX96HEOEWmaNQJc6ZnJU9mjOR9yGhKvFT+7zaDDjAeuwEvVjmlJW8CMwXcev+iPO9kVikakpntAf4NprgUVP7kT05PY4+rSPfbJ95+9iFRFWorU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=E4GRtBmW; arc=none smtp.client-ip=209.85.161.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-59a27fbe832so632733eaf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:56:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706565376; x=1707170176; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sVQfnYTeTh5M6YXr0RwVkYHFBKg3/KVCWcIRRHP0C1w=;
-        b=E4GRtBmWFQWnxRqms5+PXHjJpLYTUZ/wWpScrajH9Q6wv6YRrxEJe8bYMa6yoFtJyR
-         B+afITcLWw4JC+I9mJcFDN9UwWa6VI8T2ffXK1nj9An1OtpqJC+/A/67HIZk3hw6OhlU
-         /f2T1sg2MkqEckH8mprQZUFffM1P/1Wc6i46c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706565376; x=1707170176;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sVQfnYTeTh5M6YXr0RwVkYHFBKg3/KVCWcIRRHP0C1w=;
-        b=He2+X3g/dgX39AIPX/Ex3ZNlX06n184OeVhjmHVd755wtveAAcy87+n7L+6JAPhP51
-         DQ7+GdrRUMSAAlV/wBusul3/21FVBILGmcporNNX8G7fvR+7QWTuKk/jEKBVKoK/iiwv
-         DHEK2PwSE/Mt6S5rF6w2GG9gGukd5jTbI3aLuR9UC5tE4Co/zqMxsoyBPWBCI2LZ6VDZ
-         YlnxVRD7yaFf1gazXDASD8zPWvtxnOUwWhgxg1dh1Cn0g6Jxw6NaXWtOcPyWTeT8yHzQ
-         58AS2+Vsu89hSR0I+vd2zCiur0pOL/sFHp2t0anNJDOqLiSxr24MRqge7A1YY19JL+iT
-         ZKSA==
-X-Gm-Message-State: AOJu0YzopMJeukkR/KvGLloYCxL6Fq5aMRF1npDDEyvYD65k9uDB0tIB
-	bx4mvEBuhJEkoiP4rWnk11CZoGxQ55qrjjJfwaBMDh5HrRuVwLuFq39H2tN9qQ==
-X-Google-Smtp-Source: AGHT+IESvdtCmLe+CNtI14Gg/BY5kJrVtDarakUMqov6S6A5Y8Q7+73nxlvky29dvBOp4+LRENC4/Q==
-X-Received: by 2002:a05:6358:5709:b0:176:4fce:27 with SMTP id a9-20020a056358570900b001764fce0027mr3844045rwf.6.1706565375937;
-        Mon, 29 Jan 2024 13:56:15 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id y3-20020a63de43000000b005cf9e59477esm6779865pgi.26.2024.01.29.13.56.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 13:56:15 -0800 (PST)
-Date: Mon, 29 Jan 2024 13:56:14 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Cc: Mark Rutland <mark.rutland@arm.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-hardening@vger.kernel.org,
-	Nathan Chancellor <nathan@kernel.org>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Miguel Ojeda <ojeda@kernel.org>, Marco Elver <elver@google.com>,
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH 5/5] overflow: Introduce inc_wrap() and dec_wrap()
-Message-ID: <202401291234.00B6A1B4D@keescook>
-References: <20240129182845.work.694-kees@kernel.org>
- <20240129183411.3791340-5-keescook@chromium.org>
- <33dcfa96-e584-404e-a9e5-afeca9105818@prevas.dk>
+	 Content-Type:Content-Disposition:In-Reply-To; b=VWpWTJ0jl4aJQf8MOXrAJeoivQPtG5f3Zoo2l/lkozA8dIteUS5fde6NlG17YG4MNTGfs+crcmToPc7Xa/eFbWqAF48+62XNioEtOgyflBNFDUfwFU/vCp+3B1P4aQQXGFn5XKLtGJnlf6pXPk8mXgDkKnlj5w9LRa4+tso0+Ac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de; spf=pass smtp.mailfrom=c--e.de; arc=none smtp.client-ip=217.10.14.231
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
+Received: by cae.in-ulm.de (Postfix, from userid 1000)
+	id 8161E1402F9; Mon, 29 Jan 2024 22:57:04 +0100 (CET)
+Date: Mon, 29 Jan 2024 22:57:04 +0100
+From: "Christian A. Ehrhardt" <lk@c--e.de>
+To: Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: typec_altmode_release =?utf-8?B?4oaS?=
+ =?utf-8?Q?_refcount=5Ft=3A?= underflow; use-after-free.
+Message-ID: <ZbgfMEmpsuzLc1Hv@cae.in-ulm.de>
+References: <e12b5e52-1c94-472d-949b-2ee158857584@molgen.mpg.de>
+ <Zbf3M2+r5RP9K8jJ@cae.in-ulm.de>
+ <b1f77ee7-0684-4260-bcaf-d826af19978d@molgen.mpg.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <33dcfa96-e584-404e-a9e5-afeca9105818@prevas.dk>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b1f77ee7-0684-4260-bcaf-d826af19978d@molgen.mpg.de>
 
-On Mon, Jan 29, 2024 at 09:16:36PM +0100, Rasmus Villemoes wrote:
-> On 29/01/2024 19.34, Kees Cook wrote:
-> > This allows replacements of the idioms "var += offset" and "var -= offset"
-> > with the inc_wrap() and dec_wrap() helpers respectively. They will avoid
-> > wrap-around sanitizer instrumentation.
+
+Hi Paul,
+
+On Mon, Jan 29, 2024 at 10:27:44PM +0100, Paul Menzel wrote:
+> Dear Christian,
+> 
+> 
+> Am 29.01.24 um 20:06 schrieb Christian A. Ehrhardt:
+> 
+> > On Mon, Jan 29, 2024 at 12:57:11PM +0100, Paul Menzel wrote:
+> 
+> > > I noticed the message first time with Linux 6.6.8 on December 26th, and also
+> > > with 6.6.11, 6.7 and 6.7.1. I am unsure how to reproduce it though.
+> > > 
+> > > Here the trace from Linux 6.7.1-1~exp1:
+> > > 
+> > > ```
+> > > [    0.000000] Linux version 6.7-amd64 (debian-kernel@lists.debian.org) (x86_64-linux-gnu-gcc-13 (Debian 13.2.0-10) 13.2.0, GNU ld (GNU Binutils for Debian) 2.41.90.20240115) #1 SMP PREEMPT_DYNAMIC Debian 6.7.1-1~exp1 (2024-01-22)
+> > > […]
+> > > [    0.000000] DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022
+> > > […]
+> > > [ 9068.294345] ucsi_acpi USBC000:00: failed to re-enable notifications (-110)
+> > > [ 9068.499156] ------------[ cut here ]------------
+> > > [ 9068.499172] refcount_t: underflow; use-after-free.
+> > > [ 9068.499199] WARNING: CPU: 0 PID: 5598 at lib/refcount.c:28 refcount_warn_saturate+0xbe/0x110
+> 
+> […]
+> > > [ 9068.499517] Call Trace:
+> > > [ 9068.499521]  <TASK>
+> > > [ 9068.499522]  ? refcount_warn_saturate+0xbe/0x110
+> > > [ 9068.499526]  ? __warn+0x81/0x130
+> > > [ 9068.499533]  ? refcount_warn_saturate+0xbe/0x110
+> > > [ 9068.499545]  ? report_bug+0x171/0x1a0
+> > > [ 9068.499549]  ? console_unlock+0x78/0x120
+> > > [ 9068.499553]  ? handle_bug+0x3c/0x80
+> > > [ 9068.499557]  ? exc_invalid_op+0x17/0x70
+> > > [ 9068.499565]  ? asm_exc_invalid_op+0x1a/0x20
+> > > [ 9068.499570]  ? refcount_warn_saturate+0xbe/0x110
+> > > [ 9068.499576]  typec_altmode_release+0x49/0xc0 [typec]
+> > > [ 9068.499615]  device_release+0x34/0x90
+> > > [ 9068.499624]  kobject_put+0x78/0x190
+> > > [ 9068.499629]  ucsi_unregister_altmodes+0x41/0xa0 [typec_ucsi]
+> > > [ 9068.499648]  ucsi_unregister_partner.part.0+0x77/0xa0 [typec_ucsi]
+> > > [ 9068.499662]  ucsi_handle_connector_change+0x1bb/0x310 [typec_ucsi]
+> > > [ 9068.499671]  process_one_work+0x171/0x340
+> > > [ 9068.499676]  worker_thread+0x27b/0x3a0
+> > > [ 9068.499679]  ? __pfx_worker_thread+0x10/0x10
+> > > [ 9068.499681]  kthread+0xe5/0x120
+> > > [ 9068.499690]  ? __pfx_kthread+0x10/0x10
+> > > [ 9068.499693]  ret_from_fork+0x31/0x50
+> > > [ 9068.499698]  ? __pfx_kthread+0x10/0x10
+> > > [ 9068.499700]  ret_from_fork_asm+0x1b/0x30
+> > > [ 9068.499714]  </TASK>
+> > > [ 9068.499715] ---[ end trace 0000000000000000 ]---
+> > > ```
+> > > 
+> > > Please find the full output of `dmesg` attached.
 > > 
-> > Cc: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> > Cc: linux-hardening@vger.kernel.org
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  include/linux/overflow.h | 32 ++++++++++++++++++++++++++++++++
-> >  1 file changed, 32 insertions(+)
+> > This should be fixed by
 > > 
-> > diff --git a/include/linux/overflow.h b/include/linux/overflow.h
-> > index 4f945e9e7881..080b18b84498 100644
-> > --- a/include/linux/overflow.h
-> > +++ b/include/linux/overflow.h
-> > @@ -138,6 +138,22 @@ static inline bool __must_check __must_check_overflow(bool overflow)
-> >  		__sum;					\
-> >  	})
-> >  
-> > +/**
-> > + * add_wrap() - Intentionally perform a wrapping increment
+> > | commit 5962ded777d689cd8bf04454273e32228d7fb71f
+> > | Author: RD Babiera <rdbabiera@google.com>
+> > | Date:   Wed Jan 3 18:17:55 2024 +0000
+> > |
+> > |     usb: typec: class: fix typec_altmode_put_partner to put plugs
+> > 
+> > which is in mainline and 6.7.2.
 > 
-> inc_wrap
+> Awesome. Thank you for mentioning this, and nice timing, as the commit
+> referenced in the Fixed-by tag is from v4.19-rc1 from August 2018. ;-)
 
-Thanks, fixed.
+A first attempt to fix that 2018 commit made it into 6.7 and caused
+the regression and the warning (b17b7fe6dd5c). This commit was then
+reverted (9c6b789e954f). The final fix (5962ded777d6) is a new
+version of the reverted fix that does not cause regressions.
 
-> 
-> > + * @a: variable to be incremented
-> > + * @b: amount to add
-> > + *
-> > + * Increments @a by @b with wrap-around. Returns the resulting
-> > + * value of @a. Will not trip any wrap-around sanitizers.
-> > + */
-> > +#define inc_wrap(var, offset)					\
-> > +	({							\
-> > +		if (check_add_overflow(var, offset, &var)) {	\
-> > +			/* do nothing */			\
-> > +		}						\
-> > +		var;						\
-> 
-> Hm. I wonder if multiple evaluations of var could be a problem.
+The Fixes: tag for the revert does point into the post 6.7 range.
 
-I am normally defensive about this, but due to @a normally being an
-lvalue, I lacked the imagination to think of other side-effects, but
-you've set me straight below.
+    regards  Christian
 
-> Obviously never if var is actually some automatic variable, nor if it is
-> some simple foo->bar expression. But nothing really prevents var from
-> being, say, foo[gimme_an_index()] or something similarly convoluted.
-> 
-> Does the compiler generate ok code if one does
-> 
->   typeof(var) *__pvar = &(var);
->   if (check_add_overflow(*__pvar, offset, __pvar)) {}
->   *__pvar;
-> 
-> [in fact, does it even generate code, i.e. does it compile?]
-> 
-> I dunno, maybe it's overkill to worry about.
-
-Yeah, an index-fetch is a great example that would get lost here. I've
-updated these to be defined in terms of add/sub_wrap() and to use your
-pointer typing method to avoid side-effects.
-
--- 
-Kees Cook
 
