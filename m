@@ -1,134 +1,255 @@
-Return-Path: <linux-kernel+bounces-42346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 199C283FFFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:26:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40E27840000
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 09:26:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9FC95B22ABB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:26:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFB061F23DCF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 08:26:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02C9C537F3;
-	Mon, 29 Jan 2024 08:25:53 +0000 (UTC)
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A2E553E0A;
+	Mon, 29 Jan 2024 08:25:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aYRxzrEA"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5945553E01;
-	Mon, 29 Jan 2024 08:25:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5090053E09
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 08:25:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706516752; cv=none; b=HyK+Ulk5TiygJppaerGMNzHJ+2/A+Ha3OxMT6o5GVswRAyhrOgh/S0HcQfgCrscLoFPLBTeVwMDyeLm4UAjmdN7woKrsLee71xCDEpE3UD9QA+V3qLPnnSBJ4SH6Bx3IZRnwomhCY9sVODkobi3RqwYBrXz3pJJAJpDoRprXVjo=
+	t=1706516758; cv=none; b=bubz4BAw59ZVt1/lF9kproQDE7Ag+GQSlCgwBUGFeWuyAg5Z8wBLDm4lV7ZvTCLIoDoS5DnH5mLyB56kh3mXuvZa60GSOswTxklpHKuDI2G8iecYHRouy8s/UNKgB8+VCTs8gBrfpLZ9xvrJUw9BiJPLGhmKPQ+48v1n6mfHTfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706516752; c=relaxed/simple;
-	bh=q1gYYgdvPMV7TyEEJ8sN3MbDG/IkDzJ19sdzRd6Dl2M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mhu2/gYkYqd1sqGk+AUIaCjPwGkwaWlWIzVuBmRMdpl5dvPq4zfp8F7PgtNbNNkRuPrkjGTOTY5oIvxzEFQOY+/ouKA4FIAg2/5Qd7AGrv26S3UW8FdRq24Jtd+sPNVGpZ867wGLe5zqKJlMvVq48kmPxBRZy8t+Ssx/SHwBfi0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-602ab446cd8so23294597b3.1;
-        Mon, 29 Jan 2024 00:25:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706516749; x=1707121549;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Qnxd1+UMtflAeTNDn68oCiHgIyPBn7p4OxcQPfoNqMU=;
-        b=QezAcRnUy5ur0Nrmm2KIEo+KbsbyHMpviD+ZqL+B9g0Ld8zV7UV0DVh1O4rnNuiNrj
-         b3sWMVqBABeGj2qVvqqEZD5UnjdEBl8ZFzMSOWs0AtMF18v4IApMtJijNwW/j1TYNwmn
-         1/dFc8WCcNDZbW6olaaujJ56OlnHlbOyHx7sUbf4SP4ObuZtO7DQMYL6kMx42Ijx8YSR
-         VxaLX4Wi/EcsWJsYFu4K2OXUjT4gLePFae6TlDjRfJTTfl39LIrQysBsZJx/lKkxLWmp
-         wzpbafJ1I9GCPivIh2m5GOF4h0mOZubOY4y6sTDeDbHwqXCPEX+I8Fu61dJMwWol8rwf
-         7JlQ==
-X-Gm-Message-State: AOJu0Yw2X5PGeW7ziogVVqkTo1T/SKfjJa3/OYxqxiRpjFlSWfYNGsHg
-	OUG3LXE1hjj+jvHHfzyZMzeCvlJsXGA6riQU2mCjJurUB4oKSCI0cyHUX2sjH7Y=
-X-Google-Smtp-Source: AGHT+IHt2FmPfFVJVznJxUnbieijcR7PqiKiojtoj9hmaXt1H3lzWCLb/jXnHgeQs9w+ybZi9rzqaw==
-X-Received: by 2002:a81:431b:0:b0:5e7:ae43:e90f with SMTP id q27-20020a81431b000000b005e7ae43e90fmr3071006ywa.3.1706516749098;
-        Mon, 29 Jan 2024 00:25:49 -0800 (PST)
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
-        by smtp.gmail.com with ESMTPSA id v4-20020a81a544000000b005ff9a21d042sm2305094ywg.46.2024.01.29.00.25.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 00:25:48 -0800 (PST)
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-602ab446cd8so23294537b3.1;
-        Mon, 29 Jan 2024 00:25:48 -0800 (PST)
-X-Received: by 2002:a05:690c:338f:b0:5ff:b07c:3b72 with SMTP id
- fl15-20020a05690c338f00b005ffb07c3b72mr3540193ywb.62.1706516748639; Mon, 29
- Jan 2024 00:25:48 -0800 (PST)
+	s=arc-20240116; t=1706516758; c=relaxed/simple;
+	bh=jMR3whdAdIw5gRYP3DqIFNffqCdwTzfKu98NcVeOH8k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=U4pK16LaDA23SHQUbCWXHKeDllsdq1KsjCtm4ON/ifphRqtrj0r6aDRkrzNOgFRpsh4FSs/t05Ga2G9dOypv42mbv0dMgw3mfb1MvpiAQLDW5ZNIzC75U8x/acN8mxlkIxeXPLEwQLB44DO2eqxMLZfMp9Ykcgk7bt67o/d3A0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aYRxzrEA; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706516755;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Vl5WFT1mb4nq6HAbxmLogsdFwcpzbMyLDtITeh8IDsY=;
+	b=aYRxzrEASz2BjK0qyOgoZhvynXM6F9wdLJlzGukdgsJLl+Y/LkN0U3YS9JiYyfGi0dGp9D
+	ttATPSGpSMVtsWyExvnBxD8l6M3oYcLIe0EPhRW4tVWYopVhh3oM1oBmrAiXmJnV0sWEwf
+	8uRTp+umHaWRn01+RrtVtLRDNikd+2E=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-572-bc6dSSAvNieEZHYt5F9o5w-1; Mon,
+ 29 Jan 2024 03:25:51 -0500
+X-MC-Unique: bc6dSSAvNieEZHYt5F9o5w-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2F75428B72E9;
+	Mon, 29 Jan 2024 08:25:51 +0000 (UTC)
+Received: from fedora (unknown [10.72.116.8])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 77965C2590E;
+	Mon, 29 Jan 2024 08:25:45 +0000 (UTC)
+Date: Mon, 29 Jan 2024 16:25:41 +0800
+From: Ming Lei <ming.lei@redhat.com>
+To: Dave Chinner <david@fromorbit.com>
+Cc: Mike Snitzer <snitzer@kernel.org>, Matthew Wilcox <willy@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, Don Dutile <ddutile@redhat.com>,
+	Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, linux-block@vger.kernel.org,
+	ming.lei@redhat.com
+Subject: Re: [RFC PATCH] mm/readahead: readahead aggressively if read drops
+ in willneed range
+Message-ID: <ZbdhBaXkXm6xyqgC@fedora>
+References: <20240128142522.1524741-1-ming.lei@redhat.com>
+ <ZbbPCQZdazF7s0_b@casper.infradead.org>
+ <ZbbfXVg9FpWRUVDn@redhat.com>
+ <ZbbvfFxcVgkwbhFv@casper.infradead.org>
+ <CAH6w=aw_46Ker0w8HmSA41vUUDKGDGC3gxBFWAhd326+kEtrNg@mail.gmail.com>
+ <ZbcDvTkeDKttPfJ4@dread.disaster.area>
+ <ZbciOba1h3V9mmup@fedora>
+ <Zbc0ZJceZPyt8m7q@dread.disaster.area>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240115130817.88456-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <CA+V-a8t4v2CxZWrLRKBinS5fyG-_FzDFz5zA=mgcrNutJABr5g@mail.gmail.com>
-In-Reply-To: <CA+V-a8t4v2CxZWrLRKBinS5fyG-_FzDFz5zA=mgcrNutJABr5g@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 29 Jan 2024 09:25:37 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWKvJRFP+zOeWPALbYwAf7Z_UW879q1aLXyFwXqaJp9GA@mail.gmail.com>
-Message-ID: <CAMuHMdWKvJRFP+zOeWPALbYwAf7Z_UW879q1aLXyFwXqaJp9GA@mail.gmail.com>
-Subject: Re: [PATCH v5 0/4] Add missing port pins for RZ/Five SoC
-To: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Magnus Damm <magnus.damm@gmail.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zbc0ZJceZPyt8m7q@dread.disaster.area>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-Hi Prabhakar,
+On Mon, Jan 29, 2024 at 04:15:16PM +1100, Dave Chinner wrote:
+> On Mon, Jan 29, 2024 at 11:57:45AM +0800, Ming Lei wrote:
+> > On Mon, Jan 29, 2024 at 12:47:41PM +1100, Dave Chinner wrote:
+> > > On Sun, Jan 28, 2024 at 07:39:49PM -0500, Mike Snitzer wrote:
+> > > > On Sun, Jan 28, 2024 at 7:22 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > > > >
+> > > > > On Sun, Jan 28, 2024 at 06:12:29PM -0500, Mike Snitzer wrote:
+> > > > > > On Sun, Jan 28 2024 at  5:02P -0500,
+> > > > > > Matthew Wilcox <willy@infradead.org> wrote:
+> > > > > Understood.  But ... the application is asking for as much readahead as
+> > > > > possible, and the sysadmin has said "Don't readahead more than 64kB at
+> > > > > a time".  So why will we not get a bug report in 1-15 years time saying
+> > > > > "I put a limit on readahead and the kernel is ignoring it"?  I think
+> > > > > typically we allow the sysadmin to override application requests,
+> > > > > don't we?
+> > > > 
+> > > > The application isn't knowingly asking for readahead.  It is asking to
+> > > > mmap the file (and reporter wants it done as quickly as possible..
+> > > > like occurred before).
+> > > 
+> > > ... which we do within the constraints of the given configuration.
+> > > 
+> > > > This fix is comparable to Jens' commit 9491ae4aade6 ("mm: don't cap
+> > > > request size based on read-ahead setting") -- same logic, just applied
+> > > > to callchain that ends up using madvise(MADV_WILLNEED).
+> > > 
+> > > Not really. There is a difference between performing a synchronous
+> > > read IO here that we must complete, compared to optimistic
+> > > asynchronous read-ahead which we can fail or toss away without the
+> > > user ever seeing the data the IO returned.
+> > 
+> > Yeah, the big readahead in this patch happens when user starts to read
+> > over mmaped buffer instead of madvise().
+> 
+> Yes, that's how it is intended to work :/
+> 
+> > > We want required IO to be done in as few, larger IOs as possible,
+> > > and not be limited by constraints placed on background optimistic
+> > > IOs.
+> > > 
+> > > madvise(WILLNEED) is optimistic IO - there is no requirement that it
+> > > complete the data reads successfully. If the data is actually
+> > > required, we'll guarantee completion when the user accesses it, not
+> > > when madvise() is called.  IOWs, madvise is async readahead, and so
+> > > really should be constrained by readahead bounds and not user IO
+> > > bounds.
+> > > 
+> > > We could change this behaviour for madvise of large ranges that we
+> > > force into the page cache by ignoring device readahead bounds, but
+> > > I'm not sure we want to do this in general.
+> > > 
+> > > Perhaps fadvise/madvise(willneed) can fiddle the file f_ra.ra_pages
+> > > value in this situation to override the device limit for large
+> > > ranges (for some definition of large - say 10x bdi->ra_pages) and
+> > > restore it once the readahead operation is done. This would make it
+> > > behave less like readahead and more like a user read from an IO
+> > > perspective...
+> > 
+> > ->ra_pages is just one hint, which is 128KB at default, and either
+> > device or userspace can override it.
+> > 
+> > fadvise/madvise(willneed) already readahead bytes from bdi->io_pages which
+> > is the max device sector size(often 10X of ->ra_pages), please see
+> > force_page_cache_ra().
+> 
+> Yes, but if we also change vma->file->f_ra->ra_pages during the
+> WILLNEED operation (as we do for FADV_SEQUENTIAL) then we get a
+> larger readahead window for the demand-paged access portion of the
+> WILLNEED access...
+> 
+> > 
+> > Follows the current report:
+> > 
+> > 1) usersapce call madvise(willneed, 1G)
+> > 
+> > 2) only the 1st part(size is from bdi->io_pages, suppose it is 2MB) is
+> > readahead in madvise(willneed, 1G) since commit 6d2be915e589
+> > 
+> > 3) the other parts(2M ~ 1G) is readahead by unit of bdi->ra_pages which is
+> > set as 64KB by userspace when userspace reads the mmaped buffer, then
+> > the whole application becomes slower.
+> 
+> It gets limited by file->f_ra->ra_pages being initialised to
+> bdi->ra_pages and then never changed as the advice for access
+> methods to the file are changed.
+> 
+> But the problem here is *not the readahead code*. The problem is
+> that the user has configured the device readahead window to be far
+> smaller than is optimal for the storage. Hence readahead is slow.
+> The fix for that is to either increase the device readahead windows,
+> or to change the specific readahead window for the file that has
+> sequential access patterns.
+> 
+> Indeed, we already have that - FADV_SEQUENTIAL will set
+> file->f_ra.ra_pages to 2 * bdi->ra_pages so that readahead uses
+> larger IOs for that access.
+> 
+> That's what should happen here - MADV_WILLNEED does not imply a
+> specific access pattern so the application should be running
+> MADV_SEQUENTIAL (triggers aggressive readahead) then MADV_WILLNEED
+> to start the readahead, and then the rest of the on-demand readahead
+> will get the higher readahead limits.
+> 
+> > This patch changes 3) to use bdi->io_pages as readahead unit.
+> 
+> I think it really should be changing MADV/FADV_SEQUENTIAL to set
+> file->f_ra.ra_pages to bdi->io_pages, not bdi->ra_pages * 2, and the
+> mem.load() implementation in the application converted to use
+> MADV_SEQUENTIAL to properly indicate it's access pattern to the
+> readahead algorithm.
 
-On Mon, Jan 29, 2024 at 9:16=E2=80=AFAM Lad, Prabhakar
-<prabhakar.csengg@gmail.com> wrote:
-> On Mon, Jan 15, 2024 at 1:08=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail=
-com> wrote:
-> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > This patch series intends to incorporate the absent port pins P19 to P2=
-8,
-> > which are exclusively available on the RZ/Five SoC.
-> >
-> > Cheers,
-> > Prabhakar
-> >
-> > v4 -> v5:
-> > * Made struct rzg2l_variable_pin_cfg variables u32
-> > * Updated PIN_CFG_PIN_MAP_MASK macro to use GENMASK_ULL() as reported
-> >   by kernel test robot.
+Here the single .ra_pages may not work, that is why this patch stores
+the willneed range in maple tree, please see the following words from
+the original RH report:
 
-> > Lad Prabhakar (4):
-> >   pinctrl: renesas: rzg2l: Improve code for readability
-> >   pinctrl: renesas: rzg2l: Include pinmap in RZG2L_GPIO_PORT_PACK()
-> >     macro
-> >   pinctrl: renesas: pinctrl-rzg2l: Add the missing port pins P19 to P28
-> >   riscv: dts: renesas: r9a07g043f: Update gpio-ranges property
-> >
-> >  arch/riscv/boot/dts/renesas/r9a07g043f.dtsi |   4 +
-> >  drivers/pinctrl/renesas/pinctrl-rzg2l.c     | 284 +++++++++++++++++---
-> >  2 files changed, 248 insertions(+), 40 deletions(-)
-> >
-> With recent changes to pinctrl-rzg2l.c this patch series (patch #2)
-> does not apply cleanly anymore. Shall I resend it?
+"
+Increasing read ahead is not an option as it has a mixed I/O workload of
+random I/O and sequential I/O, so that a large read ahead is very counterproductive
+to the random I/O and is unacceptable.
+"
 
-Yes please. That would save me from resolving the conflict when
-I get to this series.
-Thanks!
+Also almost all these advises(SEQUENTIA, WILLNEED, NORMAL, RANDOM)
+ignore the passed range, and the behavior becomes all or nothing,
+instead of something only for the specified range, which may not
+match with man, please see 'man posix_fadvise':
 
-Gr{oetje,eeting}s,
+	```
+       POSIX_FADV_NORMAL
+              Indicates that the application has no advice to give about its access
+			  pattern for the specified data.  If no advice is given for an open file,
+			  this is the default assumption.
 
-                        Geert
+       POSIX_FADV_SEQUENTIAL
+              The application expects to access the specified data sequentially (with
+			  lower offsets read before higher ones).
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+       POSIX_FADV_RANDOM
+              The specified data will be accessed in random order.
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+       POSIX_FADV_NOREUSE
+              The specified data will be accessed only once.
+
+              In kernels before 2.6.18, POSIX_FADV_NOREUSE had the same semantics as
+			  POSIX_FADV_WILLNEED.  This was probably a bug; since kernel 2.6.18, this
+			  flag is a no-op.
+
+       POSIX_FADV_WILLNEED
+              The specified data will be accessed in the near future.
+	```
+
+It is even worse for readahead() syscall:
+
+	```
+	DESCRIPTION
+	       readahead()  initiates readahead on a file so that subsequent reads from that
+		   file will be satisfied from the cache, and not block on disk I/O (assuming the
+		   readahead was initiated early enough and that other activity on the system did
+		   not in the meantime flush pages from the cache).
+	```
+
+
+Thanks,
+Ming
+
 
