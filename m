@@ -1,93 +1,106 @@
-Return-Path: <linux-kernel+bounces-42736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 738AF8405C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:56:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D427A8405C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:56:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 161DB1F239C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:56:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 134BD1C217DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 12:56:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E49F664CF8;
-	Mon, 29 Jan 2024 12:54:21 +0000 (UTC)
-Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39DCF64CDD;
-	Mon, 29 Jan 2024 12:54:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.101.248.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF1A0651BF;
+	Mon, 29 Jan 2024 12:54:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Yo0ueFqH"
+Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 706E065197
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 12:54:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706532861; cv=none; b=B382wpWUXEZOa9EiSvmS5Lr2QmAQaSu5T1KFFHj6dFPERB2m5ekbbtZBxpzjJnI/E3P9WqkH7T1XRtWCkc9QE91xYIpQJ6URGvn8h9gLgL/W4CAcZiOHXZ1YlNUOnx0xR6nzsXo8FNFRlT4gcyo7DApG9VkjJ+xm9vTZD9ymG/c=
+	t=1706532864; cv=none; b=jKB/yvDty40ObelRWvMsC5Cssm7bbavCNR96rsypq87XDWgar0c08smvT/N02K3dwa/Ecr9EGel+uMcXiymjfHOUxLNZblbxhNri4PKsHGCWVIKfXUjeCilyXZJX4fEeb63ZBwezboPAoole7whvFiKOY9N9DDtsd8V2rUvlEUI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706532861; c=relaxed/simple;
-	bh=Wgrn7ehhZzT7XDm3PPzsk73AYC+R1L3bcS47dve1/DM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID; b=NIqcWU4e7b2AxLsoUdVWPUkYhIlFLUo2Hj1wdWuooZy+yR2jicLv96Uk3lz58H3MCjD/8S7jN4epZLfGLgG57jVddZ9y9E7ZVncQ+IyQPqIvTp1fbsWrA/ZQzOBL6+mRYFzeZHgAAZTwWqV8FpL+ZFXvNRsIRl3rxL3T+In/sV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=46.101.248.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from alexious$zju.edu.cn ( [10.190.77.58] ) by
- ajax-webmail-mail-app4 (Coremail) ; Mon, 29 Jan 2024 20:54:02 +0800
- (GMT+08:00)
-Date: Mon, 29 Jan 2024 20:54:02 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From: alexious@zju.edu.cn
-To: "Viacheslav Dubeyko" <slava@dubeyko.com>
-Cc: "Andrew Morton" <akpm@linux-foundation.org>,
-	"Desmond Cheong Zhi Xi" <desmondcheongzx@gmail.com>,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hfs: fix a memleak in hfs_find_init
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.4-cmXT5 build
- 20231205(37e20f0e) Copyright (c) 2002-2024 www.mailtech.cn
- mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
-In-Reply-To: <F36C0C80-DAF3-4D8F-8EA3-5209E8FB5BE3@dubeyko.com>
-References: <20240122172719.3843098-1-alexious@zju.edu.cn>
- <F36C0C80-DAF3-4D8F-8EA3-5209E8FB5BE3@dubeyko.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+	s=arc-20240116; t=1706532864; c=relaxed/simple;
+	bh=9fhnjxZ/Z3eDiIl/YeEMnJ3S6KNDkcBYjFwOq1E+8ic=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IVMWybXHTIH3QDbT5oHjRvx0eNiTrPlBhLR9eeC6W6B2xIDojXmdNcfziQE2UwD7c9PIaN9ik4thZSonhjc0Ro1N/mc4jl31EfcTwlbh6pXBFEIPRI9LmERjWCYZojC1QTEjiLujMgMS5WV+GQh56Lv9QEy3hLVryGcvZ7mVvOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Yo0ueFqH; arc=none smtp.client-ip=209.85.221.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-4bdb534410dso567996e0c.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 04:54:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706532861; x=1707137661; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9fhnjxZ/Z3eDiIl/YeEMnJ3S6KNDkcBYjFwOq1E+8ic=;
+        b=Yo0ueFqHRTYnDfScc9XqOUMKIcve+GHSNAzBIaRpd52Hx64rGuutlG/0eOm92u5Ykl
+         w5kvcRd5CkalsJEiHMvXO38tuZsK5ExSv9U+84eltOVthjzZZBg+a0ax8J3gvXrKUzo6
+         5trF+Y3vklfuuB9ujtasvkP4Y3cijekQNdEZYLiHDd3voWxLyGhKD9CSBb9gUOw29Vuk
+         1nXrnFsYJU+Gq7L3F6tOH6qKI73QgCYz3Qz7cTPnVkPmpfm8Rw92XpYoueRw5lbLg1ja
+         +9jcXdSoFzzOWCSG+bw49VIErFndeAdOfV5ocdu6LmsZCd4VlrPc/Zcpq3DzY0Sk7dw9
+         TPkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706532861; x=1707137661;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9fhnjxZ/Z3eDiIl/YeEMnJ3S6KNDkcBYjFwOq1E+8ic=;
+        b=K5WxNE2NBilJc5y+OV+hckGn2XFF3V4NxkdVbzE9UWMphMQMX4tDsocxMg9smwM//5
+         oJBoCQwijbrGkDObXIHlPG67SHnwrCvyU6exDQVpXRk/Pi0Ef/kFAjw5LkhiQmJ7V80f
+         S5i9IUv88LE+zx4mj2mjf+qYARhXXjSnRjxj9MSdtpDvTbKnpVUpMdT7wm53B02lIlF2
+         EPLJli0Dfj0Hn+wNFsw1kMJGAKqBcxQhhLqUyJ03TyHwyiE/0Beiw0/4EKWAXtFZmnUr
+         Q1xUow9dBiCkAgDkj9tcN6RRwUq9CYqdJS0hUqPt5kMgk5rCOLos6zuWKZaQEyc+wY0y
+         EfIQ==
+X-Gm-Message-State: AOJu0YwmiF+6VBuN5lRuD7iOKwDOWq4/K+FUZ7kz3/a0Yzm4b+K58p4V
+	Mo29aqfHnzycZ3IvjerFoXzQC+IlbNG3f9uJ4w3hWco6J6svupXELD+7tnY9FzwWRoxJuVUDvwq
+	ZyGHxjbWOBQWChG7va606sS0vpvN+UX8RudDXag==
+X-Google-Smtp-Source: AGHT+IGPu8IxPwCZdmDI+aLgUZ/+xyElq1oXto8vc6/h7JrJnAJ8UG3qkg/uKgc6/g7pLgSpiTY7msPMtetgCHtV67U=
+X-Received: by 2002:a05:6122:2525:b0:4b7:8199:5d11 with SMTP id
+ cl37-20020a056122252500b004b781995d11mr1970096vkb.8.1706532861322; Mon, 29
+ Jan 2024 04:54:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <38fd9f3.214a.18d5548ac0c.Coremail.alexious@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:cS_KCgB3dYXqn7dlRrnDAA--.14989W
-X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/1tbiAgAPAGW2oGMXhwABsM
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-	daVFxhVjvjDU=
+References: <20240127003607.501086-1-andre.draszik@linaro.org> <20240127003607.501086-2-andre.draszik@linaro.org>
+In-Reply-To: <20240127003607.501086-2-andre.draszik@linaro.org>
+From: Peter Griffin <peter.griffin@linaro.org>
+Date: Mon, 29 Jan 2024 12:54:10 +0000
+Message-ID: <CADrjBPpabnoOUBcq=wyaWZdiJr9jmHadvqvtj0Thvo8qQzWD=g@mail.gmail.com>
+Subject: Re: [PATCH 1/5] clk: samsung: gs101: gpio_peric0_pclk needs to be
+ kept on
+To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	linux-kernel@vger.kernel.org, kernel-team@android.com, 
+	tudor.ambarus@linaro.org, willmcvicker@google.com, semen.protsenko@linaro.org, 
+	alim.akhtar@samsung.com, s.nawrocki@samsung.com, tomasz.figa@gmail.com, 
+	cw00.choi@samsung.com, mturquette@baylibre.com, sboyd@kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
+	linux-clk@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-PiA+IE9uIDIyIEphbiAyMDI0LCBhdCAyMDoyNywgWmhpcGVuZyBMdSA8YWxleGlvdXNAemp1LmVk
-dS5jbj4gd3JvdGU6Cj4gPiAKPiA+IFdoZW4gdGhlIHN3aXRjaCBzdGF0bWVudCBnb2VzIHRvIGRl
-ZmF1bHQgYW5kIHJldHVybiBhbiBlcnJvciwgcHRyIHNob3VsZAo+ID4gYmUgZnJlZWQgc2luY2Ug
-aXQgaXMgYWxsb2NhdGVkIGluIGhmc19maW5kX2luaXQuCj4gPiAKPiAKPiBEbyB5b3UgaGF2ZSBh
-bnkgbWVtb3J5IGxlYWtzIHJlcG9ydD8gQ291bGQgeW91IHNoYXJlIGl0IGluIHRoZSBjb21tZW50
-cz8KPiBXaGljaCB1c2UtY2FzZSByZXByb2R1Y2VzIHRoZSBpc3N1ZT8gSXQgd2lsbCBiZSBlYXNp
-ZXIgdG8gcmV2aWV3IHRoZSBmaXgKPiBJZiB5b3UgY2FuIHNoYXJlIHRoZSBwYXRoIG9mIHJlcHJv
-ZHVjdGlvbi4KPiAKPiBUaGFua3MsCj4gU2xhdmEuCgpXZWxsLCB3ZSBmb3VuZCB0aGlzIHBvdGVu
-dGlhbCBtZW1vcnkgbGVhayBieSBzdGF0aWMgYW5hbHlzaXMuCgpXZSBmb3VuZCB0aGF0IGFsbCBv
-ZiBoZnNfZmluZF9pbml0J3MgY2FsbGVycyB3b24ndCByZWxlYXNlIGBwdHJgIHdoZW4gCmhmc19m
-aW5kX2luaXQgZmFpbHMsIHdoaWxlIHRoZXkgd2lsbCBkbyByZWxlYXNlIGBwdHJgIHdoZW4gZnVu
-Y3Rpb25zIAp0aGF0IGFmdGVyIGhmc19maW5kX2luaXQgZmFpbHMuIFRoaXMgdGFjdGljIG9ic2Vy
-dmF0aW9uIHN1Z2dlc3RzIHRoYXQKaGZzX2ZpbmRfaW5pdCBwcm9iZXJseSBzaG91bGQgcmVsZWFz
-ZSBgcHRyYCB3aGVuIGl0IGZhaWxzLCBpLmUuIGluIHRoZQpkZWZhdWx0IGJyYW5jaCBvZiBzd2l0
-Y2ggaW4gdGhpcyBwYXRjaC4KCkJlc2lkZXMsIHdlIG5vdGljZWQgYW5vdGhlciBpbXBsZW1lbnRh
-dGlvbiBvZiBoZnNfZmluZF9pbml0IGluIApmcy9oZnNwbHVzL2JmaW5kLmMsIHdoaWNoIGlzIGVz
-c2VudGlhbGx5IGlkZW50aWNhbCB0byB0aGUgb25lIGluIAp0aGlzIHBhdGNoIChpbiBmcy9oZnMv
-YmZpbmQuYykgYnV0IGNhbGxpbmcgYEJVRygpO2AgaW4gZGVmYXVsdCBicmFuY2gKdG8gdHJpZ2dl
-ciBhbiBlcnJvci1oYW5kbGluZy4KClRoYW5rcywKWmhpcGVuZy4KCgo+IAo+ID4gRml4ZXM6IGIz
-YjIxNzdhMmQ3OSAoImhmczogYWRkIGxvY2sgbmVzdGluZyBub3RhdGlvbiB0byBoZnNfZmluZF9p
-bml0IikKPiA+IFNpZ25lZC1vZmYtYnk6IFpoaXBlbmcgTHUgPGFsZXhpb3VzQHpqdS5lZHUuY24+
-Cj4gPiAtLS0KPiA+IGZzL2hmcy9iZmluZC5jIHwgMSArCj4gPiAxIGZpbGUgY2hhbmdlZCwgMSBp
-bnNlcnRpb24oKykKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL2ZzL2hmcy9iZmluZC5jIGIvZnMvaGZz
-L2JmaW5kLmMKPiA+IGluZGV4IGVmOTQ5OGE2ZTg4YS4uN2FhM2I5YWJhNGQxIDEwMDY0NAo+ID4g
-LS0tIGEvZnMvaGZzL2JmaW5kLmMKPiA+ICsrKyBiL2ZzL2hmcy9iZmluZC5jCj4gPiBAQCAtMzYs
-NiArMzYsNyBAQCBpbnQgaGZzX2ZpbmRfaW5pdChzdHJ1Y3QgaGZzX2J0cmVlICp0cmVlLCBzdHJ1
-Y3QgaGZzX2ZpbmRfZGF0YSAqZmQpCj4gPiBtdXRleF9sb2NrX25lc3RlZCgmdHJlZS0+dHJlZV9s
-b2NrLCBBVFRSX0JUUkVFX01VVEVYKTsKPiA+IGJyZWFrOwo+ID4gZGVmYXVsdDoKPiA+ICsga2Zy
-ZWUoZmQtPnNlYXJjaF9rZXkpOwo+ID4gcmV0dXJuIC1FSU5WQUw7Cj4gPiB9Cj4gPiByZXR1cm4g
-MDsKPiA+IC0tIAo+ID4gMi4zNC4xCj4gPiAK
+On Sat, 27 Jan 2024 at 00:37, Andr=C3=A9 Draszik <andre.draszik@linaro.org>=
+ wrote:
+>
+> This pclk clock is required any time we access the pinctrl registers of
+> this block.
+>
+> Since pinctrl-samsung doesn't support a clock at the moment, we just
+> keep the kernel from disabling it at boot, until we have an update for
+> pinctrl-samsung to handle this required clock, at which point we'll be
+> able to drop the flag again.
+>
+> Fixes: 893f133a040b ("clk: samsung: gs101: add support for cmu_peric0")
+> Signed-off-by: Andr=C3=A9 Draszik <andre.draszik@linaro.org>
+> ---
+
+Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
 
