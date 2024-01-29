@@ -1,117 +1,91 @@
-Return-Path: <linux-kernel+bounces-42839-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8F6184078F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:55:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EE6A3840790
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:56:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B3F11F2225E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:55:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B69A1F222D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:56:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B46657C7;
-	Mon, 29 Jan 2024 13:55:47 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA13665BB2;
+	Mon, 29 Jan 2024 13:55:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fc6JWBke"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A99E657AF;
-	Mon, 29 Jan 2024 13:55:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D4FC65BAC
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 13:55:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706536546; cv=none; b=juE+fWcNutrywctvm2cEo7qIOeHQtDRZJ9Iko5XzILNqH8po+iH7ISNauydPPom4vh+gg/jcoy/vfWFMXPVu57ONM4Kj+K3RmTvSe7b9kR+aptyFf9+D/bhokVNn6jo3rJhp/XoTHRmtCCTDtqFPTA9mUqg57bLJTB8FgTSohbI=
+	t=1706536551; cv=none; b=pWEwH2IuPhRclgDUG89c7uGlrOHLz2/TwZFnLY/OalqgxpBfkL06ngxyVjRR8ePT8cXNdatuVnH5FKZ+s7dLpFgXugZop0cHJmgwoiuBQ8prdCLLfHrLNTktA/GSdH19OMVk34WgE7ZW0Q4qJf4rCjFdicjmHfjgtAB6KGBYPTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706536546; c=relaxed/simple;
-	bh=Mu1POmJQZVm0NHymvBVIB8/NOZC6MGmOcANeEI54nU4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=q/NUF8bLjUc4BgUsn/mnQl9g2lFQZZcUbZdTslrpSIsi8A3hmYXOZCxZx3idjMtoS29HfHUU2KwQk0rY+o6iI6rrKolX0S6Qlvi4KSSBwt1pDoMvxKx0oy+5oyLThGaSLabBcQjgrh4WBCqKIw2ZSvS/XP+d7kEmQITaaPq/hbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TNqZK2CD5z4f3jHm;
-	Mon, 29 Jan 2024 21:55:37 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id C99491A0232;
-	Mon, 29 Jan 2024 21:55:39 +0800 (CST)
-Received: from [10.174.179.155] (unknown [10.174.179.155])
-	by APP1 (Coremail) with SMTP id cCh0CgBnOBFbrrdlZHhrCQ--.18903S3;
-	Mon, 29 Jan 2024 21:55:39 +0800 (CST)
-Message-ID: <c47a4ff6-43a0-a536-29ff-db2d1a931181@huaweicloud.com>
-Date: Mon, 29 Jan 2024 21:55:39 +0800
+	s=arc-20240116; t=1706536551; c=relaxed/simple;
+	bh=fGTY8wk+7FZYdLAKuIsKJzTeIDJ4tR1MMhapoSmIbHw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=GeIvSueQmAv4CZ8WYq8pqGY/YcAmCiP1I8yTtRUZFH/tu2g9uGC4s/5Dkxic2+6BlEfCWuplk7h7BBFMGtY/ZNtj9E/ggqJmYe95HB8lpK9DCY+Wo3b+R4YhggRGasbK5YxVbG2cNuNnvJrE9CB/hcgHvsl0f63n3iLPDVldPsc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fc6JWBke; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D33E5C433C7;
+	Mon, 29 Jan 2024 13:55:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706536550;
+	bh=fGTY8wk+7FZYdLAKuIsKJzTeIDJ4tR1MMhapoSmIbHw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=fc6JWBke9OIaN1uN3fC39GR3mX8zY7XQ8cgVPCJaxLyrByCiGTLoGPv8AjseUuM/E
+	 8jWVmqTbiuTBxGqwoZeq0/u1qkE50MDTZY+WVSxUqnveTEtsJtWJzSkW9w/YoydW9+
+	 uMQqc4q60jZ47zZnERsA+2oOhFfp4ZaGpAcVbBVHq3+6GZbiilPeZLSvBtPW0paEkS
+	 874/z6GcVmRjflAuvQAzRenXBBGAvagWi/oNxnx3/tPcI6lXlRlC/9LpkPcodakWQD
+	 2sf5YJL0bQ2cPacourBLTBXMciFlWQhbvQ6lI8+ZO25wr52+ZEANsDN31xjct0UObW
+	 B738V8mK2WXKA==
+From: Christian Brauner <brauner@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Tycho Andersen <tandersen@netflix.com>,
+	Tycho Andersen <tycho@tycho.pizza>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/1] pidfd: don't do_notify_pidfd() if !thread_group_empty()
+Date: Mon, 29 Jan 2024 14:55:41 +0100
+Message-ID: <20240129-baldigen-geklont-185287b43190@brauner>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240127132043.GA29080@redhat.com>
+References: <20240127132043.GA29080@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101
- Thunderbird/104.0
-Subject: Re: [PATCH] md: get rdev->mddev with READ_ONCE()
-To: song@kernel.org
-Cc: linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
- yukuai3@huawei.com, linan122@huawei.com, yi.zhang@huawei.com,
- yangerkun@huawei.com, lilingfeng3@huawei.com
-References: <20231229070500.3602712-1-lilingfeng@huaweicloud.com>
-From: Li Lingfeng <lilingfeng@huaweicloud.com>
-In-Reply-To: <20231229070500.3602712-1-lilingfeng@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=962; i=brauner@kernel.org; h=from:subject:message-id; bh=fGTY8wk+7FZYdLAKuIsKJzTeIDJ4tR1MMhapoSmIbHw=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaRuXxf39dSVqStbr+QFTwtbyGtbaTalz1gq9dSdU/2zj nMbqbbVd5SyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEzknBDDX8GdQYn/OtlXmqmp 7WY4kndKWjl9euMzp0vbP+TcUvy/OInhn/EENcm9J60iX91cPOPkIYU7CRdirx3f8zlSK0fGadL 7dcwA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBnOBFbrrdlZHhrCQ--.18903S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ww1Uuw43uF1xCF1xXr1rXrb_yoW8JFWrp3
-	yrXFy5Wr1Yv3y5Cw4UZFWkua4Fqwn3KrZFkry3u34rZ3WjqwnxKF1UWa4DJFyrZanrur4x
-	Xa17Xan8Z3sIgrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
-	j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
-	kEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
-	7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UGYL9UUUUU=
-X-CM-SenderInfo: polox0xjih0w46kxt4xhlfz01xgou0bp/
 
-Friendly ping ...
+On Sat, 27 Jan 2024 14:20:43 +0100, Oleg Nesterov wrote:
+> To me this patch makes sense regardless, but also this is another
+> preparation for PIDFD_THREAD change we discuss.
+> 
+> Oleg.
+> 
 
-Thanks
+Applied to the vfs.misc branch of the vfs/vfs.git tree.
+Patches in the vfs.misc branch should appear in linux-next soon.
 
-在 2023/12/29 15:05, Li Lingfeng 写道:
-> From: Li Lingfeng <lilingfeng3@huawei.com>
->
-> Users may get rdev->mddev by sysfs while rdev is releasing.
-> So use both READ_ONCE() and WRITE_ONCE() to prevent load/store tearing
-> and to read/write mddev atomically.
->
-> Signed-off-by: Li Lingfeng <lilingfeng3@huawei.com>
-> ---
->   drivers/md/md.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> index 9bdd57324c37..3b38a565bffa 100644
-> --- a/drivers/md/md.c
-> +++ b/drivers/md/md.c
-> @@ -2562,7 +2562,7 @@ static void md_kick_rdev_from_array(struct md_rdev *rdev)
->   	list_del_rcu(&rdev->same_set);
->   	pr_debug("md: unbind<%pg>\n", rdev->bdev);
->   	mddev_destroy_serial_pool(rdev->mddev, rdev);
-> -	rdev->mddev = NULL;
-> +	WRITE_ONCE(rdev->mddev, NULL);
->   	sysfs_remove_link(&rdev->kobj, "block");
->   	sysfs_put(rdev->sysfs_state);
->   	sysfs_put(rdev->sysfs_unack_badblocks);
-> @@ -3646,7 +3646,7 @@ rdev_attr_store(struct kobject *kobj, struct attribute *attr,
->   	struct kernfs_node *kn = NULL;
->   	bool suspend = false;
->   	ssize_t rv;
-> -	struct mddev *mddev = rdev->mddev;
-> +	struct mddev *mddev = READ_ONCE(rdev->mddev);
->   
->   	if (!entry->store)
->   		return -EIO;
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.misc
+
+[1/1] pidfd: don't do_notify_pidfd() if !thread_group_empty()
+      https://git.kernel.org/vfs/vfs/c/e191619dcdca
 
