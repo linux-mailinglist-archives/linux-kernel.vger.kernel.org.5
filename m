@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-43339-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43340-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2613841256
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:42:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D00B841259
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:42:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E27A51C230BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:42:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C13D1C237C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 18:42:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDC5C152DF7;
-	Mon, 29 Jan 2024 18:35:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4E2B15D5CB;
+	Mon, 29 Jan 2024 18:35:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FgX/KLLF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ijUeWpW6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0952915D5A4;
-	Mon, 29 Jan 2024 18:35:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FC8015D5B7;
+	Mon, 29 Jan 2024 18:35:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706553355; cv=none; b=Ophj79LTnd6FrFvd1qm5pdCI9pZvD9HTidMFb0b8+31i7LaF5r7fCGcaWuZWFKLyk7onv2MZ3a/G/gUIx3mVu8yp4LNcBxiAXrTDxVNjez5xBdo3YU5ErnKsTfn5954IUU2S5QcAwrqbSOwUJbj7PMuz6S+ruUM792oTnKr0+Xc=
+	t=1706553356; cv=none; b=cr32mZIxscJf9+KrQTrhQm6rwGw8sVNEEipQF7r1Vz0OowIwD+3rOZWv5wnIh1sQpeNrTp3BkehR/X/rkfz+F+ZW5ympMMuu2pSdvS7JMS7V0um+RKIv/0uv8Hj0bi6Qmq5uJDRGJSuvJQ1k/aGb75ViySYobDTeuDQKmIcGWVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706553355; c=relaxed/simple;
-	bh=+GFlLe3e6fcoGMOT9P0XBWSK5jdsfSKtzZRqyBumyzk=;
+	s=arc-20240116; t=1706553356; c=relaxed/simple;
+	bh=WGLUlG6y44wAx6s6BsUbF71upygdwDMNOrR+LHhtidc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LlsiyXAXs/uCDP8hD36a4WwEOjDabvWoWew/b3EYytiOoftub8cmZq1qGLuMeXchS2V+J3ywMcDGk8PVqTeDv2+mveQyqqUY2iHOys0CqjHGiXPJPLJCUYP4kREW1Ly7SPVk3LtgCHGzYzubHK/kM8GmmIM0ooRKZFBGkgp6oN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FgX/KLLF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB2F5C433C7;
-	Mon, 29 Jan 2024 18:35:53 +0000 (UTC)
+	 MIME-Version:Content-Type; b=dR+GV857pbFO7EONFuV9JOa0K35fJbHs9Kh9yDETCikdZN1aZBNkjFI+eOwUzre1C69s5rfVfYrRJHro8cgDsanv9DZWhniiRpmRtS0AGOfOTCEXYFU+EOaH8yfGZG1hP7wCP1AVIny0wEv+e7bW85RnSmE6nxra7S4R5kcC6to=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ijUeWpW6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B63AC43390;
+	Mon, 29 Jan 2024 18:35:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706553354;
-	bh=+GFlLe3e6fcoGMOT9P0XBWSK5jdsfSKtzZRqyBumyzk=;
+	s=k20201202; t=1706553355;
+	bh=WGLUlG6y44wAx6s6BsUbF71upygdwDMNOrR+LHhtidc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FgX/KLLFAR2J6qT5DiX5oUYKTjlwbPC3Y+DQYiujYBtTyqkAJ+v8WK/TjcgmrTLuG
-	 kzEjJKmJx+Dp64ZKkd+8+KbedRB5hyfxNqeIrSDLrGHykDtkwvNEbd1zEJIxY1X69v
-	 9f7v3Pi65SCJwPMAack5FylO3u+SXmLz1cHO0neALgc0qWqXszY9+plw1gZamxfVEF
-	 cyMlTByJDN4qp+Fz75GMh4JKFCliFFPs9CCGXI4OCSqHrbq1D1szIkDoXx8wLbgNI/
-	 s8BlrNF8dsSkksdO48UW1PlbkcnVReyi3hd/k2X3GkNKGY8S7pHfwgvQazmNGqsKQn
-	 uE2SIWbUPnytg==
+	b=ijUeWpW623awZYINlNuFmpV5nccJLvp9aByiiWn4Avi92daDVOr/sdG1RCP6vHeZI
+	 e+LHJwNyma9WJuS8f7yJ43P3tjBUJjJSDCdbODq99yLz3HfaPT6TdXN3LDSSydfjzT
+	 nS1kCQ8o3/gisGLpQ4A92Fj2sngIHTmDfk8+rfjx6BeaK57UYdhb4xrq9Pc3h08/IV
+	 4S4YtwO/9f7+GsFge9bN8Fh6o8JNgRRmSifsfW/9ugxa/M5HAechB/x2pSGstgGOPE
+	 CBkFh3dlc9dgaudUbjN/YcG5uxm0OsZ4TuOLfBSNb/K7HBnUSF/MnqUxlyEdixoeHs
+	 zhVrBaoECigYw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Vinod Koul <vkoul@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
 	dmaengine@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 08/10] dmaengine: shdma: increase size of 'dev_id'
-Date: Mon, 29 Jan 2024 13:35:16 -0500
-Message-ID: <20240129183530.464274-8-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 09/10] dmaengine: fsl-qdma: increase size of 'irq_name'
+Date: Mon, 29 Jan 2024 13:35:17 -0500
+Message-ID: <20240129183530.464274-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240129183530.464274-1-sashal@kernel.org>
 References: <20240129183530.464274-1-sashal@kernel.org>
@@ -66,46 +66,41 @@ Content-Transfer-Encoding: 8bit
 
 From: Vinod Koul <vkoul@kernel.org>
 
-[ Upstream commit 404290240827c3bb5c4e195174a8854eef2f89ac ]
+[ Upstream commit 6386f6c995b3ab91c72cfb76e4465553c555a8da ]
 
 We seem to have hit warnings of 'output may be truncated' which is fixed
-by increasing the size of 'dev_id'
+by increasing the size of 'irq_name'
 
-drivers/dma/sh/shdmac.c: In function ‘sh_dmae_probe’:
-drivers/dma/sh/shdmac.c:541:34: error: ‘%d’ directive output may be truncated writing between 1 and 10 bytes into a region of size 9 [-Werror=format-truncation=]
-  541 |                          "sh-dmae%d.%d", pdev->id, id);
-      |                                  ^~
-In function ‘sh_dmae_chan_probe’,
-    inlined from ‘sh_dmae_probe’ at drivers/dma/sh/shdmac.c:845:9:
-drivers/dma/sh/shdmac.c:541:26: note: directive argument in the range [0, 2147483647]
-  541 |                          "sh-dmae%d.%d", pdev->id, id);
-      |                          ^~~~~~~~~~~~~~
-drivers/dma/sh/shdmac.c:541:26: note: directive argument in the range [0, 19]
-drivers/dma/sh/shdmac.c:540:17: note: ‘snprintf’ output between 11 and 21 bytes into a destination of size 16
-  540 |                 snprintf(sh_chan->dev_id, sizeof(sh_chan->dev_id),
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  541 |                          "sh-dmae%d.%d", pdev->id, id);
-      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/dma/fsl-qdma.c: In function ‘fsl_qdma_irq_init’:
+drivers/dma/fsl-qdma.c:824:46: error: ‘%d’ directive writing between 1 and 11 bytes into a region of size 10 [-Werror=format-overflow=]
+  824 |                 sprintf(irq_name, "qdma-queue%d", i);
+      |                                              ^~
+drivers/dma/fsl-qdma.c:824:35: note: directive argument in the range [-2147483641, 2147483646]
+  824 |                 sprintf(irq_name, "qdma-queue%d", i);
+      |                                   ^~~~~~~~~~~~~~
+drivers/dma/fsl-qdma.c:824:17: note: ‘sprintf’ output between 12 and 22 bytes into a destination of size 20
+  824 |                 sprintf(irq_name, "qdma-queue%d", i);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/sh/shdma.h | 2 +-
+ drivers/dma/fsl-qdma.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma/sh/shdma.h b/drivers/dma/sh/shdma.h
-index 9c121a4b33ad..f97d80343aea 100644
---- a/drivers/dma/sh/shdma.h
-+++ b/drivers/dma/sh/shdma.h
-@@ -25,7 +25,7 @@ struct sh_dmae_chan {
- 	const struct sh_dmae_slave_config *config; /* Slave DMA configuration */
- 	int xmit_shift;			/* log_2(bytes_per_xfer) */
- 	void __iomem *base;
--	char dev_id[16];		/* unique name per DMAC of channel */
-+	char dev_id[32];		/* unique name per DMAC of channel */
- 	int pm_error;
- 	dma_addr_t slave_addr;
- };
+diff --git a/drivers/dma/fsl-qdma.c b/drivers/dma/fsl-qdma.c
+index a8cc8a4bc610..d141f3f4d9f6 100644
+--- a/drivers/dma/fsl-qdma.c
++++ b/drivers/dma/fsl-qdma.c
+@@ -805,7 +805,7 @@ fsl_qdma_irq_init(struct platform_device *pdev,
+ 	int i;
+ 	int cpu;
+ 	int ret;
+-	char irq_name[20];
++	char irq_name[32];
+ 
+ 	fsl_qdma->error_irq =
+ 		platform_get_irq_byname(pdev, "qdma-error");
 -- 
 2.43.0
 
