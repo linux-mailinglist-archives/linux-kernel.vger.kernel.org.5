@@ -1,45 +1,83 @@
-Return-Path: <linux-kernel+bounces-43008-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43009-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5150F840A33
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:37:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EBABA840A34
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:38:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 847FF1C21AD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:37:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C3BC1C21EC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 15:38:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13117154440;
-	Mon, 29 Jan 2024 15:37:44 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E66B154435
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 15:37:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7422F154443;
+	Mon, 29 Jan 2024 15:37:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="owqHGQGq"
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53800154426
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 15:37:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706542663; cv=none; b=uKc2xmBNMmRC7zL4i6tafTiOhpPLyKb3THiGxDCKNnbrOQu0lFZhEZ43mFdx4De8Z3wzbVLXQf51efyPAGNwsAieYUBNtB6prqXN+2Ej/JitSdP0H2wp9a5bgUzV7k3wrjam5tIHTMejmUvHwqr9+lRRihawO9r4FEnqkvv3CF0=
+	t=1706542677; cv=none; b=kXj8POOVtc5o7tQEEJ5VEVuRTJwpAVHfRHB4i2uF9WbzkMEQ70DV4Caihmaw42vIIGNvjfZWcJv//c5sI5QkwXYbGXoTidiwLVkYHh647hXYhBRj2zmFI8S7DhRGIxKNF9Jsd6ztVvd9uYl63FBS66Ph4zRy4DeQvm4inxRkKw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706542663; c=relaxed/simple;
-	bh=tZUsCsVrPLu0QLOsaw2WJYzK1MXIQo4uhNvNa+T90nc=;
+	s=arc-20240116; t=1706542677; c=relaxed/simple;
+	bh=dv7rvRTXCssC2Ucy3ETYL9O+pACUSn657yVE+v0ZMSE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z3jJRzFQS2khEsSeGplQ0xRpiQD51yyJGO7u7zB7HJXvsNVmMK1Ha4xrtipjduyNKWXU8KdLAZoIfboW+FlIDneC1r2HJXXi+5KAuS/ZzRrnzlLD8PAmgUIfCdc6du5l27EE6iBqI+VO8yCgwTfeBMG9Hox1BV9qtq2BUzkSms4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 69068DA7;
-	Mon, 29 Jan 2024 07:38:23 -0800 (PST)
-Received: from pluto (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 86BE23F738;
-	Mon, 29 Jan 2024 07:37:38 -0800 (PST)
-Date: Mon, 29 Jan 2024 15:37:36 +0000
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: Andre Przywara <andre.przywara@arm.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>, Peng Fan <peng.fan@nxp.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] firmware: arm_scmi: fix double free in smc cleanup path
-Message-ID: <ZbfGQC4gRuwc7yyN@pluto>
-References: <20240126122325.2039669-1-andre.przywara@arm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=t8lxoPu4h3RygMEB7uxjDv6SAPG+EQ4NuMMCQ4uu6tint/Km0BLeYbLTlxXS5xMX8QsZ36NYhN805m794p/DwwbEVtqLvJ0CY+3Rpp+/fDcXgbE+PuDfg8ag/jg3kjLxJVSrRxoLWUM/MW5vfGkfQsDfZrKJwLoOvf9J9KPsL7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=owqHGQGq; arc=none smtp.client-ip=209.85.210.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6e11faeb125so581929a34.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 07:37:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1706542674; x=1707147474; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+u6y5RGZUaOEJts7DaeBk/aybPKOo63QfRuk7QPhhAo=;
+        b=owqHGQGqtbUf8a/Ho4QsD2/LPQhfOhR7WY0o2qDk6nIl1pmaEem9f3jleLmuH9xL+R
+         r2pIqwgrc3RnyvlTrYurSDufJwdm8Doy70TvefYh+MlAgihzO81X6C/yfhyqbvcZLf61
+         Vx+LAkc01OZE96jEO7j0v88l7iYeZagJpC9cDl8akCmP0knyd6cMu/Rqa5yRcGbI4zCY
+         zSZB6FOR1hkDkwwizyDk3VqXRUEe4q9JaE32HLZsPClYudxswxp0a/hyLIWUAoYoDRJ7
+         Hx73ANqu63r6vfK44l/t2fBSc/OQv+kIVYceWfAobtZp6tYXQBfOB5ut0GrooD2w54BK
+         vW/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706542674; x=1707147474;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+u6y5RGZUaOEJts7DaeBk/aybPKOo63QfRuk7QPhhAo=;
+        b=lyCOV1vdcqIrTmCDlMmV5Z/ofIQUPIDSa7ZoCxXjNZR86bK3b/0rHd35BkC2J6JOBD
+         gRRkLWdX0++pSROKnlrstoQDGCPlEvumZ/nbbny83E9RYFEIsrkioCW1Rm+tNvBn+/VS
+         AtGxuDP7yy5tubayxUkXGC9Kb3ShPyY0oWrCciHUennqEehLgJ7khdd8HDo6nM9WqIor
+         lz7PE4YaZo0ow2e/9UYpFp7/bdamRpi1j+PuSGS9jyF1lfth4ayqfREuh8ydk2dyp+mV
+         m0Y9vvMKscxSGuqY2dmGuemZCltVYmDFsFPxyirqnd4wg+0SrsZh/2V4JkHYhh52St7S
+         OBQQ==
+X-Gm-Message-State: AOJu0Yw+MFkdwT5tjQ3JwVWOyobO8Y/oyIWNHTN02WddldETJZ0R6uxO
+	SeLjD962Q9+juL6E2QFgpSnDKsJFD0PduSWsBYx7h9LDJAu0oWCdc5TUwbwbyYk=
+X-Google-Smtp-Source: AGHT+IFioboZVLN9aAQFM+uMw6SK0ubssSHwws7ioYqVN5+2ra53qkjqKoRzZcZNHc4r/BPxL4LaUg==
+X-Received: by 2002:a9d:685a:0:b0:6e0:ba7c:4203 with SMTP id c26-20020a9d685a000000b006e0ba7c4203mr5515941oto.1.1706542674389;
+        Mon, 29 Jan 2024 07:37:54 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id z21-20020a05683008d500b006e12266433csm750687otg.27.2024.01.29.07.37.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 07:37:53 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rUTho-00A9vk-Ij;
+	Mon, 29 Jan 2024 11:37:52 -0400
+Date: Mon, 29 Jan 2024 11:37:52 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Lu Baolu <baolu.lu@linux.intel.com>
+Cc: Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] iommu: Probe right iommu_ops for device
+Message-ID: <20240129153752.GE50608@ziepe.ca>
+References: <20240126105341.78086-1-baolu.lu@linux.intel.com>
+ <20240126105341.78086-3-baolu.lu@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,102 +86,88 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240126122325.2039669-1-andre.przywara@arm.com>
+In-Reply-To: <20240126105341.78086-3-baolu.lu@linux.intel.com>
 
-On Fri, Jan 26, 2024 at 12:23:25PM +0000, Andre Przywara wrote:
-> When the generic SCMI code tears down a channel, it calls the chan_free
-> callback function, defined by each transport. Since multiple protocols
-> might share the same transport_info member, chan_free() might want to
-> clean up the same member multiple times. This will lead to a NULL
-> pointer dereference at the second time:
-
-Hi Andre,
-
-thanks for this.
-
+On Fri, Jan 26, 2024 at 06:53:41PM +0800, Lu Baolu wrote:
+> Previously, in the iommu probe device path, __iommu_probe_device() gets
+> the iommu_ops for the device from dev->iommu->fwspec if this field has
+> been initialized before probing. Otherwise, it is assumed that only one
+> of Intel, AMD, s390, PAMU or legacy SMMUv2 can be present, hence it's
+> feasible to lookup the global iommu device list and use the iommu_ops of
+> the first iommu device which has no dev->iommu->fwspec.
 > 
-> [    9.788824] scmi_protocol scmi_dev.1: Enabled polling mode TX channel - prot_id:16
-> [    9.813091] arm-scmi firmware:scmi: SCMI Notifications - Core Enabled.
-> [    9.814485] arm-scmi firmware:scmi: unable to communicate with SCMI
-> [    9.824996] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
-> [    9.825586] Mem abort info:
-> [    9.825863]   ESR = 0x0000000096000004
-> [    9.826193]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [    9.827625]   SET = 0, FnV = 0
-> [    9.827927]   EA = 0, S1PTW = 0
-> [    9.828232]   FSC = 0x04: level 0 translation fault
-> [    9.828628] Data abort info:
-> [    9.828909]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
-> [    9.829333]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-> [    9.829745]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-> [    9.830170] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000881ef8000
-> [    9.830887] [0000000000000000] pgd=0000000000000000, p4d=0000000000000000
-> [    9.831763] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
-> [    9.832177] Modules linked in:
-> [    9.832440] CPU: 4 PID: 1 Comm: swapper/0 Not tainted 6.7.0-rc2-00124-g455ef3d016c9-dirty #793
-> [    9.832997] Hardware name: FVP Base RevC (DT)
-> [    9.833302] pstate: 61400009 (nZCv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
-> [    9.833775] pc : smc_chan_free+0x3c/0x6c
-> [    9.834089] lr : smc_chan_free+0x3c/0x6c
-> [    9.834401] sp : ffff8000839bba00
-> [    9.834652] x29: ffff8000839bba00 x28: 00000000ffffffa1 x27: ffff0008024aa350
-> [    9.835227] x26: ffff800083305898 x25: ffff0008004d4a18 x24: ffff000800328000
-> [    9.835804] x23: ffff0008024aa1b0 x22: 0000000000000000 x21: 000000007fffffff
-> [    9.836375] x20: 0000000000000000 x19: ffff000802639440 x18: 0000000000000010
-> [    9.836945] x17: 73203e3d20293062 x16: 3161613432303830 x15: 303066666666202c
-> [    9.837522] x14: 00000000000001f4 x13: ffff000800328488 x12: 00000000ffffffea
-> [    9.838094] x11: 00000000ffff7fff x10: 00000000ffff7fff x9 : ffff800082f3b430
-> [    9.838667] x8 : 00000000000bffe8 x7 : c0000000ffff7fff x6 : 000000000005fff4
-> [    9.839237] x5 : 00000000002bffa8 x4 : 0000000000000000 x3 : 0000000000000000
-> [    9.839803] x2 : 0000000000000000 x1 : 0000000000000000 x0 : 000000000000004a
-> [    9.840368] Call trace:
-> [    9.840571]  smc_chan_free+0x3c/0x6c
-> [    9.840868]  idr_for_each+0x68/0xf8
-> [    9.841164]  scmi_cleanup_channels.isra.0+0x2c/0x58
-> [    9.841543]  scmi_probe+0x434/0x734
-> [    9.841848]  platform_probe+0x68/0xd8
-> [    9.842164]  really_probe+0x110/0x27c
-> [    9.842464]  __driver_probe_device+0x78/0x12c
-> [    9.842801]  driver_probe_device+0x3c/0x118
-> [    9.843130]  __driver_attach+0x74/0x128
-> [    9.843439]  bus_for_each_dev+0x78/0xe0
-> [    9.843783]  driver_attach+0x24/0x30
-> [    9.844121]  bus_add_driver+0xe4/0x1e8
-> [    9.844466]  driver_register+0x60/0x128
-> [    9.844778]  __platform_driver_register+0x28/0x34
-> [    9.845149]  scmi_driver_init+0x84/0xc0
-> [    9.845459]  do_one_initcall+0x78/0x33c
-> [    9.845778]  kernel_init_freeable+0x2b8/0x51c
-> [    9.846127]  kernel_init+0x24/0x130
-> [    9.846426]  ret_from_fork+0x10/0x20
-> [    9.846772] Code: f0004701 910a0021 aa1403e5 97b91c70 (b9400280)
-> [    9.847172] ---[ end trace 0000000000000000 ]---
-> [    9.847604] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+> The assumption mentioned above is no longer correct with the introduction
+> of the IOMMUFD mock device on x86 platforms. There might be multiple
+> instances of iommu drivers, none of which have the dev->iommu->fwspec
+> field populated.
 > 
-> Simply check for the struct pointer being NULL before trying to access
-> its members, to avoid this situation.
-> This was found when a transport doesn't really work (for instance no SMC
-> service), the probe routines then tries to clean up, and triggers a crash.
+> Probe the right iommu_ops for device by iterating over all the global
+> drivers and call their probe function to find a match.
 > 
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> Fixes: 1dc6558062da ("firmware: arm_scmi: Add smc/hvc transport")
-
-LGTM, maybe explicitly saying in the commit message that it is an issue
-of the SMC transport would be better, but I think Sudeep can easily add
-such a remark without the need to post a V2.
-
+> Fixes: 17de3f5fdd35 ("iommu: Retire bus ops")
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
 > ---
-> Hi,
+>  drivers/iommu/iommu.c | 76 +++++++++++++++++++++++++++----------------
+>  1 file changed, 48 insertions(+), 28 deletions(-)
 > 
-> reportedly Cristian has some patches in the making that solve this
-> problem in a more general way, but meanwhile this is an easy backport
-> candidate.
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index 0af0b5544072..2cdb01e411fa 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -396,30 +396,69 @@ void dev_iommu_priv_set(struct device *dev, void *priv)
+>  }
+>  EXPORT_SYMBOL_GPL(dev_iommu_priv_set);
+>  
+> +static struct iommu_device *
+> +__iommu_do_probe_device(struct device *dev, const struct iommu_ops *ops)
+> +{
+> +	struct iommu_device *iommu_dev;
+> +
+> +	if (!try_module_get(ops->owner))
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	iommu_dev = ops->probe_device(dev);
+> +	if (IS_ERR(iommu_dev))
+> +		module_put(ops->owner);
 
-Yes, this fix is definitely needed as it is, beside any possible future
-improvement in the core.
+This doesn't really do enough to protect against races, to do that
+fully we need to have iommu_device_unregister() do some better
+locking, and fix fwspec->ops lifecycle somehow.. Remember that module
+ref counts don't prevent iommu_device_unregister_bus() concurrency.
 
-Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
+So, it would be simpler to leave the try_module_get in the
+iommu_init_device(), just move it after the probe_device call.
 
-Thanks,
-Cristian
+> +static struct iommu_device *iommu_probe_device_ops(struct device *dev)
+> +{
+> +	struct iommu_device *iter, *iommu_dev = ERR_PTR(-ENODEV);
+> +	struct iommu_fwspec *fwspec;
+> +
+> +	/*
+> +	 * For FDT-based systems and ACPI IORT/VIOT, drivers register IOMMU
+> +	 * instances with non-NULL fwnodes, and client devices should have been
+> +	 * identified with a fwspec by this point. Otherwise, we will iterate
+> +	 * over all the global drivers and call their probe function to find a
+> +	 * match.
+> +	 */
+> +	fwspec = dev_iommu_fwspec_get(dev);
+> +	if (fwspec && fwspec->ops)
+> +		return __iommu_do_probe_device(dev, fwspec->ops);
+> +
+> +	mutex_lock(&iommu_device_lock);
+> +	list_for_each_entry(iter, &iommu_device_list, list) {
+> +		iommu_dev = __iommu_do_probe_device(dev, iter->ops);
+> +		if (!IS_ERR(iommu_dev))
+> +			break;
+
+This does need to skip duplicate ops though (see my version), we don't
+want to call the same driver many times. And Kevin and Robin are
+right, since we recently removed a bunch of fwpsec checks from drivers
+the core code must now never call a fwspec expecting driver without a
+fwspec. (check for !iommu->fwnode)
+
+Otherwise this looks fine for me, thanks
+
+Jason
 
