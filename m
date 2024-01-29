@@ -1,261 +1,154 @@
-Return-Path: <linux-kernel+bounces-42818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B309B840740
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:41:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A29A8840747
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 14:42:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68535289259
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:41:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57C281F26F65
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 13:42:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C97F64CFC;
-	Mon, 29 Jan 2024 13:41:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8BDA657BD;
+	Mon, 29 Jan 2024 13:42:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n7SrMWov"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="4toPmIrw"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B8AE651AF;
-	Mon, 29 Jan 2024 13:41:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D76955C3D;
+	Mon, 29 Jan 2024 13:42:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706535676; cv=none; b=Zaf5qHyv/DTlGQSDQBR1JtmwjPHuoe8Q4bD6hlth5oT9id+kfeRKF3lM28cWHCBLjO8K3TYckALvd+OcJVqcncFL+A2f0P7PbKHZiRmMo4qlf+vHwPTqyMpi69tikWu76QHV2FE5R/FgEgOXLQnPL57t0XeDAMxn04pRV7qAghg=
+	t=1706535724; cv=none; b=EFjGFRmA7jxxtiq6Rx9H8SqhXBJE93TnMZYvfrmGdpqWjShtjE71uf3VbW/FzOX3QCCuDATkXR7NszDRHMvT/B4JAlhXWOsDiGmnyCYvZvbevbFSjnhN6Tju97/w/23iGEFyaUGTh15N3+2hwcN+vuMw8alFLHr3xcXS6ejCcIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706535676; c=relaxed/simple;
-	bh=TVCeACnJlgCOKF5yq3bMw9iisuRk62WRaQn66az30zM=;
+	s=arc-20240116; t=1706535724; c=relaxed/simple;
+	bh=WdLW7o2nui+iHwt3lAXvXu94QN07TEcZhFQ1B6tqTUM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JoHvIwCFkM9+iKz1GVT3nu1qT0+TS2zrQCvk078ntAR3XES8ZTZm5hd2ZEO6p30LC1qQkpe7NIXaE7Nne85TSNHmzn1C1J37htnvdy+j2LOnm2VOXLEGXGXTPHdHskeAZjPrrIRteNT9IfBWWtnxX7rmP2p3hMB6nX6gO4p3lcg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n7SrMWov; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19923C433C7;
-	Mon, 29 Jan 2024 13:41:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706535675;
-	bh=TVCeACnJlgCOKF5yq3bMw9iisuRk62WRaQn66az30zM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=n7SrMWovr/HooMopeQOWcq5QFLiHYVdmon/wO+NfJnEwj0AH2FpnluqmQtF/CeZqD
-	 vpt8eEfeUXlmsxDBugLcKrKLEZBnp6Cl6TZdBciX6I3qjXdIarN4AbpKzRyG3I3qlN
-	 Pz9YC4yArnnSuEeuj0/sFE3cFYBU0iITFIiwBcCj4MbY5A55glaJCJ0iuoLPkRRdqZ
-	 moLiv7UX0MAw9N9wRbcbrviq8ujsNqpDrEJ+ioKDpiuIDp3HdKmKWxsswTaNknWl+S
-	 ljP6wsq5MehzK4VQQkTaZOJ1VOYu+EUn6YenKVZwSpAA+2W0Ui5dJ8tNR6aRvUG9+F
-	 9k5KKoY5WDDlg==
-Date: Mon, 29 Jan 2024 14:41:11 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Tycho Andersen <tycho@tycho.pizza>, linux-kernel@vger.kernel.org, 
-	linux-api@vger.kernel.org, Tycho Andersen <tandersen@netflix.com>, 
-	"Eric W. Biederman" <ebiederm@xmission.com>
-Subject: Re: [RFC PATCH] pidfd: implement PIDFD_THREAD flag for pidfd_open()
-Message-ID: <20240129-plakat-einlud-4903633a5410@brauner>
-References: <20240125140830.GA5513@redhat.com>
- <ZbQpPknTTCyiyxrP@tycho.pizza>
- <20240127105410.GA13787@redhat.com>
- <ZbUngjQMg+YUBAME@tycho.pizza>
- <20240127163117.GB13787@redhat.com>
- <ZbU7d0dpTY08JgIl@tycho.pizza>
- <20240127193127.GC13787@redhat.com>
- <ZbVrRgIvudX242ZU@tycho.pizza>
- <20240127210634.GE13787@redhat.com>
- <20240129112313.GA11635@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y/fHImHdKHDLJeF9YVqbSa3qjE9NZV3DXDI332eckuY035hvbWt/7U5gCbhg1KiTv0qqPkLuIo1V/Pk494wxIvq9+eCAr8AOARKFLTcRnRsrYVqCQ73xMDcRahugsKRiALZ4MlnOyDbqaqd6VKksE1UdNXkQFj+VDxNAt8qqZbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=4toPmIrw; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=p8iz8UHzQ67utsCq6pzEtf5vnFHnxs2dHAkgKZcozJE=; b=4toPmIrwbTb6LGQNgb70Hp7k57
+	EU2YoN7SuDLwqLn8YJyiQ1wp9fpelF/3tZ0Wau7QZWYxLYRPkGawKvnlXdq4gNl/8Rb1E9EERToex
+	bnzINlpiQJx9x3gIeUFCChZ2AwLd/BoKGWH/19mW5T2PK6hTROpBhH4O3QNckmNF0ZLM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rURt7-006Nmb-Tt; Mon, 29 Jan 2024 14:41:25 +0100
+Date: Mon, 29 Jan 2024 14:41:25 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+Cc: Serge Semin <fancer.lancer@gmail.com>,
+	Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+	David E Box <david.e.box@linux.intel.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Mark Gross <markgross@kernel.org>,
+	Jose Abreu <Jose.Abreu@synopsys.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+	Jean Delvare <jdelvare@suse.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Wong Vee Khee <veekhee@apple.com>,
+	Jon Hunter <jonathanh@nvidia.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Revanth Kumar Uppala <ruppala@nvidia.com>,
+	Shenwei Wang <shenwei.wang@nxp.com>,
+	Andrey Konovalov <andrey.konovalov@linaro.org>,
+	Jochen Henneberg <jh@henneberg-systemdesign.com>,
+	David E Box <david.e.box@intel.com>,
+	Andrew Halaney <ahalaney@redhat.com>,
+	Simon Horman <simon.horman@corigine.com>,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
+	bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
+	Tan Tee Min <tee.min.tan@linux.intel.com>,
+	Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+	Lai Peter Jun Ann <jun.ann.lai@intel.com>
+Subject: Re: [PATCH net-next v3 4/5] net: stmmac: enable Intel mGbE 1G/2.5G
+ auto-negotiation support
+Message-ID: <07a4aa8e-800c-4564-81c8-7cfcdddf1379@lunn.ch>
+References: <20230921121946.3025771-1-yong.liang.choong@linux.intel.com>
+ <20230921121946.3025771-5-yong.liang.choong@linux.intel.com>
+ <jmq54bskx4zd75ay4kf5pcdo6wnz72pxzfo5ivevleef4scucr@uw4fkfs64f3c>
+ <26568944-563d-4911-8f6f-14c0162db6e9@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240129112313.GA11635@redhat.com>
+In-Reply-To: <26568944-563d-4911-8f6f-14c0162db6e9@linux.intel.com>
 
-On Mon, Jan 29, 2024 at 12:23:15PM +0100, Oleg Nesterov wrote:
-> On 01/27, Oleg Nesterov wrote:
-> >
-> > I'll (hopefully) send v2 on top of
-> >
-> > 	pidfd: cleanup the usage of __pidfd_prepare's flags
-> > 	pidfd: don't do_notify_pidfd() if !thread_group_empty()
-> >
-> > on Monday
+On Mon, Jan 29, 2024 at 09:19:58PM +0800, Choong Yong Liang wrote:
+> > >   static const struct phylink_mac_ops stmmac_phylink_mac_ops = {
+> > >   	.mac_select_pcs = stmmac_mac_select_pcs,
+> > >   	.mac_config = stmmac_mac_config,
+> > >   	.mac_link_down = stmmac_mac_link_down,
+> > >   	.mac_link_up = stmmac_mac_link_up,
+> > > +#if IS_ENABLED(CONFIG_INTEL_PMC_IPC)
+> > > +	.mac_prepare = stmmac_mac_prepare,
+> > > +#endif
+> > 
+> > Please no for the platform-specific ifdef's in the generic code.
+> > STMMAC driver is already overwhelmed with clumsy solutions. Let's not
+> > add another one.
+> > 
+> > -Serge(y)
+> > 
+> > >   };
+> > >   /**
+> > > diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+> > > index c0079a7574ae..aa7d4d96391c 100644
+> > > --- a/include/linux/stmmac.h
+> > > +++ b/include/linux/stmmac.h
+> > > @@ -275,6 +275,7 @@ struct plat_stmmacenet_data {
+> > >   	int (*serdes_powerup)(struct net_device *ndev, void *priv);
+> > >   	void (*serdes_powerdown)(struct net_device *ndev, void *priv);
+> > >   	void (*speed_mode_2500)(struct net_device *ndev, void *priv);
+> > > +	int (*config_serdes)(struct net_device *ndev, void *priv);
+> > >   	void (*ptp_clk_freq_config)(struct stmmac_priv *priv);
+> > >   	int (*init)(struct platform_device *pdev, void *priv);
+> > >   	void (*exit)(struct platform_device *pdev, void *priv);
+> > > -- 
+> > > 2.25.1
+> > > 
+> > > 
+> Hi Russell and Serge,
 > 
-> Sorry, I don't have time to finish v2 today, I need to update the comments
-> and write the changelog.
-> 
-> But the patch itself is ready, I am sending it for review.
-> 
-> Tycho, Christian, any comments?
-> 
-> Oleg.
-> 
-> 
-> From c31780f6c1136a72048d24701ac6d8401fc1afda Mon Sep 17 00:00:00 2001
-> From: Oleg Nesterov <oleg@redhat.com>
-> Date: Sat, 27 Jan 2024 16:59:18 +0100
-> Subject: [PATCH] pidfd: implement PIDFD_THREAD flag for pidfd_open()
-> 
-> ---
->  include/uapi/linux/pidfd.h |  3 ++-
->  kernel/exit.c              |  7 +++++++
->  kernel/fork.c              | 29 +++++++++++++++++++++++++++--
->  kernel/pid.c               |  2 +-
->  kernel/signal.c            |  4 +++-
->  5 files changed, 40 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/uapi/linux/pidfd.h b/include/uapi/linux/pidfd.h
-> index 5406fbc13074..2e6461459877 100644
-> --- a/include/uapi/linux/pidfd.h
-> +++ b/include/uapi/linux/pidfd.h
-> @@ -7,6 +7,7 @@
->  #include <linux/fcntl.h>
->  
->  /* Flags for pidfd_open().  */
-> -#define PIDFD_NONBLOCK O_NONBLOCK
-> +#define PIDFD_NONBLOCK	O_NONBLOCK
-> +#define PIDFD_THREAD	O_EXCL
->  
->  #endif /* _UAPI_LINUX_PIDFD_H */
-> diff --git a/kernel/exit.c b/kernel/exit.c
-> index dfb963d2f862..74fe6bfb9577 100644
-> --- a/kernel/exit.c
-> +++ b/kernel/exit.c
-> @@ -739,6 +739,13 @@ static void exit_notify(struct task_struct *tsk, int group_dead)
->  		kill_orphaned_pgrp(tsk->group_leader, NULL);
->  
->  	tsk->exit_state = EXIT_ZOMBIE;
-> +	/*
-> +	 * sub-thread or delay_group_leader(), wake up the PIDFD_THREAD
-> +	 * waiters.
-> +	 */
-> +	if (!thread_group_empty(tsk))
-> +		do_notify_pidfd(tsk);
-> +
->  	if (unlikely(tsk->ptrace)) {
->  		int sig = thread_group_leader(tsk) &&
->  				thread_group_empty(tsk) &&
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 347641398f9d..977b58c0eac6 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -101,6 +101,7 @@
->  #include <linux/user_events.h>
->  #include <linux/iommu.h>
->  #include <linux/rseq.h>
-> +#include <uapi/linux/pidfd.h>
->  
->  #include <asm/pgalloc.h>
->  #include <linux/uaccess.h>
-> @@ -2050,6 +2051,8 @@ static void pidfd_show_fdinfo(struct seq_file *m, struct file *f)
->  
->  	seq_put_decimal_ll(m, "Pid:\t", nr);
->  
-> +	/* TODO: report PIDFD_THREAD */
+> Thank you for pointing that out.
+> The ifdef was removed and the config serdes will be implemented in
+> mac_link_up in the new patch series.
 
-Ah yes, very good point. We should give userspace an indicator whether
-something is thread pidfd or not.
+Hi Choong
 
-> +
->  #ifdef CONFIG_PID_NS
->  	seq_put_decimal_ll(m, "\nNSpid:\t", nr);
->  	if (nr > 0) {
-> @@ -2068,12 +2071,27 @@ static void pidfd_show_fdinfo(struct seq_file *m, struct file *f)
->  }
->  #endif
->  
-> +static bool pidfd_task_exited(struct pid *pid, bool thread)
-> +{
-> +	struct task_struct *task;
-> +	bool exited;
-> +
-> +	rcu_read_lock();
-> +	task = pid_task(pid, PIDTYPE_PID);
-> +	exited = !task ||
-> +		(READ_ONCE(task->exit_state) && (thread || thread_group_empty(task)));
-> +	rcu_read_unlock();
-> +
-> +	return exited;
-> +}
-> +
->  /*
->   * Poll support for process exit notification.
->   */
->  static __poll_t pidfd_poll(struct file *file, struct poll_table_struct *pts)
->  {
->  	struct pid *pid = file->private_data;
-> +	bool thread = file->f_flags & PIDFD_THREAD;
->  	__poll_t poll_flags = 0;
->  
->  	poll_wait(file, &pid->wait_pidfd, pts);
-> @@ -2083,7 +2101,7 @@ static __poll_t pidfd_poll(struct file *file, struct poll_table_struct *pts)
->  	 * If the thread group leader exits before all other threads in the
->  	 * group, then poll(2) should block, similar to the wait(2) family.
->  	 */
-> -	if (thread_group_exited(pid))
-> +	if (pidfd_task_exited(pid, thread))
->  		poll_flags = EPOLLIN | EPOLLRDNORM;
->  
->  	return poll_flags;
-> @@ -2141,6 +2159,11 @@ static int __pidfd_prepare(struct pid *pid, unsigned int flags, struct file **re
->  		return PTR_ERR(pidfd_file);
->  	}
->  	get_pid(pid); /* held by pidfd_file now */
-> +	/*
-> +	 * anon_inode_getfile() ignores everything outside of the
-> +	 * O_ACCMODE | O_NONBLOCK mask, set PIDFD_THREAD manually.
-> +	 */
-> +	pidfd_file->f_flags |= (flags & PIDFD_THREAD);
->  	*ret = pidfd_file;
->  	return pidfd;
->  }
-> @@ -2173,7 +2196,9 @@ static int __pidfd_prepare(struct pid *pid, unsigned int flags, struct file **re
->   */
->  int pidfd_prepare(struct pid *pid, unsigned int flags, struct file **ret)
->  {
-> -	if (!pid || !pid_has_task(pid, PIDTYPE_TGID))
-> +	bool thread = flags & PIDFD_THREAD;
-> +
-> +	if (!pid || !pid_has_task(pid, thread ? PIDTYPE_PID : PIDTYPE_TGID));
->  		return -EINVAL;
->  
->  	return __pidfd_prepare(pid, flags, ret);
-> diff --git a/kernel/pid.c b/kernel/pid.c
-> index c7a3e359f8f5..04bdd5ecf183 100644
-> --- a/kernel/pid.c
-> +++ b/kernel/pid.c
-> @@ -629,7 +629,7 @@ SYSCALL_DEFINE2(pidfd_open, pid_t, pid, unsigned int, flags)
->  	int fd;
->  	struct pid *p;
->  
-> -	if (flags & ~PIDFD_NONBLOCK)
-> +	if (flags & ~(PIDFD_NONBLOCK | PIDFD_THREAD))
->  		return -EINVAL;
->  
->  	if (pid <= 0)
-> diff --git a/kernel/signal.c b/kernel/signal.c
-> index 9561a3962ca6..919cd33a0405 100644
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -2051,7 +2051,8 @@ bool do_notify_parent(struct task_struct *tsk, int sig)
->  	WARN_ON_ONCE(!tsk->ptrace &&
->  	       (tsk->group_leader != tsk || !thread_group_empty(tsk)));
->  	/*
-> -	 * tsk is a group leader and has no threads, wake up the pidfd waiters.
-> +	 * tsk is a group leader and has no threads, wake up the !PIDFD_THREAD
-> +	 * waiters.
->  	 */
->  	if (thread_group_empty(tsk))
->  		do_notify_pidfd(tsk);
-> @@ -3926,6 +3927,7 @@ SYSCALL_DEFINE4(pidfd_send_signal, int, pidfd, int, sig,
->  		prepare_kill_siginfo(sig, &kinfo);
->  	}
->  
-> +	/* TODO: respect PIDFD_THREAD */
+Please trim the text when replying. It can be hard to find actually
+replies when having to do lots and lots of page downs. Just give the
+context needed to understand your reply.
 
-So I've been thinking about this at the end of last week. Do we need to
-give userspace a way to send a thread-group wide signal even when a
-PIDFD_THREAD pidfd is passed? Or should we just not worry about this
-right now and wait until someone needs this?
-
->  	ret = kill_pid_info(sig, &kinfo, pid);
-
-Otherwise this looks good to me!
+	Andrew
 
