@@ -1,110 +1,159 @@
-Return-Path: <linux-kernel+bounces-43500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3844F8414D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:05:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 573998414E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 22:07:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A9901C23C2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:04:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A1241C23EF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 21:07:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CF3D159569;
-	Mon, 29 Jan 2024 21:04:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4031A15A495;
+	Mon, 29 Jan 2024 21:06:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YblNVKav"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="Lkdopncz"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4D85158D64;
-	Mon, 29 Jan 2024 21:04:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74211157E79;
+	Mon, 29 Jan 2024 21:06:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706562271; cv=none; b=Xx2NQuB3TmvY4Q54xBR9nsWEBOIWDIabkFHwcW+Isv9SZrXm20FmDtS6ZniwYgo/v/GgMoyL2TU1T3VPReKmJXZvEgXAk0EfuddQ3pEtwoocSMQrHNzUkEMsFDATwHL45dc4DTBjMd7OIl8z8GZeWnT7B9KEOB2XjnnBwzauAW4=
+	t=1706562415; cv=none; b=qyfey159aNjsRXmNAIuO6wqrIJP2EJlU++zSHRX7/txjnBsavi0MqPu/B2prPD3CAyVAnrix4tfzQqmyWuH0NYtT7esMZpYfHa7b02CUdTE+eAtn1KXJIbyPxZpgx2xe86LDEwoa9qvIShVanA4uFyZ4pe9A5+VtlICTgIOwuqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706562271; c=relaxed/simple;
-	bh=XDN/zIhlQxTNPGPKvJfrKfrDPmIin/uSBcSP0Tsu0yY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cwuyGlZ7hW70sil5xWp9Tqa6sxprEqGS8kI8p0RRk2qlwk8LTCwRXGLQxzqnNS9tY7FrAhKr3n2F5CApbA0FrxwH7uI/7H8l5WxNtylHvuwKRgfFHUpPF2rYmWZt2ZVBMVUk6qBVl3A6gu0pJ08zy3ItZkXyEYF9FIYLTet+Kto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YblNVKav; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A83FC43399;
-	Mon, 29 Jan 2024 21:04:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706562271;
-	bh=XDN/zIhlQxTNPGPKvJfrKfrDPmIin/uSBcSP0Tsu0yY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=YblNVKavSXi8rgGT1xsktmVVJKTR+Z6woc4IBj6FaYb8zhPGwCSHXipE1+a2dZO91
-	 RNBou8glk8TSuv/Z+FHplscPy4MHwIgb6O8nGQGGdOOXbQQig362CBEriQMatrrHbK
-	 /662rwz80lYbn99z6PM/lV2/W0InWNzZ8Zvu7a/5SWdRt4Q8g4Wk21lHFEx2rFuDdJ
-	 ojNmXpBBBmtjAS74X4/PJlU14Ybn/eR84VLpXliR0gCTXiRIEsYY3F6+ddKkymn8PY
-	 efTxrtQkXL+wFM9iTnqJ3NzyiRl1zP8c1W76cBeQvPDxVVUIf61rGUpCdm/ZNHAXQR
-	 LMfccwKmRHKbw==
-Date: Mon, 29 Jan 2024 13:04:29 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Krzysztof Kozlowski
- <krzysztof.kozlowski@linaro.org>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Emil Renner Berthing <kernel@esmil.dk>, Samin Guo
- <samin.guo@starfivetech.com>, Alexandre Torgue
- <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, Maxime
- Coquelin <mcoquelin.stm32@gmail.com>, Giuseppe Cavallaro
- <peppe.cavallaro@st.com>, Jacob Keller <jacob.e.keller@intel.com>,
- netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-Subject: Re: [PATCH v4 1/2] dt-bindings: net: starfive,jh7110-dwmac: Add
- JH7100 SoC compatible
-Message-ID: <20240129130429.34094446@kernel.org>
-In-Reply-To: <1fa5aeee-a205-438a-a0fa-54643ffa41d0@collabora.com>
-References: <20240126191319.1209821-1-cristian.ciocaltea@collabora.com>
-	<20240126191319.1209821-2-cristian.ciocaltea@collabora.com>
-	<0a6f6dcb-18b0-48d5-8955-76bce0e1295d@linaro.org>
-	<e29ae12b-5823-4fba-8029-e8e490462138@collabora.com>
-	<56f3bd3c-c099-405b-837b-16d8aeb4cc4b@lunn.ch>
-	<8c4cfc54-bd23-4d56-a4ae-9f3dd5cedb59@collabora.com>
-	<e99e72b3-e0f6-4a80-82c8-bd60c36d180a@lunn.ch>
-	<f113c4b6-a074-4566-b69b-f25c9590d23f@collabora.com>
-	<20240129122651.4b3c7b8e@kernel.org>
-	<1fa5aeee-a205-438a-a0fa-54643ffa41d0@collabora.com>
+	s=arc-20240116; t=1706562415; c=relaxed/simple;
+	bh=K4VVElaY97sQQYGeAc34aX8mm/VX8BZpgLKGb7Mk6Jw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=H6HHiJRg33l68beldp2p1F2cI/KdBIobKMn1uyrxH8zrk0PYW4cz1dCC4cM0YGgERWoqnrlTM8N+0FXsWFz7t5PXd+1vJa8vAUnv8xiI0fyO8lHxlL+IGl6KvlJolqLY1KYX3PzSqXs9YKYgAEfwgYjurtCdxFGjoFxyBhVfoSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=Lkdopncz; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1706562409;
+	bh=K4VVElaY97sQQYGeAc34aX8mm/VX8BZpgLKGb7Mk6Jw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Lkdopncz71c/Xl8mEy9+xgP1NtQ66UgWekcmwJxHLJvM0Aca1KjAyRvIf2eBppTfA
+	 eZ8z0XfJkpuZOySPd7Yggh59oZyscBGePayQYNc5YKDttLWgiQipIpHSmwj57Wyr38
+	 GTmJaOFafjQb5Z/imJKsaVn1B6/DwDPda8fOPrSPS7BM+U9u4Z0ZNa8kZjwU3phykv
+	 5wvXn8+EQ4/w+kmzBGYd4HJy2x9lNF09xj6ciQy+Vd/bqBRlV72eADDunRpghi4Oa7
+	 IFwDnQqDUgVhH5dED782CRDoSNZ/oc5o3bimfkdPxtSGoY0InQnXcc597lRHv5Bh20
+	 yoNbHpGbs/bTw==
+Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TP17s0mCGzVQZ;
+	Mon, 29 Jan 2024 16:06:49 -0500 (EST)
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To: Dan Williams <dan.j.williams@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Dave Jiang <dave.jiang@intel.com>
+Cc: linux-kernel@vger.kernel.org,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-mm@kvack.org,
+	linux-arch@vger.kernel.org,
+	Matthew Wilcox <willy@infradead.org>,
+	linux-cxl@vger.kernel.org,
+	nvdimm@lists.linux.dev
+Subject: [RFC PATCH 0/7] Introduce cache_is_aliasing() to fix DAX regression
+Date: Mon, 29 Jan 2024 16:06:24 -0500
+Message-Id: <20240129210631.193493-1-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Mon, 29 Jan 2024 22:57:11 +0200 Cristian Ciocaltea wrote:
-> > First off, have another read of our rules:
-> > https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#tl-dr
-> > :)  
-> 
-> Oh, net/net-next suffix is required, will make sure to add it next time!
-> 
-> The 24h period restriction is still applicable for a RESEND that is
-> meant to quickly fix a previous submission issue?
+This commit introduced in v5.13 prevents building FS_DAX on 32-bit ARM,
+even on ARMv7 which does not have virtually aliased dcaches:
 
-Yes, reposting too quickly often leads to reviewers looking at 
-the wrong version.
+commit d92576f1167c ("dax: does not work correctly with virtual aliasing caches")
 
-> > IMHO forwarding the review tag to a newer version of the set yourself
-> > (like I just did) is fine. None of the tooling I know checks if that
-> > the person posting the tag matches the From:  
-> 
-> Hmm, I didn't actually test, but according to the link Andrew posted
-> above, for b4 it might be necessary to make use of the
-> `--sloppy-trailers` flag:
-> 
-> "Accept trailers where the email address of the sender differs from the
-> email address found in the trailer itself."
+It used to work fine before: I have customers using dax over pmem on
+ARMv7, but this regression will likely prevent them from upgrading their
+kernel.
 
-Hah, interesting. Using a corporate address for the tag but ML-friendly
-account for sending the email is quite common. I'm surprised. In any
-case, our tools don't do this. I think it's kinda pointless unless the
-tool can also prove provenance of the tags already in the patch...
+The root of the issue here is the fact that DAX was never designed to
+handle virtually aliased dcache (VIVT and VIPT with aliased dcache). It
+touches the pages through their linear mapping, which is not consistent
+with the userspace mappings on virtually aliased dcaches. 
+
+This patch series introduces cache_is_aliasing() with new Kconfig
+options:
+
+  * ARCH_HAS_CACHE_ALIASING
+  * ARCH_HAS_CACHE_ALIASING_DYNAMIC
+
+and implements it for all architectures. The "DYNAMIC" implementation
+implements cache_is_aliasing() as a runtime check, which is what is
+needed on architectures like 32-bit ARMV6 and ARMV6K.
+
+With this we can basically narrow down the list of architectures which
+are unsupported by DAX to those which are really affected.
+
+Feedback is welcome,
+
+Thanks,
+
+Mathieu
+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-arch@vger.kernel.org
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Vishal Verma <vishal.l.verma@intel.com>
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: linux-cxl@vger.kernel.org
+Cc: nvdimm@lists.linux.dev
+
+Mathieu Desnoyers (7):
+  Introduce cache_is_aliasing() across all architectures
+  dax: Fix incorrect list of cache aliasing architectures
+  erofs: Use dax_is_supported()
+  ext2: Use dax_is_supported()
+  ext4: Use dax_is_supported()
+  fuse: Introduce fuse_dax_is_supported()
+  xfs: Use dax_is_supported()
+
+ arch/arc/Kconfig                    |  1 +
+ arch/arm/include/asm/cachetype.h    |  3 ++
+ arch/arm/mm/Kconfig                 |  2 ++
+ arch/csky/Kconfig                   |  1 +
+ arch/m68k/Kconfig                   |  1 +
+ arch/mips/Kconfig                   |  1 +
+ arch/mips/include/asm/cachetype.h   |  9 +++++
+ arch/nios2/Kconfig                  |  1 +
+ arch/nios2/include/asm/cachetype.h  | 10 ++++++
+ arch/parisc/Kconfig                 |  1 +
+ arch/sh/Kconfig                     |  1 +
+ arch/sparc/Kconfig                  |  1 +
+ arch/sparc/include/asm/cachetype.h  | 14 ++++++++
+ arch/xtensa/Kconfig                 |  1 +
+ arch/xtensa/include/asm/cachetype.h | 10 ++++++
+ fs/Kconfig                          |  2 +-
+ fs/erofs/super.c                    | 10 +++---
+ fs/ext2/super.c                     | 14 ++++----
+ fs/ext4/super.c                     | 52 ++++++++++++++---------------
+ fs/fuse/file.c                      |  2 +-
+ fs/fuse/fuse_i.h                    | 36 +++++++++++++++++++-
+ fs/fuse/inode.c                     | 47 +++++++++++++-------------
+ fs/fuse/virtio_fs.c                 |  4 +--
+ fs/xfs/xfs_super.c                  | 20 +++++++----
+ include/linux/cacheinfo.h           |  8 +++++
+ include/linux/dax.h                 |  9 +++++
+ mm/Kconfig                          | 10 ++++++
+ 27 files changed, 198 insertions(+), 73 deletions(-)
+ create mode 100644 arch/mips/include/asm/cachetype.h
+ create mode 100644 arch/nios2/include/asm/cachetype.h
+ create mode 100644 arch/sparc/include/asm/cachetype.h
+ create mode 100644 arch/xtensa/include/asm/cachetype.h
+
+-- 
+2.39.2
+
 
