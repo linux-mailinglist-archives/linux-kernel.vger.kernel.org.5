@@ -1,99 +1,316 @@
-Return-Path: <linux-kernel+bounces-43104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43108-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 284C9840B99
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:34:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BED1D840BA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 17:35:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE674B21A27
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:34:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C88E61C22BE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 16:35:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2992159589;
-	Mon, 29 Jan 2024 16:30:52 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BA2415956D;
-	Mon, 29 Jan 2024 16:30:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3545115AADF;
+	Mon, 29 Jan 2024 16:32:10 +0000 (UTC)
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F5C15AAC5;
+	Mon, 29 Jan 2024 16:32:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706545852; cv=none; b=dv/jj1WY1+0Q6DI+oHEyFO2N2E1a8qrAnip93s7JBYfTnw+CJy02JlmaQvi4nBrE+KN1yxXNSCdJAa9ayfwPuQ8NyNknlZP2TuQpBPhWr/BN1vp/C8oJomSVmT+qRhSNht3xiXYTAA4f9YX6sR7DOUY2brGSXL0+cuEZMWPWSeE=
+	t=1706545929; cv=none; b=WA9iUfdnMhd0/lpUtzJqClMhFV6Tdrcrd5PbVe9jL0terz+FtbjC5aO3B3puWzWYduMM1bMUYCJthvCbXqv8CwCqXXxdZ5TiLQHQzlWT4ZRvAL2Ezi9nvMSO/k4h8uMPc/J23TZ/g2Vd9BCqUQuxseEw60TP4goFIbf+0vHQs00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706545852; c=relaxed/simple;
-	bh=W6TMqRtC+7055PVNc/k+MoT8M6gVLJlYB+nOkTGTGBE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kZLV/jwypAnlWnIwyo1rB/V4RWgCDrWGVUx6EnIhxphpsbIfj6CHOb63gfxyJSTvpqvYGBttjl5ERr08+ltWP17gARWiAmF50GfSkKw9XLSLgFXzs9DWvQT00fPpjpj9i8eYd2iha4IJZeaL5GTM+Y5R8V2pxQSmq6o9/4y5eQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2A95ADA7;
-	Mon, 29 Jan 2024 08:31:33 -0800 (PST)
-Received: from bogus (unknown [10.57.78.35])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C67DC3F738;
-	Mon, 29 Jan 2024 08:30:45 -0800 (PST)
-Date: Mon, 29 Jan 2024 16:30:43 +0000
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Peng Fan <peng.fan@oss.nxp.com>
-Cc: Cristian Marussi <cristian.marussi@arm.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Oleksii Moisieiev <oleksii_moisieiev@epam.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-	AKASHI Takahiro <takahiro.akashi@linaro.org>,
-	Peng Fan <peng.fan@nxp.com>, Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 0/6] firmware: arm_scmi: Add SCMI v3.2 pincontrol
- protocol basic support
-Message-ID: <20240129163043.if5jj4kyacqfe2n5@bogus>
-References: <20240121-pinctrl-scmi-v3-0-8d94ba79dca8@nxp.com>
- <f88d07ef-83b2-4d14-976a-6dbbd71e036f@oss.nxp.com>
+	s=arc-20240116; t=1706545929; c=relaxed/simple;
+	bh=TF0P9TEJQ6uWxFofCM9XjL8Cc46UH+Kmrrr9PszlHyw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CGGIOW1PEQS+62qSug1Hh9b1/0tMSAljvuOilYc7dDUNV8QQA+zD/cfyuxcqcS5djb1kbUE2gOA6u8h+hHAxJzm533I0c0L+zSMLbr4Z+juKuPbDziWjZsf9YulgP+MZgN8XvTtjoibxABAIFT/o7O288kfAsGO8W67CwoEIlT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id caebe9d19cc60e9b; Mon, 29 Jan 2024 17:31:59 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 00B7166975C;
+	Mon, 29 Jan 2024 17:31:58 +0100 (CET)
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+Subject: [PATCH v2 04/10] PM: sleep: stats: Define suspend_stats next to the code using it
+Date: Mon, 29 Jan 2024 17:30:44 +0100
+Message-ID: <2469144.jE0xQCEvom@kreacher>
+In-Reply-To: <5770175.DvuYhMxLoT@kreacher>
+References: <5770175.DvuYhMxLoT@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f88d07ef-83b2-4d14-976a-6dbbd71e036f@oss.nxp.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtgedgjeelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepgedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehulhhfrdhhrghnshhsohhnsehlihhnrghrohdrohhrghdprhgtphhtthhopehsthgrnhhishhlrgifrdhgrhhushiikhgrsehlihhnuhigrdhinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
 
-On Mon, Jan 29, 2024 at 08:36:50PM +0800, Peng Fan wrote:
-> Hi Sudeep, Cristian
-> 
-> Would you pick up patch 1-4?
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-I will for v6.9 sometime.
+It is not necessary to define struct suspend_stats in a header file and the
+suspend_stats variable in the core device system-wide PM code.  They both
+can be defined in kernel/power/main.c, next to the sysfs and debugfs code
+accessing suspend_stats, which can be static.
 
-> And for i.MX95 OEM extenstion, do you have any suggestions?
-> I have two points:
-> 1. use vendor compatible. This would also benefit when supporting vendor
-> protocol.
+Modify the code in question in accordance with the above observation and
+replace the static inline functions manipulating suspend_stats with
+regular ones defined in kernel/power/main.c.
 
-May be, but that was never on plate for standard protocols. So I don't
-like that approach either.
+While at it, move the enum suspend_stat_step to the end of suspend.h which
+is a more suitable place for it.
 
-> 2. Introduce a property saying supporting-generic-pinconf
->
+No intentional functional impact.
 
-I am not sure what you mean by that. But that doesn't sound right especial
-in context of SCMI. So I would say no.
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-> How do you think?
->
+v1 -> v2:
+   * Take the modifications of patches [2-3/10] into account.
 
-I don't have any other suggestions than fix your driver to use the pinmux
-properly with features in the upstream pinmux subsystem.
+---
+ drivers/base/power/main.c |    1 
+ include/linux/suspend.h   |   71 +++++++++---------------------------------
+ kernel/power/main.c       |   76 ++++++++++++++++++++++++++++++++++++++--------
+ kernel/power/power.h      |    2 +
+ kernel/power/suspend.c    |    7 ----
+ 5 files changed, 81 insertions(+), 76 deletions(-)
 
--- 
-Regards,
-Sudeep
+Index: linux-pm/include/linux/suspend.h
+===================================================================
+--- linux-pm.orig/include/linux/suspend.h
++++ linux-pm/include/linux/suspend.h
+@@ -40,62 +40,6 @@ typedef int __bitwise suspend_state_t;
+ #define PM_SUSPEND_MIN		PM_SUSPEND_TO_IDLE
+ #define PM_SUSPEND_MAX		((__force suspend_state_t) 4)
+ 
+-enum suspend_stat_step {
+-	SUSPEND_NONE = 0,
+-	SUSPEND_FREEZE,
+-	SUSPEND_PREPARE,
+-	SUSPEND_SUSPEND,
+-	SUSPEND_SUSPEND_LATE,
+-	SUSPEND_SUSPEND_NOIRQ,
+-	SUSPEND_RESUME_NOIRQ,
+-	SUSPEND_RESUME_EARLY,
+-	SUSPEND_RESUME
+-};
+-
+-#define SUSPEND_NR_STEPS	SUSPEND_RESUME
+-
+-struct suspend_stats {
+-	unsigned int step_failures[SUSPEND_NR_STEPS];
+-	unsigned int success;
+-	unsigned int fail;
+-#define	REC_FAILED_NUM	2
+-	int	last_failed_dev;
+-	char	failed_devs[REC_FAILED_NUM][40];
+-	int	last_failed_errno;
+-	int	errno[REC_FAILED_NUM];
+-	int	last_failed_step;
+-	u64	last_hw_sleep;
+-	u64	total_hw_sleep;
+-	u64	max_hw_sleep;
+-	enum suspend_stat_step	failed_steps[REC_FAILED_NUM];
+-};
+-
+-extern struct suspend_stats suspend_stats;
+-
+-static inline void dpm_save_failed_dev(const char *name)
+-{
+-	strscpy(suspend_stats.failed_devs[suspend_stats.last_failed_dev],
+-		name,
+-		sizeof(suspend_stats.failed_devs[0]));
+-	suspend_stats.last_failed_dev++;
+-	suspend_stats.last_failed_dev %= REC_FAILED_NUM;
+-}
+-
+-static inline void dpm_save_failed_errno(int err)
+-{
+-	suspend_stats.errno[suspend_stats.last_failed_errno] = err;
+-	suspend_stats.last_failed_errno++;
+-	suspend_stats.last_failed_errno %= REC_FAILED_NUM;
+-}
+-
+-static inline void dpm_save_failed_step(enum suspend_stat_step step)
+-{
+-	suspend_stats.step_failures[step-1]++;
+-	suspend_stats.failed_steps[suspend_stats.last_failed_step] = step;
+-	suspend_stats.last_failed_step++;
+-	suspend_stats.last_failed_step %= REC_FAILED_NUM;
+-}
+-
+ /**
+  * struct platform_suspend_ops - Callbacks for managing platform dependent
+  *	system sleep states.
+@@ -623,4 +567,19 @@ static inline void queue_up_suspend_work
+ 
+ #endif /* !CONFIG_PM_AUTOSLEEP */
+ 
++enum suspend_stat_step {
++	SUSPEND_NONE = 0,
++	SUSPEND_FREEZE,
++	SUSPEND_PREPARE,
++	SUSPEND_SUSPEND,
++	SUSPEND_SUSPEND_LATE,
++	SUSPEND_SUSPEND_NOIRQ,
++	SUSPEND_RESUME_NOIRQ,
++	SUSPEND_RESUME_EARLY,
++	SUSPEND_RESUME
++};
++
++void dpm_save_failed_dev(const char *name);
++void dpm_save_failed_step(enum suspend_stat_step step);
++
+ #endif /* _LINUX_SUSPEND_H */
+Index: linux-pm/kernel/power/main.c
+===================================================================
+--- linux-pm.orig/kernel/power/main.c
++++ linux-pm/kernel/power/main.c
+@@ -95,19 +95,6 @@ int unregister_pm_notifier(struct notifi
+ }
+ EXPORT_SYMBOL_GPL(unregister_pm_notifier);
+ 
+-void pm_report_hw_sleep_time(u64 t)
+-{
+-	suspend_stats.last_hw_sleep = t;
+-	suspend_stats.total_hw_sleep += t;
+-}
+-EXPORT_SYMBOL_GPL(pm_report_hw_sleep_time);
+-
+-void pm_report_max_hw_sleep(u64 t)
+-{
+-	suspend_stats.max_hw_sleep = t;
+-}
+-EXPORT_SYMBOL_GPL(pm_report_max_hw_sleep);
+-
+ int pm_notifier_call_chain_robust(unsigned long val_up, unsigned long val_down)
+ {
+ 	int ret;
+@@ -319,6 +306,69 @@ static ssize_t pm_test_store(struct kobj
+ power_attr(pm_test);
+ #endif /* CONFIG_PM_SLEEP_DEBUG */
+ 
++#define SUSPEND_NR_STEPS	SUSPEND_RESUME
++#define REC_FAILED_NUM		2
++
++struct suspend_stats {
++	unsigned int step_failures[SUSPEND_NR_STEPS];
++	unsigned int success;
++	unsigned int fail;
++	int last_failed_dev;
++	char failed_devs[REC_FAILED_NUM][40];
++	int last_failed_errno;
++	int errno[REC_FAILED_NUM];
++	int last_failed_step;
++	u64 last_hw_sleep;
++	u64 total_hw_sleep;
++	u64 max_hw_sleep;
++	enum suspend_stat_step failed_steps[REC_FAILED_NUM];
++};
++
++static struct suspend_stats suspend_stats;
++
++void dpm_save_failed_dev(const char *name)
++{
++	strscpy(suspend_stats.failed_devs[suspend_stats.last_failed_dev],
++		name, sizeof(suspend_stats.failed_devs[0]));
++	suspend_stats.last_failed_dev++;
++	suspend_stats.last_failed_dev %= REC_FAILED_NUM;
++}
++
++void dpm_save_failed_step(enum suspend_stat_step step)
++{
++	suspend_stats.step_failures[step-1]++;
++	suspend_stats.failed_steps[suspend_stats.last_failed_step] = step;
++	suspend_stats.last_failed_step++;
++	suspend_stats.last_failed_step %= REC_FAILED_NUM;
++}
++
++void dpm_save_errno(int err)
++{
++	if (!err) {
++		suspend_stats.success++;
++		return;
++	}
++
++	suspend_stats.fail++;
++
++	suspend_stats.errno[suspend_stats.last_failed_errno] = err;
++	suspend_stats.last_failed_errno++;
++	suspend_stats.last_failed_errno %= REC_FAILED_NUM;
++}
++
++void pm_report_hw_sleep_time(u64 t)
++{
++	suspend_stats.last_hw_sleep = t;
++	suspend_stats.total_hw_sleep += t;
++}
++EXPORT_SYMBOL_GPL(pm_report_hw_sleep_time);
++
++void pm_report_max_hw_sleep(u64 t)
++{
++	suspend_stats.max_hw_sleep = t;
++}
++EXPORT_SYMBOL_GPL(pm_report_max_hw_sleep);
++
+ static const char * const suspend_step_names[] = {
+ 	[SUSPEND_NONE] = "",
+ 	[SUSPEND_FREEZE] = "freeze",
+Index: linux-pm/kernel/power/power.h
+===================================================================
+--- linux-pm.orig/kernel/power/power.h
++++ linux-pm/kernel/power/power.h
+@@ -327,3 +327,5 @@ static inline void pm_sleep_enable_secon
+ 	suspend_enable_secondary_cpus();
+ 	cpuidle_resume();
+ }
++
++void dpm_save_errno(int err);
+Index: linux-pm/kernel/power/suspend.c
+===================================================================
+--- linux-pm.orig/kernel/power/suspend.c
++++ linux-pm/kernel/power/suspend.c
+@@ -616,12 +616,7 @@ int pm_suspend(suspend_state_t state)
+ 
+ 	pr_info("suspend entry (%s)\n", mem_sleep_labels[state]);
+ 	error = enter_state(state);
+-	if (error) {
+-		suspend_stats.fail++;
+-		dpm_save_failed_errno(error);
+-	} else {
+-		suspend_stats.success++;
+-	}
++	dpm_save_errno(error);
+ 	pr_info("suspend exit\n");
+ 	return error;
+ }
+Index: linux-pm/drivers/base/power/main.c
+===================================================================
+--- linux-pm.orig/drivers/base/power/main.c
++++ linux-pm/drivers/base/power/main.c
+@@ -60,7 +60,6 @@ static LIST_HEAD(dpm_suspended_list);
+ static LIST_HEAD(dpm_late_early_list);
+ static LIST_HEAD(dpm_noirq_list);
+ 
+-struct suspend_stats suspend_stats;
+ static DEFINE_MUTEX(dpm_list_mtx);
+ static pm_message_t pm_transition;
+ 
+
+
+
 
