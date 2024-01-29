@@ -1,209 +1,352 @@
-Return-Path: <linux-kernel+bounces-42081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-42082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D98E83FC0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 03:12:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BE3983FC11
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 03:15:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 418C31C20976
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 02:12:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C605E1F22FA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 02:15:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2A46EED7;
-	Mon, 29 Jan 2024 02:12:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9794EAE4;
+	Mon, 29 Jan 2024 02:15:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NfFdMlGU"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z7fuT1X6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B521DF57
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 02:12:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97356DF69
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 02:15:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706494350; cv=none; b=QYitl+x4J5xhqlZfrSrYUWM59LUUoS2CkUAimEI0mM2D3DecmiYIyVukhEMABQPaK8h/s4en9fhUS/cFB4ZdIvFHX4I5s8SV2a1b6+aWh4eVbaBGb2C2zb9VcxP41HsbeVcf+lcUpfLxEDDZXgxjE8NVWnPDBl5WSsj/8eNCUOk=
+	t=1706494516; cv=none; b=uaTySdBM8lvg3X9MZJP8LiZUKStSkGwgKXmSqHNfk7Uuz5rdGNQ2QLzXqwHBIOywghI6VLcClzxioPaBEIZr2E+b4aaf2dXv80SuXsRAt4AsyGSOiWD2XrkjsTEnOMphz+/0xycAHFzPqhvdFbftAk9NbaUzXPWOC9+LVaXtj6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706494350; c=relaxed/simple;
-	bh=74AaJSvp1x+QsqfBEbwtqQ2LgJrbhXQeDnDXDWIVpDQ=;
+	s=arc-20240116; t=1706494516; c=relaxed/simple;
+	bh=7055U/9Nxv5bXUdnlD++5r6zZXVPj28DxkcLh6h6JgA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KAGi0+Ukujob7/rXq2j1znXkkqQKxiWv6kSMtKE2X6RFSc14209q2KZAi3yCP0WgQHsnQtE+exdVY3hgrFjYy/dRyb0U3WU1aSHG5zlzmQnYqTpDmeqlvTOlHZnEe/CO4j4GvXaPE8saDByqwSU7iS3dBp0maXPmzPdm45an6/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NfFdMlGU; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706494347;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xJWg2PYEamb3ZegCQzkfF2MUl1gzSlbA9B2qC4uBssM=;
-	b=NfFdMlGUrEzLJpHzgbC+ZaydR4aTvApOAHFrJBMyKT1MZBHACDojyUg6IbNDdB85fl0uIC
-	y+zzpi0rsDQ14fAXn64owTk6mm3AsS6are+CpXlbbDJKg6wezSH/x8QfYSviKOV+XrsMUO
-	nY3D387He2CDEakWk63YACoDIC5Ts44=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-502-xV24OTZQNiKgzZszeXPhnA-1; Sun, 28 Jan 2024 21:12:25 -0500
-X-MC-Unique: xV24OTZQNiKgzZszeXPhnA-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a2c4e9cb449so110078766b.1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 18:12:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706494344; x=1707099144;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xJWg2PYEamb3ZegCQzkfF2MUl1gzSlbA9B2qC4uBssM=;
-        b=pNDSUKwCeLDNJWk4blggdz0eppkbodH0x9QWYGi9nSCpA1+hPHHgCXay/9/d5gyAZT
-         qGZnZRWbt+wduKO5+N3eXVdYdBnWOGawwmRaK0cT63voZGCkycO4M40EDQOo+dOdyMrK
-         l6i8riWLlDvrPXekO5G8us1Hep+jPnd7eIVpq1hdqYl0hcT2VBsJVMfowEotGcWh1hzP
-         KVKweEzNhFYerSVyuLlBTXaFE9q9PbCQkFcevJi/IS+EFuMBJG1CesvdO4fDpK+DfPL+
-         TYZKYWCeD06hXs9N0pkcv/b8h20rKNcUNKzspc2S2Y8VrKbSglYvZktorkDGs3RUhDoB
-         AGlA==
-X-Gm-Message-State: AOJu0YwBoj3eHVCRo//zc/fiUJvBbOIXO1G5mvAnfkArFh3MH0GW4GxE
-	rPEMOv8HYd6KKlxEhGzrgQqIc7JaVwr5O/GoGu0Yj8oSKv8hNMd8fUO9BQLOmwkcsW8vqDY8xm6
-	WgPZ74yjdoUCtqZCmfeNGEFIIYLx/3RsbGw+TVFKNs1I7mijSaGtsXwfOYrvfglrMINWzL3FhCa
-	xBJ7Gf6UGRvD+LCg+bt7qPkNwbxUMKLidetiDZSyOOLjMVCA==
-X-Received: by 2002:a17:906:c097:b0:a2d:2121:2a93 with SMTP id f23-20020a170906c09700b00a2d21212a93mr3453545ejz.70.1706494344274;
-        Sun, 28 Jan 2024 18:12:24 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGiFbrJmKuoTg7NfZCeLeu7gfR1ponzl4sUsXEQJ6nN5S021D9wfOn3F8TWqMMqPdPoyRd2vp8/+YquOqRouIk=
-X-Received: by 2002:a17:906:c097:b0:a2d:2121:2a93 with SMTP id
- f23-20020a170906c09700b00a2d21212a93mr3453534ejz.70.1706494343887; Sun, 28
- Jan 2024 18:12:23 -0800 (PST)
+	 To:Cc:Content-Type; b=RB1a7XdkDFEiK3uutkCvoP9knj9UzGTH2Jw8HzLrmX9+w6EoGvpq91g/TumXtX6dPFrN1GJddBhSmrPJE7KD46gEEazDe44exNZ0P7+sxWTgSg3+eo00FdeDasYHASJUSWKtLVvOZ3Dh5vePsCFg+On3wzwTG+bJD1cbQ8i3JZg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z7fuT1X6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED0CFC43399
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 02:15:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706494516;
+	bh=7055U/9Nxv5bXUdnlD++5r6zZXVPj28DxkcLh6h6JgA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Z7fuT1X6IyKphgcImv6Ykm47ABZiD2GM5GnUNxemHnSy1Awg8vRetFR5HijZO4EZP
+	 aJDXHqJmKhv1IMBNETgFSjKPhJ6F1o9qEoihV5F4eN8KovEir4q7Ub0//AE3M7TUeK
+	 a/rZ7CIQ0HM7+Pw7gMx6IJ9PMnm3Tlahk4HkgFegw52pKsLCNXtTFUowlbQEcy6bkM
+	 qx44r2J6q4RNlD7nPs8WJELo3+yvcdbcsZOLj58YVYBHyZFurZg4jbVrtodzrDm/1W
+	 mA3Fd4vycib3VPieknw6Sv9sok4GL4vBNgzy9be9PQi0Fl/yVMQY2fNfO0D0LHtBzO
+	 zSCWKoE6rom4Q==
+Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7bfeacc32d2so40127339f.2
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jan 2024 18:15:15 -0800 (PST)
+X-Gm-Message-State: AOJu0YxG87QgrCigdy8sYB3nVpEUDkPa5Xnog2qoz1yvDP7cyU/V0rTB
+	vIxJyNi7vMlHKBAxI3uSWY85YocgJi5sUPIxqPpJjCy09q4gQTPXyXwzZh6AUmTgAXLQvNvlxWe
+	OhU80mcHFWUGKDZR3ER0niqKuOxHm89xosCtc
+X-Google-Smtp-Source: AGHT+IEvOpo+ECoXVFn7hv2AVOp8va3Wt0QdiIVOOWoN1MX9U9R8xdEZCYi3P/pz3z/fNn14gfjoa8NV2HIbgL0orU0=
+X-Received: by 2002:a05:6e02:1a4a:b0:361:a7a2:9daf with SMTP id
+ u10-20020a056e021a4a00b00361a7a29dafmr7366338ilv.27.1706494515194; Sun, 28
+ Jan 2024 18:15:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240128142522.1524741-1-ming.lei@redhat.com> <ZbbPCQZdazF7s0_b@casper.infradead.org>
- <ZbbfXVg9FpWRUVDn@redhat.com> <ZbbvfFxcVgkwbhFv@casper.infradead.org>
- <CAH6w=aw_46Ker0w8HmSA41vUUDKGDGC3gxBFWAhd326+kEtrNg@mail.gmail.com> <ZbcDvTkeDKttPfJ4@dread.disaster.area>
-In-Reply-To: <ZbcDvTkeDKttPfJ4@dread.disaster.area>
-From: Mike Snitzer <snitzer@redhat.com>
-Date: Sun, 28 Jan 2024 21:12:12 -0500
-Message-ID: <CAH6w=azbfYCbC6m-bh-yUt3HMUe-EnWPV71P+Z=jeNwMU5aHaQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm/readahead: readahead aggressively if read drops in
- willneed range
-To: Dave Chinner <david@fromorbit.com>
-Cc: Mike Snitzer <snitzer@kernel.org>, Matthew Wilcox <willy@infradead.org>, 
-	Ming Lei <ming.lei@redhat.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, Don Dutile <ddutile@redhat.com>, 
-	Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>
+References: <20231025144546.577640-1-ryan.roberts@arm.com> <20240118111036.72641-1-21cnbao@gmail.com>
+ <20240118111036.72641-7-21cnbao@gmail.com>
+In-Reply-To: <20240118111036.72641-7-21cnbao@gmail.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Sun, 28 Jan 2024 18:15:03 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuNAj0AfXy1zNi8KuK9VQuDaALF3-qyM42gjuLuqxrhDLQ@mail.gmail.com>
+Message-ID: <CAF8kJuNAj0AfXy1zNi8KuK9VQuDaALF3-qyM42gjuLuqxrhDLQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 6/6] mm: madvise: don't split mTHP for MADV_PAGEOUT
+To: Barry Song <21cnbao@gmail.com>
+Cc: ryan.roberts@arm.com, akpm@linux-foundation.org, david@redhat.com, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, mhocko@suse.com, 
+	shy828301@gmail.com, wangkefeng.wang@huawei.com, willy@infradead.org, 
+	xiang@kernel.org, ying.huang@intel.com, yuzhao@google.com, surenb@google.com, 
+	steven.price@arm.com, Chuanhua Han <hanchuanhua@oppo.com>, 
+	Barry Song <v-songbaohua@oppo.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jan 28, 2024 at 8:48=E2=80=AFPM Dave Chinner <david@fromorbit.com> =
-wrote:
+On Thu, Jan 18, 2024 at 3:12=E2=80=AFAM Barry Song <21cnbao@gmail.com> wrot=
+e:
 >
-> On Sun, Jan 28, 2024 at 07:39:49PM -0500, Mike Snitzer wrote:
-> > On Sun, Jan 28, 2024 at 7:22=E2=80=AFPM Matthew Wilcox <willy@infradead=
-org> wrote:
-> > >
-> > > On Sun, Jan 28, 2024 at 06:12:29PM -0500, Mike Snitzer wrote:
-> > > > On Sun, Jan 28 2024 at  5:02P -0500,
-> > > > Matthew Wilcox <willy@infradead.org> wrote:
-> > > Understood.  But ... the application is asking for as much readahead =
+> From: Chuanhua Han <hanchuanhua@oppo.com>
+>
+> MADV_PAGEOUT and MADV_FREE are common cases in Android. Ryan's patchset h=
 as
-> > > possible, and the sysadmin has said "Don't readahead more than 64kB a=
-t
-> > > a time".  So why will we not get a bug report in 1-15 years time sayi=
-ng
-> > > "I put a limit on readahead and the kernel is ignoring it"?  I think
-> > > typically we allow the sysadmin to override application requests,
-> > > don't we?
-> >
-> > The application isn't knowingly asking for readahead.  It is asking to
-> > mmap the file (and reporter wants it done as quickly as possible..
-> > like occurred before).
+> supported swapping large folios out as a whole for vmscan case. This patc=
+h
+> extends the feature to madvise.
 >
-> .. which we do within the constraints of the given configuration.
+> If madvised range covers the whole large folio, we don't split it. Otherw=
+ise,
+> we still need to split it.
 >
-> > This fix is comparable to Jens' commit 9491ae4aade6 ("mm: don't cap
-> > request size based on read-ahead setting") -- same logic, just applied
-> > to callchain that ends up using madvise(MADV_WILLNEED).
+> This patch doesn't depend on ARM64's CONT-PTE, alternatively, it defines =
+one
+> helper named pte_range_cont_mapped() to check if all PTEs are contiguousl=
+y
+> mapped to a large folio.
 >
-> Not really. There is a difference between performing a synchronous
-> read IO here that we must complete, compared to optimistic
-> asynchronous read-ahead which we can fail or toss away without the
-> user ever seeing the data the IO returned.
+> Signed-off-by: Chuanhua Han <hanchuanhua@oppo.com>
+> Co-developed-by: Barry Song <v-songbaohua@oppo.com>
+> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> ---
+>  include/asm-generic/tlb.h | 10 +++++++
+>  include/linux/pgtable.h   | 60 +++++++++++++++++++++++++++++++++++++++
+>  mm/madvise.c              | 48 +++++++++++++++++++++++++++++++
+>  3 files changed, 118 insertions(+)
 >
-> We want required IO to be done in as few, larger IOs as possible,
-> and not be limited by constraints placed on background optimistic
-> IOs.
+> diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
+> index 129a3a759976..f894e22da5d6 100644
+> --- a/include/asm-generic/tlb.h
+> +++ b/include/asm-generic/tlb.h
+> @@ -608,6 +608,16 @@ static inline void tlb_flush_p4d_range(struct mmu_ga=
+ther *tlb,
+>                 __tlb_remove_tlb_entry(tlb, ptep, address);     \
+>         } while (0)
 >
-> madvise(WILLNEED) is optimistic IO - there is no requirement that it
-> complete the data reads successfully. If the data is actually
-> required, we'll guarantee completion when the user accesses it, not
-> when madvise() is called.  IOWs, madvise is async readahead, and so
-> really should be constrained by readahead bounds and not user IO
-> bounds.
+> +#define tlb_remove_nr_tlb_entry(tlb, ptep, address, nr)                 =
+       \
+> +       do {                                                            \
+> +               int i;                                                  \
+> +               tlb_flush_pte_range(tlb, address,                       \
+> +                               PAGE_SIZE * nr);                        \
+> +               for (i =3D 0; i < nr; i++)                               =
+ \
+> +                       __tlb_remove_tlb_entry(tlb, ptep + i,           \
+> +                                       address + i * PAGE_SIZE);       \
+> +       } while (0)
+> +
+>  #define tlb_remove_huge_tlb_entry(h, tlb, ptep, address)       \
+>         do {                                                    \
+>                 unsigned long _sz =3D huge_page_size(h);          \
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index 37fe83b0c358..da0c1cf447e3 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -320,6 +320,42 @@ static inline pgd_t pgdp_get(pgd_t *pgdp)
+>  }
+>  #endif
 >
-> We could change this behaviour for madvise of large ranges that we
-> force into the page cache by ignoring device readahead bounds, but
-> I'm not sure we want to do this in general.
->
-> Perhaps fadvise/madvise(willneed) can fiddle the file f_ra.ra_pages
-> value in this situation to override the device limit for large
-> ranges (for some definition of large - say 10x bdi->ra_pages) and
-> restore it once the readahead operation is done. This would make it
-> behave less like readahead and more like a user read from an IO
-> perspective...
+> +#ifndef pte_range_cont_mapped
+> +static inline bool pte_range_cont_mapped(unsigned long start_pfn,
+> +                                        pte_t *start_pte,
+> +                                        unsigned long start_addr,
+> +                                        int nr)
+> +{
+> +       int i;
+> +       pte_t pte_val;
+> +
+> +       for (i =3D 0; i < nr; i++) {
+> +               pte_val =3D ptep_get(start_pte + i);
+> +
+> +               if (pte_none(pte_val))
+> +                       return false;
 
-I'm not going to pretend like I'm an expert in this code or all the
-distinctions that are in play.  BUT, if you look at the high-level
-java reproducer: it is requesting mmap of a finite size, starting from
-the beginning of the file:
-FileChannel fc =3D new RandomAccessFile(new File(args[0]), "rw").getChannel=
-();
-MappedByteBuffer mem =3D fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size()=
+Hmm, the following check pte_pfn =3D=3D start_pfn + i should have covered
+the pte none case?
+
+I think the pte_none means it can't have a valid pfn. So this check
+can be skipped?
+
+> +
+> +               if (pte_pfn(pte_val) !=3D (start_pfn + i))
+> +                       return false;
+> +       }
+> +
+> +       return true;
+> +}
+> +#endif
+> +
+> +#ifndef pte_range_young
+> +static inline bool pte_range_young(pte_t *start_pte, int nr)
+> +{
+> +       int i;
+> +
+> +       for (i =3D 0; i < nr; i++)
+> +               if (pte_young(ptep_get(start_pte + i)))
+> +                       return true;
+> +
+> +       return false;
+> +}
+> +#endif
+> +
+>  #ifndef __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG
+>  static inline int ptep_test_and_clear_young(struct vm_area_struct *vma,
+>                                             unsigned long address,
+> @@ -580,6 +616,23 @@ static inline pte_t ptep_get_and_clear_full(struct m=
+m_struct *mm,
+>  }
+>  #endif
+>
+> +#define __HAVE_ARCH_PTEP_GET_AND_CLEAR_RANGE_FULL
+> +static inline pte_t ptep_get_and_clear_range_full(struct mm_struct *mm,
+> +                                                 unsigned long start_add=
+r,
+> +                                                 pte_t *start_pte,
+> +                                                 int nr, int full)
+> +{
+> +       int i;
+> +       pte_t pte;
+> +
+> +       pte =3D ptep_get_and_clear_full(mm, start_addr, start_pte, full);
+> +
+> +       for (i =3D 1; i < nr; i++)
+> +               ptep_get_and_clear_full(mm, start_addr + i * PAGE_SIZE,
+> +                                       start_pte + i, full);
+> +
+> +       return pte;
+> +}
+>
+>  /*
+>   * If two threads concurrently fault at the same page, the thread that
+> @@ -995,6 +1048,13 @@ static inline void arch_swap_restore(swp_entry_t en=
+try, struct folio *folio)
+>  })
+>  #endif
+>
+> +#ifndef pte_nr_addr_end
+> +#define pte_nr_addr_end(addr, size, end)                               \
+> +({     unsigned long __boundary =3D ((addr) + size) & (~(size - 1));    =
+ \
+> +       (__boundary - 1 < (end) - 1)? __boundary: (end);                \
+> +})
+> +#endif
+> +
+>  /*
+>   * When walking page tables, we usually want to skip any p?d_none entrie=
+s;
+>   * and any p?d_bad entries - reporting the error before resetting to non=
+e.
+> diff --git a/mm/madvise.c b/mm/madvise.c
+> index 912155a94ed5..262460ac4b2e 100644
+> --- a/mm/madvise.c
+> +++ b/mm/madvise.c
+> @@ -452,6 +452,54 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *=
+pmd,
+>                 if (folio_test_large(folio)) {
+>                         int err;
+>
+> +                       if (!folio_test_pmd_mappable(folio)) {
+
+This session of code indent into the right too much.
+You can do:
+
+if (folio_test_pmd_mappable(folio))
+         goto split;
+
+to make the code flatter.
+
+> +                               int nr_pages =3D folio_nr_pages(folio);
+> +                               unsigned long folio_size =3D PAGE_SIZE * =
+nr_pages;
+> +                               unsigned long start_addr =3D ALIGN_DOWN(a=
+ddr, nr_pages * PAGE_SIZE);;
+> +                               unsigned long start_pfn =3D page_to_pfn(f=
+olio_page(folio, 0));
+> +                               pte_t *start_pte =3D pte - (addr - start_=
+addr) / PAGE_SIZE;
+> +                               unsigned long next =3D pte_nr_addr_end(ad=
+dr, folio_size, end);
+> +
+> +                               if (!pte_range_cont_mapped(start_pfn, sta=
+rt_pte, start_addr, nr_pages))
+> +                                       goto split;
+> +
+> +                               if (next - addr !=3D folio_size) {
+
+Nitpick: One line statement does not need {
+
+> +                                       goto split;
+> +                               } else {
+
+When the previous if statement already "goto split", there is no need
+for the else. You can save one level of indentation.
+
+
+
+> +                                       /* Do not interfere with other ma=
+ppings of this page */
+> +                                       if (folio_estimated_sharers(folio=
+) !=3D 1)
+> +                                               goto skip;
+> +
+> +                                       VM_BUG_ON(addr !=3D start_addr ||=
+ pte !=3D start_pte);
+> +
+> +                                       if (pte_range_young(start_pte, nr=
+_pages)) {
+> +                                               ptent =3D ptep_get_and_cl=
+ear_range_full(mm, start_addr, start_pte,
+> +                                                                        =
+             nr_pages, tlb->fullmm);
+> +                                               ptent =3D pte_mkold(ptent=
 );
+> +
+> +                                               set_ptes(mm, start_addr, =
+start_pte, ptent, nr_pages);
+> +                                               tlb_remove_nr_tlb_entry(t=
+lb, start_pte, start_addr, nr_pages);
+> +                                       }
+> +
+> +                                       folio_clear_referenced(folio);
+> +                                       folio_test_clear_young(folio);
+> +                                       if (pageout) {
+> +                                               if (folio_isolate_lru(fol=
+io)) {
+> +                                                       if (folio_test_un=
+evictable(folio))
+> +                                                               folio_put=
+back_lru(folio);
+> +                                                       else
+> +                                                               list_add(=
+&folio->lru, &folio_list);
+> +                                               }
+> +                                       } else
+> +                                               folio_deactivate(folio);
 
-Yet you're talking about the application like it is stabbingly
-triggering unbounded async reads that can get dropped, etc, etc.  I
-just want to make sure the subtlety of (ab)using madvise(WILLNEED)
-like this app does isn't incorrectly attributed to something it isn't.
-The app really is effectively requesting a user read of a particular
-extent in terms of mmap, right?
+I notice this section is very similar to the earlier statements inside
+the same function.
+"if (pmd_trans_huge(*pmd)) {"
 
-BTW, your suggestion to have this app fiddle with ra_pages and then
-reset it is pretty awful (that is a global setting, being tweaked for
-a single use, and exposing random IO to excessive readahead should
-there be a heavy mix of IO to the backing block device).  Seems the
-app is providing plenty of context that it shouldn't be bounded in
-terms of readahead limits, so much so that Ming's patch is conveying
-the range the madvise(WILLNEED) is provided by the app so as to _know_
-if the requested page(s) fall within the requested size; Linux just
-happens to be fulfilling the syscall in terms of readahead.
+Wondering if there is some way to unify the two a bit somehow.
 
-FYI, here is the evolution of this use-case back from when it issued
-larger IO back in 3.14, Ming documented it I'm just sharing in case it
-helps:
+Also notice if you test the else condition first,
 
-3.14:
-madvise_willneed() -> force_page_cache_readahead()
-force_page_cache_readahead() will read all pages in the specified range
+If (!pageout) {
+    folio_deactivate(folio);
+    goto skip;
+}
 
-3.15:
-madvise_willneed() -> vfs_fadvise() -> generic_fadvise() ->
-  force_page_cache_readahead()
+You can save one level of indentation.
+Not your fault, I notice the section inside (pmd_trans_huge(*pmd))
+does exactly the same thing.
 
-force_page_cache_readahead() only reads at most device max_sectors bytes,
-and the remainder is read in filemap_fault()
+Chris
 
-Things start to change since:
 
-1) 6d2be915e589 ("mm/readahead.c: fix readahead failure for memoryless
-NUMA nodes
-and limit readahead max_pages")
-which limits at most 2Mbytes to be read in madvise_willneed()
-so the remained bytes are read in filemap_fault() via normal readahead
-
-2) 600e19afc5f8 ("mm: use only per-device readahead limit")
-limits at most .ra_pages bytes to read in madvise_willneed()
-
-3) 9491ae4aade6 ("mm: don't cap request size based on read-ahead setting")
-relax the limit by reading at most max sectors bytes in madvise_willneed()
-
+> +                               }
+> +skip:
+> +                               pte +=3D (next - PAGE_SIZE - (addr & PAGE=
+_MASK))/PAGE_SIZE;
+> +                               addr =3D next - PAGE_SIZE;
+> +                               continue;
+> +
+> +                       }
+> +split:
+>                         if (folio_estimated_sharers(folio) !=3D 1)
+>                                 break;
+>                         if (pageout_anon_only_filter && !folio_test_anon(=
+folio))
+> --
+> 2.34.1
+>
+>
 
