@@ -1,168 +1,123 @@
-Return-Path: <linux-kernel+bounces-43380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1CE38412ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:01:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 124C68412F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:02:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E58FA1C25323
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:01:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2DD3287E79
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:02:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D371C2C1A2;
-	Mon, 29 Jan 2024 19:01:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EDC8179AB;
+	Mon, 29 Jan 2024 19:01:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Uz4fF7tL"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="eurxFM7V"
+Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 750C4101CF
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 19:01:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F15C414AAA
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 19:01:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706554871; cv=none; b=JYe1wqAcrMsGuo7FGhPPjOOAJFYgrSgBa3Gy0bSVYIXKgZv2T6mBCNwg14ozI4cfAXpDpazzYDxINj9UiuBnM3v3ofxUZhP0Mko9HA2/jE30vIbuJQ/rkRH4ZUqJNPxV1lrIoauxO1QEF6q8fbiVY3C7mmVR2kkUZ6bihebsaYU=
+	t=1706554917; cv=none; b=KU0kL6k5qA3rBqplOG4La2dX1UsHoHyXJi6eHfi6tUrmBNOD2/jlotnc4mIwEeubCkmmM5SkAL/g72hqkBylJpt4RH5xHr9U5pRqjKnxxyAtd7/9L8Vwm6qp4MGMrbn7Et85tp30untCfDiBuihBFWsz7P8DsJUHLktYC+3zxj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706554871; c=relaxed/simple;
-	bh=EGwiQ4p1vYieugVbWg78iLa7GA3A68534GyysP3s9mI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Cr4TRMRju7YL0hzELVc0bMAqqetpvmoxLrA5v5UHGzWVQUFWcEI+OfOfS/TaFOCk8QvVrN6HrSVPiQCp5Zy74x1K+4/a3xcU1JuFGxle7xa1e4OgMYfw9QzHYqlwOTAjgowZ/6vzabG6mzsJCqxXRHDj49/ZnQA3hybpDXpKfZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Uz4fF7tL; arc=none smtp.client-ip=192.55.52.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706554869; x=1738090869;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=EGwiQ4p1vYieugVbWg78iLa7GA3A68534GyysP3s9mI=;
-  b=Uz4fF7tL7foOnKUjtQ39nsL6GqkudEttDVvslhejqSfOCr/9VBzG+YGX
-   cKgxwU97BC7D1029etFO88nclt3O8ESfKChwwrh1orE0GReXKabCayGG6
-   zInSgfjZ63XPWStSzLqFKg5G5Yck9cP/TCPVDtF/gNZPmO/N7meTSZNmO
-   A59dHbG8TZqcbcHFwUGzi+Nnv3rrdpgCq2VDF1mAksDEyfQell1s4ELoH
-   ZicRvbhWze1icrRekkl6m5KILgiLUzRiEztYoJd1lcOWBLVL5mQJdyaPk
-   rLYixsDPREaysIXoxmrdnE8nt5y/rWZHKk71n5R0aizOOXzgrV6SO6Qnd
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="434233556"
-X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="434233556"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 11:01:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="858194431"
-X-IronPort-AV: E=Sophos;i="6.05,227,1701158400"; 
-   d="scan'208";a="858194431"
-Received: from fdefranc-mobl3.ger.corp.intel.com (HELO fdefranc-mobl3.intel.com) ([10.213.21.23])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 11:01:06 -0800
-From: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
-To: linux-kernel@vger.kernel.org
-Cc: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Ira Weiny <ira.weiny@intel.com>
-Subject: [RFC PATCH] cleanup: Add cond_guard() to conditional guards
-Date: Mon, 29 Jan 2024 20:00:55 +0100
-Message-ID: <20240129190100.329791-1-fabio.maria.de.francesco@linux.intel.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706554917; c=relaxed/simple;
+	bh=rXwL8ZgyJFSpC9k+Ab0i+1OiFs1s/8BDF4WGUL9Hg6k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=N1KxrgDxPBwPwmO37JoF9a/brIAMrIr36qdtLw+uN5IbO6u2xFbnwthhL71kpzAjplpFABfMoKgCJ57kA2jt76LPqMs0od4JbZ5pKpu84q+A7vn4xTl+LTa1oM0GJIiDfTQvxtTBQAA8i7dLUXHLfEahkK+qWoUJT4R1IKGcUYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=eurxFM7V; arc=none smtp.client-ip=209.85.166.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7bf3283c18dso41513639f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 11:01:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1706554915; x=1707159715; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jSJF+OOAXf610xBVp3jRjdPIYKqNvKf0pGO5qcf0N64=;
+        b=eurxFM7VnQTBJ8zpsfhmcGS/aQtMga5QJZ8+lTwOelHJVP8klRaNvcY7IOSFAcauw1
+         w+d0rbXi2qIFker9Eurtzh/9PnG79zH+T02ytq5AQLlJ4GYIxK54g1WuE1Zog2amVhQG
+         nBTnPVPxCxTMYThDPWevHrGdTKC4ykFnkX2dk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706554915; x=1707159715;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jSJF+OOAXf610xBVp3jRjdPIYKqNvKf0pGO5qcf0N64=;
+        b=wpNKqyzBufe9gf7Jg1QYTKXwViM+jeFOeF+6CoYWmAUIkmHTzM6oK5KQ8774+POQWM
+         sHCoPcfVqYVD8eqtQFDMRzBUKqCUEAaYdCHWCtLXwDgOp1r79cFGcKFqlkstzz/JNR8p
+         MgMldaQQyBW1rPa/wmwZ7l0NVkZNqnJiAqUlB8AFsOf2vDzcMH2A1xOSdJUybNM8GiWO
+         KO+GjpZJfu8Ksz6AL9sNyRkQeKmjNRUeGFHPYF3aTf0JnjE92SJ+lWk4Lv5OV/Wp5GwC
+         UmxEe/BGtfAPM/5a+1csSdfHuO++e+oe9yvMoq5JBzQMX754ohIR1MW9Q7LccAQy9hFn
+         pK/w==
+X-Gm-Message-State: AOJu0YwUGFviLUn/873Nv9B9OkyDSb6sDlRgXZ7tA9zaYYWaWGr68K8h
+	pz7e0YSGi0hAHsm0bCIOo75Wyy946ZVew78CjHD5h4+nMyrSiIHDDrrFWXRNRM8=
+X-Google-Smtp-Source: AGHT+IHO4inrLZ+LmjpobsSd6xvDcDGhMatpnyJ1hPtxg7GuwS+LDjEPtsGiqtzMaR6hLvhp4a7WQA==
+X-Received: by 2002:a5e:8e0b:0:b0:7bf:dba0:7f78 with SMTP id a11-20020a5e8e0b000000b007bfdba07f78mr6571295ion.0.1706554914874;
+        Mon, 29 Jan 2024 11:01:54 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id f35-20020a0284a6000000b0046f1caefc72sm1949458jai.114.2024.01.29.11.01.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jan 2024 11:01:54 -0800 (PST)
+Message-ID: <c29848d6-29ca-4338-bbdc-abdc71cdd5f4@linuxfoundation.org>
+Date: Mon, 29 Jan 2024 12:01:53 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: manual merge of the kselftest-fixes tree with the
+ mm-hotfixes tree
+Content-Language: en-US
+To: Stephen Rothwell <sfr@canb.auug.org.au>, Shuah Khan <shuah@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: "Hu.Yadi" <hu.yadi@h3c.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>,
+ Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240129085301.5458880a@canb.auug.org.au>
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240129085301.5458880a@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Add cond_guard() to conditional guards.
+On 1/28/24 14:53, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the kselftest-fixes tree got a conflict in:
+> 
+>    tools/testing/selftests/core/close_range_test.c
+> 
+> between commit:
+> 
+>    27a593e3f13a ("selftests: core: include linux/close_range.h for CLOSE_RANGE_* macros")
+> 
+> from the mm-hotfixes-unstable branch of the mm-hotfixes tree and commit:
+> 
+>    b5a8a6de69bc ("selftests/core: Fix build issue with CLOSE_RANGE_UNSHARE")
+> 
+> from the kselftest-fixes tree.
+> 
+> I fixed it up (basically the same patch, I used the former which kept
+> the blank line) and can carry the fix as necessary. This is now fixed
+> as far as linux-next is concerned, but any non trivial conflicts should
+> be mentioned to your upstream maintainer when your tree is submitted for
+> merging.  You may also want to consider cooperating with the maintainer
+> of the conflicting tree to minimise any particularly complex conflicts.
+> 
 
-cond_guard() stores the return value from _interruptible(), _killable(),
-and _try versions of locks to a variable whose address is passed as the
-second parameter, so that the value can later be checked and an action
-be taken accordingly (e.g., calling printk() in case of failure).
+Thank you Stephen.
 
-As the other guards, it avoids to open code the release of the lock
-after a goto to an 'out' label.
+Andrew, would you like me to drop this commit? I was planning to send
+pull request with this in later on today, but if you prefer, I can
+drop this commit and the send the PR.
 
-This is an RFC at least for two reasons...
-
-1) I'm not sure that this guard is needed unless we want to avoid the
-use of scoped_cond_guard() with its necessary indentation of the code
-in the successful path and/or we want to check the return value of the
-conditional lock.
-
-2) By using cond_guard() it is not possible to release the lock before
-calling other functions from the current one. The lock is held until the
-current function exits. This is not always desirable.
-
-The changes for cxl/region are only added to show a possible use case for
-cond_guard().
-
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Suggested-by: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: Fabio M. De Francesco <fabio.maria.de.francesco@linux.intel.com>
----
- drivers/cxl/core/region.c | 7 ++-----
- include/linux/cleanup.h   | 9 +++++++++
- 2 files changed, 11 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
-index 0f05692bfec3..4a72a8d161f0 100644
---- a/drivers/cxl/core/region.c
-+++ b/drivers/cxl/core/region.c
-@@ -668,15 +668,14 @@ static size_t show_targetN(struct cxl_region *cxlr, char *buf, int pos)
- 	struct cxl_endpoint_decoder *cxled;
- 	int rc;
- 
--	rc = down_read_interruptible(&cxl_region_rwsem);
-+	cond_guard(rwsem_read_intr, &rc, &cxl_region_rwsem);
- 	if (rc)
- 		return rc;
- 
- 	if (pos >= p->interleave_ways) {
- 		dev_dbg(&cxlr->dev, "position %d out of range %d\n", pos,
- 			p->interleave_ways);
--		rc = -ENXIO;
--		goto out;
-+		return -ENXIO;
- 	}
- 
- 	cxled = p->targets[pos];
-@@ -684,8 +683,6 @@ static size_t show_targetN(struct cxl_region *cxlr, char *buf, int pos)
- 		rc = sysfs_emit(buf, "\n");
- 	else
- 		rc = sysfs_emit(buf, "%s\n", dev_name(&cxled->cxld.dev));
--out:
--	up_read(&cxl_region_rwsem);
- 
- 	return rc;
- }
-diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
-index c2d09bc4f976..550d21a425d3 100644
---- a/include/linux/cleanup.h
-+++ b/include/linux/cleanup.h
-@@ -134,6 +134,11 @@ static inline class_##_name##_t class_##_name##ext##_constructor(_init_args) \
-  *	an anonymous instance of the (guard) class, not recommended for
-  *	conditional locks.
-  *
-+ * cond_guard(_name, _retp, args...):
-+ * 	this assigns *_retp with the return values from conditional locks like
-+ * 	down_read_trylock() or mutex_lock_interruptible(). *_retp can then be
-+ * 	checked and actions can be taken accordingly.
-+ *
-  * scoped_guard (name, args...) { }:
-  *	similar to CLASS(name, scope)(args), except the variable (with the
-  *	explicit name 'scope') is declard in a for-loop such that its scope is
-@@ -165,6 +170,10 @@ static inline class_##_name##_t class_##_name##ext##_constructor(_init_args) \
- 
- #define __guard_ptr(_name) class_##_name##_lock_ptr
- 
-+#define cond_guard(_name, _ret, args...) \
-+	CLASS(_name, scope)(args); \
-+	*_ret = (!__guard_ptr(_name)(&scope))
-+
- #define scoped_guard(_name, args...)					\
- 	for (CLASS(_name, scope)(args),					\
- 	     *done = NULL; __guard_ptr(_name)(&scope) && !done; done = (void *)1)
--- 
-2.43.0
-
+thanks,
+-- Shuah
 
