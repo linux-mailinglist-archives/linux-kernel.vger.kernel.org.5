@@ -1,96 +1,156 @@
-Return-Path: <linux-kernel+bounces-43405-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-43407-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0C8584136D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:27:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 828A0841371
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 20:28:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FFC41C24FB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:27:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FE1028A6AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jan 2024 19:28:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 676FE155A2A;
-	Mon, 29 Jan 2024 19:26:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC4D9657A8;
+	Mon, 29 Jan 2024 19:27:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="dsewV60v"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="U5tNszZV"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FEE676023;
-	Mon, 29 Jan 2024 19:26:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B1DC4C637
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 19:27:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706556412; cv=none; b=RidLqjO4iURrDsX0bs1GvXM5qk0N2nKLBjE85trFuzfLr19G2o2XQ+DKv1lknOw8n5ukb75ZPmadNDLvPPmX6GrV/pf9OaU9el25XUBAbPJCLlfGaqxAzSXSi2KKMyYzeULTznm0hwRaAeDmTMaRlGXvYFaZpp9U5i57CUOS03I=
+	t=1706556437; cv=none; b=gYZWP4EfjMGIGZDbMYCJDz4NS6KPMH1yzGVHKl6MPxbElwLxZA08TxbF3aWtV31gNTKQcXsJFDL5azp7aYuEqIoehYwYXeDZwYnYZiTDUHaIR2GJu+7BHtmTnaFwtgwYJf5LjDRhadN3UCUWsKAX4wnrIbKbwDF0KT3dhRCBEyY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706556412; c=relaxed/simple;
-	bh=0DCssUbSMzZG0WW8U5N3x7j24bKA4wfldkB5+LDWwFQ=;
+	s=arc-20240116; t=1706556437; c=relaxed/simple;
+	bh=5bZskXGQ0jfrMSSDC5uZCp869pKyT+/gw6vmr10wqB8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lEhqsYlBYpRoU+54rulEJppnwUzC+IP6nku896V/eSf19CVVOESOZf/E2/itmM/8BF5a52ZJnsfNKuLi3gzzKIVgZxOIu1heQ0mg6YiFWumW1tUn+t7TfJyHrgBdJxlUX3b0VmzP66DKInBfwew+N7zKXCH2rOvIdT//9s7U0b0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=dsewV60v; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=M1jujuKLf3xpruhDR2flI4/MXT9+iY7sBsE2JSjaJ8k=; b=dsewV60v9w6yB9nt1NnbKQcKrt
-	vs1tUjLgte/Y8/eVUZw0tp4OdcDd/1aOSTr0te2/7Ri1VsyL4zE7Y05iM5U8Sx5e8yQU2yAmNWgO8
-	Rp+Mx84CubR+TVZ4CElMitOr7g17G6b1xhmr8kPm6FkeTdi+tpTvKIEpGfk9hmvEDpN8NERbZAot4
-	Nmp6AFlEDwR08x4/fFbTK3D+kCF0yMECJMixu+0sIr8TdnvS4lt6ldfAe6g21vOJpz/duKBw12tkK
-	P/Yv8yLABZiaFa6gfwV2++5kivIJqLG6WOlZDczDtwzaiI0YqUZuysI4jXEeqpN38mzqcnCDd9Gt5
-	8560ml8w==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rUXHN-0000000E683-3D7U;
-	Mon, 29 Jan 2024 19:26:49 +0000
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: masahiroy@kernel.org,
-	deller@gmx.de
-Cc: mcgrof@kernel.org,
-	arnd@arndb.de,
-	linux-arch@vger.kernel.org,
-	linux-modules@vger.kernel.org,
+	 MIME-Version:Content-Type:Content-Disposition; b=YqoyrkMPv43F3qM9qK3t9BFuySszh8Ms3JyJsN/jBfmUs1Yx2nAW6EOa7NKllyp17YbSVdVexYZ5d1qqTADptNvAqYcK38SEZYT791YBLa31eV57dQlLD3+ibCMzaUB027FP30x5Hj4wWAkDLS5bJHOuqbTFr6QZE3UPz/fjVU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=U5tNszZV; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706556434;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IcB13Ws5ITW4j3Ksvky6I24v6iNlRk+OZKw84teW+XM=;
+	b=U5tNszZVgYkfsGV+BdyVSFbrXog5w1TccMU9DIgk3EagWxnX+Xn2As5KxcuJeAOw+7QUSs
+	eOv/dDFvY+8bY8jiElxaO1xtcZ4AkBNyqmHloqptf4smNdtByCT4YkkG4GxCxn7njLXnfr
+	qEUigO5MOx2/FZAUJFLXxWKp7EXmi94=
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
+ [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-623-3ghIsIl-NOyOVoWalGWu8A-1; Mon, 29 Jan 2024 14:27:12 -0500
+X-MC-Unique: 3ghIsIl-NOyOVoWalGWu8A-1
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1d8cff976a9so7766245ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jan 2024 11:27:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706556431; x=1707161231;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IcB13Ws5ITW4j3Ksvky6I24v6iNlRk+OZKw84teW+XM=;
+        b=QvKOUv5vN686SW1hUG3nOKxvcGm4yjwRQdTL+vNSDBmdwKbzGBjKc7I02BeT61vSLy
+         B5qhSerRE2hLADy3p8y0jVyWETYFK1Ahlxuz6ARh48Io5CEOHGAPWfw3aHtT8FdMMMhM
+         0/7Gd1RzyfomTBkNWdyp17CwoYg8CJNb5EjYWabftB2Z8/aaOX2QUH9hIMVB3/XLsdrX
+         xPCOaSmnRSe+zHGPNj/PAdsEO+N5H50u/0xuFxf5fLK9AMijAsbIxuSkFgPztWX61IqU
+         c3bA7dUxCILpfC06UT0+A5XiFVnoBWwtXgJMaD8jvqzuULMy59FV3XDPYJwW367/mLAS
+         qbmQ==
+X-Gm-Message-State: AOJu0Yw97u0klSSzcgmebVS/Kr4VK73dTzjfAUwLCBwYCFLsVNzDXfMG
+	buTZnJwk0NMIBXZJsQS8rhJnd0h6H4HMUqLLPxBaHWEjiQyrijTgW2k2GQKdsLtkS0VuYksGgTU
+	olK3JZc7eVdvs/HfLyTQ1c1XHP9DXOrm24t1BuCUMASredRcSYauaOrsqXluXWA==
+X-Received: by 2002:a17:903:2306:b0:1d8:8f4d:4d15 with SMTP id d6-20020a170903230600b001d88f4d4d15mr3754214plh.17.1706556431655;
+        Mon, 29 Jan 2024 11:27:11 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHwIbziEfElU//WKCaof7xs7huJJ3bAWVrza33UwPuE1Ye6yCd/a2oCgZe4h+bYoZwzTEdwPQ==
+X-Received: by 2002:a17:903:2306:b0:1d8:8f4d:4d15 with SMTP id d6-20020a170903230600b001d88f4d4d15mr3754204plh.17.1706556431345;
+        Mon, 29 Jan 2024 11:27:11 -0800 (PST)
+Received: from localhost.localdomain ([2804:1b3:a803:e70d:8905:313f:9514:fada])
+        by smtp.gmail.com with ESMTPSA id w9-20020a170902c78900b001d8d6c1fcafsm2732025pla.163.2024.01.29.11.27.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 11:27:10 -0800 (PST)
+From: Leonardo Bras <leobras@redhat.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: Leonardo Bras <leobras@redhat.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] modules: Add missing entry for __ex_table
-Date: Mon, 29 Jan 2024 11:26:43 -0800
-Message-ID: <20240129192644.3359978-5-mcgrof@kernel.org>
+Subject: Re: [PATCH v1 1/1] wq: Avoid using isolated cpus' timers on unbounded queue_delayed_work
+Date: Mon, 29 Jan 2024 16:26:57 -0300
+Message-ID: <Zbf8AVZaXwmExroX@LeoBras>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240129192644.3359978-1-mcgrof@kernel.org>
-References: <20240129192644.3359978-1-mcgrof@kernel.org>
+In-Reply-To: <Zbfr52x97-tLP66t@slm.duckdns.org>
+References: <20240126010321.2550286-1-leobras@redhat.com> <ZbQozqY9qOa4Q8KR@slm.duckdns.org> <ZbQsr1pNSoiMbDrO@LeoBras> <Zbfr52x97-tLP66t@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-From: Helge Deller <deller@gmx.de>
+On Mon, Jan 29, 2024 at 08:18:15AM -1000, Tejun Heo wrote:
+> Hello,
+> 
+> On Fri, Jan 26, 2024 at 07:05:35PM -0300, Leonardo Bras wrote:
+> > > 	if (housekeeping_enabled(HK_TYPE_TIMER)) {
+> > > 		cpu = smp_processor_id();
+> > > 		if (!housekeeping_test_cpu(cpu, HK_TYPE_TIMER))
+> > > 			cpu = housekeeping_any_cpu(HK_TYPE_TIMER);
+> > > 		add_timer_on(timer, cpu);
+> > > 	} else {
+> > > 		if (likely(cpu == WORK_CPU_UNBOUND))
+> > > 			add_timer(timer, cpu);
+> > > 		else
+> > > 			add_timer_on(timer, cpu);
+> > > 	}
+> > > 
+> > > Thanks.
+> > 
+> > I am not really against it, but for me it's kind of weird to have that many 
+> > calls to add_timer_on() if we can avoid it. 
+> > 
+> > I would rather go with:
+> > 
+> > ###
+> > if (unlikely(cpu != WORK_CPU_UNBOUND)) {
+> > 	add_timer_on(timer, cpu);
+> > 	return;
+> > }
+> > 
+> > if (!housekeeping_enabled(HK_TYPE_TIMER)) {
+> > 	add_timer(timer);
+> > 	return;
+> > }
+> > 
+> > cpu = smp_processor_id();
+> > if (!housekeeping_test_cpu(cpu, HK_TYPE_TIMER))
+> > 	cpu = housekeeping_any_cpu(HK_TYPE_TIMER);
+> > 
+> > add_timer_on(timer, cpu);
+> > ###
+> > 
+> > What do you think?
+> 
+> Isn't that still the same number of add_timer[_on]() calls?
 
-The entry for __ex_table was missing, which may make __ex_table
-become 1- or 2-byte aligned in modules.
-Add the entry to ensure it gets 32-bit aligned.
+Yeah, sorry about this, what I meant was: If we are ok on calling 
+add_timer_on() multiple times, I would rather go with the above version, as 
+I think it's better for readability.
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- scripts/module.lds.S | 1 +
- 1 file changed, 1 insertion(+)
+> 
+> Thanks.
 
-diff --git a/scripts/module.lds.S b/scripts/module.lds.S
-index b00415a9ff27..488f61b156b2 100644
---- a/scripts/module.lds.S
-+++ b/scripts/module.lds.S
-@@ -26,6 +26,7 @@ SECTIONS {
- 	.altinstructions	0 : ALIGN(8) { KEEP(*(.altinstructions)) }
- 	__bug_table		0 : ALIGN(8) { KEEP(*(__bug_table)) }
- 	__jump_table		0 : ALIGN(8) { KEEP(*(__jump_table)) }
-+	__ex_table		0 : ALIGN(4) { KEEP(*(__ex_table)) }
- 
- 	__patchable_function_entries : { *(__patchable_function_entries) }
- 
--- 
-2.42.0
+Thank you for reviewing!
+Leo
+
+> 
+> -- 
+> tejun
+> 
 
 
